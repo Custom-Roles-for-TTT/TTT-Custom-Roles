@@ -1,0 +1,10 @@
+# Default ignored files
+/shelf/
+/.idea/workspace.xml
+/.idea/
+# Datasource local storage ignored files
+/../../../../../:\Development\gmod\TTT-Custom-Roles-2.0\.idea/dataSources/
+/dataSources.local.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+/TTT-Custom-Roles-2.0.iml

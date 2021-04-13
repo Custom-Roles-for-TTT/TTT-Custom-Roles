@@ -1,0 +1,13 @@
+{
+  "title": "Custom Roles for TTT 2.0",
+  "type": "ServerContent",
+  "ignore": [
+    ".git*",
+    "*.iml",
+    ".idea*",
+    "*.psd",
+    "*.vcproj",
+    "*.svn*",
+    "LICENSE"
+  ]
+}
