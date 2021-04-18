@@ -63,6 +63,7 @@ L.body_found_gli = "They were a Glitch."
 L.body_found_pha = "They were a Phantom."
 L.body_found_hyp = "They were a Hypnotist."
 L.body_found_dru = "They were a Drunk."
+L.body_found_rom = "They were a Romantic."
 
 L.body_confirm = "{finder} confirmed the death of {victim}."
 
@@ -196,6 +197,7 @@ L.search_role_gli = "This person was a Glitch."
 L.search_role_pha = "This person was a Phantom."
 L.search_role_hyp = "This person was a Hypnotist."
 L.search_role_dru = "This person was a Drunk."
+L.search_role_rom = "This person was a Romantic."
 
 L.search_words = "Something tells you some of this person's last words were: '{lastwords}'"
 L.search_armor = "They were wearing nonstandard body armor."
