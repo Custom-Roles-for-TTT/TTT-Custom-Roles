@@ -82,6 +82,10 @@ local function IdentifyBody(ply, rag)
             roletext = "body_found_dru"
         elseif role == ROLE_CLOWN then
             roletext = "body_found_clo"
+        elseif role == ROLE_DEPUTY then
+            roletext = "body_found_dep"
+        elseif role == ROLE_IMPERSONATOR then
+            roletext = "body_found_imp"
         else
             roletext = "body_found_inn"
         end
@@ -243,8 +247,8 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
         ServerLog(ply:Nick() .. " took " .. credits .. " credits from the body of " .. nick .. "\n")
         SCORE:HandleCreditFound(ply, nick, credits)
         return
-    elseif DetectiveMode() and not covert then
-        if ply:IsDetective() or not detectiveSearchOnly then
+    elseif DetectiveMode() then
+        if ply:IsDetective() or ((ply:IsDeputy() or ply:IsImpersonator()) and ply:GetNWBool("HasPromotion", false)) or not detectiveSearchOnly then
             IdentifyBody(ply, rag)
         elseif not ply:IsSpec() and not ownerEnt:GetNWBool("det_called", false) and not ownerEnt:GetNWBool("body_searched", false) then
             if IsValid(rag) and rag:GetPos():Distance(ply:GetPos()) < 128 then

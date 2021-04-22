@@ -49,7 +49,7 @@ local function RoleChatMsg(sender, role, msg)
     net.WriteUInt(role, 8)
     net.WriteEntity(sender)
     net.WriteString(msg)
-    if role == ROLE_TRAITOR or role == ROLE_HYPNOTIST then
+    if role == ROLE_TRAITOR or role == ROLE_HYPNOTIST or role == ROLE_IMPERSONATOR then
         net.Send(GetTraitorTeamFilter())
     elseif role == ROLE_DETECTIVE then
         net.Send(GetDetectiveFilter())
@@ -118,6 +118,14 @@ end
 
 function GetClownFilter(alive_only)
     return GetPlayerFilter(function(p) return p:GetClown() and (not alive_only or p:IsTerror()) end)
+end
+
+function GetDeputyFilter(alive_only)
+    return GetPlayerFilter(function(p) return p:GetDeputy() and (not alive_only or p:IsTerror()) end)
+end
+
+function GetImpersonatorFilter(alive_only)
+    return GetPlayerFilter(function(p) return p:GetImpersonator() and (not alive_only or p:IsTerror()) end)
 end
 
 function GetRoleFilter(role, alive_only)

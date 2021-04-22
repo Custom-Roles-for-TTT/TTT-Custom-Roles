@@ -236,7 +236,6 @@ local function ReceiveRadarScan()
 
     RADAR.targets = {}
     for i = 1, num_targets do
-        print("i am doing my part i guess")
         local r = net.ReadUInt(8)
 
         local pos = Vector()

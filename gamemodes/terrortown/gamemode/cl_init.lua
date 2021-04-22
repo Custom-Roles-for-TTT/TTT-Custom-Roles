@@ -184,6 +184,8 @@ local function ReceiveRole()
     elseif client:IsRomantic() then MsgN("ROMANTIC")
     elseif client:IsDrunk() then MsgN("DRUNK")
     elseif client:IsClown() then MsgN("CLOWN")
+    elseif client:IsDeputy() then MsgN("DEPUTY")
+    elseif client:IsImpersonator() then MsgN("IMPERSONATOR")
     else MsgN("INNOCENT") end
 end
 net.Receive("TTT_Role", ReceiveRole)
@@ -592,7 +594,7 @@ hook.Add("TTTPrepareRound", "TTTSprintPrepareRound", function()
     hook.Add("Think", "TTTSprintThink", function()
         local client = LocalPlayer()
 
-        if client:KeyDown(IN_FORWARD) and input.IsKeyDown(KEY_LSHIFT) then
+        if client:KeyDown(IN_FORWARD) and client:KeyDown(IN_SPEED) then
             -- forward + selected key
             SprintFunction()
             recoveryTimer = CurTime()
@@ -685,6 +687,12 @@ net.Receive("TTT_ClientDeathNotify", function()
     elseif role == ROLE_CLOWN then
         col = IndependentColor
         role = "a clown"
+    elseif role == ROLE_DEPUTY then
+        col = SpecInnoColor
+        role = "a deputy"
+    elseif role == ROLE_IMPERSONATOR then
+        col = SpecTraitorColor
+        role = "an impersonator"
     else
         col = InnoColor
         role = "innocent"

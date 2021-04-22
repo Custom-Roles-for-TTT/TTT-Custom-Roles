@@ -14,6 +14,8 @@ L.hypnotist = "Hypnotist"
 L.romantic = "Romantic"
 L.drunk = "Drunk"
 L.clown = "Clown"
+L.deputy = "Deputy"
+L.impersonator = "Impersonator"
 
 L.last_words = "Last Words"
 
@@ -66,6 +68,8 @@ L.body_found_hyp = "They were a Hypnotist."
 L.body_found_rom = "They were a Romantic."
 L.body_found_dru = "They were a Drunk."
 L.body_found_clo = "They were a Clown."
+L.body_found_dep = "They were a Deputy."
+L.body_found_imp = "They were an Impersonator."
 
 L.body_confirm = "{finder} confirmed the death of {victim}."
 
@@ -201,6 +205,8 @@ L.search_role_hyp = "This person was a Hypnotist."
 L.search_role_rom = "This person was a Romantic."
 L.search_role_dru = "This person was a Drunk."
 L.search_role_clo = "This person was a Clown."
+L.search_role_dep = "This person was a Deputy."
+L.search_role_imp = "This person was an Impersonator."
 
 L.search_words = "Something tells you some of this person's last words were: '{lastwords}'"
 L.search_armor = "They were wearing nonstandard body armor."
@@ -617,6 +623,7 @@ L.target_detective = "DETECTIVE"
 L.target_jester = "JESTER"
 L.target_hypnotist = "HYPNOTIST"
 L.target_clown = "KILLER CLOWN"
+L.target_impersonator = "IMPERSONATOR"
 
 L.target_romantic_lover = "YOUR SOULMATE"
 
@@ -711,6 +718,9 @@ deal no damage. However if one team would win the round instead you
 become hostile, are revealed to all players and can deal damage as
 normal. Be the last player standing to win.]]
 
+L.info_popup_deputy = [[You are a Deputy! If the detective dies you will take
+over and gain the ability to buy shop items and search bodies.]]
+
 L.info_popup_hypnotist = [[You are a Hypnotist! Work with fellow traitors to kill all others.
 
 These are your comrades:
@@ -735,6 +745,36 @@ These may or may not be your comrades:
 {traitorlist}
 
 You can use your brain washing device on a corpse to revive them as a traitor.
+
+Press {menukey} to receive your special equipment!]]
+
+L.info_popup_impersonator = [[You are an Impersonator! Work with fellow traitors to kill all others.
+
+These are your comrades:
+{traitorlist}
+
+If the detective dies you will appear to become a new detective and gain their
+abilities just like the deputy. However you are still working for the traitors.
+
+Press {menukey} to receive your special equipment!]]
+
+L.info_popup_impersonator_alone = [[You are an Impersonator! You have no fellow traitors this round.
+
+Kill all others to win!
+
+If the detective dies you will appear to become a new detective and gain their
+abilities just like the deputy. However you are still working for the traitors.
+
+Press {menukey} to receive your special equipment!]]
+
+L.info_popup_impersonator_glitch = [[You are an Impersonator! Work with fellow traitors to kill all others.
+BUT BEWARE! There was a glitch in the system and one among you does not seek the same goal.
+
+These may or may not be your comrades:
+{traitorlist}
+
+If the detective dies you will appear to become a new detective and gain their
+abilities just like the deputy. However you are still working for the traitors.
 
 Press {menukey} to receive your special equipment!]]
 

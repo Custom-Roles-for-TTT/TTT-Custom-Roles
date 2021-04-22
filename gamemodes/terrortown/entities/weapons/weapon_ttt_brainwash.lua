@@ -175,7 +175,9 @@ if SERVER then
 		[ROLE_PHANTOM] = "pha",
 		[ROLE_ROMANTIC] = "rom",
 		[ROLE_DRUNK] = "dru",
-		[ROLE_CLOWN] = "clo"
+		[ROLE_CLOWN] = "clo",
+		[ROLE_DEPUTY] = "dep",
+		[ROLE_IMPERSONATOR] = "imp"
 	};
 
 	function SWEP:DoRespawn(body)

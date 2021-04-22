@@ -40,7 +40,6 @@ local mat_dir = "vgui/ttt/"
 
 EquipmentItems = {
     [ROLE_DETECTIVE] = {
-
         -- body armor
         { id = EQUIP_ARMOR,
           loadout = true, -- default equipment for detectives
@@ -57,20 +56,6 @@ EquipmentItems = {
           name = "item_radar",
           desc = "item_radar_desc"
         }
-
-
-        -- The default TTT equipment uses the language system to allow
-        -- translation. Below is an example of how the type, name and desc fields
-        -- would look with explicit non-localized text (which is probably what you
-        -- want when modding).
-
-        --      {  id       = EQUIP_ARMOR,
-        --         loadout  = true, -- default equipment for detectives
-        --         type     = "Passive effect item",
-        --         material = mat_dir .. "icon_armor",
-        --         name     = "Body Armor",
-        --         desc     = "Reduces bullet damage by 30% when\nyou get hit."
-        --      },
     };
 
 
@@ -102,7 +87,44 @@ EquipmentItems = {
 
 
     [ROLE_HYPNOTIST] = {
+        -- body armor
+        { id = EQUIP_ARMOR,
+          loadout = true, -- default equipment for detectives
+          type = "item_passive",
+          material = mat_dir .. "icon_armor",
+          name = "item_armor",
+          desc = "item_armor_desc"
+        },
 
+        -- radar
+        { id = EQUIP_RADAR,
+          type = "item_active",
+          material = mat_dir .. "icon_radar",
+          name = "item_radar",
+          desc = "item_radar_desc"
+        }
+    };
+
+    [ROLE_DEPUTY] = {
+        -- body armor
+        { id = EQUIP_ARMOR,
+          loadout = true, -- default equipment for detectives
+          type = "item_passive",
+          material = mat_dir .. "icon_armor",
+          name = "item_armor",
+          desc = "item_armor_desc"
+        },
+
+        -- radar
+        { id = EQUIP_RADAR,
+          type = "item_active",
+          material = mat_dir .. "icon_radar",
+          name = "item_radar",
+          desc = "item_radar_desc"
+        }
+    };
+
+    [ROLE_IMPERSONATOR] = {
         -- body armor
         { id = EQUIP_ARMOR,
           loadout = true, -- default equipment for detectives

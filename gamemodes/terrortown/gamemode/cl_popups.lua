@@ -32,6 +32,9 @@ local function GetTextForRole(role)
     elseif role == ROLE_CLOWN then
         return GetTranslation("info_popup_clown")
 
+    elseif role == ROLE_DEPUTY then
+        return GetTranslation("info_popup_deputy")
+
     elseif role == ROLE_ROMANTIC then
         local lover = LocalPlayer():GetNWString("RomanticLover", "someone")
         return GetPTranslation("info_popup_romantic", { lover = lover })
@@ -65,6 +68,39 @@ local function GetTextForRole(role)
             end
         else
             text = GetPTranslation("info_popup_hypnotist_alone", { menukey = menukey })
+        end
+
+        return text
+
+    elseif role == ROLE_IMPERSONATOR then
+        local traitors = {}
+        local glitches = {}
+        for _, ply in ipairs(player.GetAll()) do
+            if ply:IsTraitorTeam() then
+                table.insert(traitors, ply)
+            elseif ply:IsGlitch() then
+                table.insert(traitors, ply)
+                table.insert(glitches, ply)
+            end
+        end
+
+        local text
+        if #traitors > 1 then
+            local traitorlist = ""
+
+            for k, ply in ipairs(traitors) do
+                if ply ~= LocalPlayer() then
+                    traitorlist = traitorlist .. string.rep(" ", 42) .. ply:Nick() .. "\n"
+                end
+            end
+
+            if #glitches > 0 then
+                text = GetPTranslation("info_popup_impersonator_glitch", { menukey = menukey, traitorlist = traitorlist })
+            else
+                text = GetPTranslation("info_popup_impersonator", { menukey = menukey, traitorlist = traitorlist })
+            end
+        else
+            text = GetPTranslation("info_popup_impersonator_alone", { menukey = menukey })
         end
 
         return text

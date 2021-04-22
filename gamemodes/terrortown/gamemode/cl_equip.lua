@@ -53,69 +53,73 @@ end
 
 -- override preexisting weapons
 local canBuyList = {
-    weapon_ttt_health_station = {ROLE_TRAITOR, ROLE_HYPNOTIST},
-    weapon_vadim_defib = {ROLE_HYPNOTIST}
+    weapon_ttt_health_station = {ROLE_TRAITOR, ROLE_HYPNOTIST, ROLE_IMPERSONATOR},
+    weapon_vadim_defib = {ROLE_HYPNOTIST, ROLE_IMPERSONATOR}
 }
 
 local Equipment = nil
-function GetEquipmentForRole(role)
-    -- need to build equipment cache?
-    if not Equipment then
-        -- start with all the non-weapon goodies
-        local tbl = table.Copy(EquipmentItems)
+function GetEquipmentForRole(role, extra)
+    -- start with all the non-weapon goodies
+    local tbl = table.Copy(EquipmentItems)
 
-        -- find buyable weapons to load info from
-        for k, v in pairs(weapons.GetList()) do
-            if v and (v.CanBuy or canBuyList[WEPS.GetClass(v)]) then
-                local data = v.EquipMenuData or {}
-                local base = {
-                    id = WEPS.GetClass(v),
-                    name = v.PrintName or "Unnamed",
-                    limited = v.LimitedStock,
-                    kind = v.Kind or WEAPON_NONE,
-                    slot = (v.Slot or 0) + 1,
-                    material = v.Icon or "vgui/ttt/icon_id",
-                    -- the below should be specified in EquipMenuData, in which case
-                    -- these values are overwritten
-                    type = "Type not specified",
-                    model = "models/weapons/w_bugbait.mdl",
-                    desc = "No description specified."
-                };
+    -- find buyable weapons to load info from
+    for k, v in pairs(weapons.GetList()) do
+        if v and (v.CanBuy or canBuyList[WEPS.GetClass(v)]) then
+            local data = v.EquipMenuData or {}
+            local base = {
+                id = WEPS.GetClass(v),
+                name = v.PrintName or "Unnamed",
+                limited = v.LimitedStock,
+                kind = v.Kind or WEAPON_NONE,
+                slot = (v.Slot or 0) + 1,
+                material = v.Icon or "vgui/ttt/icon_id",
+                -- the below should be specified in EquipMenuData, in which case
+                -- these values are overwritten
+                type = "Type not specified",
+                model = "models/weapons/w_bugbait.mdl",
+                desc = "No description specified."
+            };
 
-                -- Force material to nil so that model key is used when we are
-                -- explicitly told to do so (ie. material is false rather than nil).
-                if data.modelicon then
-                    base.material = nil
-                end
+            -- Force material to nil so that model key is used when we are
+            -- explicitly told to do so (ie. material is false rather than nil).
+            if data.modelicon then
+                base.material = nil
+            end
 
-                table.Merge(base, data)
+            table.Merge(base, data)
 
-                -- add this buyable weapon to all relevant equipment tables
-                if v.CanBuy then
-                    for _, r in pairs(v.CanBuy) do
-                        table.insert(tbl[r], base)
+            -- add this buyable weapon to all relevant equipment tables
+            if v.CanBuy then
+                for _, r in pairs(v.CanBuy) do
+                    table.insert(tbl[r], base)
+                    if extra then
+                        if r == ROLE_DETECTIVE and (role == ROLE_DEPUTY or role == ROLE_IMPERSONATOR) then
+                            table.insert(tbl[role], base)
+                        end
                     end
                 end
+            end
 
-                if canBuyList[WEPS.GetClass(v)] then
-                    for _, r in pairs(canBuyList[WEPS.GetClass(v)]) do
+            if canBuyList[WEPS.GetClass(v)] then
+                for _, r in pairs(canBuyList[WEPS.GetClass(v)]) do
+                    if not table.HasValue(tbl[r], base) then
                         table.insert(tbl[r], base)
                     end
                 end
             end
         end
-
-        -- mark custom items
-        for r, is in pairs(tbl) do
-            for _, i in pairs(is) do
-                if i and i.id then
-                    i.custom = not table.HasValue(DefaultEquipment[r], i.id)
-                end
-            end
-        end
-
-        Equipment = tbl
     end
+
+    -- mark custom items
+    for r, is in pairs(tbl) do
+        for _, i in pairs(is) do
+            if i and i.id then
+                i.custom = not table.HasValue(DefaultEquipment[r], i.id)
+            end
+        end
+    end
+
+    Equipment = tbl
 
     return Equipment and Equipment[role] or {}
 end
@@ -158,7 +162,7 @@ local function PreqLabels(parent, x, y)
 
     tbl.owned.Check = function(s, sel)
         if ItemIsWeapon(sel) and (not CanCarryWeapon(sel)) then
-            return false, GetPTranslation("equip_carry_slot", { slot = sel.slot })
+            return false, "X", GetPTranslation("equip_carry_slot", { slot = sel.slot })
         elseif (not ItemIsWeapon(sel)) and LocalPlayer():HasEquipmentItem(sel.id) then
             return false, "X", GetTranslation("equip_carry_own")
         else
@@ -227,7 +231,9 @@ local color_darkened = Color(255, 255, 255, 80)
 local color_slot = {
     [ROLE_TRAITOR] = COLOR_TRAITOR,
     [ROLE_DETECTIVE] = COLOR_DETECTIVE,
-    [ROLE_HYPNOTIST] = COLOR_SPECIAL_TRAITOR
+    [ROLE_HYPNOTIST] = COLOR_SPECIAL_TRAITOR,
+    [ROLE_DEPUTY] = COLOR_SPECIAL_INNOCENT,
+    [ROLE_IMPERSONATOR] = COLOR_SPECIAL_TRAITOR
 }
 
 local fieldstbl = { "name", "type", "desc" }
@@ -312,7 +318,7 @@ local function TraitorMenuPopup()
     dlist:EnableVerticalScrollbar(true)
     dlist:EnableHorizontal(true)
 
-    local items = GetEquipmentForRole(ply:GetRole())
+    local items = GetEquipmentForRole(ply:GetRole(), ply:GetNWBool("HasPromotion", false))
 
     local to_select = nil
 
@@ -598,7 +604,7 @@ concommand.Add("ttt_cl_traitorpopup_close", ForceCloseTraitorMenu)
 
 function GM:OnContextMenuOpen()
     local r = GetRoundState()
-    if r == ROUND_ACTIVE and not LocalPlayer():IsShopRole() then
+    if r == ROUND_ACTIVE and (not LocalPlayer():IsShopRole() or (LocalPlayer():IsDeputy() and not LocalPlayer():GetNWBool("HasPromotion", false))) then
         return
     elseif r == ROUND_POST or r == ROUND_PREP then
         CLSCORE:Toggle()

@@ -43,7 +43,9 @@ local function GetLoadoutWeapons(r)
             [ROLE_HYPNOTIST] = {},
             [ROLE_ROMANTIC] = {},
             [ROLE_DRUNK] = {},
-            [ROLE_CLOWN] = {}
+            [ROLE_CLOWN] = {},
+            [ROLE_DEPUTY] = {},
+            [ROLE_IMPERSONATOR] = {}
         };
 
         for k, w in pairs(weapons.GetList()) do
@@ -335,8 +337,8 @@ end
 
 -- override preexisting weapons
 local canBuyList = {
-    weapon_ttt_health_station = {ROLE_TRAITOR, ROLE_HYPNOTIST},
-    weapon_vadim_defib = {ROLE_HYPNOTIST}
+    weapon_ttt_health_station = {ROLE_TRAITOR, ROLE_HYPNOTIST, ROLE_IMPERSONATOR},
+    weapon_vadim_defib = {ROLE_HYPNOTIST, ROLE_IMPERSONATOR}
 }
 
 -- Equipment buying
@@ -387,7 +389,8 @@ local function OrderEquipment(ply, cmd, args)
         end
     elseif swep_table then
         -- weapon whitelist check
-        if not table.HasValue(swep_table.CanBuy, ply:GetRole()) and (not canBuyList[id] or (canBuyList[id] and not (table.HasValue(canBuyList[id], ply:GetRole())))) then
+        if (not table.HasValue(swep_table.CanBuy, ply:GetRole()) and (not canBuyList[id] or (canBuyList[id] and not (table.HasValue(canBuyList[id], ply:GetRole()))))
+                and not (table.HasValue(swep_table.CanBuy, ROLE_DETECTIVE) and ply:GetNWBool("HasPromotion", false) and (ply:GetDeputy() or ply:GetImpersonator()))) then
             print(ply, "tried to buy weapon his role is not permitted to buy")
             return
         end

@@ -87,12 +87,16 @@ CreateConVar("ttt_phantom_enabled", 0)
 CreateConVar("ttt_phantom_spawn_weight", "1")
 CreateConVar("ttt_romantic_enabled", 0)
 CreateConVar("ttt_romantic_spawn_weight", "1")
+CreateConVar("ttt_deputy_enabled", 0)
+CreateConVar("ttt_deputy_spawn_weight", "1")
 
 -- Special traitor spawn probabilities
 CreateConVar("ttt_special_traitor_pct", 0.33)
 CreateConVar("ttt_special_traitor_chance", 0.5)
 CreateConVar("ttt_hypnotist_enabled", 0)
 CreateConVar("ttt_hypnotist_spawn_weight", "1")
+CreateConVar("ttt_impersonator_enabled", 0)
+CreateConVar("ttt_impersonator_spawn_weight", "1")
 
 -- Independent spawn probabilities
 CreateConVar("ttt_independent_chance", 0.5)
@@ -305,6 +309,8 @@ function GM:SyncGlobals()
     SetGlobalBool("ttt_highlight_admins", GetConVar("ttt_highlight_admins"):GetBool())
     SetGlobalBool("ttt_locational_voice", GetConVar("ttt_locational_voice"):GetBool())
     SetGlobalInt("ttt_idle_limit", GetConVar("ttt_idle_limit"):GetInt())
+
+    SetGlobalBool("ttt_detective_search_only", GetConVar("ttt_detective_search_only"):GetBool())
 
     SetGlobalBool("ttt_voice_drain", GetConVar("ttt_voice_drain"):GetBool())
     SetGlobalFloat("ttt_voice_drain_normal", GetConVar("ttt_voice_drain_normal"):GetFloat())
@@ -528,6 +534,7 @@ function PrepareRound()
         v:SetNWBool("WasDrunk", false)
         v:SetNWString("WasHypnotised", "")
         v:SetNWBool("KillerClownActive", false)
+        v:SetNWBool("HasPromotion", false)
     end
 
     jester_killed = false
@@ -850,6 +857,11 @@ function BeginRound()
         if v:GetRole() == ROLE_CLOWN then
             v:SetNWBool("KillerClownActive", false)
         end
+
+        -- Deputy and Impersonator logic
+        if v:GetRole() == ROLE_DEPUTY or v:GetRole() == ROLE_IMPERSONATOR then
+            v:SetNWBool("HasPromotion", false)
+        end
     end
 
     net.Start("TTT_ResetScoreboard")
@@ -1147,7 +1159,9 @@ function SelectRoles()
         [ROLE_HYPNOTIST] = {},
         [ROLE_ROMANTIC] = {},
         [ROLE_DRUNK] = {},
-        [ROLE_CLOWN] = {}
+        [ROLE_CLOWN] = {},
+        [ROLE_DEPUTY] = {},
+        [ROLE_IMPERSONATOR] = {}
     };
 
     if not GAMEMODE.LastRole then GAMEMODE.LastRole = {} end
@@ -1205,6 +1219,11 @@ function SelectRoles()
     if GetConVar("ttt_hypnotist_enabled"):GetBool() then
         for i = 1, GetConVar("ttt_hypnotist_spawn_weight"):GetInt() do
             table.insert(specialTraitorRoles, ROLE_HYPNOTIST)
+        end
+    end
+    if GetConVar("ttt_impersonator_enabled"):GetBool() and detective_count > 0 then
+        for i = 1, GetConVar("ttt_impersonator_spawn_weight"):GetInt() do
+            table.insert(specialTraitorRoles, ROLE_IMPERSONATOR)
         end
     end
     for i = 1, max_special_traitor_count do
@@ -1277,6 +1296,11 @@ function SelectRoles()
     if GetConVar("ttt_romantic_enabled"):GetBool() and choice_count > 1 then
         for i = 1, GetConVar("ttt_romantic_spawn_weight"):GetInt() do
             table.insert(specialInnocentRoles, ROLE_ROMANTIC)
+        end
+    end
+    if GetConVar("ttt_deputy_enabled"):GetBool() and detective_count > 0 then
+        for i = 1, GetConVar("ttt_deputy_spawn_weight"):GetInt() do
+            table.insert(specialInnocentRoles, ROLE_DEPUTY)
         end
     end
     for i = 1, max_special_innocent_count do

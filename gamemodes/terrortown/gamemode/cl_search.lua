@@ -66,7 +66,9 @@ local TypeToMat = {
              [ROLE_HYPNOTIST] = "hyp",
              [ROLE_ROMANTIC] = "rom",
              [ROLE_DRUNK] = "dru",
-             [ROLE_CLOWN] = "clo"},
+             [ROLE_CLOWN] = "clo",
+             [ROLE_DEPUTY] = "dep",
+             [ROLE_IMPERSONATOR] = "imp"},
     c4 = "code",
     dmg = DmgToMat,
     wep = WeaponToIcon,
@@ -131,6 +133,10 @@ function PreprocSearch(raw)
                 search[t].text = T("search_role_dru")
             elseif d == ROLE_CLOWN then
                 search[t].text = T("search_role_clo")
+            elseif d == ROLE_DEPUTY then
+                search[t].text = T("search_role_dep")
+            elseif d == ROLE_IMPERSONATOR then
+                search[t].text = T("search_role_imp")
             else
                 search[t].text = T("search_role_inn")
             end

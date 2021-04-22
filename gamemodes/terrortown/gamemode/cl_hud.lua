@@ -292,7 +292,7 @@ local function InfoPaint(client)
         text = L[roundstate_string[round_state]]
     end
 
-    ShadowedText(text, "TraitorState", x + margin + 73, traitor_y, COLOR_WHITE, TEXT_ALIGN_CENTER)
+    ShadowedText(text, "TraitorState", x + margin + 74, traitor_y, COLOR_WHITE, TEXT_ALIGN_CENTER)
 
     -- Draw round time
     local is_haste = HasteMode() and round_state == ROUND_ACTIVE

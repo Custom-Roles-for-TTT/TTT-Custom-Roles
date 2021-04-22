@@ -105,7 +105,7 @@ function GM:TTTScoreboardRowColorForPlayer(ply)
         return ply:GetRole()
     end
 
-    if ply:IsDetective() then
+    if ply:IsDetective() or ((ply:IsDeputy() or (ply:IsImpersonator() and not LocalPlayer():IsTraitorTeam())) and ply:GetNWBool("HasPromotion", false)) then
         return ROLE_DETECTIVE
     elseif ply:IsClown() and ply:GetNWBool("KillerClownActive", false) then
         return ROLE_CLOWN
@@ -184,6 +184,12 @@ function PANEL:Paint(width, height)
         elseif c == ROLE_CLOWN then
             roleStr = "clo"
             c = rolecolor.independent
+        elseif c == ROLE_DEPUTY then
+            roleStr = "dep"
+            c = rolecolor.special_innocent
+        elseif c == ROLE_IMPERSONATOR then
+            roleStr = "imp"
+            c = rolecolor.special_traitor
         end
     end
 

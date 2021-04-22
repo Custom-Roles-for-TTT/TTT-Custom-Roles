@@ -34,6 +34,8 @@ function GM:PlayerInitialSpawn(ply)
         SendRomanticList()
         SendDrunkList()
         SendClownList()
+        SendDeputyList()
+        SendImpersonatorList()
     end
 
     -- Game has started, tell this guy where the round is at
@@ -50,6 +52,8 @@ function GM:PlayerInitialSpawn(ply)
         SendRomanticList(ply)
         SendDrunkList(ply)
         SendClownList(ply)
+        SendDeputyList(ply)
+        SendImpersonatorList(ply)
     end
 
     -- Handle spec bots
@@ -464,6 +468,8 @@ function GM:PlayerDisconnected(ply)
         SendRomanticList()
         SendDrunkList()
         SendClownList()
+        SendDeputyList()
+        SendImpersonatorList()
     end
 
     if KARMA.IsEnabled() then
@@ -756,6 +762,17 @@ function GM:PlayerDeath(victim, infl, attacker)
             body:Remove()
             SendFullStateUpdate()
         end)
+    end
+
+    -- Handle detective death
+    if victim:GetDetective() and GetRoundState() == ROUND_ACTIVE then
+        for _, ply in pairs(player.GetAll()) do
+            if ply:GetDeputy() or ply:GetImpersonator() then
+                ply:SetNWBool("HasPromotion", true)
+                ply:PrintMessage(HUD_PRINTTALK, "You have been promoted to Detective!")
+                ply:PrintMessage(HUD_PRINTCENTER, "You have been promoted to Detective!")
+            end
+        end
     end
 
     -- stop bleeding

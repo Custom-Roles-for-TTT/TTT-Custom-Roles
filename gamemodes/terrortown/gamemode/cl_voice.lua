@@ -47,9 +47,17 @@ local function RoleChatRecv()
                 ": " .. text)
 
     elseif role == ROLE_HYPNOTIST then
-        chat.AddText(Color(255, 0, 0),
+        chat.AddText(Color(255, 128, 0),
                 Format("(%s) ", string.upper(GetTranslation("hypnotist"))),
-                Color(255, 100, 100),
+                Color(255, 178, 100),
+                sender:Nick(),
+                Color(255, 255, 255),
+                ": " .. text)
+
+    elseif role == ROLE_IMPERSONATOR then
+        chat.AddText(Color(255, 128, 0),
+                Format("(%s) ", string.upper(GetTranslation("impersonator"))),
+                Color(255, 178, 100),
                 sender:Nick(),
                 Color(255, 255, 255),
                 ": " .. text)
@@ -83,7 +91,7 @@ end
 function GM:OnPlayerChat(ply, text, teamchat, dead)
     if not IsValid(ply) then return BaseClass.OnPlayerChat(self, ply, text, teamchat, dead) end
 
-    if ply:IsActiveDetective() then
+    if ply:IsActiveDetective() or ((ply:IsActiveDeputy() or ply:IsActiveImpersonator()) and ply:GetNWBool("HasPromotion", false)) then
         AddDetectiveText(ply, text)
         return true
     end
