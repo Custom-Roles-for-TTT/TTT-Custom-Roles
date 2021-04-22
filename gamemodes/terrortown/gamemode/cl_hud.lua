@@ -357,6 +357,17 @@ local function InfoPaint(client)
         surface.DrawText(text)
     end
 
+    if (client:IsDeputy() or client:IsImpersonator()) and client:GetNWBool("HasPromotion", false) then
+        surface.SetFont("TabLarge")
+        surface.SetTextColor(255, 255, 255, 230)
+
+        local text = GetTranslation("detective_promotion_hud")
+        local w, h = surface.GetTextSize(text)
+
+        surface.SetTextPos(12, ScrH() - 140 - h)
+        surface.DrawText(text)
+    end
+
 end
 
 -- Paints player status HUD element in the bottom left

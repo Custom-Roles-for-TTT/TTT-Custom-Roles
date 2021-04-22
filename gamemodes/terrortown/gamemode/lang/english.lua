@@ -640,6 +640,7 @@ L.disg_hud = "Disguised. Your name is hidden."
 L.radar_hud = "Radar ready for next scan in: {time}"
 
 L.drunk_hud = "You will sober up in: {time}"
+L.detective_promotion_hud = "You have been promoted to detective"
 
 -- Spectator muting of living/dead
 L.mute_living = "Living players muted"
