@@ -19,6 +19,7 @@ CLSCORE.PhantomIDs = {}
 CLSCORE.HypnotistIDs = {}
 CLSCORE.RomanticIDs = {}
 CLSCORE.DrunkIDs = {}
+CLSCORE.ClownIDs = {}
 CLSCORE.Players = {}
 CLSCORE.StartTime = 0
 CLSCORE.Panel = nil
@@ -108,7 +109,8 @@ end
 local wintitle = {
     [WIN_INNOCENT] = { txt = "hilite_win_innocent", c = COLOR_INNOCENT },
     [WIN_TRAITOR] = { txt = "hilite_win_traitors", c = COLOR_TRAITOR },
-    [WIN_JESTER] = { txt = "hilite_win_jester", c = COLOR_JESTER }
+    [WIN_JESTER] = { txt = "hilite_win_jester", c = COLOR_JESTER },
+    [WIN_CLOWN] = { txt = "hilite_win_clown", c = COLOR_INDEPENDENT }
 }
 
 function CLSCORE:ShowPanel()
@@ -211,6 +213,8 @@ function CLSCORE:ShowPanel()
                     startingRole = "rom"
                 elseif s.was_drunk then
                     startingRole = "dru"
+                elseif s.was_clown then
+                    startingRole = "clo"
                 end
 
                 local hasDisconnected = false
@@ -252,6 +256,8 @@ function CLSCORE:ShowPanel()
                         finalRole = "rom"
                     elseif ply:IsDrunk() then
                         finalRole = "dru"
+                    elseif ply:IsClown() then
+                        finalRole = "clo"
                     end
                 else
                     hasDisconnected = true
@@ -321,7 +327,8 @@ function CLSCORE:ShowPanel()
                     countT = countT + 1
                 elseif (roleFileName == "jes"
                         or roleFileName == "swa"
-                        or roleFileName == "dru") then
+                        or roleFileName == "dru"
+                        or roleFileName == "clo") then
                     roleIcon:SetPos(10, 460)
                     nicklbl:SetPos(48, 458)
 
@@ -415,6 +422,7 @@ function CLSCORE:Reset()
     self.HypnotistIDs = {}
     self.RomanticIDs = {}
     self.DrunkIDs = {}
+    self.ClownIDs = {}
     self.Scores = {}
     self.Players = {}
     self.RoundStarted = 0
@@ -425,7 +433,7 @@ end
 function CLSCORE:Init(events)
     -- Get start time, traitors, detectives, scores, and nicks
     local starttime = 0
-    local traitors, detectives, jesters, swappers, glitches, phantoms, hypnotists, romantics, drunks
+    local traitors, detectives, jesters, swappers, glitches, phantoms, hypnotists, romantics, drunks, clowns
     local scores, nicks = {}, {}
 
     local game, selected, spawn = false, false, false
@@ -451,6 +459,7 @@ function CLSCORE:Init(events)
             hypnotists = e.hypnotist_ids
             romantics = e.romantic_ids
             drunks = e.drunk_ids
+            clowns = e.clown_ids
 
             if game and spawn then
                 break
@@ -472,7 +481,7 @@ function CLSCORE:Init(events)
     if traitors == nil then traitors = {} end
     if detectives == nil then detectives = {} end
 
-    scores = ScoreEventLog(events, scores, traitors, detectives, jesters, swappers, glitches, phantoms, hypnotists, romantics, drunks)
+    scores = ScoreEventLog(events, scores, traitors, detectives, jesters, swappers, glitches, phantoms, hypnotists, romantics, drunks, clowns)
 
     self.Players = nicks
     self.Scores = scores
@@ -485,6 +494,7 @@ function CLSCORE:Init(events)
     self.HypnotistIDs = hypnotists
     self.RomanticIDs = romantics
     self.DrunkIDs = drunks
+    self.ClownIDs = clowns
     self.StartTime = starttime
     self.Events = events
 end

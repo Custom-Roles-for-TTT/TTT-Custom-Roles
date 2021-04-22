@@ -21,6 +21,7 @@ function plymeta:GetPhantom() return self:GetRole() == ROLE_PHANTOM end
 function plymeta:GetHypnotist() return self:GetRole() == ROLE_HYPNOTIST end
 function plymeta:GetRomantic() return self:GetRole() == ROLE_ROMANTIC end
 function plymeta:GetDrunk() return self:GetRole() == ROLE_DRUNK end
+function plymeta:GetClown() return self:GetRole() == ROLE_CLOWN end
 
 plymeta.IsTraitor = plymeta.GetTraitor
 plymeta.IsInnocent = plymeta.GetInnocent
@@ -32,6 +33,7 @@ plymeta.IsPhantom = plymeta.GetPhantom
 plymeta.IsHypnotist = plymeta.GetHypnotist
 plymeta.IsRomantic = plymeta.GetRomantic
 plymeta.IsDrunk = plymeta.GetDrunk
+plymeta.IsClown = plymeta.GetClown
 
 function plymeta:IsSpecial() return self:GetRole() ~= ROLE_INNOCENT end
 function plymeta:IsCustom() return self:GetRole() ~= ROLE_INNOCENT and self:GetRole() ~= ROLE_TRAITOR and self:GetRole() ~= ROLE_DETECTIVE end
@@ -53,6 +55,8 @@ function plymeta:IsActivePhantom() return self:IsActiveRole(ROLE_PHANTOM) end
 function plymeta:IsActiveHypnotist() return self:IsActiveRole(ROLE_HYPNOTIST) end
 function plymeta:IsActiveRomantic() return self:IsActiveRole(ROLE_ROMANTIC) end
 function plymeta:IsActiveDrunk() return self:IsActiveRole(ROLE_DRUNK) end
+function plymeta:IsActiveClown() return self:IsActiveRole(ROLE_CLOWN) end
+
 function plymeta:IsActiveSpecial() return self:IsSpecial() and self:IsActive() end
 function plymeta:IsActiveCustom() return self:IsCustom() and self:IsActive() end
 function plymeta:IsActiveShopRole() return self:IsShopRole() and self:IsActive() end
@@ -61,7 +65,7 @@ function plymeta:IsActiveShopRole() return self:IsShopRole() and self:IsActive()
 function plymeta:IsTraitorTeam() return self:IsRole(ROLE_TRAITOR) or self:IsRole(ROLE_HYPNOTIST) end
 function plymeta:IsInnocentTeam() return self:IsRole(ROLE_INNOCENT) or self:IsRole(ROLE_DETECTIVE) or self:IsRole(ROLE_GLITCH) or self:IsRole(ROLE_PHANTOM) or self:IsRole(ROLE_ROMANTIC) end
 function plymeta:IsJesterTeam() return self:IsRole(ROLE_JESTER) or self:IsRole(ROLE_SWAPPER) end
-function plymeta:IsIndependentTeam() return self:IsRole(ROLE_DRUNK) end
+function plymeta:IsIndependentTeam() return self:IsRole(ROLE_DRUNK) or self:IsRole(ROLE_CLOWN) end
 function plymeta:IsActiveTraitorTeam() return self:IsTraitorTeam() and self:IsActive() end
 function plymeta:IsActiveInnocentTeam() return self:IsInnocentTeam() and self:IsActive() end
 function plymeta:IsActiveJesterTeam() return self:IsJesterTeam() and self:IsActive() end
@@ -77,7 +81,8 @@ local role_strings = {
     [ROLE_PHANTOM] = "phantom",
     [ROLE_HYPNOTIST] = "hypnotist",
     [ROLE_ROMANTIC] = "romantic",
-    [ROLE_DRUNK] = "drunk"
+    [ROLE_DRUNK] = "drunk",
+    [ROLE_CLOWN] = "clown"
 };
 
 local GetRTranslation = CLIENT and LANG.GetRawTranslation or util.passthrough

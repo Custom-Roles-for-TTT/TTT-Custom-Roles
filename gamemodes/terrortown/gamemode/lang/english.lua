@@ -13,6 +13,7 @@ L.phantom = "Phantom"
 L.hypnotist = "Hypnotist"
 L.romantic = "Romantic"
 L.drunk = "Drunk"
+L.clown = "Clown"
 
 L.last_words = "Last Words"
 
@@ -62,8 +63,9 @@ L.body_found_swa = "They were a Swapper."
 L.body_found_gli = "They were a Glitch."
 L.body_found_pha = "They were a Phantom."
 L.body_found_hyp = "They were a Hypnotist."
-L.body_found_dru = "They were a Drunk."
 L.body_found_rom = "They were a Romantic."
+L.body_found_dru = "They were a Drunk."
+L.body_found_clo = "They were a Clown."
 
 L.body_confirm = "{finder} confirmed the death of {victim}."
 
@@ -196,8 +198,9 @@ L.search_role_swa = "This person was a Swapper."
 L.search_role_gli = "This person was a Glitch."
 L.search_role_pha = "This person was a Phantom."
 L.search_role_hyp = "This person was a Hypnotist."
-L.search_role_dru = "This person was a Drunk."
 L.search_role_rom = "This person was a Romantic."
+L.search_role_dru = "This person was a Drunk."
+L.search_role_clo = "This person was a Clown."
 
 L.search_words = "Something tells you some of this person's last words were: '{lastwords}'"
 L.search_armor = "They were wearing nonstandard body armor."
@@ -613,6 +616,7 @@ L.target_traitor = "FELLOW TRAITOR"
 L.target_detective = "DETECTIVE"
 L.target_jester = "JESTER"
 L.target_hypnotist = "HYPNOTIST"
+L.target_clown = "KILLER CLOWN"
 
 L.target_romantic_lover = "YOUR SOULMATE"
 
@@ -699,8 +703,13 @@ L.info_popup_romantic = [[You are a Romantic! You are helplessly in love with {l
 but they do not even know that you exist. Do whatever you can to protect
 them or you will die of heartbreak.]]
 
-L.info_popup_drunk = [[You are the Drunk!  You have forgotten what team you are on!
+L.info_popup_drunk = [[You are a Drunk!  You have forgotten what team you are on!
 Wait until you sober up and remember. Try to lay low in the meantime.]]
+
+L.info_popup_clown = [[You are a Clown! Traitors think you are a jester and you
+deal no damage. However if one team would win the round instead you
+become hostile, are revealed to all players and can deal damage as
+normal. Be the last player standing to win.]]
 
 L.info_popup_hypnotist = [[You are a Hypnotist! Work with fellow traitors to kill all others.
 
@@ -855,6 +864,7 @@ L.report_save_result = "The Event Log has been saved to:"
 L.hilite_win_traitors = "THE TRAITORS WIN"
 L.hilite_win_innocent = "THE INNOCENT WIN"
 L.hilite_win_jester = "THE JESTER WINS"
+L.hilite_win_clown = "THE CLOWN WINS"
 
 L.hilite_players1 = "{numplayers} players took part, {numtraitors} were traitors"
 L.hilite_players2 = "{numplayers} players took part, one of them the traitor"

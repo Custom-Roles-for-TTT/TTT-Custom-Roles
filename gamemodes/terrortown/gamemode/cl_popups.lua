@@ -29,6 +29,9 @@ local function GetTextForRole(role)
     elseif role == ROLE_DRUNK then
         return GetTranslation("info_popup_drunk")
 
+    elseif role == ROLE_CLOWN then
+        return GetTranslation("info_popup_clown")
+
     elseif role == ROLE_ROMANTIC then
         local lover = LocalPlayer():GetNWString("RomanticLover", "someone")
         return GetPTranslation("info_popup_romantic", { lover = lover })

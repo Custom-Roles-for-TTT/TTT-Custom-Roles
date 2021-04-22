@@ -102,12 +102,15 @@ CreateConVar("ttt_swapper_enabled", 0)
 CreateConVar("ttt_swapper_spawn_weight", "1")
 CreateConVar("ttt_drunk_enabled", 0)
 CreateConVar("ttt_drunk_spawn_weight", "1")
+CreateConVar("ttt_clown_enabled", 0)
+CreateConVar("ttt_clown_spawn_weight", "1")
 
 -- Custom role properties
 CreateConVar("ttt_swapper_killer_health", "100")
 CreateConVar("ttt_phantom_respawn_health", "50")
 CreateConVar("ttt_drunk_sober_time", "180")
 CreateConVar("ttt_drunk_innocent_chance", "0.7")
+CreateConVar("ttt_clown_damage_bonus", "0")
 
 
 -- Traitor credits
@@ -206,8 +209,8 @@ util.AddNetworkString("TTT_ScanResult")
 util.AddNetworkString("TTT_FlareScorch")
 util.AddNetworkString("TTT_Radar")
 util.AddNetworkString("TTT_Spectate")
+util.AddNetworkString("TTT_ClownActivate")
 util.AddNetworkString("TTT_DrawHitMarker")
-util.AddNetworkString("TTT_CreateBlood")
 util.AddNetworkString("TTT_ClientDeathNotify")
 util.AddNetworkString("TTT_SprintSpeedSet")
 util.AddNetworkString("TTT_SprintGetConVars")
@@ -524,6 +527,7 @@ function PrepareRound()
         v:SetNWString("SwappedWith", "")
         v:SetNWBool("WasDrunk", false)
         v:SetNWString("WasHypnotised", "")
+        v:SetNWBool("KillerClownActive", false)
     end
 
     jester_killed = false
@@ -841,6 +845,11 @@ function BeginRound()
                 end
             end)
         end
+
+        -- Clown logic
+        if v:GetRole() == ROLE_CLOWN then
+            v:SetNWBool("KillerClownActive", false)
+        end
     end
 
     net.Start("TTT_ResetScoreboard")
@@ -850,6 +859,7 @@ function BeginRound()
         if romantic_lover then
             v:SetNWString("RomanticLover", romantic_lover:Nick() or "")
         end
+
         if v:Alive() and v:IsTerror() then
             net.Start("TTT_SpawnedPlayers")
             net.WriteString(v:Nick())
@@ -991,6 +1001,9 @@ function GM:TTTCheckForWin()
     local innocent_alive = false
     local jester_alive = false
     local drunk_alive = false
+    local clown_alive = false
+
+    local killer_clown_active = false
 
     for _, v in ipairs(player.GetAll()) do
         if v:Alive() and v:IsTerror() then
@@ -1000,6 +1013,9 @@ function GM:TTTCheckForWin()
                 jester_alive = true
             elseif v:IsDrunk() then
                 drunk_alive = true
+            elseif v:IsClown() then
+                clown_alive = true
+                killer_clown_active = v:GetNWBool("KillerClownActive", false)
             else
                 innocent_alive = true
             end
@@ -1028,33 +1044,57 @@ function GM:TTTCheckForWin()
         win_type = WIN_JESTER
     end
 
-    if drunk_alive and win_type == WIN_INNOCENT then
-        if timer.Exists("drunkremember") then timer.Remove("drunkremember") end
-        if timer.Exists("waitfordrunkrespawn") then timer.Remove("waitfordrunkrespawn") end
-        for _, v in ipairs(player.GetAll()) do
-            if v:Alive() and v:IsTerror() and v:IsDrunk() then
-                v:SetRole(ROLE_TRAITOR)
-                v:SetNWBool("WasDrunk", true)
-                v:SetCredits(1)
-                v:PrintMessage(HUD_PRINTTALK, "You have remembered that you are a traitor.")
-                v:PrintMessage(HUD_PRINTCENTER, "You have remembered that you are a traitor.")
-                SendFullStateUpdate()
+    -- Drunk logic
+    if drunk_alive then
+        if win_type == WIN_INNOCENT then
+            if timer.Exists("drunkremember") then timer.Remove("drunkremember") end
+            if timer.Exists("waitfordrunkrespawn") then timer.Remove("waitfordrunkrespawn") end
+            for _, v in ipairs(player.GetAll()) do
+                if v:Alive() and v:IsTerror() and v:IsDrunk() then
+                    v:SetRole(ROLE_TRAITOR)
+                    v:SetNWBool("WasDrunk", true)
+                    v:SetCredits(1)
+                    v:PrintMessage(HUD_PRINTTALK, "You have remembered that you are a traitor.")
+                    v:PrintMessage(HUD_PRINTCENTER, "You have remembered that you are a traitor.")
+                    SendFullStateUpdate()
+                end
             end
-        end
-        win_type = WIN_NONE
-    elseif drunk_alive and win_type == WIN_TRAITOR then
-        if timer.Exists("drunkremember") then timer.Remove("drunkremember") end
-        if timer.Exists("waitfordrunkrespawn") then timer.Remove("waitfordrunkrespawn") end
-        for _, v in ipairs(player.GetAll()) do
-            if v:Alive() and v:IsTerror() and v:IsDrunk() then
-                v:SetRole(ROLE_INNOCENT)
-                v:SetNWBool("WasDrunk", true)
-                v:PrintMessage(HUD_PRINTTALK, "You have remembered that you are an innocent.")
-                v:PrintMessage(HUD_PRINTCENTER, "You have remembered that you are an innocent.")
-                SendFullStateUpdate()
+            win_type = WIN_NONE
+        elseif win_type == WIN_TRAITOR then
+            if timer.Exists("drunkremember") then timer.Remove("drunkremember") end
+            if timer.Exists("waitfordrunkrespawn") then timer.Remove("waitfordrunkrespawn") end
+            for _, v in ipairs(player.GetAll()) do
+                if v:Alive() and v:IsTerror() and v:IsDrunk() then
+                    v:SetRole(ROLE_INNOCENT)
+                    v:SetNWBool("WasDrunk", true)
+                    v:PrintMessage(HUD_PRINTTALK, "You have remembered that you are an innocent.")
+                    v:PrintMessage(HUD_PRINTCENTER, "You have remembered that you are an innocent.")
+                    SendFullStateUpdate()
+                end
             end
+            win_type = WIN_NONE
         end
-        win_type = WIN_NONE
+    end
+
+    -- Clown logic
+    if clown_alive then
+        if not killer_clown_active and (win_type == WIN_INNOCENT or win_type == WIN_TRAITOR) then
+            for _, v in ipairs(player.GetAll()) do
+                if v:IsClown() then
+                    v:SetNWBool("KillerClownActive", true)
+                    v:PrintMessage(HUD_PRINTTALK, "KILL THEM ALL!")
+                    v:PrintMessage(HUD_PRINTCENTER, "KILL THEM ALL!")
+                    net.Start("TTT_ClownActivate")
+                    net.WriteEntity(v)
+                    net.Broadcast()
+                end
+            end
+            win_type = WIN_NONE
+        elseif killer_clown_active and not traitor_alive and not innocent_alive then
+            win_type = WIN_CLOWN
+        else
+            win_type = WIN_NONE
+        end
     end
 
     return win_type
@@ -1106,7 +1146,8 @@ function SelectRoles()
         [ROLE_PHANTOM] = {},
         [ROLE_HYPNOTIST] = {},
         [ROLE_ROMANTIC] = {},
-        [ROLE_DRUNK] = {}
+        [ROLE_DRUNK] = {},
+        [ROLE_CLOWN] = {}
     };
 
     if not GAMEMODE.LastRole then GAMEMODE.LastRole = {} end
@@ -1200,6 +1241,11 @@ function SelectRoles()
                 table.insert(independentRoles, ROLE_DRUNK)
             end
         end
+        if GetConVar("ttt_clown_enabled"):GetBool() then
+            for i = 1, GetConVar("ttt_clown_spawn_weight"):GetInt() do
+                table.insert(independentRoles, ROLE_CLOWN)
+            end
+        end
         if #independentRoles ~= 0 then
             local plyPick = math.random(1, #choices)
             local ply = choices[plyPick]
@@ -1288,17 +1334,12 @@ concommand.Add("ttt_version", ShowVersion)
 -- Hit Markers
 hook.Add("EntityTakeDamage", "HitmarkerDetector", function(ent, dmginfo)
     local att = dmginfo:GetAttacker()
-    local pos = dmginfo:GetDamagePosition()
 
     if (IsValid(att) and att:IsPlayer() and att ~= ent) then
         if (ent:IsPlayer() or ent:IsNPC()) then
             net.Start("TTT_DrawHitMarker")
             net.WriteBool(ent:GetNWBool("LastHitCrit"))
             net.Send(att) -- Send the message to the attacker
-
-            net.Start("TTT_CreateBlood")
-            net.WriteVector(pos)
-            net.Broadcast()
         end
     end
 end)

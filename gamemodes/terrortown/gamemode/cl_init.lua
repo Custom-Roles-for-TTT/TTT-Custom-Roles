@@ -183,6 +183,7 @@ local function ReceiveRole()
     elseif client:IsHypnotist() then MsgN("HYPNOTIST")
     elseif client:IsRomantic() then MsgN("ROMANTIC")
     elseif client:IsDrunk() then MsgN("DRUNK")
+    elseif client:IsClown() then MsgN("CLOWN")
     else MsgN("INNOCENT") end
 end
 net.Receive("TTT_Role", ReceiveRole)
@@ -446,6 +447,37 @@ function GM:OnEntityCreated(ent)
     return self.BaseClass.OnEntityCreated(self, ent)
 end
 
+-- Clown confetti
+local confetti = Material("confetti.png")
+net.Receive("TTT_ClownActivate", function()
+    surface.PlaySound("clown.wav")
+
+    local ent = net.ReadEntity()
+    local pos = ent:GetPos() + Vector(0, 0, ent:OBBMaxs().z)
+    if ent.GetShootPos then
+        pos = ent:GetShootPos()
+    end
+
+    local velMax = 200
+    local gravMax = 50
+    local gravity = Vector(math.random(-gravMax, gravMax), math.random(-gravMax, gravMax), math.random(-gravMax, 0))
+
+    --Handles particles
+    local emitter = ParticleEmitter(pos, true)
+    for I = 1, 150 do
+        local p = emitter:Add(confetti, pos)
+        p:SetStartSize(math.random(6, 10))
+        p:SetEndSize(0)
+        p:SetAngles(Angle(math.random(0, 360), math.random(0, 360), math.random(0, 360)))
+        p:SetAngleVelocity(Angle(math.random(5, 50), math.random(5, 50), math.random(5, 50)))
+        p:SetVelocity(Vector(math.random(-velMax, velMax), math.random(-velMax, velMax), math.random(-velMax, velMax)))
+        p:SetColor(255, 255, 255)
+        p:SetDieTime(math.random(4, 7))
+        p:SetGravity(gravity)
+        p:SetAirResistance(125)
+    end
+end)
+
 -- Hit Markers
 local DrawHitM = false
 local LastHitCrit = false
@@ -459,14 +491,6 @@ net.Receive("TTT_DrawHitMarker", function(len, ply)
         LastHitCrit = false
     end
     alpha = 255
-end)
-
-net.Receive("TTT_CreateBlood", function()
-    local pos = net.ReadVector()
-    local effect = EffectData()
-    effect:SetOrigin(pos)
-    effect:SetScale(1)
-    util.Effect("bloodimpact", effect)
 end)
 
 hook.Add("HUDPaint", "HitmarkerDrawer", function()
@@ -658,6 +682,9 @@ net.Receive("TTT_ClientDeathNotify", function()
     elseif role == ROLE_DRUNK then
         col = IndependentColor
         role = "a drunk"
+    elseif role == ROLE_CLOWN then
+        col = IndependentColor
+        role = "a clown"
     else
         col = InnoColor
         role = "innocent"

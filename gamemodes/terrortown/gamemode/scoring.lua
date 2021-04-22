@@ -103,6 +103,7 @@ function SCORE:HandleSelection()
     local hypnotists = {}
     local romantics = {}
     local drunks = {}
+    local clowns = {}
     for k, ply in ipairs(player.GetAll()) do
         if ply:GetTraitor() then
             table.insert(traitors, ply:SteamID())
@@ -122,6 +123,8 @@ function SCORE:HandleSelection()
             table.insert(romantics, ply:SteamID())
         elseif ply:GetDrunk() then
             table.insert(drunks, ply:SteamID())
+        elseif ply:GetClown() then
+            table.insert(clowns, ply:SteamID())
         end
     end
 
@@ -133,7 +136,8 @@ function SCORE:HandleSelection()
                     phantom_ids = phantoms,
                     hypnotist_ids = hypnotists,
                     romantic_ids = romantics,
-                    drunk_ids = drunks})
+                    drunk_ids = drunks,
+                    clown_ids = clowns})
 end
 
 function SCORE:HandleBodyFound(finder, found)
@@ -182,6 +186,7 @@ function SCORE:ApplyEventLogScores(wintype)
     local hypnotists = {}
     local romantics = {}
     local drunks = {}
+    local clowns = {}
     for k, ply in ipairs(player.GetAll()) do
         scores[ply:SteamID()] = {}
 
@@ -203,13 +208,15 @@ function SCORE:ApplyEventLogScores(wintype)
             table.insert(romantics, ply:SteamID())
         elseif ply:GetDrunk() then
             table.insert(drunks, ply:SteamID())
+        elseif ply:GetClown() then
+            table.insert(clowns, ply:SteamID())
         end
     end
 
     -- individual scores, and count those left alive
     local alive = { traitors = 0, innos = 0 }
     local dead = { traitors = 0, innos = 0 }
-    local scored_log = ScoreEventLog(self.Events, scores, traitors, detectives, jesters, swappers, glitches, phantoms, hypnotists, romantics, drunks)
+    local scored_log = ScoreEventLog(self.Events, scores, traitors, detectives, jesters, swappers, glitches, phantoms, hypnotists, romantics, drunks, clowns)
     local ply = nil
     for sid, s in pairs(scored_log) do
         ply = player.GetBySteamID(sid)

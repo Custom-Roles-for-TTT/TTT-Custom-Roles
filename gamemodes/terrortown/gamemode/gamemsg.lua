@@ -116,6 +116,10 @@ function GetDrunkFilter(alive_only)
     return GetPlayerFilter(function(p) return p:GetDrunk() and (not alive_only or p:IsTerror()) end)
 end
 
+function GetClownFilter(alive_only)
+    return GetPlayerFilter(function(p) return p:GetClown() and (not alive_only or p:IsTerror()) end)
+end
+
 function GetRoleFilter(role, alive_only)
     return GetPlayerFilter(function(p) return p:IsRole(role) and (not alive_only or p:IsTerror()) end)
 end

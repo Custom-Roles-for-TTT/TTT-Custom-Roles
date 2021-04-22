@@ -33,6 +33,7 @@ function GM:PlayerInitialSpawn(ply)
         SendHypnotistList()
         SendRomanticList()
         SendDrunkList()
+        SendClownList()
     end
 
     -- Game has started, tell this guy where the round is at
@@ -48,6 +49,7 @@ function GM:PlayerInitialSpawn(ply)
         SendHypnotistList(ply)
         SendRomanticList(ply)
         SendDrunkList(ply)
+        SendClownList(ply)
     end
 
     -- Handle spec bots
@@ -461,6 +463,7 @@ function GM:PlayerDisconnected(ply)
         SendHypnotistList()
         SendRomanticList()
         SendDrunkList()
+        SendClownList()
     end
 
     if KARMA.IsEnabled() then
@@ -852,27 +855,32 @@ function GM:PlayerTraceAttack(ply, dmginfo, dir, trace)
 end
 
 function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
+    -- Body armor nets you a damage reduction.
     if dmginfo:IsBulletDamage() and ply:HasEquipmentItem(EQUIP_ARMOR) then
-        -- Body armor nets you a damage reduction.
         dmginfo:ScaleDamage(0.7)
     end
 
-    if ply:IsJesterTeam() and GetRoundState() >= ROUND_ACTIVE then
+    -- Jesters deal no damage and cant take environmental damage
+    if (ply:IsJesterTeam() or (ply:IsClown() and not ply:GetNWBool("KillerClownActive", false))) and GetRoundState() >= ROUND_ACTIVE then
         if dmginfo:IsBulletDamage() or dmginfo:IsFallDamage() or dmginfo:IsDamageType(1) or dmginfo:IsDamageType(128) then
-
-        else
-            dmginfo:ScaleDamage(0)
-        end
+        else dmginfo:ScaleDamage(0) end
     end
 
-    if ply:IsJesterTeam() and GetRoundState() >= ROUND_ACTIVE and dmginfo:IsExplosionDamage() then
+    if (ply:IsJesterTeam() or (ply:IsClown() and not ply:GetNWBool("KillerClownActive", false))) and GetRoundState() >= ROUND_ACTIVE and dmginfo:IsExplosionDamage() then
         dmginfo:ScaleDamage(0)
     end
 
-    if ply:IsPlayer() and dmginfo:GetAttacker():IsPlayer() and dmginfo:GetAttacker():IsJesterTeam() and GetRoundState() >= ROUND_ACTIVE then
+    if ply:IsPlayer() and dmginfo:GetAttacker():IsPlayer() and (dmginfo:GetAttacker():IsJesterTeam() or (dmginfo:GetAttacker():IsClown() and not dmginfo:GetAttacker():GetNWBool("KillerClownActive", false))) and GetRoundState() >= ROUND_ACTIVE then
         dmginfo:ScaleDamage(0)
     end
 
+    -- Clowns deal extra damage when they are active
+    if ply:IsPlayer() and dmginfo:GetAttacker():IsPlayer() and dmginfo:GetAttacker():IsClown() and dmginfo:GetAttacker():GetNWBool("KillerClownActive", false) and GetRoundState() >= ROUND_ACTIVE then
+        local bonus = GetConVar("ttt_clown_damage_bonus"):GetFloat() or 0
+        dmginfo:ScaleDamage(1 + bonus)
+    end
+
+    -- Players cant deal damage before the round starts
     if ply:IsPlayer() and dmginfo:GetAttacker():IsPlayer() and not GetRoundState == ROUND_ACTIVE then
         dmginfo:ScaleDamage(0)
     end
@@ -921,7 +929,7 @@ local fallsounds = {
 };
 
 function GM:OnPlayerHitGround(ply, in_water, on_floater, speed)
-    if ply:IsJesterTeam() and GetRoundState() >= ROUND_ACTIVE then
+    if (ply:IsJesterTeam() or (ply:IsClown() and not ply:GetNWBool("KillerClownActive", false))) and GetRoundState() >= ROUND_ACTIVE then
     else
         if in_water or speed < 450 or not IsValid(ply) then return end
 

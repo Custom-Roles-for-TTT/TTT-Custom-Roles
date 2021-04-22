@@ -34,6 +34,7 @@ local indicator_mat_tra_noz = Material("vgui/ttt/sprite_tra_noz")
 local indicator_mat_hyp_noz = Material("vgui/ttt/sprite_hyp_noz")
 local indicator_mat_det = Material("vgui/ttt/sprite_det")
 local indicator_mat_jes = Material("vgui/ttt/sprite_jes")
+local indicator_mat_clo = Material("vgui/ttt/sprite_clo")
 
 local indicator_col = Color(255, 255, 255, 130)
 
@@ -57,6 +58,9 @@ function GM:PostDrawTranslucentRenderables()
             if v:GetDetective() then
                 render.SetMaterial(indicator_mat_det)
                 render.DrawQuadEasy(pos, dir, 8, 8, indicator_col, 180)
+            elseif v:GetClown() and v:GetNWBool("KillerClownActive", false) then
+                render.SetMaterial(indicator_mat_clo)
+                render.DrawQuadEasy(pos, dir, 8, 8, indicator_col, 180)
             end
             if client:IsTraitorTeam() then
                 if v:GetTraitor() or v:GetGlitch() then
@@ -65,7 +69,7 @@ function GM:PostDrawTranslucentRenderables()
                 elseif v:GetHypnotist() then
                     render.SetMaterial(indicator_mat_hyp_noz)
                     render.DrawQuadEasy(pos, dir, 8, 8, indicator_col, 180)
-                elseif v:GetJester() or v:GetSwapper() then
+                elseif v:IsJesterTeam() or (v:GetClown() and not v:GetNWBool("KillerClownActive", false)) then
                     render.SetMaterial(indicator_mat_jes)
                     render.DrawQuadEasy(pos, dir, 8, 8, indicator_col, 180)
                 end
@@ -186,6 +190,7 @@ function GM:HUDDrawTargetID()
     local target_detective = false
     local target_jester = false
     local target_hypnotist = false
+    local target_clown = false
 
     local target_romantic_lover = false
 
@@ -231,10 +236,11 @@ function GM:HUDDrawTargetID()
         if client:IsTraitorTeam() and GetRoundState() == ROUND_ACTIVE then
             target_traitor = ent:IsTraitor() or ent:IsGlitch()
             target_hypnotist = ent:IsHypnotist()
-            target_jester = ent:IsJesterTeam()
+            target_jester = ent:IsJesterTeam() or (ent:GetClown() and not ent:GetNWBool("KillerClownActive", false))
         end
 
         target_detective = GetRoundState() > ROUND_PREP and ent:IsDetective() or false
+        target_clown = GetRoundState() > ROUND_PREP and ent:GetClown() and ent:GetNWBool("KillerClownActive", false) or false
 
         if client:IsRomantic() then
             target_romantic_lover = (ent:Nick() == client:GetNWString("RomanticLover", ""))
@@ -263,7 +269,7 @@ function GM:HUDDrawTargetID()
 
     local w, h = 0, 0 -- text width/height, reused several times
 
-    if target_traitor or target_detective or target_jester or target_hypnotist then
+    if target_traitor or target_detective or target_jester or target_hypnotist or target_clown then
         surface.SetTexture(ring_tex)
 
         if target_traitor or target_hypnotist then
@@ -272,6 +278,8 @@ function GM:HUDDrawTargetID()
             surface.SetDrawColor(0, 0, 255, 200)
         elseif target_jester then
             surface.SetDrawColor(180, 23, 253, 200)
+        elseif target_clown then
+            surface.SetDrawColor(255, 80, 235, 200)
         end
         surface.DrawTexturedRect(x - 32, y - 32, 64, 64)
     end
@@ -372,6 +380,9 @@ function GM:HUDDrawTargetID()
     elseif target_hypnotist then
         text = L.target_hypnotist
         clr = Color(255, 0, 0, 200)
+    elseif target_clown then
+        text = L.target_clown
+        clr = Color(255, 80, 235, 200)
     elseif ent.sb_tag and ent.sb_tag.txt ~= nil then
         text = L[ent.sb_tag.txt]
         clr = ent.sb_tag.color
