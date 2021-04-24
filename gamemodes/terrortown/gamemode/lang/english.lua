@@ -16,6 +16,7 @@ L.drunk = "Drunk"
 L.clown = "Clown"
 L.deputy = "Deputy"
 L.impersonator = "Impersonator"
+L.beggar = "Beggar"
 
 L.last_words = "Last Words"
 
@@ -70,6 +71,7 @@ L.body_found_dru = "They were a Drunk."
 L.body_found_clo = "They were a Clown."
 L.body_found_dep = "They were a Deputy."
 L.body_found_imp = "They were an Impersonator."
+L.body_found_beg = "They were a Beggar."
 
 L.body_confirm = "{finder} confirmed the death of {victim}."
 
@@ -207,6 +209,7 @@ L.search_role_dru = "This person was a Drunk."
 L.search_role_clo = "This person was a Clown."
 L.search_role_dep = "This person was a Deputy."
 L.search_role_imp = "This person was an Impersonator."
+L.search_role_beg = "This person was a Beggar."
 
 L.search_words = "Something tells you some of this person's last words were: '{lastwords}'"
 L.search_armor = "They were wearing nonstandard body armor."
@@ -721,6 +724,10 @@ normal. Be the last player standing to win.]]
 
 L.info_popup_deputy = [[You are a Deputy! If the detective dies you will take
 over and gain the ability to buy shop items and search bodies.]]
+
+L.info_popup_beggar = [[You are a Beggar! Traitors think you are a jester and you
+deal no damage. However, if you can convince someone to give
+you a shop item you will join their team.]]
 
 L.info_popup_hypnotist = [[You are a Hypnotist! Work with fellow traitors to kill all others.
 

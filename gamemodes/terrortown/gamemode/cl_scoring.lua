@@ -22,6 +22,7 @@ CLSCORE.DrunkIDs = {}
 CLSCORE.ClownIDs = {}
 CLSCORE.DeputyIDs = {}
 CLSCORE.ImpersonatorIDs = {}
+CLSCORE.BeggarIDs = {}
 CLSCORE.Players = {}
 CLSCORE.StartTime = 0
 CLSCORE.Panel = nil
@@ -221,6 +222,8 @@ function CLSCORE:ShowPanel()
                     startingRole = "dep"
                 elseif s.was_impersonator then
                     startingRole = "imp"
+                elseif s.was_beggar then
+                    startingRole = "beg"
                 end
 
                 local hasDisconnected = false
@@ -235,12 +238,16 @@ function CLSCORE:ShowPanel()
                         finalRole = "inn"
                         if ply:GetNWBool("WasDrunk", false) then
                             finalRole = "dru_i"
+                        elseif ply:GetNWBool("WasBeggar", false) then
+                            finalRole = "beg_i"
                         end
                     elseif ply:IsTraitor() then
                         finalRole = "tra"
                         wasHypnotised = ply:GetNWString("WasHypnotised", "")
                         if ply:GetNWBool("WasDrunk", false) then
                             finalRole = "dru_t"
+                        elseif ply:GetNWBool("WasBeggar", false) then
+                            finalRole = "beg_t"
                         elseif wasHypnotised ~= "" then
                             finalRole = wasHypnotised .. "_t"
                         end
@@ -268,6 +275,8 @@ function CLSCORE:ShowPanel()
                         finalRole = "dep"
                     elseif ply:IsImpersonator() then
                         finalRole = "imp"
+                    elseif ply:IsBeggar() then
+                        finalRole = "beg"
                     end
                 else
                     hasDisconnected = true
@@ -340,7 +349,8 @@ function CLSCORE:ShowPanel()
                 elseif (roleFileName == "jes"
                         or roleFileName == "swa"
                         or roleFileName == "dru"
-                        or roleFileName == "clo") then
+                        or roleFileName == "clo"
+                        or roleFileName == "beg") then
                     roleIcon:SetPos(10, 460)
                     nicklbl:SetPos(48, 458)
 
@@ -437,6 +447,7 @@ function CLSCORE:Reset()
     self.ClownIDs = {}
     self.DeputyIDs = {}
     self.ImpersonatorIDs = {}
+    self.BeggarIDs = {}
     self.Scores = {}
     self.Players = {}
     self.RoundStarted = 0
@@ -447,7 +458,7 @@ end
 function CLSCORE:Init(events)
     -- Get start time, traitors, detectives, scores, and nicks
     local starttime = 0
-    local traitors, detectives, jesters, swappers, glitches, phantoms, hypnotists, romantics, drunks, clowns, deputies, impersonators
+    local traitors, detectives, jesters, swappers, glitches, phantoms, hypnotists, romantics, drunks, clowns, deputies, impersonators, beggars
     local scores, nicks = {}, {}
 
     local game, selected, spawn = false, false, false
@@ -476,6 +487,7 @@ function CLSCORE:Init(events)
             clowns = e.clown_ids
             deputies = e.deputy_ids
             impersonators = e.impersonator_ids
+            beggars = e.beggar_ids
 
             if game and spawn then
                 break
@@ -497,7 +509,7 @@ function CLSCORE:Init(events)
     if traitors == nil then traitors = {} end
     if detectives == nil then detectives = {} end
 
-    scores = ScoreEventLog(events, scores, traitors, detectives, jesters, swappers, glitches, phantoms, hypnotists, romantics, drunks, clowns, deputies, impersonators)
+    scores = ScoreEventLog(events, scores, traitors, detectives, jesters, swappers, glitches, phantoms, hypnotists, romantics, drunks, clowns, deputies, impersonators, beggars)
 
     self.Players = nicks
     self.Scores = scores
@@ -513,6 +525,7 @@ function CLSCORE:Init(events)
     self.ClownIDs = clowns
     self.DeputyIDs = deputies
     self.ImpersonatorIDs = impersonators
+    self.BeggarIDs = beggars
     self.StartTime = starttime
     self.Events = events
 end

@@ -108,6 +108,8 @@ CreateConVar("ttt_drunk_enabled", 0)
 CreateConVar("ttt_drunk_spawn_weight", "1")
 CreateConVar("ttt_clown_enabled", 0)
 CreateConVar("ttt_clown_spawn_weight", "1")
+CreateConVar("ttt_beggar_enabled", 0)
+CreateConVar("ttt_beggar_spawn_weight", "1")
 
 -- Custom role properties
 CreateConVar("ttt_swapper_killer_health", "100")
@@ -115,7 +117,9 @@ CreateConVar("ttt_phantom_respawn_health", "50")
 CreateConVar("ttt_drunk_sober_time", "180")
 CreateConVar("ttt_drunk_innocent_chance", "0.7")
 CreateConVar("ttt_clown_damage_bonus", "0")
-
+CreateConVar("ttt_deputy_damage_penalty", "0")
+CreateConVar("ttt_impersonator_damage_penalty", "0")
+CreateConVar("ttt_announce_beggar_change", "1")
 
 -- Traitor credits
 CreateConVar("ttt_credits_starting", "2")
@@ -535,6 +539,7 @@ function PrepareRound()
         v:SetNWString("WasHypnotised", "")
         v:SetNWBool("KillerClownActive", false)
         v:SetNWBool("HasPromotion", false)
+        v:SetNWBool("WasBeggar", false)
     end
 
     jester_killed = false
@@ -1161,7 +1166,8 @@ function SelectRoles()
         [ROLE_DRUNK] = {},
         [ROLE_CLOWN] = {},
         [ROLE_DEPUTY] = {},
-        [ROLE_IMPERSONATOR] = {}
+        [ROLE_IMPERSONATOR] = {},
+        [ROLE_BEGGAR] = {}
     };
 
     if not GAMEMODE.LastRole then GAMEMODE.LastRole = {} end
@@ -1263,6 +1269,11 @@ function SelectRoles()
         if GetConVar("ttt_clown_enabled"):GetBool() then
             for i = 1, GetConVar("ttt_clown_spawn_weight"):GetInt() do
                 table.insert(independentRoles, ROLE_CLOWN)
+            end
+        end
+        if GetConVar("ttt_beggar_enabled"):GetBool() then
+            for i = 1, GetConVar("ttt_beggar_spawn_weight"):GetInt() do
+                table.insert(independentRoles, ROLE_BEGGAR)
             end
         end
         if #independentRoles ~= 0 then

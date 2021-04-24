@@ -106,6 +106,8 @@ function SCORE:HandleSelection()
     local clowns = {}
     local deputies = {}
     local impersonators = {}
+    local beggars = {}
+
     for k, ply in ipairs(player.GetAll()) do
         if ply:GetTraitor() then
             table.insert(traitors, ply:SteamID())
@@ -131,7 +133,8 @@ function SCORE:HandleSelection()
             table.insert(deputies, ply:SteamID())
         elseif ply:GetImpersonator() then
             table.insert(impersonators, ply:SteamID())
-
+        elseif ply:GetBeggar() then
+            table.insert(beggars, ply:SteamID())
         end
     end
 
@@ -146,7 +149,8 @@ function SCORE:HandleSelection()
                     drunk_ids = drunks,
                     clown_ids = clowns,
                     deputy_ids = deputies,
-                    impersonator_ids = impersonators})
+                    impersonator_ids = impersonators,
+                    beggar_ids = beggars})
 end
 
 function SCORE:HandleBodyFound(finder, found)
@@ -198,6 +202,8 @@ function SCORE:ApplyEventLogScores(wintype)
     local clowns = {}
     local deputies = {}
     local impersonators = {}
+    local beggars = {}
+
     for k, ply in ipairs(player.GetAll()) do
         scores[ply:SteamID()] = {}
 
@@ -225,13 +231,15 @@ function SCORE:ApplyEventLogScores(wintype)
             table.insert(deputies, ply:SteamID())
         elseif ply:GetImpersonator() then
             table.insert(impersonators, ply:SteamID())
+        elseif ply:GetBeggar() then
+            table.insert(beggars, ply:SteamID())
         end
     end
 
     -- individual scores, and count those left alive
     local alive = { traitors = 0, innos = 0 }
     local dead = { traitors = 0, innos = 0 }
-    local scored_log = ScoreEventLog(self.Events, scores, traitors, detectives, jesters, swappers, glitches, phantoms, hypnotists, romantics, drunks, clowns, deputies, impersonators)
+    local scored_log = ScoreEventLog(self.Events, scores, traitors, detectives, jesters, swappers, glitches, phantoms, hypnotists, romantics, drunks, clowns, deputies, impersonators, beggars)
     local ply = nil
     for sid, s in pairs(scored_log) do
         ply = player.GetBySteamID(sid)

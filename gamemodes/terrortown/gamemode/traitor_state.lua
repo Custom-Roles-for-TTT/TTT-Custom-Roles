@@ -63,6 +63,7 @@ function SendDrunkList(ply_or_rf) SendRoleList(ROLE_DRUNK, ply_or_rf) end
 function SendClownList(ply_or_rf) SendRoleList(ROLE_CLOWN, ply_or_rf) end
 function SendDeputyList(ply_or_rf) SendRoleList(ROLE_DEPUTY, ply_or_rf) end
 function SendImpersonatorList(ply_or_rf) SendRoleList(ROLE_IMPERSONATOR, ply_or_rf) end
+function SendBeggarList(ply_or_rf) SendRoleList(ROLE_BEGGAR, ply_or_rf) end
 
 function SendConfirmedTraitors(ply_or_rf)
     SendTraitorList(ply_or_rf, function(p) return p:GetNWBool("body_searched") end)
@@ -83,6 +84,7 @@ function SendFullStateUpdate()
     SendClownList()
     SendDeputyList()
     SendImpersonatorList()
+    SendBeggarList()
     -- not useful to sync confirmed traitors here
 end
 
@@ -122,6 +124,7 @@ local function request_rolelist(ply)
         SendClownList(ply)
         SendDeputyList(ply)
         SendImpersonatorList(ply)
+        SendBeggarList(ply)
     end
 end
 concommand.Add("_ttt_request_rolelist", request_rolelist)
@@ -247,7 +250,7 @@ local function force_deputy(ply)
     end
     SendFullStateUpdate()
 end
-concommand.Add("ttt_deputy_clown", force_deputy, nil, nil, FCVAR_CHEAT)
+concommand.Add("ttt_force_deputy", force_deputy, nil, nil, FCVAR_CHEAT)
 
 local function force_impersonator(ply)
     ply:SetRole(ROLE_IMPERSONATOR)
@@ -256,7 +259,16 @@ local function force_impersonator(ply)
     end
     SendFullStateUpdate()
 end
-concommand.Add("ttt_impersonator_clown", force_impersonator, nil, nil, FCVAR_CHEAT)
+concommand.Add("ttt_force_impersonator", force_impersonator, nil, nil, FCVAR_CHEAT)
+
+local function force_beggar(ply)
+    ply:SetRole(ROLE_BEGGAR)
+    if ply:HasWeapon("weapon_ttt_brainwash") then
+        ply:StripWeapon("weapon_ttt_brainwash")
+    end
+    SendFullStateUpdate()
+end
+concommand.Add("ttt_force_beggar", force_beggar, nil, nil, FCVAR_CHEAT)
 
 local function force_spectate(ply, cmd, arg)
     if IsValid(ply) then

@@ -441,6 +441,27 @@ function SWEP:Equip(newowner)
         newowner:GiveAmmo(given, self.Primary.Ammo)
         self.StoredAmmo = 0
     end
+
+    if self.CanBuy and newowner:IsBeggar() then
+        if self.fingerprints[1]:IsTraitorTeam() then
+            newowner:SetRole(ROLE_TRAITOR)
+            newowner:SetNWBool("WasBeggar", true)
+            newowner:PrintMessage(HUD_PRINTTALK, "You have joined the traitor team")
+            newowner:PrintMessage(HUD_PRINTCENTER, "You have joined the traitor team")
+            SendFullStateUpdate()
+        elseif self.fingerprints[1]:IsInnocentTeam() then
+            newowner:SetRole(ROLE_INNOCENT)
+            newowner:SetNWBool("WasBeggar", true)
+            newowner:PrintMessage(HUD_PRINTTALK, "You have joined the innocent team")
+            newowner:PrintMessage(HUD_PRINTCENTER, "You have joined the innocent team")
+            SendFullStateUpdate()
+        end
+
+        if GetConVar("ttt_announce_beggar_change"):GetBool() then
+            self.fingerprints[1]:PrintMessage(HUD_PRINTTALK, "The beggar has joined your team")
+            self.fingerprints[1]:PrintMessage(HUD_PRINTCENTER, "The beggar has joined your team")
+        end
+    end
 end
 
 -- We were bought as special equipment, some weapons will want to do something

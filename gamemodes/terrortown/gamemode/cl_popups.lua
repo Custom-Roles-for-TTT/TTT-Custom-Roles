@@ -35,6 +35,9 @@ local function GetTextForRole(role)
     elseif role == ROLE_DEPUTY then
         return GetTranslation("info_popup_deputy")
 
+    elseif role == ROLE_BEGGAR then
+        return GetTranslation("info_popup_beggar")
+
     elseif role == ROLE_ROMANTIC then
         local lover = LocalPlayer():GetNWString("RomanticLover", "someone")
         return GetPTranslation("info_popup_romantic", { lover = lover })

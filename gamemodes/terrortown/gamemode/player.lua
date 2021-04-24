@@ -36,6 +36,7 @@ function GM:PlayerInitialSpawn(ply)
         SendClownList()
         SendDeputyList()
         SendImpersonatorList()
+        SendBeggarList()
     end
 
     -- Game has started, tell this guy where the round is at
@@ -54,6 +55,7 @@ function GM:PlayerInitialSpawn(ply)
         SendClownList(ply)
         SendDeputyList(ply)
         SendImpersonatorList(ply)
+        SendBeggarList(ply)
     end
 
     -- Handle spec bots
@@ -470,6 +472,7 @@ function GM:PlayerDisconnected(ply)
         SendClownList()
         SendDeputyList()
         SendImpersonatorList()
+        SendBeggarList()
     end
 
     if KARMA.IsEnabled() then
@@ -895,6 +898,18 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
     if ply:IsPlayer() and dmginfo:GetAttacker():IsPlayer() and dmginfo:GetAttacker():IsClown() and dmginfo:GetAttacker():GetNWBool("KillerClownActive", false) and GetRoundState() >= ROUND_ACTIVE then
         local bonus = GetConVar("ttt_clown_damage_bonus"):GetFloat() or 0
         dmginfo:ScaleDamage(1 + bonus)
+    end
+
+    -- Deputies deal less damage before they are promoted
+    if ply:IsPlayer() and dmginfo:GetAttacker():IsPlayer() and dmginfo:GetAttacker():IsDeputy() and not dmginfo:GetAttacker():GetNWBool("HasPromotion", false) and GetRoundState() >= ROUND_ACTIVE then
+        local penalty = GetConVar("ttt_deputy_damage_penalty"):GetFloat() or 0
+        dmginfo:ScaleDamage(1 - penalty)
+    end
+
+    -- Impersonators deal less damage before they are promoted
+    if ply:IsPlayer() and dmginfo:GetAttacker():IsPlayer() and dmginfo:GetAttacker():IsImpersonator() and not dmginfo:GetAttacker():GetNWBool("HasPromotion", false) and GetRoundState() >= ROUND_ACTIVE then
+        local penalty = GetConVar("ttt_impersonator_damage_penalty"):GetFloat() or 0
+        dmginfo:ScaleDamage(1 - penalty)
     end
 
     -- Players cant deal damage before the round starts

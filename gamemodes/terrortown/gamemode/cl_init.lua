@@ -186,6 +186,7 @@ local function ReceiveRole()
     elseif client:IsClown() then MsgN("CLOWN")
     elseif client:IsDeputy() then MsgN("DEPUTY")
     elseif client:IsImpersonator() then MsgN("IMPERSONATOR")
+    elseif client:IsBeggar() then MsgN("BEGGAR")
     else MsgN("INNOCENT") end
 end
 net.Receive("TTT_Role", ReceiveRole)
@@ -693,6 +694,9 @@ net.Receive("TTT_ClientDeathNotify", function()
     elseif role == ROLE_IMPERSONATOR then
         col = SpecTraitorColor
         role = "an impersonator"
+    elseif role == ROLE_BEGGAR then
+        col = JesterColor
+        role = "a beggar"
     else
         col = InnoColor
         role = "innocent"

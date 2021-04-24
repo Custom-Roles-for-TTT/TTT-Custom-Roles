@@ -190,6 +190,9 @@ function PANEL:Paint(width, height)
         elseif c == ROLE_IMPERSONATOR then
             roleStr = "imp"
             c = rolecolor.special_traitor
+        elseif c == ROLE_BEGGAR then
+            roleStr = "beg"
+            c = rolecolor.jester
         end
     end
 
