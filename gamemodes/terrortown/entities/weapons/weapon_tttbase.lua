@@ -123,6 +123,7 @@ SWEP.PrimaryAnim = ACT_VM_PRIMARYATTACK
 SWEP.ReloadAnim = ACT_VM_RELOAD
 
 SWEP.fingerprints = {}
+SWEP.BoughtBuy = nil
 
 local sparkle = CLIENT and CreateConVar("ttt_crazy_sparks", "0", FCVAR_ARCHIVE)
 
@@ -419,6 +420,10 @@ function SWEP:Equip(newowner)
             self:Extinguish()
         end
 
+        if not self.BoughtBuy then
+            self.BoughtBuy = newowner
+        end
+
         self.fingerprints = self.fingerprints or {}
 
         if not table.HasValue(self.fingerprints, newowner) then
@@ -432,6 +437,30 @@ function SWEP:Equip(newowner)
             local newflags = bit.band(flags, bit.bnot(SF_WEAPON_START_CONSTRAINED))
             self:SetKeyValue("spawnflags", newflags)
         end
+
+        if self.CanBuy and newowner:IsBeggar() then
+            if self.BoughtBuy:IsTraitorTeam() then
+                newowner:SetRole(ROLE_TRAITOR)
+                newowner:SetNWBool("WasBeggar", true)
+                newowner:PrintMessage(HUD_PRINTTALK, "You have joined the traitor team")
+                newowner:PrintMessage(HUD_PRINTCENTER, "You have joined the traitor team")
+                SendFullStateUpdate()
+                if GetConVar("ttt_announce_beggar_change"):GetBool() then
+                    self.BoughtBuy:PrintMessage(HUD_PRINTTALK, "The beggar has joined your team")
+                    self.BoughtBuy:PrintMessage(HUD_PRINTCENTER, "The beggar has joined your team")
+                end
+            elseif self.BoughtBuy:IsInnocentTeam() then
+                newowner:SetRole(ROLE_INNOCENT)
+                newowner:SetNWBool("WasBeggar", true)
+                newowner:PrintMessage(HUD_PRINTTALK, "You have joined the innocent team")
+                newowner:PrintMessage(HUD_PRINTCENTER, "You have joined the innocent team")
+                SendFullStateUpdate()
+                if GetConVar("ttt_announce_beggar_change"):GetBool() then
+                    self.BoughtBuy:PrintMessage(HUD_PRINTTALK, "The beggar has joined your team")
+                    self.BoughtBuy:PrintMessage(HUD_PRINTCENTER, "The beggar has joined your team")
+                end
+            end
+        end
     end
 
     if SERVER and IsValid(newowner) and self.StoredAmmo > 0 and self.Primary.Ammo ~= "none" then
@@ -440,27 +469,6 @@ function SWEP:Equip(newowner)
 
         newowner:GiveAmmo(given, self.Primary.Ammo)
         self.StoredAmmo = 0
-    end
-
-    if self.CanBuy and newowner:IsBeggar() then
-        if self.fingerprints[1]:IsTraitorTeam() then
-            newowner:SetRole(ROLE_TRAITOR)
-            newowner:SetNWBool("WasBeggar", true)
-            newowner:PrintMessage(HUD_PRINTTALK, "You have joined the traitor team")
-            newowner:PrintMessage(HUD_PRINTCENTER, "You have joined the traitor team")
-            SendFullStateUpdate()
-        elseif self.fingerprints[1]:IsInnocentTeam() then
-            newowner:SetRole(ROLE_INNOCENT)
-            newowner:SetNWBool("WasBeggar", true)
-            newowner:PrintMessage(HUD_PRINTTALK, "You have joined the innocent team")
-            newowner:PrintMessage(HUD_PRINTCENTER, "You have joined the innocent team")
-            SendFullStateUpdate()
-        end
-
-        if GetConVar("ttt_announce_beggar_change"):GetBool() then
-            self.fingerprints[1]:PrintMessage(HUD_PRINTTALK, "The beggar has joined your team")
-            self.fingerprints[1]:PrintMessage(HUD_PRINTCENTER, "The beggar has joined your team")
-        end
     end
 end
 
