@@ -8,6 +8,8 @@ KARMA.RememberedPlayers = {}
 -- Convars, more convenient access than GetConVar bla bla
 KARMA.cv = {}
 KARMA.cv.enabled = CreateConVar("ttt_karma", "1", FCVAR_ARCHIVE)
+KARMA.cv.strict = CreateConVar("ttt_karma_strict", "1")
+KARMA.cv.lenient = CreateConVar("ttt_karma_lenient", "0")
 KARMA.cv.starting = CreateConVar("ttt_karma_starting", "1000")
 KARMA.cv.max = CreateConVar("ttt_karma_max", "1000")
 KARMA.cv.ratio = CreateConVar("ttt_karma_ratio", "0.001")
@@ -87,9 +89,16 @@ function KARMA.ApplyKarma(ply)
 
     -- any karma at 1000 or over guarantees a df of 1, only when it's lower do we
     -- need the penalty curve
-    if ply:GetBaseKarma() < 1000 then
+    if ply:GetBaseKarma() < 1000 and KARMA.IsEnabled() then
         local k = ply:GetBaseKarma() - 1000
-        df = -0.0000005 * (k + 1000) ^ 2 + 0.0015 * (k + 1000)
+        if config.strict:GetBool() then
+            df = 1 + (0.0007 * k) + (-0.000002 * (k^2))
+        elseif config.lenient:GetBool() then
+            df = 1 + (0.0005 * k) + (-0.0000005 * (k^2))
+        else
+            df = 1 + (-0.0000025 * (k^2))
+        end
+
     end
 
     ply:SetDamageFactor(math.Clamp(df, 0.1, 1.0))

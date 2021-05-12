@@ -20,8 +20,20 @@ function PANEL:Init()
 
     if KARMA.IsEnabled() then
         self:AddColumn(GetTranslation("sb_karma"), function(ply)
-            local dmgpct = math.Round(math.Clamp(-0.0000005 * ply:GetBaseKarma() ^ 2 + 0.0015 * ply:GetBaseKarma(), 0.1, 1.0) * 100)
-            return dmgpct .. "%"
+            if GetConVar("ttt_show_raw_karma_value"):GetBool() then
+                return math.Round(ply:GetBaseKarma())
+            else
+                local dmgpct = 100
+                local k = ply:GetBaseKarma() - 1000
+                if GetGlobalBool("ttt_karma_strict", false) then
+                    dmgpct = math.Round(math.Clamp(1 + (0.0007 * k) + (-0.000002 * (k^2)), 0.1, 1.0) * 100)
+                elseif GetGlobalBool("ttt_karma_lenient", false) then
+                    dmgpct = math.Round(math.Clamp(1 + (0.0005 * k) + (-0.0000005 * (k^2)), 0.1, 1.0) * 100)
+                else
+                    dmgpct = math.Round(math.Clamp(1 + (-0.0000025 * (k^2)), 0.1, 1.0) * 100)
+                end
+                return dmgpct .. "%"
+            end
         end)
     end
 

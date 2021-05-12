@@ -42,8 +42,14 @@ plymeta.IsImpersonator = plymeta.GetImpersonator
 plymeta.IsBeggar = plymeta.GetBeggar
 
 function plymeta:IsSpecial() return self:GetRole() ~= ROLE_INNOCENT end
-function plymeta:IsCustom() return self:GetRole() ~= ROLE_INNOCENT and self:GetRole() ~= ROLE_TRAITOR and self:GetRole() ~= ROLE_DETECTIVE end
-function plymeta:IsShopRole() return self:GetTraitor() or self:GetDetective() or self:GetHypnotist() or self:GetDeputy() or self:GetImpersonator() end
+function plymeta:IsCustom()
+    local role = self:GetRole()
+    return role ~= ROLE_INNOCENT and role ~= ROLE_TRAITOR and role ~= ROLE_DETECTIVE
+end
+function plymeta:IsShopRole()
+    local role = self:GetRole()
+    return role == ROLE_TRAITOR or role == ROLE_DETECTIVE or role == ROLE_HYPNOTIST or role == ROLE_DEPUTY or role == ROLE_IMPERSONATOR
+end
 
 -- Player is alive and in an active round
 function plymeta:IsActive() return self:IsTerror() and GetRoundState() == ROUND_ACTIVE end
@@ -71,10 +77,22 @@ function plymeta:IsActiveCustom() return self:IsCustom() and self:IsActive() end
 function plymeta:IsActiveShopRole() return self:IsShopRole() and self:IsActive() end
 
 -- functions to group individual roles into teams
-function plymeta:IsTraitorTeam() return self:IsRole(ROLE_TRAITOR) or self:IsRole(ROLE_HYPNOTIST) or self:IsRole(ROLE_IMPERSONATOR) end
-function plymeta:IsInnocentTeam() return self:IsRole(ROLE_INNOCENT) or self:IsRole(ROLE_DETECTIVE) or self:IsRole(ROLE_GLITCH) or self:IsRole(ROLE_PHANTOM) or self:IsRole(ROLE_ROMANTIC) or self:IsRole(ROLE_DEPUTY) end
-function plymeta:IsJesterTeam() return self:IsRole(ROLE_JESTER) or self:IsRole(ROLE_SWAPPER) or self:IsRole(ROLE_BEGGAR) end
-function plymeta:IsIndependentTeam() return self:IsRole(ROLE_DRUNK) or self:IsRole(ROLE_CLOWN) end
+function plymeta:IsTraitorTeam()
+    local role = self:GetRole()
+    return role == ROLE_TRAITOR or role == ROLE_HYPNOTIST or role == ROLE_IMPERSONATOR
+end
+function plymeta:IsInnocentTeam()
+    local role = self:GetRole()
+    return role == ROLE_INNOCENT or role == ROLE_DETECTIVE or role == ROLE_GLITCH or role == ROLE_PHANTOM or role == ROLE_ROMANTIC or role == ROLE_DEPUTY
+end
+function plymeta:IsJesterTeam()
+    local role = self:GetRole()
+    return role == ROLE_JESTER or role == ROLE_SWAPPER or role == ROLE_BEGGAR
+end
+function plymeta:IsIndependentTeam()
+    local role = self:GetRole()
+    return role == ROLE_DRUNK or role == ROLE_CLOWN
+end
 function plymeta:IsActiveTraitorTeam() return self:IsTraitorTeam() and self:IsActive() end
 function plymeta:IsActiveInnocentTeam() return self:IsInnocentTeam() and self:IsActive() end
 function plymeta:IsActiveJesterTeam() return self:IsJesterTeam() and self:IsActive() end

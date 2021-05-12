@@ -83,33 +83,44 @@ CreateConVar("ttt_special_innocent_pct", 0.33)
 CreateConVar("ttt_special_innocent_chance", 0.5)
 CreateConVar("ttt_glitch_enabled", 0)
 CreateConVar("ttt_glitch_spawn_weight", "1")
+CreateConVar("ttt_glitch_min_players", "0")
 CreateConVar("ttt_phantom_enabled", 0)
 CreateConVar("ttt_phantom_spawn_weight", "1")
+CreateConVar("ttt_phantom_min_players", "0")
 CreateConVar("ttt_romantic_enabled", 0)
 CreateConVar("ttt_romantic_spawn_weight", "1")
+CreateConVar("ttt_romantic_min_players", "0")
 CreateConVar("ttt_deputy_enabled", 0)
 CreateConVar("ttt_deputy_spawn_weight", "1")
+CreateConVar("ttt_deputy_min_players", "0")
 
 -- Special traitor spawn probabilities
 CreateConVar("ttt_special_traitor_pct", 0.33)
 CreateConVar("ttt_special_traitor_chance", 0.5)
 CreateConVar("ttt_hypnotist_enabled", 0)
 CreateConVar("ttt_hypnotist_spawn_weight", "1")
+CreateConVar("ttt_hypnotist_min_players", "0")
 CreateConVar("ttt_impersonator_enabled", 0)
 CreateConVar("ttt_impersonator_spawn_weight", "1")
+CreateConVar("ttt_impersonator_min_players", "0")
 
 -- Independent spawn probabilities
 CreateConVar("ttt_independent_chance", 0.5)
 CreateConVar("ttt_jester_enabled", 0)
 CreateConVar("ttt_jester_spawn_weight", "1")
+CreateConVar("ttt_jester_min_players", "0")
 CreateConVar("ttt_swapper_enabled", 0)
 CreateConVar("ttt_swapper_spawn_weight", "1")
+CreateConVar("ttt_swapper_min_players", "0")
 CreateConVar("ttt_drunk_enabled", 0)
 CreateConVar("ttt_drunk_spawn_weight", "1")
+CreateConVar("ttt_drunk_min_players", "0")
 CreateConVar("ttt_clown_enabled", 0)
 CreateConVar("ttt_clown_spawn_weight", "1")
+CreateConVar("ttt_clown_min_players", "0")
 CreateConVar("ttt_beggar_enabled", 0)
 CreateConVar("ttt_beggar_spawn_weight", "1")
+CreateConVar("ttt_beggar_min_players", "0")
 
 -- Custom role properties
 CreateConVar("ttt_swapper_killer_health", "100")
@@ -164,10 +175,10 @@ CreateConVar("ttt_bem_sv_rows", 5, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERV
 CreateConVar("ttt_bem_sv_size", 64, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Sets the item size in the Traitor/Detective menu's item list (serverside)")
 
 -- sprint convars
-local speedMultiplier = CreateConVar("ttt_sprint_bonus_rel", "0.4", FCVAR_SERVER_CAN_EXECUTE, "The relative speed bonus given while sprinting. (0.1-2) Def: 0.5")
-local recovery = CreateConVar("ttt_sprint_regenerate_innocent", "0.08", FCVAR_SERVER_CAN_EXECUTE, "Sets stamina regeneration for innocents. (0.01-2) Def: 0.15")
-local traitorRecovery = CreateConVar("ttt_sprint_regenerate_traitor", "0.12", FCVAR_SERVER_CAN_EXECUTE, "Sets stamina regeneration speed for traitors. (0.01-2) Def: 0.15")
-local consumption = CreateConVar("ttt_sprint_consume", "0.2", FCVAR_SERVER_CAN_EXECUTE, "Sets stamina consumption speed. (0.1-5) Def: 0.3")
+local speedMultiplier = CreateConVar("ttt_sprint_bonus_rel", "0.4", FCVAR_SERVER_CAN_EXECUTE, "The relative speed bonus given while sprinting. Def: 0.4")
+local recovery = CreateConVar("ttt_sprint_regenerate_innocent", "0.08", FCVAR_SERVER_CAN_EXECUTE, "Sets stamina regeneration for innocents. Def: 0.08")
+local traitorRecovery = CreateConVar("ttt_sprint_regenerate_traitor", "0.12", FCVAR_SERVER_CAN_EXECUTE, "Sets stamina regeneration speed for traitors. Def: 0.12")
+local consumption = CreateConVar("ttt_sprint_consume", "0.2", FCVAR_SERVER_CAN_EXECUTE, "Sets stamina consumption speed. Def: 0.2")
 
 local ttt_detective = CreateConVar("ttt_sherlock_mode", "1", FCVAR_ARCHIVE + FCVAR_NOTIFY)
 local ttt_minply = CreateConVar("ttt_minimum_players", "2", FCVAR_ARCHIVE + FCVAR_NOTIFY)
@@ -313,13 +324,15 @@ function GM:SyncGlobals()
     SetGlobalBool("ttt_highlight_admins", GetConVar("ttt_highlight_admins"):GetBool())
     SetGlobalBool("ttt_locational_voice", GetConVar("ttt_locational_voice"):GetBool())
     SetGlobalInt("ttt_idle_limit", GetConVar("ttt_idle_limit"):GetInt())
-
     SetGlobalBool("ttt_detective_search_only", GetConVar("ttt_detective_search_only"):GetBool())
 
     SetGlobalBool("ttt_voice_drain", GetConVar("ttt_voice_drain"):GetBool())
     SetGlobalFloat("ttt_voice_drain_normal", GetConVar("ttt_voice_drain_normal"):GetFloat())
     SetGlobalFloat("ttt_voice_drain_admin", GetConVar("ttt_voice_drain_admin"):GetFloat())
     SetGlobalFloat("ttt_voice_drain_recharge", GetConVar("ttt_voice_drain_recharge"):GetFloat())
+
+    SetGlobalFloat("ttt_karma_strict", GetConVar("ttt_karma_strict"):GetBool())
+    SetGlobalFloat("ttt_karma_lenient", GetConVar("ttt_karma_lenient"):GetBool())
 end
 
 function SendRoundState(state, ply)
@@ -1127,10 +1140,8 @@ local function GetTraitorCount(ply_count)
 end
 
 local function GetDetectiveCount(ply_count)
-    if ply_count < GetConVar("ttt_detective_min_players"):GetInt() then return 0 end
-
     local detective_count = math.ceil(ply_count * GetConVar("ttt_detective_pct"):GetFloat())
-    -- limit to a max
+
     detective_count = math.Clamp(detective_count, 1, GetConVar("ttt_detective_max"):GetInt())
 
     return detective_count
@@ -1199,12 +1210,14 @@ function SelectRoles()
     if choice_count == 0 then return end
 
     -- pick detectives
-    for i = 1, detective_count do
-        if #choices > 0 then
-            local plyPick = math.random(1, #choices)
-            local ply = choices[plyPick]
-            ply:SetRole(ROLE_DETECTIVE)
-            table.remove(choices, plyPick)
+    if choice_count >= GetConVar("ttt_detective_min_players"):GetInt() then
+        for i = 1, detective_count do
+            if #choices > 0 then
+                local plyPick = math.random(1, #choices)
+                local ply = choices[plyPick]
+                ply:SetRole(ROLE_DETECTIVE)
+                table.remove(choices, plyPick)
+            end
         end
     end
 
@@ -1222,12 +1235,12 @@ function SelectRoles()
 
     -- pick special traitors
     local specialTraitorRoles = {}
-    if GetConVar("ttt_hypnotist_enabled"):GetBool() then
+    if GetConVar("ttt_hypnotist_enabled"):GetBool() and (choice_count >= GetConVar("ttt_hypnotist_min_players"):GetInt() or GetConVar("ttt_hypnotist_min_players"):GetInt() == 0) then
         for i = 1, GetConVar("ttt_hypnotist_spawn_weight"):GetInt() do
             table.insert(specialTraitorRoles, ROLE_HYPNOTIST)
         end
     end
-    if GetConVar("ttt_impersonator_enabled"):GetBool() and detective_count > 0 then
+    if GetConVar("ttt_impersonator_enabled"):GetBool() and detective_count > 0 and (choice_count >= GetConVar("ttt_impersonator_min_players"):GetInt() or GetConVar("ttt_impersonator_min_players"):GetInt() == 0) then
         for i = 1, GetConVar("ttt_impersonator_spawn_weight"):GetInt() do
             table.insert(specialTraitorRoles, ROLE_IMPERSONATOR)
         end
@@ -1251,27 +1264,27 @@ function SelectRoles()
     -- pick independent
     if independent_count ~= 0 and #choices > 0 then
         local independentRoles = {}
-        if GetConVar("ttt_jester_enabled"):GetBool() then
+        if GetConVar("ttt_jester_enabled"):GetBool() and (choice_count >= GetConVar("ttt_jester_min_players"):GetInt() or GetConVar("ttt_jester_min_players"):GetInt() == 0) then
             for i = 1, GetConVar("ttt_jester_spawn_weight"):GetInt() do
                 table.insert(independentRoles, ROLE_JESTER)
             end
         end
-        if GetConVar("ttt_swapper_enabled"):GetBool() then
+        if GetConVar("ttt_swapper_enabled"):GetBool() and (choice_count >= GetConVar("ttt_swapper_min_players"):GetInt() or GetConVar("ttt_swapper_min_players"):GetInt() == 0) then
             for i = 1, GetConVar("ttt_swapper_spawn_weight"):GetInt() do
                 table.insert(independentRoles, ROLE_SWAPPER)
             end
         end
-        if GetConVar("ttt_drunk_enabled"):GetBool() then
+        if GetConVar("ttt_drunk_enabled"):GetBool() and (choice_count >= GetConVar("ttt_drunk_min_players"):GetInt() or GetConVar("ttt_drunk_min_players"):GetInt() == 0) then
             for i = 1, GetConVar("ttt_drunk_spawn_weight"):GetInt() do
                 table.insert(independentRoles, ROLE_DRUNK)
             end
         end
-        if GetConVar("ttt_clown_enabled"):GetBool() then
+        if GetConVar("ttt_clown_enabled"):GetBool() and (choice_count >= GetConVar("ttt_clown_min_players"):GetInt() or GetConVar("ttt_clown_min_players"):GetInt() == 0) then
             for i = 1, GetConVar("ttt_clown_spawn_weight"):GetInt() do
                 table.insert(independentRoles, ROLE_CLOWN)
             end
         end
-        if GetConVar("ttt_beggar_enabled"):GetBool() then
+        if GetConVar("ttt_beggar_enabled"):GetBool() and (choice_count >= GetConVar("ttt_beggar_min_players"):GetInt() or GetConVar("ttt_beggar_min_players"):GetInt() == 0) then
             for i = 1, GetConVar("ttt_beggar_spawn_weight"):GetInt() do
                 table.insert(independentRoles, ROLE_BEGGAR)
             end
@@ -1294,22 +1307,22 @@ function SelectRoles()
     -- pick special innocents
     local max_special_innocent_count = GetSpecialInnocentCount(#choices)
     local specialInnocentRoles = {}
-    if GetConVar("ttt_glitch_enabled"):GetBool() and #traitors > 1 then
+    if GetConVar("ttt_glitch_enabled"):GetBool() and #traitors > 1 and (choice_count >= GetConVar("ttt_glitch_min_players"):GetInt() or GetConVar("ttt_glitch_min_players"):GetInt() == 0) then
         for i = 1, GetConVar("ttt_glitch_spawn_weight"):GetInt() do
             table.insert(specialInnocentRoles, ROLE_GLITCH)
         end
     end
-    if GetConVar("ttt_phantom_enabled"):GetBool() then
+    if GetConVar("ttt_phantom_enabled"):GetBool() and (choice_count >= GetConVar("ttt_phantom_min_players"):GetInt() or GetConVar("ttt_phantom_min_players"):GetInt() == 0) then
         for i = 1, GetConVar("ttt_phantom_spawn_weight"):GetInt() do
             table.insert(specialInnocentRoles, ROLE_PHANTOM)
         end
     end
-    if GetConVar("ttt_romantic_enabled"):GetBool() and choice_count > 1 then
+    if GetConVar("ttt_romantic_enabled"):GetBool() and choice_count > 1 and (choice_count >= GetConVar("ttt_romantic_min_players"):GetInt() or GetConVar("ttt_romantic_min_players"):GetInt() == 0) then
         for i = 1, GetConVar("ttt_romantic_spawn_weight"):GetInt() do
             table.insert(specialInnocentRoles, ROLE_ROMANTIC)
         end
     end
-    if GetConVar("ttt_deputy_enabled"):GetBool() and detective_count > 0 then
+    if GetConVar("ttt_deputy_enabled"):GetBool() and detective_count > 0 and (choice_count >= GetConVar("ttt_deputy_min_players"):GetInt() or GetConVar("ttt_deputy_min_players"):GetInt() == 0) then
         for i = 1, GetConVar("ttt_deputy_spawn_weight"):GetInt() do
             table.insert(specialInnocentRoles, ROLE_DEPUTY)
         end
