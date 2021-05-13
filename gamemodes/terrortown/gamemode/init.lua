@@ -935,6 +935,9 @@ function PrintResultMessage(type)
     elseif type == WIN_JESTER then
         LANG.Msg("win_jester")
         ServerLog("Result: Jester wins.\n")
+    elseif type == WIN_CLOWN then
+        LANG.Msg("win_clown")
+        ServerLog("Result: Clown wins.\n")
     else
         ServerLog("Result: unknown victory condition!\n")
     end

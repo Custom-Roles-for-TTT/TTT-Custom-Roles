@@ -38,6 +38,7 @@ L.win_time = "Time has run out. The Traitors lose."
 L.win_traitor = "The Traitors have won!"
 L.win_innocent = "The Traitors have been defeated!"
 L.win_jester = "The Jester has fooled you all!"
+L.win_clown = "The Clown has murdered you all!"
 L.win_showreport = "Let's look at the round report for {num} seconds."
 
 L.limit_round = "Round limit reached. {mapname} will load soon."
