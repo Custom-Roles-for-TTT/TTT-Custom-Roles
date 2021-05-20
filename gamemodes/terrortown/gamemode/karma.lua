@@ -8,7 +8,7 @@ KARMA.RememberedPlayers = {}
 -- Convars, more convenient access than GetConVar bla bla
 KARMA.cv = {}
 KARMA.cv.enabled = CreateConVar("ttt_karma", "1", FCVAR_ARCHIVE)
-KARMA.cv.strict = CreateConVar("ttt_karma_strict", "1")
+KARMA.cv.strict = CreateConVar("ttt_karma_strict", "0")
 KARMA.cv.lenient = CreateConVar("ttt_karma_lenient", "0")
 KARMA.cv.starting = CreateConVar("ttt_karma_starting", "1000")
 KARMA.cv.max = CreateConVar("ttt_karma_max", "1000")

@@ -38,7 +38,7 @@ local col_active = {
         [ROLE_HYPNOTIST] = COLOR_SPECIAL_TRAITOR,
         [ROLE_ROMANTIC] = COLOR_SPECIAL_INNOCENT,
         [ROLE_DRUNK] = COLOR_INDEPENDENT,
-        [ROLE_CLOWN] = COLOR_INDEPENDENT,
+        [ROLE_CLOWN] = COLOR_JESTER,
         [ROLE_DEPUTY] = COLOR_SPECIAL_INNOCENT,
         [ROLE_IMPERSONATOR] = COLOR_SPECIAL_TRAITOR,
         [ROLE_BEGGAR] = COLOR_JESTER
@@ -64,7 +64,7 @@ local col_dark = {
         [ROLE_HYPNOTIST] = COLOR_SPECIAL_TRAITOR_DARK,
         [ROLE_ROMANTIC] = COLOR_SPECIAL_INNOCENT_DARK,
         [ROLE_DRUNK] = COLOR_INDEPENDENT_DARK,
-        [ROLE_CLOWN] = COLOR_INDEPENDENT_DARK,
+        [ROLE_CLOWN] = COLOR_JESTER_DARK,
         [ROLE_DEPUTY] = COLOR_SPECIAL_INNOCENT_DARK,
         [ROLE_IMPERSONATOR] = COLOR_SPECIAL_TRAITOR_DARK,
         [ROLE_BEGGAR] = COLOR_JESTER_DARK
@@ -91,7 +91,12 @@ function WSWITCH:DrawBarBg(x, y, w, h, col)
 
     local role = LocalPlayer():GetRole() or ROLE_INNOCENT
 
-    local c = col.tip[role]
+    local c = Color(100, 100, 100, 255)
+    if GAMEMODE.round_state == ROUND_ACTIVE then
+        c = col.tip[role]
+    else
+        c = Color(100, 100, 100, 255)
+    end
 
     -- Draw the colour tip
     surface.SetTexture(barcorner)

@@ -156,27 +156,52 @@ if CLIENT then
 
         -- somehow it seems this can be called before my player metatable
         -- additions have loaded
-        if client:IsTraitorTeam() then
+        if client:IsTraitor() then
             surface.SetDrawColor(255 * bright,
-                    50 * bright,
-                    50 * bright,
+                    0,
+                    0,
                     255 * alpha)
-        elseif client:IsJesterTeam() or client:IsIndependentTeam() then
+        elseif client:IsTraitorTeam() then
             surface.SetDrawColor(255 * bright,
-                    50 * bright,
-                    255 * bright,
+                    128 * bright,
+                    0,
                     255 * alpha)
-        else
+        elseif client:IsInnocent() then
             surface.SetDrawColor(0,
                     255 * bright,
                     0,
+                    255 * alpha)
+        elseif client:IsDetective() then
+            surface.SetDrawColor(0,
+                    0,
+                    255 * bright,
+                    255 * alpha)
+        elseif client:IsInnocentTeam() then
+            surface.SetDrawColor(255 * bright,
+                    255 * bright,
+                    0,
+                    255 * alpha)
+        elseif client:IsJesterTeam() or client:IsClown() then
+            surface.SetDrawColor(255 * bright,
+                    50 * bright,
+                    255 * bright,
+                    255 * alpha)
+        elseif client:IsIndependentTeam() then
+            surface.SetDrawColor(128 * bright,
+                    64 * bright,
+                    0,
+                    255 * alpha)
+        else
+            surface.SetDrawColor(255 * bright,
+                    255 * bright,
+                    255 * bright,
                     255 * alpha)
         end
 
         local gap = math.floor(20 * scale * (sights and 0.8 or 1))
         local length = math.floor(gap + (25 * crosshair_size:GetFloat()) * scale)
         surface.DrawLine(x - length, y, x - gap, y)
-        surface.DrawLine(x + length, y, x + gap, y)
+            surface.DrawLine(x + length, y, x + gap, y)
         surface.DrawLine(x, y - length, x, y - gap)
         surface.DrawLine(x, y + length, x, y + gap)
     end

@@ -123,6 +123,7 @@ CreateConVar("ttt_beggar_spawn_weight", "1")
 CreateConVar("ttt_beggar_min_players", "0")
 
 -- Custom role properties
+CreateConVar("ttt_detective_starting_health", "100")
 CreateConVar("ttt_swapper_killer_health", "100")
 CreateConVar("ttt_phantom_respawn_health", "50")
 CreateConVar("ttt_drunk_sober_time", "180")
@@ -131,6 +132,7 @@ CreateConVar("ttt_clown_damage_bonus", "0")
 CreateConVar("ttt_deputy_damage_penalty", "0")
 CreateConVar("ttt_impersonator_damage_penalty", "0")
 CreateConVar("ttt_announce_beggar_change", "1")
+CreateConVar("ttt_single_deputy_impersonator", "0")
 
 -- Traitor credits
 CreateConVar("ttt_credits_starting", "2")
@@ -647,6 +649,7 @@ function TellTraitorsAboutTraitors()
         if v:IsTraitorTeam() then
             table.insert(traitornicks, v:Nick())
         elseif v:IsGlitch() then
+            table.insert(traitornicks, v:Nick())
             hasGlitch = true
         end
     end
@@ -824,8 +827,8 @@ function BeginRound()
         end
 
         -- Drunk logic
+        SetGlobalFloat("ttt_drunk_remember", CurTime() + GetConVar("ttt_drunk_sober_time"):GetInt())
         if v:GetRole() == ROLE_DRUNK then
-            SetGlobalFloat("ttt_drunk_remember", CurTime() + GetConVar("ttt_drunk_sober_time"):GetInt())
             timer.Create("drunkremember", GetConVar("ttt_drunk_sober_time"):GetInt(), 1, function()
                 for _, p in pairs(player.GetAll()) do
                     if p:IsActiveDrunk() then
@@ -1210,6 +1213,17 @@ function SelectRoles()
     local independent_count = 1 and (math.random() <= GetConVar("ttt_independent_chance"):GetFloat()) or 0
     local max_special_traitor_count = GetSpecialTraitorCount(traitor_count)
 
+    -- special spawning cvars
+    local deputy_only = false
+    local impersonator_only = false
+    if GetConVar("ttt_single_deputy_impersonator"):GetBool() then
+        if math.random() <= 0.5 then
+            deputy_only = true
+        else
+            impersonator_only = true
+        end
+    end
+
     if choice_count == 0 then return end
 
     -- pick detectives
@@ -1219,6 +1233,7 @@ function SelectRoles()
                 local plyPick = math.random(1, #choices)
                 local ply = choices[plyPick]
                 ply:SetRole(ROLE_DETECTIVE)
+                ply:SetHealth(GetConVar("ttt_detective_starting_health"):GetInt())
                 table.remove(choices, plyPick)
             end
         end
@@ -1238,12 +1253,12 @@ function SelectRoles()
 
     -- pick special traitors
     local specialTraitorRoles = {}
-    if GetConVar("ttt_hypnotist_enabled"):GetBool() and (choice_count >= GetConVar("ttt_hypnotist_min_players"):GetInt() or GetConVar("ttt_hypnotist_min_players"):GetInt() == 0) then
+    if GetConVar("ttt_hypnotist_enabled"):GetBool() and choice_count >= GetConVar("ttt_hypnotist_min_players"):GetInt() then
         for i = 1, GetConVar("ttt_hypnotist_spawn_weight"):GetInt() do
             table.insert(specialTraitorRoles, ROLE_HYPNOTIST)
         end
     end
-    if GetConVar("ttt_impersonator_enabled"):GetBool() and detective_count > 0 and (choice_count >= GetConVar("ttt_impersonator_min_players"):GetInt() or GetConVar("ttt_impersonator_min_players"):GetInt() == 0) then
+    if GetConVar("ttt_impersonator_enabled"):GetBool() and detective_count > 0 and not deputy_only and choice_count >= GetConVar("ttt_impersonator_min_players"):GetInt() then
         for i = 1, GetConVar("ttt_impersonator_spawn_weight"):GetInt() do
             table.insert(specialTraitorRoles, ROLE_IMPERSONATOR)
         end
@@ -1267,27 +1282,27 @@ function SelectRoles()
     -- pick independent
     if independent_count ~= 0 and #choices > 0 then
         local independentRoles = {}
-        if GetConVar("ttt_jester_enabled"):GetBool() and (choice_count >= GetConVar("ttt_jester_min_players"):GetInt() or GetConVar("ttt_jester_min_players"):GetInt() == 0) then
+        if GetConVar("ttt_jester_enabled"):GetBool() and choice_count >= GetConVar("ttt_jester_min_players"):GetInt() then
             for i = 1, GetConVar("ttt_jester_spawn_weight"):GetInt() do
                 table.insert(independentRoles, ROLE_JESTER)
             end
         end
-        if GetConVar("ttt_swapper_enabled"):GetBool() and (choice_count >= GetConVar("ttt_swapper_min_players"):GetInt() or GetConVar("ttt_swapper_min_players"):GetInt() == 0) then
+        if GetConVar("ttt_swapper_enabled"):GetBool() and choice_count >= GetConVar("ttt_swapper_min_players"):GetInt() then
             for i = 1, GetConVar("ttt_swapper_spawn_weight"):GetInt() do
                 table.insert(independentRoles, ROLE_SWAPPER)
             end
         end
-        if GetConVar("ttt_drunk_enabled"):GetBool() and (choice_count >= GetConVar("ttt_drunk_min_players"):GetInt() or GetConVar("ttt_drunk_min_players"):GetInt() == 0) then
+        if GetConVar("ttt_drunk_enabled"):GetBool() and choice_count >= GetConVar("ttt_drunk_min_players"):GetInt() then
             for i = 1, GetConVar("ttt_drunk_spawn_weight"):GetInt() do
                 table.insert(independentRoles, ROLE_DRUNK)
             end
         end
-        if GetConVar("ttt_clown_enabled"):GetBool() and (choice_count >= GetConVar("ttt_clown_min_players"):GetInt() or GetConVar("ttt_clown_min_players"):GetInt() == 0) then
+        if GetConVar("ttt_clown_enabled"):GetBool() and choice_count >= GetConVar("ttt_clown_min_players"):GetInt() then
             for i = 1, GetConVar("ttt_clown_spawn_weight"):GetInt() do
                 table.insert(independentRoles, ROLE_CLOWN)
             end
         end
-        if GetConVar("ttt_beggar_enabled"):GetBool() and (choice_count >= GetConVar("ttt_beggar_min_players"):GetInt() or GetConVar("ttt_beggar_min_players"):GetInt() == 0) then
+        if GetConVar("ttt_beggar_enabled"):GetBool() and choice_count >= GetConVar("ttt_beggar_min_players"):GetInt() then
             for i = 1, GetConVar("ttt_beggar_spawn_weight"):GetInt() do
                 table.insert(independentRoles, ROLE_BEGGAR)
             end
@@ -1310,22 +1325,22 @@ function SelectRoles()
     -- pick special innocents
     local max_special_innocent_count = GetSpecialInnocentCount(#choices)
     local specialInnocentRoles = {}
-    if GetConVar("ttt_glitch_enabled"):GetBool() and #traitors > 1 and (choice_count >= GetConVar("ttt_glitch_min_players"):GetInt() or GetConVar("ttt_glitch_min_players"):GetInt() == 0) then
+    if GetConVar("ttt_glitch_enabled"):GetBool() and #traitors > 1 and choice_count >= GetConVar("ttt_glitch_min_players"):GetInt() then
         for i = 1, GetConVar("ttt_glitch_spawn_weight"):GetInt() do
             table.insert(specialInnocentRoles, ROLE_GLITCH)
         end
     end
-    if GetConVar("ttt_phantom_enabled"):GetBool() and (choice_count >= GetConVar("ttt_phantom_min_players"):GetInt() or GetConVar("ttt_phantom_min_players"):GetInt() == 0) then
+    if GetConVar("ttt_phantom_enabled"):GetBool() and choice_count >= GetConVar("ttt_phantom_min_players"):GetInt() then
         for i = 1, GetConVar("ttt_phantom_spawn_weight"):GetInt() do
             table.insert(specialInnocentRoles, ROLE_PHANTOM)
         end
     end
-    if GetConVar("ttt_romantic_enabled"):GetBool() and choice_count > 1 and (choice_count >= GetConVar("ttt_romantic_min_players"):GetInt() or GetConVar("ttt_romantic_min_players"):GetInt() == 0) then
+    if GetConVar("ttt_romantic_enabled"):GetBool() and choice_count > 1 and choice_count >= GetConVar("ttt_romantic_min_players"):GetInt() then
         for i = 1, GetConVar("ttt_romantic_spawn_weight"):GetInt() do
             table.insert(specialInnocentRoles, ROLE_ROMANTIC)
         end
     end
-    if GetConVar("ttt_deputy_enabled"):GetBool() and detective_count > 0 and (choice_count >= GetConVar("ttt_deputy_min_players"):GetInt() or GetConVar("ttt_deputy_min_players"):GetInt() == 0) then
+    if GetConVar("ttt_deputy_enabled"):GetBool() and detective_count > 0 and not impersonator_only and choice_count >= GetConVar("ttt_deputy_min_players"):GetInt() then
         for i = 1, GetConVar("ttt_deputy_spawn_weight"):GetInt() do
             table.insert(specialInnocentRoles, ROLE_DEPUTY)
         end

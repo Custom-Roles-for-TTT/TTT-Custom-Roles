@@ -19,7 +19,7 @@ local pickupclr = {
     [ROLE_HYPNOTIST] = COLOR_SPECIAL_TRAITOR,
     [ROLE_ROMANTIC] = COLOR_SPECIAL_INNOCENT,
     [ROLE_DRUNK] = COLOR_INDEPENDENT,
-    [ROLE_CLOWN] = COLOR_INDEPENDENT,
+    [ROLE_CLOWN] = COLOR_JESTER,
     [ROLE_DEPUTY] = COLOR_SPECIAL_INNOCENT,
     [ROLE_IMPERSONATOR] = COLOR_SPECIAL_TRAITOR,
     [ROLE_BEGGAR] = COLOR_JESTER
@@ -39,7 +39,11 @@ function GM:HUDWeaponPickedUp(wep)
     pickup.fadeout = 0.3
 
     local role = LocalPlayer().GetRole and LocalPlayer():GetRole() or ROLE_INNOCENT
-    pickup.color = pickupclr[role]
+    if GAMEMODE.round_state == ROUND_ACTIVE then
+        pickup.color = pickupclr[role]
+    else
+        pickup.color = Color(100, 100, 100, 255)
+    end
 
     pickup.upper = true
 

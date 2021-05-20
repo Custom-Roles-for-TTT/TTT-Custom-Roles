@@ -113,7 +113,7 @@ local wintitle = {
     [WIN_INNOCENT] = { txt = "hilite_win_innocent", c = COLOR_INNOCENT },
     [WIN_TRAITOR] = { txt = "hilite_win_traitors", c = COLOR_TRAITOR },
     [WIN_JESTER] = { txt = "hilite_win_jester", c = COLOR_JESTER },
-    [WIN_CLOWN] = { txt = "hilite_win_clown", c = COLOR_INDEPENDENT }
+    [WIN_CLOWN] = { txt = "hilite_win_clown", c = COLOR_JESTER }
 }
 
 function CLSCORE:ShowPanel()

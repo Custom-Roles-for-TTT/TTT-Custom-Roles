@@ -96,7 +96,7 @@ local rolecolor = {
     innocent = Color(100, 255, 25, 30),
     special_innocent = Color(255, 255, 0, 30),
     jester = Color(180, 0, 255, 30),
-    independent = Color(255, 100, 255, 30),
+    independent = Color(112, 50, 0, 30)
 }
 
 function GM:TTTScoreboardColorForPlayer(ply)
@@ -195,7 +195,7 @@ function PANEL:Paint(width, height)
             c = rolecolor.independent
         elseif c == ROLE_CLOWN then
             roleStr = "clo"
-            c = rolecolor.independent
+            c = rolecolor.jester
         elseif c == ROLE_DEPUTY then
             roleStr = "dep"
             c = rolecolor.special_innocent

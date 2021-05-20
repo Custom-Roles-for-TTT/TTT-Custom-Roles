@@ -48,6 +48,12 @@ local overhealth_colors = {
     fill = Color(255, 150, 175, 255)
 };
 
+local extraoverhealth_colors = {
+    border = COLOR_WHITE,
+    background = Color(0, 0, 0, 0),
+    fill = Color(255, 200, 255, 255)
+};
+
 local ammo_colors = {
     border = COLOR_WHITE,
     background = Color(100, 60, 0, 222),
@@ -142,7 +148,7 @@ local function DrawBg(x, y, width, height, client)
         col = bg_colors.special_traitor
     elseif client:GetDetective() then
         col = bg_colors.detective
-    elseif client:IsJesterTeam() then
+    elseif client:IsJesterTeam() or client:IsClown() then
         col = bg_colors.jester
     elseif client:IsIndependentTeam() then
         col = bg_colors.independent
@@ -256,6 +262,7 @@ local function InfoPaint(client)
 
     PaintBar(8, x + margin, health_y, bar_width, bar_height, health_colors, health / maxHealth)
     PaintBar(8, x + margin, health_y, bar_width, bar_height, overhealth_colors, math.max(0, health - maxHealth) / maxHealth)
+    PaintBar(8, x + margin, health_y, bar_width, bar_height, extraoverhealth_colors, math.max(0, health - (2*maxHealth)) / maxHealth)
 
     ShadowedText(tostring(health), "HealthAmmo", bar_width, health_y, COLOR_WHITE, TEXT_ALIGN_RIGHT, TEXT_ALIGN_RIGHT)
 

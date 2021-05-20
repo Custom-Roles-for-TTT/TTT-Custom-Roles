@@ -650,7 +650,7 @@ net.Receive("TTT_ClientDeathNotify", function()
     local SpecInnoColor = Color(255, 255, 0)
     local DetectiveColor = Color(0, 0, 255)
     local JesterColor = Color(159, 0, 211)
-    local IndependentColor = Color(255, 93, 223)
+    local IndependentColor = Color(112, 50, 0)
 
     -- Read the variables from the message
     local name = net.ReadString()
@@ -686,7 +686,7 @@ net.Receive("TTT_ClientDeathNotify", function()
         col = IndependentColor
         role = "a drunk"
     elseif role == ROLE_CLOWN then
-        col = IndependentColor
+        col = JesterColor
         role = "a clown"
     elseif role == ROLE_DEPUTY then
         col = SpecInnoColor
