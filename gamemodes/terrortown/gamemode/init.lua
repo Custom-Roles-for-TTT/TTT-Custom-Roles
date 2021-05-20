@@ -131,7 +131,7 @@ CreateConVar("ttt_drunk_innocent_chance", "0.7")
 CreateConVar("ttt_clown_damage_bonus", "0")
 CreateConVar("ttt_deputy_damage_penalty", "0")
 CreateConVar("ttt_impersonator_damage_penalty", "0")
-CreateConVar("ttt_announce_beggar_change", "1")
+CreateConVar("ttt_reveal_beggar_change", "1")
 CreateConVar("ttt_single_deputy_impersonator", "0")
 
 -- Traitor credits
@@ -326,7 +326,6 @@ function GM:SyncGlobals()
     SetGlobalBool("ttt_highlight_admins", GetConVar("ttt_highlight_admins"):GetBool())
     SetGlobalBool("ttt_locational_voice", GetConVar("ttt_locational_voice"):GetBool())
     SetGlobalInt("ttt_idle_limit", GetConVar("ttt_idle_limit"):GetInt())
-    SetGlobalBool("ttt_detective_search_only", GetConVar("ttt_detective_search_only"):GetBool())
 
     SetGlobalBool("ttt_voice_drain", GetConVar("ttt_voice_drain"):GetBool())
     SetGlobalFloat("ttt_voice_drain_normal", GetConVar("ttt_voice_drain_normal"):GetFloat())
@@ -335,6 +334,9 @@ function GM:SyncGlobals()
 
     SetGlobalFloat("ttt_karma_strict", GetConVar("ttt_karma_strict"):GetBool())
     SetGlobalFloat("ttt_karma_lenient", GetConVar("ttt_karma_lenient"):GetBool())
+
+    SetGlobalBool("ttt_detective_search_only", GetConVar("ttt_detective_search_only"):GetBool())
+    SetGlobalBool("ttt_reveal_beggar_change", GetConVar("ttt_reveal_beggar_change"):GetBool())
 end
 
 function SendRoundState(state, ply)

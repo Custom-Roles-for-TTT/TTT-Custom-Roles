@@ -375,6 +375,17 @@ local function InfoPaint(client)
         surface.DrawText(text)
     end
 
+    if (client:IsInnocent() or client:IsTraitor()) and client:GetNWBool("WasBeggar", false) and not GetGlobalBool("ttt_reveal_beggar_change", true) then
+        surface.SetFont("TabLarge")
+        surface.SetTextColor(255, 255, 255, 230)
+
+        local text = GetTranslation("beggar_hidden_hud")
+        local w, h = surface.GetTextSize(text)
+
+        surface.SetTextPos(12, ScrH() - 140 - h)
+        surface.DrawText(text)
+    end
+
 end
 
 -- Paints player status HUD element in the bottom left

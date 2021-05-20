@@ -469,8 +469,8 @@ function SWEP:Equip(newowner)
                 newowner:SetNWBool("WasBeggar", true)
                 newowner:PrintMessage(HUD_PRINTTALK, "You have joined the traitor team")
                 newowner:PrintMessage(HUD_PRINTCENTER, "You have joined the traitor team")
-                SendFullStateUpdate()
-                if GetConVar("ttt_announce_beggar_change"):GetBool() then
+                timer.Create("SendBeggarStateUpdate", 1, 1, function() SendFullStateUpdate() end)
+                if GetConVar("ttt_reveal_beggar_change"):GetBool() then
                     self.BoughtBuy:PrintMessage(HUD_PRINTTALK, "The beggar has joined your team")
                     self.BoughtBuy:PrintMessage(HUD_PRINTCENTER, "The beggar has joined your team")
                 end
@@ -479,8 +479,8 @@ function SWEP:Equip(newowner)
                 newowner:SetNWBool("WasBeggar", true)
                 newowner:PrintMessage(HUD_PRINTTALK, "You have joined the innocent team")
                 newowner:PrintMessage(HUD_PRINTCENTER, "You have joined the innocent team")
-                SendFullStateUpdate()
-                if GetConVar("ttt_announce_beggar_change"):GetBool() then
+                timer.Create( "SendBeggarStateUpdate", 1, 1, function() SendFullStateUpdate() end)
+                if GetConVar("ttt_reveal_beggar_change"):GetBool() then
                     self.BoughtBuy:PrintMessage(HUD_PRINTTALK, "The beggar has joined your team")
                     self.BoughtBuy:PrintMessage(HUD_PRINTCENTER, "The beggar has joined your team")
                 end

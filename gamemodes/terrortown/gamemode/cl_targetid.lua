@@ -65,7 +65,8 @@ function GM:PostDrawTranslucentRenderables()
                 render.DrawQuadEasy(pos, dir, 8, 8, indicator_col, 180)
             end
             if client:IsTraitorTeam() then
-                if v:GetTraitor() or v:GetGlitch() then
+                local hideBeggar = v:GetNWBool("WasBeggar", false) and not GetGlobalBool("ttt_reveal_beggar_change", true)
+                if (v:GetTraitor() and not hideBeggar) or v:GetGlitch() then
                     render.SetMaterial(indicator_mat_tra_noz)
                     render.DrawQuadEasy(pos, dir, 8, 8, indicator_col, 180)
                 elseif v:GetHypnotist() then
@@ -74,7 +75,7 @@ function GM:PostDrawTranslucentRenderables()
                 elseif v:GetImpersonator() then
                     render.SetMaterial(indicator_mat_imp_noz)
                     render.DrawQuadEasy(pos, dir, 8, 8, indicator_col, 180)
-                elseif v:IsJesterTeam() or (v:GetClown() and not v:GetNWBool("KillerClownActive", false)) then
+                elseif v:IsJesterTeam() or (v:GetClown() and not v:GetNWBool("KillerClownActive", false)) or ((v:GetTraitor() or v:GetInnocent()) and hideBeggar) then
                     render.SetMaterial(indicator_mat_jes)
                     render.DrawQuadEasy(pos, dir, 8, 8, indicator_col, 180)
                 end
@@ -239,11 +240,13 @@ function GM:HUDDrawTargetID()
             _, color = util.HealthToString(ent:Health(), ent:GetMaxHealth())
         end
 
+        local hideBeggar = ent:GetNWBool("WasBeggar", false) and not GetGlobalBool("ttt_reveal_beggar_change", true)
+
         if client:IsTraitorTeam() and GetRoundState() == ROUND_ACTIVE then
-            target_traitor = ent:IsTraitor() or ent:IsGlitch()
+            target_traitor = (ent:IsTraitor() and not hideBeggar) or ent:IsGlitch()
             target_hypnotist = ent:IsHypnotist()
             target_impersonator = ent:IsImpersonator()
-            target_jester = ent:IsJesterTeam() or (ent:GetClown() and not ent:GetNWBool("KillerClownActive", false))
+            target_jester = ent:IsJesterTeam() or (ent:GetClown() and not ent:GetNWBool("KillerClownActive", false)) or ((ent:GetTraitor() or ent:GetInnocent()) and hideBeggar)
         end
 
         target_detective = GetRoundState() > ROUND_PREP and (ent:IsDetective() or ((ent:IsDeputy() or (ent:IsImpersonator() and not client:IsTraitorTeam())) and ent:GetNWBool("HasPromotion", false))) or false

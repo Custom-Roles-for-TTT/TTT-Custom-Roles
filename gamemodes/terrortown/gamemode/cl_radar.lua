@@ -148,7 +148,7 @@ function RADAR:Draw(client)
     end
 
     -- Player radar
-    if (not self.enable) or (not client:IsActiveSpecial()) then return end
+    if not self.enable then return end
 
     surface.SetTexture(indicator)
 

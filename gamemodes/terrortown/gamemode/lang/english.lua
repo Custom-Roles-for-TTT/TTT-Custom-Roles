@@ -647,6 +647,7 @@ L.radar_hud = "Radar ready for next scan in: {time}"
 
 L.drunk_hud = "You will sober up in: {time}"
 L.detective_promotion_hud = "You have been promoted to detective"
+L.beggar_hidden_hud = "You still appear as the beggar to others"
 
 -- Spectator muting of living/dead
 L.mute_living = "Living players muted"
