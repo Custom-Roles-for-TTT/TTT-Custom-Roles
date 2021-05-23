@@ -568,7 +568,7 @@ local function TraitorMenuPopup()
     dcancel.DoClick = function() dframe:Close() end
 
     --add as favorite button
-    dfav = vgui.Create("DButton", dinfobg)
+    local dfav = vgui.Create("DButton", dinfobg)
     dfav:SetPos(0, dih - bh * 2)
     dfav:MoveRightOf(dconfirm)
     dfav:SetSize(bh, bh)

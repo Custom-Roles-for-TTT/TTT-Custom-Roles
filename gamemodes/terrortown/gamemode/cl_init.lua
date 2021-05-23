@@ -656,6 +656,7 @@ net.Receive("TTT_ClientDeathNotify", function()
     local name = net.ReadString()
     local role = net.ReadUInt(8)
     local reason = net.ReadString()
+    local col = InnoColor
 
     -- Format the number role into a human readable role
     if role == ROLE_TRAITOR then
@@ -704,21 +705,18 @@ net.Receive("TTT_ClientDeathNotify", function()
 
     -- Format the reason for their death
     if reason == "suicide" then
-        chat.AddText(Color(255, 255, 255), "You killed yourself!")
-
+        chat.AddText(COLOR_WHITE, "You killed yourself!")
     elseif reason == "burned" then
-        chat.AddText(Color(255, 255, 255), "You burned to death!")
-
+        chat.AddText(COLOR_WHITE, "You burned to death!")
     elseif reason == "prop" then
-        chat.AddText(Color(255, 255, 255), "You were killed by a prop!")
-
+        chat.AddText(COLOR_WHITE, "You were killed by a prop!")
     elseif reason == "ply" then
-        chat.AddText(Color(255, 255, 255), "You were killed by ", col, name, Color(255, 255, 255), ", they were ", col, role .. "!")
-
+        chat.AddText(COLOR_WHITE, "You were killed by ", col, name, COLOR_WHITE, ", they were ", col, role .. "!")
     elseif reason == "fell" then
-        chat.AddText(Color(255, 255, 255), "You fell to your death!")
-
+        chat.AddText(COLOR_WHITE, "You fell to your death!")
+    elseif reason == "water" then
+        chat.AddText(COLOR_WHITE, "You drowned!")
     else
-        chat.AddText(Color(255, 255, 255), "You died!")
+        chat.AddText(COLOR_WHITE, "You died!")
     end
 end)

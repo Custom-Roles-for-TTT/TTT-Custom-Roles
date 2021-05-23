@@ -254,7 +254,7 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
             IdentifyBody(ply, rag)
         elseif not ply:IsSpec() and not ownerEnt:GetNWBool("det_called", false) and not ownerEnt:GetNWBool("body_searched", false) then
             if IsValid(rag) and rag:GetPos():Distance(ply:GetPos()) < 128 then
-                hook.Call("TTTBodyFound", GAMEMODE, ply, deadply, rag)
+                hook.Call("TTTBodyFound", GAMEMODE, ply, ownerEnt, rag)
                 net.Start("TTT_CorpseCall")
                 net.WriteVector(rag:GetPos())
                 net.Send(GetDetectiveFilter(true))

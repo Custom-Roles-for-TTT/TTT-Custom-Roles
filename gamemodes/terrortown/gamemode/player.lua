@@ -611,7 +611,6 @@ function FindRespawnLocation(pos)
         local t = {
             start = v,
             endpos = v,
-            filter = target,
             mins = midsize / -2,
             maxs = midsize / 2
         }
@@ -624,6 +623,7 @@ function FindRespawnLocation(pos)
     return false
 end
 
+local deadPhantom = nil
 function GM:DoPlayerDeath(ply, attacker, dmginfo)
     if ply:IsSpec() then return end
 
@@ -731,7 +731,7 @@ end
 
 function GM:PlayerDeath(victim, infl, attacker)
     -- Handle phantom death
-    if victim:GetPhantom() and attacker:IsPlayer() and attacker ~= victim and infl:GetClass() ~= env_fire and GetRoundState() == ROUND_ACTIVE then
+    if victim:GetPhantom() and attacker:IsPlayer() and attacker ~= victim and GetRoundState() == ROUND_ACTIVE then
         attacker:SetNWBool("HauntedSmoke", true)
         attacker:PrintMessage(HUD_PRINTCENTER, "You have been haunted.")
         victim:PrintMessage(HUD_PRINTCENTER, "Your attacker has been haunted.")
@@ -739,12 +739,12 @@ function GM:PlayerDeath(victim, infl, attacker)
     end
 
     -- Handle jester death
-    if victim:GetJester() and attacker:IsPlayer() and attacker ~= victim and infl:GetClass() ~= env_fire and GetRoundState() == ROUND_ACTIVE then
+    if victim:GetJester() and attacker:IsPlayer() and attacker ~= victim and GetRoundState() == ROUND_ACTIVE then
         victim:SetNWString("JesterKiller", attacker:Nick())
     end
 
     -- Handle swapper death
-    if victim:GetSwapper() and attacker:IsPlayer() and attacker ~= victim and infl:GetClass() ~= env_fire and GetRoundState() == ROUND_ACTIVE then
+    if victim:GetSwapper() and attacker:IsPlayer() and attacker ~= victim and GetRoundState() == ROUND_ACTIVE then
         attacker:SetNWString("SwappedWith", victim:Nick())
         attacker:PrintMessage(HUD_PRINTCENTER, "You killed the swapper!")
         victim:SetRole(attacker:GetRole())
@@ -1264,7 +1264,7 @@ function GM:Tick()
             end
 
             -- Run DNA Scanner think also when it is not deployed
-            if IsValid(ply.scanner_weapon) and wep ~= ply.scanner_weapon then
+            if IsValid(ply.scanner_weapon) and ply:GetActiveWeapon() ~= ply.scanner_weapon then
                 ply.scanner_weapon:Think()
             end
         elseif tm == TEAM_SPEC then

@@ -50,7 +50,7 @@ surface.CreateFont("ScoreNicks", {
 local spawnedPlayers = {}
 
 net.Receive("TTT_SpawnedPlayers", function(len)
-    ply = net.ReadString()
+    local ply = net.ReadString()
     table.insert(spawnedPlayers, ply)
 end)
 
@@ -243,7 +243,7 @@ function CLSCORE:ShowPanel()
                         end
                     elseif ply:IsTraitor() then
                         finalRole = "tra"
-                        wasHypnotised = ply:GetNWString("WasHypnotised", "")
+                        local wasHypnotised = ply:GetNWString("WasHypnotised", "")
                         if ply:GetNWBool("WasDrunk", false) then
                             finalRole = "dru_t"
                         elseif ply:GetNWBool("WasBeggar", false) then
@@ -310,13 +310,13 @@ function CLSCORE:ShowPanel()
                     nicklbl:SetPos(48, 121 + 33 * countI)
 
                     if hasDisconnected then
-                        disconIcon = vgui.Create("DImage", dpanel)
+                        local disconIcon = vgui.Create("DImage", dpanel)
                         disconIcon:SetSize(32, 32)
                         disconIcon:SetPos(314, 123 + 33 * countI)
                         disconIcon:SetImage("vgui/ttt/score_disconicon.png")
                     else
                         if not ply:Alive() then
-                            skullIcon = vgui.Create("DImage", dpanel)
+                            local skullIcon = vgui.Create("DImage", dpanel)
                             skullIcon:SetSize(32, 32)
                             skullIcon:SetPos(314, 123 + 33 * countI)
                             skullIcon:SetImage("vgui/ttt/score_skullicon.png")
@@ -332,13 +332,13 @@ function CLSCORE:ShowPanel()
                     nicklbl:SetPos(392, 121 + 33 * countT)
 
                     if hasDisconnected then
-                        disconIcon = vgui.Create("DImage", dpanel)
+                        local disconIcon = vgui.Create("DImage", dpanel)
                         disconIcon:SetSize(32, 32)
                         disconIcon:SetPos(658, 123 + 33 * countT)
                         disconIcon:SetImage("vgui/ttt/score_disconicon.png")
                     else
                         if not ply:Alive() then
-                            skullIcon = vgui.Create("DImage", dpanel)
+                            local skullIcon = vgui.Create("DImage", dpanel)
                             skullIcon:SetSize(32, 32)
                             skullIcon:SetPos(658, 123 + 33 * countT)
                             skullIcon:SetImage("vgui/ttt/score_skullicon.png")
@@ -363,13 +363,13 @@ function CLSCORE:ShowPanel()
                     end
 
                     if hasDisconnected then
-                        disconIcon = vgui.Create("DImage", dpanel)
+                        local disconIcon = vgui.Create("DImage", dpanel)
                         disconIcon:SetSize(32, 32)
                         disconIcon:SetPos(658, 460)
                         disconIcon:SetImage("vgui/ttt/score_disconicon.png")
                     else
                         if not ply:Alive() then
-                            skullIcon = vgui.Create("DImage", dpanel)
+                            local skullIcon = vgui.Create("DImage", dpanel)
                             skullIcon:SetSize(32, 32)
                             skullIcon:SetPos(658, 460)
                             skullIcon:SetImage("vgui/ttt/score_skullicon.png")
