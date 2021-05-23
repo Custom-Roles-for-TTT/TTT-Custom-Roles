@@ -382,6 +382,13 @@ local function TraitorMenuPopup()
                 slot:SetIconSize(16)
 
                 slot:SetIconText(item.slot)
+                ic.slot = item.slot
+
+                -- Credit to @Angela and @Technofrood on the Lonely Yogs Discord for the fix!
+                -- Clamp the item slot within the correct limits
+                if ic.slot ~= nil then
+                    ic.slot = math.Clamp(ic.slot, 1, #paneltable)
+                end
 
                 slot:SetIconProperties(COLOR_WHITE,
                         "DefaultBold",
