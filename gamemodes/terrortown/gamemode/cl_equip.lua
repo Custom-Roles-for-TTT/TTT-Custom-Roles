@@ -199,32 +199,30 @@ local color_slot = {
     [ROLE_IMPERSONATOR] = COLOR_SPECIAL_TRAITOR
 }
 
-local fieldstbl = { "name", "type", "desc" }
-
 -- BEM helper functions
 
 function CreateFavTable()
     if not sql.TableExists("ttt_bem_fav") then
-    query = "CREATE TABLE ttt_bem_fav (guid TEXT, role TEXT, weapon_id TEXT)"
-    result = sql.Query(query)
-        else
+        local query = "CREATE TABLE ttt_bem_fav (guid TEXT, role TEXT, weapon_id TEXT)"
+        sql.Query(query)
+    else
         print("ALREADY EXISTS")
     end
 end
 
 function AddFavorite(guid, role, weapon_id)
-    query = "INSERT INTO ttt_bem_fav VALUES('" .. guid .. "','" .. role .. "','" .. weapon_id .. "')"
-    result = sql.Query(query)
+    local query = "INSERT INTO ttt_bem_fav VALUES('" .. guid .. "','" .. role .. "','" .. weapon_id .. "')"
+    sql.Query(query)
 end
 
 function RemoveFavorite(guid, role, weapon_id)
-    query = "DELETE FROM ttt_bem_fav WHERE guid = '" .. guid .. "' AND role = '" .. role .. "' AND weapon_id = '" .. weapon_id .. "'"
-    result = sql.Query(query)
+    local query = "DELETE FROM ttt_bem_fav WHERE guid = '" .. guid .. "' AND role = '" .. role .. "' AND weapon_id = '" .. weapon_id .. "'"
+    sql.Query(query)
 end
 
 function GetFavorites(guid, role)
-    query = "SELECT weapon_id FROM ttt_bem_fav WHERE guid = '" .. guid .. "' AND role = '" .. role .. "'"
-    result = sql.Query(query)
+    local query = "SELECT weapon_id FROM ttt_bem_fav WHERE guid = '" .. guid .. "' AND role = '" .. role .. "'"
+    local result = sql.Query(query)
     return result
 end
 
@@ -242,10 +240,9 @@ end
 
 local eqframe = nil
 local function TraitorMenuPopup()
-
-    numCols = numColsVar:GetInt()
-    numRows = numRowsVar:GetInt()
-    itemSize = itemSizeVar:GetInt()
+    local numCols = numColsVar:GetInt()
+    local numRows = numRowsVar:GetInt()
+    local itemSize = itemSizeVar:GetInt()
 
     -- margin
     local m = 5
@@ -472,8 +469,6 @@ local function TraitorMenuPopup()
     dfields.desc:SetContentAlignment(7)
     dfields.desc:MoveBelow(dfields.type, 1)
 
-    local iw, ih = dinfo:GetSize()
-
     local dhelp = vgui.Create("DPanel", dinfobg)
     dhelp:SetPaintBackground(false)
     dhelp:SetSize(diw, 64)
@@ -515,7 +510,6 @@ local function TraitorMenuPopup()
     end
 
     hook.Run("TTTEquipmentTabs", dsheet)
-
 
     -- couple panelselect with info
     dlist.OnActivePanelChanged = function(self, _, new)
