@@ -303,7 +303,7 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
     net.WriteUInt(rag:EntIndex(), 16) -- 16 bits
     net.WriteUInt(owner, 8) -- 128 max players. ( 8 bits )
     net.WriteString(nick)
-    net.WriteUInt(eq, 16) -- Equipment ( 16 = max. )
+    net.WriteUInt(eq, 32) -- Equipment ( 32 = max. )
     net.WriteUInt(role, 8) -- ( 8 bits )
     net.WriteInt(c4, bitsRequired(C4_WIRE_COUNT) + 1) -- -1 -> 2^bits ( default c4: 4 bits )
     net.WriteUInt(dmg, 30) -- DMG_BUCKSHOT is the highest. ( 30 bits )
