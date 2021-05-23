@@ -196,7 +196,7 @@ local function PreqLabels(parent, x, y)
     return function(selected)
         local allow = true
         for k, pnl in pairs(tbl) do
-            local result, text = pnl:Check(selected)
+            local result, text, tooltip = pnl:Check(selected)
             pnl:SetTextColor(result and color_good or color_bad)
             pnl:SetText(text)
             pnl:SizeToContents()
