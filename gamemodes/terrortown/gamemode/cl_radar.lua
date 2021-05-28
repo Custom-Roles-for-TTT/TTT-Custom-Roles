@@ -38,7 +38,7 @@ end
 function RADAR:Timeout()
     self:EndScan()
 
-    if self.repeating and LocalPlayer() and LocalPlayer():IsActiveSpecial() and LocalPlayer():HasEquipmentItem(EQUIP_RADAR) then
+    if self.repeating and LocalPlayer() and LocalPlayer():HasEquipmentItem(EQUIP_RADAR) then
         RunConsoleCommand("ttt_radar_scan")
     end
 end
@@ -123,7 +123,7 @@ function RADAR:Draw(client)
         surface.SetTextColor(200, 55, 55, 220)
         surface.SetDrawColor(255, 255, 255, 200)
 
-        for k, bomb in pairs(self.bombs) do
+        for _, bomb in pairs(self.bombs) do
             DrawTarget(bomb, 24, 0, true)
         end
     end
@@ -134,7 +134,7 @@ function RADAR:Draw(client)
         surface.SetTextColor(255, 255, 255, 240)
         surface.SetDrawColor(255, 255, 255, 230)
 
-        for k, corpse in pairs(self.called_corpses) do
+        for _, corpse in pairs(self.called_corpses) do
             DrawTarget(corpse, 16, 0.5)
         end
     end
@@ -145,7 +145,7 @@ function RADAR:Draw(client)
         surface.SetTextColor(200, 50, 50, 255)
         surface.SetDrawColor(255, 255, 255, 240)
 
-        for k, sample in pairs(self.samples) do
+        for _, sample in pairs(self.samples) do
             DrawTarget(sample, 16, 0.5, true)
         end
     end
@@ -156,7 +156,7 @@ function RADAR:Draw(client)
         surface.SetTextColor(255, 255, 255, 240)
         surface.SetDrawColor(255, 255, 255, 230)
 
-        for k, corpse in pairs(self.revenger_lover_killers) do
+        for _, corpse in pairs(self.revenger_lover_killers) do
             DrawTarget(corpse, 16, 0.5)
         end
     end
@@ -172,7 +172,7 @@ function RADAR:Draw(client)
     local mpos = Vector(ScrW() / 2, ScrH() / 2, 0)
 
     local role, alpha, scrpos, md
-    for k, tgt in pairs(RADAR.targets) do
+    for _, tgt in pairs(RADAR.targets) do
         alpha = alpha_base
 
         scrpos = tgt.pos:ToScreen()
