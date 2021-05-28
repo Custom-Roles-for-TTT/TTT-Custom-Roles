@@ -11,43 +11,6 @@ local showCustomVar = CreateClientConVar("ttt_bem_marker_custom", 1, true, false
 local showFavoriteVar = CreateClientConVar("ttt_bem_marker_fav", 1, true, false, "Should favorite items get a marker?")
 local showSlotVar = CreateClientConVar("ttt_bem_marker_slot", 1, true, false, "Should items get a slot-marker?")
 
--- add favorites DB functions
-function CreateFavTable()
-    if not (sql.TableExists("ttt_bem_fav")) then
-        query = "CREATE TABLE ttt_bem_fav (guid TEXT, role TEXT, weapon_id TEXT)"
-        result = sql.Query(query)
-    else
-        print("ALREADY EXISTS")
-    end
-end
-
-function AddFavorite(guid, role, weapon_id)
-    query = "INSERT INTO ttt_bem_fav VALUES('" .. guid .. "','" .. role .. "','" .. weapon_id .. "')"
-    result = sql.Query(query)
-end
-
-function RemoveFavorite(guid, role, weapon_id)
-    query = "DELETE FROM ttt_bem_fav WHERE guid = '" .. guid .. "' AND role = '" .. role .. "' AND weapon_id = '" .. weapon_id .. "'"
-    result = sql.Query(query)
-end
-
-function GetFavorites(guid, role)
-    query = "SELECT weapon_id FROM ttt_bem_fav WHERE guid = '" .. guid .. "' AND role = '" .. role .. "'"
-    result = sql.Query(query)
-    return result
-end
-
--- looks for weapon id in favorites table (result of GetFavorites)
-function IsFavorite(favorites, weapon_id)
-    for _, value in pairs(favorites) do
-        local dbid = value["weapon_id"]
-        if (dbid == tostring(weapon_id)) then
-            return true
-        end
-    end
-    return false
-end
-
 -- Buyable weapons are loaded automatically. Buyable items are defined in
 -- equip_items_shd.lua
 
@@ -196,7 +159,7 @@ local function PreqLabels(parent, x, y)
     return function(selected)
         local allow = true
         for k, pnl in pairs(tbl) do
-            local result, text = pnl:Check(selected)
+            local result, text, tooltip = pnl:Check(selected)
             pnl:SetTextColor(result and color_good or color_bad)
             pnl:SetText(text)
             pnl:SizeToContents()
@@ -236,32 +199,30 @@ local color_slot = {
     [ROLE_IMPERSONATOR] = COLOR_SPECIAL_TRAITOR
 }
 
-local fieldstbl = { "name", "type", "desc" }
-
 -- BEM helper functions
 
 function CreateFavTable()
     if not sql.TableExists("ttt_bem_fav") then
-    query = "CREATE TABLE ttt_bem_fav (guid TEXT, role TEXT, weapon_id TEXT)"
-    result = sql.Query(query)
-        else
+        local query = "CREATE TABLE ttt_bem_fav (guid TEXT, role TEXT, weapon_id TEXT)"
+        sql.Query(query)
+    else
         print("ALREADY EXISTS")
     end
 end
 
 function AddFavorite(guid, role, weapon_id)
-    query = "INSERT INTO ttt_bem_fav VALUES('" .. guid .. "','" .. role .. "','" .. weapon_id .. "')"
-    result = sql.Query(query)
+    local query = "INSERT INTO ttt_bem_fav VALUES('" .. guid .. "','" .. role .. "','" .. weapon_id .. "')"
+    sql.Query(query)
 end
 
 function RemoveFavorite(guid, role, weapon_id)
-    query = "DELETE FROM ttt_bem_fav WHERE guid = '" .. guid .. "' AND role = '" .. role .. "' AND weapon_id = '" .. weapon_id .. "'"
-    result = sql.Query(query)
+    local query = "DELETE FROM ttt_bem_fav WHERE guid = '" .. guid .. "' AND role = '" .. role .. "' AND weapon_id = '" .. weapon_id .. "'"
+    sql.Query(query)
 end
 
 function GetFavorites(guid, role)
-    query = "SELECT weapon_id FROM ttt_bem_fav WHERE guid = '" .. guid .. "' AND role = '" .. role .. "'"
-    result = sql.Query(query)
+    local query = "SELECT weapon_id FROM ttt_bem_fav WHERE guid = '" .. guid .. "' AND role = '" .. role .. "'"
+    local result = sql.Query(query)
     return result
 end
 
@@ -279,10 +240,9 @@ end
 
 local eqframe = nil
 local function TraitorMenuPopup()
-
-    numCols = numColsVar:GetInt()
-    numRows = numRowsVar:GetInt()
-    itemSize = itemSizeVar:GetInt()
+    local numCols = numColsVar:GetInt()
+    local numRows = numRowsVar:GetInt()
+    local itemSize = itemSizeVar:GetInt()
 
     -- margin
     local m = 5
@@ -422,6 +382,13 @@ local function TraitorMenuPopup()
                 slot:SetIconSize(16)
 
                 slot:SetIconText(item.slot)
+                ic.slot = item.slot
+
+                -- Credit to @Angela and @Technofrood on the Lonely Yogs Discord for the fix!
+                -- Clamp the item slot within the correct limits
+                if ic.slot ~= nil then
+                    ic.slot = math.Clamp(ic.slot, 1, #paneltable)
+                end
 
                 slot:SetIconProperties(COLOR_WHITE,
                         "DefaultBold",
@@ -509,8 +476,6 @@ local function TraitorMenuPopup()
     dfields.desc:SetContentAlignment(7)
     dfields.desc:MoveBelow(dfields.type, 1)
 
-    local iw, ih = dinfo:GetSize()
-
     local dhelp = vgui.Create("DPanel", dinfobg)
     dhelp:SetPaintBackground(false)
     dhelp:SetSize(diw, 64)
@@ -552,7 +517,6 @@ local function TraitorMenuPopup()
     end
 
     hook.Run("TTTEquipmentTabs", dsheet)
-
 
     -- couple panelselect with info
     dlist.OnActivePanelChanged = function(self, _, new)
@@ -661,7 +625,7 @@ local function ReceiveEquipment()
     local ply = LocalPlayer()
     if not IsValid(ply) then return end
 
-    ply.equipment_items = net.ReadUInt(16)
+    ply.equipment_items = net.ReadUInt(32)
 end
 net.Receive("TTT_Equipment", ReceiveEquipment)
 
@@ -703,7 +667,7 @@ net.Receive("TTT_Bought", ReceiveBought)
 -- Player received the item he has just bought, so run clientside init
 local function ReceiveBoughtItem()
     local is_item = net.ReadBit() == 1
-    local id = is_item and net.ReadUInt(16) or net.ReadString()
+    local id = is_item and net.ReadUInt(32) or net.ReadString()
 
     -- I can imagine custom equipment wanting this, so making a hook
     hook.Run("TTTBoughtItem", is_item, id)
