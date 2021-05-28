@@ -171,18 +171,20 @@ concommand.Add("ttt_confirm_death", IdentifyCommand)
 -- Call detectives to a corpse
 local function CallDetective(ply, cmd, args)
     if not IsValid(ply) then return end
-    if #args ~= 1 then return end
+    if #args ~= 2 then return end
     if not ply:IsActive() then return end
 
     local eidx = tonumber(args[1])
     if not eidx then return end
 
+    local sid = args[2]
     local rag = Entity(eidx)
     if IsValid(rag) and rag:GetPos():Distance(ply:GetPos()) < 128 then
         if CORPSE.GetFound(rag, false) then
             -- show indicator to detectives
             net.Start("TTT_CorpseCall")
             net.WriteVector(rag:GetPos())
+            net.WriteString(sid)
             net.Send(GetDetectiveFilter(true))
 
             LANG.Msg("body_call", {
@@ -259,6 +261,7 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
                 hook.Call("TTTBodyFound", GAMEMODE, ply, ownerEnt, rag)
                 net.Start("TTT_CorpseCall")
                 net.WriteVector(rag:GetPos())
+                net.WriteString(rag.sid)
                 net.Send(GetDetectiveFilter(true))
                 ownerEnt:SetNWBool("det_called", true)
                 ownerEnt:SetNWBool("body_found", true)
@@ -315,7 +318,7 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
     net.WriteInt(stime, 16)
 
     net.WriteUInt(#kill_entids, 8)
-    for k, idx in pairs(kill_entids) do
+    for _, idx in pairs(kill_entids) do
         net.WriteUInt(idx, 8) -- first game.MaxPlayers() of entities are for players.
     end
 
@@ -333,6 +336,11 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
     -- If found by detective, send to all, else just the finder
     if ply:IsActiveDetective() then
         net.Broadcast()
+
+        -- Let detctives know that this body has already been searched
+        net.Start("TTT_RemoveCorpseCall")
+        net.WriteString(rag.sid)
+        net.Send(GetDetectiveFilter(true))
     else
         net.Send(ply)
     end
