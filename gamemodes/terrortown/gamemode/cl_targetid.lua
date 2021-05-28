@@ -53,8 +53,10 @@ function GM:PostDrawTranslucentRenderables()
 
     dir = client:GetForward() * -1
 
-    for k, v in pairs(player.GetAll()) do
-        if v:IsActive() and v ~= client then
+    for _, v in pairs(player.GetAll()) do
+        -- Compatibility with the disguises
+        local hidden = v:GetNWBool("disguised", false)
+        if v:IsActive() and v ~= client and not hidden then
             pos = v:GetPos()
             pos.z = pos.z + 74
             if v:GetDetective() or ((v:GetDeputy() or (v:GetImpersonator() and not client:IsTraitorTeam())) and v:GetNWBool("HasPromotion", false)) then

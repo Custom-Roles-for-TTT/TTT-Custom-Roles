@@ -175,6 +175,13 @@ function plymeta:ResetRoundFlags()
     self.traitor_gvoice = false
 
     self:SetNWBool("disguised", false)
+    -- If they had an "old model" that means they were disguised
+    -- Reset their model back to what they used before they put the disguise on
+    if self.oldmodel then
+        local SetMDL = FindMetaTable("Entity").SetModel
+        SetMDL(self, self.oldmodel)
+        self.oldmodel = nil
+    end
 
     -- karma
     self:SetCleanRound(true)

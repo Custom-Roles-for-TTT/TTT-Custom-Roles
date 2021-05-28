@@ -443,13 +443,24 @@ function GM:TTTToggleDisguiser(ply, state)
 end
 
 local function SetDisguise(ply, cmd, args)
-    if not IsValid(ply) or not ply:IsActiveTraitor() then return end
+    if not IsValid(ply) then return end
 
     if ply:HasEquipmentItem(EQUIP_DISGUISE) then
         local state = #args == 1 and tobool(args[1])
         if hook.Run("TTTToggleDisguiser", ply, state) then return end
 
         ply:SetNWBool("disguised", state)
+        local SetMDL = FindMetaTable("Entity").SetModel
+        -- Change the player's model to a random one when they disguise and back to their previous when they undisguise
+        if state then
+            ply.oldmodel = ply:GetModel()
+            local randommodel = GetRandomPlayerModel()
+            SetMDL(ply, randommodel)
+        elseif ply.oldmodel then
+            SetMDL(ply, ply.oldmodel)
+            ply.oldmodel = nil
+        end
+
         LANG.Msg(ply, state and "disg_turned_on" or "disg_turned_off")
     end
 end
