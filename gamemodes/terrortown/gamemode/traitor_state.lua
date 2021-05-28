@@ -58,7 +58,7 @@ function SendSwapperList(ply_or_rf) SendRoleList(ROLE_SWAPPER, ply_or_rf) end
 function SendGlitchList(ply_or_rf) SendRoleList(ROLE_GLITCH, ply_or_rf) end
 function SendPhantomList(ply_or_rf) SendRoleList(ROLE_PHANTOM, ply_or_rf) end
 function SendHypnotistList(ply_or_rf) SendRoleList(ROLE_HYPNOTIST, ply_or_rf) end
-function SendRomanticList(ply_or_rf) SendRoleList(ROLE_ROMANTIC, ply_or_rf) end
+function SendRevengerList(ply_or_rf) SendRoleList(ROLE_REVENGER, ply_or_rf) end
 function SendDrunkList(ply_or_rf) SendRoleList(ROLE_DRUNK, ply_or_rf) end
 function SendClownList(ply_or_rf) SendRoleList(ROLE_CLOWN, ply_or_rf) end
 function SendDeputyList(ply_or_rf) SendRoleList(ROLE_DEPUTY, ply_or_rf) end
@@ -79,7 +79,7 @@ function SendFullStateUpdate()
     SendGlitchList()
     SendPhantomList()
     SendHypnotistList()
-    SendRomanticList()
+    SendRevengerList()
     SendDrunkList()
     SendClownList()
     SendDeputyList()
@@ -119,7 +119,7 @@ local function request_rolelist(ply)
         SendGlitchList(ply)
         SendPhantomList(ply)
         SendHypnotistList(ply)
-        SendRomanticList(ply)
+        SendRevengerList(ply)
         SendDrunkList(ply)
         SendClownList(ply)
         SendDeputyList(ply)
@@ -216,14 +216,14 @@ local function force_hypnotist(ply)
 end
 concommand.Add("ttt_force_hypnotist", force_hypnotist, nil, nil, FCVAR_CHEAT)
 
-local function force_romantic(ply)
-    ply:SetRole(ROLE_ROMANTIC)
+local function force_revenger(ply)
+    ply:SetRole(ROLE_REVENGER)
     if ply:HasWeapon("weapon_ttt_brainwash") then
         ply:StripWeapon("weapon_ttt_brainwash")
     end
     SendFullStateUpdate()
 end
-concommand.Add("ttt_force_romantic", force_romantic, nil, nil, FCVAR_CHEAT)
+concommand.Add("ttt_force_revenger", force_revenger, nil, nil, FCVAR_CHEAT)
 
 local function force_drunk(ply)
     ply:SetRole(ROLE_DRUNK)

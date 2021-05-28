@@ -31,7 +31,7 @@ function GM:PlayerInitialSpawn(ply)
         SendGlitchList()
         SendPhantomList()
         SendHypnotistList()
-        SendRomanticList()
+        SendRevengerList()
         SendDrunkList()
         SendClownList()
         SendDeputyList()
@@ -50,7 +50,7 @@ function GM:PlayerInitialSpawn(ply)
         SendGlitchList(ply)
         SendPhantomList(ply)
         SendHypnotistList(ply)
-        SendRomanticList(ply)
+        SendRevengerList(ply)
         SendDrunkList(ply)
         SendClownList(ply)
         SendDeputyList(ply)
@@ -467,7 +467,7 @@ function GM:PlayerDisconnected(ply)
         SendGlitchList()
         SendPhantomList()
         SendHypnotistList()
-        SendRomanticList()
+        SendRevengerList()
         SendDrunkList()
         SendClownList()
         SendDeputyList()
@@ -727,6 +727,8 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
                                                 role = LANG.NameParam(ply:GetRoleString()) })
         end
     end
+
+    victim:SetTeam(TEAM_SPEC)
 end
 
 function GM:PlayerDeath(victim, infl, attacker)
@@ -769,11 +771,19 @@ function GM:PlayerDeath(victim, infl, attacker)
 
     -- Handle detective death
     if victim:GetDetective() and GetRoundState() == ROUND_ACTIVE then
+        local detectiveAlive = false
         for _, ply in pairs(player.GetAll()) do
-            if ply:GetDeputy() or ply:GetImpersonator() then
-                ply:SetNWBool("HasPromotion", true)
-                ply:PrintMessage(HUD_PRINTTALK, "You have been promoted to Detective!")
-                ply:PrintMessage(HUD_PRINTCENTER, "You have been promoted to Detective!")
+            if ply:GetDetective() and ply ~= victim then
+                detectiveAlive = true
+            end
+        end
+        if not detectiveAlive then
+            for _, ply in pairs(player.GetAll()) do
+                if ply:GetDeputy() or ply:GetImpersonator() then
+                    ply:SetNWBool("HasPromotion", true)
+                    ply:PrintMessage(HUD_PRINTTALK, "You have been promoted to Detective!")
+                    ply:PrintMessage(HUD_PRINTCENTER, "You have been promoted to Detective!")
+                end
             end
         end
     end
@@ -784,7 +794,6 @@ function GM:PlayerDeath(victim, infl, attacker)
     -- tell no one
     self:PlayerSilentDeath(victim)
 
-    victim:SetTeam(TEAM_SPEC)
     victim:Freeze(false)
     victim:SetRagdollSpec(true)
     victim:Spectate(OBS_MODE_IN_EYE)

@@ -19,7 +19,7 @@ function plymeta:GetSwapper() return self:GetRole() == ROLE_SWAPPER end
 function plymeta:GetGlitch() return self:GetRole() == ROLE_GLITCH end
 function plymeta:GetPhantom() return self:GetRole() == ROLE_PHANTOM end
 function plymeta:GetHypnotist() return self:GetRole() == ROLE_HYPNOTIST end
-function plymeta:GetRomantic() return self:GetRole() == ROLE_ROMANTIC end
+function plymeta:GetRevenger() return self:GetRole() == ROLE_REVENGER end
 function plymeta:GetDrunk() return self:GetRole() == ROLE_DRUNK end
 function plymeta:GetClown() return self:GetRole() == ROLE_CLOWN end
 function plymeta:GetDeputy() return self:GetRole() == ROLE_DEPUTY end
@@ -34,7 +34,7 @@ plymeta.IsSwapper = plymeta.GetSwapper
 plymeta.IsGlitch = plymeta.GetGlitch
 plymeta.IsPhantom = plymeta.GetPhantom
 plymeta.IsHypnotist = plymeta.GetHypnotist
-plymeta.IsRomantic = plymeta.GetRomantic
+plymeta.IsRevenger = plymeta.GetRevenger
 plymeta.IsDrunk = plymeta.GetDrunk
 plymeta.IsClown = plymeta.GetClown
 plymeta.IsDeputy = plymeta.GetDeputy
@@ -65,7 +65,7 @@ function plymeta:IsActiveSwapper() return self:IsActiveRole(ROLE_SWAPPER) end
 function plymeta:IsActiveGlitch() return self:IsActiveRole(ROLE_GLITCH) end
 function plymeta:IsActivePhantom() return self:IsActiveRole(ROLE_PHANTOM) end
 function plymeta:IsActiveHypnotist() return self:IsActiveRole(ROLE_HYPNOTIST) end
-function plymeta:IsActiveRomantic() return self:IsActiveRole(ROLE_ROMANTIC) end
+function plymeta:IsActiveRevenger() return self:IsActiveRole(ROLE_REVENGER) end
 function plymeta:IsActiveDrunk() return self:IsActiveRole(ROLE_DRUNK) end
 function plymeta:IsActiveClown() return self:IsActiveRole(ROLE_CLOWN) end
 function plymeta:IsActiveDeputy() return self:IsActiveRole(ROLE_DEPUTY) end
@@ -83,7 +83,7 @@ function plymeta:IsTraitorTeam()
 end
 function plymeta:IsInnocentTeam()
     local role = self:GetRole()
-    return role == ROLE_INNOCENT or role == ROLE_DETECTIVE or role == ROLE_GLITCH or role == ROLE_PHANTOM or role == ROLE_ROMANTIC or role == ROLE_DEPUTY
+    return role == ROLE_INNOCENT or role == ROLE_DETECTIVE or role == ROLE_GLITCH or role == ROLE_PHANTOM or role == ROLE_REVENGER or role == ROLE_DEPUTY
 end
 function plymeta:IsJesterTeam()
     local role = self:GetRole()
@@ -107,7 +107,7 @@ local role_strings = {
     [ROLE_GLITCH] = "glitch",
     [ROLE_PHANTOM] = "phantom",
     [ROLE_HYPNOTIST] = "hypnotist",
-    [ROLE_ROMANTIC] = "romantic",
+    [ROLE_REVENGER] = "revenger",
     [ROLE_DRUNK] = "drunk",
     [ROLE_CLOWN] = "clown",
     [ROLE_DEPUTY] = "deputy",

@@ -101,7 +101,7 @@ function SCORE:HandleSelection()
     local glitches = {}
     local phantoms = {}
     local hypnotists = {}
-    local romantics = {}
+    local revengers = {}
     local drunks = {}
     local clowns = {}
     local deputies = {}
@@ -123,8 +123,8 @@ function SCORE:HandleSelection()
             table.insert(phantoms, ply:SteamID())
         elseif ply:GetHypnotist() then
             table.insert(hypnotists, ply:SteamID())
-        elseif ply:GetRomantic() then
-            table.insert(romantics, ply:SteamID())
+        elseif ply:GetRevenger() then
+            table.insert(revengers, ply:SteamID())
         elseif ply:GetDrunk() then
             table.insert(drunks, ply:SteamID())
         elseif ply:GetClown() then
@@ -145,7 +145,7 @@ function SCORE:HandleSelection()
                     glitch_ids = glitches,
                     phantom_ids = phantoms,
                     hypnotist_ids = hypnotists,
-                    romantic_ids = romantics,
+                    revenger_ids = revengers,
                     drunk_ids = drunks,
                     clown_ids = clowns,
                     deputy_ids = deputies,
@@ -197,7 +197,7 @@ function SCORE:ApplyEventLogScores(wintype)
     local glitches = {}
     local phantoms = {}
     local hypnotists = {}
-    local romantics = {}
+    local revengers = {}
     local drunks = {}
     local clowns = {}
     local deputies = {}
@@ -221,8 +221,8 @@ function SCORE:ApplyEventLogScores(wintype)
             table.insert(phantoms, ply:SteamID())
         elseif ply:GetHypnotist() then
             table.insert(hypnotists, ply:SteamID())
-        elseif ply:GetRomantic() then
-            table.insert(romantics, ply:SteamID())
+        elseif ply:GetRevenger() then
+            table.insert(revengers, ply:SteamID())
         elseif ply:GetDrunk() then
             table.insert(drunks, ply:SteamID())
         elseif ply:GetClown() then
@@ -239,7 +239,7 @@ function SCORE:ApplyEventLogScores(wintype)
     -- individual scores, and count those left alive
     local alive = { traitors = 0, innos = 0 }
     local dead = { traitors = 0, innos = 0 }
-    local scored_log = ScoreEventLog(self.Events, scores, traitors, detectives, jesters, swappers, glitches, phantoms, hypnotists, romantics, drunks, clowns, deputies, impersonators, beggars)
+    local scored_log = ScoreEventLog(self.Events, scores, traitors, detectives, jesters, swappers, glitches, phantoms, hypnotists, revengers, drunks, clowns, deputies, impersonators, beggars)
     local ply = nil
     for sid, s in pairs(scored_log) do
         ply = player.GetBySteamID(sid)

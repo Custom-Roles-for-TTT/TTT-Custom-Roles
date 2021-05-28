@@ -199,7 +199,7 @@ function GM:HUDDrawTargetID()
     local target_clown = false
     local target_impersonator = false
 
-    local target_romantic_lover = false
+    local target_revenger_lover = false
 
     local target_corpse = false
 
@@ -252,8 +252,8 @@ function GM:HUDDrawTargetID()
         target_detective = GetRoundState() > ROUND_PREP and (ent:IsDetective() or ((ent:IsDeputy() or (ent:IsImpersonator() and not client:IsTraitorTeam())) and ent:GetNWBool("HasPromotion", false))) or false
         target_clown = GetRoundState() > ROUND_PREP and ent:IsClown() and ent:GetNWBool("KillerClownActive", false) or false
 
-        if client:IsRomantic() then
-            target_romantic_lover = (ent:Nick() == client:GetNWString("RomanticLover", ""))
+        if client:IsRevenger() then
+            target_revenger_lover = (ent:Nick() == client:GetNWString("RevengerLover", ""))
         end
 
     elseif cls == "prop_ragdoll" then
@@ -380,7 +380,10 @@ function GM:HUDDrawTargetID()
 
     text = nil
 
-    if target_traitor then
+    if target_revenger_lover then -- Prioritise soulmate message over roles
+        text = L.target_revenger_lover
+        clr = Color(255, 80, 235, 200)
+    elseif target_traitor then
         text = L.target_traitor
         clr = Color(255, 0, 0, 200)
     elseif target_detective then
@@ -404,9 +407,6 @@ function GM:HUDDrawTargetID()
     elseif target_corpse and client:IsActiveShopRole() and CORPSE.GetCredits(ent, 0) > 0 then
         text = L.target_credits
         clr = COLOR_YELLOW
-    elseif target_romantic_lover then
-        text = L.target_romantic_lover
-        clr = Color(255, 80, 235, 200)
     end
 
     if text then

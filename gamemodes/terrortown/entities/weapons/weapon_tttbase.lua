@@ -156,29 +156,9 @@ if CLIENT then
 
         -- somehow it seems this can be called before my player metatable
         -- additions have loaded
-        if client:IsTraitor() then
+        if client:IsTraitorTeam() then
             surface.SetDrawColor(255 * bright,
                     0,
-                    0,
-                    255 * alpha)
-        elseif client:IsTraitorTeam() then
-            surface.SetDrawColor(255 * bright,
-                    128 * bright,
-                    0,
-                    255 * alpha)
-        elseif client:IsInnocent() then
-            surface.SetDrawColor(0,
-                    255 * bright,
-                    0,
-                    255 * alpha)
-        elseif client:IsDetective() then
-            surface.SetDrawColor(0,
-                    0,
-                    255 * bright,
-                    255 * alpha)
-        elseif client:IsInnocentTeam() then
-            surface.SetDrawColor(255 * bright,
-                    255 * bright,
                     0,
                     255 * alpha)
         elseif client:IsJesterTeam() or client:IsClown() then
@@ -186,22 +166,17 @@ if CLIENT then
                     50 * bright,
                     255 * bright,
                     255 * alpha)
-        elseif client:IsIndependentTeam() then
-            surface.SetDrawColor(128 * bright,
-                    64 * bright,
-                    0,
-                    255 * alpha)
         else
-            surface.SetDrawColor(255 * bright,
+            surface.SetDrawColor(0,
                     255 * bright,
-                    255 * bright,
+                    0,
                     255 * alpha)
         end
 
         local gap = math.floor(20 * scale * (sights and 0.8 or 1))
         local length = math.floor(gap + (25 * crosshair_size:GetFloat()) * scale)
         surface.DrawLine(x - length, y, x - gap, y)
-            surface.DrawLine(x + length, y, x + gap, y)
+        surface.DrawLine(x + length, y, x + gap, y)
         surface.DrawLine(x, y - length, x, y - gap)
         surface.DrawLine(x, y + length, x, y + gap)
     end
@@ -469,7 +444,7 @@ function SWEP:Equip(newowner)
                 newowner:SetNWBool("WasBeggar", true)
                 newowner:PrintMessage(HUD_PRINTTALK, "You have joined the traitor team")
                 newowner:PrintMessage(HUD_PRINTCENTER, "You have joined the traitor team")
-                timer.Create("SendBeggarStateUpdate", 1, 1, function() SendFullStateUpdate() end)
+                timer.Create("SendBeggarStateUpdate", 0.5, 1, function() SendFullStateUpdate() end) -- Slight delay to avoid flickering from beggar to traitor and back to beggar
                 if GetConVar("ttt_reveal_beggar_change"):GetBool() then
                     self.BoughtBuy:PrintMessage(HUD_PRINTTALK, "The beggar has joined your team")
                     self.BoughtBuy:PrintMessage(HUD_PRINTCENTER, "The beggar has joined your team")
@@ -479,7 +454,7 @@ function SWEP:Equip(newowner)
                 newowner:SetNWBool("WasBeggar", true)
                 newowner:PrintMessage(HUD_PRINTTALK, "You have joined the innocent team")
                 newowner:PrintMessage(HUD_PRINTCENTER, "You have joined the innocent team")
-                timer.Create( "SendBeggarStateUpdate", 1, 1, function() SendFullStateUpdate() end)
+                timer.Create( "SendBeggarStateUpdate", 0.5, 1, function() SendFullStateUpdate() end) -- Slight delay to avoid flickering from beggar to innocent and back to beggar
                 if GetConVar("ttt_reveal_beggar_change"):GetBool() then
                     self.BoughtBuy:PrintMessage(HUD_PRINTTALK, "The beggar has joined your team")
                     self.BoughtBuy:PrintMessage(HUD_PRINTCENTER, "The beggar has joined your team")

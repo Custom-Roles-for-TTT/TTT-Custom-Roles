@@ -17,7 +17,7 @@ CLSCORE.SwapperIDs = {}
 CLSCORE.GlitchIDs = {}
 CLSCORE.PhantomIDs = {}
 CLSCORE.HypnotistIDs = {}
-CLSCORE.RomanticIDs = {}
+CLSCORE.RevengerIDs = {}
 CLSCORE.DrunkIDs = {}
 CLSCORE.ClownIDs = {}
 CLSCORE.DeputyIDs = {}
@@ -212,8 +212,8 @@ function CLSCORE:ShowPanel()
                     startingRole = "pha"
                 elseif s.was_hypnotist then
                     startingRole = "hyp"
-                elseif s.was_romantic then
-                    startingRole = "rom"
+                elseif s.was_revenger then
+                    startingRole = "rev"
                 elseif s.was_drunk then
                     startingRole = "dru"
                 elseif s.was_clown then
@@ -265,8 +265,8 @@ function CLSCORE:ShowPanel()
                         finalRole = "pha"
                     elseif ply:IsHypnotist() then
                         finalRole = "hyp"
-                    elseif ply:IsRomantic() then
-                        finalRole = "rom"
+                    elseif ply:IsRevenger() then
+                        finalRole = "rev"
                     elseif ply:IsDrunk() then
                         finalRole = "dru"
                     elseif ply:IsClown() then
@@ -304,7 +304,7 @@ function CLSCORE:ShowPanel()
                         or roleFileName == "det"
                         or roleFileName == "gli"
                         or roleFileName == "pha"
-                        or roleFileName == "rom"
+                        or roleFileName == "rev"
                         or roleFileName == "dep") then
                     roleIcon:SetPos(10, 123 + 33 * countI)
                     nicklbl:SetPos(48, 121 + 33 * countI)
@@ -442,7 +442,7 @@ function CLSCORE:Reset()
     self.GlitchIDs = {}
     self.PhantomIDs = {}
     self.HypnotistIDs = {}
-    self.RomanticIDs = {}
+    self.RevengerIDs = {}
     self.DrunkIDs = {}
     self.ClownIDs = {}
     self.DeputyIDs = {}
@@ -458,7 +458,7 @@ end
 function CLSCORE:Init(events)
     -- Get start time, traitors, detectives, scores, and nicks
     local starttime = 0
-    local traitors, detectives, jesters, swappers, glitches, phantoms, hypnotists, romantics, drunks, clowns, deputies, impersonators, beggars
+    local traitors, detectives, jesters, swappers, glitches, phantoms, hypnotists, revengers, drunks, clowns, deputies, impersonators, beggars
     local scores, nicks = {}, {}
 
     local game, selected, spawn = false, false, false
@@ -482,7 +482,7 @@ function CLSCORE:Init(events)
             glitches = e.glitch_ids
             phantoms = e.phantom_ids
             hypnotists = e.hypnotist_ids
-            romantics = e.romantic_ids
+            revengers = e.revenger_ids
             drunks = e.drunk_ids
             clowns = e.clown_ids
             deputies = e.deputy_ids
@@ -509,7 +509,7 @@ function CLSCORE:Init(events)
     if traitors == nil then traitors = {} end
     if detectives == nil then detectives = {} end
 
-    scores = ScoreEventLog(events, scores, traitors, detectives, jesters, swappers, glitches, phantoms, hypnotists, romantics, drunks, clowns, deputies, impersonators, beggars)
+    scores = ScoreEventLog(events, scores, traitors, detectives, jesters, swappers, glitches, phantoms, hypnotists, revengers, drunks, clowns, deputies, impersonators, beggars)
 
     self.Players = nicks
     self.Scores = scores
@@ -520,7 +520,7 @@ function CLSCORE:Init(events)
     self.GlitchIDs = glitches
     self.PhantomIDs = phantoms
     self.HypnotistIDs = hypnotists
-    self.RomanticIDs = romantics
+    self.RevengerIDs = revengers
     self.DrunkIDs = drunks
     self.ClownIDs = clowns
     self.DeputyIDs = deputies

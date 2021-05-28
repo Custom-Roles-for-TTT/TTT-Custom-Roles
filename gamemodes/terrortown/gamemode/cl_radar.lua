@@ -19,6 +19,8 @@ RADAR.samples_count = 0
 
 RADAR.called_corpses = {}
 
+RADAR.revenger_lover_killers = {}
+
 function RADAR:EndScan()
     self.enable = false
     self.endtime = CurTime()
@@ -103,6 +105,7 @@ local indicator = surface.GetTextureID("effects/select_ring")
 local c4warn = surface.GetTextureID("vgui/ttt/icon_c4warn")
 local sample_scan = surface.GetTextureID("vgui/ttt/sample_scan")
 local det_beacon = surface.GetTextureID("vgui/ttt/det_beacon")
+local rev_beacon = surface.GetTextureID("vgui/ttt/rev_beacon")
 
 local GetPTranslation = LANG.GetParamTranslation
 local FormatTime = util.SimpleTime
@@ -144,6 +147,17 @@ function RADAR:Draw(client)
 
         for k, sample in pairs(self.samples) do
             DrawTarget(sample, 16, 0.5, true)
+        end
+    end
+
+    -- Revenger lover killer
+    if client:IsActiveRevenger() and #self.revenger_lover_killers then
+        surface.SetTexture(rev_beacon)
+        surface.SetTextColor(255, 255, 255, 240)
+        surface.SetDrawColor(255, 255, 255, 230)
+
+        for k, corpse in pairs(self.revenger_lover_killers) do
+            DrawTarget(corpse, 16, 0.5)
         end
     end
 
@@ -230,6 +244,19 @@ local function ReceiveCorpseCall()
     table.insert(RADAR.called_corpses, { pos = pos, called = CurTime() })
 end
 net.Receive("TTT_CorpseCall", ReceiveCorpseCall)
+
+local beep_success = Sound("buttons/blip2.wav")
+local function ReceiveRevengerLoverKiller()
+    local target_pos = net.ReadVector()
+    if not target_pos then return end
+
+    RADAR.revenger_lover_killers = {
+        { pos = target_pos }
+    };
+
+    surface.PlaySound(beep_success)
+end
+net.Receive("TTT_UpdateRevengerLoverKiller", ReceiveRevengerLoverKiller)
 
 local function ReceiveRadarScan()
     local num_targets = net.ReadUInt(8)

@@ -173,7 +173,7 @@ if SERVER then
 		[ROLE_SWAPPER] = "swa",
 		[ROLE_GLITCH] = "gli",
 		[ROLE_PHANTOM] = "pha",
-		[ROLE_ROMANTIC] = "rom",
+		[ROLE_REVENGER] = "rev",
 		[ROLE_DRUNK] = "dru",
 		[ROLE_CLOWN] = "clo",
 		[ROLE_DEPUTY] = "dep",

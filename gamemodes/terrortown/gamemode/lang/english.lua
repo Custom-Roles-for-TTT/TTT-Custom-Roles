@@ -11,7 +11,7 @@ L.swapper = "Swapper"
 L.glitch = "Glitch"
 L.phantom = "Phantom"
 L.hypnotist = "Hypnotist"
-L.romantic = "Romantic"
+L.revenger = "Revenger"
 L.drunk = "Drunk"
 L.clown = "Clown"
 L.deputy = "Deputy"
@@ -67,7 +67,7 @@ L.body_found_swa = "They were a Swapper."
 L.body_found_gli = "They were a Glitch."
 L.body_found_pha = "They were a Phantom."
 L.body_found_hyp = "They were a Hypnotist."
-L.body_found_rom = "They were a Romantic."
+L.body_found_rev = "They were a Revenger."
 L.body_found_dru = "They were a Drunk."
 L.body_found_clo = "They were a Clown."
 L.body_found_dep = "They were a Deputy."
@@ -205,7 +205,7 @@ L.search_role_swa = "This person was a Swapper."
 L.search_role_gli = "This person was a Glitch."
 L.search_role_pha = "This person was a Phantom."
 L.search_role_hyp = "This person was a Hypnotist."
-L.search_role_rom = "This person was a Romantic."
+L.search_role_rev = "This person was a Revenger."
 L.search_role_dru = "This person was a Drunk."
 L.search_role_clo = "This person was a Clown."
 L.search_role_dep = "This person was a Deputy."
@@ -631,7 +631,7 @@ L.target_hypnotist = "HYPNOTIST"
 L.target_clown = "KILLER CLOWN"
 L.target_impersonator = "IMPERSONATOR"
 
-L.target_romantic_lover = "YOUR SOULMATE"
+L.target_revenger_lover = "YOUR SOULMATE"
 
 L.target_credits = "Search to receive unspent credits"
 
@@ -714,9 +714,9 @@ L.info_popup_phantom = [[You are a Phantom!  Try to survive and help your innoce
 You will haunt the player who kills you causing black smoke to appear.
 If the player you are haunting dies you will be respawned!]]
 
-L.info_popup_romantic = [[You are a Romantic! You are helplessly in love with {lover}
-but they do not even know that you exist. Do whatever you can to protect
-them or you will die of heartbreak.]]
+L.info_popup_revenger = [[You are a Revenger! You are helplessly in love with {lover}.
+Do whatever you can to protect them. If they die you will
+be able to track down their killer and get your revenge.]]
 
 L.info_popup_drunk = [[You are a Drunk!  You have forgotten what team you are on!
 Wait until you sober up and remember. Try to lay low in the meantime.]]

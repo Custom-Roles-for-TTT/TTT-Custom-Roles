@@ -108,8 +108,8 @@ function GetHypnotistFilter(alive_only)
     return GetPlayerFilter(function(p) return p:GetHypnotist() and (not alive_only or p:IsTerror()) end)
 end
 
-function GetRomanticFilter(alive_only)
-    return GetPlayerFilter(function(p) return p:GetRomantic() and (not alive_only or p:IsTerror()) end)
+function GetRevengerFilter(alive_only)
+    return GetPlayerFilter(function(p) return p:GetRevenger() and (not alive_only or p:IsTerror()) end)
 end
 
 function GetDrunkFilter(alive_only)
