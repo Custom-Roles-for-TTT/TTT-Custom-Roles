@@ -103,7 +103,7 @@ end
 
 
 -- Comparison functions used to sort scoreboard
-sboard_sort = {
+_G.sboard_sort = {
     name = function(plya, plyb)
         -- Automatically sorts by name if this returns 0
         return 0
@@ -340,7 +340,7 @@ function PANEL:PerformLayout()
     local tw, _ = surface.GetTextSize(hname)
     while tw > hw do
         hname = string.sub(hname, 1, -6) .. "..."
-        tw, th = surface.GetTextSize(hname)
+        tw, _ = surface.GetTextSize(hname)
     end
 
     self.hostname:SetText(hname)

@@ -457,7 +457,7 @@ end
 
 function StartWinChecks()
     hook.Add("PlayerDeath", "CheckJesterDeath", function(victim, infl, attacker)
-        if victim:GetJester() and attacker:IsPlayer() and infl:GetClass() ~= env_fire and (not attacker:GetJester()) and GetRoundState() == ROUND_ACTIVE then
+        if victim:GetJester() and attacker:IsPlayer() and (not attacker:GetJester()) and GetRoundState() == ROUND_ACTIVE then
             jester_killed = true
         end
     end)
@@ -1437,37 +1437,27 @@ end)
 -- Death messages
 hook.Add("PlayerDeath", "Kill_Reveal_Notify", function(victim, entity, killer)
     if gmod.GetGamemode().Name == "Trouble in Terrorist Town" then
-        local reason = 0
+        local reason = "nil"
+        local killerName = "nil"
+        local role = ROLE_NONE
 
-        if entity:GetClass() == "entityflame" and killer:GetClass() == "entityflame" then
-            reason = "burned"
-            killerName = "nil"
-            role = ROLE_NONE
-
-        elseif entity:GetClass() == "worldspawn" and killer:GetClass() == "worldspawn" then
-            reason = "fell"
-            killerName = "nil"
-            role = ROLE_NONE
-
-        elseif victim:IsPlayer() and entity:GetClass() == 'prop_physics' or entity:GetClass() == "prop_dynamic" or entity:GetClass() == 'prop_physics' then -- If the killer is also a prop
-            reason = "prop"
-            killerName = "nil"
-            role = ROLE_NONE
-
-        elseif (killer == victim) then
+        if victim.DiedByWater then
+            reason = "water"
+        elseif killer == victim then
             reason = "suicide"
-            killerName = "nil"
-            role = ROLE_NONE
-
-        elseif killer:IsPlayer() and victim ~= killer then
-            reason = "ply"
-            killerName = killer:Nick()
-            role = killer:GetRole()
-
-        else
-            reason = "nil"
-            killerName = "nil"
-            role = ROLE_NONE
+        elseif IsValid(entity) then
+            if victim:IsPlayer() and (string.StartWith(entity:GetClass(), "prop_physics") or entity:GetClass() == "prop_dynamic") then -- If the killer is also a prop
+                reason = "prop"
+            elseif IsValid(killer) then
+                if entity:GetClass() == "entityflame" and killer:GetClass() == "entityflame" then
+                    reason = "burned"
+                elseif entity:GetClass() == "worldspawn" and killer:GetClass() == "worldspawn" then
+                    reason = "fell"
+                elseif killer:IsPlayer() and victim ~= killer then
+                    reason = "ply"
+                    killerName = killer:Nick()
+                end
+            end
         end
 
         -- Send the buffer message with the death information to the victim

@@ -43,7 +43,7 @@ function CreateTransferMenu(parent)
     dsubmit.DoClick = function(s)
         if selected_sid then
             if player.GetBySteamID(selected_sid):IsActiveGlitch() then
-                RunConsoleCommand("ttt_fake_transfer_credits", "1")
+                RunConsoleCommand("ttt_fake_transfer_credits", selected_sid, "1")
             else
                 RunConsoleCommand("ttt_transfer_credits", selected_sid, "1")
             end

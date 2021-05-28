@@ -162,7 +162,7 @@ function PANEL:Paint(width, height)
 
     local c = hook.Call("TTTScoreboardRowColorForPlayer", GAMEMODE, ply)
 
-    roleStr = ""
+    local roleStr = ""
     if c ~= rolecolor.default then
         if c == ROLE_DETECTIVE then
             roleStr = "det"

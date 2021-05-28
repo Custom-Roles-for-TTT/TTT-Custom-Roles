@@ -495,12 +495,20 @@ local function FakeTransferCredits(ply, cmd, args)
     if (not IsValid(ply)) or (not ply:IsActiveSpecial()) then return end
     if #args ~= 1 then return end
 
-    local credits = tonumber(args[1])
+    local sid = tostring(args[1])
+    local credits = tonumber(args[2])
     if credits then
+        local target = player.GetBySteamID(sid)
+        if (not IsValid(target)) or (target == ply) then
+            LANG.Msg(ply, "xfer_no_recip")
+            return
+        end
+
         if ply:GetCredits() < credits then
             LANG.Msg(ply, "xfer_no_credits")
             return
         end
+
         credits = math.Clamp(credits, 0, ply:GetCredits())
         if credits == 0 then return end
 
