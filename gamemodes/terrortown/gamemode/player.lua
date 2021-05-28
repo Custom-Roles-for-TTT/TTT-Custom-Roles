@@ -771,11 +771,19 @@ function GM:PlayerDeath(victim, infl, attacker)
 
     -- Handle detective death
     if victim:GetDetective() and GetRoundState() == ROUND_ACTIVE then
+        local detectiveAlive = false
         for _, ply in pairs(player.GetAll()) do
-            if ply:GetDeputy() or ply:GetImpersonator() then
-                ply:SetNWBool("HasPromotion", true)
-                ply:PrintMessage(HUD_PRINTTALK, "You have been promoted to Detective!")
-                ply:PrintMessage(HUD_PRINTCENTER, "You have been promoted to Detective!")
+            if ply:GetDetective() and ply ~= victim then
+                detectiveAlive = true
+            end
+        end
+        if not detectiveAlive then
+            for _, ply in pairs(player.GetAll()) do
+                if ply:GetDeputy() or ply:GetImpersonator() then
+                    ply:SetNWBool("HasPromotion", true)
+                    ply:PrintMessage(HUD_PRINTTALK, "You have been promoted to Detective!")
+                    ply:PrintMessage(HUD_PRINTCENTER, "You have been promoted to Detective!")
+                end
             end
         end
     end
