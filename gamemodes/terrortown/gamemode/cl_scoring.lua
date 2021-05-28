@@ -193,7 +193,7 @@ function CLSCORE:ShowPanel()
 
     bg.PaintOver = function()
         draw.RoundedBox(8, 8, 8, 680, winlbl:GetTall() + 10, title.c)
-        if old_man_won_last_round then draw.RoundedBoxEx(8, 198, 63, 380, 28, COLOR_INDEPENDENT, true, true, false, false) end
+        if old_man_won_last_round then draw.RoundedBoxEx(8, 158, 63, 380, 28, COLOR_INDEPENDENT, true, true, false, false) end
         draw.RoundedBox(0, 8, ywin - 19 + winlbl:GetTall() + 8, 336, 329, Color(164, 164, 164, 255))
         draw.RoundedBox(0, 352, ywin - 19 + winlbl:GetTall() + 8, 336, 329, Color(164, 164, 164, 255))
         draw.RoundedBox(0, 8, ywin - 19 + winlbl:GetTall() + 345, 680, 32, Color(164, 164, 164, 255))
