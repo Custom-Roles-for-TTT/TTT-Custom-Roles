@@ -132,6 +132,10 @@ function GetBeggarFilter(alive_only)
     return GetPlayerFilter(function(p) return p:GetBeggar() and (not alive_only or p:IsTerror()) end)
 end
 
+function GetOldManFilter(alive_only)
+    return GetPlayerFilter(function(p) return p:GetOldMan() and (not alive_only or p:IsTerror()) end)
+end
+
 function GetRoleFilter(role, alive_only)
     return GetPlayerFilter(function(p) return p:IsRole(role) and (not alive_only or p:IsTerror()) end)
 end

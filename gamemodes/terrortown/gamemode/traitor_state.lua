@@ -64,6 +64,7 @@ function SendClownList(ply_or_rf) SendRoleList(ROLE_CLOWN, ply_or_rf) end
 function SendDeputyList(ply_or_rf) SendRoleList(ROLE_DEPUTY, ply_or_rf) end
 function SendImpersonatorList(ply_or_rf) SendRoleList(ROLE_IMPERSONATOR, ply_or_rf) end
 function SendBeggarList(ply_or_rf) SendRoleList(ROLE_BEGGAR, ply_or_rf) end
+function SendOldManList(ply_or_rf) SendRoleList(ROLE_OLDMAN, ply_or_rf) end
 
 function SendConfirmedTraitors(ply_or_rf)
     SendTraitorList(ply_or_rf, function(p) return p:GetNWBool("body_searched") end)
@@ -85,7 +86,7 @@ function SendFullStateUpdate()
     SendDeputyList()
     SendImpersonatorList()
     SendBeggarList()
-    -- not useful to sync confirmed traitors here
+    SendOldManList()
 end
 
 function SendRoleReset(ply_or_rf)
@@ -125,6 +126,7 @@ local function request_rolelist(ply)
         SendDeputyList(ply)
         SendImpersonatorList(ply)
         SendBeggarList(ply)
+        SendOldManList(ply)
     end
 end
 concommand.Add("_ttt_request_rolelist", request_rolelist)
@@ -143,74 +145,69 @@ local function force_terror(ply)
 end
 concommand.Add("ttt_force_terror", force_terror, nil, nil, FCVAR_CHEAT)
 
-local function force_innocent(ply)
-    ply:SetRole(ROLE_INNOCENT)
+local function clear_role_effects(ply)
     if ply:HasWeapon("weapon_ttt_brainwash") then
         ply:StripWeapon("weapon_ttt_brainwash")
     end
+    ply:SetMaxHealth(100)
+    ply:SetHealth(100)
+end
+
+local function force_innocent(ply)
+    ply:SetRole(ROLE_INNOCENT)
+    clear_role_effects(ply)
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_innocent", force_innocent, nil, nil, FCVAR_CHEAT)
 
 local function force_traitor(ply)
     ply:SetRole(ROLE_TRAITOR)
-    if ply:HasWeapon("weapon_ttt_brainwash") then
-        ply:StripWeapon("weapon_ttt_brainwash")
-    end
+    clear_role_effects(ply)
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_traitor", force_traitor, nil, nil, FCVAR_CHEAT)
 
 local function force_detective(ply)
     ply:SetRole(ROLE_DETECTIVE)
-    if ply:HasWeapon("weapon_ttt_brainwash") then
-        ply:StripWeapon("weapon_ttt_brainwash")
-    end
+    clear_role_effects(ply)
+    local health = GetConVar("ttt_detective_starting_health"):GetInt()
+    ply:SetMaxHealth(100)
+    ply:SetHealth(health)
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_detective", force_detective, nil, nil, FCVAR_CHEAT)
 
 local function force_jester(ply)
     ply:SetRole(ROLE_JESTER)
-    if ply:HasWeapon("weapon_ttt_brainwash") then
-        ply:StripWeapon("weapon_ttt_brainwash")
-    end
+    clear_role_effects(ply)
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_jester", force_jester, nil, nil, FCVAR_CHEAT)
 
 local function force_swapper(ply)
     ply:SetRole(ROLE_SWAPPER)
-    if ply:HasWeapon("weapon_ttt_brainwash") then
-        ply:StripWeapon("weapon_ttt_brainwash")
-    end
+    clear_role_effects(ply)
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_swapper", force_swapper, nil, nil, FCVAR_CHEAT)
 
 local function force_glitch(ply)
     ply:SetRole(ROLE_GLITCH)
-    if ply:HasWeapon("weapon_ttt_brainwash") then
-        ply:StripWeapon("weapon_ttt_brainwash")
-    end
+    clear_role_effects(ply)
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_glitch", force_glitch, nil, nil, FCVAR_CHEAT)
 
 local function force_phantom(ply)
     ply:SetRole(ROLE_PHANTOM)
-    if ply:HasWeapon("weapon_ttt_brainwash") then
-        ply:StripWeapon("weapon_ttt_brainwash")
-    end
+    clear_role_effects(ply)
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_phantom", force_phantom, nil, nil, FCVAR_CHEAT)
 
 local function force_hypnotist(ply)
     ply:SetRole(ROLE_HYPNOTIST)
-    if ply:HasWeapon("weapon_ttt_brainwash") then
-        ply:StripWeapon("weapon_ttt_brainwash")
-    end
+    clear_role_effects(ply)
     ply:Give("weapon_ttt_brainwash")
     SendFullStateUpdate()
 end
@@ -218,57 +215,55 @@ concommand.Add("ttt_force_hypnotist", force_hypnotist, nil, nil, FCVAR_CHEAT)
 
 local function force_revenger(ply)
     ply:SetRole(ROLE_REVENGER)
-    if ply:HasWeapon("weapon_ttt_brainwash") then
-        ply:StripWeapon("weapon_ttt_brainwash")
-    end
+    clear_role_effects(ply)
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_revenger", force_revenger, nil, nil, FCVAR_CHEAT)
 
 local function force_drunk(ply)
     ply:SetRole(ROLE_DRUNK)
-    if ply:HasWeapon("weapon_ttt_brainwash") then
-        ply:StripWeapon("weapon_ttt_brainwash")
-    end
+    clear_role_effects(ply)
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_drunk", force_drunk, nil, nil, FCVAR_CHEAT)
 
 local function force_clown(ply)
     ply:SetRole(ROLE_CLOWN)
-    if ply:HasWeapon("weapon_ttt_brainwash") then
-        ply:StripWeapon("weapon_ttt_brainwash")
-    end
+    clear_role_effects(ply)
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_clown", force_clown, nil, nil, FCVAR_CHEAT)
 
 local function force_deputy(ply)
     ply:SetRole(ROLE_DEPUTY)
-    if ply:HasWeapon("weapon_ttt_brainwash") then
-        ply:StripWeapon("weapon_ttt_brainwash")
-    end
+    clear_role_effects(ply)
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_deputy", force_deputy, nil, nil, FCVAR_CHEAT)
 
 local function force_impersonator(ply)
     ply:SetRole(ROLE_IMPERSONATOR)
-    if ply:HasWeapon("weapon_ttt_brainwash") then
-        ply:StripWeapon("weapon_ttt_brainwash")
-    end
+    clear_role_effects(ply)
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_impersonator", force_impersonator, nil, nil, FCVAR_CHEAT)
 
 local function force_beggar(ply)
     ply:SetRole(ROLE_BEGGAR)
-    if ply:HasWeapon("weapon_ttt_brainwash") then
-        ply:StripWeapon("weapon_ttt_brainwash")
-    end
+    clear_role_effects(ply)
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_beggar", force_beggar, nil, nil, FCVAR_CHEAT)
+
+local function force_old_man(ply)
+    ply:SetRole(ROLE_OLDMAN)
+    clear_role_effects(ply)
+    local health = GetConVar("ttt_old_man_starting_health"):GetInt()
+    ply:SetMaxHealth(health)
+    ply:SetHealth(health)
+    SendFullStateUpdate()
+end
+concommand.Add("ttt_force_old_man", force_old_man, nil, nil, FCVAR_CHEAT)
 
 local function force_spectate(ply, cmd, arg)
     if IsValid(ply) then

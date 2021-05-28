@@ -214,7 +214,8 @@ local bgcolor = {
     [ROLE_CLOWN] = COLOR_JESTER,
     [ROLE_DEPUTY] = COLOR_SPECIAL_INNOCENT,
     [ROLE_IMPERSONATOR] = COLOR_SPECIAL_TRAITOR,
-    [ROLE_BEGGAR] = COLOR_JESTER
+    [ROLE_BEGGAR] = COLOR_JESTER,
+    [ROLE_OLDMAN] = COLOR_INDEPENDENT
 };
 
 -- Table of styles that can take a string and display it in some position,

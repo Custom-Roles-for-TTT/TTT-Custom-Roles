@@ -107,6 +107,7 @@ function SCORE:HandleSelection()
     local deputies = {}
     local impersonators = {}
     local beggars = {}
+    local oldmen = {}
 
     for k, ply in ipairs(player.GetAll()) do
         if ply:GetTraitor() then
@@ -135,6 +136,8 @@ function SCORE:HandleSelection()
             table.insert(impersonators, ply:SteamID())
         elseif ply:GetBeggar() then
             table.insert(beggars, ply:SteamID())
+        elseif ply:GetOldMan() then
+            table.insert(oldmen, ply:SteamID())
         end
     end
 
@@ -150,7 +153,8 @@ function SCORE:HandleSelection()
                     clown_ids = clowns,
                     deputy_ids = deputies,
                     impersonator_ids = impersonators,
-                    beggar_ids = beggars })
+                    beggar_ids = beggars,
+                    old_man_ids = oldmen })
 end
 
 function SCORE:HandleBodyFound(finder, found)
@@ -203,6 +207,7 @@ function SCORE:ApplyEventLogScores(wintype)
     local deputies = {}
     local impersonators = {}
     local beggars = {}
+    local oldmen = {}
 
     for k, ply in ipairs(player.GetAll()) do
         scores[ply:SteamID()] = {}
@@ -233,13 +238,15 @@ function SCORE:ApplyEventLogScores(wintype)
             table.insert(impersonators, ply:SteamID())
         elseif ply:GetBeggar() then
             table.insert(beggars, ply:SteamID())
+        elseif ply:GetOldMan() then
+            table.insert(oldmen, ply:SteamID())
         end
     end
 
     -- individual scores, and count those left alive
     local alive = { traitors = 0, innos = 0 }
     local dead = { traitors = 0, innos = 0 }
-    local scored_log = ScoreEventLog(self.Events, scores, traitors, detectives, jesters, swappers, glitches, phantoms, hypnotists, revengers, drunks, clowns, deputies, impersonators, beggars)
+    local scored_log = ScoreEventLog(self.Events, scores, traitors, detectives, jesters, swappers, glitches, phantoms, hypnotists, revengers, drunks, clowns, deputies, impersonators, beggars, oldmen)
     local ply = nil
     for sid, s in pairs(scored_log) do
         ply = player.GetBySteamID(sid)

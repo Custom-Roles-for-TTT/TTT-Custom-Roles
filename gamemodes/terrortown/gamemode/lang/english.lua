@@ -17,6 +17,7 @@ L.clown = "Clown"
 L.deputy = "Deputy"
 L.impersonator = "Impersonator"
 L.beggar = "Beggar"
+L.oldman = "Old Man"
 
 L.last_words = "Last Words"
 
@@ -73,6 +74,7 @@ L.body_found_clo = "They were a Clown."
 L.body_found_dep = "They were a Deputy."
 L.body_found_imp = "They were an Impersonator."
 L.body_found_beg = "They were a Beggar."
+L.body_found_old = "They were an Old Man."
 
 L.body_confirm = "{finder} confirmed the death of {victim}."
 
@@ -211,6 +213,7 @@ L.search_role_clo = "This person was a Clown."
 L.search_role_dep = "This person was a Deputy."
 L.search_role_imp = "This person was an Impersonator."
 L.search_role_beg = "This person was a Beggar."
+L.search_role_old = "This person was an Old Man."
 
 L.search_words = "Something tells you some of this person's last words were: '{lastwords}'"
 L.search_armor = "They were wearing nonstandard body armor."
@@ -733,6 +736,10 @@ L.info_popup_beggar = [[You are a Beggar! Traitors think you are a jester and yo
 deal no damage. However, if you can convince someone to give
 you a shop item you will join their team.]]
 
+L.info_popup_old_man = [[You are an Old Man! The slightest breeze could kill
+you if you aren't careful. You don't care who wins as long
+as you are alive at the end of the round.]]
+
 L.info_popup_hypnotist = [[You are a Hypnotist! Work with fellow traitors to kill all others.
 
 These are your comrades:
@@ -917,6 +924,7 @@ L.hilite_win_traitors = "THE TRAITORS WIN"
 L.hilite_win_innocent = "THE INNOCENT WIN"
 L.hilite_win_jester = "THE JESTER WINS"
 L.hilite_win_clown = "THE CLOWN WINS"
+L.hilite_win_old_man = "AND THE OLD MAN WINS"
 
 L.hilite_players1 = "{numplayers} players took part, {numtraitors} were traitors"
 L.hilite_players2 = "{numplayers} players took part, one of them the traitor"

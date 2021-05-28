@@ -37,6 +37,7 @@ function GM:PlayerInitialSpawn(ply)
         SendDeputyList()
         SendImpersonatorList()
         SendBeggarList()
+        SendOldManList()
     end
 
     -- Game has started, tell this guy where the round is at
@@ -56,6 +57,7 @@ function GM:PlayerInitialSpawn(ply)
         SendDeputyList(ply)
         SendImpersonatorList(ply)
         SendBeggarList(ply)
+        SendOldManList(ply)
     end
 
     -- Handle spec bots
@@ -473,6 +475,7 @@ function GM:PlayerDisconnected(ply)
         SendDeputyList()
         SendImpersonatorList()
         SendBeggarList()
+        SendOldManList()
     end
 
     if KARMA.IsEnabled() then

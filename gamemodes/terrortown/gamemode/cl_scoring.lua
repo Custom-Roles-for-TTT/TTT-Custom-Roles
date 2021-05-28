@@ -23,6 +23,7 @@ CLSCORE.ClownIDs = {}
 CLSCORE.DeputyIDs = {}
 CLSCORE.ImpersonatorIDs = {}
 CLSCORE.BeggarIDs = {}
+CLSCORE.OldManIDs = {}
 CLSCORE.Players = {}
 CLSCORE.StartTime = 0
 CLSCORE.Panel = nil
@@ -36,6 +37,14 @@ local skull_icon = Material("HUD/killicons/default")
 surface.CreateFont("WinHuge", {
     font = "Trebuchet24",
     size = 72,
+    weight = 1000,
+    shadow = true,
+    extended = true
+})
+
+surface.CreateFont("WinSmall", {
+    font = "Trebuchet24",
+    size = 32,
     weight = 1000,
     shadow = true,
     extended = true
@@ -115,7 +124,10 @@ local wintitle = {
     [WIN_JESTER] = { txt = "hilite_win_jester", c = COLOR_JESTER },
     [WIN_CLOWN] = { txt = "hilite_win_clown", c = COLOR_JESTER }
 }
+local old_man_wins = false
+net.Receive("TTT_UpdateOldManWins", function() old_man_wins = net.ReadBool() end)
 
+local old_man_won_last_round = false
 function CLSCORE:ShowPanel()
     if IsValid(self.Panel) then
         self:ClearPanel()
@@ -167,8 +179,21 @@ function CLSCORE:ShowPanel()
     local ywin = 37
     winlbl:SetPos(xwin, ywin)
 
+    local old_man_won_last_round = old_man_wins
+    local exwinlbl = vgui.Create("DLabel", dpanel)
+    if old_man_won_last_round then
+        exwinlbl:SetFont("WinSmall")
+        exwinlbl:SetText(T("hilite_win_old_man"))
+        exwinlbl:SetTextColor(COLOR_WHITE)
+        exwinlbl:SizeToContents()
+        local xexwin = (w - exwinlbl:GetWide()) / 2
+        local yexwin = 83
+        exwinlbl:SetPos(xexwin, yexwin)
+    end
+
     bg.PaintOver = function()
         draw.RoundedBox(8, 8, 8, 680, winlbl:GetTall() + 10, title.c)
+        if old_man_won_last_round then draw.RoundedBoxEx(8, 198, 63, 380, 28, COLOR_INDEPENDENT, true, true, false, false) end
         draw.RoundedBox(0, 8, ywin - 19 + winlbl:GetTall() + 8, 336, 329, Color(164, 164, 164, 255))
         draw.RoundedBox(0, 352, ywin - 19 + winlbl:GetTall() + 8, 336, 329, Color(164, 164, 164, 255))
         draw.RoundedBox(0, 8, ywin - 19 + winlbl:GetTall() + 345, 680, 32, Color(164, 164, 164, 255))
@@ -177,6 +202,8 @@ function CLSCORE:ShowPanel()
             draw.RoundedBox(0, 352, i, 336, 1, Color(97, 100, 102, 255))
         end
     end
+
+    if old_man_wins then winlbl:SetPos(xwin, ywin - 15) end
 
     local scores = self.Scores
     local nicks = self.Players
@@ -224,6 +251,8 @@ function CLSCORE:ShowPanel()
                     startingRole = "imp"
                 elseif s.was_beggar then
                     startingRole = "beg"
+                elseif s.was_old_man then
+                    startingRole = "old"
                 end
 
                 local hasDisconnected = false
@@ -277,6 +306,8 @@ function CLSCORE:ShowPanel()
                         finalRole = "imp"
                     elseif ply:IsBeggar() then
                         finalRole = "beg"
+                    elseif ply:IsOldMan() then
+                        finalRole = "old"
                     end
                 else
                     hasDisconnected = true
@@ -350,7 +381,8 @@ function CLSCORE:ShowPanel()
                         or roleFileName == "swa"
                         or roleFileName == "dru"
                         or roleFileName == "clo"
-                        or roleFileName == "beg") then
+                        or roleFileName == "beg"
+                        or roleFileName == "old") then
                     roleIcon:SetPos(10, 460)
                     nicklbl:SetPos(48, 458)
 
@@ -448,6 +480,7 @@ function CLSCORE:Reset()
     self.DeputyIDs = {}
     self.ImpersonatorIDs = {}
     self.BeggarIDs = {}
+    self.OldManIDs = {}
     self.Scores = {}
     self.Players = {}
     self.RoundStarted = 0
@@ -458,7 +491,7 @@ end
 function CLSCORE:Init(events)
     -- Get start time, traitors, detectives, scores, and nicks
     local starttime = 0
-    local traitors, detectives, jesters, swappers, glitches, phantoms, hypnotists, revengers, drunks, clowns, deputies, impersonators, beggars
+    local traitors, detectives, jesters, swappers, glitches, phantoms, hypnotists, revengers, drunks, clowns, deputies, impersonators, beggars, oldmen
     local scores, nicks = {}, {}
 
     local game, selected, spawn = false, false, false
@@ -488,6 +521,7 @@ function CLSCORE:Init(events)
             deputies = e.deputy_ids
             impersonators = e.impersonator_ids
             beggars = e.beggar_ids
+            oldmen = e.old_man_ids
 
             if game and spawn then
                 break
@@ -509,7 +543,7 @@ function CLSCORE:Init(events)
     if traitors == nil then traitors = {} end
     if detectives == nil then detectives = {} end
 
-    scores = ScoreEventLog(events, scores, traitors, detectives, jesters, swappers, glitches, phantoms, hypnotists, revengers, drunks, clowns, deputies, impersonators, beggars)
+    scores = ScoreEventLog(events, scores, traitors, detectives, jesters, swappers, glitches, phantoms, hypnotists, revengers, drunks, clowns, deputies, impersonators, beggars, oldmen)
 
     self.Players = nicks
     self.Scores = scores
@@ -526,6 +560,7 @@ function CLSCORE:Init(events)
     self.DeputyIDs = deputies
     self.ImpersonatorIDs = impersonators
     self.BeggarIDs = beggars
+    self.OldManIDs = oldmen
     self.StartTime = starttime
     self.Events = events
 end

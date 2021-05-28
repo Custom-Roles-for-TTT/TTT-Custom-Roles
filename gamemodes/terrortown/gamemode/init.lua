@@ -121,6 +121,9 @@ CreateConVar("ttt_clown_min_players", "0")
 CreateConVar("ttt_beggar_enabled", 0)
 CreateConVar("ttt_beggar_spawn_weight", "1")
 CreateConVar("ttt_beggar_min_players", "0")
+CreateConVar("ttt_old_man_enabled", 0)
+CreateConVar("ttt_old_man_spawn_weight", "1")
+CreateConVar("ttt_old_man_min_players", "0")
 
 -- Custom role properties
 CreateConVar("ttt_detective_starting_health", "100")
@@ -133,6 +136,7 @@ CreateConVar("ttt_deputy_damage_penalty", "0")
 CreateConVar("ttt_impersonator_damage_penalty", "0")
 CreateConVar("ttt_reveal_beggar_change", "1")
 CreateConVar("ttt_single_deputy_impersonator", "0")
+CreateConVar("ttt_old_man_starting_health", "1")
 
 -- Traitor credits
 CreateConVar("ttt_credits_starting", "2")
@@ -238,6 +242,7 @@ util.AddNetworkString("TTT_SprintGetConVars")
 util.AddNetworkString("TTT_SpawnedPlayers")
 util.AddNetworkString("TTT_ResetScoreboard")
 util.AddNetworkString("TTT_UpdateRevengerLoverKiller")
+util.AddNetworkString("TTT_UpdateOldManWins")
 
 local jester_killed = false
 local revenger_lover = nil
@@ -411,7 +416,7 @@ local function WinChecker()
         else
             local win = hook.Call("TTTCheckForWin", GAMEMODE)
             if win ~= WIN_NONE then
-                EndRound(win)
+                timer.Simple(0.5, function() EndRound(win) end) -- Slight delay to make sure alternate winners go through before scoring
             end
         end
     end
@@ -559,6 +564,10 @@ function PrepareRound()
         v:SetNWBool("HasPromotion", false)
         v:SetNWBool("WasBeggar", false)
     end
+
+    net.Start("TTT_UpdateOldManWins")
+    net.WriteBool(false)
+    net.Broadcast()
 
     jester_killed = false
 
@@ -897,6 +906,13 @@ function BeginRound()
         if v:GetRole() == ROLE_DEPUTY or v:GetRole() == ROLE_IMPERSONATOR then
             v:SetNWBool("HasPromotion", false)
         end
+
+        -- Old Man logic
+        if v:GetRole() == ROLE_OLDMAN then
+            local health = GetConVar("ttt_old_man_starting_health"):GetInt()
+            v:SetMaxHealth(health)
+            v:SetHealth(health)
+        end
     end
 
     net.Start("TTT_ResetScoreboard")
@@ -1054,6 +1070,7 @@ function GM:TTTCheckForWin()
     local jester_alive = false
     local drunk_alive = false
     local clown_alive = false
+    local old_man_alive = false
 
     local killer_clown_active = false
 
@@ -1068,6 +1085,8 @@ function GM:TTTCheckForWin()
             elseif v:IsClown() then
                 clown_alive = true
                 killer_clown_active = v:GetNWBool("KillerClownActive", false)
+            elseif v:IsOldMan() then
+                old_man_alive = true
             else
                 innocent_alive = true
             end
@@ -1149,6 +1168,15 @@ function GM:TTTCheckForWin()
         end
     end
 
+    -- Old Man logic
+    if old_man_alive then
+        if win_type ~= WIN_NONE then
+            net.Start("TTT_UpdateOldManWins")
+            net.WriteBool(true)
+            net.Broadcast()
+        end
+    end
+
     return win_type
 end
 
@@ -1199,7 +1227,8 @@ function SelectRoles()
         [ROLE_CLOWN] = {},
         [ROLE_DEPUTY] = {},
         [ROLE_IMPERSONATOR] = {},
-        [ROLE_BEGGAR] = {}
+        [ROLE_BEGGAR] = {},
+        [ROLE_OLDMAN] = {}
     };
 
     if not GAMEMODE.LastRole then GAMEMODE.LastRole = {} end
@@ -1320,6 +1349,11 @@ function SelectRoles()
         if GetConVar("ttt_beggar_enabled"):GetBool() and choice_count >= GetConVar("ttt_beggar_min_players"):GetInt() then
             for i = 1, GetConVar("ttt_beggar_spawn_weight"):GetInt() do
                 table.insert(independentRoles, ROLE_BEGGAR)
+            end
+        end
+        if GetConVar("ttt_old_man_enabled"):GetBool() and choice_count >= GetConVar("ttt_old_man_min_players"):GetInt() then
+            for i = 1, GetConVar("ttt_old_man_spawn_weight"):GetInt() do
+                table.insert(independentRoles, ROLE_OLDMAN)
             end
         end
         if #independentRoles ~= 0 then

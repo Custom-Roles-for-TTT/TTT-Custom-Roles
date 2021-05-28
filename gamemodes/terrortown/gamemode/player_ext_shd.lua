@@ -25,6 +25,7 @@ function plymeta:GetClown() return self:GetRole() == ROLE_CLOWN end
 function plymeta:GetDeputy() return self:GetRole() == ROLE_DEPUTY end
 function plymeta:GetImpersonator() return self:GetRole() == ROLE_IMPERSONATOR end
 function plymeta:GetBeggar() return self:GetRole() == ROLE_BEGGAR end
+function plymeta:GetOldMan() return self:GetRole() == ROLE_OLDMAN end
 
 plymeta.IsTraitor = plymeta.GetTraitor
 plymeta.IsInnocent = plymeta.GetInnocent
@@ -40,6 +41,7 @@ plymeta.IsClown = plymeta.GetClown
 plymeta.IsDeputy = plymeta.GetDeputy
 plymeta.IsImpersonator = plymeta.GetImpersonator
 plymeta.IsBeggar = plymeta.GetBeggar
+plymeta.IsOldMan = plymeta.GetOldMan
 
 function plymeta:IsSpecial() return self:GetRole() ~= ROLE_INNOCENT end
 function plymeta:IsCustom()
@@ -71,6 +73,7 @@ function plymeta:IsActiveClown() return self:IsActiveRole(ROLE_CLOWN) end
 function plymeta:IsActiveDeputy() return self:IsActiveRole(ROLE_DEPUTY) end
 function plymeta:IsActiveImpersonator() return self:IsActiveRole(ROLE_IMPERSONATOR) end
 function plymeta:IsActiveBeggar() return self:IsActiveRole(ROLE_BEGGAR) end
+function plymeta:IsActiveOldMan() return self:IsActiveRole(ROLE_OLDMAN) end
 
 function plymeta:IsActiveSpecial() return self:IsSpecial() and self:IsActive() end
 function plymeta:IsActiveCustom() return self:IsCustom() and self:IsActive() end
@@ -91,7 +94,7 @@ function plymeta:IsJesterTeam()
 end
 function plymeta:IsIndependentTeam()
     local role = self:GetRole()
-    return role == ROLE_DRUNK or role == ROLE_CLOWN
+    return role == ROLE_DRUNK or role == ROLE_CLOWN or role == ROLE_OLDMAN
 end
 function plymeta:IsActiveTraitorTeam() return self:IsTraitorTeam() and self:IsActive() end
 function plymeta:IsActiveInnocentTeam() return self:IsInnocentTeam() and self:IsActive() end
@@ -112,7 +115,8 @@ local role_strings = {
     [ROLE_CLOWN] = "clown",
     [ROLE_DEPUTY] = "deputy",
     [ROLE_IMPERSONATOR] = "impersonator",
-    [ROLE_BEGGAR] = "beggar"
+    [ROLE_BEGGAR] = "beggar",
+    [ROLE_OLDMAN] = "oldman"
 };
 
 local GetRTranslation = CLIENT and LANG.GetRawTranslation or util.passthrough
