@@ -54,8 +54,8 @@ function GM:PostDrawTranslucentRenderables()
     dir = client:GetForward() * -1
 
     for _, v in pairs(player.GetAll()) do
-        -- Compatibility with the disguises
-        local hidden = v:GetNWBool("disguised", false)
+        -- Compatibility with the disguises and Dead Ringer (810154456)
+        local hidden = v:GetNWBool("disguised", false) or (v.IsFakeDead and v:IsFakeDead())
         if v:IsActive() and v ~= client and not hidden then
             pos = v:GetPos()
             pos.z = pos.z + 74
