@@ -645,6 +645,119 @@ hook.Add("TTTPlayerSpeedModifier", "TTTSprintPlayerSpeed", function(ply, _, _)
     end
 end)
 
+hook.Add("TTTSettingsTabs", "TTTSprint4TTTSettingsTabs", function(dtabs)
+	local settings_panel = vgui.Create("DPanelList", dtabs)
+	settings_panel:StretchToParent(0, 0, dtabs:GetPadding() * 2, 0)
+	settings_panel:EnableVerticalScrollbar(true)
+	settings_panel:SetPadding(10)
+	settings_panel:SetSpacing(10)
+
+	dtabs:AddSheet("Sprint", settings_panel, "icon16/arrow_up.png", false, false, "The sprint settings")
+
+	local AddonList = vgui.Create("DIconLayout", settings_panel)
+	AddonList:SetSpaceX(5)
+	AddonList:SetSpaceY(5)
+	AddonList:Dock(FILL)
+	AddonList:DockMargin(5, 5, 5, 5)
+	AddonList:DockPadding(10, 10, 10, 10)
+
+	-- General Settings
+	local General_Settings = vgui.Create("DForm")
+	General_Settings:SetSpacing(10)
+	General_Settings:SetName("General settings")
+	General_Settings:SetWide(settings_panel:GetWide() - 30)
+
+	settings_panel:AddItem(General_Settings)
+
+	General_Settings:NumSlider("Crosshair debug size (0 = off)", "ttt_sprint_crosshairdebugsize", 0, 3, 1)
+
+	-- Controls (Activation Method)
+	local settings_sprint_tabII = vgui.Create("DForm")
+	settings_sprint_tabII:SetSpacing(10)
+	settings_sprint_tabII:SetName("Controls")
+	settings_sprint_tabII:SetWide(settings_panel:GetWide() - 30)
+	settings_panel:AddItem(settings_sprint_tabII)
+
+	local Settings_text = vgui.Create("DLabel", General_Settings)
+	Settings_text:SetText("Activation method:")
+	Settings_text:SetColor(Color(0, 0, 0))
+	settings_sprint_tabII:AddItem(Settings_text)
+
+	-- Selection
+	local Key_box = vgui.Create("DComboBox")
+
+	local function Auswahl()
+		if ActivateKey:GetFloat() == 0 then
+			KeySelected = "Use Key"
+		elseif ActivateKey:GetFloat() == 1 then
+			KeySelected = "Shift Key"
+		elseif ActivateKey:GetFloat() == 2 then
+			KeySelected = "Control Key"
+		elseif ActivateKey:GetFloat() == 3 then
+			KeySelected = "Custom Key"
+		elseif ActivateKey:GetFloat() == 4 then
+			KeySelected = "Double tap"
+		else
+			KeySelected = " "
+		end
+	end
+
+	-- Extra Options/Information
+	local function KeySettingExtra()
+		if KeySelected == "Custom Key" then
+			settings_sprint_tabII:TextEntry("Key Number:", "ttt_sprint_activate_key_custom")
+
+			local Link = vgui.Create("DLabelURL")
+			Link:SetText("Key Numbers: https://wiki.garrysmod.com/page/Enums/KEY")
+			Link:SetURL("https://wiki.garrysmod.com/page/Enums/KEY")
+
+			settings_sprint_tabII:AddItem(Link)
+		elseif KeySelected == "Double tap" then
+			settings_sprint_tabII:NumSlider("Double tap time", "ttt_sprint_doubletaptime", 0.001, 1, 2)
+		end
+	end
+
+	-- functions to refresh more easy
+	local function ComboBox()
+		settings_sprint_tabII:AddItem(Settings_text)
+
+		Key_box:Clear()
+		Key_box:SetValue(KeySelected)
+		Key_box:AddChoice("Use Key")
+		Key_box:AddChoice("Shift Key")
+		Key_box:AddChoice("Control Key")
+		Key_box:AddChoice("Custom Key")
+		Key_box:AddChoice("Double tap")
+
+		settings_sprint_tabII:AddItem(Key_box)
+	end
+
+	function Key_box:OnSelect(table_key_box, Ausgewaehlt, data_key_box)
+		if Ausgewaehlt == "Use Key" then
+			RunConsoleCommand("ttt_sprint_activate_key", "0")
+		elseif Ausgewaehlt == "Shift Key" then
+			RunConsoleCommand("ttt_sprint_activate_key", "1")
+		elseif Ausgewaehlt == "Control Key" then
+			RunConsoleCommand("ttt_sprint_activate_key", "2")
+		elseif Ausgewaehlt == "Custom Key" then
+			RunConsoleCommand("ttt_sprint_activate_key", "3")
+		elseif Ausgewaehlt == "Double tap" then
+			RunConsoleCommand("ttt_sprint_activate_key", "4")
+		end
+
+		settings_sprint_tabII:Clear()
+
+		KeySelected = Ausgewaehlt
+
+		ComboBox()
+		KeySettingExtra()
+	end
+
+	Auswahl()
+	ComboBox()
+	KeySettingExtra()
+end)
+
 -- Death messages
 net.Receive("TTT_ClientDeathNotify", function()
     -- Colours for customizing
