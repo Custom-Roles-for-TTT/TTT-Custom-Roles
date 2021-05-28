@@ -562,6 +562,7 @@ function PrepareRound()
         v:SetNWString("WasHypnotised", "")
         v:SetNWBool("KillerClownActive", false)
         v:SetNWBool("HasPromotion", false)
+        v:SetNWBool("WasBeggar", false)
         -- Workaround to prevent GMod sprint from working
         v:SetRunSpeed(v:GetWalkSpeed())
     end
