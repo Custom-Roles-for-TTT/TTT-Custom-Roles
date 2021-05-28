@@ -181,7 +181,7 @@ local function ReceiveRole()
     elseif client:IsGlitch() then MsgN("GLITCH")
     elseif client:IsPhantom() then MsgN("PHANTOM")
     elseif client:IsHypnotist() then MsgN("HYPNOTIST")
-    elseif client:IsRomantic() then MsgN("ROMANTIC")
+    elseif client:IsRevenger() then MsgN("REVENGER")
     elseif client:IsDrunk() then MsgN("DRUNK")
     elseif client:IsClown() then MsgN("CLOWN")
     elseif client:IsDeputy() then MsgN("DEPUTY")
@@ -238,6 +238,7 @@ function GM:ClearClientState()
     client.last_id = nil
     client.radio = nil
     client.called_corpses = {}
+    client.revenger_lover_killers = {}
 
     VOICE.InitBattery()
 
@@ -679,9 +680,9 @@ net.Receive("TTT_ClientDeathNotify", function()
     elseif role == ROLE_HYPNOTIST then
         col = SpecTraitorColor
         role = "a hypnotist"
-    elseif role == ROLE_ROMANTIC then
+    elseif role == ROLE_REVENGER then
         col = SpecInnoColor
-        role = "a romantic"
+        role = "a revenger"
     elseif role == ROLE_DRUNK then
         col = IndependentColor
         role = "a drunk"

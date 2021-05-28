@@ -41,7 +41,7 @@ local function GetLoadoutWeapons(r)
             [ROLE_GLITCH] = {},
             [ROLE_PHANTOM] = {},
             [ROLE_HYPNOTIST] = {},
-            [ROLE_ROMANTIC] = {},
+            [ROLE_REVENGER] = {},
             [ROLE_DRUNK] = {},
             [ROLE_CLOWN] = {},
             [ROLE_DEPUTY] = {},

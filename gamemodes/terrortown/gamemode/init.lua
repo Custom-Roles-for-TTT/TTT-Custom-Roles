@@ -87,9 +87,9 @@ CreateConVar("ttt_glitch_min_players", "0")
 CreateConVar("ttt_phantom_enabled", 0)
 CreateConVar("ttt_phantom_spawn_weight", "1")
 CreateConVar("ttt_phantom_min_players", "0")
-CreateConVar("ttt_romantic_enabled", 0)
-CreateConVar("ttt_romantic_spawn_weight", "1")
-CreateConVar("ttt_romantic_min_players", "0")
+CreateConVar("ttt_revenger_enabled", 0)
+CreateConVar("ttt_revenger_spawn_weight", "1")
+CreateConVar("ttt_revenger_min_players", "0")
 CreateConVar("ttt_deputy_enabled", 0)
 CreateConVar("ttt_deputy_spawn_weight", "1")
 CreateConVar("ttt_deputy_min_players", "0")
@@ -237,9 +237,10 @@ util.AddNetworkString("TTT_SprintSpeedSet")
 util.AddNetworkString("TTT_SprintGetConVars")
 util.AddNetworkString("TTT_SpawnedPlayers")
 util.AddNetworkString("TTT_ResetScoreboard")
+util.AddNetworkString("TTT_UpdateRevengerLoverKiller")
 
 local jester_killed = false
-local romantic_lover = nil
+local revenger_lover = nil
 
 ---- Round mechanics
 function GM:Initialize()
@@ -549,7 +550,7 @@ end
 function PrepareRound()
     for k, v in pairs(player.GetAll()) do
         v:SetNWBool("HauntedSmoke", false)
-        v:SetNWString("RomanticLover", "")
+        v:SetNWString("RevengerLover", "")
         v:SetNWString("JesterKiller", "")
         v:SetNWString("SwappedWith", "")
         v:SetNWBool("WasDrunk", false)
@@ -561,7 +562,7 @@ function PrepareRound()
 
     jester_killed = false
 
-    romantic_lover = nil
+    revenger_lover = nil
 
     -- Check playercount
     if CheckForAbort() then return end
@@ -798,34 +799,45 @@ function BeginRound()
             v:Give("weapon_ttt_brainwash")
         end
 
-        -- Romantic logic
-        if v:GetRole() == ROLE_ROMANTIC then
-            if not romantic_lover then
+        -- Revenger logic
+        if v:GetRole() == ROLE_REVENGER then
+            if not revenger_lover then
                 local potentialSoulmates = {}
                 for i, p in pairs(player.GetAll()) do
-                    if p:Alive() and not p:IsSpec() and not p:IsRomantic() then
+                    if p:Alive() and not p:IsSpec() and not p:IsRevenger() then
                         table.insert(potentialSoulmates, p)
                     end
                 end
                 if #potentialSoulmates > 0 then
-                    romantic_lover = potentialSoulmates[math.random(#potentialSoulmates)]
-
-                    timer.Create("killheartbroken", 0.1, 0, function()
-                        if not (IsValid(romantic_lover) and romantic_lover:Alive()) then
-                            for _, p in pairs(player.GetAll()) do
-                                if p:IsActiveRomantic() then
-                                    p:Kill()
-                                    p:PrintMessage(HUD_PRINTTALK, "You have died of heartbreak.")
-                                    p:PrintMessage(HUD_PRINTCENTER, "You have died of heartbreak.")
+                    revenger_lover = potentialSoulmates[math.random(#potentialSoulmates)]
+                    hook.Add("PlayerDeath", "CheckRevengerLoverDeath", function(victim, infl, attacker)
+                        if victim == revenger_lover and GetRoundState() == ROUND_ACTIVE then
+                            if attacker:IsPlayer() and infl:GetClass() ~= env_fire then
+                                v:PrintMessage(HUD_PRINTTALK, "Your love has died. Track down their killer.")
+                                v:PrintMessage(HUD_PRINTCENTER, "Your love has died. Track down their killer.")
+                                if attacker:IsValid() and attacker:IsActive() then
+                                    net.Start("TTT_UpdateRevengerLoverKiller", v)
+                                    net.WriteVector(attacker:LocalToWorld(attacker:OBBCenter()))
+                                    net.Send(v)
                                 end
+                                timer.Create("revengerloverkiller", 15, 0, function()
+                                    if attacker:IsValid() and attacker:IsActive() then
+                                        net.Start("TTT_UpdateRevengerLoverKiller", v)
+                                        net.WriteVector(attacker:LocalToWorld(attacker:OBBCenter()))
+                                        net.Send(v)
+                                    end
+                                end)
+                            else
+                                v:PrintMessage(HUD_PRINTTALK, "Your love has died, but you cannot determine the cause.")
+                                v:PrintMessage(HUD_PRINTCENTER, "Your love has died, but you cannot determine the cause.")
                             end
                         end
                     end)
                 end
             end
 
-            v:PrintMessage(HUD_PRINTTALK, "You are in love with " .. romantic_lover:Nick() .. ".")
-            v:PrintMessage(HUD_PRINTCENTER, "You are in love with " .. romantic_lover:Nick() .. ".")
+            v:PrintMessage(HUD_PRINTTALK, "You are in love with " .. revenger_lover:Nick() .. ".")
+            v:PrintMessage(HUD_PRINTCENTER, "You are in love with " .. revenger_lover:Nick() .. ".")
         end
 
         -- Drunk logic
@@ -891,8 +903,8 @@ function BeginRound()
     net.Broadcast()
 
     for _, v in pairs(player.GetAll()) do
-        if romantic_lover then
-            v:SetNWString("RomanticLover", romantic_lover:Nick() or "")
+        if revenger_lover then
+            v:SetNWString("RevengerLover", revenger_lover:Nick() or "")
         end
 
         if v:Alive() and v:IsTerror() then
@@ -994,7 +1006,9 @@ function EndRound(type)
     -- Stop checking for wins
     StopWinChecks()
 
-    if timer.Exists("killheartbroken") then timer.Remove("killheartbroken") end
+    hook.Remove("PlayerDeath", "CheckRevengerLoverDeath")
+
+    if timer.Exists("revengerloverkiller") then timer.Remove("revengerloverkiller") end
     if timer.Exists("drunkremember") then timer.Remove("drunkremember") end
     if timer.Exists("waitfordrunkrespawn") then timer.Remove("waitfordrunkrespawn") end
 
@@ -1181,7 +1195,7 @@ function SelectRoles()
         [ROLE_GLITCH] = {},
         [ROLE_PHANTOM] = {},
         [ROLE_HYPNOTIST] = {},
-        [ROLE_ROMANTIC] = {},
+        [ROLE_REVENGER] = {},
         [ROLE_DRUNK] = {},
         [ROLE_CLOWN] = {},
         [ROLE_DEPUTY] = {},
@@ -1337,9 +1351,9 @@ function SelectRoles()
             table.insert(specialInnocentRoles, ROLE_PHANTOM)
         end
     end
-    if GetConVar("ttt_romantic_enabled"):GetBool() and choice_count > 1 and choice_count >= GetConVar("ttt_romantic_min_players"):GetInt() then
-        for i = 1, GetConVar("ttt_romantic_spawn_weight"):GetInt() do
-            table.insert(specialInnocentRoles, ROLE_ROMANTIC)
+    if GetConVar("ttt_revenger_enabled"):GetBool() and choice_count > 1 and choice_count >= GetConVar("ttt_revenger_min_players"):GetInt() then
+        for i = 1, GetConVar("ttt_revenger_spawn_weight"):GetInt() do
+            table.insert(specialInnocentRoles, ROLE_REVENGER)
         end
     end
     if GetConVar("ttt_deputy_enabled"):GetBool() and detective_count > 0 and not impersonator_only and choice_count >= GetConVar("ttt_deputy_min_players"):GetInt() then

@@ -188,8 +188,8 @@ function PANEL:Paint(width, height)
         elseif c == ROLE_HYPNOTIST then
             roleStr = "hyp"
             c = rolecolor.special_traitor
-        elseif c == ROLE_ROMANTIC then
-            roleStr = "rom"
+        elseif c == ROLE_REVENGER then
+            roleStr = "rev"
             c = rolecolor.special_innocent
         elseif c == ROLE_DRUNK then
             roleStr = "dru"
@@ -219,7 +219,7 @@ function PANEL:Paint(width, height)
         self.sresult:SetVisible(false)
     end
 
-    if LocalPlayer():IsRomantic() and ply:Nick() == LocalPlayer():GetNWString("romantic_lover", "") and GetRoundState() >= ROUND_ACTIVE then
+    if LocalPlayer():IsRevenger() and ply:Nick() == LocalPlayer():GetNWString("revenger_lover", "") and GetRoundState() >= ROUND_ACTIVE then
         surface.SetDrawColor(200, 100, 200, math.Round(math.sin(RealTime() * 8) / 2 + 0.5) * 20)
         surface.DrawRect(0, 0, width, SB_ROW_HEIGHT)
         surface.SetDrawColor(150, 50, 150, 255)
@@ -279,8 +279,8 @@ function PANEL:UpdatePlayerData()
     end
 
     self.nick:SetText(ply:Nick())
-    if LocalPlayer():IsRomantic() and ply:Nick() == LocalPlayer():GetNWString("romantic_lover", "") and GetRoundState() >= ROUND_ACTIVE then
-        self.nick:SetText(ply:Nick() .. " (" .. GetTranslation("target_romantic_lover") .. ")")
+    if LocalPlayer():IsRevenger() and ply:Nick() == LocalPlayer():GetNWString("revenger_lover", "") and GetRoundState() >= ROUND_ACTIVE then
+        self.nick:SetText(ply:Nick() .. " (" .. GetTranslation("target_revenger_lover") .. ")")
     end
 
     self.nick:SizeToContents()
