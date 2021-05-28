@@ -309,6 +309,10 @@ function SWEP:TeleportStore()
 
         self:SetTeleportMark(ply:GetPos(), ply:EyeAngles())
 
+        net.Start("TTT_TeleportMark")
+        net.WriteVector(ply:GetPos())
+        net.Send(ply)
+
         LANG.Msg(ply, "tele_marked")
     end
 end

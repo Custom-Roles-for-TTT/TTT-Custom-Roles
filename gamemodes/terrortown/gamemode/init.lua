@@ -234,6 +234,8 @@ util.AddNetworkString("TTT_ScanResult")
 util.AddNetworkString("TTT_FlareScorch")
 util.AddNetworkString("TTT_Radar")
 util.AddNetworkString("TTT_Spectate")
+util.AddNetworkString("TTT_TeleportMark")
+util.AddNetworkString("TTT_ClearRadarExtras")
 util.AddNetworkString("TTT_ClownActivate")
 util.AddNetworkString("TTT_DrawHitMarker")
 util.AddNetworkString("TTT_ClientDeathNotify")
@@ -632,6 +634,8 @@ function PrepareRound()
     timer.Create("restartmute", 1, 1, function() MuteForRestart(false) end)
 
     net.Start("TTT_ClearClientState")
+    net.Broadcast()
+    net.Start("TTT_ClearRadarExtras")
     net.Broadcast()
 
     -- In case client's cleanup fails, make client set all players to innocent role
