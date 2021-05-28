@@ -437,6 +437,23 @@ local function OrderEquipment(ply, cmd, args)
 end
 concommand.Add("ttt_order_equipment", OrderEquipment)
 
+concommand.Add("ttt_order_for_someone", function(ply, cmd, args)
+    local target_name = args[1]
+    local target = nil
+    for _, v in pairs(player.GetAll()) do
+        if target_name == v:Nick() then
+            target = v
+            break
+        end
+    end
+
+    if not IsValid(target) then return end
+    local new_args = {}
+    new_args[1] = args[2]
+
+    OrderEquipment(target, cmd, new_args)
+end, nil, nil, FCVAR_CHEAT)
+
 function GM:TTTToggleDisguiser(ply, state)
     -- Can be used to prevent players from using this button.
     -- return true to prevent it.
