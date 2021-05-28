@@ -727,6 +727,8 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
                                                 role = LANG.NameParam(ply:GetRoleString()) })
         end
     end
+
+    victim:SetTeam(TEAM_SPEC)
 end
 
 function GM:PlayerDeath(victim, infl, attacker)
@@ -784,7 +786,6 @@ function GM:PlayerDeath(victim, infl, attacker)
     -- tell no one
     self:PlayerSilentDeath(victim)
 
-    victim:SetTeam(TEAM_SPEC)
     victim:Freeze(false)
     victim:SetRagdollSpec(true)
     victim:Spectate(OBS_MODE_IN_EYE)
