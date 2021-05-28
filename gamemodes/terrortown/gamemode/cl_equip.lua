@@ -667,7 +667,20 @@ net.Receive("TTT_Bought", ReceiveBought)
 -- Player received the item he has just bought, so run clientside init
 local function ReceiveBoughtItem()
     local is_item = net.ReadBit() == 1
-    local id = is_item and net.ReadUInt(32) or net.ReadString()
+    local id
+    if is_item then
+        local _, bits_left = net.BytesLeft()
+
+        -- If we don't have enough bits for the full amount, only read 16
+        local bits = 32
+        if bits_left < bits then
+            bits = 16
+        end
+
+        id = net.ReadUInt(bits)
+    else
+        id = net.ReadString()
+    end
 
     -- I can imagine custom equipment wanting this, so making a hook
     hook.Run("TTTBoughtItem", is_item, id)
