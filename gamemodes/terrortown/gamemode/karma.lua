@@ -92,11 +92,11 @@ function KARMA.ApplyKarma(ply)
     if ply:GetBaseKarma() < 1000 and KARMA.IsEnabled() then
         local k = ply:GetBaseKarma() - 1000
         if config.strict:GetBool() then
-            df = 1 + (0.0007 * k) + (-0.000002 * (k^2))
+            df = 1 + (0.0007 * k) + (-0.000002 * (k ^ 2))
         elseif config.lenient:GetBool() then
-            df = 1 + (0.0005 * k) + (-0.0000005 * (k^2))
+            df = 1 + (0.0005 * k) + (-0.0000005 * (k ^ 2))
         else
-            df = 1 + (-0.0000025 * (k^2))
+            df = 1 + (-0.0000025 * (k ^ 2))
         end
 
     end

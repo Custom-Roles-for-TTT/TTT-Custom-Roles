@@ -454,7 +454,7 @@ function SWEP:Equip(newowner)
                 newowner:SetNWBool("WasBeggar", true)
                 newowner:PrintMessage(HUD_PRINTTALK, "You have joined the innocent team")
                 newowner:PrintMessage(HUD_PRINTCENTER, "You have joined the innocent team")
-                timer.Create( "SendBeggarStateUpdate", 0.5, 1, function() SendFullStateUpdate() end) -- Slight delay to avoid flickering from beggar to innocent and back to beggar
+                timer.Create("SendBeggarStateUpdate", 0.5, 1, function() SendFullStateUpdate() end) -- Slight delay to avoid flickering from beggar to innocent and back to beggar
                 if GetConVar("ttt_reveal_beggar_change"):GetBool() then
                     self.BoughtBuy:PrintMessage(HUD_PRINTTALK, "The beggar has joined your team")
                     self.BoughtBuy:PrintMessage(HUD_PRINTCENTER, "The beggar has joined your team")

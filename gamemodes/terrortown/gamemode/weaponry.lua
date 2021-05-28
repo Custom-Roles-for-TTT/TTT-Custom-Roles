@@ -338,8 +338,8 @@ end
 
 -- override preexisting weapons
 local canBuyList = {
-    weapon_ttt_health_station = {ROLE_TRAITOR, ROLE_HYPNOTIST, ROLE_IMPERSONATOR},
-    weapon_vadim_defib = {ROLE_HYPNOTIST, ROLE_IMPERSONATOR}
+    weapon_ttt_health_station = { ROLE_TRAITOR, ROLE_HYPNOTIST, ROLE_IMPERSONATOR },
+    weapon_vadim_defib = { ROLE_HYPNOTIST, ROLE_IMPERSONATOR }
 }
 
 -- Equipment buying

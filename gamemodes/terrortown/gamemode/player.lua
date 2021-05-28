@@ -891,7 +891,7 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
 
     -- Jesters deal no damage and cant take environmental damage
     if (ply:IsJesterTeam() or (ply:IsClown() and not ply:GetNWBool("KillerClownActive", false))) and GetRoundState() >= ROUND_ACTIVE then
-        if dmginfo:IsBulletDamage() or dmginfo:IsFallDamage() or dmginfo:IsDamageType(1) or dmginfo:IsDamageType(128) then
+        if dmginfo:IsBulletDamage() or dmginfo:IsFallDamage() or dmginfo:IsDamageType(DMG_CRUSH) or dmginfo:IsDamageType(DMG_CLUB) then
         else dmginfo:ScaleDamage(0) end
     end
 
@@ -1046,7 +1046,8 @@ end
 function GM:EntityTakeDamage(ent, dmginfo)
     if SERVER then
         if (ent:IsPlayer() and ent:IsJesterTeam() and GetRoundState() >= ROUND_ACTIVE) then
-            if dmginfo:IsExplosionDamage() or dmginfo:IsDamageType(DMG_BURN) or dmginfo:IsDamageType(DMG_CRUSH) or dmginfo:IsDamageType(DMG_FALL) or dmginfo:IsDamageType(DMG_DROWN) then -- check its burn or explosion.
+            if dmginfo:IsExplosionDamage() or dmginfo:IsDamageType(DMG_BURN) or dmginfo:IsDamageType(DMG_CRUSH) or dmginfo:IsDamageType(DMG_FALL) or dmginfo:IsDamageType(DMG_DROWN) then
+                -- check its burn or explosion.
                 dmginfo:ScaleDamage(0) -- no damage
             end
         end

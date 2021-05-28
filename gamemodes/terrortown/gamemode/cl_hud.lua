@@ -262,7 +262,7 @@ local function InfoPaint(client)
 
     PaintBar(8, x + margin, health_y, bar_width, bar_height, health_colors, health / maxHealth)
     PaintBar(8, x + margin, health_y, bar_width, bar_height, overhealth_colors, math.max(0, health - maxHealth) / maxHealth)
-    PaintBar(8, x + margin, health_y, bar_width, bar_height, extraoverhealth_colors, math.max(0, health - (2*maxHealth)) / maxHealth)
+    PaintBar(8, x + margin, health_y, bar_width, bar_height, extraoverhealth_colors, math.max(0, health - (2 * maxHealth)) / maxHealth)
 
     ShadowedText(tostring(health), "HealthAmmo", bar_width, health_y, COLOR_WHITE, TEXT_ALIGN_RIGHT, TEXT_ALIGN_RIGHT)
 
@@ -276,7 +276,7 @@ local function InfoPaint(client)
         local ammo_clip, ammo_max, ammo_inv = GetAmmo(client)
         if ammo_clip ~= -1 then
             local ammo_y = health_y + bar_height + margin
-            PaintBar(8,x + margin, ammo_y, bar_width, bar_height, ammo_colors, ammo_clip / ammo_max)
+            PaintBar(8, x + margin, ammo_y, bar_width, bar_height, ammo_colors, ammo_clip / ammo_max)
             local text = string.format("%i + %02i", ammo_clip, ammo_inv)
 
             ShadowedText(text, "HealthAmmo", bar_width, ammo_y, COLOR_WHITE, TEXT_ALIGN_RIGHT, TEXT_ALIGN_RIGHT)

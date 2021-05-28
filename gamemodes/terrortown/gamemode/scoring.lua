@@ -150,7 +150,7 @@ function SCORE:HandleSelection()
                     clown_ids = clowns,
                     deputy_ids = deputies,
                     impersonator_ids = impersonators,
-                    beggar_ids = beggars})
+                    beggar_ids = beggars })
 end
 
 function SCORE:HandleBodyFound(finder, found)

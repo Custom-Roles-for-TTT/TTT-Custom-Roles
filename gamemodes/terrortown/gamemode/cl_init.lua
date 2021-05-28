@@ -331,37 +331,37 @@ function GM:AddDeathNotice() end
 function GM:DrawDeathNotice() end
 
 function GM:Think()
-   for k, v in pairs(player.GetAll()) do
-      if v:Alive() and v:GetNWBool("HauntedSmoke", false) then
-         if not v.SmokeEmitter then v.SmokeEmitter = ParticleEmitter(v:GetPos()) end
-         if not v.SmokeNextPart then v.SmokeNextPart = CurTime() end
-         local pos = v:GetPos() + Vector(0, 0, 30)
-         local client = LocalPlayer()
-         if v.SmokeNextPart < CurTime() then
-            if client:GetPos():Distance(pos) > 1000 then return end
-            v.SmokeEmitter:SetPos(pos)
-            v.SmokeNextPart = CurTime() + math.Rand(0.003, 0.01)
-            local vec = Vector(math.Rand(-8, 8), math.Rand(-8, 8), math.Rand(10, 55))
-            local pos = v:LocalToWorld(vec)
-            local particle = v.SmokeEmitter:Add("particle/snow.vmt", pos)
-            particle:SetVelocity(Vector(0, 0, 4) + VectorRand() * 3)
-            particle:SetDieTime(math.Rand(0.5, 2))
-            particle:SetStartAlpha(math.random(150, 220))
-            particle:SetEndAlpha(0)
-            local size = math.random(4, 7)
-            particle:SetStartSize(size)
-            particle:SetEndSize(size + 1)
-            particle:SetRoll(0)
-            particle:SetRollDelta(0)
-            particle:SetColor(0, 0, 0)
-         end
-      else
-         if v.SmokeEmitter then
-            v.SmokeEmitter:Finish()
-            v.SmokeEmitter = nil
-         end
-      end
-   end
+    for k, v in pairs(player.GetAll()) do
+        if v:Alive() and v:GetNWBool("HauntedSmoke", false) then
+            if not v.SmokeEmitter then v.SmokeEmitter = ParticleEmitter(v:GetPos()) end
+            if not v.SmokeNextPart then v.SmokeNextPart = CurTime() end
+            local pos = v:GetPos() + Vector(0, 0, 30)
+            local client = LocalPlayer()
+            if v.SmokeNextPart < CurTime() then
+                if client:GetPos():Distance(pos) > 1000 then return end
+                v.SmokeEmitter:SetPos(pos)
+                v.SmokeNextPart = CurTime() + math.Rand(0.003, 0.01)
+                local vec = Vector(math.Rand(-8, 8), math.Rand(-8, 8), math.Rand(10, 55))
+                local pos = v:LocalToWorld(vec)
+                local particle = v.SmokeEmitter:Add("particle/snow.vmt", pos)
+                particle:SetVelocity(Vector(0, 0, 4) + VectorRand() * 3)
+                particle:SetDieTime(math.Rand(0.5, 2))
+                particle:SetStartAlpha(math.random(150, 220))
+                particle:SetEndAlpha(0)
+                local size = math.random(4, 7)
+                particle:SetStartSize(size)
+                particle:SetEndSize(size + 1)
+                particle:SetRoll(0)
+                particle:SetRollDelta(0)
+                particle:SetColor(0, 0, 0)
+            end
+        else
+            if v.SmokeEmitter then
+                v.SmokeEmitter:Finish()
+                v.SmokeEmitter = nil
+            end
+        end
+    end
 end
 
 function GM:Tick()
@@ -601,7 +601,8 @@ hook.Add("TTTPrepareRound", "TTTSprintPrepareRound", function()
             SprintFunction()
             recoveryTimer = CurTime()
         else
-            if sprinting then -- not sprinting
+            if sprinting then
+                -- not sprinting
                 SpeedChange(false)
                 sprinting = false
                 recoveryTimer = CurTime()
@@ -619,7 +620,8 @@ hook.Add("TTTPrepareRound", "TTTSprintPrepareRound", function()
             DoubleTapActivated = false
         end
 
-        if stamina < 0 then -- prevent bugs
+        if stamina < 0 then
+            -- prevent bugs
             stamina = 0
             SpeedChange(false)
             sprinting = false

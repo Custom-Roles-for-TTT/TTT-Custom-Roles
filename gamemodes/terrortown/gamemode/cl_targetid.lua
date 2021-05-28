@@ -380,7 +380,8 @@ function GM:HUDDrawTargetID()
 
     text = nil
 
-    if target_revenger_lover then -- Prioritise soulmate message over roles
+    if target_revenger_lover then
+        -- Prioritise soulmate message over roles
         text = L.target_revenger_lover
         clr = Color(255, 80, 235, 200)
     elseif target_traitor then

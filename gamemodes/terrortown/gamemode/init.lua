@@ -1183,7 +1183,6 @@ local function GetSpecialInnocentCount(ply_count)
     return special_innocent_count
 end
 
-
 function SelectRoles()
     local choices = {}
     local prev_roles = {
@@ -1446,7 +1445,8 @@ hook.Add("PlayerDeath", "Kill_Reveal_Notify", function(victim, entity, killer)
         elseif killer == victim then
             reason = "suicide"
         elseif IsValid(entity) then
-            if victim:IsPlayer() and (string.StartWith(entity:GetClass(), "prop_physics") or entity:GetClass() == "prop_dynamic") then -- If the killer is also a prop
+            if victim:IsPlayer() and (string.StartWith(entity:GetClass(), "prop_physics") or entity:GetClass() == "prop_dynamic") then
+                -- If the killer is also a prop
                 reason = "prop"
             elseif IsValid(killer) then
                 if entity:GetClass() == "entityflame" and killer:GetClass() == "entityflame" then
