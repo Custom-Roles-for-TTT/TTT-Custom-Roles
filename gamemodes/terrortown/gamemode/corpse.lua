@@ -168,6 +168,10 @@ local function IdentifyCommand(ply, cmd, args)
 end
 concommand.Add("ttt_confirm_death", IdentifyCommand)
 
+local function GetExtendedDetectiveFilter(alive_only)
+    return GetPlayerFilter(function(p) return (p:IsDetective() or ((p:IsDeputy() or p:IsImpersonator()) and p:GetNWBool("HasPromotion", false))) and (not alive_only or p:IsTerror()) end)
+end
+
 -- Call detectives to a corpse
 local function CallDetective(ply, cmd, args)
     if not IsValid(ply) then return end
@@ -185,7 +189,7 @@ local function CallDetective(ply, cmd, args)
             net.Start("TTT_CorpseCall")
             net.WriteVector(rag:GetPos())
             net.WriteString(sid)
-            net.Send(GetDetectiveFilter(true))
+            net.Send(GetExtendedDetectiveFilter(true))
 
             LANG.Msg("body_call", {
                 player = ply:Nick(),
@@ -262,7 +266,7 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
                 net.Start("TTT_CorpseCall")
                 net.WriteVector(rag:GetPos())
                 net.WriteString(rag.sid)
-                net.Send(GetDetectiveFilter(true))
+                net.Send(GetExtendedDetectiveFilter(true))
                 ownerEnt:SetNWBool("det_called", true)
                 ownerEnt:SetNWBool("body_found", true)
                 LANG.Msg("body_confirm", { finder = ply:Nick(), victim = CORPSE.GetPlayerNick(rag, "someone") })
@@ -340,7 +344,7 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
         -- Let detctives know that this body has already been searched
         net.Start("TTT_RemoveCorpseCall")
         net.WriteString(rag.sid)
-        net.Send(GetDetectiveFilter(true))
+        net.Send(GetExtendedDetectiveFilter(true))
     else
         net.Send(ply)
     end

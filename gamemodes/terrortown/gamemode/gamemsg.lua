@@ -66,7 +66,7 @@ function ShowRoundStartPopup()
     end
 end
 
-local function GetPlayerFilter(pred)
+function GetPlayerFilter(pred)
     local filter = {}
     for k, v in ipairs(player.GetAll()) do
         if IsValid(v) and pred(v) then
