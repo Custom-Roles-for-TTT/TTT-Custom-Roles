@@ -557,7 +557,7 @@ function GM:TTTDelayRoundStartForVote()
 end
 
 function PrepareRound()
-    for k, v in pairs(player.GetAll()) do
+    for _, v in pairs(player.GetAll()) do
         v:SetNWBool("HauntedSmoke", false)
         v:SetNWString("RevengerLover", "")
         v:SetNWString("JesterKiller", "")
@@ -567,6 +567,8 @@ function PrepareRound()
         v:SetNWBool("KillerClownActive", false)
         v:SetNWBool("HasPromotion", false)
         v:SetNWBool("WasBeggar", false)
+        -- Workaround to prevent GMod sprint from working
+        v:SetRunSpeed(v:GetWalkSpeed())
     end
 
     net.Start("TTT_UpdateOldManWins")

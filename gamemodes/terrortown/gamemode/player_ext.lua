@@ -278,6 +278,9 @@ function plymeta:SpawnForRound(dead_only)
     hook.Call("PlayerSetModel", GAMEMODE, self)
     hook.Call("TTTPlayerSetColor", GAMEMODE, self)
 
+    -- Workaround to prevent GMod sprint from working
+    self:SetRunSpeed(self:GetWalkSpeed())
+
     -- wrong alive status and not a willing spec who unforced after prep started
     -- (and will therefore be "alive")
     if dead_only and self:Alive() and (not self:IsSpec()) then
