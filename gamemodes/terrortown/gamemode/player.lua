@@ -738,7 +738,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
         end
     end
 
-    victim:SetTeam(TEAM_SPEC)
+    ply:SetTeam(TEAM_SPEC)
 end
 
 function GM:PlayerDeath(victim, infl, attacker)
