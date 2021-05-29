@@ -597,8 +597,8 @@ hook.Add("TTTPrepareRound", "TTTSprintPrepareRound", function()
     -- listen for activation
     hook.Add("Think", "TTTSprintThink", function()
         local client = LocalPlayer()
-
-        if client:KeyDown(IN_FORWARD) and client:KeyDown(IN_SPEED) then
+        local forward_key = hook.Call("TTTSprintKey", GAMEMODE, client) or IN_FORWARD
+        if client:KeyDown(forward_key) and client:KeyDown(IN_SPEED) then
             -- forward + selected key
             SprintFunction()
             recoveryTimer = CurTime()
