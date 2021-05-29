@@ -1538,9 +1538,5 @@ end)
 
 -- return Speed
 hook.Add("TTTPlayerSpeedModifier", "TTTSprintPlayerSpeed", function(ply, _, _)
-    if ply.mult then
-        return ply.mult
-    else
-        return 1
-    end
+    return GetSprintMultiplier(ply, ply.mult ~= nil)
 end)

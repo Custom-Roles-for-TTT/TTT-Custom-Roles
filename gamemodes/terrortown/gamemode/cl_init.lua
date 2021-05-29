@@ -554,8 +554,9 @@ ConVars()
 local function SpeedChange(bool)
     net.Start("TTT_SprintSpeedSet")
     if bool then
-        net.WriteFloat(math.min(math.max(speedMultiplier, 0.1), 2))
-        ply.mult = 1 + math.min(math.max(speedMultiplier, 0.1), 2)
+        local mul = math.min(math.max(speedMultiplier, 0.1), 2)
+        net.WriteFloat(mul)
+        ply.mult = 1 + mul
 
         local tmp = GetConVar("ttt_crosshair_size")
         crosshairSize = tmp and tmp:GetString() or 1
@@ -637,12 +638,9 @@ hook.Add("TTTPrepareRound", "TTTSprintPrepareRound", function()
 end)
 
 -- Set Sprint Speed
-hook.Add("TTTPlayerSpeedModifier", "TTTSprintPlayerSpeed", function(ply, _, _)
-    if sprinting then
-        return speedMultiplier + 1
-    else
-        return 1
-    end
+hook.Add("TTTPlayerSpeedModifier", "TTTSprintPlayerSpeed", function(sply, _, _)
+    if sply ~= ply then return end
+    return GetSprintMultiplier(sply, sprinting)
 end)
 
 -- Death messages
