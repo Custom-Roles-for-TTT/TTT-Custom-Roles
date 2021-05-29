@@ -18,6 +18,7 @@ RADAR.samples = {}
 RADAR.samples_count = 0
 
 RADAR.called_corpses = {}
+RADAR.teleport_marks = {}
 
 RADAR.revenger_lover_killers = {}
 
@@ -106,6 +107,7 @@ local c4warn = surface.GetTextureID("vgui/ttt/icon_c4warn")
 local sample_scan = surface.GetTextureID("vgui/ttt/sample_scan")
 local det_beacon = surface.GetTextureID("vgui/ttt/det_beacon")
 local rev_beacon = surface.GetTextureID("vgui/ttt/rev_beacon")
+local tele_mark = surface.GetTextureID("vgui/ttt/tele_mark")
 
 local GetPTranslation = LANG.GetParamTranslation
 local FormatTime = util.SimpleTime
@@ -136,6 +138,17 @@ function RADAR:Draw(client)
 
         for _, corpse in pairs(self.called_corpses) do
             DrawTarget(corpse, 16, 0.5)
+        end
+    end
+
+    -- Teleport marks
+    if client:IsActive() and #self.teleport_marks then
+        surface.SetTexture(tele_mark)
+        surface.SetTextColor(255, 255, 255, 240)
+        surface.SetDrawColor(255, 255, 255, 230)
+
+        for _, mark in pairs(self.teleport_marks) do
+            DrawTarget(mark, 16, 0.5)
         end
     end
 
@@ -257,6 +270,20 @@ local function ReceiveRevengerLoverKiller()
     surface.PlaySound(beep_success)
 end
 net.Receive("TTT_UpdateRevengerLoverKiller", ReceiveRevengerLoverKiller)
+
+local function RecieveTeleportMark()
+    local pos = net.ReadVector()
+    pos.z = pos.z + 50
+    RADAR.teleport_marks = {}
+    table.insert(RADAR.teleport_marks, { pos = pos, called = CurTime() })
+end
+net.Receive("TTT_TeleportMark", RecieveTeleportMark)
+
+local function ClearRadarExtras()
+    RADAR.called_corpses = {}
+    RADAR.teleport_marks = {}
+end
+net.Receive("TTT_ClearRadarExtras", ClearRadarExtras)
 
 local function ReceiveRadarScan()
     local num_targets = net.ReadUInt(8)
