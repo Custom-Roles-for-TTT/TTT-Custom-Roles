@@ -1499,6 +1499,7 @@ hook.Add("PlayerDeath", "Kill_Reveal_Notify", function(victim, entity, killer)
                 elseif killer:IsPlayer() and victim ~= killer then
                     reason = "ply"
                     killerName = killer:Nick()
+                    role = killer:GetRole()
                 end
             end
         end
