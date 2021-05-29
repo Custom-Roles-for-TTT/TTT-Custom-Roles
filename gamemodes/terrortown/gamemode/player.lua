@@ -661,10 +661,17 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
         -- shit.
     end
 
+    -- Don't drop the crowbar when a player dies
+    ply:StripWeapon("weapon_zm_improvised")
+
     -- Drop all weapons
-    for k, wep in ipairs(ply:GetWeapons()) do
-        WEPS.DropNotifiedWeapon(ply, wep, true) -- with ammo in them
-        wep:DampenDrop()
+    for _, wep in ipairs(ply:GetWeapons()) do
+        if wep ~= nil then
+            WEPS.DropNotifiedWeapon(ply, wep, true) -- with ammo in them
+            if wep.DampenDrop ~= nil then
+                wep:DampenDrop()
+            end
+        end
     end
 
     if IsValid(ply.hat) then
@@ -731,7 +738,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
         end
     end
 
-    victim:SetTeam(TEAM_SPEC)
+    ply:SetTeam(TEAM_SPEC)
 end
 
 function GM:PlayerDeath(victim, infl, attacker)
@@ -1193,14 +1200,42 @@ function GM:PlayerTakeDamage(ent, infl, att, amount, dmginfo)
         end
     end
 
-    -- handle fire attacker
-    if ent.ignite_info and dmginfo:IsDamageType(DMG_DIRECT) then
+    -- Get the active entity fire info
+    local ignite_info = ent.ignite_info
+
+    -- Check if we have extended info
+    if ent.ignite_info_ext then
+        -- If we have extended info but not regular info
+        if not ignite_info then
+            -- Check that the extended info is still valid and use it, if so
+            if ent.ignite_info_ext.end_time > CurTime() then
+                ignite_info = ent.ignite_info_ext
+            -- Otherwise clear it out
+            else
+                ent.ignite_info_ext = nil
+            end
+        else
+            -- If we have both regular and extended info, save the attacker and inflictor to the extended info for later
+            if not ent.ignite_info_ext.att then
+                ent.ignite_info_ext.att = ent.ignite_info.att
+            end
+            if not ent.ignite_info_ext.infl then
+                ent.ignite_info_ext.infl = ent.ignite_info.infl
+            end
+        end
+    end
+
+    -- Handle fire attacker
+    if ignite_info and dmginfo:IsDamageType(DMG_DIRECT) then
         local datt = dmginfo:GetAttacker()
-        if (not IsValid(datt)) or (not datt:IsPlayer()) then
-            local ignite = ent.ignite_info
-            if IsValid(ignite.att) and IsValid(ignite.infl) then
-                dmginfo:SetAttacker(ignite.att)
-                dmginfo:SetInflictor(ignite.infl)
+        if (not IsValid(datt) or not datt:IsPlayer()) and IsValid(ignite_info.att) and IsValid(ignite_info.infl) then
+            dmginfo:SetAttacker(ignite_info.att)
+            dmginfo:SetInflictor(ignite_info.infl)
+
+            -- Set burning damage from jester team to zero, regardless of source
+            if ignite_info.att:IsJesterTeam() then
+                dmginfo:ScaleDamage(0)
+                dmginfo:SetDamage(0)
             end
         end
     end
@@ -1330,3 +1365,65 @@ function GM:PlayerShouldTaunt(ply, actid)
     -- Mods/plugins that add such a system should override this.
     return false
 end
+
+local function KillFromPlayer(victim, killer, remove_body)
+    if not IsValid(victim) or not victim:Alive() then return end
+    if not IsValid(killer) or not killer:Alive() then return end
+
+    print("Killing " .. victim:Nick() .. " by " .. killer:Nick())
+
+    -- Kill the player with a "bullet"
+    local dmginfo = DamageInfo()
+    dmginfo:SetDamage(1000)
+    dmginfo:SetAttacker(killer)
+    dmginfo:SetInflictor(killer)
+    dmginfo:SetDamageType(DMG_BULLET)
+    victim:TakeDamageInfo(dmginfo)
+
+    if remove_body then
+        timer.Simple(0.25, function()
+            local body = victim.server_ragdoll or victim:GetRagdollEntity()
+            if IsValid(body) then
+                print("and removing body")
+                body:Remove()
+            end
+        end)
+    end
+end
+
+concommand.Add("ttt_kill_from_random", function(ply, cmd, args)
+    if not IsValid(ply) or not ply:Alive() then return end
+
+    local killer = nil
+    for _, v in RandomPairs(player.GetAll()) do
+        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not v:IsJesterTeam() then
+            killer = v
+            break
+        end
+    end
+
+    local remove_body = #args > 0 and tobool(args[1])
+    KillFromPlayer(ply, killer, remove_body)
+end, nil, nil, FCVAR_CHEAT)
+
+concommand.Add("ttt_kill_from_player", function(ply, cmd, args)
+    if not IsValid(ply) or not ply:Alive() then return end
+    if #args == 0 then return end
+
+    local killer_name = args[1]
+    local killer = nil
+    for _, v in RandomPairs(player.GetAll()) do
+        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not v:IsJesterTeam() and v:Nick() == killer_name then
+            killer = v
+            break
+        end
+    end
+
+    if killer == nil then
+        print("No player named " .. killer_name .. " found")
+        return
+    end
+
+    local remove_body = #args > 1 and tobool(args[2])
+    KillFromPlayer(ply, killer, remove_body)
+end, nil, nil, FCVAR_CHEAT)

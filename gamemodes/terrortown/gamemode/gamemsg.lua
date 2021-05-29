@@ -66,7 +66,7 @@ function ShowRoundStartPopup()
     end
 end
 
-local function GetPlayerFilter(pred)
+function GetPlayerFilter(pred)
     local filter = {}
     for k, v in ipairs(player.GetAll()) do
         if IsValid(v) and pred(v) then
@@ -246,7 +246,7 @@ local loc_voice = CreateConVar("ttt_locational_voice", "0")
 -- Of course voice has to be limited as well
 function GM:PlayerCanHearPlayersVoice(listener, speaker)
     -- Enforced silence
-    if mute_all then
+    if mute_all or not GetConVar("sv_voiceenable"):GetBool() then
         return false, false
     end
 

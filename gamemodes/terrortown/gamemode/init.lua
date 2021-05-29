@@ -235,6 +235,8 @@ util.AddNetworkString("TTT_ScanResult")
 util.AddNetworkString("TTT_FlareScorch")
 util.AddNetworkString("TTT_Radar")
 util.AddNetworkString("TTT_Spectate")
+util.AddNetworkString("TTT_TeleportMark")
+util.AddNetworkString("TTT_ClearRadarExtras")
 util.AddNetworkString("TTT_ClownActivate")
 util.AddNetworkString("TTT_DrawHitMarker")
 util.AddNetworkString("TTT_ClientDeathNotify")
@@ -344,6 +346,8 @@ function GM:SyncGlobals()
 
     SetGlobalBool("ttt_detective_search_only", GetConVar("ttt_detective_search_only"):GetBool())
     SetGlobalBool("ttt_reveal_beggar_change", GetConVar("ttt_reveal_beggar_change"):GetBool())
+
+    SetGlobalBool("sv_voiceenable", GetConVar("sv_voiceenable"):GetBool())
 end
 
 function SendRoundState(state, ply)
@@ -554,7 +558,7 @@ function GM:TTTDelayRoundStartForVote()
 end
 
 function PrepareRound()
-    for k, v in pairs(player.GetAll()) do
+    for _, v in pairs(player.GetAll()) do
         v:SetNWBool("HauntedSmoke", false)
         v:SetNWString("RevengerLover", "")
         v:SetNWString("JesterKiller", "")
@@ -564,6 +568,8 @@ function PrepareRound()
         v:SetNWBool("KillerClownActive", false)
         v:SetNWBool("HasPromotion", false)
         v:SetNWBool("WasBeggar", false)
+        -- Workaround to prevent GMod sprint from working
+        v:SetRunSpeed(v:GetWalkSpeed())
     end
 
     net.Start("TTT_UpdateOldManWins")
@@ -633,6 +639,8 @@ function PrepareRound()
     timer.Create("restartmute", 1, 1, function() MuteForRestart(false) end)
 
     net.Start("TTT_ClearClientState")
+    net.Broadcast()
+    net.Start("TTT_ClearRadarExtras")
     net.Broadcast()
 
     -- In case client's cleanup fails, make client set all players to innocent role
@@ -1491,6 +1499,7 @@ hook.Add("PlayerDeath", "Kill_Reveal_Notify", function(victim, entity, killer)
                 elseif killer:IsPlayer() and victim ~= killer then
                     reason = "ply"
                     killerName = killer:Nick()
+                    role = killer:GetRole()
                 end
             end
         end

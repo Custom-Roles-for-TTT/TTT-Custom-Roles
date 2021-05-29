@@ -189,6 +189,8 @@ function CLSCORE:ShowPanel()
         local xexwin = (w - exwinlbl:GetWide()) / 2
         local yexwin = 83
         exwinlbl:SetPos(xexwin, yexwin)
+    else
+        exwinlbl:SetText("")
     end
 
     bg.PaintOver = function()

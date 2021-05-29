@@ -6,6 +6,12 @@ if not plymeta then
     return
 end
 
+local entmeta = FindMetaTable("Entity")
+if not entmeta then
+    Error("FAILED TO FIND ENTITY TABLE")
+    return
+end
+
 function plymeta:SetRagdollSpec(s)
     if s then
         self.spec_ragdoll_start = CurTime()
@@ -285,6 +291,9 @@ function plymeta:SpawnForRound(dead_only)
     hook.Call("PlayerSetModel", GAMEMODE, self)
     hook.Call("TTTPlayerSetColor", GAMEMODE, self)
 
+    -- Workaround to prevent GMod sprint from working
+    self:SetRunSpeed(self:GetWalkSpeed())
+
     -- wrong alive status and not a willing spec who unforced after prep started
     -- (and will therefore be "alive")
     if dead_only and self:Alive() and (not self:IsSpec()) then
@@ -370,6 +379,12 @@ end
 
 function plymeta:GetAvoidDetective()
     return self:GetInfoNum("ttt_avoid_detective", 0) > 0
+end
+
+function plymeta:Ignite(dur, radius)
+    -- Keep track of extended ignition information so when multiple things are causing burning the later ones don't lose their data. See PlayerTakeDamage in player.lua
+    self.ignite_info_ext = {dur = dur, end_time = CurTime() + dur}
+    entmeta.Ignite(self, dur, radius)
 end
 
 -- Run these overrides when the round is preparing the first time to ensure their addons have been loaded
