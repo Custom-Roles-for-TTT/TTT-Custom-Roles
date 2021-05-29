@@ -345,6 +345,8 @@ function GM:SyncGlobals()
 
     SetGlobalBool("ttt_detective_search_only", GetConVar("ttt_detective_search_only"):GetBool())
     SetGlobalBool("ttt_reveal_beggar_change", GetConVar("ttt_reveal_beggar_change"):GetBool())
+
+    SetGlobalBool("sv_voiceenable", GetConVar("sv_voiceenable"):GetBool())
 end
 
 function SendRoundState(state, ply)
