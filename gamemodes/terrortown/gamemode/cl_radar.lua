@@ -131,7 +131,7 @@ function RADAR:Draw(client)
     end
 
     -- Corpse calls
-    if client:IsActiveDetective() and #self.called_corpses then
+    if client:IsActiveDetectiveLike() and #self.called_corpses then
         surface.SetTexture(det_beacon)
         surface.SetTextColor(255, 255, 255, 240)
         surface.SetDrawColor(255, 255, 255, 230)
