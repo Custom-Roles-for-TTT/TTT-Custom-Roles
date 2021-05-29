@@ -30,15 +30,7 @@ local function CopyDmg(dmg)
     local g, n
 
     if wep then
-        local id = WepToEnum(wep)
-        if id then
-            g = id
-        else
-            -- we can convert each standard TTT weapon name to a preset ID, but
-            -- that's not workable with custom SWEPs from people, so we'll just
-            -- have to pay the byte tax there
-            g = wep:GetClass()
-        end
+        g = wep:GetClass()
     else
         local infl = dmg:GetInflictor()
         if IsValid(infl) and infl.ScoreName then
