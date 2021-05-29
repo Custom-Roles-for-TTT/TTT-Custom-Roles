@@ -661,10 +661,17 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
         -- shit.
     end
 
+    -- Don't drop the crowbar when a player dies
+    ply:StripWeapon("weapon_zm_improvised")
+
     -- Drop all weapons
-    for k, wep in ipairs(ply:GetWeapons()) do
-        WEPS.DropNotifiedWeapon(ply, wep, true) -- with ammo in them
-        wep:DampenDrop()
+    for _, wep in ipairs(ply:GetWeapons()) do
+        if wep ~= nil then
+            WEPS.DropNotifiedWeapon(ply, wep, true) -- with ammo in them
+            if wep.DampenDrop ~= nil then
+                wep:DampenDrop()
+            end
+        end
     end
 
     if IsValid(ply.hat) then
