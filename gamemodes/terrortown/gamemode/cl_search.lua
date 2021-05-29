@@ -385,7 +385,7 @@ local function ShowSearchScreen(search_raw)
             table.insert(client.called_corpses, search_raw.eidx)
             s:SetDisabled(true)
 
-            RunConsoleCommand("ttt_call_detective", search_raw.eidx)
+            RunConsoleCommand("ttt_call_detective", search_raw.eidx, search_raw.sid)
         end
 
         dcall:SetDisabled(client:IsSpec() or table.HasValue(client.called_corpses or {}, search_raw.eidx))
