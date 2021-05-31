@@ -225,8 +225,19 @@ function CLSCORE:ShowPanel()
             if foundPlayer then
                 -- The first bot's ID is 90071996842377216 whhich translates to "STEAM_0:0:0", an 11-character string
                 -- A player's Steam ID cannot be that short, so if it is this must be a bot
-                local isBot = string.len(util.SteamIDFrom64(id)) == 11
-                local ply = player.GetBySteamID64(id)
+                local isBot = string.len(util.SteamIDFrom64(id)) == 11;
+                local ply = nil
+                -- Bots cannot be retrieved by SteamID on the client so search by name instead
+                if isBot then
+                    for _, p in pairs(player.GetAll()) do
+                        if p:Nick() == nicks[id] then
+                            ply = p
+                            break
+                        end
+                    end
+                else
+                    ply = player.GetBySteamID64(id)
+                end
 
                 -- Backup in case people disconnect and we cant check their role at the end of the round
                 local startingRole = "inn"
@@ -316,13 +327,6 @@ function CLSCORE:ShowPanel()
                     elseif ply:IsOldMan() then
                         finalRole = "old"
                     end
-                -- Bot's can't be found via SteamID on the client so we have handle things differently
-                -- 1. Assume they didn't disconnect
-                -- 2. Calculate their alive status differently (though incorrectly because it doesn't care about resurrections)
-                -- 3. Assume their final role didn't change
-                elseif isBot then
-                    alive = s.deaths == 0
-                    finalRole = startingRole
                 else
                     hasDisconnected = true
                 end
