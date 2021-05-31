@@ -179,7 +179,7 @@ function CLSCORE:ShowPanel()
     local ywin = 37
     winlbl:SetPos(xwin, ywin)
 
-    local old_man_won_last_round = old_man_wins
+    old_man_won_last_round = old_man_wins
     local exwinlbl = vgui.Create("DLabel", dpanel)
     if old_man_won_last_round then
         exwinlbl:SetFont("WinSmall")
@@ -223,7 +223,10 @@ function CLSCORE:ShowPanel()
             end
 
             if foundPlayer then
-                local ply = player.GetBySteamID(id)
+                -- The first bot's ID is 90071996842377216 whhich translates to "STEAM_0:0:0", an 11-character string
+                -- A player's Steam ID cannot be that short, so if it is this must be a bot
+                local isBot = string.len(util.SteamIDFrom64(id)) == 11
+                local ply = player.GetBySteamID64(id)
 
                 -- Backup in case people disconnect and we cant check their role at the end of the round
                 local startingRole = "inn"
@@ -264,7 +267,9 @@ function CLSCORE:ShowPanel()
                 local swappedWith = ""
                 local jesterKiller = ""
 
+                local alive = false
                 if IsValid(ply) then
+                    alive = ply:Alive()
                     if ply:IsInnocent() then
                         finalRole = "inn"
                         if ply:GetNWBool("WasDrunk", false) then
@@ -311,6 +316,13 @@ function CLSCORE:ShowPanel()
                     elseif ply:IsOldMan() then
                         finalRole = "old"
                     end
+                -- Bot's can't be found via SteamID on the client so we have handle things differently
+                -- 1. Assume they didn't disconnect
+                -- 2. Calculate their alive status differently (though incorrectly because it doesn't care about resurrections)
+                -- 3. Assume their final role didn't change
+                elseif isBot then
+                    alive = s.deaths == 0
+                    finalRole = startingRole
                 else
                     hasDisconnected = true
                 end
@@ -347,13 +359,11 @@ function CLSCORE:ShowPanel()
                         disconIcon:SetSize(32, 32)
                         disconIcon:SetPos(314, 123 + 33 * countI)
                         disconIcon:SetImage("vgui/ttt/score_disconicon.png")
-                    else
-                        if not ply:Alive() then
-                            local skullIcon = vgui.Create("DImage", dpanel)
-                            skullIcon:SetSize(32, 32)
-                            skullIcon:SetPos(314, 123 + 33 * countI)
-                            skullIcon:SetImage("vgui/ttt/score_skullicon.png")
-                        end
+                    elseif not alive then
+                        local skullIcon = vgui.Create("DImage", dpanel)
+                        skullIcon:SetSize(32, 32)
+                        skullIcon:SetPos(314, 123 + 33 * countI)
+                        skullIcon:SetImage("vgui/ttt/score_skullicon.png")
                     end
 
                     countI = countI + 1
@@ -369,13 +379,11 @@ function CLSCORE:ShowPanel()
                         disconIcon:SetSize(32, 32)
                         disconIcon:SetPos(658, 123 + 33 * countT)
                         disconIcon:SetImage("vgui/ttt/score_disconicon.png")
-                    else
-                        if not ply:Alive() then
-                            local skullIcon = vgui.Create("DImage", dpanel)
-                            skullIcon:SetSize(32, 32)
-                            skullIcon:SetPos(658, 123 + 33 * countT)
-                            skullIcon:SetImage("vgui/ttt/score_skullicon.png")
-                        end
+                    elseif not alive then
+                        local skullIcon = vgui.Create("DImage", dpanel)
+                        skullIcon:SetSize(32, 32)
+                        skullIcon:SetPos(658, 123 + 33 * countT)
+                        skullIcon:SetImage("vgui/ttt/score_skullicon.png")
                     end
 
                     countT = countT + 1
@@ -401,13 +409,11 @@ function CLSCORE:ShowPanel()
                         disconIcon:SetSize(32, 32)
                         disconIcon:SetPos(658, 460)
                         disconIcon:SetImage("vgui/ttt/score_disconicon.png")
-                    else
-                        if not ply:Alive() then
-                            local skullIcon = vgui.Create("DImage", dpanel)
-                            skullIcon:SetSize(32, 32)
-                            skullIcon:SetPos(658, 460)
-                            skullIcon:SetImage("vgui/ttt/score_skullicon.png")
-                        end
+                    elseif not alive then
+                        local skullIcon = vgui.Create("DImage", dpanel)
+                        skullIcon:SetSize(32, 32)
+                        skullIcon:SetPos(658, 460)
+                        skullIcon:SetImage("vgui/ttt/score_skullicon.png")
                     end
                 end
             end
@@ -531,8 +537,8 @@ function CLSCORE:Init(events)
 
             selected = true
         elseif e.id == EVENT_SPAWN then
-            scores[e.sid] = ScoreInit()
-            nicks[e.sid] = e.ni
+            scores[e.sid64] = ScoreInit()
+            nicks[e.sid64] = e.ni
 
             if game and selected then
                 break

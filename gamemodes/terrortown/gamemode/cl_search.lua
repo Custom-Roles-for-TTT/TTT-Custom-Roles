@@ -508,7 +508,7 @@ local function ReceiveRagdollSearch()
     local num_kills = net.ReadUInt(8)
     if num_kills > 0 then
         search.kills = {}
-        for i = 1, num_kills do
+        for _ = 1, num_kills do
             table.insert(search.kills, net.ReadUInt(8))
         end
     else
