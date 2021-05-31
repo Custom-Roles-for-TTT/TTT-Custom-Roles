@@ -27,6 +27,8 @@ function plymeta:GetImpersonator() return self:GetRole() == ROLE_IMPERSONATOR en
 function plymeta:GetBeggar() return self:GetRole() == ROLE_BEGGAR end
 function plymeta:GetOldMan() return self:GetRole() == ROLE_OLDMAN end
 
+function plymeta:GetDetectiveLike() return self:GetDetective() or ((self:GetDeputy() or self:GetImpersonator()) and self:GetNWBool("HasPromotion", false)) end
+
 plymeta.IsTraitor = plymeta.GetTraitor
 plymeta.IsInnocent = plymeta.GetInnocent
 plymeta.IsDetective = plymeta.GetDetective
@@ -42,6 +44,8 @@ plymeta.IsDeputy = plymeta.GetDeputy
 plymeta.IsImpersonator = plymeta.GetImpersonator
 plymeta.IsBeggar = plymeta.GetBeggar
 plymeta.IsOldMan = plymeta.GetOldMan
+
+plymeta.IsDetectiveLike = plymeta.GetDetectiveLike
 
 function plymeta:IsSpecial() return self:GetRole() ~= ROLE_INNOCENT end
 function plymeta:IsCustom()
@@ -79,6 +83,8 @@ function plymeta:IsActiveSpecial() return self:IsSpecial() and self:IsActive() e
 function plymeta:IsActiveCustom() return self:IsCustom() and self:IsActive() end
 function plymeta:IsActiveShopRole() return self:IsShopRole() and self:IsActive() end
 
+function plymeta:IsActiveDetectiveLike() return self:IsActive() and self:IsDetectiveLike() end
+
 -- functions to group individual roles into teams
 function plymeta:IsTraitorTeam()
     local role = self:GetRole()
@@ -90,11 +96,11 @@ function plymeta:IsInnocentTeam()
 end
 function plymeta:IsJesterTeam()
     local role = self:GetRole()
-    return role == ROLE_JESTER or role == ROLE_SWAPPER or role == ROLE_BEGGAR
+    return role == ROLE_JESTER or role == ROLE_SWAPPER or role == ROLE_CLOWN or role == ROLE_BEGGAR
 end
 function plymeta:IsIndependentTeam()
     local role = self:GetRole()
-    return role == ROLE_DRUNK or role == ROLE_CLOWN or role == ROLE_OLDMAN
+    return role == ROLE_DRUNK or role == ROLE_OLDMAN
 end
 function plymeta:IsActiveTraitorTeam() return self:IsTraitorTeam() and self:IsActive() end
 function plymeta:IsActiveInnocentTeam() return self:IsInnocentTeam() and self:IsActive() end

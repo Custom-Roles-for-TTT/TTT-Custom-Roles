@@ -137,6 +137,8 @@ CreateConVar("ttt_impersonator_damage_penalty", "0")
 CreateConVar("ttt_reveal_beggar_change", "1")
 CreateConVar("ttt_single_deputy_impersonator", "0")
 CreateConVar("ttt_old_man_starting_health", "1")
+CreateConVar("ttt_jesters_trigger_traitor_testers", "1")
+CreateConVar("ttt_independents_trigger_traitor_testers", "0")
 
 -- Traitor credits
 CreateConVar("ttt_credits_starting", "2")
@@ -1538,9 +1540,5 @@ end)
 
 -- return Speed
 hook.Add("TTTPlayerSpeedModifier", "TTTSprintPlayerSpeed", function(ply, _, _)
-    if ply.mult then
-        return ply.mult
-    else
-        return 1
-    end
+    return GetSprintMultiplier(ply, ply.mult ~= nil)
 end)

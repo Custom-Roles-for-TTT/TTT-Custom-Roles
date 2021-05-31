@@ -20,7 +20,10 @@ function ENT:CountTraitors()
 
     local trs = 0
     for _, ply in ipairs(player.GetAll()) do
-        if IsValid(ply) and ply:IsActiveTraitorTeam() and ply:Alive() then
+        if (IsValid(ply) and ply:Alive()) and
+                (ply:IsActiveTraitorTeam() or
+                (ply:IsActiveJesterTeam() and GetConVar("ttt_jesters_trigger_traitor_testers"):GetBool()) or
+                (ply:IsActiveIndependentTeam() and GetConVar("ttt_independents_trigger_traitor_testers"):GetBool())) then
             local pos = ply:GetPos()
             if VectorInside(pos, mins, maxs) then
                 trs = trs + 1

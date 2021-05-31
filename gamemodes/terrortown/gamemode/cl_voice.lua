@@ -91,7 +91,7 @@ end
 function GM:OnPlayerChat(ply, text, teamchat, dead)
     if not IsValid(ply) then return BaseClass.OnPlayerChat(self, ply, text, teamchat, dead) end
 
-    if ply:IsActiveDetective() or ((ply:IsActiveDeputy() or ply:IsActiveImpersonator()) and ply:GetNWBool("HasPromotion", false)) then
+    if ply:IsActiveDetectiveLike() then
         AddDetectiveText(ply, text)
         return true
     end

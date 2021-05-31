@@ -117,7 +117,7 @@ function GM:TTTScoreboardRowColorForPlayer(ply)
         return ply:GetRole()
     end
 
-    if ply:IsDetective() or ((ply:IsDeputy() or (ply:IsImpersonator() and not LocalPlayer():IsTraitorTeam())) and ply:GetNWBool("HasPromotion", false)) then
+    if ply:GetDetectiveLike() and not (ply:GetImpersonator() and LocalPlayer():IsTraitorTeam()) then
         return ROLE_DETECTIVE
     elseif ply:IsClown() and ply:GetNWBool("KillerClownActive", false) then
         return ROLE_CLOWN
@@ -129,7 +129,7 @@ function GM:TTTScoreboardRowColorForPlayer(ply)
             return ply:GetRole()
         elseif ply:IsGlitch() then
             return ROLE_TRAITOR
-        elseif ply:IsJesterTeam() or (ply:IsClown() and not ply:GetNWBool("KillerClownActive", false)) or ((ply:IsTraitor() or ply:IsInnocent()) and hideBeggar) then
+        elseif (ply:IsJesterTeam() and not ply:GetNWBool("KillerClownActive", false)) or ((ply:IsTraitor() or ply:IsInnocent()) and hideBeggar) then
             return ROLE_JESTER
         end
     end

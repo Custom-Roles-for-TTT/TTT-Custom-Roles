@@ -71,15 +71,17 @@ end
 function ScoreGroup(p)
     if not IsValid(p) then return -1 end -- will not match any group panel
 
+    local fake_dead = (p.IsFakeDead and p:IsFakeDead())
     local group = hook.Call("TTTScoreGroup", nil, p)
-
-    if group then
-        -- If that hook gave us a group, use it
+    -- Ignore the Dead Ringer's scoreboard override because it doesn't work with custom roles
+    -- Otherwise, if that hook gave us a group, use it
+    if group and not fake_dead then
         return group
     end
 
     if DetectiveMode() then
-        if p:IsSpec() and (not p:Alive()) then
+        -- Show players who used the Dead Ringer as "Dead"
+        if fake_dead or (p:IsSpec() and not p:Alive()) then
             if p:GetNWBool("body_searched", false) then
                 return GROUP_SEARCHED
             elseif p:GetNWBool("body_found", false) then
@@ -98,7 +100,7 @@ function ScoreGroup(p)
         end
     end
 
-    return p:IsTerror() and GROUP_TERROR or GROUP_SPEC
+    return group or (p:IsTerror() and GROUP_TERROR or GROUP_SPEC)
 end
 
 

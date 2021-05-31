@@ -181,6 +181,13 @@ function plymeta:ResetRoundFlags()
     self.traitor_gvoice = false
 
     self:SetNWBool("disguised", false)
+    -- If they had an "old model" that means they were disguised
+    -- Reset their model back to what they used before they put the disguise on
+    if self.oldmodel then
+        local SetMDL = FindMetaTable("Entity").SetModel
+        SetMDL(self, self.oldmodel)
+        self.oldmodel = nil
+    end
 
     -- karma
     self:SetCleanRound(true)
@@ -379,3 +386,25 @@ function plymeta:Ignite(dur, radius)
     self.ignite_info_ext = {dur = dur, end_time = CurTime() + dur}
     entmeta.Ignite(self, dur, radius)
 end
+
+-- Run these overrides when the round is preparing the first time to ensure their addons have been loaded
+hook.Add("TTTPrepareRound", "PostLoadOverride", function()
+    -- Compatibility with Dead Ringer (810154456)
+    if plymeta.DRuncloak then
+        local oldDRuncloak = plymeta.DRuncloak
+        -- Handle clearing search and corpse data when a Dead Ringer'd player uncloaks
+        function plymeta:DRuncloak()
+            self:SetNWBool("body_searched", false)
+            self:SetNWBool("det_called", false)
+            oldDRuncloak(self)
+
+            net.Start("TTT_RemoveCorpseCall")
+            -- Must be SteamID for Dead Ringer compatibility
+            net.WriteString(self:SteamID())
+            net.Broadcast()
+        end
+    end
+
+    -- These overrides are set, no reason to check every round
+    hook.Remove("TTTPrepareRound", "PostLoadOverride")
+end)
