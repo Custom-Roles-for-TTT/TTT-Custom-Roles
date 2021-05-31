@@ -23,14 +23,13 @@ end
 function ENT:AcceptInput(name, activator)
     if name == "TestActivator" then
         if IsValid(activator) and activator:IsPlayer() then
-            local activator_role = (GetRoundState() == ROUND_PREP) and ROLE_INNOCENT or activator:GetRole()
-
-            if (GetRoundState() ~= ROUND_PREP and self.Role == ROLE_TRAITOR and activator:IsTraitorTeam()) or -- Traitor team
-                    (self.Role == ROLE_INNOCENT and activator:IsInnocentTeam()) or  -- Innocent team
-                    (GetRoundState() ~= ROUND_PREP and self.Role == ROLE_TRAITOR and activator:IsJesterTeam() and GetConVar("ttt_jesters_trigger_traitor_testers"):GetBool()) -- Jester team
-                    (GetRoundState() ~= ROUND_PREP and self.Role == ROLE_TRAITOR and activator:IsIndependentTeam() and GetConVar("ttt_independents_trigger_traitor_testers"):GetBool()) -- Independent team
-                    (self.Role == activator_role) or -- Specific role check
-                    (self.Role == ROLE_ANY) then
+            local traitorTest = GetRoundState() ~= ROUND_PREP and self.Role == ROLE_TRAITOR and activator:IsTraitorTeam()
+            local innocentTest = GetRoundState() == ROUND_PREP or (self.Role == ROLE_INNOCENT and activator:IsInnocentTeam())
+            local jesterTest = GetRoundState() ~= ROUND_PREP and self.Role == ROLE_TRAITOR and activator:IsJesterTeam() and GetConVar("ttt_jesters_trigger_traitor_testers"):GetBool()
+            local independentTest = GetRoundState() ~= ROUND_PREP and self.Role == ROLE_TRAITOR and activator:IsIndependentTeam() and GetConVar("ttt_independents_trigger_traitor_testers"):GetBool()
+            local specificTest = GetRoundState() ~= ROUND_PREP and self.Role == activator:GetRole()
+            local anyTest = self.Role == ROLE_ANY
+            if traitorTest or innocentTest or jesterTest or independentTest or specificTest or anyTest then
                 Dev(2, activator, "passed logic_role test of", self:GetName())
                 self:TriggerOutput("OnPass", activator)
             else
