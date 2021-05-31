@@ -211,6 +211,22 @@ function GM:Move(ply, mv)
     end
 end
 
+function GetSprintMultiplier(ply, sprinting)
+    local mult = 1
+    if IsValid(ply) then
+        local mults = {}
+        hook.Run("TTTSpeedMultiplier", ply, mults)
+        for _, m in pairs(mults) do
+            mult = mult * m
+        end
+
+        if sprinting and ply.mult then
+            mult = mult * ply.mult
+        end
+    end
+    return mult
+end
+
 
 -- Weapons and items that come with TTT. Weapons that are not in this list will
 -- get a little marker on their icon if they're buyable, showing they are custom
