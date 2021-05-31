@@ -164,50 +164,36 @@ function PANEL:Paint(width, height)
 
     local roleStr = ""
     if c ~= rolecolor.default then
+        roleStr = ROLE_STRINGS_SHORT[c]
         if c == ROLE_DETECTIVE then
-            roleStr = "det"
             c = rolecolor.detective
         elseif c == ROLE_TRAITOR then
-            roleStr = "tra"
             c = rolecolor.traitor
         elseif c == ROLE_INNOCENT then
-            roleStr = "inn"
             c = rolecolor.innocent
         elseif c == ROLE_JESTER then
-            roleStr = "jes"
             c = rolecolor.jester
         elseif c == ROLE_SWAPPER then
-            roleStr = "swa"
             c = rolecolor.jester
         elseif c == ROLE_GLITCH then
-            roleStr = "gli"
             c = rolecolor.special_innocent
         elseif c == ROLE_PHANTOM then
-            roleStr = "pha"
             c = rolecolor.special_innocent
         elseif c == ROLE_HYPNOTIST then
-            roleStr = "hyp"
             c = rolecolor.special_traitor
         elseif c == ROLE_REVENGER then
-            roleStr = "rev"
             c = rolecolor.special_innocent
         elseif c == ROLE_DRUNK then
-            roleStr = "dru"
             c = rolecolor.independent
         elseif c == ROLE_CLOWN then
-            roleStr = "clo"
             c = rolecolor.jester
         elseif c == ROLE_DEPUTY then
-            roleStr = "dep"
             c = rolecolor.special_innocent
         elseif c == ROLE_IMPERSONATOR then
-            roleStr = "imp"
             c = rolecolor.special_traitor
         elseif c == ROLE_BEGGAR then
-            roleStr = "beg"
             c = rolecolor.jester
         elseif c == ROLE_OLDMAN then
-            roleStr = "old"
             c = rolecolor.independent
         end
     end

@@ -47,6 +47,43 @@ COLOR_DETECTIVE_DARK = Color(50, 60, 160, 255)
 COLOR_JESTER_DARK = Color(150, 50, 200, 255)
 COLOR_INDEPENDENT_DARK = Color(70, 30, 0, 255)
 
+-- Role strings
+ROLE_STRINGS = {
+    [ROLE_INNOCENT] = "innocent",
+    [ROLE_TRAITOR] = "traitor",
+    [ROLE_DETECTIVE] = "detective",
+    [ROLE_JESTER] = "jester",
+    [ROLE_SWAPPER] = "swapper",
+    [ROLE_GLITCH] = "glitch",
+    [ROLE_PHANTOM] = "phantom",
+    [ROLE_HYPNOTIST] = "hypnotist",
+    [ROLE_REVENGER] = "revenger",
+    [ROLE_DRUNK] = "drunk",
+    [ROLE_CLOWN] = "clown",
+    [ROLE_DEPUTY] = "deputy",
+    [ROLE_IMPERSONATOR] = "impersonator",
+    [ROLE_BEGGAR] = "beggar",
+    [ROLE_OLDMAN] = "oldman"
+};
+
+ROLE_STRINGS_SHORT = {
+    [ROLE_INNOCENT] = "inn",
+    [ROLE_TRAITOR] = "tra",
+    [ROLE_DETECTIVE] = "det",
+    [ROLE_JESTER] = "jes",
+    [ROLE_SWAPPER] = "swa",
+    [ROLE_GLITCH] = "gli",
+    [ROLE_PHANTOM] = "pha",
+    [ROLE_HYPNOTIST] = "hyp",
+    [ROLE_REVENGER] = "rev",
+    [ROLE_DRUNK] = "dru",
+    [ROLE_CLOWN] = "clo",
+    [ROLE_DEPUTY] = "dep",
+    [ROLE_IMPERSONATOR] = "imp",
+    [ROLE_BEGGAR] = "beg",
+    [ROLE_OLDMAN] = "old"
+};
+
 -- Game event log defs
 EVENT_KILL = 1
 EVENT_SPAWN = 2
