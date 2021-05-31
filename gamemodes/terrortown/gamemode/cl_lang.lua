@@ -6,6 +6,8 @@
 -- have far more control. Maybe it's slower, but maybe not, we aren't scanning
 -- strings for "#identifiers" after all.
 
+include("shared.lua")
+
 LANG.Strings = {}
 
 CreateConVar("ttt_language", "auto", FCVAR_ARCHIVE)
@@ -200,24 +202,6 @@ end
 
 ---- Styling
 
-local bgcolor = {
-    [ROLE_INNOCENT] = COLOR_INNOCENT,
-    [ROLE_TRAITOR] = COLOR_TRAITOR,
-    [ROLE_DETECTIVE] = COLOR_DETECTIVE,
-    [ROLE_JESTER] = COLOR_JESTER,
-    [ROLE_SWAPPER] = COLOR_JESTER,
-    [ROLE_GLITCH] = COLOR_SPECIAL_INNOCENT,
-    [ROLE_PHANTOM] = COLOR_SPECIAL_INNOCENT,
-    [ROLE_HYPNOTIST] = COLOR_SPECIAL_TRAITOR,
-    [ROLE_REVENGER] = COLOR_SPECIAL_INNOCENT,
-    [ROLE_DRUNK] = COLOR_INDEPENDENT,
-    [ROLE_CLOWN] = COLOR_JESTER,
-    [ROLE_DEPUTY] = COLOR_SPECIAL_INNOCENT,
-    [ROLE_IMPERSONATOR] = COLOR_SPECIAL_TRAITOR,
-    [ROLE_BEGGAR] = COLOR_JESTER,
-    [ROLE_OLDMAN] = COLOR_INDEPENDENT
-};
-
 -- Table of styles that can take a string and display it in some position,
 -- colour, etc.
 LANG.Styles = {
@@ -228,7 +212,7 @@ LANG.Styles = {
 
     rolecolour = function(text)
         MSTACK:AddColoredBgMessage(text,
-                bgcolor[LocalPlayer():GetRole()])
+                ROLE_COLORS[LocalPlayer():GetRole()])
         print("TTT:   " .. text)
     end,
 
