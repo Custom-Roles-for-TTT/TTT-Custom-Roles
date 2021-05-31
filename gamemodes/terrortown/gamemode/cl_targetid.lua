@@ -59,7 +59,7 @@ function GM:PostDrawTranslucentRenderables()
         if v:IsActive() and v ~= client and not hidden then
             pos = v:GetPos()
             pos.z = pos.z + 74
-            if v:GetDetective() or ((v:GetDeputy() or (v:GetImpersonator() and not client:IsTraitorTeam())) and v:GetNWBool("HasPromotion", false)) then
+            if v:GetDetectiveLike() and not (v:GetImpersonator() and client:IsTraitorTeam()) then
                 render.SetMaterial(indicator_mat_det)
                 render.DrawQuadEasy(pos, dir, 8, 8, indicator_col, 180)
             elseif v:GetClown() and v:GetNWBool("KillerClownActive", false) then

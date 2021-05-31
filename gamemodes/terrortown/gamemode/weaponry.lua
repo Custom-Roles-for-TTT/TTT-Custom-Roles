@@ -392,7 +392,7 @@ local function OrderEquipment(ply, cmd, args)
     elseif swep_table then
         -- weapon whitelist check
         if (not table.HasValue(swep_table.CanBuy, ply:GetRole()) and (not canBuyList[id] or (canBuyList[id] and not (table.HasValue(canBuyList[id], ply:GetRole()))))
-                and not (table.HasValue(swep_table.CanBuy, ROLE_DETECTIVE) and ply:GetNWBool("HasPromotion", false) and (ply:GetDeputy() or ply:GetImpersonator()))) then
+                and not (table.HasValue(swep_table.CanBuy, ROLE_DETECTIVE) and ply:GetDetectiveLike())) then
             print(ply, "tried to buy weapon his role is not permitted to buy")
             return
         end

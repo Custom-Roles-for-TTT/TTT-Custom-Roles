@@ -14,7 +14,6 @@ AccessorFunc(plymeta, "role", "Role", FORCE_NUMBER)
 function plymeta:GetTraitor() return self:GetRole() == ROLE_TRAITOR end
 function plymeta:GetInnocent() return self:GetRole() == ROLE_INNOCENT end
 function plymeta:GetDetective() return self:GetRole() == ROLE_DETECTIVE end
-function plymeta:GetDetectiveLike() return self:GetDetective() or ((self:GetDeputy() or self:GetImpersonator()) and self:GetNWBool("HasPromotion", false)) end
 function plymeta:GetJester() return self:GetRole() == ROLE_JESTER end
 function plymeta:GetSwapper() return self:GetRole() == ROLE_SWAPPER end
 function plymeta:GetGlitch() return self:GetRole() == ROLE_GLITCH end
@@ -28,10 +27,11 @@ function plymeta:GetImpersonator() return self:GetRole() == ROLE_IMPERSONATOR en
 function plymeta:GetBeggar() return self:GetRole() == ROLE_BEGGAR end
 function plymeta:GetOldMan() return self:GetRole() == ROLE_OLDMAN end
 
+function plymeta:GetDetectiveLike() return self:GetDetective() or ((self:GetDeputy() or self:GetImpersonator()) and self:GetNWBool("HasPromotion", false)) end
+
 plymeta.IsTraitor = plymeta.GetTraitor
 plymeta.IsInnocent = plymeta.GetInnocent
 plymeta.IsDetective = plymeta.GetDetective
-plymeta.IsDetectiveLike = plymeta.GetDetectiveLike
 plymeta.IsJester = plymeta.GetJester
 plymeta.IsSwapper = plymeta.GetSwapper
 plymeta.IsGlitch = plymeta.GetGlitch
@@ -44,6 +44,8 @@ plymeta.IsDeputy = plymeta.GetDeputy
 plymeta.IsImpersonator = plymeta.GetImpersonator
 plymeta.IsBeggar = plymeta.GetBeggar
 plymeta.IsOldMan = plymeta.GetOldMan
+
+plymeta.IsDetectiveLike = plymeta.GetDetectiveLike
 
 function plymeta:IsSpecial() return self:GetRole() ~= ROLE_INNOCENT end
 function plymeta:IsCustom()
@@ -64,7 +66,6 @@ function plymeta:IsActiveRole(role) return self:IsRole(role) and self:IsActive()
 function plymeta:IsActiveTraitor() return self:IsActiveRole(ROLE_TRAITOR) end
 function plymeta:IsActiveInnocent() return self:IsActiveRole(ROLE_INNOCENT) end
 function plymeta:IsActiveDetective() return self:IsActiveRole(ROLE_DETECTIVE) end
-function plymeta:IsActiveDetectiveLike() return self:IsActive() and self:IsDetectiveLike() end
 function plymeta:IsActiveJester() return self:IsActiveRole(ROLE_JESTER) end
 function plymeta:IsActiveSwapper() return self:IsActiveRole(ROLE_SWAPPER) end
 function plymeta:IsActiveGlitch() return self:IsActiveRole(ROLE_GLITCH) end
@@ -81,6 +82,8 @@ function plymeta:IsActiveOldMan() return self:IsActiveRole(ROLE_OLDMAN) end
 function plymeta:IsActiveSpecial() return self:IsSpecial() and self:IsActive() end
 function plymeta:IsActiveCustom() return self:IsCustom() and self:IsActive() end
 function plymeta:IsActiveShopRole() return self:IsShopRole() and self:IsActive() end
+
+function plymeta:IsActiveDetectiveLike() return self:IsActive() and self:IsDetectiveLike() end
 
 -- functions to group individual roles into teams
 function plymeta:IsTraitorTeam()

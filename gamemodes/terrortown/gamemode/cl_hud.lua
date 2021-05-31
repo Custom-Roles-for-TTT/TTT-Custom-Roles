@@ -364,7 +364,7 @@ local function InfoPaint(client)
         surface.DrawText(text)
     end
 
-    if (client:IsDeputy() or client:IsImpersonator()) and client:GetNWBool("HasPromotion", false) then
+    if client:IsDetectiveLike() and not client:IsDetective() then
         surface.SetFont("TabLarge")
         surface.SetTextColor(255, 255, 255, 230)
 
