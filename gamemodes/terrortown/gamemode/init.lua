@@ -176,6 +176,14 @@ CreateConVar("ttt_namechange_bantime", "10")
 
 CreateConVar("ttt_detective_search_only", "1", FCVAR_REPLICATED)
 
+CreateConVar("ttt_shop_random_percent", "50", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown by default", 0, 100)
+for _, role in pairs(SHOP_ROLES) do
+    local shortstring = ROLE_STRINGS_SHORT[role]
+    local rolestring = ROLE_STRINGS[role]
+    CreateConVar("ttt_shop_random_" .. shortstring .. "_percent", "0", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown for the " .. rolestring, 0, 100)
+    CreateConVar("ttt_shop_random_" .. shortstring .. "_enabled", "0", FCVAR_REPLICATED, "Whether shop randomization should run for the " .. rolestring)
+end
+
 -- bem server convars
 CreateConVar("ttt_bem_allow_change", 1, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Allow clients to change the look of the Traitor/Detective menu")
 CreateConVar("ttt_bem_sv_cols", 4, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Sets the number of columns in the Traitor/Detective menu's item list (serverside)")
@@ -248,6 +256,8 @@ util.AddNetworkString("TTT_SpawnedPlayers")
 util.AddNetworkString("TTT_ResetScoreboard")
 util.AddNetworkString("TTT_UpdateRevengerLoverKiller")
 util.AddNetworkString("TTT_UpdateOldManWins")
+util.AddNetworkString("TTT_BuyableWeapons")
+util.AddNetworkString("TTT_ResetBuyableWeaponsCache")
 
 local jester_killed = false
 local revenger_lover = nil
@@ -348,6 +358,13 @@ function GM:SyncGlobals()
 
     SetGlobalBool("ttt_detective_search_only", GetConVar("ttt_detective_search_only"):GetBool())
     SetGlobalBool("ttt_reveal_beggar_change", GetConVar("ttt_reveal_beggar_change"):GetBool())
+
+    SetGlobalInt("ttt_shop_random_percent", GetConVar("ttt_shop_random_percent"):GetInt())
+    for _, role in pairs(SHOP_ROLES) do
+        local shortstring = ROLE_STRINGS_SHORT[role]
+        SetGlobalInt("ttt_shop_random_" .. shortstring .. "_percent", GetConVar("ttt_shop_random_" .. shortstring .. "_percent"):GetInt())
+        SetGlobalBool("ttt_shop_random_" .. shortstring .. "_enabled", GetConVar("ttt_shop_random_" .. shortstring .. "_enabled"):GetBool())
+    end
 
     SetGlobalBool("sv_voiceenable", GetConVar("sv_voiceenable"):GetBool())
 end
@@ -608,6 +625,9 @@ function PrepareRound()
     -- Update damage scaling
     KARMA.RoundBegin()
 
+    WEPS.ResetWeaponsCache()
+    WEPS.ResetRoleWeaponCache()
+
     -- New look. Random if no forced model set.
     GAMEMODE.playermodel = GAMEMODE.force_plymodel == "" and GetRandomPlayerModel() or GAMEMODE.force_plymodel
     GAMEMODE.playercolor = hook.Call("TTTPlayerColor", GAMEMODE, GAMEMODE.playermodel)
@@ -787,6 +807,7 @@ function BeginRound()
 
     if CheckForAbort() then return end
 
+    HandleRoleEquipment()
     InitRoundEndTime()
 
     if CheckForAbort() then return end
@@ -1542,3 +1563,64 @@ end)
 hook.Add("TTTPlayerSpeedModifier", "TTTSprintPlayerSpeed", function(ply, _, _)
     return GetSprintMultiplier(ply, ply.mult ~= nil)
 end)
+
+-- If this logic or the list of roles who can buy is changed, it must also be updated in weaponry.lua and cl_equip.lua
+-- This also sends a cache reset request to every client so that things like shop randomization happen every round
+function HandleRoleEquipment()
+    local handled = false
+    for id, name in pairs(ROLE_STRINGS) do
+        WEPS.PrepWeaponsLists(id)
+        local rolefiles, _ = file.Find("roleweapons/" .. name .. "/*.txt", "DATA")
+        local roleexcludes = { }
+        local roleenorandoms = { }
+        local roleweapons = { }
+        for _, v in pairs(rolefiles) do
+            local exclude = false
+            local norandom = false
+            -- Extract the weapon name from the file name
+            local lastdotpos = v:find("%.")
+            local weaponname = v:sub(0, lastdotpos - 1)
+
+            -- Check that there isn't a two-part extension (e.g. "something.exclude.txt")
+            local extension = v:sub(lastdotpos + 1, string.len(v))
+            lastdotpos = extension:find("%.")
+
+            -- If there is, check if it equals "exclude"
+            if lastdotpos ~= nil then
+                extension = extension:sub(0, lastdotpos - 1)
+                if extension:lower() == "exclude" then
+                    exclude = true
+                elseif extension:lower() == "norandom" then
+                    norandom = true
+                end
+            end
+
+            if exclude then
+                table.insert(WEPS.ExcludeWeapons[id], weaponname)
+                table.insert(roleexcludes, weaponname)
+            elseif norandom then
+                table.insert(WEPS.BypassRandomWeapons[id], weaponname)
+                table.insert(roleenorandoms, weaponname)
+            else
+                table.insert(WEPS.BuyableWeapons[id], weaponname)
+                table.insert(roleweapons, weaponname)
+            end
+        end
+
+        if #roleweapons > 0 or #roleexcludes > 0 or #roleenorandoms > 0 then
+            net.Start("TTT_BuyableWeapons")
+            net.WriteInt(id, 16)
+            net.WriteTable(roleweapons)
+            net.WriteTable(roleexcludes)
+            net.WriteTable(roleenorandoms)
+            net.Broadcast()
+            handled = true
+        end
+    end
+
+    -- Send this once if the roleweapons feature wasn't used (which resets the cache on its own)
+    if not handled then
+        net.Start("TTT_ResetBuyableWeaponsCache")
+        net.Broadcast()
+    end
+end

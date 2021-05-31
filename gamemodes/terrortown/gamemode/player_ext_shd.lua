@@ -53,8 +53,7 @@ function plymeta:IsCustom()
     return role ~= ROLE_INNOCENT and role ~= ROLE_TRAITOR and role ~= ROLE_DETECTIVE
 end
 function plymeta:IsShopRole()
-    local role = self:GetRole()
-    return role == ROLE_TRAITOR or role == ROLE_DETECTIVE or role == ROLE_HYPNOTIST or role == ROLE_DEPUTY or role == ROLE_IMPERSONATOR
+    return table.HasValue(SHOP_ROLES, self:GetRole())
 end
 
 -- Player is alive and in an active round

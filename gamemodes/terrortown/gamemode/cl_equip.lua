@@ -1,3 +1,5 @@
+include("shared.lua")
+
 ---- Traitor equipment menu
 
 local GetTranslation = LANG.GetTranslation
@@ -14,80 +16,123 @@ local showSlotVar = CreateClientConVar("ttt_bem_marker_slot", 1, true, false, "S
 -- Buyable weapons are loaded automatically. Buyable items are defined in
 -- equip_items_shd.lua
 
--- override preexisting weapons
-local canBuyList = {
-    weapon_ttt_health_station = { ROLE_TRAITOR, ROLE_HYPNOTIST, ROLE_IMPERSONATOR },
-    weapon_vadim_defib = { ROLE_HYPNOTIST, ROLE_IMPERSONATOR }
-}
+local Equipment = { }
 
-local Equipment = nil
-function GetEquipmentForRole(role, extra)
-    -- start with all the non-weapon goodies
-    local tbl = table.Copy(EquipmentItems)
+local function UpdateWeaponList(role, list, weapon)
+    if not table.HasValue(list[role], weapon) then
+        table.insert(list[role], weapon)
+    end
+end
 
-    -- find buyable weapons to load info from
-    for k, v in pairs(weapons.GetList()) do
-        if v and (v.CanBuy or canBuyList[WEPS.GetClass(v)]) then
-            local data = v.EquipMenuData or {}
-            local base = {
-                id = WEPS.GetClass(v),
-                name = v.PrintName or "Unnamed",
-                limited = v.LimitedStock,
-                kind = v.Kind or WEAPON_NONE,
-                slot = (v.Slot or 0) + 1,
-                material = v.Icon or "vgui/ttt/icon_id",
-                -- the below should be specified in EquipMenuData, in which case
-                -- these values are overwritten
-                type = "Type not specified",
-                model = "models/weapons/w_bugbait.mdl",
-                desc = "No description specified."
-            };
+local function ResetWeaponsCache()
+    -- Clear the weapon cache for each role
+    for role, _ in pairs(ROLE_STRINGS) do
+        Equipment[role] = nil
+    end
+    -- Clear the overall weapons cache
+    Equipment = {}
+    WEPS.ResetWeaponsCache()
+end
 
-            -- Force material to nil so that model key is used when we are
-            -- explicitly told to do so (ie. material is false rather than nil).
-            if data.modelicon then
-                base.material = nil
-            end
+net.Receive("TTT_ResetBuyableWeaponsCache", function()
+    ResetWeaponsCache()
+end)
 
-            table.Merge(base, data)
+net.Receive("TTT_BuyableWeapons", function()
+    local role = net.ReadInt(16)
+    WEPS.PrepWeaponsLists(role)
+    ResetWeaponsCache()
 
-            -- add this buyable weapon to all relevant equipment tables
-            if v.CanBuy then
+    local roleweapons = net.ReadTable()
+    for _, v in pairs(roleweapons) do
+        UpdateWeaponList(role, WEPS.BuyableWeapons, v)
+    end
+    local excludeweapons = net.ReadTable()
+    for _, v in pairs(excludeweapons) do
+        UpdateWeaponList(role, WEPS.ExcludeWeapons, v)
+    end
+    local norandomweapons = net.ReadTable()
+    for _, v in pairs(norandomweapons) do
+        UpdateWeaponList(role, WEPS.BypassRandomWeapons, v)
+    end
+end)
+
+local function ItemIsWeapon(item) return not tonumber(item.id) end
+
+function GetEquipmentForRole(role, extra, block_randomization)
+    WEPS.PrepWeaponsLists(role)
+
+    -- Pre-load the Detective weapons so any that have their CanBuy modified will also apply to the 'extra' check
+    if extra and not Equipment[ROLE_DETECTIVE] then
+        GetEquipmentForRole(ROLE_DETECTIVE, false, true)
+    end
+
+    -- Cache the equipment
+    if not Equipment[role] then
+        -- start with all the non-weapon goodies
+        local tbl = table.Copy(EquipmentItems)
+
+        -- find buyable weapons to load info from
+        for _, v in pairs(weapons.GetList()) do
+            WEPS.HandleCanBuyOverrides(v, role, extra, block_randomization)
+            if v and v.CanBuy then
+                local data = v.EquipMenuData or {}
+                local base = {
+                    id = WEPS.GetClass(v),
+                    name = v.PrintName or "Unnamed",
+                    limited = v.LimitedStock,
+                    kind = v.Kind or WEAPON_NONE,
+                    slot = (v.Slot or 0) + 1,
+                    material = v.Icon or "vgui/ttt/icon_id",
+                    -- the below should be specified in EquipMenuData, in which case
+                    -- these values are overwritten
+                    type = "Type not specified",
+                    model = "models/weapons/w_bugbait.mdl",
+                    desc = "No description specified."
+                };
+
+                -- Force material to nil so that model key is used when we are
+                -- explicitly told to do so (ie. material is false rather than nil).
+                if data.modelicon then
+                    base.material = nil
+                end
+
+                table.Merge(base, data)
+
+                -- add this buyable weapon to all relevant equipment tables
                 for _, r in pairs(v.CanBuy) do
                     table.insert(tbl[r], base)
-                    if extra then
-                        if r == ROLE_DETECTIVE and (role == ROLE_DEPUTY or role == ROLE_IMPERSONATOR) then
-                            table.insert(tbl[role], base)
-                        end
-                    end
-                end
-            end
-
-            if canBuyList[WEPS.GetClass(v)] then
-                for _, r in pairs(canBuyList[WEPS.GetClass(v)]) do
-                    if not table.HasValue(tbl[r], base) then
-                        table.insert(tbl[r], base)
-                    end
                 end
             end
         end
-    end
 
-    -- mark custom items
-    for r, is in pairs(tbl) do
-        for _, i in pairs(is) do
-            if i and i.id then
-                i.custom = not table.HasValue(DefaultEquipment[r], i.id)
+        -- Also check the extra buyable equipment
+        for _, v in pairs(WEPS.BuyableWeapons[role]) do
+            -- If this isn't a weapon, get its information from one of the roles and compare that to the ID we have
+            if not weapons.GetStored(v) then
+                local equip = GetEquipmentItemByName(v)
+                if equip ~= nil then
+                    table.insert(tbl[role], equip)
+                    break
+                end
             end
         end
-    end
 
-    Equipment = tbl
+        -- Mark custom items
+        for r, is in pairs(tbl) do
+            for _, i in pairs(is) do
+                if i and i.id then
+                    i.custom = not table.HasValue(DefaultEquipment[r], i.id)
+                end
+            end
+        end
+
+        Equipment[role] = tbl[role]
+    end
 
     return Equipment and Equipment[role] or {}
 end
 
-local function ItemIsWeapon(item) return not tonumber(item.id) end
 local function CanCarryWeapon(item) return LocalPlayer():CanCarryType(item.kind) end
 
 local color_bad = Color(220, 60, 60, 255)
@@ -205,8 +250,6 @@ function CreateFavTable()
     if not sql.TableExists("ttt_bem_fav") then
         local query = "CREATE TABLE ttt_bem_fav (guid TEXT, role TEXT, weapon_id TEXT)"
         sql.Query(query)
-    else
-        print("ALREADY EXISTS")
     end
 end
 

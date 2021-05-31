@@ -151,11 +151,43 @@ function GetEquipmentItem(role, id)
     local tbl = EquipmentItems[role]
     if not tbl then return end
 
-    for k, v in pairs(tbl) do
+    for _, v in pairs(tbl) do
         if v and v.id == id then
             return v
         end
     end
+end
+
+EquipmentCache = nil
+local function PopulateEquipmentCache()
+    if EquipmentCache ~= nil then return end
+
+    EquipmentCache = {}
+    for _, role_tbl in pairs(EquipmentItems) do
+        for _, equip in pairs(role_tbl) do
+            if not EquipmentCache[equip.id] then
+                EquipmentCache[equip.id] = equip
+            end
+        end
+    end
+end
+
+function GetEquipmentItemById(id)
+    PopulateEquipmentCache()
+
+    return EquipmentCache[id]
+end
+
+function GetEquipmentItemByName(name)
+    PopulateEquipmentCache()
+
+    for _, equip in pairs(EquipmentCache) do
+        if string.lower(equip.name) == string.lower(name) then
+            return equip
+        end
+    end
+
+    return nil
 end
 
 -- Utility function to register a new Equipment ID
