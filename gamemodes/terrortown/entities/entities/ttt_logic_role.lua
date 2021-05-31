@@ -27,8 +27,8 @@ function ENT:AcceptInput(name, activator)
 
             if (GetRoundState() ~= ROUND_PREP and self.Role == ROLE_TRAITOR and activator:IsTraitorTeam()) or -- Traitor team
                     (self.Role == ROLE_INNOCENT and activator:IsInnocentTeam()) or  -- Innocent team
-                    (self.Role == ROLE_TRAITOR and activator:IsJesterTeam() and GetConVar("ttt_jesters_trigger_traitor_testers"):GetBool()) -- Jester team
-                    (self.Role == ROLE_TRAITOR and activator:IsIndependentTeam() and GetConVar("ttt_independents_trigger_traitor_testers"):GetBool()) -- Independent team
+                    (GetRoundState() ~= ROUND_PREP and self.Role == ROLE_TRAITOR and activator:IsJesterTeam() and GetConVar("ttt_jesters_trigger_traitor_testers"):GetBool()) -- Jester team
+                    (GetRoundState() ~= ROUND_PREP and self.Role == ROLE_TRAITOR and activator:IsIndependentTeam() and GetConVar("ttt_independents_trigger_traitor_testers"):GetBool()) -- Independent team
                     (self.Role == activator_role) or -- Specific role check
                     (self.Role == ROLE_ANY) then
                 Dev(2, activator, "passed logic_role test of", self:GetName())
