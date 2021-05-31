@@ -161,7 +161,7 @@ if CLIENT then
                     0,
                     0,
                     255 * alpha)
-        elseif client:IsJesterTeam() or client:IsClown() then
+        elseif client:IsJesterTeam() then
             surface.SetDrawColor(255 * bright,
                     50 * bright,
                     255 * bright,

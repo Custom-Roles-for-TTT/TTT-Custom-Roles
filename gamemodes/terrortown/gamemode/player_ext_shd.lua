@@ -96,11 +96,11 @@ function plymeta:IsInnocentTeam()
 end
 function plymeta:IsJesterTeam()
     local role = self:GetRole()
-    return role == ROLE_JESTER or role == ROLE_SWAPPER or role == ROLE_BEGGAR
+    return role == ROLE_JESTER or role == ROLE_SWAPPER or role == ROLE_CLOWN or role == ROLE_BEGGAR
 end
 function plymeta:IsIndependentTeam()
     local role = self:GetRole()
-    return role == ROLE_DRUNK or role == ROLE_CLOWN or role == ROLE_OLDMAN
+    return role == ROLE_DRUNK or role == ROLE_OLDMAN
 end
 function plymeta:IsActiveTraitorTeam() return self:IsTraitorTeam() and self:IsActive() end
 function plymeta:IsActiveInnocentTeam() return self:IsInnocentTeam() and self:IsActive() end

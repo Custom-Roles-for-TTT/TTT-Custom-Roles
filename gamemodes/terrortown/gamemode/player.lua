@@ -900,16 +900,16 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
     end
 
     -- Jesters deal no damage and cant take environmental damage
-    if (ply:IsJesterTeam() or (ply:IsClown() and not ply:GetNWBool("KillerClownActive", false))) and GetRoundState() >= ROUND_ACTIVE then
+    if (ply:IsJesterTeam() and not ply:GetNWBool("KillerClownActive", false)) and GetRoundState() >= ROUND_ACTIVE then
         if dmginfo:IsBulletDamage() or dmginfo:IsFallDamage() or dmginfo:IsDamageType(DMG_CRUSH) or dmginfo:IsDamageType(DMG_CLUB) then
         else dmginfo:ScaleDamage(0) end
     end
 
-    if (ply:IsJesterTeam() or (ply:IsClown() and not ply:GetNWBool("KillerClownActive", false))) and GetRoundState() >= ROUND_ACTIVE and dmginfo:IsExplosionDamage() then
+    if (ply:IsJesterTeam() and not ply:GetNWBool("KillerClownActive", false)) and GetRoundState() >= ROUND_ACTIVE and dmginfo:IsExplosionDamage() then
         dmginfo:ScaleDamage(0)
     end
 
-    if ply:IsPlayer() and dmginfo:GetAttacker():IsPlayer() and (dmginfo:GetAttacker():IsJesterTeam() or (dmginfo:GetAttacker():IsClown() and not dmginfo:GetAttacker():GetNWBool("KillerClownActive", false))) and GetRoundState() >= ROUND_ACTIVE then
+    if ply:IsPlayer() and dmginfo:GetAttacker():IsPlayer() and (dmginfo:GetAttacker():IsJesterTeam() and not dmginfo:GetAttacker():GetNWBool("KillerClownActive", false)) and GetRoundState() >= ROUND_ACTIVE then
         dmginfo:ScaleDamage(0)
     end
 
@@ -980,7 +980,7 @@ local fallsounds = {
 };
 
 function GM:OnPlayerHitGround(ply, in_water, on_floater, speed)
-    if (ply:IsJesterTeam() or (ply:IsClown() and not ply:GetNWBool("KillerClownActive", false))) and GetRoundState() >= ROUND_ACTIVE then
+    if (ply:IsJesterTeam() and not ply:GetNWBool("KillerClownActive", false)) and GetRoundState() >= ROUND_ACTIVE then
     else
         if in_water or speed < 450 or not IsValid(ply) then return end
 
