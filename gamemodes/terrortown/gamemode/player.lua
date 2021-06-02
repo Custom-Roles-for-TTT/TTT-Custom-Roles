@@ -1055,7 +1055,7 @@ end
 -- No damage during prep, etc
 function GM:EntityTakeDamage(ent, dmginfo)
     if SERVER then
-        if (ent:IsPlayer() and ent:IsJesterTeam() and GetRoundState() >= ROUND_ACTIVE) then
+        if (ent:IsPlayer() and ent:IsJesterTeam() and not ent:GetNWBool("KillerClownActive", false) and GetRoundState() >= ROUND_ACTIVE) then
             if dmginfo:IsExplosionDamage() or dmginfo:IsDamageType(DMG_BURN) or dmginfo:IsDamageType(DMG_CRUSH) or dmginfo:IsDamageType(DMG_FALL) or dmginfo:IsDamageType(DMG_DROWN) then
                 -- check its burn or explosion.
                 dmginfo:ScaleDamage(0) -- no damage
@@ -1066,7 +1066,7 @@ function GM:EntityTakeDamage(ent, dmginfo)
     if not IsValid(ent) then return end
     local att = dmginfo:GetAttacker()
 
-    if att:IsPlayer() and att:IsJesterTeam() and GetRoundState() >= ROUND_ACTIVE then
+    if att:IsPlayer() and att:IsJesterTeam() and not att:GetNWBool("KillerClownActive", false) and GetRoundState() >= ROUND_ACTIVE then
         dmginfo:ScaleDamage(0)
         dmginfo:SetDamage(0)
     end
@@ -1233,7 +1233,7 @@ function GM:PlayerTakeDamage(ent, infl, att, amount, dmginfo)
             dmginfo:SetInflictor(ignite_info.infl)
 
             -- Set burning damage from jester team to zero, regardless of source
-            if ignite_info.att:IsJesterTeam() then
+            if ignite_info.att:IsJesterTeam() and not ignite_info.att:GetNWBool("KillerClownActive", false) then
                 dmginfo:ScaleDamage(0)
                 dmginfo:SetDamage(0)
             end
@@ -1396,7 +1396,7 @@ concommand.Add("ttt_kill_from_random", function(ply, cmd, args)
 
     local killer = nil
     for _, v in RandomPairs(player.GetAll()) do
-        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not v:IsJesterTeam() then
+        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not (v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) then
             killer = v
             break
         end
@@ -1413,7 +1413,7 @@ concommand.Add("ttt_kill_from_player", function(ply, cmd, args)
     local killer_name = args[1]
     local killer = nil
     for _, v in RandomPairs(player.GetAll()) do
-        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not v:IsJesterTeam() and v:Nick() == killer_name then
+        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not (v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) and v:Nick() == killer_name then
             killer = v
             break
         end

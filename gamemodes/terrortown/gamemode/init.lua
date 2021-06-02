@@ -1089,7 +1089,7 @@ function GM:TTTCheckForWin()
         if v:Alive() and v:IsTerror() then
             if v:IsTraitorTeam() then
                 traitor_alive = true
-            elseif v:IsJesterTeam() then
+            elseif v:IsJester() then
                 jester_alive = true
             elseif v:IsDrunk() then
                 drunk_alive = true
@@ -1110,20 +1110,12 @@ function GM:TTTCheckForWin()
 
     local win_type = WIN_NONE
 
-    if traitor_alive and not innocent_alive and jester_alive then
-        win_type = WIN_TRAITOR
-    elseif traitor_alive and not innocent_alive and not jester_alive and not jester_killed then
-        win_type = WIN_TRAITOR
-    elseif not traitor_alive and innocent_alive and jester_alive then
-        win_type = WIN_INNOCENT
-    elseif not traitor_alive and innocent_alive and not jester_alive and not jester_killed then
-        win_type = WIN_INNOCENT
-    elseif not innocent_alive and jester_alive then
-        win_type = WIN_TRAITOR
-    elseif not innocent_alive and not jester_alive and not jester_killed then
-        win_type = WIN_TRAITOR
-    elseif jester_killed then
+    if jester_killed then
         win_type = WIN_JESTER
+    elseif not innocent_alive then
+        win_type = WIN_TRAITOR
+    elseif not traitor_alive then
+        win_type = WIN_INNOCENT
     end
 
     -- Drunk logic
