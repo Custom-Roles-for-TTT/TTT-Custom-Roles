@@ -329,7 +329,7 @@ function KARMA.Remember(ply)
     end
 
     -- if persist is on, this is purely a backup method
-    KARMA.RememberedPlayers[ply:SteamID()] = ply:GetLiveKarma()
+    KARMA.RememberedPlayers[ply:SteamID64()] = ply:GetLiveKarma()
 end
 
 function KARMA.Recall(ply)
@@ -344,11 +344,11 @@ function KARMA.Recall(ply)
         end
     end
 
-    return KARMA.RememberedPlayers[ply:SteamID()]
+    return KARMA.RememberedPlayers[ply:SteamID64()]
 end
 
 function KARMA.LateRecallAndSet(ply)
-    local k = tonumber(ply:GetPData("karma_stored", KARMA.RememberedPlayers[ply:SteamID()]))
+    local k = tonumber(ply:GetPData("karma_stored", KARMA.RememberedPlayers[ply:SteamID64()]))
     if k and k < ply:GetLiveKarma() then
         ply:SetBaseKarma(k)
         ply:SetLiveKarma(k)
@@ -376,7 +376,7 @@ function KARMA.CheckAutoKick(ply)
         if config.persist:GetBool() then
             local k = math.Clamp(config.starting:GetFloat() * 0.8, config.kicklevel:GetFloat() * 1.1, config.max:GetFloat())
             ply:SetPData("karma_stored", k)
-            KARMA.RememberedPlayers[ply:SteamID()] = k
+            KARMA.RememberedPlayers[ply:SteamID64()] = k
         end
 
         if config.autoban:GetBool() then

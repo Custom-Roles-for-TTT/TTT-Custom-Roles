@@ -104,7 +104,7 @@ local function IdentifyBody(ply, rag)
     -- Register find
     if not CORPSE.GetFound(rag, false) then
         -- will return either false or a valid ply
-        local deadply = player.GetBySteamID(rag.sid)
+        local deadply = player.GetBySteamID64(rag.sid64) or player.GetBySteamID(rag.sid)
         if deadply then
             deadply:SetNWBool("body_searched", true)
             deadply:SetNWBool("body_found", true)
@@ -124,9 +124,9 @@ local function IdentifyBody(ply, rag)
     end
 
     -- Handle kill list
-    for k, vicsid in pairs(rag.kills) do
+    for _, vicsid in pairs(rag.kills) do
         -- filter out disconnected
-        local vic = player.GetBySteamID(vicsid)
+        local vic = player.GetBySteamID64(vicsid) or player.GetBySteamID(vicsid)
 
         -- is this an unconfirmed dead?
         if IsValid(vic) and (not vic:GetNWBool("body_searched", false)) and (not vic:GetNWBool("body_found", false)) then
@@ -241,7 +241,7 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
     local hshot = rag.was_headshot or false
     local dtime = rag.time or 0
 
-    local ownerEnt = player.GetBySteamID(rag.sid)
+    local ownerEnt = player.GetBySteamID64(rag.sid64) or player.GetBySteamID(rag.sid)
     local owner = IsValid(ownerEnt) and ownerEnt:EntIndex() or -1
 
     -- basic sanity check
@@ -294,9 +294,9 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
 
     -- build list of people this traitor killed
     local kill_entids = {}
-    for k, vicsid in pairs(rag.kills) do
+    for _, vicsid in pairs(rag.kills) do
         -- also send disconnected players as a marker
-        local vic = player.GetBySteamID(vicsid)
+        local vic = player.GetBySteamID64(vicsid) or player.GetBySteamID(vicsid)
         table.insert(kill_entids, IsValid(vic) and vic:EntIndex() or -1)
     end
 
@@ -373,6 +373,7 @@ local function GetKillerSample(victim, attacker, dmg)
     local sample = {}
     sample.killer = attacker
     sample.killer_sid = attacker:SteamID()
+    sample.killer_sid64 = attacker:SteamID64()
     sample.victim = victim
     sample.t = CurTime() + (-1 * (0.019 * dist) ^ 2 + GetConVarNumber("ttt_killer_dna_basetime"))
 
@@ -456,8 +457,9 @@ function CORPSE.Create(ply, attacker, dmginfo)
     -- flag this ragdoll as being a player's
     rag.player_ragdoll = true
     rag.sid = ply:SteamID()
+    rag.sid64 = ply:SteamID64()
 
-    rag.uqid = ply:UniqueID() -- backwards compatibility; use rag.sid instead
+    rag.uqid = ply:UniqueID() -- backwards compatibility; use rag.sid64 instead
 
     -- network data
     CORPSE.SetPlayerNick(rag, ply)
