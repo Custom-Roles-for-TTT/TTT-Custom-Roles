@@ -6,6 +6,8 @@
 -- have far more control. Maybe it's slower, but maybe not, we aren't scanning
 -- strings for "#identifiers" after all.
 
+include("shared.lua")
+
 LANG.Strings = {}
 
 CreateConVar("ttt_language", "auto", FCVAR_ARCHIVE)
@@ -17,30 +19,34 @@ LANG.ServerLanguage = "english"
 
 local cached_default, cached_active
 
-function LANG.CreateLanguage(lang_name)
-    if not lang_name then return end
-    lang_name = string.lower(lang_name)
+function LANG.CreateLanguage(raw_lang_name)
+    if not raw_lang_name then return end
+    local lang_name = string.lower(raw_lang_name)
 
     if not LANG.IsLanguage(lang_name) then
-        -- Empty string is very convenient to have, so init with that.
-        LANG.Strings[lang_name] = { [""] = "" }
+       LANG.Strings[lang_name] = {
+          -- Empty string is very convenient to have, so init with that.
+          [""] = "",
+          -- Presentational, not-lowercased language name
+          language_name = raw_lang_name
+       }
     end
 
     if lang_name == LANG.DefaultLanguage then
-        cached_default = LANG.Strings[lang_name]
+       cached_default = LANG.Strings[lang_name]
 
-        -- when a string is not found in the active or the default language, an
-        -- error message is shown
-        setmetatable(LANG.Strings[lang_name],
-                {
-                    __index = function(tbl, name)
-                        return Format("[ERROR: Translation of %s not found]", name), false
-                    end
-                })
+       -- when a string is not found in the active or the default language, an
+       -- error message is shown
+       setmetatable(LANG.Strings[lang_name],
+                    {
+                       __index = function(tbl, name)
+                                    return Format("[ERROR: Translation of %s not found]", name), false
+                                 end
+                    })
     end
 
     return LANG.Strings[lang_name]
-end
+ end
 
 -- Add a string to a language. Should not be used in a language file, only for
 -- adding strings elsewhere, such as a SWEP script.
@@ -198,25 +204,16 @@ function LANG.GetLanguages()
     return langs
 end
 
----- Styling
+function LANG.GetLanguageNames()
+    -- Typically preferable to GetLanguages but separate to avoid API breakage.
+    local lang_names = {}
+    for lang, strings in pairs(LANG.Strings) do
+       lang_names[lang] = strings["language_name"] or string.Capitalize(lang)
+    end
+    return lang_names
+ end 
 
-local bgcolor = {
-    [ROLE_INNOCENT] = COLOR_INNOCENT,
-    [ROLE_TRAITOR] = COLOR_TRAITOR,
-    [ROLE_DETECTIVE] = COLOR_DETECTIVE,
-    [ROLE_JESTER] = COLOR_JESTER,
-    [ROLE_SWAPPER] = COLOR_JESTER,
-    [ROLE_GLITCH] = COLOR_SPECIAL_INNOCENT,
-    [ROLE_PHANTOM] = COLOR_SPECIAL_INNOCENT,
-    [ROLE_HYPNOTIST] = COLOR_SPECIAL_TRAITOR,
-    [ROLE_REVENGER] = COLOR_SPECIAL_INNOCENT,
-    [ROLE_DRUNK] = COLOR_INDEPENDENT,
-    [ROLE_CLOWN] = COLOR_JESTER,
-    [ROLE_DEPUTY] = COLOR_SPECIAL_INNOCENT,
-    [ROLE_IMPERSONATOR] = COLOR_SPECIAL_TRAITOR,
-    [ROLE_BEGGAR] = COLOR_JESTER,
-    [ROLE_OLDMAN] = COLOR_INDEPENDENT
-};
+---- Styling
 
 -- Table of styles that can take a string and display it in some position,
 -- colour, etc.
@@ -228,7 +225,7 @@ LANG.Styles = {
 
     rolecolour = function(text)
         MSTACK:AddColoredBgMessage(text,
-                bgcolor[LocalPlayer():GetRole()])
+                ROLE_COLORS[LocalPlayer():GetRole()])
         print("TTT:   " .. text)
     end,
 
