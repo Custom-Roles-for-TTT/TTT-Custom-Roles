@@ -93,27 +93,9 @@ function WEPS.DoesRoleHaveWeapon(role)
     return false
 end
 
-local canBuyList = {
-    weapon_ttt_health_station = { ROLE_TRAITOR, ROLE_HYPNOTIST, ROLE_IMPERSONATOR },
-    weapon_vadim_defib = { ROLE_HYPNOTIST, ROLE_IMPERSONATOR }
-}
 function WEPS.HandleCanBuyOverrides(wep, role, extra, block_randomization)
     if wep == nil then return end
     local id = WEPS.GetClass(wep)
-    -- Handle the pre-determined overrides
-    if canBuyList[id] then
-        -- If there is no CanBuy list yet, save what is overidden
-        if not wep.CanBuy then
-            wep.CanBuy = canBuyList[id]
-        -- Otherwise add the new roles to the CanBuy list
-        else
-            for _, r in pairs(canBuyList[id]) do
-                if not table.HasValue(wep.CanBuy, r) then
-                    table.insert(wep.CanBuy, r)
-                end
-            end
-        end
-    end
 
     -- Handle the other overrides
     if wep.CanBuy then

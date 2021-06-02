@@ -346,12 +346,6 @@ function GM:TTTCanOrderEquipment(ply, id, is_item)
     return true
 end
 
--- override preexisting weapons
-local canBuyList = {
-    weapon_ttt_health_station = { ROLE_TRAITOR, ROLE_HYPNOTIST, ROLE_IMPERSONATOR },
-    weapon_vadim_defib = { ROLE_HYPNOTIST, ROLE_IMPERSONATOR }
-}
-
 -- Equipment buying
 local function OrderEquipment(ply, cmd, args)
     if not IsValid(ply) or #args ~= 1 then return end
