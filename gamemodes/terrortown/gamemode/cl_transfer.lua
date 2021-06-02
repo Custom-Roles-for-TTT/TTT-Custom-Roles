@@ -17,12 +17,12 @@ function CreateTransferMenu(parent)
     dsubmit:SetDisabled(true)
     dsubmit:SetText(GetTranslation("xfer_send"))
 
-    local selected_sid = nil
+    local selected_entry = nil
 
     local dpick = vgui.Create("DComboBox", dform)
     dpick.OnSelect = function(s, idx, val, data)
         if data then
-            selected_sid = data
+            selected_entry = data
             dsubmit:SetDisabled(false)
         end
     end
@@ -33,7 +33,7 @@ function CreateTransferMenu(parent)
     local r = LocalPlayer():GetRole()
     for _, p in ipairs(player.GetAll()) do
         if (IsValid(p) and p:IsActiveRole(r) and p ~= LocalPlayer()) or (LocalPlayer():IsActiveTraitorTeam() and (p:IsActiveTraitorTeam() or p:IsActiveGlitch())) then
-            dpick:AddChoice(p:Nick(), p:SteamID())
+            dpick:AddChoice(p:Nick(), { ni = p:Nick(), sid = p:SteamID64() or "BOT" })
         end
     end
 
@@ -41,11 +41,13 @@ function CreateTransferMenu(parent)
     if dpick:GetOptionText(1) then dpick:ChooseOptionID(1) end
 
     dsubmit.DoClick = function(s)
-        if selected_sid then
-            if player.GetBySteamID(selected_sid):IsActiveGlitch() then
-                RunConsoleCommand("ttt_fake_transfer_credits", selected_sid, "1")
+        if selected_entry then
+            if selected_entry.sid == "BOT" then
+                RunConsoleCommand("ttt_bot_transfer_credits", selected_entry.ni, "1")
+            elseif player.GetBySteamID64(selected_entry.sid):IsActiveGlitch() then
+                RunConsoleCommand("ttt_fake_transfer_credits", selected_entry.sid, "1")
             else
-                RunConsoleCommand("ttt_transfer_credits", selected_sid, "1")
+                RunConsoleCommand("ttt_transfer_credits", selected_entry.sid, "1")
             end
         end
     end

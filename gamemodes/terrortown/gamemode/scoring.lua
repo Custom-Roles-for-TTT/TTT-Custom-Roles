@@ -53,8 +53,8 @@ function SCORE:HandleKill(victim, attacker, dmginfo)
 
     local e = {
         id = EVENT_KILL,
-        att = { ni = "", sid = -1, tr = false },
-        vic = { ni = victim:Nick(), sid = victim:SteamID(), tr = false },
+        att = { ni = "", sid = -1, sid64 = -1, tr = false },
+        vic = { ni = victim:Nick(), sid = victim:SteamID(), sid64 = victim:SteamID64(), tr = false },
         dmg = CopyDmg(dmginfo) };
 
     e.dmg.h = victim.was_headshot
@@ -64,6 +64,7 @@ function SCORE:HandleKill(victim, attacker, dmginfo)
     if IsValid(attacker) and attacker:IsPlayer() then
         e.att.ni = attacker:Nick()
         e.att.sid = attacker:SteamID()
+        e.att.sid64 = attacker:SteamID64()
         e.att.tr = attacker:GetTraitor()
 
         -- If a traitor gets himself killed by another traitor's C4, it's his own
@@ -81,7 +82,7 @@ end
 
 function SCORE:HandleSpawn(ply)
     if ply:Team() == TEAM_TERROR then
-        self:AddEvent({ id = EVENT_SPAWN, ni = ply:Nick(), sid = ply:SteamID() })
+        self:AddEvent({ id = EVENT_SPAWN, ni = ply:Nick(), sid = ply:SteamID(), sid64 = ply:SteamID64() })
     end
 end
 
@@ -103,33 +104,33 @@ function SCORE:HandleSelection()
 
     for k, ply in ipairs(player.GetAll()) do
         if ply:GetTraitor() then
-            table.insert(traitors, ply:SteamID())
+            table.insert(traitors, ply:SteamID64())
         elseif ply:GetDetective() then
-            table.insert(detectives, ply:SteamID())
+            table.insert(detectives, ply:SteamID64())
         elseif ply:GetJester() then
-            table.insert(jesters, ply:SteamID())
+            table.insert(jesters, ply:SteamID64())
         elseif ply:GetSwapper() then
-            table.insert(swappers, ply:SteamID())
+            table.insert(swappers, ply:SteamID64())
         elseif ply:GetGlitch() then
-            table.insert(glitches, ply:SteamID())
+            table.insert(glitches, ply:SteamID64())
         elseif ply:GetPhantom() then
-            table.insert(phantoms, ply:SteamID())
+            table.insert(phantoms, ply:SteamID64())
         elseif ply:GetHypnotist() then
-            table.insert(hypnotists, ply:SteamID())
+            table.insert(hypnotists, ply:SteamID64())
         elseif ply:GetRevenger() then
-            table.insert(revengers, ply:SteamID())
+            table.insert(revengers, ply:SteamID64())
         elseif ply:GetDrunk() then
-            table.insert(drunks, ply:SteamID())
+            table.insert(drunks, ply:SteamID64())
         elseif ply:GetClown() then
-            table.insert(clowns, ply:SteamID())
+            table.insert(clowns, ply:SteamID64())
         elseif ply:GetDeputy() then
-            table.insert(deputies, ply:SteamID())
+            table.insert(deputies, ply:SteamID64())
         elseif ply:GetImpersonator() then
-            table.insert(impersonators, ply:SteamID())
+            table.insert(impersonators, ply:SteamID64())
         elseif ply:GetBeggar() then
-            table.insert(beggars, ply:SteamID())
+            table.insert(beggars, ply:SteamID64())
         elseif ply:GetOldMan() then
-            table.insert(oldmen, ply:SteamID())
+            table.insert(oldmen, ply:SteamID64())
         end
     end
 
@@ -150,7 +151,7 @@ function SCORE:HandleSelection()
 end
 
 function SCORE:HandleBodyFound(finder, found)
-    self:AddEvent({ id = EVENT_BODYFOUND, ni = finder:Nick(), sid = finder:SteamID(), b = found:Nick() })
+    self:AddEvent({ id = EVENT_BODYFOUND, ni = finder:Nick(), sid = finder:SteamID(), sid64 = finder:SteamID64(), b = found:Nick() })
 end
 
 function SCORE:HandleC4Explosion(planter, arm_time, exp_time)
@@ -181,7 +182,7 @@ function SCORE:HandleC4Disarm(disarmer, owner, success)
 end
 
 function SCORE:HandleCreditFound(finder, found_nick, credits)
-    self:AddEvent({ id = EVENT_CREDITFOUND, ni = finder:Nick(), sid = finder:SteamID(), b = found_nick, cr = credits })
+    self:AddEvent({ id = EVENT_CREDITFOUND, ni = finder:Nick(), sid = finder:SteamID(), sid64 = finder:SteamID64(), b = found_nick, cr = credits })
 end
 
 function SCORE:ApplyEventLogScores(wintype)
@@ -201,37 +202,37 @@ function SCORE:ApplyEventLogScores(wintype)
     local beggars = {}
     local oldmen = {}
 
-    for k, ply in ipairs(player.GetAll()) do
-        scores[ply:SteamID()] = {}
+    for _, ply in ipairs(player.GetAll()) do
+        scores[ply:SteamID64()] = {}
 
         if ply:GetTraitor() then
-            table.insert(traitors, ply:SteamID())
+            table.insert(traitors, ply:SteamID64())
         elseif ply:GetDetective() then
-            table.insert(detectives, ply:SteamID())
+            table.insert(detectives, ply:SteamID64())
         elseif ply:GetJester() then
-            table.insert(jesters, ply:SteamID())
+            table.insert(jesters, ply:SteamID64())
         elseif ply:GetSwapper() then
-            table.insert(swappers, ply:SteamID())
+            table.insert(swappers, ply:SteamID64())
         elseif ply:GetGlitch() then
-            table.insert(glitches, ply:SteamID())
+            table.insert(glitches, ply:SteamID64())
         elseif ply:GetPhantom() then
-            table.insert(phantoms, ply:SteamID())
+            table.insert(phantoms, ply:SteamID64())
         elseif ply:GetHypnotist() then
-            table.insert(hypnotists, ply:SteamID())
+            table.insert(hypnotists, ply:SteamID64())
         elseif ply:GetRevenger() then
-            table.insert(revengers, ply:SteamID())
+            table.insert(revengers, ply:SteamID64())
         elseif ply:GetDrunk() then
-            table.insert(drunks, ply:SteamID())
+            table.insert(drunks, ply:SteamID64())
         elseif ply:GetClown() then
-            table.insert(clowns, ply:SteamID())
+            table.insert(clowns, ply:SteamID64())
         elseif ply:GetDeputy() then
-            table.insert(deputies, ply:SteamID())
+            table.insert(deputies, ply:SteamID64())
         elseif ply:GetImpersonator() then
-            table.insert(impersonators, ply:SteamID())
+            table.insert(impersonators, ply:SteamID64())
         elseif ply:GetBeggar() then
-            table.insert(beggars, ply:SteamID())
+            table.insert(beggars, ply:SteamID64())
         elseif ply:GetOldMan() then
-            table.insert(oldmen, ply:SteamID())
+            table.insert(oldmen, ply:SteamID64())
         end
     end
 
@@ -241,7 +242,7 @@ function SCORE:ApplyEventLogScores(wintype)
     local scored_log = ScoreEventLog(self.Events, scores, traitors, detectives, jesters, swappers, glitches, phantoms, hypnotists, revengers, drunks, clowns, deputies, impersonators, beggars, oldmen)
     local ply = nil
     for sid, s in pairs(scored_log) do
-        ply = player.GetBySteamID(sid)
+        ply = player.GetBySteamID64(sid)
         if ply and ply:ShouldScore() then
             ply:AddFrags(KillsToPoints(s, ply:GetTraitor()))
         end
@@ -250,8 +251,8 @@ function SCORE:ApplyEventLogScores(wintype)
     -- team scores
     local bonus = ScoreTeamBonus(scored_log, wintype)
 
-    for sid, s in pairs(scored_log) do
-        ply = player.GetBySteamID(sid)
+    for sid64, _ in pairs(scored_log) do
+        ply = player.GetBySteamID64(sid64)
         if ply and ply:ShouldScore() then
             ply:AddFrags(ply:GetTraitor() and bonus.traitors or bonus.innos)
         end
@@ -262,7 +263,7 @@ function SCORE:ApplyEventLogScores(wintype)
     for i = 1, #events do
         local e = events[i]
         if e.id == EVENT_KILL then
-            local victim = player.GetBySteamID(e.vic.sid)
+            local victim = player.GetBySteamID64(e.vic.sid64) or player.GetBySteamID(e.vic.sid)
             if IsValid(victim) and victim:ShouldScore() then
                 victim:AddDeaths(1)
             end

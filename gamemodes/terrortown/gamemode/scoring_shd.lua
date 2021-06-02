@@ -16,8 +16,8 @@ end
 
 function ScoreEvent(e, scores)
     if e.id == EVENT_KILL then
-        local aid = e.att.sid
-        local vid = e.vic.sid
+        local aid = e.att.sid64
+        local vid = e.vic.sid64
 
         -- make sure a score table exists for this person
         -- he might have disconnected by now
@@ -45,7 +45,7 @@ function ScoreEvent(e, scores)
             end
         end
     elseif e.id == EVENT_BODYFOUND then
-        local sid = e.sid
+        local sid = e.sid64
         if scores[sid] == nil or scores[sid].was_traitor then return end
 
         local find_bonus = scores[sid].was_detective and 3 or 1
@@ -57,7 +57,7 @@ end
 -- scores should be table with SteamIDs as keys
 -- The method of finding these IDs differs between server and client
 function ScoreEventLog(events, scores, traitors, detectives, jesters, swappers, glitches, phantoms, hypnotists, revengers, drunks, clowns, deputies, impersonators, beggars, oldmen)
-    for k, s in pairs(scores) do
+    for k, _ in pairs(scores) do
         scores[k] = ScoreInit()
 
         scores[k].was_traitor = table.HasValue(traitors, k)
@@ -76,8 +76,7 @@ function ScoreEventLog(events, scores, traitors, detectives, jesters, swappers, 
         scores[k].was_old_man = table.HasValue(oldmen, k)
     end
 
-    local tmp = nil
-    for k, e in pairs(events) do
+    for _, e in pairs(events) do
         ScoreEvent(e, scores)
     end
 
