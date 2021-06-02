@@ -1,3 +1,5 @@
+include("shared.lua")
+
 local TryTranslation = LANG.TryTranslation
 
 GM.PickupHistory = {}
@@ -7,24 +9,6 @@ GM.PickupHistoryWide = 300
 GM.PickupHistoryCorner = surface.GetTextureID("gui/corner8")
 
 local custom_ammo = CreateClientConVar("ttt_custom_ammo", 0, true, false, "Use custom ammo names.")
-
-local pickupclr = {
-    [ROLE_INNOCENT] = COLOR_INNOCENT,
-    [ROLE_TRAITOR] = COLOR_TRAITOR,
-    [ROLE_DETECTIVE] = COLOR_DETECTIVE,
-    [ROLE_JESTER] = COLOR_JESTER,
-    [ROLE_SWAPPER] = COLOR_JESTER,
-    [ROLE_GLITCH] = COLOR_SPECIAL_INNOCENT,
-    [ROLE_PHANTOM] = COLOR_SPECIAL_INNOCENT,
-    [ROLE_HYPNOTIST] = COLOR_SPECIAL_TRAITOR,
-    [ROLE_REVENGER] = COLOR_SPECIAL_INNOCENT,
-    [ROLE_DRUNK] = COLOR_INDEPENDENT,
-    [ROLE_CLOWN] = COLOR_JESTER,
-    [ROLE_DEPUTY] = COLOR_SPECIAL_INNOCENT,
-    [ROLE_IMPERSONATOR] = COLOR_SPECIAL_TRAITOR,
-    [ROLE_BEGGAR] = COLOR_JESTER,
-    [ROLE_OLDMAN] = COLOR_INDEPENDENT
-}
 
 function GM:HUDWeaponPickedUp(wep)
     if not (IsValid(wep) and IsValid(LocalPlayer())) or (not LocalPlayer():Alive()) then return end
@@ -41,7 +25,7 @@ function GM:HUDWeaponPickedUp(wep)
 
     local role = LocalPlayer().GetRole and LocalPlayer():GetRole() or ROLE_INNOCENT
     if GAMEMODE.round_state == ROUND_ACTIVE then
-        pickup.color = pickupclr[role]
+        pickup.color = ROLE_COLORS[role]
     else
         pickup.color = Color(100, 100, 100, 255)
     end
