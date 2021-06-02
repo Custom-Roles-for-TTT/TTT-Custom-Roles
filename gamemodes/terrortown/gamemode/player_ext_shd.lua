@@ -107,35 +107,16 @@ function plymeta:IsActiveInnocentTeam() return self:IsInnocentTeam() and self:Is
 function plymeta:IsActiveJesterTeam() return self:IsJesterTeam() and self:IsActive() end
 function plymeta:IsActiveIndependentTeam() return self:IsIndependentTeam() and self:IsActive() end
 
-local role_strings = {
-    [ROLE_TRAITOR] = "traitor",
-    [ROLE_INNOCENT] = "innocent",
-    [ROLE_DETECTIVE] = "detective",
-    [ROLE_JESTER] = "jester",
-    [ROLE_SWAPPER] = "swapper",
-    [ROLE_GLITCH] = "glitch",
-    [ROLE_PHANTOM] = "phantom",
-    [ROLE_HYPNOTIST] = "hypnotist",
-    [ROLE_REVENGER] = "revenger",
-    [ROLE_DRUNK] = "drunk",
-    [ROLE_CLOWN] = "clown",
-    [ROLE_DEPUTY] = "deputy",
-    [ROLE_IMPERSONATOR] = "impersonator",
-    [ROLE_BEGGAR] = "beggar",
-    [ROLE_OLDMAN] = "oldman"
-};
-
 local GetRTranslation = CLIENT and LANG.GetRawTranslation or util.passthrough
 
 -- Returns printable role
 function plymeta:GetRoleString()
-    return GetRTranslation(role_strings[self:GetRole()]) or "???"
+    return GetRTranslation(ROLE_STRINGS[self:GetRole()]) or "???"
 end
-
 
 -- Returns role language string id, caller must translate if desired
 function plymeta:GetRoleStringRaw()
-    return role_strings[self:GetRole()]
+    return ROLE_STRINGS[self:GetRole()]
 end
 
 function plymeta:GetBaseKarma() return self:GetNWFloat("karma", 1000) end
