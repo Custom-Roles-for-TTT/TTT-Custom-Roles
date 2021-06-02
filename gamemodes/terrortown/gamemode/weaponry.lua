@@ -371,20 +371,40 @@ local function OrderEquipment(ply, cmd, args)
     -- be modifying it
     local swep_table = (not is_item) and weapons.GetStored(id) or nil
 
-    -- some weapons can only be bought once per player per round, this used to be
-    -- defined in a table here, but is now in the SWEP's table
-    if swep_table and swep_table.LimitedStock and ply:HasBought(id) then
-        LANG.Msg(ply, "buy_no_stock")
-        return
+    local role = ply:GetRole()
+    -- If this role has a table of additional weapons and that table includes this weapon
+    -- and this weapon is not currently buyable by the role then mark this weapon as buyable
+    if swep_table then
+        -- some weapons can only be bought once per player per round, this used to be
+        -- defined in a table here, but is now in the SWEP's table
+        if swep_table.LimitedStock and ply:HasBought(id) then
+            LANG.Msg(ply, "buy_no_stock")
+            return
+        end
+
+        -- Add the loaded weapons for this role
+        WEPS.HandleCanBuyOverrides(swep_table, role, role == ROLE_DEPUTY or role == ROLE_IMPERSONATOR)
     end
 
     local received = false
-
     if is_item then
         id = tonumber(id)
 
         -- item whitelist check
-        local allowed = GetEquipmentItem(ply:GetRole(), id)
+        local allowed = GetEquipmentItem(role, id)
+        -- If it's not allowed, check the extra buyable equipment
+        if not allowed then
+            for _, v in pairs(WEPS.BuyableWeapons[role]) do
+                -- If this isn't a weapon, get its information from one of the roles and compare that to the ID we have
+                if not weapons.GetStored(v) then
+                    local equip = GetEquipmentItemById(id)
+                    if equip ~= nil then
+                        allowed = true
+                        break
+                    end
+                end
+            end
+        end
 
         if not allowed then
             print(ply, "tried to buy item not buyable for his class:", id)
@@ -400,8 +420,7 @@ local function OrderEquipment(ply, cmd, args)
         end
     elseif swep_table then
         -- weapon whitelist check
-        if (not table.HasValue(swep_table.CanBuy, ply:GetRole()) and (not canBuyList[id] or (canBuyList[id] and not (table.HasValue(canBuyList[id], ply:GetRole()))))
-                and not (table.HasValue(swep_table.CanBuy, ROLE_DETECTIVE) and ply:GetDetectiveLike())) then
+        if not table.HasValue(swep_table.CanBuy, role) then
             print(ply, "tried to buy weapon his role is not permitted to buy")
             return
         end
