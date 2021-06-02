@@ -1,5 +1,7 @@
 -- we need our own weapon switcher because the hl2 one skips empty weapons
 
+include("shared.lua")
+
 local math = math
 local draw = draw
 local surface = surface
@@ -27,23 +29,7 @@ local height = 20
 local barcorner = surface.GetTextureID("gui/corner8")
 
 local col_active = {
-    tip = {
-        [ROLE_INNOCENT] = COLOR_INNOCENT,
-        [ROLE_TRAITOR] = COLOR_TRAITOR,
-        [ROLE_DETECTIVE] = COLOR_DETECTIVE,
-        [ROLE_JESTER] = COLOR_JESTER,
-        [ROLE_SWAPPER] = COLOR_JESTER,
-        [ROLE_GLITCH] = COLOR_SPECIAL_INNOCENT,
-        [ROLE_PHANTOM] = COLOR_SPECIAL_INNOCENT,
-        [ROLE_HYPNOTIST] = COLOR_SPECIAL_TRAITOR,
-        [ROLE_REVENGER] = COLOR_SPECIAL_INNOCENT,
-        [ROLE_DRUNK] = COLOR_INDEPENDENT,
-        [ROLE_CLOWN] = COLOR_JESTER,
-        [ROLE_DEPUTY] = COLOR_SPECIAL_INNOCENT,
-        [ROLE_IMPERSONATOR] = COLOR_SPECIAL_TRAITOR,
-        [ROLE_BEGGAR] = COLOR_JESTER,
-        [ROLE_OLDMAN] = COLOR_INDEPENDENT
-    },
+    tip = ROLE_COLORS,
 
     bg = Color(20, 20, 20, 250),
 
@@ -54,23 +40,7 @@ local col_active = {
 };
 
 local col_dark = {
-    tip = {
-        [ROLE_INNOCENT] = COLOR_INNOCENT_DARK,
-        [ROLE_TRAITOR] = COLOR_TRAITOR_DARK,
-        [ROLE_DETECTIVE] = COLOR_DETECTIVE_DARK,
-        [ROLE_JESTER] = COLOR_JESTER_DARK,
-        [ROLE_SWAPPER] = COLOR_JESTER_DARK,
-        [ROLE_GLITCH] = COLOR_SPECIAL_INNOCENT_DARK,
-        [ROLE_PHANTOM] = COLOR_SPECIAL_INNOCENT_DARK,
-        [ROLE_HYPNOTIST] = COLOR_SPECIAL_TRAITOR_DARK,
-        [ROLE_REVENGER] = COLOR_SPECIAL_INNOCENT_DARK,
-        [ROLE_DRUNK] = COLOR_INDEPENDENT_DARK,
-        [ROLE_CLOWN] = COLOR_JESTER_DARK,
-        [ROLE_DEPUTY] = COLOR_SPECIAL_INNOCENT_DARK,
-        [ROLE_IMPERSONATOR] = COLOR_SPECIAL_TRAITOR_DARK,
-        [ROLE_BEGGAR] = COLOR_JESTER_DARK,
-        [ROLE_OLDMAN] = COLOR_INDEPENDENT_DARK
-    },
+    tip = ROLE_COLORS_DARK,
 
     bg = Color(20, 20, 20, 200),
 

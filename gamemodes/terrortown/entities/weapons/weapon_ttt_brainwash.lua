@@ -168,22 +168,6 @@ if SERVER then
         end)
     end
 
-    local roleStrings = {
-        [ROLE_INNOCENT] = "inn",
-        [ROLE_DETECTIVE] = "det",
-        [ROLE_JESTER] = "jes",
-        [ROLE_SWAPPER] = "swa",
-        [ROLE_GLITCH] = "gli",
-        [ROLE_PHANTOM] = "pha",
-        [ROLE_REVENGER] = "rev",
-        [ROLE_DRUNK] = "dru",
-        [ROLE_CLOWN] = "clo",
-        [ROLE_DEPUTY] = "dep",
-        [ROLE_IMPERSONATOR] = "imp",
-        [ROLE_BEGGAR] = "beg",
-        [ROLE_OLDMAN] = "old"
-    };
-
     function SWEP:DoRespawn(body)
         local ply = bodyply(body)
         local credits = CORPSE.GetCredits(body, 0) or 0
@@ -211,7 +195,7 @@ if SERVER then
         ply:SetCredits(credits)
         ply:SetPos(self.Location or body:GetPos())
         ply:SetEyeAngles(Angle(0, body:GetAngles().y, 0))
-        ply:SetNWString("WasHypnotised", roleStrings[ply:GetRole()])
+        ply:SetNWString("WasHypnotised", ROLE_STRINGS_SHORT[ply:GetRole()])
         ply:SetRole(ROLE_TRAITOR)
         ply:PrintMessage(HUD_PRINTCENTER, "You have been brainwashed and are now a traitor.")
         ply:SetHealth(spawnhealth)

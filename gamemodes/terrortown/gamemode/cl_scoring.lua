@@ -240,40 +240,40 @@ function CLSCORE:ShowPanel()
                 end
 
                 -- Backup in case people disconnect and we cant check their role at the end of the round
-                local startingRole = "inn"
+                local startingRole = ROLE_STRINGS_SHORT[ROLE_INNOCENT]
                 if s.was_traitor then
-                    startingRole = "tra"
+                    startingRole = ROLE_STRINGS_SHORT[ROLE_TRAITOR]
                 elseif s.was_detective then
-                    startingRole = "det"
+                    startingRole = ROLE_STRINGS_SHORT[ROLE_DETECTIVE]
                 elseif s.was_jester then
-                    startingRole = "jes"
+                    startingRole = ROLE_STRINGS_SHORT[ROLE_JESTER]
                 elseif s.was_swapper then
-                    startingRole = "swa"
+                    startingRole = ROLE_STRINGS_SHORT[ROLE_SWAPPER]
                 elseif s.was_glitch then
-                    startingRole = "gli"
+                    startingRole = ROLE_STRINGS_SHORT[ROLE_GLITCH]
                 elseif s.was_phantom then
-                    startingRole = "pha"
+                    startingRole = ROLE_STRINGS_SHORT[ROLE_PHANTOM]
                 elseif s.was_hypnotist then
-                    startingRole = "hyp"
+                    startingRole = ROLE_STRINGS_SHORT[ROLE_HYPNOTIST]
                 elseif s.was_revenger then
-                    startingRole = "rev"
+                    startingRole = ROLE_STRINGS_SHORT[ROLE_REVENGER]
                 elseif s.was_drunk then
-                    startingRole = "dru"
+                    startingRole = ROLE_STRINGS_SHORT[ROLE_DRUNK]
                 elseif s.was_clown then
-                    startingRole = "clo"
+                    startingRole = ROLE_STRINGS_SHORT[ROLE_CLOWN]
                 elseif s.was_deputy then
-                    startingRole = "dep"
+                    startingRole = ROLE_STRINGS_SHORT[ROLE_DEPUTY]
                 elseif s.was_impersonator then
-                    startingRole = "imp"
+                    startingRole = ROLE_STRINGS_SHORT[ROLE_IMPERSONATOR]
                 elseif s.was_beggar then
-                    startingRole = "beg"
+                    startingRole = ROLE_STRINGS_SHORT[ROLE_BEGGAR]
                 elseif s.was_old_man then
-                    startingRole = "old"
+                    startingRole = ROLE_STRINGS_SHORT[ROLE_OLDMAN]
                 end
 
                 local hasDisconnected = false
 
-                local finalRole = "inn"
+                local finalRole = ROLE_STRINGS_SHORT[ROLE_INNOCENT]
 
                 local swappedWith = ""
                 local jesterKiller = ""
@@ -281,57 +281,32 @@ function CLSCORE:ShowPanel()
                 local alive = false
                 if IsValid(ply) then
                     alive = ply:Alive()
+                    finalRole = ROLE_STRINGS_SHORT[ply:GetRole()]
                     if ply:IsInnocent() then
-                        finalRole = "inn"
                         if ply:GetNWBool("WasDrunk", false) then
-                            finalRole = "dru_i"
+                            finalRole = ROLE_STRINGS_SHORT[ROLE_DRUNK] .. "_i"
                         elseif ply:GetNWBool("WasBeggar", false) then
-                            finalRole = "beg_i"
+                            finalRole = ROLE_STRINGS_SHORT[ROLE_BEGGAR] .. "_i"
                         end
                     elseif ply:IsTraitor() then
-                        finalRole = "tra"
                         local wasHypnotised = ply:GetNWString("WasHypnotised", "")
                         if ply:GetNWBool("WasDrunk", false) then
-                            finalRole = "dru_t"
+                            finalRole = ROLE_STRINGS_SHORT[ROLE_DRUNK] .. "_t"
                         elseif ply:GetNWBool("WasBeggar", false) then
-                            finalRole = "beg_t"
+                            finalRole = ROLE_STRINGS_SHORT[ROLE_BEGGAR] .. "_t"
                         elseif wasHypnotised ~= "" then
                             finalRole = wasHypnotised .. "_t"
                         end
-                    elseif ply:IsDetective() then
-                        finalRole = "det"
                     elseif ply:IsJester() then
-                        finalRole = "jes"
                         jesterKiller = ply:GetNWString("JesterKiller", "")
                     elseif ply:IsSwapper() then
-                        finalRole = "swa"
                         swappedWith = ply:GetNWString("SwappedWith", "")
-                    elseif ply:IsGlitch() then
-                        finalRole = "gli"
-                    elseif ply:IsPhantom() then
-                        finalRole = "pha"
-                    elseif ply:IsHypnotist() then
-                        finalRole = "hyp"
-                    elseif ply:IsRevenger() then
-                        finalRole = "rev"
-                    elseif ply:IsDrunk() then
-                        finalRole = "dru"
-                    elseif ply:IsClown() then
-                        finalRole = "clo"
-                    elseif ply:IsDeputy() then
-                        finalRole = "dep"
-                    elseif ply:IsImpersonator() then
-                        finalRole = "imp"
-                    elseif ply:IsBeggar() then
-                        finalRole = "beg"
-                    elseif ply:IsOldMan() then
-                        finalRole = "old"
                     end
                 else
                     hasDisconnected = true
                 end
 
-                local roleFileName = "inn"
+                local roleFileName = ROLE_STRINGS_SHORT[ROLE_INNOCENT]
                 if hasDisconnected then
                     roleFileName = startingRole
                 else
@@ -349,12 +324,12 @@ function CLSCORE:ShowPanel()
                 nicklbl:SizeToContents()
 
                 if (string.sub(roleFileName, -2) == "_i"
-                        or roleFileName == "inn"
-                        or roleFileName == "det"
-                        or roleFileName == "gli"
-                        or roleFileName == "pha"
-                        or roleFileName == "rev"
-                        or roleFileName == "dep") then
+                        or roleFileName == ROLE_STRINGS_SHORT[ROLE_INNOCENT]
+                        or roleFileName == ROLE_STRINGS_SHORT[ROLE_DETECTIVE]
+                        or roleFileName == ROLE_STRINGS_SHORT[ROLE_GLITCH]
+                        or roleFileName == ROLE_STRINGS_SHORT[ROLE_PHANTOM]
+                        or roleFileName == ROLE_STRINGS_SHORT[ROLE_REVENGER]
+                        or roleFileName == ROLE_STRINGS_SHORT[ROLE_DEPUTY]) then
                     roleIcon:SetPos(10, 123 + 33 * countI)
                     nicklbl:SetPos(48, 121 + 33 * countI)
 
@@ -372,9 +347,9 @@ function CLSCORE:ShowPanel()
 
                     countI = countI + 1
                 elseif (string.sub(roleFileName, -2) == "_t"
-                        or roleFileName == "tra"
-                        or roleFileName == "hyp"
-                        or roleFileName == "imp") then
+                        or roleFileName == ROLE_STRINGS_SHORT[ROLE_TRAITOR]
+                        or roleFileName == ROLE_STRINGS_SHORT[ROLE_HYPNOTIST]
+                        or roleFileName == ROLE_STRINGS_SHORT[ROLE_IMPERSONATOR]) then
                     roleIcon:SetPos(354, 123 + 33 * countT)
                     nicklbl:SetPos(392, 121 + 33 * countT)
 
@@ -391,19 +366,19 @@ function CLSCORE:ShowPanel()
                     end
 
                     countT = countT + 1
-                elseif (roleFileName == "jes"
-                        or roleFileName == "swa"
-                        or roleFileName == "dru"
-                        or roleFileName == "clo"
-                        or roleFileName == "beg"
-                        or roleFileName == "old") then
+                elseif (roleFileName == ROLE_STRINGS_SHORT[ROLE_JESTER]
+                        or roleFileName == ROLE_STRINGS_SHORT[ROLE_SWAPPER]
+                        or roleFileName == ROLE_STRINGS_SHORT[ROLE_DRUNK]
+                        or roleFileName == ROLE_STRINGS_SHORT[ROLE_CLOWN]
+                        or roleFileName == ROLE_STRINGS_SHORT[ROLE_BEGGAR]
+                        or roleFileName == ROLE_STRINGS_SHORT[ROLE_OLDMAN]) then
                     roleIcon:SetPos(10, 460)
                     nicklbl:SetPos(48, 458)
 
-                    if roleFileName == "jes" and jesterKiller ~= "" then
+                    if roleFileName == ROLE_STRINGS_SHORT[ROLE_JESTER] and jesterKiller ~= "" then
                         nicklbl:SetText(nicks[id] .. " (Killed by " .. jesterKiller .. ")")
                         nicklbl:SizeToContents()
-                    elseif roleFileName == "swa" and swappedWith ~= "" then
+                    elseif roleFileName == ROLE_STRINGS_SHORT[ROLE_SWAPPER] and swappedWith ~= "" then
                         nicklbl:SetText(nicks[id] .. " (Swapped with " .. swappedWith .. ")")
                         nicklbl:SizeToContents()
                     end
