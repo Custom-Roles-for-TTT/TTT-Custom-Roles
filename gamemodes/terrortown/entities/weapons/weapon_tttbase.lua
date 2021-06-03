@@ -420,10 +420,6 @@ function SWEP:Equip(newowner)
             self:Extinguish()
         end
 
-        if not self.BoughtBuy then
-            self.BoughtBuy = newowner
-        end
-
         self.fingerprints = self.fingerprints or {}
 
         if not table.HasValue(self.fingerprints, newowner) then
@@ -436,30 +432,6 @@ function SWEP:Equip(newowner)
             local flags = self:GetSpawnFlags()
             local newflags = bit.band(flags, bit.bnot(SF_WEAPON_START_CONSTRAINED))
             self:SetKeyValue("spawnflags", newflags)
-        end
-
-        if self.CanBuy and newowner:IsBeggar() then
-            if self.BoughtBuy:IsTraitorTeam() then
-                newowner:SetRole(ROLE_TRAITOR)
-                newowner:SetNWBool("WasBeggar", true)
-                newowner:PrintMessage(HUD_PRINTTALK, "You have joined the traitor team")
-                newowner:PrintMessage(HUD_PRINTCENTER, "You have joined the traitor team")
-                timer.Simple(0.5, function() SendFullStateUpdate() end) -- Slight delay to avoid flickering from beggar to traitor and back to beggar
-                if GetConVar("ttt_reveal_beggar_change"):GetBool() then
-                    self.BoughtBuy:PrintMessage(HUD_PRINTTALK, "The beggar has joined your team")
-                    self.BoughtBuy:PrintMessage(HUD_PRINTCENTER, "The beggar has joined your team")
-                end
-            elseif self.BoughtBuy:IsInnocentTeam() then
-                newowner:SetRole(ROLE_INNOCENT)
-                newowner:SetNWBool("WasBeggar", true)
-                newowner:PrintMessage(HUD_PRINTTALK, "You have joined the innocent team")
-                newowner:PrintMessage(HUD_PRINTCENTER, "You have joined the innocent team")
-                timer.Simple(0.5, function() SendFullStateUpdate() end) -- Slight delay to avoid flickering from beggar to innocent and back to beggar
-                if GetConVar("ttt_reveal_beggar_change"):GetBool() then
-                    self.BoughtBuy:PrintMessage(HUD_PRINTTALK, "The beggar has joined your team")
-                    self.BoughtBuy:PrintMessage(HUD_PRINTCENTER, "The beggar has joined your team")
-                end
-            end
         end
     end
 

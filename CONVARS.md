@@ -9,12 +9,12 @@ Add the following to your server config:
 
 // Weapon Shop
 ttt_shop_random_percent 50    // The percent chance that a weapon in the shop will be not be shown
-ttt_shop_random_tra_percent 0 // The percent chance that a weapon in the shop will be not be shown for the Innocents
+ttt_shop_random_tra_percent 0 // The percent chance that a weapon in the shop will be not be shown for the Traitors
 ttt_shop_random_det_percent 0 // The percent chance that a weapon in the shop will be not be shown for the Detectives
 ttt_shop_random_hyp_percent 0 // The percent chance that a weapon in the shop will be not be shown for the Hypnotists
 ttt_shop_random_dep_percent 0 // The percent chance that a weapon in the shop will be not be shown for the Deputies
 ttt_shop_random_imp_percent 0 // The percent chance that a weapon in the shop will be not be shown for the Impersonators
-ttt_shop_random_tra_enabled 0 // Whether role shop randomization is enabled for Innocents
+ttt_shop_random_tra_enabled 0 // Whether role shop randomization is enabled for Traitors
 ttt_shop_random_det_enabled 0 // Whether role shop randomization is enabled for Detectives
 ttt_shop_random_hyp_enabled 0 // Whether role shop randomization is enabled for Hypnotists
 ttt_shop_random_dep_enabled 0 // Whether role shop randomization is enabled for Deputies
