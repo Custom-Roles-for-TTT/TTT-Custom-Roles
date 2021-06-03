@@ -1460,6 +1460,9 @@ local function ForceRoundRestart(ply, command, args)
 
         StopRoundTimers()
 
+        -- Let addons know that a round ended
+        hook.Call("TTTEndRound", GAMEMODE, WIN_NONE)
+
         -- do prep
         PrepareRound()
     else
