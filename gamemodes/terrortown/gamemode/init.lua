@@ -1119,7 +1119,7 @@ function GM:TTTCheckForWin()
                 killer_clown_active = v:GetNWBool("KillerClownActive", false)
             elseif v:IsOldMan() then
                 old_man_alive = true
-            else
+            elseif v:IsInnocentTeam() then
                 innocent_alive = true
             end
         end
