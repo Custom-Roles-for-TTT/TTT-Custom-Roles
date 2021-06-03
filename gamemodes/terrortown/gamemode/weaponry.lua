@@ -593,12 +593,40 @@ end
 concommand.Add("ttt_bot_transfer_credits", BotTransferCredits)
 
 -- Protect against non-TTT weapons that may break the HUD
-function GM:WeaponEquip(wep)
+function GM:WeaponEquip(wep, ply)
     if IsValid(wep) then
         -- only remove if they lack critical stuff
         if not wep.Kind then
             wep:Remove()
             ErrorNoHalt("Equipped weapon " .. wep:GetClass() .. " is not compatible with TTT\n")
+        end
+
+        if wep.CanBuy then
+            if not wep.BoughtBuy then
+                wep.BoughtBuy = ply
+            elseif ply:IsBeggar() then
+                if wep.BoughtBuy:IsTraitorTeam() then
+                    ply:SetRole(ROLE_TRAITOR)
+                    ply:SetNWBool("WasBeggar", true)
+                    ply:PrintMessage(HUD_PRINTTALK, "You have joined the traitor team")
+                    ply:PrintMessage(HUD_PRINTCENTER, "You have joined the traitor team")
+                    timer.Simple(0.5, function() SendFullStateUpdate() end) -- Slight delay to avoid flickering from beggar to traitor and back to beggar
+                    if GetConVar("ttt_reveal_beggar_change"):GetBool() then
+                        wep.BoughtBuy:PrintMessage(HUD_PRINTTALK, "The beggar has joined your team")
+                        wep.BoughtBuy:PrintMessage(HUD_PRINTCENTER, "The beggar has joined your team")
+                    end
+                elseif wep.BoughtBuy:IsInnocentTeam() then
+                    ply:SetRole(ROLE_INNOCENT)
+                    ply:SetNWBool("WasBeggar", true)
+                    ply:PrintMessage(HUD_PRINTTALK, "You have joined the innocent team")
+                    ply:PrintMessage(HUD_PRINTCENTER, "You have joined the innocent team")
+                    timer.Simple(0.5, function() SendFullStateUpdate() end) -- Slight delay to avoid flickering from beggar to innocent and back to beggar
+                    if GetConVar("ttt_reveal_beggar_change"):GetBool() then
+                        wep.BoughtBuy:PrintMessage(HUD_PRINTTALK, "The beggar has joined your team")
+                        wep.BoughtBuy:PrintMessage(HUD_PRINTCENTER, "The beggar has joined your team")
+                    end
+                end
+            end
         end
     end
 end
