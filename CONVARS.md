@@ -19,6 +19,10 @@ ttt_shop_random_det_enabled 0 // Whether role shop randomization is enabled for 
 ttt_shop_random_hyp_enabled 0 // Whether role shop randomization is enabled for Hypnotists
 ttt_shop_random_dep_enabled 0 // Whether role shop randomization is enabled for Deputies
 ttt_shop_random_imp_enabled 0 // Whether role shop randomization is enabled for Impersonators
+
+// Logging
+ttt_debug_logkills 1 // Whether to log when a player is killed in the console
+ttt_debug_logroles 1 // Whether to log what roles players are assigned in the console
 ```
 
 Thanks to [KarlOfDuty](https://github.com/KarlOfDuty) for his original version of this document, [here](https://github.com/KarlOfDuty/TTT-Custom-Roles/blob/patch-1/README.md).
