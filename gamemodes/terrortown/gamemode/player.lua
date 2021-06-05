@@ -743,7 +743,7 @@ end
 
 function GM:PlayerDeath(victim, infl, attacker)
     -- Handle phantom death
-    if victim:GetPhantom() and attacker:IsPlayer() and attacker ~= victim and GetRoundState() == ROUND_ACTIVE then
+    if victim:IsPhantom() and attacker:IsPlayer() and attacker ~= victim and GetRoundState() == ROUND_ACTIVE then
         attacker:SetNWBool("HauntedSmoke", true)
         attacker:PrintMessage(HUD_PRINTCENTER, "You have been haunted.")
         victim:PrintMessage(HUD_PRINTCENTER, "Your attacker has been haunted.")
@@ -751,12 +751,12 @@ function GM:PlayerDeath(victim, infl, attacker)
     end
 
     -- Handle jester death
-    if victim:GetJester() and attacker:IsPlayer() and attacker ~= victim and GetRoundState() == ROUND_ACTIVE then
+    if victim:IsJester() and attacker:IsPlayer() and attacker ~= victim and GetRoundState() == ROUND_ACTIVE then
         victim:SetNWString("JesterKiller", attacker:Nick())
     end
 
     -- Handle swapper death
-    if victim:GetSwapper() and attacker:IsPlayer() and attacker ~= victim and GetRoundState() == ROUND_ACTIVE then
+    if victim:IsSwapper() and attacker:IsPlayer() and attacker ~= victim and GetRoundState() == ROUND_ACTIVE then
         attacker:SetNWString("SwappedWith", victim:Nick())
         attacker:PrintMessage(HUD_PRINTCENTER, "You killed the swapper!")
         victim:SetRole(attacker:GetRole())
@@ -780,16 +780,17 @@ function GM:PlayerDeath(victim, infl, attacker)
     end
 
     -- Handle detective death
-    if victim:GetDetective() and GetRoundState() == ROUND_ACTIVE then
+    if victim:IsDetective() and GetRoundState() == ROUND_ACTIVE then
         local detectiveAlive = false
         for _, ply in pairs(player.GetAll()) do
-            if ply:GetDetective() and ply ~= victim then
+            if not ply:IsSpec() and ply:Alive() and ply:IsDetective() and ply ~= victim then
                 detectiveAlive = true
+                break
             end
         end
         if not detectiveAlive then
             for _, ply in pairs(player.GetAll()) do
-                if ply:GetDeputy() or ply:GetImpersonator() then
+                if (ply:IsDeputy() or ply:IsImpersonator()) and not ply:GetNWBool("HasPromotion", false) then
                     ply:SetNWBool("HasPromotion", true)
                     ply:PrintMessage(HUD_PRINTTALK, "You have been promoted to Detective!")
                     ply:PrintMessage(HUD_PRINTCENTER, "You have been promoted to Detective!")
