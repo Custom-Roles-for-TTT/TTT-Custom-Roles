@@ -144,6 +144,13 @@ CreateConVar("ttt_phantom_weaker_each_respawn", "0")
 CreateConVar("ttt_phantom_killer_smoke", "1")
 CreateConVar("ttt_phantom_killer_footstep_time", "10")
 CreateConVar("ttt_phantom_announce_death", "1")
+CreateConVar("ttt_phantom_killer_haunt", "1")
+CreateConVar("ttt_phantom_killer_haunt_power_max", "100")
+CreateConVar("ttt_phantom_killer_haunt_power_rate", "5")
+CreateConVar("ttt_phantom_killer_haunt_move_cost", "50")
+CreateConVar("ttt_phantom_killer_haunt_attack_cost", "75")
+CreateConVar("ttt_phantom_killer_haunt_jump_cost", "30")
+CreateConVar("ttt_phantom_killer_haunt_drop_cost", "45")
 
 -- Traitor credits
 CreateConVar("ttt_credits_starting", "2")
@@ -379,6 +386,11 @@ function GM:SyncGlobals()
     end
 
     SetGlobalBool("ttt_phantom_killer_smoke", GetConVar("ttt_phantom_killer_smoke"):GetBool())
+    SetGlobalInt("ttt_phantom_killer_haunt_power_max", GetConVar("ttt_phantom_killer_haunt_power_max"):GetInt())
+    SetGlobalInt("ttt_phantom_killer_haunt_move_cost", GetConVar("ttt_phantom_killer_haunt_move_cost"):GetInt())
+    SetGlobalInt("ttt_phantom_killer_haunt_attack_cost", GetConVar("ttt_phantom_killer_haunt_attack_cost"):GetInt())
+    SetGlobalInt("ttt_phantom_killer_haunt_jump_cost", GetConVar("ttt_phantom_killer_haunt_jump_cost"):GetInt())
+    SetGlobalInt("ttt_phantom_killer_haunt_drop_cost", GetConVar("ttt_phantom_killer_haunt_drop_cost"):GetInt())
 
     SetGlobalBool("sv_voiceenable", GetConVar("sv_voiceenable"):GetBool())
 end
@@ -593,6 +605,11 @@ end
 function PrepareRound()
     for _, v in pairs(player.GetAll()) do
         v:SetNWBool("HauntedSmoke", false)
+        v:SetNWBool("Haunting", false)
+        v:SetNWString("HauntingTarget", nil)
+        v:SetNWInt("HauntingPower", 0)
+        timer.Remove(v:Nick() .. "HauntingPower")
+        timer.Remove(v:Nick() .. "HauntingSpectate")
         v:SetNWString("RevengerLover", "")
         v:SetNWString("JesterKiller", "")
         v:SetNWString("SwappedWith", "")
@@ -1528,7 +1545,13 @@ hook.Add("PlayerDeath", "Kill_Reveal_Notify", function(victim, entity, killer)
                 elseif killer:IsPlayer() and victim ~= killer then
                     reason = "ply"
                     killerName = killer:Nick()
-                    role = killer:GetRole()
+
+                    -- If this Phantom was killed by a player and they are supposed to haunt them, hide their killer's role
+                    if GetRoundState() == ROUND_ACTIVE and victim:IsPhantom() and GetConVar("ttt_phantom_killer_haunt"):GetBool() then
+                        role = ROLE_NONE
+                    else
+                        role = killer:GetRole()
+                    end
                 end
             end
         end

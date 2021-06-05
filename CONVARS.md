@@ -26,6 +26,13 @@ ttt_phantom_weaker_each_respawn      0   // Whether a Phantom respawns weaker (1
 ttt_phantom_killer_smoke             1   // Whether to show smoke on the player who killed the Phantom
 ttt_phantom_killer_footstep_time     10  // The amount of time a Phantom's killer's footsteps should show before fading. 0 to disable
 ttt_phantom_announce_death           1   // Whether to announce to Detectives (and promoted Deputies and Imposters) that a Phantom has been killed or respawned
+ttt_phantom_killer_haunt             1   // Whether to have the Phantom haunt their killer
+ttt_phantom_killer_haunt_power_max   100 // The maximum amount of power a Phantom can have when haunting their killer
+ttt_phantom_killer_haunt_power_rate  5   // The amount of power to regain per second when a Phantom is haunting their killer
+ttt_phantom_killer_haunt_move_cost   50  // The amount of power to spend when a Phantom is moving their killer via a haunting. 0 to disable
+ttt_phantom_killer_haunt_attack_cost 75  // The amount of power to spend when a Phantom is making their killer attack via a haunting. 0 to disable
+ttt_phantom_killer_haunt_jump_cost   30  // The amount of power to spend when a Phantom is making their killer jump via a haunting. 0 to disable
+ttt_phantom_killer_haunt_drop_cost   45  // The amount of power to spend when a Phantom is making their killer drop their weapon via a haunting. 0 to disable
 ```
 
 Thanks to [KarlOfDuty](https://github.com/KarlOfDuty) for his original version of this document, [here](https://github.com/KarlOfDuty/TTT-Custom-Roles/blob/patch-1/README.md).

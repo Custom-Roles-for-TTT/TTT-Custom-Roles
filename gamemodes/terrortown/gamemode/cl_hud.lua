@@ -13,15 +13,31 @@ local interp = string.Interp
 local FormatTime = util.SimpleTime
 
 -- Fonts
-surface.CreateFont("TraitorState", { font = "Trebuchet24",
-                                     size = 28,
-                                     weight = 1000 })
-surface.CreateFont("TimeLeft", { font = "Trebuchet24",
-                                 size = 24,
-                                 weight = 800 })
-surface.CreateFont("HealthAmmo", { font = "Trebuchet24",
-                                   size = 24,
-                                   weight = 750 })
+surface.CreateFont("TraitorState", {
+    font = "Trebuchet24",
+    size = 28,
+    weight = 1000
+})
+surface.CreateFont("TimeLeft", {
+    font = "Trebuchet24",
+    size = 24,
+    weight = 800
+})
+surface.CreateFont("HealthAmmo", {
+    font = "Trebuchet24",
+    size = 24,
+    weight = 750
+})
+surface.CreateFont("UseHintCaption", {
+    font = "Trebuchet24",
+    size = 24,
+    weight = 750
+})
+surface.CreateFont("UseHint", {
+    font = "Trebuchet24",
+    size = 18,
+    weight = 750
+})
 -- Color presets
 local bg_colors = {
     background_main = Color(0, 0, 10, 200),
@@ -225,7 +241,7 @@ local function SpecHUDPaint(client)
     ShadowedText(text, "TraitorState", x + margin, round_y, COLOR_WHITE)
 
     -- Draw round/prep/post time remaining
-    local text = util.SimpleTime(math.max(0, GetGlobalFloat("ttt_round_end", 0) - CurTime()), "%02i:%02i")
+    text = util.SimpleTime(math.max(0, GetGlobalFloat("ttt_round_end", 0) - CurTime()), "%02i:%02i")
     ShadowedText(text, "TimeLeft", time_x + margin, time_y, COLOR_WHITE)
 
     local tgt = client:GetObserverTarget()
@@ -236,6 +252,91 @@ local function SpecHUDPaint(client)
         PunchPaint(client)
     else
         ShadowedText(interp(L.spec_help, key_params), "TabLarge", ScrW() / 2, margin, COLOR_WHITE, TEXT_ALIGN_CENTER)
+    end
+
+    -- If this player is haunting someone, show the menu of the different haunts they can do
+    if client:GetNWBool("Haunting") then
+        local maxpower = GetGlobalInt("ttt_phantom_killer_haunt_power_max", 100)
+        local move_cost = GetGlobalInt("ttt_phantom_killer_haunt_move_cost", 25)
+        local attack_cost = GetGlobalInt("ttt_phantom_killer_haunt_attack_cost", 50)
+        local jump_cost = GetGlobalInt("ttt_phantom_killer_haunt_jump_cost", 20)
+        local drop_cost = GetGlobalInt("ttt_phantom_killer_haunt_drop_cost", 15)
+
+        local commandcount = 0
+        if move_cost > 0 then
+            commandcount = commandcount + 1
+        end
+        if attack_cost > 0 then
+            commandcount = commandcount + 1
+        end
+        if jump_cost > 0 then
+            commandcount = commandcount + 1
+        end
+        if drop_cost > 0 then
+            commandcount = commandcount + 1
+        end
+
+        local currentpower = client:GetNWInt("HauntingPower", 0)
+
+        -- Progress Bar
+        -- Background
+        draw.RoundedBox(8, 50 + ScrW() / 7 - (maxpower / 2), ScrH() / 2 - ScrH() / 14 - 40, maxpower + 5, 26, Color(20, 20, 5, 222))
+        -- Foreground
+        draw.RoundedBox(8, 50 + ScrW() / 7 - (maxpower / 2), ScrH() / 2 - ScrH() / 14 - 40, currentpower + 5, 26, Color(205, 155, 0, 255))
+        -- Text
+        ShadowedText(tostring(math.floor(currentpower)) .. " / " .. tostring(maxpower), "HealthAmmo", 50 + ScrW() / 7 , ScrH() / 2 - ScrH() / 14 - 40, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_RIGHT)
+
+        -- Box Background
+        -- The height of the box depends on the number of enabled commands
+        local heightfraction
+        if commandcount== 1 then
+            heightfraction = 13
+        elseif commandcount== 2 then
+            heightfraction = 9
+        elseif commandcount== 3 then
+            heightfraction = 7
+        else
+            heightfraction = 6
+        end
+
+        draw.RoundedBox(8, 50, ScrH() / 2 - ScrH() / 14, ScrW() / 3.5, ScrH() / heightfraction, Color(20, 20, 5, 222))
+
+        -- Title Bar
+        draw.RoundedBox(8, 50, ScrH() / 2 - ScrH() / 14, ScrW() / 3.5, 42, Color(20, 20, 5, 240))
+        ShadowedText("Available Hauntings", "UseHintCaption", 50 + ScrW() / 7 , ScrH() / 2 - ScrH() / 14 + 20, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+
+        -- Move
+        local heightoffset = 50
+        if move_cost > 0 then
+            ShadowedText("Move Keys", "UseHint", 50 + 20 , ScrH() / 2 - ScrH() / 14 + heightoffset, COLOR_WHITE, TEXT_ALIGN_LEFT, TEXT_ALIGN_RIGHT)
+            ShadowedText("Move One Step", "UseHint", 50 + ScrW() / 7, ScrH() / 2 - ScrH() / 14 + heightoffset, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_RIGHT)
+            ShadowedText(tostring(move_cost) .. " Power", "UseHint", 50 + ScrW() / 3.5 - 20 , ScrH() / 2 - ScrH() / 14 + heightoffset, currentpower >= move_cost and COLOR_GREEN or COLOR_RED, TEXT_ALIGN_RIGHT, TEXT_ALIGN_RIGHT)
+            heightoffset = heightoffset + 35
+        end
+
+        -- Attack
+        if attack_cost > 0 then
+            ShadowedText("Left-Click", "UseHint", 50 + 20 , ScrH() / 2 - ScrH() / 14 + heightoffset, COLOR_WHITE, TEXT_ALIGN_LEFT, TEXT_ALIGN_RIGHT)
+            ShadowedText("Attack Once", "UseHint", 50 + ScrW() / 7, ScrH() / 2 - ScrH() / 14 + heightoffset, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_RIGHT)
+            ShadowedText(tostring(attack_cost) .. " Power", "UseHint", 50 + ScrW() / 3.5 - 20 , ScrH() / 2 - ScrH() / 14 + heightoffset, currentpower >= attack_cost and COLOR_GREEN or COLOR_RED, TEXT_ALIGN_RIGHT, TEXT_ALIGN_RIGHT)
+            heightoffset = heightoffset + 35
+        end
+
+        -- Jump
+        if jump_cost> 0 then
+            ShadowedText("Jump", "UseHint", 50 + 20 , ScrH() / 2 - ScrH() / 14 + heightoffset, COLOR_WHITE, TEXT_ALIGN_LEFT, TEXT_ALIGN_RIGHT)
+            ShadowedText("Jump Once", "UseHint", 50 + ScrW() / 7, ScrH() / 2 - ScrH() / 14 + heightoffset, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_RIGHT)
+            ShadowedText(tostring(jump_cost) .. " Power", "UseHint", 50 + ScrW() / 3.5 - 20 , ScrH() / 2 - ScrH() / 14 + heightoffset, currentpower >= jump_cost and COLOR_GREEN or COLOR_RED, TEXT_ALIGN_RIGHT, TEXT_ALIGN_RIGHT)
+            heightoffset = heightoffset + 35
+        end
+
+        -- Drop Weapon
+        if drop_cost> 0 then
+            ShadowedText("Right-Click", "UseHint", 50 + 20 , ScrH() / 2 - ScrH() / 14 + heightoffset, COLOR_WHITE, TEXT_ALIGN_LEFT, TEXT_ALIGN_RIGHT)
+            ShadowedText("Drop Weapon", "UseHint", 50 + ScrW() / 7, ScrH() / 2 - ScrH() / 14 + heightoffset, COLOR_WHITE, TEXT_ALIGN_CENTER, TEXT_ALIGN_RIGHT)
+            ShadowedText(tostring(drop_cost) .. " Power", "UseHint", 50 + ScrW() / 3.5 - 20 , ScrH() / 2 - ScrH() / 14 + heightoffset, currentpower >= drop_cost and COLOR_GREEN or COLOR_RED, TEXT_ALIGN_RIGHT, TEXT_ALIGN_RIGHT)
+            heightoffset = heightoffset + 35
+        end
     end
 end
 

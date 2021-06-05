@@ -646,65 +646,68 @@ end)
 -- Death messages
 net.Receive("TTT_ClientDeathNotify", function()
     -- Colours for customizing
-    local TraitorColor = Color(255, 0, 0)
-    local SpecTraitorColor = Color(255, 128, 0)
-    local InnoColor = Color(0, 255, 0)
-    local SpecInnoColor = Color(255, 255, 0)
-    local DetectiveColor = Color(0, 0, 255)
-    local JesterColor = Color(159, 0, 211)
-    local IndependentColor = Color(112, 50, 0)
+    local traitorColor = Color(255, 0, 0)
+    local specTraitorColor = Color(255, 128, 0)
+    local innoColor = Color(0, 255, 0)
+    local specInnoColor = Color(255, 255, 0)
+    local detectiveColor = Color(0, 0, 255)
+    local jesterColor = Color(159, 0, 211)
+    local independentColor = Color(112, 50, 0)
 
     -- Read the variables from the message
     local name = net.ReadString()
     local role = net.ReadUInt(8)
     local reason = net.ReadString()
-    local col = InnoColor
+    local col = innoColor
 
     -- Format the number role into a human readable role
     if role == ROLE_TRAITOR then
-        col = TraitorColor
+        col = traitorColor
         role = "a traitor"
     elseif role == ROLE_DETECTIVE then
-        col = DetectiveColor
+        col = detectiveColor
         role = "a detective"
     elseif role == ROLE_JESTER then
-        col = JesterColor
+        col = jesterColor
         role = "a jester"
     elseif role == ROLE_SWAPPER then
-        col = JesterColor
+        col = jesterColor
         role = "a swapper"
     elseif role == ROLE_GLITCH then
-        col = SpecInnoColor
+        col = specInnoColor
         role = "a glitch"
     elseif role == ROLE_PHANTOM then
-        col = SpecInnoColor
+        col = specInnoColor
         role = "a phantom"
     elseif role == ROLE_HYPNOTIST then
-        col = SpecTraitorColor
+        col = specTraitorColor
         role = "a hypnotist"
     elseif role == ROLE_REVENGER then
-        col = SpecInnoColor
+        col = specInnoColor
         role = "a revenger"
     elseif role == ROLE_DRUNK then
-        col = IndependentColor
+        col = independentColor
         role = "a drunk"
     elseif role == ROLE_CLOWN then
-        col = JesterColor
+        col = jesterColor
         role = "a clown"
     elseif role == ROLE_DEPUTY then
-        col = SpecInnoColor
+        col = specInnoColor
         role = "a deputy"
     elseif role == ROLE_IMPERSONATOR then
-        col = SpecTraitorColor
+        col = specTraitorColor
         role = "an impersonator"
     elseif role == ROLE_BEGGAR then
-        col = JesterColor
+        col = jesterColor
         role = "a beggar"
     elseif role == ROLE_OLDMAN then
-        col = IndependentColor
+        col = independentColor
         role = "an old man"
+    elseif role == ROLE_NONE then
+        col = COLOR_WHITE
+        role = "a hidden role"
     else
-        col = InnoColor
+        col = innoColor
         role = "innocent"
     end
 
