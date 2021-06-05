@@ -128,7 +128,6 @@ CreateConVar("ttt_old_man_min_players", "0")
 -- Custom role properties
 CreateConVar("ttt_detective_starting_health", "100")
 CreateConVar("ttt_swapper_killer_health", "100")
-CreateConVar("ttt_phantom_respawn_health", "50")
 CreateConVar("ttt_drunk_sober_time", "180")
 CreateConVar("ttt_drunk_innocent_chance", "0.7")
 CreateConVar("ttt_clown_damage_bonus", "0")
@@ -139,6 +138,9 @@ CreateConVar("ttt_single_deputy_impersonator", "0")
 CreateConVar("ttt_old_man_starting_health", "1")
 CreateConVar("ttt_jesters_trigger_traitor_testers", "1")
 CreateConVar("ttt_independents_trigger_traitor_testers", "0")
+
+CreateConVar("ttt_phantom_respawn_health", "50")
+CreateConVar("ttt_phantom_killer_footstep_time", "10")
 
 -- Traitor credits
 CreateConVar("ttt_credits_starting", "2")
@@ -258,9 +260,16 @@ util.AddNetworkString("TTT_UpdateRevengerLoverKiller")
 util.AddNetworkString("TTT_UpdateOldManWins")
 util.AddNetworkString("TTT_BuyableWeapons")
 util.AddNetworkString("TTT_ResetBuyableWeaponsCache")
+util.AddNetworkString("TTT_PlayerFootstep")
+util.AddNetworkString("TTT_ClearPlayerFootsteps")
 
 local jester_killed = false
 local revenger_lover = nil
+
+local function ClearAllFootsteps()
+    net.Start("TTT_ClearPlayerFootsteps")
+    net.Broadcast()
+end
 
 ---- Round mechanics
 function GM:Initialize()
@@ -365,6 +374,8 @@ function GM:SyncGlobals()
         SetGlobalInt("ttt_shop_random_" .. shortstring .. "_percent", GetConVar("ttt_shop_random_" .. shortstring .. "_percent"):GetInt())
         SetGlobalBool("ttt_shop_random_" .. shortstring .. "_enabled", GetConVar("ttt_shop_random_" .. shortstring .. "_enabled"):GetBool())
     end
+
+    SetGlobalInt("ttt_phantom_killer_footstep_time", GetConVar("ttt_phantom_killer_footstep_time"):GetInt())
 
     SetGlobalBool("sv_voiceenable", GetConVar("sv_voiceenable"):GetBool())
 end
@@ -670,7 +681,7 @@ function PrepareRound()
 
     -- Tell hooks and map we started prep
     hook.Call("TTTPrepareRound")
-
+    ClearAllFootsteps()
     ents.TTT.TriggerRoundStateOutputs(ROUND_PREP)
 end
 
@@ -844,7 +855,7 @@ function BeginRound()
         if v:GetRole() == ROLE_REVENGER then
             if not revenger_lover then
                 local potentialSoulmates = {}
-                for i, p in pairs(player.GetAll()) do
+                for _, p in pairs(player.GetAll()) do
                     if p:Alive() and not p:IsSpec() and not p:IsRevenger() then
                         table.insert(potentialSoulmates, p)
                     end
@@ -853,7 +864,7 @@ function BeginRound()
                     revenger_lover = potentialSoulmates[math.random(#potentialSoulmates)]
                     hook.Add("PlayerDeath", "CheckRevengerLoverDeath", function(victim, infl, attacker)
                         if victim == revenger_lover and GetRoundState() == ROUND_ACTIVE then
-                            if attacker:IsPlayer() and infl:GetClass() ~= env_fire then
+                            if attacker:IsPlayer() then
                                 v:PrintMessage(HUD_PRINTTALK, "Your love has died. Track down their killer.")
                                 v:PrintMessage(HUD_PRINTCENTER, "Your love has died. Track down their killer.")
                                 if attacker:IsValid() and attacker:IsActive() then
@@ -978,7 +989,7 @@ function BeginRound()
     SetRoundState(ROUND_ACTIVE)
     LANG.Msg("round_started")
     ServerLog("Round proper has begun...\n")
-
+    ClearAllFootsteps()
     GAMEMODE:UpdatePlayerLoadouts() -- needs to happen when round_active
 
     hook.Call("TTTBeginRound")

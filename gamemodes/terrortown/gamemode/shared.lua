@@ -249,7 +249,7 @@ local ttt_playercolors = {
 
 CreateConVar("ttt_playercolor_mode", "1")
 function GM:TTTPlayerColor(model)
-    local mode = GetConVarNumber("ttt_playercolor_mode") or 0
+    local mode = GetConVar("ttt_playercolor_mode"):GetInt()
     if mode == 1 then
         return table.Random(ttt_playercolors.serious)
     elseif mode == 2 then
@@ -262,9 +262,26 @@ function GM:TTTPlayerColor(model)
     return COLOR_WHITE
 end
 
--- Kill footsteps on player and client
 function GM:PlayerFootstep(ply, pos, foot, sound, volume, rf)
-    if IsValid(ply) and (ply:Crouching() or ply:GetMaxSpeed() < 150 or ply:IsSpec()) then
+    if not IsValid(ply) or ply:IsSpec() or not ply:Alive() then return true end
+
+    if SERVER then
+        -- This player killed a Phantom. Tell everyone where their foot steps should go
+        local phantom_killer_footstep_time = GetGlobalInt("ttt_phantom_killer_footstep_time")
+        if phantom_killer_footstep_time > 0 and ply:GetNWBool("HauntedSmoke", false) and ply:WaterLevel() == 0 then
+            net.Start("TTT_PlayerFootstep")
+            net.WriteEntity(ply)
+            net.WriteVector(pos)
+            net.WriteAngle(ply:GetAimVector():Angle())
+            net.WriteBit(foot)
+            net.WriteTable(Color(138, 4, 4))
+            net.WriteUInt(phantom_killer_footstep_time, 8)
+            net.Broadcast()
+        end
+    end
+
+    -- Kill footsteps on player and client
+    if ply:Crouching() or ply:GetMaxSpeed() < 150 then
         -- do not play anything, just prevent normal sounds from playing
         return true
     end
@@ -303,7 +320,6 @@ function GetSprintMultiplier(ply, sprinting)
     end
     return mult
 end
-
 
 -- Weapons and items that come with TTT. Weapons that are not in this list will
 -- get a little marker on their icon if they're buyable, showing they are custom

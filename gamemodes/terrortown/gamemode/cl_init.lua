@@ -332,7 +332,7 @@ function GM:AddDeathNotice() end
 function GM:DrawDeathNotice() end
 
 function GM:Think()
-    for k, v in pairs(player.GetAll()) do
+    for _, v in pairs(player.GetAll()) do
         if v:Alive() and v:GetNWBool("HauntedSmoke", false) then
             if not v.SmokeEmitter then v.SmokeEmitter = ParticleEmitter(v:GetPos()) end
             if not v.SmokeNextPart then v.SmokeNextPart = CurTime() end
@@ -724,4 +724,85 @@ net.Receive("TTT_ClientDeathNotify", function()
     else
         chat.AddText(COLOR_WHITE, "You died!")
     end
+end)
+
+-- Footsteps
+
+local footSteps = {}
+local footMat = Material("thieves/footprint")
+local function DrawFootprints()
+    local client = LocalPlayer()
+    if not IsValid(client) then return end
+
+    cam.Start3D(client:EyePos(), client:EyeAngles())
+    render.SetMaterial(footMat)
+    local pos = client:EyePos()
+    for k, footstep in pairs(footSteps) do
+        local timediff = (footstep.curtime + footstep.fadetime) - CurTime()
+        if timediff > 0 then
+            if (footstep.pos - pos):LengthSqr() < 600 ^ 2 then
+                -- Fade the footprints into invisibility based on how long they've been around
+                local faderatio = timediff / footstep.fadetime
+                local col = Color(footstep.col.r, footstep.col.g, footstep.col.b, faderatio * 255)
+
+                local hitpos = footstep.pos
+                -- If this player is spectating through the target's eyes, move the prints down so they don't appear to float
+                if client:IsSpec() and client:GetNWInt("SpecMode", -1) == OBS_MODE_IN_EYE then
+                    hitpos = hitpos + Vector(0, 0, -50)
+                end
+                render.DrawQuadEasy(hitpos + footstep.normal * 0.01, footstep.normal, 10, 20, col, footstep.angle)
+            end
+        else
+            footSteps[k] = nil
+        end
+    end
+    cam.End3D()
+end
+
+local function AddFootstep(client, pos, ang, foot, col, fade_time)
+    ang.p = 0
+    ang.r = 0
+    local fpos = pos
+    if foot == 1 then
+        fpos = fpos + ang:Right() * 5
+    else
+        fpos = fpos + ang:Right() * -5
+    end
+
+    local trace = {
+        start = fpos,
+        endpos = fpos + Vector(0, 0, -10),
+        filter = client
+    }
+    local tr = util.TraceLine(trace)
+    if tr.Hit then
+        local tbl = {
+            pos = tr.HitPos,
+            curtime = CurTime(),
+            fadetime = fade_time,
+            angle = ang.y,
+            normal = tr.HitNormal,
+            col = col
+        }
+        table.insert(footSteps, tbl)
+    end
+end
+
+net.Receive("TTT_PlayerFootstep", function()
+    local client = net.ReadEntity()
+    local pos = net.ReadVector()
+    local ang = net.ReadAngle()
+    local foot = net.ReadBit()
+    local color = net.ReadTable()
+    local fade_time = net.ReadUInt(8)
+
+    AddFootstep(client, pos, ang, foot, color, fade_time)
+end)
+
+net.Receive("TTT_ClearPlayerFootsteps", function()
+    table.Empty(footSteps)
+end)
+
+hook.Add("PostDrawTranslucentRenderables", "FootstepRender", function(depth, skybox)
+    DrawFootprints()
 end)

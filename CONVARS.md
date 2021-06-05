@@ -19,6 +19,10 @@ ttt_shop_random_det_enabled 0 // Whether role shop randomization is enabled for 
 ttt_shop_random_hyp_enabled 0 // Whether role shop randomization is enabled for Hypnotists
 ttt_shop_random_dep_enabled 0 // Whether role shop randomization is enabled for Deputies
 ttt_shop_random_imp_enabled 0 // Whether role shop randomization is enabled for Impersonators
+
+// Phantom
+ttt_phantom_respawn_health           50  // The amount of health a Phantom will respawn with
+ttt_phantom_killer_footstep_time     10  // The amount of time a Phantom's killer's footsteps should show before fading. 0 to disable
 ```
 
 Thanks to [KarlOfDuty](https://github.com/KarlOfDuty) for his original version of this document, [here](https://github.com/KarlOfDuty/TTT-Custom-Roles/blob/patch-1/README.md).
