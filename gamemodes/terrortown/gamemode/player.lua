@@ -232,7 +232,7 @@ function GM:PlayerSelectSpawn(ply)
 
     -- Optimistic attempt: assume there are sufficient spawns for all and one is
     -- free
-    for k, spwn in pairs(self.SpawnPoints) do
+    for _, spwn in pairs(self.SpawnPoints) do
         if self:IsSpawnpointSuitable(ply, spwn, false) then
             return spwn
         end
@@ -241,7 +241,7 @@ function GM:PlayerSelectSpawn(ply)
     -- That did not work, so now look around spawns
     local picked = nil
 
-    for k, spwn in pairs(self.SpawnPoints) do
+    for _, spwn in pairs(self.SpawnPoints) do
         picked = spwn -- just to have something if all else fails
 
         -- See if we can jury rig a spawn near this one
@@ -263,7 +263,7 @@ function GM:PlayerSelectSpawn(ply)
     end
 
     -- Last attempt, force one
-    for k, spwn in pairs(self.SpawnPoints) do
+    for _, spwn in pairs(self.SpawnPoints) do
         if self:IsSpawnpointSuitable(ply, spwn, true) then
             return spwn
         end
@@ -626,23 +626,59 @@ function FindRespawnLocation(pos)
     return false
 end
 
-local deadPhantom = nil
+local deadPhantoms = {}
+hook.Add("TTTPrepareRound", function()
+    deadPhantoms = {}
+end)
+
 function GM:DoPlayerDeath(ply, attacker, dmginfo)
     if ply:IsSpec() then return end
 
     -- Respawn the phantom
-    if ply:GetNWBool("HauntedSmoke") == true then
-        local phantomBody = deadPhantom.server_ragdoll or deadPhantom:GetRagdollEntity()
-        if phantomBody:IsValid() and deadPhantom:GetRole() == ROLE_PHANTOM then
-            deadPhantom:SpawnForRound(true)
-            deadPhantom:SetPos(FindRespawnLocation(phantomBody:GetPos()) or phantomBody:GetPos())
-            deadPhantom:SetEyeAngles(Angle(0, phantomBody:GetAngles().y, 0))
-            deadPhantom:SetHealth(GetConVar("ttt_phantom_respawn_health"):GetInt() or 50)
-            phantomBody:Remove()
-            deadPhantom:PrintMessage(HUD_PRINTCENTER, "Your attacker died and you have been respawned.")
-            ply:SetNWBool("HauntedSmoke", false)
-            SendFullStateUpdate()
+    if ply:GetNWBool("HauntedSmoke", false) then
+        local respawn = false
+        local phantomUsers = table.GetKeys(deadPhantoms)
+        for _, key in pairs(phantomUsers) do
+            local phantom = deadPhantoms[key]
+            if phantom.attacker == ply:SteamID64() and IsValid(phantom.player) then
+                local deadPhantom = phantom.player
+                if deadPhantom:IsPhantom() and not deadPhantom:Alive() then
+                    -- Find the Phantom's corpse
+                    local phantomBody = deadPhantom.server_ragdoll or deadPhantom:GetRagdollEntity()
+                    if IsValid(phantomBody) then
+                        deadPhantom:SpawnForRound(true)
+                        deadPhantom:SetPos(FindRespawnLocation(phantomBody:GetPos()) or phantomBody:GetPos())
+                        deadPhantom:SetEyeAngles(Angle(0, phantomBody:GetAngles().y, 0))
+
+                        local health = GetConVar("ttt_phantom_respawn_health"):GetInt()
+                        if GetConVar("ttt_phantom_weaker_each_respawn"):GetBool() then
+                            -- Don't reduce them the first time since 50 is already reduced
+                            for _ = 1, phantom.times - 1 do
+                                health = health / 2
+                            end
+                            health = math.max(1, math.Round(health))
+                        end
+                        deadPhantom:SetHealth(health)
+                        phantomBody:Remove()
+                        deadPhantom:PrintMessage(HUD_PRINTCENTER, "Your attacker died and you have been respawned.")
+                        respawn = true
+                    else
+                        deadPhantom:PrintMessage(HUD_PRINTCENTER, "Your attacker died but your body has been destroyed.")
+                    end
+                end
+            end
         end
+
+        if respawn and GetConVar("ttt_phantom_announce_death"):GetBool() then
+            for _, v in pairs(player.GetAll()) do
+                if v:IsDetectiveLike() and v:Alive() and not v:IsSpec() then
+                    v:PrintMessage(HUD_PRINTCENTER, "The phantom has been respawned.")
+                end
+            end
+        end
+
+        ply:SetNWBool("HauntedSmoke", false)
+        SendFullStateUpdate()
     end
 
     -- Experimental: Fire a last shot if ironsighting and not headshot
@@ -742,21 +778,36 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 end
 
 function GM:PlayerDeath(victim, infl, attacker)
+    local valid_kill = IsValid(attacker) and attacker:IsPlayer() and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     -- Handle phantom death
-    if victim:GetPhantom() and attacker:IsPlayer() and attacker ~= victim and GetRoundState() == ROUND_ACTIVE then
+    if victim:IsPhantom() and valid_kill then
         attacker:SetNWBool("HauntedSmoke", true)
         attacker:PrintMessage(HUD_PRINTCENTER, "You have been haunted.")
         victim:PrintMessage(HUD_PRINTCENTER, "Your attacker has been haunted.")
-        deadPhantom = victim
+        if GetConVar("ttt_phantom_announce_death"):GetBool() then
+            for _, v in pairs(player.GetAll()) do
+                if v ~= attacker and v:IsDetectiveLike() and v:Alive() and not v:IsSpec() then
+                    v:PrintMessage(HUD_PRINTCENTER, "The phantom has been killed.")
+                end
+            end
+        end
+
+        local sid = victim:SteamID64()
+        -- Keep track of how many times this Phantom has been killed and by who
+        if not deadPhantoms[sid] then
+            deadPhantoms[sid] = {times = 1, player = victim, attacker = attacker:SteamID64()}
+        else
+            deadPhantoms[sid] = {times = deadPhantoms[sid].times + 1, player = victim, attacker = attacker:SteamID64()}
+        end
     end
 
     -- Handle jester death
-    if victim:GetJester() and attacker:IsPlayer() and attacker ~= victim and GetRoundState() == ROUND_ACTIVE then
+    if victim:IsJester() and valid_kill then
         victim:SetNWString("JesterKiller", attacker:Nick())
     end
 
     -- Handle swapper death
-    if victim:GetSwapper() and attacker:IsPlayer() and attacker ~= victim and GetRoundState() == ROUND_ACTIVE then
+    if victim:IsSwapper() and valid_kill then
         attacker:SetNWString("SwappedWith", victim:Nick())
         attacker:PrintMessage(HUD_PRINTCENTER, "You killed the swapper!")
         victim:SetRole(attacker:GetRole())
@@ -780,7 +831,7 @@ function GM:PlayerDeath(victim, infl, attacker)
     end
 
     -- Handle detective death
-    if victim:GetDetective() and GetRoundState() == ROUND_ACTIVE then
+    if victim:IsDetective() and valid_kill then
         local detectiveAlive = false
         for _, ply in pairs(player.GetAll()) do
             if ply:GetDetective() and ply ~= victim then

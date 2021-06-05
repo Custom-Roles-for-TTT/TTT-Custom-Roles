@@ -267,7 +267,7 @@ function GM:PlayerFootstep(ply, pos, foot, sound, volume, rf)
 
     if SERVER then
         -- This player killed a Phantom. Tell everyone where their foot steps should go
-        local phantom_killer_footstep_time = GetGlobalInt("ttt_phantom_killer_footstep_time")
+        local phantom_killer_footstep_time = GetConVar("ttt_phantom_killer_footstep_time"):GetInt()
         if phantom_killer_footstep_time > 0 and ply:GetNWBool("HauntedSmoke", false) and ply:WaterLevel() == 0 then
             net.Start("TTT_PlayerFootstep")
             net.WriteEntity(ply)

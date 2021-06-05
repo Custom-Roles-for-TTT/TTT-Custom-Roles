@@ -22,7 +22,10 @@ ttt_shop_random_imp_enabled 0 // Whether role shop randomization is enabled for 
 
 // Phantom
 ttt_phantom_respawn_health           50  // The amount of health a Phantom will respawn with
+ttt_phantom_weaker_each_respawn      0   // Whether a Phantom respawns weaker (1/2 as much HP) each time they respawn, down to a minimum of 1
+ttt_phantom_killer_smoke             1   // Whether to show smoke on the player who killed the Phantom
 ttt_phantom_killer_footstep_time     10  // The amount of time a Phantom's killer's footsteps should show before fading. 0 to disable
+ttt_phantom_announce_death           1   // Whether to announce to Detectives (and promoted Deputies and Imposters) that a Phantom has been killed or respawned
 ```
 
 Thanks to [KarlOfDuty](https://github.com/KarlOfDuty) for his original version of this document, [here](https://github.com/KarlOfDuty/TTT-Custom-Roles/blob/patch-1/README.md).

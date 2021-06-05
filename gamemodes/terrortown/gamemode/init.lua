@@ -140,7 +140,10 @@ CreateConVar("ttt_jesters_trigger_traitor_testers", "1")
 CreateConVar("ttt_independents_trigger_traitor_testers", "0")
 
 CreateConVar("ttt_phantom_respawn_health", "50")
+CreateConVar("ttt_phantom_weaker_each_respawn", "0")
+CreateConVar("ttt_phantom_killer_smoke", "1")
 CreateConVar("ttt_phantom_killer_footstep_time", "10")
+CreateConVar("ttt_phantom_announce_death", "1")
 
 -- Traitor credits
 CreateConVar("ttt_credits_starting", "2")
@@ -375,7 +378,7 @@ function GM:SyncGlobals()
         SetGlobalBool("ttt_shop_random_" .. shortstring .. "_enabled", GetConVar("ttt_shop_random_" .. shortstring .. "_enabled"):GetBool())
     end
 
-    SetGlobalInt("ttt_phantom_killer_footstep_time", GetConVar("ttt_phantom_killer_footstep_time"):GetInt())
+    SetGlobalBool("ttt_phantom_killer_smoke", GetConVar("ttt_phantom_killer_smoke"):GetBool())
 
     SetGlobalBool("sv_voiceenable", GetConVar("sv_voiceenable"):GetBool())
 end
