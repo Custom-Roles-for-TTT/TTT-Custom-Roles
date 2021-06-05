@@ -44,15 +44,15 @@ local function RoleChatRecv()
                 Format("(%s) ", string.upper(GetTranslation("traitor"))),
                 Color(255, 100, 100),
                 name,
-                Color(255, 255, 255),
+                COLOR_WHITE,
                 ": " .. text)
 
-    elseif role == ROLE_DETECTIVE then
+    elseif role == ROLE_DETECTIVE or (role == ROLE_DEPUTY and sender:GetNWBool("HasPromotion", false)) then
         chat.AddText(Color(0, 0, 255),
                 Format("(%s) ", string.upper(GetTranslation("detective"))),
                 Color(100, 100, 255),
                 name,
-                Color(255, 255, 255),
+                COLOR_WHITE,
                 ": " .. text)
 
     elseif role == ROLE_HYPNOTIST then
@@ -60,7 +60,7 @@ local function RoleChatRecv()
                 Format("(%s) ", string.upper(GetTranslation("hypnotist"))),
                 Color(255, 178, 100),
                 name,
-                Color(255, 255, 255),
+                COLOR_WHITE,
                 ": " .. text)
 
     elseif role == ROLE_IMPERSONATOR then
@@ -68,7 +68,7 @@ local function RoleChatRecv()
                 Format("(%s) ", string.upper(GetTranslation("impersonator"))),
                 Color(255, 178, 100),
                 name,
-                Color(255, 255, 255),
+                COLOR_WHITE,
                 ": " .. text)
     end
 end
@@ -281,7 +281,7 @@ function RADIO:ShowRadioCommands(state)
         self.Show = true
 
         timer.Create("radiocmdshow", 3, 1,
-                function() RADIO:ShowRadioCommands(false) end)
+            function() RADIO:ShowRadioCommands(false) end)
     end
 end
 
@@ -402,8 +402,8 @@ end
 
 local function RadioComplete(cmd, arg)
     local c = {}
-    for k, cmd in pairs(RADIO.Commands) do
-        local rcmd = "ttt_radio " .. cmd.cmd
+    for _, com in pairs(RADIO.Commands) do
+        local rcmd = "ttt_radio " .. com.cmd
         table.insert(c, rcmd)
     end
     return c
@@ -438,12 +438,12 @@ local function RadioMsgRecv()
         text = util.Capitalize(text)
     end
 
-    if sender:IsDetective() then
+    if sender:IsDetectiveLike() then
         AddDetectiveText(sender, text)
     else
         chat.AddText(sender,
-                COLOR_WHITE,
-                ": " .. text)
+            COLOR_WHITE,
+            ": " .. text)
     end
 end
 net.Receive("TTT_RadioMsg", RadioMsgRecv)
@@ -510,6 +510,16 @@ function GM:PlayerStartVoice(ply)
                 client.traitor_gvoice = false
                 RunConsoleCommand("tvog", "0")
             end
+
+            local hasGlitch = false
+            for _, v in pairs(player.GetAll()) do
+                if v:IsGlitch() then hasGlitch = true end
+            end
+
+            -- Return early so the client doesn't think they are talking
+            if not client.traitor_gvoice and hasGlitch then
+                return
+            end
         end
 
         VOICE.SetSpeaking(true)
@@ -549,6 +559,9 @@ function GM:PlayerStartVoice(ply)
     end
 
     PlayerVoicePanels[ply] = pnl
+
+    -- run ear gesture
+    ply:AnimPerformGesture(ACT_GMOD_IN_CHAT)
 end
 
 local function ReceiveVoiceState()
@@ -573,7 +586,7 @@ net.Receive("TTT_TraitorVoiceState", ReceiveVoiceState)
 local function VoiceClean()
     for ply, pnl in pairs(PlayerVoicePanels) do
         if (not IsValid(pnl)) or (not IsValid(ply)) then
-            GAMEMODE:PlayerEndVoice(ply)
+            GAMEMODE:PlayerEndVoice(ply, true)
         end
     end
 end
@@ -585,7 +598,8 @@ function GM:PlayerEndVoice(ply, no_reset)
         PlayerVoicePanels[ply] = nil
     end
 
-    if IsValid(ply) and not no_reset then
+    -- Specifically check for "false" since some base classes don't pass a value
+    if IsValid(ply) and no_reset == false then
         ply.traitor_gvoice = false
     end
 
@@ -689,6 +703,7 @@ end
 
 -- Player:IsSpeaking() does not work for localplayer
 function VOICE.IsSpeaking() return LocalPlayer().speaking end
+
 function VOICE.SetSpeaking(state) LocalPlayer().speaking = state end
 
 function VOICE.CanSpeak()
