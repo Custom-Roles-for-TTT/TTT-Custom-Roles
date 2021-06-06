@@ -1112,8 +1112,6 @@ function GM:TTTCheckForWin()
         if v:Alive() and v:IsTerror() then
             if v:IsTraitorTeam() then
                 traitor_alive = true
-            elseif v:IsJester() then
-                jester_alive = true
             elseif v:IsDrunk() then
                 drunk_alive = true
             elseif v:IsClown() then
@@ -1126,7 +1124,7 @@ function GM:TTTCheckForWin()
             end
         end
 
-        if traitor_alive and innocent_alive and jester_alive then
+        if traitor_alive and innocent_alive and not jester_killed then
             return WIN_NONE --early out
         end
     end
