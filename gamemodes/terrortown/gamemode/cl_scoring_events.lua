@@ -67,6 +67,8 @@ Event(EVENT_FINISH,
                      return T("ev_win_jester")
                   elseif e.win == WIN_CLOWN then
                      return T("ev_win_clown")
+                  elseif e.win == WIN_OLDMAN then
+                     return T("ev_win_oldman")
                   elseif e.win == WIN_TIMELIMIT then
                      return T("ev_win_time")
                   end
@@ -80,6 +82,8 @@ Event(EVENT_FINISH,
                      return star_icon, "Jester won"
                   elseif e.win == WIN_CLOWN then
                      return star_icon, "Clown won"
+                  elseif e.win == WIN_OLDMAN then
+                     return star_icon, "Old Man also won"
                   else
                      return star_icon, "Timelimit"
                   end

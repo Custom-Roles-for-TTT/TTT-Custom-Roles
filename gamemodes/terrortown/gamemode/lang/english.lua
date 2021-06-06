@@ -1004,6 +1004,7 @@ L.ev_win_traitor = "The dastardly traitors won the round!"
 L.ev_win_jester = "The tricky jester won the round!"
 L.ev_win_inno = "The lovable innocent terrorists won the round!"
 L.ev_win_clown = "The vicious clown won the round!"
+L.ev_win_oldman = "The Old Man has somehow survived and also won the round!"
 L.ev_win_time = "The traitors ran out of time and lost!"
 
 --- Awards/highlights

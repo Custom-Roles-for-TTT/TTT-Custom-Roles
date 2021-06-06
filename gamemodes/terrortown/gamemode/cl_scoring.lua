@@ -70,8 +70,8 @@ local spawnedPlayers = {}
 local disconnected = {}
 local customEvents = {}
 
-function AddEvent(e)
-    e["t"] = math.Round(CurTime(), 2)
+function AddEvent(e, offset)
+    e["t"] = math.Round(CurTime() + (offset or 0), 2)
     table.insert(customEvents, e)
 end
 
@@ -170,6 +170,14 @@ end)
 local old_man_wins = false
 net.Receive("TTT_UpdateOldManWins", function()
     old_man_wins = net.ReadBool()
+
+    -- Log the win event with an offset to force it to the end
+    if old_man_wins then
+        AddEvent({
+            id = EVENT_FINISH,
+            win = WIN_OLDMAN
+        }, 1)
+    end
 end)
 
 function CLSCORE:GetDisplay(key, event)
@@ -486,7 +494,7 @@ function CLSCORE:BuildSummaryPanel(dpanel)
         end
     end
 
-    if old_man_wins then winlbl:SetPos(xwin, ywin - 15) end
+    if old_man_won_last_round then winlbl:SetPos(xwin, ywin - 15) end
 
     local scores = self.Scores
     local nicks = self.Players
@@ -825,9 +833,25 @@ function CLSCORE:BuildHilitePanel(dpanel)
     local ywin = 15
     winlbl:SetPos(xwin, ywin)
 
+    local exwinlbl = vgui.Create("DLabel", dpanel)
+    if old_man_won_last_round then
+        exwinlbl:SetFont("WinSmall")
+        exwinlbl:SetText(T("hilite_win_old_man"))
+        exwinlbl:SetTextColor(COLOR_WHITE)
+        exwinlbl:SizeToContents()
+        local xexwin = (w - exwinlbl:GetWide()) / 2
+        local yexwin = 61
+        exwinlbl:SetPos(xexwin, yexwin)
+    else
+        exwinlbl:SetText("")
+    end
+
     bg.PaintOver = function()
         draw.RoundedBox(8, xwin - 15, ywin - 5, winlbl:GetWide() + 30, winlbl:GetTall() + 10, title.c)
+        if old_man_won_last_round then draw.RoundedBoxEx(8, 158, 65, 380, 28, COLOR_INDEPENDENT, true, true, false, false) end
     end
+
+    if old_man_won_last_round then winlbl:SetPos(xwin, ywin - 15) end
 
     local ysubwin = ywin + winlbl:GetTall()
     local partlbl = vgui.Create("DLabel", dpanel)
