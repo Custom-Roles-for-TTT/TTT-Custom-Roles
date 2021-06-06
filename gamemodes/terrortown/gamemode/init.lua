@@ -253,6 +253,7 @@ util.AddNetworkString("TTT_ClientDeathNotify")
 util.AddNetworkString("TTT_SprintSpeedSet")
 util.AddNetworkString("TTT_SprintGetConVars")
 util.AddNetworkString("TTT_SpawnedPlayers")
+util.AddNetworkString("TTT_Defibrillated")
 util.AddNetworkString("TTT_ResetScoreboard")
 util.AddNetworkString("TTT_UpdateRevengerLoverKiller")
 util.AddNetworkString("TTT_UpdateOldManWins")
@@ -853,7 +854,7 @@ function BeginRound()
                     revenger_lover = potentialSoulmates[math.random(#potentialSoulmates)]
                     hook.Add("PlayerDeath", "CheckRevengerLoverDeath", function(victim, infl, attacker)
                         if victim == revenger_lover and GetRoundState() == ROUND_ACTIVE then
-                            if attacker:IsPlayer() and infl:GetClass() ~= env_fire then
+                            if attacker:IsPlayer() then
                                 v:PrintMessage(HUD_PRINTTALK, "Your love has died. Track down their killer.")
                                 v:PrintMessage(HUD_PRINTCENTER, "Your love has died. Track down their killer.")
                                 if attacker:IsValid() and attacker:IsActive() then
@@ -958,6 +959,7 @@ function BeginRound()
         if v:Alive() and v:IsTerror() then
             net.Start("TTT_SpawnedPlayers")
             net.WriteString(v:Nick())
+            net.WriteUInt(v:GetRole(), 8)
             net.Broadcast()
         end
     end

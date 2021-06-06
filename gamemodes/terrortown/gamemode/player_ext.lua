@@ -316,6 +316,13 @@ function plymeta:SpawnForRound(dead_only)
     self:SetTeam(TEAM_TERROR)
     self:Spawn()
 
+    -- If a dead player was spawned outside of the round start, broadcast the defib event
+    if dead_only then
+        net.Start("TTT_Defibrillated")
+        net.WriteString(self:Nick())
+        net.Broadcast()
+    end
+
     -- tell caller that we spawned
     return true
 end
