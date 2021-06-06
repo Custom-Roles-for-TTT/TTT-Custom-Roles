@@ -476,6 +476,10 @@ function GM:PlayerDisconnected(ply)
         SendImpersonatorList()
         SendBeggarList()
         SendOldManList()
+
+        net.Start("TTT_PlayerDisconnected")
+        net.WriteString(ply:Nick())
+        net.Broadcast()
     end
 
     if KARMA.IsEnabled() then
