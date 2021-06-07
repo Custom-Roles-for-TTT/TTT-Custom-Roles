@@ -44,22 +44,21 @@ function TraitorMsg(ply_or_rfilter, msg)
 end
 
 -- Traitorchat
-local function RoleChatMsg(sender, role, msg)
+local function RoleChatMsg(sender, msg)
     net.Start("TTT_RoleChat")
-    net.WriteUInt(role, 8)
+    net.WriteUInt(sender:GetRole(), 8)
     net.WriteEntity(sender)
     net.WriteString(msg)
-    if role == ROLE_TRAITOR or role == ROLE_HYPNOTIST or role == ROLE_IMPERSONATOR then
+    if sender:IsTraitorTeam() then
         net.Send(GetTraitorTeamFilter())
-    elseif role == ROLE_DETECTIVE then
+    elseif sender:IsDetectiveLike() then
         net.Send(GetDetectiveFilter())
     end
 end
 
-
 -- Round start info popup
 function ShowRoundStartPopup()
-    for k, v in ipairs(player.GetAll()) do
+    for _, v in ipairs(player.GetAll()) do
         if IsValid(v) and v:Team() == TEAM_TERROR and v:Alive() then
             v:ConCommand("ttt_cl_startpopup")
         end
@@ -68,7 +67,7 @@ end
 
 function GetPlayerFilter(pred)
     local filter = {}
-    for k, v in ipairs(player.GetAll()) do
+    for _, v in ipairs(player.GetAll()) do
         if IsValid(v) and pred(v) then
             table.insert(filter, v)
         end
@@ -85,7 +84,8 @@ function GetInnocentFilter(alive_only)
 end
 
 function GetDetectiveFilter(alive_only)
-    return GetPlayerFilter(function(p) return p:IsDetective() and (not alive_only or p:IsTerror()) end)
+    -- Include promoted Deputies in this, but not Impersonators. They are included in GetTraitorFilter
+    return GetPlayerFilter(function(p) return (p:IsDetective() or (p:IsDeputy() and p:GetNWBool("HasPromotion", false))) and (not alive_only or p:IsTerror()) end)
 end
 
 function GetJesterFilter(alive_only)
@@ -173,21 +173,27 @@ function GM:PlayerCanSeePlayersChat(text, team_only, listener, speaker)
     local sTeam = speaker:Team() == TEAM_SPEC
     local lTeam = listener:Team() == TEAM_SPEC
 
-    if (GetRoundState() ~= ROUND_ACTIVE) or -- Round isn't active
-            (not GetConVar("ttt_limit_spectator_chat"):GetBool()) or -- Spectators can chat freely
-            (not DetectiveMode()) or -- Mumbling
-            (not sTeam and ((team_only and not speaker:IsSpecial()) or (not team_only))) or -- If someone alive talks (and not a special role in teamchat's case)
+    -- Round isn't active
+    if (GetRoundState() ~= ROUND_ACTIVE) or
+            -- Spectators can chat freely
+            (not GetConVar("ttt_limit_spectator_chat"):GetBool()) or
+            -- Mumbling
+            (not DetectiveMode()) or
+            -- If someone alive talks (and not a special role in teamchat's case)
+            (not sTeam and ((team_only and not speaker:IsSpecial()) or (not team_only))) or
             (not sTeam and team_only and speaker:GetRole() == listener:GetRole()) or
+            -- If the speaker and listener are spectators
             (sTeam and lTeam) then
-        -- If the speaker and listener are spectators
         return true
     end
 
     return false
 end
 
-local mumbles = { "mumble", "mm", "hmm", "hum", "mum", "mbm", "mble", "ham", "mammaries", "political situation", "mrmm", "hrm",
-                  "uzbekistan", "mumu", "cheese export", "hmhm", "mmh", "mumble", "mphrrt", "mrh", "hmm", "mumble", "mbmm", "hmml", "mfrrm" }
+local mumbles = {
+    "mumble", "mm", "hmm", "hum", "mum", "mbm", "mble", "ham", "mammaries", "political situation", "mrmm", "hrm",
+    "uzbekistan", "mumu", "cheese export", "hmhm", "mmh", "mumble", "mphrrt", "mrh", "hmm", "mumble", "mbmm", "hmml", "mfrrm"
+}
 
 -- While a round is active, spectators can only talk among themselves. When they
 -- try to speak to all players they could divulge information about who killed
@@ -199,7 +205,7 @@ function GM:PlayerSay(ply, text, team_only)
         local team = ply:Team() == TEAM_SPEC
         if team and not DetectiveMode() then
             local filtered = {}
-            for k, v in ipairs(string.Explode(" ", text)) do
+            for _, v in ipairs(string.Explode(" ", text)) do
                 -- grab word characters and whitelisted interpunction
                 -- necessary or leetspeek will be used (by trolls especially)
                 local word, interp = string.match(v, "(%a*)([%.,;!%?]*)")
@@ -215,16 +221,16 @@ function GM:PlayerSay(ply, text, team_only)
 
             table.insert(filtered, 1, "[MUMBLED]")
             return table.concat(filtered, " ")
-        elseif team_only and not team and (ply:IsTraitorTeam() or ply:IsDetective()) then
+        elseif team_only and not team and (ply:IsTraitorTeam() or ply:IsDetectiveLike()) then
             local hasGlitch = false
-            for k, v in pairs(player.GetAll()) do
+            for _, v in pairs(player.GetAll()) do
                 if v:IsGlitch() then hasGlitch = true end
             end
             if ply:IsTraitorTeam() and hasGlitch then
                 ply:SendLua("chat.AddText(\"The glitch is scrambling your communications\")")
                 return ""
             else
-                RoleChatMsg(ply, ply:GetRole(), text)
+                RoleChatMsg(ply, text)
                 return ""
             end
         end
@@ -232,7 +238,6 @@ function GM:PlayerSay(ply, text, team_only)
 
     return text or ""
 end
-
 
 -- Mute players when we are about to run map cleanup, because it might cause
 -- net buffer overflows on clients.
@@ -272,10 +277,10 @@ function GM:PlayerCanHearPlayersVoice(listener, speaker)
         return true, false
     end
 
-    -- Traitors "team"chat by default, non-locationally
+    -- Traitors "team" chat by default, non-locationally
     if speaker:IsActiveTraitorTeam() then
         local hasGlitch = false
-        for k, v in pairs(player.GetAll()) do
+        for _, v in pairs(player.GetAll()) do
             if v:IsGlitch() then hasGlitch = true end
         end
 
@@ -301,8 +306,11 @@ local function SendTraitorVoiceState(speaker, state)
     net.Start("TTT_TraitorVoiceState")
     net.WriteUInt(speaker:EntIndex() - 1, 7) -- player ids can only be 1-128
     net.WriteBit(state)
-    if rf then net.Send(rf)
-    else net.Broadcast() end
+    if rf then
+        net.Send(rf)
+    else
+        net.Broadcast()
+    end
 end
 
 local function TraitorGlobalVoice(ply, cmd, args)
@@ -311,6 +319,16 @@ local function TraitorGlobalVoice(ply, cmd, args)
     local state = tonumber(args[1])
 
     ply.traitor_gvoice = (state == 1)
+
+    local hasGlitch = false
+    for _, v in pairs(player.GetAll()) do
+        if v:IsGlitch() then hasGlitch = true end
+    end
+
+    if not ply.traitor_gvoice and hasGlitch then
+        ply:SendLua("chat.AddText(\"The glitch is scrambling your communications\")")
+        return
+    end
 
     SendTraitorVoiceState(ply, ply.traitor_gvoice)
 end
