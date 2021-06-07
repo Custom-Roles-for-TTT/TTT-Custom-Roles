@@ -484,11 +484,11 @@ function CLSCORE:BuildSummaryPanel(dpanel)
 
     bg.PaintOver = function()
         draw.RoundedBox(8, 8, ywin - 5, w - 14, winlbl:GetTall() + 10, title.c)
-        if old_man_won_last_round then draw.RoundedBoxEx(8, 158, 65, 380, 28, COLOR_INDEPENDENT, true, true, false, false) end
-        draw.RoundedBox(0, 8, ywin + winlbl:GetTall() + 6, 341, 329, Color(164, 164, 164, 255))
-        draw.RoundedBox(0, 357, ywin + winlbl:GetTall() + 6, 341, 329, Color(164, 164, 164, 255))
-        draw.RoundedBox(0, 8, ywin + winlbl:GetTall() + 344, 690, 32, Color(164, 164, 164, 255))
-        for i = ywin + winlbl:GetTall() + 39, ywin + winlbl:GetTall() + 304, 33 do
+        if old_man_won_last_round then draw.RoundedBoxEx(8, 8, 65, w - 14, 28, COLOR_INDEPENDENT, false, false, true, true) end
+        draw.RoundedBox(0, 8, ywin + winlbl:GetTall() + 14, 341, 329, Color(164, 164, 164, 255))
+        draw.RoundedBox(0, 357, ywin + winlbl:GetTall() + 14, 341, 329, Color(164, 164, 164, 255))
+        draw.RoundedBox(0, 8, ywin + winlbl:GetTall() + 352, 690, 32, Color(164, 164, 164, 255))
+        for i = ywin + winlbl:GetTall() + 47, ywin + winlbl:GetTall() + 312, 33 do
             draw.RoundedBox(0, 8, i, 341, 1, Color(97, 100, 102, 255))
             draw.RoundedBox(0, 357, i, 341, 1, Color(97, 100, 102, 255))
         end
@@ -627,9 +627,9 @@ function CLSCORE:BuildSummaryPanel(dpanel)
         end
     end
 
-    self:BuildPlayerList(scores_by_section[ROLE_INNOCENT], dpanel, 317, 8, 95, 33)
-    self:BuildPlayerList(scores_by_section[ROLE_TRAITOR], dpanel, 666, 357, 95, 33)
-    self:BuildRoleLabel(scores_by_section[ROLE_JESTER], dpanel, 666, 8, 432)
+    self:BuildPlayerList(scores_by_section[ROLE_INNOCENT], dpanel, 317, 8, 103, 33)
+    self:BuildPlayerList(scores_by_section[ROLE_TRAITOR], dpanel, 666, 357, 103, 33)
+    self:BuildRoleLabel(scores_by_section[ROLE_JESTER], dpanel, 666, 8, 440)
 end
 
 local function GetRoleIconElement(roleFileName, dpanel)
@@ -847,8 +847,8 @@ function CLSCORE:BuildHilitePanel(dpanel)
     end
 
     bg.PaintOver = function()
-        draw.RoundedBox(8, xwin - 15, ywin - 5, winlbl:GetWide() + 30, winlbl:GetTall() + 10, title.c)
-        if old_man_won_last_round then draw.RoundedBoxEx(8, 158, 65, 380, 28, COLOR_INDEPENDENT, true, true, false, false) end
+        draw.RoundedBox(8, 8, ywin - 5, w - 14, winlbl:GetTall() + 10, title.c)
+        if old_man_won_last_round then draw.RoundedBoxEx(8, 8, 65, w - 14, 28, COLOR_INDEPENDENT, false, false, true, true) end
     end
 
     if old_man_won_last_round then winlbl:SetPos(xwin, ywin - 15) end
@@ -910,7 +910,7 @@ end
 
 function CLSCORE:ShowPanel()
     local dpanel = vgui.Create("DFrame")
-    local w, h = 750, 580
+    local w, h = 750, 588
     local margin = 15
     dpanel:SetSize(w, h)
     dpanel:Center()
