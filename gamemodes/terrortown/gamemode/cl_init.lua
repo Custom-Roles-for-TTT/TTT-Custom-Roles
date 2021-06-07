@@ -469,7 +469,7 @@ net.Receive("TTT_ClownActivate", function()
 
     --Handles particles
     local emitter = ParticleEmitter(pos, true)
-    for I = 1, 150 do
+    for _ = 1, 150 do
         local p = emitter:Add(confetti, pos)
         p:SetStartSize(math.random(6, 10))
         p:SetEndSize(0)
@@ -483,8 +483,7 @@ net.Receive("TTT_ClownActivate", function()
     end
 
     local name = ent:Nick()
-
-    AddEvent({
+    CLSCORE:AddEvent({
         id = EVENT_CLOWNACTIVE,
         ply = name
     })
