@@ -92,7 +92,6 @@ function GM:PlayerSpawn(ply)
         SendRoundState(GetRoundState(), ply)
     end
 
-    ply.spawn_nick = ply:Nick()
     ply.has_spawned = true
 
     -- let the client do things on spawn
