@@ -592,7 +592,7 @@ local function CheckCreditAward(victim, attacker)
     if IsValid(attacker) and attacker:IsPlayer() and victim:IsTraitorTeam() then
         local amt = GetConVarNumber("ttt_det_credits_traitordead") or 1
         for _, ply in ipairs(player.GetAll()) do
-            if ply:IsActiveDetective() then
+            if ply:IsActiveDetective() or (ply:IsActiveDeputy() and ply:GetNWBool("HasPromotion", false)) then
                 ply:AddCredits(amt)
             end
         end
@@ -821,10 +821,10 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
     -- Check for T killing D or vice versa
     if IsValid(attacker) and attacker:IsPlayer() then
         local reward = 0
-        if attacker:IsActiveTraitorTeam() and ply:GetDetective() then
-            reward = math.ceil(GetConVarNumber("ttt_credits_detectivekill"))
-        elseif attacker:IsActiveDetective() and ply:IsTraitorTeam() then
-            reward = math.ceil(GetConVarNumber("ttt_det_credits_traitorkill"))
+        if attacker:IsActiveTraitorTeam() and ply:IsDetective() then
+            reward = math.ceil(GetConVar("ttt_credits_detectivekill"):GetInt())
+        elseif (attacker:IsActiveDetective() or (attacker:IsActiveDeputy() and attacker:GetNWBool("HasPromotion", false))) and ply:IsTraitorTeam() then
+            reward = math.ceil(GetConVar("ttt_det_credits_traitorkill"):GetInt())
         end
 
         if reward > 0 then
@@ -921,7 +921,7 @@ function GM:PlayerDeath(victim, infl, attacker)
     end
 
     -- Handle detective death
-    if victim:IsDetective() then
+    if victim:IsDetective() and GetRoundState() == ROUND_ACTIVE then
         local detectiveAlive = false
         for _, ply in pairs(player.GetAll()) do
             if not ply:IsSpec() and ply:Alive() and ply:IsDetective() and ply ~= victim then
