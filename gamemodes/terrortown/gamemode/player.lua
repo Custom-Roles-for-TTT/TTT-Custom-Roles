@@ -692,8 +692,10 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
         if IsValid(attacker) and attacker:IsPlayer() then
             attacker:RecordKill(ply)
 
-            DamageLog(Format("KILL:\t %s [%s] killed %s [%s]", attacker:Nick(), attacker:GetRoleString(), ply:Nick(), ply:GetRoleString()))
-        else
+            if GetConVar("ttt_debug_logkills"):GetBool() then
+                DamageLog(Format("KILL:\t %s [%s] killed %s [%s]", attacker:Nick(), attacker:GetRoleString(), ply:Nick(), ply:GetRoleString()))
+            end
+        elseif GetConVar("ttt_debug_logkills"):GetBool() then
             DamageLog(Format("KILL:\t <something/world> killed %s [%s]", ply:Nick(), ply:GetRoleString()))
         end
 
@@ -1264,7 +1266,9 @@ function GM:PlayerTakeDamage(ent, infl, att, amount, dmginfo)
         -- process the effects of the damage on karma
         KARMA.Hurt(att, ent, dmginfo)
 
-        DamageLog(Format("DMG: \t %s [%s] damaged %s [%s] for %d dmg", att:Nick(), att:GetRoleString(), ent:Nick(), ent:GetRoleString(), math.Round(dmginfo:GetDamage())))
+        if GetConVar("ttt_debug_logkills"):GetBool() then
+            DamageLog(Format("DMG: \t %s [%s] damaged %s [%s] for %d dmg", att:Nick(), att:GetRoleString(), ent:Nick(), ent:GetRoleString(), math.Round(dmginfo:GetDamage())))
+        end
     end
 
 end
