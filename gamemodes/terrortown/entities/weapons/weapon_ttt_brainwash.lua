@@ -98,6 +98,7 @@ end
 if SERVER then
     util.AddNetworkString("TTT_Defib_Hide")
     util.AddNetworkString("TTT_Defib_Revived")
+    util.AddNetworkString("TTT_Hypnotised")
 
     local offsets = {}
 
@@ -190,6 +191,10 @@ if SERVER then
         net.Start("TTT_Defib_Revived")
         net.WriteBool(true)
         net.Send(ply)
+
+        net.Start("TTT_Hypnotised")
+        net.WriteString(ply:Nick())
+        net.Broadcast()
 
         ply:SpawnForRound(true)
         ply:SetCredits(credits)

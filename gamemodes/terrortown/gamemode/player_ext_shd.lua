@@ -56,6 +56,17 @@ function plymeta:IsShopRole()
     return table.HasValue(SHOP_ROLES, self:GetRole())
 end
 
+function plymeta:SetRoleAndBroadcast(role)
+    self:SetRole(role)
+
+    if SERVER then
+        net.Start("TTT_RoleChanged")
+        net.WriteString(self:SteamID64())
+        net.WriteUInt(role, 8)
+        net.Broadcast()
+    end
+end
+
 -- Player is alive and in an active round
 function plymeta:IsActive() return self:IsTerror() and GetRoundState() == ROUND_ACTIVE end
 
