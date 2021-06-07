@@ -132,7 +132,7 @@ end
 concommand.Add("_ttt_request_rolelist", request_rolelist)
 
 local function force_terror(ply)
-    ply:SetRole(ROLE_INNOCENT)
+    ply:SetRoleAndBroadcast(ROLE_INNOCENT)
     ply:UnSpectate()
     ply:SetTeam(TEAM_TERROR)
 
@@ -154,21 +154,21 @@ local function clear_role_effects(ply)
 end
 
 local function force_innocent(ply)
-    ply:SetRole(ROLE_INNOCENT)
+    ply:SetRoleAndBroadcast(ROLE_INNOCENT)
     clear_role_effects(ply)
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_innocent", force_innocent, nil, nil, FCVAR_CHEAT)
 
 local function force_traitor(ply)
-    ply:SetRole(ROLE_TRAITOR)
+    ply:SetRoleAndBroadcast(ROLE_TRAITOR)
     clear_role_effects(ply)
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_traitor", force_traitor, nil, nil, FCVAR_CHEAT)
 
 local function force_detective(ply)
-    ply:SetRole(ROLE_DETECTIVE)
+    ply:SetRoleAndBroadcast(ROLE_DETECTIVE)
     clear_role_effects(ply)
     local health = GetConVar("ttt_detective_starting_health"):GetInt()
     ply:SetMaxHealth(100)
@@ -178,35 +178,35 @@ end
 concommand.Add("ttt_force_detective", force_detective, nil, nil, FCVAR_CHEAT)
 
 local function force_jester(ply)
-    ply:SetRole(ROLE_JESTER)
+    ply:SetRoleAndBroadcast(ROLE_JESTER)
     clear_role_effects(ply)
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_jester", force_jester, nil, nil, FCVAR_CHEAT)
 
 local function force_swapper(ply)
-    ply:SetRole(ROLE_SWAPPER)
+    ply:SetRoleAndBroadcast(ROLE_SWAPPER)
     clear_role_effects(ply)
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_swapper", force_swapper, nil, nil, FCVAR_CHEAT)
 
 local function force_glitch(ply)
-    ply:SetRole(ROLE_GLITCH)
+    ply:SetRoleAndBroadcast(ROLE_GLITCH)
     clear_role_effects(ply)
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_glitch", force_glitch, nil, nil, FCVAR_CHEAT)
 
 local function force_phantom(ply)
-    ply:SetRole(ROLE_PHANTOM)
+    ply:SetRoleAndBroadcast(ROLE_PHANTOM)
     clear_role_effects(ply)
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_phantom", force_phantom, nil, nil, FCVAR_CHEAT)
 
 local function force_hypnotist(ply)
-    ply:SetRole(ROLE_HYPNOTIST)
+    ply:SetRoleAndBroadcast(ROLE_HYPNOTIST)
     clear_role_effects(ply)
     ply:Give("weapon_ttt_brainwash")
     SendFullStateUpdate()
@@ -214,49 +214,49 @@ end
 concommand.Add("ttt_force_hypnotist", force_hypnotist, nil, nil, FCVAR_CHEAT)
 
 local function force_revenger(ply)
-    ply:SetRole(ROLE_REVENGER)
+    ply:SetRoleAndBroadcast(ROLE_REVENGER)
     clear_role_effects(ply)
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_revenger", force_revenger, nil, nil, FCVAR_CHEAT)
 
 local function force_drunk(ply)
-    ply:SetRole(ROLE_DRUNK)
+    ply:SetRoleAndBroadcast(ROLE_DRUNK)
     clear_role_effects(ply)
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_drunk", force_drunk, nil, nil, FCVAR_CHEAT)
 
 local function force_clown(ply)
-    ply:SetRole(ROLE_CLOWN)
+    ply:SetRoleAndBroadcast(ROLE_CLOWN)
     clear_role_effects(ply)
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_clown", force_clown, nil, nil, FCVAR_CHEAT)
 
 local function force_deputy(ply)
-    ply:SetRole(ROLE_DEPUTY)
+    ply:SetRoleAndBroadcast(ROLE_DEPUTY)
     clear_role_effects(ply)
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_deputy", force_deputy, nil, nil, FCVAR_CHEAT)
 
 local function force_impersonator(ply)
-    ply:SetRole(ROLE_IMPERSONATOR)
+    ply:SetRoleAndBroadcast(ROLE_IMPERSONATOR)
     clear_role_effects(ply)
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_impersonator", force_impersonator, nil, nil, FCVAR_CHEAT)
 
 local function force_beggar(ply)
-    ply:SetRole(ROLE_BEGGAR)
+    ply:SetRoleAndBroadcast(ROLE_BEGGAR)
     clear_role_effects(ply)
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_beggar", force_beggar, nil, nil, FCVAR_CHEAT)
 
 local function force_old_man(ply)
-    ply:SetRole(ROLE_OLDMAN)
+    ply:SetRoleAndBroadcast(ROLE_OLDMAN)
     clear_role_effects(ply)
     local health = GetConVar("ttt_old_man_starting_health"):GetInt()
     ply:SetMaxHealth(health)

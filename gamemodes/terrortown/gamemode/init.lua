@@ -244,6 +244,7 @@ util.AddNetworkString("TTT_BoughtItem")
 util.AddNetworkString("TTT_InterruptChat")
 util.AddNetworkString("TTT_PlayerSpawned")
 util.AddNetworkString("TTT_PlayerDied")
+util.AddNetworkString("TTT_PlayerDisconnected")
 util.AddNetworkString("TTT_CorpseCall")
 util.AddNetworkString("TTT_RemoveCorpseCall")
 util.AddNetworkString("TTT_ClearClientState")
@@ -267,6 +268,9 @@ util.AddNetworkString("TTT_ClientDeathNotify")
 util.AddNetworkString("TTT_SprintSpeedSet")
 util.AddNetworkString("TTT_SprintGetConVars")
 util.AddNetworkString("TTT_SpawnedPlayers")
+util.AddNetworkString("TTT_Defibrillated")
+util.AddNetworkString("TTT_RoleChanged")
+util.AddNetworkString("TTT_LogInfo")
 util.AddNetworkString("TTT_ResetScoreboard")
 util.AddNetworkString("TTT_UpdateRevengerLoverKiller")
 util.AddNetworkString("TTT_UpdateOldManWins")
@@ -999,6 +1003,7 @@ function BeginRound()
         if v:Alive() and v:IsTerror() then
             net.Start("TTT_SpawnedPlayers")
             net.WriteString(v:Nick())
+            net.WriteUInt(v:GetRole(), 8)
             net.Broadcast()
         end
     end
@@ -1151,8 +1156,6 @@ function GM:TTTCheckForWin()
         if v:Alive() and v:IsTerror() then
             if v:IsTraitorTeam() then
                 traitor_alive = true
-            elseif v:IsJester() then
-                jester_alive = true
             elseif v:IsDrunk() then
                 drunk_alive = true
             elseif v:IsClown() then
@@ -1165,7 +1168,7 @@ function GM:TTTCheckForWin()
             end
         end
 
-        if traitor_alive and innocent_alive and jester_alive then
+        if traitor_alive and innocent_alive and not jester_killed then
             return WIN_NONE --early out
         end
     end

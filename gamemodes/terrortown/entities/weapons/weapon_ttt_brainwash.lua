@@ -98,6 +98,7 @@ end
 if SERVER then
     util.AddNetworkString("TTT_Defib_Hide")
     util.AddNetworkString("TTT_Defib_Revived")
+    util.AddNetworkString("TTT_Hypnotised")
 
     local offsets = {}
 
@@ -196,6 +197,10 @@ if SERVER then
         if ply:IsPhantom() and ply:GetNWString("HauntingTarget", nil) == owner:SteamID64() then
             owner:SetNWBool("HauntedSmoke", false)
         end
+
+        net.Start("TTT_Hypnotised")
+        net.WriteString(ply:Nick())
+        net.Broadcast()
 
         ply:SpawnForRound(true)
         ply:SetCredits(credits)

@@ -906,6 +906,8 @@ L.tip40 = "If it says 'HASTE MODE' above the round timer, the round will at firs
 L.report_title = "Round report"
 
 -- Tabs
+L.report_tab_summary = "Summary"
+L.report_tab_summary_tip = "Round summary"
 L.report_tab_hilite = "Highlights"
 L.report_tab_hilite_tip = "Round highlights"
 L.report_tab_events = "Events"
@@ -938,6 +940,7 @@ L.col_player = "Player"
 L.col_role = "Role"
 L.col_kills1 = "Innocent kills"
 L.col_kills2 = "Traitor kills"
+L.col_kills3 = "Jester kills"
 L.col_points = "Points"
 L.col_team = "Team bonus"
 L.col_total = "Total points"
@@ -995,8 +998,13 @@ L.ev_c4_disarm2 = "{player} failed to disarm C4 planted by {owner}"
 L.ev_credit = "{finder} found {num} credit(s) on the corpse of {player}"
 
 L.ev_start = "The round started"
+L.ev_spawn = "{player} spawned as {a} {role}"
+L.ev_role_changed = "{player} changed roles to {a} {role}"
 L.ev_win_traitor = "The dastardly traitors won the round!"
+L.ev_win_jester = "The tricky jester won the round!"
 L.ev_win_inno = "The lovable innocent terrorists won the round!"
+L.ev_win_clown = "The vicious clown won the round!"
+L.ev_win_oldman = "The Old Man has somehow survived and also won the round!"
 L.ev_win_time = "The traitors ran out of time and lost!"
 
 --- Awards/highlights
@@ -1239,3 +1247,8 @@ L.binoc_zoom_level = "LEVEL"
 L.binoc_body = "BODY DETECTED"
 
 L.idle_popup_title = "Idle"
+
+-- Custom Events
+L.ev_hypno = "{victim} was hypnotised"
+L.ev_defi = "{victim} was defibrillated"
+L.ev_disco = "{victim} disconnected"
