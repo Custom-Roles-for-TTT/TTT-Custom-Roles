@@ -213,6 +213,8 @@ local ttt_minply = CreateConVar("ttt_minimum_players", "2", FCVAR_ARCHIVE + FCVA
 
 -- debuggery
 local ttt_dbgwin = CreateConVar("ttt_debug_preventwin", "0")
+CreateConVar("ttt_debug_logkills", "1", FCVAR_ARCHIVE + FCVAR_NOTIFY)
+local ttt_dbgroles = CreateConVar("ttt_debug_logroles", "1", FCVAR_ARCHIVE + FCVAR_NOTIFY)
 
 -- Localise stuff we use often. It's like Lua go-faster stripes.
 local math = math
@@ -472,6 +474,14 @@ local function WinChecker()
     end
 end
 
+local function GetPlayerName(ply)
+    local name = ply:GetNWString("PlayerName", nil)
+    if name ~= nil then
+        name = ply:Nick()
+    end
+    return name
+end
+
 local function NameChangeKick()
     if not GetConVar("ttt_namechange_kick"):GetBool() then
         timer.Remove("namecheck")
@@ -481,7 +491,7 @@ local function NameChangeKick()
     if GetRoundState() == ROUND_ACTIVE then
         for _, ply in ipairs(player.GetHumans()) do
             if ply.spawn_nick then
-                if ply.has_spawned and ply.spawn_nick ~= ply:Nick() and not hook.Call("TTTNameChangeKick", GAMEMODE, ply) then
+                if ply.has_spawned and ply.spawn_nick ~= GetPlayerName(ply) and not hook.Call("TTTNameChangeKick", GAMEMODE, ply) then
                     local t = GetConVar("ttt_namechange_bantime"):GetInt()
                     local msg = "Changed name during a round"
                     if t > 0 then
@@ -491,7 +501,7 @@ local function NameChangeKick()
                     end
                 end
             else
-                ply.spawn_nick = ply:Nick()
+                ply.spawn_nick = GetPlayerName(ply)
             end
         end
     end
@@ -501,8 +511,8 @@ function StartNameChangeChecks()
     if not GetConVar("ttt_namechange_kick"):GetBool() then return end
 
     -- bring nicks up to date, may have been changed during prep/post
-    for _, ply in ipairs(player.GetAll()) do
-        ply.spawn_nick = ply:Nick()
+    for _, ply in pairs(player.GetAll()) do
+        ply.spawn_nick = GetPlayerName(ply)
     end
 
     if not timer.Exists("namecheck") then
@@ -1266,6 +1276,15 @@ local function GetSpecialInnocentCount(ply_count)
     return special_innocent_count
 end
 
+local function PrintRoleText(text)
+    if not ttt_dbgroles:GetBool() then return end
+    print(text)
+end
+
+local function PrintRole(ply, role)
+    PrintRoleText(ply:Nick() .. " (" .. ply:SteamID() .. " | " .. ply:SteamID64() .. ") - " .. role)
+end
+
 function SelectRoles()
     local choices = {}
     local prev_roles = {
@@ -1290,26 +1309,24 @@ function SelectRoles()
 
     local plys = player.GetAll()
 
-    for k, v in ipairs(plys) do
+    for _, v in ipairs(plys) do
         -- everyone on the spec team is in specmode
         if IsValid(v) and (not v:IsSpec()) then
             -- save previous role and sign up as possible traitor/detective
-
             local r = GAMEMODE.LastRole[v:SteamID64()] or v:GetRole() or ROLE_INNOCENT
 
             table.insert(prev_roles[r], v)
-
             table.insert(choices, v)
         end
 
-        v:SetRole(ROLE_INNOCENT)
+        v:SetRole(ROLE_NONE)
     end
 
     -- determine how many of each role we want
     local choice_count = #choices
     local traitor_count = GetTraitorCount(choice_count)
     local detective_count = GetDetectiveCount(choice_count)
-    local independent_count = 1 and (math.random() <= GetConVar("ttt_independent_chance"):GetFloat()) or 0
+    local independent_count = (math.random() <= GetConVar("ttt_independent_chance"):GetFloat()) and 1 or 0
     local max_special_traitor_count = GetSpecialTraitorCount(traitor_count)
 
     -- special spawning cvars
@@ -1325,12 +1342,102 @@ function SelectRoles()
 
     if choice_count == 0 then return end
 
+    local choices_copy = table.Copy(choices)
+    local prev_roles_copy = table.Copy(prev_roles)
+
+    hook.Call("TTTSelectRoles", GAMEMODE, choices_copy, prev_roles_copy)
+
+    local hasHypnotist = false
+    local hasImpersonator = false
+    local hasIndependent = false
+    local hasPhantom = false
+    local hasGlitch = false
+    local hasRevenger = false
+    local hasDeputy = false
+    local specialInnoCount = 0
+
+    PrintRoleText("-----CHECKING EXTERNALLY CHOSEN ROLES-----")
+    for _, v in pairs(player.GetAll()) do
+        if IsValid(v) and (not v:IsSpec()) then
+            local index = 0
+            for i, j in pairs(choices) do
+                if v == j then
+                    index = i
+                end
+            end
+            local role = v:GetRole()
+            if role ~= ROLE_NONE then
+                table.remove(choices, index)
+                if role == ROLE_TRAITOR then
+                    traitor_count = traitor_count - 1
+                    PrintRole(v, "traitor")
+                elseif role == ROLE_HYPNOTIST then
+                    hasHypnotist = true
+                    max_special_traitor_count = max_special_traitor_count - 1
+                    PrintRole(v, "hypnotist")
+                elseif role == ROLE_IMPERSONATOR then
+                    hasImpersonator = true
+                    max_special_traitor_count = max_special_traitor_count - 1
+                    PrintRole(v, "impersonator")
+                elseif role == ROLE_DETECTIVE then
+                    detective_count = detective_count - 1
+                    PrintRole(v, "detective")
+                elseif role == ROLE_PHANTOM then
+                    hasPhantom = true
+                    specialInnoCount = specialInnoCount + 1
+                    PrintRole(v, "phantom")
+                elseif role == ROLE_GLITCH then
+                    hasGlitch = true
+                    specialInnoCount = specialInnoCount + 1
+                    PrintRole(v, "glitch")
+                elseif role == ROLE_REVENGER then
+                    hasRevenger = true
+                    specialInnoCount = specialInnoCount + 1
+                    PrintRole(v, "revenger")
+                elseif role == ROLE_DEPUTY then
+                    hasDeputy = true
+                    specialInnoCount = specialInnoCount + 1
+                    PrintRole(v, "deputy")
+                elseif role == ROLE_JESTER then
+                    hasIndependent = true
+                    independent_count = independent_count - 1
+                    PrintRole(v, "jester")
+                elseif role == ROLE_SWAPPER then
+                    hasIndependent = true
+                    independent_count = independent_count - 1
+                    PrintRole(v, "swapper")
+                elseif role == ROLE_DRUNK then
+                    hasIndependent = true
+                    independent_count = independent_count - 1
+                    PrintRole(v, "drunk")
+                elseif role == ROLE_CLOWN then
+                    hasIndependent = true
+                    independent_count = independent_count - 1
+                    PrintRole(v, "clown")
+                elseif role == ROLE_BEGGAR then
+                    hasIndependent = true
+                    independent_count = independent_count - 1
+                    PrintRole(v, "beggar")
+                elseif role == ROLE_OLDMAN then
+                    hasIndependent = true
+                    independent_count = independent_count - 1
+                    PrintRole(v, "oldman")
+                elseif role == ROLE_INNOCENT then
+                    PrintRole(v, "innocent")
+                end
+            end
+        end
+    end
+
+    PrintRoleText("-----RANDOMLY PICKING REMAINING ROLES-----")
+
     -- pick detectives
     if choice_count >= GetConVar("ttt_detective_min_players"):GetInt() then
-        for i = 1, detective_count do
+        for _ = 1, detective_count do
             if #choices > 0 then
                 local plyPick = math.random(1, #choices)
                 local ply = choices[plyPick]
+                PrintRole(ply, "detective")
                 ply:SetRole(ROLE_DETECTIVE)
                 ply:SetHealth(GetConVar("ttt_detective_starting_health"):GetInt())
                 table.remove(choices, plyPick)
@@ -1340,7 +1447,7 @@ function SelectRoles()
 
     -- pick traitors
     local traitors = {}
-    for i = 1, traitor_count do
+    for _ = 1, traitor_count do
         if #choices > 0 then
             local plyPick = math.random(1, #choices)
             local ply = choices[plyPick]
@@ -1351,63 +1458,71 @@ function SelectRoles()
     end
 
     -- pick special traitors
-    local specialTraitorRoles = {}
-    if GetConVar("ttt_hypnotist_enabled"):GetBool() and choice_count >= GetConVar("ttt_hypnotist_min_players"):GetInt() then
-        for i = 1, GetConVar("ttt_hypnotist_spawn_weight"):GetInt() do
-            table.insert(specialTraitorRoles, ROLE_HYPNOTIST)
+    if max_special_traitor_count > 0 then
+        local specialTraitorRoles = {}
+        if not hasHypnotist and GetConVar("ttt_hypnotist_enabled"):GetBool() and choice_count >= GetConVar("ttt_hypnotist_min_players"):GetInt() then
+            for _ = 1, GetConVar("ttt_hypnotist_spawn_weight"):GetInt() do
+                table.insert(specialTraitorRoles, ROLE_HYPNOTIST)
+            end
         end
-    end
-    if GetConVar("ttt_impersonator_enabled"):GetBool() and detective_count > 0 and not deputy_only and choice_count >= GetConVar("ttt_impersonator_min_players"):GetInt() then
-        for i = 1, GetConVar("ttt_impersonator_spawn_weight"):GetInt() do
-            table.insert(specialTraitorRoles, ROLE_IMPERSONATOR)
+        if not hasImpersonator and GetConVar("ttt_impersonator_enabled"):GetBool() and detective_count > 0 and not deputy_only and choice_count >= GetConVar("ttt_impersonator_min_players"):GetInt() then
+            for _ = 1, GetConVar("ttt_impersonator_spawn_weight"):GetInt() do
+                table.insert(specialTraitorRoles, ROLE_IMPERSONATOR)
+            end
         end
-    end
-    for i = 1, max_special_traitor_count do
-        if #specialTraitorRoles ~= 0 and math.random() <= GetConVar("ttt_special_traitor_chance"):GetFloat() and #traitors > 0 then
-            local plyPick = math.random(1, #traitors)
-            local ply = traitors[plyPick]
-            local rolePick = math.random(1, #specialTraitorRoles)
-            local role = specialTraitorRoles[rolePick]
-            ply:SetRole(role)
-            table.remove(traitors, plyPick)
-            for i = #specialTraitorRoles, 1, -1 do
-                if specialTraitorRoles[i] == role then
-                    table.remove(specialTraitorRoles, i)
+        for _ = 1, max_special_traitor_count do
+            if #specialTraitorRoles ~= 0 and math.random() <= GetConVar("ttt_special_traitor_chance"):GetFloat() and #traitors > 0 then
+                local plyPick = math.random(1, #traitors)
+                local ply = traitors[plyPick]
+                local rolePick = math.random(1, #specialTraitorRoles)
+                local role = specialTraitorRoles[rolePick]
+                ply:SetRole(role)
+                PrintRole(ply, ply:GetRoleString())
+                table.remove(traitors, plyPick)
+                for i = #specialTraitorRoles, 1, -1 do
+                    if specialTraitorRoles[i] == role then
+                        table.remove(specialTraitorRoles, i)
+                    end
                 end
             end
         end
     end
 
+    -- Any of these left is a vanilla traitor
+    for _, v in pairs(traitors) do
+        PrintRole(v, "traitor")
+    end
+
     -- pick independent
-    if independent_count ~= 0 and #choices > 0 then
+    if independent_count > 0 and #choices > 0 then
         local independentRoles = {}
-        if GetConVar("ttt_jester_enabled"):GetBool() and choice_count >= GetConVar("ttt_jester_min_players"):GetInt() then
-            for i = 1, GetConVar("ttt_jester_spawn_weight"):GetInt() do
+        if not hasIndependent and GetConVar("ttt_jester_enabled"):GetBool() and choice_count >= GetConVar("ttt_jester_min_players"):GetInt() then
+            for _ = 1, GetConVar("ttt_jester_spawn_weight"):GetInt() do
                 table.insert(independentRoles, ROLE_JESTER)
             end
         end
-        if GetConVar("ttt_swapper_enabled"):GetBool() and choice_count >= GetConVar("ttt_swapper_min_players"):GetInt() then
-            for i = 1, GetConVar("ttt_swapper_spawn_weight"):GetInt() do
+        if not hasIndependent and GetConVar("ttt_swapper_enabled"):GetBool() and choice_count >= GetConVar("ttt_swapper_min_players"):GetInt() then
+            for _ = 1, GetConVar("ttt_swapper_spawn_weight"):GetInt() do
                 table.insert(independentRoles, ROLE_SWAPPER)
             end
         end
-        if GetConVar("ttt_drunk_enabled"):GetBool() and choice_count >= GetConVar("ttt_drunk_min_players"):GetInt() then
-            for i = 1, GetConVar("ttt_drunk_spawn_weight"):GetInt() do
+        if not hasIndependent and GetConVar("ttt_drunk_enabled"):GetBool() and choice_count >= GetConVar("ttt_drunk_min_players"):GetInt() then
+            for _ = 1, GetConVar("ttt_drunk_spawn_weight"):GetInt() do
                 table.insert(independentRoles, ROLE_DRUNK)
             end
         end
-        if GetConVar("ttt_clown_enabled"):GetBool() and choice_count >= GetConVar("ttt_clown_min_players"):GetInt() then
-            for i = 1, GetConVar("ttt_clown_spawn_weight"):GetInt() do
+        if not hasIndependent and GetConVar("ttt_clown_enabled"):GetBool() and choice_count >= GetConVar("ttt_clown_min_players"):GetInt() then
+            for _ = 1, GetConVar("ttt_clown_spawn_weight"):GetInt() do
                 table.insert(independentRoles, ROLE_CLOWN)
             end
         end
-        if GetConVar("ttt_beggar_enabled"):GetBool() and choice_count >= GetConVar("ttt_beggar_min_players"):GetInt() then
-            for i = 1, GetConVar("ttt_beggar_spawn_weight"):GetInt() do
+        if not hasIndependent and GetConVar("ttt_beggar_enabled"):GetBool() and choice_count >= GetConVar("ttt_beggar_min_players"):GetInt() then
+            for _ = 1, GetConVar("ttt_beggar_spawn_weight"):GetInt() do
                 table.insert(independentRoles, ROLE_BEGGAR)
             end
         end
-        if GetConVar("ttt_old_man_enabled"):GetBool() and choice_count >= GetConVar("ttt_old_man_min_players"):GetInt() then
-            for i = 1, GetConVar("ttt_old_man_spawn_weight"):GetInt() do
+        if not hasIndependent and GetConVar("ttt_old_man_enabled"):GetBool() and choice_count >= GetConVar("ttt_old_man_min_players"):GetInt() then
+            for _ = 1, GetConVar("ttt_old_man_spawn_weight"):GetInt() do
                 table.insert(independentRoles, ROLE_OLDMAN)
             end
         end
@@ -1417,6 +1532,7 @@ function SelectRoles()
             local rolePick = math.random(1, #independentRoles)
             local role = independentRoles[rolePick]
             ply:SetRole(role)
+            PrintRole(ply, ply:GetRoleString())
             table.remove(choices, plyPick)
             for i = #independentRoles, 1, -1 do
                 if independentRoles[i] == role then
@@ -1427,43 +1543,53 @@ function SelectRoles()
     end
 
     -- pick special innocents
-    local max_special_innocent_count = GetSpecialInnocentCount(#choices)
-    local specialInnocentRoles = {}
-    if GetConVar("ttt_glitch_enabled"):GetBool() and #traitors > 1 and choice_count >= GetConVar("ttt_glitch_min_players"):GetInt() then
-        for i = 1, GetConVar("ttt_glitch_spawn_weight"):GetInt() do
-            table.insert(specialInnocentRoles, ROLE_GLITCH)
+    local max_special_innocent_count = GetSpecialInnocentCount(#choices) - specialInnoCount
+    if max_special_innocent_count > 0 then
+        local specialInnocentRoles = {}
+        if not hasGlitch and GetConVar("ttt_glitch_enabled"):GetBool() and #traitors > 1 and choice_count >= GetConVar("ttt_glitch_min_players"):GetInt() then
+            for _ = 1, GetConVar("ttt_glitch_spawn_weight"):GetInt() do
+                table.insert(specialInnocentRoles, ROLE_GLITCH)
+            end
         end
-    end
-    if GetConVar("ttt_phantom_enabled"):GetBool() and choice_count >= GetConVar("ttt_phantom_min_players"):GetInt() then
-        for i = 1, GetConVar("ttt_phantom_spawn_weight"):GetInt() do
-            table.insert(specialInnocentRoles, ROLE_PHANTOM)
+        if not hasPhantom and GetConVar("ttt_phantom_enabled"):GetBool() and choice_count >= GetConVar("ttt_phantom_min_players"):GetInt() then
+            for _ = 1, GetConVar("ttt_phantom_spawn_weight"):GetInt() do
+                table.insert(specialInnocentRoles, ROLE_PHANTOM)
+            end
         end
-    end
-    if GetConVar("ttt_revenger_enabled"):GetBool() and choice_count > 1 and choice_count >= GetConVar("ttt_revenger_min_players"):GetInt() then
-        for i = 1, GetConVar("ttt_revenger_spawn_weight"):GetInt() do
-            table.insert(specialInnocentRoles, ROLE_REVENGER)
+        if not hasRevenger and GetConVar("ttt_revenger_enabled"):GetBool() and choice_count > 1 and choice_count >= GetConVar("ttt_revenger_min_players"):GetInt() then
+            for _ = 1, GetConVar("ttt_revenger_spawn_weight"):GetInt() do
+                table.insert(specialInnocentRoles, ROLE_REVENGER)
+            end
         end
-    end
-    if GetConVar("ttt_deputy_enabled"):GetBool() and detective_count > 0 and not impersonator_only and choice_count >= GetConVar("ttt_deputy_min_players"):GetInt() then
-        for i = 1, GetConVar("ttt_deputy_spawn_weight"):GetInt() do
-            table.insert(specialInnocentRoles, ROLE_DEPUTY)
+        if not hasDeputy and GetConVar("ttt_deputy_enabled"):GetBool() and detective_count > 0 and not impersonator_only and choice_count >= GetConVar("ttt_deputy_min_players"):GetInt() then
+            for _ = 1, GetConVar("ttt_deputy_spawn_weight"):GetInt() do
+                table.insert(specialInnocentRoles, ROLE_DEPUTY)
+            end
         end
-    end
-    for i = 1, max_special_innocent_count do
-        if #specialInnocentRoles ~= 0 and math.random() <= GetConVar("ttt_special_innocent_chance"):GetFloat() and #choices > 0 then
-            local plyPick = math.random(1, #choices)
-            local ply = choices[plyPick]
-            local rolePick = math.random(1, #specialInnocentRoles)
-            local role = specialInnocentRoles[rolePick]
-            ply:SetRole(role)
-            table.remove(choices, plyPick)
-            for i = #specialInnocentRoles, 1, -1 do
-                if specialInnocentRoles[i] == role then
-                    table.remove(specialInnocentRoles, i)
+        for _ = 1, max_special_innocent_count do
+            if #specialInnocentRoles ~= 0 and math.random() <= GetConVar("ttt_special_innocent_chance"):GetFloat() and #choices > 0 then
+                local plyPick = math.random(1, #choices)
+                local ply = choices[plyPick]
+                local rolePick = math.random(1, #specialInnocentRoles)
+                local role = specialInnocentRoles[rolePick]
+                ply:SetRole(role)
+                PrintRole(ply, ply:GetRoleString())
+                table.remove(choices, plyPick)
+                for i = #specialInnocentRoles, 1, -1 do
+                    if specialInnocentRoles[i] == role then
+                        table.remove(specialInnocentRoles, i)
+                    end
                 end
             end
         end
     end
+
+    -- Anyone left is innocent
+    for _, v in pairs(choices) do
+        PrintRole(v, "innocent")
+        v:SetRole(ROLE_INNOCENT)
+    end
+    PrintRoleText("------------DONE PICKING ROLES------------")
 
     GAMEMODE.LastRole = {}
 
@@ -1482,6 +1608,9 @@ local function ForceRoundRestart(ply, command, args)
         LANG.Msg("round_restart")
 
         StopRoundTimers()
+
+        -- Let addons know that a round ended
+        hook.Call("TTTEndRound", GAMEMODE, WIN_NONE)
 
         -- do prep
         PrepareRound()

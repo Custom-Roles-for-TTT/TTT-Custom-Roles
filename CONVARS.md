@@ -33,6 +33,10 @@ ttt_phantom_killer_haunt_move_cost   50  // The amount of power to spend when a 
 ttt_phantom_killer_haunt_attack_cost 75  // The amount of power to spend when a Phantom is making their killer attack via a haunting. 0 to disable
 ttt_phantom_killer_haunt_jump_cost   30  // The amount of power to spend when a Phantom is making their killer jump via a haunting. 0 to disable
 ttt_phantom_killer_haunt_drop_cost   45  // The amount of power to spend when a Phantom is making their killer drop their weapon via a haunting. 0 to disable
+
+// Logging
+ttt_debug_logkills 1 // Whether to log when a player is killed in the console
+ttt_debug_logroles 1 // Whether to log what roles players are assigned in the console
 ```
 
 Thanks to [KarlOfDuty](https://github.com/KarlOfDuty) for his original version of this document, [here](https://github.com/KarlOfDuty/TTT-Custom-Roles/blob/patch-1/README.md).

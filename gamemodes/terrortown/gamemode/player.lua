@@ -92,7 +92,6 @@ function GM:PlayerSpawn(ply)
         SendRoundState(GetRoundState(), ply)
     end
 
-    ply.spawn_nick = ply:Nick()
     ply.has_spawned = true
 
     -- let the client do things on spawn
@@ -785,8 +784,10 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
         if IsValid(attacker) and attacker:IsPlayer() then
             attacker:RecordKill(ply)
 
-            DamageLog(Format("KILL:\t %s [%s] killed %s [%s]", attacker:Nick(), attacker:GetRoleString(), ply:Nick(), ply:GetRoleString()))
-        else
+            if GetConVar("ttt_debug_logkills"):GetBool() then
+                DamageLog(Format("KILL:\t %s [%s] killed %s [%s]", attacker:Nick(), attacker:GetRoleString(), ply:Nick(), ply:GetRoleString()))
+            end
+        elseif GetConVar("ttt_debug_logkills"):GetBool() then
             DamageLog(Format("KILL:\t <something/world> killed %s [%s]", ply:Nick(), ply:GetRoleString()))
         end
 
@@ -909,13 +910,14 @@ function GM:PlayerDeath(victim, infl, attacker)
     if victim:IsDetective() and valid_kill then
         local detectiveAlive = false
         for _, ply in pairs(player.GetAll()) do
-            if ply:GetDetective() and ply ~= victim then
+            if not ply:IsSpec() and ply:Alive() and ply:IsDetective() and ply ~= victim then
                 detectiveAlive = true
+                break
             end
         end
         if not detectiveAlive then
             for _, ply in pairs(player.GetAll()) do
-                if ply:GetDeputy() or ply:GetImpersonator() then
+                if (ply:IsDeputy() or ply:IsImpersonator()) and not ply:GetNWBool("HasPromotion", false) then
                     ply:SetNWBool("HasPromotion", true)
                     ply:PrintMessage(HUD_PRINTTALK, "You have been promoted to Detective!")
                     ply:PrintMessage(HUD_PRINTCENTER, "You have been promoted to Detective!")
@@ -1036,8 +1038,10 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
 
     -- Jesters deal no damage and cant take environmental damage
     if (ply:IsJesterTeam() and not ply:GetNWBool("KillerClownActive", false)) and GetRoundState() >= ROUND_ACTIVE then
-        if dmginfo:IsBulletDamage() or dmginfo:IsFallDamage() or dmginfo:IsDamageType(DMG_CRUSH) or dmginfo:IsDamageType(DMG_CLUB) then
-        else dmginfo:ScaleDamage(0) end
+        -- Damage type DMG_GENERIC is "0" which doesn't seem to work with IsDamageType
+        if dmginfo:IsExplosionDamage() or dmginfo:IsDamageType(DMG_BURN) or dmginfo:IsDamageType(DMG_CRUSH) or dmginfo:IsFallDamage() or dmginfo:IsDamageType(DMG_DROWN) or dmginfo:GetDamageType() == 0 or dmginfo:IsDamageType(DMG_DISSOLVE) then
+            dmginfo:ScaleDamage(0)
+        end
     end
 
     if (ply:IsJesterTeam() and not ply:GetNWBool("KillerClownActive", false)) and GetRoundState() >= ROUND_ACTIVE and dmginfo:IsExplosionDamage() then
@@ -1191,9 +1195,10 @@ end
 function GM:EntityTakeDamage(ent, dmginfo)
     if SERVER then
         if (ent:IsPlayer() and ent:IsJesterTeam() and not ent:GetNWBool("KillerClownActive", false) and GetRoundState() >= ROUND_ACTIVE) then
-            if dmginfo:IsExplosionDamage() or dmginfo:IsDamageType(DMG_BURN) or dmginfo:IsDamageType(DMG_CRUSH) or dmginfo:IsDamageType(DMG_FALL) or dmginfo:IsDamageType(DMG_DROWN) then
-                -- check its burn or explosion.
-                dmginfo:ScaleDamage(0) -- no damage
+            -- Damage type DMG_GENERIC is "0" which doesn't seem to work with IsDamageType
+            if dmginfo:IsExplosionDamage() or dmginfo:IsDamageType(DMG_BURN) or dmginfo:IsDamageType(DMG_CRUSH) or dmginfo:IsFallDamage() or dmginfo:IsDamageType(DMG_DROWN) or dmginfo:GetDamageType() == 0 or dmginfo:IsDamageType(DMG_DISSOLVE) then
+                dmginfo:ScaleDamage(0)
+                dmginfo:SetDamage(0)
             end
         end
     end
@@ -1400,7 +1405,9 @@ function GM:PlayerTakeDamage(ent, infl, att, amount, dmginfo)
         -- process the effects of the damage on karma
         KARMA.Hurt(att, ent, dmginfo)
 
-        DamageLog(Format("DMG: \t %s [%s] damaged %s [%s] for %d dmg", att:Nick(), att:GetRoleString(), ent:Nick(), ent:GetRoleString(), math.Round(dmginfo:GetDamage())))
+        if GetConVar("ttt_debug_logkills"):GetBool() then
+            DamageLog(Format("DMG: \t %s [%s] damaged %s [%s] for %d dmg", att:Nick(), att:GetRoleString(), ent:Nick(), ent:GetRoleString(), math.Round(dmginfo:GetDamage())))
+        end
     end
 
 end
