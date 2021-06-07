@@ -6,12 +6,20 @@ local GetTranslation = LANG.GetTranslation
 local GetPTranslation = LANG.GetParamTranslation
 local string = string
 
+local function GetPlayerName(ply)
+    local name = ply:GetNWString("PlayerName", nil)
+    if name ~= nil then
+        name = ply:Nick()
+    end
+    return name
+end
+
 local function LastWordsRecv()
     local sender = net.ReadEntity()
     local words = net.ReadString()
 
     local was_detective = IsValid(sender) and sender:IsDetective()
-    local nick = IsValid(sender) and sender:Nick() or "<Unknown>"
+    local nick = IsValid(sender) and GetPlayerName(sender) or "<Unknown>"
 
     chat.AddText(Color(150, 150, 150),
             Format("(%s) ", string.upper(GetTranslation("last_words"))),
@@ -30,11 +38,12 @@ local function RoleChatRecv()
 
     local text = net.ReadString()
 
+    local name = GetPlayerName(sender)
     if role == ROLE_TRAITOR then
         chat.AddText(Color(255, 0, 0),
                 Format("(%s) ", string.upper(GetTranslation("traitor"))),
                 Color(255, 100, 100),
-                sender:Nick(),
+                name,
                 Color(255, 255, 255),
                 ": " .. text)
 
@@ -42,7 +51,7 @@ local function RoleChatRecv()
         chat.AddText(Color(0, 0, 255),
                 Format("(%s) ", string.upper(GetTranslation("detective"))),
                 Color(100, 100, 255),
-                sender:Nick(),
+                name,
                 Color(255, 255, 255),
                 ": " .. text)
 
@@ -50,7 +59,7 @@ local function RoleChatRecv()
         chat.AddText(Color(255, 128, 0),
                 Format("(%s) ", string.upper(GetTranslation("hypnotist"))),
                 Color(255, 178, 100),
-                sender:Nick(),
+                name,
                 Color(255, 255, 255),
                 ": " .. text)
 
@@ -58,7 +67,7 @@ local function RoleChatRecv()
         chat.AddText(Color(255, 128, 0),
                 Format("(%s) ", string.upper(GetTranslation("impersonator"))),
                 Color(255, 178, 100),
-                sender:Nick(),
+                name,
                 Color(255, 255, 255),
                 ": " .. text)
     end
@@ -79,17 +88,45 @@ function GM:ChatText(idx, name, text, type)
     return BaseClass.ChatText(self, idx, name, text, type)
 end
 
-
 -- Detectives have a blue name, in both chat and radio messages
 local function AddDetectiveText(ply, text)
-    chat.AddText(Color(0, 0, 255),
-            ply:Nick(),
-            Color(255, 255, 255),
-            ": " .. text)
+    chat.AddText(ROLE_COLORS[ROLE_DETECTIVE],
+        GetPlayerName(ply),
+        COLOR_WHITE,
+        ": " .. text)
+end
+
+-- Use this instead of the base class so we can control the colors and name of the player
+local function OnPlayerChat(player, strText, bTeamOnly, bPlayerIsDead)
+    local tab = {}
+    if bPlayerIsDead then
+        table.insert(tab, Color(255, 30, 40))
+        table.insert(tab, "*DEAD* ")
+        table.insert(tab, Color(201, 201, 0))
+    elseif bTeamOnly then
+        table.insert(tab, Color(30, 160, 40))
+        table.insert(tab, "(TEAM) ")
+        table.insert(tab, Color(201, 201, 0))
+    else
+        table.insert(tab, Color(0, 201, 0))
+    end
+
+    if IsValid(player) then
+        table.insert(tab, GetPlayerName(player))
+    else
+        table.insert(tab, "Console")
+    end
+
+    table.insert(tab, color_white)
+    table.insert(tab, ": " .. strText)
+
+    chat.AddText(unpack(tab))
+
+    return true
 end
 
 function GM:OnPlayerChat(ply, text, teamchat, dead)
-    if not IsValid(ply) then return BaseClass.OnPlayerChat(self, ply, text, teamchat, dead) end
+    if not IsValid(ply) then return OnPlayerChat(ply, text, teamchat, dead) end
 
     if ply:IsActiveDetectiveLike() then
         AddDetectiveText(ply, text)
@@ -97,7 +134,6 @@ function GM:OnPlayerChat(ply, text, teamchat, dead)
     end
 
     local team = ply:Team() == TEAM_SPEC
-
     if team and not dead then
         dead = true
     end
@@ -106,7 +142,7 @@ function GM:OnPlayerChat(ply, text, teamchat, dead)
         teamchat = false
     end
 
-    return BaseClass.OnPlayerChat(self, ply, text, teamchat, dead)
+    return OnPlayerChat(ply, text, teamchat, dead)
 end
 
 local last_chat = ""

@@ -316,6 +316,19 @@ function plymeta:SpawnForRound(dead_only)
     self:SetTeam(TEAM_TERROR)
     self:Spawn()
 
+    -- Make sure players who are respawning get their default weapons
+    timer.Simple(1, function()
+        if not self:HasWeapon("weapon_ttt_unarmed") then
+            self:Give("weapon_ttt_unarmed")
+        end
+        if not self:HasWeapon("weapon_zm_carry") then
+            self:Give("weapon_zm_carry")
+        end
+        if not self:HasWeapon("weapon_zm_improvised") then
+            self:Give("weapon_zm_improvised")
+        end
+    end)
+
     -- tell caller that we spawned
     return true
 end
@@ -375,6 +388,18 @@ local oldUnSpectate = plymeta.UnSpectate
 function plymeta:UnSpectate()
     oldUnSpectate(self)
     self:SetNoTarget(false)
+end
+
+local oldSetTeam = plymeta.SetTeam
+function plymeta:SetTeam(team)
+    oldSetTeam(self, team)
+
+    -- If this player is a Spectator then strip all the weapons after a delay to work around some addons that force spectator but leave the magneto stick somehow
+    if team == TEAM_SPEC then
+        timer.Simple(0.5, function()
+            self:StripAll()
+        end)
+    end
 end
 
 function plymeta:GetAvoidDetective()
