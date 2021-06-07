@@ -118,6 +118,44 @@ net.Receive("TTT_Defibrillated", function(len)
     })
 end)
 
+net.Receive("TTT_SwapperSwapped", function(len)
+    local victim = net.ReadString()
+    local attacker = net.ReadString()
+    AddEvent({
+        id = EVENT_SWAPPER,
+        vic = victim,
+        att = attacker
+    })
+end)
+
+net.Receive("TTT_Promotion", function(len)
+    local name = net.ReadString()
+    AddEvent({
+        id = EVENT_PROMOTION,
+        ply = name
+    })
+end)
+
+net.Receive("TTT_DrunkSober", function(len)
+    local name = net.ReadString()
+    local team = net.ReadString()
+    AddEvent({
+        id = EVENT_DRUNKSOBER,
+        ply = name,
+        team = team
+    })
+end)
+
+net.Receive("TTT_PhantomHaunt", function(len)
+    local victim = net.ReadString()
+    local attacker = net.ReadString()
+    AddEvent({
+        id = EVENT_HAUNT,
+        vic = victim,
+        att = attacker
+    })
+end)
+
 net.Receive("TTT_PlayerDisconnected", function(len)
     local name = net.ReadString()
     table.insert(disconnected, name)
@@ -278,7 +316,7 @@ function CLSCORE:BuildEventLogPanel(dpanel)
     local iconcol = dlist:AddColumn("")
     local eventcol = dlist:AddColumn(T("col_event"))
 
-    iconcol:SetFixedWidth(16)
+    iconcol:SetFixedWidth(18)
     timecol:SetFixedWidth(40)
 
     -- If sortable is off, no background is drawn for the headers which looks
@@ -288,6 +326,8 @@ function CLSCORE:BuildEventLogPanel(dpanel)
     eventcol.Header:SetDisabled(true)
 
     self:FillDList(dlist)
+
+    dlist:SetDataHeight(18)
 end
 
 function CLSCORE:BuildScorePanel(dpanel)

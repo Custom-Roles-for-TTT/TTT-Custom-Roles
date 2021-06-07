@@ -63,7 +63,7 @@ function SCORE:HandleKill(victim, attacker, dmginfo)
 
     e.vic.role = victim:GetRole()
     e.vic.inno = victim:IsInnocentTeam()
-    e.vic.tr = victim:GetTraitor()
+    e.vic.tr = victim:IsTraitorTeam()
     e.vic.jes = victim:IsJesterTeam()
 
     if IsValid(attacker) and attacker:IsPlayer() then
@@ -71,10 +71,10 @@ function SCORE:HandleKill(victim, attacker, dmginfo)
         e.att.sid = attacker:SteamID()
         e.att.sid64 = attacker:SteamID64()
         e.att.role = attacker:GetRole()
-        e.att.tr = attacker:GetTraitor()
+        e.att.tr = attacker:IsTraitorTeam()
         e.att.inno = attacker:IsInnocentTeam()
         e.att.jes = attacker:IsJesterTeam()
-        e.tk = (e.att.tr and e.vic.tr) or (e.att.inno and e.vic.inno) or (e.att.jes and e.vic.jes)
+        e.tk = (e.att.tr and e.vic.tr) or (e.att.inno and e.vic.inno) or e.vic.jes
 
         -- If a traitor gets himself killed by another traitor's C4, it's his own
         -- damn fault for ignoring the indicator.

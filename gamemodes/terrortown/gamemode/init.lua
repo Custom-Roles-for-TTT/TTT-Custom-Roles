@@ -270,6 +270,10 @@ util.AddNetworkString("TTT_SprintGetConVars")
 util.AddNetworkString("TTT_SpawnedPlayers")
 util.AddNetworkString("TTT_Defibrillated")
 util.AddNetworkString("TTT_RoleChanged")
+util.AddNetworkString("TTT_SwapperSwapped")
+util.AddNetworkString("TTT_Promotion")
+util.AddNetworkString("TTT_DrunkSober")
+util.AddNetworkString("TTT_PhantomHaunt")
 util.AddNetworkString("TTT_LogInfo")
 util.AddNetworkString("TTT_ResetScoreboard")
 util.AddNetworkString("TTT_UpdateRevengerLoverKiller")
@@ -847,6 +851,33 @@ local function InitRoundEndTime()
     SetRoundEnd(endtime)
 end
 
+local function DrunkSober(ply, traitor)
+    ply:SetNWBool("WasDrunk", true)
+
+    if traitor then
+        ply:SetRole(ROLE_TRAITOR)
+        ply:SetCredits(GetConVar("ttt_credits_starting"):GetInt())
+        ply:PrintMessage(HUD_PRINTTALK, "You have remembered that you are a traitor.")
+        ply:PrintMessage(HUD_PRINTCENTER, "You have remembered that you are a traitor.")
+
+        net.Start("TTT_DrunkSober")
+        net.WriteString(ply:Nick())
+        net.WriteString("a traitor")
+        net.Broadcast()
+    else
+        ply:SetRole(ROLE_INNOCENT)
+        ply:PrintMessage(HUD_PRINTTALK, "You have remembered that you are an innocent.")
+        ply:PrintMessage(HUD_PRINTCENTER, "You have remembered that you are an innocent.")
+
+        net.Start("TTT_DrunkSober")
+        net.WriteString(ply:Nick())
+        net.WriteString("an innocent")
+        net.Broadcast()
+    end
+
+    SendFullStateUpdate()
+end
+
 function BeginRound()
     GAMEMODE:SyncGlobals()
 
@@ -933,36 +964,20 @@ function BeginRound()
                 for _, p in pairs(player.GetAll()) do
                     if p:IsActiveDrunk() then
                         if math.random() <= GetConVar("ttt_drunk_innocent_chance"):GetFloat() then
-                            p:SetRole(ROLE_INNOCENT)
-                            p:SetNWBool("WasDrunk", true)
-                            p:PrintMessage(HUD_PRINTTALK, "You have remembered that you are an innocent.")
-                            p:PrintMessage(HUD_PRINTCENTER, "You have remembered that you are an innocent.")
+                            DrunkSober(p, false)
                         else
-                            p:SetRole(ROLE_TRAITOR)
-                            p:SetNWBool("WasDrunk", true)
-                            p:SetCredits(1)
-                            p:PrintMessage(HUD_PRINTTALK, "You have remembered that you are a traitor.")
-                            p:PrintMessage(HUD_PRINTCENTER, "You have remembered that you are a traitor.")
+                            DrunkSober(p, true)
                         end
-                        SendFullStateUpdate()
                     elseif p:IsDrunk() and not p:Alive() and not timer.Exists("waitfordrunkrespawn") then
                         timer.Create("waitfordrunkrespawn", 0.1, 0, function()
                             local dead_drunk = false
                             for _, p2 in pairs(player.GetAll()) do
                                 if p2:IsActiveDrunk() then
                                     if math.random() <= GetConVar("ttt_drunk_innocent_chance"):GetFloat() then
-                                        p2:SetRole(ROLE_INNOCENT)
-                                        p2:SetNWBool("WasDrunk", true)
-                                        p2:PrintMessage(HUD_PRINTTALK, "You have remembered that you are an innocent.")
-                                        p2:PrintMessage(HUD_PRINTCENTER, "You have remembered that you are an innocent.")
+                                        DrunkSober(p2, false)
                                     else
-                                        p2:SetRole(ROLE_TRAITOR)
-                                        p2:SetNWBool("WasDrunk", true)
-                                        p2:SetCredits(1)
-                                        p2:PrintMessage(HUD_PRINTTALK, "You have remembered that you are a traitor.")
-                                        p2:PrintMessage(HUD_PRINTCENTER, "You have remembered that you are a traitor.")
+                                        DrunkSober(p2, true)
                                     end
-                                    SendFullStateUpdate()
                                 elseif p2:IsDrunk() and not p2:Alive() then
                                     dead_drunk = true
                                 end
@@ -1190,12 +1205,7 @@ function GM:TTTCheckForWin()
             if timer.Exists("waitfordrunkrespawn") then timer.Remove("waitfordrunkrespawn") end
             for _, v in ipairs(player.GetAll()) do
                 if v:Alive() and v:IsTerror() and v:IsDrunk() then
-                    v:SetRole(ROLE_TRAITOR)
-                    v:SetNWBool("WasDrunk", true)
-                    v:SetCredits(1)
-                    v:PrintMessage(HUD_PRINTTALK, "You have remembered that you are a traitor.")
-                    v:PrintMessage(HUD_PRINTCENTER, "You have remembered that you are a traitor.")
-                    SendFullStateUpdate()
+                    DrunkSober(v, true)
                 end
             end
             win_type = WIN_NONE
@@ -1204,11 +1214,7 @@ function GM:TTTCheckForWin()
             if timer.Exists("waitfordrunkrespawn") then timer.Remove("waitfordrunkrespawn") end
             for _, v in ipairs(player.GetAll()) do
                 if v:Alive() and v:IsTerror() and v:IsDrunk() then
-                    v:SetRole(ROLE_INNOCENT)
-                    v:SetNWBool("WasDrunk", true)
-                    v:PrintMessage(HUD_PRINTTALK, "You have remembered that you are an innocent.")
-                    v:PrintMessage(HUD_PRINTCENTER, "You have remembered that you are an innocent.")
-                    SendFullStateUpdate()
+                    DrunkSober(v, false)
                 end
             end
             win_type = WIN_NONE
@@ -1383,6 +1389,9 @@ function SelectRoles()
                     PrintRole(v, "hypnotist")
                 elseif role == ROLE_IMPERSONATOR then
                     hasImpersonator = true
+                    if GetConVar("ttt_single_deputy_impersonator"):GetBool() then
+                        impersonator_only = true
+                    end
                     forcedSpecialTraitorCount = forcedSpecialTraitorCount + 1
                     PrintRole(v, "impersonator")
 
@@ -1406,6 +1415,9 @@ function SelectRoles()
                     PrintRole(v, "revenger")
                 elseif role == ROLE_DEPUTY then
                     hasDeputy = true
+                    if GetConVar("ttt_single_deputy_impersonator"):GetBool() then
+                        deputy_only = true
+                    end
                     forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
                     PrintRole(v, "deputy")
 

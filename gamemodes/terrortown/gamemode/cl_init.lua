@@ -481,6 +481,13 @@ net.Receive("TTT_ClownActivate", function()
         p:SetGravity(gravity)
         p:SetAirResistance(125)
     end
+
+    local name = ent:Nick()
+
+    AddEvent({
+        id = EVENT_CLOWNACTIVE,
+        ply = name
+    })
 end)
 
 -- Hit Markers

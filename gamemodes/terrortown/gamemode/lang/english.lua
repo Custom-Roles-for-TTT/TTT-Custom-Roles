@@ -1258,5 +1258,10 @@ L.idle_popup_title = "Idle"
 
 -- Custom Events
 L.ev_hypno = "{victim} was hypnotised"
-L.ev_defi = "{victim} was defibrillated"
+L.ev_defi = "{victim} was respawned"
 L.ev_disco = "{victim} disconnected"
+L.ev_swap = "{victim} swapped with {attacker}"
+L.ev_promote = "{player} was promoted to detective"
+L.ev_clown = "The clown, {player}, went on a rampage"
+L.ev_drunk = "{player} remembered they are {team}"
+L.ev_haunt = "{victim} started haunting {attacker}"

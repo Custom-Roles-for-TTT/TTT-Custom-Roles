@@ -25,7 +25,6 @@ local T  = LANG.GetTranslation
 local PT = LANG.GetParamTranslation
 
 -- Icons we'll use
-local smile_icon   = Material("icon16/emoticon_smile.png")
 local magnifier_icon = Material("icon16/magnifier.png")
 local bomb_icon    = Material("icon16/bomb.png")
 local wrong_icon   = Material("icon16/cross.png")
@@ -39,7 +38,13 @@ local wrench_icon  = Material("icon16/wrench.png")
 local zombie_icon = Material("icon16/user_green.png")
 local vampire_icon = Material("icon16/user_gray.png")
 local traitor_icon = Material("icon16/user_red.png")
+local heart_icon = Material("icon16/heart.png")
 local disconnect_icon = Material("icon16/disconnect.png")
+local swap_icon = Material("icon16/arrow_refresh_small.png")
+local promotion_icon = Material("icon16/award_star_add.png")
+local clown_icon = Material("icon16/emoticon_evilgrin.png")
+local drunk_icon = Material("icon16/drink_empty.png")
+local haunt_icon = Material("icon16/group.png")
 local info_icon = Material("icon16/info.png")
 
 -- Shorter name, using it lots
@@ -294,7 +299,7 @@ Event(EVENT_KILL,
     text = KillText,
     icon = function(e)
         if e.att.sid == e.vic.sid or e.att.sid == -1 then
-            return smile_icon, "Suicide"
+            return wrong_icon, "Suicide"
         end
 
         local attacker = (e.att.tr and "Traitor") or (e.att.jes and "Jester") or "Innocent"
@@ -322,7 +327,7 @@ Event(EVENT_DEFIBRILLATED, {
                   return PT("ev_defi", {victim = e.vic})
                end,
         icon = function(e)
-                    return star_icon, "Defibrillated"
+                    return heart_icon, "Defibrillated"
                 end})
 
 Event(EVENT_DISCONNECTED, {
@@ -332,6 +337,46 @@ Event(EVENT_DISCONNECTED, {
         icon = function(e)
                     return disconnect_icon, "Disconnected"
                 end})
+
+Event(EVENT_SWAPPER, {
+    text = function(e)
+        return PT("ev_swap", {victim = e.vic, attacker = e.att})
+    end,
+    icon = function(e)
+        return swap_icon, "Swapped"
+    end})
+
+Event(EVENT_PROMOTION, {
+    text = function(e)
+        return PT("ev_promote", {player = e.ply})
+    end,
+    icon = function(e)
+        return promotion_icon, "Promotion"
+    end})
+
+Event(EVENT_CLOWNACTIVE, {
+    text = function(e)
+        return PT("ev_clown", {player = e.ply})
+    end,
+    icon = function(e)
+        return clown_icon, "Killer Clown"
+    end})
+
+Event(EVENT_DRUNKSOBER, {
+    text = function(e)
+        return PT("ev_drunk", {player = e.ply, team = e.team})
+    end,
+    icon = function(e)
+        return drunk_icon, "Drunk Sober"
+    end})
+
+Event(EVENT_HAUNT, {
+    text = function(e)
+        return PT("ev_haunt", {victim = e.vic, attacker = e.att})
+    end,
+    icon = function(e)
+        return haunt_icon, "Haunt"
+    end})
 
 Event(EVENT_LOG, {
         text = function(e)

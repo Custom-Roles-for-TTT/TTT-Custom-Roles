@@ -879,6 +879,11 @@ function GM:PlayerDeath(victim, infl, attacker)
         else
             deadPhantoms[sid] = {times = deadPhantoms[sid].times + 1, player = victim, attacker = attacker:SteamID64()}
         end
+
+        net.Start("TTT_PhantomHaunt")
+        net.WriteString(victim:Nick())
+        net.WriteString(attacker:Nick())
+        net.Broadcast()
     end
 
     -- Handle jester death
@@ -908,10 +913,15 @@ function GM:PlayerDeath(victim, infl, attacker)
             body:Remove()
             SendFullStateUpdate()
         end)
+
+        net.Start("TTT_SwapperSwapped")
+        net.WriteString(victim:Nick())
+        net.WriteString(attacker:Nick())
+        net.Broadcast()
     end
 
     -- Handle detective death
-    if victim:IsDetective() and valid_kill then
+    if victim:IsDetective() then
         local detectiveAlive = false
         for _, ply in pairs(player.GetAll()) do
             if not ply:IsSpec() and ply:Alive() and ply:IsDetective() and ply ~= victim then
@@ -925,6 +935,10 @@ function GM:PlayerDeath(victim, infl, attacker)
                     ply:SetNWBool("HasPromotion", true)
                     ply:PrintMessage(HUD_PRINTTALK, "You have been promoted to Detective!")
                     ply:PrintMessage(HUD_PRINTCENTER, "You have been promoted to Detective!")
+
+                    net.Start("TTT_Promotion")
+                    net.WriteString(ply:Nick())
+                    net.Broadcast()
                 end
             end
         end
