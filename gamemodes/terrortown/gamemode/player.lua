@@ -903,8 +903,10 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
 
     -- Jesters deal no damage and cant take environmental damage
     if (ply:IsJesterTeam() and not ply:GetNWBool("KillerClownActive", false)) and GetRoundState() >= ROUND_ACTIVE then
-        if dmginfo:IsBulletDamage() or dmginfo:IsFallDamage() or dmginfo:IsDamageType(DMG_CRUSH) or dmginfo:IsDamageType(DMG_CLUB) then
-        else dmginfo:ScaleDamage(0) end
+        -- Damage type DMG_GENERIC is "0" which doesn't seem to work with IsDamageType
+        if dmginfo:IsExplosionDamage() or dmginfo:IsDamageType(DMG_BURN) or dmginfo:IsDamageType(DMG_CRUSH) or dmginfo:IsFallDamage() or dmginfo:IsDamageType(DMG_DROWN) or dmginfo:GetDamageType() == 0 or dmginfo:IsDamageType(DMG_DISSOLVE) then
+            dmginfo:ScaleDamage(0)
+        end
     end
 
     if (ply:IsJesterTeam() and not ply:GetNWBool("KillerClownActive", false)) and GetRoundState() >= ROUND_ACTIVE and dmginfo:IsExplosionDamage() then
@@ -1058,9 +1060,10 @@ end
 function GM:EntityTakeDamage(ent, dmginfo)
     if SERVER then
         if (ent:IsPlayer() and ent:IsJesterTeam() and not ent:GetNWBool("KillerClownActive", false) and GetRoundState() >= ROUND_ACTIVE) then
-            if dmginfo:IsExplosionDamage() or dmginfo:IsDamageType(DMG_BURN) or dmginfo:IsDamageType(DMG_CRUSH) or dmginfo:IsDamageType(DMG_FALL) or dmginfo:IsDamageType(DMG_DROWN) then
-                -- check its burn or explosion.
-                dmginfo:ScaleDamage(0) -- no damage
+            -- Damage type DMG_GENERIC is "0" which doesn't seem to work with IsDamageType
+            if dmginfo:IsExplosionDamage() or dmginfo:IsDamageType(DMG_BURN) or dmginfo:IsDamageType(DMG_CRUSH) or dmginfo:IsFallDamage() or dmginfo:IsDamageType(DMG_DROWN) or dmginfo:GetDamageType() == 0 or dmginfo:IsDamageType(DMG_DISSOLVE) then
+                dmginfo:ScaleDamage(0)
+                dmginfo:SetDamage(0)
             end
         end
     end
