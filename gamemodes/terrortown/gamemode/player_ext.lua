@@ -314,6 +314,12 @@ function plymeta:SpawnForRound(dead_only)
 
     self:StripAll()
     self:SetTeam(TEAM_TERROR)
+    -- Disable Phantom haunting
+    self:SetNWBool("Haunting", false)
+    self:SetNWString("HauntingTarget", nil)
+    self:SetNWInt("HauntingPower", 0)
+    timer.Remove(self:Nick() .. "HauntingPower")
+    timer.Remove(self:Nick() .. "HauntingSpectate")
     self:Spawn()
 
     -- If a dead player was spawned outside of the round start, broadcast the defib event
@@ -376,6 +382,8 @@ function plymeta:Spectate(type)
     -- NPCs should never see spectators. A workaround for the fact that gmod NPCs
     -- do not ignore them by default.
     self:SetNoTarget(true)
+    -- Save the spectate mode so it can be accessed on the client
+    self:SetNWInt("SpecMode", type)
 
     if type == OBS_MODE_ROAMING then
         self:SetMoveType(MOVETYPE_NOCLIP)

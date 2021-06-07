@@ -231,7 +231,7 @@ function GM:PlayerSelectSpawn(ply)
 
     -- Optimistic attempt: assume there are sufficient spawns for all and one is
     -- free
-    for k, spwn in pairs(self.SpawnPoints) do
+    for _, spwn in pairs(self.SpawnPoints) do
         if self:IsSpawnpointSuitable(ply, spwn, false) then
             return spwn
         end
@@ -240,7 +240,7 @@ function GM:PlayerSelectSpawn(ply)
     -- That did not work, so now look around spawns
     local picked = nil
 
-    for k, spwn in pairs(self.SpawnPoints) do
+    for _, spwn in pairs(self.SpawnPoints) do
         picked = spwn -- just to have something if all else fails
 
         -- See if we can jury rig a spawn near this one
@@ -262,7 +262,7 @@ function GM:PlayerSelectSpawn(ply)
     end
 
     -- Last attempt, force one
-    for k, spwn in pairs(self.SpawnPoints) do
+    for _, spwn in pairs(self.SpawnPoints) do
         if self:IsSpawnpointSuitable(ply, spwn, true) then
             return spwn
         end
@@ -334,6 +334,66 @@ function GM:KeyPress(ply, key)
             return PROPSPEC.Key(ply, key)
         end
 
+        if key == IN_RELOAD then
+            local tgt = ply:GetObserverTarget()
+            if not IsValid(tgt) or not tgt:IsPlayer() then return end
+
+            if not ply.spec_mode or ply.spec_mode == OBS_MODE_CHASE then
+                ply.spec_mode = OBS_MODE_IN_EYE
+            elseif ply.spec_mode == OBS_MODE_IN_EYE then
+                ply.spec_mode = OBS_MODE_CHASE
+            end
+            -- roam stays roam
+
+            ply:Spectate(ply.spec_mode)
+        end
+
+        -- If the dead player is haunting their killer, don't let them switch views
+        -- Instead use their button presses to do cool things to their killer
+        if ply:GetNWBool("Haunting", false) then
+            local killer = ply:GetObserverTarget()
+            if not IsValid(killer) or not killer:Alive() then return end
+
+            local action = nil
+            -- Translate the key to the action, the undo action, how long it lasts, and how much it costs
+            if key == IN_ATTACK then
+                action = {"+attack", "-attack", 0.5, GetConVar("ttt_phantom_killer_haunt_attack_cost"):GetInt()}
+            elseif key == IN_ATTACK2 then
+                action = {"+menu", "-menu", 0.2, GetConVar("ttt_phantom_killer_haunt_drop_cost"):GetInt()}
+            elseif key == IN_MOVELEFT or key == IN_MOVERIGHT or key == IN_FORWARD or key == IN_BACK then
+                local moveCost = GetConVar("ttt_phantom_killer_haunt_move_cost"):GetInt()
+                if key == IN_FORWARD then
+                    action = {"+forward", "-forward", 1.0, moveCost}
+                elseif key == IN_BACK then
+                    action = {"+back", "-back", 1.0, moveCost}
+                elseif key == IN_MOVELEFT then
+                    action = {"+moveleft", "-moveleft", 1.0, moveCost}
+                elseif key == IN_MOVERIGHT then
+                    action = {"+moveright", "-moveright", 1.0, moveCost}
+                end
+            elseif key == IN_JUMP then
+                action = {"+jump", "-jump", 0.2, GetConVar("ttt_phantom_killer_haunt_jump_cost"):GetInt()}
+            end
+
+            if action == nil then return end
+
+            -- If this cost isn't valid, this action isn't valid
+            local cost = action[4]
+            if cost <= 0 then return end
+
+            -- Check power level
+            local currentpower = ply:GetNWInt("HauntingPower", 0)
+            if currentpower < cost then return end
+
+            -- Deduct the cost, run the command, and then run the un-command after the delay
+            ply:SetNWInt("HauntingPower", currentpower - cost)
+            killer:ConCommand(action[1])
+            timer.Simple(action[3], function()
+                killer:ConCommand(action[2])
+            end)
+            return
+        end
+
         ply:ResetViewRoll()
 
         if key == IN_ATTACK then
@@ -363,11 +423,14 @@ function GM:KeyPress(ply, key)
             local pos = ply:GetPos()
             local ang = ply:EyeAngles()
 
-            local target = ply:GetObserverTarget()
-            if IsValid(target) and target:IsPlayer() and ply:GetObserverMode() ~= OBS_MODE_ROAMING then
-                -- Only set the spectator's position to the player they are spectating if they are in chase or eye mode. They can use the reload key if they want to return to the person they're spectating
-                pos = target:EyePos()
-                ang = target:EyeAngles()
+            -- Only set the spectator's position to the player they are spectating if they are in chase or eye mode
+            -- They can use the reload key if they want to return to the person they're spectating
+            if ply:GetObserverMode() ~= OBS_MODE_ROAMING then
+                local target = ply:GetObserverTarget()
+                if IsValid(target) and target:IsPlayer() then
+                    pos = target:EyePos()
+                    ang = target:EyeAngles()
+                end
             end
 
             -- reset
@@ -379,21 +442,9 @@ function GM:KeyPress(ply, key)
             return true
         elseif key == IN_JUMP then
             -- unfuck if you're on a ladder etc
-            if (ply:GetMoveType() ~= MOVETYPE_NOCLIP) then
+            if ply:GetMoveType() ~= MOVETYPE_NOCLIP then
                 ply:SetMoveType(MOVETYPE_NOCLIP)
             end
-        elseif key == IN_RELOAD then
-            local tgt = ply:GetObserverTarget()
-            if not IsValid(tgt) or not tgt:IsPlayer() then return end
-
-            if not ply.spec_mode or ply.spec_mode == OBS_MODE_CHASE then
-                ply.spec_mode = OBS_MODE_IN_EYE
-            elseif ply.spec_mode == OBS_MODE_IN_EYE then
-                ply.spec_mode = OBS_MODE_CHASE
-            end
-            -- roam stays roam
-
-            ply:Spectate(ply.spec_mode)
         end
     end
 end
@@ -629,23 +680,64 @@ function FindRespawnLocation(pos)
     return false
 end
 
-local deadPhantom = nil
+local deadPhantoms = {}
+hook.Add("TTTPrepareRound", function()
+    deadPhantoms = {}
+end)
+
 function GM:DoPlayerDeath(ply, attacker, dmginfo)
     if ply:IsSpec() then return end
 
     -- Respawn the phantom
-    if ply:GetNWBool("HauntedSmoke") == true then
-        local phantomBody = deadPhantom.server_ragdoll or deadPhantom:GetRagdollEntity()
-        if phantomBody:IsValid() and deadPhantom:GetRole() == ROLE_PHANTOM then
-            deadPhantom:SpawnForRound(true)
-            deadPhantom:SetPos(FindRespawnLocation(phantomBody:GetPos()) or phantomBody:GetPos())
-            deadPhantom:SetEyeAngles(Angle(0, phantomBody:GetAngles().y, 0))
-            deadPhantom:SetHealth(GetConVar("ttt_phantom_respawn_health"):GetInt() or 50)
-            phantomBody:Remove()
-            deadPhantom:PrintMessage(HUD_PRINTCENTER, "Your attacker died and you have been respawned.")
-            ply:SetNWBool("HauntedSmoke", false)
-            SendFullStateUpdate()
+    if ply:GetNWBool("HauntedSmoke", false) then
+        local respawn = false
+        local phantomUsers = table.GetKeys(deadPhantoms)
+        for _, key in pairs(phantomUsers) do
+            local phantom = deadPhantoms[key]
+            if phantom.attacker == ply:SteamID64() and IsValid(phantom.player) then
+                local deadPhantom = phantom.player
+                deadPhantom:SetNWBool("Haunting", false)
+                deadPhantom:SetNWString("HauntingTarget", nil)
+                deadPhantom:SetNWInt("HauntingPower", 0)
+                timer.Remove(deadPhantom:Nick() .. "HauntingPower")
+                timer.Remove(deadPhantom:Nick() .. "HauntingSpectate")
+                if deadPhantom:IsPhantom() and not deadPhantom:Alive() then
+                    -- Find the Phantom's corpse
+                    local phantomBody = deadPhantom.server_ragdoll or deadPhantom:GetRagdollEntity()
+                    if IsValid(phantomBody) then
+                        deadPhantom:SpawnForRound(true)
+                        deadPhantom:SetPos(FindRespawnLocation(phantomBody:GetPos()) or phantomBody:GetPos())
+                        deadPhantom:SetEyeAngles(Angle(0, phantomBody:GetAngles().y, 0))
+
+                        local health = GetConVar("ttt_phantom_respawn_health"):GetInt()
+                        if GetConVar("ttt_phantom_weaker_each_respawn"):GetBool() then
+                            -- Don't reduce them the first time since 50 is already reduced
+                            for _ = 1, phantom.times - 1 do
+                                health = health / 2
+                            end
+                            health = math.max(1, math.Round(health))
+                        end
+                        deadPhantom:SetHealth(health)
+                        phantomBody:Remove()
+                        deadPhantom:PrintMessage(HUD_PRINTCENTER, "Your attacker died and you have been respawned.")
+                        respawn = true
+                    else
+                        deadPhantom:PrintMessage(HUD_PRINTCENTER, "Your attacker died but your body has been destroyed.")
+                    end
+                end
+            end
         end
+
+        if respawn and GetConVar("ttt_phantom_announce_death"):GetBool() then
+            for _, v in pairs(player.GetAll()) do
+                if v:IsDetectiveLike() and v:Alive() and not v:IsSpec() then
+                    v:PrintMessage(HUD_PRINTCENTER, "The phantom has been respawned.")
+                end
+            end
+        end
+
+        ply:SetNWBool("HauntedSmoke", false)
+        SendFullStateUpdate()
     end
 
     -- Experimental: Fire a last shot if ironsighting and not headshot
@@ -747,21 +839,55 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 end
 
 function GM:PlayerDeath(victim, infl, attacker)
+    local valid_kill = IsValid(attacker) and attacker:IsPlayer() and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     -- Handle phantom death
-    if victim:IsPhantom() and attacker:IsPlayer() and attacker ~= victim and GetRoundState() == ROUND_ACTIVE then
+    if victim:IsPhantom() and valid_kill then
         attacker:SetNWBool("HauntedSmoke", true)
+
+        if GetConVar("ttt_phantom_killer_haunt"):GetBool() then
+            victim:SetNWBool("Haunting", true)
+            victim:SetNWString("HauntingTarget", attacker:SteamID64())
+            victim:SetNWInt("HauntingPower", 0)
+            timer.Create(victim:Nick() .. "HauntingPower", 1, 0, function()
+                -- Make sure the victim is still in the correct spectate mode
+                local spec_mode = victim:GetNWInt("SpecMode", OBS_MODE_ROAMING)
+                if spec_mode ~= OBS_MODE_CHASE and spec_mode ~= OBS_MODE_IN_EYE then
+                    victim:Spectate(OBS_MODE_CHASE)
+                end
+
+                local power = victim:GetNWInt("HauntingPower", 0)
+                local power_rate = GetConVar("ttt_phantom_killer_haunt_power_rate"):GetInt()
+                local new_power = math.Clamp(power + power_rate, 0, GetConVar("ttt_phantom_killer_haunt_power_max"):GetInt())
+                victim:SetNWInt("HauntingPower", new_power)
+            end)
+        end
+
         attacker:PrintMessage(HUD_PRINTCENTER, "You have been haunted.")
         victim:PrintMessage(HUD_PRINTCENTER, "Your attacker has been haunted.")
-        deadPhantom = victim
+        if GetConVar("ttt_phantom_announce_death"):GetBool() then
+            for _, v in pairs(player.GetAll()) do
+                if v ~= attacker and v:IsDetectiveLike() and v:Alive() and not v:IsSpec() then
+                    v:PrintMessage(HUD_PRINTCENTER, "The phantom has been killed.")
+                end
+            end
+        end
+
+        local sid = victim:SteamID64()
+        -- Keep track of how many times this Phantom has been killed and by who
+        if not deadPhantoms[sid] then
+            deadPhantoms[sid] = {times = 1, player = victim, attacker = attacker:SteamID64()}
+        else
+            deadPhantoms[sid] = {times = deadPhantoms[sid].times + 1, player = victim, attacker = attacker:SteamID64()}
+        end
     end
 
     -- Handle jester death
-    if victim:IsJester() and attacker:IsPlayer() and attacker ~= victim and GetRoundState() == ROUND_ACTIVE then
+    if victim:IsJester() and valid_kill then
         victim:SetNWString("JesterKiller", attacker:Nick())
     end
 
     -- Handle swapper death
-    if victim:IsSwapper() and attacker:IsPlayer() and attacker ~= victim and GetRoundState() == ROUND_ACTIVE then
+    if victim:IsSwapper() and valid_kill then
         attacker:SetNWString("SwappedWith", victim:Nick())
         attacker:PrintMessage(HUD_PRINTCENTER, "You killed the swapper!")
         victim:SetRole(attacker:GetRole())
@@ -785,7 +911,7 @@ function GM:PlayerDeath(victim, infl, attacker)
     end
 
     -- Handle detective death
-    if victim:IsDetective() and GetRoundState() == ROUND_ACTIVE then
+    if victim:IsDetective() and valid_kill then
         local detectiveAlive = false
         for _, ply in pairs(player.GetAll()) do
             if not ply:IsSpec() and ply:Alive() and ply:IsDetective() and ply ~= victim then
@@ -811,11 +937,20 @@ function GM:PlayerDeath(victim, infl, attacker)
     self:PlayerSilentDeath(victim)
 
     victim:Freeze(false)
-    victim:SetRagdollSpec(true)
-    victim:Spectate(OBS_MODE_IN_EYE)
 
-    local rag_ent = victim.server_ragdoll or victim:GetRagdollEntity()
-    victim:SpectateEntity(rag_ent)
+    -- Haunt the (non-Swapper) attacker if that functionality is enabled
+    if valid_kill and victim:IsPhantom() and not attacker:IsSwapper() and GetConVar("ttt_phantom_killer_haunt"):GetBool() then
+        timer.Create(victim:Nick() .. "HauntingSpectate", 1, 1, function()
+            victim:Spectate(OBS_MODE_CHASE)
+            victim:SpectateEntity(attacker)
+        end)
+    else
+        victim:SetRagdollSpec(true)
+        victim:Spectate(OBS_MODE_IN_EYE)
+
+        local rag_ent = victim.server_ragdoll or victim:GetRagdollEntity()
+        victim:SpectateEntity(rag_ent)
+    end
 
     victim:Flashlight(false)
 

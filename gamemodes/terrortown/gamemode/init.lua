@@ -128,7 +128,6 @@ CreateConVar("ttt_old_man_min_players", "0")
 -- Custom role properties
 CreateConVar("ttt_detective_starting_health", "100")
 CreateConVar("ttt_swapper_killer_health", "100")
-CreateConVar("ttt_phantom_respawn_health", "50")
 CreateConVar("ttt_drunk_sober_time", "180")
 CreateConVar("ttt_drunk_innocent_chance", "0.7")
 CreateConVar("ttt_clown_damage_bonus", "0")
@@ -139,6 +138,19 @@ CreateConVar("ttt_single_deputy_impersonator", "0")
 CreateConVar("ttt_old_man_starting_health", "1")
 CreateConVar("ttt_jesters_trigger_traitor_testers", "1")
 CreateConVar("ttt_independents_trigger_traitor_testers", "0")
+
+CreateConVar("ttt_phantom_respawn_health", "50")
+CreateConVar("ttt_phantom_weaker_each_respawn", "0")
+CreateConVar("ttt_phantom_killer_smoke", "1")
+CreateConVar("ttt_phantom_killer_footstep_time", "10")
+CreateConVar("ttt_phantom_announce_death", "1")
+CreateConVar("ttt_phantom_killer_haunt", "1")
+CreateConVar("ttt_phantom_killer_haunt_power_max", "100")
+CreateConVar("ttt_phantom_killer_haunt_power_rate", "5")
+CreateConVar("ttt_phantom_killer_haunt_move_cost", "50")
+CreateConVar("ttt_phantom_killer_haunt_attack_cost", "75")
+CreateConVar("ttt_phantom_killer_haunt_jump_cost", "30")
+CreateConVar("ttt_phantom_killer_haunt_drop_cost", "45")
 
 -- Traitor credits
 CreateConVar("ttt_credits_starting", "2")
@@ -264,9 +276,16 @@ util.AddNetworkString("TTT_UpdateRevengerLoverKiller")
 util.AddNetworkString("TTT_UpdateOldManWins")
 util.AddNetworkString("TTT_BuyableWeapons")
 util.AddNetworkString("TTT_ResetBuyableWeaponsCache")
+util.AddNetworkString("TTT_PlayerFootstep")
+util.AddNetworkString("TTT_ClearPlayerFootsteps")
 
 local jester_killed = false
 local revenger_lover = nil
+
+local function ClearAllFootsteps()
+    net.Start("TTT_ClearPlayerFootsteps")
+    net.Broadcast()
+end
 
 ---- Round mechanics
 function GM:Initialize()
@@ -371,6 +390,13 @@ function GM:SyncGlobals()
         SetGlobalInt("ttt_shop_random_" .. shortstring .. "_percent", GetConVar("ttt_shop_random_" .. shortstring .. "_percent"):GetInt())
         SetGlobalBool("ttt_shop_random_" .. shortstring .. "_enabled", GetConVar("ttt_shop_random_" .. shortstring .. "_enabled"):GetBool())
     end
+
+    SetGlobalBool("ttt_phantom_killer_smoke", GetConVar("ttt_phantom_killer_smoke"):GetBool())
+    SetGlobalInt("ttt_phantom_killer_haunt_power_max", GetConVar("ttt_phantom_killer_haunt_power_max"):GetInt())
+    SetGlobalInt("ttt_phantom_killer_haunt_move_cost", GetConVar("ttt_phantom_killer_haunt_move_cost"):GetInt())
+    SetGlobalInt("ttt_phantom_killer_haunt_attack_cost", GetConVar("ttt_phantom_killer_haunt_attack_cost"):GetInt())
+    SetGlobalInt("ttt_phantom_killer_haunt_jump_cost", GetConVar("ttt_phantom_killer_haunt_jump_cost"):GetInt())
+    SetGlobalInt("ttt_phantom_killer_haunt_drop_cost", GetConVar("ttt_phantom_killer_haunt_drop_cost"):GetInt())
 
     SetGlobalBool("sv_voiceenable", GetConVar("sv_voiceenable"):GetBool())
 end
@@ -593,6 +619,11 @@ end
 function PrepareRound()
     for _, v in pairs(player.GetAll()) do
         v:SetNWBool("HauntedSmoke", false)
+        v:SetNWBool("Haunting", false)
+        v:SetNWString("HauntingTarget", nil)
+        v:SetNWInt("HauntingPower", 0)
+        timer.Remove(v:Nick() .. "HauntingPower")
+        timer.Remove(v:Nick() .. "HauntingSpectate")
         v:SetNWString("RevengerLover", "")
         v:SetNWString("JesterKiller", "")
         v:SetNWString("SwappedWith", "")
@@ -684,7 +715,7 @@ function PrepareRound()
 
     -- Tell hooks and map we started prep
     hook.Call("TTTPrepareRound")
-
+    ClearAllFootsteps()
     ents.TTT.TriggerRoundStateOutputs(ROUND_PREP)
 end
 
@@ -858,7 +889,7 @@ function BeginRound()
         if v:GetRole() == ROLE_REVENGER then
             if not revenger_lover then
                 local potentialSoulmates = {}
-                for i, p in pairs(player.GetAll()) do
+                for _, p in pairs(player.GetAll()) do
                     if p:Alive() and not p:IsSpec() and not p:IsRevenger() then
                         table.insert(potentialSoulmates, p)
                     end
@@ -993,7 +1024,7 @@ function BeginRound()
     SetRoundState(ROUND_ACTIVE)
     LANG.Msg("round_started")
     ServerLog("Round proper has begun...\n")
-
+    ClearAllFootsteps()
     GAMEMODE:UpdatePlayerLoadouts() -- needs to happen when round_active
 
     hook.Call("TTTBeginRound")
@@ -1646,7 +1677,13 @@ hook.Add("PlayerDeath", "Kill_Reveal_Notify", function(victim, entity, killer)
                 elseif killer:IsPlayer() and victim ~= killer then
                     reason = "ply"
                     killerName = killer:Nick()
-                    role = killer:GetRole()
+
+                    -- If this Phantom was killed by a player and they are supposed to haunt them, hide their killer's role
+                    if GetRoundState() == ROUND_ACTIVE and victim:IsPhantom() and GetConVar("ttt_phantom_killer_haunt"):GetBool() then
+                        role = ROLE_NONE
+                    else
+                        role = killer:GetRole()
+                    end
                 end
             end
         end

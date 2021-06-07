@@ -192,6 +192,12 @@ if SERVER then
         net.WriteBool(true)
         net.Send(ply)
 
+        -- Un-haunt the Hypnotist if the target was the Phantom
+        local owner = self:GetOwner()
+        if ply:IsPhantom() and ply:GetNWString("HauntingTarget", nil) == owner:SteamID64() then
+            owner:SetNWBool("HauntedSmoke", false)
+        end
+
         net.Start("TTT_Hypnotised")
         net.WriteString(ply:Nick())
         net.Broadcast()
@@ -209,7 +215,7 @@ if SERVER then
 
         SendFullStateUpdate()
 
-        self:GetOwner():ConCommand("lastinv")
+        owner:ConCommand("lastinv")
         self:Remove()
     end
 

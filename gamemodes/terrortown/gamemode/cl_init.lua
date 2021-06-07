@@ -332,8 +332,8 @@ function GM:AddDeathNotice() end
 function GM:DrawDeathNotice() end
 
 function GM:Think()
-    for k, v in pairs(player.GetAll()) do
-        if v:Alive() and v:GetNWBool("HauntedSmoke", false) then
+    for _, v in pairs(player.GetAll()) do
+        if v:Alive() and not v:IsSpec() and v:GetNWBool("HauntedSmoke", false) and GetGlobalBool("ttt_phantom_killer_smoke") then
             if not v.SmokeEmitter then v.SmokeEmitter = ParticleEmitter(v:GetPos()) end
             if not v.SmokeNextPart then v.SmokeNextPart = CurTime() end
             local pos = v:GetPos() + Vector(0, 0, 30)
@@ -646,65 +646,68 @@ end)
 -- Death messages
 net.Receive("TTT_ClientDeathNotify", function()
     -- Colours for customizing
-    local TraitorColor = Color(255, 0, 0)
-    local SpecTraitorColor = Color(255, 128, 0)
-    local InnoColor = Color(0, 255, 0)
-    local SpecInnoColor = Color(255, 255, 0)
-    local DetectiveColor = Color(0, 0, 255)
-    local JesterColor = Color(159, 0, 211)
-    local IndependentColor = Color(112, 50, 0)
+    local traitorColor = Color(255, 0, 0)
+    local specTraitorColor = Color(255, 128, 0)
+    local innoColor = Color(0, 255, 0)
+    local specInnoColor = Color(255, 255, 0)
+    local detectiveColor = Color(0, 0, 255)
+    local jesterColor = Color(159, 0, 211)
+    local independentColor = Color(112, 50, 0)
 
     -- Read the variables from the message
     local name = net.ReadString()
     local role = net.ReadUInt(8)
     local reason = net.ReadString()
-    local col = InnoColor
+    local col = innoColor
 
     -- Format the number role into a human readable role
     if role == ROLE_TRAITOR then
-        col = TraitorColor
+        col = traitorColor
         role = "a traitor"
     elseif role == ROLE_DETECTIVE then
-        col = DetectiveColor
+        col = detectiveColor
         role = "a detective"
     elseif role == ROLE_JESTER then
-        col = JesterColor
+        col = jesterColor
         role = "a jester"
     elseif role == ROLE_SWAPPER then
-        col = JesterColor
+        col = jesterColor
         role = "a swapper"
     elseif role == ROLE_GLITCH then
-        col = SpecInnoColor
+        col = specInnoColor
         role = "a glitch"
     elseif role == ROLE_PHANTOM then
-        col = SpecInnoColor
+        col = specInnoColor
         role = "a phantom"
     elseif role == ROLE_HYPNOTIST then
-        col = SpecTraitorColor
+        col = specTraitorColor
         role = "a hypnotist"
     elseif role == ROLE_REVENGER then
-        col = SpecInnoColor
+        col = specInnoColor
         role = "a revenger"
     elseif role == ROLE_DRUNK then
-        col = IndependentColor
+        col = independentColor
         role = "a drunk"
     elseif role == ROLE_CLOWN then
-        col = JesterColor
+        col = jesterColor
         role = "a clown"
     elseif role == ROLE_DEPUTY then
-        col = SpecInnoColor
+        col = specInnoColor
         role = "a deputy"
     elseif role == ROLE_IMPERSONATOR then
-        col = SpecTraitorColor
+        col = specTraitorColor
         role = "an impersonator"
     elseif role == ROLE_BEGGAR then
-        col = JesterColor
+        col = jesterColor
         role = "a beggar"
     elseif role == ROLE_OLDMAN then
-        col = IndependentColor
+        col = independentColor
         role = "an old man"
+    elseif role == ROLE_NONE then
+        col = COLOR_WHITE
+        role = "a hidden role"
     else
-        col = InnoColor
+        col = innoColor
         role = "innocent"
     end
 
@@ -724,4 +727,85 @@ net.Receive("TTT_ClientDeathNotify", function()
     else
         chat.AddText(COLOR_WHITE, "You died!")
     end
+end)
+
+-- Footsteps
+
+local footSteps = {}
+local footMat = Material("thieves/footprint")
+local function DrawFootprints()
+    local client = LocalPlayer()
+    if not IsValid(client) then return end
+
+    cam.Start3D(client:EyePos(), client:EyeAngles())
+    render.SetMaterial(footMat)
+    local pos = client:EyePos()
+    for k, footstep in pairs(footSteps) do
+        local timediff = (footstep.curtime + footstep.fadetime) - CurTime()
+        if timediff > 0 then
+            if (footstep.pos - pos):LengthSqr() < 600 ^ 2 then
+                -- Fade the footprints into invisibility based on how long they've been around
+                local faderatio = timediff / footstep.fadetime
+                local col = Color(footstep.col.r, footstep.col.g, footstep.col.b, faderatio * 255)
+
+                local hitpos = footstep.pos
+                -- If this player is spectating through the target's eyes, move the prints down so they don't appear to float
+                if client:IsSpec() and client:GetNWInt("SpecMode", -1) == OBS_MODE_IN_EYE then
+                    hitpos = hitpos + Vector(0, 0, -50)
+                end
+                render.DrawQuadEasy(hitpos + footstep.normal * 0.01, footstep.normal, 10, 20, col, footstep.angle)
+            end
+        else
+            footSteps[k] = nil
+        end
+    end
+    cam.End3D()
+end
+
+local function AddFootstep(client, pos, ang, foot, col, fade_time)
+    ang.p = 0
+    ang.r = 0
+    local fpos = pos
+    if foot == 1 then
+        fpos = fpos + ang:Right() * 5
+    else
+        fpos = fpos + ang:Right() * -5
+    end
+
+    local trace = {
+        start = fpos,
+        endpos = fpos + Vector(0, 0, -10),
+        filter = client
+    }
+    local tr = util.TraceLine(trace)
+    if tr.Hit then
+        local tbl = {
+            pos = tr.HitPos,
+            curtime = CurTime(),
+            fadetime = fade_time,
+            angle = ang.y,
+            normal = tr.HitNormal,
+            col = col
+        }
+        table.insert(footSteps, tbl)
+    end
+end
+
+net.Receive("TTT_PlayerFootstep", function()
+    local client = net.ReadEntity()
+    local pos = net.ReadVector()
+    local ang = net.ReadAngle()
+    local foot = net.ReadBit()
+    local color = net.ReadTable()
+    local fade_time = net.ReadUInt(8)
+
+    AddFootstep(client, pos, ang, foot, color, fade_time)
+end)
+
+net.Receive("TTT_ClearPlayerFootsteps", function()
+    table.Empty(footSteps)
+end)
+
+hook.Add("PostDrawTranslucentRenderables", "FootstepRender", function(depth, skybox)
+    DrawFootprints()
 end)
