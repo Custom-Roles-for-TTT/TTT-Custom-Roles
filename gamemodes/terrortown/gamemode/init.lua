@@ -142,15 +142,15 @@ CreateConVar("ttt_independents_trigger_traitor_testers", "0")
 CreateConVar("ttt_phantom_respawn_health", "50")
 CreateConVar("ttt_phantom_weaker_each_respawn", "0")
 CreateConVar("ttt_phantom_killer_smoke", "1")
-CreateConVar("ttt_phantom_killer_footstep_time", "10")
-CreateConVar("ttt_phantom_announce_death", "1")
+CreateConVar("ttt_phantom_killer_footstep_time", "0")
+CreateConVar("ttt_phantom_announce_death", "0")
 CreateConVar("ttt_phantom_killer_haunt", "1")
 CreateConVar("ttt_phantom_killer_haunt_power_max", "100")
-CreateConVar("ttt_phantom_killer_haunt_power_rate", "5")
-CreateConVar("ttt_phantom_killer_haunt_move_cost", "50")
-CreateConVar("ttt_phantom_killer_haunt_attack_cost", "75")
-CreateConVar("ttt_phantom_killer_haunt_jump_cost", "30")
-CreateConVar("ttt_phantom_killer_haunt_drop_cost", "45")
+CreateConVar("ttt_phantom_killer_haunt_power_rate", "10")
+CreateConVar("ttt_phantom_killer_haunt_move_cost", "25")
+CreateConVar("ttt_phantom_killer_haunt_jump_cost", "50")
+CreateConVar("ttt_phantom_killer_haunt_drop_cost", "75")
+CreateConVar("ttt_phantom_killer_haunt_attack_cost", "100")
 
 -- Traitor credits
 CreateConVar("ttt_credits_starting", "2")
@@ -1325,12 +1325,7 @@ function SelectRoles()
         v:SetRole(ROLE_NONE)
     end
 
-    -- determine how many of each role we want
     local choice_count = #choices
-    local traitor_count = GetTraitorCount(choice_count)
-    local detective_count = GetDetectiveCount(choice_count)
-    local independent_count = (math.random() <= GetConVar("ttt_independent_chance"):GetFloat()) and 1 or 0
-    local max_special_traitor_count = GetSpecialTraitorCount(traitor_count)
 
     -- special spawning cvars
     local deputy_only = false
@@ -1350,14 +1345,21 @@ function SelectRoles()
 
     hook.Call("TTTSelectRoles", GAMEMODE, choices_copy, prev_roles_copy)
 
+    local forcedTraitorCount = 0
+    local forcedSpecialTraitorCount = 0
+    local forcedDetectiveCount = 0
+    local forcedSpecialInnocentCount = 0
+    local forcedIndependentCount = 0
+
     local hasHypnotist = false
     local hasImpersonator = false
-    local hasIndependent = false
+
     local hasPhantom = false
     local hasGlitch = false
     local hasRevenger = false
     local hasDeputy = false
-    local specialInnoCount = 0
+
+    local hasIndependent = false
 
     PrintRoleText("-----CHECKING EXTERNALLY CHOSEN ROLES-----")
     for _, v in pairs(player.GetAll()) do
@@ -1371,68 +1373,79 @@ function SelectRoles()
             local role = v:GetRole()
             if role ~= ROLE_NONE then
                 table.remove(choices, index)
+                -- TRAITOR ROLES
                 if role == ROLE_TRAITOR then
-                    traitor_count = traitor_count - 1
+                    forcedTraitorCount = forcedTraitorCount + 1
                     PrintRole(v, "traitor")
                 elseif role == ROLE_HYPNOTIST then
                     hasHypnotist = true
-                    max_special_traitor_count = max_special_traitor_count - 1
+                    forcedSpecialTraitorCount = forcedSpecialTraitorCount + 1
                     PrintRole(v, "hypnotist")
                 elseif role == ROLE_IMPERSONATOR then
                     hasImpersonator = true
-                    max_special_traitor_count = max_special_traitor_count - 1
+                    forcedSpecialTraitorCount = forcedSpecialTraitorCount + 1
                     PrintRole(v, "impersonator")
+
+                -- INNOCENT ROLES
+                elseif role == ROLE_INNOCENT then
+                    PrintRole(v, "innocent")
                 elseif role == ROLE_DETECTIVE then
-                    detective_count = detective_count - 1
+                    forcedDetectiveCount = forcedDetectiveCount + 1
                     PrintRole(v, "detective")
                 elseif role == ROLE_PHANTOM then
                     hasPhantom = true
-                    specialInnoCount = specialInnoCount + 1
+                    forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
                     PrintRole(v, "phantom")
                 elseif role == ROLE_GLITCH then
                     hasGlitch = true
-                    specialInnoCount = specialInnoCount + 1
+                    forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
                     PrintRole(v, "glitch")
                 elseif role == ROLE_REVENGER then
                     hasRevenger = true
-                    specialInnoCount = specialInnoCount + 1
+                    forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
                     PrintRole(v, "revenger")
                 elseif role == ROLE_DEPUTY then
                     hasDeputy = true
-                    specialInnoCount = specialInnoCount + 1
+                    forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
                     PrintRole(v, "deputy")
+
+                -- INDEPENDENT ROLES
                 elseif role == ROLE_JESTER then
                     hasIndependent = true
-                    independent_count = independent_count - 1
+                    forcedIndependentCount = forcedIndependentCount + 1
                     PrintRole(v, "jester")
                 elseif role == ROLE_SWAPPER then
                     hasIndependent = true
-                    independent_count = independent_count - 1
+                    forcedIndependentCount = forcedIndependentCount + 1
                     PrintRole(v, "swapper")
                 elseif role == ROLE_DRUNK then
                     hasIndependent = true
-                    independent_count = independent_count - 1
+                    forcedIndependentCount = forcedIndependentCount + 1
                     PrintRole(v, "drunk")
                 elseif role == ROLE_CLOWN then
                     hasIndependent = true
-                    independent_count = independent_count - 1
+                    forcedIndependentCount = forcedIndependentCount + 1
                     PrintRole(v, "clown")
                 elseif role == ROLE_BEGGAR then
                     hasIndependent = true
-                    independent_count = independent_count - 1
+                    forcedIndependentCount = forcedIndependentCount + 1
                     PrintRole(v, "beggar")
                 elseif role == ROLE_OLDMAN then
                     hasIndependent = true
-                    independent_count = independent_count - 1
+                    forcedIndependentCount = forcedIndependentCount + 1
                     PrintRole(v, "oldman")
-                elseif role == ROLE_INNOCENT then
-                    PrintRole(v, "innocent")
                 end
             end
         end
     end
 
     PrintRoleText("-----RANDOMLY PICKING REMAINING ROLES-----")
+
+    -- determine how many of each role we want
+    local detective_count = GetDetectiveCount(choice_count) - forcedDetectiveCount
+    local traitor_count = GetTraitorCount(choice_count) - forcedTraitorCount - forcedSpecialTraitorCount
+    local max_special_traitor_count = GetSpecialTraitorCount(traitor_count) - forcedSpecialTraitorCount
+    local independent_count = ((math.random() <= GetConVar("ttt_independent_chance"):GetFloat()) and 1 or 0) - forcedIndependentCount
 
     -- pick detectives
     if choice_count >= GetConVar("ttt_detective_min_players"):GetInt() then
@@ -1468,7 +1481,7 @@ function SelectRoles()
                 table.insert(specialTraitorRoles, ROLE_HYPNOTIST)
             end
         end
-        if not hasImpersonator and GetConVar("ttt_impersonator_enabled"):GetBool() and detective_count > 0 and not deputy_only and choice_count >= GetConVar("ttt_impersonator_min_players"):GetInt() then
+        if not hasImpersonator and GetConVar("ttt_impersonator_enabled"):GetBool() and choice_count >= GetConVar("ttt_impersonator_min_players"):GetInt() and detective_count > 0 and not deputy_only then
             for _ = 1, GetConVar("ttt_impersonator_spawn_weight"):GetInt() do
                 table.insert(specialTraitorRoles, ROLE_IMPERSONATOR)
             end
@@ -1497,34 +1510,34 @@ function SelectRoles()
     end
 
     -- pick independent
-    if independent_count > 0 and #choices > 0 then
+    if not hasIndependent and independent_count > 0 and #choices > 0 then
         local independentRoles = {}
-        if not hasIndependent and GetConVar("ttt_jester_enabled"):GetBool() and choice_count >= GetConVar("ttt_jester_min_players"):GetInt() then
+        if GetConVar("ttt_jester_enabled"):GetBool() and choice_count >= GetConVar("ttt_jester_min_players"):GetInt() then
             for _ = 1, GetConVar("ttt_jester_spawn_weight"):GetInt() do
                 table.insert(independentRoles, ROLE_JESTER)
             end
         end
-        if not hasIndependent and GetConVar("ttt_swapper_enabled"):GetBool() and choice_count >= GetConVar("ttt_swapper_min_players"):GetInt() then
+        if GetConVar("ttt_swapper_enabled"):GetBool() and choice_count >= GetConVar("ttt_swapper_min_players"):GetInt() then
             for _ = 1, GetConVar("ttt_swapper_spawn_weight"):GetInt() do
                 table.insert(independentRoles, ROLE_SWAPPER)
             end
         end
-        if not hasIndependent and GetConVar("ttt_drunk_enabled"):GetBool() and choice_count >= GetConVar("ttt_drunk_min_players"):GetInt() then
+        if GetConVar("ttt_drunk_enabled"):GetBool() and choice_count >= GetConVar("ttt_drunk_min_players"):GetInt() then
             for _ = 1, GetConVar("ttt_drunk_spawn_weight"):GetInt() do
                 table.insert(independentRoles, ROLE_DRUNK)
             end
         end
-        if not hasIndependent and GetConVar("ttt_clown_enabled"):GetBool() and choice_count >= GetConVar("ttt_clown_min_players"):GetInt() then
+        if GetConVar("ttt_clown_enabled"):GetBool() and choice_count >= GetConVar("ttt_clown_min_players"):GetInt() then
             for _ = 1, GetConVar("ttt_clown_spawn_weight"):GetInt() do
                 table.insert(independentRoles, ROLE_CLOWN)
             end
         end
-        if not hasIndependent and GetConVar("ttt_beggar_enabled"):GetBool() and choice_count >= GetConVar("ttt_beggar_min_players"):GetInt() then
+        if GetConVar("ttt_beggar_enabled"):GetBool() and choice_count >= GetConVar("ttt_beggar_min_players"):GetInt() then
             for _ = 1, GetConVar("ttt_beggar_spawn_weight"):GetInt() do
                 table.insert(independentRoles, ROLE_BEGGAR)
             end
         end
-        if not hasIndependent and GetConVar("ttt_old_man_enabled"):GetBool() and choice_count >= GetConVar("ttt_old_man_min_players"):GetInt() then
+        if GetConVar("ttt_old_man_enabled"):GetBool() and choice_count >= GetConVar("ttt_old_man_min_players"):GetInt() then
             for _ = 1, GetConVar("ttt_old_man_spawn_weight"):GetInt() do
                 table.insert(independentRoles, ROLE_OLDMAN)
             end
@@ -1546,7 +1559,7 @@ function SelectRoles()
     end
 
     -- pick special innocents
-    local max_special_innocent_count = GetSpecialInnocentCount(#choices) - specialInnoCount
+    local max_special_innocent_count = GetSpecialInnocentCount(#choices) - forcedSpecialInnocentCount
     if max_special_innocent_count > 0 then
         local specialInnocentRoles = {}
         if not hasGlitch and GetConVar("ttt_glitch_enabled"):GetBool() and #traitors > 1 and choice_count >= GetConVar("ttt_glitch_min_players"):GetInt() then

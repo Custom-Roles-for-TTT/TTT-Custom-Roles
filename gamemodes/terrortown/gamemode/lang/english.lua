@@ -658,12 +658,20 @@ L.mute_specs = "Spectators muted"
 L.mute_all = "All muted"
 L.mute_off = "None muted"
 
--- Spectators and prop possession
+-- Prop possession
 L.punch_title = "PUNCH-O-METER"
 L.punch_help = "Move keys or jump: punch object. Crouch: leave object."
 L.punch_bonus = "Your bad score lowered your punch-o-meter limit by {num}"
 L.punch_malus = "Your good score increased your punch-o-meter limit by {num}!"
 
+-- Haunt
+L.haunt_title = "WILLPOWER"
+L.haunt_move = "MOVE KEYS: Move (Cost: {num}%)"
+L.haunt_jump = "SPACE: Jump (Cost: {num}%)"
+L.haunt_drop = "RIGHT CLICK: Drop (Cost: {num}%)"
+L.haunt_attack = "LEFT CLICK: Attack (Cost: {num}%)"
+
+-- Spectators
 L.spec_help = "Click to spectate players, or press {usekey} on a physics object to possess it."
 
 --- Info popups shown when the round starts
@@ -937,7 +945,7 @@ L.hilite_duration = "The round lasted {time}"
 L.col_time = "Time"
 L.col_event = "Event"
 L.col_player = "Player"
-L.col_role = "Role"
+L.col_role = "Starting Role"
 L.col_kills1 = "Innocent kills"
 L.col_kills2 = "Traitor kills"
 L.col_kills3 = "Jester kills"

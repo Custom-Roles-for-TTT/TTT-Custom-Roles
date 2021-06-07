@@ -363,13 +363,13 @@ function GM:KeyPress(ply, key)
             elseif key == IN_MOVELEFT or key == IN_MOVERIGHT or key == IN_FORWARD or key == IN_BACK then
                 local moveCost = GetConVar("ttt_phantom_killer_haunt_move_cost"):GetInt()
                 if key == IN_FORWARD then
-                    action = {"+forward", "-forward", 1.0, moveCost}
+                    action = {"+forward", "-forward", 0.5, moveCost}
                 elseif key == IN_BACK then
-                    action = {"+back", "-back", 1.0, moveCost}
+                    action = {"+back", "-back", 0.5, moveCost}
                 elseif key == IN_MOVELEFT then
-                    action = {"+moveleft", "-moveleft", 1.0, moveCost}
+                    action = {"+moveleft", "-moveleft", 0.5, moveCost}
                 elseif key == IN_MOVERIGHT then
-                    action = {"+moveright", "-moveright", 1.0, moveCost}
+                    action = {"+moveright", "-moveright", 0.5, moveCost}
                 end
             elseif key == IN_JUMP then
                 action = {"+jump", "-jump", 0.2, GetConVar("ttt_phantom_killer_haunt_jump_cost"):GetInt()}
