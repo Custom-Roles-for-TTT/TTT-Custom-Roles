@@ -70,7 +70,7 @@ local spawnedPlayers = {}
 local disconnected = {}
 local customEvents = {}
 
-function AddEvent(e, offset)
+function CLSCORE:AddEvent(e, offset)
     e["t"] = math.Round(CurTime() + (offset or 0), 2)
     table.insert(customEvents, e)
 end
@@ -104,7 +104,7 @@ end
 
 net.Receive("TTT_Hypnotised", function(len)
     local name = net.ReadString()
-    AddEvent({
+    CLSCORE:AddEvent({
         id = EVENT_HYPNOTISED,
         vic = name
     })
@@ -112,7 +112,7 @@ end)
 
 net.Receive("TTT_Defibrillated", function(len)
     local name = net.ReadString()
-    AddEvent({
+    CLSCORE:AddEvent({
         id = EVENT_DEFIBRILLATED,
         vic = name
     })
@@ -121,7 +121,7 @@ end)
 net.Receive("TTT_SwapperSwapped", function(len)
     local victim = net.ReadString()
     local attacker = net.ReadString()
-    AddEvent({
+    CLSCORE:AddEvent({
         id = EVENT_SWAPPER,
         vic = victim,
         att = attacker
@@ -130,7 +130,7 @@ end)
 
 net.Receive("TTT_Promotion", function(len)
     local name = net.ReadString()
-    AddEvent({
+    CLSCORE:AddEvent({
         id = EVENT_PROMOTION,
         ply = name
     })
@@ -139,7 +139,7 @@ end)
 net.Receive("TTT_DrunkSober", function(len)
     local name = net.ReadString()
     local team = net.ReadString()
-    AddEvent({
+    CLSCORE:AddEvent({
         id = EVENT_DRUNKSOBER,
         ply = name,
         team = team
@@ -149,7 +149,7 @@ end)
 net.Receive("TTT_PhantomHaunt", function(len)
     local victim = net.ReadString()
     local attacker = net.ReadString()
-    AddEvent({
+    CLSCORE:AddEvent({
         id = EVENT_HAUNT,
         vic = victim,
         att = attacker
@@ -159,7 +159,7 @@ end)
 net.Receive("TTT_PlayerDisconnected", function(len)
     local name = net.ReadString()
     table.insert(disconnected, name)
-    AddEvent({
+    CLSCORE:AddEvent({
         id = EVENT_DISCONNECTED,
         vic = name
     })
@@ -175,7 +175,7 @@ net.Receive("TTT_SpawnedPlayers", function(len)
     local name = net.ReadString()
     local role = net.ReadUInt(8)
     table.insert(spawnedPlayers, name)
-    AddEvent({
+    CLSCORE:AddEvent({
         id = EVENT_SPAWN,
         ply = name,
         rol = role
@@ -183,7 +183,7 @@ net.Receive("TTT_SpawnedPlayers", function(len)
 end)
 
 net.Receive("TTT_LogInfo", function(len)
-    AddEvent({
+    CLSCORE:AddEvent({
         id = EVENT_LOG,
         txt = net.ReadString()
     })
@@ -198,7 +198,7 @@ net.Receive("TTT_RoleChanged", function(len)
         name = ply:Nick()
     end
 
-    AddEvent({
+    CLSCORE:AddEvent({
         id = EVENT_ROLECHANGE,
         ply = name,
         rol = role
@@ -211,7 +211,7 @@ net.Receive("TTT_UpdateOldManWins", function()
 
     -- Log the win event with an offset to force it to the end
     if old_man_wins then
-        AddEvent({
+        CLSCORE:AddEvent({
             id = EVENT_FINISH,
             win = WIN_OLDMAN
         }, 1)

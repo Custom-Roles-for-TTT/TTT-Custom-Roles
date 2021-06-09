@@ -327,6 +327,12 @@ function plymeta:SpawnForRound(dead_only)
         net.Start("TTT_Defibrillated")
         net.WriteString(self:Nick())
         net.Broadcast()
+
+        if self:IsOldMan() then
+            local health = GetConVar("ttt_old_man_starting_health"):GetInt()
+            self:SetMaxHealth(health)
+            self:SetHealth(health)
+        end
     end
 
     -- Make sure players who are respawning get their default weapons
