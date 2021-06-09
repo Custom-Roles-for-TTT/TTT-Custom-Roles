@@ -179,6 +179,12 @@ local function ReceiveRole()
     -- Update the local state
     traitor_vision = GetGlobalBool("ttt_traitor_vision_enable")
 
+    -- Disable highlights on role change
+    if vision_enabled then
+        hook.Remove("PreDrawHalos", "AddPlayerHighlights")
+        vision_enabled = false
+    end
+
     Msg("You are: ")
     if client:IsTraitor() then MsgN("TRAITOR")
     elseif client:IsDetective() then MsgN("DETECTIVE")
@@ -803,6 +809,8 @@ function HandleRoleHighlights(client)
             EnableTraitorHighlights()
             vision_enabled = true
         end
+    else
+        vision_enabled = false
     end
 
     if not vision_enabled then
