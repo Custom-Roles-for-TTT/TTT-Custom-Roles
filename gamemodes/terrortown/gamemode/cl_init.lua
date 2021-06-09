@@ -45,6 +45,9 @@ include("cl_popups.lua")
 include("cl_equip.lua")
 include("cl_voice.lua")
 
+local traitor_vision = false
+local vision_enabled = false
+
 function GM:Initialize()
     MsgN("TTT Client initializing...")
 
@@ -138,7 +141,7 @@ local function RoundStateChange(o, n)
     end
 
     -- whatever round state we get, clear out the voice flags
-    for k, v in ipairs(player.GetAll()) do
+    for _, v in ipairs(player.GetAll()) do
         v.traitor_gvoice = false
     end
 end
@@ -173,6 +176,9 @@ local function ReceiveRole()
 
     client:SetRole(role)
 
+    -- Update the local state
+    traitor_vision = GetGlobalBool("ttt_traitor_vision_enable")
+
     Msg("You are: ")
     if client:IsTraitor() then MsgN("TRAITOR")
     elseif client:IsDetective() then MsgN("DETECTIVE")
@@ -196,7 +202,7 @@ local function ReceiveRoleList()
     local role = net.ReadUInt(8)
     local num_ids = net.ReadUInt(8)
 
-    for i = 1, num_ids do
+    for _ = 1, num_ids do
         local eidx = net.ReadUInt(7) + 1 -- we - 1 worldspawn=0
 
         local ply = player.GetByID(eidx)
@@ -343,8 +349,7 @@ function GM:Think()
                 v.SmokeEmitter:SetPos(pos)
                 v.SmokeNextPart = CurTime() + math.Rand(0.003, 0.01)
                 local vec = Vector(math.Rand(-8, 8), math.Rand(-8, 8), math.Rand(10, 55))
-                local pos = v:LocalToWorld(vec)
-                local particle = v.SmokeEmitter:Add("particle/snow.vmt", pos)
+                local particle = v.SmokeEmitter:Add("particle/snow.vmt", v:LocalToWorld(vec))
                 particle:SetVelocity(Vector(0, 0, 4) + VectorRand() * 3)
                 particle:SetDieTime(math.Rand(0.5, 2))
                 particle:SetStartAlpha(math.random(150, 220))
@@ -371,13 +376,14 @@ function GM:Tick()
         if client:Alive() and client:Team() ~= TEAM_SPEC then
             WSWITCH:Think()
             RADIO:StoreTarget()
-            HandleRoleHighlights(client)
+            if traitor_vision then
+                HandleRoleHighlights(client)
+            end
         end
 
         VOICE.Tick()
     end
 end
-
 
 -- Simple client-based idle checking
 local idle = { ang = nil, pos = nil, mx = 0, my = 0, t = 0 }
@@ -738,16 +744,14 @@ end)
 
 -- Player highlights
 
-local function OnPlayerHighlightEnabled(showJesters, showSwappers, alliedRoles, hideEnemies, traitorAllies)
+local function OnPlayerHighlightEnabled(alliedRoles, jesterRoles, hideEnemies, traitorAllies)
     if GetRoundState() ~= ROUND_ACTIVE then return end
     local enemies = {}
     local friends = {}
     local jesters = {}
     for _, v in pairs(player.GetAll()) do
         if IsValid(v) and v:Alive() and not v:IsSpec() then
-            if v:IsJester() and showJesters then
-                table.insert(jesters, v)
-            elseif v:IsSwapper() and showSwappers then
+            if table.HasValue(jesterRoles, v:GetRole()) then
                 table.insert(jesters, v)
             elseif table.HasValue(alliedRoles, v:GetRole()) then
                 table.insert(friends, v)
@@ -786,21 +790,22 @@ local function EnableTraitorHighlights()
         -- And add the glitch
         table.insert(allies, ROLE_GLITCH)
 
-        local showJester, showSwapper = true, false -- TODO: Add settings for these
-        OnPlayerHighlightEnabled(showJester, showSwapper, allies, true, true)
+        local jesters = table.GetKeys(JESTER_ROLES)
+        OnPlayerHighlightEnabled(jesters, allies, true, true)
     end)
 end
 
 function HandleRoleHighlights(client)
     if not IsValid(client) then return end
 
-    local enabled = false
-    if client:IsTraitorTeam() and GetGlobalBool("ttt_traitor_vision_enable") then
-        EnableTraitorHighlights()
-        enabled = true
+    if client:IsTraitorTeam() and traitor_vision then
+        if not vision_enabled then
+            EnableTraitorHighlights()
+            vision_enabled = true
+        end
     end
 
-    if not enabled then
+    if not vision_enabled then
         hook.Remove("PreDrawHalos", "AddPlayerHighlights")
     end
 end
