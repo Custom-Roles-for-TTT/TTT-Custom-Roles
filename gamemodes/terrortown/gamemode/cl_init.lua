@@ -371,6 +371,7 @@ function GM:Tick()
         if client:Alive() and client:Team() ~= TEAM_SPEC then
             WSWITCH:Think()
             RADIO:StoreTarget()
+            HandleRoleHighlights(client)
         end
 
         VOICE.Tick()
@@ -734,6 +735,75 @@ net.Receive("TTT_ClientDeathNotify", function()
         chat.AddText(COLOR_WHITE, "You died!")
     end
 end)
+
+-- Player highlights
+
+local function OnPlayerHighlightEnabled(showJesters, showSwappers, alliedRoles, hideEnemies, traitorAllies)
+    if GetRoundState() ~= ROUND_ACTIVE then return end
+    local enemies = {}
+    local friends = {}
+    local jesters = {}
+    for _, v in pairs(player.GetAll()) do
+        if IsValid(v) and v:Alive() and not v:IsSpec() then
+            if v:IsJester() and showJesters then
+                table.insert(jesters, v)
+            elseif v:IsSwapper() and showSwappers then
+                table.insert(jesters, v)
+            elseif table.HasValue(alliedRoles, v:GetRole()) then
+                table.insert(friends, v)
+            -- Don't even track enemies if this role can't see them
+            elseif not hideEnemies then
+                table.insert(enemies, v)
+            end
+        end
+    end
+
+    -- If the allies of this role are Traitors, show them in red to be thematic
+    if traitorAllies then
+        halo.Add(friends, Color(255, 0, 0), 1, 1, 1, true, true)
+    -- Otherwise green is good
+    else
+        halo.Add(friends, Color(0, 255, 0), 1, 1, 1, true, true)
+    end
+
+    -- Don't show enemies if we're hiding them
+    if not hideEnemies then
+        -- If the allies of this role are Traitors, show enemies as green to be difference
+        if traitorAllies then
+            halo.Add(enemies, Color(0, 255, 0), 1, 1, 1, true, true)
+        else
+            halo.Add(enemies, Color(255, 0, 0), 1, 1, 1, true, true)
+        end
+    end
+
+    halo.Add(jesters, Color(255, 85, 100), 1, 1, 1, true, true)
+end
+
+local function EnableTraitorHighlights()
+    hook.Add("PreDrawHalos", "AddPlayerHighlights", function()
+        -- Start with the list of traitors
+        local allies = table.GetKeys(TRAITOR_ROLES)
+        -- And add the glitch
+        table.insert(allies, ROLE_GLITCH)
+
+        local showJester, showSwapper = true, false -- TODO: Add settings for these
+        OnPlayerHighlightEnabled(showJester, showSwapper, allies, true, true)
+    end)
+end
+
+function HandleRoleHighlights(client)
+    if not IsValid(client) then return end
+
+    local enabled = false
+    if client:IsTraitorTeam() and GetGlobalBool("ttt_traitor_vision_enable") then
+        EnableTraitorHighlights()
+        enabled = true
+    end
+
+    if not enabled then
+        hook.Remove("PreDrawHalos", "AddPlayerHighlights")
+    end
+end
 
 -- Footsteps
 

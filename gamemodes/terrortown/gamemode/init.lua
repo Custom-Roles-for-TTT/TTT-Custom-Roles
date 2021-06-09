@@ -139,6 +139,8 @@ CreateConVar("ttt_old_man_starting_health", "1")
 CreateConVar("ttt_jesters_trigger_traitor_testers", "1")
 CreateConVar("ttt_independents_trigger_traitor_testers", "0")
 
+CreateConVar("ttt_traitor_vision_enable", "0")
+
 CreateConVar("ttt_phantom_respawn_health", "50")
 CreateConVar("ttt_phantom_weaker_each_respawn", "0")
 CreateConVar("ttt_phantom_killer_smoke", "1")
@@ -189,7 +191,7 @@ CreateConVar("ttt_namechange_bantime", "10")
 CreateConVar("ttt_detective_search_only", "1", FCVAR_REPLICATED)
 
 CreateConVar("ttt_shop_random_percent", "50", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown by default", 0, 100)
-for _, role in pairs(SHOP_ROLES) do
+for _, role in ipairs(table.GetKeys(SHOP_ROLES)) do
     local shortstring = ROLE_STRINGS_SHORT[role]
     local rolestring = ROLE_STRINGS[role]
     CreateConVar("ttt_shop_random_" .. shortstring .. "_percent", "0", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown for the " .. rolestring, 0, 100)
@@ -389,7 +391,7 @@ function GM:SyncGlobals()
     SetGlobalBool("ttt_reveal_beggar_change", GetConVar("ttt_reveal_beggar_change"):GetBool())
 
     SetGlobalInt("ttt_shop_random_percent", GetConVar("ttt_shop_random_percent"):GetInt())
-    for _, role in pairs(SHOP_ROLES) do
+    for _, role in ipairs(table.GetKeys(SHOP_ROLES)) do
         local shortstring = ROLE_STRINGS_SHORT[role]
         SetGlobalInt("ttt_shop_random_" .. shortstring .. "_percent", GetConVar("ttt_shop_random_" .. shortstring .. "_percent"):GetInt())
         SetGlobalBool("ttt_shop_random_" .. shortstring .. "_enabled", GetConVar("ttt_shop_random_" .. shortstring .. "_enabled"):GetBool())
@@ -401,6 +403,8 @@ function GM:SyncGlobals()
     SetGlobalInt("ttt_phantom_killer_haunt_attack_cost", GetConVar("ttt_phantom_killer_haunt_attack_cost"):GetInt())
     SetGlobalInt("ttt_phantom_killer_haunt_jump_cost", GetConVar("ttt_phantom_killer_haunt_jump_cost"):GetInt())
     SetGlobalInt("ttt_phantom_killer_haunt_drop_cost", GetConVar("ttt_phantom_killer_haunt_drop_cost"):GetInt())
+
+    SetGlobalBool("ttt_traitor_vision_enable", GetConVar("ttt_traitor_vision_enable"):GetBool())
 
     SetGlobalBool("sv_voiceenable", GetConVar("sv_voiceenable"):GetBool())
 end
