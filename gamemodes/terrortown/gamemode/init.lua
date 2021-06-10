@@ -179,6 +179,8 @@ CreateConVar("ttt_det_credits_traitordead", "1")
 
 -- Other credits
 CreateConVar("ttt_hyp_credits_starting", "1")
+CreateConVar("ttt_jes_credits_starting", "0")
+CreateConVar("ttt_swa_credits_starting", "0")
 
 -- Other
 CreateConVar("ttt_use_weapon_spawn_scripts", "1")
