@@ -154,8 +154,14 @@ CreateConVar("ttt_phantom_killer_haunt_attack_cost", "100")
 
 CreateConVar("ttt_jesters_trigger_traitor_testers", "1")
 CreateConVar("ttt_jester_win_by_traitors", "1")
+CreateConVar("ttt_jester_notify_mode", "1", FCVAR_NONE, "The logic to use when notifying players that the Jester is killed", 0, 4)
+CreateConVar("ttt_jester_notify_sound", "0")
+CreateConVar("ttt_jester_notify_confetti", "0")
 CreateConVar("ttt_swapper_killer_health", "100")
 CreateConVar("ttt_swapper_respawn_health", "100")
+CreateConVar("ttt_swapper_notify_mode", "1", FCVAR_NONE, "The logic to use when notifying players that the Swapper is killed", 0, 4)
+CreateConVar("ttt_swapper_notify_sound", "0")
+CreateConVar("ttt_swapper_notify_confetti", "0")
 
 -- Traitor credits
 CreateConVar("ttt_credits_starting", "2")
@@ -288,6 +294,7 @@ util.AddNetworkString("TTT_BuyableWeapons")
 util.AddNetworkString("TTT_ResetBuyableWeaponsCache")
 util.AddNetworkString("TTT_PlayerFootstep")
 util.AddNetworkString("TTT_ClearPlayerFootsteps")
+util.AddNetworkString("TTT_JesterDeathCelebration")
 
 local jester_killed = false
 local revenger_lover = nil

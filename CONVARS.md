@@ -37,8 +37,14 @@ ttt_phantom_killer_haunt_attack_cost 100 // The amount of power to spend when a 
 
 // Jesters
 ttt_jester_win_by_traitors  1   // Whether the Jester will win the round if they are killed by a traitor
-ttt_swapper_killer_health   100 // What amount of health to give the person who killed the Swapper. Set to "0" to kill them
+ttt_jester_notify_mode      1   // The logic to use when notifying players that a Jester is killed. 0 - Don't notify anyone. 1 - Only notify Traitors and Detective. 2 - Only notify Traitors. 3 - Only notify Detective. 4 - Notify everyone.
+ttt_jester_notify_sound     0   // Whether to play a cheering sound when a Jester is killed
+ttt_jester_notify_confetti  0   // Whether to throw confetti when a Jester is a killed
 ttt_swapper_respawn_health  100 // What amount of health to give the Swapper when they are killed and respawned
+ttt_swapper_notify_mode     1   // The logic to use when notifying players that a Swapper is killed. 0 - Don't notify anyone. 1 - Only notify Traitors and Detective. 2 - Only notify Traitors. 3 - Only notify Detective. 4 - Notify everyone.
+ttt_swapper_notify_sound    0   // Whether to play a cheering sound when a Swapper is killed
+ttt_swapper_notify_confetti 0   // Whether to throw confetti when a Swapper is a killed
+ttt_swapper_killer_health   100 // What amount of health to give the person who killed the Swapper. Set to "0" to kill them
 
 // Other
 ttt_traitor_vision_enable             0  // Whether members of the Traitor team can see other members of the Traitor team (including Glitches) through walls via a highlight effect.
