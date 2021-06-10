@@ -200,10 +200,10 @@ function RADAR:Draw(client)
                 if role == ROLE_TRAITOR or role == ROLE_GLITCH then
                     surface.SetDrawColor(255, 0, 0, alpha)
                     surface.SetTextColor(255, 0, 0, alpha)
-                elseif role == ROLE_HYPNOTIST then
-                    surface.SetDrawColor(255, 100, 0, alpha)
-                    surface.SetTextColor(255, 100, 0, alpha)
-                elseif role == ROLE_JESTER or role == ROLE_SWAPPER then
+                elseif TRAITOR_ROLES[role] then
+                    surface.SetDrawColor(255, 128, 0, alpha)
+                    surface.SetTextColor(255, 128, 0, alpha)
+                elseif JESTER_ROLES[role] then
                     surface.SetDrawColor(180, 23, 253, alpha)
                     surface.SetTextColor(180, 23, 253, alpha)
                 else
@@ -229,7 +229,7 @@ function RADAR:Draw(client)
     surface.SetTextColor(255, 0, 0, 230)
 
     local text = GetPTranslation("radar_hud", { time = FormatTime(remaining, "%02i:%02i") })
-    local w, h = surface.GetTextSize(text)
+    local _, h = surface.GetTextSize(text)
 
     surface.SetTextPos(36, ScrH() - 140 - h)
     surface.DrawText(text)
@@ -305,7 +305,7 @@ local function ReceiveRadarScan()
     local num_targets = net.ReadUInt(8)
 
     RADAR.targets = {}
-    for i = 1, num_targets do
+    for _ = 1, num_targets do
         local r = net.ReadUInt(8)
 
         local pos = Vector()

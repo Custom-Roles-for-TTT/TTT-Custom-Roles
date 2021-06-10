@@ -171,7 +171,7 @@ local GetLang = LANG.GetUnsafeLanguageTable
 local MAX_TRACE_LENGTH = math.sqrt(3) * 2 * 16384
 
 function GM:HUDDrawTargetID()
-    local client = LocalPlayer()
+    client = LocalPlayer()
 
     local L = GetLang()
 
