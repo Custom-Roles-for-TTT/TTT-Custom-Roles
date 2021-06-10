@@ -154,6 +154,8 @@ CreateConVar("ttt_phantom_killer_haunt_jump_cost", "50")
 CreateConVar("ttt_phantom_killer_haunt_drop_cost", "75")
 CreateConVar("ttt_phantom_killer_haunt_attack_cost", "100")
 
+CreateConVar("ttt_jester_win_by_traitors", "1")
+
 -- Traitor credits
 CreateConVar("ttt_credits_starting", "2")
 CreateConVar("ttt_credits_award_pct", "0.35")
@@ -536,8 +538,12 @@ end
 
 function StartWinChecks()
     hook.Add("PlayerDeath", "CheckJesterDeath", function(victim, infl, attacker)
-        if victim:GetJester() and attacker:IsPlayer() and (not attacker:GetJester()) and GetRoundState() == ROUND_ACTIVE then
-            jester_killed = true
+        if victim:IsJester() and attacker:IsPlayer() and (not attacker:IsJesterTeam()) and GetRoundState() == ROUND_ACTIVE then
+            -- Don't track that the jester was killed (for win reporting) if they were killed by a traitor
+            -- and the functionality that blocks Jester wins from Traitor deaths is enabled
+            if GetConVar("ttt_jester_win_by_traitors"):GetBool() or not attacker:IsTraitorTeam() then
+                jester_killed = true
+            end
         end
     end)
 

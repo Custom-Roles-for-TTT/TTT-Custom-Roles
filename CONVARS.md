@@ -35,6 +35,9 @@ ttt_phantom_killer_haunt_jump_cost   50  // The amount of power to spend when a 
 ttt_phantom_killer_haunt_drop_cost   75  // The amount of power to spend when a Phantom is making their killer drop their weapon via a haunting. 0 to disable
 ttt_phantom_killer_haunt_attack_cost 100 // The amount of power to spend when a Phantom is making their killer attack via a haunting. 0 to disable
 
+// Jesters
+ttt_jester_win_by_traitors  1   // Whether the Jester will win the round if they are killed by a traitor
+
 // Other
 ttt_traitor_vision_enable             0  // Whether members of the Traitor team can see other members of the Traitor team (including Glitches) through walls via a highlight effect.
 
