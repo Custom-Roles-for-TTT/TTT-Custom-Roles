@@ -127,7 +127,6 @@ CreateConVar("ttt_old_man_min_players", "0")
 
 -- Custom role properties
 CreateConVar("ttt_detective_starting_health", "100")
-CreateConVar("ttt_swapper_killer_health", "100")
 CreateConVar("ttt_drunk_sober_time", "180")
 CreateConVar("ttt_drunk_innocent_chance", "0.7")
 CreateConVar("ttt_clown_damage_bonus", "0")
@@ -136,7 +135,6 @@ CreateConVar("ttt_impersonator_damage_penalty", "0")
 CreateConVar("ttt_reveal_beggar_change", "1")
 CreateConVar("ttt_single_deputy_impersonator", "0")
 CreateConVar("ttt_old_man_starting_health", "1")
-CreateConVar("ttt_jesters_trigger_traitor_testers", "1")
 CreateConVar("ttt_independents_trigger_traitor_testers", "0")
 
 CreateConVar("ttt_traitor_vision_enable", "0")
@@ -154,7 +152,10 @@ CreateConVar("ttt_phantom_killer_haunt_jump_cost", "50")
 CreateConVar("ttt_phantom_killer_haunt_drop_cost", "75")
 CreateConVar("ttt_phantom_killer_haunt_attack_cost", "100")
 
+CreateConVar("ttt_jesters_trigger_traitor_testers", "1")
 CreateConVar("ttt_jester_win_by_traitors", "1")
+CreateConVar("ttt_swapper_killer_health", "100")
+CreateConVar("ttt_swapper_respawn_health", "100")
 
 -- Traitor credits
 CreateConVar("ttt_credits_starting", "2")
