@@ -465,7 +465,7 @@ function GM:OnEntityCreated(ent)
     return self.BaseClass.OnEntityCreated(self, ent)
 end
 
--- Clown and Jester show_confetti
+-- Clown and Jester confetti
 local confetti = Material("confetti.png")
 local function Celebrate(ply, sound, show_confetti)
     if not IsValid(ply) then return end
