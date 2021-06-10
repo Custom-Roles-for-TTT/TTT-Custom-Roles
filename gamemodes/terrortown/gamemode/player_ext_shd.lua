@@ -53,7 +53,7 @@ function plymeta:IsCustom()
     return role ~= ROLE_INNOCENT and role ~= ROLE_TRAITOR and role ~= ROLE_DETECTIVE
 end
 function plymeta:IsShopRole()
-    local hasShop = SHOP_ROLES[self:GetRole()]
+    local hasShop = SHOP_ROLES[self:GetRole()] or false
     -- If this is a jester team member with a potential shop, only give them access if there are actual things to buy
     if hasShop and self:IsJesterTeam() then
         return WEPS.DoesRoleHaveWeapon(self:GetRole())
@@ -101,10 +101,10 @@ function plymeta:IsActiveShopRole() return self:IsShopRole() and self:IsActive()
 function plymeta:IsActiveDetectiveLike() return self:IsActive() and self:IsDetectiveLike() end
 
 -- functions to group individual roles into teams
-function plymeta:IsTraitorTeam() return TRAITOR_ROLES[self:GetRole()] end
-function plymeta:IsInnocentTeam() return INNOCENT_ROLES[self:GetRole()] end
-function plymeta:IsJesterTeam() return JESTER_ROLES[self:GetRole()] end
-function plymeta:IsIndependentTeam() return INDEPENDENT_ROLES[self:GetRole()] end
+function plymeta:IsTraitorTeam() return TRAITOR_ROLES[self:GetRole()] or false end
+function plymeta:IsInnocentTeam() return INNOCENT_ROLES[self:GetRole()] or false end
+function plymeta:IsJesterTeam() return JESTER_ROLES[self:GetRole()] or false end
+function plymeta:IsIndependentTeam() return INDEPENDENT_ROLES[self:GetRole()] or false end
 function plymeta:IsActiveTraitorTeam() return self:IsTraitorTeam() and self:IsActive() end
 function plymeta:IsActiveInnocentTeam() return self:IsInnocentTeam() and self:IsActive() end
 function plymeta:IsActiveJesterTeam() return self:IsJesterTeam() and self:IsActive() end
