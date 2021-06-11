@@ -68,9 +68,11 @@ function plymeta:SetDefaultCredits()
             c = GetConVar("ttt_credits_starting"):GetInt()
         elseif self:IsHypnotist() then
             c = GetConVar("ttt_hyp_credits_starting"):GetInt()
+        elseif self:IsImpersonator() then
+            c = GetConVar("ttt_imp_credits_starting"):GetInt()
         end
 
-        if not self:IsImpersonator() and CountTraitors() == 1 then
+        if CountTraitors() == 1 then
             c = c + GetConVar("ttt_credits_alonebonus"):GetInt()
         end
         c = math.ceil(c)

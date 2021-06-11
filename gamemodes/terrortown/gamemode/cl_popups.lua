@@ -42,8 +42,11 @@ local function GetTextForRole(role)
         return GetTranslation("info_popup_old_man")
 
     elseif role == ROLE_REVENGER then
-        local lover = LocalPlayer():GetNWString("RevengerLover", "someone")
-        return GetPTranslation("info_popup_revenger", { lover = lover })
+        local sid = LocalPlayer():GetNWString("RevengerLover", "")
+        local lover = player.GetBySteamID64(sid)
+        local name = "someone"
+        if IsValid(lover) and lover:IsPlayer() then name = lover:Nick() end
+        return GetPTranslation("info_popup_revenger", { lover = name })
 
     elseif role == ROLE_HYPNOTIST then
         local traitors = {}

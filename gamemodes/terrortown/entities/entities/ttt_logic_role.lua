@@ -23,11 +23,21 @@ end
 function ENT:AcceptInput(name, activator)
     if name == "TestActivator" then
         if IsValid(activator) and activator:IsPlayer() then
-            local traitorTest = GetRoundState() ~= ROUND_PREP and self.Role == ROLE_TRAITOR and activator:IsTraitorTeam()
-            local innocentTest = GetRoundState() == ROUND_PREP or (self.Role == ROLE_INNOCENT and activator:IsInnocentTeam())
-            local jesterTest = GetRoundState() ~= ROUND_PREP and self.Role == ROLE_TRAITOR and activator:IsJesterTeam() and GetConVar("ttt_jesters_trigger_traitor_testers"):GetBool()
-            local independentTest = GetRoundState() ~= ROUND_PREP and self.Role == ROLE_TRAITOR and activator:IsIndependentTeam() and GetConVar("ttt_independents_trigger_traitor_testers"):GetBool()
-            local specificTest = GetRoundState() ~= ROUND_PREP and self.Role == activator:GetRole()
+            local traitorTest = false
+            local innocentTest =  false
+            local jesterTest = false
+            local independentTest = false
+            if self.Role == ROLE_TRAITOR and GetRoundState() ~= ROUND_PREP then
+                traitorTest = activator:IsTraitorTeam()
+                jesterTest = activator:IsJesterTeam() and GetConVar("ttt_jesters_trigger_traitor_testers"):GetBool()
+                independentTest = activator:IsIndependentTeam() and GetConVar("ttt_independents_trigger_traitor_testers"):GetBool()
+            elseif self.Role == ROLE_INNOCENT then
+                traitorTest = activator:IsTraitorTeam() and GetRoundState() == ROUND_PREP
+                innocentTest = activator:IsInnocentTeam()
+                jesterTest = activator:IsJesterTeam() and not GetConVar("ttt_jesters_trigger_traitor_testers"):GetBool()
+                independentTest = activator:IsIndependentTeam() and not GetConVar("ttt_independents_trigger_traitor_testers"):GetBool()
+            end
+            local specificTest = self.Role == activator:GetRole() and GetRoundState() ~= ROUND_PREP
             local anyTest = self.Role == ROLE_ANY
             if traitorTest or innocentTest or jesterTest or independentTest or specificTest or anyTest then
                 Dev(2, activator, "passed logic_role test of", self:GetName())

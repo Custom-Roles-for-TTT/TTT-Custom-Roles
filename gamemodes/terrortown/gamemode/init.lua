@@ -112,32 +112,28 @@ CreateConVar("ttt_jester_min_players", "0")
 CreateConVar("ttt_swapper_enabled", 0)
 CreateConVar("ttt_swapper_spawn_weight", "1")
 CreateConVar("ttt_swapper_min_players", "0")
-CreateConVar("ttt_drunk_enabled", 0)
-CreateConVar("ttt_drunk_spawn_weight", "1")
-CreateConVar("ttt_drunk_min_players", "0")
 CreateConVar("ttt_clown_enabled", 0)
 CreateConVar("ttt_clown_spawn_weight", "1")
 CreateConVar("ttt_clown_min_players", "0")
 CreateConVar("ttt_beggar_enabled", 0)
 CreateConVar("ttt_beggar_spawn_weight", "1")
 CreateConVar("ttt_beggar_min_players", "0")
+
+CreateConVar("ttt_drunk_enabled", 0)
+CreateConVar("ttt_drunk_spawn_weight", "1")
+CreateConVar("ttt_drunk_min_players", "0")
 CreateConVar("ttt_old_man_enabled", 0)
 CreateConVar("ttt_old_man_spawn_weight", "1")
 CreateConVar("ttt_old_man_min_players", "0")
 
--- Custom role properties
-CreateConVar("ttt_detective_starting_health", "100")
-CreateConVar("ttt_drunk_sober_time", "180")
-CreateConVar("ttt_drunk_innocent_chance", "0.7")
-CreateConVar("ttt_clown_damage_bonus", "0")
-CreateConVar("ttt_deputy_damage_penalty", "0")
-CreateConVar("ttt_impersonator_damage_penalty", "0")
-CreateConVar("ttt_reveal_beggar_change", "1")
-CreateConVar("ttt_single_deputy_impersonator", "0")
-CreateConVar("ttt_old_man_starting_health", "1")
-CreateConVar("ttt_independents_trigger_traitor_testers", "0")
-
+-- Traitor role properties
 CreateConVar("ttt_traitor_vision_enable", "0")
+
+CreateConVar("ttt_impersonator_damage_penalty", "0")
+
+-- Innocent role properties
+CreateConVar("ttt_detective_search_only", "1")
+CreateConVar("ttt_detective_starting_health", "100")
 
 CreateConVar("ttt_phantom_respawn_health", "50")
 CreateConVar("ttt_phantom_weaker_each_respawn", "0")
@@ -152,16 +148,38 @@ CreateConVar("ttt_phantom_killer_haunt_jump_cost", "50")
 CreateConVar("ttt_phantom_killer_haunt_drop_cost", "75")
 CreateConVar("ttt_phantom_killer_haunt_attack_cost", "100")
 
+CreateConVar("ttt_revenger_radar_timer", "15")
+CreateConVar("ttt_revenger_damage_bonus", "0")
+
+CreateConVar("ttt_deputy_damage_penalty", "0")
+
+-- Jester role properties
 CreateConVar("ttt_jesters_trigger_traitor_testers", "1")
 CreateConVar("ttt_jester_win_by_traitors", "1")
 CreateConVar("ttt_jester_notify_mode", "1", FCVAR_NONE, "The logic to use when notifying players that the Jester is killed", 0, 4)
 CreateConVar("ttt_jester_notify_sound", "0")
 CreateConVar("ttt_jester_notify_confetti", "0")
+
 CreateConVar("ttt_swapper_killer_health", "100")
 CreateConVar("ttt_swapper_respawn_health", "100")
 CreateConVar("ttt_swapper_notify_mode", "1", FCVAR_NONE, "The logic to use when notifying players that the Swapper is killed", 0, 4)
 CreateConVar("ttt_swapper_notify_sound", "0")
 CreateConVar("ttt_swapper_notify_confetti", "0")
+
+CreateConVar("ttt_clown_damage_bonus", "0")
+
+CreateConVar("ttt_reveal_beggar_change", "1")
+
+-- Independent role properties
+CreateConVar("ttt_independents_trigger_traitor_testers", "0")
+
+CreateConVar("ttt_drunk_sober_time", "180")
+CreateConVar("ttt_drunk_innocent_chance", "0.7")
+
+CreateConVar("ttt_old_man_starting_health", "1")
+
+-- Other custom role properties
+CreateConVar("ttt_single_deputy_impersonator", "0")
 
 -- Traitor credits
 CreateConVar("ttt_credits_starting", "2")
@@ -181,6 +199,7 @@ CreateConVar("ttt_det_credits_traitordead", "1")
 CreateConVar("ttt_hyp_credits_starting", "1")
 CreateConVar("ttt_jes_credits_starting", "0")
 CreateConVar("ttt_swa_credits_starting", "0")
+CreateConVar("ttt_imp_credits_starting", "1")
 
 -- Other
 CreateConVar("ttt_use_weapon_spawn_scripts", "1")
@@ -199,8 +218,6 @@ CreateConVar("ttt_voice_drain_recharge", "0.05", FCVAR_NOTIFY)
 CreateConVar("ttt_namechange_kick", "1", FCVAR_NOTIFY)
 CreateConVar("ttt_namechange_bantime", "10")
 
-CreateConVar("ttt_detective_search_only", "1", FCVAR_REPLICATED)
-
 CreateConVar("ttt_shop_random_percent", "50", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown by default", 0, 100)
 for _, role in ipairs(table.GetKeys(SHOP_ROLES)) do
     local shortstring = ROLE_STRINGS_SHORT[role]
@@ -208,7 +225,8 @@ for _, role in ipairs(table.GetKeys(SHOP_ROLES)) do
     CreateConVar("ttt_shop_random_" .. shortstring .. "_percent", "0", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown for the " .. rolestring, 0, 100)
     CreateConVar("ttt_shop_random_" .. shortstring .. "_enabled", "0", FCVAR_REPLICATED, "Whether shop randomization should run for the " .. rolestring)
 end
-CreateConVar("ttt_shop_hypnotist_sync", "0")
+CreateConVar("ttt_shop_hyp_sync", "0")
+CreateConVar("ttt_shop_imp_sync", "0")
 
 -- bem server convars
 CreateConVar("ttt_bem_allow_change", 1, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Allow clients to change the look of the Traitor/Detective menu")
@@ -290,7 +308,7 @@ util.AddNetworkString("TTT_DrunkSober")
 util.AddNetworkString("TTT_PhantomHaunt")
 util.AddNetworkString("TTT_LogInfo")
 util.AddNetworkString("TTT_ResetScoreboard")
-util.AddNetworkString("TTT_UpdateRevengerLoverKiller")
+util.AddNetworkString("TTT_RevengerLoverKillerRadar")
 util.AddNetworkString("TTT_UpdateOldManWins")
 util.AddNetworkString("TTT_BuyableWeapons")
 util.AddNetworkString("TTT_ResetBuyableWeaponsCache")
@@ -299,7 +317,6 @@ util.AddNetworkString("TTT_ClearPlayerFootsteps")
 util.AddNetworkString("TTT_JesterDeathCelebration")
 
 local jester_killed = false
-local revenger_lover = nil
 
 local function ClearAllFootsteps()
     net.Start("TTT_ClearPlayerFootsteps")
@@ -402,6 +419,7 @@ function GM:SyncGlobals()
 
     SetGlobalBool("ttt_detective_search_only", GetConVar("ttt_detective_search_only"):GetBool())
     SetGlobalBool("ttt_reveal_beggar_change", GetConVar("ttt_reveal_beggar_change"):GetBool())
+    SetGlobalInt("ttt_revenger_radar_timer", GetConVar("ttt_revenger_radar_timer"):GetInt())
 
     SetGlobalInt("ttt_shop_random_percent", GetConVar("ttt_shop_random_percent"):GetInt())
     for _, role in ipairs(table.GetKeys(SHOP_ROLES)) do
@@ -409,7 +427,8 @@ function GM:SyncGlobals()
         SetGlobalInt("ttt_shop_random_" .. shortstring .. "_percent", GetConVar("ttt_shop_random_" .. shortstring .. "_percent"):GetInt())
         SetGlobalBool("ttt_shop_random_" .. shortstring .. "_enabled", GetConVar("ttt_shop_random_" .. shortstring .. "_enabled"):GetBool())
     end
-    SetGlobalBool("ttt_shop_hypnotist_sync", GetConVar("ttt_shop_hypnotist_sync"):GetBool())
+    SetGlobalBool("ttt_shop_hyp_sync", GetConVar("ttt_shop_hyp_sync"):GetBool())
+    SetGlobalBool("ttt_shop_imp_sync", GetConVar("ttt_shop_imp_sync"):GetBool())
 
     SetGlobalBool("ttt_phantom_killer_smoke", GetConVar("ttt_phantom_killer_smoke"):GetBool())
     SetGlobalInt("ttt_phantom_killer_haunt_power_max", GetConVar("ttt_phantom_killer_haunt_power_max"):GetInt())
@@ -644,19 +663,21 @@ end
 
 function PrepareRound()
     for _, v in pairs(player.GetAll()) do
-        v:SetNWBool("HauntedSmoke", false)
+        v:SetNWBool("Haunted", false)
         v:SetNWBool("Haunting", false)
         v:SetNWString("HauntingTarget", nil)
         v:SetNWInt("HauntingPower", 0)
         timer.Remove(v:Nick() .. "HauntingPower")
         timer.Remove(v:Nick() .. "HauntingSpectate")
         v:SetNWString("RevengerLover", "")
+        v:SetNWString("RevengerKiller", "")
         v:SetNWString("JesterKiller", "")
         v:SetNWString("SwappedWith", "")
         v:SetNWBool("WasDrunk", false)
         v:SetNWString("WasHypnotised", "")
         v:SetNWBool("KillerClownActive", false)
         v:SetNWBool("HasPromotion", false)
+        v:GetNWBool("HadPromotion", false)
         v:SetNWBool("WasBeggar", false)
         -- Workaround to prevent GMod sprint from working
         v:SetRunSpeed(v:GetWalkSpeed())
@@ -666,9 +687,11 @@ function PrepareRound()
     net.WriteBool(false)
     net.Broadcast()
 
-    jester_killed = false
+    net.Start("TTT_RevengerLoverKillerRadar")
+    net.WriteBool(false)
+    net.Broadcast()
 
-    revenger_lover = nil
+    jester_killed = false
 
     -- Check playercount
     if CheckForAbort() then return end
@@ -943,43 +966,18 @@ function BeginRound()
 
         -- Revenger logic
         if v:GetRole() == ROLE_REVENGER then
-            if not revenger_lover then
-                local potentialSoulmates = {}
-                for _, p in pairs(player.GetAll()) do
-                    if p:Alive() and not p:IsSpec() and not p:IsRevenger() then
-                        table.insert(potentialSoulmates, p)
-                    end
-                end
-                if #potentialSoulmates > 0 then
-                    revenger_lover = potentialSoulmates[math.random(#potentialSoulmates)]
-                    hook.Add("PlayerDeath", "CheckRevengerLoverDeath", function(victim, infl, attacker)
-                        if victim == revenger_lover and GetRoundState() == ROUND_ACTIVE then
-                            if attacker:IsPlayer() then
-                                v:PrintMessage(HUD_PRINTTALK, "Your love has died. Track down their killer.")
-                                v:PrintMessage(HUD_PRINTCENTER, "Your love has died. Track down their killer.")
-                                if attacker:IsValid() and attacker:IsActive() then
-                                    net.Start("TTT_UpdateRevengerLoverKiller", v)
-                                    net.WriteVector(attacker:LocalToWorld(attacker:OBBCenter()))
-                                    net.Send(v)
-                                end
-                                timer.Create("revengerloverkiller", 15, 0, function()
-                                    if attacker:IsValid() and attacker:IsActive() then
-                                        net.Start("TTT_UpdateRevengerLoverKiller", v)
-                                        net.WriteVector(attacker:LocalToWorld(attacker:OBBCenter()))
-                                        net.Send(v)
-                                    end
-                                end)
-                            else
-                                v:PrintMessage(HUD_PRINTTALK, "Your love has died, but you cannot determine the cause.")
-                                v:PrintMessage(HUD_PRINTCENTER, "Your love has died, but you cannot determine the cause.")
-                            end
-                        end
-                    end)
+            local potentialSoulmates = {}
+            for _, p in pairs(player.GetAll()) do
+                if p:Alive() and not p:IsSpec() and p ~= v then
+                    table.insert(potentialSoulmates, p)
                 end
             end
-
-            v:PrintMessage(HUD_PRINTTALK, "You are in love with " .. revenger_lover:Nick() .. ".")
-            v:PrintMessage(HUD_PRINTCENTER, "You are in love with " .. revenger_lover:Nick() .. ".")
+            if #potentialSoulmates > 0 then
+                local revenger_lover = potentialSoulmates[math.random(#potentialSoulmates)]
+                v:SetNWString("RevengerLover", revenger_lover:SteamID64() or "")
+                v:PrintMessage(HUD_PRINTTALK, "You are in love with " .. revenger_lover:Nick() .. ".")
+                v:PrintMessage(HUD_PRINTCENTER, "You are in love with " .. revenger_lover:Nick() .. ".")
+            end
         end
 
         -- Drunk logic
@@ -1036,10 +1034,6 @@ function BeginRound()
     net.Broadcast()
 
     for _, v in pairs(player.GetAll()) do
-        if revenger_lover then
-            v:SetNWString("RevengerLover", revenger_lover:Nick() or "")
-        end
-
         if v:Alive() and v:IsTerror() then
             net.Start("TTT_SpawnedPlayers")
             net.WriteString(v:Nick())
@@ -1139,8 +1133,6 @@ function EndRound(type)
 
     -- Stop checking for wins
     StopWinChecks()
-
-    hook.Remove("PlayerDeath", "CheckRevengerLoverDeath")
 
     if timer.Exists("revengerloverkiller") then timer.Remove("revengerloverkiller") end
     if timer.Exists("drunkremember") then timer.Remove("drunkremember") end

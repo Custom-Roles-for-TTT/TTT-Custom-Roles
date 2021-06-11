@@ -756,7 +756,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
     if ply:IsSpec() then return end
 
     -- Respawn the phantom
-    if ply:GetNWBool("HauntedSmoke", false) then
+    if ply:GetNWBool("Haunted", false) then
         local respawn = false
         local phantomUsers = table.GetKeys(deadPhantoms)
         for _, key in pairs(phantomUsers) do
@@ -803,7 +803,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
             end
         end
 
-        ply:SetNWBool("HauntedSmoke", false)
+        ply:SetNWBool("Haunted", false)
         SendFullStateUpdate()
     end
 
@@ -909,7 +909,7 @@ function GM:PlayerDeath(victim, infl, attacker)
     local valid_kill = IsValid(attacker) and attacker:IsPlayer() and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     -- Handle phantom death
     if victim:IsPhantom() and valid_kill then
-        attacker:SetNWBool("HauntedSmoke", true)
+        attacker:SetNWBool("Haunted", true)
 
         if GetConVar("ttt_phantom_killer_haunt"):GetBool() then
             victim:SetNWBool("Haunting", true)
@@ -951,6 +951,28 @@ function GM:PlayerDeath(victim, infl, attacker)
         net.WriteString(victim:Nick())
         net.WriteString(attacker:Nick())
         net.Broadcast()
+    end
+
+    -- Randle revenger lover death
+    for _, v in pairs(player.GetAll()) do
+        if v:IsRevenger() and v:GetNWString("RevengerLover", "") == victim:SteamID64() then
+            if v == attacker then
+                v:PrintMessage(HUD_PRINTTALK, "Your love has died by your hand.")
+                v:PrintMessage(HUD_PRINTCENTER, "Your love has died by your hand.")
+            elseif valid_kill then
+                v:PrintMessage(HUD_PRINTTALK, "Your love has died. Track down their killer.")
+                v:PrintMessage(HUD_PRINTCENTER, "Your love has died. Track down their killer.")
+                v:SetNWString("RevengerKiller", attacker:SteamID64())
+                timer.Simple(1, function() -- Slight delay needed for NW variables to be sent
+                    net.Start("TTT_RevengerLoverKillerRadar")
+                    net.WriteBool(true)
+                    net.Send(v)
+                end)
+            else
+                v:PrintMessage(HUD_PRINTTALK, "Your love has died, but you cannot determine the cause.")
+                v:PrintMessage(HUD_PRINTCENTER, "Your love has died, but you cannot determine the cause.")
+            end
+        end
     end
 
     -- Handle jester death
@@ -1008,6 +1030,10 @@ function GM:PlayerDeath(victim, infl, attacker)
                     net.Start("TTT_Promotion")
                     net.WriteString(ply:Nick())
                     net.Broadcast()
+
+                    -- The player has been promoted so we need to update their shop
+                    net.Start("TTT_ResetBuyableWeaponsCache")
+                    net.Send(ply)
                 end
             end
         end
@@ -1155,6 +1181,12 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
     if ply:IsPlayer() and dmginfo:GetAttacker():IsPlayer() and dmginfo:GetAttacker():IsImpersonator() and not dmginfo:GetAttacker():GetNWBool("HasPromotion", false) and GetRoundState() >= ROUND_ACTIVE then
         local penalty = GetConVar("ttt_impersonator_damage_penalty"):GetFloat() or 0
         dmginfo:ScaleDamage(1 - penalty)
+    end
+
+    -- Revengers deal extra damage to their lovers killer
+    if ply:IsPlayer() and dmginfo:GetAttacker():IsPlayer() and dmginfo:GetAttacker():IsRevenger() and ply:SteamID64() == dmginfo:GetAttacker():GetNWString("RevengerKiller", "") and GetRoundState() >= ROUND_ACTIVE then
+        local bonus = GetConVar("ttt_revenger_damage_bonus"):GetFloat() or 0
+        dmginfo:ScaleDamage(1 + bonus)
     end
 
     -- Players cant deal damage before the round starts
@@ -1655,4 +1687,55 @@ concommand.Add("ttt_kill_from_player", function(ply, cmd, args)
 
     local remove_body = #args > 1 and tobool(args[2])
     KillFromPlayer(ply, killer, remove_body)
+end, nil, nil, FCVAR_CHEAT)
+
+concommand.Add("ttt_kill_target_from_random", function(ply, cmd, args)
+    if #args ~= 1 then return end
+
+    local victim_name = args[1]
+    local victim = nil
+    for _, v in RandomPairs(player.GetAll()) do
+        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not (v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) and v:Nick() == victim_name then
+            victim = v
+            break
+        end
+    end
+
+    local killer = nil
+    for _, v in RandomPairs(player.GetAll()) do
+        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not (v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) then
+            killer = v
+            break
+        end
+    end
+
+    local remove_body = #args > 1 and tobool(args[2])
+    KillFromPlayer(victim, killer, remove_body)
+end, nil, nil, FCVAR_CHEAT)
+
+concommand.Add("ttt_kill_target_from_player", function(ply, cmd, args)
+    if #args ~= 2 then return end
+
+    local victim_name = args[1]
+    local victim = nil
+    local killer_name = args[2]
+    local killer = nil
+
+    for _, v in RandomPairs(player.GetAll()) do
+        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not (v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) then
+            if v:Nick() == victim_name then
+                victim = v
+            elseif v:Nick() == killer_name then
+                killer = v
+            end
+        end
+    end
+
+    if killer == nil then
+        print("No player named " .. killer_name .. " found")
+        return
+    end
+
+    local remove_body = #args > 2 and tobool(args[3])
+    KillFromPlayer(victim, killer, remove_body)
 end, nil, nil, FCVAR_CHEAT)

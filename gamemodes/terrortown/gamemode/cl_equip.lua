@@ -59,28 +59,32 @@ end)
 
 local function ItemIsWeapon(item) return not tonumber(item.id) end
 
-function GetEquipmentForRole(role, extra, block_randomization)
+function GetEquipmentForRole(role, promoted, block_randomization)
     WEPS.PrepWeaponsLists(role)
 
-    -- Pre-load the Detective weapons so any that have their CanBuy modified will also apply to the 'extra' check
-    if extra and not Equipment[ROLE_DETECTIVE] then
-        GetEquipmentForRole(ROLE_DETECTIVE, false, true)
-    end
-
     -- Pre-load the Traitor weapons so that any that have their CanBuy modified will also apply to the enabled allied role(s)
-    local sync_traitor_weapons = GetGlobalBool("ttt_shop_hypnotist_sync") and role == ROLE_HYPNOTIST
+    local sync_hypnotist = GetGlobalBool("ttt_shop_hyp_sync") and role == ROLE_HYPNOTIST
+    local sync_impersonator = GetGlobalBool("ttt_shop_imp_sync") and role == ROLE_IMPERSONATOR
+    local sync_traitor_weapons = sync_hypnotist or sync_impersonator
     if sync_traitor_weapons and not Equipment[ROLE_TRAITOR] then
         GetEquipmentForRole(ROLE_TRAITOR, false, true)
     end
 
-    -- Cache the equipment
+    -- Pre-load the Detective weapons so that any that have their CanBuy modified will also apply to the enabled allied role(s)
+    local sync_promoted = promoted and (role == ROLE_DEPUTY or role == ROLE_IMPERSONATOR)
+    local sync_detective_weapons = sync_promoted
+    if sync_detective_weapons and not Equipment[ROLE_DETECTIVE] then
+        GetEquipmentForRole(ROLE_DETECTIVE, false, true)
+    end
+
+    -- Cache the equipment unless the role's shop can change mid round
     if not Equipment[role] then
         -- start with all the non-weapon goodies
         local tbl = table.Copy(EquipmentItems)
 
         -- find buyable weapons to load info from
         for _, v in pairs(weapons.GetList()) do
-            WEPS.HandleCanBuyOverrides(v, role, extra, block_randomization, sync_traitor_weapons)
+            WEPS.HandleCanBuyOverrides(v, role, block_randomization, sync_traitor_weapons, sync_detective_weapons)
             if v and v.CanBuy then
                 local data = v.EquipMenuData or {}
                 local base = {
@@ -554,7 +558,7 @@ local function TraitorMenuPopup()
             dlist:SelectPanel(dlist:GetItems()[1])
         end
         dsearch.OnValueChange = function(box, value)
-            local roleitems = GetEquipmentForRole(ply:GetRole(), ply:GetNWBool("HasPromotion", false))
+            local roleitems = GetEquipmentForRole(ply:GetRole(), ply:GetNWBool("HasPromotion", false), false)
             local filtered = {}
             for _, v in pairs(roleitems) do
                 if v and v["name"] and string.find(SafeTranslate(v["name"]):lower(), value:lower()) then
@@ -656,7 +660,7 @@ local function TraitorMenuPopup()
             end
         end
 
-        FillEquipmentList(GetEquipmentForRole(ply:GetRole(), ply:GetNWBool("HasPromotion", false)))
+        FillEquipmentList(GetEquipmentForRole(ply:GetRole(), ply:GetNWBool("HasPromotion", false), false))
         show = true
     end
 

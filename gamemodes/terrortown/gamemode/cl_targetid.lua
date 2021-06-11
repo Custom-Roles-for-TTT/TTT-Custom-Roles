@@ -255,7 +255,7 @@ function GM:HUDDrawTargetID()
         target_clown = GetRoundState() > ROUND_PREP and ent:IsClown() and ent:GetNWBool("KillerClownActive", false) or false
 
         if client:IsRevenger() then
-            target_revenger_lover = (ent:Nick() == client:GetNWString("RevengerLover", ""))
+            target_revenger_lover = (ent:SteamID64() == client:GetNWString("RevengerLover", ""))
         end
 
     elseif cls == "prop_ragdoll" then
