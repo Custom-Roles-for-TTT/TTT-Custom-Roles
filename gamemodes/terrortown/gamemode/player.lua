@@ -1108,6 +1108,12 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
         dmginfo:ScaleDamage(1 - penalty)
     end
 
+    -- Revengers deal extra damage to their lovers killer
+    if ply:IsPlayer() and dmginfo:GetAttacker():IsPlayer() and dmginfo:GetAttacker():IsRevenger() and ply:SteamID64() == dmginfo:GetAttacker():GetNWString("RevengerKiller", "") and GetRoundState() >= ROUND_ACTIVE then
+        local bonus = GetConVar("ttt_revenger_damage_bonus"):GetFloat() or 0
+        dmginfo:ScaleDamage(1 + bonus)
+    end
+
     -- Players cant deal damage before the round starts
     if ply:IsPlayer() and dmginfo:GetAttacker():IsPlayer() and not GetRoundState == ROUND_ACTIVE then
         dmginfo:ScaleDamage(0)
