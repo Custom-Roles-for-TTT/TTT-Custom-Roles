@@ -67,6 +67,12 @@ function GetEquipmentForRole(role, extra, block_randomization)
         GetEquipmentForRole(ROLE_DETECTIVE, false, true)
     end
 
+    -- Pre-load the Traitor weapons so that any that have their CanBuy modified will also apply to the enabled allied role(s)
+    local sync_traitor_weapons = GetGlobalBool("ttt_shop_hypnotist_sync") and role == ROLE_HYPNOTIST
+    if sync_traitor_weapons and not Equipment[ROLE_TRAITOR] then
+        GetEquipmentForRole(ROLE_TRAITOR, false, true)
+    end
+
     -- Cache the equipment
     if not Equipment[role] then
         -- start with all the non-weapon goodies
@@ -74,7 +80,7 @@ function GetEquipmentForRole(role, extra, block_randomization)
 
         -- find buyable weapons to load info from
         for _, v in pairs(weapons.GetList()) do
-            WEPS.HandleCanBuyOverrides(v, role, extra, block_randomization)
+            WEPS.HandleCanBuyOverrides(v, role, extra, block_randomization, sync_traitor_weapons)
             if v and v.CanBuy then
                 local data = v.EquipMenuData or {}
                 local base = {

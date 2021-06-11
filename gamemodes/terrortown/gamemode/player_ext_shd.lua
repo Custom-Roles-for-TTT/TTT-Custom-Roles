@@ -53,7 +53,7 @@ function plymeta:IsCustom()
     return role ~= ROLE_INNOCENT and role ~= ROLE_TRAITOR and role ~= ROLE_DETECTIVE
 end
 function plymeta:IsShopRole()
-    return table.HasValue(SHOP_ROLES, self:GetRole())
+    return SHOP_ROLES[self:GetRole()] or false
 end
 
 function plymeta:SetRoleAndBroadcast(role)
@@ -96,22 +96,10 @@ function plymeta:IsActiveShopRole() return self:IsShopRole() and self:IsActive()
 function plymeta:IsActiveDetectiveLike() return self:IsActive() and self:IsDetectiveLike() end
 
 -- functions to group individual roles into teams
-function plymeta:IsTraitorTeam()
-    local role = self:GetRole()
-    return role == ROLE_TRAITOR or role == ROLE_HYPNOTIST or role == ROLE_IMPERSONATOR
-end
-function plymeta:IsInnocentTeam()
-    local role = self:GetRole()
-    return role == ROLE_INNOCENT or role == ROLE_DETECTIVE or role == ROLE_GLITCH or role == ROLE_PHANTOM or role == ROLE_REVENGER or role == ROLE_DEPUTY
-end
-function plymeta:IsJesterTeam()
-    local role = self:GetRole()
-    return role == ROLE_JESTER or role == ROLE_SWAPPER or role == ROLE_CLOWN or role == ROLE_BEGGAR
-end
-function plymeta:IsIndependentTeam()
-    local role = self:GetRole()
-    return role == ROLE_DRUNK or role == ROLE_OLDMAN
-end
+function plymeta:IsTraitorTeam() return TRAITOR_ROLES[self:GetRole()] or false end
+function plymeta:IsInnocentTeam() return INNOCENT_ROLES[self:GetRole()] or false end
+function plymeta:IsJesterTeam() return JESTER_ROLES[self:GetRole()] or false end
+function plymeta:IsIndependentTeam() return INDEPENDENT_ROLES[self:GetRole()] or false end
 function plymeta:IsActiveTraitorTeam() return self:IsTraitorTeam() and self:IsActive() end
 function plymeta:IsActiveInnocentTeam() return self:IsInnocentTeam() and self:IsActive() end
 function plymeta:IsActiveJesterTeam() return self:IsJesterTeam() and self:IsActive() end

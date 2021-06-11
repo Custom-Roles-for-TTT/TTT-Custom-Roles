@@ -45,6 +45,9 @@ include("cl_popups.lua")
 include("cl_equip.lua")
 include("cl_voice.lua")
 
+local traitor_vision = false
+local vision_enabled = false
+
 function GM:Initialize()
     MsgN("TTT Client initializing...")
 
@@ -138,7 +141,7 @@ local function RoundStateChange(o, n)
     end
 
     -- whatever round state we get, clear out the voice flags
-    for k, v in ipairs(player.GetAll()) do
+    for _, v in ipairs(player.GetAll()) do
         v.traitor_gvoice = false
     end
 end
@@ -173,6 +176,15 @@ local function ReceiveRole()
 
     client:SetRole(role)
 
+    -- Update the local state
+    traitor_vision = GetGlobalBool("ttt_traitor_vision_enable")
+
+    -- Disable highlights on role change
+    if vision_enabled then
+        hook.Remove("PreDrawHalos", "AddPlayerHighlights")
+        vision_enabled = false
+    end
+
     Msg("You are: ")
     if client:IsTraitor() then MsgN("TRAITOR")
     elseif client:IsDetective() then MsgN("DETECTIVE")
@@ -196,7 +208,7 @@ local function ReceiveRoleList()
     local role = net.ReadUInt(8)
     local num_ids = net.ReadUInt(8)
 
-    for i = 1, num_ids do
+    for _ = 1, num_ids do
         local eidx = net.ReadUInt(7) + 1 -- we - 1 worldspawn=0
 
         local ply = player.GetByID(eidx)
@@ -343,8 +355,7 @@ function GM:Think()
                 v.SmokeEmitter:SetPos(pos)
                 v.SmokeNextPart = CurTime() + math.Rand(0.003, 0.01)
                 local vec = Vector(math.Rand(-8, 8), math.Rand(-8, 8), math.Rand(10, 55))
-                local pos = v:LocalToWorld(vec)
-                local particle = v.SmokeEmitter:Add("particle/snow.vmt", pos)
+                local particle = v.SmokeEmitter:Add("particle/snow.vmt", v:LocalToWorld(vec))
                 particle:SetVelocity(Vector(0, 0, 4) + VectorRand() * 3)
                 particle:SetDieTime(math.Rand(0.5, 2))
                 particle:SetStartAlpha(math.random(150, 220))
@@ -371,12 +382,14 @@ function GM:Tick()
         if client:Alive() and client:Team() ~= TEAM_SPEC then
             WSWITCH:Think()
             RADIO:StoreTarget()
+            if traitor_vision then
+                HandleRoleHighlights(client)
+            end
         end
 
         VOICE.Tick()
     end
 end
-
 
 -- Simple client-based idle checking
 local idle = { ang = nil, pos = nil, mx = 0, my = 0, t = 0 }
@@ -734,6 +747,76 @@ net.Receive("TTT_ClientDeathNotify", function()
         chat.AddText(COLOR_WHITE, "You died!")
     end
 end)
+
+-- Player highlights
+
+local function OnPlayerHighlightEnabled(alliedRoles, jesterRoles, hideEnemies, traitorAllies)
+    if GetRoundState() ~= ROUND_ACTIVE then return end
+    local enemies = {}
+    local friends = {}
+    local jesters = {}
+    for _, v in pairs(player.GetAll()) do
+        if IsValid(v) and v:Alive() and not v:IsSpec() then
+            if table.HasValue(jesterRoles, v:GetRole()) then
+                table.insert(jesters, v)
+            elseif table.HasValue(alliedRoles, v:GetRole()) then
+                table.insert(friends, v)
+            -- Don't even track enemies if this role can't see them
+            elseif not hideEnemies then
+                table.insert(enemies, v)
+            end
+        end
+    end
+
+    -- If the allies of this role are Traitors, show them in red to be thematic
+    if traitorAllies then
+        halo.Add(friends, Color(255, 0, 0), 1, 1, 1, true, true)
+    -- Otherwise green is good
+    else
+        halo.Add(friends, Color(0, 255, 0), 1, 1, 1, true, true)
+    end
+
+    -- Don't show enemies if we're hiding them
+    if not hideEnemies then
+        -- If the allies of this role are Traitors, show enemies as green to be difference
+        if traitorAllies then
+            halo.Add(enemies, Color(0, 255, 0), 1, 1, 1, true, true)
+        else
+            halo.Add(enemies, Color(255, 0, 0), 1, 1, 1, true, true)
+        end
+    end
+
+    halo.Add(jesters, Color(255, 85, 100), 1, 1, 1, true, true)
+end
+
+local function EnableTraitorHighlights()
+    hook.Add("PreDrawHalos", "AddPlayerHighlights", function()
+        -- Start with the list of traitors
+        local allies = table.GetKeys(TRAITOR_ROLES)
+        -- And add the glitch
+        table.insert(allies, ROLE_GLITCH)
+
+        local jesters = table.GetKeys(JESTER_ROLES)
+        OnPlayerHighlightEnabled(jesters, allies, true, true)
+    end)
+end
+
+function HandleRoleHighlights(client)
+    if not IsValid(client) then return end
+
+    if client:IsTraitorTeam() and traitor_vision then
+        if not vision_enabled then
+            EnableTraitorHighlights()
+            vision_enabled = true
+        end
+    else
+        vision_enabled = false
+    end
+
+    if not vision_enabled then
+        hook.Remove("PreDrawHalos", "AddPlayerHighlights")
+    end
+end
 
 -- Footsteps
 

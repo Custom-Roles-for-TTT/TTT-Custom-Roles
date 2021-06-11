@@ -31,7 +31,28 @@ ROLE_OLDMAN = 14
 
 ROLE_MAX = 14
 
-SHOP_ROLES = {ROLE_TRAITOR, ROLE_DETECTIVE, ROLE_HYPNOTIST, ROLE_DEPUTY, ROLE_IMPERSONATOR}
+local function AddRoleAssociations(list, roles)
+    -- Use an associative array so we can do a O(1) lookup by role
+    -- See: https://wiki.facepunch.com/gmod/table.HasValue
+    for _, r in ipairs(roles) do
+        list[r] = true
+    end
+end
+
+SHOP_ROLES = {}
+AddRoleAssociations(SHOP_ROLES, {ROLE_TRAITOR, ROLE_DETECTIVE, ROLE_HYPNOTIST, ROLE_DEPUTY, ROLE_IMPERSONATOR})
+
+TRAITOR_ROLES = {}
+AddRoleAssociations(TRAITOR_ROLES, {ROLE_TRAITOR, ROLE_HYPNOTIST, ROLE_IMPERSONATOR})
+
+INNOCENT_ROLES = {}
+AddRoleAssociations(INNOCENT_ROLES, {ROLE_INNOCENT, ROLE_DETECTIVE, ROLE_GLITCH, ROLE_PHANTOM, ROLE_REVENGER, ROLE_DEPUTY})
+
+JESTER_ROLES = {}
+AddRoleAssociations(JESTER_ROLES, {ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_BEGGAR})
+
+INDEPENDENT_ROLES = {}
+AddRoleAssociations(INDEPENDENT_ROLES, {ROLE_DRUNK, ROLE_OLDMAN})
 
 -- Role colours
 COLOR_INNOCENT = Color(25, 200, 25, 255)

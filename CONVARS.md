@@ -8,31 +8,35 @@ Add the following to your server config:
 // ----------------------------------------
 
 // Weapon Shop
-ttt_shop_random_percent 50    // The percent chance that a weapon in the shop will be not be shown
-ttt_shop_random_tra_percent 0 // The percent chance that a weapon in the shop will be not be shown for the Traitors
-ttt_shop_random_det_percent 0 // The percent chance that a weapon in the shop will be not be shown for the Detectives
-ttt_shop_random_hyp_percent 0 // The percent chance that a weapon in the shop will be not be shown for the Hypnotists
-ttt_shop_random_dep_percent 0 // The percent chance that a weapon in the shop will be not be shown for the Deputies
-ttt_shop_random_imp_percent 0 // The percent chance that a weapon in the shop will be not be shown for the Impersonators
-ttt_shop_random_tra_enabled 0 // Whether role shop randomization is enabled for Traitors
-ttt_shop_random_det_enabled 0 // Whether role shop randomization is enabled for Detectives
-ttt_shop_random_hyp_enabled 0 // Whether role shop randomization is enabled for Hypnotists
-ttt_shop_random_dep_enabled 0 // Whether role shop randomization is enabled for Deputies
-ttt_shop_random_imp_enabled 0 // Whether role shop randomization is enabled for Impersonators
+ttt_shop_random_percent     50 // The percent chance that a weapon in the shop will be not be shown
+ttt_shop_random_tra_percent 0  // The percent chance that a weapon in the shop will be not be shown for the Traitors
+ttt_shop_random_det_percent 0  // The percent chance that a weapon in the shop will be not be shown for the Detectives
+ttt_shop_random_hyp_percent 0  // The percent chance that a weapon in the shop will be not be shown for the Hypnotists
+ttt_shop_random_dep_percent 0  // The percent chance that a weapon in the shop will be not be shown for the Deputies
+ttt_shop_random_imp_percent 0  // The percent chance that a weapon in the shop will be not be shown for the Impersonators
+ttt_shop_random_tra_enabled 0  // Whether role shop randomization is enabled for Traitors
+ttt_shop_random_det_enabled 0  // Whether role shop randomization is enabled for Detectives
+ttt_shop_random_hyp_enabled 0  // Whether role shop randomization is enabled for Hypnotists
+ttt_shop_random_dep_enabled 0  // Whether role shop randomization is enabled for Deputies
+ttt_shop_random_imp_enabled 0  // Whether role shop randomization is enabled for Impersonators
+ttt_shop_hypnotist_sync     0  // Whether Hypnotists should have all weapons that vanilla Traitors have in their weapon shop
 
 // Phantom
 ttt_phantom_respawn_health           50  // The amount of health a Phantom will respawn with
 ttt_phantom_weaker_each_respawn      0   // Whether a Phantom respawns weaker (1/2 as much HP) each time they respawn, down to a minimum of 1
 ttt_phantom_killer_smoke             1   // Whether to show smoke on the player who killed the Phantom
-ttt_phantom_killer_footstep_time     0  // The amount of time a Phantom's killer's footsteps should show before fading. 0 to disable
+ttt_phantom_killer_footstep_time     0   // The amount of time a Phantom's killer's footsteps should show before fading. 0 to disable
 ttt_phantom_announce_death           0   // Whether to announce to Detectives (and promoted Deputies and Imposters) that a Phantom has been killed or respawned
 ttt_phantom_killer_haunt             1   // Whether to have the Phantom haunt their killer
 ttt_phantom_killer_haunt_power_max   100 // The maximum amount of power a Phantom can have when haunting their killer
-ttt_phantom_killer_haunt_power_rate  10   // The amount of power to regain per second when a Phantom is haunting their killer
+ttt_phantom_killer_haunt_power_rate  10  // The amount of power to regain per second when a Phantom is haunting their killer
 ttt_phantom_killer_haunt_move_cost   25  // The amount of power to spend when a Phantom is moving their killer via a haunting. 0 to disable
 ttt_phantom_killer_haunt_jump_cost   50  // The amount of power to spend when a Phantom is making their killer jump via a haunting. 0 to disable
 ttt_phantom_killer_haunt_drop_cost   75  // The amount of power to spend when a Phantom is making their killer drop their weapon via a haunting. 0 to disable
-ttt_phantom_killer_haunt_attack_cost 100  // The amount of power to spend when a Phantom is making their killer attack via a haunting. 0 to disable
+ttt_phantom_killer_haunt_attack_cost 100 // The amount of power to spend when a Phantom is making their killer attack via a haunting. 0 to disable
+
+// Other
+ttt_traitor_vision_enable             0  // Whether members of the Traitor team can see other members of the Traitor team (including Glitches) through walls via a highlight effect.
 
 // Logging
 ttt_debug_logkills 1 // Whether to log when a player is killed in the console

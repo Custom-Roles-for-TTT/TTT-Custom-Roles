@@ -93,7 +93,7 @@ function WEPS.DoesRoleHaveWeapon(role)
     return false
 end
 
-function WEPS.HandleCanBuyOverrides(wep, role, extra, block_randomization)
+function WEPS.HandleCanBuyOverrides(wep, role, extra, block_randomization, sync_traitor_weapons)
     if wep == nil then return end
     local id = WEPS.GetClass(wep)
 
@@ -114,26 +114,38 @@ function WEPS.HandleCanBuyOverrides(wep, role, extra, block_randomization)
             table.insert(wep.CanBuy, role)
         end
 
-        -- Make sure each of the excluded weapons is NOT in the role's equipment list
-        local excludetable = WEPS.ExcludeWeapons[role]
-        if excludetable and table.HasValue(excludetable, id) then
-            table.RemoveByValue(wep.CanBuy, role)
-        -- Remove some weapons based on a random chance if it isn't blocked or bypassed
-        -- Only run this on the client because there is no easy way to sync randomization between client and server
-        elseif CLIENT then
-            local norandomtable = WEPS.BypassRandomWeapons[role]
-            if not block_randomization and (not norandomtable or not table.HasValue(norandomtable, id)) then
-                local random_cvar_enabled = GetGlobalBool("ttt_shop_random_" .. ROLE_STRINGS_SHORT[role] .. "_enabled", false)
-                if random_cvar_enabled then
-                    local random_cvar_percent_global = GetGlobalInt("ttt_shop_random_percent", 0)
-                    local random_cvar_percent = GetGlobalInt("ttt_shop_random_" .. ROLE_STRINGS_SHORT[role] .. "_percent", 0)
-                    -- Use the global value if the per-role override isn't set
-                    if random_cvar_percent == 0 then
-                        random_cvar_percent = random_cvar_percent_global
-                    end
+        -- If the player is a role that should have all weapons that vanilla traitors have
+        if sync_traitor_weapons and
+            -- and they can't already buy this weapon
+            not table.HasValue(wep.CanBuy, role) and
+            -- and vanilla traitors CAN buy this weapon, let this player buy it too
+            table.HasValue(wep.CanBuy, ROLE_TRAITOR) then
+            table.insert(wep.CanBuy, role)
+        end
 
-                    if math.random() < (random_cvar_percent / 100.0) then
-                        table.RemoveByValue(wep.CanBuy, role)
+        -- If the player can still buy this weapon, check the various excludes
+        if table.HasValue(wep.CanBuy, role) then
+            -- Make sure each of the excluded weapons is NOT in the role's equipment list
+            local excludetable = WEPS.ExcludeWeapons[role]
+            if excludetable and table.HasValue(excludetable, id) then
+                table.RemoveByValue(wep.CanBuy, role)
+            -- Remove some weapons based on a random chance if it isn't blocked or bypassed
+            -- Only run this on the client because there is no easy way to sync randomization between client and server
+            elseif CLIENT then
+                local norandomtable = WEPS.BypassRandomWeapons[role]
+                if not block_randomization and (not norandomtable or not table.HasValue(norandomtable, id)) then
+                    local random_cvar_enabled = GetGlobalBool("ttt_shop_random_" .. ROLE_STRINGS_SHORT[role] .. "_enabled", false)
+                    if random_cvar_enabled then
+                        local random_cvar_percent_global = GetGlobalInt("ttt_shop_random_percent", 0)
+                        local random_cvar_percent = GetGlobalInt("ttt_shop_random_" .. ROLE_STRINGS_SHORT[role] .. "_percent", 0)
+                        -- Use the global value if the per-role override isn't set
+                        if random_cvar_percent == 0 then
+                            random_cvar_percent = random_cvar_percent_global
+                        end
+
+                        if math.random() < (random_cvar_percent / 100.0) then
+                            table.RemoveByValue(wep.CanBuy, role)
+                        end
                     end
                 end
             end
