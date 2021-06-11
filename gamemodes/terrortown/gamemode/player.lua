@@ -1654,10 +1654,8 @@ concommand.Add("ttt_kill_target_from_player", function(ply, cmd, args)
         if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not (v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) then
             if v:Nick() == victim_name then
                 victim = v
-                break
             elseif v:Nick() == killer_name then
-            killer = v
-                break
+                killer = v
             end
         end
     end
