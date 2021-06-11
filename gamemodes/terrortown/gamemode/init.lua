@@ -953,7 +953,7 @@ function BeginRound()
         if v:GetRole() == ROLE_REVENGER then
             local potentialSoulmates = {}
             for _, p in pairs(player.GetAll()) do
-                if p:Alive() and not p:IsSpec() and not p == v then
+                if p:Alive() and not p:IsSpec() and p ~= v then
                     table.insert(potentialSoulmates, p)
                 end
             end
