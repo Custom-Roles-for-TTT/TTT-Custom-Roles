@@ -1617,3 +1617,56 @@ concommand.Add("ttt_kill_from_player", function(ply, cmd, args)
     local remove_body = #args > 1 and tobool(args[2])
     KillFromPlayer(ply, killer, remove_body)
 end, nil, nil, FCVAR_CHEAT)
+
+concommand.Add("ttt_kill_target_from_random", function(ply, cmd, args)
+    if #args ~= 1 then return end
+
+    local victim_name = args[1]
+    local victim = nil
+    for _, v in RandomPairs(player.GetAll()) do
+        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not (v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) and v:Nick() == victim_name then
+            victim = v
+            break
+        end
+    end
+
+    local killer = nil
+    for _, v in RandomPairs(player.GetAll()) do
+        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not (v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) then
+            killer = v
+            break
+        end
+    end
+
+    local remove_body = #args > 1 and tobool(args[2])
+    KillFromPlayer(victim, killer, remove_body)
+end, nil, nil, FCVAR_CHEAT)
+
+concommand.Add("ttt_kill_target_from_player", function(ply, cmd, args)
+    if #args ~= 2 then return end
+
+    local victim_name = args[1]
+    local victim = nil
+    local killer_name = args[2]
+    local killer = nil
+
+    for _, v in RandomPairs(player.GetAll()) do
+        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not (v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) then
+            if v:Nick() == victim_name then
+                victim = v
+                break
+            elseif v:Nick() == killer_name then
+            killer = v
+                break
+            end
+        end
+    end
+
+    if killer == nil then
+        print("No player named " .. killer_name .. " found")
+        return
+    end
+
+    local remove_body = #args > 2 and tobool(args[3])
+    KillFromPlayer(victim, killer, remove_body)
+end, nil, nil, FCVAR_CHEAT)
