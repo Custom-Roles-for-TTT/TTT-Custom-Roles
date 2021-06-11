@@ -398,7 +398,6 @@ local function InfoPaint(client)
 
     local endtime = GetGlobalFloat("ttt_round_end", 0) - CurTime()
 
-    local text
     local font = "TimeLeft"
     local color = COLOR_WHITE
     local rx = x + margin + 170
@@ -442,38 +441,42 @@ local function InfoPaint(client)
         --dr.SimpleText(L.hastemode, "TabLarge", x + margin + 165, traitor_y - 8)
     end
 
+    local label_top = 140
+    local label_left = 36
+    if client:HasEquipmentItem(EQUIP_RADAR) then
+        label_top = label_top + 20
+    end
+    if client:HasEquipmentItem(EQUIP_DISGUISE) and client:GetNWBool("disguised", false) then
+        label_top = label_top + 20
+    end
     if client:IsDrunk() then
         surface.SetFont("TabLarge")
         surface.SetTextColor(255, 255, 255, 230)
 
         local remaining = math.max(0, GetGlobalFloat("ttt_drunk_remember", 0) - CurTime())
 
-        local text = GetPTranslation("drunk_hud", { time = FormatTime(remaining, "%02i:%02i") })
-        local w, h = surface.GetTextSize(text)
+        text = GetPTranslation("drunk_hud", { time = FormatTime(remaining, "%02i:%02i") })
+        local _, h = surface.GetTextSize(text)
 
-        surface.SetTextPos(12, ScrH() - 140 - h)
+        surface.SetTextPos(label_left, ScrH() - label_top - h)
         surface.DrawText(text)
-    end
-
-    if client:IsDetectiveLike() and not client:IsDetective() then
+    elseif client:IsDetectiveLike() and not client:IsDetective() then
         surface.SetFont("TabLarge")
         surface.SetTextColor(255, 255, 255, 230)
 
-        local text = GetTranslation("detective_promotion_hud")
-        local w, h = surface.GetTextSize(text)
+        text = GetTranslation("detective_promotion_hud")
+        local _, h = surface.GetTextSize(text)
 
-        surface.SetTextPos(12, ScrH() - 140 - h)
+        surface.SetTextPos(label_left, ScrH() - label_top - h)
         surface.DrawText(text)
-    end
-
-    if (client:IsInnocent() or client:IsTraitor()) and client:GetNWBool("WasBeggar", false) and not GetGlobalBool("ttt_reveal_beggar_change", true) then
+    elseif (client:IsInnocent() or client:IsTraitor()) and client:GetNWBool("WasBeggar", false) and not GetGlobalBool("ttt_reveal_beggar_change", true) then
         surface.SetFont("TabLarge")
         surface.SetTextColor(255, 255, 255, 230)
 
-        local text = GetTranslation("beggar_hidden_hud")
-        local w, h = surface.GetTextSize(text)
+        text = GetTranslation("beggar_hidden_hud")
+        local _, h = surface.GetTextSize(text)
 
-        surface.SetTextPos(12, ScrH() - 140 - h)
+        surface.SetTextPos(label_left, ScrH() - label_top - h)
         surface.DrawText(text)
     end
 
