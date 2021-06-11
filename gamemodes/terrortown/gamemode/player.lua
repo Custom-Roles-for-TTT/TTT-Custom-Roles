@@ -959,6 +959,10 @@ function GM:PlayerDeath(victim, infl, attacker)
                     net.Start("TTT_Promotion")
                     net.WriteString(ply:Nick())
                     net.Broadcast()
+
+                    -- The player has been promoted so we need to update their shop
+                    net.Start("TTT_ResetBuyableWeaponsCache")
+                    net.Send(ply)
                 end
             end
         end
