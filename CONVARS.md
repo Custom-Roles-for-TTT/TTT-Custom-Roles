@@ -58,6 +58,12 @@ ttt_traitor_vision_enable             0  // Whether members of the Traitor team 
 // Logging
 ttt_debug_logkills 1 // Whether to log when a player is killed in the console
 ttt_debug_logroles 1 // Whether to log what roles players are assigned in the console
+
+// Better Equipment Menu
+ttt_bem_allow_change 1  // Allow clients to change the look of the Traitor/Detective menu
+ttt_bem_sv_cols      4  // Sets the number of columns in the Traitor/Detective menu's item list (serverside)
+ttt_bem_sv_rows      5  // Sets the number of rows in the Traitor/Detective menu's item list (serverside)
+ttt_bem_sv_size      64 // Sets the item size in the Traitor/Detective menu's item list (serverside)
 ```
 
 Thanks to [KarlOfDuty](https://github.com/KarlOfDuty) for his original version of this document, [here](https://github.com/KarlOfDuty/TTT-Custom-Roles/blob/patch-1/README.md).
