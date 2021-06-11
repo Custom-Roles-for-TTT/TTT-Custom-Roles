@@ -93,21 +93,12 @@ function WEPS.DoesRoleHaveWeapon(role)
     return false
 end
 
-function WEPS.HandleCanBuyOverrides(wep, role, extra, block_randomization, sync_traitor_weapons)
+function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor_weapons, sync_detective_weapons)
     if wep == nil then return end
     local id = WEPS.GetClass(wep)
 
     -- Handle the other overrides
     if wep.CanBuy then
-        -- Let the Deputy and Impersonator buy Detective weapons
-        if extra and (role == ROLE_DEPUTY or role == ROLE_IMPERSONATOR) then
-            for _, r in pairs(wep.CanBuy) do
-                if r == ROLE_DETECTIVE and not table.HasValue(wep.CanBuy, role) then
-                    table.insert(wep.CanBuy, role)
-                end
-            end
-        end
-
         local roletable = WEPS.BuyableWeapons[role] or {}
         -- Make sure each of the buyable weapons is in the role's equipment list
         if not table.HasValue(wep.CanBuy, role) and table.HasValue(roletable, id) then
@@ -120,6 +111,15 @@ function WEPS.HandleCanBuyOverrides(wep, role, extra, block_randomization, sync_
             not table.HasValue(wep.CanBuy, role) and
             -- and vanilla traitors CAN buy this weapon, let this player buy it too
             table.HasValue(wep.CanBuy, ROLE_TRAITOR) then
+            table.insert(wep.CanBuy, role)
+        end
+
+        -- If the player is a role that should have all weapons that vanilla detectives have
+        if sync_detective_weapons and
+                -- and they can't already buy this weapon
+                not table.HasValue(wep.CanBuy, role) and
+                -- and vanilla detectives CAN buy this weapon, let this player buy it too
+                table.HasValue(wep.CanBuy, ROLE_DETECTIVE) then
             table.insert(wep.CanBuy, role)
         end
 

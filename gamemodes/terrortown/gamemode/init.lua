@@ -187,6 +187,7 @@ CreateConVar("ttt_det_credits_traitordead", "1")
 
 -- Other credits
 CreateConVar("ttt_hyp_credits_starting", "1")
+CreateConVar("ttt_imp_credits_starting", "1")
 
 -- Other
 CreateConVar("ttt_use_weapon_spawn_scripts", "1")
@@ -214,7 +215,8 @@ for _, role in ipairs(table.GetKeys(SHOP_ROLES)) do
     CreateConVar("ttt_shop_random_" .. shortstring .. "_percent", "0", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown for the " .. rolestring, 0, 100)
     CreateConVar("ttt_shop_random_" .. shortstring .. "_enabled", "0", FCVAR_REPLICATED, "Whether shop randomization should run for the " .. rolestring)
 end
-CreateConVar("ttt_shop_hypnotist_sync", "0")
+CreateConVar("ttt_shop_hyp_sync", "0")
+CreateConVar("ttt_shop_imp_sync", "0")
 
 -- bem server convars
 CreateConVar("ttt_bem_allow_change", 1, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Allow clients to change the look of the Traitor/Detective menu")
@@ -414,7 +416,8 @@ function GM:SyncGlobals()
         SetGlobalInt("ttt_shop_random_" .. shortstring .. "_percent", GetConVar("ttt_shop_random_" .. shortstring .. "_percent"):GetInt())
         SetGlobalBool("ttt_shop_random_" .. shortstring .. "_enabled", GetConVar("ttt_shop_random_" .. shortstring .. "_enabled"):GetBool())
     end
-    SetGlobalBool("ttt_shop_hypnotist_sync", GetConVar("ttt_shop_hypnotist_sync"):GetBool())
+    SetGlobalBool("ttt_shop_hyp_sync", GetConVar("ttt_shop_hyp_sync"):GetBool())
+    SetGlobalBool("ttt_shop_imp_sync", GetConVar("ttt_shop_imp_sync"):GetBool())
 
     SetGlobalBool("ttt_phantom_killer_smoke", GetConVar("ttt_phantom_killer_smoke"):GetBool())
     SetGlobalInt("ttt_phantom_killer_haunt_power_max", GetConVar("ttt_phantom_killer_haunt_power_max"):GetInt())
@@ -659,6 +662,7 @@ function PrepareRound()
         v:SetNWString("WasHypnotised", "")
         v:SetNWBool("KillerClownActive", false)
         v:SetNWBool("HasPromotion", false)
+        v:GetNWBool("HadPromotion", false)
         v:SetNWBool("WasBeggar", false)
         -- Workaround to prevent GMod sprint from working
         v:SetRunSpeed(v:GetWalkSpeed())

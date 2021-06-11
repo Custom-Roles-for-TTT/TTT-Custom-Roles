@@ -377,9 +377,14 @@ local function OrderEquipment(ply, cmd, args)
         end
 
         -- Add the loaded weapons for this role
-        local extra = role == ROLE_DEPUTY or role == ROLE_IMPERSONATOR
-        local sync_traitor_weapons = GetGlobalBool("ttt_shop_hypnotist_sync") and role == ROLE_HYPNOTIST
-        WEPS.HandleCanBuyOverrides(swep_table, role, extra, false, sync_traitor_weapons)
+        local sync_hypnotist = GetGlobalBool("ttt_shop_hyp_sync") and role == ROLE_HYPNOTIST
+        local sync_impersonator = GetGlobalBool("ttt_shop_imp_sync") and role == ROLE_IMPERSONATOR
+        local sync_traitor_weapons = sync_hypnotist or sync_impersonator
+
+        local promoted = ply:IsDetectiveLike() and not role == ROLE_DETECTIVE
+        local sync_detective_weapons = promoted
+
+        WEPS.HandleCanBuyOverrides(swep_table, role, false, sync_traitor_weapons, sync_detective_weapons)
     end
 
     local received = false
