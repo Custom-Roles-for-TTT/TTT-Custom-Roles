@@ -43,7 +43,11 @@ function DISGUISE.Draw(client)
     local text = trans("disg_hud")
     local _, h = surface.GetTextSize(text)
 
-    surface.SetTextPos(36, ScrH() - 160 - h)
+    local label_top = 140
+    if client:HasEquipmentItem(EQUIP_RADAR) then
+        label_top = label_top + 20
+    end
+    surface.SetTextPos(36, ScrH() - label_top - h)
     surface.DrawText(text)
 end
 
