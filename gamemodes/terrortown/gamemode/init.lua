@@ -112,15 +112,16 @@ CreateConVar("ttt_jester_min_players", "0")
 CreateConVar("ttt_swapper_enabled", 0)
 CreateConVar("ttt_swapper_spawn_weight", "1")
 CreateConVar("ttt_swapper_min_players", "0")
-CreateConVar("ttt_drunk_enabled", 0)
-CreateConVar("ttt_drunk_spawn_weight", "1")
-CreateConVar("ttt_drunk_min_players", "0")
 CreateConVar("ttt_clown_enabled", 0)
 CreateConVar("ttt_clown_spawn_weight", "1")
 CreateConVar("ttt_clown_min_players", "0")
 CreateConVar("ttt_beggar_enabled", 0)
 CreateConVar("ttt_beggar_spawn_weight", "1")
 CreateConVar("ttt_beggar_min_players", "0")
+
+CreateConVar("ttt_drunk_enabled", 0)
+CreateConVar("ttt_drunk_spawn_weight", "1")
+CreateConVar("ttt_drunk_min_players", "0")
 CreateConVar("ttt_old_man_enabled", 0)
 CreateConVar("ttt_old_man_spawn_weight", "1")
 CreateConVar("ttt_old_man_min_players", "0")
@@ -131,6 +132,7 @@ CreateConVar("ttt_traitor_vision_enable", "0")
 CreateConVar("ttt_impersonator_damage_penalty", "0")
 
 -- Innocent role properties
+CreateConVar("ttt_detective_search_only", "1")
 CreateConVar("ttt_detective_starting_health", "100")
 
 CreateConVar("ttt_phantom_respawn_health", "50")
@@ -205,8 +207,6 @@ CreateConVar("ttt_voice_drain_recharge", "0.05", FCVAR_NOTIFY)
 
 CreateConVar("ttt_namechange_kick", "1", FCVAR_NOTIFY)
 CreateConVar("ttt_namechange_bantime", "10")
-
-CreateConVar("ttt_detective_search_only", "1", FCVAR_REPLICATED)
 
 CreateConVar("ttt_shop_random_percent", "50", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown by default", 0, 100)
 for _, role in ipairs(table.GetKeys(SHOP_ROLES)) do
