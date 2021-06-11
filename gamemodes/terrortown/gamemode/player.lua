@@ -689,7 +689,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
     if ply:IsSpec() then return end
 
     -- Respawn the phantom
-    if ply:GetNWBool("HauntedSmoke", false) then
+    if ply:GetNWBool("Haunted", false) then
         local respawn = false
         local phantomUsers = table.GetKeys(deadPhantoms)
         for _, key in pairs(phantomUsers) do
@@ -736,7 +736,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
             end
         end
 
-        ply:SetNWBool("HauntedSmoke", false)
+        ply:SetNWBool("Haunted", false)
         SendFullStateUpdate()
     end
 
@@ -842,7 +842,7 @@ function GM:PlayerDeath(victim, infl, attacker)
     local valid_kill = IsValid(attacker) and attacker:IsPlayer() and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     -- Handle phantom death
     if victim:IsPhantom() and valid_kill then
-        attacker:SetNWBool("HauntedSmoke", true)
+        attacker:SetNWBool("Haunted", true)
 
         if GetConVar("ttt_phantom_killer_haunt"):GetBool() then
             victim:SetNWBool("Haunting", true)
@@ -884,6 +884,26 @@ function GM:PlayerDeath(victim, infl, attacker)
         net.WriteString(victim:Nick())
         net.WriteString(attacker:Nick())
         net.Broadcast()
+    end
+
+    -- Randle revenger lover death
+    for _, v in pairs(player.GetAll()) do
+        if v:IsRevenger() and v:GetNWString("RevengerLover", "") == victim:SteamID64() then
+            if v == attacker then
+                v:PrintMessage(HUD_PRINTTALK, "Your love has died by your hand.")
+                v:PrintMessage(HUD_PRINTCENTER, "Your love has died by your hand.")
+            elseif valid_kill then
+                v:PrintMessage(HUD_PRINTTALK, "Your love has died. Track down their killer.")
+                v:PrintMessage(HUD_PRINTCENTER, "Your love has died. Track down their killer.")
+                v:SetNWString("RevengerKiller", attacker:SteamID64())
+                net.Start("TTT_RevengerLoverKillerRadar")
+                net.WriteBool(true)
+                net.Send(v)
+            else
+                v:PrintMessage(HUD_PRINTTALK, "Your love has died, but you cannot determine the cause.")
+                v:PrintMessage(HUD_PRINTCENTER, "Your love has died, but you cannot determine the cause.")
+            end
+        end
     end
 
     -- Handle jester death

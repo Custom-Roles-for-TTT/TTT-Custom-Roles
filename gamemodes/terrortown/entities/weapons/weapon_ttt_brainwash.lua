@@ -195,7 +195,7 @@ if SERVER then
         -- Un-haunt the Hypnotist if the target was the Phantom
         local owner = self:GetOwner()
         if ply:IsPhantom() and ply:GetNWString("HauntingTarget", nil) == owner:SteamID64() then
-            owner:SetNWBool("HauntedSmoke", false)
+            owner:SetNWBool("Haunted", false)
         end
 
         net.Start("TTT_Hypnotised")

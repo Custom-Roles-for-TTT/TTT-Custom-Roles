@@ -274,19 +274,6 @@ local function RemoveCorpseCall()
 end
 net.Receive("TTT_RemoveCorpseCall", RemoveCorpseCall)
 
-local beep_success = Sound("buttons/blip2.wav")
-local function ReceiveRevengerLoverKiller()
-    local target_pos = net.ReadVector()
-    if not target_pos then return end
-
-    RADAR.revenger_lover_killers = {
-        { pos = target_pos }
-    };
-
-    surface.PlaySound(beep_success)
-end
-net.Receive("TTT_UpdateRevengerLoverKiller", ReceiveRevengerLoverKiller)
-
 local function RecieveTeleportMark()
     local pos = net.ReadVector()
     pos.z = pos.z + 50
@@ -323,6 +310,27 @@ local function ReceiveRadarScan()
             function() RADAR:Timeout() end)
 end
 net.Receive("TTT_Radar", ReceiveRadarScan)
+
+local beep_success = Sound("buttons/blip2.wav")
+local function UpdateRevengerLoverKiller()
+    if timer.Exists("updaterevengerloverkiller") then timer.Remove("updaterevengerloverkiller") end
+    local active = net.ReadBool()
+    if active then
+        timer.Create("updaterevengerloverkiller", GetGlobalInt("ttt_revenger_radar_timer", 15), 0, function()
+            local sid = LocalPlayer():GetNWString("RevengerKiller", "")
+            local attacker = player.GetBySteamID64(sid)
+            if IsValid(attacker) and attacker:IsPlayer() then
+                RADAR.revenger_lover_killers = {
+                    { pos = attacker:LocalToWorld(attacker:OBBCenter()) }
+                }
+                surface.PlaySound(beep_success)
+            end
+        end)
+    else
+        RADAR.revenger_lover_killers = {}
+    end
+end
+net.Receive("TTT_RevengerLoverKillerRadar", UpdateRevengerLoverKiller)
 
 local GetTranslation = LANG.GetTranslation
 function RADAR.CreateMenu(parent, frame)

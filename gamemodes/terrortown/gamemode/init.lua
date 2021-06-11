@@ -154,6 +154,8 @@ CreateConVar("ttt_phantom_killer_haunt_jump_cost", "50")
 CreateConVar("ttt_phantom_killer_haunt_drop_cost", "75")
 CreateConVar("ttt_phantom_killer_haunt_attack_cost", "100")
 
+CreateConVar("ttt_revenger_radar_timer", "15")
+
 -- Traitor credits
 CreateConVar("ttt_credits_starting", "2")
 CreateConVar("ttt_credits_award_pct", "0.35")
@@ -279,7 +281,7 @@ util.AddNetworkString("TTT_DrunkSober")
 util.AddNetworkString("TTT_PhantomHaunt")
 util.AddNetworkString("TTT_LogInfo")
 util.AddNetworkString("TTT_ResetScoreboard")
-util.AddNetworkString("TTT_UpdateRevengerLoverKiller")
+util.AddNetworkString("TTT_RevengerLoverKillerRadar")
 util.AddNetworkString("TTT_UpdateOldManWins")
 util.AddNetworkString("TTT_BuyableWeapons")
 util.AddNetworkString("TTT_ResetBuyableWeaponsCache")
@@ -287,7 +289,6 @@ util.AddNetworkString("TTT_PlayerFootstep")
 util.AddNetworkString("TTT_ClearPlayerFootsteps")
 
 local jester_killed = false
-local revenger_lover = nil
 
 local function ClearAllFootsteps()
     net.Start("TTT_ClearPlayerFootsteps")
@@ -390,6 +391,7 @@ function GM:SyncGlobals()
 
     SetGlobalBool("ttt_detective_search_only", GetConVar("ttt_detective_search_only"):GetBool())
     SetGlobalBool("ttt_reveal_beggar_change", GetConVar("ttt_reveal_beggar_change"):GetBool())
+    SetGlobalInt("ttt_revenger_radar_timer", GetConVar("ttt_revenger_radar_timer"):GetInt())
 
     SetGlobalInt("ttt_shop_random_percent", GetConVar("ttt_shop_random_percent"):GetInt())
     for _, role in ipairs(table.GetKeys(SHOP_ROLES)) do
@@ -628,13 +630,14 @@ end
 
 function PrepareRound()
     for _, v in pairs(player.GetAll()) do
-        v:SetNWBool("HauntedSmoke", false)
+        v:SetNWBool("Haunted", false)
         v:SetNWBool("Haunting", false)
         v:SetNWString("HauntingTarget", nil)
         v:SetNWInt("HauntingPower", 0)
         timer.Remove(v:Nick() .. "HauntingPower")
         timer.Remove(v:Nick() .. "HauntingSpectate")
         v:SetNWString("RevengerLover", "")
+        v:SetNWString("RevengerKiller", "")
         v:SetNWString("JesterKiller", "")
         v:SetNWString("SwappedWith", "")
         v:SetNWBool("WasDrunk", false)
@@ -650,9 +653,11 @@ function PrepareRound()
     net.WriteBool(false)
     net.Broadcast()
 
-    jester_killed = false
+    net.Start("TTT_RevengerLoverKillerRadar")
+    net.WriteBool(false)
+    net.Broadcast()
 
-    revenger_lover = nil
+    jester_killed = false
 
     -- Check playercount
     if CheckForAbort() then return end
@@ -927,43 +932,18 @@ function BeginRound()
 
         -- Revenger logic
         if v:GetRole() == ROLE_REVENGER then
-            if not revenger_lover then
-                local potentialSoulmates = {}
-                for _, p in pairs(player.GetAll()) do
-                    if p:Alive() and not p:IsSpec() and not p:IsRevenger() then
-                        table.insert(potentialSoulmates, p)
-                    end
-                end
-                if #potentialSoulmates > 0 then
-                    revenger_lover = potentialSoulmates[math.random(#potentialSoulmates)]
-                    hook.Add("PlayerDeath", "CheckRevengerLoverDeath", function(victim, infl, attacker)
-                        if victim == revenger_lover and GetRoundState() == ROUND_ACTIVE then
-                            if attacker:IsPlayer() then
-                                v:PrintMessage(HUD_PRINTTALK, "Your love has died. Track down their killer.")
-                                v:PrintMessage(HUD_PRINTCENTER, "Your love has died. Track down their killer.")
-                                if attacker:IsValid() and attacker:IsActive() then
-                                    net.Start("TTT_UpdateRevengerLoverKiller", v)
-                                    net.WriteVector(attacker:LocalToWorld(attacker:OBBCenter()))
-                                    net.Send(v)
-                                end
-                                timer.Create("revengerloverkiller", 15, 0, function()
-                                    if attacker:IsValid() and attacker:IsActive() then
-                                        net.Start("TTT_UpdateRevengerLoverKiller", v)
-                                        net.WriteVector(attacker:LocalToWorld(attacker:OBBCenter()))
-                                        net.Send(v)
-                                    end
-                                end)
-                            else
-                                v:PrintMessage(HUD_PRINTTALK, "Your love has died, but you cannot determine the cause.")
-                                v:PrintMessage(HUD_PRINTCENTER, "Your love has died, but you cannot determine the cause.")
-                            end
-                        end
-                    end)
+            local potentialSoulmates = {}
+            for _, p in pairs(player.GetAll()) do
+                if p:Alive() and not p:IsSpec() and not p == v then
+                    table.insert(potentialSoulmates, p)
                 end
             end
-
-            v:PrintMessage(HUD_PRINTTALK, "You are in love with " .. revenger_lover:Nick() .. ".")
-            v:PrintMessage(HUD_PRINTCENTER, "You are in love with " .. revenger_lover:Nick() .. ".")
+            if #potentialSoulmates > 0 then
+                local revenger_lover = potentialSoulmates[math.random(#potentialSoulmates)]
+                v:SetNWString("RevengerLover", revenger_lover:SteamID64() or "")
+                v:PrintMessage(HUD_PRINTTALK, "You are in love with " .. revenger_lover:Nick() .. ".")
+                v:PrintMessage(HUD_PRINTCENTER, "You are in love with " .. revenger_lover:Nick() .. ".")
+            end
         end
 
         -- Drunk logic
@@ -1020,10 +1000,6 @@ function BeginRound()
     net.Broadcast()
 
     for _, v in pairs(player.GetAll()) do
-        if revenger_lover then
-            v:SetNWString("RevengerLover", revenger_lover:Nick() or "")
-        end
-
         if v:Alive() and v:IsTerror() then
             net.Start("TTT_SpawnedPlayers")
             net.WriteString(v:Nick())
@@ -1123,8 +1099,6 @@ function EndRound(type)
 
     -- Stop checking for wins
     StopWinChecks()
-
-    hook.Remove("PlayerDeath", "CheckRevengerLoverDeath")
 
     if timer.Exists("revengerloverkiller") then timer.Remove("revengerloverkiller") end
     if timer.Exists("drunkremember") then timer.Remove("drunkremember") end

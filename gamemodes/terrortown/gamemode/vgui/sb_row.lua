@@ -208,7 +208,7 @@ function PANEL:Paint(width, height)
         self.sresult:SetVisible(false)
     end
 
-    if LocalPlayer():IsRevenger() and ply:Nick() == LocalPlayer():GetNWString("revenger_lover", "") and GetRoundState() >= ROUND_ACTIVE then
+    if LocalPlayer():IsRevenger() and ply:SteamID64() == LocalPlayer():GetNWString("RevengerLover", "") and GetRoundState() >= ROUND_ACTIVE then
         surface.SetDrawColor(200, 100, 200, math.Round(math.sin(RealTime() * 8) / 2 + 0.5) * 20)
         surface.DrawRect(0, 0, width, SB_ROW_HEIGHT)
         surface.SetDrawColor(150, 50, 150, 255)
@@ -268,7 +268,7 @@ function PANEL:UpdatePlayerData()
     end
 
     self.nick:SetText(ply:Nick())
-    if LocalPlayer():IsRevenger() and ply:Nick() == LocalPlayer():GetNWString("revenger_lover", "") and GetRoundState() >= ROUND_ACTIVE then
+    if LocalPlayer():IsRevenger() and ply:SteamID64() == LocalPlayer():GetNWString("RevengerLover", "") and GetRoundState() >= ROUND_ACTIVE then
         self.nick:SetText(ply:Nick() .. " (" .. GetTranslation("target_revenger_lover") .. ")")
     end
 
