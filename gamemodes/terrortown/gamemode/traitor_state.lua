@@ -1,7 +1,7 @@
 function GetTraitors()
     local trs = {}
-    for k, v in ipairs(player.GetAll()) do
-        if v:GetTraitor() then table.insert(trs, v) end
+    for _, v in ipairs(player.GetAll()) do
+        if v:IsTraitorTeam() then table.insert(trs, v) end
     end
 
     return trs
