@@ -562,64 +562,66 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                 local ply = GetPlayerFromSteam64(id)
 
                 -- Backup in case people disconnect and we cant check their role at the end of the round
-                local startingRole = ROLE_STRINGS_SHORT[ROLE_INNOCENT]
+                local startingRole = ROLE_INNOCENT
                 if s.was_traitor then
-                    startingRole = ROLE_STRINGS_SHORT[ROLE_TRAITOR]
+                    startingRole = ROLE_TRAITOR
                 elseif s.was_detective then
-                    startingRole = ROLE_STRINGS_SHORT[ROLE_DETECTIVE]
+                    startingRole = ROLE_DETECTIVE
                 elseif s.was_jester then
-                    startingRole = ROLE_STRINGS_SHORT[ROLE_JESTER]
+                    startingRole = ROLE_JESTER
                 elseif s.was_swapper then
-                    startingRole = ROLE_STRINGS_SHORT[ROLE_SWAPPER]
+                    startingRole = ROLE_SWAPPER
                 elseif s.was_glitch then
-                    startingRole = ROLE_STRINGS_SHORT[ROLE_GLITCH]
+                    startingRole = ROLE_GLITCH
                 elseif s.was_phantom then
-                    startingRole = ROLE_STRINGS_SHORT[ROLE_PHANTOM]
+                    startingRole = ROLE_PHANTOM
                 elseif s.was_hypnotist then
-                    startingRole = ROLE_STRINGS_SHORT[ROLE_HYPNOTIST]
+                    startingRole = ROLE_HYPNOTIST
                 elseif s.was_revenger then
-                    startingRole = ROLE_STRINGS_SHORT[ROLE_REVENGER]
+                    startingRole = ROLE_REVENGER
                 elseif s.was_drunk then
-                    startingRole = ROLE_STRINGS_SHORT[ROLE_DRUNK]
+                    startingRole = ROLE_DRUNK
                 elseif s.was_clown then
-                    startingRole = ROLE_STRINGS_SHORT[ROLE_CLOWN]
+                    startingRole = ROLE_CLOWN
                 elseif s.was_deputy then
-                    startingRole = ROLE_STRINGS_SHORT[ROLE_DEPUTY]
+                    startingRole = ROLE_DEPUTY
                 elseif s.was_impersonator then
-                    startingRole = ROLE_STRINGS_SHORT[ROLE_IMPERSONATOR]
+                    startingRole = ROLE_IMPERSONATOR
                 elseif s.was_beggar then
-                    startingRole = ROLE_STRINGS_SHORT[ROLE_BEGGAR]
+                    startingRole = ROLE_BEGGAR
                 elseif s.was_old_man then
-                    startingRole = ROLE_STRINGS_SHORT[ROLE_OLDMAN]
+                    startingRole = ROLE_OLDMAN
                 elseif s.was_mercenary then
-                    startingRole = ROLE_STRINGS_SHORT[ROLE_MERCENARY]
+                    startingRole = ROLE_MERCENARY
                 end
 
                 local hasDisconnected = false
+                local alive = false
 
-                local finalRole = ROLE_STRINGS_SHORT[ROLE_INNOCENT]
+                local roleFileName = ROLE_STRINGS_SHORT[startingRole]
+                local roleColor = ROLE_COLORS[startingRole]
+                local finalRole = startingRole
 
                 local swappedWith = ""
                 local jesterKiller = ""
-
-                local alive = false
                 if IsValid(ply) then
                     alive = ply:Alive()
-                    finalRole = ROLE_STRINGS_SHORT[ply:GetRole()]
+                    finalRole = ply:GetRole()
+                    roleFileName = ROLE_STRINGS_SHORT[finalRole]
+                    roleColor = ROLE_COLORS[finalRole]
                     if ply:IsInnocent() then
                         if ply:GetNWBool("WasDrunk", false) then
-                            finalRole = ROLE_STRINGS_SHORT[ROLE_DRUNK] .. "_i"
+                            roleFileName = ROLE_STRINGS_SHORT[ROLE_DRUNK]
                         elseif ply:GetNWBool("WasBeggar", false) then
-                            finalRole = ROLE_STRINGS_SHORT[ROLE_BEGGAR] .. "_i"
+                            roleFileName = ROLE_STRINGS_SHORT[ROLE_BEGGAR]
                         end
                     elseif ply:IsTraitor() then
-                        local wasHypnotised = ply:GetNWString("WasHypnotised", "")
                         if ply:GetNWBool("WasDrunk", false) then
-                            finalRole = ROLE_STRINGS_SHORT[ROLE_DRUNK] .. "_t"
+                            roleFileName = ROLE_STRINGS_SHORT[ROLE_DRUNK]
                         elseif ply:GetNWBool("WasBeggar", false) then
-                            finalRole = ROLE_STRINGS_SHORT[ROLE_BEGGAR] .. "_t"
-                        elseif wasHypnotised ~= "" then
-                            finalRole = wasHypnotised .. "_t"
+                            roleFileName = ROLE_STRINGS_SHORT[ROLE_BEGGAR]
+                        elseif ply:GetNWString("WasHypnotised", "") ~= "" then
+                            roleFileName = ROLE_STRINGS_SHORT[startingRole]
                         end
                     elseif ply:IsJester() then
                         jesterKiller = ply:GetNWString("JesterKiller", "")
@@ -630,16 +632,10 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                     hasDisconnected = true
                 end
 
-                local roleFileName = ROLE_STRINGS_SHORT[ROLE_INNOCENT]
-                if hasDisconnected then
-                    roleFileName = startingRole
-                else
-                    roleFileName = finalRole
-                end
-
                 local playerInfo = {
                     ply = ply,
                     name = nicks[id],
+                    roleColor = roleColor,
                     roleFileName = roleFileName,
                     hasDied = not alive,
                     hasDisconnected = hasDisconnected,
@@ -647,26 +643,11 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                     swappedWith = swappedWith
                 }
 
-                if (string.sub(roleFileName, -2) == "_i"
-                        or roleFileName == ROLE_STRINGS_SHORT[ROLE_INNOCENT]
-                        or roleFileName == ROLE_STRINGS_SHORT[ROLE_DETECTIVE]
-                        or roleFileName == ROLE_STRINGS_SHORT[ROLE_GLITCH]
-                        or roleFileName == ROLE_STRINGS_SHORT[ROLE_PHANTOM]
-                        or roleFileName == ROLE_STRINGS_SHORT[ROLE_REVENGER]
-                        or roleFileName == ROLE_STRINGS_SHORT[ROLE_DEPUTY]
-                        or roleFileName == ROLE_STRINGS_SHORT[ROLE_MERCENARY]) then
+                if INNOCENT_ROLES[finalRole] then
                     table.insert(scores_by_section[ROLE_INNOCENT], playerInfo)
-                elseif (string.sub(roleFileName, -2) == "_t"
-                        or roleFileName == ROLE_STRINGS_SHORT[ROLE_TRAITOR]
-                        or roleFileName == ROLE_STRINGS_SHORT[ROLE_HYPNOTIST]
-                        or roleFileName == ROLE_STRINGS_SHORT[ROLE_IMPERSONATOR]) then
+                elseif TRAITOR_ROLES[finalRole] then
                     table.insert(scores_by_section[ROLE_TRAITOR], playerInfo)
-                elseif (roleFileName == ROLE_STRINGS_SHORT[ROLE_JESTER]
-                        or roleFileName == ROLE_STRINGS_SHORT[ROLE_SWAPPER]
-                        or roleFileName == ROLE_STRINGS_SHORT[ROLE_DRUNK]
-                        or roleFileName == ROLE_STRINGS_SHORT[ROLE_CLOWN]
-                        or roleFileName == ROLE_STRINGS_SHORT[ROLE_BEGGAR]
-                        or roleFileName == ROLE_STRINGS_SHORT[ROLE_OLDMAN]) then
+                else
                     table.insert(scores_by_section[ROLE_JESTER], playerInfo)
                 end
             end
@@ -678,11 +659,16 @@ function CLSCORE:BuildSummaryPanel(dpanel)
     self:BuildRoleLabel(scores_by_section[ROLE_JESTER], dpanel, 666, 8, 440)
 end
 
-local function GetRoleIconElement(roleFileName, dpanel)
-    local roleIcon = vgui.Create("DImage", dpanel)
+local function GetRoleIconElement(roleFileName, roleColor, dpanel)
+    local roleBackground = vgui.Create("DShape", dpanel)
+    roleBackground:SetType("Rect")
+    roleBackground:SetSize(32, 32)
+    roleBackground:SetColor(roleColor)
+
+    local roleIcon = vgui.Create("DImage", roleBackground)
     roleIcon:SetSize(32, 32)
     roleIcon:SetImage("vgui/ttt/score_" .. roleFileName .. ".png")
-    return roleIcon
+    return roleBackground
 end
 
 local function GetNickLabelElement(name, dpanel)
@@ -717,7 +703,7 @@ end
 function CLSCORE:BuildPlayerList(playerList, dpanel, statusX, roleX, initialY, rowY)
     local count = 0
     for _, v in pairs(playerList) do
-        local roleIcon = GetRoleIconElement(v.roleFileName, dpanel)
+        local roleIcon = GetRoleIconElement(v.roleFileName, v.roleColor, dpanel)
         local nicklbl = GetNickLabelElement(v.name, dpanel)
         FitNicknameLabel(nicklbl, 275, function(nickname)
             return string.sub(nickname, 0, string.len(nickname) - 4) .. "..."
@@ -737,10 +723,14 @@ function CLSCORE:BuildRoleLabel(playerList, dpanel, statusX, roleX, rowY)
     local deathCount = 0
     local disconnectCount = 0
     local roleFile = nil
+    local roleColor = nil
 
     for _, v in pairs(playerList) do
         if roleFile == nil then
             roleFile = v.roleFileName
+        end
+        if roleColor == nil then
+            roleColor = v.roleColor
         end
         -- Don't count a disconnect as a death
         if v.hasDisconnected then
@@ -804,7 +794,7 @@ function CLSCORE:BuildRoleLabel(playerList, dpanel, statusX, roleX, rowY)
     local singlePlayerDisconnect = playerCount == 1 and disconnectCount == 1
     -- Show the normal death icon if we have only 1 player and they died
     local singlePlayerDeath = playerCount == 1 and deathCount == 1
-    self:AddPlayerRow(dpanel, statusX, roleX, rowY, GetRoleIconElement(roleFile, dpanel), nickLbl, singlePlayerDisconnect, singlePlayerDeath)
+    self:AddPlayerRow(dpanel, statusX, roleX, rowY, GetRoleIconElement(roleFile, roleColor, dpanel), nickLbl, singlePlayerDisconnect, singlePlayerDeath)
 
     -- Add disconnect icon with count if there are disconnects and it wasn't a single player doing it
     if disconnectCount > 0 and playerCount > 1 then
