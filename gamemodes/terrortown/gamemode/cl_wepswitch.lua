@@ -66,8 +66,6 @@ function WSWITCH:DrawBarBg(x, y, w, h, col)
     local c = Color(100, 100, 100, 255)
     if GAMEMODE.round_state == ROUND_ACTIVE then
         c = col.tip[role]
-    else
-        c = Color(100, 100, 100, 255)
     end
 
     -- Draw the colour tip

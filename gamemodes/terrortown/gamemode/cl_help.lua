@@ -153,7 +153,7 @@ function HELPSCRN:Show()
     dcol:AddChoice("Custom", "custom")
 
     dcol.OnSelect = function(idx, val, data)
-        mode = data -- For some reason it grabs the name and not the actual data so fix that here
+        local mode = data -- For some reason it grabs the name and not the actual data so fix that here
         if mode == "Default" then mode = "default"
         elseif mode == "Simplified" then mode = "simple"
         elseif mode == "Protanomaly" then mode = "protan"
