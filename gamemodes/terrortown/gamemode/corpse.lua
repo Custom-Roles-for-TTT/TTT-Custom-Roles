@@ -60,40 +60,8 @@ local function IdentifyBody(ply, rag)
 
     -- Announce body
     if bodyfound:GetBool() and not CORPSE.GetFound(rag, false) then
-        local roletext = nil
         local role = rag.was_role
-        if role == ROLE_TRAITOR then
-            roletext = "body_found_tra"
-        elseif role == ROLE_DETECTIVE then
-            roletext = "body_found_det"
-        elseif role == ROLE_JESTER then
-            roletext = "body_found_jes"
-        elseif role == ROLE_SWAPPER then
-            roletext = "body_found_swa"
-        elseif role == ROLE_GLITCH then
-            roletext = "body_found_gli"
-        elseif role == ROLE_PHANTOM then
-            roletext = "body_found_pha"
-        elseif role == ROLE_HYPNOTIST then
-            roletext = "body_found_hyp"
-        elseif role == ROLE_REVENGER then
-            roletext = "body_found_rev"
-        elseif role == ROLE_DRUNK then
-            roletext = "body_found_dru"
-        elseif role == ROLE_CLOWN then
-            roletext = "body_found_clo"
-        elseif role == ROLE_DEPUTY then
-            roletext = "body_found_dep"
-        elseif role == ROLE_IMPERSONATOR then
-            roletext = "body_found_imp"
-        elseif role == ROLE_BEGGAR then
-            roletext = "body_found_beg"
-        elseif role == ROLE_OLDMAN then
-            roletext = "body_found_old"
-        else
-            roletext = "body_found_inn"
-        end
-
+        local roletext = "body_found_" .. ROLE_STRINGS_SHORT[role]
         LANG.Msg("body_found", {
             finder = finder,
             victim = nick,
@@ -231,7 +199,6 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
 
     -- init a heap of data we'll be sending
     local nick = CORPSE.GetPlayerNick(rag)
-    local traitor = (rag.was_role == ROLE_TRAITOR)
     local role = rag.was_role
     local eq = rag.equipment or EQUIP_NONE
     local c4 = rag.bomb_wire or -1
@@ -442,7 +409,7 @@ function CORPSE.Create(ply, attacker, dmginfo)
     rag:SetPos(ply:GetPos())
     rag:SetModel(ply:GetModel())
     rag:SetSkin(ply:GetSkin())
-    for key, value in pairs(ply:GetBodyGroups()) do
+    for _, value in pairs(ply:GetBodyGroups()) do
         rag:SetBodygroup(value.id, ply:GetBodygroup(value.id))
     end
     rag:SetAngles(ply:GetAngles())
@@ -484,7 +451,6 @@ function CORPSE.Create(ply, attacker, dmginfo)
 
     -- crime scene data
     rag.scene = GetSceneData(ply, attacker, dmginfo)
-
 
     -- position the bones
     local num = rag:GetPhysicsObjectCount() - 1

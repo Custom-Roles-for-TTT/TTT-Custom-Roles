@@ -18,6 +18,7 @@ L.deputy = "Deputy"
 L.impersonator = "Impersonator"
 L.beggar = "Beggar"
 L.oldman = "Old Man"
+L.mercenary = "Mercenary"
 
 L.last_words = "Last Words"
 
@@ -75,6 +76,7 @@ L.body_found_dep = "They were a Deputy."
 L.body_found_imp = "They were an Impersonator."
 L.body_found_beg = "They were a Beggar."
 L.body_found_old = "They were an Old Man."
+L.body_found_mer = "They were a Mercenary."
 
 L.body_confirm = "{finder} confirmed the death of {victim}."
 
@@ -214,6 +216,7 @@ L.search_role_dep = "This person was a Deputy."
 L.search_role_imp = "This person was an Impersonator."
 L.search_role_beg = "This person was a Beggar."
 L.search_role_old = "This person was an Old Man."
+L.search_role_mer = "This person was a Mercenary."
 
 L.search_words = "Something tells you some of this person's last words were: '{lastwords}'"
 L.search_armor = "They were wearing nonstandard body armor."
@@ -744,9 +747,13 @@ L.info_popup_beggar = [[You are a Beggar! Traitors think you are a jester and yo
 deal no damage. However, if you can convince someone to give
 you a shop item you will join their team.]]
 
-L.info_popup_old_man = [[You are an Old Man! The slightest breeze could kill
+L.info_popup_oldman = [[You are an Old Man! The slightest breeze could kill
 you if you aren't careful. You don't care who wins as long
 as you are alive at the end of the round.]]
+
+L.info_popup_mercenary = [[You are a Mercenary! Try to survive and help your innocent friends!
+
+Press {menukey} to receive your equipment!]]
 
 L.info_popup_hypnotist = [[You are a Hypnotist! Work with fellow traitors to kill all others.
 

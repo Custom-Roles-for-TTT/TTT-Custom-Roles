@@ -8,40 +8,7 @@ local GetPTranslation = LANG.GetParamTranslation
 local function GetTextForRole(role)
     local menukey = Key("+menu_context", "C")
 
-    if role == ROLE_INNOCENT then
-        return GetTranslation("info_popup_innocent")
-
-    elseif role == ROLE_DETECTIVE then
-        return GetPTranslation("info_popup_detective", { menukey = Key("+menu_context", "C") })
-
-    elseif role == ROLE_JESTER then
-        return GetTranslation("info_popup_jester")
-
-    elseif role == ROLE_SWAPPER then
-        return GetTranslation("info_popup_swapper")
-
-    elseif role == ROLE_GLITCH then
-        return GetTranslation("info_popup_glitch")
-
-    elseif role == ROLE_PHANTOM then
-        return GetTranslation("info_popup_phantom")
-
-    elseif role == ROLE_DRUNK then
-        return GetTranslation("info_popup_drunk")
-
-    elseif role == ROLE_CLOWN then
-        return GetTranslation("info_popup_clown")
-
-    elseif role == ROLE_DEPUTY then
-        return GetTranslation("info_popup_deputy")
-
-    elseif role == ROLE_BEGGAR then
-        return GetTranslation("info_popup_beggar")
-
-    elseif role == ROLE_OLDMAN then
-        return GetTranslation("info_popup_old_man")
-
-    elseif role == ROLE_REVENGER then
+    if role == ROLE_REVENGER then
         local sid = LocalPlayer():GetNWString("RevengerLover", "")
         local lover = player.GetBySteamID64(sid)
         local name = "someone"
@@ -130,7 +97,7 @@ local function GetTextForRole(role)
         if #traitors > 1 then
             local traitorlist = ""
 
-            for k, ply in ipairs(traitors) do
+            for _, ply in ipairs(traitors) do
                 if ply ~= LocalPlayer() then
                     traitorlist = traitorlist .. string.rep(" ", 42) .. ply:Nick() .. "\n"
                 end
@@ -146,6 +113,8 @@ local function GetTextForRole(role)
         end
 
         return text
+    else
+        return GetPTranslation("info_popup_" .. ROLE_STRINGS[role], { menukey = menukey })
     end
 end
 

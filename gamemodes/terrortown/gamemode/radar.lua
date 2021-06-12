@@ -20,7 +20,7 @@ local function RadarScan(ply, cmd, args)
             table.Add(scan_ents, ents.FindByClass("ttt_decoy"))
 
             local targets = {}
-            for k, p in ipairs(scan_ents) do
+            for _, p in ipairs(scan_ents) do
                 if ply ~= p and IsValid(p) then
                     if (p:IsPlayer() and p:IsTerror()) or not p:IsPlayer() then
                         local pos = p:LocalToWorld(p:OBBCenter())
@@ -39,7 +39,7 @@ local function RadarScan(ply, cmd, args)
 
             net.Start("TTT_Radar")
             net.WriteUInt(#targets, 8)
-            for k, tgt in ipairs(targets) do
+            for _, tgt in ipairs(targets) do
                 net.WriteUInt(tgt.role, 8)
 
                 net.WriteInt(tgt.pos.x, 32)

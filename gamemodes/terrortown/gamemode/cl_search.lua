@@ -101,44 +101,12 @@ function PreprocSearch(raw)
             search[t].p = 1
             search[t].nick = d
         elseif t == "role" then
-            if d == ROLE_TRAITOR then
-                search[t].text = T("search_role_tra")
-            elseif d == ROLE_DETECTIVE then
-                search[t].text = T("search_role_det")
-            elseif d == ROLE_JESTER then
-                search[t].text = T("search_role_jes")
-            elseif d == ROLE_SWAPPER then
-                search[t].text = T("search_role_swa")
-            elseif d == ROLE_GLITCH then
-                search[t].text = T("search_role_gli")
-            elseif d == ROLE_PHANTOM then
-                search[t].text = T("search_role_pha")
-            elseif d == ROLE_HYPNOTIST then
-                search[t].text = T("search_role_hyp")
-            elseif d == ROLE_REVENGER then
-                search[t].text = T("search_role_rev")
-            elseif d == ROLE_DRUNK then
-                search[t].text = T("search_role_dru")
-            elseif d == ROLE_CLOWN then
-                search[t].text = T("search_role_clo")
-            elseif d == ROLE_DEPUTY then
-                search[t].text = T("search_role_dep")
-            elseif d == ROLE_IMPERSONATOR then
-                search[t].text = T("search_role_imp")
-            elseif d == ROLE_BEGGAR then
-                search[t].text = T("search_role_beg")
-            elseif d == ROLE_OLDMAN then
-                search[t].text = T("search_role_old")
-            else
-                search[t].text = T("search_role_inn")
-            end
-
+            search[t].text = T("search_role_" .. ROLE_STRINGS_SHORT[d])
             search[t].p = 2
         elseif t == "words" then
             if d ~= "" then
                 -- only append "--" if there's no ending interpunction
                 local final = string.match(d, "[\\.\\!\\?]$") ~= nil
-
                 search[t].text = PT("search_words", { lastwords = d .. (final and "" or "--.") })
             end
         elseif t == "eq_armor" then
@@ -154,7 +122,6 @@ function PreprocSearch(raw)
         elseif t == "eq_radar" then
             if d then
                 search[t].text = T("search_radar")
-
                 search[t].p = 19
             end
         elseif t == "c4" then
@@ -295,8 +262,6 @@ local function ShowSearchScreen(search_raw)
 
     ry = ry + desch + m
 
-    local butx, buty = rx, ry
-
     local dframe = vgui.Create("DFrame")
     dframe:SetSize(w, h)
     dframe:Center()
@@ -382,7 +347,6 @@ local function ShowSearchScreen(search_raw)
     dconfirm:SetSize(bw, bh)
     dconfirm:SetText(T("close"))
     dconfirm.DoClick = function() dframe:Close() end
-
 
     -- Finalize search data, prune stuff that won't be shown etc
     -- search is a table of tables that have an img and text key

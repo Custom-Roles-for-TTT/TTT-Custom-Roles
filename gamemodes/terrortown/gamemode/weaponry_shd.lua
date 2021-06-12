@@ -93,7 +93,13 @@ function WEPS.DoesRoleHaveWeapon(role)
     return false
 end
 
-function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor_weapons, sync_detective_weapons)
+MERC_SHOP_NONE = 0
+MERC_SHOP_UNION = 1
+MERC_SHOP_INTERSECT = 2
+MERC_SHOP_DETECTIVE = 3
+MERC_SHOP_TRAITOR = 4
+
+function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor_weapons, sync_detective_weapons, mercmode)
     if wep == nil then return end
     local id = WEPS.GetClass(wep)
 
@@ -105,22 +111,55 @@ function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor
             table.insert(wep.CanBuy, role)
         end
 
-        -- If the player is a role that should have all weapons that vanilla traitors have
-        if sync_traitor_weapons and
-            -- and they can't already buy this weapon
-            not table.HasValue(wep.CanBuy, role) and
-            -- and vanilla traitors CAN buy this weapon, let this player buy it too
-            table.HasValue(wep.CanBuy, ROLE_TRAITOR) then
-            table.insert(wep.CanBuy, role)
-        end
-
-        -- If the player is a role that should have all weapons that vanilla detectives have
-        if sync_detective_weapons and
+        -- Handle Mercenary specifically
+        if role == ROLE_MERCENARY then
+            -- Traitor OR Detective or Detective only modes
+            if mercmode == MERC_SHOP_UNION or mercmode == MERC_SHOP_DETECTIVE then
                 -- and they can't already buy this weapon
-                not table.HasValue(wep.CanBuy, role) and
-                -- and vanilla detectives CAN buy this weapon, let this player buy it too
-                table.HasValue(wep.CanBuy, ROLE_DETECTIVE) then
-            table.insert(wep.CanBuy, role)
+                if not table.HasValue(wep.CanBuy, role) and
+                    -- and detectives CAN buy this weapon, let the mercenary buy it too
+                    table.HasValue(wep.CanBuy, ROLE_DETECTIVE) then
+                    table.insert(wep.CanBuy, role)
+                end
+            end
+
+            -- Traitor OR Detective or Traitor only modes
+            if mercmode == MERC_SHOP_UNION or mercmode == MERC_SHOP_TRAITOR then
+                -- and they can't already buy this weapon
+                if not table.HasValue(wep.CanBuy, role) and
+                    -- and traitors CAN buy this weapon, let the mercenary buy it too
+                    table.HasValue(wep.CanBuy, ROLE_TRAITOR) then
+                    table.insert(wep.CanBuy, role)
+                end
+            end
+
+            -- Traitor AND Detective
+            if mercmode == MERC_SHOP_INTERSECT then
+                -- and they can't already buy this weapon
+                if not table.HasValue(wep.CanBuy, role) and
+                    -- and detectives AND traitors CAN buy this weapon, let the mercenary buy it too
+                    table.HasValue(wep.CanBuy, ROLE_DETECTIVE) and table.HasValue(wep.CanBuy, ROLE_TRAITOR) then
+                    table.insert(wep.CanBuy, role)
+                end
+            end
+        else
+            -- If the player is a role that should have all weapons that vanilla traitors have
+            if sync_traitor_weapons and
+                    -- and they can't already buy this weapon
+                    not table.HasValue(wep.CanBuy, role) and
+                    -- and vanilla traitors CAN buy this weapon, let this player buy it too
+                    table.HasValue(wep.CanBuy, ROLE_TRAITOR) then
+                table.insert(wep.CanBuy, role)
+            end
+
+            -- If the player is a role that should have all weapons that vanilla detectives have
+            if sync_detective_weapons and
+                    -- and they can't already buy this weapon
+                    not table.HasValue(wep.CanBuy, role) and
+                    -- and vanilla detectives CAN buy this weapon, let this player buy it too
+                    table.HasValue(wep.CanBuy, ROLE_DETECTIVE) then
+                table.insert(wep.CanBuy, role)
+            end
         end
 
         -- If the player can still buy this weapon, check the various excludes

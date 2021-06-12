@@ -26,6 +26,7 @@ function plymeta:GetDeputy() return self:GetRole() == ROLE_DEPUTY end
 function plymeta:GetImpersonator() return self:GetRole() == ROLE_IMPERSONATOR end
 function plymeta:GetBeggar() return self:GetRole() == ROLE_BEGGAR end
 function plymeta:GetOldMan() return self:GetRole() == ROLE_OLDMAN end
+function plymeta:GetMercenary() return self:GetRole() == ROLE_MERCENARY end
 
 function plymeta:GetDetectiveLike() return self:GetDetective() or ((self:GetDeputy() or self:GetImpersonator()) and self:GetNWBool("HasPromotion", false)) end
 
@@ -44,6 +45,7 @@ plymeta.IsDeputy = plymeta.GetDeputy
 plymeta.IsImpersonator = plymeta.GetImpersonator
 plymeta.IsBeggar = plymeta.GetBeggar
 plymeta.IsOldMan = plymeta.GetOldMan
+plymeta.IsMercenary = plymeta.GetMercenary
 
 plymeta.IsDetectiveLike = plymeta.GetDetectiveLike
 
@@ -93,6 +95,7 @@ function plymeta:IsActiveDeputy() return self:IsActiveRole(ROLE_DEPUTY) end
 function plymeta:IsActiveImpersonator() return self:IsActiveRole(ROLE_IMPERSONATOR) end
 function plymeta:IsActiveBeggar() return self:IsActiveRole(ROLE_BEGGAR) end
 function plymeta:IsActiveOldMan() return self:IsActiveRole(ROLE_OLDMAN) end
+function plymeta:IsActiveMercenary() return self:IsActiveRole(ROLE_MERCENARY) end
 
 function plymeta:IsActiveSpecial() return self:IsSpecial() and self:IsActive() end
 function plymeta:IsActiveCustom() return self:IsCustom() and self:IsActive() end

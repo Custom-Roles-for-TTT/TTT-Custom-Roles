@@ -186,21 +186,7 @@ local function ReceiveRole()
     end
 
     Msg("You are: ")
-    if client:IsTraitor() then MsgN("TRAITOR")
-    elseif client:IsDetective() then MsgN("DETECTIVE")
-    elseif client:IsJester() then MsgN("JESTER")
-    elseif client:IsSwapper() then MsgN("SWAPPER")
-    elseif client:IsGlitch() then MsgN("GLITCH")
-    elseif client:IsPhantom() then MsgN("PHANTOM")
-    elseif client:IsHypnotist() then MsgN("HYPNOTIST")
-    elseif client:IsRevenger() then MsgN("REVENGER")
-    elseif client:IsDrunk() then MsgN("DRUNK")
-    elseif client:IsClown() then MsgN("CLOWN")
-    elseif client:IsDeputy() then MsgN("DEPUTY")
-    elseif client:IsImpersonator() then MsgN("IMPERSONATOR")
-    elseif client:IsBeggar() then MsgN("BEGGAR")
-    elseif client:IsOldMan() then MsgN("OLD MAN")
-    else MsgN("INNOCENT") end
+    MsgN(string.upper(client:GetRoleString()))
 end
 net.Receive("TTT_Role", ReceiveRole)
 

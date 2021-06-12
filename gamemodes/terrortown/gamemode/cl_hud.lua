@@ -41,15 +41,7 @@ surface.CreateFont("UseHint", {
 -- Color presets
 local bg_colors = {
     background_main = Color(0, 0, 10, 200),
-
-    noround = Color(100, 100, 100, 255),
-    traitor = COLOR_TRAITOR,
-    special_traitor = COLOR_SPECIAL_TRAITOR,
-    innocent = COLOR_INNOCENT,
-    special_innocent = COLOR_SPECIAL_INNOCENT,
-    detective = COLOR_DETECTIVE,
-    jester = COLOR_JESTER,
-    independent = COLOR_INDEPENDENT
+    noround = Color(100, 100, 100, 255)
 };
 
 local health_colors = {
@@ -161,21 +153,9 @@ local function DrawBg(x, y, width, height, client)
     draw.RoundedBox(8, x, y, width, height, bg_colors.background_main)
 
     -- main border, traitor based
-    local col = bg_colors.innocent
+    local col = ROLE_COLORS[client:GetRole()]
     if GAMEMODE.round_state ~= ROUND_ACTIVE then
         col = bg_colors.noround
-    elseif client:IsTraitorTeam() and not client:IsCustom() then
-        col = bg_colors.traitor
-    elseif client:IsTraitorTeam() and client:IsCustom() then
-        col = bg_colors.special_traitor
-    elseif client:GetDetective() then
-        col = bg_colors.detective
-    elseif client:IsJesterTeam() then
-        col = bg_colors.jester
-    elseif client:IsIndependentTeam() then
-        col = bg_colors.independent
-    elseif client:IsInnocentTeam() and client:IsCustom() then
-        col = bg_colors.special_innocent
     end
 
     draw.RoundedBoxEx(8, x, y, tw, th, col, true, false, false, true)
