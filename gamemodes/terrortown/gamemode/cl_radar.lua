@@ -198,26 +198,36 @@ function RADAR:Draw(client)
             role = tgt.role or ROLE_INNOCENT
             if client:IsTraitorTeam() then
                 if role == ROLE_TRAITOR or role == ROLE_GLITCH then
-                    surface.SetDrawColor(255, 0, 0, alpha)
-                    surface.SetTextColor(255, 0, 0, alpha)
+                    local c = ColorAlpha(ROLE_COLORS_HIGHLIGHT(ROLE_TRAITOR), alpha)
+                    surface.SetDrawColor(c)
+                    surface.SetTextColor(c)
                 elseif TRAITOR_ROLES[role] then
-                    surface.SetDrawColor(255, 128, 0, alpha)
-                    surface.SetTextColor(255, 128, 0, alpha)
+                    local c = ColorAlpha(ROLE_COLORS_HIGHLIGHT(ROLE_HYPNOTIST), alpha) -- Any special traitor here will do
+                    surface.SetDrawColor(c)
+                    surface.SetTextColor(c)
                 elseif JESTER_ROLES[role] then
-                    surface.SetDrawColor(180, 23, 253, alpha)
-                    surface.SetTextColor(180, 23, 253, alpha)
+                    local c = ColorAlpha(ROLE_COLORS_HIGHLIGHT(ROLE_JESTER), alpha)
+                    surface.SetDrawColor(c)
+                    surface.SetTextColor(c)
                 else
-                    surface.SetDrawColor(0, 255, 0, alpha)
-                    surface.SetTextColor(0, 255, 0, alpha)
+                    local c = ColorAlpha(ROLE_COLORS_HIGHLIGHT(ROLE_INNOCENT), alpha)
+                    surface.SetDrawColor(c)
+                    surface.SetTextColor(c)
+                end
+            elseif client:IsDetective() then
+                if role == ROLE_DETECTIVE then
+                    local c = ColorAlpha(ROLE_COLORS_HIGHLIGHT(ROLE_DETECTIVE), alpha)
+                    surface.SetDrawColor(c)
+                    surface.SetTextColor(c)
+                else
+                    local c = ColorAlpha(ROLE_COLORS_HIGHLIGHT(ROLE_INNOCENT), alpha)
+                    surface.SetDrawColor(c)
+                    surface.SetTextColor(c)
                 end
             else
-                if role == ROLE_DETECTIVE then
-                    surface.SetDrawColor(0, 0, 255, alpha)
-                    surface.SetTextColor(0, 0, 255, alpha)
-                else
-                    surface.SetDrawColor(0, 255, 0, alpha)
-                    surface.SetTextColor(0, 255, 0, alpha)
-                end
+                local c = ColorAlpha(ROLE_COLORS_HIGHLIGHT(ROLE_INNOCENT), alpha)
+                surface.SetDrawColor(c)
+                surface.SetTextColor(c)
             end
 
             DrawTarget(tgt, 24, 0)
