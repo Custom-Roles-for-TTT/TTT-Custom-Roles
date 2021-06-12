@@ -3,6 +3,10 @@
 -- 2^16 bytes - 4 (header) - 2 (UInt length in TTT_ReportStream) - 1 (terminanting byte)
 (SERVER and SCORE or CLSCORE).MaxStreamLength = 65529
 
+function GetRoleId(id)
+    return "ID_" .. id
+end
+
 function ScoreInit()
     return {
         deaths = 0,
@@ -64,7 +68,7 @@ end
 function ScoreEventLog(events, scores, roles)
     for k, _ in pairs(scores) do
         scores[k] = ScoreInit()
-        scores[k].role = roles[k]
+        scores[k].role = roles[GetRoleId(k)]
     end
 
     for _, e in pairs(events) do

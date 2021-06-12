@@ -544,7 +544,7 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                             roleFileName = ROLE_STRINGS_SHORT[ROLE_DRUNK]
                         elseif ply:GetNWBool("WasBeggar", false) then
                             roleFileName = ROLE_STRINGS_SHORT[ROLE_BEGGAR]
-                        elseif ply:GetNWBool("WasHypnotised") then
+                        elseif ply:GetNWBool("WasHypnotised", false) then
                             roleFileName = ROLE_STRINGS_SHORT[startingRole]
                         end
                     elseif ply:IsJester() then
@@ -852,10 +852,15 @@ function CLSCORE:BuildHilitePanel(dpanel)
     -- Get the player's name and current role and pass that into the awards
     local playerInfo = {}
     for id, nick in pairs(self.Players) do
+        local role = self.Roles[GetRoleId(id)]
         local ply = GetPlayerFromSteam64(id)
+        -- If the player disconnected, use their starting role
+        if IsValid(ply) then
+            role = ply:GetRole()
+        end
         playerInfo[id] = {
             nick = nick,
-            role = ply:GetRole()
+            role = role
         }
     end
 

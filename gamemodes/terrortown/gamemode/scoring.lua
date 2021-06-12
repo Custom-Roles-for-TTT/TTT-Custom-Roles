@@ -93,12 +93,14 @@ function SCORE:HandleSpawn(ply)
     if ply:Team() == TEAM_TERROR then
         self:AddEvent({ id = EVENT_SPAWN, ni = ply:Nick(), sid = ply:SteamID(), sid64 = ply:SteamID64() })
     end
-end
+end 
 
 function SCORE:HandleSelection()
     local roles = {}
     for _, ply in ipairs(player.GetAll()) do
-        roles[ply:SteamID64()] = ply:GetRole()
+        -- Prefix the ID value with a string to force the key to stay as a string when it gets transferred
+        -- Without this, the key gets converted to a floating-point number which loses precision and causes errors during data lookup
+        roles[GetRoleId(ply:SteamID64())] = ply:GetRole()
     end
 
     self:AddEvent({ id = EVENT_SELECTED, roles = roles })
