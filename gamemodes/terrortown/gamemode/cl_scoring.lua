@@ -527,7 +527,7 @@ function CLSCORE:BuildSummaryPanel(dpanel)
 
     bg.PaintOver = function()
         draw.RoundedBox(8, 8, ywin - 5, w - 14, winlbl:GetTall() + 10, title.c)
-        if old_man_won_last_round then draw.RoundedBoxEx(8, 8, 65, w - 14, 28, COLOR_INDEPENDENT, false, false, true, true) end
+        if old_man_won_last_round then draw.RoundedBoxEx(8, 8, 65, w - 14, 28, ROLE_COLORS[ROLE_OLDMAN], false, false, true, true) end
         draw.RoundedBox(0, 8, ywin + winlbl:GetTall() + 14, 341, 329, Color(164, 164, 164, 255))
         draw.RoundedBox(0, 357, ywin + winlbl:GetTall() + 14, 341, 329, Color(164, 164, 164, 255))
         draw.RoundedBox(0, 8, ywin + winlbl:GetTall() + 352, 690, 32, Color(164, 164, 164, 255))
@@ -884,7 +884,7 @@ function CLSCORE:BuildHilitePanel(dpanel)
 
     bg.PaintOver = function()
         draw.RoundedBox(8, 8, ywin - 5, w - 14, winlbl:GetTall() + 10, title.c)
-        if old_man_won_last_round then draw.RoundedBoxEx(8, 8, 65, w - 14, 28, COLOR_INDEPENDENT, false, false, true, true) end
+        if old_man_won_last_round then draw.RoundedBoxEx(8, 8, 65, w - 14, 28, ROLE_COLORS[ROLE_OLDMAN], false, false, true, true) end
     end
 
     if old_man_won_last_round then winlbl:SetPos(xwin, ywin - 15) end
