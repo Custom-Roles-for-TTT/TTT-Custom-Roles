@@ -50,7 +50,7 @@ end
 
 -- Tell traitors about other traitors
 
-function SendTraitorList(ply_or_rf) SendRoleList(ROLE_TRAITOR, ply_or_rf) end
+function SendTraitorList(ply_or_rf, pred) SendRoleList(ROLE_TRAITOR, ply_or_rf, pred) end
 function SendDetectiveList(ply_or_rf) SendRoleList(ROLE_DETECTIVE, ply_or_rf) end
 function SendInnocentList(ply_or_rf) SendRoleList(ROLE_INNOCENT, ply_or_rf) end
 function SendJesterList(ply_or_rf) SendRoleList(ROLE_JESTER, ply_or_rf) end
@@ -65,6 +65,7 @@ function SendDeputyList(ply_or_rf) SendRoleList(ROLE_DEPUTY, ply_or_rf) end
 function SendImpersonatorList(ply_or_rf) SendRoleList(ROLE_IMPERSONATOR, ply_or_rf) end
 function SendBeggarList(ply_or_rf) SendRoleList(ROLE_BEGGAR, ply_or_rf) end
 function SendOldManList(ply_or_rf) SendRoleList(ROLE_OLDMAN, ply_or_rf) end
+function SendMercenaryList(ply_or_rf) SendRoleList(ROLE_MERCENARY, ply_or_rf) end
 
 function SendConfirmedTraitors(ply_or_rf)
     SendTraitorList(ply_or_rf, function(p) return p:GetNWBool("body_searched") end)
@@ -87,6 +88,7 @@ function SendFullStateUpdate()
     SendImpersonatorList()
     SendBeggarList()
     SendOldManList()
+    SendMercenaryList()
 end
 
 function SendRoleReset(ply_or_rf)
@@ -96,7 +98,7 @@ function SendRoleReset(ply_or_rf)
     net.WriteUInt(ROLE_INNOCENT, 8)
 
     net.WriteUInt(#plys, 8)
-    for k, v in ipairs(plys) do
+    for _, v in ipairs(plys) do
         net.WriteUInt(v:EntIndex() - 1, 7)
     end
 
@@ -127,6 +129,7 @@ local function request_rolelist(ply)
         SendImpersonatorList(ply)
         SendBeggarList(ply)
         SendOldManList(ply)
+        SendMercenaryList(ply)
     end
 end
 concommand.Add("_ttt_request_rolelist", request_rolelist)
@@ -256,7 +259,7 @@ concommand.Add("ttt_force_deputy", force_deputy, nil, nil, FCVAR_CHEAT)
 
 local function force_impersonator(ply)
     ply:SetRoleAndBroadcast(ROLE_IMPERSONATOR)
-    ply:SetCredits(0)
+    ply:SetCredits(GetConVarNumber("ttt_imp_credits_starting"))
     clear_role_effects(ply)
     SendFullStateUpdate()
 end
@@ -280,6 +283,14 @@ local function force_old_man(ply)
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_old_man", force_old_man, nil, nil, FCVAR_CHEAT)
+
+local function force_mercenary(ply)
+    ply:SetRoleAndBroadcast(ROLE_MERCENARY)
+    ply:SetCredits(GetConVarNumber("ttt_mer_credits_starting"))
+    clear_role_effects(ply)
+    SendFullStateUpdate()
+end
+concommand.Add("ttt_force_mercenary", force_mercenary, nil, nil, FCVAR_CHEAT)
 
 local function force_spectate(ply, cmd, arg)
     if IsValid(ply) then

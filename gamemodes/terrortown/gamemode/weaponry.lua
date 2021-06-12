@@ -47,10 +47,11 @@ local function GetLoadoutWeapons(r)
             [ROLE_DEPUTY] = {},
             [ROLE_IMPERSONATOR] = {},
             [ROLE_BEGGAR] = {},
-            [ROLE_OLDMAN] = {}
+            [ROLE_OLDMAN] = {},
+            [ROLE_MERCENARY] = {}
         };
 
-        for k, w in pairs(weapons.GetList()) do
+        for _, w in pairs(weapons.GetList()) do
             if WEPS.GetClass(w) == "weapon_ttt_unarmed" or WEPS.GetClass(w) == "weapon_zm_carry" or WEPS.GetClass(w) == "weapon_zm_improvised" then
                 for wrole = 0, ROLE_MAX do
                     table.insert(tbl[wrole], WEPS.GetClass(w))
@@ -384,7 +385,9 @@ local function OrderEquipment(ply, cmd, args)
         local promoted = ply:IsDetectiveLike() and role ~= ROLE_DETECTIVE
         local sync_detective_weapons = promoted
 
-        WEPS.HandleCanBuyOverrides(swep_table, role, false, sync_traitor_weapons, sync_detective_weapons)
+        local mercmode = GetGlobalInt("ttt_shop_mer_mode")
+
+        WEPS.HandleCanBuyOverrides(swep_table, role, false, sync_traitor_weapons, sync_detective_weapons, mercmode)
     end
 
     local received = false

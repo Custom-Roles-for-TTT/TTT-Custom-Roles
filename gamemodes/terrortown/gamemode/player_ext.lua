@@ -63,23 +63,19 @@ function plymeta:SubtractCredits(amt) self:AddCredits(-amt) end
 
 function plymeta:SetDefaultCredits()
     local c = 0
-    if self:IsTraitorTeam() then
-        if self:IsTraitor() then
-            c = GetConVar("ttt_credits_starting"):GetInt()
-        elseif self:IsHypnotist() then
-            c = GetConVar("ttt_hyp_credits_starting"):GetInt()
-        elseif self:IsImpersonator() then
-            c = GetConVar("ttt_imp_credits_starting"):GetInt()
-        end
+    local cvar = nil
+    if self:IsTraitor() then
+        cvar = "ttt_credits_starting"
+    else
+        cvar = "ttt_" .. ROLE_STRINGS_SHORT[self:GetRole()] .. "_credits_starting"
+    end
+    if ConVarExists(cvar) then
+        c = GetConVar(cvar):GetInt()
+    end
 
+    if self:IsTraitorTeam() then
         if CountTraitors() == 1 then
             c = c + GetConVar("ttt_credits_alonebonus"):GetInt()
-        end
-        c = math.ceil(c)
-    else
-        local cvar = "ttt_" .. ROLE_STRINGS_SHORT[self:GetRole()] .. "_credits_starting"
-        if ConVarExists(cvar) then
-            c = math.ceil(GetConVar(cvar):GetInt())
         end
     end
 
@@ -140,7 +136,6 @@ function plymeta:AddBought(id)
 
     self:SendBought()
 end
-
 
 -- Strips player of all equipment
 function plymeta:StripAll()

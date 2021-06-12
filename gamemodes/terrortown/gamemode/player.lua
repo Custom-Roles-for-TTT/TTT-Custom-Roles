@@ -38,6 +38,7 @@ function GM:PlayerInitialSpawn(ply)
         SendImpersonatorList()
         SendBeggarList()
         SendOldManList()
+        SendMercenaryList()
     end
 
     -- Game has started, tell this guy where the round is at
@@ -58,6 +59,7 @@ function GM:PlayerInitialSpawn(ply)
         SendImpersonatorList(ply)
         SendBeggarList(ply)
         SendOldManList(ply)
+        SendMercenaryList(ply)
     end
 
     -- Handle spec bots
@@ -139,7 +141,7 @@ function GM:IsSpawnpointSuitable(ply, spwn, force, rigged)
 
     local blocking = ents.FindInBox(pos + Vector(-16, -16, 0), pos + Vector(16, 16, 64))
 
-    for k, p in ipairs(blocking) do
+    for _, p in ipairs(blocking) do
         if IsValid(p) and p:IsPlayer() and p:IsTerror() and p:Alive() then
             if force then
                 p:Kill()
@@ -166,7 +168,6 @@ function GetSpawnEnts(shuffled, force_all)
             end
         end
     end
-
 
     -- Don't use info_player_start unless absolutely necessary, because eg. TF2
     -- uses it for observer starts that are in places where players cannot really
@@ -526,6 +527,7 @@ function GM:PlayerDisconnected(ply)
         SendImpersonatorList()
         SendBeggarList()
         SendOldManList()
+        SendMercenaryList()
 
         net.Start("TTT_PlayerDisconnected")
         net.WriteString(ply:Nick())

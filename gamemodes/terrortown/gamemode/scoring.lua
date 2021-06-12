@@ -97,6 +97,7 @@ end
 
 function SCORE:HandleSelection()
     local innocents = {}
+    local mercenaries = {}
     local traitors = {}
     local detectives = {}
     local jesters = {}
@@ -143,11 +144,14 @@ function SCORE:HandleSelection()
             table.insert(beggars, ply:SteamID64())
         elseif ply:GetOldMan() then
             table.insert(oldmen, ply:SteamID64())
+        elseif ply:GetMercenary() then
+            table.insert(mercenaries, ply:SteamID64())
         end
     end
 
     self:AddEvent({ id = EVENT_SELECTED,
                     innocent_ids = innocents,
+                    mercenary_ids = mercenaries,
                     traitor_ids = traitors,
                     detective_ids = detectives,
                     jester_ids = jesters,
@@ -202,6 +206,7 @@ end
 function SCORE:ApplyEventLogScores(wintype)
     local scores = {}
     local innocents = {}
+    local mercenaries = {}
     local traitors = {}
     local detectives = {}
     local jesters = {}
@@ -250,11 +255,13 @@ function SCORE:ApplyEventLogScores(wintype)
             table.insert(beggars, ply:SteamID64())
         elseif ply:GetOldMan() then
             table.insert(oldmen, ply:SteamID64())
+        elseif ply:GetMercenary() then
+            table.insert(mercenaries, ply:SteamID64())
         end
     end
 
     -- individual scores, and count those left alive
-    local scored_log = ScoreEventLog(self.Events, scores, innocents, traitors, detectives, jesters, swappers, glitches, phantoms, hypnotists, revengers, drunks, clowns, deputies, impersonators, beggars, oldmen)
+    local scored_log = ScoreEventLog(self.Events, scores, innocents, traitors, detectives, jesters, swappers, glitches, phantoms, hypnotists, revengers, drunks, clowns, deputies, impersonators, beggars, oldmen, mercenaries)
     local ply = nil
     for sid, s in pairs(scored_log) do
         ply = player.GetBySteamID64(sid)

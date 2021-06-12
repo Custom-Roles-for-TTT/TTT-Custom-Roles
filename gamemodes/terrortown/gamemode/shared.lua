@@ -28,6 +28,7 @@ ROLE_DEPUTY = 11
 ROLE_IMPERSONATOR = 12
 ROLE_BEGGAR = 13
 ROLE_OLDMAN = 14
+ROLE_MERCENARY = 15
 
 ROLE_MAX = 14
 
@@ -40,13 +41,13 @@ local function AddRoleAssociations(list, roles)
 end
 
 SHOP_ROLES = {}
-AddRoleAssociations(SHOP_ROLES, {ROLE_TRAITOR, ROLE_DETECTIVE, ROLE_HYPNOTIST, ROLE_DEPUTY, ROLE_IMPERSONATOR, ROLE_JESTER, ROLE_SWAPPER})
+AddRoleAssociations(SHOP_ROLES, {ROLE_TRAITOR, ROLE_DETECTIVE, ROLE_HYPNOTIST, ROLE_DEPUTY, ROLE_IMPERSONATOR, ROLE_JESTER, ROLE_SWAPPER, ROLE_MERCENARY})
 
 TRAITOR_ROLES = {}
 AddRoleAssociations(TRAITOR_ROLES, {ROLE_TRAITOR, ROLE_HYPNOTIST, ROLE_IMPERSONATOR})
 
 INNOCENT_ROLES = {}
-AddRoleAssociations(INNOCENT_ROLES, {ROLE_INNOCENT, ROLE_DETECTIVE, ROLE_GLITCH, ROLE_PHANTOM, ROLE_REVENGER, ROLE_DEPUTY})
+AddRoleAssociations(INNOCENT_ROLES, {ROLE_INNOCENT, ROLE_DETECTIVE, ROLE_GLITCH, ROLE_PHANTOM, ROLE_REVENGER, ROLE_DEPUTY, ROLE_MERCENARY})
 
 JESTER_ROLES = {}
 AddRoleAssociations(JESTER_ROLES, {ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_BEGGAR})
@@ -93,7 +94,8 @@ ROLE_COLORS = {
     [ROLE_DEPUTY] = COLOR_SPECIAL_INNOCENT,
     [ROLE_IMPERSONATOR] = COLOR_SPECIAL_TRAITOR,
     [ROLE_BEGGAR] = COLOR_JESTER,
-    [ROLE_OLDMAN] = COLOR_INDEPENDENT
+    [ROLE_OLDMAN] = COLOR_INDEPENDENT,
+    [ROLE_MERCENARY] = COLOR_SPECIAL_INNOCENT
 }
 ROLE_COLOURS = ROLE_COLORS
 
@@ -113,7 +115,8 @@ ROLE_COLORS_DARK = {
     [ROLE_DEPUTY] = COLOR_SPECIAL_INNOCENT_DARK,
     [ROLE_IMPERSONATOR] = COLOR_SPECIAL_TRAITOR_DARK,
     [ROLE_BEGGAR] = COLOR_JESTER_DARK,
-    [ROLE_OLDMAN] = COLOR_INDEPENDENT_DARK
+    [ROLE_OLDMAN] = COLOR_INDEPENDENT_DARK,
+    [ROLE_MERCENARY] = COLOR_SPECIAL_INNOCENT_DARK
 }
 ROLE_COLOURS_DARK = ROLE_COLORS_DARK
 
@@ -133,7 +136,8 @@ ROLE_COLORS_HIGHLIGHT = {
     [ROLE_DEPUTY] = COLOR_SPECIAL_INNOCENT_HIGHLIGHT,
     [ROLE_IMPERSONATOR] = COLOR_SPECIAL_TRAITOR_HIGHLIGHT,
     [ROLE_BEGGAR] = COLOR_JESTER_HIGHLIGHT,
-    [ROLE_OLDMAN] = COLOR_INDEPENDENT_HIGHLIGHT
+    [ROLE_OLDMAN] = COLOR_INDEPENDENT_HIGHLIGHT,
+    [ROLE_MERCENARY] = COLOR_SPECIAL_INNOCENT_HIGHLIGHT
 }
 ROLE_COLOURS_HIGHLIGHT = ROLE_COLORS_HIGHLIGHT
 
@@ -153,7 +157,8 @@ ROLE_STRINGS = {
     [ROLE_DEPUTY] = "deputy",
     [ROLE_IMPERSONATOR] = "impersonator",
     [ROLE_BEGGAR] = "beggar",
-    [ROLE_OLDMAN] = "oldman"
+    [ROLE_OLDMAN] = "oldman",
+    [ROLE_MERCENARY] = "mercenary"
 }
 
 ROLE_STRINGS_EXT = {
@@ -172,7 +177,8 @@ ROLE_STRINGS_EXT = {
     [ROLE_DEPUTY] = "a deputy",
     [ROLE_IMPERSONATOR] = "an impersonator",
     [ROLE_BEGGAR] = "a beggar",
-    [ROLE_OLDMAN] = "an old man"
+    [ROLE_OLDMAN] = "an old man",
+    [ROLE_MERCENARY] = "a mercenary"
 }
 
 ROLE_STRINGS_SHORT = {
@@ -190,7 +196,8 @@ ROLE_STRINGS_SHORT = {
     [ROLE_DEPUTY] = "dep",
     [ROLE_IMPERSONATOR] = "imp",
     [ROLE_BEGGAR] = "beg",
-    [ROLE_OLDMAN] = "old"
+    [ROLE_OLDMAN] = "old",
+    [ROLE_MERCENARY] = "mer"
 }
 
 -- Game event log defs
@@ -430,6 +437,24 @@ DefaultEquipment = {
         "weapon_ttt_stungun",
         "weapon_ttt_cse",
         "weapon_ttt_teleport",
+        EQUIP_ARMOR,
+        EQUIP_RADAR
+    },
+
+    [ROLE_MERCENARY] = {
+        "weapon_ttt_health_station",
+        "weapon_ttt_teleport",
+        "weapon_ttt_confgrenade",
+        "weapon_ttt_m16",
+        "weapon_ttt_smokegrenade",
+        "weapon_zm_mac10",
+        "weapon_zm_molotov",
+        "weapon_zm_pistol",
+        "weapon_zm_revolver",
+        "weapon_zm_rifle",
+        "weapon_zm_shotgun",
+        "weapon_zm_sledge",
+        "weapon_ttt_glock",
         EQUIP_ARMOR,
         EQUIP_RADAR
     },

@@ -93,6 +93,9 @@ CreateConVar("ttt_revenger_min_players", "0")
 CreateConVar("ttt_deputy_enabled", 0)
 CreateConVar("ttt_deputy_spawn_weight", "1")
 CreateConVar("ttt_deputy_min_players", "0")
+CreateConVar("ttt_mercenary_enabled", 0)
+CreateConVar("ttt_mercenary_spawn_weight", "1")
+CreateConVar("ttt_mercenary_min_players", "0")
 
 -- Special traitor spawn probabilities
 CreateConVar("ttt_special_traitor_pct", 0.33)
@@ -200,6 +203,7 @@ CreateConVar("ttt_hyp_credits_starting", "1")
 CreateConVar("ttt_jes_credits_starting", "0")
 CreateConVar("ttt_swa_credits_starting", "0")
 CreateConVar("ttt_imp_credits_starting", "1")
+CreateConVar("ttt_mer_credits_starting", "1")
 
 -- Other
 CreateConVar("ttt_use_weapon_spawn_scripts", "1")
@@ -227,6 +231,7 @@ for _, role in ipairs(table.GetKeys(SHOP_ROLES)) do
 end
 CreateConVar("ttt_shop_hyp_sync", "0")
 CreateConVar("ttt_shop_imp_sync", "0")
+CreateConVar("ttt_shop_mer_mode", "2")
 
 -- bem server convars
 CreateConVar("ttt_bem_allow_change", 1, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Allow clients to change the look of the Traitor/Detective menu")
@@ -245,8 +250,8 @@ local ttt_minply = CreateConVar("ttt_minimum_players", "2", FCVAR_ARCHIVE + FCVA
 
 -- debuggery
 local ttt_dbgwin = CreateConVar("ttt_debug_preventwin", "0")
-CreateConVar("ttt_debug_logkills", "1", FCVAR_ARCHIVE + FCVAR_NOTIFY)
-local ttt_dbgroles = CreateConVar("ttt_debug_logroles", "1", FCVAR_ARCHIVE + FCVAR_NOTIFY)
+CreateConVar("ttt_debug_logkills", "1")
+local ttt_dbgroles = CreateConVar("ttt_debug_logroles", "1")
 
 -- Localise stuff we use often. It's like Lua go-faster stripes.
 local math = math
@@ -429,6 +434,7 @@ function GM:SyncGlobals()
     end
     SetGlobalBool("ttt_shop_hyp_sync", GetConVar("ttt_shop_hyp_sync"):GetBool())
     SetGlobalBool("ttt_shop_imp_sync", GetConVar("ttt_shop_imp_sync"):GetBool())
+    SetGlobalInt("ttt_shop_mer_mode", GetConVar("ttt_shop_mer_mode"):GetInt())
 
     SetGlobalBool("ttt_phantom_killer_smoke", GetConVar("ttt_phantom_killer_smoke"):GetBool())
     SetGlobalInt("ttt_phantom_killer_haunt_power_max", GetConVar("ttt_phantom_killer_haunt_power_max"):GetInt())
@@ -1328,7 +1334,8 @@ function SelectRoles()
         [ROLE_DEPUTY] = {},
         [ROLE_IMPERSONATOR] = {},
         [ROLE_BEGGAR] = {},
-        [ROLE_OLDMAN] = {}
+        [ROLE_OLDMAN] = {},
+        [ROLE_MERCENARY] = {}
     };
 
     if not GAMEMODE.LastRole then GAMEMODE.LastRole = {} end
@@ -1381,6 +1388,7 @@ function SelectRoles()
     local hasGlitch = false
     local hasRevenger = false
     local hasDeputy = false
+    local hasMercenary = false
 
     local hasIndependent = false
 
@@ -1437,6 +1445,10 @@ function SelectRoles()
                     end
                     forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
                     PrintRole(v, "deputy")
+                elseif role == ROLE_MERCENARY then
+                    hasMercenary = true
+                    forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
+                    PrintRole(v, "mercenary")
 
                 -- INDEPENDENT ROLES
                 elseif role == ROLE_JESTER then
@@ -1609,6 +1621,11 @@ function SelectRoles()
         if not hasDeputy and GetConVar("ttt_deputy_enabled"):GetBool() and detective_count > 0 and not impersonator_only and choice_count >= GetConVar("ttt_deputy_min_players"):GetInt() then
             for _ = 1, GetConVar("ttt_deputy_spawn_weight"):GetInt() do
                 table.insert(specialInnocentRoles, ROLE_DEPUTY)
+            end
+        end
+        if not hasMercenary and GetConVar("ttt_mercenary_enabled"):GetBool() and choice_count >= GetConVar("ttt_mercenary_min_players"):GetInt() then
+            for _ = 1, GetConVar("ttt_mercenary_spawn_weight"):GetInt() do
+                table.insert(specialInnocentRoles, ROLE_MERCENARY)
             end
         end
         for _ = 1, max_special_innocent_count do

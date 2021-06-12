@@ -62,17 +62,20 @@ local function ItemIsWeapon(item) return not tonumber(item.id) end
 function GetEquipmentForRole(role, promoted, block_randomization)
     WEPS.PrepWeaponsLists(role)
 
+    -- The mercenary shop mode to use
+    local mercmode = GetGlobalInt("ttt_shop_mer_mode")
+
     -- Pre-load the Traitor weapons so that any that have their CanBuy modified will also apply to the enabled allied role(s)
-    local sync_hypnotist = GetGlobalBool("ttt_shop_hyp_sync") and role == ROLE_HYPNOTIST
-    local sync_impersonator = GetGlobalBool("ttt_shop_imp_sync") and role == ROLE_IMPERSONATOR
-    local sync_traitor_weapons = sync_hypnotist or sync_impersonator
+    local sync_traitor_weapons = (GetGlobalBool("ttt_shop_hyp_sync") and role == ROLE_HYPNOTIST) or
+                                    (GetGlobalBool("ttt_shop_imp_sync") and role == ROLE_IMPERSONATOR) or
+                                    (mercmode > MERC_SHOP_NONE and role == ROLE_MERCENARY)
     if sync_traitor_weapons and not Equipment[ROLE_TRAITOR] then
         GetEquipmentForRole(ROLE_TRAITOR, false, true)
     end
 
     -- Pre-load the Detective weapons so that any that have their CanBuy modified will also apply to the enabled allied role(s)
-    local sync_promoted = promoted and (role == ROLE_DEPUTY or role == ROLE_IMPERSONATOR)
-    local sync_detective_weapons = sync_promoted
+    local sync_detective_weapons = (promoted and (role == ROLE_DEPUTY or role == ROLE_IMPERSONATOR)) or
+                                    (mercmode > MERC_SHOP_NONE and role == ROLE_MERCENARY)
     if sync_detective_weapons and not Equipment[ROLE_DETECTIVE] then
         GetEquipmentForRole(ROLE_DETECTIVE, false, true)
     end
@@ -84,7 +87,7 @@ function GetEquipmentForRole(role, promoted, block_randomization)
 
         -- find buyable weapons to load info from
         for _, v in pairs(weapons.GetList()) do
-            WEPS.HandleCanBuyOverrides(v, role, block_randomization, sync_traitor_weapons, sync_detective_weapons)
+            WEPS.HandleCanBuyOverrides(v, role, block_randomization, sync_traitor_weapons, sync_detective_weapons, mercmode)
             if v and v.CanBuy then
                 local data = v.EquipMenuData or {}
                 local base = {
@@ -685,7 +688,7 @@ local function TraitorMenuPopup()
     end
 
     -- Credit transferring, but only for roles that have a shop and are allowed to transfer
-    if credits > 0 and hasShop and not ply:IsJesterTeam() then
+    if credits > 0 and hasShop and not (ply:IsMercenary() or ply:IsJesterTeam()) then
         local dtransfer = CreateTransferMenu(dsheet)
         dsheet:AddSheet(GetTranslation("xfer_name"), dtransfer, "icon16/group_gear.png", false, false, GetTranslation("equip_tooltip_xfer"))
         show = true

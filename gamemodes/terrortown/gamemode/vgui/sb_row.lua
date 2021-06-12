@@ -195,6 +195,8 @@ function PANEL:Paint(width, height)
             c = rolecolor.jester
         elseif c == ROLE_OLDMAN then
             c = rolecolor.independent
+        elseif c == ROLE_MERCENARY then
+            c = rolecolor.special_innocent
         end
     end
 

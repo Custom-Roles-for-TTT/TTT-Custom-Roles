@@ -11,6 +11,7 @@ CLSCORE = {}
 CLSCORE.Events = {}
 CLSCORE.Scores = {}
 CLSCORE.InnocentIDs = {}
+CLSCORE.MercenaryIDs = {}
 CLSCORE.TraitorIDs = {}
 CLSCORE.DetectiveIDs = {}
 CLSCORE.JesterIDs = {}
@@ -367,7 +368,7 @@ function CLSCORE:BuildScorePanel(dpanel)
     for id, s in pairs(scores) do
         if id ~= -1 then
             local was_traitor = s.was_traitor or s.was_hypnotist or s.was_impersonator
-            local was_innocent = s.was_innocent or s.was_detective or s.was_phantom or s.was_glitch or s.was_revenger or s.was_deputy
+            local was_innocent = s.was_innocent or s.was_detective or s.was_phantom or s.was_glitch or s.was_revenger or s.was_deputy or s.was_mercenary
             local role = ROLE_STRINGS[ROLE_INNOCENT]
             if s.was_traitor then
                 role = ROLE_STRINGS[ROLE_TRAITOR]
@@ -397,6 +398,8 @@ function CLSCORE:BuildScorePanel(dpanel)
                 role = ROLE_STRINGS[ROLE_BEGGAR]
             elseif s.was_old_man then
                 role = ROLE_STRINGS[ROLE_OLDMAN]
+            elseif s.was_mercenary then
+                role = ROLE_STRINGS[ROLE_MERCENARY]
             end
 
             local surv = ""
@@ -588,6 +591,8 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                     startingRole = ROLE_BEGGAR
                 elseif s.was_old_man then
                     startingRole = ROLE_OLDMAN
+                elseif s.was_mercenary then
+                    startingRole = ROLE_MERCENARY
                 end
 
                 local hasDisconnected = false
@@ -919,7 +924,7 @@ function CLSCORE:BuildHilitePanel(dpanel)
     -- priority/interestingness
     local award_choices = {}
     for _, afn in pairs(AWARDS) do
-        local a = afn(self.Events, self.Scores, self.Players, self.InnocentIDs, self.TraitorIDs, self.DetectiveIDs, self.JesterIDs, self.SwapperIDs, self.GlitchIDs, self.PhantomIDs, self.HypnotistIDs, self.RevengerIDs, self.DrunkIDs, self.ClownIDs, self.DeputyIDs, self.ImpersonatorIDs, self.BeggarIDs, self.OldManIDs)
+        local a = afn(self.Events, self.Scores, self.Players, self.InnocentIDs, self.TraitorIDs, self.DetectiveIDs, self.JesterIDs, self.SwapperIDs, self.GlitchIDs, self.PhantomIDs, self.HypnotistIDs, self.RevengerIDs, self.DrunkIDs, self.ClownIDs, self.DeputyIDs, self.ImpersonatorIDs, self.BeggarIDs, self.OldManIDs, self.MercenaryIDs)
         if ValidAward(a) then
             table.insert(award_choices, a)
         end
@@ -1063,6 +1068,7 @@ end
 function CLSCORE:Reset()
     self.Events = {}
     self.InnocentIDs = {}
+    self.MercenaryIDs = {}
     self.TraitorIDs = {}
     self.DetectiveIDs = {}
     self.JesterIDs = {}
@@ -1087,7 +1093,7 @@ end
 function CLSCORE:Init(events)
     -- Get start time, traitors, detectives, scores, and nicks
     local starttime = 0
-    local innocents, traitors, detectives, jesters, swappers, glitches, phantoms, hypnotists, revengers, drunks, clowns, deputies, impersonators, beggars, oldmen
+    local innocents, traitors, detectives, jesters, swappers, glitches, phantoms, hypnotists, revengers, drunks, clowns, deputies, impersonators, beggars, oldmen, mercenaries
     local scores, nicks = {}, {}
 
     local game, selected, spawn = false, false, false
@@ -1119,6 +1125,7 @@ function CLSCORE:Init(events)
             impersonators = e.impersonator_ids
             beggars = e.beggar_ids
             oldmen = e.old_man_ids
+            mercenaries = e.mercenary_ids
 
             if game and spawn then
                 break
@@ -1140,11 +1147,12 @@ function CLSCORE:Init(events)
     if traitors == nil then traitors = {} end
     if detectives == nil then detectives = {} end
 
-    scores = ScoreEventLog(events, scores, innocents, traitors, detectives, jesters, swappers, glitches, phantoms, hypnotists, revengers, drunks, clowns, deputies, impersonators, beggars, oldmen)
+    scores = ScoreEventLog(events, scores, innocents, traitors, detectives, jesters, swappers, glitches, phantoms, hypnotists, revengers, drunks, clowns, deputies, impersonators, beggars, oldmen, mercenaries)
 
     self.Players = nicks
     self.Scores = scores
     self.InnocentIDs = innocents
+    self.MercenaryIDs = mercenaries
     self.TraitorIDs = traitors
     self.DetectiveIDs = detectives
     self.JesterIDs = jesters
