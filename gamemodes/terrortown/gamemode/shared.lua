@@ -180,7 +180,7 @@ local function FillRoleColors(list, type)
         local h, s, l = ColorToHSL(c)
         if type == "dark" then
             l = math.max(l - 0.125, 0.125)
-        elseif type == "highlight" then
+        elseif type == "highlight" or "radar" then
             s = 1
         end
         c = HSLToColor(h, s, l)
@@ -189,6 +189,8 @@ local function FillRoleColors(list, type)
             c = ColorAlpha(c, 30)
         elseif type == "sprite" then
             c = ColorAlpha(c, 130)
+        elseif type == "radar" then
+            c = ColorAlpha(c, 230)
         end
 
         list[r] = c
@@ -200,6 +202,7 @@ ROLE_COLORS_DARK = {}
 ROLE_COLORS_HIGHLIGHT = {}
 ROLE_COLORS_SCOREBOARD = {}
 ROLE_COLORS_SPRITE = {}
+ROLE_COLORS_RADAR = {}
 
 function UpdateRoleColours()
     ROLE_COLORS = {}
@@ -221,6 +224,10 @@ function UpdateRoleColours()
     ROLE_COLORS_SPRITE = {}
     FillRoleColors(ROLE_COLORS_SPRITE, "sprite")
     ROLE_COLOURS_SPRITE = ROLE_COLORS_SPRITE
+
+    ROLE_COLORS_RADAR = {}
+    FillRoleColors(ROLE_COLORS_RADAR, "radar")
+    ROLE_COLOURS_RADAR = ROLE_COLORS_RADAR
 end
 UpdateRoleColours()
 

@@ -1,6 +1,6 @@
 "UnlitGeneric"
 {
- "$basetexture" "vgui/ttt/rev_beacon"
+ "$basetexture" "vgui/ttt/beacon_rev"
  "$vertexcolor" 1
  "$vertexalpha" 1
  "$translucent" 1

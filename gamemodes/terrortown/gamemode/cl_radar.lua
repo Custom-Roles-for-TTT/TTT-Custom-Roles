@@ -105,8 +105,9 @@ end
 local indicator = surface.GetTextureID("effects/select_ring")
 local c4warn = surface.GetTextureID("vgui/ttt/icon_c4warn")
 local sample_scan = surface.GetTextureID("vgui/ttt/sample_scan")
-local det_beacon = surface.GetTextureID("vgui/ttt/det_beacon")
-local rev_beacon = surface.GetTextureID("vgui/ttt/rev_beacon")
+local beacon_back = surface.GetTextureID("vgui/ttt/beacon_back")
+local beacon_det = surface.GetTextureID("vgui/ttt/beacon_det")
+local beacon_rev = surface.GetTextureID("vgui/ttt/beacon_rev")
 local tele_mark = surface.GetTextureID("vgui/ttt/tele_mark")
 
 local GetPTranslation = LANG.GetParamTranslation
@@ -132,9 +133,17 @@ function RADAR:Draw(client)
 
     -- Corpse calls
     if client:IsActiveDetectiveLike() and #self.called_corpses then
-        surface.SetTexture(det_beacon)
-        surface.SetTextColor(255, 255, 255, 240)
-        surface.SetDrawColor(255, 255, 255, 230)
+        surface.SetTexture(beacon_back)
+        surface.SetTextColor(0, 0, 0, 0)
+        surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_DETECTIVE])
+
+        for _, corpse in pairs(self.called_corpses) do
+            DrawTarget(corpse, 16, 0.5)
+        end
+
+        surface.SetTexture(beacon_det)
+        surface.SetTextColor(255, 255, 255, 255)
+        surface.SetDrawColor(255, 255, 255, 255)
 
         for _, corpse in pairs(self.called_corpses) do
             DrawTarget(corpse, 16, 0.5)
@@ -165,12 +174,20 @@ function RADAR:Draw(client)
 
     -- Revenger lover killer
     if client:IsActiveRevenger() and #self.revenger_lover_killers then
-        surface.SetTexture(rev_beacon)
-        surface.SetTextColor(255, 255, 255, 240)
-        surface.SetDrawColor(255, 255, 255, 230)
+        surface.SetTexture(beacon_back)
+        surface.SetTextColor(0, 0, 0, 0)
+        surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_REVENGER])
 
-        for _, corpse in pairs(self.revenger_lover_killers) do
-            DrawTarget(corpse, 16, 0.5)
+        for _, target in pairs(self.revenger_lover_killers) do
+            DrawTarget(target, 16, 0.5)
+        end
+
+        surface.SetTexture(beacon_rev)
+        surface.SetTextColor(255, 255, 255, 255)
+        surface.SetDrawColor(255, 255, 255, 255)
+
+        for _, target in pairs(self.revenger_lover_killers) do
+            DrawTarget(target, 16, 0.5)
         end
     end
 
@@ -198,34 +215,34 @@ function RADAR:Draw(client)
             role = tgt.role or ROLE_INNOCENT
             if client:IsTraitorTeam() then
                 if role == ROLE_TRAITOR or role == ROLE_GLITCH then
-                    local c = ColorAlpha(ROLE_COLORS_HIGHLIGHT(ROLE_TRAITOR), alpha)
+                    local c = ColorAlpha(ROLE_COLORS_RADAR[ROLE_TRAITOR], alpha)
                     surface.SetDrawColor(c)
                     surface.SetTextColor(c)
                 elseif TRAITOR_ROLES[role] then
-                    local c = ColorAlpha(ROLE_COLORS_HIGHLIGHT(ROLE_HYPNOTIST), alpha) -- Any special traitor here will do
+                    local c = ColorAlpha(ROLE_COLORS_RADAR[ROLE_HYPNOTIST], alpha) -- Any special traitor here will do
                     surface.SetDrawColor(c)
                     surface.SetTextColor(c)
                 elseif JESTER_ROLES[role] then
-                    local c = ColorAlpha(ROLE_COLORS_HIGHLIGHT(ROLE_JESTER), alpha)
+                    local c = ColorAlpha(ROLE_COLORS_RADAR[ROLE_JESTER], alpha)
                     surface.SetDrawColor(c)
                     surface.SetTextColor(c)
                 else
-                    local c = ColorAlpha(ROLE_COLORS_HIGHLIGHT(ROLE_INNOCENT), alpha)
+                    local c = ColorAlpha(ROLE_COLORS_RADAR[ROLE_INNOCENT], alpha)
                     surface.SetDrawColor(c)
                     surface.SetTextColor(c)
                 end
             elseif client:IsDetective() then
                 if role == ROLE_DETECTIVE then
-                    local c = ColorAlpha(ROLE_COLORS_HIGHLIGHT(ROLE_DETECTIVE), alpha)
+                    local c = ColorAlpha(ROLE_COLORS_RADAR[ROLE_DETECTIVE], alpha)
                     surface.SetDrawColor(c)
                     surface.SetTextColor(c)
                 else
-                    local c = ColorAlpha(ROLE_COLORS_HIGHLIGHT(ROLE_INNOCENT), alpha)
+                    local c = ColorAlpha(ROLE_COLORS_RADAR[ROLE_INNOCENT], alpha)
                     surface.SetDrawColor(c)
                     surface.SetTextColor(c)
                 end
             else
-                local c = ColorAlpha(ROLE_COLORS_HIGHLIGHT(ROLE_INNOCENT), alpha)
+                local c = ColorAlpha(ROLE_COLORS_RADAR[ROLE_INNOCENT], alpha)
                 surface.SetDrawColor(c)
                 surface.SetTextColor(c)
             end
