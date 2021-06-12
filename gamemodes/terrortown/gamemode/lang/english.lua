@@ -301,6 +301,7 @@ L.set_wswitch_tip = "By default the weapon switcher automatically closes a few s
 L.set_cues = "Play sound cue when a round begins or ends"
 L.set_raw_karma = "Show the raw karma value"
 L.set_raw_karma_tip = "Shows the raw karma value in the scoreboard instead of the percentage of damage each player deals"
+L.set_color_mode = "Color settings"
 
 L.set_title_play = "Gameplay settings"
 

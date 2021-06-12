@@ -6,6 +6,36 @@ local GetPTranslation = LANG.GetParamTranslation
 CreateConVar("ttt_spectator_mode", "0", FCVAR_ARCHIVE)
 CreateConVar("ttt_mute_team_check", "0")
 CreateConVar("ttt_show_raw_karma_value", "0")
+CreateConVar("ttt_color_mode", "full", FCVAR_ARCHIVE)
+
+CreateConVar("ttt_custom_inn_color_r", "25", FCVAR_ARCHIVE)
+CreateConVar("ttt_custom_inn_color_g", "200", FCVAR_ARCHIVE)
+CreateConVar("ttt_custom_inn_color_b", "25", FCVAR_ARCHIVE)
+
+CreateConVar("ttt_custom_spec_inn_color_r", "245", FCVAR_ARCHIVE)
+CreateConVar("ttt_custom_spec_inn_color_g", "200", FCVAR_ARCHIVE)
+CreateConVar("ttt_custom_spec_inn_color_b", "0", FCVAR_ARCHIVE)
+
+CreateConVar("ttt_custom_tra_color_r", "200", FCVAR_ARCHIVE)
+CreateConVar("ttt_custom_tra_color_g", "25", FCVAR_ARCHIVE)
+CreateConVar("ttt_custom_tra_color_b", "25", FCVAR_ARCHIVE)
+
+CreateConVar("ttt_custom_spec_tra_color_r", "245", FCVAR_ARCHIVE)
+CreateConVar("ttt_custom_spec_tra_color_g", "106", FCVAR_ARCHIVE)
+CreateConVar("ttt_custom_spec_tra_color_b", "0", FCVAR_ARCHIVE)
+
+CreateConVar("ttt_custom_det_color_r", "25", FCVAR_ARCHIVE)
+CreateConVar("ttt_custom_det_color_g", "25", FCVAR_ARCHIVE)
+CreateConVar("ttt_custom_det_color_b", "200", FCVAR_ARCHIVE)
+
+CreateConVar("ttt_custom_jes_color_r", "180", FCVAR_ARCHIVE)
+CreateConVar("ttt_custom_jes_color_g", "23", FCVAR_ARCHIVE)
+CreateConVar("ttt_custom_jes_color_b", "253", FCVAR_ARCHIVE)
+
+CreateConVar("ttt_custom_ind_color_r", "112", FCVAR_ARCHIVE)
+CreateConVar("ttt_custom_ind_color_g", "50", FCVAR_ARCHIVE)
+CreateConVar("ttt_custom_ind_color_b", "0", FCVAR_ARCHIVE)
+UpdateRoleColours()
 
 CreateClientConVar("ttt_avoid_detective", "0", true, true)
 
@@ -107,6 +137,135 @@ function HELPSCRN:Show()
     cb:SetTooltip(GetTranslation("set_raw_karma_tip"))
 
     dsettings:AddItem(dgui)
+
+    local dcolor = vgui.Create("DForm", dsettings)
+    dcolor:SetName(GetTranslation("set_color_mode"))
+    dcolor:DoExpansion(false)
+
+    local dcol = vgui.Create("DComboBox", dcolor)
+    dcol:SetConVar("ttt_color_mode")
+    dcol:SetSortItems(false)
+    dcol:AddChoice("Default", "default")
+    dcol:AddChoice("Simplified", "simple")
+    dcol:AddChoice("Protanomaly", "protan")
+    dcol:AddChoice("Deuteranomaly", "deutan")
+    dcol:AddChoice("Tritanomaly", "tritan")
+    dcol:AddChoice("Custom", "custom")
+
+    dcol.OnSelect = function(idx, val, data)
+        mode = data -- For some reason it grabs the name and not the actual data so fix that here
+        if mode == "Default" then mode = "default"
+        elseif mode == "Simplified" then mode = "simple"
+        elseif mode == "Protanomaly" then mode = "protan"
+        elseif mode == "Deuteranomaly" then mode = "deutan"
+        elseif mode == "Tritanomaly" then mode = "tritan"
+        elseif mode == "Custom" then mode = "custom"
+        end
+        RunConsoleCommand("ttt_color_mode", mode)
+        timer.Simple(0.5, function() UpdateRoleColours() end)
+    end
+
+    dcolor:AddItem(dcol)
+
+    local dcolinn = vgui.Create("DColorMixer", dcolor)
+    dcolinn:SetAlphaBar(false)
+    dcolinn:SetWangs(false)
+    dcolinn:SetPalette(false)
+    dcolinn:SetLabel("Custom innocent color:")
+    dcolinn:SetConVarR("ttt_custom_inn_color_r")
+    dcolinn:SetConVarG("ttt_custom_inn_color_g")
+    dcolinn:SetConVarB("ttt_custom_inn_color_b")
+    dcolinn.ValueChanged = function(col)
+        timer.Simple(0.5, function() UpdateRoleColours() end)
+    end
+
+    dcolor:AddItem(dcolinn)
+
+    local dcolspecinn = vgui.Create("DColorMixer", dcolor)
+    dcolspecinn:SetAlphaBar(false)
+    dcolspecinn:SetWangs(false)
+    dcolspecinn:SetPalette(false)
+    dcolspecinn:SetLabel("Custom special innocent color:")
+    dcolspecinn:SetConVarR("ttt_custom_spec_inn_color_r")
+    dcolspecinn:SetConVarG("ttt_custom_spec_inn_color_g")
+    dcolspecinn:SetConVarB("ttt_custom_spec_inn_color_b")
+    dcolspecinn.ValueChanged = function(col)
+        timer.Simple(0.5, function() UpdateRoleColours() end)
+    end
+
+    dcolor:AddItem(dcolspecinn)
+
+    local dcoltra = vgui.Create("DColorMixer", dcolor)
+    dcoltra:SetAlphaBar(false)
+    dcoltra:SetWangs(false)
+    dcoltra:SetPalette(false)
+    dcoltra:SetLabel("Custom traitor color:")
+    dcoltra:SetConVarR("ttt_custom_tra_color_r")
+    dcoltra:SetConVarG("ttt_custom_tra_color_g")
+    dcoltra:SetConVarB("ttt_custom_tra_color_b")
+    dcoltra.ValueChanged = function(col)
+        timer.Simple(0.5, function() UpdateRoleColours() end)
+    end
+
+    dcolor:AddItem(dcoltra)
+
+    local dcolspectra = vgui.Create("DColorMixer", dcolor)
+    dcolspectra:SetAlphaBar(false)
+    dcolspectra:SetWangs(false)
+    dcolspectra:SetPalette(false)
+    dcolspectra:SetLabel("Custom special traitor color:")
+    dcolspectra:SetConVarR("ttt_custom_spec_tra_color_r")
+    dcolspectra:SetConVarG("ttt_custom_spec_tra_color_g")
+    dcolspectra:SetConVarB("ttt_custom_spec_tra_color_b")
+    dcolspectra.ValueChanged = function(col)
+        timer.Simple(0.5, function() UpdateRoleColours() end)
+    end
+
+    dcolor:AddItem(dcolspectra)
+
+    local dcoldet = vgui.Create("DColorMixer", dcolor)
+    dcoldet:SetAlphaBar(false)
+    dcoldet:SetWangs(false)
+    dcoldet:SetPalette(false)
+    dcoldet:SetLabel("Custom detective color:")
+    dcoldet:SetConVarR("ttt_custom_det_color_r")
+    dcoldet:SetConVarG("ttt_custom_det_color_g")
+    dcoldet:SetConVarB("ttt_custom_det_color_b")
+    dcoldet.ValueChanged = function(col)
+        timer.Simple(0.5, function() UpdateRoleColours() end)
+    end
+
+    dcolor:AddItem(dcoldet)
+
+    local dcoljes = vgui.Create("DColorMixer", dcolor)
+    dcoljes:SetAlphaBar(false)
+    dcoljes:SetWangs(false)
+    dcoljes:SetPalette(false)
+    dcoljes:SetLabel("Custom jester color:")
+    dcoljes:SetConVarR("ttt_custom_jes_color_r")
+    dcoljes:SetConVarG("ttt_custom_jes_color_g")
+    dcoljes:SetConVarB("ttt_custom_jes_color_b")
+    dcoljes.ValueChanged = function(col)
+        timer.Simple(0.5, function() UpdateRoleColours() end)
+    end
+
+    dcolor:AddItem(dcoljes)
+
+    local dcolind = vgui.Create("DColorMixer", dcolor)
+    dcolind:SetAlphaBar(false)
+    dcolind:SetWangs(false)
+    dcolind:SetPalette(false)
+    dcolind:SetLabel("Custom independent color:")
+    dcolind:SetConVarR("ttt_custom_ind_color_r")
+    dcolind:SetConVarG("ttt_custom_ind_color_g")
+    dcolind:SetConVarB("ttt_custom_ind_color_b")
+    dcolind.ValueChanged = function(col)
+        timer.Simple(0.5, function() UpdateRoleColours() end)
+    end
+
+    dcolor:AddItem(dcolind)
+
+    dsettings:AddItem(dcolor)
 
     --- Gameplay area
 

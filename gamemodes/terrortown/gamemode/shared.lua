@@ -30,7 +30,7 @@ ROLE_BEGGAR = 13
 ROLE_OLDMAN = 14
 ROLE_MERCENARY = 15
 
-ROLE_MAX = 14
+ROLE_MAX = 15
 
 local function AddRoleAssociations(list, roles)
     -- Use an associative array so we can do a O(1) lookup by role
@@ -56,90 +56,173 @@ INDEPENDENT_ROLES = {}
 AddRoleAssociations(INDEPENDENT_ROLES, {ROLE_DRUNK, ROLE_OLDMAN})
 
 -- Role colours
-COLOR_INNOCENT = Color(25, 200, 25, 255)
-COLOR_INNOCENT_DARK = Color(60, 160, 50, 255)
-COLOR_INNOCENT_HIGHLIGHT = Color(0, 255, 0, 255)
-COLOR_SPECIAL_INNOCENT = Color(245, 200, 0, 255)
-COLOR_SPECIAL_INNOCENT_DARK = Color(230, 190, 0, 255)
-COLOR_SPECIAL_INNOCENT_HIGHLIGHT = Color(255, 255, 0, 255)
-COLOR_TRAITOR = Color(200, 25, 25, 255)
-COLOR_TRAITOR_DARK = Color(160, 50, 60, 255)
-COLOR_TRAITOR_HIGHLIGHT = Color(255, 0, 0, 255)
-COLOR_SPECIAL_TRAITOR = Color(245, 106, 0, 255)
-COLOR_SPECIAL_TRAITOR_DARK = Color(230, 90, 0, 255)
-COLOR_SPECIAL_TRAITOR_HIGHLIGHT = Color(255, 128, 0, 255)
-COLOR_DETECTIVE = Color(25, 25, 200, 255)
-COLOR_DETECTIVE_DARK = Color(50, 60, 160, 255)
-COLOR_DETECTIVE_HIGHLIGHT = Color(0, 0, 255, 255)
-COLOR_JESTER = Color(180, 23, 253, 255)
-COLOR_JESTER_DARK = Color(150, 50, 200, 255)
-COLOR_JESTER_HIGHLIGHT = Color(159, 0, 211, 255)
-COLOR_INDEPENDENT = Color(112, 50, 0, 255)
-COLOR_INDEPENDENT_DARK = Color(70, 30, 0, 255)
-COLOR_INDEPENDENT_HIGHLIGHT = Color(112, 50, 0, 255)
-
-ROLE_COLORS = {
-    [ROLE_NONE] = COLOR_WHITE,
-    [ROLE_INNOCENT] = COLOR_INNOCENT,
-    [ROLE_TRAITOR] = COLOR_TRAITOR,
-    [ROLE_DETECTIVE] = COLOR_DETECTIVE,
-    [ROLE_JESTER] = COLOR_JESTER,
-    [ROLE_SWAPPER] = COLOR_JESTER,
-    [ROLE_GLITCH] = COLOR_SPECIAL_INNOCENT,
-    [ROLE_PHANTOM] = COLOR_SPECIAL_INNOCENT,
-    [ROLE_HYPNOTIST] = COLOR_SPECIAL_TRAITOR,
-    [ROLE_REVENGER] = COLOR_SPECIAL_INNOCENT,
-    [ROLE_DRUNK] = COLOR_INDEPENDENT,
-    [ROLE_CLOWN] = COLOR_JESTER,
-    [ROLE_DEPUTY] = COLOR_SPECIAL_INNOCENT,
-    [ROLE_IMPERSONATOR] = COLOR_SPECIAL_TRAITOR,
-    [ROLE_BEGGAR] = COLOR_JESTER,
-    [ROLE_OLDMAN] = COLOR_INDEPENDENT,
-    [ROLE_MERCENARY] = COLOR_SPECIAL_INNOCENT
+COLOR_INNOCENT = {
+    ["default"] = Color(25, 200, 25, 255),
+    ["simple"] = Color(25, 200, 25, 255),
+    ["protan"] = Color(128, 209, 255, 255),
+    ["deutan"] = Color(128, 209, 255, 255),
+    ["tritan"] = Color(25, 200, 25, 255)
 }
-ROLE_COLOURS = ROLE_COLORS
 
-ROLE_COLORS_DARK = {
-    [ROLE_NONE] = COLOR_WHITE,
-    [ROLE_INNOCENT] = COLOR_INNOCENT_DARK,
-    [ROLE_TRAITOR] = COLOR_TRAITOR_DARK,
-    [ROLE_DETECTIVE] = COLOR_DETECTIVE_DARK,
-    [ROLE_JESTER] = COLOR_JESTER_DARK,
-    [ROLE_SWAPPER] = COLOR_JESTER_DARK,
-    [ROLE_GLITCH] = COLOR_SPECIAL_INNOCENT_DARK,
-    [ROLE_PHANTOM] = COLOR_SPECIAL_INNOCENT_DARK,
-    [ROLE_HYPNOTIST] = COLOR_SPECIAL_TRAITOR_DARK,
-    [ROLE_REVENGER] = COLOR_SPECIAL_INNOCENT_DARK,
-    [ROLE_DRUNK] = COLOR_INDEPENDENT_DARK,
-    [ROLE_CLOWN] = COLOR_JESTER_DARK,
-    [ROLE_DEPUTY] = COLOR_SPECIAL_INNOCENT_DARK,
-    [ROLE_IMPERSONATOR] = COLOR_SPECIAL_TRAITOR_DARK,
-    [ROLE_BEGGAR] = COLOR_JESTER_DARK,
-    [ROLE_OLDMAN] = COLOR_INDEPENDENT_DARK,
-    [ROLE_MERCENARY] = COLOR_SPECIAL_INNOCENT_DARK
+COLOR_SPECIAL_INNOCENT = {
+    ["default"] = Color(245, 200, 0, 255),
+    ["simple"] = Color(25, 200, 25, 255),
+    ["protan"] = Color(128, 209, 255, 255),
+    ["deutan"] = Color(128, 209, 255, 255),
+    ["tritan"] = Color(25, 200, 25, 255)
 }
-ROLE_COLOURS_DARK = ROLE_COLORS_DARK
 
-ROLE_COLORS_HIGHLIGHT = {
-    [ROLE_NONE] = COLOR_WHITE,
-    [ROLE_INNOCENT] = COLOR_INNOCENT_HIGHLIGHT,
-    [ROLE_TRAITOR] = COLOR_TRAITOR_HIGHLIGHT,
-    [ROLE_DETECTIVE] = COLOR_DETECTIVE_HIGHLIGHT,
-    [ROLE_JESTER] = COLOR_JESTER_HIGHLIGHT,
-    [ROLE_SWAPPER] = COLOR_JESTER_HIGHLIGHT,
-    [ROLE_GLITCH] = COLOR_SPECIAL_INNOCENT_HIGHLIGHT,
-    [ROLE_PHANTOM] = COLOR_SPECIAL_INNOCENT_HIGHLIGHT,
-    [ROLE_HYPNOTIST] = COLOR_SPECIAL_TRAITOR_HIGHLIGHT,
-    [ROLE_REVENGER] = COLOR_SPECIAL_INNOCENT_HIGHLIGHT,
-    [ROLE_DRUNK] = COLOR_INDEPENDENT_HIGHLIGHT,
-    [ROLE_CLOWN] = COLOR_JESTER_HIGHLIGHT,
-    [ROLE_DEPUTY] = COLOR_SPECIAL_INNOCENT_HIGHLIGHT,
-    [ROLE_IMPERSONATOR] = COLOR_SPECIAL_TRAITOR_HIGHLIGHT,
-    [ROLE_BEGGAR] = COLOR_JESTER_HIGHLIGHT,
-    [ROLE_OLDMAN] = COLOR_INDEPENDENT_HIGHLIGHT,
-    [ROLE_MERCENARY] = COLOR_SPECIAL_INNOCENT_HIGHLIGHT
+COLOR_TRAITOR = {
+    ["default"] = Color(200, 25, 25, 255),
+    ["simple"] = Color(200, 25, 25, 255),
+    ["protan"] = Color(200, 25, 25, 255),
+    ["deutan"] = Color(200, 25, 25, 255),
+    ["tritan"] = Color(200, 25, 25, 255)
 }
-ROLE_COLOURS_HIGHLIGHT = ROLE_COLORS_HIGHLIGHT
+
+COLOR_SPECIAL_TRAITOR = {
+    ["default"] = Color(245, 106, 0, 255),
+    ["simple"] = Color(200, 25, 25, 255),
+    ["protan"] = Color(200, 25, 25, 255),
+    ["deutan"] = Color(200, 25, 25, 255),
+    ["tritan"] = Color(200, 25, 25, 255)
+}
+
+COLOR_DETECTIVE = {
+    ["default"] = Color(25, 25, 200, 255),
+    ["simple"] = Color(25, 25, 200, 255),
+    ["protan"] = Color(25, 25, 200, 255),
+    ["deutan"] = Color(25, 25, 200, 255),
+    ["tritan"] = Color(25, 25, 200, 255),
+}
+
+COLOR_JESTER = {
+    ["default"] = Color(180, 23, 253, 255),
+    ["simple"] = Color(180, 23, 253, 255),
+    ["protan"] = Color(255, 194, 5, 255),
+    ["deutan"] = Color(93, 247, 0, 255),
+    ["tritan"] = Color(255, 194, 5, 255)
+}
+
+COLOR_INDEPENDENT = {
+    ["default"] = Color(112, 50, 0, 255),
+    ["simple"] = Color(112, 50, 0, 255),
+    ["protan"] = Color(167, 161, 142, 255),
+    ["deutan"] = Color(127, 137, 120, 255),
+    ["tritan"] = Color(192, 199, 63, 255)
+}
+
+local function ColorFromCustomConVars(name)
+    local rConVar = GetConVar(name .. "_r")
+    local gConVar = GetConVar(name .. "_g")
+    local bConVar = GetConVar(name .. "_b")
+    if rConVar and gConVar and bConVar then
+        local r = tonumber(rConVar:GetString())
+        local g = tonumber(gConVar:GetString())
+        local b = tonumber(bConVar:GetString())
+        return Color(r, g, b, 255)
+    else
+        return false
+    end
+end
+
+local function FillRoleColors(list, type)
+    local c = nil
+    local mode = "default"
+    if CLIENT then
+        local modeCVar = GetConVar("ttt_color_mode")
+        if modeCVar then mode = modeCVar:GetString() end
+    end
+
+    for r = -1, ROLE_MAX do
+        if mode == "custom" then
+            if r == ROLE_INNOCENT then
+                local cVarCol = ColorFromCustomConVars("ttt_custom_inn_color")
+                if cVarCol then c = cVarCol
+                else c = COLOR_INNOCENT["default"] end
+            elseif r == ROLE_DETECTIVE then
+                local cVarCol = ColorFromCustomConVars("ttt_custom_det_color")
+                if cVarCol then c = cVarCol
+                else c = COLOR_DETECTIVE["default"] end
+            elseif INNOCENT_ROLES[r] then
+                local cVarCol = ColorFromCustomConVars("ttt_custom_spec_inn_color")
+                if cVarCol then c = cVarCol
+                else c = COLOR_SPECIAL_INNOCENT["default"] end
+            elseif r == ROLE_TRAITOR then
+                local cVarCol = ColorFromCustomConVars("ttt_custom_tra_color")
+                if cVarCol then c = cVarCol
+                else c = COLOR_TRAITOR["default"] end
+            elseif TRAITOR_ROLES[r] then
+                local cVarCol = ColorFromCustomConVars("ttt_custom_spec_tra_color")
+                if cVarCol then c = cVarCol
+                else c = COLOR_SPECIAL_TRAITOR["default"] end
+            elseif JESTER_ROLES[r] then
+                local cVarCol = ColorFromCustomConVars("ttt_custom_jes_color")
+                if cVarCol then c = cVarCol
+                else c = COLOR_JESTER["default"] end
+            elseif INDEPENDENT_ROLES[r] then
+                local cVarCol = ColorFromCustomConVars("ttt_custom_ind_color")
+                if cVarCol then c = cVarCol
+                else c = COLOR_INDEPENDENT["default"] end
+            else c = COLOR_WHITE end
+        else
+            if r == ROLE_INNOCENT then c = COLOR_INNOCENT[mode]
+            elseif r == ROLE_DETECTIVE then c = COLOR_DETECTIVE[mode]
+            elseif INNOCENT_ROLES[r] then c = COLOR_SPECIAL_INNOCENT[mode]
+            elseif r == ROLE_TRAITOR then c = COLOR_TRAITOR[mode]
+            elseif TRAITOR_ROLES[r] then c = COLOR_SPECIAL_TRAITOR[mode]
+            elseif JESTER_ROLES[r] then c = COLOR_JESTER[mode]
+            elseif INDEPENDENT_ROLES[r] then c = COLOR_INDEPENDENT[mode]
+            else c = COLOR_WHITE end
+        end
+
+
+        local h, s, l = ColorToHSL(c)
+        if type == "dark" then
+            l = math.max(l - 0.125, 0.125)
+        elseif type == "highlight" then
+            s = 1
+        end
+        c = HSLToColor(h, s, l)
+
+        if type == "scoreboard" then
+            c = ColorAlpha(c, 30)
+        elseif type == "sprite" then
+            c = ColorAlpha(c, 130)
+        end
+
+        list[r] = c
+    end
+end
+
+ROLE_COLORS = {}
+ROLE_COLORS_DARK = {}
+ROLE_COLORS_HIGHLIGHT = {}
+ROLE_COLORS_SCOREBOARD = {}
+ROLE_COLORS_SPRITE = {}
+
+function UpdateRoleColours()
+    ROLE_COLORS = {}
+    FillRoleColors(ROLE_COLORS)
+    ROLE_COLOURS = ROLE_COLORS
+
+    ROLE_COLORS_DARK = {}
+    FillRoleColors(ROLE_COLORS_DARK, "dark")
+    ROLE_COLOURS_DARK = ROLE_COLORS_DARK
+
+    ROLE_COLORS_HIGHLIGHT = {}
+    FillRoleColors(ROLE_COLORS_HIGHLIGHT, "highlight")
+    ROLE_COLOURS_HIGHLIGHT = ROLE_COLORS_HIGHLIGHT
+
+    ROLE_COLORS_SCOREBOARD = {}
+    FillRoleColors(ROLE_COLORS_SCOREBOARD, "scoreboard")
+    ROLE_COLOURS_SCOREBOARD = ROLE_COLORS_SCOREBOARD
+
+    ROLE_COLORS_SPRITE = {}
+    FillRoleColors(ROLE_COLORS_SPRITE, "sprite")
+    ROLE_COLOURS_SPRITE = ROLE_COLORS_SPRITE
+end
+UpdateRoleColours()
 
 -- Role strings
 ROLE_STRINGS = {

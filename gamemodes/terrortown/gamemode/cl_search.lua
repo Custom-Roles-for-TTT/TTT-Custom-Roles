@@ -102,6 +102,7 @@ function PreprocSearch(raw)
             search[t].nick = d
         elseif t == "role" then
             search[t].text = T("search_role_" .. ROLE_STRINGS_SHORT[d])
+            search[t].color = ROLE_COLORS[d]
             search[t].p = 2
         elseif t == "words" then
             if d ~= "" then
@@ -219,7 +220,7 @@ end
 -- Returns a function meant to override OnActivePanelChanged, which modifies
 -- dactive and dtext based on the search information that is associated with the
 -- newly selected panel
-local function SearchInfoController(search, dactive, dtext)
+local function SearchInfoController(search, dback, dactive, dtext)
     return function(s, pold, pnew)
         local t = pnew.info_type
         local data = search[t]
@@ -234,6 +235,7 @@ local function SearchInfoController(search, dactive, dtext)
         dtext:GetLabel():SetWrap(#data.text > 50)
 
         dtext:SetText(data.text)
+        dback:SetColor(data.color or Color(0, 0, 0, 0))
         dactive:SetImage(data.img)
     end
 end
@@ -303,6 +305,12 @@ local function ShowSearchScreen(search_raw)
     ddesc:SetPos(descx, descy)
     ddesc:SetSize(descw, desch)
 
+    local dback = vgui.Create("DShape", ddesc)
+    dback:SetType("Rect")
+    dback:SetColor(COLOR_WHITE)
+    dback:SetPos(m + 5, m + 5)
+    dback:SetSize(54, 54)
+
     local dactive = vgui.Create("DImage", ddesc)
     dactive:SetImage("vgui/ttt/icon_id")
     dactive:SetPos(m, m)
@@ -353,7 +361,7 @@ local function ShowSearchScreen(search_raw)
     local search = PreprocSearch(search_raw)
 
     -- Install info controller that will link up the icons to the text etc
-    dlist.OnActivePanelChanged = SearchInfoController(search, dactive, dtext)
+    dlist.OnActivePanelChanged = SearchInfoController(search, dback, dactive, dtext)
 
     -- Create table of SimpleIcons, each standing for a piece of search
     -- information.
@@ -365,23 +373,24 @@ local function ShowSearchScreen(search_raw)
         if t == "nick" then
             local avply = IsValid(search_raw.owner) and search_raw.owner or nil
 
-            ic = vgui.Create("SimpleIconAvatar", dlist)
+            ic = vgui.Create("SimpleIconAvatar", pic)
             ic:SetPlayer(avply)
 
             start_icon = ic
         elseif t == "lastid" then
-            ic = vgui.Create("SimpleIconAvatar", dlist)
+            ic = vgui.Create("SimpleIconAvatar", pic)
             ic:SetPlayer(info.ply)
             ic:SetAvatarSize(24)
         elseif info.text_icon then
-            ic = vgui.Create("SimpleIconLabelled", dlist)
+            ic = vgui.Create("SimpleIconLabelled", pic)
             ic:SetIconText(info.text_icon)
         else
-            ic = vgui.Create("SimpleIcon", dlist)
+            ic = vgui.Create("SimpleIcon", pic)
         end
 
         ic:SetIconSize(64)
         ic:SetIcon(info.img)
+        ic:SetBackgroundColor(info.color or Color(0, 0, 0, 0))
 
         ic.info_type = t
 

@@ -88,16 +88,7 @@ local namecolor = {
     dev = Color(100, 240, 105, 255)
 }
 
-local rolecolor = {
-    default = Color(0, 0, 0, 0),
-    traitor = Color(255, 0, 0, 30),
-    special_traitor = Color(255, 128, 0, 30),
-    detective = Color(0, 0, 255, 30),
-    innocent = Color(100, 255, 25, 30),
-    special_innocent = Color(255, 255, 0, 30),
-    jester = Color(180, 0, 255, 30),
-    independent = Color(112, 50, 0, 30)
-}
+local defaultcolor = Color(0, 0, 0, 0)
 
 function GM:TTTScoreboardColorForPlayer(ply)
     if not IsValid(ply) then return namecolor.default end
@@ -111,7 +102,7 @@ function GM:TTTScoreboardColorForPlayer(ply)
 end
 
 function GM:TTTScoreboardRowColorForPlayer(ply)
-    if not IsValid(ply) or GetRoundState() == ROUND_WAIT or GetRoundState() == ROUND_PREP then return rolecolor.default end
+    if not IsValid(ply) or GetRoundState() == ROUND_WAIT or GetRoundState() == ROUND_PREP then return defaultcolor end
 
     if (ScoreGroup(ply) == GROUP_SEARCHED and ply.search_result) or ply == LocalPlayer() then
         return ply:GetRole()
@@ -134,7 +125,7 @@ function GM:TTTScoreboardRowColorForPlayer(ply)
         end
     end
 
-    return rolecolor.default
+    return defaultcolor
 end
 
 local function ColorForPlayer(ply)
@@ -163,41 +154,9 @@ function PANEL:Paint(width, height)
     local c = hook.Call("TTTScoreboardRowColorForPlayer", GAMEMODE, ply)
 
     local roleStr = ""
-    if c ~= rolecolor.default then
+    if c ~= defaultcolor then
         roleStr = ROLE_STRINGS_SHORT[c]
-        if c == ROLE_DETECTIVE then
-            c = rolecolor.detective
-        elseif c == ROLE_TRAITOR then
-            c = rolecolor.traitor
-        elseif c == ROLE_INNOCENT then
-            c = rolecolor.innocent
-        elseif c == ROLE_JESTER then
-            c = rolecolor.jester
-        elseif c == ROLE_SWAPPER then
-            c = rolecolor.jester
-        elseif c == ROLE_GLITCH then
-            c = rolecolor.special_innocent
-        elseif c == ROLE_PHANTOM then
-            c = rolecolor.special_innocent
-        elseif c == ROLE_HYPNOTIST then
-            c = rolecolor.special_traitor
-        elseif c == ROLE_REVENGER then
-            c = rolecolor.special_innocent
-        elseif c == ROLE_DRUNK then
-            c = rolecolor.independent
-        elseif c == ROLE_CLOWN then
-            c = rolecolor.jester
-        elseif c == ROLE_DEPUTY then
-            c = rolecolor.special_innocent
-        elseif c == ROLE_IMPERSONATOR then
-            c = rolecolor.special_traitor
-        elseif c == ROLE_BEGGAR then
-            c = rolecolor.jester
-        elseif c == ROLE_OLDMAN then
-            c = rolecolor.independent
-        elseif c == ROLE_MERCENARY then
-            c = rolecolor.special_innocent
-        end
+        c = ROLE_COLORS_SCOREBOARD[c]
     end
 
     surface.SetDrawColor(c)

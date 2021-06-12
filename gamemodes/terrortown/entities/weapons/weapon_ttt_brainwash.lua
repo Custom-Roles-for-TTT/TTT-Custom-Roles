@@ -206,7 +206,7 @@ if SERVER then
         ply:SetCredits(credits)
         ply:SetPos(self.Location or body:GetPos())
         ply:SetEyeAngles(Angle(0, body:GetAngles().y, 0))
-        ply:SetNWString("WasHypnotised", ROLE_STRINGS_SHORT[ply:GetRole()])
+        ply:SetNWBool("WasHypnotised", true)
         ply:SetRole(ROLE_TRAITOR)
         ply:PrintMessage(HUD_PRINTCENTER, "You have been brainwashed and are now a traitor.")
         ply:SetHealth(spawnhealth)

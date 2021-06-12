@@ -296,10 +296,10 @@ local function ValidAward(a)
 end
 
 local wintitle = {
-    [WIN_INNOCENT] = { txt = "hilite_win_innocent", c = COLOR_INNOCENT },
-    [WIN_TRAITOR] = { txt = "hilite_win_traitors", c = COLOR_TRAITOR },
-    [WIN_JESTER] = { txt = "hilite_win_jester", c = COLOR_JESTER },
-    [WIN_CLOWN] = { txt = "hilite_win_clown", c = COLOR_JESTER }
+    [WIN_INNOCENT] = { txt = "hilite_win_innocent", c = ROLE_COLORS[ROLE_INNOCENT] },
+    [WIN_TRAITOR] = { txt = "hilite_win_traitors", c = ROLE_COLORS[ROLE_TRAITOR] },
+    [WIN_JESTER] = { txt = "hilite_win_jester", c = ROLE_COLORS[ROLE_JESTER] },
+    [WIN_CLOWN] = { txt = "hilite_win_clown", c = ROLE_COLORS[ROLE_JESTER] }
 }
 
 function CLSCORE:BuildEventLogPanel(dpanel)
@@ -620,7 +620,7 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                             roleFileName = ROLE_STRINGS_SHORT[ROLE_DRUNK]
                         elseif ply:GetNWBool("WasBeggar", false) then
                             roleFileName = ROLE_STRINGS_SHORT[ROLE_BEGGAR]
-                        elseif ply:GetNWString("WasHypnotised", "") ~= "" then
+                        elseif ply:GetNWBool("WasHypnotised") then
                             roleFileName = ROLE_STRINGS_SHORT[startingRole]
                         end
                     elseif ply:IsJester() then
