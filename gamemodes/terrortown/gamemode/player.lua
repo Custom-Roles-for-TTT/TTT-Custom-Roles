@@ -680,6 +680,73 @@ function FindRespawnLocation(pos)
     return false
 end
 
+local function ShouldShowJesterNotification(target, mode)
+    -- 0 - Don't notify anyone
+    -- 1 (Default) - Only notify Traitors and Detective
+    -- 2 - Only notify Traitors
+    -- 3 - Only notify Detective
+    -- 4 - Notify everyone
+    if mode == 0 then
+        return false
+    elseif mode == 1 then
+        return target:IsDetective() or target:IsTraitorTeam()
+    elseif mode == 2 then
+        return target:IsTraitorTeam()
+    elseif mode == 3 then
+        return target:IsDetective()
+    elseif mode == 4 then
+        return true
+    end
+    return false
+end
+
+local function JesterKilledNotification(attacker, victim)
+    local mode = GetConVar("ttt_jester_notify_mode"):GetInt()
+    local play_sound = GetConVar("ttt_jester_notify_sound"):GetBool()
+    local show_confetti = GetConVar("ttt_jester_notify_confetti"):GetBool()
+    for _, ply in pairs(player.GetAll()) do
+        if ply == attacker then
+            ply:PrintMessage(HUD_PRINTCENTER, "You killed the Jester!")
+        -- Don't announce anything if the game doesn't end here and the Jester was killed by a traitor
+        elseif not (not GetConVar("ttt_jester_win_by_traitors"):GetBool() and attacker:IsTraitorTeam()) and ShouldShowJesterNotification(ply, mode) then
+            ply:PrintMessage(HUD_PRINTCENTER, attacker:Nick() .. " was dumb enough to kill the Jester!")
+        end
+
+        if play_sound or show_confetti then
+            net.Start("TTT_JesterDeathCelebration")
+            net.WriteEntity(victim)
+            net.WriteBool(play_sound)
+            net.WriteBool(show_confetti)
+            net.Send(ply)
+        end
+    end
+end
+
+local function SwapperKilledNotification(attacker, victim)
+    local mode = GetConVar("ttt_swapper_notify_mode"):GetInt()
+    local play_sound = GetConVar("ttt_swapper_notify_sound"):GetBool()
+    local show_confetti = GetConVar("ttt_swapper_notify_confetti"):GetBool()
+    for _, ply in pairs(player.GetAll()) do
+        if ply == attacker then
+            ply:PrintMessage(HUD_PRINTCENTER, "You killed the Swapper!")
+        elseif ShouldShowJesterNotification(ply, mode) then
+            local target = "someone"
+            if ply:IsTraitorTeam() or attacker:IsDetective() then
+                target = ROLE_STRINGS_EXT[attacker:GetRole()] .. " (" .. attacker:Nick() .. ")"
+            end
+            ply:PrintMessage(HUD_PRINTCENTER, "The swapper (" .. victim:Nick() .. ") has swapped with " .. target .. "!")
+        end
+
+        if play_sound or show_confetti then
+            net.Start("TTT_JesterDeathCelebration")
+            net.WriteEntity(victim)
+            net.WriteBool(play_sound)
+            net.WriteBool(show_confetti)
+            net.Send(ply)
+        end
+    end
+end
+
 local deadPhantoms = {}
 hook.Add("TTTPrepareRound", function()
     deadPhantoms = {}
@@ -910,11 +977,13 @@ function GM:PlayerDeath(victim, infl, attacker)
 
     -- Handle jester death
     if victim:IsJester() and valid_kill then
+        JesterKilledNotification(attacker, victim)
         victim:SetNWString("JesterKiller", attacker:Nick())
     end
 
     -- Handle swapper death
     if victim:IsSwapper() and valid_kill then
+        SwapperKilledNotification(attacker, victim)
         attacker:SetNWString("SwappedWith", victim:Nick())
         attacker:PrintMessage(HUD_PRINTCENTER, "You killed the swapper!")
         victim:SetRole(attacker:GetRole())
@@ -931,7 +1000,7 @@ function GM:PlayerDeath(victim, infl, attacker)
             victim:SpawnForRound(true)
             victim:SetPos(FindRespawnLocation(body:GetPos()) or body:GetPos())
             victim:SetEyeAngles(Angle(0, body:GetAngles().y, 0))
-            victim:SetHealth(100)
+            victim:SetHealth(GetConVar("ttt_swapper_respawn_health"):GetInt())
             body:Remove()
             SendFullStateUpdate()
         end)

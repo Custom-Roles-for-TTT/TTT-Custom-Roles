@@ -213,7 +213,7 @@ local function PreqLabels(parent, x, y)
 
     return function(selected)
         local allow = true
-        for k, pnl in pairs(tbl) do
+        for _, pnl in pairs(tbl) do
             local result, text, tooltip = pnl:Check(selected)
             pnl:SetTextColor(result and color_good or color_bad)
             pnl:SetText(text)
@@ -248,14 +248,6 @@ vgui.Register("EquipSelect", PANEL, "DPanelSelect")
 local SafeTranslate = LANG.TryTranslation
 
 local color_darkened = Color(255, 255, 255, 80)
-
-local color_slot = {
-    [ROLE_TRAITOR] = COLOR_TRAITOR,
-    [ROLE_DETECTIVE] = COLOR_DETECTIVE,
-    [ROLE_HYPNOTIST] = COLOR_SPECIAL_TRAITOR,
-    [ROLE_DEPUTY] = COLOR_SPECIAL_INNOCENT,
-    [ROLE_IMPERSONATOR] = COLOR_SPECIAL_TRAITOR
-}
 
 -- BEM helper functions
 
@@ -494,7 +486,7 @@ local function TraitorMenuPopup()
                     if ItemIsWeapon(item) and showSlotVar:GetBool() then
                         local slot = vgui.Create("SimpleIconLabelled")
                         slot:SetIcon("vgui/ttt/slot_cap")
-                        slot:SetIconColor(color_slot[ply:GetRole()] or COLOR_GREY)
+                        slot:SetIconColor(ROLE_COLORS[ply:GetRole()] or COLOR_GREY)
                         slot:SetIconSize(16)
 
                         slot:SetIconText(item.slot)
@@ -692,8 +684,8 @@ local function TraitorMenuPopup()
         show = true
     end
 
-    -- Credit transferring, but only for roles that have a shop
-    if credits > 0 and hasShop then
+    -- Credit transferring, but only for roles that have a shop and are allowed to transfer
+    if credits > 0 and hasShop and not ply:IsJesterTeam() then
         local dtransfer = CreateTransferMenu(dsheet)
         dsheet:AddSheet(GetTranslation("xfer_name"), dtransfer, "icon16/group_gear.png", false, false, GetTranslation("equip_tooltip_xfer"))
         show = true

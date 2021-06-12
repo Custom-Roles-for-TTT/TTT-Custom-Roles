@@ -39,12 +39,31 @@ ttt_phantom_killer_haunt_jump_cost   50  // The amount of power to spend when a 
 ttt_phantom_killer_haunt_drop_cost   75  // The amount of power to spend when a Phantom is making their killer drop their weapon via a haunting. 0 to disable
 ttt_phantom_killer_haunt_attack_cost 100 // The amount of power to spend when a Phantom is making their killer attack via a haunting. 0 to disable
 
+// Jesters
+ttt_jester_win_by_traitors  1   // Whether the Jester will win the round if they are killed by a traitor
+ttt_jester_notify_mode      1   // The logic to use when notifying players that a Jester is killed. 0 - Don't notify anyone. 1 - Only notify Traitors and Detective. 2 - Only notify Traitors. 3 - Only notify Detective. 4 - Notify everyone.
+ttt_jester_notify_sound     0   // Whether to play a cheering sound when a Jester is killed
+ttt_jester_notify_confetti  0   // Whether to throw confetti when a Jester is a killed
+ttt_jes_credits_starting    0   // The number of credits a Jester should start with
+ttt_swapper_respawn_health  100 // What amount of health to give the Swapper when they are killed and respawned
+ttt_swapper_notify_mode     1   // The logic to use when notifying players that a Swapper is killed. 0 - Don't notify anyone. 1 - Only notify Traitors and Detective. 2 - Only notify Traitors. 3 - Only notify Detective. 4 - Notify everyone.
+ttt_swapper_notify_sound    0   // Whether to play a cheering sound when a Swapper is killed
+ttt_swapper_notify_confetti 0   // Whether to throw confetti when a Swapper is a killed
+ttt_swapper_killer_health   100 // What amount of health to give the person who killed the Swapper. Set to "0" to kill them
+ttt_swa_credits_starting    0   // The number of credits a Swapper should start with
+
 // Other
 ttt_traitor_vision_enable             0  // Whether members of the Traitor team can see other members of the Traitor team (including Glitches) through walls via a highlight effect.
 
 // Logging
 ttt_debug_logkills 1 // Whether to log when a player is killed in the console
 ttt_debug_logroles 1 // Whether to log what roles players are assigned in the console
+
+// Better Equipment Menu
+ttt_bem_allow_change 1  // Allow clients to change the look of the Traitor/Detective menu
+ttt_bem_sv_cols      4  // Sets the number of columns in the Traitor/Detective menu's item list (serverside)
+ttt_bem_sv_rows      5  // Sets the number of rows in the Traitor/Detective menu's item list (serverside)
+ttt_bem_sv_size      64 // Sets the item size in the Traitor/Detective menu's item list (serverside)
 ```
 
 Thanks to [KarlOfDuty](https://github.com/KarlOfDuty) for his original version of this document, [here](https://github.com/KarlOfDuty/TTT-Custom-Roles/blob/patch-1/README.md).

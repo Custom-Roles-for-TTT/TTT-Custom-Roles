@@ -381,7 +381,7 @@ local function OrderEquipment(ply, cmd, args)
         local sync_impersonator = GetGlobalBool("ttt_shop_imp_sync") and role == ROLE_IMPERSONATOR
         local sync_traitor_weapons = sync_hypnotist or sync_impersonator
 
-        local promoted = ply:IsDetectiveLike() and not role == ROLE_DETECTIVE
+        local promoted = ply:IsDetectiveLike() and role ~= ROLE_DETECTIVE
         local sync_detective_weapons = promoted
 
         WEPS.HandleCanBuyOverrides(swep_table, role, false, sync_traitor_weapons, sync_detective_weapons)

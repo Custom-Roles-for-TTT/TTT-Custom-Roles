@@ -53,7 +53,12 @@ function plymeta:IsCustom()
     return role ~= ROLE_INNOCENT and role ~= ROLE_TRAITOR and role ~= ROLE_DETECTIVE
 end
 function plymeta:IsShopRole()
-    return SHOP_ROLES[self:GetRole()] or false
+    local hasShop = SHOP_ROLES[self:GetRole()] or false
+    -- If this is a jester team member with a potential shop, only give them access if there are actual things to buy
+    if hasShop and self:IsJesterTeam() then
+        return WEPS.DoesRoleHaveWeapon(self:GetRole())
+    end
+    return hasShop
 end
 
 function plymeta:SetRoleAndBroadcast(role)

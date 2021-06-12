@@ -465,15 +465,19 @@ function GM:OnEntityCreated(ent)
     return self.BaseClass.OnEntityCreated(self, ent)
 end
 
--- Clown confetti
+-- Clown and Jester confetti
 local confetti = Material("confetti.png")
-net.Receive("TTT_ClownActivate", function()
-    surface.PlaySound("clown.wav")
+local function Celebrate(ply, sound, show_confetti)
+    if not IsValid(ply) then return end
+    if sound ~= nil then
+        ply:EmitSound(sound)
+    end
 
-    local ent = net.ReadEntity()
-    local pos = ent:GetPos() + Vector(0, 0, ent:OBBMaxs().z)
-    if ent.GetShootPos then
-        pos = ent:GetShootPos()
+    if not show_confetti then return end
+
+    local pos = ply:GetPos() + Vector(0, 0, ply:OBBMaxs().z)
+    if ply.GetShootPos then
+        pos = ply:GetShootPos()
     end
 
     local velMax = 200
@@ -494,6 +498,25 @@ net.Receive("TTT_ClownActivate", function()
         p:SetGravity(gravity)
         p:SetAirResistance(125)
     end
+    emitter:Finish()
+end
+
+net.Receive("TTT_JesterDeathCelebration", function()
+    local ent = net.ReadEntity()
+    local play_sound = net.ReadBool()
+    local show_confetti = net.ReadBool()
+
+    local sound = nil
+    if play_sound then
+        sound = "birthday.wav"
+    end
+
+    Celebrate(ent, sound, show_confetti)
+end)
+
+net.Receive("TTT_ClownActivate", function()
+    local ent = net.ReadEntity()
+    Celebrate(ent, "clown.wav", true)
 
     local name = ent:Nick()
     CLSCORE:AddEvent({
@@ -664,71 +687,14 @@ end)
 
 -- Death messages
 net.Receive("TTT_ClientDeathNotify", function()
-    -- Colours for customizing
-    local traitorColor = Color(255, 0, 0)
-    local specTraitorColor = Color(255, 128, 0)
-    local innoColor = Color(0, 255, 0)
-    local specInnoColor = Color(255, 255, 0)
-    local detectiveColor = Color(0, 0, 255)
-    local jesterColor = Color(159, 0, 211)
-    local independentColor = Color(112, 50, 0)
-
     -- Read the variables from the message
     local name = net.ReadString()
     local role = net.ReadUInt(8)
     local reason = net.ReadString()
-    local col = innoColor
 
-    -- Format the number role into a human readable role
-    if role == ROLE_TRAITOR then
-        col = traitorColor
-        role = "a traitor"
-    elseif role == ROLE_DETECTIVE then
-        col = detectiveColor
-        role = "a detective"
-    elseif role == ROLE_JESTER then
-        col = jesterColor
-        role = "a jester"
-    elseif role == ROLE_SWAPPER then
-        col = jesterColor
-        role = "a swapper"
-    elseif role == ROLE_GLITCH then
-        col = specInnoColor
-        role = "a glitch"
-    elseif role == ROLE_PHANTOM then
-        col = specInnoColor
-        role = "a phantom"
-    elseif role == ROLE_HYPNOTIST then
-        col = specTraitorColor
-        role = "a hypnotist"
-    elseif role == ROLE_REVENGER then
-        col = specInnoColor
-        role = "a revenger"
-    elseif role == ROLE_DRUNK then
-        col = independentColor
-        role = "a drunk"
-    elseif role == ROLE_CLOWN then
-        col = jesterColor
-        role = "a clown"
-    elseif role == ROLE_DEPUTY then
-        col = specInnoColor
-        role = "a deputy"
-    elseif role == ROLE_IMPERSONATOR then
-        col = specTraitorColor
-        role = "an impersonator"
-    elseif role == ROLE_BEGGAR then
-        col = jesterColor
-        role = "a beggar"
-    elseif role == ROLE_OLDMAN then
-        col = independentColor
-        role = "an old man"
-    elseif role == ROLE_NONE then
-        col = COLOR_WHITE
-        role = "a hidden role"
-    else
-        col = innoColor
-        role = "innocent"
-    end
+    -- Format the number role into a human readable role and identifying color
+    local roleString = ROLE_STRINGS_EXT[role]
+    local col = ROLE_COLORS_HIGHLIGHT[role]
 
     -- Format the reason for their death
     if reason == "suicide" then
@@ -738,7 +704,7 @@ net.Receive("TTT_ClientDeathNotify", function()
     elseif reason == "prop" then
         chat.AddText(COLOR_WHITE, "You were killed by a prop!")
     elseif reason == "ply" then
-        chat.AddText(COLOR_WHITE, "You were killed by ", col, name, COLOR_WHITE, ", they were ", col, role .. "!")
+        chat.AddText(COLOR_WHITE, "You were killed by ", col, name, COLOR_WHITE, ", they were ", col, roleString .. "!")
     elseif reason == "fell" then
         chat.AddText(COLOR_WHITE, "You fell to your death!")
     elseif reason == "water" then

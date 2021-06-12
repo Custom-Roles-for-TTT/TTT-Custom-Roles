@@ -62,8 +62,8 @@ end
 function plymeta:SubtractCredits(amt) self:AddCredits(-amt) end
 
 function plymeta:SetDefaultCredits()
+    local c = 0
     if self:IsTraitorTeam() then
-        local c = 0
         if self:IsTraitor() then
             c = GetConVar("ttt_credits_starting"):GetInt()
         elseif self:IsHypnotist() then
@@ -75,12 +75,15 @@ function plymeta:SetDefaultCredits()
         if CountTraitors() == 1 then
             c = c + GetConVar("ttt_credits_alonebonus"):GetInt()
         end
-        self:SetCredits(math.ceil(c))
-    elseif self:IsDetective() then
-        self:SetCredits(math.ceil(GetConVar("ttt_det_credits_starting"):GetInt()))
+        c = math.ceil(c)
     else
-        self:SetCredits(0)
+        local cvar = "ttt_" .. ROLE_STRINGS_SHORT[self:GetRole()] .. "_credits_starting"
+        if ConVarExists(cvar) then
+            c = math.ceil(GetConVar(cvar):GetInt())
+        end
     end
+
+    self:SetCredits(c)
 end
 
 function plymeta:SendCredits()

@@ -155,8 +155,16 @@ CreateConVar("ttt_deputy_damage_penalty", "0")
 
 -- Jester role properties
 CreateConVar("ttt_jesters_trigger_traitor_testers", "1")
+CreateConVar("ttt_jester_win_by_traitors", "1")
+CreateConVar("ttt_jester_notify_mode", "1", FCVAR_NONE, "The logic to use when notifying players that the Jester is killed", 0, 4)
+CreateConVar("ttt_jester_notify_sound", "0")
+CreateConVar("ttt_jester_notify_confetti", "0")
 
 CreateConVar("ttt_swapper_killer_health", "100")
+CreateConVar("ttt_swapper_respawn_health", "100")
+CreateConVar("ttt_swapper_notify_mode", "1", FCVAR_NONE, "The logic to use when notifying players that the Swapper is killed", 0, 4)
+CreateConVar("ttt_swapper_notify_sound", "0")
+CreateConVar("ttt_swapper_notify_confetti", "0")
 
 CreateConVar("ttt_clown_damage_bonus", "0")
 
@@ -189,6 +197,8 @@ CreateConVar("ttt_det_credits_traitordead", "1")
 
 -- Other credits
 CreateConVar("ttt_hyp_credits_starting", "1")
+CreateConVar("ttt_jes_credits_starting", "0")
+CreateConVar("ttt_swa_credits_starting", "0")
 CreateConVar("ttt_imp_credits_starting", "1")
 
 -- Other
@@ -304,6 +314,7 @@ util.AddNetworkString("TTT_BuyableWeapons")
 util.AddNetworkString("TTT_ResetBuyableWeaponsCache")
 util.AddNetworkString("TTT_PlayerFootstep")
 util.AddNetworkString("TTT_ClearPlayerFootsteps")
+util.AddNetworkString("TTT_JesterDeathCelebration")
 
 local jester_killed = false
 
@@ -556,8 +567,12 @@ end
 
 function StartWinChecks()
     hook.Add("PlayerDeath", "CheckJesterDeath", function(victim, infl, attacker)
-        if victim:GetJester() and attacker:IsPlayer() and (not attacker:GetJester()) and GetRoundState() == ROUND_ACTIVE then
-            jester_killed = true
+        if victim:IsJester() and attacker:IsPlayer() and (not attacker:IsJesterTeam()) and GetRoundState() == ROUND_ACTIVE then
+            -- Don't track that the jester was killed (for win reporting) if they were killed by a traitor
+            -- and the functionality that blocks Jester wins from Traitor deaths is enabled
+            if GetConVar("ttt_jester_win_by_traitors"):GetBool() or not attacker:IsTraitorTeam() then
+                jester_killed = true
+            end
         end
     end)
 

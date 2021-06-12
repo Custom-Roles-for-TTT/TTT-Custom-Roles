@@ -142,6 +142,9 @@ EquipmentItems = {
           desc = "item_radar_desc"
         }
     };
+
+    [ROLE_JESTER] = {};
+    [ROLE_SWAPPER] = {};
 };
 
 
