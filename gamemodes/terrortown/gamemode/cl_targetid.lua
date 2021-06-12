@@ -299,15 +299,15 @@ function GM:HUDDrawTargetID()
         surface.SetTexture(ring_tex)
 
         if target_traitor then
-            surface.SetDrawColor(255, 0, 0, 200)
+            surface.SetDrawColor(ColorAlpha(ROLE_COLORS[ROLE_TRAITOR], 200))
         elseif target_detective then
-            surface.SetDrawColor(0, 0, 255, 200)
+            surface.SetDrawColor(ColorAlpha(ROLE_COLORS[ROLE_DETECTIVE], 200))
         elseif target_hypnotist or target_impersonator then
-            surface.SetDrawColor(245, 106, 0, 200)
+            surface.SetDrawColor(ColorAlpha(ROLE_COLORS[ROLE_HYPNOTIST], 200))
         elseif target_jester then
-            surface.SetDrawColor(180, 23, 253, 200)
+            surface.SetDrawColor(ColorAlpha(ROLE_COLORS[ROLE_JESTER], 200))
         elseif target_clown then
-            surface.SetDrawColor(255, 80, 235, 200)
+            surface.SetDrawColor(ColorAlpha(ROLE_COLORS[ROLE_CLOWN], 200))
         end
         surface.DrawTexturedRect(x - 32, y - 32, 64, 64)
     end
@@ -399,25 +399,25 @@ function GM:HUDDrawTargetID()
     if target_revenger_lover then
         -- Prioritise soulmate message over roles
         text = L.target_revenger_lover
-        clr = Color(255, 80, 235, 200)
+        clr = ColorAlpha(ROLE_COLORS[ROLE_REVENGER], 200)
     elseif target_traitor then
         text = L.target_traitor
-        clr = Color(255, 0, 0, 200)
+        clr = ColorAlpha(ROLE_COLORS[ROLE_TRAITOR], 200)
     elseif target_detective then
         text = L.target_detective
-        clr = Color(0, 0, 255, 200)
+        clr = ColorAlpha(ROLE_COLORS[ROLE_DETECTIVE], 200)
     elseif target_jester then
         text = L.target_jester
-        clr = Color(180, 23, 253, 200)
+        clr = ColorAlpha(ROLE_COLORS[ROLE_JESTER], 200)
     elseif target_hypnotist then
         text = L.target_hypnotist
-        clr = Color(245, 106, 0, 200)
+        clr = ColorAlpha(ROLE_COLORS[ROLE_HYPNOTIST], 200)
     elseif target_clown then
         text = L.target_clown
-        clr = Color(255, 80, 235, 200)
+        clr = ColorAlpha(ROLE_COLORS[ROLE_CLOWN], 200)
     elseif target_impersonator then
         text = L.target_impersonator
-        clr = Color(245, 106, 0, 200)
+        clr = ColorAlpha(ROLE_COLORS[ROLE_HYPNOTIST], 200)
     elseif ent.sb_tag and ent.sb_tag.txt ~= nil then
         text = L[ent.sb_tag.txt]
         clr = ent.sb_tag.color
