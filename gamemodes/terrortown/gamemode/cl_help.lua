@@ -6,7 +6,7 @@ local GetPTranslation = LANG.GetParamTranslation
 CreateConVar("ttt_spectator_mode", "0", FCVAR_ARCHIVE)
 CreateConVar("ttt_mute_team_check", "0")
 CreateConVar("ttt_show_raw_karma_value", "0")
-CreateConVar("ttt_color_mode", "full", FCVAR_ARCHIVE)
+CreateConVar("ttt_color_mode", "default", FCVAR_ARCHIVE)
 
 CreateConVar("ttt_custom_inn_color_r", "25", FCVAR_ARCHIVE)
 CreateConVar("ttt_custom_inn_color_g", "200", FCVAR_ARCHIVE)
