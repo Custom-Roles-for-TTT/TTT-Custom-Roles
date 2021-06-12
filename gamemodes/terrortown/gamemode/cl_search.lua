@@ -373,19 +373,19 @@ local function ShowSearchScreen(search_raw)
         if t == "nick" then
             local avply = IsValid(search_raw.owner) and search_raw.owner or nil
 
-            ic = vgui.Create("SimpleIconAvatar", pic)
+            ic = vgui.Create("SimpleIconAvatar", dlist)
             ic:SetPlayer(avply)
 
             start_icon = ic
         elseif t == "lastid" then
-            ic = vgui.Create("SimpleIconAvatar", pic)
+            ic = vgui.Create("SimpleIconAvatar", dlist)
             ic:SetPlayer(info.ply)
             ic:SetAvatarSize(24)
         elseif info.text_icon then
-            ic = vgui.Create("SimpleIconLabelled", pic)
+            ic = vgui.Create("SimpleIconLabelled", dlist)
             ic:SetIconText(info.text_icon)
         else
-            ic = vgui.Create("SimpleIcon", pic)
+            ic = vgui.Create("SimpleIcon", dlist)
         end
 
         ic:SetIconSize(64)

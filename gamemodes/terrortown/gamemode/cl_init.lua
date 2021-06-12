@@ -722,23 +722,23 @@ local function OnPlayerHighlightEnabled(alliedRoles, jesterRoles, hideEnemies, t
 
     -- If the allies of this role are Traitors, show them in red to be thematic
     if traitorAllies then
-        halo.Add(friends, Color(255, 0, 0), 1, 1, 1, true, true)
+        halo.Add(friends, ROLE_COLORS[ROLE_TRAITOR], 1, 1, 1, true, true)
     -- Otherwise green is good
     else
-        halo.Add(friends, Color(0, 255, 0), 1, 1, 1, true, true)
+        halo.Add(friends, ROLE_COLORS[ROLE_INNOCENT], 1, 1, 1, true, true)
     end
 
     -- Don't show enemies if we're hiding them
     if not hideEnemies then
         -- If the allies of this role are Traitors, show enemies as green to be difference
         if traitorAllies then
-            halo.Add(enemies, Color(0, 255, 0), 1, 1, 1, true, true)
+            halo.Add(enemies, ROLE_COLORS[ROLE_INNOCENT], 1, 1, 1, true, true)
         else
-            halo.Add(enemies, Color(255, 0, 0), 1, 1, 1, true, true)
+            halo.Add(enemies, ROLE_COLORS[ROLE_TRAITOR], 1, 1, 1, true, true)
         end
     end
 
-    halo.Add(jesters, Color(255, 85, 100), 1, 1, 1, true, true)
+    halo.Add(jesters, ROLE_COLORS[ROLE_JESTER], 1, 1, 1, true, true)
 end
 
 local function EnableTraitorHighlights()
