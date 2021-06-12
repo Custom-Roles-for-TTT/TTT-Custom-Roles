@@ -920,11 +920,21 @@ function CLSCORE:BuildHilitePanel(dpanel)
     -- random, involve the round's duration too.
     math.randomseed(self.StartTime + endtime)
 
+    -- Get the player's name and current role and pass that into the awards
+    local playerInfo = {}
+    for id, nick in pairs(self.Players) do
+        local ply = GetPlayerFromSteam64(id)
+        playerInfo[id] = {
+            nick = nick,
+            role = ply:GetRole()
+        }
+    end
+
     -- Attempt to generate every award, then sort the succeeded ones based on
     -- priority/interestingness
     local award_choices = {}
     for _, afn in pairs(AWARDS) do
-        local a = afn(self.Events, self.Scores, self.Players, self.InnocentIDs, self.TraitorIDs, self.DetectiveIDs, self.JesterIDs, self.SwapperIDs, self.GlitchIDs, self.PhantomIDs, self.HypnotistIDs, self.RevengerIDs, self.DrunkIDs, self.ClownIDs, self.DeputyIDs, self.ImpersonatorIDs, self.BeggarIDs, self.OldManIDs, self.MercenaryIDs)
+        local a = afn(self.Events, self.Scores, playerInfo)
         if ValidAward(a) then
             table.insert(award_choices, a)
         end
