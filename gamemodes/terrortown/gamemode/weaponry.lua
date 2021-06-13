@@ -611,7 +611,7 @@ function GM:WeaponEquip(wep, ply)
             ErrorNoHalt("Equipped weapon " .. wep:GetClass() .. " is not compatible with TTT\n")
         end
 
-        if wep.CanBuy then
+        if wep.CanBuy and not wep.AutoSpawnable then
             if not wep.BoughtBuy then
                 wep.BoughtBuy = ply
             elseif ply:IsBeggar() then
