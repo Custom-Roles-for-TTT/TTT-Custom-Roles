@@ -30,17 +30,27 @@ end
 
 ---- "T" indicator above traitors
 
-local indicator_mat_roleback_noz = Material("vgui/ttt/sprite_roleback_noz")
-local indicator_mat_tra_noz = Material("vgui/ttt/sprite_tra_noz")
-local indicator_mat_hyp_noz = Material("vgui/ttt/sprite_hyp_noz")
-local indicator_mat_imp_noz = Material("vgui/ttt/sprite_imp_noz")
-
 local indicator_mat_roleback = Material("vgui/ttt/sprite_roleback")
-local indicator_mat_det = Material("vgui/ttt/sprite_det")
-local indicator_mat_jes = Material("vgui/ttt/sprite_jes")
-local indicator_mat_clo = Material("vgui/ttt/sprite_clo")
+local indicator_mat_roleback_noz = Material("vgui/ttt/sprite_roleback_noz")
+local indicator_mat_rolefront = Material("vgui/ttt/sprite_rolefront")
+local indicator_mat_rolefront_noz = Material("vgui/ttt/sprite_rolefront_noz")
 
-local indicator_col = Color(255, 255, 255, 130)
+local function DrawRoleIcon(role, noz, pos, dir)
+    local path = "vgui/ttt/sprite_" .. ROLE_STRINGS_SHORT[role]
+    if noz then path = path .. "_noz" end
+    local indicator_mat = Material(path)
+
+    if noz then render.SetMaterial(indicator_mat_roleback_noz)
+    else render.SetMaterial(indicator_mat_roleback) end
+    render.DrawQuadEasy(pos, dir, 8, 8, ROLE_COLORS_SPRITE[role], 180)
+
+    render.SetMaterial(indicator_mat)
+    render.DrawQuadEasy(pos, dir, 8, 8, COLOR_WHITE, 180)
+
+    if noz then render.SetMaterial(indicator_mat_rolefront_noz)
+    else render.SetMaterial(indicator_mat_rolefront) end
+    render.DrawQuadEasy(pos, dir, 8, 8, COLOR_WHITE, 180)
+end
 
 local client, plys, ply, pos, dir, tgt
 local GetPlayers = player.GetAll
@@ -62,38 +72,20 @@ function GM:PostDrawTranslucentRenderables()
             pos = v:GetPos()
             pos.z = pos.z + 74
             if v:GetDetectiveLike() and not (v:GetImpersonator() and client:IsTraitorTeam()) then
-                render.SetMaterial(indicator_mat_roleback)
-                render.DrawQuadEasy(pos, dir, 8, 8, ROLE_COLORS_SPRITE[ROLE_DETECTIVE], 180)
-                render.SetMaterial(indicator_mat_det)
-                render.DrawQuadEasy(pos, dir, 8, 8, COLOR_WHITE, 180)
+                DrawRoleIcon(ROLE_DETECTIVE, false, pos, dir)
             elseif v:GetClown() and v:GetNWBool("KillerClownActive", false) then
-                render.SetMaterial(indicator_mat_roleback)
-                render.DrawQuadEasy(pos, dir, 8, 8, ROLE_COLORS_SPRITE[ROLE_JESTER], 180)
-                render.SetMaterial(indicator_mat_clo)
-                render.DrawQuadEasy(pos, dir, 8, 8, COLOR_WHITE, 180)
+                DrawRoleIcon(ROLE_CLOWN, false, pos, dir)
             end
             if client:IsTraitorTeam() then
                 local hideBeggar = v:GetNWBool("WasBeggar", false) and not GetGlobalBool("ttt_reveal_beggar_change", true)
                 if (v:GetTraitor() and not hideBeggar) or v:GetGlitch() then
-                    render.SetMaterial(indicator_mat_roleback_noz)
-                    render.DrawQuadEasy(pos, dir, 8, 8, ROLE_COLORS_SPRITE[ROLE_TRAITOR], 180)
-                    render.SetMaterial(indicator_mat_tra_noz)
-                    render.DrawQuadEasy(pos, dir, 8, 8, COLOR_WHITE, 180)
+                    DrawRoleIcon(ROLE_TRAITOR, true, pos, dir)
                 elseif v:GetHypnotist() then
-                    render.SetMaterial(indicator_mat_roleback_noz)
-                    render.DrawQuadEasy(pos, dir, 8, 8, ROLE_COLORS_SPRITE[ROLE_HYPNOTIST], 180)
-                    render.SetMaterial(indicator_mat_hyp_noz)
-                    render.DrawQuadEasy(pos, dir, 8, 8, COLOR_WHITE, 180)
+                    DrawRoleIcon(ROLE_HYPNOTIST, true, pos, dir)
                 elseif v:GetImpersonator() then
-                    render.SetMaterial(indicator_mat_roleback_noz)
-                    render.DrawQuadEasy(pos, dir, 8, 8, ROLE_COLORS_SPRITE[ROLE_IMPERSONATOR], 180)
-                    render.SetMaterial(indicator_mat_imp_noz)
-                    render.DrawQuadEasy(pos, dir, 8, 8, COLOR_WHITE, 180)
+                    DrawRoleIcon(ROLE_IMPERSONATOR, true, pos, dir)
                 elseif (v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) or ((v:GetTraitor() or v:GetInnocent()) and hideBeggar) then
-                    render.SetMaterial(indicator_mat_roleback)
-                    render.DrawQuadEasy(pos, dir, 8, 8, ROLE_COLORS_SPRITE[ROLE_JESTER], 180)
-                    render.SetMaterial(indicator_mat_jes)
-                    render.DrawQuadEasy(pos, dir, 8, 8, COLOR_WHITE, 180)
+                    DrawRoleIcon(ROLE_JESTER, false, pos, dir)
                 end
             end
         end

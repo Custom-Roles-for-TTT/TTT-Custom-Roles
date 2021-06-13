@@ -749,7 +749,7 @@ local function EnableTraitorHighlights()
         table.insert(allies, ROLE_GLITCH)
 
         local jesters = table.GetKeys(JESTER_ROLES)
-        OnPlayerHighlightEnabled(jesters, allies, true, true)
+        OnPlayerHighlightEnabled(allies, jesters, true, true)
     end)
 end
 
