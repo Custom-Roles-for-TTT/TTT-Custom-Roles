@@ -253,8 +253,8 @@ function SWEP:AllowPickup(target)
            (not phys:HasGameFlag(FVPHYSICS_NO_PLAYER_PICKUP)) and
            phys:GetMass() < CARRY_WEIGHT_LIMIT and
            (not PlayerStandsOn(target)) and
-           (target.CanPickup != false) and
-           (target:GetClass() != "prop_ragdoll" or allow_rag:GetBool()) and
+           (target.CanPickup ~= false) and
+           (target:GetClass() ~= "prop_ragdoll" or allow_rag:GetBool()) and
            ((not target:IsWeapon()) or allow_wep:GetBool()))
 end
 
@@ -584,7 +584,7 @@ if CLIENT then
       if self.dt.can_rag_pin and IsValid(self.dt.carried_rag) then
          local client = LocalPlayer()
 
-         if not client:IsSpec() and (self.dt.can_rag_pin_inno or client:IsTraitor()) then
+         if not client:IsSpec() and (self.dt.can_rag_pin_inno or client:IsTraitorTeam()) then
             local tr = util.TraceLine({start  = client:EyePos(),
                endpos = client:EyePos() + (client:GetAimVector() * PIN_RAG_RANGE),
                filter = {client, self, self.dt.carried_rag},
