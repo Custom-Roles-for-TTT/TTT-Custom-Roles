@@ -12,6 +12,8 @@ local GetLang = LANG.GetUnsafeLanguageTable
 local interp = string.Interp
 local FormatTime = util.SimpleTime
 
+local hide_role = false
+
 -- Fonts
 surface.CreateFont("TraitorState", {
     font = "Trebuchet24",
@@ -41,7 +43,8 @@ surface.CreateFont("UseHint", {
 -- Color presets
 local bg_colors = {
     background_main = Color(0, 0, 10, 200),
-    noround = Color(100, 100, 100, 255)
+    noround = Color(100, 100, 100, 255),
+    hidden = Color(75, 75, 75, 200)
 };
 
 local health_colors = {
@@ -156,6 +159,8 @@ local function DrawBg(x, y, width, height, client)
     local col = ROLE_COLORS[client:GetRole()]
     if GAMEMODE.round_state ~= ROUND_ACTIVE then
         col = bg_colors.noround
+    elseif hide_role then
+        col = bg_colors.hidden
     end
 
     draw.RoundedBoxEx(8, x, y, tw, th, col, true, false, false, true)
@@ -321,6 +326,10 @@ local function InfoPaint(client)
     local x = margin
     local y = ScrH() - margin - height
 
+    if ConVarExists("ttt_hide_role") then
+        hide_role = GetConVar("ttt_hide_role"):GetBool()
+    end
+
     DrawBg(x, y, width, height, client)
 
     local bar_height = 25
@@ -365,7 +374,11 @@ local function InfoPaint(client)
     local traitor_y = y - 30
     local text = nil
     if round_state == ROUND_ACTIVE then
-        text = L[client:GetRoleStringRaw()]
+        if hide_role then
+            text = L['hidden']
+        else
+            text = L[client:GetRoleStringRaw()]
+        end
     else
         text = L[roundstate_string[round_state]]
     end

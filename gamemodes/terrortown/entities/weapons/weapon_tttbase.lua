@@ -148,21 +148,32 @@ if CLIENT then
         local y = math.floor(ScrH() / 2.0)
         local scale = math.max(0.2, 10 * self:GetPrimaryCone())
 
-        local LastShootTime = self:LastShootTime()
-        scale = scale * (2 - math.Clamp((CurTime() - LastShootTime) * 5, 0.0, 1.0))
+        local lastShootTime = self:LastShootTime()
+        scale = scale * (2 - math.Clamp((CurTime() - lastShootTime) * 5, 0.0, 1.0))
 
         local alpha = sights and sights_opacity:GetFloat() or 1
         local bright = crosshair_brightness:GetFloat() or 1
 
+        local hide_role = false;
+        if ConVarExists("ttt_hide_role") then
+            hide_role = GetConVar("ttt_hide_role"):GetBool()
+        end
+
         -- somehow it seems this can be called before my player metatable
         -- additions have loaded
-        if client:IsTraitorTeam() then
-            surface.SetDrawColor(ColorAlpha(ROLE_COLORS_HIGHLIGHT[ROLE_TRAITOR], 255 * alpha))
-        elseif client:IsJesterTeam() then
-            surface.SetDrawColor(ColorAlpha(ROLE_COLORS_HIGHLIGHT[ROLE_JESTER], 255 * alpha))
+        local color = nil
+        if hide_role then
+            color = COLOR_WHITE
+        elseif client.IsTraitorTeam and client:IsTraitorTeam() then
+            color = ROLE_COLORS_HIGHLIGHT[ROLE_TRAITOR]
+        elseif client.IsJesterTeam and client:IsJesterTeam() then
+            color = ROLE_COLORS_HIGHLIGHT[ROLE_JESTER]
         else
-            surface.SetDrawColor(ColorAlpha(ROLE_COLORS_HIGHLIGHT[ROLE_INNOCENT], 255 * alpha))
+            color = ROLE_COLORS_HIGHLIGHT[ROLE_INNOCENT]
         end
+
+        local r, g, b, _ = color:Unpack()
+        surface.SetDrawColor(Color(r * bright, g * bright, b * bright, 255 * alpha))
 
         local gap = math.floor(20 * scale * (sights and 0.8 or 1))
         local length = math.floor(gap + (25 * crosshair_size:GetFloat()) * scale)
