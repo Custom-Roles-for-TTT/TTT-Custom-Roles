@@ -157,20 +157,11 @@ if CLIENT then
         -- somehow it seems this can be called before my player metatable
         -- additions have loaded
         if client:IsTraitorTeam() then
-            surface.SetDrawColor(255 * bright,
-                    0,
-                    0,
-                    255 * alpha)
+            surface.SetDrawColor(ColorAlpha(ROLE_COLORS_HIGHLIGHT[ROLE_TRAITOR], 255 * alpha))
         elseif client:IsJesterTeam() then
-            surface.SetDrawColor(255 * bright,
-                    50 * bright,
-                    255 * bright,
-                    255 * alpha)
+            surface.SetDrawColor(ColorAlpha(ROLE_COLORS_HIGHLIGHT[ROLE_JESTER], 255 * alpha))
         else
-            surface.SetDrawColor(0,
-                    255 * bright,
-                    0,
-                    255 * alpha)
+            surface.SetDrawColor(ColorAlpha(ROLE_COLORS_HIGHLIGHT[ROLE_INNOCENT], 255 * alpha))
         end
 
         local gap = math.floor(20 * scale * (sights and 0.8 or 1))

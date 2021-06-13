@@ -170,9 +170,9 @@ function PANEL:Paint(width, height)
     end
 
     if LocalPlayer():IsRevenger() and ply:SteamID64() == LocalPlayer():GetNWString("RevengerLover", "") and GetRoundState() >= ROUND_ACTIVE then
-        surface.SetDrawColor(200, 100, 200, math.Round(math.sin(RealTime() * 8) / 2 + 0.5) * 20)
+        surface.SetDrawColor(ColorAlpha(ROLE_COLORS[ROLE_REVENGER], math.Round(math.sin(RealTime() * 8) / 2 + 0.5) * 20))
         surface.DrawRect(0, 0, width, SB_ROW_HEIGHT)
-        surface.SetDrawColor(150, 50, 150, 255)
+        surface.SetDrawColor(ROLE_COLORS_DARK[ROLE_REVENGER])
         surface.DrawOutlinedRect(SB_ROW_HEIGHT, 0, width - SB_ROW_HEIGHT, SB_ROW_HEIGHT)
         surface.DrawOutlinedRect(1 + SB_ROW_HEIGHT, 1, width - 2 - SB_ROW_HEIGHT, SB_ROW_HEIGHT - 2)
     end
