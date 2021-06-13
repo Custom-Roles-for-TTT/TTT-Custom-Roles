@@ -385,9 +385,7 @@ local function OrderEquipment(ply, cmd, args)
         local promoted = ply:IsDetectiveLike() and role ~= ROLE_DETECTIVE
         local sync_detective_weapons = promoted
 
-        local mercmode = GetGlobalInt("ttt_shop_mer_mode")
-
-        WEPS.HandleCanBuyOverrides(swep_table, role, false, sync_traitor_weapons, sync_detective_weapons, mercmode)
+        WEPS.HandleCanBuyOverrides(swep_table, role, false, sync_traitor_weapons, sync_detective_weapons)
     end
 
     local received = false

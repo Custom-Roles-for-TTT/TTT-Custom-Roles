@@ -99,9 +99,16 @@ MERC_SHOP_INTERSECT = 2
 MERC_SHOP_DETECTIVE = 3
 MERC_SHOP_TRAITOR = 4
 
-function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor_weapons, sync_detective_weapons, mercmode)
+
+local mercmode = nil
+function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor_weapons, sync_detective_weapons)
     if wep == nil then return end
     local id = WEPS.GetClass(wep)
+
+    -- Cache this the first time
+    if mercmode == nil then
+        mercmode = GetGlobalInt("ttt_shop_mer_mode")
+    end
 
     -- Handle the other overrides
     if wep.CanBuy then

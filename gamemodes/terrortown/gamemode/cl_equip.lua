@@ -87,7 +87,7 @@ function GetEquipmentForRole(role, promoted, block_randomization)
 
         -- find buyable weapons to load info from
         for _, v in pairs(weapons.GetList()) do
-            WEPS.HandleCanBuyOverrides(v, role, block_randomization, sync_traitor_weapons, sync_detective_weapons, mercmode)
+            WEPS.HandleCanBuyOverrides(v, role, block_randomization, sync_traitor_weapons, sync_detective_weapons)
             if v and v.CanBuy then
                 local data = v.EquipMenuData or {}
                 local base = {
