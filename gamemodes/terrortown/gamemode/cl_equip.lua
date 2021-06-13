@@ -299,9 +299,15 @@ end
 concommand.Add("ttt_cl_traitorpopup_close", ForceCloseTraitorMenu)
 
 local function TraitorMenuPopup()
-    local numCols = numColsVar:GetInt()
-    local numRows = numRowsVar:GetInt()
-    local itemSize = itemSizeVar:GetInt()
+    local numCols = GetGlobalInt("ttt_bem_sv_cols", 4)
+    local numRows = GetGlobalInt("ttt_bem_sv_rows", 5)
+    local itemSize = GetGlobalInt("ttt_bem_sv_size", 64)
+
+    if GetGlobalBool("ttt_bem_allow_change", true) then
+        numCols = numColsVar:GetInt()
+        numRows = numRowsVar:GetInt()
+        itemSize = itemSizeVar:GetInt()
+    end
 
     -- margin
     local m = 5
