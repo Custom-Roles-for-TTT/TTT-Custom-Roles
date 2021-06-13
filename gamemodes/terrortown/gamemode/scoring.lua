@@ -93,79 +93,17 @@ function SCORE:HandleSpawn(ply)
     if ply:Team() == TEAM_TERROR then
         self:AddEvent({ id = EVENT_SPAWN, ni = ply:Nick(), sid = ply:SteamID(), sid64 = ply:SteamID64() })
     end
-end
+end 
 
 function SCORE:HandleSelection()
-    local innocents = {}
-    local mercenaries = {}
-    local traitors = {}
-    local detectives = {}
-    local jesters = {}
-    local swappers = {}
-    local glitches = {}
-    local phantoms = {}
-    local hypnotists = {}
-    local revengers = {}
-    local drunks = {}
-    local clowns = {}
-    local deputies = {}
-    local impersonators = {}
-    local beggars = {}
-    local oldmen = {}
-
+    local roles = {}
     for _, ply in ipairs(player.GetAll()) do
-        if ply:GetInnocent() then
-            table.insert(innocents, ply:SteamID64())
-        elseif ply:GetTraitor() then
-            table.insert(traitors, ply:SteamID64())
-        elseif ply:GetDetective() then
-            table.insert(detectives, ply:SteamID64())
-        elseif ply:GetJester() then
-            table.insert(jesters, ply:SteamID64())
-        elseif ply:GetSwapper() then
-            table.insert(swappers, ply:SteamID64())
-        elseif ply:GetGlitch() then
-            table.insert(glitches, ply:SteamID64())
-        elseif ply:GetPhantom() then
-            table.insert(phantoms, ply:SteamID64())
-        elseif ply:GetHypnotist() then
-            table.insert(hypnotists, ply:SteamID64())
-        elseif ply:GetRevenger() then
-            table.insert(revengers, ply:SteamID64())
-        elseif ply:GetDrunk() then
-            table.insert(drunks, ply:SteamID64())
-        elseif ply:GetClown() then
-            table.insert(clowns, ply:SteamID64())
-        elseif ply:GetDeputy() then
-            table.insert(deputies, ply:SteamID64())
-        elseif ply:GetImpersonator() then
-            table.insert(impersonators, ply:SteamID64())
-        elseif ply:GetBeggar() then
-            table.insert(beggars, ply:SteamID64())
-        elseif ply:GetOldMan() then
-            table.insert(oldmen, ply:SteamID64())
-        elseif ply:GetMercenary() then
-            table.insert(mercenaries, ply:SteamID64())
-        end
+        -- Prefix the ID value with a string to force the key to stay as a string when it gets transferred
+        -- Without this, the key gets converted to a floating-point number which loses precision and causes errors during data lookup
+        roles[GetRoleId(ply:SteamID64())] = ply:GetRole()
     end
 
-    self:AddEvent({ id = EVENT_SELECTED,
-                    innocent_ids = innocents,
-                    mercenary_ids = mercenaries,
-                    traitor_ids = traitors,
-                    detective_ids = detectives,
-                    jester_ids = jesters,
-                    swapper_ids = swappers,
-                    glitch_ids = glitches,
-                    phantom_ids = phantoms,
-                    hypnotist_ids = hypnotists,
-                    revenger_ids = revengers,
-                    drunk_ids = drunks,
-                    clown_ids = clowns,
-                    deputy_ids = deputies,
-                    impersonator_ids = impersonators,
-                    beggar_ids = beggars,
-                    old_man_ids = oldmen })
+    self:AddEvent({ id = EVENT_SELECTED, roles = roles })
 end
 
 function SCORE:HandleBodyFound(finder, found)
@@ -205,63 +143,16 @@ end
 
 function SCORE:ApplyEventLogScores(wintype)
     local scores = {}
-    local innocents = {}
-    local mercenaries = {}
-    local traitors = {}
-    local detectives = {}
-    local jesters = {}
-    local swappers = {}
-    local glitches = {}
-    local phantoms = {}
-    local hypnotists = {}
-    local revengers = {}
-    local drunks = {}
-    local clowns = {}
-    local deputies = {}
-    local impersonators = {}
-    local beggars = {}
-    local oldmen = {}
+    local roles = {}
 
     for _, ply in ipairs(player.GetAll()) do
-        scores[ply:SteamID64()] = {}
-
-        if ply:GetInnocent() then
-            table.insert(innocents, ply:SteamID64())
-        elseif ply:GetTraitor() then
-            table.insert(traitors, ply:SteamID64())
-        elseif ply:GetDetective() then
-            table.insert(detectives, ply:SteamID64())
-        elseif ply:GetJester() then
-            table.insert(jesters, ply:SteamID64())
-        elseif ply:GetSwapper() then
-            table.insert(swappers, ply:SteamID64())
-        elseif ply:GetGlitch() then
-            table.insert(glitches, ply:SteamID64())
-        elseif ply:GetPhantom() then
-            table.insert(phantoms, ply:SteamID64())
-        elseif ply:GetHypnotist() then
-            table.insert(hypnotists, ply:SteamID64())
-        elseif ply:GetRevenger() then
-            table.insert(revengers, ply:SteamID64())
-        elseif ply:GetDrunk() then
-            table.insert(drunks, ply:SteamID64())
-        elseif ply:GetClown() then
-            table.insert(clowns, ply:SteamID64())
-        elseif ply:GetDeputy() then
-            table.insert(deputies, ply:SteamID64())
-        elseif ply:GetImpersonator() then
-            table.insert(impersonators, ply:SteamID64())
-        elseif ply:GetBeggar() then
-            table.insert(beggars, ply:SteamID64())
-        elseif ply:GetOldMan() then
-            table.insert(oldmen, ply:SteamID64())
-        elseif ply:GetMercenary() then
-            table.insert(mercenaries, ply:SteamID64())
-        end
+        local sid64 = ply:SteamID64()
+        scores[sid64] = {}
+        roles[sid64] = ply:GetRole()
     end
 
     -- individual scores, and count those left alive
-    local scored_log = ScoreEventLog(self.Events, scores, innocents, traitors, detectives, jesters, swappers, glitches, phantoms, hypnotists, revengers, drunks, clowns, deputies, impersonators, beggars, oldmen, mercenaries)
+    local scored_log = ScoreEventLog(self.Events, scores, roles)
     local ply = nil
     for sid, s in pairs(scored_log) do
         ply = player.GetBySteamID64(sid)

@@ -10,22 +10,7 @@ local pairs = pairs
 CLSCORE = {}
 CLSCORE.Events = {}
 CLSCORE.Scores = {}
-CLSCORE.InnocentIDs = {}
-CLSCORE.MercenaryIDs = {}
-CLSCORE.TraitorIDs = {}
-CLSCORE.DetectiveIDs = {}
-CLSCORE.JesterIDs = {}
-CLSCORE.SwapperIDs = {}
-CLSCORE.GlitchIDs = {}
-CLSCORE.PhantomIDs = {}
-CLSCORE.HypnotistIDs = {}
-CLSCORE.RevengerIDs = {}
-CLSCORE.DrunkIDs = {}
-CLSCORE.ClownIDs = {}
-CLSCORE.DeputyIDs = {}
-CLSCORE.ImpersonatorIDs = {}
-CLSCORE.BeggarIDs = {}
-CLSCORE.OldManIDs = {}
+CLSCORE.Roles = {}
 CLSCORE.Players = {}
 CLSCORE.StartTime = 0
 CLSCORE.Panel = nil
@@ -340,7 +325,7 @@ function CLSCORE:BuildScorePanel(dpanel)
     dlist:SetSortable(true)
     dlist:SetMultiSelect(false)
 
-    local colnames = { "", "col_player", "col_role", "col_kills1", "col_kills2", "col_kills3", "col_points", "col_team", "col_total" }
+    local colnames = { "", "col_player", "col_role", "col_kills1", "col_kills2", "col_kills3", "col_kills4", "col_points", "col_team", "col_total" }
     for _, name in pairs(colnames) do
         if name == "" then
             -- skull icon column
@@ -367,40 +352,11 @@ function CLSCORE:BuildScorePanel(dpanel)
 
     for id, s in pairs(scores) do
         if id ~= -1 then
-            local was_traitor = s.was_traitor or s.was_hypnotist or s.was_impersonator
-            local was_innocent = s.was_innocent or s.was_detective or s.was_phantom or s.was_glitch or s.was_revenger or s.was_deputy or s.was_mercenary
-            local role = ROLE_STRINGS[ROLE_INNOCENT]
-            if s.was_traitor then
-                role = ROLE_STRINGS[ROLE_TRAITOR]
-            elseif s.was_detective then
-                role = ROLE_STRINGS[ROLE_DETECTIVE]
-            elseif s.was_jester then
-                role = ROLE_STRINGS[ROLE_JESTER]
-            elseif s.was_swapper then
-                role = ROLE_STRINGS[ROLE_SWAPPER]
-            elseif s.was_glitch then
-                role = ROLE_STRINGS[ROLE_GLITCH]
-            elseif s.was_phantom then
-                role = ROLE_STRINGS[ROLE_PHANTOM]
-            elseif s.was_hypnotist then
-                role = ROLE_STRINGS[ROLE_HYPNOTIST]
-            elseif s.was_revenger then
-                role = ROLE_STRINGS[ROLE_REVENGER]
-            elseif s.was_drunk then
-                role = ROLE_STRINGS[ROLE_DRUNK]
-            elseif s.was_clown then
-                role = ROLE_STRINGS[ROLE_CLOWN]
-            elseif s.was_deputy then
-                role = ROLE_STRINGS[ROLE_DEPUTY]
-            elseif s.was_impersonator then
-                role = ROLE_STRINGS[ROLE_IMPERSONATOR]
-            elseif s.was_beggar then
-                role = ROLE_STRINGS[ROLE_BEGGAR]
-            elseif s.was_old_man then
-                role = ROLE_STRINGS[ROLE_OLDMAN]
-            elseif s.was_mercenary then
-                role = ROLE_STRINGS[ROLE_MERCENARY]
-            end
+            local was_traitor = TRAITOR_ROLES[s.role]
+            local was_innocent = INNOCENT_ROLES[s.role]
+            local was_jester = JESTER_ROLES[s.role]
+            local was_indep = INDEPENDENT_ROLES[s.role]
+            local role_string = ROLE_STRINGS[s.role]
 
             local surv = ""
             if s.deaths > 0 then
@@ -420,14 +376,14 @@ function CLSCORE:BuildScorePanel(dpanel)
             local points_team = bonus.innos
             if was_traitor then
                 points_team = bonus.traitors
-            elseif s.was_jester or s.was_swapper then
+            elseif was_jester then
                 points_team = bonus.jesters
-            elseif s.was_killer then
-                points_team = bonus.killers
+            elseif was_indep then
+                points_team = bonus.indeps
             end
             local points_total = points_own + points_team
 
-            local l = dlist:AddLine(surv, nicks[id], role, s.innos, s.traitors, s.jesters, points_own, points_team, points_total)
+            local l = dlist:AddLine(surv, nicks[id], role_string, s.innos, s.traitors, s.jesters, s.indeps, points_own, points_team, points_total)
 
             -- center align
             for _, col in pairs(l.Columns) do
@@ -562,39 +518,7 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                 local ply = GetPlayerFromSteam64(id)
 
                 -- Backup in case people disconnect and we cant check their role at the end of the round
-                local startingRole = ROLE_INNOCENT
-                if s.was_traitor then
-                    startingRole = ROLE_TRAITOR
-                elseif s.was_detective then
-                    startingRole = ROLE_DETECTIVE
-                elseif s.was_jester then
-                    startingRole = ROLE_JESTER
-                elseif s.was_swapper then
-                    startingRole = ROLE_SWAPPER
-                elseif s.was_glitch then
-                    startingRole = ROLE_GLITCH
-                elseif s.was_phantom then
-                    startingRole = ROLE_PHANTOM
-                elseif s.was_hypnotist then
-                    startingRole = ROLE_HYPNOTIST
-                elseif s.was_revenger then
-                    startingRole = ROLE_REVENGER
-                elseif s.was_drunk then
-                    startingRole = ROLE_DRUNK
-                elseif s.was_clown then
-                    startingRole = ROLE_CLOWN
-                elseif s.was_deputy then
-                    startingRole = ROLE_DEPUTY
-                elseif s.was_impersonator then
-                    startingRole = ROLE_IMPERSONATOR
-                elseif s.was_beggar then
-                    startingRole = ROLE_BEGGAR
-                elseif s.was_old_man then
-                    startingRole = ROLE_OLDMAN
-                elseif s.was_mercenary then
-                    startingRole = ROLE_MERCENARY
-                end
-
+                local startingRole = s.role
                 local hasDisconnected = false
                 local alive = false
 
@@ -620,7 +544,7 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                             roleFileName = ROLE_STRINGS_SHORT[ROLE_DRUNK]
                         elseif ply:GetNWBool("WasBeggar", false) then
                             roleFileName = ROLE_STRINGS_SHORT[ROLE_BEGGAR]
-                        elseif ply:GetNWBool("WasHypnotised") then
+                        elseif ply:GetNWBool("WasHypnotised", false) then
                             roleFileName = ROLE_STRINGS_SHORT[startingRole]
                         end
                     elseif ply:IsJester() then
@@ -853,7 +777,12 @@ function CLSCORE:BuildHilitePanel(dpanel)
     local roundtime = endtime - self.StartTime
 
     local numply = table.Count(self.Players)
-    local numtr = table.Count(self.TraitorIDs) + table.Count(self.HypnotistIDs) + table.Count(self.ImpersonatorIDs)
+    local numtr = 0
+    for _, role in ipairs(self.Roles) do
+        if TRAITOR_ROLES[role] then
+            numtr = numtr + 1
+        end
+    end
 
     local bg = vgui.Create("ColoredBox", dpanel)
     bg:SetColor(Color(50, 50, 50, 255))
@@ -923,10 +852,15 @@ function CLSCORE:BuildHilitePanel(dpanel)
     -- Get the player's name and current role and pass that into the awards
     local playerInfo = {}
     for id, nick in pairs(self.Players) do
+        local role = self.Roles[GetRoleId(id)]
         local ply = GetPlayerFromSteam64(id)
+        -- If the player disconnected, use their starting role
+        if IsValid(ply) then
+            role = ply:GetRole()
+        end
         playerInfo[id] = {
             nick = nick,
-            role = ply:GetRole()
+            role = role
         }
     end
 
@@ -1077,22 +1011,7 @@ end
 
 function CLSCORE:Reset()
     self.Events = {}
-    self.InnocentIDs = {}
-    self.MercenaryIDs = {}
-    self.TraitorIDs = {}
-    self.DetectiveIDs = {}
-    self.JesterIDs = {}
-    self.SwapperIDs = {}
-    self.GlitchIDs = {}
-    self.PhantomIDs = {}
-    self.HypnotistIDs = {}
-    self.RevengerIDs = {}
-    self.DrunkIDs = {}
-    self.ClownIDs = {}
-    self.DeputyIDs = {}
-    self.ImpersonatorIDs = {}
-    self.BeggarIDs = {}
-    self.OldManIDs = {}
+    self.Roles = {}
     self.Scores = {}
     self.Players = {}
     self.RoundStarted = 0
@@ -1103,8 +1022,7 @@ end
 function CLSCORE:Init(events)
     -- Get start time, traitors, detectives, scores, and nicks
     local starttime = 0
-    local innocents, traitors, detectives, jesters, swappers, glitches, phantoms, hypnotists, revengers, drunks, clowns, deputies, impersonators, beggars, oldmen, mercenaries
-    local scores, nicks = {}, {}
+    local scores, nicks, roles = {}, {}, {}
 
     local game, selected, spawn = false, false, false
     for i = 1, #events do
@@ -1120,22 +1038,7 @@ function CLSCORE:Init(events)
                 game = true
             end
         elseif e.id == EVENT_SELECTED then
-            innocents = e.innocent_ids
-            traitors = e.traitor_ids
-            detectives = e.detective_ids
-            jesters = e.jester_ids
-            swappers = e.swapper_ids
-            glitches = e.glitch_ids
-            phantoms = e.phantom_ids
-            hypnotists = e.hypnotist_ids
-            revengers = e.revenger_ids
-            drunks = e.drunk_ids
-            clowns = e.clown_ids
-            deputies = e.deputy_ids
-            impersonators = e.impersonator_ids
-            beggars = e.beggar_ids
-            oldmen = e.old_man_ids
-            mercenaries = e.mercenary_ids
+            roles = e.roles
 
             if game and spawn then
                 break
@@ -1154,29 +1057,11 @@ function CLSCORE:Init(events)
         end
     end
 
-    if traitors == nil then traitors = {} end
-    if detectives == nil then detectives = {} end
-
-    scores = ScoreEventLog(events, scores, innocents, traitors, detectives, jesters, swappers, glitches, phantoms, hypnotists, revengers, drunks, clowns, deputies, impersonators, beggars, oldmen, mercenaries)
+    scores = ScoreEventLog(events, scores, roles)
 
     self.Players = nicks
     self.Scores = scores
-    self.InnocentIDs = innocents
-    self.MercenaryIDs = mercenaries
-    self.TraitorIDs = traitors
-    self.DetectiveIDs = detectives
-    self.JesterIDs = jesters
-    self.SwapperIDs = swappers
-    self.GlitchIDs = glitches
-    self.PhantomIDs = phantoms
-    self.HypnotistIDs = hypnotists
-    self.RevengerIDs = revengers
-    self.DrunkIDs = drunks
-    self.ClownIDs = clowns
-    self.DeputyIDs = deputies
-    self.ImpersonatorIDs = impersonators
-    self.BeggarIDs = beggars
-    self.OldManIDs = oldmen
+    self.Roles = roles
     self.StartTime = starttime
     self.Events = events
 end
