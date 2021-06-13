@@ -65,6 +65,11 @@ function GM:PostDrawTranslucentRenderables()
 
     dir = client:GetForward() * -1
 
+    local hide_roles = false
+    if ConVarExists("ttt_hide_role") then
+        hide_roles = GetConVar("ttt_hide_role"):GetBool()
+    end
+
     for _, v in pairs(player.GetAll()) do
         -- Compatibility with the disguises and Dead Ringer (810154456)
         local hidden = v:GetNWBool("disguised", false) or (v.IsFakeDead and v:IsFakeDead())
@@ -76,7 +81,7 @@ function GM:PostDrawTranslucentRenderables()
             elseif v:GetClown() and v:GetNWBool("KillerClownActive", false) then
                 DrawRoleIcon(ROLE_CLOWN, false, pos, dir)
             end
-            if client:IsTraitorTeam() then
+            if not hide_roles and client:IsTraitorTeam() then
                 local hideBeggar = v:GetNWBool("WasBeggar", false) and not GetGlobalBool("ttt_reveal_beggar_change", true)
                 if (v:GetTraitor() and not hideBeggar) or v:GetGlitch() then
                     DrawRoleIcon(ROLE_TRAITOR, true, pos, dir)
@@ -225,7 +230,12 @@ function GM:HUDDrawTargetID()
     local minimal = minimalist:GetBool()
     local hint = (not minimal) and (ent.TargetIDHint or ClassHint[cls])
 
-    if ent:IsPlayer() then
+    local hide_roles = false
+    if ConVarExists("ttt_hide_role") then
+        hide_roles = GetConVar("ttt_hide_role"):GetBool()
+    end
+
+    if ent:IsPlayer() and ent:Alive() then
         if ent:GetNWBool("disguised", false) then
             client.last_id = nil
 
@@ -250,7 +260,7 @@ function GM:HUDDrawTargetID()
 
         local hideBeggar = ent:GetNWBool("WasBeggar", false) and not GetGlobalBool("ttt_reveal_beggar_change", true)
 
-        if client:IsTraitorTeam() and GetRoundState() == ROUND_ACTIVE then
+        if not hide_roles and client:IsTraitorTeam() and GetRoundState() == ROUND_ACTIVE then
             target_traitor = (ent:IsTraitor() and not hideBeggar) or ent:IsGlitch()
             target_hypnotist = ent:IsHypnotist()
             target_impersonator = ent:IsImpersonator()

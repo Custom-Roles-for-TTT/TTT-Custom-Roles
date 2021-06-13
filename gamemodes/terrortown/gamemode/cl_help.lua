@@ -38,6 +38,7 @@ CreateConVar("ttt_custom_ind_color_b", "0", FCVAR_ARCHIVE)
 UpdateRoleColours()
 
 CreateClientConVar("ttt_avoid_detective", "0", true, true)
+CreateClientConVar("ttt_hide_role", "0", true, true)
 
 HELPSCRN = {}
 
@@ -135,6 +136,9 @@ function HELPSCRN:Show()
 
     cb = dgui:CheckBox(GetTranslation("set_raw_karma"), "ttt_show_raw_karma_value")
     cb:SetTooltip(GetTranslation("set_raw_karma_tip"))
+
+    cb = dgui:CheckBox(GetTranslation("set_hide_role"), "ttt_hide_role")
+    cb:SetTooltip(GetTranslation("set_hide_role_tip"))
 
     dsettings:AddItem(dgui)
 
