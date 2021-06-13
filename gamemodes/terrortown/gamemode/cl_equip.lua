@@ -66,16 +66,17 @@ function GetEquipmentForRole(role, promoted, block_randomization)
     local mercmode = GetGlobalInt("ttt_shop_mer_mode")
 
     -- Pre-load the Traitor weapons so that any that have their CanBuy modified will also apply to the enabled allied role(s)
-    local sync_traitor_weapons = (GetGlobalBool("ttt_shop_hyp_sync") and role == ROLE_HYPNOTIST) or
-                                    (GetGlobalBool("ttt_shop_imp_sync") and role == ROLE_IMPERSONATOR) or
+    local sync_hypnotist = GetGlobalBool("ttt_shop_hyp_sync") and role == ROLE_HYPNOTIST
+    local sync_impersonator = GetGlobalBool("ttt_shop_imp_sync") and role == ROLE_IMPERSONATOR
+    local sync_traitor_weapons = sync_hypnotist or sync_impersonator or
                                     (mercmode > MERC_SHOP_NONE and role == ROLE_MERCENARY)
     if sync_traitor_weapons and not Equipment[ROLE_TRAITOR] then
         GetEquipmentForRole(ROLE_TRAITOR, false, true)
     end
 
     -- Pre-load the Detective weapons so that any that have their CanBuy modified will also apply to the enabled allied role(s)
-    local sync_detective_weapons = (promoted and (role == ROLE_DEPUTY or role == ROLE_IMPERSONATOR)) or
-                                    (mercmode > MERC_SHOP_NONE and role == ROLE_MERCENARY)
+    local sync_detective_like = (promoted and (role == ROLE_DEPUTY or role == ROLE_IMPERSONATOR))
+    local sync_detective_weapons = sync_detective_like or (mercmode > MERC_SHOP_NONE and role == ROLE_MERCENARY)
     if sync_detective_weapons and not Equipment[ROLE_DETECTIVE] then
         GetEquipmentForRole(ROLE_DETECTIVE, false, true)
     end
@@ -119,23 +120,79 @@ function GetEquipmentForRole(role, promoted, block_randomization)
             end
         end
 
+        local traitor_equipment = {}
+        local traitor_equipment_ids = {}
+        local detective_equipment = {}
+        local detective_equipment_ids = {}
+        local available = {}
+        for r, is in pairs(tbl) do
+            for _, i in pairs(is) do
+                if i then
+                    -- Mark custom items
+                    i.custom = not table.HasValue(DefaultEquipment[r], i.id)
+
+                    -- Run through this again to make sure non-custom equipment is saved to be synced below
+                    if not ItemIsWeapon(i) and i.custom then
+                        -- Track the items already available to this role to avoid duplicates
+                        if r == role then
+                            available[i.id] = true
+                        end
+
+                        if r == ROLE_TRAITOR then
+                            table.insert(traitor_equipment, i)
+                            table.insert(traitor_equipment_ids, i.id)
+                        elseif r == ROLE_DETECTIVE then
+                            table.insert(detective_equipment, i)
+                            table.insert(detective_equipment_ids, i.id)
+                        end
+                    end
+                end
+            end
+        end
+
+        -- Sync the equipment from above
+        if role == ROLE_MERCENARY and mercmode == MERC_SHOP_INTERSECT then
+            for idx, i in pairs(traitor_equipment_ids) do
+                -- Traitor AND Detective mode, (Detective && Traitor) -> Mercenary
+                if not available[i.id] and table.HasValue(detective_equipment_ids, i) then
+                    table.insert(tbl[role], traitor_equipment[idx])
+                    available[i.id] = true
+                end
+            end
+        else
+            for _, i in pairs(traitor_equipment) do
+                -- Avoid duplicates
+                if not available[i.id] and
+                    -- Traitor -> Special Traitor
+                    (sync_traitor_weapons or
+                    -- Traitor OR Detective or Traitor only modes, Traitor -> Mercenary
+                    (role == ROLE_MERCENARY and (mercmode == MERC_SHOP_UNION or mercmode == MERC_SHOP_TRAITOR))) then
+                    table.insert(tbl[role], i)
+                    available[i.id] = true
+                end
+            end
+            for _, i in pairs(detective_equipment) do
+                -- Avoid duplicates
+                if not available[i.id] and
+                    -- Detective -> Detective-like
+                    (sync_detective_like or
+                    -- Traitor OR Detective or Detective only modes, Detective -> Mercenary
+                    (role == ROLE_MERCENARY and (mercmode == MERC_SHOP_UNION or mercmode == MERC_SHOP_DETECTIVE))) then
+                    table.insert(tbl[role], i)
+                    available[i.id] = true
+                end
+            end
+        end
+
         -- Also check the extra buyable equipment
         for _, v in pairs(WEPS.BuyableWeapons[role]) do
             -- If this isn't a weapon, get its information from one of the roles and compare that to the ID we have
             if not weapons.GetStored(v) then
                 local equip = GetEquipmentItemByName(v)
-                if equip ~= nil then
+                -- If this exists and isn't already in the list, add it to the role's list
+                if equip ~= nil and not available[equip.id] then
                     table.insert(tbl[role], equip)
                     break
-                end
-            end
-        end
-
-        -- Mark custom items
-        for r, is in pairs(tbl) do
-            for _, i in pairs(is) do
-                if i and i.id then
-                    i.custom = not table.HasValue(DefaultEquipment[r], i.id)
                 end
             end
         end

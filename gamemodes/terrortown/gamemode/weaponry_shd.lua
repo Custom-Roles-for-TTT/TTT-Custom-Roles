@@ -99,7 +99,6 @@ MERC_SHOP_INTERSECT = 2
 MERC_SHOP_DETECTIVE = 3
 MERC_SHOP_TRAITOR = 4
 
-
 local mercmode = nil
 function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor_weapons, sync_detective_weapons)
     if wep == nil then return end

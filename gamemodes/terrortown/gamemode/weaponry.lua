@@ -367,6 +367,11 @@ local function OrderEquipment(ply, cmd, args)
     local swep_table = (not is_item) and weapons.GetStored(id) or nil
 
     local role = ply:GetRole()
+    local sync_hypnotist = GetGlobalBool("ttt_shop_hyp_sync") and ply:IsHypnotist()
+    local sync_impersonator = GetGlobalBool("ttt_shop_imp_sync") and ply:IsImpersonator()
+    local sync_traitor_weapons = sync_hypnotist or sync_impersonator
+    local promoted = ply:IsDetectiveLike() and role ~= ROLE_DETECTIVE
+
     -- If this role has a table of additional weapons and that table includes this weapon
     -- and this weapon is not currently buyable by the role then mark this weapon as buyable
     if swep_table then
@@ -378,13 +383,7 @@ local function OrderEquipment(ply, cmd, args)
         end
 
         -- Add the loaded weapons for this role
-        local sync_hypnotist = GetGlobalBool("ttt_shop_hyp_sync") and role == ROLE_HYPNOTIST
-        local sync_impersonator = GetGlobalBool("ttt_shop_imp_sync") and role == ROLE_IMPERSONATOR
-        local sync_traitor_weapons = sync_hypnotist or sync_impersonator
-
-        local promoted = ply:IsDetectiveLike() and role ~= ROLE_DETECTIVE
         local sync_detective_weapons = promoted
-
         WEPS.HandleCanBuyOverrides(swep_table, role, false, sync_traitor_weapons, sync_detective_weapons)
     end
 
@@ -394,6 +393,37 @@ local function OrderEquipment(ply, cmd, args)
 
         -- item whitelist check
         local allowed = GetEquipmentItem(role, id)
+        -- Check for the syncing options
+        if not allowed then
+            local mercmode = GetGlobalInt("ttt_shop_mer_mode")
+            -- Handle Mercenary cases
+            if ply:IsMercenary() then
+                -- Traitor OR Detective
+                if mercmode == MERC_SHOP_UNION then
+                    allowed = GetEquipmentItem(ROLE_TRAITOR, id) or GetEquipmentItem(ROLE_DETECTIVE, id)
+                -- Traitor AND Detective
+                elseif mercmode == MERC_SHOP_INTERSECT then
+                    allowed = GetEquipmentItem(ROLE_TRAITOR, id) and GetEquipmentItem(ROLE_DETECTIVE, id)
+                -- Detective only
+                elseif mercmode == MERC_SHOP_DETECTIVE then
+                    allowed = GetEquipmentItem(ROLE_DETECTIVE, id)
+                -- Traitor only
+                elseif mercmode == MERC_SHOP_TRAITOR then
+                    allowed = GetEquipmentItem(ROLE_TRAITOR, id)
+                end
+            end
+        end
+
+        -- Traitor -> Special Traitor
+        if not allowed and sync_traitor_weapons then
+            allowed = GetEquipmentItem(ROLE_TRAITOR, id)
+        end
+
+        -- Detective -> Detective-like
+        if not allowed and promoted then
+            allowed = GetEquipmentItem(ROLE_DETECTIVE, id)
+        end
+
         -- If it's not allowed, check the extra buyable equipment
         if not allowed then
             for _, v in pairs(WEPS.BuyableWeapons[role]) do
