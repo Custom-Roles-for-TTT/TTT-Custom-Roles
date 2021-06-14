@@ -1365,7 +1365,7 @@ function SelectRoles()
 
     for _, v in ipairs(plys) do
         -- everyone on the spec team is in specmode
-        if IsValid(v) and (not v:IsSpec()) then
+        if IsValid(v) and not v:IsSpec() then
             -- save previous role and sign up as possible traitor/detective
             local r = GAMEMODE.LastRole[v:SteamID64()] or v:GetRole() or ROLE_INNOCENT
 
@@ -1697,7 +1697,9 @@ function SelectRoles()
 
     for _, ply in ipairs(plys) do
         -- initialize credit count for everyone based on their role
-        ply:SetDefaultCredits()
+        if IsValid(ply) and not ply:IsSpec() then
+            ply:SetDefaultCredits()
+        end
 
         -- store a steamid -> role map
         GAMEMODE.LastRole[ply:SteamID64()] = ply:GetRole()
