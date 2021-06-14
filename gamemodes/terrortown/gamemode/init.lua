@@ -1790,7 +1790,7 @@ hook.Add("PlayerDeath", "TTT_ClientDeathNotify", function(victim, entity, killer
         -- Send the buffer message with the death information to the victim
         net.Start("TTT_ClientDeathNotify")
         net.WriteString(killerName)
-        net.WriteUInt(role, 8)
+        net.WriteInt(role, 8)
         net.WriteString(reason)
         net.Send(victim)
     end
