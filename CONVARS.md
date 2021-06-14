@@ -104,6 +104,9 @@ ttt_revenger_damage_bonus                   0       // Extra damage that the rev
 // Deputy
 ttt_deputy_damage_penalty                   0       // Damage penalty that the deputy has before being promoted (e.g. 0.5 = 50% less damage)
 
+// Mercenary
+ttt_shop_mer_mode                           2       // What items are available to the mercenary in the shop (0=None, 1=Detective OR Traitor, 2=Detective AND Traitor, 3=Detective, 4=Traitor)
+
 // Veteran
 ttt_veteran_damage_bonus                    0.5     // Damage bonus that the veteran has when they are the last innocent alive (e.g. 0.5 = 50% more damage)
 ttt_veteran_full_heal                       1       // Whether the veteran gets a full heal upon becoming the last remaining innocent or not
