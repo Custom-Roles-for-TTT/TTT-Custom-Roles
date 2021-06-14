@@ -20,6 +20,7 @@ L.beggar = "Beggar"
 L.oldman = "Old Man"
 L.mercenary = "Mercenary"
 
+L.hidden = "Hidden"
 L.last_words = "Last Words"
 
 L.terrorists = "Terrorists"
@@ -302,6 +303,8 @@ L.set_cues = "Play sound cue when a round begins or ends"
 L.set_raw_karma = "Show the raw karma value"
 L.set_raw_karma_tip = "Shows the raw karma value in the scoreboard instead of the percentage of damage each player deals"
 L.set_color_mode = "Color settings"
+L.set_hide_role = "Hide your role in the HUD"
+L.set_hide_role_tip = "By default your role will appear in the bottom left of the HUD. Turn this on to prevent screen cheating."
 
 L.set_title_play = "Gameplay settings"
 

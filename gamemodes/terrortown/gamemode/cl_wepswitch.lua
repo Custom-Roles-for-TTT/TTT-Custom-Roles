@@ -36,6 +36,8 @@ local col_active = {
     text_empty = Color(200, 20, 20, 255),
     text = Color(255, 255, 255, 255),
 
+    none = Color(90, 90, 90, 255),
+
     shadow = 255
 };
 
@@ -46,6 +48,8 @@ local col_dark = {
 
     text_empty = Color(200, 20, 20, 100),
     text = Color(255, 255, 255, 100),
+
+    none = Color(75, 75, 75, 255),
 
     shadow = 100
 };
@@ -61,10 +65,14 @@ function WSWITCH:DrawBarBg(x, y, w, h, col)
     local b = 8 --bordersize
     local bh = b / 2
 
-    local role = LocalPlayer():GetRole() or ROLE_INNOCENT
+    local role = LocalPlayer().GetRole and LocalPlayer():GetRole() or ROLE_INNOCENT
+    local hide_role = false
+    if ConVarExists("ttt_hide_role") then
+        hide_role = GetConVar("ttt_hide_role"):GetBool()
+    end
 
-    local c = Color(100, 100, 100, 255)
-    if GAMEMODE.round_state == ROUND_ACTIVE then
+    local c = col.none
+    if not hide_role and GAMEMODE.round_state == ROUND_ACTIVE then
         c = col.tip[role]
     end
 

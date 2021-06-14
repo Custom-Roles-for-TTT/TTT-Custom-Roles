@@ -10,6 +10,20 @@ GM.PickupHistoryCorner = surface.GetTextureID("gui/corner8")
 
 local custom_ammo = CreateClientConVar("ttt_custom_ammo", 0, true, false, "Use custom ammo names.")
 
+local function GetPickupColor()
+    local role = LocalPlayer().GetRole and LocalPlayer():GetRole() or ROLE_INNOCENT
+    local hide_role = false
+    if ConVarExists("ttt_hide_role") then
+        hide_role = GetConVar("ttt_hide_role"):GetBool()
+    end
+
+    if not hide_role and GAMEMODE.round_state == ROUND_ACTIVE then
+        return ROLE_COLORS[role]
+    end
+
+    return Color(100, 100, 100, 255)
+end
+
 function GM:HUDWeaponPickedUp(wep)
     if not (IsValid(wep) and IsValid(LocalPlayer())) or (not LocalPlayer():Alive()) then return end
 
@@ -22,14 +36,7 @@ function GM:HUDWeaponPickedUp(wep)
     pickup.font = "DefaultBold"
     pickup.fadein = 0.04
     pickup.fadeout = 0.3
-
-    local role = LocalPlayer().GetRole and LocalPlayer():GetRole() or ROLE_INNOCENT
-    if GAMEMODE.round_state == ROUND_ACTIVE then
-        pickup.color = ROLE_COLORS[role]
-    else
-        pickup.color = Color(100, 100, 100, 255)
-    end
-
+    pickup.color = GetPickupColor()
     pickup.upper = true
 
     surface.SetFont(pickup.font)
@@ -59,8 +66,7 @@ function GM:HUDItemPickedUp(itemname)
     pickup.font = "DefaultBold"
     pickup.fadein = 0.04
     pickup.fadeout = 0.3
-    pickup.color = Color(255, 255, 255, 255)
-
+    pickup.color = GetPickupColor()
     pickup.upper = false
 
     surface.SetFont(pickup.font)
@@ -112,7 +118,7 @@ function GM:HUDAmmoPickedUp(itemname, amount)
     pickup.font = "DefaultBold"
     pickup.fadein = 0.04
     pickup.fadeout = 0.3
-    pickup.color = Color(205, 155, 0, 255)
+    pickup.color = GetPickupColor()
     pickup.amount = tostring(amount)
 
     surface.SetFont(pickup.font)

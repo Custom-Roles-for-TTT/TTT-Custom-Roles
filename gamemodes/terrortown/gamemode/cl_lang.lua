@@ -224,8 +224,16 @@ LANG.Styles = {
     end,
 
     rolecolour = function(text)
-        MSTACK:AddColoredBgMessage(text,
-                ROLE_COLORS[LocalPlayer():GetRole()])
+        local hide_role = false
+        if ConVarExists("ttt_hide_role") then
+            hide_role = GetConVar("ttt_hide_role"):GetBool()
+        end
+
+        if hide_role then
+            MSTACK:AddMessage(text)
+        else
+            MSTACK:AddColoredBgMessage(text, ROLE_COLORS[LocalPlayer():GetRole()])
+        end
         print("TTT:   " .. text)
     end,
 
