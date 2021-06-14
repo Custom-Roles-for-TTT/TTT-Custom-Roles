@@ -19,6 +19,8 @@ L.impersonator = "Impersonator"
 L.beggar = "Beggar"
 L.oldman = "Old Man"
 L.mercenary = "Mercenary"
+L.bodysnatcher = "Bodysnatcher"
+L.veteran = "Veteran"
 
 L.hidden = "Hidden"
 L.last_words = "Last Words"
@@ -78,6 +80,8 @@ L.body_found_imp = "They were an Impersonator."
 L.body_found_beg = "They were a Beggar."
 L.body_found_old = "They were an Old Man."
 L.body_found_mer = "They were a Mercenary."
+L.body_found_bod = "They were a Bodysnatcher."
+L.body_found_vet = "They were a Veteran."
 
 L.body_confirm = "{finder} confirmed the death of {victim}."
 
@@ -218,6 +222,8 @@ L.search_role_imp = "This person was an Impersonator."
 L.search_role_beg = "This person was a Beggar."
 L.search_role_old = "This person was an Old Man."
 L.search_role_mer = "This person was a Mercenary."
+L.search_role_bod = "This person was a Bodysnatcher."
+L.search_role_vet = "This person was a Veteran."
 
 L.search_words = "Something tells you some of this person's last words were: '{lastwords}'"
 L.search_armor = "They were wearing nonstandard body armor."
@@ -721,9 +727,9 @@ Press {menukey} to receive your special equipment!]]
 L.info_popup_jester = [[You are a Jester! You want to die but you
 deal no damage so you must be killed by some one else.]]
 
-L.info_popup_swapper = [[You are a Swapper! You deal no damage however,
-if anyone kills you, they become the swapper and
-you take their role and can join the fight.]]
+L.info_popup_swapper = [[You are a Swapper! Traitors think you are a jester and you
+deal no damage however, if anyone kills you, they become
+the swapper and you take their role and can join the fight.]]
 
 L.info_popup_glitch = [[You are a Glitch! The traitors think you are one of them.
 Try to blend in and don't give yourself away.]]
@@ -758,6 +764,14 @@ as you are alive at the end of the round.]]
 L.info_popup_mercenary = [[You are a Mercenary! Try to survive and help your innocent friends!
 
 Press {menukey} to receive your equipment!]]
+
+L.info_popup_bodysnatcher = [[You are a Bodysnatcher! Traitors think you are a jester and you
+deal no damage. Use your body snatching device on a corpse
+to take their role and join the fight!]]
+
+L.info_popup_veteran = [[You are a Veteran! You work best under pressure.
+If you are the last innocent player alive you will
+deal extra damage.]]
 
 L.info_popup_hypnotist = [[You are a Hypnotist! Work with fellow traitors to kill all others.
 
@@ -973,7 +987,7 @@ L.ev_blowup = "{victim} blew themselves up"
 L.ev_blowup_trap = "{victim} was blown up by {trap}"
 
 L.ev_tele_self = "{victim} telefragged themselves"
-L.ev_sui = "{victim} couldn't take it and killed themselves"
+L.ev_sui = "{victim} killed themselves"
 L.ev_sui_using = "{victim} killed themselves using {tool}"
 
 L.ev_fall = "{victim} fell to their death"
@@ -1277,3 +1291,4 @@ L.ev_promote = "{player} was promoted to detective"
 L.ev_clown = "The clown, {player}, went on a rampage"
 L.ev_drunk = "{player} remembered they are {team}"
 L.ev_haunt = "{victim} started haunting {attacker}"
+L.ev_bodysnatch = "{attacker} bodysnatched {role}, {victim}"

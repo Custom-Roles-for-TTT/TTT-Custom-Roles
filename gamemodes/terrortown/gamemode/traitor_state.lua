@@ -66,6 +66,8 @@ function SendImpersonatorList(ply_or_rf) SendRoleList(ROLE_IMPERSONATOR, ply_or_
 function SendBeggarList(ply_or_rf) SendRoleList(ROLE_BEGGAR, ply_or_rf) end
 function SendOldManList(ply_or_rf) SendRoleList(ROLE_OLDMAN, ply_or_rf) end
 function SendMercenaryList(ply_or_rf) SendRoleList(ROLE_MERCENARY, ply_or_rf) end
+function SendBodysnatcherList(ply_or_rf) SendRoleList(ROLE_BODYSNATCHER, ply_or_rf) end
+function SendVeteranList(ply_or_rf) SendRoleList(ROLE_VETERAN, ply_or_rf) end
 
 function SendConfirmedTraitors(ply_or_rf)
     SendTraitorList(ply_or_rf, function(p) return p:GetNWBool("body_searched") end)
@@ -89,6 +91,8 @@ function SendFullStateUpdate()
     SendBeggarList()
     SendOldManList()
     SendMercenaryList()
+    SendBodysnatcherList()
+    SendVeteranList()
 end
 
 function SendRoleReset(ply_or_rf)
@@ -130,6 +134,8 @@ local function request_rolelist(ply)
         SendBeggarList(ply)
         SendOldManList(ply)
         SendMercenaryList(ply)
+        SendBodysnatcherList(ply)
+        SendVeteranList(ply)
     end
 end
 concommand.Add("_ttt_request_rolelist", request_rolelist)
@@ -153,13 +159,16 @@ local function clear_role_effects(ply)
     if ply:HasWeapon("weapon_ttt_brainwash") then
         ply:StripWeapon("weapon_ttt_brainwash")
     end
+    if ply:HasWeapon("weapon_ttt_bodysnatch") then
+        ply:StripWeapon("weapon_ttt_bodysnatch")
+    end
+    ply:SetCredits(0)
     ply:SetMaxHealth(100)
     ply:SetHealth(100)
 end
 
 local function force_innocent(ply)
     ply:SetRoleAndBroadcast(ROLE_INNOCENT)
-    ply:SetCredits(0)
     clear_role_effects(ply)
     SendFullStateUpdate()
 end
@@ -167,16 +176,16 @@ concommand.Add("ttt_force_innocent", force_innocent, nil, nil, FCVAR_CHEAT)
 
 local function force_traitor(ply)
     ply:SetRoleAndBroadcast(ROLE_TRAITOR)
-    ply:SetCredits(GetConVarNumber("ttt_credits_starting"))
     clear_role_effects(ply)
+    ply:SetCredits(GetConVarNumber("ttt_credits_starting"))
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_traitor", force_traitor, nil, nil, FCVAR_CHEAT)
 
 local function force_detective(ply)
     ply:SetRoleAndBroadcast(ROLE_DETECTIVE)
-    ply:SetCredits(GetConVarNumber("ttt_det_credits_starting"))
     clear_role_effects(ply)
+    ply:SetCredits(GetConVarNumber("ttt_det_credits_starting"))
     local health = GetConVar("ttt_detective_starting_health"):GetInt()
     ply:SetMaxHealth(100)
     ply:SetHealth(health)
@@ -186,23 +195,22 @@ concommand.Add("ttt_force_detective", force_detective, nil, nil, FCVAR_CHEAT)
 
 local function force_jester(ply)
     ply:SetRoleAndBroadcast(ROLE_JESTER)
-    ply:SetCredits(GetConVarNumber("ttt_jes_credits_starting"))
     clear_role_effects(ply)
+    ply:SetCredits(GetConVarNumber("ttt_jes_credits_starting"))
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_jester", force_jester, nil, nil, FCVAR_CHEAT)
 
 local function force_swapper(ply)
     ply:SetRoleAndBroadcast(ROLE_SWAPPER)
-    ply:SetCredits(GetConVarNumber("ttt_swa_credits_starting"))
     clear_role_effects(ply)
+    ply:SetCredits(GetConVarNumber("ttt_swa_credits_starting"))
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_swapper", force_swapper, nil, nil, FCVAR_CHEAT)
 
 local function force_glitch(ply)
     ply:SetRoleAndBroadcast(ROLE_GLITCH)
-    ply:SetCredits(0)
     clear_role_effects(ply)
     SendFullStateUpdate()
 end
@@ -210,7 +218,6 @@ concommand.Add("ttt_force_glitch", force_glitch, nil, nil, FCVAR_CHEAT)
 
 local function force_phantom(ply)
     ply:SetRoleAndBroadcast(ROLE_PHANTOM)
-    ply:SetCredits(0)
     clear_role_effects(ply)
     SendFullStateUpdate()
 end
@@ -218,8 +225,8 @@ concommand.Add("ttt_force_phantom", force_phantom, nil, nil, FCVAR_CHEAT)
 
 local function force_hypnotist(ply)
     ply:SetRoleAndBroadcast(ROLE_HYPNOTIST)
-    ply:SetCredits(GetConVarNumber("ttt_hyp_credits_starting"))
     clear_role_effects(ply)
+    ply:SetCredits(GetConVarNumber("ttt_hyp_credits_starting"))
     ply:Give("weapon_ttt_brainwash")
     SendFullStateUpdate()
 end
@@ -227,7 +234,6 @@ concommand.Add("ttt_force_hypnotist", force_hypnotist, nil, nil, FCVAR_CHEAT)
 
 local function force_revenger(ply)
     ply:SetRoleAndBroadcast(ROLE_REVENGER)
-    ply:SetCredits(0)
     clear_role_effects(ply)
     SendFullStateUpdate()
 end
@@ -235,7 +241,6 @@ concommand.Add("ttt_force_revenger", force_revenger, nil, nil, FCVAR_CHEAT)
 
 local function force_drunk(ply)
     ply:SetRoleAndBroadcast(ROLE_DRUNK)
-    ply:SetCredits(0)
     clear_role_effects(ply)
     SendFullStateUpdate()
 end
@@ -243,7 +248,6 @@ concommand.Add("ttt_force_drunk", force_drunk, nil, nil, FCVAR_CHEAT)
 
 local function force_clown(ply)
     ply:SetRoleAndBroadcast(ROLE_CLOWN)
-    ply:SetCredits(0)
     clear_role_effects(ply)
     SendFullStateUpdate()
 end
@@ -251,7 +255,6 @@ concommand.Add("ttt_force_clown", force_clown, nil, nil, FCVAR_CHEAT)
 
 local function force_deputy(ply)
     ply:SetRoleAndBroadcast(ROLE_DEPUTY)
-    ply:SetCredits(0)
     clear_role_effects(ply)
     SendFullStateUpdate()
 end
@@ -259,15 +262,14 @@ concommand.Add("ttt_force_deputy", force_deputy, nil, nil, FCVAR_CHEAT)
 
 local function force_impersonator(ply)
     ply:SetRoleAndBroadcast(ROLE_IMPERSONATOR)
-    ply:SetCredits(GetConVarNumber("ttt_imp_credits_starting"))
     clear_role_effects(ply)
+    ply:SetCredits(GetConVarNumber("ttt_imp_credits_starting"))
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_impersonator", force_impersonator, nil, nil, FCVAR_CHEAT)
 
 local function force_beggar(ply)
     ply:SetRoleAndBroadcast(ROLE_BEGGAR)
-    ply:SetCredits(0)
     clear_role_effects(ply)
     SendFullStateUpdate()
 end
@@ -275,7 +277,6 @@ concommand.Add("ttt_force_beggar", force_beggar, nil, nil, FCVAR_CHEAT)
 
 local function force_old_man(ply)
     ply:SetRoleAndBroadcast(ROLE_OLDMAN)
-    ply:SetCredits(0)
     clear_role_effects(ply)
     local health = GetConVar("ttt_old_man_starting_health"):GetInt()
     ply:SetMaxHealth(health)
@@ -286,11 +287,26 @@ concommand.Add("ttt_force_old_man", force_old_man, nil, nil, FCVAR_CHEAT)
 
 local function force_mercenary(ply)
     ply:SetRoleAndBroadcast(ROLE_MERCENARY)
-    ply:SetCredits(GetConVarNumber("ttt_mer_credits_starting"))
     clear_role_effects(ply)
+    ply:SetCredits(GetConVarNumber("ttt_mer_credits_starting"))
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_mercenary", force_mercenary, nil, nil, FCVAR_CHEAT)
+
+local function force_bodysnatcher(ply)
+    ply:SetRoleAndBroadcast(ROLE_BODYSNATCHER)
+    clear_role_effects(ply)
+    ply:Give("weapon_ttt_bodysnatch")
+    SendFullStateUpdate()
+end
+concommand.Add("ttt_force_bodysnatcher", force_bodysnatcher, nil, nil, FCVAR_CHEAT)
+
+local function force_veteran(ply)
+    ply:SetRoleAndBroadcast(ROLE_VETERAN)
+    clear_role_effects(ply)
+    SendFullStateUpdate()
+end
+concommand.Add("ttt_force_veteran", force_veteran, nil, nil, FCVAR_CHEAT)
 
 local function force_spectate(ply, cmd, arg)
     if IsValid(ply) then

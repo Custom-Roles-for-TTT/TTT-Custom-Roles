@@ -140,6 +140,16 @@ function GetMercenaryFilter(alive_only)
     return GetPlayerFilter(function(p) return p:GetMercenary() and (not alive_only or p:IsTerror()) end)
 end
 
+function GetBodysnatcherFilter(alive_only)
+    return GetPlayerFilter(function(p) return p:GetBodysnatcher() and (not alive_only or p:IsTerror()) end)
+end
+
+function GetVeteranFilter(alive_only)
+    return GetPlayerFilter(function(p) return p:GetVeteran() and (not alive_only or p:IsTerror()) end)
+end
+
+
+
 function GetRoleFilter(role, alive_only)
     return GetPlayerFilter(function(p) return p:IsRole(role) and (not alive_only or p:IsTerror()) end)
 end

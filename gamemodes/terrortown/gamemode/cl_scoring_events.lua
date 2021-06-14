@@ -45,6 +45,7 @@ local promotion_icon = Material("icon16/award_star_add.png")
 local clown_icon = Material("icon16/emoticon_evilgrin.png")
 local drunk_icon = Material("icon16/drink_empty.png")
 local haunt_icon = Material("icon16/group.png")
+local bodysnatch_icon = Material("icon16/user_edit.png")
 local info_icon = Material("icon16/info.png")
 
 -- Shorter name, using it lots
@@ -376,6 +377,14 @@ Event(EVENT_HAUNT, {
     end,
     icon = function(e)
         return haunt_icon, "Haunt"
+    end})
+
+Event(EVENT_BODYSNATCH, {
+    text = function(e)
+        return PT("ev_bodysnatch", {victim = e.vic, attacker = e.att, role = e.role})
+    end,
+    icon = function(e)
+        return bodysnatch_icon, "Bodysnatch"
     end})
 
 Event(EVENT_LOG, {

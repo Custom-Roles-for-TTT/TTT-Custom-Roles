@@ -23,10 +23,12 @@ ttt_phantom_enabled                         0       // Whether or not the phanto
 ttt_revenger_enabled                        0       // Whether or not the revenger should spawn
 ttt_deputy_enabled                          0       // Whether or not the deputy should spawn
 ttt_mercenary_enabled                       0       // Whether or not the mercenary should spawn
+ttt_veteran_enabled                         0       // Whether or not the veteran should spawn
 ttt_jester_enabled                          0       // Whether or not the jester should spawn
 ttt_swapper_enabled                         0       // Whether or not the swapper should spawn
 ttt_clown_enabled                           0       // Whether or not the clown should spawn
 ttt_beggar_enabled                          0       // Whether or not the beggar should spawn
+ttt_bodysnatcher_enabled                    0       // Whether or not the bodysnatcher should spawn
 ttt_drunk_enabled                           0       // Whether or not the drunk should spawn
 ttt_old_man_enabled                         0       // Whether or not the old man should spawn
 
@@ -38,10 +40,12 @@ ttt_phantom_spawn_weight                    1       // The weight assigned to sp
 ttt_revenger_spawn_weight                   1       // The weight assigned to spawning the revenger
 ttt_deputy_spawn_weight                     1       // The weight assigned to spawning the deputy
 ttt_mercenary_spawn_weight                  1       // The weight assigned to spawning the mercenary
+ttt_veteran_spawn_weight                    1       // The weight assigned to spawning the veteran
 ttt_jester_spawn_weight                     1       // The weight assigned to spawning the jester
 ttt_swapper_spawn_weight                    1       // The weight assigned to spawning the swapper
 ttt_clown_spawn_weight                      1       // The weight assigned to spawning the clown
 ttt_beggar_spawn_weight                     1       // The weight assigned to spawning the beggar
+ttt_bodysnatcher_spawn_weight               1       // The weight assigned to spawning the bodysnatcher
 ttt_drunk_spawn_weight                      1       // The weight assigned to spawning the drunk
 ttt_old_man_spawn_weight                    1       // The weight assigned to spawning the old man
 // (Note: Each role is limited to one player per round.)
@@ -54,10 +58,12 @@ ttt_phantom_min_players                     0       // The minimum number of pla
 ttt_revenger_min_players                    0       // The minimum number of players required to spawn the revenger
 ttt_deputy_min_players                      0       // The minimum number of players required to spawn the deputy
 ttt_mercenary_min_players                   0       // The minimum number of players required to spawn the mercenary
+ttt_veteran_min_players                     0       // The minimum number of players required to spawn the veteran
 ttt_jester_min_players                      0       // The minimum number of players required to spawn the jester
 ttt_swapper_min_players                     0       // The minimum number of players required to spawn the swapper
 ttt_clown_min_players                       0       // The minimum number of players required to spawn the clown
 ttt_beggar_min_players                      0       // The minimum number of players required to spawn the beggar
+ttt_bodysnatcher_min_players                0       // The minimum number of players required to spawn the bodysnatcher
 ttt_drunk_min_players                       0       // The minimum number of players required to spawn the drunk
 ttt_old_man_min_players                     0       // The minimum number of players required to spawn the old man
 
@@ -98,6 +104,10 @@ ttt_revenger_damage_bonus                   0       // Extra damage that the rev
 // Deputy
 ttt_deputy_damage_penalty                   0       // Damage penalty that the deputy has before being promoted (e.g. 0.5 = 50% less damage)
 
+// Veteran
+ttt_veteran_damage_bonus                    0.5     // Damage bonus that the veteran has when they are the last innocent alive (e.g. 0.5 = 50% more damage)
+ttt_veteran_full_heal                       1       // Whether the veteran gets a full heal upon becoming the last remaining innocent or not
+
 // ----------------------------------------
 
 // JESTER TEAM SETTINGS
@@ -117,6 +127,16 @@ ttt_swapper_notify_sound                    0       // Whether to play a cheerin
 ttt_swapper_notify_confetti                 0       // Whether to throw confetti when a Swapper is a killed
 ttt_swapper_killer_health                   100     // What amount of health to give the person who killed the Swapper. Set to "0" to kill them
 ttt_swa_credits_starting                    0       // The number of credits a Swapper should start with
+
+// Clown
+ttt_clown_damage_bonus                      0       // Damage bonus that the clown has after being triggered (e.g. 0.5 = 50% more damage)
+
+// Beggar
+ttt_reveal_beggar_change                    1       // Whether the beggar is revealed to you when they join your team or not
+
+// Bodysnatcher
+ttt_bodysnatcher_destroy_body               0       // Whether the bodysnatching device destroys the body it is used on or not
+ttt_bodysnatcher_show_role                  1       // Whether the bodysnatching device shows the role of the corpse it is used on or not
 
 // ----------------------------------------
 

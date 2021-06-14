@@ -96,6 +96,9 @@ CreateConVar("ttt_deputy_min_players", "0")
 CreateConVar("ttt_mercenary_enabled", 0)
 CreateConVar("ttt_mercenary_spawn_weight", "1")
 CreateConVar("ttt_mercenary_min_players", "0")
+CreateConVar("ttt_veteran_enabled", 0)
+CreateConVar("ttt_veteran_spawn_weight", "1")
+CreateConVar("ttt_veteran_min_players", "0")
 
 -- Special traitor spawn probabilities
 CreateConVar("ttt_special_traitor_pct", 0.33)
@@ -121,6 +124,9 @@ CreateConVar("ttt_clown_min_players", "0")
 CreateConVar("ttt_beggar_enabled", 0)
 CreateConVar("ttt_beggar_spawn_weight", "1")
 CreateConVar("ttt_beggar_min_players", "0")
+CreateConVar("ttt_bodysnatcher_enabled", 0)
+CreateConVar("ttt_bodysnatcher_spawn_weight", "1")
+CreateConVar("ttt_bodysnatcher_min_players", "0")
 
 CreateConVar("ttt_drunk_enabled", 0)
 CreateConVar("ttt_drunk_spawn_weight", "1")
@@ -157,6 +163,9 @@ CreateConVar("ttt_revenger_damage_bonus", "0")
 
 CreateConVar("ttt_deputy_damage_penalty", "0")
 
+CreateConVar("ttt_veteran_damage_bonus", "0.5")
+CreateConVar("ttt_veteran_full_heal", "1")
+
 -- Jester role properties
 CreateConVar("ttt_jesters_trigger_traitor_testers", "1")
 CreateConVar("ttt_jester_win_by_traitors", "1")
@@ -173,6 +182,9 @@ CreateConVar("ttt_swapper_notify_confetti", "0")
 CreateConVar("ttt_clown_damage_bonus", "0")
 
 CreateConVar("ttt_reveal_beggar_change", "1")
+
+CreateConVar("ttt_bodysnatcher_destroy_body", "0")
+CreateConVar("ttt_bodysnatcher_show_role", "1")
 
 -- Independent role properties
 CreateConVar("ttt_independents_trigger_traitor_testers", "0")
@@ -692,6 +704,7 @@ function PrepareRound()
         v:SetNWBool("HasPromotion", false)
         v:GetNWBool("HadPromotion", false)
         v:SetNWBool("WasBeggar", false)
+        v:SetNWBool("VeteranActive", false)
         -- Workaround to prevent GMod sprint from working
         v:SetRunSpeed(v:GetWalkSpeed())
     end
@@ -1342,7 +1355,9 @@ function SelectRoles()
         [ROLE_IMPERSONATOR] = {},
         [ROLE_BEGGAR] = {},
         [ROLE_OLDMAN] = {},
-        [ROLE_MERCENARY] = {}
+        [ROLE_MERCENARY] = {},
+        [ROLE_BODYSNATCHER] = {},
+        [ROLE_VETERAN] = {}
     };
 
     if not GAMEMODE.LastRole then GAMEMODE.LastRole = {} end
@@ -1396,6 +1411,7 @@ function SelectRoles()
     local hasRevenger = false
     local hasDeputy = false
     local hasMercenary = false
+    local hasVeteran = false
 
     local hasIndependent = false
 
@@ -1456,8 +1472,12 @@ function SelectRoles()
                     hasMercenary = true
                     forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
                     PrintRole(v, "mercenary")
+                elseif role == ROLE_VETERAN then
+                    hasVeteran = true
+                    forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
+                    PrintRole(v, "veteran")
 
-                -- INDEPENDENT ROLES
+                -- JESTER/INDEPENDENT ROLES
                 elseif role == ROLE_JESTER then
                     hasIndependent = true
                     forcedIndependentCount = forcedIndependentCount + 1
@@ -1482,6 +1502,10 @@ function SelectRoles()
                     hasIndependent = true
                     forcedIndependentCount = forcedIndependentCount + 1
                     PrintRole(v, "oldman")
+                elseif role == ROLE_BODYSNATCHER then
+                    hasIndependent = true
+                    forcedIndependentCount = forcedIndependentCount + 1
+                    PrintRole(v, "bodysnatcher")
                 end
             end
         end
@@ -1590,6 +1614,11 @@ function SelectRoles()
                 table.insert(independentRoles, ROLE_OLDMAN)
             end
         end
+        if GetConVar("ttt_bodysnatcher_enabled"):GetBool() and choice_count >= GetConVar("ttt_bodysnatcher_min_players"):GetInt() then
+            for _ = 1, GetConVar("ttt_bodysnatcher_spawn_weight"):GetInt() do
+                table.insert(independentRoles, ROLE_BODYSNATCHER)
+            end
+        end
         if #independentRoles ~= 0 then
             local plyPick = math.random(1, #choices)
             local ply = choices[plyPick]
@@ -1633,6 +1662,11 @@ function SelectRoles()
         if not hasMercenary and GetConVar("ttt_mercenary_enabled"):GetBool() and choice_count >= GetConVar("ttt_mercenary_min_players"):GetInt() then
             for _ = 1, GetConVar("ttt_mercenary_spawn_weight"):GetInt() do
                 table.insert(specialInnocentRoles, ROLE_MERCENARY)
+            end
+        end
+        if not hasVeteran and GetConVar("ttt_veteran_enabled"):GetBool() and choice_count >= GetConVar("ttt_veteran_min_players"):GetInt() then
+            for _ = 1, GetConVar("ttt_veteran_spawn_weight"):GetInt() do
+                table.insert(specialInnocentRoles, ROLE_VETERAN)
             end
         end
         for _ = 1, max_special_innocent_count do

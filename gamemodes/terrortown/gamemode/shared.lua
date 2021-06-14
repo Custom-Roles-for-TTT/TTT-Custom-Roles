@@ -29,8 +29,10 @@ ROLE_IMPERSONATOR = 12
 ROLE_BEGGAR = 13
 ROLE_OLDMAN = 14
 ROLE_MERCENARY = 15
+ROLE_BODYSNATCHER = 16
+ROLE_VETERAN = 17
 
-ROLE_MAX = 15
+ROLE_MAX = 17
 
 local function AddRoleAssociations(list, roles)
     -- Use an associative array so we can do a O(1) lookup by role
@@ -47,10 +49,10 @@ TRAITOR_ROLES = {}
 AddRoleAssociations(TRAITOR_ROLES, {ROLE_TRAITOR, ROLE_HYPNOTIST, ROLE_IMPERSONATOR})
 
 INNOCENT_ROLES = {}
-AddRoleAssociations(INNOCENT_ROLES, {ROLE_INNOCENT, ROLE_DETECTIVE, ROLE_GLITCH, ROLE_PHANTOM, ROLE_REVENGER, ROLE_DEPUTY, ROLE_MERCENARY})
+AddRoleAssociations(INNOCENT_ROLES, {ROLE_INNOCENT, ROLE_DETECTIVE, ROLE_GLITCH, ROLE_PHANTOM, ROLE_REVENGER, ROLE_DEPUTY, ROLE_MERCENARY, ROLE_VETERAN})
 
 JESTER_ROLES = {}
-AddRoleAssociations(JESTER_ROLES, {ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_BEGGAR})
+AddRoleAssociations(JESTER_ROLES, {ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_BEGGAR, ROLE_BODYSNATCHER})
 
 INDEPENDENT_ROLES = {}
 AddRoleAssociations(INDEPENDENT_ROLES, {ROLE_DRUNK, ROLE_OLDMAN})
@@ -251,7 +253,9 @@ ROLE_STRINGS = {
     [ROLE_IMPERSONATOR] = "impersonator",
     [ROLE_BEGGAR] = "beggar",
     [ROLE_OLDMAN] = "oldman",
-    [ROLE_MERCENARY] = "mercenary"
+    [ROLE_MERCENARY] = "mercenary",
+    [ROLE_BODYSNATCHER] = "bodysnatcher",
+    [ROLE_VETERAN] = "veteran"
 }
 
 ROLE_STRINGS_EXT = {
@@ -271,7 +275,9 @@ ROLE_STRINGS_EXT = {
     [ROLE_IMPERSONATOR] = "an impersonator",
     [ROLE_BEGGAR] = "a beggar",
     [ROLE_OLDMAN] = "an old man",
-    [ROLE_MERCENARY] = "a mercenary"
+    [ROLE_MERCENARY] = "a mercenary",
+    [ROLE_BODYSNATCHER] = "a bodysnatcher",
+    [ROLE_VETERAN] = "a veteran"
 }
 
 ROLE_STRINGS_SHORT = {
@@ -290,7 +296,9 @@ ROLE_STRINGS_SHORT = {
     [ROLE_IMPERSONATOR] = "imp",
     [ROLE_BEGGAR] = "beg",
     [ROLE_OLDMAN] = "old",
-    [ROLE_MERCENARY] = "mer"
+    [ROLE_MERCENARY] = "mer",
+    [ROLE_BODYSNATCHER] = "bod",
+    [ROLE_VETERAN] = "vet"
 }
 
 -- Game event log defs
@@ -313,7 +321,8 @@ EVENT_PROMOTION = 16
 EVENT_CLOWNACTIVE = 17
 EVENT_DRUNKSOBER = 18
 EVENT_HAUNT = 19
-EVENT_LOG = 20
+EVENT_BODYSNATCH = 20
+EVENT_LOG = 21
 
 WIN_NONE = 1
 WIN_TRAITOR = 2

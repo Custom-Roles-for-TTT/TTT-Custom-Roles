@@ -39,6 +39,8 @@ function GM:PlayerInitialSpawn(ply)
         SendBeggarList()
         SendOldManList()
         SendMercenaryList()
+        SendBodysnatcherList()
+        SendVeteranList()
     end
 
     -- Game has started, tell this guy where the round is at
@@ -60,6 +62,8 @@ function GM:PlayerInitialSpawn(ply)
         SendBeggarList(ply)
         SendOldManList(ply)
         SendMercenaryList(ply)
+        SendBodysnatcherList(ply)
+        SendVeteranList(ply)
     end
 
     -- Handle spec bots
@@ -528,6 +532,8 @@ function GM:PlayerDisconnected(ply)
         SendBeggarList()
         SendOldManList()
         SendMercenaryList()
+        SendBodysnatcherList()
+        SendVeteranList()
 
         net.Start("TTT_PlayerDisconnected")
         net.WriteString(ply:Nick())
@@ -955,7 +961,7 @@ function GM:PlayerDeath(victim, infl, attacker)
         net.Broadcast()
     end
 
-    -- Randle revenger lover death
+    -- Handle revenger lover death
     for _, v in pairs(player.GetAll()) do
         if v:IsRevenger() and v:GetNWString("RevengerLover", "") == victim:SteamID64() then
             if v == attacker then
@@ -1036,6 +1042,27 @@ function GM:PlayerDeath(victim, infl, attacker)
                     -- The player has been promoted so we need to update their shop
                     net.Start("TTT_ResetBuyableWeaponsCache")
                     net.Send(ply)
+                end
+            end
+        end
+    end
+
+    -- Check veteran status
+    local innocents_alive = 0
+    local veterans = {}
+    for _, v in pairs(player.GetAll()) do
+        if v:IsActiveInnocentTeam() then innocents_alive = innocents_alive + 1 end
+        if v:IsActiveVeteran() then table.insert(veterans, v) end
+    end
+    if #veterans > 0 and innocents_alive == 1 then
+        for _, v in pairs(veterans) do
+            if not v:GetNWBool("VeteranActive", false) then
+                v:SetNWBool("VeteranActive", true)
+                v:PrintMessage(HUD_PRINTTALK, "You are the last innocent alive!")
+                v:PrintMessage(HUD_PRINTCENTER, "You are the last innocent alive!")
+                if GetConVar("ttt_veteran_full_heal"):GetBool() then
+                    v:SetHealth(math.min(v:GetMaxHealth(), 100))
+                    v:PrintMessage(HUD_PRINTTALK, "You have been fully healed!")
                 end
             end
         end
@@ -1188,6 +1215,12 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
     -- Revengers deal extra damage to their lovers killer
     if ply:IsPlayer() and dmginfo:GetAttacker():IsPlayer() and dmginfo:GetAttacker():IsRevenger() and ply:SteamID64() == dmginfo:GetAttacker():GetNWString("RevengerKiller", "") and GetRoundState() >= ROUND_ACTIVE then
         local bonus = GetConVar("ttt_revenger_damage_bonus"):GetFloat() or 0
+        dmginfo:ScaleDamage(1 + bonus)
+    end
+
+    -- Veterans deal extra damage if they are the last innocent alive
+    if ply:IsPlayer() and dmginfo:GetAttacker():IsPlayer() and dmginfo:GetAttacker():IsVeteran() and dmginfo:GetAttacker():GetNWBool("VeteranActive", false) and GetRoundState() >= ROUND_ACTIVE then
+        local bonus = GetConVar("ttt_veteran_damage_bonus"):GetFloat() or 0
         dmginfo:ScaleDamage(1 + bonus)
     end
 
