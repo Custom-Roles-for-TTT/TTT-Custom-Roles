@@ -702,7 +702,6 @@ function PrepareRound()
         v:SetNWBool("WasHypnotised", false)
         v:SetNWBool("KillerClownActive", false)
         v:SetNWBool("HasPromotion", false)
-        v:GetNWBool("HadPromotion", false)
         v:SetNWBool("WasBeggar", false)
         v:SetNWBool("VeteranActive", false)
         -- Workaround to prevent GMod sprint from working
@@ -1755,7 +1754,7 @@ hook.Add("ScaleNPCDamage", "HitmarkerPlayerCritDetector", function(npc, hitgroup
 end)
 
 -- Death messages
-hook.Add("PlayerDeath", "Kill_Reveal_Notify", function(victim, entity, killer)
+hook.Add("PlayerDeath", "TTT_ClientDeathNotify", function(victim, entity, killer)
     if gmod.GetGamemode().Name == "Trouble in Terrorist Town" then
         local reason = "nil"
         local killerName = "nil"
@@ -1791,7 +1790,7 @@ hook.Add("PlayerDeath", "Kill_Reveal_Notify", function(victim, entity, killer)
         -- Send the buffer message with the death information to the victim
         net.Start("TTT_ClientDeathNotify")
         net.WriteString(killerName)
-        net.WriteUInt(role, 8)
+        net.WriteInt(role, 8)
         net.WriteString(reason)
         net.Send(victim)
     end
