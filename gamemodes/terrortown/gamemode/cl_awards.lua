@@ -21,6 +21,11 @@ local function GetRoleName(s)
     return T(ROLE_STRINGS[s.role])
 end
 
+local function GetRole(players, id)
+    local player = players[id]
+    return player and player.role or ROLE_NONE
+end
+
 -- a common pattern
 local function FindHighest(tbl)
     local m_num = 0
@@ -158,7 +163,7 @@ local function AllKills(events, scores, players)
     -- Someone killed all the traitors
     if #tr_killers == 1 then
         local id = tr_killers[1]
-        local role = players[id].role
+        local role = GetRole(players, id)
         -- Don't celebrate team killers
         if TRAITOR_ROLES[role] then
             local killer = players[id].nick
@@ -171,7 +176,7 @@ local function AllKills(events, scores, players)
     -- Someone killed all the innocents
     if #in_killers == 1 then
         local id = in_killers[1]
-        local role = players[id].role
+        local role = GetRole(players, id)
         -- Don't celebrate team killers
         if INNOCENT_ROLES[role] then
             local killer = players[id].nick
@@ -187,7 +192,7 @@ end
 local function NumKills_Traitor(events, scores, players)
     local trs = {}
     for id, s in pairs(scores) do
-        local role = players[id].role
+        local role = GetRole(players, id)
         if TRAITOR_ROLES[role] then
             if s.innos > 0 then
                 table.insert(trs, id)
@@ -224,7 +229,7 @@ end
 local function NumKills_Inno(events, scores, players)
     local ins = {}
     for id, s in pairs(scores) do
-        local role = players[id].role
+        local role = GetRole(players, id)
         if not TRAITOR_ROLES[role] then
             if s.traitors > 0 then
                 table.insert(ins, id)
@@ -499,6 +504,8 @@ local function KnifeUser(events, scores, players)
     if not most then return nil end
 
     local playerInfo = players[most.sid64]
+    if not playerInfo then return nil end
+
     local nick = playerInfo.nick
     if not nick then return nil end
 
@@ -610,7 +617,7 @@ local function TeamKiller(events, scores, players)
     local tker = nil
     local pct = 0
     for id, s in pairs(scores) do
-        local role = players[id].role
+        local role = GetRole(players, id)
         local kills = s.innos
         local team = num_inno - 1
         if TRAITOR_ROLES[role] then
@@ -628,6 +635,8 @@ local function TeamKiller(events, scores, players)
     if pct == 0 or tker == nil then return nil end
 
     local tkerInfo = players[tker]
+    if not tkerInfo then return nil end
+
     local nick = tkerInfo.nick
     if not nick then return nil end
 
