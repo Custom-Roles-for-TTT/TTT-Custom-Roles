@@ -62,7 +62,7 @@ function CLSCORE:AddEvent(e, offset)
 end
 
 local function GetPlayerFromSteam64(id)
-    -- The first bot's ID is 90071996842377216 whhich translates to "STEAM_0:0:0", an 11-character string
+    -- The first bot's ID is 90071996842377216 which translates to "STEAM_0:0:0", an 11-character string
     -- A player's Steam ID cannot be that short, so if it is this must be a bot
     local isBot = string.len(util.SteamIDFrom64(id)) == 11
     -- Bots cannot be retrieved by SteamID on the client so search by name instead

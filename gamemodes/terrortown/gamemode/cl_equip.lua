@@ -154,9 +154,9 @@ function GetEquipmentForRole(role, promoted, block_randomization)
         if role == ROLE_MERCENARY and mercmode == MERC_SHOP_INTERSECT then
             for idx, i in pairs(traitor_equipment_ids) do
                 -- Traitor AND Detective mode, (Detective && Traitor) -> Mercenary
-                if not available[i.id] and table.HasValue(detective_equipment_ids, i) then
+                if not available[i] and table.HasValue(detective_equipment_ids, i) then
                     table.insert(tbl[role], traitor_equipment[idx])
-                    available[i.id] = true
+                    available[i] = true
                 end
             end
         else
