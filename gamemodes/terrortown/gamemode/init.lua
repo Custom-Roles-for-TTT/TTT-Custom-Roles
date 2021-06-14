@@ -1754,7 +1754,7 @@ hook.Add("ScaleNPCDamage", "HitmarkerPlayerCritDetector", function(npc, hitgroup
 end)
 
 -- Death messages
-hook.Add("PlayerDeath", "Kill_Reveal_Notify", function(victim, entity, killer)
+hook.Add("PlayerDeath", "TTT_ClientDeathNotify", function(victim, entity, killer)
     if gmod.GetGamemode().Name == "Trouble in Terrorist Town" then
         local reason = "nil"
         local killerName = "nil"
