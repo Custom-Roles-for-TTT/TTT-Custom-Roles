@@ -558,6 +558,12 @@ DefaultEquipment = {
         EQUIP_RADAR
     },
 
+    [ROLE_IMPERSONATOR] = {
+        "weapon_ttt_health_station",
+        EQUIP_ARMOR,
+        EQUIP_RADAR
+    },
+
     -- non-buyable
     [ROLE_NONE] = {
         "weapon_ttt_confgrenade",
