@@ -21,6 +21,7 @@ L.oldman = "Old Man"
 L.mercenary = "Mercenary"
 L.bodysnatcher = "Bodysnatcher"
 L.veteran = "Veteran"
+L.assassin = "Assassin"
 
 L.hidden = "Hidden"
 L.last_words = "Last Words"
@@ -82,6 +83,7 @@ L.body_found_old = "They were an Old Man."
 L.body_found_mer = "They were a Mercenary."
 L.body_found_bod = "They were a Bodysnatcher."
 L.body_found_vet = "They were a Veteran."
+L.body_found_asn = "They were an Assassin."
 
 L.body_confirm = "{finder} confirmed the death of {victim}."
 
@@ -224,6 +226,7 @@ L.search_role_old = "This person was an Old Man."
 L.search_role_mer = "This person was a Mercenary."
 L.search_role_bod = "This person was a Bodysnatcher."
 L.search_role_vet = "This person was a Veteran."
+L.search_role_asn = "This person was an Assassin."
 
 L.search_words = "Something tells you some of this person's last words were: '{lastwords}'"
 L.search_armor = "They were wearing nonstandard body armor."
@@ -647,7 +650,11 @@ L.target_hypnotist = "HYPNOTIST"
 L.target_clown = "KILLER CLOWN"
 L.target_impersonator = "IMPERSONATOR"
 
+L.target_current_target = "CURRENT TARGET"
+
 L.target_revenger_lover = "YOUR SOULMATE"
+L.target_assassin_target = "TARGET"
+L.target_assassin_target_team = "{player}'s Target"
 
 L.target_credits = "Search to receive unspent credits"
 
@@ -827,6 +834,52 @@ These may or may not be your comrades:
 
 If the detective dies you will appear to become a new detective and gain their
 abilities just like the deputy. However you are still working for the traitors.
+
+Press {menukey} to receive your special equipment!]]
+
+L.info_popup_assassin = [[You are an Assassin! Work with fellow traitors to kill all others.
+
+These are your comrades:
+{traitorlist}
+
+Your first target is:
+{assassintarget}
+
+You will deal more to your target and less damage
+to all other players. But take care as killing the wrong
+player will result in you losing your damage bonus and
+maybe even suffering from a penalty!
+
+Press {menukey} to receive your special equipment!]]
+
+L.info_popup_assassin_glitch = [[You are an Assassin! Work with fellow traitors to kill all others.
+BUT BEWARE! There was a glitch in the system and one among
+you does not seek the same goal.
+
+These may or may not be your comrades:
+{traitorlist}
+
+Your first target is:
+{assassintarget}
+
+You will deal more to your target and less damage
+to all other players. But take care as killing the wrong
+player will result in you losing your damage bonus and
+maybe even suffering from a penalty!
+
+Press {menukey} to receive your special equipment!]]
+
+L.info_popup_assassin_alone = [[You are an Assassin! You have no fellow traitors this round.
+
+Kill all others to win!
+
+Your first target is:
+{assassintarget}
+
+You will deal more to your target and less damage
+to all other players. But take care as killing the wrong
+player will result in you losing your damage bonus and
+maybe even suffering from a penalty!
 
 Press {menukey} to receive your special equipment!]]
 

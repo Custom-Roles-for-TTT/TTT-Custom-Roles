@@ -18,6 +18,7 @@ ttt_independent_chance                      0.5     // The chance that an indepe
 // Enable/Disable Individual Roles
 ttt_hypnotist_enabled                       0       // Whether or not the hypnotist should spawn
 ttt_impersonator_enabled                    0       // Whether or not the impersonator should spawn
+ttt_assassin_enabled                        0       // Whether or not the assassin should spawn
 ttt_glitch_enabled                          0       // Whether or not the glitch should spawn
 ttt_phantom_enabled                         0       // Whether or not the phantom should spawn
 ttt_revenger_enabled                        0       // Whether or not the revenger should spawn
@@ -35,6 +36,7 @@ ttt_old_man_enabled                         0       // Whether or not the old ma
 // Individual Role Spawn Weights
 ttt_hypnotist_spawn_weight                  1       // The weight assigned to spawning the hypnotist
 ttt_impersonator_spawn_weight               1       // The weight assigned to spawning the impersonator
+ttt_assassin_spawn_weight                   1       // The weight assigned to spawning the assassin
 ttt_glitch_spawn_weight                     1       // The weight assigned to spawning the glitch
 ttt_phantom_spawn_weight                    1       // The weight assigned to spawning the phantom
 ttt_revenger_spawn_weight                   1       // The weight assigned to spawning the revenger
@@ -53,6 +55,7 @@ ttt_old_man_spawn_weight                    1       // The weight assigned to sp
 // Individual Role Minimum Player Requirements
 ttt_hypnotist_min_players                   0       // The minimum number of players required to spawn the hypnotist
 ttt_impersonator_min_players                0       // The minimum number of players required to spawn the impersonator
+ttt_assassin_min_players                    0       // The minimum number of players required to spawn the assassin
 ttt_glitch_min_players                      0       // The minimum number of players required to spawn the glitch
 ttt_phantom_min_players                     0       // The minimum number of players required to spawn the phantom
 ttt_revenger_min_players                    0       // The minimum number of players required to spawn the revenger
@@ -74,6 +77,18 @@ ttt_traitor_vision_enable                   0       // Whether members of the Tr
 
 // Impersonator
 ttt_impersonator_damage_penalty             0       // Damage penalty that the impersonator has before being promoted (e.g. 0.5 = 50% less damage)
+ttt_imp_credits_starting                    1       // The number of credits an Impersonator should start with
+
+// Hypnotist
+ttt_hyp_credits_starting                    1       // The number of credits a Hypnotist should start with
+
+// Assassin
+ttt_assassin_show_target_icon               0       // Whether Assassins have an icon over their target's heads showing who to kill. Server or round must be restarted for changes to take effect
+ttt_assassin_next_target_delay              2       // The delay (in seconds) before an assassin is assigned their next target
+ttt_assassin_target_damage_bonus            1       // Damage bonus that the assassin has against their target (e.g. 0.5 = 50% extra damage)
+ttt_assassin_wrong_damage_penalty           0.5     // Damage penalty that the assassin has when attacking someone who is not their target (e.g. 0.5 = 50% less damage)
+ttt_assassin_failed_damage_penalty          0.5     // Damage penalty that the assassin has after they have failed their contract by killing the wrong person (e.g. 0.5 = 50% less damage)
+ttt_asn_credits_starting                    1       // The number of credits an Assassin should start with
 
 // ----------------------------------------
 
@@ -107,6 +122,9 @@ ttt_deputy_damage_penalty                   0       // Damage penalty that the d
 // Veteran
 ttt_veteran_damage_bonus                    0.5     // Damage bonus that the veteran has when they are the last innocent alive (e.g. 0.5 = 50% more damage)
 ttt_veteran_full_heal                       1       // Whether the veteran gets a full heal upon becoming the last remaining innocent or not
+
+// Mercenary
+ttt_mer_credits_starting                    1       // The number of credits a Mercenary should start with
 
 // ----------------------------------------
 
@@ -162,6 +180,9 @@ ttt_shop_random_det_percent                 0       // The percent chance that a
 ttt_shop_random_hyp_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the Hypnotists
 ttt_shop_random_dep_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the Deputies
 ttt_shop_random_imp_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the Impersonators
+ttt_shop_random_asn_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the Assassins
+ttt_shop_random_jes_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the Jesters (if they have shop weapons)
+ttt_shop_random_swa_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the Swappers (if they have shop weapons)
 
 // Enable/Disable Individual Role Random Shop Restrictions
 ttt_shop_random_tra_enabled                 0       // Whether role shop randomization is enabled for Traitors
@@ -169,10 +190,14 @@ ttt_shop_random_det_enabled                 0       // Whether role shop randomi
 ttt_shop_random_hyp_enabled                 0       // Whether role shop randomization is enabled for Hypnotists
 ttt_shop_random_dep_enabled                 0       // Whether role shop randomization is enabled for Deputies
 ttt_shop_random_imp_enabled                 0       // Whether role shop randomization is enabled for Impersonators
+ttt_shop_random_asn_enabled                 0       // Whether role shop randomization is enabled for Assassins
+ttt_shop_random_jes_enabled                 0       // Whether role shop randomization is enabled for Jesters (if they have shop weapons)
+ttt_shop_random_swa_enabled                 0       // Whether role shop randomization is enabled for Swappers (if they have shop weapons)
 
 // Role Sync
 ttt_shop_hyp_sync                           0       // Whether Hypnotists should have all weapons that vanilla Traitors have in their weapon shop
 ttt_shop_imp_sync                           0       // Whether Impersonators should have all weapons that vanilla Traitors have in their weapon shop
+ttt_shop_asn_sync                           0       // Whether Assassin should have all weapons that vanilla Traitors have in their weapon shop
 
 // ----------------------------------------
 

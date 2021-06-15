@@ -109,6 +109,9 @@ CreateConVar("ttt_hypnotist_min_players", "0")
 CreateConVar("ttt_impersonator_enabled", 0)
 CreateConVar("ttt_impersonator_spawn_weight", "1")
 CreateConVar("ttt_impersonator_min_players", "0")
+CreateConVar("ttt_assassin_enabled", 0)
+CreateConVar("ttt_assassin_spawn_weight", "1")
+CreateConVar("ttt_assassin_min_players", "0")
 
 -- Independent spawn probabilities
 CreateConVar("ttt_independent_chance", 0.5)
@@ -139,6 +142,12 @@ CreateConVar("ttt_old_man_min_players", "0")
 CreateConVar("ttt_traitor_vision_enable", "0")
 
 CreateConVar("ttt_impersonator_damage_penalty", "0")
+
+CreateConVar("ttt_assassin_show_target_icon", "0")
+CreateConVar("ttt_assassin_next_target_delay", "5")
+CreateConVar("ttt_assassin_target_damage_bonus", "1")
+CreateConVar("ttt_assassin_wrong_damage_penalty", "0.5")
+CreateConVar("ttt_assassin_failed_damage_penalty", "0.5")
 
 -- Innocent role properties
 CreateConVar("ttt_detective_search_only", "1")
@@ -217,6 +226,7 @@ CreateConVar("ttt_jes_credits_starting", "0")
 CreateConVar("ttt_swa_credits_starting", "0")
 CreateConVar("ttt_imp_credits_starting", "1")
 CreateConVar("ttt_mer_credits_starting", "1")
+CreateConVar("ttt_asn_credits_starting", "1")
 
 -- Other
 CreateConVar("ttt_use_weapon_spawn_scripts", "1")
@@ -244,6 +254,7 @@ for _, role in ipairs(table.GetKeys(SHOP_ROLES)) do
 end
 CreateConVar("ttt_shop_hyp_sync", "0")
 CreateConVar("ttt_shop_imp_sync", "0")
+CreateConVar("ttt_shop_asn_sync", "0")
 CreateConVar("ttt_shop_mer_mode", "2")
 
 -- bem server convars
@@ -448,6 +459,7 @@ function GM:SyncGlobals()
     end
     SetGlobalBool("ttt_shop_hyp_sync", GetConVar("ttt_shop_hyp_sync"):GetBool())
     SetGlobalBool("ttt_shop_imp_sync", GetConVar("ttt_shop_imp_sync"):GetBool())
+    SetGlobalBool("ttt_shop_asn_sync", GetConVar("ttt_shop_asn_sync"):GetBool())
     SetGlobalInt("ttt_shop_mer_mode", GetConVar("ttt_shop_mer_mode"):GetInt())
 
     SetGlobalBool("ttt_phantom_killer_smoke", GetConVar("ttt_phantom_killer_smoke"):GetBool())
@@ -458,6 +470,7 @@ function GM:SyncGlobals()
     SetGlobalInt("ttt_phantom_killer_haunt_drop_cost", GetConVar("ttt_phantom_killer_haunt_drop_cost"):GetInt())
 
     SetGlobalBool("ttt_traitor_vision_enable", GetConVar("ttt_traitor_vision_enable"):GetBool())
+    SetGlobalBool("ttt_assassin_show_target_icon", GetConVar("ttt_assassin_show_target_icon"):GetBool())
 
     SetGlobalBool("ttt_bem_allow_change", GetConVar("ttt_bem_allow_change"):GetBool())
     SetGlobalInt("ttt_bem_sv_cols", GetConVar("ttt_bem_sv_cols"):GetBool())
@@ -698,6 +711,8 @@ function PrepareRound()
         v:SetNWString("RevengerKiller", "")
         v:SetNWString("JesterKiller", "")
         v:SetNWString("SwappedWith", "")
+        v:SetNWString("AssassinTarget", "")
+        v:SetNWBool("AssassinFailed", false)
         v:SetNWBool("WasDrunk", false)
         v:SetNWBool("WasHypnotised", false)
         v:SetNWBool("KillerClownActive", false)
@@ -1037,21 +1052,16 @@ function BeginRound()
             end)
         end
 
-        -- Clown logic
-        if v:GetRole() == ROLE_CLOWN then
-            v:SetNWBool("KillerClownActive", false)
-        end
-
-        -- Deputy and Impersonator logic
-        if v:GetRole() == ROLE_DEPUTY or v:GetRole() == ROLE_IMPERSONATOR then
-            v:SetNWBool("HasPromotion", false)
-        end
-
         -- Old Man logic
         if v:GetRole() == ROLE_OLDMAN then
             local health = GetConVar("ttt_old_man_starting_health"):GetInt()
             v:SetMaxHealth(health)
             v:SetHealth(health)
+        end
+
+        -- Assassin logic
+        if v:GetRole() == ROLE_ASSASSIN then
+            AssignAssassinTarget(v, true)
         end
     end
 
@@ -1356,7 +1366,8 @@ function SelectRoles()
         [ROLE_OLDMAN] = {},
         [ROLE_MERCENARY] = {},
         [ROLE_BODYSNATCHER] = {},
-        [ROLE_VETERAN] = {}
+        [ROLE_VETERAN] = {},
+        [ROLE_ASSASSIN] = {}
     };
 
     if not GAMEMODE.LastRole then GAMEMODE.LastRole = {} end
@@ -1404,6 +1415,7 @@ function SelectRoles()
 
     local hasHypnotist = false
     local hasImpersonator = false
+    local hasAssassin = false
 
     local hasPhantom = false
     local hasGlitch = false
@@ -1441,6 +1453,10 @@ function SelectRoles()
                     end
                     forcedSpecialTraitorCount = forcedSpecialTraitorCount + 1
                     PrintRole(v, "impersonator")
+                elseif role == ROLE_ASSASSIN then
+                    hasAssassin = true
+                    forcedSpecialTraitorCount = forcedSpecialTraitorCount + 1
+                    PrintRole(v, "assassin")
 
                 -- INNOCENT ROLES
                 elseif role == ROLE_INNOCENT then
@@ -1555,6 +1571,11 @@ function SelectRoles()
         if not hasImpersonator and GetConVar("ttt_impersonator_enabled"):GetBool() and choice_count >= GetConVar("ttt_impersonator_min_players"):GetInt() and detective_count > 0 and not deputy_only then
             for _ = 1, GetConVar("ttt_impersonator_spawn_weight"):GetInt() do
                 table.insert(specialTraitorRoles, ROLE_IMPERSONATOR)
+            end
+        end
+        if not hasAssassin and GetConVar("ttt_assassin_enabled"):GetBool() and choice_count >= GetConVar("ttt_assassin_min_players"):GetInt() then
+            for _ = 1, GetConVar("ttt_assassin_spawn_weight"):GetInt() do
+                table.insert(specialTraitorRoles, ROLE_ASSASSIN)
             end
         end
         for _ = 1, max_special_traitor_count do

@@ -5,17 +5,18 @@ local GetPTranslation = LANG.GetParamTranslation
 
 ---- Round start
 
-local function GetTextForRole(role)
+local function GetTextForLocalPlayer()
     local menukey = Key("+menu_context", "C")
 
-    if role == ROLE_REVENGER then
+    local client = LocalPlayer()
+    if client:IsRevenger() then
         local sid = LocalPlayer():GetNWString("RevengerLover", "")
         local lover = player.GetBySteamID64(sid)
         local name = "someone"
         if IsValid(lover) and lover:IsPlayer() then name = lover:Nick() end
         return GetPTranslation("info_popup_revenger", { lover = name })
 
-    elseif role == ROLE_HYPNOTIST then
+    elseif client:IsTraitorTeam() then
         local traitors = {}
         local glitches = {}
         for _, ply in ipairs(player.GetAll()) do
@@ -27,94 +28,34 @@ local function GetTextForRole(role)
             end
         end
 
-        local text
-        if #traitors > 1 then
-            local traitorlist = ""
-
-            for k, ply in ipairs(traitors) do
-                if ply ~= LocalPlayer() then
-                    traitorlist = traitorlist .. string.rep(" ", 42) .. ply:Nick() .. "\n"
-                end
-            end
-
-            if #glitches > 0 then
-                text = GetPTranslation("info_popup_hypnotist_glitch", { menukey = menukey, traitorlist = traitorlist })
-            else
-                text = GetPTranslation("info_popup_hypnotist", { menukey = menukey, traitorlist = traitorlist })
-            end
-        else
-            text = GetPTranslation("info_popup_hypnotist_alone", { menukey = menukey })
+        local assassintarget = nil
+        if client:IsAssassin() then
+            assassintarget = string.rep(" ", 42) .. client:GetNWString("AssassinTarget", "")
         end
 
-        return text
-
-    elseif role == ROLE_IMPERSONATOR then
-        local traitors = {}
-        local glitches = {}
-        for _, ply in ipairs(player.GetAll()) do
-            if ply:IsTraitorTeam() then
-                table.insert(traitors, ply)
-            elseif ply:IsGlitch() then
-                table.insert(traitors, ply)
-                table.insert(glitches, ply)
-            end
-        end
-
-        local text
-        if #traitors > 1 then
-            local traitorlist = ""
-
-            for k, ply in ipairs(traitors) do
-                if ply ~= LocalPlayer() then
-                    traitorlist = traitorlist .. string.rep(" ", 42) .. ply:Nick() .. "\n"
-                end
-            end
-
-            if #glitches > 0 then
-                text = GetPTranslation("info_popup_impersonator_glitch", { menukey = menukey, traitorlist = traitorlist })
-            else
-                text = GetPTranslation("info_popup_impersonator", { menukey = menukey, traitorlist = traitorlist })
-            end
-        else
-            text = GetPTranslation("info_popup_impersonator_alone", { menukey = menukey })
-        end
-
-        return text
-
-    elseif role == ROLE_TRAITOR then
-        local traitors = {}
-        local glitches = {}
-        for _, ply in ipairs(player.GetAll()) do
-            if ply:IsTraitorTeam() then
-                table.insert(traitors, ply)
-            elseif ply:IsGlitch() then
-                table.insert(traitors, ply)
-                table.insert(glitches, ply)
-            end
-        end
-
+        local roleString = client:GetRoleStringRaw()
         local text
         if #traitors > 1 then
             local traitorlist = ""
 
             for _, ply in ipairs(traitors) do
-                if ply ~= LocalPlayer() then
+                if ply ~= client then
                     traitorlist = traitorlist .. string.rep(" ", 42) .. ply:Nick() .. "\n"
                 end
             end
 
             if #glitches > 0 then
-                text = GetPTranslation("info_popup_traitor_glitch", { menukey = menukey, traitorlist = traitorlist })
+                text = GetPTranslation("info_popup_" .. roleString.. "_glitch", { menukey = menukey, traitorlist = traitorlist, assassintarget = assassintarget })
             else
-                text = GetPTranslation("info_popup_traitor", { menukey = menukey, traitorlist = traitorlist })
+                text = GetPTranslation("info_popup_" .. roleString, { menukey = menukey, traitorlist = traitorlist, assassintarget = assassintarget })
             end
         else
-            text = GetPTranslation("info_popup_traitor_alone", { menukey = menukey })
+            text = GetPTranslation("info_popup_" .. roleString.. "_alone", { menukey = menukey, assassintarget = assassintarget })
         end
 
         return text
     else
-        return GetPTranslation("info_popup_" .. ROLE_STRINGS[role], { menukey = menukey })
+        return GetPTranslation("info_popup_" .. client:GetRoleStringRaw(), { menukey = menukey })
     end
 end
 
@@ -137,7 +78,7 @@ local function RoundStartPopup()
         draw.RoundedBox(8, 0, 0, s:GetWide(), s:GetTall(), color)
     end
 
-    local text = GetTextForRole(LocalPlayer():GetRole())
+    local text = GetTextForLocalPlayer()
 
     local dtext = vgui.Create("DLabel", dframe)
     dtext:SetFont("TabLarge")
