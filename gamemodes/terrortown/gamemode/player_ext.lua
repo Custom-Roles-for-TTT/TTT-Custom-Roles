@@ -62,6 +62,8 @@ end
 function plymeta:SubtractCredits(amt) self:AddCredits(-amt) end
 
 function plymeta:SetDefaultCredits()
+    if self:IsSpec() or self:GetRole() == ROLE_NONE then return end
+
     local c = 0
     local cvar = nil
     if self:IsTraitor() then
