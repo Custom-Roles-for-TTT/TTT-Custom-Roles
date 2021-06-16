@@ -84,10 +84,10 @@ function GM:PostDrawTranslucentRenderables()
 
             if showkillicon then -- If we are showing the "KILL" icon this should take priority over role icons
                 render.SetMaterial(indicator_mat_roleback_noz)
-                render.DrawQuadEasy(pos, dir, 8, 8, COLOR_WHITE, 180)
+                render.DrawQuadEasy(pos, dir, 8, 8, ROLE_COLORS_SPRITE[ROLE_ASSASSIN], 180)
 
                 render.SetMaterial(indicator_mat_target_noz)
-                render.DrawQuadEasy(pos, dir, 8, 8, ROLE_COLORS_SPRITE[ROLE_ASSASSIN], 180)
+                render.DrawQuadEasy(pos, dir, 8, 8, COLOR_WHITE, 180)
 
                 render.SetMaterial(indicator_mat_rolefront_noz)
                 render.DrawQuadEasy(pos, dir, 8, 8, COLOR_WHITE, 180)

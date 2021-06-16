@@ -568,7 +568,7 @@ if SERVER then
             elseif targets == 1 then
                 targetCount = "final"
             end
-            local targetMessage = "Your " .. targetCount .. " target is " .. target
+            local targetMessage = "Your " .. targetCount .. " target is " .. target .. "."
             ply:PrintMessage(HUD_PRINTCENTER, targetMessage)
             ply:PrintMessage(HUD_PRINTTALK, targetMessage)
         end
