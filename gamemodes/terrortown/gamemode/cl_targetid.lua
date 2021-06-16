@@ -35,9 +35,7 @@ local indicator_mat_roleback_noz = Material("vgui/ttt/sprite_roleback_noz")
 local indicator_mat_rolefront = Material("vgui/ttt/sprite_rolefront")
 local indicator_mat_rolefront_noz = Material("vgui/ttt/sprite_rolefront_noz")
 
-local indicator_mat_target = Material("vgui/ttt/sprite_target")
-
-local indicator_col = Color(255, 255, 255, 130)
+local indicator_mat_target_noz = Material("vgui/ttt/sprite_target")
 
 local function DrawRoleIcon(role, noz, pos, dir)
     local path = "vgui/ttt/sprite_" .. ROLE_STRINGS_SHORT[role]
@@ -84,26 +82,34 @@ function GM:PostDrawTranslucentRenderables()
             -- Only show the "KILL" target if the setting is enabled
             local showkillicon = (client:IsAssassin() and GetGlobalBool("ttt_assassin_show_target_icon") and client:GetNWString("AssassinTarget") == v:Nick())
 
-            if v:GetDetectiveLike() and not (v:GetImpersonator() and client:IsTraitorTeam()) and not showkillicon then
-                DrawRoleIcon(ROLE_DETECTIVE, false, pos, dir)
-            elseif v:GetClown() and v:GetNWBool("KillerClownActive", false) then
-                DrawRoleIcon(ROLE_CLOWN, false, pos, dir)
-            end
-            if not hide_roles and client:IsTraitorTeam() then
-                local hideBeggar = v:GetNWBool("WasBeggar", false) and not GetGlobalBool("ttt_reveal_beggar_change", true)
-                if (v:GetTraitor() and not hideBeggar) or v:GetGlitch() then
-                    DrawRoleIcon(ROLE_TRAITOR, true, pos, dir)
-                elseif v:GetHypnotist() then
-                    DrawRoleIcon(ROLE_HYPNOTIST, true, pos, dir)
-                elseif v:GetImpersonator() then
-                    DrawRoleIcon(ROLE_IMPERSONATOR, true, pos, dir)
-                elseif v:GetAssassin() then
-                    DrawRoleIcon(ROLE_ASSASSIN, true, pos, dir)
-                elseif (v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) or ((v:GetTraitor() or v:GetInnocent()) and hideBeggar) then
-                    DrawRoleIcon(ROLE_JESTER, false, pos, dir)
-                elseif showkillicon then
-                    render.SetMaterial(indicator_mat_target)
-                    render.DrawQuadEasy(pos, dir, 8, 8, indicator_col, 180)
+            if showkillicon then -- If we are showing the "KILL" icon this should take priority over role icons
+                render.SetMaterial(indicator_mat_roleback_noz)
+                render.DrawQuadEasy(pos, dir, 8, 8, COLOR_WHITE, 180)
+
+                render.SetMaterial(indicator_mat_target_noz)
+                render.DrawQuadEasy(pos, dir, 8, 8, ROLE_COLORS_SPRITE[ROLE_DRUNK], 180) -- The independent colour never shows up as an overhead icon so the "KILL" icon can use this colour without causing confusion
+
+                render.SetMaterial(indicator_mat_rolefront_noz)
+                render.DrawQuadEasy(pos, dir, 8, 8, COLOR_WHITE, 180)
+            else
+                if v:GetDetectiveLike() and not (v:GetImpersonator() and client:IsTraitorTeam()) and not showkillicon then
+                    DrawRoleIcon(ROLE_DETECTIVE, false, pos, dir)
+                elseif v:GetClown() and v:GetNWBool("KillerClownActive", false) then
+                    DrawRoleIcon(ROLE_CLOWN, false, pos, dir)
+                end
+                if not hide_roles and client:IsTraitorTeam() then
+                    local hideBeggar = v:GetNWBool("WasBeggar", false) and not GetGlobalBool("ttt_reveal_beggar_change", true)
+                    if (v:GetTraitor() and not hideBeggar) or v:GetGlitch() then
+                        DrawRoleIcon(ROLE_TRAITOR, true, pos, dir)
+                    elseif v:GetHypnotist() then
+                        DrawRoleIcon(ROLE_HYPNOTIST, true, pos, dir)
+                    elseif v:GetImpersonator() then
+                        DrawRoleIcon(ROLE_IMPERSONATOR, true, pos, dir)
+                    elseif v:GetAssassin() then
+                        DrawRoleIcon(ROLE_ASSASSIN, true, pos, dir)
+                    elseif (v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) or ((v:GetTraitor() or v:GetInnocent()) and hideBeggar) then
+                        DrawRoleIcon(ROLE_JESTER, false, pos, dir)
+                    end
                 end
             end
         end
