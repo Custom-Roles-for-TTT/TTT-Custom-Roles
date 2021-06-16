@@ -516,7 +516,7 @@ end
 
 if SERVER then
     -- Centralize this so it can be handled on round start and on player death
-    function AssignAssassinTarget(ply, start)
+    function AssignAssassinTarget(ply, start, delay)
         -- Don't let dead players, spectators, non-assassins, or failed assassins get another target
         -- And don't assign targets if the round isn't currently running
         if not IsValid(ply) or GetRoundState() > ROUND_ACTIVE or
@@ -558,6 +558,7 @@ if SERVER then
             target = independents[math.random(#independents)]
         end
 
+        local targetMessage = ""
         if target ~= nil then
             ply:SetNWString("AssassinTarget", target)
 
@@ -568,10 +569,13 @@ if SERVER then
             elseif targets == 1 then
                 targetCount = "final"
             end
-            local targetMessage = "Your " .. targetCount .. " target is " .. target .. "."
-            ply:PrintMessage(HUD_PRINTCENTER, targetMessage)
-            ply:PrintMessage(HUD_PRINTTALK, targetMessage)
+            targetMessage = "Your " .. targetCount .. " target is " .. target .. "."
+        else
+            targetMessage = "No further targets available."
         end
+        if not delay and not start then targetMessage = "Target eliminated. " .. targetMessage end
+        ply:PrintMessage(HUD_PRINTCENTER, targetMessage)
+        ply:PrintMessage(HUD_PRINTTALK, targetMessage)
     end
 end
 

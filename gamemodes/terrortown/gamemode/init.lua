@@ -1061,7 +1061,7 @@ function BeginRound()
 
         -- Assassin logic
         if v:GetRole() == ROLE_ASSASSIN then
-            AssignAssassinTarget(v, true)
+            AssignAssassinTarget(v, true, false)
         end
     end
 

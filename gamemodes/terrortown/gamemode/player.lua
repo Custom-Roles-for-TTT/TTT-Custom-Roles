@@ -835,11 +835,13 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
                 attacker:PrintMessage(HUD_PRINTCENTER, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
                 attacker:PrintMessage(HUD_PRINTTALK, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
                 timer.Simple(delay, function()
-                    AssignAssassinTarget(v)
+                    AssignAssassinTarget(v, false, true)
                 end)
             else
-                AssignAssassinTarget(v)
+                AssignAssassinTarget(v, false, false)
             end
+            -- Reset the target to clear the target overlay from the scoreboard
+            v:SetNWString("AssassinTarget", "")
         end
     end
 
