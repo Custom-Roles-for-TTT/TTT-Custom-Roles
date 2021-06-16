@@ -34,6 +34,7 @@ local indicator_mat_roleback = Material("vgui/ttt/sprite_roleback")
 local indicator_mat_roleback_noz = Material("vgui/ttt/sprite_roleback_noz")
 local indicator_mat_rolefront = Material("vgui/ttt/sprite_rolefront")
 local indicator_mat_rolefront_noz = Material("vgui/ttt/sprite_rolefront_noz")
+
 local indicator_mat_target = Material("vgui/ttt/sprite_target")
 
 local indicator_col = Color(255, 255, 255, 130)
@@ -96,6 +97,8 @@ function GM:PostDrawTranslucentRenderables()
                     DrawRoleIcon(ROLE_HYPNOTIST, true, pos, dir)
                 elseif v:GetImpersonator() then
                     DrawRoleIcon(ROLE_IMPERSONATOR, true, pos, dir)
+                elseif v:GetAssassin() then
+                    DrawRoleIcon(ROLE_ASSASSIN, true, pos, dir)
                 elseif (v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) or ((v:GetTraitor() or v:GetInnocent()) and hideBeggar) then
                     DrawRoleIcon(ROLE_JESTER, false, pos, dir)
                 elseif showkillicon then
