@@ -34,6 +34,9 @@ local indicator_mat_roleback = Material("vgui/ttt/sprite_roleback")
 local indicator_mat_roleback_noz = Material("vgui/ttt/sprite_roleback_noz")
 local indicator_mat_rolefront = Material("vgui/ttt/sprite_rolefront")
 local indicator_mat_rolefront_noz = Material("vgui/ttt/sprite_rolefront_noz")
+local indicator_mat_target = Material("vgui/ttt/sprite_target")
+
+local indicator_col = Color(255, 255, 255, 130)
 
 local function DrawRoleIcon(role, noz, pos, dir)
     local path = "vgui/ttt/sprite_" .. ROLE_STRINGS_SHORT[role]
@@ -76,7 +79,11 @@ function GM:PostDrawTranslucentRenderables()
         if v:IsActive() and v ~= client and not hidden then
             pos = v:GetPos()
             pos.z = pos.z + 74
-            if v:GetDetectiveLike() and not (v:GetImpersonator() and client:IsTraitorTeam()) then
+
+            -- Only show the "KILL" target if the setting is enabled
+            local showkillicon = (client:IsAssassin() and GetGlobalBool("ttt_assassin_show_target_icon") and client:GetNWString("AssassinTarget") == v:Nick())
+
+            if v:GetDetectiveLike() and not (v:GetImpersonator() and client:IsTraitorTeam()) and not showkillicon then
                 DrawRoleIcon(ROLE_DETECTIVE, false, pos, dir)
             elseif v:GetClown() and v:GetNWBool("KillerClownActive", false) then
                 DrawRoleIcon(ROLE_CLOWN, false, pos, dir)
@@ -91,6 +98,9 @@ function GM:PostDrawTranslucentRenderables()
                     DrawRoleIcon(ROLE_IMPERSONATOR, true, pos, dir)
                 elseif (v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) or ((v:GetTraitor() or v:GetInnocent()) and hideBeggar) then
                     DrawRoleIcon(ROLE_JESTER, false, pos, dir)
+                elseif showkillicon then
+                    render.SetMaterial(indicator_mat_target)
+                    render.DrawQuadEasy(pos, dir, 8, 8, indicator_col, 180)
                 end
             end
         end
@@ -213,6 +223,7 @@ function GM:HUDDrawTargetID()
     local target_impersonator = false
 
     local target_revenger_lover = false
+    local target_current_target = false
 
     local target_corpse = false
 
@@ -272,6 +283,10 @@ function GM:HUDDrawTargetID()
 
         if client:IsRevenger() then
             target_revenger_lover = (ent:SteamID64() == client:GetNWString("RevengerLover", ""))
+        end
+
+        if client:IsAssassin() then
+            target_current_target = (ent:Nick() == client:GetNWString("AssassinTarget", ""))
         end
 
     elseif cls == "prop_ragdoll" then
@@ -398,7 +413,10 @@ function GM:HUDDrawTargetID()
 
     text = nil
 
-    if target_revenger_lover then
+    if target_current_target then
+        text = L.target_current_target
+        clr = ROLE_COLORS_RADAR[ROLE_ASSASSIN]
+    elseif target_revenger_lover then
         -- Prioritise soulmate message over roles
         text = L.target_revenger_lover
         clr = ROLE_COLORS_RADAR[ROLE_REVENGER]

@@ -148,6 +148,10 @@ function GetVeteranFilter(alive_only)
     return GetPlayerFilter(function(p) return p:GetVeteran() and (not alive_only or p:IsTerror()) end)
 end
 
+function GetAssassinFilter(alive_only)
+    return GetPlayerFilter(function(p) return p:GetAssassin() and (not alive_only or p:IsTerror()) end)
+end
+
 
 
 function GetRoleFilter(role, alive_only)

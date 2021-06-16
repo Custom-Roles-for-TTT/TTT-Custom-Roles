@@ -41,6 +41,7 @@ function GM:PlayerInitialSpawn(ply)
         SendMercenaryList()
         SendBodysnatcherList()
         SendVeteranList()
+        SendAssassinList()
     end
 
     -- Game has started, tell this guy where the round is at
@@ -64,6 +65,7 @@ function GM:PlayerInitialSpawn(ply)
         SendMercenaryList(ply)
         SendBodysnatcherList(ply)
         SendVeteranList(ply)
+        SendAssassinList(ply)
     end
 
     -- Handle spec bots
@@ -534,6 +536,7 @@ function GM:PlayerDisconnected(ply)
         SendMercenaryList()
         SendBodysnatcherList()
         SendVeteranList()
+        SendAssassinList()
 
         net.Start("TTT_PlayerDisconnected")
         net.WriteString(ply:Nick())
@@ -815,6 +818,29 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
         SendFullStateUpdate()
     end
 
+    local attackertarget = attacker:GetNWString("AssassinTarget", "")
+    if attacker:IsPlayer() and attacker:IsAssassin() and ply:Nick() ~= attackertarget and attackertarget ~= "" then
+        attacker:PrintMessage(HUD_PRINTCENTER, "Contract failed. You killed the wrong player.")
+        attacker:PrintMessage(HUD_PRINTTALK, "Contract failed. You killed the wrong player.")
+        attacker:SetNWString("AssassinTarget", "")
+        attacker:SetNWBool("AssassinFailed", true)
+    end
+
+    for _, v in pairs(player.GetAll()) do
+        local assassintarget = v:GetNWString("AssassinTarget", "")
+        if v:IsAssassin() and ply:Nick() == assassintarget then
+            local delay = GetConVar("ttt_assassin_next_target_delay"):GetFloat()
+            -- Delay giving the next target if we're configured to do so
+            if delay > 0 then
+                timer.Simple(delay, function()
+                    AssignAssassinTarget(v)
+                end)
+            else
+                AssignAssassinTarget(v)
+            end
+        end
+    end
+
     -- Experimental: Fire a last shot if ironsighting and not headshot
     if GetConVar("ttt_dyingshot"):GetBool() then
         local wep = ply:GetActiveWeapon()
@@ -937,7 +963,14 @@ function GM:PlayerDeath(victim, infl, attacker)
             end)
         end
 
-        attacker:PrintMessage(HUD_PRINTCENTER, "You have been haunted.")
+        -- Delay this message so the Assassin can see the target update message
+        if attacker:IsAssassin() then
+            timer.Simple(3, function()
+                attacker:PrintMessage(HUD_PRINTCENTER, "You have been haunted.")
+            end)
+        else
+            attacker:PrintMessage(HUD_PRINTCENTER, "You have been haunted.")
+        end
         victim:PrintMessage(HUD_PRINTCENTER, "Your attacker has been haunted.")
         if GetConVar("ttt_phantom_announce_death"):GetBool() then
             for _, v in pairs(player.GetAll()) do
@@ -1178,55 +1211,61 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
         dmginfo:ScaleDamage(0.7)
     end
 
-    -- Jesters deal no damage and cant take environmental damage
-    if (ply:IsJesterTeam() and not ply:GetNWBool("KillerClownActive", false)) and GetRoundState() >= ROUND_ACTIVE then
-        -- Damage type DMG_GENERIC is "0" which doesn't seem to work with IsDamageType
-        if dmginfo:IsExplosionDamage() or dmginfo:IsDamageType(DMG_BURN) or dmginfo:IsDamageType(DMG_CRUSH) or dmginfo:IsFallDamage() or dmginfo:IsDamageType(DMG_DROWN) or dmginfo:GetDamageType() == 0 or dmginfo:IsDamageType(DMG_DISSOLVE) then
+    local att = dmginfo:GetAttacker()
+    if IsValid(att) and att:IsPlayer() then
+        -- Only apply damage scaling after the round starts
+        if GetRoundState() >= ROUND_ACTIVE then
+            -- Jesters can't deal damage
+            if att:IsJesterTeam() and not att:GetNWBool("KillerClownActive", false) then
+                dmginfo:ScaleDamage(0)
+            end
+
+            -- Clowns deal extra damage when they are active
+            if att:IsClown() and att:GetNWBool("KillerClownActive", false) then
+                local bonus = GetConVar("ttt_clown_damage_bonus"):GetFloat()
+                dmginfo:ScaleDamage(1 + bonus)
+            end
+
+            -- Deputies deal less damage before they are promoted
+            if att:IsDeputy() and not att:GetNWBool("HasPromotion", false) then
+                local penalty = GetConVar("ttt_deputy_damage_penalty"):GetFloat()
+                dmginfo:ScaleDamage(1 - penalty)
+            end
+
+            -- Impersonators deal less damage before they are promoted
+            if att:IsImpersonator() and not att:GetNWBool("HasPromotion", false) then
+                local penalty = GetConVar("ttt_impersonator_damage_penalty"):GetFloat()
+                dmginfo:ScaleDamage(1 - penalty)
+            end
+
+            -- Revengers deal extra damage to their lovers killer
+            if att:IsRevenger() and ply:SteamID64() == att:GetNWString("RevengerKiller", "") then
+                local bonus = GetConVar("ttt_revenger_damage_bonus"):GetFloat()
+                dmginfo:ScaleDamage(1 + bonus)
+            end
+
+            -- Veterans deal extra damage if they are the last innocent alive
+            if att:IsVeteran() and att:GetNWBool("VeteranActive", false) then
+                local bonus = GetConVar("ttt_veteran_damage_bonus"):GetFloat()
+                dmginfo:ScaleDamage(1 + bonus)
+            end
+
+            -- Assassins deal extra damage to their target, less damage to other players, and less damage if they fail their contract
+            if att:IsAssassin() and ply ~= att then
+                local scale = 0
+                if att:GetNWBool("AssassinFailed", false) then
+                    scale = -GetConVar("ttt_assassin_failed_damage_penalty"):GetFloat()
+                elseif ply:Nick() == att:GetNWString("AssassinTarget", "") then
+                    scale = GetConVar("ttt_assassin_target_damage_bonus"):GetFloat()
+                else
+                    scale = -GetConVar("ttt_assassin_wrong_damage_penalty"):GetFloat()
+                end
+                dmginfo:ScaleDamage(1 + scale)
+            end
+        -- Players cant deal damage to eachother before the round starts
+        else
             dmginfo:ScaleDamage(0)
         end
-    end
-
-    if (ply:IsJesterTeam() and not ply:GetNWBool("KillerClownActive", false)) and GetRoundState() >= ROUND_ACTIVE and dmginfo:IsExplosionDamage() then
-        dmginfo:ScaleDamage(0)
-    end
-
-    if ply:IsPlayer() and dmginfo:GetAttacker():IsPlayer() and (dmginfo:GetAttacker():IsJesterTeam() and not dmginfo:GetAttacker():GetNWBool("KillerClownActive", false)) and GetRoundState() >= ROUND_ACTIVE then
-        dmginfo:ScaleDamage(0)
-    end
-
-    -- Clowns deal extra damage when they are active
-    if ply:IsPlayer() and dmginfo:GetAttacker():IsPlayer() and dmginfo:GetAttacker():IsClown() and dmginfo:GetAttacker():GetNWBool("KillerClownActive", false) and GetRoundState() >= ROUND_ACTIVE then
-        local bonus = GetConVar("ttt_clown_damage_bonus"):GetFloat() or 0
-        dmginfo:ScaleDamage(1 + bonus)
-    end
-
-    -- Deputies deal less damage before they are promoted
-    if ply:IsPlayer() and dmginfo:GetAttacker():IsPlayer() and dmginfo:GetAttacker():IsDeputy() and not dmginfo:GetAttacker():GetNWBool("HasPromotion", false) and GetRoundState() >= ROUND_ACTIVE then
-        local penalty = GetConVar("ttt_deputy_damage_penalty"):GetFloat() or 0
-        dmginfo:ScaleDamage(1 - penalty)
-    end
-
-    -- Impersonators deal less damage before they are promoted
-    if ply:IsPlayer() and dmginfo:GetAttacker():IsPlayer() and dmginfo:GetAttacker():IsImpersonator() and not dmginfo:GetAttacker():GetNWBool("HasPromotion", false) and GetRoundState() >= ROUND_ACTIVE then
-        local penalty = GetConVar("ttt_impersonator_damage_penalty"):GetFloat() or 0
-        dmginfo:ScaleDamage(1 - penalty)
-    end
-
-    -- Revengers deal extra damage to their lovers killer
-    if ply:IsPlayer() and dmginfo:GetAttacker():IsPlayer() and dmginfo:GetAttacker():IsRevenger() and ply:SteamID64() == dmginfo:GetAttacker():GetNWString("RevengerKiller", "") and GetRoundState() >= ROUND_ACTIVE then
-        local bonus = GetConVar("ttt_revenger_damage_bonus"):GetFloat() or 0
-        dmginfo:ScaleDamage(1 + bonus)
-    end
-
-    -- Veterans deal extra damage if they are the last innocent alive
-    if ply:IsPlayer() and dmginfo:GetAttacker():IsPlayer() and dmginfo:GetAttacker():IsVeteran() and dmginfo:GetAttacker():GetNWBool("VeteranActive", false) and GetRoundState() >= ROUND_ACTIVE then
-        local bonus = GetConVar("ttt_veteran_damage_bonus"):GetFloat() or 0
-        dmginfo:ScaleDamage(1 + bonus)
-    end
-
-    -- Players cant deal damage before the round starts
-    if ply:IsPlayer() and dmginfo:GetAttacker():IsPlayer() and not GetRoundState == ROUND_ACTIVE then
-        dmginfo:ScaleDamage(0)
     end
 
     ply.was_headshot = false
@@ -1347,8 +1386,11 @@ end
 
 -- No damage during prep, etc
 function GM:EntityTakeDamage(ent, dmginfo)
-    if SERVER then
-        if (ent:IsPlayer() and ent:IsJesterTeam() and not ent:GetNWBool("KillerClownActive", false) and GetRoundState() >= ROUND_ACTIVE) then
+    if not IsValid(ent) then return end
+
+    if GetRoundState() >= ROUND_ACTIVE then
+        -- Jesters don't take environmental damage
+        if ent:IsPlayer() and ent:IsJesterTeam() and not ent:GetNWBool("KillerClownActive", false) then
             -- Damage type DMG_GENERIC is "0" which doesn't seem to work with IsDamageType
             if dmginfo:IsExplosionDamage() or dmginfo:IsDamageType(DMG_BURN) or dmginfo:IsDamageType(DMG_CRUSH) or dmginfo:IsFallDamage() or dmginfo:IsDamageType(DMG_DROWN) or dmginfo:GetDamageType() == 0 or dmginfo:IsDamageType(DMG_DISSOLVE) then
                 dmginfo:ScaleDamage(0)
@@ -1357,24 +1399,15 @@ function GM:EntityTakeDamage(ent, dmginfo)
         end
     end
 
-    if not IsValid(ent) then return end
     local att = dmginfo:GetAttacker()
-
-    if att:IsPlayer() and att:IsJesterTeam() and not att:GetNWBool("KillerClownActive", false) and GetRoundState() >= ROUND_ACTIVE then
-        dmginfo:ScaleDamage(0)
-        dmginfo:SetDamage(0)
-    end
-
     if not GAMEMODE:AllowPVP() then
         -- if player vs player damage, or if damage versus a prop, then zero
-        if (ent:IsExplosive() or (ent:IsPlayer() and IsValid(att) and att:IsPlayer())) then
+        if ent:IsExplosive() or (ent:IsPlayer() and IsValid(att) and att:IsPlayer()) then
             dmginfo:ScaleDamage(0)
             dmginfo:SetDamage(0)
         end
     elseif ent:IsPlayer() then
-
         GAMEMODE:PlayerTakeDamage(ent, dmginfo:GetInflictor(), att, dmginfo:GetDamage(), dmginfo)
-
     elseif ent:IsExplosive() then
         -- When a barrel hits a player, that player damages the barrel because
         -- Source physics. This gives stupid results like a player who gets hit
@@ -1389,7 +1422,6 @@ function GM:EntityTakeDamage(ent, dmginfo)
         end
     elseif ent.is_pinned and ent.OnPinnedDamage then
         ent:OnPinnedDamage(dmginfo)
-
         dmginfo:SetDamage(0)
     end
 end

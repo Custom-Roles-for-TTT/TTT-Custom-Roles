@@ -104,17 +104,18 @@ end
 function GM:TTTScoreboardRowColorForPlayer(ply)
     if not IsValid(ply) or GetRoundState() == ROUND_WAIT or GetRoundState() == ROUND_PREP then return defaultcolor end
 
-    if (ScoreGroup(ply) == GROUP_SEARCHED and ply.search_result) or ply == LocalPlayer() then
+    local client = LocalPlayer()
+    if (ScoreGroup(ply) == GROUP_SEARCHED and ply.search_result) or ply == client then
         return ply:GetRole()
     end
 
-    if ply:GetDetectiveLike() and not (ply:GetImpersonator() and LocalPlayer():IsTraitorTeam()) then
+    if ply:GetDetectiveLike() and not (ply:GetImpersonator() and client:IsTraitorTeam()) then
         return ROLE_DETECTIVE
     elseif ply:IsClown() and ply:GetNWBool("KillerClownActive", false) then
         return ROLE_CLOWN
     end
 
-    if LocalPlayer():IsTraitorTeam() then
+    if client:IsTraitorTeam() then
         local hideBeggar = ply:GetNWBool("WasBeggar", false) and not GetGlobalBool("ttt_reveal_beggar_change", true)
         if ply:IsTraitorTeam() and not hideBeggar then
             return ply:GetRole()
@@ -140,6 +141,14 @@ local function ColorForPlayer(ply)
         end
     end
     return namecolor.default
+end
+
+local function DrawFlashingBorder(width, role)
+    surface.SetDrawColor(ColorAlpha(ROLE_COLORS[role], math.Round(math.sin(RealTime() * 8) / 2 + 0.5) * 20))
+    surface.DrawRect(0, 0, width, SB_ROW_HEIGHT)
+    surface.SetDrawColor(ROLE_COLORS_DARK[role])
+    surface.DrawOutlinedRect(SB_ROW_HEIGHT, 0, width - SB_ROW_HEIGHT, SB_ROW_HEIGHT)
+    surface.DrawOutlinedRect(1 + SB_ROW_HEIGHT, 1, width - 2 - SB_ROW_HEIGHT, SB_ROW_HEIGHT - 2)
 end
 
 function PANEL:Paint(width, height)
@@ -169,15 +178,16 @@ function PANEL:Paint(width, height)
         self.sresult:SetVisible(false)
     end
 
-    if LocalPlayer():IsRevenger() and ply:SteamID64() == LocalPlayer():GetNWString("RevengerLover", "") and GetRoundState() >= ROUND_ACTIVE then
-        surface.SetDrawColor(ColorAlpha(ROLE_COLORS[ROLE_REVENGER], math.Round(math.sin(RealTime() * 8) / 2 + 0.5) * 20))
-        surface.DrawRect(0, 0, width, SB_ROW_HEIGHT)
-        surface.SetDrawColor(ROLE_COLORS_DARK[ROLE_REVENGER])
-        surface.DrawOutlinedRect(SB_ROW_HEIGHT, 0, width - SB_ROW_HEIGHT, SB_ROW_HEIGHT)
-        surface.DrawOutlinedRect(1 + SB_ROW_HEIGHT, 1, width - 2 - SB_ROW_HEIGHT, SB_ROW_HEIGHT - 2)
+    local client = LocalPlayer()
+    if GetRoundState() >= ROUND_ACTIVE then
+        if client:IsRevenger() and ply:SteamID64() == client:GetNWString("RevengerLover", "") then
+            DrawFlashingBorder(width, ROLE_REVENGER)
+        elseif client:IsAssassin() and ply:Nick() == client:GetNWString("AssassinTarget", "") then
+            DrawFlashingBorder(width, ROLE_ASSASSIN)
+        end
     end
 
-    if ply == LocalPlayer() then
+    if ply == client then
         surface.SetDrawColor(200, 200, 200, math.Clamp(math.sin(RealTime() * 2) * 50, 0, 100))
         surface.DrawRect(0, 0, width, SB_ROW_HEIGHT)
     end
@@ -228,9 +238,20 @@ function PANEL:UpdatePlayerData()
         self.cols[i]:SetText(self.cols[i].GetPlayerText(ply, self.cols[i]))
     end
 
+    local client = LocalPlayer()
     self.nick:SetText(ply:Nick())
-    if LocalPlayer():IsRevenger() and ply:SteamID64() == LocalPlayer():GetNWString("RevengerLover", "") and GetRoundState() >= ROUND_ACTIVE then
-        self.nick:SetText(ply:Nick() .. " (" .. GetTranslation("target_revenger_lover") .. ")")
+    if GetRoundState() >= ROUND_ACTIVE then
+        if client:IsRevenger() and ply:SteamID64() == client:GetNWString("RevengerLover", "") then
+            self.nick:SetText(ply:Nick() .. " (" .. GetTranslation("target_revenger_lover") .. ")")
+        elseif client:IsAssassin() and ply:Nick() == client:GetNWString("AssassinTarget", "") then
+            self.nick:SetText(ply:Nick() .. " (" .. GetTranslation("target_assassin_target") .. ")")
+        elseif client:IsTraitorTeam() then
+            for _, v in pairs(player.GetAll()) do
+                if ply:Nick() == v:GetNWString("AssassinTarget", "") then
+                    self.nick:SetText(ply:Nick() .. " (" .. GetPTranslation("target_assassin_target_team", { player = v:Nick() }) .. ")")
+                end
+            end
+        end
     end
 
     self.nick:SizeToContents()
@@ -251,7 +272,7 @@ function PANEL:UpdatePlayerData()
         self.info:UpdatePlayerData()
     end
 
-    if self.Player ~= LocalPlayer() then
+    if self.Player ~= client then
         local muted = self.Player:IsMuted()
         self.voice:SetImage(muted and "icon16/sound_mute.png" or "icon16/sound.png")
     else
@@ -260,7 +281,7 @@ function PANEL:UpdatePlayerData()
 end
 
 function PANEL:ApplySchemeSettings()
-    for k, v in pairs(self.cols) do
+    for _, v in pairs(self.cols) do
         v:SetFont("treb_small")
         v:SetTextColor(COLOR_WHITE)
     end

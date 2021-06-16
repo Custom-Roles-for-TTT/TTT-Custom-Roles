@@ -68,7 +68,8 @@ function GetEquipmentForRole(role, promoted, block_randomization)
     -- Pre-load the Traitor weapons so that any that have their CanBuy modified will also apply to the enabled allied role(s)
     local sync_hypnotist = GetGlobalBool("ttt_shop_hyp_sync") and role == ROLE_HYPNOTIST
     local sync_impersonator = GetGlobalBool("ttt_shop_imp_sync") and role == ROLE_IMPERSONATOR
-    local sync_traitor_weapons = sync_hypnotist or sync_impersonator or
+    local sync_assassin = GetGlobalBool("ttt_shop_asn_sync") and role == ROLE_ASSASSIN
+    local sync_traitor_weapons = sync_hypnotist or sync_impersonator or sync_assassin or
                                     (mercmode > MERC_SHOP_NONE and role == ROLE_MERCENARY)
     if sync_traitor_weapons and not Equipment[ROLE_TRAITOR] then
         GetEquipmentForRole(ROLE_TRAITOR, false, true)
