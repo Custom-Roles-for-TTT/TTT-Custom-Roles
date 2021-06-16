@@ -31,8 +31,9 @@ ROLE_OLDMAN = 14
 ROLE_MERCENARY = 15
 ROLE_BODYSNATCHER = 16
 ROLE_VETERAN = 17
+ROLE_ASSASSIN = 18
 
-ROLE_MAX = 17
+ROLE_MAX = 18
 
 local function AddRoleAssociations(list, roles)
     -- Use an associative array so we can do a O(1) lookup by role
@@ -43,10 +44,10 @@ local function AddRoleAssociations(list, roles)
 end
 
 SHOP_ROLES = {}
-AddRoleAssociations(SHOP_ROLES, {ROLE_TRAITOR, ROLE_DETECTIVE, ROLE_HYPNOTIST, ROLE_DEPUTY, ROLE_IMPERSONATOR, ROLE_JESTER, ROLE_SWAPPER, ROLE_MERCENARY})
+AddRoleAssociations(SHOP_ROLES, {ROLE_TRAITOR, ROLE_DETECTIVE, ROLE_HYPNOTIST, ROLE_DEPUTY, ROLE_IMPERSONATOR, ROLE_JESTER, ROLE_SWAPPER, ROLE_MERCENARY, ROLE_ASSASSIN})
 
 TRAITOR_ROLES = {}
-AddRoleAssociations(TRAITOR_ROLES, {ROLE_TRAITOR, ROLE_HYPNOTIST, ROLE_IMPERSONATOR})
+AddRoleAssociations(TRAITOR_ROLES, {ROLE_TRAITOR, ROLE_HYPNOTIST, ROLE_IMPERSONATOR, ROLE_ASSASSIN})
 
 INNOCENT_ROLES = {}
 AddRoleAssociations(INNOCENT_ROLES, {ROLE_INNOCENT, ROLE_DETECTIVE, ROLE_GLITCH, ROLE_PHANTOM, ROLE_REVENGER, ROLE_DEPUTY, ROLE_MERCENARY, ROLE_VETERAN})
@@ -255,7 +256,8 @@ ROLE_STRINGS = {
     [ROLE_OLDMAN] = "oldman",
     [ROLE_MERCENARY] = "mercenary",
     [ROLE_BODYSNATCHER] = "bodysnatcher",
-    [ROLE_VETERAN] = "veteran"
+    [ROLE_VETERAN] = "veteran",
+    [ROLE_ASSASSIN] = "assassin"
 }
 
 ROLE_STRINGS_EXT = {
@@ -277,7 +279,8 @@ ROLE_STRINGS_EXT = {
     [ROLE_OLDMAN] = "an old man",
     [ROLE_MERCENARY] = "a mercenary",
     [ROLE_BODYSNATCHER] = "a bodysnatcher",
-    [ROLE_VETERAN] = "a veteran"
+    [ROLE_VETERAN] = "a veteran",
+    [ROLE_ASSASSIN] = "an assassin"
 }
 
 ROLE_STRINGS_SHORT = {
@@ -298,7 +301,8 @@ ROLE_STRINGS_SHORT = {
     [ROLE_OLDMAN] = "old",
     [ROLE_MERCENARY] = "mer",
     [ROLE_BODYSNATCHER] = "bod",
-    [ROLE_VETERAN] = "vet"
+    [ROLE_VETERAN] = "vet",
+    [ROLE_ASSASSIN] = "asn"
 }
 
 -- Game event log defs
@@ -508,6 +512,67 @@ function GetSprintMultiplier(ply, sprinting)
         end
     end
     return mult
+end
+
+if SERVER then
+    -- Centralize this so it can be handled on round start and on player death
+    function AssignAssassinTarget(ply, start)
+        -- Don't let dead players, spectators, non-assassins, or failed assassins get another target
+        -- And don't assign targets if the round isn't currently running
+        if not IsValid(ply) or GetRoundState() > ROUND_ACTIVE or
+            not ply:Alive() or ply:IsSpec() or not ply:IsAssassin()
+            or ply:GetNWBool("AssassinFailed", true)
+        then
+            return
+        end
+
+        -- Reset the target to empty in case there are no valid targets
+        ply:SetNWString("AssassinTarget", "")
+
+        local enemies = {}
+        local detectives = {}
+        local independents = {}
+        for _, p in pairs(player.GetAll()) do
+            if p:Alive() and not p:IsSpec() then
+                if p:IsDetective() then
+                    table.insert(detectives, p:Nick())
+                -- Exclude Glitch from this list so they don't get discovered immediately
+                elseif INNOCENT_ROLES[p:GetRole()] and not p:IsGlitch() then
+                    -- Don't add the former beggar to the list of enemies unless the "reveal" setting is enabled
+                    if GetConVar("ttt_reveal_beggar_change"):GetBool() or not p:GetNWBool("WasBeggar", false) then
+                        table.insert(enemies, p:Nick())
+                    end
+                -- Exclude the Old Man because they just want to survive
+                elseif INDEPENDENT_ROLES[p:GetRole()] and not p:IsOldMan() then
+                    table.insert(independents, p:Nick())
+                end
+            end
+        end
+
+        local target = nil
+        if #enemies > 0 then
+            target = enemies[math.random(#enemies)]
+        elseif #detectives > 0 then
+            target = detectives[math.random(#detectives)]
+        elseif #independents > 0 then
+            target = independents[math.random(#independents)]
+        end
+
+        if target ~= nil then
+            ply:SetNWString("AssassinTarget", target)
+
+            local targets = #enemies + #detectives + #independents
+            local targetCount
+            if targets > 1 then
+                targetCount = start and "first" or "next"
+            elseif targets == 1 then
+                targetCount = "final"
+            end
+            local targetMessage = "Your " .. targetCount .. " target is " .. target
+            ply:PrintMessage(HUD_PRINTCENTER, targetMessage)
+            ply:PrintMessage(HUD_PRINTTALK, targetMessage)
+        end
+    end
 end
 
 -- Weapons and items that come with TTT. Weapons that are not in this list will
