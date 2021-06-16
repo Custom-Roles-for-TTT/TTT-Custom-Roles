@@ -103,7 +103,16 @@ function PANEL:UpdatePlayerData()
          ic = vgui.Create("SimpleIconLabelled", self.List)
          ic:SetIconText(info.text_icon)
       else
-         ic = vgui.Create("SimpleIcon", self.List)
+         local parent = self.List
+         if t == "role" then
+            parent = vgui.Create("DShape", self.List)
+            parent:SetType("Rect")
+            parent:SetColor(info.color)
+            parent:SetSize(54, 54)
+            parent:SetPos(8, 8)
+            parent:SetZPos(-5)
+         end
+         ic = vgui.Create("SimpleIcon", parent)
       end
 
       ic:SetIconSize(64)
