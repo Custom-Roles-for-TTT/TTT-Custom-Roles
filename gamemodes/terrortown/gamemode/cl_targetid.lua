@@ -35,7 +35,7 @@ local indicator_mat_roleback_noz = Material("vgui/ttt/sprite_roleback_noz")
 local indicator_mat_rolefront = Material("vgui/ttt/sprite_rolefront")
 local indicator_mat_rolefront_noz = Material("vgui/ttt/sprite_rolefront_noz")
 
-local indicator_mat_target_noz = Material("vgui/ttt/sprite_target")
+local indicator_mat_target_noz = Material("vgui/ttt/sprite_target_noz")
 
 local function DrawRoleIcon(role, noz, pos, dir)
     local path = "vgui/ttt/sprite_" .. ROLE_STRINGS_SHORT[role]
@@ -87,7 +87,7 @@ function GM:PostDrawTranslucentRenderables()
                 render.DrawQuadEasy(pos, dir, 8, 8, COLOR_WHITE, 180)
 
                 render.SetMaterial(indicator_mat_target_noz)
-                render.DrawQuadEasy(pos, dir, 8, 8, ROLE_COLORS_SPRITE[ROLE_DRUNK], 180) -- The independent colour never shows up as an overhead icon so the "KILL" icon can use this colour without causing confusion
+                render.DrawQuadEasy(pos, dir, 8, 8, ROLE_COLORS_SPRITE[ROLE_ASSASSIN], 180)
 
                 render.SetMaterial(indicator_mat_rolefront_noz)
                 render.DrawQuadEasy(pos, dir, 8, 8, COLOR_WHITE, 180)
