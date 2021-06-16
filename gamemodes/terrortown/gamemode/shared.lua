@@ -631,15 +631,21 @@ DefaultEquipment = {
     },
 
     [ROLE_HYPNOTIST] = {
-        "weapon_ttt_health_station",
         EQUIP_ARMOR,
-        EQUIP_RADAR
+        EQUIP_RADAR,
+        EQUIP_DISGUISE
     },
 
     [ROLE_IMPERSONATOR] = {
-        "weapon_ttt_health_station",
         EQUIP_ARMOR,
-        EQUIP_RADAR
+        EQUIP_RADAR,
+        EQUIP_DISGUISE
+    },
+
+    [ROLE_ASSASSIN] = {
+        EQUIP_ARMOR,
+        EQUIP_RADAR,
+        EQUIP_DISGUISE
     },
 
     -- non-buyable
