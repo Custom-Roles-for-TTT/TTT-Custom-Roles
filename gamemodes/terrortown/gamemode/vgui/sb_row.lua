@@ -162,6 +162,11 @@ function PANEL:Paint(width, height)
 
     local c = hook.Call("TTTScoreboardRowColorForPlayer", GAMEMODE, ply)
 
+    -- Use the default color for players without roles
+    if type(c) == "number" and c <= ROLE_NONE then
+        c = defaultcolor
+    end
+
     local roleStr = ""
     if c ~= defaultcolor then
         roleStr = ROLE_STRINGS_SHORT[c]

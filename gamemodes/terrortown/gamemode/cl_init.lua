@@ -168,7 +168,7 @@ GM.TTTEndRound = PlaySoundCue
 
 local function ReceiveRole()
     local client = LocalPlayer()
-    local role = net.ReadUInt(8)
+    local role = net.ReadInt(8)
 
     -- after a mapswitch, server might have sent us this before we are even done
     -- loading our code
@@ -185,13 +185,15 @@ local function ReceiveRole()
         vision_enabled = false
     end
 
-    Msg("You are: ")
-    MsgN(string.upper(client:GetRoleString()))
+    if role > ROLE_NONE then
+        Msg("You are: ")
+        MsgN(string.upper(client:GetRoleString()))
+    end
 end
 net.Receive("TTT_Role", ReceiveRole)
 
 local function ReceiveRoleList()
-    local role = net.ReadUInt(8)
+    local role = net.ReadInt(8)
     local num_ids = net.ReadUInt(8)
 
     for _ = 1, num_ids do
