@@ -152,6 +152,10 @@ function GetAssassinFilter(alive_only)
     return GetPlayerFilter(function(p) return p:GetAssassin() and (not alive_only or p:IsTerror()) end)
 end
 
+function GetKillerFilter(alive_only)
+    return GetPlayerFilter(function(p) return p:GetKiller() and (not alive_only or p:IsTerror()) end)
+end
+
 
 
 function GetRoleFilter(role, alive_only)

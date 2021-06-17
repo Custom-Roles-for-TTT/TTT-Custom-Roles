@@ -14,6 +14,10 @@ function GM:PlayerCanPickupWeapon(ply, wep)
         return false
     elseif not ply:GetHypnotist() and wep:GetClass() == "weapon_ttt_brainwash" then
         return false
+    elseif not ply:GetBodysnatcher() and wep:GetClass() == "weapon_ttt_bodysnatch" then
+        return false
+    elseif not ply:GetKiller() and (wep:GetClass() == "weapon_kil_knife" or wep:GetClass() == "weapon_kil_crowbar") then
+        return false
     elseif not ply:CanCarryWeapon(wep) then
         return false
     elseif IsEquipment(wep) and wep.IsDropped and (not ply:KeyDown(IN_USE)) then
@@ -32,27 +36,11 @@ end
 local loadout_weapons = nil
 local function GetLoadoutWeapons(r)
     if not loadout_weapons then
-        local tbl = {
-            [ROLE_INNOCENT] = {},
-            [ROLE_TRAITOR] = {},
-            [ROLE_DETECTIVE] = {},
-            [ROLE_JESTER] = {},
-            [ROLE_SWAPPER] = {},
-            [ROLE_GLITCH] = {},
-            [ROLE_PHANTOM] = {},
-            [ROLE_HYPNOTIST] = {},
-            [ROLE_REVENGER] = {},
-            [ROLE_DRUNK] = {},
-            [ROLE_CLOWN] = {},
-            [ROLE_DEPUTY] = {},
-            [ROLE_IMPERSONATOR] = {},
-            [ROLE_BEGGAR] = {},
-            [ROLE_OLDMAN] = {},
-            [ROLE_MERCENARY] = {},
-            [ROLE_BODYSNATCHER] = {},
-            [ROLE_VETERAN] = {},
-            [ROLE_ASSASSIN] = {}
-        };
+        local tbl = {}
+        -- Initialize the table for every role
+        for wrole = 0, ROLE_MAX do
+            tbl[wrole] = {}
+        end
 
         for _, w in pairs(weapons.GetList()) do
             if WEPS.GetClass(w) == "weapon_ttt_unarmed" or WEPS.GetClass(w) == "weapon_zm_carry" or WEPS.GetClass(w) == "weapon_zm_improvised" then
