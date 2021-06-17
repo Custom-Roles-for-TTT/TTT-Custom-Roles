@@ -193,7 +193,7 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
         return
     end
 
-    if not hook.Run("TTTCanSearchCorpse", ply, rag, covert, long_range, (rag.was_role == ROLE_TRAITOR)) then
+    if not hook.Run("TTTCanSearchCorpse", ply, rag, covert, long_range, TRAITOR_ROLES[rag.was_role]) then
         return
     end
 
