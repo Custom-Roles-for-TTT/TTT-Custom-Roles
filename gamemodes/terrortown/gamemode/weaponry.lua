@@ -18,9 +18,15 @@ function GM:PlayerCanPickupWeapon(ply, wep)
         return false
     elseif not ply:GetKiller() and (wep:GetClass() == "weapon_kil_knife" or wep:GetClass() == "weapon_kil_crowbar") then
         return false
+    elseif not ply:GetVampire() and wep:GetClass() == "weapon_vam_fangs" then
+        return false
+    elseif not ply:GetZombie() and wep:GetClass() == "weapon_zom_claws" then
+        return false
     elseif not ply:CanCarryWeapon(wep) then
         return false
     elseif IsEquipment(wep) and wep.IsDropped and (not ply:KeyDown(IN_USE)) then
+        return false
+    elseif GetConVar("ttt_zombie_prime_only_weapons"):GetBool() and ply:GetZombie() and not ply:GetZombiePrime() and wep:GetClass() ~= "weapon_zom_claws" and GetRoundState() == ROUND_ACTIVE then
         return false
     end
 
@@ -545,6 +551,8 @@ concommand.Add("ttt_cheat_credits", CheatCredits, nil, nil, FCVAR_CHEAT)
 local function IsSameTeam(first, second)
     if first:IsTraitorTeam() and second:IsTraitorTeam() then
         return true
+    elseif first:IsMonsterTeam() and second:IsMonsterTeam() then
+        return true
     elseif first:IsInnocentTeam() and second:IsInnocentTeam() then
         return true
     end
@@ -673,7 +681,7 @@ end
 -- non-cheat developer commands can reveal precaching the first time equipment
 -- is bought, so trigger it at the start of a round instead
 function WEPS.ForcePrecache()
-    for k, w in ipairs(weapons.GetList()) do
+    for _, w in ipairs(weapons.GetList()) do
         if w.WorldModel then
             util.PrecacheModel(w.WorldModel)
         end

@@ -141,6 +141,14 @@ CreateConVar("ttt_killer_enabled", 0)
 CreateConVar("ttt_killer_spawn_weight", "1")
 CreateConVar("ttt_killer_min_players", "0")
 
+-- Monster spawn probabilities
+CreateConVar("ttt_zombie_enabled", 0)
+CreateConVar("ttt_zombie_spawn_weight", "1")
+CreateConVar("ttt_zombie_min_players", "0")
+CreateConVar("ttt_vampire_enabled", 0)
+CreateConVar("ttt_vampire_spawn_weight", "1")
+CreateConVar("ttt_vampire_min_players", "0")
+
 -- Traitor role properties
 CreateConVar("ttt_traitor_vision_enable", "0")
 
@@ -216,6 +224,22 @@ CreateConVar("ttt_killer_damage_reduction", "0.45")
 CreateConVar("ttt_killer_warn_all", "0")
 CreateConVar("ttt_killer_vision_enable", "1")
 
+-- Monster role properties
+CreateConVar("ttt_monsters_are_traitors", "0")
+
+CreateConVar("ttt_zombies_are_traitors", "0")
+CreateConVar("ttt_zombie_show_target_icon", "1")
+CreateConVar("ttt_zombie_damage_scale", "0.2")
+CreateConVar("ttt_zombie_damage_reduction", "0.8")
+CreateConVar("ttt_zombie_prime_only_weapons", "1")
+CreateConVar("ttt_zombie_vision_enable", "1")
+
+CreateConVar("ttt_vampires_are_traitors", "0")
+CreateConVar("ttt_vampire_show_target_icon", "1")
+CreateConVar("ttt_vampire_damage_reduction", "0.8")
+CreateConVar("ttt_vampire_prime_death_mode", "0")
+CreateConVar("ttt_vampire_vision_enable", "1")
+
 -- Other custom role properties
 CreateConVar("ttt_single_deputy_impersonator", "0")
 
@@ -241,6 +265,8 @@ CreateConVar("ttt_imp_credits_starting", "1")
 CreateConVar("ttt_mer_credits_starting", "1")
 CreateConVar("ttt_asn_credits_starting", "1")
 CreateConVar("ttt_kil_credits_starting", "2")
+CreateConVar("ttt_zom_credits_starting", "0")
+CreateConVar("ttt_vam_credits_starting", "0")
 
 -- Other
 CreateConVar("ttt_use_weapon_spawn_scripts", "1")
@@ -358,6 +384,7 @@ util.AddNetworkString("TTT_ResetBuyableWeaponsCache")
 util.AddNetworkString("TTT_PlayerFootstep")
 util.AddNetworkString("TTT_ClearPlayerFootsteps")
 util.AddNetworkString("TTT_JesterDeathCelebration")
+util.AddNetworkString("TTT_LoadMonsterEquipment")
 
 local jester_killed = false
 
@@ -490,6 +517,14 @@ function GM:SyncGlobals()
 
     SetGlobalBool("ttt_killer_show_target_icon", GetConVar("ttt_killer_show_target_icon"):GetBool())
     SetGlobalBool("ttt_killer_vision_enable", GetConVar("ttt_killer_vision_enable"):GetBool())
+
+    SetGlobalBool("ttt_monsters_are_traitors", GetConVar("ttt_monsters_are_traitors"):GetBool())
+    SetGlobalBool("ttt_zombies_are_traitors", GetConVar("ttt_zombies_are_traitors"):GetBool())
+    SetGlobalBool("ttt_zombie_show_target_icon", GetConVar("ttt_zombie_show_target_icon"):GetBool())
+    SetGlobalBool("ttt_zombie_vision_enable", GetConVar("ttt_zombie_vision_enable"):GetBool())
+    SetGlobalBool("ttt_vampires_are_traitors", GetConVar("ttt_vampires_are_traitors"):GetBool())
+    SetGlobalBool("ttt_vampire_show_target_icon", GetConVar("ttt_vampire_show_target_icon"):GetBool())
+    SetGlobalBool("ttt_vampire_vision_enable", GetConVar("ttt_vampire_vision_enable"):GetBool())
 
     SetGlobalBool("ttt_bem_allow_change", GetConVar("ttt_bem_allow_change"):GetBool())
     SetGlobalInt("ttt_bem_sv_cols", GetConVar("ttt_bem_sv_cols"):GetBool())
@@ -739,6 +774,11 @@ function PrepareRound()
         v:SetNWBool("HasPromotion", false)
         v:SetNWBool("WasBeggar", false)
         v:SetNWBool("VeteranActive", false)
+        v:SetNWBool("IsZombifying", false)
+        -- Keep previous naming scheme for backwards compatibility
+        v:SetNWBool("zombie_prime", false)
+        v:SetNWBool("vampire_prime", false)
+        v:SetNWInt("vampire_previous_role", ROLE_NONE)
         -- Workaround to prevent GMod sprint from working
         v:SetRunSpeed(v:GetWalkSpeed())
     end
@@ -870,7 +910,7 @@ function TellTraitorsAboutTraitors()
                 return
             else
                 local names = ""
-                for i, name in ipairs(traitornicks) do
+                for _, name in ipairs(traitornicks) do
                     if name ~= v:Nick() then
                         names = names .. name .. ", "
                     end
@@ -1131,6 +1171,18 @@ function BeginRound()
     timer.Simple(1.5, TellTraitorsAboutTraitors)
     timer.Simple(2.5, ShowRoundStartPopup)
 
+    -- EQUIP_REGEN health regeneration tick
+    timer.Create("RegenEquipmentTick", 0.66, 0, function()
+        for _, v in pairs(player.GetAll()) do
+            if v:Alive() and not v:IsSpec() and v:HasEquipmentItem(EQUIP_REGEN) then
+                local hp = v:Health()
+                if hp < v:GetMaxHealth() then
+                    v:SetHealth(hp + 1)
+                end
+            end
+        end
+    end)
+
     -- Start the win condition check timer
     StartWinChecks()
     StartNameChangeChecks()
@@ -1138,6 +1190,15 @@ function BeginRound()
 
     GAMEMODE.DamageLog = {}
     GAMEMODE.RoundStartTime = CurTime()
+
+    local zombies_are_traitors = MONSTER_ROLES[ROLE_ZOMBIE]
+    local vampires_are_traitors = MONSTER_ROLES[ROLE_VAMPIRE]
+    LoadMonsterEquipment(zombies_are_traitors, vampires_are_traitors)
+    -- Send the status to the client because at this point the globals haven't synced
+    net.Start("TTT_LoadMonsterEquipment")
+    net.WriteBool(zombies_are_traitors)
+    net.WriteBool(vampires_are_traitors)
+    net.Broadcast()
 
     -- Sound start alarm
     SetRoundState(ROUND_ACTIVE)
@@ -1171,6 +1232,20 @@ function PrintResultMessage(type)
     elseif type == WIN_KILLER then
         LANG.Msg("win_killer")
         ServerLog("Result: Killer wins.\n")
+    elseif type == WIN_MONSTER then
+        -- If Zombies are not monsters then Vampires win
+        if not MONSTER_ROLES[ROLE_ZOMBIE] then
+            LANG.Msg("win_vampires")
+            ServerLog("Result: Vampires win.\n")
+        -- And vice versa
+        elseif not MONSTER_ROLES[ROLE_VAMPIRE] then
+            LANG.Msg("win_zombies")
+            ServerLog("Result: Zombies win.\n")
+        -- Otherwise the monsters legit win
+        else
+            LANG.Msg("win_monster")
+            ServerLog("Result: Monsters win.\n")
+        end
     else
         ServerLog("Result: unknown victory condition!\n")
     end
@@ -1269,12 +1344,15 @@ function GM:TTTCheckForWin()
     local clown_alive = false
     local old_man_alive = false
     local killer_alive = false
+    local monster_alive = false
 
     local killer_clown_active = false
 
     for _, v in ipairs(player.GetAll()) do
-        if v:Alive() and v:IsTerror() then
-            if v:IsTraitorTeam() then
+        if (v:Alive() and v:IsTerror()) or v:GetNWBool("IsZombifying", false) then
+            if v:IsMonsterTeam() or v:GetNWBool("IsZombifying", false) then
+                monster_alive = true
+            elseif v:IsTraitorTeam() then
                 traitor_alive = true
             elseif v:IsDrunk() then
                 drunk_alive = true
@@ -1300,13 +1378,16 @@ function GM:TTTCheckForWin()
     if jester_killed then
         win_type = WIN_JESTER
     -- If everyone is dead the traitors win
-    elseif not innocent_alive and not killer_alive then
+    elseif not innocent_alive and not killer_alive and not monster_alive then
         win_type = WIN_TRAITOR
     -- If all the "bad" people are dead, innocents win
-    elseif not traitor_alive and not killer_alive then
+    elseif not traitor_alive and not killer_alive and not monster_alive then
         win_type = WIN_INNOCENT
+    -- If the monsters are the only one left, they win
+    elseif not traitor_alive and not killer_alive and not innocent_alive then
+        win_type = WIN_MONSTER
     -- If the killer is the only one left alive, they win
-    elseif not traitor_alive and not innocent_alive and killer_alive then
+    elseif not traitor_alive and not innocent_alive and not monster_alive and killer_alive then
         win_type = WIN_KILLER
     end
 
@@ -1406,6 +1487,7 @@ local function PrintRole(ply, role)
     PrintRoleText(ply:Nick() .. " (" .. ply:SteamID() .. " | " .. ply:SteamID64() .. ") - " .. role)
 end
 
+-- TODO:
 function SelectRoles()
     local choices = {}
     local prev_roles = {}

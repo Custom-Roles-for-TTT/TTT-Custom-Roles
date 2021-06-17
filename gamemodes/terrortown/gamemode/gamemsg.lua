@@ -53,6 +53,8 @@ local function RoleChatMsg(sender, msg)
         net.Send(GetTraitorTeamFilter())
     elseif sender:IsDetectiveLike() then
         net.Send(GetDetectiveFilter())
+    elseif sender:IsMonsterTeam() then
+        net.Send(GetMonsterTeamFilter())
     end
 end
 
@@ -156,6 +158,14 @@ function GetKillerFilter(alive_only)
     return GetPlayerFilter(function(p) return p:GetKiller() and (not alive_only or p:IsTerror()) end)
 end
 
+function GetZombieFilter(alive_only)
+    return GetPlayerFilter(function(p) return p:GetZombie() and (not alive_only or p:IsTerror()) end)
+end
+
+function GetVampireFilter(alive_only)
+    return GetPlayerFilter(function(p) return p:GetVampire() and (not alive_only or p:IsTerror()) end)
+end
+
 
 
 function GetRoleFilter(role, alive_only)
@@ -176,6 +186,10 @@ end
 
 function GetIndependentTeamFilter(alive_only)
     return GetPlayerFilter(function(p) return (p:IsIndependentTeam()) and (not alive_only or p:IsTerror()) end)
+end
+
+function GetMonsterTeamFilter(alive_only)
+    return GetPlayerFilter(function(p) return (p:IsMonsterTeam()) and (not alive_only or p:IsTerror()) end)
 end
 
 ---- Communication control
@@ -243,7 +257,7 @@ function GM:PlayerSay(ply, text, team_only)
 
             table.insert(filtered, 1, "[MUMBLED]")
             return table.concat(filtered, " ")
-        elseif team_only and not team and (ply:IsTraitorTeam() or ply:IsDetectiveLike()) then
+        elseif team_only and not team and (ply:IsTraitorTeam() or ply:IsDetectiveLike() or ply:IsMonsterTeam()) then
             local hasGlitch = false
             for _, v in pairs(player.GetAll()) do
                 if v:IsGlitch() then hasGlitch = true end

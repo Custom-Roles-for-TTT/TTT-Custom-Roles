@@ -35,6 +35,10 @@ CreateConVar("ttt_custom_jes_color_b", "253", FCVAR_ARCHIVE)
 CreateConVar("ttt_custom_ind_color_r", "112", FCVAR_ARCHIVE)
 CreateConVar("ttt_custom_ind_color_g", "50", FCVAR_ARCHIVE)
 CreateConVar("ttt_custom_ind_color_b", "0", FCVAR_ARCHIVE)
+
+CreateConVar("ttt_custom_mon_color_r", "69", FCVAR_ARCHIVE)
+CreateConVar("ttt_custom_mon_color_g", "97", FCVAR_ARCHIVE)
+CreateConVar("ttt_custom_mon_color_b", "0", FCVAR_ARCHIVE)
 UpdateRoleColours()
 
 CreateClientConVar("ttt_avoid_detective", "0", true, true)
@@ -268,6 +272,20 @@ function HELPSCRN:Show()
     end
 
     dcolor:AddItem(dcolind)
+
+    local dcolmon = vgui.Create("DColorMixer", dcolor)
+    dcolmon:SetAlphaBar(false)
+    dcolmon:SetWangs(false)
+    dcolmon:SetPalette(false)
+    dcolmon:SetLabel("Custom monster color:")
+    dcolmon:SetConVarR("ttt_custom_mon_color_r")
+    dcolmon:SetConVarG("ttt_custom_mon_color_g")
+    dcolmon:SetConVarB("ttt_custom_mon_color_b")
+    dcolmon.ValueChanged = function(col)
+        timer.Simple(0.5, function() UpdateRoleColours() end)
+    end
+
+    dcolor:AddItem(dcolmon)
 
     dsettings:AddItem(dcolor)
 

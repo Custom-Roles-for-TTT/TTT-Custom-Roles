@@ -785,6 +785,14 @@ function HandleRoleHighlights(client)
     end
 end
 
+-- Monster-as-traitors equipment
+
+net.Receive("TTT_LoadMonsterEquipment", function()
+    local zombies_are_traitors = net.ReadBool()
+    local vampires_are_traitors = net.ReadBool()
+    LoadMonsterEquipment(zombies_are_traitors, vampires_are_traitors)
+end)
+
 -- Footsteps
 
 local footSteps = {}

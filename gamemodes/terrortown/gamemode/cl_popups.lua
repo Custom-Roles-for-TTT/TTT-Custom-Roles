@@ -16,6 +16,32 @@ local function GetTextForLocalPlayer()
         if IsValid(lover) and lover:IsPlayer() then name = lover:Nick() end
         return GetPTranslation("info_popup_revenger", { lover = name })
 
+    elseif client:IsMonsterTeam() then
+        local allies = {}
+        for _, ply in ipairs(player.GetAll()) do
+            if ply:IsMonsterTeam() then
+                table.insert(allies, ply)
+            end
+        end
+
+        local roleString = client:GetRoleStringRaw()
+        local text
+        if #allies > 1 then
+            local allylist = ""
+
+            for _, ply in ipairs(allies) do
+                if ply ~= client then
+                    allylist = allylist .. string.rep(" ", 42) .. ply:Nick() .. "\n"
+                end
+            end
+
+            text = GetPTranslation("info_popup_" .. roleString, { menukey = menukey, allylist = allylist })
+        else
+            text = GetPTranslation("info_popup_" .. roleString.. "_alone", { menukey = menukey })
+        end
+
+        return text
+
     elseif client:IsTraitorTeam() then
         local traitors = {}
         local glitches = {}
@@ -45,9 +71,9 @@ local function GetTextForLocalPlayer()
             end
 
             if #glitches > 0 then
-                text = GetPTranslation("info_popup_" .. roleString.. "_glitch", { menukey = menukey, traitorlist = traitorlist, assassintarget = assassintarget })
+                text = GetPTranslation("info_popup_" .. roleString.. "_glitch", { menukey = menukey, traitorlist = traitorlist, allylist = traitorlist, assassintarget = assassintarget })
             else
-                text = GetPTranslation("info_popup_" .. roleString, { menukey = menukey, traitorlist = traitorlist, assassintarget = assassintarget })
+                text = GetPTranslation("info_popup_" .. roleString, { menukey = menukey, traitorlist = traitorlist, allylist = traitorlist, assassintarget = assassintarget })
             end
         else
             text = GetPTranslation("info_popup_" .. roleString.. "_alone", { menukey = menukey, assassintarget = assassintarget })

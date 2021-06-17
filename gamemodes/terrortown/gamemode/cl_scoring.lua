@@ -297,7 +297,8 @@ local wintitle = {
     [WIN_TRAITOR] = { txt = "hilite_win_traitors", c = ROLE_COLORS[ROLE_TRAITOR] },
     [WIN_JESTER] = { txt = "hilite_win_jester", c = ROLE_COLORS[ROLE_JESTER] },
     [WIN_CLOWN] = { txt = "hilite_win_clown", c = ROLE_COLORS[ROLE_JESTER] },
-    [WIN_KILLER] = { txt = "hilite_win_killer", c = ROLE_COLORS[ROLE_KILLER] }
+    [WIN_KILLER] = { txt = "hilite_win_killer", c = ROLE_COLORS[ROLE_KILLER] },
+    [WIN_MONSTER] = { txt = "hilite_win_monster", c = ROLE_COLORS[ROLE_ZOMBIE] }
 }
 
 function CLSCORE:BuildEventLogPanel(dpanel)
@@ -338,7 +339,13 @@ function CLSCORE:BuildScorePanel(dpanel)
     dlist:SetSortable(true)
     dlist:SetMultiSelect(false)
 
-    local colnames = { "", "col_player", "col_role", "col_kills1", "col_kills2", "col_kills3", "col_kills4", "col_points", "col_team", "col_total" }
+    local monsters_exist = not table.Empty(MONSTER_ROLES)
+    local colnames = { "", "col_player", "col_role", "col_kills1", "col_kills2", "col_kills3", "col_kills4" }
+    if monsters_exist then
+        table.insert(colnames, "col_kills5")
+    end
+    table.Add(colnames, { "col_points", "col_team", "col_total" })
+
     for _, name in pairs(colnames) do
         if name == "" then
             -- skull icon column
@@ -369,6 +376,7 @@ function CLSCORE:BuildScorePanel(dpanel)
             local was_innocent = INNOCENT_ROLES[s.role]
             local was_jester = JESTER_ROLES[s.role]
             local was_indep = INDEPENDENT_ROLES[s.role]
+            local was_monster = MONSTER_ROLES[s.role]
             local role_string = ROLE_STRINGS[s.role]
 
             local surv = ""
@@ -393,10 +401,17 @@ function CLSCORE:BuildScorePanel(dpanel)
                 points_team = bonus.jesters
             elseif was_indep then
                 points_team = bonus.indeps
+            elseif was_monster then
+                points_team = bonus.monsters
             end
             local points_total = points_own + points_team
 
-            local l = dlist:AddLine(surv, nicks[id], role_string, s.innos, s.traitors, s.jesters, s.indeps, points_own, points_team, points_total)
+            local l
+            if monsters_exist then
+                l = dlist:AddLine(surv, nicks[id], role_string, s.innos, s.traitors, s.jesters, s.indeps, points_own, points_team, points_total)
+            else
+                l = dlist:AddLine(surv, nicks[id], role_string, s.innos, s.traitors, s.jesters, s.indeps, s.monsters, points_own, points_team, points_total)
+            end
 
             -- center align
             for _, col in pairs(l.Columns) do
@@ -462,6 +477,20 @@ function CLSCORE:BuildSummaryPanel(dpanel)
             local wintype = e.win
             if wintype == WIN_TIMELIMIT then wintype = WIN_INNOCENT end
             title = wintitle[wintype]
+
+            -- If this was a monster win, check that both roles are part of the monsters team still
+            if wintype == WIN_MONSTER then
+                -- If Zombies are not monsters then Vampires win
+                if not MONSTER_ROLES[ROLE_ZOMBIE] then
+                    title.txt = "hilite_win_vampires"
+                -- And vice versa
+                elseif not MONSTER_ROLES[ROLE_VAMPIRE] then
+                    title.txt = "hilite_win_zombies"
+                -- Otherwise the monsters legit win
+                else
+                    title.txt = "hilite_win_monster"
+                end
+            end
             break
         end
     end

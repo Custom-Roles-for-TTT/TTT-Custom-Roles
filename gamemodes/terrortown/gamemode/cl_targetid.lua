@@ -81,7 +81,9 @@ function GM:PostDrawTranslucentRenderables()
 
             -- Only show the "KILL" target if the setting is enabled
             local showkillicon = (client:IsAssassin() and GetGlobalBool("ttt_assassin_show_target_icon") and client:GetNWString("AssassinTarget") == v:Nick()) or
-                                    (client:IsKiller() and GetGlobalBool("ttt_killer_show_target_icon"))
+                                    (client:IsKiller() and GetGlobalBool("ttt_killer_show_target_icon")) or
+                                    (client:IsZombie() and GetGlobalBool("ttt_zombie_show_target_icon")) or
+                                    (client:IsVampire() and GetGlobalBool("ttt_vampire_show_target_icon"))
 
             if showkillicon then -- If we are showing the "KILL" icon this should take priority over role icons
                 render.SetMaterial(indicator_mat_roleback_noz)
@@ -104,12 +106,14 @@ function GM:PostDrawTranslucentRenderables()
                     if client:IsTraitorTeam() then
                         if (v:GetTraitor() and not hideBeggar) or v:GetGlitch() then
                             DrawRoleIcon(ROLE_TRAITOR, true, pos, dir)
-                        elseif v:GetHypnotist() then
-                            DrawRoleIcon(ROLE_HYPNOTIST, true, pos, dir)
-                        elseif v:GetImpersonator() then
-                            DrawRoleIcon(ROLE_IMPERSONATOR, true, pos, dir)
-                        elseif v:GetAssassin() then
-                            DrawRoleIcon(ROLE_ASSASSIN, true, pos, dir)
+                        elseif v:IsTraitorTeam() then
+                            DrawRoleIcon(v:GetRole(), true, pos, dir)
+                        elseif showJester then
+                            DrawRoleIcon(ROLE_JESTER, false, pos, dir)
+                        end
+                    elseif client:IsMonsterTeam() then
+                        if v:IsMonsterTeam() then
+                            DrawRoleIcon(v:GetRole(), true, pos, dir)
                         elseif showJester then
                             DrawRoleIcon(ROLE_JESTER, false, pos, dir)
                         end
@@ -239,6 +243,9 @@ function GM:HUDDrawTargetID()
     local target_clown = false
     local target_impersonator = false
     local target_assassin = false
+    local target_zombie = false
+    local target_fellow_zombie = false
+    local target_vampire = false
 
     local target_revenger_lover = false
     local target_current_target = false
@@ -296,7 +303,16 @@ function GM:HUDDrawTargetID()
                 target_hypnotist = ent:IsHypnotist()
                 target_impersonator = ent:IsImpersonator()
                 target_assassin = ent:IsAssassin()
+                target_zombie = ent:IsZombie() and ent:IsTraitorTeam()
+                target_vampire = ent:IsVampire() and ent:IsTraitorTeam()
                 target_jester = showJester
+            elseif client:IsMonsterTeam() then
+                if client:IsZombie() then
+                    target_fellow_zombie = ent:IsZombie()
+                else
+                    target_zombie = ent:IsZombie() and ent:IsMonsterTeam()
+                end
+                target_vampire = ent:IsVampire() and ent:IsMonsterTeam()
             elseif client:IsKiller() then
                 target_jester = showJester
             end
@@ -336,7 +352,7 @@ function GM:HUDDrawTargetID()
 
     local w, h = 0, 0 -- text width/height, reused several times
 
-    if target_traitor or target_detective or target_jester or target_hypnotist or target_clown then
+    if target_traitor or target_detective or target_jester or target_hypnotist or target_clown or target_zombie or target_fellow_zombie or target_vampire then
         surface.SetTexture(ring_tex)
 
         if target_traitor then
@@ -345,6 +361,8 @@ function GM:HUDDrawTargetID()
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_DETECTIVE])
         elseif target_hypnotist or target_impersonator or target_assassin then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_HYPNOTIST])
+        elseif target_vampire or target_zombie or target_fellow_zombie then
+            surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_ZOMBIE])
         elseif target_jester then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_JESTER])
         elseif target_clown then
@@ -465,6 +483,15 @@ function GM:HUDDrawTargetID()
     elseif target_assassin then
         text = L.target_assassin
         clr = ROLE_COLORS_RADAR[ROLE_ASSASSIN]
+    elseif target_zombie then
+        text = L.target_zombie
+        clr = ROLE_COLORS_RADAR[ROLE_ZOMBIE]
+	elseif target_fellow_zombie then
+		text = L.target_fellow_zombie
+        clr = ROLE_COLORS_RADAR[ROLE_ZOMBIE]
+    elseif target_vampire then
+        text = L.target_vampire
+        clr = ROLE_COLORS_RADAR[ROLE_VAMPIRE]
     elseif ent.sb_tag and ent.sb_tag.txt ~= nil then
         text = L[ent.sb_tag.txt]
         clr = ent.sb_tag.color

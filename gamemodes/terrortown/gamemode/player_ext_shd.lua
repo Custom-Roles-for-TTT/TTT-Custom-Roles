@@ -31,7 +31,12 @@ function plymeta:GetBodysnatcher() return self:GetRole() == ROLE_BODYSNATCHER en
 function plymeta:GetVeteran() return self:GetRole() == ROLE_VETERAN end
 function plymeta:GetAssassin() return self:GetRole() == ROLE_ASSASSIN end
 function plymeta:GetKiller() return self:GetRole() == ROLE_KILLER end
+function plymeta:GetZombie() return self:GetRole() == ROLE_ZOMBIE end
+function plymeta:GetVampire() return self:GetRole() == ROLE_VAMPIRE end
 
+function plymeta:GetZombiePrime() return self:GetZombie() and self:GetNWBool("zombie_prime", false) end
+function plymeta:GetVampirePrime() return self:GetVampire() and self:GetNWBool("vampire_prime", false) end
+function plymeta:GetVampirePreviousRole() return self:GetNWInt("vampire_previous_role", ROLE_NONE) end
 function plymeta:GetDetectiveLike() return self:GetDetective() or ((self:GetDeputy() or self:GetImpersonator()) and self:GetNWBool("HasPromotion", false)) end
 
 plymeta.IsTraitor = plymeta.GetTraitor
@@ -54,8 +59,12 @@ plymeta.IsBodysnatcher = plymeta.GetBodysnatcher
 plymeta.IsVeteran = plymeta.GetVeteran
 plymeta.IsAssassin = plymeta.GetAssassin
 plymeta.IsKiller = plymeta.GetKiller
+plymeta.IsZombie = plymeta.GetZombie
+plymeta.IsVampire = plymeta.GetVampire
 
 plymeta.IsDetectiveLike = plymeta.GetDetectiveLike
+plymeta.IsZombiePrime = plymeta.GetZombiePrime
+plymeta.IsVampirePrime = plymeta.GetVampirePrime
 
 function plymeta:IsSpecial() return self:GetRole() ~= ROLE_INNOCENT end
 function plymeta:IsCustom()
@@ -108,6 +117,8 @@ function plymeta:IsActiveBodysnatcher() return self:IsActiveRole(ROLE_BODYSNATCH
 function plymeta:IsActiveVeteran() return self:IsActiveRole(ROLE_VETERAN) end
 function plymeta:IsActiveAssassin() return self:IsActiveRole(ROLE_ASSASSIN) end
 function plymeta:IsActiveKiller() return self:IsActiveRole(ROLE_KILLER) end
+function plymeta:IsActiveZombie() return self:IsActiveRole(ROLE_ZOMBIE) end
+function plymeta:IsActiveVampire() return self:IsActiveRole(ROLE_VAMPIRE) end
 
 function plymeta:IsActiveSpecial() return self:IsSpecial() and self:IsActive() end
 function plymeta:IsActiveCustom() return self:IsCustom() and self:IsActive() end
@@ -120,10 +131,12 @@ function plymeta:IsTraitorTeam() return TRAITOR_ROLES[self:GetRole()] or false e
 function plymeta:IsInnocentTeam() return INNOCENT_ROLES[self:GetRole()] or false end
 function plymeta:IsJesterTeam() return JESTER_ROLES[self:GetRole()] or false end
 function plymeta:IsIndependentTeam() return INDEPENDENT_ROLES[self:GetRole()] or false end
+function plymeta:IsMonsterTeam() return MONSTER_ROLES[self:GetRole()] or false end
 function plymeta:IsActiveTraitorTeam() return self:IsTraitorTeam() and self:IsActive() end
 function plymeta:IsActiveInnocentTeam() return self:IsInnocentTeam() and self:IsActive() end
 function plymeta:IsActiveJesterTeam() return self:IsJesterTeam() and self:IsActive() end
 function plymeta:IsActiveIndependentTeam() return self:IsIndependentTeam() and self:IsActive() end
+function plymeta:IsActiveMonsterTeam() return self:IsMonsterTeam() and self:IsActive() end
 
 local GetRTranslation = CLIENT and LANG.GetRawTranslation or util.passthrough
 

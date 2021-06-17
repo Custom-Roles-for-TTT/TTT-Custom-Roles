@@ -53,8 +53,8 @@ function SCORE:HandleKill(victim, attacker, dmginfo)
 
     local e = {
         id = EVENT_KILL,
-        att = { ni = "", sid = -1, sid64 = -1, tr = false, inno = false, jes = false, ind = false },
-        vic = { ni = victim:Nick(), sid = victim:SteamID(), sid64 = victim:SteamID64(), tr = false, inno = false, jes = false, ind = false },
+        att = { ni = "", sid = -1, sid64 = -1, role = -1, tr = false, inno = false, jes = false, ind = false, mon = false },
+        vic = { ni = victim:Nick(), sid = victim:SteamID(), sid64 = victim:SteamID64(), role = -1, tr = false, inno = false, jes = false, ind = false, mon = false },
         dmg = CopyDmg(dmginfo),
         tk = false
     };
@@ -66,6 +66,7 @@ function SCORE:HandleKill(victim, attacker, dmginfo)
     e.vic.tr = victim:IsTraitorTeam()
     e.vic.jes = victim:IsJesterTeam()
     e.vic.ind = victim:IsIndependentTeam()
+    e.vic.mon = victim:IsMonsterTeam()
 
     if IsValid(attacker) and attacker:IsPlayer() then
         e.att.ni = attacker:Nick()
@@ -76,7 +77,8 @@ function SCORE:HandleKill(victim, attacker, dmginfo)
         e.att.inno = attacker:IsInnocentTeam()
         e.att.jes = attacker:IsJesterTeam()
         e.att.ind = attacker:IsIndependentTeam()
-        e.tk = (e.att.tr and e.vic.tr) or (e.att.inno and e.vic.inno) or e.vic.jes
+        e.att.mon = victim:IsMonsterTeam()
+        e.tk = (e.att.tr and e.vic.tr) or (e.att.inno and e.vic.inno) or (e.att.mon and e.vic.mon) or e.vic.jes
 
         -- If a traitor gets himself killed by another traitor's C4, it's his own
         -- damn fault for ignoring the indicator.
@@ -95,7 +97,7 @@ function SCORE:HandleSpawn(ply)
     if ply:Team() == TEAM_TERROR then
         self:AddEvent({ id = EVENT_SPAWN, ni = ply:Nick(), sid = ply:SteamID(), sid64 = ply:SteamID64() })
     end
-end 
+end
 
 function SCORE:HandleSelection()
     local roles = {}
@@ -176,6 +178,8 @@ function SCORE:ApplyEventLogScores(wintype)
                 points_team = bonus.jesters
             elseif ply:IsIndependentTeam() then
                 points_team = bonus.indeps
+            elseif ply:IsMonsterTeam() then
+                points_team = bonus.monsters
             end
 
             ply:AddFrags(points_team)

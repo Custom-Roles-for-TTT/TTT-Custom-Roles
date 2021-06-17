@@ -15,6 +15,7 @@ function ScoreInit()
         traitors = 0,
         jesters = 0,
         indeps = 0,
+        monsters = 0,
         role = -1,
         bonus = 0 -- non-kill points to add
     };
@@ -32,11 +33,11 @@ function ScoreEvent(e, scores)
 
             -- normally we have the ply:GetTraitor stuff to base this on, but that
             -- won't do for disconnected players
-            scores[vid].role = e.vic.tr and ROLE_TRAITOR or ROLE_INNOCENT
+            scores[vid].role = e.vic.role or (e.vic.tr and ROLE_TRAITOR or ROLE_INNOCENT)
         end
         if scores[aid] == nil then
             scores[aid] = ScoreInit()
-            scores[aid].role = e.att.tr and ROLE_TRAITOR or ROLE_INNOCENT
+            scores[aid].role = e.att.role or (e.att.tr and ROLE_TRAITOR or ROLE_INNOCENT)
         end
 
         scores[vid].deaths = scores[vid].deaths + 1
@@ -50,6 +51,8 @@ function ScoreEvent(e, scores)
                 scores[aid].jesters = scores[aid].jesters + 1
             elseif e.vic.ind then
                 scores[aid].indeps = scores[aid].indeps + 1
+            elseif e.vic.mon then
+                scores[aid].monsters = scores[aid].monsters + 1
             else
                 scores[aid].innos = scores[aid].innos + 1
             end
@@ -81,8 +84,8 @@ function ScoreEventLog(events, scores, roles)
 end
 
 function ScoreTeamBonus(scores, wintype)
-    local alive = { traitors = 0, innos = 0, jesters = 0, indeps = 0 }
-    local dead = { traitors = 0, innos = 0, jesters = 0, indeps = 0 }
+    local alive = { traitors = 0, innos = 0, jesters = 0, indeps = 0, monsters = 0 }
+    local dead = { traitors = 0, innos = 0, jesters = 0, indeps = 0, monsters = 0 }
 
     for _, sc in pairs(scores) do
         local state = (sc.deaths == 0) and alive or dead
@@ -92,6 +95,8 @@ function ScoreTeamBonus(scores, wintype)
             state.jesters = state.jesters + 1
         elseif INDEPENDENT_ROLES[sc.role] then
             state.indeps = state.indeps + 1
+        elseif MONSTER_ROLES[sc.role] then
+            state.monsters = state.monsters + 1
         else
             state.innos = state.innos + 1
         end
@@ -103,6 +108,8 @@ function ScoreTeamBonus(scores, wintype)
     bonus.innos = alive.innos * 1
     -- Slightly higher bonus for killing traitors than for killing innocents
     bonus.indeps = (dead.traitors * 1) + math.ceil(dead.innos * 0.5)
+    -- Slightly higher bonus for killing traitors than for killing innocents
+    bonus.monsters = (dead.traitors * 1) + math.ceil(dead.innos * 0.5)
 
     -- running down the clock must never be beneficial for traitors
     if wintype == WIN_TIMELIMIT then
@@ -121,6 +128,7 @@ function KillsToPoints(score, was_traitor, was_innocent)
             + (score.jesters * -10)
             + (score.innos * (was_innocent and -8 or 1))
             + score.indeps
+            + score.monsters
             + (score.deaths == 0 and 1 or 0)) --effectively 2 due to team bonus
     --for your own survival
 end
