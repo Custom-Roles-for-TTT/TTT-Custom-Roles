@@ -296,7 +296,8 @@ local wintitle = {
     [WIN_INNOCENT] = { txt = "hilite_win_innocent", c = ROLE_COLORS[ROLE_INNOCENT] },
     [WIN_TRAITOR] = { txt = "hilite_win_traitors", c = ROLE_COLORS[ROLE_TRAITOR] },
     [WIN_JESTER] = { txt = "hilite_win_jester", c = ROLE_COLORS[ROLE_JESTER] },
-    [WIN_CLOWN] = { txt = "hilite_win_clown", c = ROLE_COLORS[ROLE_JESTER] }
+    [WIN_CLOWN] = { txt = "hilite_win_clown", c = ROLE_COLORS[ROLE_JESTER] },
+    [WIN_KILLER] = { txt = "hilite_win_killer", c = ROLE_COLORS[ROLE_KILLER] }
 }
 
 function CLSCORE:BuildEventLogPanel(dpanel)

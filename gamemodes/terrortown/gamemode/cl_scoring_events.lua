@@ -75,6 +75,8 @@ Event(EVENT_FINISH,
                      return T("ev_win_clown")
                   elseif e.win == WIN_OLDMAN then
                      return T("ev_win_oldman")
+                  elseif e.win == WIN_KILLER then
+                     return T("ev_win_killer")
                   elseif e.win == WIN_TIMELIMIT then
                      return T("ev_win_time")
                   end
@@ -90,6 +92,8 @@ Event(EVENT_FINISH,
                      return star_icon, "Clown won"
                   elseif e.win == WIN_OLDMAN then
                      return star_icon, "Old Man also won"
+                  elseif e.win == WIN_KILLER then
+                     return star_icon, "Killer won"
                   else
                      return star_icon, "Timelimit"
                   end
@@ -303,11 +307,11 @@ Event(EVENT_KILL,
             return wrong_icon, "Suicide"
         end
 
-        local attacker = (e.att.tr and "Traitor") or (e.att.jes and "Jester") or "Innocent"
-        local victim = (e.vic.tr and "Traitor") or (e.vic.jes and "Jester") or "Innocent"
+        local attacker = (e.att.tr and "Traitor") or (e.att.jes and "Jester") or (e.att.ind and "Independent") or "Innocent"
+        local victim = (e.vic.tr and "Traitor") or (e.vic.jes and "Jester") or (e.vic.ind and "Independent") or "Innocent"
         if e.tk then
             return wrong_icon, "Teamkill"
-        elseif e.att.tr then
+        elseif e.att.tr or e.att.ind then
             return right_icon, attacker.." killed "..victim
         else
             return shield_icon, attacker.." killed "..victim

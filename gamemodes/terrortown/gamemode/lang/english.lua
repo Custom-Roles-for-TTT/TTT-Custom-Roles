@@ -22,6 +22,7 @@ L.mercenary = "Mercenary"
 L.bodysnatcher = "Bodysnatcher"
 L.veteran = "Veteran"
 L.assassin = "Assassin"
+L.killer = "Killer"
 
 L.hidden = "Hidden"
 L.last_words = "Last Words"
@@ -45,6 +46,7 @@ L.win_traitor = "The Traitors have won!"
 L.win_innocent = "The Traitors have been defeated!"
 L.win_jester = "The Jester has fooled you all!"
 L.win_clown = "The Clown has murdered you all!"
+L.win_killer = "The Killer has murdered you all!"
 L.win_showreport = "Let's look at the round report for {num} seconds."
 
 L.limit_round = "Round limit reached. {mapname} will load soon."
@@ -54,6 +56,7 @@ L.limit_left = "{num} round(s) or {time} minutes remaining before the map change
 --- Credit awards
 L.credit_det_all = "Detectives, you have been awarded {num} equipment credit(s) for your performance."
 L.credit_tr_all = "Traitors, you have been awarded {num} equipment credit(s) for your performance."
+L.credit_kil = "Killer, you have been awarded {num} equipment credit(s) for your performance."
 
 L.credit_kill = "You have received {num} credit(s) for killing a {role}."
 
@@ -84,6 +87,7 @@ L.body_found_mer = "They were a Mercenary."
 L.body_found_bod = "They were a Bodysnatcher."
 L.body_found_vet = "They were a Veteran."
 L.body_found_asn = "They were an Assassin."
+L.body_found_kil = "They were a Killer."
 
 L.body_confirm = "{finder} confirmed the death of {victim}."
 
@@ -227,6 +231,7 @@ L.search_role_mer = "This person was a Mercenary."
 L.search_role_bod = "This person was a Bodysnatcher."
 L.search_role_vet = "This person was a Veteran."
 L.search_role_asn = "This person was an Assassin."
+L.search_role_kil = "This person was a Killer."
 
 L.search_words = "Something tells you some of this person's last words were: '{lastwords}'"
 L.search_armor = "They were wearing nonstandard body armor."
@@ -521,6 +526,21 @@ Experimental SMG that disorients
 targets.
 
 Uses standard SMG ammo.]]
+
+-- Killer's Knife
+L.kil_knife_desc = [[
+Gravely wounds living targets quietly.
+Kills wounded targets instantly and
+silently.
+
+Can drop a smoke grenade using alternate fire.]]
+
+-- Killer's Crowbar
+L.kil_crowbar_name = "Throwable Crowbar"
+L.kil_crowbar_desc = [[
+Used to blend in with other players and do minor damage.
+
+Can be thrown using alternate fire.]]
 
 -- DNA scanner
 L.dna_name = "DNA scanner"
@@ -883,6 +903,10 @@ maybe even suffering from a penalty!
 
 Press {menukey} to receive your special equipment!]]
 
+L.info_popup_killer = [[You are a Killer! Try to kill everyone and be the last one standing!
+
+Press {menukey} to receive your special equipment!]]
+
 --- Various other text
 L.name_kick = "A player was automatically kicked for changing their name during a round."
 
@@ -1013,6 +1037,7 @@ L.hilite_win_innocent = "THE INNOCENT WIN"
 L.hilite_win_jester = "THE JESTER WINS"
 L.hilite_win_clown = "THE CLOWN WINS"
 L.hilite_win_old_man = "AND THE OLD MAN WINS"
+L.hilite_win_killer = "THE KILLER WINS"
 
 L.hilite_players1 = "{numplayers} players took part, {numtraitors} were traitors"
 L.hilite_players2 = "{numplayers} players took part, one of them the traitor"
@@ -1092,6 +1117,7 @@ L.ev_win_jester = "The tricky jester won the round!"
 L.ev_win_inno = "The lovable innocent terrorists won the round!"
 L.ev_win_clown = "The vicious clown won the round!"
 L.ev_win_oldman = "The Old Man has somehow survived and also won the round!"
+L.ev_win_killer = "The butchering killer won the round!"
 L.ev_win_time = "The traitors ran out of time and lost!"
 
 --- Awards/highlights
