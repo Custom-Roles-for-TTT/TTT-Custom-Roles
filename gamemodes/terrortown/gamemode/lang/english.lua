@@ -667,6 +667,7 @@ L.target_traitor = "FELLOW TRAITOR"
 L.target_detective = "DETECTIVE"
 L.target_jester = "JESTER"
 L.target_hypnotist = "HYPNOTIST"
+L.target_assassin = "ASSASSIN"
 L.target_clown = "KILLER CLOWN"
 L.target_impersonator = "IMPERSONATOR"
 
