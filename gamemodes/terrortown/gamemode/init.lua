@@ -1204,7 +1204,7 @@ end
 function GM:TTTCheckForWin()
     if ttt_dbgwin:GetBool() then return WIN_NONE end
 
-    if GAMEMODE.MapWin == WIN_TRAITOR or GAMEMODE.MapWin == WIN_INNOCENT then
+    if GAMEMODE.MapWin ~= WIN_NONE then
         local mw = GAMEMODE.MapWin
         GAMEMODE.MapWin = WIN_NONE
         return mw
