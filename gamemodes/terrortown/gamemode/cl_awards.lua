@@ -165,7 +165,7 @@ local function AllKills(events, scores, players)
         local id = tr_killers[1]
         local role = GetRole(players, id)
         -- Don't celebrate team killers
-        if TRAITOR_ROLES[role] then
+        if not TRAITOR_ROLES[role] then
             local killer = players[id].nick
             if not killer then return nil end
 
@@ -178,7 +178,7 @@ local function AllKills(events, scores, players)
         local id = in_killers[1]
         local role = GetRole(players, id)
         -- Don't celebrate team killers
-        if INNOCENT_ROLES[role] then
+        if not INNOCENT_ROLES[role] then
             local killer = players[id].nick
             if not killer then return nil end
 
