@@ -230,6 +230,7 @@ function GM:HUDDrawTargetID()
     local target_hypnotist = false
     local target_clown = false
     local target_impersonator = false
+    local target_assassin = false
 
     local target_revenger_lover = false
     local target_current_target = false
@@ -284,6 +285,7 @@ function GM:HUDDrawTargetID()
             target_traitor = (ent:IsTraitor() and not hideBeggar) or ent:IsGlitch()
             target_hypnotist = ent:IsHypnotist()
             target_impersonator = ent:IsImpersonator()
+            target_assassin = ent:IsAssassin()
             target_jester = (ent:IsJesterTeam() and not ent:GetNWBool("KillerClownActive", false)) or ((ent:GetTraitor() or ent:GetInnocent()) and hideBeggar)
         end
 
@@ -328,7 +330,7 @@ function GM:HUDDrawTargetID()
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_TRAITOR])
         elseif target_detective then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_DETECTIVE])
-        elseif target_hypnotist or target_impersonator then
+        elseif target_hypnotist or target_impersonator or target_assassin then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_HYPNOTIST])
         elseif target_jester then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_JESTER])
@@ -447,6 +449,9 @@ function GM:HUDDrawTargetID()
     elseif target_impersonator then
         text = L.target_impersonator
         clr = ROLE_COLORS_RADAR[ROLE_IMPERSONATOR]
+    elseif target_assassin then
+        text = L.target_assassin
+        clr = ROLE_COLORS_RADAR[ROLE_ASSASSIN]
     elseif ent.sb_tag and ent.sb_tag.txt ~= nil then
         text = L[ent.sb_tag.txt]
         clr = ent.sb_tag.color
