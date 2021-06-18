@@ -39,6 +39,21 @@ function plymeta:GetVampirePrime() return self:GetVampire() and self:GetNWBool("
 function plymeta:GetVampirePreviousRole() return self:GetNWInt("vampire_previous_role", ROLE_NONE) end
 function plymeta:GetDetectiveLike() return self:GetDetective() or ((self:GetDeputy() or self:GetImpersonator()) and self:GetNWBool("HasPromotion", false)) end
 
+function plymeta:GetZombieAlly()
+    local role = self:GetRole()
+    if MONSTER_ROLES[ROLE_ZOMBIE] then
+        return MONSTER_ROLES[role]
+    end
+    return TRAITOR_ROLES[role]
+end
+function plymeta:GetVampireAlly()
+    local role = self:GetRole()
+    if MONSTER_ROLES[ROLE_VAMPIRE] then
+        return MONSTER_ROLES[role]
+    end
+    return TRAITOR_ROLES[role]
+end
+
 plymeta.IsTraitor = plymeta.GetTraitor
 plymeta.IsInnocent = plymeta.GetInnocent
 plymeta.IsDetective = plymeta.GetDetective
@@ -65,6 +80,9 @@ plymeta.IsVampire = plymeta.GetVampire
 plymeta.IsDetectiveLike = plymeta.GetDetectiveLike
 plymeta.IsZombiePrime = plymeta.GetZombiePrime
 plymeta.IsVampirePrime = plymeta.GetVampirePrime
+
+plymeta.IsZombieAlly = plymeta.GetZombieAlly
+plymeta.IsVampireAlly = plymeta.GetVampireAlly
 
 function plymeta:IsSpecial() return self:GetRole() ~= ROLE_INNOCENT end
 function plymeta:IsCustom()

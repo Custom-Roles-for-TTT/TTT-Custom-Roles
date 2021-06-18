@@ -670,6 +670,54 @@ local function CheckCreditAward(victim, attacker)
         end
     end
 
+    -- VAMPIRE AWARD
+    if not TRAITOR_ROLES[ROLE_VAMPIRE] and attacker:IsActiveVampire() and (not (victim:IsMonsterTeam() or victim:IsJesterTeam())) and (not GAMEMODE.AwardedVampireCredits or GetConVar("ttt_credits_award_repeat"):GetBool()) then
+        local ply_alive = 0
+        local ply_dead = 0
+        local ply_total = 0
+
+        for _, ply in pairs(player.GetAll()) do
+            if not ply:IsVampireAlly() then
+                if ply:IsTerror() then
+                    ply_alive = ply_alive + 1
+                elseif ply:IsDeadTerror() then
+                    ply_dead = ply_dead + 1
+                end
+            end
+        end
+
+        -- we check this at the death of an innocent who is still technically
+        -- Alive(), so add one to dead count and sub one from living
+        ply_dead = ply_dead + 1
+        ply_alive = math.max(ply_alive - 1, 0)
+        ply_total = ply_alive + ply_dead
+
+        -- Only repeat-award if we have reached the pct again since last time
+        if GAMEMODE.AwardedVampireCredits then
+            ply_dead = ply_dead - GAMEMODE.AwardedVampireCreditsDead
+        end
+
+        local pct = ply_dead / ply_total
+        if pct >= GetConVarNumber("ttt_credits_award_pct") then
+            -- Traitors have killed sufficient people to get an award
+            local amt = GetConVarNumber("ttt_credits_award_size")
+
+            -- If size is 0, awards are off
+            if amt > 0 then
+                LANG.Msg(GetVampireFilter(true), "credit_vam", { num = amt })
+
+                for _, ply in pairs(player.GetAll()) do
+                    if ply:IsActiveVampire() then
+                        ply:AddCredits(amt)
+                    end
+                end
+            end
+
+            GAMEMODE.AwardedVampireCredits = true
+            GAMEMODE.AwardedVampireCreditsDead = ply_dead + GAMEMODE.AwardedVampireCreditsDead
+        end
+    end
+
     -- KILLER AWARD
     if IsValid(attacker) and attacker:IsActiveKiller() and (not (victim:IsKiller() or victim:IsJesterTeam())) and (not GAMEMODE.AwardedKillerCredits or GetConVar("ttt_credits_award_repeat"):GetBool()) then
         local ply_alive = 0
@@ -1335,6 +1383,28 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
                 local penalty = GetConVar("ttt_killer_damage_penalty"):GetFloat()
                 dmginfo:ScaleDamage(1 - penalty)
             end
+
+            -- Killers take less bullet damage
+            if dmginfo:IsBulletDamage() and ply:IsKiller() then
+                local reduction = GetConVar("ttt_killer_damage_reduction"):GetFloat()
+                dmginfo:ScaleDamage(1 - reduction)
+            end
+
+            -- Monsters take less bullet damage
+            if dmginfo:IsBulletDamage() and ply:IsZombie() then
+                local reduction = GetConVar("ttt_zombie_damage_reduction"):GetFloat()
+                dmginfo:ScaleDamage(1 - reduction)
+            end
+            if dmginfo:IsBulletDamage() and ply:IsVampire() then
+                local reduction = GetConVar("ttt_vampire_damage_reduction"):GetFloat()
+                dmginfo:ScaleDamage(1 - reduction)
+            end
+
+            -- Zombies do less damage when using non-claw weapons
+            if att:IsZombie() and att:GetActiveWeapon():GetClass() ~= "weapon_zom_claws" then
+                local penalty = GetConVar("ttt_zombie_damage_penalty"):GetFloat()
+                dmginfo:ScaleDamage(1 - penalty)
+            end
         -- Players cant deal damage to eachother before the round starts
         else
             dmginfo:ScaleDamage(0)
@@ -1461,6 +1531,7 @@ end
 function GM:EntityTakeDamage(ent, dmginfo)
     if not IsValid(ent) then return end
 
+    local att = dmginfo:GetAttacker()
     if GetRoundState() >= ROUND_ACTIVE and ent:IsPlayer() then
         -- Jesters don't take environmental damage
         if ent:IsJesterTeam() and not ent:GetNWBool("KillerClownActive", false) then
@@ -1471,14 +1542,14 @@ function GM:EntityTakeDamage(ent, dmginfo)
             end
         end
 
-        -- Killers take less bullet damage
-        if ent:IsKiller() and dmginfo:IsBulletDamage() then
-            local reduction = GetConVar("ttt_killer_damage_reduction"):GetFloat()
-            dmginfo:ScaleDamage(1 - reduction)
+        -- No zombie team killing
+        -- This can be funny, but it can also be used by frustrated players who didn't appreciate being zombified
+        if ent:IsPlayer() and ent:IsZombie() and att:IsPlayer() and att:IsZombieAlly() then
+            dmginfo:ScaleDamage(0)
+            dmginfo:SetDamage(0)
         end
     end
 
-    local att = dmginfo:GetAttacker()
     if not GAMEMODE:AllowPVP() then
         -- if player vs player damage, or if damage versus a prop, then zero
         if ent:IsExplosive() or (ent:IsPlayer() and IsValid(att) and att:IsPlayer()) then

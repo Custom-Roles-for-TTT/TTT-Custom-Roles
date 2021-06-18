@@ -142,6 +142,22 @@ net.Receive("TTT_PhantomHaunt", function(len)
     })
 end)
 
+net.Receive("TTT_Zombified", function(len)
+    local name = net.ReadString()
+    CLSCORE:AddEvent({
+        id = EVENT_ZOMBIFIED,
+        vic = name
+    })
+end)
+
+net.Receive("TTT_Vampified", function(len)
+    local name = net.ReadString()
+    CLSCORE:AddEvent({
+        id = EVENT_VAMPIFIED,
+        vic = name
+    })
+end)
+
 net.Receive("TTT_Score_Bodysnatch", function(len)
     local victim = net.ReadString()
     local attacker = net.ReadString()

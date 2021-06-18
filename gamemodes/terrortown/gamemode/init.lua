@@ -230,14 +230,14 @@ CreateConVar("ttt_killer_vision_enable", "1")
 -- Monster role properties
 CreateConVar("ttt_zombies_are_traitors", "0")
 CreateConVar("ttt_zombie_show_target_icon", "1")
-CreateConVar("ttt_zombie_damage_scale", "0.2")
-CreateConVar("ttt_zombie_damage_reduction", "0.8")
+CreateConVar("ttt_zombie_damage_penalty", "0.8")
+CreateConVar("ttt_zombie_damage_reduction", "0.2")
 CreateConVar("ttt_zombie_prime_only_weapons", "1")
 CreateConVar("ttt_zombie_vision_enable", "1")
 
 CreateConVar("ttt_vampires_are_traitors", "0")
 CreateConVar("ttt_vampire_show_target_icon", "1")
-CreateConVar("ttt_vampire_damage_reduction", "0.8")
+CreateConVar("ttt_vampire_damage_reduction", "0.2")
 CreateConVar("ttt_vampire_prime_death_mode", "0")
 CreateConVar("ttt_vampire_vision_enable", "1")
 
@@ -418,6 +418,8 @@ function GM:Initialize()
     GAMEMODE.AwardedCreditsDead = 0
     GAMEMODE.AwardedKillerCredits = false
     GAMEMODE.AwardedKillerCreditsDead = 0
+    GAMEMODE.AwardedVampireCredits = false
+    GAMEMODE.AwardedVampireCreditsDead = 0
 
     GAMEMODE.round_state = ROUND_WAIT
     GAMEMODE.FirstRound = true
@@ -658,17 +660,60 @@ function StartNameChangeChecks()
     end
 end
 
-function StartWinChecks()
-    hook.Add("PlayerDeath", "CheckJesterDeath", function(victim, infl, attacker)
-        if victim:IsJester() and attacker:IsPlayer() and (not attacker:IsJesterTeam()) and GetRoundState() == ROUND_ACTIVE then
-            -- Don't track that the jester was killed (for win reporting) if they were killed by a traitor
-            -- and the functionality that blocks Jester wins from Traitor deaths is enabled
-            if GetConVar("ttt_jester_win_by_traitors"):GetBool() or not attacker:IsTraitorTeam() then
-                jester_killed = true
+local function OnPlayerDeath(victim, infl, attacker)
+    if victim:IsJester() and attacker:IsPlayer() and (not attacker:IsJesterTeam()) and GetRoundState() == ROUND_ACTIVE then
+        -- Don't track that the jester was killed (for win reporting) if they were killed by a traitor
+        -- and the functionality that blocks Jester wins from Traitor deaths is enabled
+        if GetConVar("ttt_jester_win_by_traitors"):GetBool() or not attacker:IsTraitorTeam() then
+            jester_killed = true
+        end
+    else
+        local vamp_prime_death_mode = GetConVar("ttt_vampire_prime_death_mode"):GetFloat()
+        -- If the prime died and we're doing something when that happens
+        if victim:IsVampirePrime() and vamp_prime_death_mode > VAMPIRE_DEATH_NONE then
+            local living_vampire_primes = 0
+            local vampires = {}
+            -- Find all the living vampires anmd count the primes
+            for _, v in pairs(player.GetAll()) do
+                if v:Alive() and v:IsTerror() and v:IsVampire() then
+                    if v:IsVampirePrime() then
+                        living_vampire_primes = living_vampire_primes + 1
+                    end
+                    table.insert(vampires, v)
+                end
+            end
+
+            -- If there are no more living primes, do something with the non-primes
+            if living_vampire_primes == 0 and #vampires > 0 then
+                -- Kill them
+                if vamp_prime_death_mode == VAMPIRE_DEATH_KILL_CONVERED then
+                    for _, vnp in pairs(vampires) do
+                        vnp:Kill()
+                    end
+                -- Change them back to their previous roles
+                elseif vamp_prime_death_mode == VAMPIRE_DEATH_REVERT_CONVERTED then
+                    local converted = false
+                    for _, vnp in pairs(vampires) do
+                        local prev_role = vnp:GetVampirePreviousRole()
+                        if prev_role ~= ROLE_NONE then
+                            vnp:SetRoleAndBroadcast(prev_role)
+                            vnp:StripWeapon("weapon_vam_fangs")
+                            vnp:SelectWeapon("weapon_zm_improvised")
+                            converted = true
+                        end
+                    end
+
+                    -- Tell everyone if a role was updated
+                    if converted then
+                        SendFullStateUpdate()
+                    end
+                end
             end
         end
-    end)
+    end
+end
 
+function StartWinChecks()
     if not timer.Start("winchecker") then
         timer.Create("winchecker", 1, 0, WinChecker)
     end
@@ -816,6 +861,8 @@ function PrepareRound()
     GAMEMODE.AwardedCreditsDead = 0
     GAMEMODE.AwardedKillerCredits = false
     GAMEMODE.AwardedKillerCreditsDead = 0
+    GAMEMODE.AwardedVampireCredits = false
+    GAMEMODE.AwardedVampireCreditsDead = 0
 
     SCORE:Reset()
 
@@ -1183,6 +1230,9 @@ function BeginRound()
             end
         end
     end)
+
+    -- Start watching for specific deaths
+    hook.Add("PlayerDeath", "OnPlayerDeath", OnPlayerDeath)
 
     -- Start the win condition check timer
     StartWinChecks()
