@@ -570,6 +570,19 @@ function GetSprintMultiplier(ply, sprinting)
     return mult
 end
 
+function UpdateDynamicTeams()
+    local zombies_are_traitors = GetGlobalBool("ttt_zombies_are_traitors")
+    TRAITOR_ROLES[ROLE_ZOMBIE] = zombies_are_traitors
+    MONSTER_ROLES[ROLE_ZOMBIE] = not zombies_are_traitors
+
+    local vampires_are_traitors = GetGlobalBool("ttt_vampires_are_traitors")
+    TRAITOR_ROLES[ROLE_VAMPIRE] = vampires_are_traitors
+    MONSTER_ROLES[ROLE_VAMPIRE] = not vampires_are_traitors
+
+    -- Update role colors to make sure team changes have taken effect
+    UpdateRoleColours()
+end
+
 if SERVER then
     -- Centralize this so it can be handled on round start and on player death
     function AssignAssassinTarget(ply, start, delay)

@@ -521,7 +521,6 @@ function GM:SyncGlobals()
     SetGlobalBool("ttt_killer_show_target_icon", GetConVar("ttt_killer_show_target_icon"):GetBool())
     SetGlobalBool("ttt_killer_vision_enable", GetConVar("ttt_killer_vision_enable"):GetBool())
 
-    SetGlobalBool("ttt_monsters_are_traitors", GetConVar("ttt_monsters_are_traitors"):GetBool())
     SetGlobalBool("ttt_zombies_are_traitors", GetConVar("ttt_zombies_are_traitors"):GetBool())
     SetGlobalBool("ttt_zombie_show_target_icon", GetConVar("ttt_zombie_show_target_icon"):GetBool())
     SetGlobalBool("ttt_zombie_vision_enable", GetConVar("ttt_zombie_vision_enable"):GetBool())
@@ -535,6 +534,8 @@ function GM:SyncGlobals()
     SetGlobalInt("ttt_bem_sv_size", GetConVar("ttt_bem_sv_size"):GetBool())
 
     SetGlobalBool("sv_voiceenable", GetConVar("sv_voiceenable"):GetBool())
+
+    UpdateDynamicTeams()
 end
 
 function SendRoundState(state, ply)

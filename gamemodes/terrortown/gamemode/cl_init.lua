@@ -51,7 +51,7 @@ local zombie_vision = false
 local vampire_vision = false
 local vision_enabled = false
 
-local client = LocalPlayer()
+local client
 
 function GM:Initialize()
     MsgN("TTT Client initializing...")
@@ -76,7 +76,8 @@ function GM:InitPostEntity()
 
     -- make sure player class extensions are loaded up, and then do some
     -- initialization on them
-    if IsValid(LocalPlayer()) and LocalPlayer().GetTraitor then
+    client = LocalPlayer()
+    if IsValid(client) and client.GetTraitor then
         GAMEMODE:ClearClientState()
     end
 
@@ -172,6 +173,9 @@ GM.TTTEndRound = PlaySoundCue
 --- usermessages
 
 local function ReceiveRole()
+    -- Wait until now to update the teams so we know the globals have been synced
+    UpdateDynamicTeams()
+
     local role = net.ReadInt(8)
 
     -- after a mapswitch, server might have sent us this before we are even done
@@ -375,7 +379,7 @@ function GM:Tick()
             WSWITCH:Think()
             RADIO:StoreTarget()
             if traitor_vision or killer_vision or zombie_vision or vampire_vision then
-                HandleRoleHighlights(client)
+                HandleRoleHighlights()
             end
         end
 
@@ -876,7 +880,7 @@ local function DrawFootprints()
     cam.End3D()
 end
 
-local function AddFootstep(client, pos, ang, foot, col, fade_time)
+local function AddFootstep(ply, pos, ang, foot, col, fade_time)
     ang.p = 0
     ang.r = 0
     local fpos = pos
@@ -889,7 +893,7 @@ local function AddFootstep(client, pos, ang, foot, col, fade_time)
     local trace = {
         start = fpos,
         endpos = fpos + Vector(0, 0, -10),
-        filter = client
+        filter = ply
     }
     local tr = util.TraceLine(trace)
     if tr.Hit then
