@@ -325,6 +325,8 @@ util.AddNetworkString("TTT_TeleportMark")
 util.AddNetworkString("TTT_ClearRadarExtras")
 util.AddNetworkString("TTT_ClownActivate")
 util.AddNetworkString("TTT_DrawHitMarker")
+util.AddNetworkString("TTT_CreateBlood")
+util.AddNetworkString("TTT_OpenMixer")
 util.AddNetworkString("TTT_ClientDeathNotify")
 util.AddNetworkString("TTT_SprintSpeedSet")
 util.AddNetworkString("TTT_SprintGetConVars")
@@ -1764,14 +1766,22 @@ end
 concommand.Add("ttt_version", ShowVersion)
 
 -- Hit Markers
+-- Creator: Exho
+
+resource.AddFile("sound/hitmarkers/mlghit.wav")
 hook.Add("EntityTakeDamage", "HitmarkerDetector", function(ent, dmginfo)
     local att = dmginfo:GetAttacker()
+    local pos = dmginfo:GetDamagePosition()
 
     if (IsValid(att) and att:IsPlayer() and att ~= ent) then
-        if (ent:IsPlayer() or ent:IsNPC()) then
+        if (ent:IsPlayer() or ent:IsNPC()) then -- Only players and NPCs show hitmarkers
             net.Start("TTT_DrawHitMarker")
             net.WriteBool(ent:GetNWBool("LastHitCrit"))
             net.Send(att) -- Send the message to the attacker
+
+            net.Start("TTT_CreateBlood")
+            net.WriteVector(pos)
+            net.Broadcast()
         end
     end
 end)
@@ -1782,6 +1792,21 @@ end)
 
 hook.Add("ScaleNPCDamage", "HitmarkerPlayerCritDetector", function(npc, hitgroup, dmginfo)
     npc:SetNWBool("LastHitCrit", hitgroup == HITGROUP_HEAD)
+end)
+
+hook.Add("PlayerSay", "ColorMixerOpen", function(ply, text, public)
+    text = string.lower(text)
+    if (string.sub(text, 1, 12) == "!hmcritcolor") then
+        net.Start("TTT_OpenMixer")
+        net.WriteBool(true)
+        net.Send(ply)
+        return false
+    elseif (string.sub(text, 1, 8) == "!hmcolor") then
+        net.Start("TTT_OpenMixer")
+        net.WriteBool(false)
+        net.Send(ply)
+        return false
+    end
 end)
 
 -- Death messages
