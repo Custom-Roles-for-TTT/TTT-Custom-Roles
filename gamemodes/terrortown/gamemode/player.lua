@@ -1456,7 +1456,8 @@ local fallsounds = {
 };
 
 function GM:OnPlayerHitGround(ply, in_water, on_floater, speed)
-    if (ply:IsJesterTeam() and not ply:GetNWBool("KillerClownActive", false)) and GetRoundState() >= ROUND_ACTIVE then
+    if ((ply:IsJesterTeam() and not ply:GetNWBool("KillerClownActive", false)) or ply:IsZombie()) and GetRoundState() >= ROUND_ACTIVE then
+        -- Jester team and Zombie don't take fall damage
     else
         if in_water or speed < 450 or not IsValid(ply) then return end
 
