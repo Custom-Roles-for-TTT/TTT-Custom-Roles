@@ -1481,7 +1481,7 @@ function GM:TTTCheckForWin()
                 end
             end
             win_type = WIN_NONE
-        elseif killer_clown_active and not traitor_alive and not innocent_alive and not monster_alive and not killer_alive then
+        elseif killer_clown_active and not traitor_alive and not innocent_alive and not killer_alive and not monster_alive then
             win_type = WIN_CLOWN
         else
             win_type = WIN_NONE
