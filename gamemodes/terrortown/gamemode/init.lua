@@ -1539,7 +1539,7 @@ function SelectRoles()
         local min_karma = GetConVar("ttt_detective_karma_min"):GetInt()
         local options = {}
         for i, p in ipairs(choices) do
-            if not KARMA.IsEnabled() or p:GetBaseKarma() >= min_karma then
+            if (not KARMA.IsEnabled() or p:GetBaseKarma() >= min_karma) and not p:GetAvoidDetective() then
                 table.insert(options, {index = i, player = p})
             end
         end
