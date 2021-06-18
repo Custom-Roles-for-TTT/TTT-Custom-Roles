@@ -283,7 +283,7 @@ function ENT:IsDetectiveNear()
     local d = 0.0
     local diff = nil
     for _, ent in ipairs(player.GetAll()) do
-        if IsValid(ent) and ent:IsActiveDetective() then
+        if IsValid(ent) and ent:IsActiveDetectiveLike() then
             -- dot of the difference with itself is distance squared
             diff = center - ent:GetPos()
             d = diff:Dot(diff)
