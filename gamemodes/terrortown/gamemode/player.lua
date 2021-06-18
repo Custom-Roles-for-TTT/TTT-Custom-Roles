@@ -602,8 +602,10 @@ local function CheckCreditAward(victim, attacker)
     if GetRoundState() ~= ROUND_ACTIVE then return end
     if not IsValid(victim) then return end
 
+    local valid_attacker = IsValid(attacker) and attacker:IsPlayer()
+
     -- DETECTIVE AWARD
-    if IsValid(attacker) and attacker:IsPlayer() and (victim:IsTraitorTeam() or victim:IsKiller()) then
+    if valid_attacker and (victim:IsTraitorTeam() or victim:IsKiller()) then
         local amt = GetConVarNumber("ttt_det_credits_traitordead") or 1
         for _, ply in ipairs(player.GetAll()) do
             if ply:IsActiveDetective() or (ply:IsActiveDeputy() and ply:GetNWBool("HasPromotion", false)) then
@@ -665,7 +667,7 @@ local function CheckCreditAward(victim, attacker)
     end
 
     -- KILLER AWARD
-    if IsValid(attacker) and attacker:IsActiveKiller() and (not (victim:IsKiller() or victim:IsJesterTeam())) and (not GAMEMODE.AwardedKillerCredits or GetConVar("ttt_credits_award_repeat"):GetBool()) then
+    if valid_attacker and attacker:IsActiveKiller() and (not (victim:IsKiller() or victim:IsJesterTeam())) and (not GAMEMODE.AwardedKillerCredits or GetConVar("ttt_credits_award_repeat"):GetBool()) then
         local ply_alive = 0
         local ply_dead = 0
         local ply_total = 0
@@ -997,7 +999,7 @@ end
 function GM:PlayerDeath(victim, infl, attacker)
     local valid_kill = IsValid(attacker) and attacker:IsPlayer() and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     -- Handle phantom death
-    if victim:IsPhantom() and valid_kill then
+    if valid_kill and victim:IsPhantom() then
         attacker:SetNWBool("Haunted", true)
 
         if GetConVar("ttt_phantom_killer_haunt"):GetBool() then
@@ -1072,19 +1074,19 @@ function GM:PlayerDeath(victim, infl, attacker)
     end
 
     -- Handle jester death
-    if victim:IsJester() and valid_kill then
+    if valid_kill and victim:IsJester() then
         JesterKilledNotification(attacker, victim)
         victim:SetNWString("JesterKiller", attacker:Nick())
     end
 
     -- Handle killer smoke
-    if attacker:IsKiller() and valid_kill then
+    if valid_kill and attacker:IsKiller() then
         attacker:SetNWBool("KillerSmoke", false)
         ResetKillerKillCheckTimer()
     end
 
     -- Handle swapper death
-    if victim:IsSwapper() and valid_kill then
+    if valid_kill and victim:IsSwapper() then
         SwapperKilledNotification(attacker, victim)
         attacker:SetNWString("SwappedWith", victim:Nick())
         attacker:PrintMessage(HUD_PRINTCENTER, "You killed the swapper!")
