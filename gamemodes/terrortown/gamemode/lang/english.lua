@@ -385,6 +385,16 @@ being the person last seen by a victim.
 Toggle in the Disguise tab of this menu
 or press Numpad Enter.]]
 
+L.item_speed = "Speed Boost"
+L.item_speed_desc = [[
+Increases the speed boost given while
+holding claws from 35% to 50%.]]
+
+L.item_regen = "Regeneration"
+L.item_regen_desc = [[
+Passively regenerate health at a
+rate of 1.5 HP every second.]]
+
 -- C4
 L.c4_hint = "Press {usekey} to arm or disarm."
 L.c4_no_disarm = "You cannot disarm another Traitor's C4 unless they are dead."

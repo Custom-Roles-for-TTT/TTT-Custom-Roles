@@ -239,20 +239,20 @@ EquipmentItems = {
           desc = "item_armor_desc"
         },
 
-        -- radar
-        { id = EQUIP_RADAR,
-          type = "item_active",
-          material = mat_dir .. "icon_radar",
-          name = "item_radar",
-          desc = "item_radar_desc"
+        -- zombie speed
+        { id = EQUIP_SPEED,
+          type = "item_passive",
+          material = mat_dir .. "icon_speed",
+          name = "item_speed",
+          desc = "item_speed_desc"
         },
 
-        -- disguiser
-        { id = EQUIP_DISGUISE,
-          type = "item_active",
-          material = mat_dir .. "icon_disguise",
-          name = "item_disg",
-          desc = "item_disg_desc"
+        -- passive regen
+        { id = EQUIP_REGEN,
+          type = "item_passive",
+          material = mat_dir .. "icon_regen",
+          name = "item_regen",
+          desc = "item_regen_desc"
         }
     };
 
