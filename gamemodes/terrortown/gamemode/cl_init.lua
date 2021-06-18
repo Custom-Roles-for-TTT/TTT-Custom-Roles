@@ -47,7 +47,11 @@ include("cl_voice.lua")
 
 local traitor_vision = false
 local killer_vision = false
+local zombie_vision = false
+local vampire_vision = false
 local vision_enabled = false
+
+local client = LocalPlayer()
 
 function GM:Initialize()
     MsgN("TTT Client initializing...")
@@ -168,18 +172,19 @@ GM.TTTEndRound = PlaySoundCue
 --- usermessages
 
 local function ReceiveRole()
-    local client = LocalPlayer()
     local role = net.ReadInt(8)
 
     -- after a mapswitch, server might have sent us this before we are even done
     -- loading our code
-    if not client.SetRole then return end
+    if not IsValid(client) or not client.SetRole then return end
 
     client:SetRole(role)
 
     -- Update the local state
     traitor_vision = GetGlobalBool("ttt_traitor_vision_enable")
     killer_vision = GetGlobalBool("ttt_killer_vision_enable")
+    zombie_vision = GetGlobalBool("ttt_zombie_vision_enable")
+    vampire_vision = GetGlobalBool("ttt_vampire_vision_enable")
 
     -- Disable highlights on role change
     if vision_enabled then
@@ -230,8 +235,7 @@ net.Receive("TTT_RoundState", ReceiveRoundState)
 function GM:ClearClientState()
     GAMEMODE:HUDClear()
 
-    local client = LocalPlayer()
-    if not client.SetRole then return end -- code not loaded yet
+    if not IsValid(client) or not client.SetRole then return end -- code not loaded yet
 
     client:SetRole(ROLE_INNOCENT)
 
@@ -339,7 +343,6 @@ function GM:Think()
             if not v.SmokeEmitter then v.SmokeEmitter = ParticleEmitter(v:GetPos()) end
             if not v.SmokeNextPart then v.SmokeNextPart = CurTime() end
             local pos = v:GetPos() + Vector(0, 0, 30)
-            local client = LocalPlayer()
             if v.SmokeNextPart < CurTime() then
                 if client:GetPos():Distance(pos) > 1000 then return end
                 v.SmokeEmitter:SetPos(pos)
@@ -367,12 +370,11 @@ function GM:Think()
 end
 
 function GM:Tick()
-    local client = LocalPlayer()
     if IsValid(client) then
         if client:Alive() and client:Team() ~= TEAM_SPEC then
             WSWITCH:Think()
             RADIO:StoreTarget()
-            if traitor_vision or killer_vision then
+            if traitor_vision or killer_vision or zombie_vision or vampire_vision then
                 HandleRoleHighlights(client)
             end
         end
@@ -384,7 +386,6 @@ end
 -- Simple client-based idle checking
 local idle = { ang = nil, pos = nil, mx = 0, my = 0, t = 0 }
 function CheckIdle()
-    local client = LocalPlayer()
     if not IsValid(client) then return end
 
     if not idle.ang or not idle.pos then
@@ -568,7 +569,6 @@ local sprinting = false
 local crosshairSize = 1
 local sprintTimer = CurTime()
 local recoveryTimer = CurTime()
-local ply = LocalPlayer()
 
 -- Receive ConVars (SERVER)
 net.Receive("TTT_SprintGetConVars", function()
@@ -588,14 +588,14 @@ local function SpeedChange(bool)
     if bool then
         local mul = math.min(math.max(speedMultiplier, 0.1), 2)
         net.WriteFloat(mul)
-        ply.mult = 1 + mul
+        client.mult = 1 + mul
 
         local tmp = GetConVar("ttt_crosshair_size")
         crosshairSize = tmp and tmp:GetString() or 1
         RunConsoleCommand("ttt_crosshair_size", "2")
     else
         net.WriteFloat(0)
-        ply.mult = nil
+        client.mult = nil
 
         RunConsoleCommand("ttt_crosshair_size", crosshairSize)
     end
@@ -628,7 +628,6 @@ hook.Add("TTTPrepareRound", "TTTSprintPrepareRound", function()
 
     -- listen for activation
     hook.Add("Think", "TTTSprintThink", function()
-        local client = LocalPlayer()
         local forward_key = hook.Call("TTTSprintKey", GAMEMODE, client) or IN_FORWARD
         if client:KeyDown(forward_key) and client:KeyDown(IN_SPEED) then
             -- forward + selected key
@@ -671,7 +670,7 @@ end)
 
 -- Set Sprint Speed
 hook.Add("TTTPlayerSpeedModifier", "TTTSprintPlayerSpeed", function(sply, _, _)
-    if sply ~= ply then return end
+    if sply ~= client then return end
     return GetSprintMultiplier(sply, sprinting)
 end)
 
@@ -762,13 +761,65 @@ local function EnableTraitorHighlights()
         OnPlayerHighlightEnabled(allies, jesters, true, true)
     end)
 end
+local function EnableZombieHighlights()
+    hook.Add("PreDrawHalos", "AddPlayerHighlights", function()
+        local hasClaws = client.GetActiveWeapon and IsValid(client:GetActiveWeapon()) and client:GetActiveWeapon():GetClass() == "weapon_zom_claws"
+        local hideEnemies = not zombie_vision or not hasClaws
+        local allies = {}
+        local traitorAllies = TRAITOR_ROLES[ROLE_ZOMBIE]
+        -- If zombies are traitors and traitor vision or zombie vision is enabled then add all the traitor roles as allies
+        if (traitor_vision or zombie_vision) and traitorAllies then
+            allies = table.GetKeys(TRAITOR_ROLES)
+        -- If zombie vision is enabled, add the allied monster roles
+        elseif zombie_vision then
+            allies = {ROLE_ZOMBIE}
+            if MONSTER_ROLES[ROLE_VAMPIRE] then
+                table.insert(allies, ROLE_VAMPIRE)
+            end
+        end
 
-function HandleRoleHighlights(client)
+        local jesters = table.GetKeys(JESTER_ROLES)
+        OnPlayerHighlightEnabled(allies, jesters, hideEnemies, traitorAllies)
+    end)
+end
+local function EnableVampireHighlights()
+    hook.Add("PreDrawHalos", "AddPlayerHighlights", function()
+        local hasFangs = client.GetActiveWeapon and IsValid(client:GetActiveWeapon()) and client:GetActiveWeapon():GetClass() == "weapon_vam_fangs"
+        local hideEnemies = not vampire_vision or not hasFangs
+        local allies = {}
+        local traitorAllies = TRAITOR_ROLES[ROLE_VAMPIRE]
+        -- If vampires are traitors and traitor vision or vampire vision is enabled then add all the traitor roles as allies
+        if (traitor_vision or vampire_vision) and traitorAllies then
+            allies = table.GetKeys(TRAITOR_ROLES)
+        -- If vampire vision is enabled, add the allied monster roles
+        elseif vampire_vision then
+            allies = {ROLE_VAMPIRE}
+            if MONSTER_ROLES[ROLE_ZOMBIE] then
+                table.insert(allies, ROLE_ZOMBIE)
+            end
+        end
+
+        local jesters = table.GetKeys(JESTER_ROLES)
+        OnPlayerHighlightEnabled(allies, jesters, hideEnemies, traitorAllies)
+    end)
+end
+
+function HandleRoleHighlights()
     if not IsValid(client) then return end
 
     if client:IsKiller() and killer_vision then
         if not vision_enabled then
             EnableKillerHighlights()
+            vision_enabled = true
+        end
+    elseif client:IsZombie() and (zombie_vision or (traitor_vision and TRAITOR_ROLES[ROLE_ZOMBIE])) then
+        if not vision_enabled then
+            EnableZombieHighlights()
+            vision_enabled = true
+        end
+    elseif client:IsVampire() and (vampire_vision or (traitor_vision and TRAITOR_ROLES[ROLE_VAMPIRE])) then
+        if not vision_enabled then
+            EnableVampireHighlights()
             vision_enabled = true
         end
     elseif client:IsTraitorTeam() and traitor_vision then
@@ -798,7 +849,6 @@ end)
 local footSteps = {}
 local footMat = Material("thieves/footprint")
 local function DrawFootprints()
-    local client = LocalPlayer()
     if not IsValid(client) then return end
 
     cam.Start3D(client:EyePos(), client:EyeAngles())
@@ -856,14 +906,14 @@ local function AddFootstep(client, pos, ang, foot, col, fade_time)
 end
 
 net.Receive("TTT_PlayerFootstep", function()
-    local client = net.ReadEntity()
+    local ply = net.ReadEntity()
     local pos = net.ReadVector()
     local ang = net.ReadAngle()
     local foot = net.ReadBit()
     local color = net.ReadTable()
     local fade_time = net.ReadUInt(8)
 
-    AddFootstep(client, pos, ang, foot, color, fade_time)
+    AddFootstep(ply, pos, ang, foot, color, fade_time)
 end)
 
 net.Receive("TTT_ClearPlayerFootsteps", function()
