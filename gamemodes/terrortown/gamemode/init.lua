@@ -1469,7 +1469,7 @@ function GM:TTTCheckForWin()
 
     -- Clown logic
     if clown_alive then
-        if not killer_clown_active and (win_type == WIN_INNOCENT or win_type == WIN_TRAITOR) then
+        if not killer_clown_active and (win_type == WIN_INNOCENT or win_type == WIN_TRAITOR or win_type == WIN_KILLER or win_type == WIN_MONSTER) then
             for _, v in ipairs(player.GetAll()) do
                 if v:IsClown() then
                     v:SetNWBool("KillerClownActive", true)
@@ -1481,7 +1481,7 @@ function GM:TTTCheckForWin()
                 end
             end
             win_type = WIN_NONE
-        elseif killer_clown_active and not traitor_alive and not innocent_alive then
+        elseif killer_clown_active and not traitor_alive and not innocent_alive and not monster_alive and not killer_alive then
             win_type = WIN_CLOWN
         else
             win_type = WIN_NONE
