@@ -1053,7 +1053,7 @@ end
 function GM:PlayerDeath(victim, infl, attacker)
     local valid_kill = IsValid(attacker) and attacker:IsPlayer() and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     -- Handle phantom death
-    if valid_kill and victim:IsPhantom() then
+    if valid_kill and victim:IsPhantom() and not victim:GetNWBool("IsZombifying", false) then
         attacker:SetNWBool("Haunted", true)
 
         if GetConVar("ttt_phantom_killer_haunt"):GetBool() then
@@ -1227,7 +1227,7 @@ function GM:PlayerDeath(victim, infl, attacker)
     victim:Freeze(false)
 
     -- Haunt the (non-Swapper) attacker if that functionality is enabled
-    if valid_kill and victim:IsPhantom() and not attacker:IsSwapper() and GetConVar("ttt_phantom_killer_haunt"):GetBool() then
+    if valid_kill and victim:IsPhantom() and not attacker:IsSwapper() and attacker:GetNWBool("Haunted", true) and GetConVar("ttt_phantom_killer_haunt"):GetBool() then
         timer.Create(victim:Nick() .. "HauntingSpectate", 1, 1, function()
             victim:Spectate(OBS_MODE_CHASE)
             victim:SpectateEntity(attacker)

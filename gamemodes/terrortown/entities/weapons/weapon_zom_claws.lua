@@ -134,7 +134,7 @@ function SWEP:PrimaryAttack()
                     self:GetOwner():AddCredits(1)
                     LANG.Msg(self:GetOwner(), "credit_zom", { num = 1 })
                     hitEnt:PrintMessage(HUD_PRINTCENTER, "You will respawn as a zombie in 3 seconds.")
-                    hitEnt:SetNWBool("IsZombifying", 1)
+                    hitEnt:SetNWBool("IsZombifying", true)
 
                     net.Start("TTT_Zombified")
                     net.WriteString(hitEnt:Nick())
@@ -157,7 +157,7 @@ function SWEP:PrimaryAttack()
                                 body:Remove()
                             end
                         end
-                        hitEnt:SetNWBool("IsZombifying", 0)
+                        hitEnt:SetNWBool("IsZombifying", false)
                         SendFullStateUpdate()
                     end)
                 end
