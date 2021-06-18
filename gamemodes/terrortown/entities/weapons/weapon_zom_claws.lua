@@ -211,18 +211,18 @@ function SWEP:Reload()
 end
 
 function SWEP:CSShootBullet(dmg, recoil, numbul, cone)
-    numbul     = numbul     or 1
-    cone     = cone         or 0.01
+    numbul = numbul or 1
+    cone = cone or 0.01
 
     local bullet = {}
-    bullet.Attacker     = self.Owner
-    bullet.Num             = 1
-    bullet.Src             = self.Owner:GetShootPos()            -- Source
-    bullet.Dir             = self.Owner:GetAimVector()            -- Dir of bullet
-    bullet.Spread         = Vector(cone, 0, 0)                    -- Aim Cone
+    bullet.Attacker      = self.Owner
+    bullet.Num           = 1
+    bullet.Src           = self.Owner:GetShootPos()            -- Source
+    bullet.Dir           = self.Owner:GetAimVector()            -- Dir of bullet
+    bullet.Spread        = Vector(cone, 0, 0)                    -- Aim Cone
     bullet.Tracer        = 1
-    bullet.TracerName     = "acidtracer"
-    bullet.Force        = 55
+    bullet.TracerName    = "acidtracer"
+    bullet.Force         = 55
     bullet.Damage        = dmg
 
     self.Owner:FireBullets(bullet)
