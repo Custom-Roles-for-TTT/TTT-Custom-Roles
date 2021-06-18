@@ -1401,10 +1401,11 @@ function GM:TTTCheckForWin()
     local killer_clown_active = false
 
     for _, v in ipairs(player.GetAll()) do
-        if (v:Alive() and v:IsTerror()) or v:GetNWBool("IsZombifying", false) then
-            if v:IsMonsterTeam() or v:GetNWBool("IsZombifying", false) then
+        local zombifying = v:GetNWBool("IsZombifying", false)
+        if (v:Alive() and v:IsTerror()) or zombifying then
+            if v:IsMonsterTeam() or (MONSTER_ROLES[ROLE_ZOMBIE] and zombifying) then
                 monster_alive = true
-            elseif v:IsTraitorTeam() then
+            elseif v:IsTraitorTeam() or (TRAITOR_ROLES[ROLE_ZOMBIE] and zombifying) then
                 traitor_alive = true
             elseif v:IsDrunk() then
                 drunk_alive = true

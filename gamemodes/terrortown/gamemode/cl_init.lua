@@ -632,6 +632,8 @@ hook.Add("TTTPrepareRound", "TTTSprintPrepareRound", function()
 
     -- listen for activation
     hook.Add("Think", "TTTSprintThink", function()
+        if not IsValid(client) then return end
+
         local forward_key = hook.Call("TTTSprintKey", GAMEMODE, client) or IN_FORWARD
         if client:KeyDown(forward_key) and client:KeyDown(IN_SPEED) then
             -- forward + selected key

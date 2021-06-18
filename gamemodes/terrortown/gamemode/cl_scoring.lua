@@ -355,7 +355,13 @@ function CLSCORE:BuildScorePanel(dpanel)
     dlist:SetSortable(true)
     dlist:SetMultiSelect(false)
 
-    local monsters_exist = not table.Empty(MONSTER_ROLES)
+    local monsters_exist = false
+    for _, exist in pairs(MONSTER_ROLES) do
+        if exist then
+            monsters_exist = true
+            break
+        end
+    end
     local colnames = { "", "col_player", "col_role", "col_kills1", "col_kills2", "col_kills3", "col_kills4" }
     if monsters_exist then
         table.insert(colnames, "col_kills5")
@@ -625,9 +631,9 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                     swappedWith = swappedWith
                 }
 
-                if INNOCENT_ROLES[finalRole] then
+                if INNOCENT_ROLES[startingRole] then
                     table.insert(scores_by_section[ROLE_INNOCENT], playerInfo)
-                elseif TRAITOR_ROLES[finalRole] then
+                elseif TRAITOR_ROLES[startingRole] or MONSTER_ROLES[startingRole] then
                     table.insert(scores_by_section[ROLE_TRAITOR], playerInfo)
                 else
                     table.insert(scores_by_section[ROLE_JESTER], playerInfo)

@@ -85,7 +85,7 @@ function GM:PostDrawTranslucentRenderables()
                                     (client:IsZombie() and GetGlobalBool("ttt_zombie_show_target_icon")) or
                                     (client:IsVampire() and GetGlobalBool("ttt_vampire_show_target_icon"))
 
-            if showkillicon then -- If we are showing the "KILL" icon this should take priority over role icons
+            if showkillicon and not client:IsSameTeam(v) then -- If we are showing the "KILL" icon this should take priority over role icons
                 render.SetMaterial(indicator_mat_roleback_noz)
                 render.DrawQuadEasy(pos, dir, 8, 8, ROLE_COLORS_SPRITE[ROLE_ASSASSIN], 180)
 
@@ -303,7 +303,11 @@ function GM:HUDDrawTargetID()
                 target_hypnotist = ent:IsHypnotist()
                 target_impersonator = ent:IsImpersonator()
                 target_assassin = ent:IsAssassin()
-                target_zombie = ent:IsZombie() and ent:IsTraitorTeam()
+                if client:IsZombie() then
+                    target_fellow_zombie = ent:IsZombie()
+                else
+                    target_zombie = ent:IsZombie() and ent:IsTraitorTeam()
+                end
                 target_vampire = ent:IsVampire() and ent:IsTraitorTeam()
                 target_jester = showJester
             elseif client:IsMonsterTeam() then

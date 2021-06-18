@@ -54,6 +54,17 @@ function plymeta:GetVampireAlly()
     return TRAITOR_ROLES[role]
 end
 
+function plymeta:IsSameTeam(target)
+    if self:IsTraitorTeam() and target:IsTraitorTeam() then
+        return true
+    elseif self:IsMonsterTeam() and target:IsMonsterTeam() then
+        return true
+    elseif self:IsInnocentTeam() and target:IsInnocentTeam() then
+        return true
+    end
+    return self:GetRole() == target:GetRole()
+end
+
 plymeta.IsTraitor = plymeta.GetTraitor
 plymeta.IsInnocent = plymeta.GetInnocent
 plymeta.IsDetective = plymeta.GetDetective
