@@ -430,9 +430,9 @@ function CLSCORE:BuildScorePanel(dpanel)
 
             local l
             if monsters_exist then
-                l = dlist:AddLine(surv, nicks[id], role_string, s.innos, s.traitors, s.jesters, s.indeps, points_own, points_team, points_total)
-            else
                 l = dlist:AddLine(surv, nicks[id], role_string, s.innos, s.traitors, s.jesters, s.indeps, s.monsters, points_own, points_team, points_total)
+            else
+                l = dlist:AddLine(surv, nicks[id], role_string, s.innos, s.traitors, s.jesters, s.indeps, points_own, points_team, points_total)
             end
 
             -- center align
