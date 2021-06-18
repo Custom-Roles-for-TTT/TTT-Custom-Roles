@@ -1536,14 +1536,22 @@ function SelectRoles()
 
     -- pick detectives
     if choice_count >= GetConVar("ttt_detective_min_players"):GetInt() then
+        local min_karma = GetConVar("ttt_detective_karma_min"):GetInt()
+        local options = {}
+        for i, p in ipairs(choices) do
+            if not KARMA.IsEnabled() or p:GetBaseKarma() >= min_karma then
+                table.insert(options, {index = i, player = p})
+            end
+        end
+
         for _ = 1, detective_count do
-            if #choices > 0 then
-                local plyPick = math.random(1, #choices)
-                local ply = choices[plyPick]
+            if #options > 0 then
+                local plyPick = math.random(1, #options)
+                local ply = options[plyPick].player
                 PrintRole(ply, "detective")
                 ply:SetRole(ROLE_DETECTIVE)
                 ply:SetHealth(GetConVar("ttt_detective_starting_health"):GetInt())
-                table.remove(choices, plyPick)
+                table.remove(choices, options[plyPick].index)
             end
         end
     end
