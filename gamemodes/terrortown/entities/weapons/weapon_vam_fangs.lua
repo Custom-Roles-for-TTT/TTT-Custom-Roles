@@ -90,7 +90,7 @@ local function CanConvert(ply)
 end
 
 local function GetPlayerFromBody(body)
-    local ply = player.GetBySteamID64(body.sid)
+    local ply = player.GetBySteamID64(body.sid64) or player.GetBySteamID(body.sid)
     if not IsValid(ply) then return false end
     return ply
 end
