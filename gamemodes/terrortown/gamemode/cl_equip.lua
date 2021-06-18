@@ -186,13 +186,34 @@ function GetEquipmentForRole(role, promoted, block_randomization)
         end
 
         -- Also check the extra buyable equipment
-        for _, v in pairs(WEPS.BuyableWeapons[role]) do
+        for _, v in ipairs(WEPS.BuyableWeapons[role]) do
             -- If this isn't a weapon, get its information from one of the roles and compare that to the ID we have
             if not weapons.GetStored(v) then
                 local equip = GetEquipmentItemByName(v)
                 -- If this exists and isn't already in the list, add it to the role's list
                 if equip ~= nil and not available[equip.id] then
                     table.insert(tbl[role], equip)
+                    available[equip.id] = true
+                    break
+                end
+            end
+        end
+
+        -- Lastly, go through the excludes to make sure things are removed that should be
+        for _, v in ipairs(WEPS.ExcludeWeapons[role]) do
+            -- If this isn't a weapon, get its information from one of the roles and compare that to the ID we have
+            if not weapons.GetStored(v) then
+                local equip = GetEquipmentItemByName(v)
+                -- If this exists and is in the available list, remove it from the role's list
+                if equip ~= nil then
+                    for idx, i in ipairs(tbl[role]) do
+                        if not ItemIsWeapon(i) and i.id == equip.id then
+                            table.remove(tbl[role], idx)
+                            break
+                        end
+                    end
+
+                    available[equip.id] = false
                     break
                 end
             end
