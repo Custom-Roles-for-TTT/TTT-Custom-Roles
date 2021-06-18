@@ -1693,6 +1693,7 @@ function SelectRoles()
                     else
                         forcedSpecialTraitorCount = forcedSpecialTraitorCount + 1
                     end
+                    v:SetZombiePrime(true)
                 elseif role == ROLE_VAMPIRE then
                     hasVampire = true
                     if MONSTER_ROLES[role] then
@@ -1700,6 +1701,7 @@ function SelectRoles()
                     else
                         forcedSpecialTraitorCount = forcedSpecialTraitorCount + 1
                     end
+                    v:SetVampirePrime(true)
                 end
 
                 if role > ROLE_NONE and role < ROLE_MAX then
@@ -1755,8 +1757,7 @@ function SelectRoles()
         -- This is a zombie round so all traitors become zombies
         for _, v in pairs(traitors) do
             v:SetRole(ROLE_ZOMBIE)
-            v:SetZombiePrime(true)
-            PrintRole(v, "traitor")
+            PrintRole(v, "zombie")
         end
     else
         -- pick special traitors
@@ -1960,6 +1961,12 @@ function SelectRoles()
     for _, ply in ipairs(plys) do
         -- initialize credit count for everyone based on their role
         if IsValid(ply) and not ply:IsSpec() then
+            if ply:GetRole() == ROLE_ZOMBIE then
+                ply:SetZombiePrime(true)
+            elseif ply:GetRole() == ROLE_VAMPIRE then
+                ply:SetVampirePrime(true)
+            end
+
             ply:SetDefaultCredits()
         end
 
