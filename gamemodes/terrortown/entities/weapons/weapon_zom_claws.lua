@@ -129,7 +129,7 @@ function SWEP:PrimaryAttack()
         self:GetOwner():SetAnimation(PLAYER_ATTACK1)
 
         if hitEnt and hitEnt:IsValid() then
-            if hitEnt:IsPlayer() and not hitEnt:IsZombieAlly() and not hitEnt:IsJesterTeam() then
+            if hitEnt:IsPlayer() and not hitEnt:IsZombieAlly() and (not hitEnt:IsJesterTeam() or hitEnt:GetNWBool("KillerClownActive", false)) then
                 if hitEnt:Health() <= self.Primary.Damage then
                     self:GetOwner():AddCredits(1)
                     LANG.Msg(self:GetOwner(), "credit_zom", { num = 1 })
