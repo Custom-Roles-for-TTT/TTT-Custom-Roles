@@ -260,7 +260,7 @@ ROLE_STRINGS = {
     [ROLE_BODYSNATCHER] = "bodysnatcher",
     [ROLE_VETERAN] = "veteran",
     [ROLE_ASSASSIN] = "assassin",
-    [ROLE_KILLER] = "killer"
+    [ROLE_KILLER] = "killer",
 	[ROLE_DOCTOR] = "doctor"
 }
 
@@ -285,7 +285,7 @@ ROLE_STRINGS_EXT = {
     [ROLE_BODYSNATCHER] = "a bodysnatcher",
     [ROLE_VETERAN] = "a veteran",
     [ROLE_ASSASSIN] = "an assassin",
-    [ROLE_KILLER] = "a killer"
+    [ROLE_KILLER] = "a killer",
 	[ROLE_DOCTOR] = "a doctor"
 }
 
@@ -309,7 +309,7 @@ ROLE_STRINGS_SHORT = {
     [ROLE_BODYSNATCHER] = "bod",
     [ROLE_VETERAN] = "vet",
     [ROLE_ASSASSIN] = "asn",
-    [ROLE_KILLER] = "kil"
+    [ROLE_KILLER] = "kil",
 	[ROLE_DOCTOR] = "doc"
 }
 
