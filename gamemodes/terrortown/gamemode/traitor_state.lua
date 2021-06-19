@@ -330,10 +330,9 @@ local function force_doctor(ply)
     local mode = GetConVar("ttt_doctor_mode"):GetInt()
     if mode == 1 then  
         ply:Give("weapon_ttt_health_station")
-    else if mode == 2 then  
+    elseif mode == 2 then  
         ply:Give("weapon_ttt_doc_defib")
     end
-    
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_doctor", force_doctor, nil, nil, FCVAR_CHEAT)
