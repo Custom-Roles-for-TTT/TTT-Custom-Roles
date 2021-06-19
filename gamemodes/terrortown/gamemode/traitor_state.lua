@@ -70,6 +70,7 @@ function SendBodysnatcherList(ply_or_rf) SendRoleList(ROLE_BODYSNATCHER, ply_or_
 function SendVeteranList(ply_or_rf) SendRoleList(ROLE_VETERAN, ply_or_rf) end
 function SendAssassinList(ply_or_rf) SendRoleList(ROLE_ASSASSIN, ply_or_rf) end
 function SendKillerList(ply_or_rf) SendRoleList(ROLE_KILLER, ply_or_rf) end
+function SendDoctorList(ply_or_rf) SendRoleList(ROLE_DOCTOR, ply_or_rf) end
 
 function SendConfirmedTraitors(ply_or_rf)
     SendTraitorList(ply_or_rf, function(p) return p:GetNWBool("body_searched") end)
@@ -97,6 +98,7 @@ function SendFullStateUpdate()
     SendVeteranList()
     SendAssassinList()
     SendKillerList()
+    SendDoctorList()
 end
 
 function SendRoleReset(ply_or_rf)
@@ -142,6 +144,7 @@ local function request_rolelist(ply)
         SendVeteranList(ply)
         SendAssassinList(ply)
         SendKillerList(ply)
+        SendDoctorList(ply)
     end
 end
 concommand.Add("_ttt_request_rolelist", request_rolelist)
@@ -320,6 +323,20 @@ local function force_killer(ply)
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_killer", force_killer, nil, nil, FCVAR_CHEAT)
+
+local function force_doctor(ply)
+    ply:SetRoleAndBroadcast(ROLE_DOCTOR)
+    clear_role_effects(ply)
+    local mode = GetConVar("ttt_doctor_mode"):GetInt()
+    if mode == 1 then  
+        ply:Give("weapon_ttt_health_station")
+    else if mode == 2 then  
+        ply:Give("weapon_ttt_doc_defib")
+    end
+    
+    SendFullStateUpdate()
+end
+concommand.Add("ttt_force_doctor", force_doctor, nil, nil, FCVAR_CHEAT)
 
 local function force_spectate(ply, cmd, arg)
     if IsValid(ply) then

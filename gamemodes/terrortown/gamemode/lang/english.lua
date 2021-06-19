@@ -23,6 +23,7 @@ L.bodysnatcher = "Bodysnatcher"
 L.veteran = "Veteran"
 L.assassin = "Assassin"
 L.killer = "Killer"
+L.doctor = "Doctor"
 
 L.hidden = "Hidden"
 L.last_words = "Last Words"
@@ -88,6 +89,7 @@ L.body_found_bod = "They were a Bodysnatcher."
 L.body_found_vet = "They were a Veteran."
 L.body_found_asn = "They were an Assassin."
 L.body_found_kil = "They were a Killer."
+L.body_found_doc = "They were a Doctor."
 
 L.body_confirm = "{finder} confirmed the death of {victim}."
 
@@ -232,6 +234,7 @@ L.search_role_bod = "This person was a Bodysnatcher."
 L.search_role_vet = "This person was a Veteran."
 L.search_role_asn = "This person was an Assassin."
 L.search_role_kil = "This person was a Killer."
+L.search_role_doc = "This person was a Doctor."
 
 L.search_words = "Something tells you some of this person's last words were: '{lastwords}'"
 L.search_armor = "They were wearing nonstandard body armor."
@@ -799,6 +802,9 @@ to take their role and join the fight!]]
 L.info_popup_veteran = [[You are a Veteran! You work best under pressure.
 If you are the last innocent player alive you will
 deal extra damage.]]
+
+L.info_popup_doctor = [[You are a Doctor! You're here to keep your teammates alive.
+Use your tools to keep fellow innocents in the fight!]]
 
 L.info_popup_hypnotist = [[You are a Hypnotist! Work with fellow traitors to kill all others.
 

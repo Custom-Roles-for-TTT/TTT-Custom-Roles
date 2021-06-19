@@ -42,6 +42,8 @@ function GM:PlayerInitialSpawn(ply)
         SendBodysnatcherList()
         SendVeteranList()
         SendAssassinList()
+		SendKillerList()
+		SendDoctorList()
     end
 
     -- Game has started, tell this guy where the round is at
@@ -66,6 +68,8 @@ function GM:PlayerInitialSpawn(ply)
         SendBodysnatcherList(ply)
         SendVeteranList(ply)
         SendAssassinList(ply)
+		SendKillerList(ply)
+		SendDoctorList(ply)
     end
 
     -- Handle spec bots
@@ -537,6 +541,8 @@ function GM:PlayerDisconnected(ply)
         SendBodysnatcherList()
         SendVeteranList()
         SendAssassinList()
+		SendKillerList()
+		SendDoctorList()
 
         net.Start("TTT_PlayerDisconnected")
         net.WriteString(ply:Nick())
