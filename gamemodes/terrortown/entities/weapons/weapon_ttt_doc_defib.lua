@@ -205,7 +205,7 @@ if SERVER then
 		
 		body:Remove()
 		
-		self:GetOwner():Give("weapon_emt_healray")
+		self:GetOwner():Give("weapon_doc_healray")
 
 		SendFullStateUpdate()
 

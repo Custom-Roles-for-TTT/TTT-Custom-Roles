@@ -63,7 +63,7 @@ Put the mutetime slightly higher than paralyze time to make him wait a few secon
 HEALRAY.ParalyzedTime = 10
 
 --How many seconds the person is mute/gagged = Unable to speak/chat.
-HEALRAY.MuteTime = 12
+HEALRAY.MuteTime = 0
 
 --What teams are immune to the stungun? (if any).
 local immuneteams = {
