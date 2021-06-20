@@ -1362,6 +1362,9 @@ L.binoc_body = "BODY DETECTED"
 
 L.idle_popup_title = "Idle"
 
+--- 2021-06-07
+L.sb_playervolume = "Player Volume"
+
 -- Custom Events
 L.ev_hypno = "{victim} was hypnotised"
 L.ev_defi = "{victim} was respawned"
