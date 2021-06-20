@@ -111,6 +111,13 @@ function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor
 
     -- Handle the other overrides
     if wep.CanBuy then
+        -- If the last key in the table does not match how many keys there are, this is a non-sequential table
+        -- table.RemoveByValue does not work with non-sequential tables and there is not an easy way
+        -- of removing items from a non-sequential table by key or value
+        if #wep.CanBuy ~= table.Count(wep.CanBuy) then
+            wep.CanBuy = table.ClearKeys(wep.CanBuy)
+        end
+
         local roletable = WEPS.BuyableWeapons[role] or {}
         -- Make sure each of the buyable weapons is in the role's equipment list
         if not table.HasValue(wep.CanBuy, role) and table.HasValue(roletable, id) then

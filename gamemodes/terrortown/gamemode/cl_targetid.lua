@@ -303,6 +303,7 @@ function GM:HUDDrawTargetID()
                 target_hypnotist = ent:IsHypnotist()
                 target_impersonator = ent:IsImpersonator()
                 target_assassin = ent:IsAssassin()
+<<<<<<< HEAD
                 if client:IsZombie() then
                     target_fellow_zombie = ent:IsZombie()
                 else
@@ -317,6 +318,8 @@ function GM:HUDDrawTargetID()
                     target_zombie = ent:IsZombie() and ent:IsMonsterTeam()
                 end
                 target_vampire = ent:IsVampire() and ent:IsMonsterTeam()
+=======
+>>>>>>> master
                 target_jester = showJester
             elseif client:IsKiller() then
                 target_jester = showJester
