@@ -32,8 +32,9 @@ ROLE_MERCENARY = 15
 ROLE_BODYSNATCHER = 16
 ROLE_VETERAN = 17
 ROLE_ASSASSIN = 18
+ROLE_KILLER = 19
 
-ROLE_MAX = 18
+ROLE_MAX = 19
 
 local function AddRoleAssociations(list, roles)
     -- Use an associative array so we can do a O(1) lookup by role
@@ -44,7 +45,7 @@ local function AddRoleAssociations(list, roles)
 end
 
 SHOP_ROLES = {}
-AddRoleAssociations(SHOP_ROLES, {ROLE_TRAITOR, ROLE_DETECTIVE, ROLE_HYPNOTIST, ROLE_DEPUTY, ROLE_IMPERSONATOR, ROLE_JESTER, ROLE_SWAPPER, ROLE_MERCENARY, ROLE_ASSASSIN})
+AddRoleAssociations(SHOP_ROLES, {ROLE_TRAITOR, ROLE_DETECTIVE, ROLE_HYPNOTIST, ROLE_DEPUTY, ROLE_IMPERSONATOR, ROLE_JESTER, ROLE_SWAPPER, ROLE_MERCENARY, ROLE_ASSASSIN, ROLE_KILLER})
 
 TRAITOR_ROLES = {}
 AddRoleAssociations(TRAITOR_ROLES, {ROLE_TRAITOR, ROLE_HYPNOTIST, ROLE_IMPERSONATOR, ROLE_ASSASSIN})
@@ -56,7 +57,7 @@ JESTER_ROLES = {}
 AddRoleAssociations(JESTER_ROLES, {ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_BEGGAR, ROLE_BODYSNATCHER})
 
 INDEPENDENT_ROLES = {}
-AddRoleAssociations(INDEPENDENT_ROLES, {ROLE_DRUNK, ROLE_OLDMAN})
+AddRoleAssociations(INDEPENDENT_ROLES, {ROLE_DRUNK, ROLE_OLDMAN, ROLE_KILLER})
 
 -- Role colours
 COLOR_INNOCENT = {
@@ -257,7 +258,8 @@ ROLE_STRINGS = {
     [ROLE_MERCENARY] = "mercenary",
     [ROLE_BODYSNATCHER] = "bodysnatcher",
     [ROLE_VETERAN] = "veteran",
-    [ROLE_ASSASSIN] = "assassin"
+    [ROLE_ASSASSIN] = "assassin",
+    [ROLE_KILLER] = "killer"
 }
 
 ROLE_STRINGS_EXT = {
@@ -280,7 +282,8 @@ ROLE_STRINGS_EXT = {
     [ROLE_MERCENARY] = "a mercenary",
     [ROLE_BODYSNATCHER] = "a bodysnatcher",
     [ROLE_VETERAN] = "a veteran",
-    [ROLE_ASSASSIN] = "an assassin"
+    [ROLE_ASSASSIN] = "an assassin",
+    [ROLE_KILLER] = "a killer"
 }
 
 ROLE_STRINGS_SHORT = {
@@ -302,7 +305,8 @@ ROLE_STRINGS_SHORT = {
     [ROLE_MERCENARY] = "mer",
     [ROLE_BODYSNATCHER] = "bod",
     [ROLE_VETERAN] = "vet",
-    [ROLE_ASSASSIN] = "asn"
+    [ROLE_ASSASSIN] = "asn",
+    [ROLE_KILLER] = "kil"
 }
 
 -- Game event log defs
@@ -335,6 +339,7 @@ WIN_TIMELIMIT = 4
 WIN_JESTER = 5
 WIN_CLOWN = 6
 WIN_OLDMAN = 7
+WIN_KILLER = 8
 
 -- Weapon categories, you can only carry one of each
 WEAPON_NONE = 0
@@ -643,6 +648,25 @@ DefaultEquipment = {
     },
 
     [ROLE_ASSASSIN] = {
+        EQUIP_ARMOR,
+        EQUIP_RADAR,
+        EQUIP_DISGUISE
+    },
+
+    [ROLE_KILLER] = {
+        "weapon_ttt_health_station",
+        "weapon_ttt_teleport",
+        "weapon_ttt_confgrenade",
+        "weapon_ttt_m16",
+        "weapon_ttt_smokegrenade",
+        "weapon_zm_mac10",
+        "weapon_zm_molotov",
+        "weapon_zm_pistol",
+        "weapon_zm_revolver",
+        "weapon_zm_rifle",
+        "weapon_zm_shotgun",
+        "weapon_zm_sledge",
+        "weapon_ttt_glock",
         EQUIP_ARMOR,
         EQUIP_RADAR,
         EQUIP_DISGUISE

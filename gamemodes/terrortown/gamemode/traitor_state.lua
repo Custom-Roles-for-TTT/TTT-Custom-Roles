@@ -69,6 +69,7 @@ function SendMercenaryList(ply_or_rf) SendRoleList(ROLE_MERCENARY, ply_or_rf) en
 function SendBodysnatcherList(ply_or_rf) SendRoleList(ROLE_BODYSNATCHER, ply_or_rf) end
 function SendVeteranList(ply_or_rf) SendRoleList(ROLE_VETERAN, ply_or_rf) end
 function SendAssassinList(ply_or_rf) SendRoleList(ROLE_ASSASSIN, ply_or_rf) end
+function SendKillerList(ply_or_rf) SendRoleList(ROLE_KILLER, ply_or_rf) end
 
 function SendConfirmedTraitors(ply_or_rf)
     SendTraitorList(ply_or_rf, function(p) return p:GetNWBool("body_searched") end)
@@ -95,6 +96,7 @@ function SendFullStateUpdate()
     SendBodysnatcherList()
     SendVeteranList()
     SendAssassinList()
+    SendKillerList()
 end
 
 function SendRoleReset(ply_or_rf)
@@ -139,6 +141,7 @@ local function request_rolelist(ply)
         SendBodysnatcherList(ply)
         SendVeteranList(ply)
         SendAssassinList(ply)
+        SendKillerList(ply)
     end
 end
 concommand.Add("_ttt_request_rolelist", request_rolelist)
@@ -310,6 +313,13 @@ local function force_assassin(ply)
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_assassin", force_assassin, nil, nil, FCVAR_CHEAT)
+
+local function force_killer(ply)
+    ply:SetRoleAndBroadcast(ROLE_KILLER)
+    clear_role_effects(ply)
+    SendFullStateUpdate()
+end
+concommand.Add("ttt_force_killer", force_killer, nil, nil, FCVAR_CHEAT)
 
 local function force_spectate(ply, cmd, arg)
     if IsValid(ply) then

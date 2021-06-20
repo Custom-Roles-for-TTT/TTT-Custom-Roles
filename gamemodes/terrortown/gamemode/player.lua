@@ -42,6 +42,7 @@ function GM:PlayerInitialSpawn(ply)
         SendBodysnatcherList()
         SendVeteranList()
         SendAssassinList()
+        SendKillerList()
     end
 
     -- Game has started, tell this guy where the round is at
@@ -66,6 +67,7 @@ function GM:PlayerInitialSpawn(ply)
         SendBodysnatcherList(ply)
         SendVeteranList(ply)
         SendAssassinList(ply)
+        SendKillerList(ply)
     end
 
     -- Handle spec bots
@@ -537,6 +539,7 @@ function GM:PlayerDisconnected(ply)
         SendBodysnatcherList()
         SendVeteranList()
         SendAssassinList()
+        SendKillerList()
 
         net.Start("TTT_PlayerDisconnected")
         net.WriteString(ply:Nick())
@@ -599,8 +602,10 @@ local function CheckCreditAward(victim, attacker)
     if GetRoundState() ~= ROUND_ACTIVE then return end
     if not IsValid(victim) then return end
 
+    local valid_attacker = IsValid(attacker) and attacker:IsPlayer()
+
     -- DETECTIVE AWARD
-    if IsValid(attacker) and attacker:IsPlayer() and victim:IsTraitorTeam() then
+    if valid_attacker and (victim:IsTraitorTeam() or victim:IsKiller()) then
         local amt = GetConVarNumber("ttt_det_credits_traitordead") or 1
         for _, ply in ipairs(player.GetAll()) do
             if ply:IsActiveDetective() or (ply:IsActiveDeputy() and ply:GetNWBool("HasPromotion", false)) then
@@ -658,6 +663,54 @@ local function CheckCreditAward(victim, attacker)
 
             GAMEMODE.AwardedCredits = true
             GAMEMODE.AwardedCreditsDead = inno_dead + GAMEMODE.AwardedCreditsDead
+        end
+    end
+
+    -- KILLER AWARD
+    if valid_attacker and attacker:IsActiveKiller() and (not (victim:IsKiller() or victim:IsJesterTeam())) and (not GAMEMODE.AwardedKillerCredits or GetConVar("ttt_credits_award_repeat"):GetBool()) then
+        local ply_alive = 0
+        local ply_dead = 0
+        local ply_total = 0
+
+        for _, ply in pairs(player.GetAll()) do
+            if not ply:IsKiller() then
+                if ply:IsTerror() then
+                    ply_alive = ply_alive + 1
+                elseif ply:IsDeadTerror() then
+                    ply_dead = ply_dead + 1
+                end
+            end
+        end
+
+        -- we check this at the death of an innocent who is still technically
+        -- Alive(), so add one to dead count and sub one from living
+        ply_dead = ply_dead + 1
+        ply_alive = math.max(ply_alive - 1, 0)
+        ply_total = ply_alive + ply_dead
+
+        -- Only repeat-award if we have reached the pct again since last time
+        if GAMEMODE.AwardedKillerCredits then
+            ply_dead = ply_dead - GAMEMODE.AwardedKillerCreditsDead
+        end
+
+        local pct = ply_dead / ply_total
+        if pct >= GetConVarNumber("ttt_credits_award_pct") then
+            -- Traitors have killed sufficient people to get an award
+            local amt = GetConVarNumber("ttt_credits_award_size")
+
+            -- If size is 0, awards are off
+            if amt > 0 then
+                LANG.Msg(GetKillerFilter(true), "credit_kil", { num = amt })
+
+                for _, ply in pairs(player.GetAll()) do
+                    if ply:IsActiveKiller() then
+                        ply:AddCredits(amt)
+                    end
+                end
+            end
+
+            GAMEMODE.AwardedKillerCredits = true
+            GAMEMODE.AwardedKillerCreditsDead = ply_dead + GAMEMODE.AwardedKillerCreditsDead
         end
     end
 end
@@ -946,7 +999,7 @@ end
 function GM:PlayerDeath(victim, infl, attacker)
     local valid_kill = IsValid(attacker) and attacker:IsPlayer() and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     -- Handle phantom death
-    if victim:IsPhantom() and valid_kill then
+    if valid_kill and victim:IsPhantom() then
         attacker:SetNWBool("Haunted", true)
 
         if GetConVar("ttt_phantom_killer_haunt"):GetBool() then
@@ -1021,13 +1074,19 @@ function GM:PlayerDeath(victim, infl, attacker)
     end
 
     -- Handle jester death
-    if victim:IsJester() and valid_kill then
+    if valid_kill and victim:IsJester() then
         JesterKilledNotification(attacker, victim)
         victim:SetNWString("JesterKiller", attacker:Nick())
     end
 
+    -- Handle killer smoke
+    if valid_kill and attacker:IsKiller() then
+        attacker:SetNWBool("KillerSmoke", false)
+        ResetKillerKillCheckTimer()
+    end
+
     -- Handle swapper death
-    if victim:IsSwapper() and valid_kill then
+    if valid_kill and victim:IsSwapper() then
         SwapperKilledNotification(attacker, victim)
         attacker:SetNWString("SwappedWith", victim:Nick())
         attacker:PrintMessage(HUD_PRINTCENTER, "You killed the swapper!")
@@ -1267,6 +1326,12 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
                 end
                 dmginfo:ScaleDamage(1 + scale)
             end
+
+            -- Killers do less damage to encourage using the knife
+            if dmginfo:IsBulletDamage() and att:IsKiller() then
+                local penalty = GetConVar("ttt_killer_damage_penalty"):GetFloat()
+                dmginfo:ScaleDamage(1 - penalty)
+            end
         -- Players cant deal damage to eachother before the round starts
         else
             dmginfo:ScaleDamage(0)
@@ -1393,14 +1458,20 @@ end
 function GM:EntityTakeDamage(ent, dmginfo)
     if not IsValid(ent) then return end
 
-    if GetRoundState() >= ROUND_ACTIVE then
+    if GetRoundState() >= ROUND_ACTIVE and ent:IsPlayer() then
         -- Jesters don't take environmental damage
-        if ent:IsPlayer() and ent:IsJesterTeam() and not ent:GetNWBool("KillerClownActive", false) then
+        if ent:IsJesterTeam() and not ent:GetNWBool("KillerClownActive", false) then
             -- Damage type DMG_GENERIC is "0" which doesn't seem to work with IsDamageType
             if dmginfo:IsExplosionDamage() or dmginfo:IsDamageType(DMG_BURN) or dmginfo:IsDamageType(DMG_CRUSH) or dmginfo:IsFallDamage() or dmginfo:IsDamageType(DMG_DROWN) or dmginfo:GetDamageType() == 0 or dmginfo:IsDamageType(DMG_DISSOLVE) then
                 dmginfo:ScaleDamage(0)
                 dmginfo:SetDamage(0)
             end
+        end
+
+        -- Killers take less bullet damage
+        if ent:IsKiller() and dmginfo:IsBulletDamage() then
+            local reduction = GetConVar("ttt_killer_damage_reduction"):GetFloat()
+            dmginfo:ScaleDamage(1 - reduction)
         end
     end
 
@@ -1605,13 +1676,24 @@ end
 
 function GM:OnNPCKilled() end
 
+local function HandleRoleForcedWeapons(ply)
+    if not IsValid(ply) or ply:IsSpec() or GetRoundState() ~= ROUND_ACTIVE then return end
+
+    if ply:IsKiller() then
+        -- Ensure the Killer has their knife, if its enabled
+        if not ply:HasWeapon("weapon_kil_knife") and GetConVar("ttt_killer_knife_enabled"):GetBool() then
+            ply:StripWeapon("weapon_zm_improvised")
+            ply:Give("weapon_kil_knife")
+        end
+    end
+end
+
 -- Drowning and such
-local tm = nil
-local ply = nil
-local plys = nil
 function GM:Tick()
     -- three cheers for micro-optimizations
-    plys = player.GetAll()
+    local plys = player.GetAll()
+    local tm = nil
+    local ply = nil
     for i = 1, #plys do
         ply = plys[i]
         tm = ply:Team()
@@ -1648,6 +1730,8 @@ function GM:Tick()
             if IsValid(ply.scanner_weapon) and ply:GetActiveWeapon() ~= ply.scanner_weapon then
                 ply.scanner_weapon:Think()
             end
+
+            HandleRoleForcedWeapons(ply)
         elseif tm == TEAM_SPEC then
             if ply.propspec then
                 PROPSPEC.Recharge(ply)
@@ -1698,6 +1782,76 @@ function GM:PlayerShouldTaunt(ply, actid)
     -- Mods/plugins that add such a system should override this.
     return false
 end
+
+local function GetKillerPlayer()
+    for _, v in pairs(player.GetAll()) do
+        if v:Team() == TEAM_TERROR and v:IsTerror() and v:IsKiller() then
+            return v
+        end
+    end
+    return nil
+end
+
+local function HasKillerPlayer()
+    return GetKillerPlayer() ~= nil
+end
+
+local killerSmokeTime = 0
+function ResetKillerKillCheckTimer()
+    killerSmokeTime = 0
+    timer.Start("KillerKillCheckTimer")
+end
+
+local function HandleKillerSmokeTick()
+    timer.Stop("KillerKillCheckTimer")
+    if GetRoundState() ~= ROUND_ACTIVE then
+        ResetKillerKillCheckTimer()
+    end
+
+    timer.Create("KillerTick", 0.1, 0, function()
+        if GetRoundState() == ROUND_ACTIVE then
+            if killerSmokeTime >= GetConVar("ttt_killer_smoke_timer"):GetInt() then
+                for _, v in pairs(player.GetAll()) do
+                    if not IsValid(v) then return end
+                    if v:IsKiller() and v:Alive() then
+                        v:SetNWBool("KillerSmoke", true)
+                        v:PrintMessage(HUD_PRINTCENTER, "Your Evil is showing")
+                    elseif (v:IsKiller() and not v:Alive()) or not HasKillerPlayer() then
+                        timer.Remove("KillerKillCheckTimer")
+                    end
+                end
+            end
+        else
+            killerSmokeTime = 0
+        end
+    end)
+end
+
+timer.Create("KillerKillCheckTimer", 1, 0, function()
+    local killer = GetKillerPlayer();
+    if GetRoundState() == ROUND_ACTIVE and GetConVar("ttt_killer_smoke_enabled"):GetBool() and killer ~= nil then
+        killerSmokeTime = killerSmokeTime + 1
+
+        -- Warn the killer that they need to kill at 1/2 time remaining, 1/4 time remaining, 10 seconds remaining, and 5 seconds remaining
+        local smoke_timer = GetConVar("ttt_killer_smoke_timer"):GetInt()
+        local timer_remaining = smoke_timer - killerSmokeTime
+        local timer_fraction = (timer_remaining / smoke_timer)
+        -- Don't do the 1/2 and 1/4 checks if they represent < 10 seconds
+        if (timer_fraction == 0.5 and timer_remaining > 10) or
+            (timer_fraction == 0.25 and timer_remaining > 10) or
+            timer_remaining == 10 or timer_remaining == 5 then
+            killer:PrintMessage(HUD_PRINTTALK, "Your Evil grows impatient -- kill someone in the next " .. timer_remaining .. " seconds!")
+        end
+
+        if killerSmokeTime >= smoke_timer then
+            HandleKillerSmokeTick()
+        else
+            timer.Remove("KillerTick")
+        end
+    else
+        killerSmokeTime = 0
+    end
+end)
 
 local function KillFromPlayer(victim, killer, remove_body)
     if not IsValid(victim) or not victim:Alive() then return end

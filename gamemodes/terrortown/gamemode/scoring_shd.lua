@@ -48,7 +48,9 @@ function ScoreEvent(e, scores)
                 scores[aid].traitors = scores[aid].traitors + 1
             elseif e.vic.jes then
                 scores[aid].jesters = scores[aid].jesters + 1
-            elseif not e.vic.tr then
+            elseif e.vic.ind then
+                scores[aid].indeps = scores[aid].indeps + 1
+            else
                 scores[aid].innos = scores[aid].innos + 1
             end
         end

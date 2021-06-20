@@ -32,6 +32,7 @@ ttt_beggar_enabled                          0       // Whether or not the beggar
 ttt_bodysnatcher_enabled                    0       // Whether or not the bodysnatcher should spawn
 ttt_drunk_enabled                           0       // Whether or not the drunk should spawn
 ttt_old_man_enabled                         0       // Whether or not the old man should spawn
+ttt_killer_enabled                          0       // Whether or not the killer should spawn
 
 // Individual Role Spawn Weights
 ttt_hypnotist_spawn_weight                  1       // The weight assigned to spawning the hypnotist
@@ -50,6 +51,7 @@ ttt_beggar_spawn_weight                     1       // The weight assigned to sp
 ttt_bodysnatcher_spawn_weight               1       // The weight assigned to spawning the bodysnatcher
 ttt_drunk_spawn_weight                      1       // The weight assigned to spawning the drunk
 ttt_old_man_spawn_weight                    1       // The weight assigned to spawning the old man
+ttt_killer_spawn_weight                     1       // The weight assigned to spawning the killer
 // (Note: Each role is limited to one player per round.)
 
 // Individual Role Minimum Player Requirements
@@ -69,6 +71,7 @@ ttt_beggar_min_players                      0       // The minimum number of pla
 ttt_bodysnatcher_min_players                0       // The minimum number of players required to spawn the bodysnatcher
 ttt_drunk_min_players                       0       // The minimum number of players required to spawn the drunk
 ttt_old_man_min_players                     0       // The minimum number of players required to spawn the old man
+ttt_killer_min_players                      0       // The minimum number of players required to spawn the killer
 
 // ----------------------------------------
 
@@ -171,6 +174,18 @@ ttt_drunk_innocent_chance                   0.7     // Chance that the drunk wil
 // Old Man
 ttt_old_man_starting_health                 1       // The amount of health the old man spawns with
 
+// Killer
+ttt_killer_max_health                       100    // The Killer's starting and maximum health
+ttt_killer_knife_enabled                    1      // Whether the Killer knife is enabled
+ttt_killer_smoke_enabled                    1      // Whether the Killer smoke is enabled
+ttt_killer_smoke_timer                      60     // Number of seconds before a Killer will start to smoke after their last kill
+ttt_killer_show_target_icon                 1      // Whether Killers have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect
+ttt_killer_damage_penalty                   0.75   // The fraction a Killer's damage will be scaled by when they are attacking without using their knife
+ttt_killer_damage_reduction                 0.45   // The fraction an attacker's bullet damage will be reduced by when they are shooting a Killer
+ttt_killer_warn_all                         0      // Whether to warn all players if there is a Killer. If 0, only traitors will be warned
+ttt_killer_vision_enable                    1      // Whether Killers have their special vision highlights enabled
+ttt_kil_credits_starting                    2       // The number of credits a Killer should start with
+
 // ----------------------------------------
 
 // WEAPON SHOP SETTINGS
@@ -184,6 +199,7 @@ ttt_shop_random_hyp_percent                 0       // The percent chance that a
 ttt_shop_random_dep_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the Deputies
 ttt_shop_random_imp_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the Impersonators
 ttt_shop_random_asn_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the Assassins
+ttt_shop_random_kil_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the Killers
 ttt_shop_random_jes_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the Jesters (if they have shop weapons)
 ttt_shop_random_swa_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the Swappers (if they have shop weapons)
 
@@ -194,6 +210,7 @@ ttt_shop_random_hyp_enabled                 0       // Whether role shop randomi
 ttt_shop_random_dep_enabled                 0       // Whether role shop randomization is enabled for Deputies
 ttt_shop_random_imp_enabled                 0       // Whether role shop randomization is enabled for Impersonators
 ttt_shop_random_asn_enabled                 0       // Whether role shop randomization is enabled for Assassins
+ttt_shop_random_kil_enabled                 0       // Whether role shop randomization is enabled for Killers
 ttt_shop_random_jes_enabled                 0       // Whether role shop randomization is enabled for Jesters (if they have shop weapons)
 ttt_shop_random_swa_enabled                 0       // Whether role shop randomization is enabled for Swappers (if they have shop weapons)
 

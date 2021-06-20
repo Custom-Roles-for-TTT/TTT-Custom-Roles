@@ -773,7 +773,7 @@ local function TraitorMenuPopup()
     end
 
     -- Credit transferring, but only for roles that have a shop and are allowed to transfer
-    if credits > 0 and hasShop and not (ply:IsMercenary() or ply:IsJesterTeam()) then
+    if credits > 0 and hasShop and not (ply:IsMercenary() or ply:IsKiller() or ply:IsJesterTeam()) then
         local dtransfer = CreateTransferMenu(dsheet)
         dsheet:AddSheet(GetTranslation("xfer_name"), dtransfer, "icon16/group_gear.png", false, false, GetTranslation("equip_tooltip_xfer"))
         show = true

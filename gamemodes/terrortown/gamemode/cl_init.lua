@@ -46,6 +46,7 @@ include("cl_equip.lua")
 include("cl_voice.lua")
 
 local traitor_vision = false
+local killer_vision = false
 local vision_enabled = false
 
 function GM:Initialize()
@@ -178,6 +179,7 @@ local function ReceiveRole()
 
     -- Update the local state
     traitor_vision = GetGlobalBool("ttt_traitor_vision_enable")
+    killer_vision = GetGlobalBool("ttt_killer_vision_enable")
 
     -- Disable highlights on role change
     if vision_enabled then
@@ -333,7 +335,7 @@ function GM:DrawDeathNotice() end
 
 function GM:Think()
     for _, v in pairs(player.GetAll()) do
-        if v:Alive() and not v:IsSpec() and v:GetNWBool("Haunted", false) and GetGlobalBool("ttt_phantom_killer_smoke") then
+        if v:Alive() and not v:IsSpec() and ((v:GetNWBool("Haunted", false) and GetGlobalBool("ttt_phantom_killer_smoke")) or v:GetNWBool("KillerSmoke", false)) then
             if not v.SmokeEmitter then v.SmokeEmitter = ParticleEmitter(v:GetPos()) end
             if not v.SmokeNextPart then v.SmokeNextPart = CurTime() end
             local pos = v:GetPos() + Vector(0, 0, 30)
@@ -370,7 +372,7 @@ function GM:Tick()
         if client:Alive() and client:Team() ~= TEAM_SPEC then
             WSWITCH:Think()
             RADIO:StoreTarget()
-            if traitor_vision then
+            if traitor_vision or killer_vision then
                 HandleRoleHighlights(client)
             end
         end
@@ -756,7 +758,7 @@ hook.Add("TTTPrepareRound", "TTTSprintPrepareRound", function()
             end
 
             if GetRoundState() ~= ROUND_WAIT then
-                if IsValid(client) and client:IsPlayer() and client:IsTraitorTeam() then
+                if IsValid(client) and client:IsPlayer() and (client:IsTraitorTeam() or client:IsIndependentTeam()) then
                     stamina = stamina + (CurTime() - recoveryTimer) * traitorRecovery * 250
                 else
                     stamina = stamina + (CurTime() - recoveryTimer) * recovery * 250
@@ -858,6 +860,12 @@ local function OnPlayerHighlightEnabled(alliedRoles, jesterRoles, hideEnemies, t
     halo.Add(jesters, ROLE_COLORS[ROLE_JESTER], 1, 1, 1, true, true)
 end
 
+local function EnableKillerHighlights()
+    hook.Add("PreDrawHalos", "AddPlayerHighlights", function()
+        local jesters = table.GetKeys(JESTER_ROLES)
+        OnPlayerHighlightEnabled({ROLE_KILLER}, jesters, false, false)
+    end)
+end
 local function EnableTraitorHighlights()
     hook.Add("PreDrawHalos", "AddPlayerHighlights", function()
         -- Start with the list of traitors
@@ -873,7 +881,12 @@ end
 function HandleRoleHighlights(client)
     if not IsValid(client) then return end
 
-    if client:IsTraitorTeam() and traitor_vision then
+    if client:IsKiller() and killer_vision then
+        if not vision_enabled then
+            EnableKillerHighlights()
+            vision_enabled = true
+        end
+    elseif client:IsTraitorTeam() and traitor_vision then
         if not vision_enabled then
             EnableTraitorHighlights()
             vision_enabled = true
