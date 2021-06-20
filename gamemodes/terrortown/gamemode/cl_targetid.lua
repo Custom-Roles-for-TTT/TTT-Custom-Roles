@@ -80,7 +80,8 @@ function GM:PostDrawTranslucentRenderables()
             pos.z = pos.z + 74
 
             -- Only show the "KILL" target if the setting is enabled
-            local showkillicon = (client:IsAssassin() and GetGlobalBool("ttt_assassin_show_target_icon") and client:GetNWString("AssassinTarget") == v:Nick())
+            local showkillicon = (client:IsAssassin() and GetGlobalBool("ttt_assassin_show_target_icon") and client:GetNWString("AssassinTarget") == v:Nick()) or
+                                    (client:IsKiller() and GetGlobalBool("ttt_killer_show_target_icon"))
 
             if showkillicon then -- If we are showing the "KILL" icon this should take priority over role icons
                 render.SetMaterial(indicator_mat_roleback_noz)
@@ -92,23 +93,30 @@ function GM:PostDrawTranslucentRenderables()
                 render.SetMaterial(indicator_mat_rolefront_noz)
                 render.DrawQuadEasy(pos, dir, 8, 8, COLOR_WHITE, 180)
             else
-                if v:GetDetectiveLike() and not (v:GetImpersonator() and client:IsTraitorTeam()) and not showkillicon then
+                if v:GetDetectiveLike() and not (v:GetImpersonator() and client:IsTraitorTeam()) then
                     DrawRoleIcon(ROLE_DETECTIVE, false, pos, dir)
                 elseif v:GetClown() and v:GetNWBool("KillerClownActive", false) then
                     DrawRoleIcon(ROLE_CLOWN, false, pos, dir)
                 end
-                if not hide_roles and client:IsTraitorTeam() then
+                if not hide_roles then
                     local hideBeggar = v:GetNWBool("WasBeggar", false) and not GetGlobalBool("ttt_reveal_beggar_change", true)
-                    if (v:GetTraitor() and not hideBeggar) or v:GetGlitch() then
-                        DrawRoleIcon(ROLE_TRAITOR, true, pos, dir)
-                    elseif v:GetHypnotist() then
-                        DrawRoleIcon(ROLE_HYPNOTIST, true, pos, dir)
-                    elseif v:GetImpersonator() then
-                        DrawRoleIcon(ROLE_IMPERSONATOR, true, pos, dir)
-                    elseif v:GetAssassin() then
-                        DrawRoleIcon(ROLE_ASSASSIN, true, pos, dir)
-                    elseif (v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) or ((v:GetTraitor() or v:GetInnocent()) and hideBeggar) then
-                        DrawRoleIcon(ROLE_JESTER, false, pos, dir)
+                    local showJester = (v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) or ((v:GetTraitor() or v:GetInnocent()) and hideBeggar)
+                    if client:IsTraitorTeam() then
+                        if (v:GetTraitor() and not hideBeggar) or v:GetGlitch() then
+                            DrawRoleIcon(ROLE_TRAITOR, true, pos, dir)
+                        elseif v:GetHypnotist() then
+                            DrawRoleIcon(ROLE_HYPNOTIST, true, pos, dir)
+                        elseif v:GetImpersonator() then
+                            DrawRoleIcon(ROLE_IMPERSONATOR, true, pos, dir)
+                        elseif v:GetAssassin() then
+                            DrawRoleIcon(ROLE_ASSASSIN, true, pos, dir)
+                        elseif showJester then
+                            DrawRoleIcon(ROLE_JESTER, false, pos, dir)
+                        end
+                    elseif client:IsKiller() then
+                        if showJester then
+                            DrawRoleIcon(ROLE_JESTER, false, pos, dir)
+                        end
                     end
                 end
             end
@@ -280,11 +288,16 @@ function GM:HUDDrawTargetID()
 
         local hideBeggar = ent:GetNWBool("WasBeggar", false) and not GetGlobalBool("ttt_reveal_beggar_change", true)
 
-        if not hide_roles and client:IsTraitorTeam() and GetRoundState() == ROUND_ACTIVE then
-            target_traitor = (ent:IsTraitor() and not hideBeggar) or ent:IsGlitch()
-            target_hypnotist = ent:IsHypnotist()
-            target_impersonator = ent:IsImpersonator()
-            target_jester = (ent:IsJesterTeam() and not ent:GetNWBool("KillerClownActive", false)) or ((ent:GetTraitor() or ent:GetInnocent()) and hideBeggar)
+        if not hide_roles and GetRoundState() == ROUND_ACTIVE then
+            local showJester = (ent:IsJesterTeam() and not ent:GetNWBool("KillerClownActive", false)) or ((ent:GetTraitor() or ent:GetInnocent()) and hideBeggar)
+            if client:IsTraitorTeam() then
+                target_traitor = (ent:IsTraitor() and not hideBeggar) or ent:IsGlitch()
+                target_hypnotist = ent:IsHypnotist()
+                target_impersonator = ent:IsImpersonator()
+                target_jester = showJester
+            elseif client:IsKiller() then
+                target_jester = showJester
+            end
         end
 
         target_detective = GetRoundState() > ROUND_PREP and (ent:IsDetective() or ((ent:IsDeputy() or (ent:IsImpersonator() and not client:IsTraitorTeam())) and ent:GetNWBool("HasPromotion", false))) or false

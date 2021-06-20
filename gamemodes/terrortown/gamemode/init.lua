@@ -137,6 +137,9 @@ CreateConVar("ttt_drunk_min_players", "0")
 CreateConVar("ttt_old_man_enabled", 0)
 CreateConVar("ttt_old_man_spawn_weight", "1")
 CreateConVar("ttt_old_man_min_players", "0")
+CreateConVar("ttt_killer_enabled", 0)
+CreateConVar("ttt_killer_spawn_weight", "1")
+CreateConVar("ttt_killer_min_players", "0")
 
 -- Traitor role properties
 CreateConVar("ttt_traitor_vision_enable", "0")
@@ -203,6 +206,16 @@ CreateConVar("ttt_drunk_innocent_chance", "0.7")
 
 CreateConVar("ttt_old_man_starting_health", "1")
 
+CreateConVar("ttt_killer_max_health", "100")
+CreateConVar("ttt_killer_knife_enabled", "1")
+CreateConVar("ttt_killer_smoke_enabled", "1")
+CreateConVar("ttt_killer_smoke_timer", "60")
+CreateConVar("ttt_killer_show_target_icon", "1")
+CreateConVar("ttt_killer_damage_penalty", "0.75")
+CreateConVar("ttt_killer_damage_reduction", "0.45")
+CreateConVar("ttt_killer_warn_all", "0")
+CreateConVar("ttt_killer_vision_enable", "1")
+
 -- Other custom role properties
 CreateConVar("ttt_single_deputy_impersonator", "0")
 
@@ -227,6 +240,7 @@ CreateConVar("ttt_swa_credits_starting", "0")
 CreateConVar("ttt_imp_credits_starting", "1")
 CreateConVar("ttt_mer_credits_starting", "1")
 CreateConVar("ttt_asn_credits_starting", "1")
+CreateConVar("ttt_kil_credits_starting", "2")
 
 -- Other
 CreateConVar("ttt_use_weapon_spawn_scripts", "1")
@@ -374,6 +388,8 @@ function GM:Initialize()
     GAMEMODE.MapWin = WIN_NONE
     GAMEMODE.AwardedCredits = false
     GAMEMODE.AwardedCreditsDead = 0
+    GAMEMODE.AwardedKillerCredits = false
+    GAMEMODE.AwardedKillerCreditsDead = 0
 
     GAMEMODE.round_state = ROUND_WAIT
     GAMEMODE.FirstRound = true
@@ -471,6 +487,9 @@ function GM:SyncGlobals()
 
     SetGlobalBool("ttt_traitor_vision_enable", GetConVar("ttt_traitor_vision_enable"):GetBool())
     SetGlobalBool("ttt_assassin_show_target_icon", GetConVar("ttt_assassin_show_target_icon"):GetBool())
+
+    SetGlobalBool("ttt_killer_show_target_icon", GetConVar("ttt_killer_show_target_icon"):GetBool())
+    SetGlobalBool("ttt_killer_vision_enable", GetConVar("ttt_killer_vision_enable"):GetBool())
 
     SetGlobalBool("ttt_bem_allow_change", GetConVar("ttt_bem_allow_change"):GetBool())
     SetGlobalInt("ttt_bem_sv_cols", GetConVar("ttt_bem_sv_cols"):GetBool())
@@ -716,6 +735,7 @@ function PrepareRound()
         v:SetNWBool("WasDrunk", false)
         v:SetNWBool("WasHypnotised", false)
         v:SetNWBool("KillerClownActive", false)
+        v:SetNWBool("KillerSmoke", false)
         v:SetNWBool("HasPromotion", false)
         v:SetNWBool("WasBeggar", false)
         v:SetNWBool("VeteranActive", false)
@@ -753,6 +773,8 @@ function PrepareRound()
     GAMEMODE.MapWin = WIN_NONE
     GAMEMODE.AwardedCredits = false
     GAMEMODE.AwardedCreditsDead = 0
+    GAMEMODE.AwardedKillerCredits = false
+    GAMEMODE.AwardedKillerCreditsDead = 0
 
     SCORE:Reset()
 
@@ -821,20 +843,23 @@ function TellTraitorsAboutTraitors()
 
     local traitornicks = {}
     local hasGlitch = false
-
-    for k, v in ipairs(plys) do
+    local hasKiller = false
+    for _, v in ipairs(plys) do
         if v:IsTraitorTeam() then
             table.insert(traitornicks, v:Nick())
         elseif v:IsGlitch() then
             table.insert(traitornicks, v:Nick())
             hasGlitch = true
+        elseif v:IsKiller() then
+            hasKiller = true
         end
     end
 
     -- This is ugly as hell, but it's kinda nice to filter out the names of the
     -- traitors themselves in the messages to them
-    for k, v in ipairs(plys) do
-        if v:IsTraitorTeam() then
+    for _, v in ipairs(plys) do
+        local isTraitor = v:IsTraitorTeam()
+        if isTraitor then
             if hasGlitch then
                 v:PrintMessage(HUD_PRINTTALK, "There is a Glitch.")
                 v:PrintMessage(HUD_PRINTCENTER, "There is a Glitch.")
@@ -852,6 +877,20 @@ function TellTraitorsAboutTraitors()
                 end
                 names = string.sub(names, 1, -3)
                 LANG.Msg(v, "round_traitors_more", { names = names })
+            end
+        end
+
+        -- Warn this player about the Killer if they are a traitor or we are configured to warn everyone
+        if not v:IsKiller() and (isTraitor or GetConVar("ttt_killer_warn_all"):GetBool()) and hasKiller then
+            v:PrintMessage(HUD_PRINTTALK, "There is a Killer.")
+            -- Only delay this if the player is a traitor and there is a Glitch
+            -- This gives time for the Glitch warning to go away
+            if isTraitor and hasGlitch then
+                timer.Simple(3, function()
+                    v:PrintMessage(HUD_PRINTCENTER, "There is a Killer.")
+                end)
+            else
+                v:PrintMessage(HUD_PRINTCENTER, "There is a Killer.")
             end
         end
     end
@@ -947,7 +986,7 @@ local function DrunkSober(ply, traitor)
 
         net.Start("TTT_DrunkSober")
         net.WriteString(ply:Nick())
-        net.WriteString("a traitor")
+        net.WriteString(ROLE_STRINGS_EXT[ROLE_TRAITOR])
         net.Broadcast()
     else
         ply:SetRole(ROLE_INNOCENT)
@@ -956,7 +995,7 @@ local function DrunkSober(ply, traitor)
 
         net.Start("TTT_DrunkSober")
         net.WriteString(ply:Nick())
-        net.WriteString("an innocent")
+        net.WriteString(ROLE_STRINGS_EXT[ROLE_INNOCENT])
         net.Broadcast()
     end
 
@@ -1063,6 +1102,17 @@ function BeginRound()
         if v:GetRole() == ROLE_ASSASSIN then
             AssignAssassinTarget(v, true, false)
         end
+
+        -- Killer logic
+        if v:GetRole() == ROLE_KILLER then
+            if GetConVar("ttt_killer_knife_enabled"):GetBool() then
+                v:StripWeapon("weapon_zm_improvised")
+                v:Give("weapon_kil_knife")
+            end
+            local max = GetConVar("ttt_killer_max_health"):GetInt()
+            v:SetMaxHealth(max)
+            v:SetHealth(max)
+        end
     end
 
     net.Start("TTT_ResetScoreboard")
@@ -1118,6 +1168,9 @@ function PrintResultMessage(type)
     elseif type == WIN_CLOWN then
         LANG.Msg("win_clown")
         ServerLog("Result: Clown wins.\n")
+    elseif type == WIN_KILLER then
+        LANG.Msg("win_killer")
+        ServerLog("Result: Killer wins.\n")
     else
         ServerLog("Result: unknown victory condition!\n")
     end
@@ -1212,10 +1265,10 @@ function GM:TTTCheckForWin()
 
     local traitor_alive = false
     local innocent_alive = false
-    local jester_alive = false
     local drunk_alive = false
     local clown_alive = false
     local old_man_alive = false
+    local killer_alive = false
 
     local killer_clown_active = false
 
@@ -1232,6 +1285,8 @@ function GM:TTTCheckForWin()
                 old_man_alive = true
             elseif v:IsInnocentTeam() then
                 innocent_alive = true
+            elseif v:IsKiller() then
+                killer_alive = true
             end
         end
 
@@ -1244,10 +1299,15 @@ function GM:TTTCheckForWin()
 
     if jester_killed then
         win_type = WIN_JESTER
-    elseif not innocent_alive then
+    -- If everyone is dead the traitors win
+    elseif not innocent_alive and not killer_alive then
         win_type = WIN_TRAITOR
-    elseif not traitor_alive then
+    -- If all the "bad" people are dead, innocents win
+    elseif not traitor_alive and not killer_alive then
         win_type = WIN_INNOCENT
+    -- If the killer is the only one left alive, they win
+    elseif not traitor_alive and not innocent_alive and killer_alive then
+        win_type = WIN_KILLER
     end
 
     -- Drunk logic
@@ -1275,7 +1335,7 @@ function GM:TTTCheckForWin()
 
     -- Clown logic
     if clown_alive then
-        if not killer_clown_active and (win_type == WIN_INNOCENT or win_type == WIN_TRAITOR) then
+        if not killer_clown_active and (win_type == WIN_INNOCENT or win_type == WIN_TRAITOR or win_type == WIN_KILLER) then
             for _, v in ipairs(player.GetAll()) do
                 if v:IsClown() then
                     v:SetNWBool("KillerClownActive", true)
@@ -1287,7 +1347,7 @@ function GM:TTTCheckForWin()
                 end
             end
             win_type = WIN_NONE
-        elseif killer_clown_active and not traitor_alive and not innocent_alive then
+        elseif killer_clown_active and not traitor_alive and not innocent_alive and not killer_alive then
             win_type = WIN_CLOWN
         else
             win_type = WIN_NONE
@@ -1348,27 +1408,11 @@ end
 
 function SelectRoles()
     local choices = {}
-    local prev_roles = {
-        [ROLE_INNOCENT] = {},
-        [ROLE_TRAITOR] = {},
-        [ROLE_DETECTIVE] = {},
-        [ROLE_JESTER] = {},
-        [ROLE_SWAPPER] = {},
-        [ROLE_GLITCH] = {},
-        [ROLE_PHANTOM] = {},
-        [ROLE_HYPNOTIST] = {},
-        [ROLE_REVENGER] = {},
-        [ROLE_DRUNK] = {},
-        [ROLE_CLOWN] = {},
-        [ROLE_DEPUTY] = {},
-        [ROLE_IMPERSONATOR] = {},
-        [ROLE_BEGGAR] = {},
-        [ROLE_OLDMAN] = {},
-        [ROLE_MERCENARY] = {},
-        [ROLE_BODYSNATCHER] = {},
-        [ROLE_VETERAN] = {},
-        [ROLE_ASSASSIN] = {}
-    };
+    local prev_roles = {}
+    -- Initialize the table for every role
+    for wrole = 0, ROLE_MAX do
+        prev_roles[wrole] = {}
+    end
 
     if not GAMEMODE.LastRole then GAMEMODE.LastRole = {} end
 
@@ -1521,6 +1565,10 @@ function SelectRoles()
                     hasIndependent = true
                     forcedIndependentCount = forcedIndependentCount + 1
                     PrintRole(v, "bodysnatcher")
+                elseif role == ROLE_KILLER then
+                    hasIndependent = true
+                    forcedIndependentCount = forcedIndependentCount + 1
+                    PrintRole(v, "killer")
                 end
             end
         end
@@ -1637,6 +1685,11 @@ function SelectRoles()
         if GetConVar("ttt_bodysnatcher_enabled"):GetBool() and choice_count >= GetConVar("ttt_bodysnatcher_min_players"):GetInt() then
             for _ = 1, GetConVar("ttt_bodysnatcher_spawn_weight"):GetInt() do
                 table.insert(independentRoles, ROLE_BODYSNATCHER)
+            end
+        end
+        if GetConVar("ttt_killer_enabled"):GetBool() and choice_count >= GetConVar("ttt_killer_min_players"):GetInt() then
+            for _ = 1, GetConVar("ttt_killer_spawn_weight"):GetInt() do
+                table.insert(independentRoles, ROLE_KILLER)
             end
         end
         if #independentRoles ~= 0 then

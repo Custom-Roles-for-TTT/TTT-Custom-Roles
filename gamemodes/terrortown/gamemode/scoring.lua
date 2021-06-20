@@ -53,8 +53,8 @@ function SCORE:HandleKill(victim, attacker, dmginfo)
 
     local e = {
         id = EVENT_KILL,
-        att = { ni = "", sid = -1, sid64 = -1, tr = false, inno = false, jes = false },
-        vic = { ni = victim:Nick(), sid = victim:SteamID(), sid64 = victim:SteamID64(), tr = false, inno = false, jes = false },
+        att = { ni = "", sid = -1, sid64 = -1, tr = false, inno = false, jes = false, ind = false },
+        vic = { ni = victim:Nick(), sid = victim:SteamID(), sid64 = victim:SteamID64(), tr = false, inno = false, jes = false, ind = false },
         dmg = CopyDmg(dmginfo),
         tk = false
     };
@@ -65,6 +65,7 @@ function SCORE:HandleKill(victim, attacker, dmginfo)
     e.vic.inno = victim:IsInnocentTeam()
     e.vic.tr = victim:IsTraitorTeam()
     e.vic.jes = victim:IsJesterTeam()
+    e.vic.ind = victim:IsIndependentTeam()
 
     if IsValid(attacker) and attacker:IsPlayer() then
         e.att.ni = attacker:Nick()
@@ -74,6 +75,7 @@ function SCORE:HandleKill(victim, attacker, dmginfo)
         e.att.tr = attacker:IsTraitorTeam()
         e.att.inno = attacker:IsInnocentTeam()
         e.att.jes = attacker:IsJesterTeam()
+        e.att.ind = attacker:IsIndependentTeam()
         e.tk = (e.att.tr and e.vic.tr) or (e.att.inno and e.vic.inno) or e.vic.jes
 
         -- If a traitor gets himself killed by another traitor's C4, it's his own
@@ -172,6 +174,8 @@ function SCORE:ApplyEventLogScores(wintype)
                 points_team = bonus.traitors
             elseif ply:IsJesterTeam() then
                 points_team = bonus.jesters
+            elseif ply:IsIndependentTeam() then
+                points_team = bonus.indeps
             end
 
             ply:AddFrags(points_team)
