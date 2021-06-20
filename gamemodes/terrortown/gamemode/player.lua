@@ -1314,7 +1314,8 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
             end
 
             -- Assassins deal extra damage to their target, less damage to other players, and less damage if they fail their contract
-            if att:IsAssassin() and ply ~= att then
+            -- Don't apply the scaling to the Jester team to specifically allow doing 100% damage to the active killer clown
+            if att:IsAssassin() and ply ~= att and not ply:IsJesterTeam() then
                 local scale = 0
                 if att:GetNWBool("AssassinFailed", false) then
                     scale = -GetConVar("ttt_assassin_failed_damage_penalty"):GetFloat()

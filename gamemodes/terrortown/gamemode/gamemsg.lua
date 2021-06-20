@@ -46,7 +46,7 @@ end
 -- Traitorchat
 local function RoleChatMsg(sender, msg)
     net.Start("TTT_RoleChat")
-    net.WriteUInt(sender:GetRole(), 8)
+    net.WriteInt(sender:GetRole(), 8)
     net.WriteEntity(sender)
     net.WriteString(msg)
     if sender:IsTraitorTeam() then
