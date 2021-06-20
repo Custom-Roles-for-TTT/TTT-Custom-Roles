@@ -505,6 +505,8 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                 -- If Zombies are not monsters then Vampires win
                 if not MONSTER_ROLES[ROLE_ZOMBIE] then
                     title.txt = "hilite_win_vampires"
+                    -- Also make sure to override the color because they will be different
+                    title.c = ROLE_COLORS[ROLE_VAMPIRE]
                 -- And vice versa
                 elseif not MONSTER_ROLES[ROLE_VAMPIRE] then
                     title.txt = "hilite_win_zombies"
