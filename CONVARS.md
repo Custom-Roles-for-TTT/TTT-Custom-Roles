@@ -175,15 +175,16 @@ ttt_drunk_innocent_chance                   0.7     // Chance that the drunk wil
 ttt_old_man_starting_health                 1       // The amount of health the old man spawns with
 
 // Killer
-ttt_killer_max_health                       100    // The Killer's starting and maximum health
-ttt_killer_knife_enabled                    1      // Whether the Killer knife is enabled
-ttt_killer_smoke_enabled                    1      // Whether the Killer smoke is enabled
-ttt_killer_smoke_timer                      60     // Number of seconds before a Killer will start to smoke after their last kill
-ttt_killer_show_target_icon                 1      // Whether Killers have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect
-ttt_killer_damage_penalty                   0.75   // The fraction a Killer's damage will be scaled by when they are attacking without using their knife
-ttt_killer_damage_reduction                 0.45   // The fraction an attacker's bullet damage will be reduced by when they are shooting a Killer
-ttt_killer_warn_all                         0      // Whether to warn all players if there is a Killer. If 0, only traitors will be warned
-ttt_killer_vision_enable                    1      // Whether Killers have their special vision highlights enabled
+ttt_killer_max_health                       150     // The Killer's starting and maximum health
+ttt_killer_knife_enabled                    1       // Whether the Killer knife is enabled
+ttt_killer_crowbar_enabled                  1       // Whether the Killer throwable crowbar is enabled
+ttt_killer_smoke_enabled                    1       // Whether the Killer smoke is enabled
+ttt_killer_smoke_timer                      60      // Number of seconds before a Killer will start to smoke after their last kill
+ttt_killer_show_target_icon                 1       // Whether Killers have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect
+ttt_killer_damage_penalty                   0.25    // The fraction a Killer's damage will be scaled by when they are attacking without using their knife
+ttt_killer_damage_reduction                 0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a Killer
+ttt_killer_warn_all                         0       // Whether to warn all players if there is a Killer. If 0, only traitors will be warned
+ttt_killer_vision_enable                    1       // Whether Killers have their special vision highlights enabled
 ttt_kil_credits_starting                    2       // The number of credits a Killer should start with
 
 // ----------------------------------------

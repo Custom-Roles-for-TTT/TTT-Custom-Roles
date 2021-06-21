@@ -24,8 +24,10 @@ function ENT:Think()
 end
 
 function ENT:Use(activator, caller)
-    activator:Give("weapon_kil_crowbar")
-    self:Remove()
+    if activator:GetKiller() then
+        activator:Give("weapon_kil_crowbar")
+        self:Remove()
+    end
 end
 
 function ENT:Break()

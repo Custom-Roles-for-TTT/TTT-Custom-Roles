@@ -2,10 +2,11 @@ SWEP.HoldType  = "melee"
 
 if CLIENT then
     SWEP.PrintName = "kil_crowbar_name"
-    SWEP.Slot = 6
+    SWEP.Slot = 0
 
-    SWEP.ViewModelFOV = 86
+    SWEP.DrawCrosshair = false
     SWEP.ViewModelFlip = false
+    SWEP.ViewModelFOV = 54
 
     SWEP.EquipMenuData = {type = "item_weapon", desc = "kil_crowbar_desc"};
 
@@ -19,7 +20,7 @@ SWEP.UseHands                = true
 SWEP.ViewModel               = "models/weapons/c_crowbar.mdl"
 SWEP.WorldModel              = "models/weapons/w_crowbar.mdl"
 
-SWEP.Primary.Damage          = 46
+SWEP.Primary.Damage          = 20
 SWEP.Primary.ClipSize        = -1
 SWEP.Primary.DefaultClip     = -1
 SWEP.Primary.Automatic       = true
@@ -34,10 +35,8 @@ SWEP.Secondary.Delay         = 1
 
 SWEP.IsGrenade = false
 
-SWEP.Kind                   = WEAPON_EQUIP1
-SWEP.CanBuy                 = {ROLE_KILLER} -- only killers can buy
-SWEP.LimitedStock           = false -- only buyable once
-SWEP.WeaponID               = AMMO_KNIFE
+SWEP.Kind                   = WEAPON_MELEE
+SWEP.WeaponID               = AMMO_CROWBAR
 
 SWEP.NoSights                = true
 SWEP.IsSilent                = true
@@ -45,7 +44,7 @@ SWEP.IsSilent                = true
 SWEP.Weight                  = 5
 SWEP.AutoSpawnable           = false
 
-SWEP.AllowDelete             = true -- never removed for weapon reduction
+SWEP.AllowDelete             = true
 SWEP.AllowDrop = true
 
 local sound_single = Sound("Weapon_Crowbar.Single")
