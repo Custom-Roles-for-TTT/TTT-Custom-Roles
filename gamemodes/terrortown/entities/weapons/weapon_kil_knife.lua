@@ -4,7 +4,7 @@ SWEP.HoldType = "knife"
 
 if CLIENT then
     SWEP.PrintName = "knife_name"
-    SWEP.Slot = 0
+    SWEP.Slot = 6
 
     SWEP.ViewModelFlip = false
     SWEP.ViewModelFOV = 54
@@ -35,7 +35,7 @@ SWEP.Secondary.Automatic    = false
 SWEP.Secondary.Ammo         = "none"
 SWEP.Secondary.Delay        = 12
 
-SWEP.Kind                    = WEAPON_MELEE
+SWEP.Kind                    = WEAPON_EQUIP1
 SWEP.WeaponID                = AMMO_CROWBAR
 
 SWEP.IsSilent               = true

@@ -1760,8 +1760,12 @@ local function HandleRoleForcedWeapons(ply)
     if ply:IsKiller() then
         -- Ensure the Killer has their knife, if its enabled
         if not ply:HasWeapon("weapon_kil_knife") and GetConVar("ttt_killer_knife_enabled"):GetBool() then
-            ply:StripWeapon("weapon_zm_improvised")
             ply:Give("weapon_kil_knife")
+        end
+        if ply:HasWeapon("weapon_zm_improvised") and not ply:HasWeapon("weapon_kil_crowbar") and GetConVar("ttt_killer_crowbar_enabled"):GetBool() then
+            ply:StripWeapon("weapon_zm_improvised")
+            ply:Give("weapon_kil_crowbar")
+            ply:SelectWeapon("weapon_kil_crowbar")
         end
     elseif ply:IsZombie() then
         if ply.GetActiveWeapon and IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() == "weapon_zom_claws" then
@@ -1923,9 +1927,10 @@ local function HandleKillerSmokeTick()
             if killerSmokeTime >= GetConVar("ttt_killer_smoke_timer"):GetInt() then
                 for _, v in pairs(player.GetAll()) do
                     if not IsValid(v) then return end
-                    if v:IsKiller() and v:Alive() then
+                    if v:IsKiller() and v:Alive() and not v:GetNWBool("KillerSmoke", false) then
                         v:SetNWBool("KillerSmoke", true)
-                        v:PrintMessage(HUD_PRINTCENTER, "Your Evil is showing")
+                        v:PrintMessage(HUD_PRINTCENTER, "Your evil is showing")
+                        v:PrintMessage(HUD_PRINTTALK, "Your evil is showing")
                     elseif (v:IsKiller() and not v:Alive()) or not HasKillerPlayer() then
                         timer.Remove("KillerKillCheckTimer")
                     end
@@ -1950,7 +1955,7 @@ timer.Create("KillerKillCheckTimer", 1, 0, function()
         if (timer_fraction == 0.5 and timer_remaining > 10) or
             (timer_fraction == 0.25 and timer_remaining > 10) or
             timer_remaining == 10 or timer_remaining == 5 then
-            killer:PrintMessage(HUD_PRINTTALK, "Your Evil grows impatient -- kill someone in the next " .. timer_remaining .. " seconds!")
+            killer:PrintMessage(HUD_PRINTTALK, "Your evil grows impatient. Kill someone in the next " .. timer_remaining .. " seconds or you will be revealed!")
         end
 
         if killerSmokeTime >= smoke_timer then

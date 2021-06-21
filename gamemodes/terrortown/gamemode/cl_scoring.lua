@@ -6,6 +6,7 @@ local table = table
 local string = string
 local vgui = vgui
 local pairs = pairs
+local parentPanel, parentTabs, closeButton, saveButton
 
 CLSCORE = {}
 CLSCORE.Events = {}
@@ -490,77 +491,7 @@ end
 
 local old_man_won_last_round = false
 function CLSCORE:BuildSummaryPanel(dpanel)
-    local w, h = dpanel:GetSize()
-
-    local title = wintitle[WIN_INNOCENT]
-    for i = #self.Events, 1, -1 do
-        local e = self.Events[i]
-        if e.id == EVENT_FINISH then
-            local wintype = e.win
-            if wintype == WIN_TIMELIMIT then wintype = WIN_INNOCENT end
-            title = wintitle[wintype]
-
-            -- If this was a monster win, check that both roles are part of the monsters team still
-            if wintype == WIN_MONSTER then
-                -- If Zombies are not monsters then Vampires win
-                if not MONSTER_ROLES[ROLE_ZOMBIE] then
-                    title.txt = "hilite_win_vampires"
-                    -- Also make sure to override the color because they will be different
-                    title.c = ROLE_COLORS[ROLE_VAMPIRE]
-                -- And vice versa
-                elseif not MONSTER_ROLES[ROLE_VAMPIRE] then
-                    title.txt = "hilite_win_zombies"
-                -- Otherwise the monsters legit win
-                else
-                    title.txt = "hilite_win_monster"
-                end
-            end
-            break
-        end
-    end
-
-    local bg = vgui.Create("ColoredBox", dpanel)
-    bg:SetColor(Color(97, 100, 102, 255))
-    bg:SetSize(w, h)
-    bg:SetPos(0, 0)
-
-    local winlbl = vgui.Create("DLabel", dpanel)
-    winlbl:SetFont("WinHuge")
-    winlbl:SetText(T(title.txt))
-    winlbl:SetTextColor(COLOR_WHITE)
-    winlbl:SizeToContents()
-    local xwin = (w - winlbl:GetWide())/2
-    local ywin = 15
-    winlbl:SetPos(xwin, ywin)
-
-    old_man_won_last_round = old_man_wins
-    local exwinlbl = vgui.Create("DLabel", dpanel)
-    if old_man_won_last_round then
-        exwinlbl:SetFont("WinSmall")
-        exwinlbl:SetText(T("hilite_win_old_man"))
-        exwinlbl:SetTextColor(COLOR_WHITE)
-        exwinlbl:SizeToContents()
-        local xexwin = (w - exwinlbl:GetWide()) / 2
-        local yexwin = 61
-        exwinlbl:SetPos(xexwin, yexwin)
-    else
-        exwinlbl:SetText("")
-    end
-
-    bg.PaintOver = function()
-        draw.RoundedBox(8, 8, ywin - 5, w - 14, winlbl:GetTall() + 10, title.c)
-        if old_man_won_last_round then draw.RoundedBoxEx(8, 8, 65, w - 14, 28, ROLE_COLORS[ROLE_OLDMAN], false, false, true, true) end
-        draw.RoundedBox(0, 8, ywin + winlbl:GetTall() + 14, 341, 329, Color(164, 164, 164, 255))
-        draw.RoundedBox(0, 357, ywin + winlbl:GetTall() + 14, 341, 329, Color(164, 164, 164, 255))
-        draw.RoundedBox(0, 8, ywin + winlbl:GetTall() + 352, 690, 32, Color(164, 164, 164, 255))
-        for i = ywin + winlbl:GetTall() + 47, ywin + winlbl:GetTall() + 312, 33 do
-            draw.RoundedBox(0, 8, i, 341, 1, Color(97, 100, 102, 255))
-            draw.RoundedBox(0, 357, i, 341, 1, Color(97, 100, 102, 255))
-        end
-    end
-
-    if old_man_won_last_round then winlbl:SetPos(xwin, ywin - 15) end
-
+    -- Gather player information
     local scores = self.Scores
     local nicks = self.Players
 
@@ -647,9 +578,114 @@ function CLSCORE:BuildSummaryPanel(dpanel)
         end
     end
 
+    -- Minimum of 10 rows, maximum of whichever team has more players
+    local player_rows = math.max(10, math.max(#scores_by_section[ROLE_INNOCENT], #scores_by_section[ROLE_TRAITOR]))
+
+    -- Add 33px for each extra role
+    local height_extra = (player_rows - 10) * 33
+
+    -- Build the panel
+    local w, h = dpanel:GetSize()
+    if height_extra > 0 then
+        h = h + height_extra
+
+        -- Make the parent panel and tab container bigger
+        local pw, ph = parentPanel:GetSize()
+        ph = ph + height_extra
+        parentPanel:SetSize(pw, ph)
+
+        local tw, th = parentTabs:GetSize()
+        th = th + height_extra
+        parentTabs:SetSize(tw, th)
+
+        -- Move the buttons down
+        local sx, sy = saveButton:GetPos()
+        sy = sy + height_extra
+        saveButton:SetPos(sx, sy)
+
+        local cx, cy = closeButton:GetPos()
+        cy = cy + height_extra
+        closeButton:SetPos(cx, cy)
+
+        -- Make this inner panel bigger
+        dpanel:SetSize(w, h)
+    end
+
+    local title = wintitle[WIN_INNOCENT]
+    for i = #self.Events, 1, -1 do
+        local e = self.Events[i]
+        if e.id == EVENT_FINISH then
+            local wintype = e.win
+            if wintype == WIN_TIMELIMIT then wintype = WIN_INNOCENT end
+            title = wintitle[wintype]
+
+            -- If this was a monster win, check that both roles are part of the monsters team still
+            if wintype == WIN_MONSTER then
+                -- If Zombies are not monsters then Vampires win
+                if not MONSTER_ROLES[ROLE_ZOMBIE] then
+                    title.txt = "hilite_win_vampires"
+                    -- Also make sure to override the color because they will be different
+                    title.c = ROLE_COLORS[ROLE_VAMPIRE]
+                -- And vice versa
+                elseif not MONSTER_ROLES[ROLE_VAMPIRE] then
+                    title.txt = "hilite_win_zombies"
+                -- Otherwise the monsters legit win
+                else
+                    title.txt = "hilite_win_monster"
+                end
+            end
+            break
+        end
+    end
+
+    local bg = vgui.Create("ColoredBox", dpanel)
+    bg:SetColor(Color(97, 100, 102, 255))
+    bg:SetSize(w, h)
+    bg:SetPos(0, 0)
+
+    local winlbl = vgui.Create("DLabel", dpanel)
+    winlbl:SetFont("WinHuge")
+    winlbl:SetText(T(title.txt))
+    winlbl:SetTextColor(COLOR_WHITE)
+    winlbl:SizeToContents()
+    local xwin = (w - winlbl:GetWide())/2
+    local ywin = 15
+    winlbl:SetPos(xwin, ywin)
+
+    old_man_won_last_round = old_man_wins
+    local exwinlbl = vgui.Create("DLabel", dpanel)
+    if old_man_won_last_round then
+        exwinlbl:SetFont("WinSmall")
+        exwinlbl:SetText(T("hilite_win_old_man"))
+        exwinlbl:SetTextColor(COLOR_WHITE)
+        exwinlbl:SizeToContents()
+        local xexwin = (w - exwinlbl:GetWide()) / 2
+        local yexwin = 61
+        exwinlbl:SetPos(xexwin, yexwin)
+    else
+        exwinlbl:SetText("")
+    end
+
+    bg.PaintOver = function()
+        draw.RoundedBox(8, 8, ywin - 5, w - 14, winlbl:GetTall() + 10, title.c)
+        if old_man_won_last_round then draw.RoundedBoxEx(8, 8, 65, w - 14, 28, ROLE_COLORS[ROLE_OLDMAN], false, false, true, true) end
+        draw.RoundedBox(0, 8, ywin + winlbl:GetTall() + 14, 341, 330 + height_extra, Color(164, 164, 164, 255))
+        draw.RoundedBox(0, 357, ywin + winlbl:GetTall() + 14, 341, 330 + height_extra, Color(164, 164, 164, 255))
+        local loc = ywin + winlbl:GetTall() + 47
+        for _ = 1, player_rows do
+            draw.RoundedBox(0, 8, loc, 341, 1, Color(97, 100, 102, 255))
+            draw.RoundedBox(0, 357, loc, 341, 1, Color(97, 100, 102, 255))
+            loc = loc + 33
+        end
+        draw.RoundedBox(0, 8, ywin + winlbl:GetTall() + 352 + height_extra, 690, 32, Color(164, 164, 164, 255))
+    end
+
+    if old_man_won_last_round then winlbl:SetPos(xwin, ywin - 15) end
+
+    -- Add the players to the panel
     self:BuildPlayerList(scores_by_section[ROLE_INNOCENT], dpanel, 317, 8, 103, 33)
     self:BuildPlayerList(scores_by_section[ROLE_TRAITOR], dpanel, 666, 357, 103, 33)
-    self:BuildRoleLabel(scores_by_section[ROLE_JESTER], dpanel, 666, 8, 440)
+    self:BuildRoleLabel(scores_by_section[ROLE_JESTER], dpanel, 666, 8, 440 + height_extra)
 end
 
 local function GetRoleIconElement(roleFileName, roleColor, dpanel)
@@ -958,80 +994,80 @@ function CLSCORE:BuildHilitePanel(dpanel)
 end
 
 function CLSCORE:ShowPanel()
-    local dpanel = vgui.Create("DFrame")
+    parentPanel = vgui.Create("DFrame")
     local w, h = 750, 588
     local margin = 15
-    dpanel:SetSize(w, h)
-    dpanel:Center()
-    dpanel:SetTitle("Round Report")
-    dpanel:SetVisible(true)
-    dpanel:ShowCloseButton(true)
-    dpanel:SetMouseInputEnabled(true)
-    dpanel:SetKeyboardInputEnabled(true)
-    dpanel.OnKeyCodePressed = util.BasicKeyHandler
+    parentPanel:SetSize(w, h)
+    parentPanel:Center()
+    parentPanel:SetTitle("Round Report")
+    parentPanel:SetVisible(true)
+    parentPanel:ShowCloseButton(true)
+    parentPanel:SetMouseInputEnabled(true)
+    parentPanel:SetKeyboardInputEnabled(true)
+    parentPanel.OnKeyCodePressed = util.BasicKeyHandler
 
-    function dpanel:Think()
+    function parentPanel:Think()
         self:MoveToFront()
     end
 
     -- keep it around so we can reopen easily
-    dpanel:SetDeleteOnClose(false)
-    self.Panel = dpanel
+    parentPanel:SetDeleteOnClose(false)
+    self.Panel = parentPanel
 
-    local dbut = vgui.Create("DButton", dpanel)
+    closeButton = vgui.Create("DButton", parentPanel)
     local bw, bh = 100, 25
-    dbut:SetSize(bw, bh)
-    dbut:SetPos(w - bw - margin, h - bh - margin/2)
-    dbut:SetText(T("close"))
-    dbut.DoClick = function() dpanel:Close() end
+    closeButton:SetSize(bw, bh)
+    closeButton:SetPos(w - bw - margin, h - bh - margin/2)
+    closeButton:SetText(T("close"))
+    closeButton.DoClick = function() parentPanel:Close() end
 
-    local dsave = vgui.Create("DButton", dpanel)
-    dsave:SetSize(bw, bh)
-    dsave:SetPos(margin, h - bh - margin/2)
-    dsave:SetText(T("report_save"))
-    dsave:SetTooltip(T("report_save_tip"))
-    dsave:SetConsoleCommand("ttt_save_events")
+    saveButton = vgui.Create("DButton", parentPanel)
+    saveButton:SetSize(bw, bh)
+    saveButton:SetPos(margin, h - bh - margin/2)
+    saveButton:SetText(T("report_save"))
+    saveButton:SetTooltip(T("report_save_tip"))
+    saveButton:SetConsoleCommand("ttt_save_events")
 
-    local dtabsheet = vgui.Create("DPropertySheet", dpanel)
-    dtabsheet:SetPos(margin, margin + 15)
-    dtabsheet:SetSize(w - margin*2, h - margin*3 - bh)
-    local padding = dtabsheet:GetPadding()
+    parentTabs = vgui.Create("DPropertySheet", parentPanel)
+    parentTabs:SetPos(margin, margin + 15)
+    parentTabs:SetSize(w - margin*2, h - margin*3 - bh)
+    local padding = parentTabs:GetPadding()
 
     -- Summary tab
-    local dtabsummary = vgui.Create("DPanel", dtabsheet)
+    local dtabsummary = vgui.Create("DPanel", parentTabs)
     dtabsummary:SetPaintBackground(false)
     dtabsummary:StretchToParent(padding, padding, padding, padding)
     self:BuildSummaryPanel(dtabsummary)
 
-    dtabsheet:AddSheet(T("report_tab_summary"), dtabsummary, "icon16/book_open.png", false, false, T("report_tab_summary_tip"))
+    parentTabs:AddSheet(T("report_tab_summary"), dtabsummary, "icon16/book_open.png", false, false, T("report_tab_summary_tip"))
 
     -- Highlight tab
-    local dtabhilite = vgui.Create("DPanel", dtabsheet)
+    local dtabhilite = vgui.Create("DPanel", parentTabs)
     dtabhilite:SetPaintBackground(false)
     dtabhilite:StretchToParent(padding, padding, padding, padding)
     self:BuildHilitePanel(dtabhilite)
 
-    dtabsheet:AddSheet(T("report_tab_hilite"), dtabhilite, "icon16/star.png", false, false, T("report_tab_hilite_tip"))
+    parentTabs:AddSheet(T("report_tab_hilite"), dtabhilite, "icon16/star.png", false, false, T("report_tab_hilite_tip"))
 
     -- Event log tab
-    local dtabevents = vgui.Create("DPanel", dtabsheet)
+    local dtabevents = vgui.Create("DPanel", parentTabs)
     dtabevents:StretchToParent(padding, padding, padding, padding)
     self:BuildEventLogPanel(dtabevents)
 
-    dtabsheet:AddSheet(T("report_tab_events"), dtabevents, "icon16/application_view_detail.png", false, false, T("report_tab_events_tip"))
+    parentTabs:AddSheet(T("report_tab_events"), dtabevents, "icon16/application_view_detail.png", false, false, T("report_tab_events_tip"))
 
     -- Score tab
-    local dtabscores = vgui.Create("DPanel", dtabsheet)
+    local dtabscores = vgui.Create("DPanel", parentTabs)
     dtabscores:SetPaintBackground(false)
     dtabscores:StretchToParent(padding, padding, padding, padding)
     self:BuildScorePanel(dtabscores)
 
-    dtabsheet:AddSheet(T("report_tab_scores"), dtabscores, "icon16/user.png", false, false, T("report_tab_scores_tip"))
+    parentTabs:AddSheet(T("report_tab_scores"), dtabscores, "icon16/user.png", false, false, T("report_tab_scores_tip"))
 
-    dpanel:MakePopup()
+    parentPanel:MakePopup()
 
     -- makepopup grabs keyboard, whereas we only need mouse
-    dpanel:SetKeyboardInputEnabled(false)
+    parentPanel:SetKeyboardInputEnabled(false)
 end
 
 function CLSCORE:ClearPanel()

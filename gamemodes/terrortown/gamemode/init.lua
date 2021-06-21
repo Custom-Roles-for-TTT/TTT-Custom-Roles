@@ -217,13 +217,14 @@ CreateConVar("ttt_drunk_innocent_chance", "0.7")
 
 CreateConVar("ttt_old_man_starting_health", "1")
 
-CreateConVar("ttt_killer_max_health", "100")
+CreateConVar("ttt_killer_max_health", "150")
 CreateConVar("ttt_killer_knife_enabled", "1")
+CreateConVar("ttt_killer_crowbar_enabled", "1")
 CreateConVar("ttt_killer_smoke_enabled", "1")
 CreateConVar("ttt_killer_smoke_timer", "60")
 CreateConVar("ttt_killer_show_target_icon", "1")
-CreateConVar("ttt_killer_damage_penalty", "0.75")
-CreateConVar("ttt_killer_damage_reduction", "0.45")
+CreateConVar("ttt_killer_damage_penalty", "0.25")
+CreateConVar("ttt_killer_damage_reduction", "0")
 CreateConVar("ttt_killer_warn_all", "0")
 CreateConVar("ttt_killer_vision_enable", "1")
 
@@ -1197,8 +1198,12 @@ function BeginRound()
         -- Killer logic
         if v:GetRole() == ROLE_KILLER then
             if GetConVar("ttt_killer_knife_enabled"):GetBool() then
-                v:StripWeapon("weapon_zm_improvised")
                 v:Give("weapon_kil_knife")
+            end
+            if GetConVar("ttt_killer_crowbar_enabled"):GetBool() then
+                v:StripWeapon("weapon_zm_improvised")
+                v:Give("weapon_kil_crowbar")
+                v:SelectWeapon("weapon_kil_crowbar")
             end
             local max = GetConVar("ttt_killer_max_health"):GetInt()
             v:SetMaxHealth(max)
