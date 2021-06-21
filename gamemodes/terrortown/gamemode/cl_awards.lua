@@ -180,10 +180,9 @@ local function AllKills(events, scores, players)
     -- Someone killed all the traitors
     if #tr_killers == 1 then
         local id = tr_killers[1]
-        local role = GetRole(players, id)
+        local killer, role = GetNameAndRole(players, id)
         -- Don't celebrate team killers
         if not TRAITOR_ROLES[role] then
-            local killer = GetName(players, id)
             if not killer then return nil end
 
             return {nick=killer, title=T("aw_all1_title"), text=T("aw_all1_text"), priority=math.random(0, table.Count(players))}
@@ -193,10 +192,9 @@ local function AllKills(events, scores, players)
     -- Someone killed all the innocents
     if #in_killers == 1 then
         local id = in_killers[1]
-        local role = GetRole(players, id)
+        local killer, role = GetNameAndRole(players, id)
         -- Don't celebrate team killers
         if not INNOCENT_ROLES[role] then
-            local killer = GetName(players, id)
             if not killer then return nil end
 
             return {nick=killer, title=T("aw_all2_title"), text=T("aw_all2_text"), priority=math.random(0, table.Count(players))}
@@ -206,10 +204,9 @@ local function AllKills(events, scores, players)
     -- Someone killed all the monsters
     if #mon_killers == 1 then
         local id = mon_killers[1]
-        local role = GetRole(players, id)
+        local killer, role = GetNameAndRole(players, id)
         -- Don't celebrate team killers
         if not MONSTER_ROLES[role] then
-            local killer = players[id]
             if not killer then return nil end
 
             return {nick=killer, title=T("aw_all3_title"), text=T("aw_all3_text"), priority=math.random(0, table.Count(players))}
