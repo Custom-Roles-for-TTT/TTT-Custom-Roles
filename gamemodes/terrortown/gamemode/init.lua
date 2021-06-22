@@ -1459,7 +1459,7 @@ function GM:TTTCheckForWin()
 
     -- Drunk logic
     if drunk_alive then
-        if win_type == WIN_INNOCENT then
+        if not traitor_alive then
             if timer.Exists("drunkremember") then timer.Remove("drunkremember") end
             if timer.Exists("waitfordrunkrespawn") then timer.Remove("waitfordrunkrespawn") end
             for _, v in ipairs(player.GetAll()) do
@@ -1468,7 +1468,7 @@ function GM:TTTCheckForWin()
                 end
             end
             win_type = WIN_NONE
-        elseif win_type == WIN_TRAITOR then
+        elseif not innocent_alive then
             if timer.Exists("drunkremember") then timer.Remove("drunkremember") end
             if timer.Exists("waitfordrunkrespawn") then timer.Remove("waitfordrunkrespawn") end
             for _, v in ipairs(player.GetAll()) do
