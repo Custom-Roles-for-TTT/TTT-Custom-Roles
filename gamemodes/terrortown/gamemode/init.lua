@@ -389,6 +389,7 @@ util.AddNetworkString("TTT_PlayerFootstep")
 util.AddNetworkString("TTT_ClearPlayerFootsteps")
 util.AddNetworkString("TTT_JesterDeathCelebration")
 util.AddNetworkString("TTT_LoadMonsterEquipment")
+util.AddNetworkString("TTT_VampirePrimeDeath")
 
 local jester_killed = false
 
@@ -689,6 +690,11 @@ local function OnPlayerDeath(victim, infl, attacker)
 
             -- If there are no more living primes, do something with the non-primes
             if living_vampire_primes == 0 and #vampires > 0 then
+                net.Start("TTT_VampirePrimeDeath")
+                net.WriteUInt(vamp_prime_death_mode, 4)
+                net.WriteString(victim:Nick())
+                net.Broadcast()
+
                 -- Kill them
                 if vamp_prime_death_mode == VAMPIRE_DEATH_KILL_CONVERED then
                     for _, vnp in pairs(vampires) do

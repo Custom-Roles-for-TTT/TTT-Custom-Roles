@@ -159,6 +159,16 @@ net.Receive("TTT_Vampified", function(len)
     })
 end)
 
+net.Receive("TTT_VampirePrimeDeath", function(len)
+    local mode = net.ReadUInt(4)
+    local name = net.ReadString()
+    CLSCORE:AddEvent({
+        id = EVENT_VAMPPRIME_DEATH,
+        mode = mode,
+        prime = name
+    })
+end)
+
 net.Receive("TTT_Score_Bodysnatch", function(len)
     local victim = net.ReadString()
     local attacker = net.ReadString()

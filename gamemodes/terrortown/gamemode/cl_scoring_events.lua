@@ -429,3 +429,19 @@ Event(EVENT_VAMPIFIED, {
     icon = function(e)
         return vampire_icon, "Vampified"
     end})
+
+Event(EVENT_VAMPPRIME_DEATH, {
+    text = function(e)
+        if e.mode == VAMPIRE_DEATH_REVERT_CONVERTED then
+           return PT("ev_vampi_revert_converted", {prime=e.prime})
+        elseif e.mode == VAMPIRE_DEATH_KILL_CONVERED then
+           return PT("ev_vampi_kill_converted", {prime=e.prime})
+        end
+    end,
+    icon = function(e)
+        if e.mode == VAMPIRE_DEATH_REVERT_CONVERTED then
+           return heart_icon, "Restored"
+        elseif e.mode == VAMPIRE_DEATH_KILL_CONVERED then
+           return wrong_icon, "Killed"
+        end
+    end})
