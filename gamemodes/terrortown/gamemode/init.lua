@@ -485,8 +485,8 @@ function GM:SyncGlobals()
     SetGlobalBool("ttt_shop_imp_sync", GetConVar("ttt_shop_imp_sync"):GetBool())
     SetGlobalBool("ttt_shop_asn_sync", GetConVar("ttt_shop_asn_sync"):GetBool())
     SetGlobalInt("ttt_shop_mer_mode", GetConVar("ttt_shop_mer_mode"):GetInt())
-	
-	SetGlobalInt("ttt_doctor_mode", GetConVar("ttt_doctor_mode"):GetInt())
+
+    SetGlobalInt("ttt_doctor_mode", GetConVar("ttt_doctor_mode"):GetInt())
 
     SetGlobalBool("ttt_phantom_killer_smoke", GetConVar("ttt_phantom_killer_smoke"):GetBool())
     SetGlobalInt("ttt_phantom_killer_haunt_power_max", GetConVar("ttt_phantom_killer_haunt_power_max"):GetInt())
@@ -1123,16 +1123,16 @@ function BeginRound()
             v:SetMaxHealth(max)
             v:SetHealth(max)
         end
-		
-		--Doctor Logic
-		if v:GetRole() == ROLE_DOCTOR then
-			local mode = GetConVar("ttt_doctor_mode"):GetInt()
-			if mode == 1 then
-				v:Give("weapon_ttt_health_station")
-			elseif mode == 2 then 
-				v:Give("weapon_ttt_doc_defib")
-			end
-		end
+
+        --Doctor Logic
+        if v:GetRole() == ROLE_DOCTOR then
+            local mode = GetConVar("ttt_doctor_mode"):GetInt()
+            if mode == 1 then
+                v:Give("weapon_ttt_health_station")
+            elseif mode == 2 then
+                v:Give("weapon_ttt_doc_defib")
+            end
+        end
     end
 
     net.Start("TTT_ResetScoreboard")
@@ -1767,7 +1767,7 @@ function SelectRoles()
                 table.insert(specialInnocentRoles, ROLE_VETERAN)
             end
         end
-		if not hasDoctor and GetConVar("ttt_Doctor_enabled"):GetBool() and choice_count >= GetConVar("ttt_Doctor_min_players"):GetInt() then
+        if not hasDoctor and GetConVar("ttt_Doctor_enabled"):GetBool() and choice_count >= GetConVar("ttt_Doctor_min_players"):GetInt() then
             for _ = 1, GetConVar("ttt_Doctor_spawn_weight"):GetInt() do
                 table.insert(specialInnocentRoles, ROLE_DOCTOR)
             end

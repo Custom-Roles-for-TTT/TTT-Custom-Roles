@@ -261,7 +261,7 @@ ROLE_STRINGS = {
     [ROLE_VETERAN] = "veteran",
     [ROLE_ASSASSIN] = "assassin",
     [ROLE_KILLER] = "killer",
-	[ROLE_DOCTOR] = "doctor"
+    [ROLE_DOCTOR] = "doctor"
 }
 
 ROLE_STRINGS_EXT = {
@@ -286,7 +286,7 @@ ROLE_STRINGS_EXT = {
     [ROLE_VETERAN] = "a veteran",
     [ROLE_ASSASSIN] = "an assassin",
     [ROLE_KILLER] = "a killer",
-	[ROLE_DOCTOR] = "a doctor"
+    [ROLE_DOCTOR] = "a doctor"
 }
 
 ROLE_STRINGS_SHORT = {
@@ -310,7 +310,7 @@ ROLE_STRINGS_SHORT = {
     [ROLE_VETERAN] = "vet",
     [ROLE_ASSASSIN] = "asn",
     [ROLE_KILLER] = "kil",
-	[ROLE_DOCTOR] = "doc"
+    [ROLE_DOCTOR] = "doc"
 }
 
 -- Game event log defs
