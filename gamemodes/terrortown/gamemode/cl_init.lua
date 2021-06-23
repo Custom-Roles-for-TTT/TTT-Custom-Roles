@@ -767,7 +767,7 @@ hook.Add("TTTPrepareRound", "TTTSprintPrepareRound", function()
             end
 
             if GetRoundState() ~= ROUND_WAIT then
-                if IsValid(client) and client:IsPlayer() and (client:IsTraitorTeam() or client:IsIndependentTeam()) then
+                if IsValid(client) and client:IsPlayer() and (client:IsTraitorTeam() or client:IsMonsterTeam() or client:IsIndependentTeam()) then
                     stamina = stamina + (CurTime() - recoveryTimer) * traitorRecovery * 250
                 else
                     stamina = stamina + (CurTime() - recoveryTimer) * recovery * 250
