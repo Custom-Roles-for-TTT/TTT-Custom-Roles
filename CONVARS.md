@@ -132,6 +132,8 @@ ttt_veteran_full_heal                       1       // Whether the veteran gets 
 // Mercenary
 ttt_mer_credits_starting                    1       // The number of credits a Mercenary should start with
 
+// Doctor                                   1       // How the Doctor should be played (1=Health Station, 2=Defib then Health Station)
+
 // ----------------------------------------
 
 // JESTER TEAM SETTINGS
