@@ -1552,6 +1552,12 @@ function GM:EntityTakeDamage(ent, dmginfo)
             dmginfo:ScaleDamage(0)
             dmginfo:SetDamage(0)
         end
+
+        -- Prevent damage from non-bullet weapons
+        if att:IsPlayer() and att:IsJesterTeam() and not att:GetNWBool("KillerClownActive", false) then
+            dmginfo:ScaleDamage(0)
+            dmginfo:SetDamage(0)
+        end
     end
 
     if not GAMEMODE:AllowPVP() then
