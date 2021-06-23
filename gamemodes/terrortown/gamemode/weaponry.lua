@@ -418,12 +418,26 @@ local function OrderEquipment(ply, cmd, args)
 
         -- If it's not allowed, check the extra buyable equipment
         if not allowed then
-            for _, v in pairs(WEPS.BuyableWeapons[role]) do
+            for _, v in ipairs(WEPS.BuyableWeapons[role]) do
                 -- If this isn't a weapon, get its information from one of the roles and compare that to the ID we have
                 if not weapons.GetStored(v) then
                     local equip = GetEquipmentItemById(id)
                     if equip ~= nil then
                         allowed = true
+                        break
+                    end
+                end
+            end
+        end
+
+        -- Lastly, if it is allowed check the exclude equipment list
+        if allowed then
+            for _, v in ipairs(WEPS.ExcludeWeapons[role]) do
+                -- If this isn't a weapon, get its information from one of the roles and compare that to the ID we have
+                if not weapons.GetStored(v) then
+                    local equip = GetEquipmentItemById(id)
+                    if equip ~= nil then
+                        allowed = false
                         break
                     end
                 end
@@ -542,6 +556,15 @@ local function CheatCredits(ply)
 end
 concommand.Add("ttt_cheat_credits", CheatCredits, nil, nil, FCVAR_CHEAT)
 
+local function IsSameTeam(first, second)
+    if first:IsTraitorTeam() and second:IsTraitorTeam() then
+        return true
+    elseif first:IsInnocentTeam() and second:IsInnocentTeam() then
+        return true
+    end
+    return first:GetRole() == second:GetRole()
+end
+
 local function TransferCredits(ply, cmd, args)
     if (not IsValid(ply)) or (not ply:IsActiveSpecial()) then return end
     if #args ~= 2 then return end
@@ -550,7 +573,7 @@ local function TransferCredits(ply, cmd, args)
     local credits = tonumber(args[2])
     if sid and credits then
         local target = player.GetBySteamID64(sid)
-        if (not IsValid(target)) or (not target:IsActiveSpecial()) or (target:GetRole() ~= ply:GetRole()) or (target == ply) then
+        if (not IsValid(target)) or (not target:IsActiveSpecial()) or not IsSameTeam(target, ply) or (target == ply) then
             LANG.Msg(ply, "xfer_no_recip")
             return
         end

@@ -316,10 +316,10 @@ function HELPSCRN:Show()
 
     -- BEM settings
 
-    local padding = dtabs:GetPadding()
+    padding = dtabs:GetPadding()
     padding = padding * 2
 
-    local dsettings = vgui.Create("DPanelList", dtabs)
+    dsettings = vgui.Create("DPanelList", dtabs)
     dsettings:StretchToParent(0, 0, padding, 0)
     dsettings:EnableVerticalScrollbar(true)
     dsettings:SetPadding(10)
@@ -352,6 +352,34 @@ function HELPSCRN:Show()
     dsettings:AddItem(dmarker)
 
     dtabs:AddSheet("BEM settings", dsettings, "icon16/cog.png", false, false, "Better Equipment Menu Settings")
+
+    -- Hitmarkers Settings
+
+    padding = dtabs:GetPadding()
+    padding = padding * 2
+
+    dsettings = vgui.Create("DPanelList", dtabs)
+    dsettings:StretchToParent(0, 0, padding, 0)
+    dsettings:EnableVerticalScrollbar(true)
+    dsettings:SetPadding(10)
+    dsettings:SetSpacing(10)
+
+    dlabel = vgui.Create("DLabel", dsettings)
+    dlabel:SetText("All changes made here are clientside and will only apply to your own menu!\nUse the !hmcolor command in chat to change the marker colors.\nUse the !hmcritcolor command in chat to change the color of critical hit markers.")
+    dlabel:SetTextColor(Color(0, 0, 0, 255))
+    dlabel:SizeToContents()
+    dsettings:AddItem(dlabel)
+
+    local dmarkers = vgui.Create("DForm", dsettings)
+    dmarkers:SetName("Hitmarkers")
+
+    dmarkers:CheckBox("Enabled", "hm_enabled")
+    dmarkers:CheckBox("Show criticals", "hm_showcrits")
+    dmarkers:CheckBox("Play hit sound", "hm_hitsound")
+
+    dsettings:AddItem(dmarkers)
+
+    dtabs:AddSheet("HM settings", dsettings, "icon16/cross.png", false, false, "Hitmarker settings")
 
     hook.Call("TTTSettingsTabs", GAMEMODE, dtabs)
 

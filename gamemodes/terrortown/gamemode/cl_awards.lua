@@ -26,6 +26,20 @@ local function GetRole(players, id)
     return player and player.role or ROLE_NONE
 end
 
+local function GetName(players, id)
+    local player = players[id]
+    return player and player.nick or nil
+end
+
+local function GetNameAndRole(players, id)
+    local player = players[id]
+    if not player then return nil, nil end
+
+    local name = player.nick or nil
+    local role = player.role or ROLE_NONE
+    return name, role
+end
+
 -- a common pattern
 local function FindHighest(tbl)
     local m_num = 0
@@ -53,9 +67,9 @@ local function FirstSuicide(events, scores, players)
     end
 
     if fs then
-        local award = {nick=fs.att.ni}
-        if not award.nick then return nil end
+        if not fs.att.ni or fs.att.ni == "" then return nil end
 
+        local award = {nick=fs.att.ni}
         if fnum > 1 then
             award.title = T("aw_sui1_title")
             award.text =  T("aw_sui1_text")
@@ -87,7 +101,7 @@ local function ExplosiveGrant(events, scores, players)
         for sid, num in pairs(bombers) do
             -- award goes to whoever reaches this first I guess
             if num > 2 then
-                award.nick = players[sid].nick
+                award.nick = GetName(players, sid)
                 if not award.nick then return nil end -- if player disconnected or something
 
                 award.text = PT("aw_exp1_text", {num = num})
@@ -116,9 +130,9 @@ end
 local function FirstBlood(events, scores, players)
     for _, e in pairs(events) do
         if e.id == EVENT_KILL and e.att.sid64 ~= e.vic.sid64 and e.att.sid64 ~= -1 then
-            local award = {nick=e.att.ni}
-            if not award.nick or award.nick == "" then return nil end
+            if not e.att.ni or e.att.ni == "" then return nil end
 
+            local award = {nick=e.att.ni}
             local attackerrole = GetRoleName(e.att)
             local victimrole = GetRoleName(e.vic)
             -- Non-Innocent killed Innocent
@@ -165,8 +179,8 @@ local function AllKills(events, scores, players)
         local id = tr_killers[1]
         local role = GetRole(players, id)
         -- Don't celebrate team killers
-        if TRAITOR_ROLES[role] then
-            local killer = players[id].nick
+        if not TRAITOR_ROLES[role] then
+            local killer = GetName(players, id)
             if not killer then return nil end
 
             return {nick=killer, title=T("aw_all1_title"), text=T("aw_all1_text"), priority=math.random(0, table.Count(players))}
@@ -178,8 +192,8 @@ local function AllKills(events, scores, players)
         local id = in_killers[1]
         local role = GetRole(players, id)
         -- Don't celebrate team killers
-        if INNOCENT_ROLES[role] then
-            local killer = players[id].nick
+        if not INNOCENT_ROLES[role] then
+            local killer = GetName(players, id)
             if not killer then return nil end
 
             return {nick=killer, title=T("aw_all2_title"), text=T("aw_all2_text"), priority=math.random(0, table.Count(players))}
@@ -205,7 +219,7 @@ local function NumKills_Traitor(events, scores, players)
         -- award a random killer
         local pick = math.random(1, choices)
         local sid = trs[pick]
-        local nick = players[sid].nick
+        local nick = GetName(players, sid)
         if not nick then return nil end
 
         -- All non-traitor kills
@@ -242,7 +256,7 @@ local function NumKills_Inno(events, scores, players)
         -- award a random killer
         local pick = math.random(1, choices)
         local sid = ins[pick]
-        local nick = players[sid].nick
+        local nick = GetName(players, sid)
         if not nick then return nil end
 
         -- All non-innocent kills
@@ -297,10 +311,9 @@ local function Headshots(events, scores, players)
 
     -- find the one with the most shots
     local m_id, m_num = FindHighest(hs)
-
     if not m_id then return nil end
 
-    local nick = players[m_id].nick
+    local nick = GetName(players, m_id)
     if not nick then return nil end
 
     local award = {nick=nick, priority=m_num / 2}
@@ -342,7 +355,7 @@ local function CrowbarUser(events, scores, players)
     local most = UsedAmmoMost(events, AMMO_CROWBAR)
     if not most then return nil end
 
-    local nick = players[most.sid64].nick
+    local nick = GetName(players, most.sid64)
     if not nick then return nil end
 
     local award = {nick=nick, priority=most.kills + math.random(0, 4)}
@@ -365,7 +378,7 @@ local function PistolUser(events, scores, players)
     local most = UsedAmmoMost(events, AMMO_PISTOL)
     if not most then return nil end
 
-    local nick = players[most.sid64].nick
+    local nick = GetName(players, most.sid64)
     if not nick then return nil end
 
     local award = {nick=nick, priority=most.kills}
@@ -388,7 +401,7 @@ local function ShotgunUser(events, scores, players)
     local most = UsedAmmoMost(events, AMMO_SHOTGUN)
     if not most then return nil end
 
-    local nick = players[most.sid64].nick
+    local nick = GetName(players, most.sid64)
     if not nick then return nil end
 
     local award = {nick=nick, priority=most.kills}
@@ -411,7 +424,7 @@ local function RifleUser(events, scores, players)
     local most = UsedAmmoMost(events, AMMO_RIFLE)
     if not most then return nil end
 
-    local nick = players[most.sid64].nick
+    local nick = GetName(players, most.sid64)
     if not nick then return nil end
 
     local award = {nick=nick, priority=most.kills}
@@ -434,7 +447,7 @@ local function DeagleUser(events, scores, players)
     local most = UsedAmmoMost(events, AMMO_DEAGLE)
     if not most then return nil end
 
-    local nick = players[most.sid64].nick
+    local nick = GetName(players, most.sid64)
     if not nick then return nil end
 
     local award = {nick=nick, priority=most.kills}
@@ -458,7 +471,7 @@ local function MAC10User(events, scores, players)
     local most = UsedAmmoMost(events, AMMO_MAC10)
     if not most then return nil end
 
-    local nick = players[most.sid64].nick
+    local nick = GetName(players, most.sid64)
     if not nick then return nil end
 
     local award = {nick=nick, priority=most.kills}
@@ -481,7 +494,7 @@ local function SilencedPistolUser(events, scores, players)
     local most = UsedAmmoMost(events, AMMO_SIPISTOL)
     if not most then return nil end
 
-    local nick = players[most.sid64].nick
+    local nick = GetName(players, most.sid64)
     if not nick then return nil end
 
     local award = {nick=nick, priority=most.kills}
@@ -506,10 +519,9 @@ local function KnifeUser(events, scores, players)
     local playerInfo = players[most.sid64]
     if not playerInfo then return nil end
 
-    local nick = playerInfo.nick
+    local nick, role = GetNameAndRole(players, most.sid64)
     if not nick then return nil end
 
-    local role = playerInfo.role
     local award = {nick=nick, priority=most.kills}
     local kills = most.kills
 
@@ -540,7 +552,7 @@ local function FlareUser(events, scores, players)
     local most = UsedAmmoMost(events, AMMO_FLARE)
     if not most then return nil end
 
-    local nick = players[most.sid64].nick
+    local nick = GetName(players, most.sid64)
     if not nick then return nil end
 
     local award = {nick=nick, priority=most.kills}
@@ -562,7 +574,7 @@ local function M249User(events, scores, players)
     local most = UsedAmmoMost(events, AMMO_M249)
     if not most then return nil end
 
-    local nick = players[most.sid64].nick
+    local nick = GetName(players, most.sid64)
     if not nick then return nil end
 
     local award = {nick=nick, priority=most.kills}
@@ -584,7 +596,7 @@ local function M16User(events, scores, players)
     local most = UsedAmmoMost(events, AMMO_M16)
     if not most then return nil end
 
-    local nick = players[most.sid64].nick
+    local nick = GetName(players, most.sid64)
     if not nick then return nil end
 
     local award = {nick=nick, priority=most.kills}
@@ -634,13 +646,9 @@ local function TeamKiller(events, scores, players)
     -- no tks
     if pct == 0 or tker == nil then return nil end
 
-    local tkerInfo = players[tker]
-    if not tkerInfo then return nil end
-
-    local nick = tkerInfo.nick
+    local nick, tkerRole = GetNameAndRole(players, tker)
     if not nick then return nil end
 
-    local tkerRole = tkerInfo.role
     local was_traitor = TRAITOR_ROLES[tkerRole]
     local kills = (was_traitor and scores[tker].traitors > 0 and scores[tker].traitors) or (scores[tker].innos > 0 and scores[tker].innos) or 0
     local award = {nick=nick, priority=kills}
@@ -687,10 +695,9 @@ local function Burner(events, scores, players)
 
     -- find the one with the most burnings
     local m_id, m_num = FindHighest(brn)
-
     if not m_id then return nil end
 
-    local nick = players[m_id].nick
+    local nick = GetName(players, m_id)
     if not nick then return nil end
 
     local award = {nick=nick, priority=m_num * 2}
@@ -722,10 +729,9 @@ local function Coroner(events, scores, players)
     if table.IsEmpty(finders) then return end
 
     local m_id, m_num = FindHighest(finders)
-
     if not m_id then return nil end
 
-    local nick = players[m_id].nick
+    local nick = GetName(players, m_id)
     if not nick then return nil end
 
     local award = {nick=nick, priority=m_num}
@@ -757,10 +763,9 @@ local function CreditFound(events, scores, players)
     if table.IsEmpty(finders) then return end
 
     local m_id, m_num = FindHighest(finders)
-
     if not m_id then return nil end
 
-    local nick = players[m_id].nick
+    local nick = GetName(players, m_id)
     if not nick then return nil end
 
     local award = {nick=nick}

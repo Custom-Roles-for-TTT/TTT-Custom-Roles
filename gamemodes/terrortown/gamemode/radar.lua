@@ -21,8 +21,13 @@ local function RadarScan(ply, cmd, args)
 
             local targets = {}
             for _, p in ipairs(scan_ents) do
-                if ply ~= p and IsValid(p) then
-                    if (p:IsPlayer() and p:IsTerror()) or not p:IsPlayer() then
+                -- Only show radar blips for other entities that are valid
+                if (ply ~= p and IsValid(p)) and
+                    -- Only show non-players or players who are actually playing currently
+                    (not p:IsPlayer() or (p:IsPlayer() and p:IsTerror())) then
+
+                    -- If the target is disguised, only show the icon for the traitor team
+                    if not p:GetNWBool("disguised", false) or ply:IsTraitorTeam() then
                         local pos = p:LocalToWorld(p:OBBCenter())
 
                         -- Round off, easier to send and inaccuracy does not matter
@@ -35,12 +40,12 @@ local function RadarScan(ply, cmd, args)
                         table.insert(targets, { role = role, pos = pos })
                     end
                 end
-            end
+			end
 
             net.Start("TTT_Radar")
             net.WriteUInt(#targets, 8)
             for _, tgt in ipairs(targets) do
-                net.WriteUInt(tgt.role, 8)
+                net.WriteInt(tgt.role, 8)
 
                 net.WriteInt(tgt.pos.x, 32)
                 net.WriteInt(tgt.pos.y, 32)

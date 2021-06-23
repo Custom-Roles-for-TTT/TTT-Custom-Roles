@@ -13,16 +13,16 @@ function CountTraitors() return #GetTraitors() end
 
 -- Send every player their role
 local function SendPlayerRoles()
-    for k, v in ipairs(player.GetAll()) do
+    for _, v in ipairs(player.GetAll()) do
         net.Start("TTT_Role")
-        net.WriteUInt(v:GetRole(), 8)
+        net.WriteInt(v:GetRole(), 8)
         net.Send(v)
     end
 end
 
 local function SendRoleListMessage(role, role_ids, ply_or_rf)
     net.Start("TTT_RoleList")
-    net.WriteUInt(role, 8)
+    net.WriteInt(role, 8)
 
     -- list contents
     local num_ids = #role_ids
@@ -105,7 +105,7 @@ function SendRoleReset(ply_or_rf)
     local plys = player.GetAll()
 
     net.Start("TTT_RoleList")
-    net.WriteUInt(ROLE_INNOCENT, 8)
+    net.WriteInt(ROLE_INNOCENT, 8)
 
     net.WriteUInt(#plys, 8)
     for _, v in ipairs(plys) do

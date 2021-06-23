@@ -1,6 +1,8 @@
 AddCSLuaFile("shared.lua")
 include("shared.lua")
 
+ENT.DidCollide = false
+
 function ENT:Initialize()
     self.Entity:SetModel("models/weapons/w_bugbait.mdl")
     self:PrecacheGibs()
@@ -15,22 +17,25 @@ function ENT:Initialize()
 end
 
 function ENT:PhysicsCollide(data, physObj)
-    if data.HitEntity:IsPlayer() then
-        local dmginfo = DamageInfo()
-        dmginfo:SetDamage(50)
-        dmginfo:SetAttacker(self:GetOwner())
-        dmginfo:SetInflictor(self)
-        dmginfo:SetDamageType(DMG_SLASH)
-        dmginfo:SetDamagePosition(self:GetPos())
+    if not self.DidCollide then
+        if data.HitEntity:IsPlayer() then
+            local dmginfo = DamageInfo()
+            dmginfo:SetDamage(50)
+            dmginfo:SetAttacker(self:GetOwner())
+            dmginfo:SetInflictor(self)
+            dmginfo:SetDamageType(DMG_SLASH)
+            dmginfo:SetDamagePosition(self:GetPos())
 
-        data.HitEntity:TakeDamageInfo(dmginfo)
+            data.HitEntity:TakeDamageInfo(dmginfo)
+        end
+
+        local ent = ents.Create("ttt_crowbar")
+        ent:SetPos(self:GetPos())
+        ent:SetAngles(self:GetAngles())
+        ent:Spawn()
+        ent:SetModel("models/weapons/w_crowbar.mdl")
+        self.DidCollide = true
     end
-
-    local ent = ents.Create("ttt_crowbar")
-    ent:SetPos(self:GetPos())
-    ent:SetAngles(self:GetAngles())
-    ent:Spawn()
-    ent:SetModel("models/weapons/w_crowbar.mdl")
 
     self:Remove()
 end
