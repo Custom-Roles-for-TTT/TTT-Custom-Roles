@@ -11,17 +11,17 @@ SWEP.HoldType = "pistol"
 SWEP.LimitedStock = true
 
 if CLIENT then
-	SWEP.PrintName = "Defibrillator"
-	SWEP.Slot = 8
-	
-	SWEP.ViewModelFOV = 78
-	SWEP.DrawCrosshair = false
-	SWEP.ViewModelFlip = false
-	
-	SWEP.EquipMenuData = {
-		type = "item_weapon",
-		desc = "Revives a dead terrorist."
-	}
+    SWEP.PrintName = "Defibrillator"
+    SWEP.Slot = 8
+
+    SWEP.ViewModelFOV = 78
+    SWEP.DrawCrosshair = false
+    SWEP.ViewModelFlip = false
+
+    SWEP.EquipMenuData = {
+        type = "item_weapon",
+        desc = "Revives a dead terrorist."
+    }
 end
 
 SWEP.Base = "weapon_tttbase"
@@ -54,10 +54,10 @@ local mutatemax = 0
 local spawnhealth = 100
 
 local mutate = {
-	["models/props_junk/watermelon01.mdl"] = true,
-	["models/props/cs_italy/orange.mdl"] = true,
-	["models/props/cs_italy/bananna.mdl"] = true,
-	["models/props/cs_italy/bananna_bunch.mdl"] = true
+    ["models/props_junk/watermelon01.mdl"] = true,
+    ["models/props/cs_italy/orange.mdl"] = true,
+    ["models/props/cs_italy/bananna.mdl"] = true,
+    ["models/props/cs_italy/bananna_bunch.mdl"] = true
 }
 
 local beep = Sound("buttons/button17.wav")
@@ -79,301 +79,301 @@ local DEFIB_BUSY = 1
 local DEFIB_ERROR = 2
 
 if CLIENT then
-	function SWEP:Initialize()
-		self:AddHUDHelp("defibrillator_help_pri", "defibrillator_help_sec", true)
-		self:SetHoldType(self.HoldType)
-	end
+    function SWEP:Initialize()
+        self:AddHUDHelp("defibrillator_help_pri", "defibrillator_help_sec", true)
+        self:SetHoldType(self.HoldType)
+    end
 end
 
 function SWEP:SetupDataTables()
-	self:NetworkVar("Int", 0, "State")
-	self:NetworkVar("Float", 1, "Begin")
-	self:NetworkVar("String", 0, "Message")
+    self:NetworkVar("Int", 0, "State")
+    self:NetworkVar("Float", 1, "Begin")
+    self:NetworkVar("String", 0, "Message")
 end
 
 function SWEP:OnDrop()
-	self:Remove()
+    self:Remove()
 end
 
 if SERVER then
-	util.AddNetworkString("TTT_Defib_Hide")
-	util.AddNetworkString("TTT_Defib_Revived")
-	--util.AddNetworkString("TTT_Hypnotised")
-	
-	local offsets = {}
-	
-	for i = 0, 360, 15 do
-		table.insert(offsets, Vector(math.sin(i), math.cos(i), 0))
-	end
-	
-	function SWEP:FindRespawnLocation()
-		local midsize = Vector(33, 33, 74)
-		local tstart = self:GetOwner():GetPos() + Vector(0, 0, midsize.z / 2)
-		
-		for i = 1, #offsets do
-			local o = offsets[i]
-			local v = tstart + o * midsize * 1.5
-			
-			local t = {
-				start = v,
-				endpos = v,
-				filter = target,
-				mins = midsize / -2,
-				maxs = midsize / 2
-			}
-			
-			local tr = util.TraceHull(t)
-			
-			if not tr.Hit then return (v - Vector(0, 0, midsize.z / 2)) end
-		end
-		
-		return false
-	end
-	
-	local function validbody(body)
-		return (CORPSE.GetPlayerNick(body, false) ~= false)
-	end
-	
-	local function bodyply(body)
-		local ply = false
-		
-		if body.sid == "BOT" then
-			ply = player.GetByUniqueID(body.uqid)
-		else
-			ply = player.GetBySteamID(body.sid)
-		end
-		
-		if not IsValid(ply) then return false end
-		
-		return ply
-	end
-	
-	function SWEP:Reset()
-		self:SetState(DEFIB_IDLE)
-		self:SetBegin(-1)
-		self:SetMessage('')
-		self.Target = nil
-	end
-	
-	function SWEP:Error(msg)
-		self:SetState(DEFIB_ERROR)
-		self:SetBegin(CurTime())
-		self:SetMessage(msg)
-		
-		self:GetOwner():EmitSound(beep, 60, 50, 1)
-		self.Target = nil
-		
-		timer.Simple(3 * 0.75, function()
-			if IsValid(self) then self:Reset() end
-		end)
-	end
-	
-	function SWEP:DoRespawn(body)
-		local ply = bodyply(body)
-		local credits = CORPSE.GetCredits(body, 0) or 0
-		
-		--[[ if ply:IsTraitor() and CORPSE.GetFound(body, false) == true then
-			local plys = {}
-			
-			for _, v in pairs(player.GetAll()) do
-				if not v:IsTraitor() then
-					table.insert(plys, v)
-				end
-			end
-			
-			net.Start("TTT_Defib_Hide")
-			net.WriteEntity(ply)
-			net.WriteBool(true)
-			net.Send(plys)
-		end ]]
-		
-		net.Start("TTT_Defib_Revived")
-		net.WriteBool(true)
-		net.Send(ply)
-		
-		--[[ net.Start("TTT_Hypnotised")
-		net.WriteString(ply:Nick())
-		net.Broadcast() ]]
-		
-		ply:SpawnForRound(true)
-		ply:SetCredits(credits)
-		ply:SetPos(self.Location or body:GetPos())
-		ply:SetEyeAngles(Angle(0, body:GetAngles().y, 0))
-		--ply:SetRole(ROLE_TRAITOR)
-		ply:PrintMessage(HUD_PRINTCENTER, "You have been revived by a Doctor!")
-		ply:SetHealth(ply:GetMaxHealth())
-		
-		body:Remove()
-		
-		self:GetOwner():Give("weapon_ttt_health_station")
+    util.AddNetworkString("TTT_Defib_Hide")
+    util.AddNetworkString("TTT_Defib_Revived")
+    --util.AddNetworkString("TTT_Hypnotised")
 
-		SendFullStateUpdate()
+    local offsets = {}
 
-		
-		self:GetOwner():ConCommand("lastinv")
-		self:Remove()
-	end
-	
-	function SWEP:Defib()
-		sound.Play(zap, self.Target:GetPos(), 75, math.random(95, 105), 1)
-		
-		if math.random(0, 100) > success then
-			local phys = self.Target:GetPhysicsObjectNum(self.Bone)
-			
-			if IsValid(phys) then
-				phys:ApplyForceCenter(Vector(0, 0, 4096))
-			end
-			
-			self:Error("ATTEMPT FAILED TRY AGAIN")
-			return
-		end
-		if not IsFirstTimePredicted() then return end
-		
-		self:DoRespawn(self.Target)
-		self:Reset()
-	end
-	
-	function SWEP:Begin(body, bone)
-		local ply = bodyply(body)
-		
-		if not ply then self:Error("INVALID TARGET") return end
-		
-		if ply:GetSwapper() or ply:GetJester() then self:Error("SUBJECT IS A JESTER") return end
-		
-		self:SetState(DEFIB_BUSY)
-		self:SetBegin(CurTime())
-		self:SetMessage("DEFIBRILLATING " .. string.upper(ply:Nick()))
-		
-		self:GetOwner():EmitSound(hum, 75, math.random(98, 102), 1)
-		
-		self.Target = body
-		self.Bone = bone
-	end
-	
-	function SWEP:Think()
-		if self:GetState() == DEFIB_BUSY then
-			if self:GetBegin() + charge <= CurTime() then
-				self:Defib()
-			elseif not self:GetOwner():KeyDown(IN_ATTACK) or self:GetOwner():GetEyeTrace(MASK_SHOT_HULL).Entity ~= self.Target then
-				self:Error("DEFIBRILLATION ABORTED")
-			end
-		end
-	end
-	
-	function SWEP:PrimaryAttack()
-		if self:GetState() ~= DEFIB_IDLE then return end
-		
-		local tr = self:GetOwner():GetEyeTrace(MASK_SHOT_HULL)
-		
-		if tr.HitPos:Distance(self:GetOwner():GetPos()) > maxdist then return end
-		if GetRoundState() ~= ROUND_ACTIVE then return end
-		
-		local ent = tr.Entity
-		
-		if ent and IsValid(ent) then
+    for i = 0, 360, 15 do
+        table.insert(offsets, Vector(math.sin(i), math.cos(i), 0))
+    end
 
-			if ent:GetClass() == "prop_physics" and mutate[ent:GetModel()] and mutateok > 0 then
-				self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-				ent:EmitSound(zap, 75, math.random(98, 102))
-				ent:SetModelScale(math.min(mutatemax, ent:GetModelScale() + 0.25), 1)
-			elseif ent:GetClass() == "prop_ragdoll" and validbody(ent) then
-				self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-				self.Location = self:FindRespawnLocation()
-				
-				if self.Location then
-					self:Begin(ent, tr.PhysicsBone)
-				else
-					self:Error("INSUFFICIENT ROOM")
-					return
-				end
-			elseif ent:IsPlayer() and ent:IsActive() and (ent:GetRole() == ROLE_JESTER or ent:GetRole() == ROLE_SWAPPER) and not ent:IsFrozen() then
-				self:SetNextPrimaryFire(CurTime() + 0.1)
-				ent:EmitSound(zap, 100, math.random(98, 102))
-				ent:Freeze(true)
-				ent:ScreenFade(SCREENFADE.IN, Color(255, 255, 255, 255), 1, 10)
-				timer.Simple(10, function()
-					if IsValid(ent) then
-						ent:Freeze(false)
-					end
-				end)
-			end
-		end
-	end
+    function SWEP:FindRespawnLocation()
+        local midsize = Vector(33, 33, 74)
+        local tstart = self:GetOwner():GetPos() + Vector(0, 0, midsize.z / 2)
+
+        for i = 1, #offsets do
+            local o = offsets[i]
+            local v = tstart + o * midsize * 1.5
+
+            local t = {
+                start = v,
+                endpos = v,
+                filter = target,
+                mins = midsize / -2,
+                maxs = midsize / 2
+            }
+
+            local tr = util.TraceHull(t)
+
+            if not tr.Hit then return (v - Vector(0, 0, midsize.z / 2)) end
+        end
+
+        return false
+    end
+
+    local function validbody(body)
+        return (CORPSE.GetPlayerNick(body, false) ~= false)
+    end
+
+    local function bodyply(body)
+        local ply = false
+
+        if body.sid == "BOT" then
+            ply = player.GetByUniqueID(body.uqid)
+        else
+            ply = player.GetBySteamID(body.sid)
+        end
+
+        if not IsValid(ply) then return false end
+
+        return ply
+    end
+
+    function SWEP:Reset()
+        self:SetState(DEFIB_IDLE)
+        self:SetBegin(-1)
+        self:SetMessage('')
+        self.Target = nil
+    end
+
+    function SWEP:Error(msg)
+        self:SetState(DEFIB_ERROR)
+        self:SetBegin(CurTime())
+        self:SetMessage(msg)
+
+        self:GetOwner():EmitSound(beep, 60, 50, 1)
+        self.Target = nil
+
+        timer.Simple(3 * 0.75, function()
+            if IsValid(self) then self:Reset() end
+        end)
+    end
+
+    function SWEP:DoRespawn(body)
+        local ply = bodyply(body)
+        local credits = CORPSE.GetCredits(body, 0) or 0
+
+        --[[ if ply:IsTraitor() and CORPSE.GetFound(body, false) == true then
+            local plys = {}
+
+            for _, v in pairs(player.GetAll()) do
+                if not v:IsTraitor() then
+                    table.insert(plys, v)
+                end
+            end
+
+            net.Start("TTT_Defib_Hide")
+            net.WriteEntity(ply)
+            net.WriteBool(true)
+            net.Send(plys)
+        end ]]
+
+        net.Start("TTT_Defib_Revived")
+        net.WriteBool(true)
+        net.Send(ply)
+
+        --[[ net.Start("TTT_Hypnotised")
+        net.WriteString(ply:Nick())
+        net.Broadcast() ]]
+
+        ply:SpawnForRound(true)
+        ply:SetCredits(credits)
+        ply:SetPos(self.Location or body:GetPos())
+        ply:SetEyeAngles(Angle(0, body:GetAngles().y, 0))
+        --ply:SetRole(ROLE_TRAITOR)
+        ply:PrintMessage(HUD_PRINTCENTER, "You have been revived by a Doctor!")
+        ply:SetHealth(ply:GetMaxHealth())
+
+        body:Remove()
+
+        self:GetOwner():Give("weapon_ttt_health_station")
+
+        SendFullStateUpdate()
+
+
+        self:GetOwner():ConCommand("lastinv")
+        self:Remove()
+    end
+
+    function SWEP:Defib()
+        sound.Play(zap, self.Target:GetPos(), 75, math.random(95, 105), 1)
+
+        if math.random(0, 100) > success then
+            local phys = self.Target:GetPhysicsObjectNum(self.Bone)
+
+            if IsValid(phys) then
+                phys:ApplyForceCenter(Vector(0, 0, 4096))
+            end
+
+            self:Error("ATTEMPT FAILED TRY AGAIN")
+            return
+        end
+        if not IsFirstTimePredicted() then return end
+
+        self:DoRespawn(self.Target)
+        self:Reset()
+    end
+
+    function SWEP:Begin(body, bone)
+        local ply = bodyply(body)
+
+        if not ply then self:Error("INVALID TARGET") return end
+
+        if ply:GetSwapper() or ply:GetJester() then self:Error("SUBJECT IS A JESTER") return end
+
+        self:SetState(DEFIB_BUSY)
+        self:SetBegin(CurTime())
+        self:SetMessage("DEFIBRILLATING " .. string.upper(ply:Nick()))
+
+        self:GetOwner():EmitSound(hum, 75, math.random(98, 102), 1)
+
+        self.Target = body
+        self.Bone = bone
+    end
+
+    function SWEP:Think()
+        if self:GetState() == DEFIB_BUSY then
+            if self:GetBegin() + charge <= CurTime() then
+                self:Defib()
+            elseif not self:GetOwner():KeyDown(IN_ATTACK) or self:GetOwner():GetEyeTrace(MASK_SHOT_HULL).Entity ~= self.Target then
+                self:Error("DEFIBRILLATION ABORTED")
+            end
+        end
+    end
+
+    function SWEP:PrimaryAttack()
+        if self:GetState() ~= DEFIB_IDLE then return end
+
+        local tr = self:GetOwner():GetEyeTrace(MASK_SHOT_HULL)
+
+        if tr.HitPos:Distance(self:GetOwner():GetPos()) > maxdist then return end
+        if GetRoundState() ~= ROUND_ACTIVE then return end
+
+        local ent = tr.Entity
+
+        if ent and IsValid(ent) then
+
+            if ent:GetClass() == "prop_physics" and mutate[ent:GetModel()] and mutateok > 0 then
+                self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
+                ent:EmitSound(zap, 75, math.random(98, 102))
+                ent:SetModelScale(math.min(mutatemax, ent:GetModelScale() + 0.25), 1)
+            elseif ent:GetClass() == "prop_ragdoll" and validbody(ent) then
+                self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
+                self.Location = self:FindRespawnLocation()
+
+                if self.Location then
+                    self:Begin(ent, tr.PhysicsBone)
+                else
+                    self:Error("INSUFFICIENT ROOM")
+                    return
+                end
+            elseif ent:IsPlayer() and ent:IsActive() and (ent:GetRole() == ROLE_JESTER or ent:GetRole() == ROLE_SWAPPER) and not ent:IsFrozen() then
+                self:SetNextPrimaryFire(CurTime() + 0.1)
+                ent:EmitSound(zap, 100, math.random(98, 102))
+                ent:Freeze(true)
+                ent:ScreenFade(SCREENFADE.IN, Color(255, 255, 255, 255), 1, 10)
+                timer.Simple(10, function()
+                    if IsValid(ent) then
+                        ent:Freeze(false)
+                    end
+                end)
+            end
+        end
+    end
 end
 
 if CLIENT then
-	net.Receive("TTT_Defib_Hide", function(len, ply)
-		if ply or len <= 0 then return end
-		
-		local hply = net.ReadEntity()
-		hply.DefibHide = net.ReadBool()
-	end)
-	
-	net.Receive("TTT_Defib_Revived", function(len, ply)
-		if ply or len <= 0 then return end
-		surface.PlaySound(revived)
-	end)
-	
-	hook.Remove("TTTEndRound", "RemoveDefibHide")
-	hook.Add("TTTEndRound", "RemoveDefibHide", function()
-		for _, v in pairs(player.GetAll()) do v.DefibHide = nil end
-	end)
-	
-	oldScoreGroup = oldScoreGroup or ScoreGroup
-	
-	function ScoreGroup(ply)
-		if ply.DefibHide then return GROUP_FOUND end
-		return oldScoreGroup(ply)
-	end
-	
-	function SWEP:DrawHUD()
-		local state = self:GetState()
-		self.BaseClass.DrawHUD(self)
-		
-		if state == DEFIB_IDLE then return end
-		
-		local x = ScrW() / 2.0
-		local y = ScrH() / 2.0
-		
-		y = y + (y / 3)
-		
-		local w, h = 255, 20
-		
-		if state == DEFIB_BUSY then
+    net.Receive("TTT_Defib_Hide", function(len, ply)
+        if ply or len <= 0 then return end
+
+        local hply = net.ReadEntity()
+        hply.DefibHide = net.ReadBool()
+    end)
+
+    net.Receive("TTT_Defib_Revived", function(len, ply)
+        if ply or len <= 0 then return end
+        surface.PlaySound(revived)
+    end)
+
+    hook.Remove("TTTEndRound", "RemoveDefibHide")
+    hook.Add("TTTEndRound", "RemoveDefibHide", function()
+        for _, v in pairs(player.GetAll()) do v.DefibHide = nil end
+    end)
+
+    oldScoreGroup = oldScoreGroup or ScoreGroup
+
+    function ScoreGroup(ply)
+        if ply.DefibHide then return GROUP_FOUND end
+        return oldScoreGroup(ply)
+    end
+
+    function SWEP:DrawHUD()
+        local state = self:GetState()
+        self.BaseClass.DrawHUD(self)
+
+        if state == DEFIB_IDLE then return end
+
+        local x = ScrW() / 2.0
+        local y = ScrH() / 2.0
+
+        y = y + (y / 3)
+
+        local w, h = 255, 20
+
+        if state == DEFIB_BUSY then
 
 
 
-			local timer = self:GetBegin() + charge
-			
-			if timer < 0 then return end
-			
-			local cc = math.min(1, 1 - ((timer - CurTime()) / charge))
-			
-			surface.SetDrawColor(0, 255, 0, 155)
-			
-			surface.DrawOutlinedRect(x - w / 2, y - h, w, h)
-			
-			surface.DrawRect(x - w / 2, y - h, w * cc, h)
-			
-			surface.SetFont("TabLarge")
-			surface.SetTextColor(255, 255, 255, 180)
-			surface.SetTextPos((x - w / 2) + 3, y - h - 15)
-			surface.DrawText(self:GetMessage())
-		elseif state == DEFIB_ERROR then
-			surface.SetDrawColor(200 + math.sin(CurTime() * 32) * 50, 0, 0, 155)
-			
-			surface.DrawOutlinedRect(x - w / 2, y - h, w, h)
-			
-			surface.DrawRect(x - w / 2, y - h, w, h)
-			
-			surface.SetFont("TabLarge")
-			surface.SetTextColor(255, 255, 255, 180)
-			surface.SetTextPos((x - w / 2) + 3, y - h - 15)
-			surface.DrawText(self:GetMessage())
-		end
-	end
-	
-	function SWEP:PrimaryAttack() return false end
+            local timer = self:GetBegin() + charge
+
+            if timer < 0 then return end
+
+            local cc = math.min(1, 1 - ((timer - CurTime()) / charge))
+
+            surface.SetDrawColor(0, 255, 0, 155)
+
+            surface.DrawOutlinedRect(x - w / 2, y - h, w, h)
+
+            surface.DrawRect(x - w / 2, y - h, w * cc, h)
+
+            surface.SetFont("TabLarge")
+            surface.SetTextColor(255, 255, 255, 180)
+            surface.SetTextPos((x - w / 2) + 3, y - h - 15)
+            surface.DrawText(self:GetMessage())
+        elseif state == DEFIB_ERROR then
+            surface.SetDrawColor(200 + math.sin(CurTime() * 32) * 50, 0, 0, 155)
+
+            surface.DrawOutlinedRect(x - w / 2, y - h, w, h)
+
+            surface.DrawRect(x - w / 2, y - h, w, h)
+
+            surface.SetFont("TabLarge")
+            surface.SetTextColor(255, 255, 255, 180)
+            surface.SetTextPos((x - w / 2) + 3, y - h - 15)
+            surface.DrawText(self:GetMessage())
+        end
+    end
+
+    function SWEP:PrimaryAttack() return false end
 end
 
 function SWEP:DryFire() return false end
