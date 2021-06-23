@@ -830,13 +830,13 @@ end)
 
 -- Player highlights
 
-local function OnPlayerHighlightEnabled(alliedRoles, jesterRoles, hideEnemies, traitorAllies)
+local function OnPlayerHighlightEnabled(client, alliedRoles, jesterRoles, hideEnemies, traitorAllies)
     if GetRoundState() ~= ROUND_ACTIVE then return end
     local enemies = {}
     local friends = {}
     local jesters = {}
     for _, v in pairs(player.GetAll()) do
-        if IsValid(v) and v:Alive() and not v:IsSpec() then
+        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= client then
             if table.HasValue(jesterRoles, v:GetRole()) then
                 table.insert(jesters, v)
             elseif table.HasValue(alliedRoles, v:GetRole()) then
@@ -869,13 +869,13 @@ local function OnPlayerHighlightEnabled(alliedRoles, jesterRoles, hideEnemies, t
     halo.Add(jesters, ROLE_COLORS[ROLE_JESTER], 1, 1, 1, true, true)
 end
 
-local function EnableKillerHighlights()
+local function EnableKillerHighlights(client)
     hook.Add("PreDrawHalos", "AddPlayerHighlights", function()
         local jesters = table.GetKeys(JESTER_ROLES)
-        OnPlayerHighlightEnabled({ROLE_KILLER}, jesters, false, false)
+        OnPlayerHighlightEnabled(client, {ROLE_KILLER}, jesters, false, false)
     end)
 end
-local function EnableTraitorHighlights()
+local function EnableTraitorHighlights(client)
     hook.Add("PreDrawHalos", "AddPlayerHighlights", function()
         -- Start with the list of traitors
         local allies = table.GetKeys(TRAITOR_ROLES)
@@ -883,7 +883,7 @@ local function EnableTraitorHighlights()
         table.insert(allies, ROLE_GLITCH)
 
         local jesters = table.GetKeys(JESTER_ROLES)
-        OnPlayerHighlightEnabled(allies, jesters, true, true)
+        OnPlayerHighlightEnabled(client, allies, jesters, true, true)
     end)
 end
 local function EnableZombieHighlights(client)
@@ -904,7 +904,7 @@ local function EnableZombieHighlights(client)
         end
 
         local jesters = table.GetKeys(JESTER_ROLES)
-        OnPlayerHighlightEnabled(allies, jesters, hideEnemies, traitorAllies)
+        OnPlayerHighlightEnabled(client, allies, jesters, hideEnemies, traitorAllies)
     end)
 end
 local function EnableVampireHighlights(client)
@@ -925,7 +925,7 @@ local function EnableVampireHighlights(client)
         end
 
         local jesters = table.GetKeys(JESTER_ROLES)
-        OnPlayerHighlightEnabled(allies, jesters, hideEnemies, traitorAllies)
+        OnPlayerHighlightEnabled(client, allies, jesters, hideEnemies, traitorAllies)
     end)
 end
 
@@ -934,7 +934,7 @@ function HandleRoleHighlights(client)
 
     if client:IsKiller() and killer_vision then
         if not vision_enabled then
-            EnableKillerHighlights()
+            EnableKillerHighlights(client)
             vision_enabled = true
         end
     elseif client:IsZombie() and (zombie_vision or (traitor_vision and TRAITOR_ROLES[ROLE_ZOMBIE])) then
@@ -949,7 +949,7 @@ function HandleRoleHighlights(client)
         end
     elseif client:IsTraitorTeam() and traitor_vision then
         if not vision_enabled then
-            EnableTraitorHighlights()
+            EnableTraitorHighlights(client)
             vision_enabled = true
         end
     else
