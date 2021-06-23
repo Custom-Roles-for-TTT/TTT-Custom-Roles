@@ -1556,7 +1556,7 @@ function SelectRoles()
     local choices = {}
     local prev_roles = {}
     -- Initialize the table for every role
-    for wrole = 0, ROLE_MAX do
+    for wrole = ROLE_NONE, ROLE_MAX do
         prev_roles[wrole] = {}
     end
 
