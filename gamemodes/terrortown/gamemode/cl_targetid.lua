@@ -331,7 +331,12 @@ function GM:HUDDrawTargetID()
                 end
                 target_vampire = ent:IsVampire() and ent:IsMonsterTeam()
                 target_jester = showJester
-            elseif client:IsKiller() then
+            elseif client:IsIndependentTeam() then
+                if client:IsZombie() then
+                    target_fellow_zombie = ent:IsZombie()
+                else
+                    target_zombie = ent:IsZombie() and ent:IsIndependentTeam()
+                end
                 target_jester = showJester
             end
         end
