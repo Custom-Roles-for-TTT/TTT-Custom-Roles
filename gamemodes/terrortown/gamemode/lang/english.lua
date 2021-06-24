@@ -937,7 +937,7 @@ L.info_popup_zombie = [[You are a Zombie! Work with your allies to kill all othe
 These are your comrades:
 {allylist}
 
-All damage you deal with guns is reduced by one half.
+All damage you deal with guns is reduced.
 Killing someone with your claws will turn them into a zombie.
 
 Press {menukey} to receive your special equipment!]]
@@ -949,7 +949,7 @@ you does not seek the same goal.
 These are your comrades:
 {allylist}
 
-All damage you deal with guns is reduced by one half.
+All damage you deal with guns is reduced.
 Killing someone with your claws will turn them into a zombie.
 
 Press {menukey} to receive your special equipment!]]
@@ -958,7 +958,16 @@ L.info_popup_zombie_alone = [[You are a Zombie! You have no allies this round.
 
 Kill all others to win!
 
-All damage you deal with guns is reduced by one half.
+All damage you deal with guns is reduced.
+Killing someone with your claws will turn them into a zombie.
+
+Press {menukey} to receive your special equipment!]]
+
+L.info_popup_zombie_indep = [[You are a Zombie!
+
+Kill all others to win!
+
+All damage you deal with guns is reduced.
 Killing someone with your claws will turn them into a zombie.
 
 Press {menukey} to receive your special equipment!]]
