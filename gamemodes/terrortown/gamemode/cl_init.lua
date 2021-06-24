@@ -890,21 +890,13 @@ local function EnableZombieHighlights(client)
     hook.Add("PreDrawHalos", "AddPlayerHighlights", function()
         local hasClaws = client.GetActiveWeapon and IsValid(client:GetActiveWeapon()) and client:GetActiveWeapon():GetClass() == "weapon_zom_claws"
         local hideEnemies = not zombie_vision or not hasClaws
-        local allies = {}
-        local traitorAllies = TRAITOR_ROLES[ROLE_ZOMBIE]
-        -- If zombies are traitors and traitor vision or zombie vision is enabled then add all the traitor roles as allies
-        if (traitor_vision or zombie_vision) and traitorAllies then
-            allies = table.GetKeys(TRAITOR_ROLES)
-        -- If zombie vision is enabled, add the allied monster roles
-        elseif zombie_vision then
-            allies = {ROLE_ZOMBIE}
-            if MONSTER_ROLES[ROLE_VAMPIRE] then
-                table.insert(allies, ROLE_VAMPIRE)
-            end
+        local allies = {ROLE_ZOMBIE}
+        if MONSTER_ROLES[ROLE_ZOMBIE] and MONSTER_ROLES[ROLE_VAMPIRE] then
+            table.insert(allies, ROLE_VAMPIRE)
         end
 
         local jesters = table.GetKeys(JESTER_ROLES)
-        OnPlayerHighlightEnabled(client, allies, jesters, hideEnemies, traitorAllies)
+        OnPlayerHighlightEnabled(client, allies, jesters, hideEnemies, false)
     end)
 end
 local function EnableVampireHighlights(client)
@@ -937,7 +929,7 @@ function HandleRoleHighlights(client)
             EnableKillerHighlights(client)
             vision_enabled = true
         end
-    elseif client:IsZombie() and (zombie_vision or (traitor_vision and TRAITOR_ROLES[ROLE_ZOMBIE])) then
+    elseif client:IsZombie() and zombie_vision then
         if not vision_enabled then
             EnableZombieHighlights(client)
             vision_enabled = true
@@ -964,9 +956,9 @@ end
 -- Monster-as-traitors equipment
 
 net.Receive("TTT_LoadMonsterEquipment", function()
-    local zombies_are_traitors = net.ReadBool()
-    local vampires_are_traitors = net.ReadBool()
-    LoadMonsterEquipment(zombies_are_traitors, vampires_are_traitors)
+    local zombies_are_monsters = net.ReadBool()
+    local vampires_are_monsters = net.ReadBool()
+    LoadMonsterEquipment(zombies_are_monsters, vampires_are_monsters)
 end)
 
 -- Footsteps

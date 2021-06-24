@@ -50,7 +50,7 @@ SHOP_ROLES = {}
 AddRoleAssociations(SHOP_ROLES, {ROLE_TRAITOR, ROLE_DETECTIVE, ROLE_HYPNOTIST, ROLE_DEPUTY, ROLE_IMPERSONATOR, ROLE_JESTER, ROLE_SWAPPER, ROLE_MERCENARY, ROLE_ASSASSIN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_VAMPIRE})
 
 TRAITOR_ROLES = {}
-AddRoleAssociations(TRAITOR_ROLES, {ROLE_TRAITOR, ROLE_HYPNOTIST, ROLE_IMPERSONATOR, ROLE_ASSASSIN})
+AddRoleAssociations(TRAITOR_ROLES, {ROLE_TRAITOR, ROLE_HYPNOTIST, ROLE_IMPERSONATOR, ROLE_ASSASSIN, ROLE_VAMPIRE})
 
 INNOCENT_ROLES = {}
 AddRoleAssociations(INNOCENT_ROLES, {ROLE_INNOCENT, ROLE_DETECTIVE, ROLE_GLITCH, ROLE_PHANTOM, ROLE_REVENGER, ROLE_DEPUTY, ROLE_MERCENARY, ROLE_VETERAN})
@@ -59,10 +59,10 @@ JESTER_ROLES = {}
 AddRoleAssociations(JESTER_ROLES, {ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_BEGGAR, ROLE_BODYSNATCHER})
 
 INDEPENDENT_ROLES = {}
-AddRoleAssociations(INDEPENDENT_ROLES, {ROLE_DRUNK, ROLE_OLDMAN, ROLE_KILLER})
+AddRoleAssociations(INDEPENDENT_ROLES, {ROLE_DRUNK, ROLE_OLDMAN, ROLE_KILLER, ROLE_ZOMBIE})
 
 MONSTER_ROLES = {}
-AddRoleAssociations(MONSTER_ROLES, {ROLE_VAMPIRE, ROLE_ZOMBIE})
+AddRoleAssociations(MONSTER_ROLES, {})
 
 -- Role colours
 COLOR_INNOCENT = {
@@ -367,7 +367,8 @@ WIN_JESTER = 5
 WIN_CLOWN = 6
 WIN_OLDMAN = 7
 WIN_KILLER = 8
-WIN_MONSTER = 9
+WIN_ZOMBIE = 9
+WIN_MONSTER = 10
 
 -- Weapon categories, you can only carry one of each
 WEAPON_NONE = 0
@@ -572,13 +573,13 @@ function GetSprintMultiplier(ply, sprinting)
 end
 
 function UpdateDynamicTeams()
-    local zombies_are_traitors = GetGlobalBool("ttt_zombies_are_traitors")
-    TRAITOR_ROLES[ROLE_ZOMBIE] = zombies_are_traitors
-    MONSTER_ROLES[ROLE_ZOMBIE] = not zombies_are_traitors
+    local zombies_are_monsters = GetGlobalBool("ttt_zombies_are_monsters")
+    MONSTER_ROLES[ROLE_ZOMBIE] = zombies_are_monsters
+    INDEPENDENT_ROLES[ROLE_ZOMBIE] = not zombies_are_monsters
 
-    local vampires_are_traitors = GetGlobalBool("ttt_vampires_are_traitors")
-    TRAITOR_ROLES[ROLE_VAMPIRE] = vampires_are_traitors
-    MONSTER_ROLES[ROLE_VAMPIRE] = not vampires_are_traitors
+    local vampires_are_monsters = GetGlobalBool("ttt_vampires_are_monsters")
+    MONSTER_ROLES[ROLE_VAMPIRE] = vampires_are_monsters
+    TRAITOR_ROLES[ROLE_VAMPIRE] = not vampires_are_monsters
 
     -- Update role colors to make sure team changes have taken effect
     UpdateRoleColours()

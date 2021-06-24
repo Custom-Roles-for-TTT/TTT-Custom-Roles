@@ -30,7 +30,7 @@ SWEP.Primary.ClipSize = 1
 SWEP.Primary.DefaultClip = 1
 SWEP.Primary.Automatic = true
 SWEP.Primary.Ammo = "none"
-SWEP.Primary.Delay = 1.4
+SWEP.Primary.Delay = 0.7
 
 SWEP.Secondary.ClipSize = 5
 SWEP.Secondary.DefaultClip = 5

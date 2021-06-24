@@ -325,6 +325,7 @@ local wintitle = {
     [WIN_JESTER] = { txt = "hilite_win_jester", c = ROLE_COLORS[ROLE_JESTER] },
     [WIN_CLOWN] = { txt = "hilite_win_clown", c = ROLE_COLORS[ROLE_JESTER] },
     [WIN_KILLER] = { txt = "hilite_win_killer", c = ROLE_COLORS[ROLE_KILLER] },
+    [WIN_ZOMBIE] = { txt = "hilite_win_zombies", c = ROLE_COLORS[ROLE_ZOMBIE] },
     [WIN_MONSTER] = { txt = "hilite_win_monster", c = ROLE_COLORS[ROLE_ZOMBIE] }
 }
 

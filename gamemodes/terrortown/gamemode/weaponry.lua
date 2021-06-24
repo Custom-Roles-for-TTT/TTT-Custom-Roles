@@ -367,7 +367,8 @@ local function OrderEquipment(ply, cmd, args)
     local sync_hypnotist = GetGlobalBool("ttt_shop_hyp_sync") and ply:IsHypnotist()
     local sync_impersonator = GetGlobalBool("ttt_shop_imp_sync") and ply:IsImpersonator()
     local sync_assassin = GetGlobalBool("ttt_shop_asn_sync") and ply:IsAssassin()
-    local sync_traitor_weapons = sync_hypnotist or sync_impersonator or sync_assassin
+    local sync_vampire = GetGlobalBool("ttt_shop_vam_sync") and ply:IsVampire() and TRAITOR_ROLES[ROLE_VAMPIRE]
+    local sync_traitor_weapons = sync_hypnotist or sync_impersonator or sync_assassin or sync_vampire
     local promoted = ply:IsDetectiveLike() and role ~= ROLE_DETECTIVE
 
     -- If this role has a table of additional weapons and that table includes this weapon
