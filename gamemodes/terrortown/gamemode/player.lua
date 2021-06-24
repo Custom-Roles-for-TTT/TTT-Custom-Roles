@@ -939,8 +939,8 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
             local delay = GetConVar("ttt_assassin_next_target_delay"):GetFloat()
             -- Delay giving the next target if we're configured to do so
             if delay > 0 then
-                attacker:PrintMessage(HUD_PRINTCENTER, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
-                attacker:PrintMessage(HUD_PRINTTALK, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
+                v:PrintMessage(HUD_PRINTCENTER, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
+                v:PrintMessage(HUD_PRINTTALK, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
                 timer.Simple(delay, function()
                     AssignAssassinTarget(v, false, true)
                 end)
