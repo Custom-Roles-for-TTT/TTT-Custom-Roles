@@ -141,6 +141,17 @@ CreateConVar("ttt_killer_enabled", 0)
 CreateConVar("ttt_killer_spawn_weight", "1")
 CreateConVar("ttt_killer_min_players", "0")
 
+-- Monster spawn probabilities
+CreateConVar("ttt_monster_pct", 0.33)
+CreateConVar("ttt_monster_chance", 0.5)
+CreateConVar("ttt_zombie_round_chance", 0.1)
+CreateConVar("ttt_zombie_enabled", 0)
+CreateConVar("ttt_zombie_spawn_weight", "1")
+CreateConVar("ttt_zombie_min_players", "0")
+CreateConVar("ttt_vampire_enabled", 0)
+CreateConVar("ttt_vampire_spawn_weight", "1")
+CreateConVar("ttt_vampire_min_players", "0")
+
 -- Traitor role properties
 CreateConVar("ttt_traitor_vision_enable", "0")
 
@@ -217,6 +228,20 @@ CreateConVar("ttt_killer_damage_reduction", "0")
 CreateConVar("ttt_killer_warn_all", "0")
 CreateConVar("ttt_killer_vision_enable", "1")
 
+-- Monster role properties
+CreateConVar("ttt_zombies_are_traitors", "0")
+CreateConVar("ttt_zombie_show_target_icon", "1")
+CreateConVar("ttt_zombie_damage_penalty", "0.8")
+CreateConVar("ttt_zombie_damage_reduction", "0.2")
+CreateConVar("ttt_zombie_prime_only_weapons", "1")
+CreateConVar("ttt_zombie_vision_enable", "1")
+
+CreateConVar("ttt_vampires_are_traitors", "0")
+CreateConVar("ttt_vampire_show_target_icon", "1")
+CreateConVar("ttt_vampire_damage_reduction", "0.2")
+CreateConVar("ttt_vampire_prime_death_mode", "0")
+CreateConVar("ttt_vampire_vision_enable", "1")
+
 -- Other custom role properties
 CreateConVar("ttt_single_deputy_impersonator", "0")
 
@@ -242,6 +267,8 @@ CreateConVar("ttt_imp_credits_starting", "1")
 CreateConVar("ttt_mer_credits_starting", "1")
 CreateConVar("ttt_asn_credits_starting", "1")
 CreateConVar("ttt_kil_credits_starting", "2")
+CreateConVar("ttt_zom_credits_starting", "0")
+CreateConVar("ttt_vam_credits_starting", "0")
 
 -- Other
 CreateConVar("ttt_use_weapon_spawn_scripts", "1")
@@ -361,6 +388,8 @@ util.AddNetworkString("TTT_ResetBuyableWeaponsCache")
 util.AddNetworkString("TTT_PlayerFootstep")
 util.AddNetworkString("TTT_ClearPlayerFootsteps")
 util.AddNetworkString("TTT_JesterDeathCelebration")
+util.AddNetworkString("TTT_LoadMonsterEquipment")
+util.AddNetworkString("TTT_VampirePrimeDeath")
 
 local jester_killed = false
 
@@ -393,6 +422,8 @@ function GM:Initialize()
     GAMEMODE.AwardedCreditsDead = 0
     GAMEMODE.AwardedKillerCredits = false
     GAMEMODE.AwardedKillerCreditsDead = 0
+    GAMEMODE.AwardedVampireCredits = false
+    GAMEMODE.AwardedVampireCreditsDead = 0
 
     GAMEMODE.round_state = ROUND_WAIT
     GAMEMODE.FirstRound = true
@@ -494,12 +525,21 @@ function GM:SyncGlobals()
     SetGlobalBool("ttt_killer_show_target_icon", GetConVar("ttt_killer_show_target_icon"):GetBool())
     SetGlobalBool("ttt_killer_vision_enable", GetConVar("ttt_killer_vision_enable"):GetBool())
 
+    SetGlobalBool("ttt_zombies_are_traitors", GetConVar("ttt_zombies_are_traitors"):GetBool())
+    SetGlobalBool("ttt_zombie_show_target_icon", GetConVar("ttt_zombie_show_target_icon"):GetBool())
+    SetGlobalBool("ttt_zombie_vision_enable", GetConVar("ttt_zombie_vision_enable"):GetBool())
+    SetGlobalBool("ttt_vampires_are_traitors", GetConVar("ttt_vampires_are_traitors"):GetBool())
+    SetGlobalBool("ttt_vampire_show_target_icon", GetConVar("ttt_vampire_show_target_icon"):GetBool())
+    SetGlobalBool("ttt_vampire_vision_enable", GetConVar("ttt_vampire_vision_enable"):GetBool())
+
     SetGlobalBool("ttt_bem_allow_change", GetConVar("ttt_bem_allow_change"):GetBool())
     SetGlobalInt("ttt_bem_sv_cols", GetConVar("ttt_bem_sv_cols"):GetBool())
     SetGlobalInt("ttt_bem_sv_rows", GetConVar("ttt_bem_sv_rows"):GetBool())
     SetGlobalInt("ttt_bem_sv_size", GetConVar("ttt_bem_sv_size"):GetBool())
 
     SetGlobalBool("sv_voiceenable", GetConVar("sv_voiceenable"):GetBool())
+
+    UpdateDynamicTeams()
 end
 
 function SendRoundState(state, ply)
@@ -625,17 +665,65 @@ function StartNameChangeChecks()
     end
 end
 
-function StartWinChecks()
-    hook.Add("PlayerDeath", "CheckJesterDeath", function(victim, infl, attacker)
-        if victim:IsJester() and attacker:IsPlayer() and (not attacker:IsJesterTeam()) and GetRoundState() == ROUND_ACTIVE then
-            -- Don't track that the jester was killed (for win reporting) if they were killed by a traitor
-            -- and the functionality that blocks Jester wins from Traitor deaths is enabled
-            if GetConVar("ttt_jester_win_by_traitors"):GetBool() or not attacker:IsTraitorTeam() then
-                jester_killed = true
+local function OnPlayerDeath(victim, infl, attacker)
+    if victim:IsJester() and attacker:IsPlayer() and (not attacker:IsJesterTeam()) and GetRoundState() == ROUND_ACTIVE then
+        -- Don't track that the jester was killed (for win reporting) if they were killed by a traitor
+        -- and the functionality that blocks Jester wins from Traitor deaths is enabled
+        if GetConVar("ttt_jester_win_by_traitors"):GetBool() or not attacker:IsTraitorTeam() then
+            jester_killed = true
+        end
+    else
+        local vamp_prime_death_mode = GetConVar("ttt_vampire_prime_death_mode"):GetFloat()
+        -- If the prime died and we're doing something when that happens
+        if victim:IsVampirePrime() and vamp_prime_death_mode > VAMPIRE_DEATH_NONE then
+            local living_vampire_primes = 0
+            local vampires = {}
+            -- Find all the living vampires anmd count the primes
+            for _, v in pairs(player.GetAll()) do
+                if v:Alive() and v:IsTerror() and v:IsVampire() then
+                    if v:IsVampirePrime() then
+                        living_vampire_primes = living_vampire_primes + 1
+                    end
+                    table.insert(vampires, v)
+                end
+            end
+
+            -- If there are no more living primes, do something with the non-primes
+            if living_vampire_primes == 0 and #vampires > 0 then
+                net.Start("TTT_VampirePrimeDeath")
+                net.WriteUInt(vamp_prime_death_mode, 4)
+                net.WriteString(victim:Nick())
+                net.Broadcast()
+
+                -- Kill them
+                if vamp_prime_death_mode == VAMPIRE_DEATH_KILL_CONVERED then
+                    for _, vnp in pairs(vampires) do
+                        vnp:Kill()
+                    end
+                -- Change them back to their previous roles
+                elseif vamp_prime_death_mode == VAMPIRE_DEATH_REVERT_CONVERTED then
+                    local converted = false
+                    for _, vnp in pairs(vampires) do
+                        local prev_role = vnp:GetVampirePreviousRole()
+                        if prev_role ~= ROLE_NONE then
+                            vnp:SetRoleAndBroadcast(prev_role)
+                            vnp:StripWeapon("weapon_vam_fangs")
+                            vnp:SelectWeapon("weapon_zm_improvised")
+                            converted = true
+                        end
+                    end
+
+                    -- Tell everyone if a role was updated
+                    if converted then
+                        SendFullStateUpdate()
+                    end
+                end
             end
         end
-    end)
+    end
+end
 
+function StartWinChecks()
     if not timer.Start("winchecker") then
         timer.Create("winchecker", 1, 0, WinChecker)
     end
@@ -742,6 +830,11 @@ function PrepareRound()
         v:SetNWBool("HasPromotion", false)
         v:SetNWBool("WasBeggar", false)
         v:SetNWBool("VeteranActive", false)
+        v:SetNWBool("IsZombifying", false)
+        -- Keep previous naming scheme for backwards compatibility
+        v:SetNWBool("zombie_prime", false)
+        v:SetNWBool("vampire_prime", false)
+        v:SetNWInt("vampire_previous_role", ROLE_NONE)
         -- Workaround to prevent GMod sprint from working
         v:SetRunSpeed(v:GetWalkSpeed())
     end
@@ -778,6 +871,8 @@ function PrepareRound()
     GAMEMODE.AwardedCreditsDead = 0
     GAMEMODE.AwardedKillerCredits = false
     GAMEMODE.AwardedKillerCreditsDead = 0
+    GAMEMODE.AwardedVampireCredits = false
+    GAMEMODE.AwardedVampireCreditsDead = 0
 
     SCORE:Reset()
 
@@ -873,7 +968,7 @@ function TellTraitorsAboutTraitors()
                 return
             else
                 local names = ""
-                for i, name in ipairs(traitornicks) do
+                for _, name in ipairs(traitornicks) do
                     if name ~= v:Nick() then
                         names = names .. name .. ", "
                     end
@@ -1138,6 +1233,21 @@ function BeginRound()
     timer.Simple(1.5, TellTraitorsAboutTraitors)
     timer.Simple(2.5, ShowRoundStartPopup)
 
+    -- EQUIP_REGEN health regeneration tick
+    timer.Create("RegenEquipmentTick", 0.66, 0, function()
+        for _, v in pairs(player.GetAll()) do
+            if v:Alive() and not v:IsSpec() and v:HasEquipmentItem(EQUIP_REGEN) then
+                local hp = v:Health()
+                if hp < v:GetMaxHealth() then
+                    v:SetHealth(hp + 1)
+                end
+            end
+        end
+    end)
+
+    -- Start watching for specific deaths
+    hook.Add("PlayerDeath", "OnPlayerDeath", OnPlayerDeath)
+
     -- Start the win condition check timer
     StartWinChecks()
     StartNameChangeChecks()
@@ -1145,6 +1255,15 @@ function BeginRound()
 
     GAMEMODE.DamageLog = {}
     GAMEMODE.RoundStartTime = CurTime()
+
+    local zombies_are_traitors = TRAITOR_ROLES[ROLE_ZOMBIE]
+    local vampires_are_traitors = TRAITOR_ROLES[ROLE_VAMPIRE]
+    LoadMonsterEquipment(zombies_are_traitors, vampires_are_traitors)
+    -- Send the status to the client because at this point the globals haven't synced
+    net.Start("TTT_LoadMonsterEquipment")
+    net.WriteBool(zombies_are_traitors)
+    net.WriteBool(vampires_are_traitors)
+    net.Broadcast()
 
     -- Sound start alarm
     SetRoundState(ROUND_ACTIVE)
@@ -1178,6 +1297,20 @@ function PrintResultMessage(type)
     elseif type == WIN_KILLER then
         LANG.Msg("win_killer")
         ServerLog("Result: Killer wins.\n")
+    elseif type == WIN_MONSTER then
+        -- If Zombies are not monsters then Vampires win
+        if not MONSTER_ROLES[ROLE_ZOMBIE] then
+            LANG.Msg("win_vampires")
+            ServerLog("Result: Vampires win.\n")
+        -- And vice versa
+        elseif not MONSTER_ROLES[ROLE_VAMPIRE] then
+            LANG.Msg("win_zombies")
+            ServerLog("Result: Zombies win.\n")
+        -- Otherwise the monsters legit win
+        else
+            LANG.Msg("win_monster")
+            ServerLog("Result: Monsters win.\n")
+        end
     else
         ServerLog("Result: unknown victory condition!\n")
     end
@@ -1276,12 +1409,16 @@ function GM:TTTCheckForWin()
     local clown_alive = false
     local old_man_alive = false
     local killer_alive = false
+    local monster_alive = false
 
     local killer_clown_active = false
 
     for _, v in ipairs(player.GetAll()) do
-        if v:Alive() and v:IsTerror() then
-            if v:IsTraitorTeam() then
+        local zombifying = v:GetNWBool("IsZombifying", false)
+        if (v:Alive() and v:IsTerror()) or zombifying then
+            if v:IsMonsterTeam() or (MONSTER_ROLES[ROLE_ZOMBIE] and zombifying) then
+                monster_alive = true
+            elseif v:IsTraitorTeam() or (TRAITOR_ROLES[ROLE_ZOMBIE] and zombifying) then
                 traitor_alive = true
             elseif v:IsDrunk() then
                 drunk_alive = true
@@ -1307,19 +1444,22 @@ function GM:TTTCheckForWin()
     if jester_killed then
         win_type = WIN_JESTER
     -- If everyone is dead the traitors win
-    elseif not innocent_alive and not killer_alive then
+    elseif not innocent_alive and not killer_alive and not monster_alive then
         win_type = WIN_TRAITOR
     -- If all the "bad" people are dead, innocents win
-    elseif not traitor_alive and not killer_alive then
+    elseif not traitor_alive and not killer_alive and not monster_alive then
         win_type = WIN_INNOCENT
+    -- If the monsters are the only one left, they win
+    elseif not traitor_alive and not killer_alive and not innocent_alive then
+        win_type = WIN_MONSTER
     -- If the killer is the only one left alive, they win
-    elseif not traitor_alive and not innocent_alive and killer_alive then
+    elseif not traitor_alive and not innocent_alive and not monster_alive and killer_alive then
         win_type = WIN_KILLER
     end
 
     -- Drunk logic
     if drunk_alive then
-        if win_type == WIN_INNOCENT then
+        if not traitor_alive then
             if timer.Exists("drunkremember") then timer.Remove("drunkremember") end
             if timer.Exists("waitfordrunkrespawn") then timer.Remove("waitfordrunkrespawn") end
             for _, v in ipairs(player.GetAll()) do
@@ -1328,7 +1468,7 @@ function GM:TTTCheckForWin()
                 end
             end
             win_type = WIN_NONE
-        elseif win_type == WIN_TRAITOR then
+        elseif not innocent_alive then
             if timer.Exists("drunkremember") then timer.Remove("drunkremember") end
             if timer.Exists("waitfordrunkrespawn") then timer.Remove("waitfordrunkrespawn") end
             for _, v in ipairs(player.GetAll()) do
@@ -1342,7 +1482,7 @@ function GM:TTTCheckForWin()
 
     -- Clown logic
     if clown_alive then
-        if not killer_clown_active and (win_type == WIN_INNOCENT or win_type == WIN_TRAITOR or win_type == WIN_KILLER) then
+        if not killer_clown_active and (win_type == WIN_INNOCENT or win_type == WIN_TRAITOR or win_type == WIN_KILLER or win_type == WIN_MONSTER) then
             for _, v in ipairs(player.GetAll()) do
                 if v:IsClown() then
                     v:SetNWBool("KillerClownActive", true)
@@ -1354,7 +1494,7 @@ function GM:TTTCheckForWin()
                 end
             end
             win_type = WIN_NONE
-        elseif killer_clown_active and not traitor_alive and not innocent_alive and not killer_alive then
+        elseif killer_clown_active and not traitor_alive and not innocent_alive and not killer_alive and not monster_alive then
             win_type = WIN_CLOWN
         else
             win_type = WIN_NONE
@@ -1377,31 +1517,30 @@ local function GetTraitorCount(ply_count)
     -- get number of traitors: pct of players rounded up
     local traitor_count = math.ceil(ply_count * GetConVar("ttt_traitor_pct"):GetFloat())
     -- make sure there is at least 1 traitor
-    traitor_count = math.Clamp(traitor_count, 1, GetConVar("ttt_traitor_max"):GetInt())
-
-    return traitor_count
+    return math.Clamp(traitor_count, 1, GetConVar("ttt_traitor_max"):GetInt())
 end
 
 local function GetDetectiveCount(ply_count)
     local detective_count = math.ceil(ply_count * GetConVar("ttt_detective_pct"):GetFloat())
 
-    detective_count = math.Clamp(detective_count, 1, GetConVar("ttt_detective_max"):GetInt())
-
-    return detective_count
+    return math.Clamp(detective_count, 1, GetConVar("ttt_detective_max"):GetInt())
 end
 
 local function GetSpecialTraitorCount(ply_count)
     -- get number of special traitors: pct of traitors rounded up
-    local special_traitor_count = math.ceil(ply_count * GetConVar("ttt_special_traitor_pct"):GetFloat())
-
-    return special_traitor_count
+    return math.ceil(ply_count * GetConVar("ttt_special_traitor_pct"):GetFloat())
 end
 
 local function GetSpecialInnocentCount(ply_count)
     -- get number of special innocents: pct of innocents rounded up
-    local special_innocent_count = math.ceil(ply_count * GetConVar("ttt_special_innocent_pct"):GetFloat())
+    return math.ceil(ply_count * GetConVar("ttt_special_innocent_pct"):GetFloat())
+end
 
-    return special_innocent_count
+local function GetMonsterCount(ply_count)
+    if TRAITOR_ROLES[ROLE_ZOMBIE] and TRAITOR_ROLES[ROLE_VAMPIRE] then
+        return 0
+    end
+    return math.ceil(ply_count * GetConVar("ttt_monster_pct"):GetFloat())
 end
 
 local function PrintRoleText(text)
@@ -1463,6 +1602,7 @@ function SelectRoles()
     local forcedDetectiveCount = 0
     local forcedSpecialInnocentCount = 0
     local forcedIndependentCount = 0
+    local forcedMonsterCount = 0
 
     local hasHypnotist = false
     local hasImpersonator = false
@@ -1474,6 +1614,9 @@ function SelectRoles()
     local hasDeputy = false
     local hasMercenary = false
     local hasVeteran = false
+
+    local hasZombie = false
+    local hasVampire = false
 
     local hasIndependent = false
 
@@ -1492,90 +1635,91 @@ function SelectRoles()
                 -- TRAITOR ROLES
                 if role == ROLE_TRAITOR then
                     forcedTraitorCount = forcedTraitorCount + 1
-                    PrintRole(v, "traitor")
                 elseif role == ROLE_HYPNOTIST then
                     hasHypnotist = true
                     forcedSpecialTraitorCount = forcedSpecialTraitorCount + 1
-                    PrintRole(v, "hypnotist")
                 elseif role == ROLE_IMPERSONATOR then
                     hasImpersonator = true
                     if GetConVar("ttt_single_deputy_impersonator"):GetBool() then
                         impersonator_only = true
                     end
                     forcedSpecialTraitorCount = forcedSpecialTraitorCount + 1
-                    PrintRole(v, "impersonator")
                 elseif role == ROLE_ASSASSIN then
                     hasAssassin = true
                     forcedSpecialTraitorCount = forcedSpecialTraitorCount + 1
-                    PrintRole(v, "assassin")
 
                 -- INNOCENT ROLES
-                elseif role == ROLE_INNOCENT then
-                    PrintRole(v, "innocent")
                 elseif role == ROLE_DETECTIVE then
                     forcedDetectiveCount = forcedDetectiveCount + 1
-                    PrintRole(v, "detective")
                 elseif role == ROLE_PHANTOM then
                     hasPhantom = true
                     forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
-                    PrintRole(v, "phantom")
                 elseif role == ROLE_GLITCH then
                     hasGlitch = true
                     forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
-                    PrintRole(v, "glitch")
                 elseif role == ROLE_REVENGER then
                     hasRevenger = true
                     forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
-                    PrintRole(v, "revenger")
                 elseif role == ROLE_DEPUTY then
                     hasDeputy = true
                     if GetConVar("ttt_single_deputy_impersonator"):GetBool() then
                         deputy_only = true
                     end
                     forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
-                    PrintRole(v, "deputy")
                 elseif role == ROLE_MERCENARY then
                     hasMercenary = true
                     forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
-                    PrintRole(v, "mercenary")
                 elseif role == ROLE_VETERAN then
                     hasVeteran = true
                     forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
-                    PrintRole(v, "veteran")
 
                 -- JESTER/INDEPENDENT ROLES
                 elseif role == ROLE_JESTER then
                     hasIndependent = true
                     forcedIndependentCount = forcedIndependentCount + 1
-                    PrintRole(v, "jester")
                 elseif role == ROLE_SWAPPER then
                     hasIndependent = true
                     forcedIndependentCount = forcedIndependentCount + 1
-                    PrintRole(v, "swapper")
                 elseif role == ROLE_DRUNK then
                     hasIndependent = true
                     forcedIndependentCount = forcedIndependentCount + 1
-                    PrintRole(v, "drunk")
                 elseif role == ROLE_CLOWN then
                     hasIndependent = true
                     forcedIndependentCount = forcedIndependentCount + 1
-                    PrintRole(v, "clown")
                 elseif role == ROLE_BEGGAR then
                     hasIndependent = true
                     forcedIndependentCount = forcedIndependentCount + 1
-                    PrintRole(v, "beggar")
                 elseif role == ROLE_OLDMAN then
                     hasIndependent = true
                     forcedIndependentCount = forcedIndependentCount + 1
-                    PrintRole(v, "oldman")
                 elseif role == ROLE_BODYSNATCHER then
                     hasIndependent = true
                     forcedIndependentCount = forcedIndependentCount + 1
-                    PrintRole(v, "bodysnatcher")
                 elseif role == ROLE_KILLER then
                     hasIndependent = true
                     forcedIndependentCount = forcedIndependentCount + 1
-                    PrintRole(v, "killer")
+
+                -- MONSTER ROLES
+                elseif role == ROLE_ZOMBIE then
+                    hasZombie = true
+                    if MONSTER_ROLES[role] then
+                        forcedMonsterCount = forcedMonsterCount + 1
+                    else
+                        forcedSpecialTraitorCount = forcedSpecialTraitorCount + 1
+                    end
+                    v:SetZombiePrime(true)
+                elseif role == ROLE_VAMPIRE then
+                    hasVampire = true
+                    if MONSTER_ROLES[role] then
+                        forcedMonsterCount = forcedMonsterCount + 1
+                    else
+                        forcedSpecialTraitorCount = forcedSpecialTraitorCount + 1
+                    end
+                    v:SetVampirePrime(true)
+                end
+
+                if role > ROLE_NONE and role < ROLE_MAX then
+                    PrintRole(v, ROLE_STRINGS[role])
                 end
             end
         end
@@ -1623,45 +1767,58 @@ function SelectRoles()
         end
     end
 
-    -- pick special traitors
-    if max_special_traitor_count > 0 then
-        local specialTraitorRoles = {}
-        if not hasHypnotist and GetConVar("ttt_hypnotist_enabled"):GetBool() and choice_count >= GetConVar("ttt_hypnotist_min_players"):GetInt() then
-            for _ = 1, GetConVar("ttt_hypnotist_spawn_weight"):GetInt() do
-                table.insert(specialTraitorRoles, ROLE_HYPNOTIST)
-            end
+    if TRAITOR_ROLES[ROLE_ZOMBIE] and ((GetConVar("ttt_zombie_enabled"):GetBool() and math.random() <= GetConVar("ttt_zombie_round_chance"):GetFloat() and (forcedTraitorCount <= 0) and (forcedSpecialTraitorCount <= 0)) or hasZombie) then
+        -- This is a zombie round so all traitors become zombies
+        for _, v in pairs(traitors) do
+            v:SetRole(ROLE_ZOMBIE)
+            PrintRole(v, "zombie")
         end
-        if not hasImpersonator and GetConVar("ttt_impersonator_enabled"):GetBool() and choice_count >= GetConVar("ttt_impersonator_min_players"):GetInt() and detective_count > 0 and not deputy_only then
-            for _ = 1, GetConVar("ttt_impersonator_spawn_weight"):GetInt() do
-                table.insert(specialTraitorRoles, ROLE_IMPERSONATOR)
+    else
+        -- pick special traitors
+        if max_special_traitor_count > 0 then
+            local specialTraitorRoles = {}
+            if not hasHypnotist and GetConVar("ttt_hypnotist_enabled"):GetBool() and choice_count >= GetConVar("ttt_hypnotist_min_players"):GetInt() then
+                for _ = 1, GetConVar("ttt_hypnotist_spawn_weight"):GetInt() do
+                    table.insert(specialTraitorRoles, ROLE_HYPNOTIST)
+                end
             end
-        end
-        if not hasAssassin and GetConVar("ttt_assassin_enabled"):GetBool() and choice_count >= GetConVar("ttt_assassin_min_players"):GetInt() then
-            for _ = 1, GetConVar("ttt_assassin_spawn_weight"):GetInt() do
-                table.insert(specialTraitorRoles, ROLE_ASSASSIN)
+            if not hasImpersonator and GetConVar("ttt_impersonator_enabled"):GetBool() and choice_count >= GetConVar("ttt_impersonator_min_players"):GetInt() and detective_count > 0 and not deputy_only then
+                for _ = 1, GetConVar("ttt_impersonator_spawn_weight"):GetInt() do
+                    table.insert(specialTraitorRoles, ROLE_IMPERSONATOR)
+                end
             end
-        end
-        for _ = 1, max_special_traitor_count do
-            if #specialTraitorRoles ~= 0 and math.random() <= GetConVar("ttt_special_traitor_chance"):GetFloat() and #traitors > 0 then
-                local plyPick = math.random(1, #traitors)
-                local ply = traitors[plyPick]
-                local rolePick = math.random(1, #specialTraitorRoles)
-                local role = specialTraitorRoles[rolePick]
-                ply:SetRole(role)
-                PrintRole(ply, ply:GetRoleString())
-                table.remove(traitors, plyPick)
-                for i = #specialTraitorRoles, 1, -1 do
-                    if specialTraitorRoles[i] == role then
-                        table.remove(specialTraitorRoles, i)
+            if not hasAssassin and GetConVar("ttt_assassin_enabled"):GetBool() and choice_count >= GetConVar("ttt_assassin_min_players"):GetInt() then
+                for _ = 1, GetConVar("ttt_assassin_spawn_weight"):GetInt() do
+                    table.insert(specialTraitorRoles, ROLE_ASSASSIN)
+                end
+            end
+            if TRAITOR_ROLES[ROLE_VAMPIRE] and not hasVampire and GetConVar("ttt_vampire_enabled"):GetBool() and choice_count >= GetConVar("ttt_vampire_min_players"):GetInt() then
+                for _ = 1, GetConVar("ttt_vampire_spawn_weight"):GetInt() do
+                    table.insert(specialTraitorRoles, ROLE_VAMPIRE)
+                end
+            end
+            for _ = 1, max_special_traitor_count do
+                if #specialTraitorRoles ~= 0 and math.random() <= GetConVar("ttt_special_traitor_chance"):GetFloat() and #traitors > 0 then
+                    local plyPick = math.random(1, #traitors)
+                    local ply = traitors[plyPick]
+                    local rolePick = math.random(1, #specialTraitorRoles)
+                    local role = specialTraitorRoles[rolePick]
+                    ply:SetRole(role)
+                    PrintRole(ply, ply:GetRoleString())
+                    table.remove(traitors, plyPick)
+                    for i = #specialTraitorRoles, 1, -1 do
+                        if specialTraitorRoles[i] == role then
+                            table.remove(specialTraitorRoles, i)
+                        end
                     end
                 end
             end
         end
-    end
 
-    -- Any of these left is a vanilla traitor
-    for _, v in pairs(traitors) do
-        PrintRole(v, "traitor")
+        -- Any of these left is a vanilla traitor
+        for _, v in pairs(traitors) do
+            PrintRole(v, "traitor")
+        end
     end
 
     -- pick independent
@@ -1775,6 +1932,37 @@ function SelectRoles()
         end
     end
 
+    local monster_count = GetMonsterCount(#choices) - forcedMonsterCount
+    if monster_count > 0 then
+        local monsterRoles = {}
+        if MONSTER_ROLES[ROLE_ZOMBIE] and not hasZombie and GetConVar("ttt_zombie_enabled"):GetBool() and choice_count >= GetConVar("ttt_zombie_min_players"):GetInt() then
+            for _ = 1, GetConVar("ttt_zombie_spawn_weight"):GetInt() do
+                table.insert(monsterRoles, ROLE_ZOMBIE)
+            end
+        end
+        if MONSTER_ROLES[ROLE_VAMPIRE] and not hasVampire and GetConVar("ttt_vampire_enabled"):GetBool() and choice_count >= GetConVar("ttt_vampire_min_players"):GetInt() then
+            for _ = 1, GetConVar("ttt_vampire_spawn_weight"):GetInt() do
+                table.insert(monsterRoles, ROLE_VAMPIRE)
+            end
+        end
+        for _ = 1, monster_count do
+            if #monsterRoles ~= 0 and math.random() <= GetConVar("ttt_monster_chance"):GetFloat() and #choices > 0 then
+                local plyPick = math.random(1, #choices)
+                local ply = choices[plyPick]
+                local rolePick = math.random(1, #monsterRoles)
+                local role = monsterRoles[rolePick]
+                ply:SetRole(role)
+                PrintRole(ply, ply:GetRoleString())
+                table.remove(choices, plyPick)
+                for i = #monsterRoles, 1, -1 do
+                    if monsterRoles[i] == role then
+                        table.remove(monsterRoles, i)
+                    end
+                end
+            end
+        end
+    end
+
     -- Anyone left is innocent
     for _, v in pairs(choices) do
         PrintRole(v, "innocent")
@@ -1787,6 +1975,12 @@ function SelectRoles()
     for _, ply in ipairs(plys) do
         -- initialize credit count for everyone based on their role
         if IsValid(ply) and not ply:IsSpec() then
+            if ply:GetRole() == ROLE_ZOMBIE then
+                ply:SetZombiePrime(true)
+            elseif ply:GetRole() == ROLE_VAMPIRE then
+                ply:SetVampirePrime(true)
+            end
+
             ply:SetDefaultCredits()
         end
 

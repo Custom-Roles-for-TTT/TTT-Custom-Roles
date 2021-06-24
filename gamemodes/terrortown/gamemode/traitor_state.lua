@@ -37,7 +37,7 @@ end
 
 local function SendRoleList(role, ply_or_rf, pred)
     local role_ids = {}
-    for k, v in ipairs(player.GetAll()) do
+    for _, v in ipairs(player.GetAll()) do
         if v:IsRole(role) then
             if not pred or (pred and pred(v)) then
                 table.insert(role_ids, v:EntIndex())
@@ -70,6 +70,8 @@ function SendBodysnatcherList(ply_or_rf) SendRoleList(ROLE_BODYSNATCHER, ply_or_
 function SendVeteranList(ply_or_rf) SendRoleList(ROLE_VETERAN, ply_or_rf) end
 function SendAssassinList(ply_or_rf) SendRoleList(ROLE_ASSASSIN, ply_or_rf) end
 function SendKillerList(ply_or_rf) SendRoleList(ROLE_KILLER, ply_or_rf) end
+function SendZombieList(ply_or_rf) SendRoleList(ROLE_ZOMBIE, ply_or_rf) end
+function SendVampireList(ply_or_rf) SendRoleList(ROLE_VAMPIRE, ply_or_rf) end
 
 function SendConfirmedTraitors(ply_or_rf)
     SendTraitorList(ply_or_rf, function(p) return p:GetNWBool("body_searched") end)
@@ -97,6 +99,8 @@ function SendFullStateUpdate()
     SendVeteranList()
     SendAssassinList()
     SendKillerList()
+    SendZombieList()
+    SendVampireList()
 end
 
 function SendRoleReset(ply_or_rf)
@@ -142,6 +146,8 @@ local function request_rolelist(ply)
         SendVeteranList(ply)
         SendAssassinList(ply)
         SendKillerList(ply)
+        SendZombieList(ply)
+        SendVampireList(ply)
     end
 end
 concommand.Add("_ttt_request_rolelist", request_rolelist)
@@ -317,9 +323,26 @@ concommand.Add("ttt_force_assassin", force_assassin, nil, nil, FCVAR_CHEAT)
 local function force_killer(ply)
     ply:SetRoleAndBroadcast(ROLE_KILLER)
     clear_role_effects(ply)
+    local max = GetConVar("ttt_killer_max_health"):GetInt()
+    ply:SetMaxHealth(max)
+    ply:SetHealth(max)
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_killer", force_killer, nil, nil, FCVAR_CHEAT)
+
+local function force_zombie(ply)
+    ply:SetRoleAndBroadcast(ROLE_ZOMBIE)
+    clear_role_effects(ply)
+    SendFullStateUpdate()
+end
+concommand.Add("ttt_force_zombie", force_zombie, nil, nil, FCVAR_CHEAT)
+
+local function force_vampire(ply)
+    ply:SetRoleAndBroadcast(ROLE_VAMPIRE)
+    clear_role_effects(ply)
+    SendFullStateUpdate()
+end
+concommand.Add("ttt_force_vampire", force_vampire, nil, nil, FCVAR_CHEAT)
 
 local function force_spectate(ply, cmd, arg)
     if IsValid(ply) then

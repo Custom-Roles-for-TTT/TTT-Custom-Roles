@@ -23,6 +23,8 @@ L.bodysnatcher = "Bodysnatcher"
 L.veteran = "Veteran"
 L.assassin = "Assassin"
 L.killer = "Killer"
+L.zombie = "Zombie"
+L.vampire = "Vampire"
 
 L.hidden = "Hidden"
 L.last_words = "Last Words"
@@ -48,6 +50,9 @@ L.win_jester = "The Jester has fooled you all!"
 L.win_clown = "The Clown has murdered you all!"
 L.win_killer = "The Killer has murdered you all!"
 L.win_showreport = "Let's look at the round report for {num} seconds."
+L.win_monster = "The monsters have taken over!"
+L.win_zombies = "The Zombies have taken over!"
+L.win_vampires = "The Vampires have taken over!"
 
 L.limit_round = "Round limit reached. {mapname} will load soon."
 L.limit_time = "Time limit reached. {mapname} will load soon."
@@ -57,6 +62,8 @@ L.limit_left = "{num} round(s) or {time} minutes remaining before the map change
 L.credit_det_all = "Detectives, you have been awarded {num} equipment credit(s) for your performance."
 L.credit_tr_all = "Traitors, you have been awarded {num} equipment credit(s) for your performance."
 L.credit_kil = "Killer, you have been awarded {num} equipment credit(s) for your performance."
+L.credit_zom = "Zombie, you have been awarded {num} equipment credit(s) for your performance."
+L.credit_vam = "Vampire, you have been awarded {num} equipment credit(s) for your performance."
 
 L.credit_kill = "You have received {num} credit(s) for killing a {role}."
 
@@ -88,6 +95,8 @@ L.body_found_bod = "They were a Bodysnatcher."
 L.body_found_vet = "They were a Veteran."
 L.body_found_asn = "They were an Assassin."
 L.body_found_kil = "They were a Killer."
+L.body_found_zom = "They were a Zombie."
+L.body_found_vam = "They were a Vampire."
 
 L.body_confirm = "{finder} confirmed the death of {victim}."
 
@@ -232,6 +241,8 @@ L.search_role_bod = "This person was a Bodysnatcher."
 L.search_role_vet = "This person was a Veteran."
 L.search_role_asn = "This person was an Assassin."
 L.search_role_kil = "This person was a Killer."
+L.search_role_zom = "This person was a Zombie."
+L.search_role_vam = "This person was a Vampire."
 
 L.search_words = "Something tells you some of this person's last words were: '{lastwords}'"
 L.search_armor = "They were wearing nonstandard body armor."
@@ -373,6 +384,16 @@ being the person last seen by a victim.
 
 Toggle in the Disguise tab of this menu
 or press Numpad Enter.]]
+
+L.item_speed = "Speed Boost"
+L.item_speed_desc = [[
+Increases the speed boost given while
+holding claws from 35% to 50%.]]
+
+L.item_regen = "Regeneration"
+L.item_regen_desc = [[
+Passively regenerate health at a
+rate of 1.5 HP every second.]]
 
 -- C4
 L.c4_hint = "Press {usekey} to arm or disarm."
@@ -670,6 +691,9 @@ L.target_hypnotist = "HYPNOTIST"
 L.target_assassin = "ASSASSIN"
 L.target_clown = "KILLER CLOWN"
 L.target_impersonator = "IMPERSONATOR"
+L.target_vampire = "VAMPIRE"
+L.target_zombie = "ZOMBIE"
+L.target_fellow_zombie = "FELLOW ZOMBIE"
 
 L.target_current_target = "CURRENT TARGET"
 
@@ -908,6 +932,65 @@ L.info_popup_killer = [[You are a Killer! Try to kill everyone and be the last o
 
 Press {menukey} to receive your special equipment!]]
 
+L.info_popup_zombie = [[You are a Zombie! Work with your allies to kill all others.
+
+These are your comrades:
+{allylist}
+
+All damage you deal with guns is reduced by one half.
+Killing someone with your claws will turn them into a zombie.
+
+Press {menukey} to receive your special equipment!]]
+
+L.info_popup_zombie_glitch = [[You are a Zombie! Work with your allies to kill all others.
+BUT BEWARE! There was a glitch in the system and one among
+you does not seek the same goal.
+
+These are your comrades:
+{allylist}
+
+All damage you deal with guns is reduced by one half.
+Killing someone with your claws will turn them into a zombie.
+
+Press {menukey} to receive your special equipment!]]
+
+L.info_popup_zombie_alone = [[You are a Zombie! You have no allies this round.
+
+Kill all others to win!
+
+All damage you deal with guns is reduced by one half.
+Killing someone with your claws will turn them into a zombie.
+
+Press {menukey} to receive your special equipment!]]
+
+L.info_popup_vampire = [[You are a Vampire! Work with your allies to kill all others.
+
+These are your comrades:
+{allylist}
+
+You can use your fangs (left-click) to drink blood from the living and the dead to refill your health or to fade from view (right-click).
+
+Press {menukey} to receive your special equipment!]]
+
+L.info_popup_vampire_glitch = [[You are a Vampire! Work with your allies to kill all others.
+BUT BEWARE! There was a glitch in the system and one among
+you does not seek the same goal.
+
+These are your comrades:
+{allylist}
+
+You can use your fangs (left-click) to drink blood from the living and the dead to refill your health or to fade from view (right-click).
+
+Press {menukey} to receive your special equipment!]]
+
+L.info_popup_vampire_alone = [[You are a Vampire! You have no allies this round.
+
+Kill all others to win!
+
+You can use your fangs (left-click) to drink blood from the living and the dead to refill your health or to fade from view (right-click).
+
+Press {menukey} to receive your special equipment!]]
+
 --- Various other text
 L.name_kick = "A player was automatically kicked for changing their name during a round."
 
@@ -1039,6 +1122,9 @@ L.hilite_win_jester = "THE JESTER WINS"
 L.hilite_win_clown = "THE CLOWN WINS"
 L.hilite_win_old_man = "AND THE OLD MAN WINS"
 L.hilite_win_killer = "THE KILLER WINS"
+L.hilite_win_monster = "THE MONSTERS WIN"
+L.hilite_win_zombies = "THE ZOMBIES WIN"
+L.hilite_win_vampires = "THE VAMPIRES WIN"
 
 L.hilite_players1 = "{numplayers} players took part, {numtraitors} were traitors"
 L.hilite_players2 = "{numplayers} players took part, one of them the traitor"
@@ -1054,6 +1140,7 @@ L.col_kills1 = "Innocent kills"
 L.col_kills2 = "Traitor kills"
 L.col_kills3 = "Jester kills"
 L.col_kills4 = "Indep. kills"
+L.col_kills5 = "Monster kills"
 L.col_points = "Points"
 L.col_team = "Team bonus"
 L.col_total = "Total points"
@@ -1119,6 +1206,9 @@ L.ev_win_inno = "The lovable innocent terrorists won the round!"
 L.ev_win_clown = "The vicious clown won the round!"
 L.ev_win_oldman = "The Old Man has somehow survived and also won the round!"
 L.ev_win_killer = "The butchering killer won the round!"
+L.ev_win_monster = "The evil monsters have won the round!"
+L.ev_win_zombie = "The zombie infection has taken over the world!"
+L.ev_win_vampire = "The vampires have sucked the life out of everyone!"
 L.ev_win_time = "The traitors ran out of time and lost!"
 
 --- Awards/highlights
@@ -1152,6 +1242,9 @@ L.aw_all1_text = "was responsible for every kill made by the innocent this round
 
 L.aw_all2_title = "Lone Wolf"
 L.aw_all2_text = "was responsible for every kill made by a traitor this round."
+
+L.aw_all3_title = "Van Helsing"
+L.aw_all3_text = "was responsible for every monster killed this round."
 
 L.aw_nkt1_title = "I Got One, Boss!"
 L.aw_nkt1_text = "managed to kill a single innocent. Sweet!"
@@ -1375,3 +1468,7 @@ L.ev_clown = "The clown, {player}, went on a rampage"
 L.ev_drunk = "{player} remembered they are {team}"
 L.ev_haunt = "{victim} started haunting {attacker}"
 L.ev_bodysnatch = "{attacker} bodysnatched {role}, {victim}"
+L.ev_zombi = "{victim} was zombified"
+L.ev_vampi = "{victim} was vampified"
+L.ev_vampi_revert_converted = "The last Vampire Prime ({prime}) was killed and all their thralls had their humanity restored"
+L.ev_vampi_kill_converted = "The last Vampire Prime ({prime}) was killed and took all their thralls with them"

@@ -166,21 +166,23 @@ local function AllKills(events, scores, players)
 
     local tr_killers = {}
     local in_killers = {}
+    local mon_killers = {}
     for id, s in pairs(scores) do
         if s.innos > 0 then
             table.insert(in_killers, id)
         elseif s.traitors > 0 then
             table.insert(tr_killers, id)
+        elseif s.monsters > 0 then
+            table.insert(mon_killers, id)
         end
     end
 
     -- Someone killed all the traitors
     if #tr_killers == 1 then
         local id = tr_killers[1]
-        local role = GetRole(players, id)
+        local killer, role = GetNameAndRole(players, id)
         -- Don't celebrate team killers
         if not TRAITOR_ROLES[role] then
-            local killer = GetName(players, id)
             if not killer then return nil end
 
             return {nick=killer, title=T("aw_all1_title"), text=T("aw_all1_text"), priority=math.random(0, table.Count(players))}
@@ -190,13 +192,24 @@ local function AllKills(events, scores, players)
     -- Someone killed all the innocents
     if #in_killers == 1 then
         local id = in_killers[1]
-        local role = GetRole(players, id)
+        local killer, role = GetNameAndRole(players, id)
         -- Don't celebrate team killers
         if not INNOCENT_ROLES[role] then
-            local killer = GetName(players, id)
             if not killer then return nil end
 
             return {nick=killer, title=T("aw_all2_title"), text=T("aw_all2_text"), priority=math.random(0, table.Count(players))}
+        end
+    end
+
+    -- Someone killed all the monsters
+    if #mon_killers == 1 then
+        local id = mon_killers[1]
+        local killer, role = GetNameAndRole(players, id)
+        -- Don't celebrate team killers
+        if not MONSTER_ROLES[role] then
+            if not killer then return nil end
+
+            return {nick=killer, title=T("aw_all3_title"), text=T("aw_all3_text"), priority=math.random(0, table.Count(players))}
         end
     end
 
@@ -208,7 +221,7 @@ local function NumKills_Traitor(events, scores, players)
     for id, s in pairs(scores) do
         local role = GetRole(players, id)
         if TRAITOR_ROLES[role] then
-            if s.innos > 0 then
+            if s.innos > 0 or s.indeps > 0 or s.monsters > 0 then
                 table.insert(trs, id)
             end
         end
@@ -223,7 +236,7 @@ local function NumKills_Traitor(events, scores, players)
         if not nick then return nil end
 
         -- All non-traitor kills
-        local kills = scores[sid].innos
+        local kills = scores[sid].innos + scores[sid].indeps + scores[sid].monsters
         if kills == 1 then
             return {title=T("aw_nkt1_title"), nick=nick, text=T("aw_nkt1_text"), priority=0}
         elseif kills == 2 then
@@ -617,11 +630,14 @@ end
 local function TeamKiller(events, scores, players)
     local num_traitors = 0
     local num_inno = 0
+    local num_mon = 0
     for _, info in pairs(players) do
         if TRAITOR_ROLES[info.role] then
             num_traitors = num_traitors + 1
         elseif INNOCENT_ROLES[info.role] then
             num_inno = num_inno + 1
+        elseif MONSTER_ROLES[info.role] then
+            num_mon = num_mon + 1
         end
     end
 
@@ -635,6 +651,13 @@ local function TeamKiller(events, scores, players)
         if TRAITOR_ROLES[role] then
             kills = s.traitors
             team = num_traitors - 1
+        elseif MONSTER_ROLES[role] then
+            kills = s.monsters
+            team = num_mon - 1
+        -- Ignore indepdenents because they don't have a team
+        elseif INDEPENDENT_ROLES[role] then
+            kills = 0
+            team = 0
         end
 
         if kills > 0 and (kills / team) > pct then
@@ -650,7 +673,10 @@ local function TeamKiller(events, scores, players)
     if not nick then return nil end
 
     local was_traitor = TRAITOR_ROLES[tkerRole]
-    local kills = (was_traitor and scores[tker].traitors > 0 and scores[tker].traitors) or (scores[tker].innos > 0 and scores[tker].innos) or 0
+    local was_monster = MONSTER_ROLES[tkerRole]
+    local kills = (was_traitor and scores[tker].traitors > 0 and scores[tker].traitors) or
+                    (was_monster and scores[tker].monsters > 0 and scores[tker.monsters]) or
+                    (scores[tker].innos > 0 and scores[tker].innos) or 0
     local award = {nick=nick, priority=kills}
     if kills == 1 then
         award.title = T("aw_tkl1_title")
@@ -666,7 +692,7 @@ local function TeamKiller(events, scores, players)
         award.title = T("aw_tkl4_title")
         award.text =  T("aw_tkl4_text")
         award.priority = kills + math.random(3, 6)
-    elseif pct >= 0.75 and not was_traitor then
+    elseif pct >= 0.75 and not was_traitor and not was_monster then
         award.title = T("aw_tkl5_title")
         award.text =  T("aw_tkl5_text")
         award.priority = kills + 10
@@ -787,6 +813,7 @@ local function TimeOfDeath(events, scores, players)
 
     local traitor_win = nil
     local innocent_win = nil
+    local monster_win = nil
 
     local e = nil
     for i=#events, 1, -1 do
@@ -796,9 +823,10 @@ local function TimeOfDeath(events, scores, players)
             time_near_end = e.t - near
             traitor_win = (e.win == WIN_TRAITOR)
             innocent_win = (e.win == WIN_INNOCENT)
+            monster_win = (e.win == WIN_MONSTER)
         elseif e.id == EVENT_KILL and e.vic then
             -- If this happened near the end and the winning team matches the victim's team
-            if time_near_end and e.t > time_near_end and ((e.vic.tr and traitor_win) or (e.vic.inno and innocent_win)) then
+            if time_near_end and e.t > time_near_end and ((e.vic.tr and traitor_win) or (e.vic.inno and innocent_win) or (e.vic.mon and monster_win)) then
                 return {
                     nick  = e.vic.ni,
                     title = T("aw_tod1_title"),
