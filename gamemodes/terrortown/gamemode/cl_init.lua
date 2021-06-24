@@ -829,14 +829,14 @@ end)
 
 -- Player highlights
 
-local function OnPlayerHighlightEnabled(client, alliedRoles, jesterRoles, hideEnemies, traitorAllies)
+local function OnPlayerHighlightEnabled(client, alliedRoles, showJesters, hideEnemies, traitorAllies)
     if GetRoundState() ~= ROUND_ACTIVE then return end
     local enemies = {}
     local friends = {}
     local jesters = {}
     for _, v in pairs(player.GetAll()) do
         if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= client then
-            if table.HasValue(jesterRoles, v:GetRole()) then
+            if showJesters and v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false) then
                 table.insert(jesters, v)
             elseif table.HasValue(alliedRoles, v:GetRole()) then
                 table.insert(friends, v)
@@ -870,8 +870,7 @@ end
 
 local function EnableKillerHighlights(client)
     hook.Add("PreDrawHalos", "AddPlayerHighlights", function()
-        local jesters = table.GetKeys(JESTER_ROLES)
-        OnPlayerHighlightEnabled(client, {ROLE_KILLER}, jesters, false, false)
+        OnPlayerHighlightEnabled(client, {ROLE_KILLER}, true, false, false)
     end)
 end
 local function EnableTraitorHighlights(client)
@@ -881,8 +880,7 @@ local function EnableTraitorHighlights(client)
         -- And add the glitch
         table.insert(allies, ROLE_GLITCH)
 
-        local jesters = table.GetKeys(JESTER_ROLES)
-        OnPlayerHighlightEnabled(client, allies, jesters, true, true)
+        OnPlayerHighlightEnabled(client, allies, true, true, true)
     end)
 end
 local function EnableZombieHighlights(client)
@@ -907,8 +905,7 @@ local function EnableZombieHighlights(client)
             end
         end
 
-        local jesters = table.GetKeys(JESTER_ROLES)
-        OnPlayerHighlightEnabled(client, allies, jesters, hideEnemies, traitorAllies)
+        OnPlayerHighlightEnabled(client, allies, true, hideEnemies, traitorAllies)
     end)
 end
 local function EnableVampireHighlights(client)
@@ -928,8 +925,7 @@ local function EnableVampireHighlights(client)
             end
         end
 
-        local jesters = table.GetKeys(JESTER_ROLES)
-        OnPlayerHighlightEnabled(client, allies, jesters, hideEnemies, traitorAllies)
+        OnPlayerHighlightEnabled(client, allies, true, hideEnemies, traitorAllies)
     end)
 end
 
