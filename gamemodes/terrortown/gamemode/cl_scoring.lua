@@ -682,8 +682,8 @@ function CLSCORE:BuildSummaryPanel(dpanel)
     bg.PaintOver = function()
         draw.RoundedBox(8, 8, ywin - 5, w - 14, winlbl:GetTall() + 10, title.c)
         if old_man_won_last_round then draw.RoundedBoxEx(8, 8, 65, w - 14, 28, ROLE_COLORS[ROLE_OLDMAN], false, false, true, true) end
-        draw.RoundedBox(0, 8, ywin + winlbl:GetTall() + 14, 341, 330 + height_extra, Color(164, 164, 164, 255))
-        draw.RoundedBox(0, 357, ywin + winlbl:GetTall() + 14, 341, 330 + height_extra, Color(164, 164, 164, 255))
+        draw.RoundedBox(0, 8, ywin + winlbl:GetTall() + 15, 341, 329 + height_extra, Color(164, 164, 164, 255))
+        draw.RoundedBox(0, 357, ywin + winlbl:GetTall() + 15, 341, 329 + height_extra, Color(164, 164, 164, 255))
         local loc = ywin + winlbl:GetTall() + 47
         for _ = 1, player_rows do
             draw.RoundedBox(0, 8, loc, 341, 1, Color(97, 100, 102, 255))
