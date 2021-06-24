@@ -1131,6 +1131,16 @@ function GM:PlayerDeath(victim, infl, attacker)
                     ply:PrintMessage(HUD_PRINTTALK, "You have been promoted to Detective!")
                     ply:PrintMessage(HUD_PRINTCENTER, "You have been promoted to Detective!")
 
+                    -- If the player is an Impersonator, tell all their team members when they get promoted
+                    if ply:IsImpersonator() then
+                        for _, v in pairs(player.GetAll()) do
+                            if v ~= ply and v:IsTraitorTeam() and v:Alive() and not v:IsSpec() then
+                                v:PrintMessage(HUD_PRINTTALK, "The Impersonator has been promoted to Detective!")
+                                v:PrintMessage(HUD_PRINTCENTER, "The Impersonator has been promoted to Detective!")
+                            end
+                        end
+                    end
+
                     net.Start("TTT_Promotion")
                     net.WriteString(ply:Nick())
                     net.Broadcast()
