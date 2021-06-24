@@ -180,7 +180,12 @@ function PANEL:Paint(width, height)
 
     local roleStr = ""
     if c ~= defaultcolor then
-        roleStr = ROLE_STRINGS_SHORT[c]
+        -- If the impersonator is promoted, use the Detective's icon with the Impersonator's color
+        if ply:IsImpersonator() and ply:GetNWBool("HasPromotion", false) then
+            roleStr = ROLE_STRINGS_SHORT[ROLE_DETECTIVE]
+        else
+            roleStr = ROLE_STRINGS_SHORT[c]
+        end
         c = ROLE_COLORS_SCOREBOARD[c]
     end
 

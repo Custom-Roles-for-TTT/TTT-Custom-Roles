@@ -46,7 +46,7 @@ local clown_icon = Material("icon16/emoticon_evilgrin.png")
 local drunk_icon = Material("icon16/drink_empty.png")
 local haunt_icon = Material("icon16/group.png")
 local bodysnatch_icon = Material("icon16/user_edit.png")
-local info_icon = Material("icon16/info.png")
+local info_icon = Material("icon16/information.png")
 
 -- Shorter name, using it lots
 local Event = CLSCORE.DeclareEventDisplay

@@ -37,14 +37,14 @@ local indicator_mat_rolefront_noz = Material("vgui/ttt/sprite_rolefront_noz")
 
 local indicator_mat_target_noz = Material("vgui/ttt/sprite_target_noz")
 
-local function DrawRoleIcon(role, noz, pos, dir)
+local function DrawRoleIcon(role, noz, pos, dir, color_role)
     local path = "vgui/ttt/sprite_" .. ROLE_STRINGS_SHORT[role]
     if noz then path = path .. "_noz" end
     local indicator_mat = Material(path)
 
     if noz then render.SetMaterial(indicator_mat_roleback_noz)
     else render.SetMaterial(indicator_mat_roleback) end
-    render.DrawQuadEasy(pos, dir, 8, 8, ROLE_COLORS_SPRITE[role], 180)
+    render.DrawQuadEasy(pos, dir, 8, 8, ROLE_COLORS_SPRITE[color_role or role], 180)
 
     render.SetMaterial(indicator_mat)
     render.DrawQuadEasy(pos, dir, 8, 8, COLOR_WHITE, 180)
@@ -106,6 +106,13 @@ function GM:PostDrawTranslucentRenderables()
                     if client:IsTraitorTeam() then
                         if (v:GetTraitor() and not hideBeggar) or v:GetGlitch() then
                             DrawRoleIcon(ROLE_TRAITOR, true, pos, dir)
+                        elseif v:GetImpersonator() then
+                            -- If the impersonator is promoted, use the Detective's icon with the Impersonator's color
+                            if v:GetNWBool("HasPromotion", false) then
+                                DrawRoleIcon(ROLE_DETECTIVE, true, pos, dir, ROLE_IMPERSONATOR)
+                            else
+                                DrawRoleIcon(ROLE_IMPERSONATOR, true, pos, dir)
+                            end
                         elseif v:IsTraitorTeam() then
                             DrawRoleIcon(v:GetRole(), true, pos, dir)
                         elseif showJester then
