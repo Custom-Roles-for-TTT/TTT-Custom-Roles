@@ -319,15 +319,36 @@ local function ValidAward(a)
     return a and a.nick and a.text and a.title and a.priority
 end
 
-local wintitle = {
-    [WIN_INNOCENT] = { txt = "hilite_win_innocent", c = ROLE_COLORS[ROLE_INNOCENT] },
-    [WIN_TRAITOR] = { txt = "hilite_win_traitors", c = ROLE_COLORS[ROLE_TRAITOR] },
-    [WIN_JESTER] = { txt = "hilite_win_jester", c = ROLE_COLORS[ROLE_JESTER] },
-    [WIN_CLOWN] = { txt = "hilite_win_clown", c = ROLE_COLORS[ROLE_JESTER] },
-    [WIN_KILLER] = { txt = "hilite_win_killer", c = ROLE_COLORS[ROLE_KILLER] },
-    [WIN_ZOMBIE] = { txt = "hilite_win_zombies", c = ROLE_COLORS[ROLE_ZOMBIE] },
-    [WIN_MONSTER] = { txt = "hilite_win_monster", c = ROLE_COLORS[ROLE_ZOMBIE] }
-}
+local function GetWinTitle(wintype)
+    local wintitle = {
+        [WIN_INNOCENT] = { txt = "hilite_win_innocent", c = ROLE_COLORS[ROLE_INNOCENT] },
+        [WIN_TRAITOR] = { txt = "hilite_win_traitors", c = ROLE_COLORS[ROLE_TRAITOR] },
+        [WIN_JESTER] = { txt = "hilite_win_jester", c = ROLE_COLORS[ROLE_JESTER] },
+        [WIN_CLOWN] = { txt = "hilite_win_clown", c = ROLE_COLORS[ROLE_JESTER] },
+        [WIN_KILLER] = { txt = "hilite_win_killer", c = ROLE_COLORS[ROLE_KILLER] },
+        [WIN_ZOMBIE] = { txt = "hilite_win_zombies", c = ROLE_COLORS[ROLE_ZOMBIE] },
+        [WIN_MONSTER] = { txt = "hilite_win_monster", c = ROLE_COLORS[ROLE_ZOMBIE] }
+    }
+    local title = wintitle[wintype]
+
+    -- If this was a monster win, check that both roles are part of the monsters team still
+    if wintype == WIN_MONSTER then
+        -- If Zombies are not monsters then Vampires win
+        if not MONSTER_ROLES[ROLE_ZOMBIE] then
+            title.txt = "hilite_win_vampires"
+            -- Also make sure to override the color because they will be different
+            title.c = ROLE_COLORS[ROLE_VAMPIRE]
+        -- And vice versa
+        elseif not MONSTER_ROLES[ROLE_VAMPIRE] then
+            title.txt = "hilite_win_zombies"
+        -- Otherwise the monsters legit win
+        else
+            title.txt = "hilite_win_monster"
+        end
+    end
+
+    return title
+end
 
 function CLSCORE:BuildEventLogPanel(dpanel)
     local margin = 10
@@ -624,29 +645,13 @@ function CLSCORE:BuildSummaryPanel(dpanel)
         dpanel:SetSize(w, h)
     end
 
-    local title = wintitle[WIN_INNOCENT]
+    local title = GetWinTitle(WIN_INNOCENT)
     for i = #self.Events, 1, -1 do
         local e = self.Events[i]
         if e.id == EVENT_FINISH then
             local wintype = e.win
             if wintype == WIN_TIMELIMIT then wintype = WIN_INNOCENT end
-            title = wintitle[wintype]
-
-            -- If this was a monster win, check that both roles are part of the monsters team still
-            if wintype == WIN_MONSTER then
-                -- If Zombies are not monsters then Vampires win
-                if not MONSTER_ROLES[ROLE_ZOMBIE] then
-                    title.txt = "hilite_win_vampires"
-                    -- Also make sure to override the color because they will be different
-                    title.c = ROLE_COLORS[ROLE_VAMPIRE]
-                -- And vice versa
-                elseif not MONSTER_ROLES[ROLE_VAMPIRE] then
-                    title.txt = "hilite_win_zombies"
-                -- Otherwise the monsters legit win
-                else
-                    title.txt = "hilite_win_monster"
-                end
-            end
+            title = GetWinTitle(wintype)
             break
         end
     end
@@ -879,7 +884,7 @@ function CLSCORE:BuildHilitePanel(dpanel)
     local w, h = dpanel:GetSize()
 
     local endtime = self.StartTime
-    local title = wintitle[WIN_INNOCENT]
+    local title = GetWinTitle(WIN_INNOCENT)
     for i=#self.Events, 1, -1 do
         local e = self.Events[i]
         if e.id == EVENT_FINISH then
@@ -887,7 +892,7 @@ function CLSCORE:BuildHilitePanel(dpanel)
            -- when win is due to timeout, innocents win
            local wintype = e.win
            if wintype == WIN_TIMELIMIT then wintype = WIN_INNOCENT end
-           title = wintitle[wintype]
+           title = GetWinTitle(wintype)
            break
         end
     end
