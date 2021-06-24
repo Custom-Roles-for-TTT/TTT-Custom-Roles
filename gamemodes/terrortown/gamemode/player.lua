@@ -1468,6 +1468,7 @@ end
 function GM:EntityTakeDamage(ent, dmginfo)
     if not IsValid(ent) then return end
 
+    local att = dmginfo:GetAttacker()
     if GetRoundState() >= ROUND_ACTIVE and ent:IsPlayer() then
         -- Jesters don't take environmental damage
         if ent:IsJesterTeam() and not ent:GetNWBool("KillerClownActive", false) then
@@ -1483,9 +1484,14 @@ function GM:EntityTakeDamage(ent, dmginfo)
             local reduction = GetConVar("ttt_killer_damage_reduction"):GetFloat()
             dmginfo:ScaleDamage(1 - reduction)
         end
+
+        -- Prevent damage from non-bullet weapons
+        if att:IsPlayer() and att:IsJesterTeam() and not att:GetNWBool("KillerClownActive", false) then
+            dmginfo:ScaleDamage(0)
+            dmginfo:SetDamage(0)
+        end
     end
 
-    local att = dmginfo:GetAttacker()
     if not GAMEMODE:AllowPVP() then
         -- if player vs player damage, or if damage versus a prop, then zero
         if ent:IsExplosive() or (ent:IsPlayer() and IsValid(att) and att:IsPlayer()) then
