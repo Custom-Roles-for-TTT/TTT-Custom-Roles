@@ -124,9 +124,9 @@ function GM:PostDrawTranslucentRenderables()
                         elseif showJester then
                             DrawRoleIcon(ROLE_JESTER, false, pos, dir)
                         end
-                    elseif client:IsZombie() then
-                        if v:IsZombie() then
-                            DrawRoleIcon(ROLE_ZOMBIE, true, pos, dir)
+                    elseif client:IsIndependentTeam() then
+                        if v:IsIndependentTeam() then
+                            DrawRoleIcon(v:GetRole(), true, pos, dir)
                         elseif showJester then
                             DrawRoleIcon(ROLE_JESTER, false, pos, dir)
                         end

@@ -125,12 +125,10 @@ function GM:TTTScoreboardRowColorForPlayer(ply)
         elseif showJester then
             return ROLE_JESTER
         end
-    elseif client:IsZombie() then
-        if ply:IsZombie() then
-            return ROLE_ZOMBIE
-        end
     elseif client:IsIndependentTeam() then
-        if showJester then
+        if ply:IsIndependentTeam() then
+            return ply:GetRole()
+        elseif showJester then
             return ROLE_JESTER
         end
     elseif client:IsMonsterTeam() then

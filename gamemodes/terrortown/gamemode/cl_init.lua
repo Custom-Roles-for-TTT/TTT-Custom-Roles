@@ -890,13 +890,26 @@ local function EnableZombieHighlights(client)
     hook.Add("PreDrawHalos", "AddPlayerHighlights", function()
         local hasClaws = client.GetActiveWeapon and IsValid(client:GetActiveWeapon()) and client:GetActiveWeapon():GetClass() == "weapon_zom_claws"
         local hideEnemies = not zombie_vision or not hasClaws
-        local allies = {ROLE_ZOMBIE}
-        if MONSTER_ROLES[ROLE_ZOMBIE] and MONSTER_ROLES[ROLE_VAMPIRE] then
-            table.insert(allies, ROLE_VAMPIRE)
+        local allies = {}
+        local traitorAllies = TRAITOR_ROLES[ROLE_ZOMBIE]
+        -- If zombies are traitors and traitor vision or zombie vision is enabled then add all the traitor roles as allies
+        if (traitor_vision or zombie_vision) and traitorAllies then
+            allies = table.GetKeys(TRAITOR_ROLES)
+        -- If zombie vision is enabled, add the allied roles
+        elseif zombie_vision then
+            -- If they are monsters, ally with Zombies and monster-Vampires
+            if MONSTER_ROLES[ROLE_ZOMBIE] then
+                allies = {ROLE_ZOMBIE}
+                if MONSTER_ROLES[ROLE_VAMPIRE] then
+                    table.insert(allies, ROLE_VAMPIRE)
+                end
+            else
+                allies = table.GetKeys(INDEPENDENT_ROLES)
+            end
         end
 
         local jesters = table.GetKeys(JESTER_ROLES)
-        OnPlayerHighlightEnabled(client, allies, jesters, hideEnemies, false)
+        OnPlayerHighlightEnabled(client, allies, jesters, hideEnemies, traitorAllies)
     end)
 end
 local function EnableVampireHighlights(client)
@@ -929,7 +942,7 @@ function HandleRoleHighlights(client)
             EnableKillerHighlights(client)
             vision_enabled = true
         end
-    elseif client:IsZombie() and zombie_vision then
+    elseif client:IsZombie() and (zombie_vision or (traitor_vision and TRAITOR_ROLES[ROLE_ZOMBIE])) then
         if not vision_enabled then
             EnableZombieHighlights(client)
             vision_enabled = true
