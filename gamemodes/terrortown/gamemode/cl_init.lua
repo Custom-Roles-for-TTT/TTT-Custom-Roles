@@ -749,10 +749,9 @@ hook.Add("TTTPrepareRound", "TTTSprintPrepareRound", function()
     stamina = 100
     ConVars()
 
-    local client = LocalPlayer()
-
     -- listen for activation
     hook.Add("Think", "TTTSprintThink", function()
+        local client = LocalPlayer()
         local forward_key = hook.Call("TTTSprintKey", GAMEMODE, client) or IN_FORWARD
         if client:KeyDown(forward_key) and client:KeyDown(IN_SPEED) then
             -- forward + selected key
