@@ -578,9 +578,11 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                     swappedWith = swappedWith
                 }
 
-                if INNOCENT_ROLES[startingRole] then
+                local groupingRole = finalRole -- Group players in the summary by the team each player ended in...
+                if finalRole == ROLE_ZOMBIE then groupingRole = startingRole end -- ...unless that player ended as a zombie in which case keep them with the team they started as
+                if INNOCENT_ROLES[groupingRole] then
                     table.insert(scores_by_section[ROLE_INNOCENT], playerInfo)
-                elseif TRAITOR_ROLES[startingRole] or MONSTER_ROLES[startingRole] then
+                elseif TRAITOR_ROLES[groupingRole] or MONSTER_ROLES[groupingRole] then
                     table.insert(scores_by_section[ROLE_TRAITOR], playerInfo)
                 else
                     table.insert(scores_by_section[ROLE_JESTER], playerInfo)
