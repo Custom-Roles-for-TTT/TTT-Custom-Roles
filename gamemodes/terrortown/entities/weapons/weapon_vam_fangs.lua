@@ -257,6 +257,8 @@ function SWEP:Think()
                 if not ply:HasWeapon("weapon_zm_improvised") then
                     ply:Give("weapon_zm_improvised")
                 end
+                -- Disable Killer smoke if they have it
+                ply:SetNWBool("KillerSmoke", false)
                 ply:SetVampirePreviousRole(ply:GetRole())
                 ply:SetRole(ROLE_VAMPIRE)
                 ply:SetVampirePrime(false)
