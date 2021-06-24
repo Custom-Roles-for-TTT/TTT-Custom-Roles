@@ -108,9 +108,10 @@ function GM:PlayerSpawn(ply)
 
     ply.has_spawned = true
 
-    -- Reset player color and transparency
+    -- Reset player color, transparency, and render mode
     ply:SetColor(Color(255, 255, 255, 255))
     ply:SetMaterial("models/glass")
+    ply:SetRenderMode(RENDERMODE_TRANSALPHA)
 
     -- let the client do things on spawn
     net.Start("TTT_PlayerSpawned")
@@ -1791,7 +1792,7 @@ local function HandleRoleForcedWeapons(ply)
         if ply.GetActiveWeapon and IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() == "weapon_zom_claws" then
             ply:SetColor(Color(70, 100, 25, 255))
             ply:SetRenderMode(RENDERMODE_NORMAL)
-        else
+        elseif ply:GetRenderMode() ~= RENDERMODE_TRANSALPHA then
             ply:SetColor(Color(255, 255, 255, 255))
             ply:SetRenderMode(RENDERMODE_TRANSALPHA)
         end
@@ -1816,7 +1817,7 @@ local function HandleRoleForcedWeapons(ply)
         if not ply:HasWeapon("weapon_vam_fangs") then
             ply:Give("weapon_vam_fangs")
         end
-    else
+    elseif ply:GetRenderMode() ~= RENDERMODE_TRANSALPHA then
         ply:SetColor(Color(255, 255, 255, 255))
         ply:SetRenderMode(RENDERMODE_TRANSALPHA)
     end
