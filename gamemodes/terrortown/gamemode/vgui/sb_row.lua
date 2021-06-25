@@ -125,8 +125,18 @@ function GM:TTTScoreboardRowColorForPlayer(ply)
         elseif showJester then
             return ROLE_JESTER
         end
+    elseif client:IsZombie() then
+        if ply:IsZombie() then
+            return ROLE_ZOMBIE
+        end
     elseif client:IsIndependentTeam() then
         if showJester then
+            return ROLE_JESTER
+        end
+    elseif client:IsMonsterTeam() then
+        if ply:IsMonsterTeam() then
+            return ply:GetRole()
+        elseif showJester then
             return ROLE_JESTER
         end
     end
@@ -174,7 +184,12 @@ function PANEL:Paint(width, height)
 
     local roleStr = ""
     if c ~= defaultcolor then
-        roleStr = ROLE_STRINGS_SHORT[c]
+        -- If the impersonator is promoted, use the Detective's icon with the Impersonator's color
+        if ply:IsImpersonator() and ply:GetNWBool("HasPromotion", false) then
+            roleStr = ROLE_STRINGS_SHORT[ROLE_DETECTIVE]
+        else
+            roleStr = ROLE_STRINGS_SHORT[c]
+        end
         c = ROLE_COLORS_SCOREBOARD[c]
     end
 

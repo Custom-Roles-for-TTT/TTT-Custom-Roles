@@ -18,9 +18,15 @@ function GM:PlayerCanPickupWeapon(ply, wep)
         return false
     elseif not ply:GetKiller() and (wep:GetClass() == "weapon_kil_knife" or wep:GetClass() == "weapon_kil_crowbar") then
         return false
+    elseif not ply:GetVampire() and wep:GetClass() == "weapon_vam_fangs" then
+        return false
+    elseif not ply:GetZombie() and wep:GetClass() == "weapon_zom_claws" then
+        return false
     elseif not ply:CanCarryWeapon(wep) then
         return false
     elseif IsEquipment(wep) and wep.IsDropped and (not ply:KeyDown(IN_USE)) then
+        return false
+    elseif GetConVar("ttt_zombie_prime_only_weapons"):GetBool() and ply:GetZombie() and not ply:GetZombiePrime() and wep:GetClass() ~= "weapon_zom_claws" and GetRoundState() == ROUND_ACTIVE then
         return false
     end
 
@@ -361,7 +367,8 @@ local function OrderEquipment(ply, cmd, args)
     local sync_hypnotist = GetGlobalBool("ttt_shop_hyp_sync") and ply:IsHypnotist()
     local sync_impersonator = GetGlobalBool("ttt_shop_imp_sync") and ply:IsImpersonator()
     local sync_assassin = GetGlobalBool("ttt_shop_asn_sync") and ply:IsAssassin()
-    local sync_traitor_weapons = sync_hypnotist or sync_impersonator or sync_assassin
+    local sync_vampire = GetGlobalBool("ttt_shop_vam_sync") and ply:IsVampire() and TRAITOR_ROLES[ROLE_VAMPIRE]
+    local sync_traitor_weapons = sync_hypnotist or sync_impersonator or sync_assassin or sync_vampire
     local promoted = ply:IsDetectiveLike() and role ~= ROLE_DETECTIVE
 
     -- If this role has a table of additional weapons and that table includes this weapon
@@ -556,15 +563,6 @@ local function CheatCredits(ply)
 end
 concommand.Add("ttt_cheat_credits", CheatCredits, nil, nil, FCVAR_CHEAT)
 
-local function IsSameTeam(first, second)
-    if first:IsTraitorTeam() and second:IsTraitorTeam() then
-        return true
-    elseif first:IsInnocentTeam() and second:IsInnocentTeam() then
-        return true
-    end
-    return first:GetRole() == second:GetRole()
-end
-
 local function TransferCredits(ply, cmd, args)
     if (not IsValid(ply)) or (not ply:IsActiveSpecial()) then return end
     if #args ~= 2 then return end
@@ -573,7 +571,7 @@ local function TransferCredits(ply, cmd, args)
     local credits = tonumber(args[2])
     if sid and credits then
         local target = player.GetBySteamID64(sid)
-        if (not IsValid(target)) or (not target:IsActiveSpecial()) or not IsSameTeam(target, ply) or (target == ply) then
+        if (not IsValid(target)) or (not target:IsActiveSpecial()) or not ply:IsSameTeam(target) or (target == ply) then
             LANG.Msg(ply, "xfer_no_recip")
             return
         end
@@ -687,7 +685,7 @@ end
 -- non-cheat developer commands can reveal precaching the first time equipment
 -- is bought, so trigger it at the start of a round instead
 function WEPS.ForcePrecache()
-    for k, w in ipairs(weapons.GetList()) do
+    for _, w in ipairs(weapons.GetList()) do
         if w.WorldModel then
             util.PrecacheModel(w.WorldModel)
         end

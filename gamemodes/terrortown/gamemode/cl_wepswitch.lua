@@ -28,31 +28,34 @@ local height = 20
 
 local barcorner = surface.GetTextureID("gui/corner8")
 
-local col_active = {
-    tip = ROLE_COLORS,
+local function GetColors(dark)
+    if dark then
+        return {
+            tip = ROLE_COLORS_DARK,
 
-    bg = Color(20, 20, 20, 250),
+            bg = Color(20, 20, 20, 200),
 
-    text_empty = Color(200, 20, 20, 255),
-    text = Color(255, 255, 255, 255),
+            text_empty = Color(200, 20, 20, 100),
+            text = Color(255, 255, 255, 100),
 
-    none = Color(90, 90, 90, 255),
+            none = Color(75, 75, 75, 255),
 
-    shadow = 255
-};
+            shadow = 100
+        }
+    end
+    return {
+        tip = ROLE_COLORS,
 
-local col_dark = {
-    tip = ROLE_COLORS_DARK,
+        bg = Color(20, 20, 20, 250),
 
-    bg = Color(20, 20, 20, 200),
+        text_empty = Color(200, 20, 20, 255),
+        text = Color(255, 255, 255, 255),
 
-    text_empty = Color(200, 20, 20, 100),
-    text = Color(255, 255, 255, 100),
+        none = Color(90, 90, 90, 255),
 
-    none = Color(75, 75, 75, 255),
-
-    shadow = 100
-};
+        shadow = 255
+    }
+end
 
 -- Draw a bar in the style of the the weapon pickup ones
 local round = math.Round
@@ -148,12 +151,12 @@ function WSWITCH:Draw(client)
     local x = ScrW() - width - margin * 2
     local y = ScrH() - (#weps * (height + margin))
 
-    local col = col_dark
+    local col = nil
     for k, wep in pairs(weps) do
         if self.Selected == k then
-            col = col_active
+            col = GetColors(false)
         else
-            col = col_dark
+            col = GetColors(true)
         end
 
         self:DrawBarBg(x, y, width, height, col)

@@ -44,6 +44,8 @@ function GM:PlayerInitialSpawn(ply)
         SendAssassinList()
         SendKillerList()
         SendDoctorList()
+        SendZombieList()
+        SendVampireList()
     end
 
     -- Game has started, tell this guy where the round is at
@@ -70,6 +72,8 @@ function GM:PlayerInitialSpawn(ply)
         SendAssassinList(ply)
         SendKillerList(ply)
         SendDoctorList(ply)
+        SendZombieList(ply)
+        SendVampireList(ply)
     end
 
     -- Handle spec bots
@@ -543,6 +547,8 @@ function GM:PlayerDisconnected(ply)
         SendAssassinList()
         SendKillerList()
         SendDoctorList()
+        SendZombieList()
+        SendVampireList()
 
         net.Start("TTT_PlayerDisconnected")
         net.WriteString(ply:Nick())
@@ -666,6 +672,54 @@ local function CheckCreditAward(victim, attacker)
 
             GAMEMODE.AwardedCredits = true
             GAMEMODE.AwardedCreditsDead = inno_dead + GAMEMODE.AwardedCreditsDead
+        end
+    end
+
+    -- VAMPIRE AWARD
+    if valid_attacker and not TRAITOR_ROLES[ROLE_VAMPIRE] and attacker:IsActiveVampire() and (not (victim:IsMonsterTeam() or victim:IsJesterTeam())) and (not GAMEMODE.AwardedVampireCredits or GetConVar("ttt_credits_award_repeat"):GetBool()) then
+        local ply_alive = 0
+        local ply_dead = 0
+        local ply_total = 0
+
+        for _, ply in pairs(player.GetAll()) do
+            if not ply:IsVampireAlly() then
+                if ply:IsTerror() then
+                    ply_alive = ply_alive + 1
+                elseif ply:IsDeadTerror() then
+                    ply_dead = ply_dead + 1
+                end
+            end
+        end
+
+        -- we check this at the death of an innocent who is still technically
+        -- Alive(), so add one to dead count and sub one from living
+        ply_dead = ply_dead + 1
+        ply_alive = math.max(ply_alive - 1, 0)
+        ply_total = ply_alive + ply_dead
+
+        -- Only repeat-award if we have reached the pct again since last time
+        if GAMEMODE.AwardedVampireCredits then
+            ply_dead = ply_dead - GAMEMODE.AwardedVampireCreditsDead
+        end
+
+        local pct = ply_dead / ply_total
+        if pct >= GetConVarNumber("ttt_credits_award_pct") then
+            -- Traitors have killed sufficient people to get an award
+            local amt = GetConVarNumber("ttt_credits_award_size")
+
+            -- If size is 0, awards are off
+            if amt > 0 then
+                LANG.Msg(GetVampireFilter(true), "credit_vam", { num = amt })
+
+                for _, ply in pairs(player.GetAll()) do
+                    if ply:IsActiveVampire() then
+                        ply:AddCredits(amt)
+                    end
+                end
+            end
+
+            GAMEMODE.AwardedVampireCredits = true
+            GAMEMODE.AwardedVampireCreditsDead = ply_dead + GAMEMODE.AwardedVampireCreditsDead
         end
     end
 
@@ -1002,7 +1056,7 @@ end
 function GM:PlayerDeath(victim, infl, attacker)
     local valid_kill = IsValid(attacker) and attacker:IsPlayer() and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     -- Handle phantom death
-    if valid_kill and victim:IsPhantom() then
+    if valid_kill and victim:IsPhantom() and not victim:GetNWBool("IsZombifying", false) then
         attacker:SetNWBool("Haunted", true)
 
         if GetConVar("ttt_phantom_killer_haunt"):GetBool() then
@@ -1134,6 +1188,16 @@ function GM:PlayerDeath(victim, infl, attacker)
                     ply:PrintMessage(HUD_PRINTTALK, "You have been promoted to Detective!")
                     ply:PrintMessage(HUD_PRINTCENTER, "You have been promoted to Detective!")
 
+                    -- If the player is an Impersonator, tell all their team members when they get promoted
+                    if ply:IsImpersonator() then
+                        for _, v in pairs(player.GetAll()) do
+                            if v ~= ply and v:IsTraitorTeam() and v:Alive() and not v:IsSpec() then
+                                v:PrintMessage(HUD_PRINTTALK, "The Impersonator has been promoted to Detective!")
+                                v:PrintMessage(HUD_PRINTCENTER, "The Impersonator has been promoted to Detective!")
+                            end
+                        end
+                    end
+
                     net.Start("TTT_Promotion")
                     net.WriteString(ply:Nick())
                     net.Broadcast()
@@ -1176,7 +1240,7 @@ function GM:PlayerDeath(victim, infl, attacker)
     victim:Freeze(false)
 
     -- Haunt the (non-Swapper) attacker if that functionality is enabled
-    if valid_kill and victim:IsPhantom() and not attacker:IsSwapper() and GetConVar("ttt_phantom_killer_haunt"):GetBool() then
+    if valid_kill and victim:IsPhantom() and not attacker:IsSwapper() and attacker:GetNWBool("Haunted", true) and GetConVar("ttt_phantom_killer_haunt"):GetBool() then
         timer.Create(victim:Nick() .. "HauntingSpectate", 1, 1, function()
             victim:Spectate(OBS_MODE_CHASE)
             victim:SpectateEntity(attacker)
@@ -1335,6 +1399,28 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
                 local penalty = GetConVar("ttt_killer_damage_penalty"):GetFloat()
                 dmginfo:ScaleDamage(1 - penalty)
             end
+
+            -- Killers take less bullet damage
+            if dmginfo:IsBulletDamage() and ply:IsKiller() then
+                local reduction = GetConVar("ttt_killer_damage_reduction"):GetFloat()
+                dmginfo:ScaleDamage(1 - reduction)
+            end
+
+            -- Monsters take less bullet damage
+            if dmginfo:IsBulletDamage() and ply:IsZombie() then
+                local reduction = GetConVar("ttt_zombie_damage_reduction"):GetFloat()
+                dmginfo:ScaleDamage(1 - reduction)
+            end
+            if dmginfo:IsBulletDamage() and ply:IsVampire() then
+                local reduction = GetConVar("ttt_vampire_damage_reduction"):GetFloat()
+                dmginfo:ScaleDamage(1 - reduction)
+            end
+
+            -- Zombies do less damage when using non-claw weapons
+            if att:IsZombie() and att:GetActiveWeapon():GetClass() ~= "weapon_zom_claws" then
+                local penalty = GetConVar("ttt_zombie_damage_penalty"):GetFloat()
+                dmginfo:ScaleDamage(1 - penalty)
+            end
         -- Players cant deal damage to eachother before the round starts
         else
             dmginfo:ScaleDamage(0)
@@ -1385,7 +1471,8 @@ local fallsounds = {
 };
 
 function GM:OnPlayerHitGround(ply, in_water, on_floater, speed)
-    if (ply:IsJesterTeam() and not ply:GetNWBool("KillerClownActive", false)) and GetRoundState() >= ROUND_ACTIVE then
+    if ((ply:IsJesterTeam() and not ply:GetNWBool("KillerClownActive", false)) or ply:IsZombie()) and GetRoundState() >= ROUND_ACTIVE then
+        -- Jester team and Zombie don't take fall damage
     else
         if in_water or speed < 450 or not IsValid(ply) then return end
 
@@ -1461,6 +1548,7 @@ end
 function GM:EntityTakeDamage(ent, dmginfo)
     if not IsValid(ent) then return end
 
+    local att = dmginfo:GetAttacker()
     if GetRoundState() >= ROUND_ACTIVE and ent:IsPlayer() then
         -- Jesters don't take environmental damage
         if ent:IsJesterTeam() and not ent:GetNWBool("KillerClownActive", false) then
@@ -1471,14 +1559,20 @@ function GM:EntityTakeDamage(ent, dmginfo)
             end
         end
 
-        -- Killers take less bullet damage
-        if ent:IsKiller() and dmginfo:IsBulletDamage() then
-            local reduction = GetConVar("ttt_killer_damage_reduction"):GetFloat()
-            dmginfo:ScaleDamage(1 - reduction)
+        -- No zombie team killing
+        -- This can be funny, but it can also be used by frustrated players who didn't appreciate being zombified
+        if ent:IsPlayer() and ent:IsZombie() and att:IsPlayer() and att:IsZombieAlly() then
+            dmginfo:ScaleDamage(0)
+            dmginfo:SetDamage(0)
+        end
+
+        -- Prevent damage from non-bullet weapons
+        if att:IsPlayer() and att:IsJesterTeam() and not att:GetNWBool("KillerClownActive", false) then
+            dmginfo:ScaleDamage(0)
+            dmginfo:SetDamage(0)
         end
     end
 
-    local att = dmginfo:GetAttacker()
     if not GAMEMODE:AllowPVP() then
         -- if player vs player damage, or if damage versus a prop, then zero
         if ent:IsExplosive() or (ent:IsPlayer() and IsValid(att) and att:IsPlayer()) then
@@ -1692,6 +1786,38 @@ local function HandleRoleForcedWeapons(ply)
             ply:Give("weapon_kil_crowbar")
             ply:SelectWeapon("weapon_kil_crowbar")
         end
+    elseif ply:IsZombie() then
+        if ply.GetActiveWeapon and IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() == "weapon_zom_claws" then
+            ply:SetColor(Color(70, 100, 25, 255))
+            ply:SetRenderMode(RENDERMODE_NORMAL)
+        else
+            ply:SetColor(Color(255, 255, 255, 255))
+            ply:SetRenderMode(RENDERMODE_TRANSALPHA)
+        end
+
+        -- Strip all non-claw weapons for non-prime zombies if that feature is enabled
+        -- Strip individual weapons instead of all because otherwise the player will have their claws added and removed constantly
+        if GetConVar("ttt_zombie_prime_only_weapons"):GetBool() and not ply:GetZombiePrime() then
+            local weapons = ply:GetWeapons()
+            for _, v in pairs(weapons) do
+                local weapclass = WEPS.GetClass(v)
+                if weapclass ~= "weapon_zom_claws" then
+                    ply:StripWeapon(weapclass)
+                end
+            end
+        end
+
+        -- If this zombie doesn't have claws, give them claws
+        if not ply:HasWeapon("weapon_zom_claws") then
+            ply:Give("weapon_zom_claws")
+        end
+    elseif ply:IsVampire() then
+        if not ply:HasWeapon("weapon_vam_fangs") then
+            ply:Give("weapon_vam_fangs")
+        end
+    else
+        ply:SetColor(Color(255, 255, 255, 255))
+        ply:SetRenderMode(RENDERMODE_TRANSALPHA)
     end
 end
 

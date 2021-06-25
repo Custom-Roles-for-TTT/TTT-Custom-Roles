@@ -28,8 +28,10 @@ EQUIP_NONE = 0
 EQUIP_ARMOR = 1
 EQUIP_RADAR = 2
 EQUIP_DISGUISE = 4
+EQUIP_SPEED = 8
+EQUIP_REGEN = 16
 
-EQUIP_MAX = 4
+EQUIP_MAX = 16
 
 -- Icon doesn't have to be in this dir, but all default ones are in here
 local mat_dir = "vgui/ttt/"
@@ -228,6 +230,42 @@ EquipmentItems = {
         }
     };
 
+    [ROLE_ZOMBIE] = {
+        -- body armor
+        { id = EQUIP_ARMOR,
+          type = "item_passive",
+          material = mat_dir .. "icon_armor",
+          name = "item_armor",
+          desc = "item_armor_desc"
+        },
+
+        -- zombie speed
+        { id = EQUIP_SPEED,
+          type = "item_passive",
+          material = mat_dir .. "icon_speed",
+          name = "item_speed",
+          desc = "item_speed_desc"
+        },
+
+        -- passive regen
+        { id = EQUIP_REGEN,
+          type = "item_passive",
+          material = mat_dir .. "icon_regen",
+          name = "item_regen",
+          desc = "item_regen_desc"
+        }
+    };
+
+    [ROLE_VAMPIRE] = {
+        -- body armor
+        { id = EQUIP_ARMOR,
+          type = "item_passive",
+          material = mat_dir .. "icon_armor",
+          name = "item_armor",
+          desc = "item_armor_desc"
+        }
+    };
+
     [ROLE_JESTER] = {};
     [ROLE_SWAPPER] = {};
 };
@@ -282,4 +320,44 @@ end
 function GenerateNewEquipmentID()
     EQUIP_MAX = EQUIP_MAX * 2
     return EQUIP_MAX
+end
+
+local function LoadMonsterRoleEquipment(role, radar)
+  if not table.HasValue(DefaultEquipment[role], EQUIP_RADAR) then
+      table.insert(DefaultEquipment[role], EQUIP_RADAR)
+  end
+
+  if GetEquipmentItem(role, EQUIP_RADAR) == nil then
+      table.insert(EquipmentItems[role], radar)
+  end
+end
+
+local function RemoveMonsterRoleEquipment(role)
+  for i, v in ipairs(DefaultEquipment[role]) do
+      if v == EQUIP_RADAR then
+          table.remove(DefaultEquipment[role], i)
+      end
+  end
+
+  for i, v in ipairs(EquipmentItems[role]) do
+      if v.id == EQUIP_RADAR then
+          table.remove(EquipmentItems[role], i)
+      end
+  end
+end
+
+function LoadMonsterEquipment(zombies_are_monsters, vampires_are_monsters)
+  local radar = GetEquipmentItem(ROLE_TRAITOR, EQUIP_RADAR)
+
+  -- Allow Monsters to buy Radar if they aren't members of the Monster team
+  if zombies_are_monsters then
+      RemoveMonsterRoleEquipment(ROLE_ZOMBIE)
+  else
+      LoadMonsterRoleEquipment(ROLE_ZOMBIE, radar)
+  end
+  if vampires_are_monsters then
+      RemoveMonsterRoleEquipment(ROLE_VAMPIRE)
+  else
+      LoadMonsterRoleEquipment(ROLE_VAMPIRE, radar)
+  end
 end

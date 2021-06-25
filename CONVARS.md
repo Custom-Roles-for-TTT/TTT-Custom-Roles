@@ -1,6 +1,6 @@
 # Server Configurations
 
-Add the following to your server config:
+Add the following to your server.cfg (for dedicated servers) or listenserver.cfg (for peer-to-peer servers):
 
 ```cpp
 // ----------------------------------------
@@ -12,6 +12,8 @@ ttt_special_traitor_pct                     0.33    // Percentage of traitors, r
 ttt_special_traitor_chance                  0.5     // The chance that a "special traitor" will spawn in each available slot made by "ttt_special_traitor_pct"
 ttt_special_innocent_pct                    0.33    // Percentage of innocents, rounded up, that can spawn as a "special innocent" (e.g. glitch, phantom, etc.)
 ttt_special_innocent_chance                 0.5     // The chance that a "special innocent" will spawn in each available slot made by "ttt_special_innocent_pct"
+ttt_monster_pct                             0.33    // Percentage of innocents, rounded up, that can spawn as a "monster" (e.g. zombie, vampire)
+ttt_monster_chance                          0.5     // The chance that a "monster" will spawn in each available slot made by "ttt_monster_pct"
 ttt_independent_chance                      0.5     // The chance that an independent or jester (e.g. drunk, swapper, etc.) will spawn in a round.
 // (Note: Only one independent or jester can spawn per round.)
 
@@ -19,6 +21,7 @@ ttt_independent_chance                      0.5     // The chance that an indepe
 ttt_hypnotist_enabled                       0       // Whether or not the hypnotist should spawn
 ttt_impersonator_enabled                    0       // Whether or not the impersonator should spawn
 ttt_assassin_enabled                        0       // Whether or not the assassin should spawn
+ttt_vampire_enabled                         0       // Whether or not the vampire should spawn
 ttt_glitch_enabled                          0       // Whether or not the glitch should spawn
 ttt_phantom_enabled                         0       // Whether or not the phantom should spawn
 ttt_revenger_enabled                        0       // Whether or not the revenger should spawn
@@ -34,11 +37,13 @@ ttt_bodysnatcher_enabled                    0       // Whether or not the bodysn
 ttt_drunk_enabled                           0       // Whether or not the drunk should spawn
 ttt_old_man_enabled                         0       // Whether or not the old man should spawn
 ttt_killer_enabled                          0       // Whether or not the killer should spawn
+ttt_zombie_enabled                          0       // Whether or not the zombie should spawn
 
 // Individual Role Spawn Weights
 ttt_hypnotist_spawn_weight                  1       // The weight assigned to spawning the hypnotist
 ttt_impersonator_spawn_weight               1       // The weight assigned to spawning the impersonator
 ttt_assassin_spawn_weight                   1       // The weight assigned to spawning the assassin
+ttt_vampire_spawn_weight                    1       // The weight assigned to spawning the vampire
 ttt_glitch_spawn_weight                     1       // The weight assigned to spawning the glitch
 ttt_phantom_spawn_weight                    1       // The weight assigned to spawning the phantom
 ttt_revenger_spawn_weight                   1       // The weight assigned to spawning the revenger
@@ -54,12 +59,14 @@ ttt_bodysnatcher_spawn_weight               1       // The weight assigned to sp
 ttt_drunk_spawn_weight                      1       // The weight assigned to spawning the drunk
 ttt_old_man_spawn_weight                    1       // The weight assigned to spawning the old man
 ttt_killer_spawn_weight                     1       // The weight assigned to spawning the killer
+ttt_zombie_spawn_weight                     1       // The weight assigned to spawning the zombie
 // (Note: Each role is limited to one player per round.)
 
 // Individual Role Minimum Player Requirements
 ttt_hypnotist_min_players                   0       // The minimum number of players required to spawn the hypnotist
 ttt_impersonator_min_players                0       // The minimum number of players required to spawn the impersonator
 ttt_assassin_min_players                    0       // The minimum number of players required to spawn the assassin
+ttt_vampire_min_players                     0       // The minimum number of players required to spawn the Vampire
 ttt_glitch_min_players                      0       // The minimum number of players required to spawn the glitch
 ttt_phantom_min_players                     0       // The minimum number of players required to spawn the phantom
 ttt_revenger_min_players                    0       // The minimum number of players required to spawn the revenger
@@ -75,6 +82,7 @@ ttt_bodysnatcher_min_players                0       // The minimum number of pla
 ttt_drunk_min_players                       0       // The minimum number of players required to spawn the drunk
 ttt_old_man_min_players                     0       // The minimum number of players required to spawn the old man
 ttt_killer_min_players                      0       // The minimum number of players required to spawn the killer
+ttt_zombie_min_players                      0       // The minimum number of players required to spawn the Zombie
 
 // ----------------------------------------
 
@@ -95,6 +103,18 @@ ttt_assassin_target_damage_bonus            1       // Damage bonus that the ass
 ttt_assassin_wrong_damage_penalty           0.5     // Damage penalty that the assassin has when attacking someone who is not their target (e.g. 0.5 = 50% less damage)
 ttt_assassin_failed_damage_penalty          0.5     // Damage penalty that the assassin has after they have failed their contract by killing the wrong person (e.g. 0.5 = 50% less damage)
 ttt_asn_credits_starting                    1       // The number of credits an Assassin should start with
+
+// Vampire
+ttt_vampires_are_monsters                   0       // Whether Vampires should be treated as members of the Monster team.
+ttt_vampire_vision_enable                   0       // Whether Vampires have their special vision highlights enabled
+ttt_vampire_convert_enable                  1       // Whether Vampires have the ability to drain other players' blood using their fangs
+ttt_vampire_show_target_icon                0       // Whether Vampires have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect.
+ttt_vampire_damage_reduction                0     // The fraction an attacker's bullet damage will be reduced by when they are shooting a Vampire.
+ttt_vampire_fang_timer                      5       // The amount of time fangs must be used to fully drain a target's blood
+ttt_vampire_fang_heal                       50      // The amount of health a Vampire will heal by when they fully drain a target's blood
+ttt_vampire_fang_overheal                   25      // The amount over the Vampire's normal maximum health (e.g. 100 + this ConVar) that the Vampire can heal to by drinking blood.
+ttt_vampire_prime_death_mode                0       // What to do when the Prime Vampire(s) (e.g. playters who spawn as Vampires originally) are killed. 0 - Do nothing. 1 - Kill all non-prime Vampires. 2 - Revert all non-prime Vampires to their original role.
+ttt_vampire_prime_only_convert              1       // Whether only Prime Vampires (e.g. players who spawn as Vampire originally) are allowed to convert other players.
 
 // ----------------------------------------
 
@@ -194,6 +214,16 @@ ttt_killer_warn_all                         0       // Whether to warn all playe
 ttt_killer_vision_enable                    1       // Whether Killers have their special vision highlights enabled
 ttt_kil_credits_starting                    2       // The number of credits a Killer should start with
 
+// Zombie
+ttt_zombies_are_monsters                    0       // Whether Zombies should be treated as members of the Monster team.
+ttt_zombie_vision_enable                    0       // Whether Zombies have their special vision highlights enabled
+ttt_zombie_spit_enable                      1       // Whether Zombies have their spit attack enabled
+ttt_zombie_leap_enable                      1       // Whether Zombies have their leap attack enabled
+ttt_zombie_show_target_icon                 0       // Whether Zombies have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect.
+ttt_zombie_damage_penalty                   0.5     // The fraction a Zombie's damage will be scaled by when they are attacking without using their claws.
+ttt_zombie_damage_reduction                 0     // The fraction an attacker's bullet damage will be reduced by when they are shooting a Zombie.
+ttt_zombie_prime_only_weapons               1       // Whether only Prime Zombies (e.g. players who spawn as Zombies originally) are allowed to pick up weapons.
+
 // ----------------------------------------
 
 // WEAPON SHOP SETTINGS
@@ -210,6 +240,8 @@ ttt_shop_random_asn_percent                 0       // The percent chance that a
 ttt_shop_random_kil_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the Killers
 ttt_shop_random_jes_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the Jesters (if they have shop weapons)
 ttt_shop_random_swa_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the Swappers (if they have shop weapons)
+ttt_shop_random_zom_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the Zombies
+ttt_shop_random_vam_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the Vampires
 
 // Enable/Disable Individual Role Random Shop Restrictions
 ttt_shop_random_tra_enabled                 0       // Whether role shop randomization is enabled for Traitors
@@ -221,11 +253,14 @@ ttt_shop_random_asn_enabled                 0       // Whether role shop randomi
 ttt_shop_random_kil_enabled                 0       // Whether role shop randomization is enabled for Killers
 ttt_shop_random_jes_enabled                 0       // Whether role shop randomization is enabled for Jesters (if they have shop weapons)
 ttt_shop_random_swa_enabled                 0       // Whether role shop randomization is enabled for Swappers (if they have shop weapons)
+ttt_shop_random_zom_enabled                 0       // Whether role shop randomization is enabled for Zombies
+ttt_shop_random_vam_enabled                 0       // Whether role shop randomization is enabled for Vampires
 
 // Role Sync
 ttt_shop_hyp_sync                           0       // Whether Hypnotists should have all weapons that vanilla Traitors have in their weapon shop
 ttt_shop_imp_sync                           0       // Whether Impersonators should have all weapons that vanilla Traitors have in their weapon shop
-ttt_shop_asn_sync                           0       // Whether Assassin should have all weapons that vanilla Traitors have in their weapon shop
+ttt_shop_asn_sync                           0       // Whether Assassins should have all weapons that vanilla Traitors have in their weapon shop
+ttt_shop_vam_sync                           0       // Whether Vampires should have all weapons that vanilla Traitors have in their weapon shop (if they are not a Monster)
 
 // ----------------------------------------
 

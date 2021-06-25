@@ -319,7 +319,7 @@ if CLIENT then
         for _, v in pairs(player.GetAll()) do v.DefibHide = nil end
     end)
 
-    local oldScoreGroup = oldScoreGroup or ScoreGroup
+    oldScoreGroup = oldScoreGroup or ScoreGroup
 
     function ScoreGroup(ply)
         if ply.DefibHide then return GROUP_FOUND end

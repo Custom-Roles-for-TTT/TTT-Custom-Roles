@@ -6,7 +6,8 @@ function CreateTransferMenu(parent)
     dform:StretchToParent(0, 0, 0, 0)
     dform:SetAutoSize(false)
 
-    if LocalPlayer():GetCredits() <= 0 then
+    local client = LocalPlayer()
+    if client:GetCredits() <= 0 then
         dform:Help(GetTranslation("xfer_no_credits"))
         return dform
     end
@@ -30,9 +31,11 @@ function CreateTransferMenu(parent)
     dpick:SetWide(250)
 
     -- fill combobox
-    local r = LocalPlayer():GetRole()
+    local r = client:GetRole()
     for _, p in ipairs(player.GetAll()) do
-        if (IsValid(p) and p:IsActiveRole(r) and p ~= LocalPlayer()) or (LocalPlayer():IsActiveTraitorTeam() and (p:IsActiveTraitorTeam() or p:IsActiveGlitch())) then
+        if (IsValid(p) and p:IsActiveRole(r) and p ~= client) or
+                (client:IsActiveTraitorTeam() and (p:IsActiveTraitorTeam() or p:IsActiveGlitch())) or
+                (client:IsActiveMonsterTeam() and p:IsActiveMonsterTeam()) then
             dpick:AddChoice(p:Nick(), { ni = p:Nick(), sid = p:SteamID64() or "BOT" })
         end
     end

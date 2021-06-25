@@ -33,9 +33,11 @@ ROLE_BODYSNATCHER = 16
 ROLE_VETERAN = 17
 ROLE_ASSASSIN = 18
 ROLE_KILLER = 19
-ROLE_DOCTOR = 20
+ROLE_ZOMBIE = 20
+ROLE_VAMPIRE = 21
+ROLE_DOCTOR = 22
 
-ROLE_MAX = 20
+ROLE_MAX = 22
 
 local function AddRoleAssociations(list, roles)
     -- Use an associative array so we can do a O(1) lookup by role
@@ -46,10 +48,10 @@ local function AddRoleAssociations(list, roles)
 end
 
 SHOP_ROLES = {}
-AddRoleAssociations(SHOP_ROLES, {ROLE_TRAITOR, ROLE_DETECTIVE, ROLE_HYPNOTIST, ROLE_DEPUTY, ROLE_IMPERSONATOR, ROLE_JESTER, ROLE_SWAPPER, ROLE_MERCENARY, ROLE_ASSASSIN, ROLE_KILLER})
+AddRoleAssociations(SHOP_ROLES, {ROLE_TRAITOR, ROLE_DETECTIVE, ROLE_HYPNOTIST, ROLE_DEPUTY, ROLE_IMPERSONATOR, ROLE_JESTER, ROLE_SWAPPER, ROLE_MERCENARY, ROLE_ASSASSIN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_VAMPIRE})
 
 TRAITOR_ROLES = {}
-AddRoleAssociations(TRAITOR_ROLES, {ROLE_TRAITOR, ROLE_HYPNOTIST, ROLE_IMPERSONATOR, ROLE_ASSASSIN})
+AddRoleAssociations(TRAITOR_ROLES, {ROLE_TRAITOR, ROLE_HYPNOTIST, ROLE_IMPERSONATOR, ROLE_ASSASSIN, ROLE_VAMPIRE})
 
 INNOCENT_ROLES = {}
 AddRoleAssociations(INNOCENT_ROLES, {ROLE_INNOCENT, ROLE_DETECTIVE, ROLE_GLITCH, ROLE_PHANTOM, ROLE_REVENGER, ROLE_DEPUTY, ROLE_MERCENARY, ROLE_VETERAN, ROLE_DOCTOR})
@@ -58,7 +60,10 @@ JESTER_ROLES = {}
 AddRoleAssociations(JESTER_ROLES, {ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_BEGGAR, ROLE_BODYSNATCHER})
 
 INDEPENDENT_ROLES = {}
-AddRoleAssociations(INDEPENDENT_ROLES, {ROLE_DRUNK, ROLE_OLDMAN, ROLE_KILLER})
+AddRoleAssociations(INDEPENDENT_ROLES, {ROLE_DRUNK, ROLE_OLDMAN, ROLE_KILLER, ROLE_ZOMBIE})
+
+MONSTER_ROLES = {}
+AddRoleAssociations(MONSTER_ROLES, {})
 
 -- Role colours
 COLOR_INNOCENT = {
@@ -117,6 +122,14 @@ COLOR_INDEPENDENT = {
     ["tritan"] = Color(192, 199, 63, 255)
 }
 
+COLOR_MONSTER = {
+    ["default"] = Color(69, 97, 0, 255),
+    ["simple"] = Color(69, 97, 0, 255),
+    ["protan"] = Color(69, 97, 0, 255),
+    ["deutan"] = Color(69, 97, 0, 255),
+    ["tritan"] = Color(69, 97, 0, 255)
+}
+
 local function ColorFromCustomConVars(name)
     local rConVar = GetConVar(name .. "_r")
     local gConVar = GetConVar(name .. "_g")
@@ -169,6 +182,10 @@ local function FillRoleColors(list, type)
                 local cVarCol = ColorFromCustomConVars("ttt_custom_ind_color")
                 if cVarCol then c = cVarCol
                 else c = COLOR_INDEPENDENT["default"] end
+            elseif MONSTER_ROLES[r] then
+                local cVarCol = ColorFromCustomConVars("ttt_custom_mon_color")
+                if cVarCol then c = cVarCol
+                else c = COLOR_MONSTER["default"] end
             else c = COLOR_WHITE end
         else
             if r == ROLE_INNOCENT then c = COLOR_INNOCENT[mode]
@@ -178,6 +195,7 @@ local function FillRoleColors(list, type)
             elseif TRAITOR_ROLES[r] then c = COLOR_SPECIAL_TRAITOR[mode]
             elseif JESTER_ROLES[r] then c = COLOR_JESTER[mode]
             elseif INDEPENDENT_ROLES[r] then c = COLOR_INDEPENDENT[mode]
+            elseif MONSTER_ROLES[r] then c = COLOR_MONSTER[mode]
             else c = COLOR_WHITE end
         end
 
@@ -261,7 +279,9 @@ ROLE_STRINGS = {
     [ROLE_VETERAN] = "veteran",
     [ROLE_ASSASSIN] = "assassin",
     [ROLE_KILLER] = "killer",
-    [ROLE_DOCTOR] = "doctor"
+    [ROLE_DOCTOR] = "doctor",
+    [ROLE_ZOMBIE] = "zombie",
+    [ROLE_VAMPIRE] = "vampire"
 }
 
 ROLE_STRINGS_EXT = {
@@ -286,7 +306,9 @@ ROLE_STRINGS_EXT = {
     [ROLE_VETERAN] = "a veteran",
     [ROLE_ASSASSIN] = "an assassin",
     [ROLE_KILLER] = "a killer",
-    [ROLE_DOCTOR] = "a doctor"
+    [ROLE_DOCTOR] = "a doctor",
+    [ROLE_ZOMBIE] = "a zombie",
+    [ROLE_VAMPIRE] = "a vampire"
 }
 
 ROLE_STRINGS_SHORT = {
@@ -310,7 +332,9 @@ ROLE_STRINGS_SHORT = {
     [ROLE_VETERAN] = "vet",
     [ROLE_ASSASSIN] = "asn",
     [ROLE_KILLER] = "kil",
-    [ROLE_DOCTOR] = "doc"
+    [ROLE_DOCTOR] = "doc",
+    [ROLE_ZOMBIE] = "zom",
+    [ROLE_VAMPIRE] = "vam"
 }
 
 -- Game event log defs
@@ -335,6 +359,9 @@ EVENT_DRUNKSOBER = 18
 EVENT_HAUNT = 19
 EVENT_BODYSNATCH = 20
 EVENT_LOG = 21
+EVENT_ZOMBIFIED = 22
+EVENT_VAMPIFIED = 23
+EVENT_VAMPPRIME_DEATH = 24
 
 WIN_NONE = 1
 WIN_TRAITOR = 2
@@ -344,6 +371,8 @@ WIN_JESTER = 5
 WIN_CLOWN = 6
 WIN_OLDMAN = 7
 WIN_KILLER = 8
+WIN_ZOMBIE = 9
+WIN_MONSTER = 10
 
 -- Weapon categories, you can only carry one of each
 WEAPON_NONE = 0
@@ -382,6 +411,10 @@ MUTE_SPEC = 1002
 DOCTOR_Station_ONLY = 0
 DOCTOR_EMT_MODE = 1
 
+-- Vampire prime death modes
+VAMPIRE_DEATH_NONE = 0
+VAMPIRE_DEATH_KILL_CONVERED = 1
+VAMPIRE_DEATH_REVERT_CONVERTED = 2
 
 COLOR_WHITE = Color(255, 255, 255, 255)
 COLOR_BLACK = Color(0, 0, 0, 255)
@@ -524,8 +557,40 @@ function GetSprintMultiplier(ply, sprinting)
         if sprinting and ply.mult then
             mult = mult * ply.mult
         end
+
+        local wep = ply:GetActiveWeapon()
+        if wep and IsValid(wep) then
+            local weaponClass = wep:GetClass()
+            if weaponClass == "genji_melee" then
+                return 1.4 * mult
+            elseif weaponClass == "weapon_ttt_homebat" then
+                return 1.25 * mult
+            elseif weaponClass == "weapon_vam_fangs" and wep:Clip1() < 15 then
+                return 3 * mult
+            elseif weaponClass == "weapon_zom_claws" then
+                if ply:HasEquipmentItem(EQUIP_SPEED) then
+                    return 1.5 * mult
+                else
+                    return 1.35 * mult
+                end
+            end
+        end
     end
+
     return mult
+end
+
+function UpdateDynamicTeams()
+    local zombies_are_monsters = GetGlobalBool("ttt_zombies_are_monsters")
+    MONSTER_ROLES[ROLE_ZOMBIE] = zombies_are_monsters
+    INDEPENDENT_ROLES[ROLE_ZOMBIE] = not zombies_are_monsters
+
+    local vampires_are_monsters = GetGlobalBool("ttt_vampires_are_monsters")
+    MONSTER_ROLES[ROLE_VAMPIRE] = vampires_are_monsters
+    TRAITOR_ROLES[ROLE_VAMPIRE] = not vampires_are_monsters
+
+    -- Update role colors to make sure team changes have taken effect
+    UpdateRoleColours()
 end
 
 if SERVER then
@@ -551,7 +616,7 @@ if SERVER then
                 if p:IsDetective() then
                     table.insert(detectives, p:Nick())
                 -- Exclude Glitch from this list so they don't get discovered immediately
-                elseif INNOCENT_ROLES[p:GetRole()] and not p:IsGlitch() then
+                elseif (INNOCENT_ROLES[p:GetRole()] or MONSTER_ROLES[p:GetRole()]) and not p:IsGlitch() then
                     -- Don't add the former beggar to the list of enemies unless the "reveal" setting is enabled
                     if GetConVar("ttt_reveal_beggar_change"):GetBool() or not p:GetNWBool("WasBeggar", false) then
                         table.insert(enemies, p:Nick())
@@ -679,6 +744,17 @@ DefaultEquipment = {
         EQUIP_ARMOR,
         EQUIP_RADAR,
         EQUIP_DISGUISE
+    },
+
+    [ROLE_ZOMBIE] = {
+        EQUIP_ARMOR,
+        EQUIP_SPEED,
+        EQUIP_REGEN
+    },
+
+    [ROLE_VAMPIRE] = {
+        EQUIP_ARMOR,
+        "weapon_ttt_health_station"
     },
 
     -- non-buyable

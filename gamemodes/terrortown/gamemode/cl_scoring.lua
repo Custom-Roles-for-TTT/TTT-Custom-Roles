@@ -143,6 +143,32 @@ net.Receive("TTT_PhantomHaunt", function(len)
     })
 end)
 
+net.Receive("TTT_Zombified", function(len)
+    local name = net.ReadString()
+    CLSCORE:AddEvent({
+        id = EVENT_ZOMBIFIED,
+        vic = name
+    })
+end)
+
+net.Receive("TTT_Vampified", function(len)
+    local name = net.ReadString()
+    CLSCORE:AddEvent({
+        id = EVENT_VAMPIFIED,
+        vic = name
+    })
+end)
+
+net.Receive("TTT_VampirePrimeDeath", function(len)
+    local mode = net.ReadUInt(4)
+    local name = net.ReadString()
+    CLSCORE:AddEvent({
+        id = EVENT_VAMPPRIME_DEATH,
+        mode = mode,
+        prime = name
+    })
+end)
+
 net.Receive("TTT_Score_Bodysnatch", function(len)
     local victim = net.ReadString()
     local attacker = net.ReadString()
@@ -298,7 +324,9 @@ local wintitle = {
     [WIN_TRAITOR] = { txt = "hilite_win_traitors", c = ROLE_COLORS[ROLE_TRAITOR] },
     [WIN_JESTER] = { txt = "hilite_win_jester", c = ROLE_COLORS[ROLE_JESTER] },
     [WIN_CLOWN] = { txt = "hilite_win_clown", c = ROLE_COLORS[ROLE_JESTER] },
-    [WIN_KILLER] = { txt = "hilite_win_killer", c = ROLE_COLORS[ROLE_KILLER] }
+    [WIN_KILLER] = { txt = "hilite_win_killer", c = ROLE_COLORS[ROLE_KILLER] },
+    [WIN_ZOMBIE] = { txt = "hilite_win_zombies", c = ROLE_COLORS[ROLE_ZOMBIE] },
+    [WIN_MONSTER] = { txt = "hilite_win_monster", c = ROLE_COLORS[ROLE_ZOMBIE] }
 }
 
 function CLSCORE:BuildEventLogPanel(dpanel)
@@ -339,7 +367,19 @@ function CLSCORE:BuildScorePanel(dpanel)
     dlist:SetSortable(true)
     dlist:SetMultiSelect(false)
 
-    local colnames = { "", "col_player", "col_role", "col_kills1", "col_kills2", "col_kills3", "col_kills4", "col_points", "col_team", "col_total" }
+    local monsters_exist = false
+    for _, exist in pairs(MONSTER_ROLES) do
+        if exist then
+            monsters_exist = true
+            break
+        end
+    end
+    local colnames = { "", "col_player", "col_role", "col_kills1", "col_kills2", "col_kills3", "col_kills4" }
+    if monsters_exist then
+        table.insert(colnames, "col_kills5")
+    end
+    table.Add(colnames, { "col_points", "col_team", "col_total" })
+
     for _, name in pairs(colnames) do
         if name == "" then
             -- skull icon column
@@ -370,6 +410,7 @@ function CLSCORE:BuildScorePanel(dpanel)
             local was_innocent = INNOCENT_ROLES[s.role]
             local was_jester = JESTER_ROLES[s.role]
             local was_indep = INDEPENDENT_ROLES[s.role]
+            local was_monster = MONSTER_ROLES[s.role]
             local role_string = ROLE_STRINGS[s.role]
 
             local surv = ""
@@ -394,10 +435,17 @@ function CLSCORE:BuildScorePanel(dpanel)
                 points_team = bonus.jesters
             elseif was_indep then
                 points_team = bonus.indeps
+            elseif was_monster then
+                points_team = bonus.monsters
             end
             local points_total = points_own + points_team
 
-            local l = dlist:AddLine(surv, nicks[id], role_string, s.innos, s.traitors, s.jesters, s.indeps, points_own, points_team, points_total)
+            local l
+            if monsters_exist then
+                l = dlist:AddLine(surv, nicks[id], role_string, s.innos, s.traitors, s.jesters, s.indeps, s.monsters, points_own, points_team, points_total)
+            else
+                l = dlist:AddLine(surv, nicks[id], role_string, s.innos, s.traitors, s.jesters, s.indeps, points_own, points_team, points_total)
+            end
 
             -- center align
             for _, col in pairs(l.Columns) do
@@ -491,7 +539,10 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                 if IsValid(ply) then
                     alive = ply:Alive()
                     finalRole = ply:GetRole()
-                    roleFileName = ROLE_STRINGS_SHORT[finalRole]
+                    -- Keep the original role icon for people converted to Zombie and Vampire
+                    if finalRole ~= ROLE_ZOMBIE and finalRole ~= ROLE_VAMPIRE then
+                        roleFileName = ROLE_STRINGS_SHORT[finalRole]
+                    end
                     roleColor = ROLE_COLORS[finalRole]
                     if ply:IsInnocent() then
                         if ply:GetNWBool("WasDrunk", false) then
@@ -527,9 +578,11 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                     swappedWith = swappedWith
                 }
 
-                if INNOCENT_ROLES[finalRole] then
+                local groupingRole = finalRole -- Group players in the summary by the team each player ended in...
+                if finalRole == ROLE_ZOMBIE then groupingRole = startingRole end -- ...unless that player ended as a zombie in which case keep them with the team they started as
+                if INNOCENT_ROLES[groupingRole] then
                     table.insert(scores_by_section[ROLE_INNOCENT], playerInfo)
-                elseif TRAITOR_ROLES[finalRole] then
+                elseif TRAITOR_ROLES[groupingRole] or MONSTER_ROLES[groupingRole] then
                     table.insert(scores_by_section[ROLE_TRAITOR], playerInfo)
                 else
                     table.insert(scores_by_section[ROLE_JESTER], playerInfo)
@@ -578,6 +631,22 @@ function CLSCORE:BuildSummaryPanel(dpanel)
             local wintype = e.win
             if wintype == WIN_TIMELIMIT then wintype = WIN_INNOCENT end
             title = wintitle[wintype]
+
+            -- If this was a monster win, check that both roles are part of the monsters team still
+            if wintype == WIN_MONSTER then
+                -- If Zombies are not monsters then Vampires win
+                if not MONSTER_ROLES[ROLE_ZOMBIE] then
+                    title.txt = "hilite_win_vampires"
+                    -- Also make sure to override the color because they will be different
+                    title.c = ROLE_COLORS[ROLE_VAMPIRE]
+                -- And vice versa
+                elseif not MONSTER_ROLES[ROLE_VAMPIRE] then
+                    title.txt = "hilite_win_zombies"
+                -- Otherwise the monsters legit win
+                else
+                    title.txt = "hilite_win_monster"
+                end
+            end
             break
         end
     end

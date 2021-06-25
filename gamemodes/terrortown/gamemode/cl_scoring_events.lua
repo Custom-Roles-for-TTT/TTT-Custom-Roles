@@ -46,7 +46,7 @@ local clown_icon = Material("icon16/emoticon_evilgrin.png")
 local drunk_icon = Material("icon16/drink_empty.png")
 local haunt_icon = Material("icon16/group.png")
 local bodysnatch_icon = Material("icon16/user_edit.png")
-local info_icon = Material("icon16/info.png")
+local info_icon = Material("icon16/information.png")
 
 -- Shorter name, using it lots
 local Event = CLSCORE.DeclareEventDisplay
@@ -77,6 +77,13 @@ Event(EVENT_FINISH,
                      return T("ev_win_oldman")
                   elseif e.win == WIN_KILLER then
                      return T("ev_win_killer")
+                  elseif e.win == WIN_MONSTER then
+                     if not MONSTER_ROLES[ROLE_ZOMBIE] then
+                        return T("ev_win_vampire")
+                     elseif not MONSTER_ROLES[ROLE_VAMPIRE] then
+                        return T("ev_win_zombie")
+                     end
+                     return T("ev_win_monster")
                   elseif e.win == WIN_TIMELIMIT then
                      return T("ev_win_time")
                   end
@@ -94,6 +101,14 @@ Event(EVENT_FINISH,
                      return star_icon, "Old Man also won"
                   elseif e.win == WIN_KILLER then
                      return star_icon, "Killer won"
+                  elseif e.win == WIN_MONSTER then
+                     local text = "Monsters won"
+                     if not MONSTER_ROLES[ROLE_ZOMBIE] then
+                        text = "Vampires won"
+                     elseif not MONSTER_ROLES[ROLE_VAMPIRE] then
+                        text = "Zombies won"
+                     end
+                     return star_icon, text
                   else
                      return star_icon, "Timelimit"
                   end
@@ -307,11 +322,11 @@ Event(EVENT_KILL,
             return wrong_icon, "Suicide"
         end
 
-        local attacker = (e.att.tr and "Traitor") or (e.att.jes and "Jester") or (e.att.ind and "Independent") or "Innocent"
-        local victim = (e.vic.tr and "Traitor") or (e.vic.jes and "Jester") or (e.vic.ind and "Independent") or "Innocent"
+        local attacker = (e.att.tr and "Traitor") or (e.att.jes and "Jester") or (e.att.ind and "Independent") or (e.att.mon and "Monster") or "Innocent"
+        local victim = (e.vic.tr and "Traitor") or (e.vic.jes and "Jester") or (e.vic.ind and "Independent") or (e.vic.mon and "Monster") or "Innocent"
         if e.tk then
             return wrong_icon, "Teamkill"
-        elseif e.att.tr or e.att.ind then
+        elseif e.att.tr or e.att.ind or e.att.mon then
             return right_icon, attacker.." killed "..victim
         else
             return shield_icon, attacker.." killed "..victim
@@ -320,28 +335,28 @@ Event(EVENT_KILL,
 })
 
 Event(EVENT_HYPNOTISED, {
-        text = function(e)
-                  return PT("ev_hypno", {victim = e.vic})
-               end,
-        icon = function(e)
-                    return traitor_icon, "Hypnotised"
-                end})
+    text = function(e)
+        return PT("ev_hypno", {victim = e.vic})
+     end,
+    icon = function(e)
+        return traitor_icon, "Hypnotised"
+    end})
 
 Event(EVENT_DEFIBRILLATED, {
-        text = function(e)
-                  return PT("ev_defi", {victim = e.vic})
-               end,
-        icon = function(e)
-                    return heart_icon, "Defibrillated"
-                end})
+    text = function(e)
+        return PT("ev_defi", {victim = e.vic})
+    end,
+    icon = function(e)
+        return heart_icon, "Defibrillated"
+    end})
 
 Event(EVENT_DISCONNECTED, {
-        text = function(e)
-                  return PT("ev_disco", {victim = e.vic})
-               end,
-        icon = function(e)
-                    return disconnect_icon, "Disconnected"
-                end})
+    text = function(e)
+        return PT("ev_disco", {victim = e.vic})
+    end,
+    icon = function(e)
+        return disconnect_icon, "Disconnected"
+    end})
 
 Event(EVENT_SWAPPER, {
     text = function(e)
@@ -392,9 +407,41 @@ Event(EVENT_BODYSNATCH, {
     end})
 
 Event(EVENT_LOG, {
-        text = function(e)
-                    return e.txt
-                end,
-        icon = function(e)
-                    return info_icon, "Information"
-                end})
+    text = function(e)
+        return e.txt
+    end,
+    icon = function(e)
+        return info_icon, "Information"
+    end})
+
+Event(EVENT_ZOMBIFIED, {
+    text = function(e)
+        return PT("ev_zombi", {victim = e.vic})
+    end,
+    icon = function(e)
+        return zombie_icon, "Zombified"
+    end})
+
+Event(EVENT_VAMPIFIED, {
+    text = function(e)
+        return PT("ev_vampi", {victim = e.vic})
+    end,
+    icon = function(e)
+        return vampire_icon, "Vampified"
+    end})
+
+Event(EVENT_VAMPPRIME_DEATH, {
+    text = function(e)
+        if e.mode == VAMPIRE_DEATH_REVERT_CONVERTED then
+           return PT("ev_vampi_revert_converted", {prime=e.prime})
+        elseif e.mode == VAMPIRE_DEATH_KILL_CONVERED then
+           return PT("ev_vampi_kill_converted", {prime=e.prime})
+        end
+    end,
+    icon = function(e)
+        if e.mode == VAMPIRE_DEATH_REVERT_CONVERTED then
+           return heart_icon, "Restored"
+        elseif e.mode == VAMPIRE_DEATH_KILL_CONVERED then
+           return wrong_icon, "Killed"
+        end
+    end})
