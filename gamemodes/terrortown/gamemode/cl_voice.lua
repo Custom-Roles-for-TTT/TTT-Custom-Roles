@@ -32,45 +32,24 @@ net.Receive("TTT_LastWordsMsg", LastWordsRecv)
 
 local function RoleChatRecv()
     -- virtually always our role, but future equipment might allow listening in
-    local role = net.ReadUInt(8)
+    local role = net.ReadInt(8)
     local sender = net.ReadEntity()
     if not IsValid(sender) then return end
 
     local text = net.ReadString()
 
     local name = GetPlayerName(sender)
-    if role == ROLE_TRAITOR then
-        chat.AddText(Color(255, 0, 0),
-                Format("(%s) ", string.upper(GetTranslation("traitor"))),
-                Color(255, 100, 100),
-                name,
-                COLOR_WHITE,
-                ": " .. text)
-
-    elseif role == ROLE_DETECTIVE or (role == ROLE_DEPUTY and sender:GetNWBool("HasPromotion", false)) then
-        chat.AddText(Color(0, 0, 255),
-                Format("(%s) ", string.upper(GetTranslation("detective"))),
-                Color(100, 100, 255),
-                name,
-                COLOR_WHITE,
-                ": " .. text)
-
-    elseif role == ROLE_HYPNOTIST then
-        chat.AddText(Color(255, 128, 0),
-                Format("(%s) ", string.upper(GetTranslation("hypnotist"))),
-                Color(255, 178, 100),
-                name,
-                COLOR_WHITE,
-                ": " .. text)
-
-    elseif role == ROLE_IMPERSONATOR then
-        chat.AddText(Color(255, 128, 0),
-                Format("(%s) ", string.upper(GetTranslation("impersonator"))),
-                Color(255, 178, 100),
-                name,
-                COLOR_WHITE,
-                ": " .. text)
+    local visible_role = role
+    if role == ROLE_DEPUTY and sender:GetNWBool("HasPromotion", false) then
+        visible_role = ROLE_DETECTIVE
     end
+
+    chat.AddText(ROLE_COLORS[visible_role],
+        Format("(%s) ", string.upper(GetTranslation(ROLE_STRINGS[visible_role]))),
+        ROLE_COLORS[visible_role],
+        name,
+        COLOR_WHITE,
+        ": " .. text)
 end
 net.Receive("TTT_RoleChat", RoleChatRecv)
 

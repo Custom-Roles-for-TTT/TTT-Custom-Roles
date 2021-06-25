@@ -605,8 +605,10 @@ local function CheckCreditAward(victim, attacker)
     if GetRoundState() ~= ROUND_ACTIVE then return end
     if not IsValid(victim) then return end
 
+    local valid_attacker = IsValid(attacker) and attacker:IsPlayer()
+
     -- DETECTIVE AWARD
-    if IsValid(attacker) and attacker:IsPlayer() and (victim:IsTraitorTeam() or victim:IsKiller()) then
+    if valid_attacker and (victim:IsTraitorTeam() or victim:IsKiller()) then
         local amt = GetConVarNumber("ttt_det_credits_traitordead") or 1
         for _, ply in ipairs(player.GetAll()) do
             if ply:IsActiveDetective() or (ply:IsActiveDeputy() and ply:GetNWBool("HasPromotion", false)) then
@@ -668,7 +670,7 @@ local function CheckCreditAward(victim, attacker)
     end
 
     -- KILLER AWARD
-    if IsValid(attacker) and attacker:IsActiveKiller() and (not (victim:IsKiller() or victim:IsJesterTeam())) and (not GAMEMODE.AwardedKillerCredits or GetConVar("ttt_credits_award_repeat"):GetBool()) then
+    if valid_attacker and attacker:IsActiveKiller() and (not (victim:IsKiller() or victim:IsJesterTeam())) and (not GAMEMODE.AwardedKillerCredits or GetConVar("ttt_credits_award_repeat"):GetBool()) then
         local ply_alive = 0
         local ply_dead = 0
         local ply_total = 0
@@ -1000,7 +1002,7 @@ end
 function GM:PlayerDeath(victim, infl, attacker)
     local valid_kill = IsValid(attacker) and attacker:IsPlayer() and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     -- Handle phantom death
-    if victim:IsPhantom() and valid_kill then
+    if valid_kill and victim:IsPhantom() then
         attacker:SetNWBool("Haunted", true)
 
         if GetConVar("ttt_phantom_killer_haunt"):GetBool() then
@@ -1075,19 +1077,19 @@ function GM:PlayerDeath(victim, infl, attacker)
     end
 
     -- Handle jester death
-    if victim:IsJester() and valid_kill then
+    if valid_kill and victim:IsJester() then
         JesterKilledNotification(attacker, victim)
         victim:SetNWString("JesterKiller", attacker:Nick())
     end
 
     -- Handle killer smoke
-    if attacker:IsKiller() and valid_kill then
+    if valid_kill and attacker:IsKiller() then
         attacker:SetNWBool("KillerSmoke", false)
         ResetKillerKillCheckTimer()
     end
 
     -- Handle swapper death
-    if victim:IsSwapper() and valid_kill then
+    if valid_kill and victim:IsSwapper() then
         SwapperKilledNotification(attacker, victim)
         attacker:SetNWString("SwappedWith", victim:Nick())
         attacker:PrintMessage(HUD_PRINTCENTER, "You killed the swapper!")
@@ -1315,7 +1317,8 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
             end
 
             -- Assassins deal extra damage to their target, less damage to other players, and less damage if they fail their contract
-            if att:IsAssassin() and ply ~= att then
+            -- Don't apply the scaling to the Jester team to specifically allow doing 100% damage to the active killer clown
+            if att:IsAssassin() and ply ~= att and not ply:IsJesterTeam() then
                 local scale = 0
                 if att:GetNWBool("AssassinFailed", false) then
                     scale = -GetConVar("ttt_assassin_failed_damage_penalty"):GetFloat()
@@ -1682,8 +1685,12 @@ local function HandleRoleForcedWeapons(ply)
     if ply:IsKiller() then
         -- Ensure the Killer has their knife, if its enabled
         if not ply:HasWeapon("weapon_kil_knife") and GetConVar("ttt_killer_knife_enabled"):GetBool() then
-            ply:StripWeapon("weapon_zm_improvised")
             ply:Give("weapon_kil_knife")
+        end
+        if ply:HasWeapon("weapon_zm_improvised") and not ply:HasWeapon("weapon_kil_crowbar") and GetConVar("ttt_killer_crowbar_enabled"):GetBool() then
+            ply:StripWeapon("weapon_zm_improvised")
+            ply:Give("weapon_kil_crowbar")
+            ply:SelectWeapon("weapon_kil_crowbar")
         end
     end
 end
@@ -1813,9 +1820,10 @@ local function HandleKillerSmokeTick()
             if killerSmokeTime >= GetConVar("ttt_killer_smoke_timer"):GetInt() then
                 for _, v in pairs(player.GetAll()) do
                     if not IsValid(v) then return end
-                    if v:IsKiller() and v:Alive() then
+                    if v:IsKiller() and v:Alive() and not v:GetNWBool("KillerSmoke", false) then
                         v:SetNWBool("KillerSmoke", true)
-                        v:PrintMessage(HUD_PRINTCENTER, "Your Evil is showing")
+                        v:PrintMessage(HUD_PRINTCENTER, "Your evil is showing")
+                        v:PrintMessage(HUD_PRINTTALK, "Your evil is showing")
                     elseif (v:IsKiller() and not v:Alive()) or not HasKillerPlayer() then
                         timer.Remove("KillerKillCheckTimer")
                     end
@@ -1840,7 +1848,7 @@ timer.Create("KillerKillCheckTimer", 1, 0, function()
         if (timer_fraction == 0.5 and timer_remaining > 10) or
             (timer_fraction == 0.25 and timer_remaining > 10) or
             timer_remaining == 10 or timer_remaining == 5 then
-            killer:PrintMessage(HUD_PRINTTALK, "Your Evil grows impatient -- kill someone in the next " .. timer_remaining .. " seconds!")
+            killer:PrintMessage(HUD_PRINTTALK, "Your evil grows impatient. Kill someone in the next " .. timer_remaining .. " seconds or you will be revealed!")
         end
 
         if killerSmokeTime >= smoke_timer then

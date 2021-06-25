@@ -182,15 +182,16 @@ ttt_drunk_innocent_chance                   0.7     // Chance that the drunk wil
 ttt_old_man_starting_health                 1       // The amount of health the old man spawns with
 
 // Killer
-ttt_killer_max_health                       100    // The Killer's starting and maximum health
-ttt_killer_knife_enabled                    1      // Whether the Killer knife is enabled
-ttt_killer_smoke_enabled                    1      // Whether the Killer smoke is enabled
-ttt_killer_smoke_timer                      60     // Number of seconds before a Killer will start to smoke after their last kill
-ttt_killer_show_target_icon                 1      // Whether Killers have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect
-ttt_killer_damage_penalty                   0.75   // The fraction a Killer's damage will be scaled by when they are attacking without using their knife
-ttt_killer_damage_reduction                 0.45   // The fraction an attacker's bullet damage will be reduced by when they are shooting a Killer
-ttt_killer_warn_all                         0      // Whether to warn all players if there is a Killer. If 0, only traitors will be warned
-ttt_killer_vision_enable                    1      // Whether Killers have their special vision highlights enabled
+ttt_killer_max_health                       150     // The Killer's starting and maximum health
+ttt_killer_knife_enabled                    1       // Whether the Killer knife is enabled
+ttt_killer_crowbar_enabled                  1       // Whether the Killer throwable crowbar is enabled
+ttt_killer_smoke_enabled                    1       // Whether the Killer smoke is enabled
+ttt_killer_smoke_timer                      60      // Number of seconds before a Killer will start to smoke after their last kill
+ttt_killer_show_target_icon                 1       // Whether Killers have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect
+ttt_killer_damage_penalty                   0.25    // The fraction a Killer's damage will be scaled by when they are attacking without using their knife
+ttt_killer_damage_reduction                 0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a Killer
+ttt_killer_warn_all                         0       // Whether to warn all players if there is a Killer. If 0, only traitors will be warned
+ttt_killer_vision_enable                    1       // Whether Killers have their special vision highlights enabled
 ttt_kil_credits_starting                    2       // The number of credits a Killer should start with
 
 // ----------------------------------------
@@ -273,6 +274,7 @@ To remove weapons from a role's shop, create a .exclude.txt file with the weapon
 **NOTE**: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective/weapon_ttt_somethingcool.exclude.txt
 
 ## Bypassing Weapon Randomization
+
 With the addition of the Shop Randomization feature (and the ttt_shop_random_* ConVars), weapons may not always appear in the shop (which is the point). If, however, you want certain weapons to _always_ be in the shop while other weapons are randomized, the ability to bypass shop randomization for a weapon in a role's weapon shop has been added.
 
 To stop a weapon from being removed from a role's shop via randomization, create a .norandom.txt file with the weapon class (e.g. weapon_ttt_somethingcool.norandom.txt) in the garrysmod/data/roleweapons/{rolename} folder.\
@@ -289,9 +291,17 @@ To find the class name of a weapon to use above, follow the steps below
 
 ## Adding Equipment
 
-Equipment are items that a role can use that do not take up an equipment slot, such as the body armor or radar. To add equipment items to a role (that already has a shop), create a .txt file with the equipment item's name (e.g. "bruh bunker.txt") in the garrysmod/data/roleweapons/{rolename} folder.\
+Equipment are items that a role can use that do not take up a weapon slot, such as the body armor or radar. To add equipment items to a role (that already has a shop), create a .txt file with the equipment item's name (e.g. "bruh bunker.txt") in the garrysmod/data/roleweapons/{rolename} folder.\
 **NOTE**: If the _roleweapons_ folder does not already exist in garrysmod/data, create it.\
 **NOTE**: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective/bruh bunker.txt
+
+## Removing Equipment
+
+Similarly there are some equipment items that you want to prevent a specific role from buying. To handle that case, the addon has the ability to exclude specific equipment items from the shop in a similar way.
+
+To remove equipment from a role's shop, create a .exclude.txt file with the item's name (e.g. "bruh bunker.exclude.txt") in the garrysmod/data/roleweapons/{rolename} folder.\
+**NOTE**: If the _roleweapons_ folder does not already exist in garrysmod/data, create it.\
+**NOTE**: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective/bruh bunker.exclude.txt
 
 ## Finding an Equipment Item's Name
 
