@@ -408,7 +408,7 @@ MUTE_ALL = 2
 MUTE_SPEC = 1002
 
 -- Doctor Modes
-DOCTOR_STATION_ONLY = 0
+DOCTOR_MODE_STATION = 0
 DOCTOR_EMT_MODE = 1
 
 -- Vampire prime death modes

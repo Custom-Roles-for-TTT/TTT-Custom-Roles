@@ -1226,7 +1226,7 @@ function BeginRound()
         --Doctor Logic
         if v:GetRole() == ROLE_DOCTOR then
             local mode = GetConVar("ttt_doctor_mode"):GetInt()
-            if mode == DOCTOR_STATION_ONLY then
+            if mode == DOCTOR_MODE_STATION then
                 v:Give("weapon_ttt_health_station")
             elseif mode == DOCTOR_EMT_MODE then
                 v:Give("weapon_ttt_doc_defib")

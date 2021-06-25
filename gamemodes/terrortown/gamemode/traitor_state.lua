@@ -337,7 +337,7 @@ local function force_doctor(ply)
     ply:SetRoleAndBroadcast(ROLE_DOCTOR)
     clear_role_effects(ply)
     local mode = GetConVar("ttt_doctor_mode"):GetInt()
-    if mode == DOCTOR_STATION_ONLY then
+    if mode == DOCTOR_MODE_STATION then
         ply:Give("weapon_ttt_health_station")
     elseif mode == DOCTOR_EMT_MODE then
         ply:Give("weapon_ttt_doc_defib")
