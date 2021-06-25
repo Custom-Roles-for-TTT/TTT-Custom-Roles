@@ -74,6 +74,7 @@ SWEP.WorldModel = "models/weapons/w_c4.mdl"
 SWEP.AutoSpawnable = false
 SWEP.NoSights = true
 
+local oldScoreGroup = oldScoreGroup or ScoreGroup
 local DEFIB_IDLE = 0
 local DEFIB_BUSY = 1
 local DEFIB_ERROR = 2
@@ -96,9 +97,8 @@ function SWEP:OnDrop()
 end
 
 if SERVER then
-    util.AddNetworkString("TTT_Defib_Hide")
-    util.AddNetworkString("TTT_Defib_Revived")
-    --util.AddNetworkString("TTT_Hypnotised")
+
+    util.AddNetworkString("TTT_Doctor_Revived")
 
     local offsets = {}
 
@@ -137,7 +137,9 @@ if SERVER then
     local function bodyply(body)
         local ply = false
 
-        if body.sid == "BOT" then
+        if body.sid64 then
+            ply = player.GetBySteamID64(body.sid64)
+        elseif body.sid == "BOT" then
             ply = player.GetByUniqueID(body.uqid)
         else
             ply = player.GetBySteamID(body.sid)
@@ -172,34 +174,14 @@ if SERVER then
         local ply = bodyply(body)
         local credits = CORPSE.GetCredits(body, 0) or 0
 
-        --[[ if ply:IsTraitor() and CORPSE.GetFound(body, false) == true then
-            local plys = {}
-
-            for _, v in pairs(player.GetAll()) do
-                if not v:IsTraitor() then
-                    table.insert(plys, v)
-                end
-            end
-
-            net.Start("TTT_Defib_Hide")
-            net.WriteEntity(ply)
-            net.WriteBool(true)
-            net.Send(plys)
-        end ]]
-
         net.Start("TTT_Defib_Revived")
         net.WriteBool(true)
         net.Send(ply)
-
-        --[[ net.Start("TTT_Hypnotised")
-        net.WriteString(ply:Nick())
-        net.Broadcast() ]]
 
         ply:SpawnForRound(true)
         ply:SetCredits(credits)
         ply:SetPos(self.Location or body:GetPos())
         ply:SetEyeAngles(Angle(0, body:GetAngles().y, 0))
-        --ply:SetRole(ROLE_TRAITOR)
         ply:PrintMessage(HUD_PRINTCENTER, "You have been revived by a Doctor!")
         ply:SetHealth(ply:GetMaxHealth())
 
@@ -238,7 +220,7 @@ if SERVER then
 
         if not ply then self:Error("INVALID TARGET") return end
 
-        if ply:GetSwapper() or ply:GetJester() then self:Error("SUBJECT IS A JESTER") return end
+        if ply:IsJesterTeam() then self:Error("SUBJECT IS A JESTER") return end
 
         self:SetState(DEFIB_BUSY)
         self:SetBegin(CurTime())
@@ -286,7 +268,7 @@ if SERVER then
                     self:Error("INSUFFICIENT ROOM")
                     return
                 end
-            elseif ent:IsPlayer() and ent:IsActive() and (ent:GetRole() == ROLE_JESTER or ent:GetRole() == ROLE_SWAPPER) and not ent:IsFrozen() then
+            elseif ent:IsPlayer() and ent:IsActive() and ent:IsJesterTeam() and not ent:IsFrozen() then
                 self:SetNextPrimaryFire(CurTime() + 0.1)
                 ent:EmitSound(zap, 100, math.random(98, 102))
                 ent:Freeze(true)
@@ -302,24 +284,18 @@ if SERVER then
 end
 
 if CLIENT then
-    net.Receive("TTT_Defib_Hide", function(len, ply)
-        if ply or len <= 0 then return end
 
-        local hply = net.ReadEntity()
-        hply.DefibHide = net.ReadBool()
-    end)
-
-    net.Receive("TTT_Defib_Revived", function(len, ply)
+    net.Receive("TTT_Doctor_Revived", function(len, ply)
         if ply or len <= 0 then return end
         surface.PlaySound(revived)
     end)
 
-    hook.Remove("TTTEndRound", "RemoveDefibHide")
-    hook.Add("TTTEndRound", "RemoveDefibHide", function()
+    hook.Remove("TTTEndRound", "RemoveDoctorHide")
+    hook.Add("TTTEndRound", "RemoveDoctorHide", function()
         for _, v in pairs(player.GetAll()) do v.DefibHide = nil end
     end)
 
-    oldScoreGroup = oldScoreGroup or ScoreGroup
+
 
     function ScoreGroup(ply)
         if ply.DefibHide then return GROUP_FOUND end

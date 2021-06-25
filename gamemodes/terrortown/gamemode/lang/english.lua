@@ -621,6 +621,9 @@ number of uses is limited.]]
 L.brainwash_help_pri = "Hold {primaryfire} to revive dead body."
 L.brainwash_help_sec = "The revived player will become a traitor."
 
+L.defibrillator_help_pri = "Hold {primaryfire} to revive dead body."
+L.defibrillator_help_sec = "The revived player will respawn on their original team"
+
 -- Ammo names, shown when picked up
 L.ammo_pistol = "9mm ammo"
 

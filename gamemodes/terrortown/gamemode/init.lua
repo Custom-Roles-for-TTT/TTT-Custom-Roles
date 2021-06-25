@@ -173,10 +173,7 @@ CreateConVar("ttt_phantom_killer_haunt_jump_cost", "50")
 CreateConVar("ttt_phantom_killer_haunt_drop_cost", "75")
 CreateConVar("ttt_phantom_killer_haunt_attack_cost", "100")
 
-CreateConVar("ttt_doctor_mode", "1")
-CreateConVar("ttt_doctor_hot_initial", "20")
-CreateConVar("ttt_doctor_hot_amount", "5")
-CreateConVar("ttt_doctor_hot_charges", "3")
+CreateConVar("ttt_doctor_mode", "0")
 
 CreateConVar("ttt_revenger_radar_timer", "15")
 CreateConVar("ttt_revenger_damage_bonus", "0")
@@ -247,6 +244,7 @@ CreateConVar("ttt_jes_credits_starting", "0")
 CreateConVar("ttt_swa_credits_starting", "0")
 CreateConVar("ttt_imp_credits_starting", "1")
 CreateConVar("ttt_mer_credits_starting", "1")
+CreateConVar("ttt_doc_credits_starting", "0")
 CreateConVar("ttt_asn_credits_starting", "1")
 CreateConVar("ttt_kil_credits_starting", "2")
 
@@ -485,8 +483,6 @@ function GM:SyncGlobals()
     SetGlobalBool("ttt_shop_imp_sync", GetConVar("ttt_shop_imp_sync"):GetBool())
     SetGlobalBool("ttt_shop_asn_sync", GetConVar("ttt_shop_asn_sync"):GetBool())
     SetGlobalInt("ttt_shop_mer_mode", GetConVar("ttt_shop_mer_mode"):GetInt())
-
-    SetGlobalInt("ttt_doctor_mode", GetConVar("ttt_doctor_mode"):GetInt())
 
     SetGlobalBool("ttt_phantom_killer_smoke", GetConVar("ttt_phantom_killer_smoke"):GetBool())
     SetGlobalInt("ttt_phantom_killer_haunt_power_max", GetConVar("ttt_phantom_killer_haunt_power_max"):GetInt())
@@ -1127,9 +1123,9 @@ function BeginRound()
         --Doctor Logic
         if v:GetRole() == ROLE_DOCTOR then
             local mode = GetConVar("ttt_doctor_mode"):GetInt()
-            if mode == 1 then
+            if mode == DOCTOR_Station_ONLY then
                 v:Give("weapon_ttt_health_station")
-            elseif mode == 2 then
+            elseif mode == DOCTOR_Station_ONLY then
                 v:Give("weapon_ttt_doc_defib")
             end
         end
