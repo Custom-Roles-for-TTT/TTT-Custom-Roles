@@ -104,7 +104,8 @@ ttt_asn_credits_starting                    1       // The number of credits an 
 // Vampire
 ttt_vampires_are_monsters                   0       // Whether Vampires should be treated as members of the Monster team.
 ttt_vampire_vision_enable                   0       // Whether Vampires have their special vision highlights enabled
-ttt_vampire_convert_enable                  1       // Whether Vampires have the ability to drain other players' blood using their fangs
+ttt_vampire_drain_enable                    1       // Whether Vampires have the ability to drain other players' blood using their fangs
+ttt_vampire_convert_enable                  0       // Whether Vampires have the ability to convert other players to vampire thrals using their fangs
 ttt_vampire_show_target_icon                0       // Whether Vampires have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect.
 ttt_vampire_damage_reduction                0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a Vampire.
 ttt_vampire_fang_timer                      5       // The amount of time fangs must be used to fully drain a target's blood
