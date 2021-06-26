@@ -394,20 +394,24 @@ local function OrderEquipment(ply, cmd, args)
         local allowed = GetEquipmentItem(role, id)
         -- Check for the syncing options
         if not allowed then
-            local mercmode = GetGlobalInt("ttt_shop_mer_mode")
-            -- Handle Mercenary cases
+            local rolemode = SHOP_SYNC_MODE_NONE
             if ply:IsMercenary() then
+                rolemode = GetGlobalInt("ttt_shop_mer_mode")
+            elseif ply:IsClown() then
+                rolemode = GetGlobalInt("ttt_shop_clo_mode")
+            end
+            if rolemode > SHOP_SYNC_MODE_NONE then
                 -- Traitor OR Detective
-                if mercmode == MERC_SHOP_UNION then
+                if rolemode == SHOP_SYNC_MODE_UNION then
                     allowed = GetEquipmentItem(ROLE_TRAITOR, id) or GetEquipmentItem(ROLE_DETECTIVE, id)
                 -- Traitor AND Detective
-                elseif mercmode == MERC_SHOP_INTERSECT then
+                elseif rolemode == SHOP_SYNC_MODE_INTERSECT then
                     allowed = GetEquipmentItem(ROLE_TRAITOR, id) and GetEquipmentItem(ROLE_DETECTIVE, id)
                 -- Detective only
-                elseif mercmode == MERC_SHOP_DETECTIVE then
+                elseif rolemode == SHOP_SYNC_MODE_DETECTIVE then
                     allowed = GetEquipmentItem(ROLE_DETECTIVE, id)
                 -- Traitor only
-                elseif mercmode == MERC_SHOP_TRAITOR then
+                elseif rolemode == SHOP_SYNC_MODE_TRAITOR then
                     allowed = GetEquipmentItem(ROLE_TRAITOR, id)
                 end
             end

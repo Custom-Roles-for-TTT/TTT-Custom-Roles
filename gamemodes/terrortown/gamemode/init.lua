@@ -208,6 +208,7 @@ CreateConVar("ttt_swapper_notify_sound", "0")
 CreateConVar("ttt_swapper_notify_confetti", "0")
 
 CreateConVar("ttt_clown_damage_bonus", "0")
+CreateConVar("ttt_clown_activation_credits", "0")
 
 CreateConVar("ttt_reveal_beggar_change", "1")
 
@@ -297,6 +298,7 @@ CreateConVar("ttt_shop_imp_sync", "0")
 CreateConVar("ttt_shop_asn_sync", "0")
 CreateConVar("ttt_shop_vam_sync", "0")
 CreateConVar("ttt_shop_mer_mode", "2")
+CreateConVar("ttt_shop_clo_mode", "2")
 
 -- bem server convars
 CreateConVar("ttt_bem_allow_change", 1, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Allow clients to change the look of the Traitor/Detective menu")
@@ -511,6 +513,7 @@ function GM:SyncGlobals()
     SetGlobalBool("ttt_shop_asn_sync", GetConVar("ttt_shop_asn_sync"):GetBool())
     SetGlobalBool("ttt_shop_vam_sync", GetConVar("ttt_shop_vam_sync"):GetBool())
     SetGlobalInt("ttt_shop_mer_mode", GetConVar("ttt_shop_mer_mode"):GetInt())
+    SetGlobalInt("ttt_shop_clo_mode", GetConVar("ttt_shop_clo_mode"):GetInt())
 
     SetGlobalBool("ttt_phantom_killer_smoke", GetConVar("ttt_phantom_killer_smoke"):GetBool())
     SetGlobalInt("ttt_phantom_killer_haunt_power_max", GetConVar("ttt_phantom_killer_haunt_power_max"):GetInt())
@@ -1495,6 +1498,7 @@ function GM:TTTCheckForWin()
                     v:SetNWBool("KillerClownActive", true)
                     v:PrintMessage(HUD_PRINTTALK, "KILL THEM ALL!")
                     v:PrintMessage(HUD_PRINTCENTER, "KILL THEM ALL!")
+                    v:AddCredits(GetConVar("ttt_clown_activation_credits"):GetInt())
                     net.Start("TTT_ClownActivate")
                     net.WriteEntity(v)
                     net.Broadcast()

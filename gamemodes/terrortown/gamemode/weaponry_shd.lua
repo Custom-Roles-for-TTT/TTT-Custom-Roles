@@ -93,20 +93,32 @@ function WEPS.DoesRoleHaveWeapon(role)
     return false
 end
 
-MERC_SHOP_NONE = 0
-MERC_SHOP_UNION = 1
-MERC_SHOP_INTERSECT = 2
-MERC_SHOP_DETECTIVE = 3
-MERC_SHOP_TRAITOR = 4
+SHOP_SYNC_MODE_NONE = 0
+SHOP_SYNC_MODE_UNION = 1
+SHOP_SYNC_MODE_INTERSECT = 2
+SHOP_SYNC_MODE_DETECTIVE = 3
+SHOP_SYNC_MODE_TRAITOR = 4
 
 local mercmode = nil
+local clownmode = nil
 function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor_weapons, sync_detective_weapons)
     if wep == nil then return end
     local id = WEPS.GetClass(wep)
 
-    -- Cache this the first time
+    -- Cache these the first time
     if mercmode == nil then
         mercmode = GetGlobalInt("ttt_shop_mer_mode")
+    end
+    if clownmode == nil then
+        clownmode = GetGlobalInt("ttt_shop_clo_mode")
+    end
+
+    -- Determine which role sync variable to use, if any
+    local rolemode = SHOP_SYNC_MODE_NONE
+    if role == ROLE_MERCENARY then
+        rolemode = mercmode
+    elseif role == ROLE_CLOWN then
+        rolemode = clownmode
     end
 
     -- Handle the other overrides
@@ -124,10 +136,10 @@ function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor
             table.insert(wep.CanBuy, role)
         end
 
-        -- Handle Mercenary specifically
-        if role == ROLE_MERCENARY then
+        -- Handle roles with shop syncing specifically
+        if rolemode > SHOP_SYNC_MODE_NONE then
             -- Traitor OR Detective or Detective only modes
-            if mercmode == MERC_SHOP_UNION or mercmode == MERC_SHOP_DETECTIVE then
+            if rolemode == SHOP_SYNC_MODE_UNION or rolemode == SHOP_SYNC_MODE_DETECTIVE then
                 -- and they can't already buy this weapon
                 if not table.HasValue(wep.CanBuy, role) and
                     -- and detectives CAN buy this weapon, let the mercenary buy it too
@@ -137,7 +149,7 @@ function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor
             end
 
             -- Traitor OR Detective or Traitor only modes
-            if mercmode == MERC_SHOP_UNION or mercmode == MERC_SHOP_TRAITOR then
+            if rolemode == SHOP_SYNC_MODE_UNION or rolemode == SHOP_SYNC_MODE_TRAITOR then
                 -- and they can't already buy this weapon
                 if not table.HasValue(wep.CanBuy, role) and
                     -- and traitors CAN buy this weapon, let the mercenary buy it too
@@ -147,7 +159,7 @@ function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor
             end
 
             -- Traitor AND Detective
-            if mercmode == MERC_SHOP_INTERSECT then
+            if rolemode == SHOP_SYNC_MODE_INTERSECT then
                 -- and they can't already buy this weapon
                 if not table.HasValue(wep.CanBuy, role) and
                     -- and detectives AND traitors CAN buy this weapon, let the mercenary buy it too

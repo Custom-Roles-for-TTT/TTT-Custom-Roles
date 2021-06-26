@@ -62,8 +62,13 @@ local function ItemIsWeapon(item) return not tonumber(item.id) end
 function GetEquipmentForRole(role, promoted, block_randomization)
     WEPS.PrepWeaponsLists(role)
 
-    -- The mercenary shop mode to use
-    local mercmode = GetGlobalInt("ttt_shop_mer_mode")
+    -- Determine which role sync variable to use, if any
+    local rolemode = SHOP_SYNC_MODE_NONE
+    if role == ROLE_MERCENARY then
+        rolemode = GetGlobalInt("ttt_shop_mer_mode")
+    elseif role == ROLE_CLOWN then
+        rolemode = GetGlobalInt("ttt_shop_clo_mode")
+    end
 
     -- Pre-load the Traitor weapons so that any that have their CanBuy modified will also apply to the enabled allied role(s)
     local sync_hypnotist = GetGlobalBool("ttt_shop_hyp_sync") and role == ROLE_HYPNOTIST
@@ -71,14 +76,14 @@ function GetEquipmentForRole(role, promoted, block_randomization)
     local sync_assassin = GetGlobalBool("ttt_shop_asn_sync") and role == ROLE_ASSASSIN
     local sync_vampire = GetGlobalBool("ttt_shop_vam_sync") and role == ROLE_VAMPIRE and TRAITOR_ROLES[ROLE_VAMPIRE]
     local sync_traitor_weapons = sync_hypnotist or sync_impersonator or sync_assassin or sync_vampire or
-                                    (mercmode > MERC_SHOP_NONE and role == ROLE_MERCENARY)
+                                    (rolemode > SHOP_SYNC_MODE_NONE)
     if sync_traitor_weapons and not Equipment[ROLE_TRAITOR] then
         GetEquipmentForRole(ROLE_TRAITOR, false, true)
     end
 
     -- Pre-load the Detective weapons so that any that have their CanBuy modified will also apply to the enabled allied role(s)
     local sync_detective_like = (promoted and (role == ROLE_DEPUTY or role == ROLE_IMPERSONATOR))
-    local sync_detective_weapons = sync_detective_like or (mercmode > MERC_SHOP_NONE and role == ROLE_MERCENARY)
+    local sync_detective_weapons = sync_detective_like or (rolemode > SHOP_SYNC_MODE_NONE)
     if sync_detective_weapons and not Equipment[ROLE_DETECTIVE] then
         GetEquipmentForRole(ROLE_DETECTIVE, false, true)
     end
@@ -153,9 +158,9 @@ function GetEquipmentForRole(role, promoted, block_randomization)
         end
 
         -- Sync the equipment from above
-        if role == ROLE_MERCENARY and mercmode == MERC_SHOP_INTERSECT then
+        if rolemode == SHOP_SYNC_MODE_INTERSECT then
             for idx, i in pairs(traitor_equipment_ids) do
-                -- Traitor AND Detective mode, (Detective && Traitor) -> Mercenary
+                -- Traitor AND Detective mode, (Detective && Traitor) -> Sync Role
                 if not available[i] and table.HasValue(detective_equipment_ids, i) then
                     table.insert(tbl[role], traitor_equipment[idx])
                     available[i] = true
@@ -167,8 +172,8 @@ function GetEquipmentForRole(role, promoted, block_randomization)
                 if not available[i.id] and
                     -- Traitor -> Special Traitor
                     (sync_traitor_weapons or
-                    -- Traitor OR Detective or Traitor only modes, Traitor -> Mercenary
-                    (role == ROLE_MERCENARY and (mercmode == MERC_SHOP_UNION or mercmode == MERC_SHOP_TRAITOR))) then
+                    -- Traitor OR Detective or Traitor-only modes, Traitor -> Sync Role
+                    (rolemode == SHOP_SYNC_MODE_UNION or rolemode == SHOP_SYNC_MODE_TRAITOR)) then
                     table.insert(tbl[role], i)
                     available[i.id] = true
                 end
@@ -178,8 +183,8 @@ function GetEquipmentForRole(role, promoted, block_randomization)
                 if not available[i.id] and
                     -- Detective -> Detective-like
                     (sync_detective_like or
-                    -- Traitor OR Detective or Detective only modes, Detective -> Mercenary
-                    (role == ROLE_MERCENARY and (mercmode == MERC_SHOP_UNION or mercmode == MERC_SHOP_DETECTIVE))) then
+                    -- Traitor OR Detective or Detective-only modes, Detective -> Mercenary/Killer Clown
+                    (rolemode == SHOP_SYNC_MODE_UNION or rolemode == SHOP_SYNC_MODE_DETECTIVE)) then
                     table.insert(tbl[role], i)
                     available[i.id] = true
                 end
@@ -433,8 +438,10 @@ local function TraitorMenuPopup()
 
     local credits = ply:GetCredits()
     local show = false
-    -- Only show the shop for roles that have it (or have been promoted to have it)
-    local hasShop = ply:IsShopRole() and (not ply:IsDeputy() or ply:GetNWBool("HasPromotion", false))
+    -- Only show the shop for roles that have it (or have been promoted/activated to have it)
+    local hasShop = ply:IsShopRole() and
+                        (not ply:IsDeputy() or ply:GetNWBool("HasPromotion", false)) and
+                        (not ply:IsClown() or ply:GetNWBool("KillerClownActive", false))
     if hasShop then
         local can_order = credits > 0
         local padding = dsheet:GetPadding()
