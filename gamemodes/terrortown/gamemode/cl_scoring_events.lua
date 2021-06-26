@@ -39,6 +39,8 @@ local zombie_icon = Material("icon16/user_green.png")
 local vampire_icon = Material("icon16/user_gray.png")
 local traitor_icon = Material("icon16/user_red.png")
 local heart_icon = Material("icon16/heart.png")
+local heart_add_icon = Material("icon16/heart_add.png")
+local hourglass_go_icon = Material("icon16/hourglass_go.png")
 local disconnect_icon = Material("icon16/disconnect.png")
 local swap_icon = Material("icon16/arrow_refresh_small.png")
 local promotion_icon = Material("icon16/award_star_add.png")
@@ -433,9 +435,9 @@ Event(EVENT_VAMPIFIED, {
 Event(EVENT_VAMPPRIME_DEATH, {
     text = function(e)
         if e.mode == VAMPIRE_DEATH_REVERT_CONVERTED then
-           return PT("ev_vampi_revert_converted", {prime=e.prime})
+           return PT("ev_vampi_revert_converted", {prime = e.prime})
         elseif e.mode == VAMPIRE_DEATH_KILL_CONVERED then
-           return PT("ev_vampi_kill_converted", {prime=e.prime})
+           return PT("ev_vampi_kill_converted", {prime = e.prime})
         end
     end,
     icon = function(e)
@@ -445,3 +447,17 @@ Event(EVENT_VAMPPRIME_DEATH, {
            return wrong_icon, "Killed"
         end
     end})
+
+Event(EVENT_BEGGARKILLED, {
+   text = function(e)
+      if e.delay > 0 then
+         return PT("ev_beggar_killed_delay", {attacker = e.att, victim = e.vic, delay = e.delay})
+      end
+      return PT("ev_beggar_killed", {attacker = e.att, victim = e.vic})
+  end,
+  icon = function(e)
+      if e.delay > 0 then
+         return hourglass_go_icon, "Respawning"
+      end
+      return heart_add_icon, "Respawned"
+  end})

@@ -799,35 +799,33 @@ function FindRespawnLocation(pos)
 end
 
 local function ShouldShowJesterNotification(target, mode)
-    -- 0 - Don't notify anyone
-    -- 1 (Default) - Only notify Traitors and Detective
+    -- 1 - Only notify Traitors and Detective-likes
     -- 2 - Only notify Traitors
-    -- 3 - Only notify Detective
+    -- 3 - Only notify Detective-likes
     -- 4 - Notify everyone
-    if mode == 0 then
-        return false
-    elseif mode == 1 then
-        return target:IsDetective() or target:IsTraitorTeam()
-    elseif mode == 2 then
+    -- Otherwise - Don't notify anyone
+    if mode == JESTER_NOTIFY_DETECTIVE_AND_TRAITOR then
+        return target:IsDetectiveLike() or target:IsTraitorTeam()
+    elseif mode == JESTER_NOTIFY_TRAITOR then
         return target:IsTraitorTeam()
-    elseif mode == 3 then
-        return target:IsDetective()
-    elseif mode == 4 then
+    elseif mode == JESTER_NOTIFY_DETECTIVE then
+        return target:IsDetectiveLike()
+    elseif mode == JESTER_NOTIFY_EVERYONE then
         return true
     end
     return false
 end
 
-local function JesterKilledNotification(attacker, victim)
-    local mode = GetConVar("ttt_jester_notify_mode"):GetInt()
-    local play_sound = GetConVar("ttt_jester_notify_sound"):GetBool()
-    local show_confetti = GetConVar("ttt_jester_notify_confetti"):GetBool()
+local function JesterTeamKilledNotification(role_string, attacker, victim, getkillstring, shouldshow)
+    local lower_role = role_string:lower()
+    local mode = GetConVar("ttt_" .. lower_role .. "_notify_mode"):GetInt()
+    local play_sound = GetConVar("ttt_" .. lower_role .. "_notify_sound"):GetBool()
+    local show_confetti = GetConVar("ttt_" .. lower_role .. "_notify_confetti"):GetBool()
     for _, ply in pairs(player.GetAll()) do
         if ply == attacker then
-            ply:PrintMessage(HUD_PRINTCENTER, "You killed the Jester!")
-        -- Don't announce anything if the game doesn't end here and the Jester was killed by a traitor
-        elseif not (not GetConVar("ttt_jester_win_by_traitors"):GetBool() and attacker:IsTraitorTeam()) and ShouldShowJesterNotification(ply, mode) then
-            ply:PrintMessage(HUD_PRINTCENTER, attacker:Nick() .. " was dumb enough to kill the Jester!")
+            ply:PrintMessage(HUD_PRINTCENTER, "You killed the " .. role_string .. "!")
+        elseif (shouldshow == nil or shouldshow(ply)) and ShouldShowJesterNotification(ply, mode) then
+            ply:PrintMessage(HUD_PRINTCENTER, getkillstring(ply))
         end
 
         if play_sound or show_confetti then
@@ -840,29 +838,37 @@ local function JesterKilledNotification(attacker, victim)
     end
 end
 
+local function JesterKilledNotification(attacker, victim)
+    JesterTeamKilledNotification("Jester", attacker, victim,
+        -- getkillstring
+        function()
+            return attacker:Nick() .. " was dumb enough to kill the Jester!"
+        end,
+        -- shouldshow
+        function()
+            -- Don't announce anything if the game doesn't end here and the Jester was killed by a traitor
+            return not (not GetConVar("ttt_jester_win_by_traitors"):GetBool() and attacker:IsTraitorTeam())
+        end)
+end
+
 local function SwapperKilledNotification(attacker, victim)
-    local mode = GetConVar("ttt_swapper_notify_mode"):GetInt()
-    local play_sound = GetConVar("ttt_swapper_notify_sound"):GetBool()
-    local show_confetti = GetConVar("ttt_swapper_notify_confetti"):GetBool()
-    for _, ply in pairs(player.GetAll()) do
-        if ply == attacker then
-            ply:PrintMessage(HUD_PRINTCENTER, "You killed the Swapper!")
-        elseif ShouldShowJesterNotification(ply, mode) then
+    JesterTeamKilledNotification("Swapper", attacker, victim,
+        -- getkillstring
+        function(ply)
             local target = "someone"
-            if ply:IsTraitorTeam() or attacker:IsDetective() then
+            if ply:IsTraitorTeam() or attacker:IsDetectiveLike() then
                 target = ROLE_STRINGS_EXT[attacker:GetRole()] .. " (" .. attacker:Nick() .. ")"
             end
-            ply:PrintMessage(HUD_PRINTCENTER, "The swapper (" .. victim:Nick() .. ") has swapped with " .. target .. "!")
-        end
+            return "The swapper (" .. victim:Nick() .. ") has swapped with " .. target .. "!"
+        end)
+end
 
-        if play_sound or show_confetti then
-            net.Start("TTT_JesterDeathCelebration")
-            net.WriteEntity(victim)
-            net.WriteBool(play_sound)
-            net.WriteBool(show_confetti)
-            net.Send(ply)
-        end
-    end
+local function BeggarKilledNotification(attacker, victim)
+    JesterTeamKilledNotification("Beggar", attacker, victim,
+        -- getkillstring
+        function()
+            return attacker:Nick() .. " cruelly killed the lowly Beggar!"
+        end)
 end
 
 local deadPhantoms = {}
@@ -1156,10 +1162,12 @@ function GM:PlayerDeath(victim, infl, attacker)
         timer.Simple(0.01, function()
             local body = victim.server_ragdoll or victim:GetRagdollEntity()
             victim:SpawnForRound(true)
-            victim:SetPos(FindRespawnLocation(body:GetPos()) or body:GetPos())
-            victim:SetEyeAngles(Angle(0, body:GetAngles().y, 0))
             victim:SetHealth(GetConVar("ttt_swapper_respawn_health"):GetInt())
-            body:Remove()
+            if IsValid(body) then
+                victim:SetPos(FindRespawnLocation(body:GetPos()) or body:GetPos())
+                victim:SetEyeAngles(Angle(0, body:GetAngles().y, 0))
+                body:Remove()
+            end
             SendFullStateUpdate()
         end)
 
@@ -1167,6 +1175,37 @@ function GM:PlayerDeath(victim, infl, attacker)
         net.WriteString(victim:Nick())
         net.WriteString(attacker:Nick())
         net.Broadcast()
+    end
+
+    -- Handle beggar death
+    if valid_kill and victim:IsBeggar() then
+        BeggarKilledNotification(attacker, victim)
+
+        if GetConVar("ttt_beggar_respawn"):GetBool() then
+            local function DoRespawn()
+                local body = victim.server_ragdoll or victim:GetRagdollEntity()
+                victim:SpawnForRound(true)
+                victim:SetHealth(victim:GetMaxHealth())
+                if IsValid(body) then
+                    body:Remove()
+                end
+            end
+            local delay = GetConVar("ttt_beggar_respawn_delay"):GetInt()
+            if delay > 0 then
+                victim:PrintMessage(HUD_PRINTCENTER, "You were killed but will respawn in " .. delay .. " seconds.")
+            else
+                victim:PrintMessage(HUD_PRINTCENTER, "You were killed but are about to respawn.")
+                -- Introduce a slight delay to prevent player getting stuck as a spectator
+                delay = 0.1
+            end
+            timer.Create(victim:Nick() .. "BeggarRespawn", delay, 1, DoRespawn)
+
+            net.Start("TTT_BeggarKilled")
+            net.WriteString(victim:Nick())
+            net.WriteString(attacker:Nick())
+            net.WriteUInt(delay, 8)
+            net.Broadcast()
+        end
     end
 
     -- Handle detective death
@@ -2052,7 +2091,7 @@ concommand.Add("ttt_kill_target_from_random", function(ply, cmd, args)
     local victim_name = args[1]
     local victim = nil
     for _, v in RandomPairs(player.GetAll()) do
-        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not (v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) and v:Nick() == victim_name then
+        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and v:Nick() == victim_name then
             victim = v
             break
         end
@@ -2075,16 +2114,19 @@ concommand.Add("ttt_kill_target_from_player", function(ply, cmd, args)
 
     local victim_name = args[1]
     local victim = nil
+    for _, v in RandomPairs(player.GetAll()) do
+        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and v:Nick() == victim_name then
+            victim = v
+            break
+        end
+    end
+
     local killer_name = args[2]
     local killer = nil
-
     for _, v in RandomPairs(player.GetAll()) do
-        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not (v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) then
-            if v:Nick() == victim_name then
-                victim = v
-            elseif v:Nick() == killer_name then
-                killer = v
-            end
+        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not (v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) and v:Nick() == killer_name then
+            killer = v
+            break
         end
     end
 
