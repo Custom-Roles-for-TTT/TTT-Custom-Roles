@@ -186,6 +186,7 @@ local function clear_role_effects(ply)
     if ply:HasWeapon("weapon_zom_claws") then
         ply:StripWeapon("weapon_zom_claws")
     end
+    ply:Give("weapon_zm_improvised")
     ply:SetDefaultCredits()
     ply:SetMaxHealth(100)
     ply:SetHealth(100)
