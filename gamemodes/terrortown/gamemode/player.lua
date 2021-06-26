@@ -616,7 +616,7 @@ local function CheckCreditAward(victim, attacker)
     local valid_attacker = IsValid(attacker) and attacker:IsPlayer()
 
     -- DETECTIVE AWARD
-    if valid_attacker and (victim:IsTraitorTeam() or victim:IsKiller()) then
+    if valid_attacker and (victim:IsTraitorTeam() or victim:IsMonsterTeam() or victim:IsKiller() or victim:IsZombie()) then
         local amt = GetConVarNumber("ttt_det_credits_traitordead") or 1
         for _, ply in ipairs(player.GetAll()) do
             if ply:IsActiveDetective() or (ply:IsActiveDeputy() and ply:GetNWBool("HasPromotion", false)) then
@@ -627,9 +627,8 @@ local function CheckCreditAward(victim, attacker)
         LANG.Msg(GetDetectiveFilter(true), "credit_det_all", { num = amt })
     end
 
-
     -- TRAITOR AWARD
-    if (not victim:IsTraitorTeam()) and (not GAMEMODE.AwardedCredits or GetConVar("ttt_credits_award_repeat"):GetBool()) then
+    if valid_attacker and not (victim:IsTraitorTeam() or victim:IsJesterTeam()) and (not GAMEMODE.AwardedCredits or GetConVar("ttt_credits_award_repeat"):GetBool()) then
         local inno_alive = 0
         local inno_dead = 0
         local inno_total = 0
