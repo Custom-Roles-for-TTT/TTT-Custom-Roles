@@ -977,7 +977,7 @@ L.info_popup_vampire = [[You are a Vampire! Work with your allies to kill all ot
 These are your comrades:
 {allylist}
 
-You can use your fangs (left-click) to drink blood from the living and the dead to refill your health or to fade from view (right-click).
+You can use your fangs (left-click) to drink blood and refill your health or to fade from view (right-click).
 
 Press {menukey} to receive your special equipment!]]
 
@@ -988,7 +988,7 @@ you does not seek the same goal.
 These are your comrades:
 {allylist}
 
-You can use your fangs (left-click) to drink blood from the living and the dead to refill your health or to fade from view (right-click).
+You can use your fangs (left-click) to drink blood and refill your health or to fade from view (right-click).
 
 Press {menukey} to receive your special equipment!]]
 
@@ -996,7 +996,7 @@ L.info_popup_vampire_alone = [[You are a Vampire! You have no allies this round.
 
 Kill all others to win!
 
-You can use your fangs (left-click) to drink blood from the living and the dead to refill your health or to fade from view (right-click).
+You can use your fangs (left-click) to drink blood and refill your health or to fade from view (right-click).
 
 Press {menukey} to receive your special equipment!]]
 
