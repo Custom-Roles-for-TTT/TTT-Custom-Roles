@@ -272,15 +272,18 @@ CreateConVar("ttt_det_credits_traitordead", "1")
 
 -- Other credits
 CreateConVar("ttt_hyp_credits_starting", "1")
-CreateConVar("ttt_jes_credits_starting", "0")
-CreateConVar("ttt_swa_credits_starting", "0")
 CreateConVar("ttt_imp_credits_starting", "1")
+CreateConVar("ttt_asn_credits_starting", "1")
+CreateConVar("ttt_vam_credits_starting", "0")
+
 CreateConVar("ttt_mer_credits_starting", "1")
 CreateConVar("ttt_doc_credits_starting", "0")
-CreateConVar("ttt_asn_credits_starting", "1")
+
+CreateConVar("ttt_jes_credits_starting", "0")
+CreateConVar("ttt_swa_credits_starting", "0")
+
 CreateConVar("ttt_kil_credits_starting", "2")
 CreateConVar("ttt_zom_credits_starting", "0")
-CreateConVar("ttt_vam_credits_starting", "0")
 
 -- Other
 CreateConVar("ttt_use_weapon_spawn_scripts", "1")
@@ -311,8 +314,9 @@ CreateConVar("ttt_shop_imp_sync", "0")
 CreateConVar("ttt_shop_asn_sync", "0")
 CreateConVar("ttt_shop_vam_sync", "0")
 CreateConVar("ttt_shop_zom_sync", "0")
+
 CreateConVar("ttt_shop_mer_mode", "2")
-CreateConVar("ttt_shop_clo_mode", "2")
+CreateConVar("ttt_shop_clo_mode", "0")
 
 -- bem server convars
 CreateConVar("ttt_bem_allow_change", 1, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Allow clients to change the look of the Traitor/Detective menu")
@@ -1160,7 +1164,7 @@ function BeginRound()
     for _, v in pairs(player.GetAll()) do
         -- Hypnotist logic
         if v:GetRole() == ROLE_HYPNOTIST then
-            v:Give("weapon_ttt_brainwash")
+            v:Give("weapon_hyp_brainwash")
         end
 
         -- Revenger logic
@@ -1243,8 +1247,8 @@ function BeginRound()
             local mode = GetConVar("ttt_doctor_mode"):GetInt()
             if mode == DOCTOR_MODE_STATION then
                 v:Give("weapon_ttt_health_station")
-            elseif mode == DOCTOR_EMT_MODE then
-                v:Give("weapon_ttt_doc_defib")
+            elseif mode == DOCTOR_MODE_EMT then
+                v:Give("weapon_doc_defib")
             end
         end
     end

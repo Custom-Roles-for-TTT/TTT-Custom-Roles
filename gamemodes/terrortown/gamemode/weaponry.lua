@@ -12,9 +12,9 @@ function GM:PlayerCanPickupWeapon(ply, wep)
     -- Disallow picking up for ammo
     if ply:HasWeapon(wep:GetClass()) then
         return false
-    elseif not ply:GetHypnotist() and wep:GetClass() == "weapon_ttt_brainwash" then
+    elseif not ply:GetHypnotist() and wep:GetClass() == "weapon_hyp_brainwash" then
         return false
-    elseif not ply:GetBodysnatcher() and wep:GetClass() == "weapon_ttt_bodysnatch" then
+    elseif not ply:GetBodysnatcher() and wep:GetClass() == "weapon_bod_bodysnatch" then
         return false
     elseif not ply:GetKiller() and (wep:GetClass() == "weapon_kil_knife" or wep:GetClass() == "weapon_kil_crowbar") then
         return false

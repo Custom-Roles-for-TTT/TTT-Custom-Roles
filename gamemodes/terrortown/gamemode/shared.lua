@@ -279,9 +279,9 @@ ROLE_STRINGS = {
     [ROLE_VETERAN] = "veteran",
     [ROLE_ASSASSIN] = "assassin",
     [ROLE_KILLER] = "killer",
-    [ROLE_DOCTOR] = "doctor",
     [ROLE_ZOMBIE] = "zombie",
-    [ROLE_VAMPIRE] = "vampire"
+    [ROLE_VAMPIRE] = "vampire",
+    [ROLE_DOCTOR] = "doctor"
 }
 
 ROLE_STRINGS_EXT = {
@@ -306,9 +306,9 @@ ROLE_STRINGS_EXT = {
     [ROLE_VETERAN] = "a veteran",
     [ROLE_ASSASSIN] = "an assassin",
     [ROLE_KILLER] = "a killer",
-    [ROLE_DOCTOR] = "a doctor",
     [ROLE_ZOMBIE] = "a zombie",
-    [ROLE_VAMPIRE] = "a vampire"
+    [ROLE_VAMPIRE] = "a vampire",
+    [ROLE_DOCTOR] = "a doctor"
 }
 
 ROLE_STRINGS_SHORT = {
@@ -332,9 +332,9 @@ ROLE_STRINGS_SHORT = {
     [ROLE_VETERAN] = "vet",
     [ROLE_ASSASSIN] = "asn",
     [ROLE_KILLER] = "kil",
-    [ROLE_DOCTOR] = "doc",
     [ROLE_ZOMBIE] = "zom",
-    [ROLE_VAMPIRE] = "vam"
+    [ROLE_VAMPIRE] = "vam",
+    [ROLE_DOCTOR] = "doc"
 }
 
 -- Game event log defs
@@ -410,7 +410,7 @@ MUTE_SPEC = 1002
 
 -- Doctor Modes
 DOCTOR_MODE_STATION = 0
-DOCTOR_EMT_MODE = 1
+DOCTOR_MODE_EMT = 1
 
 -- Vampire prime death modes
 VAMPIRE_DEATH_NONE = 0

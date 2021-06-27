@@ -250,8 +250,8 @@ function SWEP:Think()
             -- If the player is allowed to convert, do that
             if self:GetState() == STATE_CONVERT and CanConvert(self:GetOwner()) then
                 local ply = self.TargetEntity
-                ply:StripWeapon("weapon_ttt_brainwash")
-                ply:StripWeapon("weapon_ttt_bodysnatch")
+                ply:StripWeapon("weapon_hyp_brainwash")
+                ply:StripWeapon("weapon_bod_bodysnatch")
                 ply:StripWeapon("weapon_kil_knife")
                 ply:StripWeapon("weapon_zom_claws")
                 ply:StripWeapon("weapon_ttt_wtester")

@@ -70,9 +70,9 @@ function SendBodysnatcherList(ply_or_rf) SendRoleList(ROLE_BODYSNATCHER, ply_or_
 function SendVeteranList(ply_or_rf) SendRoleList(ROLE_VETERAN, ply_or_rf) end
 function SendAssassinList(ply_or_rf) SendRoleList(ROLE_ASSASSIN, ply_or_rf) end
 function SendKillerList(ply_or_rf) SendRoleList(ROLE_KILLER, ply_or_rf) end
-function SendDoctorList(ply_or_rf) SendRoleList(ROLE_DOCTOR, ply_or_rf) end
 function SendZombieList(ply_or_rf) SendRoleList(ROLE_ZOMBIE, ply_or_rf) end
 function SendVampireList(ply_or_rf) SendRoleList(ROLE_VAMPIRE, ply_or_rf) end
+function SendDoctorList(ply_or_rf) SendRoleList(ROLE_DOCTOR, ply_or_rf) end
 
 function SendConfirmedTraitors(ply_or_rf)
     SendTraitorList(ply_or_rf, function(p) return p:GetNWBool("body_searched") end)
@@ -100,9 +100,9 @@ function SendFullStateUpdate()
     SendVeteranList()
     SendAssassinList()
     SendKillerList()
-    SendDoctorList()
     SendZombieList()
     SendVampireList()
+    SendDoctorList()
 end
 
 function SendRoleReset(ply_or_rf)
@@ -148,9 +148,9 @@ local function request_rolelist(ply)
         SendVeteranList(ply)
         SendAssassinList(ply)
         SendKillerList(ply)
-        SendDoctorList(ply)
         SendZombieList(ply)
         SendVampireList(ply)
+        SendDoctorList(ply)
     end
 end
 concommand.Add("_ttt_request_rolelist", request_rolelist)
@@ -171,11 +171,11 @@ end
 concommand.Add("ttt_force_terror", force_terror, nil, nil, FCVAR_CHEAT)
 
 local function clear_role_effects(ply)
-    if ply:HasWeapon("weapon_ttt_brainwash") then
-        ply:StripWeapon("weapon_ttt_brainwash")
+    if ply:HasWeapon("weapon_hyp_brainwash") then
+        ply:StripWeapon("weapon_hyp_brainwash")
     end
-    if ply:HasWeapon("weapon_ttt_bodysnatch") then
-        ply:StripWeapon("weapon_ttt_bodysnatch")
+    if ply:HasWeapon("weapon_bod_bodysnatch") then
+        ply:StripWeapon("weapon_bod_bodysnatch")
     end
     if ply:HasWeapon("weapon_kil_knife") then
         ply:StripWeapon("weapon_kil_knife")
@@ -188,6 +188,9 @@ local function clear_role_effects(ply)
     end
     if ply:HasWeapon("weapon_zom_claws") then
         ply:StripWeapon("weapon_zom_claws")
+    end
+    if ply:HasWeapon("weapon_doc_defib") then
+        ply:StripWeapon("weapon_doc_defib")
     end
     ply:Give("weapon_zm_improvised")
     ply:SetDefaultCredits()
@@ -250,7 +253,7 @@ concommand.Add("ttt_force_phantom", force_phantom, nil, nil, FCVAR_CHEAT)
 local function force_hypnotist(ply)
     ply:SetRoleAndBroadcast(ROLE_HYPNOTIST)
     clear_role_effects(ply)
-    ply:Give("weapon_ttt_brainwash")
+    ply:Give("weapon_hyp_brainwash")
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_hypnotist", force_hypnotist, nil, nil, FCVAR_CHEAT)
@@ -317,7 +320,7 @@ concommand.Add("ttt_force_mercenary", force_mercenary, nil, nil, FCVAR_CHEAT)
 local function force_bodysnatcher(ply)
     ply:SetRoleAndBroadcast(ROLE_BODYSNATCHER)
     clear_role_effects(ply)
-    ply:Give("weapon_ttt_bodysnatch")
+    ply:Give("weapon_bod_bodysnatch")
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_bodysnatcher", force_bodysnatcher, nil, nil, FCVAR_CHEAT)
@@ -349,19 +352,6 @@ local function force_killer(ply)
 end
 concommand.Add("ttt_force_killer", force_killer, nil, nil, FCVAR_CHEAT)
 
-local function force_doctor(ply)
-    ply:SetRoleAndBroadcast(ROLE_DOCTOR)
-    clear_role_effects(ply)
-    local mode = GetConVar("ttt_doctor_mode"):GetInt()
-    if mode == DOCTOR_MODE_STATION then
-        ply:Give("weapon_ttt_health_station")
-    elseif mode == DOCTOR_EMT_MODE then
-        ply:Give("weapon_ttt_doc_defib")
-    end
-    SendFullStateUpdate()
-end
-concommand.Add("ttt_force_doctor", force_doctor, nil, nil, FCVAR_CHEAT)
-
 local function force_zombie(ply)
     ply:SetRoleAndBroadcast(ROLE_ZOMBIE)
     clear_role_effects(ply)
@@ -377,6 +367,19 @@ local function force_vampire(ply)
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_vampire", force_vampire, nil, nil, FCVAR_CHEAT)
+
+local function force_doctor(ply)
+    ply:SetRoleAndBroadcast(ROLE_DOCTOR)
+    clear_role_effects(ply)
+    local mode = GetConVar("ttt_doctor_mode"):GetInt()
+    if mode == DOCTOR_MODE_STATION then
+        ply:Give("weapon_ttt_health_station")
+    elseif mode == DOCTOR_MODE_EMT then
+        ply:Give("weapon_doc_defib")
+    end
+    SendFullStateUpdate()
+end
+concommand.Add("ttt_force_doctor", force_doctor, nil, nil, FCVAR_CHEAT)
 
 local function force_spectate(ply, cmd, arg)
     if IsValid(ply) then
