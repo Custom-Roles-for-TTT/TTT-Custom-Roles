@@ -108,6 +108,11 @@ function GM:PlayerSpawn(ply)
 
     ply.has_spawned = true
 
+    -- Reset player color, transparency, and render mode
+    ply:SetColor(Color(255, 255, 255, 255))
+    ply:SetMaterial("models/glass")
+    ply:SetRenderMode(RENDERMODE_TRANSALPHA)
+
     -- let the client do things on spawn
     net.Start("TTT_PlayerSpawned")
     net.WriteBit(ply:IsSpec())
@@ -611,7 +616,7 @@ local function CheckCreditAward(victim, attacker)
     local valid_attacker = IsValid(attacker) and attacker:IsPlayer()
 
     -- DETECTIVE AWARD
-    if valid_attacker and (victim:IsTraitorTeam() or victim:IsKiller()) then
+    if valid_attacker and (victim:IsTraitorTeam() or victim:IsMonsterTeam() or victim:IsKiller() or victim:IsZombie()) then
         local amt = GetConVarNumber("ttt_det_credits_traitordead") or 1
         for _, ply in ipairs(player.GetAll()) do
             if ply:IsActiveDetective() or (ply:IsActiveDeputy() and ply:GetNWBool("HasPromotion", false)) then
@@ -622,9 +627,8 @@ local function CheckCreditAward(victim, attacker)
         LANG.Msg(GetDetectiveFilter(true), "credit_det_all", { num = amt })
     end
 
-
     -- TRAITOR AWARD
-    if (not victim:IsTraitorTeam()) and (not GAMEMODE.AwardedCredits or GetConVar("ttt_credits_award_repeat"):GetBool()) then
+    if valid_attacker and not (victim:IsTraitorTeam() or victim:IsJesterTeam()) and (not GAMEMODE.AwardedCredits or GetConVar("ttt_credits_award_repeat"):GetBool()) then
         local inno_alive = 0
         local inno_dead = 0
         local inno_total = 0
@@ -945,8 +949,8 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
             local delay = GetConVar("ttt_assassin_next_target_delay"):GetFloat()
             -- Delay giving the next target if we're configured to do so
             if delay > 0 then
-                attacker:PrintMessage(HUD_PRINTCENTER, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
-                attacker:PrintMessage(HUD_PRINTTALK, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
+                v:PrintMessage(HUD_PRINTCENTER, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
+                v:PrintMessage(HUD_PRINTTALK, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
                 timer.Simple(delay, function()
                     AssignAssassinTarget(v, false, true)
                 end)
@@ -1826,7 +1830,7 @@ local function HandleRoleForcedWeapons(ply)
         if ply.GetActiveWeapon and IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() == "weapon_zom_claws" then
             ply:SetColor(Color(70, 100, 25, 255))
             ply:SetRenderMode(RENDERMODE_NORMAL)
-        else
+        elseif ply:GetRenderMode() ~= RENDERMODE_TRANSALPHA then
             ply:SetColor(Color(255, 255, 255, 255))
             ply:SetRenderMode(RENDERMODE_TRANSALPHA)
         end
@@ -1851,7 +1855,7 @@ local function HandleRoleForcedWeapons(ply)
         if not ply:HasWeapon("weapon_vam_fangs") then
             ply:Give("weapon_vam_fangs")
         end
-    else
+    elseif ply:GetRenderMode() ~= RENDERMODE_TRANSALPHA then
         ply:SetColor(Color(255, 255, 255, 255))
         ply:SetRenderMode(RENDERMODE_TRANSALPHA)
     end

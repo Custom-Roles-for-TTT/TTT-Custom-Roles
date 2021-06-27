@@ -103,6 +103,7 @@ CreateConVar("ttt_veteran_min_players", "0")
 -- Special traitor spawn probabilities
 CreateConVar("ttt_special_traitor_pct", 0.33)
 CreateConVar("ttt_special_traitor_chance", 0.5)
+CreateConVar("ttt_zombie_round_chance", 0.1)
 CreateConVar("ttt_hypnotist_enabled", 0)
 CreateConVar("ttt_hypnotist_spawn_weight", "1")
 CreateConVar("ttt_hypnotist_min_players", "0")
@@ -239,6 +240,7 @@ CreateConVar("ttt_killer_warn_all", "0")
 CreateConVar("ttt_killer_vision_enable", "1")
 
 CreateConVar("ttt_zombies_are_monsters", "0")
+CreateConVar("ttt_zombies_are_traitors", "0")
 CreateConVar("ttt_zombie_show_target_icon", "0")
 CreateConVar("ttt_zombie_damage_penalty", "0.5")
 CreateConVar("ttt_zombie_damage_reduction", "0")
@@ -301,6 +303,7 @@ CreateConVar("ttt_shop_hyp_sync", "0")
 CreateConVar("ttt_shop_imp_sync", "0")
 CreateConVar("ttt_shop_asn_sync", "0")
 CreateConVar("ttt_shop_vam_sync", "0")
+CreateConVar("ttt_shop_zom_sync", "0")
 CreateConVar("ttt_shop_mer_mode", "2")
 
 -- bem server convars
@@ -516,6 +519,7 @@ function GM:SyncGlobals()
     SetGlobalBool("ttt_shop_imp_sync", GetConVar("ttt_shop_imp_sync"):GetBool())
     SetGlobalBool("ttt_shop_asn_sync", GetConVar("ttt_shop_asn_sync"):GetBool())
     SetGlobalBool("ttt_shop_vam_sync", GetConVar("ttt_shop_vam_sync"):GetBool())
+    SetGlobalBool("ttt_shop_zom_sync", GetConVar("ttt_shop_zom_sync"):GetBool())
     SetGlobalInt("ttt_shop_mer_mode", GetConVar("ttt_shop_mer_mode"):GetInt())
 
     SetGlobalBool("ttt_phantom_killer_smoke", GetConVar("ttt_phantom_killer_smoke"):GetBool())
@@ -532,6 +536,7 @@ function GM:SyncGlobals()
     SetGlobalBool("ttt_killer_vision_enable", GetConVar("ttt_killer_vision_enable"):GetBool())
 
     SetGlobalBool("ttt_zombies_are_monsters", GetConVar("ttt_zombies_are_monsters"):GetBool())
+    SetGlobalBool("ttt_zombies_are_traitors", GetConVar("ttt_zombies_are_traitors"):GetBool())
     SetGlobalBool("ttt_zombie_show_target_icon", GetConVar("ttt_zombie_show_target_icon"):GetBool())
     SetGlobalBool("ttt_zombie_vision_enable", GetConVar("ttt_zombie_vision_enable"):GetBool())
 
@@ -1425,7 +1430,7 @@ function GM:TTTCheckForWin()
     for _, v in ipairs(player.GetAll()) do
         local zombifying = v:GetNWBool("IsZombifying", false)
         if (v:Alive() and v:IsTerror()) or zombifying then
-            if v:IsTraitorTeam() then
+            if v:IsTraitorTeam() or (TRAITOR_ROLES[ROLE_ZOMBIE] and zombifying) then
                 traitor_alive = true
             elseif v:IsMonsterTeam() or (MONSTER_ROLES[ROLE_ZOMBIE] and zombifying) then
                 monster_alive = true
@@ -1668,7 +1673,6 @@ function SelectRoles()
                     else
                         forcedMonsterCount = forcedMonsterCount + 1
                     end
-                    v:SetVampirePrime(true)
 
                 -- INNOCENT ROLES
                 elseif role == ROLE_DETECTIVE then
@@ -1725,10 +1729,11 @@ function SelectRoles()
                     if INDEPENDENT_ROLES[role] then
                         hasIndependent = true
                         forcedIndependentCount = forcedIndependentCount + 1
+                    elseif TRAITOR_ROLES[role] then
+                        forcedSpecialTraitorCount = forcedSpecialTraitorCount + 1
                     else
                         forcedMonsterCount = forcedMonsterCount + 1
                     end
-                    v:SetZombiePrime(true)
                 end
 
                 if role > ROLE_NONE and role < ROLE_MAX then
@@ -1780,50 +1785,58 @@ function SelectRoles()
         end
     end
 
-    -- pick special traitors
-    if max_special_traitor_count > 0 then
-        local specialTraitorRoles = {}
-        if not hasHypnotist and GetConVar("ttt_hypnotist_enabled"):GetBool() and choice_count >= GetConVar("ttt_hypnotist_min_players"):GetInt() then
-            for _ = 1, GetConVar("ttt_hypnotist_spawn_weight"):GetInt() do
-                table.insert(specialTraitorRoles, ROLE_HYPNOTIST)
-            end
+    if ((GetConVar("ttt_zombie_enabled"):GetBool() and math.random() <= GetConVar("ttt_zombie_round_chance"):GetFloat() and (forcedTraitorCount <= 0) and (forcedSpecialTraitorCount <= 0)) or hasZombie) and TRAITOR_ROLES[ROLE_ZOMBIE] then
+        -- This is a zombie round so all traitors become zombies
+        for _, v in pairs(traitors) do
+            v:SetRole(ROLE_ZOMBIE)
+            PrintRole(v, "zombie")
         end
-        if not hasImpersonator and GetConVar("ttt_impersonator_enabled"):GetBool() and choice_count >= GetConVar("ttt_impersonator_min_players"):GetInt() and detective_count > 0 and not deputy_only then
-            for _ = 1, GetConVar("ttt_impersonator_spawn_weight"):GetInt() do
-                table.insert(specialTraitorRoles, ROLE_IMPERSONATOR)
+    else
+        -- pick special traitors
+        if max_special_traitor_count > 0 then
+            local specialTraitorRoles = {}
+            if not hasHypnotist and GetConVar("ttt_hypnotist_enabled"):GetBool() and choice_count >= GetConVar("ttt_hypnotist_min_players"):GetInt() then
+                for _ = 1, GetConVar("ttt_hypnotist_spawn_weight"):GetInt() do
+                    table.insert(specialTraitorRoles, ROLE_HYPNOTIST)
+                end
             end
-        end
-        if not hasAssassin and GetConVar("ttt_assassin_enabled"):GetBool() and choice_count >= GetConVar("ttt_assassin_min_players"):GetInt() then
-            for _ = 1, GetConVar("ttt_assassin_spawn_weight"):GetInt() do
-                table.insert(specialTraitorRoles, ROLE_ASSASSIN)
+            if not hasImpersonator and GetConVar("ttt_impersonator_enabled"):GetBool() and choice_count >= GetConVar("ttt_impersonator_min_players"):GetInt() and detective_count > 0 and not deputy_only then
+                for _ = 1, GetConVar("ttt_impersonator_spawn_weight"):GetInt() do
+                    table.insert(specialTraitorRoles, ROLE_IMPERSONATOR)
+                end
             end
-        end
-        if not hasVampire and GetConVar("ttt_vampire_enabled"):GetBool() and choice_count >= GetConVar("ttt_vampire_min_players"):GetInt() and TRAITOR_ROLES[ROLE_VAMPIRE] then
-            for _ = 1, GetConVar("ttt_vampire_spawn_weight"):GetInt() do
-                table.insert(specialTraitorRoles, ROLE_VAMPIRE)
+            if not hasAssassin and GetConVar("ttt_assassin_enabled"):GetBool() and choice_count >= GetConVar("ttt_assassin_min_players"):GetInt() then
+                for _ = 1, GetConVar("ttt_assassin_spawn_weight"):GetInt() do
+                    table.insert(specialTraitorRoles, ROLE_ASSASSIN)
+                end
             end
-        end
-        for _ = 1, max_special_traitor_count do
-            if #specialTraitorRoles ~= 0 and math.random() <= GetConVar("ttt_special_traitor_chance"):GetFloat() and #traitors > 0 then
-                local plyPick = math.random(1, #traitors)
-                local ply = traitors[plyPick]
-                local rolePick = math.random(1, #specialTraitorRoles)
-                local role = specialTraitorRoles[rolePick]
-                ply:SetRole(role)
-                PrintRole(ply, ply:GetRoleString())
-                table.remove(traitors, plyPick)
-                for i = #specialTraitorRoles, 1, -1 do
-                    if specialTraitorRoles[i] == role then
-                        table.remove(specialTraitorRoles, i)
+            if not hasVampire and GetConVar("ttt_vampire_enabled"):GetBool() and choice_count >= GetConVar("ttt_vampire_min_players"):GetInt() and TRAITOR_ROLES[ROLE_VAMPIRE] then
+                for _ = 1, GetConVar("ttt_vampire_spawn_weight"):GetInt() do
+                    table.insert(specialTraitorRoles, ROLE_VAMPIRE)
+                end
+            end
+            for _ = 1, max_special_traitor_count do
+                if #specialTraitorRoles ~= 0 and math.random() <= GetConVar("ttt_special_traitor_chance"):GetFloat() and #traitors > 0 then
+                    local plyPick = math.random(1, #traitors)
+                    local ply = traitors[plyPick]
+                    local rolePick = math.random(1, #specialTraitorRoles)
+                    local role = specialTraitorRoles[rolePick]
+                    ply:SetRole(role)
+                    PrintRole(ply, ply:GetRoleString())
+                    table.remove(traitors, plyPick)
+                    for i = #specialTraitorRoles, 1, -1 do
+                        if specialTraitorRoles[i] == role then
+                            table.remove(specialTraitorRoles, i)
+                        end
                     end
                 end
             end
         end
-    end
 
-    -- Any of these left is a vanilla traitor
-    for _, v in pairs(traitors) do
-        PrintRole(v, "traitor")
+        -- Any of these left is a vanilla traitor
+        for _, v in pairs(traitors) do
+            PrintRole(v, "traitor")
+        end
     end
 
     -- pick independent
