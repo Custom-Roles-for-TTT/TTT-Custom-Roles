@@ -174,7 +174,9 @@ ttt_swapper_killer_health                   100     // What amount of health to 
 ttt_swa_credits_starting                    0       // The number of credits a swapper should start with
 
 // Clown
-ttt_clown_damage_bonus                      0       // Damage bonus that the clown has after being triggered (e.g. 0.5 = 50% more damage)
+ttt_clown_damage_bonus                      0       // Damage bonus that the clown has after being activated (e.g. 0.5 = 50% more damage)
+ttt_clown_activation_credits                0       // The number of credits to give the clown when they are activated
+ttt_shop_clo_mode                           2       // What items are available to the clown in the shop (0=None, 1=Detective OR Traitor, 2=Detective AND Traitor, 3=Detective, 4=Traitor)
 
 // Beggar
 ttt_reveal_beggar_change                    1       // Whether the beggar is revealed to you when they join your team or not
