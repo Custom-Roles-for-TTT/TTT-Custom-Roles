@@ -358,6 +358,7 @@ EVENT_LOG = 21
 EVENT_ZOMBIFIED = 22
 EVENT_VAMPIFIED = 23
 EVENT_VAMPPRIME_DEATH = 24
+EVENT_BEGGARKILLED = 25
 
 WIN_NONE = 1
 WIN_TRAITOR = 2
@@ -407,6 +408,12 @@ MUTE_SPEC = 1002
 VAMPIRE_DEATH_NONE = 0
 VAMPIRE_DEATH_KILL_CONVERED = 1
 VAMPIRE_DEATH_REVERT_CONVERTED = 2
+
+-- Jester notify modes
+JESTER_NOTIFY_DETECTIVE_AND_TRAITOR = 1
+JESTER_NOTIFY_TRAITOR = 2
+JESTER_NOTIFY_DETECTIVE = 3
+JESTER_NOTIFY_EVERYONE = 4
 
 COLOR_WHITE = Color(255, 255, 255, 255)
 COLOR_BLACK = Color(0, 0, 0, 255)
@@ -573,11 +580,14 @@ function GetSprintMultiplier(ply, sprinting)
 end
 
 function UpdateDynamicTeams()
-    local zombies_are_monsters = GetGlobalBool("ttt_zombies_are_monsters")
+    local zombies_are_monsters = GetGlobalBool("ttt_zombies_are_monsters", false)
+    -- Zombies cannot be both Monsters and Traitors so don't make them Traitors if they are already Monsters
+    local zombies_are_traitors = not zombies_are_monsters and GetGlobalBool("ttt_zombies_are_traitors", false)
     MONSTER_ROLES[ROLE_ZOMBIE] = zombies_are_monsters
-    INDEPENDENT_ROLES[ROLE_ZOMBIE] = not zombies_are_monsters
+    TRAITOR_ROLES[ROLE_ZOMBIE] = zombies_are_traitors
+    INDEPENDENT_ROLES[ROLE_ZOMBIE] = not zombies_are_monsters and not zombies_are_traitors
 
-    local vampires_are_monsters = GetGlobalBool("ttt_vampires_are_monsters")
+    local vampires_are_monsters = GetGlobalBool("ttt_vampires_are_monsters", false)
     MONSTER_ROLES[ROLE_VAMPIRE] = vampires_are_monsters
     TRAITOR_ROLES[ROLE_VAMPIRE] = not vampires_are_monsters
 

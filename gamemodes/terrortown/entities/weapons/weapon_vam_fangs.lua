@@ -46,12 +46,13 @@ local STATE_CONVERT = 3
 
 local beep = Sound("npc/fast_zombie/fz_alert_close1.wav")
 
-local vampire_convert = CreateConVar("ttt_vampire_convert_enable", "1", FCVAR_ARCHIVE + FCVAR_REPLICATED)
-local vampire_fang_timer = CreateConVar("ttt_vampire_fang_timer", "5", FCVAR_ARCHIVE + FCVAR_REPLICATED)
-local vampire_fang_heal = CreateConVar("ttt_vampire_fang_heal", "50", FCVAR_ARCHIVE + FCVAR_REPLICATED)
-local vampire_fang_overheal = CreateConVar("ttt_vampire_fang_overheal", "25", FCVAR_ARCHIVE + FCVAR_REPLICATED)
-local vampire_fang_unfreeze_delay = CreateConVar("ttt_vampire_fang_unfreeze_delay", "1", FCVAR_ARCHIVE + FCVAR_REPLICATED)
-local vampire_prime_convert = CreateConVar("ttt_vampire_prime_only_convert", "1", FCVAR_ARCHIVE + FCVAR_REPLICATED)
+local vampire_convert = CreateConVar("ttt_vampire_convert_enable", "0")
+local vampire_drain = CreateConVar("ttt_vampire_drain_enable", "1")
+local vampire_fang_timer = CreateConVar("ttt_vampire_fang_timer", "5")
+local vampire_fang_heal = CreateConVar("ttt_vampire_fang_heal", "50")
+local vampire_fang_overheal = CreateConVar("ttt_vampire_fang_overheal", "25")
+local vampire_fang_unfreeze_delay = CreateConVar("ttt_vampire_fang_unfreeze_delay", "1")
+local vampire_prime_convert = CreateConVar("ttt_vampire_prime_only_convert", "1")
 
 function SWEP:SetupDataTables()
     self:NetworkVar("Int", 0, "State")
@@ -86,7 +87,7 @@ function SWEP:OnDrop()
 end
 
 local function CanConvert(ply)
-    return not vampire_prime_convert:GetBool() or ply:IsVampirePrime()
+    return vampire_convert:GetBool() and (not vampire_prime_convert:GetBool() or ply:IsVampirePrime())
 end
 
 local function GetPlayerFromBody(body)
@@ -109,7 +110,7 @@ function SWEP:PrimaryAttack()
             end
 
             self:Eat(tr.Entity)
-        elseif ent:IsPlayer() and vampire_convert:GetBool() then
+        elseif ent:IsPlayer() and vampire_drain:GetBool() then
             if ent:IsJesterTeam() and not ent:GetNWBool("KillerClownActive", false) then
                 self:Error("TARGET IS A JESTER")
             elseif ent:IsVampireAlly() then
@@ -257,6 +258,8 @@ function SWEP:Think()
                 if not ply:HasWeapon("weapon_zm_improvised") then
                     ply:Give("weapon_zm_improvised")
                 end
+                -- Disable Killer smoke if they have it
+                ply:SetNWBool("KillerSmoke", false)
                 ply:SetVampirePreviousRole(ply:GetRole())
                 ply:SetRole(ROLE_VAMPIRE)
                 ply:SetVampirePrime(false)

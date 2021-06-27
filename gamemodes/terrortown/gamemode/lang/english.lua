@@ -937,7 +937,7 @@ L.info_popup_zombie = [[You are a Zombie! Work with your allies to kill all othe
 These are your comrades:
 {allylist}
 
-All damage you deal with guns is reduced by one half.
+All damage you deal with guns is reduced.
 Killing someone with your claws will turn them into a zombie.
 
 Press {menukey} to receive your special equipment!]]
@@ -949,7 +949,7 @@ you does not seek the same goal.
 These are your comrades:
 {allylist}
 
-All damage you deal with guns is reduced by one half.
+All damage you deal with guns is reduced.
 Killing someone with your claws will turn them into a zombie.
 
 Press {menukey} to receive your special equipment!]]
@@ -958,7 +958,16 @@ L.info_popup_zombie_alone = [[You are a Zombie! You have no allies this round.
 
 Kill all others to win!
 
-All damage you deal with guns is reduced by one half.
+All damage you deal with guns is reduced.
+Killing someone with your claws will turn them into a zombie.
+
+Press {menukey} to receive your special equipment!]]
+
+L.info_popup_zombie_indep = [[You are a Zombie!
+
+Kill all others to win!
+
+All damage you deal with guns is reduced.
 Killing someone with your claws will turn them into a zombie.
 
 Press {menukey} to receive your special equipment!]]
@@ -968,7 +977,7 @@ L.info_popup_vampire = [[You are a Vampire! Work with your allies to kill all ot
 These are your comrades:
 {allylist}
 
-You can use your fangs (left-click) to drink blood from the living and the dead to refill your health or to fade from view (right-click).
+You can use your fangs (left-click) to drink blood and refill your health or to fade from view (right-click).
 
 Press {menukey} to receive your special equipment!]]
 
@@ -979,7 +988,7 @@ you does not seek the same goal.
 These are your comrades:
 {allylist}
 
-You can use your fangs (left-click) to drink blood from the living and the dead to refill your health or to fade from view (right-click).
+You can use your fangs (left-click) to drink blood and refill your health or to fade from view (right-click).
 
 Press {menukey} to receive your special equipment!]]
 
@@ -987,7 +996,7 @@ L.info_popup_vampire_alone = [[You are a Vampire! You have no allies this round.
 
 Kill all others to win!
 
-You can use your fangs (left-click) to drink blood from the living and the dead to refill your health or to fade from view (right-click).
+You can use your fangs (left-click) to drink blood and refill your health or to fade from view (right-click).
 
 Press {menukey} to receive your special equipment!]]
 
@@ -1472,3 +1481,5 @@ L.ev_zombi = "{victim} was zombified"
 L.ev_vampi = "{victim} was vampified"
 L.ev_vampi_revert_converted = "The last Vampire Prime ({prime}) was killed and all their thralls had their humanity restored"
 L.ev_vampi_kill_converted = "The last Vampire Prime ({prime}) was killed and took all their thralls with them"
+L.ev_beggar_killed = "The beggar ({victim}) was killed by {attacker} but respawned"
+L.ev_beggar_killed_delay = "The beggar ({victim}) was killed by {attacker} but will respawn in {delay} seconds"

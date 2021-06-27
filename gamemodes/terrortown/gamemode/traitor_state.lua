@@ -174,6 +174,19 @@ local function clear_role_effects(ply)
     if ply:HasWeapon("weapon_ttt_bodysnatch") then
         ply:StripWeapon("weapon_ttt_bodysnatch")
     end
+    if ply:HasWeapon("weapon_kil_knife") then
+        ply:StripWeapon("weapon_kil_knife")
+    end
+    if ply:HasWeapon("weapon_kil_crowbar") then
+        ply:StripWeapon("weapon_kil_crowbar")
+    end
+    if ply:HasWeapon("weapon_vam_fangs") then
+        ply:StripWeapon("weapon_vam_fangs")
+    end
+    if ply:HasWeapon("weapon_zom_claws") then
+        ply:StripWeapon("weapon_zom_claws")
+    end
+    ply:Give("weapon_zm_improvised")
     ply:SetDefaultCredits()
     ply:SetMaxHealth(100)
     ply:SetHealth(100)
@@ -326,6 +339,9 @@ local function force_killer(ply)
     local max = GetConVar("ttt_killer_max_health"):GetInt()
     ply:SetMaxHealth(max)
     ply:SetHealth(max)
+    ply:StripWeapon("weapon_zm_improvised")
+    ply:Give("weapon_kil_crowbar")
+    ply:Give("weapon_kil_knife")
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_killer", force_killer, nil, nil, FCVAR_CHEAT)
@@ -333,6 +349,7 @@ concommand.Add("ttt_force_killer", force_killer, nil, nil, FCVAR_CHEAT)
 local function force_zombie(ply)
     ply:SetRoleAndBroadcast(ROLE_ZOMBIE)
     clear_role_effects(ply)
+    ply:Give("weapon_zom_claws")
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_zombie", force_zombie, nil, nil, FCVAR_CHEAT)
@@ -340,6 +357,7 @@ concommand.Add("ttt_force_zombie", force_zombie, nil, nil, FCVAR_CHEAT)
 local function force_vampire(ply)
     ply:SetRoleAndBroadcast(ROLE_VAMPIRE)
     clear_role_effects(ply)
+    ply:Give("weapon_vam_fangs")
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_vampire", force_vampire, nil, nil, FCVAR_CHEAT)

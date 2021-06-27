@@ -80,6 +80,9 @@ local function GetTextForLocalPlayer()
         end
 
         return text
+    -- Zombies not on Traitor or Monster teams have a different message
+    elseif client:IsZombie() then
+        return GetPTranslation("info_popup_zombie_indep", { menukey = menukey })
     else
         return GetPTranslation("info_popup_" .. client:GetRoleStringRaw(), { menukey = menukey })
     end

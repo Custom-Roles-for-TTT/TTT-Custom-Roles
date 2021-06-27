@@ -43,8 +43,10 @@ function plymeta:GetZombieAlly()
     local role = self:GetRole()
     if MONSTER_ROLES[ROLE_ZOMBIE] then
         return MONSTER_ROLES[role]
+    elseif TRAITOR_ROLES[ROLE_ZOMBIE] then
+        return TRAITOR_ROLES[role]
     end
-    return role == ROLE_ZOMBIE
+    return INDEPENDENT_ROLES[role]
 end
 function plymeta:GetVampireAlly()
     local role = self:GetRole()
