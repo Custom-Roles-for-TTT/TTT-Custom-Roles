@@ -77,7 +77,7 @@ function GetEquipmentForRole(role, promoted, block_randomization)
     local sync_vampire = GetGlobalBool("ttt_shop_vam_sync") and role == ROLE_VAMPIRE and TRAITOR_ROLES[ROLE_VAMPIRE]
     local sync_zombie = GetGlobalBool("ttt_shop_zom_sync") and role == ROLE_ZOMBIE and TRAITOR_ROLES[ROLE_ZOMBIE]
     local sync_traitor_weapons = sync_hypnotist or sync_impersonator or sync_assassin or sync_vampire or sync_zombie or
-                                    (mercmode > MERC_SHOP_NONE and role == ROLE_MERCENARY)
+                                    (rolemode > SHOP_SYNC_MODE_NONE)
   
     if sync_traitor_weapons and not Equipment[ROLE_TRAITOR] then
         GetEquipmentForRole(ROLE_TRAITOR, false, true)
@@ -85,7 +85,8 @@ function GetEquipmentForRole(role, promoted, block_randomization)
 
     -- Pre-load the Detective weapons so that any that have their CanBuy modified will also apply to the enabled allied role(s)
     local sync_detective_like = (promoted and (role == ROLE_DEPUTY or role == ROLE_IMPERSONATOR))
-    local sync_detective_weapons = sync_detective_like or (rolemode > SHOP_SYNC_MODE_NONE)
+    local sync_detective_weapons = sync_detective_like or
+                                    (rolemode > SHOP_SYNC_MODE_NONE)
   
     if sync_detective_weapons and not Equipment[ROLE_DETECTIVE] then
         GetEquipmentForRole(ROLE_DETECTIVE, false, true)
