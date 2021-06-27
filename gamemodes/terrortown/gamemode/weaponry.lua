@@ -395,12 +395,7 @@ local function OrderEquipment(ply, cmd, args)
         local allowed = GetEquipmentItem(role, id)
         -- Check for the syncing options
         if not allowed then
-            local rolemode = SHOP_SYNC_MODE_NONE
-            if ply:IsMercenary() then
-                rolemode = GetGlobalInt("ttt_shop_mer_mode")
-            elseif ply:IsClown() then
-                rolemode = GetGlobalInt("ttt_shop_clo_mode")
-            end
+            local rolemode = GetGlobalInt("ttt_shop_" .. ROLE_STRINGS_SHORT[role] .. "_mode", SHOP_SYNC_MODE_NONE)
             if rolemode > SHOP_SYNC_MODE_NONE then
                 -- Traitor OR Detective
                 if rolemode == SHOP_SYNC_MODE_UNION then

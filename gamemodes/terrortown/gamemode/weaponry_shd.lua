@@ -99,27 +99,16 @@ SHOP_SYNC_MODE_INTERSECT = 2
 SHOP_SYNC_MODE_DETECTIVE = 3
 SHOP_SYNC_MODE_TRAITOR = 4
 
-local mercmode = nil
-local clownmode = nil
+local rolemodes = {}
 function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor_weapons, sync_detective_weapons)
     if wep == nil then return end
     local id = WEPS.GetClass(wep)
 
     -- Cache these the first time
-    if mercmode == nil then
-        mercmode = GetGlobalInt("ttt_shop_mer_mode")
+    if not rolemodes[role] then
+        rolemodes[role] = GetGlobalInt("ttt_shop_" .. ROLE_STRINGS_SHORT[role] .. "_mode", SHOP_SYNC_MODE_NONE)
     end
-    if clownmode == nil then
-        clownmode = GetGlobalInt("ttt_shop_clo_mode")
-    end
-
-    -- Determine which role sync variable to use, if any
-    local rolemode = SHOP_SYNC_MODE_NONE
-    if role == ROLE_MERCENARY then
-        rolemode = mercmode
-    elseif role == ROLE_CLOWN then
-        rolemode = clownmode
-    end
+    local rolemode = rolemodes[role]
 
     -- Handle the other overrides
     if wep.CanBuy then
