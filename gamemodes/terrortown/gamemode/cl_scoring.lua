@@ -115,6 +115,18 @@ net.Receive("TTT_SwapperSwapped", function(len)
     })
 end)
 
+net.Receive("TTT_BeggarKilled", function(len)
+    local victim = net.ReadString()
+    local attacker = net.ReadString()
+    local delay = net.ReadUInt(8)
+    CLSCORE:AddEvent({
+        id = EVENT_BEGGARKILLED,
+        vic = victim,
+        att = attacker,
+        delay = delay
+    })
+end)
+
 net.Receive("TTT_Promotion", function(len)
     local name = net.ReadString()
     CLSCORE:AddEvent({

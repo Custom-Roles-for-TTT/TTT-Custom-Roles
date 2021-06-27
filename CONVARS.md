@@ -84,22 +84,22 @@ ttt_zombie_min_players                      0       // The minimum number of pla
 // ----------------------------------------
 
 // TRAITOR TEAM SETTINGS
-ttt_traitor_vision_enable                   0       // Whether members of the Traitor team can see other members of the Traitor team (including Glitches) through walls via a highlight effect.
+ttt_traitor_vision_enable                   0       // Whether members of the traitor team can see other members of the traitor team (including Glitches) through walls via a highlight effect
 
 // Impersonator
 ttt_impersonator_damage_penalty             0       // Damage penalty that the impersonator has before being promoted (e.g. 0.5 = 50% less damage)
-ttt_imp_credits_starting                    1       // The number of credits an Impersonator should start with
+ttt_imp_credits_starting                    1       // The number of credits an impersonator should start with
 
 // Hypnotist
-ttt_hyp_credits_starting                    1       // The number of credits a Hypnotist should start with
+ttt_hyp_credits_starting                    1       // The number of credits a hypnotist should start with
 
 // Assassin
-ttt_assassin_show_target_icon               0       // Whether Assassins have an icon over their target's heads showing who to kill. Server or round must be restarted for changes to take effect
+ttt_assassin_show_target_icon               0       // Whether assassins have an icon over their target's heads showing who to kill. Server or round must be restarted for changes to take effect
 ttt_assassin_next_target_delay              2       // The delay (in seconds) before an assassin is assigned their next target
 ttt_assassin_target_damage_bonus            1       // Damage bonus that the assassin has against their target (e.g. 0.5 = 50% extra damage)
 ttt_assassin_wrong_damage_penalty           0.5     // Damage penalty that the assassin has when attacking someone who is not their target (e.g. 0.5 = 50% less damage)
 ttt_assassin_failed_damage_penalty          0.5     // Damage penalty that the assassin has after they have failed their contract by killing the wrong person (e.g. 0.5 = 50% less damage)
-ttt_asn_credits_starting                    1       // The number of credits an Assassin should start with
+ttt_asn_credits_starting                    1       // The number of credits an assassin should start with
 
 // Vampire
 ttt_vampires_are_monsters                   0       // Whether Vampires should be treated as members of the Monster team.
@@ -123,18 +123,18 @@ ttt_all_search_postround                    1       // Whether non-detectives ca
 ttt_detective_starting_health               100     // The amount of health the detective spawns with
 
 // Phantom
-ttt_phantom_respawn_health                  50      // The amount of health a Phantom will respawn with
-ttt_phantom_weaker_each_respawn             0       // Whether a Phantom respawns weaker (1/2 as much HP) each time they respawn, down to a minimum of 1
-ttt_phantom_killer_smoke                    1       // Whether to show smoke on the player who killed the Phantom
-ttt_phantom_announce_death                  0       // Whether to announce to Detectives (and promoted Deputies and Imposters) that a Phantom has been killed or respawned
-ttt_phantom_killer_haunt                    1       // Whether to have the Phantom haunt their killer
-ttt_phantom_killer_haunt_power_max          100     // The maximum amount of power a Phantom can have when haunting their killer
-ttt_phantom_killer_haunt_power_rate         10      // The amount of power to regain per second when a Phantom is haunting their killer
-ttt_phantom_killer_haunt_move_cost          25      // The amount of power to spend when a Phantom is moving their killer via a haunting. 0 to disable
-ttt_phantom_killer_haunt_jump_cost          50      // The amount of power to spend when a Phantom is making their killer jump via a haunting. 0 to disable
-ttt_phantom_killer_haunt_drop_cost          75      // The amount of power to spend when a Phantom is making their killer drop their weapon via a haunting. 0 to disable
-ttt_phantom_killer_haunt_attack_cost        100     // The amount of power to spend when a Phantom is making their killer attack via a haunting. 0 to disable
-ttt_phantom_killer_footstep_time            0       // The amount of time a Phantom's killer's footsteps should show before fading. 0 to disable
+ttt_phantom_respawn_health                  50      // The amount of health a phantom will respawn with
+ttt_phantom_weaker_each_respawn             0       // Whether a phantom respawns weaker (1/2 as much HP) each time they respawn, down to a minimum of 1
+ttt_phantom_killer_smoke                    1       // Whether to show smoke on the player who killed the phantom
+ttt_phantom_announce_death                  0       // Whether to announce to detectives (and promoted deputies and impersonators) that a phantom has been killed or respawned
+ttt_phantom_killer_haunt                    1       // Whether to have the phantom haunt their killer
+ttt_phantom_killer_haunt_power_max          100     // The maximum amount of power a phantom can have when haunting their killer
+ttt_phantom_killer_haunt_power_rate         10      // The amount of power to regain per second when a phantom is haunting their killer
+ttt_phantom_killer_haunt_move_cost          25      // The amount of power to spend when a phantom is moving their killer via a haunting. 0 to disable
+ttt_phantom_killer_haunt_jump_cost          50      // The amount of power to spend when a phantom is making their killer jump via a haunting. 0 to disable
+ttt_phantom_killer_haunt_drop_cost          75      // The amount of power to spend when a phantom is making their killer drop their weapon via a haunting. 0 to disable
+ttt_phantom_killer_haunt_attack_cost        100     // The amount of power to spend when a phantom is making their killer attack via a haunting. 0 to disable
+ttt_phantom_killer_footstep_time            0       // The amount of time a phantom's killer's footsteps should show before fading. 0 to disable
 
 // Revenger
 ttt_revenger_radar_timer                    15      // The amount of time between radar pings for the revenger's lover's killer
@@ -144,14 +144,14 @@ ttt_revenger_damage_bonus                   0       // Extra damage that the rev
 ttt_deputy_damage_penalty                   0       // Damage penalty that the deputy has before being promoted (e.g. 0.5 = 50% less damage)
 
 // Mercenary
-ttt_shop_mer_mode                           2       // What items are available to the mercenary in the shop (0=None, 1=Detective OR Traitor, 2=Detective AND Traitor, 3=Detective, 4=Traitor)
+ttt_shop_mer_mode                           2       // What items are available to the mercenary in the shop (0=None, 1=detective OR traitor, 2=detective AND traitor, 3=detective, 4=traitor)
 
 // Veteran
 ttt_veteran_damage_bonus                    0.5     // Damage bonus that the veteran has when they are the last innocent alive (e.g. 0.5 = 50% more damage)
 ttt_veteran_full_heal                       1       // Whether the veteran gets a full heal upon becoming the last remaining innocent or not
 
 // Mercenary
-ttt_mer_credits_starting                    1       // The number of credits a Mercenary should start with
+ttt_mer_credits_starting                    1       // The number of credits a mercenary should start with
 
 // ----------------------------------------
 
@@ -159,25 +159,30 @@ ttt_mer_credits_starting                    1       // The number of credits a M
 ttt_jesters_trigger_traitor_testers         1       // Whether jesters trigger traitor traps as if they were traitors
 
 // Jester
-ttt_jester_win_by_traitors                  1       // Whether the Jester will win the round if they are killed by a traitor
-ttt_jester_notify_mode                      0       // The logic to use when notifying players that a Jester is killed. 0 - Don't notify anyone. 1 - Only notify Traitors and Detective. 2 - Only notify Traitors. 3 - Only notify Detective. 4 - Notify everyone.
-ttt_jester_notify_sound                     0       // Whether to play a cheering sound when a Jester is killed
-ttt_jester_notify_confetti                  0       // Whether to throw confetti when a Jester is a killed
-ttt_jes_credits_starting                    0       // The number of credits a Jester should start with
+ttt_jester_win_by_traitors                  1       // Whether the jester will win the round if they are killed by a traitor
+ttt_jester_notify_mode                      0       // The logic to use when notifying players that a jester is killed. 0 - Don't notify anyone. 1 - Only notify Traitors and Detective. 2 - Only notify Traitors. 3 - Only notify Detective. 4 - Notify everyone.
+ttt_jester_notify_sound                     0       // Whether to play a cheering sound when a jester is killed
+ttt_jester_notify_confetti                  0       // Whether to throw confetti when a jester is a killed
+ttt_jes_credits_starting                    0       // The number of credits a jester should start with
 
 // Swapper
-ttt_swapper_respawn_health                  100     // What amount of health to give the Swapper when they are killed and respawned
-ttt_swapper_notify_mode                     0       // The logic to use when notifying players that a Swapper is killed. 0 - Don't notify anyone. 1 - Only notify Traitors and Detective. 2 - Only notify Traitors. 3 - Only notify Detective. 4 - Notify everyone.
-ttt_swapper_notify_sound                    0       // Whether to play a cheering sound when a Swapper is killed
-ttt_swapper_notify_confetti                 0       // Whether to throw confetti when a Swapper is a killed
-ttt_swapper_killer_health                   100     // What amount of health to give the person who killed the Swapper. Set to "0" to kill them
-ttt_swa_credits_starting                    0       // The number of credits a Swapper should start with
+ttt_swapper_respawn_health                  100     // What amount of health to give the swapper when they are killed and respawned
+ttt_swapper_notify_mode                     0       // The logic to use when notifying players that a swapper is killed. 0 - Don't notify anyone. 1 - Only notify Traitors and Detective. 2 - Only notify Traitors. 3 - Only notify Detective. 4 - Notify everyone.
+ttt_swapper_notify_sound                    0       // Whether to play a cheering sound when a swapper is killed
+ttt_swapper_notify_confetti                 0       // Whether to throw confetti when a swapper is a killed
+ttt_swapper_killer_health                   100     // What amount of health to give the person who killed the swapper. Set to "0" to kill them
+ttt_swa_credits_starting                    0       // The number of credits a swapper should start with
 
 // Clown
 ttt_clown_damage_bonus                      0       // Damage bonus that the clown has after being triggered (e.g. 0.5 = 50% more damage)
 
 // Beggar
 ttt_reveal_beggar_change                    1       // Whether the beggar is revealed to you when they join your team or not
+ttt_beggar_respawn                          0       // Whether the beggar respawns when they are killed before joining another team
+ttt_beggar_respawn_delay                    3       // The delay to use when respawning the begger (if "ttt_beggar_respawn" is enabled)
+ttt_beggar_notify_mode                      0       // The logic to use when notifying players that a beggar is killed. 0 - Don't notify anyone. 1 - Only notify Traitors and Detective. 2 - Only notify Traitors. 3 - Only notify Detective. 4 - Notify everyone.
+ttt_beggar_notify_sound                     1       // Whether to play a cheering sound when a beggar is killed
+ttt_beggar_notify_confetti                  1       // Whether to throw confetti when a beggar is a killed
 
 // Bodysnatcher
 ttt_bodysnatcher_destroy_body               0       // Whether the bodysnatching device destroys the body it is used on or not
@@ -196,17 +201,17 @@ ttt_drunk_innocent_chance                   0.7     // Chance that the drunk wil
 ttt_old_man_starting_health                 1       // The amount of health the old man spawns with
 
 // Killer
-ttt_killer_max_health                       150     // The Killer's starting and maximum health
-ttt_killer_knife_enabled                    1       // Whether the Killer knife is enabled
-ttt_killer_crowbar_enabled                  1       // Whether the Killer throwable crowbar is enabled
-ttt_killer_smoke_enabled                    1       // Whether the Killer smoke is enabled
-ttt_killer_smoke_timer                      60      // Number of seconds before a Killer will start to smoke after their last kill
-ttt_killer_show_target_icon                 1       // Whether Killers have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect
-ttt_killer_damage_penalty                   0.25    // The fraction a Killer's damage will be scaled by when they are attacking without using their knife
-ttt_killer_damage_reduction                 0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a Killer
-ttt_killer_warn_all                         0       // Whether to warn all players if there is a Killer. If 0, only traitors will be warned
-ttt_killer_vision_enable                    1       // Whether Killers have their special vision highlights enabled
-ttt_kil_credits_starting                    2       // The number of credits a Killer should start with
+ttt_killer_max_health                       150     // The killer's starting and maximum health
+ttt_killer_knife_enabled                    1       // Whether the killer knife is enabled
+ttt_killer_crowbar_enabled                  1       // Whether the killer throwable crowbar is enabled
+ttt_killer_smoke_enabled                    1       // Whether the killer smoke is enabled
+ttt_killer_smoke_timer                      60      // Number of seconds before a killer will start to smoke after their last kill
+ttt_killer_show_target_icon                 1       // Whether killer have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect
+ttt_killer_damage_penalty                   0.25    // The fraction a killer's damage will be scaled by when they are attacking without using their knife
+ttt_killer_damage_reduction                 0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a killer
+ttt_killer_warn_all                         0       // Whether to warn all players if there is a killer. If 0, only traitors will be warned
+ttt_killer_vision_enable                    1       // Whether killers have their special vision highlights enabled
+ttt_kil_credits_starting                    2       // The number of credits a killer should start with
 
 // Zombie
 ttt_zombies_are_monsters                    0       // Whether Zombies should be treated as members of the Monster team.
@@ -227,30 +232,30 @@ ttt_zombie_prime_only_weapons               1       // Whether only Prime Zombie
 ttt_shop_random_percent                     50      // The percent chance that a weapon in the shop will be not be shown
 
 // Role Specific Random Shop Restriction Percent
-ttt_shop_random_tra_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the Traitors
-ttt_shop_random_det_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the Detectives
-ttt_shop_random_hyp_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the Hypnotists
-ttt_shop_random_dep_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the Deputies
-ttt_shop_random_imp_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the Impersonators
-ttt_shop_random_asn_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the Assassins
-ttt_shop_random_kil_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the Killers
-ttt_shop_random_jes_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the Jesters (if they have shop weapons)
-ttt_shop_random_swa_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the Swappers (if they have shop weapons)
-ttt_shop_random_zom_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the Zombies
-ttt_shop_random_vam_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the Vampires
+ttt_shop_random_tra_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the traitors
+ttt_shop_random_det_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the detectives
+ttt_shop_random_hyp_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the hypnotists
+ttt_shop_random_dep_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the deputies
+ttt_shop_random_imp_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the impersonators
+ttt_shop_random_asn_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the assassins
+ttt_shop_random_kil_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the killers
+ttt_shop_random_jes_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the jesters (if they have shop weapons)
+ttt_shop_random_swa_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the swappers (if they have shop weapons)
+ttt_shop_random_zom_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the zombies
+ttt_shop_random_vam_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the vampires
 
 // Enable/Disable Individual Role Random Shop Restrictions
-ttt_shop_random_tra_enabled                 0       // Whether role shop randomization is enabled for Traitors
-ttt_shop_random_det_enabled                 0       // Whether role shop randomization is enabled for Detectives
-ttt_shop_random_hyp_enabled                 0       // Whether role shop randomization is enabled for Hypnotists
-ttt_shop_random_dep_enabled                 0       // Whether role shop randomization is enabled for Deputies
-ttt_shop_random_imp_enabled                 0       // Whether role shop randomization is enabled for Impersonators
-ttt_shop_random_asn_enabled                 0       // Whether role shop randomization is enabled for Assassins
-ttt_shop_random_kil_enabled                 0       // Whether role shop randomization is enabled for Killers
-ttt_shop_random_jes_enabled                 0       // Whether role shop randomization is enabled for Jesters (if they have shop weapons)
-ttt_shop_random_swa_enabled                 0       // Whether role shop randomization is enabled for Swappers (if they have shop weapons)
-ttt_shop_random_zom_enabled                 0       // Whether role shop randomization is enabled for Zombies
-ttt_shop_random_vam_enabled                 0       // Whether role shop randomization is enabled for Vampires
+ttt_shop_random_tra_enabled                 0       // Whether role shop randomization is enabled for traitors
+ttt_shop_random_det_enabled                 0       // Whether role shop randomization is enabled for detectives
+ttt_shop_random_hyp_enabled                 0       // Whether role shop randomization is enabled for hypnotists
+ttt_shop_random_dep_enabled                 0       // Whether role shop randomization is enabled for deputies
+ttt_shop_random_imp_enabled                 0       // Whether role shop randomization is enabled for impersonators
+ttt_shop_random_asn_enabled                 0       // Whether role shop randomization is enabled for assassins
+ttt_shop_random_kil_enabled                 0       // Whether role shop randomization is enabled for killers
+ttt_shop_random_jes_enabled                 0       // Whether role shop randomization is enabled for jesters (if they have shop weapons)
+ttt_shop_random_swa_enabled                 0       // Whether role shop randomization is enabled for swappers (if they have shop weapons)
+ttt_shop_random_zom_enabled                 0       // Whether role shop randomization is enabled for zombies
+ttt_shop_random_vam_enabled                 0       // Whether role shop randomization is enabled for vampires
 
 // Role Sync
 ttt_shop_hyp_sync                           0       // Whether Hypnotists should have all weapons that vanilla Traitors have in their weapon shop
@@ -277,10 +282,10 @@ ttt_sprint_regenerate_traitor               0.12    // Stamina regeneration for 
 ttt_sprint_consume                          0.2     // Stamina consumption speed
 
 // Better Equipment Menu
-ttt_bem_allow_change                        1       // Allow clients to change the look of the Traitor/Detective menu
-ttt_bem_sv_cols                             4       // Sets the number of columns in the Traitor/Detective menu's item list (serverside)
-ttt_bem_sv_rows                             5       // Sets the number of rows in the Traitor/Detective menu's item list (serverside)
-ttt_bem_sv_size                             64      // Sets the item size in the Traitor/Detective menu's item list (serverside)
+ttt_bem_allow_change                        1       // Allow clients to change the look of the shop menu
+ttt_bem_sv_cols                             4       // Sets the number of columns in the shop menu's item list (serverside)
+ttt_bem_sv_rows                             5       // Sets the number of rows in the shop menu's item list (serverside)
+ttt_bem_sv_size                             64      // Sets the item size in the shop menu's item list (serverside)
 ```
 
 Thanks to [KarlOfDuty](https://github.com/KarlOfDuty) for his original version of this document, [here](https://github.com/KarlOfDuty/TTT-Custom-Roles/blob/patch-1/README.md).
