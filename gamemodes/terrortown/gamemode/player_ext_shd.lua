@@ -31,6 +31,7 @@ function plymeta:GetBodysnatcher() return self:GetRole() == ROLE_BODYSNATCHER en
 function plymeta:GetVeteran() return self:GetRole() == ROLE_VETERAN end
 function plymeta:GetAssassin() return self:GetRole() == ROLE_ASSASSIN end
 function plymeta:GetKiller() return self:GetRole() == ROLE_KILLER end
+function plymeta:GetDoctor() return self:GetRole() == ROLE_DOCTOR end
 function plymeta:GetZombie() return self:GetRole() == ROLE_ZOMBIE end
 function plymeta:GetVampire() return self:GetRole() == ROLE_VAMPIRE end
 
@@ -87,6 +88,7 @@ plymeta.IsBodysnatcher = plymeta.GetBodysnatcher
 plymeta.IsVeteran = plymeta.GetVeteran
 plymeta.IsAssassin = plymeta.GetAssassin
 plymeta.IsKiller = plymeta.GetKiller
+plymeta.IsDoctor = plymeta.GetDoctor
 plymeta.IsZombie = plymeta.GetZombie
 plymeta.IsVampire = plymeta.GetVampire
 
@@ -149,6 +151,7 @@ function plymeta:IsActiveBodysnatcher() return self:IsActiveRole(ROLE_BODYSNATCH
 function plymeta:IsActiveVeteran() return self:IsActiveRole(ROLE_VETERAN) end
 function plymeta:IsActiveAssassin() return self:IsActiveRole(ROLE_ASSASSIN) end
 function plymeta:IsActiveKiller() return self:IsActiveRole(ROLE_KILLER) end
+function plymeta:IsActiveDoctor() return self:IsActiveRole(ROLE_DOCTOR) end
 function plymeta:IsActiveZombie() return self:IsActiveRole(ROLE_ZOMBIE) end
 function plymeta:IsActiveVampire() return self:IsActiveRole(ROLE_VAMPIRE) end
 

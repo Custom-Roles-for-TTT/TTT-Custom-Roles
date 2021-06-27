@@ -23,6 +23,7 @@ L.bodysnatcher = "Bodysnatcher"
 L.veteran = "Veteran"
 L.assassin = "Assassin"
 L.killer = "Killer"
+L.doctor = "Doctor"
 L.zombie = "Zombie"
 L.vampire = "Vampire"
 
@@ -95,6 +96,7 @@ L.body_found_bod = "They were a Bodysnatcher."
 L.body_found_vet = "They were a Veteran."
 L.body_found_asn = "They were an Assassin."
 L.body_found_kil = "They were a Killer."
+L.body_found_doc = "They were a Doctor."
 L.body_found_zom = "They were a Zombie."
 L.body_found_vam = "They were a Vampire."
 
@@ -241,6 +243,7 @@ L.search_role_bod = "This person was a Bodysnatcher."
 L.search_role_vet = "This person was a Veteran."
 L.search_role_asn = "This person was an Assassin."
 L.search_role_kil = "This person was a Killer."
+L.search_role_doc = "This person was a Doctor."
 L.search_role_zom = "This person was a Zombie."
 L.search_role_vam = "This person was a Vampire."
 
@@ -639,6 +642,9 @@ number of uses is limited.]]
 L.brainwash_help_pri = "Hold {primaryfire} to revive dead body."
 L.brainwash_help_sec = "The revived player will become a traitor."
 
+L.defibrillator_help_pri = "Hold {primaryfire} to revive dead body."
+L.defibrillator_help_sec = "The revived player will respawn on their original team"
+
 -- Ammo names, shown when picked up
 L.ammo_pistol = "9mm ammo"
 
@@ -824,6 +830,9 @@ to take their role and join the fight!]]
 L.info_popup_veteran = [[You are a Veteran! You work best under pressure.
 If you are the last innocent player alive you will
 deal extra damage.]]
+
+L.info_popup_doctor = [[You are a Doctor! You're here to keep your teammates alive.
+Use your tools to keep fellow innocents in the fight!]]
 
 L.info_popup_hypnotist = [[You are a Hypnotist! Work with fellow traitors to kill all others.
 

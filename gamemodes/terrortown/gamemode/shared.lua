@@ -35,8 +35,9 @@ ROLE_ASSASSIN = 18
 ROLE_KILLER = 19
 ROLE_ZOMBIE = 20
 ROLE_VAMPIRE = 21
+ROLE_DOCTOR = 22
 
-ROLE_MAX = 21
+ROLE_MAX = 22
 
 local function AddRoleAssociations(list, roles)
     -- Use an associative array so we can do a O(1) lookup by role
@@ -53,7 +54,7 @@ TRAITOR_ROLES = {}
 AddRoleAssociations(TRAITOR_ROLES, {ROLE_TRAITOR, ROLE_HYPNOTIST, ROLE_IMPERSONATOR, ROLE_ASSASSIN, ROLE_VAMPIRE})
 
 INNOCENT_ROLES = {}
-AddRoleAssociations(INNOCENT_ROLES, {ROLE_INNOCENT, ROLE_DETECTIVE, ROLE_GLITCH, ROLE_PHANTOM, ROLE_REVENGER, ROLE_DEPUTY, ROLE_MERCENARY, ROLE_VETERAN})
+AddRoleAssociations(INNOCENT_ROLES, {ROLE_INNOCENT, ROLE_DETECTIVE, ROLE_GLITCH, ROLE_PHANTOM, ROLE_REVENGER, ROLE_DEPUTY, ROLE_MERCENARY, ROLE_VETERAN, ROLE_DOCTOR})
 
 JESTER_ROLES = {}
 AddRoleAssociations(JESTER_ROLES, {ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_BEGGAR, ROLE_BODYSNATCHER})
@@ -278,6 +279,7 @@ ROLE_STRINGS = {
     [ROLE_VETERAN] = "veteran",
     [ROLE_ASSASSIN] = "assassin",
     [ROLE_KILLER] = "killer",
+    [ROLE_DOCTOR] = "doctor",
     [ROLE_ZOMBIE] = "zombie",
     [ROLE_VAMPIRE] = "vampire"
 }
@@ -304,6 +306,7 @@ ROLE_STRINGS_EXT = {
     [ROLE_VETERAN] = "a veteran",
     [ROLE_ASSASSIN] = "an assassin",
     [ROLE_KILLER] = "a killer",
+    [ROLE_DOCTOR] = "a doctor",
     [ROLE_ZOMBIE] = "a zombie",
     [ROLE_VAMPIRE] = "a vampire"
 }
@@ -329,6 +332,7 @@ ROLE_STRINGS_SHORT = {
     [ROLE_VETERAN] = "vet",
     [ROLE_ASSASSIN] = "asn",
     [ROLE_KILLER] = "kil",
+    [ROLE_DOCTOR] = "doc",
     [ROLE_ZOMBIE] = "zom",
     [ROLE_VAMPIRE] = "vam"
 }
@@ -403,6 +407,10 @@ MUTE_NONE = 0
 MUTE_TERROR = 1
 MUTE_ALL = 2
 MUTE_SPEC = 1002
+
+-- Doctor Modes
+DOCTOR_MODE_STATION = 0
+DOCTOR_EMT_MODE = 1
 
 -- Vampire prime death modes
 VAMPIRE_DEATH_NONE = 0

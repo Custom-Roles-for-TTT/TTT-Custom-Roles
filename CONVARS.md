@@ -28,6 +28,7 @@ ttt_revenger_enabled                        0       // Whether or not the reveng
 ttt_deputy_enabled                          0       // Whether or not the deputy should spawn
 ttt_mercenary_enabled                       0       // Whether or not the mercenary should spawn
 ttt_veteran_enabled                         0       // Whether or not the veteran should spawn
+ttt_doctor_enabled                          0       // Whether or not the doctor should spawn
 ttt_jester_enabled                          0       // Whether or not the jester should spawn
 ttt_swapper_enabled                         0       // Whether or not the swapper should spawn
 ttt_clown_enabled                           0       // Whether or not the clown should spawn
@@ -49,6 +50,7 @@ ttt_revenger_spawn_weight                   1       // The weight assigned to sp
 ttt_deputy_spawn_weight                     1       // The weight assigned to spawning the deputy
 ttt_mercenary_spawn_weight                  1       // The weight assigned to spawning the mercenary
 ttt_veteran_spawn_weight                    1       // The weight assigned to spawning the veteran
+ttt_doctor_spawn_weight                     1       // The weight assigned to spawning the doctor
 ttt_jester_spawn_weight                     1       // The weight assigned to spawning the jester
 ttt_swapper_spawn_weight                    1       // The weight assigned to spawning the swapper
 ttt_clown_spawn_weight                      1       // The weight assigned to spawning the clown
@@ -71,6 +73,7 @@ ttt_revenger_min_players                    0       // The minimum number of pla
 ttt_deputy_min_players                      0       // The minimum number of players required to spawn the deputy
 ttt_mercenary_min_players                   0       // The minimum number of players required to spawn the mercenary
 ttt_veteran_min_players                     0       // The minimum number of players required to spawn the veteran
+ttt_doctor_min_players                      0       // The minimum number of players required to spawn the doctor
 ttt_jester_min_players                      0       // The minimum number of players required to spawn the jester
 ttt_swapper_min_players                     0       // The minimum number of players required to spawn the swapper
 ttt_clown_min_players                       0       // The minimum number of players required to spawn the clown
@@ -152,6 +155,10 @@ ttt_veteran_full_heal                       1       // Whether the veteran gets 
 
 // Mercenary
 ttt_mer_credits_starting                    1       // The number of credits a mercenary should start with
+
+// Doctor
+ttt_doctor_mode                             0       // How the Doctor should be played (0=Health Station, 1=Defib then Health Station)
+ttt_doc_credits_starting                    0       // How many credits the Doctor starts with
 
 // ----------------------------------------
 

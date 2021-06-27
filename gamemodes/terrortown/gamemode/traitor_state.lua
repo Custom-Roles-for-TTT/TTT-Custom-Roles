@@ -70,6 +70,7 @@ function SendBodysnatcherList(ply_or_rf) SendRoleList(ROLE_BODYSNATCHER, ply_or_
 function SendVeteranList(ply_or_rf) SendRoleList(ROLE_VETERAN, ply_or_rf) end
 function SendAssassinList(ply_or_rf) SendRoleList(ROLE_ASSASSIN, ply_or_rf) end
 function SendKillerList(ply_or_rf) SendRoleList(ROLE_KILLER, ply_or_rf) end
+function SendDoctorList(ply_or_rf) SendRoleList(ROLE_DOCTOR, ply_or_rf) end
 function SendZombieList(ply_or_rf) SendRoleList(ROLE_ZOMBIE, ply_or_rf) end
 function SendVampireList(ply_or_rf) SendRoleList(ROLE_VAMPIRE, ply_or_rf) end
 
@@ -99,6 +100,7 @@ function SendFullStateUpdate()
     SendVeteranList()
     SendAssassinList()
     SendKillerList()
+    SendDoctorList()
     SendZombieList()
     SendVampireList()
 end
@@ -146,6 +148,7 @@ local function request_rolelist(ply)
         SendVeteranList(ply)
         SendAssassinList(ply)
         SendKillerList(ply)
+        SendDoctorList(ply)
         SendZombieList(ply)
         SendVampireList(ply)
     end
@@ -345,6 +348,19 @@ local function force_killer(ply)
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_killer", force_killer, nil, nil, FCVAR_CHEAT)
+
+local function force_doctor(ply)
+    ply:SetRoleAndBroadcast(ROLE_DOCTOR)
+    clear_role_effects(ply)
+    local mode = GetConVar("ttt_doctor_mode"):GetInt()
+    if mode == DOCTOR_MODE_STATION then
+        ply:Give("weapon_ttt_health_station")
+    elseif mode == DOCTOR_EMT_MODE then
+        ply:Give("weapon_ttt_doc_defib")
+    end
+    SendFullStateUpdate()
+end
+concommand.Add("ttt_force_doctor", force_doctor, nil, nil, FCVAR_CHEAT)
 
 local function force_zombie(ply)
     ply:SetRoleAndBroadcast(ROLE_ZOMBIE)

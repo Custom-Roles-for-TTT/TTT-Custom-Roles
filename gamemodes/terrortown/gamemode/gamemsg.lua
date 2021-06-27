@@ -158,6 +158,11 @@ function GetKillerFilter(alive_only)
     return GetPlayerFilter(function(p) return p:GetKiller() and (not alive_only or p:IsTerror()) end)
 end
 
+
+function GetDoctorFilter(alive_only)
+    return GetPlayerFilter(function(p) return p:GetDoctor() and (not alive_only or p:IsTerror()) end)
+end
+
 function GetZombieFilter(alive_only)
     return GetPlayerFilter(function(p) return p:GetZombie() and (not alive_only or p:IsTerror()) end)
 end
@@ -165,8 +170,6 @@ end
 function GetVampireFilter(alive_only)
     return GetPlayerFilter(function(p) return p:GetVampire() and (not alive_only or p:IsTerror()) end)
 end
-
-
 
 function GetRoleFilter(role, alive_only)
     return GetPlayerFilter(function(p) return p:IsRole(role) and (not alive_only or p:IsTerror()) end)
