@@ -248,10 +248,11 @@ ttt_shop_random_dep_percent                 0       // The percent chance that a
 ttt_shop_random_imp_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the impersonators
 ttt_shop_random_asn_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the assassins
 ttt_shop_random_kil_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the killers
-ttt_shop_random_jes_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the jesters (if they have shop weapons)
-ttt_shop_random_swa_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the swappers (if they have shop weapons)
+ttt_shop_random_jes_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the jesters
+ttt_shop_random_swa_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the swappers
 ttt_shop_random_zom_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the zombies
 ttt_shop_random_vam_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the vampires
+ttt_shop_random_clo_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the clowns
 
 // Enable/Disable Individual Role Random Shop Restrictions
 ttt_shop_random_tra_enabled                 0       // Whether role shop randomization is enabled for traitors
@@ -261,10 +262,11 @@ ttt_shop_random_dep_enabled                 0       // Whether role shop randomi
 ttt_shop_random_imp_enabled                 0       // Whether role shop randomization is enabled for impersonators
 ttt_shop_random_asn_enabled                 0       // Whether role shop randomization is enabled for assassins
 ttt_shop_random_kil_enabled                 0       // Whether role shop randomization is enabled for killers
-ttt_shop_random_jes_enabled                 0       // Whether role shop randomization is enabled for jesters (if they have shop weapons)
-ttt_shop_random_swa_enabled                 0       // Whether role shop randomization is enabled for swappers (if they have shop weapons)
+ttt_shop_random_jes_enabled                 0       // Whether role shop randomization is enabled for jesters
+ttt_shop_random_swa_enabled                 0       // Whether role shop randomization is enabled for swappers
 ttt_shop_random_zom_enabled                 0       // Whether role shop randomization is enabled for zombies
 ttt_shop_random_vam_enabled                 0       // Whether role shop randomization is enabled for vampires
+ttt_shop_random_clo_enabled                 0       // Whether role shop randomization is enabled for clowns
 
 // Role Sync
 ttt_shop_hyp_sync                           0       // Whether Hypnotists should have all weapons that vanilla Traitors have in their weapon shop
