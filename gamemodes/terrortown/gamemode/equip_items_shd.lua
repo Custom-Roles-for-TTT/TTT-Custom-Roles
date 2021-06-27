@@ -323,41 +323,42 @@ function GenerateNewEquipmentID()
 end
 
 local function LoadMonsterRoleEquipment(role, radar)
-  if not table.HasValue(DefaultEquipment[role], EQUIP_RADAR) then
-      table.insert(DefaultEquipment[role], EQUIP_RADAR)
-  end
+    if not table.HasValue(DefaultEquipment[role], EQUIP_RADAR) then
+        table.insert(DefaultEquipment[role], EQUIP_RADAR)
+    end
 
-  if GetEquipmentItem(role, EQUIP_RADAR) == nil then
-      table.insert(EquipmentItems[role], radar)
-  end
+    if GetEquipmentItem(role, EQUIP_RADAR) == nil then
+        table.insert(EquipmentItems[role], radar)
+    end
 end
 
 local function RemoveMonsterRoleEquipment(role)
-  for i, v in ipairs(DefaultEquipment[role]) do
-      if v == EQUIP_RADAR then
-          table.remove(DefaultEquipment[role], i)
-      end
-  end
+    for i, v in ipairs(DefaultEquipment[role]) do
+        if v == EQUIP_RADAR then
+            table.remove(DefaultEquipment[role], i)
+        end
+    end
 
-  for i, v in ipairs(EquipmentItems[role]) do
-      if v.id == EQUIP_RADAR then
-          table.remove(EquipmentItems[role], i)
-      end
-  end
+    for i, v in ipairs(EquipmentItems[role]) do
+        if v.id == EQUIP_RADAR then
+            table.remove(EquipmentItems[role], i)
+        end
+    end
 end
 
 function LoadMonsterEquipment(zombies_are_monsters, vampires_are_monsters)
-  local radar = GetEquipmentItem(ROLE_TRAITOR, EQUIP_RADAR)
+    local radar = GetEquipmentItem(ROLE_TRAITOR, EQUIP_RADAR)
 
-  -- Allow Monsters to buy Radar if they aren't members of the Monster team
-  if zombies_are_monsters then
-      RemoveMonsterRoleEquipment(ROLE_ZOMBIE)
-  else
-      LoadMonsterRoleEquipment(ROLE_ZOMBIE, radar)
-  end
-  if vampires_are_monsters then
-      RemoveMonsterRoleEquipment(ROLE_VAMPIRE)
-  else
-      LoadMonsterRoleEquipment(ROLE_VAMPIRE, radar)
-  end
+    -- Allow Monsters to buy Radar if they aren't members of the Monster team
+    if zombies_are_monsters then
+        RemoveMonsterRoleEquipment(ROLE_ZOMBIE)
+    else
+        LoadMonsterRoleEquipment(ROLE_ZOMBIE, radar)
+    end
+
+    if vampires_are_monsters then
+        RemoveMonsterRoleEquipment(ROLE_VAMPIRE)
+    else
+        LoadMonsterRoleEquipment(ROLE_VAMPIRE, radar)
+    end
 end

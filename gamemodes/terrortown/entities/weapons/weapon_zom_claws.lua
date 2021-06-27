@@ -55,8 +55,8 @@ SWEP.NextReload = CurTime()
 SWEP.DeploySpeed = 2
 local sound_single = Sound("Weapon_Crowbar.Single")
 
-local zombie_leap = CreateConVar("ttt_zombie_leap_enable", "1", FCVAR_ARCHIVE)
-local zombie_spit = CreateConVar("ttt_zombie_spit_enable", "1", FCVAR_ARCHIVE)
+local zombie_leap = CreateConVar("ttt_zombie_leap_enable", "1")
+local zombie_spit = CreateConVar("ttt_zombie_spit_enable", "1")
 
 function SWEP:Initialize()
     self:SetHoldType(self.HoldType)

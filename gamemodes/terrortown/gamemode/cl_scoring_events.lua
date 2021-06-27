@@ -84,6 +84,8 @@ Event(EVENT_FINISH,
                         return T("ev_win_zombie")
                      end
                      return T("ev_win_monster")
+                  elseif e.win == WIN_ZOMBIE then
+                     return T("ev_win_zombie")
                   elseif e.win == WIN_TIMELIMIT then
                      return T("ev_win_time")
                   end
@@ -109,6 +111,8 @@ Event(EVENT_FINISH,
                         text = "Zombies won"
                      end
                      return star_icon, text
+                  elseif e.win == WIN_ZOMBIE then
+                     return star_icon, "Zombies won"
                   else
                      return star_icon, "Timelimit"
                   end

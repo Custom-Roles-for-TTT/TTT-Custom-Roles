@@ -104,9 +104,10 @@ ttt_asn_credits_starting                    1       // The number of credits an 
 // Vampire
 ttt_vampires_are_monsters                   0       // Whether Vampires should be treated as members of the Monster team.
 ttt_vampire_vision_enable                   0       // Whether Vampires have their special vision highlights enabled
-ttt_vampire_convert_enable                  1       // Whether Vampires have the ability to drain other players' blood using their fangs
+ttt_vampire_drain_enable                    1       // Whether Vampires have the ability to drain other players' blood using their fangs
+ttt_vampire_convert_enable                  0       // Whether Vampires have the ability to convert other players to vampire thrals using their fangs
 ttt_vampire_show_target_icon                0       // Whether Vampires have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect.
-ttt_vampire_damage_reduction                0     // The fraction an attacker's bullet damage will be reduced by when they are shooting a Vampire.
+ttt_vampire_damage_reduction                0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a Vampire.
 ttt_vampire_fang_timer                      5       // The amount of time fangs must be used to fully drain a target's blood
 ttt_vampire_fang_heal                       50      // The amount of health a Vampire will heal by when they fully drain a target's blood
 ttt_vampire_fang_overheal                   25      // The amount over the Vampire's normal maximum health (e.g. 100 + this ConVar) that the Vampire can heal to by drinking blood.
@@ -209,12 +210,14 @@ ttt_kil_credits_starting                    2       // The number of credits a K
 
 // Zombie
 ttt_zombies_are_monsters                    0       // Whether Zombies should be treated as members of the Monster team.
+ttt_zombies_are_traitors                    0       // Whether Zombies should be treated as members of the Traitors team.
+ttt_zombie_round_chance                     0.1     // The chance that a "Zombie Round" will occur where all players who would have been Traitors are made Zombies instead. Only usable when "ttt_zombies_are_traitors" is set to "1"
 ttt_zombie_vision_enable                    0       // Whether Zombies have their special vision highlights enabled
 ttt_zombie_spit_enable                      1       // Whether Zombies have their spit attack enabled
 ttt_zombie_leap_enable                      1       // Whether Zombies have their leap attack enabled
 ttt_zombie_show_target_icon                 0       // Whether Zombies have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect.
 ttt_zombie_damage_penalty                   0.5     // The fraction a Zombie's damage will be scaled by when they are attacking without using their claws.
-ttt_zombie_damage_reduction                 0     // The fraction an attacker's bullet damage will be reduced by when they are shooting a Zombie.
+ttt_zombie_damage_reduction                 0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a Zombie.
 ttt_zombie_prime_only_weapons               1       // Whether only Prime Zombies (e.g. players who spawn as Zombies originally) are allowed to pick up weapons.
 
 // ----------------------------------------
@@ -253,7 +256,8 @@ ttt_shop_random_vam_enabled                 0       // Whether role shop randomi
 ttt_shop_hyp_sync                           0       // Whether Hypnotists should have all weapons that vanilla Traitors have in their weapon shop
 ttt_shop_imp_sync                           0       // Whether Impersonators should have all weapons that vanilla Traitors have in their weapon shop
 ttt_shop_asn_sync                           0       // Whether Assassins should have all weapons that vanilla Traitors have in their weapon shop
-ttt_shop_vam_sync                           0       // Whether Vampires should have all weapons that vanilla Traitors have in their weapon shop (if they are not a Monster)
+ttt_shop_vam_sync                           0       // Whether Vampires should have all weapons that vanilla Traitors have in their weapon shop (if they are a Traitor)
+ttt_shop_zom_sync                           0       // Whether Zombies should have all weapons that vanilla Traitors have in their weapon shop (if they are a Traitor)
 
 // ----------------------------------------
 

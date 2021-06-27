@@ -330,6 +330,8 @@ function plymeta:SpawnForRound(dead_only)
     self:SetNWBool("Haunting", false)
     self:SetNWString("HauntingTarget", nil)
     self:SetNWInt("HauntingPower", 0)
+    -- Disable Killer smoke
+    self:SetNWBool("KillerSmoke", false)
     timer.Remove(self:Nick() .. "HauntingPower")
     timer.Remove(self:Nick() .. "HauntingSpectate")
     self:Spawn()

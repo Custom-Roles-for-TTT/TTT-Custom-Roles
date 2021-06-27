@@ -124,9 +124,9 @@ function GM:PostDrawTranslucentRenderables()
                         elseif showJester then
                             DrawRoleIcon(ROLE_JESTER, false, pos, dir)
                         end
-                    elseif client:IsZombie() then
-                        if v:IsZombie() then
-                            DrawRoleIcon(ROLE_ZOMBIE, true, pos, dir)
+                    elseif client:IsIndependentTeam() then
+                        if v:IsIndependentTeam() then
+                            DrawRoleIcon(v:GetRole(), true, pos, dir)
                         elseif showJester then
                             DrawRoleIcon(ROLE_JESTER, false, pos, dir)
                         end
@@ -331,7 +331,12 @@ function GM:HUDDrawTargetID()
                 end
                 target_vampire = ent:IsVampire() and ent:IsMonsterTeam()
                 target_jester = showJester
-            elseif client:IsKiller() then
+            elseif client:IsIndependentTeam() then
+                if client:IsZombie() then
+                    target_fellow_zombie = ent:IsZombie()
+                else
+                    target_zombie = ent:IsZombie() and ent:IsIndependentTeam()
+                end
                 target_jester = showJester
             end
         end
