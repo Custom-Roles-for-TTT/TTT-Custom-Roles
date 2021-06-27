@@ -1611,7 +1611,7 @@ function SelectRoles()
         -- everyone on the spec team is in specmode
         if IsValid(v) and not v:IsSpec() then
             -- save previous role and sign up as possible traitor/detective
-            local r = GAMEMODE.LastRole[v:SteamID64()] or v:GetRole() or ROLE_INNOCENT
+            local r = GAMEMODE.LastRole[v:SteamID64()] or v:GetRole() or ROLE_NONE
 
             table.insert(prev_roles[r], v)
             table.insert(choices, v)
@@ -1674,7 +1674,7 @@ function SelectRoles()
                 end
             end
             local role = v:GetRole()
-            if role ~= ROLE_NONE then
+            if role > ROLE_NONE and role <= ROLE_MAX then
                 table.remove(choices, index)
                 -- TRAITOR ROLES
                 if role == ROLE_TRAITOR then
@@ -1723,11 +1723,9 @@ function SelectRoles()
                 elseif role == ROLE_VETERAN then
                     hasVeteran = true
                     forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
-                    PrintRole(v, "veteran")
                 elseif role == ROLE_DOCTOR then
                     hasDoctor = true
                     forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
-                    PrintRole(v, "doctor")
 
                 -- JESTER/INDEPENDENT ROLES
                 elseif role == ROLE_JESTER then
@@ -1766,9 +1764,7 @@ function SelectRoles()
                     end
                 end
 
-                if role > ROLE_NONE and role < ROLE_MAX then
-                    PrintRole(v, ROLE_STRINGS[role])
-                end
+                PrintRole(v, ROLE_STRINGS[role])
             end
         end
     end
