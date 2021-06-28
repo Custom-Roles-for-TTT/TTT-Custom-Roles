@@ -264,6 +264,7 @@ function GM:HUDDrawTargetID()
 
     local target_revenger_lover = false
     local target_current_target = false
+    local target_infected = false
 
     local target_corpse = false
 
@@ -327,6 +328,8 @@ function GM:HUDDrawTargetID()
                     target_zombie = ent:IsZombie() and ent:IsTraitorTeam()
                 end
                 target_jester = showJester
+
+                target_infected = ent:GetNWBool("Infected", false)
             elseif client:IsMonsterTeam() then
                 if client:IsZombie() then
                     target_fellow_zombie = ent:IsZombie()
@@ -484,13 +487,15 @@ function GM:HUDDrawTargetID()
 
     text = nil
 
-    if target_current_target then
+    if target_current_target then -- Prioritise target/soulmate message over roles
         text = L.target_current_target
         clr = ROLE_COLORS_RADAR[ROLE_ASSASSIN]
     elseif target_revenger_lover then
-        -- Prioritise soulmate message over roles
         text = L.target_revenger_lover
         clr = ROLE_COLORS_RADAR[ROLE_REVENGER]
+    elseif target_infected then
+        text = L.target_infected
+        clr = ROLE_COLORS_RADAR[ROLE_PARASITE]
     elseif target_traitor then
         text = L.target_traitor
         clr = ROLE_COLORS_RADAR[ROLE_TRAITOR]

@@ -656,7 +656,9 @@ function GM:WeaponEquip(wep, ply)
             if not wep.BoughtBuy then
                 wep.BoughtBuy = ply
             elseif ply:IsBeggar() then
+                local team = ""
                 if wep.BoughtBuy:IsTraitorTeam() then
+                    team = "a traitor"
                     ply:SetRole(ROLE_TRAITOR)
                     ply:SetNWBool("WasBeggar", true)
                     ply:PrintMessage(HUD_PRINTTALK, "You have joined the traitor team")
@@ -667,6 +669,7 @@ function GM:WeaponEquip(wep, ply)
                         wep.BoughtBuy:PrintMessage(HUD_PRINTCENTER, "The beggar has joined your team")
                     end
                 elseif wep.BoughtBuy:IsInnocentTeam() then
+                    team = "an innocent"
                     ply:SetRole(ROLE_INNOCENT)
                     ply:SetNWBool("WasBeggar", true)
                     ply:PrintMessage(HUD_PRINTTALK, "You have joined the innocent team")
@@ -677,6 +680,12 @@ function GM:WeaponEquip(wep, ply)
                         wep.BoughtBuy:PrintMessage(HUD_PRINTCENTER, "The beggar has joined your team")
                     end
                 end
+                net.Start("TTT_BeggarConverted")
+                net.WriteString(ply:Nick())
+                net.WriteString(wep.BoughtBuy:Nick())
+                net.WriteString(team)
+                net.Broadcast()
+
             end
         end
     end

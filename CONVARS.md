@@ -129,6 +129,10 @@ ttt_qua_credits_starting                    1       // The number of credits a q
 
 // Parasite
 ttt_par_credits_starting                    1       // The number of credits a parasite should start with
+ttt_parasite_infection_time                 90      // The time it takes in seconds for the parasite to fully infect someone
+ttt_parasite_respawn_mode                   0       // The way in which the parasite respawns. 0 - Take over host. 1 - Respawn at the parasites body. 2 - Respawn at a random location.
+ttt_parasite_respawn_health                 100     // The health on which the parasite respawns
+ttt_parasite_announce_infection             0       // Whether players are notified when they are infected with the parasite
 
 // ----------------------------------------
 

@@ -207,6 +207,8 @@ function PANEL:Paint(width, height)
             DrawFlashingBorder(width, ROLE_REVENGER)
         elseif client:IsAssassin() and ply:Nick() == client:GetNWString("AssassinTarget", "") then
             DrawFlashingBorder(width, ROLE_ASSASSIN)
+        elseif client:IsTraitorTeam() and ply:GetNWBool("Infected", false) then
+            DrawFlashingBorder(width, ROLE_PARASITE)
         end
     end
 
@@ -278,6 +280,8 @@ function PANEL:UpdatePlayerData()
             for _, v in pairs(player.GetAll()) do
                 if ply:Nick() == v:GetNWString("AssassinTarget", "") then
                     self.nick:SetText(ply:Nick() .. " (" .. GetPTranslation("target_assassin_target_team", { player = v:Nick() }) .. ")")
+                elseif ply:GetNWBool("Infected", false) then
+                    self.nick:SetText(ply:Nick() .. " (" .. GetTranslation("target_infected") .. ")")
                 end
             end
         end

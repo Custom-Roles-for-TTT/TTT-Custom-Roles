@@ -116,6 +116,18 @@ net.Receive("TTT_SwapperSwapped", function(len)
     })
 end)
 
+net.Receive("TTT_BeggarConverted", function(len)
+    local victim = net.ReadString()
+    local attacker = net.ReadString()
+    local team = net.ReadString()
+    CLSCORE:AddEvent({
+        id = EVENT_BEGGARCONVERTED,
+        vic = victim,
+        att = attacker,
+        team = team
+    })
+end)
+
 net.Receive("TTT_BeggarKilled", function(len)
     local victim = net.ReadString()
     local attacker = net.ReadString()
@@ -182,7 +194,7 @@ net.Receive("TTT_VampirePrimeDeath", function(len)
     })
 end)
 
-net.Receive("TTT_Score_Bodysnatch", function(len)
+net.Receive("TTT_ScoreBodysnatch", function(len)
     local victim = net.ReadString()
     local attacker = net.ReadString()
     local role = net.ReadString()
@@ -191,6 +203,16 @@ net.Receive("TTT_Score_Bodysnatch", function(len)
         vic = victim,
         att = attacker,
         role = role
+    })
+end)
+
+net.Receive("TTT_ParasiteInfect", function(len)
+    local victim = net.ReadString()
+    local attacker = net.ReadString()
+    CLSCORE:AddEvent({
+        id = EVENT_INFECT,
+        vic = victim,
+        att = attacker
     })
 end)
 

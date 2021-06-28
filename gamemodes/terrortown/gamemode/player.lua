@@ -813,8 +813,10 @@ local function BeggarKilledNotification(attacker, victim)
 end
 
 local deadPhantoms = {}
+local deadParasites = {}
 hook.Add("TTTPrepareRound", function()
     deadPhantoms = {}
+    deadParasites = {}
 end)
 
 function GM:DoPlayerDeath(ply, attacker, dmginfo)
@@ -872,6 +874,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
         SendFullStateUpdate()
     end
 
+    -- Handle assassin kills
     local attackertarget = attacker:GetNWString("AssassinTarget", "")
     if attacker:IsPlayer() and attacker:IsAssassin() and ply:Nick() ~= attackertarget and attackertarget ~= "" then
         attacker:PrintMessage(HUD_PRINTCENTER, "Contract failed. You killed the wrong player.")
@@ -897,6 +900,28 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
             -- Reset the target to clear the target overlay from the scoreboard
             v:SetNWString("AssassinTarget", "")
         end
+    end
+
+    -- Handle parasite infected death
+    if ply:GetNWBool("Infected", false) then
+        local parasiteUsers = table.GetKeys(deadParasites)
+        for _, key in pairs(parasiteUsers) do
+            local parasite = deadParasites[key]
+            if parasite.attacker == ply:SteamID64() and IsValid(parasite.player) then
+                local deadParasite = parasite.player
+                deadParasite:SetNWBool("Infecting", false)
+                deadParasite:SetNWString("InfectingTarget", nil)
+                deadParasite:SetNWInt("InfectionProgress", 0)
+                timer.Remove(deadParasite:Nick() .. "InfectionProgress")
+                timer.Remove(deadParasite:Nick() .. "InfectingSpectate")
+                if deadParasite:IsParasite() and not deadParasite:Alive() then
+                    deadParasite:PrintMessage(HUD_PRINTCENTER, "Your host has died.")
+                end
+            end
+        end
+
+        ply:SetNWBool("Infected", false)
+        SendFullStateUpdate()
     end
 
     -- Experimental: Fire a last shot if ironsighting and not headshot
@@ -995,6 +1020,15 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
     end
 
     ply:SetTeam(TEAM_SPEC)
+end
+
+local function DoRespawn(ply)
+    local body = ply.server_ragdoll or ply:GetRagdollEntity()
+    ply:SpawnForRound(true)
+    ply:SetHealth(ply:GetMaxHealth())
+    if IsValid(body) then
+        body:Remove()
+    end
 end
 
 function GM:PlayerDeath(victim, infl, attacker)
@@ -1123,14 +1157,6 @@ function GM:PlayerDeath(victim, infl, attacker)
         BeggarKilledNotification(attacker, victim)
 
         if GetConVar("ttt_beggar_respawn"):GetBool() then
-            local function DoRespawn()
-                local body = victim.server_ragdoll or victim:GetRagdollEntity()
-                victim:SpawnForRound(true)
-                victim:SetHealth(victim:GetMaxHealth())
-                if IsValid(body) then
-                    body:Remove()
-                end
-            end
             local delay = GetConVar("ttt_beggar_respawn_delay"):GetInt()
             if delay > 0 then
                 victim:PrintMessage(HUD_PRINTCENTER, "You were killed but will respawn in " .. delay .. " seconds.")
@@ -1139,7 +1165,7 @@ function GM:PlayerDeath(victim, infl, attacker)
                 -- Introduce a slight delay to prevent player getting stuck as a spectator
                 delay = 0.1
             end
-            timer.Create(victim:Nick() .. "BeggarRespawn", delay, 1, DoRespawn)
+            timer.Create(victim:Nick() .. "BeggarRespawn", delay, 1, function() DoRespawn(victim) end)
 
             net.Start("TTT_BeggarKilled")
             net.WriteString(victim:Nick())
@@ -1147,6 +1173,104 @@ function GM:PlayerDeath(victim, infl, attacker)
             net.WriteUInt(delay, 8)
             net.Broadcast()
         end
+    end
+
+    -- Handle parasite death
+    if valid_kill and victim:IsParasite() and not victim:GetNWBool("IsZombifying", false) then
+        attacker:SetNWBool("Infected", true)
+        victim:SetNWBool("Infecting", true)
+        victim:SetNWString("InfectingTarget", attacker:SteamID64())
+        victim:SetNWInt("InfectionProgress", 0)
+        timer.Create(victim:Nick() .. "InfectionProgress", 1, 0, function()
+            -- Make sure the victim is still in the correct spectate mode
+            local spec_mode = victim:GetNWInt("SpecMode", OBS_MODE_ROAMING)
+            if spec_mode ~= OBS_MODE_CHASE and spec_mode ~= OBS_MODE_IN_EYE then
+                victim:Spectate(OBS_MODE_CHASE)
+            end
+
+            local progress = victim:GetNWInt("InfectionProgress", 0) + 1
+            if progress >= GetConVar("ttt_parasite_infection_time"):GetInt() then -- respawn the parasite
+                if victim:IsParasite() and not victim:Alive() then
+                    attacker:SetNWBool("Infected", false)
+                    victim:SetNWBool("Infecting", false)
+                    victim:SetNWString("InfectingTarget", nil)
+                    victim:SetNWInt("InfectionProgress", 0)
+                    timer.Remove(victim:Nick() .. "InfectionProgress")
+                    timer.Remove(victim:Nick() .. "InfectingSpectate")
+
+                    local parasiteBody = victim.server_ragdoll or victim:GetRagdollEntity()
+
+                    local respawnMode = GetConVar("ttt_parasite_respawn_mode"):GetInt()
+                    if respawnMode == PARASITE_RESPAWN_HOST then
+                        victim:PrintMessage(HUD_PRINTCENTER, "You have taken control of your host.")
+                        victim:SpawnForRound(true)
+                        victim:SetPos(attacker:GetPos())
+                        victim:SetEyeAngles(Angle(0, attacker:GetAngles().y, 0))
+
+                        local weapons = attacker:GetWeapons()
+                        local currentWeapon = attacker:GetActiveWeapon() or "weapon_zm_improvised"
+                        attacker:StripAll()
+                        victim:StripAll()
+                        for _, v in ipairs(weapons) do
+                            local wep_class = WEPS.GetClass(v)
+                            victim:Give(wep_class)
+                        end
+                        victim:SelectWeapon(currentWeapon)
+                    elseif respawnMode == PARASITE_RESPAWN_BODY then
+                        if IsValid(parasiteBody) then
+                            victim:PrintMessage(HUD_PRINTCENTER, "You have drained your host of energy and regenerated your old body.")
+                            victim:SpawnForRound(true)
+                            victim:SetPos(FindRespawnLocation(parasiteBody:GetPos()) or parasiteBody:GetPos())
+                            victim:SetEyeAngles(Angle(0, parasiteBody:GetAngles().y, 0))
+                        else
+                            victim:PrintMessage(HUD_PRINTCENTER, "You have drained your host of energy and created in a new body.")
+                            -- Introduce a slight delay to prevent player getting stuck as a spectator
+                            timer.Create(victim:Nick() .. "ParasiteRespawn", 0.1, 1, function()
+                                DoRespawn(victim)
+                                local health = GetConVar("ttt_parasite_respawn_health"):GetInt()
+                                victim:SetHealth(health)
+                            end)
+                        end
+                    elseif respawnMode == PARASITE_RESPAWN_RANDOM then
+                        victim:PrintMessage(HUD_PRINTCENTER, "You have drained your host of energy and created in a new body.")
+                        -- Introduce a slight delay to prevent player getting stuck as a spectator
+                        timer.Create(victim:Nick() .. "ParasiteRespawn", 0.1, 1, function()
+                            DoRespawn(victim)
+                            local health = GetConVar("ttt_parasite_respawn_health"):GetInt()
+                            victim:SetHealth(health)
+                        end)
+                    end
+
+                    local health = GetConVar("ttt_parasite_respawn_health"):GetInt()
+                    victim:SetHealth(health)
+                    if IsValid(parasiteBody) then parasiteBody:Remove() end
+                    attacker:Kill()
+                end
+            else
+                victim:SetNWInt("InfectionProgress", progress)
+            end
+        end)
+
+        -- Delay this message so the Assassin can see the target update message
+        if GetConVar("ttt_parasite_announce_infection"):GetBool() then
+            if attacker:IsAssassin() then
+                timer.Simple(3, function()
+                    attacker:PrintMessage(HUD_PRINTCENTER, "You have been infected with a parasite.")
+                end)
+            else
+                attacker:PrintMessage(HUD_PRINTCENTER, "You have been infected with a parasite.")
+            end
+        end
+        victim:PrintMessage(HUD_PRINTCENTER, "Your attacker has been infected.")
+
+        local sid = victim:SteamID64()
+        -- Keep track of who killed this parasite
+        deadParasites[sid] = {player = victim, attacker = attacker:SteamID64()}
+
+        net.Start("TTT_ParasiteInfect")
+        net.WriteString(victim:Nick())
+        net.WriteString(attacker:Nick())
+        net.Broadcast()
     end
 
     -- Handle detective death
@@ -1216,9 +1340,14 @@ function GM:PlayerDeath(victim, infl, attacker)
 
     victim:Freeze(false)
 
-    -- Haunt the (non-Swapper) attacker if that functionality is enabled
+    -- Haunt/infect the (non-Swapper) attacker if that functionality is enabled
     if valid_kill and victim:IsPhantom() and not attacker:IsSwapper() and attacker:GetNWBool("Haunted", true) and GetConVar("ttt_phantom_killer_haunt"):GetBool() then
         timer.Create(victim:Nick() .. "HauntingSpectate", 1, 1, function()
+            victim:Spectate(OBS_MODE_CHASE)
+            victim:SpectateEntity(attacker)
+        end)
+    elseif valid_kill and victim:IsParasite() and not attacker:IsSwapper() and attacker:GetNWBool("Infected", true) then
+        timer.Create(victim:Nick() .. "InfectingSpectate", 1, 1, function()
             victim:Spectate(OBS_MODE_CHASE)
             victim:SpectateEntity(attacker)
         end)

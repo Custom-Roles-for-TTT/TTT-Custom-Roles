@@ -86,7 +86,7 @@ end
 
 if SERVER then
     util.AddNetworkString("TTT_Bodysnatched")
-    util.AddNetworkString("TTT_Score_Bodysnatch")
+    util.AddNetworkString("TTT_ScoreBodysnatch")
 
     local offsets = {}
 
@@ -141,7 +141,7 @@ if SERVER then
         net.WriteBool(true)
         net.Send(ply)
 
-        net.Start("TTT_Score_Bodysnatch")
+        net.Start("TTT_ScoreBodysnatch")
         net.WriteString(ply:Nick())
         net.WriteString(self:GetOwner():Nick())
         net.WriteString(ROLE_STRINGS_EXT[ply:GetRole()])

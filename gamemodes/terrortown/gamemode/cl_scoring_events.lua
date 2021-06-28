@@ -38,6 +38,7 @@ local wrench_icon  = Material("icon16/wrench.png")
 local zombie_icon = Material("icon16/user_green.png")
 local vampire_icon = Material("icon16/user_gray.png")
 local traitor_icon = Material("icon16/user_red.png")
+local innocent_icon = Material("icon16/user_green.png")
 local heart_icon = Material("icon16/heart.png")
 local heart_add_icon = Material("icon16/heart_add.png")
 local hourglass_go_icon = Material("icon16/hourglass_go.png")
@@ -452,6 +453,18 @@ Event(EVENT_VAMPPRIME_DEATH, {
         end
     end})
 
+Event(EVENT_BEGGARCONVERTED, {
+    text = function(e)
+        return PT("ev_beggar_converted", {victim = e.vic, attacker = e.att, team = e.team})
+    end,
+    icon = function(e)
+        if e.team == "an innocent" then
+            return innocent_icon, "Converted"
+        else
+            return traitor_icon, "Converted"
+        end
+    end})
+
 Event(EVENT_BEGGARKILLED, {
    text = function(e)
       if e.delay > 0 then
@@ -465,3 +478,11 @@ Event(EVENT_BEGGARKILLED, {
       end
       return heart_add_icon, "Respawned"
   end})
+
+Event(EVENT_INFECT, {
+    text = function(e)
+        return PT("ev_infect", {victim = e.vic, attacker = e.att})
+    end,
+    icon = function(e)
+        return haunt_icon, "Infected"
+    end})

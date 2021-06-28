@@ -722,6 +722,7 @@ L.target_quack = "QUACK"
 L.target_parasite = "PARASITE"
 
 L.target_current_target = "CURRENT TARGET"
+L.target_infected = "INFECTED WITH PARASITE"
 
 L.target_revenger_lover = "YOUR SOULMATE"
 L.target_assassin_target = "TARGET"
@@ -761,6 +762,10 @@ L.haunt_move = "MOVE KEYS: Move (Cost: {num}%)"
 L.haunt_jump = "SPACE: Jump (Cost: {num}%)"
 L.haunt_drop = "RIGHT CLICK: Drop (Cost: {num}%)"
 L.haunt_attack = "LEFT CLICK: Attack (Cost: {num}%)"
+
+-- Infection
+L.infect_title = "INFECTION"
+L.infect_help = "You will respawn when the infection bar is full."
 
 -- Spectators
 L.spec_help = "Click to spectate players, or press {usekey} on a physics object to possess it."
@@ -1027,8 +1032,8 @@ These are your comrades:
 {traitorlist}
 
 Infect those that kill you and wait patiently for a chance to take control.
-However, make sure you lay low as players you infect must stay alive in
-order for you to respawn. Try to avoid getting them cured or killed!
+Make sure you lay low as your host must stay alive in order for you to
+respawn. Try to avoid getting them cured or killed!
 
 Press {menukey} to receive your special equipment!]]
 
@@ -1037,8 +1042,8 @@ L.info_popup_parasite_alone = [[You are a Parasite! You have no fellow traitors 
 Kill all others to win!
 
 Infect those that kill you and wait patiently for a chance to take control.
-However, make sure you lay low as players you infect must stay alive in
-order for you to respawn. Try to avoid getting them cured or killed!
+Make sure you lay low as your host must stay alive in order for you to
+respawn. Try to avoid getting them cured or killed!
 
 Press {menukey} to receive your special equipment!]]
 
@@ -1049,8 +1054,8 @@ These may or may not be your comrades:
 {traitorlist}
 
 Infect those that kill you and wait patiently for a chance to take control.
-However, make sure you lay low as players you infect must stay alive in
-order for you to respawn. Try to avoid getting them cured or killed!
+Make sure you lay low as your host must stay alive in order for you to
+respawn. Try to avoid getting them cured or killed!
 
 Press {menukey} to receive your special equipment!]]
 
@@ -1577,5 +1582,7 @@ L.ev_zombi = "{victim} was zombified"
 L.ev_vampi = "{victim} was vampified"
 L.ev_vampi_revert_converted = "The last Vampire Prime ({prime}) was killed and all their thralls had their humanity restored"
 L.ev_vampi_kill_converted = "The last Vampire Prime ({prime}) was killed and took all their thralls with them"
+L.ev_beggar_converted = "The beggar ({victim}) was converted to {team} by {attacker}"
 L.ev_beggar_killed = "The beggar ({victim}) was killed by {attacker} but respawned"
 L.ev_beggar_killed_delay = "The beggar ({victim}) was killed by {attacker} but will respawn in {delay} seconds"
+L.ev_infect = "{victim} infected {attacker}"

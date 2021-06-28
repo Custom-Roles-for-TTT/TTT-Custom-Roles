@@ -83,6 +83,12 @@ local willpower_colors = {
     fill = Color(82, 226, 255, 255)
 };
 
+local infection_colors = {
+    border = COLOR_WHITE,
+    background = Color(191, 91, 22, 222),
+    fill = Color(255, 127, 39, 255)
+};
+
 
 -- Modified RoundedBox
 local Tex_Corner8 = surface.GetTextureID("gui/corner8")
@@ -246,6 +252,27 @@ local function HauntPaint(client)
     end
 end
 
+-- Paint infection progress
+local function InfectPaint(client)
+    local L = GetLang()
+
+    local width, height = 200, 25
+    local x = ScrW() / 2 - width / 2
+    local y = margin / 2 + height
+
+    local infect_time = GetGlobalInt("ttt_parasite_infection_time", 90)
+    local progress = client:GetNWInt("InfectionProgress", 0)
+    local progress_percentage = progress / infect_time
+
+    PaintBar(8, x, y, width, height, infection_colors, progress_percentage)
+
+    local color = bg_colors.background_main
+
+    dr.SimpleText(L.infect_title, "HealthAmmo", ScrW() / 2, y, color, TEXT_ALIGN_CENTER)
+
+    dr.SimpleText(L.infect_help, "TabLarge", ScrW() / 2, margin, COLOR_WHITE, TEXT_ALIGN_CENTER)
+end
+
 -- Paint punch-o-meter
 local function PunchPaint(client)
     local L = GetLang()
@@ -306,6 +333,8 @@ local function SpecHUDPaint(client)
     local tgt = client:GetObserverTarget()
     if client:GetNWBool("Haunting") then
         HauntPaint(client)
+    elseif client:GetNWBool("Infecting") then
+        InfectPaint(client)
     elseif IsValid(tgt) and tgt:IsPlayer() then
         ShadowedText(tgt:Nick(), "TimeLeft", ScrW() / 2, margin, COLOR_WHITE, TEXT_ALIGN_CENTER)
     elseif IsValid(tgt) and tgt:GetNWEntity("spec_owner", nil) == client then

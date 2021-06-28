@@ -196,6 +196,8 @@ if SERVER then
         local owner = self:GetOwner()
         if ply:IsPhantom() and ply:GetNWString("HauntingTarget", nil) == owner:SteamID64() then
             owner:SetNWBool("Haunted", false)
+        elseif ply:IsParasite() and ply:GetNWString("InfectingTarget", nil) == owner:SteamID64() then
+            owner:SetNWBool("Infected", false)
         end
 
         net.Start("TTT_Hypnotised")

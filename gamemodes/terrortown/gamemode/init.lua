@@ -178,6 +178,11 @@ CreateConVar("ttt_vampire_damage_reduction", "0")
 CreateConVar("ttt_vampire_prime_death_mode", "0")
 CreateConVar("ttt_vampire_vision_enable", "0")
 
+CreateConVar("ttt_parasite_infection_time", 90)
+CreateConVar("ttt_parasite_respawn_mode", 0)
+CreateConVar("ttt_parasite_respawn_health", 100)
+CreateConVar("ttt_parasite_announce_infection", 0)
+
 -- Innocent role properties
 CreateConVar("ttt_detective_search_only", "1")
 CreateConVar("ttt_all_search_postround", "1")
@@ -261,6 +266,7 @@ CreateConVar("ttt_zombie_vision_enable", "0")
 
 -- Other custom role properties
 CreateConVar("ttt_single_deputy_impersonator", "0")
+CreateConVar("ttt_single_doctor_quack", "0")
 
 -- Traitor credits
 CreateConVar("ttt_credits_starting", "2")
@@ -405,10 +411,12 @@ util.AddNetworkString("TTT_SpawnedPlayers")
 util.AddNetworkString("TTT_Defibrillated")
 util.AddNetworkString("TTT_RoleChanged")
 util.AddNetworkString("TTT_SwapperSwapped")
+util.AddNetworkString("TTT_BeggarConverted")
 util.AddNetworkString("TTT_BeggarKilled")
 util.AddNetworkString("TTT_Promotion")
 util.AddNetworkString("TTT_DrunkSober")
 util.AddNetworkString("TTT_PhantomHaunt")
+util.AddNetworkString("TTT_ParasiteInfect")
 util.AddNetworkString("TTT_LogInfo")
 util.AddNetworkString("TTT_ResetScoreboard")
 util.AddNetworkString("TTT_RevengerLoverKillerRadar")
@@ -566,6 +574,8 @@ function GM:SyncGlobals()
     SetGlobalBool("ttt_vampires_are_monsters", GetConVar("ttt_vampires_are_monsters"):GetBool())
     SetGlobalBool("ttt_vampire_show_target_icon", GetConVar("ttt_vampire_show_target_icon"):GetBool())
     SetGlobalBool("ttt_vampire_vision_enable", GetConVar("ttt_vampire_vision_enable"):GetBool())
+
+    SetGlobalInt("ttt_parasite_infection_time", GetConVar("ttt_parasite_infection_time"):GetInt())
 
     SetGlobalBool("ttt_bem_allow_change", GetConVar("ttt_bem_allow_change"):GetBool())
     SetGlobalInt("ttt_bem_sv_cols", GetConVar("ttt_bem_sv_cols"):GetBool())
@@ -867,6 +877,12 @@ function PrepareRound()
         timer.Remove(v:Nick() .. "BeggarRespawn")
         v:SetNWBool("VeteranActive", false)
         v:SetNWBool("IsZombifying", false)
+        v:SetNWBool("Infected", false)
+        v:SetNWBool("Infecting", false)
+        v:SetNWString("InfectingTarget", nil)
+        v:SetNWInt("InfectionProgress", 0)
+        timer.Remove(v:Nick() .. "HauntingPower")
+        timer.Remove(v:Nick() .. "HauntingSpectate")
         -- Keep previous naming scheme for backwards compatibility
         v:SetNWBool("zombie_prime", false)
         v:SetNWBool("vampire_prime", false)
@@ -1262,8 +1278,8 @@ function BeginRound()
             end
         end
 
-        --Doctor Logic
-        if v:GetRole() == ROLE_DOCTOR then
+        --Quack Logic
+        if v:GetRole() == ROLE_QUACK then
             v:Give("weapon_qua_bomb_station")
         end
     end
@@ -1650,6 +1666,16 @@ function SelectRoles()
         end
     end
 
+    local doctor_only = false
+    local quack_only = false
+    if GetConVar("ttt_single_doctor_quack"):GetBool() then
+        if math.random() <= 0.5 then
+            doctor_only = true
+        else
+            quack_only = true
+        end
+    end
+
     if choice_count == 0 then return end
 
     local choices_copy = table.Copy(choices)
@@ -1719,6 +1745,9 @@ function SelectRoles()
                     end
                 elseif role == ROLE_QUACK then
                     hasQuack = true
+                    if GetConVar("ttt_single_doctor_quack"):GetBool() then
+                        quack_only = true
+                    end
                     forcedSpecialTraitorCount = forcedSpecialTraitorCount + 1
                 elseif role == ROLE_PARASITE then
                     hasParasite = true
@@ -1750,6 +1779,9 @@ function SelectRoles()
                     forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
                 elseif role == ROLE_DOCTOR then
                     hasDoctor = true
+                    if GetConVar("ttt_single_doctor_quack"):GetBool() then
+                        doctor_only = true
+                    end
                     forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
 
                 -- JESTER/INDEPENDENT ROLES
@@ -1884,7 +1916,7 @@ function SelectRoles()
                     table.insert(specialTraitorRoles, ROLE_VAMPIRE)
                 end
             end
-            if not hasQuack and GetConVar("ttt_quack_enabled"):GetBool() and choice_count >= GetConVar("ttt_quack_min_players"):GetInt() then
+            if not hasQuack and GetConVar("ttt_quack_enabled"):GetBool() and choice_count >= GetConVar("ttt_quack_min_players"):GetInt() and not doctor_only then
                 for _ = 1, GetConVar("ttt_quack_spawn_weight"):GetInt() do
                     table.insert(specialTraitorRoles, ROLE_QUACK)
                 end
@@ -1986,7 +2018,7 @@ function SelectRoles()
     local max_special_innocent_count = GetSpecialInnocentCount(#choices) - forcedSpecialInnocentCount
     if max_special_innocent_count > 0 then
         local specialInnocentRoles = {}
-        if not hasGlitch and GetConVar("ttt_glitch_enabled"):GetBool() and #traitors > 1 and choice_count >= GetConVar("ttt_glitch_min_players"):GetInt() then
+        if not hasGlitch and GetConVar("ttt_glitch_enabled"):GetBool() and choice_count >= GetConVar("ttt_glitch_min_players"):GetInt() and #traitors > 1 then
             for _ = 1, GetConVar("ttt_glitch_spawn_weight"):GetInt() do
                 table.insert(specialInnocentRoles, ROLE_GLITCH)
             end
@@ -1996,12 +2028,12 @@ function SelectRoles()
                 table.insert(specialInnocentRoles, ROLE_PHANTOM)
             end
         end
-        if not hasRevenger and GetConVar("ttt_revenger_enabled"):GetBool() and choice_count > 1 and choice_count >= GetConVar("ttt_revenger_min_players"):GetInt() then
+        if not hasRevenger and GetConVar("ttt_revenger_enabled"):GetBool() and choice_count >= GetConVar("ttt_revenger_min_players"):GetInt() and choice_count > 1 then
             for _ = 1, GetConVar("ttt_revenger_spawn_weight"):GetInt() do
                 table.insert(specialInnocentRoles, ROLE_REVENGER)
             end
         end
-        if not hasDeputy and GetConVar("ttt_deputy_enabled"):GetBool() and detective_count > 0 and not impersonator_only and choice_count >= GetConVar("ttt_deputy_min_players"):GetInt() then
+        if not hasDeputy and GetConVar("ttt_deputy_enabled"):GetBool() and choice_count >= GetConVar("ttt_deputy_min_players"):GetInt() and detective_count > 0 and not impersonator_only then
             for _ = 1, GetConVar("ttt_deputy_spawn_weight"):GetInt() do
                 table.insert(specialInnocentRoles, ROLE_DEPUTY)
             end
@@ -2016,8 +2048,8 @@ function SelectRoles()
                 table.insert(specialInnocentRoles, ROLE_VETERAN)
             end
         end
-        if not hasDoctor and GetConVar("ttt_Doctor_enabled"):GetBool() and choice_count >= GetConVar("ttt_Doctor_min_players"):GetInt() then
-            for _ = 1, GetConVar("ttt_Doctor_spawn_weight"):GetInt() do
+        if not hasDoctor and GetConVar("ttt_doctor_enabled"):GetBool() and choice_count >= GetConVar("ttt_doctor_min_players"):GetInt() and not quack_only then
+            for _ = 1, GetConVar("ttt_doctor_spawn_weight"):GetInt() do
                 table.insert(specialInnocentRoles, ROLE_DOCTOR)
             end
         end
