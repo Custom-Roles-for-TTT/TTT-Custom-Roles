@@ -38,6 +38,10 @@ SWEP.Kind = WEAPON_EQUIP
 SWEP.CanBuy = { ROLE_DETECTIVE }
 SWEP.NoSights = true
 
+SWEP.UseHands = true
+SWEP.ViewModelFlip = false
+
+
 local CureSound = Sound("items/smallmedkit1.wav")
 
 function SWEP:Initialize()
