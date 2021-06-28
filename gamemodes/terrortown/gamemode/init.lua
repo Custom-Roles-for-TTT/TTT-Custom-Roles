@@ -1608,16 +1608,18 @@ function SelectRoles()
     local plys = player.GetAll()
 
     for _, v in ipairs(plys) do
-        -- everyone on the spec team is in specmode
-        if IsValid(v) and not v:IsSpec() then
-            -- save previous role and sign up as possible traitor/detective
-            local r = GAMEMODE.LastRole[v:SteamID64()] or v:GetRole() or ROLE_NONE
+        if IsValid(v) then
+            -- everyone on the spec team is in specmode
+            if not v:IsSpec() then
+                -- save previous role and sign up as a possible role
+                local r = GAMEMODE.LastRole[v:SteamID64()] or v:GetRole() or ROLE_NONE
 
-            table.insert(prev_roles[r], v)
-            table.insert(choices, v)
+                table.insert(prev_roles[r], v)
+                table.insert(choices, v)
+            end
+
+            v:SetRole(ROLE_NONE)
         end
-
-        v:SetRole(ROLE_NONE)
     end
 
     local choice_count = #choices
@@ -1667,14 +1669,15 @@ function SelectRoles()
     PrintRoleText("-----CHECKING EXTERNALLY CHOSEN ROLES-----")
     for _, v in pairs(player.GetAll()) do
         if IsValid(v) and (not v:IsSpec()) then
-            local index = 0
-            for i, j in pairs(choices) do
-                if v == j then
-                    index = i
-                end
-            end
             local role = v:GetRole()
             if role > ROLE_NONE and role <= ROLE_MAX then
+                local index = 0
+                for i, j in pairs(choices) do
+                    if v == j then
+                        index = i
+                    end
+                end
+
                 table.remove(choices, index)
                 -- TRAITOR ROLES
                 if role == ROLE_TRAITOR then
@@ -2029,6 +2032,11 @@ function SelectRoles()
     for _, ply in ipairs(plys) do
         -- initialize credit count for everyone based on their role
         if IsValid(ply) and not ply:IsSpec() then
+            if ply:GetRole() == ROLE_NONE then
+                ErrorNoHalt("WARNING: " .. ply:Nick() .. " was not assigned a role! Forcing them to be Innocent...\n")
+                ply:SetRole(ROLE_INNOCENT)
+            end
+
             if ply:GetRole() == ROLE_ZOMBIE then
                 ply:SetZombiePrime(true)
             elseif ply:GetRole() == ROLE_VAMPIRE then
