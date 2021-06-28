@@ -492,6 +492,18 @@ Slow recharge. Anyone can use it, and
 it can be damaged. Can be checked for
 DNA samples of its users.]]
 
+-- Bomb station
+L.bstation_name = "Bomb Station"
+L.bstation_hint = "Press {usekey} to fake receiving health. Charge: {num}."
+L.bstation_broken = "Your Bomb Station has been destroyed!"
+L.bstation_help = "{primaryfire} places the Bomb Station."
+
+L.bstation_desc = [[
+Appears as a health station to non-traitors.
+
+Detonates when used by a non-traitor.
+Traitors can use to deplete fake charge.]]
+
 -- Knife
 L.knife_name = "Knife"
 L.knife_thrown = "Thrown knife"

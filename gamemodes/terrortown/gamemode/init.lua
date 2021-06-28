@@ -1261,6 +1261,11 @@ function BeginRound()
                 v:Give("weapon_doc_defib")
             end
         end
+
+        --Doctor Logic
+        if v:GetRole() == ROLE_DOCTOR then
+            v:Give("weapon_qua_bomb_station")
+        end
     end
 
     net.Start("TTT_ResetScoreboard")

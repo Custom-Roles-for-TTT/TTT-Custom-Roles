@@ -178,6 +178,9 @@ local function clear_role_effects(ply)
     if ply:HasWeapon("weapon_doc_defib") then
         ply:StripWeapon("weapon_doc_defib")
     end
+    if ply:HasWeapon("weapon_qua_bomb_station") then
+        ply:StripWeapon("weapon_qua_bomb_station")
+    end
     ply:Give("weapon_zm_improvised")
     ply:SetDefaultCredits()
     ply:SetMaxHealth(100)
@@ -370,6 +373,7 @@ concommand.Add("ttt_force_doctor", force_doctor, nil, nil, FCVAR_CHEAT)
 local function force_quack(ply)
     ply:SetRoleAndBroadcast(ROLE_QUACK)
     clear_role_effects(ply)
+    ply:Give("weapon_qua_bomb_station")
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_quack", force_quack, nil, nil, FCVAR_CHEAT)

@@ -1536,6 +1536,14 @@ function GM:EntityTakeDamage(ent, dmginfo)
             end
         end
 
+        -- Quacks are immune to explosions
+        if ent:IsQuack() then
+            if dmginfo:IsExplosionDamage() then
+                dmginfo:ScaleDamage(0)
+                dmginfo:SetDamage(0)
+            end
+        end
+
         -- No zombie team killing
         -- This can be funny, but it can also be used by frustrated players who didn't appreciate being zombified
         if ent:IsPlayer() and ent:IsZombie() and att:IsPlayer() and att:IsZombieAlly() then
