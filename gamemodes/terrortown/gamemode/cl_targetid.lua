@@ -259,6 +259,8 @@ function GM:HUDDrawTargetID()
     local target_zombie = false
     local target_fellow_zombie = false
     local target_vampire = false
+    local target_quack = false
+    local target_parasite = false
 
     local target_revenger_lover = false
     local target_current_target = false
@@ -316,12 +318,14 @@ function GM:HUDDrawTargetID()
                 target_hypnotist = ent:IsHypnotist()
                 target_impersonator = ent:IsImpersonator()
                 target_assassin = ent:IsAssassin()
+                target_quack = ent:IsQuack()
+                target_parasite = ent:IsParasite()
+                target_vampire = ent:IsVampire() and ent:IsTraitorTeam()
                 if client:IsZombie() then
                     target_fellow_zombie = ent:IsZombie()
                 else
                     target_zombie = ent:IsZombie() and ent:IsTraitorTeam()
                 end
-                target_vampire = ent:IsVampire() and ent:IsTraitorTeam()
                 target_jester = showJester
             elseif client:IsMonsterTeam() then
                 if client:IsZombie() then
@@ -375,16 +379,18 @@ function GM:HUDDrawTargetID()
 
     local w, h = 0, 0 -- text width/height, reused several times
 
-    if target_traitor or target_detective or target_jester or target_hypnotist or target_clown or target_zombie or target_fellow_zombie or target_vampire then
+    if target_traitor or target_detective or target_jester or target_hypnotist or target_clown or target_zombie or target_fellow_zombie or target_vampire or target_quack or target_parasite then
         surface.SetTexture(ring_tex)
 
         if target_traitor then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_TRAITOR])
         elseif target_detective then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_DETECTIVE])
-        elseif target_hypnotist or target_impersonator or target_assassin then
+        elseif target_hypnotist or target_impersonator or target_assassin or target_quack or target_parasite then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_HYPNOTIST])
-        elseif target_vampire or target_zombie or target_fellow_zombie then
+        elseif target_vampire then
+            surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_VAMPIRE])
+        elseif target_zombie or target_fellow_zombie then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_ZOMBIE])
         elseif target_jester then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_JESTER])
@@ -515,6 +521,12 @@ function GM:HUDDrawTargetID()
     elseif target_vampire then
         text = L.target_vampire
         clr = ROLE_COLORS_RADAR[ROLE_VAMPIRE]
+    elseif target_quack then
+        text = L.target_quack
+        clr = ROLE_COLORS_RADAR[ROLE_QUACK]
+    elseif target_parasite then
+        text = L.target_parasite
+        clr = ROLE_COLORS_RADAR[ROLE_PARASITE]
     elseif ent.sb_tag and ent.sb_tag.txt ~= nil then
         text = L[ent.sb_tag.txt]
         clr = ent.sb_tag.color

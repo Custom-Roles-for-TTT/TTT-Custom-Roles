@@ -34,6 +34,8 @@ function plymeta:GetKiller() return self:GetRole() == ROLE_KILLER end
 function plymeta:GetZombie() return self:GetRole() == ROLE_ZOMBIE end
 function plymeta:GetVampire() return self:GetRole() == ROLE_VAMPIRE end
 function plymeta:GetDoctor() return self:GetRole() == ROLE_DOCTOR end
+function plymeta:GetQuack() return self:GetRole() == ROLE_QUACK end
+function plymeta:GetParasite() return self:GetRole() == ROLE_PARASITE end
 
 function plymeta:GetZombiePrime() return self:GetZombie() and self:GetNWBool("zombie_prime", false) end
 function plymeta:GetVampirePrime() return self:GetVampire() and self:GetNWBool("vampire_prime", false) end
@@ -91,6 +93,8 @@ plymeta.IsKiller = plymeta.GetKiller
 plymeta.IsZombie = plymeta.GetZombie
 plymeta.IsVampire = plymeta.GetVampire
 plymeta.IsDoctor = plymeta.GetDoctor
+plymeta.IsQuack = plymeta.GetQuack
+plymeta.IsParasite = plymeta.GetParasite
 
 plymeta.IsDetectiveLike = plymeta.GetDetectiveLike
 plymeta.IsZombiePrime = plymeta.GetZombiePrime
@@ -154,6 +158,8 @@ function plymeta:IsActiveKiller() return self:IsActiveRole(ROLE_KILLER) end
 function plymeta:IsActiveZombie() return self:IsActiveRole(ROLE_ZOMBIE) end
 function plymeta:IsActiveVampire() return self:IsActiveRole(ROLE_VAMPIRE) end
 function plymeta:IsActiveDoctor() return self:IsActiveRole(ROLE_DOCTOR) end
+function plymeta:IsActiveQuack() return self:IsActiveRole(ROLE_QUACK) end
+function plymeta:IsActiveParasite() return self:IsActiveRole(ROLE_PARASITE) end
 
 function plymeta:IsActiveSpecial() return self:IsSpecial() and self:IsActive() end
 function plymeta:IsActiveCustom() return self:IsCustom() and self:IsActive() end

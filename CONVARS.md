@@ -22,6 +22,8 @@ ttt_hypnotist_enabled                       0       // Whether or not the hypnot
 ttt_impersonator_enabled                    0       // Whether or not the impersonator should spawn
 ttt_assassin_enabled                        0       // Whether or not the assassin should spawn
 ttt_vampire_enabled                         0       // Whether or not the vampire should spawn
+ttt_quack_enabled                           0       // Whether or not the quack should spawn
+ttt_parasite_enabled                        0       // Whether or not the parasite should spawn
 ttt_glitch_enabled                          0       // Whether or not the glitch should spawn
 ttt_phantom_enabled                         0       // Whether or not the phantom should spawn
 ttt_revenger_enabled                        0       // Whether or not the revenger should spawn
@@ -44,6 +46,8 @@ ttt_hypnotist_spawn_weight                  1       // The weight assigned to sp
 ttt_impersonator_spawn_weight               1       // The weight assigned to spawning the impersonator
 ttt_assassin_spawn_weight                   1       // The weight assigned to spawning the assassin
 ttt_vampire_spawn_weight                    1       // The weight assigned to spawning the vampire
+ttt_quack_spawn_weight                      1       // The weight assigned to spawning the quack
+ttt_parasite_spawn_weight                   1       // The weight assigned to spawning the parasite
 ttt_glitch_spawn_weight                     1       // The weight assigned to spawning the glitch
 ttt_phantom_spawn_weight                    1       // The weight assigned to spawning the phantom
 ttt_revenger_spawn_weight                   1       // The weight assigned to spawning the revenger
@@ -66,7 +70,9 @@ ttt_zombie_spawn_weight                     1       // The weight assigned to sp
 ttt_hypnotist_min_players                   0       // The minimum number of players required to spawn the hypnotist
 ttt_impersonator_min_players                0       // The minimum number of players required to spawn the impersonator
 ttt_assassin_min_players                    0       // The minimum number of players required to spawn the assassin
-ttt_vampire_min_players                     0       // The minimum number of players required to spawn the Vampire
+ttt_vampire_min_players                     0       // The minimum number of players required to spawn the vampire
+ttt_quack_min_players                       0       // The minimum number of players required to spawn the quack
+ttt_parasite_min_players                    0       // The minimum number of players required to spawn the parasite
 ttt_glitch_min_players                      0       // The minimum number of players required to spawn the glitch
 ttt_phantom_min_players                     0       // The minimum number of players required to spawn the phantom
 ttt_revenger_min_players                    0       // The minimum number of players required to spawn the revenger
@@ -82,7 +88,7 @@ ttt_bodysnatcher_min_players                0       // The minimum number of pla
 ttt_drunk_min_players                       0       // The minimum number of players required to spawn the drunk
 ttt_old_man_min_players                     0       // The minimum number of players required to spawn the old man
 ttt_killer_min_players                      0       // The minimum number of players required to spawn the killer
-ttt_zombie_min_players                      0       // The minimum number of players required to spawn the Zombie
+ttt_zombie_min_players                      0       // The minimum number of players required to spawn the zombie
 
 // ----------------------------------------
 
@@ -116,6 +122,13 @@ ttt_vampire_fang_heal                       50      // The amount of health a Va
 ttt_vampire_fang_overheal                   25      // The amount over the Vampire's normal maximum health (e.g. 100 + this ConVar) that the Vampire can heal to by drinking blood.
 ttt_vampire_prime_death_mode                0       // What to do when the Prime Vampire(s) (e.g. playters who spawn as Vampires originally) are killed. 0 - Do nothing. 1 - Kill all non-prime Vampires. 2 - Revert all non-prime Vampires to their original role.
 ttt_vampire_prime_only_convert              1       // Whether only Prime Vampires (e.g. players who spawn as Vampire originally) are allowed to convert other players.
+ttt_vam_credits_starting                    1       // The number of credits a vampire should start with
+
+// Quack
+ttt_qua_credits_starting                    1       // The number of credits a quack should start with
+
+// Parasite
+ttt_par_credits_starting                    1       // The number of credits a parasite should start with
 
 // ----------------------------------------
 
@@ -274,6 +287,8 @@ ttt_shop_imp_sync                           0       // Whether Impersonators sho
 ttt_shop_asn_sync                           0       // Whether Assassins should have all weapons that vanilla Traitors have in their weapon shop
 ttt_shop_vam_sync                           0       // Whether Vampires should have all weapons that vanilla Traitors have in their weapon shop (if they are a Traitor)
 ttt_shop_zom_sync                           0       // Whether Zombies should have all weapons that vanilla Traitors have in their weapon shop (if they are a Traitor)
+ttt_shop_qua_sync                           0       // Whether Quacks should have all weapons that vanilla Traitors have in their weapon shop
+ttt_shop_par_sync                           0       // Whether Parasites should have all weapons that vanilla Traitors have in their weapon shop
 
 // ----------------------------------------
 

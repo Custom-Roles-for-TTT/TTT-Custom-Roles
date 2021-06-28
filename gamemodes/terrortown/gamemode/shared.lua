@@ -36,8 +36,10 @@ ROLE_KILLER = 19
 ROLE_ZOMBIE = 20
 ROLE_VAMPIRE = 21
 ROLE_DOCTOR = 22
+ROLE_QUACK = 23
+ROLE_PARASITE = 24
 
-ROLE_MAX = 22
+ROLE_MAX = 24
 
 local function AddRoleAssociations(list, roles)
     -- Use an associative array so we can do a O(1) lookup by role
@@ -48,10 +50,10 @@ local function AddRoleAssociations(list, roles)
 end
 
 SHOP_ROLES = {}
-AddRoleAssociations(SHOP_ROLES, {ROLE_TRAITOR, ROLE_DETECTIVE, ROLE_HYPNOTIST, ROLE_DEPUTY, ROLE_IMPERSONATOR, ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_MERCENARY, ROLE_ASSASSIN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_VAMPIRE})
+AddRoleAssociations(SHOP_ROLES, {ROLE_TRAITOR, ROLE_DETECTIVE, ROLE_HYPNOTIST, ROLE_DEPUTY, ROLE_IMPERSONATOR, ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_MERCENARY, ROLE_ASSASSIN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_VAMPIRE, ROLE_QUACK, ROLE_PARASITE})
 
 TRAITOR_ROLES = {}
-AddRoleAssociations(TRAITOR_ROLES, {ROLE_TRAITOR, ROLE_HYPNOTIST, ROLE_IMPERSONATOR, ROLE_ASSASSIN, ROLE_VAMPIRE})
+AddRoleAssociations(TRAITOR_ROLES, {ROLE_TRAITOR, ROLE_HYPNOTIST, ROLE_IMPERSONATOR, ROLE_ASSASSIN, ROLE_VAMPIRE, ROLE_QUACK, ROLE_PARASITE})
 
 INNOCENT_ROLES = {}
 AddRoleAssociations(INNOCENT_ROLES, {ROLE_INNOCENT, ROLE_DETECTIVE, ROLE_GLITCH, ROLE_PHANTOM, ROLE_REVENGER, ROLE_DEPUTY, ROLE_MERCENARY, ROLE_VETERAN, ROLE_DOCTOR})
@@ -281,7 +283,9 @@ ROLE_STRINGS = {
     [ROLE_KILLER] = "killer",
     [ROLE_ZOMBIE] = "zombie",
     [ROLE_VAMPIRE] = "vampire",
-    [ROLE_DOCTOR] = "doctor"
+    [ROLE_DOCTOR] = "doctor",
+    [ROLE_QUACK] = "quack",
+    [ROLE_PARASITE] = "parasite"
 }
 
 ROLE_STRINGS_EXT = {
@@ -308,7 +312,9 @@ ROLE_STRINGS_EXT = {
     [ROLE_KILLER] = "a killer",
     [ROLE_ZOMBIE] = "a zombie",
     [ROLE_VAMPIRE] = "a vampire",
-    [ROLE_DOCTOR] = "a doctor"
+    [ROLE_DOCTOR] = "a doctor",
+    [ROLE_QUACK] = "a quack",
+    [ROLE_PARASITE] = "a parasite"
 }
 
 ROLE_STRINGS_SHORT = {
@@ -334,7 +340,9 @@ ROLE_STRINGS_SHORT = {
     [ROLE_KILLER] = "kil",
     [ROLE_ZOMBIE] = "zom",
     [ROLE_VAMPIRE] = "vam",
-    [ROLE_DOCTOR] = "doc"
+    [ROLE_DOCTOR] = "doc",
+    [ROLE_QUACK] = "qua",
+    [ROLE_PARASITE] = "par"
 }
 
 -- Game event log defs
@@ -676,7 +684,6 @@ DefaultEquipment = {
     [ROLE_TRAITOR] = {
         "weapon_ttt_c4",
         "weapon_ttt_flaregun",
-        "weapon_ttt_health_station",
         "weapon_ttt_knife",
         "weapon_ttt_phammer",
         "weapon_ttt_push",
@@ -758,13 +765,28 @@ DefaultEquipment = {
 
     [ROLE_ZOMBIE] = {
         EQUIP_ARMOR,
+        EQUIP_RADAR,
+        EQUIP_DISGUISE,
         EQUIP_SPEED,
         EQUIP_REGEN
     },
 
     [ROLE_VAMPIRE] = {
         EQUIP_ARMOR,
-        "weapon_ttt_health_station"
+        EQUIP_RADAR,
+        EQUIP_DISGUISE
+    },
+
+    [ROLE_QUACK] = {
+        EQUIP_ARMOR,
+        EQUIP_RADAR,
+        EQUIP_DISGUISE
+    },
+
+    [ROLE_PARASITE] = {
+        EQUIP_ARMOR,
+        EQUIP_RADAR,
+        EQUIP_DISGUISE
     },
 
     -- non-buyable

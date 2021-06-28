@@ -73,6 +73,36 @@ function SendKillerList(ply_or_rf) SendRoleList(ROLE_KILLER, ply_or_rf) end
 function SendZombieList(ply_or_rf) SendRoleList(ROLE_ZOMBIE, ply_or_rf) end
 function SendVampireList(ply_or_rf) SendRoleList(ROLE_VAMPIRE, ply_or_rf) end
 function SendDoctorList(ply_or_rf) SendRoleList(ROLE_DOCTOR, ply_or_rf) end
+function SendQuackList(ply_or_rf) SendRoleList(ROLE_QUACK, ply_or_rf) end
+function SendParasiteList(ply_or_rf) SendRoleList(ROLE_PARASITE, ply_or_rf) end
+
+function SendAllLists(ply_or_rf)
+    SendInnocentList(ply_or_rf)
+    SendTraitorList(ply_or_rf)
+    SendDetectiveList(ply_or_rf)
+    SendJesterList(ply_or_rf)
+    SendSwapperList(ply_or_rf)
+    SendGlitchList(ply_or_rf)
+    SendPhantomList(ply_or_rf)
+    SendHypnotistList(ply_or_rf)
+    SendRevengerList(ply_or_rf)
+    SendDrunkList(ply_or_rf)
+    SendClownList(ply_or_rf)
+    SendDeputyList(ply_or_rf)
+    SendImpersonatorList(ply_or_rf)
+    SendBeggarList(ply_or_rf)
+    SendOldManList(ply_or_rf)
+    SendMercenaryList(ply_or_rf)
+    SendBodysnatcherList(ply_or_rf)
+    SendVeteranList(ply_or_rf)
+    SendAssassinList(ply_or_rf)
+    SendKillerList(ply_or_rf)
+    SendZombieList(ply_or_rf)
+    SendVampireList(ply_or_rf)
+    SendDoctorList(ply_or_rf)
+    SendQuackList(ply_or_rf)
+    SendParasiteList(ply_or_rf)
+end
 
 function SendConfirmedTraitors(ply_or_rf)
     SendTraitorList(ply_or_rf, function(p) return p:GetNWBool("body_searched") end)
@@ -80,29 +110,7 @@ end
 
 function SendFullStateUpdate()
     SendPlayerRoles()
-    SendInnocentList()
-    SendTraitorList()
-    SendDetectiveList()
-    SendJesterList()
-    SendSwapperList()
-    SendGlitchList()
-    SendPhantomList()
-    SendHypnotistList()
-    SendRevengerList()
-    SendDrunkList()
-    SendClownList()
-    SendDeputyList()
-    SendImpersonatorList()
-    SendBeggarList()
-    SendOldManList()
-    SendMercenaryList()
-    SendBodysnatcherList()
-    SendVeteranList()
-    SendAssassinList()
-    SendKillerList()
-    SendZombieList()
-    SendVampireList()
-    SendDoctorList()
+    SendAllLists()
 end
 
 function SendRoleReset(ply_or_rf)
@@ -128,29 +136,7 @@ local function request_rolelist(ply)
     if GetRoundState() ~= ROUND_WAIT then
 
         SendRoleReset(ply)
-        SendInnocentList(ply)
-        SendTraitorList(ply)
-        SendDetectiveList(ply)
-        SendJesterList(ply)
-        SendSwapperList(ply)
-        SendGlitchList(ply)
-        SendPhantomList(ply)
-        SendHypnotistList(ply)
-        SendRevengerList(ply)
-        SendDrunkList(ply)
-        SendClownList(ply)
-        SendDeputyList(ply)
-        SendImpersonatorList(ply)
-        SendBeggarList(ply)
-        SendOldManList(ply)
-        SendMercenaryList(ply)
-        SendBodysnatcherList(ply)
-        SendVeteranList(ply)
-        SendAssassinList(ply)
-        SendKillerList(ply)
-        SendZombieList(ply)
-        SendVampireList(ply)
-        SendDoctorList(ply)
+        SendAllLists(ply)
     end
 end
 concommand.Add("_ttt_request_rolelist", request_rolelist)
@@ -380,6 +366,20 @@ local function force_doctor(ply)
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_doctor", force_doctor, nil, nil, FCVAR_CHEAT)
+
+local function force_quack(ply)
+    ply:SetRoleAndBroadcast(ROLE_QUACK)
+    clear_role_effects(ply)
+    SendFullStateUpdate()
+end
+concommand.Add("ttt_force_quack", force_quack, nil, nil, FCVAR_CHEAT)
+
+local function force_parasite(ply)
+    ply:SetRoleAndBroadcast(ROLE_PARASITE)
+    clear_role_effects(ply)
+    SendFullStateUpdate()
+end
+concommand.Add("ttt_force_parasite", force_parasite, nil, nil, FCVAR_CHEAT)
 
 local function force_spectate(ply, cmd, arg)
     if IsValid(ply) then

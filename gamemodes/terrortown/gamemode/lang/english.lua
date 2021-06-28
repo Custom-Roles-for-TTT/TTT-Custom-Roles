@@ -26,6 +26,8 @@ L.killer = "Killer"
 L.zombie = "Zombie"
 L.vampire = "Vampire"
 L.doctor = "Doctor"
+L.quack = "Quack"
+L.parasite = "Parasite"
 
 L.hidden = "Hidden"
 L.last_words = "Last Words"
@@ -99,6 +101,8 @@ L.body_found_kil = "They were a Killer."
 L.body_found_zom = "They were a Zombie."
 L.body_found_vam = "They were a Vampire."
 L.body_found_doc = "They were a Doctor."
+L.body_found_qua = "They were a Quack."
+L.body_found_par = "They were a Parasite."
 
 L.body_confirm = "{finder} confirmed the death of {victim}."
 
@@ -246,6 +250,8 @@ L.search_role_kil = "This person was a Killer."
 L.search_role_zom = "This person was a Zombie."
 L.search_role_vam = "This person was a Vampire."
 L.search_role_doc = "This person was a Doctor."
+L.search_role_qua = "This person was a Quack."
+L.search_role_par = "This person was a Parasite."
 
 L.search_words = "Something tells you some of this person's last words were: '{lastwords}'"
 L.search_armor = "They were wearing nonstandard body armor."
@@ -700,6 +706,8 @@ L.target_impersonator = "IMPERSONATOR"
 L.target_vampire = "VAMPIRE"
 L.target_zombie = "ZOMBIE"
 L.target_fellow_zombie = "FELLOW ZOMBIE"
+L.target_quack = "QUACK"
+L.target_parasite = "PARASITE"
 
 L.target_current_target = "CURRENT TARGET"
 
@@ -831,8 +839,14 @@ L.info_popup_veteran = [[You are a Veteran! You work best under pressure.
 If you are the last innocent player alive you will
 deal extra damage.]]
 
+L.info_popup_killer = [[You are a Killer! Try to kill everyone and be the last one standing!
+
+Press {menukey} to receive your special equipment!]]
+
 L.info_popup_doctor = [[You are a Doctor! You're here to keep your teammates alive.
 Use your tools to keep fellow innocents in the fight!]]
+
+
 
 L.info_popup_hypnotist = [[You are a Hypnotist! Work with fellow traitors to kill all others.
 
@@ -937,9 +951,98 @@ maybe even suffering from a penalty!
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_killer = [[You are a Killer! Try to kill everyone and be the last one standing!
+L.info_popup_vampire = [[You are a Vampire! Work with your allies to kill all others.
+
+These are your comrades:
+{allylist}
+
+You can use your fangs (left-click) to drink blood and refill your health or to fade from view (right-click).
 
 Press {menukey} to receive your special equipment!]]
+
+L.info_popup_vampire_glitch = [[You are a Vampire! Work with your allies to kill all others.
+BUT BEWARE! There was a glitch in the system and one among
+you does not seek the same goal.
+
+These are your comrades:
+{allylist}
+
+You can use your fangs (left-click) to drink blood and refill your health or to fade from view (right-click).
+
+Press {menukey} to receive your special equipment!]]
+
+L.info_popup_vampire_alone = [[You are a Vampire! You have no allies this round.
+
+Kill all others to win!
+
+You can use your fangs (left-click) to drink blood and refill your health or to fade from view (right-click).
+
+Press {menukey} to receive your special equipment!]]
+
+L.info_popup_quack = [[You are a Quack! Work with fellow traitors to kill all others.
+
+These are your comrades:
+{traitorlist}
+
+Try to convince others that you are a real doctor! However, your tools harm
+instead of heal. You know that the best cure for any ailment is death.
+
+Press {menukey} to receive your special equipment!]]
+
+L.info_popup_quack_alone = [[You are a Quack! You have no fellow traitors this round.
+
+Kill all others to win!
+
+Try to convince others that you are a real doctor! However, your tools harm
+instead of heal. You know that the best cure for any ailment is death.
+
+Press {menukey} to receive your special equipment!]]
+
+L.info_popup_quack_glitch = [[You are a Quack! Work with fellow traitors to kill all others.
+BUT BEWARE! There was a glitch in the system and one among you does not seek the same goal.
+
+These may or may not be your comrades:
+{traitorlist}
+
+Try to convince others that you are a real doctor! However, your tools harm
+instead of heal. You know that the best cure for any ailment is death.
+
+Press {menukey} to receive your special equipment!]]
+
+L.info_popup_parasite = [[You are a Parasite! Work with fellow traitors to kill all others.
+
+These are your comrades:
+{traitorlist}
+
+Infect those that kill you and wait patiently for a chance to take control.
+However, make sure you lay low as players you infect must stay alive in
+order for you to respawn. Try to avoid getting them cured or killed!
+
+Press {menukey} to receive your special equipment!]]
+
+L.info_popup_parasite_alone = [[You are a Parasite! You have no fellow traitors this round.
+
+Kill all others to win!
+
+Infect those that kill you and wait patiently for a chance to take control.
+However, make sure you lay low as players you infect must stay alive in
+order for you to respawn. Try to avoid getting them cured or killed!
+
+Press {menukey} to receive your special equipment!]]
+
+L.info_popup_parasite_glitch = [[You are a Parasite! Work with fellow traitors to kill all others.
+BUT BEWARE! There was a glitch in the system and one among you does not seek the same goal.
+
+These may or may not be your comrades:
+{traitorlist}
+
+Infect those that kill you and wait patiently for a chance to take control.
+However, make sure you lay low as players you infect must stay alive in
+order for you to respawn. Try to avoid getting them cured or killed!
+
+Press {menukey} to receive your special equipment!]]
+
+
 
 L.info_popup_zombie = [[You are a Zombie! Work with your allies to kill all others.
 
@@ -978,34 +1081,6 @@ Kill all others to win!
 
 All damage you deal with guns is reduced.
 Killing someone with your claws will turn them into a zombie.
-
-Press {menukey} to receive your special equipment!]]
-
-L.info_popup_vampire = [[You are a Vampire! Work with your allies to kill all others.
-
-These are your comrades:
-{allylist}
-
-You can use your fangs (left-click) to drink blood and refill your health or to fade from view (right-click).
-
-Press {menukey} to receive your special equipment!]]
-
-L.info_popup_vampire_glitch = [[You are a Vampire! Work with your allies to kill all others.
-BUT BEWARE! There was a glitch in the system and one among
-you does not seek the same goal.
-
-These are your comrades:
-{allylist}
-
-You can use your fangs (left-click) to drink blood and refill your health or to fade from view (right-click).
-
-Press {menukey} to receive your special equipment!]]
-
-L.info_popup_vampire_alone = [[You are a Vampire! You have no allies this round.
-
-Kill all others to win!
-
-You can use your fangs (left-click) to drink blood and refill your health or to fade from view (right-click).
 
 Press {menukey} to receive your special equipment!]]
 

@@ -119,6 +119,12 @@ CreateConVar("ttt_assassin_min_players", "0")
 CreateConVar("ttt_vampire_enabled", 0)
 CreateConVar("ttt_vampire_spawn_weight", "1")
 CreateConVar("ttt_vampire_min_players", "0")
+CreateConVar("ttt_quack_enabled", 0)
+CreateConVar("ttt_quack_spawn_weight", "1")
+CreateConVar("ttt_quack_min_players", "0")
+CreateConVar("ttt_parasite_enabled", 0)
+CreateConVar("ttt_parasite_spawn_weight", "1")
+CreateConVar("ttt_parasite_min_players", "0")
 
 -- Independent spawn probabilities
 CreateConVar("ttt_independent_chance", 0.5)
@@ -274,7 +280,9 @@ CreateConVar("ttt_det_credits_traitordead", "1")
 CreateConVar("ttt_hyp_credits_starting", "1")
 CreateConVar("ttt_imp_credits_starting", "1")
 CreateConVar("ttt_asn_credits_starting", "1")
-CreateConVar("ttt_vam_credits_starting", "0")
+CreateConVar("ttt_vam_credits_starting", "1")
+CreateConVar("ttt_qua_credits_starting", "1")
+CreateConVar("ttt_par_credits_starting", "1")
 
 CreateConVar("ttt_mer_credits_starting", "1")
 CreateConVar("ttt_doc_credits_starting", "0")
@@ -314,6 +322,8 @@ CreateConVar("ttt_shop_imp_sync", "0")
 CreateConVar("ttt_shop_asn_sync", "0")
 CreateConVar("ttt_shop_vam_sync", "0")
 CreateConVar("ttt_shop_zom_sync", "0")
+CreateConVar("ttt_shop_qua_sync", "0")
+CreateConVar("ttt_shop_par_sync", "0")
 
 CreateConVar("ttt_shop_mer_mode", "2")
 CreateConVar("ttt_shop_clo_mode", "0")
@@ -1652,6 +1662,10 @@ function SelectRoles()
     local hasHypnotist = false
     local hasImpersonator = false
     local hasAssassin = false
+    local hasVampire = false
+    local hasZombie = false
+    local hasQuack = false
+    local hasParasite = false
 
     local hasPhantom = false
     local hasGlitch = false
@@ -1660,9 +1674,6 @@ function SelectRoles()
     local hasMercenary = false
     local hasVeteran = false
     local hasDoctor = false
-
-    local hasZombie = false
-    local hasVampire = false
 
     local hasIndependent = false
 
@@ -1701,6 +1712,12 @@ function SelectRoles()
                     else
                         forcedMonsterCount = forcedMonsterCount + 1
                     end
+                elseif role == ROLE_QUACK then
+                    hasQuack = true
+                    forcedSpecialTraitorCount = forcedSpecialTraitorCount + 1
+                elseif role == ROLE_PARASITE then
+                    hasParasite = true
+                    forcedSpecialTraitorCount = forcedSpecialTraitorCount + 1
 
                 -- INNOCENT ROLES
                 elseif role == ROLE_DETECTIVE then
@@ -1860,6 +1877,16 @@ function SelectRoles()
             if not hasVampire and GetConVar("ttt_vampire_enabled"):GetBool() and choice_count >= GetConVar("ttt_vampire_min_players"):GetInt() and TRAITOR_ROLES[ROLE_VAMPIRE] then
                 for _ = 1, GetConVar("ttt_vampire_spawn_weight"):GetInt() do
                     table.insert(specialTraitorRoles, ROLE_VAMPIRE)
+                end
+            end
+            if not hasQuack and GetConVar("ttt_quack_enabled"):GetBool() and choice_count >= GetConVar("ttt_quack_min_players"):GetInt() then
+                for _ = 1, GetConVar("ttt_quack_spawn_weight"):GetInt() do
+                    table.insert(specialTraitorRoles, ROLE_QUACK)
+                end
+            end
+            if not hasParasite and GetConVar("ttt_parasite_enabled"):GetBool() and choice_count >= GetConVar("ttt_parasite_min_players"):GetInt() then
+                for _ = 1, GetConVar("ttt_parasite_spawn_weight"):GetInt() do
+                    table.insert(specialTraitorRoles, ROLE_PARASITE)
                 end
             end
             for _ = 1, max_special_traitor_count do
