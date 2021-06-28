@@ -1783,15 +1783,11 @@ function SelectRoles()
     -- pick detectives
     if choice_count >= GetConVar("ttt_detective_min_players"):GetInt() then
         local min_karma = GetConVar("ttt_detective_karma_min"):GetInt()
-        local function HasGoodKarma(ply)
-            return not KARMA.IsEnabled() or ply:GetBaseKarma() >= min_karma
-        end
-
         local options = {}
         local secondary_options = {}
         local tertiary_options = {}
         for _, p in ipairs(choices) do
-            if HasGoodKarma(p) then
+            if not KARMA.IsEnabled() or p:GetBaseKarma() >= min_karma then
                 if not p:GetAvoidDetective() then
                     table.insert(options, p)
                 end
