@@ -11,8 +11,7 @@ if CLIENT then
             type =  "Weapon",
             desc =  [[Use on a player to cure them of parasites.
 
-                    Using this on a player who is not
-                    infected will kill them!]]
+Using this on a player who is not infected will kill them!]]
         };
 
     SWEP.Icon = "vgui/ttt/icon_cure"
