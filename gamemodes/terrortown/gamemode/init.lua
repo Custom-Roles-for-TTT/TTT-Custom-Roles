@@ -1783,21 +1783,43 @@ function SelectRoles()
     -- pick detectives
     if choice_count >= GetConVar("ttt_detective_min_players"):GetInt() then
         local min_karma = GetConVar("ttt_detective_karma_min"):GetInt()
+        local function HasGoodKarma(ply)
+            return not KARMA.IsEnabled() or ply:GetBaseKarma() >= min_karma
+        end
+
         local options = {}
-        for i, p in ipairs(choices) do
-            if (not KARMA.IsEnabled() or p:GetBaseKarma() >= min_karma) and not p:GetAvoidDetective() then
-                table.insert(options, {index = i, player = p})
+        local secondary_options = {}
+        local tertiary_options = {}
+        for _, p in ipairs(choices) do
+            if HasGoodKarma(p) then
+                if not p:GetAvoidDetective() then
+                    table.insert(options, p)
+                end
+                table.insert(secondary_options, p)
+            end
+            table.insert(tertiary_options, p)
+        end
+
+        -- Fall back to the other Detective options if there aren't any players with good karma and who aren't avoiding the role
+        if #options == 0 then
+            -- Prefer people with good karma
+            if #secondary_options > 0 then
+                options = secondary_options
+            -- Or just anyone
+            else
+                options = tertiary_options
             end
         end
 
         for _ = 1, detective_count do
             if #options > 0 then
                 local plyPick = math.random(1, #options)
-                local ply = options[plyPick].player
-                PrintRole(ply, "detective")
+                local ply = options[plyPick]
                 ply:SetRole(ROLE_DETECTIVE)
                 ply:SetHealth(GetConVar("ttt_detective_starting_health"):GetInt())
-                table.remove(choices, options[plyPick].index)
+                PrintRole(ply, "detective")
+                table.RemoveByValue(choices, ply)
+                table.remove(options, plyPick)
             end
         end
     end
