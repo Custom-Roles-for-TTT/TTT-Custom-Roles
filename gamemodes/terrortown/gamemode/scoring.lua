@@ -111,7 +111,7 @@ function SCORE:HandleSelection()
 end
 
 function SCORE:HandleBodyFound(finder, found)
-    self:AddEvent({ id = EVENT_BODYFOUND, ni = finder:Nick(), sid = finder:SteamID(), sid64 = finder:SteamID64(), b = found:Nick() })
+    self:AddEvent({ id = EVENT_BODYFOUND, ni = finder:Nick(), sid = finder:SteamID(), sid64 = finder:SteamID64(), b = found:Nick(), isd = finder:IsDetectiveLike() })
 end
 
 function SCORE:HandleC4Explosion(planter, arm_time, exp_time)

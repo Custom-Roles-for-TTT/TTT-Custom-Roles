@@ -59,10 +59,11 @@ function ScoreEvent(e, scores)
         end
     elseif e.id == EVENT_BODYFOUND then
         local sid = e.sid64
-        -- Unknown players and don't get points for finding bodies... because they probably created them
-        if scores[sid] == nil or TRAITOR_ROLES[scores[sid].role] then return end
+        -- Unknown players, traitors, and independents don't get points for finding bodies... because they probably created them
+        if scores[sid] == nil or TRAITOR_ROLES[scores[sid].role] or INDEPENDENT_ROLES[scores[sid].role] then return end
 
-        local find_bonus = scores[sid].role == ROLE_DETECTIVE and 3 or 1
+        -- Detective-like roles (who aren't traitors) get more of a bonus than innocents
+        local find_bonus = e.isd and 3 or 1
         scores[sid].bonus = scores[sid].bonus + find_bonus
     end
 end

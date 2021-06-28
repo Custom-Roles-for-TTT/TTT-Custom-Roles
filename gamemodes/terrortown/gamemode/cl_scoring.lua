@@ -64,8 +64,9 @@ end
 
 local function GetPlayerFromSteam64(id)
     -- The first bot's ID is 90071996842377216 which translates to "STEAM_0:0:0", an 11-character string
+    -- At some point it becomes double digits at the end (e.g. "STEAM_0:0:10") so we check for 12 or fewer characters
     -- A player's Steam ID cannot be that short, so if it is this must be a bot
-    local isBot = string.len(util.SteamIDFrom64(id)) == 11
+    local isBot = string.len(util.SteamIDFrom64(id)) <= 12
     -- Bots cannot be retrieved by SteamID on the client so search by name instead
     if isBot then
         for _, p in pairs(player.GetAll()) do
@@ -572,8 +573,8 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                 if IsValid(ply) then
                     alive = ply:Alive()
                     finalRole = ply:GetRole()
-                    -- Keep the original role icon for people converted to Zombie and Vampire
-                    if finalRole ~= ROLE_ZOMBIE and finalRole ~= ROLE_VAMPIRE then
+                    -- Keep the original role icon for people converted to Zombie and Vampire or the Bodysnatcher
+                    if finalRole ~= ROLE_ZOMBIE and finalRole ~= ROLE_VAMPIRE and startingRole ~= ROLE_BODYSNATCHER then
                         roleFileName = ROLE_STRINGS_SHORT[finalRole]
                     end
                     roleColor = ROLE_COLORS[finalRole]

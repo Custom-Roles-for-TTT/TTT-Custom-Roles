@@ -74,7 +74,7 @@ SWEP.WorldModel = "models/weapons/w_c4.mdl"
 SWEP.AutoSpawnable = false
 SWEP.NoSights = true
 
-local oldScoreGroup = oldScoreGroup or ScoreGroup
+local oldScoreGroup
 local DEFIB_IDLE = 0
 local DEFIB_BUSY = 1
 local DEFIB_ERROR = 2
@@ -117,11 +117,9 @@ if SERVER then
             local t = {
                 start = v,
                 endpos = v,
-                filter = target,
                 mins = midsize / -2,
                 maxs = midsize / 2
             }
-
             local tr = util.TraceHull(t)
 
             if not tr.Hit then return (v - Vector(0, 0, midsize.z / 2)) end
@@ -295,8 +293,7 @@ if CLIENT then
         for _, v in pairs(player.GetAll()) do v.DefibHide = nil end
     end)
 
-
-
+    oldScoreGroup = oldScoreGroup or ScoreGroup
     function ScoreGroup(ply)
         if ply.DefibHide then return GROUP_FOUND end
         return oldScoreGroup(ply)

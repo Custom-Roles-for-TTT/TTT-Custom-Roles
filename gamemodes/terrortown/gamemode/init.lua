@@ -1608,16 +1608,18 @@ function SelectRoles()
     local plys = player.GetAll()
 
     for _, v in ipairs(plys) do
-        -- everyone on the spec team is in specmode
-        if IsValid(v) and not v:IsSpec() then
-            -- save previous role and sign up as possible traitor/detective
-            local r = GAMEMODE.LastRole[v:SteamID64()] or v:GetRole() or ROLE_INNOCENT
+        if IsValid(v) then
+            -- everyone on the spec team is in specmode
+            if not v:IsSpec() then
+                -- save previous role and sign up as a possible role
+                local r = GAMEMODE.LastRole[v:SteamID64()] or v:GetRole() or ROLE_NONE
 
-            table.insert(prev_roles[r], v)
-            table.insert(choices, v)
+                table.insert(prev_roles[r], v)
+                table.insert(choices, v)
+            end
+
+            v:SetRole(ROLE_NONE)
         end
-
-        v:SetRole(ROLE_NONE)
     end
 
     local choice_count = #choices
@@ -1667,14 +1669,15 @@ function SelectRoles()
     PrintRoleText("-----CHECKING EXTERNALLY CHOSEN ROLES-----")
     for _, v in pairs(player.GetAll()) do
         if IsValid(v) and (not v:IsSpec()) then
-            local index = 0
-            for i, j in pairs(choices) do
-                if v == j then
-                    index = i
-                end
-            end
             local role = v:GetRole()
-            if role ~= ROLE_NONE then
+            if role > ROLE_NONE and role <= ROLE_MAX then
+                local index = 0
+                for i, j in pairs(choices) do
+                    if v == j then
+                        index = i
+                    end
+                end
+
                 table.remove(choices, index)
                 -- TRAITOR ROLES
                 if role == ROLE_TRAITOR then
@@ -1723,11 +1726,9 @@ function SelectRoles()
                 elseif role == ROLE_VETERAN then
                     hasVeteran = true
                     forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
-                    PrintRole(v, "veteran")
                 elseif role == ROLE_DOCTOR then
                     hasDoctor = true
                     forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
-                    PrintRole(v, "doctor")
 
                 -- JESTER/INDEPENDENT ROLES
                 elseif role == ROLE_JESTER then
@@ -1766,9 +1767,7 @@ function SelectRoles()
                     end
                 end
 
-                if role > ROLE_NONE and role < ROLE_MAX then
-                    PrintRole(v, ROLE_STRINGS[role])
-                end
+                PrintRole(v, ROLE_STRINGS[role])
             end
         end
     end
@@ -1785,20 +1784,38 @@ function SelectRoles()
     if choice_count >= GetConVar("ttt_detective_min_players"):GetInt() then
         local min_karma = GetConVar("ttt_detective_karma_min"):GetInt()
         local options = {}
-        for i, p in ipairs(choices) do
-            if (not KARMA.IsEnabled() or p:GetBaseKarma() >= min_karma) and not p:GetAvoidDetective() then
-                table.insert(options, {index = i, player = p})
+        local secondary_options = {}
+        local tertiary_options = {}
+        for _, p in ipairs(choices) do
+            if not KARMA.IsEnabled() or p:GetBaseKarma() >= min_karma then
+                if not p:GetAvoidDetective() then
+                    table.insert(options, p)
+                end
+                table.insert(secondary_options, p)
+            end
+            table.insert(tertiary_options, p)
+        end
+
+        -- Fall back to the other Detective options if there aren't any players with good karma and who aren't avoiding the role
+        if #options == 0 then
+            -- Prefer people with good karma
+            if #secondary_options > 0 then
+                options = secondary_options
+            -- Or just anyone
+            else
+                options = tertiary_options
             end
         end
 
         for _ = 1, detective_count do
             if #options > 0 then
                 local plyPick = math.random(1, #options)
-                local ply = options[plyPick].player
-                PrintRole(ply, "detective")
+                local ply = options[plyPick]
                 ply:SetRole(ROLE_DETECTIVE)
                 ply:SetHealth(GetConVar("ttt_detective_starting_health"):GetInt())
-                table.remove(choices, options[plyPick].index)
+                PrintRole(ply, "detective")
+                table.RemoveByValue(choices, ply)
+                table.remove(options, plyPick)
             end
         end
     end
@@ -2033,6 +2050,11 @@ function SelectRoles()
     for _, ply in ipairs(plys) do
         -- initialize credit count for everyone based on their role
         if IsValid(ply) and not ply:IsSpec() then
+            if ply:GetRole() == ROLE_NONE then
+                ErrorNoHalt("WARNING: " .. ply:Nick() .. " was not assigned a role! Forcing them to be Innocent...\n")
+                ply:SetRole(ROLE_INNOCENT)
+            end
+
             if ply:GetRole() == ROLE_ZOMBIE then
                 ply:SetZombiePrime(true)
             elseif ply:GetRole() == ROLE_VAMPIRE then
