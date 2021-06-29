@@ -65,7 +65,7 @@ function SWEP:PrimaryAttack()
 
         if ent:GetNWBool("Infected", false) then
             for _, v in pairs(player.GetAll()) do
-                if v:GetNWString(InfectingTarget, "") == ent:SteamID64() then
+                if v:GetNWString("InfectingTarget", "") == ent:SteamID64() then
                     ent:SetNWBool("Infected", false)
                     v:SetNWBool("Infecting", false)
                     v:SetNWString("InfectingTarget", nil)
@@ -82,5 +82,44 @@ function SWEP:PrimaryAttack()
         self:Remove()
     else
         self:SetNextPrimaryFire(CurTime() + 1)
+    end
+end
+
+function SWEP:SecondaryAttack()
+
+    if not SERVER then return end
+
+    local owner = self:GetOwner()
+
+    if IsValid(owner) and owner:IsPlayer() then
+        owner:EmitSound(CureSound)
+
+        if owner:GetNWBool("Infected", false) then
+            for _, v in pairs(player.GetAll()) do
+                if v:GetNWString("InfectingTarget", "") == owner:SteamID64() then
+                    owner:SetNWBool("Infected", false)
+                    v:SetNWBool("Infecting", false)
+                    v:SetNWString("InfectingTarget", nil)
+                    v:SetNWInt("InfectionProgress", 0)
+                    timer.Remove(v:Nick() .. "InfectionProgress")
+                    timer.Remove(v:Nick() .. "InfectingSpectate")
+                    v:PrintMessage(HUD_PRINTCENTER, "Your host has been cured.")
+                end
+            end
+        else
+            owner:Kill()
+        end
+
+        self:Remove()
+    else
+        self:SetNextSecondaryFire(CurTime() + 1)
+    end
+end
+
+if CLIENT then
+    function SWEP:Initialize()
+        self:AddHUDHelp("cure_help_pri", "cure_help_sec", true)
+
+        return self.BaseClass.Initialize(self)
     end
 end

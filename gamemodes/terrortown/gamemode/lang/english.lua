@@ -656,6 +656,11 @@ Teleport to a previously marked spot.
 Teleporting makes noise, and the
 number of uses is limited.]]
 
+-- Parasite cure
+
+L.cure_help_pri = "{primaryfire} to cure another player."
+L.cure_help_sec = "{secondaryfire} to cure yourself."
+
 -- Brainwashing device
 L.brainwash_help_pri = "Hold {primaryfire} to revive dead body."
 L.brainwash_help_sec = "The revived player will become a traitor."

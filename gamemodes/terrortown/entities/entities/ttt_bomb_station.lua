@@ -32,7 +32,7 @@ ENT.HealFreq = 0.2
 
 ENT.ExplosionDamage = 1000
 ENT.ExplosionRange = 400
-ENT.ExplosionTime = 2
+ENT.ExplosionTime = 1
 
 ENT.Triggered = false
 
