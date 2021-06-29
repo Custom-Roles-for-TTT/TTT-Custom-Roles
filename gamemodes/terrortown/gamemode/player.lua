@@ -1223,7 +1223,7 @@ function GM:PlayerDeath(victim, infl, attacker)
                             victim:SetPos(FindRespawnLocation(parasiteBody:GetPos()) or parasiteBody:GetPos())
                             victim:SetEyeAngles(Angle(0, parasiteBody:GetAngles().y, 0))
                         else
-                            victim:PrintMessage(HUD_PRINTCENTER, "You have drained your host of energy and created in a new body.")
+                            victim:PrintMessage(HUD_PRINTCENTER, "You have drained your host of energy and created a new body.")
                             -- Introduce a slight delay to prevent player getting stuck as a spectator
                             timer.Create(victim:Nick() .. "ParasiteRespawn", 0.1, 1, function()
                                 DoRespawn(victim)
@@ -1232,7 +1232,7 @@ function GM:PlayerDeath(victim, infl, attacker)
                             end)
                         end
                     elseif respawnMode == PARASITE_RESPAWN_RANDOM then
-                        victim:PrintMessage(HUD_PRINTCENTER, "You have drained your host of energy and created in a new body.")
+                        victim:PrintMessage(HUD_PRINTCENTER, "You have drained your host of energy and created a new body.")
                         -- Introduce a slight delay to prevent player getting stuck as a spectator
                         timer.Create(victim:Nick() .. "ParasiteRespawn", 0.1, 1, function()
                             DoRespawn(victim)

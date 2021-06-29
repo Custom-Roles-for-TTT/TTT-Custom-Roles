@@ -330,14 +330,16 @@ function plymeta:SpawnForRound(dead_only)
     self:SetNWBool("Haunting", false)
     self:SetNWString("HauntingTarget", nil)
     self:SetNWInt("HauntingPower", 0)
-    -- Disable Killer smoke
-    self:SetNWBool("KillerSmoke", false)
     timer.Remove(self:Nick() .. "HauntingPower")
     timer.Remove(self:Nick() .. "HauntingSpectate")
+    -- Disable Killer smoke
+    self:SetNWBool("KillerSmoke", false)
     -- Disable Parasite infection
     self:SetNWBool("Infecting", false)
     self:SetNWString("InfectingTarget", nil)
     self:SetNWInt("InfectionProgress", 0)
+    timer.Remove(self:Nick() .. "InfectionProgress")
+    timer.Remove(self:Nick() .. "InfectingSpectate")
     self:Spawn()
 
     -- If a dead player was spawned outside of the round start, broadcast the defib event
