@@ -144,7 +144,7 @@ function ENT:Trigger(ply)
 			sound.Play(beep, self:GetPos(), 75, 100)
 		end)
 	end
-	
+
 	timer.Simple(self.ExplosionTime, function()
 		self:Explode()
 	end)
@@ -155,62 +155,62 @@ local failsound = Sound("items/medshotno1.wav")
 
 local last_sound_time = 0
 function ENT:GiveHealth(ply, max_heal)
-   if self:GetStoredHealth() > 0 then
-      max_heal = max_heal or self.MaxHeal
-      local dmg = ply:GetMaxHealth() - ply:Health()
-	  
-	 local healed = self:TakeFromStorage(math.min(max_heal, dmg))
-	 local new = math.min(ply:GetMaxHealth(), ply:Health() + healed)
+	if self:GetStoredHealth() > 0 then
+		max_heal = max_heal or self.MaxHeal
+		local dmg = ply:GetMaxHealth() - ply:Health()
 
-	 if last_sound_time + 2 < CurTime() then
-		self:EmitSound(healsound)
-		last_sound_time = CurTime()
-	 end
-	 
-	 if ply:IsActiveTraitorTeam() then return end
+		local healed = self:TakeFromStorage(math.min(max_heal, dmg))
+		local new = math.min(ply:GetMaxHealth(), ply:Health() + healed)
 
-	 self:Trigger(ply)
+		if last_sound_time + 2 < CurTime() then
+			self:EmitSound(healsound)
+			last_sound_time = CurTime()
+		end
 
-	 return true
-   else
-      self:EmitSound(failsound)
-   end
+		if ply:IsActiveTraitorTeam() then return end
 
-   return false
+		self:Trigger(ply)
+
+	 	return true
+	else
+	  	self:EmitSound(failsound)
+	end
+
+	return false
 end
 
 function ENT:Use(ply)
-   if IsValid(ply) and ply:IsPlayer() and ply:IsActive() then
-      local t = CurTime()
-      if t > self.NextHeal then
-		local healed
-         local healed = self:GiveHealth(ply, self.HealRate)
+   	if IsValid(ply) and ply:IsPlayer() and ply:IsActive() then
+      	local t = CurTime()
+      	if t > self.NextHeal then
+			local healed
+         	local healed = self:GiveHealth(ply, self.HealRate)
 
-         self.NextHeal = t + (self.HealFreq * (healed and 1 or 2))
-      end
-   end
+         	self.NextHeal = t + (self.HealFreq * (healed and 1 or 2))
+      	end
+   	end
 end
 
 function ENT:OnTakeDamage(dmginfo)
-   if dmginfo:GetAttacker() == self:GetPlacer() then return end
+    if dmginfo:GetAttacker() == self:GetPlacer() then return end
 
-   self:TakePhysicsDamage(dmginfo)
+    self:TakePhysicsDamage(dmginfo)
 
-   self:SetHealth(self:Health() - dmginfo:GetDamage())
+    self:SetHealth(self:Health() - dmginfo:GetDamage())
 
-   local att = dmginfo:GetAttacker()
+    local att = dmginfo:GetAttacker()
 	local placer = self:GetPlacer()
-   if IsPlayer(att) then
-	   DamageLog(Format("DMG: \t %s [%s] damaged bomb station [%s] for %d dmg", att:Nick(), att:GetRoleString(),  (IsPlayer(placer) and placer:Nick() or "<disconnected>"), dmginfo:GetDamage()))
-   end
+    if IsPlayer(att) then
+		DamageLog(Format("DMG: \t %s [%s] damaged bomb station [%s] for %d dmg", att:Nick(), att:GetRoleString(),  (IsPlayer(placer) and placer:Nick() or "<disconnected>"), dmginfo:GetDamage()))
+    end
 
-   if self:Health() < 0 then
-      self:Remove()
+   	if self:Health() < 0 then
+      	self:Remove()
 
-      util.EquipmentDestroyed(self:GetPos())
+      	util.EquipmentDestroyed(self:GetPos())
 
-      if IsValid(self:GetPlacer()) then
-         LANG.Msg(self:GetPlacer(), "bstation_broken")
-      end
-   end
+      	if IsValid(self:GetPlacer()) then
+         	LANG.Msg(self:GetPlacer(), "bstation_broken")
+      	end
+   	end
 end
