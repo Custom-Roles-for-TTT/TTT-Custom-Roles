@@ -159,7 +159,7 @@ function ENT:GiveHealth(ply, max_heal)
         max_heal = max_heal or self.MaxHeal
         local dmg = ply:GetMaxHealth() - ply:Health()
 
-		-- Reduce the number so it appears that it's been used
+        -- Reduce the number so it appears that it's been used
         self:TakeFromStorage(math.min(max_heal, dmg))
 
         if last_sound_time + 2 < CurTime() then
