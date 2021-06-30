@@ -628,8 +628,7 @@ if SERVER then
         -- Don't let dead players, spectators, non-assassins, or failed assassins get another target
         -- And don't assign targets if the round isn't currently running
         if not IsValid(ply) or GetRoundState() > ROUND_ACTIVE or
-            not ply:Alive() or ply:IsSpec() or not ply:IsAssassin()
-            or ply:GetNWBool("AssassinFailed", true)
+            not ply:IsAssassin() or ply:GetNWBool("AssassinFailed", true)
         then
             return
         end
@@ -681,9 +680,12 @@ if SERVER then
         else
             targetMessage = "No further targets available."
         end
-        if not delay and not start then targetMessage = "Target eliminated. " .. targetMessage end
-        ply:PrintMessage(HUD_PRINTCENTER, targetMessage)
-        ply:PrintMessage(HUD_PRINTTALK, targetMessage)
+
+        if ply:Alive() and not ply:IsSpec() then
+            if not delay and not start then targetMessage = "Target eliminated. " .. targetMessage end
+            ply:PrintMessage(HUD_PRINTCENTER, targetMessage)
+            ply:PrintMessage(HUD_PRINTTALK, targetMessage)
+        end
     end
 end
 

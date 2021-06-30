@@ -876,7 +876,8 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 
     -- Handle assassin kills
     local attackertarget = attacker:GetNWString("AssassinTarget", "")
-    if attacker:IsPlayer() and attacker:IsAssassin() and ply:Nick() ~= attackertarget and attackertarget ~= "" then
+    if attacker:IsPlayer() and attacker:IsAssassin() and ply ~= attacker and ply:Nick() ~= attackertarget and (attackertarget ~= "" or timer.Exists(attacker:Nick() .. "AssassinTarget")) then
+        timer.Remove(attacker:Nick() .. "AssassinTarget")
         attacker:PrintMessage(HUD_PRINTCENTER, "Contract failed. You killed the wrong player.")
         attacker:PrintMessage(HUD_PRINTTALK, "Contract failed. You killed the wrong player.")
         attacker:SetNWString("AssassinTarget", "")
@@ -889,9 +890,11 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
             local delay = GetConVar("ttt_assassin_next_target_delay"):GetFloat()
             -- Delay giving the next target if we're configured to do so
             if delay > 0 then
-                v:PrintMessage(HUD_PRINTCENTER, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
-                v:PrintMessage(HUD_PRINTTALK, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
-                timer.Simple(delay, function()
+                if v:Alive() and not v:IsSpec() then
+                    v:PrintMessage(HUD_PRINTCENTER, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
+                    v:PrintMessage(HUD_PRINTTALK, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
+                end
+                timer.Create(v:Nick() .. "AssassinTarget", delay, 1, function()
                     AssignAssassinTarget(v, false, true)
                 end)
             else
