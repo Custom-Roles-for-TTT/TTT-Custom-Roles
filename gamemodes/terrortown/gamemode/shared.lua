@@ -1,7 +1,11 @@
+-- Version string for display and number for version checks
+CR_VERSION_STRING = "1.0"
+CR_VERSION = tonumber(CR_VERSION_STRING)
+
 GM.Name = "Trouble in Terrorist Town"
 GM.Author = "Bad King Urgrain"
 GM.Website = "ttt.badking.net"
-GM.Version = "shrug emoji"
+GM.Version = "Custom Roles for TTT - " .. CR_VERSION_STRING
 
 GM.Customized = false
 
