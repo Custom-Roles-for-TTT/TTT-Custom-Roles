@@ -694,11 +694,11 @@ local recoveryTimer = CurTime()
 
 -- Receive ConVars (SERVER)
 net.Receive("TTT_SprintGetConVars", function()
-    local Table = net.ReadTable()
-    speedMultiplier = Table[1]
-    recovery = Table[2]
-    traitorRecovery = Table[3]
-    consumption = Table[4]
+    local convars = net.ReadTable()
+    speedMultiplier = convars[1]
+    recovery = convars[2]
+    traitorRecovery = convars[3]
+    consumption = convars[4]
 end)
 
 -- Requesting ConVars first time
@@ -774,7 +774,6 @@ hook.Add("TTTPrepareRound", "TTTSprintPrepareRound", function()
             end
 
             recoveryTimer = CurTime()
-            DoubleTapActivated = false
         end
 
         if stamina < 0 then

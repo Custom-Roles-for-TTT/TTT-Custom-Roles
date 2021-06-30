@@ -2261,14 +2261,14 @@ end)
 
 -- Send ConVars if requested
 net.Receive("TTT_SprintGetConVars", function(len, ply)
-    local Table = {
+    local convars = {
         [1] = speedMultiplier:GetFloat();
         [2] = recovery:GetFloat();
         [3] = traitorRecovery:GetFloat();
         [4] = consumption:GetFloat();
     }
     net.Start("TTT_SprintGetConVars")
-    net.WriteTable(Table)
+    net.WriteTable(convars)
     net.Send(ply)
 end)
 
