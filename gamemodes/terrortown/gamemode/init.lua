@@ -316,6 +316,8 @@ CreateConVar("ttt_voice_drain_recharge", "0.05", FCVAR_NOTIFY)
 CreateConVar("ttt_namechange_kick", "1", FCVAR_NOTIFY)
 CreateConVar("ttt_namechange_bantime", "10")
 
+CreateConVar("ttt_disable_headshots", "0")
+
 CreateConVar("ttt_shop_random_percent", "50", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown by default", 0, 100)
 for _, role in ipairs(table.GetKeys(SHOP_ROLES)) do
     local shortstring = ROLE_STRINGS_SHORT[role]
@@ -2172,8 +2174,10 @@ hook.Add("EntityTakeDamage", "HitmarkerDetector", function(ent, dmginfo)
 
     if (IsValid(att) and att:IsPlayer() and att ~= ent) then
         if (ent:IsPlayer() or ent:IsNPC()) then -- Only players and NPCs show hitmarkers
+            local drawCrit = ent:GetNWBool("LastHitCrit") and not GetConVar("ttt_disable_headshots"):GetBool()
+
             net.Start("TTT_DrawHitMarker")
-            net.WriteBool(ent:GetNWBool("LastHitCrit"))
+            net.WriteBool(drawCrit)
             net.Send(att) -- Send the message to the attacker
 
             net.Start("TTT_CreateBlood")
