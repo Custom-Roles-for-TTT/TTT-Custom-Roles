@@ -1,11 +1,40 @@
--- Version string for display and number for version checks
-CR_VERSION_STRING = "1.0"
-CR_VERSION = tonumber(CR_VERSION_STRING)
+-- Version string for display and function for version checks
+CR_VERSION = "1.0.0"
+
+function CRVersion(version)
+    local installedVersionRaw = string.Split(CR_VERSION, ".")
+    local installedVersion = {
+        major = tonumber(installedVersionRaw[1]),
+        minor = tonumber(installedVersionRaw[2]),
+        patch = tonumber(installedVersionRaw[3])
+    }
+
+    local neededVersionRaw = string.Split(version, ".")
+    local neededVersion = {
+        major = tonumber(neededVersionRaw[1]),
+        minor = tonumber(neededVersionRaw[2]),
+        patch = tonumber(neededVersionRaw[3])
+    }
+
+    if installedVersion.major > neededVersion.major then
+        return true
+    elseif installedVersion.major == neededVersion.major then
+        if installedVersion.minor > neededVersion.minor then
+            return true
+        elseif installedVersion.minor == neededVersion.minor then
+            if installedVersion.patch >= neededVersion.patch then
+                return true
+            end
+        end
+    end
+
+    return false
+end
 
 GM.Name = "Trouble in Terrorist Town"
 GM.Author = "Bad King Urgrain"
 GM.Website = "ttt.badking.net"
-GM.Version = "Custom Roles for TTT - " .. CR_VERSION_STRING
+GM.Version = "Custom Roles for TTT - " .. CR_VERSION
 
 GM.Customized = false
 
