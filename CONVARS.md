@@ -111,17 +111,17 @@ ttt_assassin_failed_damage_penalty          0.5     // Damage penalty that the a
 ttt_asn_credits_starting                    1       // The number of credits an assassin should start with
 
 // Vampire
-ttt_vampires_are_monsters                   0       // Whether Vampires should be treated as members of the Monster team.
-ttt_vampire_vision_enable                   0       // Whether Vampires have their special vision highlights enabled
-ttt_vampire_drain_enable                    1       // Whether Vampires have the ability to drain other players' blood using their fangs
-ttt_vampire_convert_enable                  0       // Whether Vampires have the ability to convert other players to vampire thrals using their fangs
-ttt_vampire_show_target_icon                0       // Whether Vampires have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect.
-ttt_vampire_damage_reduction                0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a Vampire.
+ttt_vampires_are_monsters                   0       // Whether vampires should be treated as members of the Monster team.
+ttt_vampire_vision_enable                   0       // Whether vampires have their special vision highlights enabled
+ttt_vampire_drain_enable                    1       // Whether vampires have the ability to drain other players' blood using their fangs
+ttt_vampire_convert_enable                  0       // Whether vampires have the ability to convert other players to vampire thrals using their fangs
+ttt_vampire_show_target_icon                0       // Whether vampires have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect.
+ttt_vampire_damage_reduction                0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a vampire.
 ttt_vampire_fang_timer                      5       // The amount of time fangs must be used to fully drain a target's blood
-ttt_vampire_fang_heal                       50      // The amount of health a Vampire will heal by when they fully drain a target's blood
-ttt_vampire_fang_overheal                   25      // The amount over the Vampire's normal maximum health (e.g. 100 + this ConVar) that the Vampire can heal to by drinking blood.
+ttt_vampire_fang_heal                       50      // The amount of health a vVampire will heal by when they fully drain a target's blood
+ttt_vampire_fang_overheal                   25      // The amount over the vampire's normal maximum health (e.g. 100 + this ConVar) that the vampire can heal to by drinking blood.
 ttt_vampire_prime_death_mode                0       // What to do when the Prime Vampire(s) (e.g. playters who spawn as Vampires originally) are killed. 0 - Do nothing. 1 - Kill all non-prime Vampires. 2 - Revert all non-prime Vampires to their original role.
-ttt_vampire_prime_only_convert              1       // Whether only Prime Vampires (e.g. players who spawn as Vampire originally) are allowed to convert other players.
+ttt_vampire_prime_only_convert              1       // Whether only Prime Vampires (e.g. players who spawn as vampire originally) are allowed to convert other players.
 ttt_vam_credits_starting                    1       // The number of credits a vampire should start with
 
 // Quack
@@ -165,33 +165,31 @@ ttt_deputy_damage_penalty                   0       // Damage penalty that the d
 
 // Mercenary
 ttt_shop_mer_mode                           2       // What items are available to the mercenary in the shop (0=None, 1=detective OR traitor, 2=detective AND traitor, 3=detective, 4=traitor)
+ttt_mer_credits_starting                    1       // The number of credits a mercenary should start with
 
 // Veteran
 ttt_veteran_damage_bonus                    0.5     // Damage bonus that the veteran has when they are the last innocent alive (e.g. 0.5 = 50% more damage)
 ttt_veteran_full_heal                       1       // Whether the veteran gets a full heal upon becoming the last remaining innocent or not
 
-// Mercenary
-ttt_mer_credits_starting                    1       // The number of credits a mercenary should start with
-
 // Doctor
-ttt_doctor_mode                             0       // How the Doctor should be played (0=Health Station, 1=Defib then Health Station)
-ttt_doc_credits_starting                    0       // How many credits the Doctor starts with
+ttt_doctor_mode                             0       // What tool the doctor starts with (0=Health Station, 1=Defib then Health Station)
+ttt_doc_credits_starting                    0       // How many credits the doctor starts with
 
 // ----------------------------------------
 
 // JESTER TEAM SETTINGS
-ttt_jesters_trigger_traitor_testers         1       // Whether jesters trigger traitor traps as if they were traitors
+ttt_jesters_trigger_traitor_testers         1       // Whether jesters trigger traitor testers as if they were traitors
 
 // Jester
 ttt_jester_win_by_traitors                  1       // Whether the jester will win the round if they are killed by a traitor
-ttt_jester_notify_mode                      0       // The logic to use when notifying players that a jester is killed. 0 - Don't notify anyone. 1 - Only notify Traitors and Detective. 2 - Only notify Traitors. 3 - Only notify Detective. 4 - Notify everyone.
+ttt_jester_notify_mode                      0       // The logic to use when notifying players that a jester is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone.
 ttt_jester_notify_sound                     0       // Whether to play a cheering sound when a jester is killed
 ttt_jester_notify_confetti                  0       // Whether to throw confetti when a jester is a killed
 ttt_jes_credits_starting                    0       // The number of credits a jester should start with
 
 // Swapper
 ttt_swapper_respawn_health                  100     // What amount of health to give the swapper when they are killed and respawned
-ttt_swapper_notify_mode                     0       // The logic to use when notifying players that a swapper is killed. 0 - Don't notify anyone. 1 - Only notify Traitors and Detective. 2 - Only notify Traitors. 3 - Only notify Detective. 4 - Notify everyone.
+ttt_swapper_notify_mode                     0       // The logic to use when notifying players that a swapper is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone.
 ttt_swapper_notify_sound                    0       // Whether to play a cheering sound when a swapper is killed
 ttt_swapper_notify_confetti                 0       // Whether to throw confetti when a swapper is a killed
 ttt_swapper_killer_health                   100     // What amount of health to give the person who killed the swapper. Set to "0" to kill them
@@ -200,13 +198,13 @@ ttt_swa_credits_starting                    0       // The number of credits a s
 // Clown
 ttt_clown_damage_bonus                      0       // Damage bonus that the clown has after being activated (e.g. 0.5 = 50% more damage)
 ttt_clown_activation_credits                0       // The number of credits to give the clown when they are activated
-ttt_shop_clo_mode                           0       // What items are available to the clown in the shop (0=None, 1=Detective OR Traitor, 2=Detective AND Traitor, 3=Detective, 4=Traitor)
+ttt_shop_clo_mode                           0       // What items are available to the clown in the shop (0=None, 1=detective OR traitor, 2=detective AND traitor, 3=detective, 4=traitor)
 
 // Beggar
 ttt_reveal_beggar_change                    1       // Whether the beggar is revealed to you when they join your team or not
 ttt_beggar_respawn                          0       // Whether the beggar respawns when they are killed before joining another team
 ttt_beggar_respawn_delay                    3       // The delay to use when respawning the begger (if "ttt_beggar_respawn" is enabled)
-ttt_beggar_notify_mode                      0       // The logic to use when notifying players that a beggar is killed. 0 - Don't notify anyone. 1 - Only notify Traitors and Detective. 2 - Only notify Traitors. 3 - Only notify Detective. 4 - Notify everyone.
+ttt_beggar_notify_mode                      0       // The logic to use when notifying players that a beggar is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone.
 ttt_beggar_notify_sound                     1       // Whether to play a cheering sound when a beggar is killed
 ttt_beggar_notify_confetti                  1       // Whether to throw confetti when a beggar is a killed
 
@@ -217,7 +215,7 @@ ttt_bodysnatcher_show_role                  1       // Whether the bodysnatching
 // ----------------------------------------
 
 // INDEPENDENT TEAM SETTINGS
-ttt_independents_trigger_traitor_testers    0       // Whether independents trigger traitor traps as if they were traitors
+ttt_independents_trigger_traitor_testers    0       // Whether independents trigger traitor testers as if they were traitors
 
 // Drunk
 ttt_drunk_sober_time                        180     // Time in seconds for the drunk to remember their role

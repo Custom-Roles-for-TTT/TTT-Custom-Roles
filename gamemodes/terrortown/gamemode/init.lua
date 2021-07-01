@@ -868,6 +868,7 @@ function PrepareRound()
         v:SetNWString("SwappedWith", "")
         v:SetNWString("AssassinTarget", "")
         v:SetNWBool("AssassinFailed", false)
+        timer.Remove(v:Nick() .. "AssassinTarget")
         v:SetNWBool("WasDrunk", false)
         v:SetNWBool("WasHypnotised", false)
         v:SetNWBool("KillerClownActive", false)
@@ -2260,14 +2261,14 @@ end)
 
 -- Send ConVars if requested
 net.Receive("TTT_SprintGetConVars", function(len, ply)
-    local Table = {
+    local convars = {
         [1] = speedMultiplier:GetFloat();
         [2] = recovery:GetFloat();
         [3] = traitorRecovery:GetFloat();
         [4] = consumption:GetFloat();
     }
     net.Start("TTT_SprintGetConVars")
-    net.WriteTable(Table)
+    net.WriteTable(convars)
     net.Send(ply)
 end)
 
