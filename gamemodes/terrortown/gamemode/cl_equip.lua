@@ -629,10 +629,13 @@ local function TraitorMenuPopup()
                     ic:SetIconColor(color_darkened)
                 end
 
-                if ic.favorite then
-                    paneltablefav[ic.slot or 1][k] = ic
-                else
-                    paneltable[ic.slot or 1][k] = ic
+                -- Don't show equipment items that you already own that are listed as "loadout" because you were given it for free
+                if ItemIsWeapon(item) or not ply:HasEquipmentItem(item.id) or not item.loadout then
+                    if ic.favorite then
+                        paneltablefav[ic.slot or 1][k] = ic
+                    else
+                        paneltable[ic.slot or 1][k] = ic
+                    end
                 end
             end
 
