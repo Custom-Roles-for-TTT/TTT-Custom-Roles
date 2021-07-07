@@ -73,8 +73,8 @@ function GM:PostDrawTranslucentRenderables()
     end
 
     for _, v in pairs(player.GetAll()) do
-        -- Compatibility with the disguises and Dead Ringer (810154456)
-        local hidden = v:GetNWBool("disguised", false) or (v.IsFakeDead and v:IsFakeDead())
+        -- Compatibility with the disguises, Dead Ringer (810154456), and Prop Disguiser (310403737 and 2127939503)
+        local hidden = v:GetNWBool("disguised", false) or (v.IsFakeDead and v:IsFakeDead()) or v:GetNWBool("PD_Disguised", false)
         if v:IsActive() and v ~= client and not hidden then
             pos = v:GetPos()
             pos.z = pos.z + 74
@@ -288,7 +288,9 @@ function GM:HUDDrawTargetID()
     end
 
     if ent:IsPlayer() and ent:Alive() then
-        if ent:GetNWBool("disguised", false) then
+        -- Compatibility with the disguises, Dead Ringer (810154456), and Prop Disguiser (310403737 and 2127939503)
+        local hidden = ent:GetNWBool("disguised", false) or (ent.IsFakeDead and ent:IsFakeDead()) or ent:GetNWBool("PD_Disguised", false)
+        if hidden then
             client.last_id = nil
 
             if client:IsTraitor() or client:IsSpec() then
