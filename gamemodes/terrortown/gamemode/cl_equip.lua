@@ -438,9 +438,7 @@ local function TraitorMenuPopup()
     local credits = ply:GetCredits()
     local show = false
     -- Only show the shop for roles that have it (or have been promoted/activated to have it)
-    local hasShop = ply:IsShopRole() and
-                        (not ply:IsDeputy() or ply:GetNWBool("HasPromotion", false)) and
-                        (not ply:IsClown() or ply:GetNWBool("KillerClownActive", false))
+    local hasShop = ply:CanUseShop()
     if hasShop then
         local can_order = credits > 0
         local padding = dsheet:GetPadding()

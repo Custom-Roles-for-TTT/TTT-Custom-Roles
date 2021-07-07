@@ -117,6 +117,11 @@ function plymeta:IsShopRole()
     end
     return hasShop
 end
+function plymeta:CanUseShop()
+    return self:IsShopRole() and
+        (not self:IsDeputy() or self:GetNWBool("HasPromotion", false)) and
+        (not self:IsClown() or self:GetNWBool("KillerClownActive", false))
+end
 
 function plymeta:SetRoleAndBroadcast(role)
     self:SetRole(role)
