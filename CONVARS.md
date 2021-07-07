@@ -164,7 +164,6 @@ ttt_revenger_damage_bonus                   0       // Extra damage that the rev
 ttt_deputy_damage_penalty                   0       // Damage penalty that the deputy has before being promoted (e.g. 0.5 = 50% less damage)
 
 // Mercenary
-ttt_shop_mer_mode                           2       // What items are available to the mercenary in the shop (0=None, 1=detective OR traitor, 2=detective AND traitor, 3=detective, 4=traitor)
 ttt_mer_credits_starting                    1       // The number of credits a mercenary should start with
 
 // Veteran
@@ -200,7 +199,6 @@ ttt_clown_damage_bonus                      0       // Damage bonus that the clo
 ttt_clown_activation_credits                0       // The number of credits to give the clown when they are activated
 ttt_clown_hide_when_active                  0       // Whether the clown should be hidden from other players' Target ID (overhead icons) when they are activated. Server or round must be restarted for changes to take effect
 ttt_clown_show_target_icon                  0       // Whether the clown has an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect
-ttt_shop_clo_mode                           0       // What items are available to the clown in the shop (0=None, 1=detective OR traitor, 2=detective AND traitor, 3=detective, 4=traitor)
 
 // Beggar
 ttt_reveal_beggar_change                    1       // Whether the beggar is revealed to you when they join your team or not
@@ -285,7 +283,9 @@ ttt_shop_random_zom_enabled                 0       // Whether role shop randomi
 ttt_shop_random_vam_enabled                 0       // Whether role shop randomization is enabled for vampires
 ttt_shop_random_clo_enabled                 0       // Whether role shop randomization is enabled for clowns
 
-// Role Sync
+// Role Sync (Server or round must be restarted for changes to take effect)
+ttt_shop_mer_mode                           2       // What items are available to the mercenary in the shop (0=None, 1=Either detective OR traitor (aka Union), 2=Both detective AND traitor (aka Intersect), 3=Just detective, 4=Just traitor)
+ttt_shop_clo_mode                           0       // What items are available to the clown in the shop (0=None, 1=Either detective OR traitor (aka Union), 2=Both detective AND traitor (aka Intersect), 3=Just detective, 4=Just traitor)
 ttt_shop_hyp_sync                           0       // Whether Hypnotists should have all weapons that vanilla Traitors have in their weapon shop
 ttt_shop_imp_sync                           0       // Whether Impersonators should have all weapons that vanilla Traitors have in their weapon shop
 ttt_shop_asn_sync                           0       // Whether Assassins should have all weapons that vanilla Traitors have in their weapon shop
