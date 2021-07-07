@@ -198,6 +198,8 @@ ttt_swa_credits_starting                    0       // The number of credits a s
 // Clown
 ttt_clown_damage_bonus                      0       // Damage bonus that the clown has after being activated (e.g. 0.5 = 50% more damage)
 ttt_clown_activation_credits                0       // The number of credits to give the clown when they are activated
+ttt_clown_hide_when_active                  0       // Whether the clown should be hidden from other players' Target ID (overhead icons) when they are activated. Server or round must be restarted for changes to take effect
+ttt_clown_show_target_icon                  0       // Whether the clown has an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect
 ttt_shop_clo_mode                           0       // What items are available to the clown in the shop (0=None, 1=detective OR traitor, 2=detective AND traitor, 3=detective, 4=traitor)
 
 // Beggar
@@ -230,7 +232,7 @@ ttt_killer_knife_enabled                    1       // Whether the killer knife 
 ttt_killer_crowbar_enabled                  1       // Whether the killer throwable crowbar is enabled
 ttt_killer_smoke_enabled                    1       // Whether the killer smoke is enabled
 ttt_killer_smoke_timer                      60      // Number of seconds before a killer will start to smoke after their last kill
-ttt_killer_show_target_icon                 1       // Whether killer have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect
+ttt_killer_show_target_icon                 1       // Whether killers have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect
 ttt_killer_damage_penalty                   0.25    // The fraction a killer's damage will be scaled by when they are attacking without using their knife
 ttt_killer_damage_reduction                 0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a killer
 ttt_killer_warn_all                         0       // Whether to warn all players if there is a killer. If 0, only traitors will be warned
