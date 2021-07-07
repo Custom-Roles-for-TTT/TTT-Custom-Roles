@@ -628,7 +628,9 @@ local function TraitorMenuPopup()
                 end
 
                 -- Don't show equipment items that you already own that are listed as "loadout" because you were given it for free
-                if ItemIsWeapon(item) or not ply:HasEquipmentItem(item.id) or not item.loadout then
+                if not ItemIsWeapon(item) and ply:HasEquipmentItem(item.id) and item.loadout then
+                    ic:Remove()
+                else
                     if ic.favorite then
                         paneltablefav[ic.slot or 1][k] = ic
                     else
