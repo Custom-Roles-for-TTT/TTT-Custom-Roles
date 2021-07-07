@@ -190,7 +190,7 @@ CreateConVar("ttt_detective_starting_health", "100")
 
 CreateConVar("ttt_phantom_respawn_health", "50")
 CreateConVar("ttt_phantom_weaker_each_respawn", "0")
-CreateConVar("ttt_phantom_killer_smoke", "1")
+CreateConVar("ttt_phantom_killer_smoke", "0")
 CreateConVar("ttt_phantom_killer_footstep_time", "0")
 CreateConVar("ttt_phantom_announce_death", "0")
 CreateConVar("ttt_phantom_killer_haunt", "1")

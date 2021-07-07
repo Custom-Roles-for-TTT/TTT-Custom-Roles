@@ -145,7 +145,7 @@ ttt_detective_starting_health               100     // The amount of health the 
 // Phantom
 ttt_phantom_respawn_health                  50      // The amount of health a phantom will respawn with
 ttt_phantom_weaker_each_respawn             0       // Whether a phantom respawns weaker (1/2 as much HP) each time they respawn, down to a minimum of 1
-ttt_phantom_killer_smoke                    1       // Whether to show smoke on the player who killed the phantom
+ttt_phantom_killer_smoke                    0       // Whether to show smoke on the player who killed the phantom
 ttt_phantom_announce_death                  0       // Whether to announce to detectives (and promoted deputies and impersonators) that a phantom has been killed or respawned
 ttt_phantom_killer_haunt                    1       // Whether to have the phantom haunt their killer
 ttt_phantom_killer_haunt_power_max          100     // The maximum amount of power a phantom can have when haunting their killer
