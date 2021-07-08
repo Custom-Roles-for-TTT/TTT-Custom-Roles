@@ -735,6 +735,11 @@ local function SprintFunction()
             sprintTimer = CurTime()
         end
         stamina = stamina - (CurTime() - sprintTimer) * (math.min(math.max(consumption, 0.1), 5) * 250)
+        local result = hook.Call("TTTSprintStaminaPost", GAMEMODE, LocalPlayer(), stamina, sprintTimer, consumption)
+        -- Use the overwritten stamina if one is provided
+        if result then
+            stamina = result
+        end
         sprintTimer = CurTime()
     else
         if sprinting then
