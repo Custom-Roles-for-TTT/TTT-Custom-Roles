@@ -82,6 +82,16 @@ local function AddRoleAssociations(list, roles)
     end
 end
 
+function GetTeamRoles(list)
+    local roles = {}
+    for r, v in pairs(list) do
+        if v then
+            table.insert(roles, r)
+        end
+    end
+    return roles
+end
+
 SHOP_ROLES = {}
 AddRoleAssociations(SHOP_ROLES, {ROLE_TRAITOR, ROLE_DETECTIVE, ROLE_HYPNOTIST, ROLE_DEPUTY, ROLE_IMPERSONATOR, ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_MERCENARY, ROLE_ASSASSIN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_VAMPIRE, ROLE_QUACK, ROLE_PARASITE})
 

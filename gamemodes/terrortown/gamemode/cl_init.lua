@@ -880,7 +880,7 @@ end
 local function EnableTraitorHighlights(client)
     hook.Add("PreDrawHalos", "AddPlayerHighlights", function()
         -- Start with the list of traitors
-        local allies = table.GetKeys(TRAITOR_ROLES)
+        local allies = GetTeamRoles(TRAITOR_ROLES)
         -- And add the glitch
         table.insert(allies, ROLE_GLITCH)
 
@@ -895,7 +895,7 @@ local function EnableZombieHighlights(client)
         local traitorAllies = TRAITOR_ROLES[ROLE_ZOMBIE]
         -- If zombies are traitors and traitor vision or zombie vision is enabled then add all the traitor roles as allies
         if (traitor_vision or zombie_vision) and traitorAllies then
-            allies = table.GetKeys(TRAITOR_ROLES)
+            allies = GetTeamRoles(TRAITOR_ROLES)
         -- If zombie vision is enabled, add the allied roles
         elseif zombie_vision then
             -- If they are monsters, ally with Zombies and monster-Vampires
@@ -905,7 +905,7 @@ local function EnableZombieHighlights(client)
                     table.insert(allies, ROLE_VAMPIRE)
                 end
             else
-                allies = table.GetKeys(INDEPENDENT_ROLES)
+                allies = GetTeamRoles(INDEPENDENT_ROLES)
             end
         end
 
@@ -920,7 +920,7 @@ local function EnableVampireHighlights(client)
         local traitorAllies = TRAITOR_ROLES[ROLE_VAMPIRE]
         -- If vampires are traitors and traitor vision or vampire vision is enabled then add all the traitor roles as allies
         if (traitor_vision or vampire_vision) and traitorAllies then
-            allies = table.GetKeys(TRAITOR_ROLES)
+            allies = GetTeamRoles(TRAITOR_ROLES)
         -- If vampire vision is enabled, add the allied monster roles
         elseif vampire_vision then
             allies = {ROLE_VAMPIRE}
