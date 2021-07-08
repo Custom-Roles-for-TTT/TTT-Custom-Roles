@@ -120,8 +120,8 @@ ttt_vampire_damage_reduction                0       // The fraction an attacker'
 ttt_vampire_fang_timer                      5       // The amount of time fangs must be used to fully drain a target's blood
 ttt_vampire_fang_heal                       50      // The amount of health a vVampire will heal by when they fully drain a target's blood
 ttt_vampire_fang_overheal                   25      // The amount over the vampire's normal maximum health (e.g. 100 + this ConVar) that the vampire can heal to by drinking blood.
-ttt_vampire_prime_death_mode                0       // What to do when the Prime Vampire(s) (e.g. playters who spawn as Vampires originally) are killed. 0 - Do nothing. 1 - Kill all non-prime Vampires. 2 - Revert all non-prime Vampires to their original role.
-ttt_vampire_prime_only_convert              1       // Whether only Prime Vampires (e.g. players who spawn as vampire originally) are allowed to convert other players.
+ttt_vampire_prime_death_mode                0       // What to do when the prime vampire(s) (e.g. playters who spawn as vampires originally) are killed. 0 - Do nothing. 1 - Kill all vampire thralls (non-prime vampires). 2 - Revert all vampire thralls (non-prime vampires) to their original role.
+ttt_vampire_prime_only_convert              1       // Whether only prime vampires (e.g. players who spawn as vampire originally) are allowed to convert other players.
 ttt_vam_credits_starting                    1       // The number of credits a vampire should start with
 
 // Quack
@@ -238,16 +238,23 @@ ttt_killer_vision_enable                    1       // Whether killers have thei
 ttt_kil_credits_starting                    2       // The number of credits a killer should start with
 
 // Zombie
-ttt_zombies_are_monsters                    0       // Whether Zombies should be treated as members of the Monster team.
-ttt_zombies_are_traitors                    0       // Whether Zombies should be treated as members of the Traitors team.
-ttt_zombie_round_chance                     0.1     // The chance that a "Zombie Round" will occur where all players who would have been Traitors are made Zombies instead. Only usable when "ttt_zombies_are_traitors" is set to "1"
-ttt_zombie_vision_enable                    0       // Whether Zombies have their special vision highlights enabled
-ttt_zombie_spit_enable                      1       // Whether Zombies have their spit attack enabled
-ttt_zombie_leap_enable                      1       // Whether Zombies have their leap attack enabled
-ttt_zombie_show_target_icon                 0       // Whether Zombies have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect.
-ttt_zombie_damage_penalty                   0.5     // The fraction a Zombie's damage will be scaled by when they are attacking without using their claws.
-ttt_zombie_damage_reduction                 0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a Zombie.
-ttt_zombie_prime_only_weapons               1       // Whether only Prime Zombies (e.g. players who spawn as Zombies originally) are allowed to pick up weapons.
+ttt_zombies_are_monsters                    0       // Whether zombies should be treated as members of the monster team.
+ttt_zombies_are_traitors                    0       // Whether zombies should be treated as members of the traitors team.
+ttt_zombie_round_chance                     0.1     // The chance that a "zombie round" will occur where all players who would have been traitors are made zombies instead. Only usable when "ttt_zombies_are_traitors" is set to "1"
+ttt_zombie_vision_enable                    0       // Whether zombies have their special vision highlights enabled
+ttt_zombie_spit_enable                      1       // Whether zombies have their spit attack enabled
+ttt_zombie_leap_enable                      1       // Whether zombies have their leap attack enabled
+ttt_zombie_show_target_icon                 0       // Whether zombies have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect.
+ttt_zombie_damage_penalty                   0.5     // The fraction a zombie's damage will be scaled by when they are attacking without using their claws.
+ttt_zombie_damage_reduction                 0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a zombie.
+ttt_zombie_prime_only_weapons               1       // Whether only prime zombies (e.g. players who spawn as zombies originally) are allowed to pick up weapons.
+ttt_zombie_prime_attack_damage              65      // The amount of a damage a prime zombie (e.g. player who spawned as a zombie originally) does with their claws. Server or round must be restarted for changes to take effect.
+ttt_zombie_prime_attack_delay               0.7     // The amount of time between claw attacks for a prime zombie (e.g. player who spawned as a zombie originally). Server or round must be restarted for changes to take effect.
+ttt_zombie_prime_speed_bonus                0.35    // The amount of bonus speed a prime zombie (e.g. player who spawned as a zombie originally) should get when using their claws. Server or round must be restarted for changes to take effect.
+ttt_zombie_thrall_attack_damage             45      // The amount of a damage a zombie thrall (e.g. non-prime zombie) does with their claws. Server or round must be restarted for changes to take effect.
+ttt_zombie_thrall_attack_delay              1.4     // The amount of time between claw attacks for a zombie thrall (e.g. non-prime zombie). Server or round must be restarted for changes to take effect.
+ttt_zombie_thrall_speed_bonus               0.15    // The amount of bonus speed a zombie thrall (e.g. non-prime zombie) should get when using their claws. Server or round must be restarted for changes to take effect.
+ttt_zombie_respawn_health                   100     // The amount of health a player should respawn with when they are converted to a zombie thrall.
 
 // ----------------------------------------
 

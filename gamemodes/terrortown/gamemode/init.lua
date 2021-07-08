@@ -264,6 +264,8 @@ CreateConVar("ttt_zombie_show_target_icon", "0")
 CreateConVar("ttt_zombie_damage_penalty", "0.5")
 CreateConVar("ttt_zombie_damage_reduction", "0")
 CreateConVar("ttt_zombie_prime_only_weapons", "1")
+CreateConVar("ttt_zombie_prime_speed_bonus", "0.35")
+CreateConVar("ttt_zombie_thrall_speed_bonus", "0.15")
 CreateConVar("ttt_zombie_vision_enable", "0")
 
 -- Other custom role properties
@@ -574,6 +576,8 @@ function GM:SyncGlobals()
     SetGlobalBool("ttt_zombies_are_traitors", GetConVar("ttt_zombies_are_traitors"):GetBool())
     SetGlobalBool("ttt_zombie_show_target_icon", GetConVar("ttt_zombie_show_target_icon"):GetBool())
     SetGlobalBool("ttt_zombie_vision_enable", GetConVar("ttt_zombie_vision_enable"):GetBool())
+    SetGlobalFloat("ttt_zombie_prime_speed_bonus", GetConVar("ttt_zombie_prime_speed_bonus"):GetFloat())
+    SetGlobalFloat("ttt_zombie_thrall_speed_bonus", GetConVar("ttt_zombie_thrall_speed_bonus"):GetFloat())
 
     SetGlobalBool("ttt_vampires_are_monsters", GetConVar("ttt_vampires_are_monsters"):GetBool())
     SetGlobalBool("ttt_vampire_show_target_icon", GetConVar("ttt_vampire_show_target_icon"):GetBool())

@@ -623,11 +623,17 @@ function GetSprintMultiplier(ply, sprinting)
             elseif weaponClass == "weapon_vam_fangs" and wep:Clip1() < 15 then
                 return 3 * mult
             elseif weaponClass == "weapon_zom_claws" then
-                if ply:HasEquipmentItem(EQUIP_SPEED) then
-                    return 1.5 * mult
+                local speed_bonus = 1
+                if ply:IsZombiePrime() then
+                    speed_bonus = speed_bonus + GetGlobalFloat("ttt_zombie_prime_speed_bonus", 0.35)
                 else
-                    return 1.35 * mult
+                    speed_bonus = speed_bonus + GetGlobalFloat("ttt_zombie_thrall_speed_bonus", 0.15)
                 end
+
+                if ply:HasEquipmentItem(EQUIP_SPEED) then
+                    speed_bonus = speed_bonus + 0.15
+                end
+                return speed_bonus * mult
             end
         end
     end
