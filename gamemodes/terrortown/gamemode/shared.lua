@@ -651,7 +651,7 @@ function GetSprintMultiplier(ply, sprinting)
     return mult
 end
 
-function UpdateDynamicTeams()
+function UpdateRoleState()
     local zombies_are_monsters = GetGlobalBool("ttt_zombies_are_monsters", false)
     -- Zombies cannot be both Monsters and Traitors so don't make them Traitors if they are already Monsters
     local zombies_are_traitors = not zombies_are_monsters and GetGlobalBool("ttt_zombies_are_traitors", false)
@@ -665,6 +665,14 @@ function UpdateDynamicTeams()
 
     -- Update role colors to make sure team changes have taken effect
     UpdateRoleColours()
+
+    -- If the parasite is not enabled, don't let anyone buy the cure
+    local parasite_cure = weapons.GetStored("weapon_par_cure")
+    if not GetGlobalBool("ttt_parasite_enabled", false) then
+        table.Empty(parasite_cure.CanBuy)
+    else
+        parasite_cure.CanBuy = table.Copy(parasite_cure.CanBuyDefault)
+    end
 end
 
 if SERVER then

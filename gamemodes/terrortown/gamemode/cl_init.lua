@@ -172,7 +172,7 @@ GM.TTTEndRound = PlaySoundCue
 
 local function ReceiveRole()
     -- Wait until now to update the teams so we know the globals have been synced
-    UpdateDynamicTeams()
+    UpdateRoleState()
 
     local role = net.ReadInt(8)
 
