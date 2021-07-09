@@ -2205,7 +2205,7 @@ hook.Add("ScaleNPCDamage", "HitmarkerPlayerCritDetector", function(npc, hitgroup
     npc:SetNWBool("LastHitCrit", hitgroup == HITGROUP_HEAD)
 end)
 
-hook.Add("PlayerSay", "ColorMixerOpen", function(ply, text, public)
+hook.Add("PlayerSay", "ColorMixerOpen", function(ply, text, team_only)
     text = string.lower(text)
     if (string.sub(text, 1, 12) == "!hmcritcolor") then
         net.Start("TTT_OpenMixer")
