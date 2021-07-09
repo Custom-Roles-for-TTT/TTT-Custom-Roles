@@ -1,6 +1,8 @@
 # Beta Release Notes
 
-## 1.0.2 - Unreleased
+## 1.0.2
+**Released:**
+
 ### Changes
 - Changed shop to not show "loadout" equipment items that you already own because you can't buy them and might not have known you were given them for free
 - Changed Killer's knife to not conflict with shop weapons
@@ -11,6 +13,7 @@
 - Fixed equipment exclusion system accidentally excluding ALL equipment for a role
 - Fixed target ID showing when a player is hidden using the prop disguiser
 - Fixed improper team highlighting for Zombie/Vampire after they switched teams
+- Fixed parasite cure being buyable when parasite is not enabled
 
 ### Additions
 - Added CanUseShop method which checks IsShopRole and NWBools
