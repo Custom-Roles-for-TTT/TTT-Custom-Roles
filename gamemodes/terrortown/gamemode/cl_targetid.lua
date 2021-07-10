@@ -77,7 +77,7 @@ function GM:PostDrawTranslucentRenderables()
         local hidden = v:GetNWBool("disguised", false) or (v.IsFakeDead and v:IsFakeDead()) or v:GetNWBool("PD_Disguised", false)
         if v:IsActive() and v ~= client and not hidden then
             pos = v:GetPos()
-            pos.z = pos.z + v:GetViewOffset().z + 10
+            pos.z = pos.z + v:GetHeight() + 15
 
             -- Only show the "KILL" target if the setting is enabled
             local showkillicon = (client:IsAssassin() and GetGlobalBool("ttt_assassin_show_target_icon", false) and client:GetNWString("AssassinTarget") == v:Nick()) or
