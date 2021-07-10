@@ -15,6 +15,7 @@
 - Fixed target ID showing when a player is hidden using the prop disguiser
 - Fixed improper team highlighting for Zombie/Vampire after they switched teams
 - Fixed parasite cure being buyable when parasite is not enabled
+- Fixed karma percentage on scoreboard not matching damage factor when max karma was greater than 1000
 
 ### Additions
 - Added CanUseShop method which checks IsShopRole and NWBools
