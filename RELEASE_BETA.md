@@ -7,7 +7,7 @@
 - Changed shop to not show "loadout" equipment items that you already own because you can't buy them and might not have known you were given them for free
 - Changed Killer's knife to not conflict with shop weapons
 - Changed Phantom smoke to be disabled by default
-- Changed head icons to be based on view offset so scaled players have their icon in the right place
+- Changed head icons to be based on player model size and scale so they have their icon in the right place
 
 ### Fixes
 - Fixed some client ConVars not saving
