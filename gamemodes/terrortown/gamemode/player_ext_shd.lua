@@ -1,16 +1,7 @@
 -- shared extensions to player table
 
 local plymeta = FindMetaTable("Player")
-if not plymeta then
-    Error("FAILED TO FIND PLAYER TABLE")
-    return
-end
-
-local entmeta = FindMetaTable("Entity")
-if not entmeta then
-    Error("FAILED TO FIND ENTITY TABLE")
-    return
-end
+if not plymeta then return end
 
 local math = math
 
