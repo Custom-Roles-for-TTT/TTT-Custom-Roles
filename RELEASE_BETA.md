@@ -1,7 +1,17 @@
 # Beta Release Notes
 
+## 1.0.3 
+**Released: July 11th, 2021**
+
+### Changes
+- Changed convars to use '_ttt_ROLENAME\_\*_' formatting wherever possible
+  - NOTE: Old convars still work at this stage but may be removed later. Please update to the new convars now to avoid problems later
+
+### Additions
+- Added starting and max health convars to all roles
+
 ## 1.0.2
-**Released:**
+**Released: July 11th, 2021**
 
 ### Changes
 - Changed shop to not show "loadout" equipment items that you already own because you can't buy them and might not have known you were given them for free

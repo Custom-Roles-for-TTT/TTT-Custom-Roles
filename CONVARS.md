@@ -232,7 +232,7 @@ ttt_killer_damage_penalty                   0.25    // The fraction a killer's d
 ttt_killer_damage_reduction                 0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a killer
 ttt_killer_warn_all                         0       // Whether to warn all players if there is a killer. If 0, only traitors will be warned
 ttt_killer_vision_enable                    1       // Whether killers have their special vision highlights enabled
-ttt_kil_credits_starting                    2       // The number of credits a killer should start with
+ttt_killer_credits_starting                    2       // The number of credits a killer should start with
 
 // Zombie
 ttt_zombies_are_monsters                    0       // Whether zombies should be treated as members of the monster team.
@@ -260,47 +260,105 @@ ttt_zombie_respawn_health                   100     // The amount of health a pl
 ttt_shop_random_percent                     50      // The percent chance that a weapon in the shop will be not be shown
 
 // Role Specific Random Shop Restriction Percent
-ttt_shop_random_tra_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the traitors
-ttt_shop_random_det_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the detectives
-ttt_shop_random_hyp_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the hypnotists
-ttt_shop_random_dep_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the deputies
-ttt_shop_random_imp_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the impersonators
-ttt_shop_random_asn_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the assassins
-ttt_shop_random_kil_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the killers
-ttt_shop_random_jes_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the jesters
-ttt_shop_random_swa_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the swappers
-ttt_shop_random_zom_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the zombies
-ttt_shop_random_vam_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the vampires
-ttt_shop_random_clo_percent                 0       // The percent chance that a weapon in the shop will be not be shown for the clowns
+ttt_traitor_shop_random_percent             0       // The percent chance that a weapon in the shop will be not be shown for traitors
+ttt_detective_shop_random_percent           0       // The percent chance that a weapon in the shop will be not be shown for detectives
+ttt_hypnotist_shop_random_percent           0       // The percent chance that a weapon in the shop will be not be shown for hypnotists
+ttt_deputy_shop_random_percent              0       // The percent chance that a weapon in the shop will be not be shown for deputies
+ttt_impersonator_shop_random_percent        0       // The percent chance that a weapon in the shop will be not be shown for impersonators
+ttt_assassin_shop_random_percent            0       // The percent chance that a weapon in the shop will be not be shown for assassins
+ttt_killer_shop_random_percent              0       // The percent chance that a weapon in the shop will be not be shown for killers
+ttt_jester_shop_random_percent              0       // The percent chance that a weapon in the shop will be not be shown for jesters
+ttt_swapper_shop_random_percent             0       // The percent chance that a weapon in the shop will be not be shown for swappers
+ttt_zombie_shop_random_percent              0       // The percent chance that a weapon in the shop will be not be shown for zombies
+ttt_vampire_shop_random_percent             0       // The percent chance that a weapon in the shop will be not be shown for vampires
+ttt_clown_shop_random_percent               0       // The percent chance that a weapon in the shop will be not be shown for clowns
+ttt_quack_shop_random_percent               0       // The percent chance that a weapon in the shop will be not be shown for quacks
+ttt_parasite_shop_random_percent            0       // The percent chance that a weapon in the shop will be not be shown for parasites
 
 // Enable/Disable Individual Role Random Shop Restrictions
-ttt_shop_random_tra_enabled                 0       // Whether role shop randomization is enabled for traitors
-ttt_shop_random_det_enabled                 0       // Whether role shop randomization is enabled for detectives
-ttt_shop_random_hyp_enabled                 0       // Whether role shop randomization is enabled for hypnotists
-ttt_shop_random_dep_enabled                 0       // Whether role shop randomization is enabled for deputies
-ttt_shop_random_imp_enabled                 0       // Whether role shop randomization is enabled for impersonators
-ttt_shop_random_asn_enabled                 0       // Whether role shop randomization is enabled for assassins
-ttt_shop_random_kil_enabled                 0       // Whether role shop randomization is enabled for killers
-ttt_shop_random_jes_enabled                 0       // Whether role shop randomization is enabled for jesters
-ttt_shop_random_swa_enabled                 0       // Whether role shop randomization is enabled for swappers
-ttt_shop_random_zom_enabled                 0       // Whether role shop randomization is enabled for zombies
-ttt_shop_random_vam_enabled                 0       // Whether role shop randomization is enabled for vampires
-ttt_shop_random_clo_enabled                 0       // Whether role shop randomization is enabled for clowns
+ttt_traitor_shop_random_enabled             0       // Whether role shop randomization is enabled for traitors
+ttt_detective_shop_random_enabled           0       // Whether role shop randomization is enabled for detectives
+ttt_hypnotist_shop_random_enabled           0       // Whether role shop randomization is enabled for hypnotists
+ttt_deputy_shop_random_enabled              0       // Whether role shop randomization is enabled for deputies
+ttt_impersonator_shop_random_enabled        0       // Whether role shop randomization is enabled for impersonators
+ttt_assassin_shop_random_enabled            0       // Whether role shop randomization is enabled for assassins
+ttt_killer_shop_random_enabled              0       // Whether role shop randomization is enabled for killers
+ttt_jester_shop_random_enabled              0       // Whether role shop randomization is enabled for jesters
+ttt_swapper_shop_random_enabled             0       // Whether role shop randomization is enabled for swappers
+ttt_zombie_shop_random_enabled              0       // Whether role shop randomization is enabled for zombies
+ttt_vampire_shop_random_enabled             0       // Whether role shop randomization is enabled for vampires
+ttt_clown_shop_random_enabled               0       // Whether role shop randomization is enabled for clowns
+ttt_quack_shop_random_enabled               0       // Whether role shop randomization is enabled for quacks
+ttt_parasite_shop_random_enabled            0       // Whether role shop randomization is enabled for parasites
 
 // Role Sync (Server or round must be restarted for changes to take effect)
-ttt_shop_mer_mode                           2       // What items are available to the mercenary in the shop (0=None, 1=Either detective OR traitor (aka Union), 2=Both detective AND traitor (aka Intersect), 3=Just detective, 4=Just traitor)
-ttt_shop_clo_mode                           0       // What items are available to the clown in the shop (0=None, 1=Either detective OR traitor (aka Union), 2=Both detective AND traitor (aka Intersect), 3=Just detective, 4=Just traitor)
-ttt_shop_hyp_sync                           0       // Whether Hypnotists should have all weapons that vanilla Traitors have in their weapon shop
-ttt_shop_imp_sync                           0       // Whether Impersonators should have all weapons that vanilla Traitors have in their weapon shop
-ttt_shop_asn_sync                           0       // Whether Assassins should have all weapons that vanilla Traitors have in their weapon shop
-ttt_shop_vam_sync                           0       // Whether Vampires should have all weapons that vanilla Traitors have in their weapon shop (if they are a Traitor)
-ttt_shop_zom_sync                           0       // Whether Zombies should have all weapons that vanilla Traitors have in their weapon shop (if they are a Traitor)
-ttt_shop_qua_sync                           0       // Whether Quacks should have all weapons that vanilla Traitors have in their weapon shop
-ttt_shop_par_sync                           0       // Whether Parasites should have all weapons that vanilla Traitors have in their weapon shop
+ttt_mercenary_shop_mode                     2       // What items are available to the mercenary in the shop (0=None, 1=Either detective OR traitor (aka Union), 2=Both detective AND traitor (aka Intersect), 3=Just detective, 4=Just traitor)
+ttt_clown_shop_mode                         0       // What items are available to the clown in the shop (0=None, 1=Either detective OR traitor (aka Union), 2=Both detective AND traitor (aka Intersect), 3=Just detective, 4=Just traitor)
+ttt_hypnotist_shop_sync                     0       // Whether Hypnotists should have all weapons that vanilla Traitors have in their weapon shop
+ttt_impersonator_shop_sync                  0       // Whether Impersonators should have all weapons that vanilla Traitors have in their weapon shop
+ttt_assassin_shop_sync                      0       // Whether Assassins should have all weapons that vanilla Traitors have in their weapon shop
+ttt_vampire_shop_sync                       0       // Whether Vampires should have all weapons that vanilla Traitors have in their weapon shop (if they are a Traitor)
+ttt_zombie_shop_sync                        0       // Whether Zombies should have all weapons that vanilla Traitors have in their weapon shop (if they are a Traitor)
+ttt_quack_shop_sync                         0       // Whether Quacks should have all weapons that vanilla Traitors have in their weapon shop
+ttt_parasite_shop_sync                      0       // Whether Parasites should have all weapons that vanilla Traitors have in their weapon shop
 
 // ----------------------------------------
 
 // OTHER SETTINGS
+// Individual Role Starting Health
+ttt_traitor_starting_health                 100     // The amount of health a traitor starts with
+ttt_hypnotist_starting_health               100     // The amount of health the hypnotist starts with
+ttt_impersonator_starting_health            100     // The amount of health the impersonator starts with
+ttt_assassin_starting_health                100     // The amount of health the assassin starts with
+ttt_vampire_starting_health                 100     // The amount of health the vampire starts with
+ttt_quack_starting_health                   100     // The amount of health the quack starts with
+ttt_parasite_starting_health                100     // The amount of health the parasite starts with
+ttt_innocent_starting_health                100     // The amount of health an innocent starts with
+ttt_detective_starting_health               100     // The amount of health the detective starts with
+ttt_glitch_starting_health                  100     // The amount of health the glitch starts with
+ttt_phantom_starting_health                 100     // The amount of health the phantom starts with
+ttt_revenger_starting_health                100     // The amount of health the revenger starts with
+ttt_deputy_starting_health                  100     // The amount of health the deputy starts with
+ttt_mercenary_starting_health               100     // The amount of health the mercenary starts with
+ttt_veteran_starting_health                 100     // The amount of health the veteran starts with
+ttt_doctor_starting_health                  100     // The amount of health the doctor starts with
+ttt_jester_starting_health                  100     // The amount of health the jester starts with
+ttt_swapper_starting_health                 100     // The amount of health the swapper starts with
+ttt_clown_starting_health                   100     // The amount of health the clown starts with
+ttt_beggar_starting_health                  100     // The amount of health the beggar starts with
+ttt_bodysnatcher_starting_health            100     // The amount of health the bodysnatcher starts with
+ttt_drunk_starting_health                   100     // The amount of health the drunk starts with
+ttt_oldman_starting_health                  1       // The amount of health the old man starts with
+ttt_killer_starting_health                  150     // The amount of health the killer starts with
+ttt_zombie_starting_health                  100     // The amount of health the zombie starts with
+
+// Individual Role Max Health
+ttt_traitor_max_health                      100     // The maximum amount of health a traitor can have
+ttt_hypnotist_max_health                    100     // The maximum amount of health the hypnotist can have
+ttt_impersonator_max_health                 100     // The maximum amount of health the impersonator can have
+ttt_assassin_max_health                     100     // The maximum amount of health the assassin can have
+ttt_vampire_max_health                      100     // The maximum amount of health the vampire can have
+ttt_quack_max_health                        100     // The maximum amount of health the quack can have
+ttt_parasite_max_health                     100     // The maximum amount of health the parasite can have
+ttt_innocent_max_health                     100     // The maximum amount of health an innocent can have
+ttt_detective_max_health                    100     // The maximum amount of health the detective can have
+ttt_glitch_max_health                       100     // The maximum amount of health the glitch can have
+ttt_phantom_max_health                      100     // The maximum amount of health the phantom can have
+ttt_revenger_max_health                     100     // The maximum amount of health the revenger can have
+ttt_deputy_max_health                       100     // The maximum amount of health the deputy can have
+ttt_mercenary_max_health                    100     // The maximum amount of health the mercenary can have
+ttt_veteran_max_health                      100     // The maximum amount of health the veteran can have
+ttt_doctor_max_health                       100     // The maximum amount of health the doctor can have
+ttt_jester_max_health                       100     // The maximum amount of health the jester can have
+ttt_swapper_max_health                      100     // The maximum amount of health the swapper can have
+ttt_clown_max_health                        100     // The maximum amount of health the clown can have
+ttt_beggar_max_health                       100     // The maximum amount of health the beggar can have
+ttt_bodysnatcher_max_health                 100     // The maximum amount of health the bodysnatcher can have
+ttt_drunk_max_health                        100     // The maximum amount of health the drunk can have
+ttt_oldman_max_health                       1       // The maximum amount of health the old man can have
+ttt_killer_max_health                       150     // The maximum amount of health the killer can have
+ttt_zombie_max_health                       100     // The maximum amount of health the zombie can have
+
 // Logging
 ttt_debug_logkills                          1       // Whether to log when a player is killed in the console
 ttt_debug_logroles                          1       // Whether to log what roles players are assigned in the console
