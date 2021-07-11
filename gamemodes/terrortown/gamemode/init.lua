@@ -249,6 +249,7 @@ for _, role in ipairs(table.GetKeys(SHOP_ROLES)) do
     end
 end
 CreateConVar("ttt_shop_random_percent", "50", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown by default", 0, 100)
+CreateConVar("ttt_shop_random_position", "0", FCVAR_REPLICATED, "Whether to randomize the position of the items in the shop")
 
 -- Other
 CreateConVar("ttt_use_weapon_spawn_scripts", "1")
@@ -570,6 +571,7 @@ function GM:SyncGlobals()
     SetGlobalInt("ttt_revenger_radar_timer", GetConVar("ttt_revenger_radar_timer"):GetInt())
 
     SetGlobalInt("ttt_shop_random_percent", GetConVar("ttt_shop_random_percent"):GetInt())
+    SetGlobalBool("ttt_shop_random_position", GetConVar("ttt_shop_random_position"):GetBool())
 
     for _, role in ipairs(table.GetKeys(SHOP_ROLES)) do
         local rolestring = ROLE_STRINGS[role]

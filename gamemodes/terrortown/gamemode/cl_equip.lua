@@ -640,10 +640,30 @@ local function TraitorMenuPopup()
                     dlist:AddPanel(panel)
                 end
             end
+
             -- non favorites second
-            for i = 1, 9 do
-                for _, panel in pairs(paneltable[i]) do
-                    dlist:AddPanel(panel)
+            -- Randomize positions if this is enabled
+            if GetGlobalBool("ttt_shop_random_position", false) then
+                -- Gather all the panels into one list
+                local panels = {}
+                for i = 1, 9 do
+                    for _, p in pairs(paneltable[i]) do
+                        table.insert(panels, p)
+                    end
+                end
+
+                -- Randomize it
+                panels = table.Shuffle(panels)
+
+                -- Add them all to the list
+                for _, p in ipairs(panels) do
+                    dlist:AddPanel(p)
+                end
+            else
+                for i = 1, 9 do
+                    for _, panel in pairs(paneltable[i]) do
+                        dlist:AddPanel(panel)
+                    end
                 end
             end
 
