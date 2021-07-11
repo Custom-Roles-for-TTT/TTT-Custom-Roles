@@ -258,6 +258,7 @@ ttt_zombie_respawn_health                   100     // The amount of health a pl
 // WEAPON SHOP SETTINGS
 // Random Shop Restriction Percent
 ttt_shop_random_percent                     50      // The percent chance that a weapon in the shop will be not be shown
+ttt_shop_random_position                    0       // Whether to randomize the position of the items in the shop
 
 // Role Specific Random Shop Restriction Percent
 ttt_traitor_shop_random_percent             0       // The percent chance that a weapon in the shop will be not be shown for traitors
