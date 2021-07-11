@@ -6,6 +6,9 @@
 ### Changes
 - Changed the drunk so they lose karma for hurting/killing people before they sober up
 
+### Additions
+- Added new shop random position CVar
+
 ### Fixes
 - Fixed ttt_*_shop_mode cvars
 
