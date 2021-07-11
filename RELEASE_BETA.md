@@ -11,6 +11,7 @@
 
 ### Fixes
 - Fixed ttt_*_shop_mode cvars
+- Fixed "Kill" icon showing over Jester players' heads when the client knows they are a Jester
 
 ## 1.0.3 
 **Released: July 11th, 2021**
