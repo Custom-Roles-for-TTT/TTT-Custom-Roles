@@ -120,8 +120,8 @@ ttt_vampire_damage_reduction                0       // The fraction an attacker'
 ttt_vampire_fang_timer                      5       // The amount of time fangs must be used to fully drain a target's blood
 ttt_vampire_fang_heal                       50      // The amount of health a vVampire will heal by when they fully drain a target's blood
 ttt_vampire_fang_overheal                   25      // The amount over the vampire's normal maximum health (e.g. 100 + this ConVar) that the vampire can heal to by drinking blood.
-ttt_vampire_prime_death_mode                0       // What to do when the Prime Vampire(s) (e.g. playters who spawn as Vampires originally) are killed. 0 - Do nothing. 1 - Kill all non-prime Vampires. 2 - Revert all non-prime Vampires to their original role.
-ttt_vampire_prime_only_convert              1       // Whether only Prime Vampires (e.g. players who spawn as vampire originally) are allowed to convert other players.
+ttt_vampire_prime_death_mode                0       // What to do when the prime vampire(s) (e.g. playters who spawn as vampires originally) are killed. 0 - Do nothing. 1 - Kill all vampire thralls (non-prime vampires). 2 - Revert all vampire thralls (non-prime vampires) to their original role.
+ttt_vampire_prime_only_convert              1       // Whether only prime vampires (e.g. players who spawn as vampire originally) are allowed to convert other players.
 ttt_vam_credits_starting                    1       // The number of credits a vampire should start with
 
 // Quack
@@ -145,7 +145,7 @@ ttt_detective_starting_health               100     // The amount of health the 
 // Phantom
 ttt_phantom_respawn_health                  50      // The amount of health a phantom will respawn with
 ttt_phantom_weaker_each_respawn             0       // Whether a phantom respawns weaker (1/2 as much HP) each time they respawn, down to a minimum of 1
-ttt_phantom_killer_smoke                    1       // Whether to show smoke on the player who killed the phantom
+ttt_phantom_killer_smoke                    0       // Whether to show smoke on the player who killed the phantom
 ttt_phantom_announce_death                  0       // Whether to announce to detectives (and promoted deputies and impersonators) that a phantom has been killed or respawned
 ttt_phantom_killer_haunt                    1       // Whether to have the phantom haunt their killer
 ttt_phantom_killer_haunt_power_max          100     // The maximum amount of power a phantom can have when haunting their killer
@@ -164,7 +164,6 @@ ttt_revenger_damage_bonus                   0       // Extra damage that the rev
 ttt_deputy_damage_penalty                   0       // Damage penalty that the deputy has before being promoted (e.g. 0.5 = 50% less damage)
 
 // Mercenary
-ttt_shop_mer_mode                           2       // What items are available to the mercenary in the shop (0=None, 1=detective OR traitor, 2=detective AND traitor, 3=detective, 4=traitor)
 ttt_mer_credits_starting                    1       // The number of credits a mercenary should start with
 
 // Veteran
@@ -198,7 +197,8 @@ ttt_swa_credits_starting                    0       // The number of credits a s
 // Clown
 ttt_clown_damage_bonus                      0       // Damage bonus that the clown has after being activated (e.g. 0.5 = 50% more damage)
 ttt_clown_activation_credits                0       // The number of credits to give the clown when they are activated
-ttt_shop_clo_mode                           0       // What items are available to the clown in the shop (0=None, 1=detective OR traitor, 2=detective AND traitor, 3=detective, 4=traitor)
+ttt_clown_hide_when_active                  0       // Whether the clown should be hidden from other players' Target ID (overhead icons) when they are activated. Server or round must be restarted for changes to take effect
+ttt_clown_show_target_icon                  0       // Whether the clown has an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect
 
 // Beggar
 ttt_reveal_beggar_change                    1       // Whether the beggar is revealed to you when they join your team or not
@@ -230,7 +230,7 @@ ttt_killer_knife_enabled                    1       // Whether the killer knife 
 ttt_killer_crowbar_enabled                  1       // Whether the killer throwable crowbar is enabled
 ttt_killer_smoke_enabled                    1       // Whether the killer smoke is enabled
 ttt_killer_smoke_timer                      60      // Number of seconds before a killer will start to smoke after their last kill
-ttt_killer_show_target_icon                 1       // Whether killer have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect
+ttt_killer_show_target_icon                 1       // Whether killers have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect
 ttt_killer_damage_penalty                   0.25    // The fraction a killer's damage will be scaled by when they are attacking without using their knife
 ttt_killer_damage_reduction                 0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a killer
 ttt_killer_warn_all                         0       // Whether to warn all players if there is a killer. If 0, only traitors will be warned
@@ -238,16 +238,23 @@ ttt_killer_vision_enable                    1       // Whether killers have thei
 ttt_kil_credits_starting                    2       // The number of credits a killer should start with
 
 // Zombie
-ttt_zombies_are_monsters                    0       // Whether Zombies should be treated as members of the Monster team.
-ttt_zombies_are_traitors                    0       // Whether Zombies should be treated as members of the Traitors team.
-ttt_zombie_round_chance                     0.1     // The chance that a "Zombie Round" will occur where all players who would have been Traitors are made Zombies instead. Only usable when "ttt_zombies_are_traitors" is set to "1"
-ttt_zombie_vision_enable                    0       // Whether Zombies have their special vision highlights enabled
-ttt_zombie_spit_enable                      1       // Whether Zombies have their spit attack enabled
-ttt_zombie_leap_enable                      1       // Whether Zombies have their leap attack enabled
-ttt_zombie_show_target_icon                 0       // Whether Zombies have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect.
-ttt_zombie_damage_penalty                   0.5     // The fraction a Zombie's damage will be scaled by when they are attacking without using their claws.
-ttt_zombie_damage_reduction                 0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a Zombie.
-ttt_zombie_prime_only_weapons               1       // Whether only Prime Zombies (e.g. players who spawn as Zombies originally) are allowed to pick up weapons.
+ttt_zombies_are_monsters                    0       // Whether zombies should be treated as members of the monster team.
+ttt_zombies_are_traitors                    0       // Whether zombies should be treated as members of the traitors team.
+ttt_zombie_round_chance                     0.1     // The chance that a "zombie round" will occur where all players who would have been traitors are made zombies instead. Only usable when "ttt_zombies_are_traitors" is set to "1"
+ttt_zombie_vision_enable                    0       // Whether zombies have their special vision highlights enabled
+ttt_zombie_spit_enable                      1       // Whether zombies have their spit attack enabled
+ttt_zombie_leap_enable                      1       // Whether zombies have their leap attack enabled
+ttt_zombie_show_target_icon                 0       // Whether zombies have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect.
+ttt_zombie_damage_penalty                   0.5     // The fraction a zombie's damage will be scaled by when they are attacking without using their claws.
+ttt_zombie_damage_reduction                 0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a zombie.
+ttt_zombie_prime_only_weapons               1       // Whether only prime zombies (e.g. players who spawn as zombies originally) are allowed to pick up weapons.
+ttt_zombie_prime_attack_damage              65      // The amount of a damage a prime zombie (e.g. player who spawned as a zombie originally) does with their claws. Server or round must be restarted for changes to take effect.
+ttt_zombie_prime_attack_delay               0.7     // The amount of time between claw attacks for a prime zombie (e.g. player who spawned as a zombie originally). Server or round must be restarted for changes to take effect.
+ttt_zombie_prime_speed_bonus                0.35    // The amount of bonus speed a prime zombie (e.g. player who spawned as a zombie originally) should get when using their claws. Server or round must be restarted for changes to take effect.
+ttt_zombie_thrall_attack_damage             45      // The amount of a damage a zombie thrall (e.g. non-prime zombie) does with their claws. Server or round must be restarted for changes to take effect.
+ttt_zombie_thrall_attack_delay              1.4     // The amount of time between claw attacks for a zombie thrall (e.g. non-prime zombie). Server or round must be restarted for changes to take effect.
+ttt_zombie_thrall_speed_bonus               0.15    // The amount of bonus speed a zombie thrall (e.g. non-prime zombie) should get when using their claws. Server or round must be restarted for changes to take effect.
+ttt_zombie_respawn_health                   100     // The amount of health a player should respawn with when they are converted to a zombie thrall.
 
 // ----------------------------------------
 
@@ -283,7 +290,9 @@ ttt_shop_random_zom_enabled                 0       // Whether role shop randomi
 ttt_shop_random_vam_enabled                 0       // Whether role shop randomization is enabled for vampires
 ttt_shop_random_clo_enabled                 0       // Whether role shop randomization is enabled for clowns
 
-// Role Sync
+// Role Sync (Server or round must be restarted for changes to take effect)
+ttt_shop_mer_mode                           2       // What items are available to the mercenary in the shop (0=None, 1=Either detective OR traitor (aka Union), 2=Both detective AND traitor (aka Intersect), 3=Just detective, 4=Just traitor)
+ttt_shop_clo_mode                           0       // What items are available to the clown in the shop (0=None, 1=Either detective OR traitor (aka Union), 2=Both detective AND traitor (aka Intersect), 3=Just detective, 4=Just traitor)
 ttt_shop_hyp_sync                           0       // Whether Hypnotists should have all weapons that vanilla Traitors have in their weapon shop
 ttt_shop_imp_sync                           0       // Whether Impersonators should have all weapons that vanilla Traitors have in their weapon shop
 ttt_shop_asn_sync                           0       // Whether Assassins should have all weapons that vanilla Traitors have in their weapon shop

@@ -73,17 +73,18 @@ function GM:PostDrawTranslucentRenderables()
     end
 
     for _, v in pairs(player.GetAll()) do
-        -- Compatibility with the disguises and Dead Ringer (810154456)
-        local hidden = v:GetNWBool("disguised", false) or (v.IsFakeDead and v:IsFakeDead())
+        -- Compatibility with the disguises, Dead Ringer (810154456), and Prop Disguiser (310403737 and 2127939503)
+        local hidden = v:GetNWBool("disguised", false) or (v.IsFakeDead and v:IsFakeDead()) or v:GetNWBool("PD_Disguised", false)
         if v:IsActive() and v ~= client and not hidden then
             pos = v:GetPos()
-            pos.z = pos.z + 74
+            pos.z = pos.z + v:GetHeight() + 15
 
             -- Only show the "KILL" target if the setting is enabled
-            local showkillicon = (client:IsAssassin() and GetGlobalBool("ttt_assassin_show_target_icon") and client:GetNWString("AssassinTarget") == v:Nick()) or
-                                    (client:IsKiller() and GetGlobalBool("ttt_killer_show_target_icon")) or
-                                    (client:IsZombie() and GetGlobalBool("ttt_zombie_show_target_icon") and client.GetActiveWeapon and IsValid(client:GetActiveWeapon()) and client:GetActiveWeapon():GetClass() == "weapon_zom_claws") or
-                                    (client:IsVampire() and GetGlobalBool("ttt_vampire_show_target_icon"))
+            local showkillicon = (client:IsAssassin() and GetGlobalBool("ttt_assassin_show_target_icon", false) and client:GetNWString("AssassinTarget") == v:Nick()) or
+                                    (client:IsKiller() and GetGlobalBool("ttt_killer_show_target_icon", false)) or
+                                    (client:IsZombie() and GetGlobalBool("ttt_zombie_show_target_icon", false) and client.GetActiveWeapon and IsValid(client:GetActiveWeapon()) and client:GetActiveWeapon():GetClass() == "weapon_zom_claws") or
+                                    (client:IsVampire() and GetGlobalBool("ttt_vampire_show_target_icon", false)) or
+                                    (client:IsClown() and client:GetNWBool("KillerClownActive", false) and GetGlobalBool("ttt_clown_show_target_icon", false))
 
             if showkillicon and not client:IsSameTeam(v) then -- If we are showing the "KILL" icon this should take priority over role icons
                 render.SetMaterial(indicator_mat_roleback_noz)
@@ -97,7 +98,7 @@ function GM:PostDrawTranslucentRenderables()
             else
                 if v:GetDetectiveLike() and not (v:GetImpersonator() and client:IsTraitorTeam()) then
                     DrawRoleIcon(ROLE_DETECTIVE, false, pos, dir)
-                elseif v:GetClown() and v:GetNWBool("KillerClownActive", false) then
+                elseif v:GetClown() and v:GetNWBool("KillerClownActive", false) and not GetGlobalBool("ttt_clown_hide_when_active", false) then
                     DrawRoleIcon(ROLE_CLOWN, false, pos, dir)
                 end
                 if not hide_roles then
@@ -288,7 +289,9 @@ function GM:HUDDrawTargetID()
     end
 
     if ent:IsPlayer() and ent:Alive() then
-        if ent:GetNWBool("disguised", false) then
+        -- Compatibility with the disguises, Dead Ringer (810154456), and Prop Disguiser (310403737 and 2127939503)
+        local hidden = ent:GetNWBool("disguised", false) or (ent.IsFakeDead and ent:IsFakeDead()) or ent:GetNWBool("PD_Disguised", false)
+        if hidden then
             client.last_id = nil
 
             if client:IsTraitor() or client:IsSpec() then
@@ -348,8 +351,10 @@ function GM:HUDDrawTargetID()
             end
         end
 
-        target_detective = GetRoundState() > ROUND_PREP and (ent:IsDetective() or ((ent:IsDeputy() or (ent:IsImpersonator() and not client:IsTraitorTeam())) and ent:GetNWBool("HasPromotion", false))) or false
-        target_clown = GetRoundState() > ROUND_PREP and ent:IsClown() and ent:GetNWBool("KillerClownActive", false) or false
+        target_detective = GetRoundState() > ROUND_PREP and (ent:IsDetective() or ((ent:IsDeputy() or (ent:IsImpersonator() and not client:IsTraitorTeam())) and ent:GetNWBool("HasPromotion", false)))
+        if not GetGlobalBool("ttt_clown_hide_when_active", false) then
+            target_clown = GetRoundState() > ROUND_PREP and ent:IsClown() and ent:GetNWBool("KillerClownActive", false)
+        end
 
         if client:IsRevenger() then
             target_revenger_lover = (ent:SteamID64() == client:GetNWString("RevengerLover", ""))

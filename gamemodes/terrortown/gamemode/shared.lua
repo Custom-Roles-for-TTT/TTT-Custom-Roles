@@ -1,5 +1,5 @@
 -- Version string for display and function for version checks
-CR_VERSION = "1.0.1"
+CR_VERSION = "1.0.2"
 
 function CRVersion(version)
     local installedVersionRaw = string.Split(CR_VERSION, ".")
@@ -80,6 +80,16 @@ local function AddRoleAssociations(list, roles)
     for _, r in ipairs(roles) do
         list[r] = true
     end
+end
+
+function GetTeamRoles(list)
+    local roles = {}
+    for r, v in pairs(list) do
+        if v then
+            table.insert(roles, r)
+        end
+    end
+    return roles
 end
 
 SHOP_ROLES = {}
@@ -623,11 +633,17 @@ function GetSprintMultiplier(ply, sprinting)
             elseif weaponClass == "weapon_vam_fangs" and wep:Clip1() < 15 then
                 return 3 * mult
             elseif weaponClass == "weapon_zom_claws" then
-                if ply:HasEquipmentItem(EQUIP_SPEED) then
-                    return 1.5 * mult
+                local speed_bonus = 1
+                if ply:IsZombiePrime() then
+                    speed_bonus = speed_bonus + GetGlobalFloat("ttt_zombie_prime_speed_bonus", 0.35)
                 else
-                    return 1.35 * mult
+                    speed_bonus = speed_bonus + GetGlobalFloat("ttt_zombie_thrall_speed_bonus", 0.15)
                 end
+
+                if ply:HasEquipmentItem(EQUIP_SPEED) then
+                    speed_bonus = speed_bonus + 0.15
+                end
+                return speed_bonus * mult
             end
         end
     end
@@ -635,7 +651,7 @@ function GetSprintMultiplier(ply, sprinting)
     return mult
 end
 
-function UpdateDynamicTeams()
+function UpdateRoleState()
     local zombies_are_monsters = GetGlobalBool("ttt_zombies_are_monsters", false)
     -- Zombies cannot be both Monsters and Traitors so don't make them Traitors if they are already Monsters
     local zombies_are_traitors = not zombies_are_monsters and GetGlobalBool("ttt_zombies_are_traitors", false)
@@ -649,6 +665,14 @@ function UpdateDynamicTeams()
 
     -- Update role colors to make sure team changes have taken effect
     UpdateRoleColours()
+
+    -- If the parasite is not enabled, don't let anyone buy the cure
+    local parasite_cure = weapons.GetStored("weapon_par_cure")
+    if not GetGlobalBool("ttt_parasite_enabled", false) then
+        table.Empty(parasite_cure.CanBuy)
+    else
+        parasite_cure.CanBuy = table.Copy(parasite_cure.CanBuyDefault)
+    end
 end
 
 if SERVER then

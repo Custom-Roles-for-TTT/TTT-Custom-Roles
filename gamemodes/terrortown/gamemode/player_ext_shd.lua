@@ -117,6 +117,11 @@ function plymeta:IsShopRole()
     end
     return hasShop
 end
+function plymeta:CanUseShop()
+    return self:IsShopRole() and
+        (not self:IsDeputy() or self:GetNWBool("HasPromotion", false)) and
+        (not self:IsClown() or self:GetNWBool("KillerClownActive", false))
+end
 
 function plymeta:SetRoleAndBroadcast(role)
     self:SetRole(role)
@@ -273,6 +278,59 @@ function plymeta:GetEyeTrace(mask)
 end
 
 if CLIENT then
+    local height_cache = {}
+    function plymeta:GetHeight()
+        local id = self:UniqueID()
+        if height_cache[id] then
+            local data = height_cache[id]
+            local height = data.height
+            local time = data.time
+            if (CurTime() - time) < RealFrameTime() then
+                return height
+            end
+        end
+
+        -- Find the bone with the highest z point
+        local max_bone_z = 0
+        for b = 0, self:GetBoneCount() - 1 do
+            local name = self:GetBoneName(b)
+            local bone = self:LookupBone(name)
+            if bone then
+                local matrix = self:GetBoneMatrix(bone)
+                local translation = matrix:GetTranslation()
+                -- Translate the bone position from being relative to the world to being relative to the player's position
+                local z = translation.z - self:GetPos().z
+                if z > max_bone_z then
+                    max_bone_z = z
+                end
+            end
+        end
+
+        -- Check to see if the player's head is scaled
+        local headId = self:LookupBone("ValveBiped.Bip01_Head1")
+        if headId then
+            local headScale = self:GetManipulateBoneScale(headId)
+            if headScale.z ~= 1 then
+                -- If it has, get the difference between the previous largest Z position and the head position
+                local matrix = self:GetBoneMatrix(headId)
+                local translation = matrix:GetTranslation()
+                local diff = math.abs(max_bone_z - translation.z)
+                -- Scale the difference by the head scale
+                max_bone_z = max_bone_z + (diff * headScale.z)
+            end
+        end
+
+        if max_bone_z > 0 then
+            height_cache[id] = {
+                height = max_bone_z,
+                time = CurTime()
+            }
+            return max_bone_z
+        end
+
+        -- Fallback to default player heights
+        return self:Crouching() and 28 or 64
+    end
 
     function plymeta:AnimApplyGesture(act, weight)
         self:AnimRestartGesture(GESTURE_SLOT_CUSTOM, act, true) -- true = autokill

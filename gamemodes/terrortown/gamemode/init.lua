@@ -190,7 +190,7 @@ CreateConVar("ttt_detective_starting_health", "100")
 
 CreateConVar("ttt_phantom_respawn_health", "50")
 CreateConVar("ttt_phantom_weaker_each_respawn", "0")
-CreateConVar("ttt_phantom_killer_smoke", "1")
+CreateConVar("ttt_phantom_killer_smoke", "0")
 CreateConVar("ttt_phantom_killer_footstep_time", "0")
 CreateConVar("ttt_phantom_announce_death", "0")
 CreateConVar("ttt_phantom_killer_haunt", "1")
@@ -226,6 +226,8 @@ CreateConVar("ttt_swapper_notify_confetti", "0")
 
 CreateConVar("ttt_clown_damage_bonus", "0")
 CreateConVar("ttt_clown_activation_credits", "0")
+CreateConVar("ttt_clown_hide_when_active", "0")
+CreateConVar("ttt_clown_show_target_icon", "0")
 
 CreateConVar("ttt_reveal_beggar_change", "1")
 CreateConVar("ttt_beggar_respawn", "0")
@@ -262,6 +264,8 @@ CreateConVar("ttt_zombie_show_target_icon", "0")
 CreateConVar("ttt_zombie_damage_penalty", "0.5")
 CreateConVar("ttt_zombie_damage_reduction", "0")
 CreateConVar("ttt_zombie_prime_only_weapons", "1")
+CreateConVar("ttt_zombie_prime_speed_bonus", "0.35")
+CreateConVar("ttt_zombie_thrall_speed_bonus", "0.15")
 CreateConVar("ttt_zombie_vision_enable", "0")
 
 -- Other custom role properties
@@ -572,12 +576,18 @@ function GM:SyncGlobals()
     SetGlobalBool("ttt_zombies_are_traitors", GetConVar("ttt_zombies_are_traitors"):GetBool())
     SetGlobalBool("ttt_zombie_show_target_icon", GetConVar("ttt_zombie_show_target_icon"):GetBool())
     SetGlobalBool("ttt_zombie_vision_enable", GetConVar("ttt_zombie_vision_enable"):GetBool())
+    SetGlobalFloat("ttt_zombie_prime_speed_bonus", GetConVar("ttt_zombie_prime_speed_bonus"):GetFloat())
+    SetGlobalFloat("ttt_zombie_thrall_speed_bonus", GetConVar("ttt_zombie_thrall_speed_bonus"):GetFloat())
 
     SetGlobalBool("ttt_vampires_are_monsters", GetConVar("ttt_vampires_are_monsters"):GetBool())
     SetGlobalBool("ttt_vampire_show_target_icon", GetConVar("ttt_vampire_show_target_icon"):GetBool())
     SetGlobalBool("ttt_vampire_vision_enable", GetConVar("ttt_vampire_vision_enable"):GetBool())
 
     SetGlobalInt("ttt_parasite_infection_time", GetConVar("ttt_parasite_infection_time"):GetInt())
+    SetGlobalBool("ttt_parasite_enabled", GetConVar("ttt_parasite_enabled"):GetBool())
+
+    SetGlobalBool("ttt_clown_show_target_icon", GetConVar("ttt_clown_show_target_icon"):GetBool())
+    SetGlobalBool("ttt_clown_hide_when_active", GetConVar("ttt_clown_hide_when_active"):GetBool())
 
     SetGlobalBool("ttt_bem_allow_change", GetConVar("ttt_bem_allow_change"):GetBool())
     SetGlobalInt("ttt_bem_sv_cols", GetConVar("ttt_bem_sv_cols"):GetBool())
@@ -586,7 +596,7 @@ function GM:SyncGlobals()
 
     SetGlobalBool("sv_voiceenable", GetConVar("sv_voiceenable"):GetBool())
 
-    UpdateDynamicTeams()
+    UpdateRoleState()
 end
 
 function SendRoundState(state, ply)
@@ -2195,7 +2205,7 @@ hook.Add("ScaleNPCDamage", "HitmarkerPlayerCritDetector", function(npc, hitgroup
     npc:SetNWBool("LastHitCrit", hitgroup == HITGROUP_HEAD)
 end)
 
-hook.Add("PlayerSay", "ColorMixerOpen", function(ply, text, public)
+hook.Add("PlayerSay", "ColorMixerOpen", function(ply, text, team_only)
     text = string.lower(text)
     if (string.sub(text, 1, 12) == "!hmcritcolor") then
         net.Start("TTT_OpenMixer")

@@ -166,6 +166,8 @@ function SWEP:CancelUnfreeze(entity)
 end
 
 function SWEP:UnfreezeTarget()
+    local owner = self:GetOwner()
+    if not IsValid(owner) or not owner:IsPlayer() then return end
     if not IsValid(self.TargetEntity) or not self.TargetEntity:IsPlayer() then return end
 
     local delay = vampire_fang_unfreeze_delay:GetFloat()
@@ -173,7 +175,7 @@ function SWEP:UnfreezeTarget()
         self.TargetEntity:Freeze(false)
     else
         self:CancelUnfreeze(self.TargetEntity)
-        timer.Create("VampUnfreezeDelay_" .. self:GetOwner():Nick() .. "_" .. self.TargetEntity:Nick(), delay, 1, function()
+        timer.Create("VampUnfreezeDelay_" .. owner:Nick() .. "_" .. self.TargetEntity:Nick(), delay, 1, function()
             if not IsValid(self.TargetEntity) or not self.TargetEntity:IsPlayer() then return end
             self.TargetEntity:Freeze(false)
             self.TargetEntity = nil

@@ -438,9 +438,7 @@ local function TraitorMenuPopup()
     local credits = ply:GetCredits()
     local show = false
     -- Only show the shop for roles that have it (or have been promoted/activated to have it)
-    local hasShop = ply:IsShopRole() and
-                        (not ply:IsDeputy() or ply:GetNWBool("HasPromotion", false)) and
-                        (not ply:IsClown() or ply:GetNWBool("KillerClownActive", false))
+    local hasShop = ply:CanUseShop()
     if hasShop then
         local can_order = credits > 0
         local padding = dsheet:GetPadding()
@@ -629,10 +627,15 @@ local function TraitorMenuPopup()
                     ic:SetIconColor(color_darkened)
                 end
 
-                if ic.favorite then
-                    paneltablefav[ic.slot or 1][k] = ic
+                -- Don't show equipment items that you already own that are listed as "loadout" because you were given it for free
+                if not ItemIsWeapon(item) and ply:HasEquipmentItem(item.id) and item.loadout then
+                    ic:Remove()
                 else
-                    paneltable[ic.slot or 1][k] = ic
+                    if ic.favorite then
+                        paneltablefav[ic.slot or 1][k] = ic
+                    else
+                        paneltable[ic.slot or 1][k] = ic
+                    end
                 end
             end
 

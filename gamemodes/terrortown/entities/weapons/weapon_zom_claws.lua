@@ -43,6 +43,7 @@ SWEP.Tertiary.Damage = 25
 SWEP.Tertiary.NumShots = SWEP.Primary.NumShots
 SWEP.Tertiary.Recoil = 5
 SWEP.Tertiary.Cone = 0.02
+SWEP.Tertiary.Delay = 3
 
 SWEP.Kind = WEAPON_ROLE
 
@@ -58,8 +59,22 @@ local sound_single = Sound("Weapon_Crowbar.Single")
 local zombie_leap = CreateConVar("ttt_zombie_leap_enable", "1")
 local zombie_spit = CreateConVar("ttt_zombie_spit_enable", "1")
 
+local zombie_respawn_health = CreateConVar("ttt_zombie_respawn_health", "100")
+
+local zombie_prime_damage = CreateConVar("ttt_zombie_prime_attack_damage", "65")
+local zombie_thrall_damage = CreateConVar("ttt_zombie_thrall_attack_damage", "45")
+local zombie_prime_delay = CreateConVar("ttt_zombie_prime_attack_delay", "0.7")
+local zombie_thrall_delay = CreateConVar("ttt_zombie_thrall_attack_delay", "1.4")
+
 function SWEP:Initialize()
     self:SetHoldType(self.HoldType)
+
+    if SERVER then
+        SetGlobalInt("ttt_zombie_prime_attack_damage", zombie_prime_damage:GetInt())
+        SetGlobalInt("ttt_zombie_thrall_attack_damage", zombie_thrall_damage:GetInt())
+        SetGlobalFloat("ttt_zombie_prime_attack_delay", zombie_prime_delay:GetFloat())
+        SetGlobalFloat("ttt_zombie_thrall_attack_delay", zombie_thrall_delay:GetFloat())
+    end
 
     if CLIENT then
         self:AddHUDHelp("Left click to attack", "Right click to leap. Press reload to spit", false)
@@ -146,8 +161,11 @@ function SWEP:PrimaryAttack()
                             hitEnt:SpawnForRound(true)
                             hitEnt:SetRole(ROLE_ZOMBIE)
                             hitEnt:SetZombiePrime(false)
-                            hitEnt:SetMaxHealth(100)
-                            hitEnt:SetHealth(100)
+
+                            local health = zombie_respawn_health:GetInt()
+                            hitEnt:SetMaxHealth(health)
+                            hitEnt:SetHealth(health)
+
                             hitEnt:StripAll()
                             hitEnt:Give("weapon_zom_claws")
                             if IsValid(body) then
@@ -201,9 +219,10 @@ Spit Attack
 ]]
 
 function SWEP:Reload()
+    if CLIENT then return end
     if not zombie_spit:GetBool() then return end
     if self.NextReload > CurTime() then return end
-    self.NextReload = CurTime() + 3
+    self.NextReload = CurTime() + self.Tertiary.Delay
     self.Weapon:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 
     self:CSShootBullet(self.Tertiary.Damage, self.Tertiary.Recoil, self.Tertiary.NumShots, self.Tertiary.Cone)
@@ -245,6 +264,14 @@ function SWEP:OnDrop()
 end
 
 function SWEP:Deploy()
+    if self.Owner:IsZombiePrime() then
+        self.Primary.Damage = GetGlobalInt("ttt_zombie_prime_attack_damage", 65)
+        self.Primary.Delay = GetGlobalFloat("ttt_zombie_prime_attack_delay", 0.7)
+    else
+        self.Primary.Damage = GetGlobalInt("ttt_zombie_thrall_attack_damage", 45)
+        self.Primary.Delay = GetGlobalFloat("ttt_zombie_thrall_attack_delay", 1.4)
+    end
+
     local vm = self.Owner:GetViewModel()
     vm:SendViewModelMatchingSequence(vm:LookupSequence("fists_draw"))
 end

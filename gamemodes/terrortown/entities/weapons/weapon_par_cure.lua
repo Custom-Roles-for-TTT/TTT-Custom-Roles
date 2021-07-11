@@ -36,6 +36,7 @@ SWEP.Secondary.Delay          = 2
 
 SWEP.Kind = WEAPON_EQUIP
 SWEP.CanBuy = { ROLE_DETECTIVE }
+SWEP.CanBuyDefault = { ROLE_DETECTIVE }
 SWEP.NoSights = true
 
 SWEP.UseHands = true
