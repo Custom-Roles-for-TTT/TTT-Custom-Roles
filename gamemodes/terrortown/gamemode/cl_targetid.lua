@@ -102,7 +102,7 @@ function GM:PostDrawTranslucentRenderables()
                     DrawRoleIcon(ROLE_CLOWN, false, pos, dir)
                 end
                 if not hide_roles then
-                    local hideBeggar = v:GetNWBool("WasBeggar", false) and not GetGlobalBool("ttt_reveal_beggar_change", true)
+                    local hideBeggar = v:GetNWBool("WasBeggar", false) and not GetGlobalBool("ttt_beggar_reveal_change", true)
                     local showJester = (v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) or ((v:GetTraitor() or v:GetInnocent()) and hideBeggar)
                     if client:IsTraitorTeam() then
                         if (v:GetTraitor() and not hideBeggar) or v:GetGlitch() then
@@ -313,7 +313,7 @@ function GM:HUDDrawTargetID()
             _, color = util.HealthToString(ent:Health(), ent:GetMaxHealth())
         end
 
-        local hideBeggar = ent:GetNWBool("WasBeggar", false) and not GetGlobalBool("ttt_reveal_beggar_change", true)
+        local hideBeggar = ent:GetNWBool("WasBeggar", false) and not GetGlobalBool("ttt_beggar_reveal_change", true)
 
         if not hide_roles and GetRoundState() == ROUND_ACTIVE then
             local showJester = (ent:IsJesterTeam() and not ent:GetNWBool("KillerClownActive", false)) or ((ent:GetTraitor() or ent:GetInnocent()) and hideBeggar)

@@ -37,7 +37,7 @@ ttt_clown_enabled                           0       // Whether or not the clown 
 ttt_beggar_enabled                          0       // Whether or not the beggar should spawn
 ttt_bodysnatcher_enabled                    0       // Whether or not the bodysnatcher should spawn
 ttt_drunk_enabled                           0       // Whether or not the drunk should spawn
-ttt_old_man_enabled                         0       // Whether or not the old man should spawn
+ttt_oldman_enabled                          0       // Whether or not the old man should spawn
 ttt_killer_enabled                          0       // Whether or not the killer should spawn
 ttt_zombie_enabled                          0       // Whether or not the zombie should spawn
 
@@ -61,7 +61,7 @@ ttt_clown_spawn_weight                      1       // The weight assigned to sp
 ttt_beggar_spawn_weight                     1       // The weight assigned to spawning the beggar
 ttt_bodysnatcher_spawn_weight               1       // The weight assigned to spawning the bodysnatcher
 ttt_drunk_spawn_weight                      1       // The weight assigned to spawning the drunk
-ttt_old_man_spawn_weight                    1       // The weight assigned to spawning the old man
+ttt_oldman_spawn_weight                     1       // The weight assigned to spawning the old man
 ttt_killer_spawn_weight                     1       // The weight assigned to spawning the killer
 ttt_zombie_spawn_weight                     1       // The weight assigned to spawning the zombie
 // (Note: Each role is limited to one player per round.)
@@ -86,7 +86,7 @@ ttt_clown_min_players                       0       // The minimum number of pla
 ttt_beggar_min_players                      0       // The minimum number of players required to spawn the beggar
 ttt_bodysnatcher_min_players                0       // The minimum number of players required to spawn the bodysnatcher
 ttt_drunk_min_players                       0       // The minimum number of players required to spawn the drunk
-ttt_old_man_min_players                     0       // The minimum number of players required to spawn the old man
+ttt_oldman_min_players                      0       // The minimum number of players required to spawn the old man
 ttt_killer_min_players                      0       // The minimum number of players required to spawn the killer
 ttt_zombie_min_players                      0       // The minimum number of players required to spawn the zombie
 
@@ -97,10 +97,10 @@ ttt_traitor_vision_enable                   0       // Whether members of the tr
 
 // Impersonator
 ttt_impersonator_damage_penalty             0       // Damage penalty that the impersonator has before being promoted (e.g. 0.5 = 50% less damage)
-ttt_imp_credits_starting                    1       // The number of credits an impersonator should start with
+ttt_impersonator_credits_starting           1       // The number of credits an impersonator should start with
 
 // Hypnotist
-ttt_hyp_credits_starting                    1       // The number of credits a hypnotist should start with
+ttt_hypnotist_credits_starting              1       // The number of credits a hypnotist should start with
 
 // Assassin
 ttt_assassin_show_target_icon               0       // Whether assassins have an icon over their target's heads showing who to kill. Server or round must be restarted for changes to take effect
@@ -108,7 +108,7 @@ ttt_assassin_next_target_delay              2       // The delay (in seconds) be
 ttt_assassin_target_damage_bonus            1       // Damage bonus that the assassin has against their target (e.g. 0.5 = 50% extra damage)
 ttt_assassin_wrong_damage_penalty           0.5     // Damage penalty that the assassin has when attacking someone who is not their target (e.g. 0.5 = 50% less damage)
 ttt_assassin_failed_damage_penalty          0.5     // Damage penalty that the assassin has after they have failed their contract by killing the wrong person (e.g. 0.5 = 50% less damage)
-ttt_asn_credits_starting                    1       // The number of credits an assassin should start with
+ttt_assassin_credits_starting               1       // The number of credits an assassin should start with
 
 // Vampire
 ttt_vampires_are_monsters                   0       // Whether vampires should be treated as members of the Monster team.
@@ -122,17 +122,17 @@ ttt_vampire_fang_heal                       50      // The amount of health a vV
 ttt_vampire_fang_overheal                   25      // The amount over the vampire's normal maximum health (e.g. 100 + this ConVar) that the vampire can heal to by drinking blood.
 ttt_vampire_prime_death_mode                0       // What to do when the prime vampire(s) (e.g. playters who spawn as vampires originally) are killed. 0 - Do nothing. 1 - Kill all vampire thralls (non-prime vampires). 2 - Revert all vampire thralls (non-prime vampires) to their original role.
 ttt_vampire_prime_only_convert              1       // Whether only prime vampires (e.g. players who spawn as vampire originally) are allowed to convert other players.
-ttt_vam_credits_starting                    1       // The number of credits a vampire should start with
+ttt_vampire_credits_starting                1       // The number of credits a vampire should start with
 
 // Quack
-ttt_qua_credits_starting                    1       // The number of credits a quack should start with
+ttt_quack_credits_starting                  1       // The number of credits a quack should start with
 
 // Parasite
-ttt_par_credits_starting                    1       // The number of credits a parasite should start with
 ttt_parasite_infection_time                 90      // The time it takes in seconds for the parasite to fully infect someone
 ttt_parasite_respawn_mode                   0       // The way in which the parasite respawns. 0 - Take over host. 1 - Respawn at the parasites body. 2 - Respawn at a random location.
 ttt_parasite_respawn_health                 100     // The health on which the parasite respawns
 ttt_parasite_announce_infection             0       // Whether players are notified when they are infected with the parasite
+ttt_parasite_credits_starting               1       // The number of credits a parasite should start with
 
 // ----------------------------------------
 
@@ -140,7 +140,6 @@ ttt_parasite_announce_infection             0       // Whether players are notif
 // Detective
 ttt_detective_search_only                   1       // Whether only detectives can search bodies or not
 ttt_all_search_postround                    1       // Whether non-detectives can search bodies post-round or not
-ttt_detective_starting_health               100     // The amount of health the detective spawns with
 
 // Phantom
 ttt_phantom_respawn_health                  50      // The amount of health a phantom will respawn with
@@ -162,9 +161,10 @@ ttt_revenger_damage_bonus                   0       // Extra damage that the rev
 
 // Deputy
 ttt_deputy_damage_penalty                   0       // Damage penalty that the deputy has before being promoted (e.g. 0.5 = 50% less damage)
+ttt_deputy_credits_starting                 0       // The number of credits a deputy should start with
 
 // Mercenary
-ttt_mer_credits_starting                    1       // The number of credits a mercenary should start with
+ttt_mercenary_credits_starting              1       // The number of credits a mercenary should start with
 
 // Veteran
 ttt_veteran_damage_bonus                    0.5     // Damage bonus that the veteran has when they are the last innocent alive (e.g. 0.5 = 50% more damage)
@@ -172,7 +172,7 @@ ttt_veteran_full_heal                       1       // Whether the veteran gets 
 
 // Doctor
 ttt_doctor_mode                             0       // What tool the doctor starts with (0=Health Station, 1=Defib then Health Station)
-ttt_doc_credits_starting                    0       // How many credits the doctor starts with
+ttt_doctor_credits_starting                 0       // How many credits the doctor starts with
 
 // ----------------------------------------
 
@@ -184,7 +184,7 @@ ttt_jester_win_by_traitors                  1       // Whether the jester will w
 ttt_jester_notify_mode                      0       // The logic to use when notifying players that a jester is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone.
 ttt_jester_notify_sound                     0       // Whether to play a cheering sound when a jester is killed
 ttt_jester_notify_confetti                  0       // Whether to throw confetti when a jester is a killed
-ttt_jes_credits_starting                    0       // The number of credits a jester should start with
+ttt_jester_credits_starting                 0       // The number of credits a jester should start with
 
 // Swapper
 ttt_swapper_respawn_health                  100     // What amount of health to give the swapper when they are killed and respawned
@@ -192,16 +192,17 @@ ttt_swapper_notify_mode                     0       // The logic to use when not
 ttt_swapper_notify_sound                    0       // Whether to play a cheering sound when a swapper is killed
 ttt_swapper_notify_confetti                 0       // Whether to throw confetti when a swapper is a killed
 ttt_swapper_killer_health                   100     // What amount of health to give the person who killed the swapper. Set to "0" to kill them
-ttt_swa_credits_starting                    0       // The number of credits a swapper should start with
+ttt_swapper_credits_starting                0       // The number of credits a swapper should start with
 
 // Clown
 ttt_clown_damage_bonus                      0       // Damage bonus that the clown has after being activated (e.g. 0.5 = 50% more damage)
 ttt_clown_activation_credits                0       // The number of credits to give the clown when they are activated
 ttt_clown_hide_when_active                  0       // Whether the clown should be hidden from other players' Target ID (overhead icons) when they are activated. Server or round must be restarted for changes to take effect
 ttt_clown_show_target_icon                  0       // Whether the clown has an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect
+ttt_clown_credits_starting                  0       // The number of credits a clown should start with
 
 // Beggar
-ttt_reveal_beggar_change                    1       // Whether the beggar is revealed to you when they join your team or not
+ttt_beggar_reveal_change                    1       // Whether the beggar is revealed to you when they join your team or not
 ttt_beggar_respawn                          0       // Whether the beggar respawns when they are killed before joining another team
 ttt_beggar_respawn_delay                    3       // The delay to use when respawning the begger (if "ttt_beggar_respawn" is enabled)
 ttt_beggar_notify_mode                      0       // The logic to use when notifying players that a beggar is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone.
@@ -221,11 +222,7 @@ ttt_independents_trigger_traitor_testers    0       // Whether independents trig
 ttt_drunk_sober_time                        180     // Time in seconds for the drunk to remember their role
 ttt_drunk_innocent_chance                   0.7     // Chance that the drunk will become an innocent when remembering their role
 
-// Old Man
-ttt_old_man_starting_health                 1       // The amount of health the old man spawns with
-
 // Killer
-ttt_killer_max_health                       150     // The killer's starting and maximum health
 ttt_killer_knife_enabled                    1       // Whether the killer knife is enabled
 ttt_killer_crowbar_enabled                  1       // Whether the killer throwable crowbar is enabled
 ttt_killer_smoke_enabled                    1       // Whether the killer smoke is enabled

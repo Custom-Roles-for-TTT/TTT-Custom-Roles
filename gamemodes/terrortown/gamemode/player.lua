@@ -598,8 +598,7 @@ local function CheckCreditAward(victim, attacker)
 
             -- If size is 0, awards are off
             if amt > 0 then
-                LANG.Msg(GetTraitorFilter(true), "credit_tr_all", { num = amt })
-                LANG.Msg(GetHypnotistFilter(true), "credit_tr_all", { num = amt })
+                LANG.Msg(GetTraitorTeamFilter(true), "credit_tr_all", { num = amt })
 
                 for _, ply in ipairs(player.GetAll()) do
                     if ply:IsActiveTraitorTeam() and ply:IsActiveShopRole() then

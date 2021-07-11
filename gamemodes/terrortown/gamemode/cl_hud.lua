@@ -491,7 +491,7 @@ local function InfoPaint(client)
 
         surface.SetTextPos(label_left, ScrH() - label_top - h)
         surface.DrawText(text)
-    elseif (client:IsInnocent() or client:IsTraitor()) and client:GetNWBool("WasBeggar", false) and not GetGlobalBool("ttt_reveal_beggar_change", true) then
+    elseif (client:IsInnocent() or client:IsTraitor()) and client:GetNWBool("WasBeggar", false) and not GetGlobalBool("ttt_beggar_reveal_change", true) then
         surface.SetFont("TabLarge")
         surface.SetTextColor(255, 255, 255, 230)
 

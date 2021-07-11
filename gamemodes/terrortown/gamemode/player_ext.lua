@@ -74,8 +74,10 @@ function plymeta:SetDefaultCredits()
     local cvar = nil
     if self:IsTraitor() then
         cvar = "ttt_credits_starting"
+    elseif self:IsDetective() then
+        cvar = "ttt_det_credits_starting"
     else
-        cvar = "ttt_" .. ROLE_STRINGS_SHORT[self:GetRole()] .. "_credits_starting"
+        cvar = "ttt_" .. ROLE_STRINGS[self:GetRole()] .. "_credits_starting"
     end
     if ConVarExists(cvar) then
         c = GetConVar(cvar):GetInt()
@@ -347,11 +349,7 @@ function plymeta:SpawnForRound(dead_only)
         net.WriteString(self:Nick())
         net.Broadcast()
 
-        if self:IsOldMan() then
-            local health = GetConVar("ttt_old_man_starting_health"):GetInt()
-            self:SetMaxHealth(health)
-            self:SetHealth(health)
-        end
+        SetRoleHealth(self)
     end
 
     -- Make sure players who are respawning get their default weapons

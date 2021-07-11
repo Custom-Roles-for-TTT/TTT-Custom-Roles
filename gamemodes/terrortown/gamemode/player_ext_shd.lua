@@ -113,7 +113,7 @@ function plymeta:IsShopRole()
     -- If this is a jester team member with a potential shop, only give them access if there are actual things to buy
     if hasShop and self:IsJesterTeam() then
         local hasWeapon = WEPS.DoesRoleHaveWeapon(self:GetRole())
-        return hasWeapon or (self:IsClown() and GetGlobalInt("ttt_shop_clo_mode") > SHOP_SYNC_MODE_NONE)
+        return hasWeapon or (self:IsClown() and GetGlobalInt("ttt_clown_shop_mode") > SHOP_SYNC_MODE_NONE)
     end
     return hasShop
 end

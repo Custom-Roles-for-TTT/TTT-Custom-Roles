@@ -63,16 +63,12 @@ function GetEquipmentForRole(role, promoted, block_randomization)
     WEPS.PrepWeaponsLists(role)
 
     -- Determine which role sync variable to use, if any
-    local rolemode = GetGlobalInt("ttt_shop_" .. ROLE_STRINGS_SHORT[role] .. "_mode", SHOP_SYNC_MODE_NONE)
+    local rolemode = GetGlobalInt("ttt_" .. ROLE_STRINGS[role] .. "_shop_mode", SHOP_SYNC_MODE_NONE)
 
     -- Pre-load the Traitor weapons so that any that have their CanBuy modified will also apply to the enabled allied role(s)
-    local sync_hypnotist = GetGlobalBool("ttt_shop_hyp_sync") and role == ROLE_HYPNOTIST
-    local sync_impersonator = GetGlobalBool("ttt_shop_imp_sync") and role == ROLE_IMPERSONATOR
-    local sync_assassin = GetGlobalBool("ttt_shop_asn_sync") and role == ROLE_ASSASSIN
-    local sync_vampire = GetGlobalBool("ttt_shop_vam_sync") and role == ROLE_VAMPIRE and TRAITOR_ROLES[ROLE_VAMPIRE]
-    local sync_zombie = GetGlobalBool("ttt_shop_zom_sync") and role == ROLE_ZOMBIE and TRAITOR_ROLES[ROLE_ZOMBIE]
-    local sync_traitor_weapons = sync_hypnotist or sync_impersonator or sync_assassin or sync_vampire or sync_zombie or
-                                    (rolemode > SHOP_SYNC_MODE_NONE)
+    local traitorsync = GetGlobalBool("ttt_" .. ROLE_STRINGS[role] .. "_shop_sync", false) and TRAITOR_ROLES[role]
+
+    local sync_traitor_weapons = traitorsync or (rolemode > SHOP_SYNC_MODE_NONE)
 
     if sync_traitor_weapons and not Equipment[ROLE_TRAITOR] then
         GetEquipmentForRole(ROLE_TRAITOR, false, true)
@@ -80,8 +76,7 @@ function GetEquipmentForRole(role, promoted, block_randomization)
 
     -- Pre-load the Detective weapons so that any that have their CanBuy modified will also apply to the enabled allied role(s)
     local sync_detective_like = (promoted and (role == ROLE_DEPUTY or role == ROLE_IMPERSONATOR))
-    local sync_detective_weapons = sync_detective_like or
-                                    (rolemode > SHOP_SYNC_MODE_NONE)
+    local sync_detective_weapons = sync_detective_like or (rolemode > SHOP_SYNC_MODE_NONE)
 
     if sync_detective_weapons and not Equipment[ROLE_DETECTIVE] then
         GetEquipmentForRole(ROLE_DETECTIVE, false, true)

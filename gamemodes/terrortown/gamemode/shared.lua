@@ -1,5 +1,5 @@
 -- Version string for display and function for version checks
-CR_VERSION = "1.0.2"
+CR_VERSION = "1.0.3"
 
 function CRVersion(version)
     local installedVersionRaw = string.Split(CR_VERSION, ".")
@@ -109,6 +109,9 @@ AddRoleAssociations(INDEPENDENT_ROLES, {ROLE_DRUNK, ROLE_OLDMAN, ROLE_KILLER, RO
 
 MONSTER_ROLES = {}
 AddRoleAssociations(MONSTER_ROLES, {})
+
+DEFAULT_ROLES = {}
+AddRoleAssociations(DEFAULT_ROLES, {ROLE_INNOCENT, ROLE_TRAITOR, ROLE_DETECTIVE})
 
 -- Role colours
 COLOR_INNOCENT = {
@@ -699,7 +702,7 @@ if SERVER then
                 -- Exclude Glitch from this list so they don't get discovered immediately
                 elseif (INNOCENT_ROLES[p:GetRole()] or MONSTER_ROLES[p:GetRole()]) and not p:IsGlitch() then
                     -- Don't add the former beggar to the list of enemies unless the "reveal" setting is enabled
-                    if GetConVar("ttt_reveal_beggar_change"):GetBool() or not p:GetNWBool("WasBeggar", false) then
+                    if GetConVar("ttt_beggar_reveal_change"):GetBool() or not p:GetNWBool("WasBeggar", false) then
                         table.insert(enemies, p:Nick())
                     end
                 -- Exclude the Old Man because they just want to survive
@@ -739,6 +742,14 @@ if SERVER then
             ply:PrintMessage(HUD_PRINTCENTER, targetMessage)
             ply:PrintMessage(HUD_PRINTTALK, targetMessage)
         end
+    end
+
+    function SetRoleHealth(ply)
+        local role = ply:GetRole()
+        local maxhealth = GetConVar("ttt_" .. ROLE_STRINGS[role] .. "_max_health"):GetInt()
+        ply:SetMaxHealth(maxhealth)
+        local health = GetConVar("ttt_" .. ROLE_STRINGS[role] .. "_starting_health"):GetInt()
+        ply:SetHealth(health)
     end
 end
 

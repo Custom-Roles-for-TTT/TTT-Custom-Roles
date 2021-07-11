@@ -265,12 +265,12 @@ net.Receive("TTT_RoleChanged", function(len)
     })
 end)
 
-local old_man_wins = false
+local oldman_wins = false
 net.Receive("TTT_UpdateOldManWins", function()
-    old_man_wins = net.ReadBool()
+    oldman_wins = net.ReadBool()
 
     -- Log the win event with an offset to force it to the end
-    if old_man_wins then
+    if oldman_wins then
         CLSCORE:AddEvent({
             id = EVENT_FINISH,
             win = WIN_OLDMAN
@@ -556,7 +556,7 @@ function CLSCORE:AddAward(y, pw, award, dpanel)
     return y
 end
 
-local old_man_won_last_round = false
+local oldman_won_last_round = false
 function CLSCORE:BuildSummaryPanel(dpanel)
     -- Gather player information
     local scores = self.Scores
@@ -705,11 +705,11 @@ function CLSCORE:BuildSummaryPanel(dpanel)
     local ywin = 15
     winlbl:SetPos(xwin, ywin)
 
-    old_man_won_last_round = old_man_wins
+    oldman_won_last_round = oldman_wins
     local exwinlbl = vgui.Create("DLabel", dpanel)
-    if old_man_won_last_round then
+    if oldman_won_last_round then
         exwinlbl:SetFont("WinSmall")
-        exwinlbl:SetText(T("hilite_win_old_man"))
+        exwinlbl:SetText(T("hilite_win_oldman"))
         exwinlbl:SetTextColor(COLOR_WHITE)
         exwinlbl:SizeToContents()
         local xexwin = (w - exwinlbl:GetWide()) / 2
@@ -721,7 +721,7 @@ function CLSCORE:BuildSummaryPanel(dpanel)
 
     bg.PaintOver = function()
         draw.RoundedBox(8, 8, ywin - 5, w - 14, winlbl:GetTall() + 10, title.c)
-        if old_man_won_last_round then draw.RoundedBoxEx(8, 8, 65, w - 14, 28, ROLE_COLORS[ROLE_OLDMAN], false, false, true, true) end
+        if oldman_won_last_round then draw.RoundedBoxEx(8, 8, 65, w - 14, 28, ROLE_COLORS[ROLE_OLDMAN], false, false, true, true) end
         draw.RoundedBox(0, 8, ywin + winlbl:GetTall() + 15, 341, 329 + height_extra, Color(164, 164, 164, 255))
         draw.RoundedBox(0, 357, ywin + winlbl:GetTall() + 15, 341, 329 + height_extra, Color(164, 164, 164, 255))
         local loc = ywin + winlbl:GetTall() + 47
@@ -733,7 +733,7 @@ function CLSCORE:BuildSummaryPanel(dpanel)
         draw.RoundedBox(0, 8, ywin + winlbl:GetTall() + 352 + height_extra, 690, 32, Color(164, 164, 164, 255))
     end
 
-    if old_man_won_last_round then winlbl:SetPos(xwin, ywin - 15) end
+    if oldman_won_last_round then winlbl:SetPos(xwin, ywin - 15) end
 
     -- Add the players to the panel
     self:BuildPlayerList(scores_by_section[ROLE_INNOCENT], dpanel, 317, 8, 103, 33)
@@ -957,9 +957,9 @@ function CLSCORE:BuildHilitePanel(dpanel)
     winlbl:SetPos(xwin, ywin)
 
     local exwinlbl = vgui.Create("DLabel", dpanel)
-    if old_man_won_last_round then
+    if oldman_won_last_round then
         exwinlbl:SetFont("WinSmall")
-        exwinlbl:SetText(T("hilite_win_old_man"))
+        exwinlbl:SetText(T("hilite_win_oldman"))
         exwinlbl:SetTextColor(COLOR_WHITE)
         exwinlbl:SizeToContents()
         local xexwin = (w - exwinlbl:GetWide()) / 2
@@ -971,10 +971,10 @@ function CLSCORE:BuildHilitePanel(dpanel)
 
     bg.PaintOver = function()
         draw.RoundedBox(8, 8, ywin - 5, w - 14, winlbl:GetTall() + 10, title.c)
-        if old_man_won_last_round then draw.RoundedBoxEx(8, 8, 65, w - 14, 28, ROLE_COLORS[ROLE_OLDMAN], false, false, true, true) end
+        if oldman_won_last_round then draw.RoundedBoxEx(8, 8, 65, w - 14, 28, ROLE_COLORS[ROLE_OLDMAN], false, false, true, true) end
     end
 
-    if old_man_won_last_round then winlbl:SetPos(xwin, ywin - 15) end
+    if oldman_won_last_round then winlbl:SetPos(xwin, ywin - 15) end
 
     local ysubwin = ywin + winlbl:GetTall()
     local partlbl = vgui.Create("DLabel", dpanel)

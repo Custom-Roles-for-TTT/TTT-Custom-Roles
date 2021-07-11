@@ -364,12 +364,7 @@ local function OrderEquipment(ply, cmd, args)
     local swep_table = (not is_item) and weapons.GetStored(id) or nil
 
     local role = ply:GetRole()
-    local sync_hypnotist = GetGlobalBool("ttt_shop_hyp_sync") and ply:IsHypnotist()
-    local sync_impersonator = GetGlobalBool("ttt_shop_imp_sync") and ply:IsImpersonator()
-    local sync_assassin = GetGlobalBool("ttt_shop_asn_sync") and ply:IsAssassin()
-    local sync_vampire = GetGlobalBool("ttt_shop_vam_sync") and ply:IsVampire() and TRAITOR_ROLES[ROLE_VAMPIRE]
-    local sync_zombie = GetGlobalBool("ttt_shop_zom_sync") and ply:IsZombie() and TRAITOR_ROLES[ROLE_ZOMBIE]
-    local sync_traitor_weapons = sync_hypnotist or sync_impersonator or sync_assassin or sync_vampire or sync_zombie
+    local sync_traitor_weapons = GetGlobalBool("ttt_" .. ROLE_STRINGS[role] .. "_shop_sync", false) and TRAITOR_ROLES[role]
     local promoted = ply:IsDetectiveLike() and role ~= ROLE_DETECTIVE
 
     -- If this role has a table of additional weapons and that table includes this weapon
@@ -395,7 +390,7 @@ local function OrderEquipment(ply, cmd, args)
         local allowed = GetEquipmentItem(role, id)
         -- Check for the syncing options
         if not allowed then
-            local rolemode = GetGlobalInt("ttt_shop_" .. ROLE_STRINGS_SHORT[role] .. "_mode", SHOP_SYNC_MODE_NONE)
+            local rolemode = GetGlobalInt("ttt_" .. ROLE_STRINGS[role] .. "_shop_mode", SHOP_SYNC_MODE_NONE)
             if rolemode > SHOP_SYNC_MODE_NONE then
                 -- Traitor OR Detective
                 if rolemode == SHOP_SYNC_MODE_UNION then
@@ -664,7 +659,7 @@ function GM:WeaponEquip(wep, ply)
                     ply:PrintMessage(HUD_PRINTTALK, "You have joined the traitor team")
                     ply:PrintMessage(HUD_PRINTCENTER, "You have joined the traitor team")
                     timer.Simple(0.5, function() SendFullStateUpdate() end) -- Slight delay to avoid flickering from beggar to traitor and back to beggar
-                    if GetConVar("ttt_reveal_beggar_change"):GetBool() then
+                    if GetConVar("ttt_beggar_reveal_change"):GetBool() then
                         wep.BoughtBuy:PrintMessage(HUD_PRINTTALK, "The beggar has joined your team")
                         wep.BoughtBuy:PrintMessage(HUD_PRINTCENTER, "The beggar has joined your team")
                     end
@@ -675,7 +670,7 @@ function GM:WeaponEquip(wep, ply)
                     ply:PrintMessage(HUD_PRINTTALK, "You have joined the innocent team")
                     ply:PrintMessage(HUD_PRINTCENTER, "You have joined the innocent team")
                     timer.Simple(0.5, function() SendFullStateUpdate() end) -- Slight delay to avoid flickering from beggar to innocent and back to beggar
-                    if GetConVar("ttt_reveal_beggar_change"):GetBool() then
+                    if GetConVar("ttt_beggar_reveal_change"):GetBool() then
                         wep.BoughtBuy:PrintMessage(HUD_PRINTTALK, "The beggar has joined your team")
                         wep.BoughtBuy:PrintMessage(HUD_PRINTCENTER, "The beggar has joined your team")
                     end

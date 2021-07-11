@@ -78,88 +78,29 @@ CreateConVar("ttt_detective_max", "32")
 CreateConVar("ttt_detective_min_players", "8")
 CreateConVar("ttt_detective_karma_min", "600")
 
--- Special innocent spawn probabilities
+-- Role spawn parameters
 CreateConVar("ttt_special_innocent_pct", 0.33)
 CreateConVar("ttt_special_innocent_chance", 0.5)
-CreateConVar("ttt_glitch_enabled", 0)
-CreateConVar("ttt_glitch_spawn_weight", "1")
-CreateConVar("ttt_glitch_min_players", "0")
-CreateConVar("ttt_phantom_enabled", 0)
-CreateConVar("ttt_phantom_spawn_weight", "1")
-CreateConVar("ttt_phantom_min_players", "0")
-CreateConVar("ttt_revenger_enabled", 0)
-CreateConVar("ttt_revenger_spawn_weight", "1")
-CreateConVar("ttt_revenger_min_players", "0")
-CreateConVar("ttt_deputy_enabled", 0)
-CreateConVar("ttt_deputy_spawn_weight", "1")
-CreateConVar("ttt_deputy_min_players", "0")
-CreateConVar("ttt_mercenary_enabled", 0)
-CreateConVar("ttt_mercenary_spawn_weight", "1")
-CreateConVar("ttt_mercenary_min_players", "0")
-CreateConVar("ttt_veteran_enabled", 0)
-CreateConVar("ttt_veteran_spawn_weight", "1")
-CreateConVar("ttt_veteran_min_players", "0")
-CreateConVar("ttt_doctor_enabled", 0)
-CreateConVar("ttt_doctor_spawn_weight", "1")
-CreateConVar("ttt_doctor_min_players", "0")
-
--- Special traitor spawn probabilities
 CreateConVar("ttt_special_traitor_pct", 0.33)
 CreateConVar("ttt_special_traitor_chance", 0.5)
-CreateConVar("ttt_zombie_round_chance", 0.1)
-CreateConVar("ttt_hypnotist_enabled", 0)
-CreateConVar("ttt_hypnotist_spawn_weight", "1")
-CreateConVar("ttt_hypnotist_min_players", "0")
-CreateConVar("ttt_impersonator_enabled", 0)
-CreateConVar("ttt_impersonator_spawn_weight", "1")
-CreateConVar("ttt_impersonator_min_players", "0")
-CreateConVar("ttt_assassin_enabled", 0)
-CreateConVar("ttt_assassin_spawn_weight", "1")
-CreateConVar("ttt_assassin_min_players", "0")
-CreateConVar("ttt_vampire_enabled", 0)
-CreateConVar("ttt_vampire_spawn_weight", "1")
-CreateConVar("ttt_vampire_min_players", "0")
-CreateConVar("ttt_quack_enabled", 0)
-CreateConVar("ttt_quack_spawn_weight", "1")
-CreateConVar("ttt_quack_min_players", "0")
-CreateConVar("ttt_parasite_enabled", 0)
-CreateConVar("ttt_parasite_spawn_weight", "1")
-CreateConVar("ttt_parasite_min_players", "0")
-
--- Independent spawn probabilities
 CreateConVar("ttt_independent_chance", 0.5)
-CreateConVar("ttt_jester_enabled", 0)
-CreateConVar("ttt_jester_spawn_weight", "1")
-CreateConVar("ttt_jester_min_players", "0")
-CreateConVar("ttt_swapper_enabled", 0)
-CreateConVar("ttt_swapper_spawn_weight", "1")
-CreateConVar("ttt_swapper_min_players", "0")
-CreateConVar("ttt_clown_enabled", 0)
-CreateConVar("ttt_clown_spawn_weight", "1")
-CreateConVar("ttt_clown_min_players", "0")
-CreateConVar("ttt_beggar_enabled", 0)
-CreateConVar("ttt_beggar_spawn_weight", "1")
-CreateConVar("ttt_beggar_min_players", "0")
-CreateConVar("ttt_bodysnatcher_enabled", 0)
-CreateConVar("ttt_bodysnatcher_spawn_weight", "1")
-CreateConVar("ttt_bodysnatcher_min_players", "0")
-
-CreateConVar("ttt_drunk_enabled", 0)
-CreateConVar("ttt_drunk_spawn_weight", "1")
-CreateConVar("ttt_drunk_min_players", "0")
-CreateConVar("ttt_old_man_enabled", 0)
-CreateConVar("ttt_old_man_spawn_weight", "1")
-CreateConVar("ttt_old_man_min_players", "0")
-CreateConVar("ttt_killer_enabled", 0)
-CreateConVar("ttt_killer_spawn_weight", "1")
-CreateConVar("ttt_killer_min_players", "0")
-CreateConVar("ttt_zombie_enabled", 0)
-CreateConVar("ttt_zombie_spawn_weight", "1")
-CreateConVar("ttt_zombie_min_players", "0")
-
--- Monster spawn probabilities
 CreateConVar("ttt_monster_pct", 0.33)
 CreateConVar("ttt_monster_chance", 0.5)
+
+for role = 0, ROLE_MAX do
+    local rolestring = ROLE_STRINGS[role]
+    if not DEFAULT_ROLES[role] then
+        CreateConVar("ttt_" .. rolestring .. "_enabled", "0", FCVAR_REPLICATED)
+        CreateConVar("ttt_" .. rolestring .. "_spawn_weight", "1", FCVAR_REPLICATED)
+        CreateConVar("ttt_" .. rolestring .. "_min_players", "0", FCVAR_REPLICATED)
+    end
+
+    local health = "100"
+    if role == ROLE_OLDMAN then health = "1"
+    elseif role == ROLE_KILLER then health = "150" end
+    CreateConVar("ttt_" .. rolestring .. "_starting_health", health, FCVAR_REPLICATED)
+    CreateConVar("ttt_" .. rolestring .. "_max_health", health, FCVAR_REPLICATED)
+end
 
 -- Traitor role properties
 CreateConVar("ttt_traitor_vision_enable", "0")
@@ -186,7 +127,6 @@ CreateConVar("ttt_parasite_announce_infection", 0)
 -- Innocent role properties
 CreateConVar("ttt_detective_search_only", "1")
 CreateConVar("ttt_all_search_postround", "1")
-CreateConVar("ttt_detective_starting_health", "100")
 
 CreateConVar("ttt_phantom_respawn_health", "50")
 CreateConVar("ttt_phantom_weaker_each_respawn", "0")
@@ -229,7 +169,7 @@ CreateConVar("ttt_clown_activation_credits", "0")
 CreateConVar("ttt_clown_hide_when_active", "0")
 CreateConVar("ttt_clown_show_target_icon", "0")
 
-CreateConVar("ttt_reveal_beggar_change", "1")
+CreateConVar("ttt_beggar_reveal_change", "1")
 CreateConVar("ttt_beggar_respawn", "0")
 CreateConVar("ttt_beggar_respawn_delay", "3")
 CreateConVar("ttt_beggar_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the Beggar is killed", 0, 4)
@@ -245,9 +185,6 @@ CreateConVar("ttt_independents_trigger_traitor_testers", "0")
 CreateConVar("ttt_drunk_sober_time", "180")
 CreateConVar("ttt_drunk_innocent_chance", "0.7")
 
-CreateConVar("ttt_old_man_starting_health", "1")
-
-CreateConVar("ttt_killer_max_health", "150")
 CreateConVar("ttt_killer_knife_enabled", "1")
 CreateConVar("ttt_killer_crowbar_enabled", "1")
 CreateConVar("ttt_killer_smoke_enabled", "1")
@@ -260,6 +197,7 @@ CreateConVar("ttt_killer_vision_enable", "1")
 
 CreateConVar("ttt_zombies_are_monsters", "0")
 CreateConVar("ttt_zombies_are_traitors", "0")
+CreateConVar("ttt_zombie_round_chance", 0.1)
 CreateConVar("ttt_zombie_show_target_icon", "0")
 CreateConVar("ttt_zombie_damage_penalty", "0.5")
 CreateConVar("ttt_zombie_damage_reduction", "0")
@@ -286,22 +224,31 @@ CreateConVar("ttt_det_credits_starting", "1")
 CreateConVar("ttt_det_credits_traitorkill", "0")
 CreateConVar("ttt_det_credits_traitordead", "1")
 
--- Other credits
-CreateConVar("ttt_hyp_credits_starting", "1")
-CreateConVar("ttt_imp_credits_starting", "1")
-CreateConVar("ttt_asn_credits_starting", "1")
-CreateConVar("ttt_vam_credits_starting", "1")
-CreateConVar("ttt_qua_credits_starting", "1")
-CreateConVar("ttt_par_credits_starting", "1")
+-- Shop parameters
+for _, role in ipairs(table.GetKeys(SHOP_ROLES)) do
+    local rolestring = ROLE_STRINGS[role]
+    if not DEFAULT_ROLES[role] then
+        local credits = "0"
+        if TRAITOR_ROLES[role] then credits = "1"
+        elseif role == ROLE_MERCENARY then credits = "1"
+        elseif role == ROLE_KILLER then credits = "2" end
+        CreateConVar("ttt_" .. rolestring .. "_credits_starting", credits, FCVAR_REPLICATED)
+    end
 
-CreateConVar("ttt_mer_credits_starting", "1")
-CreateConVar("ttt_doc_credits_starting", "0")
+    CreateConVar("ttt_" .. rolestring .. "_shop_random_percent", "0", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown for the " .. rolestring, 0, 100)
+    CreateConVar("ttt_" .. rolestring .. "_shop_random_enabled", "0", FCVAR_REPLICATED, "Whether shop randomization should run for the " .. rolestring)
 
-CreateConVar("ttt_jes_credits_starting", "0")
-CreateConVar("ttt_swa_credits_starting", "0")
+    if (TRAITOR_ROLES[role] and role ~= ROLE_TRAITOR) or role == ROLE_ZOMBIE then -- This all happens before we run UpdateRoleState so we need to manually add zombies
+        CreateConVar("ttt_" .. rolestring .. "_shop_sync", "0", FCVAR_REPLICATED)
+    end
 
-CreateConVar("ttt_kil_credits_starting", "2")
-CreateConVar("ttt_zom_credits_starting", "0")
+    if role == ROLE_MERCENARY then
+        CreateConVar("ttt_" .. rolestring .. "_shop_mode", "2", FCVAR_REPLICATED)
+    elseif INDEPENDENT_ROLES[role] and role ~= ROLE_ZOMBIE then
+        CreateConVar("ttt_" .. rolestring .. "_shop_mode", "0", FCVAR_REPLICATED)
+    end
+end
+CreateConVar("ttt_shop_random_percent", "50", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown by default", 0, 100)
 
 -- Other
 CreateConVar("ttt_use_weapon_spawn_scripts", "1")
@@ -322,24 +269,6 @@ CreateConVar("ttt_namechange_bantime", "10")
 
 CreateConVar("ttt_disable_headshots", "0")
 
-CreateConVar("ttt_shop_random_percent", "50", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown by default", 0, 100)
-for _, role in ipairs(table.GetKeys(SHOP_ROLES)) do
-    local shortstring = ROLE_STRINGS_SHORT[role]
-    local rolestring = ROLE_STRINGS[role]
-    CreateConVar("ttt_shop_random_" .. shortstring .. "_percent", "0", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown for the " .. rolestring, 0, 100)
-    CreateConVar("ttt_shop_random_" .. shortstring .. "_enabled", "0", FCVAR_REPLICATED, "Whether shop randomization should run for the " .. rolestring)
-end
-CreateConVar("ttt_shop_hyp_sync", "0")
-CreateConVar("ttt_shop_imp_sync", "0")
-CreateConVar("ttt_shop_asn_sync", "0")
-CreateConVar("ttt_shop_vam_sync", "0")
-CreateConVar("ttt_shop_zom_sync", "0")
-CreateConVar("ttt_shop_qua_sync", "0")
-CreateConVar("ttt_shop_par_sync", "0")
-
-CreateConVar("ttt_shop_mer_mode", "2")
-CreateConVar("ttt_shop_clo_mode", "0")
-
 -- bem server convars
 CreateConVar("ttt_bem_allow_change", 1, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Allow clients to change the look of the Traitor/Detective menu")
 CreateConVar("ttt_bem_sv_cols", 4, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Sets the number of columns in the Traitor/Detective menu's item list (serverside)")
@@ -359,6 +288,101 @@ local ttt_minply = CreateConVar("ttt_minimum_players", "2", FCVAR_ARCHIVE + FCVA
 local ttt_dbgwin = CreateConVar("ttt_debug_preventwin", "0")
 CreateConVar("ttt_debug_logkills", "1")
 local ttt_dbgroles = CreateConVar("ttt_debug_logroles", "1")
+
+local function OldCVarWarning(oldName, newName)
+    cvars.AddChangeCallback(oldName, function(convar, oldValue, newValue)
+        RunConsoleCommand(newName, newValue)
+        ErrorNoHalt("WARNING: ConVar \'" .. oldName .. "\' deprecated. Use \'" .. newName .. "\' instead!\n")
+    end)
+end
+
+-- OLD CVARS CHECKS
+CreateConVar("ttt_old_man_enabled", 0)
+OldCVarWarning("ttt_old_man_enabled", "ttt_oldman_enabled")
+
+CreateConVar("ttt_old_man_spawn_weight", "1")
+OldCVarWarning("ttt_old_man_spawn_weight", "ttt_oldman_spawn_weight")
+
+CreateConVar("ttt_old_man_min_players", "0")
+OldCVarWarning("ttt_old_man_min_players", "ttt_oldman_min_players")
+
+CreateConVar("ttt_old_man_starting_health", "1")
+OldCVarWarning("ttt_old_man_starting_health", "ttt_oldman_starting_health")
+
+CreateConVar("ttt_reveal_beggar_change", "1")
+OldCVarWarning("ttt_reveal_beggar_change", "ttt_beggar_reveal_change")
+
+CreateConVar("ttt_hyp_credits_starting", "1")
+OldCVarWarning("ttt_hyp_credits_starting", "ttt_hypnotist_credits_starting")
+
+CreateConVar("ttt_imp_credits_starting", "1")
+OldCVarWarning("ttt_imp_credits_starting", "ttt_impersonator_credits_starting")
+
+CreateConVar("ttt_asn_credits_starting", "1")
+OldCVarWarning("ttt_asn_credits_starting", "ttt_assassin_credits_starting")
+
+CreateConVar("ttt_vam_credits_starting", "1")
+OldCVarWarning("ttt_vam_credits_starting", "ttt_vampire_credits_starting")
+
+CreateConVar("ttt_qua_credits_starting", "1")
+OldCVarWarning("ttt_qua_credits_starting", "ttt_quack_credits_starting")
+
+CreateConVar("ttt_par_credits_starting", "1")
+OldCVarWarning("ttt_par_credits_starting", "ttt_parasite_credits_starting")
+
+CreateConVar("ttt_mer_credits_starting", "1")
+OldCVarWarning("ttt_mer_credits_starting", "ttt_mercenary_credits_starting")
+
+CreateConVar("ttt_doc_credits_starting", "0")
+OldCVarWarning("ttt_doc_credits_starting", "ttt_doctor_credits_starting")
+
+CreateConVar("ttt_jes_credits_starting", "0")
+OldCVarWarning("ttt_jes_credits_starting", "ttt_jester_credits_starting")
+
+CreateConVar("ttt_swa_credits_starting", "0")
+OldCVarWarning("ttt_swa_credits_starting", "ttt_swapper_credits_starting")
+
+CreateConVar("ttt_kil_credits_starting", "2")
+OldCVarWarning("ttt_kil_credits_starting", "ttt_killer_credits_starting")
+
+CreateConVar("ttt_zom_credits_starting", "0")
+OldCVarWarning("ttt_zom_credits_starting", "ttt_zombie_credits_starting")
+
+CreateConVar("ttt_shop_hyp_sync", "0")
+OldCVarWarning("ttt_shop_hyp_sync", "ttt_hypnotist_shop_sync")
+
+CreateConVar("ttt_shop_imp_sync", "0")
+OldCVarWarning("ttt_shop_imp_sync", "ttt_impersonator_shop_sync")
+
+CreateConVar("ttt_shop_asn_sync", "0")
+OldCVarWarning("ttt_shop_asn_sync", "ttt_assassin_shop_sync")
+
+CreateConVar("ttt_shop_vam_sync", "0")
+OldCVarWarning("ttt_shop_vam_sync", "ttt_vampire_shop_sync")
+
+CreateConVar("ttt_shop_zom_sync", "0")
+OldCVarWarning("ttt_shop_zom_sync", "ttt_zombie_shop_sync")
+
+CreateConVar("ttt_shop_qua_sync", "0")
+OldCVarWarning("ttt_shop_qua_sync", "ttt_quack_shop_sync")
+
+CreateConVar("ttt_shop_par_sync", "0")
+OldCVarWarning("ttt_shop_par_sync", "ttt_parasite_shop_sync")
+
+CreateConVar("ttt_shop_mer_mode", "2")
+OldCVarWarning("ttt_shop_mer_mode", "ttt_mercenary_shop_mode")
+
+CreateConVar("ttt_shop_clo_mode", "0")
+OldCVarWarning("ttt_shop_clo_mode", "ttt_clown_shop_mode")
+
+for _, role in ipairs(table.GetKeys(SHOP_ROLES)) do
+    local shortstring = ROLE_STRINGS_SHORT[role]
+    local rolestring = ROLE_STRINGS[role]
+    CreateConVar("ttt_shop_random_" .. shortstring .. "_percent", "0", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown for the " .. rolestring, 0, 100)
+    OldCVarWarning("ttt_shop_random_" .. shortstring .. "_percent", "ttt_" .. rolestring .. "_shop_random_percent")
+    CreateConVar("ttt_shop_random_" .. shortstring .. "_enabled", "0", FCVAR_REPLICATED, "Whether shop randomization should run for the " .. rolestring)
+    OldCVarWarning("ttt_shop_random_" .. shortstring .. "_enabled", "ttt_" .. rolestring .. "_shop_random_enabled")
+end
 
 -- Localise stuff we use often. It's like Lua go-faster stripes.
 local math = math
@@ -542,22 +566,24 @@ function GM:SyncGlobals()
 
     SetGlobalBool("ttt_detective_search_only", GetConVar("ttt_detective_search_only"):GetBool())
     SetGlobalBool("ttt_all_search_postround", GetConVar("ttt_all_search_postround"):GetBool())
-    SetGlobalBool("ttt_reveal_beggar_change", GetConVar("ttt_reveal_beggar_change"):GetBool())
+    SetGlobalBool("ttt_beggar_reveal_change", GetConVar("ttt_beggar_reveal_change"):GetBool())
     SetGlobalInt("ttt_revenger_radar_timer", GetConVar("ttt_revenger_radar_timer"):GetInt())
 
     SetGlobalInt("ttt_shop_random_percent", GetConVar("ttt_shop_random_percent"):GetInt())
+
     for _, role in ipairs(table.GetKeys(SHOP_ROLES)) do
-        local shortstring = ROLE_STRINGS_SHORT[role]
-        SetGlobalInt("ttt_shop_random_" .. shortstring .. "_percent", GetConVar("ttt_shop_random_" .. shortstring .. "_percent"):GetInt())
-        SetGlobalBool("ttt_shop_random_" .. shortstring .. "_enabled", GetConVar("ttt_shop_random_" .. shortstring .. "_enabled"):GetBool())
+        local rolestring = ROLE_STRINGS[role]
+        SetGlobalInt("ttt_" .. rolestring .. "_shop_random_percent", GetConVar("ttt_" .. rolestring .. "_shop_random_percent"):GetInt())
+        SetGlobalBool("ttt_" .. rolestring .. "_shop_random_enabled", GetConVar("ttt_" .. rolestring .. "_shop_random_enabled"):GetBool())
+
+        if (TRAITOR_ROLES[role] and role ~= ROLE_TRAITOR) or role == ROLE_ZOMBIE then -- This all happens before we run UpdateRoleState so we need to manually add zombies
+            SetGlobalBool("ttt_" .. rolestring .. "_shop_sync", GetConVar("ttt_" .. rolestring .. "_shop_sync"):GetBool())
+        end
+
+        if role == ROLE_MERCENARY or (INDEPENDENT_ROLES[role] and role ~= ROLE_ZOMBIE) then
+            SetGlobalBool("ttt_" .. rolestring .. "_shop_mode", GetConVar("ttt_" .. rolestring .. "_shop_mode"):GetBool())
+        end
     end
-    SetGlobalBool("ttt_shop_hyp_sync", GetConVar("ttt_shop_hyp_sync"):GetBool())
-    SetGlobalBool("ttt_shop_imp_sync", GetConVar("ttt_shop_imp_sync"):GetBool())
-    SetGlobalBool("ttt_shop_asn_sync", GetConVar("ttt_shop_asn_sync"):GetBool())
-    SetGlobalBool("ttt_shop_vam_sync", GetConVar("ttt_shop_vam_sync"):GetBool())
-    SetGlobalBool("ttt_shop_zom_sync", GetConVar("ttt_shop_zom_sync"):GetBool())
-    SetGlobalInt("ttt_shop_mer_mode", GetConVar("ttt_shop_mer_mode"):GetInt())
-    SetGlobalInt("ttt_shop_clo_mode", GetConVar("ttt_shop_clo_mode"):GetInt())
 
     SetGlobalBool("ttt_phantom_killer_smoke", GetConVar("ttt_phantom_killer_smoke"):GetBool())
     SetGlobalInt("ttt_phantom_killer_haunt_power_max", GetConVar("ttt_phantom_killer_haunt_power_max"):GetInt())
@@ -1201,13 +1227,15 @@ function BeginRound()
     SCORE:HandleSelection() -- log traitors and detectives
 
     for _, v in pairs(player.GetAll()) do
+        local role = v:GetRole()
+
         -- Hypnotist logic
-        if v:GetRole() == ROLE_HYPNOTIST then
+        if role == ROLE_HYPNOTIST then
             v:Give("weapon_hyp_brainwash")
         end
 
         -- Revenger logic
-        if v:GetRole() == ROLE_REVENGER then
+        if role == ROLE_REVENGER then
             local potentialSoulmates = {}
             for _, p in pairs(player.GetAll()) do
                 if p:Alive() and not p:IsSpec() and p ~= v then
@@ -1224,7 +1252,7 @@ function BeginRound()
 
         -- Drunk logic
         SetGlobalFloat("ttt_drunk_remember", CurTime() + GetConVar("ttt_drunk_sober_time"):GetInt())
-        if v:GetRole() == ROLE_DRUNK then
+        if role == ROLE_DRUNK then
             timer.Create("drunkremember", GetConVar("ttt_drunk_sober_time"):GetInt(), 1, function()
                 for _, p in pairs(player.GetAll()) do
                     if p:IsActiveDrunk() then
@@ -1254,20 +1282,14 @@ function BeginRound()
             end)
         end
 
-        -- Old Man logic
-        if v:GetRole() == ROLE_OLDMAN then
-            local health = GetConVar("ttt_old_man_starting_health"):GetInt()
-            v:SetMaxHealth(health)
-            v:SetHealth(health)
-        end
 
         -- Assassin logic
-        if v:GetRole() == ROLE_ASSASSIN then
+        if role == ROLE_ASSASSIN then
             AssignAssassinTarget(v, true, false)
         end
 
         -- Killer logic
-        if v:GetRole() == ROLE_KILLER then
+        if role == ROLE_KILLER then
             if GetConVar("ttt_killer_knife_enabled"):GetBool() then
                 v:Give("weapon_kil_knife")
             end
@@ -1276,13 +1298,10 @@ function BeginRound()
                 v:Give("weapon_kil_crowbar")
                 v:SelectWeapon("weapon_kil_crowbar")
             end
-            local max = GetConVar("ttt_killer_max_health"):GetInt()
-            v:SetMaxHealth(max)
-            v:SetHealth(max)
         end
 
         --Doctor Logic
-        if v:GetRole() == ROLE_DOCTOR then
+        if role == ROLE_DOCTOR then
             local mode = GetConVar("ttt_doctor_mode"):GetInt()
             if mode == DOCTOR_MODE_STATION then
                 v:Give("weapon_ttt_health_station")
@@ -1292,9 +1311,11 @@ function BeginRound()
         end
 
         --Quack Logic
-        if v:GetRole() == ROLE_QUACK then
+        if role == ROLE_QUACK then
             v:Give("weapon_qua_bomb_station")
         end
+
+        SetRoleHealth(v)
     end
 
     net.Start("TTT_ResetScoreboard")
@@ -1487,7 +1508,7 @@ function GM:TTTCheckForWin()
     local innocent_alive = false
     local drunk_alive = false
     local clown_alive = false
-    local old_man_alive = false
+    local oldman_alive = false
     local killer_alive = false
     local zombie_alive = false
     local monster_alive = false
@@ -1507,7 +1528,7 @@ function GM:TTTCheckForWin()
                 clown_alive = true
                 killer_clown_active = v:GetNWBool("KillerClownActive", false)
             elseif v:IsOldMan() then
-                old_man_alive = true
+                oldman_alive = true
             elseif v:IsInnocentTeam() then
                 innocent_alive = true
             elseif v:IsKiller() then
@@ -1589,7 +1610,7 @@ function GM:TTTCheckForWin()
     end
 
     -- Old Man logic
-    if old_man_alive then
+    if oldman_alive then
         if win_type ~= WIN_NONE then
             net.Start("TTT_UpdateOldManWins")
             net.WriteBool(true)
@@ -1834,6 +1855,7 @@ function SelectRoles()
                     end
                 end
 
+                SetRoleHealth(v)
                 PrintRole(v, ROLE_STRINGS[role])
             end
         end
@@ -1879,7 +1901,7 @@ function SelectRoles()
                 local plyPick = math.random(1, #options)
                 local ply = options[plyPick]
                 ply:SetRole(ROLE_DETECTIVE)
-                ply:SetHealth(GetConVar("ttt_detective_starting_health"):GetInt())
+                SetRoleHealth(ply)
                 PrintRole(ply, "detective")
                 table.RemoveByValue(choices, ply)
                 table.remove(options, plyPick)
@@ -1903,6 +1925,7 @@ function SelectRoles()
         -- This is a zombie round so all traitors become zombies
         for _, v in pairs(traitors) do
             v:SetRole(ROLE_ZOMBIE)
+            SetRoleHealth(v)
             PrintRole(v, "zombie")
         end
     else
@@ -1946,6 +1969,7 @@ function SelectRoles()
                     local rolePick = math.random(1, #specialTraitorRoles)
                     local role = specialTraitorRoles[rolePick]
                     ply:SetRole(role)
+                    SetRoleHealth(ply)
                     PrintRole(ply, ply:GetRoleString())
                     table.remove(traitors, plyPick)
                     for i = #specialTraitorRoles, 1, -1 do
@@ -1959,6 +1983,7 @@ function SelectRoles()
 
         -- Any of these left is a vanilla traitor
         for _, v in pairs(traitors) do
+            SetRoleHealth(v)
             PrintRole(v, "traitor")
         end
     end
@@ -1991,8 +2016,8 @@ function SelectRoles()
                 table.insert(independentRoles, ROLE_BEGGAR)
             end
         end
-        if GetConVar("ttt_old_man_enabled"):GetBool() and choice_count >= GetConVar("ttt_old_man_min_players"):GetInt() then
-            for _ = 1, GetConVar("ttt_old_man_spawn_weight"):GetInt() do
+        if GetConVar("ttt_oldman_enabled"):GetBool() and choice_count >= GetConVar("ttt_oldman_min_players"):GetInt() then
+            for _ = 1, GetConVar("ttt_oldman_spawn_weight"):GetInt() do
                 table.insert(independentRoles, ROLE_OLDMAN)
             end
         end
@@ -2017,6 +2042,7 @@ function SelectRoles()
             local rolePick = math.random(1, #independentRoles)
             local role = independentRoles[rolePick]
             ply:SetRole(role)
+            SetRoleHealth(ply)
             PrintRole(ply, ply:GetRoleString())
             table.remove(choices, plyPick)
             for i = #independentRoles, 1, -1 do
@@ -2073,6 +2099,7 @@ function SelectRoles()
                 local rolePick = math.random(1, #specialInnocentRoles)
                 local role = specialInnocentRoles[rolePick]
                 ply:SetRole(role)
+                SetRoleHealth(ply)
                 PrintRole(ply, ply:GetRoleString())
                 table.remove(choices, plyPick)
                 for i = #specialInnocentRoles, 1, -1 do
@@ -2104,6 +2131,7 @@ function SelectRoles()
                 local rolePick = math.random(1, #monsterRoles)
                 local role = monsterRoles[rolePick]
                 ply:SetRole(role)
+                SetRoleHealth(ply)
                 PrintRole(ply, ply:GetRoleString())
                 table.remove(choices, plyPick)
                 for i = #monsterRoles, 1, -1 do
@@ -2117,8 +2145,9 @@ function SelectRoles()
 
     -- Anyone left is innocent
     for _, v in pairs(choices) do
-        PrintRole(v, "innocent")
         v:SetRole(ROLE_INNOCENT)
+        SetRoleHealth(v)
+        PrintRole(v, "innocent")
     end
     PrintRoleText("------------DONE PICKING ROLES------------")
 
