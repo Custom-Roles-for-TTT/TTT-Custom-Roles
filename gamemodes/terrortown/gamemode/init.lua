@@ -1855,7 +1855,6 @@ function SelectRoles()
                     end
                 end
 
-                SetRoleHealth(v)
                 PrintRole(v, ROLE_STRINGS[role])
             end
         end
@@ -1901,7 +1900,6 @@ function SelectRoles()
                 local plyPick = math.random(1, #options)
                 local ply = options[plyPick]
                 ply:SetRole(ROLE_DETECTIVE)
-                SetRoleHealth(ply)
                 PrintRole(ply, "detective")
                 table.RemoveByValue(choices, ply)
                 table.remove(options, plyPick)
@@ -1925,7 +1923,6 @@ function SelectRoles()
         -- This is a zombie round so all traitors become zombies
         for _, v in pairs(traitors) do
             v:SetRole(ROLE_ZOMBIE)
-            SetRoleHealth(v)
             PrintRole(v, "zombie")
         end
     else
@@ -1969,7 +1966,6 @@ function SelectRoles()
                     local rolePick = math.random(1, #specialTraitorRoles)
                     local role = specialTraitorRoles[rolePick]
                     ply:SetRole(role)
-                    SetRoleHealth(ply)
                     PrintRole(ply, ply:GetRoleString())
                     table.remove(traitors, plyPick)
                     for i = #specialTraitorRoles, 1, -1 do
@@ -1983,7 +1979,6 @@ function SelectRoles()
 
         -- Any of these left is a vanilla traitor
         for _, v in pairs(traitors) do
-            SetRoleHealth(v)
             PrintRole(v, "traitor")
         end
     end
@@ -2042,7 +2037,6 @@ function SelectRoles()
             local rolePick = math.random(1, #independentRoles)
             local role = independentRoles[rolePick]
             ply:SetRole(role)
-            SetRoleHealth(ply)
             PrintRole(ply, ply:GetRoleString())
             table.remove(choices, plyPick)
             for i = #independentRoles, 1, -1 do
@@ -2099,7 +2093,6 @@ function SelectRoles()
                 local rolePick = math.random(1, #specialInnocentRoles)
                 local role = specialInnocentRoles[rolePick]
                 ply:SetRole(role)
-                SetRoleHealth(ply)
                 PrintRole(ply, ply:GetRoleString())
                 table.remove(choices, plyPick)
                 for i = #specialInnocentRoles, 1, -1 do
@@ -2131,7 +2124,6 @@ function SelectRoles()
                 local rolePick = math.random(1, #monsterRoles)
                 local role = monsterRoles[rolePick]
                 ply:SetRole(role)
-                SetRoleHealth(ply)
                 PrintRole(ply, ply:GetRoleString())
                 table.remove(choices, plyPick)
                 for i = #monsterRoles, 1, -1 do
@@ -2146,7 +2138,6 @@ function SelectRoles()
     -- Anyone left is innocent
     for _, v in pairs(choices) do
         v:SetRole(ROLE_INNOCENT)
-        SetRoleHealth(v)
         PrintRole(v, "innocent")
     end
     PrintRoleText("------------DONE PICKING ROLES------------")
