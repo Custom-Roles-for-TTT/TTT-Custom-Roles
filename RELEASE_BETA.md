@@ -6,6 +6,9 @@
 ### Changes
 - Changed the drunk so they lose karma for hurting/killing people before they sober up
 
+### Fixes
+- Fixed ttt_*_shop_mode cvars
+
 ## 1.0.3 
 **Released: July 11th, 2021**
 

@@ -576,12 +576,14 @@ function GM:SyncGlobals()
         SetGlobalInt("ttt_" .. rolestring .. "_shop_random_percent", GetConVar("ttt_" .. rolestring .. "_shop_random_percent"):GetInt())
         SetGlobalBool("ttt_" .. rolestring .. "_shop_random_enabled", GetConVar("ttt_" .. rolestring .. "_shop_random_enabled"):GetBool())
 
-        if (TRAITOR_ROLES[role] and role ~= ROLE_TRAITOR) or role == ROLE_ZOMBIE then -- This all happens before we run UpdateRoleState so we need to manually add zombies
-            SetGlobalBool("ttt_" .. rolestring .. "_shop_sync", GetConVar("ttt_" .. rolestring .. "_shop_sync"):GetBool())
+        local sync_cvar = "ttt_" .. rolestring .. "_shop_sync"
+        if ConVarExists(sync_cvar) then
+            SetGlobalBool(sync_cvar, GetConVar(sync_cvar):GetBool())
         end
 
-        if role == ROLE_MERCENARY or (INDEPENDENT_ROLES[role] and role ~= ROLE_ZOMBIE) then
-            SetGlobalBool("ttt_" .. rolestring .. "_shop_mode", GetConVar("ttt_" .. rolestring .. "_shop_mode"):GetBool())
+        local mode_cvar = "ttt_" .. rolestring .. "_shop_mode"
+        if ConVarExists(mode_cvar) then
+            SetGlobalInt(mode_cvar, GetConVar(mode_cvar):GetInt())
         end
     end
 
