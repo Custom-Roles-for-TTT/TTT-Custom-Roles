@@ -942,21 +942,26 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
         -- shit.
     end
 
-    -- Don't drop the crowbar when a player dies
-    ply:StripWeapon("weapon_zm_improvised")
+    local valid_kill = IsValid(attacker) and attacker:IsPlayer() and attacker ~= ply and GetRoundState() == ROUND_ACTIVE
+    -- Don't drop Swapper weapons when they are killed by a player because they are about to be resurrected anyway
+    local clear_weapons = not valid_kill or not ply:IsSwapper()
+    if clear_weapons then
+        -- Don't drop the crowbar when a player dies
+        ply:StripWeapon("weapon_zm_improvised")
 
-    -- Drop all weapons
-    for _, wep in ipairs(ply:GetWeapons()) do
-        if wep ~= nil then
-            WEPS.DropNotifiedWeapon(ply, wep, true) -- with ammo in them
-            if wep.DampenDrop ~= nil then
-                wep:DampenDrop()
+        -- Drop all weapons
+        for _, wep in ipairs(ply:GetWeapons()) do
+            if wep ~= nil then
+                WEPS.DropNotifiedWeapon(ply, wep, true) -- with ammo in them
+                if wep.DampenDrop ~= nil then
+                    wep:DampenDrop()
+                end
             end
         end
-    end
 
-    if IsValid(ply.hat) then
-        ply.hat:Drop()
+        if IsValid(ply.hat) then
+            ply.hat:Drop()
+        end
     end
 
     -- Create ragdoll and hook up marking effects
@@ -985,7 +990,9 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
     end
 
     -- Clear out any weapon or equipment we still have
-    ply:StripAll()
+    if clear_weapons then
+        ply:StripAll()
+    end
 
     -- Tell the client to send their chat contents
     ply:SendLastWords(dmginfo)
@@ -1030,6 +1037,56 @@ local function DoRespawn(ply)
     ply:SetHealth(ply:GetMaxHealth())
     if IsValid(body) then
         body:Remove()
+    end
+end
+
+-- Pre-generate all of this information because we need the owner's weapon info even after they've been destroyed due to (temporary) death
+local function GetPlayerWeaponInfo(ply)
+    local ply_weapons = {}
+    for _, w in ipairs(ply:GetWeapons()) do
+        local primary_ammo = nil
+        local primary_ammo_type = nil
+        if w.Primary and w.Primary.Ammo ~= "none" then
+            primary_ammo_type = w.Primary.Ammo
+            primary_ammo = ply:GetAmmoCount(primary_ammo_type)
+        end
+
+        local secondary_ammo = nil
+        local secondary_ammo_type = nil
+        if w.Secondary and w.Secondary.Ammo ~= "none" and w.Secondary.Ammo ~= primary_ammo_type then
+            secondary_ammo_type = w.Secondary.Ammo
+            secondary_ammo = ply:GetAmmoCount(secondary_ammo_type)
+        end
+
+        table.insert(ply_weapons, {
+            class = WEPS.GetClass(w),
+            category = w.Category,
+            primary_ammo = primary_ammo,
+            primary_ammo_type = primary_ammo_type,
+            secondary_ammo = secondary_ammo,
+            secondary_ammo_type = secondary_ammo_type
+        })
+    end
+    return ply_weapons
+end
+
+local function GivePlayerWeaponAndAmmo(ply, weap_info)
+    ply:Give(weap_info.class)
+    if weap_info.primary_ammo then
+        ply:SetAmmo(weap_info.primary_ammo, weap_info.primary_ammo_type)
+    end
+    if weap_info.secondary_ammo then
+        ply:SetAmmo(weap_info.secondary_ammo, weap_info.secondary_ammo_type)
+    end
+end
+
+local function StripPlayerWeaponAndAmmo(ply, weap_info)
+    ply:StripWeapon(weap_info.class)
+    if weap_info.primary_ammo then
+        ply:SetAmmo(0, weap_info.primary_ammo_type)
+    end
+    if weap_info.secondary_ammo then
+        ply:SetAmmo(0, weap_info.secondary_ammo_type)
     end
 end
 
@@ -1127,15 +1184,34 @@ function GM:PlayerDeath(victim, infl, attacker)
         SwapperKilledNotification(attacker, victim)
         attacker:SetNWString("SwappedWith", victim:Nick())
         attacker:PrintMessage(HUD_PRINTCENTER, "You killed the swapper!")
+
+        -- Only bother saving the attacker weapons if we're going to do something with them
+        local weapon_mode = GetConVar("ttt_swapper_weapon_mode"):GetInt()
+        local attacker_weapons = nil
+        if weapon_mode > SWAPPER_WEAPON_NONE then
+            attacker_weapons = GetPlayerWeaponInfo(attacker)
+        end
+        local victim_weapons = GetPlayerWeaponInfo(victim)
+
+        -- Swap prime status
+        if attacker:IsZombiePrime() then
+            attacker:SetZombiePrime(false)
+            victim:SetZombiePrime(true)
+        elseif attacker:IsVampirePrime() then
+            attacker:SetVampirePrime(false)
+            victim:SetVampirePrime(true)
+        end
+
         victim:SetRole(attacker:GetRole())
         attacker:SetRole(ROLE_SWAPPER)
-        local health = GetConVar("ttt_swapper_killer_health"):GetInt() or 100
+        local health = GetConVar("ttt_swapper_killer_health"):GetInt()
         if health == 0 then
             attacker:Kill()
         else
             attacker:SetHealth(health)
         end
         SendFullStateUpdate()
+
         timer.Simple(0.01, function()
             local body = victim.server_ragdoll or victim:GetRagdollEntity()
             victim:SpawnForRound(true)
@@ -1146,6 +1222,48 @@ function GM:PlayerDeath(victim, infl, attacker)
                 body:Remove()
             end
             SendFullStateUpdate()
+
+            timer.Simple(0.2, function()
+                if weapon_mode == SWAPPER_WEAPON_ALL then
+                    -- Strip everything but the sure-thing weapons
+                    for _, w in ipairs(attacker_weapons) do
+                        if w.class ~= "weapon_ttt_unarmed" and w.class ~= "weapon_zm_carry" then
+                            StripPlayerWeaponAndAmmo(attacker, w)
+                        end
+                    end
+
+                    -- Give the opposite player's weapons back
+                    for _, w in ipairs(attacker_weapons) do
+                        GivePlayerWeaponAndAmmo(victim, w)
+                    end
+                    for _, w in ipairs(victim_weapons) do
+                        GivePlayerWeaponAndAmmo(attacker, w)
+                    end
+                else
+                    if weapon_mode == SWAPPER_WEAPON_ROLE then
+                        -- Remove all role weapons from the attacker and give them to the victim
+                        for _, w in ipairs(attacker_weapons) do
+                            if w.category == WEAPON_CATEGORY_ROLE then
+                                StripPlayerWeaponAndAmmo(attacker, w)
+                                -- Give the attacker a regular crowbar to compensate for the killer crowbar that was removed
+                                if w.class == "weapon_kil_crowbar" then
+                                    attacker:Give("weapon_zm_improvised")
+                                end
+                                GivePlayerWeaponAndAmmo(victim, w)
+                            end
+                        end
+                    end
+
+                    -- Give the victim all their weapons back
+                    for _, w in ipairs(victim_weapons) do
+                        GivePlayerWeaponAndAmmo(victim, w)
+                    end
+                end
+
+                -- Have each player select their crowbar to hide role weapons
+                attacker:SelectWeapon("weapon_zm_improvised")
+                victim:SelectWeapon("weapon_zm_improvised")
+            end)
         end)
 
         net.Start("TTT_SwapperSwapped")
@@ -2103,6 +2221,37 @@ timer.Create("KillerKillCheckTimer", 1, 0, function()
     end
 end)
 
+local function PlayerAutoComplete(cmd, args)
+    -- Split all the arguments out so we can keep track of them
+    local arg_split = {}
+    for _, v in ipairs(string.Explode("\"", args, false)) do
+        local trimmed = string.Trim(v)
+        if string.len(trimmed) > 0 then
+            table.insert(arg_split, trimmed)
+        end
+    end
+
+    -- Clean up the current and all previous arguments
+    local name = ""
+    local other_args = ""
+    if not table.IsEmpty(arg_split) then
+        name = string.Trim(string.lower(arg_split[#arg_split]))
+        other_args = table.concat(arg_split, " ", 1, #arg_split - 1)
+        if string.len(other_args) > 0 then
+            other_args = " " .. other_args
+        end
+    end
+
+    -- Find player options that match the given value (or all if there is no given value)
+    local options = {}
+    for _, v in ipairs(player.GetAll()) do
+        if string.len(name) == 0 or string.find(string.lower(v:Nick()), name) then
+            table.insert(options, cmd .. other_args .. " \"" .. v:Nick() .. "\"")
+        end
+    end
+    return options
+end
+
 local function KillFromPlayer(victim, killer, remove_body)
     if not IsValid(victim) or not victim:Alive() then return end
     if not IsValid(killer) or not killer:Alive() then return end
@@ -2141,7 +2290,7 @@ concommand.Add("ttt_kill_from_random", function(ply, cmd, args)
 
     local remove_body = #args > 0 and tobool(args[1])
     KillFromPlayer(ply, killer, remove_body)
-end, nil, nil, FCVAR_CHEAT)
+end, PlayerAutoComplete, "Kills the local player from a random target", FCVAR_CHEAT)
 
 concommand.Add("ttt_kill_from_player", function(ply, cmd, args)
     if not IsValid(ply) or not ply:Alive() then return end
@@ -2163,7 +2312,7 @@ concommand.Add("ttt_kill_from_player", function(ply, cmd, args)
 
     local remove_body = #args > 1 and tobool(args[2])
     KillFromPlayer(ply, killer, remove_body)
-end, nil, nil, FCVAR_CHEAT)
+end, PlayerAutoComplete, "Kills the local player from a specific target", FCVAR_CHEAT)
 
 concommand.Add("ttt_kill_target_from_random", function(ply, cmd, args)
     if #args ~= 1 then return end
@@ -2187,7 +2336,7 @@ concommand.Add("ttt_kill_target_from_random", function(ply, cmd, args)
 
     local remove_body = #args > 1 and tobool(args[2])
     KillFromPlayer(victim, killer, remove_body)
-end, nil, nil, FCVAR_CHEAT)
+end, PlayerAutoComplete, "Kills a target from a random target", FCVAR_CHEAT)
 
 concommand.Add("ttt_kill_target_from_player", function(ply, cmd, args)
     if #args ~= 2 then return end
@@ -2217,4 +2366,4 @@ concommand.Add("ttt_kill_target_from_player", function(ply, cmd, args)
 
     local remove_body = #args > 2 and tobool(args[3])
     KillFromPlayer(victim, killer, remove_body)
-end, nil, nil, FCVAR_CHEAT)
+end, PlayerAutoComplete, "Kills a target from another target", FCVAR_CHEAT)

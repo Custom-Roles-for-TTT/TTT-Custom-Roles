@@ -8,10 +8,12 @@
 
 ### Additions
 - Added new shop random position CVar
+- Added new CVar to control how to handle weapons when a swapper is killed
 
 ### Fixes
 - Fixed ttt_*_shop_mode cvars
 - Fixed "Kill" icon showing over Jester players' heads when the client knows they are a Jester
+- Fixed Swapper not getting Zombie/Vampire prime status when a prime Zombie/Vampire swaps with them
 
 ## 1.0.3 
 **Released: July 11th, 2021**

@@ -160,6 +160,7 @@ CreateConVar("ttt_jester_notify_confetti", "0")
 
 CreateConVar("ttt_swapper_killer_health", "100")
 CreateConVar("ttt_swapper_respawn_health", "100")
+CreateConVar("ttt_swapper_weapon_mode", "1", FCVAR_NONE, "How to handle weapons when the Swapper is killed", 0, 2)
 CreateConVar("ttt_swapper_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the Swapper is killed", 0, 4)
 CreateConVar("ttt_swapper_notify_sound", "0")
 CreateConVar("ttt_swapper_notify_confetti", "0")

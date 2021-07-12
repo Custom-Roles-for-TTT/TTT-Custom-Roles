@@ -17,6 +17,7 @@ end
 SWEP.InLoadoutFor = { ROLE_ZOMBIE }
 
 SWEP.Base = "weapon_tttbase"
+SWEP.Category = WEAPON_CATEGORY_ROLE
 
 SWEP.HoldType = "fist"
 

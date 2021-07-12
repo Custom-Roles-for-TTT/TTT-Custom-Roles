@@ -25,6 +25,7 @@ if CLIENT then
 end
 
 SWEP.Base = "weapon_tttbase"
+SWEP.Category = WEAPON_CATEGORY_ROLE
 
 SWEP.Primary.Recoil = 0
 SWEP.Primary.ClipSize = -1

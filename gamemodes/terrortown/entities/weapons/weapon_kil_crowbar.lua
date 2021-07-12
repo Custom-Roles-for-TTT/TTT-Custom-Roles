@@ -14,6 +14,8 @@ if CLIENT then
 end
 
 SWEP.Base = "weapon_tttbase"
+SWEP.Category = WEAPON_CATEGORY_ROLE
+
 SWEP.HeadshotMultiplier = 10
 
 SWEP.UseHands                = true
