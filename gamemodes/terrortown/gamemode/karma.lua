@@ -122,7 +122,8 @@ local function ShouldReduceKarma(attacker, victim)
     return (attacker:IsTraitorTeam() and victim:IsTraitorTeam()) or
             (attacker:IsZombie() and victim:IsZombieAlly()) or
             (attacker:IsVampire() and victim:IsVampireAlly()) or
-            (attacker:IsInnocentTeam() and victim:IsInnocentTeam())
+            (attacker:IsInnocentTeam() and victim:IsInnocentTeam()) or
+            attacker:IsDrunk()
 end
 
 -- Handle karma change due to one player damaging another. Damage must not have

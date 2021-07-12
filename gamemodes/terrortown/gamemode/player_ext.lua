@@ -435,7 +435,7 @@ function plymeta:SetTeam(team)
     -- If this player is a Spectator then strip all the weapons after a delay to work around some addons that force spectator but leave the magneto stick somehow
     if team == TEAM_SPEC then
         timer.Simple(0.5, function()
-            if not IsValid(self) then return end
+            if not IsValid(self) or self:Team() ~= TEAM_SPEC then return end
             self:StripAll()
         end)
     end

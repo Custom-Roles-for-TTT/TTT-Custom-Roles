@@ -160,6 +160,7 @@ CreateConVar("ttt_jester_notify_confetti", "0")
 
 CreateConVar("ttt_swapper_killer_health", "100")
 CreateConVar("ttt_swapper_respawn_health", "100")
+CreateConVar("ttt_swapper_weapon_mode", "1", FCVAR_NONE, "How to handle weapons when the Swapper is killed", 0, 2)
 CreateConVar("ttt_swapper_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the Swapper is killed", 0, 4)
 CreateConVar("ttt_swapper_notify_sound", "0")
 CreateConVar("ttt_swapper_notify_confetti", "0")
@@ -249,6 +250,7 @@ for _, role in ipairs(table.GetKeys(SHOP_ROLES)) do
     end
 end
 CreateConVar("ttt_shop_random_percent", "50", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown by default", 0, 100)
+CreateConVar("ttt_shop_random_position", "0", FCVAR_REPLICATED, "Whether to randomize the position of the items in the shop")
 
 -- Other
 CreateConVar("ttt_use_weapon_spawn_scripts", "1")
@@ -570,18 +572,21 @@ function GM:SyncGlobals()
     SetGlobalInt("ttt_revenger_radar_timer", GetConVar("ttt_revenger_radar_timer"):GetInt())
 
     SetGlobalInt("ttt_shop_random_percent", GetConVar("ttt_shop_random_percent"):GetInt())
+    SetGlobalBool("ttt_shop_random_position", GetConVar("ttt_shop_random_position"):GetBool())
 
     for _, role in ipairs(table.GetKeys(SHOP_ROLES)) do
         local rolestring = ROLE_STRINGS[role]
         SetGlobalInt("ttt_" .. rolestring .. "_shop_random_percent", GetConVar("ttt_" .. rolestring .. "_shop_random_percent"):GetInt())
         SetGlobalBool("ttt_" .. rolestring .. "_shop_random_enabled", GetConVar("ttt_" .. rolestring .. "_shop_random_enabled"):GetBool())
 
-        if (TRAITOR_ROLES[role] and role ~= ROLE_TRAITOR) or role == ROLE_ZOMBIE then -- This all happens before we run UpdateRoleState so we need to manually add zombies
-            SetGlobalBool("ttt_" .. rolestring .. "_shop_sync", GetConVar("ttt_" .. rolestring .. "_shop_sync"):GetBool())
+        local sync_cvar = "ttt_" .. rolestring .. "_shop_sync"
+        if ConVarExists(sync_cvar) then
+            SetGlobalBool(sync_cvar, GetConVar(sync_cvar):GetBool())
         end
 
-        if role == ROLE_MERCENARY or (INDEPENDENT_ROLES[role] and role ~= ROLE_ZOMBIE) then
-            SetGlobalBool("ttt_" .. rolestring .. "_shop_mode", GetConVar("ttt_" .. rolestring .. "_shop_mode"):GetBool())
+        local mode_cvar = "ttt_" .. rolestring .. "_shop_mode"
+        if ConVarExists(mode_cvar) then
+            SetGlobalInt(mode_cvar, GetConVar(mode_cvar):GetInt())
         end
     end
 
@@ -1855,7 +1860,6 @@ function SelectRoles()
                     end
                 end
 
-                SetRoleHealth(v)
                 PrintRole(v, ROLE_STRINGS[role])
             end
         end
@@ -1901,7 +1905,6 @@ function SelectRoles()
                 local plyPick = math.random(1, #options)
                 local ply = options[plyPick]
                 ply:SetRole(ROLE_DETECTIVE)
-                SetRoleHealth(ply)
                 PrintRole(ply, "detective")
                 table.RemoveByValue(choices, ply)
                 table.remove(options, plyPick)
@@ -1925,7 +1928,6 @@ function SelectRoles()
         -- This is a zombie round so all traitors become zombies
         for _, v in pairs(traitors) do
             v:SetRole(ROLE_ZOMBIE)
-            SetRoleHealth(v)
             PrintRole(v, "zombie")
         end
     else
@@ -1969,7 +1971,6 @@ function SelectRoles()
                     local rolePick = math.random(1, #specialTraitorRoles)
                     local role = specialTraitorRoles[rolePick]
                     ply:SetRole(role)
-                    SetRoleHealth(ply)
                     PrintRole(ply, ply:GetRoleString())
                     table.remove(traitors, plyPick)
                     for i = #specialTraitorRoles, 1, -1 do
@@ -1983,7 +1984,6 @@ function SelectRoles()
 
         -- Any of these left is a vanilla traitor
         for _, v in pairs(traitors) do
-            SetRoleHealth(v)
             PrintRole(v, "traitor")
         end
     end
@@ -2042,7 +2042,6 @@ function SelectRoles()
             local rolePick = math.random(1, #independentRoles)
             local role = independentRoles[rolePick]
             ply:SetRole(role)
-            SetRoleHealth(ply)
             PrintRole(ply, ply:GetRoleString())
             table.remove(choices, plyPick)
             for i = #independentRoles, 1, -1 do
@@ -2099,7 +2098,6 @@ function SelectRoles()
                 local rolePick = math.random(1, #specialInnocentRoles)
                 local role = specialInnocentRoles[rolePick]
                 ply:SetRole(role)
-                SetRoleHealth(ply)
                 PrintRole(ply, ply:GetRoleString())
                 table.remove(choices, plyPick)
                 for i = #specialInnocentRoles, 1, -1 do
@@ -2131,7 +2129,6 @@ function SelectRoles()
                 local rolePick = math.random(1, #monsterRoles)
                 local role = monsterRoles[rolePick]
                 ply:SetRole(role)
-                SetRoleHealth(ply)
                 PrintRole(ply, ply:GetRoleString())
                 table.remove(choices, plyPick)
                 for i = #monsterRoles, 1, -1 do
@@ -2146,7 +2143,6 @@ function SelectRoles()
     -- Anyone left is innocent
     for _, v in pairs(choices) do
         v:SetRole(ROLE_INNOCENT)
-        SetRoleHealth(v)
         PrintRole(v, "innocent")
     end
     PrintRoleText("------------DONE PICKING ROLES------------")

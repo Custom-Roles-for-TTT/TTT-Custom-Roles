@@ -1,5 +1,5 @@
 -- Version string for display and function for version checks
-CR_VERSION = "1.0.3"
+CR_VERSION = "1.0.4"
 
 function CRVersion(version)
     local installedVersionRaw = string.Split(CR_VERSION, ".")
@@ -445,6 +445,8 @@ WEAPON_ROLE = 8
 WEAPON_EQUIP = WEAPON_EQUIP1
 WEAPON_UNARMED = -1
 
+WEAPON_CATEGORY_ROLE = "CR-RoleWeapon"
+
 -- Kill types discerned by last words
 KILL_NORMAL = 0
 KILL_SUICIDE = 1
@@ -483,6 +485,11 @@ DOCTOR_MODE_EMT = 1
 PARASITE_RESPAWN_HOST = 0
 PARASITE_RESPAWN_BODY = 1
 PARASITE_RESPAWN_RANDOM = 2
+
+-- Swapper weapon modes
+SWAPPER_WEAPON_NONE = 0
+SWAPPER_WEAPON_ROLE = 1
+SWAPPER_WEAPON_ALL = 2
 
 COLOR_WHITE = Color(255, 255, 255, 255)
 COLOR_BLACK = Color(0, 0, 0, 255)

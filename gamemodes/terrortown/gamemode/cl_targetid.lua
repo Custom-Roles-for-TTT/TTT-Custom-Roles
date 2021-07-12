@@ -79,12 +79,16 @@ function GM:PostDrawTranslucentRenderables()
             pos = v:GetPos()
             pos.z = pos.z + v:GetHeight() + 15
 
+            local hideBeggar = v:GetNWBool("WasBeggar", false) and not GetGlobalBool("ttt_beggar_reveal_change", true)
+            local showJester = (v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) or ((v:GetTraitor() or v:GetInnocent()) and hideBeggar)
+
             -- Only show the "KILL" target if the setting is enabled
-            local showkillicon = (client:IsAssassin() and GetGlobalBool("ttt_assassin_show_target_icon", false) and client:GetNWString("AssassinTarget") == v:Nick()) or
+            local showkillicon = ((client:IsAssassin() and GetGlobalBool("ttt_assassin_show_target_icon", false) and client:GetNWString("AssassinTarget") == v:Nick()) or
                                     (client:IsKiller() and GetGlobalBool("ttt_killer_show_target_icon", false)) or
                                     (client:IsZombie() and GetGlobalBool("ttt_zombie_show_target_icon", false) and client.GetActiveWeapon and IsValid(client:GetActiveWeapon()) and client:GetActiveWeapon():GetClass() == "weapon_zom_claws") or
                                     (client:IsVampire() and GetGlobalBool("ttt_vampire_show_target_icon", false)) or
-                                    (client:IsClown() and client:GetNWBool("KillerClownActive", false) and GetGlobalBool("ttt_clown_show_target_icon", false))
+                                    (client:IsClown() and client:GetNWBool("KillerClownActive", false) and GetGlobalBool("ttt_clown_show_target_icon", false)))
+                                    and not showJester
 
             if showkillicon and not client:IsSameTeam(v) then -- If we are showing the "KILL" icon this should take priority over role icons
                 render.SetMaterial(indicator_mat_roleback_noz)
@@ -102,8 +106,6 @@ function GM:PostDrawTranslucentRenderables()
                     DrawRoleIcon(ROLE_CLOWN, false, pos, dir)
                 end
                 if not hide_roles then
-                    local hideBeggar = v:GetNWBool("WasBeggar", false) and not GetGlobalBool("ttt_beggar_reveal_change", true)
-                    local showJester = (v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) or ((v:GetTraitor() or v:GetInnocent()) and hideBeggar)
                     if client:IsTraitorTeam() then
                         if (v:GetTraitor() and not hideBeggar) or v:GetGlitch() then
                             DrawRoleIcon(ROLE_TRAITOR, true, pos, dir)

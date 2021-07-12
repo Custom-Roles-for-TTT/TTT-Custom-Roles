@@ -17,6 +17,7 @@ if CLIENT then
 end
 
 SWEP.Base                   = "weapon_tttbase"
+SWEP.Category               = WEAPON_CATEGORY_ROLE
 
 SWEP.UseHands               = true
 SWEP.ViewModel              = "models/weapons/cstrike/c_knife_t.mdl"
