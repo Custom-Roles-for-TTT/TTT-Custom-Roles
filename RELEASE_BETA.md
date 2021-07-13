@@ -7,6 +7,9 @@
 - Added ability for non-traitor roles to be configurably able to use traitor buttons
 - Added ability for non-shop roles to be configurably able to see and loot credits
 
+### Developer
+- Added plymeta:StripRoleWeapons
+
 ## 1.0.4
 **Released: July 11th, 2021**
 
