@@ -1958,11 +1958,6 @@ function SelectRoles()
                     table.insert(specialTraitorRoles, ROLE_PARASITE)
                 end
             end
-            if not hasTrickster and GetConVar("ttt_trickster_enabled"):GetBool() and choice_count >= GetConVar("ttt_trickster_min_players"):GetInt() then
-                for _ = 1, GetConVar("ttt_trickster_spawn_weight"):GetInt() do
-                    table.insert(specialTraitorRoles, ROLE_TRICKSTER)
-                end
-            end
             for _ = 1, max_special_traitor_count do
                 if #specialTraitorRoles ~= 0 and math.random() <= GetConVar("ttt_special_traitor_chance"):GetFloat() and #traitors > 0 then
                     local plyPick = math.random(1, #traitors)
@@ -2054,6 +2049,7 @@ function SelectRoles()
     -- pick special innocents
     local max_special_innocent_count = GetSpecialInnocentCount(#choices) - forcedSpecialInnocentCount
     if max_special_innocent_count > 0 then
+        local map_has_traitor_buttons = #ents.FindByName("ttt_traitor_button") > 0
         local specialInnocentRoles = {}
         if not hasGlitch and GetConVar("ttt_glitch_enabled"):GetBool() and choice_count >= GetConVar("ttt_glitch_min_players"):GetInt() and #traitors > 1 then
             for _ = 1, GetConVar("ttt_glitch_spawn_weight"):GetInt() do
@@ -2088,6 +2084,11 @@ function SelectRoles()
         if not hasDoctor and GetConVar("ttt_doctor_enabled"):GetBool() and choice_count >= GetConVar("ttt_doctor_min_players"):GetInt() and not quack_only then
             for _ = 1, GetConVar("ttt_doctor_spawn_weight"):GetInt() do
                 table.insert(specialInnocentRoles, ROLE_DOCTOR)
+            end
+        end
+        if not hasTrickster and GetConVar("ttt_trickster_enabled"):GetBool() and choice_count >= GetConVar("ttt_trickster_min_players"):GetInt() and map_has_traitor_buttons then
+            for _ = 1, GetConVar("ttt_trickster_spawn_weight"):GetInt() do
+                table.insert(specialInnocentRoles, ROLE_TRICKSTER)
             end
         end
         for _ = 1, max_special_innocent_count do
