@@ -259,6 +259,16 @@ function plymeta:HasEquipment()
     return self:HasEquipmentItem() or self:HasEquipmentWeapon()
 end
 
+function plymeta:StripRoleWeapons()
+    -- Remove all old role weapons
+    for _, w in ipairs(self:GetWeapons()) do
+        if w.Category == WEAPON_CATEGORY_ROLE then
+            local weap_class = WEPS.GetClass(w)
+            self:StripWeapon(weap_class)
+        end
+    end
+end
+
 -- Override GetEyeTrace for an optional trace mask param. Technically traces
 -- like GetEyeTraceNoCursor but who wants to type that all the time, and we
 -- never use cursor tracing anyway.

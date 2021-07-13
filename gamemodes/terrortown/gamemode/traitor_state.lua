@@ -157,30 +157,7 @@ end
 concommand.Add("ttt_force_terror", force_terror, nil, nil, FCVAR_CHEAT)
 
 local function clear_role_effects(ply)
-    if ply:HasWeapon("weapon_hyp_brainwash") then
-        ply:StripWeapon("weapon_hyp_brainwash")
-    end
-    if ply:HasWeapon("weapon_bod_bodysnatch") then
-        ply:StripWeapon("weapon_bod_bodysnatch")
-    end
-    if ply:HasWeapon("weapon_kil_knife") then
-        ply:StripWeapon("weapon_kil_knife")
-    end
-    if ply:HasWeapon("weapon_kil_crowbar") then
-        ply:StripWeapon("weapon_kil_crowbar")
-    end
-    if ply:HasWeapon("weapon_vam_fangs") then
-        ply:StripWeapon("weapon_vam_fangs")
-    end
-    if ply:HasWeapon("weapon_zom_claws") then
-        ply:StripWeapon("weapon_zom_claws")
-    end
-    if ply:HasWeapon("weapon_doc_defib") then
-        ply:StripWeapon("weapon_doc_defib")
-    end
-    if ply:HasWeapon("weapon_qua_bomb_station") then
-        ply:StripWeapon("weapon_qua_bomb_station")
-    end
+    ply:StripRoleWeapons()
     ply:Give("weapon_zm_improvised")
     ply:SetDefaultCredits()
     SetRoleHealth(ply)

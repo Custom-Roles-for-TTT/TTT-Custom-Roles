@@ -253,13 +253,7 @@ function SWEP:Think()
             -- If the player is allowed to convert, do that
             if self:GetState() == STATE_CONVERT and CanConvert(self:GetOwner()) then
                 local ply = self.TargetEntity
-                -- Remove all old role weapons
-                for _, w in ipairs(ply:GetWeapons()) do
-                    if w.Category == WEAPON_CATEGORY_ROLE then
-                        local weap_class = WEPS.GetClass(w)
-                        ply:StripWeapon(weap_class)
-                    end
-                end
+                ply:StripRoleWeapons()
                 if not ply:HasWeapon("weapon_zm_improvised") then
                     ply:Give("weapon_zm_improvised")
                 end
