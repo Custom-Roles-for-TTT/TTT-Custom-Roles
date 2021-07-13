@@ -178,6 +178,10 @@ function GetParasiteFilter(alive_only)
     return GetPlayerFilter(function(p) return p:GetParasite() and (not alive_only or p:IsTerror()) end)
 end
 
+function GetTricksterFilter(alive_only)
+    return GetPlayerFilter(function(p) return p:GetTrickster() and (not alive_only or p:IsTerror()) end)
+end
+
 function GetRoleFilter(role, alive_only)
     return GetPlayerFilter(function(p) return p:IsRole(role) and (not alive_only or p:IsTerror()) end)
 end
