@@ -2049,7 +2049,7 @@ function SelectRoles()
     -- pick special innocents
     local max_special_innocent_count = GetSpecialInnocentCount(#choices) - forcedSpecialInnocentCount
     if max_special_innocent_count > 0 then
-        local map_has_traitor_buttons = #ents.FindByName("ttt_traitor_button") > 0
+        local map_has_traitor_buttons = #ents.FindByClass("ttt_traitor_button") > 0
         local specialInnocentRoles = {}
         if not hasGlitch and GetConVar("ttt_glitch_enabled"):GetBool() and choice_count >= GetConVar("ttt_glitch_min_players"):GetInt() and #traitors > 1 then
             for _ = 1, GetConVar("ttt_glitch_spawn_weight"):GetInt() do
