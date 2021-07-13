@@ -28,6 +28,7 @@ L.vampire = "Vampire"
 L.doctor = "Doctor"
 L.quack = "Quack"
 L.parasite = "Parasite"
+L.trickster = "Trickster"
 
 L.hidden = "Hidden"
 L.last_words = "Last Words"
@@ -103,6 +104,7 @@ L.body_found_vam = "They were a Vampire."
 L.body_found_doc = "They were a Doctor."
 L.body_found_qua = "They were a Quack."
 L.body_found_par = "They were a Parasite."
+L.body_found_tri = "They were a Trickster."
 
 L.body_confirm = "{finder} confirmed the death of {victim}."
 
@@ -252,6 +254,7 @@ L.search_role_vam = "This person was a Vampire."
 L.search_role_doc = "This person was a Doctor."
 L.search_role_qua = "This person was a Quack."
 L.search_role_par = "This person was a Parasite."
+L.search_role_tri = "This person was a Trickster."
 
 L.search_words = "Something tells you some of this person's last words were: '{lastwords}'"
 L.search_armor = "They were wearing nonstandard body armor."
@@ -1064,8 +1067,6 @@ respawn. Try to avoid getting them cured or killed!
 
 Press {menukey} to receive your special equipment!]]
 
-
-
 L.info_popup_zombie = [[You are a Zombie! Work with your allies to kill all others.
 
 These are your comrades:
@@ -1105,6 +1106,9 @@ All damage you deal with guns is reduced.
 Killing someone with your claws will turn them into a zombie.
 
 Press {menukey} to receive your special equipment!]]
+
+L.info_popup_trickster = [[You are a Trickster! You are an innocent who can see and
+use traitor traps throughout the map. Have fun!]]
 
 --- Various other text
 L.name_kick = "A player was automatically kicked for changing their name during a round."

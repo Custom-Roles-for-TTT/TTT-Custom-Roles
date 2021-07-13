@@ -1234,11 +1234,6 @@ function BeginRound()
     for _, v in pairs(player.GetAll()) do
         local role = v:GetRole()
 
-        -- Hypnotist logic
-        if role == ROLE_HYPNOTIST then
-            v:Give("weapon_hyp_brainwash")
-        end
-
         -- Revenger logic
         if role == ROLE_REVENGER then
             local potentialSoulmates = {}
@@ -1305,7 +1300,7 @@ function BeginRound()
             end
         end
 
-        --Doctor Logic
+        -- Doctor Logic
         if role == ROLE_DOCTOR then
             local mode = GetConVar("ttt_doctor_mode"):GetInt()
             if mode == DOCTOR_MODE_STATION then
@@ -1313,11 +1308,6 @@ function BeginRound()
             elseif mode == DOCTOR_MODE_EMT then
                 v:Give("weapon_doc_defib")
             end
-        end
-
-        --Quack Logic
-        if role == ROLE_QUACK then
-            v:Give("weapon_qua_bomb_station")
         end
 
         SetRoleHealth(v)
@@ -1744,6 +1734,7 @@ function SelectRoles()
     local hasMercenary = false
     local hasVeteran = false
     local hasDoctor = false
+    local hasTrickster = false
 
     local hasIndependent = false
 
@@ -1821,6 +1812,9 @@ function SelectRoles()
                     if GetConVar("ttt_single_doctor_quack"):GetBool() then
                         doctor_only = true
                     end
+                    forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
+                elseif role == ROLE_TRICKSTER then
+                    hasTrickster = true
                     forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
 
                 -- JESTER/INDEPENDENT ROLES
@@ -1962,6 +1956,11 @@ function SelectRoles()
             if not hasParasite and GetConVar("ttt_parasite_enabled"):GetBool() and choice_count >= GetConVar("ttt_parasite_min_players"):GetInt() then
                 for _ = 1, GetConVar("ttt_parasite_spawn_weight"):GetInt() do
                     table.insert(specialTraitorRoles, ROLE_PARASITE)
+                end
+            end
+            if not hasTrickster and GetConVar("ttt_trickster_enabled"):GetBool() and choice_count >= GetConVar("ttt_trickster_min_players"):GetInt() then
+                for _ = 1, GetConVar("ttt_trickster_spawn_weight"):GetInt() do
+                    table.insert(specialTraitorRoles, ROLE_TRICKSTER)
                 end
             end
             for _ = 1, max_special_traitor_count do

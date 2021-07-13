@@ -6,6 +6,7 @@
 ### Additions
 - Added ability for non-traitor roles to be configurably able to use traitor buttons
 - Added ability for non-shop roles to be configurably able to see and loot credits
+- Added Trickster role
 
 ### Developer
 - Added plymeta:StripRoleWeapons

@@ -75,6 +75,7 @@ function SendVampireList(ply_or_rf) SendRoleList(ROLE_VAMPIRE, ply_or_rf) end
 function SendDoctorList(ply_or_rf) SendRoleList(ROLE_DOCTOR, ply_or_rf) end
 function SendQuackList(ply_or_rf) SendRoleList(ROLE_QUACK, ply_or_rf) end
 function SendParasiteList(ply_or_rf) SendRoleList(ROLE_PARASITE, ply_or_rf) end
+function SendTricksterList(ply_or_rf) SendRoleList(ROLE_TRICKSTER, ply_or_rf) end
 
 function SendAllLists(ply_or_rf)
     SendInnocentList(ply_or_rf)
@@ -102,6 +103,7 @@ function SendAllLists(ply_or_rf)
     SendDoctorList(ply_or_rf)
     SendQuackList(ply_or_rf)
     SendParasiteList(ply_or_rf)
+    SendTricksterList(ply_or_rf)
 end
 
 function SendConfirmedTraitors(ply_or_rf)
@@ -351,6 +353,13 @@ local function force_parasite(ply)
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_parasite", force_parasite, nil, nil, FCVAR_CHEAT)
+
+local function force_trickster(ply)
+    ply:SetRoleAndBroadcast(ROLE_TRICKSTER)
+    clear_role_effects(ply)
+    SendFullStateUpdate()
+end
+concommand.Add("ttt_force_trickster", force_trickster, nil, nil, FCVAR_CHEAT)
 
 local function force_spectate(ply, cmd, arg)
     if IsValid(ply) then
