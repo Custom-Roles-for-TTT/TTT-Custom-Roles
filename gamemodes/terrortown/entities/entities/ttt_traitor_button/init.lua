@@ -79,7 +79,7 @@ function GAMEMODE:TTTCanUseTraitorButton(ent, ply)
 end
 
 function ENT:TraitorUse(ply)
-    if not (IsValid(ply) and ply:IsActiveTraitorTeam()) then return false end
+    if not (IsValid(ply) and ply:CanUseTraitorButton(true)) then return false end
     if not self:IsUsable() then return false end
 
     if self:GetPos():Distance(ply:GetPos()) > self:GetUsableRange() then return false end
@@ -116,7 +116,7 @@ end
 local function TraitorUseCmd(ply, cmd, args)
     if #args ~= 1 then return end
 
-    if IsValid(ply) and ply:IsActiveTraitorTeam() then
+    if IsValid(ply) and ply:CanUseTraitorButton(true) then
         local idx = tonumber(args[1])
         if idx then
             local ent = Entity(idx)

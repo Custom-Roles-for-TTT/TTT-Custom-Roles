@@ -113,6 +113,14 @@ AddRoleAssociations(MONSTER_ROLES, {})
 DEFAULT_ROLES = {}
 AddRoleAssociations(DEFAULT_ROLES, {ROLE_INNOCENT, ROLE_TRAITOR, ROLE_DETECTIVE})
 
+-- Traitors get this ability by default
+TRAITOR_BUTTON_ROLES = {}
+AddRoleAssociations(TRAITOR_BUTTON_ROLES, {})
+
+-- Shop roles get this ability by default
+CAN_LOOT_CREDITS_ROLES = {}
+AddRoleAssociations(CAN_LOOT_CREDITS_ROLES, {})
+
 -- Role colours
 COLOR_INNOCENT = {
     ["default"] = Color(25, 200, 25, 255),

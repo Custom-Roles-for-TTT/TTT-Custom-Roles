@@ -1,7 +1,14 @@
 # Beta Release Notes
 
-## 1.0.4
+## 1.0.5
 **Released:**
+
+### Additions
+- Added ability for non-traitor roles to be configurably able to use traitor buttons
+- Added ability for non-shop roles to be configurably able to see and loot credits
+
+## 1.0.4
+**Released: July 11th, 2021**
 
 ### Changes
 - Changed the drunk so they lose karma for hurting/killing people before they sober up

@@ -122,6 +122,14 @@ function plymeta:CanUseShop()
         (not self:IsDeputy() or self:GetNWBool("HasPromotion", false)) and
         (not self:IsClown() or self:GetNWBool("KillerClownActive", false))
 end
+function plymeta:CanUseTraitorButton(active_only)
+    if active_only and not self:IsActive() then return false end
+    return self:IsTraitorTeam() or TRAITOR_BUTTON_ROLES[self:GetRole()]
+end
+function plymeta:CanLootCredits(active_only)
+    if active_only and not self:IsActive() then return false end
+    return self:IsShopRole() or CAN_LOOT_CREDITS_ROLES[self:GetRole()]
+end
 
 function plymeta:SetRoleAndBroadcast(role)
     self:SetRole(role)

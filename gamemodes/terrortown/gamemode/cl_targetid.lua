@@ -542,7 +542,7 @@ function GM:HUDDrawTargetID()
     elseif ent.sb_tag and ent.sb_tag.txt ~= nil then
         text = L[ent.sb_tag.txt]
         clr = ent.sb_tag.color
-    elseif target_corpse and client:IsActiveShopRole() and CORPSE.GetCredits(ent, 0) > 0 then
+    elseif target_corpse and client:CanLootCredits(true) and CORPSE.GetCredits(ent, 0) > 0 then
         text = L.target_credits
         clr = COLOR_YELLOW
     end
