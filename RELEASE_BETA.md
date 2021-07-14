@@ -8,6 +8,9 @@
 - Added ability for non-shop roles to be configurably able to see and loot credits
 - Added Trickster role
 
+### Fixes
+- Fixed vampire victims getting stuck frozen if the vampire is killed while draining their blood
+
 ### Developer
 - Added plymeta:StripRoleWeapons
 
