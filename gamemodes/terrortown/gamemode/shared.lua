@@ -764,7 +764,10 @@ if SERVER then
     end
 
     function SetRoleHealth(ply)
+        if not IsValid(ply) or not ply:Alive() or ply:IsSpec() then return end
         local role = ply:GetRole()
+        if role <= ROLE_NONE or role > ROLE_MAX then return end
+
         local maxhealth = GetConVar("ttt_" .. ROLE_STRINGS[role] .. "_max_health"):GetInt()
         ply:SetMaxHealth(maxhealth)
         local health = GetConVar("ttt_" .. ROLE_STRINGS[role] .. "_starting_health"):GetInt()
