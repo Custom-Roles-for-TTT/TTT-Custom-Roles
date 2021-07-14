@@ -48,7 +48,7 @@ function ENT:KeyValue(key, value)
     elseif key == "description" then
         self.RawDescription = tostring(value)
 
-        if self.RawDescription and string.len(self.RawDescription) < 1 then
+        if self.RawDescription and #self.RawDescription < 1 then
             self.RawDescription = nil
         end
     elseif key == "RemoveOnPress" then

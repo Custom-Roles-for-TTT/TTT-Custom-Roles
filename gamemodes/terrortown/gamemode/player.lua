@@ -2226,7 +2226,7 @@ local function PlayerAutoComplete(cmd, args)
     local arg_split = {}
     for _, v in ipairs(string.Explode("\"", args, false)) do
         local trimmed = string.Trim(v)
-        if string.len(trimmed) > 0 then
+        if #trimmed > 0 then
             table.insert(arg_split, trimmed)
         end
     end
@@ -2236,16 +2236,15 @@ local function PlayerAutoComplete(cmd, args)
     local other_args = ""
     if not table.IsEmpty(arg_split) then
         name = string.Trim(string.lower(arg_split[#arg_split]))
-        other_args = table.concat(arg_split, " ", 1, #arg_split - 1)
-        if string.len(other_args) > 0 then
-            other_args = " " .. other_args
+        if #arg_split > 1 then
+            other_args = " \"" .. table.concat(arg_split, "\" \"", 1, #arg_split - 1) .. "\""
         end
     end
 
     -- Find player options that match the given value (or all if there is no given value)
     local options = {}
     for _, v in ipairs(player.GetAll()) do
-        if string.len(name) == 0 or string.find(string.lower(v:Nick()), name) then
+        if #name == 0 or string.find(string.lower(v:Nick()), name) then
             table.insert(options, cmd .. other_args .. " \"" .. v:Nick() .. "\"")
         end
     end

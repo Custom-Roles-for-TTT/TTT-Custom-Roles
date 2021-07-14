@@ -453,7 +453,7 @@ local function LastWords(ply, cmd, args)
             local words = string.Trim(args[3])
 
             -- nothing of interest
-            if string.len(words) < 2 then return end
+            if #words < 2 then return end
 
             -- ignore admin commands
             local firstchar = string.sub(words, 1, 1)

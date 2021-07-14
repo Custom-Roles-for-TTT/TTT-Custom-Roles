@@ -2334,7 +2334,7 @@ function HandleRoleEquipment()
             local weaponname = v:sub(0, lastdotpos - 1)
 
             -- Check that there isn't a two-part extension (e.g. "something.exclude.txt")
-            local extension = v:sub(lastdotpos + 1, string.len(v))
+            local extension = v:sub(lastdotpos + 1, #v)
             lastdotpos = extension:find("%.")
 
             -- If there is, check if it equals "exclude"
