@@ -12,6 +12,7 @@
 - Fixed vampire victims getting stuck frozen if the vampire is killed while draining their blood
 - Fixed error caused by trying to set a player with no role's starting health
 - Fixed monster team count check when zombie was on the independent team
+- Fixed revenger losing karma when they killed their soulmate's killer if they were innocent
 
 ### Developer
 - Added plymeta:StripRoleWeapons
