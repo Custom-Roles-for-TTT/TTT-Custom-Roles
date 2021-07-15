@@ -11,6 +11,7 @@
 ### Fixes
 - Fixed vampire victims getting stuck frozen if the vampire is killed while draining their blood
 - Fixed error caused by trying to set a player with no role's starting health
+- Fixed monster team count check when zombie was on the independent team
 
 ### Developer
 - Added plymeta:StripRoleWeapons

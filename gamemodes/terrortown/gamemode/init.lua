@@ -1640,7 +1640,7 @@ local function GetSpecialInnocentCount(ply_count)
 end
 
 local function GetMonsterCount(ply_count)
-    if TRAITOR_ROLES[ROLE_ZOMBIE] and TRAITOR_ROLES[ROLE_VAMPIRE] then
+    if not MONSTER_ROLES[ROLE_ZOMBIE] and not MONSTER_ROLES[ROLE_VAMPIRE] then
         return 0
     end
     return math.ceil(ply_count * GetConVar("ttt_monster_pct"):GetFloat())
