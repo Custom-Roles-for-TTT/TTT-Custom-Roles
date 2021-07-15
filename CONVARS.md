@@ -101,6 +101,7 @@ ttt_traitor_vision_enable                   0       // Whether members of the tr
 // Impersonator
 ttt_impersonator_damage_penalty             0       // Damage penalty that the impersonator has before being promoted (e.g. 0.5 = 50% less damage)
 ttt_impersonator_credits_starting           1       // The number of credits an impersonator should start with
+ttt_single_deputy_impersonator              0       // Whether only a single deputy or impersonator should spawn in a round
 
 // Hypnotist
 ttt_hypnotist_credits_starting              1       // The number of credits a hypnotist should start with
@@ -129,10 +130,11 @@ ttt_vampire_credits_starting                1       // The number of credits a v
 
 // Quack
 ttt_quack_credits_starting                  1       // The number of credits a quack should start with
+ttt_single_doctor_quack                     0       // Whether only a single doctor or quack should spawn in a round
 
 // Parasite
 ttt_parasite_infection_time                 90      // The time it takes in seconds for the parasite to fully infect someone
-ttt_parasite_respawn_mode                   0       // The way in which the parasite respawns. 0 - Take over host. 1 - Respawn at the parasites body. 2 - Respawn at a random location.
+ttt_parasite_respawn_mode                   0       // The way in which the parasite respawns. 0 - Take over host. 1 - Respawn at the parasite's body. 2 - Respawn at a random location.
 ttt_parasite_respawn_health                 100     // The health on which the parasite respawns
 ttt_parasite_announce_infection             0       // Whether players are notified when they are infected with the parasite
 ttt_parasite_credits_starting               1       // The number of credits a parasite should start with
@@ -236,7 +238,7 @@ ttt_killer_damage_penalty                   0.25    // The fraction a killer's d
 ttt_killer_damage_reduction                 0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a killer
 ttt_killer_warn_all                         0       // Whether to warn all players if there is a killer. If 0, only traitors will be warned
 ttt_killer_vision_enable                    1       // Whether killers have their special vision highlights enabled
-ttt_killer_credits_starting                    2       // The number of credits a killer should start with
+ttt_killer_credits_starting                 2       // The number of credits a killer should start with
 
 // Zombie
 ttt_zombies_are_monsters                    0       // Whether zombies should be treated as members of the monster team.
