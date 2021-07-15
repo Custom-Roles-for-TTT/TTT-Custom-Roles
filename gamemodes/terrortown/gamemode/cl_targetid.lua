@@ -59,6 +59,18 @@ local GetPlayers = player.GetAll
 
 local propspec_outline = Material("models/props_combine/portalball001_sheet")
 
+local function GetDetectiveIconRole(is_traitor)
+    if is_traitor then
+        if GetGlobalBool("ttt_impersonator_use_detective_icon", false) then
+            return ROLE_DETECTIVE
+        end
+        return ROLE_IMPERSONATOR
+    elseif GetGlobalBool("ttt_deputy_use_detective_icon", false) then
+        return ROLE_DETECTIVE
+    end
+    return ROLE_DEPUTY
+end
+
 -- using this hook instead of pre/postplayerdraw because playerdraw seems to
 -- happen before certain entities are drawn, which then clip over the sprite
 function GM:PostDrawTranslucentRenderables()
@@ -101,7 +113,7 @@ function GM:PostDrawTranslucentRenderables()
                 render.DrawQuadEasy(pos, dir, 8, 8, COLOR_WHITE, 180)
             else
                 if v:GetDetectiveLike() and not (v:GetImpersonator() and client:IsTraitorTeam()) then
-                    DrawRoleIcon(ROLE_DETECTIVE, false, pos, dir)
+                    DrawRoleIcon(GetDetectiveIconRole(false), false, pos, dir)
                 elseif v:GetClown() and v:GetNWBool("KillerClownActive", false) and not GetGlobalBool("ttt_clown_hide_when_active", false) then
                     DrawRoleIcon(ROLE_CLOWN, false, pos, dir)
                 end
@@ -112,7 +124,7 @@ function GM:PostDrawTranslucentRenderables()
                         elseif v:GetImpersonator() then
                             -- If the impersonator is promoted, use the Detective's icon with the Impersonator's color
                             if v:GetNWBool("HasPromotion", false) then
-                                DrawRoleIcon(ROLE_DETECTIVE, true, pos, dir, ROLE_IMPERSONATOR)
+                                DrawRoleIcon(GetDetectiveIconRole(true), true, pos, dir, ROLE_IMPERSONATOR)
                             else
                                 DrawRoleIcon(ROLE_IMPERSONATOR, true, pos, dir)
                             end

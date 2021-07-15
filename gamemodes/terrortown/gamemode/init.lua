@@ -106,6 +106,7 @@ end
 CreateConVar("ttt_traitor_vision_enable", "0")
 
 CreateConVar("ttt_impersonator_damage_penalty", "0")
+CreateConVar("ttt_impersonator_use_detective_icon", "1")
 
 CreateConVar("ttt_assassin_show_target_icon", "0")
 CreateConVar("ttt_assassin_next_target_delay", "5")
@@ -147,6 +148,7 @@ CreateConVar("ttt_revenger_radar_timer", "15")
 CreateConVar("ttt_revenger_damage_bonus", "0")
 
 CreateConVar("ttt_deputy_damage_penalty", "0")
+CreateConVar("ttt_deputy_use_detective_icon", "1")
 
 CreateConVar("ttt_veteran_damage_bonus", "0.5")
 CreateConVar("ttt_veteran_full_heal", "1")
@@ -568,8 +570,6 @@ function GM:SyncGlobals()
 
     SetGlobalBool("ttt_detective_search_only", GetConVar("ttt_detective_search_only"):GetBool())
     SetGlobalBool("ttt_all_search_postround", GetConVar("ttt_all_search_postround"):GetBool())
-    SetGlobalBool("ttt_beggar_reveal_change", GetConVar("ttt_beggar_reveal_change"):GetBool())
-    SetGlobalInt("ttt_revenger_radar_timer", GetConVar("ttt_revenger_radar_timer"):GetInt())
 
     SetGlobalInt("ttt_shop_random_percent", GetConVar("ttt_shop_random_percent"):GetInt())
     SetGlobalBool("ttt_shop_random_position", GetConVar("ttt_shop_random_position"):GetBool())
@@ -597,8 +597,20 @@ function GM:SyncGlobals()
     SetGlobalInt("ttt_phantom_killer_haunt_jump_cost", GetConVar("ttt_phantom_killer_haunt_jump_cost"):GetInt())
     SetGlobalInt("ttt_phantom_killer_haunt_drop_cost", GetConVar("ttt_phantom_killer_haunt_drop_cost"):GetInt())
 
+    SetGlobalBool("ttt_deputy_use_detective_icon", GetConVar("ttt_deputy_use_detective_icon"):GetBool())
+
     SetGlobalBool("ttt_traitor_vision_enable", GetConVar("ttt_traitor_vision_enable"):GetBool())
+
     SetGlobalBool("ttt_assassin_show_target_icon", GetConVar("ttt_assassin_show_target_icon"):GetBool())
+
+    SetGlobalBool("ttt_impersonator_use_detective_icon", GetConVar("ttt_impersonator_use_detective_icon"):GetBool())
+
+    SetGlobalBool("ttt_vampires_are_monsters", GetConVar("ttt_vampires_are_monsters"):GetBool())
+    SetGlobalBool("ttt_vampire_show_target_icon", GetConVar("ttt_vampire_show_target_icon"):GetBool())
+    SetGlobalBool("ttt_vampire_vision_enable", GetConVar("ttt_vampire_vision_enable"):GetBool())
+
+    SetGlobalInt("ttt_parasite_infection_time", GetConVar("ttt_parasite_infection_time"):GetInt())
+    SetGlobalBool("ttt_parasite_enabled", GetConVar("ttt_parasite_enabled"):GetBool())
 
     SetGlobalBool("ttt_killer_show_target_icon", GetConVar("ttt_killer_show_target_icon"):GetBool())
     SetGlobalBool("ttt_killer_vision_enable", GetConVar("ttt_killer_vision_enable"):GetBool())
@@ -610,12 +622,9 @@ function GM:SyncGlobals()
     SetGlobalFloat("ttt_zombie_prime_speed_bonus", GetConVar("ttt_zombie_prime_speed_bonus"):GetFloat())
     SetGlobalFloat("ttt_zombie_thrall_speed_bonus", GetConVar("ttt_zombie_thrall_speed_bonus"):GetFloat())
 
-    SetGlobalBool("ttt_vampires_are_monsters", GetConVar("ttt_vampires_are_monsters"):GetBool())
-    SetGlobalBool("ttt_vampire_show_target_icon", GetConVar("ttt_vampire_show_target_icon"):GetBool())
-    SetGlobalBool("ttt_vampire_vision_enable", GetConVar("ttt_vampire_vision_enable"):GetBool())
+    SetGlobalBool("ttt_beggar_reveal_change", GetConVar("ttt_beggar_reveal_change"):GetBool())
 
-    SetGlobalInt("ttt_parasite_infection_time", GetConVar("ttt_parasite_infection_time"):GetInt())
-    SetGlobalBool("ttt_parasite_enabled", GetConVar("ttt_parasite_enabled"):GetBool())
+    SetGlobalInt("ttt_revenger_radar_timer", GetConVar("ttt_revenger_radar_timer"):GetInt())
 
     SetGlobalBool("ttt_clown_show_target_icon", GetConVar("ttt_clown_show_target_icon"):GetBool())
     SetGlobalBool("ttt_clown_hide_when_active", GetConVar("ttt_clown_hide_when_active"):GetBool())

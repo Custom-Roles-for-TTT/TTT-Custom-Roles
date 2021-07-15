@@ -101,6 +101,7 @@ ttt_traitor_vision_enable                   0       // Whether members of the tr
 // Impersonator
 ttt_impersonator_damage_penalty             0       // Damage penalty that the impersonator has before being promoted (e.g. 0.5 = 50% less damage)
 ttt_impersonator_credits_starting           1       // The number of credits an impersonator should start with
+ttt_impersonator_use_detective_icon         1       // Whether a promoted impersonator should show the detective icon over their head instead of the impersonator icon (only for traitors, non-traitors will use the equivalent deputy setting)
 ttt_single_deputy_impersonator              0       // Whether only a single deputy or impersonator should spawn in a round
 
 // Hypnotist
@@ -167,6 +168,7 @@ ttt_revenger_damage_bonus                   0       // Extra damage that the rev
 // Deputy
 ttt_deputy_damage_penalty                   0       // Damage penalty that the deputy has before being promoted (e.g. 0.5 = 50% less damage)
 ttt_deputy_credits_starting                 0       // The number of credits a deputy should start with
+ttt_deputy_use_detective_icon               1       // Whether a promoted deputy should show the detective icon over their head instead of the deputy icon
 
 // Mercenary
 ttt_mercenary_credits_starting              1       // The number of credits a mercenary should start with
