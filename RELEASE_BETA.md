@@ -8,6 +8,7 @@
 - Added ability for non-shop roles to be configurably able to see and loot credits
 - Added Trickster role
 - Added settings to control whether the Deputy/Impersonator should use their own icons or the Detective icon over their head
+- Added setting to have the old man have their health drained to a certain minimum value over time
 
 ### Fixes
 - Fixed vampire victims getting stuck frozen if the vampire is killed while draining their blood

@@ -230,6 +230,9 @@ ttt_independents_trigger_traitor_testers    0       // Whether independents trig
 ttt_drunk_sober_time                        180     // Time in seconds for the drunk to remember their role
 ttt_drunk_innocent_chance                   0.7     // Chance that the drunk will become an innocent when remembering their role
 
+// Old Man
+ttt_oldman_drain_health_to                  0       // The amount of health to drain the old man down to. Set to 0 to disable
+
 // Killer
 ttt_killer_knife_enabled                    1       // Whether the killer knife is enabled
 ttt_killer_crowbar_enabled                  1       // Whether the killer throwable crowbar is enabled

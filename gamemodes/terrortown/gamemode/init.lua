@@ -188,6 +188,8 @@ CreateConVar("ttt_independents_trigger_traitor_testers", "0")
 CreateConVar("ttt_drunk_sober_time", "180")
 CreateConVar("ttt_drunk_innocent_chance", "0.7")
 
+CreateConVar("ttt_oldman_drain_health_to", "0")
+
 CreateConVar("ttt_killer_knife_enabled", "1")
 CreateConVar("ttt_killer_crowbar_enabled", "1")
 CreateConVar("ttt_killer_smoke_enabled", "1")
@@ -1291,6 +1293,28 @@ function BeginRound()
             end)
         end
 
+        -- Old Man logic
+        local drain_health = GetConVar("ttt_oldman_drain_health_to"):GetInt()
+        print(drain_health)
+        if role == ROLE_OLDMAN and drain_health > 0 then
+            print("ST")
+            timer.Create("oldmanhealthdrain", 3, 0, function()
+                print("Draining")
+                for _, p in pairs(player.GetAll()) do
+                    if p:IsActiveOldMan() then
+                        local hp = p:Health()
+                        if hp > drain_health then
+                            p:SetHealth(hp - 1)
+                        end
+
+                        local max = p:GetMaxHealth()
+                        if max > drain_health then
+                            p:SetMaxHealth(max - 1)
+                        end
+                    end
+                end
+            end)
+        end
 
         -- Assassin logic
         if role == ROLE_ASSASSIN then
@@ -1470,6 +1494,7 @@ function EndRound(type)
     if timer.Exists("revengerloverkiller") then timer.Remove("revengerloverkiller") end
     if timer.Exists("drunkremember") then timer.Remove("drunkremember") end
     if timer.Exists("waitfordrunkrespawn") then timer.Remove("waitfordrunkrespawn") end
+    if timer.Exists("oldmanhealthdrain") then timer.Remove("oldmanhealthdrain") end
 
     -- We may need to start a timer for a mapswitch, or start a vote
     CheckForMapSwitch()
