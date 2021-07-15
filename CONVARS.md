@@ -109,7 +109,7 @@ ttt_assassin_target_damage_bonus            1       // Damage bonus that the ass
 ttt_assassin_wrong_damage_penalty           0.5     // Damage penalty that the assassin has when attacking someone who is not their target (e.g. 0.5 = 50% less damage)
 ttt_assassin_failed_damage_penalty          0.5     // Damage penalty that the assassin has after they have failed their contract by killing the wrong person (e.g. 0.5 = 50% less damage)
 ttt_assassin_credits_starting               1       // The number of credits an assassin should start with
-ttt_assassin_shop_roles_last                0       // Whether the assasin should target the shop roles right before Detective or not
+ttt_assassin_shop_roles_last                0       // Whether the assassin should target the shop roles right before Detective or not
 
 // Vampire
 ttt_vampires_are_monsters                   0       // Whether vampires should be treated as members of the Monster team.
