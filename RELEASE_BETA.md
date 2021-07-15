@@ -1,5 +1,11 @@
 # Beta Release Notes
 
+## 1.0.5
+**Released:**
+
+### Additions
+- Added new Assassin target priority CVar
+
 ## 1.0.4
 **Released:**
 
