@@ -1295,11 +1295,8 @@ function BeginRound()
 
         -- Old Man logic
         local drain_health = GetConVar("ttt_oldman_drain_health_to"):GetInt()
-        print(drain_health)
         if role == ROLE_OLDMAN and drain_health > 0 then
-            print("ST")
             timer.Create("oldmanhealthdrain", 3, 0, function()
-                print("Draining")
                 for _, p in pairs(player.GetAll()) do
                     if p:IsActiveOldMan() then
                         local hp = p:Health()
