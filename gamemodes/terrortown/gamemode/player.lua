@@ -1193,17 +1193,10 @@ function GM:PlayerDeath(victim, infl, attacker)
         end
         local victim_weapons = GetPlayerWeaponInfo(victim)
 
-        -- Swap prime status
-        if attacker:IsZombiePrime() then
-            attacker:SetZombiePrime(false)
-            victim:SetZombiePrime(true)
-        elseif attacker:IsVampirePrime() then
-            attacker:SetVampirePrime(false)
-            victim:SetVampirePrime(true)
-        end
-
         victim:SetRole(attacker:GetRole())
         attacker:SetRole(ROLE_SWAPPER)
+        attacker:MoveRoleState(victim)
+
         local health = GetConVar("ttt_swapper_killer_health"):GetInt()
         if health == 0 then
             attacker:Kill()

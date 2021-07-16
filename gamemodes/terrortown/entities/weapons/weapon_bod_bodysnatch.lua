@@ -137,6 +137,7 @@ if SERVER then
 
     function SWEP:DoBodysnatch(body)
         local ply = bodyply(body)
+        local owner = self:GetOwner()
 
         net.Start("TTT_Bodysnatched")
         net.WriteBool(true)
@@ -144,12 +145,16 @@ if SERVER then
 
         net.Start("TTT_ScoreBodysnatch")
         net.WriteString(ply:Nick())
-        net.WriteString(self:GetOwner():Nick())
+        net.WriteString(owner:Nick())
         net.WriteString(ROLE_STRINGS_EXT[ply:GetRole()])
         net.Broadcast()
 
         local role = ply:GetRole()
-        self:GetOwner():SetRole(role)
+        owner:SetRole(role)
+        if SERVER then
+            ply:MoveRoleState(owner, true)
+        end
+        owner:SelectWeapon("weapon_zm_carry")
 
         if GetConVar("ttt_bodysnatcher_destroy_body"):GetBool() then
             body:Remove()

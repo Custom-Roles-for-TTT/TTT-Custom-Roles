@@ -461,4 +461,64 @@ else
         net.WriteUInt(act, 16)
         net.Broadcast()
     end
+
+    function plymeta:MoveRoleState(target, keep_on_source)
+        if self:IsZombiePrime() then
+            if not keep_on_source then self:SetZombiePrime(false) end
+            target:SetZombiePrime(true)
+        end
+
+        if self:IsVampirePrime() then
+            if not keep_on_source then self:SetVampirePrime(false) end
+            target:SetVampirePrime(true)
+        end
+
+        if self:GetNWBool("HasPromotion", false) then
+            if not keep_on_source then self:SetNWBool("HasPromotion", false) end
+            target:SetNWBool("HasPromotion", true)
+
+            net.Start("TTT_ResetBuyableWeaponsCache")
+            net.Send(target)
+        end
+
+        local killer = self:GetNWString("RevengerKiller", nil)
+        if killer ~= nil then
+            if not keep_on_source then self:SetNWString("RevengerKiller", "") end
+            target:SetNWString("RevengerKiller", killer)
+        end
+
+        local lover = self:GetNWString("RevengerLover", nil)
+        if lover ~= nil then
+            if not keep_on_source then self:SetNWString("RevengerLover", "") end
+            target:SetNWString("RevengerLover", lover)
+
+            local revenger_lover = player.GetBySteamID64(lover)
+            if IsValid(revenger_lover) then
+                target:PrintMessage(HUD_PRINTTALK, "You are now in love with " .. revenger_lover:Nick() .. ".")
+                target:PrintMessage(HUD_PRINTCENTER, "You are now in love with " .. revenger_lover:Nick() .. ".")
+
+                if not revenger_lover:Alive() or revenger_lover:IsSpec() then
+                    local message
+                    if killer == target:SteamID64() then
+                        message = "Your love has died by your hand."
+                    elseif killer then
+                        message = "Your love has died. Track down their killer."
+
+                        timer.Simple(1, function() -- Slight delay needed for NW variables to be sent
+                            net.Start("TTT_RevengerLoverKillerRadar")
+                            net.WriteBool(true)
+                            net.Send(target)
+                        end)
+                    else
+                        message = "Your love has died, but you cannot determine the cause."
+                    end
+
+                    timer.Simple(1, function()
+                        target:PrintMessage(HUD_PRINTTALK, message)
+                        target:PrintMessage(HUD_PRINTCENTER, message)
+                    end)
+                end
+            end
+        end
+    end
 end
