@@ -1365,6 +1365,8 @@ function GM:PlayerDeath(victim, infl, attacker)
                     victim:SetHealth(health)
                     if IsValid(parasiteBody) then parasiteBody:Remove() end
                     attacker:Kill()
+                    attacker:PrintMessage(HUD_PRINTCENTER, "Your parasite has drained you of your energy.")
+                    attacker:PrintMessage(HUD_PRINTTALK, "Your parasite has drained you of your energy.")
                 end
             else
                 victim:SetNWInt("InfectionProgress", progress)
