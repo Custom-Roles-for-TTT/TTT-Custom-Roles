@@ -15,6 +15,7 @@
 - Fixed error caused by trying to set a player with no role's starting health
 - Fixed monster team count check when zombie was on the independent team
 - Fixed revenger losing karma when they killed their soulmate's killer if they were innocent
+- Fixed parasite cure showing in Deputy/Impersonator shop but not being buyable
 
 ### Developer
 - Added plymeta:StripRoleWeapons

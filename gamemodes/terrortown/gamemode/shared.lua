@@ -673,6 +673,21 @@ function GetSprintMultiplier(ply, sprinting)
     return mult
 end
 
+function UpdateRoleWeaponState()
+    -- If the parasite is not enabled, don't let anyone buy the cure
+    local parasite_cure = weapons.GetStored("weapon_par_cure")
+    if not GetGlobalBool("ttt_parasite_enabled", false) then
+        table.Empty(parasite_cure.CanBuy)
+    else
+        parasite_cure.CanBuy = table.Copy(parasite_cure.CanBuyDefault)
+    end
+
+    if SERVER then
+        net.Start("TTT_ResetBuyableWeaponsCache")
+        net.Broadcast()
+    end
+end
+
 function UpdateRoleState()
     local zombies_are_monsters = GetGlobalBool("ttt_zombies_are_monsters", false)
     -- Zombies cannot be both Monsters and Traitors so don't make them Traitors if they are already Monsters
@@ -688,13 +703,7 @@ function UpdateRoleState()
     -- Update role colors to make sure team changes have taken effect
     UpdateRoleColours()
 
-    -- If the parasite is not enabled, don't let anyone buy the cure
-    local parasite_cure = weapons.GetStored("weapon_par_cure")
-    if not GetGlobalBool("ttt_parasite_enabled", false) then
-        table.Empty(parasite_cure.CanBuy)
-    else
-        parasite_cure.CanBuy = table.Copy(parasite_cure.CanBuyDefault)
-    end
+    UpdateRoleWeaponState()
 end
 
 if SERVER then
