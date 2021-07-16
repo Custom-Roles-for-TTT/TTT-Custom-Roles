@@ -128,7 +128,8 @@ function GM:PostDrawTranslucentRenderables()
                             else
                                 DrawRoleIcon(ROLE_IMPERSONATOR, true, pos, dir)
                             end
-                        elseif v:IsTraitorTeam() then
+                        -- If this is a vanilla traitor they should have been handled above and are therefore a converted beggar who should be hidden
+                        elseif not v:GetTraitor() and v:IsTraitorTeam() then
                             DrawRoleIcon(v:GetRole(), true, pos, dir)
                         elseif showJester then
                             DrawRoleIcon(ROLE_JESTER, false, pos, dir)

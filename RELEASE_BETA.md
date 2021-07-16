@@ -16,6 +16,7 @@
 - Fixed monster team count check when zombie was on the independent team
 - Fixed revenger losing karma when they killed their soulmate's killer if they were innocent
 - Fixed parasite cure showing in Deputy/Impersonator shop but not being buyable
+- Fixed beggar who converted to a traitor still showing the traitor icon over their head even when ttt_beggar_reveal_change was disabled
 
 ### Developer
 - Added plymeta:StripRoleWeapons
