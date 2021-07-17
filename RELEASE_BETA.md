@@ -12,7 +12,7 @@
 - Added ability for non-traitor roles to be configurably able to use traitor buttons
 - Added ability for non-shop roles to be configurably able to see and loot credits
 - Added new trickster role
-- Added settings to control whether the Deputy/Impersonator should use their own icons or the Detective icon over their head
+- Added settings to control whether the deputy/impersonator should use their own icons or the Detective icon over their head
 - Added setting to have the old man have their health drained to a certain minimum value over time
 - Added a message to a parasite victim when they are killed by the parasite coming back to life
 - Added a message to a non-prime vampire when they are killed/reverted if the prime was killed
@@ -26,7 +26,8 @@
 - Fixed beggar who converted to a traitor still showing the traitor icon over their head even when ttt_beggar_reveal_change was disabled
 - Fixed swapper/bodysnatcher not being promoted when swapping roles with a promoted deputy/impersonator
 - Fixed swapper/bodysnatcher not inheriting the revenger's lover when swapping roles with a revenger
-- Fixed bodysnatcher not getting Zombie/Vampire prime status when a prime Zombie/Vampire swaps with them
+- Fixed bodysnatcher not getting zombie/vampire prime status when a prime zombie/vampire swaps with them
+- Fixed bodysnatcher not being promoted when they snatch the deputy/impersonator role and no detectives are left alive
 
 ### Developer
 - Added plymeta:StripRoleWeapons which removes all weapons with the WEAPON_CATEGORY_ROLE from a player

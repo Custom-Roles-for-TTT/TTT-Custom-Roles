@@ -1401,7 +1401,7 @@ function GM:PlayerDeath(victim, infl, attacker)
     -- Handle detective death
     if victim:IsDetective() and GetRoundState() == ROUND_ACTIVE then
         local detectiveAlive = false
-        for _, ply in pairs(player.GetAll()) do
+        for _, ply in ipairs(player.GetAll()) do
             if not ply:IsSpec() and ply:Alive() and ply:IsDetective() and ply ~= victim then
                 detectiveAlive = true
                 break

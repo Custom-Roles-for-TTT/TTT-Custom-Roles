@@ -153,6 +153,21 @@ if SERVER then
         owner:SetRole(role)
         if SERVER then
             ply:MoveRoleState(owner, true)
+            -- If we're changing to a detective-like and we aren't already promoted, check to see if all the detectives are already dead
+            if (role == ROLE_DEPUTY or role == ROLE_IMPERSONATOR) and not owner:GetNWBool("HasPromotion", false) then
+                local detectiveAlive = false
+                for _, p in ipairs(player.GetAll()) do
+                    if not p:IsSpec() and p:Alive() and p:IsDetective() then
+                        detectiveAlive = true
+                        break
+                    end
+                end
+
+                -- If they are all dead, promote the plaer
+                if not detectiveAlive then
+                    owner:SetNWBool("HasPromotion", true)
+                end
+            end
         end
         owner:SelectWeapon("weapon_zm_carry")
 
