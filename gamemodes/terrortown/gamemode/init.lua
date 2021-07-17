@@ -797,6 +797,8 @@ local function OnPlayerDeath(victim, infl, attacker)
                 -- Kill them
                 if vamp_prime_death_mode == VAMPIRE_DEATH_KILL_CONVERED then
                     for _, vnp in pairs(vampires) do
+                        vnp:PrintMessage(HUD_PRINTTALK, "Your Vampire overlord has been slain and you die with them")
+                        vnp:PrintMessage(HUD_PRINTCENTER, "Your Vampire overlord has been slain and you die with them")
                         vnp:Kill()
                     end
                 -- Change them back to their previous roles
@@ -805,6 +807,8 @@ local function OnPlayerDeath(victim, infl, attacker)
                     for _, vnp in pairs(vampires) do
                         local prev_role = vnp:GetVampirePreviousRole()
                         if prev_role ~= ROLE_NONE then
+                            vnp:PrintMessage(HUD_PRINTTALK, "Your Vampire overlord has been slain and you feel their grip over you subside")
+                            vnp:PrintMessage(HUD_PRINTCENTER, "Your Vampire overlord has been slain and you feel their grip over you subside")
                             vnp:SetRoleAndBroadcast(prev_role)
                             vnp:StripWeapon("weapon_vam_fangs")
                             vnp:SelectWeapon("weapon_zm_improvised")

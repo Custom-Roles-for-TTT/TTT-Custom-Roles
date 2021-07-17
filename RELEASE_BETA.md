@@ -15,6 +15,7 @@
 - Added settings to control whether the Deputy/Impersonator should use their own icons or the Detective icon over their head
 - Added setting to have the old man have their health drained to a certain minimum value over time
 - Added a message to a parasite victim when they are killed by the parasite coming back to life
+- Added a message to a non-prime vampire when they are killed/reverted if the prime was killed
 
 ### Fixes
 - Fixed vampire victims getting stuck frozen if the vampire is killed while draining their blood
