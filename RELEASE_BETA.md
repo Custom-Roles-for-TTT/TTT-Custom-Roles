@@ -5,6 +5,8 @@
 
 ### Changes
 - Changed revenger to receive a different message if their lover is killed when they are already dead
+- Changed deputy/impersonator to not receive a message about their promotion if they are already dead
+- Changed traitors to receive a slightly different message if their dead impersonator teammate has been promoted
 
 ### Additions
 - Added ability for non-traitor roles to be configurably able to use traitor buttons
