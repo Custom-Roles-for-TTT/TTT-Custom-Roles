@@ -3,10 +3,13 @@
 ## 1.0.5
 **Released:**
 
+### Changes
+- Changed revenger to receive a different message if their lover is killed when they are already dead
+
 ### Additions
 - Added ability for non-traitor roles to be configurably able to use traitor buttons
 - Added ability for non-shop roles to be configurably able to see and loot credits
-- Added Trickster role
+- Added new trickster role
 - Added settings to control whether the Deputy/Impersonator should use their own icons or the Detective icon over their head
 - Added setting to have the old man have their health drained to a certain minimum value over time
 - Added a message to a parasite victim when they are killed by the parasite coming back to life

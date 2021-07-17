@@ -1148,22 +1148,32 @@ function GM:PlayerDeath(victim, infl, attacker)
     -- Handle revenger lover death
     for _, v in pairs(player.GetAll()) do
         if v:IsRevenger() and v:GetNWString("RevengerLover", "") == victim:SteamID64() then
+            local message
             if v == attacker then
-                v:PrintMessage(HUD_PRINTTALK, "Your love has died by your hand.")
-                v:PrintMessage(HUD_PRINTCENTER, "Your love has died by your hand.")
-            elseif valid_kill then
-                v:PrintMessage(HUD_PRINTTALK, "Your love has died. Track down their killer.")
-                v:PrintMessage(HUD_PRINTCENTER, "Your love has died. Track down their killer.")
-                v:SetNWString("RevengerKiller", attacker:SteamID64())
-                timer.Simple(1, function() -- Slight delay needed for NW variables to be sent
-                    net.Start("TTT_RevengerLoverKillerRadar")
-                    net.WriteBool(true)
-                    net.Send(v)
-                end)
+                message = "Your love has died by your hand."
             else
-                v:PrintMessage(HUD_PRINTTALK, "Your love has died, but you cannot determine the cause.")
-                v:PrintMessage(HUD_PRINTCENTER, "Your love has died, but you cannot determine the cause.")
+                if valid_kill then
+                    if v:Alive() then
+                        message = "Your love has died. Track down their killer."
+                    end
+                    v:SetNWString("RevengerKiller", attacker:SteamID64())
+                    timer.Simple(1, function() -- Slight delay needed for NW variables to be sent
+                        net.Start("TTT_RevengerLoverKillerRadar")
+                        net.WriteBool(true)
+                        net.Send(v)
+                    end)
+                elseif v:Alive() then
+                    message = "Your love has died, but you cannot determine the cause."
+                end
+
+                -- Use a specific message if the revenger is dead already
+                if not v:Alive() then
+                    message = "Your love has been killed and joins you in death."
+                end
             end
+
+            v:PrintMessage(HUD_PRINTTALK, message)
+            v:PrintMessage(HUD_PRINTCENTER, message)
         end
     end
 
