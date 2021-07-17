@@ -593,7 +593,7 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                 local swappedWith = ""
                 local jesterKiller = ""
                 if IsValid(ply) then
-                    alive = ply:Alive()
+                    alive = ply:Alive() and not ply:IsSpec()
                     finalRole = ply:GetRole()
                     -- Keep the original role icon for people converted to Zombie and Vampire or the Bodysnatcher
                     if finalRole ~= ROLE_ZOMBIE and finalRole ~= ROLE_VAMPIRE and startingRole ~= ROLE_BODYSNATCHER then

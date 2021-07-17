@@ -22,12 +22,13 @@
 - Fixed error caused by trying to set a player with no role's starting health
 - Fixed monster team count check when zombie was on the independent team
 - Fixed revenger losing karma when they killed their soulmate's killer if they were innocent
-- Fixed parasite cure showing in Deputy/Impersonator shop but not being buyable
+- Fixed parasite cure showing in deputy/impersonator shop but not being buyable
 - Fixed beggar who converted to a traitor still showing the traitor icon over their head even when ttt_beggar_reveal_change was disabled
 - Fixed swapper/bodysnatcher not being promoted when swapping roles with a promoted deputy/impersonator
 - Fixed swapper/bodysnatcher not inheriting the revenger's lover when swapping roles with a revenger
 - Fixed bodysnatcher not getting zombie/vampire prime status when a prime zombie/vampire swaps with them
 - Fixed bodysnatcher not being promoted when they snatch the deputy/impersonator role and no detectives are left alive
+- Fixed players who were moved to spectator for being AFK not showing as dead on the end-of-round summary screen
 
 ### Developer
 - Added plymeta:StripRoleWeapons which removes all weapons with the WEAPON_CATEGORY_ROLE from a player
