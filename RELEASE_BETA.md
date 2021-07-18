@@ -7,7 +7,7 @@
 - Changed revenger to receive a different message if their lover is killed when they are already dead
 - Changed deputy/impersonator to not receive a message about their promotion if they are already dead
 - Changed traitors to receive a slightly different message if their dead impersonator teammate has been promoted
-- Changed the Killer/Phantom smoke to be viewable from further away
+- Changed the killer/phantom smoke to be viewable from further away
 - Changed corpse identified message to also send for non-vanilla traitors to non-vanilla innocents
 
 ### Additions
