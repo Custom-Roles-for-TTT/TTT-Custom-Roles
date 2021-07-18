@@ -50,17 +50,17 @@ local function IdentifyBody(ply, rag)
         return
     end
 
-    if not hook.Run("TTTCanIdentifyCorpse", ply, rag, (rag.was_role == ROLE_TRAITOR)) then
+    local role = rag.was_role
+    local traitor = TRAITOR_ROLES[rag.was_role]
+    if not hook.Run("TTTCanIdentifyCorpse", ply, rag, traitor) then
         return
     end
 
     local finder = ply:Nick()
     local nick = CORPSE.GetPlayerNick(rag, "")
-    local traitor = (rag.was_role == ROLE_TRAITOR)
 
     -- Announce body
     if bodyfound:GetBool() and not CORPSE.GetFound(rag, false) then
-        local role = rag.was_role
         local roletext = "body_found_" .. ROLE_STRINGS_SHORT[role]
         LANG.Msg("body_found", {
             finder = finder,
@@ -78,17 +78,13 @@ local function IdentifyBody(ply, rag)
             deadply:SetNWBool("body_found", true)
 
             if traitor then
-                -- update innocent's list of traitors
-                SendConfirmedTraitors(GetInnocentFilter(false))
+                -- update innocent team's list of whichever traitor role this corpse was
+                SendRoleList(role, GetInnocentTeamFilter(false))
             end
             SCORE:HandleBodyFound(ply, deadply)
         end
         hook.Call("TTTBodyFound", GAMEMODE, ply, deadply, rag)
         CORPSE.SetFound(rag, true)
-    else
-        -- re-set because nwvars are unreliable
-        --CORPSE.SetFound(rag, true)
-        --CORPSE.SetPlayerNick(rag, nick)
     end
 
     -- Handle kill list
@@ -102,11 +98,6 @@ local function IdentifyBody(ply, rag)
 
             -- update scoreboard status
             vic:SetNWBool("body_found", true)
-
-            -- however, do not mark body as found. This lets players find the
-            -- body later and get the benefits of that
-            --local vicrag = vic.server_ragdoll
-            --CORPSE.SetFound(vicrag, true)
         end
     end
 end
@@ -128,7 +119,7 @@ local function IdentifyCommand(ply, cmd, args)
     ply.search_id = nil
 
     local rag = Entity(eidx)
-    if IsValid(rag) and rag:GetPos():Distance(ply:GetPos()) < 128 then
+    if IsValid(rag) and rag.player_ragdoll and rag:GetPos():Distance(ply:GetPos()) < 128 then
         if not CORPSE.GetFound(rag, false) then
             IdentifyBody(ply, rag)
         end
@@ -151,7 +142,11 @@ local function CallDetective(ply, cmd, args)
 
     local sid = args[2]
     local rag = Entity(eidx)
-    if IsValid(rag) and rag:GetPos():Distance(ply:GetPos()) < 128 then
+    if not (IsValid(rag) and rag.player_ragdoll) then return end
+
+    if ((rag.last_detective_call or 0) < (CurTime() - 5)) and (rag:GetPos():Distance(ply:GetPos()) < 128) then
+        rag.last_detective_call = CurTime()
+
         if CORPSE.GetFound(rag, false) then
             -- show indicator to detectives
             net.Start("TTT_CorpseCall")
@@ -193,13 +188,13 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
         return
     end
 
-    if not hook.Run("TTTCanSearchCorpse", ply, rag, covert, long_range, TRAITOR_ROLES[rag.was_role]) then
+    local role = rag.was_role
+    if not hook.Run("TTTCanSearchCorpse", ply, rag, covert, long_range, TRAITOR_ROLES[role]) then
         return
     end
 
     -- init a heap of data we'll be sending
     local nick = CORPSE.GetPlayerNick(rag)
-    local role = rag.was_role
     local eq = rag.equipment or EQUIP_NONE
     local c4 = rag.bomb_wire or -1
     local dmg = rag.dmgtype or DMG_GENERIC

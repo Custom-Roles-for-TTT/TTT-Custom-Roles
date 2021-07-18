@@ -8,6 +8,7 @@
 - Changed deputy/impersonator to not receive a message about their promotion if they are already dead
 - Changed traitors to receive a slightly different message if their dead impersonator teammate has been promoted
 - Changed the Killer/Phantom smoke to be viewable from further away
+- Changed corpse identified message to also send for non-vanilla traitors to non-vanilla innocents
 
 ### Additions
 - Added ability for non-traitor roles to be configurably able to use traitor buttons
@@ -17,6 +18,7 @@
 - Added setting to have the old man have their health drained to a certain minimum value over time
 - Added a message to a parasite victim when they are killed by the parasite coming back to life
 - Added a message to a non-prime vampire when they are killed/reverted if the prime was killed
+- Ported "TTT: add more validation to corpse commands" from base TTT
 
 ### Fixes
 - Fixed vampire victims getting stuck frozen if the vampire is killed while draining their blood
@@ -37,6 +39,7 @@
 - Added plymeta:StripRoleWeapons which removes all weapons with the WEAPON_CATEGORY_ROLE from a player
 - Added plymeta:MoveRoleState which moves the role NW values from a player to a target
 - Added missing things to resource download list
+- Changed TTTCanIdentifyCorpse hook "was_traitor" parameter to be true for any role on the traitor team rather than just the vanilla traitor
 
 ## 1.0.4
 **Released: July 11th, 2021**

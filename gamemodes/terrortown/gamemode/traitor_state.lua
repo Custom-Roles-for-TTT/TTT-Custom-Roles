@@ -35,7 +35,7 @@ local function SendRoleListMessage(role, role_ids, ply_or_rf)
     else net.Broadcast() end
 end
 
-local function SendRoleList(role, ply_or_rf, pred)
+function SendRoleList(role, ply_or_rf, pred)
     local role_ids = {}
     for _, v in ipairs(player.GetAll()) do
         if v:IsRole(role) then

@@ -82,12 +82,12 @@ function GetTraitorFilter(alive_only)
 end
 
 function GetInnocentFilter(alive_only)
-    return GetPlayerFilter(function(p) return p:IsInnocent() and (not alive_only or p:IsTerror()) end)
+    return GetPlayerFilter(function(p) return p:GetInnocent() and (not alive_only or p:IsTerror()) end)
 end
 
 function GetDetectiveFilter(alive_only)
     -- Include promoted Deputies in this, but not Impersonators. They are included in GetTraitorFilter
-    return GetPlayerFilter(function(p) return (p:IsDetective() or (p:IsDeputy() and p:GetNWBool("HasPromotion", false))) and (not alive_only or p:IsTerror()) end)
+    return GetPlayerFilter(function(p) return (p:GetDetective() or (p:GetDeputy() and p:GetNWBool("HasPromotion", false))) and (not alive_only or p:IsTerror()) end)
 end
 
 function GetJesterFilter(alive_only)
