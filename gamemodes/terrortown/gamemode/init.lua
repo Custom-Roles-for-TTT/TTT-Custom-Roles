@@ -1901,6 +1901,7 @@ function SelectRoles()
     local traitor_count = GetTraitorCount(choice_count) - forcedTraitorCount - forcedSpecialTraitorCount
     local max_special_traitor_count = GetSpecialTraitorCount(traitor_count) - forcedSpecialTraitorCount
     local independent_count = ((math.random() <= GetConVar("ttt_independent_chance"):GetFloat()) and 1 or 0) - forcedIndependentCount
+    local monster_count = GetMonsterCount(choice_count) - forcedMonsterCount
 
     -- pick detectives
     if choice_count >= GetConVar("ttt_detective_min_players"):GetInt() then
@@ -2144,7 +2145,6 @@ function SelectRoles()
         end
     end
 
-    local monster_count = GetMonsterCount(#choices) - forcedMonsterCount
     if monster_count > 0 then
         local monsterRoles = {}
         if MONSTER_ROLES[ROLE_ZOMBIE] and not hasZombie and GetConVar("ttt_zombie_enabled"):GetBool() and choice_count >= GetConVar("ttt_zombie_min_players"):GetInt() then

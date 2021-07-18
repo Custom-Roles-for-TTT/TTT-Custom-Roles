@@ -31,6 +31,7 @@
 - Fixed bodysnatcher not being promoted when they snatch the deputy/impersonator role and no detectives are left alive
 - Fixed players who were moved to spectator for being AFK not showing as dead on the end-of-round summary screen
 - Fixed killer/phantom smoke not always working when multiple players should be smoking at once
+- Fixed monster team occurring more than it should due to calculating the number of players too late
 
 ### Developer
 - Added plymeta:StripRoleWeapons which removes all weapons with the WEAPON_CATEGORY_ROLE from a player
