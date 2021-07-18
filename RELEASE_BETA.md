@@ -3,6 +3,13 @@
 ## 1.0.5
 **Released:**
 
+### Additions
+- Added new Assassin target priority CVar
+- Added new CVar to heal the Clown when they activate
+
+## 1.0.4
+**Released:**
+
 ### Changes
 - Changed revenger to receive a different message if their lover is killed when they are already dead
 - Changed deputy/impersonator to not receive a message about their promotion if they are already dead

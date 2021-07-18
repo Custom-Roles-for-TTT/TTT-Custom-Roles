@@ -1,5 +1,5 @@
 -- Version string for display and function for version checks
-CR_VERSION = "1.0.4"
+CR_VERSION = "1.0.5"
 
 function CRVersion(version)
     local installedVersionRaw = string.Split(CR_VERSION, ".")
@@ -721,6 +721,7 @@ if SERVER then
         ply:SetNWString("AssassinTarget", "")
 
         local enemies = {}
+        local shops = {}
         local detectives = {}
         local independents = {}
         for _, p in pairs(player.GetAll()) do
@@ -731,7 +732,12 @@ if SERVER then
                 elseif (INNOCENT_ROLES[p:GetRole()] or MONSTER_ROLES[p:GetRole()]) and not p:IsGlitch() then
                     -- Don't add the former beggar to the list of enemies unless the "reveal" setting is enabled
                     if GetConVar("ttt_beggar_reveal_change"):GetBool() or not p:GetNWBool("WasBeggar", false) then
-                        table.insert(enemies, p:Nick())
+                        -- Put shop roles into a list if they should be targeted last
+                        if GetConVar("ttt_assassin_shop_roles_last").GetBool() and SHOP_ROLES[p:GetRole()] then
+                            table.insert(shops, p:Nick())
+                        else
+                            table.insert(enemies, p:Nick())
+                        end
                     end
                 -- Exclude the Old Man because they just want to survive
                 elseif INDEPENDENT_ROLES[p:GetRole()] and not p:IsOldMan() then
@@ -743,6 +749,8 @@ if SERVER then
         local target = nil
         if #enemies > 0 then
             target = enemies[math.random(#enemies)]
+        elseif #shops > 0 then
+            target = enemies[math.random(#shops)]
         elseif #detectives > 0 then
             target = detectives[math.random(#detectives)]
         elseif #independents > 0 then
