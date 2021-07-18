@@ -71,8 +71,9 @@ ROLE_VAMPIRE = 21
 ROLE_DOCTOR = 22
 ROLE_QUACK = 23
 ROLE_PARASITE = 24
+ROLE_TRICKSTER = 25
 
-ROLE_MAX = 24
+ROLE_MAX = 25
 
 local function AddRoleAssociations(list, roles)
     -- Use an associative array so we can do a O(1) lookup by role
@@ -99,7 +100,7 @@ TRAITOR_ROLES = {}
 AddRoleAssociations(TRAITOR_ROLES, {ROLE_TRAITOR, ROLE_HYPNOTIST, ROLE_IMPERSONATOR, ROLE_ASSASSIN, ROLE_VAMPIRE, ROLE_QUACK, ROLE_PARASITE})
 
 INNOCENT_ROLES = {}
-AddRoleAssociations(INNOCENT_ROLES, {ROLE_INNOCENT, ROLE_DETECTIVE, ROLE_GLITCH, ROLE_PHANTOM, ROLE_REVENGER, ROLE_DEPUTY, ROLE_MERCENARY, ROLE_VETERAN, ROLE_DOCTOR})
+AddRoleAssociations(INNOCENT_ROLES, {ROLE_INNOCENT, ROLE_DETECTIVE, ROLE_GLITCH, ROLE_PHANTOM, ROLE_REVENGER, ROLE_DEPUTY, ROLE_MERCENARY, ROLE_VETERAN, ROLE_DOCTOR, ROLE_TRICKSTER})
 
 JESTER_ROLES = {}
 AddRoleAssociations(JESTER_ROLES, {ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_BEGGAR, ROLE_BODYSNATCHER})
@@ -112,6 +113,14 @@ AddRoleAssociations(MONSTER_ROLES, {})
 
 DEFAULT_ROLES = {}
 AddRoleAssociations(DEFAULT_ROLES, {ROLE_INNOCENT, ROLE_TRAITOR, ROLE_DETECTIVE})
+
+-- Traitors get this ability by default
+TRAITOR_BUTTON_ROLES = {}
+AddRoleAssociations(TRAITOR_BUTTON_ROLES, {ROLE_TRICKSTER})
+
+-- Shop roles get this ability by default
+CAN_LOOT_CREDITS_ROLES = {}
+AddRoleAssociations(CAN_LOOT_CREDITS_ROLES, {ROLE_TRICKSTER})
 
 -- Role colours
 COLOR_INNOCENT = {
@@ -331,7 +340,8 @@ ROLE_STRINGS = {
     [ROLE_VAMPIRE] = "vampire",
     [ROLE_DOCTOR] = "doctor",
     [ROLE_QUACK] = "quack",
-    [ROLE_PARASITE] = "parasite"
+    [ROLE_PARASITE] = "parasite",
+    [ROLE_TRICKSTER] = "trickster"
 }
 
 ROLE_STRINGS_EXT = {
@@ -360,7 +370,8 @@ ROLE_STRINGS_EXT = {
     [ROLE_VAMPIRE] = "a vampire",
     [ROLE_DOCTOR] = "a doctor",
     [ROLE_QUACK] = "a quack",
-    [ROLE_PARASITE] = "a parasite"
+    [ROLE_PARASITE] = "a parasite",
+    [ROLE_TRICKSTER] = "a trickster"
 }
 
 ROLE_STRINGS_SHORT = {
@@ -388,7 +399,8 @@ ROLE_STRINGS_SHORT = {
     [ROLE_VAMPIRE] = "vam",
     [ROLE_DOCTOR] = "doc",
     [ROLE_QUACK] = "qua",
-    [ROLE_PARASITE] = "par"
+    [ROLE_PARASITE] = "par",
+    [ROLE_TRICKSTER] = "tri"
 }
 
 -- Game event log defs
@@ -661,6 +673,21 @@ function GetSprintMultiplier(ply, sprinting)
     return mult
 end
 
+function UpdateRoleWeaponState()
+    -- If the parasite is not enabled, don't let anyone buy the cure
+    local parasite_cure = weapons.GetStored("weapon_par_cure")
+    if not GetGlobalBool("ttt_parasite_enabled", false) then
+        table.Empty(parasite_cure.CanBuy)
+    else
+        parasite_cure.CanBuy = table.Copy(parasite_cure.CanBuyDefault)
+    end
+
+    if SERVER then
+        net.Start("TTT_ResetBuyableWeaponsCache")
+        net.Broadcast()
+    end
+end
+
 function UpdateRoleState()
     local zombies_are_monsters = GetGlobalBool("ttt_zombies_are_monsters", false)
     -- Zombies cannot be both Monsters and Traitors so don't make them Traitors if they are already Monsters
@@ -676,13 +703,7 @@ function UpdateRoleState()
     -- Update role colors to make sure team changes have taken effect
     UpdateRoleColours()
 
-    -- If the parasite is not enabled, don't let anyone buy the cure
-    local parasite_cure = weapons.GetStored("weapon_par_cure")
-    if not GetGlobalBool("ttt_parasite_enabled", false) then
-        table.Empty(parasite_cure.CanBuy)
-    else
-        parasite_cure.CanBuy = table.Copy(parasite_cure.CanBuyDefault)
-    end
+    UpdateRoleWeaponState()
 end
 
 if SERVER then
@@ -760,7 +781,10 @@ if SERVER then
     end
 
     function SetRoleHealth(ply)
+        if not IsValid(ply) or not ply:Alive() or ply:IsSpec() then return end
         local role = ply:GetRole()
+        if role <= ROLE_NONE or role > ROLE_MAX then return end
+
         local maxhealth = GetConVar("ttt_" .. ROLE_STRINGS[role] .. "_max_health"):GetInt()
         ply:SetMaxHealth(maxhealth)
         local health = GetConVar("ttt_" .. ROLE_STRINGS[role] .. "_starting_health"):GetInt()

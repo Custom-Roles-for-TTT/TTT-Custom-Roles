@@ -122,7 +122,9 @@ local function ShouldReduceKarma(attacker, victim)
     return (attacker:IsTraitorTeam() and victim:IsTraitorTeam()) or
             (attacker:IsZombie() and victim:IsZombieAlly()) or
             (attacker:IsVampire() and victim:IsVampireAlly()) or
-            (attacker:IsInnocentTeam() and victim:IsInnocentTeam()) or
+            (attacker:IsInnocentTeam() and victim:IsInnocentTeam() and
+                -- If the attacker is not a revenger or they are and their victim isn't their target then reduce
+                (not attacker:IsRevenger() or victim:SteamID64() ~= attacker:GetNWString("RevengerKiller", ""))) or
             attacker:IsDrunk()
 end
 

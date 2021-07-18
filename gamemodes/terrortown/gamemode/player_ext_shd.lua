@@ -36,6 +36,7 @@ function plymeta:GetVampire() return self:GetRole() == ROLE_VAMPIRE end
 function plymeta:GetDoctor() return self:GetRole() == ROLE_DOCTOR end
 function plymeta:GetQuack() return self:GetRole() == ROLE_QUACK end
 function plymeta:GetParasite() return self:GetRole() == ROLE_PARASITE end
+function plymeta:GetTrickster() return self:GetRole() == ROLE_TRICKSTER end
 
 function plymeta:GetZombiePrime() return self:GetZombie() and self:GetNWBool("zombie_prime", false) end
 function plymeta:GetVampirePrime() return self:GetVampire() and self:GetNWBool("vampire_prime", false) end
@@ -95,6 +96,7 @@ plymeta.IsVampire = plymeta.GetVampire
 plymeta.IsDoctor = plymeta.GetDoctor
 plymeta.IsQuack = plymeta.GetQuack
 plymeta.IsParasite = plymeta.GetParasite
+plymeta.IsTrickster = plymeta.GetTrickster
 
 plymeta.IsDetectiveLike = plymeta.GetDetectiveLike
 plymeta.IsZombiePrime = plymeta.GetZombiePrime
@@ -121,6 +123,14 @@ function plymeta:CanUseShop()
     return self:IsShopRole() and
         (not self:IsDeputy() or self:GetNWBool("HasPromotion", false)) and
         (not self:IsClown() or self:GetNWBool("KillerClownActive", false))
+end
+function plymeta:CanUseTraitorButton(active_only)
+    if active_only and not self:IsActive() then return false end
+    return self:IsTraitorTeam() or TRAITOR_BUTTON_ROLES[self:GetRole()]
+end
+function plymeta:CanLootCredits(active_only)
+    if active_only and not self:IsActive() then return false end
+    return self:IsShopRole() or CAN_LOOT_CREDITS_ROLES[self:GetRole()]
 end
 
 function plymeta:SetRoleAndBroadcast(role)
@@ -165,6 +175,7 @@ function plymeta:IsActiveVampire() return self:IsActiveRole(ROLE_VAMPIRE) end
 function plymeta:IsActiveDoctor() return self:IsActiveRole(ROLE_DOCTOR) end
 function plymeta:IsActiveQuack() return self:IsActiveRole(ROLE_QUACK) end
 function plymeta:IsActiveParasite() return self:IsActiveRole(ROLE_PARASITE) end
+function plymeta:IsActiveTrickster() return self:IsActiveRole(ROLE_TRICKSTER) end
 
 function plymeta:IsActiveSpecial() return self:IsSpecial() and self:IsActive() end
 function plymeta:IsActiveCustom() return self:IsCustom() and self:IsActive() end
@@ -249,6 +260,16 @@ end
 
 function plymeta:HasEquipment()
     return self:HasEquipmentItem() or self:HasEquipmentWeapon()
+end
+
+function plymeta:StripRoleWeapons()
+    -- Remove all old role weapons
+    for _, w in ipairs(self:GetWeapons()) do
+        if w.Category == WEAPON_CATEGORY_ROLE then
+            local weap_class = WEPS.GetClass(w)
+            self:StripWeapon(weap_class)
+        end
+    end
 end
 
 -- Override GetEyeTrace for an optional trace mask param. Technically traces
@@ -439,5 +460,65 @@ else
         net.WriteEntity(self)
         net.WriteUInt(act, 16)
         net.Broadcast()
+    end
+
+    function plymeta:MoveRoleState(target, keep_on_source)
+        if self:IsZombiePrime() then
+            if not keep_on_source then self:SetZombiePrime(false) end
+            target:SetZombiePrime(true)
+        end
+
+        if self:IsVampirePrime() then
+            if not keep_on_source then self:SetVampirePrime(false) end
+            target:SetVampirePrime(true)
+        end
+
+        if self:GetNWBool("HasPromotion", false) then
+            if not keep_on_source then self:SetNWBool("HasPromotion", false) end
+            target:SetNWBool("HasPromotion", true)
+
+            net.Start("TTT_ResetBuyableWeaponsCache")
+            net.Send(target)
+        end
+
+        local killer = self:GetNWString("RevengerKiller", nil)
+        if killer ~= nil then
+            if not keep_on_source then self:SetNWString("RevengerKiller", "") end
+            target:SetNWString("RevengerKiller", killer)
+        end
+
+        local lover = self:GetNWString("RevengerLover", nil)
+        if lover ~= nil then
+            if not keep_on_source then self:SetNWString("RevengerLover", "") end
+            target:SetNWString("RevengerLover", lover)
+
+            local revenger_lover = player.GetBySteamID64(lover)
+            if IsValid(revenger_lover) then
+                target:PrintMessage(HUD_PRINTTALK, "You are now in love with " .. revenger_lover:Nick() .. ".")
+                target:PrintMessage(HUD_PRINTCENTER, "You are now in love with " .. revenger_lover:Nick() .. ".")
+
+                if not revenger_lover:Alive() or revenger_lover:IsSpec() then
+                    local message
+                    if killer == target:SteamID64() then
+                        message = "Your love has died by your hand."
+                    elseif killer then
+                        message = "Your love has died. Track down their killer."
+
+                        timer.Simple(1, function() -- Slight delay needed for NW variables to be sent
+                            net.Start("TTT_RevengerLoverKillerRadar")
+                            net.WriteBool(true)
+                            net.Send(target)
+                        end)
+                    else
+                        message = "Your love has died, but you cannot determine the cause."
+                    end
+
+                    timer.Simple(1, function()
+                        target:PrintMessage(HUD_PRINTTALK, message)
+                        target:PrintMessage(HUD_PRINTCENTER, message)
+                    end)
+                end
+            end
+        end
     end
 end

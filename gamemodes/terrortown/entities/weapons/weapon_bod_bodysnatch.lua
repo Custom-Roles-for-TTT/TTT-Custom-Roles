@@ -137,6 +137,7 @@ if SERVER then
 
     function SWEP:DoBodysnatch(body)
         local ply = bodyply(body)
+        local owner = self:GetOwner()
 
         net.Start("TTT_Bodysnatched")
         net.WriteBool(true)
@@ -144,12 +145,31 @@ if SERVER then
 
         net.Start("TTT_ScoreBodysnatch")
         net.WriteString(ply:Nick())
-        net.WriteString(self:GetOwner():Nick())
+        net.WriteString(owner:Nick())
         net.WriteString(ROLE_STRINGS_EXT[ply:GetRole()])
         net.Broadcast()
 
         local role = ply:GetRole()
-        self:GetOwner():SetRole(role)
+        owner:SetRole(role)
+        if SERVER then
+            ply:MoveRoleState(owner, true)
+            -- If we're changing to a detective-like and we aren't already promoted, check to see if all the detectives are already dead
+            if (role == ROLE_DEPUTY or role == ROLE_IMPERSONATOR) and not owner:GetNWBool("HasPromotion", false) then
+                local detectiveAlive = false
+                for _, p in ipairs(player.GetAll()) do
+                    if not p:IsSpec() and p:Alive() and p:IsDetective() then
+                        detectiveAlive = true
+                        break
+                    end
+                end
+
+                -- If they are all dead, promote the plaer
+                if not detectiveAlive then
+                    owner:SetNWBool("HasPromotion", true)
+                end
+            end
+        end
+        owner:SelectWeapon("weapon_zm_carry")
 
         if GetConVar("ttt_bodysnatcher_destroy_body"):GetBool() then
             body:Remove()

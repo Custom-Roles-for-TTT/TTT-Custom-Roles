@@ -1148,22 +1148,32 @@ function GM:PlayerDeath(victim, infl, attacker)
     -- Handle revenger lover death
     for _, v in pairs(player.GetAll()) do
         if v:IsRevenger() and v:GetNWString("RevengerLover", "") == victim:SteamID64() then
+            local message
             if v == attacker then
-                v:PrintMessage(HUD_PRINTTALK, "Your love has died by your hand.")
-                v:PrintMessage(HUD_PRINTCENTER, "Your love has died by your hand.")
-            elseif valid_kill then
-                v:PrintMessage(HUD_PRINTTALK, "Your love has died. Track down their killer.")
-                v:PrintMessage(HUD_PRINTCENTER, "Your love has died. Track down their killer.")
-                v:SetNWString("RevengerKiller", attacker:SteamID64())
-                timer.Simple(1, function() -- Slight delay needed for NW variables to be sent
-                    net.Start("TTT_RevengerLoverKillerRadar")
-                    net.WriteBool(true)
-                    net.Send(v)
-                end)
+                message = "Your love has died by your hand."
             else
-                v:PrintMessage(HUD_PRINTTALK, "Your love has died, but you cannot determine the cause.")
-                v:PrintMessage(HUD_PRINTCENTER, "Your love has died, but you cannot determine the cause.")
+                if valid_kill then
+                    if v:Alive() then
+                        message = "Your love has died. Track down their killer."
+                    end
+                    v:SetNWString("RevengerKiller", attacker:SteamID64())
+                    timer.Simple(1, function() -- Slight delay needed for NW variables to be sent
+                        net.Start("TTT_RevengerLoverKillerRadar")
+                        net.WriteBool(true)
+                        net.Send(v)
+                    end)
+                elseif v:Alive() then
+                    message = "Your love has died, but you cannot determine the cause."
+                end
+
+                -- Use a specific message if the revenger is dead already
+                if not v:Alive() then
+                    message = "Your love has been killed and joins you in death."
+                end
             end
+
+            v:PrintMessage(HUD_PRINTTALK, message)
+            v:PrintMessage(HUD_PRINTCENTER, message)
         end
     end
 
@@ -1193,17 +1203,10 @@ function GM:PlayerDeath(victim, infl, attacker)
         end
         local victim_weapons = GetPlayerWeaponInfo(victim)
 
-        -- Swap prime status
-        if attacker:IsZombiePrime() then
-            attacker:SetZombiePrime(false)
-            victim:SetZombiePrime(true)
-        elseif attacker:IsVampirePrime() then
-            attacker:SetVampirePrime(false)
-            victim:SetVampirePrime(true)
-        end
-
         victim:SetRole(attacker:GetRole())
         attacker:SetRole(ROLE_SWAPPER)
+        attacker:MoveRoleState(victim)
+
         local health = GetConVar("ttt_swapper_killer_health"):GetInt()
         if health == 0 then
             attacker:Kill()
@@ -1365,6 +1368,8 @@ function GM:PlayerDeath(victim, infl, attacker)
                     victim:SetHealth(health)
                     if IsValid(parasiteBody) then parasiteBody:Remove() end
                     attacker:Kill()
+                    attacker:PrintMessage(HUD_PRINTCENTER, "Your parasite has drained you of your energy.")
+                    attacker:PrintMessage(HUD_PRINTTALK, "Your parasite has drained you of your energy.")
                 end
             else
                 victim:SetNWInt("InfectionProgress", progress)
@@ -1396,7 +1401,7 @@ function GM:PlayerDeath(victim, infl, attacker)
     -- Handle detective death
     if victim:IsDetective() and GetRoundState() == ROUND_ACTIVE then
         local detectiveAlive = false
-        for _, ply in pairs(player.GetAll()) do
+        for _, ply in ipairs(player.GetAll()) do
             if not ply:IsSpec() and ply:Alive() and ply:IsDetective() and ply ~= victim then
                 detectiveAlive = true
                 break
@@ -1406,15 +1411,22 @@ function GM:PlayerDeath(victim, infl, attacker)
             for _, ply in pairs(player.GetAll()) do
                 if (ply:IsDeputy() or ply:IsImpersonator()) and not ply:GetNWBool("HasPromotion", false) then
                     ply:SetNWBool("HasPromotion", true)
-                    ply:PrintMessage(HUD_PRINTTALK, "You have been promoted to Detective!")
-                    ply:PrintMessage(HUD_PRINTCENTER, "You have been promoted to Detective!")
+                    local alive = ply:Alive()
+                    if alive then
+                        ply:PrintMessage(HUD_PRINTTALK, "You have been promoted to Detective!")
+                        ply:PrintMessage(HUD_PRINTCENTER, "You have been promoted to Detective!")
+                    end
 
                     -- If the player is an Impersonator, tell all their team members when they get promoted
                     if ply:IsImpersonator() then
                         for _, v in pairs(player.GetAll()) do
                             if v ~= ply and v:IsTraitorTeam() and v:Alive() and not v:IsSpec() then
-                                v:PrintMessage(HUD_PRINTTALK, "The Impersonator has been promoted to Detective!")
-                                v:PrintMessage(HUD_PRINTCENTER, "The Impersonator has been promoted to Detective!")
+                                local message = "The Impersonator has been promoted to Detective!"
+                                if not alive then
+                                    message = message .. " Too bad they're dead..."
+                                end
+                                v:PrintMessage(HUD_PRINTTALK, message)
+                                v:PrintMessage(HUD_PRINTCENTER, message)
                             end
                         end
                     end
@@ -1786,16 +1798,14 @@ function GM:EntityTakeDamage(ent, dmginfo)
         end
 
         -- Quacks are immune to explosions
-        if ent:IsQuack() then
-            if dmginfo:IsExplosionDamage() then
-                dmginfo:ScaleDamage(0)
-                dmginfo:SetDamage(0)
-            end
+        if ent:IsQuack() and dmginfo:IsExplosionDamage() then
+            dmginfo:ScaleDamage(0)
+            dmginfo:SetDamage(0)
         end
 
         -- No zombie team killing
         -- This can be funny, but it can also be used by frustrated players who didn't appreciate being zombified
-        if ent:IsPlayer() and ent:IsZombie() and att:IsPlayer() and att:IsZombieAlly() then
+        if ent:IsZombie() and att:IsPlayer() and att:IsZombieAlly() then
             dmginfo:ScaleDamage(0)
             dmginfo:SetDamage(0)
         end
@@ -2226,7 +2236,7 @@ local function PlayerAutoComplete(cmd, args)
     local arg_split = {}
     for _, v in ipairs(string.Explode("\"", args, false)) do
         local trimmed = string.Trim(v)
-        if string.len(trimmed) > 0 then
+        if #trimmed > 0 then
             table.insert(arg_split, trimmed)
         end
     end
@@ -2236,16 +2246,15 @@ local function PlayerAutoComplete(cmd, args)
     local other_args = ""
     if not table.IsEmpty(arg_split) then
         name = string.Trim(string.lower(arg_split[#arg_split]))
-        other_args = table.concat(arg_split, " ", 1, #arg_split - 1)
-        if string.len(other_args) > 0 then
-            other_args = " " .. other_args
+        if #arg_split > 1 then
+            other_args = " \"" .. table.concat(arg_split, "\" \"", 1, #arg_split - 1) .. "\""
         end
     end
 
     -- Find player options that match the given value (or all if there is no given value)
     local options = {}
     for _, v in ipairs(player.GetAll()) do
-        if string.len(name) == 0 or string.find(string.lower(v:Nick()), name) then
+        if #name == 0 or string.find(string.lower(v:Nick()), name) then
             table.insert(options, cmd .. other_args .. " \"" .. v:Nick() .. "\"")
         end
     end

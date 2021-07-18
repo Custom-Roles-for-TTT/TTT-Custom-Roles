@@ -66,7 +66,7 @@ local function GetPlayerFromSteam64(id)
     -- The first bot's ID is 90071996842377216 which translates to "STEAM_0:0:0", an 11-character string
     -- At some point it becomes double digits at the end (e.g. "STEAM_0:0:10") so we check for 12 or fewer characters
     -- A player's Steam ID cannot be that short, so if it is this must be a bot
-    local isBot = string.len(util.SteamIDFrom64(id)) <= 12
+    local isBot = #util.SteamIDFrom64(id) <= 12
     -- Bots cannot be retrieved by SteamID on the client so search by name instead
     if isBot then
         for _, p in pairs(player.GetAll()) do
@@ -593,7 +593,7 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                 local swappedWith = ""
                 local jesterKiller = ""
                 if IsValid(ply) then
-                    alive = ply:Alive()
+                    alive = ply:Alive() and not ply:IsSpec()
                     finalRole = ply:GetRole()
                     -- Keep the original role icon for people converted to Zombie and Vampire or the Bodysnatcher
                     if finalRole ~= ROLE_ZOMBIE and finalRole ~= ROLE_VAMPIRE and startingRole ~= ROLE_BODYSNATCHER then
@@ -788,7 +788,7 @@ function CLSCORE:BuildPlayerList(playerList, dpanel, statusX, roleX, initialY, r
         local roleIcon = GetRoleIconElement(v.roleFileName, v.roleColor, dpanel)
         local nicklbl = GetNickLabelElement(v.name, dpanel)
         FitNicknameLabel(nicklbl, 275, function(nickname)
-            return string.sub(nickname, 0, string.len(nickname) - 4) .. "..."
+            return string.sub(nickname, 0, #nickname - 4) .. "..."
         end)
 
         self:AddPlayerRow(dpanel, statusX, roleX, initialY + rowY * count, roleIcon, nicklbl, v.hasDisconnected, v.hasDied)
@@ -841,10 +841,10 @@ function CLSCORE:BuildRoleLabel(playerList, dpanel, statusX, roleX, rowY)
             FitNicknameLabel(nickTmp, maxWidth, function(_, args)
                 local playerArg = args.player
                 local otherArg = args.other
-                if string.len(playerArg) > string.len(otherArg) then
-                    playerArg = string.sub(playerArg, 0, string.len(playerArg) - 4) .. "..."
+                if #playerArg > #otherArg then
+                    playerArg = string.sub(playerArg, 0, #playerArg - 4) .. "..."
                 else
-                    otherArg = string.sub(otherArg, 0, string.len(otherArg) - 4) .. "..."
+                    otherArg = string.sub(otherArg, 0, #otherArg - 4) .. "..."
                 end
 
                 return BuildJesterLabel(playerArg, otherArg, label), {player=playerArg, other=otherArg}
@@ -869,7 +869,7 @@ function CLSCORE:BuildRoleLabel(playerList, dpanel, statusX, roleX, rowY)
     local namesList = string.Implode(", ", names)
     local nickLbl = GetNickLabelElement(namesList, dpanel)
     FitNicknameLabel(nickLbl, maxWidth, function(nickname)
-        return string.sub(nickname, 0, string.len(nickname) - 4) .. "..."
+        return string.sub(nickname, 0, #nickname - 4) .. "..."
     end)
 
     -- Show the normal disconnect icon if we have only 1 player and they disconnected

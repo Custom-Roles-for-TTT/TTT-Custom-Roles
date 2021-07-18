@@ -36,6 +36,7 @@ end
 
 net.Receive("TTT_ResetBuyableWeaponsCache", function()
     ResetWeaponsCache()
+    UpdateRoleWeaponState()
 end)
 
 net.Receive("TTT_BuyableWeapons", function()

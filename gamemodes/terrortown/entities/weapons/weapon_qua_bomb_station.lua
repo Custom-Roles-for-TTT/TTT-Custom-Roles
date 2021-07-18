@@ -31,6 +31,8 @@ SWEP.Secondary.Automatic = true
 SWEP.Secondary.Ammo = "none"
 SWEP.Secondary.Delay = 1.0
 
+SWEP.InLoadoutFor = {ROLE_QUACK}
+
 -- This is special equipment
 SWEP.Kind = WEAPON_EQUIP
 SWEP.CanBuy = nil

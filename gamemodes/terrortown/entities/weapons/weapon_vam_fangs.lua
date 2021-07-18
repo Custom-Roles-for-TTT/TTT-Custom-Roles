@@ -168,11 +168,12 @@ end
 
 function SWEP:UnfreezeTarget()
     local owner = self:GetOwner()
-    if not IsValid(owner) or not owner:IsPlayer() then return end
     if not IsValid(self.TargetEntity) or not self.TargetEntity:IsPlayer() then return end
+    local valid_owner = IsValid(owner) and owner:IsPlayer()
 
+    -- Unfreeze the target immediately if there is no delay or no owner
     local delay = vampire_fang_unfreeze_delay:GetFloat()
-    if delay <= 0 then
+    if delay <= 0 or not valid_owner then
         self.TargetEntity:Freeze(false)
     else
         self:CancelUnfreeze(self.TargetEntity)
@@ -253,13 +254,7 @@ function SWEP:Think()
             -- If the player is allowed to convert, do that
             if self:GetState() == STATE_CONVERT and CanConvert(self:GetOwner()) then
                 local ply = self.TargetEntity
-                -- Remove all old role weapons
-                for _, w in ipairs(ply:GetWeapons()) do
-                    if w.Category == WEAPON_CATEGORY_ROLE then
-                        local weap_class = WEPS.GetClass(w)
-                        ply:StripWeapon(weap_class)
-                    end
-                end
+                ply:StripRoleWeapons()
                 if not ply:HasWeapon("weapon_zm_improvised") then
                     ply:Give("weapon_zm_improvised")
                 end

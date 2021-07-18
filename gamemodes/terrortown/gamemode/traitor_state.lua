@@ -35,7 +35,7 @@ local function SendRoleListMessage(role, role_ids, ply_or_rf)
     else net.Broadcast() end
 end
 
-local function SendRoleList(role, ply_or_rf, pred)
+function SendRoleList(role, ply_or_rf, pred)
     local role_ids = {}
     for _, v in ipairs(player.GetAll()) do
         if v:IsRole(role) then
@@ -75,6 +75,7 @@ function SendVampireList(ply_or_rf) SendRoleList(ROLE_VAMPIRE, ply_or_rf) end
 function SendDoctorList(ply_or_rf) SendRoleList(ROLE_DOCTOR, ply_or_rf) end
 function SendQuackList(ply_or_rf) SendRoleList(ROLE_QUACK, ply_or_rf) end
 function SendParasiteList(ply_or_rf) SendRoleList(ROLE_PARASITE, ply_or_rf) end
+function SendTricksterList(ply_or_rf) SendRoleList(ROLE_TRICKSTER, ply_or_rf) end
 
 function SendAllLists(ply_or_rf)
     SendInnocentList(ply_or_rf)
@@ -102,6 +103,7 @@ function SendAllLists(ply_or_rf)
     SendDoctorList(ply_or_rf)
     SendQuackList(ply_or_rf)
     SendParasiteList(ply_or_rf)
+    SendTricksterList(ply_or_rf)
 end
 
 function SendConfirmedTraitors(ply_or_rf)
@@ -157,30 +159,7 @@ end
 concommand.Add("ttt_force_terror", force_terror, nil, nil, FCVAR_CHEAT)
 
 local function clear_role_effects(ply)
-    if ply:HasWeapon("weapon_hyp_brainwash") then
-        ply:StripWeapon("weapon_hyp_brainwash")
-    end
-    if ply:HasWeapon("weapon_bod_bodysnatch") then
-        ply:StripWeapon("weapon_bod_bodysnatch")
-    end
-    if ply:HasWeapon("weapon_kil_knife") then
-        ply:StripWeapon("weapon_kil_knife")
-    end
-    if ply:HasWeapon("weapon_kil_crowbar") then
-        ply:StripWeapon("weapon_kil_crowbar")
-    end
-    if ply:HasWeapon("weapon_vam_fangs") then
-        ply:StripWeapon("weapon_vam_fangs")
-    end
-    if ply:HasWeapon("weapon_zom_claws") then
-        ply:StripWeapon("weapon_zom_claws")
-    end
-    if ply:HasWeapon("weapon_doc_defib") then
-        ply:StripWeapon("weapon_doc_defib")
-    end
-    if ply:HasWeapon("weapon_qua_bomb_station") then
-        ply:StripWeapon("weapon_qua_bomb_station")
-    end
+    ply:StripRoleWeapons()
     ply:Give("weapon_zm_improvised")
     ply:SetDefaultCredits()
     SetRoleHealth(ply)
@@ -374,6 +353,13 @@ local function force_parasite(ply)
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_parasite", force_parasite, nil, nil, FCVAR_CHEAT)
+
+local function force_trickster(ply)
+    ply:SetRoleAndBroadcast(ROLE_TRICKSTER)
+    clear_role_effects(ply)
+    SendFullStateUpdate()
+end
+concommand.Add("ttt_force_trickster", force_trickster, nil, nil, FCVAR_CHEAT)
 
 local function force_spectate(ply, cmd, arg)
     if IsValid(ply) then

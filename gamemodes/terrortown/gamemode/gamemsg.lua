@@ -82,12 +82,12 @@ function GetTraitorFilter(alive_only)
 end
 
 function GetInnocentFilter(alive_only)
-    return GetPlayerFilter(function(p) return p:IsInnocent() and (not alive_only or p:IsTerror()) end)
+    return GetPlayerFilter(function(p) return p:GetInnocent() and (not alive_only or p:IsTerror()) end)
 end
 
 function GetDetectiveFilter(alive_only)
     -- Include promoted Deputies in this, but not Impersonators. They are included in GetTraitorFilter
-    return GetPlayerFilter(function(p) return (p:IsDetective() or (p:IsDeputy() and p:GetNWBool("HasPromotion", false))) and (not alive_only or p:IsTerror()) end)
+    return GetPlayerFilter(function(p) return (p:GetDetective() or (p:GetDeputy() and p:GetNWBool("HasPromotion", false))) and (not alive_only or p:IsTerror()) end)
 end
 
 function GetJesterFilter(alive_only)
@@ -176,6 +176,10 @@ end
 
 function GetParasiteFilter(alive_only)
     return GetPlayerFilter(function(p) return p:GetParasite() and (not alive_only or p:IsTerror()) end)
+end
+
+function GetTricksterFilter(alive_only)
+    return GetPlayerFilter(function(p) return p:GetTrickster() and (not alive_only or p:IsTerror()) end)
 end
 
 function GetRoleFilter(role, alive_only)
@@ -449,7 +453,7 @@ local function LastWords(ply, cmd, args)
             local words = string.Trim(args[3])
 
             -- nothing of interest
-            if string.len(words) < 2 then return end
+            if #words < 2 then return end
 
             -- ignore admin commands
             local firstchar = string.sub(words, 1, 1)

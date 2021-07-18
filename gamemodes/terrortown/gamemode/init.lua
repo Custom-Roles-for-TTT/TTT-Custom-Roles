@@ -106,6 +106,7 @@ end
 CreateConVar("ttt_traitor_vision_enable", "0")
 
 CreateConVar("ttt_impersonator_damage_penalty", "0")
+CreateConVar("ttt_impersonator_use_detective_icon", "1")
 
 CreateConVar("ttt_assassin_show_target_icon", "0")
 CreateConVar("ttt_assassin_next_target_delay", "5")
@@ -148,6 +149,7 @@ CreateConVar("ttt_revenger_radar_timer", "15")
 CreateConVar("ttt_revenger_damage_bonus", "0")
 
 CreateConVar("ttt_deputy_damage_penalty", "0")
+CreateConVar("ttt_deputy_use_detective_icon", "1")
 
 CreateConVar("ttt_veteran_damage_bonus", "0.5")
 CreateConVar("ttt_veteran_full_heal", "1")
@@ -187,6 +189,8 @@ CreateConVar("ttt_independents_trigger_traitor_testers", "0")
 
 CreateConVar("ttt_drunk_sober_time", "180")
 CreateConVar("ttt_drunk_innocent_chance", "0.7")
+
+CreateConVar("ttt_oldman_drain_health_to", "0")
 
 CreateConVar("ttt_killer_knife_enabled", "1")
 CreateConVar("ttt_killer_crowbar_enabled", "1")
@@ -570,8 +574,6 @@ function GM:SyncGlobals()
 
     SetGlobalBool("ttt_detective_search_only", GetConVar("ttt_detective_search_only"):GetBool())
     SetGlobalBool("ttt_all_search_postround", GetConVar("ttt_all_search_postround"):GetBool())
-    SetGlobalBool("ttt_beggar_reveal_change", GetConVar("ttt_beggar_reveal_change"):GetBool())
-    SetGlobalInt("ttt_revenger_radar_timer", GetConVar("ttt_revenger_radar_timer"):GetInt())
 
     SetGlobalInt("ttt_shop_random_percent", GetConVar("ttt_shop_random_percent"):GetInt())
     SetGlobalBool("ttt_shop_random_position", GetConVar("ttt_shop_random_position"):GetBool())
@@ -599,8 +601,20 @@ function GM:SyncGlobals()
     SetGlobalInt("ttt_phantom_killer_haunt_jump_cost", GetConVar("ttt_phantom_killer_haunt_jump_cost"):GetInt())
     SetGlobalInt("ttt_phantom_killer_haunt_drop_cost", GetConVar("ttt_phantom_killer_haunt_drop_cost"):GetInt())
 
+    SetGlobalBool("ttt_deputy_use_detective_icon", GetConVar("ttt_deputy_use_detective_icon"):GetBool())
+
     SetGlobalBool("ttt_traitor_vision_enable", GetConVar("ttt_traitor_vision_enable"):GetBool())
+
     SetGlobalBool("ttt_assassin_show_target_icon", GetConVar("ttt_assassin_show_target_icon"):GetBool())
+
+    SetGlobalBool("ttt_impersonator_use_detective_icon", GetConVar("ttt_impersonator_use_detective_icon"):GetBool())
+
+    SetGlobalBool("ttt_vampires_are_monsters", GetConVar("ttt_vampires_are_monsters"):GetBool())
+    SetGlobalBool("ttt_vampire_show_target_icon", GetConVar("ttt_vampire_show_target_icon"):GetBool())
+    SetGlobalBool("ttt_vampire_vision_enable", GetConVar("ttt_vampire_vision_enable"):GetBool())
+
+    SetGlobalInt("ttt_parasite_infection_time", GetConVar("ttt_parasite_infection_time"):GetInt())
+    SetGlobalBool("ttt_parasite_enabled", GetConVar("ttt_parasite_enabled"):GetBool())
 
     SetGlobalBool("ttt_killer_show_target_icon", GetConVar("ttt_killer_show_target_icon"):GetBool())
     SetGlobalBool("ttt_killer_vision_enable", GetConVar("ttt_killer_vision_enable"):GetBool())
@@ -612,12 +626,9 @@ function GM:SyncGlobals()
     SetGlobalFloat("ttt_zombie_prime_speed_bonus", GetConVar("ttt_zombie_prime_speed_bonus"):GetFloat())
     SetGlobalFloat("ttt_zombie_thrall_speed_bonus", GetConVar("ttt_zombie_thrall_speed_bonus"):GetFloat())
 
-    SetGlobalBool("ttt_vampires_are_monsters", GetConVar("ttt_vampires_are_monsters"):GetBool())
-    SetGlobalBool("ttt_vampire_show_target_icon", GetConVar("ttt_vampire_show_target_icon"):GetBool())
-    SetGlobalBool("ttt_vampire_vision_enable", GetConVar("ttt_vampire_vision_enable"):GetBool())
+    SetGlobalBool("ttt_beggar_reveal_change", GetConVar("ttt_beggar_reveal_change"):GetBool())
 
-    SetGlobalInt("ttt_parasite_infection_time", GetConVar("ttt_parasite_infection_time"):GetInt())
-    SetGlobalBool("ttt_parasite_enabled", GetConVar("ttt_parasite_enabled"):GetBool())
+    SetGlobalInt("ttt_revenger_radar_timer", GetConVar("ttt_revenger_radar_timer"):GetInt())
 
     SetGlobalBool("ttt_clown_show_target_icon", GetConVar("ttt_clown_show_target_icon"):GetBool())
     SetGlobalBool("ttt_clown_hide_when_active", GetConVar("ttt_clown_hide_when_active"):GetBool())
@@ -788,6 +799,8 @@ local function OnPlayerDeath(victim, infl, attacker)
                 -- Kill them
                 if vamp_prime_death_mode == VAMPIRE_DEATH_KILL_CONVERED then
                     for _, vnp in pairs(vampires) do
+                        vnp:PrintMessage(HUD_PRINTTALK, "Your Vampire overlord has been slain and you die with them")
+                        vnp:PrintMessage(HUD_PRINTCENTER, "Your Vampire overlord has been slain and you die with them")
                         vnp:Kill()
                     end
                 -- Change them back to their previous roles
@@ -796,6 +809,8 @@ local function OnPlayerDeath(victim, infl, attacker)
                     for _, vnp in pairs(vampires) do
                         local prev_role = vnp:GetVampirePreviousRole()
                         if prev_role ~= ROLE_NONE then
+                            vnp:PrintMessage(HUD_PRINTTALK, "Your Vampire overlord has been slain and you feel their grip over you subside")
+                            vnp:PrintMessage(HUD_PRINTCENTER, "Your Vampire overlord has been slain and you feel their grip over you subside")
                             vnp:SetRoleAndBroadcast(prev_role)
                             vnp:StripWeapon("weapon_vam_fangs")
                             vnp:SelectWeapon("weapon_zm_improvised")
@@ -1236,11 +1251,6 @@ function BeginRound()
     for _, v in pairs(player.GetAll()) do
         local role = v:GetRole()
 
-        -- Hypnotist logic
-        if role == ROLE_HYPNOTIST then
-            v:Give("weapon_hyp_brainwash")
-        end
-
         -- Revenger logic
         if role == ROLE_REVENGER then
             local potentialSoulmates = {}
@@ -1289,6 +1299,25 @@ function BeginRound()
             end)
         end
 
+        -- Old Man logic
+        local drain_health = GetConVar("ttt_oldman_drain_health_to"):GetInt()
+        if role == ROLE_OLDMAN and drain_health > 0 then
+            timer.Create("oldmanhealthdrain", 3, 0, function()
+                for _, p in pairs(player.GetAll()) do
+                    if p:IsActiveOldMan() then
+                        local hp = p:Health()
+                        if hp > drain_health then
+                            p:SetHealth(hp - 1)
+                        end
+
+                        local max = p:GetMaxHealth()
+                        if max > drain_health then
+                            p:SetMaxHealth(max - 1)
+                        end
+                    end
+                end
+            end)
+        end
 
         -- Assassin logic
         if role == ROLE_ASSASSIN then
@@ -1307,7 +1336,7 @@ function BeginRound()
             end
         end
 
-        --Doctor Logic
+        -- Doctor Logic
         if role == ROLE_DOCTOR then
             local mode = GetConVar("ttt_doctor_mode"):GetInt()
             if mode == DOCTOR_MODE_STATION then
@@ -1315,11 +1344,6 @@ function BeginRound()
             elseif mode == DOCTOR_MODE_EMT then
                 v:Give("weapon_doc_defib")
             end
-        end
-
-        --Quack Logic
-        if role == ROLE_QUACK then
-            v:Give("weapon_qua_bomb_station")
         end
 
         SetRoleHealth(v)
@@ -1473,6 +1497,7 @@ function EndRound(type)
     if timer.Exists("revengerloverkiller") then timer.Remove("revengerloverkiller") end
     if timer.Exists("drunkremember") then timer.Remove("drunkremember") end
     if timer.Exists("waitfordrunkrespawn") then timer.Remove("waitfordrunkrespawn") end
+    if timer.Exists("oldmanhealthdrain") then timer.Remove("oldmanhealthdrain") end
 
     -- We may need to start a timer for a mapswitch, or start a vote
     CheckForMapSwitch()
@@ -1655,7 +1680,7 @@ local function GetSpecialInnocentCount(ply_count)
 end
 
 local function GetMonsterCount(ply_count)
-    if TRAITOR_ROLES[ROLE_ZOMBIE] and TRAITOR_ROLES[ROLE_VAMPIRE] then
+    if not MONSTER_ROLES[ROLE_ZOMBIE] and not MONSTER_ROLES[ROLE_VAMPIRE] then
         return 0
     end
     return math.ceil(ply_count * GetConVar("ttt_monster_pct"):GetFloat())
@@ -1749,6 +1774,7 @@ function SelectRoles()
     local hasMercenary = false
     local hasVeteran = false
     local hasDoctor = false
+    local hasTrickster = false
 
     local hasIndependent = false
 
@@ -1827,6 +1853,9 @@ function SelectRoles()
                         doctor_only = true
                     end
                     forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
+                elseif role == ROLE_TRICKSTER then
+                    hasTrickster = true
+                    forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
 
                 -- JESTER/INDEPENDENT ROLES
                 elseif role == ROLE_JESTER then
@@ -1877,6 +1906,7 @@ function SelectRoles()
     local traitor_count = GetTraitorCount(choice_count) - forcedTraitorCount - forcedSpecialTraitorCount
     local max_special_traitor_count = GetSpecialTraitorCount(traitor_count) - forcedSpecialTraitorCount
     local independent_count = ((math.random() <= GetConVar("ttt_independent_chance"):GetFloat()) and 1 or 0) - forcedIndependentCount
+    local monster_count = GetMonsterCount(choice_count) - forcedMonsterCount
 
     -- pick detectives
     if choice_count >= GetConVar("ttt_detective_min_players"):GetInt() then
@@ -2060,6 +2090,7 @@ function SelectRoles()
     -- pick special innocents
     local max_special_innocent_count = GetSpecialInnocentCount(#choices) - forcedSpecialInnocentCount
     if max_special_innocent_count > 0 then
+        local map_has_traitor_buttons = #ents.FindByClass("ttt_traitor_button") > 0
         local specialInnocentRoles = {}
         if not hasGlitch and GetConVar("ttt_glitch_enabled"):GetBool() and choice_count >= GetConVar("ttt_glitch_min_players"):GetInt() and #traitors > 1 then
             for _ = 1, GetConVar("ttt_glitch_spawn_weight"):GetInt() do
@@ -2096,6 +2127,11 @@ function SelectRoles()
                 table.insert(specialInnocentRoles, ROLE_DOCTOR)
             end
         end
+        if not hasTrickster and GetConVar("ttt_trickster_enabled"):GetBool() and choice_count >= GetConVar("ttt_trickster_min_players"):GetInt() and map_has_traitor_buttons then
+            for _ = 1, GetConVar("ttt_trickster_spawn_weight"):GetInt() do
+                table.insert(specialInnocentRoles, ROLE_TRICKSTER)
+            end
+        end
         for _ = 1, max_special_innocent_count do
             if #specialInnocentRoles ~= 0 and math.random() <= GetConVar("ttt_special_innocent_chance"):GetFloat() and #choices > 0 then
                 local plyPick = math.random(1, #choices)
@@ -2114,7 +2150,6 @@ function SelectRoles()
         end
     end
 
-    local monster_count = GetMonsterCount(#choices) - forcedMonsterCount
     if monster_count > 0 then
         local monsterRoles = {}
         if MONSTER_ROLES[ROLE_ZOMBIE] and not hasZombie and GetConVar("ttt_zombie_enabled"):GetBool() and choice_count >= GetConVar("ttt_zombie_min_players"):GetInt() then
@@ -2339,7 +2374,7 @@ function HandleRoleEquipment()
             local weaponname = v:sub(0, lastdotpos - 1)
 
             -- Check that there isn't a two-part extension (e.g. "something.exclude.txt")
-            local extension = v:sub(lastdotpos + 1, string.len(v))
+            local extension = v:sub(lastdotpos + 1, #v)
             lastdotpos = extension:find("%.")
 
             -- If there is, check if it equals "exclude"
