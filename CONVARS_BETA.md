@@ -113,6 +113,7 @@ ttt_assassin_next_target_delay              2       // The delay (in seconds) be
 ttt_assassin_target_damage_bonus            1       // Damage bonus that the assassin has against their target (e.g. 0.5 = 50% extra damage)
 ttt_assassin_wrong_damage_penalty           0.5     // Damage penalty that the assassin has when attacking someone who is not their target (e.g. 0.5 = 50% less damage)
 ttt_assassin_failed_damage_penalty          0.5     // Damage penalty that the assassin has after they have failed their contract by killing the wrong person (e.g. 0.5 = 50% less damage)
+ttt_assassin_shop_roles_last                0       // Whether the assassin should target the shop roles right before Detective or not
 ttt_assassin_credits_starting               1       // The number of credits an assassin should start with
 
 // Vampire
@@ -207,6 +208,7 @@ ttt_clown_damage_bonus                      0       // Damage bonus that the clo
 ttt_clown_activation_credits                0       // The number of credits to give the clown when they are activated
 ttt_clown_hide_when_active                  0       // Whether the clown should be hidden from other players' Target ID (overhead icons) when they are activated. Server or round must be restarted for changes to take effect
 ttt_clown_show_target_icon                  0       // Whether the clown has an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect
+ttt_clown_heal_on_activate                  0       // Whether the clown should fully heal when they activate or not
 ttt_clown_credits_starting                  0       // The number of credits a clown should start with
 
 // Beggar

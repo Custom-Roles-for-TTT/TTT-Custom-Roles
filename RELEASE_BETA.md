@@ -1,14 +1,7 @@
 # Beta Release Notes
 
 ## 1.0.5
-**Released:**
-
-### Additions
-- Added new Assassin target priority CVar
-- Added new CVar to heal the Clown when they activate
-
-## 1.0.4
-**Released:**
+**Released: July 19th, 2021**
 
 ### Changes
 - Changed revenger to receive a different message if their lover is killed when they are already dead
@@ -26,6 +19,8 @@
 - Added a message to a parasite victim when they are killed by the parasite coming back to life
 - Added a message to a non-prime vampire when they are killed/reverted if the prime was killed
 - Ported "TTT: add more validation to corpse commands" from base TTT
+- Added new Assassin target priority CVar
+- Added new CVar to heal the Clown when they activate
 
 ### Fixes
 - Fixed vampire victims getting stuck frozen if the vampire is killed while draining their blood
