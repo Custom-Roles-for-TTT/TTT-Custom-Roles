@@ -7,6 +7,7 @@
 - Changed revenger to receive a different message if their lover is killed when they are already dead
 - Changed deputy/impersonator to not receive a message about their promotion if they are already dead
 - Changed traitors to receive a slightly different message if their dead impersonator teammate has been promoted
+- Changed the Killer/Phantom smoke to be viewable from further away
 
 ### Additions
 - Added ability for non-traitor roles to be configurably able to use traitor buttons
@@ -29,6 +30,7 @@
 - Fixed bodysnatcher not getting zombie/vampire prime status when a prime zombie/vampire swaps with them
 - Fixed bodysnatcher not being promoted when they snatch the deputy/impersonator role and no detectives are left alive
 - Fixed players who were moved to spectator for being AFK not showing as dead on the end-of-round summary screen
+- Fixed Killer/Phantom smoke not always working when multiple players should be smoking at once
 
 ### Developer
 - Added plymeta:StripRoleWeapons which removes all weapons with the WEAPON_CATEGORY_ROLE from a player
