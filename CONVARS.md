@@ -301,7 +301,7 @@ ttt_debug_logroles                          1       // Whether to log what roles
 
 // Karma    
 ttt_karma_jesterkill_penalty                50      // Karma penalty for killing the jester
-ttt_karma_jester_ratio                      0.5     // Ratio of damage to jesters, to be taken from karma
+ttt_karma_jesterdmg_ratio                   0.5     // Ratio of damage to jesters, to be taken from karma
 
 // Sprint
 ttt_sprint_bonus_rel                        0.4     // The relative speed bonus given while sprinting (e.g. 0.4 = 40% speed increase)
