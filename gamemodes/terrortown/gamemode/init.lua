@@ -170,6 +170,7 @@ CreateConVar("ttt_clown_damage_bonus", "0")
 CreateConVar("ttt_clown_activation_credits", "0")
 CreateConVar("ttt_clown_hide_when_active", "0")
 CreateConVar("ttt_clown_show_target_icon", "0")
+CreateConVar("ttt_clown_heal_on_activate", "0")
 
 CreateConVar("ttt_beggar_reveal_change", "1")
 CreateConVar("ttt_beggar_respawn", "0")
@@ -1602,6 +1603,9 @@ function GM:TTTCheckForWin()
                     v:PrintMessage(HUD_PRINTTALK, "KILL THEM ALL!")
                     v:PrintMessage(HUD_PRINTCENTER, "KILL THEM ALL!")
                     v:AddCredits(GetConVar("ttt_clown_activation_credits"):GetInt())
+                    if GetConVar("ttt_clown_heal_on_activate"):GetBool() then
+                        v:SetHealth(v:GetMaxHealth())
+                    end
                     net.Start("TTT_ClownActivate")
                     net.WriteEntity(v)
                     net.Broadcast()
