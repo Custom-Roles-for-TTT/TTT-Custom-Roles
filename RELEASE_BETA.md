@@ -4,6 +4,7 @@
 **Released:**
 
 ### Additions
+- Added new Assassin target priority CVar
 - Added new CVar to heal the Clown when they activate
 
 ## 1.0.4

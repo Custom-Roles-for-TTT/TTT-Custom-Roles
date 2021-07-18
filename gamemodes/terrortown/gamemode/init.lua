@@ -112,6 +112,7 @@ CreateConVar("ttt_assassin_next_target_delay", "5")
 CreateConVar("ttt_assassin_target_damage_bonus", "1")
 CreateConVar("ttt_assassin_wrong_damage_penalty", "0.5")
 CreateConVar("ttt_assassin_failed_damage_penalty", "0.5")
+CreateConVar("ttt_assassin_shop_roles_last", "0")
 
 CreateConVar("ttt_vampires_are_monsters", "0")
 CreateConVar("ttt_vampire_show_target_icon", "0")
