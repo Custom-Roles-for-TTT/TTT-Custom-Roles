@@ -1,7 +1,7 @@
 # Beta Release Notes
 
 ## 1.0.6
-**Released:**
+**Released: July 20th, 2021**
 
 ### Fixes
 - Fixed detective showing deputy icon when ttt_deputy_use_detective_icon is enabled
