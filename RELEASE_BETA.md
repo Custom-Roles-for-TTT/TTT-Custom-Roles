@@ -5,6 +5,7 @@
 
 ### Fixes
 - Fixed detective showing deputy icon when ttt_deputy_use_detective_icon is enabled
+- Fixed scoreboard icons not obeying ttt_deputy_use_detective_icon and ttt_impersonator_use_detective_icon
 
 ## 1.0.5
 **Released: July 19th, 2021**
