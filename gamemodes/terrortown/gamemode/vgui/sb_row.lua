@@ -182,15 +182,28 @@ function PANEL:Paint(width, height)
         c = defaultcolor
     end
 
+    local client = LocalPlayer()
     local roleStr = ""
     if c ~= defaultcolor then
-        -- If the impersonator is promoted, use the Detective's icon with the Impersonator's color
-        if ply:IsImpersonator() and ply:GetNWBool("HasPromotion", false) then
-            roleStr = ROLE_STRINGS_SHORT[ROLE_DETECTIVE]
-        else
-            roleStr = ROLE_STRINGS_SHORT[c]
-        end
+        local role = c
         c = ROLE_COLORS_SCOREBOARD[c]
+        -- Swap the icon depending on which settings are enabled
+        if ply:GetDetectiveLike() then
+            if client:IsTraitorTeam() and ply:IsImpersonator() then
+                if GetGlobalBool("ttt_impersonator_use_detective_icon", false) then
+                    role = ROLE_DETECTIVE
+                else
+                    role = ROLE_IMPERSONATOR
+                end
+            elseif GetGlobalBool("ttt_deputy_use_detective_icon", false) then
+                role = ROLE_DETECTIVE
+            else
+                role = ROLE_DEPUTY
+                c = ROLE_COLORS_SCOREBOARD[role]
+            end
+        end
+
+        roleStr = ROLE_STRINGS_SHORT[role]
     end
 
     surface.SetDrawColor(c)
@@ -203,7 +216,6 @@ function PANEL:Paint(width, height)
         self.sresult:SetVisible(false)
     end
 
-    local client = LocalPlayer()
     if GetRoundState() >= ROUND_ACTIVE then
         if client:IsRevenger() and ply:SteamID64() == client:GetNWString("RevengerLover", "") then
             DrawFlashingBorder(width, ROLE_REVENGER)

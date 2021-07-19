@@ -1,5 +1,15 @@
 # Beta Release Notes
 
+## 1.0.6
+**Released:**
+
+### Fixes
+- Fixed detective showing deputy icon when ttt_deputy_use_detective_icon is enabled
+- Fixed scoreboard icons not obeying ttt_deputy_use_detective_icon and ttt_impersonator_use_detective_icon
+- Fixed error trying to assign an assassin target preventing rounds from starting when there was an assassin
+- Fixed potential error picking an assassin target when ttt_assassin_shop_roles_last was enabled
+- Fixed "next"/"final" label sometimes being incorrect for an assassin getting their next target if ttt_assassin_shop_roles_last was enabled
+
 ## 1.0.5
 **Released: July 19th, 2021**
 
