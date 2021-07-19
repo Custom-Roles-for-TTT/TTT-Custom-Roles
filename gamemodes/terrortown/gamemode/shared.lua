@@ -733,7 +733,7 @@ if SERVER then
                     -- Don't add the former beggar to the list of enemies unless the "reveal" setting is enabled
                     if GetConVar("ttt_beggar_reveal_change"):GetBool() or not p:GetNWBool("WasBeggar", false) then
                         -- Put shop roles into a list if they should be targeted last
-                        if GetConVar("ttt_assassin_shop_roles_last").GetBool() and SHOP_ROLES[p:GetRole()] then
+                        if GetConVar("ttt_assassin_shop_roles_last"):GetBool() and SHOP_ROLES[p:GetRole()] then
                             table.insert(shops, p:Nick())
                         else
                             table.insert(enemies, p:Nick())
@@ -750,7 +750,7 @@ if SERVER then
         if #enemies > 0 then
             target = enemies[math.random(#enemies)]
         elseif #shops > 0 then
-            target = enemies[math.random(#shops)]
+            target = shops[math.random(#shops)]
         elseif #detectives > 0 then
             target = detectives[math.random(#detectives)]
         elseif #independents > 0 then
@@ -761,7 +761,7 @@ if SERVER then
         if target ~= nil then
             ply:SetNWString("AssassinTarget", target)
 
-            local targets = #enemies + #detectives + #independents
+            local targets = #enemies + #shops + #detectives + #independents
             local targetCount
             if targets > 1 then
                 targetCount = start and "first" or "next"
