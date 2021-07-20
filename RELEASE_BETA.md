@@ -6,6 +6,9 @@
 ### Changes
 - Changed ttt_beggar_notify_sound and ttt_beggar_notify_confetti to be off by default to better match default beggar behaviour
 
+### Additions
+- Added convars to control whether members of the jesters teams are visible to other teams (via the head icons, color/icon on the scoreboard, etc.)
+
 ## 1.0.6
 **Released: July 20th, 2021**
 

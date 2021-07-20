@@ -186,6 +186,9 @@ ttt_doctor_credits_starting                 0       // How many credits the doct
 
 // JESTER TEAM SETTINGS
 ttt_jesters_trigger_traitor_testers         1       // Whether jesters trigger traitor testers as if they were traitors
+ttt_jesters_visible_to_traitors             1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to members of the traitor team
+ttt_jesters_visible_to_monsters             1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to members of the monster team
+ttt_jesters_visible_to_independents         1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to independent players
 
 // Jester
 ttt_jester_win_by_traitors                  1       // Whether the jester will win the round if they are killed by a traitor
