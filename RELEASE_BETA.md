@@ -1,5 +1,11 @@
 # Beta Release Notes
 
+## 1.0.7
+**Released:**
+
+### Changes
+- Changed ttt_beggar_notify_sound and ttt_beggar_notify_confetti to be off by default to better match default beggar behaviour
+
 ## 1.0.6
 **Released: July 20th, 2021**
 
