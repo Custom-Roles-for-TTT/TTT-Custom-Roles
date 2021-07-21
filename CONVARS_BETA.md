@@ -182,7 +182,6 @@ ttt_veteran_full_heal                       1       // Whether the veteran gets 
 
 // Doctor
 ttt_doctor_mode                             0       // What tool the doctor starts with (0=Health Station, 1=Defib then Health Station)
-ttt_doctor_credits_starting                 0       // How many credits the doctor starts with
 
 // ----------------------------------------
 

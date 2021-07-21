@@ -345,9 +345,6 @@ OldCVarWarning("ttt_par_credits_starting", "ttt_parasite_credits_starting")
 CreateConVar("ttt_mer_credits_starting", "1")
 OldCVarWarning("ttt_mer_credits_starting", "ttt_mercenary_credits_starting")
 
-CreateConVar("ttt_doc_credits_starting", "0")
-OldCVarWarning("ttt_doc_credits_starting", "ttt_doctor_credits_starting")
-
 CreateConVar("ttt_jes_credits_starting", "0")
 OldCVarWarning("ttt_jes_credits_starting", "ttt_jester_credits_starting")
 
