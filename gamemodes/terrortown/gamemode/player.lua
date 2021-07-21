@@ -1102,7 +1102,7 @@ function GM:PlayerDeath(victim, infl, attacker)
             victim:SetNWInt("HauntingPower", 0)
             timer.Create(victim:Nick() .. "HauntingPower", 1, 0, function()
                 -- Make sure the victim is still in the correct spectate mode
-                local spec_mode = victim:GetNWInt("SpecMode", OBS_MODE_ROAMING)
+                local spec_mode = victim:GetObserverMode()
                 if spec_mode ~= OBS_MODE_CHASE and spec_mode ~= OBS_MODE_IN_EYE then
                     victim:Spectate(OBS_MODE_CHASE)
                 end
@@ -1306,7 +1306,7 @@ function GM:PlayerDeath(victim, infl, attacker)
         victim:SetNWInt("InfectionProgress", 0)
         timer.Create(victim:Nick() .. "InfectionProgress", 1, 0, function()
             -- Make sure the victim is still in the correct spectate mode
-            local spec_mode = victim:GetNWInt("SpecMode", OBS_MODE_ROAMING)
+            local spec_mode = victim:GetObserverMode()
             if spec_mode ~= OBS_MODE_CHASE and spec_mode ~= OBS_MODE_IN_EYE then
                 victim:Spectate(OBS_MODE_CHASE)
             end

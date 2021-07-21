@@ -405,8 +405,6 @@ function plymeta:Spectate(type)
     -- NPCs should never see spectators. A workaround for the fact that gmod NPCs
     -- do not ignore them by default.
     self:SetNoTarget(true)
-    -- Save the spectate mode so it can be accessed on the client
-    self:SetNWInt("SpecMode", type)
 
     if type == OBS_MODE_ROAMING then
         self:SetMoveType(MOVETYPE_NOCLIP)
