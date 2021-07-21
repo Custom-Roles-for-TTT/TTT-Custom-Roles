@@ -309,16 +309,34 @@ ttt_clown_shop_random_enabled               0       // Whether role shop randomi
 ttt_quack_shop_random_enabled               0       // Whether role shop randomization is enabled for quacks
 ttt_parasite_shop_random_enabled            0       // Whether role shop randomization is enabled for parasites
 
-// Role Sync (Server or round must be restarted for changes to take effect)
-ttt_mercenary_shop_mode                     2       // What items are available to the mercenary in the shop (0=None, 1=Either detective OR traitor (aka Union), 2=Both detective AND traitor (aka Intersect), 3=Just detective, 4=Just traitor)
-ttt_clown_shop_mode                         0       // What items are available to the clown in the shop (0=None, 1=Either detective OR traitor (aka Union), 2=Both detective AND traitor (aka Intersect), 3=Just detective, 4=Just traitor)
-ttt_hypnotist_shop_sync                     0       // Whether Hypnotists should have all weapons that vanilla Traitors have in their weapon shop
-ttt_impersonator_shop_sync                  0       // Whether Impersonators should have all weapons that vanilla Traitors have in their weapon shop
-ttt_assassin_shop_sync                      0       // Whether Assassins should have all weapons that vanilla Traitors have in their weapon shop
-ttt_vampire_shop_sync                       0       // Whether Vampires should have all weapons that vanilla Traitors have in their weapon shop (if they are a Traitor)
-ttt_zombie_shop_sync                        0       // Whether Zombies should have all weapons that vanilla Traitors have in their weapon shop (if they are a Traitor)
-ttt_quack_shop_sync                         0       // Whether Quacks should have all weapons that vanilla Traitors have in their weapon shop
-ttt_parasite_shop_sync                      0       // Whether Parasites should have all weapons that vanilla Traitors have in their weapon shop
+// Role Shop Mode (Server or round must be restarted for changes to take effect)
+// Mode explanation:
+// 0 (Disable) - No additional weapons
+// 1 (Union) - All weapons available to EITHER the traitor or the detective
+// 2 (Intersect) - Only weapons available to BOTH the traitor and the detective
+// 3 (Detective) - All weapons available to the detective
+// 4 (Traitor) - All weapons available to the traitor
+
+// Examples:
+// Assuming the detective can buy "radar" and the "juggernaut suit" and the traitor can buy "radar" and the "banana bomb"
+// Then the modes would produce the following results:
+// 0 (Disable) - No additional weapons
+// 1 (Union) - "radar", "juggernaut suit", and "banana bomb"
+// 2 (Intersect) - "radar"
+// 3 (Detective) - "radar" and "juggernaut suit"
+// 4 (Traitor) - "radar" and "banana bomb"
+
+ttt_mercenary_shop_mode                     2       // What additional items are available to the mercenary in the shop (See above for possible values)
+ttt_clown_shop_mode                         0       // What additional items are available to the clown in the shop (See above for possible values)
+
+// Traitor Role Shop Sync (Server or round must be restarted for changes to take effect)
+ttt_hypnotist_shop_sync                     0       // Whether Hypnotists should have all weapons that vanilla traitors have in their weapon shop
+ttt_impersonator_shop_sync                  0       // Whether Impersonators should have all weapons that vanilla traitors have in their weapon shop
+ttt_assassin_shop_sync                      0       // Whether Assassins should have all weapons that vanilla traitors have in their weapon shop
+ttt_vampire_shop_sync                       0       // Whether Vampires should have all weapons that vanilla traitors have in their weapon shop (if they are a Traitor)
+ttt_zombie_shop_sync                        0       // Whether Zombies should have all weapons that vanilla traitors have in their weapon shop (if they are a Traitor)
+ttt_quack_shop_sync                         0       // Whether Quacks should have all weapons that vanilla traitors have in their weapon shop
+ttt_parasite_shop_sync                      0       // Whether Parasites should have all weapons that vanilla traitors have in their weapon shop
 
 // ----------------------------------------
 
