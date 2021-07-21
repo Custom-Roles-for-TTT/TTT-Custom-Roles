@@ -565,6 +565,7 @@ function CLSCORE:BuildSummaryPanel(dpanel)
     local scores_by_section = {
         [ROLE_INNOCENT] = {},
         [ROLE_TRAITOR] = {},
+        [ROLE_KILLER] = {},
         [ROLE_JESTER] = {}
     }
 
@@ -640,6 +641,8 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                     table.insert(scores_by_section[ROLE_INNOCENT], playerInfo)
                 elseif TRAITOR_ROLES[groupingRole] or MONSTER_ROLES[groupingRole] then
                     table.insert(scores_by_section[ROLE_TRAITOR], playerInfo)
+                elseif INDEPENDENT_ROLES[groupingRole] then
+                    table.insert(scores_by_section[ROLE_KILLER], playerInfo)
                 else
                     table.insert(scores_by_section[ROLE_JESTER], playerInfo)
                 end
@@ -652,28 +655,33 @@ function CLSCORE:BuildSummaryPanel(dpanel)
 
     -- Add 33px for each extra role
     local height_extra = (player_rows - 10) * 33
+    local has_indep_and_jesters = #scores_by_section[ROLE_KILLER] > 0 and #scores_by_section[ROLE_JESTER] > 0
+    local height_extra_jester = 0
+    if has_indep_and_jesters then
+        height_extra_jester = 32
+    end
 
     -- Build the panel
     local w, h = dpanel:GetSize()
-    if height_extra > 0 then
-        h = h + height_extra
+    if height_extra > 0 or height_extra_jester > 0 then
+        h = h + height_extra + height_extra_jester
 
         -- Make the parent panel and tab container bigger
         local pw, ph = parentPanel:GetSize()
-        ph = ph + height_extra
+        ph = ph + height_extra + height_extra_jester
         parentPanel:SetSize(pw, ph)
 
         local tw, th = parentTabs:GetSize()
-        th = th + height_extra
+        th = th + height_extra + height_extra_jester
         parentTabs:SetSize(tw, th)
 
         -- Move the buttons down
         local sx, sy = saveButton:GetPos()
-        sy = sy + height_extra
+        sy = sy + height_extra + height_extra_jester
         saveButton:SetPos(sx, sy)
 
         local cx, cy = closeButton:GetPos()
-        cy = cy + height_extra
+        cy = cy + height_extra + height_extra_jester
         closeButton:SetPos(cx, cy)
 
         -- Make this inner panel bigger
@@ -731,6 +739,8 @@ function CLSCORE:BuildSummaryPanel(dpanel)
             loc = loc + 33
         end
         draw.RoundedBox(0, 8, ywin + winlbl:GetTall() + 352 + height_extra, 690, 32, Color(164, 164, 164, 255))
+        -- Add another row for jesters if we also have independents
+        if has_indep_and_jesters then draw.RoundedBox(0, 8, ywin + winlbl:GetTall() + 352 + height_extra + height_extra_jester, 690, 32, Color(164, 164, 164, 255)) end
     end
 
     if oldman_won_last_round then winlbl:SetPos(xwin, ywin - 15) end
@@ -738,7 +748,16 @@ function CLSCORE:BuildSummaryPanel(dpanel)
     -- Add the players to the panel
     self:BuildPlayerList(scores_by_section[ROLE_INNOCENT], dpanel, 317, 8, 103, 33)
     self:BuildPlayerList(scores_by_section[ROLE_TRAITOR], dpanel, 666, 357, 103, 33)
-    self:BuildRoleLabel(scores_by_section[ROLE_JESTER], dpanel, 666, 8, 440 + height_extra)
+    if #scores_by_section[ROLE_KILLER] > 0 then
+        self:BuildRoleLabel(scores_by_section[ROLE_KILLER], dpanel, 666, 8, 440 + height_extra)
+    end
+    if #scores_by_section[ROLE_JESTER] > 0 then
+        -- Move the label down more to add space
+        if has_indep_and_jesters then
+            height_extra_jester = height_extra_jester + 2
+        end
+        self:BuildRoleLabel(scores_by_section[ROLE_JESTER], dpanel, 666, 8, 440 + height_extra + height_extra_jester)
+    end
 end
 
 local function GetRoleIconElement(roleFileName, roleColor, dpanel)

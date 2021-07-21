@@ -11,6 +11,7 @@
 
 ### Changes
 - Changed ttt_beggar_notify_sound and ttt_beggar_notify_confetti to be off by default to better match default beggar behaviour
+- Changed end-of-round summary to automatically add a row if there are both independents and jesters in a round (via something like a Randomat event)
 
 ### Additions
 - Added convars to control whether members of the jesters teams are visible to other teams (via the head icons, color/icon on the scoreboard, etc.)
