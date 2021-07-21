@@ -3,6 +3,9 @@
 ## 1.0.7
 **Released:**
 
+### Fixes
+- Fixed team player count calculations not always being accurate by truncating the "_pct" convars to 3 digits to work around floating point inaccuracy
+
 ### Changes
 - Changed ttt_beggar_notify_sound and ttt_beggar_notify_confetti to be off by default to better match default beggar behaviour
 
