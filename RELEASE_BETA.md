@@ -5,6 +5,7 @@
 
 ### Fixes
 - Fixed team player count calculations not always being accurate by truncating the "_pct" convars to 3 digits to work around floating point inaccuracy
+- Fixed assassin not getting a target because they were treated as having a failed contract by default
 
 ### Changes
 - Changed ttt_beggar_notify_sound and ttt_beggar_notify_confetti to be off by default to better match default beggar behaviour

@@ -712,7 +712,7 @@ if SERVER then
         -- Don't let dead players, spectators, non-assassins, or failed assassins get another target
         -- And don't assign targets if the round isn't currently running
         if not IsValid(ply) or GetRoundState() > ROUND_ACTIVE or
-            not ply:IsAssassin() or ply:GetNWBool("AssassinFailed", true)
+            not ply:IsAssassin() or ply:GetNWBool("AssassinFailed", false)
         then
             return
         end
@@ -729,18 +729,18 @@ if SERVER then
                 if p:IsDetective() then
                     table.insert(detectives, p:Nick())
                 -- Exclude Glitch from this list so they don't get discovered immediately
-                elseif (INNOCENT_ROLES[p:GetRole()] or MONSTER_ROLES[p:GetRole()]) and not p:IsGlitch() then
+                elseif (p:IsInnocentTeam() or p:IsMonsterTeam()) and not p:IsGlitch() then
                     -- Don't add the former beggar to the list of enemies unless the "reveal" setting is enabled
                     if GetConVar("ttt_beggar_reveal_change"):GetBool() or not p:GetNWBool("WasBeggar", false) then
                         -- Put shop roles into a list if they should be targeted last
-                        if GetConVar("ttt_assassin_shop_roles_last"):GetBool() and SHOP_ROLES[p:GetRole()] then
+                        if GetConVar("ttt_assassin_shop_roles_last"):GetBool() and p:IsShopRole() then
                             table.insert(shops, p:Nick())
                         else
                             table.insert(enemies, p:Nick())
                         end
                     end
                 -- Exclude the Old Man because they just want to survive
-                elseif INDEPENDENT_ROLES[p:GetRole()] and not p:IsOldMan() then
+                elseif p:IsIndependentTeam() and not p:IsOldMan() then
                     table.insert(independents, p:Nick())
                 end
             end
