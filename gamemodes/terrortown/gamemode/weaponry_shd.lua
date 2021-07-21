@@ -131,7 +131,7 @@ function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor
             if rolemode == SHOP_SYNC_MODE_UNION or rolemode == SHOP_SYNC_MODE_DETECTIVE then
                 -- and they can't already buy this weapon
                 if not table.HasValue(wep.CanBuy, role) and
-                    -- and detectives CAN buy this weapon, let the mercenary buy it too
+                    -- and detectives CAN buy this weapon, let the role buy it too
                     table.HasValue(wep.CanBuy, ROLE_DETECTIVE) then
                     table.insert(wep.CanBuy, role)
                 end
@@ -141,7 +141,7 @@ function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor
             if rolemode == SHOP_SYNC_MODE_UNION or rolemode == SHOP_SYNC_MODE_TRAITOR then
                 -- and they can't already buy this weapon
                 if not table.HasValue(wep.CanBuy, role) and
-                    -- and traitors CAN buy this weapon, let the mercenary buy it too
+                    -- and traitors CAN buy this weapon, let the role buy it too
                     table.HasValue(wep.CanBuy, ROLE_TRAITOR) then
                     table.insert(wep.CanBuy, role)
                 end
@@ -151,7 +151,7 @@ function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor
             if rolemode == SHOP_SYNC_MODE_INTERSECT then
                 -- and they can't already buy this weapon
                 if not table.HasValue(wep.CanBuy, role) and
-                    -- and detectives AND traitors CAN buy this weapon, let the mercenary buy it too
+                    -- and detectives AND traitors CAN buy this weapon, let the role buy it too
                     table.HasValue(wep.CanBuy, ROLE_DETECTIVE) and table.HasValue(wep.CanBuy, ROLE_TRAITOR) then
                     table.insert(wep.CanBuy, role)
                 end

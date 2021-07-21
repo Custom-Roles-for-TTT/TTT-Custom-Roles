@@ -364,8 +364,14 @@ local function OrderEquipment(ply, cmd, args)
     local swep_table = (not is_item) and weapons.GetStored(id) or nil
 
     local role = ply:GetRole()
-    local sync_traitor_weapons = GetGlobalBool("ttt_" .. ROLE_STRINGS[role] .. "_shop_sync", false) and TRAITOR_ROLES[role]
+
+    local rolemode = GetGlobalInt("ttt_" .. ROLE_STRINGS[role] .. "_shop_mode", SHOP_SYNC_MODE_NONE)
+    local traitorsync = GetGlobalBool("ttt_" .. ROLE_STRINGS[role] .. "_shop_sync", false) and TRAITOR_ROLES[role]
+    local sync_traitor_weapons = traitorsync or (rolemode > SHOP_SYNC_MODE_NONE)
+
     local promoted = ply:IsDetectiveLike() and role ~= ROLE_DETECTIVE
+    local sync_detective_like = (promoted and (role == ROLE_DEPUTY or role == ROLE_IMPERSONATOR))
+    local sync_detective_weapons = sync_detective_like or (rolemode > SHOP_SYNC_MODE_NONE)
 
     -- If this role has a table of additional weapons and that table includes this weapon
     -- and this weapon is not currently buyable by the role then mark this weapon as buyable
@@ -377,8 +383,17 @@ local function OrderEquipment(ply, cmd, args)
             return
         end
 
+        -- Pre-load the Traitor weapons so that any that have their CanBuy modified will also apply to the enabled allied role(s)
+        if sync_traitor_weapons then
+            WEPS.HandleCanBuyOverrides(swep_table, ROLE_TRAITOR, true, sync_traitor_weapons, sync_detective_weapons)
+        end
+
+        -- Pre-load the Detective weapons so that any that have their CanBuy modified will also apply to the enabled allied role(s)
+        if sync_detective_weapons then
+            WEPS.HandleCanBuyOverrides(swep_table, ROLE_DETECTIVE, true, sync_traitor_weapons, sync_detective_weapons)
+        end
+
         -- Add the loaded weapons for this role
-        local sync_detective_weapons = promoted
         WEPS.HandleCanBuyOverrides(swep_table, role, false, sync_traitor_weapons, sync_detective_weapons)
     end
 
@@ -390,7 +405,6 @@ local function OrderEquipment(ply, cmd, args)
         local allowed = GetEquipmentItem(role, id)
         -- Check for the syncing options
         if not allowed then
-            local rolemode = GetGlobalInt("ttt_" .. ROLE_STRINGS[role] .. "_shop_mode", SHOP_SYNC_MODE_NONE)
             if rolemode > SHOP_SYNC_MODE_NONE then
                 -- Traitor OR Detective
                 if rolemode == SHOP_SYNC_MODE_UNION then
