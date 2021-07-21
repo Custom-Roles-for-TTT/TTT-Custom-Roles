@@ -5,7 +5,7 @@
 
 ### Fixes
 - Fixed team player count calculations not always being accurate by truncating the "_pct" convars to 3 digits to work around floating point inaccuracy
-- Fixed assassin not getting a target because they were treated as having a failed contract by default
+- Fixed assassin not getting a target sometimes because they were treated as having a failed contract by default
 - Fixed missing ttt_clown_shop_mode
 - Fixed weapons added to detective or traitor via the roleweapons system not being buyable by roles using the shop mode convars
 
