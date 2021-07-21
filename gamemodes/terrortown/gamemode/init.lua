@@ -255,7 +255,7 @@ for _, role in ipairs(table.GetKeys(SHOP_ROLES)) do
 
     if role == ROLE_MERCENARY then
         CreateConVar("ttt_" .. rolestring .. "_shop_mode", "2", FCVAR_REPLICATED)
-    elseif INDEPENDENT_ROLES[role] and role ~= ROLE_ZOMBIE then
+    elseif (INDEPENDENT_ROLES[role] and role ~= ROLE_ZOMBIE) or role == ROLE_CLOWN then
         CreateConVar("ttt_" .. rolestring .. "_shop_mode", "0", FCVAR_REPLICATED)
     end
 end
