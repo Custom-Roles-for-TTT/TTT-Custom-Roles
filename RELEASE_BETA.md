@@ -15,6 +15,8 @@
 
 ### Additions
 - Added convars to control whether members of the jesters teams are visible to other teams (via the head icons, color/icon on the scoreboard, etc.)
+- Added ability to give the veteran a health bonus (in addition to the heal) when they are activated
+- Added ability to notify other remaining players when a veteran is activated
 
 ## 1.0.6
 **Released: July 20th, 2021**

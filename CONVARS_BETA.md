@@ -179,6 +179,8 @@ ttt_mercenary_credits_starting              1       // The number of credits a m
 // Veteran
 ttt_veteran_damage_bonus                    0.5     // Damage bonus that the veteran has when they are the last innocent alive (e.g. 0.5 = 50% more damage)
 ttt_veteran_full_heal                       1       // Whether the veteran gets a full heal upon becoming the last remaining innocent or not
+ttt_veteran_heal_bonus                      0       // The amount of bonus health to give the veteran when they are healed as the last remaining innocent
+ttt_veteran_announce                        0       // Whether to announce to all other living players when the veteran is the last remaining innocent
 
 // Doctor
 ttt_doctor_mode                             0       // What tool the doctor starts with (0=Health Station, 1=Defib then Health Station)

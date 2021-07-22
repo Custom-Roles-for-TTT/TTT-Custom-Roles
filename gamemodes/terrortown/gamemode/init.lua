@@ -153,6 +153,8 @@ CreateConVar("ttt_deputy_use_detective_icon", "1")
 
 CreateConVar("ttt_veteran_damage_bonus", "0.5")
 CreateConVar("ttt_veteran_full_heal", "1")
+CreateConVar("ttt_veteran_heal_bonus", "0")
+CreateConVar("ttt_veteran_announce", "0")
 
 -- Jester role properties
 CreateConVar("ttt_jesters_trigger_traitor_testers", "1")
