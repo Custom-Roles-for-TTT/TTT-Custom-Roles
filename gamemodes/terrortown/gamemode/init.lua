@@ -727,7 +727,7 @@ end
 
 local function GetPlayerName(ply)
     local name = ply:GetNWString("PlayerName", nil)
-    if name ~= nil then
+    if name == nil then
         name = ply:Nick()
     end
     return name
