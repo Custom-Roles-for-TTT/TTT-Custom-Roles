@@ -1665,32 +1665,32 @@ end
 
 local function GetTraitorCount(ply_count)
     -- get number of traitors: pct of players rounded up
-    local traitor_count = math.ceil(ply_count * math.Truncate(GetConVar("ttt_traitor_pct"):GetFloat(), 3))
+    local traitor_count = math.ceil(ply_count * math.Round(GetConVar("ttt_traitor_pct"):GetFloat(), 3))
     -- make sure there is at least 1 traitor
     return math.Clamp(traitor_count, 1, GetConVar("ttt_traitor_max"):GetInt())
 end
 
 local function GetDetectiveCount(ply_count)
-    local detective_count = math.ceil(ply_count * math.Truncate(GetConVar("ttt_detective_pct"):GetFloat(), 3))
+    local detective_count = math.ceil(ply_count * math.Round(GetConVar("ttt_detective_pct"):GetFloat(), 3))
 
     return math.Clamp(detective_count, 1, GetConVar("ttt_detective_max"):GetInt())
 end
 
 local function GetSpecialTraitorCount(ply_count)
     -- get number of special traitors: pct of traitors rounded up
-    return math.ceil(ply_count * math.Truncate(GetConVar("ttt_special_traitor_pct"):GetFloat(), 3))
+    return math.ceil(ply_count * math.Round(GetConVar("ttt_special_traitor_pct"):GetFloat(), 3))
 end
 
 local function GetSpecialInnocentCount(ply_count)
     -- get number of special innocents: pct of innocents rounded up
-    return math.ceil(ply_count * math.Truncate(GetConVar("ttt_special_innocent_pct"):GetFloat(), 3))
+    return math.ceil(ply_count * math.Round(GetConVar("ttt_special_innocent_pct"):GetFloat(), 3))
 end
 
 local function GetMonsterCount(ply_count)
     if not MONSTER_ROLES[ROLE_ZOMBIE] and not MONSTER_ROLES[ROLE_VAMPIRE] then
         return 0
     end
-    return math.ceil(ply_count * math.Truncate(GetConVar("ttt_monster_pct"):GetFloat(), 3))
+    return math.ceil(ply_count * math.Round(GetConVar("ttt_monster_pct"):GetFloat(), 3))
 end
 
 local function PrintRoleText(text)
