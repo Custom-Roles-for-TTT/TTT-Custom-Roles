@@ -1533,15 +1533,17 @@ function GM:MapTriggeredEnd(wintype)
     self.MapWin = wintype
 end
 
+local function CheckForOldManWin(win_type)
+    if win_type ~= WIN_NONE then
+        net.Start("TTT_UpdateOldManWins")
+        net.WriteBool(true)
+        net.Broadcast()
+    end
+end
+
 -- The most basic win check is whether both sides have one dude alive
 function GM:TTTCheckForWin()
     if ttt_dbgwin:GetBool() then return WIN_NONE end
-
-    if GAMEMODE.MapWin ~= WIN_NONE then
-        local mw = GAMEMODE.MapWin
-        GAMEMODE.MapWin = WIN_NONE
-        return mw
-    end
 
     local traitor_alive = false
     local innocent_alive = false
@@ -1576,10 +1578,22 @@ function GM:TTTCheckForWin()
                 zombie_alive = true
             end
         end
+    end
 
-        if traitor_alive and innocent_alive and not jester_killed then
-            return WIN_NONE --early out
+    if GAMEMODE.MapWin ~= WIN_NONE then
+        local mw = GAMEMODE.MapWin
+        GAMEMODE.MapWin = WIN_NONE
+
+        -- Old Man logic for map win
+        if oldman_alive then
+            CheckForOldManWin(mw)
         end
+
+        return mw
+    end
+
+    if traitor_alive and innocent_alive and not jester_killed then
+        return WIN_NONE --early out
     end
 
     local win_type = WIN_NONE
@@ -1653,11 +1667,7 @@ function GM:TTTCheckForWin()
 
     -- Old Man logic
     if oldman_alive then
-        if win_type ~= WIN_NONE then
-            net.Start("TTT_UpdateOldManWins")
-            net.WriteBool(true)
-            net.Broadcast()
-        end
+        CheckForOldManWin(win_type)
     end
 
     return win_type

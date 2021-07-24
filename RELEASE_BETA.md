@@ -8,6 +8,7 @@
 - Fixed assassin not getting a target sometimes because they were treated as having a failed contract by default
 - Fixed missing ttt_clown_shop_mode
 - Fixed weapons added to detective or traitor via the roleweapons system not being buyable by roles using the shop mode convars
+- Fixed old man not also winning when a map declares a winning team
 
 ### Changes
 - Changed ttt_beggar_notify_sound and ttt_beggar_notify_confetti to be off by default to better match default beggar behaviour
