@@ -18,6 +18,8 @@
 - Added convars to control whether members of the jesters teams are visible to other teams (via the head icons, color/icon on the scoreboard, etc.)
 - Added ability to give the veteran a health bonus (in addition to the heal) when they are activated
 - Added ability to notify other remaining players when a veteran is activated
+- Added convar to control what happens when a parasite cure is used on someone who is not infected
+  - NOTE: By default, parasite cure will now kill the owner if it is used on someone who is not infected. This was done to avoid the use of the parasite cure as a one-shot kill weapon.
 
 ## 1.0.6
 **Released: July 20th, 2021**

@@ -42,7 +42,11 @@ SWEP.NoSights = true
 SWEP.UseHands = true
 SWEP.ViewModelFlip = false
 
+PARASITE_CURE_KILL_NONE = 0
+PARASITE_CURE_KILL_OWNER = 1
+PARASITE_CURE_KILL_TARGET = 2
 
+local CureMode = CreateConVar("ttt_parasite_cure_mode", "1")
 local CureSound = Sound("items/smallmedkit1.wav")
 
 function SWEP:Initialize()
@@ -53,14 +57,14 @@ function SWEP:PrimaryAttack()
 
     if not SERVER then return end
 
+    local owner = self:GetOwner()
     local tr = util.TraceLine({
-        start = self.Owner:GetShootPos(),
-        endpos = self.Owner:GetShootPos() + self.Owner:GetAimVector() * 64,
-        filter = self.Owner
+        start = owner:GetShootPos(),
+        endpos = owner:GetShootPos() + owner:GetAimVector() * 64,
+        filter = owner
     })
 
     local ent = tr.Entity
-
     if IsValid(ent) and ent:IsPlayer() then
         ent:EmitSound(CureSound)
 
@@ -77,7 +81,12 @@ function SWEP:PrimaryAttack()
                 end
             end
         else
-            ent:Kill()
+            local cureMode = CureMode:GetInt()
+            if cureMode == PARASITE_CURE_KILL_OWNER and IsValid(owner) then
+                owner:Kill()
+            elseif cureMode == PARASITE_CURE_KILL_TARGET then
+                ent:Kill()
+            end
         end
 
         self:Remove()
