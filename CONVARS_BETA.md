@@ -141,7 +141,7 @@ ttt_parasite_infection_time                 90      // The time it takes in seco
 ttt_parasite_respawn_mode                   0       // The way in which the parasite respawns. 0 - Take over host. 1 - Respawn at the parasite's body. 2 - Respawn at a random location.
 ttt_parasite_respawn_health                 100     // The health on which the parasite respawns
 ttt_parasite_announce_infection             0       // Whether players are notified when they are infected with the parasite
-ttt_parasite_cure_mode                      1       // How to handle using a parasite cure on someone who is not infected. 0 = Kill nobody (But use up the cure), 1 = Kill the person who uses the cure, 2 = Kill the person the cure is used on
+ttt_parasite_cure_mode                      2       // How to handle using a parasite cure on someone who is not infected. 0 = Kill nobody (But use up the cure), 1 = Kill the person who uses the cure, 2 = Kill the person the cure is used on
 ttt_parasite_credits_starting               1       // The number of credits a parasite should start with
 
 // ----------------------------------------
