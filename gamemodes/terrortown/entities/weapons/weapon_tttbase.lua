@@ -124,6 +124,7 @@ SWEP.ReloadAnim = ACT_VM_RELOAD
 
 SWEP.fingerprints = {}
 SWEP.BoughtBuy = nil
+SWEP.BlockShopRandomization = false
 
 local sparkle = CLIENT and CreateConVar("ttt_crazy_sparks", "0", FCVAR_ARCHIVE)
 

@@ -184,7 +184,7 @@ function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor
                 table.RemoveByValue(wep.CanBuy, role)
             -- Remove some weapons based on a random chance if it isn't blocked or bypassed
             -- Only run this on the client because there is no easy way to sync randomization between client and server
-            elseif CLIENT then
+            elseif CLIENT and not wep.BlockShopRandomization then
                 local norandomtable = WEPS.BypassRandomWeapons[role]
                 if not block_randomization and (not norandomtable or not table.HasValue(norandomtable, id)) then
                     local random_cvar_enabled = GetGlobalBool("ttt_" .. ROLE_STRINGS[role] .. "_shop_random_enabled", false)

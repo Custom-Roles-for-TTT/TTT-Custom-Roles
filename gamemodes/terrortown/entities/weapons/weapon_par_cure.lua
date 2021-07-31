@@ -42,6 +42,7 @@ SWEP.HoldType = "slam"
 
 SWEP.UseHands = true
 SWEP.ViewModelFlip = false
+SWEP.BlockShopRandomization = true
 
 PARASITE_CURE_KILL_NONE = 0
 PARASITE_CURE_KILL_OWNER = 1
