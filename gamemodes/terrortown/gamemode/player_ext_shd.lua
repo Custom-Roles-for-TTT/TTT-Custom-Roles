@@ -115,14 +115,18 @@ function plymeta:IsShopRole()
     -- If this is a jester team member with a potential shop, only give them access if there are actual things to buy
     if hasShop and self:IsJesterTeam() then
         local hasWeapon = WEPS.DoesRoleHaveWeapon(self:GetRole())
-        return hasWeapon or (self:IsClown() and GetGlobalInt("ttt_clown_shop_mode") > SHOP_SYNC_MODE_NONE)
+        -- Only allow clowns to use the shop if they have weapons or will be having weapons synced and are active or "active_only" is disabled
+        if self:IsClown() then
+            hasWeapon = (hasWeapon or GetGlobalInt("ttt_clown_shop_mode") > SHOP_SYNC_MODE_NONE) and
+                        (not GetGlobalBool("ttt_clown_shop_active_only", false) or self:GetNWBool("KillerClownActive", false))
+        end
+        return hasWeapon
     end
     return hasShop
 end
 function plymeta:CanUseShop()
     return self:IsShopRole() and
-        (not self:IsDeputy() or self:GetNWBool("HasPromotion", false)) and
-        (not self:IsClown() or self:GetNWBool("KillerClownActive", false))
+        (not self:IsDeputy() or self:GetNWBool("HasPromotion", false))
 end
 function plymeta:CanUseTraitorButton(active_only)
     if active_only and not self:IsActive() then return false end

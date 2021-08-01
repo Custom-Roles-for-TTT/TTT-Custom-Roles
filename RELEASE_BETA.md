@@ -21,6 +21,7 @@
 - Added ability to give the veteran a health bonus (in addition to the heal) when they are activated
 - Added ability to notify other remaining players when a veteran is activated
 - Added convar to control what happens when a parasite cure is used on someone who is not infected
+- Added ability for the clown to always have access to their shop via a new convar
 
 ### Developer
 - Added the ability for SWEPs to not be randomized out of the shop by setting "SWEP.BlockShopRandomization = true"

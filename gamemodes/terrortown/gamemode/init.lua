@@ -179,6 +179,7 @@ CreateConVar("ttt_clown_activation_credits", "0")
 CreateConVar("ttt_clown_hide_when_active", "0")
 CreateConVar("ttt_clown_show_target_icon", "0")
 CreateConVar("ttt_clown_heal_on_activate", "0")
+CreateConVar("ttt_clown_shop_active_only", "1")
 
 CreateConVar("ttt_beggar_reveal_change", "1")
 CreateConVar("ttt_beggar_respawn", "0")
@@ -639,6 +640,7 @@ function GM:SyncGlobals()
 
     SetGlobalBool("ttt_clown_show_target_icon", GetConVar("ttt_clown_show_target_icon"):GetBool())
     SetGlobalBool("ttt_clown_hide_when_active", GetConVar("ttt_clown_hide_when_active"):GetBool())
+    SetGlobalBool("ttt_clown_shop_active_only", GetConVar("ttt_clown_shop_active_only"):GetBool())
 
     SetGlobalBool("ttt_bem_allow_change", GetConVar("ttt_bem_allow_change"):GetBool())
     SetGlobalInt("ttt_bem_sv_cols", GetConVar("ttt_bem_sv_cols"):GetBool())
