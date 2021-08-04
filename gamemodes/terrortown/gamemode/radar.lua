@@ -53,7 +53,9 @@ local function RadarScan(ply, cmd, args)
             end
             net.Send(ply)
 
-        else
+        -- Don't tell the unactivated clown that they don't have radar when they buy it but their shop is delayed
+        -- Everyone else should get yelled at though
+        elseif not ply:IsClown() or not GetGlobalBool("ttt_clown_shop_delay", false) or ply:GetNWBool("KillerClownActive", false) then
             LANG.Msg(ply, "radar_not_owned")
         end
     end

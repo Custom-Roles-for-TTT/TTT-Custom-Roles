@@ -397,6 +397,8 @@ local function OrderEquipment(ply, cmd, args)
         WEPS.HandleCanBuyOverrides(swep_table, role, false, sync_traitor_weapons, sync_detective_weapons)
     end
 
+    -- Don't give clowns their items if delayed shop activated is enabled
+    local should_give = not ply:IsClown() or not GetGlobalBool("ttt_clown_shop_delay", false) or ply:GetNWBool("KillerClownActive", false)
     local received = false
     if is_item then
         id = tonumber(id)
@@ -468,7 +470,10 @@ local function OrderEquipment(ply, cmd, args)
         -- ownership check and finalise
         if id and EQUIP_NONE < id then
             if not ply:HasEquipmentItem(id) then
-                ply:GiveEquipmentItem(id)
+                if should_give then
+                    ply:GiveEquipmentItem(id)
+                end
+
                 received = true
             end
         end
@@ -489,7 +494,9 @@ local function OrderEquipment(ply, cmd, args)
         -- no longer restricted to only WEAPON_EQUIP weapons, just anything that
         -- is whitelisted and carryable
         if ply:CanCarryWeapon(swep_table) then
-            GiveEquipmentWeapon(ply:SteamID64(), id)
+            if should_give then
+                GiveEquipmentWeapon(ply:SteamID64(), id)
+            end
 
             received = true
         end
@@ -497,7 +504,11 @@ local function OrderEquipment(ply, cmd, args)
 
     if received then
         ply:SubtractCredits(1)
-        LANG.Msg(ply, "buy_received")
+        if should_give then
+            LANG.Msg(ply, "buy_received")
+        else
+            LANG.Msg(ply, "buy_received_delay")
+        end
 
         ply:AddBought(id)
 

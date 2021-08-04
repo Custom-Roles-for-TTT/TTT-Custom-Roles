@@ -3,6 +3,9 @@
 ## 1.0.8
 **Released:**
 
+### Additions
+- Added convar to have the clown's shop purchases be held back until they are activated
+
 ### Changes
 - Updated the role string logic to handle more plural cases
 

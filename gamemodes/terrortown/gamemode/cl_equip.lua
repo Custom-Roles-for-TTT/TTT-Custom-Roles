@@ -224,7 +224,34 @@ function GetEquipmentForRole(role, promoted, block_randomization)
     return Equipment and Equipment[role] or {}
 end
 
-local function CanCarryWeapon(item) return LocalPlayer():CanCarryType(item.kind) end
+local function ShouldDelayPurchase(client)
+    return client:IsClown() and GetGlobalBool("ttt_clown_shop_delay", false) and not client:GetNWBool("KillerClownActive", false)
+end
+
+local function CanCarryWeapon(item)
+    local client = LocalPlayer()
+    -- Don't allow the clown to buy any weapon that has a kind matching one of the weapons they've already bought
+    if item.kind and client.bought and ShouldDelayPurchase(client) then
+        for _, id in ipairs(client.bought) do
+            local wep = weapons.GetStored(id)
+            if wep and wep.Kind == item.kind then
+                return false
+            end
+        end
+    end
+
+    return client:CanCarryType(item.kind)
+end
+
+local function HasEquipmentItem(item)
+    local client = LocalPlayer()
+    -- Don't allow the clown to buy the same equipment item twice if delayed acceptance is enabled
+    if client.bought and ShouldDelayPurchase(client) then
+        return table.HasValue(client.bought, tostring(item.id))
+    end
+
+    return client:HasEquipmentItem(item.id)
+end
 
 local color_bad = Color(220, 60, 60, 255)
 local color_good = Color(255, 255, 255, 255)
@@ -262,7 +289,7 @@ local function PreqLabels(parent, x, y)
     tbl.owned.Check = function(s, sel)
         if ItemIsWeapon(sel) and (not CanCarryWeapon(sel)) then
             return false, "X", GetPTranslation("equip_carry_slot", { slot = sel.slot })
-        elseif (not ItemIsWeapon(sel)) and LocalPlayer():HasEquipmentItem(sel.id) then
+        elseif (not ItemIsWeapon(sel)) and HasEquipmentItem(sel) then
             return false, "X", GetTranslation("equip_carry_own")
         else
             return true, "✔", GetTranslation("equip_carry")
@@ -851,7 +878,7 @@ local function ReceiveBought()
 
     ply.bought = {}
     local num = net.ReadUInt(8)
-    for i = 1, num do
+    for _ = 1, num do
         local s = net.ReadString()
         if s ~= "" then
             table.insert(ply.bought, s)
