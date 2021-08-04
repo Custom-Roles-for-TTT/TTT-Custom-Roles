@@ -1,7 +1,13 @@
 # Beta Release Notes
 
+## 1.0.8
+**Released:**
+
+### Changes
+- Updated the role string logic to handle more plural cases
+
 ## 1.0.7
-**Released: Released: August 8th, 2021**
+**Released: August 4th, 2021**
 
 ### Fixes
 - Fixed team player count calculations not always being accurate by truncating the "_pct" convars to 3 digits to work around floating point inaccuracy
@@ -28,7 +34,6 @@
 ### Developer
 - Added the ability for SWEPs to not be randomized out of the shop by setting "SWEP.BlockShopRandomization = true"
 - Renamed ROLE_STRINGS to ROLE_STRINGS_RAW
-
 
 ## 1.0.6
 **Released: July 20th, 2021**

@@ -1,5 +1,5 @@
 -- Version string for display and function for version checks
-CR_VERSION = "1.0.7"
+CR_VERSION = "1.0.8"
 
 function CRVersion(version)
     local installedVersionRaw = string.Split(CR_VERSION, ".")
@@ -469,14 +469,21 @@ function UpdateRoleStrings()
 
             local plural = GetGlobalString("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name_plural", "")
             if plural == "" then -- Fallback if no plural is given. Does NOT handle all cases properly
-                ROLE_STRINGS_PLURAL[role] = name .. "s"
+                local lastChar = string.sub(name, name:len(), name:len()):lower()
+                if lastChar == "s" then
+                    ROLE_STRINGS_PLURAL[role] = name .. "es"
+                elseif lastChar == "y" then
+                    ROLE_STRINGS_PLURAL[role] = string.sub(name, 1, name:len() - 1) .. "ies"
+                else
+                    ROLE_STRINGS_PLURAL[role] = name .. "s"
+                end
             else
                 ROLE_STRINGS_PLURAL[role] = plural
             end
 
             local article = GetGlobalString("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name_article", "")
             if article == "" then -- Fallback if no article is given. Does NOT handle all cases properly
-                local firstChar = string.lower(string.sub(name, 1, 1))
+                local firstChar = string.sub(name, 1, 1):lower()
                 if firstChar == "a" or firstChar == "e" or firstChar == "i" or firstChar == "o" or firstChar == "u" then
                     ROLE_STRINGS_EXT[role] = "an " .. name
                 else
