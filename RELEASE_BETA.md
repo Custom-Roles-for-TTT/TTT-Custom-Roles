@@ -26,6 +26,9 @@
 ### Developer
 - Added the ability for SWEPs to not be randomized out of the shop by setting "SWEP.BlockShopRandomization = true"
 
+### Fixes
+- Fixed the glitch from being shown as a traitor to zombies if zombies are on the traitor team
+
 ## 1.0.6
 **Released: July 20th, 2021**
 

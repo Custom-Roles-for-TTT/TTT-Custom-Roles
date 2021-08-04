@@ -127,7 +127,7 @@ function GM:PostDrawTranslucentRenderables()
                 end
                 if not hide_roles then
                     if client:IsTraitorTeam() then
-                        if (v:GetTraitor() and not hideBeggar) or v:GetGlitch() then
+                        if (v:GetTraitor() and not hideBeggar) then
                             DrawRoleIcon(ROLE_TRAITOR, true, pos, dir)
                         elseif v:GetImpersonator() then
                             -- If the impersonator is promoted, use the Detective's icon with the Impersonator's color
@@ -141,6 +141,12 @@ function GM:PostDrawTranslucentRenderables()
                             DrawRoleIcon(v:GetRole(), true, pos, dir)
                         elseif showJester then
                             DrawRoleIcon(ROLE_JESTER, false, pos, dir)
+                        elseif v:GetGlitch() then
+                            if client:IsZombie() then
+                                DrawRoleIcon(ROLE_ZOMBIE, true, pos, dir)
+                            else
+                                DrawRoleIcon(ROLE_TRAITOR, true, pos, dir)
+                            end
                         end
                     elseif client:IsMonsterTeam() then
                         if v:IsMonsterTeam() then
@@ -341,7 +347,7 @@ function GM:HUDDrawTargetID()
         if not hide_roles and GetRoundState() == ROUND_ACTIVE then
             local showJester = ((ent:IsJesterTeam() and not ent:GetNWBool("KillerClownActive", false)) or ((ent:GetTraitor() or ent:GetInnocent()) and hideBeggar)) and not ShouldHideJesters(client)
             if client:IsTraitorTeam() then
-                target_traitor = (ent:IsTraitor() and not hideBeggar) or ent:IsGlitch()
+                target_traitor = (ent:IsTraitor() and not hideBeggar) or (ent:IsGlitch() and not client:IsZombie())
                 target_hypnotist = ent:IsHypnotist()
                 target_impersonator = ent:IsImpersonator()
                 target_assassin = ent:IsAssassin()
@@ -349,7 +355,7 @@ function GM:HUDDrawTargetID()
                 target_parasite = ent:IsParasite()
                 target_vampire = ent:IsVampire() and ent:IsTraitorTeam()
                 if client:IsZombie() then
-                    target_fellow_zombie = ent:IsZombie()
+                    target_fellow_zombie = ent:IsZombie() or ent:IsGlitch()
                 else
                     target_zombie = ent:IsZombie() and ent:IsTraitorTeam()
                 end
