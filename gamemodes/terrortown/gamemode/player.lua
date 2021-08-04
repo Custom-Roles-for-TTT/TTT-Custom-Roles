@@ -1102,7 +1102,7 @@ function GM:PlayerDeath(victim, infl, attacker)
             victim:SetNWInt("HauntingPower", 0)
             timer.Create(victim:Nick() .. "HauntingPower", 1, 0, function()
                 -- Make sure the victim is still in the correct spectate mode
-                local spec_mode = victim:GetNWInt("SpecMode", OBS_MODE_ROAMING)
+                local spec_mode = victim:GetObserverMode()
                 if spec_mode ~= OBS_MODE_CHASE and spec_mode ~= OBS_MODE_IN_EYE then
                     victim:Spectate(OBS_MODE_CHASE)
                 end
@@ -1306,7 +1306,7 @@ function GM:PlayerDeath(victim, infl, attacker)
         victim:SetNWInt("InfectionProgress", 0)
         timer.Create(victim:Nick() .. "InfectionProgress", 1, 0, function()
             -- Make sure the victim is still in the correct spectate mode
-            local spec_mode = victim:GetNWInt("SpecMode", OBS_MODE_ROAMING)
+            local spec_mode = victim:GetObserverMode()
             if spec_mode ~= OBS_MODE_CHASE and spec_mode ~= OBS_MODE_IN_EYE then
                 victim:Spectate(OBS_MODE_CHASE)
             end
@@ -1454,11 +1454,28 @@ function GM:PlayerDeath(victim, infl, attacker)
         for _, v in pairs(veterans) do
             if not v:GetNWBool("VeteranActive", false) then
                 v:SetNWBool("VeteranActive", true)
+
                 v:PrintMessage(HUD_PRINTTALK, "You are the last innocent alive!")
                 v:PrintMessage(HUD_PRINTCENTER, "You are the last innocent alive!")
+                if GetConVar("ttt_veteran_announce"):GetBool() then
+                    for _, p in ipairs(player.GetAll()) do
+                        if p ~= v and p:Alive() and not p:IsSpec() then
+                            p:PrintMessage(HUD_PRINTTALK, "The last innocent alive is a veteran!")
+                            p:PrintMessage(HUD_PRINTCENTER, "The last innocent alive is a veteran!")
+                        end
+                    end
+                end
+
                 if GetConVar("ttt_veteran_full_heal"):GetBool() then
-                    v:SetHealth(math.min(v:GetMaxHealth(), 100))
-                    v:PrintMessage(HUD_PRINTTALK, "You have been fully healed!")
+                    local heal_bonus = GetConVar("ttt_veteran_heal_bonus"):GetInt()
+                    local health = math.min(v:GetMaxHealth(), 100) + heal_bonus
+
+                    v:SetHealth(health)
+                    if heal_bonus > 0 then
+                        v:PrintMessage(HUD_PRINTTALK, "You have been fully healed (with a bonus)!")
+                    else
+                        v:PrintMessage(HUD_PRINTTALK, "You have been fully healed!")
+                    end
                 end
             end
         end

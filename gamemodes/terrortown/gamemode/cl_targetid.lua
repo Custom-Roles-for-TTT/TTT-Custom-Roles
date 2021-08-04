@@ -71,6 +71,12 @@ local function GetDetectiveIconRole(is_traitor)
     return ROLE_DEPUTY
 end
 
+local function ShouldHideJesters(p)
+    return (p:IsTraitorTeam() and not GetGlobalBool("ttt_jesters_visible_to_traitors", false)) or
+            (p:IsMonsterTeam() and not GetGlobalBool("ttt_jesters_visible_to_monsters", false)) or
+            (p:IsIndependentTeam() and not GetGlobalBool("ttt_jesters_visible_to_independents", false))
+end
+
 -- using this hook instead of pre/postplayerdraw because playerdraw seems to
 -- happen before certain entities are drawn, which then clip over the sprite
 function GM:PostDrawTranslucentRenderables()
@@ -92,7 +98,7 @@ function GM:PostDrawTranslucentRenderables()
             pos.z = pos.z + v:GetHeight() + 15
 
             local hideBeggar = v:GetNWBool("WasBeggar", false) and not GetGlobalBool("ttt_beggar_reveal_change", true)
-            local showJester = (v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) or ((v:GetTraitor() or v:GetInnocent()) and hideBeggar)
+            local showJester = ((v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) or ((v:GetTraitor() or v:GetInnocent()) and hideBeggar)) and not ShouldHideJesters(client)
 
             -- Only show the "KILL" target if the setting is enabled
             local showkillicon = ((client:IsAssassin() and GetGlobalBool("ttt_assassin_show_target_icon", false) and client:GetNWString("AssassinTarget") == v:Nick()) or
@@ -142,14 +148,14 @@ function GM:PostDrawTranslucentRenderables()
                         elseif showJester then
                             DrawRoleIcon(ROLE_JESTER, false, pos, dir)
                         end
+                    elseif client:IsKiller() then
+                        if showJester then
+                            DrawRoleIcon(ROLE_JESTER, false, pos, dir)
+                        end
                     elseif client:IsIndependentTeam() then
                         if v:IsIndependentTeam() then
                             DrawRoleIcon(v:GetRole(), true, pos, dir)
                         elseif showJester then
-                            DrawRoleIcon(ROLE_JESTER, false, pos, dir)
-                        end
-                    elseif client:IsKiller() then
-                        if showJester then
                             DrawRoleIcon(ROLE_JESTER, false, pos, dir)
                         end
                     end
@@ -333,7 +339,7 @@ function GM:HUDDrawTargetID()
         local hideBeggar = ent:GetNWBool("WasBeggar", false) and not GetGlobalBool("ttt_beggar_reveal_change", true)
 
         if not hide_roles and GetRoundState() == ROUND_ACTIVE then
-            local showJester = (ent:IsJesterTeam() and not ent:GetNWBool("KillerClownActive", false)) or ((ent:GetTraitor() or ent:GetInnocent()) and hideBeggar)
+            local showJester = ((ent:IsJesterTeam() and not ent:GetNWBool("KillerClownActive", false)) or ((ent:GetTraitor() or ent:GetInnocent()) and hideBeggar)) and not ShouldHideJesters(client)
             if client:IsTraitorTeam() then
                 target_traitor = (ent:IsTraitor() and not hideBeggar) or ent:IsGlitch()
                 target_hypnotist = ent:IsHypnotist()

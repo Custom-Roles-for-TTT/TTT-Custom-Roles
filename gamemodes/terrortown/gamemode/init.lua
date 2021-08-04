@@ -153,9 +153,15 @@ CreateConVar("ttt_deputy_use_detective_icon", "1")
 
 CreateConVar("ttt_veteran_damage_bonus", "0.5")
 CreateConVar("ttt_veteran_full_heal", "1")
+CreateConVar("ttt_veteran_heal_bonus", "0")
+CreateConVar("ttt_veteran_announce", "0")
 
 -- Jester role properties
 CreateConVar("ttt_jesters_trigger_traitor_testers", "1")
+CreateConVar("ttt_jesters_visible_to_traitors", "1")
+CreateConVar("ttt_jesters_visible_to_monsters", "1")
+CreateConVar("ttt_jesters_visible_to_independents", "1")
+
 CreateConVar("ttt_jester_win_by_traitors", "1")
 CreateConVar("ttt_jester_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the Jester is killed", 0, 4)
 CreateConVar("ttt_jester_notify_sound", "0")
@@ -173,6 +179,7 @@ CreateConVar("ttt_clown_activation_credits", "0")
 CreateConVar("ttt_clown_hide_when_active", "0")
 CreateConVar("ttt_clown_show_target_icon", "0")
 CreateConVar("ttt_clown_heal_on_activate", "0")
+CreateConVar("ttt_clown_shop_active_only", "1")
 
 CreateConVar("ttt_beggar_reveal_change", "1")
 CreateConVar("ttt_beggar_respawn", "0")
@@ -251,7 +258,7 @@ for _, role in ipairs(table.GetKeys(SHOP_ROLES)) do
 
     if role == ROLE_MERCENARY then
         CreateConVar("ttt_" .. rolestring .. "_shop_mode", "2", FCVAR_REPLICATED)
-    elseif INDEPENDENT_ROLES[role] and role ~= ROLE_ZOMBIE then
+    elseif (INDEPENDENT_ROLES[role] and role ~= ROLE_ZOMBIE) or role == ROLE_CLOWN then
         CreateConVar("ttt_" .. rolestring .. "_shop_mode", "0", FCVAR_REPLICATED)
     end
 end
@@ -340,9 +347,6 @@ OldCVarWarning("ttt_par_credits_starting", "ttt_parasite_credits_starting")
 
 CreateConVar("ttt_mer_credits_starting", "1")
 OldCVarWarning("ttt_mer_credits_starting", "ttt_mercenary_credits_starting")
-
-CreateConVar("ttt_doc_credits_starting", "0")
-OldCVarWarning("ttt_doc_credits_starting", "ttt_doctor_credits_starting")
 
 CreateConVar("ttt_jes_credits_starting", "0")
 OldCVarWarning("ttt_jes_credits_starting", "ttt_jester_credits_starting")
@@ -626,12 +630,17 @@ function GM:SyncGlobals()
     SetGlobalFloat("ttt_zombie_prime_speed_bonus", GetConVar("ttt_zombie_prime_speed_bonus"):GetFloat())
     SetGlobalFloat("ttt_zombie_thrall_speed_bonus", GetConVar("ttt_zombie_thrall_speed_bonus"):GetFloat())
 
-    SetGlobalBool("ttt_beggar_reveal_change", GetConVar("ttt_beggar_reveal_change"):GetBool())
-
     SetGlobalInt("ttt_revenger_radar_timer", GetConVar("ttt_revenger_radar_timer"):GetInt())
+
+    SetGlobalBool("ttt_jesters_visible_to_traitors", GetConVar("ttt_jesters_visible_to_traitors"):GetBool())
+    SetGlobalBool("ttt_jesters_visible_to_monsters", GetConVar("ttt_jesters_visible_to_monsters"):GetBool())
+    SetGlobalBool("ttt_jesters_visible_to_independents", GetConVar("ttt_jesters_visible_to_independents"):GetBool())
+
+    SetGlobalBool("ttt_beggar_reveal_change", GetConVar("ttt_beggar_reveal_change"):GetBool())
 
     SetGlobalBool("ttt_clown_show_target_icon", GetConVar("ttt_clown_show_target_icon"):GetBool())
     SetGlobalBool("ttt_clown_hide_when_active", GetConVar("ttt_clown_hide_when_active"):GetBool())
+    SetGlobalBool("ttt_clown_shop_active_only", GetConVar("ttt_clown_shop_active_only"):GetBool())
 
     SetGlobalBool("ttt_bem_allow_change", GetConVar("ttt_bem_allow_change"):GetBool())
     SetGlobalInt("ttt_bem_sv_cols", GetConVar("ttt_bem_sv_cols"):GetBool())
@@ -722,7 +731,7 @@ end
 
 local function GetPlayerName(ply)
     local name = ply:GetNWString("PlayerName", nil)
-    if name ~= nil then
+    if name == nil then
         name = ply:Nick()
     end
     return name
@@ -1526,15 +1535,17 @@ function GM:MapTriggeredEnd(wintype)
     self.MapWin = wintype
 end
 
+local function CheckForOldManWin(win_type)
+    if win_type ~= WIN_NONE then
+        net.Start("TTT_UpdateOldManWins")
+        net.WriteBool(true)
+        net.Broadcast()
+    end
+end
+
 -- The most basic win check is whether both sides have one dude alive
 function GM:TTTCheckForWin()
     if ttt_dbgwin:GetBool() then return WIN_NONE end
-
-    if GAMEMODE.MapWin ~= WIN_NONE then
-        local mw = GAMEMODE.MapWin
-        GAMEMODE.MapWin = WIN_NONE
-        return mw
-    end
 
     local traitor_alive = false
     local innocent_alive = false
@@ -1569,10 +1580,22 @@ function GM:TTTCheckForWin()
                 zombie_alive = true
             end
         end
+    end
 
-        if traitor_alive and innocent_alive and not jester_killed then
-            return WIN_NONE --early out
+    if GAMEMODE.MapWin ~= WIN_NONE then
+        local mw = GAMEMODE.MapWin
+        GAMEMODE.MapWin = WIN_NONE
+
+        -- Old Man logic for map win
+        if oldman_alive then
+            CheckForOldManWin(mw)
         end
+
+        return mw
+    end
+
+    if traitor_alive and innocent_alive and not jester_killed then
+        return WIN_NONE --early out
     end
 
     local win_type = WIN_NONE
@@ -1646,11 +1669,7 @@ function GM:TTTCheckForWin()
 
     -- Old Man logic
     if oldman_alive then
-        if win_type ~= WIN_NONE then
-            net.Start("TTT_UpdateOldManWins")
-            net.WriteBool(true)
-            net.Broadcast()
-        end
+        CheckForOldManWin(win_type)
     end
 
     return win_type
@@ -1658,32 +1677,32 @@ end
 
 local function GetTraitorCount(ply_count)
     -- get number of traitors: pct of players rounded up
-    local traitor_count = math.ceil(ply_count * GetConVar("ttt_traitor_pct"):GetFloat())
+    local traitor_count = math.ceil(ply_count * math.Round(GetConVar("ttt_traitor_pct"):GetFloat(), 3))
     -- make sure there is at least 1 traitor
     return math.Clamp(traitor_count, 1, GetConVar("ttt_traitor_max"):GetInt())
 end
 
 local function GetDetectiveCount(ply_count)
-    local detective_count = math.ceil(ply_count * GetConVar("ttt_detective_pct"):GetFloat())
+    local detective_count = math.ceil(ply_count * math.Round(GetConVar("ttt_detective_pct"):GetFloat(), 3))
 
     return math.Clamp(detective_count, 1, GetConVar("ttt_detective_max"):GetInt())
 end
 
 local function GetSpecialTraitorCount(ply_count)
     -- get number of special traitors: pct of traitors rounded up
-    return math.ceil(ply_count * GetConVar("ttt_special_traitor_pct"):GetFloat())
+    return math.ceil(ply_count * math.Round(GetConVar("ttt_special_traitor_pct"):GetFloat(), 3))
 end
 
 local function GetSpecialInnocentCount(ply_count)
     -- get number of special innocents: pct of innocents rounded up
-    return math.ceil(ply_count * GetConVar("ttt_special_innocent_pct"):GetFloat())
+    return math.ceil(ply_count * math.Round(GetConVar("ttt_special_innocent_pct"):GetFloat(), 3))
 end
 
 local function GetMonsterCount(ply_count)
     if not MONSTER_ROLES[ROLE_ZOMBIE] and not MONSTER_ROLES[ROLE_VAMPIRE] then
         return 0
     end
-    return math.ceil(ply_count * GetConVar("ttt_monster_pct"):GetFloat())
+    return math.ceil(ply_count * math.Round(GetConVar("ttt_monster_pct"):GetFloat(), 3))
 end
 
 local function PrintRoleText(text)

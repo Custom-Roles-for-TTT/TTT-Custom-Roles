@@ -3,8 +3,28 @@
 ## 1.0.7
 **Released:**
 
+### Fixes
+- Fixed team player count calculations not always being accurate by truncating the "_pct" convars to 3 digits to work around floating point inaccuracy
+- Fixed assassin not getting a target sometimes because they were treated as having a failed contract by default
+- Fixed missing ttt_clown_shop_mode
+- Fixed weapons added to detective or traitor via the roleweapons system not being buyable by roles using the shop mode convars
+- Fixed old man not also winning when a map declares a winning team
+
 ### Changes
 - Changed ttt_beggar_notify_sound and ttt_beggar_notify_confetti to be off by default to better match default beggar behaviour
+- Changed end-of-round summary to automatically add a row if there are both independents and jesters in a round (via something like a Randomat event)
+- Changed parasite cure to have a 3-second charge time to prevent it from being used as an instant-kill weapon
+- Changed parasite cure to never be removed if shop randomization is enabled
+
+### Additions
+- Added convars to control whether members of the jesters teams are visible to other teams (via the head icons, color/icon on the scoreboard, etc.)
+- Added ability to give the veteran a health bonus (in addition to the heal) when they are activated
+- Added ability to notify other remaining players when a veteran is activated
+- Added convar to control what happens when a parasite cure is used on someone who is not infected
+- Added ability for the clown to always have access to their shop via a new convar
+
+### Developer
+- Added the ability for SWEPs to not be randomized out of the shop by setting "SWEP.BlockShopRandomization = true"
 
 ## 1.0.6
 **Released: July 20th, 2021**

@@ -131,7 +131,7 @@ function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor
             if rolemode == SHOP_SYNC_MODE_UNION or rolemode == SHOP_SYNC_MODE_DETECTIVE then
                 -- and they can't already buy this weapon
                 if not table.HasValue(wep.CanBuy, role) and
-                    -- and detectives CAN buy this weapon, let the mercenary buy it too
+                    -- and detectives CAN buy this weapon, let the role buy it too
                     table.HasValue(wep.CanBuy, ROLE_DETECTIVE) then
                     table.insert(wep.CanBuy, role)
                 end
@@ -141,7 +141,7 @@ function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor
             if rolemode == SHOP_SYNC_MODE_UNION or rolemode == SHOP_SYNC_MODE_TRAITOR then
                 -- and they can't already buy this weapon
                 if not table.HasValue(wep.CanBuy, role) and
-                    -- and traitors CAN buy this weapon, let the mercenary buy it too
+                    -- and traitors CAN buy this weapon, let the role buy it too
                     table.HasValue(wep.CanBuy, ROLE_TRAITOR) then
                     table.insert(wep.CanBuy, role)
                 end
@@ -151,7 +151,7 @@ function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor
             if rolemode == SHOP_SYNC_MODE_INTERSECT then
                 -- and they can't already buy this weapon
                 if not table.HasValue(wep.CanBuy, role) and
-                    -- and detectives AND traitors CAN buy this weapon, let the mercenary buy it too
+                    -- and detectives AND traitors CAN buy this weapon, let the role buy it too
                     table.HasValue(wep.CanBuy, ROLE_DETECTIVE) and table.HasValue(wep.CanBuy, ROLE_TRAITOR) then
                     table.insert(wep.CanBuy, role)
                 end
@@ -184,7 +184,7 @@ function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor
                 table.RemoveByValue(wep.CanBuy, role)
             -- Remove some weapons based on a random chance if it isn't blocked or bypassed
             -- Only run this on the client because there is no easy way to sync randomization between client and server
-            elseif CLIENT then
+            elseif CLIENT and not wep.BlockShopRandomization then
                 local norandomtable = WEPS.BypassRandomWeapons[role]
                 if not block_randomization and (not norandomtable or not table.HasValue(norandomtable, id)) then
                     local random_cvar_enabled = GetGlobalBool("ttt_" .. ROLE_STRINGS[role] .. "_shop_random_enabled", false)

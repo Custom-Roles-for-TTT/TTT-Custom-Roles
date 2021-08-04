@@ -8,6 +8,8 @@ Add the following to your server.cfg (for dedicated servers) or listenserver.cfg
 // ----------------------------------------
 
 // ROLE SPAWN REQUIREMENTS
+ttt_traitor_pct                             0.25    // Percentage of players, rounded up, that can spawn as a traitor or "special traitor"
+ttt_detective_pct                           0.13    // Percentage of players, rounded up, that can spawn as a detective
 ttt_special_traitor_pct                     0.33    // Percentage of traitors, rounded up, that can spawn as a "special traitor" (e.g. hypnotist, impersonator, etc.)
 ttt_special_traitor_chance                  0.5     // The chance that a "special traitor" will spawn in each available slot made by "ttt_special_traitor_pct"
 ttt_special_innocent_pct                    0.33    // Percentage of innocents, rounded up, that can spawn as a "special innocent" (e.g. glitch, phantom, etc.)

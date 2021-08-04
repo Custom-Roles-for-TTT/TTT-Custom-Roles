@@ -995,7 +995,7 @@ local function DrawFootprints()
 
                 local hitpos = footstep.pos
                 -- If this player is spectating through the target's eyes, move the prints down so they don't appear to float
-                if client:IsSpec() and client:GetNWInt("SpecMode", -1) == OBS_MODE_IN_EYE then
+                if client:IsSpec() and client:GetObserverMode() == OBS_MODE_IN_EYE then
                     hitpos = hitpos + Vector(0, 0, -50)
                 end
                 render.DrawQuadEasy(hitpos + footstep.normal * 0.01, footstep.normal, 10, 20, col, footstep.angle)

@@ -8,6 +8,8 @@ Add the following to your server.cfg (for dedicated servers) or listenserver.cfg
 // ----------------------------------------
 
 // ROLE SPAWN REQUIREMENTS
+ttt_traitor_pct                             0.25    // Percentage of players, rounded up, that can spawn as a traitor or "special traitor"
+ttt_detective_pct                           0.13    // Percentage of players, rounded up, that can spawn as a detective
 ttt_special_traitor_pct                     0.33    // Percentage of traitors, rounded up, that can spawn as a "special traitor" (e.g. hypnotist, impersonator, etc.)
 ttt_special_traitor_chance                  0.5     // The chance that a "special traitor" will spawn in each available slot made by "ttt_special_traitor_pct"
 ttt_special_innocent_pct                    0.33    // Percentage of innocents, rounded up, that can spawn as a "special innocent" (e.g. glitch, phantom, etc.)
@@ -139,6 +141,7 @@ ttt_parasite_infection_time                 90      // The time it takes in seco
 ttt_parasite_respawn_mode                   0       // The way in which the parasite respawns. 0 - Take over host. 1 - Respawn at the parasite's body. 2 - Respawn at a random location.
 ttt_parasite_respawn_health                 100     // The health on which the parasite respawns
 ttt_parasite_announce_infection             0       // Whether players are notified when they are infected with the parasite
+ttt_parasite_cure_mode                      2       // How to handle using a parasite cure on someone who is not infected. 0 = Kill nobody (But use up the cure), 1 = Kill the person who uses the cure, 2 = Kill the person the cure is used on
 ttt_parasite_credits_starting               1       // The number of credits a parasite should start with
 
 // ----------------------------------------
@@ -177,15 +180,19 @@ ttt_mercenary_credits_starting              1       // The number of credits a m
 // Veteran
 ttt_veteran_damage_bonus                    0.5     // Damage bonus that the veteran has when they are the last innocent alive (e.g. 0.5 = 50% more damage)
 ttt_veteran_full_heal                       1       // Whether the veteran gets a full heal upon becoming the last remaining innocent or not
+ttt_veteran_heal_bonus                      0       // The amount of bonus health to give the veteran when they are healed as the last remaining innocent
+ttt_veteran_announce                        0       // Whether to announce to all other living players when the veteran is the last remaining innocent
 
 // Doctor
 ttt_doctor_mode                             0       // What tool the doctor starts with (0=Health Station, 1=Defib then Health Station)
-ttt_doctor_credits_starting                 0       // How many credits the doctor starts with
 
 // ----------------------------------------
 
 // JESTER TEAM SETTINGS
 ttt_jesters_trigger_traitor_testers         1       // Whether jesters trigger traitor testers as if they were traitors
+ttt_jesters_visible_to_traitors             1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to members of the traitor team
+ttt_jesters_visible_to_monsters             1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to members of the monster team
+ttt_jesters_visible_to_independents         1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to independent players
 
 // Jester
 ttt_jester_win_by_traitors                  1       // Whether the jester will win the round if they are killed by a traitor
@@ -209,6 +216,7 @@ ttt_clown_activation_credits                0       // The number of credits to 
 ttt_clown_hide_when_active                  0       // Whether the clown should be hidden from other players' Target ID (overhead icons) when they are activated. Server or round must be restarted for changes to take effect
 ttt_clown_show_target_icon                  0       // Whether the clown has an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect
 ttt_clown_heal_on_activate                  0       // Whether the clown should fully heal when they activate or not
+ttt_clown_shop_active_only                  1       // Whether the clown's shop should be available only after they activate
 ttt_clown_credits_starting                  0       // The number of credits a clown should start with
 
 // Beggar
@@ -305,16 +313,34 @@ ttt_clown_shop_random_enabled               0       // Whether role shop randomi
 ttt_quack_shop_random_enabled               0       // Whether role shop randomization is enabled for quacks
 ttt_parasite_shop_random_enabled            0       // Whether role shop randomization is enabled for parasites
 
-// Role Sync (Server or round must be restarted for changes to take effect)
-ttt_mercenary_shop_mode                     2       // What items are available to the mercenary in the shop (0=None, 1=Either detective OR traitor (aka Union), 2=Both detective AND traitor (aka Intersect), 3=Just detective, 4=Just traitor)
-ttt_clown_shop_mode                         0       // What items are available to the clown in the shop (0=None, 1=Either detective OR traitor (aka Union), 2=Both detective AND traitor (aka Intersect), 3=Just detective, 4=Just traitor)
-ttt_hypnotist_shop_sync                     0       // Whether Hypnotists should have all weapons that vanilla Traitors have in their weapon shop
-ttt_impersonator_shop_sync                  0       // Whether Impersonators should have all weapons that vanilla Traitors have in their weapon shop
-ttt_assassin_shop_sync                      0       // Whether Assassins should have all weapons that vanilla Traitors have in their weapon shop
-ttt_vampire_shop_sync                       0       // Whether Vampires should have all weapons that vanilla Traitors have in their weapon shop (if they are a Traitor)
-ttt_zombie_shop_sync                        0       // Whether Zombies should have all weapons that vanilla Traitors have in their weapon shop (if they are a Traitor)
-ttt_quack_shop_sync                         0       // Whether Quacks should have all weapons that vanilla Traitors have in their weapon shop
-ttt_parasite_shop_sync                      0       // Whether Parasites should have all weapons that vanilla Traitors have in their weapon shop
+// Role Shop Mode (Server or round must be restarted for changes to take effect)
+// Mode explanation:
+// 0 (Disable) - No additional weapons
+// 1 (Union) - All weapons available to EITHER the traitor or the detective
+// 2 (Intersect) - Only weapons available to BOTH the traitor and the detective
+// 3 (Detective) - All weapons available to the detective
+// 4 (Traitor) - All weapons available to the traitor
+
+// Examples:
+// Assuming the detective can buy "radar" and the "juggernaut suit" and the traitor can buy "radar" and the "banana bomb"
+// Then the modes would produce the following results:
+// 0 (Disable) - No additional weapons
+// 1 (Union) - "radar", "juggernaut suit", and "banana bomb"
+// 2 (Intersect) - "radar"
+// 3 (Detective) - "radar" and "juggernaut suit"
+// 4 (Traitor) - "radar" and "banana bomb"
+
+ttt_mercenary_shop_mode                     2       // What additional items are available to the mercenary in the shop (See above for possible values)
+ttt_clown_shop_mode                         0       // What additional items are available to the clown in the shop (See above for possible values)
+
+// Traitor Role Shop Sync (Server or round must be restarted for changes to take effect)
+ttt_hypnotist_shop_sync                     0       // Whether Hypnotists should have all weapons that vanilla traitors have in their weapon shop
+ttt_impersonator_shop_sync                  0       // Whether Impersonators should have all weapons that vanilla traitors have in their weapon shop
+ttt_assassin_shop_sync                      0       // Whether Assassins should have all weapons that vanilla traitors have in their weapon shop
+ttt_vampire_shop_sync                       0       // Whether Vampires should have all weapons that vanilla traitors have in their weapon shop (if they are a Traitor)
+ttt_zombie_shop_sync                        0       // Whether Zombies should have all weapons that vanilla traitors have in their weapon shop (if they are a Traitor)
+ttt_quack_shop_sync                         0       // Whether Quacks should have all weapons that vanilla traitors have in their weapon shop
+ttt_parasite_shop_sync                      0       // Whether Parasites should have all weapons that vanilla traitors have in their weapon shop
 
 // ----------------------------------------
 
