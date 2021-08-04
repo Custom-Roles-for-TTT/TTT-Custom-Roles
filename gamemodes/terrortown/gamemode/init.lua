@@ -1754,7 +1754,7 @@ local function PrintRoleText(text)
 end
 
 local function PrintRole(ply, role)
-    PrintRoleText(ply:Nick() .. " (" .. ply:SteamID() .. " | " .. ply:SteamID64() .. ") - " .. role)
+    PrintRoleText(ply:Nick() .. " (" .. ply:SteamID() .. " | " .. ply:SteamID64() .. ") - " .. ROLE_STRINGS[role])
 end
 
 function SelectRoles()
@@ -1956,7 +1956,7 @@ function SelectRoles()
                     end
                 end
 
-                PrintRole(v, ROLE_STRINGS[role])
+                PrintRole(v, role)
             end
         end
     end
@@ -2002,7 +2002,7 @@ function SelectRoles()
                 local plyPick = math.random(1, #options)
                 local ply = options[plyPick]
                 ply:SetRole(ROLE_DETECTIVE)
-                PrintRole(ply, "detective")
+                PrintRole(ply, ROLE_DETECTIVE)
                 table.RemoveByValue(choices, ply)
                 table.remove(options, plyPick)
             end
@@ -2015,7 +2015,6 @@ function SelectRoles()
         if #choices > 0 then
             local plyPick = math.random(1, #choices)
             local ply = choices[plyPick]
-            ply:SetRole(ROLE_TRAITOR)
             table.insert(traitors, ply)
             table.remove(choices, plyPick)
         end
@@ -2025,7 +2024,7 @@ function SelectRoles()
         -- This is a zombie round so all traitors become zombies
         for _, v in pairs(traitors) do
             v:SetRole(ROLE_ZOMBIE)
-            PrintRole(v, "zombie")
+            PrintRole(v, ROLE_ZOMBIE)
         end
     else
         -- pick special traitors
@@ -2068,7 +2067,7 @@ function SelectRoles()
                     local rolePick = math.random(1, #specialTraitorRoles)
                     local role = specialTraitorRoles[rolePick]
                     ply:SetRole(role)
-                    PrintRole(ply, ply:GetRoleString())
+                    PrintRole(ply, role)
                     table.remove(traitors, plyPick)
                     for i = #specialTraitorRoles, 1, -1 do
                         if specialTraitorRoles[i] == role then
@@ -2081,7 +2080,8 @@ function SelectRoles()
 
         -- Any of these left is a vanilla traitor
         for _, v in pairs(traitors) do
-            PrintRole(v, "traitor")
+            v:SetRole(ROLE_TRAITOR)
+            PrintRole(v, ROLE_TRAITOR)
         end
     end
 
@@ -2139,7 +2139,7 @@ function SelectRoles()
             local rolePick = math.random(1, #independentRoles)
             local role = independentRoles[rolePick]
             ply:SetRole(role)
-            PrintRole(ply, ply:GetRoleString())
+            PrintRole(ply, role)
             table.remove(choices, plyPick)
             for i = #independentRoles, 1, -1 do
                 if independentRoles[i] == role then
@@ -2201,7 +2201,7 @@ function SelectRoles()
                 local rolePick = math.random(1, #specialInnocentRoles)
                 local role = specialInnocentRoles[rolePick]
                 ply:SetRole(role)
-                PrintRole(ply, ply:GetRoleString())
+                PrintRole(ply, role)
                 table.remove(choices, plyPick)
                 for i = #specialInnocentRoles, 1, -1 do
                     if specialInnocentRoles[i] == role then
@@ -2231,7 +2231,7 @@ function SelectRoles()
                 local rolePick = math.random(1, #monsterRoles)
                 local role = monsterRoles[rolePick]
                 ply:SetRole(role)
-                PrintRole(ply, ply:GetRoleString())
+                PrintRole(ply, role)
                 table.remove(choices, plyPick)
                 for i = #monsterRoles, 1, -1 do
                     if monsterRoles[i] == role then
@@ -2245,7 +2245,7 @@ function SelectRoles()
     -- Anyone left is innocent
     for _, v in pairs(choices) do
         v:SetRole(ROLE_INNOCENT)
-        PrintRole(v, "innocent")
+        PrintRole(v, ROLE_INNOCENT)
     end
     PrintRoleText("------------DONE PICKING ROLES------------")
 

@@ -3,6 +3,9 @@
 ## 1.0.8
 **Released:**
 
+### Fixes
+- Fixed role selection message not always using custom role strings
+
 ### Additions
 - Added convar to have the clown's shop purchases be held back until they are activated
 
