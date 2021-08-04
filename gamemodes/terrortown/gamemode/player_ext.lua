@@ -77,7 +77,7 @@ function plymeta:SetDefaultCredits()
     elseif self:IsDetective() then
         cvar = "ttt_det_credits_starting"
     else
-        cvar = "ttt_" .. ROLE_STRINGS[self:GetRole()] .. "_credits_starting"
+        cvar = "ttt_" .. ROLE_STRINGS_RAW[self:GetRole()] .. "_credits_starting"
     end
     if ConVarExists(cvar) then
         c = GetConVar(cvar):GetInt()

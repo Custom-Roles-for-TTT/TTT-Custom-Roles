@@ -61,11 +61,10 @@ local function IdentifyBody(ply, rag)
 
     -- Announce body
     if bodyfound:GetBool() and not CORPSE.GetFound(rag, false) then
-        local roletext = "body_found_" .. ROLE_STRINGS_SHORT[role]
         LANG.Msg("body_found", {
             finder = finder,
             victim = nick,
-            role = LANG.Param(roletext)
+            role = ROLE_STRINGS_EXT[role]
         })
     end
 
@@ -156,10 +155,11 @@ local function CallDetective(ply, cmd, args)
 
             LANG.Msg("body_call", {
                 player = ply:Nick(),
+                role = ROLE_STRINGS[ROLE_DETECTIVE],
                 victim = CORPSE.GetPlayerNick(rag, "someone")
             })
         else
-            LANG.Msg(ply, "body_call_error")
+            LANG.Msg(ply, "body_call_error", { role = ROLE_STRINGS[ROLE_DETECTIVE] })
         end
     end
 end
@@ -231,7 +231,7 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
                 ownerEnt:SetNWBool("det_called", true)
                 ownerEnt:SetNWBool("body_found", true)
                 LANG.Msg("body_confirm", { finder = ply:Nick(), victim = CORPSE.GetPlayerNick(rag, "someone") })
-                LANG.Msg("body_call", { player = ply:Nick(), victim = CORPSE.GetPlayerNick(rag, "someone") })
+                LANG.Msg("body_call", { player = ply:Nick(), role = ROLE_STRINGS[ROLE_DETECTIVE], victim = CORPSE.GetPlayerNick(rag, "someone") })
             end
             return
         else

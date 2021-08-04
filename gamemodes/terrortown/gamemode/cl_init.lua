@@ -83,6 +83,8 @@ function GM:InitPostEntity()
 
     RunConsoleCommand("_ttt_request_serverlang")
     RunConsoleCommand("_ttt_request_rolelist")
+
+    UpdateRoleStrings()
 end
 
 function GM:DoCacheEnts()

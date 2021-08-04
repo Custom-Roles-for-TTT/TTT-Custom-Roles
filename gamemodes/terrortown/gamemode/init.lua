@@ -88,7 +88,7 @@ CreateConVar("ttt_monster_pct", 0.33)
 CreateConVar("ttt_monster_chance", 0.5)
 
 for role = 0, ROLE_MAX do
-    local rolestring = ROLE_STRINGS[role]
+    local rolestring = ROLE_STRINGS_RAW[role]
     if not DEFAULT_ROLES[role] then
         CreateConVar("ttt_" .. rolestring .. "_enabled", "0", FCVAR_REPLICATED)
         CreateConVar("ttt_" .. rolestring .. "_spawn_weight", "1", FCVAR_REPLICATED)
@@ -100,6 +100,9 @@ for role = 0, ROLE_MAX do
     elseif role == ROLE_KILLER then health = "150" end
     CreateConVar("ttt_" .. rolestring .. "_starting_health", health, FCVAR_REPLICATED)
     CreateConVar("ttt_" .. rolestring .. "_max_health", health, FCVAR_REPLICATED)
+    CreateConVar("ttt_" .. rolestring .. "_name", "", FCVAR_REPLICATED)
+    CreateConVar("ttt_" .. rolestring .. "_name_plural", "", FCVAR_REPLICATED)
+    CreateConVar("ttt_" .. rolestring .. "_name_article", "", FCVAR_REPLICATED)
 end
 
 -- Traitor role properties
@@ -240,7 +243,7 @@ CreateConVar("ttt_det_credits_traitordead", "1")
 
 -- Shop parameters
 for _, role in ipairs(table.GetKeys(SHOP_ROLES)) do
-    local rolestring = ROLE_STRINGS[role]
+    local rolestring = ROLE_STRINGS_RAW[role]
     if not DEFAULT_ROLES[role] then
         local credits = "0"
         if TRAITOR_ROLES[role] then credits = "1"
@@ -389,7 +392,7 @@ OldCVarWarning("ttt_shop_clo_mode", "ttt_clown_shop_mode")
 
 for _, role in ipairs(table.GetKeys(SHOP_ROLES)) do
     local shortstring = ROLE_STRINGS_SHORT[role]
-    local rolestring = ROLE_STRINGS[role]
+    local rolestring = ROLE_STRINGS_RAW[role]
     CreateConVar("ttt_shop_random_" .. shortstring .. "_percent", "0", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown for the " .. rolestring, 0, 100)
     OldCVarWarning("ttt_shop_random_" .. shortstring .. "_percent", "ttt_" .. rolestring .. "_shop_random_percent")
     CreateConVar("ttt_shop_random_" .. shortstring .. "_enabled", "0", FCVAR_REPLICATED, "Whether shop randomization should run for the " .. rolestring)
@@ -470,6 +473,7 @@ util.AddNetworkString("TTT_ClearPlayerFootsteps")
 util.AddNetworkString("TTT_JesterDeathCelebration")
 util.AddNetworkString("TTT_LoadMonsterEquipment")
 util.AddNetworkString("TTT_VampirePrimeDeath")
+util.AddNetworkString("TTT_UpdateRoleNames")
 
 local jester_killed = false
 
@@ -551,6 +555,8 @@ function GM:InitCvars()
     GAMEMODE:SyncGlobals()
     KARMA.InitState()
 
+    UpdateRoleStrings()
+
     self.cvar_init = true
 end
 
@@ -582,19 +588,24 @@ function GM:SyncGlobals()
     SetGlobalInt("ttt_shop_random_percent", GetConVar("ttt_shop_random_percent"):GetInt())
     SetGlobalBool("ttt_shop_random_position", GetConVar("ttt_shop_random_position"):GetBool())
 
-    for _, role in ipairs(table.GetKeys(SHOP_ROLES)) do
-        local rolestring = ROLE_STRINGS[role]
-        SetGlobalInt("ttt_" .. rolestring .. "_shop_random_percent", GetConVar("ttt_" .. rolestring .. "_shop_random_percent"):GetInt())
-        SetGlobalBool("ttt_" .. rolestring .. "_shop_random_enabled", GetConVar("ttt_" .. rolestring .. "_shop_random_enabled"):GetBool())
+    for role = 0, ROLE_MAX do
+        local rolestring = ROLE_STRINGS_RAW[role]
+        SetGlobalString("ttt_" .. rolestring .. "_name", GetConVar("ttt_" .. rolestring .. "_name"):GetString())
+        SetGlobalString("ttt_" .. rolestring .. "_name_plural", GetConVar("ttt_" .. rolestring .. "_name_plural"):GetString())
+        SetGlobalString("ttt_" .. rolestring .. "_name_article", GetConVar("ttt_" .. rolestring .. "_name_article"):GetString())
+        if SHOP_ROLES[role] then
+            SetGlobalInt("ttt_" .. rolestring .. "_shop_random_percent", GetConVar("ttt_" .. rolestring .. "_shop_random_percent"):GetInt())
+            SetGlobalBool("ttt_" .. rolestring .. "_shop_random_enabled", GetConVar("ttt_" .. rolestring .. "_shop_random_enabled"):GetBool())
 
-        local sync_cvar = "ttt_" .. rolestring .. "_shop_sync"
-        if ConVarExists(sync_cvar) then
-            SetGlobalBool(sync_cvar, GetConVar(sync_cvar):GetBool())
-        end
+            local sync_cvar = "ttt_" .. rolestring .. "_shop_sync"
+            if ConVarExists(sync_cvar) then
+                SetGlobalBool(sync_cvar, GetConVar(sync_cvar):GetBool())
+            end
 
-        local mode_cvar = "ttt_" .. rolestring .. "_shop_mode"
-        if ConVarExists(mode_cvar) then
-            SetGlobalInt(mode_cvar, GetConVar(mode_cvar):GetInt())
+            local mode_cvar = "ttt_" .. rolestring .. "_shop_mode"
+            if ConVarExists(mode_cvar) then
+                SetGlobalInt(mode_cvar, GetConVar(mode_cvar):GetInt())
+            end
         end
     end
 
@@ -1086,7 +1097,7 @@ function TellTraitorsAboutTraitors()
             end
 
             if #traitornicks < 2 then
-                LANG.Msg(v, "round_traitors_one")
+                LANG.Msg(v, "round_traitors_one", { role = ROLE_STRINGS[ROLE_TRAITOR] })
                 return
             else
                 local names = ""
@@ -1096,7 +1107,7 @@ function TellTraitorsAboutTraitors()
                     end
                 end
                 names = string.sub(names, 1, -3)
-                LANG.Msg(v, "round_traitors_more", { names = names })
+                LANG.Msg(v, "round_traitors_more", { role = ROLE_STRINGS[ROLE_TRAITOR], names = names })
             end
         end
 
@@ -1246,7 +1257,7 @@ function BeginRound()
     -- Select traitors & co. This is where things really start so we can't abort
     -- anymore.
     SelectRoles()
-    LANG.Msg("round_selected")
+    LANG.Msg("round_selected", { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR] })
     SendFullStateUpdate()
 
     -- Edge case where a player joins just as the round starts and is picked as
@@ -1421,31 +1432,31 @@ end
 function PrintResultMessage(type)
     ServerLog("Round ended.\n")
     if type == WIN_TIMELIMIT then
-        LANG.Msg("win_time")
+        LANG.Msg("win_time", { role = ROLE_STRINGS_PLURAL[ROLE_INNOCENT] })
         ServerLog("Result: timelimit reached, traitors lose.\n")
     elseif type == WIN_TRAITOR then
-        LANG.Msg("win_traitor")
+        LANG.Msg("win_traitor", { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR] })
         ServerLog("Result: Traitors win.\n")
     elseif type == WIN_INNOCENT then
-        LANG.Msg("win_innocent")
+        LANG.Msg("win_innocent", { role = ROLE_STRINGS_PLURAL[ROLE_INNOCENT] })
         ServerLog("Result: Innocent win.\n")
     elseif type == WIN_JESTER then
-        LANG.Msg("win_jester")
+        LANG.Msg("win_jester", { role = ROLE_STRINGS_PLURAL[ROLE_JESTER] })
         ServerLog("Result: Jester wins.\n")
     elseif type == WIN_CLOWN then
-        LANG.Msg("win_clown")
+        LANG.Msg("win_clown", { role = ROLE_STRINGS_PLURAL[ROLE_CLOWN] })
         ServerLog("Result: Clown wins.\n")
     elseif type == WIN_KILLER then
-        LANG.Msg("win_killer")
+        LANG.Msg("win_killer", { role = ROLE_STRINGS_PLURAL[ROLE_KILLER] })
         ServerLog("Result: Killer wins.\n")
     elseif type == WIN_MONSTER then
         -- If Zombies are not monsters then Vampires win
         if not MONSTER_ROLES[ROLE_ZOMBIE] then
-            LANG.Msg("win_vampires")
+            LANG.Msg("win_vampires", { role = ROLE_STRINGS_PLURAL[ROLE_VAMPIRE] })
             ServerLog("Result: Vampires win.\n")
         -- And vice versa
         elseif not MONSTER_ROLES[ROLE_VAMPIRE] then
-            LANG.Msg("win_zombies")
+            LANG.Msg("win_zombies", { role = ROLE_STRINGS_PLURAL[ROLE_ZOMBIE] })
             ServerLog("Result: Zombies win.\n")
         -- Otherwise the monsters legit win
         else
@@ -2379,7 +2390,7 @@ end)
 -- This also sends a cache reset request to every client so that things like shop randomization happen every round
 function HandleRoleEquipment()
     local handled = false
-    for id, name in pairs(ROLE_STRINGS) do
+    for id, name in pairs(ROLE_STRINGS_RAW) do
         WEPS.PrepWeaponsLists(id)
         local rolefiles, _ = file.Find("roleweapons/" .. name .. "/*.txt", "DATA")
         local roleexcludes = { }

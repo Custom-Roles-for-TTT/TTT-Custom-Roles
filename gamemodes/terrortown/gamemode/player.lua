@@ -561,7 +561,7 @@ local function CheckCreditAward(victim, attacker)
             end
         end
 
-        LANG.Msg(GetDetectiveFilter(true), "credit_det_all", { num = amt })
+        LANG.Msg(GetDetectiveFilter(true), "credit_all", { role = ROLE_STRINGS_PLURAL[ROLE_DETECTIVE], num = amt })
     end
 
     -- TRAITOR AWARD
@@ -598,7 +598,7 @@ local function CheckCreditAward(victim, attacker)
 
             -- If size is 0, awards are off
             if amt > 0 then
-                LANG.Msg(GetTraitorTeamFilter(true), "credit_tr_all", { num = amt })
+                LANG.Msg(GetTraitorTeamFilter(true), "credit_all", { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR], num = amt })
 
                 for _, ply in ipairs(player.GetAll()) do
                     if ply:IsActiveTraitorTeam() and ply:IsActiveShopRole() then
@@ -646,7 +646,7 @@ local function CheckCreditAward(victim, attacker)
 
             -- If size is 0, awards are off
             if amt > 0 then
-                LANG.Msg(GetVampireFilter(true), "credit_vam", { num = amt })
+                LANG.Msg(GetVampireFilter(true), "credit_all", { role = ROLE_STRINGS[ROLE_VAMPIRE], num = amt })
 
                 for _, ply in pairs(player.GetAll()) do
                     if ply:IsActiveVampire() then
@@ -694,7 +694,7 @@ local function CheckCreditAward(victim, attacker)
 
             -- If size is 0, awards are off
             if amt > 0 then
-                LANG.Msg(GetKillerFilter(true), "credit_kil", { num = amt })
+                LANG.Msg(GetKillerFilter(true), "credit_all", { role = ROLE_STRINGS[ROLE_KILLER], num = amt })
 
                 for _, ply in pairs(player.GetAll()) do
                     if ply:IsActiveKiller() then
@@ -1024,7 +1024,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
             attacker:AddCredits(reward)
 
             LANG.Msg(attacker, "credit_kill", { num = reward,
-                                                role = LANG.NameParam(ply:GetRoleString()) })
+                                                role = ROLE_STRINGS_EXT[ply:GetRole()] })
         end
     end
 

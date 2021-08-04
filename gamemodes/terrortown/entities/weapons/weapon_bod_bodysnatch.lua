@@ -210,7 +210,7 @@ if SERVER then
         self:SetState(DEFIB_BUSY)
         self:SetBegin(CurTime())
         if GetConVar("ttt_bodysnatcher_show_role"):GetBool() then
-            self:SetMessage("BODYSNATCHING " .. string.upper(ply:Nick()) .. " [" .. string.upper(ROLE_STRINGS[ply:GetRole()]) .. "]")
+            self:SetMessage("BODYSNATCHING " .. string.upper(ply:Nick()) .. " [" .. string.upper(ROLE_STRINGS_RAW[ply:GetRole()]) .. "]")
         else
             self:SetMessage("BODYSNATCHING " .. string.upper(ply:Nick()))
         end

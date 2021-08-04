@@ -1,7 +1,7 @@
 # Beta Release Notes
 
 ## 1.0.7
-**Released:**
+**Released: Released: August 8th, 2021**
 
 ### Fixes
 - Fixed team player count calculations not always being accurate by truncating the "_pct" convars to 3 digits to work around floating point inaccuracy
@@ -9,6 +9,7 @@
 - Fixed missing ttt_clown_shop_mode
 - Fixed weapons added to detective or traitor via the roleweapons system not being buyable by roles using the shop mode convars
 - Fixed old man not also winning when a map declares a winning team
+- Fixed the glitch from being shown as a traitor to zombies if zombies are on the traitor team
 
 ### Changes
 - Changed ttt_beggar_notify_sound and ttt_beggar_notify_confetti to be off by default to better match default beggar behaviour
@@ -22,12 +23,12 @@
 - Added ability to notify other remaining players when a veteran is activated
 - Added convar to control what happens when a parasite cure is used on someone who is not infected
 - Added ability for the clown to always have access to their shop via a new convar
+- Added convars to rename roles
 
 ### Developer
 - Added the ability for SWEPs to not be randomized out of the shop by setting "SWEP.BlockShopRandomization = true"
+- Renamed ROLE_STRINGS to ROLE_STRINGS_RAW
 
-### Fixes
-- Fixed the glitch from being shown as a traitor to zombies if zombies are on the traitor team
 
 ## 1.0.6
 **Released: July 20th, 2021**

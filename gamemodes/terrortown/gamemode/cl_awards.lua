@@ -18,7 +18,7 @@ local T = LANG.GetTranslation
 local PT = LANG.GetParamTranslation
 
 local function GetRoleName(s)
-    return T(ROLE_STRINGS[s.role])
+    return T(ROLE_STRINGS_RAW[s.role])
 end
 
 local function GetRole(players, id)

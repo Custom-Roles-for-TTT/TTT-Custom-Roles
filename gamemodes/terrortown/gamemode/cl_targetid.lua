@@ -531,40 +531,40 @@ function GM:HUDDrawTargetID()
         text = L.target_infected
         clr = ROLE_COLORS_RADAR[ROLE_PARASITE]
     elseif target_traitor then
-        text = L.target_traitor
+        text = "FELLOW " .. string.upper(ROLE_STRINGS[ROLE_TRAITOR])
         clr = ROLE_COLORS_RADAR[ROLE_TRAITOR]
     elseif target_detective then
-        text = L.target_detective
+        text = string.upper(ROLE_STRINGS[ROLE_DETECTIVE])
         clr = ROLE_COLORS_RADAR[ROLE_DETECTIVE]
     elseif target_jester then
-        text = L.target_jester
+        text = string.upper(ROLE_STRINGS[ROLE_JESTER])
         clr = ROLE_COLORS_RADAR[ROLE_JESTER]
     elseif target_hypnotist then
-        text = L.target_hypnotist
+        text = string.upper(ROLE_STRINGS[ROLE_HYPNOTIST])
         clr = ROLE_COLORS_RADAR[ROLE_HYPNOTIST]
     elseif target_clown then
-        text = L.target_clown
+        text = string.upper(ROLE_STRINGS[ROLE_CLOWN])
         clr = ROLE_COLORS_RADAR[ROLE_CLOWN]
     elseif target_impersonator then
-        text = L.target_impersonator
+        text = string.upper(ROLE_STRINGS[ROLE_IMPERSONATOR])
         clr = ROLE_COLORS_RADAR[ROLE_IMPERSONATOR]
     elseif target_assassin then
-        text = L.target_assassin
+        text = string.upper(ROLE_STRINGS[ROLE_ASSASSIN])
         clr = ROLE_COLORS_RADAR[ROLE_ASSASSIN]
     elseif target_zombie then
-        text = L.target_zombie
+        text = string.upper(ROLE_STRINGS[ROLE_ZOMBIE])
         clr = ROLE_COLORS_RADAR[ROLE_ZOMBIE]
 	elseif target_fellow_zombie then
-		text = L.target_fellow_zombie
+		text = "FELLOW " .. string.upper(ROLE_STRINGS[ROLE_ZOMBIE])
         clr = ROLE_COLORS_RADAR[ROLE_ZOMBIE]
     elseif target_vampire then
-        text = L.target_vampire
+        text = string.upper(ROLE_STRINGS[ROLE_VAMPIRE])
         clr = ROLE_COLORS_RADAR[ROLE_VAMPIRE]
     elseif target_quack then
-        text = L.target_quack
+        text = string.upper(ROLE_STRINGS[ROLE_QUACK])
         clr = ROLE_COLORS_RADAR[ROLE_QUACK]
     elseif target_parasite then
-        text = L.target_parasite
+        text = string.upper(ROLE_STRINGS[ROLE_PARASITE])
         clr = ROLE_COLORS_RADAR[ROLE_PARASITE]
     elseif ent.sb_tag and ent.sb_tag.txt ~= nil then
         text = L[ent.sb_tag.txt]

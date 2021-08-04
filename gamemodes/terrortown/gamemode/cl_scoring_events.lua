@@ -136,7 +136,7 @@ Event(EVENT_GAME,
 Event(EVENT_SPAWN,
       { text = function(e)
                   if e.ply then
-                    local rolestring = ROLE_STRINGS[e.rol]
+                    local rolestring = ROLE_STRINGS_RAW[e.rol]
                     local a = StartsWithVowel(rolestring) and "an" or "a"
                     return PT("ev_spawn", {player = e.ply,
                                            a = a,
@@ -150,7 +150,7 @@ Event(EVENT_SPAWN,
 Event(EVENT_ROLECHANGE,
       { text = function(e)
                   if e.ply then
-                    local rolestring = ROLE_STRINGS[e.rol]
+                    local rolestring = ROLE_STRINGS_RAW[e.rol]
                     local a = StartsWithVowel(rolestring) and "an" or "a"
                     return PT("ev_role_changed", {player = e.ply,
                                                   a = a,

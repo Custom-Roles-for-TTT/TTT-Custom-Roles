@@ -406,7 +406,7 @@ local function InfoPaint(client)
         if hide_role then
             text = L['hidden']
         else
-            text = L[client:GetRoleStringRaw()]
+            text = client:GetRoleString()
         end
     else
         text = L[roundstate_string[round_state]]

@@ -356,13 +356,13 @@ end
 
 local function GetWinTitle(wintype)
     local wintitle = {
-        [WIN_INNOCENT] = { txt = "hilite_win_innocent", c = ROLE_COLORS[ROLE_INNOCENT] },
-        [WIN_TRAITOR] = { txt = "hilite_win_traitors", c = ROLE_COLORS[ROLE_TRAITOR] },
-        [WIN_JESTER] = { txt = "hilite_win_jester", c = ROLE_COLORS[ROLE_JESTER] },
-        [WIN_CLOWN] = { txt = "hilite_win_clown", c = ROLE_COLORS[ROLE_JESTER] },
-        [WIN_KILLER] = { txt = "hilite_win_killer", c = ROLE_COLORS[ROLE_KILLER] },
-        [WIN_ZOMBIE] = { txt = "hilite_win_zombies", c = ROLE_COLORS[ROLE_ZOMBIE] },
-        [WIN_MONSTER] = { txt = "hilite_win_monster", c = ROLE_COLORS[ROLE_ZOMBIE] }
+        [WIN_INNOCENT] = { txt = "hilite_win_role_plural", params = { role = string.upper(ROLE_STRINGS_PLURAL[ROLE_INNOCENT]) }, c = ROLE_COLORS[ROLE_INNOCENT] },
+        [WIN_TRAITOR] = { txt = "hilite_win_role_plural", params = { role = string.upper(ROLE_STRINGS_PLURAL[ROLE_TRAITOR]) }, c = ROLE_COLORS[ROLE_TRAITOR] },
+        [WIN_JESTER] = { txt = "hilite_win_role_singular", params = { role = string.upper(ROLE_STRINGS[ROLE_JESTER]) }, c = ROLE_COLORS[ROLE_JESTER] },
+        [WIN_CLOWN] = { txt = "hilite_win_role_singular", params = { role = string.upper(ROLE_STRINGS[ROLE_CLOWN]) }, c = ROLE_COLORS[ROLE_JESTER] },
+        [WIN_KILLER] = { txt = "hilite_win_role_singular", params = { role = string.upper(ROLE_STRINGS[ROLE_KILLER]) }, c = ROLE_COLORS[ROLE_KILLER] },
+        [WIN_ZOMBIE] = { txt = "hilite_win_role_plural", params = { role = string.upper(ROLE_STRINGS_PLURAL[ROLE_ZOMBIE]) }, c = ROLE_COLORS[ROLE_ZOMBIE] },
+        [WIN_MONSTER] = { txt = "hilite_win_role_plural", params = { role = "MONSTERS" }, c = ROLE_COLORS[ROLE_ZOMBIE] }
     }
     local title = wintitle[wintype]
 
@@ -370,15 +370,15 @@ local function GetWinTitle(wintype)
     if wintype == WIN_MONSTER then
         -- If Zombies are not monsters then Vampires win
         if not MONSTER_ROLES[ROLE_ZOMBIE] then
-            title.txt = "hilite_win_vampires"
+            title.params = { role = string.upper(ROLE_STRINGS_PLURAL[ROLE_VAMPIRE]) }
             -- Also make sure to override the color because they will be different
             title.c = ROLE_COLORS[ROLE_VAMPIRE]
-        -- And vice versa
+            -- And vice versa
         elseif not MONSTER_ROLES[ROLE_VAMPIRE] then
-            title.txt = "hilite_win_zombies"
-        -- Otherwise the monsters legit win
+            title.params = { role = string.upper(ROLE_STRINGS_PLURAL[ROLE_ZOMBIE]) }
+            -- Otherwise the monsters legit win
         else
-            title.txt = "hilite_win_monster"
+            title.params = { role = "MONSTERS" }
         end
     end
 
@@ -467,7 +467,7 @@ function CLSCORE:BuildScorePanel(dpanel)
             local was_jester = JESTER_ROLES[s.role]
             local was_indep = INDEPENDENT_ROLES[s.role]
             local was_monster = MONSTER_ROLES[s.role]
-            local role_string = ROLE_STRINGS[s.role]
+            local role_string = ROLE_STRINGS_RAW[s.role]
 
             local surv = ""
             if s.deaths > 0 then
@@ -706,7 +706,7 @@ function CLSCORE:BuildSummaryPanel(dpanel)
 
     local winlbl = vgui.Create("DLabel", dpanel)
     winlbl:SetFont("WinHuge")
-    winlbl:SetText(T(title.txt))
+    winlbl:SetText(PT(title.txt, title.params))
     winlbl:SetTextColor(COLOR_WHITE)
     winlbl:SizeToContents()
     local xwin = (w - winlbl:GetWide())/2

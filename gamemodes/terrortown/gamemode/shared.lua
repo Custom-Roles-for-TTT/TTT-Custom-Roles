@@ -315,7 +315,7 @@ end
 UpdateRoleColours()
 
 -- Role strings
-ROLE_STRINGS = {
+ROLE_STRINGS_RAW = {
     [ROLE_INNOCENT] = "innocent",
     [ROLE_TRAITOR] = "traitor",
     [ROLE_DETECTIVE] = "detective",
@@ -344,34 +344,92 @@ ROLE_STRINGS = {
     [ROLE_TRICKSTER] = "trickster"
 }
 
+ROLE_STRINGS = {
+    [ROLE_INNOCENT] = "Innocent",
+    [ROLE_TRAITOR] = "Traitor",
+    [ROLE_DETECTIVE] = "Detective",
+    [ROLE_JESTER] = "Jester",
+    [ROLE_SWAPPER] = "Swapper",
+    [ROLE_GLITCH] = "Glitch",
+    [ROLE_PHANTOM] = "Phantom",
+    [ROLE_HYPNOTIST] = "Hypnotist",
+    [ROLE_REVENGER] = "Tevenger",
+    [ROLE_DRUNK] = "Drunk",
+    [ROLE_CLOWN] = "Clown",
+    [ROLE_DEPUTY] = "Deputy",
+    [ROLE_IMPERSONATOR] = "Impersonator",
+    [ROLE_BEGGAR] = "Beggar",
+    [ROLE_OLDMAN] = "Old Man",
+    [ROLE_MERCENARY] = "Mercenary",
+    [ROLE_BODYSNATCHER] = "Bodysnatcher",
+    [ROLE_VETERAN] = "Veteran",
+    [ROLE_ASSASSIN] = "Assassin",
+    [ROLE_KILLER] = "Killer",
+    [ROLE_ZOMBIE] = "Zombie",
+    [ROLE_VAMPIRE] = "Vampire",
+    [ROLE_DOCTOR] = "Doctor",
+    [ROLE_QUACK] = "Quack",
+    [ROLE_PARASITE] = "Parasite",
+    [ROLE_TRICKSTER] = "Trickster"
+}
+
+ROLE_STRINGS_PLURAL = {
+    [ROLE_INNOCENT] = "Innocents",
+    [ROLE_TRAITOR] = "Traitors",
+    [ROLE_DETECTIVE] = "Detectives",
+    [ROLE_JESTER] = "Jesters",
+    [ROLE_SWAPPER] = "Swappers",
+    [ROLE_GLITCH] = "Glitches",
+    [ROLE_PHANTOM] = "Phantoms",
+    [ROLE_HYPNOTIST] = "Hypnotists",
+    [ROLE_REVENGER] = "Tevengers",
+    [ROLE_DRUNK] = "Drunks",
+    [ROLE_CLOWN] = "Clowns",
+    [ROLE_DEPUTY] = "Deputies",
+    [ROLE_IMPERSONATOR] = "Impersonators",
+    [ROLE_BEGGAR] = "Beggars",
+    [ROLE_OLDMAN] = "Old Men",
+    [ROLE_MERCENARY] = "Mercenaries",
+    [ROLE_BODYSNATCHER] = "Bodysnatchers",
+    [ROLE_VETERAN] = "Veterans",
+    [ROLE_ASSASSIN] = "Assassins",
+    [ROLE_KILLER] = "Killers",
+    [ROLE_ZOMBIE] = "Zombies",
+    [ROLE_VAMPIRE] = "Vampires",
+    [ROLE_DOCTOR] = "Doctors",
+    [ROLE_QUACK] = "Quacks",
+    [ROLE_PARASITE] = "Parasites",
+    [ROLE_TRICKSTER] = "Tricksters"
+}
+
 ROLE_STRINGS_EXT = {
     [ROLE_NONE] = "a hidden role",
-    [ROLE_INNOCENT] = "an innocent",
-    [ROLE_TRAITOR] = "a traitor",
-    [ROLE_DETECTIVE] = "a detective",
-    [ROLE_JESTER] = "a jester",
-    [ROLE_SWAPPER] = "a swapper",
-    [ROLE_GLITCH] = "a glitch",
-    [ROLE_PHANTOM] = "a phantom",
-    [ROLE_HYPNOTIST] = "a hypnotist",
-    [ROLE_REVENGER] = "a revenger",
-    [ROLE_DRUNK] = "a drunk",
-    [ROLE_CLOWN] = "a clown",
-    [ROLE_DEPUTY] = "a deputy",
-    [ROLE_IMPERSONATOR] = "an impersonator",
-    [ROLE_BEGGAR] = "a beggar",
-    [ROLE_OLDMAN] = "an old man",
-    [ROLE_MERCENARY] = "a mercenary",
-    [ROLE_BODYSNATCHER] = "a bodysnatcher",
-    [ROLE_VETERAN] = "a veteran",
-    [ROLE_ASSASSIN] = "an assassin",
-    [ROLE_KILLER] = "a killer",
-    [ROLE_ZOMBIE] = "a zombie",
-    [ROLE_VAMPIRE] = "a vampire",
-    [ROLE_DOCTOR] = "a doctor",
-    [ROLE_QUACK] = "a quack",
-    [ROLE_PARASITE] = "a parasite",
-    [ROLE_TRICKSTER] = "a trickster"
+    [ROLE_INNOCENT] = "an Innocent",
+    [ROLE_TRAITOR] = "a Traitor",
+    [ROLE_DETECTIVE] = "a Detective",
+    [ROLE_JESTER] = "a Jester",
+    [ROLE_SWAPPER] = "a Swapper",
+    [ROLE_GLITCH] = "a Glitch",
+    [ROLE_PHANTOM] = "a Phantom",
+    [ROLE_HYPNOTIST] = "a Hypnotist",
+    [ROLE_REVENGER] = "a Revenger",
+    [ROLE_DRUNK] = "a Drunk",
+    [ROLE_CLOWN] = "a Clown",
+    [ROLE_DEPUTY] = "a Deputy",
+    [ROLE_IMPERSONATOR] = "an Impersonator",
+    [ROLE_BEGGAR] = "a Beggar",
+    [ROLE_OLDMAN] = "an Old Man",
+    [ROLE_MERCENARY] = "a Mercenary",
+    [ROLE_BODYSNATCHER] = "a Bodysnatcher",
+    [ROLE_VETERAN] = "a Veteran",
+    [ROLE_ASSASSIN] = "an Assassin",
+    [ROLE_KILLER] = "a Killer",
+    [ROLE_ZOMBIE] = "a Zombie",
+    [ROLE_VAMPIRE] = "a Vampire",
+    [ROLE_DOCTOR] = "a Doctor",
+    [ROLE_QUACK] = "a Quack",
+    [ROLE_PARASITE] = "a Parasite",
+    [ROLE_TRICKSTER] = "a Trickster"
 }
 
 ROLE_STRINGS_SHORT = {
@@ -402,6 +460,35 @@ ROLE_STRINGS_SHORT = {
     [ROLE_PARASITE] = "par",
     [ROLE_TRICKSTER] = "tri"
 }
+
+function UpdateRoleStrings()
+    for role = 0, ROLE_MAX do
+        local name = GetGlobalString("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name", "")
+        if name ~= "" then
+            ROLE_STRINGS[role] = name
+
+            local plural = GetGlobalString("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name_plural", "")
+            if plural == "" then -- Fallback if no plural is given. Does NOT handle all cases properly
+                ROLE_STRINGS_PLURAL[role] = name .. "s"
+            else
+                ROLE_STRINGS_PLURAL[role] = plural
+            end
+
+            local article = GetGlobalString("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name_article", "")
+            if article == "" then -- Fallback if no article is given. Does NOT handle all cases properly
+                local firstChar = string.lower(string.sub(name, 1, 1))
+                if firstChar == "a" or firstChar == "e" or firstChar == "i" or firstChar == "o" or firstChar == "u" then
+                    ROLE_STRINGS_EXT[role] = "an " .. name
+                else
+                    ROLE_STRINGS_EXT[role] = "a " .. name
+                end
+            else
+                ROLE_STRINGS_EXT[role] = article .. " " .. name
+            end
+        end
+    end
+end
+if CLIENT then net.Receive("TTT_UpdateRoleNames", UpdateRoleStrings) end
 
 -- Game event log defs
 EVENT_KILL = 1
@@ -785,9 +872,9 @@ if SERVER then
         local role = ply:GetRole()
         if role <= ROLE_NONE or role > ROLE_MAX then return end
 
-        local maxhealth = GetConVar("ttt_" .. ROLE_STRINGS[role] .. "_max_health"):GetInt()
+        local maxhealth = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_max_health"):GetInt()
         ply:SetMaxHealth(maxhealth)
-        local health = GetConVar("ttt_" .. ROLE_STRINGS[role] .. "_starting_health"):GetInt()
+        local health = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_starting_health"):GetInt()
         ply:SetHealth(health)
     end
 end

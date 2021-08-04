@@ -9,12 +9,14 @@ local function GetTextForLocalPlayer()
     local menukey = Key("+menu_context", "C")
 
     local client = LocalPlayer()
+    local roleString = client:GetRoleStringRaw()
+
     if client:IsRevenger() then
         local sid = LocalPlayer():GetNWString("RevengerLover", "")
         local lover = player.GetBySteamID64(sid)
         local name = "someone"
         if IsValid(lover) and lover:IsPlayer() then name = lover:Nick() end
-        return GetPTranslation("info_popup_revenger", { lover = name })
+        return GetPTranslation("info_popup_revenger", { role = ROLE_STRINGS_EXT[client:GetRole()], lover = name })
 
     elseif client:IsMonsterTeam() then
         local allies = {}
@@ -24,7 +26,6 @@ local function GetTextForLocalPlayer()
             end
         end
 
-        local roleString = client:GetRoleStringRaw()
         local text
         if #allies > 1 then
             local allylist = ""
@@ -35,9 +36,9 @@ local function GetTextForLocalPlayer()
                 end
             end
 
-            text = GetPTranslation("info_popup_" .. roleString, { menukey = menukey, allylist = allylist })
+            text = GetPTranslation("info_popup_" .. roleString, { role = ROLE_STRINGS_EXT[client:GetRole()], menukey = menukey, allylist = allylist })
         else
-            text = GetPTranslation("info_popup_" .. roleString.. "_alone", { menukey = menukey })
+            text = GetPTranslation("info_popup_" .. roleString.. "_alone", { role = ROLE_STRINGS_EXT[client:GetRole()], menukey = menukey })
         end
 
         return text
@@ -59,7 +60,6 @@ local function GetTextForLocalPlayer()
             assassintarget = string.rep(" ", 42) .. client:GetNWString("AssassinTarget", "")
         end
 
-        local roleString = client:GetRoleStringRaw()
         local text
         if #traitors > 1 then
             local traitorlist = ""
@@ -71,20 +71,20 @@ local function GetTextForLocalPlayer()
             end
 
             if #glitches > 0 then
-                text = GetPTranslation("info_popup_" .. roleString.. "_glitch", { menukey = menukey, traitorlist = traitorlist, allylist = traitorlist, assassintarget = assassintarget })
+                text = GetPTranslation("info_popup_" .. roleString.. "_glitch", { role = ROLE_STRINGS_EXT[client:GetRole()], menukey = menukey, traitorlist = traitorlist, allylist = traitorlist, assassintarget = assassintarget })
             else
-                text = GetPTranslation("info_popup_" .. roleString, { menukey = menukey, traitorlist = traitorlist, allylist = traitorlist, assassintarget = assassintarget })
+                text = GetPTranslation("info_popup_" .. roleString, { role = ROLE_STRINGS_EXT[client:GetRole()], menukey = menukey, traitorlist = traitorlist, allylist = traitorlist, assassintarget = assassintarget })
             end
         else
-            text = GetPTranslation("info_popup_" .. roleString.. "_alone", { menukey = menukey, assassintarget = assassintarget })
+            text = GetPTranslation("info_popup_" .. roleString.. "_alone", { role = ROLE_STRINGS_EXT[client:GetRole()], menukey = menukey, assassintarget = assassintarget })
         end
 
         return text
     -- Zombies not on Traitor or Monster teams have a different message
     elseif client:IsZombie() then
-        return GetPTranslation("info_popup_zombie_indep", { menukey = menukey })
+        return GetPTranslation("info_popup_zombie_indep", { role = ROLE_STRINGS_EXT[client:GetRole()], menukey = menukey })
     else
-        return GetPTranslation("info_popup_" .. client:GetRoleStringRaw(), { menukey = menukey })
+        return GetPTranslation("info_popup_" .. roleString, { role = ROLE_STRINGS_EXT[client:GetRole()], menukey = menukey })
     end
 end
 

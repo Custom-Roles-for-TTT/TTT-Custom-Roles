@@ -26,7 +26,7 @@ end
 
 local function ResetWeaponsCache()
     -- Clear the weapon cache for each role
-    for role, _ in pairs(ROLE_STRINGS) do
+    for role, _ in pairs(ROLE_STRINGS_RAW) do
         Equipment[role] = nil
     end
     -- Clear the overall weapons cache
@@ -64,8 +64,8 @@ function GetEquipmentForRole(role, promoted, block_randomization)
     WEPS.PrepWeaponsLists(role)
 
     -- Determine which role sync variable to use, if any
-    local rolemode = GetGlobalInt("ttt_" .. ROLE_STRINGS[role] .. "_shop_mode", SHOP_SYNC_MODE_NONE)
-    local traitorsync = GetGlobalBool("ttt_" .. ROLE_STRINGS[role] .. "_shop_sync", false) and TRAITOR_ROLES[role]
+    local rolemode = GetGlobalInt("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_mode", SHOP_SYNC_MODE_NONE)
+    local traitorsync = GetGlobalBool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_sync", false) and TRAITOR_ROLES[role]
     local sync_traitor_weapons = traitorsync or (rolemode > SHOP_SYNC_MODE_NONE)
 
     -- Pre-load the Traitor weapons so that any that have their CanBuy modified will also apply to the enabled allied role(s)

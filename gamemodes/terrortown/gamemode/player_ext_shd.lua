@@ -199,16 +199,14 @@ function plymeta:IsActiveJesterTeam() return self:IsJesterTeam() and self:IsActi
 function plymeta:IsActiveIndependentTeam() return self:IsIndependentTeam() and self:IsActive() end
 function plymeta:IsActiveMonsterTeam() return self:IsMonsterTeam() and self:IsActive() end
 
-local GetRTranslation = CLIENT and LANG.GetRawTranslation or util.passthrough
-
 -- Returns printable role
 function plymeta:GetRoleString()
-    return GetRTranslation(ROLE_STRINGS[self:GetRole()]) or "???"
+    return ROLE_STRINGS[self:GetRole()]
 end
 
 -- Returns role language string id, caller must translate if desired
 function plymeta:GetRoleStringRaw()
-    return ROLE_STRINGS[self:GetRole()]
+    return ROLE_STRINGS_RAW[self:GetRole()]
 end
 
 function plymeta:GetBaseKarma() return self:GetNWFloat("karma", 1000) end

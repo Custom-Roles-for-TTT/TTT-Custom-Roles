@@ -3,33 +3,6 @@
 local L = LANG.CreateLanguage("English")
 
 --- General text used in various places
-L.traitor = "Traitor"
-L.detective = "Detective"
-L.innocent = "Innocent"
-L.jester = "Jester"
-L.swapper = "Swapper"
-L.glitch = "Glitch"
-L.phantom = "Phantom"
-L.hypnotist = "Hypnotist"
-L.revenger = "Revenger"
-L.drunk = "Drunk"
-L.clown = "Clown"
-L.deputy = "Deputy"
-L.impersonator = "Impersonator"
-L.beggar = "Beggar"
-L.oldman = "Old Man"
-L.mercenary = "Mercenary"
-L.bodysnatcher = "Bodysnatcher"
-L.veteran = "Veteran"
-L.assassin = "Assassin"
-L.killer = "Killer"
-L.zombie = "Zombie"
-L.vampire = "Vampire"
-L.doctor = "Doctor"
-L.quack = "Quack"
-L.parasite = "Parasite"
-L.trickster = "Trickster"
-
 L.hidden = "Hidden"
 L.last_words = "Last Words"
 
@@ -40,76 +13,44 @@ L.spectators = "Spectators"
 L.round_minplayers = "Not enough players to start a new round..."
 L.round_voting = "Vote in progress, delaying new round by {num} seconds..."
 L.round_begintime = "A new round begins in {num} seconds. Prepare yourself."
-L.round_selected = "The Traitors have been selected."
+L.round_selected = "The {role} have been selected."
 L.round_started = "The round has begun!"
 L.round_restart = "The round has been forced to restart by an admin."
 
-L.round_traitors_one = "Traitor, you stand alone."
-L.round_traitors_more = "Traitor, these are your allies: {names}"
+L.round_traitors_one = "{role}, you stand alone."
+L.round_traitors_more = "{role}, these are your allies: {names}"
 
-L.win_time = "Time has run out. The Traitors lose."
-L.win_traitor = "The Traitors have won!"
-L.win_innocent = "The Traitors have been defeated!"
-L.win_jester = "The Jester has fooled you all!"
-L.win_clown = "The Clown has murdered you all!"
-L.win_killer = "The Killer has murdered you all!"
+L.win_time = "Time has run out. The {role} win."
+L.win_traitor = "The {role} have won!"
+L.win_innocent = "The {role} have been defeated!"
+L.win_jester = "The {role} has fooled you all!"
+L.win_clown = "The {role} has murdered you all!"
+L.win_killer = "The {role} has murdered you all!"
 L.win_showreport = "Let's look at the round report for {num} seconds."
 L.win_monster = "The monsters have taken over!"
-L.win_zombies = "The Zombies have taken over!"
-L.win_vampires = "The Vampires have taken over!"
+L.win_zombies = "The {role} have taken over!"
+L.win_vampires = "The {role} have taken over!"
 
 L.limit_round = "Round limit reached. {mapname} will load soon."
 L.limit_time = "Time limit reached. {mapname} will load soon."
 L.limit_left = "{num} round(s) or {time} minutes remaining before the map changes to {mapname}."
 
 --- Credit awards
-L.credit_det_all = "Detectives, you have been awarded {num} equipment credit(s) for your performance."
-L.credit_tr_all = "Traitors, you have been awarded {num} equipment credit(s) for your performance."
-L.credit_kil = "Killer, you have been awarded {num} equipment credit(s) for your performance."
-L.credit_zom = "Zombie, you have been awarded {num} equipment credit(s) for your performance."
-L.credit_vam = "Vampire, you have been awarded {num} equipment credit(s) for your performance."
+L.credit_all = "{role}, you have been awarded {num} equipment credit(s) for your performance."
 
-L.credit_kill = "You have received {num} credit(s) for killing a {role}."
+L.credit_kill = "You have received {num} credit(s) for killing {role}."
 
 --- Karma
 L.karma_dmg_full = "Your Karma is {amount}, so you deal full damage this round!"
 L.karma_dmg_other = "Your Karma is {amount}. As a result all damage you deal is reduced by {num}%"
 
 --- Body identification messages
-L.body_found = "{finder} found the body of {victim}. {role}"
-
--- The {role} in body_found will be replaced by one of the following:
-L.body_found_tra = "They were a Traitor!"
-L.body_found_det = "They were a Detective."
-L.body_found_inn = "They were Innocent."
-L.body_found_jes = "They were a Jester."
-L.body_found_swa = "They were a Swapper."
-L.body_found_gli = "They were a Glitch."
-L.body_found_pha = "They were a Phantom."
-L.body_found_hyp = "They were a Hypnotist."
-L.body_found_rev = "They were a Revenger."
-L.body_found_dru = "They were a Drunk."
-L.body_found_clo = "They were a Clown."
-L.body_found_dep = "They were a Deputy."
-L.body_found_imp = "They were an Impersonator."
-L.body_found_beg = "They were a Beggar."
-L.body_found_old = "They were an Old Man."
-L.body_found_mer = "They were a Mercenary."
-L.body_found_bod = "They were a Bodysnatcher."
-L.body_found_vet = "They were a Veteran."
-L.body_found_asn = "They were an Assassin."
-L.body_found_kil = "They were a Killer."
-L.body_found_zom = "They were a Zombie."
-L.body_found_vam = "They were a Vampire."
-L.body_found_doc = "They were a Doctor."
-L.body_found_qua = "They were a Quack."
-L.body_found_par = "They were a Parasite."
-L.body_found_tri = "They were a Trickster."
+L.body_found = "{finder} found the body of {victim}. They were {role}"
 
 L.body_confirm = "{finder} confirmed the death of {victim}."
 
-L.body_call = "{player} called a Detective to the body of {victim}!"
-L.body_call_error = "You must confirm the death of this player before calling a Detective!"
+L.body_call = "{player} called a {role} to the body of {victim}!"
+L.body_call_error = "You must confirm the death of this player before calling a {role}!"
 
 L.body_burning = "Ouch! This corpse is on fire!"
 L.body_credits = "You found {num} credit(s) on the body!"
@@ -224,37 +165,11 @@ L.quick_corpse_id = "{player}'s corpse"
 L.search_title = "Body Search Results"
 L.search_info = "Information"
 L.search_confirm = "Confirm Death"
-L.search_call = "Call Detective"
+L.search_call = "Call {role}"
 
 -- Descriptions of pieces of information found
 L.search_nick = "This is the body of {player}."
-
-L.search_role_tra = "This person was a Traitor."
-L.search_role_det = "This person was a Detective."
-L.search_role_inn = "This person was Innocent."
-L.search_role_jes = "This person was a Jester."
-L.search_role_swa = "This person was a Swapper."
-L.search_role_gli = "This person was a Glitch."
-L.search_role_pha = "This person was a Phantom."
-L.search_role_hyp = "This person was a Hypnotist."
-L.search_role_rev = "This person was a Revenger."
-L.search_role_dru = "This person was a Drunk."
-L.search_role_clo = "This person was a Clown."
-L.search_role_dep = "This person was a Deputy."
-L.search_role_imp = "This person was an Impersonator."
-L.search_role_beg = "This person was a Beggar."
-L.search_role_old = "This person was an Old Man."
-L.search_role_mer = "This person was a Mercenary."
-L.search_role_bod = "This person was a Bodysnatcher."
-L.search_role_vet = "This person was a Veteran."
-L.search_role_asn = "This person was an Assassin."
-L.search_role_kil = "This person was a Killer."
-L.search_role_zom = "This person was a Zombie."
-L.search_role_vam = "This person was a Vampire."
-L.search_role_doc = "This person was a Doctor."
-L.search_role_qua = "This person was a Quack."
-L.search_role_par = "This person was a Parasite."
-L.search_role_tri = "This person was a Trickster."
+L.search_role = "This person was {role}."
 
 L.search_words = "Something tells you some of this person's last words were: '{lastwords}'"
 L.search_armor = "They were wearing nonstandard body armor."
@@ -716,19 +631,6 @@ L.corpse_hint = "Press E to search."
 L.target_disg = " (DISGUISED)"
 L.target_unid = "Unidentified body"
 
-L.target_traitor = "FELLOW TRAITOR"
-L.target_detective = "DETECTIVE"
-L.target_jester = "JESTER"
-L.target_hypnotist = "HYPNOTIST"
-L.target_assassin = "ASSASSIN"
-L.target_clown = "KILLER CLOWN"
-L.target_impersonator = "IMPERSONATOR"
-L.target_vampire = "VAMPIRE"
-L.target_zombie = "ZOMBIE"
-L.target_fellow_zombie = "FELLOW ZOMBIE"
-L.target_quack = "QUACK"
-L.target_parasite = "PARASITE"
-
 L.target_current_target = "CURRENT TARGET"
 L.target_infected = "INFECTED WITH PARASITE"
 
@@ -782,24 +684,24 @@ L.spec_help = "Click to spectate players, or press {usekey} on a physics object 
 
 -- These are spread over multiple lines, hence the square brackets instead of
 -- quotes. That's a Lua thing. Every line break (enter) will show up in-game.
-L.info_popup_innocent = [[You are an innocent Terrorist! But there are traitors around...
+L.info_popup_innocent = [[You are {role}! But there are traitors around...
 Who can you trust, and who is out to fill you with bullets?
 
 Watch your back and work with your comrades to get out of this alive!]]
 
-L.info_popup_detective = [[You are a Detective! Terrorist HQ has given you special resources to find the traitors.
+L.info_popup_detective = [[You are {role}! HQ has given you special resources to find the traitors.
 Use them to help the innocent survive, but be careful:
 the traitors will be looking to take you down first!
 
 Press {menukey} to receive your equipment!]]
 
-L.info_popup_traitor_alone = [[You are a Traitor! You have no fellow traitors this round.
+L.info_popup_traitor_alone = [[You are {role}! You have no fellow traitors this round.
 
 Kill all others to win!
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_traitor = [[You are a Traitor! Work with fellow traitors to kill all others.
+L.info_popup_traitor = [[You are {role}! Work with fellow traitors to kill all others.
 But take care, or your treason may be discovered...
 
 These are your comrades:
@@ -807,7 +709,7 @@ These are your comrades:
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_traitor_glitch = [[You are a Traitor! Work with fellow traitors to kill all others.
+L.info_popup_traitor_glitch = [[You are {role}! Work with fellow traitors to kill all others.
 BUT BEWARE! There was a glitch in the system and one among you does not seek the same goal.
 
 These may or may not be your comrades:
@@ -815,65 +717,65 @@ These may or may not be your comrades:
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_jester = [[You are a Jester! You want to die but you
+L.info_popup_jester = [[You are {role}! You want to die but you
 deal no damage so you must be killed by some one else.]]
 
-L.info_popup_swapper = [[You are a Swapper! Traitors think you are a jester and you
+L.info_popup_swapper = [[You are {role}! Traitors think you are a jester and you
 deal no damage however, if anyone kills you, they become
 the swapper and you take their role and can join the fight.]]
 
-L.info_popup_glitch = [[You are a Glitch! The traitors think you are one of them.
+L.info_popup_glitch = [[You are {role}! The traitors think you are one of them.
 Try to blend in and don't give yourself away.]]
 
-L.info_popup_phantom = [[You are a Phantom!  Try to survive and help your innocent friends!
+L.info_popup_phantom = [[You are {role}!  Try to survive and help your innocent friends!
 You will haunt the player who kills you causing black smoke to appear.
 If the player you are haunting dies you will be respawned!]]
 
-L.info_popup_revenger = [[You are a Revenger! You are helplessly in love with {lover}.
+L.info_popup_revenger = [[You are {role}! You are helplessly in love with {lover}.
 Do whatever you can to protect them. If they die you will
 be able to track down their killer and get your revenge.]]
 
-L.info_popup_drunk = [[You are a Drunk!  You have forgotten what team you are on!
+L.info_popup_drunk = [[You are {role}!  You have forgotten what team you are on!
 Wait until you sober up and remember. Try to lay low in the meantime.]]
 
-L.info_popup_clown = [[You are a Clown! Traitors think you are a jester and you
+L.info_popup_clown = [[You are {role}! Traitors think you are a jester and you
 deal no damage. However if one team would win the round instead you
 become hostile, are revealed to all players and can deal damage as
 normal. Be the last player standing to win.]]
 
-L.info_popup_deputy = [[You are a Deputy! If the detective dies you will take
+L.info_popup_deputy = [[You are {role}! If the detective dies you will take
 over and gain the ability to buy shop items and search bodies.]]
 
-L.info_popup_beggar = [[You are a Beggar! Traitors think you are a jester and you
+L.info_popup_beggar = [[You are {role}! Traitors think you are a jester and you
 deal no damage. However, if you can convince someone to give
 you a shop item you will join their team.]]
 
-L.info_popup_oldman = [[You are an Old Man! The slightest breeze could kill
+L.info_popup_oldman = [[You are {role}! The slightest breeze could kill
 you if you aren't careful. You don't care who wins as long
 as you are alive at the end of the round.]]
 
-L.info_popup_mercenary = [[You are a Mercenary! Try to survive and help your innocent friends!
+L.info_popup_mercenary = [[You are {role}! Try to survive and help your innocent friends!
 
 Press {menukey} to receive your equipment!]]
 
-L.info_popup_bodysnatcher = [[You are a Bodysnatcher! Traitors think you are a jester and you
+L.info_popup_bodysnatcher = [[You are {role}! Traitors think you are a jester and you
 deal no damage. Use your body snatching device on a corpse
 to take their role and join the fight!]]
 
-L.info_popup_veteran = [[You are a Veteran! You work best under pressure.
+L.info_popup_veteran = [[You are {role}! You work best under pressure.
 If you are the last innocent player alive you will
 deal extra damage.]]
 
-L.info_popup_killer = [[You are a Killer! Try to kill everyone and be the last one standing!
+L.info_popup_killer = [[You are {role}! Try to kill everyone and be the last one standing!
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_doctor = [[You are a Doctor! You're here to keep your teammates alive.
+L.info_popup_doctor = [[You are {role}! You're here to keep your teammates alive.
 Use your tools to keep fellow innocents in the fight!]]
 
 
 
-L.info_popup_hypnotist = [[You are a Hypnotist! Work with fellow traitors to kill all others.
+L.info_popup_hypnotist = [[You are {role}! Work with fellow traitors to kill all others.
 
 These are your comrades:
 {traitorlist}
@@ -882,7 +784,7 @@ You can use your brain washing device on a corpse to revive them as a traitor.
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_hypnotist_alone = [[You are a Hypnotist! You have no fellow traitors this round.
+L.info_popup_hypnotist_alone = [[You are {role}! You have no fellow traitors this round.
 
 Kill all others to win!
 
@@ -890,7 +792,7 @@ You can use your brain washing device on a corpse to revive them as a traitor.
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_hypnotist_glitch = [[You are a Hypnotist! Work with fellow traitors to kill all others.
+L.info_popup_hypnotist_glitch = [[You are {role}! Work with fellow traitors to kill all others.
 BUT BEWARE! There was a glitch in the system and one among you does not seek the same goal.
 
 These may or may not be your comrades:
@@ -900,7 +802,7 @@ You can use your brain washing device on a corpse to revive them as a traitor.
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_impersonator = [[You are an Impersonator! Work with fellow traitors to kill all others.
+L.info_popup_impersonator = [[You are {role}! Work with fellow traitors to kill all others.
 
 These are your comrades:
 {traitorlist}
@@ -910,7 +812,7 @@ abilities just like the deputy. However you are still working for the traitors.
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_impersonator_alone = [[You are an Impersonator! You have no fellow traitors this round.
+L.info_popup_impersonator_alone = [[You are {role}! You have no fellow traitors this round.
 
 Kill all others to win!
 
@@ -919,7 +821,7 @@ abilities just like the deputy. However you are still working for the traitors.
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_impersonator_glitch = [[You are an Impersonator! Work with fellow traitors to kill all others.
+L.info_popup_impersonator_glitch = [[You are {role}! Work with fellow traitors to kill all others.
 BUT BEWARE! There was a glitch in the system and one among you does not seek the same goal.
 
 These may or may not be your comrades:
@@ -930,7 +832,7 @@ abilities just like the deputy. However you are still working for the traitors.
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_assassin = [[You are an Assassin! Work with fellow traitors to kill all others.
+L.info_popup_assassin = [[You are {role}! Work with fellow traitors to kill all others.
 
 These are your comrades:
 {traitorlist}
@@ -945,7 +847,7 @@ maybe even suffering from a penalty!
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_assassin_glitch = [[You are an Assassin! Work with fellow traitors to kill all others.
+L.info_popup_assassin_glitch = [[You are {role}! Work with fellow traitors to kill all others.
 BUT BEWARE! There was a glitch in the system and one among
 you does not seek the same goal.
 
@@ -962,7 +864,7 @@ maybe even suffering from a penalty!
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_assassin_alone = [[You are an Assassin! You have no fellow traitors this round.
+L.info_popup_assassin_alone = [[You are {role}! You have no fellow traitors this round.
 
 Kill all others to win!
 
@@ -976,7 +878,7 @@ maybe even suffering from a penalty!
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_vampire = [[You are a Vampire! Work with your allies to kill all others.
+L.info_popup_vampire = [[You are {role}! Work with your allies to kill all others.
 
 These are your comrades:
 {allylist}
@@ -985,7 +887,7 @@ You can use your fangs (left-click) to drink blood and refill your health or to 
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_vampire_glitch = [[You are a Vampire! Work with your allies to kill all others.
+L.info_popup_vampire_glitch = [[You are {role}! Work with your allies to kill all others.
 BUT BEWARE! There was a glitch in the system and one among
 you does not seek the same goal.
 
@@ -996,7 +898,7 @@ You can use your fangs (left-click) to drink blood and refill your health or to 
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_vampire_alone = [[You are a Vampire! You have no allies this round.
+L.info_popup_vampire_alone = [[You are {role}! You have no allies this round.
 
 Kill all others to win!
 
@@ -1004,7 +906,7 @@ You can use your fangs (left-click) to drink blood and refill your health or to 
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_quack = [[You are a Quack! Work with fellow traitors to kill all others.
+L.info_popup_quack = [[You are {role}! Work with fellow traitors to kill all others.
 
 These are your comrades:
 {traitorlist}
@@ -1014,7 +916,7 @@ instead of heal. You know that the best cure for any ailment is death.
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_quack_alone = [[You are a Quack! You have no fellow traitors this round.
+L.info_popup_quack_alone = [[You are {role}! You have no fellow traitors this round.
 
 Kill all others to win!
 
@@ -1023,7 +925,7 @@ instead of heal. You know that the best cure for any ailment is death.
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_quack_glitch = [[You are a Quack! Work with fellow traitors to kill all others.
+L.info_popup_quack_glitch = [[You are {role}! Work with fellow traitors to kill all others.
 BUT BEWARE! There was a glitch in the system and one among you does not seek the same goal.
 
 These may or may not be your comrades:
@@ -1034,7 +936,7 @@ instead of heal. You know that the best cure for any ailment is death.
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_parasite = [[You are a Parasite! Work with fellow traitors to kill all others.
+L.info_popup_parasite = [[You are {role}! Work with fellow traitors to kill all others.
 
 These are your comrades:
 {traitorlist}
@@ -1045,7 +947,7 @@ respawn. Try to avoid getting them cured or killed!
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_parasite_alone = [[You are a Parasite! You have no fellow traitors this round.
+L.info_popup_parasite_alone = [[You are {role}! You have no fellow traitors this round.
 
 Kill all others to win!
 
@@ -1055,7 +957,7 @@ respawn. Try to avoid getting them cured or killed!
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_parasite_glitch = [[You are a Parasite! Work with fellow traitors to kill all others.
+L.info_popup_parasite_glitch = [[You are {role}! Work with fellow traitors to kill all others.
 BUT BEWARE! There was a glitch in the system and one among you does not seek the same goal.
 
 These may or may not be your comrades:
@@ -1067,7 +969,7 @@ respawn. Try to avoid getting them cured or killed!
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_zombie = [[You are a Zombie! Work with your allies to kill all others.
+L.info_popup_zombie = [[You are {role}! Work with your allies to kill all others.
 
 These are your comrades:
 {allylist}
@@ -1077,7 +979,7 @@ Killing someone with your claws will turn them into a zombie.
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_zombie_glitch = [[You are a Zombie! Work with your allies to kill all others.
+L.info_popup_zombie_glitch = [[You are {role}! Work with your allies to kill all others.
 BUT BEWARE! There was a glitch in the system and one among
 you does not seek the same goal.
 
@@ -1089,7 +991,7 @@ Killing someone with your claws will turn them into a zombie.
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_zombie_alone = [[You are a Zombie! You have no allies this round.
+L.info_popup_zombie_alone = [[You are {role}! You have no allies this round.
 
 Kill all others to win!
 
@@ -1098,7 +1000,7 @@ Killing someone with your claws will turn them into a zombie.
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_zombie_indep = [[You are a Zombie!
+L.info_popup_zombie_indep = [[You are {role}!
 
 Kill all others to win!
 
@@ -1107,7 +1009,7 @@ Killing someone with your claws will turn them into a zombie.
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_trickster = [[You are a Trickster! You are an innocent who can see and
+L.info_popup_trickster = [[You are {role}! You are an innocent who can see and
 use traitor traps throughout the map. Have fun!]]
 
 --- Various other text
@@ -1235,15 +1137,8 @@ L.report_save_error = "No Event Log data to save."
 L.report_save_result = "The Event Log has been saved to:"
 
 -- Big title window
-L.hilite_win_traitors = "THE TRAITORS WIN"
-L.hilite_win_innocent = "THE INNOCENT WIN"
-L.hilite_win_jester = "THE JESTER WINS"
-L.hilite_win_clown = "THE CLOWN WINS"
-L.hilite_win_oldman = "AND THE OLD MAN WINS"
-L.hilite_win_killer = "THE KILLER WINS"
-L.hilite_win_monster = "THE MONSTERS WIN"
-L.hilite_win_zombies = "THE ZOMBIES WIN"
-L.hilite_win_vampires = "THE VAMPIRES WIN"
+L.hilite_win_role_plural = "THE {role} WIN"
+L.hilite_win_role_singular = "THE {role} WIN"
 
 L.hilite_players1 = "{numplayers} players took part, {numtraitors} were traitors"
 L.hilite_players2 = "{numplayers} players took part, one of them the traitor"

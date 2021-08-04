@@ -365,8 +365,8 @@ local function OrderEquipment(ply, cmd, args)
 
     local role = ply:GetRole()
 
-    local rolemode = GetGlobalInt("ttt_" .. ROLE_STRINGS[role] .. "_shop_mode", SHOP_SYNC_MODE_NONE)
-    local traitorsync = GetGlobalBool("ttt_" .. ROLE_STRINGS[role] .. "_shop_sync", false) and TRAITOR_ROLES[role]
+    local rolemode = GetGlobalInt("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_mode", SHOP_SYNC_MODE_NONE)
+    local traitorsync = GetGlobalBool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_sync", false) and TRAITOR_ROLES[role]
     local sync_traitor_weapons = traitorsync or (rolemode > SHOP_SYNC_MODE_NONE)
 
     local promoted = ply:IsDetectiveLike() and role ~= ROLE_DETECTIVE

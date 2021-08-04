@@ -63,7 +63,7 @@ end
 local DoesRoleHaveWeaponCache = { }
 
 function WEPS.ResetRoleWeaponCache()
-    for id, _ in pairs(ROLE_STRINGS) do
+    for id, _ in pairs(ROLE_STRINGS_RAW) do
         DoesRoleHaveWeaponCache[id] = nil
     end
 end
@@ -106,7 +106,7 @@ function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor
 
     -- Cache these the first time
     if not rolemodes[role] then
-        rolemodes[role] = GetGlobalInt("ttt_" .. ROLE_STRINGS[role] .. "_shop_mode", SHOP_SYNC_MODE_NONE)
+        rolemodes[role] = GetGlobalInt("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_mode", SHOP_SYNC_MODE_NONE)
     end
     local rolemode = rolemodes[role]
 
@@ -187,10 +187,10 @@ function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor
             elseif CLIENT and not wep.BlockShopRandomization then
                 local norandomtable = WEPS.BypassRandomWeapons[role]
                 if not block_randomization and (not norandomtable or not table.HasValue(norandomtable, id)) then
-                    local random_cvar_enabled = GetGlobalBool("ttt_" .. ROLE_STRINGS[role] .. "_shop_random_enabled", false)
+                    local random_cvar_enabled = GetGlobalBool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_random_enabled", false)
                     if random_cvar_enabled then
                         local random_cvar_percent_global = GetGlobalInt("ttt_shop_random_percent", 0)
-                        local random_cvar_percent = GetGlobalInt("ttt_" .. ROLE_STRINGS[role] .. "_shop_random_percent", 0)
+                        local random_cvar_percent = GetGlobalInt("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_random_percent", 0)
                         -- Use the global value if the per-role override isn't set
                         if random_cvar_percent == 0 then
                             random_cvar_percent = random_cvar_percent_global

@@ -101,7 +101,7 @@ function PreprocSearch(raw)
             search[t].p = 1
             search[t].nick = d
         elseif t == "role" then
-            search[t].text = T("search_role_" .. ROLE_STRINGS_SHORT[d])
+            search[t].text = PT("search_role", { role = ROLE_STRINGS_EXT[d] })
             search[t].color = ROLE_COLORS[d]
             search[t].p = 2
         elseif t == "words" then
@@ -338,7 +338,7 @@ local function ShowSearchScreen(search_raw)
         local dcall = vgui.Create("DButton", dcont)
         dcall:SetPos(m * 2 + bw_large, by)
         dcall:SetSize(bw_large, bh)
-        dcall:SetText(T("search_call"))
+        dcall:SetText(PT("search_call", { role = ROLE_STRINGS[ROLE_DETECTIVE] }))
         dcall.DoClick = function(s)
             client.called_corpses = client.called_corpses or {}
             table.insert(client.called_corpses, search_raw.eidx)

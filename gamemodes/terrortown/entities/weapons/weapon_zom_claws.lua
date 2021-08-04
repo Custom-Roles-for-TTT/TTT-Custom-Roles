@@ -147,7 +147,7 @@ function SWEP:PrimaryAttack()
             if hitEnt:IsPlayer() and not hitEnt:IsZombieAlly() and (not hitEnt:IsJesterTeam() or hitEnt:GetNWBool("KillerClownActive", false)) then
                 if hitEnt:Health() <= self.Primary.Damage then
                     self:GetOwner():AddCredits(1)
-                    LANG.Msg(self:GetOwner(), "credit_zom", { num = 1 })
+                    LANG.Msg(self:GetOwner(), "credit_all", { role = ROLE_STRINGS[ROLE_ZOMBIE], num = 1 })
                     hitEnt:PrintMessage(HUD_PRINTCENTER, "You will respawn as a zombie in 3 seconds.")
                     hitEnt:SetNWBool("IsZombifying", true)
 

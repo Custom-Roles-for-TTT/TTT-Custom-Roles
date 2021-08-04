@@ -45,7 +45,7 @@ local function RoleChatRecv()
     end
 
     chat.AddText(ROLE_COLORS[visible_role],
-        Format("(%s) ", string.upper(GetTranslation(ROLE_STRINGS[visible_role]))),
+        Format("(%s) ", string.upper(ROLE_STRINGS[visible_role])),
         ROLE_COLORS[visible_role],
         name,
         COLOR_WHITE,
