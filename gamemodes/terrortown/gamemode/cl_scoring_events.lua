@@ -56,15 +56,6 @@ local Event = CLSCORE.DeclareEventDisplay
 
 local is_dmg = util.BitSet
 
-local function StartsWithVowel(word)
-    local firstletter = string.sub(word, 1, 1)
-    return firstletter == "a" or
-        firstletter == "e" or
-        firstletter == "i" or
-        firstletter == "o" or
-        firstletter == "u"
-end
-
 -- Round end event
 Event(EVENT_FINISH,
       { text = function(e)

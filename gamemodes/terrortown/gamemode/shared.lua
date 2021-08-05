@@ -461,6 +461,15 @@ ROLE_STRINGS_SHORT = {
     [ROLE_TRICKSTER] = "tri"
 }
 
+function StartsWithVowel(word)
+    local firstletter = string.sub(word, 1, 1)
+    return firstletter == "a" or
+        firstletter == "e" or
+        firstletter == "i" or
+        firstletter == "o" or
+        firstletter == "u"
+end
+
 function UpdateRoleStrings()
     for role = 0, ROLE_MAX do
         local name = GetGlobalString("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name", "")
@@ -483,8 +492,7 @@ function UpdateRoleStrings()
 
             local article = GetGlobalString("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name_article", "")
             if article == "" then -- Fallback if no article is given. Does NOT handle all cases properly
-                local firstChar = string.sub(name, 1, 1):lower()
-                if firstChar == "a" or firstChar == "e" or firstChar == "i" or firstChar == "o" or firstChar == "u" then
+                if StartsWithVowel(name) then
                     ROLE_STRINGS_EXT[role] = "an " .. name
                 else
                     ROLE_STRINGS_EXT[role] = "a " .. name
