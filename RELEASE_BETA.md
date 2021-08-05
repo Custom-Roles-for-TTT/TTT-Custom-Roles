@@ -6,6 +6,7 @@
 ### Fixes
 - Fixed role selection message not always using custom role strings
 - Fixed win message for singular roles not being properly pluralized (e.g. "THE JESTER WIN" instead of "THE JESTER WINS")
+- Fixed "AND THE OLD MAN WINS" round summary message missing
 
 ### Additions
 - Added convar to have the clown's shop purchases be held back until they are activated

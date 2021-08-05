@@ -356,12 +356,12 @@ end
 
 local function GetWinTitle(wintype)
     local wintitle = {
-        [WIN_INNOCENT] = { txt = "hilite_win_role_plural", params = { role = string.upper(ROLE_STRINGS_PLURAL[ROLE_INNOCENT]) }, c = ROLE_COLORS[ROLE_INNOCENT] },
-        [WIN_TRAITOR] = { txt = "hilite_win_role_plural", params = { role = string.upper(ROLE_STRINGS_PLURAL[ROLE_TRAITOR]) }, c = ROLE_COLORS[ROLE_TRAITOR] },
-        [WIN_JESTER] = { txt = "hilite_win_role_singular", params = { role = string.upper(ROLE_STRINGS[ROLE_JESTER]) }, c = ROLE_COLORS[ROLE_JESTER] },
-        [WIN_CLOWN] = { txt = "hilite_win_role_singular", params = { role = string.upper(ROLE_STRINGS[ROLE_CLOWN]) }, c = ROLE_COLORS[ROLE_JESTER] },
-        [WIN_KILLER] = { txt = "hilite_win_role_singular", params = { role = string.upper(ROLE_STRINGS[ROLE_KILLER]) }, c = ROLE_COLORS[ROLE_KILLER] },
-        [WIN_ZOMBIE] = { txt = "hilite_win_role_plural", params = { role = string.upper(ROLE_STRINGS_PLURAL[ROLE_ZOMBIE]) }, c = ROLE_COLORS[ROLE_ZOMBIE] },
+        [WIN_INNOCENT] = { txt = "hilite_win_role_plural", params = { role = ROLE_STRINGS_PLURAL[ROLE_INNOCENT]:upper() }, c = ROLE_COLORS[ROLE_INNOCENT] },
+        [WIN_TRAITOR] = { txt = "hilite_win_role_plural", params = { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]:upper() }, c = ROLE_COLORS[ROLE_TRAITOR] },
+        [WIN_JESTER] = { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_JESTER]:upper() }, c = ROLE_COLORS[ROLE_JESTER] },
+        [WIN_CLOWN] = { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_CLOWN]:upper() }, c = ROLE_COLORS[ROLE_JESTER] },
+        [WIN_KILLER] = { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_KILLER]:upper() }, c = ROLE_COLORS[ROLE_KILLER] },
+        [WIN_ZOMBIE] = { txt = "hilite_win_role_plural", params = { role = ROLE_STRINGS_PLURAL[ROLE_ZOMBIE]:upper() }, c = ROLE_COLORS[ROLE_ZOMBIE] },
         [WIN_MONSTER] = { txt = "hilite_win_role_plural", params = { role = "MONSTERS" }, c = ROLE_COLORS[ROLE_ZOMBIE] }
     }
     local title = wintitle[wintype]
@@ -370,12 +370,12 @@ local function GetWinTitle(wintype)
     if wintype == WIN_MONSTER then
         -- If Zombies are not monsters then Vampires win
         if not MONSTER_ROLES[ROLE_ZOMBIE] then
-            title.params = { role = string.upper(ROLE_STRINGS_PLURAL[ROLE_VAMPIRE]) }
+            title.params = { role = ROLE_STRINGS_PLURAL[ROLE_VAMPIRE]:upper() }
             -- Also make sure to override the color because they will be different
             title.c = ROLE_COLORS[ROLE_VAMPIRE]
             -- And vice versa
         elseif not MONSTER_ROLES[ROLE_VAMPIRE] then
-            title.params = { role = string.upper(ROLE_STRINGS_PLURAL[ROLE_ZOMBIE]) }
+            title.params = { role = ROLE_STRINGS_PLURAL[ROLE_ZOMBIE]:upper() }
             -- Otherwise the monsters legit win
         else
             title.params = { role = "MONSTERS" }
@@ -523,7 +523,7 @@ end
 function CLSCORE:AddAward(y, pw, award, dpanel)
     local nick = award.nick
     local text = award.text
-    local title = string.upper(award.title)
+    local title = award.title:upper()
 
     local titlelbl = vgui.Create("DLabel", dpanel)
     titlelbl:SetText(title)
@@ -717,7 +717,7 @@ function CLSCORE:BuildSummaryPanel(dpanel)
     local exwinlbl = vgui.Create("DLabel", dpanel)
     if oldman_won_last_round then
         exwinlbl:SetFont("WinSmall")
-        exwinlbl:SetText(T("hilite_win_oldman"))
+        exwinlbl:SetText(PT("hilite_win_role_singular_additional", { role = ROLE_STRINGS[ROLE_OLDMAN]:upper() }))
         exwinlbl:SetTextColor(COLOR_WHITE)
         exwinlbl:SizeToContents()
         local xexwin = (w - exwinlbl:GetWide()) / 2
@@ -978,7 +978,7 @@ function CLSCORE:BuildHilitePanel(dpanel)
     local exwinlbl = vgui.Create("DLabel", dpanel)
     if oldman_won_last_round then
         exwinlbl:SetFont("WinSmall")
-        exwinlbl:SetText(T("hilite_win_oldman"))
+        exwinlbl:SetText(PT("hilite_win_role_singular_additional", { role = ROLE_STRINGS[ROLE_OLDMAN]:upper() }))
         exwinlbl:SetTextColor(COLOR_WHITE)
         exwinlbl:SizeToContents()
         local xexwin = (w - exwinlbl:GetWide()) / 2
