@@ -8,6 +8,7 @@
 - Fixed win message for singular roles not being properly pluralized (e.g. "THE JESTER WIN" instead of "THE JESTER WINS")
 - Fixed "AND THE OLD MAN WINS" round summary message missing
 - Fixed the "Highlights" round summary tab message missing the winning role name
+- Fixed revenger being mislabeled as "tevenger" in some messages
 
 ### Additions
 - Added convar to have the clown's shop purchases be held back until they are activated
