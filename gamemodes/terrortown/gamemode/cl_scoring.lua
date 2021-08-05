@@ -968,7 +968,7 @@ function CLSCORE:BuildHilitePanel(dpanel)
 
     local winlbl = vgui.Create("DLabel", dpanel)
     winlbl:SetFont("WinHuge")
-    winlbl:SetText(T(title.txt))
+    winlbl:SetText(PT(title.txt, title.params))
     winlbl:SetTextColor(COLOR_WHITE)
     winlbl:SizeToContents()
     local xwin = (w - winlbl:GetWide())/2
