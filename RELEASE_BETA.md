@@ -13,8 +13,9 @@
 ### Additions
 - Added convar to have the clown's shop purchases be held back until they are activated
 
-### Changes
+### Updates
 - Updated the role string logic to handle more plural cases
+- Updated round summary win event text to use customizable role strings
 
 ## 1.0.7
 **Released: August 4th, 2021**
