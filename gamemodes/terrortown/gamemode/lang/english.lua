@@ -1139,7 +1139,7 @@ L.report_save_result = "The Event Log has been saved to:"
 
 -- Big title window
 L.hilite_win_role_plural = "THE {role} WIN"
-L.hilite_win_role_singular = "THE {role} WIN"
+L.hilite_win_role_singular = "THE {role} WINS"
 
 L.hilite_players1 = "{numplayers} players took part, {numtraitors} were traitors"
 L.hilite_players2 = "{numplayers} players took part, one of them the traitor"
