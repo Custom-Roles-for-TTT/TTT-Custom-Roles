@@ -9,6 +9,7 @@
 - Fixed "AND THE OLD MAN WINS" round summary message missing
 - Fixed the "Highlights" round summary tab message missing the winning role name
 - Fixed revenger being mislabeled as "tevenger" in some messages
+- Fixed body call messages not using correct custom role articles
 
 ### Additions
 - Added convar to have the clown's shop purchases be held back until they are activated

@@ -49,8 +49,8 @@ L.body_found = "{finder} found the body of {victim}. They were {role}"
 
 L.body_confirm = "{finder} confirmed the death of {victim}."
 
-L.body_call = "{player} called a {role} to the body of {victim}!"
-L.body_call_error = "You must confirm the death of this player before calling a {role}!"
+L.body_call = "{player} called {role} to the body of {victim}!"
+L.body_call_error = "You must confirm the death of this player before calling {role}!"
 
 L.body_burning = "Ouch! This corpse is on fire!"
 L.body_credits = "You found {num} credit(s) on the body!"
