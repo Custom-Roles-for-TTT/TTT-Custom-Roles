@@ -6,17 +6,42 @@ local GetPTranslation = LANG.GetParamTranslation
 ---- Round start
 
 local function GetTextForLocalPlayer()
-    local menukey = Key("+menu_context", "C")
-
     local client = LocalPlayer()
-    local roleString = client:GetRoleStringRaw()
+    -- Common parameters, mostly for custom role names
+    local params = {
+        role = ROLE_STRINGS_EXT[client:GetRole()],
+        -- "The deputy"
+        deputy = ROLE_STRINGS[ROLE_DEPUTY],
+        -- "The detective"
+        detective = ROLE_STRINGS[ROLE_DETECTIVE],
+        -- "The real doctor"
+        doctor = ROLE_STRINGS[ROLE_DOCTOR],
+        -- "A glitch"
+        glitch = ROLE_STRINGS_EXT[ROLE_GLITCH],
+        -- "Your innocent friends"
+        innocent = ROLE_STRINGS[ROLE_INNOCENT],
+        -- "Your fellow innocents"
+        innocents = ROLE_STRINGS_PLURAL[ROLE_INNOCENT],
+        -- "An innocent"
+        aninnocent = ROLE_STRINGS_EXT[ROLE_INNOCENT],
+        -- "A jester"
+        jester = ROLE_STRINGS_EXT[ROLE_JESTER],
+        -- "A traitor"
+        traitor = ROLE_STRINGS[ROLE_TRAITOR],
+        -- "Fellow traitors"
+        traitors = ROLE_STRINGS_PLURAL[ROLE_TRAITOR],
+        -- "Turn into a zombie"
+        zombie = ROLE_STRINGS_EXT[ROLE_ZOMBIE],
+        menukey = Key("+menu_context", "C")
+    }
 
+    local roleString = client:GetRoleStringRaw()
     if client:IsRevenger() then
         local sid = LocalPlayer():GetNWString("RevengerLover", "")
         local lover = player.GetBySteamID64(sid)
         local name = "someone"
         if IsValid(lover) and lover:IsPlayer() then name = lover:Nick() end
-        return GetPTranslation("info_popup_revenger", { role = ROLE_STRINGS_EXT[client:GetRole()], lover = name })
+        return GetPTranslation("info_popup_revenger", table.Merge(params, { lover = name }))
 
     elseif client:IsMonsterTeam() then
         local allies = {}
@@ -36,9 +61,9 @@ local function GetTextForLocalPlayer()
                 end
             end
 
-            text = GetPTranslation("info_popup_" .. roleString, { role = ROLE_STRINGS_EXT[client:GetRole()], menukey = menukey, allylist = allylist })
+            text = GetPTranslation("info_popup_" .. roleString, table.Merge(params, { allylist = allylist }))
         else
-            text = GetPTranslation("info_popup_" .. roleString.. "_alone", { role = ROLE_STRINGS_EXT[client:GetRole()], menukey = menukey })
+            text = GetPTranslation("info_popup_" .. roleString.. "_alone", params)
         end
 
         return text
@@ -70,21 +95,22 @@ local function GetTextForLocalPlayer()
                 end
             end
 
+            params = table.Merge(params, { traitorlist = traitorlist, allylist = traitorlist, assassintarget = assassintarget })
             if #glitches > 0 then
-                text = GetPTranslation("info_popup_" .. roleString.. "_glitch", { role = ROLE_STRINGS_EXT[client:GetRole()], menukey = menukey, traitorlist = traitorlist, allylist = traitorlist, assassintarget = assassintarget })
+                text = GetPTranslation("info_popup_" .. roleString.. "_glitch", params)
             else
-                text = GetPTranslation("info_popup_" .. roleString, { role = ROLE_STRINGS_EXT[client:GetRole()], menukey = menukey, traitorlist = traitorlist, allylist = traitorlist, assassintarget = assassintarget })
+                text = GetPTranslation("info_popup_" .. roleString, params)
             end
         else
-            text = GetPTranslation("info_popup_" .. roleString.. "_alone", { role = ROLE_STRINGS_EXT[client:GetRole()], menukey = menukey, assassintarget = assassintarget })
+            text = GetPTranslation("info_popup_" .. roleString.. "_alone", params)
         end
 
         return text
     -- Zombies not on Traitor or Monster teams have a different message
     elseif client:IsZombie() then
-        return GetPTranslation("info_popup_zombie_indep", { role = ROLE_STRINGS_EXT[client:GetRole()], menukey = menukey })
+        return GetPTranslation("info_popup_zombie_indep", params)
     else
-        return GetPTranslation("info_popup_" .. roleString, { role = ROLE_STRINGS_EXT[client:GetRole()], menukey = menukey })
+        return GetPTranslation("info_popup_" .. roleString, params)
     end
 end
 

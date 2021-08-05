@@ -17,6 +17,7 @@
 ### Updates
 - Updated the role string logic to handle more plural cases
 - Updated round summary win event text to use customizable role strings
+- Updated round start role popups to use customizable role strings for other roles/teams in the description
 
 ## 1.0.7
 **Released: August 4th, 2021**

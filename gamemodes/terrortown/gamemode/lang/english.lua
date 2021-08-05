@@ -685,24 +685,24 @@ L.spec_help = "Click to spectate players, or press {usekey} on a physics object 
 
 -- These are spread over multiple lines, hence the square brackets instead of
 -- quotes. That's a Lua thing. Every line break (enter) will show up in-game.
-L.info_popup_innocent = [[You are {role}! But there are traitors around...
+L.info_popup_innocent = [[You are {role}! But there are {traitors} around...
 Who can you trust, and who is out to fill you with bullets?
 
 Watch your back and work with your comrades to get out of this alive!]]
 
-L.info_popup_detective = [[You are {role}! HQ has given you special resources to find the traitors.
-Use them to help the innocent survive, but be careful:
-the traitors will be looking to take you down first!
+L.info_popup_detective = [[You are {role}! HQ has given you special resources to find the {traitors}.
+Use them to help the {innocents} survive, but be careful:
+the {traitors} will be looking to take you down first!
 
 Press {menukey} to receive your equipment!]]
 
-L.info_popup_traitor_alone = [[You are {role}! You have no fellow traitors this round.
+L.info_popup_traitor_alone = [[You are {role}! You have no fellow {traitors} this round.
 
 Kill all others to win!
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_traitor = [[You are {role}! Work with fellow traitors to kill all others.
+L.info_popup_traitor = [[You are {role}! Work with fellow {traitors} to kill all others.
 But take care, or your treason may be discovered...
 
 These are your comrades:
@@ -710,8 +710,8 @@ These are your comrades:
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_traitor_glitch = [[You are {role}! Work with fellow traitors to kill all others.
-BUT BEWARE! There was a glitch in the system and one among you does not seek the same goal.
+L.info_popup_traitor_glitch = [[You are {role}! Work with fellow {traitors} to kill all others.
+BUT BEWARE! There was {glitch} in the system and one among you does not seek the same goal.
 
 These may or may not be your comrades:
 {traitorlist}
@@ -721,14 +721,14 @@ Press {menukey} to receive your special equipment!]]
 L.info_popup_jester = [[You are {role}! You want to die but you
 deal no damage so you must be killed by some one else.]]
 
-L.info_popup_swapper = [[You are {role}! Traitors think you are a jester and you
+L.info_popup_swapper = [[You are {role}! {traitors} think you are {jester} and you
 deal no damage however, if anyone kills you, they become
-the swapper and you take their role and can join the fight.]]
+the {swapper} and you take their role and can join the fight.]]
 
-L.info_popup_glitch = [[You are {role}! The traitors think you are one of them.
+L.info_popup_glitch = [[You are {role}! The {traitors} think you are one of them.
 Try to blend in and don't give yourself away.]]
 
-L.info_popup_phantom = [[You are {role}!  Try to survive and help your innocent friends!
+L.info_popup_phantom = [[You are {role}! Try to survive and help your {innocent} friends!
 You will haunt the player who kills you causing black smoke to appear.
 If the player you are haunting dies you will be respawned!]]
 
@@ -739,15 +739,15 @@ be able to track down their killer and get your revenge.]]
 L.info_popup_drunk = [[You are {role}!  You have forgotten what team you are on!
 Wait until you sober up and remember. Try to lay low in the meantime.]]
 
-L.info_popup_clown = [[You are {role}! Traitors think you are a jester and you
+L.info_popup_clown = [[You are {role}! {traitors} think you are {jester} and you
 deal no damage. However if one team would win the round instead you
 become hostile, are revealed to all players and can deal damage as
 normal. Be the last player standing to win.]]
 
-L.info_popup_deputy = [[You are {role}! If the detective dies you will take
+L.info_popup_deputy = [[You are {role}! If the {detective} dies you will take
 over and gain the ability to buy shop items and search bodies.]]
 
-L.info_popup_beggar = [[You are {role}! Traitors think you are a jester and you
+L.info_popup_beggar = [[You are {role}! {traitors} think you are {jester} and you
 deal no damage. However, if you can convince someone to give
 you a shop item you will join their team.]]
 
@@ -755,16 +755,16 @@ L.info_popup_oldman = [[You are {role}! The slightest breeze could kill
 you if you aren't careful. You don't care who wins as long
 as you are alive at the end of the round.]]
 
-L.info_popup_mercenary = [[You are {role}! Try to survive and help your innocent friends!
+L.info_popup_mercenary = [[You are {role}! Try to survive and help your {innocent} friends!
 
 Press {menukey} to receive your equipment!]]
 
-L.info_popup_bodysnatcher = [[You are {role}! Traitors think you are a jester and you
+L.info_popup_bodysnatcher = [[You are {role}! {traitors} think you are {jester} and you
 deal no damage. Use your body snatching device on a corpse
 to take their role and join the fight!]]
 
 L.info_popup_veteran = [[You are {role}! You work best under pressure.
-If you are the last innocent player alive you will
+If you are the last {innocent} player alive you will
 deal extra damage.]]
 
 L.info_popup_killer = [[You are {role}! Try to kill everyone and be the last one standing!
@@ -772,68 +772,66 @@ L.info_popup_killer = [[You are {role}! Try to kill everyone and be the last one
 Press {menukey} to receive your special equipment!]]
 
 L.info_popup_doctor = [[You are {role}! You're here to keep your teammates alive.
-Use your tools to keep fellow innocents in the fight!]]
+Use your tools to keep fellow {innocents} in the fight!]]
 
-
-
-L.info_popup_hypnotist = [[You are {role}! Work with fellow traitors to kill all others.
+L.info_popup_hypnotist = [[You are {role}! Work with fellow {traitors} to kill all others.
 
 These are your comrades:
 {traitorlist}
 
-You can use your brain washing device on a corpse to revive them as a traitor.
+You can use your brain washing device on a corpse to revive them as {traitor}.
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_hypnotist_alone = [[You are {role}! You have no fellow traitors this round.
+L.info_popup_hypnotist_alone = [[You are {role}! You have no fellow {traitors} this round.
 
 Kill all others to win!
 
-You can use your brain washing device on a corpse to revive them as a traitor.
+You can use your brain washing device on a corpse to revive them as {traitor}.
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_hypnotist_glitch = [[You are {role}! Work with fellow traitors to kill all others.
-BUT BEWARE! There was a glitch in the system and one among you does not seek the same goal.
+L.info_popup_hypnotist_glitch = [[You are {role}! Work with fellow {traitors} to kill all others.
+BUT BEWARE! There was {glitch} in the system and one among you does not seek the same goal.
 
 These may or may not be your comrades:
 {traitorlist}
 
-You can use your brain washing device on a corpse to revive them as a traitor.
+You can use your brain washing device on a corpse to revive them as {traitor}.
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_impersonator = [[You are {role}! Work with fellow traitors to kill all others.
+L.info_popup_impersonator = [[You are {role}! Work with fellow {traitors} to kill all others.
 
 These are your comrades:
 {traitorlist}
 
-If the detective dies you will appear to become a new detective and gain their
-abilities just like the deputy. However you are still working for the traitors.
+If the {detective} dies you will appear to become a new {detective} and gain their
+abilities just like the {deputy}. However you are still working for the {traitors}.
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_impersonator_alone = [[You are {role}! You have no fellow traitors this round.
+L.info_popup_impersonator_alone = [[You are {role}! You have no fellow {traitors} this round.
 
 Kill all others to win!
 
-If the detective dies you will appear to become a new detective and gain their
-abilities just like the deputy. However you are still working for the traitors.
+If the {detective} dies you will appear to become a new {detective} and gain their
+abilities just like the {deputy}. However you are still working for the {traitors}.
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_impersonator_glitch = [[You are {role}! Work with fellow traitors to kill all others.
-BUT BEWARE! There was a glitch in the system and one among you does not seek the same goal.
+L.info_popup_impersonator_glitch = [[You are {role}! Work with fellow {traitors} to kill all others.
+BUT BEWARE! There was {glitch} in the system and one among you does not seek the same goal.
 
 These may or may not be your comrades:
 {traitorlist}
 
-If the detective dies you will appear to become a new detective and gain their
-abilities just like the deputy. However you are still working for the traitors.
+If the {detective} dies you will appear to become a new {detective} and gain their
+abilities just like the {deputy}. However you are still working for the {traitors}.
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_assassin = [[You are {role}! Work with fellow traitors to kill all others.
+L.info_popup_assassin = [[You are {role}! Work with fellow {traitors} to kill all others.
 
 These are your comrades:
 {traitorlist}
@@ -848,8 +846,8 @@ maybe even suffering from a penalty!
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_assassin_glitch = [[You are {role}! Work with fellow traitors to kill all others.
-BUT BEWARE! There was a glitch in the system and one among
+L.info_popup_assassin_glitch = [[You are {role}! Work with fellow {traitors} to kill all others.
+BUT BEWARE! There was {glitch} in the system and one among
 you does not seek the same goal.
 
 These may or may not be your comrades:
@@ -865,7 +863,7 @@ maybe even suffering from a penalty!
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_assassin_alone = [[You are {role}! You have no fellow traitors this round.
+L.info_popup_assassin_alone = [[You are {role}! You have no fellow {traitors} this round.
 
 Kill all others to win!
 
@@ -889,7 +887,7 @@ You can use your fangs (left-click) to drink blood and refill your health or to 
 Press {menukey} to receive your special equipment!]]
 
 L.info_popup_vampire_glitch = [[You are {role}! Work with your allies to kill all others.
-BUT BEWARE! There was a glitch in the system and one among
+BUT BEWARE! There was {glitch} in the system and one among
 you does not seek the same goal.
 
 These are your comrades:
@@ -907,7 +905,7 @@ You can use your fangs (left-click) to drink blood and refill your health or to 
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_quack = [[You are {role}! Work with fellow traitors to kill all others.
+L.info_popup_quack = [[You are {role}! Work with fellow {traitors} to kill all others.
 
 These are your comrades:
 {traitorlist}
@@ -917,27 +915,27 @@ instead of heal. You know that the best cure for any ailment is death.
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_quack_alone = [[You are {role}! You have no fellow traitors this round.
+L.info_popup_quack_alone = [[You are {role}! You have no fellow {traitors} this round.
 
 Kill all others to win!
 
-Try to convince others that you are a real doctor! However, your tools harm
+Try to convince others that you are a real {doctor}! However, your tools harm
 instead of heal. You know that the best cure for any ailment is death.
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_quack_glitch = [[You are {role}! Work with fellow traitors to kill all others.
-BUT BEWARE! There was a glitch in the system and one among you does not seek the same goal.
+L.info_popup_quack_glitch = [[You are {role}! Work with fellow {traitors} to kill all others.
+BUT BEWARE! There was {glitch} in the system and one among you does not seek the same goal.
 
 These may or may not be your comrades:
 {traitorlist}
 
-Try to convince others that you are a real doctor! However, your tools harm
+Try to convince others that you are a real {doctor}! However, your tools harm
 instead of heal. You know that the best cure for any ailment is death.
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_parasite = [[You are {role}! Work with fellow traitors to kill all others.
+L.info_popup_parasite = [[You are {role}! Work with fellow {traitors} to kill all others.
 
 These are your comrades:
 {traitorlist}
@@ -948,7 +946,7 @@ respawn. Try to avoid getting them cured or killed!
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_parasite_alone = [[You are {role}! You have no fellow traitors this round.
+L.info_popup_parasite_alone = [[You are {role}! You have no fellow {traitors} this round.
 
 Kill all others to win!
 
@@ -958,8 +956,8 @@ respawn. Try to avoid getting them cured or killed!
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_parasite_glitch = [[You are {role}! Work with fellow traitors to kill all others.
-BUT BEWARE! There was a glitch in the system and one among you does not seek the same goal.
+L.info_popup_parasite_glitch = [[You are {role}! Work with fellow {traitors} to kill all others.
+BUT BEWARE! There was {glitch} in the system and one among you does not seek the same goal.
 
 These may or may not be your comrades:
 {traitorlist}
@@ -976,19 +974,19 @@ These are your comrades:
 {allylist}
 
 All damage you deal with guns is reduced.
-Killing someone with your claws will turn them into a zombie.
+Killing someone with your claws will turn them into {zombie}.
 
 Press {menukey} to receive your special equipment!]]
 
 L.info_popup_zombie_glitch = [[You are {role}! Work with your allies to kill all others.
-BUT BEWARE! There was a glitch in the system and one among
+BUT BEWARE! There was {glitch} in the system and one among
 you does not seek the same goal.
 
 These are your comrades:
 {allylist}
 
 All damage you deal with guns is reduced.
-Killing someone with your claws will turn them into a zombie.
+Killing someone with your claws will turn them into {zombie}.
 
 Press {menukey} to receive your special equipment!]]
 
@@ -997,7 +995,7 @@ L.info_popup_zombie_alone = [[You are {role}! You have no allies this round.
 Kill all others to win!
 
 All damage you deal with guns is reduced.
-Killing someone with your claws will turn them into a zombie.
+Killing someone with your claws will turn them into {zombie}.
 
 Press {menukey} to receive your special equipment!]]
 
@@ -1006,12 +1004,12 @@ L.info_popup_zombie_indep = [[You are {role}!
 Kill all others to win!
 
 All damage you deal with guns is reduced.
-Killing someone with your claws will turn them into a zombie.
+Killing someone with your claws will turn them into {zombie}.
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_trickster = [[You are {role}! You are an innocent who can see and
-use traitor traps throughout the map. Have fun!]]
+L.info_popup_trickster = [[You are {role}! You are {aninnocent} who can see and
+use {traitor} traps throughout the map. Have fun!]]
 
 --- Various other text
 L.name_kick = "A player was automatically kicked for changing their name during a round."
