@@ -711,7 +711,7 @@ These are your comrades:
 Press {menukey} to receive your special equipment!]]
 
 L.info_popup_traitor_glitch = [[You are {role}! Work with fellow {traitors} to kill all others.
-BUT BEWARE! There was {glitch} in the system and one among you does not seek the same goal.
+BUT BEWARE! There was {aglitch} in the system and one among you does not seek the same goal.
 
 These may or may not be your comrades:
 {traitorlist}
@@ -721,7 +721,7 @@ Press {menukey} to receive your special equipment!]]
 L.info_popup_jester = [[You are {role}! You want to die but you
 deal no damage so you must be killed by some one else.]]
 
-L.info_popup_swapper = [[You are {role}! {traitors} think you are {jester} and you
+L.info_popup_swapper = [[You are {role}! {traitors} think you are {ajester} and you
 deal no damage however, if anyone kills you, they become
 the {swapper} and you take their role and can join the fight.]]
 
@@ -739,7 +739,7 @@ be able to track down their killer and get your revenge.]]
 L.info_popup_drunk = [[You are {role}!  You have forgotten what team you are on!
 Wait until you sober up and remember. Try to lay low in the meantime.]]
 
-L.info_popup_clown = [[You are {role}! {traitors} think you are {jester} and you
+L.info_popup_clown = [[You are {role}! {traitors} think you are {ajester} and you
 deal no damage. However if one team would win the round instead you
 become hostile, are revealed to all players and can deal damage as
 normal. Be the last player standing to win.]]
@@ -747,7 +747,7 @@ normal. Be the last player standing to win.]]
 L.info_popup_deputy = [[You are {role}! If the {detective} dies you will take
 over and gain the ability to buy shop items and search bodies.]]
 
-L.info_popup_beggar = [[You are {role}! {traitors} think you are {jester} and you
+L.info_popup_beggar = [[You are {role}! {traitors} think you are {ajester} and you
 deal no damage. However, if you can convince someone to give
 you a shop item you will join their team.]]
 
@@ -759,7 +759,7 @@ L.info_popup_mercenary = [[You are {role}! Try to survive and help your {innocen
 
 Press {menukey} to receive your equipment!]]
 
-L.info_popup_bodysnatcher = [[You are {role}! {traitors} think you are {jester} and you
+L.info_popup_bodysnatcher = [[You are {role}! {traitors} think you are {ajester} and you
 deal no damage. Use your body snatching device on a corpse
 to take their role and join the fight!]]
 
@@ -779,7 +779,7 @@ L.info_popup_hypnotist = [[You are {role}! Work with fellow {traitors} to kill a
 These are your comrades:
 {traitorlist}
 
-You can use your brain washing device on a corpse to revive them as {traitor}.
+You can use your brain washing device on a corpse to revive them as {atraitor}.
 
 Press {menukey} to receive your special equipment!]]
 
@@ -787,17 +787,17 @@ L.info_popup_hypnotist_alone = [[You are {role}! You have no fellow {traitors} t
 
 Kill all others to win!
 
-You can use your brain washing device on a corpse to revive them as {traitor}.
+You can use your brain washing device on a corpse to revive them as {atraitor}.
 
 Press {menukey} to receive your special equipment!]]
 
 L.info_popup_hypnotist_glitch = [[You are {role}! Work with fellow {traitors} to kill all others.
-BUT BEWARE! There was {glitch} in the system and one among you does not seek the same goal.
+BUT BEWARE! There was {aglitch} in the system and one among you does not seek the same goal.
 
 These may or may not be your comrades:
 {traitorlist}
 
-You can use your brain washing device on a corpse to revive them as {traitor}.
+You can use your brain washing device on a corpse to revive them as {atraitor}.
 
 Press {menukey} to receive your special equipment!]]
 
@@ -821,7 +821,7 @@ abilities just like the {deputy}. However you are still working for the {traitor
 Press {menukey} to receive your special equipment!]]
 
 L.info_popup_impersonator_glitch = [[You are {role}! Work with fellow {traitors} to kill all others.
-BUT BEWARE! There was {glitch} in the system and one among you does not seek the same goal.
+BUT BEWARE! There was {aglitch} in the system and one among you does not seek the same goal.
 
 These may or may not be your comrades:
 {traitorlist}
@@ -847,7 +847,7 @@ maybe even suffering from a penalty!
 Press {menukey} to receive your special equipment!]]
 
 L.info_popup_assassin_glitch = [[You are {role}! Work with fellow {traitors} to kill all others.
-BUT BEWARE! There was {glitch} in the system and one among
+BUT BEWARE! There was {aglitch} in the system and one among
 you does not seek the same goal.
 
 These may or may not be your comrades:
@@ -887,7 +887,7 @@ You can use your fangs (left-click) to drink blood and refill your health or to 
 Press {menukey} to receive your special equipment!]]
 
 L.info_popup_vampire_glitch = [[You are {role}! Work with your allies to kill all others.
-BUT BEWARE! There was {glitch} in the system and one among
+BUT BEWARE! There was {aglitch} in the system and one among
 you does not seek the same goal.
 
 These are your comrades:
@@ -925,7 +925,7 @@ instead of heal. You know that the best cure for any ailment is death.
 Press {menukey} to receive your special equipment!]]
 
 L.info_popup_quack_glitch = [[You are {role}! Work with fellow {traitors} to kill all others.
-BUT BEWARE! There was {glitch} in the system and one among you does not seek the same goal.
+BUT BEWARE! There was {aglitch} in the system and one among you does not seek the same goal.
 
 These may or may not be your comrades:
 {traitorlist}
@@ -957,7 +957,7 @@ respawn. Try to avoid getting them cured or killed!
 Press {menukey} to receive your special equipment!]]
 
 L.info_popup_parasite_glitch = [[You are {role}! Work with fellow {traitors} to kill all others.
-BUT BEWARE! There was {glitch} in the system and one among you does not seek the same goal.
+BUT BEWARE! There was {aglitch} in the system and one among you does not seek the same goal.
 
 These may or may not be your comrades:
 {traitorlist}
@@ -979,7 +979,7 @@ Killing someone with your claws will turn them into {zombie}.
 Press {menukey} to receive your special equipment!]]
 
 L.info_popup_zombie_glitch = [[You are {role}! Work with your allies to kill all others.
-BUT BEWARE! There was {glitch} in the system and one among
+BUT BEWARE! There was {aglitch} in the system and one among
 you does not seek the same goal.
 
 These are your comrades:

@@ -17,7 +17,7 @@ local function GetTextForLocalPlayer()
         -- "The real doctor"
         doctor = ROLE_STRINGS[ROLE_DOCTOR],
         -- "A glitch"
-        glitch = ROLE_STRINGS_EXT[ROLE_GLITCH],
+        aglitch = ROLE_STRINGS_EXT[ROLE_GLITCH],
         -- "Your innocent friends"
         innocent = ROLE_STRINGS[ROLE_INNOCENT],
         -- "Your fellow innocents"
@@ -25,11 +25,13 @@ local function GetTextForLocalPlayer()
         -- "An innocent"
         aninnocent = ROLE_STRINGS_EXT[ROLE_INNOCENT],
         -- "A jester"
-        jester = ROLE_STRINGS_EXT[ROLE_JESTER],
-        -- "A traitor"
+        ajester = ROLE_STRINGS_EXT[ROLE_JESTER],
+        -- "Use traitor traps"
         traitor = ROLE_STRINGS[ROLE_TRAITOR],
         -- "Fellow traitors"
         traitors = ROLE_STRINGS_PLURAL[ROLE_TRAITOR],
+        -- "A traitor"
+        atraitor = ROLE_STRINGS_EXT[ROLE_TRAITOR],
         -- "Turn into a zombie"
         zombie = ROLE_STRINGS_EXT[ROLE_ZOMBIE],
         menukey = Key("+menu_context", "C")
