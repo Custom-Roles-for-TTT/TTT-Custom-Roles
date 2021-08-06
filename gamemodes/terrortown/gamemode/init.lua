@@ -1436,7 +1436,7 @@ function PrintResultMessage(type)
         ServerLog("Result: " .. ROLE_STRINGS_PLURAL[ROLE_TRAITOR] .. " win.\n")
     elseif type == WIN_INNOCENT then
         LANG.Msg("win_innocent", { role = ROLE_STRINGS_PLURAL[ROLE_INNOCENT] })
-        ServerLog("Result: " .. ROLE_STRINGS[ROLE_INNOCENT] .. " win.\n")
+        ServerLog("Result: " .. ROLE_STRINGS_PLURAL[ROLE_INNOCENT] .. " win.\n")
     elseif type == WIN_JESTER then
         LANG.Msg("win_jester", { role = ROLE_STRINGS_PLURAL[ROLE_JESTER] })
         ServerLog("Result: " .. ROLE_STRINGS[ROLE_JESTER] .. " wins.\n")
