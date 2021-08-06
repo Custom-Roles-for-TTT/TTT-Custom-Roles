@@ -57,7 +57,7 @@ local tip_params = {
    [13] = {adetective = ROLE_STRINGS_EXT[ROLE_DETECTIVE]},
    [15] = {atraitor = ROLE_STRINGS_EXT[ROLE_TRAITOR]},
    [16] = {atraitor = ROLE_STRINGS_EXT[ROLE_TRAITOR]},
-   [17] = {innocent = ROLE_STRINGS_PLURAL[ROLE_INNOCENT]},
+   [17] = {innocents = ROLE_STRINGS_PLURAL[ROLE_INNOCENT]},
    [18] = {atraitor = ROLE_STRINGS_EXT[ROLE_TRAITOR]},
    [19] = {adetective = ROLE_STRINGS_EXT[ROLE_DETECTIVE], innocent = ROLE_STRINGS[ROLE_INNOCENT]},
    [20] = {detective = ROLE_STRINGS[ROLE_DETECTIVE], adetective = ROLE_STRINGS_EXT[ROLE_DETECTIVE], traitors = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]},

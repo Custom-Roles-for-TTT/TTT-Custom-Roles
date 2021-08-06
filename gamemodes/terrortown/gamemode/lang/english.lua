@@ -1066,7 +1066,7 @@ L.tip15 = "Are you {atraitor} and going sniping? Consider trying out the Disguis
 
 L.tip16 = "As {atraitor}, the Teleporter can help you escape when chased, and allows you to quickly travel across a big map. Make sure you always have a safe position marked."
 
-L.tip17 = "Are the {innocent} all grouped up and hard to pick off? Consider trying out the Radio to play sounds of C4 or a firefight to lead some of them away."
+L.tip17 = "Are the {innocents} all grouped up and hard to pick off? Consider trying out the Radio to play sounds of C4 or a firefight to lead some of them away."
 
 L.tip18 = "Using the Radio as {atraitor}, you can play sounds through your Equipment Menu after the radio has been placed. Queue up multiple sounds by clicking multiple buttons in the order you want them."
 
