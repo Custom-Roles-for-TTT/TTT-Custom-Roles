@@ -974,7 +974,7 @@ These are your comrades:
 {allylist}
 
 All damage you deal with guns is reduced.
-Killing someone with your claws will turn them into {zombie}.
+Killing someone with your claws will turn them into {azombie}.
 
 Press {menukey} to receive your special equipment!]]
 
@@ -986,7 +986,7 @@ These are your comrades:
 {allylist}
 
 All damage you deal with guns is reduced.
-Killing someone with your claws will turn them into {zombie}.
+Killing someone with your claws will turn them into {azombie}.
 
 Press {menukey} to receive your special equipment!]]
 
@@ -995,7 +995,7 @@ L.info_popup_zombie_alone = [[You are {role}! You have no allies this round.
 Kill all others to win!
 
 All damage you deal with guns is reduced.
-Killing someone with your claws will turn them into {zombie}.
+Killing someone with your claws will turn them into {azombie}.
 
 Press {menukey} to receive your special equipment!]]
 
@@ -1004,7 +1004,7 @@ L.info_popup_zombie_indep = [[You are {role}!
 Kill all others to win!
 
 All damage you deal with guns is reduced.
-Killing someone with your claws will turn them into {zombie}.
+Killing someone with your claws will turn them into {azombie}.
 
 Press {menukey} to receive your special equipment!]]
 

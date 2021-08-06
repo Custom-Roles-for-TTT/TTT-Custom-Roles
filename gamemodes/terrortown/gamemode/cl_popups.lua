@@ -33,7 +33,7 @@ local function GetTextForLocalPlayer()
         -- "A traitor"
         atraitor = ROLE_STRINGS_EXT[ROLE_TRAITOR],
         -- "Turn into a zombie"
-        zombie = ROLE_STRINGS_EXT[ROLE_ZOMBIE],
+        azombie = ROLE_STRINGS_EXT[ROLE_ZOMBIE],
         menukey = Key("+menu_context", "C")
     }
 
