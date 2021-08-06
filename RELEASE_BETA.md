@@ -16,9 +16,10 @@
 
 ### Updates
 - Updated the role string logic to handle more plural cases
-- Updated round summary win event text to use customizable role strings
-- Updated round start role popups to use customizable role strings for other roles/teams in the description
-- Updated HUD messages for beggar and deputy/impersonator to use customizable role strings
+- Updated more places to use customizable role strings
+  - Round summary events
+  - Round start role popups
+  - HUD messages for beggar and deputy/impersonator
 
 ## 1.0.7
 **Released: August 4th, 2021**

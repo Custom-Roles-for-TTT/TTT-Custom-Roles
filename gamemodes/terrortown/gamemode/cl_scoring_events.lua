@@ -371,7 +371,7 @@ Event(EVENT_SWAPPER, {
 
 Event(EVENT_PROMOTION, {
     text = function(e)
-        return PT("ev_promote", {player = e.ply})
+        return PT("ev_promote", {player = e.ply, detective = ROLE_STRINGS[ROLE_DETECTIVE]})
     end,
     icon = function(e)
         return promotion_icon, "Promotion"
@@ -419,7 +419,7 @@ Event(EVENT_LOG, {
 
 Event(EVENT_ZOMBIFIED, {
     text = function(e)
-        return PT("ev_zombi", {victim = e.vic})
+        return PT("ev_zombi", {victim = e.vic, zombie = ROLE_STRINGS[ROLE_ZOMBIE]})
     end,
     icon = function(e)
         return zombie_icon, "Zombified"
@@ -427,7 +427,7 @@ Event(EVENT_ZOMBIFIED, {
 
 Event(EVENT_VAMPIFIED, {
     text = function(e)
-        return PT("ev_vampi", {victim = e.vic})
+        return PT("ev_vampi", {victim = e.vic, vampire = ROLE_STRINGS[ROLE_VAMPIRE]})
     end,
     icon = function(e)
         return vampire_icon, "Vampified"
@@ -436,9 +436,9 @@ Event(EVENT_VAMPIFIED, {
 Event(EVENT_VAMPPRIME_DEATH, {
     text = function(e)
         if e.mode == VAMPIRE_DEATH_REVERT_CONVERTED then
-           return PT("ev_vampi_revert_converted", {prime = e.prime})
+           return PT("ev_vampi_revert_converted", {prime = e.prime, vampire = ROLE_STRINGS[ROLE_VAMPIRE]})
         elseif e.mode == VAMPIRE_DEATH_KILL_CONVERED then
-           return PT("ev_vampi_kill_converted", {prime = e.prime})
+           return PT("ev_vampi_kill_converted", {prime = e.prime, vampire = ROLE_STRINGS[ROLE_VAMPIRE]})
         end
     end,
     icon = function(e)
@@ -451,7 +451,7 @@ Event(EVENT_VAMPPRIME_DEATH, {
 
 Event(EVENT_BEGGARCONVERTED, {
     text = function(e)
-        return PT("ev_beggar_converted", {victim = e.vic, attacker = e.att, team = e.team})
+        return PT("ev_beggar_converted", {victim = e.vic, attacker = e.att, team = e.team, beggar = ROLE_STRINGS[ROLE_BEGGAR]})
     end,
     icon = function(e)
         if e.team == "an innocent" then
@@ -464,9 +464,9 @@ Event(EVENT_BEGGARCONVERTED, {
 Event(EVENT_BEGGARKILLED, {
    text = function(e)
       if e.delay > 0 then
-         return PT("ev_beggar_killed_delay", {attacker = e.att, victim = e.vic, delay = e.delay})
+         return PT("ev_beggar_killed_delay", {attacker = e.att, victim = e.vic, delay = e.delay, beggar = ROLE_STRINGS[ROLE_BEGGAR]})
       end
-      return PT("ev_beggar_killed", {attacker = e.att, victim = e.vic})
+      return PT("ev_beggar_killed", {attacker = e.att, victim = e.vic, beggar = ROLE_STRINGS[ROLE_BEGGAR]})
   end,
   icon = function(e)
       if e.delay > 0 then
