@@ -289,10 +289,10 @@ CreateConVar("ttt_namechange_bantime", "10")
 CreateConVar("ttt_disable_headshots", "0")
 
 -- bem server convars
-CreateConVar("ttt_bem_allow_change", 1, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Allow clients to change the look of the Traitor/Detective menu")
-CreateConVar("ttt_bem_sv_cols", 4, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Sets the number of columns in the Traitor/Detective menu's item list (serverside)")
-CreateConVar("ttt_bem_sv_rows", 5, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Sets the number of rows in the Traitor/Detective menu's item list (serverside)")
-CreateConVar("ttt_bem_sv_size", 64, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Sets the item size in the Traitor/Detective menu's item list (serverside)")
+CreateConVar("ttt_bem_allow_change", 1, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Allow clients to change the look of the shop menu")
+CreateConVar("ttt_bem_sv_cols", 4, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Sets the number of columns in the shop menu's item list (serverside)")
+CreateConVar("ttt_bem_sv_rows", 5, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Sets the number of rows in the shop menu's item list (serverside)")
+CreateConVar("ttt_bem_sv_size", 64, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Sets the item size in the shop menu's item list (serverside)")
 
 -- sprint convars
 local speedMultiplier = CreateConVar("ttt_sprint_bonus_rel", "0.4", FCVAR_SERVER_CAN_EXECUTE, "The relative speed bonus given while sprinting. Def: 0.4")
@@ -821,8 +821,8 @@ local function OnPlayerDeath(victim, infl, attacker)
                 -- Kill them
                 if vamp_prime_death_mode == VAMPIRE_DEATH_KILL_CONVERED then
                     for _, vnp in pairs(vampires) do
-                        vnp:PrintMessage(HUD_PRINTTALK, "Your Vampire overlord has been slain and you die with them")
-                        vnp:PrintMessage(HUD_PRINTCENTER, "Your Vampire overlord has been slain and you die with them")
+                        vnp:PrintMessage(HUD_PRINTTALK, "Your " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " overlord has been slain and you die with them")
+                        vnp:PrintMessage(HUD_PRINTCENTER, "Your " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " overlord has been slain and you die with them")
                         vnp:Kill()
                     end
                 -- Change them back to their previous roles
@@ -831,8 +831,8 @@ local function OnPlayerDeath(victim, infl, attacker)
                     for _, vnp in pairs(vampires) do
                         local prev_role = vnp:GetVampirePreviousRole()
                         if prev_role ~= ROLE_NONE then
-                            vnp:PrintMessage(HUD_PRINTTALK, "Your Vampire overlord has been slain and you feel their grip over you subside")
-                            vnp:PrintMessage(HUD_PRINTCENTER, "Your Vampire overlord has been slain and you feel their grip over you subside")
+                            vnp:PrintMessage(HUD_PRINTTALK, "Your " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " overlord has been slain and you feel their grip over you subside")
+                            vnp:PrintMessage(HUD_PRINTCENTER, "Your " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " overlord has been slain and you feel their grip over you subside")
                             vnp:SetRoleAndBroadcast(prev_role)
                             vnp:StripWeapon("weapon_vam_fangs")
                             vnp:SelectWeapon("weapon_zm_improvised")
@@ -1094,8 +1094,8 @@ function TellTraitorsAboutTraitors()
         local isTraitor = v:IsTraitorTeam()
         if isTraitor then
             if hasGlitch then
-                v:PrintMessage(HUD_PRINTTALK, "There is a Glitch.")
-                v:PrintMessage(HUD_PRINTCENTER, "There is a Glitch.")
+                v:PrintMessage(HUD_PRINTTALK, "There is " .. ROLE_STRINGS_EXT[ROLE_GLITCH] .. ".")
+                v:PrintMessage(HUD_PRINTCENTER, "There is " .. ROLE_STRINGS_EXT[ROLE_GLITCH] .. ".")
             end
 
             if #traitornicks < 2 then
@@ -1115,15 +1115,15 @@ function TellTraitorsAboutTraitors()
 
         -- Warn this player about the Killer if they are a traitor or we are configured to warn everyone
         if not v:IsKiller() and (isTraitor or GetConVar("ttt_killer_warn_all"):GetBool()) and hasKiller then
-            v:PrintMessage(HUD_PRINTTALK, "There is a Killer.")
+            v:PrintMessage(HUD_PRINTTALK, "There is " .. ROLE_STRINGS_EXT[ROLE_KILLER] .. ".")
             -- Only delay this if the player is a traitor and there is a Glitch
             -- This gives time for the Glitch warning to go away
             if isTraitor and hasGlitch then
                 timer.Simple(3, function()
-                    v:PrintMessage(HUD_PRINTCENTER, "There is a Killer.")
+                    v:PrintMessage(HUD_PRINTCENTER, "There is " .. ROLE_STRINGS_EXT[ROLE_KILLER] .. ".")
                 end)
             else
-                v:PrintMessage(HUD_PRINTCENTER, "There is a Killer.")
+                v:PrintMessage(HUD_PRINTCENTER, "There is " .. ROLE_STRINGS_EXT[ROLE_KILLER] .. ".")
             end
         end
     end
@@ -1209,28 +1209,23 @@ local function InitRoundEndTime()
 end
 
 local function DrunkSober(ply, traitor)
-    ply:SetNWBool("WasDrunk", true)
-
+    local role
     if traitor then
-        ply:SetRole(ROLE_TRAITOR)
+        role = ROLE_TRAITOR
         ply:SetCredits(GetConVar("ttt_credits_starting"):GetInt())
-        ply:PrintMessage(HUD_PRINTTALK, "You have remembered that you are a traitor.")
-        ply:PrintMessage(HUD_PRINTCENTER, "You have remembered that you are a traitor.")
-
-        net.Start("TTT_DrunkSober")
-        net.WriteString(ply:Nick())
-        net.WriteString(ROLE_STRINGS_EXT[ROLE_TRAITOR])
-        net.Broadcast()
     else
-        ply:SetRole(ROLE_INNOCENT)
-        ply:PrintMessage(HUD_PRINTTALK, "You have remembered that you are an innocent.")
-        ply:PrintMessage(HUD_PRINTCENTER, "You have remembered that you are an innocent.")
-
-        net.Start("TTT_DrunkSober")
-        net.WriteString(ply:Nick())
-        net.WriteString(ROLE_STRINGS_EXT[ROLE_INNOCENT])
-        net.Broadcast()
+        role = ROLE_INNOCENT
     end
+
+    ply:SetNWBool("WasDrunk", true)
+    ply:SetRole(role)
+    ply:PrintMessage(HUD_PRINTTALK, "You have remembered that you are " .. ROLE_STRINGS_EXT[role] .. ".")
+    ply:PrintMessage(HUD_PRINTCENTER, "You have remembered that you are " .. ROLE_STRINGS_EXT[role] .. ".")
+
+    net.Start("TTT_DrunkSober")
+    net.WriteString(ply:Nick())
+    net.WriteString(ROLE_STRINGS_EXT[role])
+    net.Broadcast()
 
     SendFullStateUpdate()
 end
@@ -1435,31 +1430,31 @@ function PrintResultMessage(type)
     ServerLog("Round ended.\n")
     if type == WIN_TIMELIMIT then
         LANG.Msg("win_time", { role = ROLE_STRINGS_PLURAL[ROLE_INNOCENT] })
-        ServerLog("Result: timelimit reached, traitors lose.\n")
+        ServerLog("Result: timelimit reached, " .. ROLE_STRINGS_PLURAL[ROLE_TRAITOR] .. " lose.\n")
     elseif type == WIN_TRAITOR then
         LANG.Msg("win_traitor", { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR] })
-        ServerLog("Result: Traitors win.\n")
+        ServerLog("Result: " .. ROLE_STRINGS_PLURAL[ROLE_TRAITOR] .. " win.\n")
     elseif type == WIN_INNOCENT then
         LANG.Msg("win_innocent", { role = ROLE_STRINGS_PLURAL[ROLE_INNOCENT] })
-        ServerLog("Result: Innocent win.\n")
+        ServerLog("Result: " .. ROLE_STRINGS[ROLE_INNOCENT] .. " win.\n")
     elseif type == WIN_JESTER then
         LANG.Msg("win_jester", { role = ROLE_STRINGS_PLURAL[ROLE_JESTER] })
-        ServerLog("Result: Jester wins.\n")
+        ServerLog("Result: " .. ROLE_STRINGS[ROLE_JESTER] .. " wins.\n")
     elseif type == WIN_CLOWN then
         LANG.Msg("win_clown", { role = ROLE_STRINGS_PLURAL[ROLE_CLOWN] })
-        ServerLog("Result: Clown wins.\n")
+        ServerLog("Result: " .. ROLE_STRINGS[ROLE_CLOWN] .. " wins.\n")
     elseif type == WIN_KILLER then
         LANG.Msg("win_killer", { role = ROLE_STRINGS_PLURAL[ROLE_KILLER] })
-        ServerLog("Result: Killer wins.\n")
+        ServerLog("Result: " .. ROLE_STRINGS[ROLE_KILLER] .. " wins.\n")
     elseif type == WIN_MONSTER then
         -- If Zombies are not monsters then Vampires win
         if not MONSTER_ROLES[ROLE_ZOMBIE] then
             LANG.Msg("win_vampires", { role = ROLE_STRINGS_PLURAL[ROLE_VAMPIRE] })
-            ServerLog("Result: Vampires win.\n")
+            ServerLog("Result: " .. ROLE_STRINGS_PLURAL[ROLE_VAMPIRE] .. " win.\n")
         -- And vice versa
         elseif not MONSTER_ROLES[ROLE_VAMPIRE] then
             LANG.Msg("win_zombies", { role = ROLE_STRINGS_PLURAL[ROLE_ZOMBIE] })
-            ServerLog("Result: Zombies win.\n")
+            ServerLog("Result: " .. ROLE_STRINGS_PLURAL[ROLE_ZOMBIE] .. " win.\n")
         -- Otherwise the monsters legit win
         else
             LANG.Msg("win_monster")
@@ -2255,7 +2250,7 @@ function SelectRoles()
         -- initialize credit count for everyone based on their role
         if IsValid(ply) and not ply:IsSpec() then
             if ply:GetRole() == ROLE_NONE then
-                ErrorNoHalt("WARNING: " .. ply:Nick() .. " was not assigned a role! Forcing them to be Innocent...\n")
+                ErrorNoHalt("WARNING: " .. ply:Nick() .. " was not assigned a role! Forcing them to be " .. ROLE_STRINGS[ROLE_INNOCENT] .. "...\n")
                 ply:SetRole(ROLE_INNOCENT)
             end
 

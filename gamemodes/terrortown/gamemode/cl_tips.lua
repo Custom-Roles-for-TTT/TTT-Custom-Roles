@@ -48,12 +48,32 @@ end
 table.Shuffle(tip_ids)
 
 local tip_params = {
-   [1]  = {walkkey = Key("+walk", "WALK"), usekey = Key("+use", "USE")},
+   [1]  = {walkkey = Key("+walk", "WALK"), usekey = Key("+use", "USE"), traitor = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]},
+   [3]  = {detective = ROLE_STRINGS_PLURAL[ROLE_DETECTIVE]},
+   [5]  = {detective = ROLE_STRINGS_EXT[ROLE_DETECTIVE], traitor = ROLE_STRINGS_EXT[ROLE_TRAITOR]},
+   [6]  = {detective = ROLE_STRINGS_PLURAL[ROLE_DETECTIVE], traitor = ROLE_STRINGS_EXT[ROLE_TRAITOR]},
+   [7]  = {innocent = ROLE_STRINGS_PLURAL[ROLE_INNOCENT], traitor = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]},
+   [12] = {detective = ROLE_STRINGS[ROLE_DETECTIVE]},
+   [13] = {detective = ROLE_STRINGS_EXT[ROLE_DETECTIVE]},
+   [15] = {traitor = ROLE_STRINGS[ROLE_TRAITOR]},
+   [16] = {traitor = ROLE_STRINGS_EXT[ROLE_TRAITOR]},
+   [17] = {innocent = ROLE_STRINGS_PLURAL[ROLE_INNOCENT]},
+   [18] = {traitor = ROLE_STRINGS[ROLE_TRAITOR]},
+   [19] = {detective = ROLE_STRINGS[ROLE_DETECTIVE], innocent = ROLE_STRINGS[ROLE_INNOCENT]},
+   [20] = {detective = ROLE_STRINGS[ROLE_DETECTIVE], adetective = ROLE_STRINGS_EXT[ROLE_DETECTIVE], traitor = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]},
+   [21] = {detective = ROLE_STRINGS[ROLE_DETECTIVE], traitor = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]},
+   [22] = {detective = ROLE_STRINGS_PLURAL[ROLE_DETECTIVE]},
+   [23] = {detective = ROLE_STRINGS_PLURAL[ROLE_DETECTIVE], traitor = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]},
    [24] = {helpkey = Key("+gm_showhelp", "F1")},
+   [25] = {detective = ROLE_STRINGS_EXT[ROLE_DETECTIVE]},
+   [26] = {detective = ROLE_STRINGS_EXT[ROLE_DETECTIVE]},
+   [27] = {detective = ROLE_STRINGS[ROLE_DETECTIVE]},
    [28] = {mutekey = Key("+gm_showteam", "F2")},
    [30] = {zoomkey = Key("+zoom", "the 'Suit Zoom' key")},
    [31] = {duckkey = Key("+duck", "DUCK")},
+   [35] = {detective = ROLE_STRINGS_PLURAL[ROLE_DETECTIVE], innocent = ROLE_STRINGS_PLURAL[ROLE_INNOCENT], traitor = ROLE_STRINGS[ROLE_TRAITOR]},
    [36] = {helpkey = Key("+gm_showhelp", "F1")},
+   [40] = {traitor = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]}
 };
 
 PANEL = {}

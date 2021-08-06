@@ -723,7 +723,11 @@ local function TraitorMenuPopup()
             if new and new.item then
                 for k, v in pairs(new.item) do
                     if dfields[k] then
-                        dfields[k]:SetText(SafeTranslate(v))
+                        local value = v
+                        if type(v) == "function" then
+                            value = v()
+                        end
+                        dfields[k]:SetText(SafeTranslate(value))
                         dfields[k]:SetAutoStretchVertical(true)
                         dfields[k]:SetWrap(true)
                     end

@@ -19,8 +19,15 @@
 - Updated the role string logic to handle more plural cases
 - Updated more places to use customizable role strings
   - Round summary events
+  - Round summary score table
   - Round start role popups
   - HUD messages for beggar and deputy/impersonator
+  - Role logic messages
+  - Equipment descriptions
+  - Tips
+
+### Developer
+- Added ability for SWEP name, type, and description to use functions for formatting
 
 ## 1.0.7
 **Released: August 4th, 2021**

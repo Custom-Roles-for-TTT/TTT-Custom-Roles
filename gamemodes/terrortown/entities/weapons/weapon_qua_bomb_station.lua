@@ -3,13 +3,19 @@ AddCSLuaFile()
 SWEP.HoldType = "normal"
 
 if CLIENT then
+    local GetPTranslation = LANG.GetParamTranslation
     SWEP.PrintName = "bstation_name"
     SWEP.Slot = 6
     SWEP.ViewModelFOV = 10
 
     SWEP.EquipMenuData = {
         type = "item_weapon",
-        desc = "bstation_desc"
+        desc = function()
+            return GetPTranslation("bstation_desc", {
+                traitor = ROLE_STRINGS[ROLE_TRAITOR],
+                traitors = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]
+            })
+        end
     };
 end
 

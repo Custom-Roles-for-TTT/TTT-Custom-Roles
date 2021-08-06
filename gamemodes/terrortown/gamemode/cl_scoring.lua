@@ -442,7 +442,11 @@ function CLSCORE:BuildScorePanel(dpanel)
             local c = dlist:AddColumn("")
             c:SetFixedWidth(18)
         else
-            dlist:AddColumn(T(name))
+            dlist:AddColumn(PT(name, {
+                innocent = ROLE_STRINGS[ROLE_INNOCENT],
+                traitor = ROLE_STRINGS[ROLE_TRAITOR],
+                jester = ROLE_STRINGS[ROLE_JESTER]
+            }))
         end
     end
 
@@ -999,7 +1003,12 @@ function CLSCORE:BuildHilitePanel(dpanel)
     local partlbl = vgui.Create("DLabel", dpanel)
 
     local plytxt = PT(numtr == 1 and "hilite_players2" or "hilite_players1",
-                      {numplayers = numply, numtraitors = numtr})
+                    {
+                        numplayers = numply,
+                        numtraitors = numtr,
+                        traitor = ROLE_STRINGS[ROLE_TRAITOR],
+                        traitors = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]
+                    })
 
     partlbl:SetText(plytxt)
     partlbl:SizeToContents()

@@ -4,6 +4,7 @@ AddCSLuaFile()
 SWEP.HoldType              = "normal"
 
 if CLIENT then
+   local GetPTranslation = LANG.GetParamTranslation
    SWEP.PrintName          = "decoy_name"
    SWEP.Slot               = 7
 
@@ -13,7 +14,7 @@ if CLIENT then
 
    SWEP.EquipMenuData = {
       type = "item_weapon",
-      desc = "decoy_desc"
+      desc = function() return GetPTranslation("decoy_desc", { detective = ROLE_STRINGS_PLURAL[ROLE_DETECTIVE] }) end
    };
 
    SWEP.Icon                = "vgui/ttt/icon_beacon"

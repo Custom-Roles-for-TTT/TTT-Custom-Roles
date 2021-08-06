@@ -419,7 +419,7 @@ Event(EVENT_LOG, {
 
 Event(EVENT_ZOMBIFIED, {
     text = function(e)
-        return PT("ev_zombi", {victim = e.vic, zombie = ROLE_STRINGS[ROLE_ZOMBIE]})
+        return PT("ev_zombi", {victim = e.vic, zombie = ROLE_STRINGS_EXT[ROLE_ZOMBIE]})
     end,
     icon = function(e)
         return zombie_icon, "Zombified"
@@ -427,7 +427,7 @@ Event(EVENT_ZOMBIFIED, {
 
 Event(EVENT_VAMPIFIED, {
     text = function(e)
-        return PT("ev_vampi", {victim = e.vic, vampire = ROLE_STRINGS[ROLE_VAMPIRE]})
+        return PT("ev_vampi", {victim = e.vic, vampire = ROLE_STRINGS_EXT[ROLE_VAMPIRE]})
     end,
     icon = function(e)
         return vampire_icon, "Vampified"

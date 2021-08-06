@@ -121,7 +121,7 @@ if SERVER then
 
          self:SetBeingWorn(true)
 
-         LANG.Msg(ply, "hat_retrieve")
+         LANG.Msg(ply, "hat_retrieve", {detective = ROLE_STRINGS_EXT[ROLE_DETECTIVE]})
       end
    end
 

@@ -196,7 +196,7 @@ L.search_dna = "Retrieve a sample of the killer's DNA with a DNA Scanner. The DN
 
 L.search_kills1 = "You found a list of kills that confirms the death of {player}."
 L.search_kills2 = "You found a list of kills with these names:"
-L.search_eyes = "Using your detective skills, you identified the last person they saw: {player}. The killer, or a coincidence?"
+L.search_eyes = "Using your investigative skills, you identified the last person they saw: {player}. Their killer, or a coincidence?"
 
 
 -- Scoreboard
@@ -226,7 +226,7 @@ L.help_title = "Help and Settings"
 
 -- Tabs
 L.help_tut = "Tutorial"
-L.help_tut_tip = "How TTT works, in 6 steps"
+L.help_tut_tip = "How TTT works, in just a few steps"
 
 L.help_settings = "Settings"
 L.help_settings_tip = "Client-side settings"
@@ -325,7 +325,7 @@ rate of 1.5 HP every second.]]
 
 -- C4
 L.c4_hint = "Press {usekey} to arm or disarm."
-L.c4_no_disarm = "You cannot disarm another Traitor's C4 unless they are dead."
+L.c4_no_disarm = "You cannot disarm another {traitor}'s C4 unless they are dead."
 L.c4_disarm_warn = "A C4 explosive you planted has been disarmed."
 L.c4_armed = "You have successfully armed the bomb."
 L.c4_disarmed = "You have successfully disarmed the bomb."
@@ -346,7 +346,7 @@ L.c4_remove_destroy2 = "Confirm: destroy"
 L.c4_disarm = "Disarm C4"
 L.c4_disarm_cut = "Click to cut wire {num}"
 
-L.c4_disarm_t = "Cut a wire to disarm the bomb. As you are Traitor, every wire is safe. Innocents don't have it so easy!"
+L.c4_disarm_t = "Cut a wire to disarm the bomb. As you are {traitor}, every wire is safe. {innocent} don't have it so easy!"
 L.c4_disarm_owned = "Cut a wire to disarm the bomb. It's your bomb, so every wire will disarm it."
 L.c4_disarm_other = "Cut a safe wire to disarm the bomb. It will explode if you get it wrong!"
 
@@ -355,7 +355,7 @@ L.c4_status_disarmed = "DISARMED"
 
 -- Visualizer
 L.vis_name = "Visualizer"
-L.vis_hint = "Press {usekey} to pick up (Detectives only)."
+L.vis_hint = "Press {usekey} to pick up ({detective} only)."
 
 L.vis_help_pri = "{primaryfire} drops the activated device."
 
@@ -374,7 +374,7 @@ L.decoy_broken = "Your Decoy has been destroyed!"
 L.decoy_help_pri = "{primaryfire} plants the Decoy."
 
 L.decoy_desc = [[
-Shows a fake radar sign to detectives,
+Shows a fake radar sign to {detective},
 and makes their DNA scanner show the
 location of the Decoy if they scan for
 your DNA.]]
@@ -418,10 +418,10 @@ L.bstation_broken = "Your Bomb Station has been destroyed!"
 L.bstation_help = "{primaryfire} places the Bomb Station."
 
 L.bstation_desc = [[
-Appears as a health station to non-traitors.
+Appears as a health station to non-{traitors}.
 
-Detonates when used by a non-traitor.
-Traitors can use to deplete fake charge.]]
+Detonates when used by a non-{traitor}.
+{traitors} can use to deplete fake charge.]]
 
 -- Knife
 L.knife_name = "Knife"
@@ -1034,59 +1034,59 @@ L.tips_panel_tip = "Tip:"
 
 -- Tip texts
 
-L.tip1 = "Traitors can search a corpse silently, without confirming the death, by holding {walkkey} and pressing {usekey} on the corpse."
+L.tip1 = "{traitor} can search a corpse silently, without confirming the death, by holding {walkkey} and pressing {usekey} on the corpse."
 
 L.tip2 = "Arming a C4 explosive with a longer timer will increase the number of wires that cause it to explode instantly when an innocent attempts to disarm it. It will also beep softer and less often."
 
-L.tip3 = "Detectives can search a corpse to find who is 'reflected in its eyes'. This is the last person the dead guy saw. That does not have to be the killer if they were shot in the back."
+L.tip3 = "{detective} can search a corpse to find who is 'reflected in its eyes'. This is the last person the dead guy saw. That does not have to be the killer if they were shot in the back."
 
 L.tip4 = "No one will know you have died until they find your dead body and identify you by searching it."
 
-L.tip5 = "When a Traitor kills a Detective, they instantly receive a credit reward."
+L.tip5 = "When {traitor} kills {detective}, they instantly receive a credit reward."
 
-L.tip6 = "When a Traitor dies, all Detectives are rewarded equipment credits."
+L.tip6 = "When {traitor} dies, all {detective} are rewarded equipment credits."
 
-L.tip7 = "When the Traitors have made significant progress in killing innocents, they will receive an equipment credit as reward."
+L.tip7 = "When the {traitor} have made significant progress in killing {innocent}, they will receive an equipment credit as reward."
 
-L.tip8 = "Traitors and Detectives can collect unspent equipment credits from the dead bodies of other Traitors and Detectives."
+L.tip8 = "Roles with shops can collect unspent equipment credits from the dead bodies of other roles with shops."
 
 L.tip9 = "The Poltergeist can turn any physics object into a deadly projectile. Each punch is accompanied by a blast of energy hurting anyone nearby."
 
-L.tip10 = "As Traitor or Detective, keep an eye on red messages in the top right. These will be important for you."
+L.tip10 = "Keep an eye on colored messages in the top right. These will be important for you."
 
-L.tip11 = "As Traitor or Detective, keep in mind you are rewarded extra equipment credits if you and your comrades perform well. Make sure you remember to spend them!"
+L.tip11 = "As a role with a shop, keep in mind you are rewarded extra equipment credits if you and your comrades perform well. Make sure you remember to spend them!"
 
-L.tip12 = "The Detectives' DNA Scanner can be used to gather DNA samples from weapons and items and then scan to find the location of the player who used them. Useful when you can get a sample from a corpse or a disarmed C4!"
+L.tip12 = "The {detective}'s DNA Scanner can be used to gather DNA samples from weapons and items and then scan to find the location of the player who used them. Useful when you can get a sample from a corpse or a disarmed C4!"
 
-L.tip13 = "When you are close to someone you kill, some of your DNA is left on the corpse. This DNA can be used with a Detective's DNA Scanner to find your current location. Better hide the body after you knife someone!"
+L.tip13 = "When you are close to someone you kill, some of your DNA is left on the corpse. This DNA can be used with {detective}'s DNA Scanner to find your current location. Better hide the body after you knife someone!"
 
 L.tip14 = "The further you are away from someone you kill, the faster your DNA sample on their body will decay."
 
-L.tip15 = "Are you Traitor and going sniping? Consider trying out the Disguiser. If you miss a shot, run away to a safe spot, disable the Disguiser, and no one will know it was you who was shooting at them."
+L.tip15 = "Are you {traitor} and going sniping? Consider trying out the Disguiser. If you miss a shot, run away to a safe spot, disable the Disguiser, and no one will know it was you who was shooting at them."
 
-L.tip16 = "As Traitor, the Teleporter can help you escape when chased, and allows you to quickly travel across a big map. Make sure you always have a safe position marked."
+L.tip16 = "As {traitor}, the Teleporter can help you escape when chased, and allows you to quickly travel across a big map. Make sure you always have a safe position marked."
 
-L.tip17 = "Are the innocents all grouped up and hard to pick off? Consider trying out the Radio to play sounds of C4 or a firefight to lead some of them away."
+L.tip17 = "Are the {innocent} all grouped up and hard to pick off? Consider trying out the Radio to play sounds of C4 or a firefight to lead some of them away."
 
-L.tip18 = "Using the Radio as Traitor, you can play sounds through your Equipment Menu after the radio has been placed. Queue up multiple sounds by clicking multiple buttons in the order you want them."
+L.tip18 = "Using the Radio as {traitor}, you can play sounds through your Equipment Menu after the radio has been placed. Queue up multiple sounds by clicking multiple buttons in the order you want them."
 
-L.tip19 = "As Detective, if you have leftover credits you could give a trusted Innocent a Defuser. Then you can spend your time doing the serious investigative work and leave the risky bomb defusal to them."
+L.tip19 = "As {detective}, if you have leftover credits you could give a trusted {innocent} a Defuser. Then you can spend your time doing the serious investigative work and leave the risky bomb defusal to them."
 
-L.tip20 = "The Detectives' Binoculars allow long-range searching and identifying of corpses. Bad news if the Traitors were hoping to use a corpse as bait. Of course, while using the Binoculars a Detective is unarmed and distracted..."
+L.tip20 = "The {detective}'s Binoculars allow long-range searching and identifying of corpses. Bad news if the {traitor} were hoping to use a corpse as bait. Of course, while using the Binoculars {adetective} is unarmed and distracted..."
 
-L.tip21 = "The Detectives' Health Station lets wounded players recover. Of course, those wounded people could be Traitors..."
+L.tip21 = "The {detective}'s Health Station lets wounded players recover. Of course, those wounded people could be {traitor}..."
 
-L.tip22 = "The Health Station records a DNA sample of everyone who uses it. Detectives can use this with the DNA Scanner to find out who has been healing up."
+L.tip22 = "The Health Station records a DNA sample of everyone who uses it. {detective} can use this with the DNA Scanner to find out who has been healing up."
 
-L.tip23 = "Unlike weapons and C4, the Radio equipment for Traitors does not contain a DNA sample of the person who planted it. Don't worry about Detectives finding it and blowing your cover."
+L.tip23 = "Unlike weapons and C4, the Radio equipment for {traitor} does not contain a DNA sample of the person who planted it. Don't worry about {detective} finding it and blowing your cover."
 
 L.tip24 = "Press {helpkey} to view a short tutorial or modify some TTT-specific settings. For example, you can permanently disable these tips there."
 
-L.tip25 = "When a Detective searches a body, the result is available to all players via the scoreboard by clicking on the name of the dead person."
+L.tip25 = "When {detective} searches a body, the result is available to all players via the scoreboard by clicking on the name of the dead person."
 
-L.tip26 = "In the scoreboard, a magnifying glass icon next to someone's name indicates you have search information about that person. If the icon is bright, the data comes from a Detective and may contain additional information."
+L.tip26 = "In the scoreboard, a magnifying glass icon next to someone's name indicates you have search information about that person. If the icon is bright, the data comes from {detective} and may contain additional information."
 
-L.tip27 = "As Detective, corpses with a magnifying glass after the nickname have been searched by a Detective and their results are available to all players via the scoreboard."
+L.tip27 = "As {detective}, corpses with a magnifying glass after the nickname have been searched by a Detective and their results are available to all players via the scoreboard."
 
 L.tip28 = "Spectators can press {mutekey} to cycle through muting other spectators or living players."
 
@@ -1102,7 +1102,7 @@ L.tip33 = "Firing through the ironsights of a weapon will slightly increase your
 
 L.tip34 = "Smoke grenades are effective indoors, especially for creating confusion in crowded rooms."
 
-L.tip35 = "As Traitor, remember you can carry dead bodies and hide them from the prying eyes of the innocent and their Detectives."
+L.tip35 = "As {traitor}, remember you can carry dead bodies and hide them from the prying eyes of the {innocent} and their {detective}."
 
 L.tip36 = "The tutorial available under {helpkey} contains an overview of the most important keys of the game."
 
@@ -1112,7 +1112,7 @@ L.tip38 = "Many of the placeable equipment items (such as C4, Radio) can be stuc
 
 L.tip39 = "C4 that explodes due to a mistake in disarming it has a smaller explosion than C4 that reaches zero on its timer."
 
-L.tip40 = "If it says 'HASTE MODE' above the round timer, the round will at first be only a few minutes long, but with every death the available time increases (like capturing a point in TF2). This mode puts the pressure on the traitors to keep things moving."
+L.tip40 = "If it says 'HASTE MODE' above the round timer, the round will at first be only a few minutes long, but with every death the available time increases (like capturing a point in TF2). This mode puts the pressure on the {traitor} to keep things moving."
 
 
 --- Round report
@@ -1140,8 +1140,8 @@ L.hilite_win_role_plural = "THE {role} WIN"
 L.hilite_win_role_singular = "THE {role} WINS"
 L.hilite_win_role_singular_additional = "AND THE {role} WINS"
 
-L.hilite_players1 = "{numplayers} players took part, {numtraitors} were traitors"
-L.hilite_players2 = "{numplayers} players took part, one of them the traitor"
+L.hilite_players1 = "{numplayers} players took part, {numtraitors} were {traitors}"
+L.hilite_players2 = "{numplayers} players took part, one of them the {traitor}"
 
 L.hilite_duration = "The round lasted {time}"
 
@@ -1150,9 +1150,9 @@ L.col_time = "Time"
 L.col_event = "Event"
 L.col_player = "Player"
 L.col_role = "Starting Role"
-L.col_kills1 = "Innocent kills"
-L.col_kills2 = "Traitor kills"
-L.col_kills3 = "Jester kills"
+L.col_kills1 = "{innocent} kills"
+L.col_kills2 = "{traitor} kills"
+L.col_kills3 = "{jester} kills"
 L.col_kills4 = "Indep. kills"
 L.col_kills5 = "Monster kills"
 L.col_points = "Points"
@@ -1243,49 +1243,49 @@ L.aw_exp2_title = "Field Research"
 L.aw_exp2_text = "tested their own resistance to explosions. It was not high enough."
 
 L.aw_fst1_title = "First Blood"
-L.aw_fst1_text = "delivered the first innocent death at a traitor's hands."
+L.aw_fst1_text = "delivered the first {innocent} death at {traitor}'s hands."
 
 L.aw_fst2_title = "First Bloody Stupid Kill"
-L.aw_fst2_text = "scored the first kill by shooting a fellow traitor. Good job."
+L.aw_fst2_text = "scored the first kill by shooting a fellow {traitor}. Good job."
 
 L.aw_fst3_title = "First Blooper"
-L.aw_fst3_text = "was the first to kill. Too bad it was an innocent comrade."
+L.aw_fst3_text = "was the first to kill. Too bad it was {innocent} comrade."
 
 L.aw_fst4_title = "First Blow"
-L.aw_fst4_text = "struck the first blow for the innocent terrorists by making the first death a traitor's."
+L.aw_fst4_text = "struck the first blow for the {innocent} by making the first death {traitor}'s."
 
 L.aw_all1_title = "Deadliest Among Equals"
-L.aw_all1_text = "was responsible for every kill made by the innocent this round."
+L.aw_all1_text = "was responsible for every kill made by the {innocent} this round."
 
 L.aw_all2_title = "Lone Wolf"
-L.aw_all2_text = "was responsible for every kill made by a traitor this round."
+L.aw_all2_text = "was responsible for every kill made by {traitor} this round."
 
 L.aw_all3_title = "Van Helsing"
 L.aw_all3_text = "was responsible for every monster killed this round."
 
 L.aw_nkt1_title = "I Got One, Boss!"
-L.aw_nkt1_text = "managed to kill a single innocent. Sweet!"
+L.aw_nkt1_text = "managed to kill a single {innocent}. Sweet!"
 
 L.aw_nkt2_title = "A Bullet For Two"
 L.aw_nkt2_text = "showed the first one was not a lucky shot by killing another."
 
-L.aw_nkt3_title = "Serial Traitor"
-L.aw_nkt3_text = "ended three innocent lives of terrorism today."
+L.aw_nkt3_title = "Serial {traitor}"
+L.aw_nkt3_text = "ended three {innocent} lives of terrorism today."
 
 L.aw_nkt4_title = "Wolf Among More Sheep-Like Wolves"
-L.aw_nkt4_text = "eats innocent terrorists for dinner. A dinner of {num} courses."
+L.aw_nkt4_text = "eats {innocent} for dinner. A dinner of {num} courses."
 
 L.aw_nkt5_title = "Counter-Terrorism Operative"
 L.aw_nkt5_text = "gets paid per kill. Can now buy another luxury yacht."
 
 L.aw_nki1_title = "Betray This"
-L.aw_nki1_text = "found a traitor. Shot a traitor. Easy."
+L.aw_nki1_text = "found {traitor}. Shot {traitor}. Easy."
 
 L.aw_nki2_title = "Applied to the Justice Squad"
-L.aw_nki2_text = "escorted two traitors to the great beyond."
+L.aw_nki2_text = "escorted two {traitor} to the great beyond."
 
-L.aw_nki3_title = "Do Traitors Dream Of Traitorous Sheep?"
-L.aw_nki3_text = "put three traitors to rest."
+L.aw_nki3_title = "Do {traitor} Dream Of Traitorous Sheep?"
+L.aw_nki3_text = "put three {traitor} to rest."
 
 L.aw_nki4_title = "Internal Affairs Employee"
 L.aw_nki4_text = "gets paid per kill. Can now order their fifth swimming pool."
@@ -1384,7 +1384,7 @@ L.aw_tkl1_title = "Made An Oopsie"
 L.aw_tkl1_text = "had their finger slip just when they were aiming at a buddy."
 
 L.aw_tkl2_title = "Double-Oops"
-L.aw_tkl2_text = "thought they got a Traitor twice, but was wrong both times."
+L.aw_tkl2_text = "thought they got {traitor} twice, but was wrong both times."
 
 L.aw_tkl3_title = "Karma-conscious"
 L.aw_tkl3_text = "couldn't stop after killing two teammates. Three is their lucky number."
@@ -1434,8 +1434,8 @@ L.aw_tod2_text = "died right after the start of the round."
 
 
 --- v23
-L.set_avoid_det = "Avoid being selected as Detective"
-L.set_avoid_det_tip = "Enable this to ask the server not to select you as Detective if possible. Does not mean you are Traitor more often."
+L.set_avoid_det = "Avoid being selected as {detective}"
+L.set_avoid_det_tip = "Enable this to ask the server not to select you as {detective} if possible. Does not mean you are {traitor} more often."
 
 --- v24
 L.drop_no_ammo = "Insufficient ammo in your weapon's clip to drop as an ammo box."
@@ -1445,7 +1445,7 @@ L.set_cross_brightness = "Crosshair brightness"
 L.set_cross_size = "Crosshair size"
 
 --- 5-25-15
-L.hat_retrieve = "You picked up a Detective's hat."
+L.hat_retrieve = "You picked up {detective}'s hat."
 
 --- 3-9-2017
 L.sb_sortby = "Sort By:"
@@ -1485,8 +1485,8 @@ L.ev_clown = "The clown, {player}, went on a rampage"
 L.ev_drunk = "{player} remembered they are {team}"
 L.ev_haunt = "{victim} started haunting {attacker}"
 L.ev_bodysnatch = "{attacker} bodysnatched {role}, {victim}"
-L.ev_zombi = "{victim} was turned into a {zombie}"
-L.ev_vampi = "{victim} was turned into a {vampire}"
+L.ev_zombi = "{victim} was turned into {zombie}"
+L.ev_vampi = "{victim} was turned into {vampire}"
 L.ev_vampi_revert_converted = "The last {vampire} Prime ({prime}) was killed and all their thralls had their humanity restored"
 L.ev_vampi_kill_converted = "The last {vampire} Prime ({prime}) was killed and took all their thralls with them"
 L.ev_beggar_converted = "The {beggar} ({victim}) was converted to {team} by {attacker}"

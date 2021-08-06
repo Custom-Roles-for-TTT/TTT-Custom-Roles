@@ -294,8 +294,8 @@ function HELPSCRN:Show()
     local dplay = vgui.Create("DForm", dsettings)
     dplay:SetName(GetTranslation("set_title_play"))
 
-    cb = dplay:CheckBox(GetTranslation("set_avoid_det"), "ttt_avoid_detective")
-    cb:SetTooltip(GetTranslation("set_avoid_det_tip"))
+    cb = dplay:CheckBox(GetPTranslation("set_avoid_det", {detective = ROLE_STRINGS[ROLE_DETECTIVE]}), "ttt_avoid_detective")
+    cb:SetTooltip(GetPTranslation("set_avoid_det_tip", {detective = ROLE_STRINGS[ROLE_DETECTIVE], traitor = ROLE_STRINGS[ROLE_TRAITOR]}))
 
     cb = dplay:CheckBox(GetTranslation("set_specmode"), "ttt_spectator_mode")
     cb:SetTooltip(GetTranslation("set_specmode_tip"))

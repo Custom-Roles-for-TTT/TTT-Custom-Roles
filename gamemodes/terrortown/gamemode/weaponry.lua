@@ -675,37 +675,29 @@ function GM:WeaponEquip(wep, ply)
         if wep.CanBuy and not wep.AutoSpawnable then
             if not wep.BoughtBuy then
                 wep.BoughtBuy = ply
-            elseif ply:IsBeggar() then
-                local team = ""
+            elseif ply:IsBeggar() and (wep.BoughtBuy:IsTraitorTeam() or wep.BoughtBuy:IsInnocentTeam()) then
+                local role
                 if wep.BoughtBuy:IsTraitorTeam() then
-                    team = "a traitor"
-                    ply:SetRole(ROLE_TRAITOR)
-                    ply:SetNWBool("WasBeggar", true)
-                    ply:PrintMessage(HUD_PRINTTALK, "You have joined the traitor team")
-                    ply:PrintMessage(HUD_PRINTCENTER, "You have joined the traitor team")
-                    timer.Simple(0.5, function() SendFullStateUpdate() end) -- Slight delay to avoid flickering from beggar to traitor and back to beggar
-                    if GetConVar("ttt_beggar_reveal_change"):GetBool() then
-                        wep.BoughtBuy:PrintMessage(HUD_PRINTTALK, "The beggar has joined your team")
-                        wep.BoughtBuy:PrintMessage(HUD_PRINTCENTER, "The beggar has joined your team")
-                    end
-                elseif wep.BoughtBuy:IsInnocentTeam() then
-                    team = "an innocent"
-                    ply:SetRole(ROLE_INNOCENT)
-                    ply:SetNWBool("WasBeggar", true)
-                    ply:PrintMessage(HUD_PRINTTALK, "You have joined the innocent team")
-                    ply:PrintMessage(HUD_PRINTCENTER, "You have joined the innocent team")
-                    timer.Simple(0.5, function() SendFullStateUpdate() end) -- Slight delay to avoid flickering from beggar to innocent and back to beggar
-                    if GetConVar("ttt_beggar_reveal_change"):GetBool() then
-                        wep.BoughtBuy:PrintMessage(HUD_PRINTTALK, "The beggar has joined your team")
-                        wep.BoughtBuy:PrintMessage(HUD_PRINTCENTER, "The beggar has joined your team")
-                    end
+                    role = ROLE_TRAITOR
+                else
+                    role = ROLE_INNOCENT
                 end
+
+                ply:SetRole(role)
+                ply:SetNWBool("WasBeggar", true)
+                ply:PrintMessage(HUD_PRINTTALK, "You have joined the " .. ROLE_STRINGS[role] .. " team")
+                ply:PrintMessage(HUD_PRINTCENTER, "You have joined the " .. ROLE_STRINGS[role] .. " team")
+                timer.Simple(0.5, function() SendFullStateUpdate() end) -- Slight delay to avoid flickering from beggar to the new role and back to beggar
+                if GetConVar("ttt_beggar_reveal_change"):GetBool() then
+                    wep.BoughtBuy:PrintMessage(HUD_PRINTTALK, "The " .. ROLE_STRINGS[ROLE_BEGGAR] .. " has joined your team")
+                    wep.BoughtBuy:PrintMessage(HUD_PRINTCENTER, "The " .. ROLE_STRINGS[ROLE_BEGGAR] .. " has joined your team")
+                end
+
                 net.Start("TTT_BeggarConverted")
                 net.WriteString(ply:Nick())
                 net.WriteString(wep.BoughtBuy:Nick())
-                net.WriteString(team)
+                net.WriteString(ROLE_STRINGS_EXT[role])
                 net.Broadcast()
-
             end
         end
     end
