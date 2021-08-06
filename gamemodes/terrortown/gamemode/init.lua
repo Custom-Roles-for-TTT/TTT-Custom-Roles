@@ -150,6 +150,7 @@ CreateConVar("ttt_doctor_mode", "0")
 
 CreateConVar("ttt_revenger_radar_timer", "15")
 CreateConVar("ttt_revenger_damage_bonus", "0")
+CreateConVar("ttt_revenger_drain_health_to", "-1")
 
 CreateConVar("ttt_deputy_damage_penalty", "0")
 CreateConVar("ttt_deputy_use_detective_icon", "1")
@@ -1282,6 +1283,31 @@ function BeginRound()
                 v:PrintMessage(HUD_PRINTTALK, "You are in love with " .. revenger_lover:Nick() .. ".")
                 v:PrintMessage(HUD_PRINTCENTER, "You are in love with " .. revenger_lover:Nick() .. ".")
             end
+
+            local drain_health = GetConVar("ttt_revenger_drain_health_to"):GetInt()
+            if drain_health >= 0 then
+                timer.Create("revengerhealthdrain", 3, 0, function()
+                    for _, p in pairs(player.GetAll()) do
+                        local lover_sid = p:GetNWString("RevengerLover", "")
+                        if p:IsActiveRevenger() and lover_sid ~= "" then
+                            local lover = player.GetBySteamID64(lover_sid)
+                            if IsValid(lover) and (not lover:Alive() or lover:IsSpec()) then
+                                local hp = p:Health()
+                                if hp > drain_health then
+                                    -- We were going to set them to 0, so just kill them instead
+                                    if hp == 1 then
+                                        p:PrintMessage(HUD_PRINTTALK, "You have succumbed to the heartache of losing your lover.")
+                                        p:PrintMessage(HUD_PRINTCENTER, "You have succumbed to the heartache of losing your lover.")
+                                        p:Kill()
+                                    else
+                                        p:SetHealth(hp - 1)
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end)
+            end
         end
 
         -- Drunk logic
@@ -1317,18 +1343,18 @@ function BeginRound()
         end
 
         -- Old Man logic
-        local drain_health = GetConVar("ttt_oldman_drain_health_to"):GetInt()
-        if role == ROLE_OLDMAN and drain_health > 0 then
+        local oldman_drain_health = GetConVar("ttt_oldman_drain_health_to"):GetInt()
+        if role == ROLE_OLDMAN and oldman_drain_health > 0 then
             timer.Create("oldmanhealthdrain", 3, 0, function()
                 for _, p in pairs(player.GetAll()) do
                     if p:IsActiveOldMan() then
                         local hp = p:Health()
-                        if hp > drain_health then
+                        if hp > oldman_drain_health then
                             p:SetHealth(hp - 1)
                         end
 
                         local max = p:GetMaxHealth()
-                        if max > drain_health then
+                        if max > oldman_drain_health then
                             p:SetMaxHealth(max - 1)
                         end
                     end
@@ -1515,6 +1541,7 @@ function EndRound(type)
     if timer.Exists("drunkremember") then timer.Remove("drunkremember") end
     if timer.Exists("waitfordrunkrespawn") then timer.Remove("waitfordrunkrespawn") end
     if timer.Exists("oldmanhealthdrain") then timer.Remove("oldmanhealthdrain") end
+    if timer.Exists("revengerhealthdrain") then timer.Remove("revengerhealthdrain") end
 
     -- We may need to start a timer for a mapswitch, or start a vote
     CheckForMapSwitch()
