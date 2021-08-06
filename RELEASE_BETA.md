@@ -15,6 +15,7 @@
 ### Additions
 - Added convar to have the clown's shop purchases be held back until they are activated
 - Added convar to drain a revenger's health down to a specified number when their lover has died
+- Re-added Radio menu and added ability to choose which button to use via the F1 menu
 
 ### Updates
 - Updated the role string logic to handle more plural cases

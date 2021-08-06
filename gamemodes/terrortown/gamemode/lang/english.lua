@@ -150,8 +150,8 @@ L.quick_help = "Help!"
 L.quick_imwith = "I'm with {player}."
 L.quick_see = "I see {player}."
 L.quick_suspect = "{player} acts suspicious."
-L.quick_traitor = "{player} is a Traitor!"
-L.quick_inno = "{player} is innocent."
+L.quick_traitor = "{player} is {atraitor}!"
+L.quick_inno = "{player} is {aninnocent}."
 L.quick_check = "Anyone still alive?"
 
 -- {player} in the quickchat text normally becomes a player nickname, but can
@@ -257,6 +257,8 @@ L.set_raw_karma_tip = "Shows the raw karma value in the scoreboard instead of th
 L.set_color_mode = "Color settings"
 L.set_hide_role = "Hide your role in the HUD"
 L.set_hide_role_tip = "By default your role will appear in the bottom left of the HUD. Turn this on to prevent screen cheating."
+L.set_radio_button = "Radio menu button"
+L.set_radio_button_tip = "What button to press to open/close the radio menu"
 
 L.set_title_play = "Gameplay settings"
 

@@ -164,8 +164,8 @@ RADIO.Commands = {
     { cmd = "imwith", text = "quick_imwith", format = true },
     { cmd = "see", text = "quick_see", format = true },
     { cmd = "suspect", text = "quick_suspect", format = true },
-    { cmd = "traitor", text = "quick_traitor", format = true },
-    { cmd = "innocent", text = "quick_inno", format = true },
+    { cmd = "traitor", text = "quick_traitor", format = true, params = { atraitor = ROLE_STRINGS_EXT[ROLE_TRAITOR] } },
+    { cmd = "innocent", text = "quick_inno", format = true, params = { aninnocent = ROLE_STRINGS_EXT[ROLE_INNOCENT] } },
     { cmd = "check", text = "quick_check", format = false }
 };
 
@@ -213,7 +213,11 @@ function RADIO:ShowRadioCommands(state)
                 local id = key .. ": "
                 local txt = id
                 if command.format then
-                    txt = txt .. GetPTranslation(command.text, { player = GetTranslation("quick_nobody") })
+                    local params = { player = GetTranslation("quick_nobody") }
+                    if type(command.params) == "table" then
+                        params = table.Merge(params, command.params)
+                    end
+                    txt = txt .. GetPTranslation(command.text, params)
                 else
                     txt = txt .. GetTranslation(command.text)
                 end
@@ -232,7 +236,11 @@ function RADIO:ShowRadioCommands(state)
                         if s.target ~= tgt then
                             s.target = tgt
 
-                            tgt = string.Interp(s.txt, { player = RADIO.ToPrintable(tgt) })
+                            local params = { player = RADIO.ToPrintable(tgt) }
+                            if type(command.params) == "table" then
+                                params = table.Merge(params, command.params)
+                            end
+                            tgt = string.Interp(s.txt, params)
                             if v then
                                 tgt = util.Capitalize(tgt)
                             end
@@ -354,7 +362,15 @@ local function RadioCommand(ply, cmd, arg)
     for _, msg in pairs(RADIO.Commands) do
         if msg.cmd == msg_type then
             local eng = LANG.GetTranslationFromLanguage(msg.text, "english")
-            text = msg.format and string.Interp(eng, { player = RADIO.ToPrintable(target) }) or eng
+            if msg.format then
+                local params = { player = RADIO.ToPrintable(target) }
+                if type(msg.params) == "table" then
+                    params = table.Merge(params, msg.params)
+                end
+                text = string.Interp(eng, params)
+            else
+                text = eng
+            end
 
             msg_name = msg.text
             break
@@ -410,7 +426,11 @@ local function RadioMsgRecv()
         end
     end
 
-    local text = GetPTranslation(msg, { player = param })
+    local text = GetPTranslation(msg, {
+        player = param,
+        atraitor = ROLE_STRINGS_EXT[ROLE_TRAITOR],
+        aninnocent = ROLE_STRINGS_EXT[ROLE_INNOCENT]
+    })
 
     -- don't want to capitalize nicks, but everything else is fair game
     if lang_param then

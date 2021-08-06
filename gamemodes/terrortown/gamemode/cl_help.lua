@@ -144,6 +144,9 @@ function HELPSCRN:Show()
     cb = dgui:CheckBox(GetTranslation("set_hide_role"), "ttt_hide_role")
     cb:SetTooltip(GetTranslation("set_hide_role_tip"))
 
+    cb = dgui:TextEntry(GetTranslation("set_radio_button"), "ttt_radio_button")
+    cb:SetTooltip(GetTranslation("set_radio_button_tip"))
+
     dsettings:AddItem(dgui)
 
     local dcolor = vgui.Create("DForm", dsettings)
