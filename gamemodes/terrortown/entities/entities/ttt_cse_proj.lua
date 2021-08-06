@@ -148,7 +148,7 @@ end
 
 function ENT:UseOverride(activator)
    if IsValid(activator) and activator:IsPlayer() then
-      if activator:IsActiveDetective() and activator:CanCarryType(WEAPON_EQUIP) then
+      if activator:IsActiveDetectiveLike() and activator:CanCarryType(WEAPON_EQUIP) then
          self:StopScanSound(true)
          self:Remove()
 

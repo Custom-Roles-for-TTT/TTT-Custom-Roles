@@ -10,6 +10,7 @@
 - Fixed the "Highlights" round summary tab message missing the winning role name
 - Fixed revenger being mislabeled as "tevenger" in some messages
 - Fixed body call messages not using correct custom role articles
+- Fixed promoted deputy/impersonator not being able to pick up Visualizers
 
 ### Additions
 - Added convar to have the clown's shop purchases be held back until they are activated
