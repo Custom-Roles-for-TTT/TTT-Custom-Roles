@@ -486,7 +486,7 @@ local function InfoPaint(client)
         surface.SetFont("TabLarge")
         surface.SetTextColor(255, 255, 255, 230)
 
-        text = GetTranslation("detective_promotion_hud")
+        text = GetPTranslation("detective_promotion_hud", { detective = ROLE_STRINGS[ROLE_DETECTIVE] })
         local _, h = surface.GetTextSize(text)
 
         surface.SetTextPos(label_left, ScrH() - label_top - h)
@@ -495,7 +495,7 @@ local function InfoPaint(client)
         surface.SetFont("TabLarge")
         surface.SetTextColor(255, 255, 255, 230)
 
-        text = GetTranslation("beggar_hidden_hud")
+        text = GetPTranslation("beggar_hidden_hud", { beggar = ROLE_STRINGS[ROLE_BEGGAR] })
         local _, h = surface.GetTextSize(text)
 
         surface.SetTextPos(label_left, ScrH() - label_top - h)
