@@ -442,11 +442,7 @@ function CLSCORE:BuildScorePanel(dpanel)
             local c = dlist:AddColumn("")
             c:SetFixedWidth(18)
         else
-            dlist:AddColumn(PT(name, {
-                innocent = ROLE_STRINGS[ROLE_INNOCENT],
-                traitor = ROLE_STRINGS[ROLE_TRAITOR],
-                jester = ROLE_STRINGS[ROLE_JESTER]
-            }))
+            dlist:AddColumn(T(name))
         end
     end
 
