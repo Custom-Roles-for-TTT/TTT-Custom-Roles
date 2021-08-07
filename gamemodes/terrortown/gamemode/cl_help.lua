@@ -144,6 +144,9 @@ function HELPSCRN:Show()
     cb = dgui:CheckBox(GetTranslation("set_hide_role"), "ttt_hide_role")
     cb:SetTooltip(GetTranslation("set_hide_role_tip"))
 
+    cb = dgui:TextEntry(GetTranslation("set_radio_button"), "ttt_radio_button")
+    cb:SetTooltip(GetTranslation("set_radio_button_tip"))
+
     dsettings:AddItem(dgui)
 
     local dcolor = vgui.Create("DForm", dsettings)
@@ -294,8 +297,8 @@ function HELPSCRN:Show()
     local dplay = vgui.Create("DForm", dsettings)
     dplay:SetName(GetTranslation("set_title_play"))
 
-    cb = dplay:CheckBox(GetTranslation("set_avoid_det"), "ttt_avoid_detective")
-    cb:SetTooltip(GetTranslation("set_avoid_det_tip"))
+    cb = dplay:CheckBox(GetPTranslation("set_avoid_det", {detective = ROLE_STRINGS[ROLE_DETECTIVE]}), "ttt_avoid_detective")
+    cb:SetTooltip(GetPTranslation("set_avoid_det_tip", {detective = ROLE_STRINGS[ROLE_DETECTIVE], traitor = ROLE_STRINGS[ROLE_TRAITOR]}))
 
     cb = dplay:CheckBox(GetTranslation("set_specmode"), "ttt_spectator_mode")
     cb:SetTooltip(GetTranslation("set_specmode_tip"))

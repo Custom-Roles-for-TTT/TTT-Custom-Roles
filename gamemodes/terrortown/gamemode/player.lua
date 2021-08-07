@@ -779,10 +779,10 @@ local function JesterTeamKilledNotification(role_string, attacker, victim, getki
 end
 
 local function JesterKilledNotification(attacker, victim)
-    JesterTeamKilledNotification("Jester", attacker, victim,
+    JesterTeamKilledNotification(ROLE_STRINGS[ROLE_JESTER], attacker, victim,
         -- getkillstring
         function()
-            return attacker:Nick() .. " was dumb enough to kill the Jester!"
+            return attacker:Nick() .. " was dumb enough to kill the " .. ROLE_STRINGS[ROLE_JESTER] .. "!"
         end,
         -- shouldshow
         function()
@@ -792,22 +792,22 @@ local function JesterKilledNotification(attacker, victim)
 end
 
 local function SwapperKilledNotification(attacker, victim)
-    JesterTeamKilledNotification("Swapper", attacker, victim,
+    JesterTeamKilledNotification(ROLE_STRINGS[ROLE_SWAPPER], attacker, victim,
         -- getkillstring
         function(ply)
             local target = "someone"
             if ply:IsTraitorTeam() or attacker:IsDetectiveLike() then
                 target = ROLE_STRINGS_EXT[attacker:GetRole()] .. " (" .. attacker:Nick() .. ")"
             end
-            return "The swapper (" .. victim:Nick() .. ") has swapped with " .. target .. "!"
+            return "The " .. ROLE_STRINGS[ROLE_SWAPPER] .. " (" .. victim:Nick() .. ") has swapped with " .. target .. "!"
         end)
 end
 
 local function BeggarKilledNotification(attacker, victim)
-    JesterTeamKilledNotification("Beggar", attacker, victim,
+    JesterTeamKilledNotification(ROLE_STRINGS[ROLE_BEGGAR], attacker, victim,
         -- getkillstring
         function()
-            return attacker:Nick() .. " cruelly killed the lowly Beggar!"
+            return attacker:Nick() .. " cruelly killed the lowly " .. ROLE_STRINGS[ROLE_BEGGAR] .. "!"
         end)
 end
 
@@ -864,7 +864,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
         if respawn and GetConVar("ttt_phantom_announce_death"):GetBool() then
             for _, v in pairs(player.GetAll()) do
                 if v:IsDetectiveLike() and v:Alive() and not v:IsSpec() then
-                    v:PrintMessage(HUD_PRINTCENTER, "The phantom has been respawned.")
+                    v:PrintMessage(HUD_PRINTCENTER, "The " .. ROLE_STRINGS[ROLE_PHANTOM] .. " has been respawned.")
                 end
             end
         end
@@ -1126,7 +1126,7 @@ function GM:PlayerDeath(victim, infl, attacker)
         if GetConVar("ttt_phantom_announce_death"):GetBool() then
             for _, v in pairs(player.GetAll()) do
                 if v ~= attacker and v:IsDetectiveLike() and v:Alive() and not v:IsSpec() then
-                    v:PrintMessage(HUD_PRINTCENTER, "The phantom has been killed.")
+                    v:PrintMessage(HUD_PRINTCENTER, "The " .. ROLE_STRINGS[ROLE_PHANTOM] .. " has been killed.")
                 end
             end
         end
@@ -1193,7 +1193,7 @@ function GM:PlayerDeath(victim, infl, attacker)
     if valid_kill and victim:IsSwapper() then
         SwapperKilledNotification(attacker, victim)
         attacker:SetNWString("SwappedWith", victim:Nick())
-        attacker:PrintMessage(HUD_PRINTCENTER, "You killed the swapper!")
+        attacker:PrintMessage(HUD_PRINTCENTER, "You killed the " .. ROLE_STRINGS[ROLE_SWAPPER] .. "!")
 
         -- Only bother saving the attacker weapons if we're going to do something with them
         local weapon_mode = GetConVar("ttt_swapper_weapon_mode"):GetInt()
@@ -1413,15 +1413,15 @@ function GM:PlayerDeath(victim, infl, attacker)
                     ply:SetNWBool("HasPromotion", true)
                     local alive = ply:Alive()
                     if alive then
-                        ply:PrintMessage(HUD_PRINTTALK, "You have been promoted to Detective!")
-                        ply:PrintMessage(HUD_PRINTCENTER, "You have been promoted to Detective!")
+                        ply:PrintMessage(HUD_PRINTTALK, "You have been promoted to " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "!")
+                        ply:PrintMessage(HUD_PRINTCENTER, "You have been promoted to " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "!")
                     end
 
                     -- If the player is an Impersonator, tell all their team members when they get promoted
                     if ply:IsImpersonator() then
                         for _, v in pairs(player.GetAll()) do
                             if v ~= ply and v:IsTraitorTeam() and v:Alive() and not v:IsSpec() then
-                                local message = "The Impersonator has been promoted to Detective!"
+                                local message = "The " .. ROLE_STRINGS[ROLE_IMPERSONATOR] .. " has been promoted to " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "!"
                                 if not alive then
                                     message = message .. " Too bad they're dead..."
                                 end
@@ -1455,13 +1455,13 @@ function GM:PlayerDeath(victim, infl, attacker)
             if not v:GetNWBool("VeteranActive", false) then
                 v:SetNWBool("VeteranActive", true)
 
-                v:PrintMessage(HUD_PRINTTALK, "You are the last innocent alive!")
-                v:PrintMessage(HUD_PRINTCENTER, "You are the last innocent alive!")
+                v:PrintMessage(HUD_PRINTTALK, "You are the last " .. ROLE_STRINGS[ROLE_INNOCENT] .. " alive!")
+                v:PrintMessage(HUD_PRINTCENTER, "You are the last " .. ROLE_STRINGS[ROLE_INNOCENT] .. " alive!")
                 if GetConVar("ttt_veteran_announce"):GetBool() then
                     for _, p in ipairs(player.GetAll()) do
                         if p ~= v and p:Alive() and not p:IsSpec() then
-                            p:PrintMessage(HUD_PRINTTALK, "The last innocent alive is a veteran!")
-                            p:PrintMessage(HUD_PRINTCENTER, "The last innocent alive is a veteran!")
+                            p:PrintMessage(HUD_PRINTTALK, "The last " .. ROLE_STRINGS[ROLE_INNOCENT] .. " alive is " .. ROLE_STRINGS_EXT[ROLE_VETERAN] .. "!")
+                            p:PrintMessage(HUD_PRINTCENTER, "The last " .. ROLE_STRINGS[ROLE_INNOCENT] .. " alive is " .. ROLE_STRINGS_EXT[ROLE_VETERAN] .. "!")
                         end
                     end
                 end

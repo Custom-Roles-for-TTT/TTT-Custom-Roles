@@ -310,6 +310,7 @@ local styledmessages = {
         "buy_no_stock",
         "buy_pending",
         "buy_received",
+        "buy_received_delay",
 
         "xfer_no_recip",
         "xfer_no_credits",

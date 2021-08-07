@@ -1,7 +1,38 @@
 # Beta Release Notes
 
+## 1.0.8
+**Released:**
+
+### Fixes
+- Fixed role selection message not always using custom role strings
+- Fixed win message for singular roles not being properly pluralized (e.g. "THE JESTER WIN" instead of "THE JESTER WINS")
+- Fixed "AND THE OLD MAN WINS" round summary message missing
+- Fixed the "Highlights" round summary tab message missing the winning role name
+- Fixed revenger being mislabeled as "tevenger" in some messages
+- Fixed body call messages not using correct custom role articles
+- Fixed promoted deputy/impersonator not being able to pick up Visualizers
+
+### Additions
+- Added convar to have the clown's shop purchases be held back until they are activated
+- Added convar to drain a revenger's health down to a specified number when their lover has died
+- Re-added Radio menu and added ability to choose which button to use via the F1 menu
+
+### Updates
+- Updated the role string logic to handle more plural cases
+- Updated more places to use customizable role strings
+  - Round summary events
+  - Round summary score table
+  - Round start role popups
+  - HUD messages for beggar and deputy/impersonator
+  - Role logic messages
+  - Equipment descriptions
+  - Tips
+
+### Developer
+- Added ability for SWEP name, type, and description to use functions for formatting
+
 ## 1.0.7
-**Released: Released: August 8th, 2021**
+**Released: August 4th, 2021**
 
 ### Fixes
 - Fixed team player count calculations not always being accurate by truncating the "_pct" convars to 3 digits to work around floating point inaccuracy
@@ -28,7 +59,6 @@
 ### Developer
 - Added the ability for SWEPs to not be randomized out of the shop by setting "SWEP.BlockShopRandomization = true"
 - Renamed ROLE_STRINGS to ROLE_STRINGS_RAW
-
 
 ## 1.0.6
 **Released: July 20th, 2021**

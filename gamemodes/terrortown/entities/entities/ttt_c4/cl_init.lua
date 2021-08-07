@@ -384,7 +384,7 @@ function ShowC4Disarm(bomb)
     ddesc:SetSize(256, desc_h)
     ddesc:SetWrap(true)
     if LocalPlayer():IsTraitorTeam() then
-        ddesc:SetText(T("c4_disarm_t"))
+        ddesc:SetText(PT("c4_disarm_t", { traitor = ROLE_STRINGS_EXT[ROLE_TRAITOR], innocent = ROLE_STRINGS_PLURAL[ROLE_INNOCENT] }))
     elseif LocalPlayer() == bomb:GetOwner() then
         ddesc:SetText(T("c4_disarm_owned"))
     else

@@ -397,6 +397,8 @@ local function OrderEquipment(ply, cmd, args)
         WEPS.HandleCanBuyOverrides(swep_table, role, false, sync_traitor_weapons, sync_detective_weapons)
     end
 
+    -- Don't give clowns their items if delayed shop activated is enabled
+    local should_give = not ply:IsClown() or not GetGlobalBool("ttt_clown_shop_delay", false) or ply:GetNWBool("KillerClownActive", false)
     local received = false
     if is_item then
         id = tonumber(id)
@@ -468,7 +470,10 @@ local function OrderEquipment(ply, cmd, args)
         -- ownership check and finalise
         if id and EQUIP_NONE < id then
             if not ply:HasEquipmentItem(id) then
-                ply:GiveEquipmentItem(id)
+                if should_give then
+                    ply:GiveEquipmentItem(id)
+                end
+
                 received = true
             end
         end
@@ -489,7 +494,9 @@ local function OrderEquipment(ply, cmd, args)
         -- no longer restricted to only WEAPON_EQUIP weapons, just anything that
         -- is whitelisted and carryable
         if ply:CanCarryWeapon(swep_table) then
-            GiveEquipmentWeapon(ply:SteamID64(), id)
+            if should_give then
+                GiveEquipmentWeapon(ply:SteamID64(), id)
+            end
 
             received = true
         end
@@ -497,7 +504,11 @@ local function OrderEquipment(ply, cmd, args)
 
     if received then
         ply:SubtractCredits(1)
-        LANG.Msg(ply, "buy_received")
+        if should_give then
+            LANG.Msg(ply, "buy_received")
+        else
+            LANG.Msg(ply, "buy_received_delay")
+        end
 
         ply:AddBought(id)
 
@@ -664,37 +675,29 @@ function GM:WeaponEquip(wep, ply)
         if wep.CanBuy and not wep.AutoSpawnable then
             if not wep.BoughtBuy then
                 wep.BoughtBuy = ply
-            elseif ply:IsBeggar() then
-                local team = ""
+            elseif ply:IsBeggar() and (wep.BoughtBuy:IsTraitorTeam() or wep.BoughtBuy:IsInnocentTeam()) then
+                local role
                 if wep.BoughtBuy:IsTraitorTeam() then
-                    team = "a traitor"
-                    ply:SetRole(ROLE_TRAITOR)
-                    ply:SetNWBool("WasBeggar", true)
-                    ply:PrintMessage(HUD_PRINTTALK, "You have joined the traitor team")
-                    ply:PrintMessage(HUD_PRINTCENTER, "You have joined the traitor team")
-                    timer.Simple(0.5, function() SendFullStateUpdate() end) -- Slight delay to avoid flickering from beggar to traitor and back to beggar
-                    if GetConVar("ttt_beggar_reveal_change"):GetBool() then
-                        wep.BoughtBuy:PrintMessage(HUD_PRINTTALK, "The beggar has joined your team")
-                        wep.BoughtBuy:PrintMessage(HUD_PRINTCENTER, "The beggar has joined your team")
-                    end
-                elseif wep.BoughtBuy:IsInnocentTeam() then
-                    team = "an innocent"
-                    ply:SetRole(ROLE_INNOCENT)
-                    ply:SetNWBool("WasBeggar", true)
-                    ply:PrintMessage(HUD_PRINTTALK, "You have joined the innocent team")
-                    ply:PrintMessage(HUD_PRINTCENTER, "You have joined the innocent team")
-                    timer.Simple(0.5, function() SendFullStateUpdate() end) -- Slight delay to avoid flickering from beggar to innocent and back to beggar
-                    if GetConVar("ttt_beggar_reveal_change"):GetBool() then
-                        wep.BoughtBuy:PrintMessage(HUD_PRINTTALK, "The beggar has joined your team")
-                        wep.BoughtBuy:PrintMessage(HUD_PRINTCENTER, "The beggar has joined your team")
-                    end
+                    role = ROLE_TRAITOR
+                else
+                    role = ROLE_INNOCENT
                 end
+
+                ply:SetRole(role)
+                ply:SetNWBool("WasBeggar", true)
+                ply:PrintMessage(HUD_PRINTTALK, "You have joined the " .. ROLE_STRINGS[role] .. " team")
+                ply:PrintMessage(HUD_PRINTCENTER, "You have joined the " .. ROLE_STRINGS[role] .. " team")
+                timer.Simple(0.5, function() SendFullStateUpdate() end) -- Slight delay to avoid flickering from beggar to the new role and back to beggar
+                if GetConVar("ttt_beggar_reveal_change"):GetBool() then
+                    wep.BoughtBuy:PrintMessage(HUD_PRINTTALK, "The " .. ROLE_STRINGS[ROLE_BEGGAR] .. " has joined your team")
+                    wep.BoughtBuy:PrintMessage(HUD_PRINTCENTER, "The " .. ROLE_STRINGS[ROLE_BEGGAR] .. " has joined your team")
+                end
+
                 net.Start("TTT_BeggarConverted")
                 net.WriteString(ply:Nick())
                 net.WriteString(wep.BoughtBuy:Nick())
-                net.WriteString(team)
+                net.WriteString(ROLE_STRINGS_EXT[role])
                 net.Broadcast()
-
             end
         end
     end

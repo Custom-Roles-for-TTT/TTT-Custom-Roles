@@ -60,10 +60,6 @@ function GM:PlayerBindPress(ply, bind, pressed)
             WSWITCH:SelectSlot(idx)
         end
         return true
-        --elseif string.find(bind, "zoom") and pressed then
-        -- open or close radio
-        --RADIO:ShowRadioCommands(not RADIO.Show)
-        --return true
     elseif bind == "+voicerecord" then
         if not VOICE.CanSpeak() then
             return true
@@ -112,6 +108,15 @@ function GM:KeyRelease(ply, key)
 
     if key == IN_ZOOM and ply:IsActiveTraitorTeam() then
         timer.Simple(0.05, function() RunConsoleCommand("-voicerecord") end)
+    end
+end
+
+local radio_button = CreateClientConVar("ttt_radio_button", "z", true, false, "What button to press to open/close the radio menu")
+function GM:PlayerButtonDown(ply, btn)
+    if not IsFirstTimePredicted() then return end
+    if btn == input.GetKeyCode(radio_button:GetString()) then
+        -- open or close radio
+        RADIO:ShowRadioCommands(not RADIO.Show)
     end
 end
 

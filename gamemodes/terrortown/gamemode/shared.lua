@@ -1,5 +1,5 @@
 -- Version string for display and function for version checks
-CR_VERSION = "1.0.7"
+CR_VERSION = "1.0.8"
 
 function CRVersion(version)
     local installedVersionRaw = string.Split(CR_VERSION, ".")
@@ -353,7 +353,7 @@ ROLE_STRINGS = {
     [ROLE_GLITCH] = "Glitch",
     [ROLE_PHANTOM] = "Phantom",
     [ROLE_HYPNOTIST] = "Hypnotist",
-    [ROLE_REVENGER] = "Tevenger",
+    [ROLE_REVENGER] = "Revenger",
     [ROLE_DRUNK] = "Drunk",
     [ROLE_CLOWN] = "Clown",
     [ROLE_DEPUTY] = "Deputy",
@@ -382,7 +382,7 @@ ROLE_STRINGS_PLURAL = {
     [ROLE_GLITCH] = "Glitches",
     [ROLE_PHANTOM] = "Phantoms",
     [ROLE_HYPNOTIST] = "Hypnotists",
-    [ROLE_REVENGER] = "Tevengers",
+    [ROLE_REVENGER] = "Revengers",
     [ROLE_DRUNK] = "Drunks",
     [ROLE_CLOWN] = "Clowns",
     [ROLE_DEPUTY] = "Deputies",
@@ -461,6 +461,15 @@ ROLE_STRINGS_SHORT = {
     [ROLE_TRICKSTER] = "tri"
 }
 
+function StartsWithVowel(word)
+    local firstletter = string.sub(word, 1, 1)
+    return firstletter == "a" or
+        firstletter == "e" or
+        firstletter == "i" or
+        firstletter == "o" or
+        firstletter == "u"
+end
+
 function UpdateRoleStrings()
     for role = 0, ROLE_MAX do
         local name = GetGlobalString("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name", "")
@@ -469,15 +478,21 @@ function UpdateRoleStrings()
 
             local plural = GetGlobalString("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name_plural", "")
             if plural == "" then -- Fallback if no plural is given. Does NOT handle all cases properly
-                ROLE_STRINGS_PLURAL[role] = name .. "s"
+                local lastChar = string.sub(name, name:len(), name:len()):lower()
+                if lastChar == "s" then
+                    ROLE_STRINGS_PLURAL[role] = name .. "es"
+                elseif lastChar == "y" then
+                    ROLE_STRINGS_PLURAL[role] = string.sub(name, 1, name:len() - 1) .. "ies"
+                else
+                    ROLE_STRINGS_PLURAL[role] = name .. "s"
+                end
             else
                 ROLE_STRINGS_PLURAL[role] = plural
             end
 
             local article = GetGlobalString("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name_article", "")
             if article == "" then -- Fallback if no article is given. Does NOT handle all cases properly
-                local firstChar = string.lower(string.sub(name, 1, 1))
-                if firstChar == "a" or firstChar == "e" or firstChar == "i" or firstChar == "o" or firstChar == "u" then
+                if StartsWithVowel(name) then
                     ROLE_STRINGS_EXT[role] = "an " .. name
                 else
                     ROLE_STRINGS_EXT[role] = "a " .. name

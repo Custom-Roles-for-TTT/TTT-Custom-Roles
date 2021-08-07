@@ -56,69 +56,65 @@ local Event = CLSCORE.DeclareEventDisplay
 
 local is_dmg = util.BitSet
 
-local function StartsWithVowel(word)
-    local firstletter = string.sub(word, 1, 1)
-    return firstletter == "a" or
-        firstletter == "e" or
-        firstletter == "i" or
-        firstletter == "o" or
-        firstletter == "u"
-end
-
 -- Round end event
 Event(EVENT_FINISH,
       { text = function(e)
                   if e.win == WIN_TRAITOR then
-                     return T("ev_win_traitor")
+                     return PT("ev_win_traitor", { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]:lower() })
                   elseif e.win == WIN_INNOCENT then
-                     return T("ev_win_inno")
+                     return PT("ev_win_inno", { role = ROLE_STRINGS_PLURAL[ROLE_INNOCENT]:lower() })
                   elseif e.win == WIN_JESTER then
-                     return T("ev_win_jester")
+                     return PT("ev_win_jester", { role = ROLE_STRINGS[ROLE_JESTER]:lower() })
                   elseif e.win == WIN_CLOWN then
-                     return T("ev_win_clown")
+                     return PT("ev_win_clown", { role = ROLE_STRINGS[ROLE_CLOWN]:lower() })
                   elseif e.win == WIN_OLDMAN then
-                     return T("ev_win_oldman")
+                     return PT("ev_win_oldman", { role = ROLE_STRINGS[ROLE_OLDMAN]:lower() })
                   elseif e.win == WIN_KILLER then
-                     return T("ev_win_killer")
+                     return PT("ev_win_killer", { role = ROLE_STRINGS[ROLE_KILLER]:lower() })
                   elseif e.win == WIN_MONSTER then
                      if not MONSTER_ROLES[ROLE_ZOMBIE] then
-                        return T("ev_win_vampire")
+                        return PT("ev_win_vampire", { role = ROLE_STRINGS_PLURAL[ROLE_VAMPIRE]:lower() })
                      elseif not MONSTER_ROLES[ROLE_VAMPIRE] then
-                        return T("ev_win_zombie")
+                        return PT("ev_win_zombie", { role = ROLE_STRINGS[ROLE_ZOMBIE]:lower() })
                      end
                      return T("ev_win_monster")
                   elseif e.win == WIN_ZOMBIE then
-                     return T("ev_win_zombie")
+                     return PT("ev_win_zombie", { role = ROLE_STRINGS[ROLE_ZOMBIE]:lower() })
                   elseif e.win == WIN_TIMELIMIT then
-                     return T("ev_win_time")
+                     return PT("ev_win_time", { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]:lower() })
                   end
                end,
         icon = function(e)
+                  local role_string = ""
+                  local win_string = "ev_win_icon"
                   if e.win == WIN_TRAITOR then
-                     return star_icon, "Traitors won"
+                     role_string = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]
                   elseif e.win == WIN_INNOCENT then
-                     return star_icon, "Innocents won"
+                     role_string = ROLE_STRINGS_PLURAL[ROLE_INNOCENT]
                   elseif e.win == WIN_JESTER then
-                     return star_icon, "Jester won"
+                     role_string = ROLE_STRINGS[ROLE_JESTER]
                   elseif e.win == WIN_CLOWN then
-                     return star_icon, "Clown won"
+                     role_string = ROLE_STRINGS[ROLE_CLOWN]
                   elseif e.win == WIN_OLDMAN then
-                     return star_icon, "Old Man also won"
+                     role_string = ROLE_STRINGS[ROLE_OLDMAN]
+                     win_string = "ev_win_icon_also"
                   elseif e.win == WIN_KILLER then
-                     return star_icon, "Killer won"
+                     role_string = ROLE_STRINGS[ROLE_KILLER]
                   elseif e.win == WIN_MONSTER then
-                     local text = "Monsters won"
                      if not MONSTER_ROLES[ROLE_ZOMBIE] then
-                        text = "Vampires won"
+                        role_string = ROLE_STRINGS_PLURAL[ROLE_VAMPIRE]
                      elseif not MONSTER_ROLES[ROLE_VAMPIRE] then
-                        text = "Zombies won"
+                        role_string = ROLE_STRINGS_PLURAL[ROLE_ZOMBIE]
+                     else
+                        role_string = "Monsters"
                      end
-                     return star_icon, text
                   elseif e.win == WIN_ZOMBIE then
-                     return star_icon, "Zombies won"
+                     role_string = ROLE_STRINGS_PLURAL[ROLE_ZOMBIE]
                   else
-                     return star_icon, "Timelimit"
+                     win_string = "ev_win_icon_time"
                   end
+
+                  return star_icon, PT(win_string, { role = role_string })
                end
      })
 
@@ -375,7 +371,7 @@ Event(EVENT_SWAPPER, {
 
 Event(EVENT_PROMOTION, {
     text = function(e)
-        return PT("ev_promote", {player = e.ply})
+        return PT("ev_promote", {player = e.ply, detective = ROLE_STRINGS[ROLE_DETECTIVE]})
     end,
     icon = function(e)
         return promotion_icon, "Promotion"
@@ -423,7 +419,7 @@ Event(EVENT_LOG, {
 
 Event(EVENT_ZOMBIFIED, {
     text = function(e)
-        return PT("ev_zombi", {victim = e.vic})
+        return PT("ev_zombi", {victim = e.vic, azombie = ROLE_STRINGS_EXT[ROLE_ZOMBIE]})
     end,
     icon = function(e)
         return zombie_icon, "Zombified"
@@ -431,7 +427,7 @@ Event(EVENT_ZOMBIFIED, {
 
 Event(EVENT_VAMPIFIED, {
     text = function(e)
-        return PT("ev_vampi", {victim = e.vic})
+        return PT("ev_vampi", {victim = e.vic, avampire = ROLE_STRINGS_EXT[ROLE_VAMPIRE]})
     end,
     icon = function(e)
         return vampire_icon, "Vampified"
@@ -440,9 +436,9 @@ Event(EVENT_VAMPIFIED, {
 Event(EVENT_VAMPPRIME_DEATH, {
     text = function(e)
         if e.mode == VAMPIRE_DEATH_REVERT_CONVERTED then
-           return PT("ev_vampi_revert_converted", {prime = e.prime})
+           return PT("ev_vampi_revert_converted", {prime = e.prime, vampire = ROLE_STRINGS[ROLE_VAMPIRE]})
         elseif e.mode == VAMPIRE_DEATH_KILL_CONVERED then
-           return PT("ev_vampi_kill_converted", {prime = e.prime})
+           return PT("ev_vampi_kill_converted", {prime = e.prime, vampire = ROLE_STRINGS[ROLE_VAMPIRE]})
         end
     end,
     icon = function(e)
@@ -455,7 +451,7 @@ Event(EVENT_VAMPPRIME_DEATH, {
 
 Event(EVENT_BEGGARCONVERTED, {
     text = function(e)
-        return PT("ev_beggar_converted", {victim = e.vic, attacker = e.att, team = e.team})
+        return PT("ev_beggar_converted", {victim = e.vic, attacker = e.att, team = e.team, beggar = ROLE_STRINGS[ROLE_BEGGAR]})
     end,
     icon = function(e)
         if e.team == "an innocent" then
@@ -468,9 +464,9 @@ Event(EVENT_BEGGARCONVERTED, {
 Event(EVENT_BEGGARKILLED, {
    text = function(e)
       if e.delay > 0 then
-         return PT("ev_beggar_killed_delay", {attacker = e.att, victim = e.vic, delay = e.delay})
+         return PT("ev_beggar_killed_delay", {attacker = e.att, victim = e.vic, delay = e.delay, beggar = ROLE_STRINGS[ROLE_BEGGAR]})
       end
-      return PT("ev_beggar_killed", {attacker = e.att, victim = e.vic})
+      return PT("ev_beggar_killed", {attacker = e.att, victim = e.vic, beggar = ROLE_STRINGS[ROLE_BEGGAR]})
   end,
   icon = function(e)
       if e.delay > 0 then

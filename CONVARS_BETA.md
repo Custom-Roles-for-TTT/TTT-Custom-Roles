@@ -159,15 +159,16 @@ ttt_phantom_announce_death                  0       // Whether to announce to de
 ttt_phantom_killer_haunt                    1       // Whether to have the phantom haunt their killer
 ttt_phantom_killer_haunt_power_max          100     // The maximum amount of power a phantom can have when haunting their killer
 ttt_phantom_killer_haunt_power_rate         10      // The amount of power to regain per second when a phantom is haunting their killer
-ttt_phantom_killer_haunt_move_cost          25      // The amount of power to spend when a phantom is moving their killer via a haunting. 0 to disable
-ttt_phantom_killer_haunt_jump_cost          50      // The amount of power to spend when a phantom is making their killer jump via a haunting. 0 to disable
-ttt_phantom_killer_haunt_drop_cost          75      // The amount of power to spend when a phantom is making their killer drop their weapon via a haunting. 0 to disable
-ttt_phantom_killer_haunt_attack_cost        100     // The amount of power to spend when a phantom is making their killer attack via a haunting. 0 to disable
-ttt_phantom_killer_footstep_time            0       // The amount of time a phantom's killer's footsteps should show before fading. 0 to disable
+ttt_phantom_killer_haunt_move_cost          25      // The amount of power to spend when a phantom is moving their killer via a haunting. Set to 0 to disable
+ttt_phantom_killer_haunt_jump_cost          50      // The amount of power to spend when a phantom is making their killer jump via a haunting. Set to 0 to disable
+ttt_phantom_killer_haunt_drop_cost          75      // The amount of power to spend when a phantom is making their killer drop their weapon via a haunting. Set to 0 to disable
+ttt_phantom_killer_haunt_attack_cost        100     // The amount of power to spend when a phantom is making their killer attack via a haunting. Set to 0 to disable
+ttt_phantom_killer_footstep_time            0       // The amount of time a phantom's killer's footsteps should show before fading. Set to 0 to disable
 
 // Revenger
 ttt_revenger_radar_timer                    15      // The amount of time between radar pings for the revenger's lover's killer
 ttt_revenger_damage_bonus                   0       // Extra damage that the revenger deals to their lover's killer (e.g. 0.5 = 50% extra damage)
+ttt_revenger_drain_health_to                -1      // The amount of health to drain the revenger down to after their lover has died. Setting to 0 will kill them. Set to -1 to disable
 
 // Deputy
 ttt_deputy_damage_penalty                   0       // Damage penalty that the deputy has before being promoted (e.g. 0.5 = 50% less damage)
@@ -217,6 +218,7 @@ ttt_clown_hide_when_active                  0       // Whether the clown should 
 ttt_clown_show_target_icon                  0       // Whether the clown has an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect
 ttt_clown_heal_on_activate                  0       // Whether the clown should fully heal when they activate or not
 ttt_clown_shop_active_only                  1       // Whether the clown's shop should be available only after they activate
+ttt_clown_shop_delay                        0       // Whether the clown's purchased shop items should be held until they activate
 ttt_clown_credits_starting                  0       // The number of credits a clown should start with
 
 // Beggar

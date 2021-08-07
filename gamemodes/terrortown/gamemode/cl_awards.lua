@@ -138,19 +138,32 @@ local function FirstBlood(events, scores, players)
             -- Non-Innocent killed Innocent
             if not e.att.inno and e.vic.inno then
                 award.title = T("aw_fst1_title")
-                award.text = PT("aw_fst1_text", {role=attackerrole})
+                award.text = PT("aw_fst1_text", {
+                    role = attackerrole,
+                    innocent = ROLE_STRINGS[ROLE_INNOCENT],
+                    traitor = ROLE_STRINGS_EXT[ROLE_TRAITOR]
+                })
             -- Non-Innocent TK
             elseif e.tk and not e.vic.inno then
                 award.title = T("aw_fst2_title")
-                award.text = PT("aw_fst2_text", {role=attackerrole})
+                award.text = PT("aw_fst2_text", {
+                    role = attackerrole,
+                    traitor = ROLE_STRINGS[ROLE_TRAITOR]
+                })
             -- Innocent TK
             elseif e.tk and e.vic.inno then
                 award.title = T("aw_fst3_title")
-                award.text = T("aw_fst3_text")
+                award.text = PT("aw_fst3_text",{
+                    innocent = ROLE_STRINGS_EXT[ROLE_INNOCENT]
+                })
             -- Innocent killed non-Innocent
             else
                 award.title = T("aw_fst4_title")
-                award.text = PT("aw_fst4_text", {role=victimrole})
+                award.text = PT("aw_fst4_text", {
+                    role = victimrole,
+                    innocent = ROLE_STRINGS_PLURAL[ROLE_INNOCENT],
+                    traitor = ROLE_STRINGS_EXT[ROLE_TRAITOR]
+                })
             end
 
             -- more interesting if there were many players and therefore many kills
@@ -185,7 +198,7 @@ local function AllKills(events, scores, players)
         if not TRAITOR_ROLES[role] then
             if not killer then return nil end
 
-            return {nick=killer, title=T("aw_all1_title"), text=T("aw_all1_text"), priority=math.random(0, table.Count(players))}
+            return {nick=killer, title=T("aw_all1_title"), text=PT("aw_all1_text", {innocent=ROLE_STRINGS_PLURAL[ROLE_INNOCENT]}), priority=math.random(0, table.Count(players))}
         end
     end
 
@@ -197,7 +210,7 @@ local function AllKills(events, scores, players)
         if not INNOCENT_ROLES[role] then
             if not killer then return nil end
 
-            return {nick=killer, title=T("aw_all2_title"), text=T("aw_all2_text"), priority=math.random(0, table.Count(players))}
+            return {nick=killer, title=T("aw_all2_title"), text=PT("aw_all2_text", {traitor=ROLE_STRINGS_EXT[ROLE_TRAITOR]}), priority=math.random(0, table.Count(players))}
         end
     end
 
@@ -238,13 +251,13 @@ local function NumKills_Traitor(events, scores, players)
         -- All non-traitor kills
         local kills = scores[sid].innos + scores[sid].indeps + scores[sid].monsters
         if kills == 1 then
-            return {title=T("aw_nkt1_title"), nick=nick, text=T("aw_nkt1_text"), priority=0}
+            return {title=T("aw_nkt1_title"), nick=nick, text=PT("aw_nkt1_text", {innocent = ROLE_STRINGS[ROLE_INNOCENT]}), priority=0}
         elseif kills == 2 then
             return {title=T("aw_nkt2_title"), nick=nick, text=T("aw_nkt2_text"), priority=1}
         elseif kills == 3 then
-            return {title=T("aw_nkt3_title"), nick=nick, text=T("aw_nkt3_text"), priority=kills}
+            return {title=PT("aw_nkt3_title", {traitor = ROLE_STRINGS[ROLE_TRAITOR]}), nick=nick, text=PT("aw_nkt3_text", {innocent = ROLE_STRINGS[ROLE_INNOCENT]}), priority=kills}
         elseif kills >= 4 and kills < 7 then
-            return {title=T("aw_nkt4_title"), nick=nick, text=PT("aw_nkt4_text", {num = kills}), priority=kills + 2}
+            return {title=T("aw_nkt4_title"), nick=nick, text=PT("aw_nkt4_text", {num = kills, innocent = ROLE_STRINGS_PLURAL[ROLE_INNOCENT]}), priority=kills + 2}
         elseif kills >= 7 then
             return {title=T("aw_nkt5_title"), nick=nick, text=T("aw_nkt5_text"), priority=kills + 5}
         end
@@ -275,11 +288,11 @@ local function NumKills_Inno(events, scores, players)
         -- All non-innocent kills
         local kills = scores[sid].traitors
         if kills == 1 then
-            return {title=T("aw_nki1_title"), nick=nick, text=T("aw_nki1_text"), priority = 0}
+            return {title=T("aw_nki1_title"), nick=nick, text=PT("aw_nki1_text", {traitor = ROLE_STRINGS_EXT[ROLE_TRAITOR]}), priority = 0}
         elseif kills == 2 then
-            return {title=T("aw_nki2_title"), nick=nick, text=T("aw_nki2_text"), priority = 1}
+            return {title=T("aw_nki2_title"), nick=nick, text=PT("aw_nki2_text", {traitor = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]}), priority = 1}
         elseif kills == 3 then
-            return {title=T("aw_nki3_title"), nick=nick, text=T("aw_nki3_text"), priority = 5}
+            return {title=PT("aw_nki3_title", {traitor = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]}), nick=nick, text=PT("aw_nki3_text", {traitor = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]}), priority = 5}
         elseif kills >= 4 then
             return {title=T("aw_nki4_title"), nick=nick, text=T("aw_nki4_text"), priority =kills + 10}
         end
@@ -684,7 +697,7 @@ local function TeamKiller(events, scores, players)
         award.priority = 0
     elseif kills == 2 then
         award.title = T("aw_tkl2_title")
-        award.text =  T("aw_tkl2_text")
+        award.text =  PT("aw_tkl2_text", {traitor = ROLE_STRINGS_EXT[ROLE_TRAITOR]})
     elseif kills == 3 then
         award.title = T("aw_tkl3_title")
         award.text =  T("aw_tkl3_text")
