@@ -11,6 +11,7 @@
 - Fixed revenger being mislabeled as "tevenger" in some messages
 - Fixed body call messages not using correct custom role articles
 - Fixed promoted deputy/impersonator not being able to pick up Visualizers
+- Fixed detectives showing as deputy on the scoreboard if ttt_deputy_use_detective_icon is disabled
 
 ### Additions
 - Added convar to have the clown's shop purchases be held back until they are activated
@@ -21,6 +22,7 @@
 - Updated the role string logic to handle more plural cases
 - Updated more places to use customizable role strings
   - Round summary events
+  - Round summary score table
   - Round start role popups
   - HUD messages for beggar and deputy/impersonator
   - Role logic messages
