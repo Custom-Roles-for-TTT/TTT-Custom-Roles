@@ -2246,8 +2246,9 @@ function SelectRoles()
                 table.insert(monsterRoles, ROLE_VAMPIRE)
             end
         end
+        local monster_chosen = false
         for _ = 1, monster_count do
-            if #monsterRoles ~= 0 and math.random() <= GetConVar("ttt_monster_chance"):GetFloat() and #choices > 0 then
+            if #monsterRoles ~= 0 and math.random() <= GetConVar("ttt_monster_chance"):GetFloat() and #choices > 0 and not monster_chosen then
                 local plyPick = math.random(1, #choices)
                 local ply = choices[plyPick]
                 local rolePick = math.random(1, #monsterRoles)
@@ -2260,6 +2261,7 @@ function SelectRoles()
                         table.remove(monsterRoles, i)
                     end
                 end
+                monster_chosen = true
             end
         end
     end

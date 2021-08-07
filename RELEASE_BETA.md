@@ -5,6 +5,7 @@
 
 ### Fixes
 - Fixed role weapons not being removed when a player is hypnotized
+- Fixed multiple monsters spawning in one round
 
 ## 1.0.8
 **Released: August 7th, 2021**
