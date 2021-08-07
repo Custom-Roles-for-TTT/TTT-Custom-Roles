@@ -1,7 +1,7 @@
 # Beta Release Notes
 
 ## 1.0.8
-**Released:**
+**Released: August 7th, 2021**
 
 ### Fixes
 - Fixed role selection message not always using custom role strings
