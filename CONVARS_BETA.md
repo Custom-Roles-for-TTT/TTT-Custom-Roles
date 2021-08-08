@@ -138,6 +138,8 @@ ttt_single_doctor_quack                     0       // Whether only a single doc
 
 // Parasite
 ttt_parasite_infection_time                 90      // The time it takes in seconds for the parasite to fully infect someone
+ttt_parasite_infection_transfer             0       // Whether the parasite's infection will transfer if the parasite's killer is killed by another player
+ttt_parasite_infection_transfer_reset       1       // Whether the parasite's infection progress will reset if their infection is transferred to another player
 ttt_parasite_respawn_mode                   0       // The way in which the parasite respawns. 0 - Take over host. 1 - Respawn at the parasite's body. 2 - Respawn at a random location.
 ttt_parasite_respawn_health                 100     // The health on which the parasite respawns
 ttt_parasite_announce_infection             0       // Whether players are notified when they are infected with the parasite

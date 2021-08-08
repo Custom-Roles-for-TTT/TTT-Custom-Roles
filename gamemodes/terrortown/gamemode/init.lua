@@ -125,6 +125,8 @@ CreateConVar("ttt_vampire_prime_death_mode", "0")
 CreateConVar("ttt_vampire_vision_enable", "0")
 
 CreateConVar("ttt_parasite_infection_time", 90)
+CreateConVar("ttt_parasite_infection_transfer", 0)
+CreateConVar("ttt_parasite_infection_transfer_reset", 1)
 CreateConVar("ttt_parasite_respawn_mode", 0)
 CreateConVar("ttt_parasite_respawn_health", 100)
 CreateConVar("ttt_parasite_announce_infection", 0)
