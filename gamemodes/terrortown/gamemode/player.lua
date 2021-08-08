@@ -998,9 +998,9 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
             local parasite = deadParasites[key]
             if parasite.attacker == ply:SteamID64() and IsValid(parasite.player) then
                 local deadParasite = parasite.player
-                local parasiteAlive = deadParasite:IsParasite() and not deadParasite:Alive()
+                local parasiteDead = deadParasite:IsParasite() and not deadParasite:Alive()
                 -- Transfer the infection to the new attacker if there is one, they are alive, the parasite is still alive, and the transfer feature is enabled
-                if attacker:IsPlayer() and attacker:Alive() and parasiteAlive and GetConVar("ttt_parasite_infection_transfer"):GetBool() then
+                if attacker:IsPlayer() and attacker:Alive() and parasiteDead and GetConVar("ttt_parasite_infection_transfer"):GetBool() then
                     deadParasites[key].attacker = attacker:SteamID64()
                     HandleParasiteInfection(attacker, deadParasite, not GetConVar("ttt_parasite_infection_transfer_reset"):GetBool())
                     timer.Create(deadParasite:Nick() .. "InfectingSpectate", 1, 1, function()
@@ -1018,7 +1018,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
                     deadParasite:SetNWInt("InfectionProgress", 0)
                     timer.Remove(deadParasite:Nick() .. "InfectionProgress")
                     timer.Remove(deadParasite:Nick() .. "InfectingSpectate")
-                    if parasiteAlive then
+                    if parasiteDead then
                         deadParasite:PrintMessage(HUD_PRINTCENTER, "Your host has died.")
                     end
                 end
