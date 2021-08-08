@@ -1001,12 +1001,17 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
                 local parasiteAlive = deadParasite:IsParasite() and not deadParasite:Alive()
                 -- Transfer the infection to the new attacker if there is one, they are alive, the parasite is still alive, and the transfer feature is enabled
                 if attacker:IsPlayer() and attacker:Alive() and parasiteAlive and GetConVar("ttt_parasite_infection_transfer"):GetBool() then
+                    deadParasites[key].attacker = attacker:SteamID64()
                     HandleParasiteInfection(attacker, deadParasite, not GetConVar("ttt_parasite_infection_transfer_reset"):GetBool())
                     timer.Create(deadParasite:Nick() .. "InfectingSpectate", 1, 1, function()
                         deadParasite:Spectate(OBS_MODE_CHASE)
                         deadParasite:SpectateEntity(attacker)
                     end)
                     deadParasite:PrintMessage(HUD_PRINTCENTER, "Your host has been killed and your infection has spread to their killer.")
+                    net.Start("TTT_ParasiteInfect")
+                    net.WriteString(deadParasite:Nick())
+                    net.WriteString(attacker:Nick())
+                    net.Broadcast()
                 else
                     deadParasite:SetNWBool("Infecting", false)
                     deadParasite:SetNWString("InfectingTarget", nil)
