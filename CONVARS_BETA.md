@@ -34,6 +34,7 @@ ttt_mercenary_enabled                       0       // Whether or not the mercen
 ttt_veteran_enabled                         0       // Whether or not the veteran should spawn
 ttt_doctor_enabled                          0       // Whether or not the doctor should spawn
 ttt_trickster_enabled                       0       // Whether or not the trickster should spawn
+ttt_paramedic_enabled                       0       // Whether or not the paramedic should spawn
 ttt_jester_enabled                          0       // Whether or not the jester should spawn
 ttt_swapper_enabled                         0       // Whether or not the swapper should spawn
 ttt_clown_enabled                           0       // Whether or not the clown should spawn
@@ -59,6 +60,7 @@ ttt_mercenary_spawn_weight                  1       // The weight assigned to sp
 ttt_veteran_spawn_weight                    1       // The weight assigned to spawning the veteran
 ttt_doctor_spawn_weight                     1       // The weight assigned to spawning the doctor
 ttt_trickster_spawn_weight                  1       // The weight assigned to spawning the trickster
+ttt_paramedic_spawn_weight                  1       // The weight assigned to spawning the paramedic
 ttt_jester_spawn_weight                     1       // The weight assigned to spawning the jester
 ttt_swapper_spawn_weight                    1       // The weight assigned to spawning the swapper
 ttt_clown_spawn_weight                      1       // The weight assigned to spawning the clown
@@ -85,6 +87,7 @@ ttt_mercenary_min_players                   0       // The minimum number of pla
 ttt_veteran_min_players                     0       // The minimum number of players required to spawn the veteran
 ttt_doctor_min_players                      0       // The minimum number of players required to spawn the doctor
 ttt_trickster_min_players                   0       // The minimum number of players required to spawn the trickster
+ttt_paramedic_min_players                   0       // The minimum number of players required to spawn the paramedic
 ttt_jester_min_players                      0       // The minimum number of players required to spawn the jester
 ttt_swapper_min_players                     0       // The minimum number of players required to spawn the swapper
 ttt_clown_min_players                       0       // The minimum number of players required to spawn the clown
@@ -191,7 +194,7 @@ ttt_veteran_heal_bonus                      0       // The amount of bonus healt
 ttt_veteran_announce                        0       // Whether to announce to all other living players when the veteran is the last remaining innocent
 
 // Doctor
-ttt_doctor_mode                             0       // What tool the doctor starts with (0=Health Station, 1=Defib then Health Station)
+ttt_doctor_credits_starting                 1       // The number of credits a doctor should start with
 
 // ----------------------------------------
 
@@ -371,6 +374,7 @@ ttt_mercenary_starting_health               100     // The amount of health the 
 ttt_veteran_starting_health                 100     // The amount of health the veteran starts with
 ttt_doctor_starting_health                  100     // The amount of health the doctor starts with
 ttt_trickster_starting_health               100     // The amount of health the trickster starts with
+ttt_paramedic_starting_health               100     // The amount of health the paramedic starts with
 ttt_jester_starting_health                  100     // The amount of health the jester starts with
 ttt_swapper_starting_health                 100     // The amount of health the swapper starts with
 ttt_clown_starting_health                   100     // The amount of health the clown starts with
@@ -399,6 +403,7 @@ ttt_mercenary_max_health                    100     // The maximum amount of hea
 ttt_veteran_max_health                      100     // The maximum amount of health the veteran can have
 ttt_doctor_max_health                       100     // The maximum amount of health the doctor can have
 ttt_trickster_max_health                    100     // The maximum amount of health the trickster can have
+ttt_paramedic_max_health                    100     // The maximum amount of health the paramedic can have
 ttt_jester_max_health                       100     // The maximum amount of health the jester can have
 ttt_swapper_max_health                      100     // The maximum amount of health the swapper can have
 ttt_clown_max_health                        100     // The maximum amount of health the clown can have

@@ -318,6 +318,7 @@ EquipmentItems = {
     [ROLE_JESTER] = {};
     [ROLE_SWAPPER] = {};
     [ROLE_CLOWN] = {};
+    [ROLE_DOCTOR] = {};
 };
 
 

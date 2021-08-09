@@ -1,7 +1,7 @@
 AddCSLuaFile()
 
 if CLIENT then
-    SWEP.PrintName = "Parasite Cure"
+    SWEP.PrintName = "Fake Parasite Cure"
     SWEP.Slot = 6
 
     SWEP.DrawCrosshair = false
@@ -9,12 +9,10 @@ if CLIENT then
 
     SWEP.EquipMenuData = {
             type =  "Weapon",
-            desc =  [[Use on a player to cure them of parasites.
-
-Using this on a player who is not infected will kill them!]]
+            desc =  [[Use on a player to trick them into thinking you cured the parasite.]]
         };
 
-    SWEP.Icon = "vgui/ttt/icon_cure"
+    SWEP.Icon = "vgui/ttt/icon_fakecure"
 end
 
 SWEP.Base = "weapon_tttbase"
@@ -35,8 +33,8 @@ SWEP.Secondary.Ammo           = "none"
 SWEP.Secondary.Delay          = 2
 
 SWEP.Kind = WEAPON_EQUIP
-SWEP.CanBuy = { ROLE_DETECTIVE, ROLE_DOCTOR, ROLE_QUACK }
-SWEP.CanBuyDefault = { ROLE_DETECTIVE, ROLE_DOCTOR, ROLE_QUACK  }
+SWEP.CanBuy = { ROLE_QUACK }
+SWEP.CanBuyDefault = { ROLE_QUACK }
 SWEP.NoSights = true
 SWEP.HoldType = "slam"
 
@@ -44,15 +42,9 @@ SWEP.UseHands = true
 SWEP.ViewModelFlip = false
 SWEP.BlockShopRandomization = true
 
-PARASITE_CURE_KILL_NONE = 0
-PARASITE_CURE_KILL_OWNER = 1
-PARASITE_CURE_KILL_TARGET = 2
-
 local DEFIB_IDLE = 0
 local DEFIB_BUSY = 1
 local DEFIB_ERROR = 2
-
-local CureMode = CreateConVar("ttt_parasite_cure_mode", "2")
 
 local charge = 3
 
@@ -99,27 +91,6 @@ if SERVER then
         local owner = self:GetOwner()
         if IsValid(ply) and ply:IsPlayer() then
             ply:EmitSound(cured)
-
-            if ply:GetNWBool("Infected", false) then
-                for _, v in pairs(player.GetAll()) do
-                    if v:GetNWString("InfectingTarget", "") == ply:SteamID64() then
-                        ply:SetNWBool("Infected", false)
-                        v:SetNWBool("Infecting", false)
-                        v:SetNWString("InfectingTarget", nil)
-                        v:SetNWInt("InfectionProgress", 0)
-                        timer.Remove(v:Nick() .. "InfectionProgress")
-                        timer.Remove(v:Nick() .. "InfectingSpectate")
-                        v:PrintMessage(HUD_PRINTCENTER, "Your host has been cured.")
-                    end
-                end
-            else
-                local cureMode = CureMode:GetInt()
-                if cureMode == PARASITE_CURE_KILL_OWNER and IsValid(owner) then
-                    owner:Kill()
-                elseif cureMode == PARASITE_CURE_KILL_TARGET then
-                    ply:Kill()
-                end
-            end
 
             self:Remove()
         else

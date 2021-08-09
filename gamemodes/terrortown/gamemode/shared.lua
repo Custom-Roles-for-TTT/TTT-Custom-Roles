@@ -72,8 +72,9 @@ ROLE_DOCTOR = 22
 ROLE_QUACK = 23
 ROLE_PARASITE = 24
 ROLE_TRICKSTER = 25
+ROLE_PARAMEDIC = 26
 
-ROLE_MAX = 25
+ROLE_MAX = 26
 
 local function AddRoleAssociations(list, roles)
     -- Use an associative array so we can do a O(1) lookup by role
@@ -94,13 +95,13 @@ function GetTeamRoles(list)
 end
 
 SHOP_ROLES = {}
-AddRoleAssociations(SHOP_ROLES, {ROLE_TRAITOR, ROLE_DETECTIVE, ROLE_HYPNOTIST, ROLE_DEPUTY, ROLE_IMPERSONATOR, ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_MERCENARY, ROLE_ASSASSIN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_VAMPIRE, ROLE_QUACK, ROLE_PARASITE})
+AddRoleAssociations(SHOP_ROLES, {ROLE_TRAITOR, ROLE_DETECTIVE, ROLE_HYPNOTIST, ROLE_DEPUTY, ROLE_IMPERSONATOR, ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_MERCENARY, ROLE_ASSASSIN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_VAMPIRE, ROLE_DOCTOR, ROLE_QUACK, ROLE_PARASITE})
 
 TRAITOR_ROLES = {}
 AddRoleAssociations(TRAITOR_ROLES, {ROLE_TRAITOR, ROLE_HYPNOTIST, ROLE_IMPERSONATOR, ROLE_ASSASSIN, ROLE_VAMPIRE, ROLE_QUACK, ROLE_PARASITE})
 
 INNOCENT_ROLES = {}
-AddRoleAssociations(INNOCENT_ROLES, {ROLE_INNOCENT, ROLE_DETECTIVE, ROLE_GLITCH, ROLE_PHANTOM, ROLE_REVENGER, ROLE_DEPUTY, ROLE_MERCENARY, ROLE_VETERAN, ROLE_DOCTOR, ROLE_TRICKSTER})
+AddRoleAssociations(INNOCENT_ROLES, {ROLE_INNOCENT, ROLE_DETECTIVE, ROLE_GLITCH, ROLE_PHANTOM, ROLE_REVENGER, ROLE_DEPUTY, ROLE_MERCENARY, ROLE_VETERAN, ROLE_DOCTOR, ROLE_TRICKSTER, ROLE_PARAMEDIC})
 
 JESTER_ROLES = {}
 AddRoleAssociations(JESTER_ROLES, {ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_BEGGAR, ROLE_BODYSNATCHER})
@@ -341,7 +342,8 @@ ROLE_STRINGS_RAW = {
     [ROLE_DOCTOR] = "doctor",
     [ROLE_QUACK] = "quack",
     [ROLE_PARASITE] = "parasite",
-    [ROLE_TRICKSTER] = "trickster"
+    [ROLE_TRICKSTER] = "trickster",
+    [ROLE_PARAMEDIC] = "paramedic"
 }
 
 ROLE_STRINGS = {
@@ -370,7 +372,8 @@ ROLE_STRINGS = {
     [ROLE_DOCTOR] = "Doctor",
     [ROLE_QUACK] = "Quack",
     [ROLE_PARASITE] = "Parasite",
-    [ROLE_TRICKSTER] = "Trickster"
+    [ROLE_TRICKSTER] = "Trickster",
+    [ROLE_PARAMEDIC] = "Paramedic"
 }
 
 ROLE_STRINGS_PLURAL = {
@@ -399,7 +402,8 @@ ROLE_STRINGS_PLURAL = {
     [ROLE_DOCTOR] = "Doctors",
     [ROLE_QUACK] = "Quacks",
     [ROLE_PARASITE] = "Parasites",
-    [ROLE_TRICKSTER] = "Tricksters"
+    [ROLE_TRICKSTER] = "Tricksters",
+    [ROLE_PARAMEDIC] = "Paramedics"
 }
 
 ROLE_STRINGS_EXT = {
@@ -429,7 +433,8 @@ ROLE_STRINGS_EXT = {
     [ROLE_DOCTOR] = "a Doctor",
     [ROLE_QUACK] = "a Quack",
     [ROLE_PARASITE] = "a Parasite",
-    [ROLE_TRICKSTER] = "a Trickster"
+    [ROLE_TRICKSTER] = "a Trickster",
+    [ROLE_PARAMEDIC] = "a Paramedic"
 }
 
 ROLE_STRINGS_SHORT = {
@@ -458,7 +463,8 @@ ROLE_STRINGS_SHORT = {
     [ROLE_DOCTOR] = "doc",
     [ROLE_QUACK] = "qua",
     [ROLE_PARASITE] = "par",
-    [ROLE_TRICKSTER] = "tri"
+    [ROLE_TRICKSTER] = "tri",
+    [ROLE_PARAMEDIC] = "med"
 }
 
 function StartsWithVowel(word)
@@ -590,10 +596,6 @@ JESTER_NOTIFY_EVERYONE = 4
 VAMPIRE_DEATH_NONE = 0
 VAMPIRE_DEATH_KILL_CONVERED = 1
 VAMPIRE_DEATH_REVERT_CONVERTED = 2
-
--- Doctor Modes
-DOCTOR_MODE_STATION = 0
-DOCTOR_MODE_EMT = 1
 
 -- Parasite respawn modes
 PARASITE_RESPAWN_HOST = 0
@@ -794,10 +796,13 @@ end
 function UpdateRoleWeaponState()
     -- If the parasite is not enabled, don't let anyone buy the cure
     local parasite_cure = weapons.GetStored("weapon_par_cure")
+    local fake_cure = weapons.GetStored("weapon_qua_fake_cure")
     if not GetGlobalBool("ttt_parasite_enabled", false) then
         table.Empty(parasite_cure.CanBuy)
+        table.Empty(fake_cure.CanBuy)
     else
         parasite_cure.CanBuy = table.Copy(parasite_cure.CanBuyDefault)
+        fake_cure.CanBuy = table.Copy(fake_cure.CanBuyDefault)
     end
 
     if SERVER then

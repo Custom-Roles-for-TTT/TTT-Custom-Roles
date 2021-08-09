@@ -9,12 +9,19 @@
 
 ### Changes
 - Split beggar reveal convar in two to allow finer control over when the beggar is revealed and who they are revealed to
+- Separated doctor modes into 2 separate roles
+  - The doctor now has a shop and can buy a health station or the parasite cure (based off doctor mode 0)
+  - The paramedic has a defibrillator that cannot be dropped or used by anyone else (based off doctor mode 1)
+- The quack now has to buy the bomb station from a shop instead of spawning with it
+  - The quack can also buy a real health station and the parasite cure
 
 ### Additions
 - Added ability for parasite's infection to transfer to a new player if their killer is killed (disabled by default)
   - There is also a new convar to determine whether the infection progress should be reset if the infection is transferred to a new player
 - Added ability to respawn the parasite if their infected target kills themselves (disabled by default)
 - Added glitch modes to allow glitches to function in rounds where there are 2 or more members of the traitor team but less than 2 regular traitors
+- Added convars to prevent the paramedic and hypnotist, or the phantom and parasite from spawning together
+- Added a fake parasite cure that does nothing except play the parasite cure sounds which is buyable for the quack
 
 ## 1.0.8
 **Released: August 7th, 2021**

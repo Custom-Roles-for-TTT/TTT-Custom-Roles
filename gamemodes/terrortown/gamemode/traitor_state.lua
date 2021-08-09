@@ -76,6 +76,7 @@ function SendDoctorList(ply_or_rf) SendRoleList(ROLE_DOCTOR, ply_or_rf) end
 function SendQuackList(ply_or_rf) SendRoleList(ROLE_QUACK, ply_or_rf) end
 function SendParasiteList(ply_or_rf) SendRoleList(ROLE_PARASITE, ply_or_rf) end
 function SendTricksterList(ply_or_rf) SendRoleList(ROLE_TRICKSTER, ply_or_rf) end
+function SendParamedicList(ply_or_rf) SendRoleList(ROLE_PARAMEDIC, ply_or_rf) end
 
 function SendAllLists(ply_or_rf)
     SendInnocentList(ply_or_rf)
@@ -104,6 +105,7 @@ function SendAllLists(ply_or_rf)
     SendQuackList(ply_or_rf)
     SendParasiteList(ply_or_rf)
     SendTricksterList(ply_or_rf)
+    SendParamedicList(ply_or_rf)
 end
 
 function SendConfirmedTraitors(ply_or_rf)
@@ -329,12 +331,6 @@ concommand.Add("ttt_force_vampire", force_vampire, nil, nil, FCVAR_CHEAT)
 local function force_doctor(ply)
     ply:SetRoleAndBroadcast(ROLE_DOCTOR)
     clear_role_effects(ply)
-    local mode = GetConVar("ttt_doctor_mode"):GetInt()
-    if mode == DOCTOR_MODE_STATION then
-        ply:Give("weapon_ttt_health_station")
-    elseif mode == DOCTOR_MODE_EMT then
-        ply:Give("weapon_doc_defib")
-    end
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_doctor", force_doctor, nil, nil, FCVAR_CHEAT)
@@ -342,7 +338,6 @@ concommand.Add("ttt_force_doctor", force_doctor, nil, nil, FCVAR_CHEAT)
 local function force_quack(ply)
     ply:SetRoleAndBroadcast(ROLE_QUACK)
     clear_role_effects(ply)
-    ply:Give("weapon_qua_bomb_station")
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_quack", force_quack, nil, nil, FCVAR_CHEAT)
@@ -360,6 +355,14 @@ local function force_trickster(ply)
     SendFullStateUpdate()
 end
 concommand.Add("ttt_force_trickster", force_trickster, nil, nil, FCVAR_CHEAT)
+
+local function force_paramedic(ply)
+    ply:SetRoleAndBroadcast(ROLE_PARAMEDIC)
+    clear_role_effects(ply)
+    ply:Give("weapon_med_defib")
+    SendFullStateUpdate()
+end
+concommand.Add("ttt_force_paramedic", force_paramedic, nil, nil, FCVAR_CHEAT)
 
 local function force_spectate(ply, cmd, arg)
     if IsValid(ply) then

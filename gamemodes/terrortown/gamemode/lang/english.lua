@@ -776,7 +776,16 @@ L.info_popup_killer = [[You are {role}! Try to kill everyone and be the last one
 Press {menukey} to receive your special equipment!]]
 
 L.info_popup_doctor = [[You are {role}! You're here to keep your teammates alive.
-Use your tools to keep fellow {innocents} in the fight!]]
+Use your tools to keep fellow {innocents} in the fight!
+
+Press {menukey} to receive your special equipment!]]
+
+L.info_popup_trickster = [[You are {role}! You are {aninnocent} who can see and
+use {traitor} traps throughout the map. Have fun!]]
+
+L.info_popup_paramedic = [[You are {role}! You can give your fellow {innocents}
+a second chance with your defibrillator. Stay alive
+and bring back your teams strongest player.]]
 
 L.info_popup_hypnotist = [[You are {role}! Work with fellow {traitors} to kill all others.
 
@@ -914,7 +923,7 @@ L.info_popup_quack = [[You are {role}! Work with fellow {traitors} to kill all o
 These are your comrades:
 {traitorlist}
 
-Try to convince others that you are a real doctor! However, your tools harm
+Try to convince others that you are a real {doctor}! However, your tools harm
 instead of heal. You know that the best cure for any ailment is death.
 
 Press {menukey} to receive your special equipment!]]
@@ -1011,9 +1020,6 @@ All damage you deal with guns is reduced.
 Killing someone with your claws will turn them into {azombie}.
 
 Press {menukey} to receive your special equipment!]]
-
-L.info_popup_trickster = [[You are {role}! You are {aninnocent} who can see and
-use {traitor} traps throughout the map. Have fun!]]
 
 --- Various other text
 L.name_kick = "A player was automatically kicked for changing their name during a round."

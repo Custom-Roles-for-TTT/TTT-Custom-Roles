@@ -20,7 +20,7 @@ if CLIENT then
 
     SWEP.EquipMenuData = {
         type = "item_weapon",
-        desc = "Revives a dead terrorist."
+        desc = "Revives a dead player."
     }
 end
 
@@ -40,6 +40,8 @@ SWEP.Secondary.DefaultClip = -1
 SWEP.Secondary.Automatic = false
 SWEP.Secondary.Delay = 1.25
 
+SWEP.InLoadoutFor = {ROLE_PARAMEDIC}
+
 SWEP.Charge = 0
 SWEP.Timer = -1
 SWEP.AllowDrop = false
@@ -48,7 +50,6 @@ SWEP.AllowDrop = false
 local cvf = FCVAR_ARCHIVE + FCVAR_REPLICATED + FCVAR_SERVER_CAN_EXECUTE
 local maxdist = 64
 local success = 100
-
 local charge = 8
 local mutateok = 0
 local mutatemax = 0
@@ -99,7 +100,7 @@ end
 
 if SERVER then
 
-    util.AddNetworkString("TTT_Doctor_Revived")
+    util.AddNetworkString("TTT_Paramedic_Revived")
 
     local offsets = {}
 
@@ -177,16 +178,26 @@ if SERVER then
         net.WriteBool(true)
         net.Send(ply)
 
+        -- Un-haunt the Hypnotist if the target was the Phantom
+        local owner = self:GetOwner()
+        if ply:IsPhantom() and ply:GetNWString("HauntingTarget", nil) == owner:SteamID64() then
+            owner:SetNWBool("Haunted", false)
+        elseif ply:IsParasite() and ply:GetNWString("InfectingTarget", nil) == owner:SteamID64() then
+            owner:SetNWBool("Infected", false)
+        end
+
         ply:SpawnForRound(true)
         ply:SetCredits(credits)
         ply:SetPos(self.Location or body:GetPos())
         ply:SetEyeAngles(Angle(0, body:GetAngles().y, 0))
-        ply:PrintMessage(HUD_PRINTCENTER, "You have been revived by a Doctor!")
+        if ply:GetDetective() then
+            ply:SetRole(ROLE_INNOCENT)
+            ply:StripRoleWeapons()
+        end
+        ply:PrintMessage(HUD_PRINTCENTER, "You have been revived by " .. ROLE_STRINGS_EXT[ROLE_PARAMEDIC] .. "!")
         ply:SetHealth(ply:GetMaxHealth())
 
         body:Remove()
-
-        self:GetOwner():Give("weapon_ttt_health_station")
 
         SendFullStateUpdate()
 
@@ -218,8 +229,6 @@ if SERVER then
         local ply = bodyply(body)
 
         if not ply then self:Error("INVALID TARGET") return end
-
-        if ply:IsJesterTeam() then self:Error("SUBJECT IS A JESTER") return end
 
         self:SetState(DEFIB_BUSY)
         self:SetBegin(CurTime())
@@ -284,13 +293,13 @@ end
 
 if CLIENT then
 
-    net.Receive("TTT_Doctor_Revived", function(len, ply)
+    net.Receive("TTT_Paramedic_Revived", function(len, ply)
         if ply or len <= 0 then return end
         surface.PlaySound(revived)
     end)
 
-    hook.Remove("TTTEndRound", "RemoveDoctorHide")
-    hook.Add("TTTEndRound", "RemoveDoctorHide", function()
+    hook.Remove("TTTEndRound", "RemoveParamedicHide")
+    hook.Add("TTTEndRound", "RemoveParamedicHide", function()
         for _, v in pairs(player.GetAll()) do v.DefibHide = nil end
     end)
 
