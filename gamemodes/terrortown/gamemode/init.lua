@@ -125,6 +125,9 @@ CreateConVar("ttt_vampire_prime_death_mode", "0")
 CreateConVar("ttt_vampire_vision_enable", "0")
 
 CreateConVar("ttt_parasite_infection_time", 90)
+CreateConVar("ttt_parasite_infection_transfer", 0)
+CreateConVar("ttt_parasite_infection_transfer_reset", 1)
+CreateConVar("ttt_parasite_infection_suicide_mode", 0)
 CreateConVar("ttt_parasite_respawn_mode", 0)
 CreateConVar("ttt_parasite_respawn_health", 100)
 CreateConVar("ttt_parasite_announce_infection", 0)
@@ -2246,8 +2249,9 @@ function SelectRoles()
                 table.insert(monsterRoles, ROLE_VAMPIRE)
             end
         end
+        local monster_chosen = false
         for _ = 1, monster_count do
-            if #monsterRoles ~= 0 and math.random() <= GetConVar("ttt_monster_chance"):GetFloat() and #choices > 0 then
+            if #monsterRoles ~= 0 and math.random() <= GetConVar("ttt_monster_chance"):GetFloat() and #choices > 0 and not monster_chosen then
                 local plyPick = math.random(1, #choices)
                 local ply = choices[plyPick]
                 local rolePick = math.random(1, #monsterRoles)
@@ -2260,6 +2264,7 @@ function SelectRoles()
                         table.remove(monsterRoles, i)
                     end
                 end
+                monster_chosen = true
             end
         end
     end

@@ -213,6 +213,7 @@ if SERVER then
         ply:SetEyeAngles(Angle(0, body:GetAngles().y, 0))
         ply:SetNWBool("WasHypnotised", true)
         ply:SetRole(ROLE_TRAITOR)
+        ply:StripRoleWeapons()
         ply:PrintMessage(HUD_PRINTCENTER, "You have been brainwashed and are now a traitor.")
         ply:SetHealth(spawnhealth)
 

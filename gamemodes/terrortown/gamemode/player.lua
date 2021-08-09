@@ -818,6 +818,121 @@ hook.Add("TTTPrepareRound", function()
     deadParasites = {}
 end)
 
+local function DoRespawn(ply)
+    local body = ply.server_ragdoll or ply:GetRagdollEntity()
+    ply:SpawnForRound(true)
+    ply:SetHealth(ply:GetMaxHealth())
+    if IsValid(body) then
+        body:Remove()
+    end
+end
+
+local function DoParasiteRespawnWithoutBody(parasite, hide_messages)
+    if not hide_messages then
+        parasite:PrintMessage(HUD_PRINTCENTER, "You have drained your host of energy and created a new body.")
+    end
+    -- Introduce a slight delay to prevent player getting stuck as a spectator
+    timer.Create(parasite:Nick() .. "ParasiteRespawn", 0.1, 1, function()
+        DoRespawn(parasite)
+        local health = GetConVar("ttt_parasite_respawn_health"):GetInt()
+        parasite:SetHealth(health)
+    end)
+end
+
+local function DoParasiteRespawn(parasite, attacker, hide_messages)
+    if parasite:IsParasite() and not parasite:Alive() then
+        attacker:SetNWBool("Infected", false)
+        parasite:SetNWBool("Infecting", false)
+        parasite:SetNWString("InfectingTarget", nil)
+        parasite:SetNWInt("InfectionProgress", 0)
+        timer.Remove(parasite:Nick() .. "InfectionProgress")
+        timer.Remove(parasite:Nick() .. "InfectingSpectate")
+
+        local parasiteBody = parasite.server_ragdoll or parasite:GetRagdollEntity()
+
+        local respawnMode = GetConVar("ttt_parasite_respawn_mode"):GetInt()
+        if respawnMode == PARASITE_RESPAWN_HOST then
+            if not hide_messages then
+                parasite:PrintMessage(HUD_PRINTCENTER, "You have taken control of your host.")
+            end
+
+            parasite:SpawnForRound(true)
+            parasite:SetPos(attacker:GetPos())
+            parasite:SetEyeAngles(Angle(0, attacker:GetAngles().y, 0))
+
+            local weapons = attacker:GetWeapons()
+            local currentWeapon = attacker:GetActiveWeapon() or "weapon_zm_improvised"
+            attacker:StripAll()
+            parasite:StripAll()
+            for _, v in ipairs(weapons) do
+                local wep_class = WEPS.GetClass(v)
+                parasite:Give(wep_class)
+            end
+            parasite:SelectWeapon(currentWeapon)
+        elseif respawnMode == PARASITE_RESPAWN_BODY then
+            if IsValid(parasiteBody) then
+                if not hide_messages then
+                    parasite:PrintMessage(HUD_PRINTCENTER, "You have drained your host of energy and regenerated your old body.")
+                end
+                parasite:SpawnForRound(true)
+                parasite:SetPos(FindRespawnLocation(parasiteBody:GetPos()) or parasiteBody:GetPos())
+                parasite:SetEyeAngles(Angle(0, parasiteBody:GetAngles().y, 0))
+            else
+                DoParasiteRespawnWithoutBody(parasite, hide_messages)
+            end
+        elseif respawnMode == PARASITE_RESPAWN_RANDOM then
+            DoParasiteRespawnWithoutBody(parasite, hide_messages)
+        end
+
+        local health = GetConVar("ttt_parasite_respawn_health"):GetInt()
+        parasite:SetHealth(health)
+        if IsValid(parasiteBody) then parasiteBody:Remove() end
+        if attacker:Alive() then
+            attacker:Kill()
+        end
+        if not hide_messages then
+            attacker:PrintMessage(HUD_PRINTCENTER, "Your parasite has drained you of your energy.")
+            attacker:PrintMessage(HUD_PRINTTALK, "Your parasite has drained you of your energy.")
+        end
+    end
+end
+
+local function HandleParasiteInfection(attacker, victim, keep_progress)
+    attacker:SetNWBool("Infected", true)
+    victim:SetNWBool("Infecting", true)
+    victim:SetNWString("InfectingTarget", attacker:SteamID64())
+    if not keep_progress then
+        victim:SetNWInt("InfectionProgress", 0)
+    end
+    timer.Create(victim:Nick() .. "InfectionProgress", 1, 0, function()
+        -- Make sure the victim is still in the correct spectate mode
+        local spec_mode = victim:GetObserverMode()
+        if spec_mode ~= OBS_MODE_CHASE and spec_mode ~= OBS_MODE_IN_EYE then
+            victim:Spectate(OBS_MODE_CHASE)
+        end
+
+        local progress = victim:GetNWInt("InfectionProgress", 0) + 1
+        if progress >= GetConVar("ttt_parasite_infection_time"):GetInt() then -- respawn the parasite
+            DoParasiteRespawn(victim, attacker)
+        else
+            victim:SetNWInt("InfectionProgress", progress)
+        end
+    end)
+end
+
+local function ShouldParasiteRespawnBySuicide(mode, victim, attacker, dmginfo)
+    -- Any cause of suicide
+    if mode == PARASITE_SUICIDE_RESPAWN_ALL then
+        return victim == attacker
+    -- Only if they killed themselves via a command (in this case they would be the inflictor)
+    elseif mode == PARASITE_SUICIDE_RESPAWN_CONSOLE then
+        local inflictor = dmginfo:GetInflictor()
+        return victim == attacker and IsValid(inflictor) and victim == inflictor
+    end
+
+    return false
+end
+
 function GM:DoPlayerDeath(ply, attacker, dmginfo)
     if ply:IsSpec() then return end
 
@@ -911,19 +1026,39 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
             local parasite = deadParasites[key]
             if parasite.attacker == ply:SteamID64() and IsValid(parasite.player) then
                 local deadParasite = parasite.player
-                deadParasite:SetNWBool("Infecting", false)
-                deadParasite:SetNWString("InfectingTarget", nil)
-                deadParasite:SetNWInt("InfectionProgress", 0)
-                timer.Remove(deadParasite:Nick() .. "InfectionProgress")
-                timer.Remove(deadParasite:Nick() .. "InfectingSpectate")
-                if deadParasite:IsParasite() and not deadParasite:Alive() then
-                    deadParasite:PrintMessage(HUD_PRINTCENTER, "Your host has died.")
+                local parasiteDead = deadParasite:IsParasite() and not deadParasite:Alive()
+                local transfer = GetConVar("ttt_parasite_infection_transfer"):GetBool()
+                local suicideMode = GetConVar("ttt_parasite_infection_suicide_mode"):GetInt()
+                -- Transfer the infection to the new attacker if there is one, they are alive, the parasite is still alive, and the transfer feature is enabled
+                if attacker:IsPlayer() and attacker:Alive() and parasiteDead and transfer then
+                    deadParasites[key].attacker = attacker:SteamID64()
+                    HandleParasiteInfection(attacker, deadParasite, not GetConVar("ttt_parasite_infection_transfer_reset"):GetBool())
+                    timer.Create(deadParasite:Nick() .. "InfectingSpectate", 1, 1, function()
+                        deadParasite:Spectate(OBS_MODE_CHASE)
+                        deadParasite:SpectateEntity(attacker)
+                    end)
+                    deadParasite:PrintMessage(HUD_PRINTCENTER, "Your host has been killed and your infection has spread to their killer.")
+                    net.Start("TTT_ParasiteInfect")
+                    net.WriteString(deadParasite:Nick())
+                    net.WriteString(attacker:Nick())
+                    net.Broadcast()
+                elseif suicideMode > PARASITE_SUICIDE_NONE and ShouldParasiteRespawnBySuicide(suicideMode, ply, attacker, dmginfo) then
+                    deadParasite:PrintMessage(HUD_PRINTCENTER, "Your host has killed themselves, allowing your infection to take over.")
+                    DoParasiteRespawn(deadParasite, attacker, true)
+                else
+                    deadParasite:SetNWBool("Infecting", false)
+                    deadParasite:SetNWString("InfectingTarget", nil)
+                    deadParasite:SetNWInt("InfectionProgress", 0)
+                    timer.Remove(deadParasite:Nick() .. "InfectionProgress")
+                    timer.Remove(deadParasite:Nick() .. "InfectingSpectate")
+                    if parasiteDead then
+                        deadParasite:PrintMessage(HUD_PRINTCENTER, "Your host has died.")
+                    end
                 end
             end
         end
 
         ply:SetNWBool("Infected", false)
-        SendFullStateUpdate()
     end
 
     -- Experimental: Fire a last shot if ironsighting and not headshot
@@ -1029,15 +1164,6 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
     end
 
     ply:SetTeam(TEAM_SPEC)
-end
-
-local function DoRespawn(ply)
-    local body = ply.server_ragdoll or ply:GetRagdollEntity()
-    ply:SpawnForRound(true)
-    ply:SetHealth(ply:GetMaxHealth())
-    if IsValid(body) then
-        body:Remove()
-    end
 end
 
 -- Pre-generate all of this information because we need the owner's weapon info even after they've been destroyed due to (temporary) death
@@ -1300,81 +1426,7 @@ function GM:PlayerDeath(victim, infl, attacker)
 
     -- Handle parasite death
     if valid_kill and victim:IsParasite() and not victim:GetNWBool("IsZombifying", false) then
-        attacker:SetNWBool("Infected", true)
-        victim:SetNWBool("Infecting", true)
-        victim:SetNWString("InfectingTarget", attacker:SteamID64())
-        victim:SetNWInt("InfectionProgress", 0)
-        timer.Create(victim:Nick() .. "InfectionProgress", 1, 0, function()
-            -- Make sure the victim is still in the correct spectate mode
-            local spec_mode = victim:GetObserverMode()
-            if spec_mode ~= OBS_MODE_CHASE and spec_mode ~= OBS_MODE_IN_EYE then
-                victim:Spectate(OBS_MODE_CHASE)
-            end
-
-            local progress = victim:GetNWInt("InfectionProgress", 0) + 1
-            if progress >= GetConVar("ttt_parasite_infection_time"):GetInt() then -- respawn the parasite
-                if victim:IsParasite() and not victim:Alive() then
-                    attacker:SetNWBool("Infected", false)
-                    victim:SetNWBool("Infecting", false)
-                    victim:SetNWString("InfectingTarget", nil)
-                    victim:SetNWInt("InfectionProgress", 0)
-                    timer.Remove(victim:Nick() .. "InfectionProgress")
-                    timer.Remove(victim:Nick() .. "InfectingSpectate")
-
-                    local parasiteBody = victim.server_ragdoll or victim:GetRagdollEntity()
-
-                    local respawnMode = GetConVar("ttt_parasite_respawn_mode"):GetInt()
-                    if respawnMode == PARASITE_RESPAWN_HOST then
-                        victim:PrintMessage(HUD_PRINTCENTER, "You have taken control of your host.")
-                        victim:SpawnForRound(true)
-                        victim:SetPos(attacker:GetPos())
-                        victim:SetEyeAngles(Angle(0, attacker:GetAngles().y, 0))
-
-                        local weapons = attacker:GetWeapons()
-                        local currentWeapon = attacker:GetActiveWeapon() or "weapon_zm_improvised"
-                        attacker:StripAll()
-                        victim:StripAll()
-                        for _, v in ipairs(weapons) do
-                            local wep_class = WEPS.GetClass(v)
-                            victim:Give(wep_class)
-                        end
-                        victim:SelectWeapon(currentWeapon)
-                    elseif respawnMode == PARASITE_RESPAWN_BODY then
-                        if IsValid(parasiteBody) then
-                            victim:PrintMessage(HUD_PRINTCENTER, "You have drained your host of energy and regenerated your old body.")
-                            victim:SpawnForRound(true)
-                            victim:SetPos(FindRespawnLocation(parasiteBody:GetPos()) or parasiteBody:GetPos())
-                            victim:SetEyeAngles(Angle(0, parasiteBody:GetAngles().y, 0))
-                        else
-                            victim:PrintMessage(HUD_PRINTCENTER, "You have drained your host of energy and created a new body.")
-                            -- Introduce a slight delay to prevent player getting stuck as a spectator
-                            timer.Create(victim:Nick() .. "ParasiteRespawn", 0.1, 1, function()
-                                DoRespawn(victim)
-                                local health = GetConVar("ttt_parasite_respawn_health"):GetInt()
-                                victim:SetHealth(health)
-                            end)
-                        end
-                    elseif respawnMode == PARASITE_RESPAWN_RANDOM then
-                        victim:PrintMessage(HUD_PRINTCENTER, "You have drained your host of energy and created a new body.")
-                        -- Introduce a slight delay to prevent player getting stuck as a spectator
-                        timer.Create(victim:Nick() .. "ParasiteRespawn", 0.1, 1, function()
-                            DoRespawn(victim)
-                            local health = GetConVar("ttt_parasite_respawn_health"):GetInt()
-                            victim:SetHealth(health)
-                        end)
-                    end
-
-                    local health = GetConVar("ttt_parasite_respawn_health"):GetInt()
-                    victim:SetHealth(health)
-                    if IsValid(parasiteBody) then parasiteBody:Remove() end
-                    attacker:Kill()
-                    attacker:PrintMessage(HUD_PRINTCENTER, "Your parasite has drained you of your energy.")
-                    attacker:PrintMessage(HUD_PRINTTALK, "Your parasite has drained you of your energy.")
-                end
-            else
-                victim:SetNWInt("InfectionProgress", progress)
-            end
-        end)
+        HandleParasiteInfection(attacker, victim)
 
         -- Delay this message so the Assassin can see the target update message
         if GetConVar("ttt_parasite_announce_infection"):GetBool() then

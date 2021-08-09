@@ -1,5 +1,17 @@
 # Beta Release Notes
 
+## 1.0.9
+**Released:**
+
+### Fixes
+- Fixed role weapons not being removed when a player is hypnotized
+- Fixed multiple monsters spawning in one round
+
+### Additions
+- Added ability for parasite's infection to transfer to a new player if their killer is killed (disabled by default)
+  - There is also a new convar to determine whether the infection progress should be reset if the infection is transferred to a new player
+- Added ability to respawn the parasite if their infected target kills themselves (disabled by default)
+
 ## 1.0.8
 **Released: August 7th, 2021**
 
