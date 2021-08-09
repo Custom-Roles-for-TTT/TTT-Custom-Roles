@@ -125,11 +125,23 @@ function GM:TTTScoreboardRowColorForPlayer(ply)
 
     local hideBeggar = ply:GetNWBool("WasBeggar", false) and not GetGlobalBool("ttt_beggar_reveal_change", true)
     local showJester = ((ply:IsJesterTeam() and not ply:GetNWBool("KillerClownActive", false)) or ((ply:IsTraitor() or ply:IsInnocent()) and hideBeggar)) and not ShouldHideJesters(client)
+    local glitchMode = GetGlobalInt("ttt_glitch_mode", 0)
+
     if client:IsTraitorTeam() then
         if ply:IsTraitorTeam() and not hideBeggar then
-            return ply:GetRole()
+            if ply:IsZombie() then
+                return ROLE_ZOMBIE
+            elseif glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES and GetGlobalBool("ttt_glitch_round", false) then
+                return ROLE_TRAITOR
+            else
+                return ply:GetRole()
+            end
         elseif ply:IsGlitch() then
-            return ROLE_TRAITOR
+            if client:IsZombie() then
+                return ROLE_ZOMBIE
+            else
+                return ply:GetNWInt("GlitchBluff", ROLE_TRAITOR)
+            end
         elseif showJester then
             return ROLE_JESTER
         end

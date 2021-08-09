@@ -33,6 +33,7 @@ ttt_deputy_enabled                          0       // Whether or not the deputy
 ttt_mercenary_enabled                       0       // Whether or not the mercenary should spawn
 ttt_veteran_enabled                         0       // Whether or not the veteran should spawn
 ttt_doctor_enabled                          0       // Whether or not the doctor should spawn
+ttt_trickster_enabled                       0       // Whether or not the trickster should spawn
 ttt_jester_enabled                          0       // Whether or not the jester should spawn
 ttt_swapper_enabled                         0       // Whether or not the swapper should spawn
 ttt_clown_enabled                           0       // Whether or not the clown should spawn
@@ -42,7 +43,6 @@ ttt_drunk_enabled                           0       // Whether or not the drunk 
 ttt_oldman_enabled                          0       // Whether or not the old man should spawn
 ttt_killer_enabled                          0       // Whether or not the killer should spawn
 ttt_zombie_enabled                          0       // Whether or not the zombie should spawn
-ttt_trickster_enabled                       0       // Whether or not the trickster should spawn
 
 // Individual Role Spawn Weights
 ttt_hypnotist_spawn_weight                  1       // The weight assigned to spawning the hypnotist
@@ -58,6 +58,7 @@ ttt_deputy_spawn_weight                     1       // The weight assigned to sp
 ttt_mercenary_spawn_weight                  1       // The weight assigned to spawning the mercenary
 ttt_veteran_spawn_weight                    1       // The weight assigned to spawning the veteran
 ttt_doctor_spawn_weight                     1       // The weight assigned to spawning the doctor
+ttt_trickster_spawn_weight                  1       // The weight assigned to spawning the trickster
 ttt_jester_spawn_weight                     1       // The weight assigned to spawning the jester
 ttt_swapper_spawn_weight                    1       // The weight assigned to spawning the swapper
 ttt_clown_spawn_weight                      1       // The weight assigned to spawning the clown
@@ -67,7 +68,6 @@ ttt_drunk_spawn_weight                      1       // The weight assigned to sp
 ttt_oldman_spawn_weight                     1       // The weight assigned to spawning the old man
 ttt_killer_spawn_weight                     1       // The weight assigned to spawning the killer
 ttt_zombie_spawn_weight                     1       // The weight assigned to spawning the zombie
-ttt_trickster_spawn_weight                  1       // The weight assigned to spawning the trickster
 // (Note: Each role is limited to one player per round.)
 
 // Individual Role Minimum Player Requirements
@@ -84,6 +84,7 @@ ttt_deputy_min_players                      0       // The minimum number of pla
 ttt_mercenary_min_players                   0       // The minimum number of players required to spawn the mercenary
 ttt_veteran_min_players                     0       // The minimum number of players required to spawn the veteran
 ttt_doctor_min_players                      0       // The minimum number of players required to spawn the doctor
+ttt_trickster_min_players                   0       // The minimum number of players required to spawn the trickster
 ttt_jester_min_players                      0       // The minimum number of players required to spawn the jester
 ttt_swapper_min_players                     0       // The minimum number of players required to spawn the swapper
 ttt_clown_min_players                       0       // The minimum number of players required to spawn the clown
@@ -93,7 +94,6 @@ ttt_drunk_min_players                       0       // The minimum number of pla
 ttt_oldman_min_players                      0       // The minimum number of players required to spawn the old man
 ttt_killer_min_players                      0       // The minimum number of players required to spawn the killer
 ttt_zombie_min_players                      0       // The minimum number of players required to spawn the zombie
-ttt_trickster_min_players                   0       // The minimum number of players required to spawn the trickster
 
 // ----------------------------------------
 
@@ -153,6 +153,9 @@ ttt_parasite_credits_starting               1       // The number of credits a p
 // Detective
 ttt_detective_search_only                   1       // Whether only detectives can search bodies or not
 ttt_all_search_postround                    1       // Whether non-detectives can search bodies post-round or not
+
+// Glitch
+ttt_glitch_mode                             0       // The way in which the glitch appears to traitors. 0 - Appears as a regular traitor. 1 - Can appear as a special traitor. 2 - Causes all traitors, regular or special, to appear as regular traitors and appears as a regular traitor themselves.
 
 // Phantom
 ttt_phantom_respawn_health                  50      // The amount of health a phantom will respawn with
@@ -367,6 +370,7 @@ ttt_deputy_starting_health                  100     // The amount of health the 
 ttt_mercenary_starting_health               100     // The amount of health the mercenary starts with
 ttt_veteran_starting_health                 100     // The amount of health the veteran starts with
 ttt_doctor_starting_health                  100     // The amount of health the doctor starts with
+ttt_trickster_starting_health               100     // The amount of health the trickster starts with
 ttt_jester_starting_health                  100     // The amount of health the jester starts with
 ttt_swapper_starting_health                 100     // The amount of health the swapper starts with
 ttt_clown_starting_health                   100     // The amount of health the clown starts with
@@ -376,7 +380,6 @@ ttt_drunk_starting_health                   100     // The amount of health the 
 ttt_oldman_starting_health                  1       // The amount of health the old man starts with
 ttt_killer_starting_health                  150     // The amount of health the killer starts with
 ttt_zombie_starting_health                  100     // The amount of health the zombie starts with
-ttt_trickster_starting_health               100     // The amount of health the trickster starts with
 
 // Individual Role Max Health
 ttt_traitor_max_health                      100     // The maximum amount of health a traitor can have
@@ -395,6 +398,7 @@ ttt_deputy_max_health                       100     // The maximum amount of hea
 ttt_mercenary_max_health                    100     // The maximum amount of health the mercenary can have
 ttt_veteran_max_health                      100     // The maximum amount of health the veteran can have
 ttt_doctor_max_health                       100     // The maximum amount of health the doctor can have
+ttt_trickster_max_health                    100     // The maximum amount of health the trickster can have
 ttt_jester_max_health                       100     // The maximum amount of health the jester can have
 ttt_swapper_max_health                      100     // The maximum amount of health the swapper can have
 ttt_clown_max_health                        100     // The maximum amount of health the clown can have
@@ -404,7 +408,6 @@ ttt_drunk_max_health                        100     // The maximum amount of hea
 ttt_oldman_max_health                       1       // The maximum amount of health the old man can have
 ttt_killer_max_health                       150     // The maximum amount of health the killer can have
 ttt_zombie_max_health                       100     // The maximum amount of health the zombie can have
-ttt_trickster_max_health                    100     // The maximum amount of health the trickster can have
 
 // Logging
 ttt_debug_logkills                          1       // Whether to log when a player is killed in the console

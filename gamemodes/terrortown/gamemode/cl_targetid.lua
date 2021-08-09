@@ -99,6 +99,7 @@ function GM:PostDrawTranslucentRenderables()
 
             local hideBeggar = v:GetNWBool("WasBeggar", false) and not GetGlobalBool("ttt_beggar_reveal_change", true)
             local showJester = ((v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) or ((v:GetTraitor() or v:GetInnocent()) and hideBeggar)) and not ShouldHideJesters(client)
+            local glitchMode = GetGlobalInt("ttt_glitch_mode", 0)
 
             -- Only show the "KILL" target if the setting is enabled
             local showkillicon = ((client:IsAssassin() and GetGlobalBool("ttt_assassin_show_target_icon", false) and client:GetNWString("AssassinTarget") == v:Nick()) or
@@ -133,19 +134,27 @@ function GM:PostDrawTranslucentRenderables()
                             -- If the impersonator is promoted, use the Detective's icon with the Impersonator's color
                             if v:GetNWBool("HasPromotion", false) then
                                 DrawRoleIcon(GetDetectiveIconRole(true), true, pos, dir, ROLE_IMPERSONATOR)
+                            elseif glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES and GetGlobalBool("ttt_glitch_round", false) then
+                                DrawRoleIcon(ROLE_TRAITOR, true, pos, dir)
                             else
                                 DrawRoleIcon(ROLE_IMPERSONATOR, true, pos, dir)
                             end
                         -- If this is a vanilla traitor they should have been handled above and are therefore a converted beggar who should be hidden
                         elseif not v:GetTraitor() and v:IsTraitorTeam() then
-                            DrawRoleIcon(v:GetRole(), true, pos, dir)
+                            if v:GetZombie() then
+                                DrawRoleIcon(ROLE_ZOMBIE, true, pos, dir)
+                            elseif glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES and GetGlobalBool("ttt_glitch_round", false) then
+                                DrawRoleIcon(ROLE_TRAITOR, true, pos, dir)
+                            else
+                                DrawRoleIcon(v:GetRole(), true, pos, dir)
+                            end
                         elseif showJester then
                             DrawRoleIcon(ROLE_JESTER, false, pos, dir)
                         elseif v:GetGlitch() then
                             if client:IsZombie() then
                                 DrawRoleIcon(ROLE_ZOMBIE, true, pos, dir)
                             else
-                                DrawRoleIcon(ROLE_TRAITOR, true, pos, dir)
+                                DrawRoleIcon(v:GetNWInt("GlitchBluff", ROLE_TRAITOR), true, pos, dir)
                             end
                         end
                     elseif client:IsMonsterTeam() then
@@ -280,23 +289,24 @@ function GM:HUDDrawTargetID()
 
     -- some bools for caching what kind of ent we are looking at
     local target_traitor = false
+    local target_special_traitor = false
     local target_detective = false
+
+    local target_glitch = false
+
     local target_jester = false
-    local target_hypnotist = false
     local target_clown = false
-    local target_impersonator = false
-    local target_assassin = false
+
     local target_zombie = false
-    local target_fellow_zombie = false
     local target_vampire = false
-    local target_quack = false
-    local target_parasite = false
 
     local target_revenger_lover = false
     local target_current_target = false
     local target_infected = false
 
     local target_corpse = false
+
+    local glitchMode = GetGlobalInt("ttt_glitch_mode", 0)
 
     local text = nil
     local color = COLOR_WHITE
@@ -347,35 +357,29 @@ function GM:HUDDrawTargetID()
         if not hide_roles and GetRoundState() == ROUND_ACTIVE then
             local showJester = ((ent:IsJesterTeam() and not ent:GetNWBool("KillerClownActive", false)) or ((ent:GetTraitor() or ent:GetInnocent()) and hideBeggar)) and not ShouldHideJesters(client)
             if client:IsTraitorTeam() then
-                target_traitor = (ent:IsTraitor() and not hideBeggar) or (ent:IsGlitch() and not client:IsZombie())
-                target_hypnotist = ent:IsHypnotist()
-                target_impersonator = ent:IsImpersonator()
-                target_assassin = ent:IsAssassin()
-                target_quack = ent:IsQuack()
-                target_parasite = ent:IsParasite()
-                target_vampire = ent:IsVampire() and ent:IsTraitorTeam()
-                if client:IsZombie() then
-                    target_fellow_zombie = ent:IsZombie() or ent:IsGlitch()
-                else
-                    target_zombie = ent:IsZombie() and ent:IsTraitorTeam()
+                target_traitor = (ent:IsTraitor() and not hideBeggar)
+                target_special_traitor = ent:IsTraitorTeam() and not ent:IsTraitor()
+                target_glitch = ent:IsGlitch()
+
+                if glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES and GetGlobalBool("ttt_glitch_round", false) then
+                    if target_traitor or target_special_traitor or target_glitch then
+                        target_traitor = false
+                        target_special_traitor = false
+                        target_glitch = true
+                    end
                 end
+
                 target_jester = showJester
 
                 target_infected = ent:GetNWBool("Infected", false)
             elseif client:IsMonsterTeam() then
-                if client:IsZombie() then
-                    target_fellow_zombie = ent:IsZombie()
-                else
-                    target_zombie = ent:IsZombie() and ent:IsMonsterTeam()
-                end
+                target_zombie = ent:IsZombie() and ent:IsMonsterTeam()
                 target_vampire = ent:IsVampire() and ent:IsMonsterTeam()
+
                 target_jester = showJester
             elseif client:IsIndependentTeam() then
-                if client:IsZombie() then
-                    target_fellow_zombie = ent:IsZombie()
-                else
-                    target_zombie = ent:IsZombie() and ent:IsIndependentTeam()
-                end
+                target_zombie = ent:IsZombie() and ent:IsIndependentTeam()
+
                 target_jester = showJester
             end
         end
@@ -416,18 +420,25 @@ function GM:HUDDrawTargetID()
 
     local w, h = 0, 0 -- text width/height, reused several times
 
-    if target_traitor or target_detective or target_jester or target_hypnotist or target_clown or target_zombie or target_fellow_zombie or target_vampire or target_quack or target_parasite then
+    if target_traitor or target_special_traitor or target_detective or target_glitch or target_jester or target_clown or target_zombie or target_vampire then
         surface.SetTexture(ring_tex)
 
         if target_traitor then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_TRAITOR])
         elseif target_detective then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_DETECTIVE])
-        elseif target_hypnotist or target_impersonator or target_assassin or target_quack or target_parasite then
+        elseif target_special_traitor then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_HYPNOTIST])
+        elseif target_glitch then
+            if client:IsZombie() and client:IsTraitorTeam() then
+                surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_ZOMBIE])
+            else
+                local bluff = ent:GetNWInt("GlitchBluff", ROLE_TRAITOR)
+                surface.SetDrawColor(ROLE_COLORS_RADAR[bluff])
+            end
         elseif target_vampire then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_VAMPIRE])
-        elseif target_zombie or target_fellow_zombie then
+        elseif target_zombie then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_ZOMBIE])
         elseif target_jester then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_JESTER])
@@ -531,41 +542,34 @@ function GM:HUDDrawTargetID()
         text = L.target_infected
         clr = ROLE_COLORS_RADAR[ROLE_PARASITE]
     elseif target_traitor then
-        text = "FELLOW " .. string.upper(ROLE_STRINGS[ROLE_TRAITOR])
+        text = string.upper(ROLE_STRINGS[ROLE_TRAITOR])
         clr = ROLE_COLORS_RADAR[ROLE_TRAITOR]
+    elseif target_special_traitor then
+        local role = ent:GetRole()
+        text = string.upper(ROLE_STRINGS[role])
+        clr = ROLE_COLORS_RADAR[role]
+    elseif target_glitch then
+        local bluff = ent:GetNWInt("GlitchBluff", ROLE_TRAITOR)
+        if client:IsZombie() and client:IsTraitorTeam() then
+            bluff = ROLE_ZOMBIE
+        end
+        text = string.upper(ROLE_STRINGS[bluff])
+        clr = ROLE_COLORS_RADAR[bluff]
     elseif target_detective then
         text = string.upper(ROLE_STRINGS[ROLE_DETECTIVE])
         clr = ROLE_COLORS_RADAR[ROLE_DETECTIVE]
     elseif target_jester then
         text = string.upper(ROLE_STRINGS[ROLE_JESTER])
         clr = ROLE_COLORS_RADAR[ROLE_JESTER]
-    elseif target_hypnotist then
-        text = string.upper(ROLE_STRINGS[ROLE_HYPNOTIST])
-        clr = ROLE_COLORS_RADAR[ROLE_HYPNOTIST]
     elseif target_clown then
         text = string.upper(ROLE_STRINGS[ROLE_CLOWN])
         clr = ROLE_COLORS_RADAR[ROLE_CLOWN]
-    elseif target_impersonator then
-        text = string.upper(ROLE_STRINGS[ROLE_IMPERSONATOR])
-        clr = ROLE_COLORS_RADAR[ROLE_IMPERSONATOR]
-    elseif target_assassin then
-        text = string.upper(ROLE_STRINGS[ROLE_ASSASSIN])
-        clr = ROLE_COLORS_RADAR[ROLE_ASSASSIN]
     elseif target_zombie then
         text = string.upper(ROLE_STRINGS[ROLE_ZOMBIE])
-        clr = ROLE_COLORS_RADAR[ROLE_ZOMBIE]
-	elseif target_fellow_zombie then
-		text = "FELLOW " .. string.upper(ROLE_STRINGS[ROLE_ZOMBIE])
         clr = ROLE_COLORS_RADAR[ROLE_ZOMBIE]
     elseif target_vampire then
         text = string.upper(ROLE_STRINGS[ROLE_VAMPIRE])
         clr = ROLE_COLORS_RADAR[ROLE_VAMPIRE]
-    elseif target_quack then
-        text = string.upper(ROLE_STRINGS[ROLE_QUACK])
-        clr = ROLE_COLORS_RADAR[ROLE_QUACK]
-    elseif target_parasite then
-        text = string.upper(ROLE_STRINGS[ROLE_PARASITE])
-        clr = ROLE_COLORS_RADAR[ROLE_PARASITE]
     elseif ent.sb_tag and ent.sb_tag.txt ~= nil then
         text = L[ent.sb_tag.txt]
         clr = ent.sb_tag.color

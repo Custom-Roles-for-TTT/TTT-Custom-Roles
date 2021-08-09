@@ -136,6 +136,8 @@ CreateConVar("ttt_parasite_announce_infection", 0)
 CreateConVar("ttt_detective_search_only", "1")
 CreateConVar("ttt_all_search_postround", "1")
 
+CreateConVar("ttt_glitch_mode", "0")
+
 CreateConVar("ttt_phantom_respawn_health", "50")
 CreateConVar("ttt_phantom_weaker_each_respawn", "0")
 CreateConVar("ttt_phantom_killer_smoke", "0")
@@ -530,6 +532,7 @@ function GM:Initialize()
     SetGlobalFloat("ttt_haste_end", -1)
 
     SetGlobalFloat("ttt_drunk_remember", -1)
+    SetGlobalBool("ttt_glitch_round", false)
 
     -- For the paranoid
     math.randomseed(os.time())
@@ -613,6 +616,8 @@ function GM:SyncGlobals()
             end
         end
     end
+
+    SetGlobalInt("ttt_glitch_mode", GetConVar("ttt_glitch_mode"):GetInt())
 
     SetGlobalBool("ttt_phantom_killer_smoke", GetConVar("ttt_phantom_killer_smoke"):GetBool())
     SetGlobalInt("ttt_phantom_killer_haunt_power_max", GetConVar("ttt_phantom_killer_haunt_power_max"):GetInt())
@@ -970,6 +975,7 @@ function PrepareRound()
         v:SetNWInt("InfectionProgress", 0)
         timer.Remove(v:Nick() .. "InfectionProgress")
         timer.Remove(v:Nick() .. "InfectingSpectate")
+        v:SetNWInt("GlitchBluff", ROLE_TRAITOR)
         -- Keep previous naming scheme for backwards compatibility
         v:SetNWBool("zombie_prime", false)
         v:SetNWBool("vampire_prime", false)
@@ -1269,6 +1275,8 @@ function BeginRound()
 
     SCORE:HandleSelection() -- log traitors and detectives
 
+    SetGlobalBool("ttt_glitch_round", false)
+
     for _, v in pairs(player.GetAll()) do
         local role = v:GetRole()
 
@@ -1390,6 +1398,11 @@ function BeginRound()
             elseif mode == DOCTOR_MODE_EMT then
                 v:Give("weapon_doc_defib")
             end
+        end
+
+        -- Glitch Logic
+        if role == ROLE_GLITCH then
+            SetGlobalBool("ttt_glitch_round", true)
         end
 
         SetRoleHealth(v)
@@ -1539,6 +1552,8 @@ function EndRound(type)
 
     -- Stop checking for wins
     StopWinChecks()
+
+    SetGlobalBool("ttt_glitch_round", false)
 
     if timer.Exists("revengerloverkiller") then timer.Remove("revengerloverkiller") end
     if timer.Exists("drunkremember") then timer.Remove("drunkremember") end
@@ -1910,7 +1925,7 @@ function SelectRoles()
                     hasParasite = true
                     forcedSpecialTraitorCount = forcedSpecialTraitorCount + 1
 
-                -- INNOCENT ROLES
+                    -- INNOCENT ROLES
                 elseif role == ROLE_DETECTIVE then
                     forcedDetectiveCount = forcedDetectiveCount + 1
                 elseif role == ROLE_PHANTOM then
@@ -1944,7 +1959,7 @@ function SelectRoles()
                     hasTrickster = true
                     forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
 
-                -- JESTER/INDEPENDENT ROLES
+                    -- JESTER/INDEPENDENT ROLES
                 elseif role == ROLE_JESTER then
                     hasIndependent = true
                     forcedIndependentCount = forcedIndependentCount + 1
@@ -1994,6 +2009,10 @@ function SelectRoles()
     local max_special_traitor_count = GetSpecialTraitorCount(traitor_count) - forcedSpecialTraitorCount
     local independent_count = ((math.random() <= GetConVar("ttt_independent_chance"):GetFloat()) and 1 or 0) - forcedIndependentCount
     local monster_count = GetMonsterCount(choice_count) - forcedMonsterCount
+
+    local specialTraitorRoles = {}
+    local specialInnocentRoles = {}
+    local independentRoles = {}
 
     -- pick detectives
     if choice_count >= GetConVar("ttt_detective_min_players"):GetInt() then
@@ -2054,7 +2073,6 @@ function SelectRoles()
     else
         -- pick special traitors
         if max_special_traitor_count > 0 then
-            local specialTraitorRoles = {}
             if not hasHypnotist and GetConVar("ttt_hypnotist_enabled"):GetBool() and choice_count >= GetConVar("ttt_hypnotist_min_players"):GetInt() then
                 for _ = 1, GetConVar("ttt_hypnotist_spawn_weight"):GetInt() do
                     table.insert(specialTraitorRoles, ROLE_HYPNOTIST)
@@ -2112,7 +2130,6 @@ function SelectRoles()
 
     -- pick independent
     if not hasIndependent and independent_count > 0 and #choices > 0 then
-        local independentRoles = {}
         if GetConVar("ttt_jester_enabled"):GetBool() and choice_count >= GetConVar("ttt_jester_min_players"):GetInt() then
             for _ = 1, GetConVar("ttt_jester_spawn_weight"):GetInt() do
                 table.insert(independentRoles, ROLE_JESTER)
@@ -2178,8 +2195,9 @@ function SelectRoles()
     local max_special_innocent_count = GetSpecialInnocentCount(#choices) - forcedSpecialInnocentCount
     if max_special_innocent_count > 0 then
         local map_has_traitor_buttons = #ents.FindByClass("ttt_traitor_button") > 0
-        local specialInnocentRoles = {}
-        if not hasGlitch and GetConVar("ttt_glitch_enabled"):GetBool() and choice_count >= GetConVar("ttt_glitch_min_players"):GetInt() and #traitors > 1 then
+        local glitch_mode = GetConVar("ttt_glitch_mode"):GetInt()
+        if not hasGlitch and GetConVar("ttt_glitch_enabled"):GetBool() and choice_count >= GetConVar("ttt_glitch_min_players"):GetInt()
+        and ((glitch_mode == GLITCH_SHOW_AS_TRAITOR and #traitors > 1) or ((glitch_mode == GLITCH_SHOW_AS_SPECIAL_TRAITOR or glitch_mode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES) and traitor_count > 1)) then
             for _ = 1, GetConVar("ttt_glitch_spawn_weight"):GetInt() do
                 table.insert(specialInnocentRoles, ROLE_GLITCH)
             end
@@ -2225,6 +2243,14 @@ function SelectRoles()
                 local ply = choices[plyPick]
                 local rolePick = math.random(1, #specialInnocentRoles)
                 local role = specialInnocentRoles[rolePick]
+                if role == ROLE_GLITCH and glitch_mode == GLITCH_SHOW_AS_SPECIAL_TRAITOR then
+                    local bluff = ROLE_TRAITOR
+                    if #specialTraitorRoles > 0 and not (#traitors > 0 and math.random() > 0.5) then -- If there are normal traitors in a round the glitch has a 50% chance to be a special traitor or regular traitor
+                        local bluffPick = math.random(1, #specialTraitorRoles)
+                        bluff = specialTraitorRoles[bluffPick]
+                    end
+                    ply:SetNWInt("GlitchBluff", bluff)
+                end
                 ply:SetRole(role)
                 PrintRole(ply, role)
                 table.remove(choices, plyPick)
