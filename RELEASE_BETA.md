@@ -14,6 +14,7 @@
   - The paramedic has a defibrillator that cannot be dropped or used by anyone else (based off doctor mode 1)
 - The quack now has to buy the bomb station from a shop instead of spawning with it
   - The quack can also buy a real health station and the parasite cure
+- Changed parasite infection time to 45 seconds (down from 90)
 
 ### Additions
 - Added ability for parasite's infection to transfer to a new player if their killer is killed (disabled by default)

@@ -140,7 +140,7 @@ ttt_quack_credits_starting                  1       // The number of credits a q
 ttt_single_doctor_quack                     0       // Whether only a single doctor or quack should spawn in a round
 
 // Parasite
-ttt_parasite_infection_time                 90      // The time it takes in seconds for the parasite to fully infect someone
+ttt_parasite_infection_time                 45      // The time it takes in seconds for the parasite to fully infect someone
 ttt_parasite_infection_transfer             0       // Whether the parasite's infection will transfer if the parasite's killer is killed by another player
 ttt_parasite_infection_transfer_reset       1       // Whether the parasite's infection progress will reset if their infection is transferred to another player
 ttt_parasite_infection_suicide_mode         0       // The way to handle when a player infected by the parasite kills themselves. 0 - Do nothing. 1 - Respawn the parasite. 2 - Respawn the parasite ONLY IF the infected player killed themselves with a console command like "kill"
