@@ -193,6 +193,7 @@ CreateConVar("ttt_beggar_reveal_traitor", "1")
 CreateConVar("ttt_beggar_reveal_innocent", "2")
 CreateConVar("ttt_beggar_respawn", "0")
 CreateConVar("ttt_beggar_respawn_delay", "3")
+CreateConVar("ttt_beggar_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the Beggar is killed", 0, 4)
 CreateConVar("ttt_beggar_notify_sound", "0")
 CreateConVar("ttt_beggar_notify_confetti", "0")
 
