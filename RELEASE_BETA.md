@@ -1,7 +1,7 @@
 # Beta Release Notes
 
 ## 1.0.9
-**Released:**
+**Released: August 9th, 2021**
 
 ### Fixes
 - Fixed role weapons not being removed when a player is hypnotized
