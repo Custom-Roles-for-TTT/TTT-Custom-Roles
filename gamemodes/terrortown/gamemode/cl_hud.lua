@@ -491,17 +491,27 @@ local function InfoPaint(client)
 
         surface.SetTextPos(label_left, ScrH() - label_top - h)
         surface.DrawText(text)
-    elseif (client:IsInnocent() or client:IsTraitor()) and client:GetNWBool("WasBeggar", false) and not GetGlobalBool("ttt_beggar_reveal_change", true) then
-        surface.SetFont("TabLarge")
-        surface.SetTextColor(255, 255, 255, 230)
+    elseif (client:IsInnocent() or client:IsTraitor()) and client:GetNWBool("WasBeggar", false) then
+        local beggarMode = 1
+        if client:IsInnocent() then beggarMode = GetGlobalInt("ttt_beggar_reveal_innocent", 2)
+        elseif client:IsTraitor() then beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", 1) end
+        if beggarMode ~= BEGGAR_REVEAL_ALL then
+            surface.SetFont("TabLarge")
+            surface.SetTextColor(255, 255, 255, 230)
 
-        text = GetPTranslation("beggar_hidden_hud", { beggar = ROLE_STRINGS[ROLE_BEGGAR] })
-        local _, h = surface.GetTextSize(text)
+            if beggarMode == BEGGAR_REVEAL_NONE then
+                text = GetPTranslation("beggar_hidden_all_hud", { beggar = ROLE_STRINGS_EXT[ROLE_BEGGAR] })
+            elseif beggarMode == BEGGAR_REVEAL_TRAITORS then
+                text = GetPTranslation("beggar_hidden_innocent_hud", { beggar = ROLE_STRINGS_EXT[ROLE_BEGGAR], innocents = ROLE_STRINGS_PLURAL[ROLE_INNOCENT] })
+            elseif beggarMode == BEGGAR_REVEAL_INNOCENTS then
+                text = GetPTranslation("beggar_hidden_traitor_hud", { beggar = ROLE_STRINGS_EXT[ROLE_BEGGAR], traitors = ROLE_STRINGS_PLURAL[ROLE_TRAITOR] })
+            end
+            local _, h = surface.GetTextSize(text)
 
-        surface.SetTextPos(label_left, ScrH() - label_top - h)
-        surface.DrawText(text)
+            surface.SetTextPos(label_left, ScrH() - label_top - h)
+            surface.DrawText(text)
+        end
     end
-
 end
 
 -- Paints player status HUD element in the bottom left

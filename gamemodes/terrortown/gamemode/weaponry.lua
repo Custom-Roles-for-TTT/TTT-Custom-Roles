@@ -677,10 +677,13 @@ function GM:WeaponEquip(wep, ply)
                 wep.BoughtBuy = ply
             elseif ply:IsBeggar() and (wep.BoughtBuy:IsTraitorTeam() or wep.BoughtBuy:IsInnocentTeam()) then
                 local role
+                local beggarMode
                 if wep.BoughtBuy:IsTraitorTeam() then
                     role = ROLE_TRAITOR
+                    beggarMode = GetConVar("ttt_beggar_reveal_traitor"):GetInt()
                 else
                     role = ROLE_INNOCENT
+                    beggarMode = GetConVar("ttt_beggar_reveal_innocent"):GetInt()
                 end
 
                 ply:SetRole(role)
@@ -688,9 +691,12 @@ function GM:WeaponEquip(wep, ply)
                 ply:PrintMessage(HUD_PRINTTALK, "You have joined the " .. ROLE_STRINGS[role] .. " team")
                 ply:PrintMessage(HUD_PRINTCENTER, "You have joined the " .. ROLE_STRINGS[role] .. " team")
                 timer.Simple(0.5, function() SendFullStateUpdate() end) -- Slight delay to avoid flickering from beggar to the new role and back to beggar
-                if GetConVar("ttt_beggar_reveal_change"):GetBool() then
-                    wep.BoughtBuy:PrintMessage(HUD_PRINTTALK, "The " .. ROLE_STRINGS[ROLE_BEGGAR] .. " has joined your team")
-                    wep.BoughtBuy:PrintMessage(HUD_PRINTCENTER, "The " .. ROLE_STRINGS[ROLE_BEGGAR] .. " has joined your team")
+
+                for _, v in ipairs(player.GetAll()) do
+                    if beggarMode == BEGGAR_REVEAL_ALL or (v:IsActiveTraitorTeam() and beggarMode == BEGGAR_REVEAL_TRAITORS) or (not v:IsActiveTraitorTeam() and beggarMode == BEGGAR_REVEAL_INNOCENTS) then
+                        v:PrintMessage(HUD_PRINTTALK, "The beggar has joined the " .. ROLE_STRINGS[role] .. " team")
+                        v:PrintMessage(HUD_PRINTCENTER, "The beggar has joined the " .. ROLE_STRINGS[role] .. " team")
+                    end
                 end
 
                 net.Start("TTT_BeggarConverted")

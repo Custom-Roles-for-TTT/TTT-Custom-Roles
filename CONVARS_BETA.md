@@ -228,10 +228,10 @@ ttt_clown_shop_delay                        0       // Whether the clown's purch
 ttt_clown_credits_starting                  0       // The number of credits a clown should start with
 
 // Beggar
-ttt_beggar_reveal_change                    1       // Whether the beggar is revealed to you when they join your team or not
+ttt_beggar_reveal_traitor                   1       // Who the beggar is revealed to when they join the traitor team. 0 - No one. 1 - Everyone. 2 - Traitors. 3 - Innocents
+ttt_beggar_reveal_innocent                  2       // Who the beggar is revealed to when they join the innocent team. 0 - No one. 1 - Everyone. 2 - Traitors. 3 - Innocents
 ttt_beggar_respawn                          0       // Whether the beggar respawns when they are killed before joining another team
 ttt_beggar_respawn_delay                    3       // The delay to use when respawning the begger (if "ttt_beggar_respawn" is enabled)
-ttt_beggar_notify_mode                      0       // The logic to use when notifying players that a beggar is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone.
 ttt_beggar_notify_sound                     0       // Whether to play a cheering sound when a beggar is killed
 ttt_beggar_notify_confetti                  0       // Whether to throw confetti when a beggar is a killed
 

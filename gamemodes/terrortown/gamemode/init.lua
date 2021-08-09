@@ -191,10 +191,10 @@ CreateConVar("ttt_clown_heal_on_activate", "0")
 CreateConVar("ttt_clown_shop_active_only", "1")
 CreateConVar("ttt_clown_shop_delay", "0")
 
-CreateConVar("ttt_beggar_reveal_change", "1")
+CreateConVar("ttt_beggar_reveal_traitor", "1")
+CreateConVar("ttt_beggar_reveal_innocent", "2")
 CreateConVar("ttt_beggar_respawn", "0")
 CreateConVar("ttt_beggar_respawn_delay", "3")
-CreateConVar("ttt_beggar_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the Beggar is killed", 0, 4)
 CreateConVar("ttt_beggar_notify_sound", "0")
 CreateConVar("ttt_beggar_notify_confetti", "0")
 
@@ -333,9 +333,6 @@ OldCVarWarning("ttt_old_man_min_players", "ttt_oldman_min_players")
 
 CreateConVar("ttt_old_man_starting_health", "1")
 OldCVarWarning("ttt_old_man_starting_health", "ttt_oldman_starting_health")
-
-CreateConVar("ttt_reveal_beggar_change", "1")
-OldCVarWarning("ttt_reveal_beggar_change", "ttt_beggar_reveal_change")
 
 CreateConVar("ttt_hyp_credits_starting", "1")
 OldCVarWarning("ttt_hyp_credits_starting", "ttt_hypnotist_credits_starting")
@@ -657,7 +654,8 @@ function GM:SyncGlobals()
     SetGlobalBool("ttt_jesters_visible_to_monsters", GetConVar("ttt_jesters_visible_to_monsters"):GetBool())
     SetGlobalBool("ttt_jesters_visible_to_independents", GetConVar("ttt_jesters_visible_to_independents"):GetBool())
 
-    SetGlobalBool("ttt_beggar_reveal_change", GetConVar("ttt_beggar_reveal_change"):GetBool())
+    SetGlobalInt("ttt_beggar_reveal_traitor", GetConVar("ttt_beggar_reveal_traitor"):GetInt())
+    SetGlobalInt("ttt_beggar_reveal_innocent", GetConVar("ttt_beggar_reveal_innocent"):GetInt())
 
     SetGlobalBool("ttt_clown_show_target_icon", GetConVar("ttt_clown_show_target_icon"):GetBool())
     SetGlobalBool("ttt_clown_hide_when_active", GetConVar("ttt_clown_hide_when_active"):GetBool())

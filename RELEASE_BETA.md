@@ -7,6 +7,9 @@
 - Fixed role weapons not being removed when a player is hypnotized
 - Fixed multiple monsters spawning in one round
 
+### Changes
+- Split beggar reveal convar in two to allow finer control over when the beggar is revealed and who they are revealed to
+
 ### Additions
 - Added ability for parasite's infection to transfer to a new player if their killer is killed (disabled by default)
   - There is also a new convar to determine whether the infection progress should be reset if the infection is transferred to a new player

@@ -615,6 +615,12 @@ GLITCH_SHOW_AS_TRAITOR = 0
 GLITCH_SHOW_AS_SPECIAL_TRAITOR = 1
 GLITCH_HIDE_SPECIAL_TRAITOR_ROLES = 2
 
+-- Beggar reveal modes
+BEGGAR_REVEAL_NONE = 0
+BEGGAR_REVEAL_ALL = 1
+BEGGAR_REVEAL_TRAITORS = 2
+BEGGAR_REVEAL_INNOCENTS = 3
+
 COLOR_WHITE = Color(255, 255, 255, 255)
 COLOR_BLACK = Color(0, 0, 0, 255)
 COLOR_GREEN = Color(0, 255, 0, 255)
@@ -843,7 +849,8 @@ if SERVER then
                 -- Exclude Glitch from this list so they don't get discovered immediately
                 elseif (p:IsInnocentTeam() or p:IsMonsterTeam()) and not p:IsGlitch() then
                     -- Don't add the former beggar to the list of enemies unless the "reveal" setting is enabled
-                    if GetConVar("ttt_beggar_reveal_change"):GetBool() or not p:GetNWBool("WasBeggar", false) then
+                    local beggarMode = GetConVar("ttt_beggar_reveal_innocent"):GetInt()
+                    if (beggarMode == BEGGAR_REVEAL_ALL or beggarMode == BEGGAR_REVEAL_TRAITORS) or not p:GetNWBool("WasBeggar", false) then
                         -- Put shop roles into a list if they should be targeted last
                         if GetConVar("ttt_assassin_shop_roles_last"):GetBool() and p:IsShopRole() then
                             table.insert(shops, p:Nick())
