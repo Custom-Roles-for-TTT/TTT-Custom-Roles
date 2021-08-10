@@ -3,8 +3,12 @@
 ## 1.0.10
 **Released: **
 
+### Changes
+- Resized role name font for longer role names
+
 ### Additions
 - Added the ability for other mods to create their own simple roles
+- Added new mad scientist role
 
 ## 1.0.9
 **Released: August 9th, 2021**

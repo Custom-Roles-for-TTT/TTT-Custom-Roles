@@ -73,8 +73,9 @@ ROLE_QUACK = 23
 ROLE_PARASITE = 24
 ROLE_TRICKSTER = 25
 ROLE_PARAMEDIC = 26
+ROLE_MADSCIENTIST = 27
 
-ROLE_MAX = 26
+ROLE_MAX = 27
 ROLE_EXTERNAL_START = ROLE_MAX + 1
 
 local function AddRoleAssociations(list, roles)
@@ -108,7 +109,7 @@ JESTER_ROLES = {}
 AddRoleAssociations(JESTER_ROLES, {ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_BEGGAR, ROLE_BODYSNATCHER})
 
 INDEPENDENT_ROLES = {}
-AddRoleAssociations(INDEPENDENT_ROLES, {ROLE_DRUNK, ROLE_OLDMAN, ROLE_KILLER, ROLE_ZOMBIE})
+AddRoleAssociations(INDEPENDENT_ROLES, {ROLE_DRUNK, ROLE_OLDMAN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_MADSCIENTIST})
 
 MONSTER_ROLES = {}
 AddRoleAssociations(MONSTER_ROLES, {})
@@ -344,7 +345,8 @@ ROLE_STRINGS_RAW = {
     [ROLE_QUACK] = "quack",
     [ROLE_PARASITE] = "parasite",
     [ROLE_TRICKSTER] = "trickster",
-    [ROLE_PARAMEDIC] = "paramedic"
+    [ROLE_PARAMEDIC] = "paramedic",
+    [ROLE_MADSCIENTIST] = "madscientist"
 }
 
 ROLE_STRINGS = {
@@ -374,7 +376,8 @@ ROLE_STRINGS = {
     [ROLE_QUACK] = "Quack",
     [ROLE_PARASITE] = "Parasite",
     [ROLE_TRICKSTER] = "Trickster",
-    [ROLE_PARAMEDIC] = "Paramedic"
+    [ROLE_PARAMEDIC] = "Paramedic",
+    [ROLE_MADSCIENTIST] = "Mad Scientist"
 }
 
 ROLE_STRINGS_PLURAL = {
@@ -404,7 +407,8 @@ ROLE_STRINGS_PLURAL = {
     [ROLE_QUACK] = "Quacks",
     [ROLE_PARASITE] = "Parasites",
     [ROLE_TRICKSTER] = "Tricksters",
-    [ROLE_PARAMEDIC] = "Paramedics"
+    [ROLE_PARAMEDIC] = "Paramedics",
+    [ROLE_MADSCIENTIST] = "Mad Scientists"
 }
 
 ROLE_STRINGS_EXT = {
@@ -435,7 +439,8 @@ ROLE_STRINGS_EXT = {
     [ROLE_QUACK] = "a Quack",
     [ROLE_PARASITE] = "a Parasite",
     [ROLE_TRICKSTER] = "a Trickster",
-    [ROLE_PARAMEDIC] = "a Paramedic"
+    [ROLE_PARAMEDIC] = "a Paramedic",
+    [ROLE_MADSCIENTIST] = "a Mad Scientist"
 }
 
 ROLE_STRINGS_SHORT = {
@@ -465,7 +470,8 @@ ROLE_STRINGS_SHORT = {
     [ROLE_QUACK] = "qua",
     [ROLE_PARASITE] = "par",
     [ROLE_TRICKSTER] = "tri",
-    [ROLE_PARAMEDIC] = "med"
+    [ROLE_PARAMEDIC] = "med",
+    [ROLE_MADSCIENTIST] = "mad"
 }
 
 function StartsWithVowel(word)

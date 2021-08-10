@@ -1617,7 +1617,7 @@ function GM:TTTCheckForWin()
                 innocent_alive = true
             elseif v:IsKiller() then
                 killer_alive = true
-            elseif (v:IsZombie() or zombifying) and INDEPENDENT_ROLES[ROLE_ZOMBIE] then
+            elseif v:IsMadScientist() or ((v:IsZombie() or zombifying) and INDEPENDENT_ROLES[ROLE_ZOMBIE]) then
                 zombie_alive = true
             end
         end
@@ -2020,6 +2020,9 @@ function SelectRoles()
                     else
                         forcedMonsterCount = forcedMonsterCount + 1
                     end
+                elseif role == ROLE_MADSCIENTIST then
+                    hasIndependent = true
+                    forcedIndependentCount = forcedIndependentCount + 1
 
                     -- EXTERNAL CUSTOM ROLES
                 elseif role >= ROLE_EXTERNAL_START then
@@ -2227,6 +2230,11 @@ function SelectRoles()
         if GetConVar("ttt_zombie_enabled"):GetBool() and choice_count >= GetConVar("ttt_zombie_min_players"):GetInt() and INDEPENDENT_ROLES[ROLE_ZOMBIE] then
             for _ = 1, GetConVar("ttt_zombie_spawn_weight"):GetInt() do
                 table.insert(independentRoles, ROLE_ZOMBIE)
+            end
+        end
+        if GetConVar("ttt_madscientist_enabled"):GetBool() and choice_count >= GetConVar("ttt_madscientist_min_players"):GetInt() and INDEPENDENT_ROLES[ROLE_ZOMBIE] then
+            for _ = 1, GetConVar("ttt_madscientist_spawn_weight"):GetInt() do
+                table.insert(independentRoles, ROLE_MADSCIENTIST)
             end
         end
         if #independentRoles ~= 0 then

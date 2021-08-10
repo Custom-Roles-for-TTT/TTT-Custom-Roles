@@ -20,6 +20,11 @@ surface.CreateFont("TraitorState", {
     size = 28,
     weight = 1000
 })
+surface.CreateFont("TraitorStateSmall", {
+    font = "Trebuchet24",
+    size = 24,
+    weight = 1000
+})
 surface.CreateFont("TimeLeft", {
     font = "Trebuchet24",
     size = 24,
@@ -412,7 +417,12 @@ local function InfoPaint(client)
         text = L[roundstate_string[round_state]]
     end
 
-    ShadowedText(text, "TraitorState", x + margin + 74, traitor_y, COLOR_WHITE, TEXT_ALIGN_CENTER)
+    if #text > 10 then
+        ShadowedText(text, "TraitorStateSmall", x + margin + 74, traitor_y + 2, COLOR_WHITE, TEXT_ALIGN_CENTER)
+    else
+        ShadowedText(text, "TraitorState", x + margin + 74, traitor_y, COLOR_WHITE, TEXT_ALIGN_CENTER)
+    end
+
 
     -- Draw round time
     local is_haste = HasteMode() and round_state == ROUND_ACTIVE

@@ -298,6 +298,8 @@ function GM:HUDDrawTargetID()
     local target_jester = false
     local target_clown = false
 
+    local target_madscientist = false
+
     local target_zombie = false
     local target_vampire = false
 
@@ -381,6 +383,7 @@ function GM:HUDDrawTargetID()
                 target_jester = showJester
             elseif client:IsIndependentTeam() then
                 target_zombie = ent:IsZombie() and ent:IsIndependentTeam()
+                target_madscientist = ent:IsMadScientist()
 
                 target_jester = showJester
             end
@@ -442,6 +445,8 @@ function GM:HUDDrawTargetID()
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_VAMPIRE])
         elseif target_zombie then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_ZOMBIE])
+        elseif target_madscientist then
+            surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_MADSCIENTIST])
         elseif target_jester then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_JESTER])
         elseif target_clown then
@@ -569,6 +574,9 @@ function GM:HUDDrawTargetID()
     elseif target_zombie then
         text = string.upper(ROLE_STRINGS[ROLE_ZOMBIE])
         clr = ROLE_COLORS_RADAR[ROLE_ZOMBIE]
+    elseif target_madscientist then
+        text = string.upper(ROLE_STRINGS[ROLE_MADSCIENTIST])
+        clr = ROLE_COLORS_RADAR[ROLE_MADSCIENTIST]
     elseif target_vampire then
         text = string.upper(ROLE_STRINGS[ROLE_VAMPIRE])
         clr = ROLE_COLORS_RADAR[ROLE_VAMPIRE]

@@ -11,7 +11,7 @@ SWEP.HoldType = "pistol"
 SWEP.LimitedStock = true
 
 if CLIENT then
-    SWEP.PrintName = "Brain Washing Device"
+    SWEP.PrintName = "Zombification Device"
     SWEP.Slot = 8
 
     SWEP.ViewModelFOV = 78
@@ -20,7 +20,7 @@ if CLIENT then
 
     SWEP.EquipMenuData = {
         type = "item_weapon",
-        desc = "Revives an innocent as a traitor."
+        desc = "Turns dead players into zombies."
     }
 end
 
@@ -28,8 +28,9 @@ SWEP.Base = "weapon_tttbase"
 SWEP.Category = WEAPON_CATEGORY_ROLE
 
 SWEP.Primary.Recoil = 0
-SWEP.Primary.ClipSize = -1
-SWEP.Primary.DefaultClip = -1
+SWEP.Primary.ClipSize = 5
+SWEP.Primary.ClipMax = 5
+SWEP.Primary.DefaultClip = 5
 SWEP.Primary.Automatic = false
 SWEP.Primary.Delay = 1
 SWEP.Primary.Ammo = "none"
@@ -40,7 +41,7 @@ SWEP.Secondary.DefaultClip = -1
 SWEP.Secondary.Automatic = false
 SWEP.Secondary.Delay = 1.25
 
-SWEP.InLoadoutFor = {ROLE_HYPNOTIST}
+SWEP.InLoadoutFor = {ROLE_MADSCIENTIST}
 
 SWEP.Charge = 0
 SWEP.Timer = -1
@@ -50,7 +51,7 @@ SWEP.AllowDrop = false
 local cvf = FCVAR_ARCHIVE + FCVAR_REPLICATED + FCVAR_SERVER_CAN_EXECUTE
 local maxdist = 64
 local success = 100
-local charge = 8
+local charge = 4
 local mutateok = 0
 local mutatemax = 0
 local spawnhealth = 100
@@ -83,7 +84,7 @@ local oldScoreGroup = nil
 
 if CLIENT then
     function SWEP:Initialize()
-        self:AddHUDHelp("brainwash_help_pri", "brainwash_help_sec", true)
+        self:AddHUDHelp("zombificator_help_pri", "zombificator_help_sec", true)
         self:SetHoldType(self.HoldType)
     end
 end
@@ -99,9 +100,8 @@ function SWEP:OnDrop()
 end
 
 if SERVER then
-    util.AddNetworkString("TTT_Defib_Hide")
-    util.AddNetworkString("TTT_Defib_Revived")
-    util.AddNetworkString("TTT_Hypnotised")
+    util.AddNetworkString("TTT_Zombificator_Hide")
+    util.AddNetworkString("TTT_Zombificator_Revived")
 
     local offsets = {}
 
@@ -185,13 +185,13 @@ if SERVER then
                 end
             end
 
-            net.Start("TTT_Defib_Hide")
+            net.Start("TTT_Zombificator_Hide")
             net.WriteEntity(ply)
             net.WriteBool(true)
             net.Send(plys)
         end
 
-        net.Start("TTT_Defib_Revived")
+        net.Start("TTT_Zombificator_Revived")
         net.WriteBool(true)
         net.Send(ply)
 
@@ -203,7 +203,7 @@ if SERVER then
             owner:SetNWBool("Infected", false)
         end
 
-        net.Start("TTT_Hypnotised")
+        net.Start("TTT_Zombified")
         net.WriteString(ply:Nick())
         net.Broadcast()
 
@@ -211,10 +211,9 @@ if SERVER then
         ply:SetCredits(credits)
         ply:SetPos(self.Location or body:GetPos())
         ply:SetEyeAngles(Angle(0, body:GetAngles().y, 0))
-        ply:SetNWBool("WasHypnotised", true)
-        ply:SetRole(ROLE_TRAITOR)
+        ply:SetRole(ROLE_ZOMBIE)
         ply:StripRoleWeapons()
-        ply:PrintMessage(HUD_PRINTCENTER, "You have been brainwashed and are now a traitor.")
+        ply:PrintMessage(HUD_PRINTCENTER, "You have been turned into a zombie.")
         ply:SetHealth(spawnhealth)
 
         body:Remove()
@@ -222,7 +221,7 @@ if SERVER then
         SendFullStateUpdate()
 
         owner:ConCommand("lastinv")
-        self:Remove()
+        self:TakePrimaryAmmo(1)
     end
 
     function SWEP:Defib()
@@ -252,14 +251,14 @@ if SERVER then
             return
         end
 
-        if ply:IsTraitorTeam() then
-            self:Error("SUBJECT IS ALREADY A TRAITOR")
+        if ply:IsZombie() then
+            self:Error("SUBJECT IS ALREADY A ZOMBIE")
             return
         end
 
         self:SetState(DEFIB_BUSY)
         self:SetBegin(CurTime())
-        self:SetMessage("BRAINWASHING " .. string.upper(ply:Nick()))
+        self:SetMessage("ZOMBIFYING " .. string.upper(ply:Nick()))
 
         self:GetOwner():EmitSound(hum, 75, math.random(98, 102), 1)
 
@@ -272,12 +271,13 @@ if SERVER then
             if self:GetBegin() + charge <= CurTime() then
                 self:Defib()
             elseif not self:GetOwner():KeyDown(IN_ATTACK) or self:GetOwner():GetEyeTrace(MASK_SHOT_HULL).Entity ~= self.Target then
-                self:Error("BRAINWASHING ABORTED")
+                self:Error("ZOMBIFYING ABORTED")
             end
         end
     end
 
     function SWEP:PrimaryAttack()
+        if not self:CanPrimaryAttack() then return end
         if self:GetState() ~= DEFIB_IDLE then return end
 
         local tr = self:GetOwner():GetEyeTrace(MASK_SHOT_HULL)
@@ -308,20 +308,20 @@ if SERVER then
 end
 
 if CLIENT then
-    net.Receive("TTT_Defib_Hide", function(len, ply)
+    net.Receive("TTT_Zombificator_Hide", function(len, ply)
         if ply or len <= 0 then return end
 
         local hply = net.ReadEntity()
         hply.DefibHide = net.ReadBool()
     end)
 
-    net.Receive("TTT_Defib_Revived", function(len, ply)
+    net.Receive("TTT_Zombificator_Revived", function(len, ply)
         if ply or len <= 0 then return end
         surface.PlaySound(revived)
     end)
 
-    hook.Remove("TTTEndRound", "RemoveDefibHide")
-    hook.Add("TTTEndRound", "RemoveDefibHide", function()
+    hook.Remove("TTTEndRound", "RemoveZombificatorHide")
+    hook.Add("TTTEndRound", "RemoveZombificatorHide", function()
         for _, v in pairs(player.GetAll()) do v.DefibHide = nil end
     end)
 

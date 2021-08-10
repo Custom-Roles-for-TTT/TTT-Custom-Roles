@@ -316,6 +316,14 @@ local function force_paramedic(ply)
 end
 concommand.Add("ttt_force_paramedic", force_paramedic, nil, nil, FCVAR_CHEAT)
 
+local function force_madscientist(ply)
+    ply:SetRoleAndBroadcast(ROLE_MADSCIENTIST)
+    clear_role_effects(ply)
+    ply:Give("weapon_mad_zombificator")
+    SendFullStateUpdate()
+end
+concommand.Add("ttt_force_madscientist", force_madscientist, nil, nil, FCVAR_CHEAT)
+
 local function force_spectate(ply, cmd, arg)
     if IsValid(ply) then
         if #arg == 1 and tonumber(arg[1]) == 0 then

@@ -586,6 +586,10 @@ L.cure_help_sec = "{secondaryfire} to cure yourself."
 L.brainwash_help_pri = "Hold {primaryfire} to revive dead body."
 L.brainwash_help_sec = "The revived player will become a traitor."
 
+-- Zombification device
+L.zombificator_help_pri = "Hold {primaryfire} to zombify dead body."
+L.zombificator_help_sec = "The revived player will become a zombie."
+
 L.defibrillator_help_pri = "Hold {primaryfire} to revive dead body."
 L.defibrillator_help_sec = "The revived player will respawn on their original team"
 
@@ -764,6 +768,10 @@ use {traitor} traps throughout the map. Have fun!]]
 L.info_popup_paramedic = [[You are {role}! You can give your fellow {innocents}
 a second chance with your defibrillator. Stay alive
 and bring back your teams strongest player.]]
+
+L.info_popup_madscientist = [[You are {role}! Try to spread your virus to
+everyone! Using your zombification device on a dead
+body will revive them as {azombie}.]]
 
 
 L.info_popup_traitor_comrades = [[Work with fellow {traitors} to kill all others.

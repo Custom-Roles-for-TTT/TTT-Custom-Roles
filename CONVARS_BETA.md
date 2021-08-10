@@ -44,6 +44,7 @@ ttt_drunk_enabled                           0       // Whether or not the drunk 
 ttt_oldman_enabled                          0       // Whether or not the old man should spawn
 ttt_killer_enabled                          0       // Whether or not the killer should spawn
 ttt_zombie_enabled                          0       // Whether or not the zombie should spawn
+ttt_madscientist_enabled                    0       // Whether or not the madscientist should spawn
 
 // Individual Role Spawn Weights
 ttt_hypnotist_spawn_weight                  1       // The weight assigned to spawning the hypnotist
@@ -70,6 +71,7 @@ ttt_drunk_spawn_weight                      1       // The weight assigned to sp
 ttt_oldman_spawn_weight                     1       // The weight assigned to spawning the old man
 ttt_killer_spawn_weight                     1       // The weight assigned to spawning the killer
 ttt_zombie_spawn_weight                     1       // The weight assigned to spawning the zombie
+ttt_madscientist_spawn_weight               1       // The weight assigned to spawning the madscientist
 // (Note: Each role is limited to one player per round.)
 
 // Individual Role Minimum Player Requirements
@@ -97,6 +99,7 @@ ttt_drunk_min_players                       0       // The minimum number of pla
 ttt_oldman_min_players                      0       // The minimum number of players required to spawn the old man
 ttt_killer_min_players                      0       // The minimum number of players required to spawn the killer
 ttt_zombie_min_players                      0       // The minimum number of players required to spawn the zombie
+ttt_madscientist_min_players                0       // The minimum number of players required to spawn the mad scientist
 
 // ----------------------------------------
 
@@ -385,6 +388,7 @@ ttt_drunk_starting_health                   100     // The amount of health the 
 ttt_oldman_starting_health                  1       // The amount of health the old man starts with
 ttt_killer_starting_health                  150     // The amount of health the killer starts with
 ttt_zombie_starting_health                  100     // The amount of health the zombie starts with
+ttt_madscientist_starting_health            100     // The amount of health the mads cientist starts with
 
 // Individual Role Max Health
 ttt_traitor_max_health                      100     // The maximum amount of health a traitor can have
@@ -414,6 +418,7 @@ ttt_drunk_max_health                        100     // The maximum amount of hea
 ttt_oldman_max_health                       1       // The maximum amount of health the old man can have
 ttt_killer_max_health                       150     // The maximum amount of health the killer can have
 ttt_zombie_max_health                       100     // The maximum amount of health the zombie can have
+ttt_madscientist_max_health                 100     // The maximum amount of health the mad scientist can have
 
 // Logging
 ttt_debug_logkills                          1       // Whether to log when a player is killed in the console
