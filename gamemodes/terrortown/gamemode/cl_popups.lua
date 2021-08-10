@@ -62,14 +62,12 @@ local function GetTextForLocalPlayer()
                     allylist = allylist .. string.rep(" ", 42) .. ply:Nick() .. "\n"
                 end
             end
-            comrades = GetPTranslation("info_popup_traitor_comrades", table.Merge(params, { traitorlist = allylist }))
+            comrades = GetPTranslation("info_popup_monster_comrades", table.Merge(params, { allylist = allylist }))
         else
-            comrades = GetPTranslation("info_popup_traitor_alone", params)
+            comrades = GetPTranslation("info_popup_monster_alone", params)
         end
 
-        local text = GetPTranslation("info_popup_" .. roleString, table.Merge(params, { comrades = comrades }))
-
-        return text
+        return GetPTranslation("info_popup_" .. roleString, table.Merge(params, { comrades = comrades }))
 
     elseif client:IsTraitorTeam() then
         local traitors = {}
@@ -108,8 +106,7 @@ local function GetTextForLocalPlayer()
             comrades = GetPTranslation("info_popup_traitor_alone", params)
         end
 
-        local text = GetPTranslation("info_popup_" .. roleString, table.Merge(params, { comrades = comrades }))
-        return text
+        return GetPTranslation("info_popup_" .. roleString, table.Merge(params, { comrades = comrades }))
     -- Zombies not on Traitor or Monster teams have a different message
     elseif client:IsZombie() then
         return GetPTranslation("info_popup_zombie_indep", params)

@@ -1,7 +1,7 @@
 # Beta Release Notes
 
 ## 1.0.10
-**Released: **
+**Released:**
 
 ### Changes
 - Resized role name font for longer role names
