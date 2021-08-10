@@ -20,6 +20,7 @@ L.round_restart = "The round has been forced to restart by an admin."
 L.round_traitors_one = "{role}, you stand alone."
 L.round_traitors_more = "{role}, these are your allies: {names}"
 
+L.win_prevented = "Map was prevented from ending the round."
 L.win_time = "Time has run out. The {role} win."
 L.win_traitor = "The {role} have won!"
 L.win_innocent = "The {role} have been defeated!"

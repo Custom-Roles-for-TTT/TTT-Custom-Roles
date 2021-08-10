@@ -293,6 +293,7 @@ CreateConVar("ttt_namechange_kick", "1", FCVAR_NOTIFY)
 CreateConVar("ttt_namechange_bantime", "10")
 
 CreateConVar("ttt_disable_headshots", "0")
+CreateConVar("ttt_disable_mapwin", "0")
 
 -- bem server convars
 CreateConVar("ttt_bem_allow_change", 1, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Allow clients to change the look of the shop menu")
@@ -1573,7 +1574,12 @@ function EndRound(type)
 end
 
 function GM:MapTriggeredEnd(wintype)
-    self.MapWin = wintype
+    if GetConVar("ttt_disable_mapwin"):GetBool() then
+        LANG.Msg("win_prevented")
+        ServerLog("Map attempted to end the round with win type: " .. wintype .. ".\n")
+    else
+        self.MapWin = wintype
+    end
 end
 
 local function CheckForOldManWin(win_type)

@@ -7,6 +7,9 @@
 - Fixed team name in monsters round start popup
 - Fixed only the first weapon added or excluded via roleweapons actually being added or excluded
 
+### Additions
+- Added convar to prevent maps from ending the round
+
 ### Developer
 - Added client-side command to reset the equipment cache
 
