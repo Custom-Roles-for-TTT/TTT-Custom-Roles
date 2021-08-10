@@ -1,5 +1,11 @@
 # Beta Release Notes
 
+## 1.0.10
+**Released: **
+
+### Additions
+- Added the ability for other mods to create their own simple roles
+
 ## 1.0.9
 **Released: August 9th, 2021**
 
@@ -23,7 +29,6 @@
 - Added glitch modes to allow glitches to function in rounds where there are 2 or more members of the traitor team but less than 2 regular traitors
 - Added convars to prevent the paramedic and hypnotist, or the phantom and parasite from spawning together
 - Added a fake parasite cure that does nothing except play the parasite cure sounds which is buyable for the quack
-- Added the ability for other mods to create their own simple roles
 
 ## 1.0.8
 **Released: August 7th, 2021**
