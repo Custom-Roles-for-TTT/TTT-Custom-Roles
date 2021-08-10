@@ -53,59 +53,11 @@ end
 function SendTraitorList(ply_or_rf, pred) SendRoleList(ROLE_TRAITOR, ply_or_rf, pred) end
 function SendDetectiveList(ply_or_rf) SendRoleList(ROLE_DETECTIVE, ply_or_rf) end
 function SendInnocentList(ply_or_rf) SendRoleList(ROLE_INNOCENT, ply_or_rf) end
-function SendJesterList(ply_or_rf) SendRoleList(ROLE_JESTER, ply_or_rf) end
-function SendSwapperList(ply_or_rf) SendRoleList(ROLE_SWAPPER, ply_or_rf) end
-function SendGlitchList(ply_or_rf) SendRoleList(ROLE_GLITCH, ply_or_rf) end
-function SendPhantomList(ply_or_rf) SendRoleList(ROLE_PHANTOM, ply_or_rf) end
-function SendHypnotistList(ply_or_rf) SendRoleList(ROLE_HYPNOTIST, ply_or_rf) end
-function SendRevengerList(ply_or_rf) SendRoleList(ROLE_REVENGER, ply_or_rf) end
-function SendDrunkList(ply_or_rf) SendRoleList(ROLE_DRUNK, ply_or_rf) end
-function SendClownList(ply_or_rf) SendRoleList(ROLE_CLOWN, ply_or_rf) end
-function SendDeputyList(ply_or_rf) SendRoleList(ROLE_DEPUTY, ply_or_rf) end
-function SendImpersonatorList(ply_or_rf) SendRoleList(ROLE_IMPERSONATOR, ply_or_rf) end
-function SendBeggarList(ply_or_rf) SendRoleList(ROLE_BEGGAR, ply_or_rf) end
-function SendOldManList(ply_or_rf) SendRoleList(ROLE_OLDMAN, ply_or_rf) end
-function SendMercenaryList(ply_or_rf) SendRoleList(ROLE_MERCENARY, ply_or_rf) end
-function SendBodysnatcherList(ply_or_rf) SendRoleList(ROLE_BODYSNATCHER, ply_or_rf) end
-function SendVeteranList(ply_or_rf) SendRoleList(ROLE_VETERAN, ply_or_rf) end
-function SendAssassinList(ply_or_rf) SendRoleList(ROLE_ASSASSIN, ply_or_rf) end
-function SendKillerList(ply_or_rf) SendRoleList(ROLE_KILLER, ply_or_rf) end
-function SendZombieList(ply_or_rf) SendRoleList(ROLE_ZOMBIE, ply_or_rf) end
-function SendVampireList(ply_or_rf) SendRoleList(ROLE_VAMPIRE, ply_or_rf) end
-function SendDoctorList(ply_or_rf) SendRoleList(ROLE_DOCTOR, ply_or_rf) end
-function SendQuackList(ply_or_rf) SendRoleList(ROLE_QUACK, ply_or_rf) end
-function SendParasiteList(ply_or_rf) SendRoleList(ROLE_PARASITE, ply_or_rf) end
-function SendTricksterList(ply_or_rf) SendRoleList(ROLE_TRICKSTER, ply_or_rf) end
-function SendParamedicList(ply_or_rf) SendRoleList(ROLE_PARAMEDIC, ply_or_rf) end
 
 function SendAllLists(ply_or_rf)
-    SendInnocentList(ply_or_rf)
-    SendTraitorList(ply_or_rf)
-    SendDetectiveList(ply_or_rf)
-    SendJesterList(ply_or_rf)
-    SendSwapperList(ply_or_rf)
-    SendGlitchList(ply_or_rf)
-    SendPhantomList(ply_or_rf)
-    SendHypnotistList(ply_or_rf)
-    SendRevengerList(ply_or_rf)
-    SendDrunkList(ply_or_rf)
-    SendClownList(ply_or_rf)
-    SendDeputyList(ply_or_rf)
-    SendImpersonatorList(ply_or_rf)
-    SendBeggarList(ply_or_rf)
-    SendOldManList(ply_or_rf)
-    SendMercenaryList(ply_or_rf)
-    SendBodysnatcherList(ply_or_rf)
-    SendVeteranList(ply_or_rf)
-    SendAssassinList(ply_or_rf)
-    SendKillerList(ply_or_rf)
-    SendZombieList(ply_or_rf)
-    SendVampireList(ply_or_rf)
-    SendDoctorList(ply_or_rf)
-    SendQuackList(ply_or_rf)
-    SendParasiteList(ply_or_rf)
-    SendTricksterList(ply_or_rf)
-    SendParamedicList(ply_or_rf)
+    for role = 0, ROLE_MAX do
+        SendRoleList(role, ply_or_rf)
+    end
 end
 
 function SendConfirmedTraitors(ply_or_rf)

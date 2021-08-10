@@ -51,12 +51,20 @@ local zombie_vision = false
 local vampire_vision = false
 local vision_enabled = false
 
+local function AddExternalRoleDescriptions()
+    for role, desc in pairs(EXTERNAL_ROLE_DESCRIPTIONS) do
+        LANG.AddToLanguage("english", "info_popup_" .. ROLE_STRINGS_RAW[role], desc)
+    end
+end
+
 function GM:Initialize()
     MsgN("TTT Client initializing...")
 
     GAMEMODE.round_state = ROUND_WAIT
 
     LANG.Init()
+
+    AddExternalRoleDescriptions()
 
     self.BaseClass:Initialize()
 end

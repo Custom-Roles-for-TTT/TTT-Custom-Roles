@@ -321,6 +321,15 @@ EquipmentItems = {
     [ROLE_DOCTOR] = {};
 };
 
+local function PrepareExternalRoleEquipment()
+    if ROLE_MAX >= ROLE_EXTERNAL_START then
+        for role = ROLE_EXTERNAL_START, ROLE_MAX do
+            if SHOP_ROLES[role] then EquipmentItems[role] = {} end
+        end
+    end
+end
+PrepareExternalRoleEquipment()
+
 
 -- Search if an item is in the equipment table of a given role, and return it if
 -- it exists, else return nil.

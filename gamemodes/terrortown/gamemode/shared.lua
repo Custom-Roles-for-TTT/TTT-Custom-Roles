@@ -75,6 +75,7 @@ ROLE_TRICKSTER = 25
 ROLE_PARAMEDIC = 26
 
 ROLE_MAX = 26
+ROLE_EXTERNAL_START = ROLE_MAX + 1
 
 local function AddRoleAssociations(list, roles)
     -- Use an associative array so we can do a O(1) lookup by role
@@ -510,6 +511,57 @@ function UpdateRoleStrings()
     end
 end
 if CLIENT then net.Receive("TTT_UpdateRoleNames", UpdateRoleStrings) end
+
+ROLE_TEAM_INNOCENT = 0
+ROLE_TEAM_TRAITOR = 1
+ROLE_TEAM_JESTER = 2
+ROLE_TEAM_INDEPENDENT = 3
+
+EXTERNAL_ROLE_DESCRIPTIONS = {}
+EXTERNAL_ROLE_SHOP_ITEMS = {}
+EXTERNAL_ROLE_LOADOUT_ITEMS = {}
+
+function RegisterRole(tbl)
+    local roleID = ROLE_MAX + 1
+    _G["ROLE_" .. string.upper(tbl.nameraw)] = roleID
+    ROLE_MAX = roleID
+
+    ROLE_STRINGS_RAW[roleID] = tbl.nameraw
+    ROLE_STRINGS[roleID] = tbl.name
+    ROLE_STRINGS_PLURAL[roleID] = tbl.nameplural
+    ROLE_STRINGS_EXT[roleID] = tbl.nameext
+    ROLE_STRINGS_SHORT[roleID] = tbl.nameshort
+
+    if tbl.team == ROLE_TEAM_INNOCENT then
+        AddRoleAssociations(INNOCENT_ROLES, {roleID})
+    elseif tbl.team == ROLE_TEAM_TRAITOR then
+        AddRoleAssociations(TRAITOR_ROLES, {roleID})
+    elseif tbl.team == ROLE_TEAM_JESTER then
+        AddRoleAssociations(JESTER_ROLES, {roleID})
+    elseif tbl.team == ROLE_TEAM_INDEPENDENT then
+        AddRoleAssociations(INDEPENDENT_ROLES, {roleID})
+    end
+
+    EXTERNAL_ROLE_DESCRIPTIONS[roleID] = tbl.desc
+
+    if tbl.shop then
+        EXTERNAL_ROLE_SHOP_ITEMS[roleID] = tbl.shop
+        AddRoleAssociations(SHOP_ROLES, {roleID})
+    end
+
+    if tbl.loadout then
+        EXTERNAL_ROLE_LOADOUT_ITEMS[roleID] = tbl.loadout
+    end
+end
+
+local function AddExternalRoles()
+    local files, _ = file.Find("customroles/*.lua", "LUA")
+    for _, fil in ipairs(files) do
+        if SERVER then AddCSLuaFile("customroles/" .. fil) end
+        include("customroles/" .. fil)
+    end
+end
+AddExternalRoles()
 
 -- Game event log defs
 EVENT_KILL = 1

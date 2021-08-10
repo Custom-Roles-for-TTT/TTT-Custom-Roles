@@ -700,28 +700,6 @@ the {traitors} will be looking to take you down first!
 
 Press {menukey} to receive your equipment!]]
 
-L.info_popup_traitor_alone = [[You are {role}! You have no fellow {traitors} this round.
-
-Kill all others to win!
-
-Press {menukey} to receive your special equipment!]]
-
-L.info_popup_traitor = [[You are {role}! Work with fellow {traitors} to kill all others.
-But take care, or your treason may be discovered...
-
-These are your comrades:
-{traitorlist}
-
-Press {menukey} to receive your special equipment!]]
-
-L.info_popup_traitor_glitch = [[You are {role}! Work with fellow {traitors} to kill all others.
-BUT BEWARE! There was {aglitch} in the system and one among you does not seek the same goal.
-
-These may or may not be your comrades:
-{traitorlist}
-
-Press {menukey} to receive your special equipment!]]
-
 L.info_popup_jester = [[You are {role}! You want to die but you
 deal no damage so you must be killed by some one else.]]
 
@@ -787,67 +765,41 @@ L.info_popup_paramedic = [[You are {role}! You can give your fellow {innocents}
 a second chance with your defibrillator. Stay alive
 and bring back your teams strongest player.]]
 
-L.info_popup_hypnotist = [[You are {role}! Work with fellow {traitors} to kill all others.
+
+L.info_popup_traitor_comrades = [[Work with fellow {traitors} to kill all others.
+But take care, or your treason may be discovered...
 
 These are your comrades:
-{traitorlist}
+{traitorlist}]]
 
-You can use your brain washing device on a corpse to revive them as {atraitor}.
+L.info_popup_traitor_alone = [[You have no fellow {traitors} this round.
 
-Press {menukey} to receive your special equipment!]]
+Kill all others to win!]]
 
-L.info_popup_hypnotist_alone = [[You are {role}! You have no fellow {traitors} this round.
-
-Kill all others to win!
-
-You can use your brain washing device on a corpse to revive them as {atraitor}.
-
-Press {menukey} to receive your special equipment!]]
-
-L.info_popup_hypnotist_glitch = [[You are {role}! Work with fellow {traitors} to kill all others.
+L.info_popup_traitor_glitch = [[Work with fellow {traitors} to kill all others.
 BUT BEWARE! There was {aglitch} in the system and one among you does not seek the same goal.
 
 These may or may not be your comrades:
-{traitorlist}
+{traitorlist}]]
+
+L.info_popup_traitor = [[You are {role}! {comrades}
+
+Press {menukey} to receive your special equipment!]]
+
+L.info_popup_hypnotist = [[You are {role}! {comrades}
 
 You can use your brain washing device on a corpse to revive them as {atraitor}.
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_impersonator = [[You are {role}! Work with fellow {traitors} to kill all others.
-
-These are your comrades:
-{traitorlist}
+L.info_popup_impersonator = [[You are {role}! {comrades}
 
 If the {detective} dies you will appear to become a new {detective} and gain their
 abilities just like the {deputy}. However you are still working for the {traitors}.
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_impersonator_alone = [[You are {role}! You have no fellow {traitors} this round.
-
-Kill all others to win!
-
-If the {detective} dies you will appear to become a new {detective} and gain their
-abilities just like the {deputy}. However you are still working for the {traitors}.
-
-Press {menukey} to receive your special equipment!]]
-
-L.info_popup_impersonator_glitch = [[You are {role}! Work with fellow {traitors} to kill all others.
-BUT BEWARE! There was {aglitch} in the system and one among you does not seek the same goal.
-
-These may or may not be your comrades:
-{traitorlist}
-
-If the {detective} dies you will appear to become a new {detective} and gain their
-abilities just like the {deputy}. However you are still working for the {traitors}.
-
-Press {menukey} to receive your special equipment!]]
-
-L.info_popup_assassin = [[You are {role}! Work with fellow {traitors} to kill all others.
-
-These are your comrades:
-{traitorlist}
+L.info_popup_assassin = [[You are {role}! {comrades}
 
 Your first target is:
 {assassintarget}
@@ -859,99 +811,20 @@ maybe even suffering from a penalty!
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_assassin_glitch = [[You are {role}! Work with fellow {traitors} to kill all others.
-BUT BEWARE! There was {aglitch} in the system and one among
-you does not seek the same goal.
-
-These may or may not be your comrades:
-{traitorlist}
-
-Your first target is:
-{assassintarget}
-
-You will deal more to your target and less damage
-to all other players. But take care as killing the wrong
-player will result in you losing your damage bonus and
-maybe even suffering from a penalty!
-
-Press {menukey} to receive your special equipment!]]
-
-L.info_popup_assassin_alone = [[You are {role}! You have no fellow {traitors} this round.
-
-Kill all others to win!
-
-Your first target is:
-{assassintarget}
-
-You will deal more to your target and less damage
-to all other players. But take care as killing the wrong
-player will result in you losing your damage bonus and
-maybe even suffering from a penalty!
-
-Press {menukey} to receive your special equipment!]]
-
-L.info_popup_vampire = [[You are {role}! Work with your allies to kill all others.
-
-These are your comrades:
-{allylist}
+L.info_popup_vampire = [[You are {role}! {comrades}
 
 You can use your fangs (left-click) to drink blood and refill your health or to fade from view (right-click).
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_vampire_glitch = [[You are {role}! Work with your allies to kill all others.
-BUT BEWARE! There was {aglitch} in the system and one among
-you does not seek the same goal.
-
-These are your comrades:
-{allylist}
-
-You can use your fangs (left-click) to drink blood and refill your health or to fade from view (right-click).
-
-Press {menukey} to receive your special equipment!]]
-
-L.info_popup_vampire_alone = [[You are {role}! You have no allies this round.
-
-Kill all others to win!
-
-You can use your fangs (left-click) to drink blood and refill your health or to fade from view (right-click).
-
-Press {menukey} to receive your special equipment!]]
-
-L.info_popup_quack = [[You are {role}! Work with fellow {traitors} to kill all others.
-
-These are your comrades:
-{traitorlist}
+L.info_popup_quack = [[You are {role}! {comrades}
 
 Try to convince others that you are a real {doctor}! However, your tools harm
 instead of heal. You know that the best cure for any ailment is death.
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_quack_alone = [[You are {role}! You have no fellow {traitors} this round.
-
-Kill all others to win!
-
-Try to convince others that you are a real {doctor}! However, your tools harm
-instead of heal. You know that the best cure for any ailment is death.
-
-Press {menukey} to receive your special equipment!]]
-
-L.info_popup_quack_glitch = [[You are {role}! Work with fellow {traitors} to kill all others.
-BUT BEWARE! There was {aglitch} in the system and one among you does not seek the same goal.
-
-These may or may not be your comrades:
-{traitorlist}
-
-Try to convince others that you are a real {doctor}! However, your tools harm
-instead of heal. You know that the best cure for any ailment is death.
-
-Press {menukey} to receive your special equipment!]]
-
-L.info_popup_parasite = [[You are {role}! Work with fellow {traitors} to kill all others.
-
-These are your comrades:
-{traitorlist}
+L.info_popup_parasite = [[You are {role}! {comrades}
 
 Infect those that kill you and wait patiently for a chance to take control.
 Make sure you lay low as your host must stay alive in order for you to
@@ -959,53 +832,7 @@ respawn. Try to avoid getting them cured or killed!
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_parasite_alone = [[You are {role}! You have no fellow {traitors} this round.
-
-Kill all others to win!
-
-Infect those that kill you and wait patiently for a chance to take control.
-Make sure you lay low as your host must stay alive in order for you to
-respawn. Try to avoid getting them cured or killed!
-
-Press {menukey} to receive your special equipment!]]
-
-L.info_popup_parasite_glitch = [[You are {role}! Work with fellow {traitors} to kill all others.
-BUT BEWARE! There was {aglitch} in the system and one among you does not seek the same goal.
-
-These may or may not be your comrades:
-{traitorlist}
-
-Infect those that kill you and wait patiently for a chance to take control.
-Make sure you lay low as your host must stay alive in order for you to
-respawn. Try to avoid getting them cured or killed!
-
-Press {menukey} to receive your special equipment!]]
-
-L.info_popup_zombie = [[You are {role}! Work with your allies to kill all others.
-
-These are your comrades:
-{allylist}
-
-All damage you deal with guns is reduced.
-Killing someone with your claws will turn them into {azombie}.
-
-Press {menukey} to receive your special equipment!]]
-
-L.info_popup_zombie_glitch = [[You are {role}! Work with your allies to kill all others.
-BUT BEWARE! There was {aglitch} in the system and one among
-you does not seek the same goal.
-
-These are your comrades:
-{allylist}
-
-All damage you deal with guns is reduced.
-Killing someone with your claws will turn them into {azombie}.
-
-Press {menukey} to receive your special equipment!]]
-
-L.info_popup_zombie_alone = [[You are {role}! You have no allies this round.
-
-Kill all others to win!
+L.info_popup_zombie = [[You are {role}! {comrades}
 
 All damage you deal with guns is reduced.
 Killing someone with your claws will turn them into {azombie}.

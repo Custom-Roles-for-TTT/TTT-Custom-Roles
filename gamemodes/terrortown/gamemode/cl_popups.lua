@@ -53,7 +53,7 @@ local function GetTextForLocalPlayer()
             end
         end
 
-        local text
+        local comrades
         if #allies > 1 then
             local allylist = ""
 
@@ -62,11 +62,12 @@ local function GetTextForLocalPlayer()
                     allylist = allylist .. string.rep(" ", 42) .. ply:Nick() .. "\n"
                 end
             end
-
-            text = GetPTranslation("info_popup_" .. roleString, table.Merge(params, { allylist = allylist }))
+            comrades = GetPTranslation("info_popup_traitor_comrades", table.Merge(params, { traitorlist = allylist }))
         else
-            text = GetPTranslation("info_popup_" .. roleString.. "_alone", params)
+            comrades = GetPTranslation("info_popup_traitor_alone", params)
         end
+
+        local text = GetPTranslation("info_popup_" .. roleString, table.Merge(params, { comrades = comrades }))
 
         return text
 
@@ -87,7 +88,7 @@ local function GetTextForLocalPlayer()
             assassintarget = string.rep(" ", 42) .. client:GetNWString("AssassinTarget", "")
         end
 
-        local text
+        local comrades
         if #traitors > 1 then
             local traitorlist = ""
 
@@ -97,16 +98,17 @@ local function GetTextForLocalPlayer()
                 end
             end
 
-            params = table.Merge(params, { traitorlist = traitorlist, allylist = traitorlist, assassintarget = assassintarget })
+            params = table.Merge(params, { traitorlist = traitorlist, assassintarget = assassintarget })
             if #glitches > 0 then
-                text = GetPTranslation("info_popup_" .. roleString.. "_glitch", params)
+                comrades = GetPTranslation("info_popup_traitor_glitch", params)
             else
-                text = GetPTranslation("info_popup_" .. roleString, params)
+                comrades = GetPTranslation("info_popup_traitor_comrades", params)
             end
         else
-            text = GetPTranslation("info_popup_" .. roleString.. "_alone", params)
+            comrades = GetPTranslation("info_popup_traitor_alone", params)
         end
 
+        local text = GetPTranslation("info_popup_" .. roleString, table.Merge(params, { comrades = comrades }))
         return text
     -- Zombies not on Traitor or Monster teams have a different message
     elseif client:IsZombie() then

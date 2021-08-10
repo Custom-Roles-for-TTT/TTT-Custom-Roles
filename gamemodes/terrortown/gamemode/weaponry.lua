@@ -46,6 +46,11 @@ local function GetLoadoutWeapons(r)
         -- Initialize the table for every role
         for wrole = 0, ROLE_MAX do
             tbl[wrole] = {}
+            if wrole >= ROLE_EXTERNAL_START and EXTERNAL_ROLE_LOADOUT_ITEMS[wrole] then
+                for _, v in pairs(EXTERNAL_ROLE_LOADOUT_ITEMS[wrole]) do
+                    table.insert(tbl[wrole], v)
+                end
+            end
         end
 
         for _, w in pairs(weapons.GetList()) do

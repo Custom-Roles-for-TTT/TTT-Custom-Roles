@@ -1889,6 +1889,8 @@ function SelectRoles()
 
     local hasIndependent = false
 
+    local hasExternal = {}
+
     PrintRoleText("-----CHECKING EXTERNALLY CHOSEN ROLES-----")
     for _, v in pairs(player.GetAll()) do
         if IsValid(v) and (not v:IsSpec()) then
@@ -2018,6 +2020,18 @@ function SelectRoles()
                     else
                         forcedMonsterCount = forcedMonsterCount + 1
                     end
+
+                    -- EXTERNAL CUSTOM ROLES
+                elseif role >= ROLE_EXTERNAL_START then
+                    hasExternal[role] = true
+                    if TRAITOR_ROLES[role] then
+                        forcedSpecialTraitorCount = forcedSpecialTraitorCount + 1
+                    elseif INNOCENT_ROLES[role] then
+                        forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
+                    elseif JESTER_ROLES[role] or INDEPENDENT_ROLES[role] then
+                        hasIndependent = true
+                        forcedIndependentCount = forcedIndependentCount + 1
+                    end
                 end
 
                 PrintRole(v, role)
@@ -2037,6 +2051,22 @@ function SelectRoles()
     local specialTraitorRoles = {}
     local specialInnocentRoles = {}
     local independentRoles = {}
+
+    if ROLE_MAX >= ROLE_EXTERNAL_START then
+        for r = ROLE_EXTERNAL_START, ROLE_MAX do
+            if not hasExternal[r] and GetConVar("ttt_" .. ROLE_STRINGS_RAW[r] .. "_enabled"):GetBool() and choice_count >= GetConVar("ttt_" .. ROLE_STRINGS_RAW[r] .. "_min_players"):GetInt() then
+                for _ = 1, GetConVar("ttt_" .. ROLE_STRINGS_RAW[r] .. "_spawn_weight"):GetInt() do
+                    if TRAITOR_ROLES[r] then
+                        table.insert(specialTraitorRoles, r)
+                    elseif INNOCENT_ROLES[r] then
+                        table.insert(specialInnocentRoles, r)
+                    elseif JESTER_ROLES[r] or INDEPENDENT_ROLES[r] then
+                        table.insert(independentRoles, r)
+                    end
+                end
+            end
+        end
+    end
 
     -- pick detectives
     if choice_count >= GetConVar("ttt_detective_min_players"):GetInt() then
@@ -2540,6 +2570,13 @@ function HandleRoleEquipment()
             else
                 table.insert(WEPS.BuyableWeapons[id], weaponname)
                 table.insert(roleweapons, weaponname)
+            end
+        end
+
+        if id >= ROLE_EXTERNAL_START and EXTERNAL_ROLE_SHOP_ITEMS[id] then
+            for _, v in pairs(EXTERNAL_ROLE_SHOP_ITEMS[id]) do
+                table.insert(WEPS.BuyableWeapons[id], v)
+                table.insert(roleweapons, v)
             end
         end
 
