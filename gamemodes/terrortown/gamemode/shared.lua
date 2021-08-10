@@ -526,6 +526,11 @@ ROLE_TEAM_INDEPENDENT = 3
 EXTERNAL_ROLE_DESCRIPTIONS = {}
 EXTERNAL_ROLE_SHOP_ITEMS = {}
 EXTERNAL_ROLE_LOADOUT_ITEMS = {}
+EXTERNAL_ROLE_CONVARS = {}
+
+ROLE_CONVAR_TYPE_NUM = 0
+ROLE_CONVAR_TYPE_BOOL = 1
+ROLE_CONVAR_TYPE_TEXT = 2
 
 function RegisterRole(tbl)
     local roleID = ROLE_MAX + 1
@@ -557,6 +562,24 @@ function RegisterRole(tbl)
 
     if tbl.loadout then
         EXTERNAL_ROLE_LOADOUT_ITEMS[roleID] = tbl.loadout
+    end
+
+    -- List of objects that describe convars for ULX support, in the following format:
+    -- {
+    --     cvar = "ttt_test_slider",    -- The name of the convar
+    --     decimal = 2,                 -- How many decimal places this number will use
+    --     type = ROLE_CONVAR_TYPE_NUM  -- The type of convar (will be used to determine the control, in this case a number slider)
+    -- },
+    -- {
+    --     cvar = "ttt_test_checkbox",  -- The name of the convar
+    --     type = ROLE_CONVAR_TYPE_BOOL -- The type of convar (will be used to determine the control, in this case a checkbox)
+    -- },
+    -- {
+    --     cvar = "ttt_test_textbox",   -- The name of the convar
+    --     type = ROLE_CONVAR_TYPE_TEXT -- The type of convar (will be used to determine the control, in this case a textbox)
+    -- }
+    if tbl.convars then
+        EXTERNAL_ROLE_CONVARS[roleID] = tbl.convars
     end
 end
 

@@ -54,13 +54,14 @@ local function GetLoadoutWeapons(r)
         end
 
         for _, w in pairs(weapons.GetList()) do
-            if WEPS.GetClass(w) == "weapon_ttt_unarmed" or WEPS.GetClass(w) == "weapon_zm_carry" or WEPS.GetClass(w) == "weapon_zm_improvised" then
+            local weap_class = WEPS.GetClass(w)
+            if weap_class == "weapon_ttt_unarmed" or weap_class == "weapon_zm_carry" or weap_class == "weapon_zm_improvised" then
                 for wrole = 0, ROLE_MAX do
-                    table.insert(tbl[wrole], WEPS.GetClass(w))
+                    table.insert(tbl[wrole], weap_class)
                 end
             elseif w and istable(w.InLoadoutFor) then
                 for _, wrole in pairs(w.InLoadoutFor) do
-                    table.insert(tbl[wrole], WEPS.GetClass(w))
+                    table.insert(tbl[wrole], weap_class)
                 end
             end
         end
