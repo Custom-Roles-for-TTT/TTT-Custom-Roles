@@ -33,6 +33,7 @@ local function ResetWeaponsCache()
     Equipment = {}
     WEPS.ResetWeaponsCache()
 end
+concommand.Add("ttt_reset_weapons_cache", ResetWeaponsCache)
 
 net.Receive("TTT_ResetBuyableWeaponsCache", function()
     ResetWeaponsCache()
@@ -193,7 +194,6 @@ function GetEquipmentForRole(role, promoted, block_randomization)
                 if equip ~= nil and not available[equip.id] then
                     table.insert(tbl[role], equip)
                     available[equip.id] = true
-                    break
                 end
             end
         end
@@ -213,7 +213,6 @@ function GetEquipmentForRole(role, promoted, block_randomization)
                     end
 
                     available[equip.id] = false
-                    break
                 end
             end
         end

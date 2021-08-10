@@ -1,7 +1,17 @@
 # Beta Release Notes
 
-## 1.0.10
+## 1.0.11
 **Released:**
+
+### Fixes
+- Fixed team name in monsters round start popup
+- Fixed only the first weapon added or excluded via roleweapons actually being added or excluded
+
+### Developer
+- Added client-side command to reset the equipment cache
+
+## 1.0.10
+**Released: August 10th, 2021**
 
 ### Changes
 - Resized role name font for longer role names
