@@ -10,35 +10,22 @@ function plymeta:IsSpec() return self:Team() == TEAM_SPEC end
 
 AccessorFunc(plymeta, "role", "Role", FORCE_NUMBER)
 
+-- Player is alive and in an active round
+function plymeta:IsActive() return self:IsTerror() and GetRoundState() == ROUND_ACTIVE end
+
+-- convenience functions for common patterns
+function plymeta:IsRole(role) return self:GetRole() == role end
+function plymeta:IsActiveRole(role) return self:IsRole(role) and self:IsActive() end
+
 -- Role access
-function plymeta:GetTraitor() return self:GetRole() == ROLE_TRAITOR end
-function plymeta:GetInnocent() return self:GetRole() == ROLE_INNOCENT end
-function plymeta:GetDetective() return self:GetRole() == ROLE_DETECTIVE end
-function plymeta:GetJester() return self:GetRole() == ROLE_JESTER end
-function plymeta:GetSwapper() return self:GetRole() == ROLE_SWAPPER end
-function plymeta:GetGlitch() return self:GetRole() == ROLE_GLITCH end
-function plymeta:GetPhantom() return self:GetRole() == ROLE_PHANTOM end
-function plymeta:GetHypnotist() return self:GetRole() == ROLE_HYPNOTIST end
-function plymeta:GetRevenger() return self:GetRole() == ROLE_REVENGER end
-function plymeta:GetDrunk() return self:GetRole() == ROLE_DRUNK end
-function plymeta:GetClown() return self:GetRole() == ROLE_CLOWN end
-function plymeta:GetDeputy() return self:GetRole() == ROLE_DEPUTY end
-function plymeta:GetImpersonator() return self:GetRole() == ROLE_IMPERSONATOR end
-function plymeta:GetBeggar() return self:GetRole() == ROLE_BEGGAR end
-function plymeta:GetOldMan() return self:GetRole() == ROLE_OLDMAN end
-function plymeta:GetMercenary() return self:GetRole() == ROLE_MERCENARY end
-function plymeta:GetBodysnatcher() return self:GetRole() == ROLE_BODYSNATCHER end
-function plymeta:GetVeteran() return self:GetRole() == ROLE_VETERAN end
-function plymeta:GetAssassin() return self:GetRole() == ROLE_ASSASSIN end
-function plymeta:GetKiller() return self:GetRole() == ROLE_KILLER end
-function plymeta:GetZombie() return self:GetRole() == ROLE_ZOMBIE end
-function plymeta:GetVampire() return self:GetRole() == ROLE_VAMPIRE end
-function plymeta:GetDoctor() return self:GetRole() == ROLE_DOCTOR end
-function plymeta:GetQuack() return self:GetRole() == ROLE_QUACK end
-function plymeta:GetParasite() return self:GetRole() == ROLE_PARASITE end
-function plymeta:GetTrickster() return self:GetRole() == ROLE_TRICKSTER end
-function plymeta:GetParamedic() return self:GetRole() == ROLE_PARAMEDIC end
-function plymeta:GetMadScientist() return self:GetRole() == ROLE_MADSCIENTIST end
+for role = 0, ROLE_MAX do
+    local name = string.gsub(ROLE_STRINGS[role], "%s+", "")
+    plymeta["Get" .. name] = function(self) return self:IsRole(role) end
+    plymeta["Is" .. name] = plymeta["Get" .. name]
+    plymeta["IsActive" .. name] = function(self) return self:IsActiveRole(role) end
+end
+
+
 
 function plymeta:GetZombiePrime() return self:GetZombie() and self:GetNWBool("zombie_prime", false) end
 function plymeta:GetVampirePrime() return self:GetVampire() and self:GetNWBool("vampire_prime", false) end
@@ -72,35 +59,6 @@ function plymeta:IsSameTeam(target)
     end
     return self:GetRole() == target:GetRole()
 end
-
-plymeta.IsTraitor = plymeta.GetTraitor
-plymeta.IsInnocent = plymeta.GetInnocent
-plymeta.IsDetective = plymeta.GetDetective
-plymeta.IsJester = plymeta.GetJester
-plymeta.IsSwapper = plymeta.GetSwapper
-plymeta.IsGlitch = plymeta.GetGlitch
-plymeta.IsPhantom = plymeta.GetPhantom
-plymeta.IsHypnotist = plymeta.GetHypnotist
-plymeta.IsRevenger = plymeta.GetRevenger
-plymeta.IsDrunk = plymeta.GetDrunk
-plymeta.IsClown = plymeta.GetClown
-plymeta.IsDeputy = plymeta.GetDeputy
-plymeta.IsImpersonator = plymeta.GetImpersonator
-plymeta.IsBeggar = plymeta.GetBeggar
-plymeta.IsOldMan = plymeta.GetOldMan
-plymeta.IsMercenary = plymeta.GetMercenary
-plymeta.IsBodysnatcher = plymeta.GetBodysnatcher
-plymeta.IsVeteran = plymeta.GetVeteran
-plymeta.IsAssassin = plymeta.GetAssassin
-plymeta.IsKiller = plymeta.GetKiller
-plymeta.IsZombie = plymeta.GetZombie
-plymeta.IsVampire = plymeta.GetVampire
-plymeta.IsDoctor = plymeta.GetDoctor
-plymeta.IsQuack = plymeta.GetQuack
-plymeta.IsParasite = plymeta.GetParasite
-plymeta.IsTrickster = plymeta.GetTrickster
-plymeta.IsParamedic = plymeta.GetParamedic
-plymeta.IsMadScientist = plymeta.GetMadScientist
 
 plymeta.IsDetectiveLike = plymeta.GetDetectiveLike
 plymeta.IsZombiePrime = plymeta.GetZombiePrime
@@ -151,41 +109,6 @@ function plymeta:SetRoleAndBroadcast(role)
         net.Broadcast()
     end
 end
-
--- Player is alive and in an active round
-function plymeta:IsActive() return self:IsTerror() and GetRoundState() == ROUND_ACTIVE end
-
--- convenience functions for common patterns
-function plymeta:IsRole(role) return self:GetRole() == role end
-function plymeta:IsActiveRole(role) return self:IsRole(role) and self:IsActive() end
-function plymeta:IsActiveTraitor() return self:IsActiveRole(ROLE_TRAITOR) end
-function plymeta:IsActiveInnocent() return self:IsActiveRole(ROLE_INNOCENT) end
-function plymeta:IsActiveDetective() return self:IsActiveRole(ROLE_DETECTIVE) end
-function plymeta:IsActiveJester() return self:IsActiveRole(ROLE_JESTER) end
-function plymeta:IsActiveSwapper() return self:IsActiveRole(ROLE_SWAPPER) end
-function plymeta:IsActiveGlitch() return self:IsActiveRole(ROLE_GLITCH) end
-function plymeta:IsActivePhantom() return self:IsActiveRole(ROLE_PHANTOM) end
-function plymeta:IsActiveHypnotist() return self:IsActiveRole(ROLE_HYPNOTIST) end
-function plymeta:IsActiveRevenger() return self:IsActiveRole(ROLE_REVENGER) end
-function plymeta:IsActiveDrunk() return self:IsActiveRole(ROLE_DRUNK) end
-function plymeta:IsActiveClown() return self:IsActiveRole(ROLE_CLOWN) end
-function plymeta:IsActiveDeputy() return self:IsActiveRole(ROLE_DEPUTY) end
-function plymeta:IsActiveImpersonator() return self:IsActiveRole(ROLE_IMPERSONATOR) end
-function plymeta:IsActiveBeggar() return self:IsActiveRole(ROLE_BEGGAR) end
-function plymeta:IsActiveOldMan() return self:IsActiveRole(ROLE_OLDMAN) end
-function plymeta:IsActiveMercenary() return self:IsActiveRole(ROLE_MERCENARY) end
-function plymeta:IsActiveBodysnatcher() return self:IsActiveRole(ROLE_BODYSNATCHER) end
-function plymeta:IsActiveVeteran() return self:IsActiveRole(ROLE_VETERAN) end
-function plymeta:IsActiveAssassin() return self:IsActiveRole(ROLE_ASSASSIN) end
-function plymeta:IsActiveKiller() return self:IsActiveRole(ROLE_KILLER) end
-function plymeta:IsActiveZombie() return self:IsActiveRole(ROLE_ZOMBIE) end
-function plymeta:IsActiveVampire() return self:IsActiveRole(ROLE_VAMPIRE) end
-function plymeta:IsActiveDoctor() return self:IsActiveRole(ROLE_DOCTOR) end
-function plymeta:IsActiveQuack() return self:IsActiveRole(ROLE_QUACK) end
-function plymeta:IsActiveParasite() return self:IsActiveRole(ROLE_PARASITE) end
-function plymeta:IsActiveTrickster() return self:IsActiveRole(ROLE_TRICKSTER) end
-function plymeta:IsActiveParamedic() return self:IsActiveRole(ROLE_PARAMEDIC) end
-function plymeta:IsActiveMadScientist() return self:IsActiveRole(ROLE_MADSCIENTIST) end
 
 function plymeta:IsActiveSpecial() return self:IsSpecial() and self:IsActive() end
 function plymeta:IsActiveCustom() return self:IsCustom() and self:IsActive() end

@@ -13,6 +13,7 @@
 ### Developer
 - Added client-side command to reset the equipment cache
 - Added ability to register convars with an external role for it to be picked up by ULX
+- Changed Get{ROLE}, Is{ROLE} and IsActive{ROLE} functions to be dynamically assigned for each role
 
 ## 1.0.10
 **Released: August 10th, 2021**
