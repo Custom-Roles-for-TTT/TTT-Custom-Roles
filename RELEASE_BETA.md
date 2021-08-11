@@ -1,7 +1,7 @@
 # Beta Release Notes
 
 ## 1.0.11
-**Released:**
+**Released: August 11th, 2021**
 
 ### Fixes
 - Fixed team name in monsters round start popup
