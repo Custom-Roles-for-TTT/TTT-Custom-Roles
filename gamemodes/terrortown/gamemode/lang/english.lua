@@ -20,6 +20,7 @@ L.round_restart = "The round has been forced to restart by an admin."
 L.round_traitors_one = "{role}, you stand alone."
 L.round_traitors_more = "{role}, these are your allies: {names}"
 
+L.win_prevented = "Map was prevented from ending the round."
 L.win_time = "Time has run out. The {role} win."
 L.win_traitor = "The {role} have won!"
 L.win_innocent = "The {role} have been defeated!"
@@ -773,6 +774,14 @@ L.info_popup_madscientist = [[You are {role}! Try to spread your virus to
 everyone! Using your zombification device on a dead
 body will revive them as {azombie}.]]
 
+L.info_popup_monster_comrades = [[Work with your allies to kill all others.
+
+These are your comrades:
+{allylist}]]
+
+L.info_popup_monster_alone = [[You have no allies this round.
+
+Kill all others to win!]]
 
 L.info_popup_traitor_comrades = [[Work with fellow {traitors} to kill all others.
 But take care, or your treason may be discovered...
