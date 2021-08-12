@@ -6,6 +6,9 @@
 ### Additions
 - Added ability for assassin to have their target highlighted by an aura visible through walls (disabled by default)
 
+### Developer
+- Changed Get{ROLE}Filter functions to be dynamically assigned for each role
+
 ## 1.0.12
 **Released: August 12th, 2021**
 
