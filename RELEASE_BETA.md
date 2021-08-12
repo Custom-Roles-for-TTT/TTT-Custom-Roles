@@ -6,6 +6,9 @@
 ### Fixes
 - Added missing convars ttt_single_phantom_parasite and ttt_single_paramedic_hypnotist
 
+### Developer
+- Added additional replacement strings for role descriptions
+
 ## 1.0.11
 **Released: August 11th, 2021**
 

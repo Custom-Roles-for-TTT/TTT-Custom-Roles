@@ -14,6 +14,10 @@ local function GetTextForLocalPlayer()
         deputy = ROLE_STRINGS[ROLE_DEPUTY],
         -- "The detective"
         detective = ROLE_STRINGS[ROLE_DETECTIVE],
+        -- "The detectives"
+        detectives = ROLE_STRINGS_PLURAL[ROLE_DETECTIVE],
+        -- "A detective"
+        adetective = ROLE_STRINGS_EXT[ROLE_DETECTIVE],
         -- "The real doctor"
         doctor = ROLE_STRINGS[ROLE_DOCTOR],
         -- "A glitch"
@@ -24,6 +28,10 @@ local function GetTextForLocalPlayer()
         innocents = ROLE_STRINGS_PLURAL[ROLE_INNOCENT],
         -- "An innocent"
         aninnocent = ROLE_STRINGS_EXT[ROLE_INNOCENT],
+        -- "The jester"
+        jester = ROLE_STRINGS[ROLE_JESTER],
+        -- "The jesters"
+        jesters = ROLE_STRINGS_PLURAL[ROLE_JESTER],
         -- "A jester"
         ajester = ROLE_STRINGS_EXT[ROLE_JESTER],
         -- "Use traitor traps"
