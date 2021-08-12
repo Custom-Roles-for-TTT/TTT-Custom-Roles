@@ -71,6 +71,9 @@ _ttt_detective_pct_ 1\
 Also if you want ONLY one detective, set:\
 _ttt_detective_max_ 1
 
+**My shop is not working for anyone but the Detective and Traitor/I am getting errors when I try to open the shop/My shop is not loading correctly, it's just a blank grey window**\
+This is probably due to another mod conflicting with this one. Check for things like the 'Better Equipment Menu' mod (which is integrated into this one). If that doesn't fix the problem, join the Discord server (See below) and we'll try to help you identify any other conflicts.
+
 ## Official Links:
 - GitHub: https://github.com/NoxxFlame/TTT-Custom-Roles
 - Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=2421039084
