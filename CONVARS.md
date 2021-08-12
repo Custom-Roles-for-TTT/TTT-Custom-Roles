@@ -372,10 +372,7 @@ To find the class name of a weapon to use above, follow the steps below
 1. Start a local server with TTT as the selected gamemode
 2. Spawn 1 bot by using the _bot_ command in console
 3. Obtain the weapon whose class you want. If it is already available to buy from a certain role's shop, either force yourself to be that role via the _ttt\_force\_*_ commands or via a ULX plugin.
-4. Run the following command in console to get a list of all of your weapon classes: _lua\_run PrintTable(player.GetHumans()[1]:GetWeapons())_
-
-
-
+4. Run the following command in console to get a list of all of your weapon classes: `lua_run PrintTable(player.GetHumans()[1]:GetWeapons())`
 
 ### **Equipment**
 ### *Adding Equipment*
@@ -398,4 +395,4 @@ To find the name of an equipment item to use above, follow the steps below
 1. Start a local server with TTT as the selected gamemode
 2. Spawn 1 bot by using the _bot_ command in console
 3. Obtain the equipment item whose name you want. If it is already available to buy from a certain role's shop, either force yourself to be that role via the _ttt\_force\_*_ commands or via a ULX plugin.
-4. Run the following command in console to get a full list of your equipment item names: _lua\_run GetEquipmentItemById(EQUIP\_RADAR); lua\_run for id, e in pairs(EquipmentCache) do if player.GetHumans()[1]:HasEquipmentItem(id) then print(id .. " = " .. e.name) end end_
+4. Run the following command in console to get a full list of your equipment item names: names: `lua_run GetEquipmentItemById(EQUIP_RADAR); lua_run for id, e in pairs(EquipmentCache) do if player.GetHumans()[1]:HasEquipmentItem(id) then print(id .. " = " .. e.name) end end`

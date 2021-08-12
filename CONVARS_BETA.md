@@ -1,4 +1,21 @@
-# Server Configurations
+# Configurations
+
+## Table of Contents
+1. [Server Configurations](#Server-Configurations)
+1. [Role Weapon Shop](#Role-Weapon-Shop)
+   1. [Weapons](#Weapons)
+      1. [Adding Weapons](#Adding-Weapons)
+      1. [Removing Weapons](#Removing-Weapons)
+      1. [Bypassing Weapon Randomization](#Bypassing-Weapon-Randomization)
+      1. [Finding a Weapon's Class](#Finding-a-Weapons-Class)
+   1. [Equipment](#Equipment)
+      1. [Adding Equipment](#Adding-Equipment)
+      1. [Removing Equipment](#Removing-Equipment)
+      1. [Bypassing Equipment Randomization](#Bypassing-Equipment-Randomization)
+      1. [Finding an Equipment Item's Name](#Finding-an-Equipment-Items-Name)
+1. [Renaming Roles](#Renaming-Roles)
+
+## Server Configurations
 
 Add the following to your server.cfg (for dedicated servers) or listenserver.cfg (for peer-to-peer servers):
 
@@ -445,11 +462,13 @@ ttt_bem_sv_size                             64      // Sets the item size in the
 
 Thanks to [KarlOfDuty](https://github.com/KarlOfDuty) for his original version of this document, [here](https://github.com/KarlOfDuty/TTT-Custom-Roles/blob/patch-1/README.md).
 
-# Role Weapon Shop
+## Role Weapon Shop
 
 In TTT some roles have shops where they are allowed to purchase weapons. Given the prevalence of custom weapons from the workshop, the ability to add more weapons to each role's shop has been added.
 
-## Adding Weapons
+### **Weapons**
+
+### *Adding Weapons*
 
 To add weapons to a role (that already has a shop), create a .txt file with the weapon class (e.g. weapon_ttt_somethingcool.txt) in the garrysmod/data/roleweapons/{rolename} folder.\
 **NOTE**: If the _roleweapons_ folder does not already exist in garrysmod/data, create it.\
@@ -457,7 +476,7 @@ To add weapons to a role (that already has a shop), create a .txt file with the 
 
 Also note the ttt_shop_* ConVars that are available above which can help control some of the role weapon shop lists.
 
-## Removing Weapons
+### *Removing Weapons*
 
 At the same time, there are some workshop weapons that are given to multiple roles that maybe you don't want to be available to certain roles. In order to handle that case, the ability to exclude weapons from a role's weapon shop has been added.
 
@@ -465,7 +484,7 @@ To remove weapons from a role's shop, create a .exclude.txt file with the weapon
 **NOTE**: If the _roleweapons_ folder does not already exist in garrysmod/data, create it.\
 **NOTE**: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective/weapon_ttt_somethingcool.exclude.txt
 
-## Bypassing Weapon Randomization
+### *Bypassing Weapon Randomization*
 
 With the addition of the Shop Randomization feature (and the ttt_shop_random_* ConVars), weapons may not always appear in the shop (which is the point). If, however, you want certain weapons to _always_ be in the shop while other weapons are randomized, the ability to bypass shop randomization for a weapon in a role's weapon shop has been added.
 
@@ -473,21 +492,22 @@ To stop a weapon from being removed from a role's shop via randomization, create
 **NOTE**: If the _roleweapons_ folder does not already exist in garrysmod/data, create it.\
 **NOTE**: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective/weapon_ttt_somethingcool.norandom.txt
 
-## Finding a Weapon's Class
+### *Finding a Weapon's Class*
 
 To find the class name of a weapon to use above, follow the steps below
 1. Start a local server with TTT as the selected gamemode
 2. Spawn 1 bot by using the _bot_ command in console
 3. Obtain the weapon whose class you want. If it is already available to buy from a certain role's shop, either force yourself to be that role via the _ttt\_force\_*_ commands or via a ULX plugin.
-4. Run the following command in console to get a list of all of your weapon classes: _lua\_run PrintTable(player.GetHumans()[1]:GetWeapons())_
+4. Run the following command in console to get a list of all of your weapon classes: `lua_run PrintTable(player.GetHumans()[1]:GetWeapons())`
 
-## Adding Equipment
+### **Equipment**
+### *Adding Equipment*
 
 Equipment are items that a role can use that do not take up a weapon slot, such as the body armor or radar. To add equipment items to a role (that already has a shop), create a .txt file with the equipment item's name (e.g. "bruh bunker.txt") in the garrysmod/data/roleweapons/{rolename} folder.\
 **NOTE**: If the _roleweapons_ folder does not already exist in garrysmod/data, create it.\
 **NOTE**: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective/bruh bunker.txt
 
-## Removing Equipment
+### *Removing Equipment*
 
 Similarly there are some equipment items that you want to prevent a specific role from buying. To handle that case, the addon has the ability to exclude specific equipment items from the shop in a similar way.
 
@@ -495,19 +515,19 @@ To remove equipment from a role's shop, create a .exclude.txt file with the item
 **NOTE**: If the _roleweapons_ folder does not already exist in garrysmod/data, create it.\
 **NOTE**: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective/bruh bunker.exclude.txt
 
-## Finding an Equipment Item's Name
+### *Finding an Equipment Item's Name*
 
 To find the name of an equipment item to use above, follow the steps below
 1. Start a local server with TTT as the selected gamemode
 2. Spawn 1 bot by using the _bot_ command in console
 3. Obtain the equipment item whose name you want. If it is already available to buy from a certain role's shop, either force yourself to be that role via the _ttt\_force\_*_ commands or via a ULX plugin.
-4. Run the following command in console to get a full list of your equipment item names: _lua\_run GetEquipmentItemById(EQUIP\_RADAR); lua\_run for id, e in pairs(EquipmentCache) do if player.GetHumans()[1]:HasEquipmentItem(id) then print(id .. " = " .. e.name) end end_
+4. Run the following command in console to get a full list of your equipment item names: `lua_run GetEquipmentItemById(EQUIP_RADAR); lua_run for id, e in pairs(EquipmentCache) do if player.GetHumans()[1]:HasEquipmentItem(id) then print(id .. " = " .. e.name) end end`
 
-# Renaming Roles
+## Renaming Roles
 
 If you would like to rename roles in game you can do so with specific ConVars. This effect works server side ONLY and will automatically network the role names with any clients playing on your server.\
 To rename a role set the ConVar ttt_ROLENAME_name to whatever you would like that role to be called. (e.g. _ttt_quack_name "Death Doctor"_ will rename the Quack to the Death Doctor.)
 
-**NOTE**: The game will try its best to automatically generate articles and plurals for any new names but it is not always successful. If this is the case you can use ttt_ROLENAME_name_article and ttt_ROLENAME_name_plural to manually fix this.\
+**NOTE**: The game will try its best to automatically generate articles and plurals for any new names but it is not always successful. If this is the case you can use ttt_ROLENAME_name_article and ttt_ROLENAME_name_plural to manually fix this.
 * Setting the Old Man's name to "Old Woman" will show "Old Womans" as the plural form by default. Setting _ttt_oldman_name_plural_ to "Old Women" will fix this.
 * Setting the Innocent's name to "Honest Man" will show "a Honest Man" with "a" as the article by default. Setting _ttt_innocent_name_article_ to "an" will fix this and properly show "an Honest Man".
