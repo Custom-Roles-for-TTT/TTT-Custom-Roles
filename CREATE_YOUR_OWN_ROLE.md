@@ -10,7 +10,7 @@ In this guide I will be walking through how I made the Summoner role and you can
 
 Last thing to do before you are ready to get started is to unzip that file which should give you 4 .psd files and a folder like this:
 
-![TemplateContents.png](https://i.imgur.com/cE2rpSF.png)
+![TemplateContents.png](https://i.imgur.com/UCyxklx.png)
 
 ## Code
 
