@@ -17,7 +17,13 @@ This is the development version of my [Custom Roles for TTT](https://steamcommun
 ## Configuration
 This addon has many ConVars available so it can be customized to how you want your server to run. All custom roles are disabled by default.\
 A full list of ConVars can be found [here](CONVARS.md) (for the release version) or [here](CONVARS_BETA.md) (for the beta and development versions).\
-If you would like to test the available configurations, we recommend using ULX/ULib and our ULX plugin for Custom Roles for TTT (See [here](https://steamcommunity.com/sharedfiles/filedetails/?id=2421043753) for the release version, [here](https://steamcommunity.com/sharedfiles/filedetails/?id=2414297330) for the beta version, and [here](https://github.com/NoxxFlame/TTT-Custom-Roles-ULX) for the development version)
+\
+If you would like to test the available configurations, we recommend using ULX/ULib and our ULX plugin for Custom Roles for TTT. See below for links to the various versions:
+- [Release](https://steamcommunity.com/sharedfiles/filedetails/?id=2421043753)
+- [Beta](https://steamcommunity.com/sharedfiles/filedetails/?id=2414297330)
+- [Development](https://github.com/NoxxFlame/TTT-Custom-Roles-ULX)
+
+**NOTE**: Changing settings via the ULX module will *NOT* save them when the map changes or server restarts. You can use the ULX module to test settings changes and identify which ones to put in the appropriate configuration file for your server (see above).
 
 ## Special Thanks:
 - [Jenssons](https://steamcommunity.com/profiles/76561198044525091) for the ['Town of Terror'](https://steamcommunity.com/sharedfiles/filedetails/?id=1092556189) mod which was the foundation of this mod.
@@ -58,4 +64,6 @@ _ttt_detective_max_ 1
 
 ## Official Links:
 - GitHub: https://github.com/NoxxFlame/TTT-Custom-Roles
+- Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=2421039084
+- Steam Workshop (Beta): https://steamcommunity.com/sharedfiles/filedetails/?id=2404251054
 - Discord: https://discord.gg/BAPZrykC3F
