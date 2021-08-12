@@ -114,6 +114,7 @@ ttt_single_deputy_impersonator              0       // Whether only a single dep
 
 // Hypnotist
 ttt_hypnotist_credits_starting              1       // The number of credits a hypnotist should start with
+ttt_single_paramedic_hypnotist              0       // Whether only a single paramedic or hynotist should spawn in a round
 
 // Assassin
 ttt_assassin_show_target_icon               0       // Whether assassins have an icon over their target's heads showing who to kill. Server or round must be restarted for changes to take effect
@@ -152,6 +153,7 @@ ttt_parasite_respawn_health                 100     // The health on which the p
 ttt_parasite_announce_infection             0       // Whether players are notified when they are infected with the parasite
 ttt_parasite_cure_mode                      2       // How to handle using a parasite cure on someone who is not infected. 0 - Kill nobody (But use up the cure), 1 - Kill the person who uses the cure, 2 - Kill the person the cure is used on
 ttt_parasite_credits_starting               1       // The number of credits a parasite should start with
+ttt_single_phantom_parasite                 0       // Whether only a single phantom or parasite should spawn in a round
 
 // ----------------------------------------
 

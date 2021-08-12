@@ -1,5 +1,11 @@
 # Beta Release Notes
 
+## 1.0.12
+**Released: August 12th, 2021**
+
+### Fixes
+- Added missing convars ttt_single_phantom_parasite and ttt_single_paramedic_hypnotist
+
 ## 1.0.11
 **Released: August 11th, 2021**
 
