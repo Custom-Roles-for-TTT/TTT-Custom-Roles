@@ -453,7 +453,6 @@ Before you upload your addon, now is a great time to check that your file struct
 
 ```
 .
-│
 ├─ SummonerRole.jpg
 └─ SummonerRole
    ├─ addon.json
