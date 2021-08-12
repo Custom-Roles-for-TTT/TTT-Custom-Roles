@@ -18,7 +18,7 @@ Open up 'Role Addon Template' > 'lua' > 'customroles' and rename '%NAMERAW%.lua'
 
 Open up that file and you should see something like this:
 
-```
+```lua
 local ROLE = {}  
   
 ROLE.nameraw = ""  
@@ -55,7 +55,7 @@ Lets break that down piece by piece.
 
 First we have this line here:
 
-```
+```lua
 local ROLE = {}
 ```
 
@@ -65,7 +65,7 @@ You don't need to touch this line. The ROLE table will store everything CR for T
 
 The next chunk here is all about the name of your role:
 
-```
+```lua
 ROLE.nameraw = ""  
 ROLE.name = ""  
 ROLE.nameplural = ""  
@@ -81,7 +81,7 @@ ROLE.nameshort = ""
 
 For the Summoner that block of code will now look like this.
 
-```
+```lua
 ROLE.nameraw = "summoner"  
 ROLE.name = "Summoner"  
 ROLE.nameplural = "Summoners"  
@@ -115,7 +115,7 @@ There are a few strings here that can be used within curly brackets which are re
 
 The description for the Summoner will look like this:
 
-```
+```lua
 ROLE.desc = [[You are {role}! {comrades}  
   
 Summon minions to help defeat your enemies.  
@@ -135,7 +135,7 @@ Next we have the team. You can set which team your role is a member of by using 
 
 So for the Summoner, which is a traitor we have:
 
-```
+```lua
 ROLE.team = ROLE_TEAM_TRAITOR
 ```
 
@@ -143,7 +143,7 @@ ROLE.team = ROLE_TEAM_TRAITOR
 
 The next two lines are all about shop and loadout items:
 
-```
+```lua
 ROLE.shop = {}  
   
 ROLE.loadout = {}
@@ -168,7 +168,7 @@ To find the name of an equipment item to use above, follow the steps below
 
 For the Summoner, I don't want any loadout items but I do want the shop to have access to a few different items so I can add them like this:
 
-```
+```lua
 ROLE.shop = {"weapon_ttt_beenade", "weapon_ttt_barnacle", "surprisecombine", "weapon_antlionsummoner", "weapon_controllable_manhack", "weapon_doncombinesummoner", "item_armor", "item_radar", "item_disg"}  
   
 ROLE.loadout = {}
@@ -221,7 +221,7 @@ If your ConVar is a number using a slider you can optionally add a third propert
 
 The Summoner does not have any extra ConVars but for the sake of example I will add three useless ConVars.
 
-```
+```lua
 CreateConVar("ttt_summoner_slider", "0", FCVAR_NONE, "This is a useless slider", 0, 10)
 CreateConVar("ttt_summoner_checkbox", "0")
 CreateConVar("ttt_summoner_textbox", "0")
@@ -250,7 +250,7 @@ The next line simply tells CR for TTT to register your role and passes through a
 
 Finally we have this block of code:
 
-```
+```lua
 if SERVER then  
 	AddCSLuaFile()
 	resource.AddFile("materials/vgui/ttt/icon_%NAMESHORT%.vmt")  
@@ -265,7 +265,7 @@ When this code is run on the server it makes sure that the client will download 
 
 For the summoner that looks like this:
 
-```
+```lua
 if SERVER then  
 	AddCSLuaFile()
 	resource.AddFile("materials/vgui/ttt/icon_sum.vmt")  
@@ -280,7 +280,7 @@ end
 
 Once you have done that you are finished with coding. You can close your file and move on to creating your sprites. One last time before moving on to that, here is the full summoner.lua file for reference:
 
-```
+```lua
 local ROLE = {}  
   
 ROLE.nameraw = "summoner"  
