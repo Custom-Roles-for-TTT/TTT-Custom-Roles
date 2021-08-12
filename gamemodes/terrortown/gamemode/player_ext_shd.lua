@@ -25,8 +25,6 @@ for role = 0, ROLE_MAX do
     plymeta["IsActive" .. name] = function(self) return self:IsActiveRole(role) end
 end
 
-
-
 function plymeta:GetZombiePrime() return self:GetZombie() and self:GetNWBool("zombie_prime", false) end
 function plymeta:GetVampirePrime() return self:GetVampire() and self:GetNWBool("vampire_prime", false) end
 function plymeta:GetVampirePreviousRole() return self:GetNWInt("vampire_previous_role", ROLE_NONE) end
@@ -68,10 +66,7 @@ plymeta.IsZombieAlly = plymeta.GetZombieAlly
 plymeta.IsVampireAlly = plymeta.GetVampireAlly
 
 function plymeta:IsSpecial() return self:GetRole() ~= ROLE_INNOCENT end
-function plymeta:IsCustom()
-    local role = self:GetRole()
-    return role ~= ROLE_INNOCENT and role ~= ROLE_TRAITOR and role ~= ROLE_DETECTIVE
-end
+function plymeta:IsCustom() return not DEFAULT_ROLES[self:GetRole()] end
 function plymeta:IsShopRole()
     local hasShop = SHOP_ROLES[self:GetRole()] or false
     -- If this is a jester team member with a potential shop, only give them access if there are actual things to buy
