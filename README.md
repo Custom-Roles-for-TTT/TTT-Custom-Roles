@@ -40,7 +40,7 @@ If you would like to test the available configurations, we recommend using ULX/U
 - [Silky](https://steamcommunity.com/profiles/76561198094798859) for the code used to create the pile of bones after the Vampire eats a body taken from the ['TTT Traitor Weapon Evolve'](https://steamcommunity.com/sharedfiles/filedetails/?id=1240572856) mod.
 - [Minty](https://steamcommunity.com/id/_Minty_) for the code used for the Hypnotist's brain washing device taken from the ['Defibrillator for TTT'](https://steamcommunity.com/sharedfiles/filedetails/?id=801433502) mod.
 - [Fresh Garry](https://steamcommunity.com/id/Fresh_Garry) for the ['TTT Sprint'](https://steamcommunity.com/sharedfiles/filedetails/?id=933056549) mod which was used as the base for this mod's sprinting mechanics.
-- [Game icons](game-icons.net), [Noun Project](thenounproject.com), and [Icons8](icons8.com) for the role icons.
+- [Game icons](https://game-icons.net), [Noun Project](https://thenounproject.com), and [Icons8](https://icons8.com) for the role icons.
 - Kommandos, Lix3, FunCheetah, B1andy413, Cooliew, The_Samarox, Arack12, and Aspirin for helping us test.
 - Everyone on the Discord server for their suggestions and help testing.
 
