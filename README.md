@@ -11,8 +11,17 @@ This is the development version of my [Custom Roles for TTT](https://steamcommun
 3. The radio menu (quick chat) has been rebound to "z" by default but that can be changed in the F1 settings menu.
 
 ## Roles
+### *List*
+See the links below for the list of available roles in each available version:
 - Release - Please see [this](https://steamcommunity.com/workshop/filedetails/discussion/2421039084/3108019427651795196/) discussion on the Steam Workshop
 - Beta/Development - Please see [this](https://steamcommunity.com/workshop/filedetails/discussion/2404251054/3110277460812045123/) discussion on the Steam Workshop
+### *Renaming*
+If you would like to rename one of the existing roles, see below for how to do it for each available version:
+- Release - Not yet available
+- Beta/Development - See [here](CONVARS_BETA.md#Renaming-Roles)
+### *Creating Custom Roles*
+If you would like to create your own role to integrate with Custom Roles for TTT, see, see [here](CREATE_YOUR_OWN_ROLE.md).\
+**NOTE**: This functionality is currently only available on the beta and development versions.
 
 ## Configuration
 This addon has many ConVars available so it can be customized to how you want your server to run. All custom roles are disabled by default.\
