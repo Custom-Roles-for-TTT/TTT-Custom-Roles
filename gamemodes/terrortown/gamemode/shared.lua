@@ -533,6 +533,23 @@ ROLE_CONVAR_TYPE_BOOL = 1
 ROLE_CONVAR_TYPE_TEXT = 2
 
 function RegisterRole(tbl)
+    -- Unsigned 8-bit max
+    local maximum_role_count = (2^7) - 1
+    if ROLE_MAX == maximum_role_count then
+        error("Too many roles (more than " .. maximum_role_count .. ") have been defined.")
+        return
+    end
+
+    if table.HasValue(ROLE_STRINGS_RAW, tbl.nameraw) then
+        error("Attempting to define role with a duplicate raw name value: " .. tbl.nameraw)
+        return
+    end
+
+    if table.HasValue(ROLE_STRINGS_SHORT, tbl.nameshort) then
+        error("Attempting to define role with a duplicate short name value: " .. tbl.nameshort)
+        return
+    end
+
     local roleID = ROLE_MAX + 1
     _G["ROLE_" .. string.upper(tbl.nameraw)] = roleID
     ROLE_MAX = roleID
