@@ -1463,6 +1463,10 @@ end
 
 function PrintResultMessage(type)
     ServerLog("Round ended.\n")
+
+    local overriden = hook.Call("TTTPrintResultMessage", nil, type)
+    if overriden then return end
+
     if type == WIN_TIMELIMIT then
         LANG.Msg("win_time", { role = ROLE_STRINGS_PLURAL[ROLE_INNOCENT] })
         ServerLog("Result: timelimit reached, " .. ROLE_STRINGS_PLURAL[ROLE_TRAITOR] .. " lose.\n")
