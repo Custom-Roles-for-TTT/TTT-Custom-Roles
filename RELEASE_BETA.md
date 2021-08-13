@@ -8,6 +8,7 @@
 
 ### Developer
 - Changed Get{ROLE}Filter functions to be dynamically assigned for each role
+- Added sanity checks for external role definitions
 
 ## 1.0.12
 **Released: August 12th, 2021**
