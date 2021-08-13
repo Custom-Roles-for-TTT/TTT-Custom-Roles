@@ -112,6 +112,7 @@ CreateConVar("ttt_impersonator_damage_penalty", "0")
 CreateConVar("ttt_impersonator_use_detective_icon", "1")
 
 CreateConVar("ttt_assassin_show_target_icon", "0")
+CreateConVar("ttt_assassin_target_vision_enable", "0")
 CreateConVar("ttt_assassin_next_target_delay", "5")
 CreateConVar("ttt_assassin_target_damage_bonus", "1")
 CreateConVar("ttt_assassin_wrong_damage_penalty", "0.5")
@@ -631,6 +632,7 @@ function GM:SyncGlobals()
     SetGlobalBool("ttt_traitor_vision_enable", GetConVar("ttt_traitor_vision_enable"):GetBool())
 
     SetGlobalBool("ttt_assassin_show_target_icon", GetConVar("ttt_assassin_show_target_icon"):GetBool())
+    SetGlobalBool("ttt_assassin_target_vision_enable", GetConVar("ttt_assassin_target_vision_enable"):GetBool())
 
     SetGlobalBool("ttt_impersonator_use_detective_icon", GetConVar("ttt_impersonator_use_detective_icon"):GetBool())
 

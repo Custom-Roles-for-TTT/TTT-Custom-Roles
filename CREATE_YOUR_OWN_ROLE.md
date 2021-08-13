@@ -18,7 +18,7 @@ Open up 'Role Addon Template' > 'lua' > 'customroles' and rename '%NAMERAW%.lua'
 
 Open up that file and you should see something like this:
 
-```
+```lua
 local ROLE = {}  
   
 ROLE.nameraw = ""  
@@ -55,7 +55,7 @@ Lets break that down piece by piece.
 
 First we have this line here:
 
-```
+```lua
 local ROLE = {}
 ```
 
@@ -65,7 +65,7 @@ You don't need to touch this line. The ROLE table will store everything CR for T
 
 The next chunk here is all about the name of your role:
 
-```
+```lua
 ROLE.nameraw = ""  
 ROLE.name = ""  
 ROLE.nameplural = ""  
@@ -81,7 +81,7 @@ ROLE.nameshort = ""
 
 For the Summoner that block of code will now look like this.
 
-```
+```lua
 ROLE.nameraw = "summoner"  
 ROLE.name = "Summoner"  
 ROLE.nameplural = "Summoners"  
@@ -115,7 +115,7 @@ There are a few strings here that can be used within curly brackets which are re
 
 The description for the Summoner will look like this:
 
-```
+```lua
 ROLE.desc = [[You are {role}! {comrades}  
   
 Summon minions to help defeat your enemies.  
@@ -135,7 +135,7 @@ Next we have the team. You can set which team your role is a member of by using 
 
 So for the Summoner, which is a traitor we have:
 
-```
+```lua
 ROLE.team = ROLE_TEAM_TRAITOR
 ```
 
@@ -143,7 +143,7 @@ ROLE.team = ROLE_TEAM_TRAITOR
 
 The next two lines are all about shop and loadout items:
 
-```
+```lua
 ROLE.shop = {}  
   
 ROLE.loadout = {}
@@ -157,18 +157,18 @@ Inside the curly brackets add the class names of any weapons or equipment you wa
 1. Start a local server with TTT as the selected gamemode
 2. Spawn 1 bot by using the _bot_ command in console
 3. Obtain the weapon whose class you want. If it is already available to buy from a certain role's shop, either force yourself to be that role via the _ttt\_force\_*_ commands or via a ULX plugin.
-4. Run the following command in console to get a list of all of your weapon classes: _lua\_run PrintTable(player.GetHumans()[1]:GetWeapons())_
+4. Run the following command in console to get a list of all of your weapon classes: `lua_run PrintTable(player.GetHumans()[1]:GetWeapons())`
 
 #### Equipment:
 To find the name of an equipment item to use above, follow the steps below
 1. Start a local server with TTT as the selected gamemode
 2. Spawn 1 bot by using the _bot_ command in console
 3. Obtain the equipment item whose name you want. If it is already available to buy from a certain role's shop, either force yourself to be that role via the _ttt\_force\_*_ commands or via a ULX plugin.
-4. Run the following command in console to get a full list of your equipment item names: _lua\_run GetEquipmentItemById(EQUIP\_RADAR); lua\_run for id, e in pairs(EquipmentCache) do if player.GetHumans()[1]:HasEquipmentItem(id) then print(id .. " = " .. e<area>.name) end end_
+4. Run the following command in console to get a full list of your equipment item names: `lua_run GetEquipmentItemById(EQUIP_RADAR); lua_run for id, e in pairs(EquipmentCache) do if player.GetHumans()[1]:HasEquipmentItem(id) then print(id .. " = " .. e<area>.name) end end`
 
 For the Summoner, I don't want any loadout items but I do want the shop to have access to a few different items so I can add them like this:
 
-```
+```lua
 ROLE.shop = {"weapon_ttt_beenade", "weapon_ttt_barnacle", "surprisecombine", "weapon_antlionsummoner", "weapon_controllable_manhack", "weapon_doncombinesummoner", "item_armor", "item_radar", "item_disg"}  
   
 ROLE.loadout = {}
@@ -221,7 +221,7 @@ If your ConVar is a number using a slider you can optionally add a third propert
 
 The Summoner does not have any extra ConVars but for the sake of example I will add three useless ConVars.
 
-```
+```lua
 CreateConVar("ttt_summoner_slider", "0", FCVAR_NONE, "This is a useless slider", 0, 10)
 CreateConVar("ttt_summoner_checkbox", "0")
 CreateConVar("ttt_summoner_textbox", "0")
@@ -250,7 +250,7 @@ The next line simply tells CR for TTT to register your role and passes through a
 
 Finally we have this block of code:
 
-```
+```lua
 if SERVER then  
 	AddCSLuaFile()
 	resource.AddFile("materials/vgui/ttt/icon_%NAMESHORT%.vmt")  
@@ -265,7 +265,7 @@ When this code is run on the server it makes sure that the client will download 
 
 For the summoner that looks like this:
 
-```
+```lua
 if SERVER then  
 	AddCSLuaFile()
 	resource.AddFile("materials/vgui/ttt/icon_sum.vmt")  
@@ -280,7 +280,7 @@ end
 
 Once you have done that you are finished with coding. You can close your file and move on to creating your sprites. One last time before moving on to that, here is the full summoner.lua file for reference:
 
-```
+```lua
 local ROLE = {}  
   
 ROLE.nameraw = "summoner"  

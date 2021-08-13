@@ -90,100 +90,14 @@ function GetDetectiveFilter(alive_only)
     return GetPlayerFilter(function(p) return (p:GetDetective() or (p:GetDeputy() and p:GetNWBool("HasPromotion", false))) and (not alive_only or p:IsTerror()) end)
 end
 
-function GetJesterFilter(alive_only)
-    return GetPlayerFilter(function(p) return p:GetJester() and (not alive_only or p:IsTerror()) end)
-end
-
-function GetSwapperFilter(alive_only)
-    return GetPlayerFilter(function(p) return p:GetSwapper() and (not alive_only or p:IsTerror()) end)
-end
-
-function GetGlitchFilter(alive_only)
-    return GetPlayerFilter(function(p) return p:GetGlitch() and (not alive_only or p:IsTerror()) end)
-end
-
-function GetPhantomFilter(alive_only)
-    return GetPlayerFilter(function(p) return p:GetPhantom() and (not alive_only or p:IsTerror()) end)
-end
-
-function GetHypnotistFilter(alive_only)
-    return GetPlayerFilter(function(p) return p:GetHypnotist() and (not alive_only or p:IsTerror()) end)
-end
-
-function GetRevengerFilter(alive_only)
-    return GetPlayerFilter(function(p) return p:GetRevenger() and (not alive_only or p:IsTerror()) end)
-end
-
-function GetDrunkFilter(alive_only)
-    return GetPlayerFilter(function(p) return p:GetDrunk() and (not alive_only or p:IsTerror()) end)
-end
-
-function GetClownFilter(alive_only)
-    return GetPlayerFilter(function(p) return p:GetClown() and (not alive_only or p:IsTerror()) end)
-end
-
-function GetDeputyFilter(alive_only)
-    return GetPlayerFilter(function(p) return p:GetDeputy() and (not alive_only or p:IsTerror()) end)
-end
-
-function GetImpersonatorFilter(alive_only)
-    return GetPlayerFilter(function(p) return p:GetImpersonator() and (not alive_only or p:IsTerror()) end)
-end
-
-function GetBeggarFilter(alive_only)
-    return GetPlayerFilter(function(p) return p:GetBeggar() and (not alive_only or p:IsTerror()) end)
-end
-
-function GetOldManFilter(alive_only)
-    return GetPlayerFilter(function(p) return p:GetOldMan() and (not alive_only or p:IsTerror()) end)
-end
-
-function GetMercenaryFilter(alive_only)
-    return GetPlayerFilter(function(p) return p:GetMercenary() and (not alive_only or p:IsTerror()) end)
-end
-
-function GetBodysnatcherFilter(alive_only)
-    return GetPlayerFilter(function(p) return p:GetBodysnatcher() and (not alive_only or p:IsTerror()) end)
-end
-
-function GetVeteranFilter(alive_only)
-    return GetPlayerFilter(function(p) return p:GetVeteran() and (not alive_only or p:IsTerror()) end)
-end
-
-function GetAssassinFilter(alive_only)
-    return GetPlayerFilter(function(p) return p:GetAssassin() and (not alive_only or p:IsTerror()) end)
-end
-
-function GetKillerFilter(alive_only)
-    return GetPlayerFilter(function(p) return p:GetKiller() and (not alive_only or p:IsTerror()) end)
-end
-
-function GetZombieFilter(alive_only)
-    return GetPlayerFilter(function(p) return p:GetZombie() and (not alive_only or p:IsTerror()) end)
-end
-
-function GetVampireFilter(alive_only)
-    return GetPlayerFilter(function(p) return p:GetVampire() and (not alive_only or p:IsTerror()) end)
-end
-
-function GetDoctorFilter(alive_only)
-    return GetPlayerFilter(function(p) return p:GetDoctor() and (not alive_only or p:IsTerror()) end)
-end
-
-function GetQuackFilter(alive_only)
-    return GetPlayerFilter(function(p) return p:GetQuack() and (not alive_only or p:IsTerror()) end)
-end
-
-function GetParasiteFilter(alive_only)
-    return GetPlayerFilter(function(p) return p:GetParasite() and (not alive_only or p:IsTerror()) end)
-end
-
-function GetTricksterFilter(alive_only)
-    return GetPlayerFilter(function(p) return p:GetTrickster() and (not alive_only or p:IsTerror()) end)
-end
-
 function GetRoleFilter(role, alive_only)
     return GetPlayerFilter(function(p) return p:IsRole(role) and (not alive_only or p:IsTerror()) end)
+end
+
+-- Dynamically generate all the new roles
+for role = ROLE_DETECTIVE + 1, ROLE_MAX do
+    local name = string.gsub(ROLE_STRINGS[role], "%s+", "")
+    _G["Get" .. name .. "Filter"] = function(alive_only) return GetRoleFilter(role, alive_only) end
 end
 
 function GetTraitorTeamFilter(alive_only)
