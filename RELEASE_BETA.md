@@ -6,7 +6,7 @@
 ### Additions
 - Added ability for assassin to have their target highlighted by an aura visible through walls (disabled by default)
 
-### Fixed
+### Fixes
 - Re-added mistakenly deleted brainwashing device
 
 ### Developer
@@ -29,21 +29,21 @@
 ### Additions
 - Added convar to prevent maps from ending the round
 
+### Fixes
+- Fixed team name in monsters round start popup
+- Fixed only the first weapon added or excluded via roleweapons actually being added or excluded
+
 ### Developer
 - Added client-side command to reset the equipment cache
 - Added ability to register convars with an external role for it to be picked up by ULX
 - Changed Get{ROLE}, Is{ROLE} and IsActive{ROLE} functions to be dynamically assigned for each role
 
-### Fixes
-- Fixed team name in monsters round start popup
-- Fixed only the first weapon added or excluded via roleweapons actually being added or excluded
-
 ## 1.0.10
 **Released: August 10th, 2021**
 
 ### Additions
-- Added the ability for other mods to create their own simple roles
 - Added new mad scientist role
+- Added the ability for other mods to create their own simple roles
 
 ### Changes
 - Resized role name font for longer role names
