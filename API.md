@@ -225,6 +225,18 @@ This document aims to explain the things that we have added to Custom Roles for 
 *Parameters:*
 - *ply* - The target player
 
+**SetRoleMaxHealth(ply)** - Sets the target player's max health based on their role convars.\
+*Realm:* Client and Server\
+*Added in:* 1.0.15\
+*Parameters:*
+- *ply* - The target player
+
+**SetRoleStartingHealth(ply)** - Sets the target player's health based on their role convars.\
+*Realm:* Client and Server\
+*Added in:* 1.0.15\
+*Parameters:*
+- *ply* - The target player
+
 ### *Player*
 
 **plymeta:Is{RoleName}()/plymeta:Get{RoleName}()** - Dynamically created functions for each role that returns whether the player is that role. For example: `plymeta:IsTraitor()` and `plymeta:IsPhantom()` return whether the player is a traitor or a phantom, respectively.\

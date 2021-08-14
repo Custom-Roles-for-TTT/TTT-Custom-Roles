@@ -8,7 +8,7 @@ This is the development version of my [Custom Roles for TTT](https://steamcommun
 
 1. All custom roles are disabled by default. Please read the ConVar list to find out how to turn them on.
 2. Traitor voice chat has been rebound to allow sprint to be shift by default. You will need to bind a new key to "Suit Zoom" to use traitor voice chat.
-3. The radio menu (quick chat) has been rebound to "z" by default but that can be changed in the F1 settings menu.
+3. The radio menu (quick chat) has been rebound to "n" by default but that can be changed in the F1 settings menu.
 
 ## Roles
 ### *List*
