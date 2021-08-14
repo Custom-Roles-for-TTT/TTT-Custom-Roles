@@ -772,7 +772,7 @@ local function TraitorMenuPopup()
         end
 
         local dcancel = vgui.Create("DButton", dframe)
-        dcancel:SetPos(w - 13 - bw, h - bh - 16)
+        dcancel:SetPos(w - 17 - bw, h - bh - 17)
         dcancel:SetSize(bw, bh)
         dcancel:SetDisabled(false)
         dcancel:SetText(GetTranslation("close"))
