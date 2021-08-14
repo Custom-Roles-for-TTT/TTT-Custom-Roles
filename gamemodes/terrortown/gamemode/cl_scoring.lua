@@ -579,7 +579,7 @@ function CLSCORE:BuildSummaryPanel(dpanel)
     }
 
     for id, s in pairs(scores) do
-        if id ~= -1 then
+        if id ~= -1 and s.role > ROLE_NONE and s.role <= ROLE_MAX then
             local foundPlayer = false
             for _, v in pairs(spawnedPlayers) do
                 if v == nicks[id] then
