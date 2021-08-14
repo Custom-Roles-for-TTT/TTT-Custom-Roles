@@ -127,52 +127,63 @@ This document aims to explain the things that we have added to Custom Roles for 
 
 **CRVersion(version)** - Whether the current version is equal to or newer than the version number given.\
 *Realm:* Client and Server\
-*Added in:* 1.0.0
+*Added in:* 1.0.0\
+*Parameters:*
 - *version* - The version number to compare against the currently installed version. Must be in the "#.#.#" format
 
 **GetEquipmentItemById(id)** - Gets an equipment item's definition by their ID.\
 *Realm:* Client and Server\
-*Added in:* 1.0.0
+*Added in:* 1.0.0\
+*Parameters:*\
+*Parameters:*
 - *id* - The ID of the equipment item being looked up (e.g. EQUIP_RADAR)
 
 **GetEquipmentItemByName(name)** - Gets an equipment item's definition by their name.\
 *Realm:* Client and Server\
-*Added in:* 1.0.0
+*Added in:* 1.0.0\
+*Parameters:*
 - *name* - The name of the equipment item being looked up
 
 **Get{RoleName}Filter(alive_only)** - Dynamically created functions for each role that returns a function that filters net messages to players that are role. For example: `GetTraitorFilter()` and `GetPhantomFilter()` return a filter function that can be used to send a message to players who are a traitor or a phantom, respectively.\
 *Realm:* Server\
-*Added in:* Whenever each role is added
+*Added in:* Whenever each role is added\
+*Parameters:*
 - *alive_only* - Whether this filter should only include live players (Defaults to `false`).
 
 **GetTraitorTeamFilter(alive_only)** - Returns a function that filters net messages to players that are on the traitor team.\
 *Realm:* Server\
-*Added in:* 1.0.0
+*Added in:* 1.0.0\
+*Parameters:*
 - *alive_only* - Whether this filter should only include live players (Defaults to `false`).
 
 **GetInnocentTeamFilter(alive_only)** - Returns a function that filters net messages to players that are on the innocent team.\
 *Realm:* Server\
-*Added in:* 1.0.0
+*Added in:* 1.0.0\
+*Parameters:*
 - *alive_only* - Whether this filter should only include live players (Defaults to `false`).
 
 **GetJesterTeamFilter(alive_only)** - Returns a function that filters net messages to players that are on the jester team.\
 *Realm:* Server\
-*Added in:* 1.0.0
+*Added in:* 1.0.0\
+*Parameters:*
 - *alive_only* - Whether this filter should only include live players (Defaults to `false`).
 
 **GetIndependentTeamFilter(alive_only)** - Returns a function that filters net messages to players that are on the independent team.\
 *Realm:* Server\
-*Added in:* 1.0.0
+*Added in:* 1.0.0\
+*Parameters:*
 - *alive_only* - Whether this filter should only include live players (Defaults to `false`).
 
 **GetMonsterTeamFilter(alive_only)** - Returns a function that filters net messages to players that are on the monster team.\
 *Realm:* Server\
-*Added in:* 1.0.0
+*Added in:* 1.0.0\
+*Parameters:*
 - *alive_only* - Whether this filter should only include live players (Defaults to `false`).
 
 **GetTeamRoles(team_table)** - Gets a table of role numbers that belong to the team whose lookup table is given.\
 *Realm:* Client and Server\
-*Added in:* 1.0.2
+*Added in:* 1.0.2\
+*Parameters:*
 - *team_table* - Team lookup table
 
 **UpdateRoleColours()/UpdateRoleColors()** - Updates the role color tables based on the color convars and color type convar.\
@@ -187,7 +198,8 @@ This document aims to explain the things that we have added to Custom Roles for 
 
 **GetSprintMultiplier(ply, sprinting)** - Gets the given player's current sprint multiplier.\
 *Realm:* Client and Server\
-*Added in:* 1.0.0
+*Added in:* 1.0.0\
+*Parameters:*
 - *ply* - The target player
 - *sprinting* - Whether the player is currently sprinting
 
@@ -201,14 +213,16 @@ This document aims to explain the things that we have added to Custom Roles for 
 
 **AssignAssassinTarget(ply, start, delay)** - Assigns the target player their next assassination target (if they are the assassin role).\
 *Realm:* Client and Server\
-*Added in:* 1.0.0
+*Added in:* 1.0.0\
+*Parameters:*
 - *ply* - The target player
 - *start* - Whether this is running at the start of the round (Defaults to `false`).
 - *delay* - Whether the assassin's target assignment is delayed (Defaults to false)
 
 **SetRoleHealth(ply)** - Sets the target player's health and max health based on their role convars.\
 *Realm:* Client and Server\
-*Added in:* 1.0.3
+*Added in:* 1.0.3\
+*Parameters:*
 - *ply* - The target player
 
 ### *Player*
@@ -255,7 +269,8 @@ This document aims to explain the things that we have added to Custom Roles for 
 
 **plymeta:CanLootCredits(active_only)** - Whether the player can loot credits from a corpse that has them.\
 *Realm:* Client and Server\
-*Added in:* 1.0.5
+*Added in:* 1.0.5\
+*Parameters:*
 - *active_only* - Whether the player must also be active (Defaults to `false`)
 
 **plymeta:CanUseShop()** - Whether the player can currently open the shop menu.\
@@ -264,7 +279,8 @@ This document aims to explain the things that we have added to Custom Roles for 
 
 **plymeta:CanUseTraitorButton(active_only)** - Whether the player can see and use traitor buttons.\
 *Realm:* Client and Server\
-*Added in:* 1.0.5
+*Added in:* 1.0.5\
+*Parameters:*
 - *active_only* - Whether the player must also be active (Defaults to `false`)
 
 **plymeta:GetHeight()** - Gets the *estimated* height of the player based on their player model.\
@@ -301,7 +317,8 @@ This document aims to explain the things that we have added to Custom Roles for 
 
 **plymeta:IsSameTeam(target)** - Whether the player is on the same team as the target.\
 *Realm:* Client and Server\
-*Added in:* 1.0.0
+*Added in:* 1.0.0\
+*Parameters:*
 - *target* - The other player whose team is being compared
 
 **plymeta:IsShopRole()** - Whether the player has a shop (see `plymeta:CanUseShop` for determining if it is openable).\
@@ -330,28 +347,33 @@ This document aims to explain the things that we have added to Custom Roles for 
 
 **plymeta:MoveRoleState(target, keep_on_source)** - Moves role state data (such as promotion and monster prime status) to the target.\
 *Realm:* Client and Server\
-*Added in:* 1.0.5
+*Added in:* 1.0.5\
+*Parameters:*
 - *target* - The player to move the role state data to
 - *keep_on_source* - Wheter the source player should also keep the role state data (Defaults to `false`)
 
 **plymeta:SetRoleAndBroadcast(role)** - Sets the player's role to the given one and (if called on the server) broadcasts the change to all clients for scoreboard tracking.\
 *Realm:* Client and Server\
-*Added in:* 1.0.0
+*Added in:* 1.0.0\
+*Parameters:*
 - *role* - The role number to set this player to
 
 **plymeta:SetVampirePreviousRole(previous_role)** - Sets the player's previous role for when they are turned into a vampire.\
 *Realm:* Server\
-*Added in:* 1.0.0
+*Added in:* 1.0.0\
+*Parameters:*
 - *previous_role* - The previous role this player had before becoming a vampire
 
 **plymeta:SetVampirePrime(is_prime)** - Sets whether the player is a prime (e.g. first-spawned) vampire.\
 *Realm:* Server\
-*Added in:* 1.0.0
+*Added in:* 1.0.0\
+*Parameters:*
 - *is_prime* - Whether the player is a prime vampire
 
 **plymeta:SetZombiePrime(is_prime)** - Sets whether the player is a prime (e.g. first-spawned) zombie.\
 *Realm:* Server\
-*Added in:* 1.0.0
+*Added in:* 1.0.0\
+*Parameters:*
 - *is_prime* - Whether the player is a prime zombie
 
 **plymeta:StripRoleWeapons()** - Strips all weapons from the player whose `Category` property matches the global `WEAPON_CATEGORY_ROLE` value.\
@@ -362,24 +384,53 @@ This document aims to explain the things that we have added to Custom Roles for 
 
 **TTTCanIdentifyCorpse(ply, rag, was_traitor)** - Changed `was_traitor` parameter to be `true` for any member of the traitor team, rather than just the traitor role.\
 *Realm:* Server\
-*Added in:* 1.0.5
+*Added in:* 1.0.5\
+*Parameters:*
 - *ply* - The player who is attempting to identify a corpse
 - *rag* - The ragdoll being identified
 - *was_traitor* - Whether the player who the targetted ragdoll represents belonged to the traitor team
 
+*Return:* Whether or not the given player should be able to identify the given corpse (Defaults to `false`).
+
+**TTTPrintResultMessage(type)** - Called before the round win results message is printed to the top-right corner of the screen. Can be used to print a replacement message for custom win types that this would not normally handle.\
+*Realm:* Server\
+*Added in:* 1.0.14\
+*Parameters:*
+- *type* - The round win type
+
+*Return:* `true` if the default print messages should be skipped (Defaults to `false`).
+
+**TTTScoringWinTitle(wintype, wintitle, title)** - Called before the round summary screen is shown with the winning team. Return the win title object to use on the summary screen.\
+*Realm:* Client\
+*Added in:* 1.0.14\
+*Parameters:*
+- *wintype* - The round win type
+- *wintitle* - Table of default win title parameters
+- *title* - The currently selected win title
+
+*Return:*
+- *new_title*
+  - *txt* - The translation string to use to get the winning team text
+  - *c* - The background color to use
+  - *params* - Any parameters to use when translating `txt` (Optional)
+
 **TTTSelectRoles(choices, prev_roles)** - Called before players are randomly assigned roles. If a player is assigned a role during this hook, they will not be randomly assigned one later.\
 *Realm:* Server\
-*Added in:* 1.0.0
+*Added in:* 1.0.0\
+*Parameters:*
 - *choices* - The table of players who will be assigned roles
 - *prev_roles* - The table whose keys are role numbers and values are tables of players who had that role last round
 
 **TTTSprintStaminaPost(ply, stamina, sprint_timer, consumption)** - Called after a player's sprint stamina is reduced. Return value is the new stamina value for the player.\
 *Realm:* Client\
-*Added in:* 1.0.2
+*Added in:* 1.0.2\
+*Parameters:*
 - *ply* - Player whose stamina is being adjusted
 - *stamina* - Player's currents stamina
 - *sprint_timer* - Time representing when the player last sprinted
 - *consumption* - The stamina consumption rate
+
+*Return:* The stamina value to assign to the player. If none is provided, the player's stamina will not be changed.
 
 ## SWEPs
 Changes made to SWEPs (the data structure used when defining new weapons)
@@ -405,21 +456,25 @@ Changes made to SWEPs (the data structure used when defining new weapons)
 ### *Server Commands*
 
 **ttt_kill_from_random** - Kills the local player by a random non-jester team player. *NOTE*: Cheats must be enabled to use this command.\
-*Added in:* 1.0.0
+*Added in:* 1.0.0\
+*Parameters:*
 - *remove_body* - Whether to remove the local player's body after killing them (Defaults to `false`)
 
 **ttt_kill_from_player** - Kills the local player by another player with the given name. *NOTE*: Cheats must be enabled to use this command.\
-*Added in:* 1.0.0
+*Added in:* 1.0.0\
+*Parameters:*
 - *killer_name* - The name of the player who will kill the local player
 - *remove_body* - Whether to remove the local player's body after killing them (Defaults to `false`)
 
 **ttt_kill_target_from_random** - Kills the target player by a random non-jester team player. *NOTE*: Cheats must be enabled to use this command.\
-*Added in:* 1.0.0
+*Added in:* 1.0.0\
+*Parameters:*
 - *target_name* - The name of the player who will be killed
 - *remove_body* - Whether to remove the target player's body after killing them (Defaults to `false`)
 
 **ttt_kill_target_from_player** - Kills the target player by another player with the given name. *NOTE*: Cheats must be enabled to use this command.\
-*Added in:* 1.0.0
+*Added in:* 1.0.0\
+*Parameters:*
 - *target_name* - The name of the player who will be killed
 - *killer_name* - The name of the player who will kill the target player
 - *remove_body* - Whether to remove the target player's body after killing them (Defaults to `false`)
@@ -430,7 +485,8 @@ Changes made to SWEPs (the data structure used when defining new weapons)
 *Added in:* 1.0.0
 
 **TTT_PlayerFootstep** - Adds a footstep to the list's list of footsteps to show.\
-*Added in:* 1.0.0
+*Added in:* 1.0.0\
+*Parameters:*
 - *Entity* - The player whose footsteps are being recorded
 - *Vector* - The position to place the footsteps at
 - *Angle* - The angle to place the footsteps with

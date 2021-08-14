@@ -365,6 +365,10 @@ local function GetWinTitle(wintype)
         [WIN_MONSTER] = { txt = "hilite_win_role_plural", params = { role = "MONSTERS" }, c = ROLE_COLORS[ROLE_ZOMBIE] }
     }
     local title = wintitle[wintype]
+    local new_title = hook.Call("TTTScoringWinTitle", nil, wintype, wintitle, title)
+    if new_title then
+        title = new_title
+    end
 
     -- If this was a monster win, check that both roles are part of the monsters team still
     if wintype == WIN_MONSTER then
@@ -711,7 +715,7 @@ function CLSCORE:BuildSummaryPanel(dpanel)
 
     local winlbl = vgui.Create("DLabel", dpanel)
     winlbl:SetFont("WinHuge")
-    winlbl:SetText(PT(title.txt, title.params))
+    winlbl:SetText(PT(title.txt, title.params or {}))
     winlbl:SetTextColor(COLOR_WHITE)
     winlbl:SizeToContents()
     local xwin = (w - winlbl:GetWide())/2
@@ -973,7 +977,7 @@ function CLSCORE:BuildHilitePanel(dpanel)
 
     local winlbl = vgui.Create("DLabel", dpanel)
     winlbl:SetFont("WinHuge")
-    winlbl:SetText(PT(title.txt, title.params))
+    winlbl:SetText(PT(title.txt, title.params or {}))
     winlbl:SetTextColor(COLOR_WHITE)
     winlbl:SizeToContents()
     local xwin = (w - winlbl:GetWide())/2
