@@ -1,7 +1,7 @@
 # Beta Release Notes
 
 ## 1.0.14
-**Released:**
+**Released: August 14th, 2021**
 
 ### Changes
 - Reverted traitor icon to a knife instead of a handgun
