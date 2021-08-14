@@ -499,7 +499,7 @@ local function TraitorMenuPopup()
         dlist:EnableVerticalScrollbar(true)
         dlist:EnableHorizontal(true)
 
-        local bw, bh = 100, 25
+        local bw, bh = 102, 25
 
         -- Whole right column
         local dih = h - bh - m * 5
@@ -538,6 +538,18 @@ local function TraitorMenuPopup()
         dhelp:MoveBelow(dinfo, m)
 
         local update_preqs = PreqLabels(dhelp, m * 7, m * 2)
+
+        local function CannotBuyItem(item)
+            local orderable = update_preqs(item)
+            return ((not orderable) or
+                    -- already owned
+                    table.HasValue(owned_ids, item.id) or
+                    (tonumber(item.id) and ply:HasEquipmentItem(tonumber(item.id))) or
+                    -- already carrying a weapon for this slot
+                    (ItemIsWeapon(item) and (not CanCarryWeapon(item))) or
+                    -- already bought the item before
+                    (item.limited and ply:HasBought(tostring(item.id))))
+        end
 
         local function FillEquipmentList(itemlist)
             dlist:Clear()
@@ -635,15 +647,7 @@ local function TraitorMenuPopup()
                 ic:SetTooltip(tip)
 
                 -- If we cannot order this item, darken it
-                local orderable = update_preqs(item)
-                if ((not orderable) or
-                        -- already owned
-                        table.HasValue(owned_ids, item.id) or
-                        (tonumber(item.id) and ply:HasEquipmentItem(tonumber(item.id))) or
-                        -- already carrying a weapon for this slot
-                        (ItemIsWeapon(item) and (not CanCarryWeapon(item))) or
-                        -- already bought the item before
-                        (item.limited and ply:HasBought(tostring(item.id)))) then
+                if CannotBuyItem(item) then
                     ic:SetIconColor(color_darkened)
                 end
 
@@ -786,6 +790,7 @@ local function TraitorMenuPopup()
         dfav:SetDisabled(false)
         dfav:SetText("")
         dfav:SetImage("icon16/star.png")
+        dfav:SetTooltip(GetTranslation("buy_favorite_toggle"))
         dfav.DoClick = function()
             local local_ply = LocalPlayer()
             local role = local_ply:GetRole()
@@ -800,6 +805,30 @@ local function TraitorMenuPopup()
             else
                 AddFavorite(guid, role, weapon)
             end
+        end
+
+        local drdm = vgui.Create("DButton", dinfobg)
+        drdm:MoveRightOf(dfav)
+        local bx, _ = drdm:GetPos()
+        drdm:SetPos(bx + 1, dih - bh * 2)
+        drdm:SetSize(bh, bh)
+        drdm:SetDisabled(false)
+        drdm:SetText("")
+        drdm:SetImage("icon16/basket_go.png")
+        drdm:SetTooltip(GetTranslation("buy_random"))
+        drdm.DoClick = function()
+            local item_panels = dlist:GetItems()
+            local buyable_items = {}
+            for _, item_panel in pairs(item_panels) do
+                if item_panel.item and not CannotBuyItem(item_panel.item) then
+                    table.insert(buyable_items, item_panel)
+                end
+            end
+
+            if #buyable_items == 0 then return end
+
+            dlist:SelectPanel(buyable_items[math.random(1, #buyable_items)])
+            dconfirm.DoClick()
         end
 
         FillEquipmentList(GetEquipmentForRole(ply:GetRole(), ply:GetNWBool("HasPromotion", false), false))
