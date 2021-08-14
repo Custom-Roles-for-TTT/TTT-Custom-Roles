@@ -251,9 +251,9 @@ function SWEP:Think()
 
         local tr = self:GetTraceEntity()
         if not self:GetOwner():KeyDown(IN_ATTACK) or tr.Entity ~= self.TargetEntity then
+            local ply = self.TargetEntity
             -- If the player is allowed to convert, do that
-            if self:GetState() == STATE_CONVERT and CanConvert(self:GetOwner()) then
-                local ply = self.TargetEntity
+            if self:GetState() == STATE_CONVERT and CanConvert(self:GetOwner()) and not ply:IsVampire() then
                 ply:StripRoleWeapons()
                 if not ply:HasWeapon("weapon_zm_improvised") then
                     ply:Give("weapon_zm_improvised")
@@ -273,9 +273,17 @@ function SWEP:Think()
                 self:FireError()
 
                 SendFullStateUpdate()
+                -- Reset the victim's max health
+                SetRoleMaxHealth(ply)
             else
                 self:Error("DRAINING ABORTED")
             end
+            return
+        end
+
+        -- If the target has been turned to a vampire by someone else, stop trying to drain them
+        if self.TargetEntity:IsVampire() then
+            self:Error("DRAINING ABORTED")
             return
         end
 
