@@ -2,6 +2,10 @@
 
 ## 1.0.14
 **Released:**
+
+### Changes
+- Reverted traitor icon to a knife instead of a handgun
+
 ### Developer
 - Added TTTScoringWinTitle client hook for determining which text and color to use for the round summary screen
 - Added TTTPrintResultMessage server hook for printing which team won as a message in the top-right corner
