@@ -10,6 +10,7 @@
 ### Changes
 - Changed radio menu to default to the "n" key to avoid conflicting with the "drop ammo" key
 - Changed vampire drain/convert to automatically abort if the target is converted to a vampire by someone else before you're done
+- Changed the mad scientist's zombification device to have unlimited charges
 
 ### Fixes
 - Fixed error in round summary when a player started the round as a role and ended as a spectator

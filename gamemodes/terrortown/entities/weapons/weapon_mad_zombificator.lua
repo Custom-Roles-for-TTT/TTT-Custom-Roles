@@ -28,9 +28,8 @@ SWEP.Base = "weapon_tttbase"
 SWEP.Category = WEAPON_CATEGORY_ROLE
 
 SWEP.Primary.Recoil = 0
-SWEP.Primary.ClipSize = 5
-SWEP.Primary.ClipMax = 5
-SWEP.Primary.DefaultClip = 5
+SWEP.Primary.ClipSize = -1
+SWEP.Primary.DefaultClip = -1
 SWEP.Primary.Automatic = false
 SWEP.Primary.Delay = 1
 SWEP.Primary.Ammo = "none"
@@ -219,9 +218,6 @@ if SERVER then
         body:Remove()
 
         SendFullStateUpdate()
-
-        owner:ConCommand("lastinv")
-        self:TakePrimaryAmmo(1)
     end
 
     function SWEP:Defib()
@@ -277,7 +273,6 @@ if SERVER then
     end
 
     function SWEP:PrimaryAttack()
-        if not self:CanPrimaryAttack() then return end
         if self:GetState() ~= DEFIB_IDLE then return end
 
         local tr = self:GetOwner():GetEyeTrace(MASK_SHOT_HULL)
