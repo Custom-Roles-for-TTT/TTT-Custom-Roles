@@ -266,19 +266,7 @@ function WSWITCH:Enable()
     if self.Show == false then
         self.Show = true
 
-        local wep_active = LocalPlayer():GetActiveWeapon()
-
-        self:UpdateWeaponCache()
-
-        -- make our active weapon the initial selection
-        local toselect = 1
-        for k, w in pairs(self.WeaponCache) do
-            if w == wep_active then
-                toselect = k
-                break
-            end
-        end
-        self:SetSelected(toselect)
+        WSWITCH:Refresh()
     end
 
     -- cache for speed, checked every Think
@@ -324,15 +312,21 @@ function WSWITCH:SelectAndConfirm(slot)
 end
 
 function WSWITCH:Refresh()
-    local wasShown = self.Show
-    self:Disable()
+    timer.Simple(0.1, function()
+        local wep_active = LocalPlayer():GetActiveWeapon()
 
-    -- If the menu was already open, wait a short delay and reopen it
-    if wasShown then
-        timer.Simple(0.1, function()
-            self:Enable()
-        end)
-    end
+        self:UpdateWeaponCache()
+
+        -- make our active weapon the initial selection
+        local toselect = 1
+        for k, w in pairs(self.WeaponCache) do
+            if w == wep_active then
+                toselect = k
+                break
+            end
+        end
+        self:SetSelected(toselect)
+    end)
 end
 
 local function QuickSlot(ply, cmd, args)
