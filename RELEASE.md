@@ -5,6 +5,7 @@
 
 ### Fixes
 - Fixed an error in round summary where an entry in the scores table did not have the 'role' property
+- Fixed assassin target not showing in start of round role summary
 
 ## 1.1.0
 **Released: August 15th, 2021**

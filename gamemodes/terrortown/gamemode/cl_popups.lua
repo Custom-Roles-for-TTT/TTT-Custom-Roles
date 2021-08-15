@@ -104,7 +104,7 @@ local function GetTextForLocalPlayer()
                 end
             end
 
-            params = table.Merge(params, { traitorlist = traitorlist, assassintarget = assassintarget })
+            params = table.Merge(params, { traitorlist = traitorlist })
             if #glitches > 0 then
                 comrades = GetPTranslation("info_popup_traitor_glitch", params)
             else
@@ -114,7 +114,7 @@ local function GetTextForLocalPlayer()
             comrades = GetPTranslation("info_popup_traitor_alone", params)
         end
 
-        return GetPTranslation("info_popup_" .. roleString, table.Merge(params, { comrades = comrades }))
+        return GetPTranslation("info_popup_" .. roleString, table.Merge(params, { comrades = comrades, assassintarget = assassintarget }))
     -- Zombies not on Traitor or Monster teams have a different message
     elseif client:IsZombie() then
         return GetPTranslation("info_popup_zombie_indep", params)
