@@ -5,7 +5,9 @@ local function SendWeaponDrop()
 
     -- If the player's current weapon is droppable then refresh the weapon switcher
     if LocalPlayer():GetActiveWeapon().AllowDrop then
-        WSWITCH:Refresh()
+        timer.Simple(0.1, function()
+            WSWITCH:Refresh()
+        end)
     end
 end
 

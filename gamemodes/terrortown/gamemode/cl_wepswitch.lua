@@ -312,21 +312,19 @@ function WSWITCH:SelectAndConfirm(slot)
 end
 
 function WSWITCH:Refresh()
-    timer.Simple(0.1, function()
-        local wep_active = LocalPlayer():GetActiveWeapon()
+    local wep_active = LocalPlayer():GetActiveWeapon()
 
-        self:UpdateWeaponCache()
+    self:UpdateWeaponCache()
 
-        -- make our active weapon the initial selection
-        local toselect = 1
-        for k, w in pairs(self.WeaponCache) do
-            if w == wep_active then
-                toselect = k
-                break
-            end
+    -- make our active weapon the initial selection
+    local toselect = 1
+    for k, w in pairs(self.WeaponCache) do
+        if w == wep_active then
+            toselect = k
+            break
         end
-        self:SetSelected(toselect)
-    end)
+    end
+    self:SetSelected(toselect)
 end
 
 local function QuickSlot(ply, cmd, args)
