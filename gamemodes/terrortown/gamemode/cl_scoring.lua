@@ -579,7 +579,7 @@ function CLSCORE:BuildSummaryPanel(dpanel)
     }
 
     for id, s in pairs(scores) do
-        if id ~= -1 then
+        if id ~= -1 and s.role > ROLE_NONE and s.role <= ROLE_MAX then
             local foundPlayer = false
             for _, v in pairs(spawnedPlayers) do
                 if v == nicks[id] then
@@ -605,6 +605,11 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                 if IsValid(ply) then
                     alive = ply:Alive() and not ply:IsSpec()
                     finalRole = ply:GetRole()
+                    -- Sanity check to make sure only valid roles are used for icons and stuff
+                    if finalRole <= ROLE_NONE or finalRole > ROLE_MAX then
+                        finalRole = startingRole
+                    end
+
                     -- Keep the original role icon for people converted to Zombie and Vampire or the Bodysnatcher
                     if finalRole ~= ROLE_ZOMBIE and finalRole ~= ROLE_VAMPIRE and startingRole ~= ROLE_BODYSNATCHER then
                         roleFileName = ROLE_STRINGS_SHORT[finalRole]

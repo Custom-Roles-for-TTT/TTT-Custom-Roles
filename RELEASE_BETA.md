@@ -1,5 +1,22 @@
 # Beta Release Notes
 
+## 1.0.15
+**Released:**
+
+### Additions
+- Added "Buy random equipment" button to the shop
+- Added mouseover tooltip to the "Toggle favorite" button in the shop
+
+### Changes
+- Changed radio menu to default to the "n" key to avoid conflicting with the "drop ammo" key
+- Changed vampire drain/convert to automatically abort if the target is converted to a vampire by someone else before you're done
+
+### Fixes
+- Fixed error in round summary when a player started the round as a role and ended as a spectator
+- Fixed players not having their max health set correctly when being converted to a vampire
+- Fixed players who were moved to spectator by some external addon not showing as spectator on the scoreboard
+- Fixed buttons in shop being slightly misaligned
+
 ## 1.0.14
 **Released: August 14th, 2021**
 

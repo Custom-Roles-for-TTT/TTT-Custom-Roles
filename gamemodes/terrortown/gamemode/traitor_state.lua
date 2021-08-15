@@ -55,7 +55,7 @@ function SendDetectiveList(ply_or_rf) SendRoleList(ROLE_DETECTIVE, ply_or_rf) en
 function SendInnocentList(ply_or_rf) SendRoleList(ROLE_INNOCENT, ply_or_rf) end
 
 function SendAllLists(ply_or_rf)
-    for role = 0, ROLE_MAX do
+    for role = ROLE_NONE, ROLE_MAX do
         SendRoleList(role, ply_or_rf)
     end
 end

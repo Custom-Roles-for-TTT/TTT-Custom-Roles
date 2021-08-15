@@ -282,6 +282,8 @@ L.buy_no_stock = "This weapon is out of stock: you already bought it this round.
 L.buy_pending = "You already have an order pending, wait until you receive it."
 L.buy_received = "You have received your special equipment."
 L.buy_received_delay = "You will receive your special equipment when you activate."
+L.buy_favorite_toggle = "Toggle favorite"
+L.buy_random = "Buy random equipment"
 
 L.drop_no_room = "You have no room here to drop your weapon!"
 

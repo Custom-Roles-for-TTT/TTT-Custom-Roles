@@ -111,7 +111,7 @@ function GM:KeyRelease(ply, key)
     end
 end
 
-local radio_button = CreateClientConVar("ttt_radio_button", "z", true, false, "What button to press to open/close the radio menu")
+local radio_button = CreateClientConVar("ttt_radio_button", "n", true, false, "What button to press to open/close the radio menu")
 function GM:PlayerButtonDown(ply, btn)
     if not IsFirstTimePredicted() then return end
     if btn == input.GetKeyCode(radio_button:GetString()) then

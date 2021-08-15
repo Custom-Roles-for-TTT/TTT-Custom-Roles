@@ -1,5 +1,5 @@
 -- Version string for display and function for version checks
-CR_VERSION = "1.0.13"
+CR_VERSION = "1.0.15"
 
 function CRVersion(version)
     local installedVersionRaw = string.Split(CR_VERSION, ".")
@@ -1002,15 +1002,27 @@ if SERVER then
         end
     end
 
-    function SetRoleHealth(ply)
+    function SetRoleStartingHealth(ply)
+        if not IsValid(ply) or not ply:Alive() or ply:IsSpec() then return end
+        local role = ply:GetRole()
+        if role <= ROLE_NONE or role > ROLE_MAX then return end
+
+        local health = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_starting_health"):GetInt()
+        ply:SetHealth(health)
+    end
+
+    function SetRoleMaxHealth(ply)
         if not IsValid(ply) or not ply:Alive() or ply:IsSpec() then return end
         local role = ply:GetRole()
         if role <= ROLE_NONE or role > ROLE_MAX then return end
 
         local maxhealth = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_max_health"):GetInt()
         ply:SetMaxHealth(maxhealth)
-        local health = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_starting_health"):GetInt()
-        ply:SetHealth(health)
+    end
+
+    function SetRoleHealth(ply)
+        SetRoleMaxHealth(ply)
+        SetRoleStartingHealth(ply)
     end
 end
 
