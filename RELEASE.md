@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.1.1
+**Released: August 15th, 2021**
+
+### Fixes
+- Fixed an error in round summary where an entry in the scores table did not have the 'role' property
+
 ## 1.1.0
 **Released: August 15th, 2021**
 
