@@ -605,6 +605,11 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                 if IsValid(ply) then
                     alive = ply:Alive() and not ply:IsSpec()
                     finalRole = ply:GetRole()
+                    -- Sanity check to make sure only valid roles are used for icons and stuff
+                    if finalRole <= ROLE_NONE or finalRole > ROLE_MAX then
+                        finalRole = startingRole
+                    end
+
                     -- Keep the original role icon for people converted to Zombie and Vampire or the Bodysnatcher
                     if finalRole ~= ROLE_ZOMBIE and finalRole ~= ROLE_VAMPIRE and startingRole ~= ROLE_BODYSNATCHER then
                         roleFileName = ROLE_STRINGS_SHORT[finalRole]
