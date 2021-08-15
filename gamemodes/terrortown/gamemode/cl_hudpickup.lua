@@ -51,6 +51,8 @@ function GM:HUDWeaponPickedUp(wep)
     table.insert(self.PickupHistory, pickup)
     self.PickupHistoryLast = pickup.time
 
+    -- Refresh the weapon switcher
+    WSWITCH:Refresh()
 end
 
 function GM:HUDItemPickedUp(itemname)

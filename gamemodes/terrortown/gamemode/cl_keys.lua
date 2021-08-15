@@ -3,9 +3,10 @@
 local function SendWeaponDrop()
     RunConsoleCommand("ttt_dropweapon")
 
-    -- Turn off weapon switch display if you had it open while dropping, to avoid
-    -- inconsistencies.
-    WSWITCH:Disable()
+    -- If the player's current weapon is droppable then refresh the weapon switcher
+    if LocalPlayer():GetActiveWeapon().AllowDrop then
+        WSWITCH:Refresh()
+    end
 end
 
 function GM:OnSpawnMenuOpen()

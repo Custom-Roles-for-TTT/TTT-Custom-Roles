@@ -323,6 +323,18 @@ function WSWITCH:SelectAndConfirm(slot)
     WSWITCH:ConfirmSelection()
 end
 
+function WSWITCH:Refresh()
+    local wasShown = self.Show
+    self:Disable()
+
+    -- If the menu was already open, wait a short delay and reopen it
+    if wasShown then
+        timer.Simple(0.1, function()
+            self:Enable()
+        end)
+    end
+end
+
 local function QuickSlot(ply, cmd, args)
     if (not IsValid(ply)) or (not args) or #args ~= 1 then return end
 
