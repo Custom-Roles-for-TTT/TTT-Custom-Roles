@@ -606,7 +606,7 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                     alive = ply:Alive() and not ply:IsSpec()
                     finalRole = ply:GetRole()
                     -- Sanity check to make sure only valid roles are used for icons and stuff
-                    if finalRole <= ROLE_NONE or finalRole > ROLE_MAX then
+                    if finalRole and finalRole <= ROLE_NONE or finalRole > ROLE_MAX then
                         finalRole = startingRole
                     end
 
