@@ -17,7 +17,7 @@ See the links below for the list of available roles in each available version:
 - Beta/Development - Please see [this](https://steamcommunity.com/workshop/filedetails/discussion/2404251054/3110277460812045123/) discussion on the Steam Workshop
 ### *Renaming*
 If you would like to rename one of the existing roles, see below for how to do it for each available version:
-- Release - Not yet available
+- Release - See [here](CONVARS.md#Renaming-Roles)
 - Beta/Development - See [here](CONVARS_BETA.md#Renaming-Roles)
 ### *Creating Custom Roles*
 If you would like to create your own role to integrate with Custom Roles for TTT, see, see [here](CREATE_YOUR_OWN_ROLE.md).\
