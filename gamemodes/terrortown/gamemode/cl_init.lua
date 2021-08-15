@@ -50,6 +50,9 @@ local killer_vision = false
 local zombie_vision = false
 local vampire_vision = false
 local assassin_target_vision = false
+local jesters_visible_to_traitors = false
+local jesters_visible_to_monsters = false
+local jesters_visible_to_independents = false
 local vision_enabled = false
 
 local function AddExternalRoleDescriptions()
@@ -200,6 +203,9 @@ local function ReceiveRole()
     zombie_vision = GetGlobalBool("ttt_zombie_vision_enable")
     vampire_vision = GetGlobalBool("ttt_vampire_vision_enable")
     assassin_target_vision = GetGlobalBool("ttt_assassin_target_vision_enable")
+    jesters_visible_to_traitors = GetGlobalBool("ttt_jesters_visible_to_traitors")
+    jesters_visible_to_monsters = GetGlobalBool("ttt_jesters_visible_to_monsters")
+    jesters_visible_to_independents = GetGlobalBool("ttt_jesters_visible_to_independents")
 
     -- Disable highlights on role change
     if vision_enabled then
@@ -898,7 +904,7 @@ local function EnableTraitorHighlights(client)
         -- And add the glitch
         table.insert(allies, ROLE_GLITCH)
 
-        OnPlayerHighlightEnabled(client, allies, true, true, true)
+        OnPlayerHighlightEnabled(client, allies, jesters_visible_to_traitors, true, true)
     end)
 end
 local function EnableAssassinTargetHighlights(client)
@@ -926,9 +932,11 @@ local function EnableZombieHighlights(client)
         local hideEnemies = not zombie_vision or not hasClaws
         local allies = {}
         local traitorAllies = TRAITOR_ROLES[ROLE_ZOMBIE]
+        local showJesters = false
         -- If zombies are traitors and traitor vision or zombie vision is enabled then add all the traitor roles as allies
         if (traitor_vision or zombie_vision) and traitorAllies then
             allies = GetTeamRoles(TRAITOR_ROLES)
+            showJesters = jesters_visible_to_traitors
         -- If zombie vision is enabled, add the allied roles
         elseif zombie_vision then
             -- If they are monsters, ally with Zombies and monster-Vampires
@@ -937,12 +945,14 @@ local function EnableZombieHighlights(client)
                 if MONSTER_ROLES[ROLE_VAMPIRE] then
                     table.insert(allies, ROLE_VAMPIRE)
                 end
+                showJesters = jesters_visible_to_monsters
             else
                 allies = GetTeamRoles(INDEPENDENT_ROLES)
+                showJesters = jesters_visible_to_independents
             end
         end
 
-        OnPlayerHighlightEnabled(client, allies, true, hideEnemies, traitorAllies)
+        OnPlayerHighlightEnabled(client, allies, showJesters, hideEnemies, traitorAllies)
     end)
 end
 local function EnableVampireHighlights(client)
@@ -951,18 +961,21 @@ local function EnableVampireHighlights(client)
         local hideEnemies = not vampire_vision or not hasFangs
         local allies = {}
         local traitorAllies = TRAITOR_ROLES[ROLE_VAMPIRE]
+        local showJesters = false
         -- If vampires are traitors and traitor vision or vampire vision is enabled then add all the traitor roles as allies
         if (traitor_vision or vampire_vision) and traitorAllies then
             allies = GetTeamRoles(TRAITOR_ROLES)
+            showJesters = jesters_visible_to_traitors
         -- If vampire vision is enabled, add the allied monster roles
         elseif vampire_vision then
             allies = {ROLE_VAMPIRE}
             if MONSTER_ROLES[ROLE_ZOMBIE] then
                 table.insert(allies, ROLE_ZOMBIE)
             end
+            showJesters = jesters_visible_to_monsters
         end
 
-        OnPlayerHighlightEnabled(client, allies, true, hideEnemies, traitorAllies)
+        OnPlayerHighlightEnabled(client, allies, showJesters, hideEnemies, traitorAllies)
     end)
 end
 
