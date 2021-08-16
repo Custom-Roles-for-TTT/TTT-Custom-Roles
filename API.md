@@ -513,7 +513,7 @@ Changes made to SWEPs (the data structure used when defining new weapons)
 *Added in:* 1.0.0
 *Parameters:*
 - *String* - The player's SteamID64 value
-- *Int (Versions <= 1.1.1), UInt (Versions >= 1.1.2)* - The player's new role number
+- *UInt (Versions <= 1.1.1), Int (Versions >= 1.1.2)* - The player's new role number
 
 **TTT_UpdateRoleNames** - Causes the client to update their local role name tables based on convar values.\
 *Added in:* 1.0.7
