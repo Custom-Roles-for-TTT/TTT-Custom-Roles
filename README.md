@@ -21,7 +21,6 @@ If you would like to rename one of the existing roles, see below for how to do i
 - Beta/Development - See [here](CONVARS_BETA.md#Renaming-Roles)
 ### *Creating Custom Roles*
 If you would like to create your own role to integrate with Custom Roles for TTT, see, see [here](CREATE_YOUR_OWN_ROLE.md).\
-**NOTE**: This functionality is currently only available on the beta and development versions.
 
 ## Configuration
 This addon has many ConVars available so it can be customized to how you want your server to run. All custom roles are disabled by default.\
