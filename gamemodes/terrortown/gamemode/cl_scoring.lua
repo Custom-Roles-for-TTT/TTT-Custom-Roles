@@ -233,7 +233,7 @@ end)
 
 net.Receive("TTT_SpawnedPlayers", function(len)
     local name = net.ReadString()
-    local role = net.ReadUInt(8)
+    local role = net.ReadInt(8)
     table.insert(spawnedPlayers, name)
     CLSCORE:AddEvent({
         id = EVENT_SPAWN,
@@ -251,7 +251,7 @@ end)
 
 net.Receive("TTT_RoleChanged", function(len)
     local s64 = net.ReadString()
-    local role = net.ReadUInt(8)
+    local role = net.ReadInt(8)
     local ply = GetPlayerFromSteam64(s64)
     local name = "UNKNOWN"
     if IsValid(ply) then

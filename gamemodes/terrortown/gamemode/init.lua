@@ -1408,7 +1408,7 @@ function BeginRound()
         if v:Alive() and v:IsTerror() then
             net.Start("TTT_SpawnedPlayers")
             net.WriteString(v:Nick())
-            net.WriteUInt(v:GetRole(), 8)
+            net.WriteInt(v:GetRole(), 8)
             net.Broadcast()
         end
     end
