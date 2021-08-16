@@ -116,7 +116,13 @@ function WSWITCH:DrawWeapon(x, y, c, wep)
     end
 
     -- Slot
-    local spec = { text = wep.Slot + 1, font = "Trebuchet22", pos = { x + 4, y }, yalign = TEXT_ALIGN_CENTER, color = c.text }
+    local x_offset = 4
+    local slot = wep.Slot + 1
+    -- Offset two-digit numbers less so they fit on the backgorund properly
+    if slot >= 10 then
+        x_offset = 0
+    end
+    local spec = { text = slot, font = "Trebuchet22", pos = { x + x_offset, y }, yalign = TEXT_ALIGN_CENTER, color = c.text }
     draw.TextShadow(spec, 1, c.shadow)
 
     -- Name
@@ -266,19 +272,7 @@ function WSWITCH:Enable()
     if self.Show == false then
         self.Show = true
 
-        local wep_active = LocalPlayer():GetActiveWeapon()
-
-        self:UpdateWeaponCache()
-
-        -- make our active weapon the initial selection
-        local toselect = 1
-        for k, w in pairs(self.WeaponCache) do
-            if w == wep_active then
-                toselect = k
-                break
-            end
-        end
-        self:SetSelected(toselect)
+        WSWITCH:Refresh()
     end
 
     -- cache for speed, checked every Think
@@ -321,6 +315,22 @@ function WSWITCH:SelectAndConfirm(slot)
     if not slot then return end
     WSWITCH:SelectSlot(slot)
     WSWITCH:ConfirmSelection()
+end
+
+function WSWITCH:Refresh()
+    local wep_active = LocalPlayer():GetActiveWeapon()
+
+    self:UpdateWeaponCache()
+
+    -- make our active weapon the initial selection
+    local toselect = 1
+    for k, w in pairs(self.WeaponCache) do
+        if w == wep_active then
+            toselect = k
+            break
+        end
+    end
+    self:SetSelected(toselect)
 end
 
 local function QuickSlot(ply, cmd, args)

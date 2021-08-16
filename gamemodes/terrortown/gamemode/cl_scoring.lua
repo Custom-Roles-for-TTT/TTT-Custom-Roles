@@ -233,7 +233,7 @@ end)
 
 net.Receive("TTT_SpawnedPlayers", function(len)
     local name = net.ReadString()
-    local role = net.ReadUInt(8)
+    local role = net.ReadInt(8)
     table.insert(spawnedPlayers, name)
     CLSCORE:AddEvent({
         id = EVENT_SPAWN,
@@ -251,7 +251,7 @@ end)
 
 net.Receive("TTT_RoleChanged", function(len)
     local s64 = net.ReadString()
-    local role = net.ReadUInt(8)
+    local role = net.ReadInt(8)
     local ply = GetPlayerFromSteam64(s64)
     local name = "UNKNOWN"
     if IsValid(ply) then
@@ -606,7 +606,7 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                     alive = ply:Alive() and not ply:IsSpec()
                     finalRole = ply:GetRole()
                     -- Sanity check to make sure only valid roles are used for icons and stuff
-                    if finalRole <= ROLE_NONE or finalRole > ROLE_MAX then
+                    if finalRole and finalRole <= ROLE_NONE or finalRole > ROLE_MAX then
                         finalRole = startingRole
                     end
 
@@ -1219,37 +1219,15 @@ function CLSCORE:Init(events)
     -- Get start time, traitors, detectives, scores, and nicks
     local starttime = 0
     local scores, nicks, roles = {}, {}, {}
-
-    local game, selected, spawn = false, false, false
     for i = 1, #events do
         local e = events[i]
-        if e.id == EVENT_GAME then
-            if e.state == ROUND_ACTIVE then
-                starttime = e.t
-
-                if selected and spawn then
-                    break
-                end
-
-                game = true
-            end
+        if e.id == EVENT_GAME and e.state == ROUND_ACTIVE then
+            starttime = e.t
         elseif e.id == EVENT_SELECTED then
             roles = e.roles
-
-            if game and spawn then
-                break
-            end
-
-            selected = true
         elseif e.id == EVENT_SPAWN then
             scores[e.sid64] = ScoreInit()
             nicks[e.sid64] = e.ni
-
-            if game and selected then
-                break
-            end
-
-            spawn = true
         end
     end
 

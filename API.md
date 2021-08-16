@@ -509,5 +509,11 @@ Changes made to SWEPs (the data structure used when defining new weapons)
 **TTT_ClearPlayerFootsteps** - Resets the client's list of footsteps to show.\
 *Added in:* 1.0.0
 
+**TTT_RoleChanged** - Logs that a player's role has changed.\
+*Added in:* 1.0.0
+*Parameters:*
+- *String* - The player's SteamID64 value
+- *UInt (Versions <= 1.1.1), Int (Versions >= 1.1.2)* - The player's new role number
+
 **TTT_UpdateRoleNames** - Causes the client to update their local role name tables based on convar values.\
 *Added in:* 1.0.7
