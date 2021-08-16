@@ -1219,37 +1219,15 @@ function CLSCORE:Init(events)
     -- Get start time, traitors, detectives, scores, and nicks
     local starttime = 0
     local scores, nicks, roles = {}, {}, {}
-
-    local game, selected, spawn = false, false, false
     for i = 1, #events do
         local e = events[i]
-        if e.id == EVENT_GAME then
-            if e.state == ROUND_ACTIVE then
-                starttime = e.t
-
-                if selected and spawn then
-                    break
-                end
-
-                game = true
-            end
+        if e.id == EVENT_GAME and e.state == ROUND_ACTIVE then
+            starttime = e.t
         elseif e.id == EVENT_SELECTED then
             roles = e.roles
-
-            if game and spawn then
-                break
-            end
-
-            selected = true
         elseif e.id == EVENT_SPAWN then
             scores[e.sid64] = ScoreInit()
             nicks[e.sid64] = e.ni
-
-            if game and selected then
-                break
-            end
-
-            spawn = true
         end
     end
 

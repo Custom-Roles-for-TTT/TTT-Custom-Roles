@@ -12,3 +12,8 @@
 - Fixed weapon switch GUI not updating when you picked up a new weapon and ttt_weaponswitcher_stay was enabled
 - Fixed weapon switch GUI closing when you dropped a weapon and ttt_weaponswitcher_stay was enabled
 - Fixed weapon switch GUI closing when you tried to drop an undroppable weapon
+- Fixed player not appearing on the round summary screen if they were idled to spectator last round and only un-spectated during this round's preparation phase
+
+### Developers
+- Changed TTT_RoleChanged to use Int for role number
+- Changed TTT_SpawnedPlayers to use Int for role number
