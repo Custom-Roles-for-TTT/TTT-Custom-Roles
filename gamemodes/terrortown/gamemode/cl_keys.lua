@@ -35,7 +35,7 @@ function GM:PlayerBindPress(ply, bind, pressed)
     elseif bind == "+attack" then
         if WSWITCH:PreventAttack() then
             if not pressed then
-                WSWITCH:ConfirmSelection()
+                WSWITCH:ConfirmSelection(not WSWITCH.cv.close:GetBool())
             end
             return true
         end

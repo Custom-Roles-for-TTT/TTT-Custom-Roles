@@ -16,6 +16,7 @@ WSWITCH.WeaponCache = {}
 
 WSWITCH.cv = {}
 WSWITCH.cv.stay = CreateConVar("ttt_weaponswitcher_stay", "0", FCVAR_ARCHIVE)
+WSWITCH.cv.close = CreateConVar("ttt_weaponswitcher_close", "1", FCVAR_ARCHIVE)
 WSWITCH.cv.fast = CreateConVar("ttt_weaponswitcher_fast", "0", FCVAR_ARCHIVE)
 WSWITCH.cv.display = CreateConVar("ttt_weaponswitcher_displayfast", "0", FCVAR_ARCHIVE)
 
@@ -27,6 +28,9 @@ local width = 300
 local height = 20
 
 local barcorner = surface.GetTextureID("gui/corner8")
+
+local last_slot = -1
+local last_kind = -1
 
 local function GetColors(dark)
     if dark then
@@ -182,7 +186,7 @@ end
 
 local function CopyVals(src, dest)
     table.Empty(dest)
-    for k, v in pairs(src) do
+    for _, v in pairs(src) do
         if IsValid(v) then
             table.insert(dest, v)
         end
@@ -236,6 +240,11 @@ end
 -- Select by index
 function WSWITCH:DoSelect(idx)
     self:SetSelected(idx)
+
+    -- Save which weapon was selected so we can re-select it later
+    local wep = self.WeaponCache[idx]
+    last_slot = wep.Slot
+    last_kind = wep.Kind
 
     if self.cv.fast:GetBool() then
         -- immediately confirm if fastswitch is on
@@ -314,7 +323,7 @@ end
 function WSWITCH:SelectAndConfirm(slot)
     if not slot then return end
     WSWITCH:SelectSlot(slot)
-    WSWITCH:ConfirmSelection()
+    WSWITCH:ConfirmSelection(not self.cv.close:GetBool())
 end
 
 function WSWITCH:Refresh()
@@ -322,14 +331,28 @@ function WSWITCH:Refresh()
 
     self:UpdateWeaponCache()
 
-    -- make our active weapon the initial selection
-    local toselect = 1
-    for k, w in pairs(self.WeaponCache) do
-        if w == wep_active then
-            toselect = k
-            break
+    -- Try to select the same slot if we still have an item there
+    local toselect = nil
+    if last_slot >= 0 then
+        for k, w in pairs(self.WeaponCache) do
+            if IsValid(w) and w.Slot == last_slot and w.Kind == last_kind then
+                toselect = k
+                break
+            end
         end
     end
+
+    -- Otherwise use our active weapon as the backup selection
+    if not toselect then
+        toselect = 1
+        for k, w in pairs(self.WeaponCache) do
+            if w == wep_active then
+                toselect = k
+                break
+            end
+        end
+    end
+
     self:SetSelected(toselect)
 end
 
