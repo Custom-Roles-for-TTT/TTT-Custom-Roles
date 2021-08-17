@@ -222,9 +222,11 @@ If your ConVar is a number using a slider you can optionally add a third propert
 The Summoner does not have any extra ConVars but for the sake of example I will add three useless ConVars.
 
 ```lua
-CreateConVar("ttt_summoner_slider", "0", FCVAR_NONE, "This is a useless slider", 0, 10)
-CreateConVar("ttt_summoner_checkbox", "0")
-CreateConVar("ttt_summoner_textbox", "0")
+if SERVER then
+    CreateConVar("ttt_summoner_slider", "0", FCVAR_NONE, "This is a useless slider", 0, 10)
+    CreateConVar("ttt_summoner_checkbox", "0")
+    CreateConVar("ttt_summoner_textbox", "0")
+end
 ROLE.convars = {
 	{
 		cvar = "ttt_summoner_slider",
@@ -301,9 +303,11 @@ ROLE.shop = {"weapon_ttt_beenade", "weapon_ttt_barnacle", "surprisecombine", "we
   
 ROLE.loadout = {}  
 
-CreateConVar("ttt_summoner_slider", "0", FCVAR_NONE, "This is a useless slider", 0, 10)
-CreateConVar("ttt_summoner_checkbox", "0")
-CreateConVar("ttt_summoner_textbox", "0")
+if SERVER then
+    CreateConVar("ttt_summoner_slider", "0", FCVAR_NONE, "This is a useless slider", 0, 10)
+    CreateConVar("ttt_summoner_checkbox", "0")
+    CreateConVar("ttt_summoner_textbox", "0")
+end
 ROLE.convars = {
 	{
 		cvar = "ttt_summoner_slider",
