@@ -52,6 +52,7 @@ ttt_veteran_enabled                         0       // Whether or not the vetera
 ttt_doctor_enabled                          0       // Whether or not the doctor should spawn
 ttt_trickster_enabled                       0       // Whether or not the trickster should spawn
 ttt_paramedic_enabled                       0       // Whether or not the paramedic should spawn
+ttt_paladin_enabled                         0       // Whether or not the paladin should spawn
 ttt_jester_enabled                          0       // Whether or not the jester should spawn
 ttt_swapper_enabled                         0       // Whether or not the swapper should spawn
 ttt_clown_enabled                           0       // Whether or not the clown should spawn
@@ -79,6 +80,7 @@ ttt_veteran_spawn_weight                    1       // The weight assigned to sp
 ttt_doctor_spawn_weight                     1       // The weight assigned to spawning the doctor
 ttt_trickster_spawn_weight                  1       // The weight assigned to spawning the trickster
 ttt_paramedic_spawn_weight                  1       // The weight assigned to spawning the paramedic
+ttt_paladin_spawn_weight                    1       // The weight assigned to spawning the paladin
 ttt_jester_spawn_weight                     1       // The weight assigned to spawning the jester
 ttt_swapper_spawn_weight                    1       // The weight assigned to spawning the swapper
 ttt_clown_spawn_weight                      1       // The weight assigned to spawning the clown
@@ -107,6 +109,7 @@ ttt_veteran_min_players                     0       // The minimum number of pla
 ttt_doctor_min_players                      0       // The minimum number of players required to spawn the doctor
 ttt_trickster_min_players                   0       // The minimum number of players required to spawn the trickster
 ttt_paramedic_min_players                   0       // The minimum number of players required to spawn the paramedic
+ttt_paladin_min_players                     0       // The minimum number of players required to spawn the paladin
 ttt_jester_min_players                      0       // The minimum number of players required to spawn the jester
 ttt_swapper_min_players                     0       // The minimum number of players required to spawn the swapper
 ttt_clown_min_players                       0       // The minimum number of players required to spawn the clown
@@ -389,7 +392,6 @@ ttt_vampire_starting_health                 100     // The amount of health the 
 ttt_quack_starting_health                   100     // The amount of health the quack starts with
 ttt_parasite_starting_health                100     // The amount of health the parasite starts with
 ttt_innocent_starting_health                100     // The amount of health an innocent starts with
-ttt_detective_starting_health               100     // The amount of health the detective starts with
 ttt_glitch_starting_health                  100     // The amount of health the glitch starts with
 ttt_phantom_starting_health                 100     // The amount of health the phantom starts with
 ttt_revenger_starting_health                100     // The amount of health the revenger starts with
@@ -399,6 +401,8 @@ ttt_veteran_starting_health                 100     // The amount of health the 
 ttt_doctor_starting_health                  100     // The amount of health the doctor starts with
 ttt_trickster_starting_health               100     // The amount of health the trickster starts with
 ttt_paramedic_starting_health               100     // The amount of health the paramedic starts with
+ttt_detective_starting_health               100     // The amount of health the detective starts with
+ttt_paladin_starting_health                 100     // The amount of health the paladin starts with
 ttt_jester_starting_health                  100     // The amount of health the jester starts with
 ttt_swapper_starting_health                 100     // The amount of health the swapper starts with
 ttt_clown_starting_health                   100     // The amount of health the clown starts with
@@ -419,7 +423,6 @@ ttt_vampire_max_health                      100     // The maximum amount of hea
 ttt_quack_max_health                        100     // The maximum amount of health the quack can have
 ttt_parasite_max_health                     100     // The maximum amount of health the parasite can have
 ttt_innocent_max_health                     100     // The maximum amount of health an innocent can have
-ttt_detective_max_health                    100     // The maximum amount of health the detective can have
 ttt_glitch_max_health                       100     // The maximum amount of health the glitch can have
 ttt_phantom_max_health                      100     // The maximum amount of health the phantom can have
 ttt_revenger_max_health                     100     // The maximum amount of health the revenger can have
@@ -429,6 +432,8 @@ ttt_veteran_max_health                      100     // The maximum amount of hea
 ttt_doctor_max_health                       100     // The maximum amount of health the doctor can have
 ttt_trickster_max_health                    100     // The maximum amount of health the trickster can have
 ttt_paramedic_max_health                    100     // The maximum amount of health the paramedic can have
+ttt_detective_max_health                    100     // The maximum amount of health the detective can have
+ttt_paladin_max_health                      100     // The maximum amount of health the paladin can have
 ttt_jester_max_health                       100     // The maximum amount of health the jester can have
 ttt_swapper_max_health                      100     // The maximum amount of health the swapper can have
 ttt_clown_max_health                        100     // The maximum amount of health the clown can have

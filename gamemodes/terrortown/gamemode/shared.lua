@@ -1,5 +1,5 @@
 -- Version string for display and function for version checks
-CR_VERSION = "1.1.2"
+CR_VERSION = "1.1.3"
 
 function CRVersion(version)
     local installedVersionRaw = string.Split(CR_VERSION, ".")
@@ -74,8 +74,9 @@ ROLE_PARASITE = 24
 ROLE_TRICKSTER = 25
 ROLE_PARAMEDIC = 26
 ROLE_MADSCIENTIST = 27
+ROLE_PALADIN = 28
 
-ROLE_MAX = 27
+ROLE_MAX = 28
 ROLE_EXTERNAL_START = ROLE_MAX + 1
 
 local function AddRoleAssociations(list, roles)
@@ -97,7 +98,7 @@ function GetTeamRoles(list)
 end
 
 SHOP_ROLES = {}
-AddRoleAssociations(SHOP_ROLES, {ROLE_TRAITOR, ROLE_DETECTIVE, ROLE_HYPNOTIST, ROLE_DEPUTY, ROLE_IMPERSONATOR, ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_MERCENARY, ROLE_ASSASSIN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_VAMPIRE, ROLE_DOCTOR, ROLE_QUACK, ROLE_PARASITE})
+AddRoleAssociations(SHOP_ROLES, {ROLE_TRAITOR, ROLE_DETECTIVE, ROLE_HYPNOTIST, ROLE_DEPUTY, ROLE_IMPERSONATOR, ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_MERCENARY, ROLE_ASSASSIN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_VAMPIRE, ROLE_DOCTOR, ROLE_QUACK, ROLE_PARASITE, ROLE_PALADIN})
 
 TRAITOR_ROLES = {}
 AddRoleAssociations(TRAITOR_ROLES, {ROLE_TRAITOR, ROLE_HYPNOTIST, ROLE_IMPERSONATOR, ROLE_ASSASSIN, ROLE_VAMPIRE, ROLE_QUACK, ROLE_PARASITE})
@@ -113,6 +114,9 @@ AddRoleAssociations(INDEPENDENT_ROLES, {ROLE_DRUNK, ROLE_OLDMAN, ROLE_KILLER, RO
 
 MONSTER_ROLES = {}
 AddRoleAssociations(MONSTER_ROLES, {})
+
+DETECTIVE_ROLES = {}
+AddRoleAssociations(DETECTIVE_ROLES, {ROLE_DETECTIVE, ROLE_PALADIN})
 
 DEFAULT_ROLES = {}
 AddRoleAssociations(DEFAULT_ROLES, {ROLE_INNOCENT, ROLE_TRAITOR, ROLE_DETECTIVE})
@@ -160,6 +164,14 @@ COLOR_SPECIAL_TRAITOR = {
 
 COLOR_DETECTIVE = {
     ["default"] = Color(25, 25, 200, 255),
+    ["simple"] = Color(25, 25, 200, 255),
+    ["protan"] = Color(25, 25, 200, 255),
+    ["deutan"] = Color(25, 25, 200, 255),
+    ["tritan"] = Color(25, 25, 200, 255),
+}
+
+COLOR_SPECIAL_DETECTIVE = {
+    ["default"] = Color(40, 180, 200, 255),
     ["simple"] = Color(25, 25, 200, 255),
     ["protan"] = Color(25, 25, 200, 255),
     ["deutan"] = Color(25, 25, 200, 255),
@@ -226,6 +238,10 @@ local function FillRoleColors(list, type)
                 local cVarCol = ColorFromCustomConVars("ttt_custom_spec_inn_color")
                 if cVarCol then c = cVarCol
                 else c = COLOR_SPECIAL_INNOCENT["default"] end
+            elseif DETECTIVE_ROLES[r] then
+                local cVarCol = ColorFromCustomConVars("ttt_custom_spec_det_color")
+                if cVarCol then c = cVarCol
+                else c = COLOR_SPECIAL_DETECTIVE["default"] end
             elseif r == ROLE_TRAITOR then
                 local cVarCol = ColorFromCustomConVars("ttt_custom_tra_color")
                 if cVarCol then c = cVarCol
@@ -251,6 +267,7 @@ local function FillRoleColors(list, type)
             if r == ROLE_INNOCENT then c = COLOR_INNOCENT[mode]
             elseif r == ROLE_DETECTIVE then c = COLOR_DETECTIVE[mode]
             elseif INNOCENT_ROLES[r] then c = COLOR_SPECIAL_INNOCENT[mode]
+            elseif DETECTIVE_ROLES[r] then c = COLOR_SPECIAL_DETECTIVE[mode]
             elseif r == ROLE_TRAITOR then c = COLOR_TRAITOR[mode]
             elseif TRAITOR_ROLES[r] then c = COLOR_SPECIAL_TRAITOR[mode]
             elseif JESTER_ROLES[r] then c = COLOR_JESTER[mode]
@@ -346,7 +363,8 @@ ROLE_STRINGS_RAW = {
     [ROLE_PARASITE] = "parasite",
     [ROLE_TRICKSTER] = "trickster",
     [ROLE_PARAMEDIC] = "paramedic",
-    [ROLE_MADSCIENTIST] = "madscientist"
+    [ROLE_MADSCIENTIST] = "madscientist",
+    [ROLE_PALADIN] = "paladin"
 }
 
 ROLE_STRINGS = {
@@ -377,7 +395,8 @@ ROLE_STRINGS = {
     [ROLE_PARASITE] = "Parasite",
     [ROLE_TRICKSTER] = "Trickster",
     [ROLE_PARAMEDIC] = "Paramedic",
-    [ROLE_MADSCIENTIST] = "Mad Scientist"
+    [ROLE_MADSCIENTIST] = "Mad Scientist",
+    [ROLE_PALADIN] = "Paladin"
 }
 
 ROLE_STRINGS_PLURAL = {
@@ -408,7 +427,8 @@ ROLE_STRINGS_PLURAL = {
     [ROLE_PARASITE] = "Parasites",
     [ROLE_TRICKSTER] = "Tricksters",
     [ROLE_PARAMEDIC] = "Paramedics",
-    [ROLE_MADSCIENTIST] = "Mad Scientists"
+    [ROLE_MADSCIENTIST] = "Mad Scientists",
+    [ROLE_PALADIN] = "Paladins"
 }
 
 ROLE_STRINGS_EXT = {
@@ -440,7 +460,8 @@ ROLE_STRINGS_EXT = {
     [ROLE_PARASITE] = "a Parasite",
     [ROLE_TRICKSTER] = "a Trickster",
     [ROLE_PARAMEDIC] = "a Paramedic",
-    [ROLE_MADSCIENTIST] = "a Mad Scientist"
+    [ROLE_MADSCIENTIST] = "a Mad Scientist",
+    [ROLE_PALADIN] = "a Paladin"
 }
 
 ROLE_STRINGS_SHORT = {
@@ -471,7 +492,8 @@ ROLE_STRINGS_SHORT = {
     [ROLE_PARASITE] = "par",
     [ROLE_TRICKSTER] = "tri",
     [ROLE_PARAMEDIC] = "med",
-    [ROLE_MADSCIENTIST] = "mad"
+    [ROLE_MADSCIENTIST] = "mad",
+    [ROLE_PALADIN] = "pal"
 }
 
 function StartsWithVowel(word)
@@ -522,6 +544,7 @@ ROLE_TEAM_INNOCENT = 0
 ROLE_TEAM_TRAITOR = 1
 ROLE_TEAM_JESTER = 2
 ROLE_TEAM_INDEPENDENT = 3
+ROLE_TEAM_DETECTIVE = 4
 
 EXTERNAL_ROLE_DESCRIPTIONS = {}
 EXTERNAL_ROLE_SHOP_ITEMS = {}
@@ -568,6 +591,8 @@ function RegisterRole(tbl)
         AddRoleAssociations(JESTER_ROLES, {roleID})
     elseif tbl.team == ROLE_TEAM_INDEPENDENT then
         AddRoleAssociations(INDEPENDENT_ROLES, {roleID})
+    elseif tbl.team == ROLE_TEAM_DETECTIVE then
+        AddRoleAssociations(DETECTIVE_ROLES, {roleID})
     end
 
     EXTERNAL_ROLE_DESCRIPTIONS[roleID] = tbl.desc
@@ -947,7 +972,7 @@ if SERVER then
         local independents = {}
         for _, p in pairs(player.GetAll()) do
             if p:Alive() and not p:IsSpec() then
-                if p:IsDetective() then
+                if p:IsDetectiveTeam() then
                     table.insert(detectives, p:Nick())
                 -- Exclude Glitch from this list so they don't get discovered immediately
                 elseif (p:IsInnocentTeam() or p:IsMonsterTeam()) and not p:IsGlitch() then

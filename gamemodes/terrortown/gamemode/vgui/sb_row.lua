@@ -117,8 +117,8 @@ function GM:TTTScoreboardRowColorForPlayer(ply)
         return ply:GetRole()
     end
 
-    if ply:GetDetectiveLike() and not (ply:GetImpersonator() and client:IsTraitorTeam()) then
-        return ROLE_DETECTIVE
+    if ply:GetDetectiveLike() then
+        return ply:GetRole()
     elseif ply:IsClown() and ply:GetNWBool("KillerClownActive", false) then
         return ROLE_CLOWN
     end
@@ -204,22 +204,23 @@ function PANEL:Paint(width, height)
     local roleStr = ""
     if c ~= defaultcolor then
         local role = c
-        c = ROLE_COLORS_SCOREBOARD[c]
-        -- Swap the icon depending on which settings are enabled
-        if ply:GetDetectiveLike() then
+
+        -- Swap the deputy/impersonator icons depending on which settings are enabled
+        if ply:GetNWBool("HasPromotion", false) and ply:IsDeputy() or ply:IsImpersonator() then
             if client:IsTraitorTeam() and ply:IsImpersonator() then
                 if GetGlobalBool("ttt_impersonator_use_detective_icon", false) then
                     role = ROLE_DETECTIVE
                 else
                     role = ROLE_IMPERSONATOR
                 end
-            elseif ply:IsDetective() or GetGlobalBool("ttt_deputy_use_detective_icon", false) then
+            elseif GetGlobalBool("ttt_deputy_use_detective_icon", false) then
                 role = ROLE_DETECTIVE
             else
                 role = ROLE_DEPUTY
-                c = ROLE_COLORS_SCOREBOARD[role]
             end
         end
+
+        c = ROLE_COLORS_SCOREBOARD[role]
 
         roleStr = ROLE_STRINGS_SHORT[role]
     end

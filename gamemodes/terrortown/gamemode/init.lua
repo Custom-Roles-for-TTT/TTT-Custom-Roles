@@ -83,6 +83,8 @@ CreateConVar("ttt_special_innocent_pct", 0.33)
 CreateConVar("ttt_special_innocent_chance", 0.5)
 CreateConVar("ttt_special_traitor_pct", 0.33)
 CreateConVar("ttt_special_traitor_chance", 0.5)
+CreateConVar("ttt_special_detective_pct", 0.33)
+CreateConVar("ttt_special_detective_chance", 0.5)
 CreateConVar("ttt_independent_chance", 0.5)
 CreateConVar("ttt_monster_pct", 0.33)
 CreateConVar("ttt_monster_chance", 0.5)
@@ -256,6 +258,7 @@ for _, role in ipairs(table.GetKeys(SHOP_ROLES)) do
     if not DEFAULT_ROLES[role] then
         local credits = "0"
         if TRAITOR_ROLES[role] then credits = "1"
+        elseif DETECTIVE_ROLES[role] then credits = "1"
         elseif role == ROLE_MERCENARY then credits = "1"
         elseif role == ROLE_KILLER then credits = "2"
         elseif role == ROLE_DOCTOR then credits = "1" end
@@ -1783,6 +1786,11 @@ local function GetSpecialInnocentCount(ply_count)
     return math.ceil(ply_count * math.Round(GetConVar("ttt_special_innocent_pct"):GetFloat(), 3))
 end
 
+local function GetSpecialDetectiveCount(ply_count)
+    -- get number of special detectives: pct of detectives rounded up
+    return math.ceil(ply_count * math.Round(GetConVar("ttt_special_detective_pct"):GetFloat(), 3))
+end
+
 local function GetMonsterCount(ply_count)
     if not MONSTER_ROLES[ROLE_ZOMBIE] and not MONSTER_ROLES[ROLE_VAMPIRE] then
         return 0
@@ -1879,6 +1887,7 @@ function SelectRoles()
     local forcedTraitorCount = 0
     local forcedSpecialTraitorCount = 0
     local forcedDetectiveCount = 0
+    local forcedSpecialDetectiveCount = 0
     local forcedSpecialInnocentCount = 0
     local forcedIndependentCount = 0
     local forcedMonsterCount = 0
@@ -1890,6 +1899,8 @@ function SelectRoles()
     local hasZombie = false
     local hasQuack = false
     local hasParasite = false
+
+    local hasPaladin = false
 
     local hasPhantom = false
     local hasGlitch = false
@@ -1956,9 +1967,14 @@ function SelectRoles()
                     end
                     forcedSpecialTraitorCount = forcedSpecialTraitorCount + 1
 
-                    -- INNOCENT ROLES
+                    -- DETECTIVE ROLES
                 elseif role == ROLE_DETECTIVE then
                     forcedDetectiveCount = forcedDetectiveCount + 1
+                elseif role == ROLE_PALADIN then
+                    hasPaladin = true
+                    forcedSpecialDetectiveCount = forcedSpecialDetectiveCount + 1
+
+                    -- INNOCENT ROLES
                 elseif role == ROLE_PHANTOM then
                     hasPhantom = true
                     if GetConVar("ttt_single_phantom_parasite"):GetBool() then
@@ -2059,7 +2075,8 @@ function SelectRoles()
     PrintRoleText("-----RANDOMLY PICKING REMAINING ROLES-----")
 
     -- determine how many of each role we want
-    local detective_count = GetDetectiveCount(choice_count) - forcedDetectiveCount
+    local detective_count = GetDetectiveCount(choice_count) - forcedDetectiveCount - forcedSpecialDetectiveCount
+    local max_special_detective_count = GetSpecialDetectiveCount(detective_count) - forcedSpecialDetectiveCount
     local traitor_count = GetTraitorCount(choice_count) - forcedTraitorCount - forcedSpecialTraitorCount
     local max_special_traitor_count = GetSpecialTraitorCount(traitor_count) - forcedSpecialTraitorCount
     local independent_count = ((math.random() <= GetConVar("ttt_independent_chance"):GetFloat()) and 1 or 0) - forcedIndependentCount
@@ -2067,6 +2084,7 @@ function SelectRoles()
 
     local specialTraitorRoles = {}
     local specialInnocentRoles = {}
+    local specialDetectiveRoles = {}
     local independentRoles = {}
 
     if ROLE_MAX >= ROLE_EXTERNAL_START then
@@ -2075,6 +2093,8 @@ function SelectRoles()
                 for _ = 1, GetConVar("ttt_" .. ROLE_STRINGS_RAW[r] .. "_spawn_weight"):GetInt() do
                     if TRAITOR_ROLES[r] then
                         table.insert(specialTraitorRoles, r)
+                    elseif DETECTIVE_ROLES[r] then
+                        table.insert(specialDetectiveRoles, r)
                     elseif INNOCENT_ROLES[r] then
                         table.insert(specialInnocentRoles, r)
                     elseif JESTER_ROLES[r] or INDEPENDENT_ROLES[r] then
@@ -2086,6 +2106,7 @@ function SelectRoles()
     end
 
     -- pick detectives
+    local detectives = {}
     if choice_count >= GetConVar("ttt_detective_min_players"):GetInt() then
         local min_karma = GetConVar("ttt_detective_karma_min"):GetInt()
         local options = {}
@@ -2116,12 +2137,42 @@ function SelectRoles()
             if #options > 0 then
                 local plyPick = math.random(1, #options)
                 local ply = options[plyPick]
-                ply:SetRole(ROLE_DETECTIVE)
-                PrintRole(ply, ROLE_DETECTIVE)
+                table.insert(detectives, ply)
                 table.RemoveByValue(choices, ply)
                 table.remove(options, plyPick)
             end
         end
+    end
+
+    -- pick special detectives
+    if max_special_detective_count > 0 then
+        if not hasPaladin and GetConVar("ttt_paladin_enabled"):GetBool() and choice_count >= GetConVar("ttt_paladin_min_players"):GetInt() then
+            for _ = 1, GetConVar("ttt_paladin_spawn_weight"):GetInt() do
+                table.insert(specialTraitorRoles, ROLE_PALADIN)
+            end
+        end
+        for _ = 1, max_special_detective_count do
+            if #specialDetectiveRoles ~= 0 and math.random() <= GetConVar("ttt_special_detective_chance"):GetFloat() and #detectives > 0 then
+                local plyPick = math.random(1, #detectives)
+                local ply = detectives[plyPick]
+                local rolePick = math.random(1, #specialDetectiveRoles)
+                local role = specialDetectiveRoles[rolePick]
+                ply:SetRole(role)
+                PrintRole(ply, role)
+                table.remove(detectives, plyPick)
+                for i = #specialDetectiveRoles, 1, -1 do
+                    if specialDetectiveRoles[i] == role then
+                        table.remove(specialDetectiveRoles, i)
+                    end
+                end
+            end
+        end
+    end
+
+    -- Any of these left are a vanilla detectives
+    for _, v in pairs(detectives) do
+        v:SetRole(ROLE_DETECTIVE)
+        PrintRole(v, ROLE_DETECTIVE)
     end
 
     -- pick traitors
@@ -2192,7 +2243,7 @@ function SelectRoles()
             end
         end
 
-        -- Any of these left is a vanilla traitor
+        -- Any of these left are vanilla traitors
         for _, v in pairs(traitors) do
             v:SetRole(ROLE_TRAITOR)
             PrintRole(v, ROLE_TRAITOR)

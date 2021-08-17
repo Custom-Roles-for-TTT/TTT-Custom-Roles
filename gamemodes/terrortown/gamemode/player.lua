@@ -556,12 +556,12 @@ local function CheckCreditAward(victim, attacker)
     if valid_attacker and (victim:IsTraitorTeam() or victim:IsMonsterTeam() or victim:IsKiller() or victim:IsZombie()) then
         local amt = GetConVarNumber("ttt_det_credits_traitordead") or 1
         for _, ply in ipairs(player.GetAll()) do
-            if ply:IsActiveDetective() or (ply:IsActiveDeputy() and ply:GetNWBool("HasPromotion", false)) then
+            if ply:IsActiveDetectiveTeam() or (ply:IsActiveDeputy() and ply:GetNWBool("HasPromotion", false)) then
                 ply:AddCredits(amt)
             end
         end
 
-        LANG.Msg(GetDetectiveFilter(true), "credit_all", { role = ROLE_STRINGS_PLURAL[ROLE_DETECTIVE], num = amt })
+        LANG.Msg(GetDetectiveTeamFilter(true), "credit_all", { role = ROLE_STRINGS_PLURAL[ROLE_DETECTIVE], num = amt })
     end
 
     -- TRAITOR AWARD
@@ -1149,9 +1149,9 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
     -- Check for T killing D or vice versa
     if IsValid(attacker) and attacker:IsPlayer() then
         local reward = 0
-        if attacker:IsActiveTraitorTeam() and ply:IsDetective() then
+        if attacker:IsActiveTraitorTeam() and ply:IsDetectiveTeam() then
             reward = math.ceil(GetConVar("ttt_credits_detectivekill"):GetInt())
-        elseif (attacker:IsActiveDetective() or (attacker:IsActiveDeputy() and attacker:GetNWBool("HasPromotion", false))) and ply:IsTraitorTeam() then
+        elseif (attacker:IsActiveDetectiveTeam() or (attacker:IsActiveDeputy() and attacker:GetNWBool("HasPromotion", false))) and ply:IsTraitorTeam() then
             reward = math.ceil(GetConVar("ttt_det_credits_traitorkill"):GetInt())
         end
 
@@ -1451,10 +1451,10 @@ function GM:PlayerDeath(victim, infl, attacker)
     end
 
     -- Handle detective death
-    if victim:IsDetective() and GetRoundState() == ROUND_ACTIVE then
+    if victim:IsDetectiveTeam() and GetRoundState() == ROUND_ACTIVE then
         local detectiveAlive = false
         for _, ply in ipairs(player.GetAll()) do
-            if not ply:IsSpec() and ply:Alive() and ply:IsDetective() and ply ~= victim then
+            if not ply:IsSpec() and ply:Alive() and ply:IsDetectiveTeam() and ply ~= victim then
                 detectiveAlive = true
                 break
             end

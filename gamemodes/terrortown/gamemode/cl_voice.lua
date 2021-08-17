@@ -18,7 +18,7 @@ local function LastWordsRecv()
     local sender = net.ReadEntity()
     local words = net.ReadString()
 
-    local was_detective = IsValid(sender) and sender:IsDetective()
+    local was_detective = IsValid(sender) and sender:IsDetectiveTeam()
     local nick = IsValid(sender) and GetPlayerName(sender) or "<Unknown>"
 
     chat.AddText(Color(150, 150, 150),
@@ -117,7 +117,7 @@ function GM:OnPlayerChat(ply, text, teamchat, dead)
         dead = true
     end
 
-    if teamchat and ((not team and not (ply:IsTraitorTeam() or ply:IsDetective() or ply:IsMonsterTeam())) or team) then
+    if teamchat and ((not team and not (ply:IsTraitorTeam() or ply:IsDetectiveTeam() or ply:IsMonsterTeam())) or team) then
         teamchat = false
     end
 
@@ -553,7 +553,7 @@ function GM:PlayerStartVoice(ply)
         end
     end
 
-    if ply:IsActiveDetective() then
+    if ply:IsActiveDetectiveTeam() then
         pnl.Color = Color(20, 20, 200, 255)
     end
 
@@ -673,7 +673,7 @@ local function GetDrainRate()
     local ply = LocalPlayer()
     if (not IsValid(ply)) or ply:IsSpec() then return 0 end
 
-    if ply:IsAdmin() or ply:IsDetective() then
+    if ply:IsAdmin() or ply:IsDetectiveTeam() then
         return GetGlobalFloat("ttt_voice_drain_admin", 0)
     else
         return GetGlobalFloat("ttt_voice_drain_normal", 0)

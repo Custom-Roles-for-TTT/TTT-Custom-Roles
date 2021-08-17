@@ -231,9 +231,13 @@ function RADAR:Draw(client)
                     surface.SetDrawColor(c)
                     surface.SetTextColor(c)
                 end
-            elseif client:IsDetective() then
+            elseif client:IsDetectiveLike() then
                 if role == ROLE_DETECTIVE then
                     local c = ColorAlpha(ROLE_COLORS_RADAR[ROLE_DETECTIVE], alpha)
+                    surface.SetDrawColor(c)
+                    surface.SetTextColor(c)
+                elseif DETECTIVE_ROLES[role] then
+                    local c = ColorAlpha(ROLE_COLORS_RADAR[ROLE_PALADIN], alpha) -- Any special detective here will do
                     surface.SetDrawColor(c)
                     surface.SetTextColor(c)
                 else

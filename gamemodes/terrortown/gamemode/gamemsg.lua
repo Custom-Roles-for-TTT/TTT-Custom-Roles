@@ -52,7 +52,7 @@ local function RoleChatMsg(sender, msg)
     if sender:IsTraitorTeam() then
         net.Send(GetTraitorTeamFilter())
     elseif sender:IsDetectiveLike() then
-        net.Send(GetDetectiveFilter())
+        net.Send(GetDetectiveTeamFilter())
     elseif sender:IsMonsterTeam() then
         net.Send(GetMonsterTeamFilter())
     end
@@ -86,8 +86,7 @@ function GetInnocentFilter(alive_only)
 end
 
 function GetDetectiveFilter(alive_only)
-    -- Include promoted Deputies in this, but not Impersonators. They are included in GetTraitorFilter
-    return GetPlayerFilter(function(p) return (p:GetDetective() or (p:GetDeputy() and p:GetNWBool("HasPromotion", false))) and (not alive_only or p:IsTerror()) end)
+    return GetPlayerFilter(function(p) return p:GetDetective() and (not alive_only or p:IsTerror()) end)
 end
 
 function GetRoleFilter(role, alive_only)
@@ -118,6 +117,11 @@ end
 
 function GetMonsterTeamFilter(alive_only)
     return GetPlayerFilter(function(p) return (p:IsMonsterTeam()) and (not alive_only or p:IsTerror()) end)
+end
+
+function GetDetectiveTeamFilter(alive_only)
+    -- Include promoted Deputies in this, but not Impersonators. They are included in GetTraitorTeamFilter
+    return GetPlayerFilter(function(p) return (p:IsDetectiveTeam() or (p:GetDeputy() and p:GetNWBool("HasPromotion", false))) and (not alive_only or p:IsTerror()) end)
 end
 
 ---- Communication control

@@ -28,6 +28,10 @@ CreateClientConVar("ttt_custom_det_color_r", "25", true, false)
 CreateClientConVar("ttt_custom_det_color_g", "25", true, false)
 CreateClientConVar("ttt_custom_det_color_b", "200", true, false)
 
+CreateClientConVar("ttt_custom_spec_det_color_r", "40", true, false)
+CreateClientConVar("ttt_custom_spec_det_color_g", "180", true, false)
+CreateClientConVar("ttt_custom_spec_det_color_b", "200", true, false)
+
 CreateClientConVar("ttt_custom_jes_color_r", "180", true, false)
 CreateClientConVar("ttt_custom_jes_color_g", "23", true, false)
 CreateClientConVar("ttt_custom_jes_color_b", "253", true, false)
@@ -247,6 +251,20 @@ function HELPSCRN:Show()
     end
 
     dcolor:AddItem(dcoldet)
+
+    local dcolspecdet = vgui.Create("DColorMixer", dcolor)
+    dcolspecdet:SetAlphaBar(false)
+    dcolspecdet:SetWangs(false)
+    dcolspecdet:SetPalette(false)
+    dcolspecdet:SetLabel("Custom detective color:")
+    dcolspecdet:SetConVarR("ttt_custom_spec_det_color_r")
+    dcolspecdet:SetConVarG("ttt_custom_spec_det_color_g")
+    dcolspecdet:SetConVarB("ttt_custom_spec_det_color_b")
+    dcolspecdet.ValueChanged = function(col)
+        timer.Simple(0.5, function() UpdateRoleColours() end)
+    end
+
+    dcolor:AddItem(dcolspecdet)
 
     local dcoljes = vgui.Create("DColorMixer", dcolor)
     dcoljes:SetAlphaBar(false)

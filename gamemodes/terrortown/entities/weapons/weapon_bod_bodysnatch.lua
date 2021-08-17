@@ -157,7 +157,7 @@ if SERVER then
             if (role == ROLE_DEPUTY or role == ROLE_IMPERSONATOR) and not owner:GetNWBool("HasPromotion", false) then
                 local detectiveAlive = false
                 for _, p in ipairs(player.GetAll()) do
-                    if not p:IsSpec() and p:Alive() and p:IsDetective() then
+                    if not p:IsSpec() and p:Alive() and p:IsDetectiveTeam() then
                         detectiveAlive = true
                         break
                     end

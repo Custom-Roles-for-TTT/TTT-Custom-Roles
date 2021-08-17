@@ -190,8 +190,12 @@ if SERVER then
         ply:SetCredits(credits)
         ply:SetPos(self.Location or body:GetPos())
         ply:SetEyeAngles(Angle(0, body:GetAngles().y, 0))
-        if ply:GetDetective() then
-            ply:SetRole(ROLE_INNOCENT)
+        if ply:GetDetectiveLike() then
+            if ply:IsInnocentTeam() then
+                ply:SetRole(ROLE_INNOCENT)
+            elseif ply:IsTraitorTeam() then
+                ply:SetRole(ROLE_TRAITOR)
+            end
             ply:StripRoleWeapons()
         end
         ply:PrintMessage(HUD_PRINTCENTER, "You have been revived by " .. ROLE_STRINGS_EXT[ROLE_PARAMEDIC] .. "!")

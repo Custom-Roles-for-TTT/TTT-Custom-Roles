@@ -456,7 +456,6 @@ Before you get to uploading now is a great time to test your addon. In Steam rig
 Before you upload your addon, now is a great time to check that your file structure is all correct! For reference here is the file structure of my completed Summoner addon:
 
 ```
-.
 ├─ SummonerRole.jpg
 └─ SummonerRole
    ├─ addon.json

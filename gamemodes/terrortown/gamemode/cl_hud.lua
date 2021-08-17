@@ -492,7 +492,7 @@ local function InfoPaint(client)
 
         surface.SetTextPos(label_left, ScrH() - label_top - h)
         surface.DrawText(text)
-    elseif client:IsDetectiveLike() and not client:IsDetective() then
+    elseif client:IsDetectiveLike() and not client:IsDetectiveTeam() then
         surface.SetFont("TabLarge")
         surface.SetTextColor(255, 255, 255, 230)
 

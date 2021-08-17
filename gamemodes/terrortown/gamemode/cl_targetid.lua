@@ -122,6 +122,8 @@ function GM:PostDrawTranslucentRenderables()
             else
                 if v:GetDetective() then
                     DrawRoleIcon(ROLE_DETECTIVE, false, pos, dir)
+                elseif v:IsDetectiveTeam() then
+                    DrawRoleIcon(v:GetRole(), false, pos, dir)
                 elseif v:GetDetectiveLike() and not (v:GetImpersonator() and client:IsTraitorTeam()) then
                     DrawRoleIcon(GetDetectiveIconRole(false), false, pos, dir)
                 elseif v:GetClown() and v:GetNWBool("KillerClownActive", false) and not GetGlobalBool("ttt_clown_hide_when_active", false) then
@@ -292,6 +294,7 @@ function GM:HUDDrawTargetID()
     local target_traitor = false
     local target_special_traitor = false
     local target_detective = false
+    local target_special_detective = false
 
     local target_glitch = false
 
@@ -390,6 +393,7 @@ function GM:HUDDrawTargetID()
         end
 
         target_detective = GetRoundState() > ROUND_PREP and (ent:IsDetective() or ((ent:IsDeputy() or (ent:IsImpersonator() and not client:IsTraitorTeam())) and ent:GetNWBool("HasPromotion", false)))
+        target_special_detective = GetRoundState() > ROUND_PREP and ent:IsDetectiveTeam() and not target_detective
         if not GetGlobalBool("ttt_clown_hide_when_active", false) then
             target_clown = GetRoundState() > ROUND_PREP and ent:IsClown() and ent:GetNWBool("KillerClownActive", false)
         end
@@ -425,15 +429,17 @@ function GM:HUDDrawTargetID()
 
     local w, h = 0, 0 -- text width/height, reused several times
 
-    if target_traitor or target_special_traitor or target_detective or target_glitch or target_jester or target_clown or target_zombie or target_vampire then
+    if target_traitor or target_special_traitor or target_detective or target_special_detective or target_glitch or target_jester or target_clown or target_zombie or target_vampire then
         surface.SetTexture(ring_tex)
 
         if target_traitor then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_TRAITOR])
-        elseif target_detective then
-            surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_DETECTIVE])
         elseif target_special_traitor then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_HYPNOTIST])
+        elseif target_detective then
+            surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_DETECTIVE])
+        elseif target_special_detective then
+            surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_PALADIN])
         elseif target_glitch then
             if client:IsZombie() and client:IsTraitorTeam() then
                 surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_ZOMBIE])
@@ -469,7 +475,7 @@ function GM:HUDDrawTargetID()
         draw.SimpleText(text, font, x, y, color)
 
         -- for ragdolls searched by detectives, add icon
-        if ent.search_result and client:IsDetective() then
+        if ent.search_result and client:IsDetectiveLike() then
             -- if I am detective and I know a search result for this corpse, then I
             -- have searched it or another detective has
             surface.SetMaterial(magnifier_mat)
@@ -565,6 +571,10 @@ function GM:HUDDrawTargetID()
     elseif target_detective then
         text = string.upper(ROLE_STRINGS[ROLE_DETECTIVE])
         clr = ROLE_COLORS_RADAR[ROLE_DETECTIVE]
+    elseif target_special_detective then
+        local role = ent:GetRole()
+        text = string.upper(ROLE_STRINGS[role])
+        clr = ROLE_COLORS_RADAR[role]
     elseif target_jester then
         text = string.upper(ROLE_STRINGS[ROLE_JESTER])
         clr = ROLE_COLORS_RADAR[ROLE_JESTER]
