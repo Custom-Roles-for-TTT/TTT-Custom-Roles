@@ -2148,7 +2148,7 @@ function SelectRoles()
     if max_special_detective_count > 0 then
         if not hasPaladin and GetConVar("ttt_paladin_enabled"):GetBool() and choice_count >= GetConVar("ttt_paladin_min_players"):GetInt() then
             for _ = 1, GetConVar("ttt_paladin_spawn_weight"):GetInt() do
-                table.insert(specialTraitorRoles, ROLE_PALADIN)
+                table.insert(specialDetectiveRoles, ROLE_PALADIN)
             end
         end
         for _ = 1, max_special_detective_count do
