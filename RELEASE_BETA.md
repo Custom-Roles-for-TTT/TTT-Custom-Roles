@@ -1,5 +1,11 @@
 # Beta Release Notes
 
+## 1.1.5
+**Released**
+
+### Fixes
+- Fixed innocent win console message saying "Innocents were defeated"
+
 ## 1.1.4
 **Released: August 18th, 2021**
 
