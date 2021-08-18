@@ -377,7 +377,8 @@ local function OrderEquipment(ply, cmd, args)
 
     local promoted = ply:IsDetectiveLike() and role ~= ROLE_DETECTIVE
     local sync_detective_like = (promoted and (role == ROLE_DEPUTY or role == ROLE_IMPERSONATOR))
-    local sync_detective_weapons = sync_detective_like or (rolemode > SHOP_SYNC_MODE_NONE)
+    local detectivesync = GetGlobalBool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_sync", false) and DETECTIVE_ROLES[role]
+    local sync_detective_weapons = detectivesync or sync_detective_like or (rolemode > SHOP_SYNC_MODE_NONE)
 
     -- If this role has a table of additional weapons and that table includes this weapon
     -- and this weapon is not currently buyable by the role then mark this weapon as buyable

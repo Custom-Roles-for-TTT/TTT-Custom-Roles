@@ -1728,6 +1728,21 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
                 local penalty = GetConVar("ttt_zombie_damage_penalty"):GetFloat()
                 dmginfo:ScaleDamage(1 - penalty)
             end
+
+            if not ply:IsPaladin() then
+                local withPaladin = false
+                local radius = GetGlobalFloat("ttt_paladin_aura_radius", 262.45)
+                for _, v in pairs(player.GetAll()) do
+                    if v:IsPaladin() and v:GetPos():Distance(ply:GetPos()) <= radius then
+                        withPaladin = true
+                        break
+                    end
+                end
+                if withPaladin and not att:IsPaladin() then
+                    local reduction = GetConVar("ttt_paladin_damage_reduction"):GetFloat()
+                    dmginfo:ScaleDamage(1 - reduction)
+                end
+            end
         -- Players cant deal damage to eachother before the round starts
         else
             dmginfo:ScaleDamage(0)

@@ -179,10 +179,6 @@ ttt_single_phantom_parasite                 0       // Whether only a single pha
 // ----------------------------------------
 
 // INNOCENT TEAM SETTINGS
-// Detective
-ttt_detective_search_only                   1       // Whether only detectives can search bodies or not
-ttt_all_search_postround                    1       // Whether non-detectives can search bodies post-round or not
-
 // Glitch
 ttt_glitch_mode                             0       // The way in which the glitch appears to traitors. 0 - Appears as a regular traitor. 1 - Can appear as a special traitor. 2 - Causes all traitors, regular or special, to appear as regular traitors and appears as a regular traitor themselves.
 
@@ -221,6 +217,18 @@ ttt_veteran_announce                        0       // Whether to announce to al
 
 // Doctor
 ttt_doctor_credits_starting                 1       // The number of credits a doctor should start with
+
+// ----------------------------------------
+
+// DETECTIVE TEAM SETTINGS
+// Detective
+ttt_detective_search_only                   1       // Whether only detectives can search bodies or not
+ttt_all_search_postround                    1       // Whether non-detectives can search bodies post-round or not
+
+// Paladin
+ttt_paladin_aura_radius                     5       // The radius of the paladins aura in meters
+ttt_paladin_damage_reduction                0.2     // The fraction an attacker's damage will be reduced by when they are shooting a player inside the paladin's aura
+ttt_paladin_heal_rate                       1       // The amount of heal a player inside the paladin's aura will heal each second
 
 // ----------------------------------------
 
@@ -379,6 +387,9 @@ ttt_vampire_shop_sync                       0       // Whether Vampires should h
 ttt_zombie_shop_sync                        0       // Whether Zombies should have all weapons that vanilla traitors have in their weapon shop (if they are a Traitor)
 ttt_quack_shop_sync                         0       // Whether Quacks should have all weapons that vanilla traitors have in their weapon shop
 ttt_parasite_shop_sync                      0       // Whether Parasites should have all weapons that vanilla traitors have in their weapon shop
+
+// Detective Role Shop Sync (Server or round must be restarted for changes to take effect)
+ttt_paladin_shop_sync                       0       // Whether Paladins should have all weapons that vanilla detectives have in their weapon shop
 
 // ----------------------------------------
 

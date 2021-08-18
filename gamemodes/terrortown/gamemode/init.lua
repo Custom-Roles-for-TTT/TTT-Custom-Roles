@@ -136,9 +136,6 @@ CreateConVar("ttt_parasite_respawn_health", 100)
 CreateConVar("ttt_parasite_announce_infection", 0)
 
 -- Innocent role properties
-CreateConVar("ttt_detective_search_only", "1")
-CreateConVar("ttt_all_search_postround", "1")
-
 CreateConVar("ttt_glitch_mode", "0")
 
 CreateConVar("ttt_phantom_respawn_health", "50")
@@ -165,6 +162,14 @@ CreateConVar("ttt_veteran_damage_bonus", "0.5")
 CreateConVar("ttt_veteran_full_heal", "1")
 CreateConVar("ttt_veteran_heal_bonus", "0")
 CreateConVar("ttt_veteran_announce", "0")
+
+-- Detective role properties
+CreateConVar("ttt_detective_search_only", "1")
+CreateConVar("ttt_all_search_postround", "1")
+
+CreateConVar("ttt_paladin_aura_radius", "5")
+CreateConVar("ttt_paladin_damage_reduction", "0.2")
+CreateConVar("ttt_paladin_heal_rate", "1")
 
 -- Jester role properties
 CreateConVar("ttt_jesters_trigger_traitor_testers", "1")
@@ -268,7 +273,7 @@ for _, role in ipairs(table.GetKeys(SHOP_ROLES)) do
     CreateConVar("ttt_" .. rolestring .. "_shop_random_percent", "0", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown for the " .. rolestring, 0, 100)
     CreateConVar("ttt_" .. rolestring .. "_shop_random_enabled", "0", FCVAR_REPLICATED, "Whether shop randomization should run for the " .. rolestring)
 
-    if (TRAITOR_ROLES[role] and role ~= ROLE_TRAITOR) or role == ROLE_ZOMBIE then -- This all happens before we run UpdateRoleState so we need to manually add zombies
+    if (TRAITOR_ROLES[role] and role ~= ROLE_TRAITOR) or (DETECTIVE_ROLES[role] and role ~= ROLE_DETECTIVE) or role == ROLE_ZOMBIE then -- This all happens before we run UpdateRoleState so we need to manually add zombies
         CreateConVar("ttt_" .. rolestring .. "_shop_sync", "0", FCVAR_REPLICATED)
     end
 
@@ -631,6 +636,8 @@ function GM:SyncGlobals()
     SetGlobalInt("ttt_phantom_killer_haunt_drop_cost", GetConVar("ttt_phantom_killer_haunt_drop_cost"):GetInt())
 
     SetGlobalBool("ttt_deputy_use_detective_icon", GetConVar("ttt_deputy_use_detective_icon"):GetBool())
+
+    SetGlobalFloat("ttt_paladin_aura_radius", GetConVar("ttt_paladin_aura_radius"):GetInt() * 52.49)
 
     SetGlobalBool("ttt_traitor_vision_enable", GetConVar("ttt_traitor_vision_enable"):GetBool())
 
@@ -1404,6 +1411,22 @@ function BeginRound()
         SetRoleHealth(v)
     end
 
+    -- Paladin Logic
+    local paladinHeal = GetConVar("ttt_paladin_heal_rate"):GetInt()
+    local paladinRadius = GetGlobalFloat("ttt_paladin_aura_radius", 262.45)
+    timer.Create("paladinheal", 1, 0, function()
+        for _, p in pairs(player.GetAll()) do
+            if p:IsActivePaladin() then
+                for _, v in pairs(player.GetAll()) do
+                    if v:IsActive() and not v:IsPaladin() and v:GetPos():Distance(p:GetPos()) <= paladinRadius then
+                        local health = math.min(v:GetMaxHealth(), v:Health() + paladinHeal)
+                        v:SetHealth(health)
+                    end
+                end
+            end
+        end
+    end)
+
     net.Start("TTT_ResetScoreboard")
     net.Broadcast()
 
@@ -1560,6 +1583,7 @@ function EndRound(type)
     if timer.Exists("waitfordrunkrespawn") then timer.Remove("waitfordrunkrespawn") end
     if timer.Exists("oldmanhealthdrain") then timer.Remove("oldmanhealthdrain") end
     if timer.Exists("revengerhealthdrain") then timer.Remove("revengerhealthdrain") end
+    if timer.Exists("paladinheal") then timer.Remove("paladinheal") end
 
     -- We may need to start a timer for a mapswitch, or start a vote
     CheckForMapSwitch()
@@ -1839,7 +1863,8 @@ function SelectRoles()
     -- special spawning cvars
     local deputy_only = false
     local impersonator_only = false
-    if GetConVar("ttt_single_deputy_impersonator"):GetBool() then
+    local single_dep_imp = GetConVar("ttt_single_deputy_impersonator"):GetBool()
+    if single_dep_imp then
         if math.random() <= 0.5 then
             deputy_only = true
         else
@@ -1849,7 +1874,8 @@ function SelectRoles()
 
     local doctor_only = false
     local quack_only = false
-    if GetConVar("ttt_single_doctor_quack"):GetBool() then
+    local single_doc_qua = GetConVar("ttt_single_doctor_quack"):GetBool()
+    if single_doc_qua then
         if math.random() <= 0.5 then
             doctor_only = true
         else
@@ -1859,7 +1885,8 @@ function SelectRoles()
 
     local paramedic_only = false
     local hypnotist_only = false
-    if GetConVar("ttt_single_paramedic_hypnotist"):GetBool() then
+    local single_med_hyp = GetConVar("ttt_single_paramedic_hypnotist"):GetBool()
+    if single_med_hyp then
         if math.random() <= 0.5 then
             paramedic_only = true
         else
@@ -1869,7 +1896,8 @@ function SelectRoles()
 
     local phantom_only = false
     local parasite_only = false
-    if GetConVar("ttt_single_phantom_parasite"):GetBool() then
+    local single_pha_par = GetConVar("ttt_single_phantom_parasite"):GetBool()
+    if single_pha_par then
         if math.random() <= 0.5 then
             phantom_only = true
         else
@@ -1892,29 +1920,7 @@ function SelectRoles()
     local forcedIndependentCount = 0
     local forcedMonsterCount = 0
 
-    local hasHypnotist = false
-    local hasImpersonator = false
-    local hasAssassin = false
-    local hasVampire = false
-    local hasZombie = false
-    local hasQuack = false
-    local hasParasite = false
-
-    local hasPaladin = false
-
-    local hasPhantom = false
-    local hasGlitch = false
-    local hasRevenger = false
-    local hasDeputy = false
-    local hasMercenary = false
-    local hasVeteran = false
-    local hasDoctor = false
-    local hasTrickster = false
-    local hasParamedic = false
-
-    local hasIndependent = false
-
-    local hasExternal = {}
+    local hasRole = {}
 
     PrintRoleText("-----CHECKING EXTERNALLY CHOSEN ROLES-----")
     for _, v in pairs(player.GetAll()) do
@@ -1929,142 +1935,41 @@ function SelectRoles()
                 end
 
                 table.remove(choices, index)
+                hasRole[role] = true
+
                 -- TRAITOR ROLES
                 if role == ROLE_TRAITOR then
                     forcedTraitorCount = forcedTraitorCount + 1
-                elseif role == ROLE_HYPNOTIST then
-                    hasHypnotist = true
-                    if GetConVar("ttt_single_paramedic_hypnotist"):GetBool() then
-                        hypnotist_only = true
-                    end
+                elseif TRAITOR_ROLES[role] then
                     forcedSpecialTraitorCount = forcedSpecialTraitorCount + 1
-                elseif role == ROLE_IMPERSONATOR then
-                    hasImpersonator = true
-                    if GetConVar("ttt_single_deputy_impersonator"):GetBool() then
-                        impersonator_only = true
-                    end
-                    forcedSpecialTraitorCount = forcedSpecialTraitorCount + 1
-                elseif role == ROLE_ASSASSIN then
-                    hasAssassin = true
-                    forcedSpecialTraitorCount = forcedSpecialTraitorCount + 1
-                elseif role == ROLE_VAMPIRE then
-                    hasVampire = true
-                    if TRAITOR_ROLES[role] then
-                        forcedSpecialTraitorCount = forcedSpecialTraitorCount + 1
-                    else
-                        forcedMonsterCount = forcedMonsterCount + 1
-                    end
-                elseif role == ROLE_QUACK then
-                    hasQuack = true
-                    if GetConVar("ttt_single_doctor_quack"):GetBool() then
-                        quack_only = true
-                    end
-                    forcedSpecialTraitorCount = forcedSpecialTraitorCount + 1
-                elseif role == ROLE_PARASITE then
-                    hasParasite = true
-                    if GetConVar("ttt_single_phantom_parasite"):GetBool() then
-                        parasite_only = true
-                    end
-                    forcedSpecialTraitorCount = forcedSpecialTraitorCount + 1
-
-                    -- DETECTIVE ROLES
                 elseif role == ROLE_DETECTIVE then
                     forcedDetectiveCount = forcedDetectiveCount + 1
-                elseif role == ROLE_PALADIN then
-                    hasPaladin = true
+                elseif DETECTIVE_ROLES[role] then
                     forcedSpecialDetectiveCount = forcedSpecialDetectiveCount + 1
+                elseif INNOCENT_ROLES[role] and not role == ROLE_INNOCENT then
+                    forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
+                elseif JESTER_ROLES[role] or INDEPENDENT_ROLES[role] then
+                    forcedIndependentCount = forcedIndependentCount + 1
+                    hasIndependent = true
+                elseif MONSTER_ROLES[role] then
+                    forcedMonsterCount = forcedMonsterCount + 1
+                end
 
-                    -- INNOCENT ROLES
-                elseif role == ROLE_PHANTOM then
-                    hasPhantom = true
-                    if GetConVar("ttt_single_phantom_parasite"):GetBool() then
-                        phantom_only = true
-                    end
-                    forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
-                elseif role == ROLE_GLITCH then
-                    hasGlitch = true
-                    forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
-                elseif role == ROLE_REVENGER then
-                    hasRevenger = true
-                    forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
-                elseif role == ROLE_DEPUTY then
-                    hasDeputy = true
-                    if GetConVar("ttt_single_deputy_impersonator"):GetBool() then
-                        deputy_only = true
-                    end
-                    forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
-                elseif role == ROLE_MERCENARY then
-                    hasMercenary = true
-                    forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
-                elseif role == ROLE_VETERAN then
-                    hasVeteran = true
-                    forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
-                elseif role == ROLE_DOCTOR then
-                    hasDoctor = true
-                    if GetConVar("ttt_single_doctor_quack"):GetBool() then
-                        doctor_only = true
-                    end
-                    forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
-                elseif role == ROLE_TRICKSTER then
-                    hasTrickster = true
-                    forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
-                elseif role == ROLE_PARAMEDIC then
-                    hasParamedic = true
-                    if GetConVar("ttt_single_paramedic_hypnotist"):GetBool() then
-                        paramedic_only = true
-                    end
-                    forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
-
-                    -- JESTER/INDEPENDENT ROLES
-                elseif role == ROLE_JESTER then
-                    hasIndependent = true
-                    forcedIndependentCount = forcedIndependentCount + 1
-                elseif role == ROLE_SWAPPER then
-                    hasIndependent = true
-                    forcedIndependentCount = forcedIndependentCount + 1
-                elseif role == ROLE_DRUNK then
-                    hasIndependent = true
-                    forcedIndependentCount = forcedIndependentCount + 1
-                elseif role == ROLE_CLOWN then
-                    hasIndependent = true
-                    forcedIndependentCount = forcedIndependentCount + 1
-                elseif role == ROLE_BEGGAR then
-                    hasIndependent = true
-                    forcedIndependentCount = forcedIndependentCount + 1
-                elseif role == ROLE_OLDMAN then
-                    hasIndependent = true
-                    forcedIndependentCount = forcedIndependentCount + 1
-                elseif role == ROLE_BODYSNATCHER then
-                    hasIndependent = true
-                    forcedIndependentCount = forcedIndependentCount + 1
-                elseif role == ROLE_KILLER then
-                    hasIndependent = true
-                    forcedIndependentCount = forcedIndependentCount + 1
-                elseif role == ROLE_ZOMBIE then
-                    hasZombie = true
-                    if INDEPENDENT_ROLES[role] then
-                        hasIndependent = true
-                        forcedIndependentCount = forcedIndependentCount + 1
-                    elseif TRAITOR_ROLES[role] then
-                        forcedSpecialTraitorCount = forcedSpecialTraitorCount + 1
-                    else
-                        forcedMonsterCount = forcedMonsterCount + 1
-                    end
-                elseif role == ROLE_MADSCIENTIST then
-                    hasIndependent = true
-                    forcedIndependentCount = forcedIndependentCount + 1
-
-                    -- EXTERNAL CUSTOM ROLES
-                elseif role >= ROLE_EXTERNAL_START then
-                    hasExternal[role] = true
-                    if TRAITOR_ROLES[role] then
-                        forcedSpecialTraitorCount = forcedSpecialTraitorCount + 1
-                    elseif INNOCENT_ROLES[role] then
-                        forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
-                    elseif JESTER_ROLES[role] or INDEPENDENT_ROLES[role] then
-                        hasIndependent = true
-                        forcedIndependentCount = forcedIndependentCount + 1
-                    end
+                if single_dep_imp then
+                    if role == ROLE_DEPUTY then deputy_only = true
+                    elseif role == ROLE_IMPERSONATOR then impersonator_only = true end
+                end
+                if single_doc_qua then
+                    if role == ROLE_DOCTOR then doctor_only = true
+                    elseif role == ROLE_QUACK then quack_only = true end
+                end
+                if single_med_hyp then
+                    if role == ROLE_PARAMEDIC then paramedic_only = true
+                    elseif role == ROLE_HYPNOTIST then hypnotist_only = true end
+                end
+                if single_pha_par then
+                    if role == ROLE_PHANTOM then phantom_only = true
+                    elseif role == ROLE_PARASITE then parasite_only = true end
                 end
 
                 PrintRole(v, role)
@@ -2089,7 +1994,7 @@ function SelectRoles()
 
     if ROLE_MAX >= ROLE_EXTERNAL_START then
         for r = ROLE_EXTERNAL_START, ROLE_MAX do
-            if not hasExternal[r] and GetConVar("ttt_" .. ROLE_STRINGS_RAW[r] .. "_enabled"):GetBool() and choice_count >= GetConVar("ttt_" .. ROLE_STRINGS_RAW[r] .. "_min_players"):GetInt() then
+            if not hasRole[r] and GetConVar("ttt_" .. ROLE_STRINGS_RAW[r] .. "_enabled"):GetBool() and choice_count >= GetConVar("ttt_" .. ROLE_STRINGS_RAW[r] .. "_min_players"):GetInt() then
                 for _ = 1, GetConVar("ttt_" .. ROLE_STRINGS_RAW[r] .. "_spawn_weight"):GetInt() do
                     if TRAITOR_ROLES[r] then
                         table.insert(specialTraitorRoles, r)
@@ -2146,7 +2051,7 @@ function SelectRoles()
 
     -- pick special detectives
     if max_special_detective_count > 0 then
-        if not hasPaladin and GetConVar("ttt_paladin_enabled"):GetBool() and choice_count >= GetConVar("ttt_paladin_min_players"):GetInt() then
+        if not hasRole[ROLE_PALADIN] and GetConVar("ttt_paladin_enabled"):GetBool() and choice_count >= GetConVar("ttt_paladin_min_players"):GetInt() then
             for _ = 1, GetConVar("ttt_paladin_spawn_weight"):GetInt() do
                 table.insert(specialDetectiveRoles, ROLE_PALADIN)
             end
@@ -2169,7 +2074,7 @@ function SelectRoles()
         end
     end
 
-    -- Any of these left are a vanilla detectives
+    -- Any of these left are vanilla detectives
     for _, v in pairs(detectives) do
         v:SetRole(ROLE_DETECTIVE)
         PrintRole(v, ROLE_DETECTIVE)
@@ -2195,32 +2100,32 @@ function SelectRoles()
     else
         -- pick special traitors
         if max_special_traitor_count > 0 then
-            if not hasHypnotist and GetConVar("ttt_hypnotist_enabled"):GetBool() and choice_count >= GetConVar("ttt_hypnotist_min_players"):GetInt() and not paramedic_only then
+            if not hasRole[ROLE_HYPNOTIST] and GetConVar("ttt_hypnotist_enabled"):GetBool() and choice_count >= GetConVar("ttt_hypnotist_min_players"):GetInt() and not paramedic_only then
                 for _ = 1, GetConVar("ttt_hypnotist_spawn_weight"):GetInt() do
                     table.insert(specialTraitorRoles, ROLE_HYPNOTIST)
                 end
             end
-            if not hasImpersonator and GetConVar("ttt_impersonator_enabled"):GetBool() and choice_count >= GetConVar("ttt_impersonator_min_players"):GetInt() and detective_count > 0 and not deputy_only then
+            if not hasRole[ROLE_IMPERSONATOR] and GetConVar("ttt_impersonator_enabled"):GetBool() and choice_count >= GetConVar("ttt_impersonator_min_players"):GetInt() and detective_count > 0 and not deputy_only then
                 for _ = 1, GetConVar("ttt_impersonator_spawn_weight"):GetInt() do
                     table.insert(specialTraitorRoles, ROLE_IMPERSONATOR)
                 end
             end
-            if not hasAssassin and GetConVar("ttt_assassin_enabled"):GetBool() and choice_count >= GetConVar("ttt_assassin_min_players"):GetInt() then
+            if not hasRole[ROLE_ASSASSIN] and GetConVar("ttt_assassin_enabled"):GetBool() and choice_count >= GetConVar("ttt_assassin_min_players"):GetInt() then
                 for _ = 1, GetConVar("ttt_assassin_spawn_weight"):GetInt() do
                     table.insert(specialTraitorRoles, ROLE_ASSASSIN)
                 end
             end
-            if not hasVampire and GetConVar("ttt_vampire_enabled"):GetBool() and choice_count >= GetConVar("ttt_vampire_min_players"):GetInt() and TRAITOR_ROLES[ROLE_VAMPIRE] then
+            if not hasRole[ROLE_VAMPIRE] and GetConVar("ttt_vampire_enabled"):GetBool() and choice_count >= GetConVar("ttt_vampire_min_players"):GetInt() and TRAITOR_ROLES[ROLE_VAMPIRE] then
                 for _ = 1, GetConVar("ttt_vampire_spawn_weight"):GetInt() do
                     table.insert(specialTraitorRoles, ROLE_VAMPIRE)
                 end
             end
-            if not hasQuack and GetConVar("ttt_quack_enabled"):GetBool() and choice_count >= GetConVar("ttt_quack_min_players"):GetInt() and not doctor_only then
+            if not hasRole[ROLE_QUACK] and GetConVar("ttt_quack_enabled"):GetBool() and choice_count >= GetConVar("ttt_quack_min_players"):GetInt() and not doctor_only then
                 for _ = 1, GetConVar("ttt_quack_spawn_weight"):GetInt() do
                     table.insert(specialTraitorRoles, ROLE_QUACK)
                 end
             end
-            if not hasParasite and GetConVar("ttt_parasite_enabled"):GetBool() and choice_count >= GetConVar("ttt_parasite_min_players"):GetInt() and not phantom_only then
+            if not hasRole[ROLE_PARASITE] and GetConVar("ttt_parasite_enabled"):GetBool() and choice_count >= GetConVar("ttt_parasite_min_players"):GetInt() and not phantom_only then
                 for _ = 1, GetConVar("ttt_parasite_spawn_weight"):GetInt() do
                     table.insert(specialTraitorRoles, ROLE_PARASITE)
                 end
@@ -2251,7 +2156,7 @@ function SelectRoles()
     end
 
     -- pick independent
-    if not hasIndependent and independent_count > 0 and #choices > 0 then
+    if forcedIndependentCount == 0 and independent_count > 0 and #choices > 0 then
         if GetConVar("ttt_jester_enabled"):GetBool() and choice_count >= GetConVar("ttt_jester_min_players"):GetInt() then
             for _ = 1, GetConVar("ttt_jester_spawn_weight"):GetInt() do
                 table.insert(independentRoles, ROLE_JESTER)
@@ -2323,48 +2228,48 @@ function SelectRoles()
     if max_special_innocent_count > 0 then
         local map_has_traitor_buttons = #ents.FindByClass("ttt_traitor_button") > 0
         local glitch_mode = GetConVar("ttt_glitch_mode"):GetInt()
-        if not hasGlitch and GetConVar("ttt_glitch_enabled"):GetBool() and choice_count >= GetConVar("ttt_glitch_min_players"):GetInt()
+        if not hasRole[ROLE_GLITCH] and GetConVar("ttt_glitch_enabled"):GetBool() and choice_count >= GetConVar("ttt_glitch_min_players"):GetInt()
         and ((glitch_mode == GLITCH_SHOW_AS_TRAITOR and #traitors > 1) or ((glitch_mode == GLITCH_SHOW_AS_SPECIAL_TRAITOR or glitch_mode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES) and traitor_count > 1)) then
             for _ = 1, GetConVar("ttt_glitch_spawn_weight"):GetInt() do
                 table.insert(specialInnocentRoles, ROLE_GLITCH)
             end
         end
-        if not hasPhantom and GetConVar("ttt_phantom_enabled"):GetBool() and choice_count >= GetConVar("ttt_phantom_min_players"):GetInt() and not parasite_only then
+        if not hasRole[ROLE_PHANTOM] and GetConVar("ttt_phantom_enabled"):GetBool() and choice_count >= GetConVar("ttt_phantom_min_players"):GetInt() and not parasite_only then
             for _ = 1, GetConVar("ttt_phantom_spawn_weight"):GetInt() do
                 table.insert(specialInnocentRoles, ROLE_PHANTOM)
             end
         end
-        if not hasRevenger and GetConVar("ttt_revenger_enabled"):GetBool() and choice_count >= GetConVar("ttt_revenger_min_players"):GetInt() and choice_count > 1 then
+        if not hasRole[ROLE_REVENGER] and GetConVar("ttt_revenger_enabled"):GetBool() and choice_count >= GetConVar("ttt_revenger_min_players"):GetInt() and choice_count > 1 then
             for _ = 1, GetConVar("ttt_revenger_spawn_weight"):GetInt() do
                 table.insert(specialInnocentRoles, ROLE_REVENGER)
             end
         end
-        if not hasDeputy and GetConVar("ttt_deputy_enabled"):GetBool() and choice_count >= GetConVar("ttt_deputy_min_players"):GetInt() and detective_count > 0 and not impersonator_only then
+        if not hasRole[ROLE_DEPUTY] and GetConVar("ttt_deputy_enabled"):GetBool() and choice_count >= GetConVar("ttt_deputy_min_players"):GetInt() and detective_count > 0 and not impersonator_only then
             for _ = 1, GetConVar("ttt_deputy_spawn_weight"):GetInt() do
                 table.insert(specialInnocentRoles, ROLE_DEPUTY)
             end
         end
-        if not hasMercenary and GetConVar("ttt_mercenary_enabled"):GetBool() and choice_count >= GetConVar("ttt_mercenary_min_players"):GetInt() then
+        if not hasRole[ROLE_MERCENARY] and GetConVar("ttt_mercenary_enabled"):GetBool() and choice_count >= GetConVar("ttt_mercenary_min_players"):GetInt() then
             for _ = 1, GetConVar("ttt_mercenary_spawn_weight"):GetInt() do
                 table.insert(specialInnocentRoles, ROLE_MERCENARY)
             end
         end
-        if not hasVeteran and GetConVar("ttt_veteran_enabled"):GetBool() and choice_count >= GetConVar("ttt_veteran_min_players"):GetInt() then
+        if not hasRole[ROLE_VETERAN] and GetConVar("ttt_veteran_enabled"):GetBool() and choice_count >= GetConVar("ttt_veteran_min_players"):GetInt() then
             for _ = 1, GetConVar("ttt_veteran_spawn_weight"):GetInt() do
                 table.insert(specialInnocentRoles, ROLE_VETERAN)
             end
         end
-        if not hasDoctor and GetConVar("ttt_doctor_enabled"):GetBool() and choice_count >= GetConVar("ttt_doctor_min_players"):GetInt() and not quack_only then
+        if not hasRole[ROLE_DOCTOR] and GetConVar("ttt_doctor_enabled"):GetBool() and choice_count >= GetConVar("ttt_doctor_min_players"):GetInt() and not quack_only then
             for _ = 1, GetConVar("ttt_doctor_spawn_weight"):GetInt() do
                 table.insert(specialInnocentRoles, ROLE_DOCTOR)
             end
         end
-        if not hasTrickster and GetConVar("ttt_trickster_enabled"):GetBool() and choice_count >= GetConVar("ttt_trickster_min_players"):GetInt() and map_has_traitor_buttons then
+        if not hasRole[ROLE_TRICKSTER] and GetConVar("ttt_trickster_enabled"):GetBool() and choice_count >= GetConVar("ttt_trickster_min_players"):GetInt() and map_has_traitor_buttons then
             for _ = 1, GetConVar("ttt_trickster_spawn_weight"):GetInt() do
                 table.insert(specialInnocentRoles, ROLE_TRICKSTER)
             end
         end
-        if not hasParamedic and GetConVar("ttt_paramedic_enabled"):GetBool() and choice_count >= GetConVar("ttt_paramedic_min_players"):GetInt() and not hypnotist_only then
+        if not hasRole[ROLE_PARAMEDIC] and GetConVar("ttt_paramedic_enabled"):GetBool() and choice_count >= GetConVar("ttt_paramedic_min_players"):GetInt() and not hypnotist_only then
             for _ = 1, GetConVar("ttt_paramedic_spawn_weight"):GetInt() do
                 table.insert(specialInnocentRoles, ROLE_PARAMEDIC)
             end
@@ -2397,12 +2302,12 @@ function SelectRoles()
 
     if monster_count > 0 then
         local monsterRoles = {}
-        if MONSTER_ROLES[ROLE_ZOMBIE] and not hasZombie and GetConVar("ttt_zombie_enabled"):GetBool() and choice_count >= GetConVar("ttt_zombie_min_players"):GetInt() then
+        if MONSTER_ROLES[ROLE_ZOMBIE] and not hasRole[ROLE_ZOMBIE] and GetConVar("ttt_zombie_enabled"):GetBool() and choice_count >= GetConVar("ttt_zombie_min_players"):GetInt() then
             for _ = 1, GetConVar("ttt_zombie_spawn_weight"):GetInt() do
                 table.insert(monsterRoles, ROLE_ZOMBIE)
             end
         end
-        if MONSTER_ROLES[ROLE_VAMPIRE] and not hasVampire and GetConVar("ttt_vampire_enabled"):GetBool() and choice_count >= GetConVar("ttt_vampire_min_players"):GetInt() then
+        if MONSTER_ROLES[ROLE_VAMPIRE] and not hasRole[ROLE_VAMPIRE] and GetConVar("ttt_vampire_enabled"):GetBool() and choice_count >= GetConVar("ttt_vampire_min_players"):GetInt() then
             for _ = 1, GetConVar("ttt_vampire_spawn_weight"):GetInt() do
                 table.insert(monsterRoles, ROLE_VAMPIRE)
             end

@@ -363,32 +363,64 @@ function GM:DrawDeathNotice() end
 function GM:Think()
     local client = LocalPlayer()
     for _, v in pairs(player.GetAll()) do
-        if v:Alive() and not v:IsSpec() and ((v:GetNWBool("Haunted", false) and GetGlobalBool("ttt_phantom_killer_smoke")) or v:GetNWBool("KillerSmoke", false)) then
-            if not v.SmokeEmitter then v.SmokeEmitter = ParticleEmitter(v:GetPos()) end
-            if not v.SmokeNextPart then v.SmokeNextPart = CurTime() end
-            local pos = v:GetPos() + Vector(0, 0, 30)
-            if v.SmokeNextPart < CurTime() then
-                if client:GetPos():Distance(pos) <= 3000 then
-                    v.SmokeEmitter:SetPos(pos)
-                    v.SmokeNextPart = CurTime() + math.Rand(0.003, 0.01)
-                    local vec = Vector(math.Rand(-8, 8), math.Rand(-8, 8), math.Rand(10, 55))
-                    local particle = v.SmokeEmitter:Add("particle/snow.vmt", v:LocalToWorld(vec))
-                    particle:SetVelocity(Vector(0, 0, 4) + VectorRand() * 3)
-                    particle:SetDieTime(math.Rand(0.5, 2))
-                    particle:SetStartAlpha(math.random(150, 220))
-                    particle:SetEndAlpha(0)
-                    local size = math.random(4, 7)
-                    particle:SetStartSize(size)
-                    particle:SetEndSize(size + 1)
-                    particle:SetRoll(0)
-                    particle:SetRollDelta(0)
-                    particle:SetColor(0, 0, 0)
+        if v:Alive() and not v:IsSpec() then
+            if ((v:GetNWBool("Haunted", false) and GetGlobalBool("ttt_phantom_killer_smoke")) or v:GetNWBool("KillerSmoke", false)) then
+                if not v.SmokeEmitter then v.SmokeEmitter = ParticleEmitter(v:GetPos()) end
+                if not v.SmokeNextPart then v.SmokeNextPart = CurTime() end
+                local pos = v:GetPos() + Vector(0, 0, 30)
+                if v.SmokeNextPart < CurTime() then
+                    if client:GetPos():Distance(pos) <= 3000 then
+                        v.SmokeEmitter:SetPos(pos)
+                        v.SmokeNextPart = CurTime() + math.Rand(0.003, 0.01)
+                        local vec = Vector(math.Rand(-8, 8), math.Rand(-8, 8), math.Rand(10, 55))
+                        local particle = v.SmokeEmitter:Add("particle/snow.vmt", v:LocalToWorld(vec))
+                        particle:SetVelocity(Vector(0, 0, 4) + VectorRand() * 3)
+                        particle:SetDieTime(math.Rand(0.5, 2))
+                        particle:SetStartAlpha(math.random(150, 220))
+                        particle:SetEndAlpha(0)
+                        local size = math.random(4, 7)
+                        particle:SetStartSize(size)
+                        particle:SetEndSize(size + 1)
+                        particle:SetRoll(0)
+                        particle:SetRollDelta(0)
+                        particle:SetColor(0, 0, 0)
+                    end
+                end
+            else
+                if v.SmokeEmitter then
+                    v.SmokeEmitter:Finish()
+                    v.SmokeEmitter = nil
                 end
             end
-        else
-            if v.SmokeEmitter then
-                v.SmokeEmitter:Finish()
-                v.SmokeEmitter = nil
+            if v:IsPaladin() then
+                if not v.AuraEmitter then v.AuraEmitter = ParticleEmitter(v:GetPos()) end
+                if not v.AuraNextPart then v.AuraNextPart = CurTime() end
+                if not v.AuraDir then v.AuraDir = 0 end
+                local pos = v:GetPos() + Vector(0, 0, 30)
+                if v.AuraNextPart < CurTime() then
+                    if client:GetPos():Distance(pos) <= 3000 then
+                        v.AuraEmitter:SetPos(pos)
+                        v.AuraNextPart = CurTime() + 0.02
+                        v.AuraDir = v.AuraDir + 0.05
+                        local radius = GetGlobalFloat("ttt_paladin_aura_radius", 262.45)
+                        local vec = Vector(math.sin(v.AuraDir) * radius, math.cos(v.AuraDir) * radius, 10)
+                        local particle = v.AuraEmitter:Add("particle/shield.vmt", v:GetPos() + vec)
+                        particle:SetVelocity(Vector(0, 0, 20))
+                        particle:SetDieTime(1)
+                        particle:SetStartAlpha(200)
+                        particle:SetEndAlpha(0)
+                        particle:SetStartSize(3)
+                        particle:SetEndSize(2)
+                        particle:SetRoll(0)
+                        particle:SetRollDelta(0)
+                        particle:SetColor(ROLE_COLORS[ROLE_PALADIN].r, ROLE_COLORS[ROLE_PALADIN].g, ROLE_COLORS[ROLE_PALADIN].b)
+                    end
+                end
+            else
+                if v.AuraEmitter then
+                    v.AuraEmitter:Finish()
+                    v.AuraEmitter = nil
+                end
             end
         end
     end

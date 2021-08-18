@@ -77,24 +77,12 @@ function GetPlayerFilter(pred)
     return filter
 end
 
-function GetTraitorFilter(alive_only)
-    return GetPlayerFilter(function(p) return p:GetTraitor() and (not alive_only or p:IsTerror()) end)
-end
-
-function GetInnocentFilter(alive_only)
-    return GetPlayerFilter(function(p) return p:GetInnocent() and (not alive_only or p:IsTerror()) end)
-end
-
-function GetDetectiveFilter(alive_only)
-    return GetPlayerFilter(function(p) return p:GetDetective() and (not alive_only or p:IsTerror()) end)
-end
-
 function GetRoleFilter(role, alive_only)
     return GetPlayerFilter(function(p) return p:IsRole(role) and (not alive_only or p:IsTerror()) end)
 end
 
 -- Dynamically generate all the new roles
-for role = ROLE_DETECTIVE + 1, ROLE_MAX do
+for role = 0, ROLE_MAX do
     local name = string.gsub(ROLE_STRINGS[role], "%s+", "")
     _G["Get" .. name .. "Filter"] = function(alive_only) return GetRoleFilter(role, alive_only) end
 end

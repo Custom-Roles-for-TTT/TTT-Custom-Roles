@@ -206,7 +206,7 @@ function PANEL:Paint(width, height)
         local role = c
 
         -- Swap the deputy/impersonator icons depending on which settings are enabled
-        if ply:GetNWBool("HasPromotion", false) and ply:IsDeputy() or ply:IsImpersonator() then
+        if ply:IsDetectiveLike() and not ply:IsDetectiveTeam() then
             if client:IsTraitorTeam() and ply:IsImpersonator() then
                 if GetGlobalBool("ttt_impersonator_use_detective_icon", false) then
                     role = ROLE_DETECTIVE

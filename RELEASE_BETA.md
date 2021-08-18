@@ -5,7 +5,7 @@
 
 ### Additions
 - Added special detectives
-- Added the paladin, does nothing unique (for now)
+- Added the paladin
 - Added ability to keep weapon switch menu open when a weapon is selected and fast weapon switching is disabled
 
 ### Changes

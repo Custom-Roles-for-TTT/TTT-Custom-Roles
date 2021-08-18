@@ -120,9 +120,7 @@ function GM:PostDrawTranslucentRenderables()
                 render.SetMaterial(indicator_mat_rolefront_noz)
                 render.DrawQuadEasy(pos, dir, 8, 8, COLOR_WHITE, 180)
             else
-                if v:GetDetective() then
-                    DrawRoleIcon(ROLE_DETECTIVE, false, pos, dir)
-                elseif v:IsDetectiveTeam() then
+                if v:IsDetectiveTeam() then
                     DrawRoleIcon(v:GetRole(), false, pos, dir)
                 elseif v:GetDetectiveLike() and not (v:GetImpersonator() and client:IsTraitorTeam()) then
                     DrawRoleIcon(GetDetectiveIconRole(false), false, pos, dir)
