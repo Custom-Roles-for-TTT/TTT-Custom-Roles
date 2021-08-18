@@ -11,6 +11,7 @@
 
 ### Fixes
 - Fixed an error in the round summary when a player's role was invalid
+- Fixed innocent win console message saying "Innocents were defeated"
 
 ## 1.1.2
 **Released: August 16th, 2021**
