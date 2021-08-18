@@ -130,6 +130,7 @@ Next we have the team. You can set which team your role is a member of by using 
 | --- | --- |
 | Innocent | `ROLE_TEAM_INNOCENT` |
 | Traitor | `ROLE_TEAM_TRAITOR` |
+| Detective (BETA ONLY) | `ROLE_TEAM_DETECTIVE` |
 | Jester | `ROLE_TEAM_JESTER` |
 | Independent | `ROLE_TEAM_INDEPENDENT` |
 
@@ -198,10 +199,10 @@ ttt_%NAMERAW%_shop_random_enabled (Whether shop randomization is enabled for the
 ttt_%NAMERAW%_shop_random_percent (The percent chance that each weapon in the roles shop will not be shown)
 ```
 
-Finally, these convars are only created if the role has access to a shop AND is either a traitor or independent role:
+Finally, these convars are only created if the role has access to a shop AND is either a traitor, detective or independent role:
 
 ```
-ttt_%NAMERAW%_shop_sync (Whether the role should have access to all traitor shop items) [TRAITOR ONLY]
+ttt_%NAMERAW%_shop_sync (Whether the role should have access to all traitor/detective shop items) [TRAITOR AND DETECTIVE ONLY]
 ttt_%NAMERAW%_shop_mode (Whether the role should have access to traitor and/or detective shop items) [INDEPENDENT ONLY]
 ```
 
