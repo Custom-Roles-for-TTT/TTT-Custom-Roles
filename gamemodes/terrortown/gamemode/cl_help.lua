@@ -140,6 +140,9 @@ function HELPSCRN:Show()
     cb = dgui:CheckBox(GetTranslation("set_wswitch"), "ttt_weaponswitcher_stay")
     cb:SetTooltip(GetTranslation("set_wswitch_tip"))
 
+    cb = dgui:CheckBox(GetTranslation("set_swselect"), "ttt_weaponswitcher_close")
+    cb:SetTooltip(GetTranslation("set_swselect_tip"))
+
     cb = dgui:CheckBox(GetTranslation("set_cues"), "ttt_cl_soundcues")
 
     cb = dgui:CheckBox(GetTranslation("set_raw_karma"), "ttt_show_raw_karma_value")
