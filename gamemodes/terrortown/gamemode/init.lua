@@ -1500,7 +1500,7 @@ function PrintResultMessage(type)
         LANG.Msg("win_traitor", { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR] })
         ServerLog("Result: " .. ROLE_STRINGS_PLURAL[ROLE_TRAITOR] .. " win.\n")
     elseif type == WIN_INNOCENT then
-        LANG.Msg("win_innocent", { role = ROLE_STRINGS_PLURAL[ROLE_INNOCENT] })
+        LANG.Msg("win_innocent", { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR] })
         ServerLog("Result: " .. ROLE_STRINGS_PLURAL[ROLE_INNOCENT] .. " win.\n")
     elseif type == WIN_JESTER then
         LANG.Msg("win_jester", { role = ROLE_STRINGS_PLURAL[ROLE_JESTER] })
@@ -2091,7 +2091,7 @@ function SelectRoles()
         end
     end
 
-    if ((GetConVar("ttt_zombie_enabled"):GetBool() and math.random() <= GetConVar("ttt_zombie_round_chance"):GetFloat() and (forcedTraitorCount <= 0) and (forcedSpecialTraitorCount <= 0)) or hasZombie) and TRAITOR_ROLES[ROLE_ZOMBIE] then
+    if ((GetConVar("ttt_zombie_enabled"):GetBool() and math.random() <= GetConVar("ttt_zombie_round_chance"):GetFloat() and (forcedTraitorCount <= 0) and (forcedSpecialTraitorCount <= 0)) or hasRole[ROLE_ZOMBIE]) and TRAITOR_ROLES[ROLE_ZOMBIE] then
         -- This is a zombie round so all traitors become zombies
         for _, v in pairs(traitors) do
             v:SetRole(ROLE_ZOMBIE)

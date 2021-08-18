@@ -74,8 +74,9 @@ function GetEquipmentForRole(role, promoted, block_randomization)
         GetEquipmentForRole(ROLE_TRAITOR, false, true)
     end
 
-    local sync_detective_like = (promoted and (role == ROLE_DEPUTY or role == ROLE_IMPERSONATOR))
-    local sync_detective_weapons = sync_detective_like or (rolemode > SHOP_SYNC_MODE_NONE)
+    local sync_detective_like = promoted and (role == ROLE_DEPUTY or role == ROLE_IMPERSONATOR)
+    local detectivesync = GetGlobalBool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_sync", false) and DETECTIVE_ROLES[role]
+    local sync_detective_weapons = detectivesync or sync_detective_like or (rolemode > SHOP_SYNC_MODE_NONE)
 
     -- Pre-load the Detective weapons so that any that have their CanBuy modified will also apply to the enabled allied role(s)
     if sync_detective_weapons and not Equipment[ROLE_DETECTIVE] then
