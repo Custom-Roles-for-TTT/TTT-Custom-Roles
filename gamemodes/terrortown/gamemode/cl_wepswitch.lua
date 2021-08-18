@@ -243,8 +243,13 @@ function WSWITCH:DoSelect(idx)
 
     -- Save which weapon was selected so we can re-select it later
     local wep = self.WeaponCache[idx]
-    last_slot = wep.Slot
-    last_kind = wep.Kind
+    if wep then
+        last_slot = wep.Slot
+        last_kind = wep.Kind
+    else
+        last_slot = -1
+        last_kind = -1
+    end
 
     if self.cv.fast:GetBool() then
         -- immediately confirm if fastswitch is on
