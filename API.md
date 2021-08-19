@@ -412,6 +412,22 @@ This document aims to explain the things that we have added to Custom Roles for 
 
 *Return:* `true` if the default print messages should be skipped (Defaults to `false`).
 
+**TTTScoringSummaryRender(ply, roleFileName, groupingRole, roleColor)** - Called before the round summary screen is shown. Used to modify the color, position, and icon for a player.\
+*Realm:* Client\
+*Added in:* 1.1.5\
+*Parameters:*
+- *ply* - The player being rendered
+- *roleFileName* - The portion of the scoring icon path that indicates which role it belongs to. Used in the following icon path pattern: "vgui/ttt/score_{roleFileName}.png"
+- *groupingRole* - The role to use when determining the section to of the summary screen to put this player in
+- *roleColor* - The background color to use behind the role icon
+
+*Return:*
+- *roleFileName* - The new roleFileName value to use or the original passed in to the hook
+- *groupingRole* - The new groupingRole value to use or the original passed in to the hook
+- *roleColor* - The new roleColor value to use or the original passed in to the hook
+
+*NOTE:* You must return a non-*nil* value for all of the properties or the hook results will be ignored
+
 **TTTScoringWinTitle(wintype, wintitle, title)** - Called before the round summary screen is shown with the winning team. Return the win title object to use on the summary screen.\
 *Realm:* Client\
 *Added in:* 1.0.14\
