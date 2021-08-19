@@ -6,6 +6,9 @@
 ### Fixes
 - Fixed paladin not counting as an innocent
 
+### Developer
+- Added TTTScoringSummaryRender client hook to change how players are displayed in the round summary
+
 ## 1.1.4
 **Released: August 18th, 2021**
 

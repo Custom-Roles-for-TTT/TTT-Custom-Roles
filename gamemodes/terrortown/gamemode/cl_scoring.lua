@@ -638,6 +638,19 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                     hasDisconnected = true
                 end
 
+                -- Group players in the summary by the team each player ended in...
+                local groupingRole = finalRole
+                -- ...unless that player ended as a converted monster in which case keep them with the team they started as
+                if finalRole == ROLE_ZOMBIE or finalRole == ROLE_VAMPIRE then
+                    groupingRole = startingRole
+                end
+
+                -- Allow developers to override role icon, grouping, and color
+                local roleFile, groupRole, iconColor = hook.Run("TTTScoringSummaryRender", ply, roleFileName, groupingRole, roleColor)
+                if roleFile then roleFileName = roleFile end
+                if groupRole then groupingRole = groupRole end
+                if iconColor then roleColor = iconColor end
+
                 local playerInfo = {
                     ply = ply,
                     name = nicks[id],
@@ -649,8 +662,6 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                     swappedWith = swappedWith
                 }
 
-                local groupingRole = finalRole -- Group players in the summary by the team each player ended in...
-                if finalRole == ROLE_ZOMBIE then groupingRole = startingRole end -- ...unless that player ended as a zombie in which case keep them with the team they started as
                 if INNOCENT_ROLES[groupingRole] then
                     table.insert(scores_by_section[ROLE_INNOCENT], playerInfo)
                 elseif TRAITOR_ROLES[groupingRole] or MONSTER_ROLES[groupingRole] then
