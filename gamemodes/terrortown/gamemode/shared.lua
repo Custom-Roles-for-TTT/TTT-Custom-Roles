@@ -593,6 +593,7 @@ function RegisterRole(tbl)
         AddRoleAssociations(INDEPENDENT_ROLES, {roleID})
     elseif tbl.team == ROLE_TEAM_DETECTIVE then
         AddRoleAssociations(DETECTIVE_ROLES, {roleID})
+        AddRoleAssociations(INNOCENT_ROLES, {roleID})
     end
 
     EXTERNAL_ROLE_DESCRIPTIONS[roleID] = tbl.desc

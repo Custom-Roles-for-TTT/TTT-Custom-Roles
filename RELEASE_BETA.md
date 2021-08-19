@@ -5,6 +5,7 @@
 
 ### Fixes
 - Fixed paladin not counting as an innocent
+- Fixed external special detectives not counting as innocent
 
 ### Developer
 - Added TTTScoringSummaryRender client hook to change how players are displayed in the round summary
