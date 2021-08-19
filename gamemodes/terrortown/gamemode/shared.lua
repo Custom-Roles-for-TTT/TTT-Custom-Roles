@@ -1,5 +1,5 @@
 -- Version string for display and function for version checks
-CR_VERSION = "1.1.5"
+CR_VERSION = "1.1.6"
 
 function CRVersion(version)
     local installedVersionRaw = string.Split(CR_VERSION, ".")
@@ -226,22 +226,22 @@ local function FillRoleColors(list, type)
 
     for r = -1, ROLE_MAX do
         if mode == "custom" then
-            if r == ROLE_INNOCENT then
-                local cVarCol = ColorFromCustomConVars("ttt_custom_inn_color")
-                if cVarCol then c = cVarCol
-                else c = COLOR_INNOCENT["default"] end
-            elseif r == ROLE_DETECTIVE then
+            if r == ROLE_DETECTIVE then
                 local cVarCol = ColorFromCustomConVars("ttt_custom_det_color")
                 if cVarCol then c = cVarCol
                 else c = COLOR_DETECTIVE["default"] end
-            elseif INNOCENT_ROLES[r] then
-                local cVarCol = ColorFromCustomConVars("ttt_custom_spec_inn_color")
-                if cVarCol then c = cVarCol
-                else c = COLOR_SPECIAL_INNOCENT["default"] end
             elseif DETECTIVE_ROLES[r] then
                 local cVarCol = ColorFromCustomConVars("ttt_custom_spec_det_color")
                 if cVarCol then c = cVarCol
                 else c = COLOR_SPECIAL_DETECTIVE["default"] end
+            elseif r == ROLE_INNOCENT then
+                local cVarCol = ColorFromCustomConVars("ttt_custom_inn_color")
+                if cVarCol then c = cVarCol
+                else c = COLOR_INNOCENT["default"] end
+            elseif INNOCENT_ROLES[r] then
+                local cVarCol = ColorFromCustomConVars("ttt_custom_spec_inn_color")
+                if cVarCol then c = cVarCol
+                else c = COLOR_SPECIAL_INNOCENT["default"] end
             elseif r == ROLE_TRAITOR then
                 local cVarCol = ColorFromCustomConVars("ttt_custom_tra_color")
                 if cVarCol then c = cVarCol
@@ -264,10 +264,10 @@ local function FillRoleColors(list, type)
                 else c = COLOR_MONSTER["default"] end
             else c = COLOR_WHITE end
         else
-            if r == ROLE_INNOCENT then c = COLOR_INNOCENT[mode]
-            elseif r == ROLE_DETECTIVE then c = COLOR_DETECTIVE[mode]
-            elseif INNOCENT_ROLES[r] then c = COLOR_SPECIAL_INNOCENT[mode]
+            if r == ROLE_DETECTIVE then c = COLOR_DETECTIVE[mode]
             elseif DETECTIVE_ROLES[r] then c = COLOR_SPECIAL_DETECTIVE[mode]
+            elseif r == ROLE_INNOCENT then c = COLOR_INNOCENT[mode]
+            elseif INNOCENT_ROLES[r] then c = COLOR_SPECIAL_INNOCENT[mode]
             elseif r == ROLE_TRAITOR then c = COLOR_TRAITOR[mode]
             elseif TRAITOR_ROLES[r] then c = COLOR_SPECIAL_TRAITOR[mode]
             elseif JESTER_ROLES[r] then c = COLOR_JESTER[mode]

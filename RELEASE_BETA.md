@@ -1,5 +1,11 @@
 # Beta Release Notes
 
+## 1.1.6
+**Released:**
+
+### Fixes
+- Fixed special detectives using special innocent colors
+
 ## 1.1.5
 **Released: August 19th, 2021**
 
