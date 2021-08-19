@@ -1,7 +1,7 @@
 # Beta Release Notes
 
 ## 1.1.5
-**Released:**
+**Released: August 19th, 2021**
 
 ### Fixes
 - Fixed paladin not counting as an innocent
