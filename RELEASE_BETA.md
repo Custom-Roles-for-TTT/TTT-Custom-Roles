@@ -6,6 +6,9 @@
 ### Fixes
 - Fixed special detectives using special innocent colors
 
+### Developer
+- Added oldmanwins parameter to TTTScoringWinTitle hook
+
 ## 1.1.5
 **Released: August 19th, 2021**
 
