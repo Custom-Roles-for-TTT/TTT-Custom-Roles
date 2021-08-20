@@ -6,6 +6,7 @@
 ### Fixes
 - Fixed special detectives using special innocent colors
 - Fixed not being able to use weapons when ttt_weaponswitcher_stay was enabled and ttt_weaponswitcher_fast was disabled
+- Fixed error when trying to calculate the height of some models
 
 ### Developer
 - Added oldmanwins parameter to TTTScoringWinTitle hook
