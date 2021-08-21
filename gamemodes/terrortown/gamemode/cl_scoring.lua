@@ -355,7 +355,7 @@ local function ValidAward(a)
 end
 
 local function GetWinTitle(wintype)
-    local wintitle = {
+    local wintitles = {
         [WIN_INNOCENT] = { txt = "hilite_win_role_plural", params = { role = ROLE_STRINGS_PLURAL[ROLE_INNOCENT]:upper() }, c = ROLE_COLORS[ROLE_INNOCENT] },
         [WIN_TRAITOR] = { txt = "hilite_win_role_plural", params = { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]:upper() }, c = ROLE_COLORS[ROLE_TRAITOR] },
         [WIN_JESTER] = { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_JESTER]:upper() }, c = ROLE_COLORS[ROLE_JESTER] },
@@ -364,8 +364,8 @@ local function GetWinTitle(wintype)
         [WIN_ZOMBIE] = { txt = "hilite_win_role_plural", params = { role = ROLE_STRINGS_PLURAL[ROLE_ZOMBIE]:upper() }, c = ROLE_COLORS[ROLE_ZOMBIE] },
         [WIN_MONSTER] = { txt = "hilite_win_role_plural", params = { role = "MONSTERS" }, c = ROLE_COLORS[ROLE_ZOMBIE] }
     }
-    local title = wintitle[wintype]
-    local new_title = hook.Call("TTTScoringWinTitle", nil, wintype, wintitle, title)
+    local title = wintitles[wintype]
+    local new_title = hook.Call("TTTScoringWinTitle", nil, wintype, wintitles, title, oldman_wins)
     if new_title then
         title = new_title
     end

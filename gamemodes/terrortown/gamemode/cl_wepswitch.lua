@@ -31,6 +31,7 @@ local barcorner = surface.GetTextureID("gui/corner8")
 
 local last_slot = -1
 local last_kind = -1
+local selection_changed = false
 
 local function GetColors(dark)
     if dark then
@@ -250,6 +251,7 @@ function WSWITCH:DoSelect(idx)
         last_slot = -1
         last_kind = -1
     end
+    selection_changed = true
 
     if self.cv.fast:GetBool() then
         -- immediately confirm if fastswitch is on
@@ -304,6 +306,7 @@ function WSWITCH:ConfirmSelection(noHide)
 
     for k, w in pairs(self.WeaponCache) do
         if k == self.Selected and IsValid(w) then
+            selection_changed = false
             input.SelectWeapon(w)
             return
         end
@@ -312,7 +315,7 @@ end
 
 -- Allow for suppression of the attack command
 function WSWITCH:PreventAttack()
-    return self.Show and (not self.cv.fast:GetBool())
+    return self.Show and (not self.cv.fast:GetBool()) and (not self.cv.stay:GetBool() or selection_changed)
 end
 
 function WSWITCH:Think()

@@ -428,13 +428,14 @@ This document aims to explain the things that we have added to Custom Roles for 
 
 *NOTE:* You must return a non-*nil* value for all of the properties or the hook results will be ignored
 
-**TTTScoringWinTitle(wintype, wintitle, title)** - Called before the round summary screen is shown with the winning team. Return the win title object to use on the summary screen.\
+**TTTScoringWinTitle(wintype, wintitles, title, oldmanwins)** - Called before each round summary screen is shown with the winning team. Return the win title object to use on the summary screen.\
 *Realm:* Client\
 *Added in:* 1.0.14\
 *Parameters:*
 - *wintype* - The round win type
-- *wintitle* - Table of default win title parameters
+- *wintitles* - Table of default win title parameters
 - *title* - The currently selected win title
+- *oldmanwins* - Whether the old man also won this round *(Added in 1.1.6)*
 
 *Return:*
 - *new_title*
