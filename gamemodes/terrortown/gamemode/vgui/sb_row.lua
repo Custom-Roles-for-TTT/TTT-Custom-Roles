@@ -123,7 +123,8 @@ function GM:TTTScoreboardRowColorForPlayer(ply)
         return ROLE_CLOWN
     end
 
-    local hideBeggar = ply:GetNWBool("WasBeggar", false) and not GetGlobalInt("ttt_beggar_reveal_traitor", 1)
+    local beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", 1)
+    local hideBeggar = ply:GetNWBool("WasBeggar", false) and (beggarMode == BEGGAR_REVEAL_NONE or beggarMode == BEGGAR_REVEAL_INNOCENTS)
     local showJester = ((ply:IsJesterTeam() and not ply:GetNWBool("KillerClownActive", false)) or ((ply:IsTraitor() or ply:IsInnocent()) and hideBeggar)) and not ShouldHideJesters(client)
     local glitchMode = GetGlobalInt("ttt_glitch_mode", 0)
 

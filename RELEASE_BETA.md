@@ -1,5 +1,11 @@
 # Beta Release Notes
 
+## 1.1.7
+**Released:**
+
+### Fixes
+- Fixed beggar role being revealed on a traitor's scoreboard even if ttt_beggar_reveal_traitor was 0
+
 ## 1.1.6
 **Released: August 21st, 2021**
 
