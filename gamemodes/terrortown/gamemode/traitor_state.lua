@@ -324,6 +324,20 @@ local function force_madscientist(ply)
 end
 concommand.Add("ttt_force_madscientist", force_madscientist, nil, nil, FCVAR_CHEAT)
 
+local function force_paladin(ply)
+    ply:SetRoleAndBroadcast(ROLE_PALADIN)
+    clear_role_effects(ply)
+    SendFullStateUpdate()
+end
+concommand.Add("ttt_force_paladin", force_paladin, nil, nil, FCVAR_CHEAT)
+
+local function force_tracker(ply)
+    ply:SetRoleAndBroadcast(ROLE_TRACKER)
+    clear_role_effects(ply)
+    SendFullStateUpdate()
+end
+concommand.Add("ttt_force_tracker", force_tracker, nil, nil, FCVAR_CHEAT)
+
 local function force_spectate(ply, cmd, arg)
     if IsValid(ply) then
         if #arg == 1 and tonumber(arg[1]) == 0 then

@@ -31,7 +31,7 @@ ttt_special_traitor_pct                     0.33    // Percentage of traitors, r
 ttt_special_traitor_chance                  0.5     // The chance that a "special traitor" will spawn in each available slot made by "ttt_special_traitor_pct"
 ttt_special_innocent_pct                    0.33    // Percentage of innocents, rounded up, that can spawn as a "special innocent" (e.g. glitch, phantom, etc.)
 ttt_special_innocent_chance                 0.5     // The chance that a "special innocent" will spawn in each available slot made by "ttt_special_innocent_pct"
-ttt_special_detective_pct                   0.33    // Percentage of detectives, rounded up, that can spawn as a "special detectives" (e.g. paladin, etc.)
+ttt_special_detective_pct                   0.33    // Percentage of detectives, rounded up, that can spawn as a "special detectives" (e.g. paladin, tracker, etc.)
 ttt_special_detective_chance                0.5     // The chance that a "special detectives" will spawn in each available slot made by "ttt_special_detectives_pct"
 ttt_monster_pct                             0.33    // Percentage of innocents, rounded up, that can spawn as a "monster" (e.g. zombie, vampire)
 ttt_monster_chance                          0.5     // The chance that a "monster" will spawn in each available slot made by "ttt_monster_pct"
@@ -55,6 +55,7 @@ ttt_doctor_enabled                          0       // Whether or not the doctor
 ttt_trickster_enabled                       0       // Whether or not the trickster should spawn
 ttt_paramedic_enabled                       0       // Whether or not the paramedic should spawn
 ttt_paladin_enabled                         0       // Whether or not the paladin should spawn
+ttt_tracker_enabled                         0       // Whether or not the tracker should spawn
 ttt_jester_enabled                          0       // Whether or not the jester should spawn
 ttt_swapper_enabled                         0       // Whether or not the swapper should spawn
 ttt_clown_enabled                           0       // Whether or not the clown should spawn
@@ -83,6 +84,7 @@ ttt_doctor_spawn_weight                     1       // The weight assigned to sp
 ttt_trickster_spawn_weight                  1       // The weight assigned to spawning the trickster
 ttt_paramedic_spawn_weight                  1       // The weight assigned to spawning the paramedic
 ttt_paladin_spawn_weight                    1       // The weight assigned to spawning the paladin
+ttt_tracker_spawn_weight                    1       // The weight assigned to spawning the tracker
 ttt_jester_spawn_weight                     1       // The weight assigned to spawning the jester
 ttt_swapper_spawn_weight                    1       // The weight assigned to spawning the swapper
 ttt_clown_spawn_weight                      1       // The weight assigned to spawning the clown
@@ -112,6 +114,7 @@ ttt_doctor_min_players                      0       // The minimum number of pla
 ttt_trickster_min_players                   0       // The minimum number of players required to spawn the trickster
 ttt_paramedic_min_players                   0       // The minimum number of players required to spawn the paramedic
 ttt_paladin_min_players                     0       // The minimum number of players required to spawn the paladin
+ttt_tracker_min_players                     0       // The minimum number of players required to spawn the tracker
 ttt_jester_min_players                      0       // The minimum number of players required to spawn the jester
 ttt_swapper_min_players                     0       // The minimum number of players required to spawn the swapper
 ttt_clown_min_players                       0       // The minimum number of players required to spawn the clown
@@ -229,8 +232,11 @@ ttt_all_search_postround                    1       // Whether non-detectives ca
 
 // Paladin
 ttt_paladin_aura_radius                     5       // The radius of the paladins aura in meters
-ttt_paladin_damage_reduction                0.2     // The fraction an attacker's damage will be reduced by when they are shooting a player inside the paladin's aura
+ttt_paladin_damage_reduction                0.3     // The fraction an attacker's damage will be reduced by when they are shooting a player inside the paladin's aura
 ttt_paladin_heal_rate                       1       // The amount of heal a player inside the paladin's aura will heal each second
+
+ttt_tracker_footstep_time                   15      // The amount of time players' footsteps should show to the tracker before fading. Set to 0 to disable
+ttt_tracker_footstep_color                  1       // Whether players' footsteps should have different colors
 
 // ----------------------------------------
 
@@ -392,6 +398,7 @@ ttt_parasite_shop_sync                      0       // Whether Parasites should 
 
 // Detective Role Shop Sync (Server or round must be restarted for changes to take effect)
 ttt_paladin_shop_sync                       0       // Whether Paladins should have all weapons that vanilla detectives have in their weapon shop
+ttt_tracker_shop_sync                       0       // Whether Trackers should have all weapons that vanilla detectives have in their weapon shop
 
 // ----------------------------------------
 
@@ -416,6 +423,7 @@ ttt_trickster_starting_health               100     // The amount of health the 
 ttt_paramedic_starting_health               100     // The amount of health the paramedic starts with
 ttt_detective_starting_health               100     // The amount of health the detective starts with
 ttt_paladin_starting_health                 100     // The amount of health the paladin starts with
+ttt_tracker_starting_health                 100     // The amount of health the tracker starts with
 ttt_jester_starting_health                  100     // The amount of health the jester starts with
 ttt_swapper_starting_health                 100     // The amount of health the swapper starts with
 ttt_clown_starting_health                   100     // The amount of health the clown starts with
@@ -447,6 +455,7 @@ ttt_trickster_max_health                    100     // The maximum amount of hea
 ttt_paramedic_max_health                    100     // The maximum amount of health the paramedic can have
 ttt_detective_max_health                    100     // The maximum amount of health the detective can have
 ttt_paladin_max_health                      100     // The maximum amount of health the paladin can have
+ttt_tracker_max_health                      100     // The maximum amount of health the tracker can have
 ttt_jester_max_health                       100     // The maximum amount of health the jester can have
 ttt_swapper_max_health                      100     // The maximum amount of health the swapper can have
 ttt_clown_max_health                        100     // The maximum amount of health the clown can have

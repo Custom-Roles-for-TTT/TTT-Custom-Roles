@@ -168,8 +168,11 @@ CreateConVar("ttt_detective_search_only", "1")
 CreateConVar("ttt_all_search_postround", "1")
 
 CreateConVar("ttt_paladin_aura_radius", "5")
-CreateConVar("ttt_paladin_damage_reduction", "0.2")
+CreateConVar("ttt_paladin_damage_reduction", "0.3")
 CreateConVar("ttt_paladin_heal_rate", "1")
+
+CreateConVar("ttt_tracker_footstep_time", "15")
+CreateConVar("ttt_tracker_footstep_color", "1")
 
 -- Jester role properties
 CreateConVar("ttt_jesters_trigger_traitor_testers", "1")
@@ -639,6 +642,8 @@ function GM:SyncGlobals()
 
     SetGlobalFloat("ttt_paladin_aura_radius", GetConVar("ttt_paladin_aura_radius"):GetInt() * 52.49)
 
+    SetGlobalInt("ttt_tracker_footstep_time", GetConVar("ttt_tracker_footstep_time"):GetInt())
+
     SetGlobalBool("ttt_traitor_vision_enable", GetConVar("ttt_traitor_vision_enable"):GetBool())
 
     SetGlobalBool("ttt_assassin_show_target_icon", GetConVar("ttt_assassin_show_target_icon"):GetBool())
@@ -989,6 +994,7 @@ function PrepareRound()
         timer.Remove(v:Nick() .. "InfectionProgress")
         timer.Remove(v:Nick() .. "InfectingSpectate")
         v:SetNWInt("GlitchBluff", ROLE_TRAITOR)
+        v:SetNWVector("TrackerColor", Vector(1, 1, 1))
         -- Keep previous naming scheme for backwards compatibility
         v:SetNWBool("zombie_prime", false)
         v:SetNWBool("vampire_prime", false)
@@ -1403,9 +1409,23 @@ function BeginRound()
             end
         end
 
-        -- Glitch Logic
+        -- Glitch logic
         if role == ROLE_GLITCH then
             SetGlobalBool("ttt_glitch_round", true)
+        end
+
+        -- Tracker logic
+        if role == ROLE_TRACKER then
+            local trackerColor = GetConVar("ttt_tracker_footstep_color"):GetBool()
+            for _, p in pairs(player.GetAll()) do
+                local vec = Vector(1, 1, 1)
+                if trackerColor then
+                    vec.x = math.Rand(0, 1)
+                    vec.y = math.Rand(0, 1)
+                    vec.z = math.Rand(0, 1)
+                end
+                p:SetNWVector("TrackerColor", vec)
+            end
         end
 
         SetRoleHealth(v)
@@ -2054,6 +2074,11 @@ function SelectRoles()
         if not hasRole[ROLE_PALADIN] and GetConVar("ttt_paladin_enabled"):GetBool() and choice_count >= GetConVar("ttt_paladin_min_players"):GetInt() then
             for _ = 1, GetConVar("ttt_paladin_spawn_weight"):GetInt() do
                 table.insert(specialDetectiveRoles, ROLE_PALADIN)
+            end
+        end
+        if not hasRole[ROLE_TRACKER] and GetConVar("ttt_tracker_enabled"):GetBool() and choice_count >= GetConVar("ttt_tracker_min_players"):GetInt() then
+            for _ = 1, GetConVar("ttt_tracker_spawn_weight"):GetInt() do
+                table.insert(specialDetectiveRoles, ROLE_TRACKER)
             end
         end
         for _ = 1, max_special_detective_count do

@@ -75,8 +75,9 @@ ROLE_TRICKSTER = 25
 ROLE_PARAMEDIC = 26
 ROLE_MADSCIENTIST = 27
 ROLE_PALADIN = 28
+ROLE_TRACKER = 29
 
-ROLE_MAX = 28
+ROLE_MAX = 29
 ROLE_EXTERNAL_START = ROLE_MAX + 1
 
 local function AddRoleAssociations(list, roles)
@@ -98,13 +99,13 @@ function GetTeamRoles(list)
 end
 
 SHOP_ROLES = {}
-AddRoleAssociations(SHOP_ROLES, {ROLE_TRAITOR, ROLE_DETECTIVE, ROLE_HYPNOTIST, ROLE_DEPUTY, ROLE_IMPERSONATOR, ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_MERCENARY, ROLE_ASSASSIN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_VAMPIRE, ROLE_DOCTOR, ROLE_QUACK, ROLE_PARASITE, ROLE_PALADIN})
+AddRoleAssociations(SHOP_ROLES, {ROLE_TRAITOR, ROLE_DETECTIVE, ROLE_HYPNOTIST, ROLE_DEPUTY, ROLE_IMPERSONATOR, ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_MERCENARY, ROLE_ASSASSIN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_VAMPIRE, ROLE_DOCTOR, ROLE_QUACK, ROLE_PARASITE, ROLE_PALADIN, ROLE_TRACKER})
 
 TRAITOR_ROLES = {}
 AddRoleAssociations(TRAITOR_ROLES, {ROLE_TRAITOR, ROLE_HYPNOTIST, ROLE_IMPERSONATOR, ROLE_ASSASSIN, ROLE_VAMPIRE, ROLE_QUACK, ROLE_PARASITE})
 
 INNOCENT_ROLES = {}
-AddRoleAssociations(INNOCENT_ROLES, {ROLE_INNOCENT, ROLE_DETECTIVE, ROLE_GLITCH, ROLE_PHANTOM, ROLE_REVENGER, ROLE_DEPUTY, ROLE_MERCENARY, ROLE_VETERAN, ROLE_DOCTOR, ROLE_TRICKSTER, ROLE_PARAMEDIC, ROLE_PALADIN})
+AddRoleAssociations(INNOCENT_ROLES, {ROLE_INNOCENT, ROLE_DETECTIVE, ROLE_GLITCH, ROLE_PHANTOM, ROLE_REVENGER, ROLE_DEPUTY, ROLE_MERCENARY, ROLE_VETERAN, ROLE_DOCTOR, ROLE_TRICKSTER, ROLE_PARAMEDIC, ROLE_PALADIN, ROLE_TRACKER})
 
 JESTER_ROLES = {}
 AddRoleAssociations(JESTER_ROLES, {ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_BEGGAR, ROLE_BODYSNATCHER})
@@ -116,7 +117,7 @@ MONSTER_ROLES = {}
 AddRoleAssociations(MONSTER_ROLES, {})
 
 DETECTIVE_ROLES = {}
-AddRoleAssociations(DETECTIVE_ROLES, {ROLE_DETECTIVE, ROLE_PALADIN})
+AddRoleAssociations(DETECTIVE_ROLES, {ROLE_DETECTIVE, ROLE_PALADIN, ROLE_TRACKER})
 
 DEFAULT_ROLES = {}
 AddRoleAssociations(DEFAULT_ROLES, {ROLE_INNOCENT, ROLE_TRAITOR, ROLE_DETECTIVE})
@@ -364,7 +365,8 @@ ROLE_STRINGS_RAW = {
     [ROLE_TRICKSTER] = "trickster",
     [ROLE_PARAMEDIC] = "paramedic",
     [ROLE_MADSCIENTIST] = "madscientist",
-    [ROLE_PALADIN] = "paladin"
+    [ROLE_PALADIN] = "paladin",
+    [ROLE_TRACKER] = "tracker"
 }
 
 ROLE_STRINGS = {
@@ -396,7 +398,8 @@ ROLE_STRINGS = {
     [ROLE_TRICKSTER] = "Trickster",
     [ROLE_PARAMEDIC] = "Paramedic",
     [ROLE_MADSCIENTIST] = "Mad Scientist",
-    [ROLE_PALADIN] = "Paladin"
+    [ROLE_PALADIN] = "Paladin",
+    [ROLE_TRACKER] = "Tracker"
 }
 
 ROLE_STRINGS_PLURAL = {
@@ -428,7 +431,8 @@ ROLE_STRINGS_PLURAL = {
     [ROLE_TRICKSTER] = "Tricksters",
     [ROLE_PARAMEDIC] = "Paramedics",
     [ROLE_MADSCIENTIST] = "Mad Scientists",
-    [ROLE_PALADIN] = "Paladins"
+    [ROLE_PALADIN] = "Paladins",
+    [ROLE_TRACKER] = "Trackers"
 }
 
 ROLE_STRINGS_EXT = {
@@ -461,7 +465,8 @@ ROLE_STRINGS_EXT = {
     [ROLE_TRICKSTER] = "a Trickster",
     [ROLE_PARAMEDIC] = "a Paramedic",
     [ROLE_MADSCIENTIST] = "a Mad Scientist",
-    [ROLE_PALADIN] = "a Paladin"
+    [ROLE_PALADIN] = "a Paladin",
+    [ROLE_TRACKER] = "a Tracker"
 }
 
 ROLE_STRINGS_SHORT = {
@@ -493,7 +498,8 @@ ROLE_STRINGS_SHORT = {
     [ROLE_TRICKSTER] = "tri",
     [ROLE_PARAMEDIC] = "med",
     [ROLE_MADSCIENTIST] = "mad",
-    [ROLE_PALADIN] = "pal"
+    [ROLE_PALADIN] = "pal",
+    [ROLE_TRACKER] = "trk"
 }
 
 function StartsWithVowel(word)
@@ -836,10 +842,10 @@ end
 function GM:PlayerFootstep(ply, pos, foot, sound, volume, rf)
     if not IsValid(ply) or ply:IsSpec() or not ply:Alive() then return true end
 
-    if SERVER then
+    if SERVER and ply:WaterLevel() == 0 then
         -- This player killed a Phantom. Tell everyone where their foot steps should go
         local phantom_killer_footstep_time = GetConVar("ttt_phantom_killer_footstep_time"):GetInt()
-        if phantom_killer_footstep_time > 0 and ply:GetNWBool("Haunted", false) and ply:WaterLevel() == 0 then
+        if phantom_killer_footstep_time > 0 and ply:GetNWBool("Haunted", false) then
             net.Start("TTT_PlayerFootstep")
             net.WriteEntity(ply)
             net.WriteVector(pos)
@@ -848,6 +854,25 @@ function GM:PlayerFootstep(ply, pos, foot, sound, volume, rf)
             net.WriteTable(Color(138, 4, 4))
             net.WriteUInt(phantom_killer_footstep_time, 8)
             net.Broadcast()
+        end
+
+        local tracker_footstep_time = GetConVar("ttt_tracker_footstep_time"):GetInt()
+        if tracker_footstep_time > 0 and not ply:IsTracker() then
+            net.Start("TTT_PlayerFootstep")
+            net.WriteEntity(ply)
+            net.WriteVector(pos)
+            net.WriteAngle(ply:GetAimVector():Angle())
+            net.WriteBit(foot)
+            local col = ply:GetNWVector("TrackerColor", Vector(1, 1, 1))
+            net.WriteTable(Color(col.x * 255, col.y * 255, col.z * 255))
+            net.WriteUInt(tracker_footstep_time, 8)
+            local tab = {}
+            for k, ply in pairs(player.GetAll()) do
+                if ply:IsActiveTracker() then
+                    table.insert(tab, ply)
+                end
+            end
+            net.Send(tab)
         end
     end
 

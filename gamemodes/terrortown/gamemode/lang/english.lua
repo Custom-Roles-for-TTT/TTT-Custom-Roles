@@ -784,6 +784,12 @@ Keep your friends close but definitely don't let your enemies closer!
 
 Press {menukey} to receive your equipment!]]
 
+L.info_popup_tracker = [[You are {role}! As {adetective}, HQ has given you special resources to find the {traitors}.
+You can see players' footsteps and follow their trails.
+Use your skills to keep an eye on where players have been.
+
+Press {menukey} to receive your equipment!]]
+
 L.info_popup_monster_comrades = [[Work with your allies to kill all others.
 
 These are your comrades:

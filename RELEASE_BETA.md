@@ -1,7 +1,14 @@
 # Beta Release Notes
 
 ## 1.1.6
-**Released:**
+**Released: August 21st, 2021**
+
+### Additions
+- Added the tracker
+- Added missing force_paladin command
+
+### Changes
+- Changed paladin default damage reduction to 30%
 
 ### Fixes
 - Fixed special detectives using special innocent colors

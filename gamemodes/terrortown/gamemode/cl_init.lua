@@ -1093,7 +1093,7 @@ local function DrawFootprints()
     cam.End3D()
 end
 
-local function AddFootstep(ply, pos, ang, foot, col, fade_time)
+function AddFootstep(ply, pos, ang, foot, col, fade_time)
     ang.p = 0
     ang.r = 0
     local fpos = pos
