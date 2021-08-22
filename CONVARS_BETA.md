@@ -268,6 +268,7 @@ ttt_clown_activation_credits                0       // The number of credits to 
 ttt_clown_hide_when_active                  0       // Whether the clown should be hidden from other players' Target ID (overhead icons) when they are activated. Server or round must be restarted for changes to take effect
 ttt_clown_show_target_icon                  0       // Whether the clown has an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect
 ttt_clown_heal_on_activate                  0       // Whether the clown should fully heal when they activate or not
+ttt_clown_heal_bonus                        0       // The amount of bonus health to give the clown if they are healed when they are activated
 ttt_clown_shop_active_only                  1       // Whether the clown's shop should be available only after they activate
 ttt_clown_shop_delay                        0       // Whether the clown's purchased shop items should be held until they activate
 ttt_clown_credits_starting                  0       // The number of credits a clown should start with
@@ -498,7 +499,7 @@ In TTT some roles have shops where they are allowed to purchase weapons. Given t
 
 ### *Adding Weapons*
 
-To add weapons to a role (that already has a shop), create a .txt file with the weapon class (e.g. weapon_ttt_somethingcool.txt) in the garrysmod/data/roleweapons/{rolename} folder.\
+To add weapons to a role (that already has a shop), create an empty .txt file with the weapon class (e.g. weapon_ttt_somethingcool.txt) in the garrysmod/data/roleweapons/{rolename} folder.\
 **NOTE**: If the _roleweapons_ folder does not already exist in garrysmod/data, create it.\
 **NOTE**: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective/weapon_ttt_somethingcool.txt
 
@@ -508,7 +509,7 @@ Also note the ttt_shop_* ConVars that are available above which can help control
 
 At the same time, there are some workshop weapons that are given to multiple roles that maybe you don't want to be available to certain roles. In order to handle that case, the ability to exclude weapons from a role's weapon shop has been added.
 
-To remove weapons from a role's shop, create a .exclude.txt file with the weapon class (e.g. weapon_ttt_somethingcool.exclude.txt) in the garrysmod/data/roleweapons/{rolename} folder.\
+To remove weapons from a role's shop, create an empty .exclude.txt file with the weapon class (e.g. weapon_ttt_somethingcool.exclude.txt) in the garrysmod/data/roleweapons/{rolename} folder.\
 **NOTE**: If the _roleweapons_ folder does not already exist in garrysmod/data, create it.\
 **NOTE**: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective/weapon_ttt_somethingcool.exclude.txt
 
@@ -516,7 +517,7 @@ To remove weapons from a role's shop, create a .exclude.txt file with the weapon
 
 With the addition of the Shop Randomization feature (and the ttt_shop_random_* ConVars), weapons may not always appear in the shop (which is the point). If, however, you want certain weapons to _always_ be in the shop while other weapons are randomized, the ability to bypass shop randomization for a weapon in a role's weapon shop has been added.
 
-To stop a weapon from being removed from a role's shop via randomization, create a .norandom.txt file with the weapon class (e.g. weapon_ttt_somethingcool.norandom.txt) in the garrysmod/data/roleweapons/{rolename} folder.\
+To stop a weapon from being removed from a role's shop via randomization, create an empty .norandom.txt file with the weapon class (e.g. weapon_ttt_somethingcool.norandom.txt) in the garrysmod/data/roleweapons/{rolename} folder.\
 **NOTE**: If the _roleweapons_ folder does not already exist in garrysmod/data, create it.\
 **NOTE**: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective/weapon_ttt_somethingcool.norandom.txt
 
@@ -531,7 +532,7 @@ To find the class name of a weapon to use above, follow the steps below
 ### **Equipment**
 ### *Adding Equipment*
 
-Equipment are items that a role can use that do not take up a weapon slot, such as the body armor or radar. To add equipment items to a role (that already has a shop), create a .txt file with the equipment item's name (e.g. "bruh bunker.txt") in the garrysmod/data/roleweapons/{rolename} folder.\
+Equipment are items that a role can use that do not take up a weapon slot, such as the body armor or radar. To add equipment items to a role (that already has a shop), create an empty .txt file with the equipment item's name (e.g. "bruh bunker.txt") in the garrysmod/data/roleweapons/{rolename} folder.\
 **NOTE**: If the _roleweapons_ folder does not already exist in garrysmod/data, create it.\
 **NOTE**: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective/bruh bunker.txt
 
@@ -539,7 +540,7 @@ Equipment are items that a role can use that do not take up a weapon slot, such 
 
 Similarly there are some equipment items that you want to prevent a specific role from buying. To handle that case, the addon has the ability to exclude specific equipment items from the shop in a similar way.
 
-To remove equipment from a role's shop, create a .exclude.txt file with the item's name (e.g. "bruh bunker.exclude.txt") in the garrysmod/data/roleweapons/{rolename} folder.\
+To remove equipment from a role's shop, create an empty .exclude.txt file with the item's name (e.g. "bruh bunker.exclude.txt") in the garrysmod/data/roleweapons/{rolename} folder.\
 **NOTE**: If the _roleweapons_ folder does not already exist in garrysmod/data, create it.\
 **NOTE**: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective/bruh bunker.exclude.txt
 
