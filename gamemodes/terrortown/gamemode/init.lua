@@ -197,6 +197,7 @@ CreateConVar("ttt_clown_activation_credits", "0")
 CreateConVar("ttt_clown_hide_when_active", "0")
 CreateConVar("ttt_clown_show_target_icon", "0")
 CreateConVar("ttt_clown_heal_on_activate", "0")
+CreateConVar("ttt_clown_heal_bonus", "0")
 CreateConVar("ttt_clown_shop_active_only", "1")
 CreateConVar("ttt_clown_shop_delay", "0")
 
@@ -1754,7 +1755,15 @@ function GM:TTTCheckForWin()
                     v:PrintMessage(HUD_PRINTCENTER, "KILL THEM ALL!")
                     v:AddCredits(GetConVar("ttt_clown_activation_credits"):GetInt())
                     if GetConVar("ttt_clown_heal_on_activate"):GetBool() then
-                        v:SetHealth(v:GetMaxHealth())
+                        local heal_bonus = GetConVar("ttt_clown_heal_bonus"):GetInt()
+                        local health = v:GetMaxHealth() + heal_bonus
+
+                        v:SetHealth(health)
+                        if heal_bonus > 0 then
+                            v:PrintMessage(HUD_PRINTTALK, "You have been fully healed (with a bonus)!")
+                        else
+                            v:PrintMessage(HUD_PRINTTALK, "You have been fully healed!")
+                        end
                     end
                     net.Start("TTT_ClownActivate")
                     net.WriteEntity(v)
