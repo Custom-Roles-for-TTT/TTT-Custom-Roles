@@ -556,7 +556,8 @@ ROLE_TEAM_INNOCENT = 0
 ROLE_TEAM_TRAITOR = 1
 ROLE_TEAM_JESTER = 2
 ROLE_TEAM_INDEPENDENT = 3
-ROLE_TEAM_DETECTIVE = 4
+ROLE_TEAM_MONSTER = 4
+ROLE_TEAM_DETECTIVE = 5
 
 EXTERNAL_ROLE_DESCRIPTIONS = {}
 EXTERNAL_ROLE_SHOP_ITEMS = {}
@@ -603,6 +604,8 @@ function RegisterRole(tbl)
         AddRoleAssociations(JESTER_ROLES, {roleID})
     elseif tbl.team == ROLE_TEAM_INDEPENDENT then
         AddRoleAssociations(INDEPENDENT_ROLES, {roleID})
+    elseif tbl.team == ROLE_TEAM_MONSTER then
+        AddRoleAssociations(MONSTER_ROLES, {roleID})
     elseif tbl.team == ROLE_TEAM_DETECTIVE then
         AddRoleAssociations(DETECTIVE_ROLES, {roleID})
         AddRoleAssociations(INNOCENT_ROLES, {roleID})

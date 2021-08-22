@@ -372,17 +372,21 @@ local function GetWinTitle(wintype)
 
     -- If this was a monster win, check that both roles are part of the monsters team still
     if wintype == WIN_MONSTER then
-        -- If Zombies are not monsters then Vampires win
-        if not MONSTER_ROLES[ROLE_ZOMBIE] then
+        -- If Vampire are the only monsters then vampires win
+        if #MONSTER_ROLES == 1 and MONSTER_ROLES[ROLE_VAMPIRE] then
             title.params = { role = ROLE_STRINGS_PLURAL[ROLE_VAMPIRE]:upper() }
-            -- Also make sure to override the color because they will be different
-            title.c = ROLE_COLORS[ROLE_VAMPIRE]
-            -- And vice versa
-        elseif not MONSTER_ROLES[ROLE_VAMPIRE] then
+        -- And the same for zombies
+        elseif #MONSTER_ROLES == 1 and MONSTER_ROLES[ROLE_ZOMBIE] then
             title.params = { role = ROLE_STRINGS_PLURAL[ROLE_ZOMBIE]:upper() }
-            -- Otherwise the monsters legit win
+        -- Otherwise the monsters legit win
         else
             title.params = { role = "MONSTERS" }
+        end
+
+        -- Also make sure to override the color if zombies arent monsters
+        if not MONSTER_ROLES[ROLE_ZOMBIE] then
+            local monsters = GetTeamRoles(MONSTER_ROLES)
+            title.c = ROLE_COLORS[monsters[1]]
         end
     end
 

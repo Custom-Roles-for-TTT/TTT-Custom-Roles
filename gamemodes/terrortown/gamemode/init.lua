@@ -1533,12 +1533,12 @@ function PrintResultMessage(type)
         LANG.Msg("win_killer", { role = ROLE_STRINGS_PLURAL[ROLE_KILLER] })
         ServerLog("Result: " .. ROLE_STRINGS[ROLE_KILLER] .. " wins.\n")
     elseif type == WIN_MONSTER then
-        -- If Zombies are not monsters then Vampires win
-        if not MONSTER_ROLES[ROLE_ZOMBIE] then
+        -- If Vampire are the only monsters then vampires win
+        if #MONSTER_ROLES == 1 and MONSTER_ROLES[ROLE_VAMPIRE] then
             LANG.Msg("win_vampires", { role = ROLE_STRINGS_PLURAL[ROLE_VAMPIRE] })
             ServerLog("Result: " .. ROLE_STRINGS_PLURAL[ROLE_VAMPIRE] .. " win.\n")
-        -- And vice versa
-        elseif not MONSTER_ROLES[ROLE_VAMPIRE] then
+        -- And the same for zombies
+        elseif #MONSTER_ROLES == 1 and MONSTER_ROLES[ROLE_ZOMBIE] then
             LANG.Msg("win_zombies", { role = ROLE_STRINGS_PLURAL[ROLE_ZOMBIE] })
             ServerLog("Result: " .. ROLE_STRINGS_PLURAL[ROLE_ZOMBIE] .. " win.\n")
         -- Otherwise the monsters legit win

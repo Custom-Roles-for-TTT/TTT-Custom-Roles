@@ -1,13 +1,14 @@
 # Beta Release Notes
 
 ## 1.1.7
-**Released: **
+**Released: August 22nd, 2021**
 
 ### Additions
 - Added the medium
 - Added the ability to give clowns bonus health if they are healed when they are activated
 - Added message to the clown if they are healed when they activate
 - Added role name to mouseover for icons on the round summary
+- Added monster support for external roles
 
 ### Changes
 - Changes bloody phantom killer footsteps to have priority over tracker footsteps
