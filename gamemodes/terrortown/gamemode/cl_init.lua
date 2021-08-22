@@ -432,7 +432,7 @@ function GM:Think()
                     if client:GetPos():Distance(pos) <= 3000 then
                         v.WispEmitter:SetPos(pos)
                         v.WispNextPart = CurTime() + math.Rand(0.003, 0.01)
-                        local particle = v.WispEmitter:Add("particle/wisp.vmt", v:LocalToWorld(vec))
+                        local particle = v.WispEmitter:Add("particle/wisp.vmt", pos)
                         particle:SetVelocity(Vector(0, 0, 30))
                         particle:SetDieTime(1)
                         particle:SetStartAlpha(math.random(150, 220))
