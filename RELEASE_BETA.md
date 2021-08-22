@@ -1,5 +1,11 @@
 # Beta Release Notes
 
+## 1.1.8
+
+### Developer
+- Changed more aspects of core role creation to be dynamic
+  - Adding icons to the download list
+
 ## 1.1.7
 **Released: August 22nd, 2021**
 

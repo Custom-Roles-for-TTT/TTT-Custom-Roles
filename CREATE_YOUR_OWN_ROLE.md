@@ -41,11 +41,6 @@ RegisterRole(ROLE)
   
 if SERVER then  
 	AddCSLuaFile()
-	resource.AddFile("materials/vgui/ttt/icon_%NAMESHORT%.vmt")  
-	resource.AddFile("materials/vgui/ttt/sprite_%NAMESHORT%.vmt")  
-	resource.AddSingleFile("materials/vgui/ttt/sprite_%NAMESHORT%_noz.vmt")  
-	resource.AddSingleFile("materials/vgui/ttt/score_%NAMESHORT%.png")  
-	resource.AddSingleFile("materials/vgui/ttt/tab_%NAMESHORT%.png")  
 end
 ```
 
@@ -257,27 +252,10 @@ Finally we have this block of code:
 ```lua
 if SERVER then  
 	AddCSLuaFile()
-	resource.AddFile("materials/vgui/ttt/icon_%NAMESHORT%.vmt")  
-	resource.AddFile("materials/vgui/ttt/sprite_%NAMESHORT%.vmt")  
-	resource.AddSingleFile("materials/vgui/ttt/sprite_%NAMESHORT%_noz.vmt")  
-	resource.AddSingleFile("materials/vgui/ttt/score_%NAMESHORT%.png")  
-	resource.AddSingleFile("materials/vgui/ttt/tab_%NAMESHORT%.png")  
 end
 ```
 
-When this code is run on the server it makes sure that the client will download all the required files if they haven't already. `AddCSLuaFile()` makes sure the client downloads this file so they know everything you have done up until now. The next five lines make sure the client downloads all the sprites or images for your role. Swap `%NAMESHORT%` for whatever you set `nameshort` to earlier.
-
-For the summoner that looks like this:
-
-```lua
-if SERVER then  
-	AddCSLuaFile()
-	resource.AddFile("materials/vgui/ttt/icon_sum.vmt")  
-	resource.AddFile("materials/vgui/ttt/sprite_sum.vmt")  
-	resource.AddSingleFile("materials/vgui/ttt/sprite_sum_noz.vmt")  
-	resource.AddSingleFile("materials/vgui/ttt/score_sum.png")  
-	resource.AddSingleFile("materials/vgui/ttt/tab_sum.png")  
-end
+When this code is run on the server it makes sure the client downloads this file so they know everything you have done up until now. Any logic that should only run on the server-side should be in an `if SERVER then` block like this.
 ```
 
 ### Example File
@@ -330,11 +308,6 @@ RegisterRole(ROLE)
   
 if SERVER then  
 	AddCSLuaFile()
-	resource.AddFile("materials/vgui/ttt/icon_sum.vmt")  
-	resource.AddFile("materials/vgui/ttt/sprite_sum.vmt")  
-	resource.AddSingleFile("materials/vgui/ttt/sprite_sum_noz.vmt")  
-	resource.AddSingleFile("materials/vgui/ttt/score_sum.png")  
-	resource.AddSingleFile("materials/vgui/ttt/tab_sum.png")  
 end
 ```
 

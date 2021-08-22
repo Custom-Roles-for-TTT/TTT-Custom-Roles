@@ -91,6 +91,7 @@ CreateConVar("ttt_monster_chance", 0.5)
 
 for role = 0, ROLE_MAX do
     local rolestring = ROLE_STRINGS_RAW[role]
+    local shortstring = ROLE_STRINGS_SHORT[role]
     if not DEFAULT_ROLES[role] then
         CreateConVar("ttt_" .. rolestring .. "_enabled", "0", FCVAR_REPLICATED)
         CreateConVar("ttt_" .. rolestring .. "_spawn_weight", "1", FCVAR_REPLICATED)
@@ -105,6 +106,32 @@ for role = 0, ROLE_MAX do
     CreateConVar("ttt_" .. rolestring .. "_name", "", FCVAR_REPLICATED)
     CreateConVar("ttt_" .. rolestring .. "_name_plural", "", FCVAR_REPLICATED)
     CreateConVar("ttt_" .. rolestring .. "_name_article", "", FCVAR_REPLICATED)
+
+    -- Body icon
+    if file.Exists("materials/vgui/ttt/icon_" .. shortstring .. ".vmt", "GAME") then
+        resource.AddFile("materials/vgui/ttt/icon_" .. shortstring .. ".vmt")
+    end
+
+    -- Round summary icon
+    if file.Exists("materials/vgui/ttt/score_" .. shortstring .. ".png", "GAME") then
+        resource.AddSingleFile("materials/vgui/ttt/score_" .. shortstring .. ".png")
+    end
+
+    -- Scoreboard icon
+    if file.Exists("materials/vgui/ttt/tab_" .. shortstring .. ".png", "GAME") then
+        resource.AddSingleFile("materials/vgui/ttt/tab_" .. shortstring .. ".png")
+    end
+
+    -- Target ID icons
+    if file.Exists("materials/vgui/ttt/sprite_" .. shortstring .. ".vmt", "GAME") then
+        resource.AddSingleFile("materials/vgui/ttt/sprite_" .. shortstring .. ".vmt")
+    end
+    if file.Exists("materials/vgui/ttt/sprite_" .. shortstring .. "_noz.vmt", "GAME") then
+        resource.AddSingleFile("materials/vgui/ttt/sprite_" .. shortstring .. "_noz.vmt")
+    end
+    if file.Exists("materials/vgui/ttt/sprite_" .. shortstring .. ".vtf", "GAME") then
+        resource.AddSingleFile("materials/vgui/ttt/sprite_" .. shortstring .. ".vtf")
+    end
 end
 
 -- Traitor role properties
