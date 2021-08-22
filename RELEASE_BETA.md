@@ -2,13 +2,16 @@
 
 ## 1.1.8
 
+### Changes
+- Changed round summary role tooltip to be translateable
+
 ### Fixes
 - Fixed the detective's DNA scanner not being removed when they should have lost their role weapons
 
 ### Developer
 - Changed more aspects of core role creation to be dynamic
   - Adding icons to the download list
-  - Creation of ttt_force_{ROLENAME} commands
+  - Creation of ttt_force_{ROLENAME} commands (Positive side-effect of this is now external roles will also have these commands created for them)
 
 ## 1.1.7
 **Released: August 22nd, 2021**

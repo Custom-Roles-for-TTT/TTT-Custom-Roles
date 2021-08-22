@@ -1005,13 +1005,10 @@ L.report_tab_events_tip = "Log of the events that happened this round"
 L.report_tab_scores = "Scores"
 L.report_tab_scores_tip = "Points scored by each player in this round alone"
 
--- Event log saving
-L.report_save = "Save Log .txt"
-L.report_save_tip = "Saves the Event Log to a text file"
-L.report_save_error = "No Event Log data to save."
-L.report_save_result = "The Event Log has been saved to:"
+-- Sumamry tab
+L.summary_role_changed = "{starting} changed to {ending}"
 
--- Big title window
+-- Highlights tab
 L.hilite_win_role_plural = "THE {role} WIN"
 L.hilite_win_role_singular = "THE {role} WINS"
 L.hilite_win_role_singular_additional = "AND THE {role} WINS"
@@ -1021,7 +1018,13 @@ L.hilite_players2 = "{numplayers} players took part, one of them the {traitor}"
 
 L.hilite_duration = "The round lasted {time}"
 
--- Columns
+-- Event log tab
+L.report_save = "Save Log .txt"
+L.report_save_tip = "Saves the Event Log to a text file"
+L.report_save_error = "No Event Log data to save."
+L.report_save_result = "The Event Log has been saved to:"
+
+-- Score tab columns
 L.col_time = "Time"
 L.col_event = "Event"
 L.col_player = "Player"

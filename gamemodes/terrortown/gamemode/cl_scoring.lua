@@ -794,10 +794,11 @@ local function GetRoleIconElement(roleFileName, roleColor, startingRole, finalRo
     roleBackground:SetSize(32, 32)
     roleBackground:SetBackgroundColor(roleColor)
 
-    local tooltip = ROLE_STRINGS[startingRole]
+    local startingString = ROLE_STRINGS[startingRole]
     local endingString = ROLE_STRINGS[finalRole]
-    if tooltip ~= endingString then
-        tooltip = tooltip .. " changed to " .. endingString
+    local tooltip = startingString
+    if startingString ~= endingString then
+        tooltip = PT("summary_role_changed", { starting = startingString, ending = endingString })
     end
     roleBackground:SetTooltip(tooltip)
 
