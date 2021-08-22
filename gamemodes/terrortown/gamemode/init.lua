@@ -2090,6 +2090,11 @@ function SelectRoles()
                 table.insert(specialDetectiveRoles, ROLE_TRACKER)
             end
         end
+        if not hasRole[ROLE_MEDIUM] and GetConVar("ttt_medium_enabled"):GetBool() and choice_count >= GetConVar("ttt_medium_min_players"):GetInt() then
+            for _ = 1, GetConVar("ttt_medium_spawn_weight"):GetInt() do
+                table.insert(specialDetectiveRoles, ROLE_MEDIUM)
+            end
+        end
         for _ = 1, max_special_detective_count do
             if #specialDetectiveRoles ~= 0 and math.random() <= GetConVar("ttt_special_detective_chance"):GetFloat() and #detectives > 0 then
                 local plyPick = math.random(1, #detectives)

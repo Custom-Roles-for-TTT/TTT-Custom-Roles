@@ -338,6 +338,14 @@ local function force_tracker(ply)
 end
 concommand.Add("ttt_force_tracker", force_tracker, nil, nil, FCVAR_CHEAT)
 
+local function force_medium(ply)
+    ply:SetRoleAndBroadcast(ROLE_MEDIUM)
+    clear_role_effects(ply)
+    SendFullStateUpdate()
+end
+concommand.Add("ttt_force_medium", force_medium, nil, nil, FCVAR_CHEAT)
+
+
 local function force_spectate(ply, cmd, arg)
     if IsValid(ply) then
         if #arg == 1 and tonumber(arg[1]) == 0 then

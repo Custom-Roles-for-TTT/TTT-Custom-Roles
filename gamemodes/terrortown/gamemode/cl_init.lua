@@ -423,6 +423,35 @@ function GM:Think()
                 end
             end
         end
+        if v:IsSpec() and not v:Alive() then
+            if client:IsActiveMedium() then
+                if not v.WispEmitter then v.WispEmitter = ParticleEmitter(v:GetPos()) end
+                if not v.WispNextPart then v.WispNextPart = CurTime() end
+                local pos = v:GetPos() + Vector(0, 0, 64)
+                if v.WispNextPart < CurTime() then
+                    if client:GetPos():Distance(pos) <= 3000 then
+                        v.WispEmitter:SetPos(pos)
+                        v.WispNextPart = CurTime() + math.Rand(0.003, 0.01)
+                        local particle = v.WispEmitter:Add("particle/wisp.vmt", v:LocalToWorld(vec))
+                        particle:SetVelocity(Vector(0, 0, 30))
+                        particle:SetDieTime(1)
+                        particle:SetStartAlpha(math.random(150, 220))
+                        particle:SetEndAlpha(0)
+                        local size = math.random(4, 7)
+                        particle:SetStartSize(size)
+                        particle:SetEndSize(1)
+                        particle:SetRoll(0)
+                        particle:SetRollDelta(0)
+                        particle:SetColor(255, 255, 255)
+                    end
+                end
+            end
+        else
+            if v.WispEmitter then
+                v.WispEmitter:Finish()
+                v.WispEmitter = nil
+            end
+        end
     end
 end
 

@@ -1,15 +1,22 @@
 # Beta Release Notes
 
 ## 1.1.7
-**Released:**
+**Released: **
 
 ### Additions
+- Added the medium
 - Added the ability to give clowns bonus health if they are healed when they are activated
 - Added message to the clown if they are healed when they activate
 - Added role name to mouseover for icons on the round summary
 
+### Changes
+- Changes bloody phantom killer footsteps to have priority over tracker footsteps
+
 ### Fixes
 - Fixed beggar role being revealed on a traitor's scoreboard even if ttt_beggar_reveal_traitor was 0
+
+### Developer
+- Added missing tracker sprites to resource download list
 
 ## 1.1.6
 **Released: August 21st, 2021**

@@ -56,6 +56,7 @@ ttt_trickster_enabled                       0       // Whether or not the tricks
 ttt_paramedic_enabled                       0       // Whether or not the paramedic should spawn
 ttt_paladin_enabled                         0       // Whether or not the paladin should spawn
 ttt_tracker_enabled                         0       // Whether or not the tracker should spawn
+ttt_medium_enabled                          0       // Whether or not the medium should spawn
 ttt_jester_enabled                          0       // Whether or not the jester should spawn
 ttt_swapper_enabled                         0       // Whether or not the swapper should spawn
 ttt_clown_enabled                           0       // Whether or not the clown should spawn
@@ -85,6 +86,7 @@ ttt_trickster_spawn_weight                  1       // The weight assigned to sp
 ttt_paramedic_spawn_weight                  1       // The weight assigned to spawning the paramedic
 ttt_paladin_spawn_weight                    1       // The weight assigned to spawning the paladin
 ttt_tracker_spawn_weight                    1       // The weight assigned to spawning the tracker
+ttt_medium_spawn_weight                     1       // The weight assigned to spawning the medium
 ttt_jester_spawn_weight                     1       // The weight assigned to spawning the jester
 ttt_swapper_spawn_weight                    1       // The weight assigned to spawning the swapper
 ttt_clown_spawn_weight                      1       // The weight assigned to spawning the clown
@@ -115,6 +117,7 @@ ttt_trickster_min_players                   0       // The minimum number of pla
 ttt_paramedic_min_players                   0       // The minimum number of players required to spawn the paramedic
 ttt_paladin_min_players                     0       // The minimum number of players required to spawn the paladin
 ttt_tracker_min_players                     0       // The minimum number of players required to spawn the tracker
+ttt_medium_min_players                     0       // The minimum number of players required to spawn the medium
 ttt_jester_min_players                      0       // The minimum number of players required to spawn the jester
 ttt_swapper_min_players                     0       // The minimum number of players required to spawn the swapper
 ttt_clown_min_players                       0       // The minimum number of players required to spawn the clown
@@ -400,6 +403,7 @@ ttt_parasite_shop_sync                      0       // Whether Parasites should 
 // Detective Role Shop Sync (Server or round must be restarted for changes to take effect)
 ttt_paladin_shop_sync                       0       // Whether Paladins should have all weapons that vanilla detectives have in their weapon shop
 ttt_tracker_shop_sync                       0       // Whether Trackers should have all weapons that vanilla detectives have in their weapon shop
+ttt_medium_shop_sync                       0       // Whether Mediums should have all weapons that vanilla detectives have in their weapon shop
 
 // ----------------------------------------
 
@@ -425,6 +429,7 @@ ttt_paramedic_starting_health               100     // The amount of health the 
 ttt_detective_starting_health               100     // The amount of health the detective starts with
 ttt_paladin_starting_health                 100     // The amount of health the paladin starts with
 ttt_tracker_starting_health                 100     // The amount of health the tracker starts with
+ttt_medium_starting_health                  100     // The amount of health the medium starts with
 ttt_jester_starting_health                  100     // The amount of health the jester starts with
 ttt_swapper_starting_health                 100     // The amount of health the swapper starts with
 ttt_clown_starting_health                   100     // The amount of health the clown starts with
@@ -457,6 +462,7 @@ ttt_paramedic_max_health                    100     // The maximum amount of hea
 ttt_detective_max_health                    100     // The maximum amount of health the detective can have
 ttt_paladin_max_health                      100     // The maximum amount of health the paladin can have
 ttt_tracker_max_health                      100     // The maximum amount of health the tracker can have
+ttt_medium_max_health                       100     // The maximum amount of health the medium can have
 ttt_jester_max_health                       100     // The maximum amount of health the jester can have
 ttt_swapper_max_health                      100     // The maximum amount of health the swapper can have
 ttt_clown_max_health                        100     // The maximum amount of health the clown can have

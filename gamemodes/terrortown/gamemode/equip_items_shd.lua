@@ -353,6 +353,25 @@ EquipmentItems = {
         }
     };
 
+    [ROLE_MEDIUM] = {
+        -- body armor
+        { id = EQUIP_ARMOR,
+          loadout = true, -- default equipment for detectives
+          type = "item_passive",
+          material = mat_dir .. "icon_armor",
+          name = "item_armor",
+          desc = "item_armor_desc"
+        },
+
+        -- radar
+        { id = EQUIP_RADAR,
+          type = "item_active",
+          material = mat_dir .. "icon_radar",
+          name = "item_radar",
+          desc = "item_radar_desc"
+        }
+    };
+
     [ROLE_JESTER] = {};
     [ROLE_SWAPPER] = {};
     [ROLE_CLOWN] = {};
