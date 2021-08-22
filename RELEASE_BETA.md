@@ -7,6 +7,7 @@
 
 ### Fixes
 - Fixed the detective's DNA scanner not being removed when they should have lost their role weapons
+- Fixed external monster roles not naturally spawning
 
 ### Developer
 - Changed more aspects of core role creation to be dynamic

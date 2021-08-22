@@ -2003,7 +2003,6 @@ function SelectRoles()
                     forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
                 elseif JESTER_ROLES[role] or INDEPENDENT_ROLES[role] then
                     forcedIndependentCount = forcedIndependentCount + 1
-                    hasIndependent = true
                 elseif MONSTER_ROLES[role] then
                     forcedMonsterCount = forcedMonsterCount + 1
                 end
@@ -2044,6 +2043,7 @@ function SelectRoles()
     local specialInnocentRoles = {}
     local specialDetectiveRoles = {}
     local independentRoles = {}
+    local monsterRoles = {}
 
     if ROLE_MAX >= ROLE_EXTERNAL_START then
         for r = ROLE_EXTERNAL_START, ROLE_MAX do
@@ -2057,6 +2057,8 @@ function SelectRoles()
                         table.insert(specialInnocentRoles, r)
                     elseif JESTER_ROLES[r] or INDEPENDENT_ROLES[r] then
                         table.insert(independentRoles, r)
+                    elseif MONSTER_ROLES[r] then
+                        table.insert(monsterRoles, r)
                     end
                 end
             end
@@ -2364,7 +2366,6 @@ function SelectRoles()
     end
 
     if monster_count > 0 then
-        local monsterRoles = {}
         if MONSTER_ROLES[ROLE_ZOMBIE] and not hasRole[ROLE_ZOMBIE] and GetConVar("ttt_zombie_enabled"):GetBool() and choice_count >= GetConVar("ttt_zombie_min_players"):GetInt() then
             for _ = 1, GetConVar("ttt_zombie_spawn_weight"):GetInt() do
                 table.insert(monsterRoles, ROLE_ZOMBIE)
