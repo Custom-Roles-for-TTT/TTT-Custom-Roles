@@ -2,6 +2,9 @@
 
 ## 1.1.8
 
+### Fixes
+- Fixed the detective's DNA scanner not being removed when they should have lost their role weapons
+
 ### Developer
 - Changed more aspects of core role creation to be dynamic
   - Adding icons to the download list
