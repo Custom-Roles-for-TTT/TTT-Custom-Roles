@@ -423,7 +423,7 @@ function GM:Think()
                 end
             end
         end
-        if v:IsSpec() and not v:Alive() then
+        if v:IsSpec() and not v:Alive() and v:GetObserverMode() == OBS_MODE_ROAMING then
             if client:IsActiveMedium() then
                 if not v.WispEmitter then v.WispEmitter = ParticleEmitter(v:GetPos()) end
                 if not v.WispNextPart then v.WispNextPart = CurTime() end
