@@ -1533,18 +1533,15 @@ function PrintResultMessage(type)
         LANG.Msg("win_killer", { role = ROLE_STRINGS_PLURAL[ROLE_KILLER] })
         ServerLog("Result: " .. ROLE_STRINGS[ROLE_KILLER] .. " wins.\n")
     elseif type == WIN_MONSTER then
-        -- If Vampire are the only monsters then vampires win
-        if #MONSTER_ROLES == 1 and MONSTER_ROLES[ROLE_VAMPIRE] then
-            LANG.Msg("win_vampires", { role = ROLE_STRINGS_PLURAL[ROLE_VAMPIRE] })
-            ServerLog("Result: " .. ROLE_STRINGS_PLURAL[ROLE_VAMPIRE] .. " win.\n")
-        -- And the same for zombies
-        elseif #MONSTER_ROLES == 1 and MONSTER_ROLES[ROLE_ZOMBIE] then
-            LANG.Msg("win_zombies", { role = ROLE_STRINGS_PLURAL[ROLE_ZOMBIE] })
-            ServerLog("Result: " .. ROLE_STRINGS_PLURAL[ROLE_ZOMBIE] .. " win.\n")
-        -- Otherwise the monsters legit win
-        else
+        local monster_role = GetWinningMonsterRole()
+        -- If it wasn't a special kind of monster that won (zombie or vampire) use the "Monsters Win" label
+        if not monster_role then
             LANG.Msg("win_monster")
             ServerLog("Result: Monsters win.\n")
+        else
+            local plural = ROLE_STRINGS_PLURAL[monster_role]
+            LANG.Msg("win_" .. plural:lower(), { role = plural })
+            ServerLog("Result: " .. plural .. " win.\n")
         end
     else
         ServerLog("Result: unknown victory condition!\n")

@@ -1,5 +1,5 @@
 -- Version string for display and function for version checks
-CR_VERSION = "1.1.7"
+CR_VERSION = "1.1.8"
 
 function CRVersion(version)
     local installedVersionRaw = string.Split(CR_VERSION, ".")
@@ -983,6 +983,17 @@ function UpdateRoleState()
     UpdateRoleColours()
 
     UpdateRoleWeaponState()
+end
+
+function GetWinningMonsterRole()
+    local monsters = GetTeamRoles(MONSTER_ROLES)
+    local monster = monsters[1]
+    -- If Zombies or Vampires just won on a team by themselves, use their role as the label
+    if #monsters == 1 and (monster == ROLE_ZOMBIE or monster == ROLE_VAMPIRE) then
+        return monster
+    end
+    -- Otherwise just use the "Monsters" team name
+    return nil
 end
 
 if SERVER then

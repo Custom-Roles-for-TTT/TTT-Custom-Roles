@@ -372,13 +372,11 @@ local function GetWinTitle(wintype)
 
     -- If this was a monster win, check that both roles are part of the monsters team still
     if wintype == WIN_MONSTER then
-        -- If Vampire are the only monsters then vampires win
-        if #MONSTER_ROLES == 1 and MONSTER_ROLES[ROLE_VAMPIRE] then
-            title.params = { role = ROLE_STRINGS_PLURAL[ROLE_VAMPIRE]:upper() }
-        -- And the same for zombies
-        elseif #MONSTER_ROLES == 1 and MONSTER_ROLES[ROLE_ZOMBIE] then
-            title.params = { role = ROLE_STRINGS_PLURAL[ROLE_ZOMBIE]:upper() }
-        -- Otherwise the monsters legit win
+        local monster_role = GetWinningMonsterRole()
+        -- If a single support role (zombies or vampires) won as the "monsters team", use their role as the label
+        if monster_role then
+            title.params = { role = ROLE_STRINGS_PLURAL[monster_role]:upper() }
+        -- Otherwise use the monsters label
         else
             title.params = { role = "MONSTERS" }
         end

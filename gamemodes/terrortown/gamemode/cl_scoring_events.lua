@@ -72,9 +72,10 @@ Event(EVENT_FINISH,
                   elseif e.win == WIN_KILLER then
                      return PT("ev_win_killer", { role = ROLE_STRINGS[ROLE_KILLER]:lower() })
                   elseif e.win == WIN_MONSTER then
-                     if #MONSTER_ROLES == 1 and MONSTER_ROLES[ROLE_VAMPIRE] then
+                     local monster_role = GetWinningMonsterRole()
+                     if monster_role == ROLE_VAMPIRE then
                         return PT("ev_win_vampire", { role = ROLE_STRINGS_PLURAL[ROLE_VAMPIRE]:lower() })
-                     elseif #MONSTER_ROLES == 1 and MONSTER_ROLES[ROLE_ZOMBIE] then
+                     elseif monster_role == ROLE_ZOMBIE then
                         return PT("ev_win_zombie", { role = ROLE_STRINGS[ROLE_ZOMBIE]:lower() })
                      end
                      return T("ev_win_monster")
@@ -101,9 +102,10 @@ Event(EVENT_FINISH,
                   elseif e.win == WIN_KILLER then
                      role_string = ROLE_STRINGS[ROLE_KILLER]
                   elseif e.win == WIN_MONSTER then
-                     if #MONSTER_ROLES == 1 and MONSTER_ROLES[ROLE_VAMPIRE] then
+                     local monster_role = GetWinningMonsterRole()
+                     if monster_role == ROLE_VAMPIRE then
                         role_string = ROLE_STRINGS_PLURAL[ROLE_VAMPIRE]
-                     elseif #MONSTER_ROLES == 1 and MONSTER_ROLES[ROLE_ZOMBIE] then
+                     elseif monster_role == ROLE_ZOMBIE then
                         role_string = ROLE_STRINGS_PLURAL[ROLE_ZOMBIE]
                      else
                         role_string = "Monsters"
