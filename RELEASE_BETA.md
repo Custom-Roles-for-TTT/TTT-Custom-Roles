@@ -13,6 +13,7 @@
 - Changed more aspects of core role creation to be dynamic
   - Adding icons to the download list
   - Creation of ttt_force_{ROLENAME} commands (Positive side-effect of this is now external roles will also have these commands created for them)
+  - Role selection logic
 
 ## 1.1.7
 **Released: August 22nd, 2021**

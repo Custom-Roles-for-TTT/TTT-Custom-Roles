@@ -2045,21 +2045,45 @@ function SelectRoles()
     local independentRoles = {}
     local monsterRoles = {}
 
-    if ROLE_MAX >= ROLE_EXTERNAL_START then
-        for r = ROLE_EXTERNAL_START, ROLE_MAX do
-            if not hasRole[r] and GetConVar("ttt_" .. ROLE_STRINGS_RAW[r] .. "_enabled"):GetBool() and choice_count >= GetConVar("ttt_" .. ROLE_STRINGS_RAW[r] .. "_min_players"):GetInt() then
-                for _ = 1, GetConVar("ttt_" .. ROLE_STRINGS_RAW[r] .. "_spawn_weight"):GetInt() do
-                    if TRAITOR_ROLES[r] then
-                        table.insert(specialTraitorRoles, r)
-                    elseif DETECTIVE_ROLES[r] then
-                        table.insert(specialDetectiveRoles, r)
-                    elseif INNOCENT_ROLES[r] then
-                        table.insert(specialInnocentRoles, r)
-                    elseif JESTER_ROLES[r] or INDEPENDENT_ROLES[r] then
-                        table.insert(independentRoles, r)
-                    elseif MONSTER_ROLES[r] then
-                        table.insert(monsterRoles, r)
-                    end
+    -- Special rules for role spawning
+    local rolePredicates = {
+        -- Innocents
+        [ROLE_DEPUTY] = function() return detective_count > 0 and not impersonator_only end,
+        [ROLE_DOCTOR] = function() return not quack_only end,
+        [ROLE_PARAMEDIC] = function() return not hypnotist_only end,
+        [ROLE_PHANTOM] = function() return not parasite_only end,
+        [ROLE_REVENGER] = function() return choice_count > 1 end,
+        [ROLE_TRICKSTER] = function() return #ents.FindByClass("ttt_traitor_button") > 0 end,
+
+        -- Traitors
+        [ROLE_HYPNOTIST] = function() return not paramedic_only end,
+        [ROLE_IMPERSONATOR] = function() return detective_count > 0 and not deputy_only end,
+        [ROLE_QUACK] = function() return not doctor_only end,
+        [ROLE_PARASITE] = function() return not phantom_only end,
+
+        -- Independents
+        [ROLE_MADSCIENTIST] = function() return INDEPENDENT_ROLES[ROLE_ZOMBIE] end
+    }
+
+    -- Roles that required their checks to be delayed because they rely on other role selection information
+    local delayedCheckRoles = {}
+    -- Glitch requires the number of traitors that have been selected
+    table.insert(delayedCheckRoles, ROLE_GLITCH)
+
+    -- Build the weighted lists for all non-default roles
+    for r = ROLE_DETECTIVE + 1, ROLE_MAX do
+        if not table.HasValue(delayedCheckRoles, r) and not hasRole[r] and GetConVar("ttt_" .. ROLE_STRINGS_RAW[r] .. "_enabled"):GetBool() and choice_count >= GetConVar("ttt_" .. ROLE_STRINGS_RAW[r] .. "_min_players"):GetInt() and ((not rolePredicates[r]) or rolePredicates[r]()) then
+            for _ = 1, GetConVar("ttt_" .. ROLE_STRINGS_RAW[r] .. "_spawn_weight"):GetInt() do
+                if TRAITOR_ROLES[r] then
+                    table.insert(specialTraitorRoles, r)
+                elseif DETECTIVE_ROLES[r] then
+                    table.insert(specialDetectiveRoles, r)
+                elseif INNOCENT_ROLES[r] then
+                    table.insert(specialInnocentRoles, r)
+                elseif JESTER_ROLES[r] or INDEPENDENT_ROLES[r] then
+                    table.insert(independentRoles, r)
+                elseif MONSTER_ROLES[r] then
+                    table.insert(monsterRoles, r)
                 end
             end
         end
@@ -2106,21 +2130,6 @@ function SelectRoles()
 
     -- pick special detectives
     if max_special_detective_count > 0 then
-        if not hasRole[ROLE_PALADIN] and GetConVar("ttt_paladin_enabled"):GetBool() and choice_count >= GetConVar("ttt_paladin_min_players"):GetInt() then
-            for _ = 1, GetConVar("ttt_paladin_spawn_weight"):GetInt() do
-                table.insert(specialDetectiveRoles, ROLE_PALADIN)
-            end
-        end
-        if not hasRole[ROLE_TRACKER] and GetConVar("ttt_tracker_enabled"):GetBool() and choice_count >= GetConVar("ttt_tracker_min_players"):GetInt() then
-            for _ = 1, GetConVar("ttt_tracker_spawn_weight"):GetInt() do
-                table.insert(specialDetectiveRoles, ROLE_TRACKER)
-            end
-        end
-        if not hasRole[ROLE_MEDIUM] and GetConVar("ttt_medium_enabled"):GetBool() and choice_count >= GetConVar("ttt_medium_min_players"):GetInt() then
-            for _ = 1, GetConVar("ttt_medium_spawn_weight"):GetInt() do
-                table.insert(specialDetectiveRoles, ROLE_MEDIUM)
-            end
-        end
         for _ = 1, max_special_detective_count do
             if #specialDetectiveRoles ~= 0 and math.random() <= GetConVar("ttt_special_detective_chance"):GetFloat() and #detectives > 0 then
                 local plyPick = math.random(1, #detectives)
@@ -2165,36 +2174,6 @@ function SelectRoles()
     else
         -- pick special traitors
         if max_special_traitor_count > 0 then
-            if not hasRole[ROLE_HYPNOTIST] and GetConVar("ttt_hypnotist_enabled"):GetBool() and choice_count >= GetConVar("ttt_hypnotist_min_players"):GetInt() and not paramedic_only then
-                for _ = 1, GetConVar("ttt_hypnotist_spawn_weight"):GetInt() do
-                    table.insert(specialTraitorRoles, ROLE_HYPNOTIST)
-                end
-            end
-            if not hasRole[ROLE_IMPERSONATOR] and GetConVar("ttt_impersonator_enabled"):GetBool() and choice_count >= GetConVar("ttt_impersonator_min_players"):GetInt() and detective_count > 0 and not deputy_only then
-                for _ = 1, GetConVar("ttt_impersonator_spawn_weight"):GetInt() do
-                    table.insert(specialTraitorRoles, ROLE_IMPERSONATOR)
-                end
-            end
-            if not hasRole[ROLE_ASSASSIN] and GetConVar("ttt_assassin_enabled"):GetBool() and choice_count >= GetConVar("ttt_assassin_min_players"):GetInt() then
-                for _ = 1, GetConVar("ttt_assassin_spawn_weight"):GetInt() do
-                    table.insert(specialTraitorRoles, ROLE_ASSASSIN)
-                end
-            end
-            if not hasRole[ROLE_VAMPIRE] and GetConVar("ttt_vampire_enabled"):GetBool() and choice_count >= GetConVar("ttt_vampire_min_players"):GetInt() and TRAITOR_ROLES[ROLE_VAMPIRE] then
-                for _ = 1, GetConVar("ttt_vampire_spawn_weight"):GetInt() do
-                    table.insert(specialTraitorRoles, ROLE_VAMPIRE)
-                end
-            end
-            if not hasRole[ROLE_QUACK] and GetConVar("ttt_quack_enabled"):GetBool() and choice_count >= GetConVar("ttt_quack_min_players"):GetInt() and not doctor_only then
-                for _ = 1, GetConVar("ttt_quack_spawn_weight"):GetInt() do
-                    table.insert(specialTraitorRoles, ROLE_QUACK)
-                end
-            end
-            if not hasRole[ROLE_PARASITE] and GetConVar("ttt_parasite_enabled"):GetBool() and choice_count >= GetConVar("ttt_parasite_min_players"):GetInt() and not phantom_only then
-                for _ = 1, GetConVar("ttt_parasite_spawn_weight"):GetInt() do
-                    table.insert(specialTraitorRoles, ROLE_PARASITE)
-                end
-            end
             for _ = 1, max_special_traitor_count do
                 if #specialTraitorRoles ~= 0 and math.random() <= GetConVar("ttt_special_traitor_chance"):GetFloat() and #traitors > 0 then
                     local plyPick = math.random(1, #traitors)
@@ -2222,56 +2201,6 @@ function SelectRoles()
 
     -- pick independent
     if forcedIndependentCount == 0 and independent_count > 0 and #choices > 0 then
-        if GetConVar("ttt_jester_enabled"):GetBool() and choice_count >= GetConVar("ttt_jester_min_players"):GetInt() then
-            for _ = 1, GetConVar("ttt_jester_spawn_weight"):GetInt() do
-                table.insert(independentRoles, ROLE_JESTER)
-            end
-        end
-        if GetConVar("ttt_swapper_enabled"):GetBool() and choice_count >= GetConVar("ttt_swapper_min_players"):GetInt() then
-            for _ = 1, GetConVar("ttt_swapper_spawn_weight"):GetInt() do
-                table.insert(independentRoles, ROLE_SWAPPER)
-            end
-        end
-        if GetConVar("ttt_drunk_enabled"):GetBool() and choice_count >= GetConVar("ttt_drunk_min_players"):GetInt() then
-            for _ = 1, GetConVar("ttt_drunk_spawn_weight"):GetInt() do
-                table.insert(independentRoles, ROLE_DRUNK)
-            end
-        end
-        if GetConVar("ttt_clown_enabled"):GetBool() and choice_count >= GetConVar("ttt_clown_min_players"):GetInt() then
-            for _ = 1, GetConVar("ttt_clown_spawn_weight"):GetInt() do
-                table.insert(independentRoles, ROLE_CLOWN)
-            end
-        end
-        if GetConVar("ttt_beggar_enabled"):GetBool() and choice_count >= GetConVar("ttt_beggar_min_players"):GetInt() then
-            for _ = 1, GetConVar("ttt_beggar_spawn_weight"):GetInt() do
-                table.insert(independentRoles, ROLE_BEGGAR)
-            end
-        end
-        if GetConVar("ttt_oldman_enabled"):GetBool() and choice_count >= GetConVar("ttt_oldman_min_players"):GetInt() then
-            for _ = 1, GetConVar("ttt_oldman_spawn_weight"):GetInt() do
-                table.insert(independentRoles, ROLE_OLDMAN)
-            end
-        end
-        if GetConVar("ttt_bodysnatcher_enabled"):GetBool() and choice_count >= GetConVar("ttt_bodysnatcher_min_players"):GetInt() then
-            for _ = 1, GetConVar("ttt_bodysnatcher_spawn_weight"):GetInt() do
-                table.insert(independentRoles, ROLE_BODYSNATCHER)
-            end
-        end
-        if GetConVar("ttt_killer_enabled"):GetBool() and choice_count >= GetConVar("ttt_killer_min_players"):GetInt() then
-            for _ = 1, GetConVar("ttt_killer_spawn_weight"):GetInt() do
-                table.insert(independentRoles, ROLE_KILLER)
-            end
-        end
-        if GetConVar("ttt_zombie_enabled"):GetBool() and choice_count >= GetConVar("ttt_zombie_min_players"):GetInt() and INDEPENDENT_ROLES[ROLE_ZOMBIE] then
-            for _ = 1, GetConVar("ttt_zombie_spawn_weight"):GetInt() do
-                table.insert(independentRoles, ROLE_ZOMBIE)
-            end
-        end
-        if GetConVar("ttt_madscientist_enabled"):GetBool() and choice_count >= GetConVar("ttt_madscientist_min_players"):GetInt() and INDEPENDENT_ROLES[ROLE_ZOMBIE] then
-            for _ = 1, GetConVar("ttt_madscientist_spawn_weight"):GetInt() do
-                table.insert(independentRoles, ROLE_MADSCIENTIST)
-            end
-        end
         if #independentRoles ~= 0 then
             local plyPick = math.random(1, #choices)
             local ply = choices[plyPick]
@@ -2291,52 +2220,11 @@ function SelectRoles()
     -- pick special innocents
     local max_special_innocent_count = GetSpecialInnocentCount(#choices) - forcedSpecialInnocentCount
     if max_special_innocent_count > 0 then
-        local map_has_traitor_buttons = #ents.FindByClass("ttt_traitor_button") > 0
         local glitch_mode = GetConVar("ttt_glitch_mode"):GetInt()
         if not hasRole[ROLE_GLITCH] and GetConVar("ttt_glitch_enabled"):GetBool() and choice_count >= GetConVar("ttt_glitch_min_players"):GetInt()
         and ((glitch_mode == GLITCH_SHOW_AS_TRAITOR and #traitors > 1) or ((glitch_mode == GLITCH_SHOW_AS_SPECIAL_TRAITOR or glitch_mode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES) and traitor_count > 1)) then
             for _ = 1, GetConVar("ttt_glitch_spawn_weight"):GetInt() do
                 table.insert(specialInnocentRoles, ROLE_GLITCH)
-            end
-        end
-        if not hasRole[ROLE_PHANTOM] and GetConVar("ttt_phantom_enabled"):GetBool() and choice_count >= GetConVar("ttt_phantom_min_players"):GetInt() and not parasite_only then
-            for _ = 1, GetConVar("ttt_phantom_spawn_weight"):GetInt() do
-                table.insert(specialInnocentRoles, ROLE_PHANTOM)
-            end
-        end
-        if not hasRole[ROLE_REVENGER] and GetConVar("ttt_revenger_enabled"):GetBool() and choice_count >= GetConVar("ttt_revenger_min_players"):GetInt() and choice_count > 1 then
-            for _ = 1, GetConVar("ttt_revenger_spawn_weight"):GetInt() do
-                table.insert(specialInnocentRoles, ROLE_REVENGER)
-            end
-        end
-        if not hasRole[ROLE_DEPUTY] and GetConVar("ttt_deputy_enabled"):GetBool() and choice_count >= GetConVar("ttt_deputy_min_players"):GetInt() and detective_count > 0 and not impersonator_only then
-            for _ = 1, GetConVar("ttt_deputy_spawn_weight"):GetInt() do
-                table.insert(specialInnocentRoles, ROLE_DEPUTY)
-            end
-        end
-        if not hasRole[ROLE_MERCENARY] and GetConVar("ttt_mercenary_enabled"):GetBool() and choice_count >= GetConVar("ttt_mercenary_min_players"):GetInt() then
-            for _ = 1, GetConVar("ttt_mercenary_spawn_weight"):GetInt() do
-                table.insert(specialInnocentRoles, ROLE_MERCENARY)
-            end
-        end
-        if not hasRole[ROLE_VETERAN] and GetConVar("ttt_veteran_enabled"):GetBool() and choice_count >= GetConVar("ttt_veteran_min_players"):GetInt() then
-            for _ = 1, GetConVar("ttt_veteran_spawn_weight"):GetInt() do
-                table.insert(specialInnocentRoles, ROLE_VETERAN)
-            end
-        end
-        if not hasRole[ROLE_DOCTOR] and GetConVar("ttt_doctor_enabled"):GetBool() and choice_count >= GetConVar("ttt_doctor_min_players"):GetInt() and not quack_only then
-            for _ = 1, GetConVar("ttt_doctor_spawn_weight"):GetInt() do
-                table.insert(specialInnocentRoles, ROLE_DOCTOR)
-            end
-        end
-        if not hasRole[ROLE_TRICKSTER] and GetConVar("ttt_trickster_enabled"):GetBool() and choice_count >= GetConVar("ttt_trickster_min_players"):GetInt() and map_has_traitor_buttons then
-            for _ = 1, GetConVar("ttt_trickster_spawn_weight"):GetInt() do
-                table.insert(specialInnocentRoles, ROLE_TRICKSTER)
-            end
-        end
-        if not hasRole[ROLE_PARAMEDIC] and GetConVar("ttt_paramedic_enabled"):GetBool() and choice_count >= GetConVar("ttt_paramedic_min_players"):GetInt() and not hypnotist_only then
-            for _ = 1, GetConVar("ttt_paramedic_spawn_weight"):GetInt() do
-                table.insert(specialInnocentRoles, ROLE_PARAMEDIC)
             end
         end
         for _ = 1, max_special_innocent_count do
@@ -2366,16 +2254,6 @@ function SelectRoles()
     end
 
     if monster_count > 0 then
-        if MONSTER_ROLES[ROLE_ZOMBIE] and not hasRole[ROLE_ZOMBIE] and GetConVar("ttt_zombie_enabled"):GetBool() and choice_count >= GetConVar("ttt_zombie_min_players"):GetInt() then
-            for _ = 1, GetConVar("ttt_zombie_spawn_weight"):GetInt() do
-                table.insert(monsterRoles, ROLE_ZOMBIE)
-            end
-        end
-        if MONSTER_ROLES[ROLE_VAMPIRE] and not hasRole[ROLE_VAMPIRE] and GetConVar("ttt_vampire_enabled"):GetBool() and choice_count >= GetConVar("ttt_vampire_min_players"):GetInt() then
-            for _ = 1, GetConVar("ttt_vampire_spawn_weight"):GetInt() do
-                table.insert(monsterRoles, ROLE_VAMPIRE)
-            end
-        end
         local monster_chosen = false
         for _ = 1, monster_count do
             if #monsterRoles ~= 0 and math.random() <= GetConVar("ttt_monster_chance"):GetFloat() and #choices > 0 and not monster_chosen then
