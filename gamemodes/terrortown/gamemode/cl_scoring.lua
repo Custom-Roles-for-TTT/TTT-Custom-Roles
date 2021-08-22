@@ -659,7 +659,9 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                     hasDied = not alive,
                     hasDisconnected = hasDisconnected,
                     jesterKiller = jesterKiller,
-                    swappedWith = swappedWith
+                    swappedWith = swappedWith,
+                    startingRole = startingRole,
+                    finalRole = finalRole
                 }
 
                 if INNOCENT_ROLES[groupingRole] then
@@ -785,11 +787,17 @@ function CLSCORE:BuildSummaryPanel(dpanel)
     end
 end
 
-local function GetRoleIconElement(roleFileName, roleColor, dpanel)
-    local roleBackground = vgui.Create("DShape", dpanel)
-    roleBackground:SetType("Rect")
+local function GetRoleIconElement(roleFileName, roleColor, startingRole, finalRole, dpanel)
+    local roleBackground = vgui.Create("DPanel", dpanel)
     roleBackground:SetSize(32, 32)
-    roleBackground:SetColor(roleColor)
+    roleBackground:SetBackgroundColor(roleColor)
+
+    local tooltip = ROLE_STRINGS[startingRole]
+    local endingString = ROLE_STRINGS[finalRole]
+    if tooltip ~= endingString then
+        tooltip = tooltip .. " changed to " .. endingString
+    end
+    roleBackground:SetTooltip(tooltip)
 
     local roleIcon = vgui.Create("DImage", roleBackground)
     roleIcon:SetSize(32, 32)
@@ -829,7 +837,7 @@ end
 function CLSCORE:BuildPlayerList(playerList, dpanel, statusX, roleX, initialY, rowY)
     local count = 0
     for _, v in pairs(playerList) do
-        local roleIcon = GetRoleIconElement(v.roleFileName, v.roleColor, dpanel)
+        local roleIcon = GetRoleIconElement(v.roleFileName, v.roleColor, v.startingRole, v.finalRole, dpanel)
         local nicklbl = GetNickLabelElement(v.name, dpanel)
         FitNicknameLabel(nicklbl, 275, function(nickname)
             return string.sub(nickname, 0, #nickname - 4) .. "..."
@@ -850,6 +858,8 @@ function CLSCORE:BuildRoleLabel(playerList, dpanel, statusX, roleX, rowY)
     local disconnectCount = 0
     local roleFile = nil
     local roleColor = nil
+    local startingRole = nil
+    local finalRole = nil
 
     for _, v in pairs(playerList) do
         if roleFile == nil then
@@ -857,6 +867,12 @@ function CLSCORE:BuildRoleLabel(playerList, dpanel, statusX, roleX, rowY)
         end
         if roleColor == nil then
             roleColor = v.roleColor
+        end
+        if startingRole == nil then
+            startingRole = v.startingRole
+        end
+        if finalRole == nil then
+            finalRole = v.finalRole
         end
         -- Don't count a disconnect as a death
         if v.hasDisconnected then
@@ -920,7 +936,7 @@ function CLSCORE:BuildRoleLabel(playerList, dpanel, statusX, roleX, rowY)
     local singlePlayerDisconnect = playerCount == 1 and disconnectCount == 1
     -- Show the normal death icon if we have only 1 player and they died
     local singlePlayerDeath = playerCount == 1 and deathCount == 1
-    self:AddPlayerRow(dpanel, statusX, roleX, rowY, GetRoleIconElement(roleFile, roleColor, dpanel), nickLbl, singlePlayerDisconnect, singlePlayerDeath)
+    self:AddPlayerRow(dpanel, statusX, roleX, rowY, GetRoleIconElement(roleFile, roleColor, startingRole, finalRole, dpanel), nickLbl, singlePlayerDisconnect, singlePlayerDeath)
 
     -- Add disconnect icon with count if there are disconnects and it wasn't a single player doing it
     if disconnectCount > 0 and playerCount > 1 then

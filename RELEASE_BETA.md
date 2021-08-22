@@ -6,6 +6,7 @@
 ### Additions
 - Added the ability to give clowns bonus health if they are healed when they are activated
 - Added message to the clown if they are healed when they activate
+- Added role name to mouseover for icons on the round summary
 
 ### Fixes
 - Fixed beggar role being revealed on a traitor's scoreboard even if ttt_beggar_reveal_traitor was 0
