@@ -1,11 +1,5 @@
 # Beta Release Notes
 
-## 1.1.8
-**Released:**
-
-### Fixes
-- Fixed monsters win label logic to work for zombie-only and vampire-only cases
-
 ## 1.1.7
 **Released: August 22nd, 2021**
 
