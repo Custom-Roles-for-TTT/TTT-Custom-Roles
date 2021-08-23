@@ -10,9 +10,9 @@
 - Fixed external monster roles not naturally spawning
 
 ### Developer
-- Changed more aspects of core role creation to be dynamic
+- Changed more aspects of role creation to be dynamic
   - Adding icons to the download list
-  - Creation of ttt_force_{ROLENAME} commands (Positive side-effect of this is now external roles will also have these commands created for them)
+  - Creation of ttt_force_{ROLENAME} commands
   - Role selection logic
 
 ## 1.1.7
