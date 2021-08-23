@@ -2,6 +2,9 @@
 
 ## 1.1.8
 
+### Additions
+- Added ability for glitch to see and use traitor traps (disabled by default)
+
 ### Changes
 - Changed round summary role tooltip to be translateable
 

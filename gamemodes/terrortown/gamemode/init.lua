@@ -164,6 +164,7 @@ CreateConVar("ttt_parasite_announce_infection", 0)
 
 -- Innocent role properties
 CreateConVar("ttt_glitch_mode", "0")
+CreateConVar("ttt_glitch_use_traps", "0")
 
 CreateConVar("ttt_phantom_respawn_health", "50")
 CreateConVar("ttt_phantom_weaker_each_respawn", "0")
@@ -658,6 +659,7 @@ function GM:SyncGlobals()
     end
 
     SetGlobalInt("ttt_glitch_mode", GetConVar("ttt_glitch_mode"):GetInt())
+    SetGlobalBool("ttt_glitch_use_traps", GetConVar("ttt_glitch_use_traps"):GetBool())
 
     SetGlobalBool("ttt_phantom_killer_smoke", GetConVar("ttt_phantom_killer_smoke"):GetBool())
     SetGlobalInt("ttt_phantom_killer_haunt_power_max", GetConVar("ttt_phantom_killer_haunt_power_max"):GetInt())

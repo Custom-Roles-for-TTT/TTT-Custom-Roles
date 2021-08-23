@@ -189,6 +189,7 @@ ttt_single_phantom_parasite                 0       // Whether only a single pha
 // INNOCENT TEAM SETTINGS
 // Glitch
 ttt_glitch_mode                             0       // The way in which the glitch appears to traitors. 0 - Appears as a regular traitor. 1 - Can appear as a special traitor. 2 - Causes all traitors, regular or special, to appear as regular traitors and appears as a regular traitor themselves.
+ttt_glitch_use_traps                        0       // Whether glitches can see and use traitor traps. This also allows them to loot credits for traps that require them.
 
 // Phantom
 ttt_phantom_respawn_health                  50      // The amount of health a phantom will respawn with
