@@ -213,58 +213,49 @@ local function ColorFromCustomConVars(name)
         local g = tonumber(gConVar:GetString())
         local b = tonumber(bConVar:GetString())
         return Color(r, g, b, 255)
-    else
-        return false
     end
 end
 
-local function FillRoleColors(list, type)
-    local c = nil
-    local mode = "default"
-    if CLIENT then
-        local modeCVar = GetConVar("ttt_color_mode")
-        if modeCVar then mode = modeCVar:GetString() end
+local function ModifyColor(color, type)
+    local h, s, l = ColorToHSL(color)
+    if type == "dark" then
+        l = math.max(l - 0.125, 0.125)
+    elseif type == "highlight" or "radar" then
+        s = 1
     end
 
+    local c = HSLToColor(h, s, l)
+    if type == "scoreboard" then
+        c = ColorAlpha(c, 30)
+    elseif type == "sprite" then
+        c = ColorAlpha(c, 130)
+    elseif type == "radar" then
+        c = ColorAlpha(c, 230)
+    -- HSLToColor doesn't apply the Color metatable so call ColorAlpha to ensure this is actually a "Color"
+    else
+        c = ColorAlpha(c, 255)
+    end
+
+    return c
+end
+
+local function FillRoleColors(list, type)
+    local modeCVar = GetConVar("ttt_color_mode")
+    local mode = modeCVar and modeCVar:GetString() or "default"
+
     for r = -1, ROLE_MAX do
+        local c = nil
         if mode == "custom" then
-            if r == ROLE_DETECTIVE then
-                local cVarCol = ColorFromCustomConVars("ttt_custom_det_color")
-                if cVarCol then c = cVarCol
-                else c = COLOR_DETECTIVE["default"] end
-            elseif DETECTIVE_ROLES[r] then
-                local cVarCol = ColorFromCustomConVars("ttt_custom_spec_det_color")
-                if cVarCol then c = cVarCol
-                else c = COLOR_SPECIAL_DETECTIVE["default"] end
-            elseif r == ROLE_INNOCENT then
-                local cVarCol = ColorFromCustomConVars("ttt_custom_inn_color")
-                if cVarCol then c = cVarCol
-                else c = COLOR_INNOCENT["default"] end
-            elseif INNOCENT_ROLES[r] then
-                local cVarCol = ColorFromCustomConVars("ttt_custom_spec_inn_color")
-                if cVarCol then c = cVarCol
-                else c = COLOR_SPECIAL_INNOCENT["default"] end
-            elseif r == ROLE_TRAITOR then
-                local cVarCol = ColorFromCustomConVars("ttt_custom_tra_color")
-                if cVarCol then c = cVarCol
-                else c = COLOR_TRAITOR["default"] end
-            elseif TRAITOR_ROLES[r] then
-                local cVarCol = ColorFromCustomConVars("ttt_custom_spec_tra_color")
-                if cVarCol then c = cVarCol
-                else c = COLOR_SPECIAL_TRAITOR["default"] end
-            elseif JESTER_ROLES[r] then
-                local cVarCol = ColorFromCustomConVars("ttt_custom_jes_color")
-                if cVarCol then c = cVarCol
-                else c = COLOR_JESTER["default"] end
-            elseif INDEPENDENT_ROLES[r] then
-                local cVarCol = ColorFromCustomConVars("ttt_custom_ind_color")
-                if cVarCol then c = cVarCol
-                else c = COLOR_INDEPENDENT["default"] end
-            elseif MONSTER_ROLES[r] then
-                local cVarCol = ColorFromCustomConVars("ttt_custom_mon_color")
-                if cVarCol then c = cVarCol
-                else c = COLOR_MONSTER["default"] end
-            else c = COLOR_WHITE end
+            if r == ROLE_DETECTIVE then c = ColorFromCustomConVars("ttt_custom_det_color") or COLOR_DETECTIVE["default"]
+            elseif DETECTIVE_ROLES[r] then c = ColorFromCustomConVars("ttt_custom_spec_det_color") or COLOR_SPECIAL_DETECTIVE["default"]
+            elseif r == ROLE_INNOCENT then c = ColorFromCustomConVars("ttt_custom_inn_color") or COLOR_INNOCENT["default"]
+            elseif INNOCENT_ROLES[r] then c = ColorFromCustomConVars("ttt_custom_spec_inn_color") or COLOR_SPECIAL_INNOCENT["default"]
+            elseif r == ROLE_TRAITOR then c = ColorFromCustomConVars("ttt_custom_tra_color") or COLOR_TRAITOR["default"]
+            elseif TRAITOR_ROLES[r] then c = ColorFromCustomConVars("ttt_custom_spec_tra_color") or COLOR_SPECIAL_TRAITOR["default"]
+            elseif JESTER_ROLES[r] then c = ColorFromCustomConVars("ttt_custom_jes_color") or COLOR_JESTER["default"]
+            elseif INDEPENDENT_ROLES[r] then c = ColorFromCustomConVars("ttt_custom_ind_color") or COLOR_INDEPENDENT["default"]
+            elseif MONSTER_ROLES[r] then c = ColorFromCustomConVars("ttt_custom_mon_color") or COLOR_MONSTER["default"]
+            end
         else
             if r == ROLE_DETECTIVE then c = COLOR_DETECTIVE[mode]
             elseif DETECTIVE_ROLES[r] then c = COLOR_SPECIAL_DETECTIVE[mode]
@@ -275,30 +266,37 @@ local function FillRoleColors(list, type)
             elseif JESTER_ROLES[r] then c = COLOR_JESTER[mode]
             elseif INDEPENDENT_ROLES[r] then c = COLOR_INDEPENDENT[mode]
             elseif MONSTER_ROLES[r] then c = COLOR_MONSTER[mode]
-            else c = COLOR_WHITE end
+            end
         end
 
+        list[r] = ModifyColor(c or COLOR_WHITE, type)
+    end
+end
 
-        local h, s, l = ColorToHSL(c)
-        if type == "dark" then
-            l = math.max(l - 0.125, 0.125)
-        elseif type == "highlight" or "radar" then
-            s = 1
-        end
-        c = HSLToColor(h, s, l)
-
-        if type == "scoreboard" then
-            c = ColorAlpha(c, 30)
-        elseif type == "sprite" then
-            c = ColorAlpha(c, 130)
-        elseif type == "radar" then
-            c = ColorAlpha(c, 230)
-        -- HSLToColor doesn't apply the Color metatable so call ColorAlpha to ensure this is actually a "Color"
+if CLIENT then
+    function GetRoleTeamColor(role_team, type)
+        local modeCVar = GetConVar("ttt_color_mode")
+        local mode = modeCVar and modeCVar:GetString() or "default"
+        local c = nil
+        if mode == "custom" then
+            if role_team == ROLE_TEAM_DETECTIVE then c = ColorFromCustomConVars("ttt_custom_spec_det_color") or COLOR_SPECIAL_DETECTIVE["default"]
+            elseif role_team == ROLE_TEAM_INNOCENT then c = ColorFromCustomConVars("ttt_custom_spec_inn_color") or COLOR_SPECIAL_INNOCENT["default"]
+            elseif role_team == ROLE_TEAM_TRAITOR then c = ColorFromCustomConVars("ttt_custom_spec_tra_color") or COLOR_SPECIAL_TRAITOR["default"]
+            elseif role_team == ROLE_TEAM_JESTER then c = ColorFromCustomConVars("ttt_custom_jes_color") or COLOR_JESTER["default"]
+            elseif role_team == ROLE_TEAM_INDEPENDENT then c = ColorFromCustomConVars("ttt_custom_ind_color") or COLOR_INDEPENDENT["default"]
+            elseif role_team == ROLE_TEAM_MONSTER then c = ColorFromCustomConVars("ttt_custom_mon_color") or COLOR_MONSTER["default"]
+            end
         else
-            c = ColorAlpha(c, 255)
+            if role_team == ROLE_TEAM_DETECTIVE then c = COLOR_SPECIAL_DETECTIVE[mode]
+            elseif role_team == ROLE_TEAM_INNOCENT then c = COLOR_SPECIAL_INNOCENT[mode]
+            elseif role_team == ROLE_TEAM_TRAITOR then c = COLOR_SPECIAL_TRAITOR[mode]
+            elseif role_team == ROLE_TEAM_JESTER then c = COLOR_JESTER[mode]
+            elseif role_team == ROLE_TEAM_INDEPENDENT then c = COLOR_INDEPENDENT[mode]
+            elseif role_team == ROLE_TEAM_MONSTER then c = COLOR_MONSTER[mode]
+            end
         end
 
-        list[r] = c
+        return ModifyColor(c or COLOR_WHITE, type)
     end
 end
 

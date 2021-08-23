@@ -18,6 +18,7 @@
   - Creation of ttt_force_{ROLENAME} commands
   - Role selection logic
   - Role default buyable equipment
+- Added GetRoleTeamColor global client method for getting the color for a role team
 
 ## 1.1.7
 **Released: August 22nd, 2021**
