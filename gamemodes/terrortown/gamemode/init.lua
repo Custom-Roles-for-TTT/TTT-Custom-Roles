@@ -2066,13 +2066,14 @@ function SelectRoles()
     }
 
     -- Roles that required their checks to be delayed because they rely on other role selection information
-    local delayedCheckRoles = {}
-    -- Glitch requires the number of traitors that have been selected
-    table.insert(delayedCheckRoles, ROLE_GLITCH)
+    local delayedCheckRoles = {
+        -- Glitch requires the number of traitors that have been selected
+        [ROLE_GLITCH] = true
+    }
 
     -- Build the weighted lists for all non-default roles
     for r = ROLE_DETECTIVE + 1, ROLE_MAX do
-        if not table.HasValue(delayedCheckRoles, r) and not hasRole[r] and GetConVar("ttt_" .. ROLE_STRINGS_RAW[r] .. "_enabled"):GetBool() and choice_count >= GetConVar("ttt_" .. ROLE_STRINGS_RAW[r] .. "_min_players"):GetInt() and ((not rolePredicates[r]) or rolePredicates[r]()) then
+        if not delayedCheckRoles[r] and not hasRole[r] and GetConVar("ttt_" .. ROLE_STRINGS_RAW[r] .. "_enabled"):GetBool() and choice_count >= GetConVar("ttt_" .. ROLE_STRINGS_RAW[r] .. "_min_players"):GetInt() and ((not rolePredicates[r]) or rolePredicates[r]()) then
             for _ = 1, GetConVar("ttt_" .. ROLE_STRINGS_RAW[r] .. "_spawn_weight"):GetInt() do
                 if TRAITOR_ROLES[r] then
                     table.insert(specialTraitorRoles, r)
