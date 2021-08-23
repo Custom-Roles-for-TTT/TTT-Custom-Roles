@@ -14,6 +14,7 @@
   - Adding icons to the download list
   - Creation of ttt_force_{ROLENAME} commands
   - Role selection logic
+  - Role default buyable equipment
 
 ## 1.1.7
 **Released: August 22nd, 2021**
