@@ -1402,6 +1402,7 @@ function GM:PlayerDeath(victim, infl, attacker)
         net.Start("TTT_SwapperSwapped")
         net.WriteString(victim:Nick())
         net.WriteString(attacker:Nick())
+        net.WriteString(victim:SteamID64())
         net.Broadcast()
     end
 

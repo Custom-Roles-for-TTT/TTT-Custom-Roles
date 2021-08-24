@@ -205,6 +205,7 @@ if SERVER then
 
         net.Start("TTT_Hypnotised")
         net.WriteString(ply:Nick())
+        net.WriteString(owner:SteamID64())
         net.Broadcast()
 
         ply:SpawnForRound(true)

@@ -8,6 +8,7 @@
 
 ### Changes
 - Changed round summary role tooltip to be translateable
+- Changed some role features to give the player bonus points when used successfully (hypnotist, bodysnatcher, swapper, beggar)
 
 ### Fixes
 - Fixed the detective's DNA scanner not being removed when they should have lost their role weapons
@@ -22,6 +23,7 @@
   - Role selection logic
   - Role default buyable equipment
 - Added GetRoleTeamColor global client method for getting the color for a role team
+- Added ability to give a player bonus points via a scoring event if the sid64 and bonus properties are set
 
 ## 1.1.7
 **Released: August 22nd, 2021**

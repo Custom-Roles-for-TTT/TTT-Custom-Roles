@@ -710,6 +710,7 @@ function GM:WeaponEquip(wep, ply)
                 net.WriteString(ply:Nick())
                 net.WriteString(wep.BoughtBuy:Nick())
                 net.WriteString(ROLE_STRINGS_EXT[role])
+                net.WriteString(ply:SteamID64())
                 net.Broadcast()
             end
         end
