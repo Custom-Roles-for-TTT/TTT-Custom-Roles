@@ -1260,7 +1260,7 @@ function CLSCORE:Init(events)
         local e = mergedEvents[i]
         if e.id == EVENT_GAME and e.state == ROUND_ACTIVE and e.t then
             starttime = e.t
-        elseif e.id == EVENT_SELECTED and #roles == 0 then
+        elseif e.id == EVENT_SELECTED and table.IsEmpty(roles) then
             roles = e.roles
         elseif e.id == EVENT_SPAWN and e.sid64 then
             scores[e.sid64] = ScoreInit()
