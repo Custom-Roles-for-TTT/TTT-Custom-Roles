@@ -224,21 +224,20 @@ if SERVER then
     CreateConVar("ttt_summoner_checkbox", "0")
     CreateConVar("ttt_summoner_textbox", "0")
 end
-ROLE.convars = {
-	{
-		cvar = "ttt_summoner_slider",
-		type = ROLE_CONVAR_TYPE_NUM,
-		decimal = 2
-	},
-	{
-		cvar = "ttt_summoner_checkbox",
-		type = ROLE_CONVAR_TYPE_BOOL
-	},
-	{
-		cvar = "ttt_summoner_textbox",
-		type = ROLE_CONVAR_TYPE_TEXT
-	}
-}
+ROLE.convars = {}
+table.insert(ROLE.convars, {
+    cvar = "ttt_summoner_slider",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 2
+})
+table.insert(ROLE.convars, {
+    cvar = "ttt_summoner_checkbox",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE.convars, {
+    cvar = "ttt_summoner_textbox",
+    type = ROLE_CONVAR_TYPE_TEXT
+})
 ```
 
 ### Role Registration
@@ -256,7 +255,6 @@ end
 ```
 
 When this code is run on the server it makes sure the client downloads this file so they know everything you have done up until now. Any logic that should only run on the server-side should be in an `if SERVER then` block like this.
-```
 
 ### Example File
 
@@ -288,21 +286,20 @@ if SERVER then
     CreateConVar("ttt_summoner_checkbox", "0")
     CreateConVar("ttt_summoner_textbox", "0")
 end
-ROLE.convars = {
-	{
-		cvar = "ttt_summoner_slider",
-		type = ROLE_CONVAR_TYPE_NUM,
-		decimal = 2
-	},
-	{
-		cvar = "ttt_summoner_checkbox",
-		type = ROLE_CONVAR_TYPE_BOOL
-	},
-	{
-		cvar = "ttt_summoner_textbox",
-		type = ROLE_CONVAR_TYPE_TEXT
-	}
-}
+ROLE.convars = {}
+table.insert(ROLE.convars, {
+    cvar = "ttt_summoner_slider",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 2
+})
+table.insert(ROLE.convars, {
+    cvar = "ttt_summoner_checkbox",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE.convars, {
+    cvar = "ttt_summoner_textbox",
+    type = ROLE_CONVAR_TYPE_TEXT
+})
   
 RegisterRole(ROLE)  
   
