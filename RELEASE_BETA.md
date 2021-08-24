@@ -11,6 +11,7 @@
 ### Fixes
 - Fixed the detective's DNA scanner not being removed when they should have lost their role weapons
 - Fixed external monster roles not naturally spawning
+- Fixed credit message popping up for detectives when ttt_det_credits_traitordead was 0
 
 ### Developer
 - Changed more aspects of role creation to be dynamic

@@ -555,13 +555,17 @@ local function CheckCreditAward(victim, attacker)
     -- DETECTIVE AWARD
     if valid_attacker and (victim:IsTraitorTeam() or victim:IsMonsterTeam() or victim:IsKiller() or victim:IsZombie()) then
         local amt = GetConVarNumber("ttt_det_credits_traitordead") or 1
-        for _, ply in ipairs(player.GetAll()) do
-            if ply:IsActiveDetectiveTeam() or (ply:IsActiveDeputy() and ply:GetNWBool("HasPromotion", false)) then
-                ply:AddCredits(amt)
-            end
-        end
 
-        LANG.Msg(GetDetectiveTeamFilter(true), "credit_all", { role = ROLE_STRINGS_PLURAL[ROLE_DETECTIVE], num = amt })
+        -- If size is 0, awards are off
+        if amt > 0 then
+            for _, ply in ipairs(player.GetAll()) do
+                if ply:IsActiveDetectiveTeam() or (ply:IsActiveDeputy() and ply:GetNWBool("HasPromotion", false)) then
+                    ply:AddCredits(amt)
+                end
+            end
+
+            LANG.Msg(GetDetectiveTeamFilter(true), "credit_all", { role = ROLE_STRINGS_PLURAL[ROLE_DETECTIVE], num = amt })
+        end
     end
 
     -- TRAITOR AWARD
