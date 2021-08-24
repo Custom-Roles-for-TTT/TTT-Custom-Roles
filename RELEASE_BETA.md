@@ -1,6 +1,7 @@
 # Beta Release Notes
 
 ## 1.1.8
+**Released:**
 
 ### Additions
 - Added ability for glitch to see and use traitor traps (disabled by default)
@@ -12,6 +13,7 @@
 - Fixed the detective's DNA scanner not being removed when they should have lost their role weapons
 - Fixed external monster roles not naturally spawning
 - Fixed credit message popping up for detectives when ttt_det_credits_traitordead was 0
+- Fixed error opening the shop when checking whether a weapon is equipment and it is missing a core method
 
 ### Developer
 - Changed more aspects of role creation to be dynamic
