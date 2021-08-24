@@ -41,25 +41,6 @@ local mat_dir = "vgui/ttt/"
 -- want a new line to start.
 
 EquipmentItems = {
-    [ROLE_DETECTIVE] = {
-        -- body armor
-        { id = EQUIP_ARMOR,
-          loadout = true, -- default equipment for detectives
-          type = "item_passive",
-          material = mat_dir .. "icon_armor",
-          name = "item_armor",
-          desc = "item_armor_desc"
-        },
-
-        -- radar
-        { id = EQUIP_RADAR,
-          type = "item_active",
-          material = mat_dir .. "icon_radar",
-          name = "item_radar",
-          desc = "item_radar_desc"
-        }
-    };
-
     [ROLE_MERCENARY] = {
         -- body armor
         { id = EQUIP_ARMOR,
@@ -79,58 +60,6 @@ EquipmentItems = {
         }
     };
 
-    [ROLE_TRAITOR] = {
-        -- body armor
-        { id = EQUIP_ARMOR,
-          type = "item_passive",
-          material = mat_dir .. "icon_armor",
-          name = "item_armor",
-          desc = "item_armor_desc"
-        },
-
-        -- radar
-        { id = EQUIP_RADAR,
-          type = "item_active",
-          material = mat_dir .. "icon_radar",
-          name = "item_radar",
-          desc = "item_radar_desc"
-        },
-
-        -- disguiser
-        { id = EQUIP_DISGUISE,
-          type = "item_active",
-          material = mat_dir .. "icon_disguise",
-          name = "item_disg",
-          desc = "item_disg_desc"
-        }
-    };
-
-    [ROLE_HYPNOTIST] = {
-        -- body armor
-        { id = EQUIP_ARMOR,
-          type = "item_passive",
-          material = mat_dir .. "icon_armor",
-          name = "item_armor",
-          desc = "item_armor_desc"
-        },
-
-        -- radar
-        { id = EQUIP_RADAR,
-          type = "item_active",
-          material = mat_dir .. "icon_radar",
-          name = "item_radar",
-          desc = "item_radar_desc"
-        },
-
-        -- disguiser
-        { id = EQUIP_DISGUISE,
-          type = "item_active",
-          material = mat_dir .. "icon_disguise",
-          name = "item_disg",
-          desc = "item_disg_desc"
-        }
-    };
-
     [ROLE_DEPUTY] = {
         -- body armor
         { id = EQUIP_ARMOR,
@@ -146,58 +75,6 @@ EquipmentItems = {
           material = mat_dir .. "icon_radar",
           name = "item_radar",
           desc = "item_radar_desc"
-        }
-    };
-
-    [ROLE_IMPERSONATOR] = {
-        -- body armor
-        { id = EQUIP_ARMOR,
-          type = "item_passive",
-          material = mat_dir .. "icon_armor",
-          name = "item_armor",
-          desc = "item_armor_desc"
-        },
-
-        -- radar
-        { id = EQUIP_RADAR,
-          type = "item_active",
-          material = mat_dir .. "icon_radar",
-          name = "item_radar",
-          desc = "item_radar_desc"
-        },
-
-        -- disguiser
-        { id = EQUIP_DISGUISE,
-          type = "item_active",
-          material = mat_dir .. "icon_disguise",
-          name = "item_disg",
-          desc = "item_disg_desc"
-        }
-    };
-
-    [ROLE_ASSASSIN] = {
-        -- body armor
-        { id = EQUIP_ARMOR,
-          type = "item_passive",
-          material = mat_dir .. "icon_armor",
-          name = "item_armor",
-          desc = "item_armor_desc"
-        },
-
-        -- radar
-        { id = EQUIP_RADAR,
-          type = "item_active",
-          material = mat_dir .. "icon_radar",
-          name = "item_radar",
-          desc = "item_radar_desc"
-        },
-
-        -- disguiser
-        { id = EQUIP_DISGUISE,
-          type = "item_active",
-          material = mat_dir .. "icon_disguise",
-          name = "item_disg",
-          desc = "item_disg_desc"
         }
     };
 
@@ -262,131 +139,67 @@ EquipmentItems = {
           desc = "item_armor_desc"
         }
     };
-
-    [ROLE_QUACK] = {
-        -- body armor
-        { id = EQUIP_ARMOR,
-          type = "item_passive",
-          material = mat_dir .. "icon_armor",
-          name = "item_armor",
-          desc = "item_armor_desc"
-        },
-
-        -- radar
-        { id = EQUIP_RADAR,
-          type = "item_active",
-          material = mat_dir .. "icon_radar",
-          name = "item_radar",
-          desc = "item_radar_desc"
-        },
-
-        -- disguiser
-        { id = EQUIP_DISGUISE,
-          type = "item_active",
-          material = mat_dir .. "icon_disguise",
-          name = "item_disg",
-          desc = "item_disg_desc"
-        }
-    };
-
-    [ROLE_PARASITE] = {
-        -- body armor
-        { id = EQUIP_ARMOR,
-          type = "item_passive",
-          material = mat_dir .. "icon_armor",
-          name = "item_armor",
-          desc = "item_armor_desc"
-        },
-
-        -- radar
-        { id = EQUIP_RADAR,
-          type = "item_active",
-          material = mat_dir .. "icon_radar",
-          name = "item_radar",
-          desc = "item_radar_desc"
-        },
-
-        -- disguiser
-        { id = EQUIP_DISGUISE,
-          type = "item_active",
-          material = mat_dir .. "icon_disguise",
-          name = "item_disg",
-          desc = "item_disg_desc"
-        }
-    };
-
-    [ROLE_PALADIN] = {
-        -- body armor
-        { id = EQUIP_ARMOR,
-          loadout = true, -- default equipment for detectives
-          type = "item_passive",
-          material = mat_dir .. "icon_armor",
-          name = "item_armor",
-          desc = "item_armor_desc"
-        },
-
-        -- radar
-        { id = EQUIP_RADAR,
-          type = "item_active",
-          material = mat_dir .. "icon_radar",
-          name = "item_radar",
-          desc = "item_radar_desc"
-        }
-    };
-
-    [ROLE_TRACKER] = {
-        -- body armor
-        { id = EQUIP_ARMOR,
-          loadout = true, -- default equipment for detectives
-          type = "item_passive",
-          material = mat_dir .. "icon_armor",
-          name = "item_armor",
-          desc = "item_armor_desc"
-        },
-
-        -- radar
-        { id = EQUIP_RADAR,
-          type = "item_active",
-          material = mat_dir .. "icon_radar",
-          name = "item_radar",
-          desc = "item_radar_desc"
-        }
-    };
-
-    [ROLE_MEDIUM] = {
-        -- body armor
-        { id = EQUIP_ARMOR,
-          loadout = true, -- default equipment for detectives
-          type = "item_passive",
-          material = mat_dir .. "icon_armor",
-          name = "item_armor",
-          desc = "item_armor_desc"
-        },
-
-        -- radar
-        { id = EQUIP_RADAR,
-          type = "item_active",
-          material = mat_dir .. "icon_radar",
-          name = "item_radar",
-          desc = "item_radar_desc"
-        }
-    };
-
-    [ROLE_JESTER] = {};
-    [ROLE_SWAPPER] = {};
-    [ROLE_CLOWN] = {};
-    [ROLE_DOCTOR] = {};
 };
 
-local function PrepareExternalRoleEquipment()
-    if ROLE_MAX >= ROLE_EXTERNAL_START then
-        for role = ROLE_EXTERNAL_START, ROLE_MAX do
-            if SHOP_ROLES[role] then EquipmentItems[role] = {} end
+local defaultDetectiveItems = {
+    -- body armor
+    { id = EQUIP_ARMOR,
+      loadout = true, -- default equipment for detectives
+      type = "item_passive",
+      material = mat_dir .. "icon_armor",
+      name = "item_armor",
+      desc = "item_armor_desc"
+    },
+
+    -- radar
+    { id = EQUIP_RADAR,
+      type = "item_active",
+      material = mat_dir .. "icon_radar",
+      name = "item_radar",
+      desc = "item_radar_desc"
+    }
+}
+local defaultTraitorItems = {
+    -- body armor
+    { id = EQUIP_ARMOR,
+      type = "item_passive",
+      material = mat_dir .. "icon_armor",
+      name = "item_armor",
+      desc = "item_armor_desc"
+    },
+
+    -- radar
+    { id = EQUIP_RADAR,
+      type = "item_active",
+      material = mat_dir .. "icon_radar",
+      name = "item_radar",
+      desc = "item_radar_desc"
+    },
+
+    -- disguiser
+    { id = EQUIP_DISGUISE,
+      type = "item_active",
+      material = mat_dir .. "icon_disguise",
+      name = "item_disg",
+      desc = "item_disg_desc"
+    }
+}
+
+-- Populate any role that doesn't already have an equipment list set
+local function PrepareRoleEquipment()
+    for r = 0, ROLE_MAX do
+        if not EquipmentItems[r] then
+            if DETECTIVE_ROLES[r] then
+                EquipmentItems[r] = table.Copy(defaultDetectiveItems)
+            elseif TRAITOR_ROLES[r] then
+                EquipmentItems[r] = table.Copy(defaultTraitorItems)
+            else
+                EquipmentItems[r] = {}
+            end
         end
     end
 end
-PrepareExternalRoleEquipment()
-
+PrepareRoleEquipment()
 
 -- Search if an item is in the equipment table of a given role, and return it if
 -- it exists, else return nil.

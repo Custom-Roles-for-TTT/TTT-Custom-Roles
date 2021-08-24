@@ -1,5 +1,25 @@
 # Beta Release Notes
 
+## 1.1.8
+
+### Additions
+- Added ability for glitch to see and use traitor traps (disabled by default)
+
+### Changes
+- Changed round summary role tooltip to be translateable
+
+### Fixes
+- Fixed the detective's DNA scanner not being removed when they should have lost their role weapons
+- Fixed external monster roles not naturally spawning
+
+### Developer
+- Changed more aspects of role creation to be dynamic
+  - Adding icons to the download list
+  - Creation of ttt_force_{ROLENAME} commands
+  - Role selection logic
+  - Role default buyable equipment
+- Added GetRoleTeamColor global client method for getting the color for a role team
+
 ## 1.1.7
 **Released: August 22nd, 2021**
 

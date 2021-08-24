@@ -119,232 +119,37 @@ local function clear_role_effects(ply)
     SetRoleHealth(ply)
 end
 
-local function force_innocent(ply)
-    ply:SetRoleAndBroadcast(ROLE_INNOCENT)
-    clear_role_effects(ply)
-    SendFullStateUpdate()
-end
-concommand.Add("ttt_force_innocent", force_innocent, nil, nil, FCVAR_CHEAT)
+local function give_role_weapon(ply, role)
+    -- Handle the killer specially
+    if role == ROLE_KILLER then
+        if GetConVar("ttt_killer_crowbar_enabled"):GetBool() then
+            ply:StripWeapon("weapon_zm_improvised")
+            ply:Give("weapon_kil_crowbar")
+        end
+        if GetConVar("ttt_killer_knife_enabled"):GetBool() then
+            ply:Give("weapon_kil_knife")
+        end
+        return
+    end
 
-local function force_traitor(ply)
-    ply:SetRoleAndBroadcast(ROLE_TRAITOR)
-    clear_role_effects(ply)
-    SendFullStateUpdate()
+    -- Give the player any role weapons that should by in the loadout for their role
+    for _, w in ipairs(weapons.GetList()) do
+        local weap_class = WEPS.GetClass(w)
+        if istable(w.InLoadoutFor) and table.HasValue(w.InLoadoutFor, role) and w.Category == WEAPON_CATEGORY_ROLE then
+            ply:Give(weap_class)
+        end
+    end
 end
-concommand.Add("ttt_force_traitor", force_traitor, nil, nil, FCVAR_CHEAT)
 
-local function force_detective(ply)
-    ply:SetRoleAndBroadcast(ROLE_DETECTIVE)
-    clear_role_effects(ply)
-    SendFullStateUpdate()
+for role = 0, ROLE_MAX do
+    local rolestring = ROLE_STRINGS_RAW[role]
+    concommand.Add("ttt_force_" .. rolestring, function(ply)
+        ply:SetRoleAndBroadcast(role)
+        clear_role_effects(ply)
+        give_role_weapon(ply, role)
+        SendFullStateUpdate()
+    end, nil, nil, FCVAR_CHEAT)
 end
-concommand.Add("ttt_force_detective", force_detective, nil, nil, FCVAR_CHEAT)
-
-local function force_jester(ply)
-    ply:SetRoleAndBroadcast(ROLE_JESTER)
-    clear_role_effects(ply)
-    SendFullStateUpdate()
-end
-concommand.Add("ttt_force_jester", force_jester, nil, nil, FCVAR_CHEAT)
-
-local function force_swapper(ply)
-    ply:SetRoleAndBroadcast(ROLE_SWAPPER)
-    clear_role_effects(ply)
-    SendFullStateUpdate()
-end
-concommand.Add("ttt_force_swapper", force_swapper, nil, nil, FCVAR_CHEAT)
-
-local function force_glitch(ply)
-    ply:SetRoleAndBroadcast(ROLE_GLITCH)
-    clear_role_effects(ply)
-    SendFullStateUpdate()
-end
-concommand.Add("ttt_force_glitch", force_glitch, nil, nil, FCVAR_CHEAT)
-
-local function force_phantom(ply)
-    ply:SetRoleAndBroadcast(ROLE_PHANTOM)
-    clear_role_effects(ply)
-    SendFullStateUpdate()
-end
-concommand.Add("ttt_force_phantom", force_phantom, nil, nil, FCVAR_CHEAT)
-
-local function force_hypnotist(ply)
-    ply:SetRoleAndBroadcast(ROLE_HYPNOTIST)
-    clear_role_effects(ply)
-    ply:Give("weapon_hyp_brainwash")
-    SendFullStateUpdate()
-end
-concommand.Add("ttt_force_hypnotist", force_hypnotist, nil, nil, FCVAR_CHEAT)
-
-local function force_revenger(ply)
-    ply:SetRoleAndBroadcast(ROLE_REVENGER)
-    clear_role_effects(ply)
-    SendFullStateUpdate()
-end
-concommand.Add("ttt_force_revenger", force_revenger, nil, nil, FCVAR_CHEAT)
-
-local function force_drunk(ply)
-    ply:SetRoleAndBroadcast(ROLE_DRUNK)
-    clear_role_effects(ply)
-    SendFullStateUpdate()
-end
-concommand.Add("ttt_force_drunk", force_drunk, nil, nil, FCVAR_CHEAT)
-
-local function force_clown(ply)
-    ply:SetRoleAndBroadcast(ROLE_CLOWN)
-    clear_role_effects(ply)
-    SendFullStateUpdate()
-end
-concommand.Add("ttt_force_clown", force_clown, nil, nil, FCVAR_CHEAT)
-
-local function force_deputy(ply)
-    ply:SetRoleAndBroadcast(ROLE_DEPUTY)
-    clear_role_effects(ply)
-    SendFullStateUpdate()
-end
-concommand.Add("ttt_force_deputy", force_deputy, nil, nil, FCVAR_CHEAT)
-
-local function force_impersonator(ply)
-    ply:SetRoleAndBroadcast(ROLE_IMPERSONATOR)
-    clear_role_effects(ply)
-    SendFullStateUpdate()
-end
-concommand.Add("ttt_force_impersonator", force_impersonator, nil, nil, FCVAR_CHEAT)
-
-local function force_beggar(ply)
-    ply:SetRoleAndBroadcast(ROLE_BEGGAR)
-    clear_role_effects(ply)
-    SendFullStateUpdate()
-end
-concommand.Add("ttt_force_beggar", force_beggar, nil, nil, FCVAR_CHEAT)
-
-local function force_oldman(ply)
-    ply:SetRoleAndBroadcast(ROLE_OLDMAN)
-    clear_role_effects(ply)
-    SendFullStateUpdate()
-end
-concommand.Add("ttt_force_oldman", force_oldman, nil, nil, FCVAR_CHEAT)
-
-local function force_mercenary(ply)
-    ply:SetRoleAndBroadcast(ROLE_MERCENARY)
-    clear_role_effects(ply)
-    SendFullStateUpdate()
-end
-concommand.Add("ttt_force_mercenary", force_mercenary, nil, nil, FCVAR_CHEAT)
-
-local function force_bodysnatcher(ply)
-    ply:SetRoleAndBroadcast(ROLE_BODYSNATCHER)
-    clear_role_effects(ply)
-    ply:Give("weapon_bod_bodysnatch")
-    SendFullStateUpdate()
-end
-concommand.Add("ttt_force_bodysnatcher", force_bodysnatcher, nil, nil, FCVAR_CHEAT)
-
-local function force_veteran(ply)
-    ply:SetRoleAndBroadcast(ROLE_VETERAN)
-    clear_role_effects(ply)
-    SendFullStateUpdate()
-end
-concommand.Add("ttt_force_veteran", force_veteran, nil, nil, FCVAR_CHEAT)
-
-local function force_assassin(ply)
-    ply:SetRoleAndBroadcast(ROLE_ASSASSIN)
-    clear_role_effects(ply)
-    SendFullStateUpdate()
-end
-concommand.Add("ttt_force_assassin", force_assassin, nil, nil, FCVAR_CHEAT)
-
-local function force_killer(ply)
-    ply:SetRoleAndBroadcast(ROLE_KILLER)
-    clear_role_effects(ply)
-    ply:StripWeapon("weapon_zm_improvised")
-    ply:Give("weapon_kil_crowbar")
-    ply:Give("weapon_kil_knife")
-    SendFullStateUpdate()
-end
-concommand.Add("ttt_force_killer", force_killer, nil, nil, FCVAR_CHEAT)
-
-local function force_zombie(ply)
-    ply:SetRoleAndBroadcast(ROLE_ZOMBIE)
-    clear_role_effects(ply)
-    ply:Give("weapon_zom_claws")
-    SendFullStateUpdate()
-end
-concommand.Add("ttt_force_zombie", force_zombie, nil, nil, FCVAR_CHEAT)
-
-local function force_vampire(ply)
-    ply:SetRoleAndBroadcast(ROLE_VAMPIRE)
-    clear_role_effects(ply)
-    ply:Give("weapon_vam_fangs")
-    SendFullStateUpdate()
-end
-concommand.Add("ttt_force_vampire", force_vampire, nil, nil, FCVAR_CHEAT)
-
-local function force_doctor(ply)
-    ply:SetRoleAndBroadcast(ROLE_DOCTOR)
-    clear_role_effects(ply)
-    SendFullStateUpdate()
-end
-concommand.Add("ttt_force_doctor", force_doctor, nil, nil, FCVAR_CHEAT)
-
-local function force_quack(ply)
-    ply:SetRoleAndBroadcast(ROLE_QUACK)
-    clear_role_effects(ply)
-    SendFullStateUpdate()
-end
-concommand.Add("ttt_force_quack", force_quack, nil, nil, FCVAR_CHEAT)
-
-local function force_parasite(ply)
-    ply:SetRoleAndBroadcast(ROLE_PARASITE)
-    clear_role_effects(ply)
-    SendFullStateUpdate()
-end
-concommand.Add("ttt_force_parasite", force_parasite, nil, nil, FCVAR_CHEAT)
-
-local function force_trickster(ply)
-    ply:SetRoleAndBroadcast(ROLE_TRICKSTER)
-    clear_role_effects(ply)
-    SendFullStateUpdate()
-end
-concommand.Add("ttt_force_trickster", force_trickster, nil, nil, FCVAR_CHEAT)
-
-local function force_paramedic(ply)
-    ply:SetRoleAndBroadcast(ROLE_PARAMEDIC)
-    clear_role_effects(ply)
-    ply:Give("weapon_med_defib")
-    SendFullStateUpdate()
-end
-concommand.Add("ttt_force_paramedic", force_paramedic, nil, nil, FCVAR_CHEAT)
-
-local function force_madscientist(ply)
-    ply:SetRoleAndBroadcast(ROLE_MADSCIENTIST)
-    clear_role_effects(ply)
-    ply:Give("weapon_mad_zombificator")
-    SendFullStateUpdate()
-end
-concommand.Add("ttt_force_madscientist", force_madscientist, nil, nil, FCVAR_CHEAT)
-
-local function force_paladin(ply)
-    ply:SetRoleAndBroadcast(ROLE_PALADIN)
-    clear_role_effects(ply)
-    SendFullStateUpdate()
-end
-concommand.Add("ttt_force_paladin", force_paladin, nil, nil, FCVAR_CHEAT)
-
-local function force_tracker(ply)
-    ply:SetRoleAndBroadcast(ROLE_TRACKER)
-    clear_role_effects(ply)
-    SendFullStateUpdate()
-end
-concommand.Add("ttt_force_tracker", force_tracker, nil, nil, FCVAR_CHEAT)
-
-local function force_medium(ply)
-    ply:SetRoleAndBroadcast(ROLE_MEDIUM)
-    clear_role_effects(ply)
-    SendFullStateUpdate()
-end
-concommand.Add("ttt_force_medium", force_medium, nil, nil, FCVAR_CHEAT)
-
 
 local function force_spectate(ply, cmd, arg)
     if IsValid(ply) then

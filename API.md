@@ -2,6 +2,7 @@
 ## Table of Contents
 1. [Overview](#Overview)
 1. [Global Variables](#Global-Variables)
+1. [Global Enumerations](#Global-Enumerations)
 1. [Methods](#Methods)
    1. [Global](#Global)
    1. [Player](#Player)
@@ -17,6 +18,8 @@
 This document aims to explain the things that we have added to Custom Roles for TTT that are usable by other developers for integration.
 
 ## Global Variables
+Variables available globally (within the defined realm)
+
 **CAN_LOOT_CREDITS_ROLES** - Lookup table for whether a role can loot credits off of a corpse.\
 *Realm:* Client and Server\
 *Added in:* 1.0.5
@@ -121,9 +124,44 @@ This document aims to explain the things that we have added to Custom Roles for 
 *Realm:* Client and Server\
 *Added in:* 1.0.0
 
+## Global Enumerations
+Enumerations available globally (within the defined realm). There are additional enumerations used internally for configuration and event reporting that are not included here. If you need them, for whatever reason, you will need to find them or ask one of the developers in Discord.
+
+**ROLE_{ROLENAME}** - Every role that is added has its role number available as a global enum value. In addition, `ROLE_MAX` is defined as the highest role number assigned, `ROLE_NONE` is the role number a player is given before another role is assigned, and `ROLE_EXTERNAL_START` is the first role number assigned to roles defined outside of the code Custom Roles for TTT addon.\
+*Realm:* Client and Server\
+*Added in:* Whenever each role is added
+
+**ROLE_CONVAR_TYPE_\*** - What type the convar for an external role is. Used by the ULX plugin to dynamically generate the configuration UI.\
+*Realm:* Client and Server\
+*Added in:* 1.0.11\
+*Values:*
+- ROLE_CONVAR_TYPE_NUM - A number. Will use a slider in the configuration UI.
+- ROLE_CONVAR_TYPE_BOOL = A boolean. Will use a checkbox in the configuration UI.
+- ROLE_CONVAR_TYPE_TEXT = A text value. Will use a text box in the configuration UI.
+
+**ROLE_TEAM_\*** - Which team an external role is registered to.\
+*Realm:* Client and Server\
+*Added in:* 1.0.9\
+*Values:*
+- ROLE_TEAM_INNOCENT
+- ROLE_TEAM_TRAITOR
+- ROLE_TEAM_JESTER
+- ROLE_TEAM_INDEPENDENT
+- ROLE_TEAM_MONSTER *(Added in 1.1.7)*
+- ROLE_TEAM_DETECTIVE *(Added in 1.1.3)*
+
 ## Methods
 
 ### *Global*
+Methods available globally (within the defined realm)
+
+**AssignAssassinTarget(ply, start, delay)** - Assigns the target player their next assassination target (if they are the assassin role).\
+*Realm:* Client and Server\
+*Added in:* 1.0.0\
+*Parameters:*
+- *ply* - The target player
+- *start* - Whether this is running at the start of the round (Defaults to `false`).
+- *delay* - Whether the assassin's target assignment is delayed (Defaults to false)
 
 **CRVersion(version)** - Whether the current version is equal to or newer than the version number given.\
 *Realm:* Client and Server\
@@ -147,12 +185,6 @@ This document aims to explain the things that we have added to Custom Roles for 
 **Get{RoleName}Filter(alive_only)** - Dynamically created functions for each role that returns a function that filters net messages to players that are role. For example: `GetTraitorFilter()` and `GetPhantomFilter()` return a filter function that can be used to send a message to players who are a traitor or a phantom, respectively.\
 *Realm:* Server\
 *Added in:* Whenever each role is added\
-*Parameters:*
-- *alive_only* - Whether this filter should only include live players (Defaults to `false`).
-
-**GetTraitorTeamFilter(alive_only)** - Returns a function that filters net messages to players that are on the traitor team.\
-*Realm:* Server\
-*Added in:* 1.0.0\
 *Parameters:*
 - *alive_only* - Whether this filter should only include live players (Defaults to `false`).
 
@@ -180,21 +212,12 @@ This document aims to explain the things that we have added to Custom Roles for 
 *Parameters:*
 - *alive_only* - Whether this filter should only include live players (Defaults to `false`).
 
-**GetTeamRoles(team_table)** - Gets a table of role numbers that belong to the team whose lookup table is given.\
-*Realm:* Client and Server\
-*Added in:* 1.0.2\
+**GetRoleTeamColor(role_team, type)** - Gets the color belonging to the specified role team (see ROLE_TEAM_* global enumeration).\
+*Realm:* Client\
+*Added in:* 1.1.8\
 *Parameters:*
-- *team_table* - Team lookup table
-
-**UpdateRoleColours()/UpdateRoleColors()** - Updates the role color tables based on the color convars and color type convar.\
-*Realm:* Client and Server\
-*Added in:* 1.0.0
-
-**UpdateRoleStrings()** - Updates the role string tables based on the role name convars.\
-*Realm:* Client and Server\
-*Added in:* 1.0.7
-
-**RegisterRole**\
+- *role_team* - Which team role to get the color for (see ROLE_TEAM_* global enumeration).
+- *type* - The color modification type. Options are: "dark", "highlight", "radar", "scoreboard", or "sprite". (Optional)
 
 **GetSprintMultiplier(ply, sprinting)** - Gets the given player's current sprint multiplier.\
 *Realm:* Client and Server\
@@ -203,21 +226,21 @@ This document aims to explain the things that we have added to Custom Roles for 
 - *ply* - The target player
 - *sprinting* - Whether the player is currently sprinting
 
-**UpdateRoleWeaponState()** - Enables and disables weapons based on which roles are enabled.\
+**GetTeamRoles(team_table)** - Gets a table of role numbers that belong to the team whose lookup table is given.\
 *Realm:* Client and Server\
-*Added in:* 1.0.5
+*Added in:* 1.0.2\
+*Parameters:*
+- *team_table* - Team lookup table
 
-**UpdateRoleState()** - Updates the team membership, colors, and weapon state based on which roles are enabled and belong to which teams.\
-*Realm:* Client and Server\
-*Added in:* 1.0.0
-
-**AssignAssassinTarget(ply, start, delay)** - Assigns the target player their next assassination target (if they are the assassin role).\
-*Realm:* Client and Server\
+**GetTraitorTeamFilter(alive_only)** - Returns a function that filters net messages to players that are on the traitor team.\
+*Realm:* Server\
 *Added in:* 1.0.0\
 *Parameters:*
-- *ply* - The target player
-- *start* - Whether this is running at the start of the round (Defaults to `false`).
-- *delay* - Whether the assassin's target assignment is delayed (Defaults to false)
+- *alive_only* - Whether this filter should only include live players (Defaults to `false`).
+
+**RegisterRole(role_table)** - Registers a role with Custom Roles for TTT. See [here](CREATE_YOUR_OWN_ROLE.md) for instructions on how to create a role.\
+*Realm:* Client and Server\
+*Added in:* 1.0.9
 
 **SetRoleHealth(ply)** - Sets the target player's health and max health based on their role convars.\
 *Realm:* Client and Server\
@@ -237,7 +260,28 @@ This document aims to explain the things that we have added to Custom Roles for 
 *Parameters:*
 - *ply* - The target player
 
+**StartsWithVowel(str)** - Whether the given string starts with a vowel.\
+*Realm:* Client and Server\
+*Added in:* 1.0.8
+
+**UpdateRoleColours()/UpdateRoleColors()** - Updates the role color tables based on the color convars and color type convar.\
+*Realm:* Client and Server\
+*Added in:* 1.0.0
+
+**UpdateRoleStrings()** - Updates the role string tables based on the role name convars.\
+*Realm:* Client and Server\
+*Added in:* 1.0.7
+
+**UpdateRoleWeaponState()** - Enables and disables weapons based on which roles are enabled.\
+*Realm:* Client and Server\
+*Added in:* 1.0.5
+
+**UpdateRoleState()** - Updates the team membership, colors, and weapon state based on which roles are enabled and belong to which teams.\
+*Realm:* Client and Server\
+*Added in:* 1.0.0
+
 ### *Player*
+Variables available when called from a Player object (within the defined realm)
 
 **plymeta:Is{RoleName}()/plymeta:Get{RoleName}()** - Dynamically created functions for each role that returns whether the player is that role. For example: `plymeta:IsTraitor()` and `plymeta:IsPhantom()` return whether the player is a traitor or a phantom, respectively.\
 *Realm:* Client and Server\
@@ -393,6 +437,7 @@ This document aims to explain the things that we have added to Custom Roles for 
 *Added in:* 1.0.5
 
 ## Hooks
+Custom and modified event hooks available within the defined realm
 
 **TTTCanIdentifyCorpse(ply, rag, was_traitor)** - Changed `was_traitor` parameter to be `true` for any member of the traitor team, rather than just the traitor role.\
 *Realm:* Server\
@@ -509,11 +554,14 @@ Changes made to SWEPs (the data structure used when defining new weapons)
 - *remove_body* - Whether to remove the target player's body after killing them (Defaults to `false`)
 
 ## Net Messages
+Messages that the Custom Roles for TTT addon is set up to listen to in the defined realm.
 
 **TTT_ResetBuyableWeaponsCache** - Resets the client's buyable weapons cache. This should be called if a weapon's CanBuy list has been updated.\
+*Realm:* Client\
 *Added in:* 1.0.0
 
 **TTT_PlayerFootstep** - Adds a footstep to the list's list of footsteps to show.\
+*Realm:* Client\
 *Added in:* 1.0.0\
 *Parameters:*
 - *Entity* - The player whose footsteps are being recorded
@@ -524,13 +572,16 @@ Changes made to SWEPs (the data structure used when defining new weapons)
 - *UInt(8)* - The amount of time (in seconds) before the footsteps should fade completely from view
 
 **TTT_ClearPlayerFootsteps** - Resets the client's list of footsteps to show.\
+*Realm:* Client\
 *Added in:* 1.0.0
 
 **TTT_RoleChanged** - Logs that a player's role has changed.\
+*Realm:* Client\
 *Added in:* 1.0.0
 *Parameters:*
 - *String* - The player's SteamID64 value
 - *UInt (Versions <= 1.1.1), Int (Versions >= 1.1.2)* - The player's new role number
 
 **TTT_UpdateRoleNames** - Causes the client to update their local role name tables based on convar values.\
+*Realm:* Client\
 *Added in:* 1.0.7

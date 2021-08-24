@@ -362,7 +362,7 @@ local function GetWinTitle(wintype)
         [WIN_CLOWN] = { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_CLOWN]:upper() }, c = ROLE_COLORS[ROLE_JESTER] },
         [WIN_KILLER] = { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_KILLER]:upper() }, c = ROLE_COLORS[ROLE_KILLER] },
         [WIN_ZOMBIE] = { txt = "hilite_win_role_plural", params = { role = ROLE_STRINGS_PLURAL[ROLE_ZOMBIE]:upper() }, c = ROLE_COLORS[ROLE_ZOMBIE] },
-        [WIN_MONSTER] = { txt = "hilite_win_role_plural", params = { role = "MONSTERS" }, c = ROLE_COLORS[ROLE_ZOMBIE] }
+        [WIN_MONSTER] = { txt = "hilite_win_role_plural", params = { role = "MONSTERS" }, c = GetRoleTeamColor(ROLE_TEAM_MONSTER) }
     }
     local title = wintitles[wintype]
     local new_title = hook.Call("TTTScoringWinTitle", nil, wintype, wintitles, title, oldman_wins)
@@ -379,12 +379,6 @@ local function GetWinTitle(wintype)
         -- Otherwise use the monsters label
         else
             title.params = { role = "MONSTERS" }
-        end
-
-        -- Also make sure to override the color if zombies arent monsters
-        if not MONSTER_ROLES[ROLE_ZOMBIE] then
-            local monsters = GetTeamRoles(MONSTER_ROLES)
-            title.c = ROLE_COLORS[monsters[1]]
         end
     end
 
@@ -794,10 +788,11 @@ local function GetRoleIconElement(roleFileName, roleColor, startingRole, finalRo
     roleBackground:SetSize(32, 32)
     roleBackground:SetBackgroundColor(roleColor)
 
-    local tooltip = ROLE_STRINGS[startingRole]
+    local startingString = ROLE_STRINGS[startingRole]
     local endingString = ROLE_STRINGS[finalRole]
-    if tooltip ~= endingString then
-        tooltip = tooltip .. " changed to " .. endingString
+    local tooltip = startingString
+    if startingString ~= endingString then
+        tooltip = PT("summary_role_changed", { starting = startingString, ending = endingString })
     end
     roleBackground:SetTooltip(tooltip)
 
