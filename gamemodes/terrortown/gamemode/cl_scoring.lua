@@ -1005,7 +1005,7 @@ function CLSCORE:BuildHilitePanel(dpanel)
 
     local numply = table.Count(self.Players)
     local numtr = 0
-    for _, role in ipairs(self.Roles) do
+    for _, role in pairs(self.Roles) do
         if TRAITOR_ROLES[role] then
             numtr = numtr + 1
         end
