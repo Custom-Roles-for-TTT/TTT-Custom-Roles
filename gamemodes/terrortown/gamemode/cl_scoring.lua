@@ -1255,18 +1255,20 @@ function CLSCORE:Init(events)
     -- Get start time, traitors, detectives, scores, and nicks
     local starttime = 0
     local scores, nicks, roles, bonus = {}, {}, {}, {}
-    local mergedEvents = table.Merge(events, customEvents)
-    for i = 1, #mergedEvents do
-        local e = mergedEvents[i]
-        if e.id == EVENT_GAME and e.state == ROUND_ACTIVE and e.t then
+    for i = 1, #events do
+        local e = events[i]
+        if e.id == EVENT_GAME and e.state == ROUND_ACTIVE then
             starttime = e.t
-        elseif e.id == EVENT_SELECTED and table.IsEmpty(roles) then
+        elseif e.id == EVENT_SELECTED then
             roles = e.roles
-        elseif e.id == EVENT_SPAWN and e.sid64 then
+        elseif e.id == EVENT_SPAWN then
             scores[e.sid64] = ScoreInit()
             nicks[e.sid64] = e.ni
         end
+    end
 
+    for i = 1, #customEvents do
+        local e = customEvents[i]
         -- Allow any event to provide bonus points
         if e.sid64 and e.bonus then
             local sid = e.sid64
