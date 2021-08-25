@@ -28,6 +28,7 @@
   - Role default buyable equipment
 - Added GetRoleTeamColor global client method for getting the color for a role team
 - Added ability to give a player bonus points via a scoring event if the sid64 and bonus properties are set
+- Added ability for external roles to explicitly deny credit looting and traitor button usage via the "canlootcredits" and "canusetraitorbuttons" role table properties
 
 ## 1.1.7
 **Released: August 22nd, 2021**

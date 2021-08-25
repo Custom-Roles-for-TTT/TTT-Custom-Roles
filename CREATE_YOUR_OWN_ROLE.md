@@ -19,28 +19,28 @@ Open up 'Role Addon Template' > 'lua' > 'customroles' and rename '%NAMERAW%.lua'
 Open up that file and you should see something like this:
 
 ```lua
-local ROLE = {}  
-  
-ROLE.nameraw = ""  
-ROLE.name = ""  
-ROLE.nameplural = ""  
-ROLE.nameext = ""  
-ROLE.nameshort = ""  
-  
-ROLE.desc = [[]]  
-  
+local ROLE = {}
+
+ROLE.nameraw = ""
+ROLE.name = ""
+ROLE.nameplural = ""
+ROLE.nameext = ""
+ROLE.nameshort = ""
+
+ROLE.desc = [[]]
+
 ROLE.team = 
-  
-ROLE.shop = {}  
-  
-ROLE.loadout = {}  
+
+ROLE.shop = {}
+
+ROLE.loadout = {}
 
 ROLE.convars = {}
-  
-RegisterRole(ROLE)  
-  
+
+RegisterRole(ROLE)
+
 if SERVER then  
-	AddCSLuaFile()
+    AddCSLuaFile()
 end
 ```
 
@@ -171,6 +171,22 @@ ROLE.shop = {"weapon_ttt_beenade", "weapon_ttt_barnacle", "surprisecombine", "we
 ROLE.loadout = {}
 ```
 
+### Optional Rules
+
+There are a few options for roles that aren't covered in the template because they don't apply to every role. Add any of these that you want to apply to your role's file.
+
+| Option | Description |
+| --- | --- |
+| `ROLE.canlootcredits` | Whether this role can loot credits from dead bodies. Automatically enabled if the role has a shop, but setting to `false` can make it so the role has a shop but cannot loot credits. Setting this to `true` will allow this role to loot credits regardless of whether they have a shop. |
+| `ROLE.canusetraitorbuttons` | Whether this role can see and use traitor traps. Automatically enabled if the role is part of `ROLE_TEAM_TRAITOR`, but setting to `false` can make it so the role is a traitor that cannot use traitor traps. Setting to `true` will allow this role to use traitor traps regardless of their team association. |
+
+The Summoner doesn't need these options to be set because it is `ROLE_TEAM_TRAITOR` and has a shop, but just for an example, here's what it would look like if we wanted to remove their credit looting and traitor trap abilities:
+
+```lua
+ROLE.canlootcredits = false
+ROLE.canusetraitorbuttons = false
+```
+
 ### ConVars
 
 By default CR for TTT will handle and create some of the ConVars that are required for your role to function.
@@ -250,7 +266,7 @@ Finally we have this block of code:
 
 ```lua
 if SERVER then  
-	AddCSLuaFile()
+    AddCSLuaFile()
 end
 ```
 
@@ -304,7 +320,7 @@ table.insert(ROLE.convars, {
 RegisterRole(ROLE)  
   
 if SERVER then  
-	AddCSLuaFile()
+    AddCSLuaFile()
 end
 ```
 
@@ -371,14 +387,14 @@ For example, here is what 'sprite_sum_noz.vmt' looks like:
 ```
 "UnlitGeneric"
 {
-	"$basetexture" "vgui/ttt/sprite_sum"
-	"$nocull" 1
-	"$ignorez" 1
-	"$nodecal" 1
-	"$nolod" 1
-	"$vertexcolor" 	1
-	"$vertexalpha" 	1
-	"$translucent" 1
+    "$basetexture" "vgui/ttt/sprite_sum"
+    "$nocull" 1
+    "$ignorez" 1
+    "$nodecal" 1
+    "$nolod" 1
+    "$vertexcolor" 1
+    "$vertexalpha" 1
+    "$translucent" 1
 }
 ```
 

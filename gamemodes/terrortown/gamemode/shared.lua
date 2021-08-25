@@ -616,6 +616,14 @@ function RegisterRole(tbl)
         AddRoleAssociations(SHOP_ROLES, {roleID})
     end
 
+    if type(tbl.canlootcredits) == "boolean" then
+        CAN_LOOT_CREDITS_ROLES[roleID] = tbl.canlootcredits
+    end
+
+    if type(tbl.canusetraitorbuttons) == "boolean" then
+        TRAITOR_BUTTON_ROLES[roleID] = tbl.canusetraitorbuttons
+    end
+
     if tbl.loadout then
         EXTERNAL_ROLE_LOADOUT_ITEMS[roleID] = tbl.loadout
     end
