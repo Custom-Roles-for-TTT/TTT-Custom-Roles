@@ -20,6 +20,7 @@
 - Fixed round summary highlight tab not showing the correct number of traitors
 - Fixed potential error in vampire fangs when the vampire lost their target
 - Fixed paladin heal removing a player's overheal
+- Fixed minor issue where a role could be set to not being a shop role but still have shop role convars created
 
 ### Developer
 - Changed more aspects of role creation to be dynamic

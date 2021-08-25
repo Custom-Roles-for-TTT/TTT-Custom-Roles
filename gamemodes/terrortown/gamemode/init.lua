@@ -292,7 +292,7 @@ CreateConVar("ttt_det_credits_traitorkill", "0")
 CreateConVar("ttt_det_credits_traitordead", "1")
 
 -- Shop parameters
-for _, role in ipairs(table.GetKeys(SHOP_ROLES)) do
+for _, role in ipairs(GetTeamRoles(SHOP_ROLES)) do
     local rolestring = ROLE_STRINGS_RAW[role]
     if not DEFAULT_ROLES[role] then
         local credits = "0"
@@ -440,7 +440,7 @@ OldCVarWarning("ttt_shop_mer_mode", "ttt_mercenary_shop_mode")
 CreateConVar("ttt_shop_clo_mode", "0")
 OldCVarWarning("ttt_shop_clo_mode", "ttt_clown_shop_mode")
 
-for _, role in ipairs(table.GetKeys(SHOP_ROLES)) do
+for _, role in ipairs(GetTeamRoles(SHOP_ROLES)) do
     local shortstring = ROLE_STRINGS_SHORT[role]
     local rolestring = ROLE_STRINGS_RAW[role]
     CreateConVar("ttt_shop_random_" .. shortstring .. "_percent", "0", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown for the " .. rolestring, 0, 100)
