@@ -972,9 +972,11 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
                         deadPhantom:SetHealth(health)
                         phantomBody:Remove()
                         deadPhantom:PrintMessage(HUD_PRINTCENTER, "Your attacker died and you have been respawned.")
+                        deadPhantom:PrintMessage(HUD_PRINTTALK, "Your attacker died and you have been respawned.")
                         respawn = true
                     else
                         deadPhantom:PrintMessage(HUD_PRINTCENTER, "Your attacker died but your body has been destroyed.")
+                        deadPhantom:PrintMessage(HUD_PRINTTALK, "Your attacker died but your body has been destroyed.")
                     end
                 end
             end
@@ -1231,6 +1233,23 @@ function GM:PlayerDeath(victim, infl, attacker)
             victim:SetNWString("HauntingTarget", attacker:SteamID64())
             victim:SetNWInt("HauntingPower", 0)
             timer.Create(victim:Nick() .. "HauntingPower", 1, 0, function()
+                -- If haunting without a body is disabled, check to make sure the body exists still
+                if not GetConVar("ttt_phantom_killer_haunt_without_body"):GetBool() then
+                    local phantomBody = victim.server_ragdoll or victim:GetRagdollEntity()
+                    if not IsValid(phantomBody) then
+                        timer.Remove(victim:Nick() .. "HauntingPower")
+                        timer.Remove(victim:Nick() .. "HauntingSpectate")
+                        attacker:SetNWBool("Haunted", false)
+                        victim:SetNWBool("Haunting", false)
+                        victim:SetNWString("HauntingTarget", nil)
+                        victim:SetNWInt("HauntingPower", 0)
+
+                        victim:PrintMessage(HUD_PRINTCENTER, "Your body has been destroyed, removing your tether to the world.")
+                        victim:PrintMessage(HUD_PRINTTALK, "Your body has been destroyed, removing your tether to the world.")
+                        return
+                    end
+                end
+
                 -- Make sure the victim is still in the correct spectate mode
                 local spec_mode = victim:GetObserverMode()
                 if spec_mode ~= OBS_MODE_CHASE and spec_mode ~= OBS_MODE_IN_EYE then

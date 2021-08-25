@@ -194,8 +194,9 @@ ttt_glitch_use_traps                        0       // Whether glitches can see 
 // Phantom
 ttt_phantom_respawn_health                  50      // The amount of health a phantom will respawn with
 ttt_phantom_weaker_each_respawn             0       // Whether a phantom respawns weaker (1/2 as much HP) each time they respawn, down to a minimum of 1
-ttt_phantom_killer_smoke                    0       // Whether to show smoke on the player who killed the phantom
 ttt_phantom_announce_death                  0       // Whether to announce to detectives (and promoted deputies and impersonators) that a phantom has been killed or respawned
+ttt_phantom_killer_smoke                    0       // Whether to show smoke on the player who killed the phantom
+ttt_phantom_killer_footstep_time            0       // The amount of time a phantom's killer's footsteps should show before fading. Set to 0 to disable
 ttt_phantom_killer_haunt                    1       // Whether to have the phantom haunt their killer
 ttt_phantom_killer_haunt_power_max          100     // The maximum amount of power a phantom can have when haunting their killer
 ttt_phantom_killer_haunt_power_rate         10      // The amount of power to regain per second when a phantom is haunting their killer
@@ -203,7 +204,7 @@ ttt_phantom_killer_haunt_move_cost          25      // The amount of power to sp
 ttt_phantom_killer_haunt_jump_cost          50      // The amount of power to spend when a phantom is making their killer jump via a haunting. Set to 0 to disable
 ttt_phantom_killer_haunt_drop_cost          75      // The amount of power to spend when a phantom is making their killer drop their weapon via a haunting. Set to 0 to disable
 ttt_phantom_killer_haunt_attack_cost        100     // The amount of power to spend when a phantom is making their killer attack via a haunting. Set to 0 to disable
-ttt_phantom_killer_footstep_time            0       // The amount of time a phantom's killer's footsteps should show before fading. Set to 0 to disable
+ttt_phantom_killer_haunt_without_body       1       // Whether the phantom can use their powers after their body is destroyed
 
 // Revenger
 ttt_revenger_radar_timer                    15      // The amount of time between radar pings for the revenger's lover's killer
