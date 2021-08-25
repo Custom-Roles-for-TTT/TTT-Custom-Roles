@@ -1468,7 +1468,7 @@ function BeginRound()
         for _, p in pairs(player.GetAll()) do
             if p:IsActivePaladin() then
                 for _, v in pairs(player.GetAll()) do
-                    if v:IsActive() and not v:IsPaladin() and v:GetPos():Distance(p:GetPos()) <= paladinRadius then
+                    if v:IsActive() and not v:IsPaladin() and v:GetPos():Distance(p:GetPos()) <= paladinRadius and v:Health() < v:GetMaxHealth() then
                         local health = math.min(v:GetMaxHealth(), v:Health() + paladinHeal)
                         v:SetHealth(health)
                     end
