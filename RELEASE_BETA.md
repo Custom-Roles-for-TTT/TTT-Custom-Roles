@@ -6,6 +6,7 @@
 ### Additions
 - Added ability for glitch to see and use traitor traps (disabled by default)
 - Added ability for a phantom to lose their powers if their body is destroyed (disabled by default)
+- Added ability to remove all detective roles' ability to loot credits from corpses (disabled by default)
 
 ### Changes
 - Changed round summary role tooltip to be translateable

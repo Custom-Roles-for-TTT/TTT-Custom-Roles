@@ -989,6 +989,13 @@ function UpdateRoleState()
     CAN_LOOT_CREDITS_ROLES[ROLE_GLITCH] = glitch_use_traps
     TRAITOR_BUTTON_ROLES[ROLE_GLITCH] = glitch_use_traps
 
+    local disable_looting = GetGlobalBool("ttt_detective_disable_looting", false)
+    for r, e in pairs(DETECTIVE_ROLES) do
+        if e then
+            CAN_LOOT_CREDITS_ROLES[r] = not disable_looting
+        end
+    end
+
     -- Update role colors to make sure team changes have taken effect
     UpdateRoleColours()
 

@@ -194,6 +194,7 @@ CreateConVar("ttt_veteran_announce", "0")
 
 -- Detective role properties
 CreateConVar("ttt_detective_search_only", "1")
+CreateConVar("ttt_detective_disable_looting", "0")
 CreateConVar("ttt_all_search_postround", "1")
 
 CreateConVar("ttt_paladin_aura_radius", "5")
@@ -633,6 +634,7 @@ function GM:SyncGlobals()
     SetGlobalFloat("ttt_karma_lenient", GetConVar("ttt_karma_lenient"):GetBool())
 
     SetGlobalBool("ttt_detective_search_only", GetConVar("ttt_detective_search_only"):GetBool())
+    SetGlobalBool("ttt_detective_disable_looting", GetConVar("ttt_detective_disable_looting"):GetBool())
     SetGlobalBool("ttt_all_search_postround", GetConVar("ttt_all_search_postround"):GetBool())
 
     SetGlobalInt("ttt_shop_random_percent", GetConVar("ttt_shop_random_percent"):GetInt())

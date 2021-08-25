@@ -231,8 +231,9 @@ ttt_doctor_credits_starting                 1       // The number of credits a d
 // ----------------------------------------
 
 // DETECTIVE TEAM SETTINGS
-// Detective
+// All Detective Roles
 ttt_detective_search_only                   1       // Whether only detectives can search bodies or not
+ttt_detective_disable_looting               0       // Whether to disable a detective role's ability to loot credits from bodies
 ttt_all_search_postround                    1       // Whether non-detectives can search bodies post-round or not
 
 // Paladin
@@ -240,6 +241,7 @@ ttt_paladin_aura_radius                     5       // The radius of the paladin
 ttt_paladin_damage_reduction                0.3     // The fraction an attacker's damage will be reduced by when they are shooting a player inside the paladin's aura
 ttt_paladin_heal_rate                       1       // The amount of heal a player inside the paladin's aura will heal each second
 
+// Tracker
 ttt_tracker_footstep_time                   15      // The amount of time players' footsteps should show to the tracker before fading. Set to 0 to disable
 ttt_tracker_footstep_color                  1       // Whether players' footsteps should have different colors
 
