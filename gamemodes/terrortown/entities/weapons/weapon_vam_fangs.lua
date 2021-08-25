@@ -166,9 +166,13 @@ function SWEP:CancelUnfreeze(entity)
     timer.Remove("VampUnfreezeDelay_" .. self:GetOwner():Nick() .. "_" .. entity:Nick())
 end
 
+function SWEP:HasValidTarget()
+    return IsValid(self.TargetEntity) and self.TargetEntity:IsPlayer()
+end
+
 function SWEP:UnfreezeTarget()
     local owner = self:GetOwner()
-    if not IsValid(self.TargetEntity) or not self.TargetEntity:IsPlayer() then return end
+    if not self:HasValidTarget() then return end
     local valid_owner = IsValid(owner) and owner:IsPlayer()
 
     -- Unfreeze the target immediately if there is no delay or no owner
@@ -281,8 +285,8 @@ function SWEP:Think()
             return
         end
 
-        -- If the target has been turned to a vampire by someone else, stop trying to drain them
-        if self.TargetEntity:IsVampire() then
+        -- If their is a target and they have been turned to a vampire by someone else, stop trying to drain them
+        if not self:HasValidTarget() or self.TargetEntity:IsVampire() then
             self:Error("DRAINING ABORTED")
             return
         end

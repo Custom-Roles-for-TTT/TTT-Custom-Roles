@@ -16,6 +16,7 @@
 - Fixed credit message popping up for detectives when ttt_det_credits_traitordead was 0
 - Fixed error opening the shop when checking whether a weapon is equipment and it is missing a core method
 - Fixed round summary highlight tab not showing the correct number of traitors
+- Fixed potential error in vampire fangs when the vampire lost their target
 
 ### Developer
 - Changed more aspects of role creation to be dynamic
