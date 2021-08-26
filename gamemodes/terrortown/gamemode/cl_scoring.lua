@@ -624,15 +624,11 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                     end
                     roleColor = ROLE_COLORS[finalRole]
                     if ply:IsInnocent() then
-                        if ply:GetNWBool("WasDrunk", false) then
-                            roleFileName = ROLE_STRINGS_SHORT[ROLE_DRUNK]
-                        elseif ply:GetNWBool("WasBeggar", false) then
+                        if ply:GetNWBool("WasBeggar", false) then
                             roleFileName = ROLE_STRINGS_SHORT[ROLE_BEGGAR]
                         end
                     elseif ply:IsTraitor() then
-                        if ply:GetNWBool("WasDrunk", false) then
-                            roleFileName = ROLE_STRINGS_SHORT[ROLE_DRUNK]
-                        elseif ply:GetNWBool("WasBeggar", false) then
+                        if ply:GetNWBool("WasBeggar", false) then
                             roleFileName = ROLE_STRINGS_SHORT[ROLE_BEGGAR]
                         elseif ply:GetNWBool("WasHypnotised", false) then
                             roleFileName = ROLE_STRINGS_SHORT[startingRole]
@@ -641,6 +637,10 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                         jesterKiller = ply:GetNWString("JesterKiller", "")
                     elseif ply:IsSwapper() then
                         swappedWith = ply:GetNWString("SwappedWith", "")
+                    end
+
+                    if ply:GetNWBool("WasDrunk", false) then
+                        roleColor = ROLE_COLORS[ROLE_DRUNK]
                     end
                 else
                     hasDisconnected = true

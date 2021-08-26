@@ -226,11 +226,12 @@ Methods available globally (within the defined realm)
 - *ply* - The target player
 - *sprinting* - Whether the player is currently sprinting
 
-**GetTeamRoles(team_table)** - Gets a table of role numbers that belong to the team whose lookup table is given.\
+**GetTeamRoles(team_table, exclude)** - Gets a table of role numbers that belong to the team whose lookup table is given.\
 *Realm:* Client and Server\
 *Added in:* 1.0.2\
 *Parameters:*
 - *team_table* - Team lookup table
+- *exclude* - Lookup table of roles to exclude from the team (Optional).
 
 **GetTraitorTeamFilter(alive_only)** - Returns a function that filters net messages to players that are on the traitor team.\
 *Realm:* Server\

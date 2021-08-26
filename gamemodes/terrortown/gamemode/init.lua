@@ -98,6 +98,10 @@ for role = 0, ROLE_MAX do
         CreateConVar("ttt_" .. rolestring .. "_min_players", "0", FCVAR_REPLICATED)
     end
 
+    if role ~= ROLE_DRUNK and role ~= ROLE_GLITCH then
+        CreateConVar("ttt_drunk_can_be_" .. rolestring, "1", FCVAR_REPLICATED)
+    end
+
     local health = "100"
     if role == ROLE_OLDMAN then health = "1"
     elseif role == ROLE_KILLER then health = "150" end
@@ -249,6 +253,7 @@ CreateConVar("ttt_independents_trigger_traitor_testers", "0")
 
 CreateConVar("ttt_drunk_sober_time", "180")
 CreateConVar("ttt_drunk_innocent_chance", "0.7")
+CreateConVar("ttt_drunk_any_role", "0")
 
 CreateConVar("ttt_oldman_drain_health_to", "0")
 
@@ -1272,28 +1277,6 @@ local function InitRoundEndTime()
     SetRoundEnd(endtime)
 end
 
-local function DrunkSober(ply, traitor)
-    local role
-    if traitor then
-        role = ROLE_TRAITOR
-        ply:SetCredits(GetConVar("ttt_credits_starting"):GetInt())
-    else
-        role = ROLE_INNOCENT
-    end
-
-    ply:SetNWBool("WasDrunk", true)
-    ply:SetRole(role)
-    ply:PrintMessage(HUD_PRINTTALK, "You have remembered that you are " .. ROLE_STRINGS_EXT[role] .. ".")
-    ply:PrintMessage(HUD_PRINTCENTER, "You have remembered that you are " .. ROLE_STRINGS_EXT[role] .. ".")
-
-    net.Start("TTT_DrunkSober")
-    net.WriteString(ply:Nick())
-    net.WriteString(ROLE_STRINGS_EXT[role])
-    net.Broadcast()
-
-    SendFullStateUpdate()
-end
-
 function BeginRound()
     GAMEMODE:SyncGlobals()
 
@@ -1332,8 +1315,6 @@ function BeginRound()
     SetGlobalBool("ttt_glitch_round", false)
 
     for _, v in pairs(player.GetAll()) do
-        local role = v:GetRole()
-
         -- Player color
         local vec = Vector(1, 1, 1)
         vec.x = math.Rand(0, 1)
@@ -1341,120 +1322,7 @@ function BeginRound()
         vec.z = math.Rand(0, 1)
         v:SetNWVector("PlayerColor", vec)
 
-        -- Revenger logic
-        if role == ROLE_REVENGER then
-            local potentialSoulmates = {}
-            for _, p in pairs(player.GetAll()) do
-                if p:Alive() and not p:IsSpec() and p ~= v then
-                    table.insert(potentialSoulmates, p)
-                end
-            end
-            if #potentialSoulmates > 0 then
-                local revenger_lover = potentialSoulmates[math.random(#potentialSoulmates)]
-                v:SetNWString("RevengerLover", revenger_lover:SteamID64() or "")
-                v:PrintMessage(HUD_PRINTTALK, "You are in love with " .. revenger_lover:Nick() .. ".")
-                v:PrintMessage(HUD_PRINTCENTER, "You are in love with " .. revenger_lover:Nick() .. ".")
-            end
-
-            local drain_health = GetConVar("ttt_revenger_drain_health_to"):GetInt()
-            if drain_health >= 0 then
-                timer.Create("revengerhealthdrain", 3, 0, function()
-                    for _, p in pairs(player.GetAll()) do
-                        local lover_sid = p:GetNWString("RevengerLover", "")
-                        if p:IsActiveRevenger() and lover_sid ~= "" then
-                            local lover = player.GetBySteamID64(lover_sid)
-                            if IsValid(lover) and (not lover:Alive() or lover:IsSpec()) then
-                                local hp = p:Health()
-                                if hp > drain_health then
-                                    -- We were going to set them to 0, so just kill them instead
-                                    if hp == 1 then
-                                        p:PrintMessage(HUD_PRINTTALK, "You have succumbed to the heartache of losing your lover.")
-                                        p:PrintMessage(HUD_PRINTCENTER, "You have succumbed to the heartache of losing your lover.")
-                                        p:Kill()
-                                    else
-                                        p:SetHealth(hp - 1)
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end)
-            end
-        end
-
-        -- Drunk logic
-        SetGlobalFloat("ttt_drunk_remember", CurTime() + GetConVar("ttt_drunk_sober_time"):GetInt())
-        if role == ROLE_DRUNK then
-            timer.Create("drunkremember", GetConVar("ttt_drunk_sober_time"):GetInt(), 1, function()
-                for _, p in pairs(player.GetAll()) do
-                    if p:IsActiveDrunk() then
-                        if math.random() <= GetConVar("ttt_drunk_innocent_chance"):GetFloat() then
-                            DrunkSober(p, false)
-                        else
-                            DrunkSober(p, true)
-                        end
-                    elseif p:IsDrunk() and not p:Alive() and not timer.Exists("waitfordrunkrespawn") then
-                        timer.Create("waitfordrunkrespawn", 0.1, 0, function()
-                            local dead_drunk = false
-                            for _, p2 in pairs(player.GetAll()) do
-                                if p2:IsActiveDrunk() then
-                                    if math.random() <= GetConVar("ttt_drunk_innocent_chance"):GetFloat() then
-                                        DrunkSober(p2, false)
-                                    else
-                                        DrunkSober(p2, true)
-                                    end
-                                elseif p2:IsDrunk() and not p2:Alive() then
-                                    dead_drunk = true
-                                end
-                            end
-                            if timer.Exists("waitfordrunkrespawn") and not dead_drunk then timer.Remove("waitfordrunkrespawn") end
-                        end)
-                    end
-                end
-            end)
-        end
-
-        -- Old Man logic
-        local oldman_drain_health = GetConVar("ttt_oldman_drain_health_to"):GetInt()
-        if role == ROLE_OLDMAN and oldman_drain_health > 0 then
-            timer.Create("oldmanhealthdrain", 3, 0, function()
-                for _, p in pairs(player.GetAll()) do
-                    if p:IsActiveOldMan() then
-                        local hp = p:Health()
-                        if hp > oldman_drain_health then
-                            p:SetHealth(hp - 1)
-                        end
-
-                        local max = p:GetMaxHealth()
-                        if max > oldman_drain_health then
-                            p:SetMaxHealth(max - 1)
-                        end
-                    end
-                end
-            end)
-        end
-
-        -- Assassin logic
-        if role == ROLE_ASSASSIN then
-            AssignAssassinTarget(v, true, false)
-        end
-
-        -- Killer logic
-        if role == ROLE_KILLER then
-            if GetConVar("ttt_killer_knife_enabled"):GetBool() then
-                v:Give("weapon_kil_knife")
-            end
-            if GetConVar("ttt_killer_crowbar_enabled"):GetBool() then
-                v:StripWeapon("weapon_zm_improvised")
-                v:Give("weapon_kil_crowbar")
-                v:SelectWeapon("weapon_kil_crowbar")
-            end
-        end
-
-        -- Glitch logic
-        if role == ROLE_GLITCH then
-            SetGlobalBool("ttt_glitch_round", true)
-        end
+        v:BeginRoleChecks()
 
         SetRoleHealth(v)
     end
@@ -1753,7 +1621,7 @@ function GM:TTTCheckForWin()
             if timer.Exists("waitfordrunkrespawn") then timer.Remove("waitfordrunkrespawn") end
             for _, v in ipairs(player.GetAll()) do
                 if v:Alive() and v:IsTerror() and v:IsDrunk() then
-                    DrunkSober(v, true)
+                    v:SoberDrunk(ROLE_TEAM_TRAITOR)
                 end
             end
             win_type = WIN_NONE
@@ -1762,7 +1630,7 @@ function GM:TTTCheckForWin()
             if timer.Exists("waitfordrunkrespawn") then timer.Remove("waitfordrunkrespawn") end
             for _, v in ipairs(player.GetAll()) do
                 if v:Alive() and v:IsTerror() and v:IsDrunk() then
-                    DrunkSober(v, false)
+                    v:SoberDrunk(ROLE_TEAM_INNOCENT)
                 end
             end
             win_type = WIN_NONE
@@ -2046,6 +1914,7 @@ function SelectRoles()
     local monsterRoles = {}
 
     -- Special rules for role spawning
+    -- Role exclusion logic also needs to be copied into the drunk role selection logic in player_ext.lua -> plymeta:SoberDrunk
     local rolePredicates = {
         -- Innocents
         [ROLE_DEPUTY] = function() return detective_count > 0 and not impersonator_only end,

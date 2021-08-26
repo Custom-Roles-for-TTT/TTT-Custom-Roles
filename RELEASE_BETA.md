@@ -1,5 +1,14 @@
 # Beta Release Notes
 
+## 1.1.9
+**Released:**
+
+### Additions
+- Added the option for the drunk to become any enabled role except for another drunk or the glitch (disabled by default)
+
+### Developer
+- Updated GetTeamRoles to take an optional lookup table of excluded roles
+
 ## 1.1.8
 **Released: August 26th, 2021**
 
@@ -7,7 +16,7 @@
 - Added ability for glitch to see and use traitor traps (disabled by default)
 - Added ability for a phantom to lose their powers if their body is destroyed (disabled by default)
 - Added ability to remove all detective roles' ability to loot credits from corpses (disabled by default)
-- Added the option for the mediums spirits to the colored similar to tracker footsteps (enabled by default)
+- Added the option for the mediums' spirits to be colored similar to tracker footsteps (enabled by default)
 
 ### Changes
 - Changed round summary role tooltip to be translateable
