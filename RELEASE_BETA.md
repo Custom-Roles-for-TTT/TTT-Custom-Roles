@@ -1,7 +1,7 @@
 # Beta Release Notes
 
 ## 1.1.8
-**Released:**
+**Released: August 26th, 2021**
 
 ### Additions
 - Added ability for glitch to see and use traitor traps (disabled by default)
