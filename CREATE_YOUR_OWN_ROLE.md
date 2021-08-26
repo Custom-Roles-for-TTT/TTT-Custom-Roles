@@ -19,28 +19,28 @@ Open up 'Role Addon Template' > 'lua' > 'customroles' and rename '%NAMERAW%.lua'
 Open up that file and you should see something like this:
 
 ```lua
-local ROLE = {}  
-  
-ROLE.nameraw = ""  
-ROLE.name = ""  
-ROLE.nameplural = ""  
-ROLE.nameext = ""  
-ROLE.nameshort = ""  
-  
-ROLE.desc = [[]]  
-  
+local ROLE = {}
+
+ROLE.nameraw = ""
+ROLE.name = ""
+ROLE.nameplural = ""
+ROLE.nameext = ""
+ROLE.nameshort = ""
+
+ROLE.desc = [[]]
+
 ROLE.team = 
-  
-ROLE.shop = {}  
-  
-ROLE.loadout = {}  
+
+ROLE.shop = {}
+
+ROLE.loadout = {}
 
 ROLE.convars = {}
-  
-RegisterRole(ROLE)  
-  
+
+RegisterRole(ROLE)
+
 if SERVER then  
-	AddCSLuaFile()
+    AddCSLuaFile()
 end
 ```
 
@@ -171,6 +171,22 @@ ROLE.shop = {"weapon_ttt_beenade", "weapon_ttt_barnacle", "surprisecombine", "we
 ROLE.loadout = {}
 ```
 
+### Optional Rules
+
+There are a few options for roles that aren't covered in the template because they don't apply to every role. Add any of these that you want to apply to your role's file.
+
+| Option | Description |
+| --- | --- |
+| `ROLE.canlootcredits` | Whether this role can loot credits from dead bodies. Automatically enabled if the role has a shop, but setting to `false` can make it so the role has a shop but cannot loot credits. Setting this to `true` will allow this role to loot credits regardless of whether they have a shop. |
+| `ROLE.canusetraitorbuttons` | Whether this role can see and use traitor traps. Automatically enabled if the role is part of `ROLE_TEAM_TRAITOR`, but setting to `false` can make it so the role is a traitor that cannot use traitor traps. Setting to `true` will allow this role to use traitor traps regardless of their team association. |
+
+The Summoner doesn't need these options to be set because it is `ROLE_TEAM_TRAITOR` and has a shop, but just for an example, here's what it would look like if we wanted to remove their credit looting and traitor trap abilities:
+
+```lua
+ROLE.canlootcredits = false
+ROLE.canusetraitorbuttons = false
+```
+
 ### ConVars
 
 By default CR for TTT will handle and create some of the ConVars that are required for your role to function.
@@ -224,21 +240,20 @@ if SERVER then
     CreateConVar("ttt_summoner_checkbox", "0")
     CreateConVar("ttt_summoner_textbox", "0")
 end
-ROLE.convars = {
-	{
-		cvar = "ttt_summoner_slider",
-		type = ROLE_CONVAR_TYPE_NUM,
-		decimal = 2
-	},
-	{
-		cvar = "ttt_summoner_checkbox",
-		type = ROLE_CONVAR_TYPE_BOOL
-	},
-	{
-		cvar = "ttt_summoner_textbox",
-		type = ROLE_CONVAR_TYPE_TEXT
-	}
-}
+ROLE.convars = {}
+table.insert(ROLE.convars, {
+    cvar = "ttt_summoner_slider",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 2
+})
+table.insert(ROLE.convars, {
+    cvar = "ttt_summoner_checkbox",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE.convars, {
+    cvar = "ttt_summoner_textbox",
+    type = ROLE_CONVAR_TYPE_TEXT
+})
 ```
 
 ### Role Registration
@@ -251,12 +266,11 @@ Finally we have this block of code:
 
 ```lua
 if SERVER then  
-	AddCSLuaFile()
+    AddCSLuaFile()
 end
 ```
 
 When this code is run on the server it makes sure the client downloads this file so they know everything you have done up until now. Any logic that should only run on the server-side should be in an `if SERVER then` block like this.
-```
 
 ### Example File
 
@@ -288,26 +302,25 @@ if SERVER then
     CreateConVar("ttt_summoner_checkbox", "0")
     CreateConVar("ttt_summoner_textbox", "0")
 end
-ROLE.convars = {
-	{
-		cvar = "ttt_summoner_slider",
-		type = ROLE_CONVAR_TYPE_NUM,
-		decimal = 2
-	},
-	{
-		cvar = "ttt_summoner_checkbox",
-		type = ROLE_CONVAR_TYPE_BOOL
-	},
-	{
-		cvar = "ttt_summoner_textbox",
-		type = ROLE_CONVAR_TYPE_TEXT
-	}
-}
+ROLE.convars = {}
+table.insert(ROLE.convars, {
+    cvar = "ttt_summoner_slider",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 2
+})
+table.insert(ROLE.convars, {
+    cvar = "ttt_summoner_checkbox",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE.convars, {
+    cvar = "ttt_summoner_textbox",
+    type = ROLE_CONVAR_TYPE_TEXT
+})
   
 RegisterRole(ROLE)  
   
 if SERVER then  
-	AddCSLuaFile()
+    AddCSLuaFile()
 end
 ```
 
@@ -374,14 +387,14 @@ For example, here is what 'sprite_sum_noz.vmt' looks like:
 ```
 "UnlitGeneric"
 {
-	"$basetexture" "vgui/ttt/sprite_sum"
-	"$nocull" 1
-	"$ignorez" 1
-	"$nodecal" 1
-	"$nolod" 1
-	"$vertexcolor" 	1
-	"$vertexalpha" 	1
-	"$translucent" 1
+    "$basetexture" "vgui/ttt/sprite_sum"
+    "$nocull" 1
+    "$ignorez" 1
+    "$nodecal" 1
+    "$nolod" 1
+    "$vertexcolor" 1
+    "$vertexalpha" 1
+    "$translucent" 1
 }
 ```
 

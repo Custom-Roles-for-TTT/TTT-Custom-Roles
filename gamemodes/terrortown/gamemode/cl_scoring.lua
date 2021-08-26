@@ -91,10 +91,13 @@ local function FitNicknameLabel(nicklbl, maxwidth, getstring, args)
 end
 
 net.Receive("TTT_Hypnotised", function(len)
-    local name = net.ReadString()
+    local vicname = net.ReadString()
+    local vicsid = net.ReadString()
     CLSCORE:AddEvent({
         id = EVENT_HYPNOTISED,
-        vic = name
+        vic = vicname,
+        sid64 = vicsid,
+        bonus = 1
     })
 end)
 
@@ -109,10 +112,13 @@ end)
 net.Receive("TTT_SwapperSwapped", function(len)
     local victim = net.ReadString()
     local attacker = net.ReadString()
+    local vicsid = net.ReadString()
     CLSCORE:AddEvent({
         id = EVENT_SWAPPER,
         vic = victim,
-        att = attacker
+        att = attacker,
+        sid64 = vicsid,
+        bonus = 2
     })
 end)
 
@@ -120,11 +126,14 @@ net.Receive("TTT_BeggarConverted", function(len)
     local victim = net.ReadString()
     local attacker = net.ReadString()
     local team = net.ReadString()
+    local vicsid = net.ReadString()
     CLSCORE:AddEvent({
         id = EVENT_BEGGARCONVERTED,
         vic = victim,
         att = attacker,
-        team = team
+        team = team,
+        sid64 = vicsid,
+        bonus = 2
     })
 end)
 
@@ -198,11 +207,14 @@ net.Receive("TTT_ScoreBodysnatch", function(len)
     local victim = net.ReadString()
     local attacker = net.ReadString()
     local role = net.ReadString()
+    local vicsid = net.ReadString()
     CLSCORE:AddEvent({
         id = EVENT_BODYSNATCH,
         vic = victim,
         att = attacker,
-        role = role
+        role = role,
+        sid64 = vicsid,
+        bonus = 2
     })
 end)
 
@@ -993,7 +1005,7 @@ function CLSCORE:BuildHilitePanel(dpanel)
 
     local numply = table.Count(self.Players)
     local numtr = 0
-    for _, role in ipairs(self.Roles) do
+    for _, role in pairs(self.Roles) do
         if TRAITOR_ROLES[role] then
             numtr = numtr + 1
         end
@@ -1242,7 +1254,7 @@ end
 function CLSCORE:Init(events)
     -- Get start time, traitors, detectives, scores, and nicks
     local starttime = 0
-    local scores, nicks, roles = {}, {}, {}
+    local scores, nicks, roles, bonus = {}, {}, {}, {}
     for i = 1, #events do
         local e = events[i]
         if e.id == EVENT_GAME and e.state == ROUND_ACTIVE then
@@ -1255,7 +1267,16 @@ function CLSCORE:Init(events)
         end
     end
 
-    scores = ScoreEventLog(events, scores, roles)
+    for i = 1, #customEvents do
+        local e = customEvents[i]
+        -- Allow any event to provide bonus points
+        if e.sid64 and e.bonus then
+            local sid = e.sid64
+            bonus[sid] = (bonus[sid] or 0) + e.bonus
+        end
+    end
+
+    scores = ScoreEventLog(events, scores, roles, bonus)
 
     self.Players = nicks
     self.Scores = scores

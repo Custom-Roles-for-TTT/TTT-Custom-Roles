@@ -168,9 +168,9 @@ CreateConVar("ttt_glitch_use_traps", "0")
 
 CreateConVar("ttt_phantom_respawn_health", "50")
 CreateConVar("ttt_phantom_weaker_each_respawn", "0")
+CreateConVar("ttt_phantom_announce_death", "0")
 CreateConVar("ttt_phantom_killer_smoke", "0")
 CreateConVar("ttt_phantom_killer_footstep_time", "0")
-CreateConVar("ttt_phantom_announce_death", "0")
 CreateConVar("ttt_phantom_killer_haunt", "1")
 CreateConVar("ttt_phantom_killer_haunt_power_max", "100")
 CreateConVar("ttt_phantom_killer_haunt_power_rate", "10")
@@ -178,6 +178,7 @@ CreateConVar("ttt_phantom_killer_haunt_move_cost", "25")
 CreateConVar("ttt_phantom_killer_haunt_jump_cost", "50")
 CreateConVar("ttt_phantom_killer_haunt_drop_cost", "75")
 CreateConVar("ttt_phantom_killer_haunt_attack_cost", "100")
+CreateConVar("ttt_phantom_killer_haunt_without_body", "1")
 
 CreateConVar("ttt_revenger_radar_timer", "15")
 CreateConVar("ttt_revenger_damage_bonus", "0")
@@ -193,6 +194,7 @@ CreateConVar("ttt_veteran_announce", "0")
 
 -- Detective role properties
 CreateConVar("ttt_detective_search_only", "1")
+CreateConVar("ttt_detective_disable_looting", "0")
 CreateConVar("ttt_all_search_postround", "1")
 
 CreateConVar("ttt_paladin_aura_radius", "5")
@@ -290,7 +292,7 @@ CreateConVar("ttt_det_credits_traitorkill", "0")
 CreateConVar("ttt_det_credits_traitordead", "1")
 
 -- Shop parameters
-for _, role in ipairs(table.GetKeys(SHOP_ROLES)) do
+for _, role in ipairs(GetTeamRoles(SHOP_ROLES)) do
     local rolestring = ROLE_STRINGS_RAW[role]
     if not DEFAULT_ROLES[role] then
         local credits = "0"
@@ -438,7 +440,7 @@ OldCVarWarning("ttt_shop_mer_mode", "ttt_mercenary_shop_mode")
 CreateConVar("ttt_shop_clo_mode", "0")
 OldCVarWarning("ttt_shop_clo_mode", "ttt_clown_shop_mode")
 
-for _, role in ipairs(table.GetKeys(SHOP_ROLES)) do
+for _, role in ipairs(GetTeamRoles(SHOP_ROLES)) do
     local shortstring = ROLE_STRINGS_SHORT[role]
     local rolestring = ROLE_STRINGS_RAW[role]
     CreateConVar("ttt_shop_random_" .. shortstring .. "_percent", "0", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown for the " .. rolestring, 0, 100)
@@ -632,6 +634,7 @@ function GM:SyncGlobals()
     SetGlobalFloat("ttt_karma_lenient", GetConVar("ttt_karma_lenient"):GetBool())
 
     SetGlobalBool("ttt_detective_search_only", GetConVar("ttt_detective_search_only"):GetBool())
+    SetGlobalBool("ttt_detective_disable_looting", GetConVar("ttt_detective_disable_looting"):GetBool())
     SetGlobalBool("ttt_all_search_postround", GetConVar("ttt_all_search_postround"):GetBool())
 
     SetGlobalInt("ttt_shop_random_percent", GetConVar("ttt_shop_random_percent"):GetInt())
@@ -1468,7 +1471,7 @@ function BeginRound()
         for _, p in pairs(player.GetAll()) do
             if p:IsActivePaladin() then
                 for _, v in pairs(player.GetAll()) do
-                    if v:IsActive() and not v:IsPaladin() and v:GetPos():Distance(p:GetPos()) <= paladinRadius then
+                    if v:IsActive() and not v:IsPaladin() and v:GetPos():Distance(p:GetPos()) <= paladinRadius and v:Health() < v:GetMaxHealth() then
                         local health = math.min(v:GetMaxHealth(), v:Health() + paladinHeal)
                         v:SetHealth(health)
                     end

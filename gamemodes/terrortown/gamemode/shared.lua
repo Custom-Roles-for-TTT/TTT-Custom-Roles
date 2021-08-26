@@ -616,6 +616,14 @@ function RegisterRole(tbl)
         AddRoleAssociations(SHOP_ROLES, {roleID})
     end
 
+    if type(tbl.canlootcredits) == "boolean" then
+        CAN_LOOT_CREDITS_ROLES[roleID] = tbl.canlootcredits
+    end
+
+    if type(tbl.canusetraitorbuttons) == "boolean" then
+        TRAITOR_BUTTON_ROLES[roleID] = tbl.canusetraitorbuttons
+    end
+
     if tbl.loadout then
         EXTERNAL_ROLE_LOADOUT_ITEMS[roleID] = tbl.loadout
     end
@@ -980,6 +988,13 @@ function UpdateRoleState()
     local glitch_use_traps = GetGlobalBool("ttt_glitch_use_traps", false)
     CAN_LOOT_CREDITS_ROLES[ROLE_GLITCH] = glitch_use_traps
     TRAITOR_BUTTON_ROLES[ROLE_GLITCH] = glitch_use_traps
+
+    local disable_looting = GetGlobalBool("ttt_detective_disable_looting", false)
+    for r, e in pairs(DETECTIVE_ROLES) do
+        if e then
+            CAN_LOOT_CREDITS_ROLES[r] = not disable_looting
+        end
+    end
 
     -- Update role colors to make sure team changes have taken effect
     UpdateRoleColours()

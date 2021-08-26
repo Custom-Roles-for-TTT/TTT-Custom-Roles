@@ -101,11 +101,25 @@ function plymeta:CanUseShop()
 end
 function plymeta:CanUseTraitorButton(active_only)
     if active_only and not self:IsActive() then return false end
-    return self:IsTraitorTeam() or TRAITOR_BUTTON_ROLES[self:GetRole()]
+
+    local can_use = TRAITOR_BUTTON_ROLES[self:GetRole()]
+    -- If this is explicitly set, use it as-is
+    -- This allows us to say a role is a traitor but cannot use traps by setting can_use to false
+    if type(can_use) == "boolean" then
+        return can_use
+    end
+    return self:IsTraitorTeam()
 end
 function plymeta:CanLootCredits(active_only)
     if active_only and not self:IsActive() then return false end
-    return self:IsShopRole() or CAN_LOOT_CREDITS_ROLES[self:GetRole()]
+
+    local can_loot = CAN_LOOT_CREDITS_ROLES[self:GetRole()]
+    -- If this is explicitly set, use it as-is
+    -- This allows us to say a role has a shop but cannot loot credits by setting can_loot to false
+    if type(can_loot) == "boolean" then
+        return can_loot
+    end
+    return self:IsShopRole()
 end
 
 function plymeta:SetRoleAndBroadcast(role)

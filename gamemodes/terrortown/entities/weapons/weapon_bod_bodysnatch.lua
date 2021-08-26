@@ -147,6 +147,7 @@ if SERVER then
         net.WriteString(ply:Nick())
         net.WriteString(owner:Nick())
         net.WriteString(ROLE_STRINGS_EXT[ply:GetRole()])
+        net.WriteString(owner:SteamID64())
         net.Broadcast()
 
         local role = ply:GetRole()

@@ -148,15 +148,33 @@ end
 function SCORE:ApplyEventLogScores(wintype)
     local scores = {}
     local roles = {}
+    local bonus = {}
 
     for _, ply in ipairs(player.GetAll()) do
         local sid64 = ply:SteamID64()
         scores[sid64] = {}
         roles[sid64] = ply:GetRole()
+        bonus[sid64] = 0
+    end
+
+    -- count deaths
+    for _, e in pairs(self.Events) do
+        if e.id == EVENT_KILL then
+            local victim = player.GetBySteamID64(e.vic.sid64) or player.GetBySteamID(e.vic.sid)
+            if IsValid(victim) and victim:ShouldScore() then
+                victim:AddDeaths(1)
+            end
+        end
+
+        -- Allow any event to provide bonus points
+        if e.sid64 and e.bonus then
+            local sid = e.sid64
+            bonus[sid] = bonus[sid] + e.bonus
+        end
     end
 
     -- individual scores, and count those left alive
-    local scored_log = ScoreEventLog(self.Events, scores, roles)
+    local scored_log = ScoreEventLog(self.Events, scores, roles, bonus)
     local ply = nil
     for sid, s in pairs(scored_log) do
         ply = player.GetBySteamID64(sid)
@@ -183,16 +201,6 @@ function SCORE:ApplyEventLogScores(wintype)
             end
 
             ply:AddFrags(points_team)
-        end
-    end
-
-    -- count deaths
-    for _, e in pairs(self.Events) do
-        if e.id == EVENT_KILL then
-            local victim = player.GetBySteamID64(e.vic.sid64) or player.GetBySteamID(e.vic.sid)
-            if IsValid(victim) and victim:ShouldScore() then
-                victim:AddDeaths(1)
-            end
         end
     end
 end
