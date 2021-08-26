@@ -204,6 +204,8 @@ CreateConVar("ttt_paladin_heal_rate", "1")
 CreateConVar("ttt_tracker_footstep_time", "15")
 CreateConVar("ttt_tracker_footstep_color", "1")
 
+CreateConVar("ttt_medium_spirit_color", "1")
+
 -- Jester role properties
 CreateConVar("ttt_jesters_trigger_traitor_testers", "1")
 CreateConVar("ttt_jesters_visible_to_traitors", "1")
@@ -1027,7 +1029,7 @@ function PrepareRound()
         timer.Remove(v:Nick() .. "InfectionProgress")
         timer.Remove(v:Nick() .. "InfectingSpectate")
         v:SetNWInt("GlitchBluff", ROLE_TRAITOR)
-        v:SetNWVector("TrackerColor", Vector(1, 1, 1))
+        v:SetNWVector("PlayerColor", Vector(1, 1, 1))
         -- Keep previous naming scheme for backwards compatibility
         v:SetNWBool("zombie_prime", false)
         v:SetNWBool("vampire_prime", false)
@@ -1332,6 +1334,13 @@ function BeginRound()
     for _, v in pairs(player.GetAll()) do
         local role = v:GetRole()
 
+        -- Player color
+        local vec = Vector(1, 1, 1)
+        vec.x = math.Rand(0, 1)
+        vec.y = math.Rand(0, 1)
+        vec.z = math.Rand(0, 1)
+        v:SetNWVector("PlayerColor", vec)
+
         -- Revenger logic
         if role == ROLE_REVENGER then
             local potentialSoulmates = {}
@@ -1445,20 +1454,6 @@ function BeginRound()
         -- Glitch logic
         if role == ROLE_GLITCH then
             SetGlobalBool("ttt_glitch_round", true)
-        end
-
-        -- Tracker logic
-        if role == ROLE_TRACKER then
-            local trackerColor = GetConVar("ttt_tracker_footstep_color"):GetBool()
-            for _, p in pairs(player.GetAll()) do
-                local vec = Vector(1, 1, 1)
-                if trackerColor then
-                    vec.x = math.Rand(0, 1)
-                    vec.y = math.Rand(0, 1)
-                    vec.z = math.Rand(0, 1)
-                end
-                p:SetNWVector("TrackerColor", vec)
-            end
         end
 
         SetRoleHealth(v)

@@ -214,7 +214,9 @@ function RADAR:Draw(client)
 
             role = tgt.role or ROLE_INNOCENT
             if client:IsTraitorTeam() then
-                if role == ROLE_TRAITOR or role == ROLE_GLITCH then
+                local glitchMode = GetGlobalInt("ttt_glitch_mode", 0)
+                local hideSpecialTraitors = glitchMode == 2 and GetGlobalBool("ttt_glitch_round", false)
+                if role == ROLE_TRAITOR or role == ROLE_GLITCH or (hideSpecialTraitors and TRAITOR_ROLES(role)) then
                     local c = ColorAlpha(ROLE_COLORS_RADAR[ROLE_TRAITOR], alpha)
                     surface.SetDrawColor(c)
                     surface.SetTextColor(c)

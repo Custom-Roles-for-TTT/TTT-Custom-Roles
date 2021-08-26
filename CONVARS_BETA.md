@@ -245,6 +245,9 @@ ttt_paladin_heal_rate                       1       // The amount of heal a play
 ttt_tracker_footstep_time                   15      // The amount of time players' footsteps should show to the tracker before fading. Set to 0 to disable
 ttt_tracker_footstep_color                  1       // Whether players' footsteps should have different colors
 
+// Medium
+ttt_medium_spirit_color                     1       // Whether players' spirits should have different colors
+
 // ----------------------------------------
 
 // JESTER TEAM SETTINGS

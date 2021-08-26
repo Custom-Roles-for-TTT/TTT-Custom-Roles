@@ -423,16 +423,18 @@ function GM:Think()
                 end
             end
         end
-        if v:IsSpec() and not v:Alive() and v:GetObserverMode() == OBS_MODE_ROAMING then
-            if client:IsActiveMedium() then
-                if not v.WispEmitter then v.WispEmitter = ParticleEmitter(v:GetPos()) end
-                if not v.WispNextPart then v.WispNextPart = CurTime() end
-                local pos = v:GetPos() + Vector(0, 0, 64)
-                if v.WispNextPart < CurTime() then
+    end
+    if client:IsActiveMedium() then
+        for _, ent in pairs(ents.GetAll()) do
+            if ent:GetNWBool("MediumSpirit", false) then
+                if not ent.WispEmitter then ent.WispEmitter = ParticleEmitter(ent:GetPos()) end
+                if not ent.WispNextPart then ent.WispNextPart = CurTime() end
+                local pos = ent:GetPos() + Vector(0, 0, 64)
+                if ent.WispNextPart < CurTime() then
                     if client:GetPos():Distance(pos) <= 3000 then
-                        v.WispEmitter:SetPos(pos)
-                        v.WispNextPart = CurTime() + math.Rand(0.003, 0.01)
-                        local particle = v.WispEmitter:Add("particle/wisp.vmt", pos)
+                        ent.WispEmitter:SetPos(pos)
+                        ent.WispNextPart = CurTime() + math.Rand(0.003, 0.01)
+                        local particle = ent.WispEmitter:Add("particle/wisp.vmt", pos)
                         particle:SetVelocity(Vector(0, 0, 30))
                         particle:SetDieTime(1)
                         particle:SetStartAlpha(math.random(150, 220))
@@ -440,16 +442,17 @@ function GM:Think()
                         local size = math.random(4, 7)
                         particle:SetStartSize(size)
                         particle:SetEndSize(1)
-                        particle:SetRoll(0)
+                        particle:SetRoll(math.Rand(0, math.pi))
                         particle:SetRollDelta(0)
-                        particle:SetColor(255, 255, 255)
+                        local col = ent:GetNWVector("SpiritColor", Vector(1, 1, 1))
+                        particle:SetColor(col.x * 255, col.y * 255, col.z * 255)
                     end
                 end
-            end
-        else
-            if v.WispEmitter then
-                v.WispEmitter:Finish()
-                v.WispEmitter = nil
+            else
+                if ent.WispEmitter then
+                    ent.WispEmitter:Finish()
+                    ent.WispEmitter = nil
+                end
             end
         end
     end

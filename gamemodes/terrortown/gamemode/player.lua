@@ -12,6 +12,18 @@ CreateConVar("ttt_dyingshot", "0")
 CreateConVar("ttt_killer_dna_range", "550")
 CreateConVar("ttt_killer_dna_basetime", "100")
 
+local deadPhantoms = {}
+local deadParasites = {}
+local spirits = {}
+hook.Add("TTTPrepareRound", function()
+    deadPhantoms = {}
+    deadParasites = {}
+    for _, ent in pairs(spirits) do
+        ent:Remove()
+    end
+    table.Empty(spirits)
+end)
+
 -- First spawn on the server
 function GM:PlayerInitialSpawn(ply)
     if not GAMEMODE.cvar_init then
@@ -84,6 +96,12 @@ function GM:PlayerSpawn(ply)
 
     ply:UnSpectate()
 
+    local sid = ply:SteamID64()
+    if spirits[sid] and IsValid(spirits[sid]) then
+        spirits[sid]:Remove()
+    end
+    spirits[sid] = nil
+
     -- ye olde hooks
     hook.Call("PlayerLoadout", GAMEMODE, ply)
     hook.Call("PlayerSetModel", GAMEMODE, ply)
@@ -92,6 +110,19 @@ function GM:PlayerSpawn(ply)
     ply:SetupHands()
 
     SCORE:HandleSpawn(ply)
+end
+
+function GM:FinishMove(ply, mv)
+    if not IsValid(ply) or not ply:IsSpec() then return end
+
+    local spirit = spirits[ply:SteamID64()]
+    if not IsValid(spirit) then return end
+
+    spirit:SetPos(ply:GetPos())
+
+    local show = ply:GetObserverMode() == OBS_MODE_ROAMING
+
+    spirit:SetNWBool("MediumSpirit", show)
 end
 
 function GM:PlayerSetHandsModel(pl, ent)
@@ -486,6 +517,12 @@ function GM:PlayerDisconnected(ply)
         ply:SetRole(ROLE_NONE)
     end
 
+    local sid = ply:SteamID64()
+    if spirits[sid] then
+        spirits[sid]:Remove()
+    end
+    spirits[sid] = nil
+
     if GetRoundState() ~= ROUND_PREP then
         SendAllLists()
 
@@ -814,13 +851,6 @@ local function BeggarKilledNotification(attacker, victim)
             return attacker:Nick() .. " cruelly killed the lowly " .. ROLE_STRINGS[ROLE_BEGGAR] .. "!"
         end)
 end
-
-local deadPhantoms = {}
-local deadParasites = {}
-hook.Add("TTTPrepareRound", function()
-    deadPhantoms = {}
-    deadParasites = {}
-end)
 
 local function DoRespawn(ply)
     local body = ply.server_ragdoll or ply:GetRagdollEntity()
@@ -1517,6 +1547,26 @@ function GM:PlayerDeath(victim, infl, attacker)
                 end
             end
         end
+    end
+
+    -- Create spirit for the medium
+    local mediums = {}
+    for _, v in pairs(player.GetAll()) do
+        if v:IsMedium() then table.insert(mediums, v) end
+    end
+    if #mediums > 0 then
+        local spirit = ents.Create("npc_kleiner")
+        spirit:SetPos(victim:GetPos())
+        spirit:SetRenderMode(RENDERMODE_NONE)
+        spirit:SetNotSolid(true)
+        spirit:SetNWBool("MediumSpirit", true)
+        local col = Vector(1, 1, 1)
+        if GetConVar("ttt_medium_spirit_color"):GetBool() then
+            col = victim:GetNWVector("PlayerColor", Vector(1, 1, 1))
+        end
+        spirit:SetNWVector("SpiritColor", col)
+        spirit:Spawn()
+        spirits[victim:SteamID64()] = spirit
     end
 
     -- Check veteran status

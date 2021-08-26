@@ -7,6 +7,7 @@
 - Added ability for glitch to see and use traitor traps (disabled by default)
 - Added ability for a phantom to lose their powers if their body is destroyed (disabled by default)
 - Added ability to remove all detective roles' ability to loot credits from corpses (disabled by default)
+- Added the option for the mediums spirits to the colored similar to tracker footsteps (enabled by default)
 
 ### Changes
 - Changed round summary role tooltip to be translateable
@@ -21,6 +22,8 @@
 - Fixed potential error in vampire fangs when the vampire lost their target
 - Fixed paladin heal removing a player's overheal
 - Fixed minor issue where a role could be set to not being a shop role but still have shop role convars created
+- Fixed special traitors having orange radar pings when glitch mode was set to 2
+- Fixed medium spirit positions updating infrequently
 
 ### Developer
 - Changed more aspects of role creation to be dynamic

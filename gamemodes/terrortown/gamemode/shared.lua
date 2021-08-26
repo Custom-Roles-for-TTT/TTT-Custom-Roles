@@ -876,7 +876,10 @@ function GM:PlayerFootstep(ply, pos, foot, sound, volume, rf)
             net.WriteVector(pos)
             net.WriteAngle(ply:GetAimVector():Angle())
             net.WriteBit(foot)
-            local col = ply:GetNWVector("TrackerColor", Vector(1, 1, 1))
+            local col = Vector(1, 1, 1)
+            if GetConVar("ttt_tracker_footstep_color"):GetBool() then
+                col = ply:GetNWVector("PlayerColor", Vector(1, 1, 1))
+            end
             net.WriteTable(Color(col.x * 255, col.y * 255, col.z * 255))
             net.WriteUInt(tracker_footstep_time, 8)
             local tab = {}
