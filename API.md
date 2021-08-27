@@ -284,6 +284,10 @@ Methods available globally (within the defined realm)
 ### *Player*
 Variables available when called from a Player object (within the defined realm)
 
+**plymeta:BeginRoleChecks()** - Sets up role logic for the player to handle role-specific events and checks.\
+*Realm:* Server\
+*Added in:* 1.1.9
+
 **plymeta:Is{RoleName}()/plymeta:Get{RoleName}()** - Dynamically created functions for each role that returns whether the player is that role. For example: `plymeta:IsTraitor()` and `plymeta:IsPhantom()` return whether the player is a traitor or a phantom, respectively.\
 *Realm:* Client and Server\
 *Added in:* Whenever each role is added
@@ -432,6 +436,12 @@ Variables available when called from a Player object (within the defined realm)
 *Added in:* 1.0.0\
 *Parameters:*
 - *is_prime* - Whether the player is a prime zombie
+
+**plymeta:SoberDrunk(team)** - Runs the logic for when a drunk sobers up and remembers their role.\
+*Realm:* Server\
+*Added in:* 1.1.9\
+*Parameters:*
+- *team* - Which team to choose a role from (see ROLE_TEAM_* global enumeration).
 
 **plymeta:StripRoleWeapons()** - Strips all weapons from the player whose `Category` property matches the global `WEAPON_CATEGORY_ROLE` value.\
 *Realm:* Client and Server\
