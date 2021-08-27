@@ -171,10 +171,24 @@ if SERVER then
         end)
     end
 
+    function SWEP:DoRespawnFailure()
+        local phys = self.Target:GetPhysicsObjectNum(self.Bone)
+
+        if IsValid(phys) then
+            phys:ApplyForceCenter(Vector(0, 0, 4096))
+        end
+
+        self:Error("ATTEMPT FAILED TRY AGAIN")
+    end
+
     function SWEP:DoRespawn(body)
         local ply = bodyply(body)
-        local credits = CORPSE.GetCredits(body, 0) or 0
+        if not ply or ply:Alive() and not ply:IsSpec() then
+            self:DoRespawnFailure()
+            return
+        end
 
+        local credits = CORPSE.GetCredits(body, 0) or 0
         if ply:IsTraitor() and CORPSE.GetFound(body, false) == true then
             local plys = {}
 
@@ -218,25 +232,19 @@ if SERVER then
         body:Remove()
 
         SendFullStateUpdate()
+        self:Reset()
     end
 
     function SWEP:Defib()
         sound.Play(zap, self.Target:GetPos(), 75, math.random(95, 105), 1)
 
         if math.random(0, 100) > success then
-            local phys = self.Target:GetPhysicsObjectNum(self.Bone)
-
-            if IsValid(phys) then
-                phys:ApplyForceCenter(Vector(0, 0, 4096))
-            end
-
-            self:Error("ATTEMPT FAILED TRY AGAIN")
+            self:DoRespawnFailure()
             return
         end
         if not IsFirstTimePredicted() then return end
 
         self:DoRespawn(self.Target)
-        self:Reset()
     end
 
     function SWEP:Begin(body, bone)
@@ -307,7 +315,7 @@ if CLIENT then
         if ply or len <= 0 then return end
 
         local hply = net.ReadEntity()
-        hply.DefibHide = net.ReadBool()
+        hply.MadZomHide = net.ReadBool()
     end)
 
     net.Receive("TTT_Zombificator_Revived", function(len, ply)
@@ -317,13 +325,13 @@ if CLIENT then
 
     hook.Remove("TTTEndRound", "RemoveZombificatorHide")
     hook.Add("TTTEndRound", "RemoveZombificatorHide", function()
-        for _, v in pairs(player.GetAll()) do v.DefibHide = nil end
+        for _, v in pairs(player.GetAll()) do v.MadZomHide = nil end
     end)
 
     oldScoreGroup = oldScoreGroup or ScoreGroup
 
     function ScoreGroup(ply)
-        if ply.DefibHide then return GROUP_FOUND end
+        if ply.MadZomHide then return GROUP_FOUND end
         return oldScoreGroup(ply)
     end
 
