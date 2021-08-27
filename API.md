@@ -491,13 +491,16 @@ Custom and modified event hooks available within the defined realm
 - *wintype* - The round win type
 - *wintitles* - Table of default win title parameters
 - *title* - The currently selected win title
-- *oldmanwins* - Whether the old man also won this round *(Added in 1.1.6)*
+- *secondary_win_role* - Which role (if any) is sharing the win for this round (see ROLE_* global enumeration) *(Added in 1.1.9)*
 
 *Return:*
 - *new_title*
   - *txt* - The translation string to use to get the winning team text
   - *c* - The background color to use
-  - *params* - Any parameters to use when translating `txt` (Optional)
+  - *params* - Any parameters to use when translating `txt` (Optional if `new_secondary_win_role` is also omitted)
+- *new_secondary_win_role* - Which role should share in the win for this round (see ROLE_* global enumeration) (Optional) *(Added in 1.1.9)*
+
+*NOTE:* You must return a non-*nil* value for all of the properties or the hook results will be ignored
 
 **TTTSelectRoles(choices, prev_roles)** - Called before players are randomly assigned roles. If a player is assigned a role during this hook, they will not be randomly assigned one later.\
 *Realm:* Server\

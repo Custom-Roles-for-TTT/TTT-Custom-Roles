@@ -8,6 +8,7 @@
 
 ### Developer
 - Updated GetTeamRoles to take an optional lookup table of excluded roles
+- Changed TTTScoringWinTitle hook to allow dynamically setting a secondary win role (like the old man)
 
 ## 1.1.8
 **Released: August 26th, 2021**
