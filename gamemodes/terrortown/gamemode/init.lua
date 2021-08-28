@@ -1035,6 +1035,7 @@ function PrepareRound()
         timer.Remove(v:Nick() .. "InfectingSpectate")
         v:SetNWInt("GlitchBluff", ROLE_TRAITOR)
         v:SetNWVector("PlayerColor", Vector(1, 1, 1))
+        v:SetNWInt("VampireFreezeCount", 0)
         -- Keep previous naming scheme for backwards compatibility
         v:SetNWBool("zombie_prime", false)
         v:SetNWBool("vampire_prime", false)

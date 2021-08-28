@@ -6,6 +6,7 @@
 ### Fixes
 - Fixed mad scientist's zombificator, bodysnatcher's bodysnatching device, and paramedic's defib being usable on fake bodies with odd side effects
 - Fixed bodysnatcher's bodysnatching device showing and taking the corpse player's current role rather than the role on the corpse (relevant for fake bodies and things that resurrect without destroying the body)
+- Fixed case where multiple vampires draining the same target would have the target unfreeze when any of the vampires quit draining
 
 ### Additions
 - Added the option for the drunk to become any enabled role except for another drunk or the glitch (disabled by default)

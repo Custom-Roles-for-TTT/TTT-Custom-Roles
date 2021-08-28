@@ -154,8 +154,8 @@ function SWEP:Drain(entity)
     self:CancelUnfreeze(entity)
 
     entity:PrintMessage(HUD_PRINTCENTER, "Someone is draining your blood!")
-    entity:Freeze(true)
     self.TargetEntity = entity
+    self:DoFreeze()
 
     self:SetNextPrimaryFire(CurTime() + self:GetFangTime())
 end
@@ -163,11 +163,35 @@ end
 function SWEP:CancelUnfreeze(entity)
     if not IsValid(entity) or not entity:IsPlayer() then return end
     if not IsValid(self:GetOwner()) then return end
-    timer.Remove("VampUnfreezeDelay_" .. self:GetOwner():Nick() .. "_" .. entity:Nick())
+    local timerid = "VampUnfreezeDelay_" .. self:GetOwner():Nick() .. "_" .. entity:Nick()
+    if timer.Exists(timerid) then
+        self:AdjustFreezeCount(entity, -1, 1)
+        timer.Remove(timerid)
+    end
 end
 
 function SWEP:HasValidTarget()
     return IsValid(self.TargetEntity) and self.TargetEntity:IsPlayer()
+end
+
+function SWEP:AdjustFreezeCount(ent, adj, def)
+    local freeze_count =  math.max(0, ent:GetNWInt("VampireFreezeCount", def) + adj)
+    ent:SetNWInt("VampireFreezeCount", freeze_count)
+    return freeze_count
+end
+
+function SWEP:DoFreeze()
+    self:AdjustFreezeCount(self.TargetEntity, 1, 0)
+    self.TargetEntity:Freeze(true)
+end
+
+function SWEP:DoUnfreeze()
+    local freeze_count = self:AdjustFreezeCount(self.TargetEntity, -1, 1)
+    -- Only unfreeze the target if nobody else is draining them
+    if freeze_count == 0 then
+        self.TargetEntity:Freeze(false)
+    end
+    self.TargetEntity = nil
 end
 
 function SWEP:UnfreezeTarget()
@@ -178,13 +202,12 @@ function SWEP:UnfreezeTarget()
     -- Unfreeze the target immediately if there is no delay or no owner
     local delay = vampire_fang_unfreeze_delay:GetFloat()
     if delay <= 0 or not valid_owner then
-        self.TargetEntity:Freeze(false)
+        self:DoUnfreeze()
     else
         self:CancelUnfreeze(self.TargetEntity)
         timer.Create("VampUnfreezeDelay_" .. owner:Nick() .. "_" .. self.TargetEntity:Nick(), delay, 1, function()
-            if not IsValid(self.TargetEntity) or not self.TargetEntity:IsPlayer() then return end
-            self.TargetEntity:Freeze(false)
-            self.TargetEntity = nil
+            if not self:HasValidTarget() then return end
+            self:DoUnfreeze()
         end)
     end
 end
