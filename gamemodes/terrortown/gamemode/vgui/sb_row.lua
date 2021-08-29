@@ -193,8 +193,7 @@ function PANEL:Paint(width, height)
     --   end
 
     local ply = self.Player
-
-    local c = hook.Call("TTTScoreboardRowColorForPlayer", GAMEMODE, ply)
+    local c = hook.Run("TTTScoreboardRowColorForPlayer", ply)
 
     -- Use the default color for players without roles
     if type(c) == "number" and c <= ROLE_NONE then
@@ -225,6 +224,11 @@ function PANEL:Paint(width, height)
         roleStr = ROLE_STRINGS_SHORT[role]
     end
 
+    -- Allow external addons (like new roles) to manipulate how a player appears on the scoreboard
+    local new_color, new_role_str, flash_role = hook.Run("TTTScoreboardPlayerRole", ply, client, c, roleStr)
+    if new_color then c = new_color end
+    if new_role_str then roleStr = new_role_str end
+
     surface.SetDrawColor(c)
     surface.DrawRect(0, 0, width, SB_ROW_HEIGHT)
 
@@ -242,6 +246,8 @@ function PANEL:Paint(width, height)
             DrawFlashingBorder(width, ROLE_ASSASSIN)
         elseif client:IsTraitorTeam() and ply:GetNWBool("Infected", false) then
             DrawFlashingBorder(width, ROLE_PARASITE)
+        elseif flash_role and flash_role > ROLE_NONE and flash_role <= ROLE_MAX then
+            DrawFlashingBorder(width, flash_role)
         end
     end
 
@@ -307,17 +313,38 @@ function PANEL:UpdatePlayerData()
     if GetRoundState() >= ROUND_ACTIVE then
         if client:IsRevenger() and ply:SteamID64() == client:GetNWString("RevengerLover", "") then
             self.nick:SetText(ply:Nick() .. " (" .. GetTranslation("target_revenger_lover") .. ")")
-        elseif client:IsAssassin() and ply:Nick() == client:GetNWString("AssassinTarget", "") then
-            self.nick:SetText(ply:Nick() .. " (" .. GetTranslation("target_assassin_target") .. ")")
         elseif client:IsTraitorTeam() then
-            for _, v in pairs(player.GetAll()) do
-                if ply:Nick() == v:GetNWString("AssassinTarget", "") then
-                    self.nick:SetText(ply:Nick() .. " (" .. GetPTranslation("target_assassin_target_team", { player = v:Nick() }) .. ")")
-                elseif ply:GetNWBool("Infected", false) then
+            local infected = ply:GetNWBool("Infected", false)
+
+            if client:IsAssassin() and ply:Nick() == client:GetNWString("AssassinTarget", "") then
+                local text = " ("
+                if infected then
+                    text = text .. GetTranslation("target_infected") .. " | "
+                end
+                text = text .. GetTranslation("target_assassin_target") .. ")"
+                self.nick:SetText(ply:Nick() .. text)
+            else
+                local updated = false
+                for _, v in pairs(player.GetAll()) do
+                    if ply:Nick() == v:GetNWString("AssassinTarget", "") then
+                        local text = " ("
+                        if infected then
+                            text = text .. GetTranslation("target_infected") .. " | "
+                        end
+                        text = text .. GetPTranslation("target_assassin_target_team", { player = v:Nick() }) .. ")"
+                        self.nick:SetText(ply:Nick() .. text)
+                        updated = true
+                    end
+                end
+
+                if not updated and infected then
                     self.nick:SetText(ply:Nick() .. " (" .. GetTranslation("target_infected") .. ")")
                 end
             end
         end
+
+        local nick_override = hook.Run("TTTScoreboardPlayerName", ply, client, self.nick:GetText())
+        if nick_override then self.nick:SetText(nick_override) end
     end
 
     self.nick:SizeToContents()

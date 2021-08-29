@@ -468,6 +468,33 @@ Custom and modified event hooks available within the defined realm
 
 *Return:* `true` if the default print messages should be skipped (Defaults to `false`).
 
+**TTTScoreboardPlayerName(ply, client, currentName)** - Called before a player's row in the scoreboard (tab menu) is shown, allowing the name to be changed.\
+*Realm:* Client\
+*Added in:* 1.1.9\
+*Parameters:*
+- *ply* - The player being rendered
+- *client* - The local player
+- *currentName* - The current name string (including extra information)
+
+*Return:*
+- *name* - The new name value to show on the scoreboard
+
+**TTTScoreboardPlayerRole(ply, client, color, roleFileName)** - Called before a player's row in the scoreboard (tab menu) is shown, allowing the colors and icon to be changed.\
+*Realm:* Client\
+*Added in:* 1.1.9\
+*Parameters:*
+- *ply* - The player being rendered
+- *client* - The local player
+- *color* - The background color to use
+- *roleFileName* - The portion of the scoring icon path that indicates which role it belongs to. Used in the following icon path pattern: "vgui/ttt/tab_{roleFileName}.png"
+
+*Return:*
+- *color* - The new color value to use or the original passed into the hook
+- *roleFileName* - The new roleFileName value to use or the original passed into the hook
+- *flashRole* - If a valid role is provided, this will cause the target player's scoreboard role to have a flashing border in the given role's color (see ROLE_* global enumeration)
+
+*NOTE:* You must return a non-*nil* value for all of the properties or the hook results will be ignored
+
 **TTTScoringSummaryRender(ply, roleFileName, groupingRole, roleColor)** - Called before the round summary screen is shown. Used to modify the color, position, and icon for a player.\
 *Realm:* Client\
 *Added in:* 1.1.5\
@@ -478,9 +505,9 @@ Custom and modified event hooks available within the defined realm
 - *roleColor* - The background color to use behind the role icon
 
 *Return:*
-- *roleFileName* - The new roleFileName value to use or the original passed in to the hook
-- *groupingRole* - The new groupingRole value to use or the original passed in to the hook
-- *roleColor* - The new roleColor value to use or the original passed in to the hook
+- *roleFileName* - The new roleFileName value to use or the original passed into the hook
+- *groupingRole* - The new groupingRole value to use or the original passed into the hook
+- *roleColor* - The new roleColor value to use or the original passed into the hook
 
 *NOTE:* You must return a non-*nil* value for all of the properties or the hook results will be ignored
 

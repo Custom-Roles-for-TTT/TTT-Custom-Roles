@@ -7,6 +7,8 @@
 - Fixed mad scientist's zombificator, bodysnatcher's bodysnatching device, and paramedic's defib being usable on fake bodies with odd side effects
 - Fixed bodysnatcher's bodysnatching device showing and taking the corpse player's current role rather than the role on the corpse (relevant for fake bodies and things that resurrect without destroying the body)
 - Fixed case where multiple vampires draining the same target would have the target unfreeze when any of the vampires quit draining
+- Fixed assassin not being able to see which players are infected by a parasite on the scoreboard
+- Fixed only assassin target or parasite infection showing on the scoreboard even if a player should see both
 
 ### Additions
 - Added the option for the drunk to become any enabled role except for another drunk or the glitch (disabled by default)
@@ -14,6 +16,9 @@
 ### Developer
 - Updated GetTeamRoles to take an optional lookup table of excluded roles
 - Changed TTTScoringWinTitle hook to allow dynamically setting a secondary win role (like the old man)
+- Added new hooks to handle cases where a player would want to appear as a different role in-game
+  - TTTScoreboardPlayerRole - What role/color the player should show as on the scoreboard
+  - TTTScoreboardPlayerName - What name the player should have on the scoreboard (useful for adding things like the assassin's "(TARGET)")
 
 ## 1.1.8
 **Released: August 26th, 2021**
