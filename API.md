@@ -547,7 +547,7 @@ Custom and modified event hooks available within the defined realm
 
 *Return:* The stamina value to assign to the player. If none is provided, the player's stamina will not be changed.
 
-**TTTTargetIDPlayerText(client, ent, text, clr, secondaryText)** - .\
+**TTTTargetIDPlayerText(client, ent, text, clr, secondaryText)** - Called before player Target ID text (shown when you look at a player) is rendered.\
 *Realm:* Client\
 *Added in:* 1.1.9\
 *Parameters:*
