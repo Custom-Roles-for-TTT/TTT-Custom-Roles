@@ -547,12 +547,22 @@ Custom and modified event hooks available within the defined realm
 
 *Return:* The stamina value to assign to the player. If none is provided, the player's stamina will not be changed.
 
+**TTTTargetIDPlayerKillIcon(ply, client, showKillIcon, showJester)** - Called before player Target ID icon (over their head) is rendered to determine if the "KILL" icon should be shown.\
+*Realm:* Client\
+*Added in:* 1.1.9\
+*Parameters:*
+- *ply* - The target player being rendered
+- *client* - The local player
+- *showKillIcon* - Whether the kill icon would normally be shown for this player
+- *showJester* - Whether the target is a jester and the local player would normally know that
+
+*Return:* `true` if the kill icon should be shown or `false` if not. Returning nothing or a non-boolean value will default to the given *showKillIcon* value.
 
 **TTTTargetIDPlayerText(ent, client, text, clr, secondaryText)** - Called before player Target ID text (shown when you look at a player) is rendered.\
 *Realm:* Client\
 *Added in:* 1.1.9\
 *Parameters:*
-- *ent* - Target entity. Not necessarily a player so be sure to check `ent:IsPlayer()` if needed
+- *ent* - The target entity being rendered. Not necessarily a player so be sure to check `ent:IsPlayer()` if needed
 - *client* - The local player
 - *text* - The first line of text being shown
 - *clr* - The color of the text being used

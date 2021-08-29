@@ -19,6 +19,7 @@
 - Added new hooks to handle cases where a player would want to appear as a different role in-game
   - TTTScoreboardPlayerRole - What role/color the player should show as on the scoreboard
   - TTTScoreboardPlayerName - What name the player should have on the scoreboard (useful for adding things like the assassin's "(TARGET)")
+  - TTTTargetIDPlayerKillIcon - Whether the "KILL" icon should be shown over the target's head
   - TTTTargetIDPlayerText - What text and color to use for the Target ID (when you look at a player)
 
 ## 1.1.8

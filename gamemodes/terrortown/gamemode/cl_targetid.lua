@@ -103,14 +103,20 @@ function GM:PostDrawTranslucentRenderables()
             local glitchMode = GetGlobalInt("ttt_glitch_mode", 0)
 
             -- Only show the "KILL" target if the setting is enabled
-            local showkillicon = ((client:IsAssassin() and GetGlobalBool("ttt_assassin_show_target_icon", false) and client:GetNWString("AssassinTarget") == v:Nick()) or
+            local showKillIcon = ((client:IsAssassin() and GetGlobalBool("ttt_assassin_show_target_icon", false) and client:GetNWString("AssassinTarget") == v:Nick()) or
                                     (client:IsKiller() and GetGlobalBool("ttt_killer_show_target_icon", false)) or
                                     (client:IsZombie() and GetGlobalBool("ttt_zombie_show_target_icon", false) and client.GetActiveWeapon and IsValid(client:GetActiveWeapon()) and client:GetActiveWeapon():GetClass() == "weapon_zom_claws") or
                                     (client:IsVampire() and GetGlobalBool("ttt_vampire_show_target_icon", false)) or
                                     (client:IsClown() and client:GetNWBool("KillerClownActive", false) and GetGlobalBool("ttt_clown_show_target_icon", false)))
                                     and not showJester
 
-            if showkillicon and not client:IsSameTeam(v) then -- If we are showing the "KILL" icon this should take priority over role icons
+            -- Allow other addons (and external roles) to determine if the "KILL" icon should show
+            local newShowKillIcon = hook.Run("TTTTargetIDPlayerKillIcon", v, client, showKillIcon, showJester)
+            if type(newShowKillIcon) == "boolean" then
+                showKillIcon = newShowKillIcon
+            end
+
+            if showKillIcon and not client:IsSameTeam(v) then -- If we are showing the "KILL" icon this should take priority over role icons
                 render.SetMaterial(indicator_mat_roleback_noz)
                 render.DrawQuadEasy(pos, dir, 8, 8, ROLE_COLORS_SPRITE[client:GetRole()], 180) -- Use the colour of whatever role the player currently is for the "KILL" icon
 
@@ -120,61 +126,73 @@ function GM:PostDrawTranslucentRenderables()
                 render.SetMaterial(indicator_mat_rolefront_noz)
                 render.DrawQuadEasy(pos, dir, 8, 8, COLOR_WHITE, 180)
             else
+                local role = nil
+                local role_color = nil
+                local noz = false
                 if v:IsDetectiveTeam() then
-                    DrawRoleIcon(v:GetRole(), false, pos, dir)
+                    role = v:GetRole()
                 elseif v:GetDetectiveLike() and not (v:GetImpersonator() and client:IsTraitorTeam()) then
-                    DrawRoleIcon(GetDetectiveIconRole(false), false, pos, dir)
+                    role = GetDetectiveIconRole(false)
                 elseif v:GetClown() and v:GetNWBool("KillerClownActive", false) and not GetGlobalBool("ttt_clown_hide_when_active", false) then
-                    DrawRoleIcon(ROLE_CLOWN, false, pos, dir)
+                    role = ROLE_CLOWN
                 end
                 if not hide_roles then
                     if client:IsTraitorTeam() then
+                        noz = true
                         if (v:GetTraitor() and not hideBeggar) then
-                            DrawRoleIcon(ROLE_TRAITOR, true, pos, dir)
+                            role = ROLE_TRAITOR
                         elseif v:GetImpersonator() then
                             -- If the impersonator is promoted, use the Detective's icon with the Impersonator's color
                             if v:GetNWBool("HasPromotion", false) then
-                                DrawRoleIcon(GetDetectiveIconRole(true), true, pos, dir, ROLE_IMPERSONATOR)
+                                role = GetDetectiveIconRole(true)
+                                role_color = ROLE_IMPERSONATOR
                             elseif glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES and GetGlobalBool("ttt_glitch_round", false) then
-                                DrawRoleIcon(ROLE_TRAITOR, true, pos, dir)
+                                role = ROLE_TRAITOR
                             else
-                                DrawRoleIcon(ROLE_IMPERSONATOR, true, pos, dir)
+                                role = ROLE_IMPERSONATOR
                             end
                         -- If this is a vanilla traitor they should have been handled above and are therefore a converted beggar who should be hidden
                         elseif not v:GetTraitor() and v:IsTraitorTeam() then
                             if v:GetZombie() then
-                                DrawRoleIcon(ROLE_ZOMBIE, true, pos, dir)
+                                role = ROLE_ZOMBIE
                             elseif glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES and GetGlobalBool("ttt_glitch_round", false) then
-                                DrawRoleIcon(ROLE_TRAITOR, true, pos, dir)
+                                role = ROLE_TRAITOR
                             else
-                                DrawRoleIcon(v:GetRole(), true, pos, dir)
+                                role = v:GetRole()
                             end
                         elseif showJester then
-                            DrawRoleIcon(ROLE_JESTER, false, pos, dir)
+                            role = ROLE_JESTER
+                            noz = false
                         elseif v:GetGlitch() then
                             if client:IsZombie() then
-                                DrawRoleIcon(ROLE_ZOMBIE, true, pos, dir)
+                                role = ROLE_ZOMBIE
                             else
-                                DrawRoleIcon(v:GetNWInt("GlitchBluff", ROLE_TRAITOR), true, pos, dir)
+                                role = v:GetNWInt("GlitchBluff", ROLE_TRAITOR)
                             end
                         end
                     elseif client:IsMonsterTeam() then
                         if v:IsMonsterTeam() then
-                            DrawRoleIcon(v:GetRole(), true, pos, dir)
+                            role = v:GetRole()
+                            noz = true
                         elseif showJester then
-                            DrawRoleIcon(ROLE_JESTER, false, pos, dir)
+                            role = ROLE_JESTER
                         end
                     elseif client:IsKiller() then
                         if showJester then
-                            DrawRoleIcon(ROLE_JESTER, false, pos, dir)
+                            role = ROLE_JESTER
                         end
                     elseif client:IsIndependentTeam() then
                         if v:IsIndependentTeam() then
-                            DrawRoleIcon(v:GetRole(), true, pos, dir)
+                            role = v:GetRole()
+                            noz = true
                         elseif showJester then
-                            DrawRoleIcon(ROLE_JESTER, false, pos, dir)
+                            role = ROLE_JESTER
                         end
                     end
+                end
+
+                if role then
+                    DrawRoleIcon(role, noz, pos, dir, role_color)
                 end
             end
         end
@@ -206,39 +224,39 @@ end
 
 ---- Spectator labels
 
-local function DrawPropSpecLabels(client)
-    if (not client:IsSpec()) and (GetRoundState() ~= ROUND_POST) then return end
+local function DrawPropSpecLabels(cli)
+    if (not cli:IsSpec()) and (GetRoundState() ~= ROUND_POST) then return end
 
     surface.SetFont("TabLarge")
 
-    local tgt = nil
     local scrpos = nil
     local text = nil
     local w = 0
-    for _, ply in ipairs(player.GetAll()) do
-        if ply:IsSpec() then
+    tgt = nil
+    for _, p in ipairs(GetPlayers()) do
+        if p:IsSpec() then
             surface.SetTextColor(220, 200, 0, 120)
 
-            tgt = ply:GetObserverTarget()
+            tgt = p:GetObserverTarget()
 
-            if IsValid(tgt) and tgt:GetNWEntity("spec_owner", nil) == ply then
+            if IsValid(tgt) and tgt:GetNWEntity("spec_owner", nil) == p then
 
                 scrpos = tgt:GetPos():ToScreen()
             else
                 scrpos = nil
             end
         else
-            local _, healthcolor = util.HealthToString(ply:Health(), ply:GetMaxHealth())
+            local _, healthcolor = util.HealthToString(p:Health(), p:GetMaxHealth())
             surface.SetTextColor(clr(healthcolor))
 
-            scrpos = ply:EyePos()
+            scrpos = p:EyePos()
             scrpos.z = scrpos.z + 20
 
             scrpos = scrpos:ToScreen()
         end
 
         if scrpos and (not IsOffScreen(scrpos)) then
-            text = ply:Nick()
+            text = p:Nick()
             w, _ = surface.GetTextSize(text)
 
             surface.SetTextPos(scrpos.x - w / 2, scrpos.y)
