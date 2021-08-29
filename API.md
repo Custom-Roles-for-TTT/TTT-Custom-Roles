@@ -547,6 +547,23 @@ Custom and modified event hooks available within the defined realm
 
 *Return:* The stamina value to assign to the player. If none is provided, the player's stamina will not be changed.
 
+**TTTTargetIDPlayerText(client, ent, text, clr, secondaryText)** - .\
+*Realm:* Client\
+*Added in:* 1.1.9\
+*Parameters:*
+- *ent* - Target entity. Not necessarily a player so be sure to check `ent:IsPlayer()` if needed
+- *client* - The local player
+- *text* - The first line of text being shown
+- *clr* - The color of the text being used
+- *secondaryText* - The second line of text being shown
+
+*Return:*
+- *text* - The new text value to use or the original passed into the hook
+- *clr* - The new clr value to use or the original passed into the hook
+- *secondaryText* - The new secondaryText value to use or the original passed into the hook
+
+*NOTE:* You must return a non-*nil* value for all of the properties or the hook results will be ignored
+
 ## SWEPs
 Changes made to SWEPs (the data structure used when defining new weapons)
 

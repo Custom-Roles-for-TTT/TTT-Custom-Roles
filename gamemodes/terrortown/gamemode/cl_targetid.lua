@@ -542,10 +542,14 @@ function GM:HUDDrawTargetID()
     end
 
     text = nil
-
+    local secondary_text = nil
     if target_current_target then -- Prioritise target/soulmate message over roles
         text = L.target_current_target
         clr = ROLE_COLORS_RADAR[ROLE_ASSASSIN]
+
+        if target_infected then
+            secondary_text = L.target_infected
+        end
     elseif target_revenger_lover then
         text = L.target_revenger_lover
         clr = ROLE_COLORS_RADAR[ROLE_REVENGER]
@@ -596,6 +600,11 @@ function GM:HUDDrawTargetID()
         clr = COLOR_YELLOW
     end
 
+    local new_text, new_color, new_secondary = hook.Run("TTTTargetIDPlayerText", ent, client, text, clr, secondary_text)
+    if new_text then text = new_text end
+    if new_color then clr = new_color end
+    if new_secondary then secondary_text = new_secondary end
+
     if text then
         w, h = surface.GetTextSize(text)
         x = x_orig - w / 2
@@ -603,5 +612,13 @@ function GM:HUDDrawTargetID()
 
         draw.SimpleText(text, font, x + 1, y + 1, COLOR_BLACK)
         draw.SimpleText(text, font, x, y, clr)
+    end
+    if secondary_text then
+        w, h = surface.GetTextSize(secondary_text)
+        x = x_orig - w / 2
+        y = y + h + 5
+
+        draw.SimpleText(secondary_text, font, x + 1, y + 1, COLOR_BLACK)
+        draw.SimpleText(secondary_text, font, x, y, clr)
     end
 end
