@@ -558,6 +558,25 @@ Custom and modified event hooks available within the defined realm
 
 *Return:* `true` if the kill icon should be shown or `false` if not. Returning nothing or a non-boolean value will default to the given *showKillIcon* value.
 
+**TTTTargetIDPlayerRoleIcon(ply, client, role, noZ, colorRole, hideBeggar, showJester)** - Called before player Target ID icon (over their head) is rendered allowing changing the icon and color shown.\
+*Realm:* Client\
+*Added in:* 1.1.9\
+*Parameters:*
+- *ply* - The target player being rendered
+- *client* - The local player
+- *role* - What role is currently being shown for the target player
+- *noZ* - Whether the icon is currently visible through walls
+- *colorRole* - What role is being used for the icon background color (Only used when a different color than the only belonging to *role* is being used)
+- *hideBeggar* - Whether the target was a beggar whose new role should be hidden
+- *showJester* - Whether the target is a jester and the local player would normally know that
+
+*Return:*
+- *role* - The new role value to use or the original passed into the hook
+- *noZ* - The new noZ value to use or the original passed into the hook. *NOTE:* The matching icon .vmt for this flag needs to exist. If *noZ* is `true`, a "sprite\_{ROLESHORTNAME}\_noz.vmt" file must exist and if *noZ* is `false`, a "sprite_{ROLESHORTNAME}.vmt" file must exist
+- *colorRole* - The new colorRole value to use or the original passed into the hook
+
+*NOTE:* You must return a non-*nil* value for all of the properties or the hook results will be ignored
+
 **TTTTargetIDPlayerText(ent, client, text, clr, secondaryText)** - Called before player Target ID text (shown when you look at a player) is rendered.\
 *Realm:* Client\
 *Added in:* 1.1.9\

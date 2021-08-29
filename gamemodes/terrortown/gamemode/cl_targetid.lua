@@ -127,7 +127,7 @@ function GM:PostDrawTranslucentRenderables()
                 render.DrawQuadEasy(pos, dir, 8, 8, COLOR_WHITE, 180)
             else
                 local role = nil
-                local role_color = nil
+                local color_role = nil
                 local noz = false
                 if v:IsDetectiveTeam() then
                     role = v:GetRole()
@@ -145,7 +145,7 @@ function GM:PostDrawTranslucentRenderables()
                             -- If the impersonator is promoted, use the Detective's icon with the Impersonator's color
                             if v:GetNWBool("HasPromotion", false) then
                                 role = GetDetectiveIconRole(true)
-                                role_color = ROLE_IMPERSONATOR
+                                color_role = ROLE_IMPERSONATOR
                             elseif glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES and GetGlobalBool("ttt_glitch_round", false) then
                                 role = ROLE_TRAITOR
                             else
@@ -191,8 +191,13 @@ function GM:PostDrawTranslucentRenderables()
                     end
                 end
 
+                local newRole, newNoZ, newColorRole = hook.Run("TTTTargetIDPlayerRoleIcon", v, client, role, noz, color_role, hideBeggar, showJester)
+                if newRole then role = newRole end
+                if type(newNoZ) == "boolean" then noz = newNoZ end
+                if newColorRole then color_role = newColorRole end
+
                 if role then
-                    DrawRoleIcon(role, noz, pos, dir, role_color)
+                    DrawRoleIcon(role, noz, pos, dir, color_role)
                 end
             end
         end
