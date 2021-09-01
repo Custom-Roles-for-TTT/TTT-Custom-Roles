@@ -257,6 +257,7 @@ CreateConVar("ttt_drunk_sober_time", "180")
 CreateConVar("ttt_drunk_innocent_chance", "0.7")
 CreateConVar("ttt_drunk_any_role", "0")
 CreateConVar("ttt_drunk_become_clown", "0")
+CreateConVar("ttt_drunk_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the Drunk sobers up", 0, 4)
 
 CreateConVar("ttt_oldman_drain_health_to", "0")
 

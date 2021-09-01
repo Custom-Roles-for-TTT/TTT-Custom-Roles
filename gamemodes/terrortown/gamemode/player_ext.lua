@@ -514,6 +514,19 @@ function plymeta:DrunkRememberRole(role, hidecenter)
     if not hidecenter then self:PrintMessage(HUD_PRINTCENTER, "You have remembered that you are " .. ROLE_STRINGS_EXT[role] .. ".") end
     self:SetDefaultCredits()
 
+    local mode = GetConVar("ttt_drunk_notify_mode"):GetInt()
+    if mode > 0 then
+        for _, v in pairs(player.GetAll()) do
+            if self ~= v then
+                if (v:IsTraitorTeam() and (mode == JESTER_NOTIFY_DETECTIVE_AND_TRAITOR or mode == JESTER_NOTIFY_TRAITOR)) or -- the enums here are the same as for the jester notifications so we can just use those
+                        (v:IsDetectiveLike() and (mode == JESTER_NOTIFY_DETECTIVE_AND_TRAITOR or mode == JESTER_NOTIFY_DETECTIVE)) or
+                        mode == JESTER_NOTIFY_EVERYONE then
+                    v:PrintMessage(HUD_PRINTTALK, ROLE_STRINGS_EXT[ROLE_DRUNK] .. " has remembered their role.")
+                end
+            end
+        end
+    end
+
     -- Update role health
     SetRoleMaxHealth(self)
     if self:Health() > self:GetMaxHealth() then
