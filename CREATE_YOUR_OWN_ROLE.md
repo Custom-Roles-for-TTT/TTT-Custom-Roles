@@ -6,7 +6,7 @@ In order to create your own role you will need to make sure you have downloaded 
 -   **.lua** - This can be done in Notepad in a pinch but at the very least I would reccomend  [Notepad++](https://notepad-plus-plus.org/).
 -   **.vmt and .vtf**  -  [VTFEdit](https://nemstools.github.io/pages/VTFLib-Download.html) is the best way to edit these files but if you know what you are doing there are plugins for other apps.
 
-In this guide I will be walking through how I made the Summoner role and you can download all the templates I am using [here](https://drive.google.com/uc?export=download&id=1W6_LV1aqdXXwah-Q2Op2wdOtVkBs-S6Q).
+In this guide I will be walking through how I made the Summoner role and you can download all the templates I am using [here](/templates).
 
 Last thing to do before you are ready to get started is to unzip that file which should give you 4 .psd files and a folder like this:
 

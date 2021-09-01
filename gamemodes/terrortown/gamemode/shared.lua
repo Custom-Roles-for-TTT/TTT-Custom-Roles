@@ -1,5 +1,5 @@
 -- Version string for display and function for version checks
-CR_VERSION = "1.1.8"
+CR_VERSION = "1.1.9"
 
 function CRVersion(version)
     local installedVersionRaw = string.Split(CR_VERSION, ".")
@@ -89,10 +89,10 @@ local function AddRoleAssociations(list, roles)
     end
 end
 
-function GetTeamRoles(list)
+function GetTeamRoles(list, excludes)
     local roles = {}
     for r, v in pairs(list) do
-        if v then
+        if v and (not excludes or not excludes[r]) then
             table.insert(roles, r)
         end
     end

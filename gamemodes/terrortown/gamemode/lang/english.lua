@@ -648,7 +648,7 @@ L.target_infected = "INFECTED WITH PARASITE"
 
 L.target_revenger_lover = "YOUR SOULMATE"
 L.target_assassin_target = "TARGET"
-L.target_assassin_target_team = "{player}'s Target"
+L.target_assassin_target_team = "{player}'s TARGET"
 
 L.target_credits = "Search to receive unspent credits"
 

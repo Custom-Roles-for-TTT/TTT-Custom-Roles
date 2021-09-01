@@ -303,7 +303,37 @@ ttt_independents_trigger_traitor_testers    0       // Whether independents trig
 
 // Drunk
 ttt_drunk_sober_time                        180     // Time in seconds for the drunk to remember their role
-ttt_drunk_innocent_chance                   0.7     // Chance that the drunk will become an innocent when remembering their role
+ttt_drunk_innocent_chance                   0.7     // Chance that the drunk will become an innocent role when remembering their role
+ttt_drunk_any_role                          0       // Whether the drunk can become any enabled role (other than the drunk, the glitch, or roles that were already used this round)
+ttt_drunk_can_be_traitor                    1       // Whether the drunk can become a traitor
+ttt_drunk_can_be_hypnotist                  1       // Whether the drunk can become a hypnotist
+ttt_drunk_can_be_impersonator               1       // Whether the drunk can become an impersonator
+ttt_drunk_can_be_assassin                   1       // Whether the drunk can become an assassin
+ttt_drunk_can_be_vampire                    1       // Whether the drunk can become a vampire
+ttt_drunk_can_be_quack                      1       // Whether the drunk can become a quack
+ttt_drunk_can_be_parasite                   1       // Whether the drunk can become a parasite
+ttt_drunk_can_be_innocent                   1       // Whether the drunk can become an innocent
+ttt_drunk_can_be_phantom                    1       // Whether the drunk can become a phantom
+ttt_drunk_can_be_revenger                   1       // Whether the drunk can become a revenger
+ttt_drunk_can_be_deputy                     1       // Whether the drunk can become a deputy
+ttt_drunk_can_be_mercenary                  1       // Whether the drunk can become a mercenary
+ttt_drunk_can_be_veteran                    1       // Whether the drunk can become a veteran
+ttt_drunk_can_be_doctor                     1       // Whether the drunk can become a doctor
+ttt_drunk_can_be_trickster                  1       // Whether the drunk can become a trickster
+ttt_drunk_can_be_paramedic                  1       // Whether the drunk can become a paramedic
+ttt_drunk_can_be_detective                  1       // Whether the drunk can become a detective
+ttt_drunk_can_be_paladin                    1       // Whether the drunk can become a paladin
+ttt_drunk_can_be_tracker                    1       // Whether the drunk can become a tracker
+ttt_drunk_can_be_medium                     1       // Whether the drunk can become a medium
+ttt_drunk_can_be_jester                     1       // Whether the drunk can become a jester
+ttt_drunk_can_be_swapper                    1       // Whether the drunk can become a swapper
+ttt_drunk_can_be_clown                      1       // Whether the drunk can become a clown
+ttt_drunk_can_be_beggar                     1       // Whether the drunk can become a beggar
+ttt_drunk_can_be_bodysnatcher               1       // Whether the drunk can become a bodysnatcher
+ttt_drunk_can_be_oldman                     1       // Whether the drunk can become an old man
+ttt_drunk_can_be_killer                     1       // Whether the drunk can become a killer
+ttt_drunk_can_be_zombie                     1       // Whether the drunk can become a zombie
+ttt_drunk_can_be_madscientist               1       // Whether the drunk can become a mad scientist
 
 // Old Man
 ttt_oldman_drain_health_to                  0       // The amount of health to drain the old man down to. Set to 0 to disable

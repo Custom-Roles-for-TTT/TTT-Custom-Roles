@@ -1,5 +1,28 @@
 # Beta Release Notes
 
+## 1.1.9
+**Released:**
+
+### Fixes
+- Fixed mad scientist's zombificator, bodysnatcher's bodysnatching device, and paramedic's defib being usable on fake bodies with odd side effects
+- Fixed bodysnatcher's bodysnatching device showing and taking the corpse player's current role rather than the role on the corpse (relevant for fake bodies and things that resurrect without destroying the body)
+- Fixed case where multiple vampires draining the same target would have the target unfreeze when any of the vampires quit draining
+- Fixed assassin not being able to see which players are infected by a parasite on the scoreboard
+- Fixed only assassin target or parasite infection showing on the scoreboard and target ID (when you look at a player) even if a player should see both
+
+### Additions
+- Added the option for the drunk to become any enabled role except for another drunk or the glitch (disabled by default)
+
+### Developer
+- Updated GetTeamRoles to take an optional lookup table of excluded roles
+- Changed TTTScoringWinTitle hook to allow dynamically setting a secondary win role (like the old man)
+- Added new hooks to handle cases where a player would want to appear as a different role in-game
+  - TTTScoreboardPlayerRole - What role/color the player should show as on the scoreboard
+  - TTTScoreboardPlayerName - What name the player should have on the scoreboard (useful for adding things like the assassin's "(TARGET)")
+  - TTTTargetIDPlayerKillIcon - Whether the "KILL" icon should be shown over the target's head
+  - TTTTargetIDPlayerRoleIcon - What role icon and background color should be shown over the target's head
+  - TTTTargetIDPlayerText - What text and color to use for the Target ID (when you look at a player)
+
 ## 1.1.8
 **Released: August 26th, 2021**
 
@@ -7,7 +30,7 @@
 - Added ability for glitch to see and use traitor traps (disabled by default)
 - Added ability for a phantom to lose their powers if their body is destroyed (disabled by default)
 - Added ability to remove all detective roles' ability to loot credits from corpses (disabled by default)
-- Added the option for the mediums spirits to the colored similar to tracker footsteps (enabled by default)
+- Added the option for the mediums' spirits to be colored similar to tracker footsteps (enabled by default)
 
 ### Changes
 - Changed round summary role tooltip to be translateable

@@ -135,22 +135,37 @@ if SERVER then
         end)
     end
 
+    function SWEP:DoBodysnatchFailure()
+        local phys = self.Target:GetPhysicsObjectNum(self.Bone)
+
+        if IsValid(phys) then
+            phys:ApplyForceCenter(Vector(0, 0, 4096))
+        end
+
+        self:Error("ATTEMPT FAILED TRY AGAIN")
+    end
+
     function SWEP:DoBodysnatch(body)
         local ply = bodyply(body)
+        if not ply or ply:Alive() and not ply:IsSpec() then
+            self:DoBodysnatchFailure()
+            return
+        end
+
         local owner = self:GetOwner()
 
         net.Start("TTT_Bodysnatched")
         net.WriteBool(true)
         net.Send(ply)
 
+        local role = body.was_role or ply:GetRole()
         net.Start("TTT_ScoreBodysnatch")
         net.WriteString(ply:Nick())
         net.WriteString(owner:Nick())
-        net.WriteString(ROLE_STRINGS_EXT[ply:GetRole()])
+        net.WriteString(ROLE_STRINGS_EXT[role])
         net.WriteString(owner:SteamID64())
         net.Broadcast()
 
-        local role = ply:GetRole()
         owner:SetRole(role)
         if SERVER then
             ply:MoveRoleState(owner, true)
@@ -179,25 +194,19 @@ if SERVER then
         SendFullStateUpdate()
 
         self:Remove()
+        self:Reset()
     end
 
     function SWEP:Defib()
         sound.Play(zap, self.Target:GetPos(), 75, math.random(95, 105), 1)
 
         if math.random(0, 100) > success then
-            local phys = self.Target:GetPhysicsObjectNum(self.Bone)
-
-            if IsValid(phys) then
-                phys:ApplyForceCenter(Vector(0, 0, 4096))
-            end
-
-            self:Error("ATTEMPT FAILED TRY AGAIN")
+            self:DoBodysnatchFailure()
             return
         end
         if not IsFirstTimePredicted() then return end
 
         self:DoBodysnatch(self.Target)
-        self:Reset()
     end
 
     function SWEP:Begin(body, bone)
@@ -211,7 +220,8 @@ if SERVER then
         self:SetState(DEFIB_BUSY)
         self:SetBegin(CurTime())
         if GetConVar("ttt_bodysnatcher_show_role"):GetBool() then
-            self:SetMessage("BODYSNATCHING " .. string.upper(ply:Nick()) .. " [" .. string.upper(ROLE_STRINGS_RAW[ply:GetRole()]) .. "]")
+            local role = body.was_role or ply:GetRole()
+            self:SetMessage("BODYSNATCHING " .. string.upper(ply:Nick()) .. " [" .. string.upper(ROLE_STRINGS_RAW[role]) .. "]")
         else
             self:SetMessage("BODYSNATCHING " .. string.upper(ply:Nick()))
         end

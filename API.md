@@ -182,41 +182,41 @@ Methods available globally (within the defined realm)
 *Parameters:*
 - *name* - The name of the equipment item being looked up
 
-**Get{RoleName}Filter(alive_only)** - Dynamically created functions for each role that returns a function that filters net messages to players that are role. For example: `GetTraitorFilter()` and `GetPhantomFilter()` return a filter function that can be used to send a message to players who are a traitor or a phantom, respectively.\
+**Get{RoleName}Filter(aliveOnly)** - Dynamically created functions for each role that returns a function that filters net messages to players that are role. For example: `GetTraitorFilter()` and `GetPhantomFilter()` return a filter function that can be used to send a message to players who are a traitor or a phantom, respectively.\
 *Realm:* Server\
 *Added in:* Whenever each role is added\
 *Parameters:*
-- *alive_only* - Whether this filter should only include live players (Defaults to `false`).
+- *aliveOnly* - Whether this filter should only include live players (Defaults to `false`).
 
-**GetInnocentTeamFilter(alive_only)** - Returns a function that filters net messages to players that are on the innocent team.\
+**GetInnocentTeamFilter(aliveOnly)** - Returns a function that filters net messages to players that are on the innocent team.\
 *Realm:* Server\
 *Added in:* 1.0.0\
 *Parameters:*
-- *alive_only* - Whether this filter should only include live players (Defaults to `false`).
+- *aliveOnly* - Whether this filter should only include live players (Defaults to `false`).
 
-**GetJesterTeamFilter(alive_only)** - Returns a function that filters net messages to players that are on the jester team.\
+**GetJesterTeamFilter(aliveOnly)** - Returns a function that filters net messages to players that are on the jester team.\
 *Realm:* Server\
 *Added in:* 1.0.0\
 *Parameters:*
-- *alive_only* - Whether this filter should only include live players (Defaults to `false`).
+- *aliveOnly* - Whether this filter should only include live players (Defaults to `false`).
 
-**GetIndependentTeamFilter(alive_only)** - Returns a function that filters net messages to players that are on the independent team.\
+**GetIndependentTeamFilter(aliveOnly)** - Returns a function that filters net messages to players that are on the independent team.\
 *Realm:* Server\
 *Added in:* 1.0.0\
 *Parameters:*
-- *alive_only* - Whether this filter should only include live players (Defaults to `false`).
+- *aliveOnly* - Whether this filter should only include live players (Defaults to `false`).
 
-**GetMonsterTeamFilter(alive_only)** - Returns a function that filters net messages to players that are on the monster team.\
+**GetMonsterTeamFilter(aliveOnly)** - Returns a function that filters net messages to players that are on the monster team.\
 *Realm:* Server\
 *Added in:* 1.0.0\
 *Parameters:*
-- *alive_only* - Whether this filter should only include live players (Defaults to `false`).
+- *aliveOnly* - Whether this filter should only include live players (Defaults to `false`).
 
-**GetRoleTeamColor(role_team, type)** - Gets the color belonging to the specified role team (see ROLE_TEAM_* global enumeration).\
+**GetRoleTeamColor(roleTeam, type)** - Gets the color belonging to the specified role team (see ROLE_TEAM_* global enumeration).\
 *Realm:* Client\
 *Added in:* 1.1.8\
 *Parameters:*
-- *role_team* - Which team role to get the color for (see ROLE_TEAM_* global enumeration).
+- *roleTeam* - Which team role to get the color for (see ROLE_TEAM_* global enumeration).
 - *type* - The color modification type. Options are: "dark", "highlight", "radar", "scoreboard", or "sprite". (Optional)
 
 **GetSprintMultiplier(ply, sprinting)** - Gets the given player's current sprint multiplier.\
@@ -226,19 +226,20 @@ Methods available globally (within the defined realm)
 - *ply* - The target player
 - *sprinting* - Whether the player is currently sprinting
 
-**GetTeamRoles(team_table)** - Gets a table of role numbers that belong to the team whose lookup table is given.\
+**GetTeamRoles(team_table, exclude)** - Gets a table of role numbers that belong to the team whose lookup table is given.\
 *Realm:* Client and Server\
 *Added in:* 1.0.2\
 *Parameters:*
 - *team_table* - Team lookup table
+- *exclude* - Lookup table of roles to exclude from the team (Optional).
 
-**GetTraitorTeamFilter(alive_only)** - Returns a function that filters net messages to players that are on the traitor team.\
+**GetTraitorTeamFilter(aliveOnly)** - Returns a function that filters net messages to players that are on the traitor team.\
 *Realm:* Server\
 *Added in:* 1.0.0\
 *Parameters:*
-- *alive_only* - Whether this filter should only include live players (Defaults to `false`).
+- *aliveOnly* - Whether this filter should only include live players (Defaults to `false`).
 
-**RegisterRole(role_table)** - Registers a role with Custom Roles for TTT. See [here](CREATE_YOUR_OWN_ROLE.md) for instructions on how to create a role.\
+**RegisterRole(roleTable)** - Registers a role with Custom Roles for TTT. See [here](CREATE_YOUR_OWN_ROLE.md) for instructions on how to create a role and role table structure.\
 *Realm:* Client and Server\
 *Added in:* 1.0.9
 
@@ -283,6 +284,10 @@ Methods available globally (within the defined realm)
 ### *Player*
 Variables available when called from a Player object (within the defined realm)
 
+**plymeta:BeginRoleChecks()** - Sets up role logic for the player to handle role-specific events and checks.\
+*Realm:* Server\
+*Added in:* 1.1.9
+
 **plymeta:Is{RoleName}()/plymeta:Get{RoleName}()** - Dynamically created functions for each role that returns whether the player is that role. For example: `plymeta:IsTraitor()` and `plymeta:IsPhantom()` return whether the player is a traitor or a phantom, respectively.\
 *Realm:* Client and Server\
 *Added in:* Whenever each role is added
@@ -323,21 +328,21 @@ Variables available when called from a Player object (within the defined realm)
 *Realm:* Client and Server\
 *Added in:* 1.0.0
 
-**plymeta:CanLootCredits(active_only)** - Whether the player can loot credits from a corpse that has them.\
+**plymeta:CanLootCredits(activeOnly)** - Whether the player can loot credits from a corpse that has them.\
 *Realm:* Client and Server\
 *Added in:* 1.0.5\
 *Parameters:*
-- *active_only* - Whether the player must also be active (Defaults to `false`)
+- *activeOnly* - Whether the player must also be active (Defaults to `false`)
 
 **plymeta:CanUseShop()** - Whether the player can currently open the shop menu.\
 *Realm:* Client and Server\
 *Added in:* 1.0.2
 
-**plymeta:CanUseTraitorButton(active_only)** - Whether the player can see and use traitor buttons.\
+**plymeta:CanUseTraitorButton(activeOnly)** - Whether the player can see and use traitor buttons.\
 *Realm:* Client and Server\
 *Added in:* 1.0.5\
 *Parameters:*
-- *active_only* - Whether the player must also be active (Defaults to `false`)
+- *activeOnly* - Whether the player must also be active (Defaults to `false`)
 
 **plymeta:GetHeight()** - Gets the *estimated* height of the player based on their player model.\
 *Realm:* Client\
@@ -401,12 +406,12 @@ Variables available when called from a Player object (within the defined realm)
 *Realm:* Client and Server\
 *Added in:* 1.0.0
 
-**plymeta:MoveRoleState(target, keep_on_source)** - Moves role state data (such as promotion and monster prime status) to the target.\
+**plymeta:MoveRoleState(target, keepOnSource)** - Moves role state data (such as promotion and monster prime status) to the target.\
 *Realm:* Client and Server\
 *Added in:* 1.0.5\
 *Parameters:*
 - *target* - The player to move the role state data to
-- *keep_on_source* - Wheter the source player should also keep the role state data (Defaults to `false`)
+- *keepOnSource* - Wheter the source player should also keep the role state data (Defaults to `false`)
 
 **plymeta:SetRoleAndBroadcast(role)** - Sets the player's role to the given one and (if called on the server) broadcasts the change to all clients for scoreboard tracking.\
 *Realm:* Client and Server\
@@ -414,23 +419,29 @@ Variables available when called from a Player object (within the defined realm)
 *Parameters:*
 - *role* - The role number to set this player to
 
-**plymeta:SetVampirePreviousRole(previous_role)** - Sets the player's previous role for when they are turned into a vampire.\
+**plymeta:SetVampirePreviousRole(previousRole)** - Sets the player's previous role for when they are turned into a vampire.\
 *Realm:* Server\
 *Added in:* 1.0.0\
 *Parameters:*
-- *previous_role* - The previous role this player had before becoming a vampire
+- *previousRole* - The previous role this player had before becoming a vampire
 
-**plymeta:SetVampirePrime(is_prime)** - Sets whether the player is a prime (e.g. first-spawned) vampire.\
+**plymeta:SetVampirePrime(isPrime)** - Sets whether the player is a prime (e.g. first-spawned) vampire.\
 *Realm:* Server\
 *Added in:* 1.0.0\
 *Parameters:*
-- *is_prime* - Whether the player is a prime vampire
+- *isPrime* - Whether the player is a prime vampire
 
-**plymeta:SetZombiePrime(is_prime)** - Sets whether the player is a prime (e.g. first-spawned) zombie.\
+**plymeta:SetZombiePrime(isPrime)** - Sets whether the player is a prime (e.g. first-spawned) zombie.\
 *Realm:* Server\
 *Added in:* 1.0.0\
 *Parameters:*
-- *is_prime* - Whether the player is a prime zombie
+- *isPrime* - Whether the player is a prime zombie
+
+**plymeta:SoberDrunk(team)** - Runs the logic for when a drunk sobers up and remembers their role.\
+*Realm:* Server\
+*Added in:* 1.1.9\
+*Parameters:*
+- *team* - Which team to choose a role from (see ROLE_TEAM_* global enumeration).
 
 **plymeta:StripRoleWeapons()** - Strips all weapons from the player whose `Category` property matches the global `WEAPON_CATEGORY_ROLE` value.\
 *Realm:* Client and Server\
@@ -439,13 +450,13 @@ Variables available when called from a Player object (within the defined realm)
 ## Hooks
 Custom and modified event hooks available within the defined realm
 
-**TTTCanIdentifyCorpse(ply, rag, was_traitor)** - Changed `was_traitor` parameter to be `true` for any member of the traitor team, rather than just the traitor role.\
+**TTTCanIdentifyCorpse(ply, rag, wasTraitor)** - Changed `was_traitor` parameter to be `true` for any member of the traitor team, rather than just the traitor role.\
 *Realm:* Server\
 *Added in:* 1.0.5\
 *Parameters:*
 - *ply* - The player who is attempting to identify a corpse
 - *rag* - The ragdoll being identified
-- *was_traitor* - Whether the player who the targetted ragdoll represents belonged to the traitor team
+- *wasTraitor* - Whether the player who the targetted ragdoll represents belonged to the traitor team
 
 *Return:* Whether or not the given player should be able to identify the given corpse (Defaults to `false`).
 
@@ -457,6 +468,33 @@ Custom and modified event hooks available within the defined realm
 
 *Return:* `true` if the default print messages should be skipped (Defaults to `false`).
 
+**TTTScoreboardPlayerName(ply, client, currentName)** - Called before a player's row in the scoreboard (tab menu) is shown, allowing the name to be changed.\
+*Realm:* Client\
+*Added in:* 1.1.9\
+*Parameters:*
+- *ply* - The player being rendered
+- *client* - The local player
+- *currentName* - The current name string (including extra information)
+
+*Return:*
+- *name* - The new name value to show on the scoreboard
+
+**TTTScoreboardPlayerRole(ply, client, color, roleFileName)** - Called before a player's row in the scoreboard (tab menu) is shown, allowing the colors and icon to be changed.\
+*Realm:* Client\
+*Added in:* 1.1.9\
+*Parameters:*
+- *ply* - The player being rendered
+- *client* - The local player
+- *color* - The background color to use
+- *roleFileName* - The portion of the scoring icon path that indicates which role it belongs to. Used in the following icon path pattern: "vgui/ttt/tab_{roleFileName}.png"
+
+*Return:*
+- *color* - The new color value to use or the original passed into the hook
+- *roleFileName* - The new roleFileName value to use or the original passed into the hook
+- *flashRole* - If a valid role is provided, this will cause the target player's scoreboard role to have a flashing border in the given role's color (see ROLE_* global enumeration)
+
+*NOTE:* You must return a non-*nil* value for all of the properties or the hook results will be ignored
+
 **TTTScoringSummaryRender(ply, roleFileName, groupingRole, roleColor)** - Called before the round summary screen is shown. Used to modify the color, position, and icon for a player.\
 *Realm:* Client\
 *Added in:* 1.1.5\
@@ -467,44 +505,94 @@ Custom and modified event hooks available within the defined realm
 - *roleColor* - The background color to use behind the role icon
 
 *Return:*
-- *roleFileName* - The new roleFileName value to use or the original passed in to the hook
-- *groupingRole* - The new groupingRole value to use or the original passed in to the hook
-- *roleColor* - The new roleColor value to use or the original passed in to the hook
+- *roleFileName* - The new roleFileName value to use or the original passed into the hook
+- *groupingRole* - The new groupingRole value to use or the original passed into the hook
+- *roleColor* - The new roleColor value to use or the original passed into the hook
 
 *NOTE:* You must return a non-*nil* value for all of the properties or the hook results will be ignored
 
-**TTTScoringWinTitle(wintype, wintitles, title, oldmanwins)** - Called before each round summary screen is shown with the winning team. Return the win title object to use on the summary screen.\
+**TTTScoringWinTitle(wintype, wintitles, title, secondaryWinRole)** - Called before each round summary screen is shown with the winning team. Return the win title object to use on the summary screen.\
 *Realm:* Client\
 *Added in:* 1.0.14\
 *Parameters:*
 - *wintype* - The round win type
 - *wintitles* - Table of default win title parameters
 - *title* - The currently selected win title
-- *oldmanwins* - Whether the old man also won this round *(Added in 1.1.6)*
+- *secondaryWinRole* - Which role (if any) is sharing the win for this round (see ROLE_* global enumeration) *(Added in 1.1.9)*
 
 *Return:*
-- *new_title*
+- *newTitle*
   - *txt* - The translation string to use to get the winning team text
   - *c* - The background color to use
-  - *params* - Any parameters to use when translating `txt` (Optional)
+  - *params* - Any parameters to use when translating `txt` (Optional if `new_secondary_win_role` is also omitted)
+- *newSecondaryWinRole* - Which role should share in the win for this round (see ROLE_* global enumeration) (Optional) *(Added in 1.1.9)*
 
-**TTTSelectRoles(choices, prev_roles)** - Called before players are randomly assigned roles. If a player is assigned a role during this hook, they will not be randomly assigned one later.\
+*NOTE:* You must return a non-*nil* value for all of the properties or the hook results will be ignored
+
+**TTTSelectRoles(choices, prevRoles)** - Called before players are randomly assigned roles. If a player is assigned a role during this hook, they will not be randomly assigned one later.\
 *Realm:* Server\
 *Added in:* 1.0.0\
 *Parameters:*
 - *choices* - The table of players who will be assigned roles
-- *prev_roles* - The table whose keys are role numbers and values are tables of players who had that role last round
+- *prevRoles* - The table whose keys are role numbers and values are tables of players who had that role last round
 
-**TTTSprintStaminaPost(ply, stamina, sprint_timer, consumption)** - Called after a player's sprint stamina is reduced. Return value is the new stamina value for the player.\
+**TTTSprintStaminaPost(ply, stamina, sprintTimer, consumption)** - Called after a player's sprint stamina is reduced. Return value is the new stamina value for the player.\
 *Realm:* Client\
 *Added in:* 1.0.2\
 *Parameters:*
 - *ply* - Player whose stamina is being adjusted
 - *stamina* - Player's currents stamina
-- *sprint_timer* - Time representing when the player last sprinted
+- *sprintTimer* - Time representing when the player last sprinted
 - *consumption* - The stamina consumption rate
 
 *Return:* The stamina value to assign to the player. If none is provided, the player's stamina will not be changed.
+
+**TTTTargetIDPlayerKillIcon(ply, client, showKillIcon, showJester)** - Called before player Target ID icon (over their head) is rendered to determine if the "KILL" icon should be shown.\
+*Realm:* Client\
+*Added in:* 1.1.9\
+*Parameters:*
+- *ply* - The target player being rendered
+- *client* - The local player
+- *showKillIcon* - Whether the kill icon would normally be shown for this player
+- *showJester* - Whether the target is a jester and the local player would normally know that
+
+*Return:* `true` if the kill icon should be shown or `false` if not. Returning nothing or a non-boolean value will default to the given *showKillIcon* value.
+
+**TTTTargetIDPlayerRoleIcon(ply, client, role, noZ, colorRole, hideBeggar, showJester)** - Called before player Target ID icon (over their head) is rendered allowing changing the icon and color shown.\
+*Realm:* Client\
+*Added in:* 1.1.9\
+*Parameters:*
+- *ply* - The target player being rendered
+- *client* - The local player
+- *role* - What role is currently being shown for the target player
+- *noZ* - Whether the icon is currently visible through walls
+- *colorRole* - What role is being used for the icon background color (Only used when a different color than the only belonging to *role* is being used)
+- *hideBeggar* - Whether the target was a beggar whose new role should be hidden
+- *showJester* - Whether the target is a jester and the local player would normally know that
+
+*Return:*
+- *role* - The new role value to use or the original passed into the hook
+- *noZ* - The new noZ value to use or the original passed into the hook. *NOTE:* The matching icon .vmt for this flag needs to exist. If *noZ* is `true`, a "sprite\_{ROLESHORTNAME}\_noz.vmt" file must exist and if *noZ* is `false`, a "sprite_{ROLESHORTNAME}.vmt" file must exist
+- *colorRole* - The new colorRole value to use or the original passed into the hook
+
+*NOTE:* You must return a non-*nil* value for all of the properties or the hook results will be ignored
+
+**TTTTargetIDPlayerText(ent, client, text, clr, secondaryText)** - Called before player Target ID text (shown when you look at a player) is rendered.\
+*Realm:* Client\
+*Added in:* 1.1.9\
+*Parameters:*
+- *ent* - The target entity being rendered. Not necessarily a player so be sure to check `ent:IsPlayer()` if needed
+- *client* - The local player
+- *text* - The first line of text being shown
+- *clr* - The color of the text being used
+- *secondaryText* - The second line of text being shown
+
+*Return:*
+- *text* - The new text value to use or the original passed into the hook
+- *clr* - The new clr value to use or the original passed into the hook
+- *secondaryText* - The new secondaryText value to use or the original passed into the hook
+
+*NOTE:* You must return a non-*nil* value for all of the properties or the hook results will be ignored
 
 ## SWEPs
 Changes made to SWEPs (the data structure used when defining new weapons)
