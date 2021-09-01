@@ -49,6 +49,7 @@ local beep = Sound("npc/fast_zombie/fz_alert_close1.wav")
 
 local vampire_convert = CreateConVar("ttt_vampire_convert_enable", "0")
 local vampire_drain = CreateConVar("ttt_vampire_drain_enable", "1")
+local vampire_fang_dead_timer = CreateConVar("ttt_vampire_fang_dead_timer", "0")
 local vampire_fang_timer = CreateConVar("ttt_vampire_fang_timer", "5")
 local vampire_fang_heal = CreateConVar("ttt_vampire_fang_heal", "50")
 local vampire_fang_overheal = CreateConVar("ttt_vampire_fang_overheal", "25")
@@ -58,10 +59,12 @@ local vampire_prime_convert = CreateConVar("ttt_vampire_prime_only_convert", "1"
 function SWEP:SetupDataTables()
     self:NetworkVar("Int", 0, "State")
     self:NetworkVar("Int", 1, "FangTime")
+    self:NetworkVar("Int", 2, "DeadFangTime")
     self:NetworkVar("Float", 0, "StartTime")
     self:NetworkVar("String", 0, "Message")
     if SERVER then
         self:SetFangTime(vampire_fang_timer:GetInt())
+        self:SetDeadFangTime(vampire_fang_dead_timer:GetInt())
         self:Reset()
     end
 end
@@ -135,6 +138,14 @@ function SWEP:SecondaryAttack()
     end
 end
 
+function SWEP:GetFangDuration()
+    local fang_time = self:GetDeadFangTime()
+    if fang_time <= 0 or self:GetState() ~= STATE_EAT then
+        fang_time = self:GetFangTime()
+    end
+    return fang_time
+end
+
 function SWEP:Eat(entity)
     self:GetOwner():EmitSound("weapons/ttt/vampireeat.wav")
     self:SetState(STATE_EAT)
@@ -143,7 +154,7 @@ function SWEP:Eat(entity)
 
     self.TargetEntity = entity
 
-    self:SetNextPrimaryFire(CurTime() + self:GetFangTime())
+    self:SetNextPrimaryFire(CurTime() + self:GetFangDuration())
 end
 
 function SWEP:Drain(entity)
@@ -157,7 +168,7 @@ function SWEP:Drain(entity)
     self.TargetEntity = entity
     self:DoFreeze()
 
-    self:SetNextPrimaryFire(CurTime() + self:GetFangTime())
+    self:SetNextPrimaryFire(CurTime() + self:GetFangDuration())
 end
 
 function SWEP:CancelUnfreeze(entity)
@@ -309,13 +320,13 @@ function SWEP:Think()
         end
 
         -- If their is a target and they have been turned to a vampire by someone else, stop trying to drain them
-        if not self:HasValidTarget() or self.TargetEntity:IsVampire() then
+        if self:GetState() ~= STATE_EAT and (not self:HasValidTarget() or self.TargetEntity:IsVampire()) then
             self:Error("DRAINING ABORTED")
             return
         end
 
         if self:GetState() == STATE_EAT or self:GetState() == STATE_CONVERT then
-            if CurTime() >= self:GetStartTime() + self:GetFangTime() then
+            if CurTime() >= self:GetStartTime() + self:GetFangDuration() then
                 if self:GetState() == STATE_CONVERT then
                     local attacker = self:GetOwner()
                     local dmginfo = DamageInfo()
@@ -345,7 +356,7 @@ function SWEP:Think()
                 self:DropBones()
             end
         else
-            if CurTime() >= self:GetStartTime() + (self:GetFangTime() / 2) then
+            if CurTime() >= self:GetStartTime() + (self:GetFangDuration() / 2) then
                 self:SetState(STATE_CONVERT)
                 -- Only update the message if this player can convert
                 if CanConvert(self:GetOwner()) then
@@ -366,7 +377,7 @@ if CLIENT then
         local w, h = 255, 20
 
         if self:GetState() == STATE_EAT or self:GetState() == STATE_DRAIN or self:GetState() == STATE_CONVERT then
-            local progress = math.TimeFraction(self:GetStartTime(), self:GetStartTime() + self:GetFangTime(), CurTime())
+            local progress = math.TimeFraction(self:GetStartTime(), self:GetStartTime() + self:GetFangDuration(), CurTime())
 
             if progress < 0 then return end
 
