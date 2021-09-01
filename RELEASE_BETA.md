@@ -3,15 +3,17 @@
 ## 1.1.9
 **Released:**
 
+### Additions
+- Added the option for the drunk to become any enabled role except for another drunk or the glitch (disabled by default)
+- Added the option for the paladin's damage reduction aura to protect themselves (disabled by default)
+- Added the option for the paladin's healing aura to heal themselves (enabled by default)
+
 ### Fixes
 - Fixed mad scientist's zombificator, bodysnatcher's bodysnatching device, and paramedic's defib being usable on fake bodies with odd side effects
 - Fixed bodysnatcher's bodysnatching device showing and taking the corpse player's current role rather than the role on the corpse (relevant for fake bodies and things that resurrect without destroying the body)
 - Fixed case where multiple vampires draining the same target would have the target unfreeze when any of the vampires quit draining
 - Fixed assassin not being able to see which players are infected by a parasite on the scoreboard
 - Fixed only assassin target or parasite infection showing on the scoreboard and target ID (when you look at a player) even if a player should see both
-
-### Additions
-- Added the option for the drunk to become any enabled role except for another drunk or the glitch (disabled by default)
 
 ### Developer
 - Updated GetTeamRoles to take an optional lookup table of excluded roles

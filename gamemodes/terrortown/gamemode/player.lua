@@ -1803,7 +1803,7 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
                 dmginfo:ScaleDamage(1 - penalty)
             end
 
-            if not ply:IsPaladin() then
+            if not ply:IsPaladin() or GetConVar("ttt_paladin_protect_self"):GetBool() then
                 local withPaladin = false
                 local radius = GetGlobalFloat("ttt_paladin_aura_radius", 262.45)
                 for _, v in pairs(player.GetAll()) do

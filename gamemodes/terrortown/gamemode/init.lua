@@ -204,6 +204,8 @@ CreateConVar("ttt_all_search_postround", "1")
 CreateConVar("ttt_paladin_aura_radius", "5")
 CreateConVar("ttt_paladin_damage_reduction", "0.3")
 CreateConVar("ttt_paladin_heal_rate", "1")
+CreateConVar("ttt_paladin_protect_self", "0")
+CreateConVar("ttt_paladin_heal_self", "1")
 
 CreateConVar("ttt_tracker_footstep_time", "15")
 CreateConVar("ttt_tracker_footstep_color", "1")
@@ -1330,12 +1332,13 @@ function BeginRound()
 
     -- Paladin Logic
     local paladinHeal = GetConVar("ttt_paladin_heal_rate"):GetInt()
+    local paladinHealSelf = GetConVar("ttt_paladin_heal_self"):GetBool()
     local paladinRadius = GetGlobalFloat("ttt_paladin_aura_radius", 262.45)
     timer.Create("paladinheal", 1, 0, function()
         for _, p in pairs(player.GetAll()) do
             if p:IsActivePaladin() then
                 for _, v in pairs(player.GetAll()) do
-                    if v:IsActive() and not v:IsPaladin() and v:GetPos():Distance(p:GetPos()) <= paladinRadius and v:Health() < v:GetMaxHealth() then
+                    if v:IsActive() and (not v:IsPaladin() or paladinHealSelf) and v:GetPos():Distance(p:GetPos()) <= paladinRadius and v:Health() < v:GetMaxHealth() then
                         local health = math.min(v:GetMaxHealth(), v:Health() + paladinHeal)
                         v:SetHealth(health)
                     end
