@@ -170,6 +170,7 @@ ttt_vampire_credits_starting                1       // The number of credits a v
 
 // Quack
 ttt_quack_credits_starting                  1       // The number of credits a quack should start with
+ttt_quack_fake_cure_mode                    0       // How to handle using a fake parasite cure on someone who is not infected. 0 - Kill nobody (But use up the cure), 1 - Kill the person who uses the cure, 2 - Kill the person the cure is used on
 ttt_single_doctor_quack                     0       // Whether only a single doctor or quack should spawn in a round
 
 // Parasite

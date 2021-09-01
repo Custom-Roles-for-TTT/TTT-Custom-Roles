@@ -42,9 +42,15 @@ SWEP.UseHands = true
 SWEP.ViewModelFlip = false
 SWEP.BlockShopRandomization = true
 
+QUACK_FAKE_CURE_KILL_NONE = 0
+QUACK_FAKE_CURE_KILL_OWNER = 1
+QUACK_FAKE_CURE_KILL_TARGET = 2
+
 local DEFIB_IDLE = 0
 local DEFIB_BUSY = 1
 local DEFIB_ERROR = 2
+
+local CureMode = CreateConVar("ttt_quack_fake_cure_mode", "0")
 
 local charge = 3
 
@@ -91,6 +97,21 @@ if SERVER then
         local owner = self:GetOwner()
         if IsValid(ply) and ply:IsPlayer() then
             ply:EmitSound(cured)
+
+            if ply:GetNWBool("Infected", false) then
+                for _, v in pairs(player.GetAll()) do
+                    if v:GetNWString("InfectingTarget", "") == ply:SteamID64() then
+                        v:PrintMessage(HUD_PRINTCENTER, "A fake cure has been used on your host.")
+                    end
+                end
+            else
+                local cureMode = CureMode:GetInt()
+                if cureMode == QUACK_FAKE_CURE_KILL_OWNER and IsValid(owner) then
+                    owner:Kill()
+                elseif cureMode == QUACK_FAKE_CURE_KILL_TARGET then
+                    ply:Kill()
+                end
+            end
 
             self:Remove()
         else

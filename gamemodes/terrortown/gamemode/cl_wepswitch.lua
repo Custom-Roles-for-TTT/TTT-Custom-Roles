@@ -114,6 +114,10 @@ function WSWITCH:DrawWeapon(x, y, c, wep)
     local cl1, am1 = wep:Clip1(), wep:Ammo1()
     local ammo = false
 
+    if not LocalPlayer():IsTraitorTeam() and wep:GetClass() == "weapon_qua_fake_cure" then -- Make the fake parasite cure appear as a regular parasite cure to non-traitors
+        name = "Parasite Cure"
+    end
+
     -- Clip1 will be -1 if a melee weapon
     -- Ammo1 will be false if weapon has no owner (was just dropped)
     if cl1 ~= -1 and am1 ~= false then

@@ -9,6 +9,10 @@
 - Added the option to notify players when the drunk sobers up (disabled by default)
 - Added the option for the paladin's damage reduction aura to protect themselves (disabled by default)
 - Added the option for the paladin's healing aura to heal themselves (enabled by default)
+- Added the option for the quack's fake parasite cure to kill uninfected users (disabled by default)
+
+### Changes
+- Changed the quack's fake parasite cure to display as a real parasite cure to non-traitors
 
 ### Fixes
 - Fixed mad scientist's zombificator, bodysnatcher's bodysnatching device, and paramedic's defib being usable on fake bodies with odd side effects
