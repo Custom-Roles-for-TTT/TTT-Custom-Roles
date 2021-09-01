@@ -443,6 +443,12 @@ Variables available when called from a Player object (within the defined realm)
 *Parameters:*
 - *team* - Which team to choose a role from (see ROLE_TEAM_* global enumeration).
 
+**plymeta:DrunkRememberRole(role)** - Sets the drunk's role and runs required checks for that role.\
+*Realm:* Server\
+*Added in:* 1.1.9\
+*Parameters:*
+- *role* - Which role to set the drunk to (see ROLE_* global enumeration).
+
 **plymeta:StripRoleWeapons()** - Strips all weapons from the player whose `Category` property matches the global `WEAPON_CATEGORY_ROLE` value.\
 *Realm:* Client and Server\
 *Added in:* 1.0.5

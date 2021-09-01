@@ -501,10 +501,17 @@ function plymeta:SoberDrunk(team)
         end
     end
 
+    self:DrunkRememberRole(role)
+    return true
+end
+
+function plymeta:DrunkRememberRole(role, hidecenter)
+    if not self:IsActiveDrunk() then return false end
+
     self:SetNWBool("WasDrunk", true)
     self:SetRole(role)
     self:PrintMessage(HUD_PRINTTALK, "You have remembered that you are " .. ROLE_STRINGS_EXT[role] .. ".")
-    self:PrintMessage(HUD_PRINTCENTER, "You have remembered that you are " .. ROLE_STRINGS_EXT[role] .. ".")
+    if not hidecenter then self:PrintMessage(HUD_PRINTCENTER, "You have remembered that you are " .. ROLE_STRINGS_EXT[role] .. ".") end
     self:SetDefaultCredits()
 
     -- Update role health

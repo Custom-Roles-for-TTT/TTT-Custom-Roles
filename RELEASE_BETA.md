@@ -5,6 +5,7 @@
 
 ### Additions
 - Added the option for the drunk to become any enabled role except for another drunk or the glitch (disabled by default)
+- Added the option for the drunk to become the clown if the round would end before they sober up (disabled by default)
 - Added the option for the paladin's damage reduction aura to protect themselves (disabled by default)
 - Added the option for the paladin's healing aura to heal themselves (enabled by default)
 

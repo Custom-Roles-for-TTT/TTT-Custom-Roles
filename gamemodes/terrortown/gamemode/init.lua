@@ -256,6 +256,7 @@ CreateConVar("ttt_independents_trigger_traitor_testers", "0")
 CreateConVar("ttt_drunk_sober_time", "180")
 CreateConVar("ttt_drunk_innocent_chance", "0.7")
 CreateConVar("ttt_drunk_any_role", "0")
+CreateConVar("ttt_drunk_become_clown", "0")
 
 CreateConVar("ttt_oldman_drain_health_to", "0")
 
@@ -1620,24 +1621,37 @@ function GM:TTTCheckForWin()
 
     -- Drunk logic
     if drunk_alive then
-        if not traitor_alive then
-            if timer.Exists("drunkremember") then timer.Remove("drunkremember") end
-            if timer.Exists("waitfordrunkrespawn") then timer.Remove("waitfordrunkrespawn") end
-            for _, v in ipairs(player.GetAll()) do
-                if v:Alive() and v:IsTerror() and v:IsDrunk() then
-                    v:SoberDrunk(ROLE_TEAM_TRAITOR)
+        if GetConVar("ttt_drunk_become_clown"):GetBool() then
+            if win_type == WIN_INNOCENT or win_type == WIN_TRAITOR or win_type == WIN_MONSTER or win_type == WIN_KILLER or win_type == WIN_ZOMBIE then
+                if timer.Exists("drunkremember") then timer.Remove("drunkremember") end
+                if timer.Exists("waitfordrunkrespawn") then timer.Remove("waitfordrunkrespawn") end
+                for _, v in ipairs(player.GetAll()) do
+                    if v:Alive() and v:IsTerror() and v:IsDrunk() then
+                        v:DrunkRememberRole(ROLE_CLOWN, true)
+                        clown_alive = true
+                    end
                 end
             end
-            win_type = WIN_NONE
-        elseif not innocent_alive then
-            if timer.Exists("drunkremember") then timer.Remove("drunkremember") end
-            if timer.Exists("waitfordrunkrespawn") then timer.Remove("waitfordrunkrespawn") end
-            for _, v in ipairs(player.GetAll()) do
-                if v:Alive() and v:IsTerror() and v:IsDrunk() then
-                    v:SoberDrunk(ROLE_TEAM_INNOCENT)
+        else
+            if not traitor_alive then
+                if timer.Exists("drunkremember") then timer.Remove("drunkremember") end
+                if timer.Exists("waitfordrunkrespawn") then timer.Remove("waitfordrunkrespawn") end
+                for _, v in ipairs(player.GetAll()) do
+                    if v:Alive() and v:IsTerror() and v:IsDrunk() then
+                        v:SoberDrunk(ROLE_TEAM_TRAITOR)
+                    end
                 end
+                win_type = WIN_NONE
+            elseif not innocent_alive then
+                if timer.Exists("drunkremember") then timer.Remove("drunkremember") end
+                if timer.Exists("waitfordrunkrespawn") then timer.Remove("waitfordrunkrespawn") end
+                for _, v in ipairs(player.GetAll()) do
+                    if v:Alive() and v:IsTerror() and v:IsDrunk() then
+                        v:SoberDrunk(ROLE_TEAM_INNOCENT)
+                    end
+                end
+                win_type = WIN_NONE
             end
-            win_type = WIN_NONE
         end
     end
 
