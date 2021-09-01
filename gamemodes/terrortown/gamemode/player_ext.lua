@@ -465,7 +465,9 @@ function plymeta:SoberDrunk(team)
         if #role_options > 0 then
             -- Remove any used roles
             for _, p in ipairs(player.GetAll()) do
-                table.RemoveByValue(role_options, p:GetRole())
+                if p:IsCustom() then
+                    table.RemoveByValue(role_options, p:GetRole())
+                end
             end
 
             -- Keep track of which ones are explicitly allowed because removing from tables that you are iterating over causes the iteration to skip elements
