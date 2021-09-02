@@ -95,7 +95,7 @@ function GetEquipmentForRole(role, promoted, block_randomization)
                 local data = v.EquipMenuData or {}
                 local base = {
                     id = WEPS.GetClass(v),
-                    name = v.PrintName or "Unnamed",
+                    name = v.ShopName or v.PrintName or "Unnamed",
                     limited = v.LimitedStock,
                     kind = v.Kind or WEAPON_NONE,
                     slot = (v.Slot or 0) + 1,

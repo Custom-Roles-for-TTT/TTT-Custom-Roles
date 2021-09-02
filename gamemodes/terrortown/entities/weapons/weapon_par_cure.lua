@@ -194,6 +194,12 @@ if SERVER then
             self:Begin(owner)
         end
     end
+
+    function SWEP:Equip(newowner)
+        if newowner:IsTraitorTeam() then
+            newowner:PrintMessage(HUD_PRINTTALK, "The parasite cure you are holding is real.")
+        end
+    end
 end
 
 if CLIENT then

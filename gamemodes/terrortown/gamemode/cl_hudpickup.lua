@@ -29,10 +29,6 @@ function GM:HUDWeaponPickedUp(wep)
 
     local name = TryTranslation(wep.GetPrintName and wep:GetPrintName() or wep:GetClass() or "Unknown Weapon Name")
 
-    if not LocalPlayer():IsTraitorTeam() and wep:GetClass() == "weapon_qua_fake_cure" then -- Make the fake parasite cure appear as a regular parasite cure to non-traitors
-        name = "Parasite Cure"
-    end
-
     local pickup = {}
     pickup.time = CurTime()
     pickup.name = string.upper(name)

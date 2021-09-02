@@ -1,7 +1,7 @@
 # Beta Release Notes
 
 ## 1.1.9
-**Released:**
+**Released: September 2nd, 2021**
 
 ### Additions
 - Added the option for the drunk to become any enabled role except for another drunk or the glitch (disabled by default)
@@ -11,9 +11,10 @@
 - Added the option for the paladin's healing aura to heal themselves (enabled by default)
 - Added the option for the quack's fake parasite cure to kill uninfected users (disabled by default)
 - Added the option to set the amount of time it takes a vampire to drain a dead body to a different amount of time than if the target is alive (disabled by default)
+- Added a message that is displayed when a traitor picks up a parasite cure to distinguish if it is real or fake
 
 ### Changes
-- Changed the quack's fake parasite cure to display as a real parasite cure to non-traitors
+- Changed the quack's fake parasite cure to display as a real parasite cure
 
 ### Fixes
 - Fixed mad scientist's zombificator, bodysnatcher's bodysnatching device, and paramedic's defib being usable on fake bodies with odd side effects
@@ -32,6 +33,7 @@
   - TTTTargetIDPlayerKillIcon - Whether the "KILL" icon should be shown over the target's head
   - TTTTargetIDPlayerRoleIcon - What role icon and background color should be shown over the target's head
   - TTTTargetIDPlayerText - What text and color to use for the Target ID (when you look at a player)
+- Added SWEP.ShopName to weapon_tttbase to allow for weapons to have different names for when they are in the shop as opposed to when they are an entity in world
 
 ## 1.1.8
 **Released: August 26th, 2021**
