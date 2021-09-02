@@ -304,6 +304,7 @@ CreateConVar("ttt_det_credits_traitordead", "1")
 
 -- Shop parameters
 CreateConVar("ttt_shop_for_all", 0, FCVAR_REPLICATED)
+-- Add any convars that are missing once shop-for-all is enabled
 cvars.AddChangeCallback("ttt_shop_for_all", function(convar, oldValue, newValue)
     local enabled = tobool(newValue)
     if enabled then
