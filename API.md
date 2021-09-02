@@ -614,6 +614,9 @@ Changes made to SWEPs (the data structure used when defining new weapons)
 **SWEP.EquipMenuData** - Updated so `name`, `type`, and `desc` properties can be parameterless functions to allow for parameterized translation.\
 *Added in:* 1.0.8
 
+**SWEP.ShopName** - The weapon name to use in the shop menu. If not provided, `SWEP.PrintName` is used instead.\
+*Added in:* 1.1.9
+
 ## Commands
 
 ### *Client Commands*
