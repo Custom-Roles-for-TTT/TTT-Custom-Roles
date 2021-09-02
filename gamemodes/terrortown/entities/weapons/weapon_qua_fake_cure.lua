@@ -1,7 +1,8 @@
 AddCSLuaFile()
 
 if CLIENT then
-    SWEP.PrintName = "Fake Parasite Cure"
+    SWEP.PrintName = "Parasite Cure"
+    SWEP.ShopName = "Fake Parasite Cure"
     SWEP.Slot = 6
 
     SWEP.DrawCrosshair = false
@@ -184,6 +185,12 @@ if SERVER then
         if owner and IsValid(owner) and owner:IsPlayer() then
             self:SetNextSecondaryFire(CurTime() + self.Primary.Delay)
             self:Begin(owner)
+        end
+    end
+
+    function SWEP:Equip(newowner)
+        if newowner:IsTraitorTeam() then
+            newowner:PrintMessage(HUD_PRINTTALK, "The parasite cure you are holding is a fake.")
         end
     end
 end

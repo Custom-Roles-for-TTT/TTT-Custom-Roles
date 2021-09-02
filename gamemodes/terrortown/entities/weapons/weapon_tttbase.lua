@@ -126,6 +126,11 @@ SWEP.fingerprints = {}
 SWEP.BoughtBuy = nil
 SWEP.BlockShopRandomization = false
 
+if CLIENT then
+    -- This is used for when items have a different name for when they are in the shop as opposed to when they are an entity in world which uses SWEP.PrintName
+    SWEP.ShopName = nil
+end
+
 local sparkle = CLIENT and CreateConVar("ttt_crazy_sparks", "0", FCVAR_ARCHIVE)
 
 -- crosshair
