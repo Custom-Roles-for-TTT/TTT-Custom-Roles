@@ -1,7 +1,7 @@
 # Beta Release Notes
 
 ## 1.1.9
-**Released:**
+**Released: September 2nd, 2021**
 
 ### Additions
 - Added the option for the drunk to become any enabled role except for another drunk or the glitch (disabled by default)
