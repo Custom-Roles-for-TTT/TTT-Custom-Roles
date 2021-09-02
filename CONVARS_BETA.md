@@ -117,7 +117,7 @@ ttt_trickster_min_players                   0       // The minimum number of pla
 ttt_paramedic_min_players                   0       // The minimum number of players required to spawn the paramedic
 ttt_paladin_min_players                     0       // The minimum number of players required to spawn the paladin
 ttt_tracker_min_players                     0       // The minimum number of players required to spawn the tracker
-ttt_medium_min_players                     0       // The minimum number of players required to spawn the medium
+ttt_medium_min_players                      0       // The minimum number of players required to spawn the medium
 ttt_jester_min_players                      0       // The minimum number of players required to spawn the jester
 ttt_swapper_min_players                     0       // The minimum number of players required to spawn the swapper
 ttt_clown_min_players                       0       // The minimum number of players required to spawn the clown
@@ -239,7 +239,7 @@ ttt_detective_disable_looting               0       // Whether to disable a dete
 ttt_all_search_postround                    1       // Whether non-detectives can search bodies post-round or not
 
 // Paladin
-ttt_paladin_aura_radius                     5       // The radius of the paladins aura in meters
+ttt_paladin_aura_radius                     5       // The radius of the paladin's aura in meters
 ttt_paladin_damage_reduction                0.3     // The fraction an attacker's damage will be reduced by when they are shooting a player inside the paladin's aura
 ttt_paladin_heal_rate                       1       // The amount of heal a player inside the paladin's aura will heal each second
 ttt_paladin_protect_self                    0       // Whether the paladin's damage reduction aura will protect themselves or not
@@ -270,7 +270,7 @@ ttt_jester_credits_starting                 0       // The number of credits a j
 // Swapper
 ttt_swapper_respawn_health                  100     // What amount of health to give the swapper when they are killed and respawned
 ttt_swapper_weapon_mode                     1       // How to handle weapons when the Swapper is killed. 0 - Don't swap anything. 1 - Swap role weapons (if there are any). 2 - Swap all weapons.
-ttt_swapper_notify_mode                     0       // The logic to use when notifying players that a swapper is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone.
+ttt_swapper_notify_mode                     0       // The logic to use when notifying players that a swapper is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
 ttt_swapper_notify_sound                    0       // Whether to play a cheering sound when a swapper is killed
 ttt_swapper_notify_confetti                 0       // Whether to throw confetti when a swapper is a killed
 ttt_swapper_killer_health                   100     // What amount of health to give the person who killed the swapper. Set to "0" to kill them
@@ -292,7 +292,7 @@ ttt_beggar_reveal_traitor                   1       // Who the beggar is reveale
 ttt_beggar_reveal_innocent                  2       // Who the beggar is revealed to when they join the innocent team. 0 - No one. 1 - Everyone. 2 - Traitors. 3 - Innocents
 ttt_beggar_respawn                          0       // Whether the beggar respawns when they are killed before joining another team
 ttt_beggar_respawn_delay                    3       // The delay to use when respawning the begger (if "ttt_beggar_respawn" is enabled)
-ttt_beggar_notify_mode                      0       // The logic to use when notifying players that a beggar is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone.
+ttt_beggar_notify_mode                      0       // The logic to use when notifying players that a beggar is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
 ttt_beggar_notify_sound                     0       // Whether to play a cheering sound when a beggar is killed
 ttt_beggar_notify_confetti                  0       // Whether to throw confetti when a beggar is a killed
 
@@ -310,7 +310,7 @@ ttt_drunk_sober_time                        180     // Time in seconds for the d
 ttt_drunk_innocent_chance                   0.7     // Chance that the drunk will become an innocent role when remembering their role
 ttt_drunk_any_role                          0       // Whether the drunk can become any enabled role (other than the drunk, the glitch, or roles that were already used this round)
 ttt_drunk_become_clown                      0       // Whether the drunk should become a clown (instead of joining the losing team) if the round would end before they sober up
-ttt_drunk_notify_mode                       0       // The logic to use when notifying players that a drunk has sobered up. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone.
+ttt_drunk_notify_mode                       0       // The logic to use when notifying players that a drunk has sobered up. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
 ttt_drunk_can_be_traitor                    1       // Whether the drunk can become a traitor
 ttt_drunk_can_be_hypnotist                  1       // Whether the drunk can become a hypnotist
 ttt_drunk_can_be_impersonator               1       // Whether the drunk can become an impersonator
@@ -364,20 +364,21 @@ ttt_zombie_vision_enable                    0       // Whether zombies have thei
 ttt_zombie_spit_enable                      1       // Whether zombies have their spit attack enabled
 ttt_zombie_leap_enable                      1       // Whether zombies have their leap attack enabled
 ttt_zombie_show_target_icon                 0       // Whether zombies have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect.
-ttt_zombie_damage_penalty                   0.5     // The fraction a zombie's damage will be scaled by when they are attacking without using their claws.
-ttt_zombie_damage_reduction                 0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a zombie.
-ttt_zombie_prime_only_weapons               1       // Whether only prime zombies (e.g. players who spawn as zombies originally) are allowed to pick up weapons.
-ttt_zombie_prime_attack_damage              65      // The amount of a damage a prime zombie (e.g. player who spawned as a zombie originally) does with their claws. Server or round must be restarted for changes to take effect.
-ttt_zombie_prime_attack_delay               0.7     // The amount of time between claw attacks for a prime zombie (e.g. player who spawned as a zombie originally). Server or round must be restarted for changes to take effect.
-ttt_zombie_prime_speed_bonus                0.35    // The amount of bonus speed a prime zombie (e.g. player who spawned as a zombie originally) should get when using their claws. Server or round must be restarted for changes to take effect.
-ttt_zombie_thrall_attack_damage             45      // The amount of a damage a zombie thrall (e.g. non-prime zombie) does with their claws. Server or round must be restarted for changes to take effect.
-ttt_zombie_thrall_attack_delay              1.4     // The amount of time between claw attacks for a zombie thrall (e.g. non-prime zombie). Server or round must be restarted for changes to take effect.
-ttt_zombie_thrall_speed_bonus               0.15    // The amount of bonus speed a zombie thrall (e.g. non-prime zombie) should get when using their claws. Server or round must be restarted for changes to take effect.
-ttt_zombie_respawn_health                   100     // The amount of health a player should respawn with when they are converted to a zombie thrall.
+ttt_zombie_damage_penalty                   0.5     // The fraction a zombie's damage will be scaled by when they are attacking without using their claws
+ttt_zombie_damage_reduction                 0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a zombie
+ttt_zombie_prime_only_weapons               1       // Whether only prime zombies (e.g. players who spawn as zombies originally) are allowed to pick up weapons
+ttt_zombie_prime_attack_damage              65      // The amount of a damage a prime zombie (e.g. player who spawned as a zombie originally) does with their claws. Server or round must be restarted for changes to take effect
+ttt_zombie_prime_attack_delay               0.7     // The amount of time between claw attacks for a prime zombie (e.g. player who spawned as a zombie originally). Server or round must be restarted for changes to take effect
+ttt_zombie_prime_speed_bonus                0.35    // The amount of bonus speed a prime zombie (e.g. player who spawned as a zombie originally) should get when using their claws. Server or round must be restarted for changes to take effect
+ttt_zombie_thrall_attack_damage             45      // The amount of a damage a zombie thrall (e.g. non-prime zombie) does with their claws. Server or round must be restarted for changes to take effect
+ttt_zombie_thrall_attack_delay              1.4     // The amount of time between claw attacks for a zombie thrall (e.g. non-prime zombie). Server or round must be restarted for changes to take effect
+ttt_zombie_thrall_speed_bonus               0.15    // The amount of bonus speed a zombie thrall (e.g. non-prime zombie) should get when using their claws. Server or round must be restarted for changes to take effect
+ttt_zombie_respawn_health                   100     // The amount of health a player should respawn with when they are converted to a zombie thrall
 
 // ----------------------------------------
 
 // WEAPON SHOP SETTINGS
+ttt_shop_for_all                            0       // Whether all roles should have a shop. Roles that normally do not have a shop will need to have items added via the roleweapon system (see below). Also note that while the ttt_*_shop_random_percent and ttt_*_shop_random_enabled convars are created for each role, only the roles that have a shop by default will have their randomization convars show in the ULX module
 // Random Shop Restriction Percent
 ttt_shop_random_percent                     50      // The percent chance that a weapon in the shop will be not be shown
 ttt_shop_random_position                    0       // Whether to randomize the position of the items in the shop
@@ -435,18 +436,18 @@ ttt_mercenary_shop_mode                     2       // What additional items are
 ttt_clown_shop_mode                         0       // What additional items are available to the clown in the shop (See above for possible values)
 
 // Traitor Role Shop Sync (Server or round must be restarted for changes to take effect)
-ttt_hypnotist_shop_sync                     0       // Whether Hypnotists should have all weapons that vanilla traitors have in their weapon shop
-ttt_impersonator_shop_sync                  0       // Whether Impersonators should have all weapons that vanilla traitors have in their weapon shop
-ttt_assassin_shop_sync                      0       // Whether Assassins should have all weapons that vanilla traitors have in their weapon shop
-ttt_vampire_shop_sync                       0       // Whether Vampires should have all weapons that vanilla traitors have in their weapon shop (if they are a Traitor)
-ttt_zombie_shop_sync                        0       // Whether Zombies should have all weapons that vanilla traitors have in their weapon shop (if they are a Traitor)
-ttt_quack_shop_sync                         0       // Whether Quacks should have all weapons that vanilla traitors have in their weapon shop
-ttt_parasite_shop_sync                      0       // Whether Parasites should have all weapons that vanilla traitors have in their weapon shop
+ttt_hypnotist_shop_sync                     0       // Whether hypnotists should have all weapons that vanilla traitors have in their weapon shop
+ttt_impersonator_shop_sync                  0       // Whether impersonators should have all weapons that vanilla traitors have in their weapon shop
+ttt_assassin_shop_sync                      0       // Whether assassins should have all weapons that vanilla traitors have in their weapon shop
+ttt_vampire_shop_sync                       0       // Whether vampires should have all weapons that vanilla traitors have in their weapon shop (if they are a traitor)
+ttt_zombie_shop_sync                        0       // Whether zombies should have all weapons that vanilla traitors have in their weapon shop (if they are a traitor)
+ttt_quack_shop_sync                         0       // Whether quacks should have all weapons that vanilla traitors have in their weapon shop
+ttt_parasite_shop_sync                      0       // Whether parasites should have all weapons that vanilla traitors have in their weapon shop
 
 // Detective Role Shop Sync (Server or round must be restarted for changes to take effect)
-ttt_paladin_shop_sync                       0       // Whether Paladins should have all weapons that vanilla detectives have in their weapon shop
-ttt_tracker_shop_sync                       0       // Whether Trackers should have all weapons that vanilla detectives have in their weapon shop
-ttt_medium_shop_sync                       0       // Whether Mediums should have all weapons that vanilla detectives have in their weapon shop
+ttt_paladin_shop_sync                       0       // Whether paladins should have all weapons that vanilla detectives have in their weapon shop
+ttt_tracker_shop_sync                       0       // Whether trackers should have all weapons that vanilla detectives have in their weapon shop
+ttt_medium_shop_sync                        0       // Whether mediums should have all weapons that vanilla detectives have in their weapon shop
 
 // ----------------------------------------
 

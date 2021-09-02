@@ -1,5 +1,15 @@
 # Beta Release Notes
 
+## 1.1.10
+**Released:**
+
+### Additions
+- Added the option to set the amount of time it takes a vampire to drain a dead body to a different amount of time than if the target is alive (disabled by default)
+- Added option to enable shop for all roles (disabled by default)
+
+### Fixes
+- Fixed vampires not being able to drain dead players
+
 ## 1.1.9
 **Released: September 2nd, 2021**
 
@@ -10,7 +20,6 @@
 - Added the option for the paladin's damage reduction aura to protect themselves (disabled by default)
 - Added the option for the paladin's healing aura to heal themselves (enabled by default)
 - Added the option for the quack's fake parasite cure to kill uninfected users (disabled by default)
-- Added the option to set the amount of time it takes a vampire to drain a dead body to a different amount of time than if the target is alive (disabled by default)
 - Added a message that is displayed when a traitor picks up a parasite cure to distinguish if it is real or fake
 
 ### Changes
@@ -22,7 +31,6 @@
 - Fixed case where multiple vampires draining the same target would have the target unfreeze when any of the vampires quit draining
 - Fixed assassin not being able to see which players are infected by a parasite on the scoreboard
 - Fixed only assassin target or parasite infection showing on the scoreboard and target ID (when you look at a player) even if a player should see both
-- Fixed vampires not being able to drain dead players
 
 ### Developer
 - Updated GetTeamRoles to take an optional lookup table of excluded roles

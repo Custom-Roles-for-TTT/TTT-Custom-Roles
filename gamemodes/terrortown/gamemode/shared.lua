@@ -1,5 +1,5 @@
 -- Version string for display and function for version checks
-CR_VERSION = "1.1.9"
+CR_VERSION = "1.1.10"
 
 function CRVersion(version)
     local installedVersionRaw = string.Split(CR_VERSION, ".")
@@ -297,6 +297,48 @@ if CLIENT then
         end
 
         return ModifyColor(c or COLOR_WHITE, type)
+    end
+else
+    function CreateShopConVars(role)
+        local rolestring = ROLE_STRINGS_RAW[role]
+        if not DEFAULT_ROLES[role] then
+            local credits = "0"
+            if TRAITOR_ROLES[role] then credits = "1"
+            elseif DETECTIVE_ROLES[role] then credits = "1"
+            elseif role == ROLE_MERCENARY then credits = "1"
+            elseif role == ROLE_KILLER then credits = "2"
+            elseif role == ROLE_DOCTOR then credits = "1" end
+            CreateConVar("ttt_" .. rolestring .. "_credits_starting", credits, FCVAR_REPLICATED)
+        end
+
+        CreateConVar("ttt_" .. rolestring .. "_shop_random_percent", "0", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown for the " .. rolestring, 0, 100)
+        CreateConVar("ttt_" .. rolestring .. "_shop_random_enabled", "0", FCVAR_REPLICATED, "Whether shop randomization should run for the " .. rolestring)
+
+        if (TRAITOR_ROLES[role] and role ~= ROLE_TRAITOR) or (DETECTIVE_ROLES[role] and role ~= ROLE_DETECTIVE) or role == ROLE_ZOMBIE then -- This all happens before we run UpdateRoleState so we need to manually add zombies
+            CreateConVar("ttt_" .. rolestring .. "_shop_sync", "0", FCVAR_REPLICATED)
+        end
+
+        if role == ROLE_MERCENARY then
+            CreateConVar("ttt_" .. rolestring .. "_shop_mode", "2", FCVAR_REPLICATED)
+        elseif (INDEPENDENT_ROLES[role] and role ~= ROLE_ZOMBIE) or role == ROLE_CLOWN then
+            CreateConVar("ttt_" .. rolestring .. "_shop_mode", "0", FCVAR_REPLICATED)
+        end
+    end
+
+    function SyncShopConVars(role)
+        local rolestring = ROLE_STRINGS_RAW[role]
+        SetGlobalInt("ttt_" .. rolestring .. "_shop_random_percent", GetConVar("ttt_" .. rolestring .. "_shop_random_percent"):GetInt())
+        SetGlobalBool("ttt_" .. rolestring .. "_shop_random_enabled", GetConVar("ttt_" .. rolestring .. "_shop_random_enabled"):GetBool())
+
+        local sync_cvar = "ttt_" .. rolestring .. "_shop_sync"
+        if ConVarExists(sync_cvar) then
+            SetGlobalBool(sync_cvar, GetConVar(sync_cvar):GetBool())
+        end
+
+        local mode_cvar = "ttt_" .. rolestring .. "_shop_mode"
+        if ConVarExists(mode_cvar) then
+            SetGlobalInt(mode_cvar, GetConVar(mode_cvar):GetInt())
+        end
     end
 end
 
@@ -1004,6 +1046,15 @@ function UpdateRoleState()
 
     -- Update which weapons are available based on role state
     UpdateRoleWeaponState()
+
+    -- Enable the shop for all roles if configured to do so
+    if GetGlobalBool("ttt_shop_for_all", false) then
+        for role = 0, ROLE_MAX do
+            if not SHOP_ROLES[role] then
+                SHOP_ROLES[role] = true
+            end
+        end
+    end
 end
 
 function GetWinningMonsterRole()
