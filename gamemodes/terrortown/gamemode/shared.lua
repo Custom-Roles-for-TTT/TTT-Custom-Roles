@@ -301,7 +301,8 @@ if CLIENT then
 else
     function CreateShopConVars(role)
         local rolestring = ROLE_STRINGS_RAW[role]
-        if not DEFAULT_ROLES[role] then
+        -- Add explicit ROLE_INNOCENT exclusion here in case shop-for-all is enabled
+        if not DEFAULT_ROLES[role] or role == ROLE_INNOCENT then
             local credits = "0"
             if TRAITOR_ROLES[role] then credits = "1"
             elseif DETECTIVE_ROLES[role] then credits = "1"
