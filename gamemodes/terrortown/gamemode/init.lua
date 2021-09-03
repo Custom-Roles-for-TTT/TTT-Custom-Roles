@@ -1857,6 +1857,7 @@ function SelectRoles()
                 for i, j in pairs(choices) do
                     if v == j then
                         index = i
+                        break
                     end
                 end
 
