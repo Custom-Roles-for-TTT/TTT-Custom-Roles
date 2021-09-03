@@ -169,6 +169,9 @@ function GM:PostDrawTranslucentRenderables()
                             else
                                 role = v:GetNWInt("GlitchBluff", ROLE_TRAITOR)
                             end
+                        -- Disable "No Z" for other icons like the Clown and Detective-like roles
+                        else
+                            noz = false
                         end
                     elseif client:IsMonsterTeam() then
                         if v:IsMonsterTeam() then

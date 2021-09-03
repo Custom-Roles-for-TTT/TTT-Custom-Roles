@@ -9,6 +9,7 @@
 
 ### Fixes
 - Fixed vampires not being able to drain dead players
+- Fixed traitors being able to see detective, special detective, and clown icons through walls
 
 ## 1.1.9
 **Released: September 2nd, 2021**
