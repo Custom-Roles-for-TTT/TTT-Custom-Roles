@@ -1,7 +1,7 @@
 # Beta Release Notes
 
 ## 1.1.10
-**Released:**
+**Released: September 4th, 2021**
 
 ### Additions
 - Added the option to set the amount of time it takes a vampire to drain a dead body to a different amount of time than if the target is alive (disabled by default)
