@@ -303,30 +303,27 @@ CreateConVar("ttt_det_credits_traitorkill", "0")
 CreateConVar("ttt_det_credits_traitordead", "1")
 
 -- Shop parameters
+CreateConVar("ttt_shop_for_all", 0, FCVAR_REPLICATED)
+-- Add any convars that are missing once shop-for-all is enabled
+cvars.AddChangeCallback("ttt_shop_for_all", function(convar, oldValue, newValue)
+    local enabled = tobool(newValue)
+    if enabled then
+        for role = 0, ROLE_MAX do
+            if not SHOP_ROLES[role] then
+                CreateShopConVars(role)
+                SHOP_ROLES[role] = true
+                timer.Simple(0.25, function()
+                    SyncShopConVars(role)
+                end)
+            end
+        end
+    end
+
+    SetGlobalBool("ttt_shop_for_all", enabled)
+end)
+
 for _, role in ipairs(GetTeamRoles(SHOP_ROLES)) do
-    local rolestring = ROLE_STRINGS_RAW[role]
-    if not DEFAULT_ROLES[role] then
-        local credits = "0"
-        if TRAITOR_ROLES[role] then credits = "1"
-        elseif DETECTIVE_ROLES[role] then credits = "1"
-        elseif role == ROLE_MERCENARY then credits = "1"
-        elseif role == ROLE_KILLER then credits = "2"
-        elseif role == ROLE_DOCTOR then credits = "1" end
-        CreateConVar("ttt_" .. rolestring .. "_credits_starting", credits, FCVAR_REPLICATED)
-    end
-
-    CreateConVar("ttt_" .. rolestring .. "_shop_random_percent", "0", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown for the " .. rolestring, 0, 100)
-    CreateConVar("ttt_" .. rolestring .. "_shop_random_enabled", "0", FCVAR_REPLICATED, "Whether shop randomization should run for the " .. rolestring)
-
-    if (TRAITOR_ROLES[role] and role ~= ROLE_TRAITOR) or (DETECTIVE_ROLES[role] and role ~= ROLE_DETECTIVE) or role == ROLE_ZOMBIE then -- This all happens before we run UpdateRoleState so we need to manually add zombies
-        CreateConVar("ttt_" .. rolestring .. "_shop_sync", "0", FCVAR_REPLICATED)
-    end
-
-    if role == ROLE_MERCENARY then
-        CreateConVar("ttt_" .. rolestring .. "_shop_mode", "2", FCVAR_REPLICATED)
-    elseif (INDEPENDENT_ROLES[role] and role ~= ROLE_ZOMBIE) or role == ROLE_CLOWN then
-        CreateConVar("ttt_" .. rolestring .. "_shop_mode", "0", FCVAR_REPLICATED)
-    end
+    CreateShopConVars(role)
 end
 CreateConVar("ttt_shop_random_percent", "50", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown by default", 0, 100)
 CreateConVar("ttt_shop_random_position", "0", FCVAR_REPLICATED, "Whether to randomize the position of the items in the shop")
@@ -657,18 +654,7 @@ function GM:SyncGlobals()
         SetGlobalString("ttt_" .. rolestring .. "_name_plural", GetConVar("ttt_" .. rolestring .. "_name_plural"):GetString())
         SetGlobalString("ttt_" .. rolestring .. "_name_article", GetConVar("ttt_" .. rolestring .. "_name_article"):GetString())
         if SHOP_ROLES[role] then
-            SetGlobalInt("ttt_" .. rolestring .. "_shop_random_percent", GetConVar("ttt_" .. rolestring .. "_shop_random_percent"):GetInt())
-            SetGlobalBool("ttt_" .. rolestring .. "_shop_random_enabled", GetConVar("ttt_" .. rolestring .. "_shop_random_enabled"):GetBool())
-
-            local sync_cvar = "ttt_" .. rolestring .. "_shop_sync"
-            if ConVarExists(sync_cvar) then
-                SetGlobalBool(sync_cvar, GetConVar(sync_cvar):GetBool())
-            end
-
-            local mode_cvar = "ttt_" .. rolestring .. "_shop_mode"
-            if ConVarExists(mode_cvar) then
-                SetGlobalInt(mode_cvar, GetConVar(mode_cvar):GetInt())
-            end
+            SyncShopConVars(role)
         end
     end
 
@@ -1871,6 +1857,7 @@ function SelectRoles()
                 for i, j in pairs(choices) do
                     if v == j then
                         index = i
+                        break
                     end
                 end
 

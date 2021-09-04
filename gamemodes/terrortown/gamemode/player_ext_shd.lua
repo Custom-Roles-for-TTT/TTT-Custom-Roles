@@ -83,6 +83,11 @@ function plymeta:IsSpecial() return self:GetRole() ~= ROLE_INNOCENT end
 function plymeta:IsCustom() return not DEFAULT_ROLES[self:GetRole()] end
 function plymeta:IsShopRole()
     local hasShop = SHOP_ROLES[self:GetRole()] or false
+    -- Don't perform the additional checks if "shop for all" is enabled
+    if GetGlobalBool("ttt_shop_for_all", false) then
+        return hasShop
+    end
+
     -- If this is a jester team member with a potential shop, only give them access if there are actual things to buy
     if hasShop and self:IsJesterTeam() then
         local hasWeapon = WEPS.DoesRoleHaveWeapon(self:GetRole())
@@ -96,8 +101,13 @@ function plymeta:IsShopRole()
     return hasShop
 end
 function plymeta:CanUseShop()
-    return self:IsShopRole() and
-        (not self:IsDeputy() or self:GetNWBool("HasPromotion", false))
+    local isShopRole = self:IsShopRole()
+    -- Don't perform the additional checks if "shop for all" is enabled
+    if GetGlobalBool("ttt_shop_for_all", false) then
+        return isShopRole
+    end
+
+    return isShopRole and (not self:IsDeputy() or self:GetNWBool("HasPromotion", false))
 end
 function plymeta:CanUseTraitorButton(active_only)
     if active_only and not self:IsActive() then return false end
