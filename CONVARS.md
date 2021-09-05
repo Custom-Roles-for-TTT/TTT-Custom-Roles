@@ -31,6 +31,8 @@ ttt_special_traitor_pct                     0.33    // Percentage of traitors, r
 ttt_special_traitor_chance                  0.5     // The chance that a "special traitor" will spawn in each available slot made by "ttt_special_traitor_pct"
 ttt_special_innocent_pct                    0.33    // Percentage of innocents, rounded up, that can spawn as a "special innocent" (e.g. glitch, phantom, etc.)
 ttt_special_innocent_chance                 0.5     // The chance that a "special innocent" will spawn in each available slot made by "ttt_special_innocent_pct"
+ttt_special_detective_pct                   0.33    // Percentage of detectives, rounded up, that can spawn as a "special detectives" (e.g. paladin, tracker, etc.)
+ttt_special_detective_chance                0.5     // The chance that a "special detectives" will spawn in each available slot made by "ttt_special_detectives_pct"
 ttt_monster_pct                             0.33    // Percentage of innocents, rounded up, that can spawn as a "monster" (e.g. zombie, vampire)
 ttt_monster_chance                          0.5     // The chance that a "monster" will spawn in each available slot made by "ttt_monster_pct"
 ttt_independent_chance                      0.5     // The chance that an independent or jester (e.g. drunk, swapper, etc.) will spawn in a round.
@@ -52,6 +54,9 @@ ttt_veteran_enabled                         0       // Whether or not the vetera
 ttt_doctor_enabled                          0       // Whether or not the doctor should spawn
 ttt_trickster_enabled                       0       // Whether or not the trickster should spawn
 ttt_paramedic_enabled                       0       // Whether or not the paramedic should spawn
+ttt_paladin_enabled                         0       // Whether or not the paladin should spawn
+ttt_tracker_enabled                         0       // Whether or not the tracker should spawn
+ttt_medium_enabled                          0       // Whether or not the medium should spawn
 ttt_jester_enabled                          0       // Whether or not the jester should spawn
 ttt_swapper_enabled                         0       // Whether or not the swapper should spawn
 ttt_clown_enabled                           0       // Whether or not the clown should spawn
@@ -79,6 +84,9 @@ ttt_veteran_spawn_weight                    1       // The weight assigned to sp
 ttt_doctor_spawn_weight                     1       // The weight assigned to spawning the doctor
 ttt_trickster_spawn_weight                  1       // The weight assigned to spawning the trickster
 ttt_paramedic_spawn_weight                  1       // The weight assigned to spawning the paramedic
+ttt_paladin_spawn_weight                    1       // The weight assigned to spawning the paladin
+ttt_tracker_spawn_weight                    1       // The weight assigned to spawning the tracker
+ttt_medium_spawn_weight                     1       // The weight assigned to spawning the medium
 ttt_jester_spawn_weight                     1       // The weight assigned to spawning the jester
 ttt_swapper_spawn_weight                    1       // The weight assigned to spawning the swapper
 ttt_clown_spawn_weight                      1       // The weight assigned to spawning the clown
@@ -107,6 +115,9 @@ ttt_veteran_min_players                     0       // The minimum number of pla
 ttt_doctor_min_players                      0       // The minimum number of players required to spawn the doctor
 ttt_trickster_min_players                   0       // The minimum number of players required to spawn the trickster
 ttt_paramedic_min_players                   0       // The minimum number of players required to spawn the paramedic
+ttt_paladin_min_players                     0       // The minimum number of players required to spawn the paladin
+ttt_tracker_min_players                     0       // The minimum number of players required to spawn the tracker
+ttt_medium_min_players                      0       // The minimum number of players required to spawn the medium
 ttt_jester_min_players                      0       // The minimum number of players required to spawn the jester
 ttt_swapper_min_players                     0       // The minimum number of players required to spawn the swapper
 ttt_clown_min_players                       0       // The minimum number of players required to spawn the clown
@@ -151,6 +162,7 @@ ttt_vampire_convert_enable                  0       // Whether vampires have the
 ttt_vampire_show_target_icon                0       // Whether vampires have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect.
 ttt_vampire_damage_reduction                0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a vampire.
 ttt_vampire_fang_timer                      5       // The amount of time fangs must be used to fully drain a target's blood
+ttt_vampire_fang_timer_dead                 0       // The amount of time fangs must be used to fully drain a dead target's blood. Set to 0 to use the same time as "ttt_vampire_fang_timer"
 ttt_vampire_fang_heal                       50      // The amount of health a vVampire will heal by when they fully drain a target's blood
 ttt_vampire_fang_overheal                   25      // The amount over the vampire's normal maximum health (e.g. 100 + this ConVar) that the vampire can heal to by drinking blood.
 ttt_vampire_prime_death_mode                0       // What to do when the prime vampire(s) (e.g. playters who spawn as vampires originally) are killed. 0 - Do nothing. 1 - Kill all vampire thralls (non-prime vampires). 2 - Revert all vampire thralls (non-prime vampires) to their original role.
@@ -159,6 +171,7 @@ ttt_vampire_credits_starting                1       // The number of credits a v
 
 // Quack
 ttt_quack_credits_starting                  1       // The number of credits a quack should start with
+ttt_quack_fake_cure_mode                    0       // How to handle using a fake parasite cure on someone who is not infected. 0 - Kill nobody (But use up the cure), 1 - Kill the person who uses the cure, 2 - Kill the person the cure is used on
 ttt_single_doctor_quack                     0       // Whether only a single doctor or quack should spawn in a round
 
 // Parasite
@@ -176,18 +189,16 @@ ttt_single_phantom_parasite                 0       // Whether only a single pha
 // ----------------------------------------
 
 // INNOCENT TEAM SETTINGS
-// Detective
-ttt_detective_search_only                   1       // Whether only detectives can search bodies or not
-ttt_all_search_postround                    1       // Whether non-detectives can search bodies post-round or not
-
 // Glitch
 ttt_glitch_mode                             0       // The way in which the glitch appears to traitors. 0 - Appears as a regular traitor. 1 - Can appear as a special traitor. 2 - Causes all traitors, regular or special, to appear as regular traitors and appears as a regular traitor themselves.
+ttt_glitch_use_traps                        0       // Whether glitches can see and use traitor traps. This also allows them to loot credits for traps that require them.
 
 // Phantom
 ttt_phantom_respawn_health                  50      // The amount of health a phantom will respawn with
 ttt_phantom_weaker_each_respawn             0       // Whether a phantom respawns weaker (1/2 as much HP) each time they respawn, down to a minimum of 1
-ttt_phantom_killer_smoke                    0       // Whether to show smoke on the player who killed the phantom
 ttt_phantom_announce_death                  0       // Whether to announce to detectives (and promoted deputies and impersonators) that a phantom has been killed or respawned
+ttt_phantom_killer_smoke                    0       // Whether to show smoke on the player who killed the phantom
+ttt_phantom_killer_footstep_time            0       // The amount of time a phantom's killer's footsteps should show before fading. Set to 0 to disable
 ttt_phantom_killer_haunt                    1       // Whether to have the phantom haunt their killer
 ttt_phantom_killer_haunt_power_max          100     // The maximum amount of power a phantom can have when haunting their killer
 ttt_phantom_killer_haunt_power_rate         10      // The amount of power to regain per second when a phantom is haunting their killer
@@ -195,7 +206,7 @@ ttt_phantom_killer_haunt_move_cost          25      // The amount of power to sp
 ttt_phantom_killer_haunt_jump_cost          50      // The amount of power to spend when a phantom is making their killer jump via a haunting. Set to 0 to disable
 ttt_phantom_killer_haunt_drop_cost          75      // The amount of power to spend when a phantom is making their killer drop their weapon via a haunting. Set to 0 to disable
 ttt_phantom_killer_haunt_attack_cost        100     // The amount of power to spend when a phantom is making their killer attack via a haunting. Set to 0 to disable
-ttt_phantom_killer_footstep_time            0       // The amount of time a phantom's killer's footsteps should show before fading. Set to 0 to disable
+ttt_phantom_killer_haunt_without_body       1       // Whether the phantom can use their powers after their body is destroyed
 
 // Revenger
 ttt_revenger_radar_timer                    15      // The amount of time between radar pings for the revenger's lover's killer
@@ -221,6 +232,28 @@ ttt_doctor_credits_starting                 1       // The number of credits a d
 
 // ----------------------------------------
 
+// DETECTIVE TEAM SETTINGS
+// All Detective Roles
+ttt_detective_search_only                   1       // Whether only detectives can search bodies or not
+ttt_detective_disable_looting               0       // Whether to disable a detective role's ability to loot credits from bodies
+ttt_all_search_postround                    1       // Whether non-detectives can search bodies post-round or not
+
+// Paladin
+ttt_paladin_aura_radius                     5       // The radius of the paladin's aura in meters
+ttt_paladin_damage_reduction                0.3     // The fraction an attacker's damage will be reduced by when they are shooting a player inside the paladin's aura
+ttt_paladin_heal_rate                       1       // The amount of heal a player inside the paladin's aura will heal each second
+ttt_paladin_protect_self                    0       // Whether the paladin's damage reduction aura will protect themselves or not
+ttt_paladin_heal_self                       1       // Whether the paladin's healing aura will heal themselves or not
+
+// Tracker
+ttt_tracker_footstep_time                   15      // The amount of time players' footsteps should show to the tracker before fading. Set to 0 to disable
+ttt_tracker_footstep_color                  1       // Whether players' footsteps should have different colors
+
+// Medium
+ttt_medium_spirit_color                     1       // Whether players' spirits should have different colors
+
+// ----------------------------------------
+
 // JESTER TEAM SETTINGS
 ttt_jesters_trigger_traitor_testers         1       // Whether jesters trigger traitor testers as if they were traitors
 ttt_jesters_visible_to_traitors             1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to members of the traitor team
@@ -237,7 +270,7 @@ ttt_jester_credits_starting                 0       // The number of credits a j
 // Swapper
 ttt_swapper_respawn_health                  100     // What amount of health to give the swapper when they are killed and respawned
 ttt_swapper_weapon_mode                     1       // How to handle weapons when the Swapper is killed. 0 - Don't swap anything. 1 - Swap role weapons (if there are any). 2 - Swap all weapons.
-ttt_swapper_notify_mode                     0       // The logic to use when notifying players that a swapper is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone.
+ttt_swapper_notify_mode                     0       // The logic to use when notifying players that a swapper is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
 ttt_swapper_notify_sound                    0       // Whether to play a cheering sound when a swapper is killed
 ttt_swapper_notify_confetti                 0       // Whether to throw confetti when a swapper is a killed
 ttt_swapper_killer_health                   100     // What amount of health to give the person who killed the swapper. Set to "0" to kill them
@@ -249,6 +282,7 @@ ttt_clown_activation_credits                0       // The number of credits to 
 ttt_clown_hide_when_active                  0       // Whether the clown should be hidden from other players' Target ID (overhead icons) when they are activated. Server or round must be restarted for changes to take effect
 ttt_clown_show_target_icon                  0       // Whether the clown has an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect
 ttt_clown_heal_on_activate                  0       // Whether the clown should fully heal when they activate or not
+ttt_clown_heal_bonus                        0       // The amount of bonus health to give the clown if they are healed when they are activated
 ttt_clown_shop_active_only                  1       // Whether the clown's shop should be available only after they activate
 ttt_clown_shop_delay                        0       // Whether the clown's purchased shop items should be held until they activate
 ttt_clown_credits_starting                  0       // The number of credits a clown should start with
@@ -258,7 +292,7 @@ ttt_beggar_reveal_traitor                   1       // Who the beggar is reveale
 ttt_beggar_reveal_innocent                  2       // Who the beggar is revealed to when they join the innocent team. 0 - No one. 1 - Everyone. 2 - Traitors. 3 - Innocents
 ttt_beggar_respawn                          0       // Whether the beggar respawns when they are killed before joining another team
 ttt_beggar_respawn_delay                    3       // The delay to use when respawning the begger (if "ttt_beggar_respawn" is enabled)
-ttt_beggar_notify_mode                      0       // The logic to use when notifying players that a beggar is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone.
+ttt_beggar_notify_mode                      0       // The logic to use when notifying players that a beggar is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
 ttt_beggar_notify_sound                     0       // Whether to play a cheering sound when a beggar is killed
 ttt_beggar_notify_confetti                  0       // Whether to throw confetti when a beggar is a killed
 
@@ -273,7 +307,39 @@ ttt_independents_trigger_traitor_testers    0       // Whether independents trig
 
 // Drunk
 ttt_drunk_sober_time                        180     // Time in seconds for the drunk to remember their role
-ttt_drunk_innocent_chance                   0.7     // Chance that the drunk will become an innocent when remembering their role
+ttt_drunk_innocent_chance                   0.7     // Chance that the drunk will become an innocent role when remembering their role
+ttt_drunk_any_role                          0       // Whether the drunk can become any enabled role (other than the drunk, the glitch, or roles that were already used this round)
+ttt_drunk_become_clown                      0       // Whether the drunk should become a clown (instead of joining the losing team) if the round would end before they sober up
+ttt_drunk_notify_mode                       0       // The logic to use when notifying players that a drunk has sobered up. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
+ttt_drunk_can_be_traitor                    1       // Whether the drunk can become a traitor
+ttt_drunk_can_be_hypnotist                  1       // Whether the drunk can become a hypnotist
+ttt_drunk_can_be_impersonator               1       // Whether the drunk can become an impersonator
+ttt_drunk_can_be_assassin                   1       // Whether the drunk can become an assassin
+ttt_drunk_can_be_vampire                    1       // Whether the drunk can become a vampire
+ttt_drunk_can_be_quack                      1       // Whether the drunk can become a quack
+ttt_drunk_can_be_parasite                   1       // Whether the drunk can become a parasite
+ttt_drunk_can_be_innocent                   1       // Whether the drunk can become an innocent
+ttt_drunk_can_be_phantom                    1       // Whether the drunk can become a phantom
+ttt_drunk_can_be_revenger                   1       // Whether the drunk can become a revenger
+ttt_drunk_can_be_deputy                     1       // Whether the drunk can become a deputy
+ttt_drunk_can_be_mercenary                  1       // Whether the drunk can become a mercenary
+ttt_drunk_can_be_veteran                    1       // Whether the drunk can become a veteran
+ttt_drunk_can_be_doctor                     1       // Whether the drunk can become a doctor
+ttt_drunk_can_be_trickster                  1       // Whether the drunk can become a trickster
+ttt_drunk_can_be_paramedic                  1       // Whether the drunk can become a paramedic
+ttt_drunk_can_be_detective                  1       // Whether the drunk can become a detective
+ttt_drunk_can_be_paladin                    1       // Whether the drunk can become a paladin
+ttt_drunk_can_be_tracker                    1       // Whether the drunk can become a tracker
+ttt_drunk_can_be_medium                     1       // Whether the drunk can become a medium
+ttt_drunk_can_be_jester                     1       // Whether the drunk can become a jester
+ttt_drunk_can_be_swapper                    1       // Whether the drunk can become a swapper
+ttt_drunk_can_be_clown                      1       // Whether the drunk can become a clown
+ttt_drunk_can_be_beggar                     1       // Whether the drunk can become a beggar
+ttt_drunk_can_be_bodysnatcher               1       // Whether the drunk can become a bodysnatcher
+ttt_drunk_can_be_oldman                     1       // Whether the drunk can become an old man
+ttt_drunk_can_be_killer                     1       // Whether the drunk can become a killer
+ttt_drunk_can_be_zombie                     1       // Whether the drunk can become a zombie
+ttt_drunk_can_be_madscientist               1       // Whether the drunk can become a mad scientist
 
 // Old Man
 ttt_oldman_drain_health_to                  0       // The amount of health to drain the old man down to. Set to 0 to disable
@@ -298,20 +364,21 @@ ttt_zombie_vision_enable                    0       // Whether zombies have thei
 ttt_zombie_spit_enable                      1       // Whether zombies have their spit attack enabled
 ttt_zombie_leap_enable                      1       // Whether zombies have their leap attack enabled
 ttt_zombie_show_target_icon                 0       // Whether zombies have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect.
-ttt_zombie_damage_penalty                   0.5     // The fraction a zombie's damage will be scaled by when they are attacking without using their claws.
-ttt_zombie_damage_reduction                 0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a zombie.
-ttt_zombie_prime_only_weapons               1       // Whether only prime zombies (e.g. players who spawn as zombies originally) are allowed to pick up weapons.
-ttt_zombie_prime_attack_damage              65      // The amount of a damage a prime zombie (e.g. player who spawned as a zombie originally) does with their claws. Server or round must be restarted for changes to take effect.
-ttt_zombie_prime_attack_delay               0.7     // The amount of time between claw attacks for a prime zombie (e.g. player who spawned as a zombie originally). Server or round must be restarted for changes to take effect.
-ttt_zombie_prime_speed_bonus                0.35    // The amount of bonus speed a prime zombie (e.g. player who spawned as a zombie originally) should get when using their claws. Server or round must be restarted for changes to take effect.
-ttt_zombie_thrall_attack_damage             45      // The amount of a damage a zombie thrall (e.g. non-prime zombie) does with their claws. Server or round must be restarted for changes to take effect.
-ttt_zombie_thrall_attack_delay              1.4     // The amount of time between claw attacks for a zombie thrall (e.g. non-prime zombie). Server or round must be restarted for changes to take effect.
-ttt_zombie_thrall_speed_bonus               0.15    // The amount of bonus speed a zombie thrall (e.g. non-prime zombie) should get when using their claws. Server or round must be restarted for changes to take effect.
-ttt_zombie_respawn_health                   100     // The amount of health a player should respawn with when they are converted to a zombie thrall.
+ttt_zombie_damage_penalty                   0.5     // The fraction a zombie's damage will be scaled by when they are attacking without using their claws
+ttt_zombie_damage_reduction                 0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a zombie
+ttt_zombie_prime_only_weapons               1       // Whether only prime zombies (e.g. players who spawn as zombies originally) are allowed to pick up weapons
+ttt_zombie_prime_attack_damage              65      // The amount of a damage a prime zombie (e.g. player who spawned as a zombie originally) does with their claws. Server or round must be restarted for changes to take effect
+ttt_zombie_prime_attack_delay               0.7     // The amount of time between claw attacks for a prime zombie (e.g. player who spawned as a zombie originally). Server or round must be restarted for changes to take effect
+ttt_zombie_prime_speed_bonus                0.35    // The amount of bonus speed a prime zombie (e.g. player who spawned as a zombie originally) should get when using their claws. Server or round must be restarted for changes to take effect
+ttt_zombie_thrall_attack_damage             45      // The amount of a damage a zombie thrall (e.g. non-prime zombie) does with their claws. Server or round must be restarted for changes to take effect
+ttt_zombie_thrall_attack_delay              1.4     // The amount of time between claw attacks for a zombie thrall (e.g. non-prime zombie). Server or round must be restarted for changes to take effect
+ttt_zombie_thrall_speed_bonus               0.15    // The amount of bonus speed a zombie thrall (e.g. non-prime zombie) should get when using their claws. Server or round must be restarted for changes to take effect
+ttt_zombie_respawn_health                   100     // The amount of health a player should respawn with when they are converted to a zombie thrall
 
 // ----------------------------------------
 
 // WEAPON SHOP SETTINGS
+ttt_shop_for_all                            0       // Whether all roles should have a shop. Roles that normally do not have a shop will need to have items added via the roleweapon system (see below). Also note that all supporting shop-related convars (such as ttt_*_credits_starting, ttt_*_shop_random_percent, ttt_*_shop_random_enabled, and ttt_*_shop_sync or ttt_*_shop_mode where applicable) will be automatically created but are not documented here to avoid confusion. Server must be restarted for changes to take effect
 // Random Shop Restriction Percent
 ttt_shop_random_percent                     50      // The percent chance that a weapon in the shop will be not be shown
 ttt_shop_random_position                    0       // Whether to randomize the position of the items in the shop
@@ -369,13 +436,18 @@ ttt_mercenary_shop_mode                     2       // What additional items are
 ttt_clown_shop_mode                         0       // What additional items are available to the clown in the shop (See above for possible values)
 
 // Traitor Role Shop Sync (Server or round must be restarted for changes to take effect)
-ttt_hypnotist_shop_sync                     0       // Whether Hypnotists should have all weapons that vanilla traitors have in their weapon shop
-ttt_impersonator_shop_sync                  0       // Whether Impersonators should have all weapons that vanilla traitors have in their weapon shop
-ttt_assassin_shop_sync                      0       // Whether Assassins should have all weapons that vanilla traitors have in their weapon shop
-ttt_vampire_shop_sync                       0       // Whether Vampires should have all weapons that vanilla traitors have in their weapon shop (if they are a Traitor)
-ttt_zombie_shop_sync                        0       // Whether Zombies should have all weapons that vanilla traitors have in their weapon shop (if they are a Traitor)
-ttt_quack_shop_sync                         0       // Whether Quacks should have all weapons that vanilla traitors have in their weapon shop
-ttt_parasite_shop_sync                      0       // Whether Parasites should have all weapons that vanilla traitors have in their weapon shop
+ttt_hypnotist_shop_sync                     0       // Whether hypnotists should have all weapons that vanilla traitors have in their weapon shop
+ttt_impersonator_shop_sync                  0       // Whether impersonators should have all weapons that vanilla traitors have in their weapon shop
+ttt_assassin_shop_sync                      0       // Whether assassins should have all weapons that vanilla traitors have in their weapon shop
+ttt_vampire_shop_sync                       0       // Whether vampires should have all weapons that vanilla traitors have in their weapon shop (if they are a traitor)
+ttt_zombie_shop_sync                        0       // Whether zombies should have all weapons that vanilla traitors have in their weapon shop (if they are a traitor)
+ttt_quack_shop_sync                         0       // Whether quacks should have all weapons that vanilla traitors have in their weapon shop
+ttt_parasite_shop_sync                      0       // Whether parasites should have all weapons that vanilla traitors have in their weapon shop
+
+// Detective Role Shop Sync (Server or round must be restarted for changes to take effect)
+ttt_paladin_shop_sync                       0       // Whether paladins should have all weapons that vanilla detectives have in their weapon shop
+ttt_tracker_shop_sync                       0       // Whether trackers should have all weapons that vanilla detectives have in their weapon shop
+ttt_medium_shop_sync                        0       // Whether mediums should have all weapons that vanilla detectives have in their weapon shop
 
 // ----------------------------------------
 
@@ -389,7 +461,6 @@ ttt_vampire_starting_health                 100     // The amount of health the 
 ttt_quack_starting_health                   100     // The amount of health the quack starts with
 ttt_parasite_starting_health                100     // The amount of health the parasite starts with
 ttt_innocent_starting_health                100     // The amount of health an innocent starts with
-ttt_detective_starting_health               100     // The amount of health the detective starts with
 ttt_glitch_starting_health                  100     // The amount of health the glitch starts with
 ttt_phantom_starting_health                 100     // The amount of health the phantom starts with
 ttt_revenger_starting_health                100     // The amount of health the revenger starts with
@@ -399,6 +470,10 @@ ttt_veteran_starting_health                 100     // The amount of health the 
 ttt_doctor_starting_health                  100     // The amount of health the doctor starts with
 ttt_trickster_starting_health               100     // The amount of health the trickster starts with
 ttt_paramedic_starting_health               100     // The amount of health the paramedic starts with
+ttt_detective_starting_health               100     // The amount of health the detective starts with
+ttt_paladin_starting_health                 100     // The amount of health the paladin starts with
+ttt_tracker_starting_health                 100     // The amount of health the tracker starts with
+ttt_medium_starting_health                  100     // The amount of health the medium starts with
 ttt_jester_starting_health                  100     // The amount of health the jester starts with
 ttt_swapper_starting_health                 100     // The amount of health the swapper starts with
 ttt_clown_starting_health                   100     // The amount of health the clown starts with
@@ -419,7 +494,6 @@ ttt_vampire_max_health                      100     // The maximum amount of hea
 ttt_quack_max_health                        100     // The maximum amount of health the quack can have
 ttt_parasite_max_health                     100     // The maximum amount of health the parasite can have
 ttt_innocent_max_health                     100     // The maximum amount of health an innocent can have
-ttt_detective_max_health                    100     // The maximum amount of health the detective can have
 ttt_glitch_max_health                       100     // The maximum amount of health the glitch can have
 ttt_phantom_max_health                      100     // The maximum amount of health the phantom can have
 ttt_revenger_max_health                     100     // The maximum amount of health the revenger can have
@@ -429,6 +503,10 @@ ttt_veteran_max_health                      100     // The maximum amount of hea
 ttt_doctor_max_health                       100     // The maximum amount of health the doctor can have
 ttt_trickster_max_health                    100     // The maximum amount of health the trickster can have
 ttt_paramedic_max_health                    100     // The maximum amount of health the paramedic can have
+ttt_detective_max_health                    100     // The maximum amount of health the detective can have
+ttt_paladin_max_health                      100     // The maximum amount of health the paladin can have
+ttt_tracker_max_health                      100     // The maximum amount of health the tracker can have
+ttt_medium_max_health                       100     // The maximum amount of health the medium can have
 ttt_jester_max_health                       100     // The maximum amount of health the jester can have
 ttt_swapper_max_health                      100     // The maximum amount of health the swapper can have
 ttt_clown_max_health                        100     // The maximum amount of health the clown can have

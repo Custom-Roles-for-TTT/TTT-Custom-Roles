@@ -125,10 +125,10 @@ Next we have the team. You can set which team your role is a member of by using 
 | --- | --- |
 | Innocent | `ROLE_TEAM_INNOCENT` |
 | Traitor | `ROLE_TEAM_TRAITOR` |
-| Detective (BETA ONLY) | `ROLE_TEAM_DETECTIVE` |
+| Detective | `ROLE_TEAM_DETECTIVE` |
 | Jester | `ROLE_TEAM_JESTER` |
 | Independent | `ROLE_TEAM_INDEPENDENT` |
-| Monster (BETA ONLY) | `ROLE_TEAM_MONSTER` |
+| Monster | `ROLE_TEAM_MONSTER` |
 
 So for the Summoner, which is a traitor we have:
 
