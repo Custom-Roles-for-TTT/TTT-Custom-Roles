@@ -1,5 +1,11 @@
 # Beta Release Notes
 
+## 1.1.11
+**Released:**
+
+### Fixes
+- Fixed case where the medium ghosts would temporarily show up as floating kleiner models
+
 ## 1.1.10
 **Released: September 4th, 2021**
 
