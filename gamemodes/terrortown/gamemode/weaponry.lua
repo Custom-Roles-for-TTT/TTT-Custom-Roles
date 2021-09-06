@@ -104,26 +104,40 @@ end
 
 -- Give loadout items.
 local function GiveLoadoutItems(ply)
+    local loadout_items = {}
     local role = ply:GetRole()
+
     local items = EquipmentItems[role]
     if items then
         for _, item in pairs(items) do
             if item.loadout and item.id then
-                ply:GiveEquipmentItem(item.id)
+                table.insert(loadout_items, item.id)
             end
         end
     end
 
     local ext_items = EXTERNAL_ROLE_LOADOUT_ITEMS[role]
     if ext_items then
-        for _, ext_item in pairs(ext_items) do
-            if not weapons.GetStored(ext_item) then
-                local equip = GetEquipmentItemByName(ext_item)
+        for _, item in pairs(ext_items) do
+            if not weapons.GetStored(item) then
+                local equip = GetEquipmentItemByName(item)
                 if equip ~= nil then
-                    ply:GiveEquipmentItem(equip.id)
+                    table.insert(loadout_items, equip.id)
                 end
             end
         end
+    end
+
+    for _, id in pairs(loadout_items) do
+        ply:GiveEquipmentItem(id)
+
+        hook.Call("TTTOrderedEquipment", GAMEMODE, ply, id, true)
+        ply:AddBought(id)
+
+        net.Start("TTT_BoughtItem")
+        net.WriteBit(true)
+        net.WriteInt(id, 32)
+        net.Send(ply)
     end
 end
 

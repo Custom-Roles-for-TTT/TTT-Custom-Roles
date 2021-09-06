@@ -148,7 +148,9 @@ ROLE.loadout = {}
 
 If you want your role to have access to a shop or if you want them to spawn with any items, this is where you can add that.
 
-Inside the curly brackets add the class names of any weapons or equipment you want, separated by commas. To find the class name of a weapon or equipment you can do the following:
+Traitors automatically have access to body armor, a radar and a disguiser in the shop. Detectives have access to a radar in the shop and spawn with body armor.
+
+Inside the curly brackets add the class names of any other weapons or equipment you want, separated by commas. To find the class name of a weapon or equipment you can do the following:
 
 #### Weapon:
 1. Start a local server with TTT as the selected gamemode
@@ -157,16 +159,17 @@ Inside the curly brackets add the class names of any weapons or equipment you wa
 4. Run the following command in console to get a list of all of your weapon classes: `lua_run PrintTable(player.GetHumans()[1]:GetWeapons())`
 
 #### Equipment:
-To find the name of an equipment item to use above, follow the steps below
 1. Start a local server with TTT as the selected gamemode
 2. Spawn 1 bot by using the _bot_ command in console
 3. Obtain the equipment item whose name you want. If it is already available to buy from a certain role's shop, either force yourself to be that role via the _ttt\_force\_*_ commands or via a ULX plugin.
 4. Run the following command in console to get a full list of your equipment item names: `lua_run GetEquipmentItemById(EQUIP_RADAR); lua_run for id, e in pairs(EquipmentCache) do if player.GetHumans()[1]:HasEquipmentItem(id) then print(id .. " = " .. e.name) end end`
 
+*(Note: Equipment items can only be added to the loadout table for roles in version 1.2.1 and above!)*
+
 For the Summoner, I don't want any loadout items but I do want the shop to have access to a few different items so I can add them like this:
 
 ```lua
-ROLE.shop = {"weapon_ttt_beenade", "weapon_ttt_barnacle", "surprisecombine", "weapon_antlionsummoner", "weapon_controllable_manhack", "weapon_doncombinesummoner", "item_armor", "item_radar", "item_disg"}  
+ROLE.shop = {"weapon_ttt_beenade", "weapon_ttt_barnacle", "surprisecombine", "weapon_antlionsummoner", "weapon_controllable_manhack", "weapon_doncombinesummoner"}  
   
 ROLE.loadout = {}
 ```
@@ -293,7 +296,7 @@ Press {menukey} to receive your special equipment!]]
   
 ROLE.team = ROLE_TEAM_TRAITOR
   
-ROLE.shop = {"weapon_ttt_beenade", "weapon_ttt_barnacle", "surprisecombine", "weapon_antlionsummoner", "weapon_controllable_manhack", "weapon_doncombinesummoner", "item_armor", "item_radar", "item_disg"} 
+ROLE.shop = {"weapon_ttt_beenade", "weapon_ttt_barnacle", "surprisecombine", "weapon_antlionsummoner", "weapon_controllable_manhack", "weapon_doncombinesummoner"} 
   
 ROLE.loadout = {}  
 
