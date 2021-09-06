@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.2.1
+**Released: September 6th, 2021**
+
+### Fixes
+- Fixed external roles not being able to give equipment items in their loadout
+
 ## 1.2.0
 **Released: September 5th, 2021**
 
