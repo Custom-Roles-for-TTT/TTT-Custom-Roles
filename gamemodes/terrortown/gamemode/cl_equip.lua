@@ -653,7 +653,8 @@ local function TraitorMenuPopup()
                 end
 
                 -- Don't show equipment items that you already own that are listed as "loadout" because you were given it for free
-                if not ItemIsWeapon(item) and ply:HasEquipmentItem(item.id) and item.loadout then
+                local externalLoadout = EXTERNAL_ROLE_LOADOUT_ITEMS[ply:GetRole()] and table.HasValue(EXTERNAL_ROLE_LOADOUT_ITEMS[ply:GetRole()], item.name)
+                if not ItemIsWeapon(item) and ply:HasEquipmentItem(item.id) and (item.loadout or externalLoadout) then
                     ic:Remove()
                 else
                     if ic.favorite then

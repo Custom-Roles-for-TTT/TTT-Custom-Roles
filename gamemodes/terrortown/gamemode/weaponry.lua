@@ -104,11 +104,24 @@ end
 
 -- Give loadout items.
 local function GiveLoadoutItems(ply)
-    local items = EquipmentItems[ply:GetRole()]
+    local role = ply:GetRole()
+    local items = EquipmentItems[role]
     if items then
         for _, item in pairs(items) do
             if item.loadout and item.id then
                 ply:GiveEquipmentItem(item.id)
+            end
+        end
+    end
+
+    local ext_items = EXTERNAL_ROLE_LOADOUT_ITEMS[role]
+    if ext_items then
+        for _, ext_item in pairs(ext_items) do
+            if not weapons.GetStored(ext_item) then
+                local equip = GetEquipmentItemByName(ext_item)
+                if equip ~= nil then
+                    ply:GiveEquipmentItem(equip.id)
+                end
             end
         end
     end
