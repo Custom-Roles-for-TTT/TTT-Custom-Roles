@@ -209,7 +209,9 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
     -- basic sanity check
     if nick == nil or eq == nil or role == nil then return end
 
-    local detectiveSearchOnly = GetGlobalBool("ttt_detective_search_only", true) and not (GetGlobalBool("ttt_all_search_postround", true) and GetRoundState() ~= ROUND_ACTIVE)
+    local detectiveSearchOnly = GetGlobalBool("ttt_detective_search_only", true) and
+                                    not (GetGlobalBool("ttt_all_search_postround", true) and GetRoundState() ~= ROUND_ACTIVE) and
+                                    not (GetGlobalBool("ttt_all_search_binoc", false) and ply:GetActiveWeapon() and WEPS.GetClass(ply:GetActiveWeapon()) == "weapon_ttt_binoculars")
     local credits = CORPSE.GetCredits(rag, 0)
     if ply:CanLootCredits(true) and credits > 0 and (not long_range) then
         LANG.Msg(ply, "body_credits", { num = credits })

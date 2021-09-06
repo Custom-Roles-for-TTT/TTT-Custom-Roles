@@ -237,6 +237,7 @@ ttt_doctor_credits_starting                 1       // The number of credits a d
 ttt_detective_search_only                   1       // Whether only detectives can search bodies or not
 ttt_detective_disable_looting               0       // Whether to disable a detective role's ability to loot credits from bodies
 ttt_all_search_postround                    1       // Whether non-detectives can search bodies post-round or not
+ttt_all_search_binoc                        0       // Whether non-detectives can search bodies if they are using binoculars
 
 // Paladin
 ttt_paladin_aura_radius                     5       // The radius of the paladin's aura in meters
