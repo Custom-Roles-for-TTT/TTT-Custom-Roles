@@ -15,7 +15,7 @@ CreateConVar("ttt_killer_dna_basetime", "100")
 local deadPhantoms = {}
 local deadParasites = {}
 local spirits = {}
-hook.Add("TTTPrepareRound", function()
+hook.Add("TTTPrepareRound", "CRPrepRoundCleanup", function()
     deadPhantoms = {}
     deadParasites = {}
     for _, ent in pairs(spirits) do
