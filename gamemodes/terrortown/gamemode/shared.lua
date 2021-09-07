@@ -100,7 +100,10 @@ function GetTeamRoles(list, excludes)
 end
 
 SHOP_ROLES = {}
-AddRoleAssociations(SHOP_ROLES, {ROLE_TRAITOR, ROLE_DETECTIVE, ROLE_HYPNOTIST, ROLE_DEPUTY, ROLE_IMPERSONATOR, ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_MERCENARY, ROLE_ASSASSIN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_VAMPIRE, ROLE_DOCTOR, ROLE_QUACK, ROLE_PARASITE, ROLE_PALADIN, ROLE_TRACKER, ROLE_MEDIUM})
+AddRoleAssociations(SHOP_ROLES, {ROLE_TRAITOR, ROLE_DETECTIVE, ROLE_HYPNOTIST, ROLE_DEPUTY, ROLE_IMPERSONATOR, ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_MERCENARY, ROLE_ASSASSIN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_VAMPIRE, ROLE_VETERAN, ROLE_DOCTOR, ROLE_QUACK, ROLE_PARASITE, ROLE_PALADIN, ROLE_TRACKER, ROLE_MEDIUM})
+
+DELAYED_SHOP_ROLES = {}
+AddRoleAssociations(DELAYED_SHOP_ROLES, {ROLE_CLOWN, ROLE_VETERAN})
 
 TRAITOR_ROLES = {}
 AddRoleAssociations(TRAITOR_ROLES, {ROLE_TRAITOR, ROLE_HYPNOTIST, ROLE_IMPERSONATOR, ROLE_ASSASSIN, ROLE_VAMPIRE, ROLE_QUACK, ROLE_PARASITE})
@@ -321,8 +324,13 @@ else
 
         if role == ROLE_MERCENARY then
             CreateConVar("ttt_" .. rolestring .. "_shop_mode", "2", FCVAR_REPLICATED)
-        elseif (INDEPENDENT_ROLES[role] and role ~= ROLE_ZOMBIE) or role == ROLE_CLOWN then
+        elseif (INDEPENDENT_ROLES[role] and role ~= ROLE_ZOMBIE) or DELAYED_SHOP_ROLES[role] then
             CreateConVar("ttt_" .. rolestring .. "_shop_mode", "0", FCVAR_REPLICATED)
+        end
+
+        if DELAYED_SHOP_ROLES[role] then
+            CreateConVar("ttt_" .. rolestring .. "_shop_active_only", "1")
+            CreateConVar("ttt_" .. rolestring .. "_shop_delay", "0")
         end
     end
 
@@ -339,6 +347,11 @@ else
         local mode_cvar = "ttt_" .. rolestring .. "_shop_mode"
         if ConVarExists(mode_cvar) then
             SetGlobalInt(mode_cvar, GetConVar(mode_cvar):GetInt())
+        end
+
+        if DELAYED_SHOP_ROLES[role] then
+            SetGlobalBool("ttt_" .. rolestring .. "_shop_active_only", GetConVar("ttt_" .. rolestring .. "_shop_active_only"):GetBool())
+            SetGlobalBool("ttt_" .. rolestring .. "_shop_delay", GetConVar("ttt_" .. rolestring .. "_shop_delay"):GetBool())
         end
     end
 end
@@ -665,6 +678,10 @@ function RegisterRole(tbl)
 
     if type(tbl.canusetraitorbuttons) == "boolean" then
         TRAITOR_BUTTON_ROLES[roleID] = tbl.canusetraitorbuttons
+    end
+
+    if type(tbl.shoulddelayshop) == "boolean" then
+        DELAYED_SHOP_ROLES[roleID] = tbl.shoulddelayshop
     end
 
     if tbl.loadout then

@@ -436,8 +436,8 @@ local function OrderEquipment(ply, cmd, args)
         WEPS.HandleCanBuyOverrides(swep_table, role, false, sync_traitor_weapons, sync_detective_weapons)
     end
 
-    -- Don't give clowns their items if delayed shop activated is enabled
-    local should_give = not ply:IsClown() or not GetGlobalBool("ttt_clown_shop_delay", false) or ply:GetNWBool("KillerClownActive", false)
+    -- Don't give roles their items if delayed shop is enabled
+    local should_give = not ply:ShouldDelayShopPurchase()
     local received = false
     if is_item then
         id = tonumber(id)

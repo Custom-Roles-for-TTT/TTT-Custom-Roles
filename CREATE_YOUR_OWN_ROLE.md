@@ -31,7 +31,7 @@ ROLE.desc = [[]]
 
 ROLE.team = 
 
-ROLE.shop = {}
+ROLE.shop = nil
 
 ROLE.loadout = {}
 
@@ -141,7 +141,7 @@ ROLE.team = ROLE_TEAM_TRAITOR
 The next two lines are all about shop and loadout items:
 
 ```lua
-ROLE.shop = {}  
+ROLE.shop = nil
   
 ROLE.loadout = {}
 ```
@@ -150,7 +150,9 @@ If you want your role to have access to a shop or if you want them to spawn with
 
 Traitors automatically have access to body armor, a radar and a disguiser in the shop. Detectives have access to a radar in the shop and spawn with body armor.
 
-Inside the curly brackets add the class names of any other weapons or equipment you want, separated by commas. To find the class name of a weapon or equipment you can do the following:
+To give your role a shop, first change the shop property to read: `ROLE.shop = {}`. By default a role will not have a shop. If a role is given a shop, the `ttt_%NAMERAW%_shop_random_percent`, `ttt_%NAMERAW%_shop_random_enabled`, and (if applicable) `ttt_%NAMERAW%_shop_mode` or `ttt_%NAMERAW%_shop_sync` convars will be created automatically.
+
+Inside the curly brackets for the shop or loadout add the class names of any other weapons or equipment you want, separated by commas. To find the class name of a weapon or equipment you can do the following:
 
 #### Weapon:
 1. Start a local server with TTT as the selected gamemode
@@ -176,18 +178,20 @@ ROLE.loadout = {}
 
 ### Optional Rules
 
-There are a few options for roles that aren't covered in the template because they don't apply to every role. Add any of these that you want to apply to your role's file.
+There are a few options for roles that aren't covered in the template because they don't apply to every role. Add any of these that you want to apply to your role to the file.
 
-| Option | Description |
-| --- | --- |
-| `ROLE.canlootcredits` | Whether this role can loot credits from dead bodies. Automatically enabled if the role has a shop, but setting to `false` can make it so the role has a shop but cannot loot credits. Setting this to `true` will allow this role to loot credits regardless of whether they have a shop. |
-| `ROLE.canusetraitorbuttons` | Whether this role can see and use traitor traps. Automatically enabled if the role is part of `ROLE_TEAM_TRAITOR`, but setting to `false` can make it so the role is a traitor that cannot use traitor traps. Setting to `true` will allow this role to use traitor traps regardless of their team association. |
+| Option | Description | Added in |
+| --- | --- | --- |
+| `ROLE.canlootcredits` | Whether this role can loot credits from dead bodies. Automatically enabled if the role has a shop, but setting to `false` can make it so the role has a shop but cannot loot credits. Setting this to `true` will allow this role to loot credits regardless of whether they have a shop. | 1.1.8 |
+| `ROLE.canusetraitorbuttons` | Whether this role can see and use traitor traps. Automatically enabled if the role is part of `ROLE_TEAM_TRAITOR`, but setting to `false` can make it so the role is a traitor that cannot use traitor traps. Setting to `true` will allow this role to use traitor traps regardless of their team association. | 1.1.8 |
+| `ROLE.shoulddelayshop` | Whether this role's shop purchases are delayed. Purchases will only be given to the player when `plymeta:GiveDelayedShopItems` is called by your own role logic. Enabling this feature will automatically create `ttt_%NAMERAW%_shop_active_only` and `ttt_%NAMERAW%_shop_delay` convars. Requires that the role have a shop. | 1.2.2 |
 
-The Summoner doesn't need these options to be set because it is `ROLE_TEAM_TRAITOR` and has a shop, but just for an example, here's what it would look like if we wanted to remove their credit looting and traitor trap abilities:
+The Summoner doesn't need these options to be set because it is `ROLE_TEAM_TRAITOR` and has a shop, but just for an example, here's what it would look like if we wanted to remove their credit looting and traitor trap abilities and delay their shop item delivery:
 
 ```lua
 ROLE.canlootcredits = false
 ROLE.canusetraitorbuttons = false
+ROLE.shoulddelayshop = true
 ```
 
 ### ConVars

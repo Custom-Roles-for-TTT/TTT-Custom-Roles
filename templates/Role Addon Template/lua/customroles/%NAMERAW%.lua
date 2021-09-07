@@ -10,7 +10,7 @@ ROLE.desc = [[]]
 
 ROLE.team = ROLE_TEAM_
 
-ROLE.shop = {}
+ROLE.shop = nil
 
 ROLE.loadout = {}
 

@@ -237,8 +237,6 @@ CreateConVar("ttt_clown_hide_when_active", "0")
 CreateConVar("ttt_clown_show_target_icon", "0")
 CreateConVar("ttt_clown_heal_on_activate", "0")
 CreateConVar("ttt_clown_heal_bonus", "0")
-CreateConVar("ttt_clown_shop_active_only", "1")
-CreateConVar("ttt_clown_shop_delay", "0")
 
 CreateConVar("ttt_beggar_reveal_traitor", "1")
 CreateConVar("ttt_beggar_reveal_innocent", "2")
@@ -711,8 +709,6 @@ function GM:SyncGlobals()
 
     SetGlobalBool("ttt_clown_show_target_icon", GetConVar("ttt_clown_show_target_icon"):GetBool())
     SetGlobalBool("ttt_clown_hide_when_active", GetConVar("ttt_clown_hide_when_active"):GetBool())
-    SetGlobalBool("ttt_clown_shop_active_only", GetConVar("ttt_clown_shop_active_only"):GetBool())
-    SetGlobalBool("ttt_clown_shop_delay", GetConVar("ttt_clown_shop_delay"):GetBool())
 
     SetGlobalBool("ttt_bem_allow_change", GetConVar("ttt_bem_allow_change"):GetBool())
     SetGlobalInt("ttt_bem_sv_cols", GetConVar("ttt_bem_sv_cols"):GetBool())
@@ -1670,32 +1666,7 @@ function GM:TTTCheckForWin()
 
                     -- Give the clown their shop items if purchase was delayed
                     if v.bought and GetConVar("ttt_clown_shop_delay"):GetBool() then
-                        for _, item_id in ipairs(v.bought) do
-                            local id_num = tonumber(item_id)
-                            local isequip = id_num and 1 or 0
-
-                            -- Give the item to the player
-                            if id_num then
-                                v:GiveEquipmentItem(id_num)
-                            else
-                                v:Give(item_id)
-                                local wep = weapons.GetStored(item_id)
-                                if wep and wep.WasBought then
-                                    wep:WasBought(v)
-                                end
-                            end
-
-                            -- Also let them know they bought this item "again" so hooks are called
-                            -- NOTE: The net event and the give action cannot be done at the same time because GiveEquipmentItem calls its own net event which causes an error
-                            net.Start("TTT_BoughtItem")
-                            net.WriteBit(isequip)
-                            if id_num then
-                                net.WriteInt(id_num, 32)
-                            else
-                                net.WriteString(item_id)
-                            end
-                            net.Send(v)
-                        end
+                        v:GiveDelayedShopItems()
                     end
                 end
             end

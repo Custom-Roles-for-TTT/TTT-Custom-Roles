@@ -226,6 +226,8 @@ ttt_veteran_damage_bonus                    0.5     // Damage bonus that the vet
 ttt_veteran_full_heal                       1       // Whether the veteran gets a full heal upon becoming the last remaining innocent or not
 ttt_veteran_heal_bonus                      0       // The amount of bonus health to give the veteran when they are healed as the last remaining innocent
 ttt_veteran_announce                        0       // Whether to announce to all other living players when the veteran is the last remaining innocent
+ttt_veteran_shop_active_only                1       // Whether the veteran's shop should be available only after they activate
+ttt_veteran_shop_delay                      0       // Whether the veteran's purchased shop items should be held until they activate
 
 // Doctor
 ttt_doctor_credits_starting                 1       // The number of credits a doctor should start with
@@ -435,6 +437,7 @@ ttt_parasite_shop_random_enabled            0       // Whether role shop randomi
 
 ttt_mercenary_shop_mode                     2       // What additional items are available to the mercenary in the shop (See above for possible values)
 ttt_clown_shop_mode                         0       // What additional items are available to the clown in the shop (See above for possible values)
+ttt_veteran_shop_mode                       0       // What additional items are available to the veteran in the shop (See above for possible values)
 
 // Traitor Role Shop Sync (Server or round must be restarted for changes to take effect)
 ttt_hypnotist_shop_sync                     0       // Whether hypnotists should have all weapons that vanilla traitors have in their weapon shop

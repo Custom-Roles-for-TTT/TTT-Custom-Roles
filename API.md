@@ -60,6 +60,10 @@ Variables available globally (within the defined realm)
 *Realm:* Client and Server\
 *Added in:* 1.0.0
 
+**DELAYED_SHOP_ROLES** - Lookup table for the roles whose shop purchases can be delayed.\
+*Realm:* Client and Server\
+*Added in:* 1.2.2
+
 **ROLE_NONE** - Updated to be -1 so players who have not been given a role can be identified.\
 *Realm:* Client and Server\
 *Added in:* 1.0.0
@@ -352,6 +356,10 @@ Variables available when called from a Player object (within the defined realm)
 *Realm:* Client and Server\
 *Added in:* 1.0.0
 
+**plymeta:GiveDelayedShopItems()** - Give the player their shop items that were being held due to the role having a delayed shop.\
+*Realm:* Server\
+*Added in:* 1.2.2
+
 **plymeta:IsCustom()** - Whether the player's role is not one of the three default TTT roles.\
 *Realm:* Client and Server\
 *Added in:* 1.0.0
@@ -375,6 +383,10 @@ Variables available when called from a Player object (within the defined realm)
 **plymeta:IsMonsterTeam()** - Whether the player is on the monster team.\
 *Realm:* Client and Server\
 *Added in:* 1.0.0
+
+**plymeta:IsRoleActive()** - Whether the player's role feature has been activated.\
+*Realm:* Client and Server\
+*Added in:* 1.2.2
 
 **plymeta:IsSameTeam(target)** - Whether the player is on the same team as the target.\
 *Realm:* Client and Server\
@@ -436,6 +448,10 @@ Variables available when called from a Player object (within the defined realm)
 *Added in:* 1.0.0\
 *Parameters:*
 - *isPrime* - Whether the player is a prime zombie
+
+**plymeta:ShouldDelayShopPurchase()** - Whether the player's shop purchase deliveries should be delayed.\
+*Realm:* Client and Server\
+*Added in:* 1.2.2
 
 **plymeta:SoberDrunk(team)** - Runs the logic for when a drunk sobers up and remembers their role.\
 *Realm:* Server\

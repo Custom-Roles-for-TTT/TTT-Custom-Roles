@@ -1605,6 +1605,11 @@ function GM:PlayerDeath(victim, infl, attacker)
                         v:PrintMessage(HUD_PRINTTALK, "You have been fully healed!")
                     end
                 end
+
+                -- Give the veteran their shop items if purchase was delayed
+                if v.bought and GetConVar("ttt_veteran_shop_delay"):GetBool() then
+                    v:GiveDelayedShopItems()
+                end
             end
         end
     end

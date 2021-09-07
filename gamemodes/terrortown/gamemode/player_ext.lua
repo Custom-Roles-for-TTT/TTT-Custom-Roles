@@ -678,6 +678,35 @@ function plymeta:BeginRoleChecks()
     end
 end
 
+function plymeta:GiveDelayedShopItems()
+    for _, item_id in ipairs(self.bought) do
+        local id_num = tonumber(item_id)
+        local isequip = id_num and 1 or 0
+
+        -- Give the item to the player
+        if id_num then
+            self:GiveEquipmentItem(id_num)
+        else
+            self:Give(item_id)
+            local wep = weapons.GetStored(item_id)
+            if wep and wep.WasBought then
+                wep:WasBought(self)
+            end
+        end
+
+        -- Also let them know they bought this item "again" so hooks are called
+        -- NOTE: The net event and the give action cannot be done at the same time because GiveEquipmentItem calls its own net event which causes an error
+        net.Start("TTT_BoughtItem")
+        net.WriteBit(isequip)
+        if id_num then
+            net.WriteInt(id_num, 32)
+        else
+            net.WriteString(item_id)
+        end
+        net.Send(self)
+    end
+end
+
 local oldSpectate = plymeta.Spectate
 function plymeta:Spectate(type)
     oldSpectate(self, type)
