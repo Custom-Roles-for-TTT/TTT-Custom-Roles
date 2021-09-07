@@ -19,7 +19,9 @@ hook.Add("TTTPrepareRound", "CRPrepRoundCleanup", function()
     deadPhantoms = {}
     deadParasites = {}
     for _, ent in pairs(spirits) do
-        ent:Remove()
+        if ent then
+            ent:Remove()
+        end
     end
     table.Empty(spirits)
 end)
