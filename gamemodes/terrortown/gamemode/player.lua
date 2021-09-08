@@ -19,7 +19,7 @@ hook.Add("TTTPrepareRound", "CRPrepRoundCleanup", function()
     deadPhantoms = {}
     deadParasites = {}
     for _, ent in pairs(spirits) do
-        if ent then
+        if ent and IsValid(ent) then
             ent:Remove()
         end
     end
@@ -520,7 +520,7 @@ function GM:PlayerDisconnected(ply)
     end
 
     local sid = ply:SteamID64()
-    if spirits[sid] then
+    if spirits[sid] and IsValid(spirits[sid]) then
         spirits[sid]:Remove()
     end
     spirits[sid] = nil
