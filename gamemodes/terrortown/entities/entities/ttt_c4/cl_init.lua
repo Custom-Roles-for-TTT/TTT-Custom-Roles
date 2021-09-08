@@ -12,7 +12,7 @@ local PT = LANG.GetParamTranslation
 ---- ARMING
 
 -- Initial bomb arming
-function ShowC4Config(bomb)
+local function ShowC4Config(bomb)
     local dframe = vgui.Create("DFrame")
     local w, h = 350, 270
     dframe:SetSize(w, h)
@@ -283,7 +283,7 @@ surface.CreateFont("C4Timer", {
 
 local disarm_success, disarm_fail
 
-function ShowC4Disarm(bomb)
+local function ShowC4Disarm(bomb)
     local dframe = vgui.Create("DFrame")
     local w, h = 420, 340
     dframe:SetSize(w, h)
