@@ -943,9 +943,9 @@ function GM:PlayerFootstep(ply, pos, foot, sound, volume, rf)
             net.WriteTable(Color(col.x * 255, col.y * 255, col.z * 255))
             net.WriteUInt(tracker_footstep_time, 8)
             local tab = {}
-            for k, ply in pairs(player.GetAll()) do
-                if ply:IsActiveTracker() then
-                    table.insert(tab, ply)
+            for k, p in pairs(player.GetAll()) do
+                if p:IsActiveTracker() then
+                    table.insert(tab, p)
                 end
             end
             net.Send(tab)
@@ -991,7 +991,7 @@ function GetSprintMultiplier(ply, sprinting)
         end
 
         local wep = ply:GetActiveWeapon()
-        if wep and IsValid(wep) then
+        if IsValid(wep) then
             local weaponClass = wep:GetClass()
             if weaponClass == "genji_melee" then
                 return 1.4 * mult

@@ -116,24 +116,25 @@ function SWEP:OpenEnt(hitEnt)
 end
 
 function SWEP:PrimaryAttack()
-    self.Weapon:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
+    self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 
-    if not IsValid(self:GetOwner()) then return end
+    local owner = self:GetOwner()
+    if not IsValid(owner) then return end
 
-    if self:GetOwner().LagCompensation then -- for some reason not always true
-        self:GetOwner():LagCompensation(true)
+    if owner.LagCompensation then -- for some reason not always true
+        owner:LagCompensation(true)
     end
 
-    local spos = self:GetOwner():GetShootPos()
-    local sdest = spos + (self:GetOwner():GetAimVector() * 70)
+    local spos = owner:GetShootPos()
+    local sdest = spos + (owner:GetAimVector() * 70)
 
-    local tr_main = util.TraceLine({ start = spos, endpos = sdest, filter = self:GetOwner(), mask = MASK_SHOT_HULL })
+    local tr_main = util.TraceLine({ start = spos, endpos = sdest, filter = owner, mask = MASK_SHOT_HULL })
     local hitEnt = tr_main.Entity
 
-    self.Weapon:EmitSound(sound_single)
+    self:EmitSound(sound_single)
 
     if IsValid(hitEnt) or tr_main.HitWorld then
-        self.Weapon:SendWeaponAnim(ACT_VM_HITCENTER)
+        self:SendWeaponAnim(ACT_VM_HITCENTER)
 
         if not (CLIENT and (not IsFirstTimePredicted())) then
             local edata = EffectData()
@@ -153,46 +154,43 @@ function SWEP:PrimaryAttack()
 
                 -- do a bullet just to make blood decals work sanely
                 -- need to disable lagcomp because firebullets does its own
-                self:GetOwner():LagCompensation(false)
-                self:GetOwner():FireBullets({ Num = 1, Src = spos, Dir = self:GetOwner():GetAimVector(), Spread = Vector(0, 0, 0), Tracer = 0, Force = 1, Damage = 0 })
+                owner:LagCompensation(false)
+                owner:FireBullets({ Num = 1, Src = spos, Dir = owner:GetAimVector(), Spread = Vector(0, 0, 0), Tracer = 0, Force = 1, Damage = 0 })
             else
                 util.Effect("Impact", edata)
             end
         end
     else
-        self.Weapon:SendWeaponAnim(ACT_VM_MISSCENTER)
+        self:SendWeaponAnim(ACT_VM_MISSCENTER)
     end
 
-    if CLIENT then
-        -- used to be some shit here
-    else -- SERVER
-
+    if SERVER then
         -- Do another trace that sees nodraw stuff like func_button
         local tr_all = nil
-        tr_all = util.TraceLine({ start = spos, endpos = sdest, filter = self:GetOwner() })
+        tr_all = util.TraceLine({ start = spos, endpos = sdest, filter = owner })
 
-        self:GetOwner():SetAnimation(PLAYER_ATTACK1)
+        owner:SetAnimation(PLAYER_ATTACK1)
 
-        if hitEnt and hitEnt:IsValid() then
-            if self:OpenEnt(hitEnt) == OPEN_NO and tr_all.Entity and tr_all.Entity:IsValid() then
+        if IsValid(hitEnt) then
+            if self:OpenEnt(hitEnt) == OPEN_NO and IsValid(tr_all.Entity) then
                 -- See if there's a nodraw thing we should open
                 self:OpenEnt(tr_all.Entity)
             end
 
             local dmg = DamageInfo()
             dmg:SetDamage(self.Primary.Damage)
-            dmg:SetAttacker(self:GetOwner())
-            dmg:SetInflictor(self.Weapon)
-            dmg:SetDamageForce(self:GetOwner():GetAimVector() * 1500)
-            dmg:SetDamagePosition(self:GetOwner():GetPos())
+            dmg:SetAttacker(owner)
+            dmg:SetInflictor(self)
+            dmg:SetDamageForce(owner:GetAimVector() * 1500)
+            dmg:SetDamagePosition(owner:GetPos())
             dmg:SetDamageType(DMG_CLUB)
 
-            hitEnt:DispatchTraceAttack(dmg, spos + (self:GetOwner():GetAimVector() * 3), sdest)
+            hitEnt:DispatchTraceAttack(dmg, spos + (owner:GetAimVector() * 3), sdest)
 
             --         self.Weapon:SendWeaponAnim( ACT_VM_HITCENTER )
 
-            --         self:GetOwner():TraceHullAttack(spos, sdest, Vector(-16,-16,-16), Vector(16,16,16), 30, DMG_CLUB, 11, true)
-            --         self:GetOwner():FireBullets({Num=1, Src=spos, Dir=self:GetOwner():GetAimVector(), Spread=Vector(0,0,0), Tracer=0, Force=1, Damage=20})
+            --         owner:TraceHullAttack(spos, sdest, Vector(-16,-16,-16), Vector(16,16,16), 30, DMG_CLUB, 11, true)
+            --         owner:FireBullets({Num=1, Src=spos, Dir=owner:GetAimVector(), Spread=Vector(0,0,0), Tracer=0, Force=1, Damage=20})
 
         else
             --         if tr_main.HitWorld then
@@ -202,28 +200,29 @@ function SWEP:PrimaryAttack()
             --         end
 
             -- See if our nodraw trace got the goods
-            if tr_all.Entity and tr_all.Entity:IsValid() then
+            if IsValid(tr_all.Entity) then
                 self:OpenEnt(tr_all.Entity)
             end
         end
     end
 
-    if self:GetOwner().LagCompensation then
-        self:GetOwner():LagCompensation(false)
+    if owner.LagCompensation then
+        owner:LagCompensation(false)
     end
 end
 
 function SWEP:SecondaryAttack()
-    self.Weapon:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-    self.Weapon:SetNextSecondaryFire(CurTime() + 0.1)
+    self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
+    self:SetNextSecondaryFire(CurTime() + 0.1)
 
-    if self:GetOwner().LagCompensation then
-        self:GetOwner():LagCompensation(true)
+    local owner = self:GetOwner()
+    if owner.LagCompensation then
+        owner:LagCompensation(true)
     end
 
-    local tr = self:GetOwner():GetEyeTrace(MASK_SHOT)
+    local tr = owner:GetEyeTrace(MASK_SHOT)
 
-    if tr.Hit and IsValid(tr.Entity) and tr.Entity:IsPlayer() and (self:GetOwner():EyePos() - tr.HitPos):Length() < 100 then
+    if tr.Hit and IsPlayer(tr.Entity) and (owner:EyePos() - tr.HitPos):Length() < 100 then
         local ply = tr.Entity
 
         if SERVER and (not ply:IsFrozen()) then
@@ -233,19 +232,19 @@ function SWEP:SecondaryAttack()
             pushvel.z = math.Clamp(pushvel.z, 50, 100)
 
             ply:SetVelocity(ply:GetVelocity() + pushvel)
-            self:GetOwner():SetAnimation(PLAYER_ATTACK1)
+            owner:SetAnimation(PLAYER_ATTACK1)
 
-            ply.was_pushed = { att = self:GetOwner(), t = CurTime(), wep = self:GetClass() } --, infl=self}
+            ply.was_pushed = { att = owner, t = CurTime(), wep = self:GetClass() } --, infl=self}
         end
 
-        self.Weapon:EmitSound(sound_single)
-        self.Weapon:SendWeaponAnim(ACT_VM_HITCENTER)
+        self:EmitSound(sound_single)
+        self:SendWeaponAnim(ACT_VM_HITCENTER)
 
-        self.Weapon:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
+        self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
     end
 
-    if self:GetOwner().LagCompensation then
-        self:GetOwner():LagCompensation(false)
+    if owner.LagCompensation then
+        owner:LagCompensation(false)
     end
 end
 

@@ -19,9 +19,7 @@ hook.Add("TTTPrepareRound", "CRPrepRoundCleanup", function()
     deadPhantoms = {}
     deadParasites = {}
     for _, ent in pairs(spirits) do
-        if ent and IsValid(ent) then
-            ent:Remove()
-        end
+        SafeRemoveEntity(ent)
     end
     table.Empty(spirits)
 end)
@@ -99,9 +97,7 @@ function GM:PlayerSpawn(ply)
     ply:UnSpectate()
 
     local sid = ply:SteamID64()
-    if spirits[sid] and IsValid(spirits[sid]) then
-        spirits[sid]:Remove()
-    end
+    SafeRemoveEntity(spirits[sid])
     spirits[sid] = nil
 
     -- ye olde hooks
@@ -150,7 +146,7 @@ function GM:IsSpawnpointSuitable(ply, spwn, force, rigged)
     local blocking = ents.FindInBox(pos + Vector(-16, -16, 0), pos + Vector(16, 16, 64))
 
     for _, p in ipairs(blocking) do
-        if IsValid(p) and p:IsPlayer() and p:IsTerror() and p:Alive() then
+        if IsPlayer(p) and p:IsTerror() and p:Alive() then
             if force then
                 p:Kill()
             else
@@ -200,7 +196,8 @@ local function PointsAroundSpawn(spwn)
     if not IsValid(spwn) then return {} end
     local pos = spwn:GetPos()
 
-    local w, h = 36, 72 -- bit roomier than player hull
+    local w = 36 -- bit roomier than player hull
+    --local h = 72
 
     -- all rigged positions
     -- could be done without typing them out, but would take about as much time
@@ -345,7 +342,7 @@ function GM:KeyPress(ply, key)
 
         if key == IN_RELOAD then
             local tgt = ply:GetObserverTarget()
-            if not IsValid(tgt) or not tgt:IsPlayer() then return end
+            if not IsPlayer(tgt) then return end
 
             if not ply.spec_mode or ply.spec_mode == OBS_MODE_CHASE then
                 ply.spec_mode = OBS_MODE_IN_EYE
@@ -436,7 +433,7 @@ function GM:KeyPress(ply, key)
             -- They can use the reload key if they want to return to the person they're spectating
             if ply:GetObserverMode() ~= OBS_MODE_ROAMING then
                 local target = ply:GetObserverTarget()
-                if IsValid(target) and target:IsPlayer() then
+                if IsPlayer(target) then
                     pos = target:EyePos()
                     ang = target:EyeAngles()
                 end
@@ -479,7 +476,7 @@ function GM:KeyRelease(ply, key)
                     return true
                 end
             elseif tr.Entity.player_ragdoll then
-                CORPSE.ShowSearch(ply, tr.Entity, (ply:KeyDown(IN_WALK) or ply:KeyDownLast(IN_WALK)))
+                CORPSE.ShowSearch(ply, tr.Entity, ply:KeyDown(IN_WALK) or ply:KeyDownLast(IN_WALK))
                 return true
             end
         end
@@ -520,9 +517,7 @@ function GM:PlayerDisconnected(ply)
     end
 
     local sid = ply:SteamID64()
-    if spirits[sid] and IsValid(spirits[sid]) then
-        spirits[sid]:Remove()
-    end
+    SafeRemoveEntity(spirits[sid])
     spirits[sid] = nil
 
     if GetRoundState() ~= ROUND_PREP then
@@ -589,11 +584,11 @@ local function CheckCreditAward(victim, attacker)
     if GetRoundState() ~= ROUND_ACTIVE then return end
     if not IsValid(victim) then return end
 
-    local valid_attacker = IsValid(attacker) and attacker:IsPlayer()
+    local valid_attacker = IsPlayer(attacker)
 
     -- DETECTIVE AWARD
     if valid_attacker and (victim:IsTraitorTeam() or victim:IsMonsterTeam() or victim:IsKiller() or victim:IsZombie()) then
-        local amt = GetConVarNumber("ttt_det_credits_traitordead") or 1
+        local amt = GetConVar("ttt_det_credits_traitordead"):GetInt()
 
         -- If size is 0, awards are off
         if amt > 0 then
@@ -635,9 +630,9 @@ local function CheckCreditAward(victim, attacker)
         end
 
         local pct = inno_dead / inno_total
-        if pct >= GetConVarNumber("ttt_credits_award_pct") then
+        if pct >= GetConVar("ttt_credits_award_pct"):GetFloat() then
             -- Traitors have killed sufficient people to get an award
-            local amt = GetConVarNumber("ttt_credits_award_size")
+            local amt = GetConVar("ttt_credits_award_size"):GetInt()
 
             -- If size is 0, awards are off
             if amt > 0 then
@@ -683,9 +678,9 @@ local function CheckCreditAward(victim, attacker)
         end
 
         local pct = ply_dead / ply_total
-        if pct >= GetConVarNumber("ttt_credits_award_pct") then
+        if pct >= GetConVar("ttt_credits_award_pct"):GetFloat() then
             -- Traitors have killed sufficient people to get an award
-            local amt = GetConVarNumber("ttt_credits_award_size")
+            local amt = GetConVar("ttt_credits_award_size"):GetInt()
 
             -- If size is 0, awards are off
             if amt > 0 then
@@ -731,9 +726,9 @@ local function CheckCreditAward(victim, attacker)
         end
 
         local pct = ply_dead / ply_total
-        if pct >= GetConVarNumber("ttt_credits_award_pct") then
+        if pct >= GetConVar("ttt_credits_award_pct"):GetFloat() then
             -- Traitors have killed sufficient people to get an award
-            local amt = GetConVarNumber("ttt_credits_award_size")
+            local amt = GetConVar("ttt_credits_award_size"):GetInt()
 
             -- If size is 0, awards are off
             if amt > 0 then
@@ -775,7 +770,7 @@ function FindRespawnLocation(pos)
 
         local tr = util.TraceHull(t)
 
-        if not tr.Hit then return (v - Vector(0, 0, midsize.z / 2)) end
+        if not tr.Hit then return v - Vector(0, 0, midsize.z / 2) end
     end
 
     return false
@@ -858,9 +853,7 @@ local function DoRespawn(ply)
     local body = ply.server_ragdoll or ply:GetRagdollEntity()
     ply:SpawnForRound(true)
     ply:SetHealth(ply:GetMaxHealth())
-    if IsValid(body) then
-        body:Remove()
-    end
+    SafeRemoveEntity(body)
 end
 
 local function DoParasiteRespawnWithoutBody(parasite, hide_messages)
@@ -922,7 +915,7 @@ local function DoParasiteRespawn(parasite, attacker, hide_messages)
 
         local health = GetConVar("ttt_parasite_respawn_health"):GetInt()
         parasite:SetHealth(health)
-        if IsValid(parasiteBody) then parasiteBody:Remove() end
+        SafeRemoveEntity(parasiteBody)
         if attacker:Alive() then
             attacker:Kill()
         end
@@ -1028,7 +1021,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
 
     -- Handle assassin kills
     local attackertarget = attacker:GetNWString("AssassinTarget", "")
-    if attacker:IsPlayer() and attacker:IsAssassin() and ply ~= attacker and ply:Nick() ~= attackertarget and (attackertarget ~= "" or timer.Exists(attacker:Nick() .. "AssassinTarget")) then
+    if IsPlayer(attacker) and attacker:IsAssassin() and ply ~= attacker and ply:Nick() ~= attackertarget and (attackertarget ~= "" or timer.Exists(attacker:Nick() .. "AssassinTarget")) then
         timer.Remove(attacker:Nick() .. "AssassinTarget")
         attacker:PrintMessage(HUD_PRINTCENTER, "Contract failed. You killed the wrong player.")
         attacker:PrintMessage(HUD_PRINTTALK, "Contract failed. You killed the wrong player.")
@@ -1068,7 +1061,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
                 local transfer = GetConVar("ttt_parasite_infection_transfer"):GetBool()
                 local suicideMode = GetConVar("ttt_parasite_infection_suicide_mode"):GetInt()
                 -- Transfer the infection to the new attacker if there is one, they are alive, the parasite is still alive, and the transfer feature is enabled
-                if attacker:IsPlayer() and attacker:Alive() and parasiteDead and transfer then
+                if IsPlayer(attacker) and attacker:Alive() and parasiteDead and transfer then
                     deadParasites[key].attacker = attacker:SteamID64()
                     HandleParasiteInfection(attacker, deadParasite, not GetConVar("ttt_parasite_infection_transfer_reset"):GetBool())
                     timer.Create(deadParasite:Nick() .. "InfectingSpectate", 1, 1, function()
@@ -1115,7 +1108,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
         -- shit.
     end
 
-    local valid_kill = IsValid(attacker) and attacker:IsPlayer() and attacker ~= ply and GetRoundState() == ROUND_ACTIVE
+    local valid_kill = IsPlayer(attacker) and attacker ~= ply and GetRoundState() == ROUND_ACTIVE
     -- Don't drop Swapper weapons when they are killed by a player because they are about to be resurrected anyway
     local clear_weapons = not valid_kill or not ply:IsSwapper()
     if clear_weapons then
@@ -1149,7 +1142,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
     if GetRoundState() == ROUND_ACTIVE then
         SCORE:HandleKill(ply, attacker, dmginfo)
 
-        if IsValid(attacker) and attacker:IsPlayer() then
+        if IsPlayer(attacker) then
             attacker:RecordKill(ply)
 
             if GetConVar("ttt_debug_logkills"):GetBool() then
@@ -1185,7 +1178,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
     CheckCreditAward(ply, attacker)
 
     -- Check for T killing D or vice versa
-    if IsValid(attacker) and attacker:IsPlayer() then
+    if IsPlayer(attacker) then
         local reward = 0
         if attacker:IsActiveTraitorTeam() and ply:IsDetectiveTeam() then
             reward = math.ceil(GetConVar("ttt_credits_detectivekill"):GetInt())
@@ -1255,7 +1248,7 @@ local function StripPlayerWeaponAndAmmo(ply, weap_info)
 end
 
 function GM:PlayerDeath(victim, infl, attacker)
-    local valid_kill = IsValid(attacker) and attacker:IsPlayer() and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
+    local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     -- Handle phantom death
     if valid_kill and victim:IsPhantom() and not victim:GetNWBool("IsZombifying", false) then
         attacker:SetNWBool("Haunted", true)
@@ -1696,7 +1689,7 @@ function GM:SpectatorThink(ply)
     -- when speccing a player
     if ply:GetObserverMode() ~= OBS_MODE_ROAMING and (not ply.propspec) and (not ply:GetRagdollSpec()) then
         local tgt = ply:GetObserverTarget()
-        if IsValid(tgt) and tgt:IsPlayer() then
+        if IsPlayer(tgt) then
             if (not tgt:IsTerror()) or (not tgt:Alive()) then
                 -- stop speccing as soon as target dies
                 ply:Spectate(OBS_MODE_ROAMING)
@@ -1730,7 +1723,7 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
     end
 
     local att = dmginfo:GetAttacker()
-    if IsValid(att) and att:IsPlayer() then
+    if IsPlayer(att) then
         -- Only apply damage scaling after the round starts
         if GetRoundState() >= ROUND_ACTIVE then
             -- Jesters can't deal damage
@@ -1876,6 +1869,7 @@ local fallsounds = {
 function GM:OnPlayerHitGround(ply, in_water, on_floater, speed)
     if ((ply:IsJesterTeam() and not ply:GetNWBool("KillerClownActive", false)) or ply:IsZombie()) and GetRoundState() >= ROUND_ACTIVE then
         -- Jester team and Zombie don't take fall damage
+        return
     else
         if in_water or speed < 450 or not IsValid(ply) then return end
 
@@ -1888,7 +1882,7 @@ function GM:OnPlayerHitGround(ply, in_water, on_floater, speed)
 
         -- if we fell on a dude, that hurts (him)
         local ground = ply:GetGroundEntity()
-        if IsValid(ground) and ground:IsPlayer() then
+        if IsPlayer(ground) then
             if math.floor(damage) > 0 then
                 local att = ply
 
@@ -1970,13 +1964,13 @@ function GM:EntityTakeDamage(ent, dmginfo)
 
         -- No zombie team killing
         -- This can be funny, but it can also be used by frustrated players who didn't appreciate being zombified
-        if ent:IsZombie() and att:IsPlayer() and att:IsZombieAlly() then
+        if ent:IsZombie() and IsPlayer(att) and att:IsZombieAlly() then
             dmginfo:ScaleDamage(0)
             dmginfo:SetDamage(0)
         end
 
         -- Prevent damage from non-bullet weapons
-        if att:IsPlayer() and att:IsJesterTeam() and not att:GetNWBool("KillerClownActive", false) then
+        if IsPlayer(att) and att:IsJesterTeam() and not att:GetNWBool("KillerClownActive", false) then
             dmginfo:ScaleDamage(0)
             dmginfo:SetDamage(0)
         end
@@ -1984,7 +1978,7 @@ function GM:EntityTakeDamage(ent, dmginfo)
 
     if not GAMEMODE:AllowPVP() then
         -- if player vs player damage, or if damage versus a prop, then zero
-        if ent:IsExplosive() or (ent:IsPlayer() and IsValid(att) and att:IsPlayer()) then
+        if ent:IsExplosive() or (ent:IsPlayer() and IsPlayer(att)) then
             dmginfo:ScaleDamage(0)
             dmginfo:SetDamage(0)
         end
@@ -1994,7 +1988,7 @@ function GM:EntityTakeDamage(ent, dmginfo)
         -- When a barrel hits a player, that player damages the barrel because
         -- Source physics. This gives stupid results like a player who gets hit
         -- with a barrel being blamed for killing himself or even his attacker.
-        if IsValid(att) and att:IsPlayer() and
+        if IsPlayer(att) and
                 dmginfo:IsDamageType(DMG_CRUSH) and
                 IsValid(ent:GetPhysicsAttacker()) then
 
@@ -2031,10 +2025,9 @@ function GM:PlayerTakeDamage(ent, infl, att, amount, dmginfo)
             owner = hurter:GetDriver()
         end
 
-
         -- if we were hurt by a trap OR by a non-ply ent, and we were pushed
         -- recently, then our pusher is the attacker
-        if owner_time or (not IsValid(att)) or (not att:IsPlayer()) then
+        if owner_time or not IsPlayer(att) then
             local push = ent.was_pushed
 
             if push and IsValid(push.att) and push.t then
@@ -2101,7 +2094,7 @@ function GM:PlayerTakeDamage(ent, infl, att, amount, dmginfo)
             dmginfo:ScaleDamage(0.25)
 
             -- if the prop is held, no damage
-            if IsValid(infl) and IsValid(infl:GetOwner()) and infl:GetOwner():IsPlayer() then
+            if IsValid(infl) and IsPlayer(infl:GetOwner()) then
                 dmginfo:ScaleDamage(0)
                 dmginfo:SetDamage(0)
             end
@@ -2136,7 +2129,7 @@ function GM:PlayerTakeDamage(ent, infl, att, amount, dmginfo)
     -- Handle fire attacker
     if ignite_info and dmginfo:IsDamageType(DMG_DIRECT) then
         local datt = dmginfo:GetAttacker()
-        if (not IsValid(datt) or not datt:IsPlayer()) and IsValid(ignite_info.att) and IsValid(ignite_info.infl) then
+        if not IsPlayer(datt) and IsValid(ignite_info.att) and IsValid(ignite_info.infl) then
             dmginfo:SetAttacker(ignite_info.att)
             dmginfo:SetInflictor(ignite_info.infl)
 
@@ -2162,8 +2155,7 @@ function GM:PlayerTakeDamage(ent, infl, att, amount, dmginfo)
     util.StartBleeding(ent, dmginfo:GetDamage(), 5)
 
     -- general actions for pvp damage
-    if ent ~= att and IsValid(att) and att:IsPlayer() and GetRoundState() == ROUND_ACTIVE and math.floor(dmginfo:GetDamage()) > 0 then
-
+    if ent ~= att and IsPlayer(att) and GetRoundState() == ROUND_ACTIVE and math.floor(dmginfo:GetDamage()) > 0 then
         -- scale everything to karma damage factor except the knife, because it
         -- assumes a kill
         if not dmginfo:IsDamageType(DMG_SLASH) then
@@ -2177,7 +2169,6 @@ function GM:PlayerTakeDamage(ent, infl, att, amount, dmginfo)
             DamageLog(Format("DMG: \t %s [%s] damaged %s [%s] for %d dmg", att:Nick(), att:GetRoleString(), ent:Nick(), ent:GetRoleString(), math.Round(dmginfo:GetDamage())))
         end
     end
-
 end
 
 function GM:OnNPCKilled() end
@@ -2327,7 +2318,7 @@ end
 
 local function GetKillerPlayer()
     for _, v in pairs(player.GetAll()) do
-        if v:Team() == TEAM_TERROR and v:IsTerror() and v:IsKiller() then
+        if v:IsActiveKiller() then
             return v
         end
     end
@@ -2371,7 +2362,7 @@ local function HandleKillerSmokeTick()
 end
 
 timer.Create("KillerKillCheckTimer", 1, 0, function()
-    local killer = GetKillerPlayer();
+    local killer = GetKillerPlayer()
     if GetRoundState() == ROUND_ACTIVE and GetConVar("ttt_killer_smoke_enabled"):GetBool() and killer ~= nil then
         killerSmokeTime = killerSmokeTime + 1
 

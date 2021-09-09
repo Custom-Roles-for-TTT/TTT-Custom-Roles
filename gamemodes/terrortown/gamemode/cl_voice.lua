@@ -173,7 +173,7 @@ local radioframe = nil
 
 function RADIO:ShowRadioCommands(state)
     if not state then
-        if radioframe and radioframe:IsValid() then
+        if IsValid(radioframe) then
             radioframe:Remove()
             radioframe = nil
 
@@ -198,7 +198,8 @@ function RADIO:ShowRadioCommands(state)
 
             -- ASS
             radioframe.ForceResize = function(s)
-                local w, label = 0, nil
+                w = 0
+                local label = nil
                 for k, v in pairs(s.Items) do
                     label = v:GetChild(0)
                     if label:GetWide() > w then
@@ -288,7 +289,6 @@ function RADIO:GetTargetType()
     if not trace or (not trace.Hit) or (not IsValid(trace.Entity)) then return end
 
     local ent = trace.Entity
-
     if ent:IsPlayer() and ent:IsTerror() then
         if ent:GetNWBool("disguised", false) then
             return "quick_disg", true
@@ -296,7 +296,6 @@ function RADIO:GetTargetType()
             return ent, false
         end
     elseif ent:GetClass() == "prop_ragdoll" and CORPSE.GetPlayerNick(ent, "") ~= "" then
-
         if DetectiveMode() and not CORPSE.GetFound(ent, false) then
             return "quick_corpse", true
         else
@@ -410,7 +409,7 @@ local function RadioMsgRecv()
     local msg = net.ReadString()
     local param = net.ReadString()
 
-    if not (IsValid(sender) and sender:IsPlayer()) then return end
+    if not IsPlayer(sender) then return end
 
     GAMEMODE:PlayerSentRadioCommand(sender, msg, param)
 
@@ -529,9 +528,9 @@ function GM:PlayerStartVoice(ply)
     pnl:Dock(TOP)
 
     local oldThink = pnl.Think
-    pnl.Think = function(self)
-        oldThink(self)
-        VoiceNotifyThink(self)
+    pnl.Think = function(p)
+        oldThink(p)
+        VoiceNotifyThink(p)
     end
 
     local shade = Color(0, 0, 0, 150)
@@ -624,8 +623,6 @@ local function CreateVoiceVGUI()
     MutedState:SetVisible(false)
 end
 hook.Add("InitPostEntity", "CreateVoiceVGUI", CreateVoiceVGUI)
-
-local MuteStates = { MUTE_NONE, MUTE_TERROR, MUTE_ALL, MUTE_SPEC }
 
 local MuteText = {
     [MUTE_NONE] = "",

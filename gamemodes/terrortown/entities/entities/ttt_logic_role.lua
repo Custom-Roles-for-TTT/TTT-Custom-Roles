@@ -19,10 +19,9 @@ function ENT:KeyValue(key, value)
     end
 end
 
-
 function ENT:AcceptInput(name, activator)
     if name == "TestActivator" then
-        if IsValid(activator) and activator:IsPlayer() then
+        if IsPlayer(activator) then
             local traitorTest = false
             local innocentTest =  false
             local jesterTest = false

@@ -4,21 +4,21 @@ include("shared.lua")
 ENT.DidCollide = false
 
 function ENT:Initialize()
-    self.Entity:SetModel("models/weapons/w_bugbait.mdl")
+    self:SetModel("models/weapons/w_bugbait.mdl")
     self:PrecacheGibs()
-    self.Entity:PhysicsInit(SOLID_VPHYSICS)
-    self.Entity:SetMoveType(MOVETYPE_VPHYSICS)
-    self.Entity:SetSolid(SOLID_VPHYSICS)
+    self:PhysicsInit(SOLID_VPHYSICS)
+    self:SetMoveType(MOVETYPE_VPHYSICS)
+    self:SetSolid(SOLID_VPHYSICS)
 
-    local phys = self.Entity:GetPhysicsObject()
-    if phys:IsValid() then
+    local phys = self:GetPhysicsObject()
+    if IsValid(phys) then
         phys:Wake()
     end
 end
 
 function ENT:PhysicsCollide(data, physObj)
     if not self.DidCollide then
-        if data.HitEntity:IsPlayer() then
+        if IsPlayer(data.HitEntity) then
             local dmginfo = DamageInfo()
             dmginfo:SetDamage(50)
             dmginfo:SetAttacker(self:GetOwner())
@@ -50,5 +50,4 @@ function ENT:Think()
 end
 
 function ENT:Break()
-
 end

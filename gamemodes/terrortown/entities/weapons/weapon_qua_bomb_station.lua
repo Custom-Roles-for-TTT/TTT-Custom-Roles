@@ -51,11 +51,11 @@ function SWEP:OnDrop()
 end
 
 function SWEP:PrimaryAttack()
-    self.Weapon:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
+    self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
     self:BombDrop()
 end
 function SWEP:SecondaryAttack()
-    self.Weapon:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
+    self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
     self:BombDrop()
 end
 

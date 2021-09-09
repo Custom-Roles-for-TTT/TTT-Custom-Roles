@@ -596,7 +596,7 @@ function GM:Initialize()
 
     local cstrike = false
     for _, g in ipairs(engine.GetGames()) do
-        if g.folder == 'cstrike' then cstrike = true end
+        if g.folder == "cstrike" then cstrike = true end
     end
     if not cstrike then
         ErrorNoHalt("TTT WARNING: CS:S does not appear to be mounted by GMod. Things may break in strange ways. Server admin? Check the TTT readme for help.\n")
@@ -844,7 +844,7 @@ function StartNameChangeChecks()
 end
 
 local function OnPlayerDeath(victim, infl, attacker)
-    if victim:IsJester() and attacker:IsPlayer() and (not attacker:IsJesterTeam()) and GetRoundState() == ROUND_ACTIVE then
+    if victim:IsJester() and IsPlayer(attacker) and (not attacker:IsJesterTeam()) and GetRoundState() == ROUND_ACTIVE then
         -- Don't track that the jester was killed (for win reporting) if they were killed by a traitor
         -- and the functionality that blocks Jester wins from Traitor deaths is enabled
         if GetConVar("ttt_jester_win_by_traitors"):GetBool() or not attacker:IsTraitorTeam() then
@@ -1846,7 +1846,7 @@ function SelectRoles()
                     forcedDetectiveCount = forcedDetectiveCount + 1
                 elseif DETECTIVE_ROLES[role] then
                     forcedSpecialDetectiveCount = forcedSpecialDetectiveCount + 1
-                elseif INNOCENT_ROLES[role] and not role == ROLE_INNOCENT then
+                elseif INNOCENT_ROLES[role] and role ~= ROLE_INNOCENT then
                     forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
                 elseif JESTER_ROLES[role] or INDEPENDENT_ROLES[role] then
                     forcedIndependentCount = forcedIndependentCount + 1
@@ -2190,7 +2190,7 @@ hook.Add("EntityTakeDamage", "HitmarkerDetector", function(ent, dmginfo)
     local att = dmginfo:GetAttacker()
     local pos = dmginfo:GetDamagePosition()
 
-    if (IsValid(att) and att:IsPlayer() and att ~= ent) then
+    if IsPlayer(att) and att ~= ent then
         if (ent:IsPlayer() or ent:IsNPC()) then -- Only players and NPCs show hitmarkers
             local drawCrit = ent:GetNWBool("LastHitCrit") and not GetConVar("ttt_disable_headshots"):GetBool()
 

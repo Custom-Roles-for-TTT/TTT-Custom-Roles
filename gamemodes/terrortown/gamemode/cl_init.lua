@@ -856,7 +856,7 @@ hook.Add("TTTPrepareRound", "TTTSprintPrepareRound", function()
             end
 
             if GetRoundState() ~= ROUND_WAIT then
-                if IsValid(client) and client:IsPlayer() and (client:IsTraitorTeam() or client:IsMonsterTeam() or client:IsIndependentTeam()) then
+                if IsPlayer(client) and (client:IsTraitorTeam() or client:IsMonsterTeam() or client:IsIndependentTeam()) then
                     stamina = stamina + (CurTime() - recoveryTimer) * traitorRecovery * 250
                 else
                     stamina = stamina + (CurTime() - recoveryTimer) * recovery * 250
@@ -875,7 +875,7 @@ hook.Add("TTTPrepareRound", "TTTSprintPrepareRound", function()
         elseif stamina > 100 then
             stamina = 100
         end
-        if IsValid(client) and client:IsPlayer() then
+        if IsPlayer(client) then
             client:SetNWFloat("sprintMeter", stamina)
         end
     end)

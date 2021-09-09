@@ -172,7 +172,7 @@ function SWEP:Drain(entity)
 end
 
 function SWEP:CancelUnfreeze(entity)
-    if not IsValid(entity) or not entity:IsPlayer() then return end
+    if not IsPlayer(entity) then return end
     if not IsValid(self:GetOwner()) then return end
     local timerid = "VampUnfreezeDelay_" .. self:GetOwner():Nick() .. "_" .. entity:Nick()
     if timer.Exists(timerid) then
@@ -182,7 +182,7 @@ function SWEP:CancelUnfreeze(entity)
 end
 
 function SWEP:HasValidTarget()
-    return IsValid(self.TargetEntity) and self.TargetEntity:IsPlayer()
+    return IsPlayer(self.TargetEntity)
 end
 
 function SWEP:AdjustFreezeCount(ent, adj, def)
@@ -208,11 +208,10 @@ end
 function SWEP:UnfreezeTarget()
     local owner = self:GetOwner()
     if not self:HasValidTarget() then return end
-    local valid_owner = IsValid(owner) and owner:IsPlayer()
 
     -- Unfreeze the target immediately if there is no delay or no owner
     local delay = vampire_fang_unfreeze_delay:GetFloat()
-    if delay <= 0 or not valid_owner then
+    if delay <= 0 or not IsPlayer(owner) then
         self:DoUnfreeze()
     else
         self:CancelUnfreeze(self.TargetEntity)
@@ -340,11 +339,9 @@ function SWEP:Think()
 
                     -- Remove the body
                     local rag = self.TargetEntity.server_ragdoll or self.TargetEntity:GetRagdollEntity()
-                    if IsValid(rag) then
-                        rag:Remove()
-                    end
+                    SafeRemoveEntity(rag)
                 else
-                    self.TargetEntity:Remove()
+                    SafeRemoveEntity(self.TargetEntity)
                 end
 
                 self:SetState(STATE_NONE)

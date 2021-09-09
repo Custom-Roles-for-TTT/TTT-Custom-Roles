@@ -117,7 +117,7 @@ function TBHUD:Draw(client)
                 self.focus_ent = focus_ent
                 self.focus_stick = CurTime() + 0.1
 
-                local scrpos = focus_ent:GetPos():ToScreen()
+                scrpos = focus_ent:GetPos():ToScreen()
 
                 local sz = 16
 

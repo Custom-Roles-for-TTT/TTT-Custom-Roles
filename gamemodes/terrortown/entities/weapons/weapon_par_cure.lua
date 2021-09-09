@@ -97,7 +97,7 @@ if SERVER then
 
     function SWEP:DoCure(ply)
         local owner = self:GetOwner()
-        if IsValid(ply) and ply:IsPlayer() then
+        if IsPlayer(ply) then
             ply:EmitSound(cured)
 
             if ply:GetNWBool("Infected", false) then
@@ -132,7 +132,7 @@ if SERVER then
     end
 
     function SWEP:Begin(ply)
-        if not ply or not IsValid(ply) or not ply:IsPlayer() then
+        if not IsPlayer(ply) then
             self:Error("INVALID TARGET")
             return
         end
@@ -178,7 +178,7 @@ if SERVER then
         })
 
         local ent = tr.Entity
-        if ent and IsValid(ent) and ent:IsPlayer() then
+        if IsPlayer(ent) then
             self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
             self:Begin(ent)
         end
@@ -189,7 +189,7 @@ if SERVER then
         if GetRoundState() ~= ROUND_ACTIVE then return end
 
         local owner = self:GetOwner()
-        if owner and IsValid(owner) and owner:IsPlayer() then
+        if IsPlayer(owner) then
             self:SetNextSecondaryFire(CurTime() + self.Primary.Delay)
             self:Begin(owner)
         end
@@ -209,7 +209,7 @@ if CLIENT then
 
         if state == DEFIB_IDLE then return end
 
-        local timer = self:GetBegin() + charge
+        local time = self:GetBegin() + charge
 
         local x = ScrW() / 2.0
         local y = ScrH() / 2.0
@@ -219,9 +219,9 @@ if CLIENT then
         local w, h = 255, 20
 
         if state == DEFIB_BUSY then
-            if timer < 0 then return end
+            if time < 0 then return end
 
-            local cc = math.min(1, 1 - ((timer - CurTime()) / charge))
+            local cc = math.min(1, 1 - ((time - CurTime()) / charge))
 
             surface.SetDrawColor(0, 255, 0, 155)
 

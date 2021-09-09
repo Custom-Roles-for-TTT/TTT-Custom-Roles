@@ -1,6 +1,5 @@
 ---- Customized scoring
 
-local math = math
 local string = string
 local table = table
 local pairs = pairs
@@ -49,7 +48,7 @@ local function CopyDmg(dmg)
 end
 
 function SCORE:HandleKill(victim, attacker, dmginfo)
-    if not (IsValid(victim) and victim:IsPlayer()) then return end
+    if not IsPlayer(victim) then return end
 
     local e = {
         id = EVENT_KILL,
@@ -68,7 +67,7 @@ function SCORE:HandleKill(victim, attacker, dmginfo)
     e.vic.ind = victim:IsIndependentTeam()
     e.vic.mon = victim:IsMonsterTeam()
 
-    if IsValid(attacker) and attacker:IsPlayer() then
+    if IsPlayer(attacker) then
         e.att.ni = attacker:Nick()
         e.att.sid = attacker:SteamID()
         e.att.sid64 = attacker:SteamID64()
@@ -116,7 +115,7 @@ end
 
 function SCORE:HandleC4Explosion(planter, arm_time, exp_time)
     local nick = "Someone"
-    if IsValid(planter) and planter:IsPlayer() then
+    if IsPlayer(planter) then
         nick = planter:Nick()
     end
 
@@ -184,7 +183,7 @@ function SCORE:ApplyEventLogScores(wintype)
     end
 
     -- team scores
-    local bonus = ScoreTeamBonus(scored_log, wintype)
+    bonus = ScoreTeamBonus(scored_log, wintype)
 
     for sid64, _ in pairs(scored_log) do
         ply = player.GetBySteamID64(sid64)

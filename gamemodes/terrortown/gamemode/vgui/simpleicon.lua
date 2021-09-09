@@ -110,7 +110,7 @@ vgui.Register( "SimpleIcon", PANEL, "Panel" )
 
 ---
 
-local PANEL = {}
+PANEL = {}
 
 function PANEL:Init()
     self.Layers = {}
@@ -154,7 +154,7 @@ end
 vgui.Register("LayeredIcon", PANEL, "SimpleIcon")
 
 -- Avatar icon
-local PANEL = {}
+PANEL = {}
 
 function PANEL:Init()
     self.imgAvatar = vgui.Create( "AvatarImage", self )
@@ -182,7 +182,7 @@ vgui.Register( "SimpleIconAvatar", PANEL, "LayeredIcon" )
 
 --- Labelled icon
 
-local PANEL = {}
+PANEL = {}
 
 AccessorFunc(PANEL, "IconText", "IconText")
 AccessorFunc(PANEL, "IconTextColor", "IconTextColor")

@@ -427,7 +427,7 @@ local function TraitorMenuPopup()
     end
 
     -- Close any existing traitor menu
-    if eqframe and IsValid(eqframe) then eqframe:Close() end
+    if IsValid(eqframe) then eqframe:Close() end
 
     local dframe = vgui.Create("DFrame")
     dframe:SetSize(w, h)
@@ -538,14 +538,14 @@ local function TraitorMenuPopup()
 
         local function CannotBuyItem(item)
             local orderable = update_preqs(item)
-            return ((not orderable) or
+            return (not orderable) or
                     -- already owned
                     table.HasValue(owned_ids, item.id) or
                     (tonumber(item.id) and ply:HasEquipmentItem(tonumber(item.id))) or
                     -- already carrying a weapon for this slot
                     (ItemIsWeapon(item) and (not CanCarryWeapon(item))) or
                     -- already bought the item before
-                    (item.limited and ply:HasBought(tostring(item.id))))
+                    (item.limited and ply:HasBought(tostring(item.id)))
         end
 
         local function FillEquipmentList(itemlist)
@@ -878,7 +878,7 @@ function GM:OnContextMenuOpen()
         CLSCORE:Toggle()
         return
     end
-    if eqframe and IsValid(eqframe) then
+    if IsValid(eqframe) then
         ForceCloseTraitorMenu()
     else
         TraitorMenuPopup()

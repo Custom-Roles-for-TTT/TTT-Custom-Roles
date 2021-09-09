@@ -47,7 +47,6 @@ SWEP.Timer = -1
 SWEP.AllowDrop = false
 
 -- settings
-local cvf = FCVAR_ARCHIVE + FCVAR_REPLICATED + FCVAR_SERVER_CAN_EXECUTE
 local maxdist = 64
 local success = 100
 local charge = 8
@@ -126,14 +125,14 @@ if SERVER then
 
             local tr = util.TraceHull(t)
 
-            if not tr.Hit then return (v - Vector(0, 0, midsize.z / 2)) end
+            if not tr.Hit then return v - Vector(0, 0, midsize.z / 2) end
         end
 
         return false
     end
 
     local function validbody(body)
-        return (CORPSE.GetPlayerNick(body, false) ~= false)
+        return CORPSE.GetPlayerNick(body, false) ~= false
     end
 
     local function bodyply(body)
@@ -218,7 +217,7 @@ if SERVER then
         ply:PrintMessage(HUD_PRINTCENTER, "You have been brainwashed and are now a traitor.")
         ply:SetHealth(spawnhealth)
 
-        body:Remove()
+        SafeRemoveEntity(body)
 
         SendFullStateUpdate()
 
@@ -287,8 +286,7 @@ if SERVER then
         if GetRoundState() ~= ROUND_ACTIVE then return end
 
         local ent = tr.Entity
-
-        if ent and IsValid(ent) then
+        if IsValid(ent) then
             if ent:GetClass() == "prop_physics" and mutate[ent:GetModel()] and mutateok > 0 then
                 self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
                 ent:EmitSound(zap, 75, math.random(98, 102))
@@ -339,7 +337,7 @@ if CLIENT then
 
         if state == DEFIB_IDLE then return end
 
-        local timer = self:GetBegin() + charge
+        local time = self:GetBegin() + charge
 
         local x = ScrW() / 2.0
         local y = ScrH() / 2.0
@@ -349,9 +347,9 @@ if CLIENT then
         local w, h = 255, 20
 
         if state == DEFIB_BUSY then
-            if timer < 0 then return end
+            if time < 0 then return end
 
-            local cc = math.min(1, 1 - ((timer - CurTime()) / charge))
+            local cc = math.min(1, 1 - ((time - CurTime()) / charge))
 
             surface.SetDrawColor(0, 255, 0, 155)
 
