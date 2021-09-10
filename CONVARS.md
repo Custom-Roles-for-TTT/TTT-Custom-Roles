@@ -244,13 +244,16 @@ ttt_paladin_damage_reduction                0.3     // The fraction an attacker'
 ttt_paladin_heal_rate                       1       // The amount of heal a player inside the paladin's aura will heal each second
 ttt_paladin_protect_self                    0       // Whether the paladin's damage reduction aura will protect themselves or not
 ttt_paladin_heal_self                       1       // Whether the paladin's healing aura will heal themselves or not
+ttt_paladin_credits_starting                1       // The number of credits a paladin should start with
 
 // Tracker
 ttt_tracker_footstep_time                   15      // The amount of time players' footsteps should show to the tracker before fading. Set to 0 to disable
 ttt_tracker_footstep_color                  1       // Whether players' footsteps should have different colors
+ttt_tracker_credits_starting                1       // The number of credits a tracker should start with
 
 // Medium
 ttt_medium_spirit_color                     1       // Whether players' spirits should have different colors
+ttt_medium_credits_starting                 1       // The number of credits a medium should start with
 
 // ----------------------------------------
 
