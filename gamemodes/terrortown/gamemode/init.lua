@@ -1544,11 +1544,10 @@ function GM:TTTCheckForWin()
     local killer_clown_active = false
 
     for _, v in ipairs(player.GetAll()) do
-        local zombifying = v:GetNWBool("IsZombifying", false)
-        if (v:Alive() and v:IsTerror()) or zombifying then
-            if v:IsTraitorTeam() or (TRAITOR_ROLES[ROLE_ZOMBIE] and zombifying) then
+        if v:Alive() and v:IsTerror() then
+            if v:IsTraitorTeam() then
                 traitor_alive = true
-            elseif v:IsMonsterTeam() or (MONSTER_ROLES[ROLE_ZOMBIE] and zombifying) then
+            elseif v:IsMonsterTeam() then
                 monster_alive = true
             elseif v:IsDrunk() then
                 drunk_alive = true
@@ -1561,7 +1560,16 @@ function GM:TTTCheckForWin()
                 innocent_alive = true
             elseif v:IsKiller() then
                 killer_alive = true
-            elseif v:IsMadScientist() or ((v:IsZombie() or zombifying) and INDEPENDENT_ROLES[ROLE_ZOMBIE]) then
+            elseif v:IsMadScientist() or (v:IsZombie() and INDEPENDENT_ROLES[ROLE_ZOMBIE]) then
+                zombie_alive = true
+            end
+        -- Handle zombification differently because the player's original role should have no impact on this
+        elseif v:GetNWBool("IsZombifying", false) then
+            if TRAITOR_ROLES[ROLE_ZOMBIE] then
+                traitor_alive = true
+            elseif MONSTER_ROLES[ROLE_ZOMBIE] then
+                monster_alive = true
+            elseif INDEPENDENT_ROLES[ROLE_ZOMBIE] then
                 zombie_alive = true
             end
         end

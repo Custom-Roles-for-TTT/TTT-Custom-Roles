@@ -159,9 +159,9 @@ function SWEP:PrimaryAttack()
                     -- Don't respawn the player if they were already zombified by something else
                     if hitEnt:GetRole() ~= ROLE_ZOMBIE then
                         local body = hitEnt.server_ragdoll or hitEnt:GetRagdollEntity()
-                        hitEnt:SpawnForRound(true)
                         hitEnt:SetRole(ROLE_ZOMBIE)
                         hitEnt:SetZombiePrime(false)
+                        hitEnt:SpawnForRound(true)
 
                         local health = zombie_respawn_health:GetInt()
                         hitEnt:SetMaxHealth(health)
