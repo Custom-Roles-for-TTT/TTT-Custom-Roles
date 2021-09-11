@@ -7,6 +7,7 @@
 - Added ability to allow anyone to use binoculars to inspect bodies (disabled by default)
 - Added ability to give the veteran a shop when they are activated (enabled by default)
 - Added ability to delay giving shop weapons to the veteran until after they are activated (disabled by default)
+- Added ability to set the vampire fangs to drain their target first rather than convert first (disabled by default)
 
 ### Fixes
 - Fixed error trying to give a loadout equipment item as a weapon at the start of the round
