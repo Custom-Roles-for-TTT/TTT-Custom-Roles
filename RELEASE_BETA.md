@@ -12,6 +12,8 @@
 - Fixed error trying to give a loadout equipment item as a weapon at the start of the round
 - Fixed some equipment item states not being properly reset if they were part of a custom role loadout due to the loadout being added during the prep phase as well as during the active round
 - Fixed translations in C4 UI not working sometimes
+- Fixed medium ghosts creating shadows
+- Adjusted medium ghost logic to hopefully fix another "floating kliener" case
 
 ### Developer
 - Added plymeta:GiveDelayedShopItems to give a player their delayed shop items

@@ -428,6 +428,9 @@ function GM:Think()
         for _, ent in pairs(ents.GetAll()) do
             if ent:GetNWBool("MediumSpirit", false) then
                 ent:SetNoDraw(true)
+                ent:SetRenderMode(RENDERMODE_NONE)
+                ent:SetNotSolid(true)
+                ent:DrawShadow(false)
                 if not ent.WispEmitter then ent.WispEmitter = ParticleEmitter(ent:GetPos()) end
                 if not ent.WispNextPart then ent.WispNextPart = CurTime() end
                 local pos = ent:GetPos() + Vector(0, 0, 64)

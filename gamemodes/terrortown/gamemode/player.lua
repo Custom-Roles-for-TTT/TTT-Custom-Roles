@@ -1554,6 +1554,7 @@ function GM:PlayerDeath(victim, infl, attacker)
         spirit:SetPos(victim:GetPos())
         spirit:SetRenderMode(RENDERMODE_NONE)
         spirit:SetNotSolid(true)
+        spirit:DrawShadow(false)
         spirit:SetNWBool("MediumSpirit", true)
         local col = Vector(1, 1, 1)
         if GetConVar("ttt_medium_spirit_color"):GetBool() then
