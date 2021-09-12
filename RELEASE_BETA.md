@@ -1,5 +1,11 @@
 # Beta Release Notes
 
+## 1.2.3
+**Released:**
+
+### Fixes
+- Fixed jesters being marked in pink on a traitor's radar when ttt_jesters_visible_to_traitors was disabled
+
 ## 1.2.2
 **Released: September 12th, 2021**
 

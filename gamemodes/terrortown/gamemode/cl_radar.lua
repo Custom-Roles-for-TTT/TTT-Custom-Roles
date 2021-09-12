@@ -222,7 +222,7 @@ function RADAR:Draw(client)
                     local c = ColorAlpha(ROLE_COLORS_RADAR[ROLE_HYPNOTIST], alpha) -- Any special traitor here will do
                     surface.SetDrawColor(c)
                     surface.SetTextColor(c)
-                elseif JESTER_ROLES[role] then
+                elseif JESTER_ROLES[role] and GetGlobalBool("ttt_jesters_visible_to_traitors", false) then
                     local c = ColorAlpha(ROLE_COLORS_RADAR[ROLE_JESTER], alpha)
                     surface.SetDrawColor(c)
                     surface.SetTextColor(c)
