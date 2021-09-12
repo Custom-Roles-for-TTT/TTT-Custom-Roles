@@ -162,7 +162,7 @@ ttt_vampire_convert_enable                  0       // Whether vampires have the
 ttt_vampire_show_target_icon                0       // Whether vampires have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect.
 ttt_vampire_damage_reduction                0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a vampire.
 ttt_vampire_fang_timer                      5       // The amount of time fangs must be used to fully drain a target's blood
-ttt_vampire_fang_timer_dead                 0       // The amount of time fangs must be used to fully drain a dead target's blood. Set to 0 to use the same time as "ttt_vampire_fang_timer"
+ttt_vampire_fang_dead_timer                 0       // The amount of time fangs must be used to fully drain a dead target's blood. Set to 0 to use the same time as "ttt_vampire_fang_timer"
 ttt_vampire_fang_heal                       50      // The amount of health a vVampire will heal by when they fully drain a target's blood
 ttt_vampire_fang_overheal                   25      // The amount over the vampire's normal maximum health (e.g. 100 + this ConVar) that the vampire can heal to by drinking blood.
 ttt_vampire_prime_death_mode                0       // What to do when the prime vampire(s) (e.g. playters who spawn as vampires originally) are killed. 0 - Do nothing. 1 - Kill all vampire thralls (non-prime vampires). 2 - Revert all vampire thralls (non-prime vampires) to their original role.
@@ -244,13 +244,16 @@ ttt_paladin_damage_reduction                0.3     // The fraction an attacker'
 ttt_paladin_heal_rate                       1       // The amount of heal a player inside the paladin's aura will heal each second
 ttt_paladin_protect_self                    0       // Whether the paladin's damage reduction aura will protect themselves or not
 ttt_paladin_heal_self                       1       // Whether the paladin's healing aura will heal themselves or not
+ttt_paladin_credits_starting                1       // The number of credits a paladin should start with
 
 // Tracker
 ttt_tracker_footstep_time                   15      // The amount of time players' footsteps should show to the tracker before fading. Set to 0 to disable
 ttt_tracker_footstep_color                  1       // Whether players' footsteps should have different colors
+ttt_tracker_credits_starting                1       // The number of credits a tracker should start with
 
 // Medium
 ttt_medium_spirit_color                     1       // Whether players' spirits should have different colors
+ttt_medium_credits_starting                 1       // The number of credits a medium should start with
 
 // ----------------------------------------
 

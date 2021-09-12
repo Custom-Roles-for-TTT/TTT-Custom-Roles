@@ -48,7 +48,9 @@ local function GetLoadoutWeapons(r)
             tbl[wrole] = {}
             if wrole >= ROLE_EXTERNAL_START and EXTERNAL_ROLE_LOADOUT_ITEMS[wrole] then
                 for _, v in pairs(EXTERNAL_ROLE_LOADOUT_ITEMS[wrole]) do
-                    table.insert(tbl[wrole], v)
+                    if weapons.GetStored(v) then
+                        table.insert(tbl[wrole], v)
+                    end
                 end
             end
         end
@@ -180,7 +182,7 @@ end
 -- possible.
 local function LateLoadout(id)
     local ply = Entity(id)
-    if not IsValid(ply) or not ply:IsPlayer() then
+    if not IsPlayer(ply) then
         timer.Remove("lateloadout" .. id)
         return
     end
@@ -200,18 +202,21 @@ function GM:PlayerLoadout(ply)
         -- clear out equipment flags
         ply:ResetEquipment()
 
-        -- give default items
-        GiveLoadoutItems(ply)
+        -- Don't actually give out the loadout except for while the round is running
+        if GetRoundState() == ROUND_ACTIVE then
+            -- give default items
+            GiveLoadoutItems(ply)
 
-        -- hand out weaponry
-        GiveLoadoutWeapons(ply)
+            -- hand out weaponry
+            GiveLoadoutWeapons(ply)
 
-        GiveLoadoutSpecial(ply)
+            GiveLoadoutSpecial(ply)
 
-        if not HasLoadoutWeapons(ply) then
-            MsgN("Could not spawn all loadout weapons for " .. ply:Nick() .. ", will retry.")
-            timer.Create("lateloadout" .. ply:EntIndex(), 1, 0,
-                    function() LateLoadout(ply:EntIndex()) end)
+            if not HasLoadoutWeapons(ply) then
+                MsgN("Could not spawn all loadout weapons for " .. ply:Nick() .. ", will retry.")
+                timer.Create("lateloadout" .. ply:EntIndex(), 1, 0,
+                        function() LateLoadout(ply:EntIndex()) end)
+            end
         end
     end
 end
@@ -431,8 +436,8 @@ local function OrderEquipment(ply, cmd, args)
         WEPS.HandleCanBuyOverrides(swep_table, role, false, sync_traitor_weapons, sync_detective_weapons)
     end
 
-    -- Don't give clowns their items if delayed shop activated is enabled
-    local should_give = not ply:IsClown() or not GetGlobalBool("ttt_clown_shop_delay", false) or ply:GetNWBool("KillerClownActive", false)
+    -- Don't give roles their items if delayed shop is enabled
+    local should_give = not ply:ShouldDelayShopPurchase()
     local received = false
     if is_item then
         id = tonumber(id)

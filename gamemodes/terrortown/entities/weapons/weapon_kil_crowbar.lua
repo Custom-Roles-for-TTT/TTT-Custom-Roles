@@ -63,29 +63,30 @@ function SWEP:Initialize()
 end
 
 function SWEP:PrimaryAttack()
-    self.Weapon:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
+    self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 
-    if not IsValid(self:GetOwner()) then return end
+    local owner = self:GetOwner()
+    if not IsValid(owner) then return end
 
-    if self:GetOwner().LagCompensation then -- for some reason not always true
-        self:GetOwner():LagCompensation(true)
+    if owner.LagCompensation then -- for some reason not always true
+        owner:LagCompensation(true)
     end
 
-    local spos = self:GetOwner():GetShootPos()
-    local sdest = spos + (self:GetOwner():GetAimVector() * 70)
+    local spos = owner:GetShootPos()
+    local sdest = spos + (owner:GetAimVector() * 70)
 
     local tr_main = util.TraceLine({
         start = spos,
         endpos = sdest,
-        filter = self:GetOwner(),
+        filter = owner,
         mask = MASK_SHOT_HULL
     })
     local hitEnt = tr_main.Entity
 
-    self.Weapon:EmitSound(sound_single)
+    self:EmitSound(sound_single)
 
     if IsValid(hitEnt) or tr_main.HitWorld then
-        self.Weapon:SendWeaponAnim(ACT_VM_HITCENTER)
+        self:SendWeaponAnim(ACT_VM_HITCENTER)
 
         if not (CLIENT and (not IsFirstTimePredicted())) then
             local edata = EffectData()
@@ -100,34 +101,34 @@ function SWEP:PrimaryAttack()
                 util.Effect("BloodImpact", edata)
                 -- do a bullet just to make blood decals work sanely
                 -- need to disable lagcomp because firebullets does its own
-                self:GetOwner():LagCompensation(false)
-                self:GetOwner():FireBullets({Num=1, Src=spos, Dir=self:GetOwner():GetAimVector(), Spread=Vector(0,0,0), Tracer=0, Force=1, Damage=0})
+                owner:LagCompensation(false)
+                owner:FireBullets({Num=1, Src=spos, Dir=owner:GetAimVector(), Spread=Vector(0,0,0), Tracer=0, Force=1, Damage=0})
             else
                 util.Effect("Impact", edata)
             end
         end
     else
-        self.Weapon:SendWeaponAnim(ACT_VM_MISSCENTER)
+        self:SendWeaponAnim(ACT_VM_MISSCENTER)
     end
 
     if SERVER then
-        self:GetOwner():SetAnimation(PLAYER_ATTACK1)
+        owner:SetAnimation(PLAYER_ATTACK1)
 
-        if hitEnt and hitEnt:IsValid() then
+        if IsValid(hitEnt) then
             local dmg = DamageInfo()
             dmg:SetDamage(self.Primary.Damage)
-            dmg:SetAttacker(self:GetOwner())
-            dmg:SetInflictor(self.Weapon)
-            dmg:SetDamageForce(self:GetOwner():GetAimVector() * 1500)
-            dmg:SetDamagePosition(self:GetOwner():GetPos())
+            dmg:SetAttacker(owner)
+            dmg:SetInflictor(self)
+            dmg:SetDamageForce(owner:GetAimVector() * 1500)
+            dmg:SetDamagePosition(owner:GetPos())
             dmg:SetDamageType(DMG_CLUB)
 
-            hitEnt:DispatchTraceAttack(dmg, spos + (self:GetOwner():GetAimVector() * 3), sdest)
+            hitEnt:DispatchTraceAttack(dmg, spos + (owner:GetAimVector() * 3), sdest)
         end
     end
 
-    if self:GetOwner().LagCompensation then
-        self:GetOwner():LagCompensation(false)
+    if owner.LagCompensation then
+        owner:LagCompensation(false)
     end
 end
 
@@ -137,25 +138,25 @@ function SWEP:Throw()
     self:ShootEffects()
     self.BaseClass.ShootEffects(self)
 
-    self.Weapon:SendWeaponAnim(ACT_VM_THROW)
+    self:SendWeaponAnim(ACT_VM_THROW)
     self.CanFire = false
 
     local ent = ents.Create("ttt_kil_crowbar")
 
-    ent:SetOwner(self:GetOwner())
-    ent:SetPos(self.Owner:EyePos() + (self.Owner:GetAimVector() * 16))
-    ent:SetAngles(self.Owner:EyeAngles())
+    local owner = self:GetOwner()
+    ent:SetOwner(owner)
+    ent:SetPos(owner:EyePos() + (owner:GetAimVector() * 16))
+    ent:SetAngles(owner:EyeAngles())
     ent:Spawn()
 
     local phys = ent:GetPhysicsObject()
-
-    phys:ApplyForceCenter(self.Owner:GetAimVector():GetNormalized() * 1300)
+    phys:ApplyForceCenter(owner:GetAimVector():GetNormalized() * 1300)
 
     self:Remove()
 end
 
 function SWEP:SecondaryAttack()
-    if (self.CanFire) then
+    if self.CanFire then
         self:Throw()
     end
 end

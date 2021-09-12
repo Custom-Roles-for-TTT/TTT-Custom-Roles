@@ -456,9 +456,6 @@ cvars.AddChangeCallback("ttt_mute_team_check", MuteTeamCallback)
 local imgpath = "vgui/ttt/help/tut0%d"
 local tutorial_pages = 6
 function HELPSCRN:CreateTutorial(parent)
-    local w, h = parent:GetSize()
-    local m = 5
-
     local bg = vgui.Create("ColoredBox", parent)
     bg:StretchToParent(0, 0, 0, 0)
     bg:SetTall(330)

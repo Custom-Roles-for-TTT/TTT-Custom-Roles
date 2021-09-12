@@ -126,18 +126,16 @@ end
 -- Scores were initially calculated as points immediately, but not anymore, so
 -- we can convert them using this fn
 function KillsToPoints(score, was_traitor, was_innocent)
-    return ((score.suicides * -1)
+    return (score.suicides * -1)
             + score.bonus
             + (score.traitors * (was_traitor and -16 or 5))
             + (score.jesters * -10)
             + (score.innos * (was_innocent and -8 or 1))
             + score.indeps
             + score.monsters
-            + (score.deaths == 0 and 1 or 0)) --effectively 2 due to team bonus
+            + (score.deaths == 0 and 1 or 0) --effectively 2 due to team bonus
     --for your own survival
 end
-
-
 
 ---- Weapon AMMO_ enum stuff, used only in score.lua/cl_score.lua these days
 

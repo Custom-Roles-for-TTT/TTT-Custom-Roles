@@ -515,9 +515,9 @@ function GM:HUDDrawTargetID()
     if minimal then return end
 
     -- Draw subtitle: health or type
-    local clr = rag_color
+    local col = rag_color
     if ent:IsPlayer() then
-        text, clr = util.HealthToString(ent:Health(), ent:GetMaxHealth())
+        text, col = util.HealthToString(ent:Health(), ent:GetMaxHealth())
 
         -- HealthToString returns a string id, need to look it up
         text = L[text]
@@ -533,14 +533,14 @@ function GM:HUDDrawTargetID()
     x = x_orig - w / 2
 
     draw.SimpleText(text, font, x + 1, y + 1, COLOR_BLACK)
-    draw.SimpleText(text, font, x, y, clr)
+    draw.SimpleText(text, font, x, y, col)
 
     font = "TargetIDSmall"
     surface.SetFont(font)
 
     -- Draw second subtitle: karma
     if ent:IsPlayer() and KARMA.IsEnabled() then
-        text, clr = util.KarmaToString(ent:GetBaseKarma())
+        text, col = util.KarmaToString(ent:GetBaseKarma())
 
         text = L[text]
 
@@ -549,7 +549,7 @@ function GM:HUDDrawTargetID()
         x = x_orig - w / 2
 
         draw.SimpleText(text, font, x + 1, y + 1, COLOR_BLACK)
-        draw.SimpleText(text, font, x, y, clr)
+        draw.SimpleText(text, font, x, y, col)
     end
 
     -- Draw key hint
@@ -571,64 +571,64 @@ function GM:HUDDrawTargetID()
     local secondary_text = nil
     if target_current_target then -- Prioritise target/soulmate message over roles
         text = L.target_current_target
-        clr = ROLE_COLORS_RADAR[ROLE_ASSASSIN]
+        col = ROLE_COLORS_RADAR[ROLE_ASSASSIN]
 
         if target_infected then
             secondary_text = L.target_infected
         end
     elseif target_revenger_lover then
         text = L.target_revenger_lover
-        clr = ROLE_COLORS_RADAR[ROLE_REVENGER]
+        col = ROLE_COLORS_RADAR[ROLE_REVENGER]
     elseif target_infected then
         text = L.target_infected
-        clr = ROLE_COLORS_RADAR[ROLE_PARASITE]
+        col = ROLE_COLORS_RADAR[ROLE_PARASITE]
     elseif target_traitor then
         text = string.upper(ROLE_STRINGS[ROLE_TRAITOR])
-        clr = ROLE_COLORS_RADAR[ROLE_TRAITOR]
+        col = ROLE_COLORS_RADAR[ROLE_TRAITOR]
     elseif target_special_traitor then
         local role = ent:GetRole()
         text = string.upper(ROLE_STRINGS[role])
-        clr = ROLE_COLORS_RADAR[role]
+        col = ROLE_COLORS_RADAR[role]
     elseif target_glitch then
         local bluff = ent:GetNWInt("GlitchBluff", ROLE_TRAITOR)
         if client:IsZombie() and client:IsTraitorTeam() then
             bluff = ROLE_ZOMBIE
         end
         text = string.upper(ROLE_STRINGS[bluff])
-        clr = ROLE_COLORS_RADAR[bluff]
+        col = ROLE_COLORS_RADAR[bluff]
     elseif target_detective then
         text = string.upper(ROLE_STRINGS[ROLE_DETECTIVE])
-        clr = ROLE_COLORS_RADAR[ROLE_DETECTIVE]
+        col = ROLE_COLORS_RADAR[ROLE_DETECTIVE]
     elseif target_special_detective then
         local role = ent:GetRole()
         text = string.upper(ROLE_STRINGS[role])
-        clr = ROLE_COLORS_RADAR[role]
+        col = ROLE_COLORS_RADAR[role]
     elseif target_jester then
         text = string.upper(ROLE_STRINGS[ROLE_JESTER])
-        clr = ROLE_COLORS_RADAR[ROLE_JESTER]
+        col = ROLE_COLORS_RADAR[ROLE_JESTER]
     elseif target_clown then
         text = string.upper(ROLE_STRINGS[ROLE_CLOWN])
-        clr = ROLE_COLORS_RADAR[ROLE_CLOWN]
+        col = ROLE_COLORS_RADAR[ROLE_CLOWN]
     elseif target_zombie then
         text = string.upper(ROLE_STRINGS[ROLE_ZOMBIE])
-        clr = ROLE_COLORS_RADAR[ROLE_ZOMBIE]
+        col = ROLE_COLORS_RADAR[ROLE_ZOMBIE]
     elseif target_madscientist then
         text = string.upper(ROLE_STRINGS[ROLE_MADSCIENTIST])
-        clr = ROLE_COLORS_RADAR[ROLE_MADSCIENTIST]
+        col = ROLE_COLORS_RADAR[ROLE_MADSCIENTIST]
     elseif target_vampire then
         text = string.upper(ROLE_STRINGS[ROLE_VAMPIRE])
-        clr = ROLE_COLORS_RADAR[ROLE_VAMPIRE]
+        col = ROLE_COLORS_RADAR[ROLE_VAMPIRE]
     elseif ent.sb_tag and ent.sb_tag.txt ~= nil then
         text = L[ent.sb_tag.txt]
-        clr = ent.sb_tag.color
+        col = ent.sb_tag.color
     elseif target_corpse and client:CanLootCredits(true) and CORPSE.GetCredits(ent, 0) > 0 then
         text = L.target_credits
-        clr = COLOR_YELLOW
+        col = COLOR_YELLOW
     end
 
-    local new_text, new_color, new_secondary = hook.Run("TTTTargetIDPlayerText", ent, client, text, clr, secondary_text)
+    local new_text, new_color, new_secondary = hook.Run("TTTTargetIDPlayerText", ent, client, text, col, secondary_text)
     if new_text then text = new_text end
-    if new_color then clr = new_color end
+    if new_color then col = new_color end
     if new_secondary then secondary_text = new_secondary end
 
     if text then
@@ -637,7 +637,7 @@ function GM:HUDDrawTargetID()
         y = y + h + 5
 
         draw.SimpleText(text, font, x + 1, y + 1, COLOR_BLACK)
-        draw.SimpleText(text, font, x, y, clr)
+        draw.SimpleText(text, font, x, y, col)
     end
     if secondary_text then
         w, h = surface.GetTextSize(secondary_text)
@@ -645,6 +645,6 @@ function GM:HUDDrawTargetID()
         y = y + h + 5
 
         draw.SimpleText(secondary_text, font, x + 1, y + 1, COLOR_BLACK)
-        draw.SimpleText(secondary_text, font, x, y, clr)
+        draw.SimpleText(secondary_text, font, x, y, col)
     end
 end

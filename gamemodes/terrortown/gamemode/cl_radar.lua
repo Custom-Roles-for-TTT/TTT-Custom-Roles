@@ -1,8 +1,6 @@
 -- Traitor radar rendering
 
-local render = render
 local surface = surface
-local string = string
 local player = player
 local math = math
 
@@ -345,32 +343,25 @@ end
 net.Receive("TTT_Radar", ReceiveRadarScan)
 
 local beep_success = Sound("buttons/blip2.wav")
+local function SetRevengerLoverKillerPosition()
+    local sid = LocalPlayer():GetNWString("RevengerKiller", "")
+    local attacker = player.GetBySteamID64(sid)
+    if IsPlayer(attacker) and attacker:IsActive() then
+        RADAR.revenger_lover_killers = {
+            { pos = attacker:LocalToWorld(attacker:OBBCenter()) }
+        }
+        if LocalPlayer():IsActive() then surface.PlaySound(beep_success) end
+    else
+        RADAR.revenger_lover_killers = {}
+    end
+end
+
 local function UpdateRevengerLoverKiller()
     if timer.Exists("updaterevengerloverkiller") then timer.Remove("updaterevengerloverkiller") end
     local active = net.ReadBool()
     if active then
-        local sid = LocalPlayer():GetNWString("RevengerKiller", "")
-        local attacker = player.GetBySteamID64(sid)
-        if IsValid(attacker) and attacker:IsPlayer() and attacker:IsActive() then
-            RADAR.revenger_lover_killers = {
-                { pos = attacker:LocalToWorld(attacker:OBBCenter()) }
-            }
-            if LocalPlayer():IsActive() then surface.PlaySound(beep_success) end
-        else
-            RADAR.revenger_lover_killers = {}
-        end
-        timer.Create("updaterevengerloverkiller", GetGlobalInt("ttt_revenger_radar_timer", 15), 0, function()
-            local sid = LocalPlayer():GetNWString("RevengerKiller", "")
-            local attacker = player.GetBySteamID64(sid)
-            if IsValid(attacker) and attacker:IsPlayer() and attacker:IsActive() then
-                RADAR.revenger_lover_killers = {
-                    { pos = attacker:LocalToWorld(attacker:OBBCenter()) }
-                }
-                if LocalPlayer():IsActive() then surface.PlaySound(beep_success) end
-            else
-                RADAR.revenger_lover_killers = {}
-            end
-        end)
+        SetRevengerLoverKillerPosition()
+        timer.Create("updaterevengerloverkiller", GetGlobalInt("ttt_revenger_radar_timer", 15), 0, SetRevengerLoverKillerPosition)
     else
         RADAR.revenger_lover_killers = {}
     end
@@ -379,8 +370,6 @@ net.Receive("TTT_RevengerLoverKillerRadar", UpdateRevengerLoverKiller)
 
 local GetTranslation = LANG.GetTranslation
 function RADAR.CreateMenu(parent, frame)
-    local w, h = parent:GetSize()
-
     local dform = vgui.Create("DForm", parent)
     dform:SetName(GetTranslation("radar_menutitle"))
     dform:StretchToParent(0, 0, 0, 0)

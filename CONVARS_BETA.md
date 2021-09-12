@@ -155,14 +155,15 @@ ttt_assassin_shop_roles_last                0       // Whether the assassin shou
 ttt_assassin_credits_starting               1       // The number of credits an assassin should start with
 
 // Vampire
-ttt_vampires_are_monsters                   0       // Whether vampires should be treated as members of the Monster team.
+ttt_vampires_are_monsters                   0       // Whether vampires should be treated as members of the Monster team
 ttt_vampire_vision_enable                   0       // Whether vampires have their special vision highlights enabled
-ttt_vampire_drain_enable                    1       // Whether vampires have the ability to drain other players' blood using their fangs
-ttt_vampire_convert_enable                  0       // Whether vampires have the ability to convert other players to vampire thrals using their fangs
+ttt_vampire_drain_enable                    1       // Whether vampires have the ability to drain a target's blood using their fangs
+ttt_vampire_drain_first                     0       // Whether vampires should drain a target's blood first rather than converting first
+ttt_vampire_convert_enable                  0       // Whether vampires have the ability to convert targets to a vampire thrall using their fangs
 ttt_vampire_show_target_icon                0       // Whether vampires have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect.
 ttt_vampire_damage_reduction                0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a vampire.
 ttt_vampire_fang_timer                      5       // The amount of time fangs must be used to fully drain a target's blood
-ttt_vampire_fang_timer_dead                 0       // The amount of time fangs must be used to fully drain a dead target's blood. Set to 0 to use the same time as "ttt_vampire_fang_timer"
+ttt_vampire_fang_dead_timer                 0       // The amount of time fangs must be used to fully drain a dead target's blood. Set to 0 to use the same time as "ttt_vampire_fang_timer"
 ttt_vampire_fang_heal                       50      // The amount of health a vVampire will heal by when they fully drain a target's blood
 ttt_vampire_fang_overheal                   25      // The amount over the vampire's normal maximum health (e.g. 100 + this ConVar) that the vampire can heal to by drinking blood.
 ttt_vampire_prime_death_mode                0       // What to do when the prime vampire(s) (e.g. playters who spawn as vampires originally) are killed. 0 - Do nothing. 1 - Kill all vampire thralls (non-prime vampires). 2 - Revert all vampire thralls (non-prime vampires) to their original role.
@@ -226,6 +227,8 @@ ttt_veteran_damage_bonus                    0.5     // Damage bonus that the vet
 ttt_veteran_full_heal                       1       // Whether the veteran gets a full heal upon becoming the last remaining innocent or not
 ttt_veteran_heal_bonus                      0       // The amount of bonus health to give the veteran when they are healed as the last remaining innocent
 ttt_veteran_announce                        0       // Whether to announce to all other living players when the veteran is the last remaining innocent
+ttt_veteran_shop_active_only                1       // Whether the veteran's shop should be available only after they activate
+ttt_veteran_shop_delay                      0       // Whether the veteran's purchased shop items should be held until they activate
 
 // Doctor
 ttt_doctor_credits_starting                 1       // The number of credits a doctor should start with
@@ -237,6 +240,7 @@ ttt_doctor_credits_starting                 1       // The number of credits a d
 ttt_detective_search_only                   1       // Whether only detectives can search bodies or not
 ttt_detective_disable_looting               0       // Whether to disable a detective role's ability to loot credits from bodies
 ttt_all_search_postround                    1       // Whether non-detectives can search bodies post-round or not
+ttt_all_search_binoc                        0       // Whether non-detectives can search bodies if they are using binoculars
 
 // Paladin
 ttt_paladin_aura_radius                     5       // The radius of the paladin's aura in meters
@@ -244,13 +248,16 @@ ttt_paladin_damage_reduction                0.3     // The fraction an attacker'
 ttt_paladin_heal_rate                       1       // The amount of heal a player inside the paladin's aura will heal each second
 ttt_paladin_protect_self                    0       // Whether the paladin's damage reduction aura will protect themselves or not
 ttt_paladin_heal_self                       1       // Whether the paladin's healing aura will heal themselves or not
+ttt_paladin_credits_starting                1       // The number of credits a paladin should start with
 
 // Tracker
 ttt_tracker_footstep_time                   15      // The amount of time players' footsteps should show to the tracker before fading. Set to 0 to disable
 ttt_tracker_footstep_color                  1       // Whether players' footsteps should have different colors
+ttt_tracker_credits_starting                1       // The number of credits a tracker should start with
 
 // Medium
 ttt_medium_spirit_color                     1       // Whether players' spirits should have different colors
+ttt_medium_credits_starting                 1       // The number of credits a medium should start with
 
 // ----------------------------------------
 
@@ -434,6 +441,7 @@ ttt_parasite_shop_random_enabled            0       // Whether role shop randomi
 
 ttt_mercenary_shop_mode                     2       // What additional items are available to the mercenary in the shop (See above for possible values)
 ttt_clown_shop_mode                         0       // What additional items are available to the clown in the shop (See above for possible values)
+ttt_veteran_shop_mode                       0       // What additional items are available to the veteran in the shop (See above for possible values)
 
 // Traitor Role Shop Sync (Server or round must be restarted for changes to take effect)
 ttt_hypnotist_shop_sync                     0       // Whether hypnotists should have all weapons that vanilla traitors have in their weapon shop

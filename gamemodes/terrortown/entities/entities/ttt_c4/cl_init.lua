@@ -4,15 +4,13 @@ include("shared.lua")
 
 local starttime = C4_MINIMUM_TIME
 
-local beep = Sound("weapons/c4/c4_click.wav")
-
 local T = LANG.GetTranslation
 local PT = LANG.GetParamTranslation
 
 ---- ARMING
 
 -- Initial bomb arming
-function ShowC4Config(bomb)
+local function ShowC4Config(bomb)
     local dframe = vgui.Create("DFrame")
     local w, h = 350, 270
     dframe:SetSize(w, h)
@@ -42,8 +40,6 @@ function ShowC4Config(bomb)
     dclock:SetPos(m * 2, m * 2)
 
     dformtime:AddItem(dclock)
-
-    local ch, cw = dclock:GetSize()
 
     local dtime = vgui.Create("DNumSlider", dformtime)
     dtime:SetWide(w - m * 4)
@@ -241,7 +237,7 @@ vgui.Register("DisarmWire", PANEL, "DImageButton")
 
 
 -- Bomb
-local PANEL = {}
+PANEL = {}
 
 AccessorFunc(PANEL, "wirecount", "WireCount")
 
@@ -256,7 +252,6 @@ function PANEL:Init()
     self.Wires = {}
 
     local wx, wy = -84, 70
-    local wc = 1
     for i = 1, self:GetWireCount() do
         local w = vgui.Create("DisarmWire", self)
         w:SetPos(wx, wy)
@@ -283,7 +278,7 @@ surface.CreateFont("C4Timer", {
 
 local disarm_success, disarm_fail
 
-function ShowC4Disarm(bomb)
+local function ShowC4Disarm(bomb)
     local dframe = vgui.Create("DFrame")
     local w, h = 420, 340
     dframe:SetSize(w, h)

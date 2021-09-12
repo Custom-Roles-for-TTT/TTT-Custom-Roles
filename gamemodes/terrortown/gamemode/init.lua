@@ -200,6 +200,7 @@ CreateConVar("ttt_veteran_announce", "0")
 CreateConVar("ttt_detective_search_only", "1")
 CreateConVar("ttt_detective_disable_looting", "0")
 CreateConVar("ttt_all_search_postround", "1")
+CreateConVar("ttt_all_search_binoc", "0")
 
 CreateConVar("ttt_paladin_aura_radius", "5")
 CreateConVar("ttt_paladin_damage_reduction", "0.3")
@@ -236,8 +237,6 @@ CreateConVar("ttt_clown_hide_when_active", "0")
 CreateConVar("ttt_clown_show_target_icon", "0")
 CreateConVar("ttt_clown_heal_on_activate", "0")
 CreateConVar("ttt_clown_heal_bonus", "0")
-CreateConVar("ttt_clown_shop_active_only", "1")
-CreateConVar("ttt_clown_shop_delay", "0")
 
 CreateConVar("ttt_beggar_reveal_traitor", "1")
 CreateConVar("ttt_beggar_reveal_innocent", "2")
@@ -597,7 +596,7 @@ function GM:Initialize()
 
     local cstrike = false
     for _, g in ipairs(engine.GetGames()) do
-        if g.folder == 'cstrike' then cstrike = true end
+        if g.folder == "cstrike" then cstrike = true end
     end
     if not cstrike then
         ErrorNoHalt("TTT WARNING: CS:S does not appear to be mounted by GMod. Things may break in strange ways. Server admin? Check the TTT readme for help.\n")
@@ -644,6 +643,7 @@ function GM:SyncGlobals()
     SetGlobalBool("ttt_detective_search_only", GetConVar("ttt_detective_search_only"):GetBool())
     SetGlobalBool("ttt_detective_disable_looting", GetConVar("ttt_detective_disable_looting"):GetBool())
     SetGlobalBool("ttt_all_search_postround", GetConVar("ttt_all_search_postround"):GetBool())
+    SetGlobalBool("ttt_all_search_binoc", GetConVar("ttt_all_search_binoc"):GetBool())
 
     SetGlobalInt("ttt_shop_random_percent", GetConVar("ttt_shop_random_percent"):GetInt())
     SetGlobalBool("ttt_shop_random_position", GetConVar("ttt_shop_random_position"):GetBool())
@@ -709,8 +709,6 @@ function GM:SyncGlobals()
 
     SetGlobalBool("ttt_clown_show_target_icon", GetConVar("ttt_clown_show_target_icon"):GetBool())
     SetGlobalBool("ttt_clown_hide_when_active", GetConVar("ttt_clown_hide_when_active"):GetBool())
-    SetGlobalBool("ttt_clown_shop_active_only", GetConVar("ttt_clown_shop_active_only"):GetBool())
-    SetGlobalBool("ttt_clown_shop_delay", GetConVar("ttt_clown_shop_delay"):GetBool())
 
     SetGlobalBool("ttt_bem_allow_change", GetConVar("ttt_bem_allow_change"):GetBool())
     SetGlobalInt("ttt_bem_sv_cols", GetConVar("ttt_bem_sv_cols"):GetBool())
@@ -846,7 +844,7 @@ function StartNameChangeChecks()
 end
 
 local function OnPlayerDeath(victim, infl, attacker)
-    if victim:IsJester() and attacker:IsPlayer() and (not attacker:IsJesterTeam()) and GetRoundState() == ROUND_ACTIVE then
+    if victim:IsJester() and IsPlayer(attacker) and (not attacker:IsJesterTeam()) and GetRoundState() == ROUND_ACTIVE then
         -- Don't track that the jester was killed (for win reporting) if they were killed by a traitor
         -- and the functionality that blocks Jester wins from Traitor deaths is enabled
         if GetConVar("ttt_jester_win_by_traitors"):GetBool() or not attacker:IsTraitorTeam() then
@@ -1546,11 +1544,10 @@ function GM:TTTCheckForWin()
     local killer_clown_active = false
 
     for _, v in ipairs(player.GetAll()) do
-        local zombifying = v:GetNWBool("IsZombifying", false)
-        if (v:Alive() and v:IsTerror()) or zombifying then
-            if v:IsTraitorTeam() or (TRAITOR_ROLES[ROLE_ZOMBIE] and zombifying) then
+        if v:Alive() and v:IsTerror() then
+            if v:IsTraitorTeam() then
                 traitor_alive = true
-            elseif v:IsMonsterTeam() or (MONSTER_ROLES[ROLE_ZOMBIE] and zombifying) then
+            elseif v:IsMonsterTeam() then
                 monster_alive = true
             elseif v:IsDrunk() then
                 drunk_alive = true
@@ -1563,7 +1560,16 @@ function GM:TTTCheckForWin()
                 innocent_alive = true
             elseif v:IsKiller() then
                 killer_alive = true
-            elseif v:IsMadScientist() or ((v:IsZombie() or zombifying) and INDEPENDENT_ROLES[ROLE_ZOMBIE]) then
+            elseif v:IsMadScientist() or (v:IsZombie() and INDEPENDENT_ROLES[ROLE_ZOMBIE]) then
+                zombie_alive = true
+            end
+        -- Handle zombification differently because the player's original role should have no impact on this
+        elseif v:GetNWBool("IsZombifying", false) then
+            if TRAITOR_ROLES[ROLE_ZOMBIE] then
+                traitor_alive = true
+            elseif MONSTER_ROLES[ROLE_ZOMBIE] then
+                monster_alive = true
+            elseif INDEPENDENT_ROLES[ROLE_ZOMBIE] then
                 zombie_alive = true
             end
         end
@@ -1668,32 +1674,7 @@ function GM:TTTCheckForWin()
 
                     -- Give the clown their shop items if purchase was delayed
                     if v.bought and GetConVar("ttt_clown_shop_delay"):GetBool() then
-                        for _, item_id in ipairs(v.bought) do
-                            local id_num = tonumber(item_id)
-                            local isequip = id_num and 1 or 0
-
-                            -- Give the item to the player
-                            if id_num then
-                                v:GiveEquipmentItem(id_num)
-                            else
-                                v:Give(item_id)
-                                local wep = weapons.GetStored(item_id)
-                                if wep and wep.WasBought then
-                                    wep:WasBought(v)
-                                end
-                            end
-
-                            -- Also let them know they bought this item "again" so hooks are called
-                            -- NOTE: The net event and the give action cannot be done at the same time because GiveEquipmentItem calls its own net event which causes an error
-                            net.Start("TTT_BoughtItem")
-                            net.WriteBit(isequip)
-                            if id_num then
-                                net.WriteInt(id_num, 32)
-                            else
-                                net.WriteString(item_id)
-                            end
-                            net.Send(v)
-                        end
+                        v:GiveDelayedShopItems()
                     end
                 end
             end
@@ -1873,7 +1854,7 @@ function SelectRoles()
                     forcedDetectiveCount = forcedDetectiveCount + 1
                 elseif DETECTIVE_ROLES[role] then
                     forcedSpecialDetectiveCount = forcedSpecialDetectiveCount + 1
-                elseif INNOCENT_ROLES[role] and not role == ROLE_INNOCENT then
+                elseif INNOCENT_ROLES[role] and role ~= ROLE_INNOCENT then
                     forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
                 elseif JESTER_ROLES[role] or INDEPENDENT_ROLES[role] then
                     forcedIndependentCount = forcedIndependentCount + 1
@@ -2217,7 +2198,7 @@ hook.Add("EntityTakeDamage", "HitmarkerDetector", function(ent, dmginfo)
     local att = dmginfo:GetAttacker()
     local pos = dmginfo:GetDamagePosition()
 
-    if (IsValid(att) and att:IsPlayer() and att ~= ent) then
+    if IsPlayer(att) and att ~= ent then
         if (ent:IsPlayer() or ent:IsNPC()) then -- Only players and NPCs show hitmarkers
             local drawCrit = ent:GetNWBool("LastHitCrit") and not GetConVar("ttt_disable_headshots"):GetBool()
 

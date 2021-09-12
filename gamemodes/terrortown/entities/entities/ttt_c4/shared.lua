@@ -90,7 +90,7 @@ function ENT:SetDetonateTimer(length)
 end
 
 function ENT:UseOverride(activator)
-    if IsValid(activator) and activator:IsPlayer() then
+    if IsPlayer(activator) then
         -- Traitors not allowed to disarm other traitor's C4 until he is dead
         local owner = self:GetOwner()
         if self:GetArmed() and owner ~= activator and activator:IsTraitorTeam() and (IsValid(owner) and owner:Alive() and owner:IsTraitorTeam()) then
@@ -437,7 +437,6 @@ if SERVER then
 
         -- random selection process, lot like traitor selection
         local safe_count = self.SafeWiresForTime(time)
-        local safes = {}
         local picked = 0
         while picked < safe_count do
             local pick = math.random(1, #choices)

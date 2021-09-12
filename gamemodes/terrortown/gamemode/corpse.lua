@@ -209,7 +209,9 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
     -- basic sanity check
     if nick == nil or eq == nil or role == nil then return end
 
-    local detectiveSearchOnly = GetGlobalBool("ttt_detective_search_only", true) and not (GetGlobalBool("ttt_all_search_postround", true) and GetRoundState() ~= ROUND_ACTIVE)
+    local detectiveSearchOnly = GetGlobalBool("ttt_detective_search_only", true) and
+                                    not (GetGlobalBool("ttt_all_search_postround", true) and GetRoundState() ~= ROUND_ACTIVE) and
+                                    not (GetGlobalBool("ttt_all_search_binoc", false) and ply:GetActiveWeapon() and WEPS.GetClass(ply:GetActiveWeapon()) == "weapon_ttt_binoculars")
     local credits = CORPSE.GetCredits(rag, 0)
     if ply:CanLootCredits(true) and credits > 0 and (not long_range) then
         LANG.Msg(ply, "body_credits", { num = credits })
@@ -320,7 +322,7 @@ local function GetKillerSample(victim, attacker, dmg)
         return nil
     end
 
-    if not (IsValid(victim) and IsValid(attacker) and attacker:IsPlayer()) then return end
+    if not (IsValid(victim) and IsPlayer(attacker)) then return end
 
     -- NPCs for which a player is damage owner (meaning despite the NPC dealing
     -- the damage, the attacker is a player) should not cause the player's DNA to
@@ -329,14 +331,14 @@ local function GetKillerSample(victim, attacker, dmg)
     if IsValid(infl) and infl:IsNPC() then return end
 
     local dist = victim:GetPos():Distance(attacker:GetPos())
-    if dist > GetConVarNumber("ttt_killer_dna_range") then return nil end
+    if dist > GetConVar("ttt_killer_dna_range"):GetInt() then return nil end
 
     local sample = {}
     sample.killer = attacker
     sample.killer_sid = attacker:SteamID()
     sample.killer_sid64 = attacker:SteamID64()
     sample.victim = victim
-    sample.t = CurTime() + (-1 * (0.019 * dist) ^ 2 + GetConVarNumber("ttt_killer_dna_basetime"))
+    sample.t = CurTime() + (-1 * (0.019 * dist) ^ 2 + GetConVar("ttt_killer_dna_basetime"):GetInt())
 
     return sample
 end
@@ -376,7 +378,7 @@ local function GetSceneData(victim, attacker, dmginfo)
 
     scene.victim = GetSceneDataFromPlayer(victim)
 
-    if IsValid(attacker) and attacker:IsPlayer() then
+    if IsPlayer(attacker) then
         scene.killer = GetSceneDataFromPlayer(attacker)
 
         local att = attacker:LookupAttachment("anim_attachment_RH")

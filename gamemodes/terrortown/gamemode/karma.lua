@@ -132,9 +132,8 @@ end
 -- been applied to the victim yet, but must have been scaled according to the
 -- damage factor of the attacker.
 function KARMA.Hurt(attacker, victim, dmginfo)
-    if not IsValid(attacker) or not IsValid(victim) then return end
+    if not IsPlayer(attacker) or not IsPlayer(victim) then return end
     if attacker == victim then return end
-    if not attacker:IsPlayer() or not victim:IsPlayer() then return end
     if attacker:IsKiller() then return end
 
     -- Ignore excess damage
@@ -184,9 +183,8 @@ end
 
 -- Handle karma change due to one player killing another.
 function KARMA.Killed(attacker, victim, dmginfo)
-    if not IsValid(attacker) or not IsValid(victim) then return end
+    if not IsPlayer(attacker) or not IsPlayer(victim) then return end
     if attacker == victim then return end
-    if not attacker:IsPlayer() or not victim:IsPlayer() then return end
     if attacker:IsKiller() then return end
 
     if attacker:IsInnocentTeam() and victim:IsKiller() then

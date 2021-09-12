@@ -3,13 +3,13 @@ ENT.Type            = "anim"
 ENT.Base            = "ttt_basegrenade_proj"
 
 function ENT:Initialize()
-    self.Entity:SetModel("models/weapons/w_crowbar.mdl")
-    self.Entity:PhysicsInit(SOLID_VPHYSICS)
-    self.Entity:SetMoveType(MOVETYPE_VPHYSICS)
-    self.Entity:SetSolid(SOLID_VPHYSICS)
+    self:SetModel("models/weapons/w_crowbar.mdl")
+    self:PhysicsInit(SOLID_VPHYSICS)
+    self:SetMoveType(MOVETYPE_VPHYSICS)
+    self:SetSolid(SOLID_VPHYSICS)
 
-    local phys = self.Entity:GetPhysicsObject()
-    if (phys:IsValid()) then
+    local phys = self:GetPhysicsObject()
+    if IsValid(phys) then
         phys:Wake()
     end
 end

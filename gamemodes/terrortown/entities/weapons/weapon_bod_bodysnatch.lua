@@ -96,7 +96,7 @@ if SERVER then
     end
 
     local function validbody(body)
-        return (CORPSE.GetPlayerNick(body, false) ~= false)
+        return CORPSE.GetPlayerNick(body, false) ~= false
     end
 
     local function bodyply(body)
@@ -188,7 +188,7 @@ if SERVER then
         owner:SelectWeapon("weapon_zm_carry")
 
         if GetConVar("ttt_bodysnatcher_destroy_body"):GetBool() then
-            body:Remove()
+            SafeRemoveEntity(body)
         end
 
         SendFullStateUpdate()
@@ -251,12 +251,9 @@ if SERVER then
         if GetRoundState() ~= ROUND_ACTIVE then return end
 
         local ent = tr.Entity
-
-        if ent and IsValid(ent) then
-            if ent:GetClass() == "prop_ragdoll" and validbody(ent) then
-                self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-                self:Begin(ent, tr.PhysicsBone)
-            end
+        if IsRagdoll(ent) and validbody(ent) then
+            self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
+            self:Begin(ent, tr.PhysicsBone)
         end
     end
 end
@@ -273,7 +270,7 @@ if CLIENT then
 
         if state == DEFIB_IDLE then return end
 
-        local timer = self:GetBegin() + charge
+        local time = self:GetBegin() + charge
 
         local x = ScrW() / 2.0
         local y = ScrH() / 2.0
@@ -283,9 +280,9 @@ if CLIENT then
         local w, h = 255, 20
 
         if state == DEFIB_BUSY then
-            if timer < 0 then return end
+            if time < 0 then return end
 
-            local cc = math.min(1, 1 - ((timer - CurTime()) / charge))
+            local cc = math.min(1, 1 - ((time - CurTime()) / charge))
 
             surface.SetDrawColor(0, 255, 0, 155)
 

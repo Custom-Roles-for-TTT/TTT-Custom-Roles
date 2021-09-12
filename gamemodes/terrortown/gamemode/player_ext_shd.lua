@@ -82,19 +82,21 @@ plymeta.IsVampireAlly = plymeta.GetVampireAlly
 function plymeta:IsSpecial() return self:GetRole() ~= ROLE_INNOCENT end
 function plymeta:IsCustom() return not DEFAULT_ROLES[self:GetRole()] end
 function plymeta:IsShopRole()
-    local hasShop = SHOP_ROLES[self:GetRole()] or false
+    local role = self:GetRole()
+    local hasShop = SHOP_ROLES[role] or false
     -- Don't perform the additional checks if "shop for all" is enabled
     if GetGlobalBool("ttt_shop_for_all", false) then
         return hasShop
     end
 
-    -- If this is a jester team member with a potential shop, only give them access if there are actual things to buy
-    if hasShop and self:IsJesterTeam() then
-        local hasWeapon = WEPS.DoesRoleHaveWeapon(self:GetRole())
-        -- Only allow clowns to use the shop if they have weapons or will be having weapons synced and are active or "active_only" is disabled
-        if self:IsClown() then
-            hasWeapon = (hasWeapon or GetGlobalInt("ttt_clown_shop_mode") > SHOP_SYNC_MODE_NONE) and
-                        (not GetGlobalBool("ttt_clown_shop_active_only", false) or self:GetNWBool("KillerClownActive", false))
+    -- If this is a role with a potential shop, only give them access if there are actual things to buy
+    if hasShop and (DELAYED_SHOP_ROLES[role] or self:IsJesterTeam()) then
+        local hasWeapon = WEPS.DoesRoleHaveWeapon(role)
+        -- Only allow roles with a delayed shop to use it if they have weapons or will be having weapons synced and are active or "active_only" is disabled
+        if DELAYED_SHOP_ROLES[role] then
+            local rolestring = ROLE_STRINGS_RAW[role]
+            hasWeapon = (hasWeapon or GetGlobalInt("ttt_" .. rolestring .. "_shop_mode", SHOP_SYNC_MODE_NONE) > SHOP_SYNC_MODE_NONE) and
+                (not GetGlobalBool("ttt_" .. rolestring .. "_shop_active_only", false) or self:IsRoleActive())
         end
         return hasWeapon
     end
@@ -107,7 +109,14 @@ function plymeta:CanUseShop()
         return isShopRole
     end
 
-    return isShopRole and (not self:IsDeputy() or self:GetNWBool("HasPromotion", false))
+    return isShopRole and (not self:IsDeputy() or self:IsRoleActive())
+end
+function plymeta:ShouldDelayShopPurchase()
+    local role = self:GetRole()
+    if DELAYED_SHOP_ROLES[role] then
+        return GetGlobalBool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_delay", false) and not self:IsRoleActive()
+    end
+    return false
 end
 function plymeta:CanUseTraitorButton(active_only)
     if active_only and not self:IsActive() then return false end
@@ -146,8 +155,13 @@ end
 function plymeta:IsActiveSpecial() return self:IsSpecial() and self:IsActive() end
 function plymeta:IsActiveCustom() return self:IsCustom() and self:IsActive() end
 function plymeta:IsActiveShopRole() return self:IsShopRole() and self:IsActive() end
-
 function plymeta:IsActiveDetectiveLike() return self:IsActive() and self:IsDetectiveLike() end
+function plymeta:IsRoleActive()
+    if self:IsClown() then return self:GetNWBool("KillerClownActive", false) end
+    if self:IsVeteran() then return self:GetNWBool("VeteranActive", false) end
+    if self:IsDeputy() or self:IsImpersonator() then return self:GetNWBool("HasPromotion", false) end
+    return true
+end
 
 -- Returns printable role
 function plymeta:GetRoleString()
@@ -189,7 +203,7 @@ function plymeta:CanCarryType(t)
 end
 
 function plymeta:IsDeadTerror()
-    return (self:IsSpec() and not self:Alive())
+    return self:IsSpec() and not self:Alive()
 end
 
 function plymeta:HasBought(id)
@@ -367,7 +381,7 @@ if CLIENT then
     -- Perform the gesture using the GestureRunner system. If custom_runner is
     -- non-nil, it will be used instead of the default runner for the act.
     function plymeta:AnimPerformGesture(act, custom_runner)
-        if GetConVarNumber("ttt_show_gestures") == 0 then return end
+        if not GetConVar("ttt_show_gestures"):GetBool() then return end
 
         local runner = custom_runner or act_runner[act]
         if not runner then return false end

@@ -8,31 +8,30 @@ function ENT:Initialize()
     util.PrecacheSound("weapons/ar2/ar2_altfire.wav")
     util.PrecacheSound("weapons/grenade/tick1.wav")
 
-    self.Entity:SetModel("models/weapons/w_eq_flashbang_thrown.mdl")
-    self.Entity:SetMaterial("smokenade/smokenade")
-    self.Entity:PhysicsInit(SOLID_VPHYSICS)
-    self.Entity:SetMoveType(MOVETYPE_VPHYSICS)
-    self.Entity:SetSolid(SOLID_VPHYSICS)
-    local phys = self.Entity:GetPhysicsObject()
+    self:SetModel("models/weapons/w_eq_flashbang_thrown.mdl")
+    self:SetMaterial("smokenade/smokenade")
+    self:PhysicsInit(SOLID_VPHYSICS)
+    self:SetMoveType(MOVETYPE_VPHYSICS)
+    self:SetSolid(SOLID_VPHYSICS)
 
-    if (phys:IsValid()) then
+    local phys = self:GetPhysicsObject()
+    if IsValid(phys) then
         phys:Wake()
 
         --This is how we make the smoke explosion
         local Smoke = function()
             --Safeguards
-            if not self.Entity then return end
-            if not self.Entity:IsValid() then return end
+            if not self:IsValid() then return end
 
             if SERVER then
-                self.Entity:EmitSound("weapons/ar2/npc_ar2_altfire.wav", 72, 100)
-                self.Entity:EmitSound("weapons/ar2/ar2_altfire.wav", 72, 100)
+                self:EmitSound("weapons/ar2/npc_ar2_altfire.wav", 72, 100)
+                self:EmitSound("weapons/ar2/ar2_altfire.wav", 72, 100)
 
                 local shake = ents.Create("env_physexplosion")
                 shake:SetKeyValue("radius", 256)
                 shake:SetKeyValue("magnitude", 32)
                 shake:SetKeyValue("spawnflags", "3")
-                shake:SetOwner(self.Owner)
+                shake:SetOwner(self:GetOwner())
                 shake:SetPos(self:GetPos())
                 shake:Fire("Explode" , "", 0)
                 shake:Fire("kill", "", 2)
@@ -41,7 +40,7 @@ function ENT:Initialize()
                 fear:SetKeyValue("soundtype", 8)
                 fear:SetKeyValue("volume", 312)
                 fear:SetKeyValue("duration", 5)
-                fear:SetOwner(self.Owner)
+                fear:SetOwner(self:GetOwner())
                 fear:SetPos(self:GetPos())
                 fear:Fire("EmitAISound" , "", 0.82)
                 fear:Fire("kill", "", 6)
@@ -51,14 +50,14 @@ function ENT:Initialize()
                 util.Effect("effect_smokenade_smoke", sfx)
                 util.ScreenShake(self:GetPos(), 32, 210, 1, 1024)
 
-                self.Entity:Remove()
+                self:Remove()
             end
         end
 
         --This is the little tick before the explosion
         local Sfx = function()
             if SERVER and self:IsValid() then
-                self.Entity:EmitSound("weapons/grenade/tick1.wav", 62, 100 )
+                self:EmitSound("weapons/grenade/tick1.wav", 62, 100 )
             end
         end
 
@@ -80,6 +79,6 @@ function ENT:PhysicsCollide(data, physobj)
         physobj:SetVelocity(newVelocity * lastSpeed * 0.62)
 
         -- Make collision sound
-        self.Entity:EmitSound("physics/metal/weapon_impact_soft" .. math.random(1,2) .. ".wav", 52, 100)
+        self:EmitSound("physics/metal/weapon_impact_soft" .. math.random(1,2) .. ".wav", 52, 100)
     end
 end

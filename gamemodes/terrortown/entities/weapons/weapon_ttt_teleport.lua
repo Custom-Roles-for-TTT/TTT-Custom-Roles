@@ -102,10 +102,10 @@ end
 
 local function ShouldCollide(ent)
     local g = ent:GetCollisionGroup()
-    return (g ~= COLLISION_GROUP_WEAPON and
+    return g ~= COLLISION_GROUP_WEAPON and
               g ~= COLLISION_GROUP_DEBRIS and
               g ~= COLLISION_GROUP_DEBRIS_TRIGGER and
-              g ~= COLLISION_GROUP_INTERACTIVE_DEBRIS)
+              g ~= COLLISION_GROUP_INTERACTIVE_DEBRIS
 end
 
 -- Teleport a player to a {pos, ang}
@@ -177,14 +177,10 @@ local function CanTeleportToPos(ply, pos)
         local blocking_plys = {}
 
         for _, block in ipairs(blockers) do
-            if IsValid(block) then
-                if block:IsPlayer() and block ~= ply then
-                    if block:IsTerror() and block:Alive() then
-                        table.insert(blocking_plys, block)
-                        -- telefrag blocker
-                        --Telefrag(block, ply)
-                    end
-                end
+            if IsPlayer(block) and block ~= ply and block:IsTerror() and block:Alive() then
+                table.insert(blocking_plys, block)
+                -- telefrag blocker
+                --Telefrag(block, ply)
             end
         end
 

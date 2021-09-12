@@ -109,7 +109,7 @@ function AccessorFuncDT(tbl, varname, name)
 end
 
 function util.PaintDown(start, effname, ignore)
-    local btr = util.TraceLine({ start = start, endpos = (start + Vector(0, 0, -256)), filter = ignore, mask = MASK_SOLID })
+    local btr = util.TraceLine({ start = start, endpos = start + Vector(0, 0, -256), filter = ignore, mask = MASK_SOLID })
 
     util.Decal(effname, btr.HitPos + btr.HitNormal, btr.HitPos - btr.HitNormal)
 end
@@ -250,7 +250,7 @@ local gsub = string.gsub
 -- returns "Bob killed Joe"
 -- No spaces or special chars in parameter name, just alphanumerics.
 function string.Interp(str, tbl)
-    return gsub(str, '{(%w+)}', tbl)
+    return gsub(str, "{(%w+)}", tbl)
 end
 
 -- Short helper for input.LookupBinding, returns capitalised key or a default
@@ -284,16 +284,16 @@ function Dev(level, ...)
 end
 
 function IsPlayer(ent)
-    return ent and ent:IsValid() and ent:IsPlayer()
+    return IsValid(ent) and ent:IsPlayer()
 end
 
 function IsRagdoll(ent)
-    return ent and ent:IsValid() and ent:GetClass() == "prop_ragdoll"
+    return IsValid(ent) and ent:GetClass() == "prop_ragdoll"
 end
 
 local band = bit.band
-function util.BitSet(val, bit)
-    return band(val, bit) == bit
+function util.BitSet(val, b)
+    return band(val, b) == b
 end
 
 if CLIENT then

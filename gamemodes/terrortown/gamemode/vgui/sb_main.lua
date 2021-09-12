@@ -362,7 +362,7 @@ function PANEL:PerformLayout()
     -- sort headers
     -- reuse cy
     -- cx = logo width + buffer space
-    local cx = 256 + 8
+    cx = 256 + 8
     for k, v in ipairs(self.sort_headers) do
         v:SizeToContents()
         cx = cx + v.Width
@@ -439,7 +439,7 @@ vgui.Register("TTTScoreboard", PANEL, "Panel")
 ---- PlayerFrame is defined in sandbox and is basically a little scrolling
 ---- hack. Just putting it here (slightly modified) because it's tiny.
 
-local PANEL = {}
+PANEL = {}
 function PANEL:Init()
     self.pnlCanvas = vgui.Create("Panel", self)
     self.YOffset = 0

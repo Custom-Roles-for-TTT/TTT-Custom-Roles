@@ -47,13 +47,11 @@ SWEP.Timer = -1
 SWEP.AllowDrop = false
 
 -- settings
-local cvf = FCVAR_ARCHIVE + FCVAR_REPLICATED + FCVAR_SERVER_CAN_EXECUTE
 local maxdist = 64
 local success = 100
 local charge = 8
 local mutateok = 0
 local mutatemax = 0
-local spawnhealth = 100
 
 local mutate = {
     ["models/props_junk/watermelon01.mdl"] = true,
@@ -124,14 +122,14 @@ if SERVER then
             }
             local tr = util.TraceHull(t)
 
-            if not tr.Hit then return (v - Vector(0, 0, midsize.z / 2)) end
+            if not tr.Hit then return v - Vector(0, 0, midsize.z / 2) end
         end
 
         return false
     end
 
     local function validbody(body)
-        return (CORPSE.GetPlayerNick(body, false) ~= false)
+        return CORPSE.GetPlayerNick(body, false) ~= false
     end
 
     local function bodyply(body)
@@ -216,10 +214,9 @@ if SERVER then
         ply:PrintMessage(HUD_PRINTCENTER, "You have been revived by " .. ROLE_STRINGS_EXT[ROLE_PARAMEDIC] .. "!")
         ply:SetHealth(ply:GetMaxHealth())
 
-        body:Remove()
+        SafeRemoveEntity(body)
 
         SendFullStateUpdate()
-
 
         self:GetOwner():ConCommand("lastinv")
         self:Remove()
@@ -272,9 +269,7 @@ if SERVER then
         if GetRoundState() ~= ROUND_ACTIVE then return end
 
         local ent = tr.Entity
-
-        if ent and IsValid(ent) then
-
+        if IsValid(ent) then
             if ent:GetClass() == "prop_physics" and mutate[ent:GetModel()] and mutateok > 0 then
                 self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
                 ent:EmitSound(zap, 75, math.random(98, 102))
@@ -305,7 +300,6 @@ if SERVER then
 end
 
 if CLIENT then
-
     net.Receive("TTT_Paramedic_Revived", function(len, ply)
         if ply or len <= 0 then return end
         surface.PlaySound(revived)
@@ -336,14 +330,10 @@ if CLIENT then
         local w, h = 255, 20
 
         if state == DEFIB_BUSY then
+            local time = self:GetBegin() + charge
+            if time < 0 then return end
 
-
-
-            local timer = self:GetBegin() + charge
-
-            if timer < 0 then return end
-
-            local cc = math.min(1, 1 - ((timer - CurTime()) / charge))
+            local cc = math.min(1, 1 - ((time - CurTime()) / charge))
 
             surface.SetDrawColor(0, 255, 0, 155)
 

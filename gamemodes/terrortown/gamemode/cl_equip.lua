@@ -224,14 +224,10 @@ function GetEquipmentForRole(role, promoted, block_randomization)
     return Equipment and Equipment[role] or {}
 end
 
-local function ShouldDelayPurchase(client)
-    return client:IsClown() and GetGlobalBool("ttt_clown_shop_delay", false) and not client:GetNWBool("KillerClownActive", false)
-end
-
 local function CanCarryWeapon(item)
     local client = LocalPlayer()
     -- Don't allow the clown to buy any weapon that has a kind matching one of the weapons they've already bought
-    if item.kind and client.bought and ShouldDelayPurchase(client) then
+    if item.kind and client.bought and client:ShouldDelayShopPurchase() then
         for _, id in ipairs(client.bought) do
             local wep = weapons.GetStored(id)
             if wep and wep.Kind == item.kind then
@@ -246,7 +242,7 @@ end
 local function HasEquipmentItem(item)
     local client = LocalPlayer()
     -- Don't allow the clown to buy the same equipment item twice if delayed acceptance is enabled
-    if client.bought and ShouldDelayPurchase(client) then
+    if client.bought and client:ShouldDelayShopPurchase() then
         return table.HasValue(client.bought, tostring(item.id))
     end
 
@@ -431,7 +427,7 @@ local function TraitorMenuPopup()
     end
 
     -- Close any existing traitor menu
-    if eqframe and IsValid(eqframe) then eqframe:Close() end
+    if IsValid(eqframe) then eqframe:Close() end
 
     local dframe = vgui.Create("DFrame")
     dframe:SetSize(w, h)
@@ -542,14 +538,14 @@ local function TraitorMenuPopup()
 
         local function CannotBuyItem(item)
             local orderable = update_preqs(item)
-            return ((not orderable) or
+            return (not orderable) or
                     -- already owned
                     table.HasValue(owned_ids, item.id) or
                     (tonumber(item.id) and ply:HasEquipmentItem(tonumber(item.id))) or
                     -- already carrying a weapon for this slot
                     (ItemIsWeapon(item) and (not CanCarryWeapon(item))) or
                     -- already bought the item before
-                    (item.limited and ply:HasBought(tostring(item.id))))
+                    (item.limited and ply:HasBought(tostring(item.id)))
         end
 
         local function FillEquipmentList(itemlist)
@@ -882,7 +878,7 @@ function GM:OnContextMenuOpen()
         CLSCORE:Toggle()
         return
     end
-    if eqframe and IsValid(eqframe) then
+    if IsValid(eqframe) then
         ForceCloseTraitorMenu()
     else
         TraitorMenuPopup()

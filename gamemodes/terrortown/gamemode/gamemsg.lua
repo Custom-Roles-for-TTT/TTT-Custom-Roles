@@ -250,7 +250,7 @@ function GM:PlayerCanHearPlayersVoice(listener, speaker)
         end
     end
 
-    return true, (loc_voice:GetBool() and GetRoundState() ~= ROUND_POST)
+    return true, loc_voice:GetBool() and GetRoundState() ~= ROUND_POST
 end
 
 local function SendTraitorVoiceState(speaker, state)
@@ -350,7 +350,7 @@ local function LastWords(ply, cmd, args)
             local last_seen = tonumber(args[2])
             if last_seen then
                 local ent = Entity(last_seen)
-                if IsValid(ent) and ent:IsPlayer() and rag and (not rag.lastid) then
+                if IsPlayer(ent) and rag and (not rag.lastid) then
                     rag.lastid = { ent = ent, t = CurTime() }
                 end
             end

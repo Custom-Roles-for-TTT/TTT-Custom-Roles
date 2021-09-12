@@ -102,16 +102,6 @@ function LANG.GetUnsafeLanguageTable() return cached_active end
 
 function LANG.GetUnsafeNamed(name) return LANG.Strings[name] end
 
--- Safe and slow access, not sure if it's ever useful.
-function LANG.GetLanguageTable(lang_name)
-    lang_name = lang_name or LANG.ActiveLanguage
-
-    local cpy = table.Copy(LANG.Strings[lang_name])
-    SetFallback(cpy)
-
-    return cpy
-end
-
 local function SetFallback(tbl)
     -- languages may deal with this themselves, or may already have the fallback
     local m = getmetatable(tbl)
@@ -126,7 +116,16 @@ local function SetFallback(tbl)
             {
                 __index = cached_default
             })
+end
 
+-- Safe and slow access, not sure if it's ever useful.
+function LANG.GetLanguageTable(lang_name)
+    lang_name = lang_name or LANG.ActiveLanguage
+
+    local cpy = table.Copy(LANG.Strings[lang_name])
+    SetFallback(cpy)
+
+    return cpy
 end
 
 function LANG.SetActiveLanguage(lang_name)
@@ -157,7 +156,7 @@ function LANG.SetActiveLanguage(lang_name)
 end
 
 function LANG.Init()
-    local lang_name = GetConVarString("ttt_language")
+    local lang_name = GetConVar("ttt_language"):GetString()
 
     -- if we want to use the server language, we'll be switching to it as soon as
     -- we hear from the server which one it is, for now use default
@@ -211,7 +210,7 @@ function LANG.GetLanguageNames()
        lang_names[lang] = strings["language_name"] or string.Capitalize(lang)
     end
     return lang_names
- end 
+ end
 
 ---- Styling
 
@@ -277,9 +276,9 @@ function LANG.ProcessMsg(name, params)
         -- some of our params may be string names themselves
         for k, v in pairs(params) do
             if isstring(v) then
-                local name = LANG.GetNameParam(v)
-                if name then
-                    params[k] = LANG.GetTranslation(name)
+                local param = LANG.GetNameParam(v)
+                if param then
+                    params[k] = LANG.GetTranslation(param)
                 end
             end
         end
@@ -289,8 +288,6 @@ function LANG.ProcessMsg(name, params)
 
     LANG.ShowStyledMsg(text, LANG.GetStyle(name))
 end
-
-
 
 --- Message style declarations
 

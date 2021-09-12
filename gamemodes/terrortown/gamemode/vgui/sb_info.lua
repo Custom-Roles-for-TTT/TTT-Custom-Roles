@@ -4,7 +4,6 @@
 local vgui = vgui
 
 local GetTranslation = LANG.GetTranslation
-local GetPTranslation = LANG.GetParamTranslation
 
 
 --- Base stuff
@@ -33,7 +32,7 @@ vgui.Register("TTTScorePlayerInfoBase", PANEL, "Panel")
 
 --- Dead player search results
 
-local PANEL = {}
+PANEL = {}
 
 function PANEL:Init()
    self.List = vgui.Create("DPanelSelect", self)
@@ -147,7 +146,7 @@ local tags = {
    {txt="sb_tag_miss",   color=Color(130, 190, 130, 255)}
 };
 
-local PANEL = {}
+PANEL = {}
 
 function PANEL:Init()
    self.TagButtons = {}
@@ -199,7 +198,7 @@ end
 vgui.Register("TTTScorePlayerInfoTags", PANEL, "TTTScorePlayerInfoBase")
 
 --- Tag button
-local PANEL = {}
+PANEL = {}
 
 function PANEL:Init()
    self.Player = nil
@@ -260,8 +259,6 @@ function PANEL:DoClick()
    end
 end
 
-
-local select_color = Color(255, 200, 0, 255)
 function PANEL:PaintOver()
    if self.Player and self.Player.sb_tag == self.Tag then
       surface.SetDrawColor(255,200,0,255)

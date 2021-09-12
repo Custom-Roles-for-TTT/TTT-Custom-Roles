@@ -44,11 +44,13 @@ local STATE_NONE = 0
 local STATE_EAT = 1
 local STATE_DRAIN = 2
 local STATE_CONVERT = 3
+local STATE_KILL = 4
 
 local beep = Sound("npc/fast_zombie/fz_alert_close1.wav")
 
 local vampire_convert = CreateConVar("ttt_vampire_convert_enable", "0")
 local vampire_drain = CreateConVar("ttt_vampire_drain_enable", "1")
+local vampire_drain_first = CreateConVar("ttt_vampire_drain_first", "0")
 local vampire_fang_dead_timer = CreateConVar("ttt_vampire_fang_dead_timer", "0")
 local vampire_fang_timer = CreateConVar("ttt_vampire_fang_timer", "5")
 local vampire_fang_heal = CreateConVar("ttt_vampire_fang_heal", "50")
@@ -90,8 +92,8 @@ function SWEP:OnDrop()
     self:Remove()
 end
 
-local function CanConvert(ply)
-    return vampire_convert:GetBool() and (not vampire_prime_convert:GetBool() or ply:IsVampirePrime())
+function SWEP:CanConvert()
+    return vampire_convert:GetBool() and (not vampire_prime_convert:GetBool() or self:GetOwner():IsVampirePrime())
 end
 
 local function GetPlayerFromBody(body)
@@ -172,7 +174,7 @@ function SWEP:Drain(entity)
 end
 
 function SWEP:CancelUnfreeze(entity)
-    if not IsValid(entity) or not entity:IsPlayer() then return end
+    if not IsPlayer(entity) then return end
     if not IsValid(self:GetOwner()) then return end
     local timerid = "VampUnfreezeDelay_" .. self:GetOwner():Nick() .. "_" .. entity:Nick()
     if timer.Exists(timerid) then
@@ -182,7 +184,7 @@ function SWEP:CancelUnfreeze(entity)
 end
 
 function SWEP:HasValidTarget()
-    return IsValid(self.TargetEntity) and self.TargetEntity:IsPlayer()
+    return IsPlayer(self.TargetEntity)
 end
 
 function SWEP:AdjustFreezeCount(ent, adj, def)
@@ -205,14 +207,66 @@ function SWEP:DoUnfreeze()
     self.TargetEntity = nil
 end
 
+function SWEP:DoConvert()
+    local ply = self.TargetEntity
+    ply:StripRoleWeapons()
+    if not ply:HasWeapon("weapon_zm_improvised") then
+        ply:Give("weapon_zm_improvised")
+    end
+    -- Disable Killer smoke if they have it
+    ply:SetNWBool("KillerSmoke", false)
+    ply:SetVampirePreviousRole(ply:GetRole())
+    ply:SetRole(ROLE_VAMPIRE)
+    ply:SetVampirePrime(false)
+    ply:PrintMessage(HUD_PRINTCENTER, "You have become a Vampire! Use your fangs to suck blood or fade from view")
+
+    net.Start("TTT_Vampified")
+    net.WriteString(ply:Nick())
+    net.Broadcast()
+
+    -- Not actually an error, but it resets the things we want
+    self:FireError()
+
+    SendFullStateUpdate()
+    -- Reset the victim's max health
+    SetRoleMaxHealth(ply)
+end
+
+function SWEP:DoKill()
+    local attacker = self:GetOwner()
+    local dmginfo = DamageInfo()
+    dmginfo:SetDamage(10000)
+    dmginfo:SetAttacker(attacker)
+    dmginfo:SetInflictor(game.GetWorld())
+    dmginfo:SetDamageType(DMG_SLASH)
+    dmginfo:SetDamageForce(Vector(0, 0, 0))
+    dmginfo:SetDamagePosition(attacker:GetPos())
+    self.TargetEntity:TakeDamageInfo(dmginfo)
+
+    -- Remove the body
+    local rag = self.TargetEntity.server_ragdoll or self.TargetEntity:GetRagdollEntity()
+    SafeRemoveEntity(rag)
+
+    self:DoHeal()
+    self:DropBones()
+
+    -- Not actually an error, but it resets the things we want
+    self:FireError()
+end
+
+function SWEP:DoHeal()
+    local vamheal = vampire_fang_heal:GetInt()
+    local vamoverheal = vampire_fang_overheal:GetInt()
+    self:GetOwner():SetHealth(math.min(self:GetOwner():Health() + vamheal, self:GetOwner():GetMaxHealth() + vamoverheal))
+end
+
 function SWEP:UnfreezeTarget()
     local owner = self:GetOwner()
     if not self:HasValidTarget() then return end
-    local valid_owner = IsValid(owner) and owner:IsPlayer()
 
     -- Unfreeze the target immediately if there is no delay or no owner
     local delay = vampire_fang_unfreeze_delay:GetFloat()
-    if delay <= 0 or not valid_owner then
+    if delay <= 0 or not IsPlayer(owner) then
         self:DoUnfreeze()
     else
         self:CancelUnfreeze(self.TargetEntity)
@@ -281,7 +335,7 @@ function SWEP:Think()
         self:GetOwner():EmitSound("weapons/ttt/unfade.wav")
     end
 
-    if self:GetState() == STATE_EAT or self:GetState() == STATE_DRAIN or self:GetState() == STATE_CONVERT then
+    if self:GetState() >= STATE_EAT then
         if not IsValid(self:GetOwner()) then
             self:FireError()
             return
@@ -289,78 +343,65 @@ function SWEP:Think()
 
         local tr = self:GetTraceEntity()
         if not self:GetOwner():KeyDown(IN_ATTACK) or tr.Entity ~= self.TargetEntity then
-            local ply = self.TargetEntity
-            -- If the player is allowed to convert, do that
-            if self:GetState() == STATE_CONVERT and CanConvert(self:GetOwner()) and not ply:IsVampire() then
-                ply:StripRoleWeapons()
-                if not ply:HasWeapon("weapon_zm_improvised") then
-                    ply:Give("weapon_zm_improvised")
+            -- Only allow doing the 1/2 progress actions if there are 2 actions enabled (e.g. drain and convert)
+            if self:CanConvert() and self:HasValidTarget() and not self.TargetEntity:IsVampire() then
+                if self:GetState() == STATE_KILL then
+                    self:DoKill()
+                    return
+                elseif self:GetState() == STATE_CONVERT then
+                    self:DoConvert()
+                    return
                 end
-                -- Disable Killer smoke if they have it
-                ply:SetNWBool("KillerSmoke", false)
-                ply:SetVampirePreviousRole(ply:GetRole())
-                ply:SetRole(ROLE_VAMPIRE)
-                ply:SetVampirePrime(false)
-                ply:PrintMessage(HUD_PRINTCENTER, "You have become a Vampire! Use your fangs to suck blood or fade from view")
-
-                net.Start("TTT_Vampified")
-                net.WriteString(ply:Nick())
-                net.Broadcast()
-
-                -- Not actually an error, but it resets the things we want
-                self:FireError()
-
-                SendFullStateUpdate()
-                -- Reset the victim's max health
-                SetRoleMaxHealth(ply)
-            else
-                self:Error("DRAINING ABORTED")
             end
+
+            self:Error("DRAINING ABORTED")
             return
         end
 
-        -- If their is a target and they have been turned to a vampire by someone else, stop trying to drain them
+        -- If there is a target and they have been turned to a vampire by someone else, stop trying to drain them
         if self:GetState() ~= STATE_EAT and (not self:HasValidTarget() or self.TargetEntity:IsVampire()) then
             self:Error("DRAINING ABORTED")
             return
         end
 
-        if self:GetState() == STATE_EAT or self:GetState() == STATE_CONVERT then
+        if self:GetState() ~= STATE_DRAIN then
             if CurTime() >= self:GetStartTime() + self:GetFangDuration() then
+                -- These seem backwards, but it's due to how the state tracking works.
+                -- The "in-progress" state of killing a player is STATE_CONVERT because
+                -- when "ttt_vampire_drain_first" is not enabled, the player will be "converting" until the very end.
+                -- Therefore, the state will be STATE_CONVERT even though the end intent is to kill.
+                -- When "ttt_vampire_drain_first" is enabled, the player will be "killing" until the very end.
+                -- Therefore, the state will be STATE_KILL even though the end intent is to convert.
+                -- Of course we also have to check that this vampire can actually convert and kill the target if they can't.
                 if self:GetState() == STATE_CONVERT then
-                    local attacker = self:GetOwner()
-                    local dmginfo = DamageInfo()
-                    dmginfo:SetDamage(10000)
-                    dmginfo:SetAttacker(attacker)
-                    dmginfo:SetInflictor(game.GetWorld())
-                    dmginfo:SetDamageType(DMG_SLASH)
-                    dmginfo:SetDamageForce(Vector(0, 0, 0))
-                    dmginfo:SetDamagePosition(attacker:GetPos())
-                    self.TargetEntity:TakeDamageInfo(dmginfo)
-
-                    -- Remove the body
-                    local rag = self.TargetEntity.server_ragdoll or self.TargetEntity:GetRagdollEntity()
-                    if IsValid(rag) then
-                        rag:Remove()
+                    self:DoKill()
+                elseif self:GetState() == STATE_KILL then
+                    if self:CanConvert() then
+                        self:DoConvert()
+                    else
+                        self:DoKill()
                     end
                 else
-                    self.TargetEntity:Remove()
+                    SafeRemoveEntity(self.TargetEntity)
+                    self:DoHeal()
+
+                    -- Not actually an error, but it resets the things we want
+                    self:FireError()
                 end
-
-                self:SetState(STATE_NONE)
-
-                local vamheal = vampire_fang_heal:GetInt()
-                local vamoverheal = vampire_fang_overheal:GetInt()
-                self:GetOwner():SetHealth(math.min(self:GetOwner():Health() + vamheal, self:GetOwner():GetMaxHealth() + vamoverheal))
-
-                self:DropBones()
             end
         else
             if CurTime() >= self:GetStartTime() + (self:GetFangDuration() / 2) then
-                self:SetState(STATE_CONVERT)
+                local verb = "CONVERT"
+                if vampire_drain_first:GetBool() then
+                    self:SetState(STATE_KILL)
+                    verb = "KILL"
+                else
+                    self:SetState(STATE_CONVERT)
+                end
+
                 -- Only update the message if this player can convert
-                if CanConvert(self:GetOwner()) then
-                    self:SetMessage("DRAINING - RELEASE TO CONVERT")
+                if self:CanConvert() then
+                    self:SetMessage("DRAINING - RELEASE TO " .. verb)
                 end
             end
         end
@@ -376,7 +417,7 @@ if CLIENT then
 
         local w, h = 255, 20
 
-        if self:GetState() == STATE_EAT or self:GetState() == STATE_DRAIN or self:GetState() == STATE_CONVERT then
+        if self:GetState() >= STATE_EAT then
             local progress = math.TimeFraction(self:GetStartTime(), self:GetStartTime() + self:GetFangDuration(), CurTime())
 
             if progress < 0 then return end

@@ -1,6 +1,5 @@
 -- HUD HUD HUD
 
-local table = table
 local surface = surface
 local draw = draw
 local math = math
@@ -177,7 +176,6 @@ local function DrawBg(x, y, width, height, client)
     draw.RoundedBoxEx(8, x, y, tw, th, col, true, false, false, true)
 end
 
-local sf = surface
 local dr = draw
 
 local function ShadowedText(text, font, x, y, color, xalign, yalign)
@@ -340,7 +338,7 @@ local function SpecHUDPaint(client)
         HauntPaint(client)
     elseif client:GetNWBool("Infecting") then
         InfectPaint(client)
-    elseif IsValid(tgt) and tgt:IsPlayer() then
+    elseif IsPlayer(tgt) then
         ShadowedText(tgt:Nick(), "TimeLeft", ScrW() / 2, margin, COLOR_WHITE, TEXT_ALIGN_CENTER)
     elseif IsValid(tgt) and tgt:GetNWEntity("spec_owner", nil) == client then
         PunchPaint(client)
@@ -409,7 +407,7 @@ local function InfoPaint(client)
     local text = nil
     if round_state == ROUND_ACTIVE then
         if hide_role then
-            text = L['hidden']
+            text = GetTranslation("hidden")
         else
             text = client:GetRoleString()
         end
@@ -468,10 +466,6 @@ local function InfoPaint(client)
     end
 
     ShadowedText(text, font, rx, ry, color)
-
-    if is_haste then
-        --dr.SimpleText(L.hastemode, "TabLarge", x + margin + 165, traitor_y - 8)
-    end
 
     local label_top = 140
     local label_left = 36

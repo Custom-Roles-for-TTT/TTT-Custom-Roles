@@ -50,7 +50,7 @@ local function GetTextForLocalPlayer()
         local sid = LocalPlayer():GetNWString("RevengerLover", "")
         local lover = player.GetBySteamID64(sid)
         local name = "someone"
-        if IsValid(lover) and lover:IsPlayer() then name = lover:Nick() end
+        if IsPlayer(lover) then name = lover:Nick() end
         return GetPTranslation("info_popup_revenger", table.Merge(params, { lover = name }))
 
     elseif client:IsMonsterTeam() then
