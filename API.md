@@ -478,6 +478,10 @@ Variables available when called from a Player object (within the defined realm)
 ## Hooks
 Custom and modified event hooks available within the defined realm
 
+***NOTE:*** When using a hook with multiple return values, you *must* return a non-`nil` value for all properties up to the one(s) you are modifying or the hook results will be ignored entirely.
+
+For example, if there is a hook that returns three parameters: `first`, `second`, and `third` and you want to modify the `second` parameter you must return the `first` parameter as non-`nil` as well, like this: `return first, newSecond`. Any return parameters after `second` can be omitted and the default value will be used.
+
 **TTTCanIdentifyCorpse(ply, rag, wasTraitor)** - Changed `was_traitor` parameter to be `true` for any member of the traitor team, rather than just the traitor role.\
 *Realm:* Server\
 *Added in:* 1.0.5\
@@ -495,6 +499,27 @@ Custom and modified event hooks available within the defined realm
 - *type* - The round win type
 
 *Return:* `true` if the default print messages should be skipped (Defaults to `false`).
+
+**TTTRadarPlayerRender(client, tgt, color, hidden)** - Called before a target's radar ping is rendered, allowing the color and whether the ping should be shown to be changed.\
+*Realm:* Client\
+*Added in:* 1.2.3\
+*Parameters:*
+- *client* - The local player
+- *tgt* - The target player's radar data. Can contain the following properties:
+  - `pos` - The target's position
+  - `role` - The target's role, if any
+  - `was_beggar` - If the target was a beggar but was converted to another role
+  - `killer_clown_active` - whether the target is a Clown that has been activated
+  - `sid64` - The [SteamID64](https://wiki.facepunch.com/gmod/Player:SteamID64) value of the target
+  - The following properties can be added (only one or the other) to `tgt` to change what is displayed with the radar ping
+    - `nick` - A string value that will be shown under the radar ping circle
+    - `t` - A time number value that will be calculated as the difference from "now" and shown in the "##:##" format
+- *color* - The color that would normally be used for the radar ping for the target, if any
+- *hidden* - Whether the radar ping for the target would normally be hidden
+
+*Return:*
+- *color* - The new color value to use or the original passed into the hook
+- *hidden* - The new hidden value to use or the original passed into the hook
 
 **TTTScoreboardPlayerName(ply, client, currentName)** - Called before a player's row in the scoreboard (tab menu) is shown, allowing the name to be changed.\
 *Realm:* Client\
@@ -521,8 +546,6 @@ Custom and modified event hooks available within the defined realm
 - *roleFileName* - The new roleFileName value to use or the original passed into the hook
 - *flashRole* - If a valid role is provided, this will cause the target player's scoreboard role to have a flashing border in the given role's color (see ROLE_* global enumeration)
 
-*NOTE:* You must return a non-*nil* value for all of the properties or the hook results will be ignored
-
 **TTTScoringSummaryRender(ply, roleFileName, groupingRole, roleColor, nameLabel)** - Called before the round summary screen is shown. Used to modify the color, position, and icon for a player.\
 *Realm:* Client\
 *Added in:* 1.1.5\
@@ -538,8 +561,6 @@ Custom and modified event hooks available within the defined realm
 - *groupingRole* - The new groupingRole value to use or the original passed into the hook
 - *roleColor* - The new roleColor value to use or the original passed into the hook
 - *newName* - The new nameLabel value to use for the original passed into the hook *(Added in 1.2.3)*
-
-*NOTE:* You must return a non-*nil* value for all of the properties or the hook results will be ignored
 
 **TTTScoringWinTitle(wintype, wintitles, title, secondaryWinRole)** - Called before each round summary screen is shown with the winning team. Return the win title object to use on the summary screen.\
 *Realm:* Client\
@@ -557,14 +578,19 @@ Custom and modified event hooks available within the defined realm
   - *params* - Any parameters to use when translating `txt` (Optional if `new_secondary_win_role` is also omitted)
 - *newSecondaryWinRole* - Which role should share in the win for this round (see ROLE_* global enumeration) (Optional) *(Added in 1.1.9)*
 
-*NOTE:* You must return a non-*nil* value for all of the properties or the hook results will be ignored
-
 **TTTSelectRoles(choices, prevRoles)** - Called before players are randomly assigned roles. If a player is assigned a role during this hook, they will not be randomly assigned one later.\
 *Realm:* Server\
 *Added in:* 1.0.0\
 *Parameters:*
 - *choices* - The table of players who will be assigned roles
 - *prevRoles* - The table whose keys are role numbers and values are tables of players who had that role last round
+
+**TTTSpeedMultiplier(ply, mults)** - Called when determining what speed the player should be moving at.\
+*Realm:* Client and Server\
+*Added in:* 1.0.0\
+*Parameters:*
+- *ply* - The target player
+- *mults* - The table of speed multipliers that should be applied to this player. Insert any multipliers you would like to apply to the target player into this table
 
 **TTTSprintStaminaPost(ply, stamina, sprintTimer, consumption)** - Called after a player's sprint stamina is reduced. Return value is the new stamina value for the player.\
 *Realm:* Client\
@@ -600,8 +626,6 @@ Custom and modified event hooks available within the defined realm
 - *newVisible* - The new ringVisible value to use or the original passed into the hook
 - *colorOverride* - The [Color](https://wiki.facepunch.com/gmod/Global.Color) to use for the ring. Return `false` if you don't want to override the color. *NOTE:* For some reason colors that are near-black do not render so try a lighter color if you are having trouble
 
-*NOTE:* You must return a non-*nil* value for all of the properties or the hook results will be ignored
-
 **TTTTargetIDPlayerRoleIcon(ply, client, role, noZ, colorRole, hideBeggar, showJester)** - Called before player Target ID icon (over their head) is rendered allowing changing the icon and color shown.\
 *Realm:* Client\
 *Added in:* 1.1.9\
@@ -619,8 +643,6 @@ Custom and modified event hooks available within the defined realm
 - *noZ* - The new noZ value to use or the original passed into the hook. *NOTE:* The matching icon .vmt for this flag needs to exist. If *noZ* is `true`, a "sprite\_{ROLESHORTNAME}\_noz.vmt" file must exist and if *noZ* is `false`, a "sprite_{ROLESHORTNAME}.vmt" file must exist
 - *colorRole* - The new colorRole value to use or the original passed into the hook
 
-*NOTE:* You must return a non-*nil* value for all of the properties or the hook results will be ignored
-
 **TTTTargetIDPlayerText(ent, client, text, clr, secondaryText)** - Called before player Target ID text (shown when you look at a player) is rendered.\
 *Realm:* Client\
 *Added in:* 1.1.9\
@@ -635,8 +657,6 @@ Custom and modified event hooks available within the defined realm
 - *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
 - *clr* - The new clr value to use or the original passed into the hook
 - *secondaryText* - The new secondaryText value to use or the original passed into the hook
-
-*NOTE:* You must return a non-*nil* value for all of the properties or the hook results will be ignored
 
 ## SWEPs
 Changes made to SWEPs (the data structure used when defining new weapons)
