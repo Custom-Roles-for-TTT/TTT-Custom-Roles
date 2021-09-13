@@ -447,10 +447,17 @@ function GM:HUDDrawTargetID()
 
     local w, h = 0, 0 -- text width/height, reused several times
 
-    if target_traitor or target_special_traitor or target_detective or target_special_detective or target_glitch or target_jester or target_clown or target_zombie or target_vampire then
+    local ring_visible = target_traitor or target_special_traitor or target_detective or target_special_detective or target_glitch or target_jester or target_clown or target_zombie or target_vampire
+
+    local new_visible, color_override = hook.Run("TTTTargetIDPlayerRing", ent, client, ring_visible)
+    if type(new_visible) == "boolean" then ring_visible = new_visible end
+
+    if ring_visible then
         surface.SetTexture(ring_tex)
 
-        if target_traitor then
+        if color_override then
+            surface.SetDrawColor(color_override)
+        elseif target_traitor then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_TRAITOR])
         elseif target_special_traitor then
             surface.SetDrawColor(GetRoleTeamColor(ROLE_TEAM_TRAITOR, "radar"))

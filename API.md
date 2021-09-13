@@ -586,6 +586,20 @@ Custom and modified event hooks available within the defined realm
 
 *Return:* `true` if the kill icon should be shown or `false` if not. Returning nothing or a non-boolean value will default to the given *showKillIcon* value.
 
+**TTTTargetIDPlayerRing(ent, client, ringVisible)** - Called before a player Target ID ring (shown when you look at a player) is rendered.\
+*Realm:* Client\
+*Added in:* 1.2.3\
+*Parameters:*
+- *ent* - The target entity being rendered. Not necessarily a player so be sure to check `ent:IsPlayer()` if needed
+- *client* - The local player
+- *ringVisible* - Whether the ring would normally be visible for this target
+
+*Return:*
+- *newVisible* - The new ringVisible value to use or the original passed into the hook
+- *colorOverride* - The [Color](https://wiki.facepunch.com/gmod/Global.Color) to use for the ring. Return `false` if you don't want to override the color. *NOTE:* For some reason colors that are near-black do not render so try a lighter color if you are having trouble
+
+*NOTE:* You must return a non-*nil* value for all of the properties or the hook results will be ignored
+
 **TTTTargetIDPlayerRoleIcon(ply, client, role, noZ, colorRole, hideBeggar, showJester)** - Called before player Target ID icon (over their head) is rendered allowing changing the icon and color shown.\
 *Realm:* Client\
 *Added in:* 1.1.9\
