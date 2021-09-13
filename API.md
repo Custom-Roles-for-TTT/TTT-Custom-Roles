@@ -265,6 +265,12 @@ Methods available globally (within the defined realm)
 *Parameters:*
 - *ply* - The target player
 
+**ShouldHideJesters(ply)** - Whether the target player should hide a jester player's role (in radar, on the scoreboard, in target ID, etc.).\
+*Realm:* Client and Server\
+*Added in:* 1.2.3\
+*Parameters:*
+- *ply* - The target player
+
 **StartsWithVowel(str)** - Whether the given string starts with a vowel.\
 *Realm:* Client and Server\
 *Added in:* 1.0.8

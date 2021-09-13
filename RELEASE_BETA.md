@@ -8,6 +8,12 @@
 
 ### Fixes
 - Fixed jesters being marked in pink on a traitor's radar when ttt_jesters_visible_to_traitors was disabled
+- Fixed beggars showing as their new role on a traitor's radar when ttt_beggar_reveal_traitor was not 1 or 2
+- Fixed killer clowns showing on radar after they are activated if ttt_clown_hide_when_active is enabled
+- Fixed error in the radar when ttt_glitch_mode was 2
+
+### Developer
+- Added ShouldHideJesters global function to determine whether the given player should hide a jester player's role
 
 ## 1.2.2
 **Released: September 12th, 2021**

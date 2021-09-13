@@ -71,12 +71,6 @@ local function GetDetectiveIconRole(is_traitor)
     return ROLE_DEPUTY
 end
 
-local function ShouldHideJesters(p)
-    return (p:IsTraitorTeam() and not GetGlobalBool("ttt_jesters_visible_to_traitors", false)) or
-            (p:IsMonsterTeam() and not GetGlobalBool("ttt_jesters_visible_to_monsters", false)) or
-            (p:IsIndependentTeam() and not GetGlobalBool("ttt_jesters_visible_to_independents", false))
-end
-
 -- using this hook instead of pre/postplayerdraw because playerdraw seems to
 -- happen before certain entities are drawn, which then clip over the sprite
 function GM:PostDrawTranslucentRenderables()
@@ -97,7 +91,7 @@ function GM:PostDrawTranslucentRenderables()
             pos = v:GetPos()
             pos.z = pos.z + v:GetHeight() + 15
 
-            local beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", 1)
+            local beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", BEGGAR_REVEAL_ALL)
             local hideBeggar = v:GetNWBool("WasBeggar", false) and (beggarMode == BEGGAR_REVEAL_NONE or beggarMode == BEGGAR_REVEAL_INNOCENTS)
             local showJester = ((v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) or ((v:GetTraitor() or v:GetInnocent()) and hideBeggar)) and not ShouldHideJesters(client)
             local glitchMode = GetGlobalInt("ttt_glitch_mode", 0)
@@ -382,7 +376,7 @@ function GM:HUDDrawTargetID()
             _, color = util.HealthToString(ent:Health(), ent:GetMaxHealth())
         end
 
-        local beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", 1)
+        local beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", BEGGAR_REVEAL_ALL)
         local hideBeggar = ent:GetNWBool("WasBeggar", false) and (beggarMode == BEGGAR_REVEAL_NONE or beggarMode == BEGGAR_REVEAL_INNOCENTS)
 
         if not hide_roles and GetRoundState() == ROUND_ACTIVE then
@@ -459,11 +453,11 @@ function GM:HUDDrawTargetID()
         if target_traitor then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_TRAITOR])
         elseif target_special_traitor then
-            surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_HYPNOTIST])
+            surface.SetDrawColor(GetRoleTeamColor(ROLE_TEAM_TRAITOR, "radar"))
         elseif target_detective then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_DETECTIVE])
         elseif target_special_detective then
-            surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_PALADIN])
+            surface.SetDrawColor(GetRoleTeamColor(ROLE_TEAM_DETECTIVE, "radar"))
         elseif target_glitch then
             if client:IsZombie() and client:IsTraitorTeam() then
                 surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_ZOMBIE])

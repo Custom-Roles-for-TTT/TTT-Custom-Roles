@@ -1086,6 +1086,17 @@ function GetWinningMonsterRole()
     return nil
 end
 
+function ShouldHideJesters(p)
+    if p:IsTraitorTeam() then
+        return not GetGlobalBool("ttt_jesters_visible_to_traitors", false)
+    elseif p:IsMonsterTeam() then
+        return not GetGlobalBool("ttt_jesters_visible_to_monsters", false)
+    elseif p:IsIndependentTeam() then
+        return not GetGlobalBool("ttt_jesters_visible_to_independents", false)
+    end
+    return true
+end
+
 if SERVER then
     -- Centralize this so it can be handled on round start and on player death
     function AssignAssassinTarget(ply, start, delay)

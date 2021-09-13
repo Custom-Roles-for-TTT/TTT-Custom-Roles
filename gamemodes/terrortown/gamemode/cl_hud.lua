@@ -497,8 +497,8 @@ local function InfoPaint(client)
         surface.DrawText(text)
     elseif (client:IsInnocent() or client:IsTraitor()) and client:GetNWBool("WasBeggar", false) then
         local beggarMode = 1
-        if client:IsInnocent() then beggarMode = GetGlobalInt("ttt_beggar_reveal_innocent", 2)
-        elseif client:IsTraitor() then beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", 1) end
+        if client:IsInnocent() then beggarMode = GetGlobalInt("ttt_beggar_reveal_innocent", BEGGAR_REVEAL_TRAITORS)
+        elseif client:IsTraitor() then beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", BEGGAR_REVEAL_ALL) end
         if beggarMode ~= BEGGAR_REVEAL_ALL then
             surface.SetFont("TabLarge")
             surface.SetTextColor(255, 255, 255, 230)

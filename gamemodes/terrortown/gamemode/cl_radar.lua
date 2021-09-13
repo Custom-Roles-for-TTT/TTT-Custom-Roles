@@ -204,7 +204,9 @@ function RADAR:Draw(client)
         alpha = alpha_base
 
         scrpos = tgt.pos:ToScreen()
-        if scrpos.visible then
+        -- If the target is an active clown but they should be hidden, hide them from the radar
+        local hidden = tgt.killer_clown_active and GetGlobalBool("ttt_clown_hide_when_active", false)
+        if scrpos.visible and not hidden then
             md = mpos:Distance(Vector(scrpos.x, scrpos.y, 0))
             if md < near_cursor_dist then
                 alpha = math.Clamp(alpha * (md / near_cursor_dist), 40, 230)
@@ -214,15 +216,18 @@ function RADAR:Draw(client)
             if client:IsTraitorTeam() then
                 local glitchMode = GetGlobalInt("ttt_glitch_mode", 0)
                 local hideSpecialTraitors = glitchMode == 2 and GetGlobalBool("ttt_glitch_round", false)
-                if role == ROLE_TRAITOR or role == ROLE_GLITCH or (hideSpecialTraitors and TRAITOR_ROLES(role)) then
+                local beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", BEGGAR_REVEAL_ALL)
+                local hideBeggar = tgt.was_beggar and (beggarMode == BEGGAR_REVEAL_NONE or beggarMode == BEGGAR_REVEAL_INNOCENTS)
+                local showJester = (JESTER_ROLES[role] or ((role == ROLE_TRAITOR or role == ROLE_INNOCENT) and hideBeggar)) and not ShouldHideJesters(client)
+                if (role == ROLE_TRAITOR or role == ROLE_GLITCH or (hideSpecialTraitors and TRAITOR_ROLES[role])) and not hideBeggar then
                     local c = ColorAlpha(ROLE_COLORS_RADAR[ROLE_TRAITOR], alpha)
                     surface.SetDrawColor(c)
                     surface.SetTextColor(c)
-                elseif TRAITOR_ROLES[role] then
-                    local c = ColorAlpha(ROLE_COLORS_RADAR[ROLE_HYPNOTIST], alpha) -- Any special traitor here will do
+                elseif TRAITOR_ROLES[role] and not hideBeggar then
+                    local c = ColorAlpha(GetRoleTeamColor(ROLE_TEAM_TRAITOR, "radar"), alpha)
                     surface.SetDrawColor(c)
                     surface.SetTextColor(c)
-                elseif JESTER_ROLES[role] and GetGlobalBool("ttt_jesters_visible_to_traitors", false) then
+                elseif showJester then
                     local c = ColorAlpha(ROLE_COLORS_RADAR[ROLE_JESTER], alpha)
                     surface.SetDrawColor(c)
                     surface.SetTextColor(c)
@@ -237,7 +242,7 @@ function RADAR:Draw(client)
                     surface.SetDrawColor(c)
                     surface.SetTextColor(c)
                 elseif DETECTIVE_ROLES[role] then
-                    local c = ColorAlpha(ROLE_COLORS_RADAR[ROLE_PALADIN], alpha) -- Any special detective here will do
+                    local c = ColorAlpha(GetRoleTeamColor(ROLE_TEAM_DETECTIVE, "radar"), alpha)
                     surface.SetDrawColor(c)
                     surface.SetTextColor(c)
                 else
@@ -331,7 +336,10 @@ local function ReceiveRadarScan()
         pos.y = net.ReadInt(32)
         pos.z = net.ReadInt(32)
 
-        table.insert(RADAR.targets, { role = r, pos = pos })
+        local was_beggar = net.ReadBool()
+        local killer_clown_active = net.ReadBool()
+
+        table.insert(RADAR.targets, { role = r, pos = pos, was_beggar = was_beggar, killer_clown_active = killer_clown_active })
     end
 
     RADAR.enable = true
