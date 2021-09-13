@@ -15,7 +15,8 @@
 ### Developer
 - Added ShouldHideJesters global function to determine whether the given player should hide a jester player's role
 - Added ability for external roles to define their own translations
-- Added new TTTTargetIDPlayerRing hook which allows overriding whether the Target ID ring is shown and what color it should be shown as
+- Added TTTTargetIDPlayerRing hook which allows overriding whether the Target ID ring is shown and what color it should be shown as
+- Added nameLabel parameter to TTTScoringSummaryRender hook, allowing you to override what is displayed for a player's name
 
 ## 1.2.2
 **Released: September 12th, 2021**

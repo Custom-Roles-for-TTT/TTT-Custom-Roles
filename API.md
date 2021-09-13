@@ -513,7 +513,7 @@ Custom and modified event hooks available within the defined realm
 *Parameters:*
 - *ply* - The player being rendered
 - *client* - The local player
-- *color* - The background color to use
+- *color* - The background [Color](https://wiki.facepunch.com/gmod/Global.Color) to use
 - *roleFileName* - The portion of the scoring icon path that indicates which role it belongs to. Used in the following icon path pattern: "vgui/ttt/tab_{roleFileName}.png"
 
 *Return:*
@@ -523,19 +523,21 @@ Custom and modified event hooks available within the defined realm
 
 *NOTE:* You must return a non-*nil* value for all of the properties or the hook results will be ignored
 
-**TTTScoringSummaryRender(ply, roleFileName, groupingRole, roleColor)** - Called before the round summary screen is shown. Used to modify the color, position, and icon for a player.\
+**TTTScoringSummaryRender(ply, roleFileName, groupingRole, roleColor, nameLabel)** - Called before the round summary screen is shown. Used to modify the color, position, and icon for a player.\
 *Realm:* Client\
 *Added in:* 1.1.5\
 *Parameters:*
 - *ply* - The player being rendered
 - *roleFileName* - The portion of the scoring icon path that indicates which role it belongs to. Used in the following icon path pattern: "vgui/ttt/score_{roleFileName}.png"
 - *groupingRole* - The role to use when determining the section to of the summary screen to put this player in
-- *roleColor* - The background color to use behind the role icon
+- *roleColor* - The background [Color](https://wiki.facepunch.com/gmod/Global.Color) to use behind the role icon
+- *nameLabel* - The name that is going to be used for this player on the round summary *(Added in 1.2.3)*
 
 *Return:*
 - *roleFileName* - The new roleFileName value to use or the original passed into the hook
 - *groupingRole* - The new groupingRole value to use or the original passed into the hook
 - *roleColor* - The new roleColor value to use or the original passed into the hook
+- *newName* - The new nameLabel value to use for the original passed into the hook *(Added in 1.2.3)*
 
 *NOTE:* You must return a non-*nil* value for all of the properties or the hook results will be ignored
 
@@ -551,7 +553,7 @@ Custom and modified event hooks available within the defined realm
 *Return:*
 - *newTitle*
   - *txt* - The translation string to use to get the winning team text
-  - *c* - The background color to use
+  - *c* - The background [Color](https://wiki.facepunch.com/gmod/Global.Color) to use
   - *params* - Any parameters to use when translating `txt` (Optional if `new_secondary_win_role` is also omitted)
 - *newSecondaryWinRole* - Which role should share in the win for this round (see ROLE_* global enumeration) (Optional) *(Added in 1.1.9)*
 

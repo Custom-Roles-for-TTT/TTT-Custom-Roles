@@ -603,6 +603,7 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                 local hasDisconnected = false
                 local alive = false
 
+                local name = nicks[id]
                 local roleFileName = ROLE_STRINGS_SHORT[startingRole]
                 local roleColor = ROLE_COLORS[startingRole]
                 local finalRole = startingRole
@@ -653,14 +654,15 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                 end
 
                 -- Allow developers to override role icon, grouping, and color
-                local roleFile, groupRole, iconColor = hook.Run("TTTScoringSummaryRender", ply, roleFileName, groupingRole, roleColor)
+                local roleFile, groupRole, iconColor, newName = hook.Run("TTTScoringSummaryRender", ply, roleFileName, groupingRole, roleColor, nicks[id])
                 if roleFile then roleFileName = roleFile end
                 if groupRole then groupingRole = groupRole end
                 if iconColor then roleColor = iconColor end
+                if newName then name = newName end
 
                 local playerInfo = {
                     ply = ply,
-                    name = nicks[id],
+                    name = name,
                     roleColor = roleColor,
                     roleFileName = roleFileName,
                     hasDied = not alive,
