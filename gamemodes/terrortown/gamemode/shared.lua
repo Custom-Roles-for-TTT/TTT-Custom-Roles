@@ -613,7 +613,7 @@ ROLE_TEAM_INDEPENDENT = 3
 ROLE_TEAM_MONSTER = 4
 ROLE_TEAM_DETECTIVE = 5
 
-EXTERNAL_ROLE_DESCRIPTIONS = {}
+EXTERNAL_ROLE_TRANSLATIONS = {}
 EXTERNAL_ROLE_SHOP_ITEMS = {}
 EXTERNAL_ROLE_LOADOUT_ITEMS = {}
 EXTERNAL_ROLE_CONVARS = {}
@@ -665,7 +665,20 @@ function RegisterRole(tbl)
         AddRoleAssociations(INNOCENT_ROLES, {roleID})
     end
 
-    EXTERNAL_ROLE_DESCRIPTIONS[roleID] = tbl.desc
+    -- Allow roles to have translations automatically added for them
+    if type(tbl.translations) == "table" then
+        EXTERNAL_ROLE_TRANSLATIONS[roleID] = tbl.translations
+    else
+        EXTERNAL_ROLE_TRANSLATIONS[roleID] = {}
+    end
+
+    -- Ensure that at least english is present
+    if not EXTERNAL_ROLE_TRANSLATIONS[roleID]["english"] then
+        EXTERNAL_ROLE_TRANSLATIONS[roleID]["english"] = {}
+    end
+
+    -- Create the role description translation automatically
+    EXTERNAL_ROLE_TRANSLATIONS[roleID]["english"]["info_popup_" .. tbl.nameraw] = tbl.desc
 
     if tbl.shop then
         EXTERNAL_ROLE_SHOP_ITEMS[roleID] = tbl.shop

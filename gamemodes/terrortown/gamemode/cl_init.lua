@@ -55,9 +55,13 @@ local jesters_visible_to_monsters = false
 local jesters_visible_to_independents = false
 local vision_enabled = false
 
-local function AddExternalRoleDescriptions()
-    for role, desc in pairs(EXTERNAL_ROLE_DESCRIPTIONS) do
-        LANG.AddToLanguage("english", "info_popup_" .. ROLE_STRINGS_RAW[role], desc)
+local function AddExternalRoleTranslations()
+    for role, lang_table in pairs(EXTERNAL_ROLE_TRANSLATIONS) do
+        for lang, string_table in pairs(lang_table) do
+            for name, value in pairs(string_table) do
+                LANG.AddToLanguage(lang, name, value)
+            end
+        end
     end
 end
 
@@ -68,7 +72,7 @@ function GM:Initialize()
 
     LANG.Init()
 
-    AddExternalRoleDescriptions()
+    AddExternalRoleTranslations()
 
     self.BaseClass:Initialize()
 end

@@ -14,6 +14,8 @@ ROLE.shop = nil
 
 ROLE.loadout = {}
 
+ROLE.translations = {}
+
 ROLE.convars = {}
 
 RegisterRole(ROLE)

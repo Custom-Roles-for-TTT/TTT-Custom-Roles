@@ -35,6 +35,8 @@ ROLE.shop = nil
 
 ROLE.loadout = {}
 
+ROLE.translations = {}
+
 ROLE.convars = {}
 
 RegisterRole(ROLE)
@@ -175,6 +177,41 @@ ROLE.shop = {"weapon_ttt_beenade", "weapon_ttt_barnacle", "surprisecombine", "we
   
 ROLE.loadout = {}
 ```
+
+### Translations
+
+Following the lines having to do with the shop, there is a line that looks like this:
+
+```lua
+ROLE.translations = {}
+```
+
+This line allows you to define custom translations to be used elsewhere in your role. The `ROLE.translations` variable is a table that maps a language name to a list of key-value pairs where the `key` is the name of the translation and the `value` is the translated string in the desired language.
+
+For example, if we wanted to add a custom translation for the `english` language, it would look something like this:
+
+```lua
+ROLE.translations = {
+    ["english"] = {
+        ["summoner_testtranslation"] = "This is in English"
+    }
+}
+```
+
+From here you can add additional entries for each language you want to add support for. The list of currently-supported languages is available on the [Facepunch Garry's Mod GitHub](https://github.com/Facepunch/garrysmod/tree/master/garrysmod/gamemodes/terrortown/gamemode/lang). For exmaple, if we wanted to add a Spanish version of our translation then it would look like this:
+
+```lua
+ROLE.translations = {
+    ["english"] = {
+        ["summoner_testtranslation"] = "This is in English"
+    },
+    ["español"] = {
+        ["summoner_testtranslation"] = "Esto es en español"
+    }
+}
+```
+
+*(Note: At the very least there should be an english version of every translation you add. The english translation will be used as the default if a translation is not available in the client's chosen language)*
 
 ### Optional Rules
 

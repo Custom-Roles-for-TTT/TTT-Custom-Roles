@@ -14,6 +14,7 @@
 
 ### Developer
 - Added ShouldHideJesters global function to determine whether the given player should hide a jester player's role
+- Added ability for external roles to define their own translations
 
 ## 1.2.2
 **Released: September 12th, 2021**
