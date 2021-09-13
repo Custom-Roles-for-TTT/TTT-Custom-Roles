@@ -616,7 +616,7 @@ Custom and modified event hooks available within the defined realm
 - *secondaryText* - The second line of text being shown
 
 *Return:*
-- *text* - The new text value to use or the original passed into the hook
+- *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
 - *clr* - The new clr value to use or the original passed into the hook
 - *secondaryText* - The new secondaryText value to use or the original passed into the hook
 
