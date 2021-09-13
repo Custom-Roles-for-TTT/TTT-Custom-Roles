@@ -3,6 +3,9 @@
 ## 1.2.3
 **Released:**
 
+### Additions
+- Added version number to the scoreboard and round summary title bar
+
 ### Fixes
 - Fixed jesters being marked in pink on a traitor's radar when ttt_jesters_visible_to_traitors was disabled
 

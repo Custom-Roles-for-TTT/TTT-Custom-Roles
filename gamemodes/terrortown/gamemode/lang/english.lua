@@ -201,7 +201,7 @@ L.search_eyes = "Using your investigative skills, you identified the last person
 
 
 -- Scoreboard
-L.sb_playing = "You are playing on..."
+L.sb_playing = "You are playing {version} on..."
 L.sb_mapchange = "Map changes in {num} rounds or in {time}"
 
 L.sb_mia = "Missing In Action"

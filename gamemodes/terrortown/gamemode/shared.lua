@@ -34,7 +34,7 @@ end
 GM.Name = "Trouble in Terrorist Town"
 GM.Author = "Bad King Urgrain"
 GM.Website = "ttt.badking.net"
-GM.Version = "Custom Roles for TTT - " .. CR_VERSION
+GM.Version = "Custom Roles for TTT v" .. CR_VERSION
 
 GM.Customized = false
 
