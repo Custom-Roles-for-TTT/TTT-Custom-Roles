@@ -599,7 +599,7 @@ Custom and modified event hooks available within the defined realm
 - *showJester* - Whether the target is a jester and the local player would normally know that
 
 *Return:*
-- *role* - The new role value to use or the original passed into the hook
+- *role* - The new role value to use or the original passed into the hook. Return `false` to stop the icon from being rendered
 - *noZ* - The new noZ value to use or the original passed into the hook. *NOTE:* The matching icon .vmt for this flag needs to exist. If *noZ* is `true`, a "sprite\_{ROLESHORTNAME}\_noz.vmt" file must exist and if *noZ* is `false`, a "sprite_{ROLESHORTNAME}.vmt" file must exist
 - *colorRole* - The new colorRole value to use or the original passed into the hook
 
