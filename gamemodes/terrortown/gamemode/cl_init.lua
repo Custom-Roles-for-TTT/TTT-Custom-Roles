@@ -1038,13 +1038,19 @@ local function EnableVampireHighlights(client)
         if (traitor_vision or vampire_vision) and traitorAllies then
             allies = GetTeamRoles(TRAITOR_ROLES)
             showJesters = jesters_visible_to_traitors
-        -- If vampire vision is enabled, add the allied monster roles
+        -- If vampire vision is enabled, add the allied roles
         elseif vampire_vision then
-            allies = {ROLE_VAMPIRE}
-            if MONSTER_ROLES[ROLE_ZOMBIE] then
-                table.insert(allies, ROLE_ZOMBIE)
+            -- If they are monsters, ally with Vampires and monster-Zombies
+            if MONSTER_ROLES[ROLE_VAMPIRE] then
+                allies = {ROLE_VAMPIRE}
+                if MONSTER_ROLES[ROLE_ZOMBIE] then
+                    table.insert(allies, ROLE_ZOMBIE)
+                end
+                showJesters = jesters_visible_to_monsters
+            else
+                allies = GetTeamRoles(INDEPENDENT_ROLES)
+                showJesters = jesters_visible_to_independents
             end
-            showJesters = jesters_visible_to_monsters
         end
 
         OnPlayerHighlightEnabled(client, allies, showJesters, hideEnemies, traitorAllies)
@@ -1095,9 +1101,9 @@ end
 -- Monster-as-traitors equipment
 
 net.Receive("TTT_LoadMonsterEquipment", function()
-    local zombies_are_monsters = net.ReadBool()
-    local vampires_are_monsters = net.ReadBool()
-    LoadMonsterEquipment(zombies_are_monsters, vampires_are_monsters)
+    local zombies_are_traitors = net.ReadBool()
+    local vampires_are_traitors = net.ReadBool()
+    LoadMonsterEquipment(zombies_are_traitors, vampires_are_traitors)
 end)
 
 -- Footsteps

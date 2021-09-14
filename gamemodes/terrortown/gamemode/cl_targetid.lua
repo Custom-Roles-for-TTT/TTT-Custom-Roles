@@ -405,6 +405,7 @@ function GM:HUDDrawTargetID()
             elseif client:IsIndependentTeam() then
                 target_zombie = ent:IsZombie() and ent:IsIndependentTeam()
                 target_madscientist = ent:IsMadScientist()
+                target_vampire = ent:IsVampire() and ent:IsIndependentTeam()
 
                 target_jester = showJester
             end

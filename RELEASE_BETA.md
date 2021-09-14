@@ -6,6 +6,7 @@
 ### Additions
 - Added version number to the scoreboard and round summary title bar
 - Added ability for the bodysnatcher to be on the independent team (disabled by default)
+- Added ability for vampires to be on the independent team (disabled by default)
 
 ### Fixes
 - Fixed jesters being marked in pink on a traitor's radar when ttt_jesters_visible_to_traitors was disabled

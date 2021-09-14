@@ -156,6 +156,7 @@ ttt_assassin_credits_starting               1       // The number of credits an 
 
 // Vampire
 ttt_vampires_are_monsters                   0       // Whether vampires should be treated as members of the monster team (rather than the traitor team)
+ttt_vampires_are_independent                0       // Whether vampires should be treated as members of the independent team (rather than the traitor team)
 ttt_vampire_vision_enable                   0       // Whether vampires have their special vision highlights enabled
 ttt_vampire_drain_enable                    1       // Whether vampires have the ability to drain a target's blood using their fangs
 ttt_vampire_drain_first                     0       // Whether vampires should drain a target's blood first rather than converting first

@@ -768,6 +768,7 @@ WIN_OLDMAN = 7
 WIN_KILLER = 8
 WIN_ZOMBIE = 9
 WIN_MONSTER = 10
+WIN_VAMPIRE = 11
 
 -- Weapon categories, you can only carry one of each
 WEAPON_NONE = 0
@@ -1058,8 +1059,11 @@ function UpdateRoleState()
     INDEPENDENT_ROLES[ROLE_ZOMBIE] = not zombies_are_monsters and not zombies_are_traitors
 
     local vampires_are_monsters = GetGlobalBool("ttt_vampires_are_monsters", false)
+    -- Vampires cannot be both Monsters and Independents so don't make them Independents if they are already Monsters
+    local vampires_are_independent = not vampires_are_monsters and GetGlobalBool("ttt_vampires_are_independent", false)
     MONSTER_ROLES[ROLE_VAMPIRE] = vampires_are_monsters
-    TRAITOR_ROLES[ROLE_VAMPIRE] = not vampires_are_monsters
+    TRAITOR_ROLES[ROLE_VAMPIRE] = not vampires_are_monsters and not vampires_are_independent
+    INDEPENDENT_ROLES[ROLE_VAMPIRE] = vampires_are_independent
 
     local bodysnatchers_are_independent = GetGlobalBool("ttt_bodysnatchers_are_independent", false)
     INDEPENDENT_ROLES[ROLE_BODYSNATCHER] = bodysnatchers_are_independent

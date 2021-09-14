@@ -153,6 +153,7 @@ CreateConVar("ttt_assassin_failed_damage_penalty", "0.5")
 CreateConVar("ttt_assassin_shop_roles_last", "0")
 
 CreateConVar("ttt_vampires_are_monsters", "0")
+CreateConVar("ttt_vampires_are_independent", "0")
 CreateConVar("ttt_vampire_show_target_icon", "0")
 CreateConVar("ttt_vampire_damage_reduction", "0")
 CreateConVar("ttt_vampire_prime_death_mode", "0")
@@ -683,6 +684,7 @@ function GM:SyncGlobals()
     SetGlobalBool("ttt_impersonator_use_detective_icon", GetConVar("ttt_impersonator_use_detective_icon"):GetBool())
 
     SetGlobalBool("ttt_vampires_are_monsters", GetConVar("ttt_vampires_are_monsters"):GetBool())
+    SetGlobalBool("ttt_vampires_are_independent", GetConVar("ttt_vampires_are_independent"):GetBool())
     SetGlobalBool("ttt_vampire_show_target_icon", GetConVar("ttt_vampire_show_target_icon"):GetBool())
     SetGlobalBool("ttt_vampire_vision_enable", GetConVar("ttt_vampire_vision_enable"):GetBool())
 
@@ -1375,13 +1377,13 @@ function BeginRound()
     GAMEMODE.DamageLog = {}
     GAMEMODE.RoundStartTime = CurTime()
 
-    local zombies_are_monsters = MONSTER_ROLES[ROLE_ZOMBIE]
-    local vampires_are_monsters = MONSTER_ROLES[ROLE_VAMPIRE]
-    LoadMonsterEquipment(zombies_are_monsters, vampires_are_monsters)
+    local zombies_are_traitors = TRAITOR_ROLES[ROLE_ZOMBIE]
+    local vampires_are_traitors = TRAITOR_ROLES[ROLE_VAMPIRE]
+    LoadMonsterEquipment(zombies_are_traitors, vampires_are_traitors)
     -- Send the status to the client because at this point the globals haven't synced
     net.Start("TTT_LoadMonsterEquipment")
-    net.WriteBool(zombies_are_monsters)
-    net.WriteBool(vampires_are_monsters)
+    net.WriteBool(zombies_are_traitors)
+    net.WriteBool(vampires_are_traitors)
     net.Broadcast()
 
     -- Sound start alarm
@@ -1420,6 +1422,14 @@ function PrintResultMessage(type)
     elseif type == WIN_KILLER then
         LANG.Msg("win_killer", { role = ROLE_STRINGS_PLURAL[ROLE_KILLER] })
         ServerLog("Result: " .. ROLE_STRINGS[ROLE_KILLER] .. " wins.\n")
+    elseif type == WIN_ZOMBIE then
+        local plural = ROLE_STRINGS_PLURAL[ROLE_ZOMBIE]
+        LANG.Msg("win_zombies", { role = plural })
+        ServerLog("Result: " .. plural .. " win.\n")
+    elseif type == WIN_VAMPIRE then
+        local plural = ROLE_STRINGS_PLURAL[ROLE_VAMPIRE]
+        LANG.Msg("win_vampires", { role = plural })
+        ServerLog("Result: " .. plural .. " win.\n")
     elseif type == WIN_MONSTER then
         local monster_role = GetWinningMonsterRole()
         -- If it wasn't a special kind of monster that won (zombie or vampire) use the "Monsters Win" label
@@ -1542,6 +1552,7 @@ function GM:TTTCheckForWin()
     local oldman_alive = false
     local killer_alive = false
     local zombie_alive = false
+    local vampire_alive = false
     local monster_alive = false
 
     local killer_clown_active = false
@@ -1565,6 +1576,8 @@ function GM:TTTCheckForWin()
                 killer_alive = true
             elseif v:IsMadScientist() or (v:IsZombie() and INDEPENDENT_ROLES[ROLE_ZOMBIE]) then
                 zombie_alive = true
+            elseif v:IsVampire() then
+                vampire_alive = true
             end
         -- Handle zombification differently because the player's original role should have no impact on this
         elseif v:GetNWBool("IsZombifying", false) then
@@ -1599,26 +1612,29 @@ function GM:TTTCheckForWin()
     if jester_killed then
         win_type = WIN_JESTER
     -- If everyone is dead the traitors win
-    elseif not innocent_alive and not monster_alive and not killer_alive and not zombie_alive then
+    elseif not innocent_alive and not monster_alive and not killer_alive and not zombie_alive and not vampire_alive then
         win_type = WIN_TRAITOR
     -- If all the "bad" people are dead, innocents win
-    elseif not traitor_alive and not monster_alive and not killer_alive and not zombie_alive then
+    elseif not traitor_alive and not monster_alive and not killer_alive and not zombie_alive and not vampire_alive then
         win_type = WIN_INNOCENT
     -- If the monsters are the only ones left, they win
-    elseif  not innocent_alive and not traitor_alive and not killer_alive and not zombie_alive then
+    elseif not innocent_alive and not traitor_alive and not killer_alive and not zombie_alive and not vampire_alive then
         win_type = WIN_MONSTER
     -- If the killer is the only one left alive, they win
-    elseif not traitor_alive and not innocent_alive and not monster_alive and not zombie_alive and killer_alive then
+    elseif not traitor_alive and not innocent_alive and not monster_alive and not zombie_alive and not vampire_alive and killer_alive then
         win_type = WIN_KILLER
     -- If the zombies are the only ones left, they win
-    elseif not traitor_alive and not innocent_alive and not monster_alive and not killer_alive and zombie_alive then
+    elseif not traitor_alive and not innocent_alive and not monster_alive and not killer_alive and not vampire_alive and zombie_alive then
         win_type = WIN_ZOMBIE
+    -- If the vampires are the only ones left, they win
+    elseif not traitor_alive and not innocent_alive and not monster_alive and not killer_alive and not zombie_alive and vampire_alive then
+        win_type = WIN_VAMPIRE
     end
 
     -- Drunk logic
     if drunk_alive then
         if GetConVar("ttt_drunk_become_clown"):GetBool() then
-            if win_type == WIN_INNOCENT or win_type == WIN_TRAITOR or win_type == WIN_MONSTER or win_type == WIN_KILLER or win_type == WIN_ZOMBIE then
+            if win_type == WIN_INNOCENT or win_type == WIN_TRAITOR or win_type == WIN_MONSTER or win_type == WIN_KILLER or win_type == WIN_ZOMBIE or win_type == WIN_VAMPIRE then
                 if timer.Exists("drunkremember") then timer.Remove("drunkremember") end
                 if timer.Exists("waitfordrunkrespawn") then timer.Remove("waitfordrunkrespawn") end
                 for _, v in ipairs(player.GetAll()) do
@@ -1653,7 +1669,7 @@ function GM:TTTCheckForWin()
 
     -- Clown logic
     if clown_alive then
-        if not killer_clown_active and (win_type == WIN_INNOCENT or win_type == WIN_TRAITOR or win_type == WIN_MONSTER or win_type == WIN_KILLER or win_type == WIN_ZOMBIE) then
+        if not killer_clown_active and (win_type == WIN_INNOCENT or win_type == WIN_TRAITOR or win_type == WIN_MONSTER or win_type == WIN_KILLER or win_type == WIN_ZOMBIE or win_type == WIN_VAMPIRE) then
             for _, v in ipairs(player.GetAll()) do
                 if v:IsClown() then
                     v:SetNWBool("KillerClownActive", true)
@@ -1682,7 +1698,7 @@ function GM:TTTCheckForWin()
                 end
             end
             win_type = WIN_NONE
-        elseif killer_clown_active and not traitor_alive and not innocent_alive and not killer_alive and not monster_alive then
+        elseif killer_clown_active and not traitor_alive and not innocent_alive and not killer_alive and not monster_alive and not zombie_alive and not vampire_alive then
             win_type = WIN_CLOWN
         else
             win_type = WIN_NONE
