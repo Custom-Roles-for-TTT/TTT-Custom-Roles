@@ -585,6 +585,78 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *choices* - The table of players who will be assigned roles
 - *prevRoles* - The table whose keys are role numbers and values are tables of players who had that role last round
 
+**TTTSelectRolesDetectiveOptions(roleTable, choices, choiceCount, traitors, traitorCount)** - Called before players are assigned a detective role, allowing the available roles and their weights (how many times they appear in the table) to be manipulated.\
+*Realm:* Server\
+*Added in:* 1.2.3\
+*Parameters:*
+- *roleTable* - The table of roles representing the available detective roles and their weight (how many times they appear in the table). This table should be manipulated to effect change
+- *choices* - The table of available player choices that will not be (and have not already been) assigned a traitor or detective role. Manipulating this table will have no effect
+- *choiceCount* - The total number of player choices there are
+- *traitors* - The table of available player choices that will be (or have already been) assigned a traitor role. Manipulating this table will have no effect
+- *traitorCount* - The number of players that will be (or have already been) assigned a traitor role
+- *detectives* - The table of available player choices that will be (or have already been) assigned a detective role. Manipulating this table will have no effect
+- *detectiveCount* - The number of players that will be (or have already been) assigned a detective role
+
+**TTTSelectRolesIndependentOptions(roleTable, choices, choiceCount, traitors, traitorCount)** - Called before players are assigned a independent role, allowing the available roles and their weights (how many times they appear in the table) to be manipulated.\
+*Realm:* Server\
+*Added in:* 1.2.3\
+*Parameters:*
+- *roleTable* - The table of roles representing the available independent roles and their weight (how many times they appear in the table). This table should be manipulated to effect change
+- *choices* - The table of available player choices that will not be (and have not already been) assigned a traitor or detective role. Manipulating this table will have no effect
+- *choiceCount* - The total number of player choices there are
+- *traitors* - The table of available player choices that will be (or have already been) assigned a traitor role. Manipulating this table will have no effect
+- *traitorCount* - The number of players that will be (or have already been) assigned a traitor role
+- *detectives* - The table of available player choices that will be (or have already been) assigned a detective role. Manipulating this table will have no effect
+- *detectiveCount* - The number of players that will be (or have already been) assigned a detective role
+
+**TTTSelectRolesInnocentOptions(roleTable, choices, choiceCount, traitors, traitorCount)** - Called before players are assigned an innocent role, allowing the available roles and their weights (how many times they appear in the table) to be manipulated.\
+*Realm:* Server\
+*Added in:* 1.2.3\
+*Parameters:*
+- *roleTable* - The table of roles representing the available innocent roles and their weight (how many times they appear in the table). This table should be manipulated to effect change
+- *choices* - The table of available player choices that will not be (and have not already been) assigned a traitor or detective role. Manipulating this table will have no effect
+- *choiceCount* - The total number of player choices there are
+- *traitors* - The table of available player choices that will be (or have already been) assigned a traitor role. Manipulating this table will have no effect
+- *traitorCount* - The number of players that will be (or have already been) assigned a traitor role
+- *detectives* - The table of available player choices that will be (or have already been) assigned a detective role. Manipulating this table will have no effect
+- *detectiveCount* - The number of players that will be (or have already been) assigned a detective role
+
+**TTTSelectRolesJesterOptions(roleTable, choices, choiceCount, traitors, traitorCount)** - Called before players are assigned a jester role, allowing the available roles and their weights (how many times they appear in the table) to be manipulated.\
+*Realm:* Server\
+*Added in:* 1.2.3\
+*Parameters:*
+- *roleTable* - The table of roles representing the available jester roles and their weight (how many times they appear in the table). This table should be manipulated to effect change
+- *choices* - The table of available player choices that will not be (and have not already been) assigned a traitor or detective role. Manipulating this table will have no effect
+- *choiceCount* - The total number of player choices there are
+- *traitors* - The table of available player choices that will be (or have already been) assigned a traitor role. Manipulating this table will have no effect
+- *traitorCount* - The number of players that will be (or have already been) assigned a traitor role
+- *detectives* - The table of available player choices that will be (or have already been) assigned a detective role. Manipulating this table will have no effect
+- *detectiveCount* - The number of players that will be (or have already been) assigned a detective role
+
+**TTTSelectRolesMonsterOptions(roleTable, choices, choiceCount, traitors, traitorCount)** - Called before players are assigned a monster role, allowing the available roles and their weights (how many times they appear in the table) to be manipulated.\
+*Realm:* Server\
+*Added in:* 1.2.3\
+*Parameters:*
+- *roleTable* - The table of roles representing the available monster roles and their weight (how many times they appear in the table). This table should be manipulated to effect change
+- *choices* - The table of available player choices that will not be (and have not already been) assigned a traitor or detective role. Manipulating this table will have no effect
+- *choiceCount* - The total number of player choices there are
+- *traitors* - The table of available player choices that will be (or have already been) assigned a traitor role. Manipulating this table will have no effect
+- *traitorCount* - The number of players that will be (or have already been) assigned a traitor role
+- *detectives* - The table of available player choices that will be (or have already been) assigned a detective role. Manipulating this table will have no effect
+- *detectiveCount* - The number of players that will be (or have already been) assigned a detective role
+
+**TTTSelectRolesTraitorOptions(roleTable, choices, choiceCount, traitors, traitorCount)** - Called before players are assigned a traitor role, allowing the available roles and their weights (how many times they appear in the table) to be manipulated.\
+*Realm:* Server\
+*Added in:* 1.2.3\
+*Parameters:*
+- *roleTable* - The table of roles representing the available traitor roles and their weight (how many times they appear in the table). This table should be manipulated to effect change
+- *choices* - The table of available player choices that will not be (and have not already been) assigned a traitor or detective role. Manipulating this table will have no effect
+- *choiceCount* - The total number of player choices there are
+- *traitors* - The table of available player choices that will be (or have already been) assigned a traitor role. Manipulating this table will have no effect
+- *traitorCount* - The number of players that will be (or have already been) assigned a traitor role
+- *detectives* - The table of available player choices that will be (or have already been) assigned a detective role. Manipulating this table will have no effect
+- *detectiveCount* - The number of players that will be (or have already been) assigned a detective role
+
 **TTTSpeedMultiplier(ply, mults)** - Called when determining what speed the player should be moving at.\
 *Realm:* Client and Server\
 *Added in:* 1.0.0\

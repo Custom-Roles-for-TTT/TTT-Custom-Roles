@@ -1841,7 +1841,7 @@ function SelectRoles()
     local choices_copy = table.Copy(choices)
     local prev_roles_copy = table.Copy(prev_roles)
 
-    hook.Call("TTTSelectRoles", GAMEMODE, choices_copy, prev_roles_copy)
+    hook.Run("TTTSelectRoles", choices_copy, prev_roles_copy)
 
     local forcedTraitorCount = 0
     local forcedSpecialTraitorCount = 0
@@ -2009,8 +2009,27 @@ function SelectRoles()
         end
     end
 
+    -- pick traitors
+    local traitors = {}
+    for _ = 1, traitor_count do
+        if #choices > 0 then
+            local plyPick = math.random(1, #choices)
+            local ply = choices[plyPick]
+            table.insert(traitors, ply)
+            table.remove(choices, plyPick)
+        end
+    end
+
+    -- Copy these tables before they are modified so the hooks can know who the available team members are
+    choices_copy = table.Copy(choices)
+    local traitors_copy = table.Copy(traitors)
+    local detectives_copy = table.Copy(detectives)
+
     -- pick special detectives
     if max_special_detective_count > 0 then
+        -- Allow external addons to modify available roles and their weights
+        hook.Run("TTTSelectRolesDetectiveOptions", specialDetectiveRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+
         for _ = 1, max_special_detective_count do
             if #specialDetectiveRoles ~= 0 and math.random() <= GetConVar("ttt_special_detective_chance"):GetFloat() and #detectives > 0 then
                 local plyPick = math.random(1, #detectives)
@@ -2035,17 +2054,6 @@ function SelectRoles()
         PrintRole(v, ROLE_DETECTIVE)
     end
 
-    -- pick traitors
-    local traitors = {}
-    for _ = 1, traitor_count do
-        if #choices > 0 then
-            local plyPick = math.random(1, #choices)
-            local ply = choices[plyPick]
-            table.insert(traitors, ply)
-            table.remove(choices, plyPick)
-        end
-    end
-
     if ((GetConVar("ttt_zombie_enabled"):GetBool() and math.random() <= GetConVar("ttt_zombie_round_chance"):GetFloat() and (forcedTraitorCount <= 0) and (forcedSpecialTraitorCount <= 0)) or hasRole[ROLE_ZOMBIE]) and TRAITOR_ROLES[ROLE_ZOMBIE] then
         -- This is a zombie round so all traitors become zombies
         for _, v in pairs(traitors) do
@@ -2055,6 +2063,9 @@ function SelectRoles()
     else
         -- pick special traitors
         if max_special_traitor_count > 0 then
+            -- Allow external addons to modify available roles and their weights
+            hook.Run("TTTSelectRolesTraitorOptions", specialTraitorRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+
             for _ = 1, max_special_traitor_count do
                 if #specialTraitorRoles ~= 0 and math.random() <= GetConVar("ttt_special_traitor_chance"):GetFloat() and #traitors > 0 then
                     local plyPick = math.random(1, #traitors)
@@ -2082,6 +2093,10 @@ function SelectRoles()
 
     -- pick independent
     if forcedIndependentCount == 0 and independent_count > 0 and #choices > 0 then
+        -- Allow external addons to modify available roles and their weights
+        hook.Run("TTTSelectRolesIndependentOptions", independentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+        hook.Run("TTTSelectRolesJesterOptions", independentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+
         if #independentRoles ~= 0 then
             local plyPick = math.random(1, #choices)
             local ply = choices[plyPick]
@@ -2103,11 +2118,15 @@ function SelectRoles()
     if max_special_innocent_count > 0 then
         local glitch_mode = GetConVar("ttt_glitch_mode"):GetInt()
         if not hasRole[ROLE_GLITCH] and GetConVar("ttt_glitch_enabled"):GetBool() and choice_count >= GetConVar("ttt_glitch_min_players"):GetInt()
-        and ((glitch_mode == GLITCH_SHOW_AS_TRAITOR and #traitors > 1) or ((glitch_mode == GLITCH_SHOW_AS_SPECIAL_TRAITOR or glitch_mode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES) and traitor_count > 1)) then
+            and ((glitch_mode == GLITCH_SHOW_AS_TRAITOR and #traitors > 1) or ((glitch_mode == GLITCH_SHOW_AS_SPECIAL_TRAITOR or glitch_mode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES) and traitor_count > 1)) then
             for _ = 1, GetConVar("ttt_glitch_spawn_weight"):GetInt() do
                 table.insert(specialInnocentRoles, ROLE_GLITCH)
             end
         end
+
+        -- Allow external addons to modify available roles and their weights
+        hook.Run("TTTSelectRolesInnocentOptions", specialInnocentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+
         for _ = 1, max_special_innocent_count do
             if #specialInnocentRoles ~= 0 and math.random() <= GetConVar("ttt_special_innocent_chance"):GetFloat() and #choices > 0 then
                 local plyPick = math.random(1, #choices)
@@ -2137,6 +2156,9 @@ function SelectRoles()
     if monster_count > 0 then
         local monster_chosen = false
         for _ = 1, monster_count do
+            -- Allow external addons to modify available roles and their weights
+            hook.Run("TTTSelectRolesMonsterOptions", monsterRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+
             if #monsterRoles ~= 0 and math.random() <= GetConVar("ttt_monster_chance"):GetFloat() and #choices > 0 and not monster_chosen then
                 local plyPick = math.random(1, #choices)
                 local ply = choices[plyPick]
