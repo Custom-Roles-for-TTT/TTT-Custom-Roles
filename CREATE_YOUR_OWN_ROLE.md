@@ -1,12 +1,42 @@
 # Creating Your Own Custom Roles for TTT Role
+
+## Table of Contents
+1. [Before You Start](#Before-You-Start)
+1. [Code](#Code)
+   1. [Role Table](#Role-Table)
+   1. [Role Strings](#Role-Strings)
+   1. [Description](#Description)
+   1. [Team](#Team)
+   1. [Shop and Loadout Items](#Shop-and-Loadout-Items)
+      1. [Weapon](#Weapon)
+      1. [Equipment](#Equipment)
+   1. [Health](#Health)
+   1. [Translations](#Translations)
+   1. [Optional Rules](#Optional-Rules)
+   1. [ConVars](#ConVars)
+1. [Sprites](#Sprites)
+   1. [Finding a Role Icon](#Finding-a-Role-Icon)
+   1. [Tab File](#Tab-File)
+   1. [Score File](#Score-File)
+   1. [Sprite File](#Sprite-File)
+   1. [Icon File](#Icon-File)
+   1. [.vmt Files](#.vmt-Files)
+1. [Uploading Your Addon](#Uploading-Your-Addon)
+   1. [addon.json](#addon.json)
+   1. [Workshop Icon](#Workshop-Icon)
+   1. [Folder Name](#Folder-Name)
+   1. [Final Checks](#Final-Checks)
+   1. [Uploading](#Uploading)
+1. [Wrapping Up](#Wrapping-Up)
+
 ## Before You Start
 In order to create your own role you will need to make sure you have downloaded tools to edit the following file types:
 
--   **.psd** - For this guide I will be using Photoshop but  [GIMP](https://www.gimp.org/) is a great free alternative.
--   **.lua** - This can be done in Notepad in a pinch but at the very least I would reccomend  [Notepad++](https://notepad-plus-plus.org/).
+-   **.psd** - For this guide we will be using Photoshop but  [GIMP](https://www.gimp.org/) is a great free alternative.
+-   **.lua** - This can be done in Notepad in a pinch but at the very least we would reccomend  [Notepad++](https://notepad-plus-plus.org/).
 -   **.vmt and .vtf**  -  [VTFEdit](https://nemstools.github.io/pages/VTFLib-Download.html) is the best way to edit these files but if you know what you are doing there are plugins for other apps.
 
-In this guide I will be walking through how I made the Summoner role and you can download all the templates I am using [here](/templates).
+In this guide we will be walking through how we made the Summoner role and you can download all the templates we am using [here](/templates).
 
 Last thing to do before you are ready to get started is to unzip that file which should give you 4 .psd files and a folder like this:
 
@@ -14,7 +44,7 @@ Last thing to do before you are ready to get started is to unzip that file which
 
 ## Code
 
-Open up 'Role Addon Template' > 'lua' > 'customroles' and rename '%NAMERAW%.lua' to whatever you want the name of your role to be. In this case I will rename it to 'summoner.lua'.
+Open up 'Role Addon Template' > 'lua' > 'customroles' and rename '%NAMERAW%.lua' to whatever you want the name of your role to be. In this case we will rename it to 'summoner.lua'.
 
 Open up that file and you should see something like this:
 
@@ -32,8 +62,12 @@ ROLE.desc = [[]]
 ROLE.team = 
 
 ROLE.shop = nil
-
 ROLE.loadout = {}
+
+ROLE.startingcredits = nil
+
+ROLE.startinghealth = nil
+ROLE.maxhealth = nil
 
 ROLE.translations = {}
 
@@ -144,7 +178,6 @@ The next two lines are all about shop and loadout items:
 
 ```lua
 ROLE.shop = nil
-  
 ROLE.loadout = {}
 ```
 
@@ -170,12 +203,41 @@ Inside the curly brackets for the shop or loadout add the class names of any oth
 
 *(Note: Equipment items can only be added to the loadout table for roles in version 1.2.1 and above!)*
 
-For the Summoner, I don't want any loadout items but I do want the shop to have access to a few different items so I can add them like this:
+For the Summoner, we don't want any loadout items but we do want the shop to have access to a few different items so we can add them like this:
 
 ```lua
 ROLE.shop = {"weapon_ttt_beenade", "weapon_ttt_barnacle", "surprisecombine", "weapon_antlionsummoner", "weapon_controllable_manhack", "weapon_doncombinesummoner"}  
-  
 ROLE.loadout = {}
+```
+
+Now that you have a shop set up for you role, what about the credits to actually buy things? Well, if your role is `ROLE_TEAM_TRAITOR` or `ROLE_TEAM_DETECTIVE` then they will automatically have 1 starting credit. If they belong to another team or you want to change your role to have a different amount of starting credits than the default, you can use the `ROLE.startingcredits` property:
+
+```lua
+ROLE.startingcredits = nil
+```
+
+Whatever number you assign to this property will automatically be set as the default for the `ttt_%NAMERAW%_credits_starting` convar that is created. For the Summoner, let's have them start with 2 credits so they can use a couple different shop items in the same round:
+
+```lua
+ROLE.startingcredits = 2
+```
+
+### Health
+
+The next couple of properties have to do with the health for your role:
+
+```lua
+ROLE.startinghealth = nil
+ROLE.maxhealth = nil
+```
+
+If these aren't set the role will use *100* for the starting and maxmium health by default. Also, if you only set the `ROLE.startinghealth` property then the maximum health will match by default as well.
+
+For the Summoner we want to keep it at the *100* default health, but for the sake of this example we're going to change the starting and maximum health so they start with *125* but have a maximum of *150*, allowing them to heal a little:
+
+```lua
+ROLE.startinghealth = 125
+ROLE.maxhealth = 150
 ```
 
 ### Translations
@@ -276,7 +338,7 @@ Once you have defined your ConVar you can add it to the `convars` table to get i
 
 If your ConVar is a number using a slider you can optionally add a third property `decimal` which determines how many decimal places of precision you want to give the user. *(Note: Max and min values for sliders are determined by the max and min values you specified when you defined the ConVar)*
 
-The Summoner does not have any extra ConVars but for the sake of example I will add three useless ConVars.
+The Summoner does not have any extra ConVars but for the sake of example we will add three useless ConVars.
 
 ```lua
 if SERVER then
@@ -304,7 +366,7 @@ table.insert(ROLE.convars, {
 
 The next line simply tells CR for TTT to register your role and passes through all the relevent information. You do not need to edit this line. CR for TTT automatically defines an enumeration for your role, `ROLE_%NAMERAW%` as well as helper functions `Get%NAMERAW%`, `Is%NAMERAW%` and `IsActive%NAMERAW%` if you would like to use them to add extra logic for your role.
 
-### Sprites
+### Final block
 
 Finally we have this block of code:
 
@@ -322,24 +384,37 @@ Once you have done that you are finished with coding. You can close your file an
 
 ```lua
 local ROLE = {}  
-  
+
 ROLE.nameraw = "summoner"  
 ROLE.name = "Summoner"  
 ROLE.nameplural = "Summoners"  
 ROLE.nameext = "a Summoner"  
 ROLE.nameshort = "sum"
-  
+
 ROLE.desc = [[You are {role}! {comrades}  
-  
+
 Summon minions to help defeat your enemies.  
-  
+
 Press {menukey} to receive your special equipment!]]
-  
+
 ROLE.team = ROLE_TEAM_TRAITOR
-  
+
 ROLE.shop = {"weapon_ttt_beenade", "weapon_ttt_barnacle", "surprisecombine", "weapon_antlionsummoner", "weapon_controllable_manhack", "weapon_doncombinesummoner"} 
-  
-ROLE.loadout = {}  
+ROLE.loadout = {}
+
+ROLE.startingcredits = 2
+
+ROLE.startinghealth = 125
+ROLE.maxhealth = 150
+
+ROLE.translations = {
+    ["english"] = {
+        ["summoner_testtranslation"] = "This is in English"
+    },
+    ["español"] = {
+        ["summoner_testtranslation"] = "Esto es en español"
+    }
+}
 
 if SERVER then
     CreateConVar("ttt_summoner_slider", "0", FCVAR_NONE, "This is a useless slider", 0, 10)
@@ -360,9 +435,9 @@ table.insert(ROLE.convars, {
     cvar = "ttt_summoner_textbox",
     type = ROLE_CONVAR_TYPE_TEXT
 })
-  
+
 RegisterRole(ROLE)  
-  
+
 if SERVER then  
     AddCSLuaFile()
 end
@@ -373,9 +448,9 @@ end
 There are four different sprites used within CR for TTT and you will need to make a separate image file for each.
 
 ### Finding a Role Icon
-Before you start messing with each individual sprite you need to find a good role icon. Your role icon should be solid white and you should avoid too much detail. One of the best places I know to find icons like this is https://game-icons.net/.
+Before you start messing with each individual sprite you need to find a good role icon. Your role icon should be solid white and you should avoid too much detail. One of the best places we know to find icons like this is https://game-icons.net/.
 
-For the Summoner I am going to use their minions with some slight changes. Make sure your icon is white with a transparent background. Here is the final version of the icon I am using for the summoner:
+For the Summoner we am going to use their minions with some slight changes. Make sure your icon is white with a transparent background. Here is the final version of the icon we am using for the summoner:
 
 ![SummonerIcon.png](https://i.imgur.com/vbuDVHP.png)
 
@@ -383,7 +458,7 @@ For the Summoner I am going to use their minions with some slight changes. Make 
 
 The tab file is the simplest icon of the bunch. This icon shows up next to players that you know the role of when you are holding tab. There is no template for the tab icon as all you need to do is resize your icon down to 16x16. This icon should be saved as 'tab_%NAMESHORT%.png' where `%NAMESHORT%` is replaced with whatever you defined `nameshort` as earlier. All of the icons in this guide should be saved in 'Role Addon Template' > 'materials' > 'vgui' > 'ttt'.
 
-Here is what I ended with for 'tab_sum.png':
+Here is what we ended with for 'tab_sum.png':
 
 ![tab_sum.png](https://i.imgur.com/XocV4qu.png)
 
@@ -391,7 +466,7 @@ Here is what I ended with for 'tab_sum.png':
 
 The score file is what shows up in the round summary at the end of each round. Open up 'Score Template.psd' and you should see a white dashed outline. This is the guide for the size of your icon. Click on the 'Icon' layer and paste in your role icon. You should automatically see a shadow appear behind your icon. Resize this icon until the white is all inside the dashed outline. *(Note: It doesn't matter if some shadow spills out of the outline as long as all the white is inside the guide.)* Once you are happy with the positioning of the icon you can click the eye symbol next to the 'Icon Guide' layer to hide the dashed outline guide. Save this image as 'score_%NAMESHORT%.png' where `%NAMESHORT%` is replaced as you did before. Once again this should be saved in 'Role Addon Template' > 'materials' > 'vgui' > 'ttt'.
 
-Here is what I have for 'score_sum.png':
+Here is what we have for 'score_sum.png':
 
 ![score_sum.png](https://i.imgur.com/zZkU611.png)
 
@@ -399,7 +474,7 @@ Here is what I have for 'score_sum.png':
 
 The sprite file is what shows up above players heads when you know their role. Open up 'Sprite Template.psd' and once again you should see a white dashed outline. Repeat the same process as you did for the score icon. Click on the 'Icon' layer, paste in your role icon, resize to fit the outline and hide the outline guide layer. Save this image as 'sprite_%NAMESHORT%.png'.
 
-For some icons GMod likes to use a .vtf or Valve Texture Format file. In order to do this we need to first create a .tga or Targa file. Targa files use an alpha layer for transparency so we need to convert our .png into a .tga. While Photoshop and GIMP can do this natively they do not properly create the alpha layer we need. The best method I have found is to use [Aconvert.com](https://www.aconvert.com/image/png-to-tga/) so upload your 'sprite_%NAMESHORT%.png' file here and download the converted Targa file.
+For some icons GMod likes to use a .vtf or Valve Texture Format file. In order to do this we need to first create a .tga or Targa file. Targa files use an alpha layer for transparency so we need to convert our .png into a .tga. While Photoshop and GIMP can do this natively they do not properly create the alpha layer we need. The best method we have found is to use [Aconvert.com](https://www.aconvert.com/image/png-to-tga/) so upload your 'sprite_%NAMESHORT%.png' file here and download the converted Targa file.
 
 Finally we can turn our .tga into the .vtf file we need. Open VTFEdit, click 'File' > 'Import' and select the converted Targa file. You should see your icon inside of VTFEdit except the shadows should have turned solid black and any transparency is now white. While this may look incredibly strange, this is actually exactly what we want! Save this file as 'sprite_%NAMESHORT%.vtf' in 'Role Addon Template' > 'materials' > 'vgui' > 'ttt'.
 
@@ -508,7 +583,7 @@ Before you upload your addon, now is a great time to check that your file struct
 
 ### Uploading
 
-Now you are ready to upload your addon. In Steam right click on Garry's Mod and click 'Manage' > 'Browse local files'. A folder should open up which contains your GMod files. Open 'bin' and you should see a file called 'gmad.exe'. Drag and drop your addon folder onto 'gmad.exe'. You should see a new file appear next to your addon folder. It should have the same name as your folder but with the file extension '.gma'. In my case I now have a new file called 'SummonerRole.gma'.
+Now you are ready to upload your addon. In Steam right click on Garry's Mod and click 'Manage' > 'Browse local files'. A folder should open up which contains your GMod files. Open 'bin' and you should see a file called 'gmad.exe'. Drag and drop your addon folder onto 'gmad.exe'. You should see a new file appear next to your addon folder. It should have the same name as your folder but with the file extension '.gma'. In my case we now have a new file called 'SummonerRole.gma'.
 
 Go back to the same folder where you found 'gmad.exe'. Click on the address bar up the top and type 'cmd'. This should open up the command prompt where you need to type this command to upload your addon.
 

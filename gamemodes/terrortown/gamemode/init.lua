@@ -102,11 +102,16 @@ for role = 0, ROLE_MAX do
         CreateConVar("ttt_drunk_can_be_" .. rolestring, "1", FCVAR_REPLICATED)
     end
 
-    local health = "100"
-    if role == ROLE_OLDMAN then health = "1"
-    elseif role == ROLE_KILLER then health = "150" end
-    CreateConVar("ttt_" .. rolestring .. "_starting_health", health, FCVAR_REPLICATED)
-    CreateConVar("ttt_" .. rolestring .. "_max_health", health, FCVAR_REPLICATED)
+    local starting_health = "100"
+    if role == ROLE_OLDMAN then starting_health = "1"
+    elseif role == ROLE_KILLER then starting_health = "150"
+    elseif EXTERNAL_ROLE_STARTING_HEALTH[role] then starting_health = EXTERNAL_ROLE_STARTING_HEALTH[role] end
+
+    local max_health = nil
+    if EXTERNAL_ROLE_MAX_HEALTH[role] then max_health = EXTERNAL_ROLE_MAX_HEALTH[role] end
+
+    CreateConVar("ttt_" .. rolestring .. "_starting_health", starting_health, FCVAR_REPLICATED)
+    CreateConVar("ttt_" .. rolestring .. "_max_health", max_health or starting_health, FCVAR_REPLICATED)
     CreateConVar("ttt_" .. rolestring .. "_name", "", FCVAR_REPLICATED)
     CreateConVar("ttt_" .. rolestring .. "_name_plural", "", FCVAR_REPLICATED)
     CreateConVar("ttt_" .. rolestring .. "_name_article", "", FCVAR_REPLICATED)

@@ -307,7 +307,8 @@ else
         -- Add explicit ROLE_INNOCENT exclusion here in case shop-for-all is enabled
         if not DEFAULT_ROLES[role] or role == ROLE_INNOCENT then
             local credits = "0"
-            if TRAITOR_ROLES[role] then credits = "1"
+            if EXTERNAL_ROLE_STARTING_CREDITS[role] then credits = EXTERNAL_ROLE_STARTING_CREDITS[role]
+            elseif TRAITOR_ROLES[role] then credits = "1"
             elseif DETECTIVE_ROLES[role] then credits = "1"
             elseif role == ROLE_MERCENARY then credits = "1"
             elseif role == ROLE_KILLER then credits = "2"
@@ -617,6 +618,9 @@ EXTERNAL_ROLE_TRANSLATIONS = {}
 EXTERNAL_ROLE_SHOP_ITEMS = {}
 EXTERNAL_ROLE_LOADOUT_ITEMS = {}
 EXTERNAL_ROLE_CONVARS = {}
+EXTERNAL_ROLE_STARTING_CREDITS = {}
+EXTERNAL_ROLE_STARTING_HEALTH = {}
+EXTERNAL_ROLE_MAX_HEALTH = {}
 
 ROLE_CONVAR_TYPE_NUM = 0
 ROLE_CONVAR_TYPE_BOOL = 1
@@ -683,6 +687,18 @@ function RegisterRole(tbl)
     if tbl.shop then
         EXTERNAL_ROLE_SHOP_ITEMS[roleID] = tbl.shop
         AddRoleAssociations(SHOP_ROLES, {roleID})
+    end
+
+    if type(tbl.startingcredits) == "number" then
+        EXTERNAL_ROLE_STARTING_CREDITS[roleID] = tbl.startingcredits
+    end
+
+    if type(tbl.startinghealth) == "number" then
+        EXTERNAL_ROLE_STARTING_HEALTH[roleID] = tbl.startinghealth
+    end
+
+    if type(tbl.maxhealth) == "number" then
+        EXTERNAL_ROLE_MAX_HEALTH[roleID] = tbl.maxhealth
     end
 
     if type(tbl.canlootcredits) == "boolean" then

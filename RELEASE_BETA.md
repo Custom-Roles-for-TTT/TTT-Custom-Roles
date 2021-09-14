@@ -17,7 +17,11 @@
 
 ### Developer
 - Added ShouldHideJesters global function to determine whether the given player should hide a jester player's role
-- Added ability for external roles to define their own translations
+- Added ability for external roles to define:
+  - Starting credits
+  - Starting health
+  - Maximum health
+  - Extra translations
 - Added TTTTargetIDPlayerRing hook which allows overriding whether the Target ID ring is shown and what color it should be shown as
 - Added nameLabel parameter to TTTScoringSummaryRender hook, allowing you to override what is displayed for a player's name
 - Added TTTRadarPlayerRender hook which allows overriding whether a radar ping is shown and what color it should be shown as
