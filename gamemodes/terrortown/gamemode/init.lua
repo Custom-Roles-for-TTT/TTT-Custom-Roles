@@ -246,6 +246,7 @@ CreateConVar("ttt_beggar_notify_mode", "0", FCVAR_NONE, "The logic to use when n
 CreateConVar("ttt_beggar_notify_sound", "0")
 CreateConVar("ttt_beggar_notify_confetti", "0")
 
+CreateConVar("ttt_bodysnatchers_are_independent", "0")
 CreateConVar("ttt_bodysnatcher_destroy_body", "0")
 CreateConVar("ttt_bodysnatcher_show_role", "1")
 
@@ -709,6 +710,8 @@ function GM:SyncGlobals()
 
     SetGlobalBool("ttt_clown_show_target_icon", GetConVar("ttt_clown_show_target_icon"):GetBool())
     SetGlobalBool("ttt_clown_hide_when_active", GetConVar("ttt_clown_hide_when_active"):GetBool())
+
+    SetGlobalBool("ttt_bodysnatchers_are_independent", GetConVar("ttt_bodysnatchers_are_independent"):GetBool())
 
     SetGlobalBool("ttt_bem_allow_change", GetConVar("ttt_bem_allow_change"):GetBool())
     SetGlobalInt("ttt_bem_sv_cols", GetConVar("ttt_bem_sv_cols"):GetBool())

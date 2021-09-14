@@ -1061,6 +1061,11 @@ function UpdateRoleState()
     MONSTER_ROLES[ROLE_VAMPIRE] = vampires_are_monsters
     TRAITOR_ROLES[ROLE_VAMPIRE] = not vampires_are_monsters
 
+    local bodysnatchers_are_independent = GetGlobalBool("ttt_bodysnatchers_are_independent", false)
+    INDEPENDENT_ROLES[ROLE_BODYSNATCHER] = bodysnatchers_are_independent
+    JESTER_ROLES[ROLE_BODYSNATCHER] = not bodysnatchers_are_independent
+
+    -- Role Features
     local glitch_use_traps = GetGlobalBool("ttt_glitch_use_traps", false)
     CAN_LOOT_CREDITS_ROLES[ROLE_GLITCH] = glitch_use_traps
     TRAITOR_BUTTON_ROLES[ROLE_GLITCH] = glitch_use_traps
