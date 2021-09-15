@@ -194,7 +194,7 @@ if SERVER then
         net.WriteBool(true)
         net.Send(ply)
 
-        -- Un-haunt the Hypnotist if the target was the Phantom
+        -- Un-haunt the player if the target was the Phantom or Parasite
         local owner = self:GetOwner()
         if ply:IsPhantom() and ply:GetNWString("HauntingTarget", nil) == owner:SteamID64() then
             owner:SetNWBool("Haunted", false)
