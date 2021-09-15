@@ -33,11 +33,11 @@
 ## Before You Start
 In order to create your own role you will need to make sure you have downloaded tools to edit the following file types:
 
--   **.psd** - For this guide we will be using Photoshop but  [GIMP](https://www.gimp.org/) is a great free alternative.
--   **.lua** - This can be done in Notepad in a pinch but at the very least we would reccomend  [Notepad++](https://notepad-plus-plus.org/).
--   **.vmt and .vtf**  -  [VTFEdit](https://nemstools.github.io/pages/VTFLib-Download.html) is the best way to edit these files but if you know what you are doing there are plugins for other apps.
+- **.psd** - For this guide we will be using Photoshop but [GIMP](https://www.gimp.org/) is a great free alternative.
+- **.lua** - This can be done in Notepad in a pinch but at the very least we would recommend [Notepad++](https://notepad-plus-plus.org/).
+- **.vmt and .vtf** - [VTFEdit](https://nemstools.github.io/pages/VTFLib-Download.html) is the best way to edit these files but if you know what you are doing there are plugins for other apps.
 
-In this guide we will be walking through how we made the Summoner role and you can download all the templates we am using [here](/templates).
+In this guide we will be walking through how we made the Summoner role and you can download all the templates we are using [here](/templates).
 
 Last thing to do before you are ready to get started is to unzip that file which should give you 4 .psd files and a folder like this:
 
@@ -453,7 +453,7 @@ There are four different sprites used within CR for TTT and you will need to mak
 ### Finding a Role Icon
 Before you start messing with each individual sprite you need to find a good role icon. Your role icon should be solid white and you should avoid too much detail. One of the best places we know to find icons like this is https://game-icons.net/.
 
-For the Summoner we am going to use their minions with some slight changes. Make sure your icon is white with a transparent background. Here is the final version of the icon we am using for the summoner:
+For the Summoner we are going to use their "minions" icon with some slight changes. Make sure your icon is white with a transparent background. Here is the final version of the icon we are using for the summoner:
 
 ![SummonerIcon.png](https://i.imgur.com/vbuDVHP.png)
 
