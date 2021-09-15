@@ -26,6 +26,12 @@
 - Added nameLabel parameter to TTTScoringSummaryRender hook, allowing you to override what is displayed for a player's name
 - Added TTTRadarPlayerRender hook which allows overriding whether a radar ping is shown and what color it should be shown as
 - Added TTTSelectRoles*Options for each team to allow external roles to affect the available roles and their weights
+- Added new table methods
+  - table.IntersectedKeys
+  - table.UnionedKeys
+  - table.ExcludedKeys
+  - table.LookupKeys
+  - table.ToLookup
 
 ## 1.2.2
 **Released: September 12th, 2021**

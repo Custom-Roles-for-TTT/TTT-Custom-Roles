@@ -10,6 +10,7 @@
    1. [Shop and Loadout Items](#Shop-and-Loadout-Items)
       1. [Weapon](#Weapon)
       1. [Equipment](#Equipment)
+   1. [Credits](#Credits)
    1. [Health](#Health)
    1. [Translations](#Translations)
    1. [Optional Rules](#Optional-Rules)
@@ -210,13 +211,15 @@ ROLE.shop = {"weapon_ttt_beenade", "weapon_ttt_barnacle", "surprisecombine", "we
 ROLE.loadout = {}
 ```
 
+### Credits
+
 Now that you have a shop set up for you role, what about the credits to actually buy things? Well, if your role is `ROLE_TEAM_TRAITOR` or `ROLE_TEAM_DETECTIVE` then they will automatically have 1 starting credit. If they belong to another team or you want to change your role to have a different amount of starting credits than the default, you can use the `ROLE.startingcredits` property:
 
 ```lua
 ROLE.startingcredits = nil
 ```
 
-Whatever number you assign to this property will automatically be set as the default for the `ttt_%NAMERAW%_credits_starting` convar that is created. For the Summoner, let's have them start with 2 credits so they can use a couple different shop items in the same round:
+Whatever number you assign to this property will automatically be set as the default for the `ttt_%NAMERAW%_credits_starting` convar. This convar is automatically created for all roles that have credits. For the Summoner, let's have them start with 2 credits so they can use a couple different shop items in the same round:
 
 ```lua
 ROLE.startingcredits = 2

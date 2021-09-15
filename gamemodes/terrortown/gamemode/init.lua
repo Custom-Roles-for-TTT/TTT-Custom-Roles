@@ -328,11 +328,19 @@ cvars.AddChangeCallback("ttt_shop_for_all", function(convar, oldValue, newValue)
     SetGlobalBool("ttt_shop_for_all", enabled)
 end)
 
-for _, role in ipairs(GetTeamRoles(SHOP_ROLES)) do
+local shop_roles = GetTeamRoles(SHOP_ROLES)
+for _, role in ipairs(shop_roles) do
     CreateShopConVars(role)
 end
+
 CreateConVar("ttt_shop_random_percent", "50", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown by default", 0, 100)
 CreateConVar("ttt_shop_random_position", "0", FCVAR_REPLICATED, "Whether to randomize the position of the items in the shop")
+
+-- Create the starting credit convar for all roles that have credits but don't have a shop
+local shopless_credit_roles = table.ExcludedKeys(EXTERNAL_ROLE_STARTING_CREDITS, shop_roles)
+for _, role in ipairs(shopless_credit_roles) do
+    CreateCreditConVar(role)
+end
 
 -- Other
 CreateConVar("ttt_use_weapon_spawn_scripts", "1")
@@ -454,7 +462,7 @@ OldCVarWarning("ttt_shop_mer_mode", "ttt_mercenary_shop_mode")
 CreateConVar("ttt_shop_clo_mode", "0")
 OldCVarWarning("ttt_shop_clo_mode", "ttt_clown_shop_mode")
 
-for _, role in ipairs(GetTeamRoles(SHOP_ROLES)) do
+for _, role in ipairs(shop_roles) do
     local shortstring = ROLE_STRINGS_SHORT[role]
     local rolestring = ROLE_STRINGS_RAW[role]
     CreateConVar("ttt_shop_random_" .. shortstring .. "_percent", "0", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown for the " .. rolestring, 0, 100)

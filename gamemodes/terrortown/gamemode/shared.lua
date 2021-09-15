@@ -302,10 +302,10 @@ if CLIENT then
         return ModifyColor(c or COLOR_WHITE, type)
     end
 else
-    function CreateShopConVars(role)
-        local rolestring = ROLE_STRINGS_RAW[role]
+    function CreateCreditConVar(role)
         -- Add explicit ROLE_INNOCENT exclusion here in case shop-for-all is enabled
         if not DEFAULT_ROLES[role] or role == ROLE_INNOCENT then
+            local rolestring = ROLE_STRINGS_RAW[role]
             local credits = "0"
             if EXTERNAL_ROLE_STARTING_CREDITS[role] then credits = EXTERNAL_ROLE_STARTING_CREDITS[role]
             elseif TRAITOR_ROLES[role] then credits = "1"
@@ -315,6 +315,11 @@ else
             elseif role == ROLE_DOCTOR then credits = "1" end
             CreateConVar("ttt_" .. rolestring .. "_credits_starting", credits, FCVAR_REPLICATED)
         end
+    end
+
+    function CreateShopConVars(role)
+        local rolestring = ROLE_STRINGS_RAW[role]
+        CreateCreditConVar(role)
 
         CreateConVar("ttt_" .. rolestring .. "_shop_random_percent", "0", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown for the " .. rolestring, 0, 100)
         CreateConVar("ttt_" .. rolestring .. "_shop_random_enabled", "0", FCVAR_REPLICATED, "Whether shop randomization should run for the " .. rolestring)
