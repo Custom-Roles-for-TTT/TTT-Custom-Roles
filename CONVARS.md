@@ -155,10 +155,12 @@ ttt_assassin_shop_roles_last                0       // Whether the assassin shou
 ttt_assassin_credits_starting               1       // The number of credits an assassin should start with
 
 // Vampire
-ttt_vampires_are_monsters                   0       // Whether vampires should be treated as members of the Monster team.
+ttt_vampires_are_monsters                   0       // Whether vampires should be treated as members of the monster team (rather than the traitor team)
+ttt_vampires_are_independent                0       // Whether vampires should be treated as members of the independent team (rather than the traitor team)
 ttt_vampire_vision_enable                   0       // Whether vampires have their special vision highlights enabled
-ttt_vampire_drain_enable                    1       // Whether vampires have the ability to drain other players' blood using their fangs
-ttt_vampire_convert_enable                  0       // Whether vampires have the ability to convert other players to vampire thrals using their fangs
+ttt_vampire_drain_enable                    1       // Whether vampires have the ability to drain a target's blood using their fangs
+ttt_vampire_drain_first                     0       // Whether vampires should drain a target's blood first rather than converting first
+ttt_vampire_convert_enable                  0       // Whether vampires have the ability to convert targets to a vampire thrall using their fangs
 ttt_vampire_show_target_icon                0       // Whether vampires have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect.
 ttt_vampire_damage_reduction                0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a vampire.
 ttt_vampire_fang_timer                      5       // The amount of time fangs must be used to fully drain a target's blood
@@ -226,6 +228,8 @@ ttt_veteran_damage_bonus                    0.5     // Damage bonus that the vet
 ttt_veteran_full_heal                       1       // Whether the veteran gets a full heal upon becoming the last remaining innocent or not
 ttt_veteran_heal_bonus                      0       // The amount of bonus health to give the veteran when they are healed as the last remaining innocent
 ttt_veteran_announce                        0       // Whether to announce to all other living players when the veteran is the last remaining innocent
+ttt_veteran_shop_active_only                1       // Whether the veteran's shop should be available only after they activate
+ttt_veteran_shop_delay                      0       // Whether the veteran's purchased shop items should be held until they activate
 
 // Doctor
 ttt_doctor_credits_starting                 1       // The number of credits a doctor should start with
@@ -237,6 +241,7 @@ ttt_doctor_credits_starting                 1       // The number of credits a d
 ttt_detective_search_only                   1       // Whether only detectives can search bodies or not
 ttt_detective_disable_looting               0       // Whether to disable a detective role's ability to loot credits from bodies
 ttt_all_search_postround                    1       // Whether non-detectives can search bodies post-round or not
+ttt_all_search_binoc                        0       // Whether non-detectives can search bodies if they are using binoculars
 
 // Paladin
 ttt_paladin_aura_radius                     5       // The radius of the paladin's aura in meters
@@ -300,6 +305,7 @@ ttt_beggar_notify_sound                     0       // Whether to play a cheerin
 ttt_beggar_notify_confetti                  0       // Whether to throw confetti when a beggar is a killed
 
 // Bodysnatcher
+ttt_bodysnatchers_are_independent           0       // Whether bodysnatchers should be treated as members of the independent team (rather than the jester team)
 ttt_bodysnatcher_destroy_body               0       // Whether the bodysnatching device destroys the body it is used on or not
 ttt_bodysnatcher_show_role                  1       // Whether the bodysnatching device shows the role of the corpse it is used on or not
 
@@ -360,13 +366,13 @@ ttt_killer_vision_enable                    1       // Whether killers have thei
 ttt_killer_credits_starting                 2       // The number of credits a killer should start with
 
 // Zombie
-ttt_zombies_are_monsters                    0       // Whether zombies should be treated as members of the monster team.
-ttt_zombies_are_traitors                    0       // Whether zombies should be treated as members of the traitors team.
+ttt_zombies_are_monsters                    0       // Whether zombies should be treated as members of the monster team (rather than the independent team)
+ttt_zombies_are_traitors                    0       // Whether zombies should be treated as members of the traitors team (rather than the independent team)
 ttt_zombie_round_chance                     0.1     // The chance that a "zombie round" will occur where all players who would have been traitors are made zombies instead. Only usable when "ttt_zombies_are_traitors" is set to "1"
 ttt_zombie_vision_enable                    0       // Whether zombies have their special vision highlights enabled
 ttt_zombie_spit_enable                      1       // Whether zombies have their spit attack enabled
 ttt_zombie_leap_enable                      1       // Whether zombies have their leap attack enabled
-ttt_zombie_show_target_icon                 0       // Whether zombies have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect.
+ttt_zombie_show_target_icon                 0       // Whether zombies have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect
 ttt_zombie_damage_penalty                   0.5     // The fraction a zombie's damage will be scaled by when they are attacking without using their claws
 ttt_zombie_damage_reduction                 0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a zombie
 ttt_zombie_prime_only_weapons               1       // Whether only prime zombies (e.g. players who spawn as zombies originally) are allowed to pick up weapons
@@ -437,6 +443,7 @@ ttt_parasite_shop_random_enabled            0       // Whether role shop randomi
 
 ttt_mercenary_shop_mode                     2       // What additional items are available to the mercenary in the shop (See above for possible values)
 ttt_clown_shop_mode                         0       // What additional items are available to the clown in the shop (See above for possible values)
+ttt_veteran_shop_mode                       0       // What additional items are available to the veteran in the shop (See above for possible values)
 
 // Traitor Role Shop Sync (Server or round must be restarted for changes to take effect)
 ttt_hypnotist_shop_sync                     0       // Whether hypnotists should have all weapons that vanilla traitors have in their weapon shop
