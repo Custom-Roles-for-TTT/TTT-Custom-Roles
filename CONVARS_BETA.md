@@ -352,6 +352,8 @@ ttt_drunk_can_be_madscientist               1       // Whether the drunk can bec
 
 // Old Man
 ttt_oldman_drain_health_to                  0       // The amount of health to drain the old man down to. Set to 0 to disable
+ttt_oldman_adrenaline_rush                  5       // The time in seconds the old mans adrenaline rush lasts for. Set to 0 to disable
+ttt_oldman_adrenaline_shotgun               1       // Whether the old man is given a double barrel shotgun when their adrenaline rush is triggered
 
 // Killer
 ttt_killer_knife_enabled                    1       // Whether the killer knife is enabled
