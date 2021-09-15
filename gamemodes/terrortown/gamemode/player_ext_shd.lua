@@ -57,8 +57,10 @@ function plymeta:GetVampireAlly()
     local role = self:GetRole()
     if MONSTER_ROLES[ROLE_VAMPIRE] then
         return MONSTER_ROLES[role]
+    elseif TRAITOR_ROLES[ROLE_VAMPIRE] then
+        return TRAITOR_ROLES[role]
     end
-    return TRAITOR_ROLES[role]
+    return INDEPENDENT_ROLES[role]
 end
 
 function plymeta:IsSameTeam(target)

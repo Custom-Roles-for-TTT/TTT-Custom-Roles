@@ -375,6 +375,7 @@ local function GetWinTitle(wintype)
         [WIN_CLOWN] = { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_CLOWN]:upper() }, c = ROLE_COLORS[ROLE_JESTER] },
         [WIN_KILLER] = { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_KILLER]:upper() }, c = ROLE_COLORS[ROLE_KILLER] },
         [WIN_ZOMBIE] = { txt = "hilite_win_role_plural", params = { role = ROLE_STRINGS_PLURAL[ROLE_ZOMBIE]:upper() }, c = ROLE_COLORS[ROLE_ZOMBIE] },
+        [WIN_VAMPIRE] = { txt = "hilite_win_role_plural", params = { role = ROLE_STRINGS_PLURAL[ROLE_VAMPIRE]:upper() }, c = ROLE_COLORS[ROLE_VAMPIRE] },
         [WIN_MONSTER] = { txt = "hilite_win_role_plural", params = { role = "MONSTERS" }, c = GetRoleTeamColor(ROLE_TEAM_MONSTER) }
     }
     local title = wintitles[wintype]
@@ -603,6 +604,7 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                 local hasDisconnected = false
                 local alive = false
 
+                local name = nicks[id]
                 local roleFileName = ROLE_STRINGS_SHORT[startingRole]
                 local roleColor = ROLE_COLORS[startingRole]
                 local finalRole = startingRole
@@ -653,14 +655,15 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                 end
 
                 -- Allow developers to override role icon, grouping, and color
-                local roleFile, groupRole, iconColor = hook.Run("TTTScoringSummaryRender", ply, roleFileName, groupingRole, roleColor)
+                local roleFile, groupRole, iconColor, newName = hook.Run("TTTScoringSummaryRender", ply, roleFileName, groupingRole, roleColor, name)
                 if roleFile then roleFileName = roleFile end
                 if groupRole then groupingRole = groupRole end
                 if iconColor then roleColor = iconColor end
+                if newName then name = newName end
 
                 local playerInfo = {
                     ply = ply,
-                    name = nicks[id],
+                    name = name,
                     roleColor = roleColor,
                     roleFileName = roleFileName,
                     hasDied = not alive,
@@ -1124,7 +1127,7 @@ function CLSCORE:ShowPanel()
     local margin = 15
     parentPanel:SetSize(w, h)
     parentPanel:Center()
-    parentPanel:SetTitle("Round Report")
+    parentPanel:SetTitle("Round Report - " .. GAMEMODE.Version)
     parentPanel:SetVisible(true)
     parentPanel:ShowCloseButton(true)
     parentPanel:SetMouseInputEnabled(true)
