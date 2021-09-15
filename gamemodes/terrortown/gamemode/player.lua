@@ -1974,6 +1974,38 @@ function GM:EntityTakeDamage(ent, dmginfo)
             dmginfo:ScaleDamage(0)
             dmginfo:SetDamage(0)
         end
+
+        -- Old man adrenaline rush logic
+        local adrenalineTime = GetConVar("ttt_oldman_adrenaline_rush"):GetInt()
+        if ent:IsOldMan() and adrenalineTime > 0 then
+            local damage = dmginfo:GetDamage()
+            local health = ent:Health()
+
+            if ent:GetNWBool("AdrenalineRush", false) then -- If they are mid adrenaline rush then they take no damage
+                dmginfo:ScaleDamage(0)
+                dmginfo:SetDamage(0)
+            elseif IsPlayer(att) and damage >= health then -- If they are attacked by a player that would have killed them they enter an adrenaline rush
+                dmginfo:SetDamage(health - 1)
+                ent:SetNWBool("AdrenalineRush", true)
+                ent:EmitSound("oldmanramble.wav")
+                ent:PrintMessage(HUD_PRINTTALK, "You are having an adrenaline rush! You will die in " .. tostring(adrenalineTime) .. " seconds.")
+
+                if GetConVar("ttt_oldman_adrenaline_shotgun"):GetBool() then
+                    for _, wep in ipairs(ent:GetWeapons()) do
+                        if wep.Kind == WEAPON_HEAVY then
+                            ent:StripWeapon(wep:GetClass())
+                        end
+                    end
+                    ent:Give("weapon_old_dbshotgun")
+                    ent:SelectWeapon("weapon_old_dbshotgun")
+                end
+
+                timer.Create(ent:Nick() .. "AdrenalineRush", adrenalineTime, 1, function()
+                    ent:SetNWBool("AdrenalineRush", false)
+                    if ent:IsActiveOldMan() then ent:Kill() end -- Only kill them if they are still the old man
+                end)
+            end
+        end
     end
 
     if not GAMEMODE:AllowPVP() then

@@ -37,8 +37,9 @@ If you would like to test the available configurations, we recommend using ULX/U
 - [Jenssons](https://steamcommunity.com/profiles/76561198044525091) for the ['Town of Terror'](https://steamcommunity.com/sharedfiles/filedetails/?id=1092556189) mod which was the foundation of this mod.
 - [hendrikbl](https://steamcommunity.com/id/gamerhenne) for the ['Better Equipment Menu'](https://steamcommunity.com/sharedfiles/filedetails/?id=878772496) mod which is integrated into this mod.
 - [Silky](https://steamcommunity.com/profiles/76561198094798859) for the code used to create the pile of bones after the Vampire eats a body taken from the ['TTT Traitor Weapon Evolve'](https://steamcommunity.com/sharedfiles/filedetails/?id=1240572856) mod.
-- [Minty](https://steamcommunity.com/id/_Minty_) for the code used for the Hypnotist's brain washing device taken from the ['Defibrillator for TTT'](https://steamcommunity.com/sharedfiles/filedetails/?id=801433502) mod.
+- [Minty](https://steamcommunity.com/id/_Minty_) for the code used in many items taken from the ['Defibrillator for TTT'](https://steamcommunity.com/sharedfiles/filedetails/?id=801433502) mod.
 - [Fresh Garry](https://steamcommunity.com/id/Fresh_Garry) for the ['TTT Sprint'](https://steamcommunity.com/sharedfiles/filedetails/?id=933056549) mod which was used as the base for this mod's sprinting mechanics.
+- [Lykrast](https://steamcommunity.com/id/Lykrast) for the code and models used to create the old man's double barrel shotgun taken from ['Lykrast's TTT Weapon Collection'](https://steamcommunity.com/sharedfiles/filedetails/?id=337994500).
 - [Game icons](https://game-icons.net), [Noun Project](https://thenounproject.com), and [Icons8](https://icons8.com) for the role icons.
 - Kommandos, Lix3, FunCheetah, B1andy413, Cooliew, The_Samarox, Arack12, and Aspirin for helping us test.
 - Everyone on the Discord server for their suggestions and help testing.

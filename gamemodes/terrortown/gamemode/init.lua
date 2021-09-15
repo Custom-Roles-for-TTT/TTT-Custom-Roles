@@ -266,6 +266,8 @@ CreateConVar("ttt_drunk_become_clown", "0")
 CreateConVar("ttt_drunk_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the Drunk sobers up", 0, 4)
 
 CreateConVar("ttt_oldman_drain_health_to", "0")
+CreateConVar("ttt_oldman_adrenaline_rush", "5")
+CreateConVar("ttt_oldman_adrenaline_shotgun", "1")
 
 CreateConVar("ttt_killer_knife_enabled", "1")
 CreateConVar("ttt_killer_crowbar_enabled", "1")
@@ -1042,6 +1044,8 @@ function PrepareRound()
         v:SetNWInt("GlitchBluff", ROLE_TRAITOR)
         v:SetNWVector("PlayerColor", Vector(1, 1, 1))
         v:SetNWInt("VampireFreezeCount", 0)
+        v:SetNWBool("AdrenalineRush", false)
+        timer.Remove(v:Nick() .. "AdrenalineRush")
         -- Keep previous naming scheme for backwards compatibility
         v:SetNWBool("zombie_prime", false)
         v:SetNWBool("vampire_prime", false)
