@@ -12,6 +12,7 @@
       1. [Equipment](#Equipment)
    1. [Credits](#Credits)
    1. [Health](#Health)
+   1. [Role Activation](#Role-Activation)
    1. [Translations](#Translations)
    1. [Optional Rules](#Optional-Rules)
    1. [ConVars](#ConVars)
@@ -69,6 +70,8 @@ ROLE.startingcredits = nil
 
 ROLE.startinghealth = nil
 ROLE.maxhealth = nil
+
+ROLE.isactive = nil
 
 ROLE.translations = {}
 
@@ -243,9 +246,29 @@ ROLE.startinghealth = 125
 ROLE.maxhealth = 150
 ```
 
+### Role Activation
+
+Some roles may have special logic that changes how they behave after some activation event. For example, the Clown is activated when only one team remains and the effect of their activation is they can now do damage. If you want to be able to do something like that we recommend using the entity networked properties system (such as [SetNWBool](https://wiki.facepunch.com/gmod/Entity:SetNWBool)). When the role is activated you could `ply:SetNWBool("SummonerActive", true)` and then check that they are active in other places to change their behavior using `ply:GetNWBool("SummonerActive", false)`. To make this slightly nicer, we introduced the `ply:IsRoleActive()` method in v1.2.2 which is also used in delayed shop activation (see [Optional Rules](#Optional-Rules)).
+
+The next line in our role definition has to do with tying into the `ply:IsRoleActive()` method, allowing you to define if your role is "active" on your own terms:
+
+```lua
+ROLE.isactive = nil
+```
+
+This property should be a function with a single parameter that takes a player object and returns a boolean. Continuing our example from the paragraph above, we should define this property like so:
+
+```lua
+ROLE.isactive = function(ply)
+    return ply:GetNWBool("SummonerActive", false)
+end
+```
+
+Once that is defined you can use `ply:IsRoleActive()` anywhere you need to check your role's activation state.
+
 ### Translations
 
-Following the lines having to do with the shop, there is a line that looks like this:
+Next there is a line that looks like this:
 
 ```lua
 ROLE.translations = {}
@@ -286,7 +309,7 @@ There are a few options for roles that aren't covered in the template because th
 | --- | --- | --- |
 | `ROLE.canlootcredits` | Whether this role can loot credits from dead bodies. Automatically enabled if the role has a shop, but setting to `false` can make it so the role has a shop but cannot loot credits. Setting this to `true` will allow this role to loot credits regardless of whether they have a shop. | 1.1.8 |
 | `ROLE.canusetraitorbuttons` | Whether this role can see and use traitor traps. Automatically enabled if the role is part of `ROLE_TEAM_TRAITOR`, but setting to `false` can make it so the role is a traitor that cannot use traitor traps. Setting to `true` will allow this role to use traitor traps regardless of their team association. | 1.1.8 |
-| `ROLE.shoulddelayshop` | Whether this role's shop purchases are delayed. Purchases will only be given to the player when `plymeta:GiveDelayedShopItems` is called by your own role logic. Enabling this feature will automatically create `ttt_%NAMERAW%_shop_active_only` and `ttt_%NAMERAW%_shop_delay` convars. Requires that the role have a shop. | 1.2.2 |
+| `ROLE.shoulddelayshop` | Whether this role's shop purchases are delayed. Purchases will only be given to the player when `plymeta:GiveDelayedShopItems` is called by your own role logic. Enabling this feature will automatically create `ttt_%NAMERAW%_shop_active_only` and `ttt_%NAMERAW%_shop_delay` convars. Requires that the role has a shop and has role activation defined (see [Role Activation](#Role-Activation)) | 1.2.2 |
 
 The Summoner doesn't need these options to be set because it is `ROLE_TEAM_TRAITOR` and has a shop, but just for an example, here's what it would look like if we wanted to remove their credit looting and traitor trap abilities and delay their shop item delivery:
 
@@ -383,7 +406,7 @@ When this code is run on the server it makes sure the client downloads this file
 
 ### Example File
 
-Once you have done that you are finished with coding. You can close your file and move on to creating your sprites. One last time before moving on to that, here is the full summoner.lua file for reference:
+Once you have done that you are finished with coding. You can close your file and move on to creating your sprites. One last time before moving on to that, here is the full summoner.lua file for reference, as it appears on the workshop:
 
 ```lua
 local ROLE = {}  
@@ -404,40 +427,6 @@ ROLE.team = ROLE_TEAM_TRAITOR
 
 ROLE.shop = {"weapon_ttt_beenade", "weapon_ttt_barnacle", "surprisecombine", "weapon_antlionsummoner", "weapon_controllable_manhack", "weapon_doncombinesummoner"} 
 ROLE.loadout = {}
-
-ROLE.startingcredits = 2
-
-ROLE.startinghealth = 125
-ROLE.maxhealth = 150
-
-ROLE.translations = {
-    ["english"] = {
-        ["summoner_testtranslation"] = "This is in English"
-    },
-    ["español"] = {
-        ["summoner_testtranslation"] = "Esto es en español"
-    }
-}
-
-if SERVER then
-    CreateConVar("ttt_summoner_slider", "0", FCVAR_NONE, "This is a useless slider", 0, 10)
-    CreateConVar("ttt_summoner_checkbox", "0")
-    CreateConVar("ttt_summoner_textbox", "0")
-end
-ROLE.convars = {}
-table.insert(ROLE.convars, {
-    cvar = "ttt_summoner_slider",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-table.insert(ROLE.convars, {
-    cvar = "ttt_summoner_checkbox",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE.convars, {
-    cvar = "ttt_summoner_textbox",
-    type = ROLE_CONVAR_TYPE_TEXT
-})
 
 RegisterRole(ROLE)  
 

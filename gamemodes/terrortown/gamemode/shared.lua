@@ -626,6 +626,7 @@ EXTERNAL_ROLE_CONVARS = {}
 EXTERNAL_ROLE_STARTING_CREDITS = {}
 EXTERNAL_ROLE_STARTING_HEALTH = {}
 EXTERNAL_ROLE_MAX_HEALTH = {}
+EXTERNAL_ROLE_IS_ACTIVE = {}
 
 ROLE_CONVAR_TYPE_NUM = 0
 ROLE_CONVAR_TYPE_BOOL = 1
@@ -720,6 +721,10 @@ function RegisterRole(tbl)
 
     if tbl.loadout then
         EXTERNAL_ROLE_LOADOUT_ITEMS[roleID] = tbl.loadout
+    end
+
+    if type(tbl.isactive) == "function" then
+        EXTERNAL_ROLE_IS_ACTIVE[roleID] = tbl.isactive
     end
 
     -- List of objects that describe convars for ULX support, in the following format:

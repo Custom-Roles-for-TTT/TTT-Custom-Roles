@@ -162,6 +162,11 @@ function plymeta:IsRoleActive()
     if self:IsClown() then return self:GetNWBool("KillerClownActive", false) end
     if self:IsVeteran() then return self:GetNWBool("VeteranActive", false) end
     if self:IsDeputy() or self:IsImpersonator() then return self:GetNWBool("HasPromotion", false) end
+
+    -- Check if this role has an external definition for "IsActive" and use that
+    local role = self:GetRole()
+    if EXTERNAL_ROLE_IS_ACTIVE[role] then return EXTERNAL_ROLE_IS_ACTIVE[role](self) end
+
     return true
 end
 
