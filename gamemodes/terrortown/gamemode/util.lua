@@ -244,6 +244,76 @@ function table.CopyKeys(tbl, keys)
     return out
 end
 
+-- Returns new table that contains the keys that are only present in both given tables,
+-- excluding those which appear as values in the given exclude table (if it is given)
+function table.IntersectedKeys(first_tbl, second_tbl, excludes)
+    if not (first_tbl and second_tbl) then return end
+    local intersect = {}
+    for k, v in pairs(first_tbl) do
+        if v and second_tbl[k] and (not excludes or not table.HasValue(excludes, k)) then
+            table.insert(intersect, k)
+        end
+    end
+    return intersect
+end
+
+-- Returns new table that contains a combination of the keys present in first table and the second table,
+-- excluding those which appear as values in the given exclude table (if it is given)
+function table.UnionedKeys(first_tbl, second_tbl, excludes)
+    if not (first_tbl and second_tbl) then return end
+
+    -- Clone the first table if there are no excludes
+    local union
+    if excludes then
+        union = table.ExcludedKeys(first_tbl, excludes)
+    else
+        union = table.LookupKeys(first_tbl)
+    end
+
+    -- Add anything that is not already in the table and not excluded
+    for k, v in pairs(second_tbl) do
+        if v and not union[k] and (not excludes or not table.HasValue(excludes, k)) then
+            table.insert(union, k)
+        end
+    end
+    return union
+end
+
+-- Returns new table that contains the keys not present as values in in the given exclude table
+function table.ExcludedKeys(tbl, excludes)
+    if not (tbl and excludes) then return end
+    local new_tbl = {}
+    for k, v in pairs(tbl) do
+        if v and not table.HasValue(excludes, k) then
+            table.insert(new_tbl, k)
+        end
+    end
+    return new_tbl
+end
+
+-- Returns new table that contains the keys that have a truth-y value in the given table
+function table.LookupKeys(tbl)
+    if not tbl then return end
+    local new_tbl = {}
+    for k, v in pairs(tbl) do
+        if v then
+            table.insert(new_tbl, k)
+        end
+    end
+    return new_tbl
+end
+
+-- Returns a new table whose keys are the values of the given table and whose values are all the literal boolean "true"
+-- Used for fast lookups by key
+function table.ToLookup(tbl)
+    if not tbl then return end
+    local new_tbl = {}
+    for _, v in pairs(tbl) do
+        new_tbl[v] = true
+    end
+    return new_tbl
+end
+
 local gsub = string.gsub
 -- Simple string interpolation:
 -- string.Interp("{killer} killed {victim}", {killer = "Bob", victim = "Joe"})

@@ -11,8 +11,14 @@ ROLE.desc = [[]]
 ROLE.team = ROLE_TEAM_
 
 ROLE.shop = nil
-
 ROLE.loadout = {}
+
+ROLE.startingcredits = nil
+
+ROLE.startinghealth = nil
+ROLE.maxhealth = nil
+
+ROLE.translations = {}
 
 ROLE.convars = {}
 

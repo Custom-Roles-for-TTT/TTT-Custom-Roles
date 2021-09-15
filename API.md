@@ -6,6 +6,7 @@
 1. [Methods](#Methods)
    1. [Global](#Global)
    1. [Player](#Player)
+   1. [Table](#Table)
 1. [Hooks](#Hooks)
 1. [SWEPs](#SWEPs)
    1. [SWEP Properties](#SWEP-Properties)
@@ -265,6 +266,12 @@ Methods available globally (within the defined realm)
 *Parameters:*
 - *ply* - The target player
 
+**ShouldHideJesters(ply)** - Whether the target player should hide a jester player's role (in radar, on the scoreboard, in target ID, etc.).\
+*Realm:* Client and Server\
+*Added in:* 1.2.3\
+*Parameters:*
+- *ply* - The target player
+
 **StartsWithVowel(str)** - Whether the given string starts with a vowel.\
 *Realm:* Client and Server\
 *Added in:* 1.0.8
@@ -457,20 +464,62 @@ Variables available when called from a Player object (within the defined realm)
 *Realm:* Server\
 *Added in:* 1.1.9\
 *Parameters:*
-- *team* - Which team to choose a role from (see ROLE_TEAM_* global enumeration).
+- *team* - Which team to choose a role from (see ROLE_TEAM_* global enumeration)
 
 **plymeta:DrunkRememberRole(role)** - Sets the drunk's role and runs required checks for that role.\
 *Realm:* Server\
 *Added in:* 1.1.9\
 *Parameters:*
-- *role* - Which role to set the drunk to (see ROLE_* global enumeration).
+- *role* - Which role to set the drunk to (see ROLE_* global enumeration)
 
 **plymeta:StripRoleWeapons()** - Strips all weapons from the player whose `Category` property matches the global `WEAPON_CATEGORY_ROLE` value.\
 *Realm:* Client and Server\
 *Added in:* 1.0.5
 
+### *Table*
+Methods created to help with the manipulation of tables
+
+**table.ExcludedKeys(tbl, excludes)** - Returns new table that contains the keys not present as values in in the given exclude table.\
+*Realm:* Client and Server\
+*Added in:* 1.2.3
+*Parameters:*
+- *tbl* - The table whose keys are being inspected
+- *excludes* - Table of values to exclude
+
+**table.IntersectedKeys(first_tbl, second_tbl, excludes)** - Returns new table that contains the keys that are only present in both given tables, excluding those which appear as values in the given exclude table (if it is given).\
+*Realm:* Client and Server\
+*Added in:* 1.2.3
+*Parameters:*
+- *first_tbl* - The first table whose keys are being intersected
+- *second_tbl* - The second table whose keys are being intersected
+- *excludes* - Table of values to exclude from the intersect. (Optional)
+
+**table.LookupKeys(tbl)** - Returns new table that contains the keys that have a truth-y value in the given table.\
+*Realm:* Client and Server\
+*Added in:* 1.2.3
+*Parameters:*
+- *tbl* - The table whose keys are being inspected
+
+**table.ToLookup(tbl)** - Returns a new table whose keys are the values of the given table and whose values are all the literal boolean `true`. Used for fast lookups by key.\
+*Realm:* Client and Server\
+*Added in:* 1.2.3
+*Parameters:*
+- *tbl* - The table whose keys are being inspected
+
+**table.UnionedKeys(first_tbl, second_tbl, excludes)** - Returns new table that contains a combination of the keys present in first table and the second table, excluding those which appear as values in the given exclude table (if it is given).\
+*Realm:* Client and Server\
+*Added in:* 1.2.3
+*Parameters:*
+- *first_tbl* - The first table whose keys are being unioned
+- *second_tbl* - The second table whose keys are being unioned
+- *excludes* - Table of values to exclude from the union. (Optional)
+
 ## Hooks
 Custom and modified event hooks available within the defined realm
+
+***NOTE:*** When using a hook with multiple return values, you *must* return a non-`nil` value for all properties up to the one(s) you are modifying or the hook results will be ignored entirely.
+
+For example, if there is a hook that returns three parameters: `first`, `second`, and `third` and you want to modify the `second` parameter you must return the `first` parameter as non-`nil` as well, like this: `return first, newSecond`. Any return parameters after `second` can be omitted and the default value will be used.
 
 **TTTCanIdentifyCorpse(ply, rag, wasTraitor)** - Changed `was_traitor` parameter to be `true` for any member of the traitor team, rather than just the traitor role.\
 *Realm:* Server\
@@ -490,6 +539,27 @@ Custom and modified event hooks available within the defined realm
 
 *Return:* `true` if the default print messages should be skipped (Defaults to `false`).
 
+**TTTRadarPlayerRender(client, tgt, color, hidden)** - Called before a target's radar ping is rendered, allowing the color and whether the ping should be shown to be changed.\
+*Realm:* Client\
+*Added in:* 1.2.3\
+*Parameters:*
+- *client* - The local player
+- *tgt* - The target player's radar data. Can contain the following properties:
+  - `pos` - The target's position
+  - `role` - The target's role, if any
+  - `was_beggar` - If the target was a beggar but was converted to another role
+  - `killer_clown_active` - whether the target is a Clown that has been activated
+  - `sid64` - The [SteamID64](https://wiki.facepunch.com/gmod/Player:SteamID64) value of the target
+  - The following properties can be added (only one or the other) to `tgt` to change what is displayed with the radar ping
+    - `nick` - A string value that will be shown under the radar ping circle
+    - `t` - A time number value that will be calculated as the difference from "now" and shown in the "##:##" format
+- *color* - The color that would normally be used for the radar ping for the target, if any
+- *hidden* - Whether the radar ping for the target would normally be hidden
+
+*Return:*
+- *color* - The new color value to use or the original passed into the hook
+- *hidden* - The new hidden value to use or the original passed into the hook
+
 **TTTScoreboardPlayerName(ply, client, currentName)** - Called before a player's row in the scoreboard (tab menu) is shown, allowing the name to be changed.\
 *Realm:* Client\
 *Added in:* 1.1.9\
@@ -507,7 +577,7 @@ Custom and modified event hooks available within the defined realm
 *Parameters:*
 - *ply* - The player being rendered
 - *client* - The local player
-- *color* - The background color to use
+- *color* - The background [Color](https://wiki.facepunch.com/gmod/Global.Color) to use
 - *roleFileName* - The portion of the scoring icon path that indicates which role it belongs to. Used in the following icon path pattern: "vgui/ttt/tab_{roleFileName}.png"
 
 *Return:*
@@ -515,23 +585,21 @@ Custom and modified event hooks available within the defined realm
 - *roleFileName* - The new roleFileName value to use or the original passed into the hook
 - *flashRole* - If a valid role is provided, this will cause the target player's scoreboard role to have a flashing border in the given role's color (see ROLE_* global enumeration)
 
-*NOTE:* You must return a non-*nil* value for all of the properties or the hook results will be ignored
-
-**TTTScoringSummaryRender(ply, roleFileName, groupingRole, roleColor)** - Called before the round summary screen is shown. Used to modify the color, position, and icon for a player.\
+**TTTScoringSummaryRender(ply, roleFileName, groupingRole, roleColor, nameLabel)** - Called before the round summary screen is shown. Used to modify the color, position, and icon for a player.\
 *Realm:* Client\
 *Added in:* 1.1.5\
 *Parameters:*
 - *ply* - The player being rendered
 - *roleFileName* - The portion of the scoring icon path that indicates which role it belongs to. Used in the following icon path pattern: "vgui/ttt/score_{roleFileName}.png"
 - *groupingRole* - The role to use when determining the section to of the summary screen to put this player in
-- *roleColor* - The background color to use behind the role icon
+- *roleColor* - The background [Color](https://wiki.facepunch.com/gmod/Global.Color) to use behind the role icon
+- *nameLabel* - The name that is going to be used for this player on the round summary *(Added in 1.2.3)*
 
 *Return:*
 - *roleFileName* - The new roleFileName value to use or the original passed into the hook
 - *groupingRole* - The new groupingRole value to use or the original passed into the hook
 - *roleColor* - The new roleColor value to use or the original passed into the hook
-
-*NOTE:* You must return a non-*nil* value for all of the properties or the hook results will be ignored
+- *newName* - The new nameLabel value to use for the original passed into the hook *(Added in 1.2.3)*
 
 **TTTScoringWinTitle(wintype, wintitles, title, secondaryWinRole)** - Called before each round summary screen is shown with the winning team. Return the win title object to use on the summary screen.\
 *Realm:* Client\
@@ -545,11 +613,9 @@ Custom and modified event hooks available within the defined realm
 *Return:*
 - *newTitle*
   - *txt* - The translation string to use to get the winning team text
-  - *c* - The background color to use
+  - *c* - The background [Color](https://wiki.facepunch.com/gmod/Global.Color) to use
   - *params* - Any parameters to use when translating `txt` (Optional if `new_secondary_win_role` is also omitted)
 - *newSecondaryWinRole* - Which role should share in the win for this round (see ROLE_* global enumeration) (Optional) *(Added in 1.1.9)*
-
-*NOTE:* You must return a non-*nil* value for all of the properties or the hook results will be ignored
 
 **TTTSelectRoles(choices, prevRoles)** - Called before players are randomly assigned roles. If a player is assigned a role during this hook, they will not be randomly assigned one later.\
 *Realm:* Server\
@@ -557,6 +623,85 @@ Custom and modified event hooks available within the defined realm
 *Parameters:*
 - *choices* - The table of players who will be assigned roles
 - *prevRoles* - The table whose keys are role numbers and values are tables of players who had that role last round
+
+**TTTSelectRolesDetectiveOptions(roleTable, choices, choiceCount, traitors, traitorCount)** - Called before players are assigned a detective role, allowing the available roles and their weights (how many times they appear in the table) to be manipulated.\
+*Realm:* Server\
+*Added in:* 1.2.3\
+*Parameters:*
+- *roleTable* - The table of roles representing the available detective roles and their weight (how many times they appear in the table). This table should be manipulated to effect change
+- *choices* - The table of available player choices that will not be (and have not already been) assigned a traitor or detective role. Manipulating this table will have no effect
+- *choiceCount* - The total number of player choices there are
+- *traitors* - The table of available player choices that will be (or have already been) assigned a traitor role. Manipulating this table will have no effect
+- *traitorCount* - The number of players that will be (or have already been) assigned a traitor role
+- *detectives* - The table of available player choices that will be (or have already been) assigned a detective role. Manipulating this table will have no effect
+- *detectiveCount* - The number of players that will be (or have already been) assigned a detective role
+
+**TTTSelectRolesIndependentOptions(roleTable, choices, choiceCount, traitors, traitorCount)** - Called before players are assigned a independent role, allowing the available roles and their weights (how many times they appear in the table) to be manipulated.\
+*Realm:* Server\
+*Added in:* 1.2.3\
+*Parameters:*
+- *roleTable* - The table of roles representing the available independent roles and their weight (how many times they appear in the table). This table should be manipulated to effect change
+- *choices* - The table of available player choices that will not be (and have not already been) assigned a traitor or detective role. Manipulating this table will have no effect
+- *choiceCount* - The total number of player choices there are
+- *traitors* - The table of available player choices that will be (or have already been) assigned a traitor role. Manipulating this table will have no effect
+- *traitorCount* - The number of players that will be (or have already been) assigned a traitor role
+- *detectives* - The table of available player choices that will be (or have already been) assigned a detective role. Manipulating this table will have no effect
+- *detectiveCount* - The number of players that will be (or have already been) assigned a detective role
+
+**TTTSelectRolesInnocentOptions(roleTable, choices, choiceCount, traitors, traitorCount)** - Called before players are assigned an innocent role, allowing the available roles and their weights (how many times they appear in the table) to be manipulated.\
+*Realm:* Server\
+*Added in:* 1.2.3\
+*Parameters:*
+- *roleTable* - The table of roles representing the available innocent roles and their weight (how many times they appear in the table). This table should be manipulated to effect change
+- *choices* - The table of available player choices that will not be (and have not already been) assigned a traitor or detective role. Manipulating this table will have no effect
+- *choiceCount* - The total number of player choices there are
+- *traitors* - The table of available player choices that will be (or have already been) assigned a traitor role. Manipulating this table will have no effect
+- *traitorCount* - The number of players that will be (or have already been) assigned a traitor role
+- *detectives* - The table of available player choices that will be (or have already been) assigned a detective role. Manipulating this table will have no effect
+- *detectiveCount* - The number of players that will be (or have already been) assigned a detective role
+
+**TTTSelectRolesJesterOptions(roleTable, choices, choiceCount, traitors, traitorCount)** - Called before players are assigned a jester role, allowing the available roles and their weights (how many times they appear in the table) to be manipulated.\
+*Realm:* Server\
+*Added in:* 1.2.3\
+*Parameters:*
+- *roleTable* - The table of roles representing the available jester roles and their weight (how many times they appear in the table). This table should be manipulated to effect change
+- *choices* - The table of available player choices that will not be (and have not already been) assigned a traitor or detective role. Manipulating this table will have no effect
+- *choiceCount* - The total number of player choices there are
+- *traitors* - The table of available player choices that will be (or have already been) assigned a traitor role. Manipulating this table will have no effect
+- *traitorCount* - The number of players that will be (or have already been) assigned a traitor role
+- *detectives* - The table of available player choices that will be (or have already been) assigned a detective role. Manipulating this table will have no effect
+- *detectiveCount* - The number of players that will be (or have already been) assigned a detective role
+
+**TTTSelectRolesMonsterOptions(roleTable, choices, choiceCount, traitors, traitorCount)** - Called before players are assigned a monster role, allowing the available roles and their weights (how many times they appear in the table) to be manipulated.\
+*Realm:* Server\
+*Added in:* 1.2.3\
+*Parameters:*
+- *roleTable* - The table of roles representing the available monster roles and their weight (how many times they appear in the table). This table should be manipulated to effect change
+- *choices* - The table of available player choices that will not be (and have not already been) assigned a traitor or detective role. Manipulating this table will have no effect
+- *choiceCount* - The total number of player choices there are
+- *traitors* - The table of available player choices that will be (or have already been) assigned a traitor role. Manipulating this table will have no effect
+- *traitorCount* - The number of players that will be (or have already been) assigned a traitor role
+- *detectives* - The table of available player choices that will be (or have already been) assigned a detective role. Manipulating this table will have no effect
+- *detectiveCount* - The number of players that will be (or have already been) assigned a detective role
+
+**TTTSelectRolesTraitorOptions(roleTable, choices, choiceCount, traitors, traitorCount)** - Called before players are assigned a traitor role, allowing the available roles and their weights (how many times they appear in the table) to be manipulated.\
+*Realm:* Server\
+*Added in:* 1.2.3\
+*Parameters:*
+- *roleTable* - The table of roles representing the available traitor roles and their weight (how many times they appear in the table). This table should be manipulated to effect change
+- *choices* - The table of available player choices that will not be (and have not already been) assigned a traitor or detective role. Manipulating this table will have no effect
+- *choiceCount* - The total number of player choices there are
+- *traitors* - The table of available player choices that will be (or have already been) assigned a traitor role. Manipulating this table will have no effect
+- *traitorCount* - The number of players that will be (or have already been) assigned a traitor role
+- *detectives* - The table of available player choices that will be (or have already been) assigned a detective role. Manipulating this table will have no effect
+- *detectiveCount* - The number of players that will be (or have already been) assigned a detective role
+
+**TTTSpeedMultiplier(ply, mults)** - Called when determining what speed the player should be moving at.\
+*Realm:* Client and Server\
+*Added in:* 1.0.0\
+*Parameters:*
+- *ply* - The target player
+- *mults* - The table of speed multipliers that should be applied to this player. Insert any multipliers you would like to apply to the target player into this table
 
 **TTTSprintStaminaPost(ply, stamina, sprintTimer, consumption)** - Called after a player's sprint stamina is reduced. Return value is the new stamina value for the player.\
 *Realm:* Client\
@@ -580,6 +725,18 @@ Custom and modified event hooks available within the defined realm
 
 *Return:* `true` if the kill icon should be shown or `false` if not. Returning nothing or a non-boolean value will default to the given *showKillIcon* value.
 
+**TTTTargetIDPlayerRing(ent, client, ringVisible)** - Called before a player Target ID ring (shown when you look at a player) is rendered.\
+*Realm:* Client\
+*Added in:* 1.2.3\
+*Parameters:*
+- *ent* - The target entity being rendered. Not necessarily a player so be sure to check `ent:IsPlayer()` if needed
+- *client* - The local player
+- *ringVisible* - Whether the ring would normally be visible for this target
+
+*Return:*
+- *newVisible* - The new ringVisible value to use or the original passed into the hook
+- *colorOverride* - The [Color](https://wiki.facepunch.com/gmod/Global.Color) to use for the ring. Return `false` if you don't want to override the color. *NOTE:* For some reason colors that are near-black do not render so try a lighter color if you are having trouble
+
 **TTTTargetIDPlayerRoleIcon(ply, client, role, noZ, colorRole, hideBeggar, showJester)** - Called before player Target ID icon (over their head) is rendered allowing changing the icon and color shown.\
 *Realm:* Client\
 *Added in:* 1.1.9\
@@ -593,11 +750,9 @@ Custom and modified event hooks available within the defined realm
 - *showJester* - Whether the target is a jester and the local player would normally know that
 
 *Return:*
-- *role* - The new role value to use or the original passed into the hook
+- *role* - The new role value to use or the original passed into the hook. Return `false` to stop the icon from being rendered
 - *noZ* - The new noZ value to use or the original passed into the hook. *NOTE:* The matching icon .vmt for this flag needs to exist. If *noZ* is `true`, a "sprite\_{ROLESHORTNAME}\_noz.vmt" file must exist and if *noZ* is `false`, a "sprite_{ROLESHORTNAME}.vmt" file must exist
 - *colorRole* - The new colorRole value to use or the original passed into the hook
-
-*NOTE:* You must return a non-*nil* value for all of the properties or the hook results will be ignored
 
 **TTTTargetIDPlayerText(ent, client, text, clr, secondaryText)** - Called before player Target ID text (shown when you look at a player) is rendered.\
 *Realm:* Client\
@@ -610,11 +765,9 @@ Custom and modified event hooks available within the defined realm
 - *secondaryText* - The second line of text being shown
 
 *Return:*
-- *text* - The new text value to use or the original passed into the hook
+- *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
 - *clr* - The new clr value to use or the original passed into the hook
 - *secondaryText* - The new secondaryText value to use or the original passed into the hook
-
-*NOTE:* You must return a non-*nil* value for all of the properties or the hook results will be ignored
 
 ## SWEPs
 Changes made to SWEPs (the data structure used when defining new weapons)

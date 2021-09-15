@@ -81,6 +81,8 @@ Event(EVENT_FINISH,
                      return T("ev_win_monster")
                   elseif e.win == WIN_ZOMBIE then
                      return PT("ev_win_zombie", { role = ROLE_STRINGS[ROLE_ZOMBIE]:lower() })
+                  elseif e.win == WIN_VAMPIRE then
+                     return PT("ev_win_vampire", { role = ROLE_STRINGS_PLURAL[ROLE_VAMPIRE]:lower() })
                   elseif e.win == WIN_TIMELIMIT then
                      return PT("ev_win_time", { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]:lower() })
                   end
@@ -112,6 +114,8 @@ Event(EVENT_FINISH,
                      end
                   elseif e.win == WIN_ZOMBIE then
                      role_string = ROLE_STRINGS_PLURAL[ROLE_ZOMBIE]
+                  elseif e.win == WIN_VAMPIRE then
+                     role_string = ROLE_STRINGS_PLURAL[ROLE_VAMPIRE]
                   else
                      win_string = "ev_win_icon_time"
                   end

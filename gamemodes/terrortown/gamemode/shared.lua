@@ -1,5 +1,5 @@
 -- Version string for display and function for version checks
-CR_VERSION = "1.2.2"
+CR_VERSION = "1.2.3"
 
 function CRVersion(version)
     local installedVersionRaw = string.Split(CR_VERSION, ".")
@@ -34,7 +34,7 @@ end
 GM.Name = "Trouble in Terrorist Town"
 GM.Author = "Bad King Urgrain"
 GM.Website = "ttt.badking.net"
-GM.Version = "Custom Roles for TTT - " .. CR_VERSION
+GM.Version = "Custom Roles for TTT v" .. CR_VERSION
 
 GM.Customized = false
 
@@ -302,18 +302,24 @@ if CLIENT then
         return ModifyColor(c or COLOR_WHITE, type)
     end
 else
-    function CreateShopConVars(role)
-        local rolestring = ROLE_STRINGS_RAW[role]
+    function CreateCreditConVar(role)
         -- Add explicit ROLE_INNOCENT exclusion here in case shop-for-all is enabled
         if not DEFAULT_ROLES[role] or role == ROLE_INNOCENT then
+            local rolestring = ROLE_STRINGS_RAW[role]
             local credits = "0"
-            if TRAITOR_ROLES[role] then credits = "1"
+            if EXTERNAL_ROLE_STARTING_CREDITS[role] then credits = EXTERNAL_ROLE_STARTING_CREDITS[role]
+            elseif TRAITOR_ROLES[role] then credits = "1"
             elseif DETECTIVE_ROLES[role] then credits = "1"
             elseif role == ROLE_MERCENARY then credits = "1"
             elseif role == ROLE_KILLER then credits = "2"
             elseif role == ROLE_DOCTOR then credits = "1" end
             CreateConVar("ttt_" .. rolestring .. "_credits_starting", credits, FCVAR_REPLICATED)
         end
+    end
+
+    function CreateShopConVars(role)
+        local rolestring = ROLE_STRINGS_RAW[role]
+        CreateCreditConVar(role)
 
         CreateConVar("ttt_" .. rolestring .. "_shop_random_percent", "0", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown for the " .. rolestring, 0, 100)
         CreateConVar("ttt_" .. rolestring .. "_shop_random_enabled", "0", FCVAR_REPLICATED, "Whether shop randomization should run for the " .. rolestring)
@@ -613,10 +619,13 @@ ROLE_TEAM_INDEPENDENT = 3
 ROLE_TEAM_MONSTER = 4
 ROLE_TEAM_DETECTIVE = 5
 
-EXTERNAL_ROLE_DESCRIPTIONS = {}
+EXTERNAL_ROLE_TRANSLATIONS = {}
 EXTERNAL_ROLE_SHOP_ITEMS = {}
 EXTERNAL_ROLE_LOADOUT_ITEMS = {}
 EXTERNAL_ROLE_CONVARS = {}
+EXTERNAL_ROLE_STARTING_CREDITS = {}
+EXTERNAL_ROLE_STARTING_HEALTH = {}
+EXTERNAL_ROLE_MAX_HEALTH = {}
 
 ROLE_CONVAR_TYPE_NUM = 0
 ROLE_CONVAR_TYPE_BOOL = 1
@@ -665,11 +674,36 @@ function RegisterRole(tbl)
         AddRoleAssociations(INNOCENT_ROLES, {roleID})
     end
 
-    EXTERNAL_ROLE_DESCRIPTIONS[roleID] = tbl.desc
+    -- Allow roles to have translations automatically added for them
+    if type(tbl.translations) == "table" then
+        EXTERNAL_ROLE_TRANSLATIONS[roleID] = tbl.translations
+    else
+        EXTERNAL_ROLE_TRANSLATIONS[roleID] = {}
+    end
+
+    -- Ensure that at least english is present
+    if not EXTERNAL_ROLE_TRANSLATIONS[roleID]["english"] then
+        EXTERNAL_ROLE_TRANSLATIONS[roleID]["english"] = {}
+    end
+
+    -- Create the role description translation automatically
+    EXTERNAL_ROLE_TRANSLATIONS[roleID]["english"]["info_popup_" .. tbl.nameraw] = tbl.desc
 
     if tbl.shop then
         EXTERNAL_ROLE_SHOP_ITEMS[roleID] = tbl.shop
         AddRoleAssociations(SHOP_ROLES, {roleID})
+    end
+
+    if type(tbl.startingcredits) == "number" then
+        EXTERNAL_ROLE_STARTING_CREDITS[roleID] = tbl.startingcredits
+    end
+
+    if type(tbl.startinghealth) == "number" then
+        EXTERNAL_ROLE_STARTING_HEALTH[roleID] = tbl.startinghealth
+    end
+
+    if type(tbl.maxhealth) == "number" then
+        EXTERNAL_ROLE_MAX_HEALTH[roleID] = tbl.maxhealth
     end
 
     if type(tbl.canlootcredits) == "boolean" then
@@ -755,6 +789,7 @@ WIN_OLDMAN = 7
 WIN_KILLER = 8
 WIN_ZOMBIE = 9
 WIN_MONSTER = 10
+WIN_VAMPIRE = 11
 
 -- Weapon categories, you can only carry one of each
 WEAPON_NONE = 0
@@ -1045,9 +1080,17 @@ function UpdateRoleState()
     INDEPENDENT_ROLES[ROLE_ZOMBIE] = not zombies_are_monsters and not zombies_are_traitors
 
     local vampires_are_monsters = GetGlobalBool("ttt_vampires_are_monsters", false)
+    -- Vampires cannot be both Monsters and Independents so don't make them Independents if they are already Monsters
+    local vampires_are_independent = not vampires_are_monsters and GetGlobalBool("ttt_vampires_are_independent", false)
     MONSTER_ROLES[ROLE_VAMPIRE] = vampires_are_monsters
-    TRAITOR_ROLES[ROLE_VAMPIRE] = not vampires_are_monsters
+    TRAITOR_ROLES[ROLE_VAMPIRE] = not vampires_are_monsters and not vampires_are_independent
+    INDEPENDENT_ROLES[ROLE_VAMPIRE] = vampires_are_independent
 
+    local bodysnatchers_are_independent = GetGlobalBool("ttt_bodysnatchers_are_independent", false)
+    INDEPENDENT_ROLES[ROLE_BODYSNATCHER] = bodysnatchers_are_independent
+    JESTER_ROLES[ROLE_BODYSNATCHER] = not bodysnatchers_are_independent
+
+    -- Role Features
     local glitch_use_traps = GetGlobalBool("ttt_glitch_use_traps", false)
     CAN_LOOT_CREDITS_ROLES[ROLE_GLITCH] = glitch_use_traps
     TRAITOR_BUTTON_ROLES[ROLE_GLITCH] = glitch_use_traps
@@ -1084,6 +1127,17 @@ function GetWinningMonsterRole()
     end
     -- Otherwise just use the "Monsters" team name
     return nil
+end
+
+function ShouldHideJesters(p)
+    if p:IsTraitorTeam() then
+        return not GetGlobalBool("ttt_jesters_visible_to_traitors", false)
+    elseif p:IsMonsterTeam() then
+        return not GetGlobalBool("ttt_jesters_visible_to_monsters", false)
+    elseif p:IsIndependentTeam() then
+        return not GetGlobalBool("ttt_jesters_visible_to_independents", false)
+    end
+    return true
 end
 
 if SERVER then

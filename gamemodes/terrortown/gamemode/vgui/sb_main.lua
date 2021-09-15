@@ -123,7 +123,7 @@ _G.sboard_sort = {
 function PANEL:Init()
 
     self.hostdesc = vgui.Create("DLabel", self)
-    self.hostdesc:SetText(GetTranslation("sb_playing"))
+    self.hostdesc:SetText(GetPTranslation("sb_playing", { version = GAMEMODE.Version }))
     self.hostdesc:SetContentAlignment(9)
 
     self.hostname = vgui.Create("DLabel", self)

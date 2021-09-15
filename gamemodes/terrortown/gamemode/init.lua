@@ -102,11 +102,16 @@ for role = 0, ROLE_MAX do
         CreateConVar("ttt_drunk_can_be_" .. rolestring, "1", FCVAR_REPLICATED)
     end
 
-    local health = "100"
-    if role == ROLE_OLDMAN then health = "1"
-    elseif role == ROLE_KILLER then health = "150" end
-    CreateConVar("ttt_" .. rolestring .. "_starting_health", health, FCVAR_REPLICATED)
-    CreateConVar("ttt_" .. rolestring .. "_max_health", health, FCVAR_REPLICATED)
+    local starting_health = "100"
+    if role == ROLE_OLDMAN then starting_health = "1"
+    elseif role == ROLE_KILLER then starting_health = "150"
+    elseif EXTERNAL_ROLE_STARTING_HEALTH[role] then starting_health = EXTERNAL_ROLE_STARTING_HEALTH[role] end
+
+    local max_health = nil
+    if EXTERNAL_ROLE_MAX_HEALTH[role] then max_health = EXTERNAL_ROLE_MAX_HEALTH[role] end
+
+    CreateConVar("ttt_" .. rolestring .. "_starting_health", starting_health, FCVAR_REPLICATED)
+    CreateConVar("ttt_" .. rolestring .. "_max_health", max_health or starting_health, FCVAR_REPLICATED)
     CreateConVar("ttt_" .. rolestring .. "_name", "", FCVAR_REPLICATED)
     CreateConVar("ttt_" .. rolestring .. "_name_plural", "", FCVAR_REPLICATED)
     CreateConVar("ttt_" .. rolestring .. "_name_article", "", FCVAR_REPLICATED)
@@ -153,6 +158,7 @@ CreateConVar("ttt_assassin_failed_damage_penalty", "0.5")
 CreateConVar("ttt_assassin_shop_roles_last", "0")
 
 CreateConVar("ttt_vampires_are_monsters", "0")
+CreateConVar("ttt_vampires_are_independent", "0")
 CreateConVar("ttt_vampire_show_target_icon", "0")
 CreateConVar("ttt_vampire_damage_reduction", "0")
 CreateConVar("ttt_vampire_prime_death_mode", "0")
@@ -246,6 +252,7 @@ CreateConVar("ttt_beggar_notify_mode", "0", FCVAR_NONE, "The logic to use when n
 CreateConVar("ttt_beggar_notify_sound", "0")
 CreateConVar("ttt_beggar_notify_confetti", "0")
 
+CreateConVar("ttt_bodysnatchers_are_independent", "0")
 CreateConVar("ttt_bodysnatcher_destroy_body", "0")
 CreateConVar("ttt_bodysnatcher_show_role", "1")
 
@@ -321,11 +328,19 @@ cvars.AddChangeCallback("ttt_shop_for_all", function(convar, oldValue, newValue)
     SetGlobalBool("ttt_shop_for_all", enabled)
 end)
 
-for _, role in ipairs(GetTeamRoles(SHOP_ROLES)) do
+local shop_roles = GetTeamRoles(SHOP_ROLES)
+for _, role in ipairs(shop_roles) do
     CreateShopConVars(role)
 end
+
 CreateConVar("ttt_shop_random_percent", "50", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown by default", 0, 100)
 CreateConVar("ttt_shop_random_position", "0", FCVAR_REPLICATED, "Whether to randomize the position of the items in the shop")
+
+-- Create the starting credit convar for all roles that have credits but don't have a shop
+local shopless_credit_roles = table.ExcludedKeys(EXTERNAL_ROLE_STARTING_CREDITS, shop_roles)
+for _, role in ipairs(shopless_credit_roles) do
+    CreateCreditConVar(role)
+end
 
 -- Other
 CreateConVar("ttt_use_weapon_spawn_scripts", "1")
@@ -447,7 +462,7 @@ OldCVarWarning("ttt_shop_mer_mode", "ttt_mercenary_shop_mode")
 CreateConVar("ttt_shop_clo_mode", "0")
 OldCVarWarning("ttt_shop_clo_mode", "ttt_clown_shop_mode")
 
-for _, role in ipairs(GetTeamRoles(SHOP_ROLES)) do
+for _, role in ipairs(shop_roles) do
     local shortstring = ROLE_STRINGS_SHORT[role]
     local rolestring = ROLE_STRINGS_RAW[role]
     CreateConVar("ttt_shop_random_" .. shortstring .. "_percent", "0", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown for the " .. rolestring, 0, 100)
@@ -682,6 +697,7 @@ function GM:SyncGlobals()
     SetGlobalBool("ttt_impersonator_use_detective_icon", GetConVar("ttt_impersonator_use_detective_icon"):GetBool())
 
     SetGlobalBool("ttt_vampires_are_monsters", GetConVar("ttt_vampires_are_monsters"):GetBool())
+    SetGlobalBool("ttt_vampires_are_independent", GetConVar("ttt_vampires_are_independent"):GetBool())
     SetGlobalBool("ttt_vampire_show_target_icon", GetConVar("ttt_vampire_show_target_icon"):GetBool())
     SetGlobalBool("ttt_vampire_vision_enable", GetConVar("ttt_vampire_vision_enable"):GetBool())
 
@@ -709,6 +725,8 @@ function GM:SyncGlobals()
 
     SetGlobalBool("ttt_clown_show_target_icon", GetConVar("ttt_clown_show_target_icon"):GetBool())
     SetGlobalBool("ttt_clown_hide_when_active", GetConVar("ttt_clown_hide_when_active"):GetBool())
+
+    SetGlobalBool("ttt_bodysnatchers_are_independent", GetConVar("ttt_bodysnatchers_are_independent"):GetBool())
 
     SetGlobalBool("ttt_bem_allow_change", GetConVar("ttt_bem_allow_change"):GetBool())
     SetGlobalInt("ttt_bem_sv_cols", GetConVar("ttt_bem_sv_cols"):GetBool())
@@ -1372,13 +1390,13 @@ function BeginRound()
     GAMEMODE.DamageLog = {}
     GAMEMODE.RoundStartTime = CurTime()
 
-    local zombies_are_monsters = MONSTER_ROLES[ROLE_ZOMBIE]
-    local vampires_are_monsters = MONSTER_ROLES[ROLE_VAMPIRE]
-    LoadMonsterEquipment(zombies_are_monsters, vampires_are_monsters)
+    local zombies_are_traitors = TRAITOR_ROLES[ROLE_ZOMBIE]
+    local vampires_are_traitors = TRAITOR_ROLES[ROLE_VAMPIRE]
+    LoadMonsterEquipment(zombies_are_traitors, vampires_are_traitors)
     -- Send the status to the client because at this point the globals haven't synced
     net.Start("TTT_LoadMonsterEquipment")
-    net.WriteBool(zombies_are_monsters)
-    net.WriteBool(vampires_are_monsters)
+    net.WriteBool(zombies_are_traitors)
+    net.WriteBool(vampires_are_traitors)
     net.Broadcast()
 
     -- Sound start alarm
@@ -1417,6 +1435,14 @@ function PrintResultMessage(type)
     elseif type == WIN_KILLER then
         LANG.Msg("win_killer", { role = ROLE_STRINGS_PLURAL[ROLE_KILLER] })
         ServerLog("Result: " .. ROLE_STRINGS[ROLE_KILLER] .. " wins.\n")
+    elseif type == WIN_ZOMBIE then
+        local plural = ROLE_STRINGS_PLURAL[ROLE_ZOMBIE]
+        LANG.Msg("win_zombies", { role = plural })
+        ServerLog("Result: " .. plural .. " win.\n")
+    elseif type == WIN_VAMPIRE then
+        local plural = ROLE_STRINGS_PLURAL[ROLE_VAMPIRE]
+        LANG.Msg("win_vampires", { role = plural })
+        ServerLog("Result: " .. plural .. " win.\n")
     elseif type == WIN_MONSTER then
         local monster_role = GetWinningMonsterRole()
         -- If it wasn't a special kind of monster that won (zombie or vampire) use the "Monsters Win" label
@@ -1539,6 +1565,7 @@ function GM:TTTCheckForWin()
     local oldman_alive = false
     local killer_alive = false
     local zombie_alive = false
+    local vampire_alive = false
     local monster_alive = false
 
     local killer_clown_active = false
@@ -1562,6 +1589,8 @@ function GM:TTTCheckForWin()
                 killer_alive = true
             elseif v:IsMadScientist() or (v:IsZombie() and INDEPENDENT_ROLES[ROLE_ZOMBIE]) then
                 zombie_alive = true
+            elseif v:IsVampire() then
+                vampire_alive = true
             end
         -- Handle zombification differently because the player's original role should have no impact on this
         elseif v:GetNWBool("IsZombifying", false) then
@@ -1596,26 +1625,29 @@ function GM:TTTCheckForWin()
     if jester_killed then
         win_type = WIN_JESTER
     -- If everyone is dead the traitors win
-    elseif not innocent_alive and not monster_alive and not killer_alive and not zombie_alive then
+    elseif not innocent_alive and not monster_alive and not killer_alive and not zombie_alive and not vampire_alive then
         win_type = WIN_TRAITOR
     -- If all the "bad" people are dead, innocents win
-    elseif not traitor_alive and not monster_alive and not killer_alive and not zombie_alive then
+    elseif not traitor_alive and not monster_alive and not killer_alive and not zombie_alive and not vampire_alive then
         win_type = WIN_INNOCENT
     -- If the monsters are the only ones left, they win
-    elseif  not innocent_alive and not traitor_alive and not killer_alive and not zombie_alive then
+    elseif not innocent_alive and not traitor_alive and not killer_alive and not zombie_alive and not vampire_alive then
         win_type = WIN_MONSTER
     -- If the killer is the only one left alive, they win
-    elseif not traitor_alive and not innocent_alive and not monster_alive and not zombie_alive and killer_alive then
+    elseif not traitor_alive and not innocent_alive and not monster_alive and not zombie_alive and not vampire_alive and killer_alive then
         win_type = WIN_KILLER
     -- If the zombies are the only ones left, they win
-    elseif not traitor_alive and not innocent_alive and not monster_alive and not killer_alive and zombie_alive then
+    elseif not traitor_alive and not innocent_alive and not monster_alive and not killer_alive and not vampire_alive and zombie_alive then
         win_type = WIN_ZOMBIE
+    -- If the vampires are the only ones left, they win
+    elseif not traitor_alive and not innocent_alive and not monster_alive and not killer_alive and not zombie_alive and vampire_alive then
+        win_type = WIN_VAMPIRE
     end
 
     -- Drunk logic
     if drunk_alive then
         if GetConVar("ttt_drunk_become_clown"):GetBool() then
-            if win_type == WIN_INNOCENT or win_type == WIN_TRAITOR or win_type == WIN_MONSTER or win_type == WIN_KILLER or win_type == WIN_ZOMBIE then
+            if win_type == WIN_INNOCENT or win_type == WIN_TRAITOR or win_type == WIN_MONSTER or win_type == WIN_KILLER or win_type == WIN_ZOMBIE or win_type == WIN_VAMPIRE then
                 if timer.Exists("drunkremember") then timer.Remove("drunkremember") end
                 if timer.Exists("waitfordrunkrespawn") then timer.Remove("waitfordrunkrespawn") end
                 for _, v in ipairs(player.GetAll()) do
@@ -1650,7 +1682,7 @@ function GM:TTTCheckForWin()
 
     -- Clown logic
     if clown_alive then
-        if not killer_clown_active and (win_type == WIN_INNOCENT or win_type == WIN_TRAITOR or win_type == WIN_MONSTER or win_type == WIN_KILLER or win_type == WIN_ZOMBIE) then
+        if not killer_clown_active and (win_type == WIN_INNOCENT or win_type == WIN_TRAITOR or win_type == WIN_MONSTER or win_type == WIN_KILLER or win_type == WIN_ZOMBIE or win_type == WIN_VAMPIRE) then
             for _, v in ipairs(player.GetAll()) do
                 if v:IsClown() then
                     v:SetNWBool("KillerClownActive", true)
@@ -1679,7 +1711,7 @@ function GM:TTTCheckForWin()
                 end
             end
             win_type = WIN_NONE
-        elseif killer_clown_active and not traitor_alive and not innocent_alive and not killer_alive and not monster_alive then
+        elseif killer_clown_active and not traitor_alive and not innocent_alive and not killer_alive and not monster_alive and not zombie_alive and not vampire_alive then
             win_type = WIN_CLOWN
         else
             win_type = WIN_NONE
@@ -1817,7 +1849,7 @@ function SelectRoles()
     local choices_copy = table.Copy(choices)
     local prev_roles_copy = table.Copy(prev_roles)
 
-    hook.Call("TTTSelectRoles", GAMEMODE, choices_copy, prev_roles_copy)
+    hook.Run("TTTSelectRoles", choices_copy, prev_roles_copy)
 
     local forcedTraitorCount = 0
     local forcedSpecialTraitorCount = 0
@@ -1985,8 +2017,27 @@ function SelectRoles()
         end
     end
 
+    -- pick traitors
+    local traitors = {}
+    for _ = 1, traitor_count do
+        if #choices > 0 then
+            local plyPick = math.random(1, #choices)
+            local ply = choices[plyPick]
+            table.insert(traitors, ply)
+            table.remove(choices, plyPick)
+        end
+    end
+
+    -- Copy these tables before they are modified so the hooks can know who the available team members are
+    choices_copy = table.Copy(choices)
+    local traitors_copy = table.Copy(traitors)
+    local detectives_copy = table.Copy(detectives)
+
     -- pick special detectives
     if max_special_detective_count > 0 then
+        -- Allow external addons to modify available roles and their weights
+        hook.Run("TTTSelectRolesDetectiveOptions", specialDetectiveRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+
         for _ = 1, max_special_detective_count do
             if #specialDetectiveRoles ~= 0 and math.random() <= GetConVar("ttt_special_detective_chance"):GetFloat() and #detectives > 0 then
                 local plyPick = math.random(1, #detectives)
@@ -2011,17 +2062,6 @@ function SelectRoles()
         PrintRole(v, ROLE_DETECTIVE)
     end
 
-    -- pick traitors
-    local traitors = {}
-    for _ = 1, traitor_count do
-        if #choices > 0 then
-            local plyPick = math.random(1, #choices)
-            local ply = choices[plyPick]
-            table.insert(traitors, ply)
-            table.remove(choices, plyPick)
-        end
-    end
-
     if ((GetConVar("ttt_zombie_enabled"):GetBool() and math.random() <= GetConVar("ttt_zombie_round_chance"):GetFloat() and (forcedTraitorCount <= 0) and (forcedSpecialTraitorCount <= 0)) or hasRole[ROLE_ZOMBIE]) and TRAITOR_ROLES[ROLE_ZOMBIE] then
         -- This is a zombie round so all traitors become zombies
         for _, v in pairs(traitors) do
@@ -2031,6 +2071,9 @@ function SelectRoles()
     else
         -- pick special traitors
         if max_special_traitor_count > 0 then
+            -- Allow external addons to modify available roles and their weights
+            hook.Run("TTTSelectRolesTraitorOptions", specialTraitorRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+
             for _ = 1, max_special_traitor_count do
                 if #specialTraitorRoles ~= 0 and math.random() <= GetConVar("ttt_special_traitor_chance"):GetFloat() and #traitors > 0 then
                     local plyPick = math.random(1, #traitors)
@@ -2058,6 +2101,10 @@ function SelectRoles()
 
     -- pick independent
     if forcedIndependentCount == 0 and independent_count > 0 and #choices > 0 then
+        -- Allow external addons to modify available roles and their weights
+        hook.Run("TTTSelectRolesIndependentOptions", independentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+        hook.Run("TTTSelectRolesJesterOptions", independentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+
         if #independentRoles ~= 0 then
             local plyPick = math.random(1, #choices)
             local ply = choices[plyPick]
@@ -2079,11 +2126,15 @@ function SelectRoles()
     if max_special_innocent_count > 0 then
         local glitch_mode = GetConVar("ttt_glitch_mode"):GetInt()
         if not hasRole[ROLE_GLITCH] and GetConVar("ttt_glitch_enabled"):GetBool() and choice_count >= GetConVar("ttt_glitch_min_players"):GetInt()
-        and ((glitch_mode == GLITCH_SHOW_AS_TRAITOR and #traitors > 1) or ((glitch_mode == GLITCH_SHOW_AS_SPECIAL_TRAITOR or glitch_mode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES) and traitor_count > 1)) then
+            and ((glitch_mode == GLITCH_SHOW_AS_TRAITOR and #traitors > 1) or ((glitch_mode == GLITCH_SHOW_AS_SPECIAL_TRAITOR or glitch_mode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES) and traitor_count > 1)) then
             for _ = 1, GetConVar("ttt_glitch_spawn_weight"):GetInt() do
                 table.insert(specialInnocentRoles, ROLE_GLITCH)
             end
         end
+
+        -- Allow external addons to modify available roles and their weights
+        hook.Run("TTTSelectRolesInnocentOptions", specialInnocentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+
         for _ = 1, max_special_innocent_count do
             if #specialInnocentRoles ~= 0 and math.random() <= GetConVar("ttt_special_innocent_chance"):GetFloat() and #choices > 0 then
                 local plyPick = math.random(1, #choices)
@@ -2113,6 +2164,9 @@ function SelectRoles()
     if monster_count > 0 then
         local monster_chosen = false
         for _ = 1, monster_count do
+            -- Allow external addons to modify available roles and their weights
+            hook.Run("TTTSelectRolesMonsterOptions", monsterRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+
             if #monsterRoles ~= 0 and math.random() <= GetConVar("ttt_monster_chance"):GetFloat() and #choices > 0 and not monster_chosen then
                 local plyPick = math.random(1, #choices)
                 local ply = choices[plyPick]

@@ -71,12 +71,6 @@ local function GetDetectiveIconRole(is_traitor)
     return ROLE_DEPUTY
 end
 
-local function ShouldHideJesters(p)
-    return (p:IsTraitorTeam() and not GetGlobalBool("ttt_jesters_visible_to_traitors", false)) or
-            (p:IsMonsterTeam() and not GetGlobalBool("ttt_jesters_visible_to_monsters", false)) or
-            (p:IsIndependentTeam() and not GetGlobalBool("ttt_jesters_visible_to_independents", false))
-end
-
 -- using this hook instead of pre/postplayerdraw because playerdraw seems to
 -- happen before certain entities are drawn, which then clip over the sprite
 function GM:PostDrawTranslucentRenderables()
@@ -97,7 +91,7 @@ function GM:PostDrawTranslucentRenderables()
             pos = v:GetPos()
             pos.z = pos.z + v:GetHeight() + 15
 
-            local beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", 1)
+            local beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", BEGGAR_REVEAL_ALL)
             local hideBeggar = v:GetNWBool("WasBeggar", false) and (beggarMode == BEGGAR_REVEAL_NONE or beggarMode == BEGGAR_REVEAL_INNOCENTS)
             local showJester = ((v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) or ((v:GetTraitor() or v:GetInnocent()) and hideBeggar)) and not ShouldHideJesters(client)
             local glitchMode = GetGlobalInt("ttt_glitch_mode", 0)
@@ -382,7 +376,7 @@ function GM:HUDDrawTargetID()
             _, color = util.HealthToString(ent:Health(), ent:GetMaxHealth())
         end
 
-        local beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", 1)
+        local beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", BEGGAR_REVEAL_ALL)
         local hideBeggar = ent:GetNWBool("WasBeggar", false) and (beggarMode == BEGGAR_REVEAL_NONE or beggarMode == BEGGAR_REVEAL_INNOCENTS)
 
         if not hide_roles and GetRoundState() == ROUND_ACTIVE then
@@ -411,6 +405,7 @@ function GM:HUDDrawTargetID()
             elseif client:IsIndependentTeam() then
                 target_zombie = ent:IsZombie() and ent:IsIndependentTeam()
                 target_madscientist = ent:IsMadScientist()
+                target_vampire = ent:IsVampire() and ent:IsIndependentTeam()
 
                 target_jester = showJester
             end
@@ -453,17 +448,24 @@ function GM:HUDDrawTargetID()
 
     local w, h = 0, 0 -- text width/height, reused several times
 
-    if target_traitor or target_special_traitor or target_detective or target_special_detective or target_glitch or target_jester or target_clown or target_zombie or target_vampire then
+    local ring_visible = target_traitor or target_special_traitor or target_detective or target_special_detective or target_glitch or target_jester or target_clown or target_zombie or target_vampire
+
+    local new_visible, color_override = hook.Run("TTTTargetIDPlayerRing", ent, client, ring_visible)
+    if type(new_visible) == "boolean" then ring_visible = new_visible end
+
+    if ring_visible then
         surface.SetTexture(ring_tex)
 
-        if target_traitor then
+        if color_override then
+            surface.SetDrawColor(color_override)
+        elseif target_traitor then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_TRAITOR])
         elseif target_special_traitor then
-            surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_HYPNOTIST])
+            surface.SetDrawColor(GetRoleTeamColor(ROLE_TEAM_TRAITOR, "radar"))
         elseif target_detective then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_DETECTIVE])
         elseif target_special_detective then
-            surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_PALADIN])
+            surface.SetDrawColor(GetRoleTeamColor(ROLE_TEAM_DETECTIVE, "radar"))
         elseif target_glitch then
             if client:IsZombie() and client:IsTraitorTeam() then
                 surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_ZOMBIE])

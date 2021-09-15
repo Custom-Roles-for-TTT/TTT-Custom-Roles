@@ -1377,20 +1377,9 @@ function GM:PlayerDeath(victim, infl, attacker)
         end
         local victim_weapons = GetPlayerWeaponInfo(victim)
 
-        victim:SetRole(attacker:GetRole())
-        attacker:SetRole(ROLE_SWAPPER)
-        attacker:MoveRoleState(victim)
-
-        local health = GetConVar("ttt_swapper_killer_health"):GetInt()
-        if health == 0 then
-            attacker:Kill()
-        else
-            attacker:SetHealth(health)
-        end
-        SendFullStateUpdate()
-
         timer.Simple(0.01, function()
             local body = victim.server_ragdoll or victim:GetRagdollEntity()
+            victim:SetRole(attacker:GetRole())
             victim:SpawnForRound(true)
             victim:SetHealth(GetConVar("ttt_swapper_respawn_health"):GetInt())
             if IsValid(body) then
@@ -1398,7 +1387,17 @@ function GM:PlayerDeath(victim, infl, attacker)
                 victim:SetEyeAngles(Angle(0, body:GetAngles().y, 0))
                 body:Remove()
             end
+
+            attacker:SetRole(ROLE_SWAPPER)
+            attacker:MoveRoleState(victim)
             SendFullStateUpdate()
+
+            local health = GetConVar("ttt_swapper_killer_health"):GetInt()
+            if health == 0 then
+                attacker:Kill()
+            else
+                attacker:SetHealth(health)
+            end
 
             timer.Simple(0.2, function()
                 if weapon_mode == SWAPPER_WEAPON_ALL then
