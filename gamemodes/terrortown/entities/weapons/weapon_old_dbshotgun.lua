@@ -8,7 +8,7 @@ if CLIENT then
 end
 
 SWEP.Base = "weapon_tttbase"
-SWEP.Spawnable = false
+SWEP.Category = WEAPON_CATEGORY_ROLE
 
 SWEP.Kind = WEAPON_HEAVY
 
@@ -22,7 +22,6 @@ SWEP.Primary.DefaultClip = 2
 SWEP.Primary.Automatic = true
 SWEP.Primary.NumShots = 12
 
-SWEP.AutoSpawnable = false
 SWEP.AllowDrop = false
 
 SWEP.UseHands = false
@@ -33,7 +32,7 @@ SWEP.WorldModel = "models/weapons/w_double_barrel_shotgun.mdl"
 SWEP.Primary.Sound = "weapons/ttt/dbsingle.wav"
 SWEP.Primary.Recoil = 15
 SWEP.Secondary.Sound = "weapons/ttt/dbblast.wav"
-SWEP.Secondary.Recoil = 15
+SWEP.Secondary.Recoil = 40
 
 SWEP.IronSightsPos = Vector(0, 0, 0)
 SWEP.IronSightsAng = Vector(0, 0, 0)
@@ -73,7 +72,7 @@ function SWEP:SecondaryAttack(worldsnd)
             sound.Play(self.Secondary.Sound, self:GetPos(), self.Primary.SoundLevel)
         end
 
-        self:ShootBullet(self.Primary.Damage, self.Primary.Recoil, self.Primary.NumShots * 2, self:GetPrimaryCone())
+        self:ShootBullet(self.Primary.Damage, self.Secondary.Recoil, self.Primary.NumShots * 2, self:GetPrimaryCone())
         self:TakePrimaryAmmo(2)
 
         local owner = self.Owner
