@@ -148,6 +148,7 @@ CreateConVar("ttt_traitor_vision_enable", "0")
 
 CreateConVar("ttt_impersonator_damage_penalty", "0")
 CreateConVar("ttt_impersonator_use_detective_icon", "1")
+CreateConVar("ttt_impersonator_without_detective", "0")
 
 CreateConVar("ttt_assassin_show_target_icon", "0")
 CreateConVar("ttt_assassin_target_vision_enable", "0")
@@ -196,6 +197,7 @@ CreateConVar("ttt_revenger_drain_health_to", "-1")
 
 CreateConVar("ttt_deputy_damage_penalty", "0")
 CreateConVar("ttt_deputy_use_detective_icon", "1")
+CreateConVar("ttt_deputy_without_detective", "0")
 
 CreateConVar("ttt_veteran_damage_bonus", "0.5")
 CreateConVar("ttt_veteran_full_heal", "1")
@@ -1940,7 +1942,7 @@ function SelectRoles()
     -- Role exclusion logic also needs to be copied into the drunk role selection logic in player_ext.lua -> plymeta:SoberDrunk
     local rolePredicates = {
         -- Innocents
-        [ROLE_DEPUTY] = function() return detective_count > 0 and not impersonator_only end,
+        [ROLE_DEPUTY] = function() return (detective_count > 0 or GetConVar("ttt_deputy_without_detective"):GetBool()) and not impersonator_only end,
         [ROLE_DOCTOR] = function() return not quack_only end,
         [ROLE_PARAMEDIC] = function() return not hypnotist_only end,
         [ROLE_PHANTOM] = function() return not parasite_only end,
@@ -1949,7 +1951,7 @@ function SelectRoles()
 
         -- Traitors
         [ROLE_HYPNOTIST] = function() return not paramedic_only end,
-        [ROLE_IMPERSONATOR] = function() return detective_count > 0 and not deputy_only end,
+        [ROLE_IMPERSONATOR] = function() return (detective_count > 0 or GetConVar("ttt_impersonator_without_detective"):GetBool()) and not deputy_only end,
         [ROLE_QUACK] = function() return not doctor_only end,
         [ROLE_PARASITE] = function() return not phantom_only end,
 
