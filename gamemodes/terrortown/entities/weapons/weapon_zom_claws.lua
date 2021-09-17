@@ -98,7 +98,7 @@ function SWEP:PlayPunchAnimation()
 end
 
 function SWEP:ShouldConvert()
-    local chance = seld:GetOwner():IsZombiePrime() and zombie_prime_convert_chance:GetFloat() or zombie_thrall_convert_chance:GetFloat()
+    local chance = self:GetOwner():IsZombiePrime() and zombie_prime_convert_chance:GetFloat() or zombie_thrall_convert_chance:GetFloat()
     -- Use "less-than" so a chance of 0 really means never
     return math.random() < chance
 end
