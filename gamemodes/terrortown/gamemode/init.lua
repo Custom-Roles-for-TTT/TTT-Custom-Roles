@@ -294,6 +294,7 @@ CreateConVar("ttt_zombie_vision_enable", "0")
 
 -- Other custom role properties
 CreateConVar("ttt_single_deputy_impersonator", "0")
+CreateConVar("ttt_deputy_impersonator_promote_any_death", "0")
 CreateConVar("ttt_single_doctor_quack", "0")
 CreateConVar("ttt_single_paramedic_hypnotist", "0")
 CreateConVar("ttt_single_phantom_parasite", "0")

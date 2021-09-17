@@ -1239,13 +1239,24 @@ if SERVER then
     end
 
     function ShouldPromoteDetectiveLike()
-        local detectivesAlive = 0
+        local alive, dead = 0, 0
         for _, p in ipairs(player.GetAll()) do
-            if not p:IsSpec() and p:Alive() and p:IsDetectiveTeam() then
-                detectivesAlive = detectivesAlive + 1
+            if p:IsDetectiveTeam() then
+                if not p:IsSpec() and p:Alive() then
+                    alive = alive + 1
+                else
+                    dead = dead + 1
+                end
             end
         end
-        return detectivesAlive == 0
+
+        -- If they should be promoted when any detective has died, just check that there is a dead detective
+        if GetConVar("ttt_deputy_impersonator_promote_any_death"):GetBool() then
+            return dead > 0
+        end
+
+        -- Otherwise, only promote if there are no living detectives
+        return alive == 0
     end
 end
 
