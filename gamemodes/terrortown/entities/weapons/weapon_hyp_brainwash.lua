@@ -80,6 +80,8 @@ local DEFIB_BUSY = 1
 local DEFIB_ERROR = 2
 local oldScoreGroup = nil
 
+local convert_detectives = CreateConVar("ttt_hypnotist_convert_detectives", "0")
+
 if CLIENT then
     function SWEP:Initialize()
         self:AddHUDHelp("brainwash_help_pri", "brainwash_help_sec", true)
@@ -171,6 +173,19 @@ if SERVER then
         end)
     end
 
+    function SWEP:ShouldConvertToImpersonator(ply)
+        if not convert_detectives:GetBool() then
+            return false
+        end
+        if ply:IsDetective() then
+            return true
+        end
+        if ply:IsDeputy() then
+            return GetGlobalBool("ttt_deputy_use_detective_icon", true)
+        end
+        return false
+    end
+
     function SWEP:DoRespawn(body)
         local ply = bodyply(body)
         local credits = CORPSE.GetCredits(body, 0) or 0
@@ -212,7 +227,19 @@ if SERVER then
         ply:SetPos(self.Location or body:GetPos())
         ply:SetEyeAngles(Angle(0, body:GetAngles().y, 0))
         ply:SetNWBool("WasHypnotised", true)
-        ply:SetRole(ROLE_TRAITOR)
+        -- If detectives and deputies that look like detectives should be converted
+        if self:ShouldConvertToImpersonator(ply) then
+            -- Keep track of whether they should be promoted
+            local promote = (ply:IsDetective() or ShouldPromoteDetectiveLike())
+
+            -- Convert them to an impersonator and promote them if appropriate
+            ply:SetRole(ROLE_IMPERSONATOR)
+            if promote then
+                ply:HandleDetectiveLikePromotion()
+            end
+        else
+            ply:SetRole(ROLE_TRAITOR)
+        end
         ply:StripRoleWeapons()
         ply:PrintMessage(HUD_PRINTCENTER, "You have been brainwashed and are now a traitor.")
         ply:SetHealth(spawnhealth)

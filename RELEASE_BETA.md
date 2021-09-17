@@ -4,9 +4,9 @@
 **Released:**
 
 ### Additions
-
 - Added ability for deputy to spawn when there isn't a detective and be pre-activated (disabled by default)
 - Added ability for impersonator to spawn when there isn't a detective and be pre-activated (disabled by default)
+- Added ability for hypnotist device to convert detective and deputies that appear as detective to impersonator (disabled by default)
 
 ## 1.2.4
 **Released: September 15th, 2021**

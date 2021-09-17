@@ -1500,17 +1500,9 @@ function GM:PlayerDeath(victim, infl, attacker)
 
     -- Handle detective death
     if victim:IsDetectiveTeam() and GetRoundState() == ROUND_ACTIVE then
-        local detectiveAlive = false
-        for _, ply in ipairs(player.GetAll()) do
-            if not ply:IsSpec() and ply:Alive() and ply:IsDetectiveTeam() and ply ~= victim then
-                detectiveAlive = true
-                break
-            end
-        end
-        if not detectiveAlive then
+        if ShouldPromoteDetectiveLike() then
             for _, ply in pairs(player.GetAll()) do
-                if (ply:IsDeputy() or ply:IsImpersonator()) and not ply:GetNWBool("HasPromotion", false) then
-                    ply:SetNWBool("HasPromotion", true)
+                if ply:IsDetectiveLikePromotable() then
                     local alive = ply:Alive()
                     if alive then
                         ply:PrintMessage(HUD_PRINTTALK, "You have been promoted to " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "!")
@@ -1531,13 +1523,7 @@ function GM:PlayerDeath(victim, infl, attacker)
                         end
                     end
 
-                    net.Start("TTT_Promotion")
-                    net.WriteString(ply:Nick())
-                    net.Broadcast()
-
-                    -- The player has been promoted so we need to update their shop
-                    net.Start("TTT_ResetBuyableWeaponsCache")
-                    net.Send(ply)
+                    ply:HandleDetectiveLikePromotion()
                 end
             end
         end

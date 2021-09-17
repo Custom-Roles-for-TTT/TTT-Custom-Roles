@@ -1237,6 +1237,21 @@ if SERVER then
         SetRoleMaxHealth(ply)
         SetRoleStartingHealth(ply)
     end
+
+    function GetLivingDetectiveCount()
+        local detectivesAlive = 0
+        for _, p in ipairs(player.GetAll()) do
+            if not p:IsSpec() and p:Alive() and p:IsDetectiveTeam() then
+                detectivesAlive = detectivesAlive + 1
+            end
+        end
+        return detectivesAlive
+    end
+
+    function ShouldPromoteDetectiveLike()
+        local count = GetLivingDetectiveCount()
+        return count == 0
+    end
 end
 
 -- Weapons and items that come with TTT. Weapons that are not in this list will
