@@ -272,6 +272,10 @@ Methods available globally (within the defined realm)
 *Parameters:*
 - *ply* - The target player
 
+**ShouldPromoteDetectiveLike()** - Whether an unpromoted detective-like player (deputy/impersonator) should be promoted.\
+*Realm:* Server\
+*Added in:* 1.2.5
+
 **StartsWithVowel(str)** - Whether the given string starts with a vowel.\
 *Realm:* Client and Server\
 *Added in:* 1.0.8
@@ -367,13 +371,21 @@ Variables available when called from a Player object (within the defined realm)
 *Realm:* Server\
 *Added in:* 1.2.2
 
+**plymeta:HandleDetectiveLikePromotion()** - Handles the player's promotion as a detective-like role (deputy/impersonator). Promotes the player and sends necessary net events.\
+*Realm:* Server\
+*Added in:* 1.2.5
+
 **plymeta:IsCustom()** - Whether the player's role is not one of the three default TTT roles.\
 *Realm:* Client and Server\
 *Added in:* 1.0.0
 
-**plymeta:IsDetectiveLike()/plymeta:GetDetectiveLike()** - Whether the player's role is like a Detective (e.g. detective or promoted deputy/impersonator).\
+**plymeta:IsDetectiveLike()/plymeta:GetDetectiveLike()** - Whether the player's role is like a detective (e.g. detective or promoted deputy/impersonator).\
 *Realm:* Client and Server\
 *Added in:* 1.0.0\
+
+**plymeta:IsDetectiveLikePromotable()/plymeta:GetDetectiveLikePromotable()** - Whether the player's role is an unpromoted detective-like role (deputy/impersonator).\
+*Realm:* Client and Server\
+*Added in:* 1.2.5\
 
 **plymeta:IsIndependentTeam()** - Whether the player is on the independent team.\
 *Realm:* Client and Server\
