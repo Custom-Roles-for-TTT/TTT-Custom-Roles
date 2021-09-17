@@ -41,6 +41,7 @@ SWEP.Secondary.Automatic = false
 SWEP.Secondary.Delay = 1.25
 
 SWEP.InLoadoutFor = {ROLE_HYPNOTIST}
+SWEP.InLoadoutForDefault = {ROLE_HYPNOTIST}
 
 SWEP.Charge = 0
 SWEP.Timer = -1

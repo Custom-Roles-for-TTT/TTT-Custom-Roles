@@ -142,6 +142,8 @@ ttt_single_deputy_impersonator              0       // Whether only a single dep
 
 // Hypnotist
 ttt_hypnotist_credits_starting              1       // The number of credits a hypnotist should start with
+ttt_hypnotist_device_loadout                1       // Whether the hypnotist's defib should be given to them when they spawn. Server must be restarted for changes to take effect
+ttt_hypnotist_device_shop                   0       // Whether the hypnotist's defib should be purchasable in the shop. Server must be restarted for changes to take effect
 ttt_single_paramedic_hypnotist              0       // Whether only a single paramedic or hynotist should spawn in a round
 
 // Assassin
@@ -233,6 +235,10 @@ ttt_veteran_shop_delay                      0       // Whether the veteran's pur
 
 // Doctor
 ttt_doctor_credits_starting                 1       // The number of credits a doctor should start with
+
+// Paramedic
+ttt_paramedic_device_loadout                1       // Whether the paramedic's defib should be given to them when they spawn. Server must be restarted for changes to take effect
+ttt_paramedic_device_shop                   0       // Whether the paramedic's defib should be purchasable in the shop (requires ttt_shop_for_all to be enabled). Server must be restarted for changes to take effect
 
 // ----------------------------------------
 

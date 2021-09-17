@@ -1,5 +1,5 @@
 -- Version string for display and function for version checks
-CR_VERSION = "1.2.4"
+CR_VERSION = "1.2.5"
 
 function CRVersion(version)
     local installedVersionRaw = string.Split(CR_VERSION, ".")
@@ -1057,12 +1057,38 @@ function UpdateRoleWeaponState()
     -- If the parasite is not enabled, don't let anyone buy the cure
     local parasite_cure = weapons.GetStored("weapon_par_cure")
     local fake_cure = weapons.GetStored("weapon_qua_fake_cure")
-    if not GetGlobalBool("ttt_parasite_enabled", false) then
-        table.Empty(parasite_cure.CanBuy)
-        table.Empty(fake_cure.CanBuy)
-    else
+    if GetGlobalBool("ttt_parasite_enabled", false) then
         parasite_cure.CanBuy = table.Copy(parasite_cure.CanBuyDefault)
         fake_cure.CanBuy = table.Copy(fake_cure.CanBuyDefault)
+    else
+        table.Empty(parasite_cure.CanBuy)
+        table.Empty(fake_cure.CanBuy)
+    end
+
+    -- Hypnotist
+    local hypnotist_defib = weapons.GetStored("weapon_hyp_brainwash")
+    if GetGlobalBool("ttt_hypnotist_device_loadout", false) then
+        hypnotist_defib.InLoadoutFor = table.Copy(hypnotist_defib.InLoadoutForDefault)
+    else
+        table.Empty(hypnotist_defib.InLoadoutFor)
+    end
+    if GetGlobalBool("ttt_hypnotist_device_shop", false) then
+        hypnotist_defib.CanBuy = {ROLE_HYPNOTIST}
+    else
+        hypnotist_defib.CanBuy = nil
+    end
+
+    -- Paramedic
+    local paramedic_defib = weapons.GetStored("weapon_med_defib")
+    if GetGlobalBool("ttt_paramedic_device_loadout", false) then
+        paramedic_defib.InLoadoutFor = table.Copy(paramedic_defib.InLoadoutForDefault)
+    else
+        table.Empty(paramedic_defib.InLoadoutFor)
+    end
+    if GetGlobalBool("ttt_paramedic_device_shop", false) then
+        paramedic_defib.CanBuy = {ROLE_PARAMEDIC}
+    else
+        paramedic_defib.CanBuy = nil
     end
 
     if SERVER then

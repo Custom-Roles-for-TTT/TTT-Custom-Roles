@@ -41,6 +41,7 @@ SWEP.Secondary.Automatic = false
 SWEP.Secondary.Delay = 1.25
 
 SWEP.InLoadoutFor = {ROLE_PARAMEDIC}
+SWEP.InLoadoutForDefault = {ROLE_PARAMEDIC}
 
 SWEP.Charge = 0
 SWEP.Timer = -1

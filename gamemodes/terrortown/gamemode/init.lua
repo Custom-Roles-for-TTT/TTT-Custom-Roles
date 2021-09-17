@@ -149,6 +149,9 @@ CreateConVar("ttt_traitor_vision_enable", "0")
 CreateConVar("ttt_impersonator_damage_penalty", "0")
 CreateConVar("ttt_impersonator_use_detective_icon", "1")
 
+CreateConVar("ttt_hypnotist_device_loadout", "1")
+CreateConVar("ttt_hypnotist_device_shop", "0")
+
 CreateConVar("ttt_assassin_show_target_icon", "0")
 CreateConVar("ttt_assassin_target_vision_enable", "0")
 CreateConVar("ttt_assassin_next_target_delay", "5")
@@ -201,6 +204,9 @@ CreateConVar("ttt_veteran_damage_bonus", "0.5")
 CreateConVar("ttt_veteran_full_heal", "1")
 CreateConVar("ttt_veteran_heal_bonus", "0")
 CreateConVar("ttt_veteran_announce", "0")
+
+CreateConVar("ttt_paramedic_device_loadout", "1")
+CreateConVar("ttt_paramedic_device_shop", "0")
 
 -- Detective role properties
 CreateConVar("ttt_detective_search_only", "1")
@@ -687,11 +693,17 @@ function GM:SyncGlobals()
 
     SetGlobalBool("ttt_deputy_use_detective_icon", GetConVar("ttt_deputy_use_detective_icon"):GetBool())
 
+    SetGlobalBool("ttt_paramedic_device_loadout", GetConVar("ttt_paramedic_device_loadout"):GetBool())
+    SetGlobalBool("ttt_paramedic_device_shop", GetConVar("ttt_paramedic_device_shop"):GetBool())
+
     SetGlobalFloat("ttt_paladin_aura_radius", GetConVar("ttt_paladin_aura_radius"):GetInt() * 52.49)
 
     SetGlobalInt("ttt_tracker_footstep_time", GetConVar("ttt_tracker_footstep_time"):GetInt())
 
     SetGlobalBool("ttt_traitor_vision_enable", GetConVar("ttt_traitor_vision_enable"):GetBool())
+
+    SetGlobalBool("ttt_hypnotist_device_loadout", GetConVar("ttt_hypnotist_device_loadout"):GetBool())
+    SetGlobalBool("ttt_hypnotist_device_shop", GetConVar("ttt_hypnotist_device_shop"):GetBool())
 
     SetGlobalBool("ttt_assassin_show_target_icon", GetConVar("ttt_assassin_show_target_icon"):GetBool())
     SetGlobalBool("ttt_assassin_target_vision_enable", GetConVar("ttt_assassin_target_vision_enable"):GetBool())
