@@ -60,6 +60,9 @@ local sound_single = Sound("Weapon_Crowbar.Single")
 local zombie_leap = CreateConVar("ttt_zombie_leap_enable", "1")
 local zombie_spit = CreateConVar("ttt_zombie_spit_enable", "1")
 
+local zombie_prime_convert_chance = CreateConVar("ttt_zombie_prime_convert_chance", "1")
+local zombie_thrall_convert_chance = CreateConVar("ttt_zombie_thrall_convert_chance", "1")
+
 local zombie_respawn_health = CreateConVar("ttt_zombie_respawn_health", "100")
 
 local zombie_prime_damage = CreateConVar("ttt_zombie_prime_attack_damage", "65")
@@ -92,6 +95,11 @@ function SWEP:PlayPunchAnimation()
     vm:SendViewModelMatchingSequence(vm:LookupSequence(anim))
     self:GetOwner():ViewPunch(Angle( 4, 4, 0 ))
     self:GetOwner():SetAnimation(PLAYER_ATTACK1)
+end
+
+function SWEP:ShouldConvert()
+    local chance = seld:GetOwner():IsZombiePrime() and zombie_prime_convert_chance:GetFloat() or zombie_thrall_convert_chance:GetFloat()
+    return math.random() <= chance
 end
 
 function SWEP:PrimaryAttack()
@@ -145,7 +153,7 @@ function SWEP:PrimaryAttack()
         owner:SetAnimation(PLAYER_ATTACK1)
 
         if IsPlayer(hitEnt) and not hitEnt:IsZombieAlly() and (not hitEnt:IsJesterTeam() or hitEnt:GetNWBool("KillerClownActive", false)) then
-            if hitEnt:Health() <= self.Primary.Damage then
+            if hitEnt:Health() <= self.Primary.Damage and self:ShouldConvert() then
                 owner:AddCredits(1)
                 LANG.Msg(owner, "credit_all", { role = ROLE_STRINGS[ROLE_ZOMBIE], num = 1 })
                 hitEnt:PrintMessage(HUD_PRINTCENTER, "You will respawn as a zombie in 3 seconds.")
@@ -237,9 +245,9 @@ function SWEP:CSShootBullet(dmg, recoil, numbul, cone)
     local bullet = {}
     bullet.Attacker      = owner
     bullet.Num           = 1
-    bullet.Src           = owner:GetShootPos()            -- Source
-    bullet.Dir           = owner:GetAimVector()            -- Dir of bullet
-    bullet.Spread        = Vector(cone, 0, 0)                    -- Aim Cone
+    bullet.Src           = owner:GetShootPos()    -- Source
+    bullet.Dir           = owner:GetAimVector()   -- Dir of bullet
+    bullet.Spread        = Vector(cone, 0, 0)     -- Aim Cone
     bullet.Tracer        = 1
     bullet.TracerName    = "acidtracer"
     bullet.Force         = 55
@@ -247,8 +255,8 @@ function SWEP:CSShootBullet(dmg, recoil, numbul, cone)
 
     owner:FireBullets(bullet)
     self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)     -- View model animation
-    owner:MuzzleFlash()                            -- Crappy muzzle light
-    owner:SetAnimation(PLAYER_ATTACK1)                -- 3rd Person Animation
+    owner:MuzzleFlash()                           -- Crappy muzzle light
+    owner:SetAnimation(PLAYER_ATTACK1)            -- 3rd Person Animation
 
     if owner:IsNPC() then return end
 
