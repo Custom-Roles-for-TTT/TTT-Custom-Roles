@@ -218,7 +218,7 @@ function RADAR:Draw(client)
                 local hideSpecialTraitors = glitchMode == 2 and GetGlobalBool("ttt_glitch_round", false)
                 local beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", BEGGAR_REVEAL_ALL)
                 local hideBeggar = tgt.was_beggar and (beggarMode == BEGGAR_REVEAL_NONE or beggarMode == BEGGAR_REVEAL_INNOCENTS)
-                local showJester = (JESTER_ROLES[role] or ((role == ROLE_TRAITOR or role == ROLE_INNOCENT) and hideBeggar)) and not ShouldHideJesters(client)
+                local showJester = (tgt.should_act_like_jester or ((role == ROLE_TRAITOR or role == ROLE_INNOCENT) and hideBeggar)) and not ShouldHideJesters(client)
                 if (role == ROLE_TRAITOR or role == ROLE_GLITCH or (hideSpecialTraitors and TRAITOR_ROLES[role])) and not hideBeggar then
                     color = ColorAlpha(ROLE_COLORS_RADAR[ROLE_TRAITOR], alpha)
                 elseif TRAITOR_ROLES[role] and not hideBeggar then
@@ -333,9 +333,10 @@ local function ReceiveRadarScan()
 
         local was_beggar = net.ReadBool()
         local killer_clown_active = net.ReadBool()
+        local should_act_like_jester = net.ReadBool()
         local sid64 = net.ReadString()
 
-        table.insert(RADAR.targets, { role = r, pos = pos, was_beggar = was_beggar, killer_clown_active = killer_clown_active, sid64 = sid64 })
+        table.insert(RADAR.targets, { role = r, pos = pos, was_beggar = was_beggar, killer_clown_active = killer_clown_active, should_act_like_jester = should_act_like_jester, sid64 = sid64 })
     end
 
     RADAR.enable = true

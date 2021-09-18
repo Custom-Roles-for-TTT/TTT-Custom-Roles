@@ -93,7 +93,7 @@ function GM:PostDrawTranslucentRenderables()
 
             local beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", BEGGAR_REVEAL_ALL)
             local hideBeggar = v:GetNWBool("WasBeggar", false) and (beggarMode == BEGGAR_REVEAL_NONE or beggarMode == BEGGAR_REVEAL_INNOCENTS)
-            local showJester = ((v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) or ((v:GetTraitor() or v:GetInnocent()) and hideBeggar)) and not ShouldHideJesters(client)
+            local showJester = (v:ShouldActLikeJester() or ((v:GetTraitor() or v:GetInnocent()) and hideBeggar)) and not ShouldHideJesters(client)
             local glitchMode = GetGlobalInt("ttt_glitch_mode", 0)
 
             -- Only show the "KILL" target if the setting is enabled
@@ -380,7 +380,7 @@ function GM:HUDDrawTargetID()
         local hideBeggar = ent:GetNWBool("WasBeggar", false) and (beggarMode == BEGGAR_REVEAL_NONE or beggarMode == BEGGAR_REVEAL_INNOCENTS)
 
         if not hide_roles and GetRoundState() == ROUND_ACTIVE then
-            local showJester = ((ent:IsJesterTeam() and not ent:GetNWBool("KillerClownActive", false)) or ((ent:GetTraitor() or ent:GetInnocent()) and hideBeggar)) and not ShouldHideJesters(client)
+            local showJester = (ent:ShouldActLikeJester() or ((ent:GetTraitor() or ent:GetInnocent()) and hideBeggar)) and not ShouldHideJesters(client)
             if client:IsTraitorTeam() then
                 target_traitor = (ent:IsTraitor() and not hideBeggar)
                 target_special_traitor = ent:IsTraitorTeam() and not ent:IsTraitor()

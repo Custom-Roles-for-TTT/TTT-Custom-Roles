@@ -142,6 +142,10 @@ function plymeta:CanLootCredits(active_only)
     end
     return self:IsShopRole()
 end
+function plymeta:ShouldActLikeJester()
+    if self:IsClown() then return not self:GetNWBool("KillerClownActive", false) end
+    return self:IsJesterTeam()
+end
 
 function plymeta:SetRoleAndBroadcast(role)
     self:SetRole(role)
@@ -162,6 +166,7 @@ function plymeta:IsRoleActive()
     if self:IsClown() then return self:GetNWBool("KillerClownActive", false) end
     if self:IsVeteran() then return self:GetNWBool("VeteranActive", false) end
     if self:IsDeputy() or self:IsImpersonator() then return self:GetNWBool("HasPromotion", false) end
+    if self:IsOldMan() then return self:GetNWBool("AdrenalineRush", false) end
 
     -- Check if this role has an external definition for "IsActive" and use that
     local role = self:GetRole()

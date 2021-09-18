@@ -117,7 +117,7 @@ function SWEP:PrimaryAttack()
 
             self:Eat(tr.Entity)
         elseif ent:IsPlayer() and vampire_drain:GetBool() then
-            if ent:IsJesterTeam() and not ent:GetNWBool("KillerClownActive", false) then
+            if ent:ShouldActLikeJester() then
                 self:Error("TARGET IS A JESTER")
             elseif ent:IsVampireAlly() then
                 self:Error("TARGET IS AN ALLY")

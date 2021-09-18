@@ -456,6 +456,10 @@ Variables available when called from a Player object (within the defined realm)
 *Parameters:*
 - *isPrime* - Whether the player is a prime zombie
 
+**plymeta:ShouldActLikeJester()** - Whether the player should act like a jester (e.g. in what damage they do, what damage they take, how they appear to other players, etc.).\
+*Realm:* Client and Server\
+*Added in:* 1.2.5
+
 **plymeta:ShouldDelayShopPurchase()** - Whether the player's shop purchase deliveries should be delayed.\
 *Realm:* Client and Server\
 *Added in:* 1.2.2

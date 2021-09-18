@@ -37,7 +37,7 @@ local function RadarScan(ply, cmd, args)
 
                         local role = p:IsPlayer() and p:GetRole() or -1
 
-                        table.insert(targets, { role = role, pos = pos, was_beggar = p:GetNWBool("WasBeggar", false), killer_clown_active = p:GetNWBool("KillerClownActive", false), sid64 = p:SteamID64() })
+                        table.insert(targets, { role = role, pos = pos, was_beggar = p:GetNWBool("WasBeggar", false), killer_clown_active = p:GetNWBool("KillerClownActive", false), should_act_like_jester = p:ShouldActLikeJester(), sid64 = p:SteamID64() })
                     end
                 end
 			end
@@ -53,6 +53,7 @@ local function RadarScan(ply, cmd, args)
 
                 net.WriteBool(tgt.was_beggar)
                 net.WriteBool(tgt.killer_clown_active)
+                net.WriteBool(tgt.should_act_like_jester)
                 net.WriteString(tgt.sid64)
             end
             net.Send(ply)

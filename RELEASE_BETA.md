@@ -5,6 +5,7 @@
 
 ### Developer
 - Added ability for external roles to define when their role "is active", tying directly into the "plymeta:IsRoleActive" function
+- Added "plymeta:ShouldActLikeJester" to determine if a player should act like a jester (damage in, damage out, appearance, etc.)
 
 ## 1.2.4
 **Released: September 15th, 2021**

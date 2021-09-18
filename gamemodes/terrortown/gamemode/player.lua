@@ -1727,7 +1727,7 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
         -- Only apply damage scaling after the round starts
         if GetRoundState() >= ROUND_ACTIVE then
             -- Jesters can't deal damage
-            if att:IsJesterTeam() and not att:GetNWBool("KillerClownActive", false) then
+            if att:ShouldActLikeJester() then
                 dmginfo:ScaleDamage(0)
             end
 
@@ -1867,7 +1867,7 @@ local fallsounds = {
 };
 
 function GM:OnPlayerHitGround(ply, in_water, on_floater, speed)
-    if ((ply:IsJesterTeam() and not ply:GetNWBool("KillerClownActive", false)) or ply:IsZombie()) and GetRoundState() >= ROUND_ACTIVE then
+    if (ply:ShouldActLikeJester() or ply:IsZombie()) and GetRoundState() >= ROUND_ACTIVE then
         -- Jester team and Zombie don't take fall damage
         return
     else
@@ -1948,7 +1948,7 @@ function GM:EntityTakeDamage(ent, dmginfo)
     local att = dmginfo:GetAttacker()
     if GetRoundState() >= ROUND_ACTIVE and ent:IsPlayer() then
         -- Jesters don't take environmental damage
-        if ent:IsJesterTeam() and not ent:GetNWBool("KillerClownActive", false) then
+        if ent:ShouldActLikeJester() then
             -- Damage type DMG_GENERIC is "0" which doesn't seem to work with IsDamageType
             if dmginfo:IsExplosionDamage() or dmginfo:IsDamageType(DMG_BURN) or dmginfo:IsDamageType(DMG_CRUSH) or dmginfo:IsFallDamage() or dmginfo:IsDamageType(DMG_DROWN) or dmginfo:GetDamageType() == 0 or dmginfo:IsDamageType(DMG_DISSOLVE) then
                 dmginfo:ScaleDamage(0)
@@ -1969,8 +1969,8 @@ function GM:EntityTakeDamage(ent, dmginfo)
             dmginfo:SetDamage(0)
         end
 
-        -- Prevent damage from non-bullet weapons
-        if IsPlayer(att) and att:IsJesterTeam() and not att:GetNWBool("KillerClownActive", false) then
+        -- Prevent damage from jesters
+        if IsPlayer(att) and att:ShouldActLikeJester() then
             dmginfo:ScaleDamage(0)
             dmginfo:SetDamage(0)
         end
@@ -2166,7 +2166,7 @@ function GM:PlayerTakeDamage(ent, infl, att, amount, dmginfo)
             dmginfo:SetInflictor(ignite_info.infl)
 
             -- Set burning damage from jester team to zero, regardless of source
-            if ignite_info.att:IsJesterTeam() and not ignite_info.att:GetNWBool("KillerClownActive", false) then
+            if ignite_info.att:ShouldActLikeJester() then
                 dmginfo:ScaleDamage(0)
                 dmginfo:SetDamage(0)
             end
@@ -2479,7 +2479,7 @@ concommand.Add("ttt_kill_from_random", function(ply, cmd, args)
 
     local killer = nil
     for _, v in RandomPairs(player.GetAll()) do
-        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not (v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) then
+        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not v:ShouldActLikeJester() then
             killer = v
             break
         end
@@ -2496,7 +2496,7 @@ concommand.Add("ttt_kill_from_player", function(ply, cmd, args)
     local killer_name = args[1]
     local killer = nil
     for _, v in RandomPairs(player.GetAll()) do
-        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not (v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) and v:Nick() == killer_name then
+        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not v:ShouldActLikeJester() and v:Nick() == killer_name then
             killer = v
             break
         end
@@ -2525,7 +2525,7 @@ concommand.Add("ttt_kill_target_from_random", function(ply, cmd, args)
 
     local killer = nil
     for _, v in RandomPairs(player.GetAll()) do
-        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not (v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) then
+        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not v:ShouldActLikeJester() then
             killer = v
             break
         end
@@ -2550,7 +2550,7 @@ concommand.Add("ttt_kill_target_from_player", function(ply, cmd, args)
     local killer_name = args[2]
     local killer = nil
     for _, v in RandomPairs(player.GetAll()) do
-        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not (v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) and v:Nick() == killer_name then
+        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not v:ShouldActLikeJester() and v:Nick() == killer_name then
             killer = v
             break
         end

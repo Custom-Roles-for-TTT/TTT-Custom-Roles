@@ -144,7 +144,7 @@ function SWEP:PrimaryAttack()
     if not CLIENT then
         owner:SetAnimation(PLAYER_ATTACK1)
 
-        if IsPlayer(hitEnt) and not hitEnt:IsZombieAlly() and (not hitEnt:IsJesterTeam() or hitEnt:GetNWBool("KillerClownActive", false)) then
+        if IsPlayer(hitEnt) and not hitEnt:IsZombieAlly() and not hitEnt:ShouldActLikeJester() then
             if hitEnt:Health() <= self.Primary.Damage then
                 owner:AddCredits(1)
                 LANG.Msg(owner, "credit_all", { role = ROLE_STRINGS[ROLE_ZOMBIE], num = 1 })
