@@ -144,6 +144,11 @@ function plymeta:CanLootCredits(active_only)
 end
 function plymeta:ShouldActLikeJester()
     if self:IsClown() then return not self:GetNWBool("KillerClownActive", false) end
+
+    -- Check if this role has an external definition for "ShouldActLikeJester" and use that
+    local role = self:GetRole()
+    if EXTERNAL_ROLE_SHOULD_ACT_LIKE_JESTER[role] then return EXTERNAL_ROLE_SHOULD_ACT_LIKE_JESTER[role](self) end
+
     return self:IsJesterTeam()
 end
 

@@ -13,6 +13,7 @@
    1. [Credits](#Credits)
    1. [Health](#Health)
    1. [Role Activation](#Role-Activation)
+   1. [Acting Like a Jester](#Acting-Like-a-Jester)
    1. [Translations](#Translations)
    1. [Optional Rules](#Optional-Rules)
    1. [ConVars](#ConVars)
@@ -72,6 +73,7 @@ ROLE.startinghealth = nil
 ROLE.maxhealth = nil
 
 ROLE.isactive = nil
+ROLE.shouldactlikejester = nil
 
 ROLE.translations = {}
 
@@ -265,6 +267,31 @@ end
 ```
 
 Once that is defined you can use `ply:IsRoleActive()` anywhere you need to check your role's activation state.
+
+### Acting Like a Jester
+
+The next part of the file will help you create a role that sometimes acts like a jester. The perfect example of this functionality is the clown role -- when they first spawn, they:
+1. Cannot do damage
+1. Don't take various forms of damage (fire, explosion, falling, etc.)
+1. Appear as a jester to other roles (on the radar, scoreboard, icon over their head, etc.)
+
+Once the role activates (in the case of the clown, this happens when there is only one team remaining) then they no longer act like a jester, allowing them to do damage and potentially win the round.
+
+To make your role behave similarly, you need to define the following property:
+
+```lua
+ROLE.shouldactlikejester = nil
+```
+
+This property should be a function with a single parameter that takes a player object and returns a boolean. In the case of our example Summoner, we're going to have them to act like a jester until they are activated. To accomplish that, we define the property like this:
+
+```lua
+ROLE.shouldactlikejester = function(ply)
+    return not ply:IsRoleActive()
+end
+```
+
+Once that is defined you can use `ply:ShouldActLikeJester()` anywhere you need to check whether they should still act like a jester. Custom Roles for TTT will automatically use your defined function when doing damage calculations (damage taken and damage given) as well as role display in thinks like the radar and target ID (icon over the head, name and circle when looking at a player).
 
 ### Translations
 
