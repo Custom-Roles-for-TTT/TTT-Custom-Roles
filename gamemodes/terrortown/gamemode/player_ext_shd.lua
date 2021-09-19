@@ -43,6 +43,7 @@ function plymeta:GetZombiePrime() return self:GetZombie() and self:GetNWBool("zo
 function plymeta:GetVampirePrime() return self:GetVampire() and self:GetNWBool("vampire_prime", false) end
 function plymeta:GetVampirePreviousRole() return self:GetNWInt("vampire_previous_role", ROLE_NONE) end
 function plymeta:GetDetectiveLike() return self:IsDetectiveTeam() or ((self:GetDeputy() or self:GetImpersonator()) and self:GetNWBool("HasPromotion", false)) end
+function plymeta:GetDetectiveLikePromotable() return (self:IsDeputy() or self:IsImpersonator()) and not self:GetNWBool("HasPromotion", false) end
 
 function plymeta:GetZombieAlly()
     local role = self:GetRole()
@@ -75,6 +76,7 @@ function plymeta:IsSameTeam(target)
 end
 
 plymeta.IsDetectiveLike = plymeta.GetDetectiveLike
+plymeta.IsDetectiveLikePromotable = plymeta.GetDetectiveLikePromotable
 plymeta.IsZombiePrime = plymeta.GetZombiePrime
 plymeta.IsVampirePrime = plymeta.GetVampirePrime
 
@@ -452,6 +454,18 @@ else
         net.Broadcast()
     end
 
+    function plymeta:HandleDetectiveLikePromotion()
+        self:SetNWBool("HasPromotion", true)
+
+        net.Start("TTT_Promotion")
+        net.WriteString(self:Nick())
+        net.Broadcast()
+
+        -- The player has been promoted so we need to update their shop
+        net.Start("TTT_ResetBuyableWeaponsCache")
+        net.Send(self)
+    end
+
     function plymeta:MoveRoleState(target, keep_on_source)
         if self:IsZombiePrime() then
             if not keep_on_source then self:SetZombiePrime(false) end
@@ -465,10 +479,7 @@ else
 
         if self:GetNWBool("HasPromotion", false) then
             if not keep_on_source then self:SetNWBool("HasPromotion", false) end
-            target:SetNWBool("HasPromotion", true)
-
-            net.Start("TTT_ResetBuyableWeaponsCache")
-            net.Send(target)
+            target:HandleDetectiveLikePromotion()
         end
 
         local killer = self:GetNWString("RevengerKiller", nil)

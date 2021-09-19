@@ -13,6 +13,10 @@
 - Added ability to add the paramedic's defib to their shop (disabled by default, requires shop-for-all to be enabled)
 - Added ability to control whether the hypnotist spawns with their device (enabled by default)
 - Added ability to control whether the paramedic spawns with their defib (enabled by default)
+- Added ability for deputy to spawn when there isn't a detective and be pre-activated (disabled by default)
+- Added ability for impersonator to spawn when there isn't a detective and be pre-activated (disabled by default)
+- Added ability for hypnotist device to convert detective and deputies that appear as detective to impersonator (disabled by default)
+- Added ability for deputy/impersonator to be promoted when any detective dies, rather than all detectives (disabled by default)
 
 ### Developer
 - Added ability for external roles to define when they are "active", tying directly into the "plymeta:IsRoleActive" function

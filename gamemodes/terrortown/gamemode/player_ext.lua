@@ -659,24 +659,10 @@ function plymeta:BeginRoleChecks()
     end
 
     -- Deputy/Impersonator logic
-    -- If this is a promotable role and there are no living detectives, promote them immediately
+    -- If this is a promotable role and they should be promoted, promote them immediately
     -- The logic which handles a detective dying is in the PlayerDeath hook
-    if self:IsDeputy() or self:IsImpersonator() then
-        local has_detective = false
-        for _, p in ipairs(player.GetAll()) do
-            if p:Alive() and not p:IsSpec() and p:IsDetectiveTeam() then
-                has_detective = true
-                break
-            end
-        end
-
-        if not has_detective then
-            self:SetNWBool("HasPromotion", true)
-
-            net.Start("TTT_Promotion")
-            net.WriteString(self:Nick())
-            net.Broadcast()
-        end
+    if self:IsDetectiveLikePromotable() and ShouldPromoteDetectiveLike() then
+        self:HandleDetectiveLikePromotion()
     end
 end
 

@@ -141,11 +141,13 @@ ttt_impersonator_credits_starting           1       // The number of credits an 
 ttt_impersonator_use_detective_icon         1       // Whether a promoted impersonator should show the detective icon over their head instead of the impersonator icon (only for traitors, non-traitors will use the equivalent deputy setting)
 ttt_impersonator_without_detective          0       // Whether an impersonator can spawn without a detective in the round. Will automatically promote the impersonator when they spawn
 ttt_single_deputy_impersonator              0       // Whether only a single deputy or impersonator should spawn in a round
+ttt_deputy_impersonator_promote_any_death   0       // Whether deputy/impersonator should be promoted when any detective dies rather than only after all detectives have died
 
 // Hypnotist
 ttt_hypnotist_credits_starting              1       // The number of credits a hypnotist should start with
 ttt_hypnotist_device_loadout                1       // Whether the hypnotist's defib should be given to them when they spawn. Server must be restarted for changes to take effect
 ttt_hypnotist_device_shop                   0       // Whether the hypnotist's defib should be purchasable in the shop. Server must be restarted for changes to take effect
+ttt_hypnotist_convert_detectives            0       // Whether to convert detectives and deputies (only if ttt_deputy_use_detective_icon is enabled) to impersonator instead of just a regular traitor. Does NOT convert detective team roles like paladin, medium, or tracker. Target will be automatically promoted to appear as a detective if appropriate
 ttt_single_paramedic_hypnotist              0       // Whether only a single paramedic or hynotist should spawn in a round
 
 // Assassin

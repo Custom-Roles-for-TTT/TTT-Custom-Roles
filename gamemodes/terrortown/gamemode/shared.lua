@@ -1273,6 +1273,27 @@ if SERVER then
         SetRoleMaxHealth(ply)
         SetRoleStartingHealth(ply)
     end
+
+    function ShouldPromoteDetectiveLike()
+        local alive, dead = 0, 0
+        for _, p in ipairs(player.GetAll()) do
+            if p:IsDetectiveTeam() then
+                if not p:IsSpec() and p:Alive() then
+                    alive = alive + 1
+                else
+                    dead = dead + 1
+                end
+            end
+        end
+
+        -- If they should be promoted when any detective has died, just check that there is a dead detective
+        if GetConVar("ttt_deputy_impersonator_promote_any_death"):GetBool() then
+            return dead > 0
+        end
+
+        -- Otherwise, only promote if there are no living detectives
+        return alive == 0
+    end
 end
 
 -- Weapons and items that come with TTT. Weapons that are not in this list will
