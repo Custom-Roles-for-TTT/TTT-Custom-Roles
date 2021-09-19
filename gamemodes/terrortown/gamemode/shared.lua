@@ -789,6 +789,13 @@ EVENT_BEGGARCONVERTED = 25
 EVENT_BEGGARKILLED = 26
 EVENT_INFECT = 27
 
+EVENT_MAX = 27
+
+function GenerateNewEventID()
+    EVENT_MAX = EVENT_MAX + 1
+    return EVENT_MAX
+end
+
 WIN_NONE = 1
 WIN_TRAITOR = 2
 WIN_INNOCENT = 3
@@ -800,6 +807,13 @@ WIN_KILLER = 8
 WIN_ZOMBIE = 9
 WIN_MONSTER = 10
 WIN_VAMPIRE = 11
+
+WIN_MAX = 11
+
+function GenerateNewWinID()
+    WIN_MAX = WIN_MAX + 1
+    return WIN_MAX
+end
 
 -- Weapon categories, you can only carry one of each
 WEAPON_NONE = 0

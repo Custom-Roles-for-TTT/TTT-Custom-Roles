@@ -828,6 +828,10 @@ local function WinChecker()
             EndRound(WIN_TIMELIMIT)
         else
             local win = hook.Call("TTTCheckForWin", GAMEMODE)
+            if win > WIN_MAX then
+                ErrorNoHalt("WARNING: 'TTTCheckForWin' hook returned win ID '" .. win .. "' that exceeds the expected maximum of " .. WIN_MAX .. ". Please use GenerateNewWinID() instead to get a unique win ID.\n")
+            end
+
             if win ~= WIN_NONE then
                 timer.Simple(0.5, function() EndRound(win) end) -- Slight delay to make sure alternate winners go through before scoring
             end

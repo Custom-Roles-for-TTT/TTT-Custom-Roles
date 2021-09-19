@@ -174,6 +174,14 @@ Methods available globally (within the defined realm)
 *Parameters:*
 - *version* - The version number to compare against the currently installed version. Must be in the "#.#.#" format
 
+**GenerateNewEventID()** - Generates a new ID to be used for custom scoring events.\
+*Realm:* Client and Server\
+*Added in:* 1.2.5
+
+**GenerateNewWinID()** - Generates a new ID to be used for custom win conditions.\
+*Realm:* Client and Server\
+*Added in:* 1.2.5
+
 **GetEquipmentItemById(id)** - Gets an equipment item's definition by their ID.\
 *Realm:* Client and Server\
 *Added in:* 1.0.0\
@@ -381,11 +389,11 @@ Variables available when called from a Player object (within the defined realm)
 
 **plymeta:IsDetectiveLike()/plymeta:GetDetectiveLike()** - Whether the player's role is like a detective (e.g. detective or promoted deputy/impersonator).\
 *Realm:* Client and Server\
-*Added in:* 1.0.0\
+*Added in:* 1.0.0
 
 **plymeta:IsDetectiveLikePromotable()/plymeta:GetDetectiveLikePromotable()** - Whether the player's role is an unpromoted detective-like role (deputy/impersonator).\
 *Realm:* Client and Server\
-*Added in:* 1.2.5\
+*Added in:* 1.2.5
 
 **plymeta:IsIndependentTeam()** - Whether the player is on the independent team.\
 *Realm:* Client and Server\
