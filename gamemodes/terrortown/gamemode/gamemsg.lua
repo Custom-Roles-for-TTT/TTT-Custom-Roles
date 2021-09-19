@@ -43,6 +43,11 @@ function TraitorMsg(ply_or_rfilter, msg)
     PlayerMsg(ply_or_rfilter, msg, true)
 end
 
+local function ShouldHideTraitorBeggar()
+    local beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", BEGGAR_REVEAL_ALL)
+    return beggarMode == BEGGAR_REVEAL_NONE or beggarMode == BEGGAR_REVEAL_INNOCENTS
+end
+
 -- Traitorchat
 local function RoleChatMsg(sender, msg)
     net.Start("TTT_RoleChat")
@@ -50,7 +55,11 @@ local function RoleChatMsg(sender, msg)
     net.WriteEntity(sender)
     net.WriteString(msg)
     if sender:IsTraitorTeam() then
-        net.Send(GetTraitorTeamFilter())
+        if ShouldHideTraitorBeggar() then
+            net.Send(GetTraitorWithoutBeggarTeamFilter())
+        else
+            net.Send(GetTraitorTeamFilter())
+        end
     elseif sender:IsDetectiveLike() then
         net.Send(GetDetectiveTeamFilter())
     elseif sender:IsMonsterTeam() then
@@ -89,6 +98,10 @@ end
 
 function GetTraitorTeamFilter(alive_only)
     return GetPlayerFilter(function(p) return (p:IsTraitorTeam()) and (not alive_only or p:IsTerror()) end)
+end
+
+function GetTraitorWithoutBeggarTeamFilter(alive_only)
+    return GetPlayerFilter(function(p) return (p:IsTraitorTeam()) and not p:GetNWBool("WasBeggar", false) and (not alive_only or p:IsTerror()) end)
 end
 
 function GetInnocentTeamFilter(alive_only)
@@ -183,7 +196,10 @@ function GM:PlayerSay(ply, text, team_only)
                 if v:IsGlitch() then hasGlitch = true end
             end
             if ply:IsTraitorTeam() and hasGlitch then
-                ply:SendLua("chat.AddText(\"The glitch is scrambling your communications\")")
+                ply:PrintMessage(HUD_PRINTTALK, "The glitch is scrambling your communications")
+                return ""
+            elseif ply:IsTraitor() and ply:GetNWBool("WasBeggar", false) and ShouldHideTraitorBeggar() then
+                ply:PrintMessage(HUD_PRINTTALK, "You still appear as " .. ROLE_STRINGS_EXT[ROLE_BEGGAR] .. " to " .. ROLE_STRINGS_PLURAL[ROLE_TRAITOR] .. " so you can't use team chat")
                 return ""
             else
                 RoleChatMsg(ply, text)
@@ -242,8 +258,14 @@ function GM:PlayerCanHearPlayersVoice(listener, speaker)
 
         if speaker.traitor_gvoice then
             return true, loc_voice:GetBool()
-        elseif listener:IsActiveTraitorTeam() and not hasGlitch then
-            return true, false
+        elseif listener:IsActiveTraitorTeam() then
+            -- Don't send voice to listener if either one of them was a beggar and the role change is not revealed
+            if ((speaker:IsTraitor() and speaker:GetNWBool("WasBeggar", false)) or
+                (listener:IsTraitor() and listener:GetNWBool("WasBeggar", false))) and
+                ShouldHideTraitorBeggar() then
+                return false, false
+            end
+            return not hasGlitch, false
         else
             -- unless traitor_gvoice is true, normal innos can't hear speaker
             return false, false
@@ -254,18 +276,17 @@ function GM:PlayerCanHearPlayersVoice(listener, speaker)
 end
 
 local function SendTraitorVoiceState(speaker, state)
-    -- send umsg to living traitors that this is traitor-only talk
-    local rf = GetTraitorTeamFilter(true)
-
     -- make it as small as possible, to get there as fast as possible
     -- we can fit it into a mere byte by being cheeky.
     net.Start("TTT_TraitorVoiceState")
     net.WriteUInt(speaker:EntIndex() - 1, 7) -- player ids can only be 1-128
     net.WriteBit(state)
-    if rf then
-        net.Send(rf)
+
+    -- send umsg to living traitors that this is traitor-only talk
+    if ShouldHideTraitorBeggar() then
+        net.Send(GetTraitorWithoutBeggarTeamFilter(true))
     else
-        net.Broadcast()
+        net.Send(GetTraitorTeamFilter(true))
     end
 end
 
@@ -281,9 +302,14 @@ local function TraitorGlobalVoice(ply, cmd, args)
         if v:IsGlitch() then hasGlitch = true end
     end
 
-    if not ply.traitor_gvoice and hasGlitch then
-        ply:SendLua("chat.AddText(\"The glitch is scrambling your communications\")")
-        return
+    if not ply.traitor_gvoice then
+        if hasGlitch then
+            ply:PrintMessage(HUD_PRINTTALK, "The glitch is scrambling your communications")
+            return
+        elseif ply:IsTraitor() and ply:GetNWBool("WasBeggar", false) and ShouldHideTraitorBeggar() then
+            ply:PrintMessage(HUD_PRINTTALK, "You still appear as " .. ROLE_STRINGS_EXT[ROLE_BEGGAR] .. " to " .. ROLE_STRINGS_PLURAL[ROLE_TRAITOR] .. " so you can't use team chat")
+            return
+        end
     end
 
     SendTraitorVoiceState(ply, ply.traitor_gvoice)

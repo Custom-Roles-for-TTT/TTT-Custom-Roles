@@ -16,6 +16,9 @@
 - Added ability to control whether the paramedic spawns with their defib (enabled by default)
 - Added ability for hypnotist device to convert detective and deputies that appear as detective to impersonator (disabled by default)
 
+### Changes
+- Changed beggar to not be able to use or see traitor chat (text or voice) when the beggar reveal mode is disabled for traitors
+
 ### Fixes
 - Fixed zombies sometimes spawning in non-zombie rounds if they are on the traitor team
 - Fixed beggar who converted to traitor and then was resurrected by a hypnotist not showing as a traitor when beggar reveal was disabled for traitors
