@@ -9,6 +9,10 @@
 - Added ability for impersonator to spawn when there isn't a detective and be pre-activated (disabled by default)
 - Added ability to configure zombie conversion to be based on chance, separately for prime and thralls (disabled by default)
 - Added ability for a paramedic's defib to convert all roles to a vanilla innocent (disabled by default)
+- Added ability to add the hypnotist's device to their shop (disabled by default)
+- Added ability to add the paramedic's defib to their shop (disabled by default, requires shop-for-all to be enabled)
+- Added ability to control whether the hypnotist spawns with their device (enabled by default)
+- Added ability to control whether the paramedic spawns with their defib (enabled by default)
 
 ### Developer
 - Added ability for external roles to define when they are "active", tying directly into the "plymeta:IsRoleActive" function
