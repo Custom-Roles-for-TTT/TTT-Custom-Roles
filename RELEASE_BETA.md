@@ -18,6 +18,7 @@
 
 ### Fixes
 - Fixed zombies sometimes spawning in non-zombie rounds if they are on the traitor team
+- Fixed beggar who converted to traitor and then was resurrected by a hypnotist not showing as a traitor when beggar reveal was disabled for traitors
 
 ### Developer
 - Added ability for external roles to define when they are "active", tying directly into the "plymeta:IsRoleActive" function

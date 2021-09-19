@@ -228,6 +228,7 @@ if SERVER then
         ply:SetPos(self.Location or body:GetPos())
         ply:SetEyeAngles(Angle(0, body:GetAngles().y, 0))
         ply:SetNWBool("WasHypnotised", true)
+        ply:SetNWBool("WasBeggar", false)
         -- If detectives and deputies that look like detectives should be converted
         if self:ShouldConvertToImpersonator(ply) then
             -- Keep track of whether they should be promoted
