@@ -531,7 +531,7 @@ Methods created to help with the manipulation of tables
 - *excludes* - Table of values to exclude from the union. (Optional)
 
 ## Hooks
-Custom and modified event hooks available within the defined realm
+Custom and modified event hooks available within the defined realm. A list of default TTT hooks is available [here](https://www.troubleinterroristtown.com/development/hooks/) but note that they may have been modified (see below).
 
 ***NOTE:*** When using a hook with multiple return values, you *must* return a non-`nil` value for all properties up to the one(s) you are modifying or the hook results will be ignored entirely.
 
