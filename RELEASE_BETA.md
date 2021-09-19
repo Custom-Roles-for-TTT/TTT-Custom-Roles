@@ -16,6 +16,9 @@
 - Added ability to control whether the paramedic spawns with their defib (enabled by default)
 - Added ability for hypnotist device to convert detective and deputies that appear as detective to impersonator (disabled by default)
 
+### Fixes
+- Fixed zombies sometimes spawning in non-zombie rounds if they are on the traitor team
+
 ### Developer
 - Added ability for external roles to define when they are "active", tying directly into the "plymeta:IsRoleActive" function
 - Added "plymeta:ShouldActLikeJester" to determine if a player should act like a jester (damage in, damage out, appearance, etc.)

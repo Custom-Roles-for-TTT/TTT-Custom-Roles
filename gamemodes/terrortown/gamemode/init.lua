@@ -1996,7 +1996,8 @@ function SelectRoles()
     for r = ROLE_DETECTIVE + 1, ROLE_MAX do
         if not delayedCheckRoles[r] and not hasRole[r] and GetConVar("ttt_" .. ROLE_STRINGS_RAW[r] .. "_enabled"):GetBool() and choice_count >= GetConVar("ttt_" .. ROLE_STRINGS_RAW[r] .. "_min_players"):GetInt() and ((not rolePredicates[r]) or rolePredicates[r]()) then
             for _ = 1, GetConVar("ttt_" .. ROLE_STRINGS_RAW[r] .. "_spawn_weight"):GetInt() do
-                if TRAITOR_ROLES[r] then
+                -- Don't include zombies in the traitor list since they will spawn as a special "zombie round" sometimes if they are traitors
+                if TRAITOR_ROLES[r] and r ~= ROLE_ZOMBIE then
                     table.insert(specialTraitorRoles, r)
                 elseif DETECTIVE_ROLES[r] then
                     table.insert(specialDetectiveRoles, r)
