@@ -535,25 +535,6 @@ function plymeta:DrunkRememberRole(role, hidecenter)
         self:SetHealth(self:GetMaxHealth())
     end
 
-    -- If this is a promotable role and there are no living detectives, promote them immediately
-    if role == ROLE_DEPUTY or role == ROLE_IMPERSONATOR then
-        local has_detective = false
-        for _, p in ipairs(player.GetAll()) do
-            if p:Alive() and not p:IsSpec() and p:IsDetectiveTeam() then
-                has_detective = true
-                break
-            end
-        end
-
-        if not has_detective then
-            self:SetNWBool("HasPromotion", true)
-
-            net.Start("TTT_Promotion")
-            net.WriteString(self:Nick())
-            net.Broadcast()
-        end
-    end
-
     -- Start role special logic checks
     self:BeginRoleChecks()
 
@@ -675,6 +656,27 @@ function plymeta:BeginRoleChecks()
     -- Glitch logic
     if self:IsGlitch() then
         SetGlobalBool("ttt_glitch_round", true)
+    end
+
+    -- Deputy/Impersonator logic
+    -- If this is a promotable role and there are no living detectives, promote them immediately
+    -- The logic which handles a detective dying is in the PlayerDeath hook
+    if self:IsDeputy() or self:IsImpersonator() then
+        local has_detective = false
+        for _, p in ipairs(player.GetAll()) do
+            if p:Alive() and not p:IsSpec() and p:IsDetectiveTeam() then
+                has_detective = true
+                break
+            end
+        end
+
+        if not has_detective then
+            self:SetNWBool("HasPromotion", true)
+
+            net.Start("TTT_Promotion")
+            net.WriteString(self:Nick())
+            net.Broadcast()
+        end
     end
 end
 

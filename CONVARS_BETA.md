@@ -139,6 +139,7 @@ ttt_traitor_vision_enable                   0       // Whether members of the tr
 ttt_impersonator_damage_penalty             0       // Damage penalty that the impersonator has before being promoted (e.g. 0.5 = 50% less damage)
 ttt_impersonator_credits_starting           1       // The number of credits an impersonator should start with
 ttt_impersonator_use_detective_icon         1       // Whether a promoted impersonator should show the detective icon over their head instead of the impersonator icon (only for traitors, non-traitors will use the equivalent deputy setting)
+ttt_impersonator_without_detective          0       // Whether an impersonator can spawn without a detective in the round. Will automatically promote the impersonator when they spawn
 ttt_single_deputy_impersonator              0       // Whether only a single deputy or impersonator should spawn in a round
 
 // Hypnotist
@@ -220,6 +221,7 @@ ttt_revenger_drain_health_to                -1      // The amount of health to d
 ttt_deputy_damage_penalty                   0       // Damage penalty that the deputy has before being promoted (e.g. 0.5 = 50% less damage)
 ttt_deputy_credits_starting                 0       // The number of credits a deputy should start with
 ttt_deputy_use_detective_icon               1       // Whether a promoted deputy should show the detective icon over their head instead of the deputy icon
+ttt_deputy_without_detective                0       // Whether a deputy can spawn without a detective in the round. Will automatically promote the deputy when they spawn
 
 // Mercenary
 ttt_mercenary_credits_starting              1       // The number of credits a mercenary should start with
