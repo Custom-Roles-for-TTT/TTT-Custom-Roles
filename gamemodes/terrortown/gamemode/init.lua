@@ -86,6 +86,7 @@ CreateConVar("ttt_special_traitor_chance", 0.5)
 CreateConVar("ttt_special_detective_pct", 0.33)
 CreateConVar("ttt_special_detective_chance", 0.5)
 CreateConVar("ttt_independent_chance", 0.5)
+CreateConVar("ttt_jester_chance", 0.5)
 CreateConVar("ttt_monster_pct", 0.33)
 CreateConVar("ttt_monster_chance", 0.5)
 
@@ -295,6 +296,7 @@ CreateConVar("ttt_single_deputy_impersonator", "0")
 CreateConVar("ttt_single_doctor_quack", "0")
 CreateConVar("ttt_single_paramedic_hypnotist", "0")
 CreateConVar("ttt_single_phantom_parasite", "0")
+CreateConVar("ttt_single_jester_independent", "1")
 
 -- Traitor credits
 CreateConVar("ttt_credits_starting", "2")
@@ -1861,9 +1863,12 @@ function SelectRoles()
     local forcedSpecialDetectiveCount = 0
     local forcedSpecialInnocentCount = 0
     local forcedIndependentCount = 0
+    local forcedJesterCount = 0
     local forcedMonsterCount = 0
 
     local hasRole = {}
+
+    local singleJesterIndependent = GetConVar("ttt_single_jester_independent"):GetBool()
 
     PrintRoleText("-----CHECKING EXTERNALLY CHOSEN ROLES-----")
     for _, v in pairs(player.GetAll()) do
@@ -1892,7 +1897,13 @@ function SelectRoles()
                     forcedSpecialDetectiveCount = forcedSpecialDetectiveCount + 1
                 elseif INNOCENT_ROLES[role] and role ~= ROLE_INNOCENT then
                     forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
-                elseif JESTER_ROLES[role] or INDEPENDENT_ROLES[role] then
+                elseif JESTER_ROLES[role] then
+                    if singleJesterIndependent then
+                        forcedIndependentCount = forcedIndependentCount + 1
+                    else
+                        forcedJesterCount = forcedJesterCount + 1
+                    end
+                elseif INDEPENDENT_ROLES[role] then
                     forcedIndependentCount = forcedIndependentCount + 1
                 elseif MONSTER_ROLES[role] then
                     forcedMonsterCount = forcedMonsterCount + 1
@@ -1928,12 +1939,14 @@ function SelectRoles()
     local traitor_count = GetTraitorCount(choice_count) - forcedTraitorCount - forcedSpecialTraitorCount
     local max_special_traitor_count = GetSpecialTraitorCount(traitor_count) - forcedSpecialTraitorCount
     local independent_count = ((math.random() <= GetConVar("ttt_independent_chance"):GetFloat()) and 1 or 0) - forcedIndependentCount
+    local jester_count = ((math.random() <= GetConVar("ttt_jester_chance"):GetFloat()) and 1 or 0) - forcedJesterCount
     local monster_count = GetMonsterCount(choice_count) - forcedMonsterCount
 
     local specialTraitorRoles = {}
     local specialInnocentRoles = {}
     local specialDetectiveRoles = {}
     local independentRoles = {}
+    local jesterRoles = {}
     local monsterRoles = {}
 
     -- Special rules for role spawning
@@ -1973,7 +1986,13 @@ function SelectRoles()
                     table.insert(specialDetectiveRoles, r)
                 elseif INNOCENT_ROLES[r] then
                     table.insert(specialInnocentRoles, r)
-                elseif JESTER_ROLES[r] or INDEPENDENT_ROLES[r] then
+                elseif JESTER_ROLES[r] then
+                    if singleJesterIndependent then
+                        table.insert(independentRoles, r)
+                    else
+                        table.insert(jesterRoles, r)
+                    end
+                elseif INDEPENDENT_ROLES[r] then
                     table.insert(independentRoles, r)
                 elseif MONSTER_ROLES[r] then
                     table.insert(monsterRoles, r)
@@ -2107,7 +2126,9 @@ function SelectRoles()
     if forcedIndependentCount == 0 and independent_count > 0 and #choices > 0 then
         -- Allow external addons to modify available roles and their weights
         hook.Run("TTTSelectRolesIndependentOptions", independentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
-        hook.Run("TTTSelectRolesJesterOptions", independentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+        if singleJesterIndependent then
+            hook.Run("TTTSelectRolesJesterOptions", independentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+        end
 
         if #independentRoles ~= 0 then
             local plyPick = math.random(1, #choices)
@@ -2120,6 +2141,26 @@ function SelectRoles()
             for i = #independentRoles, 1, -1 do
                 if independentRoles[i] == role then
                     table.remove(independentRoles, i)
+                end
+            end
+        end
+    end
+
+    -- pick jester
+    if not singleJesterIndependent and forcedJesterCount == 0 and jester_count > 0 and #choices > 0 then
+        hook.Run("TTTSelectRolesJesterOptions", jesterRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+
+        if #jesterRoles ~= 0 then
+            local plyPick = math.random(1, #choices)
+            local ply = choices[plyPick]
+            local rolePick = math.random(1, #jesterRoles)
+            local role = jesterRoles[rolePick]
+            ply:SetRole(role)
+            PrintRole(ply, role)
+            table.remove(choices, plyPick)
+            for i = #jesterRoles, 1, -1 do
+                if jesterRoles[i] == role then
+                    table.remove(jesterRoles, i)
                 end
             end
         end

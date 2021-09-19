@@ -3,6 +3,9 @@
 ## 1.2.5
 **Released:**
 
+### Additions
+- Added ability to have a jester and an independent both spawn in the same round (disabled by default)
+
 ### Developer
 - Added ability for external roles to define when they are "active", tying directly into the "plymeta:IsRoleActive" function
 - Added "plymeta:ShouldActLikeJester" to determine if a player should act like a jester (damage in, damage out, appearance, etc.)
