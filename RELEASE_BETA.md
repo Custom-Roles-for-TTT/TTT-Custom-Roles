@@ -8,6 +8,7 @@
 - Added ability for deputy to spawn when there isn't a detective and be pre-activated (disabled by default)
 - Added ability for impersonator to spawn when there isn't a detective and be pre-activated (disabled by default)
 - Added ability to configure zombie conversion to be based on chance, separately for prime and thralls (disabled by default)
+- Added ability for a paramedic's defib to convert all roles to a vanilla innocent (disabled by default)
 
 ### Developer
 - Added ability for external roles to define when they are "active", tying directly into the "plymeta:IsRoleActive" function

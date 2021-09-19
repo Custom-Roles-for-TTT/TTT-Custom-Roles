@@ -237,6 +237,9 @@ ttt_veteran_shop_delay                      0       // Whether the veteran's pur
 // Doctor
 ttt_doctor_credits_starting                 1       // The number of credits a doctor should start with
 
+// Paramedic
+ttt_paramedic_defib_as_innocent             1       // Whether the paramedic's defib brings back everyone as a vanilla innocent role
+
 // ----------------------------------------
 
 // DETECTIVE TEAM SETTINGS

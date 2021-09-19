@@ -205,6 +205,8 @@ CreateConVar("ttt_veteran_full_heal", "1")
 CreateConVar("ttt_veteran_heal_bonus", "0")
 CreateConVar("ttt_veteran_announce", "0")
 
+CreateConVar("ttt_paramedic_defib_as_innocent", "0")
+
 -- Detective role properties
 CreateConVar("ttt_detective_search_only", "1")
 CreateConVar("ttt_detective_disable_looting", "0")
