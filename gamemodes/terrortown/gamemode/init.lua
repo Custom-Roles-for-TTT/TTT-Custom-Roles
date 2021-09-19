@@ -351,7 +351,7 @@ CreateConVar("ttt_shop_random_percent", "50", FCVAR_REPLICATED, "The percent cha
 CreateConVar("ttt_shop_random_position", "0", FCVAR_REPLICATED, "Whether to randomize the position of the items in the shop")
 
 -- Create the starting credit convar for all roles that have credits but don't have a shop
-local shopless_credit_roles = table.ExcludedKeys(EXTERNAL_ROLE_STARTING_CREDITS, shop_roles)
+local shopless_credit_roles = table.UnionedKeys(CAN_LOOT_CREDITS_ROLES, EXTERNAL_ROLE_STARTING_CREDITS, shop_roles)
 for _, role in ipairs(shopless_credit_roles) do
     CreateCreditConVar(role)
 end

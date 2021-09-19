@@ -246,6 +246,9 @@ ttt_paramedic_defib_as_innocent             1       // Whether the paramedic's d
 ttt_paramedic_device_loadout                1       // Whether the paramedic's defib should be given to them when they spawn. Server must be restarted for changes to take effect
 ttt_paramedic_device_shop                   0       // Whether the paramedic's defib should be purchasable in the shop (requires ttt_shop_for_all to be enabled). Server must be restarted for changes to take effect
 
+// Trickster
+ttt_trickster_credits_starting              0       // The number of credits a trickster should start with
+
 // ----------------------------------------
 
 // DETECTIVE TEAM SETTINGS
