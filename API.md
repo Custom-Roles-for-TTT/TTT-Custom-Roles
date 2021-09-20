@@ -664,7 +664,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 *Realm:* Server\
 *Added in:* 1.2.3\
 *Parameters:*
-- *roleTable* - The table of roles representing the available independent roles and their weight (how many times they appear in the table). This table should be manipulated to effect change
+- *roleTable* - The table of roles representing the available independent roles (and jester roles, if ttt_single_jester_independent is enabled) and their weight (how many times they appear in the table). This table should be manipulated to effect change
 - *choices* - The table of available player choices that will not be (and have not already been) assigned a traitor or detective role. Manipulating this table will have no effect
 - *choiceCount* - The total number of player choices there are
 - *traitors* - The table of available player choices that will be (or have already been) assigned a traitor role. Manipulating this table will have no effect
@@ -688,7 +688,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 *Realm:* Server\
 *Added in:* 1.2.3\
 *Parameters:*
-- *roleTable* - The table of roles representing the available jester roles and their weight (how many times they appear in the table). This table should be manipulated to effect change
+- *roleTable* - The table of roles representing the available jester roles (and independent roles, if ttt_single_jester_independent is enabled) and their weight (how many times they appear in the table). This table should be manipulated to effect change
 - *choices* - The table of available player choices that will not be (and have not already been) assigned a traitor or detective role. Manipulating this table will have no effect
 - *choiceCount* - The total number of player choices there are
 - *traitors* - The table of available player choices that will be (or have already been) assigned a traitor role. Manipulating this table will have no effect
