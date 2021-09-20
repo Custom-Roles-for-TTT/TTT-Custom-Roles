@@ -738,6 +738,58 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 
 *Return:* The stamina value to assign to the player. If none is provided, the player's stamina will not be changed.
 
+**TTTTargetIDPlayerHealth(ply, client, text, clr)** - Called before a player's heath status (shown when you look at a player) is rendered.\
+*Realm:* Client\
+*Added in:* 1.2.5\
+*Parameters:*
+- *ply* - The target player being rendered
+- *client* - The local player
+- *text* - The health-related text being shown
+- *clr* - The [Color](https://wiki.facepunch.com/gmod/Global.Color) of the text being used
+
+*Return:*
+- *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
+- *clr* - The new clr value to use or the original passed into the hook
+
+**TTTTargetIDEntityHintLabel(ent, client, label, clr)** - Called before an entity's hint label (shown when you look at an entity) is rendered.\
+*Realm:* Client\
+*Added in:* 1.2.5\
+*Parameters:*
+- *ent* - The target entity being rendered. Guaranteed to not be a player.
+- *client* - The local player
+- *text* - The label for the hint-related text being shown
+- *clr* - The [Color](https://wiki.facepunch.com/gmod/Global.Color) of the text being used
+
+*Return:*
+- *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
+- *clr* - The new clr value to use or the original passed into the hook
+
+**TTTTargetIDPlayerHintText(ent, client, text, clr)** - Called before an entity's hint text (shown when you look at an entity) is rendered.\
+*Realm:* Client\
+*Added in:* 1.2.5\
+*Parameters:*
+- *ent* - The target entity being rendered. Not necessarily a player so be sure to check `ent:IsPlayer()` if needed
+- *client* - The local player
+- *text* - The hint-related text being shown
+- *clr* - The [Color](https://wiki.facepunch.com/gmod/Global.Color) of the text being used
+
+*Return:*
+- *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
+- *clr* - The new clr value to use or the original passed into the hook
+
+**TTTTargetIDPlayerKarma(ply, client, text, clr)** - Called before a player's karma status text (shown when you look at a player) is rendered.\
+*Realm:* Client\
+*Added in:* 1.2.5\
+*Parameters:*
+- *ply* - The target player being rendered
+- *client* - The local player
+- *text* - The karma-related text being shown
+- *clr* - The [Color](https://wiki.facepunch.com/gmod/Global.Color) of the text being used
+
+*Return:*
+- *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
+- *clr* - The new clr value to use or the original passed into the hook
+
 **TTTTargetIDPlayerKillIcon(ply, client, showKillIcon, showJester)** - Called before player Target ID icon (over their head) is rendered to determine if the "KILL" icon should be shown.\
 *Realm:* Client\
 *Added in:* 1.1.9\
@@ -749,7 +801,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 
 *Return:* `true` if the kill icon should be shown or `false` if not. Returning nothing or a non-boolean value will default to the given *showKillIcon* value.
 
-**TTTTargetIDPlayerRing(ent, client, ringVisible)** - Called before a player Target ID ring (shown when you look at a player) is rendered.\
+**TTTTargetIDPlayerRing(ent, client, ringVisible)** - Called before an entity's Target ID ring (shown when you look at an entity) is rendered.\
 *Realm:* Client\
 *Added in:* 1.2.3\
 *Parameters:*
@@ -785,13 +837,13 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *ent* - The target entity being rendered. Not necessarily a player so be sure to check `ent:IsPlayer()` if needed
 - *client* - The local player
 - *text* - The first line of text being shown
-- *clr* - The color of the text being used
+- *clr* - The [Color](https://wiki.facepunch.com/gmod/Global.Color) of the text being used
 - *secondaryText* - The second line of text being shown
 
 *Return:*
 - *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
 - *clr* - The new clr value to use or the original passed into the hook
-- *secondaryText* - The new secondaryText value to use or the original passed into the hook
+- *secondaryText* - The new secondaryText value to use or the original passed into the hook. Return `false` to not show text at all
 
 ## SWEPs
 Changes made to SWEPs (the data structure used when defining new weapons)

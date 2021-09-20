@@ -30,6 +30,11 @@
 - Added ability for external roles to define if/when they should act like a jester, tying directly into the "plymeta:ShouldActLikeJester" function
 - Added GenerateNewEventID method for generating a unique ID for custom scoring events
 - Added GenerateNewWinID method for generating a unique ID for custom win conditions
+- Added TTTTargetIDPlayerHealth hook for controling what text to show when rendering a player's health
+- Added TTTTargetIDPlayerKarma hook for controling what text to show when rendering a player's karma
+- Added TTTTargetIDEntityHintLabel hook for controling what text to show when rendering a player or entity's hint label
+- Added TTTTargetIDPlayerHintText hook for controling what text to show when rendering an entity's hint text
+- Fixed returning false for either text value in TTTTargetIDPlayerText hook not actually stopping the original text from being used
 
 ## 1.2.4
 **Released: September 15th, 2021**

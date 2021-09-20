@@ -523,19 +523,33 @@ function GM:HUDDrawTargetID()
 
         -- HealthToString returns a string id, need to look it up
         text = L[text]
+
+        -- Allow external roles to override or block showing health
+        local new_text, new_col = hook.Run("TTTTargetIDPlayerHealth", ent, client, text, col)
+        -- If the first return value is a boolean and it's "false" then save that so we know to skip rendering the text
+        if new_text or (type(new_text) == "boolean" and not new_text) then text = new_text end
+        if new_col then col = new_col end
     elseif hint then
         text = GetRaw(hint.name) or hint.name
+
+        -- Allow external roles to override or block showing the hint label
+        local new_text, new_col = hook.Run("TTTTargetIDEntityHintLabel", ent, client, text, col)
+        -- If the first return value is a boolean and it's "false" then save that so we know to skip rendering the text
+        if new_text or (type(new_text) == "boolean" and not new_text) then text = new_text end
+        if new_col then col = new_col end
     else
         return
     end
     font = "TargetIDSmall2"
 
-    surface.SetFont(font)
-    w, h = surface.GetTextSize(text)
-    x = x_orig - w / 2
+    if text and col then
+        surface.SetFont(font)
+        w, h = surface.GetTextSize(text)
+        x = x_orig - w / 2
 
-    draw.SimpleText(text, font, x + 1, y + 1, COLOR_BLACK)
-    draw.SimpleText(text, font, x, y, col)
+        draw.SimpleText(text, font, x + 1, y + 1, COLOR_BLACK)
+        draw.SimpleText(text, font, x, y, col)
+    end
 
     font = "TargetIDSmall"
     surface.SetFont(font)
@@ -546,27 +560,44 @@ function GM:HUDDrawTargetID()
 
         text = L[text]
 
-        w, h = surface.GetTextSize(text)
-        y = y + h + 5
-        x = x_orig - w / 2
+        -- Allow external roles to override or block showing karma
+        local new_text, new_col = hook.Run("TTTTargetIDPlayerKarma", ent, client, text, col)
+        -- If the first return value is a boolean and it's "false" then save that so we know to skip rendering the text
+        if new_text or (type(new_text) == "boolean" and not new_text) then text = new_text end
+        if new_col then col = new_col end
 
-        draw.SimpleText(text, font, x + 1, y + 1, COLOR_BLACK)
-        draw.SimpleText(text, font, x, y, col)
+        if text and col then
+            w, h = surface.GetTextSize(text)
+            y = y + h + 5
+            x = x_orig - w / 2
+
+            draw.SimpleText(text, font, x + 1, y + 1, COLOR_BLACK)
+            draw.SimpleText(text, font, x, y, col)
+        end
     end
 
     -- Draw key hint
     if hint and hint.hint then
+        col = COLOR_LGRAY
         if not hint.fmt then
             text = GetRaw(hint.hint) or hint.hint
         else
             text = hint.fmt(ent, hint.hint)
         end
 
-        w, h = surface.GetTextSize(text)
-        x = x_orig - w / 2
-        y = y + h + 5
-        draw.SimpleText(text, font, x + 1, y + 1, COLOR_BLACK)
-        draw.SimpleText(text, font, x, y, COLOR_LGRAY)
+        -- Allow external roles to override or block showing karma
+        local new_text, new_col = hook.Run("TTTTargetIDPlayerHintText", ent, client, text, col)
+        -- If the first return value is a boolean and it's "false" then save that so we know to skip rendering the text
+        if new_text or (type(new_text) == "boolean" and not new_text) then text = new_text end
+        if new_col then col = new_col end
+
+        if text and col then
+            w, h = surface.GetTextSize(text)
+            x = x_orig - w / 2
+            y = y + h + 5
+            draw.SimpleText(text, font, x + 1, y + 1, COLOR_BLACK)
+            draw.SimpleText(text, font, x, y, col)
+        end
     end
 
     text = nil
@@ -629,9 +660,10 @@ function GM:HUDDrawTargetID()
     end
 
     local new_text, new_color, new_secondary = hook.Run("TTTTargetIDPlayerText", ent, client, text, col, secondary_text)
-    if new_text then text = new_text end
+    -- If either text return value is a boolean and it's "false" then save that so we know to skip rendering the text
+    if new_text or (type(new_text) == "boolean" and not new_text) then text = new_text end
     if new_color then col = new_color end
-    if new_secondary then secondary_text = new_secondary end
+    if new_secondary or (type(new_secondary) == "boolean" and not new_secondary) then secondary_text = new_secondary end
 
     if text then
         w, h = surface.GetTextSize(text)
