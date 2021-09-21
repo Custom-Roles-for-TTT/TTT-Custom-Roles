@@ -22,6 +22,8 @@ if CLIENT then
         type = "item_weapon",
         desc = "Revives a dead player."
     }
+
+    SWEP.Icon = "vgui/ttt/icon_meddefib"
 end
 
 SWEP.Base = "weapon_tttbase"

@@ -22,6 +22,8 @@ if CLIENT then
         type = "item_weapon",
         desc = "Revives an innocent as a traitor."
     }
+
+    SWEP.Icon = "vgui/ttt/icon_brainwash"
 end
 
 SWEP.Base = "weapon_tttbase"
