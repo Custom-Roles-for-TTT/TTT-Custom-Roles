@@ -509,7 +509,8 @@ if SERVER then
             return true
         end    
     end)
-else
+end
+if CLIENT then
     LANG.AddToLanguage("english", "win_summoner", "The {role}'s minions have overwhelmed their enemies!")
 end
 ```
@@ -546,7 +547,8 @@ If we piece together all the bits of code from the preivous sections it would co
                 return true
             end
         end)
-    else
+    end
+    if CLIENT then
         LANG.AddToLanguage("english", "win_summoner", "The {role}'s minions have overwhelmed their enemies!")
 
         hook.Add("TTTScoringWinTitle", "SummonerScoringWinTitle", function(wintype, wintitles, title, secondaryWinRole)
