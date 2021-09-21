@@ -124,9 +124,9 @@ if SERVER then
             self:Remove()
         else
             if ply == owner then
-                self:SetNextPrimaryFire(CurTime() + 1)
-            else
                 self:SetNextSecondaryFire(CurTime() + 1)
+            else
+                self:SetNextPrimaryFire(CurTime() + 1)
             end
         end
     end
