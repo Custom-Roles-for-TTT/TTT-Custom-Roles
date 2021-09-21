@@ -583,9 +583,12 @@ Teleporting makes noise, and the
 number of uses is limited.]]
 
 -- Parasite cure
-
 L.cure_help_pri = "{primaryfire} to cure another player."
 L.cure_help_sec = "{secondaryfire} to cure yourself."
+
+-- Phantom exorcsim
+L.exor_help_pri = "{primaryfire} to cleanse another player."
+L.exor_help_sec = "{secondaryfire} to cleanse yourself."
 
 -- Brainwashing device
 L.brainwash_help_pri = "Hold {primaryfire} to revive dead body."

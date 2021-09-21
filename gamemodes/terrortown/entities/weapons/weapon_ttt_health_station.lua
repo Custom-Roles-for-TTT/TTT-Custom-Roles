@@ -36,7 +36,7 @@ SWEP.Secondary.Delay        = 1.0
 
 -- This is special equipment
 SWEP.Kind                   = WEAPON_EQUIP
-SWEP.CanBuy                 = {ROLE_DETECTIVE, ROLE_DOCTOR, ROLE_QUACK }
+SWEP.CanBuy                 = {ROLE_DETECTIVE, ROLE_DOCTOR, ROLE_QUACK}
 SWEP.LimitedStock           = true -- only buyable once
 SWEP.WeaponID               = AMMO_HEALTHSTATION
 

@@ -146,6 +146,7 @@ end
 
 -- Traitor role properties
 CreateConVar("ttt_traitor_vision_enable", "0")
+CreateConVar("ttt_traitor_phantom_cure", "0")
 
 CreateConVar("ttt_impersonator_damage_penalty", "0")
 CreateConVar("ttt_impersonator_use_detective_icon", "1")
@@ -168,6 +169,8 @@ CreateConVar("ttt_vampire_show_target_icon", "0")
 CreateConVar("ttt_vampire_damage_reduction", "0")
 CreateConVar("ttt_vampire_prime_death_mode", "0")
 CreateConVar("ttt_vampire_vision_enable", "0")
+
+CreateConVar("ttt_quack_phantom_cure", "0")
 
 CreateConVar("ttt_parasite_infection_time", 45)
 CreateConVar("ttt_parasite_infection_transfer", 0)
@@ -707,6 +710,7 @@ function GM:SyncGlobals()
     SetGlobalInt("ttt_tracker_footstep_time", GetConVar("ttt_tracker_footstep_time"):GetInt())
 
     SetGlobalBool("ttt_traitor_vision_enable", GetConVar("ttt_traitor_vision_enable"):GetBool())
+    SetGlobalBool("ttt_traitor_phantom_cure", GetConVar("ttt_traitor_phantom_cure"):GetBool())
 
     SetGlobalBool("ttt_hypnotist_device_loadout", GetConVar("ttt_hypnotist_device_loadout"):GetBool())
     SetGlobalBool("ttt_hypnotist_device_shop", GetConVar("ttt_hypnotist_device_shop"):GetBool())
@@ -720,6 +724,8 @@ function GM:SyncGlobals()
     SetGlobalBool("ttt_vampires_are_independent", GetConVar("ttt_vampires_are_independent"):GetBool())
     SetGlobalBool("ttt_vampire_show_target_icon", GetConVar("ttt_vampire_show_target_icon"):GetBool())
     SetGlobalBool("ttt_vampire_vision_enable", GetConVar("ttt_vampire_vision_enable"):GetBool())
+
+    SetGlobalBool("ttt_quack_phantom_cure", GetConVar("ttt_quack_phantom_cure"):GetBool())
 
     SetGlobalInt("ttt_parasite_infection_time", GetConVar("ttt_parasite_infection_time"):GetInt())
     SetGlobalBool("ttt_parasite_enabled", GetConVar("ttt_parasite_enabled"):GetBool())

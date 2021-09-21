@@ -1115,6 +1115,22 @@ function UpdateRoleWeaponState()
         paramedic_defib.CanBuy = nil
     end
 
+    -- Phantom
+    local phantom_device = weapons.GetStored("weapon_pha_exorcism")
+    local phantom_device_roles = {}
+    if GetGlobalBool("ttt_traitor_phantom_cure", false) then
+        table.insert(phantom_device_roles, ROLE_TRAITOR)
+    end
+    if GetGlobalBool("ttt_quack_phantom_cure", false) then
+        table.insert(phantom_device_roles, ROLE_QUACK)
+    end
+
+    if #phantom_device_roles > 0 then
+        phantom_device.CanBuy = phantom_device_roles
+    else
+        table.Empty(phantom_device.CanBuy)
+    end
+
     if SERVER then
         net.Start("TTT_ResetBuyableWeaponsCache")
         net.Broadcast()
@@ -1325,6 +1341,7 @@ DefaultEquipment = {
         "weapon_ttt_sipistol",
         "weapon_ttt_teleport",
         "weapon_ttt_decoy",
+        "weapon_pha_exorcism",
         EQUIP_ARMOR,
         EQUIP_RADAR,
         EQUIP_DISGUISE
@@ -1361,6 +1378,7 @@ DefaultEquipment = {
     },
 
     [ROLE_HYPNOTIST] = {
+        "weapon_hyp_brainwash",
         EQUIP_ARMOR,
         EQUIP_RADAR,
         EQUIP_DISGUISE
@@ -1392,6 +1410,8 @@ DefaultEquipment = {
         "weapon_zm_shotgun",
         "weapon_zm_sledge",
         "weapon_ttt_glock",
+        "weapon_kil_crowbar",
+        "weapon_kil_knife",
         EQUIP_ARMOR,
         EQUIP_RADAR,
         EQUIP_DISGUISE
@@ -1412,6 +1432,11 @@ DefaultEquipment = {
     },
 
     [ROLE_QUACK] = {
+        "weapon_ttt_health_station",
+        "weapon_par_cure",
+        "weapon_pha_exorcism",
+        "weapon_qua_bomb_station",
+        "weapon_qua_fake_cure",
         EQUIP_ARMOR,
         EQUIP_RADAR,
         EQUIP_DISGUISE
@@ -1421,6 +1446,16 @@ DefaultEquipment = {
         EQUIP_ARMOR,
         EQUIP_RADAR,
         EQUIP_DISGUISE
+    },
+
+    [ROLE_DOCTOR] = {
+        "weapon_ttt_health_station",
+        "weapon_par_cure",
+        "weapon_qua_fake_cure"
+    },
+
+    [ROLE_PARAMEDIC] = {
+        "weapon_med_defib"
     },
 
     -- non-buyable
