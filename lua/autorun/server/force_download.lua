@@ -8,6 +8,7 @@ if SERVER then
 
     -- Items
     resource.AddFile("materials/vgui/ttt/icon_cure.vmt")
+    resource.AddFile("materials/vgui/ttt/icon_bombstation.vmt")
     resource.AddFile("materials/vgui/ttt/icon_fakecure.vmt")
     resource.AddFile("materials/vgui/ttt/icon_exor.vmt")
     resource.AddFile("materials/vgui/ttt/icon_regen.vmt")
