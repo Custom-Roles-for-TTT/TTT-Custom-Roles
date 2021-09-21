@@ -35,6 +35,7 @@
 - Added TTTTargetIDEntityHintLabel hook for controlling what text to show when rendering a player or entity's hint label
 - Added TTTTargetIDPlayerHintText hook for controlling what text to show when rendering an entity's hint text
 - Fixed returning false for either text value in TTTTargetIDPlayerText hook not actually stopping the original text from being used
+- Fixed ttt_debug_preventwin not blocking when TTTCheckForWin returns a value or when the round time ends
 
 ## 1.2.4
 **Released: September 15th, 2021**

@@ -823,6 +823,9 @@ end
 
 -- Used to be in think, now a timer
 local function WinChecker()
+    -- If prevent-win is enabled then don't even check the win conditions
+    if ttt_dbgwin:GetBool() then return end
+
     if GetRoundState() == ROUND_ACTIVE then
         if CurTime() > GetGlobalFloat("ttt_round_end", 0) then
             EndRound(WIN_TIMELIMIT)
@@ -1582,8 +1585,6 @@ end
 
 -- The most basic win check is whether both sides have one dude alive
 function GM:TTTCheckForWin()
-    if ttt_dbgwin:GetBool() then return WIN_NONE end
-
     local traitor_alive = false
     local innocent_alive = false
     local drunk_alive = false
