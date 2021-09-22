@@ -16,6 +16,7 @@
 - Added ability to control whether the paramedic spawns with their defib (enabled by default)
 - Added ability for hypnotist device to convert detective and deputies that appear as detective to impersonator (disabled by default)
 - Added ability for traitor or quack to buy an exorcism device usable to remove a haunting phantom (disabled by default)
+- Added configuration for whether assassin damage bonus applies to weapons bought from the shop (enabled by default)
 - Added a shop icon for the bomb station
 
 ### Changes

@@ -1754,7 +1754,16 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
                 if att:GetNWBool("AssassinFailed", false) then
                     scale = -GetConVar("ttt_assassin_failed_damage_penalty"):GetFloat()
                 elseif ply:Nick() == att:GetNWString("AssassinTarget", "") then
-                    scale = GetConVar("ttt_assassin_target_damage_bonus"):GetFloat()
+                    -- Get the active weapon, whather it's in the inflictor or it's from the attacker
+                    local active_weapon = dmginfo:GetInflictor()
+                    if not IsValid(active_weapon) or IsPlayer(active_weapon) then
+                        active_weapon = att:GetActiveWeapon()
+                    end
+
+                    -- Only scale bought weapons if that is enabled
+                    if (active_weapon.Spawnable or (not active_weapon.CanBuy or GetConVar("ttt_assassin_target_bonus_bought"):GetBool())) then
+                        scale = GetConVar("ttt_assassin_target_damage_bonus"):GetFloat()
+                    end
                 else
                     scale = -GetConVar("ttt_assassin_wrong_damage_penalty"):GetFloat()
                 end
