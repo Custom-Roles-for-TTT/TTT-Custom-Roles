@@ -85,6 +85,7 @@ plymeta.IsVampireAlly = plymeta.GetVampireAlly
 
 function plymeta:IsSpecial() return self:GetRole() ~= ROLE_INNOCENT end
 function plymeta:IsCustom() return not DEFAULT_ROLES[self:GetRole()] end
+
 function plymeta:IsShopRole()
     local role = self:GetRole()
     local hasShop = SHOP_ROLES[role] or false
@@ -144,6 +145,7 @@ function plymeta:CanLootCredits(active_only)
     end
     return self:IsShopRole()
 end
+
 function plymeta:ShouldActLikeJester()
     if self:IsClown() then return not self:GetNWBool("KillerClownActive", false) end
 
@@ -152,6 +154,33 @@ function plymeta:ShouldActLikeJester()
     if EXTERNAL_ROLE_SHOULD_ACT_LIKE_JESTER[role] then return EXTERNAL_ROLE_SHOULD_ACT_LIKE_JESTER[role](self) end
 
     return self:IsJesterTeam()
+end
+function plymeta:ShouldHideJesters()
+    if self:IsTraitorTeam() then
+        return not GetGlobalBool("ttt_jesters_visible_to_traitors", false)
+    elseif self:IsMonsterTeam() then
+        return not GetGlobalBool("ttt_jesters_visible_to_monsters", false)
+    elseif self:IsIndependentTeam() then
+        return not GetGlobalBool("ttt_jesters_visible_to_independents", false)
+    end
+    return true
+end
+function plymeta:ShouldRevealBeggar(tgt)
+    -- If we weren't given a target, use ourselves
+    if not tgt then tgt = self end
+
+    -- Determine whether which setting we should check based on what role they changed to
+    local beggarMode = nil
+    if tgt:IsTraitor() then
+        beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", BEGGAR_REVEAL_ALL)
+    elseif tgt:IsInnocent() then
+        beggarMode = GetGlobalInt("ttt_beggar_reveal_innocent", BEGGAR_REVEAL_TRAITORS)
+    end
+
+    -- Check the setting value and the player's team to see we if should reveal this beggar
+    return beggarMode == BEGGAR_REVEAL_ALL or
+            (self:IsInnocentTeam() and beggarMode == BEGGAR_REVEAL_INNOCENTS) or
+            (self:IsTraitorTeam() and beggarMode == BEGGAR_REVEAL_TRAITORS)
 end
 
 function plymeta:SetRoleAndBroadcast(role)

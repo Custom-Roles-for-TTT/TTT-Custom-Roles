@@ -516,10 +516,9 @@ function GM:PlayerStartVoice(ply)
 
             -- Return early so the client doesn't think they are talking
             if not client.traitor_gvoice then
-                local beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", BEGGAR_REVEAL_ALL)
                 if hasGlitch then
                     return
-                elseif client:IsTraitor() and client:GetNWBool("WasBeggar", false) and (beggarMode == BEGGAR_REVEAL_NONE or beggarMode == BEGGAR_REVEAL_INNOCENTS) then
+                elseif client:IsTraitor() and client:GetNWBool("WasBeggar", false) and not client:ShouldRevealBeggar() then
                     return
                 end
             end

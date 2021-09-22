@@ -38,6 +38,8 @@
 - Added TTTTargetIDPlayerKarma hook for controlling what text to show when rendering a player's karma
 - Added TTTTargetIDEntityHintLabel hook for controlling what text to show when rendering a player or entity's hint label
 - Added TTTTargetIDPlayerHintText hook for controlling what text to show when rendering an entity's hint text
+- Added "plymeta:ShouldRevealBeggar" to determine if a palyer should be able to tell that a target player is no longer a beggar (e.g. converted to an innocent or traitor)
+- Changed the global "ShouldHideJesters" to be deprecated in favor of "plymeta:ShouldHideJesters"
 - Fixed returning false for either text value in TTTTargetIDPlayerText hook not actually stopping the original text from being used
 - Fixed ttt_debug_preventwin not blocking when TTTCheckForWin returns a value or when the round time ends
 

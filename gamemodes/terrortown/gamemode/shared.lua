@@ -1196,14 +1196,9 @@ function GetWinningMonsterRole()
 end
 
 function ShouldHideJesters(p)
-    if p:IsTraitorTeam() then
-        return not GetGlobalBool("ttt_jesters_visible_to_traitors", false)
-    elseif p:IsMonsterTeam() then
-        return not GetGlobalBool("ttt_jesters_visible_to_monsters", false)
-    elseif p:IsIndependentTeam() then
-        return not GetGlobalBool("ttt_jesters_visible_to_independents", false)
-    end
-    return true
+    -- TODO: Remove this in the next beta release after 1.2.5 is released to non-beta
+    ErrorNoHaltWithStack("WARNING: ShouldHideJesters(ply) is deprecated. Please switch to ply:ShouldHideJesters()")
+    return p:ShouldHideJesters()
 end
 
 if SERVER then

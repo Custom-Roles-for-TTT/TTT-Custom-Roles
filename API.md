@@ -18,6 +18,8 @@
 ## Overview
 This document aims to explain the things that we have added to Custom Roles for TTT that are usable by other developers for integration.
 
+*NOTE:* Any entries in this document marked as *deprecated* will provide a version number where we will begin issuing a warning message in the server console if they are used. Anything marked as *deprecated* will be removed in the first beta version following the next major release from the deprecation version. For example: If something is marked as "deprecated in version 1.2.5" and the next released version number is 1.2.6 then that deprecated thing will be deleted in the beta version after that (1.2.7, for example).
+
 ## Global Variables
 Variables available globally (within the defined realm)
 
@@ -277,6 +279,7 @@ Methods available globally (within the defined realm)
 **ShouldHideJesters(ply)** - Whether the target player should hide a jester player's role (in radar, on the scoreboard, in target ID, etc.).\
 *Realm:* Client and Server\
 *Added in:* 1.2.3\
+*Deprecated in:* 1.2.5\
 *Parameters:*
 - *ply* - The target player
 
@@ -483,6 +486,16 @@ Variables available when called from a Player object (within the defined realm)
 **plymeta:ShouldDelayShopPurchase()** - Whether the player's shop purchase deliveries should be delayed.\
 *Realm:* Client and Server\
 *Added in:* 1.2.2
+
+**plymeta:ShouldHideJesters()** - Whether the player should hide a jester player's role (in radar, on the scoreboard, in target ID, etc.).\
+*Realm:* Client and Server\
+*Added in:* 1.2.5
+
+**plymeta:ShouldRevealBeggar(tgt)** - Whether the player should reveal the fact that the target player is no longer a beggar (e.g. converted to an innocent or traitor).\
+*Realm:* Client and Server\
+*Added in:* 1.2.5\
+*Parameters:*
+- *tgt* - The target player beggar. If a value is not provided, the context player will be used instead (e.g. `ply:ShouldRevealBeggar()` is the same as `ply:ShouldRevealBeggar(ply)`)
 
 **plymeta:SoberDrunk(team)** - Runs the logic for when a drunk sobers up and remembers their role.\
 *Realm:* Server\
