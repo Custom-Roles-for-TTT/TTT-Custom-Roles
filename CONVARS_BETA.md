@@ -135,6 +135,9 @@ ttt_madscientist_min_players                0       // The minimum number of pla
 // TRAITOR TEAM SETTINGS
 ttt_traitor_vision_enable                   0       // Whether members of the traitor team can see other members of the traitor team (including Glitches) through walls via a highlight effect
 
+// Traitor
+ttt_traitor_phantom_cure                    0       // Whether to allow the traitor to buy the phantom exorcism device which can remove a haunting phantom. Server must be restarted for changes to take effect
+
 // Impersonator
 ttt_impersonator_damage_penalty             0       // Damage penalty that the impersonator has before being promoted (e.g. 0.5 = 50% less damage)
 ttt_impersonator_credits_starting           1       // The number of credits an impersonator should start with
@@ -180,6 +183,7 @@ ttt_vampire_credits_starting                1       // The number of credits a v
 // Quack
 ttt_quack_credits_starting                  1       // The number of credits a quack should start with
 ttt_quack_fake_cure_mode                    0       // How to handle using a fake parasite cure on someone who is not infected. 0 - Kill nobody (But use up the cure), 1 - Kill the person who uses the cure, 2 - Kill the person the cure is used on
+ttt_quack_phantom_cure                      0       // Whether to allow the quack to buy the phantom exorcism device which can remove a haunting phantom. Server must be restarted for changes to take effect
 ttt_single_doctor_quack                     0       // Whether only a single doctor or quack should spawn in a round
 
 // Parasite
