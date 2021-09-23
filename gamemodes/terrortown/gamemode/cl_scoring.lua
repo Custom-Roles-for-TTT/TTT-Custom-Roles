@@ -634,6 +634,8 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                         elseif ply:GetNWBool("WasHypnotised", false) then
                             roleFileName = ROLE_STRINGS_SHORT[startingRole]
                         end
+                    elseif ply:IsImpersonator() and ply:GetNWBool("WasHypnotised", false) then
+                        roleFileName = ROLE_STRINGS_SHORT[startingRole]
                     elseif ply:IsJester() then
                         jesterKiller = ply:GetNWString("JesterKiller", "")
                     elseif ply:IsSwapper() then
