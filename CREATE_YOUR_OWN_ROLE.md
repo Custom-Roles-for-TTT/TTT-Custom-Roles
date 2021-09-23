@@ -496,7 +496,7 @@ end
 
 #### Round Result Message
 
-The final hook to set up our custom win condition is the one that displays the winning message in the top-right of the screen. It also prints the winning team to the server console, but that's not something the players will see. This hook is on the server side but requires a translation to be set up on the client side for the actual message to display.
+The final hook to set up our custom win condition is the one that displays the winning message in the top-right of the screen. It also prints the winning team to the server console, but that's not something the players will see. This hook is on the server side but requires a translation to be set up on the client side (after the addon has initialized) for the actual message to display.
 
 The standard name we use for the translation string for this is the same as the win condition identifier global, but in all lowercase. In our example, that would be `win_summoner`. When we set up the translation we deliberately use a placeholder for the role name so that the role can be renamed dynamically. We then have to pass the role string for our role when we use the translation. The full example of the hook and the translation string setup can be seen below:
 
@@ -511,7 +511,9 @@ if SERVER then
     end)
 end
 if CLIENT then
-    LANG.AddToLanguage("english", "win_summoner", "The {role}'s minions have overwhelmed their enemies!")
+    hook.Add("Initialize", "SummonerInitialize", function()
+        LANG.AddToLanguage("english", "win_summoner", "The {role}'s minions have overwhelmed their enemies!")
+    end)
 end
 ```
 
@@ -526,6 +528,10 @@ If we piece together all the bits of code from the preivous sections it would co
         -- Use 245 if we're on Custom Roles for TTT earlier than version 1.2.5
         -- 245 is summation of the ASCII values for the characters "S", "U", and "M"
         WIN_SUMMONER = GenerateNewWinID and GenerateNewWinID() or 245
+
+        if CLIENT then
+            LANG.AddToLanguage("english", "win_summoner", "The {role}'s minions have overwhelmed their enemies!")
+        end
     end)
 
     if SERVER then
@@ -549,8 +555,6 @@ If we piece together all the bits of code from the preivous sections it would co
         end)
     end
     if CLIENT then
-        LANG.AddToLanguage("english", "win_summoner", "The {role}'s minions have overwhelmed their enemies!")
-
         hook.Add("TTTScoringWinTitle", "SummonerScoringWinTitle", function(wintype, wintitles, title, secondaryWinRole)
             if wintype == WIN_SUMMONER then
                 return { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_SUMMONER] }, c = ROLE_COLORS[ROLE_SUMMONER] }
