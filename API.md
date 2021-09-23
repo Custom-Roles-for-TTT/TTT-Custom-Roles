@@ -833,7 +833,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *newVisible* - The new ringVisible value to use or the original passed into the hook
 - *colorOverride* - The [Color](https://wiki.facepunch.com/gmod/Global.Color) to use for the ring. Return `false` if you don't want to override the color. *NOTE:* For some reason colors that are near-black do not render so try a lighter color if you are having trouble
 
-**TTTTargetIDPlayerRoleIcon(ply, client, role, noZ, colorRole, hideBeggar, showJester)** - Called before player Target ID icon (over their head) is rendered allowing changing the icon and color shown.\
+**TTTTargetIDPlayerRoleIcon(ply, client, role, noZ, colorRole, hideBeggar, showJester, hideBodysnatcher)** - Called before player Target ID icon (over their head) is rendered allowing changing the icon and color shown.\
 *Realm:* Client\
 *Added in:* 1.1.9\
 *Parameters:*
@@ -844,6 +844,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *colorRole* - What role is being used for the icon background color (Only used when a different color than the only belonging to *role* is being used)
 - *hideBeggar* - Whether the target was a beggar whose new role should be hidden
 - *showJester* - Whether the target is a jester and the local player would normally know that
+- *hideBodysnatcher* - Whether the target is a bodysnatcher whose new role should be hidden *(Added in 1.2.5)*
 
 *Return:*
 - *role* - The new role value to use or the original passed into the hook. Return `false` to stop the icon from being rendered
