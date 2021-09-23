@@ -49,6 +49,7 @@ If you would like to test the available configurations, we recommend using ULX/U
 - [Better Equipment Menu](https://steamcommunity.com/sharedfiles/filedetails/?id=878772496) - This has its functionality built in
 - [TTT Damage Logs](https://github.com/Tommy228/tttdamagelogs) - Use [this version](https://steamcommunity.com/sharedfiles/filedetails/?id=2306802961) instead
 - [TTT DeadRinger](https://steamcommunity.com/sharedfiles/filedetails/?id=2045444087) - Overrides several scripts that are core to TTT that this also overrides (notably, the scoreboard and client initialization). As a workaround, you can use [this version](https://steamcommunity.com/sharedfiles/filedetails/?id=810154456) instead.
+- [TTT: Advanced Body Search](https://steamcommunity.com/sharedfiles/filedetails/?id=367945571) - Overwrites the body search dialog in ways that don't keep compatibility with the changes we also make to the same dialog.
 
 ## FAQs
 **Do I need the other versions of Custom Roles or Town of Terror as well?**\
@@ -72,7 +73,10 @@ Also if you want ONLY one detective, set:\
 _ttt_detective_max_ 1
 
 **My shop is not working for anyone but the Detective and Traitor/I am getting errors when I try to open the shop/My shop is not loading correctly, it's just a blank grey window**\
-This is probably due to another mod conflicting with this one. Check for things like the 'Better Equipment Menu' mod (which is integrated into this one). If that doesn't fix the problem, join the Discord server (See below) and we'll try to help you identify any other conflicts.
+This is probably due to another mod conflicting with this one. Check for things like the 'Better Equipment Menu' mod (which is integrated into this one). If removing that doesn't fix the problem, join the Discord server (see below) and we'll try to help you identify any other conflicts.
+
+**Nothing happens when I search a body as a detective**
+This is most likely caused by a conflict with a mod like 'TTT: Advanced Body Search'. If removing that doesn't fix the problem, join the Discord server (see below) and we'll try to help you identify any other conflicts.
 
 ## Official Links:
 - GitHub: https://github.com/NoxxFlame/TTT-Custom-Roles
