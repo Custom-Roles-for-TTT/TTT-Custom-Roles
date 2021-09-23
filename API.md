@@ -63,9 +63,33 @@ Variables available globally (within the defined realm)
 *Realm:* Client and Server\
 *Added in:* 1.0.0
 
+**DEFAULT_ROLES** - Lookup table for whether a role is a default TTT role.\
+*Realm:* Client and Server\
+*Added in:* 1.0.3
+
 **DELAYED_SHOP_ROLES** - Lookup table for the roles whose shop purchases can be delayed.\
 *Realm:* Client and Server\
 *Added in:* 1.2.2
+
+**EVENT_MAX** - The maximum event identifier.\
+*Realm:* Client and Server\
+*Added in:* 1.2.5
+
+**INDEPENDENT_ROLES** - Lookup table for whether a role is on the independent team.\
+*Realm:* Client and Server\
+*Added in:* 1.0.0
+
+**INNOCENT_ROLES** - Lookup table for whether a role is on the innocent team.\
+*Realm:* Client and Server\
+*Added in:* 1.0.0
+
+**JESTER_ROLES** - Lookup table for whether a role is on the jester team.\
+*Realm:* Client and Server\
+*Added in:* 1.0.0
+
+**MONSTER_ROLES** - Lookup table for whether a role is on the monster team.\
+*Realm:* Client and Server\
+*Added in:* 1.0.0
 
 **ROLE_NONE** - Updated to be -1 so players who have not been given a role can be identified.\
 *Realm:* Client and Server\
@@ -103,26 +127,6 @@ Variables available globally (within the defined realm)
 *Realm:* Client and Server\
 *Added in:* 1.0.0
 
-**DEFAULT_ROLES** - Lookup table for whether a role is a default TTT role.\
-*Realm:* Client and Server\
-*Added in:* 1.0.3
-
-**INDEPENDENT_ROLES** - Lookup table for whether a role is on the independent team.\
-*Realm:* Client and Server\
-*Added in:* 1.0.0
-
-**INNOCENT_ROLES** - Lookup table for whether a role is on the innocent team.\
-*Realm:* Client and Server\
-*Added in:* 1.0.0
-
-**JESTER_ROLES** - Lookup table for whether a role is on the jester team.\
-*Realm:* Client and Server\
-*Added in:* 1.0.0
-
-**MONSTER_ROLES** - Lookup table for whether a role is on the monster team.\
-*Realm:* Client and Server\
-*Added in:* 1.0.0
-
 **TRAITOR_BUTTON_ROLES** - Lookup table for whether a role can use traitor buttons.\
 *Realm:* Client and Server\
 *Added in:* 1.0.5
@@ -130,6 +134,10 @@ Variables available globally (within the defined realm)
 **TRAITOR_ROLES** - Lookup table for whether a role is on the traitor team.\
 *Realm:* Client and Server\
 *Added in:* 1.0.0
+
+**WIN_MAX** - The maximum win state identifier.\
+*Realm:* Client and Server\
+*Added in:* 1.2.5
 
 ## Global Enumerations
 Enumerations available globally (within the defined realm). There are additional enumerations used internally for configuration and event reporting that are not included here. If you need them, for whatever reason, you will need to find them or ask one of the developers in Discord.
