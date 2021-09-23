@@ -190,9 +190,9 @@ function plymeta:ShouldRevealBodysnatcher(tgt)
     -- Determine whether which setting we should check based on what role they changed to
     local bodysnatcherMode = nil
     if tgt:IsTraitorTeam() then
-        bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_beggar_reveal_traitor", BODYSNATCHER_REVEAL_ALL)
+        bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_traitor", BODYSNATCHER_REVEAL_ALL)
     elseif tgt:IsInnocentTeam() then
-        bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_beggar_reveal_innocent", BODYSNATCHER_REVEAL_ALL)
+        bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_innocent", BODYSNATCHER_REVEAL_ALL)
     elseif tgt:IsMonsterTeam() then
         bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_monster", BODYSNATCHER_REVEAL_ALL)
     elseif tgt:IsIndependentTeam() then
