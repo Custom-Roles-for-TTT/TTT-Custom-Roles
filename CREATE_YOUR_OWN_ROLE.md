@@ -511,7 +511,7 @@ if SERVER then
     end)
 end
 if CLIENT then
-    hook.Add("Initialize", "SummonerInitialize", function()
+    hook.Add("Initialize", "SummonerClientInitialize", function()
         LANG.AddToLanguage("english", "win_summoner", "The {role}'s minions have overwhelmed their enemies!")
     end)
 end
@@ -562,6 +562,8 @@ If we piece together all the bits of code from the preivous sections it would co
         end)
     end
 ```
+
+Notice that we combined the two different `Initialize` hooks into one. That is not required but if you do decide to keep two hooks make sure you give them different identifiers.
 
 ### Role Registration
 
