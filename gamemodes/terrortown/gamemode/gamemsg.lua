@@ -109,7 +109,7 @@ function GetTraitorTeamFilterWithExcludes(alive_only)
         if not p:IsTraitorTeam() then return false end
         if alive_only and (not p:Alive() or p:IsSpec()) then return false end
 
-        if hideBeggar and p:GetNWBool("WasBeggar", false) then return false end
+        if hideBeggar and p:IsTraitor() and p:GetNWBool("WasBeggar", false) then return false end
         if hideBodysnatcher and p:GetNWBool("WasBodysnatcher", false) then return false end
 
         return true
