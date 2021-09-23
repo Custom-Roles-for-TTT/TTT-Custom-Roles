@@ -17,6 +17,7 @@
 - Added ability for hypnotist device to convert detective and deputies that appear as detective to impersonator (disabled by default)
 - Added ability for traitor or quack to buy an exorcism device usable to remove a haunting phantom (disabled by default)
 - Added configuration for whether assassin damage bonus applies to weapons bought from the shop (enabled by default)
+- Added ability for bodysnatcher's role change to be hidden based on which team they joined (disbled by default)
 - Added a shop icon for the bomb station
 
 ### Changes
@@ -39,6 +40,8 @@
 - Added TTTTargetIDEntityHintLabel hook for controlling what text to show when rendering a player or entity's hint label
 - Added TTTTargetIDPlayerHintText hook for controlling what text to show when rendering an entity's hint text
 - Added "plymeta:ShouldRevealBeggar" to determine if a palyer should be able to tell that a target player is no longer a beggar (e.g. converted to an innocent or traitor)
+- Added "plymeta:ShouldRevealBodysnatcher" to determine if a palyer should be able to tell that a target player is no longer a bodysnatcher (e.g. has snatched a role from a dead body)
+- Added "was_bodysnatcher" property to TTTRadarPlayerRender hook's "tgt" parameter
 - Changed the global "ShouldHideJesters" to be deprecated in favor of "plymeta:ShouldHideJesters"
 - Fixed returning false for either text value in TTTTargetIDPlayerText hook not actually stopping the original text from being used
 - Fixed ttt_debug_preventwin not blocking when TTTCheckForWin returns a value or when the round time ends

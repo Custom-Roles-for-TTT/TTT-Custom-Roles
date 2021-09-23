@@ -171,6 +171,7 @@ if SERVER then
             ply:MoveRoleState(owner, true)
         end
         owner:SelectWeapon("weapon_zm_carry")
+        owner:SetNWBool("WasBodysnatcher", true)
 
         if GetConVar("ttt_bodysnatcher_destroy_body"):GetBool() then
             SafeRemoveEntity(body)

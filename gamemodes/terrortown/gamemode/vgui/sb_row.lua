@@ -118,11 +118,14 @@ function GM:TTTScoreboardRowColorForPlayer(ply)
     end
 
     local hideBeggar = ply:GetNWBool("WasBeggar", false) and not client:ShouldRevealBeggar(ply)
-    local showJester = (ply:ShouldActLikeJester() or ((ply:IsTraitor() or ply:IsInnocent()) and hideBeggar)) and not client:ShouldHideJesters()
+    local hideBodysnatcher = ply:GetNWBool("WasBodysnatcher", false) and not client:ShouldRevealBodysnatcher(ply)
+    local showJester = (ply:ShouldActLikeJester() or ((ply:IsTraitor() or ply:IsInnocent()) and hideBeggar) or hideBodysnatcher) and not client:ShouldHideJesters()
     local glitchMode = GetGlobalInt("ttt_glitch_mode", 0)
 
     if client:IsTraitorTeam() then
-        if ply:IsTraitorTeam() and not hideBeggar then
+        if showJester then
+            return ROLE_JESTER
+        elseif ply:IsTraitorTeam() then
             if ply:IsZombie() then
                 return ROLE_ZOMBIE
             elseif glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES and GetGlobalBool("ttt_glitch_round", false) then
@@ -136,20 +139,18 @@ function GM:TTTScoreboardRowColorForPlayer(ply)
             else
                 return ply:GetNWInt("GlitchBluff", ROLE_TRAITOR)
             end
-        elseif showJester then
-            return ROLE_JESTER
         end
     elseif client:IsIndependentTeam() then
-        if ply:IsIndependentTeam() then
-            return ply:GetRole()
-        elseif showJester then
+        if showJester then
             return ROLE_JESTER
+        elseif ply:IsIndependentTeam() then
+            return ply:GetRole()
         end
     elseif client:IsMonsterTeam() then
-        if ply:IsMonsterTeam() then
-            return ply:GetRole()
-        elseif showJester then
+        if showJester then
             return ROLE_JESTER
+        elseif ply:IsMonsterTeam() then
+            return ply:GetRole()
         end
     end
 

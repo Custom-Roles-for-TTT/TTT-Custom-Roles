@@ -92,7 +92,8 @@ function GM:PostDrawTranslucentRenderables()
             pos.z = pos.z + v:GetHeight() + 15
 
             local hideBeggar = v:GetNWBool("WasBeggar", false) and not client:ShouldRevealBeggar(v)
-            local showJester = (v:ShouldActLikeJester() or ((v:GetTraitor() or v:GetInnocent()) and hideBeggar)) and not client:ShouldHideJesters()
+            local hideBodysnatcher = v:GetNWBool("WasBodysnatcher", false) and not client:ShouldRevealBodysnatcher(v)
+            local showJester = (v:ShouldActLikeJester() or ((v:GetTraitor() or v:GetInnocent()) and hideBeggar) or hideBodysnatcher) and not client:ShouldHideJesters()
             local glitchMode = GetGlobalInt("ttt_glitch_mode", 0)
 
             -- Only show the "KILL" target if the setting is enabled
@@ -132,7 +133,10 @@ function GM:PostDrawTranslucentRenderables()
                 if not hide_roles then
                     if client:IsTraitorTeam() then
                         noz = true
-                        if (v:GetTraitor() and not hideBeggar) then
+                        if showJester then
+                            role = ROLE_JESTER
+                            noz = false
+                        elseif v:GetTraitor() then
                             role = ROLE_TRAITOR
                         elseif v:GetImpersonator() then
                             -- If the impersonator is promoted, use the Detective's icon with the Impersonator's color
@@ -153,9 +157,6 @@ function GM:PostDrawTranslucentRenderables()
                             else
                                 role = v:GetRole()
                             end
-                        elseif showJester then
-                            role = ROLE_JESTER
-                            noz = false
                         elseif v:GetGlitch() then
                             if client:IsZombie() then
                                 role = ROLE_ZOMBIE
@@ -167,27 +168,27 @@ function GM:PostDrawTranslucentRenderables()
                             noz = false
                         end
                     elseif client:IsMonsterTeam() then
-                        if v:IsMonsterTeam() then
+                        if showJester then
+                            role = ROLE_JESTER
+                        elseif v:IsMonsterTeam() then
                             role = v:GetRole()
                             noz = true
-                        elseif showJester then
-                            role = ROLE_JESTER
                         end
                     elseif client:IsKiller() then
                         if showJester then
                             role = ROLE_JESTER
                         end
                     elseif client:IsIndependentTeam() then
-                        if v:IsIndependentTeam() then
+                        if showJester then
+                            role = ROLE_JESTER
+                        elseif v:IsIndependentTeam() then
                             role = v:GetRole()
                             noz = true
-                        elseif showJester then
-                            role = ROLE_JESTER
                         end
                     end
                 end
 
-                local newRole, newNoZ, newColorRole = hook.Run("TTTTargetIDPlayerRoleIcon", v, client, role, noz, color_role, hideBeggar, showJester)
+                local newRole, newNoZ, newColorRole = hook.Run("TTTTargetIDPlayerRoleIcon", v, client, role, noz, color_role, hideBeggar, showJester, hideBodysnatcher)
                 if newRole then role = newRole end
                 if type(newNoZ) == "boolean" then noz = newNoZ end
                 if newColorRole then color_role = newColorRole end
@@ -375,36 +376,43 @@ function GM:HUDDrawTargetID()
             _, color = util.HealthToString(ent:Health(), ent:GetMaxHealth())
         end
 
-        local hideBeggar = ent:GetNWBool("WasBeggar", false) and not client:ShouldRevealBeggar(ent)
         if not hide_roles and GetRoundState() == ROUND_ACTIVE then
-            local showJester = (ent:ShouldActLikeJester() or ((ent:GetTraitor() or ent:GetInnocent()) and hideBeggar)) and not client:ShouldHideJesters()
+            local hideBeggar = ent:GetNWBool("WasBeggar", false) and not client:ShouldRevealBeggar(ent)
+            local hideBodysnatcher = ent:GetNWBool("WasBodysnatcher", false) and not client:ShouldRevealBodysnatcher(ent)
+            local showJester = (ent:ShouldActLikeJester() or ((ent:GetTraitor() or ent:GetInnocent()) and hideBeggar) or hideBodysnatcher) and not client:ShouldHideJesters()
             if client:IsTraitorTeam() then
-                target_traitor = (ent:IsTraitor() and not hideBeggar)
-                target_special_traitor = ent:IsTraitorTeam() and not ent:IsTraitor()
-                target_glitch = ent:IsGlitch()
+                if showJester then
+                    target_jester = showJester
+                else
+                    target_traitor = ent:IsTraitor()
+                    target_special_traitor = ent:IsTraitorTeam() and not ent:IsTraitor()
+                    target_glitch = ent:IsGlitch()
 
-                if glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES and GetGlobalBool("ttt_glitch_round", false) then
-                    if target_traitor or target_special_traitor or target_glitch then
-                        target_traitor = false
-                        target_special_traitor = false
-                        target_glitch = true
+                    if glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES and GetGlobalBool("ttt_glitch_round", false) then
+                        if target_traitor or target_special_traitor or target_glitch then
+                            target_traitor = false
+                            target_special_traitor = false
+                            target_glitch = true
+                        end
                     end
                 end
 
-                target_jester = showJester
-
                 target_infected = ent:GetNWBool("Infected", false)
             elseif client:IsMonsterTeam() then
-                target_zombie = ent:IsZombie() and ent:IsMonsterTeam()
-                target_vampire = ent:IsVampire() and ent:IsMonsterTeam()
-
-                target_jester = showJester
+                if showJester then
+                    target_jester = showJester
+                else
+                    target_zombie = ent:IsZombie() and ent:IsMonsterTeam()
+                    target_vampire = ent:IsVampire() and ent:IsMonsterTeam()
+                end
             elseif client:IsIndependentTeam() then
-                target_zombie = ent:IsZombie() and ent:IsIndependentTeam()
-                target_madscientist = ent:IsMadScientist()
-                target_vampire = ent:IsVampire() and ent:IsIndependentTeam()
-
-                target_jester = showJester
+                if showJester then
+                    target_jester = showJester
+                else
+                    target_zombie = ent:IsZombie() and ent:IsIndependentTeam()
+                    target_madscientist = ent:IsMadScientist()
+                    target_vampire = ent:IsVampire() and ent:IsIndependentTeam()
+                end
             end
         end
 

@@ -48,6 +48,11 @@ local function ShouldHideTraitorBeggar()
     return beggarMode == BEGGAR_REVEAL_NONE or beggarMode == BEGGAR_REVEAL_INNOCENTS
 end
 
+local function ShouldHideTraitorBodysnatcher()
+    local bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_traitor", BODYSNATCHER_REVEAL_ALL)
+    return bodysnatcherMode == BEGGAR_REVEAL_NONE
+end
+
 -- Traitorchat
 local function RoleChatMsg(sender, msg)
     net.Start("TTT_RoleChat")
@@ -55,11 +60,7 @@ local function RoleChatMsg(sender, msg)
     net.WriteEntity(sender)
     net.WriteString(msg)
     if sender:IsTraitorTeam() then
-        if ShouldHideTraitorBeggar() then
-            net.Send(GetTraitorWithoutBeggarTeamFilter())
-        else
-            net.Send(GetTraitorTeamFilter())
-        end
+        net.Send(GetTraitorTeamFilterWithExcludes())
     elseif sender:IsDetectiveLike() then
         net.Send(GetDetectiveTeamFilter())
     elseif sender:IsMonsterTeam() then
@@ -97,27 +98,38 @@ for role = 0, ROLE_MAX do
 end
 
 function GetTraitorTeamFilter(alive_only)
-    return GetPlayerFilter(function(p) return (p:IsTraitorTeam()) and (not alive_only or p:IsTerror()) end)
+    return GetPlayerFilter(function(p) return p:IsTraitorTeam() and (not alive_only or p:IsTerror()) end)
 end
 
-function GetTraitorWithoutBeggarTeamFilter(alive_only)
-    return GetPlayerFilter(function(p) return (p:IsTraitorTeam()) and not p:GetNWBool("WasBeggar", false) and (not alive_only or p:IsTerror()) end)
+function GetTraitorTeamFilterWithExcludes(alive_only)
+    local hideBeggar = ShouldHideTraitorBeggar()
+    local hideBodysnatcher = ShouldHideTraitorBodysnatcher()
+
+    return GetPlayerFilter(function(p)
+        if not p:IsTraitorTeam() then return false end
+        if alive_only and (not p:Alive() or p:IsSpec()) then return false end
+
+        if hideBeggar and p:GetNWBool("WasBeggar", false) then return false end
+        if hideBodysnatcher and p:GetNWBool("WasBodysnatcher", false) then return false end
+
+        return true
+    end)
 end
 
 function GetInnocentTeamFilter(alive_only)
-    return GetPlayerFilter(function(p) return (p:IsInnocentTeam()) and (not alive_only or p:IsTerror()) end)
+    return GetPlayerFilter(function(p) return p:IsInnocentTeam() and (not alive_only or p:IsTerror()) end)
 end
 
 function GetJesterTeamFilter(alive_only)
-    return GetPlayerFilter(function(p) return (p:IsJesterTeam()) and (not alive_only or p:IsTerror()) end)
+    return GetPlayerFilter(function(p) return p:IsJesterTeam() and (not alive_only or p:IsTerror()) end)
 end
 
 function GetIndependentTeamFilter(alive_only)
-    return GetPlayerFilter(function(p) return (p:IsIndependentTeam()) and (not alive_only or p:IsTerror()) end)
+    return GetPlayerFilter(function(p) return p:IsIndependentTeam() and (not alive_only or p:IsTerror()) end)
 end
 
 function GetMonsterTeamFilter(alive_only)
-    return GetPlayerFilter(function(p) return (p:IsMonsterTeam()) and (not alive_only or p:IsTerror()) end)
+    return GetPlayerFilter(function(p) return p:IsMonsterTeam() and (not alive_only or p:IsTerror()) end)
 end
 
 function GetDetectiveTeamFilter(alive_only)
@@ -201,6 +213,9 @@ function GM:PlayerSay(ply, text, team_only)
             elseif ply:IsTraitor() and ply:GetNWBool("WasBeggar", false) and ShouldHideTraitorBeggar() then
                 ply:PrintMessage(HUD_PRINTTALK, "You still appear as " .. ROLE_STRINGS_EXT[ROLE_BEGGAR] .. " to " .. ROLE_STRINGS_PLURAL[ROLE_TRAITOR] .. " so you can't use team chat")
                 return ""
+            elseif ply:IsTraitorTeam() and ply:GetNWBool("WasBodysnatcher", false) and ShouldHideTraitorBodysnatcher() then
+                ply:PrintMessage(HUD_PRINTTALK, "You still appear as " .. ROLE_STRINGS_EXT[ROLE_BODYSNATCHER] .. " to " .. ROLE_STRINGS_PLURAL[ROLE_TRAITOR] .. " so you can't use team chat")
+                return ""
             else
                 RoleChatMsg(ply, text)
                 return ""
@@ -265,6 +280,12 @@ function GM:PlayerCanHearPlayersVoice(listener, speaker)
                 ShouldHideTraitorBeggar() then
                 return false, false
             end
+            -- Do the same for bodysnatchers
+            if (speaker:GetNWBool("WasBodysnatcher", false) or
+                listener:GetNWBool("WasBodysnatcher", false)) and
+                ShouldHideTraitorBodysnatcher() then
+                return false, false
+            end
             return not hasGlitch, false
         else
             -- unless traitor_gvoice is true, normal innos can't hear speaker
@@ -283,11 +304,7 @@ local function SendTraitorVoiceState(speaker, state)
     net.WriteBit(state)
 
     -- send umsg to living traitors that this is traitor-only talk
-    if ShouldHideTraitorBeggar() then
-        net.Send(GetTraitorWithoutBeggarTeamFilter(true))
-    else
-        net.Send(GetTraitorTeamFilter(true))
-    end
+    net.Send(GetTraitorTeamFilterWithExcludes(true))
 end
 
 local function TraitorGlobalVoice(ply, cmd, args)
@@ -308,6 +325,9 @@ local function TraitorGlobalVoice(ply, cmd, args)
             return
         elseif ply:IsTraitor() and ply:GetNWBool("WasBeggar", false) and ShouldHideTraitorBeggar() then
             ply:PrintMessage(HUD_PRINTTALK, "You still appear as " .. ROLE_STRINGS_EXT[ROLE_BEGGAR] .. " to " .. ROLE_STRINGS_PLURAL[ROLE_TRAITOR] .. " so you can't use team chat")
+            return
+        elseif ply:IsTraitorTeam() and ply:GetNWBool("WasBodysnatcher", false) and ShouldHideTraitorBodysnatcher() then
+            ply:PrintMessage(HUD_PRINTTALK, "You still appear as " .. ROLE_STRINGS_EXT[ROLE_BODYSNATCHER] .. " to " .. ROLE_STRINGS_PLURAL[ROLE_TRAITOR] .. " so you can't use team chat")
             return
         end
     end

@@ -515,6 +515,26 @@ local function InfoPaint(client)
             surface.SetTextPos(label_left, ScrH() - label_top - h)
             surface.DrawText(text)
         end
+    elseif client:GetNWBool("WasBodysnatcher", false) then
+        local bodysnatcherMode = BODYSNATCHER_REVEAL_ALL
+        if client:IsInnocentTeam() then bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_innocent", BODYSNATCHER_REVEAL_ALL)
+        elseif client:IsTraitorTeam() then bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_traitor", BODYSNATCHER_REVEAL_ALL)
+        elseif client:IsMonsterTeam() then bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_monster", BODYSNATCHER_REVEAL_ALL)
+        elseif client:IsIndependentTeam() then bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_independent", BODYSNATCHER_REVEAL_ALL) end
+        if bodysnatcherMode ~= BODYSNATCHER_REVEAL_ALL then
+            surface.SetFont("TabLarge")
+            surface.SetTextColor(255, 255, 255, 230)
+
+            if bodysnatcherMode == BODYSNATCHER_REVEAL_NONE then
+                text = GetPTranslation("bodysnatcher_hidden_all_hud", { bodysnatcher = ROLE_STRINGS_EXT[ROLE_BODYSNATCHER] })
+            elseif bodysnatcherMode == BODYSNATCHER_REVEAL_TEAM then
+                text = GetPTranslation("bodysnatcher_hidden_team_hud", { bodysnatcher = ROLE_STRINGS_EXT[ROLE_BODYSNATCHER] })
+            end
+            local _, h = surface.GetTextSize(text)
+
+            surface.SetTextPos(label_left, ScrH() - label_top - h)
+            surface.DrawText(text)
+        end
     end
 end
 

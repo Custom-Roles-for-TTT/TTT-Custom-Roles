@@ -887,6 +887,11 @@ BEGGAR_REVEAL_ALL = 1
 BEGGAR_REVEAL_TRAITORS = 2
 BEGGAR_REVEAL_INNOCENTS = 3
 
+-- Bodysnatcher reveal modes
+BODYSNATCHER_REVEAL_NONE = 0
+BODYSNATCHER_REVEAL_ALL = 1
+BODYSNATCHER_REVEAL_TEAM = 2
+
 COLOR_WHITE = Color(255, 255, 255, 255)
 COLOR_BLACK = Color(0, 0, 0, 255)
 COLOR_GREEN = Color(0, 255, 0, 255)
@@ -1219,25 +1224,40 @@ if SERVER then
         local shops = {}
         local detectives = {}
         local independents = {}
+        local beggarMode = GetConVar("ttt_beggar_reveal_innocent"):GetInt()
+        local shopRolesFirst = GetConVar("ttt_assassin_shop_roles_last"):GetBool()
+        local bodysnatcherModeInno = GetConVar("ttt_bodysnatcher_reveal_innocent"):GetInt()
+        local bodysnatcherModeMon = GetConVar("ttt_bodysnatcher_reveal_monster"):GetInt()
+        local bodysnatcherModeIndep = GetConVar("ttt_bodysnatcher_reveal_independent"):GetInt()
+
+        local function AddEnemy(p, bodysnatcherMode)
+            -- Don't add the former beggar to the list of enemies unless the "reveal" setting is enabled
+            if p:IsInnocent() and p:GetNWBool("WasBeggar", false) and beggarMode ~= BEGGAR_REVEAL_ALL and beggarMode ~= BEGGAR_REVEAL_TRAITORS then return end
+            if p:GetNWBool("WasBodysnatcher", false) and bodysnatcherMode ~= BODYSNATCHER_REVEAL_ALL then return end
+
+            -- Put shop roles into a list if they should be targeted last
+            if shopRolesFirst and p:IsShopRole() then
+                table.insert(shops, p:Nick())
+            else
+                table.insert(enemies, p:Nick())
+            end
+        end
+
         for _, p in pairs(player.GetAll()) do
             if p:Alive() and not p:IsSpec() then
                 if p:IsDetectiveTeam() then
                     table.insert(detectives, p:Nick())
-                -- Exclude Glitch from this list so they don't get discovered immediately
-                elseif (p:IsInnocentTeam() or p:IsMonsterTeam()) and not p:IsGlitch() then
-                    -- Don't add the former beggar to the list of enemies unless the "reveal" setting is enabled
-                    local beggarMode = GetConVar("ttt_beggar_reveal_innocent"):GetInt()
-                    if (beggarMode == BEGGAR_REVEAL_ALL or beggarMode == BEGGAR_REVEAL_TRAITORS) or not p:GetNWBool("WasBeggar", false) then
-                        -- Put shop roles into a list if they should be targeted last
-                        if GetConVar("ttt_assassin_shop_roles_last"):GetBool() and p:IsShopRole() then
-                            table.insert(shops, p:Nick())
-                        else
-                            table.insert(enemies, p:Nick())
-                        end
-                    end
+                -- Exclude Glitch from these lists so they don't get discovered immediately
+                elseif p:IsInnocentTeam() and not p:IsGlitch() then
+                    AddEnemy(p, bodysnatcherModeInno)
+                elseif p:IsMonsterTeam() and not p:IsGlitch() then
+                    AddEnemy(p, bodysnatcherModeMon)
                 -- Exclude the Old Man because they just want to survive
                 elseif p:IsIndependentTeam() and not p:IsOldMan() then
-                    table.insert(independents, p:Nick())
+                    -- Also exclude bodysnatchers turned into an independent if their role hasn't been revealed
+                    if not p:GetNWBool("WasBodysnatcher", false) or bodysnatcherModeIndep == BODYSNATCHER_REVEAL_ALL then
+                        table.insert(independents, p:Nick())
+                    end
                 end
             end
         end

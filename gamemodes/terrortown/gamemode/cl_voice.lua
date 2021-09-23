@@ -520,6 +520,8 @@ function GM:PlayerStartVoice(ply)
                     return
                 elseif client:IsTraitor() and client:GetNWBool("WasBeggar", false) and not client:ShouldRevealBeggar() then
                     return
+                elseif client:IsTraitorTeam() and client:GetNWBool("WasBodysnatcher", false) and not client:ShouldRevealBodysnatcher() then
+                    return
                 end
             end
         end

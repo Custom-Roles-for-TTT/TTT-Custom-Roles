@@ -497,6 +497,12 @@ Variables available when called from a Player object (within the defined realm)
 *Parameters:*
 - *tgt* - The target player beggar. If a value is not provided, the context player will be used instead (e.g. `ply:ShouldRevealBeggar()` is the same as `ply:ShouldRevealBeggar(ply)`)
 
+**plymeta:ShouldRevealBodysnatcher(tgt)** - Whether the player should reveal the fact that the target player is no longer a bodysnatcher (e.g. has snatched a role from a dead body).\
+*Realm:* Client and Server\
+*Added in:* 1.2.5\
+*Parameters:*
+- *tgt* - The target player bodysnatcher. If a value is not provided, the context player will be used instead (e.g. `ply:ShouldRevealBodysnatcher()` is the same as `ply:ShouldRevealBodysnatcher(ply)`)
+
 **plymeta:SoberDrunk(team)** - Runs the logic for when a drunk sobers up and remembers their role.\
 *Realm:* Server\
 *Added in:* 1.1.9\
@@ -585,6 +591,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
   - `pos` - The target's position
   - `role` - The target's role, if any
   - `was_beggar` - If the target was a beggar but was converted to another role
+  - `was_bodysnatcher` - If the target was a bodysnatcher but was converted to another role
   - `killer_clown_active` - whether the target is a Clown that has been activated
   - `sid64` - The [SteamID64](https://wiki.facepunch.com/gmod/Player:SteamID64) value of the target
   - The following properties can be added (only one or the other) to `tgt` to change what is displayed with the radar ping
