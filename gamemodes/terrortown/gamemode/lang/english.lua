@@ -671,7 +671,7 @@ L.beggar_hidden_all_hud = "You still appear as {beggar} to others"
 L.beggar_hidden_innocent_hud = "You still appear as {beggar} to {innocents}"
 L.beggar_hidden_traitor_hud = "You still appear as {beggar} to {traitors}"
 L.bodysnatcher_hidden_all_hud = "You still appear as {bodysnatcher} to others"
-L.bodysnatcher_hidden_team_hud = "You still appear as {bodysnatcher} to everyone but your team"
+L.bodysnatcher_hidden_team_hud = "Only your team knows you are no longer {bodysnatcher}"
 
 -- Spectator muting of living/dead
 L.mute_living = "Living players muted"
