@@ -57,7 +57,7 @@ No, you should only use one addon that adds roles. That means only this version 
 **This lags everyone when I play on my peer-to-peer (aka listen, aka local) server/game**\
 Everyone needs to subscribe to this workshop item, not just the host. We're not sure why that is, but having everyone subscribed to the addon seems to help.\
 \
-I would suggest making a workshop collection of the addons you have and then having your friends subscribe to them all.
+We would suggest making a workshop collection of the addons you have and then having your friends subscribe to them all.
 
 **How do I change X, Y, or Z?**\
 Check out the [Configuration](#Configuration) section above and add the setting value you want in your server.cfg (for dedicated servers) or listenserver.cfg (For peer-to-peer, listen, and local servers). If you don't see a setting for what you want to change, leave a comment on the workshop or join the Discord server (see below) and we'll either help you find it or try to add one.
