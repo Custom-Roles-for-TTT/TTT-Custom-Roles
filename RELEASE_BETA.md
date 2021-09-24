@@ -31,6 +31,7 @@
 - Fixed beggar who converted to traitor and then was resurrected by a hypnotist not showing as a traitor when beggar reveal was disabled for traitors
 - Fixed some buyable role weapons showing the "custom" icon in the shop
 - Fixed resurrected players getting their full loadouts even if they've already used their one-use weapons (like the hypnotist brainwashing device)
+- Fixed potential case where assassin's new target would get immediately cleared if a delay wasn't being used
 
 ### Developer
 - Added ability for external roles to define when they are "active", tying directly into the "plymeta:IsRoleActive" function

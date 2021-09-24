@@ -1049,6 +1049,9 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
     for _, v in pairs(player.GetAll()) do
         local assassintarget = v:GetNWString("AssassinTarget", "")
         if v:IsAssassin() and ply:Nick() == assassintarget then
+            -- Reset the target to clear the target overlay from the scoreboard
+            v:SetNWString("AssassinTarget", "")
+
             local delay = GetConVar("ttt_assassin_next_target_delay"):GetFloat()
             -- Delay giving the next target if we're configured to do so
             if delay > 0 then
@@ -1062,8 +1065,6 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
             else
                 AssignAssassinTarget(v, false, false)
             end
-            -- Reset the target to clear the target overlay from the scoreboard
-            v:SetNWString("AssassinTarget", "")
         end
     end
 
