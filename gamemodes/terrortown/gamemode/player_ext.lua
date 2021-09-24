@@ -539,7 +539,7 @@ function plymeta:DrunkRememberRole(role, hidecenter)
     self:BeginRoleChecks()
 
     -- Give loadout weapons
-    GAMEMODE:PlayerLoadout(self)
+    hook.Run("PlayerLoadout", self)
 
     net.Start("TTT_DrunkSober")
     net.WriteString(self:Nick())

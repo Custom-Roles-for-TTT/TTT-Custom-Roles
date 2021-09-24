@@ -45,6 +45,7 @@
 - Changed the global "ShouldHideJesters" to be deprecated in favor of "plymeta:ShouldHideJesters"
 - Fixed returning false for either text value in TTTTargetIDPlayerText hook not actually stopping the original text from being used
 - Fixed ttt_debug_preventwin not blocking when TTTCheckForWin returns a value or when the round time ends
+- Fixed "plymeta:SoberDrunk" not calling PlayerLoadout hook when granting the player their new role loadout
 
 ## 1.2.4
 **Released: September 15th, 2021**
