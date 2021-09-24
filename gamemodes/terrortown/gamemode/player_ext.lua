@@ -341,6 +341,12 @@ function plymeta:SpawnForRound(dead_only)
     self:SetNWInt("InfectionProgress", 0)
     timer.Remove(self:Nick() .. "InfectionProgress")
     timer.Remove(self:Nick() .. "InfectingSpectate")
+
+    -- If this player was dead, mark them as being in the process of being resurrected
+    if dead_only then
+        self.Resurrecting = true
+    end
+
     self:Spawn()
 
     -- If a dead player was spawned outside of the round start, broadcast the defib event

@@ -100,12 +100,29 @@ function GM:PlayerSpawn(ply)
     SafeRemoveEntity(spirits[sid])
     spirits[sid] = nil
 
+    -- Don't run the normal loadout for a player being brought back from the dead. Just give them their stored weapons
+    if ply.Resurrecting then
+        -- If this player had a role weapon on them when they were killed, give it back
+        if ply.DeathRoleWeapons and ply.DeathRoleWeapons[ply:GetRole()] then
+            for _, w in ipairs(ply.DeathRoleWeapons[ply:GetRole()]) do
+                ply:Give(w)
+            end
+        end
+    else
+        hook.Call("PlayerLoadout", GAMEMODE, ply)
+    end
+
     -- ye olde hooks
-    hook.Call("PlayerLoadout", GAMEMODE, ply)
     hook.Call("PlayerSetModel", GAMEMODE, ply)
     hook.Call("TTTPlayerSetColor", GAMEMODE, ply)
 
     ply:SetupHands()
+
+    -- Reset the properties we use for tracking resurrection
+    ply.Resurrecting = false
+    if ply.DeathRoleWeapons then
+        table.Empty(ply.DeathRoleWeapons)
+    end
 
     SCORE:HandleSpawn(ply)
 end
@@ -1107,6 +1124,18 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
         -- him. This is ugly, and we have to return the first one to prevent crazy
         -- shit.
     end
+
+    -- Store what non-droppable role weapons this player had when they died as this role
+    -- They will be restored to the player if they are resurrected as the same role
+    -- Droppable role weapons will be dropped on the ground so there's no need to give them back automatically
+    ply.DeathRoleWeapons = {}
+    local role_weapons = {}
+    for _, w in ipairs(ply:GetWeapons()) do
+        if w.Category == WEAPON_CATEGORY_ROLE and not w.AllowDrop then
+            table.insert(role_weapons, WEPS.GetClass(w))
+        end
+    end
+    ply.DeathRoleWeapons[ply:GetRole()] = role_weapons
 
     local valid_kill = IsPlayer(attacker) and attacker ~= ply and GetRoundState() == ROUND_ACTIVE
     -- Don't drop Swapper weapons when they are killed by a player because they are about to be resurrected anyway

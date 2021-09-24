@@ -570,5 +570,19 @@ else
                 end
             end
         end
+
+        -- If the dead player had role weapons stored, give them to the target and then clear the list
+        -- Use a slight delay so their old role weapons (like the bodysnatching device) are removed first
+        timer.Simple(0.25, function()
+            if self.DeathRoleWeapons then
+                if self.DeathRoleWeapons[self:GetRole()] then
+                    for _, w in ipairs(self.DeathRoleWeapons[self:GetRole()]) do
+                        target:Give(w)
+                    end
+                end
+
+                table.Empty(self.DeathRoleWeapons)
+            end
+        end)
     end
 end
