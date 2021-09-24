@@ -531,14 +531,14 @@ else
             target:HandleDetectiveLikePromotion()
         end
 
-        local killer = self:GetNWString("RevengerKiller", nil)
-        if killer ~= nil then
+        local killer = self:GetNWString("RevengerKiller", "")
+        if #killer > 0 then
             if not keep_on_source then self:SetNWString("RevengerKiller", "") end
             target:SetNWString("RevengerKiller", killer)
         end
 
-        local lover = self:GetNWString("RevengerLover", nil)
-        if lover ~= nil then
+        local lover = self:GetNWString("RevengerLover", "")
+        if #lover > 0 then
             if not keep_on_source then self:SetNWString("RevengerLover", "") end
             target:SetNWString("RevengerLover", lover)
 
@@ -569,6 +569,20 @@ else
                     end)
                 end
             end
+        end
+
+        local assassinTarget = self:GetNWString("AssassinTarget", "")
+        if #assassinTarget > 0 then
+            if not keep_on_source then self:SetNWString("AssassinTarget", "") end
+            target:SetNWString("AssassinTarget", assassinTarget)
+            target:PrintMessage(HUD_PRINTCENTER, "You have learned that your predecessor's target was " .. assassinTarget)
+            target:PrintMessage(HUD_PRINTTALK, "You have learned that your predecessor's target was " .. assassinTarget)
+        elseif self:IsAssassin() then
+            -- If the player we're taking the role state from was an assassin but they didn't have a target, try to assign a target to this player
+            -- Use a slight delay to let the role change go through first just in case
+            timer.Simple(0.25, function()
+                AssignAssassinTarget(target, true)
+            end)
         end
 
         -- If the dead player had role weapons stored, give them to the target and then clear the list

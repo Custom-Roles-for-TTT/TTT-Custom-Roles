@@ -320,7 +320,7 @@ function PANEL:UpdatePlayerData()
             else
                 local updated = false
                 for _, v in pairs(player.GetAll()) do
-                    if ply:Nick() == v:GetNWString("AssassinTarget", "") then
+                    if ply:Nick() == v:GetNWString("AssassinTarget", "") and v:Alive() and not v:IsSpec() then
                         local text = " ("
                         if infected then
                             text = text .. GetTranslation("target_infected") .. " | "

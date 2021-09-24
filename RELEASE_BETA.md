@@ -25,6 +25,7 @@
 - Changed beggar to not be able to use or see traitor chat (text or voice) when the beggar reveal mode is disabled for traitors
 - Changed credit-lootable roles without a shop (like the trickster) to have starting credits convars
 - Changed bodysnatcher to automatically be given any role weapons the body had on them when they died
+- Changed bodysnatcher to inherit an assassin's target (or be given a new one) when they snatch an assassin's body
 
 ### Fixes
 - Fixed zombies sometimes spawning in non-zombie rounds if they are on the traitor team
