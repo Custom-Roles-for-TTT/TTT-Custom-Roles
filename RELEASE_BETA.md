@@ -19,6 +19,7 @@
 - Added configuration for whether assassin damage bonus applies to weapons bought from the shop (enabled by default)
 - Added ability for bodysnatcher's role change to be hidden based on which team they joined (disbled by default)
 - Added a shop icon for the bomb station
+- Added new microphone volume tip from base TTT
 
 ### Changes
 - Changed beggar to not be able to use or see traitor chat (text or voice) when the beggar reveal mode is disabled for traitors
