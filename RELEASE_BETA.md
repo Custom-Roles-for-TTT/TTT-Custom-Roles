@@ -1,7 +1,7 @@
 # Beta Release Notes
 
 ## 1.2.5
-**Released:**
+**Released: September 25th, 2021**
 
 ### Additions
 - Added ability to have a jester and an independent both spawn in the same round (disabled by default)
