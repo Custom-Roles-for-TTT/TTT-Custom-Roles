@@ -430,6 +430,11 @@ function GM:HUDDrawTargetID()
             target_current_target = (ent:Nick() == client:GetNWString("AssassinTarget", ""))
         end
 
+        -- Allow external roles to override or block showing player name
+        local new_text, new_col = hook.Run("TTTTargetIDPlayerName", ent, client, text, color)
+        -- If the first return value is a boolean and it's "false" then save that so we know to skip rendering the text
+        if new_text or (type(new_text) == "boolean" and not new_text) then text = new_text end
+        if new_col then color = new_col end
     elseif cls == "prop_ragdoll" then
         -- only show this if the ragdoll has a nick, else it could be a mattress
         if CORPSE.GetPlayerNick(ent, false) == false then return end
@@ -442,6 +447,12 @@ function GM:HUDDrawTargetID()
             text = L.target_unid
             color = COLOR_YELLOW
         end
+
+        -- Allow external roles to override or block showing a ragdoll's name
+        local new_text, new_col = hook.Run("TTTTargetIDRagdollName", ent, client, text, color)
+        -- If the first return value is a boolean and it's "false" then save that so we know to skip rendering the text
+        if new_text or (type(new_text) == "boolean" and not new_text) then text = new_text end
+        if new_col then color = new_col end
     elseif not hint then
         -- Not something to ID and not something to hint about
         return
