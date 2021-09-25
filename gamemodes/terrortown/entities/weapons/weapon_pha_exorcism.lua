@@ -1,7 +1,7 @@
 AddCSLuaFile()
 
 if CLIENT then
-    SWEP.PrintName = "Parasite Cure"
+    SWEP.PrintName = "Phantom Exorcism Device"
     SWEP.Slot = 6
 
     SWEP.DrawCrosshair = false
@@ -9,18 +9,16 @@ if CLIENT then
 
     SWEP.EquipMenuData = {
             type =  "Weapon",
-            desc =  [[Use on a player to cure them of parasites.
-
-Using this on a player who is not infected will kill them!]]
+            desc =  [[Use on a player to exorcise a phantom]]
         };
 
-    SWEP.Icon = "vgui/ttt/icon_cure"
+    SWEP.Icon = "vgui/ttt/icon_exor"
 end
 
 SWEP.Base = "weapon_tttbase"
 
-SWEP.ViewModel = "models/weapons/c_medkit.mdl"
-SWEP.WorldModel = "models/weapons/w_medkit.mdl"
+SWEP.ViewModel = "models/weapons/c_toolgun.mdl"
+SWEP.WorldModel = "models/weapons/w_toolgun.mdl"
 
 SWEP.Primary.ClipSize        = -1
 SWEP.Primary.DefaultClip     = -1
@@ -28,15 +26,14 @@ SWEP.Primary.Automatic       = true
 SWEP.Primary.Delay           = 1
 SWEP.Primary.Ammo            = "none"
 
-SWEP.Secondary.ClipSize       = -1
-SWEP.Secondary.DefaultClip    = -1
-SWEP.Secondary.Automatic      = true
-SWEP.Secondary.Ammo           = "none"
-SWEP.Secondary.Delay          = 2
+SWEP.Secondary.ClipSize      = -1
+SWEP.Secondary.DefaultClip   = -1
+SWEP.Secondary.Automatic     = true
+SWEP.Secondary.Ammo          = "none"
+SWEP.Secondary.Delay         = 2
 
 SWEP.Kind = WEAPON_EQUIP
-SWEP.CanBuy = { ROLE_DETECTIVE, ROLE_DOCTOR, ROLE_QUACK }
-SWEP.CanBuyDefault = { ROLE_DETECTIVE, ROLE_DOCTOR, ROLE_QUACK  }
+SWEP.CanBuy = { }
 SWEP.NoSights = true
 SWEP.HoldType = "slam"
 
@@ -44,15 +41,9 @@ SWEP.UseHands = true
 SWEP.ViewModelFlip = false
 SWEP.BlockShopRandomization = true
 
-PARASITE_CURE_KILL_NONE = 0
-PARASITE_CURE_KILL_OWNER = 1
-PARASITE_CURE_KILL_TARGET = 2
-
 local DEFIB_IDLE = 0
 local DEFIB_BUSY = 1
 local DEFIB_ERROR = 2
-
-local CureMode = CreateConVar("ttt_parasite_cure_mode", "2")
 
 local charge = 3
 
@@ -62,7 +53,7 @@ local cured = Sound("items/smallmedkit1.wav")
 
 if CLIENT then
     function SWEP:Initialize()
-        self:AddHUDHelp("cure_help_pri", "cure_help_sec", true)
+        self:AddHUDHelp("exor_help_pri", "exor_help_sec", true)
         self:SetHoldType(self.HoldType)
         return self.BaseClass.Initialize(self)
     end
@@ -95,29 +86,22 @@ if SERVER then
         end)
     end
 
-    function SWEP:DoCure(ply)
+    function SWEP:DoCleanse(ply)
         local owner = self:GetOwner()
         if IsPlayer(ply) then
             ply:EmitSound(cured)
 
-            if ply:GetNWBool("Infected", false) then
+            if ply:GetNWBool("Haunted", false) then
                 for _, v in pairs(player.GetAll()) do
-                    if v:GetNWString("InfectingTarget", "") == ply:SteamID64() then
-                        ply:SetNWBool("Infected", false)
-                        v:SetNWBool("Infecting", false)
-                        v:SetNWString("InfectingTarget", nil)
-                        v:SetNWInt("InfectionProgress", 0)
-                        timer.Remove(v:Nick() .. "InfectionProgress")
-                        timer.Remove(v:Nick() .. "InfectingSpectate")
-                        v:PrintMessage(HUD_PRINTCENTER, "Your host has been cured.")
+                    if v:GetNWString("HauntingTarget", "") == ply:SteamID64() then
+                        ply:SetNWBool("Haunted", false)
+                        v:SetNWBool("Haunting", false)
+                        v:SetNWString("HauntingTarget", nil)
+                        v:SetNWInt("HauntingPower", 0)
+                        timer.Remove(v:Nick() .. "HauntingPower")
+                        timer.Remove(v:Nick() .. "HauntingSpectate")
+                        v:PrintMessage(HUD_PRINTCENTER, "Your spirit has been cleansed from your target.")
                     end
-                end
-            else
-                local cureMode = CureMode:GetInt()
-                if cureMode == PARASITE_CURE_KILL_OWNER and IsValid(owner) then
-                    owner:Kill()
-                elseif cureMode == PARASITE_CURE_KILL_TARGET then
-                    ply:Kill()
                 end
             end
 
@@ -140,9 +124,9 @@ if SERVER then
         self:SetState(DEFIB_BUSY)
         self:SetBegin(CurTime())
         if ply == self:GetOwner() then
-            self:SetMessage("CURING YOURSELF")
+            self:SetMessage("CLEANSING YOURSELF")
         else
-            self:SetMessage("CURING " .. string.upper(ply:Nick()))
+            self:SetMessage("CLEANSING " .. string.upper(ply:Nick()))
         end
 
         self:GetOwner():EmitSound(hum, 75, math.random(98, 102), 1)
@@ -154,14 +138,14 @@ if SERVER then
         if self:GetState() == DEFIB_BUSY then
             local owner = self:GetOwner()
             if self:GetBegin() + charge <= CurTime() then
-                self:DoCure(self.Target)
+                self:DoCleanse(self.Target)
                 self:Reset()
             elseif owner == self.Target then
                 if not owner:KeyDown(IN_ATTACK2) then
-                    self:Error("CURE ABORTED")
+                    self:Error("CLEANSE ABORTED")
                 end
             elseif not owner:KeyDown(IN_ATTACK) or owner:GetEyeTrace(MASK_SHOT_HULL).Entity ~= self.Target then
-                self:Error("CURE ABORTED")
+                self:Error("CLEANSE ABORTED")
             end
         end
     end
@@ -192,12 +176,6 @@ if SERVER then
         if IsPlayer(owner) then
             self:SetNextSecondaryFire(CurTime() + self.Primary.Delay)
             self:Begin(owner)
-        end
-    end
-
-    function SWEP:Equip(newowner)
-        if newowner:IsTraitorTeam() then
-            newowner:PrintMessage(HUD_PRINTTALK, "The parasite cure you are holding is real.")
         end
     end
 end

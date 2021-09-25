@@ -515,8 +515,14 @@ function GM:PlayerStartVoice(ply)
             end
 
             -- Return early so the client doesn't think they are talking
-            if not client.traitor_gvoice and hasGlitch then
-                return
+            if not client.traitor_gvoice then
+                if hasGlitch then
+                    return
+                elseif client:IsTraitor() and client:GetNWBool("WasBeggar", false) and not client:ShouldRevealBeggar() then
+                    return
+                elseif client:GetNWBool("WasBodysnatcher", false) and not client:ShouldRevealBodysnatcher() then
+                    return
+                end
             end
         end
 

@@ -932,7 +932,7 @@ local function OnPlayerHighlightEnabled(client, alliedRoles, showJesters, hideEn
     local jesters = {}
     for _, v in pairs(player.GetAll()) do
         if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= client then
-            if showJesters and v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false) then
+            if showJesters and v:ShouldActLikeJester() then
                 table.insert(jesters, v)
             elseif table.HasValue(alliedRoles, v:GetRole()) then
                 table.insert(friends, v)

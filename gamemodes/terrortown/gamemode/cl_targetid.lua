@@ -91,9 +91,9 @@ function GM:PostDrawTranslucentRenderables()
             pos = v:GetPos()
             pos.z = pos.z + v:GetHeight() + 15
 
-            local beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", BEGGAR_REVEAL_ALL)
-            local hideBeggar = v:GetNWBool("WasBeggar", false) and (beggarMode == BEGGAR_REVEAL_NONE or beggarMode == BEGGAR_REVEAL_INNOCENTS)
-            local showJester = ((v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) or ((v:GetTraitor() or v:GetInnocent()) and hideBeggar)) and not ShouldHideJesters(client)
+            local hideBeggar = v:GetNWBool("WasBeggar", false) and not client:ShouldRevealBeggar(v)
+            local hideBodysnatcher = v:GetNWBool("WasBodysnatcher", false) and not client:ShouldRevealBodysnatcher(v)
+            local showJester = (v:ShouldActLikeJester() or ((v:GetTraitor() or v:GetInnocent()) and hideBeggar) or hideBodysnatcher) and not client:ShouldHideJesters()
             local glitchMode = GetGlobalInt("ttt_glitch_mode", 0)
 
             -- Only show the "KILL" target if the setting is enabled
@@ -133,7 +133,10 @@ function GM:PostDrawTranslucentRenderables()
                 if not hide_roles then
                     if client:IsTraitorTeam() then
                         noz = true
-                        if (v:GetTraitor() and not hideBeggar) then
+                        if showJester then
+                            role = ROLE_JESTER
+                            noz = false
+                        elseif v:GetTraitor() then
                             role = ROLE_TRAITOR
                         elseif v:GetImpersonator() then
                             -- If the impersonator is promoted, use the Detective's icon with the Impersonator's color
@@ -154,9 +157,6 @@ function GM:PostDrawTranslucentRenderables()
                             else
                                 role = v:GetRole()
                             end
-                        elseif showJester then
-                            role = ROLE_JESTER
-                            noz = false
                         elseif v:GetGlitch() then
                             if client:IsZombie() then
                                 role = ROLE_ZOMBIE
@@ -168,27 +168,27 @@ function GM:PostDrawTranslucentRenderables()
                             noz = false
                         end
                     elseif client:IsMonsterTeam() then
-                        if v:IsMonsterTeam() then
+                        if showJester then
+                            role = ROLE_JESTER
+                        elseif v:IsMonsterTeam() then
                             role = v:GetRole()
                             noz = true
-                        elseif showJester then
-                            role = ROLE_JESTER
                         end
                     elseif client:IsKiller() then
                         if showJester then
                             role = ROLE_JESTER
                         end
                     elseif client:IsIndependentTeam() then
-                        if v:IsIndependentTeam() then
+                        if showJester then
+                            role = ROLE_JESTER
+                        elseif v:IsIndependentTeam() then
                             role = v:GetRole()
                             noz = true
-                        elseif showJester then
-                            role = ROLE_JESTER
                         end
                     end
                 end
 
-                local newRole, newNoZ, newColorRole = hook.Run("TTTTargetIDPlayerRoleIcon", v, client, role, noz, color_role, hideBeggar, showJester)
+                local newRole, newNoZ, newColorRole = hook.Run("TTTTargetIDPlayerRoleIcon", v, client, role, noz, color_role, hideBeggar, showJester, hideBodysnatcher)
                 if newRole then role = newRole end
                 if type(newNoZ) == "boolean" then noz = newNoZ end
                 if newColorRole then color_role = newColorRole end
@@ -376,38 +376,43 @@ function GM:HUDDrawTargetID()
             _, color = util.HealthToString(ent:Health(), ent:GetMaxHealth())
         end
 
-        local beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", BEGGAR_REVEAL_ALL)
-        local hideBeggar = ent:GetNWBool("WasBeggar", false) and (beggarMode == BEGGAR_REVEAL_NONE or beggarMode == BEGGAR_REVEAL_INNOCENTS)
-
         if not hide_roles and GetRoundState() == ROUND_ACTIVE then
-            local showJester = ((ent:IsJesterTeam() and not ent:GetNWBool("KillerClownActive", false)) or ((ent:GetTraitor() or ent:GetInnocent()) and hideBeggar)) and not ShouldHideJesters(client)
+            local hideBeggar = ent:GetNWBool("WasBeggar", false) and not client:ShouldRevealBeggar(ent)
+            local hideBodysnatcher = ent:GetNWBool("WasBodysnatcher", false) and not client:ShouldRevealBodysnatcher(ent)
+            local showJester = (ent:ShouldActLikeJester() or ((ent:GetTraitor() or ent:GetInnocent()) and hideBeggar) or hideBodysnatcher) and not client:ShouldHideJesters()
             if client:IsTraitorTeam() then
-                target_traitor = (ent:IsTraitor() and not hideBeggar)
-                target_special_traitor = ent:IsTraitorTeam() and not ent:IsTraitor()
-                target_glitch = ent:IsGlitch()
+                if showJester then
+                    target_jester = showJester
+                else
+                    target_traitor = ent:IsTraitor()
+                    target_special_traitor = ent:IsTraitorTeam() and not ent:IsTraitor()
+                    target_glitch = ent:IsGlitch()
 
-                if glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES and GetGlobalBool("ttt_glitch_round", false) then
-                    if target_traitor or target_special_traitor or target_glitch then
-                        target_traitor = false
-                        target_special_traitor = false
-                        target_glitch = true
+                    if glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES and GetGlobalBool("ttt_glitch_round", false) then
+                        if target_traitor or target_special_traitor or target_glitch then
+                            target_traitor = false
+                            target_special_traitor = false
+                            target_glitch = true
+                        end
                     end
                 end
 
-                target_jester = showJester
-
                 target_infected = ent:GetNWBool("Infected", false)
             elseif client:IsMonsterTeam() then
-                target_zombie = ent:IsZombie() and ent:IsMonsterTeam()
-                target_vampire = ent:IsVampire() and ent:IsMonsterTeam()
-
-                target_jester = showJester
+                if showJester then
+                    target_jester = showJester
+                else
+                    target_zombie = ent:IsZombie() and ent:IsMonsterTeam()
+                    target_vampire = ent:IsVampire() and ent:IsMonsterTeam()
+                end
             elseif client:IsIndependentTeam() then
-                target_zombie = ent:IsZombie() and ent:IsIndependentTeam()
-                target_madscientist = ent:IsMadScientist()
-                target_vampire = ent:IsVampire() and ent:IsIndependentTeam()
-
-                target_jester = showJester
+                if showJester then
+                    target_jester = showJester
+                else
+                    target_zombie = ent:IsZombie() and ent:IsIndependentTeam()
+                    target_madscientist = ent:IsMadScientist()
+                    target_vampire = ent:IsVampire() and ent:IsIndependentTeam()
+                end
             end
         end
 
@@ -523,19 +528,33 @@ function GM:HUDDrawTargetID()
 
         -- HealthToString returns a string id, need to look it up
         text = L[text]
+
+        -- Allow external roles to override or block showing health
+        local new_text, new_col = hook.Run("TTTTargetIDPlayerHealth", ent, client, text, col)
+        -- If the first return value is a boolean and it's "false" then save that so we know to skip rendering the text
+        if new_text or (type(new_text) == "boolean" and not new_text) then text = new_text end
+        if new_col then col = new_col end
     elseif hint then
         text = GetRaw(hint.name) or hint.name
+
+        -- Allow external roles to override or block showing the hint label
+        local new_text, new_col = hook.Run("TTTTargetIDEntityHintLabel", ent, client, text, col)
+        -- If the first return value is a boolean and it's "false" then save that so we know to skip rendering the text
+        if new_text or (type(new_text) == "boolean" and not new_text) then text = new_text end
+        if new_col then col = new_col end
     else
         return
     end
     font = "TargetIDSmall2"
 
-    surface.SetFont(font)
-    w, h = surface.GetTextSize(text)
-    x = x_orig - w / 2
+    if text and col then
+        surface.SetFont(font)
+        w, h = surface.GetTextSize(text)
+        x = x_orig - w / 2
 
-    draw.SimpleText(text, font, x + 1, y + 1, COLOR_BLACK)
-    draw.SimpleText(text, font, x, y, col)
+        draw.SimpleText(text, font, x + 1, y + 1, COLOR_BLACK)
+        draw.SimpleText(text, font, x, y, col)
+    end
 
     font = "TargetIDSmall"
     surface.SetFont(font)
@@ -546,27 +565,44 @@ function GM:HUDDrawTargetID()
 
         text = L[text]
 
-        w, h = surface.GetTextSize(text)
-        y = y + h + 5
-        x = x_orig - w / 2
+        -- Allow external roles to override or block showing karma
+        local new_text, new_col = hook.Run("TTTTargetIDPlayerKarma", ent, client, text, col)
+        -- If the first return value is a boolean and it's "false" then save that so we know to skip rendering the text
+        if new_text or (type(new_text) == "boolean" and not new_text) then text = new_text end
+        if new_col then col = new_col end
 
-        draw.SimpleText(text, font, x + 1, y + 1, COLOR_BLACK)
-        draw.SimpleText(text, font, x, y, col)
+        if text and col then
+            w, h = surface.GetTextSize(text)
+            y = y + h + 5
+            x = x_orig - w / 2
+
+            draw.SimpleText(text, font, x + 1, y + 1, COLOR_BLACK)
+            draw.SimpleText(text, font, x, y, col)
+        end
     end
 
     -- Draw key hint
     if hint and hint.hint then
+        col = COLOR_LGRAY
         if not hint.fmt then
             text = GetRaw(hint.hint) or hint.hint
         else
             text = hint.fmt(ent, hint.hint)
         end
 
-        w, h = surface.GetTextSize(text)
-        x = x_orig - w / 2
-        y = y + h + 5
-        draw.SimpleText(text, font, x + 1, y + 1, COLOR_BLACK)
-        draw.SimpleText(text, font, x, y, COLOR_LGRAY)
+        -- Allow external roles to override or block showing karma
+        local new_text, new_col = hook.Run("TTTTargetIDPlayerHintText", ent, client, text, col)
+        -- If the first return value is a boolean and it's "false" then save that so we know to skip rendering the text
+        if new_text or (type(new_text) == "boolean" and not new_text) then text = new_text end
+        if new_col then col = new_col end
+
+        if text and col then
+            w, h = surface.GetTextSize(text)
+            x = x_orig - w / 2
+            y = y + h + 5
+            draw.SimpleText(text, font, x + 1, y + 1, COLOR_BLACK)
+            draw.SimpleText(text, font, x, y, col)
+        end
     end
 
     text = nil
@@ -629,9 +665,10 @@ function GM:HUDDrawTargetID()
     end
 
     local new_text, new_color, new_secondary = hook.Run("TTTTargetIDPlayerText", ent, client, text, col, secondary_text)
-    if new_text then text = new_text end
+    -- If either text return value is a boolean and it's "false" then save that so we know to skip rendering the text
+    if new_text or (type(new_text) == "boolean" and not new_text) then text = new_text end
     if new_color then col = new_color end
-    if new_secondary then secondary_text = new_secondary end
+    if new_secondary or (type(new_secondary) == "boolean" and not new_secondary) then secondary_text = new_secondary end
 
     if text then
         w, h = surface.GetTextSize(text)

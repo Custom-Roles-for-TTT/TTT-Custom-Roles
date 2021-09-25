@@ -1,5 +1,5 @@
 -- Version string for display and function for version checks
-CR_VERSION = "1.2.4"
+CR_VERSION = "1.2.5"
 
 function CRVersion(version)
     local installedVersionRaw = string.Split(CR_VERSION, ".")
@@ -626,6 +626,8 @@ EXTERNAL_ROLE_CONVARS = {}
 EXTERNAL_ROLE_STARTING_CREDITS = {}
 EXTERNAL_ROLE_STARTING_HEALTH = {}
 EXTERNAL_ROLE_MAX_HEALTH = {}
+EXTERNAL_ROLE_IS_ACTIVE = {}
+EXTERNAL_ROLE_SHOULD_ACT_LIKE_JESTER = {}
 
 ROLE_CONVAR_TYPE_NUM = 0
 ROLE_CONVAR_TYPE_BOOL = 1
@@ -722,6 +724,14 @@ function RegisterRole(tbl)
         EXTERNAL_ROLE_LOADOUT_ITEMS[roleID] = tbl.loadout
     end
 
+    if type(tbl.isactive) == "function" then
+        EXTERNAL_ROLE_IS_ACTIVE[roleID] = tbl.isactive
+    end
+
+    if type(tbl.shouldactlikejester) == "function" then
+        EXTERNAL_ROLE_SHOULD_ACT_LIKE_JESTER[roleID] = tbl.shouldactlikejester
+    end
+
     -- List of objects that describe convars for ULX support, in the following format:
     -- {
     --     cvar = "ttt_test_slider",    -- The name of the convar
@@ -779,6 +789,13 @@ EVENT_BEGGARCONVERTED = 25
 EVENT_BEGGARKILLED = 26
 EVENT_INFECT = 27
 
+EVENT_MAX = 27
+
+function GenerateNewEventID()
+    EVENT_MAX = EVENT_MAX + 1
+    return EVENT_MAX
+end
+
 WIN_NONE = 1
 WIN_TRAITOR = 2
 WIN_INNOCENT = 3
@@ -790,6 +807,13 @@ WIN_KILLER = 8
 WIN_ZOMBIE = 9
 WIN_MONSTER = 10
 WIN_VAMPIRE = 11
+
+WIN_MAX = 11
+
+function GenerateNewWinID()
+    WIN_MAX = WIN_MAX + 1
+    return WIN_MAX
+end
 
 -- Weapon categories, you can only carry one of each
 WEAPON_NONE = 0
@@ -862,6 +886,11 @@ BEGGAR_REVEAL_NONE = 0
 BEGGAR_REVEAL_ALL = 1
 BEGGAR_REVEAL_TRAITORS = 2
 BEGGAR_REVEAL_INNOCENTS = 3
+
+-- Bodysnatcher reveal modes
+BODYSNATCHER_REVEAL_NONE = 0
+BODYSNATCHER_REVEAL_ALL = 1
+BODYSNATCHER_REVEAL_TEAM = 2
 
 COLOR_WHITE = Color(255, 255, 255, 255)
 COLOR_BLACK = Color(0, 0, 0, 255)
@@ -1057,12 +1086,54 @@ function UpdateRoleWeaponState()
     -- If the parasite is not enabled, don't let anyone buy the cure
     local parasite_cure = weapons.GetStored("weapon_par_cure")
     local fake_cure = weapons.GetStored("weapon_qua_fake_cure")
-    if not GetGlobalBool("ttt_parasite_enabled", false) then
-        table.Empty(parasite_cure.CanBuy)
-        table.Empty(fake_cure.CanBuy)
-    else
+    if GetGlobalBool("ttt_parasite_enabled", false) then
         parasite_cure.CanBuy = table.Copy(parasite_cure.CanBuyDefault)
         fake_cure.CanBuy = table.Copy(fake_cure.CanBuyDefault)
+    else
+        table.Empty(parasite_cure.CanBuy)
+        table.Empty(fake_cure.CanBuy)
+    end
+
+    -- Hypnotist
+    local hypnotist_defib = weapons.GetStored("weapon_hyp_brainwash")
+    if GetGlobalBool("ttt_hypnotist_device_loadout", false) then
+        hypnotist_defib.InLoadoutFor = table.Copy(hypnotist_defib.InLoadoutForDefault)
+    else
+        table.Empty(hypnotist_defib.InLoadoutFor)
+    end
+    if GetGlobalBool("ttt_hypnotist_device_shop", false) then
+        hypnotist_defib.CanBuy = {ROLE_HYPNOTIST}
+    else
+        hypnotist_defib.CanBuy = nil
+    end
+
+    -- Paramedic
+    local paramedic_defib = weapons.GetStored("weapon_med_defib")
+    if GetGlobalBool("ttt_paramedic_device_loadout", false) then
+        paramedic_defib.InLoadoutFor = table.Copy(paramedic_defib.InLoadoutForDefault)
+    else
+        table.Empty(paramedic_defib.InLoadoutFor)
+    end
+    if GetGlobalBool("ttt_paramedic_device_shop", false) then
+        paramedic_defib.CanBuy = {ROLE_PARAMEDIC}
+    else
+        paramedic_defib.CanBuy = nil
+    end
+
+    -- Phantom
+    local phantom_device = weapons.GetStored("weapon_pha_exorcism")
+    local phantom_device_roles = {}
+    if GetGlobalBool("ttt_traitor_phantom_cure", false) then
+        table.insert(phantom_device_roles, ROLE_TRAITOR)
+    end
+    if GetGlobalBool("ttt_quack_phantom_cure", false) then
+        table.insert(phantom_device_roles, ROLE_QUACK)
+    end
+
+    if #phantom_device_roles > 0 then
+        phantom_device.CanBuy = phantom_device_roles
+    else
+        table.Empty(phantom_device.CanBuy)
     end
 
     if SERVER then
@@ -1130,14 +1201,9 @@ function GetWinningMonsterRole()
 end
 
 function ShouldHideJesters(p)
-    if p:IsTraitorTeam() then
-        return not GetGlobalBool("ttt_jesters_visible_to_traitors", false)
-    elseif p:IsMonsterTeam() then
-        return not GetGlobalBool("ttt_jesters_visible_to_monsters", false)
-    elseif p:IsIndependentTeam() then
-        return not GetGlobalBool("ttt_jesters_visible_to_independents", false)
-    end
-    return true
+    -- TODO: Remove this in the next beta release after 1.2.5 is released to non-beta
+    ErrorNoHaltWithStack("WARNING: ShouldHideJesters(ply) is deprecated. Please switch to ply:ShouldHideJesters()")
+    return p:ShouldHideJesters()
 end
 
 if SERVER then
@@ -1158,25 +1224,40 @@ if SERVER then
         local shops = {}
         local detectives = {}
         local independents = {}
+        local beggarMode = GetConVar("ttt_beggar_reveal_innocent"):GetInt()
+        local shopRolesFirst = GetConVar("ttt_assassin_shop_roles_last"):GetBool()
+        local bodysnatcherModeInno = GetConVar("ttt_bodysnatcher_reveal_innocent"):GetInt()
+        local bodysnatcherModeMon = GetConVar("ttt_bodysnatcher_reveal_monster"):GetInt()
+        local bodysnatcherModeIndep = GetConVar("ttt_bodysnatcher_reveal_independent"):GetInt()
+
+        local function AddEnemy(p, bodysnatcherMode)
+            -- Don't add the former beggar to the list of enemies unless the "reveal" setting is enabled
+            if p:IsInnocent() and p:GetNWBool("WasBeggar", false) and beggarMode ~= BEGGAR_REVEAL_ALL and beggarMode ~= BEGGAR_REVEAL_TRAITORS then return end
+            if p:GetNWBool("WasBodysnatcher", false) and bodysnatcherMode ~= BODYSNATCHER_REVEAL_ALL then return end
+
+            -- Put shop roles into a list if they should be targeted last
+            if shopRolesFirst and p:IsShopRole() then
+                table.insert(shops, p:Nick())
+            else
+                table.insert(enemies, p:Nick())
+            end
+        end
+
         for _, p in pairs(player.GetAll()) do
             if p:Alive() and not p:IsSpec() then
                 if p:IsDetectiveTeam() then
                     table.insert(detectives, p:Nick())
-                -- Exclude Glitch from this list so they don't get discovered immediately
-                elseif (p:IsInnocentTeam() or p:IsMonsterTeam()) and not p:IsGlitch() then
-                    -- Don't add the former beggar to the list of enemies unless the "reveal" setting is enabled
-                    local beggarMode = GetConVar("ttt_beggar_reveal_innocent"):GetInt()
-                    if (beggarMode == BEGGAR_REVEAL_ALL or beggarMode == BEGGAR_REVEAL_TRAITORS) or not p:GetNWBool("WasBeggar", false) then
-                        -- Put shop roles into a list if they should be targeted last
-                        if GetConVar("ttt_assassin_shop_roles_last"):GetBool() and p:IsShopRole() then
-                            table.insert(shops, p:Nick())
-                        else
-                            table.insert(enemies, p:Nick())
-                        end
-                    end
+                -- Exclude Glitch from these lists so they don't get discovered immediately
+                elseif p:IsInnocentTeam() and not p:IsGlitch() then
+                    AddEnemy(p, bodysnatcherModeInno)
+                elseif p:IsMonsterTeam() and not p:IsGlitch() then
+                    AddEnemy(p, bodysnatcherModeMon)
                 -- Exclude the Old Man because they just want to survive
                 elseif p:IsIndependentTeam() and not p:IsOldMan() then
-                    table.insert(independents, p:Nick())
+                    -- Also exclude bodysnatchers turned into an independent if their role hasn't been revealed
+                    if not p:GetNWBool("WasBodysnatcher", false) or bodysnatcherModeIndep == BODYSNATCHER_REVEAL_ALL then
+                        table.insert(independents, p:Nick())
+                    end
                 end
             end
         end
@@ -1237,6 +1318,27 @@ if SERVER then
         SetRoleMaxHealth(ply)
         SetRoleStartingHealth(ply)
     end
+
+    function ShouldPromoteDetectiveLike()
+        local alive, dead = 0, 0
+        for _, p in ipairs(player.GetAll()) do
+            if p:IsDetectiveTeam() then
+                if not p:IsSpec() and p:Alive() then
+                    alive = alive + 1
+                else
+                    dead = dead + 1
+                end
+            end
+        end
+
+        -- If they should be promoted when any detective has died, just check that there is a dead detective
+        if GetConVar("ttt_deputy_impersonator_promote_any_death"):GetBool() then
+            return dead > 0
+        end
+
+        -- Otherwise, only promote if there are no living detectives
+        return alive == 0
+    end
 end
 
 -- Weapons and items that come with TTT. Weapons that are not in this list will
@@ -1254,6 +1356,7 @@ DefaultEquipment = {
         "weapon_ttt_sipistol",
         "weapon_ttt_teleport",
         "weapon_ttt_decoy",
+        "weapon_pha_exorcism",
         EQUIP_ARMOR,
         EQUIP_RADAR,
         EQUIP_DISGUISE
@@ -1290,6 +1393,7 @@ DefaultEquipment = {
     },
 
     [ROLE_HYPNOTIST] = {
+        "weapon_hyp_brainwash",
         EQUIP_ARMOR,
         EQUIP_RADAR,
         EQUIP_DISGUISE
@@ -1321,6 +1425,8 @@ DefaultEquipment = {
         "weapon_zm_shotgun",
         "weapon_zm_sledge",
         "weapon_ttt_glock",
+        "weapon_kil_crowbar",
+        "weapon_kil_knife",
         EQUIP_ARMOR,
         EQUIP_RADAR,
         EQUIP_DISGUISE
@@ -1341,6 +1447,11 @@ DefaultEquipment = {
     },
 
     [ROLE_QUACK] = {
+        "weapon_ttt_health_station",
+        "weapon_par_cure",
+        "weapon_pha_exorcism",
+        "weapon_qua_bomb_station",
+        "weapon_qua_fake_cure",
         EQUIP_ARMOR,
         EQUIP_RADAR,
         EQUIP_DISGUISE
@@ -1350,6 +1461,16 @@ DefaultEquipment = {
         EQUIP_ARMOR,
         EQUIP_RADAR,
         EQUIP_DISGUISE
+    },
+
+    [ROLE_DOCTOR] = {
+        "weapon_ttt_health_station",
+        "weapon_par_cure",
+        "weapon_qua_fake_cure"
+    },
+
+    [ROLE_PARAMEDIC] = {
+        "weapon_med_defib"
     },
 
     -- non-buyable

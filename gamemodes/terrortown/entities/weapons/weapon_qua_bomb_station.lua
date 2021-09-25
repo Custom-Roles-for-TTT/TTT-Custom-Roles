@@ -17,6 +17,8 @@ if CLIENT then
             })
         end
     };
+
+    SWEP.Icon = "vgui/ttt/icon_bombstation"
 end
 
 SWEP.Base = "weapon_tttbase"

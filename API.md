@@ -18,6 +18,8 @@
 ## Overview
 This document aims to explain the things that we have added to Custom Roles for TTT that are usable by other developers for integration.
 
+*NOTE:* Any entries in this document marked as *deprecated* will provide a version number where we will begin issuing a warning message in the server console if they are used. Anything marked as *deprecated* will be removed in the first beta version following the next major release from the deprecation version. For example: If something is marked as "deprecated in version 1.2.5" and the next released version number is 1.2.6 then that deprecated thing will be deleted in the beta version after that (1.2.7, for example).
+
 ## Global Variables
 Variables available globally (within the defined realm)
 
@@ -61,9 +63,33 @@ Variables available globally (within the defined realm)
 *Realm:* Client and Server\
 *Added in:* 1.0.0
 
+**DEFAULT_ROLES** - Lookup table for whether a role is a default TTT role.\
+*Realm:* Client and Server\
+*Added in:* 1.0.3
+
 **DELAYED_SHOP_ROLES** - Lookup table for the roles whose shop purchases can be delayed.\
 *Realm:* Client and Server\
 *Added in:* 1.2.2
+
+**EVENT_MAX** - The maximum event identifier.\
+*Realm:* Client and Server\
+*Added in:* 1.2.5
+
+**INDEPENDENT_ROLES** - Lookup table for whether a role is on the independent team.\
+*Realm:* Client and Server\
+*Added in:* 1.0.0
+
+**INNOCENT_ROLES** - Lookup table for whether a role is on the innocent team.\
+*Realm:* Client and Server\
+*Added in:* 1.0.0
+
+**JESTER_ROLES** - Lookup table for whether a role is on the jester team.\
+*Realm:* Client and Server\
+*Added in:* 1.0.0
+
+**MONSTER_ROLES** - Lookup table for whether a role is on the monster team.\
+*Realm:* Client and Server\
+*Added in:* 1.0.0
 
 **ROLE_NONE** - Updated to be -1 so players who have not been given a role can be identified.\
 *Realm:* Client and Server\
@@ -101,26 +127,6 @@ Variables available globally (within the defined realm)
 *Realm:* Client and Server\
 *Added in:* 1.0.0
 
-**DEFAULT_ROLES** - Lookup table for whether a role is a default TTT role.\
-*Realm:* Client and Server\
-*Added in:* 1.0.3
-
-**INDEPENDENT_ROLES** - Lookup table for whether a role is on the independent team.\
-*Realm:* Client and Server\
-*Added in:* 1.0.0
-
-**INNOCENT_ROLES** - Lookup table for whether a role is on the innocent team.\
-*Realm:* Client and Server\
-*Added in:* 1.0.0
-
-**JESTER_ROLES** - Lookup table for whether a role is on the jester team.\
-*Realm:* Client and Server\
-*Added in:* 1.0.0
-
-**MONSTER_ROLES** - Lookup table for whether a role is on the monster team.\
-*Realm:* Client and Server\
-*Added in:* 1.0.0
-
 **TRAITOR_BUTTON_ROLES** - Lookup table for whether a role can use traitor buttons.\
 *Realm:* Client and Server\
 *Added in:* 1.0.5
@@ -128,6 +134,10 @@ Variables available globally (within the defined realm)
 **TRAITOR_ROLES** - Lookup table for whether a role is on the traitor team.\
 *Realm:* Client and Server\
 *Added in:* 1.0.0
+
+**WIN_MAX** - The maximum win state identifier.\
+*Realm:* Client and Server\
+*Added in:* 1.2.5
 
 ## Global Enumerations
 Enumerations available globally (within the defined realm). There are additional enumerations used internally for configuration and event reporting that are not included here. If you need them, for whatever reason, you will need to find them or ask one of the developers in Discord.
@@ -173,6 +183,14 @@ Methods available globally (within the defined realm)
 *Added in:* 1.0.0\
 *Parameters:*
 - *version* - The version number to compare against the currently installed version. Must be in the "#.#.#" format
+
+**GenerateNewEventID()** - Generates a new ID to be used for custom scoring events.\
+*Realm:* Client and Server\
+*Added in:* 1.2.5
+
+**GenerateNewWinID()** - Generates a new ID to be used for custom win conditions.\
+*Realm:* Client and Server\
+*Added in:* 1.2.5
 
 **GetEquipmentItemById(id)** - Gets an equipment item's definition by their ID.\
 *Realm:* Client and Server\
@@ -269,8 +287,13 @@ Methods available globally (within the defined realm)
 **ShouldHideJesters(ply)** - Whether the target player should hide a jester player's role (in radar, on the scoreboard, in target ID, etc.).\
 *Realm:* Client and Server\
 *Added in:* 1.2.3\
+*Deprecated in:* 1.2.5\
 *Parameters:*
 - *ply* - The target player
+
+**ShouldPromoteDetectiveLike()** - Whether an unpromoted detective-like player (deputy/impersonator) should be promoted.\
+*Realm:* Server\
+*Added in:* 1.2.5
 
 **StartsWithVowel(str)** - Whether the given string starts with a vowel.\
 *Realm:* Client and Server\
@@ -367,13 +390,21 @@ Variables available when called from a Player object (within the defined realm)
 *Realm:* Server\
 *Added in:* 1.2.2
 
+**plymeta:HandleDetectiveLikePromotion()** - Handles the player's promotion as a detective-like role (deputy/impersonator). Promotes the player and sends necessary net events.\
+*Realm:* Server\
+*Added in:* 1.2.5
+
 **plymeta:IsCustom()** - Whether the player's role is not one of the three default TTT roles.\
 *Realm:* Client and Server\
 *Added in:* 1.0.0
 
-**plymeta:IsDetectiveLike()/plymeta:GetDetectiveLike()** - Whether the player's role is like a Detective (e.g. detective or promoted deputy/impersonator).\
+**plymeta:IsDetectiveLike()/plymeta:GetDetectiveLike()** - Whether the player's role is like a detective (e.g. detective or promoted deputy/impersonator).\
 *Realm:* Client and Server\
-*Added in:* 1.0.0\
+*Added in:* 1.0.0
+
+**plymeta:IsDetectiveLikePromotable()/plymeta:GetDetectiveLikePromotable()** - Whether the player's role is an unpromoted detective-like role (deputy/impersonator).\
+*Realm:* Client and Server\
+*Added in:* 1.2.5
 
 **plymeta:IsIndependentTeam()** - Whether the player is on the independent team.\
 *Realm:* Client and Server\
@@ -456,9 +487,29 @@ Variables available when called from a Player object (within the defined realm)
 *Parameters:*
 - *isPrime* - Whether the player is a prime zombie
 
+**plymeta:ShouldActLikeJester()** - Whether the player should act like a jester (e.g. in what damage they do, what damage they take, how they appear to other players, etc.).\
+*Realm:* Client and Server\
+*Added in:* 1.2.5
+
 **plymeta:ShouldDelayShopPurchase()** - Whether the player's shop purchase deliveries should be delayed.\
 *Realm:* Client and Server\
 *Added in:* 1.2.2
+
+**plymeta:ShouldHideJesters()** - Whether the player should hide a jester player's role (in radar, on the scoreboard, in target ID, etc.).\
+*Realm:* Client and Server\
+*Added in:* 1.2.5
+
+**plymeta:ShouldRevealBeggar(tgt)** - Whether the player should reveal the fact that the target player is no longer a beggar (e.g. converted to an innocent or traitor).\
+*Realm:* Client and Server\
+*Added in:* 1.2.5\
+*Parameters:*
+- *tgt* - The target player beggar. If a value is not provided, the context player will be used instead (e.g. `ply:ShouldRevealBeggar()` is the same as `ply:ShouldRevealBeggar(ply)`)
+
+**plymeta:ShouldRevealBodysnatcher(tgt)** - Whether the player should reveal the fact that the target player is no longer a bodysnatcher (e.g. has snatched a role from a dead body).\
+*Realm:* Client and Server\
+*Added in:* 1.2.5\
+*Parameters:*
+- *tgt* - The target player bodysnatcher. If a value is not provided, the context player will be used instead (e.g. `ply:ShouldRevealBodysnatcher()` is the same as `ply:ShouldRevealBodysnatcher(ply)`)
 
 **plymeta:SoberDrunk(team)** - Runs the logic for when a drunk sobers up and remembers their role.\
 *Realm:* Server\
@@ -515,7 +566,7 @@ Methods created to help with the manipulation of tables
 - *excludes* - Table of values to exclude from the union. (Optional)
 
 ## Hooks
-Custom and modified event hooks available within the defined realm
+Custom and modified event hooks available within the defined realm. A list of default TTT hooks is available [here](https://www.troubleinterroristtown.com/development/hooks/) but note that they may have been modified (see below).
 
 ***NOTE:*** When using a hook with multiple return values, you *must* return a non-`nil` value for all properties up to the one(s) you are modifying or the hook results will be ignored entirely.
 
@@ -548,6 +599,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
   - `pos` - The target's position
   - `role` - The target's role, if any
   - `was_beggar` - If the target was a beggar but was converted to another role
+  - `was_bodysnatcher` - If the target was a bodysnatcher but was converted to another role
   - `killer_clown_active` - whether the target is a Clown that has been activated
   - `sid64` - The [SteamID64](https://wiki.facepunch.com/gmod/Player:SteamID64) value of the target
   - The following properties can be added (only one or the other) to `tgt` to change what is displayed with the radar ping
@@ -640,7 +692,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 *Realm:* Server\
 *Added in:* 1.2.3\
 *Parameters:*
-- *roleTable* - The table of roles representing the available independent roles and their weight (how many times they appear in the table). This table should be manipulated to effect change
+- *roleTable* - The table of roles representing the available independent roles (and jester roles, if ttt_single_jester_independent is enabled) and their weight (how many times they appear in the table). This table should be manipulated to effect change
 - *choices* - The table of available player choices that will not be (and have not already been) assigned a traitor or detective role. Manipulating this table will have no effect
 - *choiceCount* - The total number of player choices there are
 - *traitors* - The table of available player choices that will be (or have already been) assigned a traitor role. Manipulating this table will have no effect
@@ -664,7 +716,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 *Realm:* Server\
 *Added in:* 1.2.3\
 *Parameters:*
-- *roleTable* - The table of roles representing the available jester roles and their weight (how many times they appear in the table). This table should be manipulated to effect change
+- *roleTable* - The table of roles representing the available jester roles (and independent roles, if ttt_single_jester_independent is enabled) and their weight (how many times they appear in the table). This table should be manipulated to effect change
 - *choices* - The table of available player choices that will not be (and have not already been) assigned a traitor or detective role. Manipulating this table will have no effect
 - *choiceCount* - The total number of player choices there are
 - *traitors* - The table of available player choices that will be (or have already been) assigned a traitor role. Manipulating this table will have no effect
@@ -714,6 +766,58 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 
 *Return:* The stamina value to assign to the player. If none is provided, the player's stamina will not be changed.
 
+**TTTTargetIDPlayerHealth(ply, client, text, clr)** - Called before a player's heath status (shown when you look at a player) is rendered.\
+*Realm:* Client\
+*Added in:* 1.2.5\
+*Parameters:*
+- *ply* - The target player being rendered
+- *client* - The local player
+- *text* - The health-related text being shown
+- *clr* - The [Color](https://wiki.facepunch.com/gmod/Global.Color) of the text being used
+
+*Return:*
+- *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
+- *clr* - The new clr value to use or the original passed into the hook
+
+**TTTTargetIDEntityHintLabel(ent, client, label, clr)** - Called before an entity's hint label (shown when you look at an entity) is rendered.\
+*Realm:* Client\
+*Added in:* 1.2.5\
+*Parameters:*
+- *ent* - The target entity being rendered. Guaranteed to not be a player.
+- *client* - The local player
+- *text* - The label for the hint-related text being shown
+- *clr* - The [Color](https://wiki.facepunch.com/gmod/Global.Color) of the text being used
+
+*Return:*
+- *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
+- *clr* - The new clr value to use or the original passed into the hook
+
+**TTTTargetIDPlayerHintText(ent, client, text, clr)** - Called before an entity's hint text (shown when you look at an entity) is rendered.\
+*Realm:* Client\
+*Added in:* 1.2.5\
+*Parameters:*
+- *ent* - The target entity being rendered. Not necessarily a player so be sure to check `ent:IsPlayer()` if needed
+- *client* - The local player
+- *text* - The hint-related text being shown
+- *clr* - The [Color](https://wiki.facepunch.com/gmod/Global.Color) of the text being used
+
+*Return:*
+- *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
+- *clr* - The new clr value to use or the original passed into the hook
+
+**TTTTargetIDPlayerKarma(ply, client, text, clr)** - Called before a player's karma status text (shown when you look at a player) is rendered.\
+*Realm:* Client\
+*Added in:* 1.2.5\
+*Parameters:*
+- *ply* - The target player being rendered
+- *client* - The local player
+- *text* - The karma-related text being shown
+- *clr* - The [Color](https://wiki.facepunch.com/gmod/Global.Color) of the text being used
+
+*Return:*
+- *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
+- *clr* - The new clr value to use or the original passed into the hook
+
 **TTTTargetIDPlayerKillIcon(ply, client, showKillIcon, showJester)** - Called before player Target ID icon (over their head) is rendered to determine if the "KILL" icon should be shown.\
 *Realm:* Client\
 *Added in:* 1.1.9\
@@ -725,7 +829,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 
 *Return:* `true` if the kill icon should be shown or `false` if not. Returning nothing or a non-boolean value will default to the given *showKillIcon* value.
 
-**TTTTargetIDPlayerRing(ent, client, ringVisible)** - Called before a player Target ID ring (shown when you look at a player) is rendered.\
+**TTTTargetIDPlayerRing(ent, client, ringVisible)** - Called before an entity's Target ID ring (shown when you look at an entity) is rendered.\
 *Realm:* Client\
 *Added in:* 1.2.3\
 *Parameters:*
@@ -737,7 +841,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *newVisible* - The new ringVisible value to use or the original passed into the hook
 - *colorOverride* - The [Color](https://wiki.facepunch.com/gmod/Global.Color) to use for the ring. Return `false` if you don't want to override the color. *NOTE:* For some reason colors that are near-black do not render so try a lighter color if you are having trouble
 
-**TTTTargetIDPlayerRoleIcon(ply, client, role, noZ, colorRole, hideBeggar, showJester)** - Called before player Target ID icon (over their head) is rendered allowing changing the icon and color shown.\
+**TTTTargetIDPlayerRoleIcon(ply, client, role, noZ, colorRole, hideBeggar, showJester, hideBodysnatcher)** - Called before player Target ID icon (over their head) is rendered allowing changing the icon and color shown.\
 *Realm:* Client\
 *Added in:* 1.1.9\
 *Parameters:*
@@ -748,6 +852,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *colorRole* - What role is being used for the icon background color (Only used when a different color than the only belonging to *role* is being used)
 - *hideBeggar* - Whether the target was a beggar whose new role should be hidden
 - *showJester* - Whether the target is a jester and the local player would normally know that
+- *hideBodysnatcher* - Whether the target is a bodysnatcher whose new role should be hidden *(Added in 1.2.5)*
 
 *Return:*
 - *role* - The new role value to use or the original passed into the hook. Return `false` to stop the icon from being rendered
@@ -761,13 +866,13 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *ent* - The target entity being rendered. Not necessarily a player so be sure to check `ent:IsPlayer()` if needed
 - *client* - The local player
 - *text* - The first line of text being shown
-- *clr* - The color of the text being used
+- *clr* - The [Color](https://wiki.facepunch.com/gmod/Global.Color) of the text being used
 - *secondaryText* - The second line of text being shown
 
 *Return:*
 - *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
 - *clr* - The new clr value to use or the original passed into the hook
-- *secondaryText* - The new secondaryText value to use or the original passed into the hook
+- *secondaryText* - The new secondaryText value to use or the original passed into the hook. Return `false` to not show text at all
 
 ## SWEPs
 Changes made to SWEPs (the data structure used when defining new weapons)

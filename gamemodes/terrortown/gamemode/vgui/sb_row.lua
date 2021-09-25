@@ -117,13 +117,15 @@ function GM:TTTScoreboardRowColorForPlayer(ply)
         return ROLE_CLOWN
     end
 
-    local beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", BEGGAR_REVEAL_ALL)
-    local hideBeggar = ply:GetNWBool("WasBeggar", false) and (beggarMode == BEGGAR_REVEAL_NONE or beggarMode == BEGGAR_REVEAL_INNOCENTS)
-    local showJester = ((ply:IsJesterTeam() and not ply:GetNWBool("KillerClownActive", false)) or ((ply:IsTraitor() or ply:IsInnocent()) and hideBeggar)) and not ShouldHideJesters(client)
+    local hideBeggar = ply:GetNWBool("WasBeggar", false) and not client:ShouldRevealBeggar(ply)
+    local hideBodysnatcher = ply:GetNWBool("WasBodysnatcher", false) and not client:ShouldRevealBodysnatcher(ply)
+    local showJester = (ply:ShouldActLikeJester() or ((ply:IsTraitor() or ply:IsInnocent()) and hideBeggar) or hideBodysnatcher) and not client:ShouldHideJesters()
     local glitchMode = GetGlobalInt("ttt_glitch_mode", 0)
 
     if client:IsTraitorTeam() then
-        if ply:IsTraitorTeam() and not hideBeggar then
+        if showJester then
+            return ROLE_JESTER
+        elseif ply:IsTraitorTeam() then
             if ply:IsZombie() then
                 return ROLE_ZOMBIE
             elseif glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES and GetGlobalBool("ttt_glitch_round", false) then
@@ -137,20 +139,18 @@ function GM:TTTScoreboardRowColorForPlayer(ply)
             else
                 return ply:GetNWInt("GlitchBluff", ROLE_TRAITOR)
             end
-        elseif showJester then
-            return ROLE_JESTER
         end
     elseif client:IsIndependentTeam() then
-        if ply:IsIndependentTeam() then
-            return ply:GetRole()
-        elseif showJester then
+        if showJester then
             return ROLE_JESTER
+        elseif ply:IsIndependentTeam() then
+            return ply:GetRole()
         end
     elseif client:IsMonsterTeam() then
-        if ply:IsMonsterTeam() then
-            return ply:GetRole()
-        elseif showJester then
+        if showJester then
             return ROLE_JESTER
+        elseif ply:IsMonsterTeam() then
+            return ply:GetRole()
         end
     end
 
@@ -320,7 +320,7 @@ function PANEL:UpdatePlayerData()
             else
                 local updated = false
                 for _, v in pairs(player.GetAll()) do
-                    if ply:Nick() == v:GetNWString("AssassinTarget", "") then
+                    if ply:Nick() == v:GetNWString("AssassinTarget", "") and v:Alive() and not v:IsSpec() then
                         local text = " ("
                         if infected then
                             text = text .. GetTranslation("target_infected") .. " | "

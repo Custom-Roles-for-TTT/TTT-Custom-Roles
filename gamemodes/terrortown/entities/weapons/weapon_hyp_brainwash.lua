@@ -22,6 +22,8 @@ if CLIENT then
         type = "item_weapon",
         desc = "Revives an innocent as a traitor."
     }
+
+    SWEP.Icon = "vgui/ttt/icon_brainwash"
 end
 
 SWEP.Base = "weapon_tttbase"
@@ -41,6 +43,7 @@ SWEP.Secondary.Automatic = false
 SWEP.Secondary.Delay = 1.25
 
 SWEP.InLoadoutFor = {ROLE_HYPNOTIST}
+SWEP.InLoadoutForDefault = {ROLE_HYPNOTIST}
 
 SWEP.Charge = 0
 SWEP.Timer = -1
@@ -79,6 +82,8 @@ local DEFIB_IDLE = 0
 local DEFIB_BUSY = 1
 local DEFIB_ERROR = 2
 local oldScoreGroup = nil
+
+local convert_detectives = CreateConVar("ttt_hypnotist_convert_detectives", "0")
 
 if CLIENT then
     function SWEP:Initialize()
@@ -171,6 +176,19 @@ if SERVER then
         end)
     end
 
+    function SWEP:ShouldConvertToImpersonator(ply)
+        if not convert_detectives:GetBool() then
+            return false
+        end
+        if ply:IsDetective() then
+            return true
+        end
+        if ply:IsDeputy() then
+            return GetGlobalBool("ttt_deputy_use_detective_icon", true)
+        end
+        return false
+    end
+
     function SWEP:DoRespawn(body)
         local ply = bodyply(body)
         local credits = CORPSE.GetCredits(body, 0) or 0
@@ -194,7 +212,7 @@ if SERVER then
         net.WriteBool(true)
         net.Send(ply)
 
-        -- Un-haunt the Hypnotist if the target was the Phantom
+        -- Un-haunt the player if the target was the Phantom or Parasite
         local owner = self:GetOwner()
         if ply:IsPhantom() and ply:GetNWString("HauntingTarget", nil) == owner:SteamID64() then
             owner:SetNWBool("Haunted", false)
@@ -212,7 +230,21 @@ if SERVER then
         ply:SetPos(self.Location or body:GetPos())
         ply:SetEyeAngles(Angle(0, body:GetAngles().y, 0))
         ply:SetNWBool("WasHypnotised", true)
-        ply:SetRole(ROLE_TRAITOR)
+        ply:SetNWBool("WasBeggar", false)
+        ply:SetNWBool("WasBodysnatcher", false)
+        -- If detectives and deputies that look like detectives should be converted
+        if self:ShouldConvertToImpersonator(ply) then
+            -- Keep track of whether they should be promoted
+            local promote = (ply:IsDetective() or ShouldPromoteDetectiveLike())
+
+            -- Convert them to an impersonator and promote them if appropriate
+            ply:SetRole(ROLE_IMPERSONATOR)
+            if promote then
+                ply:HandleDetectiveLikePromotion()
+            end
+        else
+            ply:SetRole(ROLE_TRAITOR)
+        end
         ply:StripRoleWeapons()
         ply:PrintMessage(HUD_PRINTCENTER, "You have been brainwashed and are now a traitor.")
         ply:SetHealth(spawnhealth)

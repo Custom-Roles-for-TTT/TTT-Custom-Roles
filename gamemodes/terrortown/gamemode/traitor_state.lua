@@ -132,13 +132,8 @@ local function give_role_weapon(ply, role)
         return
     end
 
-    -- Give the player any role weapons that should by in the loadout for their role
-    for _, w in ipairs(weapons.GetList()) do
-        local weap_class = WEPS.GetClass(w)
-        if istable(w.InLoadoutFor) and table.HasValue(w.InLoadoutFor, role) and w.Category == WEAPON_CATEGORY_ROLE then
-            ply:Give(weap_class)
-        end
-    end
+    -- Give loadout weapons
+    hook.Run("PlayerLoadout", ply)
 end
 
 for role = 0, ROLE_MAX do

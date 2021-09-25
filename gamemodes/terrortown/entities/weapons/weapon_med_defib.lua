@@ -22,6 +22,8 @@ if CLIENT then
         type = "item_weapon",
         desc = "Revives a dead player."
     }
+
+    SWEP.Icon = "vgui/ttt/icon_meddefib"
 end
 
 SWEP.Base = "weapon_tttbase"
@@ -41,6 +43,7 @@ SWEP.Secondary.Automatic = false
 SWEP.Secondary.Delay = 1.25
 
 SWEP.InLoadoutFor = {ROLE_PARAMEDIC}
+SWEP.InLoadoutForDefault = {ROLE_PARAMEDIC}
 
 SWEP.Charge = 0
 SWEP.Timer = -1
@@ -74,7 +77,6 @@ SWEP.WorldModel = "models/weapons/w_c4.mdl"
 SWEP.AutoSpawnable = false
 SWEP.NoSights = true
 
-local oldScoreGroup
 local DEFIB_IDLE = 0
 local DEFIB_BUSY = 1
 local DEFIB_ERROR = 2
@@ -187,11 +189,11 @@ if SERVER then
 
         local credits = CORPSE.GetCredits(body, 0) or 0
 
-        net.Start("TTT_Defib_Revived")
+        net.Start("TTT_Paramedic_Revived")
         net.WriteBool(true)
         net.Send(ply)
 
-        -- Un-haunt the Hypnotist if the target was the Phantom
+        -- Un-haunt the player if the target was the Phantom or Parasite
         local owner = self:GetOwner()
         if ply:IsPhantom() and ply:GetNWString("HauntingTarget", nil) == owner:SteamID64() then
             owner:SetNWBool("Haunted", false)
@@ -203,7 +205,10 @@ if SERVER then
         ply:SetCredits(credits)
         ply:SetPos(self.Location or body:GetPos())
         ply:SetEyeAngles(Angle(0, body:GetAngles().y, 0))
-        if ply:GetDetectiveLike() then
+        if GetConVar("ttt_paramedic_defib_as_innocent"):GetBool() then
+            ply:SetRole(ROLE_INNOCENT)
+            ply:StripRoleWeapons()
+        elseif ply:GetDetectiveLike() then
             if ply:IsInnocentTeam() then
                 ply:SetRole(ROLE_INNOCENT)
             elseif ply:IsTraitorTeam() then
@@ -304,17 +309,6 @@ if CLIENT then
         if ply or len <= 0 then return end
         surface.PlaySound(revived)
     end)
-
-    hook.Remove("TTTEndRound", "RemoveParamedicHide")
-    hook.Add("TTTEndRound", "RemoveParamedicHide", function()
-        for _, v in pairs(player.GetAll()) do v.MedDefibHide = nil end
-    end)
-
-    oldScoreGroup = oldScoreGroup or ScoreGroup
-    function ScoreGroup(ply)
-        if ply.MedDefibHide then return GROUP_FOUND end
-        return oldScoreGroup(ply)
-    end
 
     function SWEP:DrawHUD()
         local state = self:GetState()

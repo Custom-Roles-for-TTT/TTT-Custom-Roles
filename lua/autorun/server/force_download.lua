@@ -7,7 +7,12 @@ if SERVER then
     resource.AddSingleFile("materials/vgui/confetti.png")
 
     -- Items
+    resource.AddFile("materials/vgui/ttt/icon_bombstation.vmt")
+    resource.AddFile("materials/vgui/ttt/icon_brainwash.vmt")
     resource.AddFile("materials/vgui/ttt/icon_cure.vmt")
+    resource.AddFile("materials/vgui/ttt/icon_exor.vmt")
+    resource.AddFile("materials/vgui/ttt/icon_fakecure.vmt")
+    resource.AddFile("materials/vgui/ttt/icon_meddefib.vmt")
     resource.AddFile("materials/vgui/ttt/icon_regen.vmt")
     resource.AddFile("materials/vgui/ttt/icon_speed.vmt")
 

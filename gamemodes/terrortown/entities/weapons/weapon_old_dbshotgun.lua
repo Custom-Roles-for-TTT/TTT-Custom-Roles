@@ -58,7 +58,7 @@ function SWEP:GetHeadshotMultiplier(victim, dmginfo)
     local d = math.max(0, dist - 140)
 
     -- decay from 3 to 1 as distance increases
-    return 1 + math.max(0, (2 - 0.002 * (d ^ 1.25)))
+    return 1 + math.max(0, 2 - 0.002 * (d ^ 1.25))
 end
 
 function SWEP:SecondaryAttack(worldsnd)
@@ -75,7 +75,7 @@ function SWEP:SecondaryAttack(worldsnd)
         self:ShootBullet(self.Primary.Damage, self.Secondary.Recoil, self.Primary.NumShots * 2, self:GetPrimaryCone())
         self:TakePrimaryAmmo(2)
 
-        local owner = self.Owner
+        local owner = self:GetOwner()
         if not IsValid(owner) or owner:IsNPC() or (not owner.ViewPunch) then return end
         owner:ViewPunch(Angle(math.Rand(-0.2, -0.1) * self.Secondary.Recoil, math.Rand(-0.1, 0.1) * self.Secondary.Recoil, 0))
     elseif self:Clip1() == 1 then
@@ -88,9 +88,8 @@ function SWEP:SecondaryAttack(worldsnd)
         self:ShootBullet(self.Primary.Damage, self.Primary.Recoil, self.Primary.NumShots, self:GetPrimaryCone())
         self:TakePrimaryAmmo(1)
 
-        local owner = self.Owner
+        local owner = self:GetOwner()
         if not IsValid(owner) or owner:IsNPC() or (not owner.ViewPunch) then return end
-
         owner:ViewPunch(Angle(math.Rand(-0.2, -0.1) * self.Primary.Recoil, math.Rand(-0.1, 0.1) * self.Primary.Recoil, 0))
     end
 end

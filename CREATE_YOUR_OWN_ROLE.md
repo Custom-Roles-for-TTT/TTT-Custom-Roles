@@ -12,9 +12,20 @@
       1. [Equipment](#Equipment)
    1. [Credits](#Credits)
    1. [Health](#Health)
+   1. [Role Activation](#Role-Activation)
+   1. [Acting Like a Jester](#Acting-Like-a-Jester)
    1. [Translations](#Translations)
    1. [Optional Rules](#Optional-Rules)
    1. [ConVars](#ConVars)
+   1. [Custom Win Conditions](#Custom-Win-Conditions)
+      1. [Win Identifier](#Win-Identifier)
+      1. [Win Condition](#Win-Condition)
+      1. [Round Summary Screen](#Round-Summary-Screen)
+      1. [Round Result Message](#Round-Result-Message)
+      1. [Full Win Condition Example](#Full-Win-Condition-Example)
+   1. [Role Registration](#Role-Registration)
+   1. [Final Block](#Final-Block)
+   1. [Example File](#Example-File)
 1. [Sprites](#Sprites)
    1. [Finding a Role Icon](#Finding-a-Role-Icon)
    1. [Tab File](#Tab-File)
@@ -69,6 +80,9 @@ ROLE.startingcredits = nil
 
 ROLE.startinghealth = nil
 ROLE.maxhealth = nil
+
+ROLE.isactive = nil
+ROLE.shouldactlikejester = nil
 
 ROLE.translations = {}
 
@@ -243,9 +257,54 @@ ROLE.startinghealth = 125
 ROLE.maxhealth = 150
 ```
 
+### Role Activation
+
+Some roles may have special logic that changes how they behave after some activation event. For example, the Clown is activated when only one team remains and the effect of their activation is they can now do damage. If you want to be able to do something like that we recommend using the entity networked properties system (such as [SetNWBool](https://wiki.facepunch.com/gmod/Entity:SetNWBool)). When the role is activated you could `ply:SetNWBool("SummonerActive", true)` and then check that they are active in other places to change their behavior using `ply:GetNWBool("SummonerActive", false)`. To make this slightly nicer, we introduced the `ply:IsRoleActive()` method in v1.2.2 which is also used in delayed shop activation (see [Optional Rules](#Optional-Rules)).
+
+The next line in our role definition has to do with tying into the `ply:IsRoleActive()` method, allowing you to define if your role is "active" on your own terms:
+
+```lua
+ROLE.isactive = nil
+```
+
+This property should be a function with a single parameter that takes a player object and returns a boolean. Continuing our example from the paragraph above, we should define this property like so:
+
+```lua
+ROLE.isactive = function(ply)
+    return ply:GetNWBool("SummonerActive", false)
+end
+```
+
+Once that is defined you can use `ply:IsRoleActive()` anywhere you need to check your role's activation state.
+
+### Acting Like a Jester
+
+The next part of the file will help you create a role that sometimes acts like a jester. The perfect example of this functionality is the clown role -- when they first spawn, they:
+1. Cannot do damage
+1. Don't take various forms of damage (fire, explosion, falling, etc.)
+1. Appear as a jester to other roles (on the radar, scoreboard, icon over their head, etc.)
+
+Once the role activates (in the case of the clown, this happens when there is only one team remaining) then they no longer act like a jester, allowing them to do damage and potentially win the round.
+
+To make your role behave similarly, you need to define the following property:
+
+```lua
+ROLE.shouldactlikejester = nil
+```
+
+This property should be a function with a single parameter that takes a player object and returns a boolean. In the case of our example Summoner, we're going to have them to act like a jester until they are activated. To accomplish that, we define the property like this:
+
+```lua
+ROLE.shouldactlikejester = function(ply)
+    return not ply:IsRoleActive()
+end
+```
+
+Once that is defined you can use `ply:ShouldActLikeJester()` anywhere you need to check whether they should still act like a jester. Custom Roles for TTT will automatically use your defined function when doing damage calculations (damage taken and damage given) as well as role display in thinks like the radar and target ID (icon over the head, name and circle when looking at a player).
+
 ### Translations
 
-Following the lines having to do with the shop, there is a line that looks like this:
+Next there is a line that looks like this:
 
 ```lua
 ROLE.translations = {}
@@ -284,9 +343,9 @@ There are a few options for roles that aren't covered in the template because th
 
 | Option | Description | Added in |
 | --- | --- | --- |
-| `ROLE.canlootcredits` | Whether this role can loot credits from dead bodies. Automatically enabled if the role has a shop, but setting to `false` can make it so the role has a shop but cannot loot credits. Setting this to `true` will allow this role to loot credits regardless of whether they have a shop. | 1.1.8 |
+| `ROLE.canlootcredits` | Whether this role can loot credits from dead bodies. Automatically enabled if the role has a shop, but setting to `false` can make it so the role has a shop but cannot loot credits. Setting this to `true` will allow this role to loot credits regardless of whether they have a shop and will automatically create the `ttt_%NAMERAW%_credits_starting` convar. | 1.1.8 |
 | `ROLE.canusetraitorbuttons` | Whether this role can see and use traitor traps. Automatically enabled if the role is part of `ROLE_TEAM_TRAITOR`, but setting to `false` can make it so the role is a traitor that cannot use traitor traps. Setting to `true` will allow this role to use traitor traps regardless of their team association. | 1.1.8 |
-| `ROLE.shoulddelayshop` | Whether this role's shop purchases are delayed. Purchases will only be given to the player when `plymeta:GiveDelayedShopItems` is called by your own role logic. Enabling this feature will automatically create `ttt_%NAMERAW%_shop_active_only` and `ttt_%NAMERAW%_shop_delay` convars. Requires that the role have a shop. | 1.2.2 |
+| `ROLE.shoulddelayshop` | Whether this role's shop purchases are delayed. Purchases will only be given to the player when `plymeta:GiveDelayedShopItems` is called by your own role logic. Enabling this feature will automatically create `ttt_%NAMERAW%_shop_active_only` and `ttt_%NAMERAW%_shop_delay` convars. Requires that the role has a shop and has role activation defined (see [Role Activation](#Role-Activation)) | 1.2.2 |
 
 The Summoner doesn't need these options to be set because it is `ROLE_TEAM_TRAITOR` and has a shop, but just for an example, here's what it would look like if we wanted to remove their credit looting and traitor trap abilities and delay their shop item delivery:
 
@@ -365,11 +424,152 @@ table.insert(ROLE.convars, {
 })
 ```
 
+### Custom Win Conditions
+
+One of the more complicated parts of creating a new role comes with creating a custom win condition. The good news is this is only required if you don't want to use one of the existing "Traitors Win!", "Innocents Win!", etc. messages. A good rule of thumb is if you are creating a role that is `ROLE_TEAM_JESTER` or `ROLE_TEAM_INDEPENDENT` then you would probably need to create a custom win condition as well.
+
+To create a custom win condition, you will need to define a global unique win identifier and use three separate hooks.
+
+#### Win Identifier
+
+The identifier must be unique to make sure you can differentiate between your role's win and any other role's win. Starting in version 1.2.5, Custom Roles for TTT provides a method for generating a unique win identifier for you. If you want to ensure compatibility with Custom Roles for TTT prior to version 1.2.5 you shoud come up with your own unique number for your role.
+
+The following code should be run on both the server and the client and will generate a new win condition identifier. It then saves the generated value to the global `WIN_SUMMONER` value to be used later:
+
+```lua
+hook.Add("Initialize", "SummonerInitialize", function()
+    -- Use 245 if we're on Custom Roles for TTT earlier than version 1.2.5
+    -- 245 is summation of the ASCII values for the characters "S", "U", and "M"
+    WIN_SUMMONER = GenerateNewWinID and GenerateNewWinID() or 245
+end)
+```
+
+Once we have our unique win condition identifier created it's time to write the code that uses it.
+
+#### Win Condition
+
+The first piece of code that will use our new win condition identifier is the code that determines if our role should win the round. To do that we have to hook the `TTTCheckForWin` method on the server side. For this hook it is important to only return a value if you want to have a specific result. For example, if you want to block the round from ending you return `WIN_NONE` and if you want your role to win then you return the win condition identifer we made above (in our example case: `WIN_SUMMONER`). If you return nothing then the default win condition logic will run as normal. See below for a template example of how to set up this hook:
+
+```lua
+if SERVER then
+    hook.Add("TTTCheckForWin", "SummonerCheckForWin", function()
+        local summonerWins = false
+        --[[
+            Insert logic to determine whether our role should win here
+        ]]--
+
+        if summonerWins then
+            return WIN_SUMMONER
+        end
+    end)
+end
+```
+
+We'll leave the actual logic to determine whether our role wins blank as an exercise for you to fill out on your own. Once our role can actually win we need to define two more hooks to let everyone know when that it happened.
+
+#### Round Summary Screen
+
+The first hook to show that our role won is the one for the round summary screen. This hook (which runs on the client side) allows you to return an object which describes the text to show when your win condition happens.
+
+The first property of the object that the hook expects is `txt` which is the translation string for the text being shown. There are two default translation strings that are available specifically for this purpose. Choose whichever one makes sense for your role:
+
+| Translation String | Text |
+| --- | --- |
+| hilite_win_role_singular | THE {role} WINS |
+| hilite_win_role_plural | THE {role} WIN |
+
+The second property is `params` which is another object with the values to use when replacing placeholders in the translation string. When using the translation strings above, the only placeholder is `role` so the only property inside the `params` object should be `role`. The value for this property should be the role string for your role in the correct singular or plural form depending on which translation string you used above. For example, if you used `hilite_win_role_singular` then `role` would be `ROLE_STRINGS[ROLE_SUMMONER]` but if you used `hilite_win_role_plural` then `role` would be `ROLE_STRINGS_PLURAL[ROLE_SUMMONER]`.
+
+The final parameter of the returned object is `c`, representing the color to show in the background behind the winning text. In general you should use the role color for your role. In our case that would look like this: `ROLE_COLORS[ROLE_SUMMONER]`.
+
+Putting all the properties together, the hook would look something like the following:
+
+```lua
+if CLIENT then
+    hook.Add("TTTScoringWinTitle", "SummonerScoringWinTitle", function(wintype, wintitles, title, secondaryWinRole)
+        if wintype == WIN_SUMMONER then
+            return { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_SUMMONER] }, c = ROLE_COLORS[ROLE_SUMMONER] }
+        end
+    end)
+end
+```
+
+#### Round Result Message
+
+The final hook to set up our custom win condition is the one that displays the winning message in the top-right of the screen. It also prints the winning team to the server console, but that's not something the players will see. This hook is on the server side but requires a translation to be set up on the client side (after the addon has initialized) for the actual message to display.
+
+The standard name we use for the translation string for this is the same as the win condition identifier global, but in all lowercase. In our example, that would be `win_summoner`. When we set up the translation we deliberately use a placeholder for the role name so that the role can be renamed dynamically. We then have to pass the role string for our role when we use the translation. The full example of the hook and the translation string setup can be seen below:
+
+```lua
+if SERVER then
+    hook.Add("TTTPrintResultMessage", "SummonerPrintResultMessage", function(type)
+        if type == WIN_SUMMONER then
+            LANG.Msg("win_summoner", { role = ROLE_STRINGS[ROLE_SUMMONER] })
+            ServerLog("Result: " .. ROLE_STRINGS[ROLE_SUMMONER] .. " wins.\n")
+            return true
+        end    
+    end)
+end
+if CLIENT then
+    hook.Add("Initialize", "SummonerClientInitialize", function()
+        LANG.AddToLanguage("english", "win_summoner", "The {role}'s minions have overwhelmed their enemies!")
+    end)
+end
+```
+
+The `LANG.Msg` call is the one that sends the message to each client and tells them to translate it. Below that, the `ServerLog` call writes a simpler message to the server console, just in case. Finally we `return true` from the hook to tell Custom Roles for TTT not to run the default logic for printing these messages since we've already handled it.
+
+#### Full Win Condition Example
+
+If we piece together all the bits of code from the preivous sections it would come out looking something like this:
+
+```lua
+    hook.Add("Initialize", "SummonerInitialize", function()
+        -- Use 245 if we're on Custom Roles for TTT earlier than version 1.2.5
+        -- 245 is summation of the ASCII values for the characters "S", "U", and "M"
+        WIN_SUMMONER = GenerateNewWinID and GenerateNewWinID() or 245
+
+        if CLIENT then
+            LANG.AddToLanguage("english", "win_summoner", "The {role}'s minions have overwhelmed their enemies!")
+        end
+    end)
+
+    if SERVER then
+        hook.Add("TTTCheckForWin", "SummonerCheckForWin", function()
+            local summonerWins = false
+            --[[
+                Insert logic to determine whether our role should win here
+            ]]--
+
+            if summonerWins then
+                return WIN_SUMMONER
+            end
+        end)
+
+        hook.Add("TTTPrintResultMessage", "SummonerPrintResultMessage", function(type)
+            if type == WIN_SUMMONER then
+                LANG.Msg("win_summoner", { role = ROLE_STRINGS[ROLE_SUMMONER] })
+                ServerLog("Result: " .. ROLE_STRINGS[ROLE_SUMMONER] .. " wins.\n")
+                return true
+            end
+        end)
+    end
+    if CLIENT then
+        hook.Add("TTTScoringWinTitle", "SummonerScoringWinTitle", function(wintype, wintitles, title, secondaryWinRole)
+            if wintype == WIN_SUMMONER then
+                return { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_SUMMONER] }, c = ROLE_COLORS[ROLE_SUMMONER] }
+            end
+        end)
+    end
+```
+
+Notice that we combined the two different `Initialize` hooks into one. That is not required but if you do decide to keep two hooks make sure you give them different identifiers.
+
 ### Role Registration
 
 The next line simply tells CR for TTT to register your role and passes through all the relevent information. You do not need to edit this line. CR for TTT automatically defines an enumeration for your role, `ROLE_%NAMERAW%` as well as helper functions `Get%NAMERAW%`, `Is%NAMERAW%` and `IsActive%NAMERAW%` if you would like to use them to add extra logic for your role.
 
-### Final block
+### Final Block
 
 Finally we have this block of code:
 
@@ -383,7 +583,7 @@ When this code is run on the server it makes sure the client downloads this file
 
 ### Example File
 
-Once you have done that you are finished with coding. You can close your file and move on to creating your sprites. One last time before moving on to that, here is the full summoner.lua file for reference:
+Once you have done that you are finished with coding. You can close your file and move on to creating your sprites. One last time before moving on to that, here is the full summoner.lua file for reference, as it appears on the workshop:
 
 ```lua
 local ROLE = {}  
@@ -404,40 +604,6 @@ ROLE.team = ROLE_TEAM_TRAITOR
 
 ROLE.shop = {"weapon_ttt_beenade", "weapon_ttt_barnacle", "surprisecombine", "weapon_antlionsummoner", "weapon_controllable_manhack", "weapon_doncombinesummoner"} 
 ROLE.loadout = {}
-
-ROLE.startingcredits = 2
-
-ROLE.startinghealth = 125
-ROLE.maxhealth = 150
-
-ROLE.translations = {
-    ["english"] = {
-        ["summoner_testtranslation"] = "This is in English"
-    },
-    ["español"] = {
-        ["summoner_testtranslation"] = "Esto es en español"
-    }
-}
-
-if SERVER then
-    CreateConVar("ttt_summoner_slider", "0", FCVAR_NONE, "This is a useless slider", 0, 10)
-    CreateConVar("ttt_summoner_checkbox", "0")
-    CreateConVar("ttt_summoner_textbox", "0")
-end
-ROLE.convars = {}
-table.insert(ROLE.convars, {
-    cvar = "ttt_summoner_slider",
-    type = ROLE_CONVAR_TYPE_NUM,
-    decimal = 2
-})
-table.insert(ROLE.convars, {
-    cvar = "ttt_summoner_checkbox",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE.convars, {
-    cvar = "ttt_summoner_textbox",
-    type = ROLE_CONVAR_TYPE_TEXT
-})
 
 RegisterRole(ROLE)  
 

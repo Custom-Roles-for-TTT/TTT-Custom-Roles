@@ -159,7 +159,7 @@ function KARMA.Hurt(attacker, victim, dmginfo)
         if IsDebug() then
             print(Format("%s (%f) attacked %s (%f) for %d and got penalised for %f", attacker:Nick(), attacker:GetLiveKarma(), victim:Nick(), victim:GetLiveKarma(), hurt_amount, penalty))
         end
-    elseif victim:IsJesterTeam() and not victim:GetNWBool("KillerClownActive", false) then
+    elseif victim:ShouldActLikeJester() then
         -- Don't hurt a traitor's karma if killing a Jester doesn't end the round for them
         if GetConVar("ttt_jester_win_by_traitors"):GetBool() or not attacker:IsTraitorTeam() then
             local penalty = hurt_amount * config.jratio:GetFloat()
@@ -209,7 +209,7 @@ function KARMA.Killed(attacker, victim, dmginfo)
         if IsDebug() then
             print(Format("%s (%f) killed %s (%f) and gets penalised for %f", attacker:Nick(), attacker:GetLiveKarma(), victim:Nick(), victim:GetLiveKarma(), penalty))
         end
-    elseif victim:IsJesterTeam() and not victim:GetNWBool("KillerClownActive", false) then
+    elseif victim:ShouldActLikeJester() then
         -- Don't hurt a traitor's karma if killing a Jester doesn't end the round for them
         if GetConVar("ttt_jester_win_by_traitors"):GetBool() or not attacker:IsTraitorTeam() then
             local penalty = config.jpenalty:GetFloat()

@@ -100,12 +100,29 @@ function GM:PlayerSpawn(ply)
     SafeRemoveEntity(spirits[sid])
     spirits[sid] = nil
 
+    -- Don't run the normal loadout for a player being brought back from the dead. Just give them their stored weapons
+    if ply.Resurrecting then
+        -- If this player had a role weapon on them when they were killed, give it back
+        if ply.DeathRoleWeapons and ply.DeathRoleWeapons[ply:GetRole()] then
+            for _, w in ipairs(ply.DeathRoleWeapons[ply:GetRole()]) do
+                ply:Give(w)
+            end
+        end
+    else
+        hook.Call("PlayerLoadout", GAMEMODE, ply)
+    end
+
     -- ye olde hooks
-    hook.Call("PlayerLoadout", GAMEMODE, ply)
     hook.Call("PlayerSetModel", GAMEMODE, ply)
     hook.Call("TTTPlayerSetColor", GAMEMODE, ply)
 
     ply:SetupHands()
+
+    -- Reset the properties we use for tracking resurrection
+    ply.Resurrecting = false
+    if ply.DeathRoleWeapons then
+        table.Empty(ply.DeathRoleWeapons)
+    end
 
     SCORE:HandleSpawn(ply)
 end
@@ -1032,6 +1049,9 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
     for _, v in pairs(player.GetAll()) do
         local assassintarget = v:GetNWString("AssassinTarget", "")
         if v:IsAssassin() and ply:Nick() == assassintarget then
+            -- Reset the target to clear the target overlay from the scoreboard
+            v:SetNWString("AssassinTarget", "")
+
             local delay = GetConVar("ttt_assassin_next_target_delay"):GetFloat()
             -- Delay giving the next target if we're configured to do so
             if delay > 0 then
@@ -1045,8 +1065,6 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
             else
                 AssignAssassinTarget(v, false, false)
             end
-            -- Reset the target to clear the target overlay from the scoreboard
-            v:SetNWString("AssassinTarget", "")
         end
     end
 
@@ -1107,6 +1125,18 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
         -- him. This is ugly, and we have to return the first one to prevent crazy
         -- shit.
     end
+
+    -- Store what non-droppable role weapons this player had when they died as this role
+    -- They will be restored to the player if they are resurrected as the same role
+    -- Droppable role weapons will be dropped on the ground so there's no need to give them back automatically
+    ply.DeathRoleWeapons = {}
+    local role_weapons = {}
+    for _, w in ipairs(ply:GetWeapons()) do
+        if w.Category == WEAPON_CATEGORY_ROLE and not w.AllowDrop then
+            table.insert(role_weapons, WEPS.GetClass(w))
+        end
+    end
+    ply.DeathRoleWeapons[ply:GetRole()] = role_weapons
 
     local valid_kill = IsPlayer(attacker) and attacker ~= ply and GetRoundState() == ROUND_ACTIVE
     -- Don't drop Swapper weapons when they are killed by a player because they are about to be resurrected anyway
@@ -1500,17 +1530,9 @@ function GM:PlayerDeath(victim, infl, attacker)
 
     -- Handle detective death
     if victim:IsDetectiveTeam() and GetRoundState() == ROUND_ACTIVE then
-        local detectiveAlive = false
-        for _, ply in ipairs(player.GetAll()) do
-            if not ply:IsSpec() and ply:Alive() and ply:IsDetectiveTeam() and ply ~= victim then
-                detectiveAlive = true
-                break
-            end
-        end
-        if not detectiveAlive then
+        if ShouldPromoteDetectiveLike() then
             for _, ply in pairs(player.GetAll()) do
-                if (ply:IsDeputy() or ply:IsImpersonator()) and not ply:GetNWBool("HasPromotion", false) then
-                    ply:SetNWBool("HasPromotion", true)
+                if ply:IsDetectiveLikePromotable() then
                     local alive = ply:Alive()
                     if alive then
                         ply:PrintMessage(HUD_PRINTTALK, "You have been promoted to " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "!")
@@ -1531,13 +1553,7 @@ function GM:PlayerDeath(victim, infl, attacker)
                         end
                     end
 
-                    net.Start("TTT_Promotion")
-                    net.WriteString(ply:Nick())
-                    net.Broadcast()
-
-                    -- The player has been promoted so we need to update their shop
-                    net.Start("TTT_ResetBuyableWeaponsCache")
-                    net.Send(ply)
+                    ply:HandleDetectiveLikePromotion()
                 end
             end
         end
@@ -1727,7 +1743,7 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
         -- Only apply damage scaling after the round starts
         if GetRoundState() >= ROUND_ACTIVE then
             -- Jesters can't deal damage
-            if att:IsJesterTeam() and not att:GetNWBool("KillerClownActive", false) then
+            if att:ShouldActLikeJester() then
                 dmginfo:ScaleDamage(0)
             end
 
@@ -1768,7 +1784,16 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
                 if att:GetNWBool("AssassinFailed", false) then
                     scale = -GetConVar("ttt_assassin_failed_damage_penalty"):GetFloat()
                 elseif ply:Nick() == att:GetNWString("AssassinTarget", "") then
-                    scale = GetConVar("ttt_assassin_target_damage_bonus"):GetFloat()
+                    -- Get the active weapon, whather it's in the inflictor or it's from the attacker
+                    local active_weapon = dmginfo:GetInflictor()
+                    if not IsValid(active_weapon) or IsPlayer(active_weapon) then
+                        active_weapon = att:GetActiveWeapon()
+                    end
+
+                    -- Only scale bought weapons if that is enabled
+                    if (active_weapon.Spawnable or (not active_weapon.CanBuy or GetConVar("ttt_assassin_target_bonus_bought"):GetBool())) then
+                        scale = GetConVar("ttt_assassin_target_damage_bonus"):GetFloat()
+                    end
                 else
                     scale = -GetConVar("ttt_assassin_wrong_damage_penalty"):GetFloat()
                 end
@@ -1867,7 +1892,7 @@ local fallsounds = {
 };
 
 function GM:OnPlayerHitGround(ply, in_water, on_floater, speed)
-    if ((ply:IsJesterTeam() and not ply:GetNWBool("KillerClownActive", false)) or ply:IsZombie()) and GetRoundState() >= ROUND_ACTIVE then
+    if (ply:ShouldActLikeJester() or ply:IsZombie()) and GetRoundState() >= ROUND_ACTIVE then
         -- Jester team and Zombie don't take fall damage
         return
     else
@@ -1948,7 +1973,7 @@ function GM:EntityTakeDamage(ent, dmginfo)
     local att = dmginfo:GetAttacker()
     if GetRoundState() >= ROUND_ACTIVE and ent:IsPlayer() then
         -- Jesters don't take environmental damage
-        if ent:IsJesterTeam() and not ent:GetNWBool("KillerClownActive", false) then
+        if ent:ShouldActLikeJester() then
             -- Damage type DMG_GENERIC is "0" which doesn't seem to work with IsDamageType
             if dmginfo:IsExplosionDamage() or dmginfo:IsDamageType(DMG_BURN) or dmginfo:IsDamageType(DMG_CRUSH) or dmginfo:IsFallDamage() or dmginfo:IsDamageType(DMG_DROWN) or dmginfo:GetDamageType() == 0 or dmginfo:IsDamageType(DMG_DISSOLVE) then
                 dmginfo:ScaleDamage(0)
@@ -1969,8 +1994,8 @@ function GM:EntityTakeDamage(ent, dmginfo)
             dmginfo:SetDamage(0)
         end
 
-        -- Prevent damage from non-bullet weapons
-        if IsPlayer(att) and att:IsJesterTeam() and not att:GetNWBool("KillerClownActive", false) then
+        -- Prevent damage from jesters
+        if IsPlayer(att) and att:ShouldActLikeJester() then
             dmginfo:ScaleDamage(0)
             dmginfo:SetDamage(0)
         end
@@ -2166,7 +2191,7 @@ function GM:PlayerTakeDamage(ent, infl, att, amount, dmginfo)
             dmginfo:SetInflictor(ignite_info.infl)
 
             -- Set burning damage from jester team to zero, regardless of source
-            if ignite_info.att:IsJesterTeam() and not ignite_info.att:GetNWBool("KillerClownActive", false) then
+            if ignite_info.att:ShouldActLikeJester() then
                 dmginfo:ScaleDamage(0)
                 dmginfo:SetDamage(0)
             end
@@ -2479,7 +2504,7 @@ concommand.Add("ttt_kill_from_random", function(ply, cmd, args)
 
     local killer = nil
     for _, v in RandomPairs(player.GetAll()) do
-        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not (v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) then
+        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not v:ShouldActLikeJester() then
             killer = v
             break
         end
@@ -2496,7 +2521,7 @@ concommand.Add("ttt_kill_from_player", function(ply, cmd, args)
     local killer_name = args[1]
     local killer = nil
     for _, v in RandomPairs(player.GetAll()) do
-        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not (v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) and v:Nick() == killer_name then
+        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not v:ShouldActLikeJester() and v:Nick() == killer_name then
             killer = v
             break
         end
@@ -2525,7 +2550,7 @@ concommand.Add("ttt_kill_target_from_random", function(ply, cmd, args)
 
     local killer = nil
     for _, v in RandomPairs(player.GetAll()) do
-        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not (v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) then
+        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not v:ShouldActLikeJester() then
             killer = v
             break
         end
@@ -2550,7 +2575,7 @@ concommand.Add("ttt_kill_target_from_player", function(ply, cmd, args)
     local killer_name = args[2]
     local killer = nil
     for _, v in RandomPairs(player.GetAll()) do
-        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not (v:IsJesterTeam() and not v:GetNWBool("KillerClownActive", false)) and v:Nick() == killer_name then
+        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not v:ShouldActLikeJester() and v:Nick() == killer_name then
             killer = v
             break
         end

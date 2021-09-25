@@ -583,9 +583,12 @@ Teleporting makes noise, and the
 number of uses is limited.]]
 
 -- Parasite cure
-
 L.cure_help_pri = "{primaryfire} to cure another player."
 L.cure_help_sec = "{secondaryfire} to cure yourself."
+
+-- Phantom exorcsim
+L.exor_help_pri = "{primaryfire} to cleanse another player."
+L.exor_help_sec = "{secondaryfire} to cleanse yourself."
 
 -- Brainwashing device
 L.brainwash_help_pri = "Hold {primaryfire} to revive dead body."
@@ -667,6 +670,8 @@ L.detective_promotion_hud = "You have been promoted to {detective}"
 L.beggar_hidden_all_hud = "You still appear as {beggar} to others"
 L.beggar_hidden_innocent_hud = "You still appear as {beggar} to {innocents}"
 L.beggar_hidden_traitor_hud = "You still appear as {beggar} to {traitors}"
+L.bodysnatcher_hidden_all_hud = "You still appear as {bodysnatcher} to others"
+L.bodysnatcher_hidden_team_hud = "Only your team knows you are no longer {bodysnatcher}"
 
 -- Spectator muting of living/dead
 L.mute_living = "Living players muted"
@@ -990,6 +995,8 @@ L.tip39 = "C4 that explodes due to a mistake in disarming it has a smaller explo
 
 L.tip40 = "If it says 'HASTE MODE' above the round timer, the round will at first be only a few minutes long, but with every death the available time increases (like capturing a point in TF2). This mode puts the pressure on the {traitors} to keep things moving."
 
+-- 9/22/21
+L.tip41 = "You can adjust a player's microphone volume by right-clicking their mute button at the end of the scoreboard."
 
 --- Round report
 

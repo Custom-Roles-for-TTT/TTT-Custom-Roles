@@ -86,6 +86,7 @@ CreateConVar("ttt_special_traitor_chance", 0.5)
 CreateConVar("ttt_special_detective_pct", 0.33)
 CreateConVar("ttt_special_detective_chance", 0.5)
 CreateConVar("ttt_independent_chance", 0.5)
+CreateConVar("ttt_jester_chance", 0.5)
 CreateConVar("ttt_monster_pct", 0.33)
 CreateConVar("ttt_monster_chance", 0.5)
 
@@ -145,14 +146,20 @@ end
 
 -- Traitor role properties
 CreateConVar("ttt_traitor_vision_enable", "0")
+CreateConVar("ttt_traitor_phantom_cure", "0")
 
 CreateConVar("ttt_impersonator_damage_penalty", "0")
 CreateConVar("ttt_impersonator_use_detective_icon", "1")
+CreateConVar("ttt_impersonator_without_detective", "0")
+
+CreateConVar("ttt_hypnotist_device_loadout", "1")
+CreateConVar("ttt_hypnotist_device_shop", "0")
 
 CreateConVar("ttt_assassin_show_target_icon", "0")
 CreateConVar("ttt_assassin_target_vision_enable", "0")
 CreateConVar("ttt_assassin_next_target_delay", "5")
 CreateConVar("ttt_assassin_target_damage_bonus", "1")
+CreateConVar("ttt_assassin_target_bonus_bought", "1")
 CreateConVar("ttt_assassin_wrong_damage_penalty", "0.5")
 CreateConVar("ttt_assassin_failed_damage_penalty", "0.5")
 CreateConVar("ttt_assassin_shop_roles_last", "0")
@@ -163,6 +170,8 @@ CreateConVar("ttt_vampire_show_target_icon", "0")
 CreateConVar("ttt_vampire_damage_reduction", "0")
 CreateConVar("ttt_vampire_prime_death_mode", "0")
 CreateConVar("ttt_vampire_vision_enable", "0")
+
+CreateConVar("ttt_quack_phantom_cure", "0")
 
 CreateConVar("ttt_parasite_infection_time", 45)
 CreateConVar("ttt_parasite_infection_transfer", 0)
@@ -196,11 +205,16 @@ CreateConVar("ttt_revenger_drain_health_to", "-1")
 
 CreateConVar("ttt_deputy_damage_penalty", "0")
 CreateConVar("ttt_deputy_use_detective_icon", "1")
+CreateConVar("ttt_deputy_without_detective", "0")
 
 CreateConVar("ttt_veteran_damage_bonus", "0.5")
 CreateConVar("ttt_veteran_full_heal", "1")
 CreateConVar("ttt_veteran_heal_bonus", "0")
 CreateConVar("ttt_veteran_announce", "0")
+
+CreateConVar("ttt_paramedic_defib_as_innocent", "0")
+CreateConVar("ttt_paramedic_device_loadout", "1")
+CreateConVar("ttt_paramedic_device_shop", "0")
 
 -- Detective role properties
 CreateConVar("ttt_detective_search_only", "1")
@@ -226,14 +240,14 @@ CreateConVar("ttt_jesters_visible_to_monsters", "1")
 CreateConVar("ttt_jesters_visible_to_independents", "1")
 
 CreateConVar("ttt_jester_win_by_traitors", "1")
-CreateConVar("ttt_jester_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the Jester is killed", 0, 4)
+CreateConVar("ttt_jester_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the jester is killed", 0, 4)
 CreateConVar("ttt_jester_notify_sound", "0")
 CreateConVar("ttt_jester_notify_confetti", "0")
 
 CreateConVar("ttt_swapper_killer_health", "100")
 CreateConVar("ttt_swapper_respawn_health", "100")
-CreateConVar("ttt_swapper_weapon_mode", "1", FCVAR_NONE, "How to handle weapons when the Swapper is killed", 0, 2)
-CreateConVar("ttt_swapper_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the Swapper is killed", 0, 4)
+CreateConVar("ttt_swapper_weapon_mode", "1", FCVAR_NONE, "How to handle weapons when the swapper is killed", 0, 2)
+CreateConVar("ttt_swapper_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the swapper is killed", 0, 4)
 CreateConVar("ttt_swapper_notify_sound", "0")
 CreateConVar("ttt_swapper_notify_confetti", "0")
 
@@ -244,17 +258,21 @@ CreateConVar("ttt_clown_show_target_icon", "0")
 CreateConVar("ttt_clown_heal_on_activate", "0")
 CreateConVar("ttt_clown_heal_bonus", "0")
 
-CreateConVar("ttt_beggar_reveal_traitor", "1")
-CreateConVar("ttt_beggar_reveal_innocent", "2")
+CreateConVar("ttt_beggar_reveal_traitor", "1", FCVAR_NONE, "Who the beggar is revealed to when they join the traitor team", 0, 3)
+CreateConVar("ttt_beggar_reveal_innocent", "2", FCVAR_NONE, "Who the beggar is revealed to when they join the innocent team", 0, 3)
 CreateConVar("ttt_beggar_respawn", "0")
 CreateConVar("ttt_beggar_respawn_delay", "3")
-CreateConVar("ttt_beggar_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the Beggar is killed", 0, 4)
+CreateConVar("ttt_beggar_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the beggar is killed", 0, 4)
 CreateConVar("ttt_beggar_notify_sound", "0")
 CreateConVar("ttt_beggar_notify_confetti", "0")
 
 CreateConVar("ttt_bodysnatchers_are_independent", "0")
 CreateConVar("ttt_bodysnatcher_destroy_body", "0")
 CreateConVar("ttt_bodysnatcher_show_role", "1")
+CreateConVar("ttt_bodysnatcher_reveal_traitor", "1", FCVAR_NONE, "Who the bodysnatcher is revealed to when they join the traitor team", 0, 2)
+CreateConVar("ttt_bodysnatcher_reveal_innocent", "1", FCVAR_NONE, "Who the bodysnatcher is revealed to when they join the innocent team", 0, 2)
+CreateConVar("ttt_bodysnatcher_reveal_monster", "1", FCVAR_NONE, "Who the bodysnatcher is revealed to when they join the monster team", 0, 2)
+CreateConVar("ttt_bodysnatcher_reveal_independent", "1", FCVAR_NONE, "Who the bodysnatcher is revealed to when they join the independent team", 0, 2)
 
 -- Independent role properties
 CreateConVar("ttt_independents_trigger_traitor_testers", "0")
@@ -263,7 +281,7 @@ CreateConVar("ttt_drunk_sober_time", "180")
 CreateConVar("ttt_drunk_innocent_chance", "0.7")
 CreateConVar("ttt_drunk_any_role", "0")
 CreateConVar("ttt_drunk_become_clown", "0")
-CreateConVar("ttt_drunk_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the Drunk sobers up", 0, 4)
+CreateConVar("ttt_drunk_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the drunk sobers up", 0, 4)
 
 CreateConVar("ttt_oldman_drain_health_to", "0")
 CreateConVar("ttt_oldman_adrenaline_rush", "5")
@@ -292,9 +310,11 @@ CreateConVar("ttt_zombie_vision_enable", "0")
 
 -- Other custom role properties
 CreateConVar("ttt_single_deputy_impersonator", "0")
+CreateConVar("ttt_deputy_impersonator_promote_any_death", "0")
 CreateConVar("ttt_single_doctor_quack", "0")
 CreateConVar("ttt_single_paramedic_hypnotist", "0")
 CreateConVar("ttt_single_phantom_parasite", "0")
+CreateConVar("ttt_single_jester_independent", "1")
 
 -- Traitor credits
 CreateConVar("ttt_credits_starting", "2")
@@ -339,7 +359,7 @@ CreateConVar("ttt_shop_random_percent", "50", FCVAR_REPLICATED, "The percent cha
 CreateConVar("ttt_shop_random_position", "0", FCVAR_REPLICATED, "Whether to randomize the position of the items in the shop")
 
 -- Create the starting credit convar for all roles that have credits but don't have a shop
-local shopless_credit_roles = table.ExcludedKeys(EXTERNAL_ROLE_STARTING_CREDITS, shop_roles)
+local shopless_credit_roles = table.UnionedKeys(CAN_LOOT_CREDITS_ROLES, EXTERNAL_ROLE_STARTING_CREDITS, shop_roles)
 for _, role in ipairs(shopless_credit_roles) do
     CreateCreditConVar(role)
 end
@@ -687,11 +707,18 @@ function GM:SyncGlobals()
 
     SetGlobalBool("ttt_deputy_use_detective_icon", GetConVar("ttt_deputy_use_detective_icon"):GetBool())
 
+    SetGlobalBool("ttt_paramedic_device_loadout", GetConVar("ttt_paramedic_device_loadout"):GetBool())
+    SetGlobalBool("ttt_paramedic_device_shop", GetConVar("ttt_paramedic_device_shop"):GetBool())
+
     SetGlobalFloat("ttt_paladin_aura_radius", GetConVar("ttt_paladin_aura_radius"):GetInt() * 52.49)
 
     SetGlobalInt("ttt_tracker_footstep_time", GetConVar("ttt_tracker_footstep_time"):GetInt())
 
     SetGlobalBool("ttt_traitor_vision_enable", GetConVar("ttt_traitor_vision_enable"):GetBool())
+    SetGlobalBool("ttt_traitor_phantom_cure", GetConVar("ttt_traitor_phantom_cure"):GetBool())
+
+    SetGlobalBool("ttt_hypnotist_device_loadout", GetConVar("ttt_hypnotist_device_loadout"):GetBool())
+    SetGlobalBool("ttt_hypnotist_device_shop", GetConVar("ttt_hypnotist_device_shop"):GetBool())
 
     SetGlobalBool("ttt_assassin_show_target_icon", GetConVar("ttt_assassin_show_target_icon"):GetBool())
     SetGlobalBool("ttt_assassin_target_vision_enable", GetConVar("ttt_assassin_target_vision_enable"):GetBool())
@@ -702,6 +729,8 @@ function GM:SyncGlobals()
     SetGlobalBool("ttt_vampires_are_independent", GetConVar("ttt_vampires_are_independent"):GetBool())
     SetGlobalBool("ttt_vampire_show_target_icon", GetConVar("ttt_vampire_show_target_icon"):GetBool())
     SetGlobalBool("ttt_vampire_vision_enable", GetConVar("ttt_vampire_vision_enable"):GetBool())
+
+    SetGlobalBool("ttt_quack_phantom_cure", GetConVar("ttt_quack_phantom_cure"):GetBool())
 
     SetGlobalInt("ttt_parasite_infection_time", GetConVar("ttt_parasite_infection_time"):GetInt())
     SetGlobalBool("ttt_parasite_enabled", GetConVar("ttt_parasite_enabled"):GetBool())
@@ -729,6 +758,10 @@ function GM:SyncGlobals()
     SetGlobalBool("ttt_clown_hide_when_active", GetConVar("ttt_clown_hide_when_active"):GetBool())
 
     SetGlobalBool("ttt_bodysnatchers_are_independent", GetConVar("ttt_bodysnatchers_are_independent"):GetBool())
+    SetGlobalInt("ttt_bodysnatcher_reveal_traitor", GetConVar("ttt_bodysnatcher_reveal_traitor"):GetInt())
+    SetGlobalInt("ttt_bodysnatcher_reveal_innocent", GetConVar("ttt_bodysnatcher_reveal_innocent"):GetInt())
+    SetGlobalInt("ttt_bodysnatcher_reveal_monster", GetConVar("ttt_bodysnatcher_reveal_monster"):GetInt())
+    SetGlobalInt("ttt_bodysnatcher_reveal_independent", GetConVar("ttt_bodysnatcher_reveal_independent"):GetInt())
 
     SetGlobalBool("ttt_bem_allow_change", GetConVar("ttt_bem_allow_change"):GetBool())
     SetGlobalInt("ttt_bem_sv_cols", GetConVar("ttt_bem_sv_cols"):GetBool())
@@ -805,11 +838,18 @@ end
 
 -- Used to be in think, now a timer
 local function WinChecker()
+    -- If prevent-win is enabled then don't even check the win conditions
+    if ttt_dbgwin:GetBool() then return end
+
     if GetRoundState() == ROUND_ACTIVE then
         if CurTime() > GetGlobalFloat("ttt_round_end", 0) then
             EndRound(WIN_TIMELIMIT)
         else
             local win = hook.Call("TTTCheckForWin", GAMEMODE)
+            if win > WIN_MAX then
+                ErrorNoHalt("WARNING: 'TTTCheckForWin' hook returned win ID '" .. win .. "' that exceeds the expected maximum of " .. WIN_MAX .. ". Please use GenerateNewWinID() instead to get a unique win ID.\n")
+            end
+
             if win ~= WIN_NONE then
                 timer.Simple(0.5, function() EndRound(win) end) -- Slight delay to make sure alternate winners go through before scoring
             end
@@ -1032,6 +1072,7 @@ function PrepareRound()
         v:SetNWBool("KillerSmoke", false)
         v:SetNWBool("HasPromotion", false)
         v:SetNWBool("WasBeggar", false)
+        v:SetNWBool("WasBodysnatcher", false)
         timer.Remove(v:Nick() .. "BeggarRespawn")
         v:SetNWBool("VeteranActive", false)
         v:SetNWBool("IsZombifying", false)
@@ -1560,8 +1601,6 @@ end
 
 -- The most basic win check is whether both sides have one dude alive
 function GM:TTTCheckForWin()
-    if ttt_dbgwin:GetBool() then return WIN_NONE end
-
     local traitor_alive = false
     local innocent_alive = false
     local drunk_alive = false
@@ -1861,9 +1900,12 @@ function SelectRoles()
     local forcedSpecialDetectiveCount = 0
     local forcedSpecialInnocentCount = 0
     local forcedIndependentCount = 0
+    local forcedJesterCount = 0
     local forcedMonsterCount = 0
 
     local hasRole = {}
+
+    local singleJesterIndependent = GetConVar("ttt_single_jester_independent"):GetBool()
 
     PrintRoleText("-----CHECKING EXTERNALLY CHOSEN ROLES-----")
     for _, v in pairs(player.GetAll()) do
@@ -1892,7 +1934,13 @@ function SelectRoles()
                     forcedSpecialDetectiveCount = forcedSpecialDetectiveCount + 1
                 elseif INNOCENT_ROLES[role] and role ~= ROLE_INNOCENT then
                     forcedSpecialInnocentCount = forcedSpecialInnocentCount + 1
-                elseif JESTER_ROLES[role] or INDEPENDENT_ROLES[role] then
+                elseif JESTER_ROLES[role] then
+                    if singleJesterIndependent then
+                        forcedIndependentCount = forcedIndependentCount + 1
+                    else
+                        forcedJesterCount = forcedJesterCount + 1
+                    end
+                elseif INDEPENDENT_ROLES[role] then
                     forcedIndependentCount = forcedIndependentCount + 1
                 elseif MONSTER_ROLES[role] then
                     forcedMonsterCount = forcedMonsterCount + 1
@@ -1928,19 +1976,21 @@ function SelectRoles()
     local traitor_count = GetTraitorCount(choice_count) - forcedTraitorCount - forcedSpecialTraitorCount
     local max_special_traitor_count = GetSpecialTraitorCount(traitor_count) - forcedSpecialTraitorCount
     local independent_count = ((math.random() <= GetConVar("ttt_independent_chance"):GetFloat()) and 1 or 0) - forcedIndependentCount
+    local jester_count = ((math.random() <= GetConVar("ttt_jester_chance"):GetFloat()) and 1 or 0) - forcedJesterCount
     local monster_count = GetMonsterCount(choice_count) - forcedMonsterCount
 
     local specialTraitorRoles = {}
     local specialInnocentRoles = {}
     local specialDetectiveRoles = {}
     local independentRoles = {}
+    local jesterRoles = {}
     local monsterRoles = {}
 
     -- Special rules for role spawning
     -- Role exclusion logic also needs to be copied into the drunk role selection logic in player_ext.lua -> plymeta:SoberDrunk
     local rolePredicates = {
         -- Innocents
-        [ROLE_DEPUTY] = function() return detective_count > 0 and not impersonator_only end,
+        [ROLE_DEPUTY] = function() return (detective_count > 0 or GetConVar("ttt_deputy_without_detective"):GetBool()) and not impersonator_only end,
         [ROLE_DOCTOR] = function() return not quack_only end,
         [ROLE_PARAMEDIC] = function() return not hypnotist_only end,
         [ROLE_PHANTOM] = function() return not parasite_only end,
@@ -1949,7 +1999,7 @@ function SelectRoles()
 
         -- Traitors
         [ROLE_HYPNOTIST] = function() return not paramedic_only end,
-        [ROLE_IMPERSONATOR] = function() return detective_count > 0 and not deputy_only end,
+        [ROLE_IMPERSONATOR] = function() return (detective_count > 0 or GetConVar("ttt_impersonator_without_detective"):GetBool()) and not deputy_only end,
         [ROLE_QUACK] = function() return not doctor_only end,
         [ROLE_PARASITE] = function() return not phantom_only end,
 
@@ -1967,13 +2017,20 @@ function SelectRoles()
     for r = ROLE_DETECTIVE + 1, ROLE_MAX do
         if not delayedCheckRoles[r] and not hasRole[r] and GetConVar("ttt_" .. ROLE_STRINGS_RAW[r] .. "_enabled"):GetBool() and choice_count >= GetConVar("ttt_" .. ROLE_STRINGS_RAW[r] .. "_min_players"):GetInt() and ((not rolePredicates[r]) or rolePredicates[r]()) then
             for _ = 1, GetConVar("ttt_" .. ROLE_STRINGS_RAW[r] .. "_spawn_weight"):GetInt() do
-                if TRAITOR_ROLES[r] then
+                -- Don't include zombies in the traitor list since they will spawn as a special "zombie round" sometimes if they are traitors
+                if TRAITOR_ROLES[r] and r ~= ROLE_ZOMBIE then
                     table.insert(specialTraitorRoles, r)
                 elseif DETECTIVE_ROLES[r] then
                     table.insert(specialDetectiveRoles, r)
                 elseif INNOCENT_ROLES[r] then
                     table.insert(specialInnocentRoles, r)
-                elseif JESTER_ROLES[r] or INDEPENDENT_ROLES[r] then
+                elseif JESTER_ROLES[r] then
+                    if singleJesterIndependent then
+                        table.insert(independentRoles, r)
+                    else
+                        table.insert(jesterRoles, r)
+                    end
+                elseif INDEPENDENT_ROLES[r] then
                     table.insert(independentRoles, r)
                 elseif MONSTER_ROLES[r] then
                     table.insert(monsterRoles, r)
@@ -2107,7 +2164,9 @@ function SelectRoles()
     if forcedIndependentCount == 0 and independent_count > 0 and #choices > 0 then
         -- Allow external addons to modify available roles and their weights
         hook.Run("TTTSelectRolesIndependentOptions", independentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
-        hook.Run("TTTSelectRolesJesterOptions", independentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+        if singleJesterIndependent then
+            hook.Run("TTTSelectRolesJesterOptions", independentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+        end
 
         if #independentRoles ~= 0 then
             local plyPick = math.random(1, #choices)
@@ -2120,6 +2179,26 @@ function SelectRoles()
             for i = #independentRoles, 1, -1 do
                 if independentRoles[i] == role then
                     table.remove(independentRoles, i)
+                end
+            end
+        end
+    end
+
+    -- pick jester
+    if not singleJesterIndependent and forcedJesterCount == 0 and jester_count > 0 and #choices > 0 then
+        hook.Run("TTTSelectRolesJesterOptions", jesterRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+
+        if #jesterRoles ~= 0 then
+            local plyPick = math.random(1, #choices)
+            local ply = choices[plyPick]
+            local rolePick = math.random(1, #jesterRoles)
+            local role = jesterRoles[rolePick]
+            ply:SetRole(role)
+            PrintRole(ply, role)
+            table.remove(choices, plyPick)
+            for i = #jesterRoles, 1, -1 do
+                if jesterRoles[i] == role then
+                    table.remove(jesterRoles, i)
                 end
             end
         end

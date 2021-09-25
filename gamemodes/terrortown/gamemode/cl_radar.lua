@@ -199,6 +199,9 @@ function RADAR:Draw(client)
 
     local mpos = Vector(ScrW() / 2, ScrH() / 2, 0)
 
+    local glitchMode = GetGlobalInt("ttt_glitch_mode", 0)
+    local beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", BEGGAR_REVEAL_ALL)
+    local bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_traitor", BODYSNATCHER_REVEAL_ALL)
     local role, alpha, scrpos, md
     for _, tgt in pairs(RADAR.targets) do
         alpha = alpha_base
@@ -214,17 +217,16 @@ function RADAR:Draw(client)
 
             local color = nil
             if client:IsTraitorTeam() then
-                local glitchMode = GetGlobalInt("ttt_glitch_mode", 0)
                 local hideSpecialTraitors = glitchMode == 2 and GetGlobalBool("ttt_glitch_round", false)
-                local beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", BEGGAR_REVEAL_ALL)
                 local hideBeggar = tgt.was_beggar and (beggarMode == BEGGAR_REVEAL_NONE or beggarMode == BEGGAR_REVEAL_INNOCENTS)
-                local showJester = (JESTER_ROLES[role] or ((role == ROLE_TRAITOR or role == ROLE_INNOCENT) and hideBeggar)) and not ShouldHideJesters(client)
-                if (role == ROLE_TRAITOR or role == ROLE_GLITCH or (hideSpecialTraitors and TRAITOR_ROLES[role])) and not hideBeggar then
-                    color = ColorAlpha(ROLE_COLORS_RADAR[ROLE_TRAITOR], alpha)
-                elseif TRAITOR_ROLES[role] and not hideBeggar then
-                    color = ColorAlpha(GetRoleTeamColor(ROLE_TEAM_TRAITOR, "radar"), alpha)
-                elseif showJester then
+                local hideBodysnatcher = tgt.was_bodysnatcher and not (bodysnatcherMode == BODYSNATCHER_REVEAL_ALL or (TRAITOR_ROLES[role] and bodysnatcherMode == BODYSNATCHER_REVEAL_TEAM))
+                local showJester = (tgt.should_act_like_jester or ((role == ROLE_TRAITOR or role == ROLE_INNOCENT) and hideBeggar) or hideBodysnatcher) and not client:ShouldHideJesters()
+                if showJester then
                     color = ColorAlpha(ROLE_COLORS_RADAR[ROLE_JESTER], alpha)
+                elseif (role == ROLE_TRAITOR or role == ROLE_GLITCH or (hideSpecialTraitors and TRAITOR_ROLES[role])) then
+                    color = ColorAlpha(ROLE_COLORS_RADAR[ROLE_TRAITOR], alpha)
+                elseif TRAITOR_ROLES[role] then
+                    color = ColorAlpha(GetRoleTeamColor(ROLE_TEAM_TRAITOR, "radar"), alpha)
                 else
                     color = ColorAlpha(ROLE_COLORS_RADAR[ROLE_INNOCENT], alpha)
                 end
@@ -324,7 +326,7 @@ local function ReceiveRadarScan()
 
     RADAR.targets = {}
     for _ = 1, num_targets do
-        local r = net.ReadInt(8)
+        local role = net.ReadInt(8)
 
         local pos = Vector()
         pos.x = net.ReadInt(32)
@@ -332,17 +334,26 @@ local function ReceiveRadarScan()
         pos.z = net.ReadInt(32)
 
         local was_beggar = net.ReadBool()
+        local was_bodysnatcher = net.ReadBool()
         local killer_clown_active = net.ReadBool()
+        local should_act_like_jester = net.ReadBool()
         local sid64 = net.ReadString()
 
-        table.insert(RADAR.targets, { role = r, pos = pos, was_beggar = was_beggar, killer_clown_active = killer_clown_active, sid64 = sid64 })
+        table.insert(RADAR.targets, {
+            role = role,
+            pos = pos,
+            was_beggar = was_beggar,
+            was_bodysnatcher = was_bodysnatcher,
+            killer_clown_active = killer_clown_active,
+            should_act_like_jester = should_act_like_jester,
+            sid64 = sid64
+        })
     end
 
     RADAR.enable = true
     RADAR.endtime = CurTime() + RADAR.duration
 
-    timer.Create("radartimeout", RADAR.duration + 1, 1,
-            function() RADAR:Timeout() end)
+    timer.Create("radartimeout", RADAR.duration + 1, 1, function() RADAR:Timeout() end)
 end
 net.Receive("TTT_Radar", ReceiveRadarScan)
 

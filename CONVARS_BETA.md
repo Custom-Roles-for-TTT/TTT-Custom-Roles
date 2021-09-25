@@ -35,7 +35,8 @@ ttt_special_detective_pct                   0.33    // Percentage of detectives,
 ttt_special_detective_chance                0.5     // The chance that a "special detectives" will spawn in each available slot made by "ttt_special_detectives_pct"
 ttt_monster_pct                             0.33    // Percentage of innocents, rounded up, that can spawn as a "monster" (e.g. zombie, vampire)
 ttt_monster_chance                          0.5     // The chance that a "monster" will spawn in each available slot made by "ttt_monster_pct"
-ttt_independent_chance                      0.5     // The chance that an independent or jester (e.g. drunk, swapper, etc.) will spawn in a round.
+ttt_independent_chance                      0.5     // The chance that a single independent or jester (if ttt_single_jester_independent is eanbled) will spawn in a round (e.g. drunk, swapper, etc.)
+ttt_jester_chance                           0.5     // The chance that a single jester (e.g. jester, swapper, etc.) will spawn in a round. Only used if ttt_single_jester_independent is disabled
 // (Note: Only one independent or jester can spawn per round.)
 
 // Enable/Disable Individual Roles
@@ -134,14 +135,22 @@ ttt_madscientist_min_players                0       // The minimum number of pla
 // TRAITOR TEAM SETTINGS
 ttt_traitor_vision_enable                   0       // Whether members of the traitor team can see other members of the traitor team (including Glitches) through walls via a highlight effect
 
+// Traitor
+ttt_traitor_phantom_cure                    0       // Whether to allow the traitor to buy the phantom exorcism device which can remove a haunting phantom. Server must be restarted for changes to take effect
+
 // Impersonator
 ttt_impersonator_damage_penalty             0       // Damage penalty that the impersonator has before being promoted (e.g. 0.5 = 50% less damage)
 ttt_impersonator_credits_starting           1       // The number of credits an impersonator should start with
 ttt_impersonator_use_detective_icon         1       // Whether a promoted impersonator should show the detective icon over their head instead of the impersonator icon (only for traitors, non-traitors will use the equivalent deputy setting)
+ttt_impersonator_without_detective          0       // Whether an impersonator can spawn without a detective in the round. Will automatically promote the impersonator when they spawn
 ttt_single_deputy_impersonator              0       // Whether only a single deputy or impersonator should spawn in a round
+ttt_deputy_impersonator_promote_any_death   0       // Whether deputy/impersonator should be promoted when any detective dies rather than only after all detectives have died
 
 // Hypnotist
 ttt_hypnotist_credits_starting              1       // The number of credits a hypnotist should start with
+ttt_hypnotist_device_loadout                1       // Whether the hypnotist's defib should be given to them when they spawn. Server must be restarted for changes to take effect
+ttt_hypnotist_device_shop                   0       // Whether the hypnotist's defib should be purchasable in the shop. Server must be restarted for changes to take effect
+ttt_hypnotist_convert_detectives            0       // Whether to convert detectives and deputies (only if ttt_deputy_use_detective_icon is enabled) to impersonator instead of just a regular traitor. Does NOT convert detective team roles like paladin, medium, or tracker. Target will be automatically promoted to appear as a detective if appropriate
 ttt_single_paramedic_hypnotist              0       // Whether only a single paramedic or hynotist should spawn in a round
 
 // Assassin
@@ -149,6 +158,7 @@ ttt_assassin_show_target_icon               0       // Whether assassins have an
 ttt_assassin_target_vision_enable           0       // Whether assassins have a visible aura around their target, visible through walls
 ttt_assassin_next_target_delay              2       // The delay (in seconds) before an assassin is assigned their next target
 ttt_assassin_target_damage_bonus            1       // Damage bonus that the assassin has against their target (e.g. 0.5 = 50% extra damage)
+ttt_assassin_target_bonus_bought            1       // Whether the damage bonus that the assassin has against their target should apply on weapons bought from the shop
 ttt_assassin_wrong_damage_penalty           0.5     // Damage penalty that the assassin has when attacking someone who is not their target (e.g. 0.5 = 50% less damage)
 ttt_assassin_failed_damage_penalty          0.5     // Damage penalty that the assassin has after they have failed their contract by killing the wrong person (e.g. 0.5 = 50% less damage)
 ttt_assassin_shop_roles_last                0       // Whether the assassin should target the shop roles right before Detective or not
@@ -158,9 +168,9 @@ ttt_assassin_credits_starting               1       // The number of credits an 
 ttt_vampires_are_monsters                   0       // Whether vampires should be treated as members of the monster team (rather than the traitor team)
 ttt_vampires_are_independent                0       // Whether vampires should be treated as members of the independent team (rather than the traitor team)
 ttt_vampire_vision_enable                   0       // Whether vampires have their special vision highlights enabled
-ttt_vampire_drain_enable                    1       // Whether vampires have the ability to drain a target's blood using their fangs
-ttt_vampire_drain_first                     0       // Whether vampires should drain a target's blood first rather than converting first
-ttt_vampire_convert_enable                  0       // Whether vampires have the ability to convert targets to a vampire thrall using their fangs
+ttt_vampire_drain_enable                    1       // Whether vampires have the ability to drain a living target's blood using their fangs
+ttt_vampire_drain_first                     0       // Whether vampires should drain a living target's blood first rather than converting first
+ttt_vampire_convert_enable                  0       // Whether vampires have the ability to convert living targets to a vampire thrall using their fangs
 ttt_vampire_show_target_icon                0       // Whether vampires have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect.
 ttt_vampire_damage_reduction                0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a vampire.
 ttt_vampire_fang_timer                      5       // The amount of time fangs must be used to fully drain a target's blood
@@ -174,6 +184,7 @@ ttt_vampire_credits_starting                1       // The number of credits a v
 // Quack
 ttt_quack_credits_starting                  1       // The number of credits a quack should start with
 ttt_quack_fake_cure_mode                    0       // How to handle using a fake parasite cure on someone who is not infected. 0 - Kill nobody (But use up the cure), 1 - Kill the person who uses the cure, 2 - Kill the person the cure is used on
+ttt_quack_phantom_cure                      0       // Whether to allow the quack to buy the phantom exorcism device which can remove a haunting phantom. Server must be restarted for changes to take effect
 ttt_single_doctor_quack                     0       // Whether only a single doctor or quack should spawn in a round
 
 // Parasite
@@ -219,6 +230,7 @@ ttt_revenger_drain_health_to                -1      // The amount of health to d
 ttt_deputy_damage_penalty                   0       // Damage penalty that the deputy has before being promoted (e.g. 0.5 = 50% less damage)
 ttt_deputy_credits_starting                 0       // The number of credits a deputy should start with
 ttt_deputy_use_detective_icon               1       // Whether a promoted deputy should show the detective icon over their head instead of the deputy icon
+ttt_deputy_without_detective                0       // Whether a deputy can spawn without a detective in the round. Will automatically promote the deputy when they spawn
 
 // Mercenary
 ttt_mercenary_credits_starting              1       // The number of credits a mercenary should start with
@@ -233,6 +245,14 @@ ttt_veteran_shop_delay                      0       // Whether the veteran's pur
 
 // Doctor
 ttt_doctor_credits_starting                 1       // The number of credits a doctor should start with
+
+// Paramedic
+ttt_paramedic_defib_as_innocent             1       // Whether the paramedic's defib brings back everyone as a vanilla innocent role
+ttt_paramedic_device_loadout                1       // Whether the paramedic's defib should be given to them when they spawn. Server must be restarted for changes to take effect
+ttt_paramedic_device_shop                   0       // Whether the paramedic's defib should be purchasable in the shop (requires ttt_shop_for_all to be enabled). Server must be restarted for changes to take effect
+
+// Trickster
+ttt_trickster_credits_starting              0       // The number of credits a trickster should start with
 
 // ----------------------------------------
 
@@ -263,6 +283,7 @@ ttt_medium_credits_starting                 1       // The number of credits a m
 // ----------------------------------------
 
 // JESTER TEAM SETTINGS
+ttt_single_jester_independent               1       // Whether a single jester OR independent should spawn in a round. If disabled, both a jester AND an independent can spawn at the same time
 ttt_jesters_trigger_traitor_testers         1       // Whether jesters trigger traitor testers as if they were traitors
 ttt_jesters_visible_to_traitors             1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to members of the traitor team
 ttt_jesters_visible_to_monsters             1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to members of the monster team
@@ -308,6 +329,10 @@ ttt_beggar_notify_confetti                  0       // Whether to throw confetti
 ttt_bodysnatchers_are_independent           0       // Whether bodysnatchers should be treated as members of the independent team (rather than the jester team)
 ttt_bodysnatcher_destroy_body               0       // Whether the bodysnatching device destroys the body it is used on or not
 ttt_bodysnatcher_show_role                  1       // Whether the bodysnatching device shows the role of the corpse it is used on or not
+ttt_bodysnatcher_reveal_traitor             1       // Who the bodysnatcher is revealed to when they join the traitor team. 0 - No one. 1 - Everyone. 2 - Their new team
+ttt_bodysnatcher_reveal_innocent            1       // Who the bodysnatcher is revealed to when they join the innocent team. 0 - No one. 1 - Everyone. 2 - Their new team
+ttt_bodysnatcher_reveal_monster             1       // Who the bodysnatcher is revealed to when they join the monster team. 0 - No one. 1 - Everyone. 2 - Their new team
+ttt_bodysnatcher_reveal_independent         1       // Who the bodysnatcher is revealed to when they join the independent team. 0 - No one. 1 - Everyone. 2 - Their new team
 
 // ----------------------------------------
 
@@ -385,6 +410,8 @@ ttt_zombie_thrall_attack_damage             45      // The amount of a damage a 
 ttt_zombie_thrall_attack_delay              1.4     // The amount of time between claw attacks for a zombie thrall (e.g. non-prime zombie). Server or round must be restarted for changes to take effect
 ttt_zombie_thrall_speed_bonus               0.15    // The amount of bonus speed a zombie thrall (e.g. non-prime zombie) should get when using their claws. Server or round must be restarted for changes to take effect
 ttt_zombie_respawn_health                   100     // The amount of health a player should respawn with when they are converted to a zombie thrall
+ttt_zombie_prime_convert_chance             1.0     // The chance that a prime zombie (e.g. player who spawned as a zombie originally) will convert other players who are killed by their claws to be zombies as well. Set to 0 to disable
+ttt_zombie_thrall_convert_chance            1.0     // The chance that a zombie thrall (e.g. non-prime zombie) will convert other players who are killed by their claws to be zombies as well. Set to 0 to disable
 
 // ----------------------------------------
 

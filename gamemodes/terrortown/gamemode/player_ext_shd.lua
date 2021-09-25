@@ -43,6 +43,7 @@ function plymeta:GetZombiePrime() return self:GetZombie() and self:GetNWBool("zo
 function plymeta:GetVampirePrime() return self:GetVampire() and self:GetNWBool("vampire_prime", false) end
 function plymeta:GetVampirePreviousRole() return self:GetNWInt("vampire_previous_role", ROLE_NONE) end
 function plymeta:GetDetectiveLike() return self:IsDetectiveTeam() or ((self:GetDeputy() or self:GetImpersonator()) and self:GetNWBool("HasPromotion", false)) end
+function plymeta:GetDetectiveLikePromotable() return (self:IsDeputy() or self:IsImpersonator()) and not self:GetNWBool("HasPromotion", false) end
 
 function plymeta:GetZombieAlly()
     local role = self:GetRole()
@@ -75,6 +76,7 @@ function plymeta:IsSameTeam(target)
 end
 
 plymeta.IsDetectiveLike = plymeta.GetDetectiveLike
+plymeta.IsDetectiveLikePromotable = plymeta.GetDetectiveLikePromotable
 plymeta.IsZombiePrime = plymeta.GetZombiePrime
 plymeta.IsVampirePrime = plymeta.GetVampirePrime
 
@@ -83,6 +85,7 @@ plymeta.IsVampireAlly = plymeta.GetVampireAlly
 
 function plymeta:IsSpecial() return self:GetRole() ~= ROLE_INNOCENT end
 function plymeta:IsCustom() return not DEFAULT_ROLES[self:GetRole()] end
+
 function plymeta:IsShopRole()
     local role = self:GetRole()
     local hasShop = SHOP_ROLES[role] or false
@@ -143,6 +146,63 @@ function plymeta:CanLootCredits(active_only)
     return self:IsShopRole()
 end
 
+function plymeta:ShouldActLikeJester()
+    if self:IsClown() then return not self:GetNWBool("KillerClownActive", false) end
+
+    -- Check if this role has an external definition for "ShouldActLikeJester" and use that
+    local role = self:GetRole()
+    if EXTERNAL_ROLE_SHOULD_ACT_LIKE_JESTER[role] then return EXTERNAL_ROLE_SHOULD_ACT_LIKE_JESTER[role](self) end
+
+    return self:IsJesterTeam()
+end
+function plymeta:ShouldHideJesters()
+    if self:IsTraitorTeam() then
+        return not GetGlobalBool("ttt_jesters_visible_to_traitors", false)
+    elseif self:IsMonsterTeam() then
+        return not GetGlobalBool("ttt_jesters_visible_to_monsters", false)
+    elseif self:IsIndependentTeam() then
+        return not GetGlobalBool("ttt_jesters_visible_to_independents", false)
+    end
+    return true
+end
+function plymeta:ShouldRevealBeggar(tgt)
+    -- If we weren't given a target, use ourselves
+    if not tgt then tgt = self end
+
+    -- Determine whether which setting we should check based on what role they changed to
+    local beggarMode = nil
+    local sameTeam = false
+    if tgt:IsTraitor() then
+        beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", BEGGAR_REVEAL_ALL)
+        sameTeam = self:IsTraitorTeam() and beggarMode == BEGGAR_REVEAL_TRAITORS
+    elseif tgt:IsInnocent() then
+        beggarMode = GetGlobalInt("ttt_beggar_reveal_innocent", BEGGAR_REVEAL_TRAITORS)
+        sameTeam = self:IsInnocentTeam() and beggarMode == BEGGAR_REVEAL_INNOCENTS
+    end
+
+    -- Check the setting value and the player's team to see we if should reveal this beggar
+    return beggarMode == BEGGAR_REVEAL_ALL or sameTeam
+end
+function plymeta:ShouldRevealBodysnatcher(tgt)
+    -- If we weren't given a target, use ourselves
+    if not tgt then tgt = self end
+
+    -- Determine whether which setting we should check based on what role they changed to
+    local bodysnatcherMode = nil
+    if tgt:IsTraitorTeam() then
+        bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_traitor", BODYSNATCHER_REVEAL_ALL)
+    elseif tgt:IsInnocentTeam() then
+        bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_innocent", BODYSNATCHER_REVEAL_ALL)
+    elseif tgt:IsMonsterTeam() then
+        bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_monster", BODYSNATCHER_REVEAL_ALL)
+    elseif tgt:IsIndependentTeam() then
+        bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_independent", BODYSNATCHER_REVEAL_ALL)
+    end
+
+    -- Check the setting value and whether the player and the target are the same team
+    return bodysnatcherMode == BODYSNATCHER_REVEAL_ALL or (self:IsSameTeam(tgt) and bodysnatcherMode == BODYSNATCHER_REVEAL_TEAM)
+end
+
 function plymeta:SetRoleAndBroadcast(role)
     self:SetRole(role)
 
@@ -162,6 +222,12 @@ function plymeta:IsRoleActive()
     if self:IsClown() then return self:GetNWBool("KillerClownActive", false) end
     if self:IsVeteran() then return self:GetNWBool("VeteranActive", false) end
     if self:IsDeputy() or self:IsImpersonator() then return self:GetNWBool("HasPromotion", false) end
+    if self:IsOldMan() then return self:GetNWBool("AdrenalineRush", false) end
+
+    -- Check if this role has an external definition for "IsActive" and use that
+    local role = self:GetRole()
+    if EXTERNAL_ROLE_IS_ACTIVE[role] then return EXTERNAL_ROLE_IS_ACTIVE[role](self) end
+
     return true
 end
 
@@ -437,6 +503,18 @@ else
         net.Broadcast()
     end
 
+    function plymeta:HandleDetectiveLikePromotion()
+        self:SetNWBool("HasPromotion", true)
+
+        net.Start("TTT_Promotion")
+        net.WriteString(self:Nick())
+        net.Broadcast()
+
+        -- The player has been promoted so we need to update their shop
+        net.Start("TTT_ResetBuyableWeaponsCache")
+        net.Send(self)
+    end
+
     function plymeta:MoveRoleState(target, keep_on_source)
         if self:IsZombiePrime() then
             if not keep_on_source then self:SetZombiePrime(false) end
@@ -450,20 +528,17 @@ else
 
         if self:GetNWBool("HasPromotion", false) then
             if not keep_on_source then self:SetNWBool("HasPromotion", false) end
-            target:SetNWBool("HasPromotion", true)
-
-            net.Start("TTT_ResetBuyableWeaponsCache")
-            net.Send(target)
+            target:HandleDetectiveLikePromotion()
         end
 
-        local killer = self:GetNWString("RevengerKiller", nil)
-        if killer ~= nil then
+        local killer = self:GetNWString("RevengerKiller", "")
+        if #killer > 0 then
             if not keep_on_source then self:SetNWString("RevengerKiller", "") end
             target:SetNWString("RevengerKiller", killer)
         end
 
-        local lover = self:GetNWString("RevengerLover", nil)
-        if lover ~= nil then
+        local lover = self:GetNWString("RevengerLover", "")
+        if #lover > 0 then
             if not keep_on_source then self:SetNWString("RevengerLover", "") end
             target:SetNWString("RevengerLover", lover)
 
@@ -495,5 +570,33 @@ else
                 end
             end
         end
+
+        local assassinTarget = self:GetNWString("AssassinTarget", "")
+        if #assassinTarget > 0 then
+            if not keep_on_source then self:SetNWString("AssassinTarget", "") end
+            target:SetNWString("AssassinTarget", assassinTarget)
+            target:PrintMessage(HUD_PRINTCENTER, "You have learned that your predecessor's target was " .. assassinTarget)
+            target:PrintMessage(HUD_PRINTTALK, "You have learned that your predecessor's target was " .. assassinTarget)
+        elseif self:IsAssassin() then
+            -- If the player we're taking the role state from was an assassin but they didn't have a target, try to assign a target to this player
+            -- Use a slight delay to let the role change go through first just in case
+            timer.Simple(0.25, function()
+                AssignAssassinTarget(target, true)
+            end)
+        end
+
+        -- If the dead player had role weapons stored, give them to the target and then clear the list
+        -- Use a slight delay so their old role weapons (like the bodysnatching device) are removed first
+        timer.Simple(0.25, function()
+            if self.DeathRoleWeapons then
+                if self.DeathRoleWeapons[self:GetRole()] then
+                    for _, w in ipairs(self.DeathRoleWeapons[self:GetRole()]) do
+                        target:Give(w)
+                    end
+                end
+
+                table.Empty(self.DeathRoleWeapons)
+            end
+        end)
     end
 end
