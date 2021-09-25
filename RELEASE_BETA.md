@@ -44,6 +44,8 @@
 - Added TTTTargetIDPlayerKarma hook for controlling what text to show when rendering a player's karma
 - Added TTTTargetIDEntityHintLabel hook for controlling what text to show when rendering a player or entity's hint label
 - Added TTTTargetIDPlayerHintText hook for controlling what text to show when rendering an entity's hint text
+- Added TTTTargetIDPlayerName hook for controlling what text to show when rendering a player's name
+- Added TTTTargetIDRagdollName hook for controlling what text to show when rendering a ragdoll's name
 - Added "plymeta:ShouldRevealBeggar" to determine if a palyer should be able to tell that a target player is no longer a beggar (e.g. converted to an innocent or traitor)
 - Added "plymeta:ShouldRevealBodysnatcher" to determine if a palyer should be able to tell that a target player is no longer a bodysnatcher (e.g. has snatched a role from a dead body)
 - Added "was_bodysnatcher" property to TTTRadarPlayerRender hook's "tgt" parameter

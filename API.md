@@ -829,6 +829,19 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 
 *Return:* `true` if the kill icon should be shown or `false` if not. Returning nothing or a non-boolean value will default to the given *showKillIcon* value.
 
+**TTTTargetIDPlayerName(ply, client, text, clr)** - Called before a player's name (shown when you look at a player) is rendered.\
+*Realm:* Client\
+*Added in:* 1.2.5\
+*Parameters:*
+- *ply* - The target player being rendered
+- *client* - The local player
+- *text* - The player's name text being shown
+- *clr* - The [Color](https://wiki.facepunch.com/gmod/Global.Color) of the text being used
+
+*Return:*
+- *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
+- *clr* - The new clr value to use or the original passed into the hook
+
 **TTTTargetIDPlayerRing(ent, client, ringVisible)** - Called before an entity's Target ID ring (shown when you look at an entity) is rendered.\
 *Realm:* Client\
 *Added in:* 1.2.3\
@@ -873,6 +886,19 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
 - *clr* - The new clr value to use or the original passed into the hook
 - *secondaryText* - The new secondaryText value to use or the original passed into the hook. Return `false` to not show text at all
+
+**TTTTargetIDRagdollName(ent, client, text, clr)** - Called before a ragdoll's name (shown when you look at a ragdoll) is rendered.\
+*Realm:* Client\
+*Added in:* 1.2.5\
+*Parameters:*
+- *ent* - The target ragdoll being rendered
+- *client* - The local player
+- *text* - The ragdoll's name text being shown
+- *clr* - The [Color](https://wiki.facepunch.com/gmod/Global.Color) of the text being used
+
+*Return:*
+- *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
+- *clr* - The new clr value to use or the original passed into the hook
 
 ## SWEPs
 Changes made to SWEPs (the data structure used when defining new weapons)
