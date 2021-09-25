@@ -836,27 +836,6 @@ function FixSpectators()
     end
 end
 
--- Used to be in think, now a timer
-local function WinChecker()
-    -- If prevent-win is enabled then don't even check the win conditions
-    if ttt_dbgwin:GetBool() then return end
-
-    if GetRoundState() == ROUND_ACTIVE then
-        if CurTime() > GetGlobalFloat("ttt_round_end", 0) then
-            EndRound(WIN_TIMELIMIT)
-        else
-            local win = hook.Call("TTTCheckForWin", GAMEMODE)
-            if win > WIN_MAX then
-                ErrorNoHalt("WARNING: 'TTTCheckForWin' hook returned win ID '" .. win .. "' that exceeds the expected maximum of " .. WIN_MAX .. ". Please use GenerateNewWinID() instead to get a unique win ID.\n")
-            end
-
-            if win ~= WIN_NONE then
-                timer.Simple(0.5, function() EndRound(win) end) -- Slight delay to make sure alternate winners go through before scoring
-            end
-        end
-    end
-end
-
 local function GetPlayerName(ply)
     local name = ply:GetNWString("PlayerName", nil)
     if name == nil then
@@ -963,17 +942,6 @@ local function OnPlayerDeath(victim, infl, attacker)
             end
         end
     end
-end
-
-function StartWinChecks()
-    if not timer.Start("winchecker") then
-        timer.Create("winchecker", 1, 0, WinChecker)
-    end
-end
-
-function StopWinChecks()
-    hook.Remove("PlayerDeath", "CheckJesterDeath")
-    timer.Stop("winchecker")
 end
 
 local function CleanUp()
@@ -1591,12 +1559,70 @@ function GM:MapTriggeredEnd(wintype)
     end
 end
 
-local function CheckForOldManWin(win_type)
-    if win_type ~= WIN_NONE then
-        net.Start("TTT_UpdateOldManWins")
-        net.WriteBool(true)
-        net.Broadcast()
+local function HandleOldManWinChecks(oldman_alive, win_type)
+    if not oldman_alive then return end
+    if win_type == WIN_NONE then return end
+
+    net.Start("TTT_UpdateOldManWins")
+    net.WriteBool(true)
+    net.Broadcast()
+end
+
+local function IsOldManAlive()
+    for _, v in ipairs(player.GetAll()) do
+        if v:Alive() and v:IsTerror() and v:IsOldMan() then
+            return true
+        end
     end
+    return false
+end
+
+-- Used to be in think, now a timer
+local function WinChecker()
+    -- If prevent-win is enabled then don't even check the win conditions
+    if ttt_dbgwin:GetBool() then return end
+
+    if GetRoundState() == ROUND_ACTIVE then
+        if CurTime() > GetGlobalFloat("ttt_round_end", 0) then
+            EndRound(WIN_TIMELIMIT)
+        else
+            local win = WIN_NONE
+            -- Check the map win first
+            if GAMEMODE.MapWin ~= WIN_NONE then
+                local mw = GAMEMODE.MapWin
+                GAMEMODE.MapWin = WIN_NONE
+
+                -- Old Man logic for map win
+                HandleOldManWinChecks(IsOldManAlive(), mw)
+
+                win = mw
+            end
+
+            -- If this isn't a map win, call the hook
+            if win == WIN_NONE then
+                win = hook.Call("TTTCheckForWin", GAMEMODE)
+                if win > WIN_MAX then
+                    ErrorNoHalt("WARNING: 'TTTCheckForWin' hook returned win ID '" .. win .. "' that exceeds the expected maximum of " .. WIN_MAX .. ". Please use GenerateNewWinID() instead to get a unique win ID.\n")
+                end
+            end
+
+            -- If, after all that, we have a win condition then end the round
+            if win ~= WIN_NONE then
+                timer.Simple(0.5, function() EndRound(win) end) -- Slight delay to make sure alternate winners go through before scoring
+            end
+        end
+    end
+end
+
+function StartWinChecks()
+    if not timer.Start("winchecker") then
+        timer.Create("winchecker", 1, 0, WinChecker)
+    end
+end
+
+function StopWinChecks()
+    hook.Remove("PlayerDeath", "CheckJesterDeath")
+    timer.Stop("winchecker")
 end
 
 -- The most basic win check is whether both sides have one dude alive
@@ -1645,18 +1671,6 @@ function GM:TTTCheckForWin()
                 zombie_alive = true
             end
         end
-    end
-
-    if GAMEMODE.MapWin ~= WIN_NONE then
-        local mw = GAMEMODE.MapWin
-        GAMEMODE.MapWin = WIN_NONE
-
-        -- Old Man logic for map win
-        if oldman_alive then
-            CheckForOldManWin(mw)
-        end
-
-        return mw
     end
 
     if traitor_alive and innocent_alive and not jester_killed then
@@ -1762,9 +1776,7 @@ function GM:TTTCheckForWin()
     end
 
     -- Old Man logic
-    if oldman_alive then
-        CheckForOldManWin(win_type)
-    end
+    HandleOldManWinChecks(oldman_alive, win_type)
 
     return win_type
 end

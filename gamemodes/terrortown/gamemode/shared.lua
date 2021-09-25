@@ -1,5 +1,5 @@
 -- Version string for display and function for version checks
-CR_VERSION = "1.2.5"
+CR_VERSION = "1.2.6"
 
 function CRVersion(version)
     local installedVersionRaw = string.Split(CR_VERSION, ".")
@@ -789,7 +789,10 @@ EVENT_BEGGARCONVERTED = 25
 EVENT_BEGGARKILLED = 26
 EVENT_INFECT = 27
 
-EVENT_MAX = 27
+-- Don't redefine this every time we load this file
+if not EVENT_MAX then
+    EVENT_MAX = 27
+end
 
 function GenerateNewEventID()
     EVENT_MAX = EVENT_MAX + 1
@@ -808,7 +811,10 @@ WIN_ZOMBIE = 9
 WIN_MONSTER = 10
 WIN_VAMPIRE = 11
 
-WIN_MAX = 11
+-- Don't redefine this every time we load this file
+if not WIN_MAX then
+    WIN_MAX = 11
+end
 
 function GenerateNewWinID()
     WIN_MAX = WIN_MAX + 1

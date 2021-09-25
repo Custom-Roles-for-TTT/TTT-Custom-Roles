@@ -1,5 +1,15 @@
 # Beta Release Notes
 
+## 1.2.6
+**Released: September 25th, 2021**
+
+### Fixes
+- Fixed external roles with long names and custom win conditions having their win title cut off
+- Fixed map wins being ignored when an external role with a custom win condition was in use
+
+### Developer
+- Fixed generated win and event identifiers resetting if lua is refreshed
+
 ## 1.2.5
 **Released: September 25th, 2021**
 
