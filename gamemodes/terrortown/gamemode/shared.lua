@@ -1027,6 +1027,10 @@ function GM:PlayerFootstep(ply, pos, foot, sound, volume, rf)
         -- do not play anything, just prevent normal sounds from playing
         return true
     end
+
+    if hook.Run("TTTBlockPlayerFootstepSound", ply) then
+        return true
+    end
 end
 
 -- Predicted move speed changes

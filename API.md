@@ -572,6 +572,14 @@ Custom and modified event hooks available within the defined realm. A list of de
 
 For example, if there is a hook that returns three parameters: `first`, `second`, and `third` and you want to modify the `second` parameter you must return the `first` parameter as non-`nil` as well, like this: `return first, newSecond`. Any return parameters after `second` can be omitted and the default value will be used.
 
+**TTTBlockPlayerFootstepSound(ply)** - Called when a player is making a footstep. Used to determine if the player's footstep sound should be stopped.\
+*Realm:* Client and Server\
+*Added in:* 1.2.7\
+*Parameters:*
+- *ply* - The player who is making footsteps
+
+*Return:* Whether or not the given player's footstep sounds should be stopped (Defaults to `false`).
+
 **TTTCanIdentifyCorpse(ply, rag, wasTraitor)** - Changed `was_traitor` parameter to be `true` for any member of the traitor team, rather than just the traitor role.\
 *Realm:* Server\
 *Added in:* 1.0.5\

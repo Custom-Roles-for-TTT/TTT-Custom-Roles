@@ -1,5 +1,11 @@
 # Beta Release Notes
 
+## 1.2.7
+**Released:**
+
+### Developer
+- Added TTTBlockPlayerFootstepSound hook to block a player's footstep sound
+
 ## 1.2.6
 **Released: September 25th, 2021**
 
