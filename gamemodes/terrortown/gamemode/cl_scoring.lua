@@ -30,6 +30,14 @@ surface.CreateFont("WinHuge", {
     extended = true
 })
 
+surface.CreateFont("WinLarge", {
+    font = "Trebuchet24",
+    size = 48,
+    weight = 1000,
+    shadow = true,
+    extended = true
+})
+
 surface.CreateFont("WinSmall", {
     font = "Trebuchet24",
     size = 32,
@@ -744,10 +752,21 @@ function CLSCORE:BuildSummaryPanel(dpanel)
     bg:SetPos(0, 0)
 
     local winlbl = vgui.Create("DLabel", dpanel)
-    winlbl:SetFont("WinHuge")
-    winlbl:SetText(PT(title.txt, title.params or {}))
+    local winfont = "WinHuge"
+    local wintxt = PT(title.txt, title.params or {})
+    -- Scale the title down if there are too many letters
+    if #wintxt > 20 then
+        winfont = "WinLarge"
+    end
+    winlbl:SetFont(winfont)
+    winlbl:SetText(wintxt)
     winlbl:SetTextColor(COLOR_WHITE)
     winlbl:SizeToContents()
+
+    -- Set a fixed height to make sure the different font sizes don't break the layout
+    local lblw, _ = winlbl:GetSize()
+    winlbl:SetSize(lblw, 73)
+
     local xwin = (w - winlbl:GetWide())/2
     local ywin = 15
     winlbl:SetPos(xwin, ywin)
@@ -1020,10 +1039,21 @@ function CLSCORE:BuildHilitePanel(dpanel)
     bg:SetPos(0,0)
 
     local winlbl = vgui.Create("DLabel", dpanel)
-    winlbl:SetFont("WinHuge")
-    winlbl:SetText(PT(title.txt, title.params or {}))
+    local winfont = "WinHuge"
+    local wintxt = PT(title.txt, title.params or {})
+    -- Scale the title down if there are too many letters
+    if #wintxt > 20 then
+        winfont = "WinLarge"
+    end
+    winlbl:SetFont(winfont)
+    winlbl:SetText(wintxt)
     winlbl:SetTextColor(COLOR_WHITE)
     winlbl:SizeToContents()
+
+    -- Set a fixed height to make sure the different font sizes don't break the layout
+    local lblw, _ = winlbl:GetSize()
+    winlbl:SetSize(lblw, 73)
+
     local xwin = (w - winlbl:GetWide())/2
     local ywin = 15
     winlbl:SetPos(xwin, ywin)
