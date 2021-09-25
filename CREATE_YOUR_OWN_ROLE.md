@@ -488,7 +488,7 @@ Putting all the properties together, the hook would look something like the foll
 if CLIENT then
     hook.Add("TTTScoringWinTitle", "SummonerScoringWinTitle", function(wintype, wintitles, title, secondaryWinRole)
         if wintype == WIN_SUMMONER then
-            return { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_SUMMONER] }, c = ROLE_COLORS[ROLE_SUMMONER] }
+            return { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_SUMMONER]:upper() }, c = ROLE_COLORS[ROLE_SUMMONER] }
         end
     end)
 end
@@ -557,7 +557,7 @@ If we piece together all the bits of code from the preivous sections it would co
     if CLIENT then
         hook.Add("TTTScoringWinTitle", "SummonerScoringWinTitle", function(wintype, wintitles, title, secondaryWinRole)
             if wintype == WIN_SUMMONER then
-                return { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_SUMMONER] }, c = ROLE_COLORS[ROLE_SUMMONER] }
+                return { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_SUMMONER]:upper() }, c = ROLE_COLORS[ROLE_SUMMONER] }
             end
         end)
     end
