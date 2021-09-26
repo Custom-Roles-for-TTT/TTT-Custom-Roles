@@ -74,6 +74,22 @@ function plymeta:IsSameTeam(target)
     end
     return self:GetRole() == target:GetRole()
 end
+function plymeta:GetRoleTeam(detectivesAreInnocent)
+    if self:IsTraitorTeam() then
+        return ROLE_TEAM_TRAITOR
+    elseif self:IsMonsterTeam() then
+        return ROLE_TEAM_MONSTER
+    elseif self:IsJesterteam() then
+        return ROLE_TEAM_JESTER
+    elseif self:IsIndependentTeam() then
+        return ROLE_TEAM_INDEPENDENT
+    elseif self:IsInnocentTeam() then
+        if not detectivesAreInnocent and self:IsDetectiveTeam() then
+            return ROLE_TEAM_DETECTIVE
+        end
+        return ROLE_TEAM_INNOCENT
+    end
+end
 
 plymeta.IsDetectiveLike = plymeta.GetDetectiveLike
 plymeta.IsDetectiveLikePromotable = plymeta.GetDetectiveLikePromotable

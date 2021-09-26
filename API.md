@@ -154,7 +154,7 @@ Enumerations available globally (within the defined realm). There are additional
 - ROLE_CONVAR_TYPE_BOOL = A boolean. Will use a checkbox in the configuration UI.
 - ROLE_CONVAR_TYPE_TEXT = A text value. Will use a text box in the configuration UI.
 
-**ROLE_TEAM_\*** - Which team an external role is registered to.\
+**ROLE_TEAM_\*** - Which role team an external role is registered to. A "role team" is a way of grouping roles by common functionality and mostly maps to the logical team with the exception of the detective role team. The detective role team is part of the innocent logical team.\
 *Realm:* Client and Server\
 *Added in:* 1.0.9\
 *Values:*
@@ -381,6 +381,12 @@ Variables available when called from a Player object (within the defined realm)
 **plymeta:GetHeight()** - Gets the *estimated* height of the player based on their player model.\
 *Realm:* Client\
 *Added in:* 1.0.2
+
+**plymeta:GetRoleTeam(detectivesAreInnocent)** - Gets which "role team" a player belongs to (see ROLE_TEAM_* global enumeration).\
+*Realm:* Client and Server\
+*Added in:* 1.2.7\
+*Parameters:*
+- *detectivesAreInnocent* - Whether to include members of the detective "role team" in the innocent "role team" to match the logical teams
 
 **plymeta:GetVampirePreviousRole()** - Gets the player's previous role if they are a Vampire that has been converted or `ROLE_NONE` otherwise.\
 *Realm:* Client and Server\

@@ -5,6 +5,7 @@
 
 ### Developer
 - Added TTTBlockPlayerFootstepSound hook to block a player's footstep sound
+- Added plymeta:GetRoleTeam to get the appropriate ROLE_TEAM_* enum value for the player
 
 ## 1.2.6
 **Released: September 25th, 2021**
