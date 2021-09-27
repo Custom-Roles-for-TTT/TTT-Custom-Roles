@@ -569,8 +569,6 @@ util.AddNetworkString("TTT_LoadMonsterEquipment")
 util.AddNetworkString("TTT_VampirePrimeDeath")
 util.AddNetworkString("TTT_UpdateRoleNames")
 
-local jester_killed = false
-
 local function ClearAllFootsteps()
     net.Start("TTT_ClearPlayerFootsteps")
     net.Broadcast()
@@ -886,11 +884,16 @@ function StartNameChangeChecks()
 end
 
 local function OnPlayerDeath(victim, infl, attacker)
-    if victim:IsJester() and IsPlayer(attacker) and (not attacker:IsJesterTeam()) and GetRoundState() == ROUND_ACTIVE then
-        -- Don't track that the jester was killed (for win reporting) if they were killed by a traitor
-        -- and the functionality that blocks Jester wins from Traitor deaths is enabled
+    if GetRoundState() ~= ROUND_ACTIVE then return end
+
+    if victim:IsJester() and IsPlayer(attacker) and (not attacker:IsJesterTeam()) then
+        -- Don't end the round if the jester was killed by a traitor
+        -- and the functionality that blocks Jester wins from traitor deaths is enabled
         if GetConVar("ttt_jester_win_by_traitors"):GetBool() or not attacker:IsTraitorTeam() then
-            jester_killed = true
+            -- Stop the win checks so someone else doesn't steal the jester's win
+            StopWinChecks()
+            -- Delay the actual end for a second so the message and sound have a chance to generate a reaction
+            timer.Simple(1, function() EndRound(WIN_JESTER) end)
         end
     else
         local vamp_prime_death_mode = GetConVar("ttt_vampire_prime_death_mode"):GetFloat()
@@ -1073,8 +1076,6 @@ function PrepareRound()
     net.Start("TTT_RevengerLoverKillerRadar")
     net.WriteBool(false)
     net.Broadcast()
-
-    jester_killed = false
 
     -- Check playercount
     if CheckForAbort() then return end
@@ -1624,7 +1625,7 @@ function StartWinChecks()
 end
 
 function StopWinChecks()
-    hook.Remove("PlayerDeath", "CheckJesterDeath")
+    hook.Remove("PlayerDeath", "OnPlayerDeath")
     timer.Stop("winchecker")
 end
 
@@ -1676,16 +1677,14 @@ function GM:TTTCheckForWin()
         end
     end
 
-    if traitor_alive and innocent_alive and not jester_killed then
+    if traitor_alive and innocent_alive then
         return WIN_NONE --early out
     end
 
     local win_type = WIN_NONE
 
-    if jester_killed then
-        win_type = WIN_JESTER
     -- If everyone is dead the traitors win
-    elseif not innocent_alive and not monster_alive and not killer_alive and not zombie_alive and not vampire_alive then
+    if not innocent_alive and not monster_alive and not killer_alive and not zombie_alive and not vampire_alive then
         win_type = WIN_TRAITOR
     -- If all the "bad" people are dead, innocents win
     elseif not traitor_alive and not monster_alive and not killer_alive and not zombie_alive and not vampire_alive then

@@ -6,6 +6,10 @@
 ### Changes
 - Changed custom win events to show in the end-of-round summary's Events tab with an "unknown win event" message until the new TTTEventFinishText hooks are used
 
+### Fixes
+- Fixed vampire prime death effects still happening after the round has ended
+- Fixed external roles with custom win conditions blocking jester wins
+
 ### Developer
 - Added TTTBlockPlayerFootstepSound hook to block a player's footstep sound
 - Added TTTKarmaGiveReward hook to block a player from receiving karma
