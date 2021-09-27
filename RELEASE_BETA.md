@@ -15,7 +15,8 @@
 - Added TTTKarmaGiveReward hook to block a player from receiving karma
 - Added TTTPlayerSpawnForRound hook to react to when a player is spawned (or respawed)
 - Added TTTEventFinishText and TTTEventFinishIconText hooks to add detail to the round finished event row for custom win conditions
-- Added new TTTPlayerRoleChanged hook to react to when a player's role changes
+- Added TTTPlayerRoleChanged hook to react to when a player's role changes
+- Added TTTShouldPlayerSmoke hook to affect whether a player should smoke and how that should look
 - Added plymeta:GetRoleTeam to get the appropriate ROLE_TEAM_* enum value for the player
 - Changed OnPlayerHighlightEnabled to be globally available so other roles can use the same highlighting logic
 - Fixed returning false for the first parameter of TTTTargetIDPlayerRoleIcon not stopping the role icon from showing

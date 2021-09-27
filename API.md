@@ -704,7 +704,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 *Parameters:*
 - *ply* - The player being rendered
 - *client* - The local player
-- *color* - The background [Color](https://wiki.facepunch.com/gmod/Global.Color) to use
+- *color* - The background [Color](https://wiki.facepunch.com/gmod/Color) to use
 - *roleFileName* - The portion of the scoring icon path that indicates which role it belongs to. Used in the following icon path pattern: "vgui/ttt/tab_{roleFileName}.png"
 
 *Return:*
@@ -719,7 +719,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *ply* - The player being rendered
 - *roleFileName* - The portion of the scoring icon path that indicates which role it belongs to. Used in the following icon path pattern: "vgui/ttt/score_{roleFileName}.png"
 - *groupingRole* - The role to use when determining the section to of the summary screen to put this player in
-- *roleColor* - The background [Color](https://wiki.facepunch.com/gmod/Global.Color) to use behind the role icon
+- *roleColor* - The background [Color](https://wiki.facepunch.com/gmod/Color) to use behind the role icon
 - *nameLabel* - The name that is going to be used for this player on the round summary *(Added in 1.2.3)*
 
 *Return:*
@@ -740,7 +740,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 *Return:*
 - *newTitle*
   - *txt* - The translation string to use to get the winning team text
-  - *c* - The background [Color](https://wiki.facepunch.com/gmod/Global.Color) to use
+  - *c* - The background [Color](https://wiki.facepunch.com/gmod/Color) to use
   - *params* - Any parameters to use when translating `txt` (Optional if `new_secondary_win_role` is also omitted)
 - *newSecondaryWinRole* - Which role should share in the win for this round (see ROLE_* global enumeration) (Optional) *(Added in 1.1.9)*
 
@@ -841,6 +841,23 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 
 *Return:* The stamina value to assign to the player. If none is provided, the player's stamina will not be changed.
 
+**TTTShouldPlayerSmoke(ply, client, shouldSmoke, smokeColor, smokeParticle, smokeOffset)** - .\
+*Realm:* Client\
+*Added in:* 1.2.7\
+*Parameters:*
+- *ply* - The target player being rendered
+- *client* - The local player
+- *shouldSmoke* - Whether the player would normally emit smoke
+- *smokeColor* - What [Color](https://wiki.facepunch.com/gmod/Color) the smoke will be. (Defaults to `COLOR_BLACK`)
+- *smokeParticle* - What particle the smoke will use. Should be the relative path the the `.vmt` file for the particle. (Defaults to `"particle/snow.vmt"`)
+- *smokeOffset* - A [Vector](https://wiki.facepunch.com/gmod/Vector) representing the relative offset from the player's feet. (Defaults to `Vector(0, 0, 30)`)
+
+*Return:*
+- *shouldSmoke* - The new shouldSmoke value to use or the original passed into the hook
+- *smokeColor* - The new smokeColor value to use or the original passed into the hook
+- *smokeParticle* - The new smokeParticle value to use or the original passed into the hook
+- *smokeOffset* - The new smokeOffset value to use or the original passed into the hook
+
 **TTTSyncGlobals()** - Called when the server is syncing convars to global variables for client access.\
 *Realm:* Server\
 *Added in:* 1.2.7
@@ -852,7 +869,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *ply* - The target player being rendered
 - *client* - The local player
 - *text* - The health-related text being shown
-- *clr* - The [Color](https://wiki.facepunch.com/gmod/Global.Color) of the text being used
+- *clr* - The [Color](https://wiki.facepunch.com/gmod/Color) of the text being used
 
 *Return:*
 - *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
@@ -865,7 +882,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *ent* - The target entity being rendered. Guaranteed to not be a player.
 - *client* - The local player
 - *text* - The label for the hint-related text being shown
-- *clr* - The [Color](https://wiki.facepunch.com/gmod/Global.Color) of the text being used
+- *clr* - The [Color](https://wiki.facepunch.com/gmod/Color) of the text being used
 
 *Return:*
 - *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
@@ -878,7 +895,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *ent* - The target entity being rendered. Not necessarily a player so be sure to check `ent:IsPlayer()` if needed
 - *client* - The local player
 - *text* - The hint-related text being shown
-- *clr* - The [Color](https://wiki.facepunch.com/gmod/Global.Color) of the text being used
+- *clr* - The [Color](https://wiki.facepunch.com/gmod/Color) of the text being used
 
 *Return:*
 - *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
@@ -891,7 +908,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *ply* - The target player being rendered
 - *client* - The local player
 - *text* - The karma-related text being shown
-- *clr* - The [Color](https://wiki.facepunch.com/gmod/Global.Color) of the text being used
+- *clr* - The [Color](https://wiki.facepunch.com/gmod/Color) of the text being used
 
 *Return:*
 - *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
@@ -915,7 +932,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *ply* - The target player being rendered
 - *client* - The local player
 - *text* - The player's name text being shown
-- *clr* - The [Color](https://wiki.facepunch.com/gmod/Global.Color) of the text being used
+- *clr* - The [Color](https://wiki.facepunch.com/gmod/Color) of the text being used
 
 *Return:*
 - *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
@@ -931,7 +948,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 
 *Return:*
 - *newVisible* - The new ringVisible value to use or the original passed into the hook
-- *colorOverride* - The [Color](https://wiki.facepunch.com/gmod/Global.Color) to use for the ring. Return `false` if you don't want to override the color. *NOTE:* For some reason colors that are near-black do not render so try a lighter color if you are having trouble
+- *colorOverride* - The [Color](https://wiki.facepunch.com/gmod/Color) to use for the ring. Return `false` if you don't want to override the color. *NOTE:* For some reason colors that are near-black do not render so try a lighter color if you are having trouble
 
 **TTTTargetIDPlayerRoleIcon(ply, client, role, noZ, colorRole, hideBeggar, showJester, hideBodysnatcher)** - Called before player Target ID icon (over their head) is rendered allowing changing the icon and color shown.\
 *Realm:* Client\
@@ -958,7 +975,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *ent* - The target entity being rendered. Not necessarily a player so be sure to check `ent:IsPlayer()` if needed
 - *client* - The local player
 - *text* - The first line of text being shown
-- *clr* - The [Color](https://wiki.facepunch.com/gmod/Global.Color) of the text being used
+- *clr* - The [Color](https://wiki.facepunch.com/gmod/Color) of the text being used
 - *secondaryText* - The second line of text being shown
 
 *Return:*
@@ -973,7 +990,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *ent* - The target ragdoll being rendered
 - *client* - The local player
 - *text* - The ragdoll's name text being shown
-- *clr* - The [Color](https://wiki.facepunch.com/gmod/Global.Color) of the text being used
+- *clr* - The [Color](https://wiki.facepunch.com/gmod/Color) of the text being used
 
 *Return:*
 - *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all

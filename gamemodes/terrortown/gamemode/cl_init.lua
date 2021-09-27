@@ -368,16 +368,28 @@ function GM:Think()
     local client = LocalPlayer()
     for _, v in pairs(player.GetAll()) do
         if v:Alive() and not v:IsSpec() then
-            if ((v:GetNWBool("Haunted", false) and GetGlobalBool("ttt_phantom_killer_smoke")) or v:GetNWBool("KillerSmoke", false)) then
+            local shouldSmoke = (v:GetNWBool("Haunted", false) and GetGlobalBool("ttt_phantom_killer_smoke")) or v:GetNWBool("KillerSmoke", false)
+            local smokeColor = COLOR_BLACK
+            local smokeParticle = "particle/snow.vmt"
+            local smokeOffset = Vector(0, 0, 30)
+
+            -- Allow other addons to manipulate whether and how players smoke
+            local newShouldSmoke, newSmokeColor, newSmokeParticle, newSmokeOffset = hook.Run("TTTShouldPlayerSmoke", v, client, shouldSmoke, smokeColor, smokeParticle, smokeOffset)
+            if type(newShouldSmoke) == "boolean" then shouldSmoke = newShouldSmoke end
+            if newSmokeColor then smokeColor = newSmokeColor end
+            if newSmokeParticle then smokeParticle = newSmokeParticle end
+            if newSmokeOffset then smokeOffset = newSmokeOffset end
+
+            if shouldSmoke then
                 if not v.SmokeEmitter then v.SmokeEmitter = ParticleEmitter(v:GetPos()) end
                 if not v.SmokeNextPart then v.SmokeNextPart = CurTime() end
-                local pos = v:GetPos() + Vector(0, 0, 30)
+                local pos = v:GetPos() + smokeOffset
                 if v.SmokeNextPart < CurTime() then
                     if client:GetPos():Distance(pos) <= 3000 then
                         v.SmokeEmitter:SetPos(pos)
                         v.SmokeNextPart = CurTime() + math.Rand(0.003, 0.01)
                         local vec = Vector(math.Rand(-8, 8), math.Rand(-8, 8), math.Rand(10, 55))
-                        local particle = v.SmokeEmitter:Add("particle/snow.vmt", v:LocalToWorld(vec))
+                        local particle = v.SmokeEmitter:Add(smokeParticle, v:LocalToWorld(vec))
                         particle:SetVelocity(Vector(0, 0, 4) + VectorRand() * 3)
                         particle:SetDieTime(math.Rand(0.5, 2))
                         particle:SetStartAlpha(math.random(150, 220))
@@ -387,7 +399,7 @@ function GM:Think()
                         particle:SetEndSize(size + 1)
                         particle:SetRoll(0)
                         particle:SetRollDelta(0)
-                        particle:SetColor(0, 0, 0)
+                        particle:SetColor(smokeColor.r, smokeColor.g, smokeColor.b)
                     end
                 end
             else
