@@ -334,8 +334,6 @@ function plymeta:SpawnForRound(dead_only)
     self:SetNWInt("HauntingPower", 0)
     timer.Remove(self:Nick() .. "HauntingPower")
     timer.Remove(self:Nick() .. "HauntingSpectate")
-    -- Disable Killer smoke
-    self:SetNWBool("KillerSmoke", false)
     -- Disable Parasite infection
     self:SetNWBool("Infecting", false)
     self:SetNWString("InfectingTarget", nil)
@@ -646,18 +644,6 @@ function plymeta:BeginRoleChecks()
     -- Assassin logic
     if self:IsAssassin() then
         AssignAssassinTarget(self, true, false)
-    end
-
-    -- Killer logic
-    if self:IsKiller() then
-        if GetConVar("ttt_killer_knife_enabled"):GetBool() then
-            self:Give("weapon_kil_knife")
-        end
-        if GetConVar("ttt_killer_crowbar_enabled"):GetBool() then
-            self:StripWeapon("weapon_zm_improvised")
-            self:Give("weapon_kil_crowbar")
-            self:SelectWeapon("weapon_kil_crowbar")
-        end
     end
 
     -- Glitch logic
