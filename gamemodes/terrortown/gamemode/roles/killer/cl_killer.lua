@@ -93,3 +93,13 @@ hook.Add("TTTEventFinishIconText", "Killer_TTTEventFinishIconText", function(e, 
         return win_string, ROLE_STRINGS[ROLE_KILLER]
     end
 end)
+
+-----------
+-- SMOKE --
+-----------
+
+hook.Add("TTTShouldPlayerSmoke", "Killer_TTTShouldPlayerSmoke", function(ply, cli, shouldSmoke, smokeColor, smokeParticle, smokeOffset)
+    if ply:IsKiller() and ply:GetNWBool("KillerSmoke", false) then
+        return true
+    end
+end)
