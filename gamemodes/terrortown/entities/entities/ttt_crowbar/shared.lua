@@ -24,7 +24,7 @@ function ENT:Think()
 end
 
 function ENT:Use(activator, caller)
-    if activator:GetKiller() then
+    if activator:IsKiller() then
         activator:Give("weapon_kil_crowbar")
         self:Remove()
     end
