@@ -381,7 +381,6 @@ local function GetWinTitle(wintype)
         [WIN_TRAITOR] = { txt = "hilite_win_role_plural", params = { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]:upper() }, c = ROLE_COLORS[ROLE_TRAITOR] },
         [WIN_JESTER] = { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_JESTER]:upper() }, c = ROLE_COLORS[ROLE_JESTER] },
         [WIN_CLOWN] = { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_CLOWN]:upper() }, c = ROLE_COLORS[ROLE_JESTER] },
-        [WIN_KILLER] = { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_KILLER]:upper() }, c = ROLE_COLORS[ROLE_KILLER] },
         [WIN_ZOMBIE] = { txt = "hilite_win_role_plural", params = { role = ROLE_STRINGS_PLURAL[ROLE_ZOMBIE]:upper() }, c = ROLE_COLORS[ROLE_ZOMBIE] },
         [WIN_VAMPIRE] = { txt = "hilite_win_role_plural", params = { role = ROLE_STRINGS_PLURAL[ROLE_VAMPIRE]:upper() }, c = ROLE_COLORS[ROLE_VAMPIRE] },
         [WIN_MONSTER] = { txt = "hilite_win_role_plural", params = { role = "MONSTERS" }, c = GetRoleTeamColor(ROLE_TEAM_MONSTER) }
