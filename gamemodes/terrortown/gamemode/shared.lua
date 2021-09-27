@@ -1197,6 +1197,8 @@ function UpdateRoleState()
             end
         end
     end
+
+    hook.Run("TTTUpdateRoleState")
 end
 
 function GetWinningMonsterRole()

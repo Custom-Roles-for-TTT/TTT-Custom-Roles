@@ -262,6 +262,16 @@ Methods available globally (within the defined realm)
 *Parameters:*
 - *aliveOnly* - Whether this filter should only include live players (Defaults to `false`).
 
+**OnPlayerHighlightEnabled(client, alliedRoles, showJesters, hideEnemies, traitorAllies)** - Handles player highlighting (colored glow around players) rules for the local player.\
+*Realm:* Client\
+*Added in:* 1.2.7\
+*Parameters:*
+- *client* - The local player
+- *alliedRoles* - Table of role IDs that should show as allied to the current player
+- *showJesters* - Whether jester roles should be highlighted in the jester color. If `false`, jesters will appear in the generic enemy color instead
+- *hideEnemies* - Whether enemy roles (e.g. anyone that isn't an ally or a jester if *showJesters* is enabled) should be highlighted
+- *traitorAllies* - Whether this role's allies are traitors. If `true`, allied roles will be shown in the traitor color. Otherwise allied roles will be shown in the innocent color
+
 **RegisterRole(roleTable)** - Registers a role with Custom Roles for TTT. See [here](CREATE_YOUR_OWN_ROLE.md) for instructions on how to create a role and role table structure.\
 *Realm:* Client and Server\
 *Added in:* 1.0.9
@@ -596,6 +606,49 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 
 *Return:* Whether or not the given player should be able to identify the given corpse (Defaults to `false`).
 
+**TTTEventFinishText(e)** - Called before the event text for the "round finished" event is rendered in the end-of-round summary's Events tab.\
+*Realm:* Client\
+*Added in:* 1.2.7\
+*Parameters:*
+- *e* - Event parameters. Contains the following properties:
+  - `id` - The event identifier (always `EVENT_FINISH`)
+  - `t` - The time when this event occurred
+  - `win` - The win condition identifier
+
+*Return:* Text to show in events list at the end of the round
+
+**TTTEventFinishIconText(e, winString, roleString)** - Called before the event icon for the "round finished" event is rendered in the end-of-round summary's Events tab. Used to change the mouseover text for the icon.\
+*Realm:* Client\
+*Added in:* 1.2.7\
+*Parameters:*
+- *e* - Event parameters. Contains the following properties:
+  - `id` - The event identifier (always `EVENT_FINISH`)
+  - `t` - The time when this event occurred
+  - `win` - The win condition identifier
+- *winString* - The translation string that will be used to display the icon mouseover text
+- *roleString* - The role string to use in place of the `role` placeholder in the translation string
+
+*Return:*
+- *winString* - The new winString value to use or the original passed into the hook
+- *roleString* - The new roleString value to use or the original passed into the hook
+
+**TTTKarmaGiveReward(ply, reward, victim)** - Called before a player is rewarded with karma. Used to block a player's karma reward.\
+*Realm:* Server\
+*Added in:* 1.2.7\
+*Parameters:*
+- *ply* - The player who will be rewarded karma
+- *reward* - The amount of karma the player will be rewarded with
+- *victim* - The victim of the event that is rewarding the player with karma. If this is not a player, karma is being rewarded as part of the end of the round
+
+*Return:* Whether or not the given player should be prevented from being rewarded with karma (Defaults to `false`).
+
+**TTTPlayerSpawnForRound(ply, deadOnly)** - Called before a player is spawned for a round. Also used when reviving a player (via a defib, zombie conversion, etc.).\
+*Realm:* Server\
+*Added in:* 1.2.7\
+*Parameters:*
+- *ply* - The player who is being spawn
+- *deadOnly* - Whether this call is specifically targetted at dead players
+
 **TTTPrintResultMessage(type)** - Called before the round win results message is printed to the top-right corner of the screen. Can be used to print a replacement message for custom win types that this would not normally handle.\
 *Realm:* Server\
 *Added in:* 1.0.14\
@@ -780,6 +833,10 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 
 *Return:* The stamina value to assign to the player. If none is provided, the player's stamina will not be changed.
 
+**TTTSyncGlobals()** - Called when the server is syncing convars to global variables for client access.\
+*Realm:* Server\
+*Added in:* 1.2.7
+
 **TTTTargetIDPlayerHealth(ply, client, text, clr)** - Called before a player's heath status (shown when you look at a player) is rendered.\
 *Realm:* Client\
 *Added in:* 1.2.5\
@@ -913,6 +970,10 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 *Return:*
 - *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
 - *clr* - The new clr value to use or the original passed into the hook
+
+**TTTUpdateRoleState()** - Called after role states and role weapon states have been updated. At this point you can be assured that a role belongs to the team it has been configured to be on.\
+*Realm:* Client and Server\
+*Added in:* 1.2.7
 
 ## SWEPs
 Changes made to SWEPs (the data structure used when defining new weapons)

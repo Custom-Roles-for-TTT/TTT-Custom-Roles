@@ -925,7 +925,7 @@ end)
 
 -- Player highlights
 
-local function OnPlayerHighlightEnabled(client, alliedRoles, showJesters, hideEnemies, traitorAllies)
+function OnPlayerHighlightEnabled(client, alliedRoles, showJesters, hideEnemies, traitorAllies)
     if GetRoundState() ~= ROUND_ACTIVE then return end
     local enemies = {}
     local friends = {}

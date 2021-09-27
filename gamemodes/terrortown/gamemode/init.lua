@@ -662,6 +662,9 @@ end
 -- Convar replication is broken in gmod, so we do this.
 -- I don't like it any more than you do, dear reader.
 function GM:SyncGlobals()
+    -- For some reason hooking "SyncGlobals" directly is unreliable so... here we go
+    hook.Run("TTTSyncGlobals")
+
     SetGlobalBool("ttt_detective", ttt_detective:GetBool())
     SetGlobalBool("ttt_haste", ttt_haste:GetBool())
     SetGlobalInt("ttt_time_limit_minutes", GetConVar("ttt_time_limit_minutes"):GetInt())
