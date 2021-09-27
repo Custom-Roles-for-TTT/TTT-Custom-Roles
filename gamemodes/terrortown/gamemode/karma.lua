@@ -141,7 +141,6 @@ end
 function KARMA.Hurt(attacker, victim, dmginfo)
     if not IsPlayer(attacker) or not IsPlayer(victim) then return end
     if attacker == victim then return end
-    if attacker:IsKiller() then return end
 
     -- Ignore excess damage
     local hurt_amount = math.min(victim:Health(), dmginfo:GetDamage())
@@ -178,7 +177,6 @@ end
 function KARMA.Killed(attacker, victim, dmginfo)
     if not IsPlayer(attacker) or not IsPlayer(victim) then return end
     if attacker == victim then return end
-    if attacker:IsKiller() then return end
 
     if ShouldReduceKarma(attacker, victim) then
         -- don't penalise attacker for stupid victims

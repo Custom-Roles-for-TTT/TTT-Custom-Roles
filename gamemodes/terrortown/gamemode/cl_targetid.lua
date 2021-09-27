@@ -98,7 +98,6 @@ function GM:PostDrawTranslucentRenderables()
 
             -- Only show the "KILL" target if the setting is enabled
             local showKillIcon = ((client:IsAssassin() and GetGlobalBool("ttt_assassin_show_target_icon", false) and client:GetNWString("AssassinTarget") == v:Nick()) or
-            (client:IsKiller() and GetGlobalBool("ttt_killer_show_target_icon", false)) or
                                     (client:IsZombie() and GetGlobalBool("ttt_zombie_show_target_icon", false) and client.GetActiveWeapon and IsValid(client:GetActiveWeapon()) and client:GetActiveWeapon():GetClass() == "weapon_zom_claws") or
                                     (client:IsVampire() and GetGlobalBool("ttt_vampire_show_target_icon", false)) or
                                     (client:IsClown() and client:GetNWBool("KillerClownActive", false) and GetGlobalBool("ttt_clown_show_target_icon", false)))
@@ -173,10 +172,6 @@ function GM:PostDrawTranslucentRenderables()
                         elseif v:IsMonsterTeam() then
                             role = v:GetRole()
                             noz = true
-                        end
-                    elseif client:IsKiller() then
-                        if showJester then
-                            role = ROLE_JESTER
                         end
                     elseif client:IsIndependentTeam() then
                         if showJester then

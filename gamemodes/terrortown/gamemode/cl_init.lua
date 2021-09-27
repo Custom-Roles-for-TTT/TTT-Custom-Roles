@@ -46,7 +46,6 @@ include("cl_equip.lua")
 include("cl_voice.lua")
 
 local traitor_vision = false
-local killer_vision = false
 local zombie_vision = false
 local vampire_vision = false
 local assassin_target_vision = false
@@ -203,7 +202,6 @@ local function ReceiveRole()
 
     -- Update the local state
     traitor_vision = GetGlobalBool("ttt_traitor_vision_enable")
-    killer_vision = GetGlobalBool("ttt_killer_vision_enable")
     zombie_vision = GetGlobalBool("ttt_zombie_vision_enable")
     vampire_vision = GetGlobalBool("ttt_vampire_vision_enable")
     assassin_target_vision = GetGlobalBool("ttt_assassin_target_vision_enable")
@@ -484,7 +482,7 @@ function GM:Tick()
         if client:Alive() and client:Team() ~= TEAM_SPEC then
             WSWITCH:Think()
             RADIO:StoreTarget()
-            if traitor_vision or killer_vision or zombie_vision or vampire_vision or assassin_target_vision then
+            if traitor_vision or zombie_vision or vampire_vision or assassin_target_vision then
                 HandleRoleHighlights(client)
             end
         end
@@ -976,11 +974,6 @@ function OnPlayerHighlightEnabled(client, alliedRoles, showJesters, hideEnemies,
     halo.Add(jesters, ROLE_COLORS[ROLE_JESTER], 1, 1, 1, true, true)
 end
 
-local function EnableKillerHighlights(client)
-    hook.Add("PreDrawHalos", "AddPlayerHighlights", function()
-        OnPlayerHighlightEnabled(client, {ROLE_KILLER}, true, false, false)
-    end)
-end
 local function EnableTraitorHighlights(client)
     hook.Add("PreDrawHalos", "AddPlayerHighlights", function()
         -- Start with the list of traitors
@@ -1072,12 +1065,7 @@ end
 function HandleRoleHighlights(client)
     if not IsValid(client) then return end
 
-    if client:IsKiller() and killer_vision then
-        if not vision_enabled then
-            EnableKillerHighlights(client)
-            vision_enabled = true
-        end
-    elseif client:IsZombie() and (zombie_vision or (traitor_vision and TRAITOR_ROLES[ROLE_ZOMBIE])) then
+    if client:IsZombie() and (zombie_vision or (traitor_vision and TRAITOR_ROLES[ROLE_ZOMBIE])) then
         if not vision_enabled then
             EnableZombieHighlights(client)
             vision_enabled = true

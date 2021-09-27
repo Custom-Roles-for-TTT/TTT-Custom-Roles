@@ -751,6 +751,28 @@ function RegisterRole(tbl)
     end
 end
 
+local function AddInternalRoles()
+    local root = "terrortown/gamemode/roles/"
+    local _, dirs = file.Find(root .. "*", "LUA")
+    for _, dir in ipairs(dirs) do
+        local files, _ = file.Find(root .. dir .. "/*.lua", "LUA")
+        for _, fil in ipairs(files) do
+            local isClientFile = string.find(fil, "cl_")
+            local isSharedFile = fil == "shared.lua" or string.find(fil, "sh_")
+
+            if SERVER then
+                -- Send client and shared files to clients
+                if isClientFile or isSharedFile then AddCSLuaFile(root .. dir .. "/" .. fil) end
+                -- Include non-client files
+                if not isClientFile then include(root .. dir .. "/" .. fil) end
+            end
+            -- Include client and shared files
+            if CLIENT and (isClientFile or isSharedFile) then include(root .. dir .. "/" .. fil) end
+        end
+    end
+end
+AddInternalRoles()
+
 local function AddExternalRoles()
     local files, _ = file.Find("customroles/*.lua", "LUA")
     for _, fil in ipairs(files) do
