@@ -10,6 +10,13 @@ function plymeta:IsSpec() return self:Team() == TEAM_SPEC end
 
 AccessorFunc(plymeta, "role", "Role", FORCE_NUMBER)
 
+local oldSetRole = plymeta.SetRole
+function plymeta:SetRole(role)
+    local oldRole = self:GetRole()
+    oldSetRole(self, role)
+    hook.Run("TTTPlayerRoleChanged", self, oldRole, role)
+end
+
 -- Player is alive and in an active round
 function plymeta:IsActive() return self:IsTerror() and GetRoundState() == ROUND_ACTIVE end
 

@@ -642,11 +642,19 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 
 *Return:* Whether or not the given player should be prevented from being rewarded with karma (Defaults to `false`).
 
+**TTTPlayerRoleChanged(ply, oldRole, newRole)** - Called after a player's role has changed.\
+*Realm:* Client and Server\
+*Added in:* 1.2.7\
+*Parameters:*
+- *ply* - The player whose role is being changed
+- *oldRole* - The role the player had before this change
+- *newRole* - The role the player is changing to
+
 **TTTPlayerSpawnForRound(ply, deadOnly)** - Called before a player is spawned for a round. Also used when reviving a player (via a defib, zombie conversion, etc.).\
 *Realm:* Server\
 *Added in:* 1.2.7\
 *Parameters:*
-- *ply* - The player who is being spawn
+- *ply* - The player who is being spawned or respawned
 - *deadOnly* - Whether this call is specifically targetted at dead players
 
 **TTTPrintResultMessage(type)** - Called before the round win results message is printed to the top-right corner of the screen. Can be used to print a replacement message for custom win types that this would not normally handle.\
