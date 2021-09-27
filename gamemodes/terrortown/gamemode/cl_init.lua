@@ -366,7 +366,7 @@ function GM:Think()
     local client = LocalPlayer()
     for _, v in pairs(player.GetAll()) do
         if v:Alive() and not v:IsSpec() then
-            local shouldSmoke = (v:GetNWBool("Haunted", false) and GetGlobalBool("ttt_phantom_killer_smoke")) or v:GetNWBool("KillerSmoke", false)
+            local shouldSmoke = v:GetNWBool("Haunted", false) and GetGlobalBool("ttt_phantom_killer_smoke")
             local smokeColor = COLOR_BLACK
             local smokeParticle = "particle/snow.vmt"
             local smokeOffset = Vector(0, 0, 30)
