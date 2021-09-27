@@ -127,6 +127,7 @@ hook.Add("PlayerDeath", "Killer_Smoke_PlayerDeath", function(victim, infl, attac
     end
 end)
 
+-- Disable the smoke when the round ends, the player respawns, or they have their role changed
 hook.Add("TTTPrepareRound", "Killer_Smoke_PrepareRound", function()
     for _, v in pairs(player.GetAll()) do
         v:SetNWBool("KillerSmoke", false)
@@ -137,6 +138,12 @@ hook.Add("TTTPlayerSpawnForRound", "Killer_Smoke_TTTPlayerSpawnForRound", functi
     if dead_only and ply:Alive() and not ply:IsSpec() then return end
 
     ply:SetNWBool("KillerSmoke", false)
+end)
+
+hook.Add("TTTPlayerRoleChanged", "Killer_Smoke_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+    if oldRole == ROLE_KILLER then
+        ply:SetNWBool("KillerSmoke", false)
+    end
 end)
 
 -------------
