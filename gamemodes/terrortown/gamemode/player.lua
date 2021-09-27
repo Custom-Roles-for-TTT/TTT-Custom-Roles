@@ -604,7 +604,7 @@ local function CheckCreditAward(victim, attacker)
     local valid_attacker = IsPlayer(attacker)
 
     -- DETECTIVE AWARD
-    if valid_attacker and (victim:IsTraitorTeam() or victim:IsMonsterTeam() or victim:IsKiller() or victim:IsZombie()) then
+    if valid_attacker and not (victim:IsInnocentTeam() or victim:IsJesterTeam()) then
         local amt = GetConVar("ttt_det_credits_traitordead"):GetInt()
 
         -- If size is 0, awards are off
@@ -2322,6 +2322,7 @@ function GM:Tick()
             end
 
             HandleRoleForcedWeapons(ply)
+            hook.Run("TTTPlayerAliveThink", ply)
         elseif tm == TEAM_SPEC then
             if ply.propspec then
                 PROPSPEC.Recharge(ply)
