@@ -56,6 +56,7 @@ local vampire_fang_dead_timer = CreateConVar("ttt_vampire_fang_dead_timer", "0")
 local vampire_fang_timer = CreateConVar("ttt_vampire_fang_timer", "5")
 local vampire_fang_heal = CreateConVar("ttt_vampire_fang_heal", "50")
 local vampire_fang_overheal = CreateConVar("ttt_vampire_fang_overheal", "25")
+local vampire_fang_overheal_living = CreateConVar("ttt_vampire_fang_overheal_living", "-1")
 local vampire_fang_unfreeze_delay = CreateConVar("ttt_vampire_fang_unfreeze_delay", "1")
 local vampire_prime_convert = CreateConVar("ttt_vampire_prime_only_convert", "1")
 
@@ -247,7 +248,7 @@ function SWEP:DoKill()
     local rag = self.TargetEntity.server_ragdoll or self.TargetEntity:GetRagdollEntity()
     SafeRemoveEntity(rag)
 
-    self:DoHeal()
+    self:DoHeal(true)
     self:DropBones()
 
     local amt = vampire_drain_credits:GetInt()
@@ -260,9 +261,13 @@ function SWEP:DoKill()
     self:FireError()
 end
 
-function SWEP:DoHeal()
+function SWEP:DoHeal(living)
+    local vamoverheal = vampire_fang_overheal_living:GetInt()
+    if not living or vamoverheal < 0 then
+        vamoverheal = vampire_fang_overheal:GetInt()
+    end
+
     local vamheal = vampire_fang_heal:GetInt()
-    local vamoverheal = vampire_fang_overheal:GetInt()
     self:GetOwner():SetHealth(math.min(self:GetOwner():Health() + vamheal, self:GetOwner():GetMaxHealth() + vamoverheal))
 end
 
