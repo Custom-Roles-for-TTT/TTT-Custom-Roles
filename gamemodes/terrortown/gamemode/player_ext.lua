@@ -303,6 +303,7 @@ end
 function plymeta:SpawnForRound(dead_only)
     hook.Call("PlayerSetModel", GAMEMODE, self)
     hook.Call("TTTPlayerSetColor", GAMEMODE, self)
+    hook.Call("TTTPlayerSpawnForRound", GAMEMODE, self, dead_only)
 
     -- Workaround to prevent GMod sprint from working
     self:SetRunSpeed(self:GetWalkSpeed())

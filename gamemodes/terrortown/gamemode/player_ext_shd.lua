@@ -10,6 +10,13 @@ function plymeta:IsSpec() return self:Team() == TEAM_SPEC end
 
 AccessorFunc(plymeta, "role", "Role", FORCE_NUMBER)
 
+local oldSetRole = plymeta.SetRole
+function plymeta:SetRole(role)
+    local oldRole = self:GetRole()
+    oldSetRole(self, role)
+    hook.Run("TTTPlayerRoleChanged", self, oldRole, role)
+end
+
 -- Player is alive and in an active round
 function plymeta:IsActive() return self:IsTerror() and GetRoundState() == ROUND_ACTIVE end
 
@@ -73,6 +80,22 @@ function plymeta:IsSameTeam(target)
         return true
     end
     return self:GetRole() == target:GetRole()
+end
+function plymeta:GetRoleTeam(detectivesAreInnocent)
+    if self:IsTraitorTeam() then
+        return ROLE_TEAM_TRAITOR
+    elseif self:IsMonsterTeam() then
+        return ROLE_TEAM_MONSTER
+    elseif self:IsJesterteam() then
+        return ROLE_TEAM_JESTER
+    elseif self:IsIndependentTeam() then
+        return ROLE_TEAM_INDEPENDENT
+    elseif self:IsInnocentTeam() then
+        if not detectivesAreInnocent and self:IsDetectiveTeam() then
+            return ROLE_TEAM_DETECTIVE
+        end
+        return ROLE_TEAM_INNOCENT
+    end
 end
 
 plymeta.IsDetectiveLike = plymeta.GetDetectiveLike
@@ -151,7 +174,7 @@ function plymeta:ShouldActLikeJester()
 
     -- Check if this role has an external definition for "ShouldActLikeJester" and use that
     local role = self:GetRole()
-    if EXTERNAL_ROLE_SHOULD_ACT_LIKE_JESTER[role] then return EXTERNAL_ROLE_SHOULD_ACT_LIKE_JESTER[role](self) end
+    if ROLE_SHOULD_ACT_LIKE_JESTER[role] then return ROLE_SHOULD_ACT_LIKE_JESTER[role](self) end
 
     return self:IsJesterTeam()
 end
@@ -226,7 +249,7 @@ function plymeta:IsRoleActive()
 
     -- Check if this role has an external definition for "IsActive" and use that
     local role = self:GetRole()
-    if EXTERNAL_ROLE_IS_ACTIVE[role] then return EXTERNAL_ROLE_IS_ACTIVE[role](self) end
+    if ROLE_IS_ACTIVE[role] then return ROLE_IS_ACTIVE[role](self) end
 
     return true
 end

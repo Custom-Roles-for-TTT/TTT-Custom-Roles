@@ -1113,6 +1113,7 @@ L.ev_win_time = "The {role} ran out of time and lost!"
 L.ev_win_icon = "{role} won"
 L.ev_win_icon_time = "Time Limit"
 L.ev_win_icon_also = "{role} also won"
+L.ev_win_unknown = "Unknown win type with ID: {id}"
 
 --- Awards/highlights
 

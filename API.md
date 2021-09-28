@@ -154,7 +154,7 @@ Enumerations available globally (within the defined realm). There are additional
 - ROLE_CONVAR_TYPE_BOOL = A boolean. Will use a checkbox in the configuration UI.
 - ROLE_CONVAR_TYPE_TEXT = A text value. Will use a text box in the configuration UI.
 
-**ROLE_TEAM_\*** - Which team an external role is registered to.\
+**ROLE_TEAM_\*** - Which role team an external role is registered to. A "role team" is a way of grouping roles by common functionality and mostly maps to the logical team with the exception of the detective role team. The detective role team is part of the innocent logical team.\
 *Realm:* Client and Server\
 *Added in:* 1.0.9\
 *Values:*
@@ -261,6 +261,16 @@ Methods available globally (within the defined realm)
 *Added in:* 1.0.0\
 *Parameters:*
 - *aliveOnly* - Whether this filter should only include live players (Defaults to `false`).
+
+**OnPlayerHighlightEnabled(client, alliedRoles, showJesters, hideEnemies, traitorAllies)** - Handles player highlighting (colored glow around players) rules for the local player.\
+*Realm:* Client\
+*Added in:* 1.2.7\
+*Parameters:*
+- *client* - The local player
+- *alliedRoles* - Table of role IDs that should show as allied to the current player
+- *showJesters* - Whether jester roles should be highlighted in the jester color. If `false`, jesters will appear in the generic enemy color instead
+- *hideEnemies* - Whether enemy roles (e.g. anyone that isn't an ally or a jester if *showJesters* is enabled) should be highlighted
+- *traitorAllies* - Whether this role's allies are traitors. If `true`, allied roles will be shown in the traitor color. Otherwise allied roles will be shown in the innocent color
 
 **RegisterRole(roleTable)** - Registers a role with Custom Roles for TTT. See [here](CREATE_YOUR_OWN_ROLE.md) for instructions on how to create a role and role table structure.\
 *Realm:* Client and Server\
@@ -381,6 +391,12 @@ Variables available when called from a Player object (within the defined realm)
 **plymeta:GetHeight()** - Gets the *estimated* height of the player based on their player model.\
 *Realm:* Client\
 *Added in:* 1.0.2
+
+**plymeta:GetRoleTeam(detectivesAreInnocent)** - Gets which "role team" a player belongs to (see ROLE_TEAM_* global enumeration).\
+*Realm:* Client and Server\
+*Added in:* 1.2.7\
+*Parameters:*
+- *detectivesAreInnocent* - Whether to include members of the detective "role team" in the innocent "role team" to match the logical teams
 
 **plymeta:GetVampirePreviousRole()** - Gets the player's previous role if they are a Vampire that has been converted or `ROLE_NONE` otherwise.\
 *Realm:* Client and Server\
@@ -572,6 +588,14 @@ Custom and modified event hooks available within the defined realm. A list of de
 
 For example, if there is a hook that returns three parameters: `first`, `second`, and `third` and you want to modify the `second` parameter you must return the `first` parameter as non-`nil` as well, like this: `return first, newSecond`. Any return parameters after `second` can be omitted and the default value will be used.
 
+**TTTBlockPlayerFootstepSound(ply)** - Called when a player is making a footstep. Used to determine if the player's footstep sound should be stopped.\
+*Realm:* Client and Server\
+*Added in:* 1.2.7\
+*Parameters:*
+- *ply* - The player who is making footsteps
+
+*Return:* Whether or not the given player's footstep sounds should be stopped (Defaults to `false`).
+
 **TTTCanIdentifyCorpse(ply, rag, wasTraitor)** - Changed `was_traitor` parameter to be `true` for any member of the traitor team, rather than just the traitor role.\
 *Realm:* Server\
 *Added in:* 1.0.5\
@@ -581,6 +605,57 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *wasTraitor* - Whether the player who the targetted ragdoll represents belonged to the traitor team
 
 *Return:* Whether or not the given player should be able to identify the given corpse (Defaults to `false`).
+
+**TTTEventFinishText(e)** - Called before the event text for the "round finished" event is rendered in the end-of-round summary's Events tab.\
+*Realm:* Client\
+*Added in:* 1.2.7\
+*Parameters:*
+- *e* - Event parameters. Contains the following properties:
+  - `id` - The event identifier (always `EVENT_FINISH`)
+  - `t` - The time when this event occurred
+  - `win` - The win condition identifier
+
+*Return:* Text to show in events list at the end of the round
+
+**TTTEventFinishIconText(e, winString, roleString)** - Called before the event icon for the "round finished" event is rendered in the end-of-round summary's Events tab. Used to change the mouseover text for the icon.\
+*Realm:* Client\
+*Added in:* 1.2.7\
+*Parameters:*
+- *e* - Event parameters. Contains the following properties:
+  - `id` - The event identifier (always `EVENT_FINISH`)
+  - `t` - The time when this event occurred
+  - `win` - The win condition identifier
+- *winString* - The translation string that will be used to display the icon mouseover text
+- *roleString* - The role string to use in place of the `role` placeholder in the translation string
+
+*Return:*
+- *winString* - The new winString value to use or the original passed into the hook
+- *roleString* - The new roleString value to use or the original passed into the hook
+
+**TTTKarmaGiveReward(ply, reward, victim)** - Called before a player is rewarded with karma. Used to block a player's karma reward.\
+*Realm:* Server\
+*Added in:* 1.2.7\
+*Parameters:*
+- *ply* - The player who will be rewarded karma
+- *reward* - The amount of karma the player will be rewarded with
+- *victim* - The victim of the event that is rewarding the player with karma. If this is not a player, karma is being rewarded as part of the end of the round
+
+*Return:* Whether or not the given player should be prevented from being rewarded with karma (Defaults to `false`).
+
+**TTTPlayerRoleChanged(ply, oldRole, newRole)** - Called after a player's role has changed.\
+*Realm:* Client and Server\
+*Added in:* 1.2.7\
+*Parameters:*
+- *ply* - The player whose role is being changed
+- *oldRole* - The role the player had before this change
+- *newRole* - The role the player is changing to
+
+**TTTPlayerSpawnForRound(ply, deadOnly)** - Called before a player is spawned for a round. Also used when reviving a player (via a defib, zombie conversion, etc.).\
+*Realm:* Server\
+*Added in:* 1.2.7\
+*Parameters:*
+- *ply* - The player who is being spawned or respawned
+- *deadOnly* - Whether this call is specifically targetted at dead players
 
 **TTTPrintResultMessage(type)** - Called before the round win results message is printed to the top-right corner of the screen. Can be used to print a replacement message for custom win types that this would not normally handle.\
 *Realm:* Server\
@@ -629,7 +704,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 *Parameters:*
 - *ply* - The player being rendered
 - *client* - The local player
-- *color* - The background [Color](https://wiki.facepunch.com/gmod/Global.Color) to use
+- *color* - The background [Color](https://wiki.facepunch.com/gmod/Color) to use
 - *roleFileName* - The portion of the scoring icon path that indicates which role it belongs to. Used in the following icon path pattern: "vgui/ttt/tab_{roleFileName}.png"
 
 *Return:*
@@ -644,7 +719,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *ply* - The player being rendered
 - *roleFileName* - The portion of the scoring icon path that indicates which role it belongs to. Used in the following icon path pattern: "vgui/ttt/score_{roleFileName}.png"
 - *groupingRole* - The role to use when determining the section to of the summary screen to put this player in
-- *roleColor* - The background [Color](https://wiki.facepunch.com/gmod/Global.Color) to use behind the role icon
+- *roleColor* - The background [Color](https://wiki.facepunch.com/gmod/Color) to use behind the role icon
 - *nameLabel* - The name that is going to be used for this player on the round summary *(Added in 1.2.3)*
 
 *Return:*
@@ -665,7 +740,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 *Return:*
 - *newTitle*
   - *txt* - The translation string to use to get the winning team text
-  - *c* - The background [Color](https://wiki.facepunch.com/gmod/Global.Color) to use
+  - *c* - The background [Color](https://wiki.facepunch.com/gmod/Color) to use
   - *params* - Any parameters to use when translating `txt` (Optional if `new_secondary_win_role` is also omitted)
 - *newSecondaryWinRole* - Which role should share in the win for this round (see ROLE_* global enumeration) (Optional) *(Added in 1.1.9)*
 
@@ -766,6 +841,27 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 
 *Return:* The stamina value to assign to the player. If none is provided, the player's stamina will not be changed.
 
+**TTTShouldPlayerSmoke(ply, client, shouldSmoke, smokeColor, smokeParticle, smokeOffset)** - .\
+*Realm:* Client\
+*Added in:* 1.2.7\
+*Parameters:*
+- *ply* - The target player being rendered
+- *client* - The local player
+- *shouldSmoke* - Whether the player would normally emit smoke
+- *smokeColor* - What [Color](https://wiki.facepunch.com/gmod/Color) the smoke will be. (Defaults to `COLOR_BLACK`)
+- *smokeParticle* - What particle the smoke will use. Should be the relative path the the `.vmt` file for the particle. (Defaults to `"particle/snow.vmt"`)
+- *smokeOffset* - A [Vector](https://wiki.facepunch.com/gmod/Vector) representing the relative offset from the player's feet. (Defaults to `Vector(0, 0, 30)`)
+
+*Return:*
+- *shouldSmoke* - The new shouldSmoke value to use or the original passed into the hook
+- *smokeColor* - The new smokeColor value to use or the original passed into the hook
+- *smokeParticle* - The new smokeParticle value to use or the original passed into the hook
+- *smokeOffset* - The new smokeOffset value to use or the original passed into the hook
+
+**TTTSyncGlobals()** - Called when the server is syncing convars to global variables for client access.\
+*Realm:* Server\
+*Added in:* 1.2.7
+
 **TTTTargetIDPlayerHealth(ply, client, text, clr)** - Called before a player's heath status (shown when you look at a player) is rendered.\
 *Realm:* Client\
 *Added in:* 1.2.5\
@@ -773,7 +869,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *ply* - The target player being rendered
 - *client* - The local player
 - *text* - The health-related text being shown
-- *clr* - The [Color](https://wiki.facepunch.com/gmod/Global.Color) of the text being used
+- *clr* - The [Color](https://wiki.facepunch.com/gmod/Color) of the text being used
 
 *Return:*
 - *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
@@ -786,7 +882,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *ent* - The target entity being rendered. Guaranteed to not be a player.
 - *client* - The local player
 - *text* - The label for the hint-related text being shown
-- *clr* - The [Color](https://wiki.facepunch.com/gmod/Global.Color) of the text being used
+- *clr* - The [Color](https://wiki.facepunch.com/gmod/Color) of the text being used
 
 *Return:*
 - *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
@@ -799,7 +895,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *ent* - The target entity being rendered. Not necessarily a player so be sure to check `ent:IsPlayer()` if needed
 - *client* - The local player
 - *text* - The hint-related text being shown
-- *clr* - The [Color](https://wiki.facepunch.com/gmod/Global.Color) of the text being used
+- *clr* - The [Color](https://wiki.facepunch.com/gmod/Color) of the text being used
 
 *Return:*
 - *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
@@ -812,7 +908,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *ply* - The target player being rendered
 - *client* - The local player
 - *text* - The karma-related text being shown
-- *clr* - The [Color](https://wiki.facepunch.com/gmod/Global.Color) of the text being used
+- *clr* - The [Color](https://wiki.facepunch.com/gmod/Color) of the text being used
 
 *Return:*
 - *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
@@ -836,7 +932,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *ply* - The target player being rendered
 - *client* - The local player
 - *text* - The player's name text being shown
-- *clr* - The [Color](https://wiki.facepunch.com/gmod/Global.Color) of the text being used
+- *clr* - The [Color](https://wiki.facepunch.com/gmod/Color) of the text being used
 
 *Return:*
 - *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
@@ -852,7 +948,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 
 *Return:*
 - *newVisible* - The new ringVisible value to use or the original passed into the hook
-- *colorOverride* - The [Color](https://wiki.facepunch.com/gmod/Global.Color) to use for the ring. Return `false` if you don't want to override the color. *NOTE:* For some reason colors that are near-black do not render so try a lighter color if you are having trouble
+- *colorOverride* - The [Color](https://wiki.facepunch.com/gmod/Color) to use for the ring. Return `false` if you don't want to override the color. *NOTE:* For some reason colors that are near-black do not render so try a lighter color if you are having trouble
 
 **TTTTargetIDPlayerRoleIcon(ply, client, role, noZ, colorRole, hideBeggar, showJester, hideBodysnatcher)** - Called before player Target ID icon (over their head) is rendered allowing changing the icon and color shown.\
 *Realm:* Client\
@@ -879,7 +975,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *ent* - The target entity being rendered. Not necessarily a player so be sure to check `ent:IsPlayer()` if needed
 - *client* - The local player
 - *text* - The first line of text being shown
-- *clr* - The [Color](https://wiki.facepunch.com/gmod/Global.Color) of the text being used
+- *clr* - The [Color](https://wiki.facepunch.com/gmod/Color) of the text being used
 - *secondaryText* - The second line of text being shown
 
 *Return:*
@@ -894,11 +990,15 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *ent* - The target ragdoll being rendered
 - *client* - The local player
 - *text* - The ragdoll's name text being shown
-- *clr* - The [Color](https://wiki.facepunch.com/gmod/Global.Color) of the text being used
+- *clr* - The [Color](https://wiki.facepunch.com/gmod/Color) of the text being used
 
 *Return:*
 - *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
 - *clr* - The new clr value to use or the original passed into the hook
+
+**TTTUpdateRoleState()** - Called after role states and role weapon states have been updated. At this point you can be assured that a role belongs to the team it has been configured to be on.\
+*Realm:* Client and Server\
+*Added in:* 1.2.7
 
 ## SWEPs
 Changes made to SWEPs (the data structure used when defining new weapons)

@@ -59,6 +59,9 @@ local is_dmg = util.BitSet
 -- Round end event
 Event(EVENT_FINISH,
       { text = function(e)
+                  local result = hook.Run("TTTEventFinishText", e)
+                  if result then return result end
+
                   if e.win == WIN_TRAITOR then
                      return PT("ev_win_traitor", { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]:lower() })
                   elseif e.win == WIN_INNOCENT then
@@ -69,8 +72,8 @@ Event(EVENT_FINISH,
                      return PT("ev_win_clown", { role = ROLE_STRINGS[ROLE_CLOWN]:lower() })
                   elseif e.win == WIN_OLDMAN then
                      return PT("ev_win_oldman", { role = ROLE_STRINGS[ROLE_OLDMAN]:lower() })
-                  elseif e.win == WIN_KILLER then
-                     return PT("ev_win_killer", { role = ROLE_STRINGS[ROLE_KILLER]:lower() })
+                    elseif e.win == WIN_KILLER then
+                       return PT("ev_win_killer", { role = ROLE_STRINGS[ROLE_KILLER]:lower() })
                   elseif e.win == WIN_MONSTER then
                      local monster_role = GetWinningMonsterRole()
                      if monster_role == ROLE_VAMPIRE then
@@ -86,6 +89,8 @@ Event(EVENT_FINISH,
                   elseif e.win == WIN_TIMELIMIT then
                      return PT("ev_win_time", { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]:lower() })
                   end
+
+                  return PT("ev_win_unknown", { id = e.win })
                end,
         icon = function(e)
                   local role_string = ""
@@ -101,8 +106,8 @@ Event(EVENT_FINISH,
                   elseif e.win == WIN_OLDMAN then
                      role_string = ROLE_STRINGS[ROLE_OLDMAN]
                      win_string = "ev_win_icon_also"
-                  elseif e.win == WIN_KILLER then
-                     role_string = ROLE_STRINGS[ROLE_KILLER]
+                    elseif e.win == WIN_KILLER then
+                       role_string = ROLE_STRINGS[ROLE_KILLER]
                   elseif e.win == WIN_MONSTER then
                      local monster_role = GetWinningMonsterRole()
                      if monster_role == ROLE_VAMPIRE then
@@ -116,8 +121,17 @@ Event(EVENT_FINISH,
                      role_string = ROLE_STRINGS_PLURAL[ROLE_ZOMBIE]
                   elseif e.win == WIN_VAMPIRE then
                      role_string = ROLE_STRINGS_PLURAL[ROLE_VAMPIRE]
-                  else
+                  elseif e.win == WIN_TIMELIMIT then
                      win_string = "ev_win_icon_time"
+                  end
+
+                  local new_win_string, new_role_string = hook.Run("TTTEventFinishIconText", e, win_string, role_string)
+                  if new_win_string then win_string = new_win_string end
+                  if new_role_string then role_string = new_role_string end
+
+                  -- If we're supposed to be winning as a role but nobody set the role string, use the unknown string instead
+                  if win_string == "ev_win_icon" and #role_string == 0 then
+                    return star_icon, PT("ev_win_unknown", { id = e.win })
                   end
 
                   return star_icon, PT(win_string, { role = role_string })

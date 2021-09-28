@@ -588,10 +588,10 @@ function CLSCORE:BuildSummaryPanel(dpanel)
     local nicks = self.Players
 
     local scores_by_section = {
-        [ROLE_INNOCENT] = {},
-        [ROLE_TRAITOR] = {},
-        [ROLE_KILLER] = {},
-        [ROLE_JESTER] = {}
+        [ROLE_TEAM_INNOCENT] = {},
+        [ROLE_TEAM_TRAITOR] = {},
+        [ROLE_TEAM_INDEPENDENT] = {},
+        [ROLE_TEAM_JESTER] = {}
     }
 
     for id, s in pairs(scores) do
@@ -685,24 +685,24 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                 }
 
                 if INNOCENT_ROLES[groupingRole] then
-                    table.insert(scores_by_section[ROLE_INNOCENT], playerInfo)
+                    table.insert(scores_by_section[ROLE_TEAM_INNOCENT], playerInfo)
                 elseif TRAITOR_ROLES[groupingRole] or MONSTER_ROLES[groupingRole] then
-                    table.insert(scores_by_section[ROLE_TRAITOR], playerInfo)
+                    table.insert(scores_by_section[ROLE_TEAM_TRAITOR], playerInfo)
                 elseif INDEPENDENT_ROLES[groupingRole] then
-                    table.insert(scores_by_section[ROLE_KILLER], playerInfo)
+                    table.insert(scores_by_section[ROLE_TEAM_INDEPENDENT], playerInfo)
                 else
-                    table.insert(scores_by_section[ROLE_JESTER], playerInfo)
+                    table.insert(scores_by_section[ROLE_TEAM_JESTER], playerInfo)
                 end
             end
         end
     end
 
     -- Minimum of 10 rows, maximum of whichever team has more players
-    local player_rows = math.max(10, math.max(#scores_by_section[ROLE_INNOCENT], #scores_by_section[ROLE_TRAITOR]))
+    local player_rows = math.max(10, math.max(#scores_by_section[ROLE_TEAM_INNOCENT], #scores_by_section[ROLE_TEAM_TRAITOR]))
 
     -- Add 33px for each extra role
     local height_extra = (player_rows - 10) * 33
-    local has_indep_and_jesters = #scores_by_section[ROLE_KILLER] > 0 and #scores_by_section[ROLE_JESTER] > 0
+    local has_indep_and_jesters = #scores_by_section[ROLE_TEAM_INDEPENDENT] > 0 and #scores_by_section[ROLE_TEAM_JESTER] > 0
     local height_extra_jester = 0
     if has_indep_and_jesters then
         height_extra_jester = 32
@@ -803,17 +803,17 @@ function CLSCORE:BuildSummaryPanel(dpanel)
     if secondary_win_role then winlbl:SetPos(xwin, ywin - 15) end
 
     -- Add the players to the panel
-    self:BuildPlayerList(scores_by_section[ROLE_INNOCENT], dpanel, 317, 8, 103, 33)
-    self:BuildPlayerList(scores_by_section[ROLE_TRAITOR], dpanel, 666, 357, 103, 33)
-    if #scores_by_section[ROLE_KILLER] > 0 then
-        self:BuildRoleLabel(scores_by_section[ROLE_KILLER], dpanel, 666, 8, 440 + height_extra)
+    self:BuildPlayerList(scores_by_section[ROLE_TEAM_INNOCENT], dpanel, 317, 8, 103, 33)
+    self:BuildPlayerList(scores_by_section[ROLE_TEAM_TRAITOR], dpanel, 666, 357, 103, 33)
+    if #scores_by_section[ROLE_TEAM_INDEPENDENT] > 0 then
+        self:BuildRoleLabel(scores_by_section[ROLE_TEAM_INDEPENDENT], dpanel, 666, 8, 440 + height_extra)
     end
-    if #scores_by_section[ROLE_JESTER] > 0 then
+    if #scores_by_section[ROLE_TEAM_JESTER] > 0 then
         -- Move the label down more to add space
         if has_indep_and_jesters then
             height_extra_jester = height_extra_jester + 2
         end
-        self:BuildRoleLabel(scores_by_section[ROLE_JESTER], dpanel, 666, 8, 440 + height_extra + height_extra_jester)
+        self:BuildRoleLabel(scores_by_section[ROLE_TEAM_JESTER], dpanel, 666, 8, 440 + height_extra + height_extra_jester)
     end
 end
 

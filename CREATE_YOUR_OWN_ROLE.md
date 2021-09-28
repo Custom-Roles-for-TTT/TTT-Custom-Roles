@@ -20,7 +20,8 @@
    1. [Custom Win Conditions](#Custom-Win-Conditions)
       1. [Win Identifier](#Win-Identifier)
       1. [Win Condition](#Win-Condition)
-      1. [Round Summary Screen](#Round-Summary-Screen)
+      1. [Round Summary Title](#Round-Summary-Title)
+      1. [Round Summary Events](#Round-Summary-Events)
       1. [Round Result Message](#Round-Result-Message)
       1. [Full Win Condition Example](#Full-Win-Condition-Example)
    1. [Role Registration](#Role-Registration)
@@ -467,9 +468,9 @@ end
 
 We'll leave the actual logic to determine whether our role wins blank as an exercise for you to fill out on your own. Once our role can actually win we need to define two more hooks to let everyone know when that it happened.
 
-#### Round Summary Screen
+#### Round Summary Title
 
-The first hook to show that our role won is the one for the round summary screen. This hook (which runs on the client side) allows you to return an object which describes the text to show when your win condition happens.
+The first hook to show that our role won is the one for the big text on the round summary screen. This hook (which runs on the client side) allows you to return an object which describes the text to show when your win condition happens.
 
 The first property of the object that the hook expects is `txt` which is the translation string for the text being shown. There are two default translation strings that are available specifically for this purpose. Choose whichever one makes sense for your role:
 
@@ -493,6 +494,34 @@ if CLIENT then
     end)
 end
 ```
+
+#### Round Summary Events
+
+Another part of the round summary screen that we want to tie into the is Events tab. When the round ends we add a row to the Events tab for the major events that occurred during that round. The part that we care about, specifically, is the text for the "round finished" event which is implemented by the two hooks below:
+
+```lua
+if CLIENT then
+    hook.Add("TTTEventFinishText", "SummonerEventFinishText", function(e)
+        if e.win == WIN_SUMMONER then
+            return LANG.GetParamTranslation("ev_win_summoner", { role = ROLE_STRINGS[ROLE_SUMMONER]:lower() })
+        end
+    end)
+
+    hook.Add("TTTEventFinishIconText", "SummonerEventFinishIconText", function(e, win_string, role_string)
+        if e.win == WIN_SUMMONER then
+            return win_string, ROLE_STRINGS_PLURAL[ROLE_SUMMONER]
+        end
+    end)
+
+    hook.Add("Initialize", "SummonerClientInitialize", function()
+        LANG.AddToLanguage("english", "ev_win_summoner", "The {role}'s army of minions has won them the round!")
+    end)
+end
+```
+
+The first hook (`TTTEventFinishText`) is used to control the text to show in the row on the Events tab itself. We recommend using a translateable string (as we do in the example) but that is not strictly necessary. The `Initialize` hook in the example above is only used to set up the translation string to use.
+
+The second hook (`TTTEventFinishIconText`) is used to control the text that shows when you hover over the icon in the row on the Events tab. The second hook's first return value is the name of a translation string and in most cases doesn't need to be changed at all. In the most common case the only thing you need to do is return the plural string for the winning role (or team) as the second return value.
 
 #### Round Result Message
 
@@ -531,6 +560,7 @@ If we piece together all the bits of code from the preivous sections it would co
 
         if CLIENT then
             LANG.AddToLanguage("english", "win_summoner", "The {role}'s minions have overwhelmed their enemies!")
+            LANG.AddToLanguage("english", "ev_win_summoner", "The {role}'s army of minions has won them the round!")
         end
     end)
 
@@ -555,6 +585,18 @@ If we piece together all the bits of code from the preivous sections it would co
         end)
     end
     if CLIENT then
+        hook.Add("TTTEventFinishText", "SummonerEventFinishText", function(e)
+            if e.win == WIN_SUMMONER then
+                return LANG.GetParamTranslation("ev_win_summoner", { role = ROLE_STRINGS[ROLE_SUMMONER]:lower() })
+            end
+        end)
+
+        hook.Add("TTTEventFinishIconText", "SummonerEventFinishIconText", function(e, win_string, role_string)
+            if e.win == WIN_SUMMONER then
+                return win_string, ROLE_STRINGS_PLURAL[ROLE_SUMMONER]
+            end
+        end)
+
         hook.Add("TTTScoringWinTitle", "SummonerScoringWinTitle", function(wintype, wintitles, title, secondaryWinRole)
             if wintype == WIN_SUMMONER then
                 return { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_SUMMONER]:upper() }, c = ROLE_COLORS[ROLE_SUMMONER] }

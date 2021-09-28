@@ -106,10 +106,10 @@ for role = 0, ROLE_MAX do
     local starting_health = "100"
     if role == ROLE_OLDMAN then starting_health = "1"
     elseif role == ROLE_KILLER then starting_health = "150"
-    elseif EXTERNAL_ROLE_STARTING_HEALTH[role] then starting_health = EXTERNAL_ROLE_STARTING_HEALTH[role] end
+    elseif ROLE_STARTING_HEALTH[role] then starting_health = ROLE_STARTING_HEALTH[role] end
 
     local max_health = nil
-    if EXTERNAL_ROLE_MAX_HEALTH[role] then max_health = EXTERNAL_ROLE_MAX_HEALTH[role] end
+    if ROLE_MAX_HEALTH[role] then max_health = ROLE_MAX_HEALTH[role] end
 
     CreateConVar("ttt_" .. rolestring .. "_starting_health", starting_health, FCVAR_REPLICATED)
     CreateConVar("ttt_" .. rolestring .. "_max_health", max_health or starting_health, FCVAR_REPLICATED)
@@ -359,7 +359,7 @@ CreateConVar("ttt_shop_random_percent", "50", FCVAR_REPLICATED, "The percent cha
 CreateConVar("ttt_shop_random_position", "0", FCVAR_REPLICATED, "Whether to randomize the position of the items in the shop")
 
 -- Create the starting credit convar for all roles that have credits but don't have a shop
-local shopless_credit_roles = table.UnionedKeys(CAN_LOOT_CREDITS_ROLES, EXTERNAL_ROLE_STARTING_CREDITS, shop_roles)
+local shopless_credit_roles = table.UnionedKeys(CAN_LOOT_CREDITS_ROLES, ROLE_STARTING_CREDITS, shop_roles)
 for _, role in ipairs(shopless_credit_roles) do
     CreateCreditConVar(role)
 end
@@ -569,8 +569,6 @@ util.AddNetworkString("TTT_LoadMonsterEquipment")
 util.AddNetworkString("TTT_VampirePrimeDeath")
 util.AddNetworkString("TTT_UpdateRoleNames")
 
-local jester_killed = false
-
 local function ClearAllFootsteps()
     net.Start("TTT_ClearPlayerFootsteps")
     net.Broadcast()
@@ -662,6 +660,9 @@ end
 -- Convar replication is broken in gmod, so we do this.
 -- I don't like it any more than you do, dear reader.
 function GM:SyncGlobals()
+    -- For some reason hooking "SyncGlobals" directly is unreliable so... here we go
+    hook.Run("TTTSyncGlobals")
+
     SetGlobalBool("ttt_detective", ttt_detective:GetBool())
     SetGlobalBool("ttt_haste", ttt_haste:GetBool())
     SetGlobalInt("ttt_time_limit_minutes", GetConVar("ttt_time_limit_minutes"):GetInt())
@@ -883,11 +884,16 @@ function StartNameChangeChecks()
 end
 
 local function OnPlayerDeath(victim, infl, attacker)
-    if victim:IsJester() and IsPlayer(attacker) and (not attacker:IsJesterTeam()) and GetRoundState() == ROUND_ACTIVE then
-        -- Don't track that the jester was killed (for win reporting) if they were killed by a traitor
-        -- and the functionality that blocks Jester wins from Traitor deaths is enabled
+    if GetRoundState() ~= ROUND_ACTIVE then return end
+
+    if victim:IsJester() and IsPlayer(attacker) and (not attacker:IsJesterTeam()) then
+        -- Don't end the round if the jester was killed by a traitor
+        -- and the functionality that blocks Jester wins from traitor deaths is enabled
         if GetConVar("ttt_jester_win_by_traitors"):GetBool() or not attacker:IsTraitorTeam() then
-            jester_killed = true
+            -- Stop the win checks so someone else doesn't steal the jester's win
+            StopWinChecks()
+            -- Delay the actual end for a second so the message and sound have a chance to generate a reaction
+            timer.Simple(1, function() EndRound(WIN_JESTER) end)
         end
     else
         local vamp_prime_death_mode = GetConVar("ttt_vampire_prime_death_mode"):GetFloat()
@@ -1070,8 +1076,6 @@ function PrepareRound()
     net.Start("TTT_RevengerLoverKillerRadar")
     net.WriteBool(false)
     net.Broadcast()
-
-    jester_killed = false
 
     -- Check playercount
     if CheckForAbort() then return end
@@ -1621,7 +1625,7 @@ function StartWinChecks()
 end
 
 function StopWinChecks()
-    hook.Remove("PlayerDeath", "CheckJesterDeath")
+    hook.Remove("PlayerDeath", "OnPlayerDeath")
     timer.Stop("winchecker")
 end
 
@@ -1673,16 +1677,14 @@ function GM:TTTCheckForWin()
         end
     end
 
-    if traitor_alive and innocent_alive and not jester_killed then
+    if traitor_alive and innocent_alive then
         return WIN_NONE --early out
     end
 
     local win_type = WIN_NONE
 
-    if jester_killed then
-        win_type = WIN_JESTER
     -- If everyone is dead the traitors win
-    elseif not innocent_alive and not monster_alive and not killer_alive and not zombie_alive and not vampire_alive then
+    if not innocent_alive and not monster_alive and not killer_alive and not zombie_alive and not vampire_alive then
         win_type = WIN_TRAITOR
     -- If all the "bad" people are dead, innocents win
     elseif not traitor_alive and not monster_alive and not killer_alive and not zombie_alive and not vampire_alive then
@@ -2499,8 +2501,8 @@ function HandleRoleEquipment()
             end
         end
 
-        if id >= ROLE_EXTERNAL_START and EXTERNAL_ROLE_SHOP_ITEMS[id] then
-            for _, v in pairs(EXTERNAL_ROLE_SHOP_ITEMS[id]) do
+        if id >= ROLE_EXTERNAL_START and ROLE_SHOP_ITEMS[id] then
+            for _, v in pairs(ROLE_SHOP_ITEMS[id]) do
                 table.insert(WEPS.BuyableWeapons[id], v)
                 table.insert(roleweapons, v)
             end
