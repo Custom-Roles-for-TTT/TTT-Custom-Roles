@@ -1,8 +1,8 @@
+-- Initialize role features
 ROLE_STARTING_HEALTH[ROLE_KILLER] = 150
 ROLE_MAX_HEALTH[ROLE_KILLER] = 150
 ROLE_STARTING_CREDITS[ROLE_KILLER] = 2
 
--- Initialize role features
 hook.Add("Initialize", "Killer_Shared_Initialize", function()
     local mat_dir = "vgui/ttt/"
     EquipmentItems[ROLE_KILLER] = {

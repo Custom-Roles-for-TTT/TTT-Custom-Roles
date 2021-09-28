@@ -12,15 +12,15 @@ end)
 ---------------
 
 -- Show "KILL" icon over all non-jester team heads
-hook.Add("TTTTargetIDPlayerKillIcon", "Killer_TTTTargetIDPlayerKillIcon", function(ply, client, showKillIcon, showJester)
-    if client:IsKiller() and GetGlobalBool("ttt_killer_show_target_icon", false) and not showJester then
+hook.Add("TTTTargetIDPlayerKillIcon", "Killer_TTTTargetIDPlayerKillIcon", function(ply, cli, showKillIcon, showJester)
+    if cli:IsKiller() and GetGlobalBool("ttt_killer_show_target_icon", false) and not showJester then
         return true
     end
 end)
 
 -- Show the jester role icon for any jester team player
-hook.Add("TTTTargetIDPlayerRoleIcon", "Killer_TTTTargetIDPlayerRoleIcon", function(ply, client, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
-    if client:IsKiller() and showJester then
+hook.Add("TTTTargetIDPlayerRoleIcon", "Killer_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
+    if cli:IsKiller() and showJester then
         return ROLE_JESTER
     end
 end)
@@ -29,15 +29,16 @@ end)
 -- HIGHLIGHTING --
 ------------------
 
-local function EnableKillerHighlights(client)
+local killer_vision = false
+local vision_enabled = false
+local client = nil
+
+local function EnableKillerHighlights()
     hook.Add("PreDrawHalos", "Killer_Highlight_PreDrawHalos", function()
         OnPlayerHighlightEnabled(client, {ROLE_KILLER}, true, false, false)
     end)
 end
 
-local killer_vision = false
-local vision_enabled = false
-local client = nil
 hook.Add("TTTUpdateRoleState", "Killer_Highlight_TTTUpdateRoleState", function()
     client = LocalPlayer()
     killer_vision = GetGlobalBool("ttt_killer_vision_enable", false)
@@ -55,7 +56,7 @@ hook.Add("Think", "Killer_Highlight_Think", function()
 
     if killer_vision and client:IsKiller() then
         if not vision_enabled then
-            EnableKillerHighlights(client)
+            EnableKillerHighlights()
             vision_enabled = true
         end
     else
