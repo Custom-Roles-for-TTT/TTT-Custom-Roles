@@ -174,7 +174,7 @@ function plymeta:ShouldActLikeJester()
 
     -- Check if this role has an external definition for "ShouldActLikeJester" and use that
     local role = self:GetRole()
-    if EXTERNAL_ROLE_SHOULD_ACT_LIKE_JESTER[role] then return EXTERNAL_ROLE_SHOULD_ACT_LIKE_JESTER[role](self) end
+    if ROLE_SHOULD_ACT_LIKE_JESTER[role] then return ROLE_SHOULD_ACT_LIKE_JESTER[role](self) end
 
     return self:IsJesterTeam()
 end
@@ -249,7 +249,7 @@ function plymeta:IsRoleActive()
 
     -- Check if this role has an external definition for "IsActive" and use that
     local role = self:GetRole()
-    if EXTERNAL_ROLE_IS_ACTIVE[role] then return EXTERNAL_ROLE_IS_ACTIVE[role](self) end
+    if ROLE_IS_ACTIVE[role] then return ROLE_IS_ACTIVE[role](self) end
 
     return true
 end

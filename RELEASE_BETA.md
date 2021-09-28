@@ -19,6 +19,7 @@
 - Added TTTShouldPlayerSmoke hook to affect whether a player should smoke and how that should look
 - Added plymeta:GetRoleTeam to get the appropriate ROLE_TEAM_* enum value for the player
 - Changed OnPlayerHighlightEnabled to be globally available so other roles can use the same highlighting logic
+- Changed all EXTERNAL_ROLE_* tables to be named ROLE_* in preparation for role separation
 - Fixed returning false for the first parameter of TTTTargetIDPlayerRoleIcon not stopping the role icon from showing
 
 ## 1.2.6

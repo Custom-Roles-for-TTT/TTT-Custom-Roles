@@ -46,8 +46,8 @@ local function GetLoadoutWeapons(r)
         -- Initialize the table for every role
         for wrole = 0, ROLE_MAX do
             tbl[wrole] = {}
-            if wrole >= ROLE_EXTERNAL_START and EXTERNAL_ROLE_LOADOUT_ITEMS[wrole] then
-                for _, v in pairs(EXTERNAL_ROLE_LOADOUT_ITEMS[wrole]) do
+            if wrole >= ROLE_EXTERNAL_START and ROLE_LOADOUT_ITEMS[wrole] then
+                for _, v in pairs(ROLE_LOADOUT_ITEMS[wrole]) do
                     if weapons.GetStored(v) then
                         table.insert(tbl[wrole], v)
                     end
@@ -118,7 +118,7 @@ local function GiveLoadoutItems(ply)
         end
     end
 
-    local ext_items = EXTERNAL_ROLE_LOADOUT_ITEMS[role]
+    local ext_items = ROLE_LOADOUT_ITEMS[role]
     if ext_items then
         for _, item in pairs(ext_items) do
             if not weapons.GetStored(item) then

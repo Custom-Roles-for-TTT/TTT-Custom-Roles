@@ -307,7 +307,7 @@ else
         if not DEFAULT_ROLES[role] or role == ROLE_INNOCENT then
             local rolestring = ROLE_STRINGS_RAW[role]
             local credits = "0"
-            if EXTERNAL_ROLE_STARTING_CREDITS[role] then credits = EXTERNAL_ROLE_STARTING_CREDITS[role]
+            if ROLE_STARTING_CREDITS[role] then credits = ROLE_STARTING_CREDITS[role]
             elseif TRAITOR_ROLES[role] then credits = "1"
             elseif DETECTIVE_ROLES[role] then credits = "1"
             elseif role == ROLE_MERCENARY then credits = "1"
@@ -619,15 +619,15 @@ ROLE_TEAM_INDEPENDENT = 3
 ROLE_TEAM_MONSTER = 4
 ROLE_TEAM_DETECTIVE = 5
 
-EXTERNAL_ROLE_TRANSLATIONS = {}
-EXTERNAL_ROLE_SHOP_ITEMS = {}
-EXTERNAL_ROLE_LOADOUT_ITEMS = {}
-EXTERNAL_ROLE_CONVARS = {}
-EXTERNAL_ROLE_STARTING_CREDITS = {}
-EXTERNAL_ROLE_STARTING_HEALTH = {}
-EXTERNAL_ROLE_MAX_HEALTH = {}
-EXTERNAL_ROLE_IS_ACTIVE = {}
-EXTERNAL_ROLE_SHOULD_ACT_LIKE_JESTER = {}
+ROLE_TRANSLATIONS = {}
+ROLE_SHOP_ITEMS = {}
+ROLE_LOADOUT_ITEMS = {}
+ROLE_CONVARS = {}
+ROLE_STARTING_CREDITS = {}
+ROLE_STARTING_HEALTH = {}
+ROLE_MAX_HEALTH = {}
+ROLE_IS_ACTIVE = {}
+ROLE_SHOULD_ACT_LIKE_JESTER = {}
 
 ROLE_CONVAR_TYPE_NUM = 0
 ROLE_CONVAR_TYPE_BOOL = 1
@@ -678,34 +678,34 @@ function RegisterRole(tbl)
 
     -- Allow roles to have translations automatically added for them
     if type(tbl.translations) == "table" then
-        EXTERNAL_ROLE_TRANSLATIONS[roleID] = tbl.translations
+        ROLE_TRANSLATIONS[roleID] = tbl.translations
     else
-        EXTERNAL_ROLE_TRANSLATIONS[roleID] = {}
+        ROLE_TRANSLATIONS[roleID] = {}
     end
 
     -- Ensure that at least english is present
-    if not EXTERNAL_ROLE_TRANSLATIONS[roleID]["english"] then
-        EXTERNAL_ROLE_TRANSLATIONS[roleID]["english"] = {}
+    if not ROLE_TRANSLATIONS[roleID]["english"] then
+        ROLE_TRANSLATIONS[roleID]["english"] = {}
     end
 
     -- Create the role description translation automatically
-    EXTERNAL_ROLE_TRANSLATIONS[roleID]["english"]["info_popup_" .. tbl.nameraw] = tbl.desc
+    ROLE_TRANSLATIONS[roleID]["english"]["info_popup_" .. tbl.nameraw] = tbl.desc
 
     if tbl.shop then
-        EXTERNAL_ROLE_SHOP_ITEMS[roleID] = tbl.shop
+        ROLE_SHOP_ITEMS[roleID] = tbl.shop
         AddRoleAssociations(SHOP_ROLES, {roleID})
     end
 
     if type(tbl.startingcredits) == "number" then
-        EXTERNAL_ROLE_STARTING_CREDITS[roleID] = tbl.startingcredits
+        ROLE_STARTING_CREDITS[roleID] = tbl.startingcredits
     end
 
     if type(tbl.startinghealth) == "number" then
-        EXTERNAL_ROLE_STARTING_HEALTH[roleID] = tbl.startinghealth
+        ROLE_STARTING_HEALTH[roleID] = tbl.startinghealth
     end
 
     if type(tbl.maxhealth) == "number" then
-        EXTERNAL_ROLE_MAX_HEALTH[roleID] = tbl.maxhealth
+        ROLE_MAX_HEALTH[roleID] = tbl.maxhealth
     end
 
     if type(tbl.canlootcredits) == "boolean" then
@@ -721,15 +721,15 @@ function RegisterRole(tbl)
     end
 
     if tbl.loadout then
-        EXTERNAL_ROLE_LOADOUT_ITEMS[roleID] = tbl.loadout
+        ROLE_LOADOUT_ITEMS[roleID] = tbl.loadout
     end
 
     if type(tbl.isactive) == "function" then
-        EXTERNAL_ROLE_IS_ACTIVE[roleID] = tbl.isactive
+        ROLE_IS_ACTIVE[roleID] = tbl.isactive
     end
 
     if type(tbl.shouldactlikejester) == "function" then
-        EXTERNAL_ROLE_SHOULD_ACT_LIKE_JESTER[roleID] = tbl.shouldactlikejester
+        ROLE_SHOULD_ACT_LIKE_JESTER[roleID] = tbl.shouldactlikejester
     end
 
     -- List of objects that describe convars for ULX support, in the following format:
@@ -747,7 +747,7 @@ function RegisterRole(tbl)
     --     type = ROLE_CONVAR_TYPE_TEXT -- The type of convar (will be used to determine the control, in this case a textbox)
     -- }
     if tbl.convars then
-        EXTERNAL_ROLE_CONVARS[roleID] = tbl.convars
+        ROLE_CONVARS[roleID] = tbl.convars
     end
 end
 

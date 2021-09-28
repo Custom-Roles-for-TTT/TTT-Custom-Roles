@@ -106,10 +106,10 @@ for role = 0, ROLE_MAX do
     local starting_health = "100"
     if role == ROLE_OLDMAN then starting_health = "1"
     elseif role == ROLE_KILLER then starting_health = "150"
-    elseif EXTERNAL_ROLE_STARTING_HEALTH[role] then starting_health = EXTERNAL_ROLE_STARTING_HEALTH[role] end
+    elseif ROLE_STARTING_HEALTH[role] then starting_health = ROLE_STARTING_HEALTH[role] end
 
     local max_health = nil
-    if EXTERNAL_ROLE_MAX_HEALTH[role] then max_health = EXTERNAL_ROLE_MAX_HEALTH[role] end
+    if ROLE_MAX_HEALTH[role] then max_health = ROLE_MAX_HEALTH[role] end
 
     CreateConVar("ttt_" .. rolestring .. "_starting_health", starting_health, FCVAR_REPLICATED)
     CreateConVar("ttt_" .. rolestring .. "_max_health", max_health or starting_health, FCVAR_REPLICATED)
@@ -359,7 +359,7 @@ CreateConVar("ttt_shop_random_percent", "50", FCVAR_REPLICATED, "The percent cha
 CreateConVar("ttt_shop_random_position", "0", FCVAR_REPLICATED, "Whether to randomize the position of the items in the shop")
 
 -- Create the starting credit convar for all roles that have credits but don't have a shop
-local shopless_credit_roles = table.UnionedKeys(CAN_LOOT_CREDITS_ROLES, EXTERNAL_ROLE_STARTING_CREDITS, shop_roles)
+local shopless_credit_roles = table.UnionedKeys(CAN_LOOT_CREDITS_ROLES, ROLE_STARTING_CREDITS, shop_roles)
 for _, role in ipairs(shopless_credit_roles) do
     CreateCreditConVar(role)
 end
@@ -2501,8 +2501,8 @@ function HandleRoleEquipment()
             end
         end
 
-        if id >= ROLE_EXTERNAL_START and EXTERNAL_ROLE_SHOP_ITEMS[id] then
-            for _, v in pairs(EXTERNAL_ROLE_SHOP_ITEMS[id]) do
+        if id >= ROLE_EXTERNAL_START and ROLE_SHOP_ITEMS[id] then
+            for _, v in pairs(ROLE_SHOP_ITEMS[id]) do
                 table.insert(WEPS.BuyableWeapons[id], v)
                 table.insert(roleweapons, v)
             end
