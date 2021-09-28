@@ -793,48 +793,8 @@ function FindRespawnLocation(pos)
     return false
 end
 
-local function ShouldShowJesterNotification(target, mode)
-    -- 1 - Only notify Traitors and Detective-likes
-    -- 2 - Only notify Traitors
-    -- 3 - Only notify Detective-likes
-    -- 4 - Notify everyone
-    -- Otherwise - Don't notify anyone
-    if mode == JESTER_NOTIFY_DETECTIVE_AND_TRAITOR then
-        return target:IsDetectiveLike() or target:IsTraitorTeam()
-    elseif mode == JESTER_NOTIFY_TRAITOR then
-        return target:IsTraitorTeam()
-    elseif mode == JESTER_NOTIFY_DETECTIVE then
-        return target:IsDetectiveLike()
-    elseif mode == JESTER_NOTIFY_EVERYONE then
-        return true
-    end
-    return false
-end
-
-local function JesterTeamKilledNotification(role_string, attacker, victim, getkillstring, shouldshow)
-    local lower_role = role_string:lower()
-    local mode = GetConVar("ttt_" .. lower_role .. "_notify_mode"):GetInt()
-    local play_sound = GetConVar("ttt_" .. lower_role .. "_notify_sound"):GetBool()
-    local show_confetti = GetConVar("ttt_" .. lower_role .. "_notify_confetti"):GetBool()
-    for _, ply in pairs(player.GetAll()) do
-        if ply == attacker then
-            ply:PrintMessage(HUD_PRINTCENTER, "You killed the " .. role_string .. "!")
-        elseif (shouldshow == nil or shouldshow(ply)) and ShouldShowJesterNotification(ply, mode) then
-            ply:PrintMessage(HUD_PRINTCENTER, getkillstring(ply))
-        end
-
-        if play_sound or show_confetti then
-            net.Start("TTT_JesterDeathCelebration")
-            net.WriteEntity(victim)
-            net.WriteBool(play_sound)
-            net.WriteBool(show_confetti)
-            net.Send(ply)
-        end
-    end
-end
-
 local function JesterKilledNotification(attacker, victim)
-    JesterTeamKilledNotification(ROLE_STRINGS[ROLE_JESTER], attacker, victim,
+    JesterTeamKilledNotification(ROLE_JESTER, attacker, victim,
         -- getkillstring
         function()
             return attacker:Nick() .. " was dumb enough to kill the " .. ROLE_STRINGS[ROLE_JESTER] .. "!"
@@ -847,7 +807,7 @@ local function JesterKilledNotification(attacker, victim)
 end
 
 local function SwapperKilledNotification(attacker, victim)
-    JesterTeamKilledNotification(ROLE_STRINGS[ROLE_SWAPPER], attacker, victim,
+    JesterTeamKilledNotification(ROLE_SWAPPER, attacker, victim,
         -- getkillstring
         function(ply)
             local target = "someone"
@@ -859,7 +819,7 @@ local function SwapperKilledNotification(attacker, victim)
 end
 
 local function BeggarKilledNotification(attacker, victim)
-    JesterTeamKilledNotification(ROLE_STRINGS[ROLE_BEGGAR], attacker, victim,
+    JesterTeamKilledNotification(ROLE_BEGGAR, attacker, victim,
         -- getkillstring
         function()
             return attacker:Nick() .. " cruelly killed the lowly " .. ROLE_STRINGS[ROLE_BEGGAR] .. "!"

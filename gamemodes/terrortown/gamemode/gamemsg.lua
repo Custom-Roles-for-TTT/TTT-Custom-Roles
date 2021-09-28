@@ -44,13 +44,13 @@ function TraitorMsg(ply_or_rfilter, msg)
 end
 
 local function ShouldHideTraitorBeggar()
-    local beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", BEGGAR_REVEAL_ALL)
-    return beggarMode == BEGGAR_REVEAL_NONE or beggarMode == BEGGAR_REVEAL_INNOCENTS
+    local beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", ANNOUNCE_REVEAL_ALL)
+    return beggarMode == ANNOUNCE_REVEAL_NONE or beggarMode == ANNOUNCE_REVEAL_INNOCENTS
 end
 
 local function ShouldHideTraitorBodysnatcher()
     local bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_traitor", BODYSNATCHER_REVEAL_ALL)
-    return bodysnatcherMode == BEGGAR_REVEAL_NONE
+    return bodysnatcherMode == ANNOUNCE_REVEAL_NONE
 end
 
 -- Traitorchat

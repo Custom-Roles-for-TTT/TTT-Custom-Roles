@@ -732,7 +732,7 @@ function GM:WeaponEquip(wep, ply)
                 timer.Simple(0.5, function() SendFullStateUpdate() end) -- Slight delay to avoid flickering from beggar to the new role and back to beggar
 
                 for _, v in ipairs(player.GetAll()) do
-                    if beggarMode == BEGGAR_REVEAL_ALL or (v:IsActiveTraitorTeam() and beggarMode == BEGGAR_REVEAL_TRAITORS) or (not v:IsActiveTraitorTeam() and beggarMode == BEGGAR_REVEAL_INNOCENTS) then
+                    if beggarMode == ANNOUNCE_REVEAL_ALL or (v:IsActiveTraitorTeam() and beggarMode == ANNOUNCE_REVEAL_TRAITORS) or (not v:IsActiveTraitorTeam() and beggarMode == ANNOUNCE_REVEAL_INNOCENTS) then
                         v:PrintMessage(HUD_PRINTTALK, "The beggar has joined the " .. ROLE_STRINGS[role] .. " team")
                         v:PrintMessage(HUD_PRINTCENTER, "The beggar has joined the " .. ROLE_STRINGS[role] .. " team")
                     end

@@ -77,8 +77,9 @@ ROLE_MADSCIENTIST = 27
 ROLE_PALADIN = 28
 ROLE_TRACKER = 29
 ROLE_MEDIUM = 30
+ROLE_LOOTGOBLIN = 31
 
-ROLE_MAX = 30
+ROLE_MAX = 31
 ROLE_EXTERNAL_START = ROLE_MAX + 1
 
 local function AddRoleAssociations(list, roles)
@@ -112,7 +113,7 @@ INNOCENT_ROLES = {}
 AddRoleAssociations(INNOCENT_ROLES, {ROLE_INNOCENT, ROLE_DETECTIVE, ROLE_GLITCH, ROLE_PHANTOM, ROLE_REVENGER, ROLE_DEPUTY, ROLE_MERCENARY, ROLE_VETERAN, ROLE_DOCTOR, ROLE_TRICKSTER, ROLE_PARAMEDIC, ROLE_PALADIN, ROLE_TRACKER, ROLE_MEDIUM})
 
 JESTER_ROLES = {}
-AddRoleAssociations(JESTER_ROLES, {ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_BEGGAR, ROLE_BODYSNATCHER})
+AddRoleAssociations(JESTER_ROLES, {ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_BEGGAR, ROLE_BODYSNATCHER, ROLE_LOOTGOBLIN})
 
 INDEPENDENT_ROLES = {}
 AddRoleAssociations(INDEPENDENT_ROLES, {ROLE_DRUNK, ROLE_OLDMAN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_MADSCIENTIST})
@@ -132,7 +133,7 @@ AddRoleAssociations(TRAITOR_BUTTON_ROLES, {ROLE_TRICKSTER})
 
 -- Shop roles get this ability by default
 CAN_LOOT_CREDITS_ROLES = {}
-AddRoleAssociations(CAN_LOOT_CREDITS_ROLES, {ROLE_TRICKSTER})
+AddRoleAssociations(CAN_LOOT_CREDITS_ROLES, {ROLE_TRICKSTER, ROLE_LOOTGOBLIN})
 
 -- Role colours
 COLOR_INNOCENT = {
@@ -428,7 +429,8 @@ ROLE_STRINGS_RAW = {
     [ROLE_MADSCIENTIST] = "madscientist",
     [ROLE_PALADIN] = "paladin",
     [ROLE_TRACKER] = "tracker",
-    [ROLE_MEDIUM] = "medium"
+    [ROLE_MEDIUM] = "medium",
+    [ROLE_LOOTGOBLIN] = "lootgoblin"
 }
 
 ROLE_STRINGS = {
@@ -462,7 +464,8 @@ ROLE_STRINGS = {
     [ROLE_MADSCIENTIST] = "Mad Scientist",
     [ROLE_PALADIN] = "Paladin",
     [ROLE_TRACKER] = "Tracker",
-    [ROLE_MEDIUM] = "Medium"
+    [ROLE_MEDIUM] = "Medium",
+    [ROLE_LOOTGOBLIN] = "Loot Goblin"
 }
 
 ROLE_STRINGS_PLURAL = {
@@ -496,7 +499,8 @@ ROLE_STRINGS_PLURAL = {
     [ROLE_MADSCIENTIST] = "Mad Scientists",
     [ROLE_PALADIN] = "Paladins",
     [ROLE_TRACKER] = "Trackers",
-    [ROLE_MEDIUM] = "Mediums"
+    [ROLE_MEDIUM] = "Mediums",
+    [ROLE_LOOTGOBLIN] = "Loot Goblins"
 }
 
 ROLE_STRINGS_EXT = {
@@ -531,7 +535,8 @@ ROLE_STRINGS_EXT = {
     [ROLE_MADSCIENTIST] = "a Mad Scientist",
     [ROLE_PALADIN] = "a Paladin",
     [ROLE_TRACKER] = "a Tracker",
-    [ROLE_MEDIUM] = "a Medium"
+    [ROLE_MEDIUM] = "a Medium",
+    [ROLE_LOOTGOBLIN] = "a Loot Goblin"
 }
 
 ROLE_STRINGS_SHORT = {
@@ -565,7 +570,8 @@ ROLE_STRINGS_SHORT = {
     [ROLE_MADSCIENTIST] = "mad",
     [ROLE_PALADIN] = "pal",
     [ROLE_TRACKER] = "trk",
-    [ROLE_MEDIUM] = "mdm"
+    [ROLE_MEDIUM] = "mdm",
+    [ROLE_LOOTGOBLIN] = "gob"
 }
 
 function StartsWithVowel(word)
@@ -751,6 +757,28 @@ function RegisterRole(tbl)
     end
 end
 
+local function AddInternalRoles()
+    local root = "terrortown/gamemode/roles/"
+    local _, dirs = file.Find(root .. "*", "LUA")
+    for _, dir in ipairs(dirs) do
+        local files, _ = file.Find(root .. dir .. "/*.lua", "LUA")
+        for _, fil in ipairs(files) do
+            local isClientFile = string.find(fil, "cl_")
+            local isSharedFile = fil == "shared.lua" or string.find(fil, "sh_")
+
+            if SERVER then
+                -- Send client and shared files to clients
+                if isClientFile or isSharedFile then AddCSLuaFile(root .. dir .. "/" .. fil) end
+                -- Include non-client files
+                if not isClientFile then include(root .. dir .. "/" .. fil) end
+            end
+            -- Include client and shared files
+            if CLIENT and (isClientFile or isSharedFile) then include(root .. dir .. "/" .. fil) end
+        end
+    end
+end
+AddInternalRoles()
+
 local function AddExternalRoles()
     local files, _ = file.Find("customroles/*.lua", "LUA")
     for _, fil in ipairs(files) do
@@ -887,11 +915,11 @@ GLITCH_SHOW_AS_TRAITOR = 0
 GLITCH_SHOW_AS_SPECIAL_TRAITOR = 1
 GLITCH_HIDE_SPECIAL_TRAITOR_ROLES = 2
 
--- Beggar reveal modes
-BEGGAR_REVEAL_NONE = 0
-BEGGAR_REVEAL_ALL = 1
-BEGGAR_REVEAL_TRAITORS = 2
-BEGGAR_REVEAL_INNOCENTS = 3
+-- Role reveal announcement modes
+ANNOUNCE_REVEAL_NONE = 0
+ANNOUNCE_REVEAL_ALL = 1
+ANNOUNCE_REVEAL_TRAITORS = 2
+ANNOUNCE_REVEAL_INNOCENTS = 3
 
 -- Bodysnatcher reveal modes
 BODYSNATCHER_REVEAL_NONE = 0
@@ -1244,7 +1272,7 @@ if SERVER then
 
         local function AddEnemy(p, bodysnatcherMode)
             -- Don't add the former beggar to the list of enemies unless the "reveal" setting is enabled
-            if p:IsInnocent() and p:GetNWBool("WasBeggar", false) and beggarMode ~= BEGGAR_REVEAL_ALL and beggarMode ~= BEGGAR_REVEAL_TRAITORS then return end
+            if p:IsInnocent() and p:GetNWBool("WasBeggar", false) and beggarMode ~= ANNOUNCE_REVEAL_ALL and beggarMode ~= ANNOUNCE_REVEAL_TRAITORS then return end
             if p:GetNWBool("WasBodysnatcher", false) and bodysnatcherMode ~= BODYSNATCHER_REVEAL_ALL then return end
 
             -- Put shop roles into a list if they should be targeted last
@@ -1350,6 +1378,46 @@ if SERVER then
 
         -- Otherwise, only promote if there are no living detectives
         return alive == 0
+    end
+
+    function ShouldShowJesterNotification(target, mode)
+        -- 1 - Only notify Traitors and Detective-likes
+        -- 2 - Only notify Traitors
+        -- 3 - Only notify Detective-likes
+        -- 4 - Notify everyone
+        -- Otherwise - Don't notify anyone
+        if mode == JESTER_NOTIFY_DETECTIVE_AND_TRAITOR then
+            return target:IsDetectiveLike() or target:IsTraitorTeam()
+        elseif mode == JESTER_NOTIFY_TRAITOR then
+            return target:IsTraitorTeam()
+        elseif mode == JESTER_NOTIFY_DETECTIVE then
+            return target:IsDetectiveLike()
+        elseif mode == JESTER_NOTIFY_EVERYONE then
+            return true
+        end
+        return false
+    end
+
+    function JesterTeamKilledNotification(role, attacker, victim, getkillstring, shouldshow)
+        local lower_role = ROLE_STRINGS_RAW[role]:lower()
+        local mode = GetConVar("ttt_" .. lower_role .. "_notify_mode"):GetInt()
+        local play_sound = GetConVar("ttt_" .. lower_role .. "_notify_sound"):GetBool()
+        local show_confetti = GetConVar("ttt_" .. lower_role .. "_notify_confetti"):GetBool()
+        for _, ply in pairs(player.GetAll()) do
+            if ply == attacker then
+                ply:PrintMessage(HUD_PRINTCENTER, "You killed the " .. ROLE_STRINGS[role] .. "!")
+            elseif (shouldshow == nil or shouldshow(ply)) and ShouldShowJesterNotification(ply, mode) then
+                ply:PrintMessage(HUD_PRINTCENTER, getkillstring(ply))
+            end
+
+            if play_sound or show_confetti then
+                net.Start("TTT_JesterDeathCelebration")
+                net.WriteEntity(victim)
+                net.WriteBool(play_sound)
+                net.WriteBool(show_confetti)
+                net.Send(ply)
+            end
+        end
     end
 end
 
