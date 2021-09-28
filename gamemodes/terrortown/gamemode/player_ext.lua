@@ -406,9 +406,11 @@ end
 local function GetInnocentTeamDrunkExcludes()
     -- Exclude detectives from the innocent list
     local excludes = table.Copy(DETECTIVE_ROLES)
-    -- Also exclude the trickster if there are no traitor buttons
-    if #ents.FindByClass("ttt_traitor_button") == 0 then
-        excludes[ROLE_TRICKSTER] = true
+    -- Also exclude any roles whose predicate fails
+    for r, pred in pairs(ROLE_SELECTION_PREDICATE) do
+        if not pred() then
+            excludes[r] = true
+        end
     end
 
     -- Always exclude the glitch because a glitch suddenly appearing

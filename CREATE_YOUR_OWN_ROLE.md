@@ -13,6 +13,7 @@
    1. [Credits](#Credits)
    1. [Health](#Health)
    1. [Role Activation](#Role-Activation)
+   1. [Role Selection](#Role-Selection)
    1. [Acting Like a Jester](#Acting-Like-a-Jester)
    1. [Translations](#Translations)
    1. [Optional Rules](#Optional-Rules)
@@ -83,6 +84,7 @@ ROLE.startinghealth = nil
 ROLE.maxhealth = nil
 
 ROLE.isactive = nil
+ROLE.selectionpredicate = nil
 ROLE.shouldactlikejester = nil
 
 ROLE.translations = {}
@@ -277,6 +279,22 @@ end
 ```
 
 Once that is defined you can use `ply:IsRoleActive()` anywhere you need to check your role's activation state.
+
+### Role Selection
+
+Not all roles that are created should be selectable at all times. A perfect example of this is the Trickster role which is nearly useless on maps that don't have traitor traps and traitor buttons. The next line in our file lets us define a predicate function to decide whether a role should be selectable (both for initial spawn and for a role the Drunk can change into if `ttt_drunk_any_role` is enabled):
+
+```lua
+ROLE.selectionpredicate = nil
+```
+
+Our example Summoner doesn't have any selection requirements, but let's say for example's sake that it should behave like the Trickster and only spawn if there are traitor traps and traitor buttons on the map. To do that we define the predicate function which returns `true` to allow the role to be selected when the traps and buttons exist. It would look something like this: 
+
+```lua
+ROLE.selectionpredicate = function()
+    return #ents.FindByClass("ttt_traitor_button") > 0
+end
+```
 
 ### Acting Like a Jester
 

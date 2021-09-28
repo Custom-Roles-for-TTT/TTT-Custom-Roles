@@ -1963,7 +1963,6 @@ function SelectRoles()
         [ROLE_PARAMEDIC] = function() return not hypnotist_only end,
         [ROLE_PHANTOM] = function() return not parasite_only end,
         [ROLE_REVENGER] = function() return choice_count > 1 end,
-        [ROLE_TRICKSTER] = function() return #ents.FindByClass("ttt_traitor_button") > 0 end,
 
         -- Traitors
         [ROLE_HYPNOTIST] = function() return not paramedic_only end,
@@ -1974,6 +1973,8 @@ function SelectRoles()
         -- Independents
         [ROLE_MADSCIENTIST] = function() return INDEPENDENT_ROLES[ROLE_ZOMBIE] end
     }
+    -- Merge in any role predicates
+    table.Merge(rolePredicates, ROLE_SELECTION_PREDICATE)
 
     -- Roles that required their checks to be delayed because they rely on other role selection information
     local delayedCheckRoles = {

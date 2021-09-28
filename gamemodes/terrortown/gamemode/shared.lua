@@ -627,6 +627,7 @@ ROLE_STARTING_HEALTH = {}
 ROLE_MAX_HEALTH = {}
 ROLE_IS_ACTIVE = {}
 ROLE_SHOULD_ACT_LIKE_JESTER = {}
+ROLE_SELECTION_PREDICATE = {}
 
 ROLE_CONVAR_TYPE_NUM = 0
 ROLE_CONVAR_TYPE_BOOL = 1
@@ -729,6 +730,10 @@ function RegisterRole(tbl)
 
     if type(tbl.shouldactlikejester) == "function" then
         ROLE_SHOULD_ACT_LIKE_JESTER[roleID] = tbl.shouldactlikejester
+    end
+
+    if type(tbl.selectionpredicate) == "function" then
+        ROLE_SELECTION_PREDICATE[roleID] = tbl.selectionpredicate
     end
 
     -- List of objects that describe convars for ULX support, in the following format:
