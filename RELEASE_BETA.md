@@ -3,6 +3,9 @@
 ## 1.2.7
 **Released:**
 
+### Additions
+- Added ability to reward vampires with credits when they drain a living target using their fangs (disabled by default)
+
 ### Changes
 - Changed custom win events to show in the end-of-round summary's Events tab with an "unknown win event" message until the new TTTEventFinishText hooks are used
 

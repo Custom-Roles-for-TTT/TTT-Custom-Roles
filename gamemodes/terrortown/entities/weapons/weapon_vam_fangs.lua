@@ -51,6 +51,7 @@ local beep = Sound("npc/fast_zombie/fz_alert_close1.wav")
 local vampire_convert = CreateConVar("ttt_vampire_convert_enable", "0")
 local vampire_drain = CreateConVar("ttt_vampire_drain_enable", "1")
 local vampire_drain_first = CreateConVar("ttt_vampire_drain_first", "0")
+local vampire_drain_credits = CreateConVar("ttt_vampire_drain_credits", "0")
 local vampire_fang_dead_timer = CreateConVar("ttt_vampire_fang_dead_timer", "0")
 local vampire_fang_timer = CreateConVar("ttt_vampire_fang_timer", "5")
 local vampire_fang_heal = CreateConVar("ttt_vampire_fang_heal", "50")
@@ -248,6 +249,12 @@ function SWEP:DoKill()
 
     self:DoHeal()
     self:DropBones()
+
+    local amt = vampire_drain_credits:GetInt()
+    if amt > 0 then
+        LANG.Msg(attacker, "credit_all", { role = ROLE_STRINGS[ROLE_VAMPIRE], num = amt })
+        attacker:AddCredits(amt)
+    end
 
     -- Not actually an error, but it resets the things we want
     self:FireError()
