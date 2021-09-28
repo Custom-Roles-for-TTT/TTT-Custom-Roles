@@ -41,7 +41,6 @@ local client = nil
 hook.Add("TTTUpdateRoleState", "Killer_Highlight_TTTUpdateRoleState", function()
     client = LocalPlayer()
     killer_vision = GetGlobalBool("ttt_killer_vision_enable", false)
-    print("Killer_Highlight_TTTUpdateRoleState - " .. tostring(killer_vision))
 
     -- Disable highlights on role change
     if vision_enabled then

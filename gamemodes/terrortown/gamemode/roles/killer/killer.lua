@@ -15,7 +15,6 @@ CreateConVar("ttt_killer_warn_all", "0")
 CreateConVar("ttt_killer_vision_enable", "1")
 
 hook.Add("TTTSyncGlobals", "Killer_TTTSyncGlobals", function()
-    print("Killer_TTTSyncGlobals")
     SetGlobalBool("ttt_killer_show_target_icon", GetConVar("ttt_killer_show_target_icon"):GetBool())
     SetGlobalBool("ttt_killer_vision_enable", GetConVar("ttt_killer_vision_enable"):GetBool())
 end)
