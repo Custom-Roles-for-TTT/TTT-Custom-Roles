@@ -1247,10 +1247,10 @@ end
 if SERVER then
     -- Centralize this so it can be handled on round start and on player death
     function AssignAssassinTarget(ply, start, delay)
-        -- Don't let dead players, spectators, non-assassins, or failed assassins get another target
+        -- Don't let dead players, spectators, non-assassins, failed assassins, or assassins who already received their "final target" get another target
         -- And don't assign targets if the round isn't currently running
         if not IsValid(ply) or GetRoundState() > ROUND_ACTIVE or
-            not ply:IsAssassin() or ply:GetNWBool("AssassinFailed", false)
+            not ply:IsAssassin() or ply:GetNWBool("AssassinFailed", false) or ply:GetNWBool("AssassinComplete", false)
         then
             return
         end
@@ -1321,6 +1321,7 @@ if SERVER then
                 targetCount = start and "first" or "next"
             elseif targets == 1 then
                 targetCount = "final"
+                ply:SetNWBool("AssassinComplete", true)
             end
             targetMessage = "Your " .. targetCount .. " target is " .. target .. "."
         else

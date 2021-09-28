@@ -1004,18 +1004,24 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
             -- Reset the target to clear the target overlay from the scoreboard
             v:SetNWString("AssassinTarget", "")
 
-            local delay = GetConVar("ttt_assassin_next_target_delay"):GetFloat()
-            -- Delay giving the next target if we're configured to do so
-            if delay > 0 then
-                if v:Alive() and not v:IsSpec() then
-                    v:PrintMessage(HUD_PRINTCENTER, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
-                    v:PrintMessage(HUD_PRINTTALK, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
+            -- Don't select a new target if this was the final target
+            if not v:GetNWBool("AssassinComplete", false) then
+                local delay = GetConVar("ttt_assassin_next_target_delay"):GetFloat()
+                -- Delay giving the next target if we're configured to do so
+                if delay > 0 then
+                    if v:Alive() and not v:IsSpec() then
+                        v:PrintMessage(HUD_PRINTCENTER, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
+                        v:PrintMessage(HUD_PRINTTALK, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
+                    end
+                    timer.Create(v:Nick() .. "AssassinTarget", delay, 1, function()
+                        AssignAssassinTarget(v, false, true)
+                    end)
+                else
+                    AssignAssassinTarget(v, false, false)
                 end
-                timer.Create(v:Nick() .. "AssassinTarget", delay, 1, function()
-                    AssignAssassinTarget(v, false, true)
-                end)
             else
-                AssignAssassinTarget(v, false, false)
+                v:PrintMessage(HUD_PRINTCENTER, "Final target eliminated.")
+                v:PrintMessage(HUD_PRINTTALK, "Final target eliminated.")
             end
         end
     end

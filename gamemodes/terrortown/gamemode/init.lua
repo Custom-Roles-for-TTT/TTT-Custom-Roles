@@ -1023,6 +1023,7 @@ function PrepareRound()
         v:SetNWString("SwappedWith", "")
         v:SetNWString("AssassinTarget", "")
         v:SetNWBool("AssassinFailed", false)
+        v:SetNWBool("AssassinComplete", false)
         timer.Remove(v:Nick() .. "AssassinTarget")
         v:SetNWBool("WasDrunk", false)
         v:SetNWBool("WasHypnotised", false)
@@ -1464,6 +1465,11 @@ function CheckForMapSwitch()
     end
 end
 
+local function StopDrunkTimers()
+    if timer.Exists("drunkremember") then timer.Remove("drunkremember") end
+    if timer.Exists("waitfordrunkrespawn") then timer.Remove("waitfordrunkrespawn") end
+end
+
 function EndRound(type)
     PrintResultMessage(type)
 
@@ -1485,11 +1491,10 @@ function EndRound(type)
     SetGlobalBool("ttt_glitch_round", false)
 
     if timer.Exists("revengerloverkiller") then timer.Remove("revengerloverkiller") end
-    if timer.Exists("drunkremember") then timer.Remove("drunkremember") end
-    if timer.Exists("waitfordrunkrespawn") then timer.Remove("waitfordrunkrespawn") end
-    if timer.Exists("oldmanhealthdrain") then timer.Remove("oldmanhealthdrain") end
     if timer.Exists("revengerhealthdrain") then timer.Remove("revengerhealthdrain") end
+    if timer.Exists("oldmanhealthdrain") then timer.Remove("oldmanhealthdrain") end
     if timer.Exists("paladinheal") then timer.Remove("paladinheal") end
+    StopDrunkTimers()
 
     -- We may need to start a timer for a mapswitch, or start a vote
     CheckForMapSwitch()
@@ -1523,22 +1528,86 @@ function GM:MapTriggeredEnd(wintype)
     end
 end
 
-local function HandleOldManWinChecks(oldman_alive, win_type)
-    if not oldman_alive then return end
+local function HandleOldManWinChecks(win_type)
     if win_type == WIN_NONE then return end
+    if not player.IsRoleLiving(ROLE_OLDMAN) then return end
 
     net.Start("TTT_UpdateOldManWins")
     net.WriteBool(true)
     net.Broadcast()
 end
 
-local function IsOldManAlive()
-    for _, v in ipairs(player.GetAll()) do
-        if v:Alive() and v:IsTerror() and v:IsOldMan() then
-            return true
+local unblockable_wins = {WIN_TIMELIMIT}
+local function HandleClownWinBlock(win_type)
+    if win_type == WIN_NONE then return win_type end
+    if table.HasValue(unblockable_wins, win_type) then return win_type end
+
+    local clown = player.GetLivingRole(ROLE_CLOWN)
+    if not IsPlayer(clown) then return win_type end
+
+    local killer_clown_active = clown:IsRoleActive()
+    if not killer_clown_active then
+        clown:SetNWBool("KillerClownActive", true)
+        clown:PrintMessage(HUD_PRINTTALK, "KILL THEM ALL!")
+        clown:PrintMessage(HUD_PRINTCENTER, "KILL THEM ALL!")
+        clown:AddCredits(GetConVar("ttt_clown_activation_credits"):GetInt())
+        if GetConVar("ttt_clown_heal_on_activate"):GetBool() then
+            local heal_bonus = GetConVar("ttt_clown_heal_bonus"):GetInt()
+            local health = clown:GetMaxHealth() + heal_bonus
+
+            clown:SetHealth(health)
+            if heal_bonus > 0 then
+                clown:PrintMessage(HUD_PRINTTALK, "You have been fully healed (with a bonus)!")
+            else
+                clown:PrintMessage(HUD_PRINTTALK, "You have been fully healed!")
+            end
         end
+        net.Start("TTT_ClownActivate")
+        net.WriteEntity(clown)
+        net.Broadcast()
+
+        -- Give the clown their shop items if purchase was delayed
+        if clown.bought and GetConVar("ttt_clown_shop_delay"):GetBool() then
+            clown:GiveDelayedShopItems()
+        end
+
+        return WIN_NONE
     end
-    return false
+
+    -- Clown wins if they are the only one left
+    local innocent_alive, traitor_alive, indep_alive, monster_alive, _ = player.AreTeamsLiving()
+    if not traitor_alive and not innocent_alive and not monster_alive and not indep_alive then
+        return WIN_CLOWN
+    end
+
+    return WIN_NONE
+end
+
+local function HandleDrunkWinBlock(win_type)
+    if win_type == WIN_NONE then return win_type end
+    if table.HasValue(unblockable_wins, win_type) then return win_type end
+
+    local drunk = player.GetLivingRole(ROLE_DRUNK)
+    if not IsPlayer(drunk) then return win_type end
+
+    -- Make the drunk a clown
+    if GetConVar("ttt_drunk_become_clown"):GetBool() then
+        StopDrunkTimers()
+        drunk:DrunkRememberRole(ROLE_CLOWN, true)
+        return WIN_NONE
+    end
+
+    -- Change the drunk to whichever team is about to lose
+    local innocent_alive, traitor_alive, _, _, _ = player.AreTeamsLiving()
+    if not traitor_alive then
+        StopDrunkTimers()
+        drunk:SoberDrunk(ROLE_TEAM_TRAITOR)
+        return WIN_NONE
+    elseif not innocent_alive then
+        StopDrunkTimers()
+        drunk:SoberDrunk(ROLE_TEAM_INNOCENT)
+        return WIN_NONE
+    end
 end
 
 -- Used to be in think, now a timer
@@ -1555,10 +1624,6 @@ local function WinChecker()
             if GAMEMODE.MapWin ~= WIN_NONE then
                 local mw = GAMEMODE.MapWin
                 GAMEMODE.MapWin = WIN_NONE
-
-                -- Old Man logic for map win
-                HandleOldManWinChecks(IsOldManAlive(), mw)
-
                 win = mw
             end
 
@@ -1569,6 +1634,11 @@ local function WinChecker()
                     ErrorNoHalt("WARNING: 'TTTCheckForWin' hook returned win ID '" .. win .. "' that exceeds the expected maximum of " .. WIN_MAX .. ". Please use GenerateNewWinID() instead to get a unique win ID.\n")
                 end
             end
+
+            -- Handle role-specific checks
+            win = HandleDrunkWinBlock(win)
+            win = HandleClownWinBlock(win)
+            HandleOldManWinChecks(win)
 
             -- If, after all that, we have a win condition then end the round
             if win ~= WIN_NONE then
@@ -1593,14 +1663,9 @@ end
 function GM:TTTCheckForWin()
     local traitor_alive = false
     local innocent_alive = false
-    local drunk_alive = false
-    local clown_alive = false
-    local oldman_alive = false
     local zombie_alive = false
     local vampire_alive = false
     local monster_alive = false
-
-    local killer_clown_active = false
 
     for _, v in ipairs(player.GetAll()) do
         if v:Alive() and v:IsTerror() then
@@ -1608,13 +1673,6 @@ function GM:TTTCheckForWin()
                 traitor_alive = true
             elseif v:IsMonsterTeam() then
                 monster_alive = true
-            elseif v:IsDrunk() then
-                drunk_alive = true
-            elseif v:IsClown() then
-                clown_alive = true
-                killer_clown_active = v:GetNWBool("KillerClownActive", false)
-            elseif v:IsOldMan() then
-                oldman_alive = true
             elseif v:IsInnocentTeam() then
                 innocent_alive = true
             elseif v:IsMadScientist() or (v:IsZombie() and INDEPENDENT_ROLES[ROLE_ZOMBIE]) then
@@ -1638,103 +1696,24 @@ function GM:TTTCheckForWin()
         return WIN_NONE --early out
     end
 
-    local win_type = WIN_NONE
-
     -- If everyone is dead the traitors win
     if not innocent_alive and not monster_alive and not zombie_alive and not vampire_alive then
-        win_type = WIN_TRAITOR
+        return WIN_TRAITOR
     -- If all the "bad" people are dead, innocents win
     elseif not traitor_alive and not monster_alive and not zombie_alive and not vampire_alive then
-        win_type = WIN_INNOCENT
+        return WIN_INNOCENT
     -- If the monsters are the only ones left, they win
     elseif not innocent_alive and not traitor_alive and not zombie_alive and not vampire_alive then
-        win_type = WIN_MONSTER
+        return WIN_MONSTER
     -- If the zombies are the only ones left, they win
     elseif not traitor_alive and not innocent_alive and not monster_alive and not vampire_alive and zombie_alive then
-        win_type = WIN_ZOMBIE
+        return WIN_ZOMBIE
     -- If the vampires are the only ones left, they win
     elseif not traitor_alive and not innocent_alive and not monster_alive and not zombie_alive and vampire_alive then
-        win_type = WIN_VAMPIRE
+        return WIN_VAMPIRE
     end
 
-    -- Drunk logic
-    if drunk_alive then
-        if GetConVar("ttt_drunk_become_clown"):GetBool() then
-            if win_type == WIN_INNOCENT or win_type == WIN_TRAITOR or win_type == WIN_MONSTER or win_type == WIN_ZOMBIE or win_type == WIN_VAMPIRE then
-                if timer.Exists("drunkremember") then timer.Remove("drunkremember") end
-                if timer.Exists("waitfordrunkrespawn") then timer.Remove("waitfordrunkrespawn") end
-                for _, v in ipairs(player.GetAll()) do
-                    if v:Alive() and v:IsTerror() and v:IsDrunk() then
-                        v:DrunkRememberRole(ROLE_CLOWN, true)
-                        clown_alive = true
-                    end
-                end
-            end
-        else
-            if not traitor_alive then
-                if timer.Exists("drunkremember") then timer.Remove("drunkremember") end
-                if timer.Exists("waitfordrunkrespawn") then timer.Remove("waitfordrunkrespawn") end
-                for _, v in ipairs(player.GetAll()) do
-                    if v:Alive() and v:IsTerror() and v:IsDrunk() then
-                        v:SoberDrunk(ROLE_TEAM_TRAITOR)
-                    end
-                end
-                win_type = WIN_NONE
-            elseif not innocent_alive then
-                if timer.Exists("drunkremember") then timer.Remove("drunkremember") end
-                if timer.Exists("waitfordrunkrespawn") then timer.Remove("waitfordrunkrespawn") end
-                for _, v in ipairs(player.GetAll()) do
-                    if v:Alive() and v:IsTerror() and v:IsDrunk() then
-                        v:SoberDrunk(ROLE_TEAM_INNOCENT)
-                    end
-                end
-                win_type = WIN_NONE
-            end
-        end
-    end
-
-    -- Clown logic
-    if clown_alive then
-        if not killer_clown_active and (win_type == WIN_INNOCENT or win_type == WIN_TRAITOR or win_type == WIN_MONSTER or win_type == WIN_ZOMBIE or win_type == WIN_VAMPIRE) then
-            for _, v in ipairs(player.GetAll()) do
-                if v:IsClown() then
-                    v:SetNWBool("KillerClownActive", true)
-                    v:PrintMessage(HUD_PRINTTALK, "KILL THEM ALL!")
-                    v:PrintMessage(HUD_PRINTCENTER, "KILL THEM ALL!")
-                    v:AddCredits(GetConVar("ttt_clown_activation_credits"):GetInt())
-                    if GetConVar("ttt_clown_heal_on_activate"):GetBool() then
-                        local heal_bonus = GetConVar("ttt_clown_heal_bonus"):GetInt()
-                        local health = v:GetMaxHealth() + heal_bonus
-
-                        v:SetHealth(health)
-                        if heal_bonus > 0 then
-                            v:PrintMessage(HUD_PRINTTALK, "You have been fully healed (with a bonus)!")
-                        else
-                            v:PrintMessage(HUD_PRINTTALK, "You have been fully healed!")
-                        end
-                    end
-                    net.Start("TTT_ClownActivate")
-                    net.WriteEntity(v)
-                    net.Broadcast()
-
-                    -- Give the clown their shop items if purchase was delayed
-                    if v.bought and GetConVar("ttt_clown_shop_delay"):GetBool() then
-                        v:GiveDelayedShopItems()
-                    end
-                end
-            end
-            win_type = WIN_NONE
-        elseif killer_clown_active and not traitor_alive and not innocent_alive and not monster_alive and not zombie_alive and not vampire_alive then
-            win_type = WIN_CLOWN
-        else
-            win_type = WIN_NONE
-        end
-    end
-
-    -- Old Man logic
-    HandleOldManWinChecks(oldman_alive, win_type)
-
-    return win_type
+    return WIN_NONE
 end
 
 local function GetTraitorCount(ply_count)

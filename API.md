@@ -5,7 +5,8 @@
 1. [Global Enumerations](#Global-Enumerations)
 1. [Methods](#Methods)
    1. [Global](#Global)
-   1. [Player](#Player)
+   1. [Player Object](#Player-Object)
+   1. [Player Static](#Player-Static)
    1. [Table](#Table)
 1. [Hooks](#Hooks)
 1. [SWEPs](#SWEPs)
@@ -325,8 +326,8 @@ Methods available globally (within the defined realm)
 *Realm:* Client and Server\
 *Added in:* 1.0.0
 
-### *Player*
-Variables available when called from a Player object (within the defined realm)
+### *Player Object*
+Methods available when called from a Player object (within the defined realm)
 
 **plymeta:BeginRoleChecks()** - Sets up role logic for the player to handle role-specific events and checks.\
 *Realm:* Server\
@@ -542,6 +543,32 @@ Variables available when called from a Player object (within the defined realm)
 **plymeta:StripRoleWeapons()** - Strips all weapons from the player whose `Category` property matches the global `WEAPON_CATEGORY_ROLE` value.\
 *Realm:* Client and Server\
 *Added in:* 1.0.5
+
+### *Player Static*
+Methods available having to do with players but without needing a specific Player object
+
+**player.AreTeamsLiving()** - Returns whether the there are members of the various teams left alive.\
+*Realm:* Client and Server\
+*Added in:* 1.2.7
+
+*Returns:*
+- *traitor_alive* - Whether there are members of the traitor team left alive
+- *innocent_alive* - Whether there are members of the innocent team left alive
+- *indep_alive* - Whether there are members of the independent team left alive
+- *monster_alive* - Whether there are members of the monster team left alive
+- *jester_alive* - Whether there are members of the jester team left alive
+
+**player.GetLivingRole(role)** - Returns a single player that is alive and belongs to the given role (or `nil` if none exist). Useful when trying to get the player belonging to a role that can only occur once in a round.\
+*Realm:* Client and Server\
+*Added in:* 1.2.7\
+*Parameters:*
+- *role* - The desired role ID of the alive player to be found
+
+**player.IsRoleLiving(role)** - Returns whether a player belonging to the given role exists and is alive.\
+*Realm:* Client and Server\
+*Added in:* 1.2.7\
+*Parameters:*
+- *role* - The role ID in question
 
 ### *Table*
 Methods created to help with the manipulation of tables

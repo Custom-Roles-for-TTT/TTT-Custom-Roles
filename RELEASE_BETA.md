@@ -9,6 +9,9 @@
 ### Fixes
 - Fixed vampire prime death effects still happening after the round has ended
 - Fixed external roles with custom win conditions blocking jester wins
+- Fixed assassin being shown "No targets remaining" after already being told their current target was their final target
+  - This does allow players who are resurrected after the assassin is assigned their final target to slide under the radar
+- Fixed roles with custom win conditions being able to block jester, clown, and old man wins as well as drunks remembering their role
 
 ### Developer
 - Added TTTBlockPlayerFootstepSound hook to block a player's footstep sound
@@ -19,6 +22,7 @@
 - Added TTTShouldPlayerSmoke hook to affect whether a player should smoke and how that should look
 - Added plymeta:GetRoleTeam to get the appropriate ROLE_TEAM_* enum value for the player
 - Added ability for external roles to define their role selection predicate function
+- Added player.GetLivingRole, player.IsRoleLiving, and player.AreTeamsLiving static methods
 - Changed OnPlayerHighlightEnabled to be globally available so other roles can use the same highlighting logic
 - Changed all EXTERNAL_ROLE_* tables to be named ROLE_* in preparation for role separation
 - Fixed returning false for the first parameter of TTTTargetIDPlayerRoleIcon not stopping the role icon from showing
