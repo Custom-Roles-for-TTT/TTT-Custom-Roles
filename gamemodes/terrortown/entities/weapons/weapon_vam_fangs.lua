@@ -119,7 +119,8 @@ function SWEP:PrimaryAttack()
         elseif ent:IsPlayer() and vampire_drain:GetBool() then
             if ent:ShouldActLikeJester() then
                 self:Error("TARGET IS A JESTER")
-            elseif ent:IsVampireAlly() then
+            -- Don't allow draining allies or glitches when the vampire is a traitor
+            elseif ent:IsVampireAlly() or (TRAITOR_ROLES[ROLE_VAMPIRE] and ent:IsGlitch()) then
                 self:Error("TARGET IS AN ALLY")
             else
                 self:Drain(ent)

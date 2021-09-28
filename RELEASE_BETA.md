@@ -12,6 +12,7 @@
 - Fixed assassin being shown "No targets remaining" after already being told their current target was their final target
   - This does allow players who are resurrected after the assassin is assigned their final target to slide under the radar
 - Fixed roles with custom win conditions being able to block jester, clown, and old man wins as well as drunks remembering their role
+- Fixed traitor vampires being able to drain glitches
 
 ### Developer
 - Added TTTBlockPlayerFootstepSound hook to block a player's footstep sound
