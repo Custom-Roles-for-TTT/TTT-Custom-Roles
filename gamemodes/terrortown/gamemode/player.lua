@@ -619,6 +619,9 @@ local function CheckCreditAward(victim, attacker)
         end
     end
 
+
+    local vampire_kill_credits = GetConVar("ttt_vampire_kill_credits"):GetBool()
+
     -- TRAITOR AWARD
     if valid_attacker and not (victim:IsTraitorTeam() or victim:IsJesterTeam()) and (not GAMEMODE.AwardedCredits or GetConVar("ttt_credits_award_repeat"):GetBool()) then
         local inno_alive = 0
@@ -653,10 +656,16 @@ local function CheckCreditAward(victim, attacker)
 
             -- If size is 0, awards are off
             if amt > 0 then
-                LANG.Msg(GetTraitorTeamFilter(true), "credit_all", { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR], num = amt })
+                local predicate = function(p)
+                    if p:Alive() and not p:IsSpec() and p:IsTraitorTeam() and p:IsShopRole() then
+                        return not p:IsVampire() or vampire_kill_credits
+                    end
+                    return false
+                end
+                LANG.Msg(GetPlayerFilter(predicate), "credit_all", { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR], num = amt })
 
                 for _, ply in ipairs(player.GetAll()) do
-                    if ply:IsActiveTraitorTeam() and ply:IsActiveShopRole() then
+                    if predicate(ply) then
                         ply:AddCredits(amt)
                     end
                 end
@@ -668,7 +677,7 @@ local function CheckCreditAward(victim, attacker)
     end
 
     -- VAMPIRE AWARD
-    if valid_attacker and not TRAITOR_ROLES[ROLE_VAMPIRE] and attacker:IsActiveVampire() and (not (victim:IsMonsterTeam() or victim:IsJesterTeam())) and (not GAMEMODE.AwardedVampireCredits or GetConVar("ttt_credits_award_repeat"):GetBool()) then
+    if vampire_kill_credits and valid_attacker and not TRAITOR_ROLES[ROLE_VAMPIRE] and attacker:IsActiveVampire() and (not (victim:IsMonsterTeam() or victim:IsJesterTeam())) and (not GAMEMODE.AwardedVampireCredits or GetConVar("ttt_credits_award_repeat"):GetBool()) then
         local ply_alive = 0
         local ply_dead = 0
         local ply_total = 0

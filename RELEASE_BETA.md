@@ -6,6 +6,7 @@
 ### Additions
 - Added ability to reward vampires with credits when they drain a living target using their fangs (disabled by default)
 - Added ability to set a different amount of health overheal if a vampire drains a living target (disabled by default)
+- Added ability to block rewarding vampires when they (or their allies) kill someone (disabled by default)
 
 ### Changes
 - Changed custom win events to show in the end-of-round summary's Events tab with an "unknown win event" message until the new TTTEventFinishText hooks are used

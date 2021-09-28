@@ -169,6 +169,7 @@ CreateConVar("ttt_vampire_show_target_icon", "0")
 CreateConVar("ttt_vampire_damage_reduction", "0")
 CreateConVar("ttt_vampire_prime_death_mode", "0")
 CreateConVar("ttt_vampire_vision_enable", "0")
+CreateConVar("ttt_vampire_kill_credits", "1")
 
 CreateConVar("ttt_quack_phantom_cure", "0")
 
