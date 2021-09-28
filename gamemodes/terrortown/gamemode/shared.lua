@@ -311,7 +311,6 @@ else
             elseif TRAITOR_ROLES[role] then credits = "1"
             elseif DETECTIVE_ROLES[role] then credits = "1"
             elseif role == ROLE_MERCENARY then credits = "1"
-            elseif role == ROLE_KILLER then credits = "2"
             elseif role == ROLE_DOCTOR then credits = "1" end
             CreateConVar("ttt_" .. rolestring .. "_credits_starting", credits, FCVAR_REPLICATED)
         end
@@ -1440,27 +1439,6 @@ DefaultEquipment = {
     },
 
     [ROLE_ASSASSIN] = {
-        EQUIP_ARMOR,
-        EQUIP_RADAR,
-        EQUIP_DISGUISE
-    },
-
-    [ROLE_KILLER] = {
-        "weapon_ttt_health_station",
-        "weapon_ttt_teleport",
-        "weapon_ttt_confgrenade",
-        "weapon_ttt_m16",
-        "weapon_ttt_smokegrenade",
-        "weapon_zm_mac10",
-        "weapon_zm_molotov",
-        "weapon_zm_pistol",
-        "weapon_zm_revolver",
-        "weapon_zm_rifle",
-        "weapon_zm_shotgun",
-        "weapon_zm_sledge",
-        "weapon_ttt_glock",
-        "weapon_kil_crowbar",
-        "weapon_kil_knife",
         EQUIP_ARMOR,
         EQUIP_RADAR,
         EQUIP_DISGUISE

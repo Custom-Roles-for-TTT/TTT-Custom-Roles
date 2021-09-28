@@ -105,7 +105,6 @@ for role = 0, ROLE_MAX do
 
     local starting_health = "100"
     if role == ROLE_OLDMAN then starting_health = "1"
-    elseif role == ROLE_KILLER then starting_health = "150"
     elseif ROLE_STARTING_HEALTH[role] then starting_health = ROLE_STARTING_HEALTH[role] end
 
     local max_health = nil
