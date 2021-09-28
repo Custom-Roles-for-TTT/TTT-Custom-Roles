@@ -48,7 +48,6 @@ include("cl_voice.lua")
 local traitor_vision = false
 local zombie_vision = false
 local vampire_vision = false
-local assassin_target_vision = false
 local jesters_visible_to_traitors = false
 local jesters_visible_to_monsters = false
 local jesters_visible_to_independents = false
@@ -201,18 +200,16 @@ local function ReceiveRole()
     client:SetRole(role)
 
     -- Update the local state
-    traitor_vision = GetGlobalBool("ttt_traitor_vision_enable")
-    zombie_vision = GetGlobalBool("ttt_zombie_vision_enable")
-    vampire_vision = GetGlobalBool("ttt_vampire_vision_enable")
-    assassin_target_vision = GetGlobalBool("ttt_assassin_target_vision_enable")
-    jesters_visible_to_traitors = GetGlobalBool("ttt_jesters_visible_to_traitors")
-    jesters_visible_to_monsters = GetGlobalBool("ttt_jesters_visible_to_monsters")
-    jesters_visible_to_independents = GetGlobalBool("ttt_jesters_visible_to_independents")
+    traitor_vision = GetGlobalBool("ttt_traitor_vision_enable", false)
+    zombie_vision = GetGlobalBool("ttt_zombie_vision_enable", false)
+    vampire_vision = GetGlobalBool("ttt_vampire_vision_enable", false)
+    jesters_visible_to_traitors = GetGlobalBool("ttt_jesters_visible_to_traitors", false)
+    jesters_visible_to_monsters = GetGlobalBool("ttt_jesters_visible_to_monsters", false)
+    jesters_visible_to_independents = GetGlobalBool("ttt_jesters_visible_to_independents", false)
 
     -- Disable highlights on role change
     if vision_enabled then
         hook.Remove("PreDrawHalos", "AddPlayerHighlights")
-        hook.Remove("PreDrawHalos", "AddPlayerHighlights_Assassin")
         vision_enabled = false
     end
 
@@ -482,7 +479,7 @@ function GM:Tick()
         if client:Alive() and client:Team() ~= TEAM_SPEC then
             WSWITCH:Think()
             RADIO:StoreTarget()
-            if traitor_vision or zombie_vision or vampire_vision or assassin_target_vision then
+            if traitor_vision or zombie_vision or vampire_vision then
                 HandleRoleHighlights(client)
             end
         end
@@ -984,25 +981,6 @@ local function EnableTraitorHighlights(client)
         OnPlayerHighlightEnabled(client, allies, jesters_visible_to_traitors, true, true)
     end)
 end
-local function EnableAssassinTargetHighlights(client)
-    hook.Add("PreDrawHalos", "AddPlayerHighlights_Assassin", function()
-        local target_nick = client:GetNWString("AssassinTarget", "")
-        if not target_nick or target_nick:len() == 0 then return end
-
-        local target = nil
-        for _, v in pairs(player.GetAll()) do
-            if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= client and v:Nick() == target_nick then
-                target = v
-                break
-            end
-        end
-
-        if not target then return end
-
-        -- Highlight the assassin's target as a different color than their friends
-        halo.Add({target}, ROLE_COLORS[ROLE_INNOCENT], 1, 1, 1, true, true)
-    end)
-end
 local function EnableZombieHighlights(client)
     hook.Add("PreDrawHalos", "AddPlayerHighlights", function()
         local hasClaws = client.GetActiveWeapon and IsValid(client:GetActiveWeapon()) and client:GetActiveWeapon():GetClass() == "weapon_zom_claws"
@@ -1075,14 +1053,6 @@ function HandleRoleHighlights(client)
             EnableVampireHighlights(client)
             vision_enabled = true
         end
-    elseif client:IsAssassin() and assassin_target_vision then
-        if not vision_enabled then
-            if traitor_vision then
-                EnableTraitorHighlights(client)
-            end
-            EnableAssassinTargetHighlights(client)
-            vision_enabled = true
-        end
     elseif client:IsTraitorTeam() and traitor_vision then
         if not vision_enabled then
             EnableTraitorHighlights(client)
@@ -1094,7 +1064,6 @@ function HandleRoleHighlights(client)
 
     if not vision_enabled then
         hook.Remove("PreDrawHalos", "AddPlayerHighlights")
-        hook.Remove("PreDrawHalos", "AddPlayerHighlights_Assassin")
     end
 end
 

@@ -226,6 +226,8 @@ function plymeta:ShouldRevealBodysnatcher(tgt)
     return bodysnatcherMode == BODYSNATCHER_REVEAL_ALL or (self:IsSameTeam(tgt) and bodysnatcherMode == BODYSNATCHER_REVEAL_TEAM)
 end
 
+function plymeta:ShouldDelayAnnouncements() return ROLE_SHOULD_DELAY_ANNOUNCEMENTS[self:GetRole()] or false end
+
 function plymeta:SetRoleAndBroadcast(role)
     self:SetRole(role)
 
@@ -594,24 +596,9 @@ else
             end
         end
 
-        local assassinComplete = self:GetNWBool("AssassinComplete", false)
-        if assassinComplete then
-            if not keep_on_source then self:SetNWBool("AssassinComplete", false) end
-            target:SetNWBool("AssassinComplete", true)
-        end
-
-        local assassinTarget = self:GetNWString("AssassinTarget", "")
-        if #assassinTarget > 0 then
-            if not keep_on_source then self:SetNWString("AssassinTarget", "") end
-            target:SetNWString("AssassinTarget", assassinTarget)
-            target:PrintMessage(HUD_PRINTCENTER, "You have learned that your predecessor's target was " .. assassinTarget)
-            target:PrintMessage(HUD_PRINTTALK, "You have learned that your predecessor's target was " .. assassinTarget)
-        elseif self:IsAssassin() then
-            -- If the player we're taking the role state from was an assassin but they didn't have a target, try to assign a target to this player
-            -- Use a slight delay to let the role change go through first just in case
-            timer.Simple(0.25, function()
-                AssignAssassinTarget(target, true)
-            end)
+        -- Run role-specific logic
+        if ROLE_MOVE_ROLE_STATE[self:GetRole()] then
+            ROLE_MOVE_ROLE_STATE[self:GetRole()](self, target, keep_on_source)
         end
 
         -- If the dead player had role weapons stored, give them to the target and then clear the list

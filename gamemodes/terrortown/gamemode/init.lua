@@ -154,15 +154,6 @@ CreateConVar("ttt_impersonator_without_detective", "0")
 CreateConVar("ttt_hypnotist_device_loadout", "1")
 CreateConVar("ttt_hypnotist_device_shop", "0")
 
-CreateConVar("ttt_assassin_show_target_icon", "0")
-CreateConVar("ttt_assassin_target_vision_enable", "0")
-CreateConVar("ttt_assassin_next_target_delay", "5")
-CreateConVar("ttt_assassin_target_damage_bonus", "1")
-CreateConVar("ttt_assassin_target_bonus_bought", "1")
-CreateConVar("ttt_assassin_wrong_damage_penalty", "0.5")
-CreateConVar("ttt_assassin_failed_damage_penalty", "0.5")
-CreateConVar("ttt_assassin_shop_roles_last", "0")
-
 CreateConVar("ttt_vampires_are_monsters", "0")
 CreateConVar("ttt_vampires_are_independent", "0")
 CreateConVar("ttt_vampire_show_target_icon", "0")
@@ -708,9 +699,6 @@ function GM:SyncGlobals()
 
     SetGlobalBool("ttt_hypnotist_device_loadout", GetConVar("ttt_hypnotist_device_loadout"):GetBool())
     SetGlobalBool("ttt_hypnotist_device_shop", GetConVar("ttt_hypnotist_device_shop"):GetBool())
-
-    SetGlobalBool("ttt_assassin_show_target_icon", GetConVar("ttt_assassin_show_target_icon"):GetBool())
-    SetGlobalBool("ttt_assassin_target_vision_enable", GetConVar("ttt_assassin_target_vision_enable"):GetBool())
 
     SetGlobalBool("ttt_impersonator_use_detective_icon", GetConVar("ttt_impersonator_use_detective_icon"):GetBool())
 

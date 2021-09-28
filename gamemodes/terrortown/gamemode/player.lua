@@ -997,44 +997,6 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
         SendFullStateUpdate()
     end
 
-    -- Handle assassin kills
-    local attackertarget = attacker:GetNWString("AssassinTarget", "")
-    if IsPlayer(attacker) and attacker:IsAssassin() and ply ~= attacker and ply:Nick() ~= attackertarget and (attackertarget ~= "" or timer.Exists(attacker:Nick() .. "AssassinTarget")) then
-        timer.Remove(attacker:Nick() .. "AssassinTarget")
-        attacker:PrintMessage(HUD_PRINTCENTER, "Contract failed. You killed the wrong player.")
-        attacker:PrintMessage(HUD_PRINTTALK, "Contract failed. You killed the wrong player.")
-        attacker:SetNWString("AssassinTarget", "")
-        attacker:SetNWBool("AssassinFailed", true)
-    end
-
-    for _, v in pairs(player.GetAll()) do
-        local assassintarget = v:GetNWString("AssassinTarget", "")
-        if v:IsAssassin() and ply:Nick() == assassintarget then
-            -- Reset the target to clear the target overlay from the scoreboard
-            v:SetNWString("AssassinTarget", "")
-
-            -- Don't select a new target if this was the final target
-            if not v:GetNWBool("AssassinComplete", false) then
-                local delay = GetConVar("ttt_assassin_next_target_delay"):GetFloat()
-                -- Delay giving the next target if we're configured to do so
-                if delay > 0 then
-                    if v:Alive() and not v:IsSpec() then
-                        v:PrintMessage(HUD_PRINTCENTER, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
-                        v:PrintMessage(HUD_PRINTTALK, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
-                    end
-                    timer.Create(v:Nick() .. "AssassinTarget", delay, 1, function()
-                        AssignAssassinTarget(v, false, true)
-                    end)
-                else
-                    AssignAssassinTarget(v, false, false)
-                end
-            else
-                v:PrintMessage(HUD_PRINTCENTER, "Final target eliminated.")
-                v:PrintMessage(HUD_PRINTTALK, "Final target eliminated.")
-            end
-        end
-    end
-
     -- Handle parasite infected death
     if ply:GetNWBool("Infected", false) then
         local parasiteUsers = table.GetKeys(deadParasites)
@@ -1285,8 +1247,8 @@ function GM:PlayerDeath(victim, infl, attacker)
             end)
         end
 
-        -- Delay this message so the Assassin can see the target update message
-        if attacker:IsAssassin() then
+        -- Delay this message so the player can see the target update message
+        if attacker:ShouldDelayAnnouncements() then
             timer.Simple(3, function()
                 attacker:PrintMessage(HUD_PRINTCENTER, "You have been haunted.")
             end)
@@ -1467,9 +1429,9 @@ function GM:PlayerDeath(victim, infl, attacker)
     if valid_kill and victim:IsParasite() and not victim:GetNWBool("IsZombifying", false) then
         HandleParasiteInfection(attacker, victim)
 
-        -- Delay this message so the Assassin can see the target update message
+        -- Delay this message so the player can see the target update message
         if GetConVar("ttt_parasite_announce_infection"):GetBool() then
-            if attacker:IsAssassin() then
+            if attacker:ShouldDelayAnnouncements() then
                 timer.Simple(3, function()
                     attacker:PrintMessage(HUD_PRINTCENTER, "You have been infected with a parasite.")
                 end)
@@ -1736,29 +1698,6 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
             if att:IsVeteran() and att:GetNWBool("VeteranActive", false) then
                 local bonus = GetConVar("ttt_veteran_damage_bonus"):GetFloat()
                 dmginfo:ScaleDamage(1 + bonus)
-            end
-
-            -- Assassins deal extra damage to their target, less damage to other players, and less damage if they fail their contract
-            -- Don't apply the scaling to the Jester team to specifically allow doing 100% damage to the active killer clown
-            if att:IsAssassin() and ply ~= att and not ply:IsJesterTeam() then
-                local scale = 0
-                if att:GetNWBool("AssassinFailed", false) then
-                    scale = -GetConVar("ttt_assassin_failed_damage_penalty"):GetFloat()
-                elseif ply:Nick() == att:GetNWString("AssassinTarget", "") then
-                    -- Get the active weapon, whather it's in the inflictor or it's from the attacker
-                    local active_weapon = dmginfo:GetInflictor()
-                    if not IsValid(active_weapon) or IsPlayer(active_weapon) then
-                        active_weapon = att:GetActiveWeapon()
-                    end
-
-                    -- Only scale bought weapons if that is enabled
-                    if (active_weapon.Spawnable or (not active_weapon.CanBuy or GetConVar("ttt_assassin_target_bonus_bought"):GetBool())) then
-                        scale = GetConVar("ttt_assassin_target_damage_bonus"):GetFloat()
-                    end
-                else
-                    scale = -GetConVar("ttt_assassin_wrong_damage_penalty"):GetFloat()
-                end
-                dmginfo:ScaleDamage(1 + scale)
             end
 
             -- Monsters take less bullet damage

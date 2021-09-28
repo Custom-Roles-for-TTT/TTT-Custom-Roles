@@ -643,11 +643,6 @@ function plymeta:BeginRoleChecks()
         end)
     end
 
-    -- Assassin logic
-    if self:IsAssassin() then
-        AssignAssassinTarget(self, true, false)
-    end
-
     -- Glitch logic
     if self:IsGlitch() then
         SetGlobalBool("ttt_glitch_round", true)
@@ -658,6 +653,11 @@ function plymeta:BeginRoleChecks()
     -- The logic which handles a detective dying is in the PlayerDeath hook
     if self:IsDetectiveLikePromotable() and ShouldPromoteDetectiveLike() then
         self:HandleDetectiveLikePromotion()
+    end
+
+    -- Run role-specific logic
+    if ROLE_ON_ROLE_ASSIGNED[self:GetRole()] then
+        ROLE_ON_ROLE_ASSIGNED[self:GetRole()](self)
     end
 end
 

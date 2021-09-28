@@ -508,6 +508,10 @@ Methods available when called from a Player object (within the defined realm)
 *Realm:* Client and Server\
 *Added in:* 1.2.5
 
+**plymeta:ShouldDelayAnnouncements()** - Whether this role should delay announcements when they kill a player that shows a message (like phantom and parasite). Used for things like preventing the assassin's target update message from getting overlapped.\
+*Realm:* Client and Server\
+*Added in:* 1.2.7
+
 **plymeta:ShouldDelayShopPurchase()** - Whether the player's shop purchase deliveries should be delayed.\
 *Realm:* Client and Server\
 *Added in:* 1.2.2
@@ -713,6 +717,15 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 *Return:*
 - *color* - The new color value to use or the original passed into the hook
 - *hidden* - The new hidden value to use or the original passed into the hook
+
+**TTTRolePopupParams(client)** - Called before a player's role start-of-round popup message is displayed, allowing the parameters to be added to.\
+*Realm:* Client\
+*Added in:* 1.2.7\
+*Parameters:*
+- *client* - The local player
+
+*Return:*
+- *params* - Table of name-value parameters to be used in this player's role start-of-round popup message
 
 **TTTScoreboardPlayerName(ply, client, currentName)** - Called before a player's row in the scoreboard (tab menu) is shown, allowing the name to be changed.\
 *Realm:* Client\
