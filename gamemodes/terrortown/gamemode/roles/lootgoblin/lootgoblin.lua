@@ -132,7 +132,7 @@ hook.Add("PlayerDeath", "LootGoblin_PlayerDeath", function(victim, infl, attacke
                     return "The " .. ROLE_STRINGS[ROLE_LOOTGOBLIN] .. " has been killed!"
                 end)
         local lootTable = {}
-        timer.Create("LootGoblinWeaponDrop", 0.1, GetConVar("ttt_lootgoblin_weapons_dropped"):GetInt(), function()
+        timer.Create("LootGoblinWeaponDrop", 0.05, GetConVar("ttt_lootgoblin_weapons_dropped"):GetInt(), function()
             if #lootTable == 0 then -- Rebuild the loot table if we run out
                 for _, v in ipairs(weapons.GetList()) do
                     if v and not v.AutoSpawnable and v.CanBuy and v.AllowDrop then
@@ -150,7 +150,9 @@ hook.Add("PlayerDeath", "LootGoblin_PlayerDeath", function(victim, infl, attacke
             local ent = ents.Create(wep)
             ent:SetPos(pos)
             ent:Spawn()
-            -- TODO: Give weapons velocity so they spray out
+
+            local phys = ent:GetPhysicsObject()
+            if phys:IsValid() then phys:ApplyForceCenter(Vector(math.Rand(-100, 100), math.Rand(-100, 100), 300) * phys:GetMass()) end
         end)
     end
 end)
