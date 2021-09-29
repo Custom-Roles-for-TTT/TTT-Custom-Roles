@@ -1,5 +1,3 @@
--- TODO: Allow "No Random" along with "Include" or "None"
-
 include("shared.lua")
 
 local GetTranslation = LANG.GetTranslation
@@ -88,7 +86,7 @@ local function OpenDialog(client)
     dlist:EnableVerticalScrollbar(true)
     dlist:EnableHorizontal(true)
 
-    local bw, bh = 128, 25
+    local bw, bh = 126, 25
 
     -- Whole right column
     local dih = h - bh - m * 20 - 30
@@ -224,7 +222,7 @@ local function OpenDialog(client)
     end
 
     local dsaverole = vgui.Create("DComboBox", dequip)
-    dsaverole:SetPos(w - 30 - bw, dih)
+    dsaverole:SetPos(dlistw + m, dih)
     dsaverole:SetSize(bw, dsearchheight)
     dsaverole:AddChoice(GetTranslation("roleweapons_select_saverole"), ROLE_NONE, true)
     for r = ROLE_INNOCENT, ROLE_MAX do
@@ -244,8 +242,10 @@ local function OpenDialog(client)
     dcancel:SetText(GetTranslation("close"))
     dcancel.DoClick = function() dframe:Close() end
 
+    local dradiopadding = 3
+
     local dradionone = vgui.Create("DCheckBoxLabel", dequip)
-    dradionone:SetPos(dlistw + m, dih)
+    dradionone:SetPos(dlistw + m, dih + dsearchheight + dradiopadding)
     dradionone:SetText(GetTranslation("roleweapons_option_none"))
     dradionone:SizeToContents()
     dradionone:SetValue(true)
@@ -253,7 +253,6 @@ local function OpenDialog(client)
 
     local dradiol, dradiot = dradionone:GetPos()
     local _, dradioh = dradionone:GetSize()
-    local dradiopadding = 6
 
     local dradioinclude = vgui.Create("DCheckBoxLabel", dequip)
     dradioinclude:SetPos(dradiol, dradiot + dradioh + dradiopadding)
@@ -268,7 +267,7 @@ local function OpenDialog(client)
     dradioexclude:SetDisabled(true)
 
     local dradionorandom = vgui.Create("DCheckBoxLabel", dequip)
-    dradionorandom:SetPos(dradiol, dradiot + (dradioh * 3) + (dradiopadding * 3))
+    dradionorandom:SetPos(w - 30 - bw, dih + (dradiopadding * 2))
     dradionorandom:SetText(GetTranslation("roleweapons_option_norandom"))
     dradionorandom:SizeToContents()
     dradionorandom:SetDisabled(true)
@@ -294,22 +293,22 @@ local function OpenDialog(client)
                 dradioinclude:SetValue(true)
             elseif WEPS.ExcludeWeapons[save_role] and table.HasValue(WEPS.ExcludeWeapons[save_role], weap_class) then
                 dradioexclude:SetValue(true)
-            elseif WEPS.BypassRandomWeapons[save_role] and table.HasValue(WEPS.BypassRandomWeapons[save_role], weap_class) then
-                dradionorandom:SetValue(true)
             else
                 dradionone:SetValue(true)
             end
+
+            dradionorandom:SetValue(WEPS.BypassRandomWeapons[save_role] and table.HasValue(WEPS.BypassRandomWeapons[save_role], weap_class))
         else
             local name = item.name
             if WEPS.BuyableWeapons[save_role] and table.HasValue(WEPS.BuyableWeapons[save_role], name) then
                 dradioinclude:SetValue(true)
             elseif WEPS.ExcludeWeapons[save_role] and table.HasValue(WEPS.ExcludeWeapons[save_role], name) then
                 dradioexclude:SetValue(true)
-            elseif WEPS.BypassRandomWeapons[save_role] and table.HasValue(WEPS.BypassRandomWeapons[save_role], name) then
-                dradionorandom:SetValue(true)
             else
                 dradionone:SetValue(true)
             end
+
+            dradionorandom:SetValue(WEPS.BypassRandomWeapons[save_role] and table.HasValue(WEPS.BypassRandomWeapons[save_role], name))
         end
     end
 
@@ -317,7 +316,6 @@ local function OpenDialog(client)
         if val then
             dradioinclude:SetValue(false)
             dradioexclude:SetValue(false)
-            dradionorandom:SetValue(false)
             UpdateButtonState()
         else
             dconfirm:SetDisabled(true)
@@ -327,7 +325,6 @@ local function OpenDialog(client)
         if val then
             dradionone:SetValue(false)
             dradioexclude:SetValue(false)
-            dradionorandom:SetValue(false)
             UpdateButtonState()
         else
             dconfirm:SetDisabled(true)
@@ -337,6 +334,7 @@ local function OpenDialog(client)
         if val then
             dradionone:SetValue(false)
             dradioinclude:SetValue(false)
+            -- You can't have "no random" a weapon that is excluded
             dradionorandom:SetValue(false)
             UpdateButtonState()
         else
@@ -345,12 +343,7 @@ local function OpenDialog(client)
     end
     dradionorandom.OnChange = function(pnl, val)
         if val then
-            dradionone:SetValue(false)
-            dradioinclude:SetValue(false)
-            dradioexclude:SetValue(false)
             UpdateButtonState()
-        else
-            dconfirm:SetDisabled(true)
         end
     end
 
