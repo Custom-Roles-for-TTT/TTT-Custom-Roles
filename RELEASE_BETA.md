@@ -5,6 +5,7 @@
 
 ### Additions
 - Added ttt_roleweapons admin command which opens a configuration interface for the roleweapons shop configuration system
+- Added new dynamic tutorial system using HTML and hook-generated pages per role
 
 ### Changes
 - Changed custom win events to show in the end-of-round summary's Events tab with an "unknown win event" message until the new TTTEventFinishText hooks are used
@@ -12,6 +13,7 @@
 ### Fixes
 - Fixed vampire prime death effects still happening after the round has ended
 - Fixed external roles with custom win conditions blocking jester wins
+- Fixed tip about radio usage not using the correct key
 
 ### Developer
 - Added TTTBlockPlayerFootstepSound hook to block a player's footstep sound
