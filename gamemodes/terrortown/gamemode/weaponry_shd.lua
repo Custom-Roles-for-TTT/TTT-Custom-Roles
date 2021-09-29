@@ -46,6 +46,31 @@ function WEPS.PrepWeaponsLists(role)
     end
 end
 
+function WEPS.UpdateWeaponLists(role, weapon, includeSelected, excludeSelected, noRandomSelected)
+    WEPS.PrepWeaponsLists(role)
+    if includeSelected then
+        if not table.HasValue(WEPS.BuyableWeapons[role], weapon) then
+            table.insert(WEPS.BuyableWeapons[role], weapon)
+        end
+    else
+        table.RemoveByValue(WEPS.BuyableWeapons[role], weapon)
+    end
+    if excludeSelected then
+        if not table.HasValue(WEPS.ExcludeWeapons[role], weapon) then
+            table.insert(WEPS.ExcludeWeapons[role], weapon)
+        end
+    else
+        table.RemoveByValue(WEPS.ExcludeWeapons[role], weapon)
+    end
+    if noRandomSelected then
+        if not table.HasValue(WEPS.BypassRandomWeapons[role], weapon) then
+            table.insert(WEPS.BypassRandomWeapons[role], weapon)
+        end
+    else
+        table.RemoveByValue(WEPS.BypassRandomWeapons[role], weapon)
+    end
+end
+
 function WEPS.ResetWeaponsCache()
     -- Reset the CanBuy list or save the original for next time
     for _, v in pairs(weapons.GetList()) do

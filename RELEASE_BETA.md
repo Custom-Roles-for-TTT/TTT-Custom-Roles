@@ -3,6 +3,9 @@
 ## 1.2.7
 **Released:**
 
+### Additions
+- Added ttt_roleweapons admin command which opens a configuration interface for the roleweapons shop configuration system
+
 ### Changes
 - Changed custom win events to show in the end-of-round summary's Events tab with an "unknown win event" message until the new TTTEventFinishText hooks are used
 

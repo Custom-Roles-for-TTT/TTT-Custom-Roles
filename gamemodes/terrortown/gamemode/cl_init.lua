@@ -44,6 +44,7 @@ include("cl_scoring_events.lua")
 include("cl_popups.lua")
 include("cl_equip.lua")
 include("cl_voice.lua")
+include("cl_roleweapons.lua")
 
 local traitor_vision = false
 local killer_vision = false

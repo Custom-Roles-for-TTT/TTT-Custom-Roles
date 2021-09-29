@@ -1380,3 +1380,15 @@ L.ev_beggar_converted = "The {beggar} ({victim}) was converted to {team} by {att
 L.ev_beggar_killed = "The {beggar} ({victim}) was killed by {attacker} but respawned"
 L.ev_beggar_killed_delay = "The {beggar} ({victim}) was killed by {attacker} but will respawn in {delay} seconds"
 L.ev_infect = "{victim} infected {attacker}"
+
+-- Role Weapons Configuration
+L.roleweapons_title = "Role Weapons Configuration"
+L.roleweapons_tabtitle = "Role Weapons"
+L.roleweapons_tooltip_main = "Configure which buyable weapons are added or excluded from a role's shop"
+L.roleweapons_confirm = "Update"
+L.roleweapons_option_none = "None"
+L.roleweapons_option_include = "Include"
+L.roleweapons_option_exclude = "Exclude"
+L.roleweapons_option_norandom = "No Random"
+L.roleweapons_select_searchrole = "-Search Role-"
+L.roleweapons_select_saverole = "-Save Role-"

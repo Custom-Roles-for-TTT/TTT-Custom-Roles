@@ -18,9 +18,9 @@ local showSlotVar = CreateClientConVar("ttt_bem_marker_slot", 1, true, false, "S
 
 local Equipment = { }
 
-local function UpdateWeaponList(role, list, weapon)
-    if not table.HasValue(list[role], weapon) then
-        table.insert(list[role], weapon)
+local function UpdateWeaponList(role, lst, weapon)
+    if not table.HasValue(lst[role], weapon) then
+        table.insert(lst[role], weapon)
     end
 end
 
@@ -57,6 +57,19 @@ net.Receive("TTT_BuyableWeapons", function()
     for _, v in pairs(norandomweapons) do
         UpdateWeaponList(role, WEPS.BypassRandomWeapons, v)
     end
+end)
+
+net.Receive("TTT_UpdateBuyableWeapons", function()
+    local id = net.ReadString()
+    local role = net.ReadInt(8)
+    local includeSelected = net.ReadBool()
+    local excludeSelected = net.ReadBool()
+    local noRandomSelected = net.ReadBool()
+
+    -- Update tables and reset cache
+    WEPS.UpdateWeaponLists(role, id, includeSelected, excludeSelected, noRandomSelected)
+    ResetWeaponsCache()
+    UpdateRoleWeaponState()
 end)
 
 local function ItemIsWeapon(item) return not tonumber(item.id) end

@@ -1386,6 +1386,23 @@ DefaultEquipment = {
         EQUIP_RADAR
     },
 
+    [ROLE_PALADIN] = {
+        EQUIP_RADAR
+    },
+
+    [ROLE_MEDIUM] = {
+        EQUIP_RADAR
+    },
+
+    [ROLE_TRACKER] = {
+        EQUIP_RADAR
+    },
+
+    [ROLE_DEPUTY] = {
+        EQUIP_ARMOR,
+        EQUIP_RADAR
+    },
+
     [ROLE_MERCENARY] = {
         "weapon_ttt_health_station",
         "weapon_ttt_teleport",
