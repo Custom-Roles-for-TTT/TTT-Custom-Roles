@@ -458,75 +458,78 @@ cvars.AddChangeCallback("ttt_mute_team_check", MuteTeamCallback)
 
 --- Tutorial
 
-local function CreateColoredSquareLabel(parent, text, color, padding)
-    local bg = vgui.Create("DPanel", parent)
-    bg:SetBackgroundColor(color)
-
-    bg.ShadowLabel = vgui.Create("DLabel", bg)
-    bg.ShadowLabel:SetFont("Trebuchet22")
-    bg.ShadowLabel:SetText(text)
-    bg.ShadowLabel:SizeToContents()
-    bg.ShadowLabel:SetColor(COLOR_BLACK)
-    bg.ShadowLabel:AlignLeft(padding + 1)
-    bg.ShadowLabel:AlignTop(padding + 1)
-
-    bg.Label = vgui.Create("DLabel", bg)
-    bg.Label:SetFont("Trebuchet22")
-    bg.Label:SetText(text)
-    bg.Label:SizeToContents()
-    bg.Label:AlignLeft(padding)
-    bg.Label:AlignTop(padding)
-
-    local w, h = bg.Label:GetSize()
-    bg:SetSize(w + (padding * 2), h + (padding * 2))
-
-    return bg
-end
-
 local function TutorialOverview(pnl, lbl)
-    --"It's mostly about TRAITOR versus INNOCENT"
-    --"A small group of Traitors is randomly picked."
-    --"Together they have to kill all the Innocent."
-    --"The Innocent do not know who is a Traitor and who is not."
-    --"The Traitor need stealth and guile: they are outnumbered"
+    local html = vgui.Create("DHTML", pnl)
+    html:Dock(FILL)
 
+    local htmlData = "<div style='width: 100%; height: 93%; top: 20px; position: relative; padding-top: 10px;'>"
 
-    local padding = 3
+    local fontStyle = "font-family: arial; font-weight: 600;"
 
     -- First line
-    local firstLine = vgui.Create("DPanel", pnl)
-    firstLine:MoveBelow(lbl, padding * 2)
-    firstLine:SetPaintBackground(false)
+        htmlData = htmlData .. "<div style='margin-top: 10px; text-align: center; height: 40px;'>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>It's mostly about</span>"
+            local color = ROLE_COLORS[ROLE_TRAITOR]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white; text-shadow: black 1px 1px; margin-left: 5px; margin-right: 5px; padding: 5px 10px 5px 8px; border-radius: 3px; background-color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>" .. ROLE_STRINGS[ROLE_TRAITOR] .. "</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>versus</span>"
+            color = ROLE_COLORS[ROLE_INNOCENT]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white; text-shadow: black 1px 1px; margin-left: 5px; margin-right: 5px; padding: 5px 10px 5px 8px; border-radius: 3px; background-color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>" .. ROLE_STRINGS[ROLE_INNOCENT] .. "</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>but there are others...</span>"
+        htmlData = htmlData .. "</div>"
 
-    local firstOne = vgui.Create("DLabel", firstLine)
-    firstOne:SetFont("Trebuchet22")
-    firstOne:SetText("It's mostly about")
-    firstOne:SizeToContents()
-    firstOne:AlignLeft(padding)
-    firstOne:AlignTop(padding)
+    -- Second line
+        htmlData = htmlData .. "<div style='text-align: center; height: 40px;'>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>A small group of " .. ROLE_STRINGS_PLURAL[ROLE_TRAITOR] .. " is </span>"
+            color = ROLE_COLORS[ROLE_INNOCENT]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>randomly picked.</span>"
+        htmlData = htmlData .. "</div>"
 
-    local firstTwo = CreateColoredSquareLabel(firstLine, "TRAITOR", ROLE_COLORS[ROLE_TRAITOR], 3)
-    firstTwo:MoveRightOf(firstOne, padding)
+    -- Third line
+        htmlData = htmlData .. "<div style='text-align: center; height: 40px;'>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>Together they have to </span>"
+            color = ROLE_COLORS[ROLE_TRAITOR]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>kill all the " .. ROLE_STRINGS_PLURAL[ROLE_INNOCENT] .. ".</span>"
+        htmlData = htmlData .. "</div>"
 
-    local firstThree = vgui.Create("DLabel", firstLine)
-    firstThree:SetFont("Trebuchet22")
-    firstThree:SetText("versus")
-    firstThree:SizeToContents()
-    firstThree:MoveRightOf(firstTwo, padding)
-    firstThree:AlignTop(padding)
+    -- Fourth line
+        htmlData = htmlData .. "<div style='text-align: center; height: 40px;'>"
+            color = ROLE_COLORS[ROLE_INNOCENT]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>The " .. ROLE_STRINGS_PLURAL[ROLE_INNOCENT] .. "</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> do not know </span>"
+            color = ROLE_COLORS[ROLE_TRAITOR]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>who is " .. ROLE_STRINGS_EXT[ROLE_TRAITOR] .. "</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> and </span>"
+            color = ROLE_COLORS[ROLE_INNOCENT]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>who is not.</span>"
+        htmlData = htmlData .. "</div>"
 
-    local firstFour = CreateColoredSquareLabel(firstLine, "INNOCENT", ROLE_COLORS[ROLE_INNOCENT], 3)
-    firstFour:MoveRightOf(firstThree, padding)
+    -- Fifth line
+        htmlData = htmlData .. "<div style='text-align: center; height: 40px;'>"
+            color = ROLE_COLORS[ROLE_TRAITOR]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>The " .. ROLE_STRINGS_PLURAL[ROLE_TRAITOR] .. "</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> need stealth and guile: they are </span>"
+            color = ROLE_COLORS[ROLE_INNOCENT]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>outnumbered.</span>"
+        htmlData = htmlData .. "</div>"
 
-    local firstFive = vgui.Create("DLabel", firstLine)
-    firstFive:SetFont("Trebuchet22")
-    firstFive:SetText("but there are others...")
-    firstFive:SizeToContents()
-    firstFive:MoveRightOf(firstFour, padding)
-    firstFive:AlignTop(padding)
+    -- Sixth line
+        htmlData = htmlData .. "<div style='text-align: center; height: 40px;'>"
+            color = GetRoleTeamColor(ROLE_TEAM_INDEPENDENT)
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>The Independents</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> work alone, trying to win against everyone else.</span>"
+        htmlData = htmlData .. "</div>"
 
-    firstLine:SizeToChildren(true, true)
-    firstLine:CenterHorizontal()
+    -- Seventh line
+        htmlData = htmlData .. "<div style='text-align: center; height: 40px;'>"
+            color = GetRoleTeamColor(ROLE_TEAM_JESTER)
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>The Jesters</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>, meanwhile, try to trick the other players into aiding them.</span>"
+        htmlData = htmlData .. "</div>"
+
+    -- Close the page
+    htmlData = htmlData .. "</div>"
+
+    html:SetHTML(htmlData)
 end
 
 local tutorial_pages = {
@@ -537,6 +540,7 @@ local tutorial_pages = {
     [5] = {title = "Karma", body = function(pnl) end}
 }
 local maxPages = table.Count(tutorial_pages)
+local enabledRoles = {}
 
 local function UpdateTitle(lbl, text)
     lbl:SetFont("TutorialTitle")
@@ -556,14 +560,23 @@ local function ShowTutorialPage(pnl, page)
         UpdateTitle(titleLabel, pageInfo.title)
         pageInfo.body(pnl, titleLabel)
     else
-        local role = page - table.Count(tutorial_pages) - 1
+        local role = enabledRoles[page - table.Count(tutorial_pages)]
         local roleName = ROLE_STRINGS[role]
         UpdateTitle(titleLabel, roleName)
     end
 end
 
 function HELPSCRN:CreateTutorial(parent)
-    maxPages = table.Count(tutorial_pages) + ROLE_MAX + 1
+    -- Get the list of enabled roles
+    table.Empty(enabledRoles)
+    for r = ROLE_INNOCENT, ROLE_MAX do
+        local rolestring = ROLE_STRINGS_RAW[r]
+        if DEFAULT_ROLES[r] or GetConVar("ttt_" .. rolestring .. "_enabled"):GetBool() then
+            table.insert(enabledRoles, r)
+        end
+    end
+
+    maxPages = table.Count(tutorial_pages) + #enabledRoles
 
     local bw, bh = 100, 30
 
