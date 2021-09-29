@@ -44,7 +44,8 @@ end)
 
 function KARMA.InitState()
     SetGlobalBool("ttt_karma", config.enabled:GetBool())
-    SetGlobalInt("ttt_karma_max", config.max:GetFloat())
+    SetGlobalInt("ttt_karma_max", config.max:GetInt())
+    SetGlobalInt("ttt_karma_starting", config.starting:GetInt())
 end
 
 function KARMA.IsEnabled()

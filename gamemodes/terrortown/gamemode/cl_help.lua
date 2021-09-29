@@ -706,15 +706,68 @@ local function TutorialUsefulKeys(pnl, lbl)
     html:SetHTML(htmlData)
 end
 
-local tutorial_pages = {
+local function TutorialKarma(pnl, lbl)
+    local html = vgui.Create("DHTML", pnl)
+    html:Dock(FILL)
+
+    local fontStyle = "font-family: arial; font-weight: 600;"
+
+    -- Open the page
+    local htmlData = "<div style='width: 100%; height: 93%; top: 20px; position: relative; padding-top: 10px;'>"
+
+    -- First line
+        htmlData = htmlData .. "<div style='margin-top: 15px; height: 40px;'>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>Your </span>"
+            local color = GetRoleTeamColor(ROLE_TEAM_INNOCENT)
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>Karma</span>"
+            local starting_karma = GetGlobalInt("ttt_karma_starting", 1000)
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> starts at " .. starting_karma .. " and goes down if you </span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>damage players</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> who are on your own side. It does down less if their Karma is lower.</span>"
+        htmlData = htmlData .. "</div>"
+
+    -- Second line
+        htmlData = htmlData .. "<div style='margin-top: 15px; height: 40px;'>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>If your Karma is low when a round starts, you get a </span>"
+            color = GetRoleTeamColor(ROLE_TEAM_INNOCENT)
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>penalty to your weapon damage</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> that round.</span>"
+        htmlData = htmlData .. "</div>"
+
+    -- Third line
+        htmlData = htmlData .. "<div style='margin-top: 15px; height: 40px;'>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>By playing </span>"
+            color = GetRoleTeamColor(ROLE_TEAM_INNOCENT)
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>clean rounds</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> where you don't harm teammates, you regain Karma. Some roles will also get Karma for </span>"
+            color = ROLE_COLORS[ROLE_INNOCENT]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'> hurting their enemies.</span>"
+        htmlData = htmlData .. "</div>"
+
+    -- Fourth line
+        htmlData = htmlData .. "<div style='margin-top: 15px; height: 40px;'>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>The Karma value shown on the scoreboard updates only </span>"
+            color = GetRoleTeamColor(ROLE_TEAM_INNOCENT)
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>after the round ends</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>. During a round, someone's true Karma might be lower.</span>"
+        htmlData = htmlData .. "</div>"
+
+    -- Close the page
+    htmlData = htmlData .. "</div>"
+
+    html:SetHTML(htmlData)
+end
+
+local tutorialPages = {
     [1] = {title = "Overview", body = TutorialOverview},
     [2] = {title = "Player Death", body = TutorialPlayerDeath},
     [3] = {title = "Special Equipment", body = TutorialSpecialEquipment},
     [4] = {title = "Useful Keys", body = TutorialUsefulKeys},
-    [5] = {title = "Karma", body = function(pnl) end}
+    [5] = {title = "Karma", body = TutorialKarma, enabled = function() return GetGlobalBool("ttt_karma", false) end}
 }
-local maxPages = table.Count(tutorial_pages)
+local maxPages = table.Count(tutorialPages)
 local enabledRoles = {}
+local enabledPages = {}
 
 local function UpdateTitle(lbl, text)
     lbl:SetFont("TutorialTitle")
@@ -729,12 +782,12 @@ local function ShowTutorialPage(pnl, page)
 
     local titleLabel = vgui.Create("DLabel", pnl)
 
-    if page <= table.Count(tutorial_pages) then
-        local pageInfo = tutorial_pages[page]
+    if page <= #enabledPages then
+        local pageInfo = enabledPages[page]
         UpdateTitle(titleLabel, pageInfo.title)
         pageInfo.body(pnl, titleLabel)
     else
-        local role = enabledRoles[page - table.Count(tutorial_pages)]
+        local role = enabledRoles[page - #enabledPages]
         local roleName = ROLE_STRINGS[role]
         UpdateTitle(titleLabel, roleName)
     end
@@ -750,7 +803,15 @@ function HELPSCRN:CreateTutorial(parent)
         end
     end
 
-    maxPages = table.Count(tutorial_pages) + #enabledRoles
+    -- Get the list of enables pages
+    table.Empty(enabledPages)
+    for _, page in ipairs(tutorialPages) do
+        if not page.enabled or page.enabled() then
+            table.insert(enabledPages, page)
+        end
+    end
+
+    maxPages = #enabledPages + #enabledRoles
 
     local bw, bh = 100, 30
 
