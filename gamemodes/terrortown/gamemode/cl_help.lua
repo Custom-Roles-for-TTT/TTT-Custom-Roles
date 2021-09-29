@@ -458,13 +458,12 @@ cvars.AddChangeCallback("ttt_mute_team_check", MuteTeamCallback)
 
 --- Tutorial
 
+local fontStyle = "font-family: arial; font-weight: 600;"
 local keyMappingStyles = "font-size: 12px; color: black; display: inline-block; padding: 0px 3px; height: 16px; border-width: 4px; border-style: solid; border-left-color: rgb(221, 221, 221); border-bottom-color: rgb(119, 119, 102); border-right-color: rgb(119, 119, 119); border-top-color: rgb(255, 255, 255); background-color: rgb(204, 204, 187);"
 
 local function TutorialOverview(pnl, lbl)
     local html = vgui.Create("DHTML", pnl)
     html:Dock(FILL)
-
-    local fontStyle = "font-family: arial; font-weight: 600;"
 
     -- Open the page
     local htmlData = "<div style='width: 100%; height: 93%; top: 20px; position: relative; padding-top: 10px;'>"
@@ -539,8 +538,6 @@ local function TutorialPlayerDeath(pnl, lbl)
     local html = vgui.Create("DHTML", pnl)
     html:Dock(FILL)
 
-    local fontStyle = "font-family: arial; font-weight: 600;"
-
     -- Open the page
     local htmlData = "<div style='width: 100%; height: 93%; top: 20px; position: relative; padding-top: 10px;'>"
 
@@ -595,8 +592,6 @@ local function TutorialSpecialEquipment(pnl, lbl)
     local html = vgui.Create("DHTML", pnl)
     html:Dock(FILL)
 
-    local fontStyle = "font-family: arial; font-weight: 600;"
-
     -- Open the page
     local htmlData = "<div style='width: 100%; height: 93%; top: 20px; position: relative; padding-top: 10px;'>"
 
@@ -633,8 +628,6 @@ local function TutorialUsefulKeys(pnl, lbl)
 
     local html = vgui.Create("DHTML", pnl)
     html:Dock(FILL)
-
-    local fontStyle = "font-family: arial; font-weight: 600;"
 
     -- Open the page
     local htmlData = "<div style='width: 100%; height: 93%; top: 20px; position: relative; padding-top: 10px;'>"
@@ -709,8 +702,6 @@ end
 local function TutorialKarma(pnl, lbl)
     local html = vgui.Create("DHTML", pnl)
     html:Dock(FILL)
-
-    local fontStyle = "font-family: arial; font-weight: 600;"
 
     -- Open the page
     local htmlData = "<div style='width: 100%; height: 93%; top: 20px; position: relative; padding-top: 10px;'>"
@@ -790,6 +781,51 @@ local function ShowTutorialPage(pnl, page)
         local role = enabledRoles[page - #enabledPages]
         local roleName = ROLE_STRINGS[role]
         UpdateTitle(titleLabel, roleName)
+
+        -- If nobody wants to handle this page themselves,
+        if not hook.Run("TTTTutorialRolePage", role, pnl, titleLabel) then
+            local roleText = hook.Run("TTTTutorialRoleText", role, titleLabel)
+
+            local html = vgui.Create("DHTML", pnl)
+            html:Dock(FILL)
+
+            -- Open the page
+            local htmlData = "<div style='width: 100%; height: 93%; top: 20px; position: relative; padding-top: 10px;'>"
+
+            -- If the role didn't provide details, use some generic info
+            if not roleText or #roleText == 0 then
+                htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>This is some generic information about the " .. roleName .. " role because the role author hasn't provided us with specifics.</span>"
+
+                -- Team
+                htmlData = htmlData .. "<div style='margin-top: 5px;'>"
+                    local roleTeam = player.GetRoleTeam(role, true)
+                    local roleTeamString
+                    local roleTeamColor = GetRoleTeamColor(roleTeam)
+                    if roleTeam == ROLE_TEAM_TRAITOR then
+                        roleTeamString = "Traitor"
+                        roleTeamColor = ROLE_COLORS[ROLE_TRAITOR]
+                    elseif roleTeam == ROLE_TEAM_MONSTER then
+                        roleTeamString = "Monster"
+                    elseif roleTeam == ROLE_TEAM_JESTER then
+                        roleTeamString = "Jester"
+                    elseif roleTeam == ROLE_TEAM_INDEPENDENT then
+                        roleTeamString = "Independent"
+                    else
+                        roleTeamString = "Innocent"
+                        roleTeamColor = ROLE_COLORS[ROLE_INNOCENT]
+                    end
+                    htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>Role Team: </span>"
+                    htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. roleTeamColor.r .. ", " .. roleTeamColor.g .. ", " .. roleTeamColor.b .. ");'>" .. roleTeamString .. "</span>"
+                htmlData = htmlData .. "</div>"
+            else
+                htmlData = htmlData .. roleText
+            end
+
+            -- Close the page
+            htmlData = htmlData .. "</div>"
+
+            html:SetHTML(htmlData)
+        end
     end
 end
 

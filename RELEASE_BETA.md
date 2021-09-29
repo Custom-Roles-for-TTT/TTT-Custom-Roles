@@ -22,6 +22,7 @@
 - Added TTTEventFinishText and TTTEventFinishIconText hooks to add detail to the round finished event row for custom win conditions
 - Added TTTPlayerRoleChanged hook to react to when a player's role changes
 - Added TTTShouldPlayerSmoke hook to affect whether a player should smoke and how that should look
+- Added TTTTutorialRolePage and TTTTutorialRoleText hooks for generating tutorial pages for an external role
 - Added plymeta:GetRoleTeam to get the appropriate ROLE_TEAM_* enum value for the player
 - Added player.GetRoleTeam static method to get the appropriate ROLE_TEAM_* enum value for a role
 - Changed OnPlayerHighlightEnabled to be globally available so other roles can use the same highlighting logic

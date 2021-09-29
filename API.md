@@ -1007,6 +1007,25 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
 - *clr* - The new clr value to use or the original passed into the hook
 
+**TTTTutorialRolePage(role, parentPanel, titleLabel)** - Called before a role's tutorial page is rendered. This can be used to render a completely custom page with information about a role.\
+*Realm:* Client\
+*Added in:* 1.2.7\
+*Parameters:*
+- *role* - Which role's tutorial page is being rendered
+- *parentPanel* - The parent [DPanel](https://wiki.facepunch.com/gmod/DPanel) that this tutorial page is being rendered within
+- *titleLabel* - The [DLabel](https://wiki.facepunch.com/gmod/DLabel) that is being used as the title of the rendered tutorial page. Has the role's name automatically set as the label text
+
+*Return:* `true` to tell the tutorial page to use the content set in this hook rather than calling the `TTTTutorialRoleText` hook
+
+**TTTTutorialRoleText(role, titleLabel)** - Called before a role's tutorial page is rendered. This can be used to provide the text to show for a role.\
+*Realm:* Client\
+*Added in:* 1.2.7\
+*Parameters:*
+- *role* - Which role's tutorial page is being rendered
+- *titleLabel* - The [DLabel](https://wiki.facepunch.com/gmod/DLabel) that is being used as the title of the rendered tutorial page. Has the role's name automatically set as the label text
+
+*Return:* The string value to show on the tutorial page for this role. Can be HTML and will be rendered within a `<div>`
+
 **TTTUpdateRoleState()** - Called after role states and role weapon states have been updated. At this point you can be assured that a role belongs to the team it has been configured to be on.\
 *Realm:* Client and Server\
 *Added in:* 1.2.7
