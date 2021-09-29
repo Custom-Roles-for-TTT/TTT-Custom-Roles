@@ -48,6 +48,7 @@ if SERVER then
     resource.AddSingleFile("materials/vgui/ttt/help/tut02_death_arrow.png")
     resource.AddSingleFile("materials/vgui/ttt/help/tut02_found_arrow.png")
     resource.AddSingleFile("materials/vgui/ttt/help/tut02_corpse_info.png")
+    resource.AddSingleFile("materials/vgui/ttt/help/tut03_shop.png")
 
     ------------
     -- Sounds --

@@ -550,7 +550,7 @@ local function TutorialPlayerDeath(pnl, lbl)
     -- Second line
         htmlData = htmlData .. "<div style='text-align: center; height: 40px;'>"
             htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>" .. ROLE_STRINGS_PLURAL[ROLE_INNOCENT] .. " </span>"
-            color = ROLE_COLORS[ROLE_INNOCENT]
+            local color = ROLE_COLORS[ROLE_INNOCENT]
             htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>will not know</span>"
             htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> you are dead...</span>"
         htmlData = htmlData .. "</div>"
@@ -589,10 +589,45 @@ local function TutorialPlayerDeath(pnl, lbl)
     html:SetHTML(htmlData)
 end
 
+local function TutorialSpecialEquipment(pnl, lbl)
+    local html = vgui.Create("DHTML", pnl)
+    html:Dock(FILL)
+
+    local fontStyle = "font-family: arial; font-weight: 600;"
+
+    -- Open the page
+    local htmlData = "<div style='width: 100%; height: 93%; top: 20px; position: relative; padding-top: 10px;'>"
+
+    -- First line
+        htmlData = htmlData .. "<div style='margin-top: 10px; text-align: center; height: 40px;'>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>Some roles can buy </span>"
+            local color = ROLE_COLORS[ROLE_TRAITOR]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>special equipment.</span>"
+        htmlData = htmlData .. "</div>"
+
+    -- Second line
+        htmlData = htmlData .. "<div style='text-align: center; height: 40px;'>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>Their </span>"
+            color = ROLE_COLORS[ROLE_TRAITOR]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>Equipment menu</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> can be opened by pressing </span>"
+            local key = Key("+menu_context", "C")
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " font-size: 12px; color: black; display: inline-block; padding: 0px 3px; height: 16px; border-width: 4px; border-style: solid; border-left-color: rgb(221, 221, 221); border-bottom-color: rgb(119, 119, 102); border-right-color: rgb(119, 119, 119); border-top-color: rgb(255, 255, 255); background-color: rgb(204, 204, 187);'>" .. key .. "</span>"
+            htmlData = htmlData .. "<img style='position: relative; top: 10px;' src='asset://garrysmod/gamemodes/terrortown/content/materials/vgui/ttt/help/tut03_shop.png' width='567' height='129'></img>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " display: block; margin-top: 15px; color: white;'>Roles from all teams can have access to an equipment menu.</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " display: block; color: white;'>Check your specific role's page for more details.</span>"
+        htmlData = htmlData .. "</div>"
+
+    -- Close the page
+    htmlData = htmlData .. "</div>"
+
+    html:SetHTML(htmlData)
+end
+
 local tutorial_pages = {
     [1] = {title = "Overview", body = TutorialOverview},
     [2] = {title = "Player Death", body = TutorialPlayerDeath},
-    [3] = {title = "Special Equipment", body = function(pnl) end},
+    [3] = {title = "Special Equipment", body = TutorialSpecialEquipment},
     [4] = {title = "Useful Keys", body = function(pnl) end},
     [5] = {title = "Karma", body = function(pnl) end}
 }
