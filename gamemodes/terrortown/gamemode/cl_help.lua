@@ -3,6 +3,11 @@
 local GetTranslation = LANG.GetTranslation
 local GetPTranslation = LANG.GetParamTranslation
 
+surface.CreateFont("TutorialTitle", {
+    font = "Trebuchet MS",
+    size = 30,
+    weight = 900 })
+
 CreateClientConVar("ttt_spectator_mode", "0", true, false)
 CreateClientConVar("ttt_mute_team_check", "0", true, false)
 CreateClientConVar("ttt_show_raw_karma_value", "0", true, false)
@@ -453,38 +458,136 @@ cvars.AddChangeCallback("ttt_mute_team_check", MuteTeamCallback)
 
 --- Tutorial
 
-local imgpath = "vgui/ttt/help/tut0%d"
-local tutorial_pages = 6
+local function CreateColoredSquareLabel(parent, text, color, padding)
+    local bg = vgui.Create("DPanel", parent)
+    bg:SetBackgroundColor(color)
+
+    bg.ShadowLabel = vgui.Create("DLabel", bg)
+    bg.ShadowLabel:SetFont("Trebuchet22")
+    bg.ShadowLabel:SetText(text)
+    bg.ShadowLabel:SizeToContents()
+    bg.ShadowLabel:SetColor(COLOR_BLACK)
+    bg.ShadowLabel:AlignLeft(padding + 1)
+    bg.ShadowLabel:AlignTop(padding + 1)
+
+    bg.Label = vgui.Create("DLabel", bg)
+    bg.Label:SetFont("Trebuchet22")
+    bg.Label:SetText(text)
+    bg.Label:SizeToContents()
+    bg.Label:AlignLeft(padding)
+    bg.Label:AlignTop(padding)
+
+    local w, h = bg.Label:GetSize()
+    bg:SetSize(w + (padding * 2), h + (padding * 2))
+
+    return bg
+end
+
+local function TutorialOverview(pnl, lbl)
+    --"It's mostly about TRAITOR versus INNOCENT"
+    --"A small group of Traitors is randomly picked."
+    --"Together they have to kill all the Innocent."
+    --"The Innocent do not know who is a Traitor and who is not."
+    --"The Traitor need stealth and guile: they are outnumbered"
+
+
+    local padding = 3
+
+    -- First line
+    local firstLine = vgui.Create("DPanel", pnl)
+    firstLine:MoveBelow(lbl, padding * 2)
+    firstLine:SetPaintBackground(false)
+
+    local firstOne = vgui.Create("DLabel", firstLine)
+    firstOne:SetFont("Trebuchet22")
+    firstOne:SetText("It's mostly about")
+    firstOne:SizeToContents()
+    firstOne:AlignLeft(padding)
+    firstOne:AlignTop(padding)
+
+    local firstTwo = CreateColoredSquareLabel(firstLine, "TRAITOR", ROLE_COLORS[ROLE_TRAITOR], 3)
+    firstTwo:MoveRightOf(firstOne, padding)
+
+    local firstThree = vgui.Create("DLabel", firstLine)
+    firstThree:SetFont("Trebuchet22")
+    firstThree:SetText("versus")
+    firstThree:SizeToContents()
+    firstThree:MoveRightOf(firstTwo, padding)
+    firstThree:AlignTop(padding)
+
+    local firstFour = CreateColoredSquareLabel(firstLine, "INNOCENT", ROLE_COLORS[ROLE_INNOCENT], 3)
+    firstFour:MoveRightOf(firstThree, padding)
+
+    local firstFive = vgui.Create("DLabel", firstLine)
+    firstFive:SetFont("Trebuchet22")
+    firstFive:SetText("but there are others...")
+    firstFive:SizeToContents()
+    firstFive:MoveRightOf(firstFour, padding)
+    firstFive:AlignTop(padding)
+
+    firstLine:SizeToChildren(true, true)
+    firstLine:CenterHorizontal()
+end
+
+local tutorial_pages = {
+    [1] = {title = "Overview", body = TutorialOverview},
+    [2] = {title = "Player Death", body = function(pnl) end},
+    [3] = {title = "Special Equipment", body = function(pnl) end},
+    [4] = {title = "Useful Keys", body = function(pnl) end},
+    [5] = {title = "Karma", body = function(pnl) end}
+}
+local maxPages = table.Count(tutorial_pages)
+
+local function UpdateTitle(lbl, text)
+    lbl:SetFont("TutorialTitle")
+    lbl:SetText(text)
+    lbl:SizeToContents()
+    lbl:CenterHorizontal()
+end
+
+local function ShowTutorialPage(pnl, page)
+    pnl:Clear()
+    pnl:SetBackgroundColor(COLOR_BLACK)
+
+    local titleLabel = vgui.Create("DLabel", pnl)
+
+    if page <= table.Count(tutorial_pages) then
+        local pageInfo = tutorial_pages[page]
+        UpdateTitle(titleLabel, pageInfo.title)
+        pageInfo.body(pnl, titleLabel)
+    else
+        local role = page - table.Count(tutorial_pages) - 1
+        local roleName = ROLE_STRINGS[role]
+        UpdateTitle(titleLabel, roleName)
+    end
+end
+
 function HELPSCRN:CreateTutorial(parent)
-    local bg = vgui.Create("ColoredBox", parent)
-    bg:StretchToParent(0, 0, 0, 0)
-    bg:SetTall(330)
-    bg:SetColor(COLOR_BLACK)
-
-    local tut = vgui.Create("DImage", parent)
-    tut:StretchToParent(0, 0, 0, 0)
-    tut:SetVerticalScrollbarEnabled(false)
-
-    tut:SetImage(Format(imgpath, 1))
-    tut:SetWide(1024)
-    tut:SetTall(512)
-
-    tut.current = 1
+    maxPages = table.Count(tutorial_pages) + ROLE_MAX + 1
 
     local bw, bh = 100, 30
 
+    local tut = vgui.Create("DPanel", parent)
+    tut:StretchToParent(0, 0, 0, 0)
+    tut:SetVerticalScrollbarEnabled(false)
+    tut:SetTall(330)
+
+    tut.current = 1
+    ShowTutorialPage(tut, tut.current)
+
     local bar = vgui.Create("TTTProgressBar", parent)
     bar:SetSize(200, bh)
-    bar:MoveBelow(bg)
+    bar:MoveBelow(tut)
     bar:CenterHorizontal()
     bar:SetMin(1)
-    bar:SetMax(tutorial_pages)
+    bar:SetMax(maxPages)
     bar:SetValue(1)
     bar:SetColor(Color(0, 200, 0))
 
     -- fixing your panels...
     bar.UpdateText = function(s)
         s.Label:SetText(Format("%i / %i", s.m_iValue, s.m_iMax))
+        s:PerformLayout()
     end
 
     bar:UpdateText()
@@ -504,18 +607,18 @@ function HELPSCRN:CreateTutorial(parent)
     bprev:AlignLeft()
 
     bnext.DoClick = function()
-        if tut.current < tutorial_pages then
+        if tut.current < maxPages then
             tut.current = tut.current + 1
-            tut:SetImage(Format(imgpath, tut.current))
             bar:SetValue(tut.current)
+            ShowTutorialPage(tut, tut.current)
         end
     end
 
     bprev.DoClick = function()
         if tut.current > 1 then
             tut.current = tut.current - 1
-            tut:SetImage(Format(imgpath, tut.current))
             bar:SetValue(tut.current)
+            ShowTutorialPage(tut, tut.current)
         end
     end
 end
