@@ -5,7 +5,8 @@
 1. [Global Enumerations](#Global-Enumerations)
 1. [Methods](#Methods)
    1. [Global](#Global)
-   1. [Player](#Player)
+   1. [Player Object](#Player-Object)
+   1. [Player Static](#Player-Static)
    1. [Table](#Table)
 1. [Hooks](#Hooks)
 1. [SWEPs](#SWEPs)
@@ -325,7 +326,7 @@ Methods available globally (within the defined realm)
 *Realm:* Client and Server\
 *Added in:* 1.0.0
 
-### *Player*
+### *Player Object*
 Variables available when called from a Player object (within the defined realm)
 
 **plymeta:BeginRoleChecks()** - Sets up role logic for the player to handle role-specific events and checks.\
@@ -542,6 +543,16 @@ Variables available when called from a Player object (within the defined realm)
 **plymeta:StripRoleWeapons()** - Strips all weapons from the player whose `Category` property matches the global `WEAPON_CATEGORY_ROLE` value.\
 *Realm:* Client and Server\
 *Added in:* 1.0.5
+
+### *Player Static*
+Methods available having to do with players but without needing a specific Player object
+
+**player.GetRoleTeam(role, detectivesAreInnocent)** - Gets which "role team" a role belongs to (see ROLE_TEAM_* global enumeration).\
+*Realm:* Client and Server\
+*Added in:* 1.2.7\
+*Parameters:*
+- *role* - The role ID in question
+- *detectivesAreInnocent* - Whether to include members of the detective "role team" in the innocent "role team" to match the logical teams
 
 ### *Table*
 Methods created to help with the manipulation of tables
