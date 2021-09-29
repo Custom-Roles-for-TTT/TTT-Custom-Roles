@@ -44,6 +44,11 @@ if SERVER then
     resource.AddFile("materials/vgui/ttt/tele_mark.vmt")
     resource.AddSingleFile("materials/vgui/ttt/ulx_ttt.png")
 
+    -- Tutorial
+    resource.AddSingleFile("materials/vgui/ttt/help/tut02_death_arrow.png")
+    resource.AddSingleFile("materials/vgui/ttt/help/tut02_found_arrow.png")
+    resource.AddSingleFile("materials/vgui/ttt/help/tut02_corpse_info.png")
+
     ------------
     -- Sounds --
     ------------

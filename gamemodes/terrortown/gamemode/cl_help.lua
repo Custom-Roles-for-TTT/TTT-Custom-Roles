@@ -462,9 +462,10 @@ local function TutorialOverview(pnl, lbl)
     local html = vgui.Create("DHTML", pnl)
     html:Dock(FILL)
 
-    local htmlData = "<div style='width: 100%; height: 93%; top: 20px; position: relative; padding-top: 10px;'>"
-
     local fontStyle = "font-family: arial; font-weight: 600;"
+
+    -- Open the page
+    local htmlData = "<div style='width: 100%; height: 93%; top: 20px; position: relative; padding-top: 10px;'>"
 
     -- First line
         htmlData = htmlData .. "<div style='margin-top: 10px; text-align: center; height: 40px;'>"
@@ -532,9 +533,65 @@ local function TutorialOverview(pnl, lbl)
     html:SetHTML(htmlData)
 end
 
+local function TutorialPlayerDeath(pnl, lbl)
+    local html = vgui.Create("DHTML", pnl)
+    html:Dock(FILL)
+
+    local fontStyle = "font-family: arial; font-weight: 600;"
+
+    -- Open the page
+    local htmlData = "<div style='width: 100%; height: 93%; top: 20px; position: relative; padding-top: 10px;'>"
+
+    -- First line
+        htmlData = htmlData .. "<div style='margin-top: 10px; text-align: center; height: 40px;'>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>If you die, you will not respawn until next round.</span>"
+        htmlData = htmlData .. "</div>"
+
+    -- Second line
+        htmlData = htmlData .. "<div style='text-align: center; height: 40px;'>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>" .. ROLE_STRINGS_PLURAL[ROLE_INNOCENT] .. " </span>"
+            color = ROLE_COLORS[ROLE_INNOCENT]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>will not know</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> you are dead...</span>"
+        htmlData = htmlData .. "</div>"
+
+    -- Third line
+        htmlData = htmlData .. "<div style='text-align: center; height: 40px; margin-top: -15px;'>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>...until they find your </span>"
+            color = ROLE_COLORS[ROLE_INNOCENT]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>corpse.</span>"
+        htmlData = htmlData .. "</div>"
+
+    -- Fourth line
+        htmlData = htmlData .. "<div style='text-align: center; height: 40px;'>"
+            color = Color(0, 200, 0, 100)
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white; text-shadow: black 1px 1px; margin-left: 5px; margin-right: 5px; padding: 2px 10px 2px 8px; border-radius: 8px; background-color: rgba(" .. color.r .. ", " .. color.g .. "," .. color.b .. ", " .. color.a .. ");'>" .. GetTranslation("terrorists") .. "</span>"
+            htmlData = htmlData .. "<img style='position: relative; top: 4px;' src='asset://garrysmod/gamemodes/terrortown/content/materials/vgui/ttt/help/tut02_death_arrow.png' width='36' height='21'></img>"
+            color = Color(130, 190, 130, 100)
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white; text-shadow: black 1px 1px; margin-left: 5px; margin-right: 5px; padding: 2px 10px; border-radius: 8px; background-color: rgba(" .. color.r .. ", " .. color.g .. "," .. color.b .. ", " .. color.a .. ");'>" .. GetTranslation("sb_mia") .. "</span>"
+            htmlData = htmlData .. "<img style='position: relative; top: 4px;' src='asset://garrysmod/gamemodes/terrortown/content/materials/vgui/ttt/help/tut02_found_arrow.png' width='39' height='22'></img>"
+            color = Color(130, 170, 10, 100)
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white; text-shadow: black 1px 1px; margin-left: 5px; margin-right: 5px; padding: 2px 10px; border-radius: 8px; background-color: rgba(" .. color.r .. ", " .. color.g .. "," .. color.b .. ", " .. color.a .. ");'>" .. GetTranslation("sb_confirmed") .. "</span>"
+            htmlData = htmlData .. "<img style='position: relative; top: 50px;' src='asset://garrysmod/gamemodes/terrortown/content/materials/vgui/ttt/help/tut02_corpse_info.png' width='382' height='62'></img>"
+        htmlData = htmlData .. "</div>"
+
+    -- Fifth line
+        htmlData = htmlData .. "<div style='text-align: center; height: 40px;'>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>Corpses may have </span>"
+            color = ROLE_COLORS[ROLE_INNOCENT]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>information</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> that leads to the killer.</span>"
+        htmlData = htmlData .. "</div>"
+
+    -- Close the page
+    htmlData = htmlData .. "</div>"
+
+    html:SetHTML(htmlData)
+end
+
 local tutorial_pages = {
     [1] = {title = "Overview", body = TutorialOverview},
-    [2] = {title = "Player Death", body = function(pnl) end},
+    [2] = {title = "Player Death", body = TutorialPlayerDeath},
     [3] = {title = "Special Equipment", body = function(pnl) end},
     [4] = {title = "Useful Keys", body = function(pnl) end},
     [5] = {title = "Karma", body = function(pnl) end}
