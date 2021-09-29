@@ -973,7 +973,7 @@ L.tip28 = "Spectators can press {mutekey} to cycle through muting other spectato
 
 L.tip29 = "If the server has installed additional languages, you can switch to a different language at any time in the Settings menu."
 
-L.tip30 = "Quickchat or 'radio' commands can be used by pressing {zoomkey}."
+L.tip30 = "Quickchat or 'radio' commands can be used by pressing {radiokey}."
 
 L.tip31 = "As Spectator, press {duckkey} to unlock your mouse cursor and click the buttons on this tips panel. Press {duckkey} again to go back to mouseview."
 
