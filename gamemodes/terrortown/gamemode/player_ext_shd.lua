@@ -213,6 +213,8 @@ function plymeta:ShouldRevealBodysnatcher(tgt)
     return bodysnatcherMode == BODYSNATCHER_REVEAL_ALL or (self:IsSameTeam(tgt) and bodysnatcherMode == BODYSNATCHER_REVEAL_TEAM)
 end
 
+function plymeta:ShouldDelayAnnouncements() return ROLE_SHOULD_DELAY_ANNOUNCEMENTS[self:GetRole()] or false end
+
 function plymeta:SetRoleAndBroadcast(role)
     self:SetRole(role)
 
@@ -581,18 +583,9 @@ else
             end
         end
 
-        local assassinTarget = self:GetNWString("AssassinTarget", "")
-        if #assassinTarget > 0 then
-            if not keep_on_source then self:SetNWString("AssassinTarget", "") end
-            target:SetNWString("AssassinTarget", assassinTarget)
-            target:PrintMessage(HUD_PRINTCENTER, "You have learned that your predecessor's target was " .. assassinTarget)
-            target:PrintMessage(HUD_PRINTTALK, "You have learned that your predecessor's target was " .. assassinTarget)
-        elseif self:IsAssassin() then
-            -- If the player we're taking the role state from was an assassin but they didn't have a target, try to assign a target to this player
-            -- Use a slight delay to let the role change go through first just in case
-            timer.Simple(0.25, function()
-                AssignAssassinTarget(target, true)
-            end)
+        -- Run role-specific logic
+        if ROLE_MOVE_ROLE_STATE[self:GetRole()] then
+            ROLE_MOVE_ROLE_STATE[self:GetRole()](self, target, keep_on_source)
         end
 
         -- If the dead player had role weapons stored, give them to the target and then clear the list
@@ -626,4 +619,49 @@ function player.GetRoleTeam(role, detectivesAreInnocent)
         end
         return ROLE_TEAM_INNOCENT
     end
+end
+
+function player.GetLivingRole(role)
+    for _, v in ipairs(player.GetAll()) do
+        if v:Alive() and v:IsTerror() and v:IsRole(role) then
+            return v
+        end
+    end
+    return nil
+end
+function player.IsRoleLiving(role) return IsPlayer(player.GetLivingRole(role)) end
+
+function player.AreTeamsLiving()
+    local traitor_alive = false
+    local innocent_alive = false
+    local indep_alive = false
+    local monster_alive = false
+    local jester_alive = false
+
+    for _, v in ipairs(player.GetAll()) do
+        if v:Alive() and v:IsTerror() then
+            if v:IsTraitorTeam() then
+                traitor_alive = true
+            elseif v:IsMonsterTeam() then
+                monster_alive = true
+            elseif v:IsInnocentTeam() then
+                innocent_alive = true
+            elseif v:IsIndependentTeam() then
+                indep_alive = true
+            elseif v:IsJesterTeam() then
+                jester_alive = true
+            end
+        -- Handle zombification differently because the player's original role should have no impact on this
+        elseif v:GetNWBool("IsZombifying", false) then
+            if TRAITOR_ROLES[ROLE_ZOMBIE] then
+                traitor_alive = true
+            elseif MONSTER_ROLES[ROLE_ZOMBIE] then
+                monster_alive = true
+            elseif INDEPENDENT_ROLES[ROLE_ZOMBIE] then
+                indep_alive = true
+            end
+        end
+    end
+
+    return innocent_alive, traitor_alive, indep_alive, monster_alive, jester_alive
 end

@@ -51,10 +51,12 @@ local beep = Sound("npc/fast_zombie/fz_alert_close1.wav")
 local vampire_convert = CreateConVar("ttt_vampire_convert_enable", "0")
 local vampire_drain = CreateConVar("ttt_vampire_drain_enable", "1")
 local vampire_drain_first = CreateConVar("ttt_vampire_drain_first", "0")
+local vampire_drain_credits = CreateConVar("ttt_vampire_drain_credits", "0")
 local vampire_fang_dead_timer = CreateConVar("ttt_vampire_fang_dead_timer", "0")
 local vampire_fang_timer = CreateConVar("ttt_vampire_fang_timer", "5")
 local vampire_fang_heal = CreateConVar("ttt_vampire_fang_heal", "50")
 local vampire_fang_overheal = CreateConVar("ttt_vampire_fang_overheal", "25")
+local vampire_fang_overheal_living = CreateConVar("ttt_vampire_fang_overheal_living", "-1")
 local vampire_fang_unfreeze_delay = CreateConVar("ttt_vampire_fang_unfreeze_delay", "1")
 local vampire_prime_convert = CreateConVar("ttt_vampire_prime_only_convert", "1")
 
@@ -119,7 +121,8 @@ function SWEP:PrimaryAttack()
         elseif ent:IsPlayer() and vampire_drain:GetBool() then
             if ent:ShouldActLikeJester() then
                 self:Error("TARGET IS A JESTER")
-            elseif ent:IsVampireAlly() then
+            -- Don't allow draining allies or glitches when the vampire is a traitor
+            elseif ent:IsVampireAlly() or (TRAITOR_ROLES[ROLE_VAMPIRE] and ent:IsGlitch()) then
                 self:Error("TARGET IS AN ALLY")
             else
                 self:Drain(ent)
@@ -213,8 +216,6 @@ function SWEP:DoConvert()
     if not ply:HasWeapon("weapon_zm_improvised") then
         ply:Give("weapon_zm_improvised")
     end
-    -- Disable Killer smoke if they have it
-    ply:SetNWBool("KillerSmoke", false)
     ply:SetVampirePreviousRole(ply:GetRole())
     ply:SetRole(ROLE_VAMPIRE)
     ply:SetVampirePrime(false)
@@ -247,16 +248,26 @@ function SWEP:DoKill()
     local rag = self.TargetEntity.server_ragdoll or self.TargetEntity:GetRagdollEntity()
     SafeRemoveEntity(rag)
 
-    self:DoHeal()
+    self:DoHeal(true)
     self:DropBones()
+
+    local amt = vampire_drain_credits:GetInt()
+    if amt > 0 then
+        LANG.Msg(attacker, "credit_all", { role = ROLE_STRINGS[ROLE_VAMPIRE], num = amt })
+        attacker:AddCredits(amt)
+    end
 
     -- Not actually an error, but it resets the things we want
     self:FireError()
 end
 
-function SWEP:DoHeal()
+function SWEP:DoHeal(living)
+    local vamoverheal = vampire_fang_overheal_living:GetInt()
+    if not living or vamoverheal < 0 then
+        vamoverheal = vampire_fang_overheal:GetInt()
+    end
+
     local vamheal = vampire_fang_heal:GetInt()
-    local vamoverheal = vampire_fang_overheal:GetInt()
     self:GetOwner():SetHealth(math.min(self:GetOwner():Health() + vamheal, self:GetOwner():GetMaxHealth() + vamoverheal))
 end
 

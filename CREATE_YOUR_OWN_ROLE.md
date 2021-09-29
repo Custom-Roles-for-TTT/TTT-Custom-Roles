@@ -13,6 +13,7 @@
    1. [Credits](#Credits)
    1. [Health](#Health)
    1. [Role Activation](#Role-Activation)
+   1. [Role Selection](#Role-Selection)
    1. [Acting Like a Jester](#Acting-Like-a-Jester)
    1. [Translations](#Translations)
    1. [Optional Rules](#Optional-Rules)
@@ -83,6 +84,7 @@ ROLE.startinghealth = nil
 ROLE.maxhealth = nil
 
 ROLE.isactive = nil
+ROLE.selectionpredicate = nil
 ROLE.shouldactlikejester = nil
 
 ROLE.translations = {}
@@ -278,6 +280,22 @@ end
 
 Once that is defined you can use `ply:IsRoleActive()` anywhere you need to check your role's activation state.
 
+### Role Selection
+
+Not all roles that are created should be selectable at all times. A perfect example of this is the Trickster role which is nearly useless on maps that don't have traitor traps and traitor buttons. The next line in our file lets us define a predicate function to decide whether a role should be selectable (both for initial spawn and for a role the Drunk can change into if `ttt_drunk_any_role` is enabled):
+
+```lua
+ROLE.selectionpredicate = nil
+```
+
+Our example Summoner doesn't have any selection requirements, but let's say for example's sake that it should behave like the Trickster and only spawn if there are traitor traps and traitor buttons on the map. To do that we define the predicate function which returns `true` to allow the role to be selected when the traps and buttons exist. It would look something like this: 
+
+```lua
+ROLE.selectionpredicate = function()
+    return #ents.FindByClass("ttt_traitor_button") > 0
+end
+```
+
 ### Acting Like a Jester
 
 The next part of the file will help you create a role that sometimes acts like a jester. The perfect example of this functionality is the clown role -- when they first spawn, they:
@@ -347,6 +365,7 @@ There are a few options for roles that aren't covered in the template because th
 | `ROLE.canlootcredits` | Whether this role can loot credits from dead bodies. Automatically enabled if the role has a shop, but setting to `false` can make it so the role has a shop but cannot loot credits. Setting this to `true` will allow this role to loot credits regardless of whether they have a shop and will automatically create the `ttt_%NAMERAW%_credits_starting` convar. | 1.1.8 |
 | `ROLE.canusetraitorbuttons` | Whether this role can see and use traitor traps. Automatically enabled if the role is part of `ROLE_TEAM_TRAITOR`, but setting to `false` can make it so the role is a traitor that cannot use traitor traps. Setting to `true` will allow this role to use traitor traps regardless of their team association. | 1.1.8 |
 | `ROLE.shoulddelayshop` | Whether this role's shop purchases are delayed. Purchases will only be given to the player when `plymeta:GiveDelayedShopItems` is called by your own role logic. Enabling this feature will automatically create `ttt_%NAMERAW%_shop_active_only` and `ttt_%NAMERAW%_shop_delay` convars. Requires that the role has a shop and has role activation defined (see [Role Activation](#Role-Activation)) | 1.2.2 |
+| `ROLE.shoulddelayannouncements` | Whether this role should delay announcements when they kill a player that shows a message (like phantom and parasite). Used for things like preventing the assassin's target update message from getting overlapped. | 1.2.7 |
 
 The Summoner doesn't need these options to be set because it is `ROLE_TEAM_TRAITOR` and has a shop, but just for an example, here's what it would look like if we wanted to remove their credit looting and traitor trap abilities and delay their shop item delivery:
 
@@ -354,6 +373,28 @@ The Summoner doesn't need these options to be set because it is `ROLE_TEAM_TRAIT
 ROLE.canlootcredits = false
 ROLE.canusetraitorbuttons = false
 ROLE.shoulddelayshop = true
+```
+
+### Role Change Logic
+
+Sometimes a role has to handle the specific cases of when a role is initially assigned to a player (e.g. at the start of the round or when the drunk remembers what role they are) or when a role is stolen (e.g. by the bodysnatcher or the swapper). To make those situations handleable there are two different functions that can optionally be added to your role.
+
+The first function is called when a role is initially assigned to a player and can be used to set up some logic like the assignment of the assassin's first target. The function can be defined like this:
+
+```lua
+ROLE.onroleassigned = function(ply)
+    -- Do something with the 'ply', the player being assigned the role, here
+end
+```
+
+The other function that might be useful is called when someone takes the role from someone else. This can be used to transfer some part of the role state (such as an assassin's current target) to the new player. This function looks something like:
+
+```lua
+ROLE.moverolestate = function(source, target, keepOnSource)
+    -- In this function 'source' is the player whose state is being moved to 'target'
+    -- The 'keepOnSource' tells you whether the 'source' player should keep whatever information is being copied to 'target'
+    -- If 'keepOnSource' is 'false', that information should be removed from the 'source' player
+end
 ```
 
 ### ConVars

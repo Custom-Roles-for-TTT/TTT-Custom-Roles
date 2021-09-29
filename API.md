@@ -327,7 +327,7 @@ Methods available globally (within the defined realm)
 *Added in:* 1.0.0
 
 ### *Player Object*
-Variables available when called from a Player object (within the defined realm)
+Methods available when called from a Player object (within the defined realm)
 
 **plymeta:BeginRoleChecks()** - Sets up role logic for the player to handle role-specific events and checks.\
 *Realm:* Server\
@@ -508,6 +508,10 @@ Variables available when called from a Player object (within the defined realm)
 *Realm:* Client and Server\
 *Added in:* 1.2.5
 
+**plymeta:ShouldDelayAnnouncements()** - Whether this role should delay announcements when they kill a player that shows a message (like phantom and parasite). Used for things like preventing the assassin's target update message from getting overlapped.\
+*Realm:* Client and Server\
+*Added in:* 1.2.7
+
 **plymeta:ShouldDelayShopPurchase()** - Whether the player's shop purchase deliveries should be delayed.\
 *Realm:* Client and Server\
 *Added in:* 1.2.2
@@ -547,12 +551,35 @@ Variables available when called from a Player object (within the defined realm)
 ### *Player Static*
 Methods available having to do with players but without needing a specific Player object
 
+**player.AreTeamsLiving()** - Returns whether the there are members of the various teams left alive.\
+*Realm:* Client and Server\
+*Added in:* 1.2.7
+
+*Returns:*
+- *traitor_alive* - Whether there are members of the traitor team left alive
+- *innocent_alive* - Whether there are members of the innocent team left alive
+- *indep_alive* - Whether there are members of the independent team left alive
+- *monster_alive* - Whether there are members of the monster team left alive
+- *jester_alive* - Whether there are members of the jester team left alive
+
+**player.GetLivingRole(role)** - Returns a single player that is alive and belongs to the given role (or `nil` if none exist). Useful when trying to get the player belonging to a role that can only occur once in a round.\
+*Realm:* Client and Server\
+*Added in:* 1.2.7\
+*Parameters:*
+- *role* - The desired role ID of the alive player to be found
+
 **player.GetRoleTeam(role, detectivesAreInnocent)** - Gets which "role team" a role belongs to (see ROLE_TEAM_* global enumeration).\
 *Realm:* Client and Server\
 *Added in:* 1.2.7\
 *Parameters:*
 - *role* - The role ID in question
 - *detectivesAreInnocent* - Whether to include members of the detective "role team" in the innocent "role team" to match the logical teams
+
+**player.IsRoleLiving(role)** - Returns whether a player belonging to the given role exists and is alive.\
+*Realm:* Client and Server\
+*Added in:* 1.2.7\
+*Parameters:*
+- *role* - The role ID in question
 
 ### *Table*
 Methods created to help with the manipulation of tables
@@ -697,6 +724,15 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 *Return:*
 - *color* - The new color value to use or the original passed into the hook
 - *hidden* - The new hidden value to use or the original passed into the hook
+
+**TTTRolePopupParams(client)** - Called before a player's role start-of-round popup message is displayed, allowing the parameters to be added to.\
+*Realm:* Client\
+*Added in:* 1.2.7\
+*Parameters:*
+- *client* - The local player
+
+*Return:*
+- *params* - Table of name-value parameters to be used in this player's role start-of-round popup message
 
 **TTTScoreboardPlayerName(ply, client, currentName)** - Called before a player's row in the scoreboard (tab menu) is shown, allowing the name to be changed.\
 *Realm:* Client\

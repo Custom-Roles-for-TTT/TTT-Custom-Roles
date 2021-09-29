@@ -334,8 +334,6 @@ function plymeta:SpawnForRound(dead_only)
     self:SetNWInt("HauntingPower", 0)
     timer.Remove(self:Nick() .. "HauntingPower")
     timer.Remove(self:Nick() .. "HauntingSpectate")
-    -- Disable Killer smoke
-    self:SetNWBool("KillerSmoke", false)
     -- Disable Parasite infection
     self:SetNWBool("Infecting", false)
     self:SetNWString("InfectingTarget", nil)
@@ -408,9 +406,11 @@ end
 local function GetInnocentTeamDrunkExcludes()
     -- Exclude detectives from the innocent list
     local excludes = table.Copy(DETECTIVE_ROLES)
-    -- Also exclude the trickster if there are no traitor buttons
-    if #ents.FindByClass("ttt_traitor_button") == 0 then
-        excludes[ROLE_TRICKSTER] = true
+    -- Also exclude any roles whose predicate fails
+    for r, pred in pairs(ROLE_SELECTION_PREDICATE) do
+        if not pred() then
+            excludes[r] = true
+        end
     end
 
     -- Always exclude the glitch because a glitch suddenly appearing
@@ -643,23 +643,6 @@ function plymeta:BeginRoleChecks()
         end)
     end
 
-    -- Assassin logic
-    if self:IsAssassin() then
-        AssignAssassinTarget(self, true, false)
-    end
-
-    -- Killer logic
-    if self:IsKiller() then
-        if GetConVar("ttt_killer_knife_enabled"):GetBool() then
-            self:Give("weapon_kil_knife")
-        end
-        if GetConVar("ttt_killer_crowbar_enabled"):GetBool() then
-            self:StripWeapon("weapon_zm_improvised")
-            self:Give("weapon_kil_crowbar")
-            self:SelectWeapon("weapon_kil_crowbar")
-        end
-    end
-
     -- Glitch logic
     if self:IsGlitch() then
         SetGlobalBool("ttt_glitch_round", true)
@@ -670,6 +653,11 @@ function plymeta:BeginRoleChecks()
     -- The logic which handles a detective dying is in the PlayerDeath hook
     if self:IsDetectiveLikePromotable() and ShouldPromoteDetectiveLike() then
         self:HandleDetectiveLikePromotion()
+    end
+
+    -- Run role-specific logic
+    if ROLE_ON_ROLE_ASSIGNED[self:GetRole()] then
+        ROLE_ON_ROLE_ASSIGNED[self:GetRole()](self)
     end
 end
 

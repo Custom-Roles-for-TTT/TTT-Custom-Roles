@@ -19,6 +19,7 @@ ROLE.startinghealth = nil
 ROLE.maxhealth = nil
 
 ROLE.isactive = nil
+ROLE.selectionpredicate = nil
 ROLE.shouldactlikejester = nil
 
 ROLE.translations = {}

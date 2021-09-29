@@ -97,9 +97,7 @@ function GM:PostDrawTranslucentRenderables()
             local glitchMode = GetGlobalInt("ttt_glitch_mode", 0)
 
             -- Only show the "KILL" target if the setting is enabled
-            local showKillIcon = ((client:IsAssassin() and GetGlobalBool("ttt_assassin_show_target_icon", false) and client:GetNWString("AssassinTarget") == v:Nick()) or
-            (client:IsKiller() and GetGlobalBool("ttt_killer_show_target_icon", false)) or
-                                    (client:IsZombie() and GetGlobalBool("ttt_zombie_show_target_icon", false) and client.GetActiveWeapon and IsValid(client:GetActiveWeapon()) and client:GetActiveWeapon():GetClass() == "weapon_zom_claws") or
+            local showKillIcon = ((client:IsZombie() and GetGlobalBool("ttt_zombie_show_target_icon", false) and client.GetActiveWeapon and IsValid(client:GetActiveWeapon()) and client:GetActiveWeapon():GetClass() == "weapon_zom_claws") or
                                     (client:IsVampire() and GetGlobalBool("ttt_vampire_show_target_icon", false)) or
                                     (client:IsClown() and client:GetNWBool("KillerClownActive", false) and GetGlobalBool("ttt_clown_show_target_icon", false)))
                                     and not showJester
@@ -173,10 +171,6 @@ function GM:PostDrawTranslucentRenderables()
                         elseif v:IsMonsterTeam() then
                             role = v:GetRole()
                             noz = true
-                        end
-                    elseif client:IsKiller() then
-                        if showJester then
-                            role = ROLE_JESTER
                         end
                     elseif client:IsIndependentTeam() then
                         if showJester then
@@ -325,7 +319,6 @@ function GM:HUDDrawTargetID()
     local target_vampire = false
 
     local target_revenger_lover = false
-    local target_current_target = false
     local target_infected = false
 
     local target_corpse = false
@@ -424,10 +417,6 @@ function GM:HUDDrawTargetID()
 
         if client:IsRevenger() then
             target_revenger_lover = (ent:SteamID64() == client:GetNWString("RevengerLover", ""))
-        end
-
-        if client:IsAssassin() then
-            target_current_target = (ent:Nick() == client:GetNWString("AssassinTarget", ""))
         end
 
         -- Allow external roles to override or block showing player name
@@ -618,14 +607,7 @@ function GM:HUDDrawTargetID()
 
     text = nil
     local secondary_text = nil
-    if target_current_target then -- Prioritise target/soulmate message over roles
-        text = L.target_current_target
-        col = ROLE_COLORS_RADAR[ROLE_ASSASSIN]
-
-        if target_infected then
-            secondary_text = L.target_infected
-        end
-    elseif target_revenger_lover then
+    if target_revenger_lover then -- Prioritise soulmate message over roles
         text = L.target_revenger_lover
         col = ROLE_COLORS_RADAR[ROLE_REVENGER]
     elseif target_infected then

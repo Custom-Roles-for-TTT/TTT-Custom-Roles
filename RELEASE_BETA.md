@@ -6,6 +6,9 @@
 ### Additions
 - Added ttt_roleweapons admin command which opens a configuration interface for the roleweapons shop configuration system
 - Added new dynamic tutorial system using HTML and hook-generated pages per role
+- Added ability to reward vampires with credits when they drain a living target using their fangs (disabled by default)
+- Added ability to set a different amount of health overheal if a vampire drains a living target (disabled by default)
+- Added ability to block rewarding vampires when they (or their allies) kill someone (disabled by default)
 
 ### Changes
 - Changed custom win events to show in the end-of-round summary's Events tab with an "unknown win event" message until the new TTTEventFinishText hooks are used
@@ -14,6 +17,11 @@
 - Fixed vampire prime death effects still happening after the round has ended
 - Fixed external roles with custom win conditions blocking jester wins
 - Fixed tip about radio usage not using the correct key
+- Fixed assassin being shown "No targets remaining" after already being told their current target was their final target
+  - This does allow players who are resurrected after the assassin is assigned their final target to slide under the radar
+- Fixed roles with custom win conditions being able to block jester, clown, and old man wins as well as drunks remembering their role
+- Fixed traitor vampires being able to drain glitches
+- Fixed promoted deputies not being grouped with other detectives in assassin targetting logic
 
 ### Developer
 - Added TTTBlockPlayerFootstepSound hook to block a player's footstep sound
@@ -23,8 +31,13 @@
 - Added TTTPlayerRoleChanged hook to react to when a player's role changes
 - Added TTTShouldPlayerSmoke hook to affect whether a player should smoke and how that should look
 - Added TTTTutorialRolePage and TTTTutorialRoleText hooks for generating tutorial pages for an external role
+- Added TTTRolePopupParams hook to allow roles add parameters to their start-of-round popup message translation
 - Added plymeta:GetRoleTeam to get the appropriate ROLE_TEAM_* enum value for the player
+- Added plymeta:ShouldDelayAnnouncements to determine whether announcements when a player is killed should be delayed for this player
+- Added player.GetLivingRole, player.IsRoleLiving, and player.AreTeamsLiving static methods
 - Added player.GetRoleTeam static method to get the appropriate ROLE_TEAM_* enum value for a role
+- Added ability for external roles to define their role selection predicate function
+- Added ability for external roles to run specific logic when a player is initially assigned a role or when they steal a role from someone else
 - Changed OnPlayerHighlightEnabled to be globally available so other roles can use the same highlighting logic
 - Changed all EXTERNAL_ROLE_* tables to be named ROLE_* in preparation for role separation
 - Fixed returning false for the first parameter of TTTTargetIDPlayerRoleIcon not stopping the role icon from showing

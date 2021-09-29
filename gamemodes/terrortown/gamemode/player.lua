@@ -619,6 +619,9 @@ local function CheckCreditAward(victim, attacker)
         end
     end
 
+
+    local vampire_kill_credits = GetConVar("ttt_vampire_kill_credits"):GetBool()
+
     -- TRAITOR AWARD
     if valid_attacker and not (victim:IsTraitorTeam() or victim:IsJesterTeam()) and (not GAMEMODE.AwardedCredits or GetConVar("ttt_credits_award_repeat"):GetBool()) then
         local inno_alive = 0
@@ -653,10 +656,16 @@ local function CheckCreditAward(victim, attacker)
 
             -- If size is 0, awards are off
             if amt > 0 then
-                LANG.Msg(GetTraitorTeamFilter(true), "credit_all", { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR], num = amt })
+                local predicate = function(p)
+                    if p:Alive() and not p:IsSpec() and p:IsTraitorTeam() and p:IsShopRole() then
+                        return not p:IsVampire() or vampire_kill_credits
+                    end
+                    return false
+                end
+                LANG.Msg(GetPlayerFilter(predicate), "credit_all", { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR], num = amt })
 
                 for _, ply in ipairs(player.GetAll()) do
-                    if ply:IsActiveTraitorTeam() and ply:IsActiveShopRole() then
+                    if predicate(ply) then
                         ply:AddCredits(amt)
                     end
                 end
@@ -668,7 +677,7 @@ local function CheckCreditAward(victim, attacker)
     end
 
     -- VAMPIRE AWARD
-    if valid_attacker and not TRAITOR_ROLES[ROLE_VAMPIRE] and attacker:IsActiveVampire() and (not (victim:IsMonsterTeam() or victim:IsJesterTeam())) and (not GAMEMODE.AwardedVampireCredits or GetConVar("ttt_credits_award_repeat"):GetBool()) then
+    if vampire_kill_credits and valid_attacker and not TRAITOR_ROLES[ROLE_VAMPIRE] and attacker:IsActiveVampire() and (not (victim:IsMonsterTeam() or victim:IsJesterTeam())) and (not GAMEMODE.AwardedVampireCredits or GetConVar("ttt_credits_award_repeat"):GetBool()) then
         local ply_alive = 0
         local ply_dead = 0
         local ply_total = 0
@@ -712,54 +721,6 @@ local function CheckCreditAward(victim, attacker)
 
             GAMEMODE.AwardedVampireCredits = true
             GAMEMODE.AwardedVampireCreditsDead = ply_dead + GAMEMODE.AwardedVampireCreditsDead
-        end
-    end
-
-    -- KILLER AWARD
-    if valid_attacker and attacker:IsActiveKiller() and (not (victim:IsKiller() or victim:IsJesterTeam())) and (not GAMEMODE.AwardedKillerCredits or GetConVar("ttt_credits_award_repeat"):GetBool()) then
-        local ply_alive = 0
-        local ply_dead = 0
-        local ply_total = 0
-
-        for _, ply in pairs(player.GetAll()) do
-            if not ply:IsKiller() then
-                if ply:IsTerror() then
-                    ply_alive = ply_alive + 1
-                elseif ply:IsDeadTerror() then
-                    ply_dead = ply_dead + 1
-                end
-            end
-        end
-
-        -- we check this at the death of an innocent who is still technically
-        -- Alive(), so add one to dead count and sub one from living
-        ply_dead = ply_dead + 1
-        ply_alive = math.max(ply_alive - 1, 0)
-        ply_total = ply_alive + ply_dead
-
-        -- Only repeat-award if we have reached the pct again since last time
-        if GAMEMODE.AwardedKillerCredits then
-            ply_dead = ply_dead - GAMEMODE.AwardedKillerCreditsDead
-        end
-
-        local pct = ply_dead / ply_total
-        if pct >= GetConVar("ttt_credits_award_pct"):GetFloat() then
-            -- Traitors have killed sufficient people to get an award
-            local amt = GetConVar("ttt_credits_award_size"):GetInt()
-
-            -- If size is 0, awards are off
-            if amt > 0 then
-                LANG.Msg(GetKillerFilter(true), "credit_all", { role = ROLE_STRINGS[ROLE_KILLER], num = amt })
-
-                for _, ply in pairs(player.GetAll()) do
-                    if ply:IsActiveKiller() then
-                        ply:AddCredits(amt)
-                    end
-                end
-            end
-
-            GAMEMODE.AwardedKillerCredits = true
-            GAMEMODE.AwardedKillerCreditsDead = ply_dead + GAMEMODE.AwardedKillerCreditsDead
         end
     end
 end
@@ -1036,38 +997,6 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
         SendFullStateUpdate()
     end
 
-    -- Handle assassin kills
-    local attackertarget = attacker:GetNWString("AssassinTarget", "")
-    if IsPlayer(attacker) and attacker:IsAssassin() and ply ~= attacker and ply:Nick() ~= attackertarget and (attackertarget ~= "" or timer.Exists(attacker:Nick() .. "AssassinTarget")) then
-        timer.Remove(attacker:Nick() .. "AssassinTarget")
-        attacker:PrintMessage(HUD_PRINTCENTER, "Contract failed. You killed the wrong player.")
-        attacker:PrintMessage(HUD_PRINTTALK, "Contract failed. You killed the wrong player.")
-        attacker:SetNWString("AssassinTarget", "")
-        attacker:SetNWBool("AssassinFailed", true)
-    end
-
-    for _, v in pairs(player.GetAll()) do
-        local assassintarget = v:GetNWString("AssassinTarget", "")
-        if v:IsAssassin() and ply:Nick() == assassintarget then
-            -- Reset the target to clear the target overlay from the scoreboard
-            v:SetNWString("AssassinTarget", "")
-
-            local delay = GetConVar("ttt_assassin_next_target_delay"):GetFloat()
-            -- Delay giving the next target if we're configured to do so
-            if delay > 0 then
-                if v:Alive() and not v:IsSpec() then
-                    v:PrintMessage(HUD_PRINTCENTER, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
-                    v:PrintMessage(HUD_PRINTTALK, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
-                end
-                timer.Create(v:Nick() .. "AssassinTarget", delay, 1, function()
-                    AssignAssassinTarget(v, false, true)
-                end)
-            else
-                AssignAssassinTarget(v, false, false)
-            end
-        end
-    end
-
     -- Handle parasite infected death
     if ply:GetNWBool("Infected", false) then
         local parasiteUsers = table.GetKeys(deadParasites)
@@ -1318,8 +1247,8 @@ function GM:PlayerDeath(victim, infl, attacker)
             end)
         end
 
-        -- Delay this message so the Assassin can see the target update message
-        if attacker:IsAssassin() then
+        -- Delay this message so the player can see the target update message
+        if attacker:ShouldDelayAnnouncements() then
             timer.Simple(3, function()
                 attacker:PrintMessage(HUD_PRINTCENTER, "You have been haunted.")
             end)
@@ -1385,12 +1314,6 @@ function GM:PlayerDeath(victim, infl, attacker)
     if valid_kill and victim:IsJester() then
         JesterKilledNotification(attacker, victim)
         victim:SetNWString("JesterKiller", attacker:Nick())
-    end
-
-    -- Handle killer smoke
-    if valid_kill and attacker:IsKiller() then
-        attacker:SetNWBool("KillerSmoke", false)
-        ResetKillerKillCheckTimer()
     end
 
     -- Handle swapper death
@@ -1506,9 +1429,9 @@ function GM:PlayerDeath(victim, infl, attacker)
     if valid_kill and victim:IsParasite() and not victim:GetNWBool("IsZombifying", false) then
         HandleParasiteInfection(attacker, victim)
 
-        -- Delay this message so the Assassin can see the target update message
+        -- Delay this message so the player can see the target update message
         if GetConVar("ttt_parasite_announce_infection"):GetBool() then
-            if attacker:IsAssassin() then
+            if attacker:ShouldDelayAnnouncements() then
                 timer.Simple(3, function()
                     attacker:PrintMessage(HUD_PRINTCENTER, "You have been infected with a parasite.")
                 end)
@@ -1775,41 +1698,6 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
             if att:IsVeteran() and att:GetNWBool("VeteranActive", false) then
                 local bonus = GetConVar("ttt_veteran_damage_bonus"):GetFloat()
                 dmginfo:ScaleDamage(1 + bonus)
-            end
-
-            -- Assassins deal extra damage to their target, less damage to other players, and less damage if they fail their contract
-            -- Don't apply the scaling to the Jester team to specifically allow doing 100% damage to the active killer clown
-            if att:IsAssassin() and ply ~= att and not ply:IsJesterTeam() then
-                local scale = 0
-                if att:GetNWBool("AssassinFailed", false) then
-                    scale = -GetConVar("ttt_assassin_failed_damage_penalty"):GetFloat()
-                elseif ply:Nick() == att:GetNWString("AssassinTarget", "") then
-                    -- Get the active weapon, whather it's in the inflictor or it's from the attacker
-                    local active_weapon = dmginfo:GetInflictor()
-                    if not IsValid(active_weapon) or IsPlayer(active_weapon) then
-                        active_weapon = att:GetActiveWeapon()
-                    end
-
-                    -- Only scale bought weapons if that is enabled
-                    if (active_weapon.Spawnable or (not active_weapon.CanBuy or GetConVar("ttt_assassin_target_bonus_bought"):GetBool())) then
-                        scale = GetConVar("ttt_assassin_target_damage_bonus"):GetFloat()
-                    end
-                else
-                    scale = -GetConVar("ttt_assassin_wrong_damage_penalty"):GetFloat()
-                end
-                dmginfo:ScaleDamage(1 + scale)
-            end
-
-            -- Killers do less damage to encourage using the knife
-            if dmginfo:IsBulletDamage() and att:IsKiller() then
-                local penalty = GetConVar("ttt_killer_damage_penalty"):GetFloat()
-                dmginfo:ScaleDamage(1 - penalty)
-            end
-
-            -- Killers take less bullet damage
-            if dmginfo:IsBulletDamage() and ply:IsKiller() then
-                local reduction = GetConVar("ttt_killer_damage_reduction"):GetFloat()
-                dmginfo:ScaleDamage(1 - reduction)
             end
 
             -- Monsters take less bullet damage
@@ -2233,17 +2121,7 @@ function GM:OnNPCKilled() end
 local function HandleRoleForcedWeapons(ply)
     if not IsValid(ply) or ply:IsSpec() or GetRoundState() ~= ROUND_ACTIVE then return end
 
-    if ply:IsKiller() then
-        -- Ensure the Killer has their knife, if its enabled
-        if not ply:HasWeapon("weapon_kil_knife") and GetConVar("ttt_killer_knife_enabled"):GetBool() then
-            ply:Give("weapon_kil_knife")
-        end
-        if ply:HasWeapon("weapon_zm_improvised") and not ply:HasWeapon("weapon_kil_crowbar") and GetConVar("ttt_killer_crowbar_enabled"):GetBool() then
-            ply:StripWeapon("weapon_zm_improvised")
-            ply:Give("weapon_kil_crowbar")
-            ply:SelectWeapon("weapon_kil_crowbar")
-        end
-    elseif ply:IsZombie() then
+    if ply:IsZombie() then
         if ply.GetActiveWeapon and IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() == "weapon_zom_claws" then
             ply:SetColor(Color(70, 100, 25, 255))
             ply:SetRenderMode(RENDERMODE_NORMAL)
@@ -2373,77 +2251,6 @@ function GM:PlayerShouldTaunt(ply, actid)
     -- Mods/plugins that add such a system should override this.
     return false
 end
-
-local function GetKillerPlayer()
-    for _, v in pairs(player.GetAll()) do
-        if v:IsActiveKiller() then
-            return v
-        end
-    end
-    return nil
-end
-
-local function HasKillerPlayer()
-    return GetKillerPlayer() ~= nil
-end
-
-local killerSmokeTime = 0
-function ResetKillerKillCheckTimer()
-    killerSmokeTime = 0
-    timer.Start("KillerKillCheckTimer")
-end
-
-local function HandleKillerSmokeTick()
-    timer.Stop("KillerKillCheckTimer")
-    if GetRoundState() ~= ROUND_ACTIVE then
-        ResetKillerKillCheckTimer()
-    end
-
-    timer.Create("KillerTick", 0.1, 0, function()
-        if GetRoundState() == ROUND_ACTIVE then
-            if killerSmokeTime >= GetConVar("ttt_killer_smoke_timer"):GetInt() then
-                for _, v in pairs(player.GetAll()) do
-                    if not IsValid(v) then return end
-                    if v:IsKiller() and v:Alive() and not v:GetNWBool("KillerSmoke", false) then
-                        v:SetNWBool("KillerSmoke", true)
-                        v:PrintMessage(HUD_PRINTCENTER, "Your evil is showing")
-                        v:PrintMessage(HUD_PRINTTALK, "Your evil is showing")
-                    elseif (v:IsKiller() and not v:Alive()) or not HasKillerPlayer() then
-                        timer.Remove("KillerKillCheckTimer")
-                    end
-                end
-            end
-        else
-            killerSmokeTime = 0
-        end
-    end)
-end
-
-timer.Create("KillerKillCheckTimer", 1, 0, function()
-    local killer = GetKillerPlayer()
-    if GetRoundState() == ROUND_ACTIVE and GetConVar("ttt_killer_smoke_enabled"):GetBool() and killer ~= nil then
-        killerSmokeTime = killerSmokeTime + 1
-
-        -- Warn the killer that they need to kill at 1/2 time remaining, 1/4 time remaining, 10 seconds remaining, and 5 seconds remaining
-        local smoke_timer = GetConVar("ttt_killer_smoke_timer"):GetInt()
-        local timer_remaining = smoke_timer - killerSmokeTime
-        local timer_fraction = (timer_remaining / smoke_timer)
-        -- Don't do the 1/2 and 1/4 checks if they represent < 10 seconds
-        if (timer_fraction == 0.5 and timer_remaining > 10) or
-            (timer_fraction == 0.25 and timer_remaining > 10) or
-            timer_remaining == 10 or timer_remaining == 5 then
-            killer:PrintMessage(HUD_PRINTTALK, "Your evil grows impatient. Kill someone in the next " .. timer_remaining .. " seconds or you will be revealed!")
-        end
-
-        if killerSmokeTime >= smoke_timer then
-            HandleKillerSmokeTick()
-        else
-            timer.Remove("KillerTick")
-        end
-    else
-        killerSmokeTime = 0
-    end
-end)
 
 local function PlayerAutoComplete(cmd, args)
     -- Split all the arguments out so we can keep track of them
