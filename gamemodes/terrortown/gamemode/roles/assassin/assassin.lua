@@ -60,7 +60,8 @@ function AssignAssassinTarget(ply, start, delay)
 
     for _, p in pairs(player.GetAll()) do
         if p:Alive() and not p:IsSpec() then
-            if p:IsDetectiveTeam() then
+            -- Include all non-traitor detective-like players
+            if p:IsDetectiveLike() and not p:IsTraitorTeam() then
                 table.insert(detectives, p:Nick())
             -- Exclude Glitch from these lists so they don't get discovered immediately
             elseif p:IsInnocentTeam() and not p:IsGlitch() then

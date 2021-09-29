@@ -18,6 +18,7 @@
   - This does allow players who are resurrected after the assassin is assigned their final target to slide under the radar
 - Fixed roles with custom win conditions being able to block jester, clown, and old man wins as well as drunks remembering their role
 - Fixed traitor vampires being able to drain glitches
+- Fixed promoted deputies not being grouped with other detectives in assassin targetting logic
 
 ### Developer
 - Added TTTBlockPlayerFootstepSound hook to block a player's footstep sound
