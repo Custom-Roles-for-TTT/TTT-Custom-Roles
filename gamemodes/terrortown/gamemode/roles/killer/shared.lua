@@ -3,7 +3,7 @@ ROLE_STARTING_HEALTH[ROLE_KILLER] = 150
 ROLE_MAX_HEALTH[ROLE_KILLER] = 150
 ROLE_STARTING_CREDITS[ROLE_KILLER] = 2
 
-hook.Add("Initialize", "Killer_Shared_Initialize", function()
+local function InitializeEquipment()
     local mat_dir = "vgui/ttt/"
     EquipmentItems[ROLE_KILLER] = {
         -- body armor
@@ -51,4 +51,12 @@ hook.Add("Initialize", "Killer_Shared_Initialize", function()
         EQUIP_RADAR,
         EQUIP_DISGUISE
     }
+end
+InitializeEquipment()
+
+hook.Add("Initialize", "Killer_Shared_Initialize", function()
+    InitializeEquipment()
+end)
+hook.Add("TTTPrepareRound", "Killer_Shared_TTTPrepareRound", function()
+    InitializeEquipment()
 end)

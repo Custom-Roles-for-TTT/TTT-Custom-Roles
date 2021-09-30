@@ -3,24 +3,36 @@ VAMPIRE_DEATH_NONE = 0
 VAMPIRE_DEATH_KILL_CONVERED = 1
 VAMPIRE_DEATH_REVERT_CONVERTED = 2
 
+local function InitializeEquipment()
+    if EquipmentItems then
+        local mat_dir = "vgui/ttt/"
+        EquipmentItems[ROLE_VAMPIRE] = {
+            -- body armor
+            { id = EQUIP_ARMOR,
+              type = "item_passive",
+              material = mat_dir .. "icon_armor",
+              name = "item_armor",
+              desc = "item_armor_desc"
+            }
+        }
+    end
+
+    if DefaultEquipment then
+        DefaultEquipment[ROLE_VAMPIRE] = {
+            EQUIP_ARMOR,
+            EQUIP_RADAR,
+            EQUIP_DISGUISE
+        }
+    end
+end
+InitializeEquipment()
+
 -- Initialize role features
 hook.Add("Initialize", "Vampire_Shared_Initialize", function()
-    local mat_dir = "vgui/ttt/"
-    EquipmentItems[ROLE_VAMPIRE] = {
-        -- body armor
-        { id = EQUIP_ARMOR,
-          type = "item_passive",
-          material = mat_dir .. "icon_armor",
-          name = "item_armor",
-          desc = "item_armor_desc"
-        }
-    }
-
-    DefaultEquipment[ROLE_VAMPIRE] = {
-        EQUIP_ARMOR,
-        EQUIP_RADAR,
-        EQUIP_DISGUISE
-    }
+    InitializeEquipment()
+end)
+hook.Add("TTTPrepareRound", "Vampire_Shared_TTTPrepareRound", function()
+    InitializeEquipment()
 end)
 
 hook.Add("TTTUpdateRoleState", "Vampire_Team_TTTUpdateRoleState", function()
