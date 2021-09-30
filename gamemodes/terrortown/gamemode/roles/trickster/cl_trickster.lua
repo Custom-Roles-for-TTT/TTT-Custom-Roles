@@ -1,3 +1,13 @@
+------------------
+-- TRANSLATIONS --
+------------------
+
+hook.Add("Initialize", "Trickster_Translations_Initialize", function()
+    -- Popup
+    LANG.AddToLanguage("english", "info_popup_trickster", [[You are {role}! You are {aninnocent} who can see and
+use {traitor} traps throughout the map. Have fun!]])
+end)
+
 --------------
 -- TUTORIAL --
 --------------

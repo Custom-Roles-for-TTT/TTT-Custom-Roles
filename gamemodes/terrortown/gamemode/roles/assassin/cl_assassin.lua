@@ -1,3 +1,27 @@
+------------------
+-- TRANSLATIONS --
+------------------
+
+hook.Add("Initialize", "Assassin_Translations_Initialize", function()
+    -- Target
+    LANG.AddToLanguage("english", "target_assassin_target", "TARGET")
+    LANG.AddToLanguage("english", "target_assassin_target_team", "{player}'s TARGET")
+    LANG.AddToLanguage("english", "target_current_target", "CURRENT TARGET")
+
+    -- Popup
+    LANG.AddToLanguage("english", "info_popup_assassin", [[You are {role}! {comrades}
+
+Your first target is:
+{assassintarget}
+
+You will deal more to your target and less damage
+to all other players. But take care as killing the wrong
+player will result in you losing your damage bonus and
+maybe even suffering from a penalty!
+
+Press {menukey} to receive your special equipment!]])
+end)
+
 ---------------
 -- TARGET ID --
 ---------------

@@ -640,12 +640,9 @@ L.corpse_hint = "Press E to search."
 L.target_disg = " (DISGUISED)"
 L.target_unid = "Unidentified body"
 
-L.target_current_target = "CURRENT TARGET"
 L.target_infected = "INFECTED WITH PARASITE"
 
 L.target_revenger_lover = "YOUR SOULMATE"
-L.target_assassin_target = "TARGET"
-L.target_assassin_target_team = "{player}'s TARGET"
 
 L.target_credits = "Search to receive unspent credits"
 
@@ -762,9 +759,6 @@ Use your tools to keep fellow {innocents} in the fight!
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_trickster = [[You are {role}! You are {aninnocent} who can see and
-use {traitor} traps throughout the map. Have fun!]]
-
 L.info_popup_paramedic = [[You are {role}! You can give your fellow {innocents}
 a second chance with your defibrillator. Stay alive
 and bring back your teams strongest player.]]
@@ -830,18 +824,6 @@ L.info_popup_impersonator = [[You are {role}! {comrades}
 
 If the {detective} dies you will appear to become a new {detective} and gain their
 abilities just like the {deputy}. However you are still working for the {traitors}.
-
-Press {menukey} to receive your special equipment!]]
-
-L.info_popup_assassin = [[You are {role}! {comrades}
-
-Your first target is:
-{assassintarget}
-
-You will deal more to your target and less damage
-to all other players. But take care as killing the wrong
-player will result in you losing your damage bonus and
-maybe even suffering from a penalty!
 
 Press {menukey} to receive your special equipment!]]
 
