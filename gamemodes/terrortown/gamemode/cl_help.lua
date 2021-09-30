@@ -794,7 +794,7 @@ local function ShowTutorialPage(pnl, page)
 
             -- If the role didn't provide details, use some generic info
             if not roleText or #roleText == 0 then
-                htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>This is some generic information about the " .. roleName .. " role because the role author hasn't provided us with specifics.</span>"
+                htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>This is some generic information about the " .. roleName .. " role because the role author hasn't defined specifics.</span>"
 
                 -- Team
                 htmlData = htmlData .. "<div style='margin-top: 5px;'>"
@@ -849,7 +849,7 @@ function HELPSCRN:CreateTutorial(parent)
 
     maxPages = #enabledPages + #enabledRoles
 
-    local bw, bh = 100, 30
+    local bw, bh = 96, 30
 
     local tut = vgui.Create("DPanel", parent)
     tut:StretchToParent(0, 0, 0, 0)
@@ -858,6 +858,21 @@ function HELPSCRN:CreateTutorial(parent)
 
     tut.current = 1
     ShowTutorialPage(tut, tut.current)
+
+    local pageSelect = vgui.Create("DComboBox", parent)
+    pageSelect:SetSize(bw * 2, bh)
+    pageSelect:MoveBelow(tut)
+    pageSelect:SetSortItems(false)
+    for i = 1, maxPages do
+        local name
+        if i <= #enabledPages then
+            name = enabledPages[i].title
+        else
+            local role = enabledRoles[i - #enabledPages]
+            name = ROLE_STRINGS[role]
+        end
+        pageSelect:AddChoice(name, i, i == 1)
+    end
 
     local bar = vgui.Create("TTTProgressBar", parent)
     bar:SetSize(200, bh)
@@ -888,13 +903,20 @@ function HELPSCRN:CreateTutorial(parent)
     bprev:SetSize(bw, bh)
     bprev:SetText(GetTranslation("prev"))
     bprev:CopyPos(bar)
-    bprev:AlignLeft()
+    bprev:MoveLeftOf(bnext)
+
+    pageSelect.OnSelect = function(pnl, index, label, data)
+        tut.current = data
+        bar:SetValue(tut.current)
+        ShowTutorialPage(tut, tut.current)
+    end
 
     bnext.DoClick = function()
         if tut.current < maxPages then
             tut.current = tut.current + 1
             bar:SetValue(tut.current)
             ShowTutorialPage(tut, tut.current)
+            pageSelect:ChooseOptionID(tut.current)
         end
     end
 
@@ -903,6 +925,7 @@ function HELPSCRN:CreateTutorial(parent)
             tut.current = tut.current - 1
             bar:SetValue(tut.current)
             ShowTutorialPage(tut, tut.current)
+            pageSelect:ChooseOptionID(tut.current)
         end
     end
 end
