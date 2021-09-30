@@ -19,23 +19,6 @@ hook.Add("TTTSyncGlobals", "Killer_TTTSyncGlobals", function()
     SetGlobalBool("ttt_killer_vision_enable", GetConVar("ttt_killer_vision_enable"):GetBool())
 end)
 
--------------
--- HELPERS --
--------------
-
-local function GetKillerPlayer()
-    for _, v in pairs(player.GetAll()) do
-        if v:IsActiveKiller() then
-            return v
-        end
-    end
-    return nil
-end
-
-local function HasKillerPlayer()
-    return GetKillerPlayer() ~= nil
-end
-
 -----------
 -- KARMA --
 -----------
@@ -79,7 +62,7 @@ local function HandleKillerSmokeTick()
                         v:SetNWBool("KillerSmoke", true)
                         v:PrintMessage(HUD_PRINTCENTER, "Your evil is showing")
                         v:PrintMessage(HUD_PRINTTALK, "Your evil is showing")
-                    elseif (v:IsKiller() and not v:Alive()) or not HasKillerPlayer() then
+                    elseif (v:IsKiller() and not v:Alive()) or not player.IsRoleLiving(ROLE_KILLER) then
                         timer.Remove("KillerKillCheckTimer")
                     end
                 end
@@ -92,7 +75,7 @@ end
 
 -- Warn the player periodically if they are going to start smoking
 timer.Create("KillerKillCheckTimer", 1, 0, function()
-    local killer = GetKillerPlayer()
+    local killer = player.GetLivingRole(ROLE_KILLER)
     if GetRoundState() == ROUND_ACTIVE and GetConVar("ttt_killer_smoke_enabled"):GetBool() and killer ~= nil then
         killerSmokeTime = killerSmokeTime + 1
 
