@@ -62,7 +62,6 @@ local vision_enabled = false
 local client = nil
 
 local function EnableAssassinTargetHighlights()
-    print("EnableAssassinTargetHighlights")
     hook.Add("PreDrawHalos", "Assassin_Highlight_PreDrawHalos", function()
         local target_nick = client:GetNWString("AssassinTarget", "")
         if not target_nick or target_nick:len() == 0 then return end
