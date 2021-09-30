@@ -1,4 +1,8 @@
-hook.Add("TTTTutorialRoleText", "SummonerTutorialRoleText", function(role, titleLabel)
+--------------
+-- TUTORIAL --
+--------------
+
+hook.Add("TTTTutorialRoleText", "Trickster_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_TRICKSTER then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local html = "The " .. ROLE_STRINGS[ROLE_TRICKSTER] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> who can:"
