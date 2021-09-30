@@ -25,6 +25,7 @@
       1. [Round Summary Events](#Round-Summary-Events)
       1. [Round Result Message](#Round-Result-Message)
       1. [Full Win Condition Example](#Full-Win-Condition-Example)
+   1. [Tutorial Page](#Tutorial-Page)
    1. [Role Registration](#Role-Registration)
    1. [Final Block](#Final-Block)
    1. [Example File](#Example-File)
@@ -356,6 +357,8 @@ ROLE.translations = {
 
 *(Note: At the very least there should be an english version of every translation you add. The english translation will be used as the default if a translation is not available in the client's chosen language)*
 
+Once a translation is defined, it can be used in client-side code via `LANG.GetTranslation` (or `LANG.GetParamTranslation` if it requires parameters).
+
 ### Optional Rules
 
 There are a few options for roles that aren't covered in the template because they don't apply to every role. Add any of these that you want to apply to your role to the file.
@@ -647,6 +650,41 @@ If we piece together all the bits of code from the preivous sections it would co
 ```
 
 Notice that we combined the two different `Initialize` hooks into one. That is not required but if you do decide to keep two hooks make sure you give them different identifiers.
+
+### Tutorial Page
+
+With every new role that is added, the amount of different possible features and abilities becomes even more difficult for the players to remember. To help in that regard we have created a dynamic tutorial system within the in-game F1 Help and Settings menu. The tutorial system only shows pages for the roles that are currently available and enabled on the server and allows role creators to dynamically define their role tutorial page. The intent of the role tutorial page is to provide a description of the functionality of the role and to dynamically update based on the current role configurations. Dynamically updating the role tutorial page allows server operators to configure the roles to their liking while avoiding the confusion of a static tutorial image not matching those configurations (as in past versions of Custom Roles for TTT).
+
+There are two different client-side hooks that can be used to define the tutorial page for your role:
+1. `TTTTutorialRolePage` - Used to render a completely custom page using the extensive panel and UI control system built into GMod.
+1. `TTTTutorialRoleText` - Used to provide the text to show for a role. This text can be HTML and will be rendered within a `<div>`.
+
+For our Summoner example, we're going to use the simpler `TTTTutorialRoleText` hook and return a simple string description of the role.
+
+```lua
+if CLIENT then
+    hook.Add("TTTTutorialRoleText", "SummonerTutorialRoleText", function(role, titleLabel)
+        if role == ROLE_SUMMONER then
+            return "The " .. ROLE_STRINGS[ROLE_SUMMONER] .. " is a member of the traitor team who can only purchase items that summon minions to fight for them."
+        end
+    end)
+end
+```
+
+*(Note: If you would like to make this information translateable, see the [Translations](#Translations) section of this document. )*
+
+For a more complex example, lets take the same string from before but change the phrase "traitor team" to be the color of the traitor team in TTT. To do that, we're going to use some fairly basic HTML instead of just raw text:
+
+```lua
+if CLIENT then
+    hook.Add("TTTTutorialRoleText", "SummonerTutorialRoleText", function(role, titleLabel)
+        if role == ROLE_SUMMONER then
+            local roleColor = ROLE_COLORS[ROLE_TRAITOR]
+            return "The " .. ROLE_STRINGS[ROLE_SUMMONER] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitor team</span> who can only purchase items that summon minions to fight for them."
+        end
+    end)
+end
+```
 
 ### Role Registration
 

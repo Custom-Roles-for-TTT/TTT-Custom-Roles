@@ -790,7 +790,7 @@ local function ShowTutorialPage(pnl, page)
             html:Dock(FILL)
 
             -- Open the page
-            local htmlData = "<div style='width: 100%; height: 93%; top: 20px; position: relative; padding-top: 10px;'>"
+            local htmlData = "<div style='width: 100%; height: 93%; top: 20px; position: relative; padding-top: 10px;" .. fontStyle .. "; color: white;'>"
 
             -- If the role didn't provide details, use some generic info
             if not roleText or #roleText == 0 then
