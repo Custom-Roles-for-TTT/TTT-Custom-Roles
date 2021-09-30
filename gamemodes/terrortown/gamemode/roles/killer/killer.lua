@@ -145,7 +145,7 @@ hook.Add("TTTPrepareRound", "Killer_Credits_TTTPrepareRound", function()
 end)
 
 -- Award credits for valid kill
-hook.Add("DoPlayerDeath", "Killer_Credits_DoPlayerDeath", function()
+hook.Add("DoPlayerDeath", "Killer_Credits_DoPlayerDeath", function(victim, attacker, dmginfo)
     if GetRoundState() ~= ROUND_ACTIVE then return end
     if not IsValid(victim) then return end
 
