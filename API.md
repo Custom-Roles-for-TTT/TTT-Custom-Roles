@@ -263,7 +263,7 @@ Methods available globally (within the defined realm)
 *Parameters:*
 - *aliveOnly* - Whether this filter should only include live players (Defaults to `false`).
 
-**OnPlayerHighlightEnabled(client, alliedRoles, showJesters, hideEnemies, traitorAllies)** - Handles player highlighting (colored glow around players) rules for the local player.\
+**OnPlayerHighlightEnabled(client, alliedRoles, showJesters, hideEnemies, traitorAllies, onlyShowEnemies)** - Handles player highlighting (colored glow around players) rules for the local player.\
 *Realm:* Client\
 *Added in:* 1.2.7\
 *Parameters:*
@@ -272,6 +272,7 @@ Methods available globally (within the defined realm)
 - *showJesters* - Whether jester roles should be highlighted in the jester color. If `false`, jesters will appear in the generic enemy color instead
 - *hideEnemies* - Whether enemy roles (e.g. anyone that isn't an ally or a jester if *showJesters* is enabled) should be highlighted
 - *traitorAllies* - Whether this role's allies are traitors. If `true`, allied roles will be shown in the traitor color. Otherwise allied roles will be shown in the innocent color
+- *onlyShowEnemies* - Whether to only highlight players whose roles are explicitly enemies of the local player. If this is `true` then allies will not be highlighted. If both this and *showJesters* are `true` then neither allies nor jesters will be highlighted.
 
 **RegisterRole(roleTable)** - Registers a role with Custom Roles for TTT. See [here](CREATE_YOUR_OWN_ROLE.md) for instructions on how to create a role and role table structure.\
 *Realm:* Client and Server\

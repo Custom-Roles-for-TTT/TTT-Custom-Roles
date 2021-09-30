@@ -48,7 +48,6 @@ include("cl_roleweapons.lua")
 
 local traitor_vision = false
 local zombie_vision = false
-local vampire_vision = false
 local jesters_visible_to_traitors = false
 local jesters_visible_to_monsters = false
 local jesters_visible_to_independents = false
@@ -203,7 +202,6 @@ local function ReceiveRole()
     -- Update the local state
     traitor_vision = GetGlobalBool("ttt_traitor_vision_enable", false)
     zombie_vision = GetGlobalBool("ttt_zombie_vision_enable", false)
-    vampire_vision = GetGlobalBool("ttt_vampire_vision_enable", false)
     jesters_visible_to_traitors = GetGlobalBool("ttt_jesters_visible_to_traitors", false)
     jesters_visible_to_monsters = GetGlobalBool("ttt_jesters_visible_to_monsters", false)
     jesters_visible_to_independents = GetGlobalBool("ttt_jesters_visible_to_independents", false)
@@ -480,7 +478,7 @@ function GM:Tick()
         if client:Alive() and client:Team() ~= TEAM_SPEC then
             WSWITCH:Think()
             RADIO:StoreTarget()
-            if traitor_vision or zombie_vision or vampire_vision then
+            if traitor_vision or zombie_vision then
                 HandleRoleHighlights(client)
             end
         end
@@ -933,7 +931,7 @@ end)
 
 -- Player highlights
 
-function OnPlayerHighlightEnabled(client, alliedRoles, showJesters, hideEnemies, traitorAllies)
+function OnPlayerHighlightEnabled(client, alliedRoles, showJesters, hideEnemies, traitorAllies, onlyShowEnemies)
     if GetRoundState() ~= ROUND_ACTIVE then return end
     local enemies = {}
     local friends = {}
@@ -941,9 +939,13 @@ function OnPlayerHighlightEnabled(client, alliedRoles, showJesters, hideEnemies,
     for _, v in pairs(player.GetAll()) do
         if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= client then
             if showJesters and v:ShouldActLikeJester() then
-                table.insert(jesters, v)
+                if not onlyShowEnemies then
+                    table.insert(jesters, v)
+                end
             elseif table.HasValue(alliedRoles, v:GetRole()) then
-                table.insert(friends, v)
+                if not onlyShowEnemies then
+                    table.insert(friends, v)
+                end
             -- Don't even track enemies if this role can't see them
             elseif not hideEnemies then
                 table.insert(enemies, v)
@@ -995,41 +997,9 @@ local function EnableZombieHighlights(client)
             showJesters = jesters_visible_to_traitors
         -- If zombie vision is enabled, add the allied roles
         elseif zombie_vision then
-            -- If they are monsters, ally with Zombies and monster-Vampires
+            -- Ally with whichever team they belong to
             if MONSTER_ROLES[ROLE_ZOMBIE] then
-                allies = {ROLE_ZOMBIE}
-                if MONSTER_ROLES[ROLE_VAMPIRE] then
-                    table.insert(allies, ROLE_VAMPIRE)
-                end
-                showJesters = jesters_visible_to_monsters
-            else
-                allies = GetTeamRoles(INDEPENDENT_ROLES)
-                showJesters = jesters_visible_to_independents
-            end
-        end
-
-        OnPlayerHighlightEnabled(client, allies, showJesters, hideEnemies, traitorAllies)
-    end)
-end
-local function EnableVampireHighlights(client)
-    hook.Add("PreDrawHalos", "AddPlayerHighlights", function()
-        local hasFangs = client.GetActiveWeapon and IsValid(client:GetActiveWeapon()) and client:GetActiveWeapon():GetClass() == "weapon_vam_fangs"
-        local hideEnemies = not vampire_vision or not hasFangs
-        local allies = {}
-        local traitorAllies = TRAITOR_ROLES[ROLE_VAMPIRE]
-        local showJesters = false
-        -- If vampires are traitors and traitor vision or vampire vision is enabled then add all the traitor roles as allies
-        if (traitor_vision or vampire_vision) and traitorAllies then
-            allies = GetTeamRoles(TRAITOR_ROLES)
-            showJesters = jesters_visible_to_traitors
-        -- If vampire vision is enabled, add the allied roles
-        elseif vampire_vision then
-            -- If they are monsters, ally with Vampires and monster-Zombies
-            if MONSTER_ROLES[ROLE_VAMPIRE] then
-                allies = {ROLE_VAMPIRE}
-                if MONSTER_ROLES[ROLE_ZOMBIE] then
-                    table.insert(allies, ROLE_ZOMBIE)
-                end
+                allies = GetTeamRoles(MONSTER_ROLES)
                 showJesters = jesters_visible_to_monsters
             else
                 allies = GetTeamRoles(INDEPENDENT_ROLES)
@@ -1047,11 +1017,6 @@ function HandleRoleHighlights(client)
     if client:IsZombie() and (zombie_vision or (traitor_vision and TRAITOR_ROLES[ROLE_ZOMBIE])) then
         if not vision_enabled then
             EnableZombieHighlights(client)
-            vision_enabled = true
-        end
-    elseif client:IsVampire() and (vampire_vision or (traitor_vision and TRAITOR_ROLES[ROLE_VAMPIRE])) then
-        if not vision_enabled then
-            EnableVampireHighlights(client)
             vision_enabled = true
         end
     elseif client:IsTraitorTeam() and traitor_vision then
