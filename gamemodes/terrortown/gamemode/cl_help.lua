@@ -815,12 +815,20 @@ local function ShowTutorialPage(pnl, page)
     end
 end
 
+-- Allow roles to have special logic for additional readons why they might show on the tutorial screen
+local special_role_enabled = {
+    -- Show the zombie screen if the Mad Scientist could spawn them
+    [ROLE_ZOMBIE] = function()
+        return INDEPENDENT_ROLES[ROLE_ZOMBIE] and GetConVar("ttt_madscientist_enabled"):GetBool()
+    end
+}
+
 function HELPSCRN:CreateTutorial(parent)
     -- Get the list of enabled roles
     table.Empty(enabledRoles)
     for r = ROLE_INNOCENT, ROLE_MAX do
         local rolestring = ROLE_STRINGS_RAW[r]
-        if DEFAULT_ROLES[r] or GetConVar("ttt_" .. rolestring .. "_enabled"):GetBool() then
+        if DEFAULT_ROLES[r] or (special_role_enabled[r] and special_role_enabled[r]()) or GetConVar("ttt_" .. rolestring .. "_enabled"):GetBool() then
             table.insert(enabledRoles, r)
         end
     end
