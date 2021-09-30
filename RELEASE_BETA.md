@@ -22,6 +22,7 @@
 - Fixed roles with custom win conditions being able to block jester, clown, and old man wins as well as drunks remembering their role
 - Fixed traitor vampires being able to drain glitches
 - Fixed promoted deputies not being grouped with other detectives in assassin targetting logic
+- Fixed independent vampire popup still having "{comrades}" placeholder
 
 ### Developer
 - Added TTTBlockPlayerFootstepSound hook to block a player's footstep sound

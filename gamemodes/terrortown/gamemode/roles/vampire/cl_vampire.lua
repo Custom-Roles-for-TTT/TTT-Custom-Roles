@@ -20,6 +20,13 @@ You can use your fangs (left-click) to drink blood and refill your health or to 
 Press {menukey} to receive your special equipment!]])
 end)
 
+-- If this is an independent Vampire, replace the "comrades" list with a generic kill message
+hook.Add("TTTRolePopupParams", "Vampire_TTTRolePopupParams", function(client)
+    if client:IsVampire() and client:IsIndependentTeam() then
+        return {comrades = "\n\nKill all others to win!"}
+    end
+end)
+
 ---------------
 -- TARGET ID --
 ---------------
