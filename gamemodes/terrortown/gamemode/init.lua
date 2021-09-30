@@ -195,6 +195,7 @@ CreateConVar("ttt_veteran_damage_bonus", "0.5")
 CreateConVar("ttt_veteran_full_heal", "1")
 CreateConVar("ttt_veteran_heal_bonus", "0")
 CreateConVar("ttt_veteran_announce", "0")
+CreateConVar("ttt_veteran_activation_credits", "0")
 
 CreateConVar("ttt_paramedic_defib_as_innocent", "0")
 CreateConVar("ttt_paramedic_device_loadout", "1")

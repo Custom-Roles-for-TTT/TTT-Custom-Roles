@@ -244,6 +244,7 @@ ttt_veteran_heal_bonus                      0       // The amount of bonus healt
 ttt_veteran_announce                        0       // Whether to announce to all other living players when the veteran is the last remaining innocent
 ttt_veteran_shop_active_only                1       // Whether the veteran's shop should be available only after they activate
 ttt_veteran_shop_delay                      0       // Whether the veteran's purchased shop items should be held until they activate
+ttt_veteran_activation_credits              0       // The number of credits to give the veteran when they are activated
 
 // Doctor
 ttt_doctor_credits_starting                 1       // The number of credits a doctor should start with

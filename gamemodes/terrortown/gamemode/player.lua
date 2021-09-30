@@ -1465,6 +1465,8 @@ function GM:PlayerDeath(victim, infl, attacker)
             if not v:GetNWBool("VeteranActive", false) then
                 v:SetNWBool("VeteranActive", true)
 
+                v:AddCredits(GetConVar("ttt_veteran_activation_credits"):GetInt())
+
                 v:PrintMessage(HUD_PRINTTALK, "You are the last " .. ROLE_STRINGS[ROLE_INNOCENT] .. " alive!")
                 v:PrintMessage(HUD_PRINTCENTER, "You are the last " .. ROLE_STRINGS[ROLE_INNOCENT] .. " alive!")
                 if GetConVar("ttt_veteran_announce"):GetBool() then
