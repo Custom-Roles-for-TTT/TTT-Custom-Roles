@@ -103,3 +103,38 @@ hook.Add("TTTShouldPlayerSmoke", "Killer_TTTShouldPlayerSmoke", function(ply, cl
         return true
     end
 end)
+
+--------------
+-- TUTORIAL --
+--------------
+
+hook.Add("TTTTutorialRoleText", "Killer_TTTTutorialRoleText", function(role, titleLabel)
+    if role == ROLE_KILLER then
+        local roleColor = GetRoleTeamColor(ROLE_TEAM_INDEPENDENT)
+        local html = "The " .. ROLE_STRINGS[ROLE_KILLER] .. " is an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>independent</span> role whose goal is to be the last player standing."
+
+        roleColor = ROLE_COLORS[ROLE_TRAITOR]
+        if GetGlobalBool("ttt_killer_knife_enabled", false) then
+            html = html .. "<span style='display: block; margin-top: 10px;'>They are given a knife that does high damage to aid in their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>slaughter.</span></span>"
+        end
+
+        if GetGlobalBool("ttt_killer_smoke_enabled", false) then
+            html = html .. "<span style='display: block; margin-top: 10px;'>If they don't <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>kill</span> often enough they will begin to smoke, alerting the other players.</span>"
+        end
+
+        local hasVision = GetGlobalBool("ttt_killer_vision_enable", false)
+        if hasVision then
+            html = html .. "<span style='display: block; margin-top: 10px;'>Their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>blood lust</span> helps them see their targets through walls by highlighting their enemies.</span>"
+        end
+
+        if GetGlobalBool("ttt_killer_show_target_icon", false) then
+            html = html .. "<span style='display: block; margin-top: 10px;'>Their targets can"
+            if hasVision then
+                html = html .. " also"
+            end
+            html = html .. " be identified by the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>KILL</span> icon floating over their heads.</span>"
+        end
+
+        return html
+    end
+end)
