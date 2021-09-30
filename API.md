@@ -759,7 +759,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *roleFileName* - The new roleFileName value to use or the original passed into the hook
 - *flashRole* - If a valid role is provided, this will cause the target player's scoreboard role to have a flashing border in the given role's color (see ROLE_* global enumeration)
 
-**TTTScoringSummaryRender(ply, roleFileName, groupingRole, roleColor, nameLabel)** - Called before the round summary screen is shown. Used to modify the color, position, and icon for a player.\
+**TTTScoringSummaryRender(ply, roleFileName, groupingRole, roleColor, nameLabel, startingRole, finalRole)** - Called before the round summary screen is shown. Used to modify the color, position, and icon for a player.\
 *Realm:* Client\
 *Added in:* 1.1.5\
 *Parameters:*
@@ -768,6 +768,8 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *groupingRole* - The role to use when determining the section to of the summary screen to put this player in
 - *roleColor* - The background [Color](https://wiki.facepunch.com/gmod/Color) to use behind the role icon
 - *nameLabel* - The name that is going to be used for this player on the round summary *(Added in 1.2.3)*
+- *startingRole* - The role that this player started the round with *(Added in 1.2.7)*
+- *finalRole* - The role that this player ended the round with *(Added in 1.2.7)*
 
 *Return:*
 - *roleFileName* - The new roleFileName value to use or the original passed into the hook

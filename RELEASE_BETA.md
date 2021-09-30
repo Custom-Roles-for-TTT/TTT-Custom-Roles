@@ -32,6 +32,7 @@
 - Added TTTShouldPlayerSmoke hook to affect whether a player should smoke and how that should look
 - Added TTTTutorialRolePage and TTTTutorialRoleText hooks for generating tutorial pages for an external role
 - Added TTTRolePopupParams hook to allow roles add parameters to their start-of-round popup message translation
+- Added startingRole and finalRole parameters to the TTTScoringSummaryRender hook
 - Added plymeta:GetRoleTeam to get the appropriate ROLE_TEAM_* enum value for the player
 - Added plymeta:ShouldDelayAnnouncements to determine whether announcements when a player is killed should be delayed for this player
 - Added player.GetLivingRole, player.IsRoleLiving, and player.AreTeamsLiving static methods
