@@ -832,6 +832,9 @@ function HELPSCRN:CreateTutorial(parent)
             table.insert(enabledRoles, r)
         end
     end
+    table.sort(enabledRoles, function(a, b)
+        return ROLE_STRINGS[a] < ROLE_STRINGS[b]
+    end)
 
     -- Get the list of enables pages
     table.Empty(enabledPages)
