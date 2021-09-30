@@ -301,6 +301,32 @@ if CLIENT then
 
         return ModifyColor(c or COLOR_WHITE, type)
     end
+
+    function GetRoleTeamName(role_team)
+        if role_team == ROLE_TEAM_TRAITOR then
+            return LANG.GetTranslation("traitor")
+        elseif role_team == ROLE_TEAM_MONSTER then
+            return LANG.GetTranslation("monster")
+        elseif role_team == ROLE_TEAM_JESTER then
+            return LANG.GetTranslation("jester")
+        elseif role_team == ROLE_TEAM_INDEPENDENT then
+            return LANG.GetTranslation("independent")
+        end
+        return LANG.GetTranslation("innocent")
+    end
+
+    function GetRoleTeamInfo(role_team, simple_color)
+        local teamName = GetRoleTeamName(role_team)
+        local teamColor = GetRoleTeamColor(role_team)
+        if simple_color then
+            if role_team == ROLE_TEAM_INNOCENT or role_team == ROLE_TEAM_DETECTIVE then
+                teamColor = ROLE_COLORS[ROLE_INNOCENT]
+            elseif role_team == ROLE_TEAM_TRAITOR then
+                teamColor = ROLE_COLORS[ROLE_TRAITOR]
+            end
+        end
+        return teamName, teamColor
+    end
 else
     function CreateCreditConVar(role)
         -- Add explicit ROLE_INNOCENT exclusion here in case shop-for-all is enabled
@@ -907,11 +933,6 @@ JESTER_NOTIFY_TRAITOR = 2
 JESTER_NOTIFY_DETECTIVE = 3
 JESTER_NOTIFY_EVERYONE = 4
 
--- Vampire prime death modes
-VAMPIRE_DEATH_NONE = 0
-VAMPIRE_DEATH_KILL_CONVERED = 1
-VAMPIRE_DEATH_REVERT_CONVERTED = 2
-
 -- Parasite respawn modes
 PARASITE_RESPAWN_HOST = 0
 PARASITE_RESPAWN_BODY = 1
@@ -1205,13 +1226,6 @@ function UpdateRoleState()
     TRAITOR_ROLES[ROLE_ZOMBIE] = zombies_are_traitors
     INDEPENDENT_ROLES[ROLE_ZOMBIE] = not zombies_are_monsters and not zombies_are_traitors
 
-    local vampires_are_monsters = GetGlobalBool("ttt_vampires_are_monsters", false)
-    -- Vampires cannot be both Monsters and Independents so don't make them Independents if they are already Monsters
-    local vampires_are_independent = not vampires_are_monsters and GetGlobalBool("ttt_vampires_are_independent", false)
-    MONSTER_ROLES[ROLE_VAMPIRE] = vampires_are_monsters
-    TRAITOR_ROLES[ROLE_VAMPIRE] = not vampires_are_monsters and not vampires_are_independent
-    INDEPENDENT_ROLES[ROLE_VAMPIRE] = vampires_are_independent
-
     local bodysnatchers_are_independent = GetGlobalBool("ttt_bodysnatchers_are_independent", false)
     INDEPENDENT_ROLES[ROLE_BODYSNATCHER] = bodysnatchers_are_independent
     JESTER_ROLES[ROLE_BODYSNATCHER] = not bodysnatchers_are_independent
@@ -1220,6 +1234,8 @@ function UpdateRoleState()
     local glitch_use_traps = GetGlobalBool("ttt_glitch_use_traps", false)
     CAN_LOOT_CREDITS_ROLES[ROLE_GLITCH] = glitch_use_traps
     TRAITOR_BUTTON_ROLES[ROLE_GLITCH] = glitch_use_traps
+
+    hook.Run("TTTUpdateRoleState")
 
     local disable_looting = GetGlobalBool("ttt_detective_disable_looting", false)
     for r, e in pairs(DETECTIVE_ROLES) do
@@ -1242,8 +1258,6 @@ function UpdateRoleState()
             end
         end
     end
-
-    hook.Run("TTTUpdateRoleState")
 end
 
 function GetWinningMonsterRole()
@@ -1402,12 +1416,6 @@ DefaultEquipment = {
         EQUIP_DISGUISE,
         EQUIP_SPEED,
         EQUIP_REGEN
-    },
-
-    [ROLE_VAMPIRE] = {
-        EQUIP_ARMOR,
-        EQUIP_RADAR,
-        EQUIP_DISGUISE
     },
 
     [ROLE_QUACK] = {

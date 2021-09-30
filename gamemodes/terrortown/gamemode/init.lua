@@ -155,14 +155,6 @@ CreateConVar("ttt_impersonator_without_detective", "0")
 CreateConVar("ttt_hypnotist_device_loadout", "1")
 CreateConVar("ttt_hypnotist_device_shop", "0")
 
-CreateConVar("ttt_vampires_are_monsters", "0")
-CreateConVar("ttt_vampires_are_independent", "0")
-CreateConVar("ttt_vampire_show_target_icon", "0")
-CreateConVar("ttt_vampire_damage_reduction", "0")
-CreateConVar("ttt_vampire_prime_death_mode", "0")
-CreateConVar("ttt_vampire_vision_enable", "0")
-CreateConVar("ttt_vampire_kill_credits", "1")
-
 CreateConVar("ttt_quack_phantom_cure", "0")
 
 CreateConVar("ttt_parasite_infection_time", 45)
@@ -550,7 +542,6 @@ util.AddNetworkString("TTT_PlayerFootstep")
 util.AddNetworkString("TTT_ClearPlayerFootsteps")
 util.AddNetworkString("TTT_JesterDeathCelebration")
 util.AddNetworkString("TTT_LoadMonsterEquipment")
-util.AddNetworkString("TTT_VampirePrimeDeath")
 util.AddNetworkString("TTT_UpdateRoleNames")
 
 local function ClearAllFootsteps()
@@ -580,8 +571,6 @@ function GM:Initialize()
     GAMEMODE.MapWin = WIN_NONE
     GAMEMODE.AwardedCredits = false
     GAMEMODE.AwardedCreditsDead = 0
-    GAMEMODE.AwardedVampireCredits = false
-    GAMEMODE.AwardedVampireCreditsDead = 0
 
     GAMEMODE.round_state = ROUND_WAIT
     GAMEMODE.FirstRound = true
@@ -704,11 +693,6 @@ function GM:SyncGlobals()
     SetGlobalBool("ttt_hypnotist_device_shop", GetConVar("ttt_hypnotist_device_shop"):GetBool())
 
     SetGlobalBool("ttt_impersonator_use_detective_icon", GetConVar("ttt_impersonator_use_detective_icon"):GetBool())
-
-    SetGlobalBool("ttt_vampires_are_monsters", GetConVar("ttt_vampires_are_monsters"):GetBool())
-    SetGlobalBool("ttt_vampires_are_independent", GetConVar("ttt_vampires_are_independent"):GetBool())
-    SetGlobalBool("ttt_vampire_show_target_icon", GetConVar("ttt_vampire_show_target_icon"):GetBool())
-    SetGlobalBool("ttt_vampire_vision_enable", GetConVar("ttt_vampire_vision_enable"):GetBool())
 
     SetGlobalBool("ttt_quack_phantom_cure", GetConVar("ttt_quack_phantom_cure"):GetBool())
 
@@ -871,58 +855,6 @@ local function OnPlayerDeath(victim, infl, attacker)
             -- Delay the actual end for a second so the message and sound have a chance to generate a reaction
             timer.Simple(1, function() EndRound(WIN_JESTER) end)
         end
-    else
-        local vamp_prime_death_mode = GetConVar("ttt_vampire_prime_death_mode"):GetFloat()
-        -- If the prime died and we're doing something when that happens
-        if victim:IsVampirePrime() and vamp_prime_death_mode > VAMPIRE_DEATH_NONE then
-            local living_vampire_primes = 0
-            local vampires = {}
-            -- Find all the living vampires anmd count the primes
-            for _, v in pairs(player.GetAll()) do
-                if v:Alive() and v:IsTerror() and v:IsVampire() then
-                    if v:IsVampirePrime() then
-                        living_vampire_primes = living_vampire_primes + 1
-                    end
-                    table.insert(vampires, v)
-                end
-            end
-
-            -- If there are no more living primes, do something with the non-primes
-            if living_vampire_primes == 0 and #vampires > 0 then
-                net.Start("TTT_VampirePrimeDeath")
-                net.WriteUInt(vamp_prime_death_mode, 4)
-                net.WriteString(victim:Nick())
-                net.Broadcast()
-
-                -- Kill them
-                if vamp_prime_death_mode == VAMPIRE_DEATH_KILL_CONVERED then
-                    for _, vnp in pairs(vampires) do
-                        vnp:PrintMessage(HUD_PRINTTALK, "Your " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " overlord has been slain and you die with them")
-                        vnp:PrintMessage(HUD_PRINTCENTER, "Your " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " overlord has been slain and you die with them")
-                        vnp:Kill()
-                    end
-                -- Change them back to their previous roles
-                elseif vamp_prime_death_mode == VAMPIRE_DEATH_REVERT_CONVERTED then
-                    local converted = false
-                    for _, vnp in pairs(vampires) do
-                        local prev_role = vnp:GetVampirePreviousRole()
-                        if prev_role ~= ROLE_NONE then
-                            vnp:PrintMessage(HUD_PRINTTALK, "Your " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " overlord has been slain and you feel their grip over you subside")
-                            vnp:PrintMessage(HUD_PRINTCENTER, "Your " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " overlord has been slain and you feel their grip over you subside")
-                            vnp:SetRoleAndBroadcast(prev_role)
-                            vnp:StripWeapon("weapon_vam_fangs")
-                            vnp:SelectWeapon("weapon_zm_improvised")
-                            converted = true
-                        end
-                    end
-
-                    -- Tell everyone if a role was updated
-                    if converted then
-                        SendFullStateUpdate()
-                    end
-                end
-            end
-        end
     end
 end
 
@@ -1030,13 +962,10 @@ function PrepareRound()
         timer.Remove(v:Nick() .. "InfectingSpectate")
         v:SetNWInt("GlitchBluff", ROLE_TRAITOR)
         v:SetNWVector("PlayerColor", Vector(1, 1, 1))
-        v:SetNWInt("VampireFreezeCount", 0)
         v:SetNWBool("AdrenalineRush", false)
         timer.Remove(v:Nick() .. "AdrenalineRush")
         -- Keep previous naming scheme for backwards compatibility
         v:SetNWBool("zombie_prime", false)
-        v:SetNWBool("vampire_prime", false)
-        v:SetNWInt("vampire_previous_role", ROLE_NONE)
         -- Workaround to prevent GMod sprint from working
         v:SetRunSpeed(v:GetWalkSpeed())
     end
@@ -1069,8 +998,6 @@ function PrepareRound()
     GAMEMODE.MapWin = WIN_NONE
     GAMEMODE.AwardedCredits = false
     GAMEMODE.AwardedCreditsDead = 0
-    GAMEMODE.AwardedVampireCredits = false
-    GAMEMODE.AwardedVampireCreditsDead = 0
 
     SCORE:Reset()
 
@@ -1405,10 +1332,6 @@ function PrintResultMessage(type)
         local plural = ROLE_STRINGS_PLURAL[ROLE_ZOMBIE]
         LANG.Msg("win_zombies", { role = plural })
         ServerLog("Result: " .. plural .. " win.\n")
-    elseif type == WIN_VAMPIRE then
-        local plural = ROLE_STRINGS_PLURAL[ROLE_VAMPIRE]
-        LANG.Msg("win_vampires", { role = plural })
-        ServerLog("Result: " .. plural .. " win.\n")
     elseif type == WIN_MONSTER then
         local monster_role = GetWinningMonsterRole()
         -- If it wasn't a special kind of monster that won (zombie or vampire) use the "Monsters Win" label
@@ -1652,7 +1575,6 @@ function GM:TTTCheckForWin()
     local traitor_alive = false
     local innocent_alive = false
     local zombie_alive = false
-    local vampire_alive = false
     local monster_alive = false
 
     for _, v in ipairs(player.GetAll()) do
@@ -1665,8 +1587,6 @@ function GM:TTTCheckForWin()
                 innocent_alive = true
             elseif v:IsMadScientist() or (v:IsZombie() and INDEPENDENT_ROLES[ROLE_ZOMBIE]) then
                 zombie_alive = true
-            elseif v:IsVampire() then
-                vampire_alive = true
             end
         -- Handle zombification differently because the player's original role should have no impact on this
         elseif v:GetNWBool("IsZombifying", false) then
@@ -1685,20 +1605,17 @@ function GM:TTTCheckForWin()
     end
 
     -- If everyone is dead the traitors win
-    if not innocent_alive and not monster_alive and not zombie_alive and not vampire_alive then
+    if not innocent_alive and not monster_alive and not zombie_alive then
         return WIN_TRAITOR
     -- If all the "bad" people are dead, innocents win
-    elseif not traitor_alive and not monster_alive and not zombie_alive and not vampire_alive then
+    elseif not traitor_alive and not monster_alive and not zombie_alive then
         return WIN_INNOCENT
     -- If the monsters are the only ones left, they win
-    elseif not innocent_alive and not traitor_alive and not zombie_alive and not vampire_alive then
+    elseif not innocent_alive and not traitor_alive and not zombie_alive then
         return WIN_MONSTER
     -- If the zombies are the only ones left, they win
-    elseif not traitor_alive and not innocent_alive and not monster_alive and not vampire_alive and zombie_alive then
+    elseif not traitor_alive and not innocent_alive and not monster_alive and zombie_alive then
         return WIN_ZOMBIE
-    -- If the vampires are the only ones left, they win
-    elseif not traitor_alive and not innocent_alive and not monster_alive and not zombie_alive and vampire_alive then
-        return WIN_VAMPIRE
     end
 
     return WIN_NONE
@@ -2223,8 +2140,6 @@ function SelectRoles()
 
             if ply:GetRole() == ROLE_ZOMBIE then
                 ply:SetZombiePrime(true)
-            elseif ply:GetRole() == ROLE_VAMPIRE then
-                ply:SetVampirePrime(true)
             end
 
             ply:SetDefaultCredits()

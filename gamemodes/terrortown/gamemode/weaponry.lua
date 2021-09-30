@@ -16,8 +16,6 @@ function GM:PlayerCanPickupWeapon(ply, wep)
         return false
     elseif not ply:GetBodysnatcher() and wep:GetClass() == "weapon_bod_bodysnatch" then
         return false
-    elseif not ply:GetVampire() and wep:GetClass() == "weapon_vam_fangs" then
-        return false
     elseif not ply:GetZombie() and wep:GetClass() == "weapon_zom_claws" then
         return false
     elseif not ply:CanCarryWeapon(wep) then

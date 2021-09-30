@@ -176,7 +176,7 @@ Methods available globally (within the defined realm)
 *Added in:* 1.0.0\
 *Parameters:*
 - *ply* - The target player
-- *start* - Whether this is running at the start of the round (Defaults to `false`).
+- *start* - Whether this is running at the start of the round (Defaults to `false`)
 - *delay* - Whether the assassin's target assignment is delayed (Defaults to false)
 
 **CRVersion(version)** - Whether the current version is equal to or newer than the version number given.\
@@ -210,38 +210,55 @@ Methods available globally (within the defined realm)
 *Realm:* Server\
 *Added in:* Whenever each role is added\
 *Parameters:*
-- *aliveOnly* - Whether this filter should only include live players (Defaults to `false`).
+- *aliveOnly* - Whether this filter should only include live players (Defaults to `false`)
 
 **GetInnocentTeamFilter(aliveOnly)** - Returns a function that filters net messages to players that are on the innocent team.\
 *Realm:* Server\
 *Added in:* 1.0.0\
 *Parameters:*
-- *aliveOnly* - Whether this filter should only include live players (Defaults to `false`).
+- *aliveOnly* - Whether this filter should only include live players (Defaults to `false`)
 
 **GetJesterTeamFilter(aliveOnly)** - Returns a function that filters net messages to players that are on the jester team.\
 *Realm:* Server\
 *Added in:* 1.0.0\
 *Parameters:*
-- *aliveOnly* - Whether this filter should only include live players (Defaults to `false`).
+- *aliveOnly* - Whether this filter should only include live players (Defaults to `false`)
 
 **GetIndependentTeamFilter(aliveOnly)** - Returns a function that filters net messages to players that are on the independent team.\
 *Realm:* Server\
 *Added in:* 1.0.0\
 *Parameters:*
-- *aliveOnly* - Whether this filter should only include live players (Defaults to `false`).
+- *aliveOnly* - Whether this filter should only include live players (Defaults to `false`)
 
 **GetMonsterTeamFilter(aliveOnly)** - Returns a function that filters net messages to players that are on the monster team.\
 *Realm:* Server\
 *Added in:* 1.0.0\
 *Parameters:*
-- *aliveOnly* - Whether this filter should only include live players (Defaults to `false`).
+- *aliveOnly* - Whether this filter should only include live players (Defaults to `false`)
 
 **GetRoleTeamColor(roleTeam, type)** - Gets the color belonging to the specified role team (see ROLE_TEAM_* global enumeration).\
 *Realm:* Client\
 *Added in:* 1.1.8\
 *Parameters:*
-- *roleTeam* - Which team role to get the color for (see ROLE_TEAM_* global enumeration).
+- *roleTeam* - Which team role to get the color for (see ROLE_TEAM_* global enumeration)
 - *type* - The color modification type. Options are: "dark", "highlight", "radar", "scoreboard", or "sprite". (Optional)
+
+**GetRoleTeamInfo(roleTeam, simpleColor)** - Gets the name and color belonging to the specified role team (see ROLE_TEAM_* global enumeration).\
+*Realm:* Client\
+*Added in:* 1.2.7\
+*Parameters:*
+- *roleTeam* - Which team role to get the color for (see ROLE_TEAM_* global enumeration)
+- *simpleColor* - Whether to use simple team colors (e.g. all innocents are the same color and all traitors are the same color)
+
+*Returns:*
+- *roleTeamName* - The name of the provided role team
+- *roleTeamColor* - The color of the provided role team
+
+**GetRoleTeamName(roleTeam)** - Gets the name belonging to the specified role team (see ROLE_TEAM_* global enumeration).\
+*Realm:* Client\
+*Added in:* 1.2.7\
+*Parameters:*
+- *roleTeam* - Which team role to get the color for (see ROLE_TEAM_* global enumeration)
 
 **GetSprintMultiplier(ply, sprinting)** - Gets the given player's current sprint multiplier.\
 *Realm:* Client and Server\
@@ -261,7 +278,7 @@ Methods available globally (within the defined realm)
 *Realm:* Server\
 *Added in:* 1.0.0\
 *Parameters:*
-- *aliveOnly* - Whether this filter should only include live players (Defaults to `false`).
+- *aliveOnly* - Whether this filter should only include live players (Defaults to `false`)
 
 **OnPlayerHighlightEnabled(client, alliedRoles, showJesters, hideEnemies, traitorAllies, onlyShowEnemies)** - Handles player highlighting (colored glow around players) rules for the local player.\
 *Realm:* Client\
@@ -272,7 +289,7 @@ Methods available globally (within the defined realm)
 - *showJesters* - Whether jester roles should be highlighted in the jester color. If `false`, jesters will appear in the generic enemy color instead
 - *hideEnemies* - Whether enemy roles (e.g. anyone that isn't an ally or a jester if *showJesters* is enabled) should be highlighted
 - *traitorAllies* - Whether this role's allies are traitors. If `true`, allied roles will be shown in the traitor color. Otherwise allied roles will be shown in the innocent color
-- *onlyShowEnemies* - Whether to only highlight players whose roles are explicitly enemies of the local player. If this is `true` then allies will not be highlighted. If both this and *showJesters* are `true` then neither allies nor jesters will be highlighted.
+- *onlyShowEnemies* - Whether to only highlight players whose roles are explicitly enemies of the local player. If this is `true` then allies will not be highlighted. If both this and *showJesters* are `true` then neither allies nor jesters will be highlighted
 
 **RegisterRole(roleTable)** - Registers a role with Custom Roles for TTT. See [here](CREATE_YOUR_OWN_ROLE.md) for instructions on how to create a role and role table structure.\
 *Realm:* Client and Server\
@@ -680,6 +697,15 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *victim* - The victim of the event that is rewarding the player with karma. If this is not a player, karma is being rewarded as part of the end of the round
 
 *Return:* Whether or not the given player should be prevented from being rewarded with karma (Defaults to `false`).
+
+**TTTKarmaShouldGivePenalty(attacker, victim)** - Called before a player's karma effect is decided. Used to determine if a player should be penalized or rewarded.\
+*Realm:* Server\
+*Added in:* 1.2.7\
+*Parameters:*
+- *attacker* - The player who hurt or killed the victim
+- *victim* - The player who was hurt or killed
+
+*Return:* `true` if the attacker should be penalized or `false` if they should not. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
 
 **TTTPlayerRoleChanged(ply, oldRole, newRole)** - Called after a player's role has changed.\
 *Realm:* Client and Server\

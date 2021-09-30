@@ -26,6 +26,7 @@
 ### Developer
 - Added TTTBlockPlayerFootstepSound hook to block a player's footstep sound
 - Added TTTKarmaGiveReward hook to block a player from receiving karma
+- Added TTTKarmaShouldGivePenalty hook to determine whether a player should have their karma rewarded or penalized
 - Added TTTPlayerSpawnForRound hook to react to when a player is spawned (or respawed)
 - Added TTTEventFinishText and TTTEventFinishIconText hooks to add detail to the round finished event row for custom win conditions
 - Added TTTPlayerRoleChanged hook to react to when a player's role changes
@@ -39,6 +40,7 @@
 - Added player.GetRoleTeam static method to get the appropriate ROLE_TEAM_* enum value for a role
 - Added ability for external roles to define their role selection predicate function
 - Added ability for external roles to run specific logic when a player is initially assigned a role or when they steal a role from someone else
+- Added GetRoleTeamInfo and GetRoleTeamName global methods
 - Changed OnPlayerHighlightEnabled to be globally available so other roles can use the same highlighting logic
 - Changed all EXTERNAL_ROLE_* tables to be named ROLE_* in preparation for role separation
 - Fixed returning false for the first parameter of TTTTargetIDPlayerRoleIcon not stopping the role icon from showing

@@ -619,9 +619,6 @@ local function CheckCreditAward(victim, attacker)
         end
     end
 
-
-    local vampire_kill_credits = GetConVar("ttt_vampire_kill_credits"):GetBool()
-
     -- TRAITOR AWARD
     if valid_attacker and not (victim:IsTraitorTeam() or victim:IsJesterTeam()) and (not GAMEMODE.AwardedCredits or GetConVar("ttt_credits_award_repeat"):GetBool()) then
         local inno_alive = 0
@@ -656,6 +653,7 @@ local function CheckCreditAward(victim, attacker)
 
             -- If size is 0, awards are off
             if amt > 0 then
+                local vampire_kill_credits = GetConVar("ttt_vampire_kill_credits"):GetBool()
                 local predicate = function(p)
                     if p:Alive() and not p:IsSpec() and p:IsTraitorTeam() and p:IsShopRole() then
                         return not p:IsVampire() or vampire_kill_credits
@@ -673,54 +671,6 @@ local function CheckCreditAward(victim, attacker)
 
             GAMEMODE.AwardedCredits = true
             GAMEMODE.AwardedCreditsDead = inno_dead + GAMEMODE.AwardedCreditsDead
-        end
-    end
-
-    -- VAMPIRE AWARD
-    if vampire_kill_credits and valid_attacker and not TRAITOR_ROLES[ROLE_VAMPIRE] and attacker:IsActiveVampire() and (not (victim:IsMonsterTeam() or victim:IsJesterTeam())) and (not GAMEMODE.AwardedVampireCredits or GetConVar("ttt_credits_award_repeat"):GetBool()) then
-        local ply_alive = 0
-        local ply_dead = 0
-        local ply_total = 0
-
-        for _, ply in pairs(player.GetAll()) do
-            if not ply:IsVampireAlly() then
-                if ply:IsTerror() then
-                    ply_alive = ply_alive + 1
-                elseif ply:IsDeadTerror() then
-                    ply_dead = ply_dead + 1
-                end
-            end
-        end
-
-        -- we check this at the death of an innocent who is still technically
-        -- Alive(), so add one to dead count and sub one from living
-        ply_dead = ply_dead + 1
-        ply_alive = math.max(ply_alive - 1, 0)
-        ply_total = ply_alive + ply_dead
-
-        -- Only repeat-award if we have reached the pct again since last time
-        if GAMEMODE.AwardedVampireCredits then
-            ply_dead = ply_dead - GAMEMODE.AwardedVampireCreditsDead
-        end
-
-        local pct = ply_dead / ply_total
-        if pct >= GetConVar("ttt_credits_award_pct"):GetFloat() then
-            -- Traitors have killed sufficient people to get an award
-            local amt = GetConVar("ttt_credits_award_size"):GetInt()
-
-            -- If size is 0, awards are off
-            if amt > 0 then
-                LANG.Msg(GetVampireFilter(true), "credit_all", { role = ROLE_STRINGS[ROLE_VAMPIRE], num = amt })
-
-                for _, ply in pairs(player.GetAll()) do
-                    if ply:IsActiveVampire() then
-                        ply:AddCredits(amt)
-                    end
-                end
-            end
-
-            GAMEMODE.AwardedVampireCredits = true
-            GAMEMODE.AwardedVampireCreditsDead = ply_dead + GAMEMODE.AwardedVampireCreditsDead
         end
     end
 end
@@ -1705,10 +1655,6 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
                 local reduction = GetConVar("ttt_zombie_damage_reduction"):GetFloat()
                 dmginfo:ScaleDamage(1 - reduction)
             end
-            if dmginfo:IsBulletDamage() and ply:IsVampire() then
-                local reduction = GetConVar("ttt_vampire_damage_reduction"):GetFloat()
-                dmginfo:ScaleDamage(1 - reduction)
-            end
 
             -- Zombies do less damage when using non-claw weapons
             if att:IsZombie() and att:GetActiveWeapon():GetClass() ~= "weapon_zom_claws" then
@@ -2145,10 +2091,6 @@ local function HandleRoleForcedWeapons(ply)
         -- If this zombie doesn't have claws, give them claws
         if not ply:HasWeapon("weapon_zom_claws") then
             ply:Give("weapon_zom_claws")
-        end
-    elseif ply:IsVampire() then
-        if not ply:HasWeapon("weapon_vam_fangs") then
-            ply:Give("weapon_vam_fangs")
         end
     elseif ply:GetRenderMode() ~= RENDERMODE_TRANSALPHA then
         ply:SetColor(Color(255, 255, 255, 255))

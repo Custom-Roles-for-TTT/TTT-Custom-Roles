@@ -48,10 +48,6 @@ AccessorFunc(plymeta, "clean_rounds", "CleanRounds", FORCE_NUMBER)
 
 function plymeta:SetZombiePrime(p) self:SetNWBool("zombie_prime", p) end
 
-function plymeta:SetVampirePrime(p) self:SetNWBool("vampire_prime", p) end
-
-function plymeta:SetVampirePreviousRole(r) self:SetNWInt("vampire_previous_role", r) end
-
 function plymeta:InitKarma()
     KARMA.InitPlayer(self)
 end

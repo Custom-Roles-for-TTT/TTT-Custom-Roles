@@ -60,9 +60,4 @@ if SERVER then
 
     -- Hit Markers
     resource.AddSingleFile("sound/hitmarkers/mlghit.wav")
-
-    -- Vampire
-    resource.AddSingleFile("sound/weapons/ttt/fade.wav")
-    resource.AddSingleFile("sound/weapons/ttt/unfade.wav")
-    resource.AddSingleFile("sound/weapons/ttt/vampireeat.wav")
 end

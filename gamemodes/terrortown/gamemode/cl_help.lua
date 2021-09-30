@@ -799,21 +799,7 @@ local function ShowTutorialPage(pnl, page)
                 -- Team
                 htmlData = htmlData .. "<div style='margin-top: 5px;'>"
                     local roleTeam = player.GetRoleTeam(role, true)
-                    local roleTeamString
-                    local roleTeamColor = GetRoleTeamColor(roleTeam)
-                    if roleTeam == ROLE_TEAM_TRAITOR then
-                        roleTeamString = "Traitor"
-                        roleTeamColor = ROLE_COLORS[ROLE_TRAITOR]
-                    elseif roleTeam == ROLE_TEAM_MONSTER then
-                        roleTeamString = "Monster"
-                    elseif roleTeam == ROLE_TEAM_JESTER then
-                        roleTeamString = "Jester"
-                    elseif roleTeam == ROLE_TEAM_INDEPENDENT then
-                        roleTeamString = "Independent"
-                    else
-                        roleTeamString = "Innocent"
-                        roleTeamColor = ROLE_COLORS[ROLE_INNOCENT]
-                    end
+                    local roleTeamString, roleTeamColor = GetRoleTeamInfo(roleTeam)
                     htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>Role Team: </span>"
                     htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. roleTeamColor.r .. ", " .. roleTeamColor.g .. ", " .. roleTeamColor.b .. ");'>" .. roleTeamString .. "</span>"
                 htmlData = htmlData .. "</div>"

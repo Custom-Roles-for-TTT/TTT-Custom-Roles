@@ -3,8 +3,29 @@
 ------------------
 
 hook.Add("Initialize", "Killer_Translations_Initialize", function()
+    -- Win conditions
     LANG.AddToLanguage("english", "win_killer", "The {role} has murdered you all!")
     LANG.AddToLanguage("english", "ev_win_killer", "The butchering {role} won the round!")
+
+    -- Popup
+    LANG.AddToLanguage("english", "info_popup_killer", [[You are {role}! Try to kill everyone and be the last one standing!
+
+Press {menukey} to receive your special equipment!]])
+
+    -- Killer's Knife
+    LANG.AddToLanguage("english", "kil_knife_desc", [[
+Gravely wounds living targets quietly.
+Kills wounded targets instantly and
+silently.
+    
+Can drop a smoke grenade using alternate fire.]])
+
+    -- Killer's Crowbar
+    LANG.AddToLanguage("english", "kil_crowbar_name", "Throwable Crowbar")
+    LANG.AddToLanguage("english", "kil_crowbar_desc", [[
+Used to blend in with other players and do minor damage.
+    
+Can be thrown using alternate fire.]])
 end)
 
 ---------------
@@ -113,21 +134,27 @@ hook.Add("TTTTutorialRoleText", "Killer_TTTTutorialRoleText", function(role, tit
         local roleColor = GetRoleTeamColor(ROLE_TEAM_INDEPENDENT)
         local html = "The " .. ROLE_STRINGS[ROLE_KILLER] .. " is an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>independent</span> role whose goal is to be the last player standing."
 
+        -- Use this for highlighting things like "kill"
         roleColor = ROLE_COLORS[ROLE_TRAITOR]
-        if GetGlobalBool("ttt_killer_knife_enabled", false) then
+
+        -- Knife
+        if GetGlobalBool("ttt_killer_knife_enabled", true) then
             html = html .. "<span style='display: block; margin-top: 10px;'>They are given a knife that does high damage to aid in their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>slaughter.</span></span>"
         end
 
-        if GetGlobalBool("ttt_killer_smoke_enabled", false) then
+        -- Smoke
+        if GetGlobalBool("ttt_killer_smoke_enabled", true) then
             html = html .. "<span style='display: block; margin-top: 10px;'>If they don't <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>kill</span> often enough they will begin to smoke, alerting the other players.</span>"
         end
 
-        local hasVision = GetGlobalBool("ttt_killer_vision_enable", false)
+        -- Vision
+        local hasVision = GetGlobalBool("ttt_killer_vision_enable", true)
         if hasVision then
             html = html .. "<span style='display: block; margin-top: 10px;'>Their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>blood lust</span> helps them see their targets through walls by highlighting their enemies.</span>"
         end
 
-        if GetGlobalBool("ttt_killer_show_target_icon", false) then
+        -- Target ID
+        if GetGlobalBool("ttt_killer_show_target_icon", true) then
             html = html .. "<span style='display: block; margin-top: 10px;'>Their targets can"
             if hasVision then
                 html = html .. " also"

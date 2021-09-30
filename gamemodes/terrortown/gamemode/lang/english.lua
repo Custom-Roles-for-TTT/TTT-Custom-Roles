@@ -9,6 +9,17 @@ L.last_words = "Last Words"
 L.terrorists = "Terrorists"
 L.spectators = "Spectators"
 
+L.traitor = "Traitor"
+L.traitors = "Traitors"
+L.monster = "Monster"
+L.monsters = "Monsters"
+L.jester = "Jester"
+L.jesters = "Jesters"
+L.independent = "Independent"
+L.independents = "Independents"
+L.innocent = "Innocent"
+L.innocents = "Innocents"
+
 --- Round status messages
 L.round_minplayers = "Not enough players to start a new round..."
 L.round_voting = "Vote in progress, delaying new round by {num} seconds..."
@@ -29,7 +40,6 @@ L.win_clown = "The {role} has murdered you all!"
 L.win_showreport = "Let's look at the round report for {num} seconds."
 L.win_monster = "The monsters have taken over!"
 L.win_zombies = "The {role} have taken over!"
-L.win_vampires = "The {role} have taken over!"
 
 L.limit_round = "Round limit reached. {mapname} will load soon."
 L.limit_time = "Time limit reached. {mapname} will load soon."
@@ -494,21 +504,6 @@ targets.
 
 Uses standard SMG ammo.]]
 
--- Killer's Knife
-L.kil_knife_desc = [[
-Gravely wounds living targets quietly.
-Kills wounded targets instantly and
-silently.
-
-Can drop a smoke grenade using alternate fire.]]
-
--- Killer's Crowbar
-L.kil_crowbar_name = "Throwable Crowbar"
-L.kil_crowbar_desc = [[
-Used to blend in with other players and do minor damage.
-
-Can be thrown using alternate fire.]]
-
 -- DNA scanner
 L.dna_name = "DNA scanner"
 L.dna_identify = "Corpse must be identified to retrieve killer's DNA."
@@ -762,10 +757,6 @@ L.info_popup_veteran = [[You are {role}! You work best under pressure.
 If you are the last {innocent} player alive you will
 deal extra damage.]]
 
-L.info_popup_killer = [[You are {role}! Try to kill everyone and be the last one standing!
-
-Press {menukey} to receive your special equipment!]]
-
 L.info_popup_doctor = [[You are {role}! You're here to keep your teammates alive.
 Use your tools to keep fellow {innocents} in the fight!
 
@@ -851,12 +842,6 @@ You will deal more to your target and less damage
 to all other players. But take care as killing the wrong
 player will result in you losing your damage bonus and
 maybe even suffering from a penalty!
-
-Press {menukey} to receive your special equipment!]]
-
-L.info_popup_vampire = [[You are {role}! {comrades}
-
-You can use your fangs (left-click) to drink blood and refill your health or to fade from view (right-click).
 
 Press {menukey} to receive your special equipment!]]
 
@@ -1106,7 +1091,6 @@ L.ev_win_clown = "The vicious {role} won the round!"
 L.ev_win_oldman = "The {role} has somehow survived and also won the round!"
 L.ev_win_monster = "The evil monsters have won the round!"
 L.ev_win_zombie = "The {role} infection has taken over the world!"
-L.ev_win_vampire = "The {role} have sucked the life out of everyone!"
 L.ev_win_time = "The {role} ran out of time and lost!"
 L.ev_win_icon = "{role} won"
 L.ev_win_icon_time = "Time Limit"
@@ -1371,9 +1355,6 @@ L.ev_drunk = "{player} remembered they are {team}"
 L.ev_haunt = "{victim} started haunting {attacker}"
 L.ev_bodysnatch = "{attacker} bodysnatched {role}, {victim}"
 L.ev_zombi = "{victim} was turned into {azombie}"
-L.ev_vampi = "{victim} was turned into {avampire}"
-L.ev_vampi_revert_converted = "The last {vampire} Prime ({prime}) was killed and all their thralls had their humanity restored"
-L.ev_vampi_kill_converted = "The last {vampire} Prime ({prime}) was killed and took all their thralls with them"
 L.ev_beggar_converted = "The {beggar} ({victim}) was converted to {team} by {attacker}"
 L.ev_beggar_killed = "The {beggar} ({victim}) was killed by {attacker} but respawned"
 L.ev_beggar_killed_delay = "The {beggar} ({victim}) was killed by {attacker} but will respawn in {delay} seconds"

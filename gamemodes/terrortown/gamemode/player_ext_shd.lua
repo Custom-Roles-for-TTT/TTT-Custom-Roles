@@ -47,8 +47,6 @@ function plymeta:IsActiveMonsterTeam() return self:IsMonsterTeam() and self:IsAc
 function plymeta:IsActiveDetectiveTeam() return self:IsDetectiveTeam() and self:IsActive() end
 
 function plymeta:GetZombiePrime() return self:GetZombie() and self:GetNWBool("zombie_prime", false) end
-function plymeta:GetVampirePrime() return self:GetVampire() and self:GetNWBool("vampire_prime", false) end
-function plymeta:GetVampirePreviousRole() return self:GetNWInt("vampire_previous_role", ROLE_NONE) end
 function plymeta:GetDetectiveLike() return self:IsDetectiveTeam() or ((self:GetDeputy() or self:GetImpersonator()) and self:GetNWBool("HasPromotion", false)) end
 function plymeta:GetDetectiveLikePromotable() return (self:IsDeputy() or self:IsImpersonator()) and not self:GetNWBool("HasPromotion", false) end
 
@@ -57,15 +55,6 @@ function plymeta:GetZombieAlly()
     if MONSTER_ROLES[ROLE_ZOMBIE] then
         return MONSTER_ROLES[role]
     elseif TRAITOR_ROLES[ROLE_ZOMBIE] then
-        return TRAITOR_ROLES[role]
-    end
-    return INDEPENDENT_ROLES[role]
-end
-function plymeta:GetVampireAlly()
-    local role = self:GetRole()
-    if MONSTER_ROLES[ROLE_VAMPIRE] then
-        return MONSTER_ROLES[role]
-    elseif TRAITOR_ROLES[ROLE_VAMPIRE] then
         return TRAITOR_ROLES[role]
     end
     return INDEPENDENT_ROLES[role]
@@ -88,10 +77,7 @@ end
 plymeta.IsDetectiveLike = plymeta.GetDetectiveLike
 plymeta.IsDetectiveLikePromotable = plymeta.GetDetectiveLikePromotable
 plymeta.IsZombiePrime = plymeta.GetZombiePrime
-plymeta.IsVampirePrime = plymeta.GetVampirePrime
-
 plymeta.IsZombieAlly = plymeta.GetZombieAlly
-plymeta.IsVampireAlly = plymeta.GetVampireAlly
 
 function plymeta:IsSpecial() return self:GetRole() ~= ROLE_INNOCENT end
 function plymeta:IsCustom() return not DEFAULT_ROLES[self:GetRole()] end
@@ -531,11 +517,6 @@ else
         if self:IsZombiePrime() then
             if not keep_on_source then self:SetZombiePrime(false) end
             target:SetZombiePrime(true)
-        end
-
-        if self:IsVampirePrime() then
-            if not keep_on_source then self:SetVampirePrime(false) end
-            target:SetVampirePrime(true)
         end
 
         if self:GetNWBool("HasPromotion", false) then
