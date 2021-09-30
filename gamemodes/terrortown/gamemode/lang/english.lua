@@ -814,12 +814,6 @@ L.info_popup_traitor = [[You are {role}! {comrades}
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_hypnotist = [[You are {role}! {comrades}
-
-You can use your brain washing device on a corpse to revive them as {atraitor}.
-
-Press {menukey} to receive your special equipment!]]
-
 L.info_popup_impersonator = [[You are {role}! {comrades}
 
 If the {detective} dies you will appear to become a new {detective} and gain their

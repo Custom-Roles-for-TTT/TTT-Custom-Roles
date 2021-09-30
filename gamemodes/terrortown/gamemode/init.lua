@@ -152,9 +152,6 @@ CreateConVar("ttt_impersonator_damage_penalty", "0")
 CreateConVar("ttt_impersonator_use_detective_icon", "1")
 CreateConVar("ttt_impersonator_without_detective", "0")
 
-CreateConVar("ttt_hypnotist_device_loadout", "1")
-CreateConVar("ttt_hypnotist_device_shop", "0")
-
 CreateConVar("ttt_quack_phantom_cure", "0")
 
 CreateConVar("ttt_parasite_infection_time", 45)
@@ -689,9 +686,6 @@ function GM:SyncGlobals()
 
     SetGlobalBool("ttt_traitor_vision_enable", GetConVar("ttt_traitor_vision_enable"):GetBool())
     SetGlobalBool("ttt_traitor_phantom_cure", GetConVar("ttt_traitor_phantom_cure"):GetBool())
-
-    SetGlobalBool("ttt_hypnotist_device_loadout", GetConVar("ttt_hypnotist_device_loadout"):GetBool())
-    SetGlobalBool("ttt_hypnotist_device_shop", GetConVar("ttt_hypnotist_device_shop"):GetBool())
 
     SetGlobalBool("ttt_impersonator_use_detective_icon", GetConVar("ttt_impersonator_use_detective_icon"):GetBool())
 
