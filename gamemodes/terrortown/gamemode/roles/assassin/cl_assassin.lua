@@ -120,3 +120,36 @@ hook.Add("TTTRolePopupParams", "Assassin_TTTRolePopupParams", function(cli)
         return { assassintarget = string.rep(" ", 42) .. cli:GetNWString("AssassinTarget", "") }
     end
 end)
+
+--------------
+-- TUTORIAL --
+--------------
+
+hook.Add("TTTTutorialRoleText", "Assassin_TTTTutorialRoleText", function(role, titleLabel)
+    if role == ROLE_ASSASSIN then
+        local roleColor = ROLE_COLORS[ROLE_TRAITOR]
+        local html = "The " .. ROLE_STRINGS[ROLE_ASSASSIN] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitor team</span> whose goal is to elminate their enemies, one target at a time."
+
+        local delay = GetGlobalInt("ttt_assassin_next_target_delay", 0)
+        html = html .. "<span style='display: block; margin-top: 10px;'>They are assigned an initial target at the start of the round. A new target is assigned "
+        if delay > 0 then
+            html = html .. delay .. " seconds "
+        end
+        html = html .. "after their current target is <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>killed</span>.</span>"
+
+        local hasVision = GetGlobalBool("ttt_assassin_target_vision_enable", false)
+        if hasVision then
+            html = html .. "<span style='display: block; margin-top: 10px;'>Their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>target intel</span> helps them see their target through walls by highlighting them.</span>"
+        end
+
+        if GetGlobalBool("ttt_assassin_show_target_icon", false) then
+            html = html .. "<span style='display: block; margin-top: 10px;'>Their current target can"
+            if hasVision then
+                html = html .. " also"
+            end
+            html = html .. " be identified by the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>KILL</span> icon floating over their head.</span>"
+        end
+
+        return html
+    end
+end)

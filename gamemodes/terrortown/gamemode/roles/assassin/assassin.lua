@@ -16,6 +16,7 @@ CreateConVar("ttt_assassin_shop_roles_last", "0")
 hook.Add("TTTSyncGlobals", "Assassin_TTTSyncGlobals", function()
     SetGlobalBool("ttt_assassin_show_target_icon", GetConVar("ttt_assassin_show_target_icon"):GetBool())
     SetGlobalBool("ttt_assassin_target_vision_enable", GetConVar("ttt_assassin_target_vision_enable"):GetBool())
+    SetGlobalInt("ttt_assassin_next_target_delay", GetConVar("ttt_assassin_next_target_delay"):GetInt())
 end)
 
 -----------------------
