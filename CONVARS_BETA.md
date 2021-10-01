@@ -610,7 +610,7 @@ Apart from those familiar pieces, this dialog also adds a few more controls spec
     - *None* - Use the default buying configuration for the weapon
     - *Include* - Mark this weapon as explicitly buyable
     - *Exclude* - Mark this weapon as explicitly NOT buyable
-  - *No Random* - Prevent this weapon from being excluded by shop randomization
+  - *No Random* - Ensure this weapon stays in the shop, regardless of randomization
   - *Update* - Save the configuration changes
 - *Close* - This button will close the dialog, disgarding any unsaved changes
 
