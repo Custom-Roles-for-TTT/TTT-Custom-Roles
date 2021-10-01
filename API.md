@@ -1080,22 +1080,24 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 
 *Return:* `true` to show this page when it normally would not be
 
-**TTTTutorialRolePage(role, parentPanel, titleLabel)** - Called before a role's tutorial page is rendered. This can be used to render a completely custom page with information about a role.\
+**TTTTutorialRolePage(role, parentPanel, titleLabel, roleIcon)** - Called before a role's tutorial page is rendered. This can be used to render a completely custom page with information about a role.\
 *Realm:* Client\
 *Added in:* 1.2.7\
 *Parameters:*
 - *role* - Which role's tutorial page is being rendered
 - *parentPanel* - The parent [DPanel](https://wiki.facepunch.com/gmod/DPanel) that this tutorial page is being rendered within
 - *titleLabel* - The [DLabel](https://wiki.facepunch.com/gmod/DLabel) that is being used as the title of the rendered tutorial page. Has the role's name automatically set as the label text
+- *roleIcon* - The [DImage](https://wiki.facepunch.com/gmod/DImage) that is being used to show the role's icon on the rendered tutorial page
 
 *Return:* `true` to tell the tutorial page to use the content set in this hook rather than calling the `TTTTutorialRoleText` hook
 
-**TTTTutorialRoleText(role, titleLabel)** - Called before a role's tutorial page is rendered. This can be used to provide the text to show for a role.\
+**TTTTutorialRoleText(role, titleLabel, roleIcon)** - Called before a role's tutorial page is rendered. This can be used to provide the text to show for a role.\
 *Realm:* Client\
 *Added in:* 1.2.7\
 *Parameters:*
 - *role* - Which role's tutorial page is being rendered
 - *titleLabel* - The [DLabel](https://wiki.facepunch.com/gmod/DLabel) that is being used as the title of the rendered tutorial page. Has the role's name automatically set as the label text
+- *roleIcon* - The [DImage](https://wiki.facepunch.com/gmod/DImage) that is being used to show the role's icon on the rendered tutorial page
 
 *Return:* The string value to show on the tutorial page for this role. Can be HTML and will be rendered within a `<div>`
 

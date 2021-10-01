@@ -782,12 +782,22 @@ local function ShowTutorialPage(pnl, page)
         local roleName = ROLE_STRINGS[role]
         UpdateTitle(titleLabel, roleName)
 
+        -- Add the role icon next to the label
+        local roleFileName = ROLE_STRINGS_SHORT[role]
+        local roleIcon = vgui.Create("DImage", pnl)
+        roleIcon:SetSize(16, 16)
+        roleIcon:SetImage("vgui/ttt/tab_" .. roleFileName .. ".png")
+        roleIcon:MoveLeftOf(titleLabel)
+        -- Center it vertically within the title bar and give it a little space from the role name
+        roleIcon:SetPos(roleIcon:GetX() - 3, roleIcon:GetY() + 7)
+
         -- If nobody wants to handle this page themselves,
-        if not hook.Run("TTTTutorialRolePage", role, pnl, titleLabel) then
-            local roleText = hook.Run("TTTTutorialRoleText", role, titleLabel)
+        if not hook.Run("TTTTutorialRolePage", role, pnl, titleLabel, roleIcon) then
+            local roleText = hook.Run("TTTTutorialRoleText", role, titleLabel, roleIcon)
 
             local html = vgui.Create("DHTML", pnl)
             html:Dock(FILL)
+            -- Leave a gap for the title at the top
             html:DockMargin(0, 30, 0, 0)
 
             -- Open the page

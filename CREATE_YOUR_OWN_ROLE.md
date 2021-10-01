@@ -663,7 +663,7 @@ For our Summoner example, we're going to use the simpler `TTTTutorialRoleText` h
 
 ```lua
 if CLIENT then
-    hook.Add("TTTTutorialRoleText", "SummonerTutorialRoleText", function(role, titleLabel)
+    hook.Add("TTTTutorialRoleText", "SummonerTutorialRoleText", function(role, titleLabel, roleIcon)
         if role == ROLE_SUMMONER then
             return "The " .. ROLE_STRINGS[ROLE_SUMMONER] .. " is a member of the traitor team who can only purchase items that summon minions to fight for them."
         end
@@ -677,7 +677,7 @@ For a more complex example, lets take the same string from before but change the
 
 ```lua
 if CLIENT then
-    hook.Add("TTTTutorialRoleText", "SummonerTutorialRoleText", function(role, titleLabel)
+    hook.Add("TTTTutorialRoleText", "SummonerTutorialRoleText", function(role, titleLabel, roleIcon)
         if role == ROLE_SUMMONER then
             local roleColor = ROLE_COLORS[ROLE_TRAITOR]
             return "The " .. ROLE_STRINGS[ROLE_SUMMONER] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitor team</span> who can only purchase items that summon minions to fight for them."
