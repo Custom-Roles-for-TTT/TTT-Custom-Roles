@@ -287,6 +287,7 @@ CreateConVar("ttt_single_doctor_quack", "0")
 CreateConVar("ttt_single_paramedic_hypnotist", "0")
 CreateConVar("ttt_single_phantom_parasite", "0")
 CreateConVar("ttt_single_jester_independent", "1")
+CreateConVar("ttt_single_jester_independent_max_players", "0")
 
 -- Traitor credits
 CreateConVar("ttt_credits_starting", "2")
@@ -1753,6 +1754,12 @@ function SelectRoles()
     local hasRole = {}
 
     local singleJesterIndependent = GetConVar("ttt_single_jester_independent"):GetBool()
+
+    -- If we have more players than the maximum for a single jester OR independent, force allowing both
+    local singleJesterIndependentMaxPlayers = GetConVar("ttt_single_jester_independent_max_players"):GetInt()
+    if singleJesterIndependent and singleJesterIndependentMaxPlayers > 0 and #choices > singleJesterIndependentMaxPlayers then
+        singleJesterIndependent = false
+    end
 
     PrintRoleText("-----CHECKING EXTERNALLY CHOSEN ROLES-----")
     for _, v in pairs(player.GetAll()) do

@@ -287,6 +287,7 @@ ttt_medium_credits_starting                 1       // The number of credits a m
 
 // JESTER TEAM SETTINGS
 ttt_single_jester_independent               1       // Whether a single jester OR independent should spawn in a round. If disabled, both a jester AND an independent can spawn at the same time
+ttt_single_jester_independent_max_players   0       // The maximum players to have a single jester OR independent spawn in a row. If there are more players than this both a jester AND an independent can spawn in the same row. Set to 0 to disable. Not used if "ttt_single_jester_independent" is disabled.
 ttt_jesters_trigger_traitor_testers         1       // Whether jesters trigger traitor testers as if they were traitors
 ttt_jesters_visible_to_traitors             1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to members of the traitor team
 ttt_jesters_visible_to_monsters             1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to members of the monster team
