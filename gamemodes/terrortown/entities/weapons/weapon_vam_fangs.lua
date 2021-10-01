@@ -89,9 +89,14 @@ function SWEP:Holster()
 end
 
 function SWEP:OnDrop()
-    self:UnfreezeTarget()
-    self:Reset()
     self:Remove()
+end
+
+function SWEP:OnRemove()
+    self:UnfreezeTarget()
+    if SERVER then
+        self:Reset()
+    end
 end
 
 function SWEP:CanConvert()
@@ -186,10 +191,6 @@ function SWEP:CancelUnfreeze(entity)
     end
 end
 
-function SWEP:HasValidTarget()
-    return IsPlayer(self.TargetEntity)
-end
-
 function SWEP:AdjustFreezeCount(ent, adj, def)
     local freeze_count =  math.max(0, ent:GetNWInt("VampireFreezeCount", def) + adj)
     ent:SetNWInt("VampireFreezeCount", freeze_count)
@@ -273,16 +274,17 @@ end
 
 function SWEP:UnfreezeTarget()
     local owner = self:GetOwner()
-    if not self:HasValidTarget() then return end
+    if not IsPlayer(self.TargetEntity) then return end
+
+    self:CancelUnfreeze(self.TargetEntity)
 
     -- Unfreeze the target immediately if there is no delay or no owner
     local delay = vampire_fang_unfreeze_delay:GetFloat()
     if delay <= 0 or not IsPlayer(owner) then
         self:DoUnfreeze()
     else
-        self:CancelUnfreeze(self.TargetEntity)
         timer.Create("VampUnfreezeDelay_" .. owner:Nick() .. "_" .. self.TargetEntity:Nick(), delay, 1, function()
-            if not self:HasValidTarget() then return end
+            if not IsPlayer(self.TargetEntity) then return end
             self:DoUnfreeze()
         end)
     end
@@ -355,7 +357,7 @@ function SWEP:Think()
         local tr = self:GetTraceEntity()
         if not self:GetOwner():KeyDown(IN_ATTACK) or tr.Entity ~= self.TargetEntity then
             -- Only allow doing the 1/2 progress actions if there are 2 actions enabled (e.g. drain and convert)
-            if self:CanConvert() and self:HasValidTarget() and not self.TargetEntity:IsVampire() then
+            if self:CanConvert() and IsPlayer(self.TargetEntity) and not self.TargetEntity:IsVampire() then
                 if self:GetState() == STATE_KILL then
                     self:DoKill()
                     return
@@ -370,7 +372,7 @@ function SWEP:Think()
         end
 
         -- If there is a target and they have been turned to a vampire by someone else, stop trying to drain them
-        if self:GetState() ~= STATE_EAT and (not self:HasValidTarget() or self.TargetEntity:IsVampire()) then
+        if self:GetState() ~= STATE_EAT and (not IsPlayer(self.TargetEntity) or self.TargetEntity:IsVampire()) then
             self:Error("DRAINING ABORTED")
             return
         end
