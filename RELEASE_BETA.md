@@ -24,6 +24,7 @@
 - Fixed traitor vampires being able to drain glitches
 - Fixed promoted deputies not being grouped with other detectives in assassin targetting logic
 - Fixed independent vampire popup still having "{comrades}" placeholder
+- Fixed a drunk who becomes a clown in the same round as another jester role showing in the same row on the round summary screen
 
 ### Developer
 - Added TTTBlockPlayerFootstepSound hook to block a player's footstep sound

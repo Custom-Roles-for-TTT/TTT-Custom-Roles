@@ -650,6 +650,9 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                 -- ...unless that player ended as a converted Zombie in which case keep them with the team they started as
                 if finalRole == ROLE_ZOMBIE then
                     groupingRole = startingRole
+                -- If the drunk changed to a jester role, keep them in the independent row
+                elseif startingRole == ROLE_DRUNK and JESTER_ROLES[finalRole] then
+                    groupingRole = ROLE_DRUNK
                 end
 
                 -- Allow developers to override role icon, grouping, and color
