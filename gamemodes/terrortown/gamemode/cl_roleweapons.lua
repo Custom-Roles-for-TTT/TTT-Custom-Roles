@@ -212,7 +212,7 @@ local function OpenDialog(client)
     dsearch.OnValueChange = function(box, value)
         if role <= ROLE_NONE then return end
 
-        local roleitems = GetEquipmentForRole(role, false, true)
+        local roleitems = GetEquipmentForRole(role, false, true, true, true)
         local filtered = {}
         for _, v in pairs(roleitems) do
             if v and v["name"] and string.find(SafeTranslate(v["name"]):lower(), value:lower()) then
@@ -401,7 +401,7 @@ local function OpenDialog(client)
             if #searchText then
                 dsearch.OnValueChange(dsearch, searchText)
             else
-                FillEquipmentList(GetEquipmentForRole(role, false, true))
+                FillEquipmentList(GetEquipmentForRole(role, false, true, true, true))
             end
         end
     end
@@ -448,13 +448,13 @@ local function OpenDialog(client)
         if role == save_role then
             LocalPlayer():ConCommand("ttt_reset_weapons_cache")
             timer.Simple(0.25, function()
-                FillEquipmentList(GetEquipmentForRole(role, false, true))
+                FillEquipmentList(GetEquipmentForRole(role, false, true, true, true))
             end)
         end
     end
 
     if role > ROLE_NONE then
-        FillEquipmentList(GetEquipmentForRole(role, false, true))
+        FillEquipmentList(GetEquipmentForRole(role, false, true, true, true))
     end
 
     dsheet:AddSheet(GetTranslation("roleweapons_tabtitle"), dequip, "icon16/bomb.png", false, false, GetTranslation("roleweapons_tabtitle_tooltip"))

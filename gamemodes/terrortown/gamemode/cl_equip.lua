@@ -74,7 +74,7 @@ end)
 
 local function ItemIsWeapon(item) return not tonumber(item.id) end
 
-function GetEquipmentForRole(role, promoted, block_randomization)
+function GetEquipmentForRole(role, promoted, block_randomization, block_exclusion, ignore_cache)
     WEPS.PrepWeaponsLists(role)
 
     -- Determine which role sync variable to use, if any
@@ -84,7 +84,7 @@ function GetEquipmentForRole(role, promoted, block_randomization)
 
     -- Pre-load the Traitor weapons so that any that have their CanBuy modified will also apply to the enabled allied role(s)
     if sync_traitor_weapons and not Equipment[ROLE_TRAITOR] then
-        GetEquipmentForRole(ROLE_TRAITOR, false, true)
+        GetEquipmentForRole(ROLE_TRAITOR, false, true, block_exclusion, ignore_cache)
     end
 
     local sync_detective_like = promoted and (role == ROLE_DEPUTY or role == ROLE_IMPERSONATOR)
@@ -93,17 +93,17 @@ function GetEquipmentForRole(role, promoted, block_randomization)
 
     -- Pre-load the Detective weapons so that any that have their CanBuy modified will also apply to the enabled allied role(s)
     if sync_detective_weapons and not Equipment[ROLE_DETECTIVE] then
-        GetEquipmentForRole(ROLE_DETECTIVE, false, true)
+        GetEquipmentForRole(ROLE_DETECTIVE, false, true, block_exclusion, ignore_cache)
     end
 
     -- Cache the equipment unless the role's shop can change mid round
-    if not Equipment[role] then
+    if ignore_cache or not Equipment[role] then
         -- start with all the non-weapon goodies
         local tbl = table.Copy(EquipmentItems)
 
         -- find buyable weapons to load info from
         for _, v in pairs(weapons.GetList()) do
-            WEPS.HandleCanBuyOverrides(v, role, block_randomization, sync_traitor_weapons, sync_detective_weapons)
+            WEPS.HandleCanBuyOverrides(v, role, block_randomization, sync_traitor_weapons, sync_detective_weapons, block_exclusion)
             if v and v.CanBuy then
                 local data = v.EquipMenuData or {}
                 local base = {
@@ -212,26 +212,33 @@ function GetEquipmentForRole(role, promoted, block_randomization)
             end
         end
 
-        -- Lastly, go through the excludes to make sure things are removed that should be
-        for _, v in ipairs(WEPS.ExcludeWeapons[role]) do
-            -- If this isn't a weapon, get its information from one of the roles and compare that to the ID we have
-            if not weapons.GetStored(v) then
-                local equip = GetEquipmentItemByName(v)
-                -- If this exists and is in the available list, remove it from the role's list
-                if equip ~= nil then
-                    for idx, i in ipairs(tbl[role]) do
-                        if not ItemIsWeapon(i) and i.id == equip.id then
-                            table.remove(tbl[role], idx)
-                            break
+        -- Lastly, go through the excludes to make sure things are removed that should be, if it's not blocked
+        if not block_exclusion then
+            for _, v in ipairs(WEPS.ExcludeWeapons[role]) do
+                -- If this isn't a weapon, get its information from one of the roles and compare that to the ID we have
+                if not weapons.GetStored(v) then
+                    local equip = GetEquipmentItemByName(v)
+                    -- If this exists and is in the available list, remove it from the role's list
+                    if equip ~= nil then
+                        for idx, i in ipairs(tbl[role]) do
+                            if not ItemIsWeapon(i) and i.id == equip.id then
+                                table.remove(tbl[role], idx)
+                                break
+                            end
                         end
-                    end
 
-                    available[equip.id] = false
+                        available[equip.id] = false
+                    end
                 end
             end
         end
 
-        Equipment[role] = tbl[role]
+        -- If we're ignoring the cache, don't even save the results to the cache
+        if ignore_cache then
+            return tbl[role]
+        else
+            Equipment[role] = tbl[role]
+        end
     end
 
     return Equipment and Equipment[role] or {}
