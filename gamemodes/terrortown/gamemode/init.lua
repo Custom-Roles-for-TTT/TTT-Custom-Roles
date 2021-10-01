@@ -593,6 +593,7 @@ function GM:Initialize()
     math.randomseed(os.time())
 
     WaitForPlayers()
+    HandleRoleEquipment()
 
     if cvars.Number("sv_alltalk", 0) > 0 then
         ErrorNoHalt("TTT WARNING: sv_alltalk is enabled. Dead players will be able to talk to living players. TTT will now attempt to set sv_alltalk 0.\n")
