@@ -665,6 +665,11 @@ function GM:SyncGlobals()
         if SHOP_ROLES[role] then
             SyncShopConVars(role)
         end
+
+        -- "Replicate" the enabled convar so we can use it for informative messages on the client (e.g. tutorials)
+        if not DEFAULT_ROLES[role] then
+            SetGlobalBool("ttt_" .. rolestring .. "_enabled", GetConVar("ttt_" .. rolestring .. "_enabled"):GetBool())
+        end
     end
 
     SetGlobalInt("ttt_glitch_mode", GetConVar("ttt_glitch_mode"):GetInt())
