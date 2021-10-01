@@ -220,7 +220,7 @@ hook.Add("TTTTutorialRoleText", "Vampire_TTTTutorialRoleText", function(role, ti
         html = html .. "corpses using their fangs (Hold the attack button down when near a target).</span>"
 
         -- Fade
-        html = html .. "<span style='display: block; margin-top: 10px;'>By right-clicking with their fangs, they can also <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>fade from view</span> and gain a temporary speed bonus. This is useful for either chasing down prey or running away from conflict.</span>"
+        html = html .. "<span style='display: block; margin-top: 10px;'>By using the secondary attack with their fangs, they can also <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>fade from view</span> and gain a temporary speed bonus. This is useful for either chasing down prey or running away from conflict.</span>"
 
         -- Convert
         if drainEnabled and GetGlobalBool("ttt_vampire_convert_enable", false) then
@@ -228,7 +228,7 @@ hook.Add("TTTTutorialRoleText", "Vampire_TTTTutorialRoleText", function(role, ti
             if GetGlobalBool("ttt_vampire_prime_only_convert", true) then
                 html = html .. "Prime "
             end
-            html = html .. "Vampires can convert their living targets to their team by <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>draining their blood</span> the correct amount (Look for the message on the drain progress bar for when to release).</span>"
+            html = html .. ROLE_STRINGS_PLURAL[ROLE_VAMPIRE] .. " can convert their living targets to their team by <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>draining their blood</span> the correct amount (Look for the message on the drain progress bar for when to release).</span>"
         end
 
         -- Vision
