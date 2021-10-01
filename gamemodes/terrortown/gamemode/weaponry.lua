@@ -767,7 +767,7 @@ net.Receive("TTT_ConfigureRoleWeapons", function(len, ply)
     local includeSelected = net.ReadBool()
     local excludeSelected = net.ReadBool()
     local noRandomSelected = net.ReadBool()
-    local roleName = ROLE_STRINGS_RAW[role]
+    local roleName = ROLE_STRINGS_RAW[role]:lower()
 
     -- Ensure directories exist
     if not file.IsDir("roleweapons", "DATA") then
