@@ -14,13 +14,9 @@ function GM:PlayerCanPickupWeapon(ply, wep)
         return false
     elseif not ply:GetBodysnatcher() and wep:GetClass() == "weapon_bod_bodysnatch" then
         return false
-    elseif not ply:GetZombie() and wep:GetClass() == "weapon_zom_claws" then
-        return false
     elseif not ply:CanCarryWeapon(wep) then
         return false
     elseif IsEquipment(wep) and wep.IsDropped and (not ply:KeyDown(IN_USE)) then
-        return false
-    elseif GetConVar("ttt_zombie_prime_only_weapons"):GetBool() and ply:GetZombie() and not ply:GetZombiePrime() and wep:GetClass() ~= "weapon_zom_claws" and GetRoundState() == ROUND_ACTIVE then
         return false
     end
 

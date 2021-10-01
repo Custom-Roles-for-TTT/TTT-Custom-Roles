@@ -64,3 +64,15 @@ end
 
 plymeta.IsVampirePrime = plymeta.GetVampirePrime
 plymeta.IsVampireAlly = plymeta.GetVampireAlly
+
+-----------------
+-- SPEED BONUS --
+-----------------
+
+-- Vampire moves 3x faster temporarily while fading
+hook.Add("TTTSpeedMultiplier", "Vampire_TTTSpeedMultiplier", function(ply, mults)
+    local wep = ply:GetActiveWeapon()
+    if IsValid(wep) and WEPS.GetClass(wep) == "weapon_vam_fangs" and wep:Clip1() < 15 then
+        table.insert(mults, 3)
+    end
+end)

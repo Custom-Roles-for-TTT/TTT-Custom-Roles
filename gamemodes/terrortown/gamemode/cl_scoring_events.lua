@@ -35,7 +35,6 @@ local app_icon     = Material("icon16/application.png")
 local credit_icon = Material("icon16/coins.png")
 local wrench_icon  = Material("icon16/wrench.png")
 
-local zombie_icon = Material("icon16/user_green.png")
 local traitor_icon = Material("icon16/user_red.png")
 local innocent_icon = Material("icon16/user_green.png")
 local heart_icon = Material("icon16/heart.png")
@@ -79,8 +78,6 @@ Event(EVENT_FINISH,
                         return PT("ev_win_zombie", { role = ROLE_STRINGS[ROLE_ZOMBIE]:lower() })
                      end
                      return T("ev_win_monster")
-                  elseif e.win == WIN_ZOMBIE then
-                     return PT("ev_win_zombie", { role = ROLE_STRINGS[ROLE_ZOMBIE]:lower() })
                   elseif e.win == WIN_TIMELIMIT then
                      return PT("ev_win_time", { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]:lower() })
                   end
@@ -110,8 +107,6 @@ Event(EVENT_FINISH,
                      else
                         role_string = "Monsters"
                      end
-                  elseif e.win == WIN_ZOMBIE then
-                     role_string = ROLE_STRINGS_PLURAL[ROLE_ZOMBIE]
                   elseif e.win == WIN_TIMELIMIT then
                      win_string = "ev_win_icon_time"
                   end
@@ -426,14 +421,6 @@ Event(EVENT_LOG, {
     end,
     icon = function(e)
         return info_icon, "Information"
-    end})
-
-Event(EVENT_ZOMBIFIED, {
-    text = function(e)
-        return PT("ev_zombi", {victim = e.vic, azombie = ROLE_STRINGS_EXT[ROLE_ZOMBIE]})
-    end,
-    icon = function(e)
-        return zombie_icon, "Zombified"
     end})
 
 Event(EVENT_BEGGARCONVERTED, {

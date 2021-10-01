@@ -1137,20 +1137,6 @@ function GetSprintMultiplier(ply, sprinting)
                 return 1.4 * mult
             elseif weaponClass == "weapon_ttt_homebat" then
                 return 1.25 * mult
-            elseif weaponClass == "weapon_vam_fangs" and wep:Clip1() < 15 then
-                return 3 * mult
-            elseif weaponClass == "weapon_zom_claws" then
-                local speed_bonus = 1
-                if ply:IsZombiePrime() then
-                    speed_bonus = speed_bonus + GetGlobalFloat("ttt_zombie_prime_speed_bonus", 0.35)
-                else
-                    speed_bonus = speed_bonus + GetGlobalFloat("ttt_zombie_thrall_speed_bonus", 0.15)
-                end
-
-                if ply:HasEquipmentItem(EQUIP_SPEED) then
-                    speed_bonus = speed_bonus + 0.15
-                end
-                return speed_bonus * mult
             end
         end
     end
@@ -1206,13 +1192,6 @@ function UpdateRoleWeaponState()
 end
 
 function UpdateRoleState()
-    local zombies_are_monsters = GetGlobalBool("ttt_zombies_are_monsters", false)
-    -- Zombies cannot be both Monsters and Traitors so don't make them Traitors if they are already Monsters
-    local zombies_are_traitors = not zombies_are_monsters and GetGlobalBool("ttt_zombies_are_traitors", false)
-    MONSTER_ROLES[ROLE_ZOMBIE] = zombies_are_monsters
-    TRAITOR_ROLES[ROLE_ZOMBIE] = zombies_are_traitors
-    INDEPENDENT_ROLES[ROLE_ZOMBIE] = not zombies_are_monsters and not zombies_are_traitors
-
     local bodysnatchers_are_independent = GetGlobalBool("ttt_bodysnatchers_are_independent", false)
     INDEPENDENT_ROLES[ROLE_BODYSNATCHER] = bodysnatchers_are_independent
     JESTER_ROLES[ROLE_BODYSNATCHER] = not bodysnatchers_are_independent
@@ -1395,14 +1374,6 @@ DefaultEquipment = {
         EQUIP_ARMOR,
         EQUIP_RADAR,
         EQUIP_DISGUISE
-    },
-
-    [ROLE_ZOMBIE] = {
-        EQUIP_ARMOR,
-        EQUIP_RADAR,
-        EQUIP_DISGUISE,
-        EQUIP_SPEED,
-        EQUIP_REGEN
     },
 
     [ROLE_QUACK] = {

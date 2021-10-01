@@ -282,6 +282,6 @@ hook.Add("PlayerCanPickupWeapon", "Vampire_Weapons_PlayerCanPickupWeapon", funct
     if ply:IsSpec() then return false end
 
     if wep:GetClass() == "weapon_vam_fangs" then
-        return ply:GetVampire()
+        return ply:IsVampire()
     end
 end)

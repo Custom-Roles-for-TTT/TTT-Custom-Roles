@@ -269,17 +269,6 @@ CreateConVar("ttt_oldman_drain_health_to", "0")
 CreateConVar("ttt_oldman_adrenaline_rush", "5")
 CreateConVar("ttt_oldman_adrenaline_shotgun", "1")
 
-CreateConVar("ttt_zombies_are_monsters", "0")
-CreateConVar("ttt_zombies_are_traitors", "0")
-CreateConVar("ttt_zombie_round_chance", 0.1)
-CreateConVar("ttt_zombie_show_target_icon", "0")
-CreateConVar("ttt_zombie_damage_penalty", "0.5")
-CreateConVar("ttt_zombie_damage_reduction", "0")
-CreateConVar("ttt_zombie_prime_only_weapons", "1")
-CreateConVar("ttt_zombie_prime_speed_bonus", "0.35")
-CreateConVar("ttt_zombie_thrall_speed_bonus", "0.15")
-CreateConVar("ttt_zombie_vision_enable", "0")
-
 -- Other custom role properties
 CreateConVar("ttt_single_deputy_impersonator", "0")
 CreateConVar("ttt_deputy_impersonator_promote_any_death", "0")
@@ -701,13 +690,6 @@ function GM:SyncGlobals()
     SetGlobalInt("ttt_parasite_infection_time", GetConVar("ttt_parasite_infection_time"):GetInt())
     SetGlobalBool("ttt_parasite_enabled", GetConVar("ttt_parasite_enabled"):GetBool())
 
-    SetGlobalBool("ttt_zombies_are_monsters", GetConVar("ttt_zombies_are_monsters"):GetBool())
-    SetGlobalBool("ttt_zombies_are_traitors", GetConVar("ttt_zombies_are_traitors"):GetBool())
-    SetGlobalBool("ttt_zombie_show_target_icon", GetConVar("ttt_zombie_show_target_icon"):GetBool())
-    SetGlobalBool("ttt_zombie_vision_enable", GetConVar("ttt_zombie_vision_enable"):GetBool())
-    SetGlobalFloat("ttt_zombie_prime_speed_bonus", GetConVar("ttt_zombie_prime_speed_bonus"):GetFloat())
-    SetGlobalFloat("ttt_zombie_thrall_speed_bonus", GetConVar("ttt_zombie_thrall_speed_bonus"):GetFloat())
-
     SetGlobalInt("ttt_revenger_radar_timer", GetConVar("ttt_revenger_radar_timer"):GetInt())
 
     SetGlobalBool("ttt_jesters_visible_to_traitors", GetConVar("ttt_jesters_visible_to_traitors"):GetBool())
@@ -955,7 +937,6 @@ function PrepareRound()
         v:SetNWBool("WasBodysnatcher", false)
         timer.Remove(v:Nick() .. "BeggarRespawn")
         v:SetNWBool("VeteranActive", false)
-        v:SetNWBool("IsZombifying", false)
         v:SetNWBool("Infected", false)
         v:SetNWBool("Infecting", false)
         v:SetNWString("InfectingTarget", nil)
@@ -966,8 +947,6 @@ function PrepareRound()
         v:SetNWVector("PlayerColor", Vector(1, 1, 1))
         v:SetNWBool("AdrenalineRush", false)
         timer.Remove(v:Nick() .. "AdrenalineRush")
-        -- Keep previous naming scheme for backwards compatibility
-        v:SetNWBool("zombie_prime", false)
         -- Workaround to prevent GMod sprint from working
         v:SetRunSpeed(v:GetWalkSpeed())
     end
@@ -1330,10 +1309,6 @@ function PrintResultMessage(type)
     elseif type == WIN_CLOWN then
         LANG.Msg("win_clown", { role = ROLE_STRINGS_PLURAL[ROLE_CLOWN] })
         ServerLog("Result: " .. ROLE_STRINGS[ROLE_CLOWN] .. " wins.\n")
-    elseif type == WIN_ZOMBIE then
-        local plural = ROLE_STRINGS_PLURAL[ROLE_ZOMBIE]
-        LANG.Msg("win_zombies", { role = plural })
-        ServerLog("Result: " .. plural .. " win.\n")
     elseif type == WIN_MONSTER then
         local monster_role = GetWinningMonsterRole()
         -- If it wasn't a special kind of monster that won (zombie or vampire) use the "Monsters Win" label
@@ -1576,7 +1551,6 @@ end
 function GM:TTTCheckForWin()
     local traitor_alive = false
     local innocent_alive = false
-    local zombie_alive = false
     local monster_alive = false
 
     for _, v in ipairs(player.GetAll()) do
@@ -1587,8 +1561,6 @@ function GM:TTTCheckForWin()
                 monster_alive = true
             elseif v:IsInnocentTeam() then
                 innocent_alive = true
-            elseif v:IsMadScientist() or (v:IsZombie() and INDEPENDENT_ROLES[ROLE_ZOMBIE]) then
-                zombie_alive = true
             end
         -- Handle zombification differently because the player's original role should have no impact on this
         elseif v:GetNWBool("IsZombifying", false) then
@@ -1596,8 +1568,6 @@ function GM:TTTCheckForWin()
                 traitor_alive = true
             elseif MONSTER_ROLES[ROLE_ZOMBIE] then
                 monster_alive = true
-            elseif INDEPENDENT_ROLES[ROLE_ZOMBIE] then
-                zombie_alive = true
             end
         end
     end
@@ -1607,17 +1577,14 @@ function GM:TTTCheckForWin()
     end
 
     -- If everyone is dead the traitors win
-    if not innocent_alive and not monster_alive and not zombie_alive then
+    if not innocent_alive and not monster_alive then
         return WIN_TRAITOR
     -- If all the "bad" people are dead, innocents win
-    elseif not traitor_alive and not monster_alive and not zombie_alive then
+    elseif not traitor_alive and not monster_alive then
         return WIN_INNOCENT
     -- If the monsters are the only ones left, they win
-    elseif not innocent_alive and not traitor_alive and not zombie_alive then
+    elseif not innocent_alive and not traitor_alive then
         return WIN_MONSTER
-    -- If the zombies are the only ones left, they win
-    elseif not traitor_alive and not innocent_alive and not monster_alive and zombie_alive then
-        return WIN_ZOMBIE
     end
 
     return WIN_NONE
@@ -2144,10 +2111,6 @@ function SelectRoles()
             if ply:GetRole() == ROLE_NONE then
                 ErrorNoHalt("WARNING: " .. ply:Nick() .. " was not assigned a role! Forcing them to be " .. ROLE_STRINGS[ROLE_INNOCENT] .. "...\n")
                 ply:SetRole(ROLE_INNOCENT)
-            end
-
-            if ply:GetRole() == ROLE_ZOMBIE then
-                ply:SetZombiePrime(true)
             end
 
             ply:SetDefaultCredits()

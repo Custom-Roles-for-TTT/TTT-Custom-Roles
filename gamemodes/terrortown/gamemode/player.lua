@@ -1652,18 +1652,6 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
                 dmginfo:ScaleDamage(1 + bonus)
             end
 
-            -- Monsters take less bullet damage
-            if dmginfo:IsBulletDamage() and ply:IsZombie() then
-                local reduction = GetConVar("ttt_zombie_damage_reduction"):GetFloat()
-                dmginfo:ScaleDamage(1 - reduction)
-            end
-
-            -- Zombies do less damage when using non-claw weapons
-            if att:IsZombie() and att:GetActiveWeapon():GetClass() ~= "weapon_zom_claws" then
-                local penalty = GetConVar("ttt_zombie_damage_penalty"):GetFloat()
-                dmginfo:ScaleDamage(1 - penalty)
-            end
-
             if not ply:IsPaladin() or GetConVar("ttt_paladin_protect_self"):GetBool() then
                 local withPaladin = false
                 local radius = GetGlobalFloat("ttt_paladin_aura_radius", 262.45)
@@ -1728,8 +1716,8 @@ local fallsounds = {
 };
 
 function GM:OnPlayerHitGround(ply, in_water, on_floater, speed)
-    if (ply:ShouldActLikeJester() or ply:IsZombie()) and GetRoundState() >= ROUND_ACTIVE then
-        -- Jester team and Zombie don't take fall damage
+    if ply:ShouldActLikeJester() and GetRoundState() >= ROUND_ACTIVE then
+        -- Jester team don't take fall damage
         return
     else
         if in_water or speed < 450 or not IsValid(ply) then return end
@@ -1819,13 +1807,6 @@ function GM:EntityTakeDamage(ent, dmginfo)
 
         -- Quacks are immune to explosions
         if ent:IsQuack() and dmginfo:IsExplosionDamage() then
-            dmginfo:ScaleDamage(0)
-            dmginfo:SetDamage(0)
-        end
-
-        -- No zombie team killing
-        -- This can be funny, but it can also be used by frustrated players who didn't appreciate being zombified
-        if ent:IsZombie() and IsPlayer(att) and att:IsZombieAlly() then
             dmginfo:ScaleDamage(0)
             dmginfo:SetDamage(0)
         end
@@ -2066,40 +2047,6 @@ end
 
 function GM:OnNPCKilled() end
 
-local function HandleRoleForcedWeapons(ply)
-    if not IsValid(ply) or ply:IsSpec() or GetRoundState() ~= ROUND_ACTIVE then return end
-
-    if ply:IsZombie() then
-        if ply.GetActiveWeapon and IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() == "weapon_zom_claws" then
-            ply:SetColor(Color(70, 100, 25, 255))
-            ply:SetRenderMode(RENDERMODE_NORMAL)
-        elseif ply:GetRenderMode() ~= RENDERMODE_TRANSALPHA then
-            ply:SetColor(Color(255, 255, 255, 255))
-            ply:SetRenderMode(RENDERMODE_TRANSALPHA)
-        end
-
-        -- Strip all non-claw weapons for non-prime zombies if that feature is enabled
-        -- Strip individual weapons instead of all because otherwise the player will have their claws added and removed constantly
-        if GetConVar("ttt_zombie_prime_only_weapons"):GetBool() and not ply:GetZombiePrime() then
-            local weapons = ply:GetWeapons()
-            for _, v in pairs(weapons) do
-                local weapclass = WEPS.GetClass(v)
-                if weapclass ~= "weapon_zom_claws" then
-                    ply:StripWeapon(weapclass)
-                end
-            end
-        end
-
-        -- If this zombie doesn't have claws, give them claws
-        if not ply:HasWeapon("weapon_zom_claws") then
-            ply:Give("weapon_zom_claws")
-        end
-    elseif ply:GetRenderMode() ~= RENDERMODE_TRANSALPHA then
-        ply:SetColor(Color(255, 255, 255, 255))
-        ply:SetRenderMode(RENDERMODE_TRANSALPHA)
-    end
-end
-
 -- Drowning and such
 function GM:Tick()
     -- three cheers for micro-optimizations
@@ -2143,7 +2090,6 @@ function GM:Tick()
                 ply.scanner_weapon:Think()
             end
 
-            HandleRoleForcedWeapons(ply)
             hook.Run("TTTPlayerAliveThink", ply)
         elseif tm == TEAM_SPEC then
             if ply.propspec then

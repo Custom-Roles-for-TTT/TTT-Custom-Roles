@@ -46,19 +46,8 @@ function plymeta:IsActiveIndependentTeam() return self:IsIndependentTeam() and s
 function plymeta:IsActiveMonsterTeam() return self:IsMonsterTeam() and self:IsActive() end
 function plymeta:IsActiveDetectiveTeam() return self:IsDetectiveTeam() and self:IsActive() end
 
-function plymeta:GetZombiePrime() return self:GetZombie() and self:GetNWBool("zombie_prime", false) end
 function plymeta:GetDetectiveLike() return self:IsDetectiveTeam() or ((self:GetDeputy() or self:GetImpersonator()) and self:GetNWBool("HasPromotion", false)) end
 function plymeta:GetDetectiveLikePromotable() return (self:IsDeputy() or self:IsImpersonator()) and not self:GetNWBool("HasPromotion", false) end
-
-function plymeta:GetZombieAlly()
-    local role = self:GetRole()
-    if MONSTER_ROLES[ROLE_ZOMBIE] then
-        return MONSTER_ROLES[role]
-    elseif TRAITOR_ROLES[ROLE_ZOMBIE] then
-        return TRAITOR_ROLES[role]
-    end
-    return INDEPENDENT_ROLES[role]
-end
 
 function plymeta:IsSameTeam(target)
     if self:IsTraitorTeam() and target:IsTraitorTeam() then
@@ -76,8 +65,6 @@ end
 
 plymeta.IsDetectiveLike = plymeta.GetDetectiveLike
 plymeta.IsDetectiveLikePromotable = plymeta.GetDetectiveLikePromotable
-plymeta.IsZombiePrime = plymeta.GetZombiePrime
-plymeta.IsZombieAlly = plymeta.GetZombieAlly
 
 function plymeta:IsSpecial() return self:GetRole() ~= ROLE_INNOCENT end
 function plymeta:IsCustom() return not DEFAULT_ROLES[self:GetRole()] end
@@ -514,11 +501,6 @@ else
     end
 
     function plymeta:MoveRoleState(target, keep_on_source)
-        if self:IsZombiePrime() then
-            if not keep_on_source then self:SetZombiePrime(false) end
-            target:SetZombiePrime(true)
-        end
-
         if self:GetNWBool("HasPromotion", false) then
             if not keep_on_source then self:SetNWBool("HasPromotion", false) end
             target:HandleDetectiveLikePromotion()

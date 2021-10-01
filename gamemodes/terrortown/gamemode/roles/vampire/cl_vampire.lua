@@ -21,8 +21,8 @@ Press {menukey} to receive your special equipment!]])
 end)
 
 -- If this is an independent Vampire, replace the "comrades" list with a generic kill message
-hook.Add("TTTRolePopupParams", "Vampire_TTTRolePopupParams", function(client)
-    if client:IsVampire() and client:IsIndependentTeam() then
+hook.Add("TTTRolePopupParams", "Vampire_TTTRolePopupParams", function(cli)
+    if cli:IsVampire() and cli:IsIndependentTeam() then
         return {comrades = "\n\nKill all others to win!"}
     end
 end)
@@ -73,6 +73,14 @@ hook.Add("Initialize", "Vampire_Scoring_Initialize", function()
                return wrong_icon, "Killed"
             end
         end})
+end)
+
+net.Receive("TTT_Vampified", function(len)
+    local name = net.ReadString()
+    CLSCORE:AddEvent({
+        id = EVENT_VAMPIFIED,
+        vic = name
+    })
 end)
 
 net.Receive("TTT_VampirePrimeDeath", function(len)

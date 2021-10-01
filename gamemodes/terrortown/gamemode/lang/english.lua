@@ -39,7 +39,6 @@ L.win_jester = "The {role} has fooled you all!"
 L.win_clown = "The {role} has murdered you all!"
 L.win_showreport = "Let's look at the round report for {num} seconds."
 L.win_monster = "The monsters have taken over!"
-L.win_zombies = "The {role} have taken over!"
 
 L.limit_round = "Round limit reached. {mapname} will load soon."
 L.limit_time = "Time limit reached. {mapname} will load soon."
@@ -836,22 +835,6 @@ respawn. Try to avoid getting them cured or killed!
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_zombie = [[You are {role}! {comrades}
-
-All damage you deal with guns is reduced.
-Killing someone with your claws will turn them into {azombie}.
-
-Press {menukey} to receive your special equipment!]]
-
-L.info_popup_zombie_indep = [[You are {role}!
-
-Kill all others to win!
-
-All damage you deal with guns is reduced.
-Killing someone with your claws will turn them into {azombie}.
-
-Press {menukey} to receive your special equipment!]]
-
 --- Various other text
 L.name_kick = "A player was automatically kicked for changing their name during a round."
 
@@ -1066,7 +1049,6 @@ L.ev_win_inno = "The lovable {role} won the round!"
 L.ev_win_clown = "The vicious {role} won the round!"
 L.ev_win_oldman = "The {role} has somehow survived and also won the round!"
 L.ev_win_monster = "The evil monsters have won the round!"
-L.ev_win_zombie = "The {role} infection has taken over the world!"
 L.ev_win_time = "The {role} ran out of time and lost!"
 L.ev_win_icon = "{role} won"
 L.ev_win_icon_time = "Time Limit"
@@ -1330,7 +1312,6 @@ L.ev_clown = "The clown, {player}, went on a rampage"
 L.ev_drunk = "{player} remembered they are {team}"
 L.ev_haunt = "{victim} started haunting {attacker}"
 L.ev_bodysnatch = "{attacker} bodysnatched {role}, {victim}"
-L.ev_zombi = "{victim} was turned into {azombie}"
 L.ev_beggar_converted = "The {beggar} ({victim}) was converted to {team} by {attacker}"
 L.ev_beggar_killed = "The {beggar} ({victim}) was killed by {attacker} but respawned"
 L.ev_beggar_killed_delay = "The {beggar} ({victim}) was killed by {attacker} but will respawn in {delay} seconds"
