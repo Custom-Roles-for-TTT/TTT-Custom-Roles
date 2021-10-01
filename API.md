@@ -1072,6 +1072,14 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
 - *clr* - The new clr value to use or the original passed into the hook
 
+**TTTTutorialRoleEnabled(role)** - Called before a role's tutorial page is rendered. This can be used to allow a page to be shown when it normally would not be because the role is disabled. Useful for situations like showing the Zombie tutorial page when the Mad Scientist is enabled (because the Mad Scientist creates Zombies).\
+*Realm:* Client\
+*Added in:* 1.2.7\
+*Parameters:*
+- *role* - Which role's tutorial page is being rendered
+
+*Return:* `true` to show this page when it normally would not be
+
 **TTTTutorialRolePage(role, parentPanel, titleLabel)** - Called before a role's tutorial page is rendered. This can be used to render a completely custom page with information about a role.\
 *Realm:* Client\
 *Added in:* 1.2.7\

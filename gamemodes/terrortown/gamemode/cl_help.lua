@@ -815,20 +815,25 @@ local function ShowTutorialPage(pnl, page)
     end
 end
 
--- Allow roles to have special logic for additional readons why they might show on the tutorial screen
-local special_role_enabled = {
-    -- Show the zombie screen if the Mad Scientist could spawn them
-    [ROLE_ZOMBIE] = function()
-        return INDEPENDENT_ROLES[ROLE_ZOMBIE] and GetGlobalBool("ttt_madscientist_enabled", false)
+local function ShowRoleTutorial(role)
+    -- If the role is enabled, show the page
+    if DEFAULT_ROLES[role] then return true end
+    if GetGlobalBool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_enabled", false) then
+        return true
     end
-}
+
+    -- Otherwise check if there are special rules for this role
+    if hook.Run("TTTTutorialRoleEnabled", role) then
+        return true
+    end
+    return false
+end
 
 function HELPSCRN:CreateTutorial(parent)
     -- Get the list of enabled roles
     table.Empty(enabledRoles)
     for r = ROLE_INNOCENT, ROLE_MAX do
-        local rolestring = ROLE_STRINGS_RAW[r]
-        if DEFAULT_ROLES[r] or (special_role_enabled[r] and special_role_enabled[r]()) or GetGlobalBool("ttt_" .. rolestring .. "_enabled", false) then
+        if ShowRoleTutorial(r) then
             table.insert(enabledRoles, r)
         end
     end
