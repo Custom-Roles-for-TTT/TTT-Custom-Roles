@@ -596,31 +596,31 @@ In TTT some roles have shops where they are allowed to purchase weapons. Given t
 
 The easiest way to configure the role shops is via a user interface usable by administrators directly from a running game. To open the interface, run the `ttt_roleweapons` command from your console. The window that opens should look something like this:
 
-![Blank Role Weapons Dialog](images/RoleWeapons_Blank.png)
+![Blank Role Weapons Window](images/RoleWeapons_Blank.png)
 
 #### **Explanation**
 
-This dialog was made to closely resemble the role equipment shop so parts of it should be fairly intuitive to use. For example: the search bar, the weapon list, and the weapon info panel are all directly copied from the weapon shop.
+This window was made to closely resemble the role equipment shop so parts of it should be fairly intuitive to use. For example: the search bar, the weapon list, and the weapon info panel are all directly copied from the weapon shop.
 
-Apart from those familiar pieces, this dialog also adds a few more controls specifically for configuring the role weapons shops:
-- *Search Role* - This dropdown in the top right of the dialog allows you to choose which role's shop to display and search through
-- The bottom right of the dialog houses the controls for targeting and saving the configuration changes
+Apart from those familiar pieces, this window also adds a few more controls specifically for configuring the role weapons shops:
+- *Search Role* - This dropdown in the top right of the window allows you to choose which role's shop to display and search through
+- The bottom right of the window houses the controls for targeting and saving the configuration changes
   - *Save Role* - This dropdown allows you to choose which role you would update
-  - *Weapon State Checkboxes* - These checkboxes allow you to change how a weapon behaves in the target role's shop
+  - *Weapon State Checkboxes* - These checkboxes allow you to change how a weapon behaves in the role's shop
     - *None* - Use the default buying configuration for the weapon
     - *Include* - Mark this weapon as explicitly buyable
     - *Exclude* - Mark this weapon as explicitly NOT buyable
   - *No Random* - Ensure this weapon stays in the shop, regardless of randomization
   - *Update* - Save the configuration changes
-- *Close* - This button will close the dialog, disgarding any unsaved changes
+- *Close* - This button will close the window, disgarding any unsaved changes
 
 #### **Example**
 
-To help understand the functionality of this dialog it might be easier to walk through an example. In this example we are going to find the Health Station (which we know the Detective can buy) and add it to the Veteran's shop. The Veteran gets a shop when they are activated but only if weapons are actually available to them which is where the roleweapons system comes into play.
+To help understand the functionality of this window it might be easier to walk through an example: we are going to find the Health Station (which we know the Detective can buy) and add it to the Veteran's shop. The Veteran gets a shop when they are activated, but only if weapons are actually available to them. This is where the role weapons system comes into play.
 
-First things first, we open the dialog and select "Detective" from the "Search Roles" dropdown. From there we can either scroll through the list of weapons or use the search text box to search for "health". We then choose "Veteran" from the "Save Role" dropown and click the "Include" checkbox. With all that done the dialog should look like this:
+First things first: we open the window and select "Detective" from the "Search Roles" dropdown. From there we can either scroll through the list of weapons or use the search text box to search for "health". We then choose "Veteran" from the "Save Role" dropown and click the "Include" checkbox. With all that done the window should look like this:
 
-![Role Weapons Dialog for Detective -> Veteran](images/RoleWeapons_DetVet.png)
+![Role Weapons Window for Detective -> Veteran](images/RoleWeapons_DetVet.png)
 
 From here, the last step is to click the "Update" button and we're done -- The Veteran now has the ability to buy a Health Station.
 
