@@ -1,7 +1,7 @@
 # Beta Release Notes
 
 ## 1.2.7
-**Released:**
+**Released: October 2nd, 2021**
 
 ### Additions
 - Added ttt_roleweapons admin command which opens a configuration interface for the roleweapons shop configuration system

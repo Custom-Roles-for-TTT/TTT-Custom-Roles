@@ -594,6 +594,8 @@ The `LANG.Msg` call is the one that sends the message to each client and tells t
 
 #### Full Win Condition Example
 
+As mentioned earlier, a good rule of thumb is if you are creating a role that is `ROLE_TEAM_JESTER` or `ROLE_TEAM_INDEPENDENT` then you will probably need a custom win condition. In the case of the Summoner none of this is required as it is `ROLE_TEAM_TRAITOR` and we want the summoner to win with the traitors, but it is left here as an example.
+
 If we piece together all the bits of code from the preivous sections it would come out looking something like this:
 
 ```lua
@@ -730,6 +732,15 @@ RegisterRole(ROLE)
 
 if SERVER then  
     AddCSLuaFile()
+end
+
+if CLIENT then
+   hook.Add("TTTTutorialRoleText", "SummonerTutorialRoleText", function(role, titleLabel, roleIcon)
+      if role == ROLE_SUMMONER then
+         local roleColor = ROLE_COLORS[ROLE_TRAITOR]
+         return "The " .. ROLE_STRINGS[ROLE_SUMMONER] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitor team</span> who can only purchase items that summon minions to fight for them."
+      end
+   end)
 end
 ```
 
