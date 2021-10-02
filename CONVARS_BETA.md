@@ -186,6 +186,7 @@ ttt_vampire_fang_overheal_living            -1      // The amount of overheal (s
 ttt_vampire_prime_death_mode                0       // What to do when the prime vampire(s) (e.g. playters who spawn as vampires originally) are killed. 0 - Do nothing. 1 - Kill all vampire thralls (non-prime vampires). 2 - Revert all vampire thralls (non-prime vampires) to their original role
 ttt_vampire_prime_only_convert              1       // Whether only prime vampires (e.g. players who spawn as vampire originally) are allowed to convert other players
 ttt_vampire_kill_credits                    1       // Whether the vampire receives credits when they kill another player
+ttt_vampire_loot_credits                    1       // Whether the vampire can loot credits from a dead player
 ttt_vampire_credits_starting                1       // The number of credits a vampire should start with
 
 // Quack

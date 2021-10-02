@@ -19,6 +19,7 @@ CreateConVar("ttt_vampire_damage_reduction", "0")
 CreateConVar("ttt_vampire_prime_death_mode", "0")
 CreateConVar("ttt_vampire_vision_enable", "0")
 CreateConVar("ttt_vampire_kill_credits", "1")
+CreateConVar("ttt_vampire_loot_credits", "1")
 
 hook.Add("TTTSyncGlobals", "Vampire_TTTSyncGlobals", function()
     SetGlobalBool("ttt_vampires_are_monsters", GetConVar("ttt_vampires_are_monsters"):GetBool())
@@ -28,6 +29,7 @@ hook.Add("TTTSyncGlobals", "Vampire_TTTSyncGlobals", function()
     SetGlobalBool("ttt_vampire_convert_enable", GetConVar("ttt_vampire_convert_enable"):GetBool())
     SetGlobalBool("ttt_vampire_drain_enable", GetConVar("ttt_vampire_drain_enable"):GetBool())
     SetGlobalBool("ttt_vampire_prime_only_convert", GetConVar("ttt_vampire_prime_only_convert"):GetBool())
+    SetGlobalBool("ttt_vampire_loot_credits", GetConVar("ttt_vampire_loot_credits"):GetBool())
 end)
 
 -------------

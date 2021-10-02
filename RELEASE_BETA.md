@@ -1,5 +1,11 @@
 # Beta Release Notes
 
+## 1.3.1
+**Released:**
+
+### Additions
+- Added ability to control whether a vampire can loot credits (enabled by default)
+
 ## 1.2.7
 **Released: October 2nd, 2021**
 
