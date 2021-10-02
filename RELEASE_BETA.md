@@ -5,6 +5,7 @@
 
 ### Additions
 - Added ability to control whether a vampire can loot credits (enabled by default)
+- Added ability to control whether special detectives (all detective roles other than the original detective itself) get armor automatically for free (enabled by default)
 
 ## 1.2.7
 **Released: October 2nd, 2021**

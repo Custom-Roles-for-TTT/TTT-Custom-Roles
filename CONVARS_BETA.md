@@ -269,6 +269,7 @@ ttt_trickster_credits_starting              0       // The number of credits a t
 // All Detective Roles
 ttt_detective_search_only                   1       // Whether only detectives can search bodies or not
 ttt_detective_disable_looting               0       // Whether to disable a detective role's ability to loot credits from bodies
+ttt_special_detectives_armor_loadout        1       // Whether special detectives (all detective roles other than the original detective itself) get armor automatically for free
 ttt_all_search_postround                    1       // Whether non-detectives can search bodies post-round or not
 ttt_all_search_binoc                        0       // Whether non-detectives can search bodies if they are using binoculars
 
