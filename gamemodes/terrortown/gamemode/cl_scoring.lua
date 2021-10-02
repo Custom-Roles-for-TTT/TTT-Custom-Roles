@@ -185,32 +185,6 @@ net.Receive("TTT_PhantomHaunt", function(len)
     })
 end)
 
-net.Receive("TTT_Zombified", function(len)
-    local name = net.ReadString()
-    CLSCORE:AddEvent({
-        id = EVENT_ZOMBIFIED,
-        vic = name
-    })
-end)
-
-net.Receive("TTT_Vampified", function(len)
-    local name = net.ReadString()
-    CLSCORE:AddEvent({
-        id = EVENT_VAMPIFIED,
-        vic = name
-    })
-end)
-
-net.Receive("TTT_VampirePrimeDeath", function(len)
-    local mode = net.ReadUInt(4)
-    local name = net.ReadString()
-    CLSCORE:AddEvent({
-        id = EVENT_VAMPPRIME_DEATH,
-        mode = mode,
-        prime = name
-    })
-end)
-
 net.Receive("TTT_ScoreBodysnatch", function(len)
     local victim = net.ReadString()
     local attacker = net.ReadString()
@@ -381,9 +355,6 @@ local function GetWinTitle(wintype)
         [WIN_TRAITOR] = { txt = "hilite_win_role_plural", params = { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]:upper() }, c = ROLE_COLORS[ROLE_TRAITOR] },
         [WIN_JESTER] = { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_JESTER]:upper() }, c = ROLE_COLORS[ROLE_JESTER] },
         [WIN_CLOWN] = { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_CLOWN]:upper() }, c = ROLE_COLORS[ROLE_JESTER] },
-        [WIN_KILLER] = { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_KILLER]:upper() }, c = ROLE_COLORS[ROLE_KILLER] },
-        [WIN_ZOMBIE] = { txt = "hilite_win_role_plural", params = { role = ROLE_STRINGS_PLURAL[ROLE_ZOMBIE]:upper() }, c = ROLE_COLORS[ROLE_ZOMBIE] },
-        [WIN_VAMPIRE] = { txt = "hilite_win_role_plural", params = { role = ROLE_STRINGS_PLURAL[ROLE_VAMPIRE]:upper() }, c = ROLE_COLORS[ROLE_VAMPIRE] },
         [WIN_MONSTER] = { txt = "hilite_win_role_plural", params = { role = "MONSTERS" }, c = GetRoleTeamColor(ROLE_TEAM_MONSTER) }
     }
     local title = wintitles[wintype]
@@ -627,8 +598,8 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                         finalRole = startingRole
                     end
 
-                    -- Keep the original role icon for people converted to Zombie and Vampire or the Bodysnatcher
-                    if finalRole ~= ROLE_ZOMBIE and finalRole ~= ROLE_VAMPIRE and startingRole ~= ROLE_BODYSNATCHER then
+                    -- Keep the original role icon for the Bodysnatcher
+                    if startingRole ~= ROLE_BODYSNATCHER then
                         roleFileName = ROLE_STRINGS_SHORT[finalRole]
                     end
                     roleColor = ROLE_COLORS[finalRole]
@@ -659,13 +630,13 @@ function CLSCORE:BuildSummaryPanel(dpanel)
 
                 -- Group players in the summary by the team each player ended in...
                 local groupingRole = finalRole
-                -- ...unless that player ended as a converted monster in which case keep them with the team they started as
-                if finalRole == ROLE_ZOMBIE or finalRole == ROLE_VAMPIRE then
-                    groupingRole = startingRole
+                -- ...unless that player was the drunk who changed to a jester role. In that case keep them in the independent row
+                if startingRole == ROLE_DRUNK and JESTER_ROLES[finalRole] then
+                    groupingRole = ROLE_DRUNK
                 end
 
                 -- Allow developers to override role icon, grouping, and color
-                local roleFile, groupRole, iconColor, newName = hook.Run("TTTScoringSummaryRender", ply, roleFileName, groupingRole, roleColor, name)
+                local roleFile, groupRole, iconColor, newName = hook.Run("TTTScoringSummaryRender", ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
                 if roleFile then roleFileName = roleFile end
                 if groupRole then groupingRole = groupRole end
                 if iconColor then roleColor = iconColor end

@@ -12,21 +12,11 @@ function GM:PlayerCanPickupWeapon(ply, wep)
     -- Disallow picking up for ammo
     if ply:HasWeapon(wep:GetClass()) then
         return false
-    elseif not ply:GetHypnotist() and wep:GetClass() == "weapon_hyp_brainwash" then
-        return false
     elseif not ply:GetBodysnatcher() and wep:GetClass() == "weapon_bod_bodysnatch" then
-        return false
-    elseif not ply:GetKiller() and (wep:GetClass() == "weapon_kil_knife" or wep:GetClass() == "weapon_kil_crowbar") then
-        return false
-    elseif not ply:GetVampire() and wep:GetClass() == "weapon_vam_fangs" then
-        return false
-    elseif not ply:GetZombie() and wep:GetClass() == "weapon_zom_claws" then
         return false
     elseif not ply:CanCarryWeapon(wep) then
         return false
     elseif IsEquipment(wep) and wep.IsDropped and (not ply:KeyDown(IN_USE)) then
-        return false
-    elseif GetConVar("ttt_zombie_prime_only_weapons"):GetBool() and ply:GetZombie() and not ply:GetZombiePrime() and wep:GetClass() ~= "weapon_zom_claws" and GetRoundState() == ROUND_ACTIVE then
         return false
     end
 
@@ -761,3 +751,78 @@ function WEPS.ForcePrecache()
         end
     end
 end
+
+net.Receive("TTT_ConfigureRoleWeapons", function(len, ply)
+    if not IsPlayer(ply) or not ply:IsAdmin() then
+        ErrorNoHalt("Player withing admin access attempted to configure role weapons: " .. ply:Nick() .. " (" .. ply:SteamID() .. ")\n")
+        return
+    end
+
+    local id = net.ReadString():lower()
+    local role = net.ReadInt(8)
+    local includeSelected = net.ReadBool()
+    local excludeSelected = net.ReadBool()
+    local noRandomSelected = net.ReadBool()
+    local roleName = ROLE_STRINGS_RAW[role]:lower()
+
+    -- Ensure directories exist
+    if not file.IsDir("roleweapons", "DATA") then
+        if file.Exists("roleweapons", "DATA") then
+            ErrorNoHalt("Item named 'roleweapons' already exists in garrysmod/data but it is not a directory\n")
+            return
+        end
+
+        file.CreateDir("roleweapons")
+    end
+
+    local rolePath = "roleweapons/" .. roleName
+    if not file.IsDir(rolePath, "DATA") then
+        if file.Exists(rolePath, "DATA") then
+            ErrorNoHalt("Item named '" .. rolePath .. "' already exists in garrysmod/data but it is not a directory\n")
+            return
+        end
+
+        file.CreateDir(rolePath)
+    end
+
+    -- Update files
+    local filePath = rolePath .. "/" .. id
+    local includePath = filePath .. ".txt"
+    if not includeSelected then
+        if file.Exists(includePath, "DATA") then
+            file.Delete(includePath)
+        end
+    elseif not file.Exists(includePath, "DATA") then
+        file.Write(includePath, "")
+    end
+
+    local excludePath = filePath .. ".exclude.txt"
+    if not excludeSelected then
+        if file.Exists(excludePath, "DATA") then
+            file.Delete(excludePath)
+        end
+    elseif not file.Exists(excludePath, "DATA") then
+        file.Write(excludePath, "")
+    end
+
+    local noRandomPath = filePath .. ".norandom.txt"
+    if not noRandomSelected then
+        if file.Exists(noRandomPath, "DATA") then
+            file.Delete(noRandomPath)
+        end
+    elseif not file.Exists(noRandomPath, "DATA") then
+        file.Write(noRandomPath, "")
+    end
+
+    -- Update tables
+    WEPS.UpdateWeaponLists(role, id, includeSelected, excludeSelected, noRandomSelected)
+
+    -- Send updated lists to client
+    net.Start("TTT_UpdateBuyableWeapons")
+    net.WriteString(id)
+    net.WriteInt(role, 8)
+    net.WriteBool(includeSelected)
+    net.WriteBool(excludeSelected)
+    net.WriteBool(noRandomSelected)
+    net.Broadcast()
+end)

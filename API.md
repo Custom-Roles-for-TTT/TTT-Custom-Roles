@@ -5,7 +5,8 @@
 1. [Global Enumerations](#Global-Enumerations)
 1. [Methods](#Methods)
    1. [Global](#Global)
-   1. [Player](#Player)
+   1. [Player Object](#Player-Object)
+   1. [Player Static](#Player-Static)
    1. [Table](#Table)
 1. [Hooks](#Hooks)
 1. [SWEPs](#SWEPs)
@@ -175,7 +176,7 @@ Methods available globally (within the defined realm)
 *Added in:* 1.0.0\
 *Parameters:*
 - *ply* - The target player
-- *start* - Whether this is running at the start of the round (Defaults to `false`).
+- *start* - Whether this is running at the start of the round (Defaults to `false`)
 - *delay* - Whether the assassin's target assignment is delayed (Defaults to false)
 
 **CRVersion(version)** - Whether the current version is equal to or newer than the version number given.\
@@ -209,38 +210,55 @@ Methods available globally (within the defined realm)
 *Realm:* Server\
 *Added in:* Whenever each role is added\
 *Parameters:*
-- *aliveOnly* - Whether this filter should only include live players (Defaults to `false`).
+- *aliveOnly* - Whether this filter should only include live players (Defaults to `false`)
 
 **GetInnocentTeamFilter(aliveOnly)** - Returns a function that filters net messages to players that are on the innocent team.\
 *Realm:* Server\
 *Added in:* 1.0.0\
 *Parameters:*
-- *aliveOnly* - Whether this filter should only include live players (Defaults to `false`).
+- *aliveOnly* - Whether this filter should only include live players (Defaults to `false`)
 
 **GetJesterTeamFilter(aliveOnly)** - Returns a function that filters net messages to players that are on the jester team.\
 *Realm:* Server\
 *Added in:* 1.0.0\
 *Parameters:*
-- *aliveOnly* - Whether this filter should only include live players (Defaults to `false`).
+- *aliveOnly* - Whether this filter should only include live players (Defaults to `false`)
 
 **GetIndependentTeamFilter(aliveOnly)** - Returns a function that filters net messages to players that are on the independent team.\
 *Realm:* Server\
 *Added in:* 1.0.0\
 *Parameters:*
-- *aliveOnly* - Whether this filter should only include live players (Defaults to `false`).
+- *aliveOnly* - Whether this filter should only include live players (Defaults to `false`)
 
 **GetMonsterTeamFilter(aliveOnly)** - Returns a function that filters net messages to players that are on the monster team.\
 *Realm:* Server\
 *Added in:* 1.0.0\
 *Parameters:*
-- *aliveOnly* - Whether this filter should only include live players (Defaults to `false`).
+- *aliveOnly* - Whether this filter should only include live players (Defaults to `false`)
 
 **GetRoleTeamColor(roleTeam, type)** - Gets the color belonging to the specified role team (see ROLE_TEAM_* global enumeration).\
 *Realm:* Client\
 *Added in:* 1.1.8\
 *Parameters:*
-- *roleTeam* - Which team role to get the color for (see ROLE_TEAM_* global enumeration).
+- *roleTeam* - Which team role to get the color for (see ROLE_TEAM_* global enumeration)
 - *type* - The color modification type. Options are: "dark", "highlight", "radar", "scoreboard", or "sprite". (Optional)
+
+**GetRoleTeamInfo(roleTeam, simpleColor)** - Gets the name and color belonging to the specified role team (see ROLE_TEAM_* global enumeration).\
+*Realm:* Client\
+*Added in:* 1.2.7\
+*Parameters:*
+- *roleTeam* - Which team role to get the color for (see ROLE_TEAM_* global enumeration)
+- *simpleColor* - Whether to use simple team colors (e.g. all innocents are the same color and all traitors are the same color)
+
+*Returns:*
+- *roleTeamName* - The name of the provided role team
+- *roleTeamColor* - The color of the provided role team
+
+**GetRoleTeamName(roleTeam)** - Gets the name belonging to the specified role team (see ROLE_TEAM_* global enumeration).\
+*Realm:* Client\
+*Added in:* 1.2.7\
+*Parameters:*
+- *roleTeam* - Which team role to get the color for (see ROLE_TEAM_* global enumeration)
 
 **GetSprintMultiplier(ply, sprinting)** - Gets the given player's current sprint multiplier.\
 *Realm:* Client and Server\
@@ -260,9 +278,9 @@ Methods available globally (within the defined realm)
 *Realm:* Server\
 *Added in:* 1.0.0\
 *Parameters:*
-- *aliveOnly* - Whether this filter should only include live players (Defaults to `false`).
+- *aliveOnly* - Whether this filter should only include live players (Defaults to `false`)
 
-**OnPlayerHighlightEnabled(client, alliedRoles, showJesters, hideEnemies, traitorAllies)** - Handles player highlighting (colored glow around players) rules for the local player.\
+**OnPlayerHighlightEnabled(client, alliedRoles, showJesters, hideEnemies, traitorAllies, onlyShowEnemies)** - Handles player highlighting (colored glow around players) rules for the local player.\
 *Realm:* Client\
 *Added in:* 1.2.7\
 *Parameters:*
@@ -271,6 +289,7 @@ Methods available globally (within the defined realm)
 - *showJesters* - Whether jester roles should be highlighted in the jester color. If `false`, jesters will appear in the generic enemy color instead
 - *hideEnemies* - Whether enemy roles (e.g. anyone that isn't an ally or a jester if *showJesters* is enabled) should be highlighted
 - *traitorAllies* - Whether this role's allies are traitors. If `true`, allied roles will be shown in the traitor color. Otherwise allied roles will be shown in the innocent color
+- *onlyShowEnemies* - Whether to only highlight players whose roles are explicitly enemies of the local player. If this is `true` then allies will not be highlighted. If both this and *showJesters* are `true` then neither allies nor jesters will be highlighted
 
 **RegisterRole(roleTable)** - Registers a role with Custom Roles for TTT. See [here](CREATE_YOUR_OWN_ROLE.md) for instructions on how to create a role and role table structure.\
 *Realm:* Client and Server\
@@ -325,8 +344,8 @@ Methods available globally (within the defined realm)
 *Realm:* Client and Server\
 *Added in:* 1.0.0
 
-### *Player*
-Variables available when called from a Player object (within the defined realm)
+### *Player Object*
+Methods available when called from a Player object (within the defined realm)
 
 **plymeta:BeginRoleChecks()** - Sets up role logic for the player to handle role-specific events and checks.\
 *Realm:* Server\
@@ -507,6 +526,10 @@ Variables available when called from a Player object (within the defined realm)
 *Realm:* Client and Server\
 *Added in:* 1.2.5
 
+**plymeta:ShouldDelayAnnouncements()** - Whether this role should delay announcements when they kill a player that shows a message (like phantom and parasite). Used for things like preventing the assassin's target update message from getting overlapped.\
+*Realm:* Client and Server\
+*Added in:* 1.2.7
+
 **plymeta:ShouldDelayShopPurchase()** - Whether the player's shop purchase deliveries should be delayed.\
 *Realm:* Client and Server\
 *Added in:* 1.2.2
@@ -542,6 +565,39 @@ Variables available when called from a Player object (within the defined realm)
 **plymeta:StripRoleWeapons()** - Strips all weapons from the player whose `Category` property matches the global `WEAPON_CATEGORY_ROLE` value.\
 *Realm:* Client and Server\
 *Added in:* 1.0.5
+
+### *Player Static*
+Methods available having to do with players but without needing a specific Player object
+
+**player.AreTeamsLiving()** - Returns whether the there are members of the various teams left alive.\
+*Realm:* Client and Server\
+*Added in:* 1.2.7
+
+*Returns:*
+- *traitor_alive* - Whether there are members of the traitor team left alive
+- *innocent_alive* - Whether there are members of the innocent team left alive
+- *indep_alive* - Whether there are members of the independent team left alive
+- *monster_alive* - Whether there are members of the monster team left alive
+- *jester_alive* - Whether there are members of the jester team left alive
+
+**player.GetLivingRole(role)** - Returns a single player that is alive and belongs to the given role (or `nil` if none exist). Useful when trying to get the player belonging to a role that can only occur once in a round.\
+*Realm:* Client and Server\
+*Added in:* 1.2.7\
+*Parameters:*
+- *role* - The desired role ID of the alive player to be found
+
+**player.GetRoleTeam(role, detectivesAreInnocent)** - Gets which "role team" a role belongs to (see ROLE_TEAM_* global enumeration).\
+*Realm:* Client and Server\
+*Added in:* 1.2.7\
+*Parameters:*
+- *role* - The role ID in question
+- *detectivesAreInnocent* - Whether to include members of the detective "role team" in the innocent "role team" to match the logical teams
+
+**player.IsRoleLiving(role)** - Returns whether a player belonging to the given role exists and is alive.\
+*Realm:* Client and Server\
+*Added in:* 1.2.7\
+*Parameters:*
+- *role* - The role ID in question
 
 ### *Table*
 Methods created to help with the manipulation of tables
@@ -642,6 +698,15 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 
 *Return:* Whether or not the given player should be prevented from being rewarded with karma (Defaults to `false`).
 
+**TTTKarmaShouldGivePenalty(attacker, victim)** - Called before a player's karma effect is decided. Used to determine if a player should be penalized or rewarded.\
+*Realm:* Server\
+*Added in:* 1.2.7\
+*Parameters:*
+- *attacker* - The player who hurt or killed the victim
+- *victim* - The player who was hurt or killed
+
+*Return:* `true` if the attacker should be penalized or `false` if they should not. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
+
 **TTTPlayerRoleChanged(ply, oldRole, newRole)** - Called after a player's role has changed.\
 *Realm:* Client and Server\
 *Added in:* 1.2.7\
@@ -687,6 +752,15 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *color* - The new color value to use or the original passed into the hook
 - *hidden* - The new hidden value to use or the original passed into the hook
 
+**TTTRolePopupParams(client)** - Called before a player's role start-of-round popup message is displayed, allowing the parameters to be added to.\
+*Realm:* Client\
+*Added in:* 1.2.7\
+*Parameters:*
+- *client* - The local player
+
+*Return:*
+- *params* - Table of name-value parameters to be used in this player's role start-of-round popup message
+
 **TTTScoreboardPlayerName(ply, client, currentName)** - Called before a player's row in the scoreboard (tab menu) is shown, allowing the name to be changed.\
 *Realm:* Client\
 *Added in:* 1.1.9\
@@ -712,7 +786,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *roleFileName* - The new roleFileName value to use or the original passed into the hook
 - *flashRole* - If a valid role is provided, this will cause the target player's scoreboard role to have a flashing border in the given role's color (see ROLE_* global enumeration)
 
-**TTTScoringSummaryRender(ply, roleFileName, groupingRole, roleColor, nameLabel)** - Called before the round summary screen is shown. Used to modify the color, position, and icon for a player.\
+**TTTScoringSummaryRender(ply, roleFileName, groupingRole, roleColor, nameLabel, startingRole, finalRole)** - Called before the round summary screen is shown. Used to modify the color, position, and icon for a player.\
 *Realm:* Client\
 *Added in:* 1.1.5\
 *Parameters:*
@@ -721,6 +795,8 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *groupingRole* - The role to use when determining the section to of the summary screen to put this player in
 - *roleColor* - The background [Color](https://wiki.facepunch.com/gmod/Color) to use behind the role icon
 - *nameLabel* - The name that is going to be used for this player on the round summary *(Added in 1.2.3)*
+- *startingRole* - The role that this player started the round with *(Added in 1.2.7)*
+- *finalRole* - The role that this player ended the round with *(Added in 1.2.7)*
 
 *Return:*
 - *roleFileName* - The new roleFileName value to use or the original passed into the hook
@@ -995,6 +1071,35 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 *Return:*
 - *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
 - *clr* - The new clr value to use or the original passed into the hook
+
+**TTTTutorialRoleEnabled(role)** - Called before a role's tutorial page is rendered. This can be used to allow a page to be shown when it normally would not be because the role is disabled. Useful for situations like showing the Zombie tutorial page when the Mad Scientist is enabled (because the Mad Scientist creates Zombies).\
+*Realm:* Client\
+*Added in:* 1.2.7\
+*Parameters:*
+- *role* - Which role's tutorial page is being rendered
+
+*Return:* `true` to show this page when it normally would not be
+
+**TTTTutorialRolePage(role, parentPanel, titleLabel, roleIcon)** - Called before a role's tutorial page is rendered. This can be used to render a completely custom page with information about a role.\
+*Realm:* Client\
+*Added in:* 1.2.7\
+*Parameters:*
+- *role* - Which role's tutorial page is being rendered
+- *parentPanel* - The parent [DPanel](https://wiki.facepunch.com/gmod/DPanel) that this tutorial page is being rendered within
+- *titleLabel* - The [DLabel](https://wiki.facepunch.com/gmod/DLabel) that is being used as the title of the rendered tutorial page. Has the role's name automatically set as the label text
+- *roleIcon* - The [DImage](https://wiki.facepunch.com/gmod/DImage) that is being used to show the role's icon on the rendered tutorial page
+
+*Return:* `true` to tell the tutorial page to use the content set in this hook rather than calling the `TTTTutorialRoleText` hook
+
+**TTTTutorialRoleText(role, titleLabel, roleIcon)** - Called before a role's tutorial page is rendered. This can be used to provide the text to show for a role.\
+*Realm:* Client\
+*Added in:* 1.2.7\
+*Parameters:*
+- *role* - Which role's tutorial page is being rendered
+- *titleLabel* - The [DLabel](https://wiki.facepunch.com/gmod/DLabel) that is being used as the title of the rendered tutorial page. Has the role's name automatically set as the label text
+- *roleIcon* - The [DImage](https://wiki.facepunch.com/gmod/DImage) that is being used to show the role's icon on the rendered tutorial page
+
+*Return:* The string value to show on the tutorial page for this role. Can be HTML and will be rendered within a `<div>`
 
 **TTTUpdateRoleState()** - Called after role states and role weapon states have been updated. At this point you can be assured that a role belongs to the team it has been configured to be on.\
 *Realm:* Client and Server\

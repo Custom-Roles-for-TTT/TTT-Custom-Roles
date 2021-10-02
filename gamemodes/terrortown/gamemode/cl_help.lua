@@ -3,6 +3,11 @@
 local GetTranslation = LANG.GetTranslation
 local GetPTranslation = LANG.GetParamTranslation
 
+surface.CreateFont("TutorialTitle", {
+    font = "Trebuchet MS",
+    size = 30,
+    weight = 900 })
+
 CreateClientConVar("ttt_spectator_mode", "0", true, false)
 CreateClientConVar("ttt_mute_team_check", "0", true, false)
 CreateClientConVar("ttt_show_raw_karma_value", "0", true, false)
@@ -453,38 +458,448 @@ cvars.AddChangeCallback("ttt_mute_team_check", MuteTeamCallback)
 
 --- Tutorial
 
-local imgpath = "vgui/ttt/help/tut0%d"
-local tutorial_pages = 6
-function HELPSCRN:CreateTutorial(parent)
-    local bg = vgui.Create("ColoredBox", parent)
-    bg:StretchToParent(0, 0, 0, 0)
-    bg:SetTall(330)
-    bg:SetColor(COLOR_BLACK)
+local fontStyle = "font-family: arial; font-weight: 600;"
+local keyMappingStyles = "font-size: 12px; color: black; display: inline-block; padding: 0px 3px; height: 16px; border-width: 4px; border-style: solid; border-left-color: rgb(221, 221, 221); border-bottom-color: rgb(119, 119, 102); border-right-color: rgb(119, 119, 119); border-top-color: rgb(255, 255, 255); background-color: rgb(204, 204, 187);"
 
-    local tut = vgui.Create("DImage", parent)
+local function TutorialOverview(pnl, lbl)
+    local html = vgui.Create("DHTML", pnl)
+    html:Dock(FILL)
+
+    -- Open the page
+    local htmlData = "<div style='width: 100%; height: 93%; top: 20px; position: relative; padding-top: 10px;'>"
+
+    -- First line
+        htmlData = htmlData .. "<div style='margin-top: 10px; text-align: center; height: 40px;'>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>It's mostly about</span>"
+            local color = ROLE_COLORS[ROLE_TRAITOR]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white; text-shadow: black 1px 1px; margin-left: 5px; margin-right: 5px; padding: 5px 10px 5px 8px; border-radius: 3px; background-color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>" .. ROLE_STRINGS[ROLE_TRAITOR] .. "</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>versus</span>"
+            color = ROLE_COLORS[ROLE_INNOCENT]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white; text-shadow: black 1px 1px; margin-left: 5px; margin-right: 5px; padding: 5px 10px 5px 8px; border-radius: 3px; background-color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>" .. ROLE_STRINGS[ROLE_INNOCENT] .. "</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>but there are others...</span>"
+        htmlData = htmlData .. "</div>"
+
+    -- Second line
+        htmlData = htmlData .. "<div style='text-align: center; height: 40px;'>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>A small group of " .. ROLE_STRINGS_PLURAL[ROLE_TRAITOR] .. " is </span>"
+            color = ROLE_COLORS[ROLE_INNOCENT]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>randomly picked.</span>"
+        htmlData = htmlData .. "</div>"
+
+    -- Third line
+        htmlData = htmlData .. "<div style='text-align: center; height: 40px;'>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>Together they have to </span>"
+            color = ROLE_COLORS[ROLE_TRAITOR]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>kill all the " .. ROLE_STRINGS_PLURAL[ROLE_INNOCENT] .. ".</span>"
+        htmlData = htmlData .. "</div>"
+
+    -- Fourth line
+        htmlData = htmlData .. "<div style='text-align: center; height: 40px;'>"
+            color = ROLE_COLORS[ROLE_INNOCENT]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>The " .. ROLE_STRINGS_PLURAL[ROLE_INNOCENT] .. "</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> do not know </span>"
+            color = ROLE_COLORS[ROLE_TRAITOR]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>who is " .. ROLE_STRINGS_EXT[ROLE_TRAITOR] .. "</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> and </span>"
+            color = ROLE_COLORS[ROLE_INNOCENT]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>who is not.</span>"
+        htmlData = htmlData .. "</div>"
+
+    -- Fifth line
+        htmlData = htmlData .. "<div style='text-align: center; height: 40px;'>"
+            color = ROLE_COLORS[ROLE_TRAITOR]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>The " .. ROLE_STRINGS_PLURAL[ROLE_TRAITOR] .. "</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> need stealth and guile: they are </span>"
+            color = ROLE_COLORS[ROLE_INNOCENT]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>outnumbered.</span>"
+        htmlData = htmlData .. "</div>"
+
+    -- Sixth line
+        htmlData = htmlData .. "<div style='text-align: center; height: 40px;'>"
+            color = GetRoleTeamColor(ROLE_TEAM_INDEPENDENT)
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>The Independents</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> work alone, trying to win against everyone else.</span>"
+        htmlData = htmlData .. "</div>"
+
+    -- Seventh line
+        htmlData = htmlData .. "<div style='text-align: center; height: 40px;'>"
+            color = GetRoleTeamColor(ROLE_TEAM_JESTER)
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>The Jesters</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>, meanwhile, try to trick the other players into aiding them.</span>"
+        htmlData = htmlData .. "</div>"
+
+    -- Close the page
+    htmlData = htmlData .. "</div>"
+
+    html:SetHTML(htmlData)
+end
+
+local function TutorialPlayerDeath(pnl, lbl)
+    local html = vgui.Create("DHTML", pnl)
+    html:Dock(FILL)
+
+    -- Open the page
+    local htmlData = "<div style='width: 100%; height: 93%; top: 20px; position: relative; padding-top: 10px;'>"
+
+    -- First line
+        htmlData = htmlData .. "<div style='margin-top: 10px; text-align: center; height: 40px;'>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>If you die, you will not respawn until next round.</span>"
+        htmlData = htmlData .. "</div>"
+
+    -- Second line
+        htmlData = htmlData .. "<div style='text-align: center; height: 40px;'>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>" .. ROLE_STRINGS_PLURAL[ROLE_INNOCENT] .. " </span>"
+            local color = ROLE_COLORS[ROLE_INNOCENT]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>will not know</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> you are dead...</span>"
+        htmlData = htmlData .. "</div>"
+
+    -- Third line
+        htmlData = htmlData .. "<div style='text-align: center; height: 40px; margin-top: -15px;'>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>...until they find your </span>"
+            color = ROLE_COLORS[ROLE_INNOCENT]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>corpse.</span>"
+        htmlData = htmlData .. "</div>"
+
+    -- Fourth line
+        htmlData = htmlData .. "<div style='text-align: center; height: 40px;'>"
+            color = Color(0, 200, 0, 100)
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white; text-shadow: black 1px 1px; margin-left: 5px; margin-right: 5px; padding: 2px 10px 2px 8px; border-radius: 8px; background-color: rgba(" .. color.r .. ", " .. color.g .. "," .. color.b .. ", " .. color.a .. ");'>" .. GetTranslation("terrorists") .. "</span>"
+            htmlData = htmlData .. "<img style='position: relative; top: 4px;' src='asset://garrysmod/gamemodes/terrortown/content/materials/vgui/ttt/help/tut02_death_arrow.png' width='36' height='21'></img>"
+            color = Color(130, 190, 130, 100)
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white; text-shadow: black 1px 1px; margin-left: 5px; margin-right: 5px; padding: 2px 10px; border-radius: 8px; background-color: rgba(" .. color.r .. ", " .. color.g .. "," .. color.b .. ", " .. color.a .. ");'>" .. GetTranslation("sb_mia") .. "</span>"
+            htmlData = htmlData .. "<img style='position: relative; top: 4px;' src='asset://garrysmod/gamemodes/terrortown/content/materials/vgui/ttt/help/tut02_found_arrow.png' width='39' height='22'></img>"
+            color = Color(130, 170, 10, 100)
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white; text-shadow: black 1px 1px; margin-left: 5px; margin-right: 5px; padding: 2px 10px; border-radius: 8px; background-color: rgba(" .. color.r .. ", " .. color.g .. "," .. color.b .. ", " .. color.a .. ");'>" .. GetTranslation("sb_confirmed") .. "</span>"
+            htmlData = htmlData .. "<img style='position: relative; top: 50px;' src='asset://garrysmod/gamemodes/terrortown/content/materials/vgui/ttt/help/tut02_corpse_info.png' width='382' height='62'></img>"
+        htmlData = htmlData .. "</div>"
+
+    -- Fifth line
+        htmlData = htmlData .. "<div style='text-align: center; height: 40px;'>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>Corpses may have </span>"
+            color = ROLE_COLORS[ROLE_INNOCENT]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>information</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> that leads to the killer.</span>"
+        htmlData = htmlData .. "</div>"
+
+    -- Close the page
+    htmlData = htmlData .. "</div>"
+
+    html:SetHTML(htmlData)
+end
+
+local function TutorialSpecialEquipment(pnl, lbl)
+    local html = vgui.Create("DHTML", pnl)
+    html:Dock(FILL)
+
+    -- Open the page
+    local htmlData = "<div style='width: 100%; height: 93%; top: 20px; position: relative; padding-top: 10px;'>"
+
+    -- First line
+        htmlData = htmlData .. "<div style='margin-top: 10px; text-align: center; height: 40px;'>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>Some roles can buy </span>"
+            local color = ROLE_COLORS[ROLE_TRAITOR]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>special equipment.</span>"
+        htmlData = htmlData .. "</div>"
+
+    -- Second line
+        htmlData = htmlData .. "<div style='text-align: center; height: 40px;'>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>Their </span>"
+            color = ROLE_COLORS[ROLE_TRAITOR]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>Equipment menu</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> can be opened by pressing </span>"
+            local key = Key("+menu_context", "C")
+            htmlData = htmlData .. "<span style='" .. fontStyle .. keyMappingStyles .. "'>" .. key .. "</span>"
+            htmlData = htmlData .. "<img style='position: relative; top: 10px;' src='asset://garrysmod/gamemodes/terrortown/content/materials/vgui/ttt/help/tut03_shop.png' width='567' height='129'></img>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " display: block; margin-top: 15px; color: white;'>Roles from all teams can have access to an equipment menu.</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " display: block; color: white;'>Check your specific role's page for more details.</span>"
+        htmlData = htmlData .. "</div>"
+
+    -- Close the page
+    htmlData = htmlData .. "</div>"
+
+    html:SetHTML(htmlData)
+end
+
+local function TutorialUsefulKeys(pnl, lbl)
+    lbl:SetText("You may find the following keys useful:")
+    lbl:SizeToContents()
+    lbl:CenterHorizontal()
+
+    local html = vgui.Create("DHTML", pnl)
+    html:Dock(FILL)
+
+    -- Open the page
+    local htmlData = "<div style='width: 100%; height: 93%; top: 20px; position: relative; padding-top: 10px;'>"
+
+    -- First line
+        htmlData = htmlData .. "<div style='height: 40px;'>"
+            local key = Key("+menu", "Q")
+            htmlData = htmlData .. "<span style='" .. fontStyle .. keyMappingStyles .. "'>" .. key .. "</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> will </span>"
+            local color = ROLE_COLORS[ROLE_INNOCENT]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>drop</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> your weapon so you can pick up another.</span>"
+        htmlData = htmlData .. "</div>"
+
+    -- Second line
+        htmlData = htmlData .. "<div style='height: 40px;'>"
+            key = Key("+menu_context", "C")
+            htmlData = htmlData .. "<span style='" .. fontStyle .. keyMappingStyles .. "'>" .. key .. "</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> will open the </span>"
+            color = ROLE_COLORS[ROLE_TRAITOR]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>Equipment menu</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>, if your role has one.</span>"
+        htmlData = htmlData .. "</div>"
+
+    -- Third line (only if voice is enabled)
+    if GetGlobalBool("sv_voiceenable") then
+        htmlData = htmlData .. "<div style='height: 40px;'>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>Set a key for </span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white; font-style: italic;'>Suit Zoom</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> to send voicechat </span>"
+            color = ROLE_COLORS[ROLE_TRAITOR]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>only to " .. ROLE_STRINGS_PLURAL[ROLE_TRAITOR] .. ".</span>"
+        htmlData = htmlData .. "</div>"
+    end
+
+    -- Fourth line
+        htmlData = htmlData .. "<div style='height: 40px;'>"
+            key = Key("gm_showhelp", "F1")
+            htmlData = htmlData .. "<span style='" .. fontStyle .. keyMappingStyles .. "'>" .. key .. "</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> shows this </span>"
+            color = ROLE_COLORS[ROLE_INNOCENT]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>Help and Settings</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> menu.</span>"
+        htmlData = htmlData .. "</div>"
+
+    -- Fifth line
+        htmlData = htmlData .. "<div style='height: 40px;'>"
+            key = GetConVar("ttt_radio_button"):GetString():upper()
+            htmlData = htmlData .. "<span style='" .. fontStyle .. keyMappingStyles .. "'>" .. key .. "</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> will open the </span>"
+            color = ROLE_COLORS[ROLE_INNOCENT]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>Radio Commands</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> menu.</span>"
+        htmlData = htmlData .. "</div>"
+
+    -- Sixth line
+        htmlData = htmlData .. "<div style='height: 40px;'>"
+            key = Key("+speed", "Shift")
+            htmlData = htmlData .. "<span style='" .. fontStyle .. keyMappingStyles .. "'>" .. key .. "</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> will allow you to </span>"
+            color = ROLE_COLORS[ROLE_INNOCENT]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>sprint</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> while you have the stamina.</span>"
+        htmlData = htmlData .. "</div>"
+
+    -- Close the page
+    htmlData = htmlData .. "</div>"
+
+    html:SetHTML(htmlData)
+end
+
+local function TutorialKarma(pnl, lbl)
+    local html = vgui.Create("DHTML", pnl)
+    html:Dock(FILL)
+
+    -- Open the page
+    local htmlData = "<div style='width: 100%; height: 93%; top: 20px; position: relative; padding-top: 10px;'>"
+
+    -- First line
+        htmlData = htmlData .. "<div style='margin-top: 15px; height: 40px;'>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>Your </span>"
+            local color = GetRoleTeamColor(ROLE_TEAM_INNOCENT)
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>Karma</span>"
+            local starting_karma = GetGlobalInt("ttt_karma_starting", 1000)
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> starts at " .. starting_karma .. " and goes down if you </span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>damage players</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> who are on your own side. It does down less if their Karma is lower.</span>"
+        htmlData = htmlData .. "</div>"
+
+    -- Second line
+        htmlData = htmlData .. "<div style='margin-top: 15px; height: 40px;'>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>If your Karma is low when a round starts, you get a </span>"
+            color = GetRoleTeamColor(ROLE_TEAM_INNOCENT)
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>penalty to your weapon damage</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> that round.</span>"
+        htmlData = htmlData .. "</div>"
+
+    -- Third line
+        htmlData = htmlData .. "<div style='margin-top: 15px; height: 40px;'>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>By playing </span>"
+            color = GetRoleTeamColor(ROLE_TEAM_INNOCENT)
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>clean rounds</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> where you don't harm teammates, you regain Karma. Some roles will also get Karma for </span>"
+            color = ROLE_COLORS[ROLE_INNOCENT]
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'> hurting their enemies.</span>"
+        htmlData = htmlData .. "</div>"
+
+    -- Fourth line
+        htmlData = htmlData .. "<div style='margin-top: 15px; height: 40px;'>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>The Karma value shown on the scoreboard updates only </span>"
+            color = GetRoleTeamColor(ROLE_TEAM_INNOCENT)
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. color.r .. ", " .. color.g .. "," .. color.b .. ");'>after the round ends</span>"
+            htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>. During a round, someone's true Karma might be lower.</span>"
+        htmlData = htmlData .. "</div>"
+
+    -- Close the page
+    htmlData = htmlData .. "</div>"
+
+    html:SetHTML(htmlData)
+end
+
+local tutorialPages = {
+    [1] = {title = "Overview", body = TutorialOverview},
+    [2] = {title = "Player Death", body = TutorialPlayerDeath},
+    [3] = {title = "Special Equipment", body = TutorialSpecialEquipment},
+    [4] = {title = "Useful Keys", body = TutorialUsefulKeys},
+    [5] = {title = "Karma", body = TutorialKarma, enabled = function() return GetGlobalBool("ttt_karma", false) end}
+}
+local maxPages = table.Count(tutorialPages)
+local enabledRoles = {}
+local enabledPages = {}
+
+local function UpdateTitle(lbl, text)
+    lbl:SetFont("TutorialTitle")
+    lbl:SetText(text)
+    lbl:SizeToContents()
+    lbl:CenterHorizontal()
+end
+
+local function ShowTutorialPage(pnl, page)
+    pnl:Clear()
+    pnl:SetBackgroundColor(COLOR_BLACK)
+
+    local titleLabel = vgui.Create("DLabel", pnl)
+
+    if page <= #enabledPages then
+        local pageInfo = enabledPages[page]
+        UpdateTitle(titleLabel, pageInfo.title)
+        pageInfo.body(pnl, titleLabel)
+    else
+        local role = enabledRoles[page - #enabledPages]
+        local roleName = ROLE_STRINGS[role]
+        UpdateTitle(titleLabel, roleName)
+
+        -- Add the role icon next to the label
+        local roleFileName = ROLE_STRINGS_SHORT[role]
+        local roleIcon = vgui.Create("DImage", pnl)
+        roleIcon:SetSize(16, 16)
+        roleIcon:SetImage("vgui/ttt/tab_" .. roleFileName .. ".png")
+        roleIcon:MoveLeftOf(titleLabel)
+        -- Center it vertically within the title bar and give it a little space from the role name
+        roleIcon:SetPos(roleIcon:GetX() - 3, roleIcon:GetY() + 7)
+
+        -- If nobody wants to handle this page themselves,
+        if not hook.Run("TTTTutorialRolePage", role, pnl, titleLabel, roleIcon) then
+            local roleText = hook.Run("TTTTutorialRoleText", role, titleLabel, roleIcon)
+
+            local html = vgui.Create("DHTML", pnl)
+            html:Dock(FILL)
+            -- Leave a gap for the title at the top
+            html:DockMargin(0, 30, 0, 0)
+
+            -- Open the page
+            local htmlData = "<div style='width: 100%; height: 93%;" .. fontStyle .. "; color: white;'>"
+
+            -- If the role didn't provide details, use some generic info
+            if not roleText or #roleText == 0 then
+                htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>This is some generic information about the " .. roleName .. " role because the role author hasn't defined specifics.</span>"
+
+                -- Team
+                htmlData = htmlData .. "<div style='margin-top: 5px;'>"
+                    local roleTeam = player.GetRoleTeam(role, true)
+                    local roleTeamString, roleTeamColor = GetRoleTeamInfo(roleTeam, true)
+                    htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'>Role Team: </span>"
+                    htmlData = htmlData .. "<span style='" .. fontStyle .. " color: rgb(" .. roleTeamColor.r .. ", " .. roleTeamColor.g .. ", " .. roleTeamColor.b .. ");'>" .. roleTeamString .. "</span>"
+                htmlData = htmlData .. "</div>"
+            else
+                htmlData = htmlData .. roleText
+            end
+
+            -- Close the page
+            htmlData = htmlData .. "</div>"
+
+            html:SetHTML(htmlData)
+        end
+    end
+end
+
+local function ShowRoleTutorial(role)
+    -- If the role is enabled, show the page
+    if DEFAULT_ROLES[role] then return true end
+    if GetGlobalBool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_enabled", false) then
+        return true
+    end
+
+    -- Otherwise check if there are special rules for this role
+    if hook.Run("TTTTutorialRoleEnabled", role) then
+        return true
+    end
+    return false
+end
+
+function HELPSCRN:CreateTutorial(parent)
+    -- Get the list of enabled roles
+    table.Empty(enabledRoles)
+    for r = ROLE_INNOCENT, ROLE_MAX do
+        if ShowRoleTutorial(r) then
+            table.insert(enabledRoles, r)
+        end
+    end
+    table.sort(enabledRoles, function(a, b)
+        return ROLE_STRINGS[a] < ROLE_STRINGS[b]
+    end)
+
+    -- Get the list of enables pages
+    table.Empty(enabledPages)
+    for _, page in ipairs(tutorialPages) do
+        if not page.enabled or page.enabled() then
+            table.insert(enabledPages, page)
+        end
+    end
+
+    maxPages = #enabledPages + #enabledRoles
+
+    local bw, bh = 96, 30
+
+    local tut = vgui.Create("DPanel", parent)
     tut:StretchToParent(0, 0, 0, 0)
     tut:SetVerticalScrollbarEnabled(false)
-
-    tut:SetImage(Format(imgpath, 1))
-    tut:SetWide(1024)
-    tut:SetTall(512)
+    tut:SetTall(330)
 
     tut.current = 1
+    ShowTutorialPage(tut, tut.current)
 
-    local bw, bh = 100, 30
+    local pageSelect = vgui.Create("DComboBox", parent)
+    pageSelect:SetSize(bw * 2, bh)
+    pageSelect:MoveBelow(tut)
+    pageSelect:SetSortItems(false)
+    for i = 1, maxPages do
+        local name
+        if i <= #enabledPages then
+            name = enabledPages[i].title
+        else
+            local role = enabledRoles[i - #enabledPages]
+            name = ROLE_STRINGS[role]
+        end
+        pageSelect:AddChoice(name, i, i == 1)
+    end
 
     local bar = vgui.Create("TTTProgressBar", parent)
     bar:SetSize(200, bh)
-    bar:MoveBelow(bg)
+    bar:MoveBelow(tut)
     bar:CenterHorizontal()
     bar:SetMin(1)
-    bar:SetMax(tutorial_pages)
+    bar:SetMax(maxPages)
     bar:SetValue(1)
     bar:SetColor(Color(0, 200, 0))
 
     -- fixing your panels...
     bar.UpdateText = function(s)
         s.Label:SetText(Format("%i / %i", s.m_iValue, s.m_iMax))
+        s:PerformLayout()
     end
 
     bar:UpdateText()
@@ -501,21 +916,29 @@ function HELPSCRN:CreateTutorial(parent)
     bprev:SetSize(bw, bh)
     bprev:SetText(GetTranslation("prev"))
     bprev:CopyPos(bar)
-    bprev:AlignLeft()
+    bprev:MoveLeftOf(bnext)
+
+    pageSelect.OnSelect = function(pnl, index, label, data)
+        tut.current = data
+        bar:SetValue(tut.current)
+        ShowTutorialPage(tut, tut.current)
+    end
 
     bnext.DoClick = function()
-        if tut.current < tutorial_pages then
+        if tut.current < maxPages then
             tut.current = tut.current + 1
-            tut:SetImage(Format(imgpath, tut.current))
             bar:SetValue(tut.current)
+            ShowTutorialPage(tut, tut.current)
+            pageSelect:ChooseOptionID(tut.current)
         end
     end
 
     bprev.DoClick = function()
         if tut.current > 1 then
             tut.current = tut.current - 1
-            tut:SetImage(Format(imgpath, tut.current))
             bar:SetValue(tut.current)
+            ShowTutorialPage(tut, tut.current)
+            pageSelect:ChooseOptionID(tut.current)
         end
     end
 end

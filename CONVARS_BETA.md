@@ -3,16 +3,20 @@
 ## Table of Contents
 1. [Server Configurations](#Server-Configurations)
 1. [Role Weapon Shop](#Role-Weapon-Shop)
-   1. [Weapons](#Weapons)
-      1. [Adding Weapons](#Adding-Weapons)
-      1. [Removing Weapons](#Removing-Weapons)
-      1. [Bypassing Weapon Randomization](#Bypassing-Weapon-Randomization)
-      1. [Finding a Weapon's Class](#Finding-a-Weapons-Class)
-   1. [Equipment](#Equipment)
-      1. [Adding Equipment](#Adding-Equipment)
-      1. [Removing Equipment](#Removing-Equipment)
-      1. [Bypassing Equipment Randomization](#Bypassing-Equipment-Randomization)
-      1. [Finding an Equipment Item's Name](#Finding-an-Equipment-Items-Name)
+   1. [Configuration by UI](#Configuration-by-UI)
+       1. [Explanation](#Explanation)
+       1. [Example](#Example)
+   1. [Configuration by Files](#Configuration-by-Files)
+       1. [Weapons](#Weapons)
+          1. [Adding Weapons](#Adding-Weapons)
+          1. [Removing Weapons](#Removing-Weapons)
+          1. [Bypassing Weapon Randomization](#Bypassing-Weapon-Randomization)
+          1. [Finding a Weapon's Class](#Finding-a-Weapons-Class)
+       1. [Equipment](#Equipment)
+          1. [Adding Equipment](#Adding-Equipment)
+          1. [Removing Equipment](#Removing-Equipment)
+          1. [Bypassing Equipment Randomization](#Bypassing-Equipment-Randomization)
+          1. [Finding an Equipment Item's Name](#Finding-an-Equipment-Items-Name)
 1. [Renaming Roles](#Renaming-Roles)
 
 ## Server Configurations
@@ -170,15 +174,17 @@ ttt_vampires_are_independent                0       // Whether vampires should b
 ttt_vampire_vision_enable                   0       // Whether vampires have their special vision highlights enabled
 ttt_vampire_drain_enable                    1       // Whether vampires have the ability to drain a living target's blood using their fangs
 ttt_vampire_drain_first                     0       // Whether vampires should drain a living target's blood first rather than converting first
+ttt_vampire_drain_credits                   0       // How many credits a vampire should get for draining a living target
 ttt_vampire_convert_enable                  0       // Whether vampires have the ability to convert living targets to a vampire thrall using their fangs
 ttt_vampire_show_target_icon                0       // Whether vampires have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect.
-ttt_vampire_damage_reduction                0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a vampire.
+ttt_vampire_damage_reduction                0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a vampire
 ttt_vampire_fang_timer                      5       // The amount of time fangs must be used to fully drain a target's blood
 ttt_vampire_fang_dead_timer                 0       // The amount of time fangs must be used to fully drain a dead target's blood. Set to 0 to use the same time as "ttt_vampire_fang_timer"
 ttt_vampire_fang_heal                       50      // The amount of health a vVampire will heal by when they fully drain a target's blood
 ttt_vampire_fang_overheal                   25      // The amount over the vampire's normal maximum health (e.g. 100 + this ConVar) that the vampire can heal to by drinking blood.
-ttt_vampire_prime_death_mode                0       // What to do when the prime vampire(s) (e.g. playters who spawn as vampires originally) are killed. 0 - Do nothing. 1 - Kill all vampire thralls (non-prime vampires). 2 - Revert all vampire thralls (non-prime vampires) to their original role.
-ttt_vampire_prime_only_convert              1       // Whether only prime vampires (e.g. players who spawn as vampire originally) are allowed to convert other players.
+ttt_vampire_fang_overheal_living            -1      // The amount of overheal (see "ttt_vampire_fang_overheal") to give if the vampire's target is living. Set to -1 to use the same amount as "ttt_vampire_fang_overheal" instead
+ttt_vampire_prime_death_mode                0       // What to do when the prime vampire(s) (e.g. playters who spawn as vampires originally) are killed. 0 - Do nothing. 1 - Kill all vampire thralls (non-prime vampires). 2 - Revert all vampire thralls (non-prime vampires) to their original role
+ttt_vampire_prime_only_convert              1       // Whether only prime vampires (e.g. players who spawn as vampire originally) are allowed to convert other players
 ttt_vampire_credits_starting                1       // The number of credits a vampire should start with
 
 // Quack
@@ -242,6 +248,7 @@ ttt_veteran_heal_bonus                      0       // The amount of bonus healt
 ttt_veteran_announce                        0       // Whether to announce to all other living players when the veteran is the last remaining innocent
 ttt_veteran_shop_active_only                1       // Whether the veteran's shop should be available only after they activate
 ttt_veteran_shop_delay                      0       // Whether the veteran's purchased shop items should be held until they activate
+ttt_veteran_activation_credits              0       // The number of credits to give the veteran when they are activated
 
 // Doctor
 ttt_doctor_credits_starting                 1       // The number of credits a doctor should start with
@@ -284,6 +291,7 @@ ttt_medium_credits_starting                 1       // The number of credits a m
 
 // JESTER TEAM SETTINGS
 ttt_single_jester_independent               1       // Whether a single jester OR independent should spawn in a round. If disabled, both a jester AND an independent can spawn at the same time
+ttt_single_jester_independent_max_players   0       // The maximum players to have a single jester OR independent spawn in a row. If there are more players than this both a jester AND an independent can spawn in the same row. Set to 0 to disable. Not used if "ttt_single_jester_independent" is disabled.
 ttt_jesters_trigger_traitor_testers         1       // Whether jesters trigger traitor testers as if they were traitors
 ttt_jesters_visible_to_traitors             1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to members of the traitor team
 ttt_jesters_visible_to_monsters             1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to members of the monster team
@@ -584,9 +592,47 @@ Thanks to [KarlOfDuty](https://github.com/KarlOfDuty) for his original version o
 
 In TTT some roles have shops where they are allowed to purchase weapons. Given the prevalence of custom weapons from the workshop, the ability to add more weapons to each role's shop has been added.
 
-### **Weapons**
+### Configuration by UI
 
-### *Adding Weapons*
+The easiest way to configure the role shops is via a user interface usable by administrators directly from a running game. To open the interface, run the `ttt_roleweapons` command from your console. The window that opens should look something like this:
+
+![Blank Role Weapons Window](images/RoleWeapons_Blank.png)
+
+#### **Explanation**
+
+This window was made to closely resemble the role equipment shop so parts of it should be fairly intuitive to use. For example: the search bar, the weapon list, and the weapon info panel are all directly copied from the weapon shop.
+
+Apart from those familiar pieces, this window also adds a few more controls specifically for configuring the role weapons shops:
+- *Search Role* - This dropdown in the top right of the window allows you to choose which role's shop to display and search through
+- The bottom right of the window houses the controls for targeting and saving the configuration changes
+  - *Save Role* - This dropdown allows you to choose which role you would update
+  - *Weapon State Checkboxes* - These checkboxes allow you to change how a weapon behaves in the role's shop
+    - *None* - Use the default buying configuration for the weapon
+    - *Include* - Mark this weapon as explicitly buyable
+    - *Exclude* - Mark this weapon as explicitly NOT buyable
+  - *No Random* - Ensure this weapon stays in the shop, regardless of randomization
+  - *Update* - Save the configuration changes
+- *Close* - This button will close the window, disgarding any unsaved changes
+
+#### **Example**
+
+To help understand the functionality of this window it might be easier to walk through an example: we are going to find the Health Station (which we know the Detective can buy) and add it to the Veteran's shop. The Veteran gets a shop when they are activated, but only if weapons are actually available to them. This is where the role weapons system comes into play.
+
+First things first: we open the window and select "Detective" from the "Search Roles" dropdown. From there we can either scroll through the list of weapons or use the search text box to search for "health". We then choose "Veteran" from the "Save Role" dropown and click the "Include" checkbox. With all that done the window should look like this:
+
+![Role Weapons Window for Detective -> Veteran](images/RoleWeapons_DetVet.png)
+
+From here, the last step is to click the "Update" button and we're done -- The Veteran now has the ability to buy a Health Station.
+
+### Configuration by Files
+
+If you cannot or do not want to use the in-game UI to set up the role shop, it is also doable by manual file manipulation. This may be useful for server operators using Docker who want to have the configurations embedded in their server image. 
+
+*NOTE*: Using the configuration UI still creates and deletes files in the backend. Given that, you can use the UI on your local game and then copy the files to a server or Docker image build as needed.
+
+#### **Weapons**
+
+#### *Adding Weapons*
 
 To add weapons to a role (that already has a shop), create an empty .txt file with the weapon class (e.g. weapon_ttt_somethingcool.txt) in the garrysmod/data/roleweapons/{rolename} folder.\
 **NOTE**: If the _roleweapons_ folder does not already exist in garrysmod/data, create it.\
@@ -594,7 +640,7 @@ To add weapons to a role (that already has a shop), create an empty .txt file wi
 
 Also note the ttt_shop_* ConVars that are available above which can help control some of the role weapon shop lists.
 
-### *Removing Weapons*
+#### *Removing Weapons*
 
 At the same time, there are some workshop weapons that are given to multiple roles that maybe you don't want to be available to certain roles. In order to handle that case, the ability to exclude weapons from a role's weapon shop has been added.
 
@@ -602,7 +648,7 @@ To remove weapons from a role's shop, create an empty .exclude.txt file with the
 **NOTE**: If the _roleweapons_ folder does not already exist in garrysmod/data, create it.\
 **NOTE**: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective/weapon_ttt_somethingcool.exclude.txt
 
-### *Bypassing Weapon Randomization*
+#### *Bypassing Weapon Randomization*
 
 With the addition of the Shop Randomization feature (and the ttt_shop_random_* ConVars), weapons may not always appear in the shop (which is the point). If, however, you want certain weapons to _always_ be in the shop while other weapons are randomized, the ability to bypass shop randomization for a weapon in a role's weapon shop has been added.
 
@@ -610,7 +656,7 @@ To stop a weapon from being removed from a role's shop via randomization, create
 **NOTE**: If the _roleweapons_ folder does not already exist in garrysmod/data, create it.\
 **NOTE**: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective/weapon_ttt_somethingcool.norandom.txt
 
-### *Finding a Weapon's Class*
+#### *Finding a Weapon's Class*
 
 To find the class name of a weapon to use above, follow the steps below
 1. Start a local server with TTT as the selected gamemode
@@ -618,14 +664,14 @@ To find the class name of a weapon to use above, follow the steps below
 3. Obtain the weapon whose class you want. If it is already available to buy from a certain role's shop, either force yourself to be that role via the _ttt\_force\_*_ commands or via a ULX plugin.
 4. Run the following command in console to get a list of all of your weapon classes: `lua_run PrintTable(player.GetHumans()[1]:GetWeapons())`
 
-### **Equipment**
-### *Adding Equipment*
+#### **Equipment**
+#### *Adding Equipment*
 
 Equipment are items that a role can use that do not take up a weapon slot, such as the body armor or radar. To add equipment items to a role (that already has a shop), create an empty .txt file with the equipment item's name (e.g. "bruh bunker.txt") in the garrysmod/data/roleweapons/{rolename} folder.\
 **NOTE**: If the _roleweapons_ folder does not already exist in garrysmod/data, create it.\
 **NOTE**: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective/bruh bunker.txt
 
-### *Removing Equipment*
+#### *Removing Equipment*
 
 Similarly there are some equipment items that you want to prevent a specific role from buying. To handle that case, the addon has the ability to exclude specific equipment items from the shop in a similar way.
 
@@ -633,7 +679,7 @@ To remove equipment from a role's shop, create an empty .exclude.txt file with t
 **NOTE**: If the _roleweapons_ folder does not already exist in garrysmod/data, create it.\
 **NOTE**: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective/bruh bunker.exclude.txt
 
-### *Finding an Equipment Item's Name*
+#### *Finding an Equipment Item's Name*
 
 To find the name of an equipment item to use above, follow the steps below
 1. Start a local server with TTT as the selected gamemode

@@ -78,6 +78,8 @@ function SWEP:Initialize()
         SetGlobalInt("ttt_zombie_thrall_attack_damage", zombie_thrall_damage:GetInt())
         SetGlobalFloat("ttt_zombie_prime_attack_delay", zombie_prime_delay:GetFloat())
         SetGlobalFloat("ttt_zombie_thrall_attack_delay", zombie_thrall_delay:GetFloat())
+        SetGlobalBool("ttt_zombie_leap_enable", zombie_leap:GetBool())
+        SetGlobalBool("ttt_zombie_spit_enable", zombie_spit:GetBool())
     end
 
     if CLIENT then

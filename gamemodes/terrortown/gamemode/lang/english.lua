@@ -9,6 +9,17 @@ L.last_words = "Last Words"
 L.terrorists = "Terrorists"
 L.spectators = "Spectators"
 
+L.traitor = "Traitor"
+L.traitors = "Traitors"
+L.monster = "Monster"
+L.monsters = "Monsters"
+L.jester = "Jester"
+L.jesters = "Jesters"
+L.independent = "Independent"
+L.independents = "Independents"
+L.innocent = "Innocent"
+L.innocents = "Innocents"
+
 --- Round status messages
 L.round_minplayers = "Not enough players to start a new round..."
 L.round_voting = "Vote in progress, delaying new round by {num} seconds..."
@@ -26,11 +37,8 @@ L.win_traitor = "The {role} have won!"
 L.win_innocent = "The {role} have been defeated!"
 L.win_jester = "The {role} has fooled you all!"
 L.win_clown = "The {role} has murdered you all!"
-L.win_killer = "The {role} has murdered you all!"
 L.win_showreport = "Let's look at the round report for {num} seconds."
 L.win_monster = "The monsters have taken over!"
-L.win_zombies = "The {role} have taken over!"
-L.win_vampires = "The {role} have taken over!"
 
 L.limit_round = "Round limit reached. {mapname} will load soon."
 L.limit_time = "Time limit reached. {mapname} will load soon."
@@ -495,21 +503,6 @@ targets.
 
 Uses standard SMG ammo.]]
 
--- Killer's Knife
-L.kil_knife_desc = [[
-Gravely wounds living targets quietly.
-Kills wounded targets instantly and
-silently.
-
-Can drop a smoke grenade using alternate fire.]]
-
--- Killer's Crowbar
-L.kil_crowbar_name = "Throwable Crowbar"
-L.kil_crowbar_desc = [[
-Used to blend in with other players and do minor damage.
-
-Can be thrown using alternate fire.]]
-
 -- DNA scanner
 L.dna_name = "DNA scanner"
 L.dna_identify = "Corpse must be identified to retrieve killer's DNA."
@@ -646,12 +639,9 @@ L.corpse_hint = "Press E to search."
 L.target_disg = " (DISGUISED)"
 L.target_unid = "Unidentified body"
 
-L.target_current_target = "CURRENT TARGET"
 L.target_infected = "INFECTED WITH PARASITE"
 
 L.target_revenger_lover = "YOUR SOULMATE"
-L.target_assassin_target = "TARGET"
-L.target_assassin_target_team = "{player}'s TARGET"
 
 L.target_credits = "Search to receive unspent credits"
 
@@ -763,17 +753,10 @@ L.info_popup_veteran = [[You are {role}! You work best under pressure.
 If you are the last {innocent} player alive you will
 deal extra damage.]]
 
-L.info_popup_killer = [[You are {role}! Try to kill everyone and be the last one standing!
-
-Press {menukey} to receive your special equipment!]]
-
 L.info_popup_doctor = [[You are {role}! You're here to keep your teammates alive.
 Use your tools to keep fellow {innocents} in the fight!
 
 Press {menukey} to receive your special equipment!]]
-
-L.info_popup_trickster = [[You are {role}! You are {aninnocent} who can see and
-use {traitor} traps throughout the map. Have fun!]]
 
 L.info_popup_paramedic = [[You are {role}! You can give your fellow {innocents}
 a second chance with your defibrillator. Stay alive
@@ -830,34 +813,10 @@ L.info_popup_traitor = [[You are {role}! {comrades}
 
 Press {menukey} to receive your special equipment!]]
 
-L.info_popup_hypnotist = [[You are {role}! {comrades}
-
-You can use your brain washing device on a corpse to revive them as {atraitor}.
-
-Press {menukey} to receive your special equipment!]]
-
 L.info_popup_impersonator = [[You are {role}! {comrades}
 
 If the {detective} dies you will appear to become a new {detective} and gain their
 abilities just like the {deputy}. However you are still working for the {traitors}.
-
-Press {menukey} to receive your special equipment!]]
-
-L.info_popup_assassin = [[You are {role}! {comrades}
-
-Your first target is:
-{assassintarget}
-
-You will deal more to your target and less damage
-to all other players. But take care as killing the wrong
-player will result in you losing your damage bonus and
-maybe even suffering from a penalty!
-
-Press {menukey} to receive your special equipment!]]
-
-L.info_popup_vampire = [[You are {role}! {comrades}
-
-You can use your fangs (left-click) to drink blood and refill your health or to fade from view (right-click).
 
 Press {menukey} to receive your special equipment!]]
 
@@ -873,22 +832,6 @@ L.info_popup_parasite = [[You are {role}! {comrades}
 Infect those that kill you and wait patiently for a chance to take control.
 Make sure you lay low as your host must stay alive in order for you to
 respawn. Try to avoid getting them cured or killed!
-
-Press {menukey} to receive your special equipment!]]
-
-L.info_popup_zombie = [[You are {role}! {comrades}
-
-All damage you deal with guns is reduced.
-Killing someone with your claws will turn them into {azombie}.
-
-Press {menukey} to receive your special equipment!]]
-
-L.info_popup_zombie_indep = [[You are {role}!
-
-Kill all others to win!
-
-All damage you deal with guns is reduced.
-Killing someone with your claws will turn them into {azombie}.
 
 Press {menukey} to receive your special equipment!]]
 
@@ -973,7 +916,7 @@ L.tip28 = "Spectators can press {mutekey} to cycle through muting other spectato
 
 L.tip29 = "If the server has installed additional languages, you can switch to a different language at any time in the Settings menu."
 
-L.tip30 = "Quickchat or 'radio' commands can be used by pressing {zoomkey}."
+L.tip30 = "Quickchat or 'radio' commands can be used by pressing {radiokey}."
 
 L.tip31 = "As Spectator, press {duckkey} to unlock your mouse cursor and click the buttons on this tips panel. Press {duckkey} again to go back to mouseview."
 
@@ -1105,10 +1048,7 @@ L.ev_win_jester = "The tricky {role} won the round!"
 L.ev_win_inno = "The lovable {role} won the round!"
 L.ev_win_clown = "The vicious {role} won the round!"
 L.ev_win_oldman = "The {role} has somehow survived and also won the round!"
-L.ev_win_killer = "The butchering {role} won the round!"
 L.ev_win_monster = "The evil monsters have won the round!"
-L.ev_win_zombie = "The {role} infection has taken over the world!"
-L.ev_win_vampire = "The {role} have sucked the life out of everyone!"
 L.ev_win_time = "The {role} ran out of time and lost!"
 L.ev_win_icon = "{role} won"
 L.ev_win_icon_time = "Time Limit"
@@ -1372,11 +1312,25 @@ L.ev_clown = "The clown, {player}, went on a rampage"
 L.ev_drunk = "{player} remembered they are {team}"
 L.ev_haunt = "{victim} started haunting {attacker}"
 L.ev_bodysnatch = "{attacker} bodysnatched {role}, {victim}"
-L.ev_zombi = "{victim} was turned into {azombie}"
-L.ev_vampi = "{victim} was turned into {avampire}"
-L.ev_vampi_revert_converted = "The last {vampire} Prime ({prime}) was killed and all their thralls had their humanity restored"
-L.ev_vampi_kill_converted = "The last {vampire} Prime ({prime}) was killed and took all their thralls with them"
 L.ev_beggar_converted = "The {beggar} ({victim}) was converted to {team} by {attacker}"
 L.ev_beggar_killed = "The {beggar} ({victim}) was killed by {attacker} but respawned"
 L.ev_beggar_killed_delay = "The {beggar} ({victim}) was killed by {attacker} but will respawn in {delay} seconds"
 L.ev_infect = "{victim} infected {attacker}"
+
+-- Role Weapons Configuration
+L.roleweapons_title = "Role Weapons Configuration"
+L.roleweapons_tabtitle = "Role Weapons"
+L.roleweapons_tabtitle_tooltip = "Configure which buyable weapons are added or excluded from a role's shop"
+L.roleweapons_confirm = "Update"
+L.roleweapons_option_none = "None"
+L.roleweapons_option_none_tooltip = "Use the default buying configuration for the weapon"
+L.roleweapons_option_include = "Include"
+L.roleweapons_option_include_tooltip = "Mark this weapon as explicitly buyable"
+L.roleweapons_option_exclude = "Exclude"
+L.roleweapons_option_exclude_tooltip = "Mark this weapon as explicitly NOT buyable"
+L.roleweapons_option_norandom = "No Random"
+L.roleweapons_option_norandom_tooltip = "Ensure this weapon stays in the shop, regardless of randomization"
+L.roleweapons_select_searchrole = "-Search Role-"
+L.roleweapons_select_searchrole_tooltip = "Which role shop to search within"
+L.roleweapons_select_saverole = "-Save Role-"
+L.roleweapons_select_saverole_tooltip = "Which role shop to affect by these configuration changes"

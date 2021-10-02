@@ -35,8 +35,6 @@ local app_icon     = Material("icon16/application.png")
 local credit_icon = Material("icon16/coins.png")
 local wrench_icon  = Material("icon16/wrench.png")
 
-local zombie_icon = Material("icon16/user_green.png")
-local vampire_icon = Material("icon16/user_gray.png")
 local traitor_icon = Material("icon16/user_red.png")
 local innocent_icon = Material("icon16/user_green.png")
 local heart_icon = Material("icon16/heart.png")
@@ -72,8 +70,6 @@ Event(EVENT_FINISH,
                      return PT("ev_win_clown", { role = ROLE_STRINGS[ROLE_CLOWN]:lower() })
                   elseif e.win == WIN_OLDMAN then
                      return PT("ev_win_oldman", { role = ROLE_STRINGS[ROLE_OLDMAN]:lower() })
-                    elseif e.win == WIN_KILLER then
-                       return PT("ev_win_killer", { role = ROLE_STRINGS[ROLE_KILLER]:lower() })
                   elseif e.win == WIN_MONSTER then
                      local monster_role = GetWinningMonsterRole()
                      if monster_role == ROLE_VAMPIRE then
@@ -82,10 +78,6 @@ Event(EVENT_FINISH,
                         return PT("ev_win_zombie", { role = ROLE_STRINGS[ROLE_ZOMBIE]:lower() })
                      end
                      return T("ev_win_monster")
-                  elseif e.win == WIN_ZOMBIE then
-                     return PT("ev_win_zombie", { role = ROLE_STRINGS[ROLE_ZOMBIE]:lower() })
-                  elseif e.win == WIN_VAMPIRE then
-                     return PT("ev_win_vampire", { role = ROLE_STRINGS_PLURAL[ROLE_VAMPIRE]:lower() })
                   elseif e.win == WIN_TIMELIMIT then
                      return PT("ev_win_time", { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]:lower() })
                   end
@@ -106,8 +98,6 @@ Event(EVENT_FINISH,
                   elseif e.win == WIN_OLDMAN then
                      role_string = ROLE_STRINGS[ROLE_OLDMAN]
                      win_string = "ev_win_icon_also"
-                    elseif e.win == WIN_KILLER then
-                       role_string = ROLE_STRINGS[ROLE_KILLER]
                   elseif e.win == WIN_MONSTER then
                      local monster_role = GetWinningMonsterRole()
                      if monster_role == ROLE_VAMPIRE then
@@ -117,10 +107,6 @@ Event(EVENT_FINISH,
                      else
                         role_string = "Monsters"
                      end
-                  elseif e.win == WIN_ZOMBIE then
-                     role_string = ROLE_STRINGS_PLURAL[ROLE_ZOMBIE]
-                  elseif e.win == WIN_VAMPIRE then
-                     role_string = ROLE_STRINGS_PLURAL[ROLE_VAMPIRE]
                   elseif e.win == WIN_TIMELIMIT then
                      win_string = "ev_win_icon_time"
                   end
@@ -435,38 +421,6 @@ Event(EVENT_LOG, {
     end,
     icon = function(e)
         return info_icon, "Information"
-    end})
-
-Event(EVENT_ZOMBIFIED, {
-    text = function(e)
-        return PT("ev_zombi", {victim = e.vic, azombie = ROLE_STRINGS_EXT[ROLE_ZOMBIE]})
-    end,
-    icon = function(e)
-        return zombie_icon, "Zombified"
-    end})
-
-Event(EVENT_VAMPIFIED, {
-    text = function(e)
-        return PT("ev_vampi", {victim = e.vic, avampire = ROLE_STRINGS_EXT[ROLE_VAMPIRE]})
-    end,
-    icon = function(e)
-        return vampire_icon, "Vampified"
-    end})
-
-Event(EVENT_VAMPPRIME_DEATH, {
-    text = function(e)
-        if e.mode == VAMPIRE_DEATH_REVERT_CONVERTED then
-           return PT("ev_vampi_revert_converted", {prime = e.prime, vampire = ROLE_STRINGS[ROLE_VAMPIRE]})
-        elseif e.mode == VAMPIRE_DEATH_KILL_CONVERED then
-           return PT("ev_vampi_kill_converted", {prime = e.prime, vampire = ROLE_STRINGS[ROLE_VAMPIRE]})
-        end
-    end,
-    icon = function(e)
-        if e.mode == VAMPIRE_DEATH_REVERT_CONVERTED then
-           return heart_icon, "Restored"
-        elseif e.mode == VAMPIRE_DEATH_KILL_CONVERED then
-           return wrong_icon, "Killed"
-        end
     end})
 
 Event(EVENT_BEGGARCONVERTED, {

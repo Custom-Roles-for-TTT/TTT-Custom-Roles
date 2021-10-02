@@ -44,7 +44,8 @@ end)
 
 function KARMA.InitState()
     SetGlobalBool("ttt_karma", config.enabled:GetBool())
-    SetGlobalInt("ttt_karma_max", config.max:GetFloat())
+    SetGlobalInt("ttt_karma_max", config.max:GetInt())
+    SetGlobalInt("ttt_karma_starting", config.starting:GetInt())
 end
 
 function KARMA.IsEnabled()
@@ -126,9 +127,12 @@ local function WasAvoidable(attacker, victim, dmginfo)
 end
 
 local function ShouldReduceKarma(attacker, victim)
+    local result = hook.Run("TTTKarmaShouldGivePenalty", attacker, victim)
+    if type(result) == "boolean" then
+        return result
+    end
+
     return (attacker:IsTraitorTeam() and victim:IsTraitorTeam()) or
-            (attacker:IsZombie() and victim:IsZombieAlly()) or
-            (attacker:IsVampire() and victim:IsVampireAlly()) or
             (attacker:IsInnocentTeam() and victim:IsInnocentTeam() and
                 -- If the attacker is not a revenger or they are and their victim isn't their target then reduce
                 (not attacker:IsRevenger() or victim:SteamID64() ~= attacker:GetNWString("RevengerKiller", ""))) or
@@ -141,7 +145,6 @@ end
 function KARMA.Hurt(attacker, victim, dmginfo)
     if not IsPlayer(attacker) or not IsPlayer(victim) then return end
     if attacker == victim then return end
-    if attacker:IsKiller() then return end
 
     -- Ignore excess damage
     local hurt_amount = math.min(victim:Health(), dmginfo:GetDamage())
@@ -178,7 +181,6 @@ end
 function KARMA.Killed(attacker, victim, dmginfo)
     if not IsPlayer(attacker) or not IsPlayer(victim) then return end
     if attacker == victim then return end
-    if attacker:IsKiller() then return end
 
     if ShouldReduceKarma(attacker, victim) then
         -- don't penalise attacker for stupid victims

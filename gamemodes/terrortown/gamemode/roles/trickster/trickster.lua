@@ -1,0 +1,1 @@
+ROLE_SELECTION_PREDICATE[ROLE_TRICKSTER] = function() return #ents.FindByClass("ttt_traitor_button") > 0 end

@@ -46,30 +46,8 @@ function plymeta:IsActiveIndependentTeam() return self:IsIndependentTeam() and s
 function plymeta:IsActiveMonsterTeam() return self:IsMonsterTeam() and self:IsActive() end
 function plymeta:IsActiveDetectiveTeam() return self:IsDetectiveTeam() and self:IsActive() end
 
-function plymeta:GetZombiePrime() return self:GetZombie() and self:GetNWBool("zombie_prime", false) end
-function plymeta:GetVampirePrime() return self:GetVampire() and self:GetNWBool("vampire_prime", false) end
-function plymeta:GetVampirePreviousRole() return self:GetNWInt("vampire_previous_role", ROLE_NONE) end
 function plymeta:GetDetectiveLike() return self:IsDetectiveTeam() or ((self:GetDeputy() or self:GetImpersonator()) and self:GetNWBool("HasPromotion", false)) end
 function plymeta:GetDetectiveLikePromotable() return (self:IsDeputy() or self:IsImpersonator()) and not self:GetNWBool("HasPromotion", false) end
-
-function plymeta:GetZombieAlly()
-    local role = self:GetRole()
-    if MONSTER_ROLES[ROLE_ZOMBIE] then
-        return MONSTER_ROLES[role]
-    elseif TRAITOR_ROLES[ROLE_ZOMBIE] then
-        return TRAITOR_ROLES[role]
-    end
-    return INDEPENDENT_ROLES[role]
-end
-function plymeta:GetVampireAlly()
-    local role = self:GetRole()
-    if MONSTER_ROLES[ROLE_VAMPIRE] then
-        return MONSTER_ROLES[role]
-    elseif TRAITOR_ROLES[ROLE_VAMPIRE] then
-        return TRAITOR_ROLES[role]
-    end
-    return INDEPENDENT_ROLES[role]
-end
 
 function plymeta:IsSameTeam(target)
     if self:IsTraitorTeam() and target:IsTraitorTeam() then
@@ -82,29 +60,11 @@ function plymeta:IsSameTeam(target)
     return self:GetRole() == target:GetRole()
 end
 function plymeta:GetRoleTeam(detectivesAreInnocent)
-    if self:IsTraitorTeam() then
-        return ROLE_TEAM_TRAITOR
-    elseif self:IsMonsterTeam() then
-        return ROLE_TEAM_MONSTER
-    elseif self:IsJesterteam() then
-        return ROLE_TEAM_JESTER
-    elseif self:IsIndependentTeam() then
-        return ROLE_TEAM_INDEPENDENT
-    elseif self:IsInnocentTeam() then
-        if not detectivesAreInnocent and self:IsDetectiveTeam() then
-            return ROLE_TEAM_DETECTIVE
-        end
-        return ROLE_TEAM_INNOCENT
-    end
+    return player.GetRoleTeam(self:GetRole(), detectivesAreInnocent)
 end
 
 plymeta.IsDetectiveLike = plymeta.GetDetectiveLike
 plymeta.IsDetectiveLikePromotable = plymeta.GetDetectiveLikePromotable
-plymeta.IsZombiePrime = plymeta.GetZombiePrime
-plymeta.IsVampirePrime = plymeta.GetVampirePrime
-
-plymeta.IsZombieAlly = plymeta.GetZombieAlly
-plymeta.IsVampireAlly = plymeta.GetVampireAlly
 
 function plymeta:IsSpecial() return self:GetRole() ~= ROLE_INNOCENT end
 function plymeta:IsCustom() return not DEFAULT_ROLES[self:GetRole()] end
@@ -225,6 +185,8 @@ function plymeta:ShouldRevealBodysnatcher(tgt)
     -- Check the setting value and whether the player and the target are the same team
     return bodysnatcherMode == BODYSNATCHER_REVEAL_ALL or (self:IsSameTeam(tgt) and bodysnatcherMode == BODYSNATCHER_REVEAL_TEAM)
 end
+
+function plymeta:ShouldDelayAnnouncements() return ROLE_SHOULD_DELAY_ANNOUNCEMENTS[self:GetRole()] or false end
 
 function plymeta:SetRoleAndBroadcast(role)
     self:SetRole(role)
@@ -539,16 +501,6 @@ else
     end
 
     function plymeta:MoveRoleState(target, keep_on_source)
-        if self:IsZombiePrime() then
-            if not keep_on_source then self:SetZombiePrime(false) end
-            target:SetZombiePrime(true)
-        end
-
-        if self:IsVampirePrime() then
-            if not keep_on_source then self:SetVampirePrime(false) end
-            target:SetVampirePrime(true)
-        end
-
         if self:GetNWBool("HasPromotion", false) then
             if not keep_on_source then self:SetNWBool("HasPromotion", false) end
             target:HandleDetectiveLikePromotion()
@@ -594,18 +546,9 @@ else
             end
         end
 
-        local assassinTarget = self:GetNWString("AssassinTarget", "")
-        if #assassinTarget > 0 then
-            if not keep_on_source then self:SetNWString("AssassinTarget", "") end
-            target:SetNWString("AssassinTarget", assassinTarget)
-            target:PrintMessage(HUD_PRINTCENTER, "You have learned that your predecessor's target was " .. assassinTarget)
-            target:PrintMessage(HUD_PRINTTALK, "You have learned that your predecessor's target was " .. assassinTarget)
-        elseif self:IsAssassin() then
-            -- If the player we're taking the role state from was an assassin but they didn't have a target, try to assign a target to this player
-            -- Use a slight delay to let the role change go through first just in case
-            timer.Simple(0.25, function()
-                AssignAssassinTarget(target, true)
-            end)
+        -- Run role-specific logic
+        if ROLE_MOVE_ROLE_STATE[self:GetRole()] then
+            ROLE_MOVE_ROLE_STATE[self:GetRole()](self, target, keep_on_source)
         end
 
         -- If the dead player had role weapons stored, give them to the target and then clear the list
@@ -622,4 +565,66 @@ else
             end
         end)
     end
+end
+
+function player.GetRoleTeam(role, detectivesAreInnocent)
+    if TRAITOR_ROLES[role] then
+        return ROLE_TEAM_TRAITOR
+    elseif MONSTER_ROLES[role] then
+        return ROLE_TEAM_MONSTER
+    elseif JESTER_ROLES[role] then
+        return ROLE_TEAM_JESTER
+    elseif INDEPENDENT_ROLES[role] then
+        return ROLE_TEAM_INDEPENDENT
+    elseif INNOCENT_ROLES[role] then
+        if not detectivesAreInnocent and DETECTIVE_ROLES[role] then
+            return ROLE_TEAM_DETECTIVE
+        end
+        return ROLE_TEAM_INNOCENT
+    end
+end
+
+function player.GetLivingRole(role)
+    for _, v in ipairs(player.GetAll()) do
+        if v:Alive() and v:IsTerror() and v:IsRole(role) then
+            return v
+        end
+    end
+    return nil
+end
+function player.IsRoleLiving(role) return IsPlayer(player.GetLivingRole(role)) end
+
+function player.AreTeamsLiving()
+    local traitor_alive = false
+    local innocent_alive = false
+    local indep_alive = false
+    local monster_alive = false
+    local jester_alive = false
+
+    for _, v in ipairs(player.GetAll()) do
+        if v:Alive() and v:IsTerror() then
+            if v:IsTraitorTeam() then
+                traitor_alive = true
+            elseif v:IsMonsterTeam() then
+                monster_alive = true
+            elseif v:IsInnocentTeam() then
+                innocent_alive = true
+            elseif v:IsIndependentTeam() then
+                indep_alive = true
+            elseif v:IsJesterTeam() then
+                jester_alive = true
+            end
+        -- Handle zombification differently because the player's original role should have no impact on this
+        elseif v:GetNWBool("IsZombifying", false) then
+            if TRAITOR_ROLES[ROLE_ZOMBIE] then
+                traitor_alive = true
+            elseif MONSTER_ROLES[ROLE_ZOMBIE] then
+                monster_alive = true
+            elseif INDEPENDENT_ROLES[ROLE_ZOMBIE] then
+                indep_alive = true
+            end
+        end
+    end
+
+    return innocent_alive, traitor_alive, indep_alive, monster_alive, jester_alive
 end

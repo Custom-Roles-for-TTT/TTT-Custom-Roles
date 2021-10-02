@@ -1,5 +1,5 @@
 -- Version string for display and function for version checks
-CR_VERSION = "1.2.6"
+CR_VERSION = "1.2.7"
 
 function CRVersion(version)
     local installedVersionRaw = string.Split(CR_VERSION, ".")
@@ -301,6 +301,32 @@ if CLIENT then
 
         return ModifyColor(c or COLOR_WHITE, type)
     end
+
+    function GetRoleTeamName(role_team)
+        if role_team == ROLE_TEAM_TRAITOR then
+            return LANG.GetTranslation("traitor")
+        elseif role_team == ROLE_TEAM_MONSTER then
+            return LANG.GetTranslation("monster")
+        elseif role_team == ROLE_TEAM_JESTER then
+            return LANG.GetTranslation("jester")
+        elseif role_team == ROLE_TEAM_INDEPENDENT then
+            return LANG.GetTranslation("independent")
+        end
+        return LANG.GetTranslation("innocent")
+    end
+
+    function GetRoleTeamInfo(role_team, simple_color)
+        local teamName = GetRoleTeamName(role_team)
+        local teamColor = GetRoleTeamColor(role_team)
+        if simple_color then
+            if role_team == ROLE_TEAM_INNOCENT or role_team == ROLE_TEAM_DETECTIVE then
+                teamColor = ROLE_COLORS[ROLE_INNOCENT]
+            elseif role_team == ROLE_TEAM_TRAITOR then
+                teamColor = ROLE_COLORS[ROLE_TRAITOR]
+            end
+        end
+        return teamName, teamColor
+    end
 else
     function CreateCreditConVar(role)
         -- Add explicit ROLE_INNOCENT exclusion here in case shop-for-all is enabled
@@ -311,7 +337,6 @@ else
             elseif TRAITOR_ROLES[role] then credits = "1"
             elseif DETECTIVE_ROLES[role] then credits = "1"
             elseif role == ROLE_MERCENARY then credits = "1"
-            elseif role == ROLE_KILLER then credits = "2"
             elseif role == ROLE_DOCTOR then credits = "1" end
             CreateConVar("ttt_" .. rolestring .. "_credits_starting", credits, FCVAR_REPLICATED)
         end
@@ -628,6 +653,10 @@ ROLE_STARTING_HEALTH = {}
 ROLE_MAX_HEALTH = {}
 ROLE_IS_ACTIVE = {}
 ROLE_SHOULD_ACT_LIKE_JESTER = {}
+ROLE_SELECTION_PREDICATE = {}
+ROLE_SHOULD_DELAY_ANNOUNCEMENTS = {}
+ROLE_MOVE_ROLE_STATE = {}
+ROLE_ON_ROLE_ASSIGNED = {}
 
 ROLE_CONVAR_TYPE_NUM = 0
 ROLE_CONVAR_TYPE_BOOL = 1
@@ -691,11 +720,11 @@ function RegisterRole(tbl)
     -- Create the role description translation automatically
     ROLE_TRANSLATIONS[roleID]["english"]["info_popup_" .. tbl.nameraw] = tbl.desc
 
-    if tbl.shop then
-        ROLE_SHOP_ITEMS[roleID] = tbl.shop
-        AddRoleAssociations(SHOP_ROLES, {roleID})
+    if type(tbl.selectionpredicate) == "function" then
+        ROLE_SELECTION_PREDICATE[roleID] = tbl.selectionpredicate
     end
 
+    -- Role features
     if type(tbl.startingcredits) == "number" then
         ROLE_STARTING_CREDITS[roleID] = tbl.startingcredits
     end
@@ -708,6 +737,7 @@ function RegisterRole(tbl)
         ROLE_MAX_HEALTH[roleID] = tbl.maxhealth
     end
 
+    -- Optional Features
     if type(tbl.canlootcredits) == "boolean" then
         CAN_LOOT_CREDITS_ROLES[roleID] = tbl.canlootcredits
     end
@@ -720,16 +750,35 @@ function RegisterRole(tbl)
         DELAYED_SHOP_ROLES[roleID] = tbl.shoulddelayshop
     end
 
+    if type(tbl.shoulddelayannouncements) == "boolean" then
+        ROLE_SHOULD_DELAY_ANNOUNCEMENTS[roleID] = tbl.shoulddelayannouncements
+    end
+
+    -- Equipment
+    if tbl.shop then
+        ROLE_SHOP_ITEMS[roleID] = tbl.shop
+        AddRoleAssociations(SHOP_ROLES, {roleID})
+    end
+
     if tbl.loadout then
         ROLE_LOADOUT_ITEMS[roleID] = tbl.loadout
     end
 
+    -- plymeta Functions
     if type(tbl.isactive) == "function" then
         ROLE_IS_ACTIVE[roleID] = tbl.isactive
     end
 
     if type(tbl.shouldactlikejester) == "function" then
         ROLE_SHOULD_ACT_LIKE_JESTER[roleID] = tbl.shouldactlikejester
+    end
+
+    if type(tbl.moverolestate) == "function" then
+        ROLE_MOVE_ROLE_STATE[roleID] = tbl.moverolestate
+    end
+
+    if type(tbl.onroleassigned) == "function" then
+        ROLE_ON_ROLE_ASSIGNED[roleID] = tbl.onroleassigned
     end
 
     -- List of objects that describe convars for ULX support, in the following format:
@@ -750,6 +799,28 @@ function RegisterRole(tbl)
         ROLE_CONVARS[roleID] = tbl.convars
     end
 end
+
+local function AddInternalRoles()
+    local root = "terrortown/gamemode/roles/"
+    local _, dirs = file.Find(root .. "*", "LUA")
+    for _, dir in ipairs(dirs) do
+        local files, _ = file.Find(root .. dir .. "/*.lua", "LUA")
+        for _, fil in ipairs(files) do
+            local isClientFile = string.find(fil, "cl_")
+            local isSharedFile = fil == "shared.lua" or string.find(fil, "sh_")
+
+            if SERVER then
+                -- Send client and shared files to clients
+                if isClientFile or isSharedFile then AddCSLuaFile(root .. dir .. "/" .. fil) end
+                -- Include non-client files
+                if not isClientFile then include(root .. dir .. "/" .. fil) end
+            end
+            -- Include client and shared files
+            if CLIENT and (isClientFile or isSharedFile) then include(root .. dir .. "/" .. fil) end
+        end
+    end
+end
+AddInternalRoles()
 
 local function AddExternalRoles()
     local files, _ = file.Find("customroles/*.lua", "LUA")
@@ -861,11 +932,6 @@ JESTER_NOTIFY_DETECTIVE_AND_TRAITOR = 1
 JESTER_NOTIFY_TRAITOR = 2
 JESTER_NOTIFY_DETECTIVE = 3
 JESTER_NOTIFY_EVERYONE = 4
-
--- Vampire prime death modes
-VAMPIRE_DEATH_NONE = 0
-VAMPIRE_DEATH_KILL_CONVERED = 1
-VAMPIRE_DEATH_REVERT_CONVERTED = 2
 
 -- Parasite respawn modes
 PARASITE_RESPAWN_HOST = 0
@@ -1071,20 +1137,6 @@ function GetSprintMultiplier(ply, sprinting)
                 return 1.4 * mult
             elseif weaponClass == "weapon_ttt_homebat" then
                 return 1.25 * mult
-            elseif weaponClass == "weapon_vam_fangs" and wep:Clip1() < 15 then
-                return 3 * mult
-            elseif weaponClass == "weapon_zom_claws" then
-                local speed_bonus = 1
-                if ply:IsZombiePrime() then
-                    speed_bonus = speed_bonus + GetGlobalFloat("ttt_zombie_prime_speed_bonus", 0.35)
-                else
-                    speed_bonus = speed_bonus + GetGlobalFloat("ttt_zombie_thrall_speed_bonus", 0.15)
-                end
-
-                if ply:HasEquipmentItem(EQUIP_SPEED) then
-                    speed_bonus = speed_bonus + 0.15
-                end
-                return speed_bonus * mult
             end
         end
     end
@@ -1102,19 +1154,6 @@ function UpdateRoleWeaponState()
     else
         table.Empty(parasite_cure.CanBuy)
         table.Empty(fake_cure.CanBuy)
-    end
-
-    -- Hypnotist
-    local hypnotist_defib = weapons.GetStored("weapon_hyp_brainwash")
-    if GetGlobalBool("ttt_hypnotist_device_loadout", false) then
-        hypnotist_defib.InLoadoutFor = table.Copy(hypnotist_defib.InLoadoutForDefault)
-    else
-        table.Empty(hypnotist_defib.InLoadoutFor)
-    end
-    if GetGlobalBool("ttt_hypnotist_device_shop", false) then
-        hypnotist_defib.CanBuy = {ROLE_HYPNOTIST}
-    else
-        hypnotist_defib.CanBuy = nil
     end
 
     -- Paramedic
@@ -1153,20 +1192,6 @@ function UpdateRoleWeaponState()
 end
 
 function UpdateRoleState()
-    local zombies_are_monsters = GetGlobalBool("ttt_zombies_are_monsters", false)
-    -- Zombies cannot be both Monsters and Traitors so don't make them Traitors if they are already Monsters
-    local zombies_are_traitors = not zombies_are_monsters and GetGlobalBool("ttt_zombies_are_traitors", false)
-    MONSTER_ROLES[ROLE_ZOMBIE] = zombies_are_monsters
-    TRAITOR_ROLES[ROLE_ZOMBIE] = zombies_are_traitors
-    INDEPENDENT_ROLES[ROLE_ZOMBIE] = not zombies_are_monsters and not zombies_are_traitors
-
-    local vampires_are_monsters = GetGlobalBool("ttt_vampires_are_monsters", false)
-    -- Vampires cannot be both Monsters and Independents so don't make them Independents if they are already Monsters
-    local vampires_are_independent = not vampires_are_monsters and GetGlobalBool("ttt_vampires_are_independent", false)
-    MONSTER_ROLES[ROLE_VAMPIRE] = vampires_are_monsters
-    TRAITOR_ROLES[ROLE_VAMPIRE] = not vampires_are_monsters and not vampires_are_independent
-    INDEPENDENT_ROLES[ROLE_VAMPIRE] = vampires_are_independent
-
     local bodysnatchers_are_independent = GetGlobalBool("ttt_bodysnatchers_are_independent", false)
     INDEPENDENT_ROLES[ROLE_BODYSNATCHER] = bodysnatchers_are_independent
     JESTER_ROLES[ROLE_BODYSNATCHER] = not bodysnatchers_are_independent
@@ -1175,6 +1200,8 @@ function UpdateRoleState()
     local glitch_use_traps = GetGlobalBool("ttt_glitch_use_traps", false)
     CAN_LOOT_CREDITS_ROLES[ROLE_GLITCH] = glitch_use_traps
     TRAITOR_BUTTON_ROLES[ROLE_GLITCH] = glitch_use_traps
+
+    hook.Run("TTTUpdateRoleState")
 
     local disable_looting = GetGlobalBool("ttt_detective_disable_looting", false)
     for r, e in pairs(DETECTIVE_ROLES) do
@@ -1197,8 +1224,6 @@ function UpdateRoleState()
             end
         end
     end
-
-    hook.Run("TTTUpdateRoleState")
 end
 
 function GetWinningMonsterRole()
@@ -1219,95 +1244,6 @@ function ShouldHideJesters(p)
 end
 
 if SERVER then
-    -- Centralize this so it can be handled on round start and on player death
-    function AssignAssassinTarget(ply, start, delay)
-        -- Don't let dead players, spectators, non-assassins, or failed assassins get another target
-        -- And don't assign targets if the round isn't currently running
-        if not IsValid(ply) or GetRoundState() > ROUND_ACTIVE or
-            not ply:IsAssassin() or ply:GetNWBool("AssassinFailed", false)
-        then
-            return
-        end
-
-        -- Reset the target to empty in case there are no valid targets
-        ply:SetNWString("AssassinTarget", "")
-
-        local enemies = {}
-        local shops = {}
-        local detectives = {}
-        local independents = {}
-        local beggarMode = GetConVar("ttt_beggar_reveal_innocent"):GetInt()
-        local shopRolesFirst = GetConVar("ttt_assassin_shop_roles_last"):GetBool()
-        local bodysnatcherModeInno = GetConVar("ttt_bodysnatcher_reveal_innocent"):GetInt()
-        local bodysnatcherModeMon = GetConVar("ttt_bodysnatcher_reveal_monster"):GetInt()
-        local bodysnatcherModeIndep = GetConVar("ttt_bodysnatcher_reveal_independent"):GetInt()
-
-        local function AddEnemy(p, bodysnatcherMode)
-            -- Don't add the former beggar to the list of enemies unless the "reveal" setting is enabled
-            if p:IsInnocent() and p:GetNWBool("WasBeggar", false) and beggarMode ~= BEGGAR_REVEAL_ALL and beggarMode ~= BEGGAR_REVEAL_TRAITORS then return end
-            if p:GetNWBool("WasBodysnatcher", false) and bodysnatcherMode ~= BODYSNATCHER_REVEAL_ALL then return end
-
-            -- Put shop roles into a list if they should be targeted last
-            if shopRolesFirst and p:IsShopRole() then
-                table.insert(shops, p:Nick())
-            else
-                table.insert(enemies, p:Nick())
-            end
-        end
-
-        for _, p in pairs(player.GetAll()) do
-            if p:Alive() and not p:IsSpec() then
-                if p:IsDetectiveTeam() then
-                    table.insert(detectives, p:Nick())
-                -- Exclude Glitch from these lists so they don't get discovered immediately
-                elseif p:IsInnocentTeam() and not p:IsGlitch() then
-                    AddEnemy(p, bodysnatcherModeInno)
-                elseif p:IsMonsterTeam() and not p:IsGlitch() then
-                    AddEnemy(p, bodysnatcherModeMon)
-                -- Exclude the Old Man because they just want to survive
-                elseif p:IsIndependentTeam() and not p:IsOldMan() then
-                    -- Also exclude bodysnatchers turned into an independent if their role hasn't been revealed
-                    if not p:GetNWBool("WasBodysnatcher", false) or bodysnatcherModeIndep == BODYSNATCHER_REVEAL_ALL then
-                        table.insert(independents, p:Nick())
-                    end
-                end
-            end
-        end
-
-        local target = nil
-        if #enemies > 0 then
-            target = enemies[math.random(#enemies)]
-        elseif #shops > 0 then
-            target = shops[math.random(#shops)]
-        elseif #detectives > 0 then
-            target = detectives[math.random(#detectives)]
-        elseif #independents > 0 then
-            target = independents[math.random(#independents)]
-        end
-
-        local targetMessage = ""
-        if target ~= nil then
-            ply:SetNWString("AssassinTarget", target)
-
-            local targets = #enemies + #shops + #detectives + #independents
-            local targetCount
-            if targets > 1 then
-                targetCount = start and "first" or "next"
-            elseif targets == 1 then
-                targetCount = "final"
-            end
-            targetMessage = "Your " .. targetCount .. " target is " .. target .. "."
-        else
-            targetMessage = "No further targets available."
-        end
-
-        if ply:Alive() and not ply:IsSpec() then
-            if not delay and not start then targetMessage = "Target eliminated. " .. targetMessage end
-            ply:PrintMessage(HUD_PRINTCENTER, targetMessage)
-            ply:PrintMessage(HUD_PRINTTALK, targetMessage)
-        end
-    end
-
     function SetRoleStartingHealth(ply)
         if not IsValid(ply) or not ply:Alive() or ply:IsSpec() then return end
         local role = ply:GetRole()
@@ -1386,6 +1322,23 @@ DefaultEquipment = {
         EQUIP_RADAR
     },
 
+    [ROLE_PALADIN] = {
+        EQUIP_RADAR
+    },
+
+    [ROLE_MEDIUM] = {
+        EQUIP_RADAR
+    },
+
+    [ROLE_TRACKER] = {
+        EQUIP_RADAR
+    },
+
+    [ROLE_DEPUTY] = {
+        EQUIP_ARMOR,
+        EQUIP_RADAR
+    },
+
     [ROLE_MERCENARY] = {
         "weapon_ttt_health_station",
         "weapon_ttt_teleport",
@@ -1418,41 +1371,6 @@ DefaultEquipment = {
     },
 
     [ROLE_ASSASSIN] = {
-        EQUIP_ARMOR,
-        EQUIP_RADAR,
-        EQUIP_DISGUISE
-    },
-
-    [ROLE_KILLER] = {
-        "weapon_ttt_health_station",
-        "weapon_ttt_teleport",
-        "weapon_ttt_confgrenade",
-        "weapon_ttt_m16",
-        "weapon_ttt_smokegrenade",
-        "weapon_zm_mac10",
-        "weapon_zm_molotov",
-        "weapon_zm_pistol",
-        "weapon_zm_revolver",
-        "weapon_zm_rifle",
-        "weapon_zm_shotgun",
-        "weapon_zm_sledge",
-        "weapon_ttt_glock",
-        "weapon_kil_crowbar",
-        "weapon_kil_knife",
-        EQUIP_ARMOR,
-        EQUIP_RADAR,
-        EQUIP_DISGUISE
-    },
-
-    [ROLE_ZOMBIE] = {
-        EQUIP_ARMOR,
-        EQUIP_RADAR,
-        EQUIP_DISGUISE,
-        EQUIP_SPEED,
-        EQUIP_REGEN
-    },
-
-    [ROLE_VAMPIRE] = {
         EQUIP_ARMOR,
         EQUIP_RADAR,
         EQUIP_DISGUISE

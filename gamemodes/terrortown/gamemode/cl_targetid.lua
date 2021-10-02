@@ -97,11 +97,7 @@ function GM:PostDrawTranslucentRenderables()
             local glitchMode = GetGlobalInt("ttt_glitch_mode", 0)
 
             -- Only show the "KILL" target if the setting is enabled
-            local showKillIcon = ((client:IsAssassin() and GetGlobalBool("ttt_assassin_show_target_icon", false) and client:GetNWString("AssassinTarget") == v:Nick()) or
-            (client:IsKiller() and GetGlobalBool("ttt_killer_show_target_icon", false)) or
-                                    (client:IsZombie() and GetGlobalBool("ttt_zombie_show_target_icon", false) and client.GetActiveWeapon and IsValid(client:GetActiveWeapon()) and client:GetActiveWeapon():GetClass() == "weapon_zom_claws") or
-                                    (client:IsVampire() and GetGlobalBool("ttt_vampire_show_target_icon", false)) or
-                                    (client:IsClown() and client:GetNWBool("KillerClownActive", false) and GetGlobalBool("ttt_clown_show_target_icon", false)))
+            local showKillIcon = (client:IsClown() and client:GetNWBool("KillerClownActive", false) and GetGlobalBool("ttt_clown_show_target_icon", false))
                                     and not showJester
 
             -- Allow other addons (and external roles) to determine if the "KILL" icon should show
@@ -173,10 +169,6 @@ function GM:PostDrawTranslucentRenderables()
                         elseif v:IsMonsterTeam() then
                             role = v:GetRole()
                             noz = true
-                        end
-                    elseif client:IsKiller() then
-                        if showJester then
-                            role = ROLE_JESTER
                         end
                     elseif client:IsIndependentTeam() then
                         if showJester then
@@ -319,13 +311,10 @@ function GM:HUDDrawTargetID()
     local target_jester = false
     local target_clown = false
 
-    local target_madscientist = false
-
-    local target_zombie = false
-    local target_vampire = false
+    local target_monster = false
+    local target_independent = false
 
     local target_revenger_lover = false
-    local target_current_target = false
     local target_infected = false
 
     local target_corpse = false
@@ -401,17 +390,19 @@ function GM:HUDDrawTargetID()
             elseif client:IsMonsterTeam() then
                 if showJester then
                     target_jester = showJester
-                else
-                    target_zombie = ent:IsZombie() and ent:IsMonsterTeam()
-                    target_vampire = ent:IsVampire() and ent:IsMonsterTeam()
+                elseif ent:IsMonsterTeam() then
+                    target_monster = ent:GetRole()
                 end
             elseif client:IsIndependentTeam() then
                 if showJester then
                     target_jester = showJester
-                else
-                    target_zombie = ent:IsZombie() and ent:IsIndependentTeam()
-                    target_madscientist = ent:IsMadScientist()
-                    target_vampire = ent:IsVampire() and ent:IsIndependentTeam()
+                elseif ent:IsIndependentTeam() then
+                    -- Only show other independent players if they are the same role or are "teamed"
+                    if ent:GetRole() == client:GetRole() or
+                        (ent:IsZombie() and client:IsMadScientist()) or
+                        (ent:IsMadScientist() and client:IsZombie()) then
+                        target_independent = ent:GetRole()
+                    end
                 end
             end
         end
@@ -424,10 +415,6 @@ function GM:HUDDrawTargetID()
 
         if client:IsRevenger() then
             target_revenger_lover = (ent:SteamID64() == client:GetNWString("RevengerLover", ""))
-        end
-
-        if client:IsAssassin() then
-            target_current_target = (ent:Nick() == client:GetNWString("AssassinTarget", ""))
         end
 
         -- Allow external roles to override or block showing player name
@@ -464,7 +451,7 @@ function GM:HUDDrawTargetID()
 
     local w, h = 0, 0 -- text width/height, reused several times
 
-    local ring_visible = target_traitor or target_special_traitor or target_detective or target_special_detective or target_glitch or target_jester or target_clown or target_zombie or target_vampire
+    local ring_visible = target_traitor or target_special_traitor or target_detective or target_special_detective or target_glitch or target_jester or target_clown or target_independent or target_monster
 
     local new_visible, color_override = hook.Run("TTTTargetIDPlayerRing", ent, client, ring_visible)
     if type(new_visible) == "boolean" then ring_visible = new_visible end
@@ -489,12 +476,10 @@ function GM:HUDDrawTargetID()
                 local bluff = ent:GetNWInt("GlitchBluff", ROLE_TRAITOR)
                 surface.SetDrawColor(ROLE_COLORS_RADAR[bluff])
             end
-        elseif target_vampire then
-            surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_VAMPIRE])
-        elseif target_zombie then
-            surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_ZOMBIE])
-        elseif target_madscientist then
-            surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_MADSCIENTIST])
+        elseif target_monster then
+            surface.SetDrawColor(GetRoleTeamColor(ROLE_TEAM_MONSTER, "radar"))
+        elseif target_independent then
+            surface.SetDrawColor(GetRoleTeamColor(ROLE_TEAM_INDEPENDENT, "radar"))
         elseif target_jester then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_JESTER])
         elseif target_clown then
@@ -618,14 +603,7 @@ function GM:HUDDrawTargetID()
 
     text = nil
     local secondary_text = nil
-    if target_current_target then -- Prioritise target/soulmate message over roles
-        text = L.target_current_target
-        col = ROLE_COLORS_RADAR[ROLE_ASSASSIN]
-
-        if target_infected then
-            secondary_text = L.target_infected
-        end
-    elseif target_revenger_lover then
+    if target_revenger_lover then -- Prioritise soulmate message over roles
         text = L.target_revenger_lover
         col = ROLE_COLORS_RADAR[ROLE_REVENGER]
     elseif target_infected then
@@ -658,15 +636,12 @@ function GM:HUDDrawTargetID()
     elseif target_clown then
         text = string.upper(ROLE_STRINGS[ROLE_CLOWN])
         col = ROLE_COLORS_RADAR[ROLE_CLOWN]
-    elseif target_zombie then
-        text = string.upper(ROLE_STRINGS[ROLE_ZOMBIE])
-        col = ROLE_COLORS_RADAR[ROLE_ZOMBIE]
-    elseif target_madscientist then
-        text = string.upper(ROLE_STRINGS[ROLE_MADSCIENTIST])
-        col = ROLE_COLORS_RADAR[ROLE_MADSCIENTIST]
-    elseif target_vampire then
-        text = string.upper(ROLE_STRINGS[ROLE_VAMPIRE])
-        col = ROLE_COLORS_RADAR[ROLE_VAMPIRE]
+    elseif target_monster then
+        text = string.upper(ROLE_STRINGS[target_monster])
+        col = GetRoleTeamColor(ROLE_TEAM_MONSTER, "radar")
+    elseif target_independent then
+        text = string.upper(ROLE_STRINGS[target_independent])
+        col = GetRoleTeamColor(ROLE_TEAM_INDEPENDENT, "radar")
     elseif ent.sb_tag and ent.sb_tag.txt ~= nil then
         text = L[ent.sb_tag.txt]
         col = ent.sb_tag.color

@@ -45,6 +45,10 @@ local function GetTextForLocalPlayer()
         menukey = Key("+menu_context", "C")
     }
 
+    -- Allow roles to specify their extra parameters
+    local additionalParams = hook.Run("TTTRolePopupParams", client)
+    if type(additionalParams) == "table" then params = table.Merge(params, additionalParams) end
+
     local roleString = client:GetRoleStringRaw()
     if client:IsRevenger() then
         local sid = LocalPlayer():GetNWString("RevengerLover", "")
@@ -89,11 +93,6 @@ local function GetTextForLocalPlayer()
             end
         end
 
-        local assassintarget = nil
-        if client:IsAssassin() then
-            assassintarget = string.rep(" ", 42) .. client:GetNWString("AssassinTarget", "")
-        end
-
         local comrades
         if #traitors > 1 then
             local traitorlist = ""
@@ -114,10 +113,7 @@ local function GetTextForLocalPlayer()
             comrades = GetPTranslation("info_popup_traitor_alone", params)
         end
 
-        return GetPTranslation("info_popup_" .. roleString, table.Merge(params, { comrades = comrades, assassintarget = assassintarget }))
-    -- Zombies not on Traitor or Monster teams have a different message
-    elseif client:IsZombie() then
-        return GetPTranslation("info_popup_zombie_indep", params)
+        return GetPTranslation("info_popup_" .. roleString, table.Merge(params, { comrades = comrades }))
     else
         return GetPTranslation("info_popup_" .. roleString, params)
     end

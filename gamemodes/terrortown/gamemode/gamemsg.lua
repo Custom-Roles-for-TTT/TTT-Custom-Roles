@@ -50,7 +50,7 @@ end
 
 local function ShouldHideTraitorBodysnatcher()
     local bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_traitor", BODYSNATCHER_REVEAL_ALL)
-    return bodysnatcherMode == BEGGAR_REVEAL_NONE
+    return bodysnatcherMode == BODYSNATCHER_REVEAL_NONE
 end
 
 -- Traitorchat

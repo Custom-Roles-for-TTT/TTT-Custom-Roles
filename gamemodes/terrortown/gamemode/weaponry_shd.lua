@@ -46,6 +46,31 @@ function WEPS.PrepWeaponsLists(role)
     end
 end
 
+function WEPS.UpdateWeaponLists(role, weapon, includeSelected, excludeSelected, noRandomSelected)
+    WEPS.PrepWeaponsLists(role)
+    if includeSelected then
+        if not table.HasValue(WEPS.BuyableWeapons[role], weapon) then
+            table.insert(WEPS.BuyableWeapons[role], weapon)
+        end
+    else
+        table.RemoveByValue(WEPS.BuyableWeapons[role], weapon)
+    end
+    if excludeSelected then
+        if not table.HasValue(WEPS.ExcludeWeapons[role], weapon) then
+            table.insert(WEPS.ExcludeWeapons[role], weapon)
+        end
+    else
+        table.RemoveByValue(WEPS.ExcludeWeapons[role], weapon)
+    end
+    if noRandomSelected then
+        if not table.HasValue(WEPS.BypassRandomWeapons[role], weapon) then
+            table.insert(WEPS.BypassRandomWeapons[role], weapon)
+        end
+    else
+        table.RemoveByValue(WEPS.BypassRandomWeapons[role], weapon)
+    end
+end
+
 function WEPS.ResetWeaponsCache()
     -- Reset the CanBuy list or save the original for next time
     for _, v in pairs(weapons.GetList()) do
@@ -100,7 +125,7 @@ SHOP_SYNC_MODE_DETECTIVE = 3
 SHOP_SYNC_MODE_TRAITOR = 4
 
 local rolemodes = {}
-function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor_weapons, sync_detective_weapons)
+function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor_weapons, sync_detective_weapons, block_exclusion)
     if wep == nil then return end
     local id = WEPS.GetClass(wep)
 
@@ -180,7 +205,7 @@ function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor
         if table.HasValue(wep.CanBuy, role) then
             -- Make sure each of the excluded weapons is NOT in the role's equipment list
             local excludetable = WEPS.ExcludeWeapons[role]
-            if excludetable and table.HasValue(excludetable, id) then
+            if not block_exclusion and excludetable and table.HasValue(excludetable, id) then
                 table.RemoveByValue(wep.CanBuy, role)
             -- Remove some weapons based on a random chance if it isn't blocked or bypassed
             -- Only run this on the client because there is no easy way to sync randomization between client and server

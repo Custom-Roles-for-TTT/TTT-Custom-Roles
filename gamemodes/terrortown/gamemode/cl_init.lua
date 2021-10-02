@@ -44,15 +44,10 @@ include("cl_scoring_events.lua")
 include("cl_popups.lua")
 include("cl_equip.lua")
 include("cl_voice.lua")
+include("cl_roleweapons.lua")
 
 local traitor_vision = false
-local killer_vision = false
-local zombie_vision = false
-local vampire_vision = false
-local assassin_target_vision = false
 local jesters_visible_to_traitors = false
-local jesters_visible_to_monsters = false
-local jesters_visible_to_independents = false
 local vision_enabled = false
 
 local function AddRoleTranslations()
@@ -202,19 +197,12 @@ local function ReceiveRole()
     client:SetRole(role)
 
     -- Update the local state
-    traitor_vision = GetGlobalBool("ttt_traitor_vision_enable")
-    killer_vision = GetGlobalBool("ttt_killer_vision_enable")
-    zombie_vision = GetGlobalBool("ttt_zombie_vision_enable")
-    vampire_vision = GetGlobalBool("ttt_vampire_vision_enable")
-    assassin_target_vision = GetGlobalBool("ttt_assassin_target_vision_enable")
-    jesters_visible_to_traitors = GetGlobalBool("ttt_jesters_visible_to_traitors")
-    jesters_visible_to_monsters = GetGlobalBool("ttt_jesters_visible_to_monsters")
-    jesters_visible_to_independents = GetGlobalBool("ttt_jesters_visible_to_independents")
+    traitor_vision = GetGlobalBool("ttt_traitor_vision_enable", false)
+    jesters_visible_to_traitors = GetGlobalBool("ttt_jesters_visible_to_traitors", false)
 
     -- Disable highlights on role change
     if vision_enabled then
         hook.Remove("PreDrawHalos", "AddPlayerHighlights")
-        hook.Remove("PreDrawHalos", "AddPlayerHighlights_Assassin")
         vision_enabled = false
     end
 
@@ -368,7 +356,7 @@ function GM:Think()
     local client = LocalPlayer()
     for _, v in pairs(player.GetAll()) do
         if v:Alive() and not v:IsSpec() then
-            local shouldSmoke = (v:GetNWBool("Haunted", false) and GetGlobalBool("ttt_phantom_killer_smoke")) or v:GetNWBool("KillerSmoke", false)
+            local shouldSmoke = v:GetNWBool("Haunted", false) and GetGlobalBool("ttt_phantom_killer_smoke")
             local smokeColor = COLOR_BLACK
             local smokeParticle = "particle/snow.vmt"
             local smokeOffset = Vector(0, 0, 30)
@@ -484,7 +472,7 @@ function GM:Tick()
         if client:Alive() and client:Team() ~= TEAM_SPEC then
             WSWITCH:Think()
             RADIO:StoreTarget()
-            if traitor_vision or killer_vision or zombie_vision or vampire_vision or assassin_target_vision then
+            if traitor_vision then
                 HandleRoleHighlights(client)
             end
         end
@@ -937,7 +925,7 @@ end)
 
 -- Player highlights
 
-function OnPlayerHighlightEnabled(client, alliedRoles, showJesters, hideEnemies, traitorAllies)
+function OnPlayerHighlightEnabled(client, alliedRoles, showJesters, hideEnemies, traitorAllies, onlyShowEnemies)
     if GetRoundState() ~= ROUND_ACTIVE then return end
     local enemies = {}
     local friends = {}
@@ -945,9 +933,13 @@ function OnPlayerHighlightEnabled(client, alliedRoles, showJesters, hideEnemies,
     for _, v in pairs(player.GetAll()) do
         if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= client then
             if showJesters and v:ShouldActLikeJester() then
-                table.insert(jesters, v)
+                if not onlyShowEnemies then
+                    table.insert(jesters, v)
+                end
             elseif table.HasValue(alliedRoles, v:GetRole()) then
-                table.insert(friends, v)
+                if not onlyShowEnemies then
+                    table.insert(friends, v)
+                end
             -- Don't even track enemies if this role can't see them
             elseif not hideEnemies then
                 table.insert(enemies, v)
@@ -976,11 +968,6 @@ function OnPlayerHighlightEnabled(client, alliedRoles, showJesters, hideEnemies,
     halo.Add(jesters, ROLE_COLORS[ROLE_JESTER], 1, 1, 1, true, true)
 end
 
-local function EnableKillerHighlights(client)
-    hook.Add("PreDrawHalos", "AddPlayerHighlights", function()
-        OnPlayerHighlightEnabled(client, {ROLE_KILLER}, true, false, false)
-    end)
-end
 local function EnableTraitorHighlights(client)
     hook.Add("PreDrawHalos", "AddPlayerHighlights", function()
         -- Start with the list of traitors
@@ -991,111 +978,10 @@ local function EnableTraitorHighlights(client)
         OnPlayerHighlightEnabled(client, allies, jesters_visible_to_traitors, true, true)
     end)
 end
-local function EnableAssassinTargetHighlights(client)
-    hook.Add("PreDrawHalos", "AddPlayerHighlights_Assassin", function()
-        local target_nick = client:GetNWString("AssassinTarget", "")
-        if not target_nick or target_nick:len() == 0 then return end
-
-        local target = nil
-        for _, v in pairs(player.GetAll()) do
-            if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= client and v:Nick() == target_nick then
-                target = v
-                break
-            end
-        end
-
-        if not target then return end
-
-        -- Highlight the assassin's target as a different color than their friends
-        halo.Add({target}, ROLE_COLORS[ROLE_INNOCENT], 1, 1, 1, true, true)
-    end)
-end
-local function EnableZombieHighlights(client)
-    hook.Add("PreDrawHalos", "AddPlayerHighlights", function()
-        local hasClaws = client.GetActiveWeapon and IsValid(client:GetActiveWeapon()) and client:GetActiveWeapon():GetClass() == "weapon_zom_claws"
-        local hideEnemies = not zombie_vision or not hasClaws
-        local allies = {}
-        local traitorAllies = TRAITOR_ROLES[ROLE_ZOMBIE]
-        local showJesters = false
-        -- If zombies are traitors and traitor vision or zombie vision is enabled then add all the traitor roles as allies
-        if (traitor_vision or zombie_vision) and traitorAllies then
-            allies = GetTeamRoles(TRAITOR_ROLES)
-            showJesters = jesters_visible_to_traitors
-        -- If zombie vision is enabled, add the allied roles
-        elseif zombie_vision then
-            -- If they are monsters, ally with Zombies and monster-Vampires
-            if MONSTER_ROLES[ROLE_ZOMBIE] then
-                allies = {ROLE_ZOMBIE}
-                if MONSTER_ROLES[ROLE_VAMPIRE] then
-                    table.insert(allies, ROLE_VAMPIRE)
-                end
-                showJesters = jesters_visible_to_monsters
-            else
-                allies = GetTeamRoles(INDEPENDENT_ROLES)
-                showJesters = jesters_visible_to_independents
-            end
-        end
-
-        OnPlayerHighlightEnabled(client, allies, showJesters, hideEnemies, traitorAllies)
-    end)
-end
-local function EnableVampireHighlights(client)
-    hook.Add("PreDrawHalos", "AddPlayerHighlights", function()
-        local hasFangs = client.GetActiveWeapon and IsValid(client:GetActiveWeapon()) and client:GetActiveWeapon():GetClass() == "weapon_vam_fangs"
-        local hideEnemies = not vampire_vision or not hasFangs
-        local allies = {}
-        local traitorAllies = TRAITOR_ROLES[ROLE_VAMPIRE]
-        local showJesters = false
-        -- If vampires are traitors and traitor vision or vampire vision is enabled then add all the traitor roles as allies
-        if (traitor_vision or vampire_vision) and traitorAllies then
-            allies = GetTeamRoles(TRAITOR_ROLES)
-            showJesters = jesters_visible_to_traitors
-        -- If vampire vision is enabled, add the allied roles
-        elseif vampire_vision then
-            -- If they are monsters, ally with Vampires and monster-Zombies
-            if MONSTER_ROLES[ROLE_VAMPIRE] then
-                allies = {ROLE_VAMPIRE}
-                if MONSTER_ROLES[ROLE_ZOMBIE] then
-                    table.insert(allies, ROLE_ZOMBIE)
-                end
-                showJesters = jesters_visible_to_monsters
-            else
-                allies = GetTeamRoles(INDEPENDENT_ROLES)
-                showJesters = jesters_visible_to_independents
-            end
-        end
-
-        OnPlayerHighlightEnabled(client, allies, showJesters, hideEnemies, traitorAllies)
-    end)
-end
-
 function HandleRoleHighlights(client)
     if not IsValid(client) then return end
 
-    if client:IsKiller() and killer_vision then
-        if not vision_enabled then
-            EnableKillerHighlights(client)
-            vision_enabled = true
-        end
-    elseif client:IsZombie() and (zombie_vision or (traitor_vision and TRAITOR_ROLES[ROLE_ZOMBIE])) then
-        if not vision_enabled then
-            EnableZombieHighlights(client)
-            vision_enabled = true
-        end
-    elseif client:IsVampire() and (vampire_vision or (traitor_vision and TRAITOR_ROLES[ROLE_VAMPIRE])) then
-        if not vision_enabled then
-            EnableVampireHighlights(client)
-            vision_enabled = true
-        end
-    elseif client:IsAssassin() and assassin_target_vision then
-        if not vision_enabled then
-            if traitor_vision then
-                EnableTraitorHighlights(client)
-            end
-            EnableAssassinTargetHighlights(client)
-            vision_enabled = true
-        end
-    elseif client:IsTraitorTeam() and traitor_vision then
+    if client:IsTraitorTeam() and traitor_vision then
         if not vision_enabled then
             EnableTraitorHighlights(client)
             vision_enabled = true
@@ -1106,7 +992,6 @@ function HandleRoleHighlights(client)
 
     if not vision_enabled then
         hook.Remove("PreDrawHalos", "AddPlayerHighlights")
-        hook.Remove("PreDrawHalos", "AddPlayerHighlights_Assassin")
     end
 end
 
