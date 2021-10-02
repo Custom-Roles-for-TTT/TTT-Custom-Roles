@@ -272,8 +272,6 @@ hook.Add("PlayerLoadout", "Vampire_PlayerLoadout", function(ply)
     if not ply:HasWeapon("weapon_vam_fangs") then
         ply:Give("weapon_vam_fangs")
     end
-
-    return true
 end)
 
 -- Only allow the vampire to pick up vampire-specific weapons

@@ -259,8 +259,6 @@ hook.Add("PlayerLoadout", "Killer_PlayerLoadout", function(ply)
             ply:SelectWeapon("weapon_kil_crowbar")
         end
     end
-
-    return true
 end)
 
 -- Only allow the killer to pick up killer-specific weapons
