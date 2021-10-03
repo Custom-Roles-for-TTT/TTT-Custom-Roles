@@ -349,6 +349,7 @@ ttt_bodysnatcher_reveal_independent         1       // Who the bodysnatcher is r
 
 // INDEPENDENT TEAM SETTINGS
 ttt_independents_trigger_traitor_testers    0       // Whether independents trigger traitor testers as if they were traitors
+ttt_independents_update_scoreboard          0       // Whether all independent roles show dead players as missing in action
 
 // Drunk
 ttt_drunk_sober_time                        180     // Time in seconds for the drunk to remember their role
@@ -402,6 +403,7 @@ ttt_killer_damage_reduction                 0       // The fraction an attacker'
 ttt_killer_warn_all                         0       // Whether to warn all players if there is a killer. If 0, only traitors will be warned
 ttt_killer_vision_enable                    1       // Whether killers have their special vision highlights enabled
 ttt_killer_credits_starting                 2       // The number of credits a killer should start with
+ttt_killer_update_scoreboard                1       // Whether killers show dead players as missing in action (Is ignored if ttt_independents_update_scoreboard is set to 1)
 
 // Zombie
 ttt_zombies_are_monsters                    0       // Whether zombies should be treated as members of the monster team (rather than the independent team)

@@ -260,6 +260,7 @@ CreateConVar("ttt_bodysnatcher_reveal_independent", "1", FCVAR_NONE, "Who the bo
 
 -- Independent role properties
 CreateConVar("ttt_independents_trigger_traitor_testers", "0")
+CreateConVar("ttt_independents_update_scoreboard", "0")
 
 CreateConVar("ttt_drunk_sober_time", "180")
 CreateConVar("ttt_drunk_innocent_chance", "0.7")
@@ -711,6 +712,8 @@ function GM:SyncGlobals()
     SetGlobalInt("ttt_bodysnatcher_reveal_innocent", GetConVar("ttt_bodysnatcher_reveal_innocent"):GetInt())
     SetGlobalInt("ttt_bodysnatcher_reveal_monster", GetConVar("ttt_bodysnatcher_reveal_monster"):GetInt())
     SetGlobalInt("ttt_bodysnatcher_reveal_independent", GetConVar("ttt_bodysnatcher_reveal_independent"):GetInt())
+
+    SetGlobalBool("ttt_independents_update_scoreboard", GetConVar("ttt_independents_update_scoreboard"):GetBool())
 
     SetGlobalBool("ttt_bem_allow_change", GetConVar("ttt_bem_allow_change"):GetBool())
     SetGlobalInt("ttt_bem_sv_cols", GetConVar("ttt_bem_sv_cols"):GetBool())
