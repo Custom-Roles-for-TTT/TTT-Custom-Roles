@@ -1,7 +1,7 @@
 # Beta Release Notes
 
 ## 1.2.8
-**Released: **
+**Released: October 3rd, 2021**
 
 ### Additions
 - Added ability for independents to see missing in action players on the scoreboard (disabled by default)
