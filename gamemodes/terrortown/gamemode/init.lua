@@ -204,6 +204,8 @@ CreateConVar("ttt_detective_disable_looting", "0")
 CreateConVar("ttt_all_search_postround", "1")
 CreateConVar("ttt_all_search_binoc", "0")
 
+CreateConVar("ttt_special_detectives_armor_loadout", "1")
+
 CreateConVar("ttt_paladin_aura_radius", "5")
 CreateConVar("ttt_paladin_damage_reduction", "0.3")
 CreateConVar("ttt_paladin_heal_rate", "1")
@@ -676,6 +678,8 @@ function GM:SyncGlobals()
 
     SetGlobalBool("ttt_paramedic_device_loadout", GetConVar("ttt_paramedic_device_loadout"):GetBool())
     SetGlobalBool("ttt_paramedic_device_shop", GetConVar("ttt_paramedic_device_shop"):GetBool())
+
+    SetGlobalBool("ttt_special_detectives_armor_loadout", GetConVar("ttt_special_detectives_armor_loadout"):GetBool())
 
     SetGlobalFloat("ttt_paladin_aura_radius", GetConVar("ttt_paladin_aura_radius"):GetInt() * 52.49)
 

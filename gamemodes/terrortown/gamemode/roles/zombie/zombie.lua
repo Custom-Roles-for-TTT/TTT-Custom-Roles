@@ -194,8 +194,6 @@ hook.Add("PlayerLoadout", "Zombie_PlayerLoadout", function(ply)
     if not ply:HasWeapon("weapon_zom_claws") then
         ply:Give("weapon_zom_claws")
     end
-
-    return true
 end)
 
 -- Only allow the zombie to pick up zombie-specific weapons

@@ -1,5 +1,5 @@
 -- Version string for display and function for version checks
-CR_VERSION = "1.2.7"
+CR_VERSION = "1.3.1"
 
 function CRVersion(version)
     local installedVersionRaw = string.Split(CR_VERSION, ".")
@@ -1192,6 +1192,7 @@ function UpdateRoleWeaponState()
 end
 
 function UpdateRoleState()
+    -- Team changing
     local bodysnatchers_are_independent = GetGlobalBool("ttt_bodysnatchers_are_independent", false)
     INDEPENDENT_ROLES[ROLE_BODYSNATCHER] = bodysnatchers_are_independent
     JESTER_ROLES[ROLE_BODYSNATCHER] = not bodysnatchers_are_independent
@@ -1201,14 +1202,25 @@ function UpdateRoleState()
     CAN_LOOT_CREDITS_ROLES[ROLE_GLITCH] = glitch_use_traps
     TRAITOR_BUTTON_ROLES[ROLE_GLITCH] = glitch_use_traps
 
-    hook.Run("TTTUpdateRoleState")
-
     local disable_looting = GetGlobalBool("ttt_detective_disable_looting", false)
+    local special_detectives_armor_loadout = GetGlobalBool("ttt_special_detectives_armor_loadout", true)
     for r, e in pairs(DETECTIVE_ROLES) do
         if e then
             CAN_LOOT_CREDITS_ROLES[r] = not disable_looting
+
+            -- If this isn't a regular detective, update the armor equipment loadout status to match the setting
+            if not DEFAULT_ROLES[r] then
+                for _, i in ipairs(EquipmentItems[r]) do
+                    if i.id == EQUIP_ARMOR then
+                        i.loadout = special_detectives_armor_loadout
+                        break
+                    end
+                end
+            end
         end
     end
+
+    hook.Run("TTTUpdateRoleState")
 
     -- Update role colors to make sure team changes have taken effect
     UpdateRoleColours()
@@ -1323,14 +1335,17 @@ DefaultEquipment = {
     },
 
     [ROLE_PALADIN] = {
+        EQUIP_ARMOR,
         EQUIP_RADAR
     },
 
     [ROLE_MEDIUM] = {
+        EQUIP_ARMOR,
         EQUIP_RADAR
     },
 
     [ROLE_TRACKER] = {
+        EQUIP_ARMOR,
         EQUIP_RADAR
     },
 

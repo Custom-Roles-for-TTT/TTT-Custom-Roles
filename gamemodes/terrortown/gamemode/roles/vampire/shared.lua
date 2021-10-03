@@ -35,13 +35,16 @@ hook.Add("TTTPrepareRound", "Vampire_Shared_TTTPrepareRound", function()
     InitializeEquipment()
 end)
 
-hook.Add("TTTUpdateRoleState", "Vampire_Team_TTTUpdateRoleState", function()
+hook.Add("TTTUpdateRoleState", "Vampire_TTTUpdateRoleState", function()
     local vampires_are_monsters = GetGlobalBool("ttt_vampires_are_monsters", false)
     -- Vampires cannot be both Monsters and Independents so don't make them Independents if they are already Monsters
     local vampires_are_independent = not vampires_are_monsters and GetGlobalBool("ttt_vampires_are_independent", false)
     MONSTER_ROLES[ROLE_VAMPIRE] = vampires_are_monsters
     TRAITOR_ROLES[ROLE_VAMPIRE] = not vampires_are_monsters and not vampires_are_independent
     INDEPENDENT_ROLES[ROLE_VAMPIRE] = vampires_are_independent
+
+    -- Override whether the Vampire can loot credits
+    CAN_LOOT_CREDITS_ROLES[ROLE_VAMPIRE] = GetGlobalBool("ttt_vampire_loot_credits", true)
 end)
 
 --------------------
