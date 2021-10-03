@@ -259,6 +259,9 @@ CreateConVar("ttt_bodysnatcher_reveal_independent", "1", FCVAR_NONE, "Who the bo
 -- Independent role properties
 CreateConVar("ttt_independents_trigger_traitor_testers", "0")
 
+CreateConVar("ttt_independents_update_scoreboard", "0")
+CreateConVar("ttt_killer_update_scoreboard", "0")
+
 CreateConVar("ttt_drunk_sober_time", "180")
 CreateConVar("ttt_drunk_innocent_chance", "0.7")
 CreateConVar("ttt_drunk_any_role", "0")
@@ -691,6 +694,9 @@ function GM:SyncGlobals()
     SetGlobalBool("ttt_parasite_enabled", GetConVar("ttt_parasite_enabled"):GetBool())
 
     SetGlobalInt("ttt_revenger_radar_timer", GetConVar("ttt_revenger_radar_timer"):GetInt())
+
+    SetGlobalBool("ttt_independents_update_scoreboard", GetConVar("ttt_independents_update_scoreboard"):GetBool())
+    SetGlobalBool("ttt_killer_update_scoreboard", GetConVar("ttt_killer_update_scoreboard"):GetBool())
 
     SetGlobalBool("ttt_jesters_visible_to_traitors", GetConVar("ttt_jesters_visible_to_traitors"):GetBool())
     SetGlobalBool("ttt_jesters_visible_to_monsters", GetConVar("ttt_jesters_visible_to_monsters"):GetBool())
