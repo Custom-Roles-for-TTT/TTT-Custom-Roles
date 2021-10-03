@@ -13,12 +13,14 @@ CreateConVar("ttt_killer_damage_penalty", "0.25")
 CreateConVar("ttt_killer_damage_reduction", "0")
 CreateConVar("ttt_killer_warn_all", "0")
 CreateConVar("ttt_killer_vision_enable", "1")
+CreateConVar("ttt_killer_update_scoreboard", "1")
 
 hook.Add("TTTSyncGlobals", "Killer_TTTSyncGlobals", function()
     SetGlobalBool("ttt_killer_show_target_icon", GetConVar("ttt_killer_show_target_icon"):GetBool())
     SetGlobalBool("ttt_killer_vision_enable", GetConVar("ttt_killer_vision_enable"):GetBool())
     SetGlobalBool("ttt_killer_knife_enabled", GetConVar("ttt_killer_knife_enabled"):GetBool())
     SetGlobalBool("ttt_killer_smoke_enabled", GetConVar("ttt_killer_smoke_enabled"):GetBool())
+    SetGlobalBool("ttt_killer_update_scoreboard", GetConVar("ttt_killer_update_scoreboard"):GetBool())
 end)
 
 -----------

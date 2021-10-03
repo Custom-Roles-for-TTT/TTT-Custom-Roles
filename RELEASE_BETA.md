@@ -4,7 +4,8 @@
 **Released: **
 
 ### Additions
-- Added ttt_independents_update_scoreboard and ttt_killer_update_scoreboard convars to allow either all independent or just killer scoreboards to show dead players
+- Added ability for independents to see missing in action players on the scoreboard (disabled by default)
+- Added ability for the killer to see missing in action players on the scoreboard (enabled by default)
 
 ## 1.2.7
 **Released: October 2nd, 2021**
