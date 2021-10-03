@@ -313,6 +313,8 @@ ttt_bodysnatcher_show_role                  1       // Whether the bodysnatching
 
 // INDEPENDENT TEAM SETTINGS
 ttt_independents_trigger_traitor_testers    0       // Whether independents trigger traitor testers as if they were traitors
+ttt_independents_update_scoreboard          0       // Whether all independent roles show dead players as missing in action
+ttt_killer_update_scoreboard                0       // Whether killers show dead players as missing in action (Is ignored if ttt_independents_update_scoreboard is set to 1)
 
 // Drunk
 ttt_drunk_sober_time                        180     // Time in seconds for the drunk to remember their role
