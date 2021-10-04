@@ -223,11 +223,6 @@ CreateConVar("ttt_jesters_visible_to_traitors", "1")
 CreateConVar("ttt_jesters_visible_to_monsters", "1")
 CreateConVar("ttt_jesters_visible_to_independents", "1")
 
-CreateConVar("ttt_jester_win_by_traitors", "1")
-CreateConVar("ttt_jester_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the jester is killed", 0, 4)
-CreateConVar("ttt_jester_notify_sound", "0")
-CreateConVar("ttt_jester_notify_confetti", "0")
-
 CreateConVar("ttt_swapper_killer_health", "100")
 CreateConVar("ttt_swapper_respawn_health", "100")
 CreateConVar("ttt_swapper_weapon_mode", "1", FCVAR_NONE, "How to handle weapons when the swapper is killed", 0, 2)
@@ -834,21 +829,6 @@ function StartNameChangeChecks()
     end
 end
 
-local function OnPlayerDeath(victim, infl, attacker)
-    if GetRoundState() ~= ROUND_ACTIVE then return end
-
-    if victim:IsJester() and IsPlayer(attacker) and (not attacker:IsJesterTeam()) then
-        -- Don't end the round if the jester was killed by a traitor
-        -- and the functionality that blocks Jester wins from traitor deaths is enabled
-        if GetConVar("ttt_jester_win_by_traitors"):GetBool() or not attacker:IsTraitorTeam() then
-            -- Stop the win checks so someone else doesn't steal the jester's win
-            StopWinChecks()
-            -- Delay the actual end for a second so the message and sound have a chance to generate a reaction
-            timer.Simple(1, function() EndRound(WIN_JESTER) end)
-        end
-    end
-end
-
 local function CleanUp()
     local et = ents.TTT
     -- if we are going to import entities, it's no use replacing HL2DM ones as
@@ -934,7 +914,6 @@ function PrepareRound()
         timer.Remove(v:Nick() .. "HauntingSpectate")
         v:SetNWString("RevengerLover", "")
         v:SetNWString("RevengerKiller", "")
-        v:SetNWString("JesterKiller", "")
         v:SetNWString("SwappedWith", "")
         v:SetNWBool("WasDrunk", false)
         v:SetNWBool("WasHypnotised", false)
@@ -1263,9 +1242,6 @@ function BeginRound()
         end
     end)
 
-    -- Start watching for specific deaths
-    hook.Add("PlayerDeath", "OnPlayerDeath", OnPlayerDeath)
-
     -- Start the win condition check timer
     StartWinChecks()
     StartNameChangeChecks()
@@ -1310,9 +1286,6 @@ function PrintResultMessage(type)
     elseif type == WIN_INNOCENT then
         LANG.Msg("win_innocent", { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR] })
         ServerLog("Result: " .. ROLE_STRINGS_PLURAL[ROLE_INNOCENT] .. " win.\n")
-    elseif type == WIN_JESTER then
-        LANG.Msg("win_jester", { role = ROLE_STRINGS_PLURAL[ROLE_JESTER] })
-        ServerLog("Result: " .. ROLE_STRINGS[ROLE_JESTER] .. " wins.\n")
     elseif type == WIN_CLOWN then
         LANG.Msg("win_clown", { role = ROLE_STRINGS_PLURAL[ROLE_CLOWN] })
         ServerLog("Result: " .. ROLE_STRINGS[ROLE_CLOWN] .. " wins.\n")
@@ -1550,7 +1523,6 @@ function StartWinChecks()
 end
 
 function StopWinChecks()
-    hook.Remove("PlayerDeath", "OnPlayerDeath")
     timer.Stop("winchecker")
 end
 

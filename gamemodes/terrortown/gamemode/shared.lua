@@ -1249,12 +1249,6 @@ function GetWinningMonsterRole()
     return nil
 end
 
-function ShouldHideJesters(p)
-    -- TODO: Remove this in the next beta release after 1.2.5 is released to non-beta
-    ErrorNoHaltWithStack("WARNING: ShouldHideJesters(ply) is deprecated. Please switch to ply:ShouldHideJesters()")
-    return p:ShouldHideJesters()
-end
-
 if SERVER then
     function SetRoleStartingHealth(ply)
         if not IsValid(ply) or not ply:Alive() or ply:IsSpec() then return end

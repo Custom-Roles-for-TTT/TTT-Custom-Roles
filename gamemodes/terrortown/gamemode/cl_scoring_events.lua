@@ -64,8 +64,6 @@ Event(EVENT_FINISH,
                      return PT("ev_win_traitor", { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]:lower() })
                   elseif e.win == WIN_INNOCENT then
                      return PT("ev_win_inno", { role = ROLE_STRINGS_PLURAL[ROLE_INNOCENT]:lower() })
-                  elseif e.win == WIN_JESTER then
-                     return PT("ev_win_jester", { role = ROLE_STRINGS[ROLE_JESTER]:lower() })
                   elseif e.win == WIN_CLOWN then
                      return PT("ev_win_clown", { role = ROLE_STRINGS[ROLE_CLOWN]:lower() })
                   elseif e.win == WIN_OLDMAN then
@@ -91,8 +89,6 @@ Event(EVENT_FINISH,
                      role_string = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]
                   elseif e.win == WIN_INNOCENT then
                      role_string = ROLE_STRINGS_PLURAL[ROLE_INNOCENT]
-                  elseif e.win == WIN_JESTER then
-                     role_string = ROLE_STRINGS[ROLE_JESTER]
                   elseif e.win == WIN_CLOWN then
                      role_string = ROLE_STRINGS[ROLE_CLOWN]
                   elseif e.win == WIN_OLDMAN then

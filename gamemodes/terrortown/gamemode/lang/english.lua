@@ -35,7 +35,6 @@ L.win_prevented = "Map was prevented from ending the round."
 L.win_time = "Time has run out. The {role} win."
 L.win_traitor = "The {role} have won!"
 L.win_innocent = "The {role} have been defeated!"
-L.win_jester = "The {role} has fooled you all!"
 L.win_clown = "The {role} has murdered you all!"
 L.win_showreport = "Let's look at the round report for {num} seconds."
 L.win_monster = "The monsters have taken over!"
@@ -693,9 +692,6 @@ L.spec_help = "Click to spectate players, or press {usekey} on a physics object 
 
 -- These are spread over multiple lines, hence the square brackets instead of
 -- quotes. That's a Lua thing. Every line break (enter) will show up in-game.
-L.info_popup_jester = [[You are {role}! You want to die but you
-deal no damage so you must be killed by some one else.]]
-
 L.info_popup_swapper = [[You are {role}! {traitors} think you are {ajester} and you
 deal no damage however, if anyone kills you, they become
 the {swapper} and you take their role and can join the fight.]]
@@ -1013,7 +1009,6 @@ L.ev_start = "The round started"
 L.ev_spawn = "{player} spawned as {a} {role}"
 L.ev_role_changed = "{player} changed roles to {a} {role}"
 L.ev_win_traitor = "The dastardly {role} won the round!"
-L.ev_win_jester = "The tricky {role} won the round!"
 L.ev_win_inno = "The lovable {role} won the round!"
 L.ev_win_clown = "The vicious {role} won the round!"
 L.ev_win_oldman = "The {role} has somehow survived and also won the round!"

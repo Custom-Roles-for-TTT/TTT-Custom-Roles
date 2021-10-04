@@ -8,6 +8,11 @@
 
 ### Fixes
 - Fixed teamkilling monster team members not having their karma reduced
+- Fixed renaming jester, swapper, or beggar causing errors when trying to show killed notifications
+
+### Developer
+- Changed JesterTeamKilledNotification to be globally accessible
+- Removed deprecated global ShouldHideJesters. Use plymeta:ShouldHideJesters instead
 
 ## 1.2.8
 **Released: October 3rd, 2021**

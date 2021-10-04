@@ -722,13 +722,15 @@ local function ShouldShowJesterNotification(target, mode)
     return false
 end
 
-local function JesterTeamKilledNotification(role_string, attacker, victim, getkillstring, shouldshow)
-    local lower_role = role_string:lower()
-    local mode = GetConVar("ttt_" .. lower_role .. "_notify_mode"):GetInt()
-    local play_sound = GetConVar("ttt_" .. lower_role .. "_notify_sound"):GetBool()
-    local show_confetti = GetConVar("ttt_" .. lower_role .. "_notify_confetti"):GetBool()
+function JesterTeamKilledNotification(attacker, victim, getkillstring, shouldshow)
+    local role = victim:GetRole()
+    local cvar_role = ROLE_STRINGS_RAW[role]
+    local mode = GetConVar("ttt_" .. cvar_role .. "_notify_mode"):GetInt()
+    local play_sound = GetConVar("ttt_" .. cvar_role .. "_notify_sound"):GetBool()
+    local show_confetti = GetConVar("ttt_" .. cvar_role .. "_notify_confetti"):GetBool()
     for _, ply in pairs(player.GetAll()) do
         if ply == attacker then
+            local role_string = ROLE_STRINGS[role]
             ply:PrintMessage(HUD_PRINTCENTER, "You killed the " .. role_string .. "!")
         elseif (shouldshow == nil or shouldshow(ply)) and ShouldShowJesterNotification(ply, mode) then
             ply:PrintMessage(HUD_PRINTCENTER, getkillstring(ply))
@@ -744,21 +746,8 @@ local function JesterTeamKilledNotification(role_string, attacker, victim, getki
     end
 end
 
-local function JesterKilledNotification(attacker, victim)
-    JesterTeamKilledNotification(ROLE_STRINGS[ROLE_JESTER], attacker, victim,
-        -- getkillstring
-        function()
-            return attacker:Nick() .. " was dumb enough to kill the " .. ROLE_STRINGS[ROLE_JESTER] .. "!"
-        end,
-        -- shouldshow
-        function()
-            -- Don't announce anything if the game doesn't end here and the Jester was killed by a traitor
-            return not (not GetConVar("ttt_jester_win_by_traitors"):GetBool() and attacker:IsTraitorTeam())
-        end)
-end
-
 local function SwapperKilledNotification(attacker, victim)
-    JesterTeamKilledNotification(ROLE_STRINGS[ROLE_SWAPPER], attacker, victim,
+    JesterTeamKilledNotification(attacker, victim,
         -- getkillstring
         function(ply)
             local target = "someone"
@@ -770,7 +759,7 @@ local function SwapperKilledNotification(attacker, victim)
 end
 
 local function BeggarKilledNotification(attacker, victim)
-    JesterTeamKilledNotification(ROLE_STRINGS[ROLE_BEGGAR], attacker, victim,
+    JesterTeamKilledNotification(attacker, victim,
         -- getkillstring
         function()
             return attacker:Nick() .. " cruelly killed the lowly " .. ROLE_STRINGS[ROLE_BEGGAR] .. "!"
@@ -1258,12 +1247,6 @@ function GM:PlayerDeath(victim, infl, attacker)
             v:PrintMessage(HUD_PRINTTALK, message)
             v:PrintMessage(HUD_PRINTCENTER, message)
         end
-    end
-
-    -- Handle jester death
-    if valid_kill and victim:IsJester() then
-        JesterKilledNotification(attacker, victim)
-        victim:SetNWString("JesterKiller", attacker:Nick())
     end
 
     -- Handle swapper death
