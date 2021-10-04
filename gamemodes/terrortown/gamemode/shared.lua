@@ -943,11 +943,6 @@ PARASITE_SUICIDE_NONE = 0
 PARASITE_SUICIDE_RESPAWN_ALL = 1
 PARASITE_SUICIDE_RESPAWN_CONSOLE = 2
 
--- Swapper weapon modes
-SWAPPER_WEAPON_NONE = 0
-SWAPPER_WEAPON_ROLE = 1
-SWAPPER_WEAPON_ALL = 2
-
 -- Glitch modes
 GLITCH_SHOW_AS_TRAITOR = 0
 GLITCH_SHOW_AS_SPECIAL_TRAITOR = 1
@@ -1292,6 +1287,48 @@ if SERVER then
 
         -- Otherwise, only promote if there are no living detectives
         return alive == 0
+    end
+
+    local function ShouldShowJesterNotification(target, mode)
+        -- 1 - Only notify Traitors and Detective-likes
+        -- 2 - Only notify Traitors
+        -- 3 - Only notify Detective-likes
+        -- 4 - Notify everyone
+        -- Otherwise - Don't notify anyone
+        if mode == JESTER_NOTIFY_DETECTIVE_AND_TRAITOR then
+            return target:IsDetectiveLike() or target:IsTraitorTeam()
+        elseif mode == JESTER_NOTIFY_TRAITOR then
+            return target:IsTraitorTeam()
+        elseif mode == JESTER_NOTIFY_DETECTIVE then
+            return target:IsDetectiveLike()
+        elseif mode == JESTER_NOTIFY_EVERYONE then
+            return true
+        end
+        return false
+    end
+
+    function JesterTeamKilledNotification(attacker, victim, getkillstring, shouldshow)
+        local role = victim:GetRole()
+        local cvar_role = ROLE_STRINGS_RAW[role]
+        local mode = GetConVar("ttt_" .. cvar_role .. "_notify_mode"):GetInt()
+        local play_sound = GetConVar("ttt_" .. cvar_role .. "_notify_sound"):GetBool()
+        local show_confetti = GetConVar("ttt_" .. cvar_role .. "_notify_confetti"):GetBool()
+        for _, ply in pairs(player.GetAll()) do
+            if ply == attacker then
+                local role_string = ROLE_STRINGS[role]
+                ply:PrintMessage(HUD_PRINTCENTER, "You killed the " .. role_string .. "!")
+            elseif (shouldshow == nil or shouldshow(ply)) and ShouldShowJesterNotification(ply, mode) then
+                ply:PrintMessage(HUD_PRINTCENTER, getkillstring(ply))
+            end
+
+            if play_sound or show_confetti then
+                net.Start("TTT_JesterDeathCelebration")
+                net.WriteEntity(victim)
+                net.WriteBool(play_sound)
+                net.WriteBool(show_confetti)
+                net.Send(ply)
+            end
+        end
     end
 end
 

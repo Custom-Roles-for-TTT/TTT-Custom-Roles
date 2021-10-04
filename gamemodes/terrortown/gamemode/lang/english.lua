@@ -692,10 +692,6 @@ L.spec_help = "Click to spectate players, or press {usekey} on a physics object 
 
 -- These are spread over multiple lines, hence the square brackets instead of
 -- quotes. That's a Lua thing. Every line break (enter) will show up in-game.
-L.info_popup_swapper = [[You are {role}! {traitors} think you are {ajester} and you
-deal no damage however, if anyone kills you, they become
-the {swapper} and you take their role and can join the fight.]]
-
 L.info_popup_glitch = [[You are {role}! The {traitors} think you are one of them.
 Try to blend in and don't give yourself away.]]
 
@@ -1270,7 +1266,6 @@ L.sb_playervolume = "Player Volume"
 L.ev_hypno = "{victim} was hypnotised"
 L.ev_defi = "{victim} was respawned"
 L.ev_disco = "{victim} disconnected"
-L.ev_swap = "{victim} swapped with {attacker}"
 L.ev_promote = "{player} was promoted to {detective}"
 L.ev_clown = "The clown, {player}, went on a rampage"
 L.ev_drunk = "{player} remembered they are {team}"

@@ -117,19 +117,6 @@ net.Receive("TTT_Defibrillated", function(len)
     })
 end)
 
-net.Receive("TTT_SwapperSwapped", function(len)
-    local victim = net.ReadString()
-    local attacker = net.ReadString()
-    local vicsid = net.ReadString()
-    CLSCORE:AddEvent({
-        id = EVENT_SWAPPER,
-        vic = victim,
-        att = attacker,
-        sid64 = vicsid,
-        bonus = 2
-    })
-end)
-
 net.Receive("TTT_BeggarConverted", function(len)
     local victim = net.ReadString()
     local attacker = net.ReadString()

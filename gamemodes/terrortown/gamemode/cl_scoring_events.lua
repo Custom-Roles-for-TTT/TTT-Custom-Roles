@@ -41,7 +41,6 @@ local heart_icon = Material("icon16/heart.png")
 local heart_add_icon = Material("icon16/heart_add.png")
 local hourglass_go_icon = Material("icon16/hourglass_go.png")
 local disconnect_icon = Material("icon16/disconnect.png")
-local swap_icon = Material("icon16/arrow_refresh_small.png")
 local promotion_icon = Material("icon16/award_star_add.png")
 local clown_icon = Material("icon16/emoticon_evilgrin.png")
 local drunk_icon = Material("icon16/drink_empty.png")
@@ -361,14 +360,6 @@ Event(EVENT_DISCONNECTED, {
     end,
     icon = function(e)
         return disconnect_icon, "Disconnected"
-    end})
-
-Event(EVENT_SWAPPER, {
-    text = function(e)
-        return PT("ev_swap", {victim = e.vic, attacker = e.att})
-    end,
-    icon = function(e)
-        return swap_icon, "Swapped"
     end})
 
 Event(EVENT_PROMOTION, {
