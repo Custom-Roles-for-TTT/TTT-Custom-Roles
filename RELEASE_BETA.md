@@ -1,5 +1,11 @@
 # Beta Release Notes
 
+## 1.3.1
+**Released:**
+
+### Fixes
+- Fixed teamkilling monster team members not having their karma reduced
+
 ## 1.2.8
 **Released: October 3rd, 2021**
 
