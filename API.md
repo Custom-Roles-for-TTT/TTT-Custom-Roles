@@ -571,9 +571,11 @@ Methods available when called from a Player object (within the defined realm)
 ### *Player Static*
 Methods available having to do with players but without needing a specific Player object
 
-**player.AreTeamsLiving()** - Returns whether the there are members of the various teams left alive.\
+**player.AreTeamsLiving(ignorePassiveWinners)** - Returns whether the there are members of the various teams left alive.\
 *Realm:* Client and Server\
-*Added in:* 1.2.7
+*Added in:* 1.2.7\
+*Parameters:*
+- *ignorePassiveWinners* - Whether to ignore roles who win passively (like the old man) *(Added in 1.3.1)*
 
 *Returns:*
 - *traitor_alive* - Whether there are members of the traitor team left alive

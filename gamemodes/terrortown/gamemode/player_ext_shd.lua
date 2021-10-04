@@ -594,7 +594,7 @@ function player.GetLivingRole(role)
 end
 function player.IsRoleLiving(role) return IsPlayer(player.GetLivingRole(role)) end
 
-function player.AreTeamsLiving()
+function player.AreTeamsLiving(ignorePassiveWinners)
     local traitor_alive = false
     local innocent_alive = false
     local indep_alive = false
@@ -603,16 +603,19 @@ function player.AreTeamsLiving()
 
     for _, v in ipairs(player.GetAll()) do
         if v:Alive() and v:IsTerror() then
-            if v:IsTraitorTeam() then
-                traitor_alive = true
-            elseif v:IsMonsterTeam() then
-                monster_alive = true
-            elseif v:IsInnocentTeam() then
-                innocent_alive = true
-            elseif v:IsIndependentTeam() then
-                indep_alive = true
-            elseif v:IsJesterTeam() then
-                jester_alive = true
+            local role = v:GetRole()
+            if not ignorePassiveWinners or not ROLE_HAS_PASSIVE_WIN[role] then
+                if v:IsTraitorTeam() then
+                    traitor_alive = true
+                elseif v:IsMonsterTeam() then
+                    monster_alive = true
+                elseif v:IsInnocentTeam() then
+                    innocent_alive = true
+                elseif v:IsIndependentTeam() then
+                    indep_alive = true
+                elseif v:IsJesterTeam() then
+                    jester_alive = true
+                end
             end
         -- Handle zombification differently because the player's original role should have no impact on this
         elseif v:GetNWBool("IsZombifying", false) then

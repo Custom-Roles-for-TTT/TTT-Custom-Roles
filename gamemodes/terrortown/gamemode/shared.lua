@@ -657,6 +657,10 @@ ROLE_SELECTION_PREDICATE = {}
 ROLE_SHOULD_DELAY_ANNOUNCEMENTS = {}
 ROLE_MOVE_ROLE_STATE = {}
 ROLE_ON_ROLE_ASSIGNED = {}
+ROLE_HAS_PASSIVE_WIN = {}
+
+-- TODO: Move this to own file
+ROLE_HAS_PASSIVE_WIN[ROLE_OLDMAN] = true
 
 ROLE_CONVAR_TYPE_NUM = 0
 ROLE_CONVAR_TYPE_BOOL = 1
@@ -752,6 +756,10 @@ function RegisterRole(tbl)
 
     if type(tbl.shoulddelayannouncements) == "boolean" then
         ROLE_SHOULD_DELAY_ANNOUNCEMENTS[roleID] = tbl.shoulddelayannouncements
+    end
+
+    if type(tbl.haspassivewin) == "boolean" then
+        ROLE_HAS_PASSIVE_WIN[roleID] = tbl.haspassivewin
     end
 
     -- Equipment
