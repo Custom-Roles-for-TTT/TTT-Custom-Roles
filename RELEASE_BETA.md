@@ -6,6 +6,9 @@
 ### Additions
 - Added tutorial pages for more roles
 
+### Changes
+- Removed support for old version of role and shop convars, originally deprecated in v1.0.14
+
 ### Fixes
 - Fixed teamkilling monster team members not having their karma reduced
 - Fixed renaming jester, swapper, or beggar causing errors when trying to show killed notifications
