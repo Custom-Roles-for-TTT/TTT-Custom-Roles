@@ -693,17 +693,6 @@ L.spec_help = "Click to spectate players, or press {usekey} on a physics object 
 
 -- These are spread over multiple lines, hence the square brackets instead of
 -- quotes. That's a Lua thing. Every line break (enter) will show up in-game.
-L.info_popup_innocent = [[You are {role}! But there are {traitors} around...
-Who can you trust, and who is out to fill you with bullets?
-
-Watch your back and work with your comrades to get out of this alive!]]
-
-L.info_popup_detective = [[You are {role}! HQ has given you special resources to find the {traitors}.
-Use them to help the {innocents} survive, but be careful:
-the {traitors} will be looking to take you down first!
-
-Press {menukey} to receive your equipment!]]
-
 L.info_popup_jester = [[You are {role}! You want to die but you
 deal no damage so you must be killed by some one else.]]
 
@@ -792,26 +781,6 @@ These are your comrades:
 L.info_popup_monster_alone = [[You have no allies this round.
 
 Kill all others to win!]]
-
-L.info_popup_traitor_comrades = [[Work with fellow {traitors} to kill all others.
-But take care, or your treason may be discovered...
-
-These are your comrades:
-{traitorlist}]]
-
-L.info_popup_traitor_alone = [[You have no fellow {traitors} this round.
-
-Kill all others to win!]]
-
-L.info_popup_traitor_glitch = [[Work with fellow {traitors} to kill all others.
-BUT BEWARE! There was {aglitch} in the system and one among you does not seek the same goal.
-
-These may or may not be your comrades:
-{traitorlist}]]
-
-L.info_popup_traitor = [[You are {role}! {comrades}
-
-Press {menukey} to receive your special equipment!]]
 
 L.info_popup_impersonator = [[You are {role}! {comrades}
 

@@ -3,6 +3,9 @@
 ## 1.3.1
 **Released:**
 
+### Additions
+- Added tutorial pages for more roles
+
 ### Fixes
 - Fixed teamkilling monster team members not having their karma reduced
 

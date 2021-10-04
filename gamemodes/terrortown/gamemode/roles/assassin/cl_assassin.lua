@@ -173,6 +173,10 @@ hook.Add("TTTTutorialRoleText", "Assassin_TTTTutorialRoleText", function(role, t
             html = html .. " be identified by the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>KILL</span> icon floating over their head.</span>"
         end
 
+        if GetGlobalBool("ttt_traitor_vision_enable", false) then
+            html = html .. "<span style='display: block; margin-top: 10px;'><span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>Constant communication</span> with their allies allows them to quickly identify friends by highlighting them in their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>team color</span>.</span>"
+        end
+
         return html
     end
 end)
