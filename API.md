@@ -322,13 +322,6 @@ Methods available globally (within the defined realm)
 *Parameters:*
 - *ply* - The target player
 
-**ShouldHideJesters(ply)** - Whether the target player should hide a jester player's role (in radar, on the scoreboard, in target ID, etc.).\
-*Realm:* Client and Server\
-*Added in:* 1.2.3\
-*Deprecated in:* 1.2.5\
-*Parameters:*
-- *ply* - The target player
-
 **ShouldPromoteDetectiveLike()** - Whether an unpromoted detective-like player (deputy/impersonator) should be promoted.\
 *Realm:* Server\
 *Added in:* 1.2.5
