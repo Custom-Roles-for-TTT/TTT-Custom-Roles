@@ -1305,35 +1305,6 @@ end
 -- get a little marker on their icon if they're buyable, showing they are custom
 -- and unique to the server.
 DefaultEquipment = {
-    -- traitor-buyable by default
-    [ROLE_TRAITOR] = {
-        "weapon_ttt_c4",
-        "weapon_ttt_flaregun",
-        "weapon_ttt_knife",
-        "weapon_ttt_phammer",
-        "weapon_ttt_push",
-        "weapon_ttt_radio",
-        "weapon_ttt_sipistol",
-        "weapon_ttt_teleport",
-        "weapon_ttt_decoy",
-        "weapon_pha_exorcism",
-        EQUIP_ARMOR,
-        EQUIP_RADAR,
-        EQUIP_DISGUISE
-    },
-
-    -- detective-buyable by default
-    [ROLE_DETECTIVE] = {
-        "weapon_ttt_binoculars",
-        "weapon_ttt_defuser",
-        "weapon_ttt_health_station",
-        "weapon_ttt_stungun",
-        "weapon_ttt_cse",
-        "weapon_ttt_teleport",
-        EQUIP_ARMOR,
-        EQUIP_RADAR
-    },
-
     [ROLE_PALADIN] = {
         EQUIP_ARMOR,
         EQUIP_RADAR
@@ -1372,20 +1343,7 @@ DefaultEquipment = {
         EQUIP_RADAR
     },
 
-    [ROLE_HYPNOTIST] = {
-        "weapon_hyp_brainwash",
-        EQUIP_ARMOR,
-        EQUIP_RADAR,
-        EQUIP_DISGUISE
-    },
-
     [ROLE_IMPERSONATOR] = {
-        EQUIP_ARMOR,
-        EQUIP_RADAR,
-        EQUIP_DISGUISE
-    },
-
-    [ROLE_ASSASSIN] = {
         EQUIP_ARMOR,
         EQUIP_RADAR,
         EQUIP_DISGUISE

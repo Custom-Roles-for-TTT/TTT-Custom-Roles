@@ -1,3 +1,22 @@
+local function InitializeEquipment()
+    if DefaultEquipment then
+        DefaultEquipment[ROLE_HYPNOTIST] = {
+            "weapon_hyp_brainwash",
+            EQUIP_ARMOR,
+            EQUIP_RADAR,
+            EQUIP_DISGUISE
+        }
+    end
+end
+InitializeEquipment()
+
+hook.Add("Initialize", "Hypnotist_Shared_Initialize", function()
+    InitializeEquipment()
+end)
+hook.Add("TTTPrepareRound", "Hypnotist_Shared_TTTPrepareRound", function()
+    InitializeEquipment()
+end)
+
 -----------------
 -- ROLE WEAPON --
 -----------------
