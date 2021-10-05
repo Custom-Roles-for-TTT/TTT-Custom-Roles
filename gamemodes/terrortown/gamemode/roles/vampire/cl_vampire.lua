@@ -62,14 +62,14 @@ hook.Add("Initialize", "Vampire_Scoring_Initialize", function()
         text = function(e)
             if e.mode == VAMPIRE_DEATH_REVERT_CONVERTED then
                return PT("ev_vampi_revert_converted", {prime = e.prime, vampire = ROLE_STRINGS[ROLE_VAMPIRE]})
-            elseif e.mode == VAMPIRE_DEATH_KILL_CONVERED then
+            elseif e.mode == VAMPIRE_DEATH_KILL_CONVERTED then
                return PT("ev_vampi_kill_converted", {prime = e.prime, vampire = ROLE_STRINGS[ROLE_VAMPIRE]})
             end
         end,
         icon = function(e)
             if e.mode == VAMPIRE_DEATH_REVERT_CONVERTED then
                return heart_icon, "Restored"
-            elseif e.mode == VAMPIRE_DEATH_KILL_CONVERED then
+            elseif e.mode == VAMPIRE_DEATH_KILL_CONVERTED then
                return wrong_icon, "Killed"
             end
         end})
@@ -228,7 +228,21 @@ hook.Add("TTTTutorialRoleText", "Vampire_TTTTutorialRoleText", function(role, ti
             if GetGlobalBool("ttt_vampire_prime_only_convert", true) then
                 html = html .. "Prime "
             end
-            html = html .. ROLE_STRINGS_PLURAL[ROLE_VAMPIRE] .. " can convert their living targets to their team by <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>draining their blood</span> the correct amount (Look for the message on the drain progress bar for when to release).</span>"
+            html = html .. ROLE_STRINGS_PLURAL[ROLE_VAMPIRE] .. " can convert living targets to their team by <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>draining their blood</span> the correct amount (Look for the message on the drain progress bar for when to release).</span>"
+
+            -- Prime Death Mode
+            local primeMode = GetGlobalInt("ttt_vampire_prime_death_mode", VAMPIRE_DEATH_NONE)
+            if primeMode > VAMPIRE_DEATH_NONE then
+                html = html .. "<span style='display: block; margin-top: 10px;'>If the Prime " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " is killed, all of the " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " spawn they made will be "
+
+                if primeMode == VAMPIRE_DEATH_KILL_CONVERTED then
+                    html = html .. "<span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>killed as well</span>"
+                else
+                    html = html .. "<span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>returned to their original role</span>"
+                end
+
+                html = html .. ".</span>"
+            end
         end
 
         -- Vision

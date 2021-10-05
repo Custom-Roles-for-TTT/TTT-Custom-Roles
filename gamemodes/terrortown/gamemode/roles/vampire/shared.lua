@@ -1,6 +1,6 @@
 -- Vampire prime death modes
 VAMPIRE_DEATH_NONE = 0
-VAMPIRE_DEATH_KILL_CONVERED = 1
+VAMPIRE_DEATH_KILL_CONVERTED = 1
 VAMPIRE_DEATH_REVERT_CONVERTED = 2
 
 local function InitializeEquipment()

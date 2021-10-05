@@ -30,6 +30,7 @@ hook.Add("TTTSyncGlobals", "Vampire_TTTSyncGlobals", function()
     SetGlobalBool("ttt_vampire_drain_enable", GetConVar("ttt_vampire_drain_enable"):GetBool())
     SetGlobalBool("ttt_vampire_prime_only_convert", GetConVar("ttt_vampire_prime_only_convert"):GetBool())
     SetGlobalBool("ttt_vampire_loot_credits", GetConVar("ttt_vampire_loot_credits"):GetBool())
+    SetGlobalInt("ttt_vampire_prime_death_mode", GetConVar("ttt_vampire_prime_death_mode"):GetInt())
 end)
 
 -------------
@@ -130,7 +131,7 @@ hook.Add("PlayerDeath", "Vampire_PrimeDeath_PlayerDeath", function(victim, infl,
             net.Broadcast()
 
             -- Kill them
-            if vamp_prime_death_mode == VAMPIRE_DEATH_KILL_CONVERED then
+            if vamp_prime_death_mode == VAMPIRE_DEATH_KILL_CONVERTED then
                 for _, vnp in pairs(vampires) do
                     vnp:PrintMessage(HUD_PRINTTALK, "Your " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " overlord has been slain and you die with them")
                     vnp:PrintMessage(HUD_PRINTCENTER, "Your " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " overlord has been slain and you die with them")
