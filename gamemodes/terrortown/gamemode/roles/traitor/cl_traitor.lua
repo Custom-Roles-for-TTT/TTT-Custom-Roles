@@ -3,23 +3,7 @@
 ------------------
 
 hook.Add("Initialize", "Traitor_Translations_Initialize", function()
-    -- Popups
-    LANG.AddToLanguage("english", "info_popup_traitor_comrades", [[Work with fellow {traitors} to kill all others.
-But take care, or your treason may be discovered...
-
-These are your comrades:
-{traitorlist}]])
-
-    LANG.AddToLanguage("english", "info_popup_traitor_alone", [[You have no fellow {traitors} this round.
-
-Kill all others to win!]])
-
-    LANG.AddToLanguage("english", "info_popup_traitor_glitch", [[Work with fellow {traitors} to kill all others.
-BUT BEWARE! There was {aglitch} in the system and one among you does not seek the same goal.
-
-These may or may not be your comrades:
-{traitorlist}]])
-
+    -- Popup
     LANG.AddToLanguage("english", "info_popup_traitor", [[You are {role}! {comrades}
 
 Press {menukey} to receive your special equipment!]])

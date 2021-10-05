@@ -774,6 +774,22 @@ L.info_popup_monster_alone = [[You have no allies this round.
 
 Kill all others to win!]]
 
+L.info_popup_traitor_comrades = [[Work with fellow {traitors} to kill all others.
+But take care, or your treason may be discovered...
+
+These are your comrades:
+{traitorlist}]]
+
+L.info_popup_traitor_alone = [[You have no fellow {traitors} this round.
+
+Kill all others to win!]]
+
+L.info_popup_traitor_glitch = [[Work with fellow {traitors} to kill all others.
+BUT BEWARE! There was {aglitch} in the system and one among you does not seek the same goal.
+
+These may or may not be your comrades:
+{traitorlist}]]
+
 L.info_popup_impersonator = [[You are {role}! {comrades}
 
 If the {detective} dies you will appear to become a new {detective} and gain their
