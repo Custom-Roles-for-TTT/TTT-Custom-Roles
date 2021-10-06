@@ -5,6 +5,14 @@
 
 ### Additions
 - Added tutorial pages for more roles
+- Added ability to configure the amount of time the various role devices take to be used
+  - Bodysnatching Device
+  - Hypnotist's Brainwashing Device
+  - Mad Scientist's Zombificator
+  - Paramedic's Defibrillator
+  - Phantom Exorcism Device
+  - Doctor's Parasite Cure
+  - Quack's Fake Parasite Cure
 
 ### Changes
 - Removed support for old version of role and shop convars, originally deprecated in v1.0.14

@@ -155,6 +155,7 @@ ttt_hypnotist_credits_starting              1       // The number of credits a h
 ttt_hypnotist_device_loadout                1       // Whether the hypnotist's defib should be given to them when they spawn. Server must be restarted for changes to take effect
 ttt_hypnotist_device_shop                   0       // Whether the hypnotist's defib should be purchasable in the shop. Server must be restarted for changes to take effect
 ttt_hypnotist_convert_detectives            0       // Whether to convert detectives and deputies (only if ttt_deputy_use_detective_icon is enabled) to impersonator instead of just a regular traitor. Does NOT convert detective team roles like paladin, medium, or tracker. Target will be automatically promoted to appear as a detective if appropriate
+ttt_hypnotist_device_time                   8       // The amount of time (in seconds) the hypnotist's device takes to use
 ttt_single_paramedic_hypnotist              0       // Whether only a single paramedic or hynotist should spawn in a round
 
 // Assassin
@@ -192,6 +193,7 @@ ttt_vampire_credits_starting                1       // The number of credits a v
 // Quack
 ttt_quack_credits_starting                  1       // The number of credits a quack should start with
 ttt_quack_fake_cure_mode                    0       // How to handle using a fake parasite cure on someone who is not infected. 0 - Kill nobody (But use up the cure), 1 - Kill the person who uses the cure, 2 - Kill the person the cure is used on
+ttt_quack_fake_cure_time                    -1      // The amount of time (in seconds) the fake parasite cure takes to use. If set to -1, the ttt_parasite_cure_time value will be usd instead
 ttt_quack_phantom_cure                      0       // Whether to allow the quack to buy the phantom exorcism device which can remove a haunting phantom. Server must be restarted for changes to take effect
 ttt_single_doctor_quack                     0       // Whether only a single doctor or quack should spawn in a round
 
@@ -204,6 +206,7 @@ ttt_parasite_respawn_mode                   0       // The way in which the para
 ttt_parasite_respawn_health                 100     // The health on which the parasite respawns
 ttt_parasite_announce_infection             0       // Whether players are notified when they are infected with the parasite
 ttt_parasite_cure_mode                      2       // How to handle using a parasite cure on someone who is not infected. 0 - Kill nobody (But use up the cure), 1 - Kill the person who uses the cure, 2 - Kill the person the cure is used on
+ttt_parasite_cure_time                      3       // The amount of time (in seconds) the parasite cure takes to use
 ttt_parasite_credits_starting               1       // The number of credits a parasite should start with
 ttt_single_phantom_parasite                 0       // Whether only a single phantom or parasite should spawn in a round
 
@@ -228,6 +231,7 @@ ttt_phantom_killer_haunt_jump_cost          50      // The amount of power to sp
 ttt_phantom_killer_haunt_drop_cost          75      // The amount of power to spend when a phantom is making their killer drop their weapon via a haunting. Set to 0 to disable
 ttt_phantom_killer_haunt_attack_cost        100     // The amount of power to spend when a phantom is making their killer attack via a haunting. Set to 0 to disable
 ttt_phantom_killer_haunt_without_body       1       // Whether the phantom can use their powers after their body is destroyed
+ttt_phantom_cure_time                       3       // The amount of time (in seconds) the phantom exorcism device takes to use. See "ttt_traitor_phantom_cure" and "ttt_quack_phantom_cure" to enable the device itself
 
 // Revenger
 ttt_revenger_radar_timer                    15      // The amount of time between radar pings for the revenger's lover's killer
@@ -259,6 +263,7 @@ ttt_doctor_credits_starting                 1       // The number of credits a d
 ttt_paramedic_defib_as_innocent             1       // Whether the paramedic's defib brings back everyone as a vanilla innocent role
 ttt_paramedic_device_loadout                1       // Whether the paramedic's defib should be given to them when they spawn. Server must be restarted for changes to take effect
 ttt_paramedic_device_shop                   0       // Whether the paramedic's defib should be purchasable in the shop (requires ttt_shop_for_all to be enabled). Server must be restarted for changes to take effect
+ttt_paramedic_defib_time                    8       // The amount of time (in seconds) the paramedic's defib takes to use
 
 // Trickster
 ttt_trickster_credits_starting              0       // The number of credits a trickster should start with
@@ -344,6 +349,7 @@ ttt_bodysnatcher_reveal_traitor             1       // Who the bodysnatcher is r
 ttt_bodysnatcher_reveal_innocent            1       // Who the bodysnatcher is revealed to when they join the innocent team. 0 - No one. 1 - Everyone. 2 - Their new team
 ttt_bodysnatcher_reveal_monster             1       // Who the bodysnatcher is revealed to when they join the monster team. 0 - No one. 1 - Everyone. 2 - Their new team
 ttt_bodysnatcher_reveal_independent         1       // Who the bodysnatcher is revealed to when they join the independent team. 0 - No one. 1 - Everyone. 2 - Their new team
+ttt_bodysnatcher_device_time                5       // The amount of time (in seconds) the bodysnatcher's device takes to use
 
 // ----------------------------------------
 
@@ -425,6 +431,9 @@ ttt_zombie_thrall_speed_bonus               0.15    // The amount of bonus speed
 ttt_zombie_respawn_health                   100     // The amount of health a player should respawn with when they are converted to a zombie thrall
 ttt_zombie_prime_convert_chance             1.0     // The chance that a prime zombie (e.g. player who spawned as a zombie originally) will convert other players who are killed by their claws to be zombies as well. Set to 0 to disable
 ttt_zombie_thrall_convert_chance            1.0     // The chance that a zombie thrall (e.g. non-prime zombie) will convert other players who are killed by their claws to be zombies as well. Set to 0 to disable
+
+// Mad Scientist
+ttt_madscientist_device_time                4       // The amount of time (in seconds) the mad scientist's device takes to use
 
 // ----------------------------------------
 
