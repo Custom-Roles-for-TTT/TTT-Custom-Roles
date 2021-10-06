@@ -83,7 +83,7 @@ local function StripPlayerWeaponAndAmmo(ply, weap_info)
     end
 end
 
-hook.Add("PlayerDeath", "Swapper_WinCheck_PlayerDeath", function(victim, infl, attacker)
+hook.Add("PlayerDeath", "Swapper_KillCheck_PlayerDeath", function(victim, infl, attacker)
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     if not valid_kill then return end
     if not victim:IsSwapper() then return end
