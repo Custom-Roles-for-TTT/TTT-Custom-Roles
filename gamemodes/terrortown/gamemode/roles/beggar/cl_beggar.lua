@@ -89,9 +89,51 @@ end)
 -- TUTORIAL --
 --------------
 
+local function GetRevealModeString(roleColor, revealMode, teamName, teamColor)
+    local modeString = "When joining the <span style='color: rgb(" .. teamColor.r .. ", " .. teamColor.g .. ", " .. teamColor.b .. ")'>" .. teamName .. "</span> team, the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. ROLE_STRINGS[ROLE_BEGGAR] .. "</span>'s new role will be revealed to "
+    if revealMode == BEGGAR_REVEAL_ALL then
+        modeString = modeString .. "everyone"
+    elseif revealMode == BEGGAR_REVEAL_TRAITORS then
+        local revealColor = ROLE_COLORS[ROLE_TRAITOR]
+        modeString = modeString .. "only <span style='color: rgb(" .. revealColor.r .. ", " .. revealColor.g .. ", " .. revealColor.b .. ")'>" .. LANG.GetTranslation("traitors"):lower() .. "</span>"
+    elseif revealMode == BEGGAR_REVEAL_INNOCENTS then
+        local revealColor = ROLE_COLORS[ROLE_TRAITOR]
+        modeString = modeString .. "only <span style='color: rgb(" .. revealColor.r .. ", " .. revealColor.g .. ", " .. revealColor.b .. ")'>" .. LANG.GetTranslation("innocents"):lower() .. "</span>"
+    else
+        modeString = modeString .. "nobody"
+    end
+    return modeString .. "."
+end
+
 hook.Add("TTTTutorialRoleText", "Beggar_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_BEGGAR then
         local roleColor = GetRoleTeamColor(ROLE_TEAM_JESTER)
-        return "The " .. ROLE_STRINGS[ROLE_BEGGAR] .. " is a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>jester</span> role whose goal is to ."
+        local html = "The " .. ROLE_STRINGS[ROLE_BEGGAR] .. " is a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>jester</span> role whose goal is to convince another players to give them a shop item."
+
+        html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_BEGGAR] .. " then <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>joins the team</span> of whichever player <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>bought the item</span> they are given.</span>"
+
+        -- Respawn
+        if GetGlobalBool("ttt_beggar_respawn", false) then
+            html = html .. "<span style='display: block; margin-top: 10px;'>If the " .. ROLE_STRINGS[ROLE_BEGGAR] .. " is killed before they join a team, <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>they will respawn</span>"
+
+            local respawnDelay = GetGlobalInt("ttt_beggar_respawn_delay", 0)
+            if respawnDelay > 0 then
+                html = html .. " after a " .. respawnDelay .. " second delay"
+            end
+
+            html = html .. ".</span>"
+        end
+
+        -- Innocent Reveal
+        local revealMode = GetGlobalInt("ttt_beggar_reveal_innocent", BEGGAR_REVEAL_TRAITORS)
+        local teamName, teamColor = GetRoleTeamInfo(ROLE_TEAM_INNOCENT, true)
+        html = html .. "<span style='display: block; margin-top: 10px;'>" .. GetRevealModeString(roleColor, revealMode, teamName, teamColor) .. "</span>"
+
+        -- Traitor Reveal
+        revealMode = GetGlobalInt("ttt_beggar_reveal_traitor", BEGGAR_REVEAL_ALL)
+        teamName, teamColor = GetRoleTeamInfo(ROLE_TEAM_TRAITOR, true)
+        html = html .. "<span style='display: block; margin-top: 10px;'>" .. GetRevealModeString(roleColor, revealMode, teamName, teamColor) .. "</span>"
+
+        return html
     end
 end)

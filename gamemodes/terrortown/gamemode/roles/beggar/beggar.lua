@@ -16,6 +16,8 @@ CreateConVar("ttt_beggar_notify_sound", "0")
 CreateConVar("ttt_beggar_notify_confetti", "0")
 
 hook.Add("TTTSyncGlobals", "Beggar_TTTSyncGlobals", function()
+    SetGlobalBool("ttt_beggar_respawn", GetConVar("ttt_beggar_respawn"):GetBool())
+    SetGlobalInt("ttt_beggar_respawn_delay", GetConVar("ttt_beggar_respawn_delay"):GetInt())
     SetGlobalInt("ttt_beggar_reveal_traitor", GetConVar("ttt_beggar_reveal_traitor"):GetInt())
     SetGlobalInt("ttt_beggar_reveal_innocent", GetConVar("ttt_beggar_reveal_innocent"):GetInt())
 end)
