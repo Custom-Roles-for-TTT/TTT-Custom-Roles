@@ -96,6 +96,7 @@ function GM:InitPostEntity()
     RunConsoleCommand("_ttt_request_rolelist")
 
     UpdateRoleStrings()
+    UpdateRoleColours()
 end
 
 function GM:DoCacheEnts()
