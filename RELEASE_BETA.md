@@ -22,9 +22,11 @@
 - Fixed renaming jester, swapper, or beggar causing errors when trying to show killed notifications
 - Fixed clown not winning the round when just them and the old man are left alive
 - Fixed error using role colors on the client before the first round preparation phase
+- Fixed "beggar converted to innocent" entry in the round summary Events tab using the "traitor" icon
 
 ### Developer
 - Added ability to define a role as on that wins passively (like the old man)
 - Added parameter to player.AreTeamsLiving to ignore players who win passively (like the old man)
 - Changed JesterTeamKilledNotification to be globally accessible
+- Renamed `SWEP.BoughtBuy` to `SWEP.BoughtBy`
 - Removed deprecated global ShouldHideJesters. Use plymeta:ShouldHideJesters instead

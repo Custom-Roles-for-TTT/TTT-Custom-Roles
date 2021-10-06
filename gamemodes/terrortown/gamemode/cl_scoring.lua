@@ -117,33 +117,6 @@ net.Receive("TTT_Defibrillated", function(len)
     })
 end)
 
-net.Receive("TTT_BeggarConverted", function(len)
-    local victim = net.ReadString()
-    local attacker = net.ReadString()
-    local team = net.ReadString()
-    local vicsid = net.ReadString()
-    CLSCORE:AddEvent({
-        id = EVENT_BEGGARCONVERTED,
-        vic = victim,
-        att = attacker,
-        team = team,
-        sid64 = vicsid,
-        bonus = 2
-    })
-end)
-
-net.Receive("TTT_BeggarKilled", function(len)
-    local victim = net.ReadString()
-    local attacker = net.ReadString()
-    local delay = net.ReadUInt(8)
-    CLSCORE:AddEvent({
-        id = EVENT_BEGGARKILLED,
-        vic = victim,
-        att = attacker,
-        delay = delay
-    })
-end)
-
 net.Receive("TTT_Promotion", function(len)
     local name = net.ReadString()
     CLSCORE:AddEvent({

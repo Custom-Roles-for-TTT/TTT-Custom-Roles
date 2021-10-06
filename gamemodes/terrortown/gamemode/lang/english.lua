@@ -656,9 +656,6 @@ L.radar_hud = "Radar ready for next scan in: {time}"
 
 L.drunk_hud = "You will sober up in: {time}"
 L.detective_promotion_hud = "You have been promoted to {detective}"
-L.beggar_hidden_all_hud = "You still appear as {beggar} to others"
-L.beggar_hidden_innocent_hud = "You still appear as {beggar} to {innocents}"
-L.beggar_hidden_traitor_hud = "You still appear as {beggar} to {traitors}"
 L.bodysnatcher_hidden_all_hud = "You still appear as {bodysnatcher} to others"
 L.bodysnatcher_hidden_team_hud = "Only your team knows you are no longer {bodysnatcher}"
 
@@ -713,10 +710,6 @@ normal. Be the last player standing to win.]]
 
 L.info_popup_deputy = [[You are {role}! If the {detective} dies you will take
 over and gain the ability to buy shop items and search bodies.]]
-
-L.info_popup_beggar = [[You are {role}! {traitors} think you are {ajester} and you
-deal no damage. However, if you can convince someone to give
-you a shop item you will join their team.]]
 
 L.info_popup_oldman = [[You are {role}! The slightest breeze could kill
 you if you aren't careful. You don't care who wins as long
@@ -1287,9 +1280,6 @@ L.ev_clown = "The clown, {player}, went on a rampage"
 L.ev_drunk = "{player} remembered they are {team}"
 L.ev_haunt = "{victim} started haunting {attacker}"
 L.ev_bodysnatch = "{attacker} bodysnatched {role}, {victim}"
-L.ev_beggar_converted = "The {beggar} ({victim}) was converted to {team} by {attacker}"
-L.ev_beggar_killed = "The {beggar} ({victim}) was killed by {attacker} but respawned"
-L.ev_beggar_killed_delay = "The {beggar} ({victim}) was killed by {attacker} but will respawn in {delay} seconds"
 L.ev_infect = "{victim} infected {attacker}"
 
 -- Role Weapons Configuration

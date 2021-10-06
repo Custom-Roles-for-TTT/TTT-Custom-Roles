@@ -123,7 +123,7 @@ SWEP.PrimaryAnim = ACT_VM_PRIMARYATTACK
 SWEP.ReloadAnim = ACT_VM_RELOAD
 
 SWEP.fingerprints = {}
-SWEP.BoughtBuy = nil
+SWEP.BoughtBy = nil
 SWEP.BlockShopRandomization = false
 
 if CLIENT then

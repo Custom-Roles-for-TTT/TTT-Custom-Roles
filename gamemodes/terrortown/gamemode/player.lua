@@ -704,28 +704,16 @@ function FindRespawnLocation(pos)
     return false
 end
 
-local function BeggarKilledNotification(attacker, victim)
-    JesterTeamKilledNotification(attacker, victim,
-        -- getkillstring
-        function()
-            return attacker:Nick() .. " cruelly killed the lowly " .. ROLE_STRINGS[ROLE_BEGGAR] .. "!"
-        end)
-end
-
-local function DoRespawn(ply)
-    local body = ply.server_ragdoll or ply:GetRagdollEntity()
-    ply:SpawnForRound(true)
-    ply:SetHealth(ply:GetMaxHealth())
-    SafeRemoveEntity(body)
-end
-
 local function DoParasiteRespawnWithoutBody(parasite, hide_messages)
     if not hide_messages then
         parasite:PrintMessage(HUD_PRINTCENTER, "You have drained your host of energy and created a new body.")
     end
     -- Introduce a slight delay to prevent player getting stuck as a spectator
     timer.Create(parasite:Nick() .. "ParasiteRespawn", 0.1, 1, function()
-        DoRespawn(parasite)
+        local body = parasite.server_ragdoll or parasite:GetRagdollEntity()
+        parasite:SpawnForRound(true)
+        SafeRemoveEntity(body)
+
         local health = GetConVar("ttt_parasite_respawn_health"):GetInt()
         parasite:SetHealth(health)
     end)
@@ -1142,29 +1130,6 @@ function GM:PlayerDeath(victim, infl, attacker)
 
             v:PrintMessage(HUD_PRINTTALK, message)
             v:PrintMessage(HUD_PRINTCENTER, message)
-        end
-    end
-
-    -- Handle beggar death
-    if valid_kill and victim:IsBeggar() then
-        BeggarKilledNotification(attacker, victim)
-
-        if GetConVar("ttt_beggar_respawn"):GetBool() then
-            local delay = GetConVar("ttt_beggar_respawn_delay"):GetInt()
-            if delay > 0 then
-                victim:PrintMessage(HUD_PRINTCENTER, "You were killed but will respawn in " .. delay .. " seconds.")
-            else
-                victim:PrintMessage(HUD_PRINTCENTER, "You were killed but are about to respawn.")
-                -- Introduce a slight delay to prevent player getting stuck as a spectator
-                delay = 0.1
-            end
-            timer.Create(victim:Nick() .. "BeggarRespawn", delay, 1, function() DoRespawn(victim) end)
-
-            net.Start("TTT_BeggarKilled")
-            net.WriteString(victim:Nick())
-            net.WriteString(attacker:Nick())
-            net.WriteUInt(delay, 8)
-            net.Broadcast()
         end
     end
 

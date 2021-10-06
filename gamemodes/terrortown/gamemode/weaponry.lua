@@ -694,48 +694,12 @@ concommand.Add("ttt_bot_transfer_credits", BotTransferCredits)
 
 -- Protect against non-TTT weapons that may break the HUD
 function GM:WeaponEquip(wep, ply)
-    if IsValid(wep) then
-        -- only remove if they lack critical stuff
-        if not wep.Kind then
-            wep:Remove()
-            ErrorNoHalt("Equipped weapon " .. wep:GetClass() .. " is not compatible with TTT\n")
-        end
+    if not IsValid(wep) then return end
 
-        if wep.CanBuy and not wep.AutoSpawnable then
-            if not wep.BoughtBuy then
-                wep.BoughtBuy = ply
-            elseif ply:IsBeggar() and (wep.BoughtBuy:IsTraitorTeam() or wep.BoughtBuy:IsInnocentTeam()) then
-                local role
-                local beggarMode
-                if wep.BoughtBuy:IsTraitorTeam() then
-                    role = ROLE_TRAITOR
-                    beggarMode = GetConVar("ttt_beggar_reveal_traitor"):GetInt()
-                else
-                    role = ROLE_INNOCENT
-                    beggarMode = GetConVar("ttt_beggar_reveal_innocent"):GetInt()
-                end
-
-                ply:SetRole(role)
-                ply:SetNWBool("WasBeggar", true)
-                ply:PrintMessage(HUD_PRINTTALK, "You have joined the " .. ROLE_STRINGS[role] .. " team")
-                ply:PrintMessage(HUD_PRINTCENTER, "You have joined the " .. ROLE_STRINGS[role] .. " team")
-                timer.Simple(0.5, function() SendFullStateUpdate() end) -- Slight delay to avoid flickering from beggar to the new role and back to beggar
-
-                for _, v in ipairs(player.GetAll()) do
-                    if beggarMode == BEGGAR_REVEAL_ALL or (v:IsActiveTraitorTeam() and beggarMode == BEGGAR_REVEAL_TRAITORS) or (not v:IsActiveTraitorTeam() and beggarMode == BEGGAR_REVEAL_INNOCENTS) then
-                        v:PrintMessage(HUD_PRINTTALK, "The beggar has joined the " .. ROLE_STRINGS[role] .. " team")
-                        v:PrintMessage(HUD_PRINTCENTER, "The beggar has joined the " .. ROLE_STRINGS[role] .. " team")
-                    end
-                end
-
-                net.Start("TTT_BeggarConverted")
-                net.WriteString(ply:Nick())
-                net.WriteString(wep.BoughtBuy:Nick())
-                net.WriteString(ROLE_STRINGS_EXT[role])
-                net.WriteString(ply:SteamID64())
-                net.Broadcast()
-            end
-        end
+    -- only remove if they lack critical stuff
+    if not wep.Kind then
+        wep:Remove()
+        ErrorNoHalt("Equipped weapon " .. wep:GetClass() .. " is not compatible with TTT\n")
     end
 end
 
