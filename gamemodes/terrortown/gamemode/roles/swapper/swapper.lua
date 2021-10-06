@@ -17,9 +17,9 @@ hook.Add("TTTSyncGlobals", "Swapper_TTTSyncGlobals", function()
     SetGlobalInt("ttt_swapper_killer_health", GetConVar("ttt_swapper_killer_health"):GetInt())
 end)
 
-----------------
--- WIN CHECKS --
-----------------
+-----------------
+-- KILL CHECKS --
+-----------------
 
 local function SwapperKilledNotification(attacker, victim)
     JesterTeamKilledNotification(attacker, victim,
@@ -86,90 +86,89 @@ end
 hook.Add("PlayerDeath", "Swapper_WinCheck_PlayerDeath", function(victim, infl, attacker)
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     if not valid_kill then return end
+    if not victim:IsSwapper() then return end
 
-    if victim:IsSwapper() then
-        SwapperKilledNotification(attacker, victim)
-        attacker:SetNWString("SwappedWith", victim:Nick())
+    SwapperKilledNotification(attacker, victim)
+    attacker:SetNWString("SwappedWith", victim:Nick())
 
-        -- Only bother saving the attacker weapons if we're going to do something with them
-        local weapon_mode = GetConVar("ttt_swapper_weapon_mode"):GetInt()
-        local attacker_weapons = nil
-        if weapon_mode > SWAPPER_WEAPON_NONE then
-            attacker_weapons = GetPlayerWeaponInfo(attacker)
+    -- Only bother saving the attacker weapons if we're going to do something with them
+    local weapon_mode = GetConVar("ttt_swapper_weapon_mode"):GetInt()
+    local attacker_weapons = nil
+    if weapon_mode > SWAPPER_WEAPON_NONE then
+        attacker_weapons = GetPlayerWeaponInfo(attacker)
+    end
+    local victim_weapons = GetPlayerWeaponInfo(victim)
+
+    timer.Simple(0.01, function()
+        local body = victim.server_ragdoll or victim:GetRagdollEntity()
+        victim:SetRole(attacker:GetRole())
+        victim:SpawnForRound(true)
+        victim:SetHealth(GetConVar("ttt_swapper_respawn_health"):GetInt())
+        if IsValid(body) then
+            victim:SetPos(FindRespawnLocation(body:GetPos()) or body:GetPos())
+            victim:SetEyeAngles(Angle(0, body:GetAngles().y, 0))
+            body:Remove()
         end
-        local victim_weapons = GetPlayerWeaponInfo(victim)
 
-        timer.Simple(0.01, function()
-            local body = victim.server_ragdoll or victim:GetRagdollEntity()
-            victim:SetRole(attacker:GetRole())
-            victim:SpawnForRound(true)
-            victim:SetHealth(GetConVar("ttt_swapper_respawn_health"):GetInt())
-            if IsValid(body) then
-                victim:SetPos(FindRespawnLocation(body:GetPos()) or body:GetPos())
-                victim:SetEyeAngles(Angle(0, body:GetAngles().y, 0))
-                body:Remove()
-            end
+        attacker:SetRole(ROLE_SWAPPER)
+        attacker:MoveRoleState(victim)
+        SendFullStateUpdate()
 
-            attacker:SetRole(ROLE_SWAPPER)
-            attacker:MoveRoleState(victim)
-            SendFullStateUpdate()
+        local health = GetConVar("ttt_swapper_killer_health"):GetInt()
+        if health == 0 then
+            attacker:Kill()
+        else
+            attacker:SetHealth(health)
+        end
 
-            local health = GetConVar("ttt_swapper_killer_health"):GetInt()
-            if health == 0 then
-                attacker:Kill()
-            else
-                attacker:SetHealth(health)
-            end
-
-            timer.Simple(0.2, function()
-                if weapon_mode == SWAPPER_WEAPON_ALL then
-                    -- Strip everything but the sure-thing weapons
-                    for _, w in ipairs(attacker_weapons) do
-                        if w.class ~= "weapon_ttt_unarmed" and w.class ~= "weapon_zm_carry" then
-                            StripPlayerWeaponAndAmmo(attacker, w)
-                        end
-                    end
-
-                    -- Give the opposite player's weapons back
-                    for _, w in ipairs(attacker_weapons) do
-                        GivePlayerWeaponAndAmmo(victim, w)
-                    end
-                    for _, w in ipairs(victim_weapons) do
-                        GivePlayerWeaponAndAmmo(attacker, w)
-                    end
-                else
-                    if weapon_mode == SWAPPER_WEAPON_ROLE then
-                        -- Remove all role weapons from the attacker and give them to the victim
-                        for _, w in ipairs(attacker_weapons) do
-                            if w.category == WEAPON_CATEGORY_ROLE then
-                                StripPlayerWeaponAndAmmo(attacker, w)
-                                -- Give the attacker a regular crowbar to compensate for the killer crowbar that was removed
-                                if w.class == "weapon_kil_crowbar" then
-                                    attacker:Give("weapon_zm_improvised")
-                                end
-                                GivePlayerWeaponAndAmmo(victim, w)
-                            end
-                        end
-                    end
-
-                    -- Give the victim all their weapons back
-                    for _, w in ipairs(victim_weapons) do
-                        GivePlayerWeaponAndAmmo(victim, w)
+        timer.Simple(0.2, function()
+            if weapon_mode == SWAPPER_WEAPON_ALL then
+                -- Strip everything but the sure-thing weapons
+                for _, w in ipairs(attacker_weapons) do
+                    if w.class ~= "weapon_ttt_unarmed" and w.class ~= "weapon_zm_carry" then
+                        StripPlayerWeaponAndAmmo(attacker, w)
                     end
                 end
 
-                -- Have each player select their crowbar to hide role weapons
-                attacker:SelectWeapon("weapon_zm_improvised")
-                victim:SelectWeapon("weapon_zm_improvised")
-            end)
-        end)
+                -- Give the opposite player's weapons back
+                for _, w in ipairs(attacker_weapons) do
+                    GivePlayerWeaponAndAmmo(victim, w)
+                end
+                for _, w in ipairs(victim_weapons) do
+                    GivePlayerWeaponAndAmmo(attacker, w)
+                end
+            else
+                if weapon_mode == SWAPPER_WEAPON_ROLE then
+                    -- Remove all role weapons from the attacker and give them to the victim
+                    for _, w in ipairs(attacker_weapons) do
+                        if w.category == WEAPON_CATEGORY_ROLE then
+                            StripPlayerWeaponAndAmmo(attacker, w)
+                            -- Give the attacker a regular crowbar to compensate for the killer crowbar that was removed
+                            if w.class == "weapon_kil_crowbar" then
+                                attacker:Give("weapon_zm_improvised")
+                            end
+                            GivePlayerWeaponAndAmmo(victim, w)
+                        end
+                    end
+                end
 
-        net.Start("TTT_SwapperSwapped")
-        net.WriteString(victim:Nick())
-        net.WriteString(attacker:Nick())
-        net.WriteString(victim:SteamID64())
-        net.Broadcast()
-    end
+                -- Give the victim all their weapons back
+                for _, w in ipairs(victim_weapons) do
+                    GivePlayerWeaponAndAmmo(victim, w)
+                end
+            end
+
+            -- Have each player select their crowbar to hide role weapons
+            attacker:SelectWeapon("weapon_zm_improvised")
+            victim:SelectWeapon("weapon_zm_improvised")
+        end)
+    end)
+
+    net.Start("TTT_SwapperSwapped")
+    net.WriteString(victim:Nick())
+    net.WriteString(attacker:Nick())
+    net.WriteString(victim:SteamID64())
+    net.Broadcast()
 end)
 
 hook.Add("TTTPrepareRound", "Swapper_PrepareRound", function()
