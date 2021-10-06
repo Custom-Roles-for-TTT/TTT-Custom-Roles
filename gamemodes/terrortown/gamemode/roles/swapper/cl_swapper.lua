@@ -16,8 +16,8 @@ end)
 -- SCORING --
 -------------
 
--- Register the scoring events for the vampire
-hook.Add("Initialize", "Vampire_Scoring_Initialize", function()
+-- Register the scoring events for the swapper
+hook.Add("Initialize", "Swapper_Scoring_Initialize", function()
     local swap_icon = Material("icon16/arrow_refresh_small.png")
     local Event = CLSCORE.DeclareEventDisplay
     local PT = LANG.GetParamTranslation
