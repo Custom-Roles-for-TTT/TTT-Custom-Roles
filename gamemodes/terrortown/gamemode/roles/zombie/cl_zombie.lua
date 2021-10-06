@@ -17,6 +17,10 @@ All damage you deal with guns is reduced.
 Killing someone with your claws will turn them into {azombie}.
 
 Press {menukey} to receive your special equipment!]])
+
+    -- Zombie Claws
+    LANG.AddToLanguage("english", "zom_claws_help_pri", "Press {primaryfire} to attack.")
+    LANG.AddToLanguage("english", "zom_claws_help_sec", "Press {secondaryfire} to leap. Press {reload} to spit.")
 end)
 
 -- If this is an independent Zombie, replace the "comrades" list with a generic kill message

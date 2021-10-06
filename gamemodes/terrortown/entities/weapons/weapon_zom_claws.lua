@@ -83,7 +83,7 @@ function SWEP:Initialize()
     end
 
     if CLIENT then
-        self:AddHUDHelp("Left click to attack", "Right click to leap. Press reload to spit", false)
+        self:AddHUDHelp("zom_claws_help_pri", "zom_claws_help_sec", true)
     end
 end
 

@@ -222,7 +222,8 @@ if CLIENT then
     local default_key_params = {
         primaryfire = Key("+attack", "LEFT MOUSE"),
         secondaryfire = Key("+attack2", "RIGHT MOUSE"),
-        usekey = Key("+use", "USE")
+        reload = Key("+reload", "R"),
+        usekey = Key("+use", "E")
     };
 
     function SWEP:AddHUDHelp(primary_text, secondary_text, translate, extra_params)
