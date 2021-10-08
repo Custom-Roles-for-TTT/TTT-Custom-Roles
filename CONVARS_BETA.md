@@ -326,6 +326,7 @@ ttt_clown_heal_bonus                        0       // The amount of bonus healt
 ttt_clown_shop_active_only                  1       // Whether the clown's shop should be available only after they activate
 ttt_clown_shop_delay                        0       // Whether the clown's purchased shop items should be held until they activate
 ttt_clown_credits_starting                  0       // The number of credits a clown should start with
+ttt_single_drunk_clown                      0       // Whether only a single drunk or clown should spawn in a round (Only applies if ttt_single_jester_independent is disabled)
 
 // Beggar
 ttt_beggar_reveal_traitor                   1       // Who the beggar is revealed to when they join the traitor team. 0 - No one. 1 - Everyone. 2 - Traitors. 3 - Innocents
