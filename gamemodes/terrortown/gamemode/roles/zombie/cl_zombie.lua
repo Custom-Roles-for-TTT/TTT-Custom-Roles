@@ -191,7 +191,7 @@ hook.Add("TTTTutorialRoleText", "Zombie_TTTTutorialRoleText", function(role, tit
         local roleTeam = player.GetRoleTeam(ROLE_ZOMBIE, true)
         local roleTeamString, roleTeamColor = GetRoleTeamInfo(roleTeam, true)
 
-        local html = "The " .. ROLE_STRINGS[ROLE_ZOMBIE] .. " is a member of the <span style='color: rgb(" .. roleTeamColor.r .. ", " .. roleTeamColor.g .. ", " .. roleTeamColor.b .. ")'>" .. roleTeamString .. "</span> team that uses their claws to attack their enemies."
+        local html = "The " .. ROLE_STRINGS[ROLE_ZOMBIE] .. " is a member of the <span style='color: rgb(" .. roleTeamColor.r .. ", " .. roleTeamColor.g .. ", " .. roleTeamColor.b .. ")'>" .. roleTeamString:lower() .. " team</span> that uses their claws to attack their enemies."
 
         -- Convert
         html = html .. "<span style='display: block; margin-top: 10px;'>Killing a player with their claws will <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>turn the target</span> into a " .. ROLE_STRINGS[ROLE_ZOMBIE] .. " thrall.</span>"

@@ -956,11 +956,6 @@ GLITCH_SHOW_AS_TRAITOR = 0
 GLITCH_SHOW_AS_SPECIAL_TRAITOR = 1
 GLITCH_HIDE_SPECIAL_TRAITOR_ROLES = 2
 
--- Bodysnatcher reveal modes
-BODYSNATCHER_REVEAL_NONE = 0
-BODYSNATCHER_REVEAL_ALL = 1
-BODYSNATCHER_REVEAL_TEAM = 2
-
 COLOR_WHITE = Color(255, 255, 255, 255)
 COLOR_BLACK = Color(0, 0, 0, 255)
 COLOR_GREEN = Color(0, 255, 0, 255)
@@ -1189,11 +1184,6 @@ function UpdateRoleWeaponState()
 end
 
 function UpdateRoleState()
-    -- Team changing
-    local bodysnatchers_are_independent = GetGlobalBool("ttt_bodysnatchers_are_independent", false)
-    INDEPENDENT_ROLES[ROLE_BODYSNATCHER] = bodysnatchers_are_independent
-    JESTER_ROLES[ROLE_BODYSNATCHER] = not bodysnatchers_are_independent
-
     -- Role Features
     local glitch_use_traps = GetGlobalBool("ttt_glitch_use_traps", false)
     CAN_LOOT_CREDITS_ROLES[ROLE_GLITCH] = glitch_use_traps

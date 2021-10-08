@@ -656,8 +656,6 @@ L.radar_hud = "Radar ready for next scan in: {time}"
 
 L.drunk_hud = "You will sober up in: {time}"
 L.detective_promotion_hud = "You have been promoted to {detective}"
-L.bodysnatcher_hidden_all_hud = "You still appear as {bodysnatcher} to others"
-L.bodysnatcher_hidden_team_hud = "Only your team knows you are no longer {bodysnatcher}"
 
 -- Spectator muting of living/dead
 L.mute_living = "Living players muted"
@@ -718,10 +716,6 @@ as you are alive at the end of the round.]]
 L.info_popup_mercenary = [[You are {role}! Try to survive and help your {innocent} friends!
 
 Press {menukey} to receive your equipment!]]
-
-L.info_popup_bodysnatcher = [[You are {role}! {traitors} think you are {ajester} and you
-deal no damage. Use your body snatching device on a corpse
-to take their role and join the fight!]]
 
 L.info_popup_veteran = [[You are {role}! You work best under pressure.
 If you are the last {innocent} player alive you will
@@ -1279,7 +1273,6 @@ L.ev_promote = "{player} was promoted to {detective}"
 L.ev_clown = "The clown, {player}, went on a rampage"
 L.ev_drunk = "{player} remembered they are {team}"
 L.ev_haunt = "{victim} started haunting {attacker}"
-L.ev_bodysnatch = "{attacker} bodysnatched {role}, {victim}"
 L.ev_infect = "{victim} infected {attacker}"
 
 -- Role Weapons Configuration

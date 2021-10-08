@@ -12,8 +12,6 @@ function GM:PlayerCanPickupWeapon(ply, wep)
     -- Disallow picking up for ammo
     if ply:HasWeapon(wep:GetClass()) then
         return false
-    elseif not ply:GetBodysnatcher() and wep:GetClass() == "weapon_bod_bodysnatch" then
-        return false
     elseif not ply:CanCarryWeapon(wep) then
         return false
     elseif IsEquipment(wep) and wep.IsDropped and (not ply:KeyDown(IN_USE)) then

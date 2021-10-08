@@ -145,21 +145,6 @@ net.Receive("TTT_PhantomHaunt", function(len)
     })
 end)
 
-net.Receive("TTT_ScoreBodysnatch", function(len)
-    local victim = net.ReadString()
-    local attacker = net.ReadString()
-    local role = net.ReadString()
-    local vicsid = net.ReadString()
-    CLSCORE:AddEvent({
-        id = EVENT_BODYSNATCH,
-        vic = victim,
-        att = attacker,
-        role = role,
-        sid64 = vicsid,
-        bonus = 2
-    })
-end)
-
 net.Receive("TTT_ParasiteInfect", function(len)
     local victim = net.ReadString()
     local attacker = net.ReadString()
@@ -557,10 +542,8 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                         finalRole = startingRole
                     end
 
-                    -- Keep the original role icon for the Bodysnatcher
-                    if startingRole ~= ROLE_BODYSNATCHER then
-                        roleFileName = ROLE_STRINGS_SHORT[finalRole]
-                    end
+                    -- Update the icon to use the final role, in case it changed
+                    roleFileName = ROLE_STRINGS_SHORT[finalRole]
                     roleColor = ROLE_COLORS[finalRole]
                     if ply:IsInnocent() then
                         if ply:GetNWBool("WasBeggar", false) then

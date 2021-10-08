@@ -209,7 +209,7 @@ hook.Add("TTTTutorialRoleText", "Vampire_TTTTutorialRoleText", function(role, ti
         local roleTeam = player.GetRoleTeam(ROLE_VAMPIRE, true)
         local roleTeamString, roleTeamColor = GetRoleTeamInfo(roleTeam, true)
 
-        local html = "The " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " is a member of the <span style='color: rgb(" .. roleTeamColor.r .. ", " .. roleTeamColor.g .. ", " .. roleTeamColor.b .. ")'>" .. roleTeamString .. "</span> team."
+        local html = "The " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " is a member of the <span style='color: rgb(" .. roleTeamColor.r .. ", " .. roleTeamColor.g .. ", " .. roleTeamColor.b .. ")'>" .. roleTeamString:lower() .. " team</span>."
 
         -- Draining
         html = html .. "<span style='display: block; margin-top: 10px;'>They can heal themselves by <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>draining blood</span> from "
