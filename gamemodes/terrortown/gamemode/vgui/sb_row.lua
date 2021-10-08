@@ -112,7 +112,7 @@ function GM:TTTScoreboardRowColorForPlayer(ply)
 
     if ply:GetDetectiveLike() then
         return ply:GetRole()
-    elseif ply:IsClown() and ply:GetNWBool("KillerClownActive", false) then
+    elseif ply:IsClown() and ply:IsRoleActive() then
         return ROLE_CLOWN
     end
 

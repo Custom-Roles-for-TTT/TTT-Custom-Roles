@@ -298,7 +298,6 @@ local function GetWinTitle(wintype)
     local wintitles = {
         [WIN_INNOCENT] = { txt = "hilite_win_role_plural", params = { role = ROLE_STRINGS_PLURAL[ROLE_INNOCENT]:upper() }, c = ROLE_COLORS[ROLE_INNOCENT] },
         [WIN_TRAITOR] = { txt = "hilite_win_role_plural", params = { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]:upper() }, c = ROLE_COLORS[ROLE_TRAITOR] },
-        [WIN_CLOWN] = { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_CLOWN]:upper() }, c = ROLE_COLORS[ROLE_JESTER] },
         [WIN_MONSTER] = { txt = "hilite_win_role_plural", params = { role = "MONSTERS" }, c = GetRoleTeamColor(ROLE_TEAM_MONSTER) }
     }
     local title = wintitles[wintype]

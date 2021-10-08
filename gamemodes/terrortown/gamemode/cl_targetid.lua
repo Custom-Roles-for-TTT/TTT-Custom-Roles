@@ -96,16 +96,9 @@ function GM:PostDrawTranslucentRenderables()
             local showJester = (v:ShouldActLikeJester() or ((v:GetTraitor() or v:GetInnocent()) and hideBeggar) or hideBodysnatcher) and not client:ShouldHideJesters()
             local glitchMode = GetGlobalInt("ttt_glitch_mode", 0)
 
-            -- Only show the "KILL" target if the setting is enabled
-            local showKillIcon = (client:IsClown() and client:GetNWBool("KillerClownActive", false) and GetGlobalBool("ttt_clown_show_target_icon", false))
-                                    and not showJester
-
             -- Allow other addons (and external roles) to determine if the "KILL" icon should show
-            local newShowKillIcon = hook.Run("TTTTargetIDPlayerKillIcon", v, client, showKillIcon, showJester)
-            if type(newShowKillIcon) == "boolean" then
-                showKillIcon = newShowKillIcon
-            end
-
+            -- NOTE: Leave the permanent 'false' parameter to make sure we don't break external hook usage
+            local showKillIcon = hook.Run("TTTTargetIDPlayerKillIcon", v, client, false, showJester)
             if showKillIcon and not client:IsSameTeam(v) then -- If we are showing the "KILL" icon this should take priority over role icons
                 render.SetMaterial(indicator_mat_roleback_noz)
                 render.DrawQuadEasy(pos, dir, 8, 8, ROLE_COLORS_SPRITE[client:GetRole()], 180) -- Use the colour of whatever role the player currently is for the "KILL" icon
@@ -123,8 +116,6 @@ function GM:PostDrawTranslucentRenderables()
                     role = v:GetRole()
                 elseif v:GetDetectiveLike() and not (v:GetImpersonator() and client:IsTraitorTeam()) then
                     role = GetDetectiveIconRole(false)
-                elseif v:GetClown() and v:GetNWBool("KillerClownActive", false) and not GetGlobalBool("ttt_clown_hide_when_active", false) then
-                    role = ROLE_CLOWN
                 end
                 if not hide_roles then
                     if client:IsTraitorTeam() then
@@ -159,7 +150,7 @@ function GM:PostDrawTranslucentRenderables()
                             else
                                 role = v:GetNWInt("GlitchBluff", ROLE_TRAITOR)
                             end
-                        -- Disable "No Z" for other icons like the Clown and Detective-like roles
+                        -- Disable "No Z" for other icons like the Detective-like roles
                         else
                             noz = false
                         end
@@ -309,7 +300,6 @@ function GM:HUDDrawTargetID()
     local target_glitch = false
 
     local target_jester = false
-    local target_clown = false
 
     local target_monster = false
     local target_independent = false
@@ -409,9 +399,6 @@ function GM:HUDDrawTargetID()
 
         target_detective = GetRoundState() > ROUND_PREP and (ent:IsDetective() or ((ent:IsDeputy() or (ent:IsImpersonator() and not client:IsTraitorTeam())) and ent:GetNWBool("HasPromotion", false)))
         target_special_detective = GetRoundState() > ROUND_PREP and ent:IsDetectiveTeam() and not target_detective
-        if not GetGlobalBool("ttt_clown_hide_when_active", false) then
-            target_clown = GetRoundState() > ROUND_PREP and ent:IsClown() and ent:GetNWBool("KillerClownActive", false)
-        end
 
         if client:IsRevenger() then
             target_revenger_lover = (ent:SteamID64() == client:GetNWString("RevengerLover", ""))
@@ -451,7 +438,7 @@ function GM:HUDDrawTargetID()
 
     local w, h = 0, 0 -- text width/height, reused several times
 
-    local ring_visible = target_traitor or target_special_traitor or target_detective or target_special_detective or target_glitch or target_jester or target_clown or target_independent or target_monster
+    local ring_visible = target_traitor or target_special_traitor or target_detective or target_special_detective or target_glitch or target_jester or target_independent or target_monster
 
     local new_visible, color_override = hook.Run("TTTTargetIDPlayerRing", ent, client, ring_visible)
     if type(new_visible) == "boolean" then ring_visible = new_visible end
@@ -482,8 +469,6 @@ function GM:HUDDrawTargetID()
             surface.SetDrawColor(GetRoleTeamColor(ROLE_TEAM_INDEPENDENT, "radar"))
         elseif target_jester then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_JESTER])
-        elseif target_clown then
-            surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_CLOWN])
         end
         surface.DrawTexturedRect(x - 32, y - 32, 64, 64)
     end
@@ -633,9 +618,6 @@ function GM:HUDDrawTargetID()
     elseif target_jester then
         text = string.upper(ROLE_STRINGS[ROLE_JESTER])
         col = ROLE_COLORS_RADAR[ROLE_JESTER]
-    elseif target_clown then
-        text = string.upper(ROLE_STRINGS[ROLE_CLOWN])
-        col = ROLE_COLORS_RADAR[ROLE_CLOWN]
     elseif target_monster then
         text = string.upper(ROLE_STRINGS[target_monster])
         col = GetRoleTeamColor(ROLE_TEAM_MONSTER, "radar")

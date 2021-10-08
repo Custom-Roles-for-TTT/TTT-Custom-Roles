@@ -130,8 +130,6 @@ function plymeta:CanLootCredits(active_only)
 end
 
 function plymeta:ShouldActLikeJester()
-    if self:IsClown() then return not self:GetNWBool("KillerClownActive", false) end
-
     -- Check if this role has an external definition for "ShouldActLikeJester" and use that
     local role = self:GetRole()
     if ROLE_SHOULD_ACT_LIKE_JESTER[role] then return ROLE_SHOULD_ACT_LIKE_JESTER[role](self) end
@@ -167,7 +165,6 @@ function plymeta:IsActiveCustom() return self:IsCustom() and self:IsActive() end
 function plymeta:IsActiveShopRole() return self:IsShopRole() and self:IsActive() end
 function plymeta:IsActiveDetectiveLike() return self:IsActive() and self:IsDetectiveLike() end
 function plymeta:IsRoleActive()
-    if self:IsClown() then return self:GetNWBool("KillerClownActive", false) end
     if self:IsVeteran() then return self:GetNWBool("VeteranActive", false) end
     if self:IsDeputy() or self:IsImpersonator() then return self:GetNWBool("HasPromotion", false) end
     if self:IsOldMan() then return self:GetNWBool("AdrenalineRush", false) end
@@ -435,6 +432,40 @@ if CLIENT then
         end
     end)
 
+    -- Jester team confetti
+    local confetti = Material("confetti.png")
+    function plymeta:Celebrate(snd, show_confetti)
+        if snd ~= nil then
+            self:EmitSound(snd)
+        end
+
+        if not show_confetti then return end
+
+        local pos = self:GetPos() + Vector(0, 0, self:OBBMaxs().z)
+        if self.GetShootPos then
+            pos = self:GetShootPos()
+        end
+
+        local velMax = 200
+        local gravMax = 50
+        local gravity = Vector(math.random(-gravMax, gravMax), math.random(-gravMax, gravMax), math.random(-gravMax, 0))
+
+        --Handles particles
+        local emitter = ParticleEmitter(pos, true)
+        for _ = 1, 150 do
+            local p = emitter:Add(confetti, pos)
+            p:SetStartSize(math.random(6, 10))
+            p:SetEndSize(0)
+            p:SetAngles(Angle(math.random(0, 360), math.random(0, 360), math.random(0, 360)))
+            p:SetAngleVelocity(Angle(math.random(5, 50), math.random(5, 50), math.random(5, 50)))
+            p:SetVelocity(Vector(math.random(-velMax, velMax), math.random(-velMax, velMax), math.random(-velMax, velMax)))
+            p:SetColor(255, 255, 255)
+            p:SetDieTime(math.random(4, 7))
+            p:SetGravity(gravity)
+            p:SetAirResistance(125)
+        end
+        emitter:Finish()
+    end
 else
     -- SERVER
 

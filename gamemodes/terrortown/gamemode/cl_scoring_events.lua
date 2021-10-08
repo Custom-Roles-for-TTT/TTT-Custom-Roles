@@ -39,7 +39,6 @@ local traitor_icon = Material("icon16/user_red.png")
 local heart_icon = Material("icon16/heart.png")
 local disconnect_icon = Material("icon16/disconnect.png")
 local promotion_icon = Material("icon16/award_star_add.png")
-local clown_icon = Material("icon16/emoticon_evilgrin.png")
 local drunk_icon = Material("icon16/drink_empty.png")
 local haunt_icon = Material("icon16/group.png")
 local info_icon = Material("icon16/information.png")
@@ -59,8 +58,6 @@ Event(EVENT_FINISH,
                      return PT("ev_win_traitor", { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]:lower() })
                   elseif e.win == WIN_INNOCENT then
                      return PT("ev_win_inno", { role = ROLE_STRINGS_PLURAL[ROLE_INNOCENT]:lower() })
-                  elseif e.win == WIN_CLOWN then
-                     return PT("ev_win_clown", { role = ROLE_STRINGS[ROLE_CLOWN]:lower() })
                   elseif e.win == WIN_OLDMAN then
                      return PT("ev_win_oldman", { role = ROLE_STRINGS[ROLE_OLDMAN]:lower() })
                   elseif e.win == WIN_MONSTER then
@@ -84,8 +81,6 @@ Event(EVENT_FINISH,
                      role_string = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]
                   elseif e.win == WIN_INNOCENT then
                      role_string = ROLE_STRINGS_PLURAL[ROLE_INNOCENT]
-                  elseif e.win == WIN_CLOWN then
-                     role_string = ROLE_STRINGS[ROLE_CLOWN]
                   elseif e.win == WIN_OLDMAN then
                      role_string = ROLE_STRINGS[ROLE_OLDMAN]
                      win_string = "ev_win_icon_also"
@@ -364,14 +359,6 @@ Event(EVENT_PROMOTION, {
     end,
     icon = function(e)
         return promotion_icon, "Promotion"
-    end})
-
-Event(EVENT_CLOWNACTIVE, {
-    text = function(e)
-        return PT("ev_clown", {player = e.ply})
-    end,
-    icon = function(e)
-        return clown_icon, "Killer Clown"
     end})
 
 Event(EVENT_DRUNKSOBER, {

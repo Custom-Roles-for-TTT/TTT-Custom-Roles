@@ -353,6 +353,13 @@ Methods available when called from a Player object (within the defined realm)
 *Realm:* Server\
 *Added in:* 1.1.9
 
+**plymeta:Celebrate(snd, showConfetti)** - Plays a celebration effect (sound and or confetti) at the player's location.\
+*Realm:* Client\
+*Added in:* 1.3.1\
+*Parameters:*
+- *snd* - What sound to play (if any) as part of this celebration
+- *showConfetti* - Whether to show confetti as part of this celebration
+
 **plymeta:Is{RoleName}()/plymeta:Get{RoleName}()** - Dynamically created functions for each role that returns whether the player is that role. For example: `plymeta:IsTraitor()` and `plymeta:IsPhantom()` return whether the player is a traitor or a phantom, respectively.\
 *Realm:* Client and Server\
 *Added in:* Whenever each role is added
@@ -1108,6 +1115,18 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 **TTTUpdateRoleState()** - Called after globals are synced but but before role colors and strings are set. Can be used to update role states (team membership) and role weapon (buyable, loadout, etc.) states based on configurations.\
 *Realm:* Client and Server\
 *Added in:* 1.2.7
+
+**TTTWinCheckBlocks(winBlocks)** - Called after the `TTTCheckForWins` has already been called, allowing for an addon to block a win. Used for roles like the clown and the drunk to have them activate when the round would normally end the first time.\
+*Realm:* Server\
+*Added in:* 1.3.1\
+*Parameters:*
+- *winBlocks* - The table of callback functions that are given the current win type and return either the same win type they are given or a different win type if it should be changed. The callback function should **always** return a value.
+
+**TTTWinCheckComplete(win)** - Called after a win condition has been set and right before the round eds. Used for roles like the old man that perform some logic before the end of the round without changing the outcome.\
+*Realm:* Server\
+*Added in:* 1.3.1\
+*Parameters:*
+- *win* - The win type that the round is about to end with
 
 ## SWEPs
 Changes made to SWEPs (the data structure used when defining new weapons)

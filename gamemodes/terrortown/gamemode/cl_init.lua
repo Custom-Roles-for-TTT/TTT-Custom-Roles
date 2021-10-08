@@ -556,64 +556,19 @@ function GM:OnEntityCreated(ent)
     return self.BaseClass.OnEntityCreated(self, ent)
 end
 
--- Clown and Jester confetti
-local confetti = Material("confetti.png")
-local function Celebrate(ply, sound, show_confetti)
-    if not IsValid(ply) then return end
-    if sound ~= nil then
-        ply:EmitSound(sound)
-    end
-
-    if not show_confetti then return end
-
-    local pos = ply:GetPos() + Vector(0, 0, ply:OBBMaxs().z)
-    if ply.GetShootPos then
-        pos = ply:GetShootPos()
-    end
-
-    local velMax = 200
-    local gravMax = 50
-    local gravity = Vector(math.random(-gravMax, gravMax), math.random(-gravMax, gravMax), math.random(-gravMax, 0))
-
-    --Handles particles
-    local emitter = ParticleEmitter(pos, true)
-    for _ = 1, 150 do
-        local p = emitter:Add(confetti, pos)
-        p:SetStartSize(math.random(6, 10))
-        p:SetEndSize(0)
-        p:SetAngles(Angle(math.random(0, 360), math.random(0, 360), math.random(0, 360)))
-        p:SetAngleVelocity(Angle(math.random(5, 50), math.random(5, 50), math.random(5, 50)))
-        p:SetVelocity(Vector(math.random(-velMax, velMax), math.random(-velMax, velMax), math.random(-velMax, velMax)))
-        p:SetColor(255, 255, 255)
-        p:SetDieTime(math.random(4, 7))
-        p:SetGravity(gravity)
-        p:SetAirResistance(125)
-    end
-    emitter:Finish()
-end
-
 net.Receive("TTT_JesterDeathCelebration", function()
     local ent = net.ReadEntity()
     local play_sound = net.ReadBool()
     local show_confetti = net.ReadBool()
 
-    local sound = nil
+    if not IsPlayer(ent) then return end
+
+    local snd = nil
     if play_sound then
-        sound = "birthday.wav"
+        snd = "birthday.wav"
     end
 
-    Celebrate(ent, sound, show_confetti)
-end)
-
-net.Receive("TTT_ClownActivate", function()
-    local ent = net.ReadEntity()
-    Celebrate(ent, "clown.wav", true)
-
-    local name = ent:Nick()
-    CLSCORE:AddEvent({
-        id = EVENT_CLOWNACTIVE,
-        ply = name
-    })
+    ent:Celebrate(snd, show_confetti)
 end)
 
 -- Hit Markers

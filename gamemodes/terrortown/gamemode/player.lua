@@ -1380,12 +1380,6 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
                 dmginfo:ScaleDamage(0)
             end
 
-            -- Clowns deal extra damage when they are active
-            if att:IsClown() and att:GetNWBool("KillerClownActive", false) then
-                local bonus = GetConVar("ttt_clown_damage_bonus"):GetFloat()
-                dmginfo:ScaleDamage(1 + bonus)
-            end
-
             -- Deputies deal less damage before they are promoted
             if att:IsDeputy() and not att:GetNWBool("HasPromotion", false) then
                 local penalty = GetConVar("ttt_deputy_damage_penalty"):GetFloat()

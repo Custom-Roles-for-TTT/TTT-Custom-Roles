@@ -31,6 +31,8 @@
 ### Developer
 - Added ability to define a role as on that wins passively (like the old man)
 - Added parameter to player.AreTeamsLiving to ignore players who win passively (like the old man)
+- Added TTTWinCheckBlocks and TTTWinCheckComplete hooks to allow manipulating and reacting to the win type
+- Added plymeta:Celebrate to celebrate with sound and or confetti
 - Changed JesterTeamKilledNotification to be globally accessible
 - Renamed `SWEP.BoughtBuy` to `SWEP.BoughtBy`
 - Removed deprecated global ShouldHideJesters. Use plymeta:ShouldHideJesters instead

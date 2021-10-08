@@ -224,13 +224,6 @@ CreateConVar("ttt_jesters_visible_to_traitors", "1")
 CreateConVar("ttt_jesters_visible_to_monsters", "1")
 CreateConVar("ttt_jesters_visible_to_independents", "1")
 
-CreateConVar("ttt_clown_damage_bonus", "0")
-CreateConVar("ttt_clown_activation_credits", "0")
-CreateConVar("ttt_clown_hide_when_active", "0")
-CreateConVar("ttt_clown_show_target_icon", "0")
-CreateConVar("ttt_clown_heal_on_activate", "0")
-CreateConVar("ttt_clown_heal_bonus", "0")
-
 -- Independent role properties
 CreateConVar("ttt_independents_trigger_traitor_testers", "0")
 CreateConVar("ttt_independents_update_scoreboard", "0")
@@ -388,7 +381,6 @@ util.AddNetworkString("TTT_Radar")
 util.AddNetworkString("TTT_Spectate")
 util.AddNetworkString("TTT_TeleportMark")
 util.AddNetworkString("TTT_ClearRadarExtras")
-util.AddNetworkString("TTT_ClownActivate")
 util.AddNetworkString("TTT_DrawHitMarker")
 util.AddNetworkString("TTT_CreateBlood")
 util.AddNetworkString("TTT_OpenMixer")
@@ -581,9 +573,6 @@ function GM:SyncGlobals()
     SetGlobalBool("ttt_jesters_visible_to_traitors", GetConVar("ttt_jesters_visible_to_traitors"):GetBool())
     SetGlobalBool("ttt_jesters_visible_to_monsters", GetConVar("ttt_jesters_visible_to_monsters"):GetBool())
     SetGlobalBool("ttt_jesters_visible_to_independents", GetConVar("ttt_jesters_visible_to_independents"):GetBool())
-
-    SetGlobalBool("ttt_clown_show_target_icon", GetConVar("ttt_clown_show_target_icon"):GetBool())
-    SetGlobalBool("ttt_clown_hide_when_active", GetConVar("ttt_clown_hide_when_active"):GetBool())
 
     SetGlobalBool("ttt_independents_update_scoreboard", GetConVar("ttt_independents_update_scoreboard"):GetBool())
 
@@ -793,7 +782,6 @@ function PrepareRound()
         v:SetNWString("RevengerKiller", "")
         v:SetNWBool("WasDrunk", false)
         v:SetNWBool("WasHypnotised", false)
-        v:SetNWBool("KillerClownActive", false)
         v:SetNWBool("HasPromotion", false)
         v:SetNWBool("VeteranActive", false)
         v:SetNWBool("Infected", false)
@@ -1159,9 +1147,6 @@ function PrintResultMessage(type)
     elseif type == WIN_INNOCENT then
         LANG.Msg("win_innocent", { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR] })
         ServerLog("Result: " .. ROLE_STRINGS_PLURAL[ROLE_INNOCENT] .. " win.\n")
-    elseif type == WIN_CLOWN then
-        LANG.Msg("win_clown", { role = ROLE_STRINGS_PLURAL[ROLE_CLOWN] })
-        ServerLog("Result: " .. ROLE_STRINGS[ROLE_CLOWN] .. " wins.\n")
     elseif type == WIN_MONSTER then
         local monster_role = GetWinningMonsterRole()
         -- If it wasn't a special kind of monster that won (zombie or vampire) use the "Monsters Win" label
@@ -1279,51 +1264,6 @@ local function HandleOldManWinChecks(win_type)
 end
 
 local unblockable_wins = {WIN_TIMELIMIT}
-local function HandleClownWinBlock(win_type)
-    if win_type == WIN_NONE then return win_type end
-    if table.HasValue(unblockable_wins, win_type) then return win_type end
-
-    local clown = player.GetLivingRole(ROLE_CLOWN)
-    if not IsPlayer(clown) then return win_type end
-
-    local killer_clown_active = clown:IsRoleActive()
-    if not killer_clown_active then
-        clown:SetNWBool("KillerClownActive", true)
-        clown:PrintMessage(HUD_PRINTTALK, "KILL THEM ALL!")
-        clown:PrintMessage(HUD_PRINTCENTER, "KILL THEM ALL!")
-        clown:AddCredits(GetConVar("ttt_clown_activation_credits"):GetInt())
-        if GetConVar("ttt_clown_heal_on_activate"):GetBool() then
-            local heal_bonus = GetConVar("ttt_clown_heal_bonus"):GetInt()
-            local health = clown:GetMaxHealth() + heal_bonus
-
-            clown:SetHealth(health)
-            if heal_bonus > 0 then
-                clown:PrintMessage(HUD_PRINTTALK, "You have been fully healed (with a bonus)!")
-            else
-                clown:PrintMessage(HUD_PRINTTALK, "You have been fully healed!")
-            end
-        end
-        net.Start("TTT_ClownActivate")
-        net.WriteEntity(clown)
-        net.Broadcast()
-
-        -- Give the clown their shop items if purchase was delayed
-        if clown.bought and GetConVar("ttt_clown_shop_delay"):GetBool() then
-            clown:GiveDelayedShopItems()
-        end
-
-        return WIN_NONE
-    end
-
-    -- Clown wins if they are the only one left
-    local innocent_alive, traitor_alive, indep_alive, monster_alive, _ = player.AreTeamsLiving(true)
-    if not traitor_alive and not innocent_alive and not monster_alive and not indep_alive then
-        return WIN_CLOWN
-    end
-
-    return WIN_NONE
-end
-
 local function HandleDrunkWinBlock(win_type)
     if win_type == WIN_NONE then return win_type end
     if table.HasValue(unblockable_wins, win_type) then return win_type end
@@ -1377,12 +1317,21 @@ local function WinChecker()
             end
 
             -- Handle role-specific checks
+            local win_blocks = {}
+            hook.Run("TTTWinCheckBlocks", win_blocks)
+
+            for _, win_block in ipairs(win_blocks) do
+                win = win_block(win)
+            end
+
+            -- TODO: Move these to role-specific files
             win = HandleDrunkWinBlock(win)
-            win = HandleClownWinBlock(win)
             HandleOldManWinChecks(win)
 
             -- If, after all that, we have a win condition then end the round
             if win ~= WIN_NONE then
+                hook.Run("TTTWinCheckComplete", win)
+
                 timer.Simple(0.5, function() EndRound(win) end) -- Slight delay to make sure alternate winners go through before scoring
             end
         end

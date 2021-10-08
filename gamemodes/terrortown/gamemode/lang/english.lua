@@ -35,7 +35,6 @@ L.win_prevented = "Map was prevented from ending the round."
 L.win_time = "Time has run out. The {role} win."
 L.win_traitor = "The {role} have won!"
 L.win_innocent = "The {role} have been defeated!"
-L.win_clown = "The {role} has murdered you all!"
 L.win_showreport = "Let's look at the round report for {num} seconds."
 L.win_monster = "The monsters have taken over!"
 
@@ -701,11 +700,6 @@ be able to track down their killer and get your revenge.]]
 L.info_popup_drunk = [[You are {role}!  You have forgotten what team you are on!
 Wait until you sober up and remember. Try to lay low in the meantime.]]
 
-L.info_popup_clown = [[You are {role}! {traitors} think you are {ajester} and you
-deal no damage. However if one team would win the round instead you
-become hostile, are revealed to all players and can deal damage as
-normal. Be the last player standing to win.]]
-
 L.info_popup_deputy = [[You are {role}! If the {detective} dies you will take
 over and gain the ability to buy shop items and search bodies.]]
 
@@ -1009,7 +1003,6 @@ L.ev_spawn = "{player} spawned as {a} {role}"
 L.ev_role_changed = "{player} changed roles to {a} {role}"
 L.ev_win_traitor = "The dastardly {role} won the round!"
 L.ev_win_inno = "The lovable {role} won the round!"
-L.ev_win_clown = "The vicious {role} won the round!"
 L.ev_win_oldman = "The {role} has somehow survived and also won the round!"
 L.ev_win_monster = "The evil monsters have won the round!"
 L.ev_win_time = "The {role} ran out of time and lost!"
@@ -1270,7 +1263,6 @@ L.ev_hypno = "{victim} was hypnotised"
 L.ev_defi = "{victim} was respawned"
 L.ev_disco = "{victim} disconnected"
 L.ev_promote = "{player} was promoted to {detective}"
-L.ev_clown = "The clown, {player}, went on a rampage"
 L.ev_drunk = "{player} remembered they are {team}"
 L.ev_haunt = "{victim} started haunting {attacker}"
 L.ev_infect = "{victim} infected {attacker}"
