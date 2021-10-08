@@ -1854,10 +1854,10 @@ function SelectRoles()
 
         -- Independents
         [ROLE_MADSCIENTIST] = function() return INDEPENDENT_ROLES[ROLE_ZOMBIE] end,
-        [ROLE_DRUNK] = function() return not clown_only  end,
+        [ROLE_DRUNK] = function() return not clown_only end,
 
         -- Jesters
-        [ROLE_CLOWN] = function() return not drunk_only  end
+        [ROLE_CLOWN] = function() return not drunk_only end
     }
     -- Merge in any role predicates
     table.Merge(rolePredicates, ROLE_SELECTION_PREDICATE)
