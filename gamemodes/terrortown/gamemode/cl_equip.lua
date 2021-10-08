@@ -246,7 +246,7 @@ end
 
 local function CanCarryWeapon(item)
     local client = LocalPlayer()
-    -- Don't allow the clown to buy any weapon that has a kind matching one of the weapons they've already bought
+    -- Don't allow delayed shop roles to buy any weapon that has a kind matching one of the weapons they've already bought
     if item.kind and client.bought and client:ShouldDelayShopPurchase() then
         for _, id in ipairs(client.bought) do
             local wep = weapons.GetStored(id)
@@ -261,7 +261,7 @@ end
 
 local function HasEquipmentItem(item)
     local client = LocalPlayer()
-    -- Don't allow the clown to buy the same equipment item twice if delayed acceptance is enabled
+    -- Don't allow the delayed shop roles to buy the same equipment item twice if delayed acceptance is enabled
     if client.bought and client:ShouldDelayShopPurchase() then
         return table.HasValue(client.bought, tostring(item.id))
     end
