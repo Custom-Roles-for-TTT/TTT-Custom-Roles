@@ -245,12 +245,12 @@ function SWEP:DoKill()
     dmginfo:SetDamagePosition(attacker:GetPos())
     self.TargetEntity:TakeDamageInfo(dmginfo)
 
+    self:DoHeal(true)
+    self:DropBones()
+
     -- Remove the body
     local rag = self.TargetEntity.server_ragdoll or self.TargetEntity:GetRagdollEntity()
     SafeRemoveEntity(rag)
-
-    self:DoHeal(true)
-    self:DropBones()
 
     local amt = vampire_drain_credits:GetInt()
     if amt > 0 then
@@ -395,8 +395,9 @@ function SWEP:Think()
                         self:DoKill()
                     end
                 else
-                    SafeRemoveEntity(self.TargetEntity)
+                    self:DropBones()
                     self:DoHeal()
+                    SafeRemoveEntity(self.TargetEntity)
 
                     -- Not actually an error, but it resets the things we want
                     self:FireError()

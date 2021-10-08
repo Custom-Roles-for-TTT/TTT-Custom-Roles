@@ -23,6 +23,7 @@
 - Fixed clown not winning the round when just them and the old man are left alive
 - Fixed error using role colors on the client before the first round preparation phase
 - Fixed "beggar converted to innocent" entry in the round summary Events tab using the "traitor" icon
+- Fixed vampire eating a body not dropping bones
 
 ### Developer
 - Added ability to define a role as on that wins passively (like the old man)
