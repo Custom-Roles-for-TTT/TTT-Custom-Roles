@@ -16,7 +16,7 @@ end)
 -- ROLE WEAPONS --
 ------------------
 
--- Only allow the killer to pick up killer-specific weapons
+-- Only allow the hypnotist to pick up hypnotist-specific weapons
 hook.Add("PlayerCanPickupWeapon", "Hypnotist_Weapons_PlayerCanPickupWeapon", function(ply, wep)
     if not IsValid(wep) or not IsValid(ply) then return end
     if ply:IsSpec() then return false end
