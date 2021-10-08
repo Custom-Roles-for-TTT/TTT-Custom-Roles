@@ -243,6 +243,9 @@ ttt_deputy_damage_penalty                   0       // Damage penalty that the d
 ttt_deputy_credits_starting                 0       // The number of credits a deputy should start with
 ttt_deputy_use_detective_icon               1       // Whether a promoted deputy should show the detective icon over their head instead of the deputy icon
 ttt_deputy_without_detective                0       // Whether a deputy can spawn without a detective in the round. Will automatically promote the deputy when they spawn
+ttt_deputy_shop_active_only                 1       // Whether the deputy's shop should be available only after they activate
+ttt_deputy_shop_delay                       0       // Whether the deputy's purchased shop items should be held until they activate
+ttt_deputy_activation_credits               0       // The number of credits to give the deputy when they are activated
 
 // Mercenary
 ttt_mercenary_credits_starting              1       // The number of credits a mercenary should start with

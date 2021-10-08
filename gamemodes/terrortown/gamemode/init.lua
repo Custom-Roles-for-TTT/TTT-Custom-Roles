@@ -187,6 +187,7 @@ CreateConVar("ttt_revenger_drain_health_to", "-1")
 CreateConVar("ttt_deputy_damage_penalty", "0")
 CreateConVar("ttt_deputy_use_detective_icon", "1")
 CreateConVar("ttt_deputy_without_detective", "0")
+CreateConVar("ttt_deputy_activation_credits", "0")
 
 CreateConVar("ttt_veteran_damage_bonus", "0.5")
 CreateConVar("ttt_veteran_full_heal", "1")

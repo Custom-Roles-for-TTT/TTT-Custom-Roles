@@ -97,7 +97,7 @@ function plymeta:CanUseShop()
         return isShopRole
     end
 
-    return isShopRole and (not self:IsDeputy() or self:IsRoleActive())
+    return isShopRole
 end
 function plymeta:ShouldDelayShopPurchase()
     local role = self:GetRole()
@@ -453,6 +453,18 @@ else
 
     function plymeta:HandleDetectiveLikePromotion()
         self:SetNWBool("HasPromotion", true)
+
+        if self:IsDeputy() then
+            local credits = GetConVar("ttt_deputy_activation_credits"):GetInt()
+            if credits > 0 then
+                self:AddCredits(credits)
+            end
+
+            -- Give the deputy their shop items if purchase was delayed
+            if self.bought and GetConVar("ttt_deputy_shop_delay"):GetBool() then
+                self:GiveDelayedShopItems()
+            end
+        end
 
         net.Start("TTT_Promotion")
         net.WriteString(self:Nick())

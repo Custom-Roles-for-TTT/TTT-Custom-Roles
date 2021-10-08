@@ -5,6 +5,9 @@
 
 ### Additions
 - Added tutorial pages for more roles
+- Added ability to allow the deputy to use their shop before activation (disabled by default)
+- Added ability to delay a deputy's shop purchases until they are activated (disabled by default)
+- Added ability to give a deputy some credits when they activate (disabled by default)
 - Added ability to configure the amount of time the various role devices take to be used
   - Bodysnatching Device
   - Hypnotist's Brainwashing Device
