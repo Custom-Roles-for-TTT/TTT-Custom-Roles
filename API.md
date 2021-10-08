@@ -1105,7 +1105,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 
 *Return:* The string value to show on the tutorial page for this role. Can be HTML and will be rendered within a `<div>`
 
-**TTTUpdateRoleState()** - Called after role states and role weapon states have been updated. At this point you can be assured that a role belongs to the team it has been configured to be on.\
+**TTTUpdateRoleState()** - Called after globals are synced but but before role colors and strings are set. Can be used to update role states (team membership) and role weapon (buyable, loadout, etc.) states based on configurations.\
 *Realm:* Client and Server\
 *Added in:* 1.2.7
 
