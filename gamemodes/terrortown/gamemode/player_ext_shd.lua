@@ -664,7 +664,7 @@ function player.LivingCount(ignorePassiveWinners)
     local players_alive = 0
     for _, v in ipairs(player.GetAll()) do
         -- If the player is alive and we're either not ignoring passive winners or this isn't a passive winning role
-        if (v:Alive() and v:IsTerror() and not ignorePassiveWinners or not ROLE_HAS_PASSIVE_WIN[v:GetRole()]) or
+        if (v:Alive() and v:IsTerror() and (not ignorePassiveWinners or not ROLE_HAS_PASSIVE_WIN[v:GetRole()])) or
             -- Handle zombification differently because the player's original role should have no impact on this
             v:GetNWBool("IsZombifying", false) then
             players_alive = players_alive + 1
