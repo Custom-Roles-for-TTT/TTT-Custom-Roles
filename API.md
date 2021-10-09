@@ -591,6 +591,15 @@ Methods available having to do with players but without needing a specific Playe
 - *monster_alive* - Whether there are members of the monster team left alive
 - *jester_alive* - Whether there are members of the jester team left alive
 
+**player.ExecuteAgainstTeamPlayers(roleTeam, detectivesAreInnocent, aliveOnly, callback)** - Executes a callback function against the players that are members of the specified "role team" (see ROLE_TEAM_* global enumeration).\
+*Realm:* Client and Server\
+*Added in:* 1.3.1\
+*Parameters:*
+- *roleTeam* - The "role team" whose members to execute the callback against (see ROLE_TEAM_* global enumeration)
+- *detectivesAreInnocent* - Whether to include members of the detective "role team" in the innocent "role team" to match the logical teams
+- *aliveOnly* - Whether to only include alive players
+- *callback* - The function to execute against each "role team" player. Takes a player as the single argument
+
 **player.GetLivingRole(role)** - Returns a single player that is alive and belongs to the given role (or `nil` if none exist). Useful when trying to get the player belonging to a role that can only occur once in a round.\
 *Realm:* Client and Server\
 *Added in:* 1.2.7\
@@ -603,6 +612,14 @@ Methods available having to do with players but without needing a specific Playe
 *Parameters:*
 - *role* - The role ID in question
 - *detectivesAreInnocent* - Whether to include members of the detective "role team" in the innocent "role team" to match the logical teams
+
+**player.GetTeamPlayers(roleTeam, detectivesAreInnocent, aliveOnly)** - Returns a table containing the players that are members of the specified "role team" (see ROLE_TEAM_* global enumeration).\
+*Realm:* Client and Server\
+*Added in:* 1.3.1\
+*Parameters:*
+- *roleTeam* - The "role team" to find the members of (see ROLE_TEAM_* global enumeration)
+- *detectivesAreInnocent* - Whether to include members of the detective "role team" in the innocent "role team" to match the logical teams
+- *aliveOnly* - Whether to only include alive players
 
 **player.IsRoleLiving(role)** - Returns whether a player belonging to the given role exists and is alive.\
 *Realm:* Client and Server\

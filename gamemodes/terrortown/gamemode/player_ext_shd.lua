@@ -641,6 +641,25 @@ function player.AreTeamsLiving(ignorePassiveWinners)
     return innocent_alive > 0, traitor_alive > 0, indep_alive > 0, monster_alive > 0, jester_alive > 0
 end
 
+function player.ExecuteAgainstTeamPlayers(roleTeam, detectivesAreInnocent, aliveOnly, callback)
+    for _, v in ipairs(player.GetAll()) do
+        if not aliveOnly or (v:Alive() and v:IsTerror()) then
+            local playerTeam = player.GetRoleTeam(v:GetRole(), detectivesAreInnocent)
+            if playerTeam == roleTeam then
+                callback(v)
+            end
+        end
+    end
+end
+
+function player.GetTeamPlayers(roleTeam, detectivesAreInnocent, aliveOnly)
+    local team_players = {}
+    player.ExecuteAgainstTeamPlayers(roleTeam, detectivesAreInnocent, aliveOnly, function(ply)
+        table.insert(team_players, ply)
+    end)
+    return team_players
+end
+
 function player.LivingCount(ignorePassiveWinners)
     local players_alive = 0
     for _, v in ipairs(player.GetAll()) do
