@@ -31,6 +31,7 @@
 ### Developer
 - Added ability to define a role as on that wins passively (like the old man)
 - Added parameter to player.AreTeamsLiving to ignore players who win passively (like the old man)
+- Added player.TeamLivingCount and player.LivingCount to help tracking how many players are alive
 - Added TTTWinCheckBlocks and TTTWinCheckComplete hooks to allow manipulating and reacting to the win type
 - Added plymeta:Celebrate to celebrate with sound and or confetti
 - Changed JesterTeamKilledNotification to be globally accessible

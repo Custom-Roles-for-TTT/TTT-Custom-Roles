@@ -610,6 +610,25 @@ Methods available having to do with players but without needing a specific Playe
 *Parameters:*
 - *role* - The role ID in question
 
+**player.LivingCount(ignorePassiveWinners)** - Returns the number of players left alive.\
+*Realm:* Client and Server\
+*Added in:* 1.3.1\
+*Parameters:*
+- *ignorePassiveWinners* - Whether to ignore roles who win passively (like the old man)
+
+**player.TeamLivingCount(ignorePassiveWinners)** - Returns the number of members of the various teams left alive.\
+*Realm:* Client and Server\
+*Added in:* 1.3.1\
+*Parameters:*
+- *ignorePassiveWinners* - Whether to ignore roles who win passively (like the old man)
+
+*Returns:*
+- *traitor_alive* - The number of members of the traitor team left alive
+- *innocent_alive* - The number of members of the innocent team left alive
+- *indep_alive* - The number of members of the independent team left alive
+- *monster_alive* - The number of members of the monster team left alive
+- *jester_alive* - The number of members of the jester team left alive
+
 ### *Table*
 Methods created to help with the manipulation of tables
 
