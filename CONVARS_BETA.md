@@ -328,6 +328,7 @@ ttt_swapper_credits_starting                0       // The number of credits a s
 ttt_clown_damage_bonus                      0       // Damage bonus that the clown has after being activated (e.g. 0.5 = 50% more damage)
 ttt_clown_activation_credits                0       // The number of credits to give the clown when they are activated
 ttt_clown_hide_when_active                  0       // Whether the clown should be hidden from other players' Target ID (overhead icons) when they are activated. Server or round must be restarted for changes to take effect
+ttt_clown_use_traps_when_active             0       // Whether the clown can see and use traitor traps when they are activated
 ttt_clown_show_target_icon                  0       // Whether the clown has an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect
 ttt_clown_heal_on_activate                  0       // Whether the clown should fully heal when they activate or not
 ttt_clown_heal_bonus                        0       // The amount of bonus health to give the clown if they are healed when they are activated

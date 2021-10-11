@@ -78,6 +78,9 @@ net.Receive("TTT_ClownActivate", function()
     local ent = net.ReadEntity()
     if not IsPlayer(ent) then return end
 
+    -- Set the traitor button availability state to match the setting
+    TRAITOR_BUTTON_ROLES[ROLE_CLOWN] = GetGlobalBool("ttt_clown_use_traps_when_active", false)
+
     ent:Celebrate("clown.wav", true)
 
     local name = ent:Nick()
@@ -85,6 +88,15 @@ net.Receive("TTT_ClownActivate", function()
         id = EVENT_CLOWNACTIVE,
         ply = name
     })
+end)
+
+-------------------
+-- ROLE FEATURES --
+-------------------
+
+hook.Add("TTTPrepareRound", "Clown_RoleFeatures_PrepareRound", function()
+    -- Disable traitor buttons for clown until they are activated (and the setting is enabled)
+    TRAITOR_BUTTON_ROLES[ROLE_CLOWN] = false
 end)
 
 ----------------

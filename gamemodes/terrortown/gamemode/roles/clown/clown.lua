@@ -11,6 +11,7 @@ resource.AddSingleFile("sound/clown.wav")
 CreateConVar("ttt_clown_damage_bonus", "0")
 CreateConVar("ttt_clown_activation_credits", "0")
 CreateConVar("ttt_clown_hide_when_active", "0")
+CreateConVar("ttt_clown_use_traps_when_active", "0")
 CreateConVar("ttt_clown_show_target_icon", "0")
 CreateConVar("ttt_clown_heal_on_activate", "0")
 CreateConVar("ttt_clown_heal_bonus", "0")
@@ -18,6 +19,7 @@ CreateConVar("ttt_clown_heal_bonus", "0")
 hook.Add("TTTSyncGlobals", "Clown_TTTSyncGlobals", function()
     SetGlobalBool("ttt_clown_show_target_icon", GetConVar("ttt_clown_show_target_icon"):GetBool())
     SetGlobalBool("ttt_clown_hide_when_active", GetConVar("ttt_clown_hide_when_active"):GetBool())
+    SetGlobalBool("ttt_clown_use_traps_when_active", GetConVar("ttt_clown_use_traps_when_active"):GetBool())
 end)
 
 ----------------
@@ -58,6 +60,9 @@ local function HandleClownWinBlock(win_type)
             clown:GiveDelayedShopItems()
         end
 
+        -- Enable traitor buttons for them, if that's enabled
+        TRAITOR_BUTTON_ROLES[ROLE_CLOWN] = GetGlobalBool("ttt_clown_use_traps_when_active", false)
+
         return WIN_NONE
     end
 
@@ -79,6 +84,15 @@ hook.Add("TTTPrintResultMessage", "Clown_TTTPrintResultMessage", function(type)
         LANG.Msg("win_clown", { role = ROLE_STRINGS_PLURAL[ROLE_CLOWN] })
         ServerLog("Result: " .. ROLE_STRINGS[ROLE_CLOWN] .. " wins.\n")
     end
+end)
+
+-------------------
+-- ROLE FEATURES --
+-------------------
+
+hook.Add("TTTPrepareRound", "Clown_RoleFeatures_PrepareRound", function()
+    -- Disable traitor buttons for clown until they are activated (and the setting is enabled)
+    TRAITOR_BUTTON_ROLES[ROLE_CLOWN] = false
 end)
 
 -------------------
