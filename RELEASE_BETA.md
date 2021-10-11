@@ -27,6 +27,7 @@
 - Fixed error using role colors on the client before the first round preparation phase
 - Fixed "beggar converted to innocent" entry in the round summary Events tab using the "traitor" icon
 - Fixed vampire eating a body not dropping bones
+- Fixed special detectives (paladin, medium, tracker) not counting as detectives in the ttt_logic_role entity
 
 ### Developer
 - Added ability to define a role as on that wins passively (like the old man)

@@ -26,6 +26,7 @@ function ENT:AcceptInput(name, activator)
             local innocentTest =  false
             local jesterTest = false
             local independentTest = false
+            local detectiveTest = false
             if self.Role == ROLE_TRAITOR and GetRoundState() ~= ROUND_PREP then
                 traitorTest = activator:IsTraitorTeam()
                 jesterTest = activator:IsJesterTeam() and GetConVar("ttt_jesters_trigger_traitor_testers"):GetBool()
@@ -35,10 +36,12 @@ function ENT:AcceptInput(name, activator)
                 innocentTest = activator:IsInnocentTeam()
                 jesterTest = activator:IsJesterTeam() and not GetConVar("ttt_jesters_trigger_traitor_testers"):GetBool()
                 independentTest = activator:IsIndependentTeam() and not GetConVar("ttt_independents_trigger_traitor_testers"):GetBool()
+            elseif self.Role == ROLE_DETECTIVE then
+                detectiveTest = activator:IsDetectiveTeam()
             end
             local specificTest = self.Role == activator:GetRole() and GetRoundState() ~= ROUND_PREP
             local anyTest = self.Role == ROLE_ANY
-            if traitorTest or innocentTest or jesterTest or independentTest or specificTest or anyTest then
+            if traitorTest or innocentTest or jesterTest or independentTest or specificTest or detectiveTest or anyTest then
                 Dev(2, activator, "passed logic_role test of", self:GetName())
                 self:TriggerOutput("OnPass", activator)
             else
