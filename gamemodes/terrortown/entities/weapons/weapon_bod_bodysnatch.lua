@@ -70,12 +70,6 @@ if SERVER then
     CreateConVar("ttt_bodysnatcher_device_time", "5")
 end
 
-if CLIENT then
-    function SWEP:Initialize()
-        self:SetHoldType(self.HoldType)
-    end
-end
-
 function SWEP:SetupDataTables()
     self:NetworkVar("Int", 0, "State")
     self:NetworkVar("Int", 1, "ChargeTime")

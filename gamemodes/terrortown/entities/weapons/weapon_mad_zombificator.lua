@@ -84,7 +84,7 @@ end
 if CLIENT then
     function SWEP:Initialize()
         self:AddHUDHelp("zombificator_help_pri", "zombificator_help_sec", true)
-        self:SetHoldType(self.HoldType)
+        return self.BaseClass.Initialize(self)
     end
 end
 

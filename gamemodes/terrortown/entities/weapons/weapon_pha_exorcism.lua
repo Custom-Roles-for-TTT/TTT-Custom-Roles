@@ -56,7 +56,6 @@ end
 if CLIENT then
     function SWEP:Initialize()
         self:AddHUDHelp("exor_help_pri", "exor_help_sec", true)
-        self:SetHoldType(self.HoldType)
         return self.BaseClass.Initialize(self)
     end
 end

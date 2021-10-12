@@ -57,9 +57,7 @@ if SERVER then
 end
 
 function SWEP:Initialize()
-    self:SetWeaponHoldType(self.HoldType)
     self.CanFire = true
-    self:SetDeploySpeed(self.DeploySpeed)
     self.was_thrown = false
 
     if SERVER then
@@ -70,6 +68,7 @@ function SWEP:Initialize()
         self.ModelEntity = ClientsideModel(self.WorldModel)
         self.ModelEntity:SetNoDraw(true)
     end
+    return self.BaseClass.Initialize(self)
 end
 
 function SWEP:Deploy()

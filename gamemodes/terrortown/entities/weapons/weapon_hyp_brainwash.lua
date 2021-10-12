@@ -86,7 +86,7 @@ end
 if CLIENT then
     function SWEP:Initialize()
         self:AddHUDHelp("brainwash_help_pri", "brainwash_help_sec", true)
-        self:SetHoldType(self.HoldType)
+        return self.BaseClass.Initialize(self)
     end
 end
 

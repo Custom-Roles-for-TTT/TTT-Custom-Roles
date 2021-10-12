@@ -62,7 +62,6 @@ end
 if CLIENT then
     function SWEP:Initialize()
         self:AddHUDHelp("cure_help_pri", "cure_help_sec", true)
-        self:SetHoldType(self.HoldType)
         return self.BaseClass.Initialize(self)
     end
 end

@@ -74,13 +74,13 @@ function SWEP:SetupDataTables()
 end
 
 function SWEP:Initialize()
-    self:SetHoldType(self.HoldType)
     self.lastTickSecond = 0
     self.fading = false
 
     if CLIENT then
         self:AddHUDHelp("Left-click to suck blood", "Right-click to fade", false)
     end
+    return self.BaseClass.Initialize(self)
 end
 
 function SWEP:Holster()

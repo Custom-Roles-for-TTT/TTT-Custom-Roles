@@ -73,8 +73,6 @@ if SERVER then
 end
 
 function SWEP:Initialize()
-    self:SetHoldType(self.HoldType)
-
     if SERVER then
         SetGlobalInt("ttt_zombie_prime_attack_damage", GetConVar("ttt_zombie_prime_attack_damage"):GetInt())
         SetGlobalInt("ttt_zombie_thrall_attack_damage", GetConVar("ttt_zombie_thrall_attack_damage"):GetInt())
@@ -87,6 +85,7 @@ function SWEP:Initialize()
     if CLIENT then
         self:AddHUDHelp("zom_claws_help_pri", "zom_claws_help_sec", true)
     end
+    return self.BaseClass.Initialize(self)
 end
 
 --[[
