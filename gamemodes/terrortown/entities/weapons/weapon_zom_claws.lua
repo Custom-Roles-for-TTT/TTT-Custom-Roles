@@ -57,29 +57,31 @@ SWEP.NextReload = CurTime()
 SWEP.DeploySpeed = 2
 local sound_single = Sound("Weapon_Crowbar.Single")
 
-local zombie_leap = CreateConVar("ttt_zombie_leap_enable", "1")
-local zombie_spit = CreateConVar("ttt_zombie_spit_enable", "1")
+if SERVER then
+    CreateConVar("ttt_zombie_leap_enable", "1")
+    CreateConVar("ttt_zombie_spit_enable", "1")
 
-local zombie_prime_convert_chance = CreateConVar("ttt_zombie_prime_convert_chance", "1")
-local zombie_thrall_convert_chance = CreateConVar("ttt_zombie_thrall_convert_chance", "1")
+    CreateConVar("ttt_zombie_prime_convert_chance", "1")
+    CreateConVar("ttt_zombie_thrall_convert_chance", "1")
 
-local zombie_respawn_health = CreateConVar("ttt_zombie_respawn_health", "100")
+    CreateConVar("ttt_zombie_respawn_health", "100")
 
-local zombie_prime_damage = CreateConVar("ttt_zombie_prime_attack_damage", "65")
-local zombie_thrall_damage = CreateConVar("ttt_zombie_thrall_attack_damage", "45")
-local zombie_prime_delay = CreateConVar("ttt_zombie_prime_attack_delay", "0.7")
-local zombie_thrall_delay = CreateConVar("ttt_zombie_thrall_attack_delay", "1.4")
+    CreateConVar("ttt_zombie_prime_attack_damage", "65")
+    CreateConVar("ttt_zombie_thrall_attack_damage", "45")
+    CreateConVar("ttt_zombie_prime_attack_delay", "0.7")
+    CreateConVar("ttt_zombie_thrall_attack_delay", "1.4")
+end
 
 function SWEP:Initialize()
     self:SetHoldType(self.HoldType)
 
     if SERVER then
-        SetGlobalInt("ttt_zombie_prime_attack_damage", zombie_prime_damage:GetInt())
-        SetGlobalInt("ttt_zombie_thrall_attack_damage", zombie_thrall_damage:GetInt())
-        SetGlobalFloat("ttt_zombie_prime_attack_delay", zombie_prime_delay:GetFloat())
-        SetGlobalFloat("ttt_zombie_thrall_attack_delay", zombie_thrall_delay:GetFloat())
-        SetGlobalBool("ttt_zombie_leap_enable", zombie_leap:GetBool())
-        SetGlobalBool("ttt_zombie_spit_enable", zombie_spit:GetBool())
+        SetGlobalInt("ttt_zombie_prime_attack_damage", GetConVar("ttt_zombie_prime_attack_damage"):GetInt())
+        SetGlobalInt("ttt_zombie_thrall_attack_damage", GetConVar("ttt_zombie_thrall_attack_damage"):GetInt())
+        SetGlobalFloat("ttt_zombie_prime_attack_delay", GetConVar("ttt_zombie_prime_attack_delay"):GetFloat())
+        SetGlobalFloat("ttt_zombie_thrall_attack_delay", GetConVar("ttt_zombie_thrall_attack_delay"):GetFloat())
+        SetGlobalBool("ttt_zombie_leap_enable", GetConVar("ttt_zombie_leap_enable"):GetBool())
+        SetGlobalBool("ttt_zombie_spit_enable", GetConVar("ttt_zombie_spit_enable"):GetBool())
     end
 
     if CLIENT then
@@ -100,7 +102,7 @@ function SWEP:PlayPunchAnimation()
 end
 
 function SWEP:ShouldConvert()
-    local chance = self:GetOwner():IsZombiePrime() and zombie_prime_convert_chance:GetFloat() or zombie_thrall_convert_chance:GetFloat()
+    local chance = self:GetOwner():IsZombiePrime() and GetConVar("ttt_zombie_prime_convert_chance"):GetFloat() or GetConVar("ttt_zombie_thrall_convert_chance"):GetFloat()
     -- Use "less-than" so a chance of 0 really means never
     return math.random() < chance
 end
@@ -174,7 +176,7 @@ function SWEP:PrimaryAttack()
                         hitEnt:SetZombiePrime(false)
                         hitEnt:SpawnForRound(true)
 
-                        local health = zombie_respawn_health:GetInt()
+                        local health = GetConVar("ttt_zombie_respawn_health"):GetInt()
                         hitEnt:SetMaxHealth(health)
                         hitEnt:SetHealth(health)
 
@@ -214,7 +216,7 @@ Jump Attack
 
 function SWEP:SecondaryAttack()
     if SERVER then
-        if not zombie_leap:GetBool() then return end
+        if not GetConVar("ttt_zombie_leap_enable"):GetBool() then return end
         local owner = self:GetOwner()
         if (not self:CanSecondaryAttack()) or owner:IsOnGround() == false then return end
 
@@ -232,7 +234,7 @@ Spit Attack
 
 function SWEP:Reload()
     if CLIENT then return end
-    if not zombie_spit:GetBool() then return end
+    if not GetConVar("ttt_zombie_spit_enable"):GetBool() then return end
     if self.NextReload > CurTime() then return end
     self.NextReload = CurTime() + self.Tertiary.Delay
     self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
