@@ -93,7 +93,10 @@ function SWEP:OnDrop()
 end
 
 function SWEP:OnRemove()
-    self:UnfreezeTarget()
+    if IsPlayer(self.TargetEntity) then
+        self:CancelUnfreeze(self.TargetEntity)
+        self:DoUnfreeze()
+    end
     if SERVER then
         self:Reset()
     end
@@ -182,6 +185,7 @@ function SWEP:Drain(entity)
 end
 
 function SWEP:CancelUnfreeze(entity)
+    if CLIENT then return end
     if not IsPlayer(entity) then return end
     if not IsValid(self:GetOwner()) then return end
     local timerid = "VampUnfreezeDelay_" .. self:GetOwner():Nick() .. "_" .. entity:Nick()
@@ -192,17 +196,20 @@ function SWEP:CancelUnfreeze(entity)
 end
 
 function SWEP:AdjustFreezeCount(ent, adj, def)
+    if CLIENT then return end
     local freeze_count =  math.max(0, ent:GetNWInt("VampireFreezeCount", def) + adj)
     ent:SetNWInt("VampireFreezeCount", freeze_count)
     return freeze_count
 end
 
 function SWEP:DoFreeze()
+    if CLIENT then return end
     self:AdjustFreezeCount(self.TargetEntity, 1, 0)
     self.TargetEntity:Freeze(true)
 end
 
 function SWEP:DoUnfreeze()
+    if CLIENT then return end
     local freeze_count = self:AdjustFreezeCount(self.TargetEntity, -1, 1)
     -- Only unfreeze the target if nobody else is draining them
     if freeze_count == 0 then
@@ -273,6 +280,7 @@ function SWEP:DoHeal(living)
 end
 
 function SWEP:UnfreezeTarget()
+    if CLIENT then return end
     local owner = self:GetOwner()
     if not IsPlayer(self.TargetEntity) then return end
 
