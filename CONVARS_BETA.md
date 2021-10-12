@@ -405,6 +405,8 @@ ttt_oldman_adrenaline_shotgun               1       // Whether the old man is gi
 // Killer
 ttt_killer_knife_enabled                    1       // Whether the killer knife is enabled
 ttt_killer_crowbar_enabled                  1       // Whether the killer throwable crowbar is enabled
+ttt_killer_crowbar_damage                   20      // How much damage the crowbar should do when the killer bashes another player with it
+ttt_killer_crowbar_thrown_damage            50      // How much damage the crowbar should do when the killer throws it at another player
 ttt_killer_smoke_enabled                    1       // Whether the killer smoke is enabled
 ttt_killer_smoke_timer                      60      // Number of seconds before a killer will start to smoke after their last kill
 ttt_killer_show_target_icon                 1       // Whether killers have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect
