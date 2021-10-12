@@ -157,6 +157,11 @@ hook.Add("TTTTutorialRoleText", "Clown_TTTTutorialRoleText", function(role, titl
         end
         html = html .. ".</span>"
 
+        -- Traitor Traps
+        if GetGlobalBool("ttt_clown_use_traps_when_active", false) then
+            html = html .. "<span style='display: block; margin-top: 10px;'><span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>Traitor traps</span> also become available when <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>the " .. ROLE_STRINGS[ROLE_CLOWN] .." is activated</span>.</span>"
+        end
+
         return html
     end
 end)
