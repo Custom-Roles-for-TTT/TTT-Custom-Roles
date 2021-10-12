@@ -1,6 +1,7 @@
 AddCSLuaFile()
 
 if CLIENT then
+    local GetPTranslation = LANG.GetParamTranslation
     SWEP.PrintName = "Parasite Cure"
     SWEP.ShopName = "Fake Parasite Cure"
     SWEP.Slot = 6
@@ -9,9 +10,13 @@ if CLIENT then
     SWEP.ViewModelFOV = 54
 
     SWEP.EquipMenuData = {
-            type =  "Weapon",
-            desc =  [[Use on a player to trick them into thinking you cured the parasite.]]
-        };
+        type =  "item_weapon",
+        desc = function()
+            return GetPTranslation("fake_cure_desc", {
+                parasite = ROLE_STRINGS[ROLE_PARASITE]:lower()
+            })
+        end
+    };
 
     SWEP.Icon = "vgui/ttt/icon_fakecure"
 end

@@ -1,16 +1,21 @@
 AddCSLuaFile()
 
 if CLIENT then
-    SWEP.PrintName = "Phantom Exorcism Device"
+    local GetPTranslation = LANG.GetParamTranslation
+    SWEP.PrintName = "Exorcism Device"
     SWEP.Slot = 6
 
     SWEP.DrawCrosshair = false
     SWEP.ViewModelFOV = 54
 
     SWEP.EquipMenuData = {
-            type =  "Weapon",
-            desc =  [[Use on a player to exorcise a phantom]]
-        };
+        type = "item_weapon",
+        desc = function()
+            return GetPTranslation("exor_desc", {
+                phantom = ROLE_STRINGS[ROLE_PHANTOM]:lower()
+            })
+        end
+    };
 
     SWEP.Icon = "vgui/ttt/icon_exor"
 end

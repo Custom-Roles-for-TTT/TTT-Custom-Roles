@@ -1,6 +1,7 @@
 AddCSLuaFile()
 
 if CLIENT then
+    local GetPTranslation = LANG.GetParamTranslation
     SWEP.PrintName = "Parasite Cure"
     SWEP.Slot = 6
 
@@ -8,11 +9,13 @@ if CLIENT then
     SWEP.ViewModelFOV = 54
 
     SWEP.EquipMenuData = {
-            type =  "Weapon",
-            desc =  [[Use on a player to cure them of parasites.
-
-Using this on a player who is not infected will kill them!]]
-        };
+        type =  "item_weapon",
+        desc = function()
+            return GetPTranslation("cure_desc", {
+                parasites = ROLE_STRINGS_PLURAL[ROLE_PARASITE]:lower()
+            })
+        end
+    };
 
     SWEP.Icon = "vgui/ttt/icon_cure"
 end

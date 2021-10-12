@@ -576,10 +576,14 @@ number of uses is limited.]]
 -- Parasite cure
 L.cure_help_pri = "{primaryfire} to cure another player."
 L.cure_help_sec = "{secondaryfire} to cure yourself."
+L.cure_desc = [[Use on a player to cure them of {parasites}.
+
+Using this on a player who is not infected will kill them!]]
 
 -- Phantom exorcsim
 L.exor_help_pri = "{primaryfire} to cleanse another player."
 L.exor_help_sec = "{secondaryfire} to cleanse yourself."
+L.exor_desc = "Use on a player to exorcise a {phantom}"
 
 -- Brainwashing device
 L.brainwash_help_pri = "Hold {primaryfire} to revive dead body."
@@ -775,13 +779,6 @@ L.info_popup_impersonator = [[You are {role}! {comrades}
 
 If the {detective} dies you will appear to become a new {detective} and gain their
 abilities just like the {deputy}. However you are still working for the {traitors}.
-
-Press {menukey} to receive your special equipment!]]
-
-L.info_popup_quack = [[You are {role}! {comrades}
-
-Try to convince others that you are a real {doctor}! However, your tools harm
-instead of heal. You know that the best cure for any ailment is death.
 
 Press {menukey} to receive your special equipment!]]
 

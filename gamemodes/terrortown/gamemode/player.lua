@@ -1557,12 +1557,6 @@ function GM:EntityTakeDamage(ent, dmginfo)
             end
         end
 
-        -- Quacks are immune to explosions
-        if ent:IsQuack() and dmginfo:IsExplosionDamage() then
-            dmginfo:ScaleDamage(0)
-            dmginfo:SetDamage(0)
-        end
-
         -- Prevent damage from jesters
         if IsPlayer(att) and att:ShouldActLikeJester() then
             dmginfo:ScaleDamage(0)

@@ -152,8 +152,6 @@ CreateConVar("ttt_impersonator_damage_penalty", "0")
 CreateConVar("ttt_impersonator_use_detective_icon", "1")
 CreateConVar("ttt_impersonator_without_detective", "0")
 
-CreateConVar("ttt_quack_phantom_cure", "0")
-
 CreateConVar("ttt_parasite_infection_time", 45)
 CreateConVar("ttt_parasite_infection_transfer", 0)
 CreateConVar("ttt_parasite_infection_transfer_reset", 1)
@@ -562,8 +560,6 @@ function GM:SyncGlobals()
     SetGlobalBool("ttt_traitor_phantom_cure", GetConVar("ttt_traitor_phantom_cure"):GetBool())
 
     SetGlobalBool("ttt_impersonator_use_detective_icon", GetConVar("ttt_impersonator_use_detective_icon"):GetBool())
-
-    SetGlobalBool("ttt_quack_phantom_cure", GetConVar("ttt_quack_phantom_cure"):GetBool())
 
     SetGlobalInt("ttt_parasite_infection_time", GetConVar("ttt_parasite_infection_time"):GetInt())
     SetGlobalBool("ttt_parasite_enabled", GetConVar("ttt_parasite_enabled"):GetBool())

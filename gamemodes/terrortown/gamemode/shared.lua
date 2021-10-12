@@ -1161,20 +1161,14 @@ function UpdateRoleWeaponState()
         paramedic_defib.CanBuy = nil
     end
 
-    -- Phantom
+    -- Phantom Cure
     local phantom_device = weapons.GetStored("weapon_pha_exorcism")
-    local phantom_device_roles = {}
     if GetGlobalBool("ttt_traitor_phantom_cure", false) then
-        table.insert(phantom_device_roles, ROLE_TRAITOR)
-    end
-    if GetGlobalBool("ttt_quack_phantom_cure", false) then
-        table.insert(phantom_device_roles, ROLE_QUACK)
-    end
-
-    if #phantom_device_roles > 0 then
-        phantom_device.CanBuy = phantom_device_roles
-    else
-        table.Empty(phantom_device.CanBuy)
+        if not table.HasValue(phantom_device.CanBuy, ROLE_TRAITOR) then
+            table.insert(phantom_device.CanBuy, ROLE_TRAITOR)
+        end
+    elseif table.HasValue(phantom_device.CanBuy, ROLE_TRAITOR) then
+        table.RemoveByValue(phantom_device.CanBuy, ROLE_TRAITOR)
     end
 
     if SERVER then
@@ -1367,17 +1361,6 @@ DefaultEquipment = {
     },
 
     [ROLE_IMPERSONATOR] = {
-        EQUIP_ARMOR,
-        EQUIP_RADAR,
-        EQUIP_DISGUISE
-    },
-
-    [ROLE_QUACK] = {
-        "weapon_ttt_health_station",
-        "weapon_par_cure",
-        "weapon_pha_exorcism",
-        "weapon_qua_bomb_station",
-        "weapon_qua_fake_cure",
         EQUIP_ARMOR,
         EQUIP_RADAR,
         EQUIP_DISGUISE

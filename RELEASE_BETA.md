@@ -22,6 +22,7 @@
 
 ### Changes
 - Changed vampire fang unfreeze logic to hopefully fix rare case where the target would stay frozen if the vampire was killed
+- Updated Parasite Cures and Phantom Exorcism device to use renamed role strings
 - Removed support for old version of role and shop convars, originally deprecated in v1.0.14
 
 ### Fixes
