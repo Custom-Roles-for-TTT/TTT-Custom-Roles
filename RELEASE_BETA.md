@@ -19,6 +19,7 @@
   - Quack's Fake Parasite Cure
 
 ### Changes
+- Changed vampire fang unfreeze logic to hopefully fix rare case where the target would stay frozen if the vampire was killed
 - Removed support for old version of role and shop convars, originally deprecated in v1.0.14
 
 ### Fixes
