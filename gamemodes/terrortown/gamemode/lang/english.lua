@@ -585,16 +585,9 @@ L.exor_help_pri = "{primaryfire} to cleanse another player."
 L.exor_help_sec = "{secondaryfire} to cleanse yourself."
 L.exor_desc = "Use on a player to exorcise a {phantom}"
 
--- Brainwashing device
-L.brainwash_help_pri = "Hold {primaryfire} to revive dead body."
-L.brainwash_help_sec = "The revived player will become a traitor."
-
 -- Zombification device
 L.zombificator_help_pri = "Hold {primaryfire} to zombify dead body."
 L.zombificator_help_sec = "The revived player will become a zombie."
-
-L.defibrillator_help_pri = "Hold {primaryfire} to revive dead body."
-L.defibrillator_help_sec = "The revived player will respawn on their original team"
 
 -- Ammo names, shown when picked up
 L.ammo_pistol = "9mm ammo"
@@ -718,10 +711,6 @@ Press {menukey} to receive your equipment!]]
 L.info_popup_veteran = [[You are {role}! You work best under pressure.
 If you are the last {innocent} player alive you will
 deal extra damage.]]
-
-L.info_popup_paramedic = [[You are {role}! You can give your fellow {innocents}
-a second chance with your defibrillator. Stay alive
-and bring back your teams strongest player.]]
 
 L.info_popup_madscientist = [[You are {role}! Try to spread your virus to
 everyone! Using your zombification device on a dead

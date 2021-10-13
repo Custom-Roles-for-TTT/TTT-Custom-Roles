@@ -193,10 +193,6 @@ CreateConVar("ttt_veteran_heal_bonus", "0")
 CreateConVar("ttt_veteran_announce", "0")
 CreateConVar("ttt_veteran_activation_credits", "0")
 
-CreateConVar("ttt_paramedic_defib_as_innocent", "0")
-CreateConVar("ttt_paramedic_device_loadout", "1")
-CreateConVar("ttt_paramedic_device_shop", "0")
-
 -- Detective role properties
 CreateConVar("ttt_detective_search_only", "1")
 CreateConVar("ttt_detective_disable_looting", "0")
@@ -546,9 +542,6 @@ function GM:SyncGlobals()
     SetGlobalInt("ttt_phantom_killer_haunt_drop_cost", GetConVar("ttt_phantom_killer_haunt_drop_cost"):GetInt())
 
     SetGlobalBool("ttt_deputy_use_detective_icon", GetConVar("ttt_deputy_use_detective_icon"):GetBool())
-
-    SetGlobalBool("ttt_paramedic_device_loadout", GetConVar("ttt_paramedic_device_loadout"):GetBool())
-    SetGlobalBool("ttt_paramedic_device_shop", GetConVar("ttt_paramedic_device_shop"):GetBool())
 
     SetGlobalBool("ttt_special_detectives_armor_loadout", GetConVar("ttt_special_detectives_armor_loadout"):GetBool())
 

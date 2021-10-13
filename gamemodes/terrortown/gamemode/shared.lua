@@ -1148,19 +1148,6 @@ function UpdateRoleWeaponState()
         table.Empty(fake_cure.CanBuy)
     end
 
-    -- Paramedic
-    local paramedic_defib = weapons.GetStored("weapon_med_defib")
-    if GetGlobalBool("ttt_paramedic_device_loadout", false) then
-        paramedic_defib.InLoadoutFor = table.Copy(paramedic_defib.InLoadoutForDefault)
-    else
-        table.Empty(paramedic_defib.InLoadoutFor)
-    end
-    if GetGlobalBool("ttt_paramedic_device_shop", false) then
-        paramedic_defib.CanBuy = {ROLE_PARAMEDIC}
-    else
-        paramedic_defib.CanBuy = nil
-    end
-
     if SERVER then
         net.Start("TTT_ResetBuyableWeaponsCache")
         net.Broadcast()
@@ -1360,10 +1347,6 @@ DefaultEquipment = {
         EQUIP_ARMOR,
         EQUIP_RADAR,
         EQUIP_DISGUISE
-    },
-
-    [ROLE_PARAMEDIC] = {
-        "weapon_med_defib"
     },
 
     -- non-buyable

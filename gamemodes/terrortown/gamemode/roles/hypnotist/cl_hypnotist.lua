@@ -3,6 +3,10 @@
 ------------------
 
 hook.Add("Initialize", "Hypnotist_Translations_Initialize", function()
+    -- Weapons
+    LANG.AddToLanguage("english", "brainwash_help_pri", "Hold {primaryfire} to revive dead body.")
+    LANG.AddToLanguage("english", "brainwash_help_sec", "The revived player will become a traitor.")
+
     -- Popup
     LANG.AddToLanguage("english", "info_popup_hypnotist", [[You are {role}! {comrades}
 
