@@ -719,11 +719,6 @@ L.info_popup_veteran = [[You are {role}! You work best under pressure.
 If you are the last {innocent} player alive you will
 deal extra damage.]]
 
-L.info_popup_doctor = [[You are {role}! You're here to keep your teammates alive.
-Use your tools to keep fellow {innocents} in the fight!
-
-Press {menukey} to receive your special equipment!]]
-
 L.info_popup_paramedic = [[You are {role}! You can give your fellow {innocents}
 a second chance with your defibrillator. Stay alive
 and bring back your teams strongest player.]]

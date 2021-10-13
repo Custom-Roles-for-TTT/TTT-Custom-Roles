@@ -1372,12 +1372,6 @@ DefaultEquipment = {
         EQUIP_DISGUISE
     },
 
-    [ROLE_DOCTOR] = {
-        "weapon_ttt_health_station",
-        "weapon_par_cure",
-        "weapon_qua_fake_cure"
-    },
-
     [ROLE_PARAMEDIC] = {
         "weapon_med_defib"
     },
