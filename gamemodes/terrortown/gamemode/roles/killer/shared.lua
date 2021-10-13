@@ -1,3 +1,5 @@
+AddCSLuaFile()
+
 -- Initialize role features
 ROLE_STARTING_HEALTH[ROLE_KILLER] = 150
 ROLE_MAX_HEALTH[ROLE_KILLER] = 150

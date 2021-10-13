@@ -1,3 +1,5 @@
+AddCSLuaFile()
+
 -- Vampire prime death modes
 VAMPIRE_DEATH_NONE = 0
 VAMPIRE_DEATH_KILL_CONVERTED = 1

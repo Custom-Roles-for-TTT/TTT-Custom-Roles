@@ -1,3 +1,5 @@
+AddCSLuaFile()
+
 -- Beggar reveal modes
 BEGGAR_REVEAL_NONE = 0
 BEGGAR_REVEAL_ALL = 1

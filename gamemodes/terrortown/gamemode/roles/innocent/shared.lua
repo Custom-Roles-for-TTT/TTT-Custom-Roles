@@ -1,3 +1,5 @@
+AddCSLuaFile()
+
 local function InitializeEquipment()
     if DefaultEquipment then
         DefaultEquipment[ROLE_INNOCENT] = {

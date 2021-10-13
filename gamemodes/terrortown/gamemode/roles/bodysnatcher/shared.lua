@@ -1,3 +1,5 @@
+AddCSLuaFile()
+
 -- Bodysnatcher reveal modes
 BODYSNATCHER_REVEAL_NONE = 0
 BODYSNATCHER_REVEAL_ALL = 1

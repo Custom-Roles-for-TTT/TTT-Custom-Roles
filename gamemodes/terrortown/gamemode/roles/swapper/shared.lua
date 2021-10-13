@@ -1,3 +1,5 @@
+AddCSLuaFile()
+
 -- Swapper weapon modes
 SWAPPER_WEAPON_NONE = 0
 SWAPPER_WEAPON_ROLE = 1
