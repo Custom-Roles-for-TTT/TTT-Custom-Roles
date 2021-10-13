@@ -25,3 +25,13 @@ hook.Add("PlayerCanPickupWeapon", "Hypnotist_Weapons_PlayerCanPickupWeapon", fun
         return ply:IsHypnotist()
     end
 end)
+
+----------------
+-- ROLE STATE --
+----------------
+
+hook.Add("TTTPrepareRound", "Hypnotist_PrepareRound", function()
+    for _, v in pairs(player.GetAll()) do
+        v:SetNWBool("WasHypnotised", false)
+    end
+end)

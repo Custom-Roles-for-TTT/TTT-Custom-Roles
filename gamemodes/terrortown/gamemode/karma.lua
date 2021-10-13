@@ -136,8 +136,7 @@ local function ShouldReduceKarma(attacker, victim)
             (attacker:IsMonsterTeam() and victim:IsMonsterTeam()) or
             (attacker:IsInnocentTeam() and victim:IsInnocentTeam() and
                 -- If the attacker is not a revenger or they are and their victim isn't their target then reduce
-                (not attacker:IsRevenger() or victim:SteamID64() ~= attacker:GetNWString("RevengerKiller", ""))) or
-            attacker:IsDrunk()
+                (not attacker:IsRevenger() or victim:SteamID64() ~= attacker:GetNWString("RevengerKiller", "")))
 end
 
 -- Handle karma change due to one player damaging another. Damage must not have

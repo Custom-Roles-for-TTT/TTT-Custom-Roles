@@ -9,7 +9,6 @@ local GetTranslation = LANG.GetTranslation
 local GetPTranslation = LANG.GetParamTranslation
 local GetLang = LANG.GetUnsafeLanguageTable
 local interp = string.Interp
-local FormatTime = util.SimpleTime
 
 local hide_role = false
 
@@ -421,7 +420,6 @@ local function InfoPaint(client)
         ShadowedText(text, "TraitorState", x + margin + 74, traitor_y, COLOR_WHITE, TEXT_ALIGN_CENTER)
     end
 
-
     -- Draw round time
     local is_haste = HasteMode() and round_state == ROUND_ACTIVE
     local is_traitor = client:IsActiveTraitorTeam() or client:IsActiveMonsterTeam()
@@ -475,18 +473,11 @@ local function InfoPaint(client)
     if client:HasEquipmentItem(EQUIP_DISGUISE) and client:GetNWBool("disguised", false) then
         label_top = label_top + 20
     end
-    if client:IsDrunk() then
-        surface.SetFont("TabLarge")
-        surface.SetTextColor(255, 255, 255, 230)
 
-        local remaining = math.max(0, GetGlobalFloat("ttt_drunk_remember", 0) - CurTime())
+    -- Allow other addons to add stuff to the player info HUD
+    hook.Run("TTTHUDInfoPaint", client, label_left, label_top)
 
-        text = GetPTranslation("drunk_hud", { time = FormatTime(remaining, "%02i:%02i") })
-        local _, h = surface.GetTextSize(text)
-
-        surface.SetTextPos(label_left, ScrH() - label_top - h)
-        surface.DrawText(text)
-    elseif client:IsDetectiveLike() and not client:IsDetectiveTeam() then
+    if client:IsDetectiveLike() and not client:IsDetectiveTeam() then
         surface.SetFont("TabLarge")
         surface.SetTextColor(255, 255, 255, 230)
 
@@ -495,46 +486,6 @@ local function InfoPaint(client)
 
         surface.SetTextPos(label_left, ScrH() - label_top - h)
         surface.DrawText(text)
-    elseif (client:IsInnocent() or client:IsTraitor()) and client:GetNWBool("WasBeggar", false) then
-        local beggarMode = BEGGAR_REVEAL_ALL
-        if client:IsInnocent() then beggarMode = GetGlobalInt("ttt_beggar_reveal_innocent", BEGGAR_REVEAL_TRAITORS)
-        elseif client:IsTraitor() then beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", BEGGAR_REVEAL_ALL) end
-        if beggarMode ~= BEGGAR_REVEAL_ALL then
-            surface.SetFont("TabLarge")
-            surface.SetTextColor(255, 255, 255, 230)
-
-            if beggarMode == BEGGAR_REVEAL_NONE then
-                text = GetPTranslation("beggar_hidden_all_hud", { beggar = ROLE_STRINGS_EXT[ROLE_BEGGAR] })
-            elseif beggarMode == BEGGAR_REVEAL_TRAITORS then
-                text = GetPTranslation("beggar_hidden_innocent_hud", { beggar = ROLE_STRINGS_EXT[ROLE_BEGGAR], innocents = ROLE_STRINGS_PLURAL[ROLE_INNOCENT] })
-            elseif beggarMode == BEGGAR_REVEAL_INNOCENTS then
-                text = GetPTranslation("beggar_hidden_traitor_hud", { beggar = ROLE_STRINGS_EXT[ROLE_BEGGAR], traitors = ROLE_STRINGS_PLURAL[ROLE_TRAITOR] })
-            end
-            local _, h = surface.GetTextSize(text)
-
-            surface.SetTextPos(label_left, ScrH() - label_top - h)
-            surface.DrawText(text)
-        end
-    elseif client:GetNWBool("WasBodysnatcher", false) then
-        local bodysnatcherMode = BODYSNATCHER_REVEAL_ALL
-        if client:IsInnocentTeam() then bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_innocent", BODYSNATCHER_REVEAL_ALL)
-        elseif client:IsTraitorTeam() then bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_traitor", BODYSNATCHER_REVEAL_ALL)
-        elseif client:IsMonsterTeam() then bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_monster", BODYSNATCHER_REVEAL_ALL)
-        elseif client:IsIndependentTeam() then bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_independent", BODYSNATCHER_REVEAL_ALL) end
-        if bodysnatcherMode ~= BODYSNATCHER_REVEAL_ALL then
-            surface.SetFont("TabLarge")
-            surface.SetTextColor(255, 255, 255, 230)
-
-            if bodysnatcherMode == BODYSNATCHER_REVEAL_NONE then
-                text = GetPTranslation("bodysnatcher_hidden_all_hud", { bodysnatcher = ROLE_STRINGS_EXT[ROLE_BODYSNATCHER] })
-            elseif bodysnatcherMode == BODYSNATCHER_REVEAL_TEAM then
-                text = GetPTranslation("bodysnatcher_hidden_team_hud", { bodysnatcher = ROLE_STRINGS_EXT[ROLE_BODYSNATCHER] })
-            end
-            local _, h = surface.GetTextSize(text)
-
-            surface.SetTextPos(label_left, ScrH() - label_top - h)
-            surface.DrawText(text)
-        end
     end
 end
 

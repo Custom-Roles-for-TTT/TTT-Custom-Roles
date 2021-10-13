@@ -735,6 +735,14 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *winString* - The new winString value to use or the original passed into the hook
 - *roleString* - The new roleString value to use or the original passed into the hook
 
+**TTTHUDInfoPaint(client, labelX, labelY)** - Called after player information such as role, health, and ammo and equipment information such as radar cooldown and disguiser activation are drawn on the screen. Used to write additional persistent text on the screen for player reference.\
+*Realm:* Client\
+*Added in:* 1.3.1\
+*Parameters:*
+- *client* - The local player
+- *labelX* - The X value representing the correct indentation from the left side of the screen to add information
+- *labelY* - The Y value representing the first clear space to add information
+
 **TTTKarmaGiveReward(ply, reward, victim)** - Called before a player is rewarded with karma. Used to block a player's karma reward.\
 *Realm:* Server\
 *Added in:* 1.2.7\

@@ -650,7 +650,6 @@ L.tbut_help = "Press {key} to activate"
 L.disg_hud = "Disguised. Your name is hidden."
 L.radar_hud = "Radar ready for next scan in: {time}"
 
-L.drunk_hud = "You will sober up in: {time}"
 L.detective_promotion_hud = "You have been promoted to {detective}"
 
 -- Spectator muting of living/dead
@@ -693,9 +692,6 @@ If the player you are haunting dies you will be respawned!]]
 L.info_popup_revenger = [[You are {role}! You are helplessly in love with {lover}.
 Do whatever you can to protect them. If they die you will
 be able to track down their killer and get your revenge.]]
-
-L.info_popup_drunk = [[You are {role}!  You have forgotten what team you are on!
-Wait until you sober up and remember. Try to lay low in the meantime.]]
 
 L.info_popup_deputy = [[You are {role}! If the {detective} dies you will take
 over and gain the ability to buy shop items and search bodies.]]
@@ -1244,7 +1240,6 @@ L.ev_hypno = "{victim} was hypnotised"
 L.ev_defi = "{victim} was respawned"
 L.ev_disco = "{victim} disconnected"
 L.ev_promote = "{player} was promoted to {detective}"
-L.ev_drunk = "{player} remembered they are {team}"
 L.ev_haunt = "{victim} started haunting {attacker}"
 L.ev_infect = "{victim} infected {attacker}"
 

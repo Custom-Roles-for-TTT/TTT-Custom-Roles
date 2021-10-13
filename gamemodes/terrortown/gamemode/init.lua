@@ -100,10 +100,6 @@ for role = 0, ROLE_MAX do
         CreateConVar("ttt_" .. rolestring .. "_min_players", "0", FCVAR_REPLICATED)
     end
 
-    if role ~= ROLE_DRUNK and role ~= ROLE_GLITCH then
-        CreateConVar("ttt_drunk_can_be_" .. rolestring, "1", FCVAR_REPLICATED)
-    end
-
     local starting_health = "100"
     if role == ROLE_OLDMAN then starting_health = "1"
     elseif ROLE_STARTING_HEALTH[role] then starting_health = ROLE_STARTING_HEALTH[role] end
@@ -221,12 +217,6 @@ CreateConVar("ttt_jesters_visible_to_independents", "1")
 -- Independent role properties
 CreateConVar("ttt_independents_trigger_traitor_testers", "0")
 CreateConVar("ttt_independents_update_scoreboard", "0")
-
-CreateConVar("ttt_drunk_sober_time", "180")
-CreateConVar("ttt_drunk_innocent_chance", "0.7")
-CreateConVar("ttt_drunk_any_role", "0")
-CreateConVar("ttt_drunk_become_clown", "0")
-CreateConVar("ttt_drunk_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the drunk sobers up", 0, 4)
 
 CreateConVar("ttt_oldman_drain_health_to", "0")
 CreateConVar("ttt_oldman_adrenaline_rush", "5")
@@ -385,7 +375,6 @@ util.AddNetworkString("TTT_SpawnedPlayers")
 util.AddNetworkString("TTT_Defibrillated")
 util.AddNetworkString("TTT_RoleChanged")
 util.AddNetworkString("TTT_Promotion")
-util.AddNetworkString("TTT_DrunkSober")
 util.AddNetworkString("TTT_PhantomHaunt")
 util.AddNetworkString("TTT_ParasiteInfect")
 util.AddNetworkString("TTT_LogInfo")
@@ -445,7 +434,6 @@ function GM:Initialize()
     SetGlobalFloat("ttt_round_end", -1)
     SetGlobalFloat("ttt_haste_end", -1)
 
-    SetGlobalFloat("ttt_drunk_remember", -1)
     SetGlobalBool("ttt_glitch_round", false)
 
     -- For the paranoid
@@ -769,8 +757,6 @@ function PrepareRound()
         timer.Remove(v:Nick() .. "HauntingSpectate")
         v:SetNWString("RevengerLover", "")
         v:SetNWString("RevengerKiller", "")
-        v:SetNWBool("WasDrunk", false)
-        v:SetNWBool("WasHypnotised", false)
         v:SetNWBool("HasPromotion", false)
         v:SetNWBool("VeteranActive", false)
         v:SetNWBool("Infected", false)
@@ -1180,11 +1166,6 @@ function CheckForMapSwitch()
     end
 end
 
-local function StopDrunkTimers()
-    if timer.Exists("drunkremember") then timer.Remove("drunkremember") end
-    if timer.Exists("waitfordrunkrespawn") then timer.Remove("waitfordrunkrespawn") end
-end
-
 function EndRound(type)
     PrintResultMessage(type)
 
@@ -1209,7 +1190,6 @@ function EndRound(type)
     if timer.Exists("revengerhealthdrain") then timer.Remove("revengerhealthdrain") end
     if timer.Exists("oldmanhealthdrain") then timer.Remove("oldmanhealthdrain") end
     if timer.Exists("paladinheal") then timer.Remove("paladinheal") end
-    StopDrunkTimers()
 
     -- We may need to start a timer for a mapswitch, or start a vote
     CheckForMapSwitch()
@@ -1252,34 +1232,6 @@ local function HandleOldManWinChecks(win_type)
     net.Broadcast()
 end
 
-local unblockable_wins = {WIN_TIMELIMIT}
-local function HandleDrunkWinBlock(win_type)
-    if win_type == WIN_NONE then return win_type end
-    if table.HasValue(unblockable_wins, win_type) then return win_type end
-
-    local drunk = player.GetLivingRole(ROLE_DRUNK)
-    if not IsPlayer(drunk) then return win_type end
-
-    -- Make the drunk a clown
-    if GetConVar("ttt_drunk_become_clown"):GetBool() then
-        StopDrunkTimers()
-        drunk:DrunkRememberRole(ROLE_CLOWN, true)
-        return WIN_NONE
-    end
-
-    -- Change the drunk to whichever team is about to lose
-    local innocent_alive, traitor_alive, _, _, _ = player.AreTeamsLiving()
-    if not traitor_alive then
-        StopDrunkTimers()
-        drunk:SoberDrunk(ROLE_TEAM_TRAITOR)
-        return WIN_NONE
-    elseif not innocent_alive then
-        StopDrunkTimers()
-        drunk:SoberDrunk(ROLE_TEAM_INNOCENT)
-        return WIN_NONE
-    end
-end
-
 -- Used to be in think, now a timer
 local function WinChecker()
     -- If prevent-win is enabled then don't even check the win conditions
@@ -1314,7 +1266,6 @@ local function WinChecker()
             end
 
             -- TODO: Move these to role-specific files
-            win = HandleDrunkWinBlock(win)
             HandleOldManWinChecks(win)
 
             -- If, after all that, we have a win condition then end the round
@@ -1604,7 +1555,7 @@ function SelectRoles()
     local monsterRoles = {}
 
     -- Special rules for role spawning
-    -- Role exclusion logic also needs to be copied into the drunk role selection logic in player_ext.lua -> plymeta:SoberDrunk
+    -- Role exclusion logic also needs to be copied into the drunk role selection logic in drunk.lua -> plymeta:SoberDrunk
     local rolePredicates = {
         -- Innocents
         [ROLE_DEPUTY] = function() return (detective_count > 0 or GetConVar("ttt_deputy_without_detective"):GetBool()) and not impersonator_only end,

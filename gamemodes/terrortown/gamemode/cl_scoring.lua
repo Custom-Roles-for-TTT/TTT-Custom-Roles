@@ -125,16 +125,6 @@ net.Receive("TTT_Promotion", function(len)
     })
 end)
 
-net.Receive("TTT_DrunkSober", function(len)
-    local name = net.ReadString()
-    local team = net.ReadString()
-    CLSCORE:AddEvent({
-        id = EVENT_DRUNKSOBER,
-        ply = name,
-        team = team
-    })
-end)
-
 net.Receive("TTT_PhantomHaunt", function(len)
     local victim = net.ReadString()
     local attacker = net.ReadString()
@@ -561,20 +551,12 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                     elseif ply:IsSwapper() then
                         swappedWith = ply:GetNWString("SwappedWith", "")
                     end
-
-                    if ply:GetNWBool("WasDrunk", false) then
-                        roleColor = ROLE_COLORS[ROLE_DRUNK]
-                    end
                 else
                     hasDisconnected = true
                 end
 
-                -- Group players in the summary by the team each player ended in...
+                -- Group players in the summary by the team each player ended in
                 local groupingRole = finalRole
-                -- ...unless that player was the drunk who changed to a jester role. In that case keep them in the independent row
-                if startingRole == ROLE_DRUNK and JESTER_ROLES[finalRole] then
-                    groupingRole = ROLE_DRUNK
-                end
 
                 -- Allow developers to override role icon, grouping, and color
                 local roleFile, groupRole, iconColor, newName = hook.Run("TTTScoringSummaryRender", ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)

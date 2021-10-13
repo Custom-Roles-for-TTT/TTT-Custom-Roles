@@ -39,7 +39,6 @@ local traitor_icon = Material("icon16/user_red.png")
 local heart_icon = Material("icon16/heart.png")
 local disconnect_icon = Material("icon16/disconnect.png")
 local promotion_icon = Material("icon16/award_star_add.png")
-local drunk_icon = Material("icon16/drink_empty.png")
 local haunt_icon = Material("icon16/group.png")
 local info_icon = Material("icon16/information.png")
 
@@ -359,14 +358,6 @@ Event(EVENT_PROMOTION, {
     end,
     icon = function(e)
         return promotion_icon, "Promotion"
-    end})
-
-Event(EVENT_DRUNKSOBER, {
-    text = function(e)
-        return PT("ev_drunk", {player = e.ply, team = e.team})
-    end,
-    icon = function(e)
-        return drunk_icon, "Drunk Sober"
     end})
 
 Event(EVENT_HAUNT, {

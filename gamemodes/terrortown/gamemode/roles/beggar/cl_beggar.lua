@@ -85,6 +85,34 @@ net.Receive("TTT_BeggarKilled", function(len)
     })
 end)
 
+---------
+-- HUD --
+---------
+
+hook.Add("TTTHUDInfoPaint", "Beggar_TTTHUDInfoPaint", function(client, label_left, label_top)
+    if (client:IsInnocent() or client:IsTraitor()) and client:GetNWBool("WasBeggar", false) then
+        local beggarMode = BEGGAR_REVEAL_ALL
+        if client:IsInnocent() then beggarMode = GetGlobalInt("ttt_beggar_reveal_innocent", BEGGAR_REVEAL_TRAITORS)
+        elseif client:IsTraitor() then beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", BEGGAR_REVEAL_ALL) end
+        if beggarMode ~= BEGGAR_REVEAL_ALL then
+            surface.SetFont("TabLarge")
+            surface.SetTextColor(255, 255, 255, 230)
+
+            if beggarMode == BEGGAR_REVEAL_NONE then
+                text = LANG.GetParamTranslation("beggar_hidden_all_hud", { beggar = ROLE_STRINGS_EXT[ROLE_BEGGAR] })
+            elseif beggarMode == BEGGAR_REVEAL_TRAITORS then
+                text = LANG.GetParamTranslation("beggar_hidden_innocent_hud", { beggar = ROLE_STRINGS_EXT[ROLE_BEGGAR], innocents = ROLE_STRINGS_PLURAL[ROLE_INNOCENT] })
+            elseif beggarMode == BEGGAR_REVEAL_INNOCENTS then
+                text = LANG.GetParamTranslation("beggar_hidden_traitor_hud", { beggar = ROLE_STRINGS_EXT[ROLE_BEGGAR], traitors = ROLE_STRINGS_PLURAL[ROLE_TRAITOR] })
+            end
+            local _, h = surface.GetTextSize(text)
+
+            surface.SetTextPos(label_left, ScrH() - label_top - h)
+            surface.DrawText(text)
+        end
+    end
+end)
+
 --------------
 -- TUTORIAL --
 --------------
