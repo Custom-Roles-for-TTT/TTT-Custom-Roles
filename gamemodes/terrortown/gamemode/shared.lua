@@ -1161,16 +1161,6 @@ function UpdateRoleWeaponState()
         paramedic_defib.CanBuy = nil
     end
 
-    -- Phantom Cure
-    local phantom_device = weapons.GetStored("weapon_pha_exorcism")
-    if GetGlobalBool("ttt_traitor_phantom_cure", false) then
-        if not table.HasValue(phantom_device.CanBuy, ROLE_TRAITOR) then
-            table.insert(phantom_device.CanBuy, ROLE_TRAITOR)
-        end
-    elseif table.HasValue(phantom_device.CanBuy, ROLE_TRAITOR) then
-        table.RemoveByValue(phantom_device.CanBuy, ROLE_TRAITOR)
-    end
-
     if SERVER then
         net.Start("TTT_ResetBuyableWeaponsCache")
         net.Broadcast()

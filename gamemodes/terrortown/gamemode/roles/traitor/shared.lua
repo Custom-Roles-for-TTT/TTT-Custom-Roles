@@ -27,3 +27,18 @@ end)
 hook.Add("TTTPrepareRound", "Traitor_Shared_TTTPrepareRound", function()
     InitializeEquipment()
 end)
+
+------------------
+-- ROLE WEAPONS --
+------------------
+
+hook.Add("TTTUpdateRoleState", "Traitor_TTTUpdateRoleState", function()
+    local phantom_device = weapons.GetStored("weapon_pha_exorcism")
+    if GetGlobalBool("ttt_traitor_phantom_cure", false) then
+        if not table.HasValue(phantom_device.CanBuy, ROLE_TRAITOR) then
+            table.insert(phantom_device.CanBuy, ROLE_TRAITOR)
+        end
+    elseif table.HasValue(phantom_device.CanBuy, ROLE_TRAITOR) then
+        table.RemoveByValue(phantom_device.CanBuy, ROLE_TRAITOR)
+    end
+end)
