@@ -20,6 +20,7 @@ hook.Add("TTTTutorialRoleText", "Mercenary_TTTTutorialRoleText", function(role, 
         local traitorColor = ROLE_COLORS[ROLE_TRAITOR]
         local html = "The " .. ROLE_STRINGS[ROLE_MERCENARY] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> whose goal is to use their shop to help the player with a <span style='color: rgb(" .. detectiveColor.r .. ", " .. detectiveColor.g .. ", " .. detectiveColor.b .. ")'>" .. ROLE_STRINGS[ROLE_DETECTIVE] .. " role</span> defeat their enemies."
 
+        -- Shop Mode
         html = html .. "<span style='display: block; margin-top: 10px;'>There is an <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>equipment shop</span> available to the " .. ROLE_STRINGS[ROLE_MERCENARY] .. " filled with "
         local shopMode = GetGlobalInt("ttt_mercenary_shop_mode", SHOP_SYNC_MODE_INTERSECT)
         if shopMode == SHOP_SYNC_MODE_UNION then
