@@ -69,8 +69,8 @@ function AssignAssassinTarget(ply, start, delay)
                 AddEnemy(p, bodysnatcherModeInno)
             elseif p:IsMonsterTeam() and not p:IsGlitch() then
                 AddEnemy(p, bodysnatcherModeMon)
-            -- Exclude the Old Man because they just want to survive
-            elseif p:IsIndependentTeam() and not p:IsOldMan() then
+            -- Exclude roles that have a passive win because they just want to survive
+            elseif p:IsIndependentTeam() and not ROLE_HAS_PASSIVE_WIN[p:GetRole()] then
                 -- Also exclude bodysnatchers turned into an independent if their role hasn't been revealed
                 if not p:GetNWBool("WasBodysnatcher", false) or bodysnatcherModeIndep == BODYSNATCHER_REVEAL_ALL then
                     table.insert(independents, p:Nick())
