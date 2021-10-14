@@ -696,10 +696,6 @@ be able to track down their killer and get your revenge.]]
 L.info_popup_deputy = [[You are {role}! If the {detective} dies you will take
 over and gain the ability to buy shop items and search bodies.]]
 
-L.info_popup_oldman = [[You are {role}! The slightest breeze could kill
-you if you aren't careful. You don't care who wins as long
-as you are alive at the end of the round.]]
-
 L.info_popup_mercenary = [[You are {role}! Try to survive and help your {innocent} friends!
 
 Press {menukey} to receive your equipment!]]
@@ -980,7 +976,6 @@ L.ev_spawn = "{player} spawned as {a} {role}"
 L.ev_role_changed = "{player} changed roles to {a} {role}"
 L.ev_win_traitor = "The dastardly {role} won the round!"
 L.ev_win_inno = "The lovable {role} won the round!"
-L.ev_win_oldman = "The {role} has somehow survived and also won the round!"
 L.ev_win_monster = "The evil monsters have won the round!"
 L.ev_win_time = "The {role} ran out of time and lost!"
 L.ev_win_icon = "{role} won"

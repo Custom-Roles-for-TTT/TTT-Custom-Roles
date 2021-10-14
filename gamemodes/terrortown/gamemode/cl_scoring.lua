@@ -161,17 +161,6 @@ net.Receive("TTT_ResetScoreboard", function(len)
 end)
 
 local secondary_win_role = nil
-net.Receive("TTT_UpdateOldManWins", function()
-    -- Log the win event with an offset to force it to the end
-    if net.ReadBool() then
-        secondary_win_role = ROLE_OLDMAN
-        CLSCORE:AddEvent({
-            id = EVENT_FINISH,
-            win = WIN_OLDMAN
-        }, 1)
-    end
-end)
-
 net.Receive("TTT_SpawnedPlayers", function(len)
     local name = net.ReadString()
     local role = net.ReadInt(8)

@@ -101,8 +101,7 @@ for role = 0, ROLE_MAX do
     end
 
     local starting_health = "100"
-    if role == ROLE_OLDMAN then starting_health = "1"
-    elseif ROLE_STARTING_HEALTH[role] then starting_health = ROLE_STARTING_HEALTH[role] end
+    if ROLE_STARTING_HEALTH[role] then starting_health = ROLE_STARTING_HEALTH[role] end
 
     local max_health = nil
     if ROLE_MAX_HEALTH[role] then max_health = ROLE_MAX_HEALTH[role] end
@@ -217,10 +216,6 @@ CreateConVar("ttt_jesters_visible_to_independents", "1")
 -- Independent role properties
 CreateConVar("ttt_independents_trigger_traitor_testers", "0")
 CreateConVar("ttt_independents_update_scoreboard", "0")
-
-CreateConVar("ttt_oldman_drain_health_to", "0")
-CreateConVar("ttt_oldman_adrenaline_rush", "5")
-CreateConVar("ttt_oldman_adrenaline_shotgun", "1")
 
 -- Other custom role properties
 CreateConVar("ttt_single_deputy_impersonator", "0")
@@ -380,7 +375,6 @@ util.AddNetworkString("TTT_ParasiteInfect")
 util.AddNetworkString("TTT_LogInfo")
 util.AddNetworkString("TTT_ResetScoreboard")
 util.AddNetworkString("TTT_RevengerLoverKillerRadar")
-util.AddNetworkString("TTT_UpdateOldManWins")
 util.AddNetworkString("TTT_BuyableWeapons")
 util.AddNetworkString("TTT_UpdateBuyableWeapons")
 util.AddNetworkString("TTT_ResetBuyableWeaponsCache")
@@ -772,10 +766,6 @@ function PrepareRound()
         -- Workaround to prevent GMod sprint from working
         v:SetRunSpeed(v:GetWalkSpeed())
     end
-
-    net.Start("TTT_UpdateOldManWins")
-    net.WriteBool(false)
-    net.Broadcast()
 
     net.Start("TTT_RevengerLoverKillerRadar")
     net.WriteBool(false)
@@ -1188,7 +1178,6 @@ function EndRound(type)
 
     if timer.Exists("revengerloverkiller") then timer.Remove("revengerloverkiller") end
     if timer.Exists("revengerhealthdrain") then timer.Remove("revengerhealthdrain") end
-    if timer.Exists("oldmanhealthdrain") then timer.Remove("oldmanhealthdrain") end
     if timer.Exists("paladinheal") then timer.Remove("paladinheal") end
 
     -- We may need to start a timer for a mapswitch, or start a vote
@@ -1223,15 +1212,6 @@ function GM:MapTriggeredEnd(wintype)
     end
 end
 
-local function HandleOldManWinChecks(win_type)
-    if win_type == WIN_NONE then return end
-    if not player.IsRoleLiving(ROLE_OLDMAN) then return end
-
-    net.Start("TTT_UpdateOldManWins")
-    net.WriteBool(true)
-    net.Broadcast()
-end
-
 -- Used to be in think, now a timer
 local function WinChecker()
     -- If prevent-win is enabled then don't even check the win conditions
@@ -1264,9 +1244,6 @@ local function WinChecker()
             for _, win_block in ipairs(win_blocks) do
                 win = win_block(win)
             end
-
-            -- TODO: Move these to role-specific files
-            HandleOldManWinChecks(win)
 
             -- If, after all that, we have a win condition then end the round
             if win ~= WIN_NONE then

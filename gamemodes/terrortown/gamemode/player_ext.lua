@@ -439,26 +439,6 @@ function plymeta:BeginRoleChecks()
         end
     end
 
-    -- Old Man logic
-    local oldman_drain_health = GetConVar("ttt_oldman_drain_health_to"):GetInt()
-    if self:IsOldMan() and oldman_drain_health > 0 then
-        timer.Create("oldmanhealthdrain", 3, 0, function()
-            for _, p in pairs(player.GetAll()) do
-                if p:IsActiveOldMan() then
-                    local hp = p:Health()
-                    if hp > oldman_drain_health then
-                        p:SetHealth(hp - 1)
-                    end
-
-                    local max = p:GetMaxHealth()
-                    if max > oldman_drain_health then
-                        p:SetMaxHealth(max - 1)
-                    end
-                end
-            end
-        end)
-    end
-
     -- Glitch logic
     if self:IsGlitch() then
         SetGlobalBool("ttt_glitch_round", true)

@@ -57,8 +57,6 @@ Event(EVENT_FINISH,
                      return PT("ev_win_traitor", { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]:lower() })
                   elseif e.win == WIN_INNOCENT then
                      return PT("ev_win_inno", { role = ROLE_STRINGS_PLURAL[ROLE_INNOCENT]:lower() })
-                  elseif e.win == WIN_OLDMAN then
-                     return PT("ev_win_oldman", { role = ROLE_STRINGS[ROLE_OLDMAN]:lower() })
                   elseif e.win == WIN_MONSTER then
                      local monster_role = GetWinningMonsterRole()
                      if monster_role == ROLE_VAMPIRE then
@@ -80,9 +78,6 @@ Event(EVENT_FINISH,
                      role_string = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]
                   elseif e.win == WIN_INNOCENT then
                      role_string = ROLE_STRINGS_PLURAL[ROLE_INNOCENT]
-                  elseif e.win == WIN_OLDMAN then
-                     role_string = ROLE_STRINGS[ROLE_OLDMAN]
-                     win_string = "ev_win_icon_also"
                   elseif e.win == WIN_MONSTER then
                      local monster_role = GetWinningMonsterRole()
                      if monster_role == ROLE_VAMPIRE then
