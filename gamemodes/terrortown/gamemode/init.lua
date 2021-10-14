@@ -196,9 +196,6 @@ CreateConVar("ttt_paladin_heal_rate", "1")
 CreateConVar("ttt_paladin_protect_self", "0")
 CreateConVar("ttt_paladin_heal_self", "1")
 
-CreateConVar("ttt_tracker_footstep_time", "15")
-CreateConVar("ttt_tracker_footstep_color", "1")
-
 CreateConVar("ttt_medium_spirit_color", "1")
 
 -- Jester role properties
@@ -522,8 +519,6 @@ function GM:SyncGlobals()
     SetGlobalBool("ttt_special_detectives_armor_loadout", GetConVar("ttt_special_detectives_armor_loadout"):GetBool())
 
     SetGlobalFloat("ttt_paladin_aura_radius", GetConVar("ttt_paladin_aura_radius"):GetInt() * 52.49)
-
-    SetGlobalInt("ttt_tracker_footstep_time", GetConVar("ttt_tracker_footstep_time"):GetInt())
 
     SetGlobalBool("ttt_traitor_vision_enable", GetConVar("ttt_traitor_vision_enable"):GetBool())
     SetGlobalBool("ttt_traitor_phantom_cure", GetConVar("ttt_traitor_phantom_cure"):GetBool())

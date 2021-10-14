@@ -1041,7 +1041,6 @@ function GM:PlayerFootstep(ply, pos, foot, sound, volume, rf)
     if SERVER and ply:WaterLevel() == 0 then
         -- This player killed a Phantom. Tell everyone where their foot steps should go
         local phantom_killer_footstep_time = GetConVar("ttt_phantom_killer_footstep_time"):GetInt()
-        local tracker_footstep_time = GetConVar("ttt_tracker_footstep_time"):GetInt()
         if phantom_killer_footstep_time > 0 and ply:GetNWBool("Haunted", false) then
             net.Start("TTT_PlayerFootstep")
             net.WriteEntity(ply)
@@ -1051,25 +1050,6 @@ function GM:PlayerFootstep(ply, pos, foot, sound, volume, rf)
             net.WriteTable(Color(138, 4, 4))
             net.WriteUInt(phantom_killer_footstep_time, 8)
             net.Broadcast()
-        elseif tracker_footstep_time > 0 and not ply:IsTracker() then
-            net.Start("TTT_PlayerFootstep")
-            net.WriteEntity(ply)
-            net.WriteVector(pos)
-            net.WriteAngle(ply:GetAimVector():Angle())
-            net.WriteBit(foot)
-            local col = Vector(1, 1, 1)
-            if GetConVar("ttt_tracker_footstep_color"):GetBool() then
-                col = ply:GetNWVector("PlayerColor", Vector(1, 1, 1))
-            end
-            net.WriteTable(Color(col.x * 255, col.y * 255, col.z * 255))
-            net.WriteUInt(tracker_footstep_time, 8)
-            local tab = {}
-            for k, p in pairs(player.GetAll()) do
-                if p:IsActiveTracker() then
-                    table.insert(tab, p)
-                end
-            end
-            net.Send(tab)
         end
     end
 
@@ -1298,11 +1278,6 @@ DefaultEquipment = {
     },
 
     [ROLE_MEDIUM] = {
-        EQUIP_ARMOR,
-        EQUIP_RADAR
-    },
-
-    [ROLE_TRACKER] = {
         EQUIP_ARMOR,
         EQUIP_RADAR
     },

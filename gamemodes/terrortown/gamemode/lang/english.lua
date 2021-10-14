@@ -706,12 +706,6 @@ Keep your friends close but definitely don't let your enemies closer!
 
 Press {menukey} to receive your equipment!]]
 
-L.info_popup_tracker = [[You are {role}! As {adetective}, HQ has given you special resources to find the {traitors}.
-You can see players' footsteps and follow their trails.
-Use your skills to keep an eye on where players have been.
-
-Press {menukey} to receive your equipment!]]
-
 L.info_popup_medium = [[You are {role}! As {adetective}, HQ has given you special resources to find the {traitors}.
 You can see the spirits of the dead. Follow the spirits
 to uncover secrets that were taken to the grave.
