@@ -1272,11 +1272,6 @@ end
 -- get a little marker on their icon if they're buyable, showing they are custom
 -- and unique to the server.
 DefaultEquipment = {
-    [ROLE_PALADIN] = {
-        EQUIP_ARMOR,
-        EQUIP_RADAR
-    },
-
     [ROLE_DEPUTY] = {
         EQUIP_ARMOR,
         EQUIP_RADAR

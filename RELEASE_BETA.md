@@ -42,6 +42,7 @@
 - Added player.ExecuteAgainstTeamPlayers to execute a function against the players belonging to a role team
 - Added TTTWinCheckBlocks and TTTWinCheckComplete hooks to allow manipulating and reacting to the win type
 - Added TTTHUDInfoPaint hook to add informational messages to a player's HUD (above their health bar)
+- Added TTTPlayerAliveClientThink hook to handle the Think event for each currently living player on the client
 - Added plymeta:Celebrate to celebrate with sound and or confetti
 - Changed JesterTeamKilledNotification to be globally accessible
 - Renamed `SWEP.BoughtBuy` to `SWEP.BoughtBy`

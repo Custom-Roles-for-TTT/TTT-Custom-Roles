@@ -357,6 +357,8 @@ function GM:Think()
     local client = LocalPlayer()
     for _, v in pairs(player.GetAll()) do
         if v:Alive() and not v:IsSpec() then
+            hook.Run("TTTPlayerAliveClientThink", client, v)
+
             local shouldSmoke = v:GetNWBool("Haunted", false) and GetGlobalBool("ttt_phantom_killer_smoke")
             local smokeColor = COLOR_BLACK
             local smokeParticle = "particle/snow.vmt"
@@ -395,36 +397,6 @@ function GM:Think()
                 if v.SmokeEmitter then
                     v.SmokeEmitter:Finish()
                     v.SmokeEmitter = nil
-                end
-            end
-            if v:IsPaladin() then
-                if not v.AuraEmitter then v.AuraEmitter = ParticleEmitter(v:GetPos()) end
-                if not v.AuraNextPart then v.AuraNextPart = CurTime() end
-                if not v.AuraDir then v.AuraDir = 0 end
-                local pos = v:GetPos() + Vector(0, 0, 30)
-                if v.AuraNextPart < CurTime() then
-                    if client:GetPos():Distance(pos) <= 3000 then
-                        v.AuraEmitter:SetPos(pos)
-                        v.AuraNextPart = CurTime() + 0.02
-                        v.AuraDir = v.AuraDir + 0.05
-                        local radius = GetGlobalFloat("ttt_paladin_aura_radius", 262.45)
-                        local vec = Vector(math.sin(v.AuraDir) * radius, math.cos(v.AuraDir) * radius, 10)
-                        local particle = v.AuraEmitter:Add("particle/shield.vmt", v:GetPos() + vec)
-                        particle:SetVelocity(Vector(0, 0, 20))
-                        particle:SetDieTime(1)
-                        particle:SetStartAlpha(200)
-                        particle:SetEndAlpha(0)
-                        particle:SetStartSize(3)
-                        particle:SetEndSize(2)
-                        particle:SetRoll(0)
-                        particle:SetRollDelta(0)
-                        particle:SetColor(ROLE_COLORS[ROLE_PALADIN].r, ROLE_COLORS[ROLE_PALADIN].g, ROLE_COLORS[ROLE_PALADIN].b)
-                    end
-                end
-            else
-                if v.AuraEmitter then
-                    v.AuraEmitter:Finish()
-                    v.AuraEmitter = nil
                 end
             end
         end

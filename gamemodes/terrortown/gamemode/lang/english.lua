@@ -700,12 +700,6 @@ L.info_popup_madscientist = [[You are {role}! Try to spread your virus to
 everyone! Using your zombification device on a dead
 body will revive them as {azombie}.]]
 
-L.info_popup_paladin = [[You are {role}! As {adetective}, HQ has given you special resources to find the {traitors}.
-You have a healing aura that is visible to everyone.
-Keep your friends close but definitely don't let your enemies closer!
-
-Press {menukey} to receive your equipment!]]
-
 L.info_popup_monster_comrades = [[Work with your allies to kill all others.
 
 These are your comrades:

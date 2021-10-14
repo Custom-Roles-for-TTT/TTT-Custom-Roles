@@ -762,6 +762,13 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 
 *Return:* `true` if the attacker should be penalized or `false` if they should not. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
 
+**TTTPlayerAliveClientThink(client, ply)** - Called for each player who is alive during the Think hook.\
+*Realm:* Client\
+*Added in:* 1.3.1\
+*Parameters:*
+- *client* - The local player
+- *ply* - The current alive player target
+
 **TTTPlayerRoleChanged(ply, oldRole, newRole)** - Called after a player's role has changed.\
 *Realm:* Client and Server\
 *Added in:* 1.2.7\

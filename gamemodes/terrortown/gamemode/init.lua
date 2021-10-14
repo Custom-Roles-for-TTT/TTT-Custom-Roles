@@ -190,12 +190,6 @@ CreateConVar("ttt_all_search_binoc", "0")
 
 CreateConVar("ttt_special_detectives_armor_loadout", "1")
 
-CreateConVar("ttt_paladin_aura_radius", "5")
-CreateConVar("ttt_paladin_damage_reduction", "0.3")
-CreateConVar("ttt_paladin_heal_rate", "1")
-CreateConVar("ttt_paladin_protect_self", "0")
-CreateConVar("ttt_paladin_heal_self", "1")
-
 -- Jester role properties
 CreateConVar("ttt_jesters_trigger_traitor_testers", "1")
 CreateConVar("ttt_jesters_visible_to_traitors", "1")
@@ -515,8 +509,6 @@ function GM:SyncGlobals()
     SetGlobalBool("ttt_deputy_use_detective_icon", GetConVar("ttt_deputy_use_detective_icon"):GetBool())
 
     SetGlobalBool("ttt_special_detectives_armor_loadout", GetConVar("ttt_special_detectives_armor_loadout"):GetBool())
-
-    SetGlobalFloat("ttt_paladin_aura_radius", GetConVar("ttt_paladin_aura_radius"):GetInt() * 52.49)
 
     SetGlobalBool("ttt_traitor_vision_enable", GetConVar("ttt_traitor_vision_enable"):GetBool())
     SetGlobalBool("ttt_traitor_phantom_cure", GetConVar("ttt_traitor_phantom_cure"):GetBool())
@@ -1009,23 +1001,6 @@ function BeginRound()
         SetRoleHealth(v)
     end
 
-    -- Paladin Logic
-    local paladinHeal = GetConVar("ttt_paladin_heal_rate"):GetInt()
-    local paladinHealSelf = GetConVar("ttt_paladin_heal_self"):GetBool()
-    local paladinRadius = GetGlobalFloat("ttt_paladin_aura_radius", 262.45)
-    timer.Create("paladinheal", 1, 0, function()
-        for _, p in pairs(player.GetAll()) do
-            if p:IsActivePaladin() then
-                for _, v in pairs(player.GetAll()) do
-                    if v:IsActive() and (not v:IsPaladin() or paladinHealSelf) and v:GetPos():Distance(p:GetPos()) <= paladinRadius and v:Health() < v:GetMaxHealth() then
-                        local health = math.min(v:GetMaxHealth(), v:Health() + paladinHeal)
-                        v:SetHealth(health)
-                    end
-                end
-            end
-        end
-    end)
-
     net.Start("TTT_ResetScoreboard")
     net.Broadcast()
 
@@ -1164,7 +1139,6 @@ function EndRound(type)
 
     if timer.Exists("revengerloverkiller") then timer.Remove("revengerloverkiller") end
     if timer.Exists("revengerhealthdrain") then timer.Remove("revengerhealthdrain") end
-    if timer.Exists("paladinheal") then timer.Remove("paladinheal") end
 
     -- We may need to start a timer for a mapswitch, or start a vote
     CheckForMapSwitch()

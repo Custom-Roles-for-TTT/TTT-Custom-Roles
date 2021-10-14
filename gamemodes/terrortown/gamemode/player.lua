@@ -1305,21 +1305,6 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
                 local bonus = GetConVar("ttt_revenger_damage_bonus"):GetFloat()
                 dmginfo:ScaleDamage(1 + bonus)
             end
-
-            if not ply:IsPaladin() or GetConVar("ttt_paladin_protect_self"):GetBool() then
-                local withPaladin = false
-                local radius = GetGlobalFloat("ttt_paladin_aura_radius", 262.45)
-                for _, v in pairs(player.GetAll()) do
-                    if v:IsPaladin() and v:GetPos():Distance(ply:GetPos()) <= radius then
-                        withPaladin = true
-                        break
-                    end
-                end
-                if withPaladin and not att:IsPaladin() then
-                    local reduction = GetConVar("ttt_paladin_damage_reduction"):GetFloat()
-                    dmginfo:ScaleDamage(1 - reduction)
-                end
-            end
         -- Players cant deal damage to eachother before the round starts
         else
             dmginfo:ScaleDamage(0)
