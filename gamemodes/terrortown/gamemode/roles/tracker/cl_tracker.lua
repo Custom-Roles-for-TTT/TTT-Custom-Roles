@@ -26,7 +26,7 @@ hook.Add("TTTTutorialRoleText", "Tracker_TTTTutorialRoleText", function(role, ti
             html = html .. "<span style='display: block; margin-top: 10px;'>Instead of getting a DNA Scanner like a vanilla <span style='color: rgb(" .. detectiveColor.r .. ", " .. detectiveColor.g .. ", " .. detectiveColor.b .. ")'>" .. ROLE_STRINGS[ROLE_DETECTIVE] .. "</span>, they have the ability to see player footsteps from the last " .. footstepTime .. " seconds on the ground.</span>"
 
             if GetGlobalBool("ttt_tracker_footstep_color", true) then
-                html = html .. "<span style='display: block; margin-top: 10px;'>Each player will have a randomly assigned <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>footstep color</span>. The " .. ROLE_STRINGS[ROLE_TRACKER] .. " can use these footsteps to track specific players.</span>"
+                html = html .. "<span style='display: block; margin-top: 10px;'>Each player will have a randomly assigned <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>footstep color</span> allowing the " .. ROLE_STRINGS[ROLE_TRACKER] .. " to follow specific players.</span>"
             end
         end
 
