@@ -696,10 +696,6 @@ be able to track down their killer and get your revenge.]]
 L.info_popup_deputy = [[You are {role}! If the {detective} dies you will take
 over and gain the ability to buy shop items and search bodies.]]
 
-L.info_popup_veteran = [[You are {role}! You work best under pressure.
-If you are the last {innocent} player alive you will
-deal extra damage.]]
-
 L.info_popup_madscientist = [[You are {role}! Try to spread your virus to
 everyone! Using your zombification device on a dead
 body will revive them as {azombie}.]]

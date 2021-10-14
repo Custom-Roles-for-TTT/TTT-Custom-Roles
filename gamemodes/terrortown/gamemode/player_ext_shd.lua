@@ -165,7 +165,6 @@ function plymeta:IsActiveCustom() return self:IsCustom() and self:IsActive() end
 function plymeta:IsActiveShopRole() return self:IsShopRole() and self:IsActive() end
 function plymeta:IsActiveDetectiveLike() return self:IsActive() and self:IsDetectiveLike() end
 function plymeta:IsRoleActive()
-    if self:IsVeteran() then return self:GetNWBool("VeteranActive", false) end
     if self:IsDeputy() or self:IsImpersonator() then return self:GetNWBool("HasPromotion", false) end
 
     -- Check if this role has an external definition for "IsActive" and use that

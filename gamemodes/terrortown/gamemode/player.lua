@@ -1211,51 +1211,6 @@ function GM:PlayerDeath(victim, infl, attacker)
         spirits[victim:SteamID64()] = spirit
     end
 
-    -- Check veteran status
-    local innocents_alive = 0
-    local veterans = {}
-    for _, v in pairs(player.GetAll()) do
-        if v:IsActiveInnocentTeam() then innocents_alive = innocents_alive + 1 end
-        if v:IsActiveVeteran() then table.insert(veterans, v) end
-    end
-    if #veterans > 0 and innocents_alive == 1 then
-        for _, v in pairs(veterans) do
-            if not v:GetNWBool("VeteranActive", false) then
-                v:SetNWBool("VeteranActive", true)
-
-                v:AddCredits(GetConVar("ttt_veteran_activation_credits"):GetInt())
-
-                v:PrintMessage(HUD_PRINTTALK, "You are the last " .. ROLE_STRINGS[ROLE_INNOCENT] .. " alive!")
-                v:PrintMessage(HUD_PRINTCENTER, "You are the last " .. ROLE_STRINGS[ROLE_INNOCENT] .. " alive!")
-                if GetConVar("ttt_veteran_announce"):GetBool() then
-                    for _, p in ipairs(player.GetAll()) do
-                        if p ~= v and p:Alive() and not p:IsSpec() then
-                            p:PrintMessage(HUD_PRINTTALK, "The last " .. ROLE_STRINGS[ROLE_INNOCENT] .. " alive is " .. ROLE_STRINGS_EXT[ROLE_VETERAN] .. "!")
-                            p:PrintMessage(HUD_PRINTCENTER, "The last " .. ROLE_STRINGS[ROLE_INNOCENT] .. " alive is " .. ROLE_STRINGS_EXT[ROLE_VETERAN] .. "!")
-                        end
-                    end
-                end
-
-                if GetConVar("ttt_veteran_full_heal"):GetBool() then
-                    local heal_bonus = GetConVar("ttt_veteran_heal_bonus"):GetInt()
-                    local health = math.min(v:GetMaxHealth(), 100) + heal_bonus
-
-                    v:SetHealth(health)
-                    if heal_bonus > 0 then
-                        v:PrintMessage(HUD_PRINTTALK, "You have been fully healed (with a bonus)!")
-                    else
-                        v:PrintMessage(HUD_PRINTTALK, "You have been fully healed!")
-                    end
-                end
-
-                -- Give the veteran their shop items if purchase was delayed
-                if v.bought and GetConVar("ttt_veteran_shop_delay"):GetBool() then
-                    v:GiveDelayedShopItems()
-                end
-            end
-        end
-    end
-
     -- stop bleeding
     util.StopBleeding(victim)
 
@@ -1395,12 +1350,6 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
             -- Revengers deal extra damage to their lovers killer
             if att:IsRevenger() and ply:SteamID64() == att:GetNWString("RevengerKiller", "") then
                 local bonus = GetConVar("ttt_revenger_damage_bonus"):GetFloat()
-                dmginfo:ScaleDamage(1 + bonus)
-            end
-
-            -- Veterans deal extra damage if they are the last innocent alive
-            if att:IsVeteran() and att:GetNWBool("VeteranActive", false) then
-                local bonus = GetConVar("ttt_veteran_damage_bonus"):GetFloat()
                 dmginfo:ScaleDamage(1 + bonus)
             end
 
