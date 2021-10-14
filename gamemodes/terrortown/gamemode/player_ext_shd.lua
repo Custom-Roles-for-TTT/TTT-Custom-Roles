@@ -633,11 +633,11 @@ function player.TeamLivingCount(ignorePassiveWinners)
             end
         end
     end
-    return innocent_alive, traitor_alive, indep_alive, monster_alive, jester_alive
+    return traitor_alive, innocent_alive, indep_alive, monster_alive, jester_alive
 end
 function player.AreTeamsLiving(ignorePassiveWinners)
-    local innocent_alive, traitor_alive, indep_alive, monster_alive, jester_alive = player.TeamLivingCount(ignorePassiveWinners)
-    return innocent_alive > 0, traitor_alive > 0, indep_alive > 0, monster_alive > 0, jester_alive > 0
+    local traitor_alive, innocent_alive, indep_alive, monster_alive, jester_alive = player.TeamLivingCount(ignorePassiveWinners)
+    return traitor_alive > 0, innocent_alive > 0, indep_alive > 0, monster_alive > 0, jester_alive > 0
 end
 
 function player.ExecuteAgainstTeamPlayers(roleTeam, detectivesAreInnocent, aliveOnly, callback)

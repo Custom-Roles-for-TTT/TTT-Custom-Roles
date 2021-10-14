@@ -67,7 +67,7 @@ local function HandleClownWinBlock(win_type)
     end
 
     -- Clown wins if they are the only one left
-    local innocent_alive, traitor_alive, indep_alive, monster_alive, _ = player.AreTeamsLiving(true)
+    local traitor_alive, innocent_alive, indep_alive, monster_alive, _ = player.AreTeamsLiving(true)
     if not traitor_alive and not innocent_alive and not monster_alive and not indep_alive then
         return WIN_CLOWN
     end

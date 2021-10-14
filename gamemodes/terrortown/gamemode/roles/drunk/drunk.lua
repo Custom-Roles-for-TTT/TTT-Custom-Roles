@@ -286,7 +286,7 @@ local function HandleDrunkWinBlock(win_type)
     end
 
     -- Change the drunk to whichever team is about to lose
-    local innocent_alive, traitor_alive, _, _, _ = player.AreTeamsLiving()
+    local traitor_alive, innocent_alive, _, _, _ = player.AreTeamsLiving()
     if not traitor_alive then
         StopDrunkTimers()
         drunk:SoberDrunk(ROLE_TEAM_TRAITOR)
