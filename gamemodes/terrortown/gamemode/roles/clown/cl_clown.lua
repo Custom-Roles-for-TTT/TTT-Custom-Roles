@@ -60,7 +60,7 @@ end)
 -- SCORING --
 -------------
 
--- Register the scoring events for the beggar
+-- Register the scoring events for the clown
 hook.Add("Initialize", "Clown_Scoring_Initialize", function()
     local clown_icon = Material("icon16/emoticon_evilgrin.png")
     local Event = CLSCORE.DeclareEventDisplay
