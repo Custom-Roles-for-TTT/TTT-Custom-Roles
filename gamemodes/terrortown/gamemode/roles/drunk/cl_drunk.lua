@@ -53,7 +53,7 @@ end)
 -- Show the player's starting role color if they used to be a drunk
 -- Also if they were a drunk that changed to a jester role, keep them in the independent section in case there is another jester in the same round
 hook.Add("TTTScoringSummaryRender", "Drunk_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
-    if ply:GetNWBool("WasDrunk", false) then
+    if IsPlayer(ply) and ply:GetNWBool("WasDrunk", false) then
         local groupRole = groupingRole
         if JESTER_ROLES[finalRole] then
             groupRole = ROLE_DRUNK
