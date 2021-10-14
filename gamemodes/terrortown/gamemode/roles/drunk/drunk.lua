@@ -84,11 +84,6 @@ local function GetIndependentTeamDrunkExcludes()
         end
     end
 
-    -- Also exclude the mad scientist if zombies aren't independent (same as spawning logic)
-    if not INDEPENDENT_ROLES[ROLE_ZOMBIE] then
-        excludes[ROLE_MADSCIENTIST] = true
-    end
-
     return excludes
 end
 

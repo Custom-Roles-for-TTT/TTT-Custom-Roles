@@ -1505,10 +1505,7 @@ function SelectRoles()
         [ROLE_HYPNOTIST] = function() return not paramedic_only end,
         [ROLE_IMPERSONATOR] = function() return (detective_count > 0 or GetConVar("ttt_impersonator_without_detective"):GetBool()) and not deputy_only end,
         [ROLE_QUACK] = function() return not doctor_only end,
-        [ROLE_PARASITE] = function() return not phantom_only end,
-
-        -- Independents
-        [ROLE_MADSCIENTIST] = function() return INDEPENDENT_ROLES[ROLE_ZOMBIE] end
+        [ROLE_PARASITE] = function() return not phantom_only end
     }
     -- Merge in any role predicates
     table.Merge(rolePredicates, ROLE_SELECTION_PREDICATE)
