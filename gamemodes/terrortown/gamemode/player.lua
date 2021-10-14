@@ -14,14 +14,9 @@ CreateConVar("ttt_killer_dna_basetime", "100")
 
 local deadPhantoms = {}
 local deadParasites = {}
-local spirits = {}
 hook.Add("TTTPrepareRound", "CRPrepRoundCleanup", function()
     deadPhantoms = {}
     deadParasites = {}
-    for _, ent in pairs(spirits) do
-        SafeRemoveEntity(ent)
-    end
-    table.Empty(spirits)
 end)
 
 -- First spawn on the server
@@ -96,10 +91,6 @@ function GM:PlayerSpawn(ply)
 
     ply:UnSpectate()
 
-    local sid = ply:SteamID64()
-    SafeRemoveEntity(spirits[sid])
-    spirits[sid] = nil
-
     -- Don't run the normal loadout for a player being brought back from the dead. Just give them their stored weapons
     if ply.Resurrecting then
         -- If this player had a role weapon on them when they were killed, give it back
@@ -125,19 +116,6 @@ function GM:PlayerSpawn(ply)
     end
 
     SCORE:HandleSpawn(ply)
-end
-
-function GM:FinishMove(ply, mv)
-    if not IsValid(ply) or not ply:IsSpec() then return end
-
-    local spirit = spirits[ply:SteamID64()]
-    if not IsValid(spirit) then return end
-
-    spirit:SetPos(ply:GetPos())
-
-    local show = ply:GetObserverMode() == OBS_MODE_ROAMING
-
-    spirit:SetNWBool("MediumSpirit", show)
 end
 
 function GM:PlayerSetHandsModel(pl, ent)
@@ -532,10 +510,6 @@ function GM:PlayerDisconnected(ply)
     if IsValid(ply) then
         ply:SetRole(ROLE_NONE)
     end
-
-    local sid = ply:SteamID64()
-    SafeRemoveEntity(spirits[sid])
-    spirits[sid] = nil
 
     if GetRoundState() ~= ROUND_PREP then
         SendAllLists()
@@ -1188,27 +1162,6 @@ function GM:PlayerDeath(victim, infl, attacker)
                 end
             end
         end
-    end
-
-    -- Create spirit for the medium
-    local mediums = {}
-    for _, v in pairs(player.GetAll()) do
-        if v:IsMedium() then table.insert(mediums, v) end
-    end
-    if #mediums > 0 then
-        local spirit = ents.Create("npc_kleiner")
-        spirit:SetPos(victim:GetPos())
-        spirit:SetRenderMode(RENDERMODE_NONE)
-        spirit:SetNotSolid(true)
-        spirit:DrawShadow(false)
-        spirit:SetNWBool("MediumSpirit", true)
-        local col = Vector(1, 1, 1)
-        if GetConVar("ttt_medium_spirit_color"):GetBool() then
-            col = victim:GetNWVector("PlayerColor", Vector(1, 1, 1))
-        end
-        spirit:SetNWVector("SpiritColor", col)
-        spirit:Spawn()
-        spirits[victim:SteamID64()] = spirit
     end
 
     -- stop bleeding

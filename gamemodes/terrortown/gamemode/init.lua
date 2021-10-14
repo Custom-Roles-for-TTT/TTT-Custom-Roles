@@ -196,8 +196,6 @@ CreateConVar("ttt_paladin_heal_rate", "1")
 CreateConVar("ttt_paladin_protect_self", "0")
 CreateConVar("ttt_paladin_heal_self", "1")
 
-CreateConVar("ttt_medium_spirit_color", "1")
-
 -- Jester role properties
 CreateConVar("ttt_jesters_trigger_traitor_testers", "1")
 CreateConVar("ttt_jesters_visible_to_traitors", "1")

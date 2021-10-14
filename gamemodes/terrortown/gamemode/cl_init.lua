@@ -429,42 +429,6 @@ function GM:Think()
             end
         end
     end
-    if client:IsActiveMedium() then
-        for _, ent in pairs(ents.GetAll()) do
-            if ent:GetNWBool("MediumSpirit", false) then
-                ent:SetNoDraw(true)
-                ent:SetRenderMode(RENDERMODE_NONE)
-                ent:SetNotSolid(true)
-                ent:DrawShadow(false)
-                if not ent.WispEmitter then ent.WispEmitter = ParticleEmitter(ent:GetPos()) end
-                if not ent.WispNextPart then ent.WispNextPart = CurTime() end
-                local pos = ent:GetPos() + Vector(0, 0, 64)
-                if ent.WispNextPart < CurTime() then
-                    if client:GetPos():Distance(pos) <= 3000 then
-                        ent.WispEmitter:SetPos(pos)
-                        ent.WispNextPart = CurTime() + math.Rand(0.003, 0.01)
-                        local particle = ent.WispEmitter:Add("particle/wisp.vmt", pos)
-                        particle:SetVelocity(Vector(0, 0, 30))
-                        particle:SetDieTime(1)
-                        particle:SetStartAlpha(math.random(150, 220))
-                        particle:SetEndAlpha(0)
-                        local size = math.random(4, 7)
-                        particle:SetStartSize(size)
-                        particle:SetEndSize(1)
-                        particle:SetRoll(math.Rand(0, math.pi))
-                        particle:SetRollDelta(0)
-                        local col = ent:GetNWVector("SpiritColor", Vector(1, 1, 1))
-                        particle:SetColor(col.x * 255, col.y * 255, col.z * 255)
-                    end
-                end
-            else
-                if ent.WispEmitter then
-                    ent.WispEmitter:Finish()
-                    ent.WispEmitter = nil
-                end
-            end
-        end
-    end
 end
 
 function GM:Tick()

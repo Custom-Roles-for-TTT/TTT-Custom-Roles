@@ -1277,11 +1277,6 @@ DefaultEquipment = {
         EQUIP_RADAR
     },
 
-    [ROLE_MEDIUM] = {
-        EQUIP_ARMOR,
-        EQUIP_RADAR
-    },
-
     [ROLE_DEPUTY] = {
         EQUIP_ARMOR,
         EQUIP_RADAR

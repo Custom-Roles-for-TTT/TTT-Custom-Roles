@@ -706,12 +706,6 @@ Keep your friends close but definitely don't let your enemies closer!
 
 Press {menukey} to receive your equipment!]]
 
-L.info_popup_medium = [[You are {role}! As {adetective}, HQ has given you special resources to find the {traitors}.
-You can see the spirits of the dead. Follow the spirits
-to uncover secrets that were taken to the grave.
-
-Press {menukey} to receive your equipment!]]
-
 L.info_popup_monster_comrades = [[Work with your allies to kill all others.
 
 These are your comrades:
