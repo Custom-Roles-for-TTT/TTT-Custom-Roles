@@ -335,9 +335,7 @@ else
             local credits = "0"
             if ROLE_STARTING_CREDITS[role] then credits = ROLE_STARTING_CREDITS[role]
             elseif TRAITOR_ROLES[role] then credits = "1"
-            elseif DETECTIVE_ROLES[role] then credits = "1"
-            elseif role == ROLE_MERCENARY then credits = "1"
-            elseif role == ROLE_DOCTOR then credits = "1" end
+            elseif DETECTIVE_ROLES[role] then credits = "1" end
             CreateConVar("ttt_" .. rolestring .. "_credits_starting", credits, FCVAR_REPLICATED)
         end
     end
@@ -353,9 +351,7 @@ else
             CreateConVar("ttt_" .. rolestring .. "_shop_sync", "0", FCVAR_REPLICATED)
         end
 
-        if role == ROLE_MERCENARY then
-            CreateConVar("ttt_" .. rolestring .. "_shop_mode", "2", FCVAR_REPLICATED)
-        elseif (INDEPENDENT_ROLES[role] and role ~= ROLE_ZOMBIE) or DELAYED_SHOP_ROLES[role] then
+        if (INDEPENDENT_ROLES[role] and role ~= ROLE_ZOMBIE) or DELAYED_SHOP_ROLES[role] then
             CreateConVar("ttt_" .. rolestring .. "_shop_mode", "0", FCVAR_REPLICATED)
         end
 
@@ -1312,24 +1308,6 @@ DefaultEquipment = {
     },
 
     [ROLE_DEPUTY] = {
-        EQUIP_ARMOR,
-        EQUIP_RADAR
-    },
-
-    [ROLE_MERCENARY] = {
-        "weapon_ttt_health_station",
-        "weapon_ttt_teleport",
-        "weapon_ttt_confgrenade",
-        "weapon_ttt_m16",
-        "weapon_ttt_smokegrenade",
-        "weapon_zm_mac10",
-        "weapon_zm_molotov",
-        "weapon_zm_pistol",
-        "weapon_zm_revolver",
-        "weapon_zm_rifle",
-        "weapon_zm_shotgun",
-        "weapon_zm_sledge",
-        "weapon_ttt_glock",
         EQUIP_ARMOR,
         EQUIP_RADAR
     },

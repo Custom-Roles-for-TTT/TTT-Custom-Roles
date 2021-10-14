@@ -1,5 +1,7 @@
 AddCSLuaFile()
 
+-- Initialize role features
+ROLE_STARTING_CREDITS[ROLE_DOCTOR] = 1
 local function InitializeEquipment()
     if DefaultEquipment then
         DefaultEquipment[ROLE_DOCTOR] = {

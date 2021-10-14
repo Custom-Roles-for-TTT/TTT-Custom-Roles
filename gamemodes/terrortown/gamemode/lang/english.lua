@@ -696,10 +696,6 @@ be able to track down their killer and get your revenge.]]
 L.info_popup_deputy = [[You are {role}! If the {detective} dies you will take
 over and gain the ability to buy shop items and search bodies.]]
 
-L.info_popup_mercenary = [[You are {role}! Try to survive and help your {innocent} friends!
-
-Press {menukey} to receive your equipment!]]
-
 L.info_popup_veteran = [[You are {role}! You work best under pressure.
 If you are the last {innocent} player alive you will
 deal extra damage.]]
