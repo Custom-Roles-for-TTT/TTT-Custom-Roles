@@ -33,6 +33,7 @@
 - Fixed "beggar converted to innocent" entry in the round summary Events tab using the "traitor" icon
 - Fixed vampire eating a body not dropping bones
 - Fixed special detectives (paladin, medium, tracker) not counting as detectives in the ttt_logic_role entity
+- Fixed error when selecting weapon after respawning a parasite
 
 ### Developer
 - Added ability to define a role as on that wins passively (like the old man)

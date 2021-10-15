@@ -714,11 +714,14 @@ local function DoParasiteRespawn(parasite, attacker, hide_messages)
             parasite:SetPos(attacker:GetPos())
             parasite:SetEyeAngles(Angle(0, attacker:GetAngles().y, 0))
 
-            local weapons = attacker:GetWeapons()
-            local currentWeapon = attacker:GetActiveWeapon() or "weapon_zm_improvised"
+            local weaps = attacker:GetWeapons()
+            local currentWeapon = "weapon_zm_improvised"
+            if attacker:GetActiveWeapon() then
+                currentWeapon = WEPS.GetClass(attacker:GetActiveWeapon())
+            end
             attacker:StripAll()
             parasite:StripAll()
-            for _, v in ipairs(weapons) do
+            for _, v in ipairs(weaps) do
                 local wep_class = WEPS.GetClass(v)
                 parasite:Give(wep_class)
             end
