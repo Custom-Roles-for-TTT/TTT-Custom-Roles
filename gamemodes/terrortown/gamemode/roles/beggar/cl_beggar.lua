@@ -144,6 +144,11 @@ hook.Add("TTTTutorialRoleText", "Beggar_TTTTutorialRoleText", function(role, tit
         if GetGlobalBool("ttt_beggar_respawn", false) then
             html = html .. "<span style='display: block; margin-top: 10px;'>If the " .. ROLE_STRINGS[ROLE_BEGGAR] .. " is killed before they join a team, <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>they will respawn</span>"
 
+            local respawnLimit = GetGlobalInt("ttt_beggar_respawn_limit", 0)
+            if respawnLimit > 0 then
+                html = html .. " up to " .. respawnLimit .. " time(s)"
+            end
+
             local respawnDelay = GetGlobalInt("ttt_beggar_respawn_delay", 0)
             if respawnDelay > 0 then
                 html = html .. " after a " .. respawnDelay .. " second delay"

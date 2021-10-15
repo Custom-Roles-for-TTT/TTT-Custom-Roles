@@ -11,6 +11,7 @@
 - Added ability for a clown to see and use traitor traps when they activate (disabled by default)
 - Added ability to configure the amount of damage the killer's crowbar does (when bashing or throwing)
 - Added ability to configure the amount of damage the old man's shotgun does
+- Added ability to limit the number of times a beggar can respawn, if that is enabled (disabled by default)
 - Added ability to configure the amount of time the various role devices take to be used
   - Bodysnatching Device
   - Hypnotist's Brainwashing Device

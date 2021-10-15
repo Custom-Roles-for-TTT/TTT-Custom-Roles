@@ -7,19 +7,21 @@ util.AddNetworkString("TTT_BeggarKilled")
 -- CONVARS --
 -------------
 
-CreateConVar("ttt_beggar_reveal_traitor", "1", FCVAR_NONE, "Who the beggar is revealed to when they join the traitor team", 0, 3)
-CreateConVar("ttt_beggar_reveal_innocent", "2", FCVAR_NONE, "Who the beggar is revealed to when they join the innocent team", 0, 3)
-CreateConVar("ttt_beggar_respawn", "0")
-CreateConVar("ttt_beggar_respawn_delay", "3")
 CreateConVar("ttt_beggar_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the beggar is killed", 0, 4)
 CreateConVar("ttt_beggar_notify_sound", "0")
 CreateConVar("ttt_beggar_notify_confetti", "0")
+local beggar_reveal_traitor = CreateConVar("ttt_beggar_reveal_traitor", "1", FCVAR_NONE, "Who the beggar is revealed to when they join the traitor team", 0, 3)
+local beggar_reveal_innocent = CreateConVar("ttt_beggar_reveal_innocent", "2", FCVAR_NONE, "Who the beggar is revealed to when they join the innocent team", 0, 3)
+local beggar_respawn = CreateConVar("ttt_beggar_respawn", "0")
+local beggar_respawn_limit = CreateConVar("ttt_beggar_respawn_limit", "0")
+local beggar_respawn_delay = CreateConVar("ttt_beggar_respawn_delay", "3")
 
 hook.Add("TTTSyncGlobals", "Beggar_TTTSyncGlobals", function()
-    SetGlobalBool("ttt_beggar_respawn", GetConVar("ttt_beggar_respawn"):GetBool())
-    SetGlobalInt("ttt_beggar_respawn_delay", GetConVar("ttt_beggar_respawn_delay"):GetInt())
-    SetGlobalInt("ttt_beggar_reveal_traitor", GetConVar("ttt_beggar_reveal_traitor"):GetInt())
-    SetGlobalInt("ttt_beggar_reveal_innocent", GetConVar("ttt_beggar_reveal_innocent"):GetInt())
+    SetGlobalBool("ttt_beggar_respawn", beggar_respawn:GetBool())
+    SetGlobalInt("ttt_beggar_respawn_limit", beggar_respawn_limit:GetInt())
+    SetGlobalInt("ttt_beggar_respawn_delay", beggar_respawn_delay:GetInt())
+    SetGlobalInt("ttt_beggar_reveal_traitor", beggar_reveal_traitor:GetInt())
+    SetGlobalInt("ttt_beggar_reveal_innocent", beggar_reveal_innocent:GetInt())
 end)
 
 -------------------
@@ -37,10 +39,10 @@ hook.Add("WeaponEquip", "Beggar_WeaponEquip", function(wep, ply)
         local beggarMode
         if wep.BoughtBy:IsTraitorTeam() then
             role = ROLE_TRAITOR
-            beggarMode = GetConVar("ttt_beggar_reveal_traitor"):GetInt()
+            beggarMode = beggar_reveal_traitor:GetInt()
         else
             role = ROLE_INNOCENT
-            beggarMode = GetConVar("ttt_beggar_reveal_innocent"):GetInt()
+            beggarMode = beggar_reveal_innocent:GetInt()
         end
 
         ply:SetRole(role)
@@ -76,6 +78,11 @@ end)
 hook.Add("TTTPlayerRoleChanged", "Beggar_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if oldRole ~= ROLE_BEGGAR then
         ply:SetNWBool("WasBeggar", false)
+
+        -- Keep track of how many times they have respawned
+        if newRole == ROLE_BEGGAR then
+            ply.BeggarRespawn = 0
+        end
     end
 end)
 
@@ -98,8 +105,10 @@ hook.Add("PlayerDeath", "Beggar_KillCheck_PlayerDeath", function(victim, infl, a
 
     BeggarKilledNotification(attacker, victim)
 
-    if GetConVar("ttt_beggar_respawn"):GetBool() then
-        local delay = GetConVar("ttt_beggar_respawn_delay"):GetInt()
+    local respawnLimit = beggar_respawn_limit:GetInt()
+    if beggar_respawn:GetBool() and (respawnLimit == 0 or victim.BeggarRespawn < respawnLimit) then
+        victim.BeggarRespawn = victim.BeggarRespawn + 1
+        local delay = beggar_respawn_limit:GetInt()
         if delay > 0 then
             victim:PrintMessage(HUD_PRINTCENTER, "You were killed but will respawn in " .. delay .. " seconds.")
         else
