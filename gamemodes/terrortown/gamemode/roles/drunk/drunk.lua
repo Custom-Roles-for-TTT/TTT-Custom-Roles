@@ -8,11 +8,11 @@ util.AddNetworkString("TTT_DrunkSober")
 -- CONVARS --
 -------------
 
-CreateConVar("ttt_drunk_sober_time", "180")
-CreateConVar("ttt_drunk_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the drunk sobers up", 0, 4)
-CreateConVar("ttt_drunk_innocent_chance", "0.7")
-CreateConVar("ttt_drunk_become_clown", "0")
-CreateConVar("ttt_drunk_any_role", "0")
+local drunk_sober_time = CreateConVar("ttt_drunk_sober_time", "180")
+local drunk_notify_mode = CreateConVar("ttt_drunk_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the drunk sobers up", 0, 4)
+local drunk_innocent_chance = CreateConVar("ttt_drunk_innocent_chance", "0.7")
+local drunk_become_clown = CreateConVar("ttt_drunk_become_clown", "0")
+local drunk_any_role = CreateConVar("ttt_drunk_any_role", "0")
 for role = 0, ROLE_MAX do
     if role ~= ROLE_DRUNK and role ~= ROLE_GLITCH then
         CreateConVar("ttt_drunk_can_be_" .. ROLE_STRINGS_RAW[role], "1")
@@ -20,7 +20,7 @@ for role = 0, ROLE_MAX do
 end
 
 hook.Add("TTTSyncGlobals", "Drunk_TTTSyncGlobals", function()
-    SetGlobalBool("ttt_drunk_become_clown", GetConVar("ttt_drunk_become_clown"):GetBool())
+    SetGlobalBool("ttt_drunk_become_clown", drunk_become_clown:GetBool())
 end)
 
 -----------------------
@@ -116,7 +116,7 @@ function plymeta:SoberDrunk(team)
 
     local role = nil
     -- If any role is allowed
-    if GetConVar("ttt_drunk_any_role"):GetBool() then
+    if drunk_any_role:GetBool() then
         local role_options = {}
         -- Get the role options by team, if one was given
         if team then
@@ -135,7 +135,7 @@ function plymeta:SoberDrunk(team)
             end
         -- Or build a list of the options based on what team is randomly chosen (innocent vs. everything else)
         else
-            if math.random() <= GetConVar("ttt_drunk_innocent_chance"):GetFloat() then
+            if math.random() <= drunk_innocent_chance:GetFloat() then
                 role_options = GetTeamRoles(INNOCENT_ROLES, GetInnocentTeamDrunkExcludes())
             else
                 local excludes = GetIndependentTeamDrunkExcludes()
@@ -183,7 +183,7 @@ function plymeta:SoberDrunk(team)
         if team then
             role = team == ROLE_TEAM_TRAITOR and ROLE_TRAITOR or ROLE_INNOCENT
         -- If not, use randomization
-        elseif math.random() <= GetConVar("ttt_drunk_innocent_chance"):GetFloat() then
+        elseif math.random() <= drunk_innocent_chance:GetFloat() then
             role = ROLE_INNOCENT
         else
             role = ROLE_TRAITOR
@@ -203,7 +203,7 @@ function plymeta:DrunkRememberRole(role, hidecenter)
     if not hidecenter then self:PrintMessage(HUD_PRINTCENTER, "You have remembered that you are " .. ROLE_STRINGS_EXT[role] .. ".") end
     self:SetDefaultCredits()
 
-    local mode = GetConVar("ttt_drunk_notify_mode"):GetInt()
+    local mode = drunk_notify_mode:GetInt()
     if mode > 0 then
         for _, v in pairs(player.GetAll()) do
             if self ~= v then
@@ -238,8 +238,8 @@ function plymeta:DrunkRememberRole(role, hidecenter)
 end
 
 ROLE_ON_ROLE_ASSIGNED[ROLE_DRUNK] = function(ply)
-    SetGlobalFloat("ttt_drunk_remember", CurTime() + GetConVar("ttt_drunk_sober_time"):GetInt())
-    timer.Create("drunkremember", GetConVar("ttt_drunk_sober_time"):GetInt(), 1, function()
+    SetGlobalFloat("ttt_drunk_remember", CurTime() + drunk_sober_time:GetInt())
+    timer.Create("drunkremember", drunk_sober_time:GetInt(), 1, function()
         for _, p in pairs(player.GetAll()) do
             if p:IsActiveDrunk() then
                 p:SoberDrunk()
@@ -274,7 +274,7 @@ local function HandleDrunkWinBlock(win_type)
     if not IsPlayer(drunk) then return win_type end
 
     -- Make the drunk a clown
-    if GetConVar("ttt_drunk_become_clown"):GetBool() then
+    if drunk_become_clown:GetBool() then
         StopDrunkTimers()
         drunk:DrunkRememberRole(ROLE_CLOWN, true)
         return WIN_NONE

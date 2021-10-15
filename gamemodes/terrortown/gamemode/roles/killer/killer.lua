@@ -4,23 +4,23 @@ AddCSLuaFile()
 -- CONVARS --
 -------------
 
-CreateConVar("ttt_killer_knife_enabled", "1")
-CreateConVar("ttt_killer_crowbar_enabled", "1")
-CreateConVar("ttt_killer_smoke_enabled", "1")
-CreateConVar("ttt_killer_smoke_timer", "60")
-CreateConVar("ttt_killer_show_target_icon", "1")
-CreateConVar("ttt_killer_damage_penalty", "0.25")
-CreateConVar("ttt_killer_damage_reduction", "0")
-CreateConVar("ttt_killer_warn_all", "0")
-CreateConVar("ttt_killer_vision_enable", "1")
-CreateConVar("ttt_killer_update_scoreboard", "1")
+local killer_knife_enabled = CreateConVar("ttt_killer_knife_enabled", "1")
+local killer_crowbar_enabled = CreateConVar("ttt_killer_crowbar_enabled", "1")
+local killer_smoke_enabled = CreateConVar("ttt_killer_smoke_enabled", "1")
+local killer_smoke_timer = CreateConVar("ttt_killer_smoke_timer", "60")
+local killer_show_target_icon = CreateConVar("ttt_killer_show_target_icon", "1")
+local killer_damage_penalty = CreateConVar("ttt_killer_damage_penalty", "0.25")
+local killer_damage_reduction = CreateConVar("ttt_killer_damage_reduction", "0")
+local killer_warn_all = CreateConVar("ttt_killer_warn_all", "0")
+local killer_vision_enable = CreateConVar("ttt_killer_vision_enable", "1")
+local killer_update_scoreboard = CreateConVar("ttt_killer_update_scoreboard", "1")
 
 hook.Add("TTTSyncGlobals", "Killer_TTTSyncGlobals", function()
-    SetGlobalBool("ttt_killer_show_target_icon", GetConVar("ttt_killer_show_target_icon"):GetBool())
-    SetGlobalBool("ttt_killer_vision_enable", GetConVar("ttt_killer_vision_enable"):GetBool())
-    SetGlobalBool("ttt_killer_knife_enabled", GetConVar("ttt_killer_knife_enabled"):GetBool())
-    SetGlobalBool("ttt_killer_smoke_enabled", GetConVar("ttt_killer_smoke_enabled"):GetBool())
-    SetGlobalBool("ttt_killer_update_scoreboard", GetConVar("ttt_killer_update_scoreboard"):GetBool())
+    SetGlobalBool("ttt_killer_show_target_icon", killer_show_target_icon:GetBool())
+    SetGlobalBool("ttt_killer_vision_enable", killer_vision_enable:GetBool())
+    SetGlobalBool("ttt_killer_knife_enabled", killer_knife_enabled:GetBool())
+    SetGlobalBool("ttt_killer_smoke_enabled", killer_smoke_enabled:GetBool())
+    SetGlobalBool("ttt_killer_update_scoreboard", killer_update_scoreboard:GetBool())
 end)
 
 -----------
@@ -59,7 +59,7 @@ local function HandleKillerSmokeTick()
 
     timer.Create("KillerTick", 0.1, 0, function()
         if GetRoundState() == ROUND_ACTIVE then
-            if killerSmokeTime >= GetConVar("ttt_killer_smoke_timer"):GetInt() then
+            if killerSmokeTime >= killer_smoke_timer:GetInt() then
                 for _, v in pairs(player.GetAll()) do
                     if not IsValid(v) then return end
                     if v:IsKiller() and v:Alive() and not v:GetNWBool("KillerSmoke", false) then
@@ -80,11 +80,11 @@ end
 -- Warn the player periodically if they are going to start smoking
 timer.Create("KillerKillCheckTimer", 1, 0, function()
     local killer = player.GetLivingRole(ROLE_KILLER)
-    if GetRoundState() == ROUND_ACTIVE and GetConVar("ttt_killer_smoke_enabled"):GetBool() and killer ~= nil then
+    if GetRoundState() == ROUND_ACTIVE and killer_smoke_enabled:GetBool() and killer ~= nil then
         killerSmokeTime = killerSmokeTime + 1
 
         -- Warn the killer that they need to kill at 1/2 time remaining, 1/4 time remaining, 10 seconds remaining, and 5 seconds remaining
-        local smoke_timer = GetConVar("ttt_killer_smoke_timer"):GetInt()
+        local smoke_timer = killer_smoke_timer:GetInt()
         local timer_remaining = smoke_timer - killerSmokeTime
         local timer_fraction = (timer_remaining / smoke_timer)
         -- Don't do the 1/2 and 1/4 checks if they represent < 10 seconds
@@ -212,13 +212,13 @@ hook.Add("ScalePlayerDamage", "Killer_ScalePlayerDamage", function(ply, hitgroup
     if IsPlayer(att) and GetRoundState() >= ROUND_ACTIVE then
         -- Killers do less damage to encourage using the knife
         if dmginfo:IsBulletDamage() and att:IsKiller() then
-            local penalty = GetConVar("ttt_killer_damage_penalty"):GetFloat()
+            local penalty = killer_damage_penalty:GetFloat()
             dmginfo:ScaleDamage(1 - penalty)
         end
 
         -- Killers take less bullet damage
         if dmginfo:IsBulletDamage() and ply:IsKiller() then
-            local reduction = GetConVar("ttt_killer_damage_reduction"):GetFloat()
+            local reduction = killer_damage_reduction:GetFloat()
             dmginfo:ScaleDamage(1 - reduction)
         end
     end
@@ -234,10 +234,10 @@ hook.Add("TTTPlayerAliveThink", "Killer_TTTPlayerAliveThink", function(ply)
 
     if ply:IsKiller() then
         -- Ensure the Killer has their knife, if its enabled
-        if not ply:HasWeapon("weapon_kil_knife") and GetConVar("ttt_killer_knife_enabled"):GetBool() then
+        if not ply:HasWeapon("weapon_kil_knife") and killer_knife_enabled:GetBool() then
             ply:Give("weapon_kil_knife")
         end
-        if ply:HasWeapon("weapon_zm_improvised") and not ply:HasWeapon("weapon_kil_crowbar") and GetConVar("ttt_killer_crowbar_enabled"):GetBool() then
+        if ply:HasWeapon("weapon_zm_improvised") and not ply:HasWeapon("weapon_kil_crowbar") and killer_crowbar_enabled:GetBool() then
             ply:StripWeapon("weapon_zm_improvised")
             ply:Give("weapon_kil_crowbar")
             ply:SelectWeapon("weapon_kil_crowbar")
@@ -249,10 +249,10 @@ end)
 hook.Add("PlayerLoadout", "Killer_PlayerLoadout", function(ply)
     if not IsPlayer(ply) or not ply:Alive() or ply:IsSpec() or not ply:IsKiller() or GetRoundState() ~= ROUND_ACTIVE then return end
 
-    if GetConVar("ttt_killer_knife_enabled"):GetBool() then
+    if killer_knife_enabled:GetBool() then
         ply:Give("weapon_kil_knife")
     end
-    if GetConVar("ttt_killer_crowbar_enabled"):GetBool() then
+    if killer_crowbar_enabled:GetBool() then
         local had_crowbar_out = WEPS.GetClass(ply:GetActiveWeapon()) == "weapon_zm_improvised"
         ply:StripWeapon("weapon_zm_improvised")
         ply:Give("weapon_kil_crowbar")
@@ -296,7 +296,7 @@ hook.Add("TTTBeginRound", "Killer_Announce_TTTBeginRound", function()
             for _, v in ipairs(plys) do
                 local isTraitor = v:IsTraitorTeam()
                 -- Warn this player about the Killer if they are a traitor or we are configured to warn everyone
-                if not v:IsKiller() and (isTraitor or GetConVar("ttt_killer_warn_all"):GetBool()) then
+                if not v:IsKiller() and (isTraitor or killer_warn_all:GetBool()) then
                     v:PrintMessage(HUD_PRINTTALK, "There is " .. ROLE_STRINGS_EXT[ROLE_KILLER] .. ".")
                     -- Only delay this if the player is a traitor and there is a glitch
                     -- This gives time for the glitch warning to go away

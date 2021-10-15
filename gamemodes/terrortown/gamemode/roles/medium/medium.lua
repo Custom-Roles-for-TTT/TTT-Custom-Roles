@@ -4,10 +4,10 @@ AddCSLuaFile()
 -- CONVARS --
 -------------
 
-CreateConVar("ttt_medium_spirit_color", "1")
+local medium_spirit_color = CreateConVar("ttt_medium_spirit_color", "1")
 
 hook.Add("TTTSyncGlobals", "Medium_TTTSyncGlobals", function()
-    SetGlobalBool("ttt_medium_spirit_color", GetConVar("ttt_medium_spirit_color"):GetBool())
+    SetGlobalBool("ttt_medium_spirit_color", medium_spirit_color:GetBool())
 end)
 
 -------------------
@@ -60,7 +60,7 @@ hook.Add("PlayerDeath", "Medium_Spirits_PlayerDeath", function(victim, infl, att
         spirit:DrawShadow(false)
         spirit:SetNWBool("MediumSpirit", true)
         local col = Vector(1, 1, 1)
-        if GetConVar("ttt_medium_spirit_color"):GetBool() then
+        if medium_spirit_color:GetBool() then
             col = victim:GetNWVector("PlayerColor", Vector(1, 1, 1))
         end
         spirit:SetNWVector("SpiritColor", col)

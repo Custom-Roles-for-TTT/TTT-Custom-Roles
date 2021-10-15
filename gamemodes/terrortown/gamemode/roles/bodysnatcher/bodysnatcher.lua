@@ -4,20 +4,20 @@ AddCSLuaFile()
 -- CONVARS --
 -------------
 
-CreateConVar("ttt_bodysnatchers_are_independent", "0")
 CreateConVar("ttt_bodysnatcher_destroy_body", "0")
 CreateConVar("ttt_bodysnatcher_show_role", "1")
-CreateConVar("ttt_bodysnatcher_reveal_traitor", "1", FCVAR_NONE, "Who the bodysnatcher is revealed to when they join the traitor team", 0, 2)
-CreateConVar("ttt_bodysnatcher_reveal_innocent", "1", FCVAR_NONE, "Who the bodysnatcher is revealed to when they join the innocent team", 0, 2)
-CreateConVar("ttt_bodysnatcher_reveal_monster", "1", FCVAR_NONE, "Who the bodysnatcher is revealed to when they join the monster team", 0, 2)
-CreateConVar("ttt_bodysnatcher_reveal_independent", "1", FCVAR_NONE, "Who the bodysnatcher is revealed to when they join the independent team", 0, 2)
+local bodysnatchers_are_independent = CreateConVar("ttt_bodysnatchers_are_independent", "0")
+local bodysnatcher_reveal_traitor = CreateConVar("ttt_bodysnatcher_reveal_traitor", "1", FCVAR_NONE, "Who the bodysnatcher is revealed to when they join the traitor team", 0, 2)
+local bodysnatcher_reveal_innocent = CreateConVar("ttt_bodysnatcher_reveal_innocent", "1", FCVAR_NONE, "Who the bodysnatcher is revealed to when they join the innocent team", 0, 2)
+local bodysnatcher_reveal_monster = CreateConVar("ttt_bodysnatcher_reveal_monster", "1", FCVAR_NONE, "Who the bodysnatcher is revealed to when they join the monster team", 0, 2)
+local bodysnatcher_reveal_independent = CreateConVar("ttt_bodysnatcher_reveal_independent", "1", FCVAR_NONE, "Who the bodysnatcher is revealed to when they join the independent team", 0, 2)
 
 hook.Add("TTTSyncGlobals", "Bodysnatcher_TTTSyncGlobals", function()
-    SetGlobalBool("ttt_bodysnatchers_are_independent", GetConVar("ttt_bodysnatchers_are_independent"):GetBool())
-    SetGlobalInt("ttt_bodysnatcher_reveal_traitor", GetConVar("ttt_bodysnatcher_reveal_traitor"):GetInt())
-    SetGlobalInt("ttt_bodysnatcher_reveal_innocent", GetConVar("ttt_bodysnatcher_reveal_innocent"):GetInt())
-    SetGlobalInt("ttt_bodysnatcher_reveal_monster", GetConVar("ttt_bodysnatcher_reveal_monster"):GetInt())
-    SetGlobalInt("ttt_bodysnatcher_reveal_independent", GetConVar("ttt_bodysnatcher_reveal_independent"):GetInt())
+    SetGlobalBool("ttt_bodysnatchers_are_independent", bodysnatchers_are_independent:GetBool())
+    SetGlobalInt("ttt_bodysnatcher_reveal_traitor", bodysnatcher_reveal_traitor:GetInt())
+    SetGlobalInt("ttt_bodysnatcher_reveal_innocent", bodysnatcher_reveal_innocent:GetInt())
+    SetGlobalInt("ttt_bodysnatcher_reveal_monster", bodysnatcher_reveal_monster:GetInt())
+    SetGlobalInt("ttt_bodysnatcher_reveal_independent", bodysnatcher_reveal_independent:GetInt())
 end)
 
 ----------------

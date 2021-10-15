@@ -4,12 +4,12 @@ AddCSLuaFile()
 -- CONVARS --
 -------------
 
-CreateConVar("ttt_tracker_footstep_time", "15")
-CreateConVar("ttt_tracker_footstep_color", "1")
+local tracker_footstep_time = CreateConVar("ttt_tracker_footstep_time", "15")
+local tracker_footstep_color = CreateConVar("ttt_tracker_footstep_color", "1")
 
 hook.Add("TTTSyncGlobals", "Tracker_TTTSyncGlobals", function()
-    SetGlobalInt("ttt_tracker_footstep_time", GetConVar("ttt_tracker_footstep_time"):GetInt())
-    SetGlobalBool("ttt_tracker_footstep_color", GetConVar("ttt_tracker_footstep_color"):GetBool())
+    SetGlobalInt("ttt_tracker_footstep_time", tracker_footstep_time:GetInt())
+    SetGlobalBool("ttt_tracker_footstep_color", tracker_footstep_color:GetBool())
 end)
 
 -------------------
@@ -22,8 +22,8 @@ hook.Add("PlayerFootstep", "Tracker_PlayerFootstep", function(ply, pos, foot, so
     -- Trackers don't see their own footsteps
     if ply:IsTracker() then return end
 
-    local tracker_footstep_time = GetConVar("ttt_tracker_footstep_time"):GetInt()
-    if tracker_footstep_time <= 0 then return end
+    local footstep_time = tracker_footstep_time:GetInt()
+    if footstep_time <= 0 then return end
 
     net.Start("TTT_PlayerFootstep")
     net.WriteEntity(ply)
@@ -31,11 +31,11 @@ hook.Add("PlayerFootstep", "Tracker_PlayerFootstep", function(ply, pos, foot, so
     net.WriteAngle(ply:GetAimVector():Angle())
     net.WriteBit(foot)
     local col = Vector(1, 1, 1)
-    if GetConVar("ttt_tracker_footstep_color"):GetBool() then
+    if tracker_footstep_color:GetBool() then
         col = ply:GetNWVector("PlayerColor", Vector(1, 1, 1))
     end
     net.WriteTable(Color(col.x * 255, col.y * 255, col.z * 255))
-    net.WriteUInt(tracker_footstep_time, 8)
+    net.WriteUInt(footstep_time, 8)
     local tab = {}
     for k, p in pairs(player.GetAll()) do
         if p:IsActiveTracker() then

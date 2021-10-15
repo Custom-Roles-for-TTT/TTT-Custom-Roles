@@ -4,14 +4,14 @@ AddCSLuaFile()
 -- CONVARS --
 -------------
 
-CreateConVar("ttt_veteran_damage_bonus", "0.5")
-CreateConVar("ttt_veteran_full_heal", "1")
-CreateConVar("ttt_veteran_heal_bonus", "0")
-CreateConVar("ttt_veteran_announce", "0")
-CreateConVar("ttt_veteran_activation_credits", "0")
+local veteran_damage_bonus = CreateConVar("ttt_veteran_damage_bonus", "0.5")
+local veteran_full_heal = CreateConVar("ttt_veteran_full_heal", "1")
+local veteran_heal_bonus = CreateConVar("ttt_veteran_heal_bonus", "0")
+local veteran_announce = CreateConVar("ttt_veteran_announce", "0")
+local veteran_activation_credits = CreateConVar("ttt_veteran_activation_credits", "0")
 
 hook.Add("TTTSyncGlobals", "Veteran_TTTSyncGlobals", function()
-    SetGlobalBool("ttt_veteran_full_heal", GetConVar("ttt_veteran_full_heal"):GetBool())
+    SetGlobalBool("ttt_veteran_full_heal", veteran_full_heal:GetBool())
 end)
 
 -----------------
@@ -29,11 +29,11 @@ hook.Add("PlayerDeath", "Veteran_RoleFeatures_PlayerDeath", function(victim, inf
         for _, v in pairs(veterans) do
             if not v:IsRoleActive() then
                 v:SetNWBool("VeteranActive", true)
-                v:AddCredits(GetConVar("ttt_veteran_activation_credits"):GetInt())
+                v:AddCredits(veteran_activation_credits:GetInt())
 
                 v:PrintMessage(HUD_PRINTTALK, "You are the last " .. ROLE_STRINGS[ROLE_INNOCENT] .. " alive!")
                 v:PrintMessage(HUD_PRINTCENTER, "You are the last " .. ROLE_STRINGS[ROLE_INNOCENT] .. " alive!")
-                if GetConVar("ttt_veteran_announce"):GetBool() then
+                if veteran_announce:GetBool() then
                     for _, p in ipairs(player.GetAll()) do
                         if p ~= v and p:Alive() and not p:IsSpec() then
                             p:PrintMessage(HUD_PRINTTALK, "The last " .. ROLE_STRINGS[ROLE_INNOCENT] .. " alive is " .. ROLE_STRINGS_EXT[ROLE_VETERAN] .. "!")
@@ -42,8 +42,8 @@ hook.Add("PlayerDeath", "Veteran_RoleFeatures_PlayerDeath", function(victim, inf
                     end
                 end
 
-                if GetConVar("ttt_veteran_full_heal"):GetBool() then
-                    local heal_bonus = GetConVar("ttt_veteran_heal_bonus"):GetInt()
+                if veteran_full_heal:GetBool() then
+                    local heal_bonus = veteran_heal_bonus:GetInt()
                     local health = math.min(v:GetMaxHealth(), 100) + heal_bonus
 
                     v:SetHealth(health)
@@ -68,7 +68,7 @@ hook.Add("ScalePlayerDamage", "Veteran_ScalePlayerDamage", function(ply, hitgrou
     if IsPlayer(att) and GetRoundState() >= ROUND_ACTIVE then
         -- Veterans deal extra damage if they are the last innocent alive
         if att:IsVeteran() and att:IsRoleActive() then
-            local bonus = GetConVar("ttt_veteran_damage_bonus"):GetFloat()
+            local bonus = veteran_damage_bonus:GetFloat()
             dmginfo:ScaleDamage(1 + bonus)
         end
     end

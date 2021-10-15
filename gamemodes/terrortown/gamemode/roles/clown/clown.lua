@@ -8,18 +8,18 @@ resource.AddSingleFile("sound/clown.wav")
 -- CONVARS --
 -------------
 
-CreateConVar("ttt_clown_damage_bonus", "0")
-CreateConVar("ttt_clown_activation_credits", "0")
-CreateConVar("ttt_clown_hide_when_active", "0")
-CreateConVar("ttt_clown_use_traps_when_active", "0")
-CreateConVar("ttt_clown_show_target_icon", "0")
-CreateConVar("ttt_clown_heal_on_activate", "0")
-CreateConVar("ttt_clown_heal_bonus", "0")
+local clown_damage_bonus = CreateConVar("ttt_clown_damage_bonus", "0")
+local clown_activation_credits = CreateConVar("ttt_clown_activation_credits", "0")
+local clown_hide_when_active = CreateConVar("ttt_clown_hide_when_active", "0")
+local clown_use_traps_when_active = CreateConVar("ttt_clown_use_traps_when_active", "0")
+local clown_show_target_icon = CreateConVar("ttt_clown_show_target_icon", "0")
+local clown_heal_on_activate = CreateConVar("ttt_clown_heal_on_activate", "0")
+local clown_heal_bonus = CreateConVar("ttt_clown_heal_bonus", "0")
 
 hook.Add("TTTSyncGlobals", "Clown_TTTSyncGlobals", function()
-    SetGlobalBool("ttt_clown_show_target_icon", GetConVar("ttt_clown_show_target_icon"):GetBool())
-    SetGlobalBool("ttt_clown_hide_when_active", GetConVar("ttt_clown_hide_when_active"):GetBool())
-    SetGlobalBool("ttt_clown_use_traps_when_active", GetConVar("ttt_clown_use_traps_when_active"):GetBool())
+    SetGlobalBool("ttt_clown_show_target_icon", clown_show_target_icon:GetBool())
+    SetGlobalBool("ttt_clown_hide_when_active", clown_hide_when_active:GetBool())
+    SetGlobalBool("ttt_clown_use_traps_when_active", clown_use_traps_when_active:GetBool())
 end)
 
 ----------------
@@ -39,9 +39,9 @@ local function HandleClownWinBlock(win_type)
         clown:SetNWBool("KillerClownActive", true)
         clown:PrintMessage(HUD_PRINTTALK, "KILL THEM ALL!")
         clown:PrintMessage(HUD_PRINTCENTER, "KILL THEM ALL!")
-        clown:AddCredits(GetConVar("ttt_clown_activation_credits"):GetInt())
-        if GetConVar("ttt_clown_heal_on_activate"):GetBool() then
-            local heal_bonus = GetConVar("ttt_clown_heal_bonus"):GetInt()
+        clown:AddCredits(clown_activation_credits:GetInt())
+        if clown_heal_on_activate:GetBool() then
+            local heal_bonus = clown_heal_bonus:GetInt()
             local health = clown:GetMaxHealth() + heal_bonus
 
             clown:SetHealth(health)
@@ -123,7 +123,7 @@ hook.Add("ScalePlayerDamage", "Clown_ScalePlayerDamage", function(ply, hitgroup,
     if IsPlayer(att) and GetRoundState() >= ROUND_ACTIVE then
         -- Clowns deal extra damage when they are active
         if att:IsClown() and att:IsRoleActive() then
-            local bonus = GetConVar("ttt_clown_damage_bonus"):GetFloat()
+            local bonus = clown_damage_bonus:GetFloat()
             dmginfo:ScaleDamage(1 + bonus)
         end
     end

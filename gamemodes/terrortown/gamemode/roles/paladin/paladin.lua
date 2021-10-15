@@ -4,16 +4,16 @@ AddCSLuaFile()
 -- CONVARS --
 -------------
 
-CreateConVar("ttt_paladin_aura_radius", "5")
-CreateConVar("ttt_paladin_damage_reduction", "0.3")
-CreateConVar("ttt_paladin_heal_rate", "1")
-CreateConVar("ttt_paladin_protect_self", "0")
-CreateConVar("ttt_paladin_heal_self", "1")
+local paladin_aura_radius = CreateConVar("ttt_paladin_aura_radius", "5")
+local paladin_damage_reduction = CreateConVar("ttt_paladin_damage_reduction", "0.3")
+local paladin_heal_rate = CreateConVar("ttt_paladin_heal_rate", "1")
+local paladin_protect_self = CreateConVar("ttt_paladin_protect_self", "0")
+local paladin_heal_self = CreateConVar("ttt_paladin_heal_self", "1")
 
 hook.Add("TTTSyncGlobals", "Paladin_TTTSyncGlobals", function()
-    SetGlobalFloat("ttt_paladin_aura_radius", GetConVar("ttt_paladin_aura_radius"):GetInt() * 52.49)
-    SetGlobalBool("ttt_paladin_protect_self", GetConVar("ttt_paladin_protect_self"):GetBool())
-    SetGlobalBool("ttt_paladin_heal_self", GetConVar("ttt_paladin_heal_self"):GetBool())
+    SetGlobalFloat("ttt_paladin_aura_radius", paladin_aura_radius:GetInt() * 52.49)
+    SetGlobalBool("ttt_paladin_protect_self", paladin_protect_self:GetBool())
+    SetGlobalBool("ttt_paladin_heal_self", paladin_heal_self:GetBool())
 end)
 
 -------------------
@@ -21,8 +21,8 @@ end)
 -------------------
 
 hook.Add("TTTBeginRound", "Paladin_RoleFeatures_TTTBeginRound", function()
-    local paladinHeal = GetConVar("ttt_paladin_heal_rate"):GetInt()
-    local paladinHealSelf = GetConVar("ttt_paladin_heal_self"):GetBool()
+    local paladinHeal = paladin_heal_rate:GetInt()
+    local paladinHealSelf = paladin_heal_self:GetBool()
     local paladinRadius = GetGlobalFloat("ttt_paladin_aura_radius", 262.45)
     timer.Create("paladinheal", 1, 0, function()
         for _, p in pairs(player.GetAll()) do
@@ -49,7 +49,7 @@ end)
 hook.Add("ScalePlayerDamage", "Paladin_ScalePlayerDamage", function(ply, hitgroup, dmginfo)
     local att = dmginfo:GetAttacker()
     if IsPlayer(att) and GetRoundState() >= ROUND_ACTIVE then
-        if not ply:IsPaladin() or GetConVar("ttt_paladin_protect_self"):GetBool() then
+        if not ply:IsPaladin() or paladin_protect_self:GetBool() then
             local withPaladin = false
             local radius = GetGlobalFloat("ttt_paladin_aura_radius", 262.45)
             for _, v in pairs(player.GetAll()) do
@@ -59,7 +59,7 @@ hook.Add("ScalePlayerDamage", "Paladin_ScalePlayerDamage", function(ply, hitgrou
                 end
             end
             if withPaladin and not att:IsPaladin() then
-                local reduction = GetConVar("ttt_paladin_damage_reduction"):GetFloat()
+                local reduction = paladin_damage_reduction:GetFloat()
                 dmginfo:ScaleDamage(1 - reduction)
             end
         end

@@ -6,15 +6,15 @@ util.AddNetworkString("TTT_SwapperSwapped")
 -- CONVARS --
 -------------
 
-CreateConVar("ttt_swapper_killer_health", "100")
-CreateConVar("ttt_swapper_respawn_health", "100")
-CreateConVar("ttt_swapper_weapon_mode", "1", FCVAR_NONE, "How to handle weapons when the swapper is killed", 0, 2)
 CreateConVar("ttt_swapper_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the swapper is killed", 0, 4)
 CreateConVar("ttt_swapper_notify_sound", "0")
 CreateConVar("ttt_swapper_notify_confetti", "0")
+local swapper_killer_health = CreateConVar("ttt_swapper_killer_health", "100")
+local swapper_respawn_health = CreateConVar("ttt_swapper_respawn_health", "100")
+local swapper_weapon_mode = CreateConVar("ttt_swapper_weapon_mode", "1", FCVAR_NONE, "How to handle weapons when the swapper is killed", 0, 2)
 
 hook.Add("TTTSyncGlobals", "Swapper_TTTSyncGlobals", function()
-    SetGlobalInt("ttt_swapper_killer_health", GetConVar("ttt_swapper_killer_health"):GetInt())
+    SetGlobalInt("ttt_swapper_killer_health", swapper_killer_health:GetInt())
 end)
 
 -----------------
@@ -92,7 +92,7 @@ hook.Add("PlayerDeath", "Swapper_KillCheck_PlayerDeath", function(victim, infl, 
     attacker:SetNWString("SwappedWith", victim:Nick())
 
     -- Only bother saving the attacker weapons if we're going to do something with them
-    local weapon_mode = GetConVar("ttt_swapper_weapon_mode"):GetInt()
+    local weapon_mode = swapper_weapon_mode:GetInt()
     local attacker_weapons = nil
     if weapon_mode > SWAPPER_WEAPON_NONE then
         attacker_weapons = GetPlayerWeaponInfo(attacker)
@@ -103,7 +103,7 @@ hook.Add("PlayerDeath", "Swapper_KillCheck_PlayerDeath", function(victim, infl, 
         local body = victim.server_ragdoll or victim:GetRagdollEntity()
         victim:SetRole(attacker:GetRole())
         victim:SpawnForRound(true)
-        victim:SetHealth(GetConVar("ttt_swapper_respawn_health"):GetInt())
+        victim:SetHealth(swapper_respawn_health:GetInt())
         if IsValid(body) then
             victim:SetPos(FindRespawnLocation(body:GetPos()) or body:GetPos())
             victim:SetEyeAngles(Angle(0, body:GetAngles().y, 0))
@@ -114,7 +114,7 @@ hook.Add("PlayerDeath", "Swapper_KillCheck_PlayerDeath", function(victim, infl, 
         attacker:MoveRoleState(victim)
         SendFullStateUpdate()
 
-        local health = GetConVar("ttt_swapper_killer_health"):GetInt()
+        local health = swapper_killer_health:GetInt()
         if health == 0 then
             attacker:Kill()
         else

@@ -12,25 +12,25 @@ resource.AddSingleFile("sound/weapons/ttt/vampireeat.wav")
 -- CONVARS --
 -------------
 
-CreateConVar("ttt_vampires_are_monsters", "0")
-CreateConVar("ttt_vampires_are_independent", "0")
-CreateConVar("ttt_vampire_show_target_icon", "0")
-CreateConVar("ttt_vampire_damage_reduction", "0")
-CreateConVar("ttt_vampire_prime_death_mode", "0")
-CreateConVar("ttt_vampire_vision_enable", "0")
-CreateConVar("ttt_vampire_kill_credits", "1")
-CreateConVar("ttt_vampire_loot_credits", "1")
+local vampires_are_monsters = CreateConVar("ttt_vampires_are_monsters", "0")
+local vampires_are_independent = CreateConVar("ttt_vampires_are_independent", "0")
+local vampire_show_target_icon = CreateConVar("ttt_vampire_show_target_icon", "0")
+local vampire_damage_reduction = CreateConVar("ttt_vampire_damage_reduction", "0")
+local vampire_prime_death_mode = CreateConVar("ttt_vampire_prime_death_mode", "0")
+local vampire_vision_enable = CreateConVar("ttt_vampire_vision_enable", "0")
+local vampire_kill_credits = CreateConVar("ttt_vampire_kill_credits", "1")
+local vampire_loot_credits = CreateConVar("ttt_vampire_loot_credits", "1")
 
 hook.Add("TTTSyncGlobals", "Vampire_TTTSyncGlobals", function()
-    SetGlobalBool("ttt_vampires_are_monsters", GetConVar("ttt_vampires_are_monsters"):GetBool())
-    SetGlobalBool("ttt_vampires_are_independent", GetConVar("ttt_vampires_are_independent"):GetBool())
-    SetGlobalBool("ttt_vampire_show_target_icon", GetConVar("ttt_vampire_show_target_icon"):GetBool())
-    SetGlobalBool("ttt_vampire_vision_enable", GetConVar("ttt_vampire_vision_enable"):GetBool())
+    SetGlobalBool("ttt_vampires_are_monsters", vampires_are_monsters:GetBool())
+    SetGlobalBool("ttt_vampires_are_independent", vampires_are_independent:GetBool())
+    SetGlobalBool("ttt_vampire_show_target_icon", vampire_show_target_icon:GetBool())
+    SetGlobalBool("ttt_vampire_vision_enable", vampire_vision_enable:GetBool())
     SetGlobalBool("ttt_vampire_convert_enable", GetConVar("ttt_vampire_convert_enable"):GetBool())
     SetGlobalBool("ttt_vampire_drain_enable", GetConVar("ttt_vampire_drain_enable"):GetBool())
     SetGlobalBool("ttt_vampire_prime_only_convert", GetConVar("ttt_vampire_prime_only_convert"):GetBool())
-    SetGlobalBool("ttt_vampire_loot_credits", GetConVar("ttt_vampire_loot_credits"):GetBool())
-    SetGlobalInt("ttt_vampire_prime_death_mode", GetConVar("ttt_vampire_prime_death_mode"):GetInt())
+    SetGlobalBool("ttt_vampire_loot_credits", vampire_loot_credits:GetBool())
+    SetGlobalInt("ttt_vampire_prime_death_mode", vampire_prime_death_mode:GetInt())
 end)
 
 -------------
@@ -53,8 +53,8 @@ hook.Add("DoPlayerDeath", "Vampire_Credits_DoPlayerDeath", function(victim, atta
     if not IsValid(victim) then return end
 
     local valid_attacker = IsPlayer(attacker)
-    local vampire_kill_credits = GetConVar("ttt_vampire_kill_credits"):GetBool()
-    if vampire_kill_credits and valid_attacker and not TRAITOR_ROLES[ROLE_VAMPIRE] and attacker:IsActiveVampire() and (not (victim:IsMonsterTeam() or victim:IsJesterTeam())) and (not GAMEMODE.AwardedVampireCredits or GetConVar("ttt_credits_award_repeat"):GetBool()) then
+    local kill_credits = vampire_kill_credits:GetBool()
+    if kill_credits and valid_attacker and not TRAITOR_ROLES[ROLE_VAMPIRE] and attacker:IsActiveVampire() and (not (victim:IsMonsterTeam() or victim:IsJesterTeam())) and (not GAMEMODE.AwardedVampireCredits or GetConVar("ttt_credits_award_repeat"):GetBool()) then
         local ply_alive = 0
         local ply_dead = 0
         local ply_total = 0
@@ -108,9 +108,9 @@ end)
 
 -- Handle when the prime dies
 hook.Add("PlayerDeath", "Vampire_PrimeDeath_PlayerDeath", function(victim, infl, attacker)
-    local vamp_prime_death_mode = GetConVar("ttt_vampire_prime_death_mode"):GetFloat()
+    local prime_death_mode = vampire_prime_death_mode:GetFloat()
     -- If the prime died and we're doing something when that happens
-    if victim:IsVampirePrime() and vamp_prime_death_mode > VAMPIRE_DEATH_NONE then
+    if victim:IsVampirePrime() and prime_death_mode > VAMPIRE_DEATH_NONE then
         local living_vampire_primes = 0
         local vampires = {}
         -- Find all the living vampires anmd count the primes
@@ -126,19 +126,19 @@ hook.Add("PlayerDeath", "Vampire_PrimeDeath_PlayerDeath", function(victim, infl,
         -- If there are no more living primes, do something with the non-primes
         if living_vampire_primes == 0 and #vampires > 0 then
             net.Start("TTT_VampirePrimeDeath")
-            net.WriteUInt(vamp_prime_death_mode, 4)
+            net.WriteUInt(prime_death_mode, 4)
             net.WriteString(victim:Nick())
             net.Broadcast()
 
             -- Kill them
-            if vamp_prime_death_mode == VAMPIRE_DEATH_KILL_CONVERTED then
+            if prime_death_mode == VAMPIRE_DEATH_KILL_CONVERTED then
                 for _, vnp in pairs(vampires) do
                     vnp:PrintMessage(HUD_PRINTTALK, "Your " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " overlord has been slain and you die with them")
                     vnp:PrintMessage(HUD_PRINTCENTER, "Your " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " overlord has been slain and you die with them")
                     vnp:Kill()
                 end
             -- Change them back to their previous roles
-            elseif vamp_prime_death_mode == VAMPIRE_DEATH_REVERT_CONVERTED then
+            elseif prime_death_mode == VAMPIRE_DEATH_REVERT_CONVERTED then
                 local converted = false
                 for _, vnp in pairs(vampires) do
                     local prev_role = vnp:GetVampirePreviousRole()
@@ -247,7 +247,7 @@ hook.Add("ScalePlayerDamage", "Vampire_ScalePlayerDamage", function(ply, hitgrou
     -- Only apply damage scaling after the round starts
     if IsPlayer(att) and GetRoundState() >= ROUND_ACTIVE then
         if dmginfo:IsBulletDamage() and ply:IsVampire() then
-            local reduction = GetConVar("ttt_vampire_damage_reduction"):GetFloat()
+            local reduction = vampire_damage_reduction:GetFloat()
             dmginfo:ScaleDamage(1 - reduction)
         end
     end

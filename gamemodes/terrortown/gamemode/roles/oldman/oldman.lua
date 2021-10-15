@@ -8,14 +8,14 @@ resource.AddSingleFile("sound/oldmanramble.wav")
 -- CONVARS --
 -------------
 
-CreateConVar("ttt_oldman_drain_health_to", "0")
-CreateConVar("ttt_oldman_adrenaline_rush", "5")
-CreateConVar("ttt_oldman_adrenaline_shotgun", "1")
+local oldman_drain_health_to = CreateConVar("ttt_oldman_drain_health_to", "0")
+local oldman_adrenaline_rush = CreateConVar("ttt_oldman_adrenaline_rush", "5")
+local oldman_adrenaline_shotgun = CreateConVar("ttt_oldman_adrenaline_shotgun", "1")
 
 hook.Add("TTTSyncGlobals", "OldMan_TTTSyncGlobals", function()
-    SetGlobalInt("ttt_oldman_drain_health_to", GetConVar("ttt_oldman_drain_health_to"):GetInt())
-    SetGlobalInt("ttt_oldman_adrenaline_rush", GetConVar("ttt_oldman_adrenaline_rush"):GetInt())
-    SetGlobalBool("ttt_oldman_adrenaline_shotgun", GetConVar("ttt_oldman_adrenaline_shotgun"):GetBool())
+    SetGlobalInt("ttt_oldman_drain_health_to", oldman_drain_health_to:GetInt())
+    SetGlobalInt("ttt_oldman_adrenaline_rush", oldman_adrenaline_rush:GetInt())
+    SetGlobalBool("ttt_oldman_adrenaline_shotgun", oldman_adrenaline_shotgun:GetBool())
 end)
 
 ----------------
@@ -42,7 +42,7 @@ hook.Add("TTTEndRound", "OldMan_RoleFeatures_TTTEndRound", function()
 end)
 
 ROLE_ON_ROLE_ASSIGNED[ROLE_OLDMAN] = function(ply)
-    local oldman_drain_health = GetConVar("ttt_oldman_drain_health_to"):GetInt()
+    local oldman_drain_health = oldman_drain_health_to:GetInt()
     if oldman_drain_health > 0 then
         timer.Create("oldmanhealthdrain", 3, 0, function()
             for _, p in pairs(player.GetAll()) do
@@ -67,7 +67,7 @@ hook.Add("EntityTakeDamage", "OldMan_EntityTakeDamage", function(ent, dmginfo)
 
     local att = dmginfo:GetAttacker()
     if GetRoundState() >= ROUND_ACTIVE and ent:IsPlayer() then
-        local adrenalineTime = GetConVar("ttt_oldman_adrenaline_rush"):GetInt()
+        local adrenalineTime = oldman_adrenaline_rush:GetInt()
         if ent:IsOldMan() and adrenalineTime > 0 then
             local damage = dmginfo:GetDamage()
             local health = ent:Health()
@@ -81,7 +81,7 @@ hook.Add("EntityTakeDamage", "OldMan_EntityTakeDamage", function(ent, dmginfo)
                 ent:EmitSound("oldmanramble.wav")
                 ent:PrintMessage(HUD_PRINTTALK, "You are having an adrenaline rush! You will die in " .. tostring(adrenalineTime) .. " seconds.")
 
-                if GetConVar("ttt_oldman_adrenaline_shotgun"):GetBool() then
+                if oldman_adrenaline_shotgun:GetBool() then
                     for _, wep in ipairs(ent:GetWeapons()) do
                         if wep.Kind == WEAPON_HEAVY then
                             ent:StripWeapon(wep:GetClass())
