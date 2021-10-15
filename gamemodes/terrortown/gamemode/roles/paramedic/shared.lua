@@ -29,7 +29,9 @@ hook.Add("TTTUpdateRoleState", "Paramedic_TTTUpdateRoleState", function()
     end
     if GetGlobalBool("ttt_paramedic_device_shop", false) then
         paramedic_defib.CanBuy = {ROLE_PARAMEDIC}
+        paramedic_defib.LimitedStock = not GetGlobalBool("ttt_paramedic_device_shop_rebuyable", false)
     else
         paramedic_defib.CanBuy = nil
+        paramedic_defib.LimitedStock = true
     end
 end)

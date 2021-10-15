@@ -154,6 +154,7 @@ ttt_deputy_impersonator_promote_any_death   0       // Whether deputy/impersonat
 ttt_hypnotist_credits_starting              1       // The number of credits a hypnotist should start with
 ttt_hypnotist_device_loadout                1       // Whether the hypnotist's defib should be given to them when they spawn. Server must be restarted for changes to take effect
 ttt_hypnotist_device_shop                   0       // Whether the hypnotist's defib should be purchasable in the shop. Server must be restarted for changes to take effect
+ttt_hypnotist_device_shop_rebuyable         0       // Whether the hypnotist's defib should be purchaseable multiple times (requires "ttt_hypnotist_device_shop" to be enabled). Server must be restarted for changes to take effect
 ttt_hypnotist_convert_detectives            0       // Whether to convert detectives and deputies (only if ttt_deputy_use_detective_icon is enabled) to impersonator instead of just a regular traitor. Does NOT convert detective team roles like paladin, medium, or tracker. Target will be automatically promoted to appear as a detective if appropriate
 ttt_hypnotist_device_time                   8       // The amount of time (in seconds) the hypnotist's device takes to use
 ttt_single_paramedic_hypnotist              0       // Whether only a single paramedic or hynotist should spawn in a round
@@ -265,7 +266,8 @@ ttt_doctor_credits_starting                 1       // The number of credits a d
 // Paramedic
 ttt_paramedic_defib_as_innocent             1       // Whether the paramedic's defib brings back everyone as a vanilla innocent role
 ttt_paramedic_device_loadout                1       // Whether the paramedic's defib should be given to them when they spawn. Server must be restarted for changes to take effect
-ttt_paramedic_device_shop                   0       // Whether the paramedic's defib should be purchasable in the shop (requires ttt_shop_for_all to be enabled). Server must be restarted for changes to take effect
+ttt_paramedic_device_shop                   0       // Whether the paramedic's defib should be purchasable in the shop (requires "ttt_shop_for_all" to be enabled). Server must be restarted for changes to take effect
+ttt_paramedic_device_shop_rebuyable         0       // Whether the paramedic's defib should be purchaseable multiple times (requires "ttt_paramedic_device_shop" to be enabled). Server must be restarted for changes to take effect
 ttt_paramedic_defib_time                    8       // The amount of time (in seconds) the paramedic's defib takes to use
 
 // Trickster
@@ -340,8 +342,8 @@ ttt_clown_credits_starting                  0       // The number of credits a c
 ttt_beggar_reveal_traitor                   1       // Who the beggar is revealed to when they join the traitor team. 0 - No one. 1 - Everyone. 2 - Traitors. 3 - Innocents
 ttt_beggar_reveal_innocent                  2       // Who the beggar is revealed to when they join the innocent team. 0 - No one. 1 - Everyone. 2 - Traitors. 3 - Innocents
 ttt_beggar_respawn                          0       // Whether the beggar respawns when they are killed before joining another team
-ttt_beggar_respawn_delay                    3       // The delay to use when respawning the begger (if "ttt_beggar_respawn" is enabled)
-ttt_beggar_respawn_limit                    0       // The maximum number of times the begger can respawn (if "ttt_beggar_respawn" is enabled). Set to 0 to allow infinite respawns
+ttt_beggar_respawn_delay                    3       // The delay to use when respawning the beggar (if "ttt_beggar_respawn" is enabled)
+ttt_beggar_respawn_limit                    0       // The maximum number of times the beggar can respawn (if "ttt_beggar_respawn" is enabled). Set to 0 to allow infinite respawns
 ttt_beggar_notify_mode                      0       // The logic to use when notifying players that a beggar is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
 ttt_beggar_notify_sound                     0       // Whether to play a cheering sound when a beggar is killed
 ttt_beggar_notify_confetti                  0       // Whether to throw confetti when a beggar is a killed
@@ -354,6 +356,12 @@ ttt_bodysnatcher_reveal_traitor             1       // Who the bodysnatcher is r
 ttt_bodysnatcher_reveal_innocent            1       // Who the bodysnatcher is revealed to when they join the innocent team. 0 - No one. 1 - Everyone. 2 - Their new team
 ttt_bodysnatcher_reveal_monster             1       // Who the bodysnatcher is revealed to when they join the monster team. 0 - No one. 1 - Everyone. 2 - Their new team
 ttt_bodysnatcher_reveal_independent         1       // Who the bodysnatcher is revealed to when they join the independent team. 0 - No one. 1 - Everyone. 2 - Their new team
+ttt_bodysnatcher_respawn                    0       // Whether the bodysnatcher respawns when they are killed before joining another team
+ttt_bodysnatcher_respawn_delay              3       // The delay to use when respawning the bodysnatcher (if "ttt_bodysnatcher_respawn" is enabled)
+ttt_bodysnatcher_respawn_limit              0       // The maximum number of times the bodysnatcher can respawn (if "ttt_bodysnatcher_respawn" is enabled). Set to 0 to allow infinite respawns
+ttt_bodysnatcher_notify_mode                0       // The logic to use when notifying players that a bodysnatcher is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
+ttt_bodysnatcher_notify_sound               0       // Whether to play a cheering sound when a bodysnatcher is killed
+ttt_bodysnatcher_notify_confetti            0       // Whether to throw confetti when a bodysnatcher is a killed
 ttt_bodysnatcher_device_time                5       // The amount of time (in seconds) the bodysnatcher's device takes to use
 
 // ----------------------------------------

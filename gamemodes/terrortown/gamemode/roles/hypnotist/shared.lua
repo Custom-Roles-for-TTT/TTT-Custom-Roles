@@ -32,7 +32,9 @@ hook.Add("TTTUpdateRoleState", "Hypnotist_TTTUpdateRoleState", function()
     end
     if GetGlobalBool("ttt_hypnotist_device_shop", false) then
         hypnotist_defib.CanBuy = {ROLE_HYPNOTIST}
+        hypnotist_defib.LimitedStock = not GetGlobalBool("ttt_hypnotist_device_shop_rebuyable", false)
     else
         hypnotist_defib.CanBuy = nil
+        hypnotist_defib.LimitedStock = true
     end
 end)

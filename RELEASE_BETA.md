@@ -12,6 +12,10 @@
 - Added ability to configure the amount of damage the killer's crowbar does (when bashing or throwing)
 - Added ability to configure the amount of damage the old man's shotgun does
 - Added ability to limit the number of times a beggar can respawn, if that is enabled (disabled by default)
+- Added ability to have the bodysnatcher respawn if they are killed before they use their device (disabled by default)
+- Added ability to use common jester notifications (message, sound, confetti) when the bodysnatcher is killed (disabled by default)
+- Added ability to make the paramedic defib rebuyable if ttt_paramedic_device_shop is enabled (disabled by default)
+- Added ability to make the hypnotist brainwashing device rebuyable if ttt_hypnotist_device_shop is enabled (disabled by default)
 - Added ability to configure the amount of time the various role devices take to be used
   - Bodysnatching Device
   - Hypnotist's Brainwashing Device

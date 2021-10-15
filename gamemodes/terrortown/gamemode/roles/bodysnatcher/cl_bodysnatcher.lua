@@ -5,6 +5,8 @@
 hook.Add("Initialize", "Bodysnatcher_Translations_Initialize", function()
     -- Event
     LANG.AddToLanguage("english", "ev_bodysnatch", "{attacker} bodysnatched {role}, {victim}")
+    LANG.AddToLanguage("english", "ev_bodysnatch_killed", "The {bodysnatch} ({victim}) was killed by {attacker} but respawned")
+    LANG.AddToLanguage("english", "ev_bodysnatch_killed_delay", "The {bodysnatch} ({victim}) was killed by {attacker} but will respawn in {delay} seconds")
 
     -- HUD
     LANG.AddToLanguage("english", "bodysnatcher_hidden_all_hud", "You still appear as {bodysnatcher} to others")
@@ -23,6 +25,8 @@ end)
 -- Register the scoring events for the swapper
 hook.Add("Initialize", "Bodysnatcher_Scoring_Initialize", function()
     local bodysnatch_icon = Material("icon16/user_edit.png")
+    local hourglass_go_icon = Material("icon16/hourglass_go.png")
+    local heart_add_icon = Material("icon16/heart_add.png")
     local Event = CLSCORE.DeclareEventDisplay
     local PT = LANG.GetParamTranslation
     Event(EVENT_BODYSNATCH, {
@@ -31,6 +35,20 @@ hook.Add("Initialize", "Bodysnatcher_Scoring_Initialize", function()
         end,
         icon = function(e)
             return bodysnatch_icon, "Bodysnatch"
+        end})
+
+    Event(EVENT_BODYSNATCHERKILLED, {
+        text = function(e)
+            if e.delay > 0 then
+                return PT("ev_bodysnatch_killed_delay", {attacker = e.att, victim = e.vic, delay = e.delay, bodysnatch = ROLE_STRINGS[ROLE_BODYSNATCHER]})
+            end
+            return PT("ev_bodysnatch_killed", {attacker = e.att, victim = e.vic, bodysnatch = ROLE_STRINGS[ROLE_BODYSNATCHER]})
+        end,
+        icon = function(e)
+            if e.delay > 0 then
+                return hourglass_go_icon, "Respawning"
+            end
+            return heart_add_icon, "Respawned"
         end})
 end)
 
@@ -46,6 +64,17 @@ net.Receive("TTT_ScoreBodysnatch", function(len)
         role = role,
         sid64 = vicsid,
         bonus = 2
+    })
+end)
+net.Receive("TTT_BodysnatcherKilled", function(len)
+    local victim = net.ReadString()
+    local attacker = net.ReadString()
+    local delay = net.ReadUInt(8)
+    CLSCORE:AddEvent({
+        id = EVENT_BODYSNATCHERKILLED,
+        vic = victim,
+        att = attacker,
+        delay = delay
     })
 end)
 
@@ -106,6 +135,23 @@ hook.Add("TTTTutorialRoleText", "Bodysnatcher_TTTTutorialRoleText", function(rol
         local html = "The " .. ROLE_STRINGS[ROLE_BODYSNATCHER] .. " is a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>jester</span> role whose goal is to steal the role of a dead player using their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>bodysnatching device</span>."
 
         html = html .. "<span style='display: block; margin-top: 10px;'>After <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>stealing a corpse's role</span>, they take over the goal of their new role.</span>"
+
+        -- Respawn
+        if GetGlobalBool("ttt_bodysnatcher_respawn", false) then
+            html = html .. "<span style='display: block; margin-top: 10px;'>If the " .. ROLE_STRINGS[ROLE_BODYSNATCHER] .. " is killed before they join a team, <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>they will respawn</span>"
+
+            local respawnLimit = GetGlobalInt("ttt_bodysnatcher_respawn_limit", 0)
+            if respawnLimit > 0 then
+                html = html .. " up to " .. respawnLimit .. " time(s)"
+            end
+
+            local respawnDelay = GetGlobalInt("ttt_bodysnatcher_respawn_delay", 0)
+            if respawnDelay > 0 then
+                html = html .. " after a " .. respawnDelay .. " second delay"
+            end
+
+            html = html .. ".</span>"
+        end
 
         -- Innocent Reveal
         local revealMode = GetGlobalInt("ttt_bodysnatcher_reveal_innocent", BODYSNATCHER_REVEAL_ALL)
