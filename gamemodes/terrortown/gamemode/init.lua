@@ -173,10 +173,6 @@ CreateConVar("ttt_phantom_killer_haunt_drop_cost", "75")
 CreateConVar("ttt_phantom_killer_haunt_attack_cost", "100")
 CreateConVar("ttt_phantom_killer_haunt_without_body", "1")
 
-CreateConVar("ttt_revenger_radar_timer", "15")
-CreateConVar("ttt_revenger_damage_bonus", "0")
-CreateConVar("ttt_revenger_drain_health_to", "-1")
-
 CreateConVar("ttt_deputy_damage_penalty", "0")
 CreateConVar("ttt_deputy_use_detective_icon", "1")
 CreateConVar("ttt_deputy_without_detective", "0")
@@ -357,7 +353,6 @@ util.AddNetworkString("TTT_PhantomHaunt")
 util.AddNetworkString("TTT_ParasiteInfect")
 util.AddNetworkString("TTT_LogInfo")
 util.AddNetworkString("TTT_ResetScoreboard")
-util.AddNetworkString("TTT_RevengerLoverKillerRadar")
 util.AddNetworkString("TTT_BuyableWeapons")
 util.AddNetworkString("TTT_UpdateBuyableWeapons")
 util.AddNetworkString("TTT_ResetBuyableWeaponsCache")
@@ -517,8 +512,6 @@ function GM:SyncGlobals()
 
     SetGlobalInt("ttt_parasite_infection_time", GetConVar("ttt_parasite_infection_time"):GetInt())
     SetGlobalBool("ttt_parasite_enabled", GetConVar("ttt_parasite_enabled"):GetBool())
-
-    SetGlobalInt("ttt_revenger_radar_timer", GetConVar("ttt_revenger_radar_timer"):GetInt())
 
     SetGlobalBool("ttt_jesters_visible_to_traitors", GetConVar("ttt_jesters_visible_to_traitors"):GetBool())
     SetGlobalBool("ttt_jesters_visible_to_monsters", GetConVar("ttt_jesters_visible_to_monsters"):GetBool())
@@ -728,8 +721,6 @@ function PrepareRound()
         v:SetNWInt("HauntingPower", 0)
         timer.Remove(v:Nick() .. "HauntingPower")
         timer.Remove(v:Nick() .. "HauntingSpectate")
-        v:SetNWString("RevengerLover", "")
-        v:SetNWString("RevengerKiller", "")
         v:SetNWBool("HasPromotion", false)
         v:SetNWBool("Infected", false)
         v:SetNWBool("Infecting", false)
@@ -744,10 +735,6 @@ function PrepareRound()
         -- Workaround to prevent GMod sprint from working
         v:SetRunSpeed(v:GetWalkSpeed())
     end
-
-    net.Start("TTT_RevengerLoverKillerRadar")
-    net.WriteBool(false)
-    net.Broadcast()
 
     -- Check playercount
     if CheckForAbort() then return end
@@ -1136,9 +1123,6 @@ function EndRound(type)
     StopWinChecks()
 
     SetGlobalBool("ttt_glitch_round", false)
-
-    if timer.Exists("revengerloverkiller") then timer.Remove("revengerloverkiller") end
-    if timer.Exists("revengerhealthdrain") then timer.Remove("revengerhealthdrain") end
 
     -- We may need to start a timer for a mapswitch, or start a vote
     CheckForMapSwitch()

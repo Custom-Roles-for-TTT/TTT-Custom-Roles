@@ -510,46 +510,6 @@ else
             target:HandleDetectiveLikePromotion()
         end
 
-        local killer = self:GetNWString("RevengerKiller", "")
-        if #killer > 0 then
-            if not keep_on_source then self:SetNWString("RevengerKiller", "") end
-            target:SetNWString("RevengerKiller", killer)
-        end
-
-        local lover = self:GetNWString("RevengerLover", "")
-        if #lover > 0 then
-            if not keep_on_source then self:SetNWString("RevengerLover", "") end
-            target:SetNWString("RevengerLover", lover)
-
-            local revenger_lover = player.GetBySteamID64(lover)
-            if IsValid(revenger_lover) then
-                target:PrintMessage(HUD_PRINTTALK, "You are now in love with " .. revenger_lover:Nick() .. ".")
-                target:PrintMessage(HUD_PRINTCENTER, "You are now in love with " .. revenger_lover:Nick() .. ".")
-
-                if not revenger_lover:Alive() or revenger_lover:IsSpec() then
-                    local message
-                    if killer == target:SteamID64() then
-                        message = "Your love has died by your hand."
-                    elseif killer then
-                        message = "Your love has died. Track down their killer."
-
-                        timer.Simple(1, function() -- Slight delay needed for NW variables to be sent
-                            net.Start("TTT_RevengerLoverKillerRadar")
-                            net.WriteBool(true)
-                            net.Send(target)
-                        end)
-                    else
-                        message = "Your love has died, but you cannot determine the cause."
-                    end
-
-                    timer.Simple(1, function()
-                        target:PrintMessage(HUD_PRINTTALK, message)
-                        target:PrintMessage(HUD_PRINTCENTER, message)
-                    end)
-                end
-            end
-        end
-
         -- Run role-specific logic
         if ROLE_MOVE_ROLE_STATE[self:GetRole()] then
             ROLE_MOVE_ROLE_STATE[self:GetRole()](self, target, keep_on_source)

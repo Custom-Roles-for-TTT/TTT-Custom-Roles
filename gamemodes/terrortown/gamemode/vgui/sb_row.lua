@@ -233,9 +233,7 @@ function PANEL:Paint(width, height)
     end
 
     if GetRoundState() >= ROUND_ACTIVE then
-        if client:IsRevenger() and ply:SteamID64() == client:GetNWString("RevengerLover", "") then
-            DrawFlashingBorder(width, ROLE_REVENGER)
-        elseif flash_role and flash_role > ROLE_NONE and flash_role <= ROLE_MAX then
+        if flash_role and flash_role > ROLE_NONE and flash_role <= ROLE_MAX then
             DrawFlashingBorder(width, flash_role)
         elseif client:IsTraitorTeam() and ply:GetNWBool("Infected", false) then
             DrawFlashingBorder(width, ROLE_PARASITE)
@@ -302,9 +300,7 @@ function PANEL:UpdatePlayerData()
     local client = LocalPlayer()
     self.nick:SetText(ply:Nick())
     if GetRoundState() >= ROUND_ACTIVE then
-        if client:IsRevenger() and ply:SteamID64() == client:GetNWString("RevengerLover", "") then
-            self.nick:SetText(ply:Nick() .. " (" .. GetTranslation("target_revenger_lover") .. ")")
-        elseif client:IsTraitorTeam() and ply:GetNWBool("Infected", false) then
+        if client:IsTraitorTeam() and ply:GetNWBool("Infected", false) then
             self.nick:SetText(ply:Nick() .. " (" .. GetTranslation("target_infected") .. ")")
         end
 

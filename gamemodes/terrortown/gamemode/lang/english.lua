@@ -636,8 +636,6 @@ L.target_unid = "Unidentified body"
 
 L.target_infected = "INFECTED WITH PARASITE"
 
-L.target_revenger_lover = "YOUR SOULMATE"
-
 L.target_credits = "Search to receive unspent credits"
 
 -- Traitor buttons (HUD buttons with hand icons that only traitors can see)
@@ -688,10 +686,6 @@ Try to blend in and don't give yourself away.]]
 L.info_popup_phantom = [[You are {role}! Try to survive and help your {innocent} friends!
 You will haunt the player who kills you causing black smoke to appear.
 If the player you are haunting dies you will be respawned!]]
-
-L.info_popup_revenger = [[You are {role}! You are helplessly in love with {lover}.
-Do whatever you can to protect them. If they die you will
-be able to track down their killer and get your revenge.]]
 
 L.info_popup_deputy = [[You are {role}! If the {detective} dies you will take
 over and gain the ability to buy shop items and search bodies.]]

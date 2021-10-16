@@ -304,7 +304,6 @@ function GM:HUDDrawTargetID()
     local target_monster = false
     local target_independent = false
 
-    local target_revenger_lover = false
     local target_infected = false
 
     local target_corpse = false
@@ -399,10 +398,6 @@ function GM:HUDDrawTargetID()
 
         target_detective = GetRoundState() > ROUND_PREP and (ent:IsDetective() or ((ent:IsDeputy() or (ent:IsImpersonator() and not client:IsTraitorTeam())) and ent:GetNWBool("HasPromotion", false)))
         target_special_detective = GetRoundState() > ROUND_PREP and ent:IsDetectiveTeam() and not target_detective
-
-        if client:IsRevenger() then
-            target_revenger_lover = (ent:SteamID64() == client:GetNWString("RevengerLover", ""))
-        end
 
         -- Allow external roles to override or block showing player name
         local new_text, new_col = hook.Run("TTTTargetIDPlayerName", ent, client, text, color)
@@ -588,10 +583,7 @@ function GM:HUDDrawTargetID()
 
     text = nil
     local secondary_text = nil
-    if target_revenger_lover then -- Prioritise soulmate message over roles
-        text = L.target_revenger_lover
-        col = ROLE_COLORS_RADAR[ROLE_REVENGER]
-    elseif target_infected then
+    if target_infected then
         text = L.target_infected
         col = ROLE_COLORS_RADAR[ROLE_PARASITE]
     elseif target_traitor then

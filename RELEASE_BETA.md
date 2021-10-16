@@ -42,14 +42,16 @@
 
 ### Developer
 - Added ability to define a role as on that wins passively (like the old man)
-- Added parameter to player.AreTeamsLiving to ignore players who win passively (like the old man)
-- Added player.TeamLivingCount and player.LivingCount to help tracking how many players are alive
-- Added player.GetTeamPlayers to get all the players belonging to a player
-- Added player.ExecuteAgainstTeamPlayers to execute a function against the players belonging to a role team
+- Added parameter to `player.AreTeamsLiving` to ignore players who win passively (like the old man)
+- Added `player.TeamLivingCount` and `player.LivingCount` to help tracking how many players are alive
+- Added `player.GetTeamPlayers` to get all the players belonging to a player
+- Added `player.ExecuteAgainstTeamPlayers` to execute a function against the players belonging to a role team
 - Added TTTWinCheckBlocks and TTTWinCheckComplete hooks to allow manipulating and reacting to the win type
 - Added TTTHUDInfoPaint hook to add informational messages to a player's HUD (above their health bar)
 - Added TTTPlayerAliveClientThink hook to handle the Think event for each currently living player on the client
-- Added plymeta:Celebrate to celebrate with sound and or confetti
-- Changed JesterTeamKilledNotification to be globally accessible
+- Added TTTRadarRender hook to handle custom radar entry rendering
+- Added `plymeta:Celebrate` to celebrate with sound and or confetti
+- Changed radar's `DrawTarget` method to be accessible in the RADAR namespace as `RADAR:DrawTarget`
+- Changed `JesterTeamKilledNotification` to be globally accessible
 - Renamed `SWEP.BoughtBuy` to `SWEP.BoughtBy`
-- Removed deprecated global ShouldHideJesters. Use plymeta:ShouldHideJesters instead
+- Removed deprecated global `ShouldHideJesters`. Use `plymeta:ShouldHideJesters` instead

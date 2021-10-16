@@ -398,47 +398,6 @@ function plymeta:KickBan(length, reason)
 end
 
 function plymeta:BeginRoleChecks()
-    -- Revenger logic
-    if self:IsRevenger() then
-        local potentialSoulmates = {}
-        for _, p in pairs(player.GetAll()) do
-            if p:Alive() and not p:IsSpec() and p ~= self then
-                table.insert(potentialSoulmates, p)
-            end
-        end
-        if #potentialSoulmates > 0 then
-            local revenger_lover = potentialSoulmates[math.random(#potentialSoulmates)]
-            self:SetNWString("RevengerLover", revenger_lover:SteamID64() or "")
-            self:PrintMessage(HUD_PRINTTALK, "You are in love with " .. revenger_lover:Nick() .. ".")
-            self:PrintMessage(HUD_PRINTCENTER, "You are in love with " .. revenger_lover:Nick() .. ".")
-        end
-
-        local drain_health = GetConVar("ttt_revenger_drain_health_to"):GetInt()
-        if drain_health >= 0 then
-            timer.Create("revengerhealthdrain", 3, 0, function()
-                for _, p in pairs(player.GetAll()) do
-                    local lover_sid = p:GetNWString("RevengerLover", "")
-                    if p:IsActiveRevenger() and lover_sid ~= "" then
-                        local lover = player.GetBySteamID64(lover_sid)
-                        if IsValid(lover) and (not lover:Alive() or lover:IsSpec()) then
-                            local hp = p:Health()
-                            if hp > drain_health then
-                                -- We were going to set them to 0, so just kill them instead
-                                if hp == 1 then
-                                    p:PrintMessage(HUD_PRINTTALK, "You have succumbed to the heartache of losing your lover.")
-                                    p:PrintMessage(HUD_PRINTCENTER, "You have succumbed to the heartache of losing your lover.")
-                                    p:Kill()
-                                else
-                                    p:SetHealth(hp - 1)
-                                end
-                            end
-                        end
-                    end
-                end
-            end)
-        end
-    end
-
     -- Glitch logic
     if self:IsGlitch() then
         SetGlobalBool("ttt_glitch_round", true)

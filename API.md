@@ -814,6 +814,12 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *color* - The new color value to use or the original passed into the hook
 - *hidden* - The new hidden value to use or the original passed into the hook
 
+**TTTRadarRender(client)** - Called after non-player radar points are rendered and before players are rendered. Used for rendering custom non-player radar points.\
+*Realm:* Client\
+*Added in:* 1.3.1\
+*Parameters:*
+- *client* - The local player
+
 **TTTRolePopupParams(client)** - Called before a player's role start-of-round popup message is displayed, allowing the parameters to be added to.\
 *Realm:* Client\
 *Added in:* 1.2.7\

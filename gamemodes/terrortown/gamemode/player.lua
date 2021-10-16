@@ -1078,38 +1078,6 @@ function GM:PlayerDeath(victim, infl, attacker)
         net.Broadcast()
     end
 
-    -- Handle revenger lover death
-    for _, v in pairs(player.GetAll()) do
-        if v:IsRevenger() and v:GetNWString("RevengerLover", "") == victim:SteamID64() then
-            local message
-            if v == attacker then
-                message = "Your love has died by your hand."
-            else
-                if valid_kill then
-                    if v:Alive() then
-                        message = "Your love has died. Track down their killer."
-                    end
-                    v:SetNWString("RevengerKiller", attacker:SteamID64())
-                    timer.Simple(1, function() -- Slight delay needed for NW variables to be sent
-                        net.Start("TTT_RevengerLoverKillerRadar")
-                        net.WriteBool(true)
-                        net.Send(v)
-                    end)
-                elseif v:Alive() then
-                    message = "Your love has died, but you cannot determine the cause."
-                end
-
-                -- Use a specific message if the revenger is dead already
-                if not v:Alive() then
-                    message = "Your love has been killed and joins you in death."
-                end
-            end
-
-            v:PrintMessage(HUD_PRINTTALK, message)
-            v:PrintMessage(HUD_PRINTCENTER, message)
-        end
-    end
-
     -- Handle parasite death
     if valid_kill and victim:IsParasite() and not victim:GetNWBool("IsZombifying", false) then
         HandleParasiteInfection(attacker, victim)
@@ -1301,12 +1269,6 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
             if att:IsImpersonator() and not att:GetNWBool("HasPromotion", false) then
                 local penalty = GetConVar("ttt_impersonator_damage_penalty"):GetFloat()
                 dmginfo:ScaleDamage(1 - penalty)
-            end
-
-            -- Revengers deal extra damage to their lovers killer
-            if att:IsRevenger() and ply:SteamID64() == att:GetNWString("RevengerKiller", "") then
-                local bonus = GetConVar("ttt_revenger_damage_bonus"):GetFloat()
-                dmginfo:ScaleDamage(1 + bonus)
             end
         -- Players cant deal damage to eachother before the round starts
         else
