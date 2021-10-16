@@ -261,7 +261,6 @@ function GM:ClearClientState()
     client.last_id = nil
     client.radio = nil
     client.called_corpses = {}
-    client.revenger_lover_killers = {}
 
     VOICE.InitBattery()
 
