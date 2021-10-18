@@ -134,7 +134,7 @@ end
 
 function GetDetectiveTeamFilter(alive_only)
     -- Include promoted Deputies in this, but not Impersonators. They are included in GetTraitorTeamFilter
-    return GetPlayerFilter(function(p) return (p:IsDetectiveTeam() or (p:GetDeputy() and p:GetNWBool("HasPromotion", false))) and (not alive_only or p:IsTerror()) end)
+    return GetPlayerFilter(function(p) return (p:IsDetectiveTeam() or (p:GetDeputy() and p:IsRoleActive())) and (not alive_only or p:IsTerror()) end)
 end
 
 ---- Communication control

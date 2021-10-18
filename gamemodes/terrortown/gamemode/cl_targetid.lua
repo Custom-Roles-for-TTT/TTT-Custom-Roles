@@ -114,7 +114,7 @@ function GM:PostDrawTranslucentRenderables()
                 local noz = false
                 if v:IsDetectiveTeam() then
                     role = v:GetRole()
-                elseif v:GetDetectiveLike() and not (v:GetImpersonator() and client:IsTraitorTeam()) then
+                elseif v:IsDetectiveLike() and not (v:IsImpersonator() and client:IsTraitorTeam()) then
                     role = GetDetectiveIconRole(false)
                 end
                 if not hide_roles then
@@ -123,22 +123,22 @@ function GM:PostDrawTranslucentRenderables()
                         if showJester then
                             role = ROLE_JESTER
                             noz = false
-                        elseif v:GetTraitor() then
+                        elseif v:IsTraitor() then
                             role = ROLE_TRAITOR
                         elseif v:IsTraitorTeam() then
                             -- If the impersonator is promoted, use the Detective's icon with the Impersonator's color
-                            if v:GetImpersonator() and v:GetNWBool("HasPromotion", false) then
+                            if v:IsImpersonator() and v:IsRoleActive() then
                                 role = GetDetectiveIconRole(true)
                                 color_role = ROLE_IMPERSONATOR
                             -- Explicitly set zombie role so that is shown to glitches during a zombie traitor round
-                            elseif v:GetZombie() then
+                            elseif v:IsZombie() then
                                 role = ROLE_ZOMBIE
                             elseif glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES and GetGlobalBool("ttt_glitch_round", false) then
                                 role = ROLE_TRAITOR
                             else
                                 role = v:GetRole()
                             end
-                        elseif v:GetGlitch() then
+                        elseif v:IsGlitch() then
                             if client:IsZombie() then
                                 role = ROLE_ZOMBIE
                             else
@@ -390,7 +390,7 @@ function GM:HUDDrawTargetID()
             end
         end
 
-        target_detective = GetRoundState() > ROUND_PREP and (ent:IsDetective() or ((ent:IsDeputy() or (ent:IsImpersonator() and not client:IsTraitorTeam())) and ent:GetNWBool("HasPromotion", false)))
+        target_detective = GetRoundState() > ROUND_PREP and (ent:IsDetective() or ((ent:IsDeputy() or (ent:IsImpersonator() and not client:IsTraitorTeam())) and ent:IsRoleActive()))
         target_special_detective = GetRoundState() > ROUND_PREP and ent:IsDetectiveTeam() and not target_detective
 
         -- Allow external roles to override or block showing player name

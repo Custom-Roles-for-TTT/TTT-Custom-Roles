@@ -99,3 +99,10 @@ hook.Add("EntityTakeDamage", "OldMan_EntityTakeDamage", function(ent, dmginfo)
         end
     end
 end)
+
+hook.Add("TTTPrepareRound", "OldMan_Adrenaline_TTTPrepareRound", function()
+    for _, v in pairs(player.GetAll()) do
+        v:SetNWBool("AdrenalineRush", false)
+        timer.Remove(v:Nick() .. "AdrenalineRush")
+    end
+end)
