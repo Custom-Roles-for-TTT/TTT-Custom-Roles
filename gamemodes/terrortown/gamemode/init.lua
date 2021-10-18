@@ -156,9 +156,6 @@ CreateConVar("ttt_parasite_respawn_health", 100)
 CreateConVar("ttt_parasite_announce_infection", 0)
 
 -- Innocent role properties
-CreateConVar("ttt_glitch_mode", "0")
-CreateConVar("ttt_glitch_use_traps", "0")
-
 CreateConVar("ttt_phantom_respawn_health", "50")
 CreateConVar("ttt_phantom_weaker_each_respawn", "0")
 CreateConVar("ttt_phantom_announce_death", "0")
@@ -406,8 +403,6 @@ function GM:Initialize()
     SetGlobalFloat("ttt_round_end", -1)
     SetGlobalFloat("ttt_haste_end", -1)
 
-    SetGlobalBool("ttt_glitch_round", false)
-
     -- For the paranoid
     math.randomseed(os.time())
 
@@ -490,9 +485,6 @@ function GM:SyncGlobals()
             SetGlobalBool("ttt_" .. rolestring .. "_enabled", GetConVar("ttt_" .. rolestring .. "_enabled"):GetBool())
         end
     end
-
-    SetGlobalInt("ttt_glitch_mode", GetConVar("ttt_glitch_mode"):GetInt())
-    SetGlobalBool("ttt_glitch_use_traps", GetConVar("ttt_glitch_use_traps"):GetBool())
 
     SetGlobalBool("ttt_phantom_killer_smoke", GetConVar("ttt_phantom_killer_smoke"):GetBool())
     SetGlobalInt("ttt_phantom_killer_haunt_power_max", GetConVar("ttt_phantom_killer_haunt_power_max"):GetInt())
@@ -728,7 +720,6 @@ function PrepareRound()
         v:SetNWInt("InfectionProgress", 0)
         timer.Remove(v:Nick() .. "InfectionProgress")
         timer.Remove(v:Nick() .. "InfectingSpectate")
-        v:SetNWInt("GlitchBluff", ROLE_TRAITOR)
         v:SetNWVector("PlayerColor", Vector(1, 1, 1))
         v:SetNWBool("AdrenalineRush", false)
         timer.Remove(v:Nick() .. "AdrenalineRush")
@@ -973,8 +964,6 @@ function BeginRound()
 
     SCORE:HandleSelection() -- log traitors and detectives
 
-    SetGlobalBool("ttt_glitch_round", false)
-
     for _, v in pairs(player.GetAll()) do
         -- Player color
         local vec = Vector(1, 1, 1)
@@ -1121,8 +1110,6 @@ function EndRound(type)
 
     -- Stop checking for wins
     StopWinChecks()
-
-    SetGlobalBool("ttt_glitch_round", false)
 
     -- We may need to start a timer for a mapswitch, or start a vote
     CheckForMapSwitch()

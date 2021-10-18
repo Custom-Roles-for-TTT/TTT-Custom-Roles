@@ -945,11 +945,6 @@ PARASITE_SUICIDE_NONE = 0
 PARASITE_SUICIDE_RESPAWN_ALL = 1
 PARASITE_SUICIDE_RESPAWN_CONSOLE = 2
 
--- Glitch modes
-GLITCH_SHOW_AS_TRAITOR = 0
-GLITCH_SHOW_AS_SPECIAL_TRAITOR = 1
-GLITCH_HIDE_SPECIAL_TRAITOR_ROLES = 2
-
 COLOR_WHITE = Color(255, 255, 255, 255)
 COLOR_BLACK = Color(0, 0, 0, 255)
 COLOR_GREEN = Color(0, 255, 0, 255)
@@ -1129,11 +1124,6 @@ function UpdateRoleWeaponState()
 end
 
 function UpdateRoleState()
-    -- Role Features
-    local glitch_use_traps = GetGlobalBool("ttt_glitch_use_traps", false)
-    CAN_LOOT_CREDITS_ROLES[ROLE_GLITCH] = glitch_use_traps
-    TRAITOR_BUTTON_ROLES[ROLE_GLITCH] = glitch_use_traps
-
     local disable_looting = GetGlobalBool("ttt_detective_disable_looting", false)
     local special_detectives_armor_loadout = GetGlobalBool("ttt_special_detectives_armor_loadout", true)
     for r, e in pairs(DETECTIVE_ROLES) do

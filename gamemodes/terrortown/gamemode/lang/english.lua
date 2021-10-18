@@ -680,9 +680,6 @@ L.spec_help = "Click to spectate players, or press {usekey} on a physics object 
 
 -- These are spread over multiple lines, hence the square brackets instead of
 -- quotes. That's a Lua thing. Every line break (enter) will show up in-game.
-L.info_popup_glitch = [[You are {role}! The {traitors} think you are one of them.
-Try to blend in and don't give yourself away.]]
-
 L.info_popup_phantom = [[You are {role}! Try to survive and help your {innocent} friends!
 You will haunt the player who kills you causing black smoke to appear.
 If the player you are haunting dies you will be respawned!]]

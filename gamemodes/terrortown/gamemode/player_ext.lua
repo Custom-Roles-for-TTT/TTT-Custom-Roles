@@ -398,11 +398,6 @@ function plymeta:KickBan(length, reason)
 end
 
 function plymeta:BeginRoleChecks()
-    -- Glitch logic
-    if self:IsGlitch() then
-        SetGlobalBool("ttt_glitch_round", true)
-    end
-
     -- Deputy/Impersonator logic
     -- If this is a promotable role and they should be promoted, promote them immediately
     -- The logic which handles a detective dying is in the PlayerDeath hook
