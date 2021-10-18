@@ -125,19 +125,13 @@ function GM:PostDrawTranslucentRenderables()
                             noz = false
                         elseif v:GetTraitor() then
                             role = ROLE_TRAITOR
-                        elseif v:GetImpersonator() then
+                        elseif v:IsTraitorTeam() then
                             -- If the impersonator is promoted, use the Detective's icon with the Impersonator's color
-                            if v:GetNWBool("HasPromotion", false) then
+                            if v:GetImpersonator() and v:GetNWBool("HasPromotion", false) then
                                 role = GetDetectiveIconRole(true)
                                 color_role = ROLE_IMPERSONATOR
-                            elseif glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES and GetGlobalBool("ttt_glitch_round", false) then
-                                role = ROLE_TRAITOR
-                            else
-                                role = ROLE_IMPERSONATOR
-                            end
-                        -- If this is a vanilla traitor they should have been handled above and are therefore a converted beggar who should be hidden
-                        elseif not v:GetTraitor() and v:IsTraitorTeam() then
-                            if v:GetZombie() then
+                            -- Explicitly set zombie role so that is shown to glitches during a zombie traitor round
+                            elseif v:GetZombie() then
                                 role = ROLE_ZOMBIE
                             elseif glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES and GetGlobalBool("ttt_glitch_round", false) then
                                 role = ROLE_TRAITOR
