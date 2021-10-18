@@ -202,11 +202,11 @@ function PANEL:Paint(width, height)
         -- Swap the deputy/impersonator icons depending on which settings are enabled
         if ply:IsDetectiveLike() and not ply:IsDetectiveTeam() then
             if client:IsTraitorTeam() and ply:IsImpersonator() then
-                if GetGlobalBool("ttt_impersonator_use_detective_icon", false) then
+                if GetGlobalBool("ttt_impersonator_use_detective_icon", true) then
                     role = ROLE_DETECTIVE
                 end
                 color = ROLE_COLORS_SCOREBOARD[ROLE_IMPERSONATOR]
-            elseif GetGlobalBool("ttt_deputy_use_detective_icon", false) then
+            elseif GetGlobalBool("ttt_deputy_use_detective_icon", true) then
                 role = ROLE_DETECTIVE
             else
                 role = ROLE_DEPUTY
