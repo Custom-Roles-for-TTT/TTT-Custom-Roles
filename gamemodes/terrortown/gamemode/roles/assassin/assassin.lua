@@ -64,10 +64,10 @@ function AssignAssassinTarget(ply, start, delay)
             -- Include all non-traitor detective-like players
             if p:IsDetectiveLike() and not p:IsTraitorTeam() then
                 table.insert(detectives, p:Nick())
-            -- Exclude Glitch from these lists so they don't get discovered immediately
+            -- Exclude Glitch from this list so they don't get discovered immediately
             elseif p:IsInnocentTeam() and not p:IsGlitch() then
                 AddEnemy(p, bodysnatcherModeInno)
-            elseif p:IsMonsterTeam() and not p:IsGlitch() then
+            elseif p:IsMonsterTeam() then
                 AddEnemy(p, bodysnatcherModeMon)
             -- Exclude roles that have a passive win because they just want to survive
             elseif p:IsIndependentTeam() and not ROLE_HAS_PASSIVE_WIN[p:GetRole()] then
