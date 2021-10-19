@@ -22,6 +22,7 @@ local phantom_killer_haunt_without_body = CreateConVar("ttt_phantom_killer_haunt
 
 hook.Add("TTTSyncGlobals", "Phantom_TTTSyncGlobals", function()
     SetGlobalBool("ttt_phantom_killer_smoke", phantom_killer_smoke:GetBool())
+    SetGlobalBool("ttt_phantom_killer_haunt", phantom_killer_haunt:GetBool())
     SetGlobalInt("ttt_phantom_killer_haunt_power_max", phantom_killer_haunt_power_max:GetInt())
     SetGlobalInt("ttt_phantom_killer_haunt_move_cost", phantom_killer_haunt_move_cost:GetInt())
     SetGlobalInt("ttt_phantom_killer_haunt_attack_cost", phantom_killer_haunt_attack_cost:GetInt())
