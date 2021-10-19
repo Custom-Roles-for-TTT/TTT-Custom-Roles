@@ -489,21 +489,6 @@ function GM:OnEntityCreated(ent)
     return self.BaseClass.OnEntityCreated(self, ent)
 end
 
-net.Receive("TTT_JesterDeathCelebration", function()
-    local ent = net.ReadEntity()
-    local play_sound = net.ReadBool()
-    local show_confetti = net.ReadBool()
-
-    if not IsPlayer(ent) then return end
-
-    local snd = nil
-    if play_sound then
-        snd = "birthday.wav"
-    end
-
-    ent:Celebrate(snd, show_confetti)
-end)
-
 -- Hit Markers
 -- Creator: Exho
 local hm_toggle = CreateClientConVar("hm_enabled", "1", true, true)

@@ -1207,6 +1207,23 @@ if SERVER then
     end
 end
 
+if CLIENT then
+    net.Receive("TTT_JesterDeathCelebration", function()
+        local ent = net.ReadEntity()
+        local play_sound = net.ReadBool()
+        local show_confetti = net.ReadBool()
+
+        if not IsPlayer(ent) then return end
+
+        local snd = nil
+        if play_sound then
+            snd = "birthday.wav"
+        end
+
+        ent:Celebrate(snd, show_confetti)
+    end)
+end
+
 -- Weapons and items that come with TTT. Weapons that are not in this list will
 -- get a little marker on their icon if they're buyable, showing they are custom
 -- and unique to the server.
