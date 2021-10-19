@@ -37,7 +37,7 @@ function ENT:AcceptInput(name, activator)
                 jesterTest = activator:IsJesterTeam() and not GetConVar("ttt_jesters_trigger_traitor_testers"):GetBool()
                 independentTest = activator:IsIndependentTeam() and not GetConVar("ttt_independents_trigger_traitor_testers"):GetBool()
             elseif self.Role == ROLE_DETECTIVE then
-                detectiveTest = activator:IsDetectiveTeam()
+                detectiveTest = activator:IsDetectiveLike()
             end
             local specificTest = self.Role == activator:GetRole() and GetRoundState() ~= ROUND_PREP
             local anyTest = self.Role == ROLE_ANY
