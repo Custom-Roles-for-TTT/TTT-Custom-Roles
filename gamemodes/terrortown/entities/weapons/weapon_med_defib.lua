@@ -199,6 +199,7 @@ if SERVER then
         net.WriteBool(true)
         net.Send(ply)
 
+        local owner = self:GetOwner()
         hook.Run("TTTPlayerDefibRoleChange", owner, ply)
 
         ply:SpawnForRound(true)
