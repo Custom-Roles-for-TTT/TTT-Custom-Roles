@@ -38,7 +38,6 @@ local wrench_icon  = Material("icon16/wrench.png")
 local traitor_icon = Material("icon16/user_red.png")
 local heart_icon = Material("icon16/heart.png")
 local disconnect_icon = Material("icon16/disconnect.png")
-local haunt_icon = Material("icon16/group.png")
 local info_icon = Material("icon16/information.png")
 
 -- Shorter name, using it lots
@@ -352,12 +351,4 @@ Event(EVENT_LOG, {
     end,
     icon = function(e)
         return info_icon, "Information"
-    end})
-
-Event(EVENT_INFECT, {
-    text = function(e)
-        return PT("ev_infect", {victim = e.vic, attacker = e.att})
-    end,
-    icon = function(e)
-        return haunt_icon, "Infected"
     end})

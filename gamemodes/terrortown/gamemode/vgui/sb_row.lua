@@ -232,12 +232,8 @@ function PANEL:Paint(width, height)
         self.sresult:SetVisible(false)
     end
 
-    if GetRoundState() >= ROUND_ACTIVE then
-        if flash_role and flash_role > ROLE_NONE and flash_role <= ROLE_MAX then
-            DrawFlashingBorder(width, flash_role)
-        elseif client:IsTraitorTeam() and ply:GetNWBool("Infected", false) then
-            DrawFlashingBorder(width, ROLE_PARASITE)
-        end
+    if GetRoundState() >= ROUND_ACTIVE and flash_role and flash_role > ROLE_NONE and flash_role <= ROLE_MAX then
+        DrawFlashingBorder(width, flash_role)
     end
 
     if ply == client then
@@ -300,10 +296,6 @@ function PANEL:UpdatePlayerData()
     local client = LocalPlayer()
     self.nick:SetText(ply:Nick())
     if GetRoundState() >= ROUND_ACTIVE then
-        if client:IsTraitorTeam() and ply:GetNWBool("Infected", false) then
-            self.nick:SetText(ply:Nick() .. " (" .. GetTranslation("target_infected") .. ")")
-        end
-
         local nick_override = hook.Run("TTTScoreboardPlayerName", ply, client, self.nick:GetText())
         if nick_override then self.nick:SetText(nick_override) end
     end

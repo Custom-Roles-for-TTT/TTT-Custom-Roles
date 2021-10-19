@@ -573,13 +573,6 @@ Teleport to a previously marked spot.
 Teleporting makes noise, and the
 number of uses is limited.]]
 
--- Parasite cure
-L.cure_help_pri = "{primaryfire} to cure another player."
-L.cure_help_sec = "{secondaryfire} to cure yourself."
-L.cure_desc = [[Use on a player to cure them of {parasites}.
-
-Using this on a player who is not infected will kill them!]]
-
 -- Zombification device
 L.zombificator_help_pri = "Hold {primaryfire} to zombify dead body."
 L.zombificator_help_sec = "The revived player will become a zombie."
@@ -629,8 +622,6 @@ L.corpse_hint = "Press E to search."
 L.target_disg = " (DISGUISED)"
 L.target_unid = "Unidentified body"
 
-L.target_infected = "INFECTED WITH PARASITE"
-
 L.target_credits = "Search to receive unspent credits"
 
 -- Traitor buttons (HUD buttons with hand icons that only traitors can see)
@@ -656,10 +647,6 @@ L.punch_title = "PUNCH-O-METER"
 L.punch_help = "Move keys or jump: punch object. Crouch: leave object."
 L.punch_bonus = "Your bad score lowered your punch-o-meter limit by {num}"
 L.punch_malus = "Your good score increased your punch-o-meter limit by {num}!"
-
--- Infection
-L.infect_title = "INFECTION"
-L.infect_help = "You will respawn when the infection bar is full."
 
 -- Spectators
 L.spec_help = "Click to spectate players, or press {usekey} on a physics object to possess it."
@@ -692,14 +679,6 @@ BUT BEWARE! There was {aglitch} in the system and one among you does not seek th
 
 These may or may not be your comrades:
 {traitorlist}]]
-
-L.info_popup_parasite = [[You are {role}! {comrades}
-
-Infect those that kill you and wait patiently for a chance to take control.
-Make sure you lay low as your host must stay alive in order for you to
-respawn. Try to avoid getting them cured or killed!
-
-Press {menukey} to receive your special equipment!]]
 
 --- Various other text
 L.name_kick = "A player was automatically kicked for changing their name during a round."
@@ -1170,7 +1149,6 @@ L.ev_hypno = "{victim} was hypnotised"
 L.ev_defi = "{victim} was respawned"
 L.ev_disco = "{victim} disconnected"
 L.ev_promote = "{player} was promoted to {detective}"
-L.ev_infect = "{victim} infected {attacker}"
 
 -- Role Weapons Configuration
 L.roleweapons_title = "Role Weapons Configuration"

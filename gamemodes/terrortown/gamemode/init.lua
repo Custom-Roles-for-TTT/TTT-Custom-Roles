@@ -142,14 +142,6 @@ end
 -- Traitor role properties
 CreateConVar("ttt_traitor_vision_enable", "0")
 
-CreateConVar("ttt_parasite_infection_time", 45)
-CreateConVar("ttt_parasite_infection_transfer", 0)
-CreateConVar("ttt_parasite_infection_transfer_reset", 1)
-CreateConVar("ttt_parasite_infection_suicide_mode", 0)
-CreateConVar("ttt_parasite_respawn_mode", 0)
-CreateConVar("ttt_parasite_respawn_health", 100)
-CreateConVar("ttt_parasite_announce_infection", 0)
-
 -- Detective role properties
 CreateConVar("ttt_detective_search_only", "1")
 CreateConVar("ttt_detective_disable_looting", "0")
@@ -320,7 +312,6 @@ util.AddNetworkString("TTT_SprintGetConVars")
 util.AddNetworkString("TTT_SpawnedPlayers")
 util.AddNetworkString("TTT_Defibrillated")
 util.AddNetworkString("TTT_RoleChanged")
-util.AddNetworkString("TTT_ParasiteInfect")
 util.AddNetworkString("TTT_LogInfo")
 util.AddNetworkString("TTT_ResetScoreboard")
 util.AddNetworkString("TTT_BuyableWeapons")
@@ -462,9 +453,6 @@ function GM:SyncGlobals()
     SetGlobalBool("ttt_special_detectives_armor_loadout", GetConVar("ttt_special_detectives_armor_loadout"):GetBool())
 
     SetGlobalBool("ttt_traitor_vision_enable", GetConVar("ttt_traitor_vision_enable"):GetBool())
-
-    SetGlobalInt("ttt_parasite_infection_time", GetConVar("ttt_parasite_infection_time"):GetInt())
-    SetGlobalBool("ttt_parasite_enabled", GetConVar("ttt_parasite_enabled"):GetBool())
 
     SetGlobalBool("ttt_jesters_visible_to_traitors", GetConVar("ttt_jesters_visible_to_traitors"):GetBool())
     SetGlobalBool("ttt_jesters_visible_to_monsters", GetConVar("ttt_jesters_visible_to_monsters"):GetBool())
@@ -668,12 +656,6 @@ end
 
 function PrepareRound()
     for _, v in pairs(player.GetAll()) do
-        v:SetNWBool("Infected", false)
-        v:SetNWBool("Infecting", false)
-        v:SetNWString("InfectingTarget", nil)
-        v:SetNWInt("InfectionProgress", 0)
-        timer.Remove(v:Nick() .. "InfectionProgress")
-        timer.Remove(v:Nick() .. "InfectingSpectate")
         v:SetNWVector("PlayerColor", Vector(1, 1, 1))
         -- Workaround to prevent GMod sprint from working
         v:SetRunSpeed(v:GetWalkSpeed())

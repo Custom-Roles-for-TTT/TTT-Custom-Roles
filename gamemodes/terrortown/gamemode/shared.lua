@@ -940,16 +940,6 @@ JESTER_NOTIFY_TRAITOR = 2
 JESTER_NOTIFY_DETECTIVE = 3
 JESTER_NOTIFY_EVERYONE = 4
 
--- Parasite respawn modes
-PARASITE_RESPAWN_HOST = 0
-PARASITE_RESPAWN_BODY = 1
-PARASITE_RESPAWN_RANDOM = 2
-
--- Parasite infection suicide respawn modes
-PARASITE_SUICIDE_NONE = 0
-PARASITE_SUICIDE_RESPAWN_ALL = 1
-PARASITE_SUICIDE_RESPAWN_CONSOLE = 2
-
 COLOR_WHITE = Color(255, 255, 255, 255)
 COLOR_BLACK = Color(0, 0, 0, 255)
 COLOR_GREEN = Color(0, 255, 0, 255)
@@ -1096,16 +1086,7 @@ function GetSprintMultiplier(ply, sprinting)
 end
 
 function UpdateRoleWeaponState()
-    -- If the parasite is not enabled, don't let anyone buy the cure
-    local parasite_cure = weapons.GetStored("weapon_par_cure")
-    local fake_cure = weapons.GetStored("weapon_qua_fake_cure")
-    if GetGlobalBool("ttt_parasite_enabled", false) then
-        parasite_cure.CanBuy = table.Copy(parasite_cure.CanBuyDefault)
-        fake_cure.CanBuy = table.Copy(fake_cure.CanBuyDefault)
-    else
-        table.Empty(parasite_cure.CanBuy)
-        table.Empty(fake_cure.CanBuy)
-    end
+    hook.Run("TTTUpdateRoleState")
 
     if SERVER then
         net.Start("TTT_ResetBuyableWeaponsCache")
@@ -1132,13 +1113,11 @@ function UpdateRoleState()
         end
     end
 
-    hook.Run("TTTUpdateRoleState")
+    -- Update which weapons are available based on role state
+    UpdateRoleWeaponState()
 
     -- Update role colors to make sure team changes have taken effect
     UpdateRoleColours()
-
-    -- Update which weapons are available based on role state
-    UpdateRoleWeaponState()
 
     -- Enable the shop for all roles if configured to do so
     if GetGlobalBool("ttt_shop_for_all", false) then
@@ -1232,12 +1211,6 @@ end
 -- get a little marker on their icon if they're buyable, showing they are custom
 -- and unique to the server.
 DefaultEquipment = {
-    [ROLE_PARASITE] = {
-        EQUIP_ARMOR,
-        EQUIP_RADAR,
-        EQUIP_DISGUISE
-    },
-
     -- non-buyable
     [ROLE_NONE] = {
         "weapon_ttt_confgrenade",

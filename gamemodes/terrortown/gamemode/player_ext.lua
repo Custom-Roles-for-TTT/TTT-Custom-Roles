@@ -322,12 +322,6 @@ function plymeta:SpawnForRound(dead_only)
 
     self:StripAll()
     self:SetTeam(TEAM_TERROR)
-    -- Disable Parasite infection
-    self:SetNWBool("Infecting", false)
-    self:SetNWString("InfectingTarget", nil)
-    self:SetNWInt("InfectionProgress", 0)
-    timer.Remove(self:Nick() .. "InfectionProgress")
-    timer.Remove(self:Nick() .. "InfectingSpectate")
 
     -- If this player was dead, mark them as being in the process of being resurrected
     if dead_only then

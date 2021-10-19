@@ -117,16 +117,6 @@ net.Receive("TTT_Defibrillated", function(len)
     })
 end)
 
-net.Receive("TTT_ParasiteInfect", function(len)
-    local victim = net.ReadString()
-    local attacker = net.ReadString()
-    CLSCORE:AddEvent({
-        id = EVENT_INFECT,
-        vic = victim,
-        att = attacker
-    })
-end)
-
 net.Receive("TTT_PlayerDisconnected", function(len)
     local name = net.ReadString()
     table.insert(disconnected, name)

@@ -298,8 +298,6 @@ function GM:HUDDrawTargetID()
     local target_monster = false
     local target_independent = false
 
-    local target_infected = false
-
     local target_corpse = false
 
     local glitchMode = GetGlobalInt("ttt_glitch_mode", 0)
@@ -368,8 +366,6 @@ function GM:HUDDrawTargetID()
                         end
                     end
                 end
-
-                target_infected = ent:GetNWBool("Infected", false)
             elseif client:IsMonsterTeam() then
                 if showJester then
                     target_jester = showJester
@@ -577,10 +573,7 @@ function GM:HUDDrawTargetID()
 
     text = nil
     local secondary_text = nil
-    if target_infected then
-        text = L.target_infected
-        col = ROLE_COLORS_RADAR[ROLE_PARASITE]
-    elseif target_traitor then
+    if target_traitor then
         text = string.upper(ROLE_STRINGS[ROLE_TRAITOR])
         col = ROLE_COLORS_RADAR[ROLE_TRAITOR]
     elseif target_special_traitor then
