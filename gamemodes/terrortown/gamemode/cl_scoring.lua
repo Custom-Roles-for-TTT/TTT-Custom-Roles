@@ -98,17 +98,6 @@ local function FitNicknameLabel(nicklbl, maxwidth, getstring, args)
     end
 end
 
-net.Receive("TTT_Hypnotised", function(len)
-    local vicname = net.ReadString()
-    local vicsid = net.ReadString()
-    CLSCORE:AddEvent({
-        id = EVENT_HYPNOTISED,
-        vic = vicname,
-        sid64 = vicsid,
-        bonus = 1
-    })
-end)
-
 net.Receive("TTT_Defibrillated", function(len)
     local name = net.ReadString()
     CLSCORE:AddEvent({

@@ -7,12 +7,43 @@ hook.Add("Initialize", "Hypnotist_Translations_Initialize", function()
     LANG.AddToLanguage("english", "brainwash_help_pri", "Hold {primaryfire} to revive dead body.")
     LANG.AddToLanguage("english", "brainwash_help_sec", "The revived player will become a traitor.")
 
+    -- Event
+    LANG.AddToLanguage("english", "ev_hypno", "{victim} was hypnotised")
+
     -- Popup
     LANG.AddToLanguage("english", "info_popup_hypnotist", [[You are {role}! {comrades}
 
 You can use your brain washing device on a corpse to revive them as {atraitor}.
 
 Press {menukey} to receive your special equipment!]])
+end)
+-------------
+-- SCORING --
+-------------
+
+-- Register the scoring events for the hypnotist
+hook.Add("Initialize", "Hypnotist_Scoring_Initialize", function()
+    local traitor_icon = Material("icon16/user_red.png")
+    local Event = CLSCORE.DeclareEventDisplay
+    local PT = LANG.GetParamTranslation
+    Event(EVENT_HYPNOTISED, {
+        text = function(e)
+            return PT("ev_hypno", {victim = e.vic})
+         end,
+        icon = function(e)
+            return traitor_icon, "Hypnotised"
+        end})
+end)
+
+net.Receive("TTT_Hypnotised", function(len)
+    local vicname = net.ReadString()
+    local vicsid = net.ReadString()
+    CLSCORE:AddEvent({
+        id = EVENT_HYPNOTISED,
+        vic = vicname,
+        sid64 = vicsid,
+        bonus = 1
+    })
 end)
 
 --------------

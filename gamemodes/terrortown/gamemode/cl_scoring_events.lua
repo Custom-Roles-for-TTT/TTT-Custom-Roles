@@ -35,7 +35,6 @@ local app_icon     = Material("icon16/application.png")
 local credit_icon = Material("icon16/coins.png")
 local wrench_icon  = Material("icon16/wrench.png")
 
-local traitor_icon = Material("icon16/user_red.png")
 local heart_icon = Material("icon16/heart.png")
 local disconnect_icon = Material("icon16/disconnect.png")
 local info_icon = Material("icon16/information.png")
@@ -320,14 +319,6 @@ Event(EVENT_KILL,
         end
     end
 })
-
-Event(EVENT_HYPNOTISED, {
-    text = function(e)
-        return PT("ev_hypno", {victim = e.vic})
-     end,
-    icon = function(e)
-        return traitor_icon, "Hypnotised"
-    end})
 
 Event(EVENT_DEFIBRILLATED, {
     text = function(e)

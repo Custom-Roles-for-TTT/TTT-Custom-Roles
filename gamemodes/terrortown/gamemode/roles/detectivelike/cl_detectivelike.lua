@@ -1,3 +1,12 @@
+------------------
+-- TRANSLATIONS --
+------------------
+
+hook.Add("Initialize", "DetectiveLike_Translations_Initialize", function()
+    -- Event
+    LANG.AddToLanguage("english", "ev_promote", "{player} was promoted to {detective}")
+end)
+
 -------------
 -- SCORING --
 -------------

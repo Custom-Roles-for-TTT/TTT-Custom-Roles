@@ -32,10 +32,10 @@ L.round_traitors_one = "{role}, you stand alone."
 L.round_traitors_more = "{role}, these are your allies: {names}"
 
 L.win_prevented = "Map was prevented from ending the round."
+L.win_showreport = "Let's look at the round report for {num} seconds."
 L.win_time = "Time has run out. The {role} win."
 L.win_traitor = "The {role} have won!"
 L.win_innocent = "The {role} have been defeated!"
-L.win_showreport = "Let's look at the round report for {num} seconds."
 L.win_monster = "The monsters have taken over!"
 
 L.limit_round = "Round limit reached. {mapname} will load soon."
@@ -424,18 +424,6 @@ Slow recharge. Anyone can use it, and
 it can be damaged. Can be checked for
 DNA samples of its users.]]
 
--- Bomb station
-L.bstation_name = "Bomb Station"
-L.bstation_hint = "Press {usekey} to fake receiving health. Charge: {num}."
-L.bstation_broken = "Your Bomb Station has been destroyed!"
-L.bstation_help = "{primaryfire} places the Bomb Station."
-
-L.bstation_desc = [[
-Appears as a health station to non-{traitors}.
-
-Detonates when used by a non-{traitor}.
-{traitors} can use to deplete fake charge.]]
-
 -- Knife
 L.knife_name = "Knife"
 L.knife_thrown = "Thrown knife"
@@ -572,10 +560,6 @@ Teleport to a previously marked spot.
 
 Teleporting makes noise, and the
 number of uses is limited.]]
-
--- Zombification device
-L.zombificator_help_pri = "Hold {primaryfire} to zombify dead body."
-L.zombificator_help_sec = "The revived player will become a zombie."
 
 -- Ammo names, shown when picked up
 L.ammo_pistol = "9mm ammo"
@@ -1145,10 +1129,8 @@ L.idle_popup_title = "Idle"
 L.sb_playervolume = "Player Volume"
 
 -- Custom Events
-L.ev_hypno = "{victim} was hypnotised"
 L.ev_defi = "{victim} was respawned"
 L.ev_disco = "{victim} disconnected"
-L.ev_promote = "{player} was promoted to {detective}"
 
 -- Role Weapons Configuration
 L.roleweapons_title = "Role Weapons Configuration"
