@@ -694,7 +694,7 @@ Helper methods that can be used when displaying client-side UIs
 
 **HUD:PaintBar(r, x, y, w, h, colors, value)** - Paints a rounded bar that is some-percentaged filled. Can be used as a progress bar.\
 *Realm:* Client\
-*Added in:* 1.3.1
+*Added in:* 1.3.1\
 *Parameters:*
 - *r* - The amount the bar should be rounded
 - *x* - The position from the left of the screen
@@ -708,7 +708,7 @@ Helper methods that can be used when displaying client-side UIs
 
 **HUD:PaintPowersHUD(powers, max_power, current_power, colors, title, subtitle)** - Paints a HUD for showing available powers and their associated costs. Used for roles such as the Phantom.\
 *Realm:* Client\
-*Added in:* 1.3.1
+*Added in:* 1.3.1\
 *Parameters:*
 - *powers* - Table of key-value pairs where each key is the label for a power and the associated value is the cost of using it. The key can contain a `{num}` placeholder which will be replaced with the percentage of maximum power that the power costs
 - *max_power* - The maximum amount of a power a player can have
@@ -721,7 +721,7 @@ Helper methods that can be used when displaying client-side UIs
 
 **HUD:ShadowedText(text, font, x, y, color, xalign, yalign)** - Renders text with an offset black background to emulate a shadow.\
 *Realm:* Client\
-*Added in:* 1.3.1
+*Added in:* 1.3.1\
 *Parameters:*
 - *text* - The text to render
 - *font* - The name of the font to use
