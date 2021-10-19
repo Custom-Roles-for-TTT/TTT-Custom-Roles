@@ -12,6 +12,7 @@ local itemSizeVar = CreateClientConVar("ttt_bem_size", 64, true, false, "Sets th
 local showCustomVar = CreateClientConVar("ttt_bem_marker_custom", 1, true, false, "Should custom items get a marker?")
 local showFavoriteVar = CreateClientConVar("ttt_bem_marker_fav", 1, true, false, "Should favorite items get a marker?")
 local showSlotVar = CreateClientConVar("ttt_bem_marker_slot", 1, true, false, "Should items get a slot-marker?")
+local showLoadoutEquipment = CreateClientConVar("ttt_show_loadout_equipment", 0, true, false, "Should loadout equipment show in shops?")
 
 -- Buyable weapons are loaded automatically. Buyable items are defined in
 -- equip_items_shd.lua
@@ -433,7 +434,7 @@ local function TraitorMenuPopup()
     local m = 5
     -- item list width
     local dlistw = ((itemSize + 2) * numCols) - 2 + 15
-    local dlisth = ((itemSize + 2) * numRows) - 2 + 15
+    local dlisth = ((itemSize + 2) * numRows) - 2 + 45
     -- right column width
     local diw = 270
     -- frame size
@@ -669,7 +670,7 @@ local function TraitorMenuPopup()
 
                 -- Don't show equipment items that you already own that are listed as "loadout" because you were given it for free
                 local externalLoadout = ROLE_LOADOUT_ITEMS[ply:GetRole()] and table.HasValue(ROLE_LOADOUT_ITEMS[ply:GetRole()], item.name)
-                if not ItemIsWeapon(item) and ply:HasEquipmentItem(item.id) and (item.loadout or externalLoadout) then
+                if not ItemIsWeapon(item) and ply:HasEquipmentItem(item.id) and (item.loadout or externalLoadout) and not showLoadoutEquipment:GetBool() then
                     ic:Remove()
                 else
                     if ic.favorite then
