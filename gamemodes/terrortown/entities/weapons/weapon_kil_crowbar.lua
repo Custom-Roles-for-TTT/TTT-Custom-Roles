@@ -51,15 +51,28 @@ SWEP.AllowDrop = true
 
 local sound_single = Sound("Weapon_Crowbar.Single")
 
+if SERVER then
+    CreateConVar("ttt_killer_crowbar_damage", "20")
+    CreateConVar("ttt_killer_crowbar_thrown_damage", "50")
+end
+
 function SWEP:Initialize()
-    self:SetWeaponHoldType(self.HoldType)
     self.CanFire = true
-    self:SetDeploySpeed(self.DeploySpeed)
     self.was_thrown = false
+
+    if SERVER then
+        SetGlobalInt("ttt_killer_crowbar_damage", GetConVar("ttt_killer_crowbar_damage"):GetInt())
+    end
+
     if CLIENT then
         self.ModelEntity = ClientsideModel(self.WorldModel)
         self.ModelEntity:SetNoDraw(true)
     end
+    return self.BaseClass.Initialize(self)
+end
+
+function SWEP:Deploy()
+    self.Primary.Damage = GetGlobalInt("ttt_killer_crowbar_damage", 20)
 end
 
 function SWEP:PrimaryAttack()
@@ -142,6 +155,7 @@ function SWEP:Throw()
     self.CanFire = false
 
     local ent = ents.Create("ttt_kil_crowbar")
+    ent:SetDamage(GetConVar("ttt_killer_crowbar_thrown_damage"):GetInt())
 
     local owner = self:GetOwner()
     ent:SetOwner(owner)

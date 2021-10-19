@@ -96,6 +96,7 @@ function GM:InitPostEntity()
     RunConsoleCommand("_ttt_request_rolelist")
 
     UpdateRoleStrings()
+    UpdateRoleColours()
 end
 
 function GM:DoCacheEnts()
@@ -260,7 +261,6 @@ function GM:ClearClientState()
     client.last_id = nil
     client.radio = nil
     client.called_corpses = {}
-    client.revenger_lover_killers = {}
 
     VOICE.InitBattery()
 
@@ -356,14 +356,14 @@ function GM:Think()
     local client = LocalPlayer()
     for _, v in pairs(player.GetAll()) do
         if v:Alive() and not v:IsSpec() then
-            local shouldSmoke = v:GetNWBool("Haunted", false) and GetGlobalBool("ttt_phantom_killer_smoke")
+            hook.Run("TTTPlayerAliveClientThink", client, v)
+
             local smokeColor = COLOR_BLACK
             local smokeParticle = "particle/snow.vmt"
             local smokeOffset = Vector(0, 0, 30)
 
             -- Allow other addons to manipulate whether and how players smoke
-            local newShouldSmoke, newSmokeColor, newSmokeParticle, newSmokeOffset = hook.Run("TTTShouldPlayerSmoke", v, client, shouldSmoke, smokeColor, smokeParticle, smokeOffset)
-            if type(newShouldSmoke) == "boolean" then shouldSmoke = newShouldSmoke end
+            local shouldSmoke, newSmokeColor, newSmokeParticle, newSmokeOffset = hook.Run("TTTShouldPlayerSmoke", v, client, false, smokeColor, smokeParticle, smokeOffset)
             if newSmokeColor then smokeColor = newSmokeColor end
             if newSmokeParticle then smokeParticle = newSmokeParticle end
             if newSmokeOffset then smokeOffset = newSmokeOffset end
@@ -394,72 +394,6 @@ function GM:Think()
                 if v.SmokeEmitter then
                     v.SmokeEmitter:Finish()
                     v.SmokeEmitter = nil
-                end
-            end
-            if v:IsPaladin() then
-                if not v.AuraEmitter then v.AuraEmitter = ParticleEmitter(v:GetPos()) end
-                if not v.AuraNextPart then v.AuraNextPart = CurTime() end
-                if not v.AuraDir then v.AuraDir = 0 end
-                local pos = v:GetPos() + Vector(0, 0, 30)
-                if v.AuraNextPart < CurTime() then
-                    if client:GetPos():Distance(pos) <= 3000 then
-                        v.AuraEmitter:SetPos(pos)
-                        v.AuraNextPart = CurTime() + 0.02
-                        v.AuraDir = v.AuraDir + 0.05
-                        local radius = GetGlobalFloat("ttt_paladin_aura_radius", 262.45)
-                        local vec = Vector(math.sin(v.AuraDir) * radius, math.cos(v.AuraDir) * radius, 10)
-                        local particle = v.AuraEmitter:Add("particle/shield.vmt", v:GetPos() + vec)
-                        particle:SetVelocity(Vector(0, 0, 20))
-                        particle:SetDieTime(1)
-                        particle:SetStartAlpha(200)
-                        particle:SetEndAlpha(0)
-                        particle:SetStartSize(3)
-                        particle:SetEndSize(2)
-                        particle:SetRoll(0)
-                        particle:SetRollDelta(0)
-                        particle:SetColor(ROLE_COLORS[ROLE_PALADIN].r, ROLE_COLORS[ROLE_PALADIN].g, ROLE_COLORS[ROLE_PALADIN].b)
-                    end
-                end
-            else
-                if v.AuraEmitter then
-                    v.AuraEmitter:Finish()
-                    v.AuraEmitter = nil
-                end
-            end
-        end
-    end
-    if client:IsActiveMedium() then
-        for _, ent in pairs(ents.GetAll()) do
-            if ent:GetNWBool("MediumSpirit", false) then
-                ent:SetNoDraw(true)
-                ent:SetRenderMode(RENDERMODE_NONE)
-                ent:SetNotSolid(true)
-                ent:DrawShadow(false)
-                if not ent.WispEmitter then ent.WispEmitter = ParticleEmitter(ent:GetPos()) end
-                if not ent.WispNextPart then ent.WispNextPart = CurTime() end
-                local pos = ent:GetPos() + Vector(0, 0, 64)
-                if ent.WispNextPart < CurTime() then
-                    if client:GetPos():Distance(pos) <= 3000 then
-                        ent.WispEmitter:SetPos(pos)
-                        ent.WispNextPart = CurTime() + math.Rand(0.003, 0.01)
-                        local particle = ent.WispEmitter:Add("particle/wisp.vmt", pos)
-                        particle:SetVelocity(Vector(0, 0, 30))
-                        particle:SetDieTime(1)
-                        particle:SetStartAlpha(math.random(150, 220))
-                        particle:SetEndAlpha(0)
-                        local size = math.random(4, 7)
-                        particle:SetStartSize(size)
-                        particle:SetEndSize(1)
-                        particle:SetRoll(math.Rand(0, math.pi))
-                        particle:SetRollDelta(0)
-                        local col = ent:GetNWVector("SpiritColor", Vector(1, 1, 1))
-                        particle:SetColor(col.x * 255, col.y * 255, col.z * 255)
-                    end
-                end
-            else
-                if ent.WispEmitter then
-                    ent.WispEmitter:Finish()
-                    ent.WispEmitter = nil
                 end
             end
         end
@@ -554,66 +488,6 @@ function GM:OnEntityCreated(ent)
 
     return self.BaseClass.OnEntityCreated(self, ent)
 end
-
--- Clown and Jester confetti
-local confetti = Material("confetti.png")
-local function Celebrate(ply, sound, show_confetti)
-    if not IsValid(ply) then return end
-    if sound ~= nil then
-        ply:EmitSound(sound)
-    end
-
-    if not show_confetti then return end
-
-    local pos = ply:GetPos() + Vector(0, 0, ply:OBBMaxs().z)
-    if ply.GetShootPos then
-        pos = ply:GetShootPos()
-    end
-
-    local velMax = 200
-    local gravMax = 50
-    local gravity = Vector(math.random(-gravMax, gravMax), math.random(-gravMax, gravMax), math.random(-gravMax, 0))
-
-    --Handles particles
-    local emitter = ParticleEmitter(pos, true)
-    for _ = 1, 150 do
-        local p = emitter:Add(confetti, pos)
-        p:SetStartSize(math.random(6, 10))
-        p:SetEndSize(0)
-        p:SetAngles(Angle(math.random(0, 360), math.random(0, 360), math.random(0, 360)))
-        p:SetAngleVelocity(Angle(math.random(5, 50), math.random(5, 50), math.random(5, 50)))
-        p:SetVelocity(Vector(math.random(-velMax, velMax), math.random(-velMax, velMax), math.random(-velMax, velMax)))
-        p:SetColor(255, 255, 255)
-        p:SetDieTime(math.random(4, 7))
-        p:SetGravity(gravity)
-        p:SetAirResistance(125)
-    end
-    emitter:Finish()
-end
-
-net.Receive("TTT_JesterDeathCelebration", function()
-    local ent = net.ReadEntity()
-    local play_sound = net.ReadBool()
-    local show_confetti = net.ReadBool()
-
-    local sound = nil
-    if play_sound then
-        sound = "birthday.wav"
-    end
-
-    Celebrate(ent, sound, show_confetti)
-end)
-
-net.Receive("TTT_ClownActivate", function()
-    local ent = net.ReadEntity()
-    Celebrate(ent, "clown.wav", true)
-
-    local name = ent:Nick()
-    CLSCORE:AddEvent({
-        id = EVENT_CLOWNACTIVE,
-        ply = name
-    })
-end)
 
 -- Hit Markers
 -- Creator: Exho

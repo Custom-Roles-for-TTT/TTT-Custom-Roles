@@ -87,9 +87,8 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
         GetEquipmentForRole(ROLE_TRAITOR, false, true, block_exclusion, ignore_cache)
     end
 
-    local sync_detective_like = promoted and (role == ROLE_DEPUTY or role == ROLE_IMPERSONATOR)
     local detectivesync = GetGlobalBool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_sync", false) and DETECTIVE_ROLES[role]
-    local sync_detective_weapons = detectivesync or sync_detective_like or (rolemode > SHOP_SYNC_MODE_NONE)
+    local sync_detective_weapons = detectivesync or promoted or (rolemode > SHOP_SYNC_MODE_NONE)
 
     -- Pre-load the Detective weapons so that any that have their CanBuy modified will also apply to the enabled allied role(s)
     if sync_detective_weapons and not Equipment[ROLE_DETECTIVE] then
@@ -190,7 +189,7 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
                 -- Avoid duplicates
                 if not available[i.id] and
                     -- Detective -> Detective-like
-                    (sync_detective_like or
+                    (promoted or
                     -- Traitor OR Detective or Detective-only modes, Detective -> Sync Role
                     (rolemode == SHOP_SYNC_MODE_UNION or rolemode == SHOP_SYNC_MODE_DETECTIVE)) then
                     table.insert(tbl[role], i)
@@ -246,7 +245,7 @@ end
 
 local function CanCarryWeapon(item)
     local client = LocalPlayer()
-    -- Don't allow the clown to buy any weapon that has a kind matching one of the weapons they've already bought
+    -- Don't allow delayed shop roles to buy any weapon that has a kind matching one of the weapons they've already bought
     if item.kind and client.bought and client:ShouldDelayShopPurchase() then
         for _, id in ipairs(client.bought) do
             local wep = weapons.GetStored(id)
@@ -261,7 +260,7 @@ end
 
 local function HasEquipmentItem(item)
     local client = LocalPlayer()
-    -- Don't allow the clown to buy the same equipment item twice if delayed acceptance is enabled
+    -- Don't allow the delayed shop roles to buy the same equipment item twice if delayed acceptance is enabled
     if client.bought and client:ShouldDelayShopPurchase() then
         return table.HasValue(client.bought, tostring(item.id))
     end
@@ -718,7 +717,7 @@ local function TraitorMenuPopup()
             dlist:SelectPanel(dlist:GetItems()[1])
         end
         dsearch.OnValueChange = function(box, value)
-            local roleitems = GetEquipmentForRole(ply:GetRole(), ply:GetNWBool("HasPromotion", false), false)
+            local roleitems = GetEquipmentForRole(ply:GetRole(), ply:IsDetectiveLike() and not ply:IsDetectiveTeam(), false)
             local filtered = {}
             for _, v in pairs(roleitems) do
                 if v and v["name"] and string.find(SafeTranslate(v["name"]):lower(), value:lower()) then
@@ -849,7 +848,7 @@ local function TraitorMenuPopup()
             dconfirm.DoClick()
         end
 
-        FillEquipmentList(GetEquipmentForRole(ply:GetRole(), ply:GetNWBool("HasPromotion", false), false))
+        FillEquipmentList(GetEquipmentForRole(ply:GetRole(), ply:IsDetectiveLike() and not ply:IsDetectiveTeam(), false))
         show = true
     end
 

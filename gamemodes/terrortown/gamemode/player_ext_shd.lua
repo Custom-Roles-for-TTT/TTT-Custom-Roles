@@ -46,9 +46,6 @@ function plymeta:IsActiveIndependentTeam() return self:IsIndependentTeam() and s
 function plymeta:IsActiveMonsterTeam() return self:IsMonsterTeam() and self:IsActive() end
 function plymeta:IsActiveDetectiveTeam() return self:IsDetectiveTeam() and self:IsActive() end
 
-function plymeta:GetDetectiveLike() return self:IsDetectiveTeam() or ((self:GetDeputy() or self:GetImpersonator()) and self:GetNWBool("HasPromotion", false)) end
-function plymeta:GetDetectiveLikePromotable() return (self:IsDeputy() or self:IsImpersonator()) and not self:GetNWBool("HasPromotion", false) end
-
 function plymeta:IsSameTeam(target)
     if self:IsTraitorTeam() and target:IsTraitorTeam() then
         return true
@@ -62,9 +59,6 @@ end
 function plymeta:GetRoleTeam(detectivesAreInnocent)
     return player.GetRoleTeam(self:GetRole(), detectivesAreInnocent)
 end
-
-plymeta.IsDetectiveLike = plymeta.GetDetectiveLike
-plymeta.IsDetectiveLikePromotable = plymeta.GetDetectiveLikePromotable
 
 function plymeta:IsSpecial() return self:GetRole() ~= ROLE_INNOCENT end
 function plymeta:IsCustom() return not DEFAULT_ROLES[self:GetRole()] end
@@ -97,7 +91,7 @@ function plymeta:CanUseShop()
         return isShopRole
     end
 
-    return isShopRole and (not self:IsDeputy() or self:IsRoleActive())
+    return isShopRole
 end
 function plymeta:ShouldDelayShopPurchase()
     local role = self:GetRole()
@@ -130,8 +124,6 @@ function plymeta:CanLootCredits(active_only)
 end
 
 function plymeta:ShouldActLikeJester()
-    if self:IsClown() then return not self:GetNWBool("KillerClownActive", false) end
-
     -- Check if this role has an external definition for "ShouldActLikeJester" and use that
     local role = self:GetRole()
     if ROLE_SHOULD_ACT_LIKE_JESTER[role] then return ROLE_SHOULD_ACT_LIKE_JESTER[role](self) end
@@ -148,45 +140,17 @@ function plymeta:ShouldHideJesters()
     end
     return true
 end
-function plymeta:ShouldRevealBeggar(tgt)
-    -- If we weren't given a target, use ourselves
-    if not tgt then tgt = self end
-
-    -- Determine whether which setting we should check based on what role they changed to
-    local beggarMode = nil
-    local sameTeam = false
-    if tgt:IsTraitor() then
-        beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", BEGGAR_REVEAL_ALL)
-        sameTeam = self:IsTraitorTeam() and beggarMode == BEGGAR_REVEAL_TRAITORS
-    elseif tgt:IsInnocent() then
-        beggarMode = GetGlobalInt("ttt_beggar_reveal_innocent", BEGGAR_REVEAL_TRAITORS)
-        sameTeam = self:IsInnocentTeam() and beggarMode == BEGGAR_REVEAL_INNOCENTS
-    end
-
-    -- Check the setting value and the player's team to see we if should reveal this beggar
-    return beggarMode == BEGGAR_REVEAL_ALL or sameTeam
-end
-function plymeta:ShouldRevealBodysnatcher(tgt)
-    -- If we weren't given a target, use ourselves
-    if not tgt then tgt = self end
-
-    -- Determine whether which setting we should check based on what role they changed to
-    local bodysnatcherMode = nil
-    if tgt:IsTraitorTeam() then
-        bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_traitor", BODYSNATCHER_REVEAL_ALL)
-    elseif tgt:IsInnocentTeam() then
-        bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_innocent", BODYSNATCHER_REVEAL_ALL)
-    elseif tgt:IsMonsterTeam() then
-        bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_monster", BODYSNATCHER_REVEAL_ALL)
-    elseif tgt:IsIndependentTeam() then
-        bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_independent", BODYSNATCHER_REVEAL_ALL)
-    end
-
-    -- Check the setting value and whether the player and the target are the same team
-    return bodysnatcherMode == BODYSNATCHER_REVEAL_ALL or (self:IsSameTeam(tgt) and bodysnatcherMode == BODYSNATCHER_REVEAL_TEAM)
-end
 
 function plymeta:ShouldDelayAnnouncements() return ROLE_SHOULD_DELAY_ANNOUNCEMENTS[self:GetRole()] or false end
+
+function plymeta:ShouldShowSpectatorHUD()
+    -- Check if this role has an external definition for whether to show a spectator HUD and use that
+    local role = self:GetRole()
+    if ROLE_SHOULD_SHOW_SPECTATOR_HUD[role] then
+        return ROLE_SHOULD_SHOW_SPECTATOR_HUD[role](self)
+    end
+    return false
+end
 
 function plymeta:SetRoleAndBroadcast(role)
     self:SetRole(role)
@@ -202,13 +166,7 @@ end
 function plymeta:IsActiveSpecial() return self:IsSpecial() and self:IsActive() end
 function plymeta:IsActiveCustom() return self:IsCustom() and self:IsActive() end
 function plymeta:IsActiveShopRole() return self:IsShopRole() and self:IsActive() end
-function plymeta:IsActiveDetectiveLike() return self:IsActive() and self:IsDetectiveLike() end
 function plymeta:IsRoleActive()
-    if self:IsClown() then return self:GetNWBool("KillerClownActive", false) end
-    if self:IsVeteran() then return self:GetNWBool("VeteranActive", false) end
-    if self:IsDeputy() or self:IsImpersonator() then return self:GetNWBool("HasPromotion", false) end
-    if self:IsOldMan() then return self:GetNWBool("AdrenalineRush", false) end
-
     -- Check if this role has an external definition for "IsActive" and use that
     local role = self:GetRole()
     if ROLE_IS_ACTIVE[role] then return ROLE_IS_ACTIVE[role](self) end
@@ -472,6 +430,40 @@ if CLIENT then
         end
     end)
 
+    -- Jester team confetti
+    local confetti = Material("confetti.png")
+    function plymeta:Celebrate(snd, show_confetti)
+        if snd ~= nil then
+            self:EmitSound(snd)
+        end
+
+        if not show_confetti then return end
+
+        local pos = self:GetPos() + Vector(0, 0, self:OBBMaxs().z)
+        if self.GetShootPos then
+            pos = self:GetShootPos()
+        end
+
+        local velMax = 200
+        local gravMax = 50
+        local gravity = Vector(math.random(-gravMax, gravMax), math.random(-gravMax, gravMax), math.random(-gravMax, 0))
+
+        --Handles particles
+        local emitter = ParticleEmitter(pos, true)
+        for _ = 1, 150 do
+            local p = emitter:Add(confetti, pos)
+            p:SetStartSize(math.random(6, 10))
+            p:SetEndSize(0)
+            p:SetAngles(Angle(math.random(0, 360), math.random(0, 360), math.random(0, 360)))
+            p:SetAngleVelocity(Angle(math.random(5, 50), math.random(5, 50), math.random(5, 50)))
+            p:SetVelocity(Vector(math.random(-velMax, velMax), math.random(-velMax, velMax), math.random(-velMax, velMax)))
+            p:SetColor(255, 255, 255)
+            p:SetDieTime(math.random(4, 7))
+            p:SetGravity(gravity)
+            p:SetAirResistance(125)
+        end
+        emitter:Finish()
+    end
 else
     -- SERVER
 
@@ -479,7 +471,6 @@ else
     -- performing a gesture. This allows the client to decide whether it should
     -- play, depending on eg. a cvar.
     function plymeta:AnimPerformGesture(act)
-
         if not act then return end
 
         net.Start("TTT_PerformGesture")
@@ -488,64 +479,7 @@ else
         net.Broadcast()
     end
 
-    function plymeta:HandleDetectiveLikePromotion()
-        self:SetNWBool("HasPromotion", true)
-
-        net.Start("TTT_Promotion")
-        net.WriteString(self:Nick())
-        net.Broadcast()
-
-        -- The player has been promoted so we need to update their shop
-        net.Start("TTT_ResetBuyableWeaponsCache")
-        net.Send(self)
-    end
-
     function plymeta:MoveRoleState(target, keep_on_source)
-        if self:GetNWBool("HasPromotion", false) then
-            if not keep_on_source then self:SetNWBool("HasPromotion", false) end
-            target:HandleDetectiveLikePromotion()
-        end
-
-        local killer = self:GetNWString("RevengerKiller", "")
-        if #killer > 0 then
-            if not keep_on_source then self:SetNWString("RevengerKiller", "") end
-            target:SetNWString("RevengerKiller", killer)
-        end
-
-        local lover = self:GetNWString("RevengerLover", "")
-        if #lover > 0 then
-            if not keep_on_source then self:SetNWString("RevengerLover", "") end
-            target:SetNWString("RevengerLover", lover)
-
-            local revenger_lover = player.GetBySteamID64(lover)
-            if IsValid(revenger_lover) then
-                target:PrintMessage(HUD_PRINTTALK, "You are now in love with " .. revenger_lover:Nick() .. ".")
-                target:PrintMessage(HUD_PRINTCENTER, "You are now in love with " .. revenger_lover:Nick() .. ".")
-
-                if not revenger_lover:Alive() or revenger_lover:IsSpec() then
-                    local message
-                    if killer == target:SteamID64() then
-                        message = "Your love has died by your hand."
-                    elseif killer then
-                        message = "Your love has died. Track down their killer."
-
-                        timer.Simple(1, function() -- Slight delay needed for NW variables to be sent
-                            net.Start("TTT_RevengerLoverKillerRadar")
-                            net.WriteBool(true)
-                            net.Send(target)
-                        end)
-                    else
-                        message = "Your love has died, but you cannot determine the cause."
-                    end
-
-                    timer.Simple(1, function()
-                        target:PrintMessage(HUD_PRINTTALK, message)
-                        target:PrintMessage(HUD_PRINTCENTER, message)
-                    end)
-                end
-            end
-        end
-
         -- Run role-specific logic
         if ROLE_MOVE_ROLE_STATE[self:GetRole()] then
             ROLE_MOVE_ROLE_STATE[self:GetRole()](self, target, keep_on_source)
@@ -594,37 +528,75 @@ function player.GetLivingRole(role)
 end
 function player.IsRoleLiving(role) return IsPlayer(player.GetLivingRole(role)) end
 
-function player.AreTeamsLiving()
-    local traitor_alive = false
-    local innocent_alive = false
-    local indep_alive = false
-    local monster_alive = false
-    local jester_alive = false
-
+function player.TeamLivingCount(ignorePassiveWinners)
+    local innocent_alive = 0
+    local traitor_alive = 0
+    local indep_alive = 0
+    local monster_alive = 0
+    local jester_alive = 0
     for _, v in ipairs(player.GetAll()) do
+        -- If the player is alive
         if v:Alive() and v:IsTerror() then
-            if v:IsTraitorTeam() then
-                traitor_alive = true
-            elseif v:IsMonsterTeam() then
-                monster_alive = true
-            elseif v:IsInnocentTeam() then
-                innocent_alive = true
-            elseif v:IsIndependentTeam() then
-                indep_alive = true
-            elseif v:IsJesterTeam() then
-                jester_alive = true
+            -- If we're either not ignoring passive winners or this isn't a passive winning role
+            if not ignorePassiveWinners or not ROLE_HAS_PASSIVE_WIN[v:GetRole()] then
+                if v:IsInnocentTeam() then
+                    innocent_alive = innocent_alive + 1
+                elseif v:IsTraitorTeam() then
+                    traitor_alive = traitor_alive + 1
+                elseif v:IsIndependentTeam() then
+                    indep_alive = indep_alive + 1
+                elseif v:IsMonsterTeam() then
+                    monster_alive = monster_alive + 1
+                elseif v:IsJesterTeam() then
+                    jester_alive = jester_alive + 1
+                end
             end
         -- Handle zombification differently because the player's original role should have no impact on this
         elseif v:GetNWBool("IsZombifying", false) then
             if TRAITOR_ROLES[ROLE_ZOMBIE] then
-                traitor_alive = true
-            elseif MONSTER_ROLES[ROLE_ZOMBIE] then
-                monster_alive = true
+                traitor_alive = traitor_alive + 1
             elseif INDEPENDENT_ROLES[ROLE_ZOMBIE] then
-                indep_alive = true
+                indep_alive = indep_alive + 1
+            elseif MONSTER_ROLES[ROLE_ZOMBIE] then
+                monster_alive = monster_alive + 1
             end
         end
     end
+    return traitor_alive, innocent_alive, indep_alive, monster_alive, jester_alive
+end
+function player.AreTeamsLiving(ignorePassiveWinners)
+    local traitor_alive, innocent_alive, indep_alive, monster_alive, jester_alive = player.TeamLivingCount(ignorePassiveWinners)
+    return traitor_alive > 0, innocent_alive > 0, indep_alive > 0, monster_alive > 0, jester_alive > 0
+end
 
-    return innocent_alive, traitor_alive, indep_alive, monster_alive, jester_alive
+function player.ExecuteAgainstTeamPlayers(roleTeam, detectivesAreInnocent, aliveOnly, callback)
+    for _, v in ipairs(player.GetAll()) do
+        if not aliveOnly or (v:Alive() and v:IsTerror()) then
+            local playerTeam = player.GetRoleTeam(v:GetRole(), detectivesAreInnocent)
+            if playerTeam == roleTeam then
+                callback(v)
+            end
+        end
+    end
+end
+
+function player.GetTeamPlayers(roleTeam, detectivesAreInnocent, aliveOnly)
+    local team_players = {}
+    player.ExecuteAgainstTeamPlayers(roleTeam, detectivesAreInnocent, aliveOnly, function(ply)
+        table.insert(team_players, ply)
+    end)
+    return team_players
+end
+
+function player.LivingCount(ignorePassiveWinners)
+    local players_alive = 0
+    for _, v in ipairs(player.GetAll()) do
+        -- If the player is alive and we're either not ignoring passive winners or this isn't a passive winning role
+        if (v:Alive() and v:IsTerror() and (not ignorePassiveWinners or not ROLE_HAS_PASSIVE_WIN[v:GetRole()])) or
+            -- Handle zombification differently because the player's original role should have no impact on this
+            v:GetNWBool("IsZombifying", false) then
+            players_alive = players_alive + 1
+        end
+    end
+    return players_alive
 end

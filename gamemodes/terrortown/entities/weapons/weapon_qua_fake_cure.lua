@@ -1,6 +1,7 @@
 AddCSLuaFile()
 
 if CLIENT then
+    local GetPTranslation = LANG.GetParamTranslation
     SWEP.PrintName = "Parasite Cure"
     SWEP.ShopName = "Fake Parasite Cure"
     SWEP.Slot = 6
@@ -9,9 +10,13 @@ if CLIENT then
     SWEP.ViewModelFOV = 54
 
     SWEP.EquipMenuData = {
-            type =  "Weapon",
-            desc =  [[Use on a player to trick them into thinking you cured the parasite.]]
-        };
+        type =  "item_weapon",
+        desc = function()
+            return GetPTranslation("fake_cure_desc", {
+                parasite = ROLE_STRINGS[ROLE_PARASITE]:lower()
+            })
+        end
+    };
 
     SWEP.Icon = "vgui/ttt/icon_fakecure"
 end
@@ -51,29 +56,40 @@ local DEFIB_IDLE = 0
 local DEFIB_BUSY = 1
 local DEFIB_ERROR = 2
 
-local CureMode = CreateConVar("ttt_quack_fake_cure_mode", "0")
-
-local charge = 3
-
 local beep = Sound("buttons/button17.wav")
 local hum = Sound("items/nvg_on.wav")
 local cured = Sound("items/smallmedkit1.wav")
 
+if SERVER then
+    CreateConVar("ttt_quack_fake_cure_time", "-1")
+end
+
 if CLIENT then
     function SWEP:Initialize()
         self:AddHUDHelp("cure_help_pri", "cure_help_sec", true)
-        self:SetHoldType(self.HoldType)
         return self.BaseClass.Initialize(self)
     end
 end
 
 function SWEP:SetupDataTables()
     self:NetworkVar("Int", 0, "State")
-    self:NetworkVar("Float", 1, "Begin")
+    self:NetworkVar("Int", 1, "ChargeTime")
+    self:NetworkVar("Float", 0, "Begin")
     self:NetworkVar("String", 0, "Message")
+
+    if SERVER then
+        local cureTime = GetConVar("ttt_quack_fake_cure_time"):GetInt()
+        -- Use the same setting as for the real parasite cure if it isn't explicitly set
+        if cureTime < 0 then
+            cureTime = GetConVar("ttt_parasite_cure_time"):GetInt()
+        end
+        self:SetChargeTime(cureTime)
+    end
 end
 
 if SERVER then
+    local CureMode = CreateConVar("ttt_quack_fake_cure_mode", "0")
+
     function SWEP:Reset()
         self:SetState(DEFIB_IDLE)
         self:SetBegin(-1)
@@ -146,7 +162,7 @@ if SERVER then
     function SWEP:Think()
         if self:GetState() == DEFIB_BUSY then
             local owner = self:GetOwner()
-            if self:GetBegin() + charge <= CurTime() then
+            if self:GetBegin() + self:GetChargeTime() <= CurTime() then
                 self:DoCure(self.Target)
                 self:Reset()
             elseif owner == self.Target then
@@ -202,6 +218,7 @@ if CLIENT then
 
         if state == DEFIB_IDLE then return end
 
+        local charge = self:GetChargeTime()
         local time = self:GetBegin() + charge
 
         local x = ScrW() / 2.0

@@ -1,5 +1,7 @@
 -- HUD HUD HUD
 
+HUD = {}
+
 local surface = surface
 local draw = draw
 local math = math
@@ -9,7 +11,6 @@ local GetTranslation = LANG.GetTranslation
 local GetPTranslation = LANG.GetParamTranslation
 local GetLang = LANG.GetUnsafeLanguageTable
 local interp = string.Interp
-local FormatTime = util.SimpleTime
 
 local hide_role = false
 
@@ -81,19 +82,6 @@ local sprint_colors = {
     fill = Color(75, 150, 255, 255)
 };
 
-local willpower_colors = {
-    border = COLOR_WHITE,
-    background = Color(17, 115, 135, 222),
-    fill = Color(82, 226, 255, 255)
-};
-
-local infection_colors = {
-    border = COLOR_WHITE,
-    background = Color(191, 91, 22, 222),
-    fill = Color(255, 127, 39, 255)
-};
-
-
 -- Modified RoundedBox
 local Tex_Corner8 = surface.GetTextureID("gui/corner8")
 local function RoundedMeter(bs, x, y, w, h, color)
@@ -120,7 +108,7 @@ end
 ---- http://wiki.garrysmod.com/?title=Creating_a_HUD
 
 -- Paints a graphical meter bar
-local function PaintBar(r, x, y, w, h, colors, value)
+function HUD:PaintBar(r, x, y, w, h, colors, value)
     -- Background
     -- slightly enlarged to make a subtle border
     draw.RoundedBox(8, x - 1, y - 1, w + 2, h + 2, colors.background)
@@ -130,6 +118,41 @@ local function PaintBar(r, x, y, w, h, colors, value)
 
     if width > 0 then
         RoundedMeter(r, x, y, width, h, colors.fill)
+    end
+end
+
+function HUD:PaintPowersHUD(powers, max_power, current_power, colors, title, subtitle)
+    local margin = 10
+    local width, height = 200, 25
+    local x = ScrW() / 2 - width / 2
+    local y = margin / 2 + height
+    local power_percentage = current_power / max_power
+
+    HUD:PaintBar(8, x, y, width, height, colors, power_percentage)
+
+    local color = bg_colors.background_main
+
+    draw.SimpleText(title, "HealthAmmo", ScrW() / 2, y, color, TEXT_ALIGN_CENTER)
+    if subtitle and #subtitle > 0 then
+        draw.SimpleText(subtitle, "TabLarge", ScrW() / 2, margin, COLOR_WHITE, TEXT_ALIGN_CENTER)
+    end
+
+    if powers and table.Count(powers) > 0 then
+        local command_count = 0
+        for _, p in pairs(powers) do
+            if p > 0 then
+                command_count = command_count + 1
+            end
+        end
+
+        local current_command = 1
+        for t, p in pairs(powers) do
+            if p > 0 then
+                local percentage = math.Round(100 * (p / max_power))
+                draw.SimpleText(interp(t, { num = percentage }), "TabLarge", ScrW() / 4 + ((ScrW() / (2 * (command_count + 1))) * current_command), margin, current_power >= p and COLOR_GREEN or COLOR_RED, TEXT_ALIGN_CENTER)
+                current_command = current_command + 1
+            end
+        end
     end
 end
 
@@ -176,105 +199,12 @@ local function DrawBg(x, y, width, height, client)
     draw.RoundedBoxEx(8, x, y, tw, th, col, true, false, false, true)
 end
 
-local dr = draw
-
-local function ShadowedText(text, font, x, y, color, xalign, yalign)
-
-    dr.SimpleText(text, font, x + 2, y + 2, COLOR_BLACK, xalign, yalign)
-
-    dr.SimpleText(text, font, x, y, color, xalign, yalign)
+function HUD:ShadowedText(text, font, x, y, color, xalign, yalign)
+    draw.SimpleText(text, font, x + 2, y + 2, COLOR_BLACK, xalign, yalign)
+    draw.SimpleText(text, font, x, y, color, xalign, yalign)
 end
 
 local margin = 10
-
--- Paint haunt abilities
-local function HauntPaint(client)
-    local L = GetLang()
-
-    local width, height = 200, 25
-    local x = ScrW() / 2 - width / 2
-    local y = margin / 2 + height
-
-    local max_power = GetGlobalInt("ttt_phantom_killer_haunt_power_max", 100)
-    local move_cost = GetGlobalInt("ttt_phantom_killer_haunt_move_cost", 25)
-    local jump_cost = GetGlobalInt("ttt_phantom_killer_haunt_jump_cost", 50)
-    local drop_cost = GetGlobalInt("ttt_phantom_killer_haunt_drop_cost", 75)
-    local attack_cost = GetGlobalInt("ttt_phantom_killer_haunt_attack_cost", 100)
-
-    local current_power = client:GetNWInt("HauntingPower", 0)
-
-    local power_percentage = current_power / max_power
-
-    PaintBar(8, x, y, width, height, willpower_colors, power_percentage)
-
-    local color = bg_colors.background_main
-
-    dr.SimpleText(L.haunt_title, "HealthAmmo", ScrW() / 2, y, color, TEXT_ALIGN_CENTER)
-
-    local command_count = 0
-    if move_cost > 0 then
-        command_count = command_count + 1
-    end
-    if jump_cost > 0 then
-        command_count = command_count + 1
-    end
-    if drop_cost > 0 then
-        command_count = command_count + 1
-    end
-    if attack_cost > 0 then
-        command_count = command_count + 1
-    end
-
-    local current_command = 1
-    -- Move
-    if move_cost > 0 then
-        local move_percentage = math.Round(100 * (move_cost / max_power))
-        dr.SimpleText(interp(L.haunt_move, { num = move_percentage }), "TabLarge", ScrW() / 4 + ((ScrW() / (2 * (command_count + 1))) * current_command), margin, current_power >= move_cost and COLOR_GREEN or COLOR_RED, TEXT_ALIGN_CENTER)
-        current_command = current_command + 1
-    end
-
-    -- Jump
-    if jump_cost > 0 then
-        local jump_percentage = math.Round(100 * (jump_cost / max_power))
-        dr.SimpleText(interp(L.haunt_jump, { num = jump_percentage }), "TabLarge", ScrW() / 4 + ((ScrW() / (2 * (command_count + 1))) * current_command), margin, current_power >= jump_cost and COLOR_GREEN or COLOR_RED, TEXT_ALIGN_CENTER)
-        current_command = current_command + 1
-    end
-
-    -- Drop Weapon
-    if drop_cost > 0 then
-        local drop_percentage = math.Round(100 * (drop_cost / max_power))
-        dr.SimpleText(interp(L.haunt_drop, { num = drop_percentage }), "TabLarge", ScrW() / 4 + ((ScrW() / (2 * (command_count + 1))) * current_command), margin, current_power >= drop_cost and COLOR_GREEN or COLOR_RED, TEXT_ALIGN_CENTER)
-        current_command = current_command + 1
-    end
-
-    -- Attack
-    if attack_cost > 0 then
-        local attack_percentage = math.Round(100 * (attack_cost / max_power))
-        dr.SimpleText(interp(L.haunt_attack, { num = attack_percentage }), "TabLarge", ScrW() / 4 + ((ScrW() / (2 * (command_count + 1))) * current_command), margin, current_power >= attack_cost and COLOR_GREEN or COLOR_RED, TEXT_ALIGN_CENTER)
-        current_command = current_command + 1
-    end
-end
-
--- Paint infection progress
-local function InfectPaint(client)
-    local L = GetLang()
-
-    local width, height = 200, 25
-    local x = ScrW() / 2 - width / 2
-    local y = margin / 2 + height
-
-    local infect_time = GetGlobalInt("ttt_parasite_infection_time", 90)
-    local progress = client:GetNWInt("InfectionProgress", 0)
-    local progress_percentage = progress / infect_time
-
-    PaintBar(8, x, y, width, height, infection_colors, progress_percentage)
-
-    local color = bg_colors.background_main
-
-    dr.SimpleText(L.infect_title, "HealthAmmo", ScrW() / 2, y, color, TEXT_ALIGN_CENTER)
-
-    dr.SimpleText(L.infect_help, "TabLarge", ScrW() / 2, margin, COLOR_WHITE, TEXT_ALIGN_CENTER)
-end
 
 -- Paint punch-o-meter
 local function PunchPaint(client)
@@ -285,13 +215,12 @@ local function PunchPaint(client)
     local x = ScrW() / 2 - width / 2
     local y = margin / 2 + height
 
-    PaintBar(8, x, y, width, height, ammo_colors, punch)
+    HUD:PaintBar(8, x, y, width, height, ammo_colors, punch)
 
     local color = bg_colors.background_main
 
-    dr.SimpleText(L.punch_title, "HealthAmmo", ScrW() / 2, y, color, TEXT_ALIGN_CENTER)
-
-    dr.SimpleText(L.punch_help, "TabLarge", ScrW() / 2, margin, COLOR_WHITE, TEXT_ALIGN_CENTER)
+    draw.SimpleText(L.punch_title, "HealthAmmo", ScrW() / 2, y, color, TEXT_ALIGN_CENTER)
+    draw.SimpleText(L.punch_help, "TabLarge", ScrW() / 2, margin, COLOR_WHITE, TEXT_ALIGN_CENTER)
 
     local bonus = client:GetNWInt("bonuspunches", 0)
     if bonus ~= 0 then
@@ -302,7 +231,7 @@ local function PunchPaint(client)
             text = interp(L.punch_malus, { num = bonus })
         end
 
-        dr.SimpleText(text, "TabLarge", ScrW() / 2, y * 2, COLOR_WHITE, TEXT_ALIGN_CENTER)
+        draw.SimpleText(text, "TabLarge", ScrW() / 2, y * 2, COLOR_WHITE, TEXT_ALIGN_CENTER)
     end
 end
 
@@ -327,23 +256,21 @@ local function SpecHUDPaint(client)
     draw.RoundedBox(8, x, round_y, time_x - x, height, bg_colors.noround)
 
     local text = L[roundstate_string[GAMEMODE.round_state]]
-    ShadowedText(text, "TraitorState", x + margin, round_y, COLOR_WHITE)
+    HUD:ShadowedText(text, "TraitorState", x + margin, round_y, COLOR_WHITE)
 
     -- Draw round/prep/post time remaining
     text = util.SimpleTime(math.max(0, GetGlobalFloat("ttt_round_end", 0) - CurTime()), "%02i:%02i")
-    ShadowedText(text, "TimeLeft", time_x + margin, time_y, COLOR_WHITE)
+    HUD:ShadowedText(text, "TimeLeft", time_x + margin, time_y, COLOR_WHITE)
 
     local tgt = client:GetObserverTarget()
-    if client:GetNWBool("Haunting") then
-        HauntPaint(client)
-    elseif client:GetNWBool("Infecting") then
-        InfectPaint(client)
+    if client:ShouldShowSpectatorHUD() then
+        hook.Run("TTTSpectatorShowHUD", client, tgt)
     elseif IsPlayer(tgt) then
-        ShadowedText(tgt:Nick(), "TimeLeft", ScrW() / 2, margin, COLOR_WHITE, TEXT_ALIGN_CENTER)
+        HUD:ShadowedText(tgt:Nick(), "TimeLeft", ScrW() / 2, margin, COLOR_WHITE, TEXT_ALIGN_CENTER)
     elseif IsValid(tgt) and tgt:GetNWEntity("spec_owner", nil) == client then
         PunchPaint(client)
     else
-        ShadowedText(interp(L.spec_help, key_params), "TabLarge", ScrW() / 2, margin, COLOR_WHITE, TEXT_ALIGN_CENTER)
+        HUD:ShadowedText(interp(L.spec_help, key_params), "TabLarge", ScrW() / 2, margin, COLOR_WHITE, TEXT_ALIGN_CENTER)
     end
 end
 
@@ -372,11 +299,11 @@ local function InfoPaint(client)
     local maxHealth = math.max(0, client:GetMaxHealth())
     local health_y = y + margin
 
-    PaintBar(8, x + margin, health_y, bar_width, bar_height, health_colors, health / maxHealth)
-    PaintBar(8, x + margin, health_y, bar_width, bar_height, overhealth_colors, math.max(0, health - maxHealth) / maxHealth)
-    PaintBar(8, x + margin, health_y, bar_width, bar_height, extraoverhealth_colors, math.max(0, health - (2 * maxHealth)) / maxHealth)
+    HUD:PaintBar(8, x + margin, health_y, bar_width, bar_height, health_colors, health / maxHealth)
+    HUD:PaintBar(8, x + margin, health_y, bar_width, bar_height, overhealth_colors, math.max(0, health - maxHealth) / maxHealth)
+    HUD:PaintBar(8, x + margin, health_y, bar_width, bar_height, extraoverhealth_colors, math.max(0, health - (2 * maxHealth)) / maxHealth)
 
-    ShadowedText(tostring(health), "HealthAmmo", bar_width, health_y, COLOR_WHITE, TEXT_ALIGN_RIGHT, TEXT_ALIGN_RIGHT)
+    HUD:ShadowedText(tostring(health), "HealthAmmo", bar_width, health_y, COLOR_WHITE, TEXT_ALIGN_RIGHT, TEXT_ALIGN_RIGHT)
 
     if ttt_health_label:GetBool() then
         local health_status = util.HealthToString(health, client:GetMaxHealth())
@@ -388,17 +315,17 @@ local function InfoPaint(client)
         local ammo_clip, ammo_max, ammo_inv = GetAmmo(client)
         if ammo_clip ~= -1 then
             local ammo_y = health_y + bar_height + margin
-            PaintBar(8, x + margin, ammo_y, bar_width, bar_height, ammo_colors, ammo_clip / ammo_max)
+            HUD:PaintBar(8, x + margin, ammo_y, bar_width, bar_height, ammo_colors, ammo_clip / ammo_max)
             local text = string.format("%i + %02i", ammo_clip, ammo_inv)
 
-            ShadowedText(text, "HealthAmmo", bar_width, ammo_y, COLOR_WHITE, TEXT_ALIGN_RIGHT, TEXT_ALIGN_RIGHT)
+            HUD:ShadowedText(text, "HealthAmmo", bar_width, ammo_y, COLOR_WHITE, TEXT_ALIGN_RIGHT, TEXT_ALIGN_RIGHT)
         end
     end
 
     local sprint_y = health_y + (2 * (bar_height + margin))
     bar_height = 4
 
-    PaintBar(2, x + margin, sprint_y, bar_width, bar_height, sprint_colors, client:GetNWFloat("sprintMeter", 0) / 100)
+    HUD:PaintBar(2, x + margin, sprint_y, bar_width, bar_height, sprint_colors, client:GetNWFloat("sprintMeter", 0) / 100)
 
     -- Draw traitor state
     local round_state = GAMEMODE.round_state
@@ -416,11 +343,10 @@ local function InfoPaint(client)
     end
 
     if #text > 10 then
-        ShadowedText(text, "TraitorStateSmall", x + margin + 74, traitor_y + 2, COLOR_WHITE, TEXT_ALIGN_CENTER)
+        HUD:ShadowedText(text, "TraitorStateSmall", x + margin + 74, traitor_y + 2, COLOR_WHITE, TEXT_ALIGN_CENTER)
     else
-        ShadowedText(text, "TraitorState", x + margin + 74, traitor_y, COLOR_WHITE, TEXT_ALIGN_CENTER)
+        HUD:ShadowedText(text, "TraitorState", x + margin + 74, traitor_y, COLOR_WHITE, TEXT_ALIGN_CENTER)
     end
-
 
     -- Draw round time
     local is_haste = HasteMode() and round_state == ROUND_ACTIVE
@@ -465,7 +391,7 @@ local function InfoPaint(client)
         text = util.SimpleTime(math.max(0, endtime), "%02i:%02i")
     end
 
-    ShadowedText(text, font, rx, ry, color)
+    HUD:ShadowedText(text, font, rx, ry, color)
 
     local label_top = 140
     local label_left = 36
@@ -475,18 +401,11 @@ local function InfoPaint(client)
     if client:HasEquipmentItem(EQUIP_DISGUISE) and client:GetNWBool("disguised", false) then
         label_top = label_top + 20
     end
-    if client:IsDrunk() then
-        surface.SetFont("TabLarge")
-        surface.SetTextColor(255, 255, 255, 230)
 
-        local remaining = math.max(0, GetGlobalFloat("ttt_drunk_remember", 0) - CurTime())
+    -- Allow other addons to add stuff to the player info HUD
+    hook.Run("TTTHUDInfoPaint", client, label_left, label_top)
 
-        text = GetPTranslation("drunk_hud", { time = FormatTime(remaining, "%02i:%02i") })
-        local _, h = surface.GetTextSize(text)
-
-        surface.SetTextPos(label_left, ScrH() - label_top - h)
-        surface.DrawText(text)
-    elseif client:IsDetectiveLike() and not client:IsDetectiveTeam() then
+    if client:IsDetectiveLike() and not client:IsDetectiveTeam() then
         surface.SetFont("TabLarge")
         surface.SetTextColor(255, 255, 255, 230)
 
@@ -495,46 +414,6 @@ local function InfoPaint(client)
 
         surface.SetTextPos(label_left, ScrH() - label_top - h)
         surface.DrawText(text)
-    elseif (client:IsInnocent() or client:IsTraitor()) and client:GetNWBool("WasBeggar", false) then
-        local beggarMode = BEGGAR_REVEAL_ALL
-        if client:IsInnocent() then beggarMode = GetGlobalInt("ttt_beggar_reveal_innocent", BEGGAR_REVEAL_TRAITORS)
-        elseif client:IsTraitor() then beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", BEGGAR_REVEAL_ALL) end
-        if beggarMode ~= BEGGAR_REVEAL_ALL then
-            surface.SetFont("TabLarge")
-            surface.SetTextColor(255, 255, 255, 230)
-
-            if beggarMode == BEGGAR_REVEAL_NONE then
-                text = GetPTranslation("beggar_hidden_all_hud", { beggar = ROLE_STRINGS_EXT[ROLE_BEGGAR] })
-            elseif beggarMode == BEGGAR_REVEAL_TRAITORS then
-                text = GetPTranslation("beggar_hidden_innocent_hud", { beggar = ROLE_STRINGS_EXT[ROLE_BEGGAR], innocents = ROLE_STRINGS_PLURAL[ROLE_INNOCENT] })
-            elseif beggarMode == BEGGAR_REVEAL_INNOCENTS then
-                text = GetPTranslation("beggar_hidden_traitor_hud", { beggar = ROLE_STRINGS_EXT[ROLE_BEGGAR], traitors = ROLE_STRINGS_PLURAL[ROLE_TRAITOR] })
-            end
-            local _, h = surface.GetTextSize(text)
-
-            surface.SetTextPos(label_left, ScrH() - label_top - h)
-            surface.DrawText(text)
-        end
-    elseif client:GetNWBool("WasBodysnatcher", false) then
-        local bodysnatcherMode = BODYSNATCHER_REVEAL_ALL
-        if client:IsInnocentTeam() then bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_innocent", BODYSNATCHER_REVEAL_ALL)
-        elseif client:IsTraitorTeam() then bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_traitor", BODYSNATCHER_REVEAL_ALL)
-        elseif client:IsMonsterTeam() then bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_monster", BODYSNATCHER_REVEAL_ALL)
-        elseif client:IsIndependentTeam() then bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_independent", BODYSNATCHER_REVEAL_ALL) end
-        if bodysnatcherMode ~= BODYSNATCHER_REVEAL_ALL then
-            surface.SetFont("TabLarge")
-            surface.SetTextColor(255, 255, 255, 230)
-
-            if bodysnatcherMode == BODYSNATCHER_REVEAL_NONE then
-                text = GetPTranslation("bodysnatcher_hidden_all_hud", { bodysnatcher = ROLE_STRINGS_EXT[ROLE_BODYSNATCHER] })
-            elseif bodysnatcherMode == BODYSNATCHER_REVEAL_TEAM then
-                text = GetPTranslation("bodysnatcher_hidden_team_hud", { bodysnatcher = ROLE_STRINGS_EXT[ROLE_BODYSNATCHER] })
-            end
-            local _, h = surface.GetTextSize(text)
-
-            surface.SetTextPos(label_left, ScrH() - label_top - h)
-            surface.DrawText(text)
-        end
     end
 end
 

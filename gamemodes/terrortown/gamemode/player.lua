@@ -12,18 +12,6 @@ CreateConVar("ttt_dyingshot", "0")
 CreateConVar("ttt_killer_dna_range", "550")
 CreateConVar("ttt_killer_dna_basetime", "100")
 
-local deadPhantoms = {}
-local deadParasites = {}
-local spirits = {}
-hook.Add("TTTPrepareRound", "CRPrepRoundCleanup", function()
-    deadPhantoms = {}
-    deadParasites = {}
-    for _, ent in pairs(spirits) do
-        SafeRemoveEntity(ent)
-    end
-    table.Empty(spirits)
-end)
-
 -- First spawn on the server
 function GM:PlayerInitialSpawn(ply)
     if not GAMEMODE.cvar_init then
@@ -96,10 +84,6 @@ function GM:PlayerSpawn(ply)
 
     ply:UnSpectate()
 
-    local sid = ply:SteamID64()
-    SafeRemoveEntity(spirits[sid])
-    spirits[sid] = nil
-
     -- Don't run the normal loadout for a player being brought back from the dead. Just give them their stored weapons
     if ply.Resurrecting then
         -- If this player had a role weapon on them when they were killed, give it back
@@ -125,19 +109,6 @@ function GM:PlayerSpawn(ply)
     end
 
     SCORE:HandleSpawn(ply)
-end
-
-function GM:FinishMove(ply, mv)
-    if not IsValid(ply) or not ply:IsSpec() then return end
-
-    local spirit = spirits[ply:SteamID64()]
-    if not IsValid(spirit) then return end
-
-    spirit:SetPos(ply:GetPos())
-
-    local show = ply:GetObserverMode() == OBS_MODE_ROAMING
-
-    spirit:SetNWBool("MediumSpirit", show)
 end
 
 function GM:PlayerSetHandsModel(pl, ent)
@@ -371,50 +342,37 @@ function GM:KeyPress(ply, key)
             ply:Spectate(ply.spec_mode)
         end
 
-        -- If the dead player is haunting their killer, don't let them switch views
-        -- Instead use their button presses to do cool things to their killer
-        if ply:GetNWBool("Haunting", false) then
-            local killer = ply:GetObserverTarget()
-            if not IsValid(killer) or not killer:Alive() then return end
+        -- If the dead player is supposed to be seeing a special spectator HUD, check if there are
+        -- actions to perform on keypress and whether normal keypress stuff should be blocked
+        if ply:ShouldShowSpectatorHUD() then
+            local tgt = ply:GetObserverTarget()
+            local powers = {}
+            local skip, power_property = hook.Run("TTTSpectatorHUDKeyPress", ply, tgt, powers)
+            if power_property then
+                -- Get the player's current power and make sure they can do something with the key the pressed
+                local current_power = ply:GetNWInt(power_property, 0)
+                if current_power > 0 and powers[key] then
+                    local action = powers[key]
+                    local action_start = action.start_command
+                    local action_end = action.end_command
+                    local action_time = action.time
+                    local action_cost = action.cost
 
-            local action = nil
-            -- Translate the key to the action, the undo action, how long it lasts, and how much it costs
-            if key == IN_ATTACK then
-                action = {"+attack", "-attack", 0.5, GetConVar("ttt_phantom_killer_haunt_attack_cost"):GetInt()}
-            elseif key == IN_ATTACK2 then
-                action = {"+menu", "-menu", 0.2, GetConVar("ttt_phantom_killer_haunt_drop_cost"):GetInt()}
-            elseif key == IN_MOVELEFT or key == IN_MOVERIGHT or key == IN_FORWARD or key == IN_BACK then
-                local moveCost = GetConVar("ttt_phantom_killer_haunt_move_cost"):GetInt()
-                if key == IN_FORWARD then
-                    action = {"+forward", "-forward", 0.5, moveCost}
-                elseif key == IN_BACK then
-                    action = {"+back", "-back", 0.5, moveCost}
-                elseif key == IN_MOVELEFT then
-                    action = {"+moveleft", "-moveleft", 0.5, moveCost}
-                elseif key == IN_MOVERIGHT then
-                    action = {"+moveright", "-moveright", 0.5, moveCost}
+                    -- Don't do the action if it's enabled and they have enough power
+                    if action_cost > 0 and current_power >= action_cost then
+                        -- Deduct the cost, run the command, and then run the un-command after the delay
+                        ply:SetNWInt(power_property, current_power - action_cost)
+                        tgt:ConCommand(action_start)
+                        timer.Simple(action_time, function()
+                            tgt:ConCommand(action_end)
+                        end)
+                    end
                 end
-            elseif key == IN_JUMP then
-                action = {"+jump", "-jump", 0.2, GetConVar("ttt_phantom_killer_haunt_jump_cost"):GetInt()}
             end
 
-            if action == nil then return end
-
-            -- If this cost isn't valid, this action isn't valid
-            local cost = action[4]
-            if cost <= 0 then return end
-
-            -- Check power level
-            local currentpower = ply:GetNWInt("HauntingPower", 0)
-            if currentpower < cost then return end
-
-            -- Deduct the cost, run the command, and then run the un-command after the delay
-            ply:SetNWInt("HauntingPower", currentpower - cost)
-            killer:ConCommand(action[1])
-            timer.Simple(action[3], function()
-                killer:ConCommand(action[2])
-            end)
-            return
+            if type(skip) == "boolean" and skip then
+                return
+            end
         end
 
         ply:ResetViewRoll()
@@ -533,10 +491,6 @@ function GM:PlayerDisconnected(ply)
         ply:SetRole(ROLE_NONE)
     end
 
-    local sid = ply:SteamID64()
-    SafeRemoveEntity(spirits[sid])
-    spirits[sid] = nil
-
     if GetRoundState() ~= ROUND_PREP then
         SendAllLists()
 
@@ -610,7 +564,7 @@ local function CheckCreditAward(victim, attacker)
         -- If size is 0, awards are off
         if amt > 0 then
             for _, ply in ipairs(player.GetAll()) do
-                if ply:IsActiveDetectiveTeam() or (ply:IsActiveDeputy() and ply:GetNWBool("HasPromotion", false)) then
+                if ply:IsActiveDetectiveTeam() or (ply:IsActiveDeputy() and ply:IsRoleActive()) then
                     ply:AddCredits(amt)
                 end
             end
@@ -704,290 +658,8 @@ function FindRespawnLocation(pos)
     return false
 end
 
-local function ShouldShowJesterNotification(target, mode)
-    -- 1 - Only notify Traitors and Detective-likes
-    -- 2 - Only notify Traitors
-    -- 3 - Only notify Detective-likes
-    -- 4 - Notify everyone
-    -- Otherwise - Don't notify anyone
-    if mode == JESTER_NOTIFY_DETECTIVE_AND_TRAITOR then
-        return target:IsDetectiveLike() or target:IsTraitorTeam()
-    elseif mode == JESTER_NOTIFY_TRAITOR then
-        return target:IsTraitorTeam()
-    elseif mode == JESTER_NOTIFY_DETECTIVE then
-        return target:IsDetectiveLike()
-    elseif mode == JESTER_NOTIFY_EVERYONE then
-        return true
-    end
-    return false
-end
-
-local function JesterTeamKilledNotification(role_string, attacker, victim, getkillstring, shouldshow)
-    local lower_role = role_string:lower()
-    local mode = GetConVar("ttt_" .. lower_role .. "_notify_mode"):GetInt()
-    local play_sound = GetConVar("ttt_" .. lower_role .. "_notify_sound"):GetBool()
-    local show_confetti = GetConVar("ttt_" .. lower_role .. "_notify_confetti"):GetBool()
-    for _, ply in pairs(player.GetAll()) do
-        if ply == attacker then
-            ply:PrintMessage(HUD_PRINTCENTER, "You killed the " .. role_string .. "!")
-        elseif (shouldshow == nil or shouldshow(ply)) and ShouldShowJesterNotification(ply, mode) then
-            ply:PrintMessage(HUD_PRINTCENTER, getkillstring(ply))
-        end
-
-        if play_sound or show_confetti then
-            net.Start("TTT_JesterDeathCelebration")
-            net.WriteEntity(victim)
-            net.WriteBool(play_sound)
-            net.WriteBool(show_confetti)
-            net.Send(ply)
-        end
-    end
-end
-
-local function JesterKilledNotification(attacker, victim)
-    JesterTeamKilledNotification(ROLE_STRINGS[ROLE_JESTER], attacker, victim,
-        -- getkillstring
-        function()
-            return attacker:Nick() .. " was dumb enough to kill the " .. ROLE_STRINGS[ROLE_JESTER] .. "!"
-        end,
-        -- shouldshow
-        function()
-            -- Don't announce anything if the game doesn't end here and the Jester was killed by a traitor
-            return not (not GetConVar("ttt_jester_win_by_traitors"):GetBool() and attacker:IsTraitorTeam())
-        end)
-end
-
-local function SwapperKilledNotification(attacker, victim)
-    JesterTeamKilledNotification(ROLE_STRINGS[ROLE_SWAPPER], attacker, victim,
-        -- getkillstring
-        function(ply)
-            local target = "someone"
-            if ply:IsTraitorTeam() or attacker:IsDetectiveLike() then
-                target = ROLE_STRINGS_EXT[attacker:GetRole()] .. " (" .. attacker:Nick() .. ")"
-            end
-            return "The " .. ROLE_STRINGS[ROLE_SWAPPER] .. " (" .. victim:Nick() .. ") has swapped with " .. target .. "!"
-        end)
-end
-
-local function BeggarKilledNotification(attacker, victim)
-    JesterTeamKilledNotification(ROLE_STRINGS[ROLE_BEGGAR], attacker, victim,
-        -- getkillstring
-        function()
-            return attacker:Nick() .. " cruelly killed the lowly " .. ROLE_STRINGS[ROLE_BEGGAR] .. "!"
-        end)
-end
-
-local function DoRespawn(ply)
-    local body = ply.server_ragdoll or ply:GetRagdollEntity()
-    ply:SpawnForRound(true)
-    ply:SetHealth(ply:GetMaxHealth())
-    SafeRemoveEntity(body)
-end
-
-local function DoParasiteRespawnWithoutBody(parasite, hide_messages)
-    if not hide_messages then
-        parasite:PrintMessage(HUD_PRINTCENTER, "You have drained your host of energy and created a new body.")
-    end
-    -- Introduce a slight delay to prevent player getting stuck as a spectator
-    timer.Create(parasite:Nick() .. "ParasiteRespawn", 0.1, 1, function()
-        DoRespawn(parasite)
-        local health = GetConVar("ttt_parasite_respawn_health"):GetInt()
-        parasite:SetHealth(health)
-    end)
-end
-
-local function DoParasiteRespawn(parasite, attacker, hide_messages)
-    if parasite:IsParasite() and not parasite:Alive() then
-        attacker:SetNWBool("Infected", false)
-        parasite:SetNWBool("Infecting", false)
-        parasite:SetNWString("InfectingTarget", nil)
-        parasite:SetNWInt("InfectionProgress", 0)
-        timer.Remove(parasite:Nick() .. "InfectionProgress")
-        timer.Remove(parasite:Nick() .. "InfectingSpectate")
-
-        local parasiteBody = parasite.server_ragdoll or parasite:GetRagdollEntity()
-
-        local respawnMode = GetConVar("ttt_parasite_respawn_mode"):GetInt()
-        if respawnMode == PARASITE_RESPAWN_HOST then
-            if not hide_messages then
-                parasite:PrintMessage(HUD_PRINTCENTER, "You have taken control of your host.")
-            end
-
-            parasite:SpawnForRound(true)
-            parasite:SetPos(attacker:GetPos())
-            parasite:SetEyeAngles(Angle(0, attacker:GetAngles().y, 0))
-
-            local weapons = attacker:GetWeapons()
-            local currentWeapon = attacker:GetActiveWeapon() or "weapon_zm_improvised"
-            attacker:StripAll()
-            parasite:StripAll()
-            for _, v in ipairs(weapons) do
-                local wep_class = WEPS.GetClass(v)
-                parasite:Give(wep_class)
-            end
-            parasite:SelectWeapon(currentWeapon)
-        elseif respawnMode == PARASITE_RESPAWN_BODY then
-            if IsValid(parasiteBody) then
-                if not hide_messages then
-                    parasite:PrintMessage(HUD_PRINTCENTER, "You have drained your host of energy and regenerated your old body.")
-                end
-                parasite:SpawnForRound(true)
-                parasite:SetPos(FindRespawnLocation(parasiteBody:GetPos()) or parasiteBody:GetPos())
-                parasite:SetEyeAngles(Angle(0, parasiteBody:GetAngles().y, 0))
-            else
-                DoParasiteRespawnWithoutBody(parasite, hide_messages)
-            end
-        elseif respawnMode == PARASITE_RESPAWN_RANDOM then
-            DoParasiteRespawnWithoutBody(parasite, hide_messages)
-        end
-
-        local health = GetConVar("ttt_parasite_respawn_health"):GetInt()
-        parasite:SetHealth(health)
-        SafeRemoveEntity(parasiteBody)
-        if attacker:Alive() then
-            attacker:Kill()
-        end
-        if not hide_messages then
-            attacker:PrintMessage(HUD_PRINTCENTER, "Your parasite has drained you of your energy.")
-            attacker:PrintMessage(HUD_PRINTTALK, "Your parasite has drained you of your energy.")
-        end
-    end
-end
-
-local function HandleParasiteInfection(attacker, victim, keep_progress)
-    attacker:SetNWBool("Infected", true)
-    victim:SetNWBool("Infecting", true)
-    victim:SetNWString("InfectingTarget", attacker:SteamID64())
-    if not keep_progress then
-        victim:SetNWInt("InfectionProgress", 0)
-    end
-    timer.Create(victim:Nick() .. "InfectionProgress", 1, 0, function()
-        -- Make sure the victim is still in the correct spectate mode
-        local spec_mode = victim:GetObserverMode()
-        if spec_mode ~= OBS_MODE_CHASE and spec_mode ~= OBS_MODE_IN_EYE then
-            victim:Spectate(OBS_MODE_CHASE)
-        end
-
-        local progress = victim:GetNWInt("InfectionProgress", 0) + 1
-        if progress >= GetConVar("ttt_parasite_infection_time"):GetInt() then -- respawn the parasite
-            DoParasiteRespawn(victim, attacker)
-        else
-            victim:SetNWInt("InfectionProgress", progress)
-        end
-    end)
-end
-
-local function ShouldParasiteRespawnBySuicide(mode, victim, attacker, dmginfo)
-    -- Any cause of suicide
-    if mode == PARASITE_SUICIDE_RESPAWN_ALL then
-        return victim == attacker
-    -- Only if they killed themselves via a command (in this case they would be the inflictor)
-    elseif mode == PARASITE_SUICIDE_RESPAWN_CONSOLE then
-        local inflictor = dmginfo:GetInflictor()
-        return victim == attacker and IsValid(inflictor) and victim == inflictor
-    end
-
-    return false
-end
-
 function GM:DoPlayerDeath(ply, attacker, dmginfo)
     if ply:IsSpec() then return end
-
-    -- Respawn the phantom
-    if ply:GetNWBool("Haunted", false) then
-        local respawn = false
-        local phantomUsers = table.GetKeys(deadPhantoms)
-        for _, key in pairs(phantomUsers) do
-            local phantom = deadPhantoms[key]
-            if phantom.attacker == ply:SteamID64() and IsValid(phantom.player) then
-                local deadPhantom = phantom.player
-                deadPhantom:SetNWBool("Haunting", false)
-                deadPhantom:SetNWString("HauntingTarget", nil)
-                deadPhantom:SetNWInt("HauntingPower", 0)
-                timer.Remove(deadPhantom:Nick() .. "HauntingPower")
-                timer.Remove(deadPhantom:Nick() .. "HauntingSpectate")
-                if deadPhantom:IsPhantom() and not deadPhantom:Alive() then
-                    -- Find the Phantom's corpse
-                    local phantomBody = deadPhantom.server_ragdoll or deadPhantom:GetRagdollEntity()
-                    if IsValid(phantomBody) then
-                        deadPhantom:SpawnForRound(true)
-                        deadPhantom:SetPos(FindRespawnLocation(phantomBody:GetPos()) or phantomBody:GetPos())
-                        deadPhantom:SetEyeAngles(Angle(0, phantomBody:GetAngles().y, 0))
-
-                        local health = GetConVar("ttt_phantom_respawn_health"):GetInt()
-                        if GetConVar("ttt_phantom_weaker_each_respawn"):GetBool() then
-                            -- Don't reduce them the first time since 50 is already reduced
-                            for _ = 1, phantom.times - 1 do
-                                health = health / 2
-                            end
-                            health = math.max(1, math.Round(health))
-                        end
-                        deadPhantom:SetHealth(health)
-                        phantomBody:Remove()
-                        deadPhantom:PrintMessage(HUD_PRINTCENTER, "Your attacker died and you have been respawned.")
-                        deadPhantom:PrintMessage(HUD_PRINTTALK, "Your attacker died and you have been respawned.")
-                        respawn = true
-                    else
-                        deadPhantom:PrintMessage(HUD_PRINTCENTER, "Your attacker died but your body has been destroyed.")
-                        deadPhantom:PrintMessage(HUD_PRINTTALK, "Your attacker died but your body has been destroyed.")
-                    end
-                end
-            end
-        end
-
-        if respawn and GetConVar("ttt_phantom_announce_death"):GetBool() then
-            for _, v in pairs(player.GetAll()) do
-                if v:IsDetectiveLike() and v:Alive() and not v:IsSpec() then
-                    v:PrintMessage(HUD_PRINTCENTER, "The " .. ROLE_STRINGS[ROLE_PHANTOM] .. " has been respawned.")
-                end
-            end
-        end
-
-        ply:SetNWBool("Haunted", false)
-        SendFullStateUpdate()
-    end
-
-    -- Handle parasite infected death
-    if ply:GetNWBool("Infected", false) then
-        local parasiteUsers = table.GetKeys(deadParasites)
-        for _, key in pairs(parasiteUsers) do
-            local parasite = deadParasites[key]
-            if parasite.attacker == ply:SteamID64() and IsValid(parasite.player) then
-                local deadParasite = parasite.player
-                local parasiteDead = deadParasite:IsParasite() and not deadParasite:Alive()
-                local transfer = GetConVar("ttt_parasite_infection_transfer"):GetBool()
-                local suicideMode = GetConVar("ttt_parasite_infection_suicide_mode"):GetInt()
-                -- Transfer the infection to the new attacker if there is one, they are alive, the parasite is still alive, and the transfer feature is enabled
-                if IsPlayer(attacker) and attacker:Alive() and parasiteDead and transfer then
-                    deadParasites[key].attacker = attacker:SteamID64()
-                    HandleParasiteInfection(attacker, deadParasite, not GetConVar("ttt_parasite_infection_transfer_reset"):GetBool())
-                    timer.Create(deadParasite:Nick() .. "InfectingSpectate", 1, 1, function()
-                        deadParasite:Spectate(OBS_MODE_CHASE)
-                        deadParasite:SpectateEntity(attacker)
-                    end)
-                    deadParasite:PrintMessage(HUD_PRINTCENTER, "Your host has been killed and your infection has spread to their killer.")
-                    net.Start("TTT_ParasiteInfect")
-                    net.WriteString(deadParasite:Nick())
-                    net.WriteString(attacker:Nick())
-                    net.Broadcast()
-                elseif suicideMode > PARASITE_SUICIDE_NONE and ShouldParasiteRespawnBySuicide(suicideMode, ply, attacker, dmginfo) then
-                    deadParasite:PrintMessage(HUD_PRINTCENTER, "Your host has killed themselves, allowing your infection to take over.")
-                    DoParasiteRespawn(deadParasite, attacker, true)
-                else
-                    deadParasite:SetNWBool("Infecting", false)
-                    deadParasite:SetNWString("InfectingTarget", nil)
-                    deadParasite:SetNWInt("InfectionProgress", 0)
-                    timer.Remove(deadParasite:Nick() .. "InfectionProgress")
-                    timer.Remove(deadParasite:Nick() .. "InfectingSpectate")
-                    if parasiteDead then
-                        deadParasite:PrintMessage(HUD_PRINTCENTER, "Your host has died.")
-                    end
-                end
-            end
-        end
-
-        ply:SetNWBool("Infected", false)
-    end
 
     -- Experimental: Fire a last shot if ironsighting and not headshot
     if GetConVar("ttt_dyingshot"):GetBool() then
@@ -1091,7 +763,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
         local reward = 0
         if attacker:IsActiveTraitorTeam() and ply:IsDetectiveTeam() then
             reward = math.ceil(GetConVar("ttt_credits_detectivekill"):GetInt())
-        elseif (attacker:IsActiveDetectiveTeam() or (attacker:IsActiveDeputy() and attacker:GetNWBool("HasPromotion", false))) and ply:IsTraitorTeam() then
+        elseif (attacker:IsActiveDetectiveTeam() or (attacker:IsActiveDeputy() and attacker:IsRoleActive())) and ply:IsTraitorTeam() then
             reward = math.ceil(GetConVar("ttt_det_credits_traitorkill"):GetInt())
         end
 
@@ -1106,398 +778,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
     ply:SetTeam(TEAM_SPEC)
 end
 
--- Pre-generate all of this information because we need the owner's weapon info even after they've been destroyed due to (temporary) death
-local function GetPlayerWeaponInfo(ply)
-    local ply_weapons = {}
-    for _, w in ipairs(ply:GetWeapons()) do
-        local primary_ammo = nil
-        local primary_ammo_type = nil
-        if w.Primary and w.Primary.Ammo ~= "none" then
-            primary_ammo_type = w.Primary.Ammo
-            primary_ammo = ply:GetAmmoCount(primary_ammo_type)
-        end
-
-        local secondary_ammo = nil
-        local secondary_ammo_type = nil
-        if w.Secondary and w.Secondary.Ammo ~= "none" and w.Secondary.Ammo ~= primary_ammo_type then
-            secondary_ammo_type = w.Secondary.Ammo
-            secondary_ammo = ply:GetAmmoCount(secondary_ammo_type)
-        end
-
-        table.insert(ply_weapons, {
-            class = WEPS.GetClass(w),
-            category = w.Category,
-            primary_ammo = primary_ammo,
-            primary_ammo_type = primary_ammo_type,
-            secondary_ammo = secondary_ammo,
-            secondary_ammo_type = secondary_ammo_type
-        })
-    end
-    return ply_weapons
-end
-
-local function GivePlayerWeaponAndAmmo(ply, weap_info)
-    ply:Give(weap_info.class)
-    if weap_info.primary_ammo then
-        ply:SetAmmo(weap_info.primary_ammo, weap_info.primary_ammo_type)
-    end
-    if weap_info.secondary_ammo then
-        ply:SetAmmo(weap_info.secondary_ammo, weap_info.secondary_ammo_type)
-    end
-end
-
-local function StripPlayerWeaponAndAmmo(ply, weap_info)
-    ply:StripWeapon(weap_info.class)
-    if weap_info.primary_ammo then
-        ply:SetAmmo(0, weap_info.primary_ammo_type)
-    end
-    if weap_info.secondary_ammo then
-        ply:SetAmmo(0, weap_info.secondary_ammo_type)
-    end
-end
-
 function GM:PlayerDeath(victim, infl, attacker)
-    local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
-    -- Handle phantom death
-    if valid_kill and victim:IsPhantom() and not victim:GetNWBool("IsZombifying", false) then
-        attacker:SetNWBool("Haunted", true)
-
-        if GetConVar("ttt_phantom_killer_haunt"):GetBool() then
-            victim:SetNWBool("Haunting", true)
-            victim:SetNWString("HauntingTarget", attacker:SteamID64())
-            victim:SetNWInt("HauntingPower", 0)
-            timer.Create(victim:Nick() .. "HauntingPower", 1, 0, function()
-                -- If haunting without a body is disabled, check to make sure the body exists still
-                if not GetConVar("ttt_phantom_killer_haunt_without_body"):GetBool() then
-                    local phantomBody = victim.server_ragdoll or victim:GetRagdollEntity()
-                    if not IsValid(phantomBody) then
-                        timer.Remove(victim:Nick() .. "HauntingPower")
-                        timer.Remove(victim:Nick() .. "HauntingSpectate")
-                        attacker:SetNWBool("Haunted", false)
-                        victim:SetNWBool("Haunting", false)
-                        victim:SetNWString("HauntingTarget", nil)
-                        victim:SetNWInt("HauntingPower", 0)
-
-                        victim:PrintMessage(HUD_PRINTCENTER, "Your body has been destroyed, removing your tether to the world.")
-                        victim:PrintMessage(HUD_PRINTTALK, "Your body has been destroyed, removing your tether to the world.")
-                        return
-                    end
-                end
-
-                -- Make sure the victim is still in the correct spectate mode
-                local spec_mode = victim:GetObserverMode()
-                if spec_mode ~= OBS_MODE_CHASE and spec_mode ~= OBS_MODE_IN_EYE then
-                    victim:Spectate(OBS_MODE_CHASE)
-                end
-
-                local power = victim:GetNWInt("HauntingPower", 0)
-                local power_rate = GetConVar("ttt_phantom_killer_haunt_power_rate"):GetInt()
-                local new_power = math.Clamp(power + power_rate, 0, GetConVar("ttt_phantom_killer_haunt_power_max"):GetInt())
-                victim:SetNWInt("HauntingPower", new_power)
-            end)
-        end
-
-        -- Delay this message so the player can see the target update message
-        if attacker:ShouldDelayAnnouncements() then
-            timer.Simple(3, function()
-                attacker:PrintMessage(HUD_PRINTCENTER, "You have been haunted.")
-            end)
-        else
-            attacker:PrintMessage(HUD_PRINTCENTER, "You have been haunted.")
-        end
-        victim:PrintMessage(HUD_PRINTCENTER, "Your attacker has been haunted.")
-        if GetConVar("ttt_phantom_announce_death"):GetBool() then
-            for _, v in pairs(player.GetAll()) do
-                if v ~= attacker and v:IsDetectiveLike() and v:Alive() and not v:IsSpec() then
-                    v:PrintMessage(HUD_PRINTCENTER, "The " .. ROLE_STRINGS[ROLE_PHANTOM] .. " has been killed.")
-                end
-            end
-        end
-
-        local sid = victim:SteamID64()
-        -- Keep track of how many times this Phantom has been killed and by who
-        if not deadPhantoms[sid] then
-            deadPhantoms[sid] = {times = 1, player = victim, attacker = attacker:SteamID64()}
-        else
-            deadPhantoms[sid] = {times = deadPhantoms[sid].times + 1, player = victim, attacker = attacker:SteamID64()}
-        end
-
-        net.Start("TTT_PhantomHaunt")
-        net.WriteString(victim:Nick())
-        net.WriteString(attacker:Nick())
-        net.Broadcast()
-    end
-
-    -- Handle revenger lover death
-    for _, v in pairs(player.GetAll()) do
-        if v:IsRevenger() and v:GetNWString("RevengerLover", "") == victim:SteamID64() then
-            local message
-            if v == attacker then
-                message = "Your love has died by your hand."
-            else
-                if valid_kill then
-                    if v:Alive() then
-                        message = "Your love has died. Track down their killer."
-                    end
-                    v:SetNWString("RevengerKiller", attacker:SteamID64())
-                    timer.Simple(1, function() -- Slight delay needed for NW variables to be sent
-                        net.Start("TTT_RevengerLoverKillerRadar")
-                        net.WriteBool(true)
-                        net.Send(v)
-                    end)
-                elseif v:Alive() then
-                    message = "Your love has died, but you cannot determine the cause."
-                end
-
-                -- Use a specific message if the revenger is dead already
-                if not v:Alive() then
-                    message = "Your love has been killed and joins you in death."
-                end
-            end
-
-            v:PrintMessage(HUD_PRINTTALK, message)
-            v:PrintMessage(HUD_PRINTCENTER, message)
-        end
-    end
-
-    -- Handle jester death
-    if valid_kill and victim:IsJester() then
-        JesterKilledNotification(attacker, victim)
-        victim:SetNWString("JesterKiller", attacker:Nick())
-    end
-
-    -- Handle swapper death
-    if valid_kill and victim:IsSwapper() then
-        SwapperKilledNotification(attacker, victim)
-        attacker:SetNWString("SwappedWith", victim:Nick())
-        attacker:PrintMessage(HUD_PRINTCENTER, "You killed the " .. ROLE_STRINGS[ROLE_SWAPPER] .. "!")
-
-        -- Only bother saving the attacker weapons if we're going to do something with them
-        local weapon_mode = GetConVar("ttt_swapper_weapon_mode"):GetInt()
-        local attacker_weapons = nil
-        if weapon_mode > SWAPPER_WEAPON_NONE then
-            attacker_weapons = GetPlayerWeaponInfo(attacker)
-        end
-        local victim_weapons = GetPlayerWeaponInfo(victim)
-
-        timer.Simple(0.01, function()
-            local body = victim.server_ragdoll or victim:GetRagdollEntity()
-            victim:SetRole(attacker:GetRole())
-            victim:SpawnForRound(true)
-            victim:SetHealth(GetConVar("ttt_swapper_respawn_health"):GetInt())
-            if IsValid(body) then
-                victim:SetPos(FindRespawnLocation(body:GetPos()) or body:GetPos())
-                victim:SetEyeAngles(Angle(0, body:GetAngles().y, 0))
-                body:Remove()
-            end
-
-            attacker:SetRole(ROLE_SWAPPER)
-            attacker:MoveRoleState(victim)
-            SendFullStateUpdate()
-
-            local health = GetConVar("ttt_swapper_killer_health"):GetInt()
-            if health == 0 then
-                attacker:Kill()
-            else
-                attacker:SetHealth(health)
-            end
-
-            timer.Simple(0.2, function()
-                if weapon_mode == SWAPPER_WEAPON_ALL then
-                    -- Strip everything but the sure-thing weapons
-                    for _, w in ipairs(attacker_weapons) do
-                        if w.class ~= "weapon_ttt_unarmed" and w.class ~= "weapon_zm_carry" then
-                            StripPlayerWeaponAndAmmo(attacker, w)
-                        end
-                    end
-
-                    -- Give the opposite player's weapons back
-                    for _, w in ipairs(attacker_weapons) do
-                        GivePlayerWeaponAndAmmo(victim, w)
-                    end
-                    for _, w in ipairs(victim_weapons) do
-                        GivePlayerWeaponAndAmmo(attacker, w)
-                    end
-                else
-                    if weapon_mode == SWAPPER_WEAPON_ROLE then
-                        -- Remove all role weapons from the attacker and give them to the victim
-                        for _, w in ipairs(attacker_weapons) do
-                            if w.category == WEAPON_CATEGORY_ROLE then
-                                StripPlayerWeaponAndAmmo(attacker, w)
-                                -- Give the attacker a regular crowbar to compensate for the killer crowbar that was removed
-                                if w.class == "weapon_kil_crowbar" then
-                                    attacker:Give("weapon_zm_improvised")
-                                end
-                                GivePlayerWeaponAndAmmo(victim, w)
-                            end
-                        end
-                    end
-
-                    -- Give the victim all their weapons back
-                    for _, w in ipairs(victim_weapons) do
-                        GivePlayerWeaponAndAmmo(victim, w)
-                    end
-                end
-
-                -- Have each player select their crowbar to hide role weapons
-                attacker:SelectWeapon("weapon_zm_improvised")
-                victim:SelectWeapon("weapon_zm_improvised")
-            end)
-        end)
-
-        net.Start("TTT_SwapperSwapped")
-        net.WriteString(victim:Nick())
-        net.WriteString(attacker:Nick())
-        net.WriteString(victim:SteamID64())
-        net.Broadcast()
-    end
-
-    -- Handle beggar death
-    if valid_kill and victim:IsBeggar() then
-        BeggarKilledNotification(attacker, victim)
-
-        if GetConVar("ttt_beggar_respawn"):GetBool() then
-            local delay = GetConVar("ttt_beggar_respawn_delay"):GetInt()
-            if delay > 0 then
-                victim:PrintMessage(HUD_PRINTCENTER, "You were killed but will respawn in " .. delay .. " seconds.")
-            else
-                victim:PrintMessage(HUD_PRINTCENTER, "You were killed but are about to respawn.")
-                -- Introduce a slight delay to prevent player getting stuck as a spectator
-                delay = 0.1
-            end
-            timer.Create(victim:Nick() .. "BeggarRespawn", delay, 1, function() DoRespawn(victim) end)
-
-            net.Start("TTT_BeggarKilled")
-            net.WriteString(victim:Nick())
-            net.WriteString(attacker:Nick())
-            net.WriteUInt(delay, 8)
-            net.Broadcast()
-        end
-    end
-
-    -- Handle parasite death
-    if valid_kill and victim:IsParasite() and not victim:GetNWBool("IsZombifying", false) then
-        HandleParasiteInfection(attacker, victim)
-
-        -- Delay this message so the player can see the target update message
-        if GetConVar("ttt_parasite_announce_infection"):GetBool() then
-            if attacker:ShouldDelayAnnouncements() then
-                timer.Simple(3, function()
-                    attacker:PrintMessage(HUD_PRINTCENTER, "You have been infected with a parasite.")
-                end)
-            else
-                attacker:PrintMessage(HUD_PRINTCENTER, "You have been infected with a parasite.")
-            end
-        end
-        victim:PrintMessage(HUD_PRINTCENTER, "Your attacker has been infected.")
-
-        local sid = victim:SteamID64()
-        -- Keep track of who killed this parasite
-        deadParasites[sid] = {player = victim, attacker = attacker:SteamID64()}
-
-        net.Start("TTT_ParasiteInfect")
-        net.WriteString(victim:Nick())
-        net.WriteString(attacker:Nick())
-        net.Broadcast()
-    end
-
-    -- Handle detective death
-    if victim:IsDetectiveTeam() and GetRoundState() == ROUND_ACTIVE then
-        if ShouldPromoteDetectiveLike() then
-            for _, ply in pairs(player.GetAll()) do
-                if ply:IsDetectiveLikePromotable() then
-                    local alive = ply:Alive()
-                    if alive then
-                        ply:PrintMessage(HUD_PRINTTALK, "You have been promoted to " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "!")
-                        ply:PrintMessage(HUD_PRINTCENTER, "You have been promoted to " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "!")
-                    end
-
-                    -- If the player is an Impersonator, tell all their team members when they get promoted
-                    if ply:IsImpersonator() then
-                        for _, v in pairs(player.GetAll()) do
-                            if v ~= ply and v:IsTraitorTeam() and v:Alive() and not v:IsSpec() then
-                                local message = "The " .. ROLE_STRINGS[ROLE_IMPERSONATOR] .. " has been promoted to " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "!"
-                                if not alive then
-                                    message = message .. " Too bad they're dead..."
-                                end
-                                v:PrintMessage(HUD_PRINTTALK, message)
-                                v:PrintMessage(HUD_PRINTCENTER, message)
-                            end
-                        end
-                    end
-
-                    ply:HandleDetectiveLikePromotion()
-                end
-            end
-        end
-    end
-
-    -- Create spirit for the medium
-    local mediums = {}
-    for _, v in pairs(player.GetAll()) do
-        if v:IsMedium() then table.insert(mediums, v) end
-    end
-    if #mediums > 0 then
-        local spirit = ents.Create("npc_kleiner")
-        spirit:SetPos(victim:GetPos())
-        spirit:SetRenderMode(RENDERMODE_NONE)
-        spirit:SetNotSolid(true)
-        spirit:DrawShadow(false)
-        spirit:SetNWBool("MediumSpirit", true)
-        local col = Vector(1, 1, 1)
-        if GetConVar("ttt_medium_spirit_color"):GetBool() then
-            col = victim:GetNWVector("PlayerColor", Vector(1, 1, 1))
-        end
-        spirit:SetNWVector("SpiritColor", col)
-        spirit:Spawn()
-        spirits[victim:SteamID64()] = spirit
-    end
-
-    -- Check veteran status
-    local innocents_alive = 0
-    local veterans = {}
-    for _, v in pairs(player.GetAll()) do
-        if v:IsActiveInnocentTeam() then innocents_alive = innocents_alive + 1 end
-        if v:IsActiveVeteran() then table.insert(veterans, v) end
-    end
-    if #veterans > 0 and innocents_alive == 1 then
-        for _, v in pairs(veterans) do
-            if not v:GetNWBool("VeteranActive", false) then
-                v:SetNWBool("VeteranActive", true)
-
-                v:AddCredits(GetConVar("ttt_veteran_activation_credits"):GetInt())
-
-                v:PrintMessage(HUD_PRINTTALK, "You are the last " .. ROLE_STRINGS[ROLE_INNOCENT] .. " alive!")
-                v:PrintMessage(HUD_PRINTCENTER, "You are the last " .. ROLE_STRINGS[ROLE_INNOCENT] .. " alive!")
-                if GetConVar("ttt_veteran_announce"):GetBool() then
-                    for _, p in ipairs(player.GetAll()) do
-                        if p ~= v and p:Alive() and not p:IsSpec() then
-                            p:PrintMessage(HUD_PRINTTALK, "The last " .. ROLE_STRINGS[ROLE_INNOCENT] .. " alive is " .. ROLE_STRINGS_EXT[ROLE_VETERAN] .. "!")
-                            p:PrintMessage(HUD_PRINTCENTER, "The last " .. ROLE_STRINGS[ROLE_INNOCENT] .. " alive is " .. ROLE_STRINGS_EXT[ROLE_VETERAN] .. "!")
-                        end
-                    end
-                end
-
-                if GetConVar("ttt_veteran_full_heal"):GetBool() then
-                    local heal_bonus = GetConVar("ttt_veteran_heal_bonus"):GetInt()
-                    local health = math.min(v:GetMaxHealth(), 100) + heal_bonus
-
-                    v:SetHealth(health)
-                    if heal_bonus > 0 then
-                        v:PrintMessage(HUD_PRINTTALK, "You have been fully healed (with a bonus)!")
-                    else
-                        v:PrintMessage(HUD_PRINTTALK, "You have been fully healed!")
-                    end
-                end
-
-                -- Give the veteran their shop items if purchase was delayed
-                if v.bought and GetConVar("ttt_veteran_shop_delay"):GetBool() then
-                    v:GiveDelayedShopItems()
-                end
-            end
-        end
-    end
-
     -- stop bleeding
     util.StopBleeding(victim)
 
@@ -1506,24 +787,11 @@ function GM:PlayerDeath(victim, infl, attacker)
 
     victim:Freeze(false)
 
-    -- Haunt/infect the (non-Swapper) attacker if that functionality is enabled
-    if valid_kill and victim:IsPhantom() and not attacker:IsSwapper() and attacker:GetNWBool("Haunted", true) and GetConVar("ttt_phantom_killer_haunt"):GetBool() then
-        timer.Create(victim:Nick() .. "HauntingSpectate", 1, 1, function()
-            victim:Spectate(OBS_MODE_CHASE)
-            victim:SpectateEntity(attacker)
-        end)
-    elseif valid_kill and victim:IsParasite() and not attacker:IsSwapper() and attacker:GetNWBool("Infected", true) then
-        timer.Create(victim:Nick() .. "InfectingSpectate", 1, 1, function()
-            victim:Spectate(OBS_MODE_CHASE)
-            victim:SpectateEntity(attacker)
-        end)
-    else
-        victim:SetRagdollSpec(true)
-        victim:Spectate(OBS_MODE_IN_EYE)
+    victim:SetRagdollSpec(true)
+    victim:Spectate(OBS_MODE_IN_EYE)
 
-        local rag_ent = victim.server_ragdoll or victim:GetRagdollEntity()
-        victim:SpectateEntity(rag_ent)
-    end
+    local rag_ent = victim.server_ragdoll or victim:GetRagdollEntity()
+    victim:SpectateEntity(rag_ent)
 
     victim:Flashlight(false)
 
@@ -1620,51 +888,6 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
             -- Jesters can't deal damage
             if att:ShouldActLikeJester() then
                 dmginfo:ScaleDamage(0)
-            end
-
-            -- Clowns deal extra damage when they are active
-            if att:IsClown() and att:GetNWBool("KillerClownActive", false) then
-                local bonus = GetConVar("ttt_clown_damage_bonus"):GetFloat()
-                dmginfo:ScaleDamage(1 + bonus)
-            end
-
-            -- Deputies deal less damage before they are promoted
-            if att:IsDeputy() and not att:GetNWBool("HasPromotion", false) then
-                local penalty = GetConVar("ttt_deputy_damage_penalty"):GetFloat()
-                dmginfo:ScaleDamage(1 - penalty)
-            end
-
-            -- Impersonators deal less damage before they are promoted
-            if att:IsImpersonator() and not att:GetNWBool("HasPromotion", false) then
-                local penalty = GetConVar("ttt_impersonator_damage_penalty"):GetFloat()
-                dmginfo:ScaleDamage(1 - penalty)
-            end
-
-            -- Revengers deal extra damage to their lovers killer
-            if att:IsRevenger() and ply:SteamID64() == att:GetNWString("RevengerKiller", "") then
-                local bonus = GetConVar("ttt_revenger_damage_bonus"):GetFloat()
-                dmginfo:ScaleDamage(1 + bonus)
-            end
-
-            -- Veterans deal extra damage if they are the last innocent alive
-            if att:IsVeteran() and att:GetNWBool("VeteranActive", false) then
-                local bonus = GetConVar("ttt_veteran_damage_bonus"):GetFloat()
-                dmginfo:ScaleDamage(1 + bonus)
-            end
-
-            if not ply:IsPaladin() or GetConVar("ttt_paladin_protect_self"):GetBool() then
-                local withPaladin = false
-                local radius = GetGlobalFloat("ttt_paladin_aura_radius", 262.45)
-                for _, v in pairs(player.GetAll()) do
-                    if v:IsPaladin() and v:GetPos():Distance(ply:GetPos()) <= radius then
-                        withPaladin = true
-                        break
-                    end
-                end
-                if withPaladin and not att:IsPaladin() then
-                    local reduction = GetConVar("ttt_paladin_damage_reduction"):GetFloat()
-                    dmginfo:ScaleDamage(1 - reduction)
-                end
             end
         -- Players cant deal damage to eachother before the round starts
         else
@@ -1805,48 +1028,10 @@ function GM:EntityTakeDamage(ent, dmginfo)
             end
         end
 
-        -- Quacks are immune to explosions
-        if ent:IsQuack() and dmginfo:IsExplosionDamage() then
-            dmginfo:ScaleDamage(0)
-            dmginfo:SetDamage(0)
-        end
-
         -- Prevent damage from jesters
         if IsPlayer(att) and att:ShouldActLikeJester() then
             dmginfo:ScaleDamage(0)
             dmginfo:SetDamage(0)
-        end
-
-        -- Old man adrenaline rush logic
-        local adrenalineTime = GetConVar("ttt_oldman_adrenaline_rush"):GetInt()
-        if ent:IsOldMan() and adrenalineTime > 0 then
-            local damage = dmginfo:GetDamage()
-            local health = ent:Health()
-
-            if ent:GetNWBool("AdrenalineRush", false) then -- If they are mid adrenaline rush then they take no damage
-                dmginfo:ScaleDamage(0)
-                dmginfo:SetDamage(0)
-            elseif IsPlayer(att) and damage >= health then -- If they are attacked by a player that would have killed them they enter an adrenaline rush
-                dmginfo:SetDamage(health - 1)
-                ent:SetNWBool("AdrenalineRush", true)
-                ent:EmitSound("oldmanramble.wav")
-                ent:PrintMessage(HUD_PRINTTALK, "You are having an adrenaline rush! You will die in " .. tostring(adrenalineTime) .. " seconds.")
-
-                if GetConVar("ttt_oldman_adrenaline_shotgun"):GetBool() then
-                    for _, wep in ipairs(ent:GetWeapons()) do
-                        if wep.Kind == WEAPON_HEAVY then
-                            ent:StripWeapon(wep:GetClass())
-                        end
-                    end
-                    ent:Give("weapon_old_dbshotgun")
-                    ent:SelectWeapon("weapon_old_dbshotgun")
-                end
-
-                timer.Create(ent:Nick() .. "AdrenalineRush", adrenalineTime, 1, function()
-                    ent:SetNWBool("AdrenalineRush", false)
-                    if ent:IsActiveOldMan() then ent:Kill() end -- Only kill them if they are still the old man
-                end)
-            end
         end
     end
 
@@ -2219,7 +1404,7 @@ concommand.Add("ttt_kill_from_player", function(ply, cmd, args)
     local killer_name = args[1]
     local killer = nil
     for _, v in RandomPairs(player.GetAll()) do
-        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not v:ShouldActLikeJester() and v:Nick() == killer_name then
+        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and v:Nick() == killer_name then
             killer = v
             break
         end
@@ -2273,7 +1458,7 @@ concommand.Add("ttt_kill_target_from_player", function(ply, cmd, args)
     local killer_name = args[2]
     local killer = nil
     for _, v in RandomPairs(player.GetAll()) do
-        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not v:ShouldActLikeJester() and v:Nick() == killer_name then
+        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and v:Nick() == killer_name then
             killer = v
             break
         end
