@@ -46,9 +46,6 @@ function plymeta:IsActiveIndependentTeam() return self:IsIndependentTeam() and s
 function plymeta:IsActiveMonsterTeam() return self:IsMonsterTeam() and self:IsActive() end
 function plymeta:IsActiveDetectiveTeam() return self:IsDetectiveTeam() and self:IsActive() end
 
-function plymeta:GetDetectiveLike() return self:IsDetectiveTeam() or ((self:GetDeputy() or self:GetImpersonator()) and self:GetNWBool("HasPromotion", false)) end
-function plymeta:GetDetectiveLikePromotable() return (self:IsDeputy() or self:IsImpersonator()) and not self:GetNWBool("HasPromotion", false) end
-
 function plymeta:IsSameTeam(target)
     if self:IsTraitorTeam() and target:IsTraitorTeam() then
         return true
@@ -62,9 +59,6 @@ end
 function plymeta:GetRoleTeam(detectivesAreInnocent)
     return player.GetRoleTeam(self:GetRole(), detectivesAreInnocent)
 end
-
-plymeta.IsDetectiveLike = plymeta.GetDetectiveLike
-plymeta.IsDetectiveLikePromotable = plymeta.GetDetectiveLikePromotable
 
 function plymeta:IsSpecial() return self:GetRole() ~= ROLE_INNOCENT end
 function plymeta:IsCustom() return not DEFAULT_ROLES[self:GetRole()] end
@@ -163,10 +157,7 @@ end
 function plymeta:IsActiveSpecial() return self:IsSpecial() and self:IsActive() end
 function plymeta:IsActiveCustom() return self:IsCustom() and self:IsActive() end
 function plymeta:IsActiveShopRole() return self:IsShopRole() and self:IsActive() end
-function plymeta:IsActiveDetectiveLike() return self:IsActive() and self:IsDetectiveLike() end
 function plymeta:IsRoleActive()
-    if self:IsDeputy() or self:IsImpersonator() then return self:GetNWBool("HasPromotion", false) end
-
     -- Check if this role has an external definition for "IsActive" and use that
     local role = self:GetRole()
     if ROLE_IS_ACTIVE[role] then return ROLE_IS_ACTIVE[role](self) end
@@ -480,36 +471,7 @@ else
         net.Broadcast()
     end
 
-    function plymeta:HandleDetectiveLikePromotion()
-        self:SetNWBool("HasPromotion", true)
-
-        if self:IsDeputy() then
-            local credits = GetConVar("ttt_deputy_activation_credits"):GetInt()
-            if credits > 0 then
-                self:AddCredits(credits)
-            end
-
-            -- Give the deputy their shop items if purchase was delayed
-            if self.bought and GetConVar("ttt_deputy_shop_delay"):GetBool() then
-                self:GiveDelayedShopItems()
-            end
-        end
-
-        net.Start("TTT_Promotion")
-        net.WriteString(self:Nick())
-        net.Broadcast()
-
-        -- The player has been promoted so we need to update their shop
-        net.Start("TTT_ResetBuyableWeaponsCache")
-        net.Send(self)
-    end
-
     function plymeta:MoveRoleState(target, keep_on_source)
-        if self:GetNWBool("HasPromotion", false) then
-            if not keep_on_source then self:SetNWBool("HasPromotion", false) end
-            target:HandleDetectiveLikePromotion()
-        end
-
         -- Run role-specific logic
         if ROLE_MOVE_ROLE_STATE[self:GetRole()] then
             ROLE_MOVE_ROLE_STATE[self:GetRole()](self, target, keep_on_source)

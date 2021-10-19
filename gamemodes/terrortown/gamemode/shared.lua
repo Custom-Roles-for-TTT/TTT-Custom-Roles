@@ -1195,27 +1195,6 @@ if SERVER then
         SetRoleStartingHealth(ply)
     end
 
-    function ShouldPromoteDetectiveLike()
-        local alive, dead = 0, 0
-        for _, p in ipairs(player.GetAll()) do
-            if p:IsDetectiveTeam() then
-                if not p:IsSpec() and p:Alive() then
-                    alive = alive + 1
-                else
-                    dead = dead + 1
-                end
-            end
-        end
-
-        -- If they should be promoted when any detective has died, just check that there is a dead detective
-        if GetConVar("ttt_deputy_impersonator_promote_any_death"):GetBool() then
-            return dead > 0
-        end
-
-        -- Otherwise, only promote if there are no living detectives
-        return alive == 0
-    end
-
     local function ShouldShowJesterNotification(target, mode)
         -- 1 - Only notify Traitors and Detective-likes
         -- 2 - Only notify Traitors
@@ -1263,17 +1242,6 @@ end
 -- get a little marker on their icon if they're buyable, showing they are custom
 -- and unique to the server.
 DefaultEquipment = {
-    [ROLE_DEPUTY] = {
-        EQUIP_ARMOR,
-        EQUIP_RADAR
-    },
-
-    [ROLE_IMPERSONATOR] = {
-        EQUIP_ARMOR,
-        EQUIP_RADAR,
-        EQUIP_DISGUISE
-    },
-
     [ROLE_PARASITE] = {
         EQUIP_ARMOR,
         EQUIP_RADAR,

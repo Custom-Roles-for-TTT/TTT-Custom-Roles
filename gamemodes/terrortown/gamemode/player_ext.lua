@@ -398,13 +398,6 @@ function plymeta:KickBan(length, reason)
 end
 
 function plymeta:BeginRoleChecks()
-    -- Deputy/Impersonator logic
-    -- If this is a promotable role and they should be promoted, promote them immediately
-    -- The logic which handles a detective dying is in the PlayerDeath hook
-    if self:IsDetectiveLikePromotable() and ShouldPromoteDetectiveLike() then
-        self:HandleDetectiveLikePromotion()
-    end
-
     -- Run role-specific logic
     if ROLE_ON_ROLE_ASSIGNED[self:GetRole()] then
         ROLE_ON_ROLE_ASSIGNED[self:GetRole()](self)

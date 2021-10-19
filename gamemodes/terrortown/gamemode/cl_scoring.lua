@@ -117,14 +117,6 @@ net.Receive("TTT_Defibrillated", function(len)
     })
 end)
 
-net.Receive("TTT_Promotion", function(len)
-    local name = net.ReadString()
-    CLSCORE:AddEvent({
-        id = EVENT_PROMOTION,
-        ply = name
-    })
-end)
-
 net.Receive("TTT_PhantomHaunt", function(len)
     local victim = net.ReadString()
     local attacker = net.ReadString()

@@ -684,9 +684,6 @@ L.info_popup_phantom = [[You are {role}! Try to survive and help your {innocent}
 You will haunt the player who kills you causing black smoke to appear.
 If the player you are haunting dies you will be respawned!]]
 
-L.info_popup_deputy = [[You are {role}! If the {detective} dies you will take
-over and gain the ability to buy shop items and search bodies.]]
-
 L.info_popup_monster_comrades = [[Work with your allies to kill all others.
 
 These are your comrades:
@@ -711,13 +708,6 @@ BUT BEWARE! There was {aglitch} in the system and one among you does not seek th
 
 These may or may not be your comrades:
 {traitorlist}]]
-
-L.info_popup_impersonator = [[You are {role}! {comrades}
-
-If the {detective} dies you will appear to become a new {detective} and gain their
-abilities just like the {deputy}. However you are still working for the {traitors}.
-
-Press {menukey} to receive your special equipment!]]
 
 L.info_popup_parasite = [[You are {role}! {comrades}
 

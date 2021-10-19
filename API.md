@@ -691,6 +691,8 @@ Custom and modified event hooks available within the defined realm. A list of de
 
 For example, if there is a hook that returns three parameters: `first`, `second`, and `third` and you want to modify the `second` parameter you must return the `first` parameter as non-`nil` as well, like this: `return first, newSecond`. Any return parameters after `second` can be omitted and the default value will be used.
 
+***NOTE:*** Be careful that you only return from a hook when you absolutely want to change something. Due to the way GMod hooks work, whichever hook instance returns first causes the *remaining hook instances to be completely skipped*. This is useful for certain hooks when you want to stop a behavior from happening, but it can also accidentally cause functionality to break because its code is completely ignored.
+
 **TTTBlockPlayerFootstepSound(ply)** - Called when a player is making a footstep. Used to determine if the player's footstep sound should be stopped.\
 *Realm:* Client and Server\
 *Added in:* 1.2.7\

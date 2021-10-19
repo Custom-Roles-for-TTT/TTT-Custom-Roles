@@ -584,7 +584,7 @@ local function CheckCreditAward(victim, attacker)
         -- If size is 0, awards are off
         if amt > 0 then
             for _, ply in ipairs(player.GetAll()) do
-                if ply:IsActiveDetectiveTeam() or (ply:IsActiveDeputy() and ply:GetNWBool("HasPromotion", false)) then
+                if ply:IsActiveDetectiveTeam() or (ply:IsActiveDeputy() and ply:IsRoleActive()) then
                     ply:AddCredits(amt)
                 end
             end
@@ -991,7 +991,7 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
         local reward = 0
         if attacker:IsActiveTraitorTeam() and ply:IsDetectiveTeam() then
             reward = math.ceil(GetConVar("ttt_credits_detectivekill"):GetInt())
-        elseif (attacker:IsActiveDetectiveTeam() or (attacker:IsActiveDeputy() and attacker:GetNWBool("HasPromotion", false))) and ply:IsTraitorTeam() then
+        elseif (attacker:IsActiveDetectiveTeam() or (attacker:IsActiveDeputy() and attacker:IsRoleActive())) and ply:IsTraitorTeam() then
             reward = math.ceil(GetConVar("ttt_det_credits_traitorkill"):GetInt())
         end
 
@@ -1102,37 +1102,6 @@ function GM:PlayerDeath(victim, infl, attacker)
         net.WriteString(victim:Nick())
         net.WriteString(attacker:Nick())
         net.Broadcast()
-    end
-
-    -- Handle detective death
-    if victim:IsDetectiveTeam() and GetRoundState() == ROUND_ACTIVE then
-        if ShouldPromoteDetectiveLike() then
-            for _, ply in pairs(player.GetAll()) do
-                if ply:IsDetectiveLikePromotable() then
-                    local alive = ply:Alive()
-                    if alive then
-                        ply:PrintMessage(HUD_PRINTTALK, "You have been promoted to " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "!")
-                        ply:PrintMessage(HUD_PRINTCENTER, "You have been promoted to " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "!")
-                    end
-
-                    -- If the player is an Impersonator, tell all their team members when they get promoted
-                    if ply:IsImpersonator() then
-                        for _, v in pairs(player.GetAll()) do
-                            if v ~= ply and v:IsTraitorTeam() and v:Alive() and not v:IsSpec() then
-                                local message = "The " .. ROLE_STRINGS[ROLE_IMPERSONATOR] .. " has been promoted to " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "!"
-                                if not alive then
-                                    message = message .. " Too bad they're dead..."
-                                end
-                                v:PrintMessage(HUD_PRINTTALK, message)
-                                v:PrintMessage(HUD_PRINTCENTER, message)
-                            end
-                        end
-                    end
-
-                    ply:HandleDetectiveLikePromotion()
-                end
-            end
-        end
     end
 
     -- stop bleeding
@@ -1257,18 +1226,6 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
             -- Jesters can't deal damage
             if att:ShouldActLikeJester() then
                 dmginfo:ScaleDamage(0)
-            end
-
-            -- Deputies deal less damage before they are promoted
-            if att:IsDeputy() and not att:GetNWBool("HasPromotion", false) then
-                local penalty = GetConVar("ttt_deputy_damage_penalty"):GetFloat()
-                dmginfo:ScaleDamage(1 - penalty)
-            end
-
-            -- Impersonators deal less damage before they are promoted
-            if att:IsImpersonator() and not att:GetNWBool("HasPromotion", false) then
-                local penalty = GetConVar("ttt_impersonator_damage_penalty"):GetFloat()
-                dmginfo:ScaleDamage(1 - penalty)
             end
         -- Players cant deal damage to eachother before the round starts
         else

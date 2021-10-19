@@ -143,10 +143,6 @@ end
 CreateConVar("ttt_traitor_vision_enable", "0")
 CreateConVar("ttt_traitor_phantom_cure", "0")
 
-CreateConVar("ttt_impersonator_damage_penalty", "0")
-CreateConVar("ttt_impersonator_use_detective_icon", "1")
-CreateConVar("ttt_impersonator_without_detective", "0")
-
 CreateConVar("ttt_parasite_infection_time", 45)
 CreateConVar("ttt_parasite_infection_transfer", 0)
 CreateConVar("ttt_parasite_infection_transfer_reset", 1)
@@ -169,11 +165,6 @@ CreateConVar("ttt_phantom_killer_haunt_jump_cost", "50")
 CreateConVar("ttt_phantom_killer_haunt_drop_cost", "75")
 CreateConVar("ttt_phantom_killer_haunt_attack_cost", "100")
 CreateConVar("ttt_phantom_killer_haunt_without_body", "1")
-
-CreateConVar("ttt_deputy_damage_penalty", "0")
-CreateConVar("ttt_deputy_use_detective_icon", "1")
-CreateConVar("ttt_deputy_without_detective", "0")
-CreateConVar("ttt_deputy_activation_credits", "0")
 
 -- Detective role properties
 CreateConVar("ttt_detective_search_only", "1")
@@ -345,7 +336,6 @@ util.AddNetworkString("TTT_SprintGetConVars")
 util.AddNetworkString("TTT_SpawnedPlayers")
 util.AddNetworkString("TTT_Defibrillated")
 util.AddNetworkString("TTT_RoleChanged")
-util.AddNetworkString("TTT_Promotion")
 util.AddNetworkString("TTT_PhantomHaunt")
 util.AddNetworkString("TTT_ParasiteInfect")
 util.AddNetworkString("TTT_LogInfo")
@@ -493,14 +483,10 @@ function GM:SyncGlobals()
     SetGlobalInt("ttt_phantom_killer_haunt_jump_cost", GetConVar("ttt_phantom_killer_haunt_jump_cost"):GetInt())
     SetGlobalInt("ttt_phantom_killer_haunt_drop_cost", GetConVar("ttt_phantom_killer_haunt_drop_cost"):GetInt())
 
-    SetGlobalBool("ttt_deputy_use_detective_icon", GetConVar("ttt_deputy_use_detective_icon"):GetBool())
-
     SetGlobalBool("ttt_special_detectives_armor_loadout", GetConVar("ttt_special_detectives_armor_loadout"):GetBool())
 
     SetGlobalBool("ttt_traitor_vision_enable", GetConVar("ttt_traitor_vision_enable"):GetBool())
     SetGlobalBool("ttt_traitor_phantom_cure", GetConVar("ttt_traitor_phantom_cure"):GetBool())
-
-    SetGlobalBool("ttt_impersonator_use_detective_icon", GetConVar("ttt_impersonator_use_detective_icon"):GetBool())
 
     SetGlobalInt("ttt_parasite_infection_time", GetConVar("ttt_parasite_infection_time"):GetInt())
     SetGlobalBool("ttt_parasite_enabled", GetConVar("ttt_parasite_enabled"):GetBool())
@@ -713,7 +699,6 @@ function PrepareRound()
         v:SetNWInt("HauntingPower", 0)
         timer.Remove(v:Nick() .. "HauntingPower")
         timer.Remove(v:Nick() .. "HauntingSpectate")
-        v:SetNWBool("HasPromotion", false)
         v:SetNWBool("Infected", false)
         v:SetNWBool("Infecting", false)
         v:SetNWString("InfectingTarget", nil)
@@ -721,8 +706,6 @@ function PrepareRound()
         timer.Remove(v:Nick() .. "InfectionProgress")
         timer.Remove(v:Nick() .. "InfectingSpectate")
         v:SetNWVector("PlayerColor", Vector(1, 1, 1))
-        v:SetNWBool("AdrenalineRush", false)
-        timer.Remove(v:Nick() .. "AdrenalineRush")
         -- Workaround to prevent GMod sprint from working
         v:SetRunSpeed(v:GetWalkSpeed())
     end
