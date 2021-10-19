@@ -8,6 +8,7 @@
    1. [Player Object](#Player-Object)
    1. [Player Static](#Player-Static)
    1. [Table](#Table)
+   1. [HUD](#HUD)
 1. [Hooks](#Hooks)
 1. [SWEPs](#SWEPs)
    1. [SWEP Properties](#SWEP-Properties)
@@ -559,6 +560,10 @@ Methods available when called from a Player object (within the defined realm)
 *Parameters:*
 - *tgt* - The target player bodysnatcher. If a value is not provided, the context player will be used instead (e.g. `ply:ShouldRevealBodysnatcher()` is the same as `ply:ShouldRevealBodysnatcher(ply)`)
 
+**plymeta:ShouldShowSpectatorHUD()** - Whether this player should currently be shown a spectator HUD. Used for things like the Phantom and Parasite spectator HUDs.\
+*Realm:* Client and Server\
+*Added in:* 1.3.1
+
 **plymeta:SoberDrunk(team)** - Runs the logic for when a drunk sobers up and remembers their role.\
 *Realm:* Server\
 *Added in:* 1.1.9\
@@ -684,6 +689,48 @@ Methods created to help with the manipulation of tables
 - *second_tbl* - The second table whose keys are being unioned
 - *excludes* - Table of values to exclude from the union. (Optional)
 
+### *HUD*
+Helper methods that can be used when displaying client-side UIs
+
+**HUD:PaintBar(r, x, y, w, h, colors, value)** - Paints a rounded bar that is some-percentaged filled. Can be used as a progress bar.\
+*Realm:* Client\
+*Added in:* 1.3.1
+*Parameters:*
+- *r* - The amount the bar should be rounded
+- *x* - The position from the left of the screen
+- *y* - The position from the top of the screen
+- *w* - The width of the bar
+- *h* - The height of the bar
+- *colors* - Object containing [Colors](https://wiki.facepunch.com/gmod/Color) to be used when displaying the bar
+  - *background* - The background color of the bar
+  - *fill* - The color to use to show the percentage of the bar filled
+- *value* - The percent of the bar to be filled
+
+**HUD:PaintPowersHUD(powers, max_power, current_power, colors, title, subtitle)** - Paints a HUD for showing available powers and their associated costs. Used for roles such as the Phantom.\
+*Realm:* Client\
+*Added in:* 1.3.1
+*Parameters:*
+- *powers* - Table of key-value pairs where each key is the label for a power and the associated value is the cost of using it. The key can contain a `{num}` placeholder which will be replaced with the percentage of maximum power that the power costs
+- *max_power* - The maximum amount of a power a player can have
+- *current_power* - The current amount of power a player has
+- *colors* - Object containing [Colors](https://wiki.facepunch.com/gmod/Color) to be used when displaying the powers
+  - *background* - The background color of the progress bar used to show power level percentage
+  - *fill* - The color to use for the current power level in the progress bar
+- *title* - Title text to show within the power level progress bar
+- *subtitle* - The sub-title text, used for hints, that is shown in small text above the power level progress bar
+
+**HUD:ShadowedText(text, font, x, y, color, xalign, yalign)** - Renders text with an offset black background to emulate a shadow.\
+*Realm:* Client\
+*Added in:* 1.3.1
+*Parameters:*
+- *text* - The text to render
+- *font* - The name of the font to use
+- *x* - The position from the left of the screen
+- *y* - The position from the top of the screen
+- *color* - The color to use for the rendered text
+- *xalign* - The [TEXT_ALIGN](https://wiki.facepunch.com/gmod/Enums/TEXT_ALIGN) enum value to use for the horizontal alignment of the text
+- *yalign* - The [TEXT_ALIGN](https://wiki.facepunch.com/gmod/Enums/TEXT_ALIGN) enum value to use for the vertical alignment of the text
+
 ## Hooks
 Custom and modified event hooks available within the defined realm. A list of default TTT hooks is available [here](https://www.troubleinterroristtown.com/development/hooks/) but note that they may have been modified (see below).
 
@@ -770,6 +817,13 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 *Parameters:*
 - *client* - The local player
 - *ply* - The current alive player target
+
+**TTTPlayerDefibRoleChange(ply, tgt)** - Called after a player has been resurrected by a device that also changes their role.\
+*Realm:* Server\
+*Added in:* 1.3.1\
+*Parameters:*
+- *ply* - The player using the resurrection device
+- *tgt* - The target player being resurrected
 
 **TTTPlayerRoleChanged(ply, oldRole, newRole)** - Called after a player's role has changed.\
 *Realm:* Client and Server\
@@ -968,6 +1022,29 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *traitorCount* - The number of players that will be (or have already been) assigned a traitor role
 - *detectives* - The table of available player choices that will be (or have already been) assigned a detective role. Manipulating this table will have no effect
 - *detectiveCount* - The number of players that will be (or have already been) assigned a detective role
+
+**TTTSpectatorHUDKeyPress(ply, tgt, powers)** - Called when a player who is being shown a role-specific spectator HUD presses a button, allowing the hook to intercept that button press and perform specific logic if necessary.\
+*Realm:* Server\
+*Added in:* 1.3.1\
+*Parameters:*
+- *ply* - The spectator player who is attemping to press a key
+- *tgt* - The target playing being spectated
+- *powers* - The table of key-value pairs of spectator powers where the key is the [IN](https://wiki.facepunch.com/gmod/Enums/IN) enum value of the desired button press and the value is an object with the following properties:
+  - *start_command* - The console command to run to start the power effect
+  - *end_command* - The console command to run to end the power effect
+  - *time* - The amount of time before the end command should be run
+  - *cost* - The cost of using this power
+
+*Return:*
+- *skip* - Whether the remaining spectator keypress logic should be skipped
+- *power_property* - The NWInt property name to use when getting and updating the current spectator power level
+
+**TTTSpectatorShowHUD(client, tgt)** - Called when a player should be shown a role-specific spectator HUD, allowing that role's logic to render the HUD as needed.\
+*Realm:* Client\
+*Added in:* 1.3.1\
+*Parameters:*
+- *client* - The local player
+- *tgt* - The target playing being spectated
 
 **TTTSpeedMultiplier(ply, mults)** - Called when determining what speed the player should be moving at.\
 *Realm:* Client and Server\

@@ -346,14 +346,6 @@ Event(EVENT_DISCONNECTED, {
         return disconnect_icon, "Disconnected"
     end})
 
-Event(EVENT_HAUNT, {
-    text = function(e)
-        return PT("ev_haunt", {victim = e.vic, attacker = e.att})
-    end,
-    icon = function(e)
-        return haunt_icon, "Haunt"
-    end})
-
 Event(EVENT_LOG, {
     text = function(e)
         return e.txt

@@ -143,6 +143,15 @@ end
 
 function plymeta:ShouldDelayAnnouncements() return ROLE_SHOULD_DELAY_ANNOUNCEMENTS[self:GetRole()] or false end
 
+function plymeta:ShouldShowSpectatorHUD()
+    -- Check if this role has an external definition for whether to show a spectator HUD and use that
+    local role = self:GetRole()
+    if ROLE_SHOULD_SHOW_SPECTATOR_HUD[role] then
+        return ROLE_SHOULD_SHOW_SPECTATOR_HUD[role](self)
+    end
+    return false
+end
+
 function plymeta:SetRoleAndBroadcast(role)
     self:SetRole(role)
 
@@ -462,7 +471,6 @@ else
     -- performing a gesture. This allows the client to decide whether it should
     -- play, depending on eg. a cvar.
     function plymeta:AnimPerformGesture(act)
-
         if not act then return end
 
         net.Start("TTT_PerformGesture")

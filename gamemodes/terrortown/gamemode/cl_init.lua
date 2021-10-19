@@ -358,14 +358,12 @@ function GM:Think()
         if v:Alive() and not v:IsSpec() then
             hook.Run("TTTPlayerAliveClientThink", client, v)
 
-            local shouldSmoke = v:GetNWBool("Haunted", false) and GetGlobalBool("ttt_phantom_killer_smoke")
             local smokeColor = COLOR_BLACK
             local smokeParticle = "particle/snow.vmt"
             local smokeOffset = Vector(0, 0, 30)
 
             -- Allow other addons to manipulate whether and how players smoke
-            local newShouldSmoke, newSmokeColor, newSmokeParticle, newSmokeOffset = hook.Run("TTTShouldPlayerSmoke", v, client, shouldSmoke, smokeColor, smokeParticle, smokeOffset)
-            if type(newShouldSmoke) == "boolean" then shouldSmoke = newShouldSmoke end
+            local shouldSmoke, newSmokeColor, newSmokeParticle, newSmokeOffset = hook.Run("TTTShouldPlayerSmoke", v, client, false, smokeColor, smokeParticle, smokeOffset)
             if newSmokeColor then smokeColor = newSmokeColor end
             if newSmokeParticle then smokeParticle = newSmokeParticle end
             if newSmokeOffset then smokeOffset = newSmokeOffset end

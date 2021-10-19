@@ -141,7 +141,6 @@ end
 
 -- Traitor role properties
 CreateConVar("ttt_traitor_vision_enable", "0")
-CreateConVar("ttt_traitor_phantom_cure", "0")
 
 CreateConVar("ttt_parasite_infection_time", 45)
 CreateConVar("ttt_parasite_infection_transfer", 0)
@@ -150,21 +149,6 @@ CreateConVar("ttt_parasite_infection_suicide_mode", 0)
 CreateConVar("ttt_parasite_respawn_mode", 0)
 CreateConVar("ttt_parasite_respawn_health", 100)
 CreateConVar("ttt_parasite_announce_infection", 0)
-
--- Innocent role properties
-CreateConVar("ttt_phantom_respawn_health", "50")
-CreateConVar("ttt_phantom_weaker_each_respawn", "0")
-CreateConVar("ttt_phantom_announce_death", "0")
-CreateConVar("ttt_phantom_killer_smoke", "0")
-CreateConVar("ttt_phantom_killer_footstep_time", "0")
-CreateConVar("ttt_phantom_killer_haunt", "1")
-CreateConVar("ttt_phantom_killer_haunt_power_max", "100")
-CreateConVar("ttt_phantom_killer_haunt_power_rate", "10")
-CreateConVar("ttt_phantom_killer_haunt_move_cost", "25")
-CreateConVar("ttt_phantom_killer_haunt_jump_cost", "50")
-CreateConVar("ttt_phantom_killer_haunt_drop_cost", "75")
-CreateConVar("ttt_phantom_killer_haunt_attack_cost", "100")
-CreateConVar("ttt_phantom_killer_haunt_without_body", "1")
 
 -- Detective role properties
 CreateConVar("ttt_detective_search_only", "1")
@@ -336,7 +320,6 @@ util.AddNetworkString("TTT_SprintGetConVars")
 util.AddNetworkString("TTT_SpawnedPlayers")
 util.AddNetworkString("TTT_Defibrillated")
 util.AddNetworkString("TTT_RoleChanged")
-util.AddNetworkString("TTT_PhantomHaunt")
 util.AddNetworkString("TTT_ParasiteInfect")
 util.AddNetworkString("TTT_LogInfo")
 util.AddNetworkString("TTT_ResetScoreboard")
@@ -476,17 +459,9 @@ function GM:SyncGlobals()
         end
     end
 
-    SetGlobalBool("ttt_phantom_killer_smoke", GetConVar("ttt_phantom_killer_smoke"):GetBool())
-    SetGlobalInt("ttt_phantom_killer_haunt_power_max", GetConVar("ttt_phantom_killer_haunt_power_max"):GetInt())
-    SetGlobalInt("ttt_phantom_killer_haunt_move_cost", GetConVar("ttt_phantom_killer_haunt_move_cost"):GetInt())
-    SetGlobalInt("ttt_phantom_killer_haunt_attack_cost", GetConVar("ttt_phantom_killer_haunt_attack_cost"):GetInt())
-    SetGlobalInt("ttt_phantom_killer_haunt_jump_cost", GetConVar("ttt_phantom_killer_haunt_jump_cost"):GetInt())
-    SetGlobalInt("ttt_phantom_killer_haunt_drop_cost", GetConVar("ttt_phantom_killer_haunt_drop_cost"):GetInt())
-
     SetGlobalBool("ttt_special_detectives_armor_loadout", GetConVar("ttt_special_detectives_armor_loadout"):GetBool())
 
     SetGlobalBool("ttt_traitor_vision_enable", GetConVar("ttt_traitor_vision_enable"):GetBool())
-    SetGlobalBool("ttt_traitor_phantom_cure", GetConVar("ttt_traitor_phantom_cure"):GetBool())
 
     SetGlobalInt("ttt_parasite_infection_time", GetConVar("ttt_parasite_infection_time"):GetInt())
     SetGlobalBool("ttt_parasite_enabled", GetConVar("ttt_parasite_enabled"):GetBool())
@@ -693,12 +668,6 @@ end
 
 function PrepareRound()
     for _, v in pairs(player.GetAll()) do
-        v:SetNWBool("Haunted", false)
-        v:SetNWBool("Haunting", false)
-        v:SetNWString("HauntingTarget", nil)
-        v:SetNWInt("HauntingPower", 0)
-        timer.Remove(v:Nick() .. "HauntingPower")
-        timer.Remove(v:Nick() .. "HauntingSpectate")
         v:SetNWBool("Infected", false)
         v:SetNWBool("Infecting", false)
         v:SetNWString("InfectingTarget", nil)

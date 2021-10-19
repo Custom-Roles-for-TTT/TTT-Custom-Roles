@@ -50,8 +50,14 @@
 - Added TTTHUDInfoPaint hook to add informational messages to a player's HUD (above their health bar)
 - Added TTTPlayerAliveClientThink hook to handle the Think event for each currently living player on the client
 - Added TTTRadarRender hook to handle custom radar entry rendering
+- Added TTTPlayerDefibRoleChange hook to handle a player being resurrected as a different role
+- Added TTTSpectatorShowHUD hook to handle showing a player a spectator HUD
+- Added TTTSpectatorHUDKeyPress hook to handle the key press event for a player who should be viewing a spectator HUD
 - Added `plymeta:Celebrate` to celebrate with sound and or confetti
+- Added `plymeta:ShouldShowSpectatorHUD` to determine whether a player should have a spectator HUD displayed
+- Added `HUD:PaintPowersHUD` method to render phantom-like spectator HUD in a generic way
 - Changed radar's `DrawTarget` method to be accessible in the RADAR namespace as `RADAR:DrawTarget`
+- Changed HUD's `PaintBar` and `ShadowedText` methods to be accessible in the HUD namespace as `HUD:PaintBar` and `HUD:ShadowedText` respectively
 - Changed `JesterTeamKilledNotification` to be globally accessible
 - Renamed `SWEP.BoughtBuy` to `SWEP.BoughtBy`
 - Removed deprecated global `ShouldHideJesters`. Use `plymeta:ShouldHideJesters` instead

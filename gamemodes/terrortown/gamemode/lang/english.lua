@@ -580,11 +580,6 @@ L.cure_desc = [[Use on a player to cure them of {parasites}.
 
 Using this on a player who is not infected will kill them!]]
 
--- Phantom exorcsim
-L.exor_help_pri = "{primaryfire} to cleanse another player."
-L.exor_help_sec = "{secondaryfire} to cleanse yourself."
-L.exor_desc = "Use on a player to exorcise a {phantom}"
-
 -- Zombification device
 L.zombificator_help_pri = "Hold {primaryfire} to zombify dead body."
 L.zombificator_help_sec = "The revived player will become a zombie."
@@ -662,13 +657,6 @@ L.punch_help = "Move keys or jump: punch object. Crouch: leave object."
 L.punch_bonus = "Your bad score lowered your punch-o-meter limit by {num}"
 L.punch_malus = "Your good score increased your punch-o-meter limit by {num}!"
 
--- Haunt
-L.haunt_title = "WILLPOWER"
-L.haunt_move = "MOVE KEYS: Move (Cost: {num}%)"
-L.haunt_jump = "SPACE: Jump (Cost: {num}%)"
-L.haunt_drop = "RIGHT CLICK: Drop (Cost: {num}%)"
-L.haunt_attack = "LEFT CLICK: Attack (Cost: {num}%)"
-
 -- Infection
 L.infect_title = "INFECTION"
 L.infect_help = "You will respawn when the infection bar is full."
@@ -680,10 +668,6 @@ L.spec_help = "Click to spectate players, or press {usekey} on a physics object 
 
 -- These are spread over multiple lines, hence the square brackets instead of
 -- quotes. That's a Lua thing. Every line break (enter) will show up in-game.
-L.info_popup_phantom = [[You are {role}! Try to survive and help your {innocent} friends!
-You will haunt the player who kills you causing black smoke to appear.
-If the player you are haunting dies you will be respawned!]]
-
 L.info_popup_monster_comrades = [[Work with your allies to kill all others.
 
 These are your comrades:
@@ -1186,7 +1170,6 @@ L.ev_hypno = "{victim} was hypnotised"
 L.ev_defi = "{victim} was respawned"
 L.ev_disco = "{victim} disconnected"
 L.ev_promote = "{player} was promoted to {detective}"
-L.ev_haunt = "{victim} started haunting {attacker}"
 L.ev_infect = "{victim} infected {attacker}"
 
 -- Role Weapons Configuration

@@ -654,6 +654,7 @@ ROLE_SHOULD_DELAY_ANNOUNCEMENTS = {}
 ROLE_MOVE_ROLE_STATE = {}
 ROLE_ON_ROLE_ASSIGNED = {}
 ROLE_HAS_PASSIVE_WIN = {}
+ROLE_SHOULD_SHOW_SPECTATOR_HUD = {}
 
 ROLE_CONVAR_TYPE_NUM = 0
 ROLE_CONVAR_TYPE_BOOL = 1
@@ -780,6 +781,10 @@ function RegisterRole(tbl)
 
     if type(tbl.onroleassigned) == "function" then
         ROLE_ON_ROLE_ASSIGNED[roleID] = tbl.onroleassigned
+    end
+
+    if type(tbl.shouldshowspectatorhud) == "function" then
+        ROLE_SHOULD_SHOW_SPECTATOR_HUD[roleID] = tbl.shouldshowspectatorhud
     end
 
     -- List of objects that describe convars for ULX support, in the following format:
@@ -1033,21 +1038,6 @@ end
 
 function GM:PlayerFootstep(ply, pos, foot, sound, volume, rf)
     if not IsValid(ply) or ply:IsSpec() or not ply:Alive() then return true end
-
-    if SERVER and ply:WaterLevel() == 0 then
-        -- This player killed a Phantom. Tell everyone where their foot steps should go
-        local phantom_killer_footstep_time = GetConVar("ttt_phantom_killer_footstep_time"):GetInt()
-        if phantom_killer_footstep_time > 0 and ply:GetNWBool("Haunted", false) then
-            net.Start("TTT_PlayerFootstep")
-            net.WriteEntity(ply)
-            net.WriteVector(pos)
-            net.WriteAngle(ply:GetAimVector():Angle())
-            net.WriteBit(foot)
-            net.WriteTable(Color(138, 4, 4))
-            net.WriteUInt(phantom_killer_footstep_time, 8)
-            net.Broadcast()
-        end
-    end
 
     -- Kill footsteps on player and client
     if ply:Crouching() or ply:GetMaxSpeed() < 150 then
