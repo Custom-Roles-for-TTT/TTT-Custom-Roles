@@ -168,6 +168,7 @@ CreateConVar("ttt_single_paramedic_hypnotist", "0")
 CreateConVar("ttt_single_phantom_parasite", "0")
 CreateConVar("ttt_single_jester_independent", "1")
 CreateConVar("ttt_single_jester_independent_max_players", "0")
+CreateConVar("ttt_single_drunk_clown", "0")
 
 -- Traitor credits
 CreateConVar("ttt_credits_starting", "2")
@@ -1291,6 +1292,17 @@ function SelectRoles()
         end
     end
 
+    local drunk_only = false
+    local clown_only = false
+    local single_dru_clo = GetConVar("ttt_single_drunk_clown"):GetBool()
+    if single_dru_clo then
+        if math.random() <= 0.5 then
+            drunk_only = true
+        else
+            clown_only = true
+        end
+    end
+
     if choice_count == 0 then return end
 
     local choices_copy = table.Copy(choices)
@@ -1372,6 +1384,10 @@ function SelectRoles()
                     if role == ROLE_PHANTOM then phantom_only = true
                     elseif role == ROLE_PARASITE then parasite_only = true end
                 end
+                if single_dru_clo then
+                    if role == ROLE_DRUNK then drunk_only = true
+                    elseif role == ROLE_CLOWN then clown_only = true end
+                end
 
                 PrintRole(v, role)
             end
@@ -1410,7 +1426,15 @@ function SelectRoles()
         [ROLE_HYPNOTIST] = function() return not paramedic_only end,
         [ROLE_IMPERSONATOR] = function() return (detective_count > 0 or GetConVar("ttt_impersonator_without_detective"):GetBool()) and not deputy_only end,
         [ROLE_QUACK] = function() return not doctor_only end,
-        [ROLE_PARASITE] = function() return not phantom_only end
+        [ROLE_PARASITE] = function() return not phantom_only end,
+
+        -- Independents
+        [ROLE_MADSCIENTIST] = function() return INDEPENDENT_ROLES[ROLE_ZOMBIE] end,
+        [ROLE_DRUNK] = function() return not clown_only end,
+
+        -- Jesters
+        [ROLE_CLOWN] = function() return not drunk_only end
+
     }
     -- Merge in any role predicates
     table.Merge(rolePredicates, ROLE_SELECTION_PREDICATE)

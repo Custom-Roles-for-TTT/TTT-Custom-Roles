@@ -16,6 +16,7 @@
 - Added ability to use common jester notifications (message, sound, confetti) when the bodysnatcher is killed (disabled by default)
 - Added ability to make the paramedic defib rebuyable if ttt_paramedic_device_shop is enabled (disabled by default)
 - Added ability to make the hypnotist brainwashing device rebuyable if ttt_hypnotist_device_shop is enabled (disabled by default)
+- Added ability to prevent the drunk and clown from being selected in the same round (disabled by default)
 - Added ability to configure the amount of time the various role devices take to be used
   - Bodysnatching Device
   - Hypnotist's Brainwashing Device
