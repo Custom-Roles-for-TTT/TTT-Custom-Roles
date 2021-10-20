@@ -11,11 +11,14 @@ resource.AddSingleFile("sound/oldmanramble.wav")
 local oldman_drain_health_to = CreateConVar("ttt_oldman_drain_health_to", "0")
 local oldman_adrenaline_rush = CreateConVar("ttt_oldman_adrenaline_rush", "5")
 local oldman_adrenaline_shotgun = CreateConVar("ttt_oldman_adrenaline_shotgun", "1")
+local oldman_adrenaline_ramble = CreateConVar("ttt_oldman_adrenaline_ramble", "1")
+local oldman_hide_when_active = CreateConVar("ttt_oldman_hide_when_active", "0")
 
 hook.Add("TTTSyncGlobals", "OldMan_TTTSyncGlobals", function()
     SetGlobalInt("ttt_oldman_drain_health_to", oldman_drain_health_to:GetInt())
     SetGlobalInt("ttt_oldman_adrenaline_rush", oldman_adrenaline_rush:GetInt())
     SetGlobalBool("ttt_oldman_adrenaline_shotgun", oldman_adrenaline_shotgun:GetBool())
+    SetGlobalBool("ttt_oldman_hide_when_active", oldman_hide_when_active:GetBool())
 end)
 
 ----------------
@@ -78,7 +81,9 @@ hook.Add("EntityTakeDamage", "OldMan_EntityTakeDamage", function(ent, dmginfo)
             elseif IsPlayer(att) and damage >= health then -- If they are attacked by a player that would have killed them they enter an adrenaline rush
                 dmginfo:SetDamage(health - 1)
                 ent:SetNWBool("AdrenalineRush", true)
-                ent:EmitSound("oldmanramble.wav")
+                if oldman_adrenaline_ramble:GetBool() then
+                    ent:EmitSound("oldmanramble.wav")
+                end
                 ent:PrintMessage(HUD_PRINTTALK, "You are having an adrenaline rush! You will die in " .. tostring(adrenalineTime) .. " seconds.")
 
                 if oldman_adrenaline_shotgun:GetBool() then

@@ -427,6 +427,8 @@ ttt_oldman_drain_health_to                  0       // The amount of health to d
 ttt_oldman_adrenaline_rush                  5       // The time in seconds the old mans adrenaline rush lasts for. Set to 0 to disable
 ttt_oldman_adrenaline_shotgun               1       // Whether the old man is given a double barrel shotgun when their adrenaline rush is triggered
 ttt_oldman_adrenaline_shotgun_damage        10      // How much damage the double barrel shotgun should do
+ttt_oldman_adrenaline_ramble                1       // Whether the rambling speech sound plays when the old man is having their adrenaline rush
+ttt_oldman_hide_when_active                 0       // Whether the old man should be hidden from other players' Target ID (overhead icons) when their adrenaline rush is triggered. Server or round must be restarted for changes to take effect
 
 // Killer
 ttt_killer_knife_enabled                    1       // Whether the killer knife is enabled
