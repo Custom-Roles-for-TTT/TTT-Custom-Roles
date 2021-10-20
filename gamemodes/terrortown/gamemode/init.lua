@@ -1429,7 +1429,6 @@ function SelectRoles()
         [ROLE_PARASITE] = function() return not phantom_only end,
 
         -- Independents
-        [ROLE_MADSCIENTIST] = function() return INDEPENDENT_ROLES[ROLE_ZOMBIE] end,
         [ROLE_DRUNK] = function() return not clown_only end,
 
         -- Jesters

@@ -395,6 +395,7 @@ function HELPSCRN:Show()
     dmarker:CheckBox("Show slot marker", "ttt_bem_marker_slot")
     dmarker:CheckBox("Show custom item marker", "ttt_bem_marker_custom")
     dmarker:CheckBox("Show favourite item marker", "ttt_bem_marker_fav")
+    dmarker:CheckBox("Show loadout items", "ttt_show_loadout_equipment")
 
     dsettings:AddItem(dmarker)
 
