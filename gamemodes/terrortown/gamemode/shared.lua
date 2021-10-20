@@ -894,10 +894,11 @@ WIN_KILLER = 8
 WIN_ZOMBIE = 9
 WIN_MONSTER = 10
 WIN_VAMPIRE = 11
+WIN_LOOTGOBLIN = 12
 
 -- Don't redefine this every time we load this file
 if not WIN_MAX then
-    WIN_MAX = 11
+    WIN_MAX = 12
 end
 
 function GenerateNewWinID()

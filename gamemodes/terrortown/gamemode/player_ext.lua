@@ -472,6 +472,63 @@ function plymeta:Ignite(dur, radius)
     entmeta.Ignite(self, dur, radius)
 end
 
+local player_view_offsets = {}
+local player_view_offsets_ducked = {}
+function plymeta:SetPlayerScale(scale)
+    self:SetStepSize(self:GetStepSize() * scale)
+    self:SetModelScale(self:GetModelScale() * scale, 1)
+
+    -- Save the original values
+    local sid = self:SteamID64()
+    if not player_view_offsets[sid] then
+        player_view_offsets[sid] = self:GetViewOffset()
+    end
+    if not player_view_offsets_ducked[sid] then
+        player_view_offsets_ducked[sid] = self:GetViewOffsetDucked()
+    end
+
+    -- Use the current, not the saved, values so that this can run multiple times (in theory)
+    self:SetViewOffset(self:GetViewOffset()*scale)
+    self:SetViewOffsetDucked(self:GetViewOffsetDucked()*scale)
+
+    local a, b = self:GetHull()
+    self:SetHull(a * scale, b * scale)
+
+    a, b = self:GetHullDuck()
+    self:SetHullDuck(a * scale, b * scale)
+end
+
+function plymeta:ResetPlayerScale()
+    self:SetModelScale(1, 1)
+
+    -- Retrieve the saved offsets
+    local offset = nil
+    local sid = self:SteamID64()
+    if player_view_offsets[sid] then
+        offset = player_view_offsets[sid]
+        player_view_offsets[sid] = nil
+    end
+    -- Reset the view offset to the saved value or the default (if the ec_ViewChanged is not set)
+    -- The "ec_ViewChanged" property is from the "Enhanced Camera" mod which use ViewOffset to make the camera more "realistic"
+    if offset or not self.ec_ViewChanged then
+        self:SetViewOffset(offset or Vector(0, 0, 64))
+    end
+
+    -- Retrieve the saved ducked offsets
+    local offset_ducked = nil
+    if player_view_offsets_ducked[sid] then
+        offset_ducked = player_view_offsets_ducked[sid]
+        player_view_offsets_ducked[sid] = nil
+    end
+    -- Reset the view offset to the saved value or the default (if the ec_ViewChanged is not set)
+    -- The "ec_ViewChanged" property is from the "Enhanced Camera" mod which use ViewOffset to make the camera more "realistic"
+    if offset_ducked or not self.ec_ViewChanged then
+        self:SetViewOffsetDucked(offset_ducked or Vector(0, 0, 28))
+    end
+    self:ResetHull()
+    self:SetStepSize(18)
+end
+
 -- Run these overrides when the round is preparing the first time to ensure their addons have been loaded
 hook.Add("TTTPrepareRound", "PostLoadOverride", function()
     -- Compatibility with Dead Ringer (810154456)

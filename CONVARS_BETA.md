@@ -67,6 +67,7 @@ ttt_swapper_enabled                         0       // Whether or not the swappe
 ttt_clown_enabled                           0       // Whether or not the clown should spawn
 ttt_beggar_enabled                          0       // Whether or not the beggar should spawn
 ttt_bodysnatcher_enabled                    0       // Whether or not the bodysnatcher should spawn
+ttt_lootgoblin_enabled                      0       // Whether or not the loot goblin should spawn
 ttt_drunk_enabled                           0       // Whether or not the drunk should spawn
 ttt_oldman_enabled                          0       // Whether or not the old man should spawn
 ttt_killer_enabled                          0       // Whether or not the killer should spawn
@@ -97,6 +98,7 @@ ttt_swapper_spawn_weight                    1       // The weight assigned to sp
 ttt_clown_spawn_weight                      1       // The weight assigned to spawning the clown
 ttt_beggar_spawn_weight                     1       // The weight assigned to spawning the beggar
 ttt_bodysnatcher_spawn_weight               1       // The weight assigned to spawning the bodysnatcher
+ttt_lootgoblin_spawn_weight                 1       // The weight assigned to spawning the loot goblin
 ttt_drunk_spawn_weight                      1       // The weight assigned to spawning the drunk
 ttt_oldman_spawn_weight                     1       // The weight assigned to spawning the old man
 ttt_killer_spawn_weight                     1       // The weight assigned to spawning the killer
@@ -128,6 +130,7 @@ ttt_swapper_min_players                     0       // The minimum number of pla
 ttt_clown_min_players                       0       // The minimum number of players required to spawn the clown
 ttt_beggar_min_players                      0       // The minimum number of players required to spawn the beggar
 ttt_bodysnatcher_min_players                0       // The minimum number of players required to spawn the bodysnatcher
+ttt_lootgoblin_min_players                  0       // The minimum number of players required to spawn the loot goblin
 ttt_drunk_min_players                       0       // The minimum number of players required to spawn the drunk
 ttt_oldman_min_players                      0       // The minimum number of players required to spawn the old man
 ttt_killer_min_players                      0       // The minimum number of players required to spawn the killer
@@ -365,6 +368,17 @@ ttt_bodysnatcher_notify_sound               0       // Whether to play a cheerin
 ttt_bodysnatcher_notify_confetti            0       // Whether to throw confetti when a bodysnatcher is a killed
 ttt_bodysnatcher_device_time                5       // The amount of time (in seconds) the bodysnatcher's device takes to use
 
+// Loot Goblin
+ttt_lootgoblin_activation_timer             30      // Time in seconds before the loot goblin is revealed
+ttt_lootgoblin_announce                     4       // The logic to use when notifying players that a loot goblin has been revealed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
+ttt_lootgoblin_size                         0.5     // The size that the loot goblin will become when they are revealed (e.g. 0.5 = 50% size)
+ttt_lootgoblin_cackle_timer_min             4       // The minimum time between loot goblin cackles
+ttt_lootgoblin_cackle_timer_max             12      // The maximum time between loot goblin cackles
+ttt_lootgoblin_weapons_dropped              8       // How many weapons the loot goblin drops when they are killed
+ttt_lootgoblin_notify_mode                  4       // The logic to use when notifying players that a loot goblin is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
+ttt_lootgoblin_notify_sound                 1       // Whether to play a cheering sound when a loot goblin is killed
+ttt_lootgoblin_notify_confetti              1       // Whether to throw confetti when a loot goblin is a killed
+
 // ----------------------------------------
 
 // INDEPENDENT TEAM SETTINGS
@@ -402,6 +416,7 @@ ttt_drunk_can_be_swapper                    1       // Whether the drunk can bec
 ttt_drunk_can_be_clown                      1       // Whether the drunk can become a clown
 ttt_drunk_can_be_beggar                     1       // Whether the drunk can become a beggar
 ttt_drunk_can_be_bodysnatcher               1       // Whether the drunk can become a bodysnatcher
+ttt_drunk_can_be_lootgoblin                 1       // Whether the drunk can become a loot goblin
 ttt_drunk_can_be_oldman                     1       // Whether the drunk can become an old man
 ttt_drunk_can_be_killer                     1       // Whether the drunk can become a killer
 ttt_drunk_can_be_zombie                     1       // Whether the drunk can become a zombie
