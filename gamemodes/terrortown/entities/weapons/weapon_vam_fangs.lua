@@ -51,10 +51,12 @@ local beep = Sound("npc/fast_zombie/fz_alert_close1.wav")
 local vampire_convert = CreateConVar("ttt_vampire_convert_enable", "0")
 local vampire_drain = CreateConVar("ttt_vampire_drain_enable", "1")
 local vampire_drain_first = CreateConVar("ttt_vampire_drain_first", "0")
+local vampire_drain_credits = CreateConVar("ttt_vampire_drain_credits", "0")
 local vampire_fang_dead_timer = CreateConVar("ttt_vampire_fang_dead_timer", "0")
 local vampire_fang_timer = CreateConVar("ttt_vampire_fang_timer", "5")
 local vampire_fang_heal = CreateConVar("ttt_vampire_fang_heal", "50")
 local vampire_fang_overheal = CreateConVar("ttt_vampire_fang_overheal", "25")
+local vampire_fang_overheal_living = CreateConVar("ttt_vampire_fang_overheal_living", "-1")
 local vampire_fang_unfreeze_delay = CreateConVar("ttt_vampire_fang_unfreeze_delay", "1")
 local vampire_prime_convert = CreateConVar("ttt_vampire_prime_only_convert", "1")
 
@@ -72,13 +74,13 @@ function SWEP:SetupDataTables()
 end
 
 function SWEP:Initialize()
-    self:SetHoldType(self.HoldType)
     self.lastTickSecond = 0
     self.fading = false
 
     if CLIENT then
         self:AddHUDHelp("Left-click to suck blood", "Right-click to fade", false)
     end
+    return self.BaseClass.Initialize(self)
 end
 
 function SWEP:Holster()
@@ -87,9 +89,17 @@ function SWEP:Holster()
 end
 
 function SWEP:OnDrop()
-    self:UnfreezeTarget()
-    self:Reset()
     self:Remove()
+end
+
+function SWEP:OnRemove()
+    if IsPlayer(self.TargetEntity) then
+        self:CancelUnfreeze(self.TargetEntity)
+        self:DoUnfreeze()
+    end
+    if SERVER then
+        self:Reset()
+    end
 end
 
 function SWEP:CanConvert()
@@ -119,7 +129,8 @@ function SWEP:PrimaryAttack()
         elseif ent:IsPlayer() and vampire_drain:GetBool() then
             if ent:ShouldActLikeJester() then
                 self:Error("TARGET IS A JESTER")
-            elseif ent:IsVampireAlly() then
+            -- Don't allow draining allies or glitches when the vampire is a traitor
+            elseif ent:IsVampireAlly() or (TRAITOR_ROLES[ROLE_VAMPIRE] and ent:IsGlitch()) then
                 self:Error("TARGET IS AN ALLY")
             else
                 self:Drain(ent)
@@ -174,6 +185,7 @@ function SWEP:Drain(entity)
 end
 
 function SWEP:CancelUnfreeze(entity)
+    if CLIENT then return end
     if not IsPlayer(entity) then return end
     if not IsValid(self:GetOwner()) then return end
     local timerid = "VampUnfreezeDelay_" .. self:GetOwner():Nick() .. "_" .. entity:Nick()
@@ -183,22 +195,21 @@ function SWEP:CancelUnfreeze(entity)
     end
 end
 
-function SWEP:HasValidTarget()
-    return IsPlayer(self.TargetEntity)
-end
-
 function SWEP:AdjustFreezeCount(ent, adj, def)
+    if CLIENT then return end
     local freeze_count =  math.max(0, ent:GetNWInt("VampireFreezeCount", def) + adj)
     ent:SetNWInt("VampireFreezeCount", freeze_count)
     return freeze_count
 end
 
 function SWEP:DoFreeze()
+    if CLIENT then return end
     self:AdjustFreezeCount(self.TargetEntity, 1, 0)
     self.TargetEntity:Freeze(true)
 end
 
 function SWEP:DoUnfreeze()
+    if CLIENT then return end
     local freeze_count = self:AdjustFreezeCount(self.TargetEntity, -1, 1)
     -- Only unfreeze the target if nobody else is draining them
     if freeze_count == 0 then
@@ -213,8 +224,6 @@ function SWEP:DoConvert()
     if not ply:HasWeapon("weapon_zm_improvised") then
         ply:Give("weapon_zm_improvised")
     end
-    -- Disable Killer smoke if they have it
-    ply:SetNWBool("KillerSmoke", false)
     ply:SetVampirePreviousRole(ply:GetRole())
     ply:SetRole(ROLE_VAMPIRE)
     ply:SetVampirePrime(false)
@@ -243,35 +252,47 @@ function SWEP:DoKill()
     dmginfo:SetDamagePosition(attacker:GetPos())
     self.TargetEntity:TakeDamageInfo(dmginfo)
 
+    self:DoHeal(true)
+    self:DropBones()
+
     -- Remove the body
     local rag = self.TargetEntity.server_ragdoll or self.TargetEntity:GetRagdollEntity()
     SafeRemoveEntity(rag)
 
-    self:DoHeal()
-    self:DropBones()
+    local amt = vampire_drain_credits:GetInt()
+    if amt > 0 then
+        LANG.Msg(attacker, "credit_all", { role = ROLE_STRINGS[ROLE_VAMPIRE], num = amt })
+        attacker:AddCredits(amt)
+    end
 
     -- Not actually an error, but it resets the things we want
     self:FireError()
 end
 
-function SWEP:DoHeal()
+function SWEP:DoHeal(living)
+    local vamoverheal = vampire_fang_overheal_living:GetInt()
+    if not living or vamoverheal < 0 then
+        vamoverheal = vampire_fang_overheal:GetInt()
+    end
+
     local vamheal = vampire_fang_heal:GetInt()
-    local vamoverheal = vampire_fang_overheal:GetInt()
     self:GetOwner():SetHealth(math.min(self:GetOwner():Health() + vamheal, self:GetOwner():GetMaxHealth() + vamoverheal))
 end
 
 function SWEP:UnfreezeTarget()
+    if CLIENT then return end
     local owner = self:GetOwner()
-    if not self:HasValidTarget() then return end
+    if not IsPlayer(self.TargetEntity) then return end
+
+    self:CancelUnfreeze(self.TargetEntity)
 
     -- Unfreeze the target immediately if there is no delay or no owner
     local delay = vampire_fang_unfreeze_delay:GetFloat()
     if delay <= 0 or not IsPlayer(owner) then
         self:DoUnfreeze()
     else
-        self:CancelUnfreeze(self.TargetEntity)
         timer.Create("VampUnfreezeDelay_" .. owner:Nick() .. "_" .. self.TargetEntity:Nick(), delay, 1, function()
-            if not self:HasValidTarget() then return end
+            if not IsPlayer(self.TargetEntity) then return end
             self:DoUnfreeze()
         end)
     end
@@ -344,7 +365,7 @@ function SWEP:Think()
         local tr = self:GetTraceEntity()
         if not self:GetOwner():KeyDown(IN_ATTACK) or tr.Entity ~= self.TargetEntity then
             -- Only allow doing the 1/2 progress actions if there are 2 actions enabled (e.g. drain and convert)
-            if self:CanConvert() and self:HasValidTarget() and not self.TargetEntity:IsVampire() then
+            if self:CanConvert() and IsPlayer(self.TargetEntity) and not self.TargetEntity:IsVampire() then
                 if self:GetState() == STATE_KILL then
                     self:DoKill()
                     return
@@ -359,7 +380,7 @@ function SWEP:Think()
         end
 
         -- If there is a target and they have been turned to a vampire by someone else, stop trying to drain them
-        if self:GetState() ~= STATE_EAT and (not self:HasValidTarget() or self.TargetEntity:IsVampire()) then
+        if self:GetState() ~= STATE_EAT and (not IsPlayer(self.TargetEntity) or self.TargetEntity:IsVampire()) then
             self:Error("DRAINING ABORTED")
             return
         end
@@ -382,8 +403,9 @@ function SWEP:Think()
                         self:DoKill()
                     end
                 else
-                    SafeRemoveEntity(self.TargetEntity)
+                    self:DropBones()
                     self:DoHeal()
+                    SafeRemoveEntity(self.TargetEntity)
 
                     -- Not actually an error, but it resets the things we want
                     self:FireError()

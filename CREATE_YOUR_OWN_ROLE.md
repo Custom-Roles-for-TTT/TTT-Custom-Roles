@@ -13,7 +13,9 @@
    1. [Credits](#Credits)
    1. [Health](#Health)
    1. [Role Activation](#Role-Activation)
+   1. [Role Selection](#Role-Selection)
    1. [Acting Like a Jester](#Acting-Like-a-Jester)
+   1. [Custom Spectator HUD](#Custom-Spectator-HUD)
    1. [Translations](#Translations)
    1. [Optional Rules](#Optional-Rules)
    1. [ConVars](#ConVars)
@@ -24,6 +26,7 @@
       1. [Round Summary Events](#Round-Summary-Events)
       1. [Round Result Message](#Round-Result-Message)
       1. [Full Win Condition Example](#Full-Win-Condition-Example)
+   1. [Tutorial Page](#Tutorial-Page)
    1. [Role Registration](#Role-Registration)
    1. [Final Block](#Final-Block)
    1. [Example File](#Example-File)
@@ -83,6 +86,7 @@ ROLE.startinghealth = nil
 ROLE.maxhealth = nil
 
 ROLE.isactive = nil
+ROLE.selectionpredicate = nil
 ROLE.shouldactlikejester = nil
 
 ROLE.translations = {}
@@ -278,6 +282,22 @@ end
 
 Once that is defined you can use `ply:IsRoleActive()` anywhere you need to check your role's activation state.
 
+### Role Selection
+
+Not all roles that are created should be selectable at all times. A perfect example of this is the Trickster role which is nearly useless on maps that don't have traitor traps and traitor buttons. The next line in our file lets us define a predicate function to decide whether a role should be selectable (both for initial spawn and for a role the Drunk can change into if `ttt_drunk_any_role` is enabled):
+
+```lua
+ROLE.selectionpredicate = nil
+```
+
+Our example Summoner doesn't have any selection requirements, but let's say for example's sake that it should behave like the Trickster and only spawn if there are traitor traps and traitor buttons on the map. To do that we define the predicate function which returns `true` to allow the role to be selected when the traps and buttons exist. It would look something like this: 
+
+```lua
+ROLE.selectionpredicate = function()
+    return #ents.FindByClass("ttt_traitor_button") > 0
+end
+```
+
 ### Acting Like a Jester
 
 The next part of the file will help you create a role that sometimes acts like a jester. The perfect example of this functionality is the clown role -- when they first spawn, they:
@@ -302,6 +322,86 @@ end
 ```
 
 Once that is defined you can use `ply:ShouldActLikeJester()` anywhere you need to check whether they should still act like a jester. Custom Roles for TTT will automatically use your defined function when doing damage calculations (damage taken and damage given) as well as role display in thinks like the radar and target ID (icon over the head, name and circle when looking at a player).
+
+### Custom Spectator HUD
+
+Some roles have features which are activated once the player dies, such as the phantom. In the phantom's case, they build up some amount of power over time and can use that power to use one of four different abilities against the player the killed them. While the power generation logic will be up to you to design and implement (you may want to look at the phantom code for reference), the spectator HUD display and action implementation have been made easier through the use of hooks and shared methods.
+
+This section of the guide will explain the pieces of the system which should make these kind of spectator HUDs easier and provide a proof-of-concept example with the summoner role.
+
+To implement a spectator HUD like the phantom has, you will need to create two hooks, one player method, and a series of translations and convars to control which powers are enabled and their costs. The translations and the `TTTSpectatorShowHUD` hook (which is what is used to render the spectator HUD itself) must be defined on the client. The convars and the `TTTSpectatorHUDKeyPress` hook (which is what is used to handle when a key is pressed by someone who has a spectator HUD shown) must be defined on the server. The `ROLE.shouldshowspectatorhud` method (which determines whether a player should currently be seeing a spectator HUD) should be defined on both client and server.
+
+Due to how inter-connected the pieces of this system are, we're not going to break them down into individual blocks in this guide like other sections do. Instead, we'll go over them in concept and then leave the implemented example below for you to peruse.
+
+For our example's sake we've taken the phantom implementation and removed half the powers to keep the code size relatively small. Going through the implementation, the `ROLE.shouldshowspectatorhud` function checks that the player (who is guaranteed to be a summoner, in this case) has the property that shows they should be seeing the spectator HUD. On the client side, we first initialize the translations used for the spectator HUD and then define the HUD itself using the `TTTSpectatorShowHUD` hook. Within that hook we prepare teh information required and call the shared `HUD:PaintPowersHUD` method which handles the rendering for us. The server side is similar, first we initialize the convars and sync the values as globals so they are available on the client. Then we use the `TTTSpectatorHUDKeyPress` hook to intercept key presses and define what action each keypress should result in. The [API](API.md) has more information about the specifics of these hooks and methods if you want to learn more. See below for the fully constructed example:
+
+```lua
+ROLE.shouldshowspectatorhud = function(ply)
+    if ply:GetNWBool("Haunting") then
+        return true
+    end
+end
+
+if CLIENT then
+    hook.Add("Initialize", "Summoner_Translations_Initialize", function()
+        LANG.AddToLanguage("english", "summoner_haunt_title", "WILLPOWER")
+        LANG.AddToLanguage("english", "summoner_haunt_jump", "SPACE: Jump (Cost: {num}%)")
+        LANG.AddToLanguage("english", "summoner_haunt_drop", "RIGHT CLICK: Drop (Cost: {num}%)")
+    end)
+
+    hook.Add("TTTSpectatorShowHUD", "Summoner_TTTSpectatorShowHUD", function(cli, tgt)
+        if not cli:IsSummoner() then return end
+
+        local L = LANG.GetUnsafeLanguageTable()
+        local willpower_colors = {
+            border = COLOR_WHITE,
+            background = Color(17, 115, 135, 222),
+            fill = Color(82, 226, 255, 255)
+        }
+        local powers = {
+            [L.summoner_haunt_jump] = GetGlobalInt("ttt_summoner_killer_haunt_jump_cost", 50),
+            [L.summoner_haunt_drop] = GetGlobalInt("ttt_summoner_killer_haunt_drop_cost", 75)
+        }
+        local max_power = GetGlobalInt("ttt_summoner_killer_haunt_power_max", 100)
+        local current_power = cli:GetNWInt("HauntingPower", 0)
+
+        HUD:PaintPowersHUD(powers, max_power, current_power, willpower_colors, L.summoner_haunt_title)
+    end)
+end
+
+if SERVER then
+    local summoner_killer_haunt_power_max = CreateConVar("ttt_summoner_killer_haunt_power_max", "100")
+    local summoner_killer_haunt_jump_cost = CreateConVar("ttt_summoner_killer_haunt_jump_cost", "50")
+    local summoner_killer_haunt_drop_cost = CreateConVar("ttt_summoner_killer_haunt_drop_cost", "75")
+
+    hook.Add("TTTSyncGlobals", "Summoner_TTTSyncGlobals", function()
+        SetGlobalInt("ttt_summoner_killer_haunt_power_max", summoner_killer_haunt_power_max:GetInt())
+        SetGlobalInt("ttt_summoner_killer_haunt_jump_cost", summoner_killer_haunt_jump_cost:GetInt())
+        SetGlobalInt("ttt_summoner_killer_haunt_drop_cost", summoner_killer_haunt_drop_cost:GetInt())
+    end)
+
+    hook.Add("TTTSpectatorHUDKeyPress", "Summoner_TTTSpectatorHUDKeyPress", function(ply, tgt, powers)
+        if ply:GetNWBool("Haunting", false) and IsValid(tgt) and tgt:Alive() and not tgt:IsSpec() then
+            powers[IN_ATTACK2] = {
+                start_command = "+menu",
+                end_command = "-menu",
+                time = 0.2,
+                cost = summoner_killer_haunt_drop_cost:GetInt()
+            }
+            powers[IN_JUMP] = {
+                start_command = "+jump",
+                end_command = "-jump",
+                time = 0.2,
+                cost = summoner_killer_haunt_jump_cost:GetInt()
+            }
+
+            return true, "HauntingPower"
+        end
+    end)
+end
+```
+
+*(NOTE: If your role is already using the `Initialize` and `TTTSyncGlobals` hooks elsewhere then consider merging the hooks together in your role file. If you don't want to do that, just be careful that the hook instance name (the 2nd parameter) is unique for each hook you add)*
 
 ### Translations
 
@@ -338,6 +438,8 @@ ROLE.translations = {
 
 *(Note: At the very least there should be an english version of every translation you add. The english translation will be used as the default if a translation is not available in the client's chosen language)*
 
+Once a translation is defined, it can be used in client-side code via `LANG.GetTranslation` (or `LANG.GetParamTranslation` if it requires parameters).
+
 ### Optional Rules
 
 There are a few options for roles that aren't covered in the template because they don't apply to every role. Add any of these that you want to apply to your role to the file.
@@ -346,7 +448,9 @@ There are a few options for roles that aren't covered in the template because th
 | --- | --- | --- |
 | `ROLE.canlootcredits` | Whether this role can loot credits from dead bodies. Automatically enabled if the role has a shop, but setting to `false` can make it so the role has a shop but cannot loot credits. Setting this to `true` will allow this role to loot credits regardless of whether they have a shop and will automatically create the `ttt_%NAMERAW%_credits_starting` convar. | 1.1.8 |
 | `ROLE.canusetraitorbuttons` | Whether this role can see and use traitor traps. Automatically enabled if the role is part of `ROLE_TEAM_TRAITOR`, but setting to `false` can make it so the role is a traitor that cannot use traitor traps. Setting to `true` will allow this role to use traitor traps regardless of their team association. | 1.1.8 |
-| `ROLE.shoulddelayshop` | Whether this role's shop purchases are delayed. Purchases will only be given to the player when `plymeta:GiveDelayedShopItems` is called by your own role logic. Enabling this feature will automatically create `ttt_%NAMERAW%_shop_active_only` and `ttt_%NAMERAW%_shop_delay` convars. Requires that the role has a shop and has role activation defined (see [Role Activation](#Role-Activation)) | 1.2.2 |
+| `ROLE.shoulddelayshop` | Whether this role's shop purchases are delayed. Purchases will only be given to the player when `plymeta:GiveDelayedShopItems` is called by your own role logic. Enabling this feature will automatically create `ttt_%NAMERAW%_shop_active_only` and `ttt_%NAMERAW%_shop_delay` convars. Requires that the role has a shop and has role activation defined (see [Role Activation](#Role-Activation)). | 1.2.2 |
+| `ROLE.shoulddelayannouncements` | Whether this role should delay announcements when they kill a player that shows a message (like phantom and parasite). Used for things like preventing the assassin's target update message from getting overlapped. | 1.2.7 |
+| `ROLE.haspassivewin` | Whether this role should not block another role from winning (like the old man). | 1.3.1 |
 
 The Summoner doesn't need these options to be set because it is `ROLE_TEAM_TRAITOR` and has a shop, but just for an example, here's what it would look like if we wanted to remove their credit looting and traitor trap abilities and delay their shop item delivery:
 
@@ -354,6 +458,28 @@ The Summoner doesn't need these options to be set because it is `ROLE_TEAM_TRAIT
 ROLE.canlootcredits = false
 ROLE.canusetraitorbuttons = false
 ROLE.shoulddelayshop = true
+```
+
+### Role Change Logic
+
+Sometimes a role has to handle the specific cases of when a role is initially assigned to a player (e.g. at the start of the round or when the drunk remembers what role they are) or when a role is stolen (e.g. by the bodysnatcher or the swapper). To make those situations handleable there are two different functions that can optionally be added to your role.
+
+The first function is called when a role is initially assigned to a player and can be used to set up some logic like the assignment of the assassin's first target. The function can be defined like this:
+
+```lua
+ROLE.onroleassigned = function(ply)
+    -- Do something with the 'ply', the player being assigned the role, here
+end
+```
+
+The other function that might be useful is called when someone takes the role from someone else. This can be used to transfer some part of the role state (such as an assassin's current target) to the new player. This function looks something like:
+
+```lua
+ROLE.moverolestate = function(source, target, keepOnSource)
+    -- In this function 'source' is the player whose state is being moved to 'target'
+    -- The 'keepOnSource' tells you whether the 'source' player should keep whatever information is being copied to 'target'
+    -- If 'keepOnSource' is 'false', that information should be removed from the 'source' player
+end
 ```
 
 ### ConVars
@@ -550,6 +676,8 @@ The `LANG.Msg` call is the one that sends the message to each client and tells t
 
 #### Full Win Condition Example
 
+As mentioned earlier, a good rule of thumb is if you are creating a role that is `ROLE_TEAM_JESTER` or `ROLE_TEAM_INDEPENDENT` then you will probably need a custom win condition. In the case of the Summoner none of this is required as it is `ROLE_TEAM_TRAITOR` and we want the summoner to win with the traitors, but it is left here as an example.
+
 If we piece together all the bits of code from the preivous sections it would come out looking something like this:
 
 ```lua
@@ -607,6 +735,41 @@ If we piece together all the bits of code from the preivous sections it would co
 
 Notice that we combined the two different `Initialize` hooks into one. That is not required but if you do decide to keep two hooks make sure you give them different identifiers.
 
+### Tutorial Page
+
+With every new role that is added, the amount of different possible features and abilities becomes even more difficult for the players to remember. To help in that regard we have created a dynamic tutorial system within the in-game F1 Help and Settings menu. The tutorial system only shows pages for the roles that are currently available and enabled on the server and allows role creators to dynamically define their role tutorial page. The intent of the role tutorial page is to provide a description of the functionality of the role and to dynamically update based on the current role configurations. Dynamically updating the role tutorial page allows server operators to configure the roles to their liking while avoiding the confusion of a static tutorial image not matching those configurations (as in past versions of Custom Roles for TTT).
+
+There are two different client-side hooks that can be used to define the tutorial page for your role:
+1. `TTTTutorialRolePage` - Used to render a completely custom page using the extensive panel and UI control system built into GMod.
+1. `TTTTutorialRoleText` - Used to provide the text to show for a role. This text can be HTML and will be rendered within a `<div>`.
+
+For our Summoner example, we're going to use the simpler `TTTTutorialRoleText` hook and return a simple string description of the role.
+
+```lua
+if CLIENT then
+    hook.Add("TTTTutorialRoleText", "SummonerTutorialRoleText", function(role, titleLabel, roleIcon)
+        if role == ROLE_SUMMONER then
+            return "The " .. ROLE_STRINGS[ROLE_SUMMONER] .. " is a member of the traitor team who can only purchase items that summon minions to fight for them."
+        end
+    end)
+end
+```
+
+*(Note: If you would like to make this information translateable, see the [Translations](#Translations) section of this document. )*
+
+For a more complex example, lets take the same string from before but change the phrase "traitor team" to be the color of the traitor team in TTT. To do that, we're going to use some fairly basic HTML instead of just raw text:
+
+```lua
+if CLIENT then
+    hook.Add("TTTTutorialRoleText", "SummonerTutorialRoleText", function(role, titleLabel, roleIcon)
+        if role == ROLE_SUMMONER then
+            local roleColor = ROLE_COLORS[ROLE_TRAITOR]
+            return "The " .. ROLE_STRINGS[ROLE_SUMMONER] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitor team</span> who can only purchase items that summon minions to fight for them."
+        end
+    end)
+end
+```
+
 ### Role Registration
 
 The next line simply tells CR for TTT to register your role and passes through all the relevent information. You do not need to edit this line. CR for TTT automatically defines an enumeration for your role, `ROLE_%NAMERAW%` as well as helper functions `Get%NAMERAW%`, `Is%NAMERAW%` and `IsActive%NAMERAW%` if you would like to use them to add extra logic for your role.
@@ -651,6 +814,15 @@ RegisterRole(ROLE)
 
 if SERVER then  
     AddCSLuaFile()
+end
+
+if CLIENT then
+   hook.Add("TTTTutorialRoleText", "SummonerTutorialRoleText", function(role, titleLabel, roleIcon)
+      if role == ROLE_SUMMONER then
+         local roleColor = ROLE_COLORS[ROLE_TRAITOR]
+         return "The " .. ROLE_STRINGS[ROLE_SUMMONER] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitor team</span> who can only purchase items that summon minions to fight for them."
+      end
+   end)
 end
 ```
 

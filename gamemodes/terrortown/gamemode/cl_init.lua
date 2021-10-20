@@ -44,15 +44,10 @@ include("cl_scoring_events.lua")
 include("cl_popups.lua")
 include("cl_equip.lua")
 include("cl_voice.lua")
+include("cl_roleweapons.lua")
 
 local traitor_vision = false
-local killer_vision = false
-local zombie_vision = false
-local vampire_vision = false
-local assassin_target_vision = false
 local jesters_visible_to_traitors = false
-local jesters_visible_to_monsters = false
-local jesters_visible_to_independents = false
 local vision_enabled = false
 
 local function AddRoleTranslations()
@@ -101,6 +96,7 @@ function GM:InitPostEntity()
     RunConsoleCommand("_ttt_request_rolelist")
 
     UpdateRoleStrings()
+    UpdateRoleColours()
 end
 
 function GM:DoCacheEnts()
@@ -202,19 +198,12 @@ local function ReceiveRole()
     client:SetRole(role)
 
     -- Update the local state
-    traitor_vision = GetGlobalBool("ttt_traitor_vision_enable")
-    killer_vision = GetGlobalBool("ttt_killer_vision_enable")
-    zombie_vision = GetGlobalBool("ttt_zombie_vision_enable")
-    vampire_vision = GetGlobalBool("ttt_vampire_vision_enable")
-    assassin_target_vision = GetGlobalBool("ttt_assassin_target_vision_enable")
-    jesters_visible_to_traitors = GetGlobalBool("ttt_jesters_visible_to_traitors")
-    jesters_visible_to_monsters = GetGlobalBool("ttt_jesters_visible_to_monsters")
-    jesters_visible_to_independents = GetGlobalBool("ttt_jesters_visible_to_independents")
+    traitor_vision = GetGlobalBool("ttt_traitor_vision_enable", false)
+    jesters_visible_to_traitors = GetGlobalBool("ttt_jesters_visible_to_traitors", false)
 
     -- Disable highlights on role change
     if vision_enabled then
         hook.Remove("PreDrawHalos", "AddPlayerHighlights")
-        hook.Remove("PreDrawHalos", "AddPlayerHighlights_Assassin")
         vision_enabled = false
     end
 
@@ -272,7 +261,6 @@ function GM:ClearClientState()
     client.last_id = nil
     client.radio = nil
     client.called_corpses = {}
-    client.revenger_lover_killers = {}
 
     VOICE.InitBattery()
 
@@ -368,14 +356,14 @@ function GM:Think()
     local client = LocalPlayer()
     for _, v in pairs(player.GetAll()) do
         if v:Alive() and not v:IsSpec() then
-            local shouldSmoke = (v:GetNWBool("Haunted", false) and GetGlobalBool("ttt_phantom_killer_smoke")) or v:GetNWBool("KillerSmoke", false)
+            hook.Run("TTTPlayerAliveClientThink", client, v)
+
             local smokeColor = COLOR_BLACK
             local smokeParticle = "particle/snow.vmt"
             local smokeOffset = Vector(0, 0, 30)
 
             -- Allow other addons to manipulate whether and how players smoke
-            local newShouldSmoke, newSmokeColor, newSmokeParticle, newSmokeOffset = hook.Run("TTTShouldPlayerSmoke", v, client, shouldSmoke, smokeColor, smokeParticle, smokeOffset)
-            if type(newShouldSmoke) == "boolean" then shouldSmoke = newShouldSmoke end
+            local shouldSmoke, newSmokeColor, newSmokeParticle, newSmokeOffset = hook.Run("TTTShouldPlayerSmoke", v, client, false, smokeColor, smokeParticle, smokeOffset)
             if newSmokeColor then smokeColor = newSmokeColor end
             if newSmokeParticle then smokeParticle = newSmokeParticle end
             if newSmokeOffset then smokeOffset = newSmokeOffset end
@@ -408,72 +396,6 @@ function GM:Think()
                     v.SmokeEmitter = nil
                 end
             end
-            if v:IsPaladin() then
-                if not v.AuraEmitter then v.AuraEmitter = ParticleEmitter(v:GetPos()) end
-                if not v.AuraNextPart then v.AuraNextPart = CurTime() end
-                if not v.AuraDir then v.AuraDir = 0 end
-                local pos = v:GetPos() + Vector(0, 0, 30)
-                if v.AuraNextPart < CurTime() then
-                    if client:GetPos():Distance(pos) <= 3000 then
-                        v.AuraEmitter:SetPos(pos)
-                        v.AuraNextPart = CurTime() + 0.02
-                        v.AuraDir = v.AuraDir + 0.05
-                        local radius = GetGlobalFloat("ttt_paladin_aura_radius", 262.45)
-                        local vec = Vector(math.sin(v.AuraDir) * radius, math.cos(v.AuraDir) * radius, 10)
-                        local particle = v.AuraEmitter:Add("particle/shield.vmt", v:GetPos() + vec)
-                        particle:SetVelocity(Vector(0, 0, 20))
-                        particle:SetDieTime(1)
-                        particle:SetStartAlpha(200)
-                        particle:SetEndAlpha(0)
-                        particle:SetStartSize(3)
-                        particle:SetEndSize(2)
-                        particle:SetRoll(0)
-                        particle:SetRollDelta(0)
-                        particle:SetColor(ROLE_COLORS[ROLE_PALADIN].r, ROLE_COLORS[ROLE_PALADIN].g, ROLE_COLORS[ROLE_PALADIN].b)
-                    end
-                end
-            else
-                if v.AuraEmitter then
-                    v.AuraEmitter:Finish()
-                    v.AuraEmitter = nil
-                end
-            end
-        end
-    end
-    if client:IsActiveMedium() then
-        for _, ent in pairs(ents.GetAll()) do
-            if ent:GetNWBool("MediumSpirit", false) then
-                ent:SetNoDraw(true)
-                ent:SetRenderMode(RENDERMODE_NONE)
-                ent:SetNotSolid(true)
-                ent:DrawShadow(false)
-                if not ent.WispEmitter then ent.WispEmitter = ParticleEmitter(ent:GetPos()) end
-                if not ent.WispNextPart then ent.WispNextPart = CurTime() end
-                local pos = ent:GetPos() + Vector(0, 0, 64)
-                if ent.WispNextPart < CurTime() then
-                    if client:GetPos():Distance(pos) <= 3000 then
-                        ent.WispEmitter:SetPos(pos)
-                        ent.WispNextPart = CurTime() + math.Rand(0.003, 0.01)
-                        local particle = ent.WispEmitter:Add("particle/wisp.vmt", pos)
-                        particle:SetVelocity(Vector(0, 0, 30))
-                        particle:SetDieTime(1)
-                        particle:SetStartAlpha(math.random(150, 220))
-                        particle:SetEndAlpha(0)
-                        local size = math.random(4, 7)
-                        particle:SetStartSize(size)
-                        particle:SetEndSize(1)
-                        particle:SetRoll(math.Rand(0, math.pi))
-                        particle:SetRollDelta(0)
-                        local col = ent:GetNWVector("SpiritColor", Vector(1, 1, 1))
-                        particle:SetColor(col.x * 255, col.y * 255, col.z * 255)
-                    end
-                end
-            else
-                if ent.WispEmitter then
-                    ent.WispEmitter:Finish()
-                    ent.WispEmitter = nil
-                end
-            end
         end
     end
 end
@@ -484,7 +406,7 @@ function GM:Tick()
         if client:Alive() and client:Team() ~= TEAM_SPEC then
             WSWITCH:Think()
             RADIO:StoreTarget()
-            if traitor_vision or killer_vision or zombie_vision or vampire_vision or assassin_target_vision then
+            if traitor_vision then
                 HandleRoleHighlights(client)
             end
         end
@@ -566,66 +488,6 @@ function GM:OnEntityCreated(ent)
 
     return self.BaseClass.OnEntityCreated(self, ent)
 end
-
--- Clown and Jester confetti
-local confetti = Material("confetti.png")
-local function Celebrate(ply, sound, show_confetti)
-    if not IsValid(ply) then return end
-    if sound ~= nil then
-        ply:EmitSound(sound)
-    end
-
-    if not show_confetti then return end
-
-    local pos = ply:GetPos() + Vector(0, 0, ply:OBBMaxs().z)
-    if ply.GetShootPos then
-        pos = ply:GetShootPos()
-    end
-
-    local velMax = 200
-    local gravMax = 50
-    local gravity = Vector(math.random(-gravMax, gravMax), math.random(-gravMax, gravMax), math.random(-gravMax, 0))
-
-    --Handles particles
-    local emitter = ParticleEmitter(pos, true)
-    for _ = 1, 150 do
-        local p = emitter:Add(confetti, pos)
-        p:SetStartSize(math.random(6, 10))
-        p:SetEndSize(0)
-        p:SetAngles(Angle(math.random(0, 360), math.random(0, 360), math.random(0, 360)))
-        p:SetAngleVelocity(Angle(math.random(5, 50), math.random(5, 50), math.random(5, 50)))
-        p:SetVelocity(Vector(math.random(-velMax, velMax), math.random(-velMax, velMax), math.random(-velMax, velMax)))
-        p:SetColor(255, 255, 255)
-        p:SetDieTime(math.random(4, 7))
-        p:SetGravity(gravity)
-        p:SetAirResistance(125)
-    end
-    emitter:Finish()
-end
-
-net.Receive("TTT_JesterDeathCelebration", function()
-    local ent = net.ReadEntity()
-    local play_sound = net.ReadBool()
-    local show_confetti = net.ReadBool()
-
-    local sound = nil
-    if play_sound then
-        sound = "birthday.wav"
-    end
-
-    Celebrate(ent, sound, show_confetti)
-end)
-
-net.Receive("TTT_ClownActivate", function()
-    local ent = net.ReadEntity()
-    Celebrate(ent, "clown.wav", true)
-
-    local name = ent:Nick()
-    CLSCORE:AddEvent({
-        id = EVENT_CLOWNACTIVE,
-        ply = name
-    })
-end)
 
 -- Hit Markers
 -- Creator: Exho
@@ -937,7 +799,7 @@ end)
 
 -- Player highlights
 
-function OnPlayerHighlightEnabled(client, alliedRoles, showJesters, hideEnemies, traitorAllies)
+function OnPlayerHighlightEnabled(client, alliedRoles, showJesters, hideEnemies, traitorAllies, onlyShowEnemies)
     if GetRoundState() ~= ROUND_ACTIVE then return end
     local enemies = {}
     local friends = {}
@@ -945,9 +807,13 @@ function OnPlayerHighlightEnabled(client, alliedRoles, showJesters, hideEnemies,
     for _, v in pairs(player.GetAll()) do
         if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= client then
             if showJesters and v:ShouldActLikeJester() then
-                table.insert(jesters, v)
+                if not onlyShowEnemies then
+                    table.insert(jesters, v)
+                end
             elseif table.HasValue(alliedRoles, v:GetRole()) then
-                table.insert(friends, v)
+                if not onlyShowEnemies then
+                    table.insert(friends, v)
+                end
             -- Don't even track enemies if this role can't see them
             elseif not hideEnemies then
                 table.insert(enemies, v)
@@ -976,11 +842,6 @@ function OnPlayerHighlightEnabled(client, alliedRoles, showJesters, hideEnemies,
     halo.Add(jesters, ROLE_COLORS[ROLE_JESTER], 1, 1, 1, true, true)
 end
 
-local function EnableKillerHighlights(client)
-    hook.Add("PreDrawHalos", "AddPlayerHighlights", function()
-        OnPlayerHighlightEnabled(client, {ROLE_KILLER}, true, false, false)
-    end)
-end
 local function EnableTraitorHighlights(client)
     hook.Add("PreDrawHalos", "AddPlayerHighlights", function()
         -- Start with the list of traitors
@@ -991,111 +852,10 @@ local function EnableTraitorHighlights(client)
         OnPlayerHighlightEnabled(client, allies, jesters_visible_to_traitors, true, true)
     end)
 end
-local function EnableAssassinTargetHighlights(client)
-    hook.Add("PreDrawHalos", "AddPlayerHighlights_Assassin", function()
-        local target_nick = client:GetNWString("AssassinTarget", "")
-        if not target_nick or target_nick:len() == 0 then return end
-
-        local target = nil
-        for _, v in pairs(player.GetAll()) do
-            if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= client and v:Nick() == target_nick then
-                target = v
-                break
-            end
-        end
-
-        if not target then return end
-
-        -- Highlight the assassin's target as a different color than their friends
-        halo.Add({target}, ROLE_COLORS[ROLE_INNOCENT], 1, 1, 1, true, true)
-    end)
-end
-local function EnableZombieHighlights(client)
-    hook.Add("PreDrawHalos", "AddPlayerHighlights", function()
-        local hasClaws = client.GetActiveWeapon and IsValid(client:GetActiveWeapon()) and client:GetActiveWeapon():GetClass() == "weapon_zom_claws"
-        local hideEnemies = not zombie_vision or not hasClaws
-        local allies = {}
-        local traitorAllies = TRAITOR_ROLES[ROLE_ZOMBIE]
-        local showJesters = false
-        -- If zombies are traitors and traitor vision or zombie vision is enabled then add all the traitor roles as allies
-        if (traitor_vision or zombie_vision) and traitorAllies then
-            allies = GetTeamRoles(TRAITOR_ROLES)
-            showJesters = jesters_visible_to_traitors
-        -- If zombie vision is enabled, add the allied roles
-        elseif zombie_vision then
-            -- If they are monsters, ally with Zombies and monster-Vampires
-            if MONSTER_ROLES[ROLE_ZOMBIE] then
-                allies = {ROLE_ZOMBIE}
-                if MONSTER_ROLES[ROLE_VAMPIRE] then
-                    table.insert(allies, ROLE_VAMPIRE)
-                end
-                showJesters = jesters_visible_to_monsters
-            else
-                allies = GetTeamRoles(INDEPENDENT_ROLES)
-                showJesters = jesters_visible_to_independents
-            end
-        end
-
-        OnPlayerHighlightEnabled(client, allies, showJesters, hideEnemies, traitorAllies)
-    end)
-end
-local function EnableVampireHighlights(client)
-    hook.Add("PreDrawHalos", "AddPlayerHighlights", function()
-        local hasFangs = client.GetActiveWeapon and IsValid(client:GetActiveWeapon()) and client:GetActiveWeapon():GetClass() == "weapon_vam_fangs"
-        local hideEnemies = not vampire_vision or not hasFangs
-        local allies = {}
-        local traitorAllies = TRAITOR_ROLES[ROLE_VAMPIRE]
-        local showJesters = false
-        -- If vampires are traitors and traitor vision or vampire vision is enabled then add all the traitor roles as allies
-        if (traitor_vision or vampire_vision) and traitorAllies then
-            allies = GetTeamRoles(TRAITOR_ROLES)
-            showJesters = jesters_visible_to_traitors
-        -- If vampire vision is enabled, add the allied roles
-        elseif vampire_vision then
-            -- If they are monsters, ally with Vampires and monster-Zombies
-            if MONSTER_ROLES[ROLE_VAMPIRE] then
-                allies = {ROLE_VAMPIRE}
-                if MONSTER_ROLES[ROLE_ZOMBIE] then
-                    table.insert(allies, ROLE_ZOMBIE)
-                end
-                showJesters = jesters_visible_to_monsters
-            else
-                allies = GetTeamRoles(INDEPENDENT_ROLES)
-                showJesters = jesters_visible_to_independents
-            end
-        end
-
-        OnPlayerHighlightEnabled(client, allies, showJesters, hideEnemies, traitorAllies)
-    end)
-end
-
 function HandleRoleHighlights(client)
     if not IsValid(client) then return end
 
-    if client:IsKiller() and killer_vision then
-        if not vision_enabled then
-            EnableKillerHighlights(client)
-            vision_enabled = true
-        end
-    elseif client:IsZombie() and (zombie_vision or (traitor_vision and TRAITOR_ROLES[ROLE_ZOMBIE])) then
-        if not vision_enabled then
-            EnableZombieHighlights(client)
-            vision_enabled = true
-        end
-    elseif client:IsVampire() and (vampire_vision or (traitor_vision and TRAITOR_ROLES[ROLE_VAMPIRE])) then
-        if not vision_enabled then
-            EnableVampireHighlights(client)
-            vision_enabled = true
-        end
-    elseif client:IsAssassin() and assassin_target_vision then
-        if not vision_enabled then
-            if traitor_vision then
-                EnableTraitorHighlights(client)
-            end
-            EnableAssassinTargetHighlights(client)
-            vision_enabled = true
-        end
-    elseif client:IsTraitorTeam() and traitor_vision then
+    if client:IsTraitorTeam() and traitor_vision then
         if not vision_enabled then
             EnableTraitorHighlights(client)
             vision_enabled = true
@@ -1106,7 +866,6 @@ function HandleRoleHighlights(client)
 
     if not vision_enabled then
         hook.Remove("PreDrawHalos", "AddPlayerHighlights")
-        hook.Remove("PreDrawHalos", "AddPlayerHighlights_Assassin")
     end
 end
 

@@ -119,29 +119,13 @@ local function clear_role_effects(ply)
     SetRoleHealth(ply)
 end
 
-local function give_role_weapon(ply, role)
-    -- Handle the killer specially
-    if role == ROLE_KILLER then
-        if GetConVar("ttt_killer_crowbar_enabled"):GetBool() then
-            ply:StripWeapon("weapon_zm_improvised")
-            ply:Give("weapon_kil_crowbar")
-        end
-        if GetConVar("ttt_killer_knife_enabled"):GetBool() then
-            ply:Give("weapon_kil_knife")
-        end
-        return
-    end
-
-    -- Give loadout weapons
-    hook.Run("PlayerLoadout", ply)
-end
-
 for role = 0, ROLE_MAX do
     local rolestring = ROLE_STRINGS_RAW[role]
     concommand.Add("ttt_force_" .. rolestring, function(ply)
         ply:SetRoleAndBroadcast(role)
         clear_role_effects(ply)
-        give_role_weapon(ply, role)
+        -- Give loadout weapons
+        hook.Run("PlayerLoadout", ply)
         SendFullStateUpdate()
     end, nil, nil, FCVAR_CHEAT)
 end

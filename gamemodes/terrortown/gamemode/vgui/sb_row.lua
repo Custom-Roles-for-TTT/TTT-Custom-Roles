@@ -3,7 +3,6 @@
 include("sb_info.lua")
 
 local GetTranslation = LANG.GetTranslation
-local GetPTranslation = LANG.GetParamTranslation
 
 SB_ROW_HEIGHT = 24 --16
 
@@ -113,7 +112,7 @@ function GM:TTTScoreboardRowColorForPlayer(ply)
 
     if ply:GetDetectiveLike() then
         return ply:GetRole()
-    elseif ply:IsClown() and ply:GetNWBool("KillerClownActive", false) then
+    elseif ply:IsClown() and ply:IsRoleActive() then
         return ROLE_CLOWN
     end
 
@@ -203,11 +202,11 @@ function PANEL:Paint(width, height)
         -- Swap the deputy/impersonator icons depending on which settings are enabled
         if ply:IsDetectiveLike() and not ply:IsDetectiveTeam() then
             if client:IsTraitorTeam() and ply:IsImpersonator() then
-                if GetGlobalBool("ttt_impersonator_use_detective_icon", false) then
+                if GetGlobalBool("ttt_impersonator_use_detective_icon", true) then
                     role = ROLE_DETECTIVE
                 end
                 color = ROLE_COLORS_SCOREBOARD[ROLE_IMPERSONATOR]
-            elseif GetGlobalBool("ttt_deputy_use_detective_icon", false) then
+            elseif GetGlobalBool("ttt_deputy_use_detective_icon", true) then
                 role = ROLE_DETECTIVE
             else
                 role = ROLE_DEPUTY
@@ -233,16 +232,8 @@ function PANEL:Paint(width, height)
         self.sresult:SetVisible(false)
     end
 
-    if GetRoundState() >= ROUND_ACTIVE then
-        if client:IsRevenger() and ply:SteamID64() == client:GetNWString("RevengerLover", "") then
-            DrawFlashingBorder(width, ROLE_REVENGER)
-        elseif client:IsAssassin() and ply:Nick() == client:GetNWString("AssassinTarget", "") then
-            DrawFlashingBorder(width, ROLE_ASSASSIN)
-        elseif client:IsTraitorTeam() and ply:GetNWBool("Infected", false) then
-            DrawFlashingBorder(width, ROLE_PARASITE)
-        elseif flash_role and flash_role > ROLE_NONE and flash_role <= ROLE_MAX then
-            DrawFlashingBorder(width, flash_role)
-        end
+    if GetRoundState() >= ROUND_ACTIVE and flash_role and flash_role > ROLE_NONE and flash_role <= ROLE_MAX then
+        DrawFlashingBorder(width, flash_role)
     end
 
     if ply == client then
@@ -305,38 +296,6 @@ function PANEL:UpdatePlayerData()
     local client = LocalPlayer()
     self.nick:SetText(ply:Nick())
     if GetRoundState() >= ROUND_ACTIVE then
-        if client:IsRevenger() and ply:SteamID64() == client:GetNWString("RevengerLover", "") then
-            self.nick:SetText(ply:Nick() .. " (" .. GetTranslation("target_revenger_lover") .. ")")
-        elseif client:IsTraitorTeam() then
-            local infected = ply:GetNWBool("Infected", false)
-
-            if client:IsAssassin() and ply:Nick() == client:GetNWString("AssassinTarget", "") then
-                local text = " ("
-                if infected then
-                    text = text .. GetTranslation("target_infected") .. " | "
-                end
-                text = text .. GetTranslation("target_assassin_target") .. ")"
-                self.nick:SetText(ply:Nick() .. text)
-            else
-                local updated = false
-                for _, v in pairs(player.GetAll()) do
-                    if ply:Nick() == v:GetNWString("AssassinTarget", "") and v:Alive() and not v:IsSpec() then
-                        local text = " ("
-                        if infected then
-                            text = text .. GetTranslation("target_infected") .. " | "
-                        end
-                        text = text .. GetPTranslation("target_assassin_target_team", { player = v:Nick() }) .. ")"
-                        self.nick:SetText(ply:Nick() .. text)
-                        updated = true
-                    end
-                end
-
-                if not updated and infected then
-                    self.nick:SetText(ply:Nick() .. " (" .. GetTranslation("target_infected") .. ")")
-                end
-            end
-        end
-
         local nick_override = hook.Run("TTTScoreboardPlayerName", ply, client, self.nick:GetText())
         if nick_override then self.nick:SetText(nick_override) end
     end

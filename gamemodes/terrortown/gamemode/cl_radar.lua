@@ -1,7 +1,6 @@
 -- Traitor radar rendering
 
 local surface = surface
-local player = player
 local math = math
 
 RADAR = {}
@@ -17,8 +16,6 @@ RADAR.samples_count = 0
 
 RADAR.called_corpses = {}
 RADAR.teleport_marks = {}
-
-RADAR.revenger_lover_killers = {}
 
 function RADAR:EndScan()
     self.enable = false
@@ -62,7 +59,7 @@ function RADAR.Bought(is_item, id)
 end
 hook.Add("TTTBoughtItem", "RadarBoughtItem", RADAR.Bought)
 
-local function DrawTarget(tgt, size, offset, no_shrink)
+function RADAR:DrawTarget(tgt, size, offset, no_shrink)
     local scrpos = tgt.pos:ToScreen() -- sweet
     local sz = (IsOffScreen(scrpos) and (not no_shrink)) and size / 2 or size
 
@@ -105,7 +102,6 @@ local c4warn = surface.GetTextureID("vgui/ttt/icon_c4warn")
 local sample_scan = surface.GetTextureID("vgui/ttt/sample_scan")
 local beacon_back = surface.GetTextureID("vgui/ttt/beacon_back")
 local beacon_det = surface.GetTextureID("vgui/ttt/beacon_det")
-local beacon_rev = surface.GetTextureID("vgui/ttt/beacon_rev")
 local tele_mark = surface.GetTextureID("vgui/ttt/tele_mark")
 
 local GetPTranslation = LANG.GetParamTranslation
@@ -125,7 +121,7 @@ function RADAR:Draw(client)
         surface.SetDrawColor(255, 255, 255, 200)
 
         for _, bomb in pairs(self.bombs) do
-            DrawTarget(bomb, 24, 0, true)
+            self:DrawTarget(bomb, 24, 0, true)
         end
     end
 
@@ -136,7 +132,7 @@ function RADAR:Draw(client)
         surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_DETECTIVE])
 
         for _, corpse in pairs(self.called_corpses) do
-            DrawTarget(corpse, 16, 0.5)
+            self:DrawTarget(corpse, 16, 0.5)
         end
 
         surface.SetTexture(beacon_det)
@@ -144,7 +140,7 @@ function RADAR:Draw(client)
         surface.SetDrawColor(255, 255, 255, 255)
 
         for _, corpse in pairs(self.called_corpses) do
-            DrawTarget(corpse, 16, 0.5)
+            self:DrawTarget(corpse, 16, 0.5)
         end
     end
 
@@ -155,7 +151,7 @@ function RADAR:Draw(client)
         surface.SetDrawColor(255, 255, 255, 230)
 
         for _, mark in pairs(self.teleport_marks) do
-            DrawTarget(mark, 16, 0.5)
+            self:DrawTarget(mark, 16, 0.5)
         end
     end
 
@@ -166,28 +162,11 @@ function RADAR:Draw(client)
         surface.SetDrawColor(255, 255, 255, 240)
 
         for _, sample in pairs(self.samples) do
-            DrawTarget(sample, 16, 0.5, true)
+            self:DrawTarget(sample, 16, 0.5, true)
         end
     end
 
-    -- Revenger lover killer
-    if client:IsActiveRevenger() and #self.revenger_lover_killers then
-        surface.SetTexture(beacon_back)
-        surface.SetTextColor(0, 0, 0, 0)
-        surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_REVENGER])
-
-        for _, target in pairs(self.revenger_lover_killers) do
-            DrawTarget(target, 16, 0.5)
-        end
-
-        surface.SetTexture(beacon_rev)
-        surface.SetTextColor(255, 255, 255, 255)
-        surface.SetDrawColor(255, 255, 255, 255)
-
-        for _, target in pairs(self.revenger_lover_killers) do
-            DrawTarget(target, 16, 0.5)
-        end
-    end
+    hook.Run("TTTRadarRender", client)
 
     -- Player radar
     if not self.enable then return end
@@ -252,7 +231,7 @@ function RADAR:Draw(client)
             if color and not hidden then
                 surface.SetDrawColor(color)
                 surface.SetTextColor(color)
-                DrawTarget(tgt, 24, 0)
+                self:DrawTarget(tgt, 24, 0)
             end
         end
     end
@@ -356,32 +335,6 @@ local function ReceiveRadarScan()
     timer.Create("radartimeout", RADAR.duration + 1, 1, function() RADAR:Timeout() end)
 end
 net.Receive("TTT_Radar", ReceiveRadarScan)
-
-local beep_success = Sound("buttons/blip2.wav")
-local function SetRevengerLoverKillerPosition()
-    local sid = LocalPlayer():GetNWString("RevengerKiller", "")
-    local attacker = player.GetBySteamID64(sid)
-    if IsPlayer(attacker) and attacker:IsActive() then
-        RADAR.revenger_lover_killers = {
-            { pos = attacker:LocalToWorld(attacker:OBBCenter()) }
-        }
-        if LocalPlayer():IsActive() then surface.PlaySound(beep_success) end
-    else
-        RADAR.revenger_lover_killers = {}
-    end
-end
-
-local function UpdateRevengerLoverKiller()
-    if timer.Exists("updaterevengerloverkiller") then timer.Remove("updaterevengerloverkiller") end
-    local active = net.ReadBool()
-    if active then
-        SetRevengerLoverKillerPosition()
-        timer.Create("updaterevengerloverkiller", GetGlobalInt("ttt_revenger_radar_timer", 15), 0, SetRevengerLoverKillerPosition)
-    else
-        RADAR.revenger_lover_killers = {}
-    end
-end
-net.Receive("TTT_RevengerLoverKillerRadar", UpdateRevengerLoverKiller)
 
 local GetTranslation = LANG.GetTranslation
 function RADAR.CreateMenu(parent, frame)

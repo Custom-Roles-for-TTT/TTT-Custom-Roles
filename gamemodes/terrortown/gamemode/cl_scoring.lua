@@ -98,141 +98,11 @@ local function FitNicknameLabel(nicklbl, maxwidth, getstring, args)
     end
 end
 
-net.Receive("TTT_Hypnotised", function(len)
-    local vicname = net.ReadString()
-    local vicsid = net.ReadString()
-    CLSCORE:AddEvent({
-        id = EVENT_HYPNOTISED,
-        vic = vicname,
-        sid64 = vicsid,
-        bonus = 1
-    })
-end)
-
 net.Receive("TTT_Defibrillated", function(len)
     local name = net.ReadString()
     CLSCORE:AddEvent({
         id = EVENT_DEFIBRILLATED,
         vic = name
-    })
-end)
-
-net.Receive("TTT_SwapperSwapped", function(len)
-    local victim = net.ReadString()
-    local attacker = net.ReadString()
-    local vicsid = net.ReadString()
-    CLSCORE:AddEvent({
-        id = EVENT_SWAPPER,
-        vic = victim,
-        att = attacker,
-        sid64 = vicsid,
-        bonus = 2
-    })
-end)
-
-net.Receive("TTT_BeggarConverted", function(len)
-    local victim = net.ReadString()
-    local attacker = net.ReadString()
-    local team = net.ReadString()
-    local vicsid = net.ReadString()
-    CLSCORE:AddEvent({
-        id = EVENT_BEGGARCONVERTED,
-        vic = victim,
-        att = attacker,
-        team = team,
-        sid64 = vicsid,
-        bonus = 2
-    })
-end)
-
-net.Receive("TTT_BeggarKilled", function(len)
-    local victim = net.ReadString()
-    local attacker = net.ReadString()
-    local delay = net.ReadUInt(8)
-    CLSCORE:AddEvent({
-        id = EVENT_BEGGARKILLED,
-        vic = victim,
-        att = attacker,
-        delay = delay
-    })
-end)
-
-net.Receive("TTT_Promotion", function(len)
-    local name = net.ReadString()
-    CLSCORE:AddEvent({
-        id = EVENT_PROMOTION,
-        ply = name
-    })
-end)
-
-net.Receive("TTT_DrunkSober", function(len)
-    local name = net.ReadString()
-    local team = net.ReadString()
-    CLSCORE:AddEvent({
-        id = EVENT_DRUNKSOBER,
-        ply = name,
-        team = team
-    })
-end)
-
-net.Receive("TTT_PhantomHaunt", function(len)
-    local victim = net.ReadString()
-    local attacker = net.ReadString()
-    CLSCORE:AddEvent({
-        id = EVENT_HAUNT,
-        vic = victim,
-        att = attacker
-    })
-end)
-
-net.Receive("TTT_Zombified", function(len)
-    local name = net.ReadString()
-    CLSCORE:AddEvent({
-        id = EVENT_ZOMBIFIED,
-        vic = name
-    })
-end)
-
-net.Receive("TTT_Vampified", function(len)
-    local name = net.ReadString()
-    CLSCORE:AddEvent({
-        id = EVENT_VAMPIFIED,
-        vic = name
-    })
-end)
-
-net.Receive("TTT_VampirePrimeDeath", function(len)
-    local mode = net.ReadUInt(4)
-    local name = net.ReadString()
-    CLSCORE:AddEvent({
-        id = EVENT_VAMPPRIME_DEATH,
-        mode = mode,
-        prime = name
-    })
-end)
-
-net.Receive("TTT_ScoreBodysnatch", function(len)
-    local victim = net.ReadString()
-    local attacker = net.ReadString()
-    local role = net.ReadString()
-    local vicsid = net.ReadString()
-    CLSCORE:AddEvent({
-        id = EVENT_BODYSNATCH,
-        vic = victim,
-        att = attacker,
-        role = role,
-        sid64 = vicsid,
-        bonus = 2
-    })
-end)
-
-net.Receive("TTT_ParasiteInfect", function(len)
-    local victim = net.ReadString()
-    local attacker = net.ReadString()
-    CLSCORE:AddEvent({
-        id = EVENT_INFECT,
-        vic = victim,
-        att = attacker
     })
 end)
 
@@ -252,17 +122,6 @@ net.Receive("TTT_ResetScoreboard", function(len)
 end)
 
 local secondary_win_role = nil
-net.Receive("TTT_UpdateOldManWins", function()
-    -- Log the win event with an offset to force it to the end
-    if net.ReadBool() then
-        secondary_win_role = ROLE_OLDMAN
-        CLSCORE:AddEvent({
-            id = EVENT_FINISH,
-            win = WIN_OLDMAN
-        }, 1)
-    end
-end)
-
 net.Receive("TTT_SpawnedPlayers", function(len)
     local name = net.ReadString()
     local role = net.ReadInt(8)
@@ -379,11 +238,6 @@ local function GetWinTitle(wintype)
     local wintitles = {
         [WIN_INNOCENT] = { txt = "hilite_win_role_plural", params = { role = ROLE_STRINGS_PLURAL[ROLE_INNOCENT]:upper() }, c = ROLE_COLORS[ROLE_INNOCENT] },
         [WIN_TRAITOR] = { txt = "hilite_win_role_plural", params = { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]:upper() }, c = ROLE_COLORS[ROLE_TRAITOR] },
-        [WIN_JESTER] = { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_JESTER]:upper() }, c = ROLE_COLORS[ROLE_JESTER] },
-        [WIN_CLOWN] = { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_CLOWN]:upper() }, c = ROLE_COLORS[ROLE_JESTER] },
-        [WIN_KILLER] = { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_KILLER]:upper() }, c = ROLE_COLORS[ROLE_KILLER] },
-        [WIN_ZOMBIE] = { txt = "hilite_win_role_plural", params = { role = ROLE_STRINGS_PLURAL[ROLE_ZOMBIE]:upper() }, c = ROLE_COLORS[ROLE_ZOMBIE] },
-        [WIN_VAMPIRE] = { txt = "hilite_win_role_plural", params = { role = ROLE_STRINGS_PLURAL[ROLE_VAMPIRE]:upper() }, c = ROLE_COLORS[ROLE_VAMPIRE] },
         [WIN_MONSTER] = { txt = "hilite_win_role_plural", params = { role = "MONSTERS" }, c = GetRoleTeamColor(ROLE_TEAM_MONSTER) }
     }
     local title = wintitles[wintype]
@@ -627,10 +481,8 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                         finalRole = startingRole
                     end
 
-                    -- Keep the original role icon for people converted to Zombie and Vampire or the Bodysnatcher
-                    if finalRole ~= ROLE_ZOMBIE and finalRole ~= ROLE_VAMPIRE and startingRole ~= ROLE_BODYSNATCHER then
-                        roleFileName = ROLE_STRINGS_SHORT[finalRole]
-                    end
+                    -- Update the icon to use the final role, in case it changed
+                    roleFileName = ROLE_STRINGS_SHORT[finalRole]
                     roleColor = ROLE_COLORS[finalRole]
                     if ply:IsInnocent() then
                         if ply:GetNWBool("WasBeggar", false) then
@@ -649,23 +501,15 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                     elseif ply:IsSwapper() then
                         swappedWith = ply:GetNWString("SwappedWith", "")
                     end
-
-                    if ply:GetNWBool("WasDrunk", false) then
-                        roleColor = ROLE_COLORS[ROLE_DRUNK]
-                    end
                 else
                     hasDisconnected = true
                 end
 
-                -- Group players in the summary by the team each player ended in...
+                -- Group players in the summary by the team each player ended in
                 local groupingRole = finalRole
-                -- ...unless that player ended as a converted monster in which case keep them with the team they started as
-                if finalRole == ROLE_ZOMBIE or finalRole == ROLE_VAMPIRE then
-                    groupingRole = startingRole
-                end
 
                 -- Allow developers to override role icon, grouping, and color
-                local roleFile, groupRole, iconColor, newName = hook.Run("TTTScoringSummaryRender", ply, roleFileName, groupingRole, roleColor, name)
+                local roleFile, groupRole, iconColor, newName = hook.Run("TTTScoringSummaryRender", ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
                 if roleFile then roleFileName = roleFile end
                 if groupRole then groupingRole = groupRole end
                 if iconColor then roleColor = iconColor end

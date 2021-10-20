@@ -3,16 +3,20 @@
 ## Table of Contents
 1. [Server Configurations](#Server-Configurations)
 1. [Role Weapon Shop](#Role-Weapon-Shop)
-   1. [Weapons](#Weapons)
-      1. [Adding Weapons](#Adding-Weapons)
-      1. [Removing Weapons](#Removing-Weapons)
-      1. [Bypassing Weapon Randomization](#Bypassing-Weapon-Randomization)
-      1. [Finding a Weapon's Class](#Finding-a-Weapons-Class)
-   1. [Equipment](#Equipment)
-      1. [Adding Equipment](#Adding-Equipment)
-      1. [Removing Equipment](#Removing-Equipment)
-      1. [Bypassing Equipment Randomization](#Bypassing-Equipment-Randomization)
-      1. [Finding an Equipment Item's Name](#Finding-an-Equipment-Items-Name)
+   1. [Configuration by UI](#Configuration-by-UI)
+       1. [Explanation](#Explanation)
+       1. [Example](#Example)
+   1. [Configuration by Files](#Configuration-by-Files)
+       1. [Weapons](#Weapons)
+          1. [Adding Weapons](#Adding-Weapons)
+          1. [Removing Weapons](#Removing-Weapons)
+          1. [Bypassing Weapon Randomization](#Bypassing-Weapon-Randomization)
+          1. [Finding a Weapon's Class](#Finding-a-Weapons-Class)
+       1. [Equipment](#Equipment)
+          1. [Adding Equipment](#Adding-Equipment)
+          1. [Removing Equipment](#Removing-Equipment)
+          1. [Bypassing Equipment Randomization](#Bypassing-Equipment-Randomization)
+          1. [Finding an Equipment Item's Name](#Finding-an-Equipment-Items-Name)
 1. [Renaming Roles](#Renaming-Roles)
 
 ## Server Configurations
@@ -150,7 +154,9 @@ ttt_deputy_impersonator_promote_any_death   0       // Whether deputy/impersonat
 ttt_hypnotist_credits_starting              1       // The number of credits a hypnotist should start with
 ttt_hypnotist_device_loadout                1       // Whether the hypnotist's defib should be given to them when they spawn. Server must be restarted for changes to take effect
 ttt_hypnotist_device_shop                   0       // Whether the hypnotist's defib should be purchasable in the shop. Server must be restarted for changes to take effect
+ttt_hypnotist_device_shop_rebuyable         0       // Whether the hypnotist's defib should be purchaseable multiple times (requires "ttt_hypnotist_device_shop" to be enabled). Server must be restarted for changes to take effect
 ttt_hypnotist_convert_detectives            0       // Whether to convert detectives and deputies (only if ttt_deputy_use_detective_icon is enabled) to impersonator instead of just a regular traitor. Does NOT convert detective team roles like paladin, medium, or tracker. Target will be automatically promoted to appear as a detective if appropriate
+ttt_hypnotist_device_time                   8       // The amount of time (in seconds) the hypnotist's device takes to use
 ttt_single_paramedic_hypnotist              0       // Whether only a single paramedic or hynotist should spawn in a round
 
 // Assassin
@@ -170,20 +176,25 @@ ttt_vampires_are_independent                0       // Whether vampires should b
 ttt_vampire_vision_enable                   0       // Whether vampires have their special vision highlights enabled
 ttt_vampire_drain_enable                    1       // Whether vampires have the ability to drain a living target's blood using their fangs
 ttt_vampire_drain_first                     0       // Whether vampires should drain a living target's blood first rather than converting first
+ttt_vampire_drain_credits                   0       // How many credits a vampire should get for draining a living target
 ttt_vampire_convert_enable                  0       // Whether vampires have the ability to convert living targets to a vampire thrall using their fangs
 ttt_vampire_show_target_icon                0       // Whether vampires have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect.
-ttt_vampire_damage_reduction                0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a vampire.
+ttt_vampire_damage_reduction                0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a vampire
 ttt_vampire_fang_timer                      5       // The amount of time fangs must be used to fully drain a target's blood
 ttt_vampire_fang_dead_timer                 0       // The amount of time fangs must be used to fully drain a dead target's blood. Set to 0 to use the same time as "ttt_vampire_fang_timer"
 ttt_vampire_fang_heal                       50      // The amount of health a vVampire will heal by when they fully drain a target's blood
 ttt_vampire_fang_overheal                   25      // The amount over the vampire's normal maximum health (e.g. 100 + this ConVar) that the vampire can heal to by drinking blood.
-ttt_vampire_prime_death_mode                0       // What to do when the prime vampire(s) (e.g. playters who spawn as vampires originally) are killed. 0 - Do nothing. 1 - Kill all vampire thralls (non-prime vampires). 2 - Revert all vampire thralls (non-prime vampires) to their original role.
-ttt_vampire_prime_only_convert              1       // Whether only prime vampires (e.g. players who spawn as vampire originally) are allowed to convert other players.
+ttt_vampire_fang_overheal_living            -1      // The amount of overheal (see "ttt_vampire_fang_overheal") to give if the vampire's target is living. Set to -1 to use the same amount as "ttt_vampire_fang_overheal" instead
+ttt_vampire_prime_death_mode                0       // What to do when the prime vampire(s) (e.g. playters who spawn as vampires originally) are killed. 0 - Do nothing. 1 - Kill all vampire thralls (non-prime vampires). 2 - Revert all vampire thralls (non-prime vampires) to their original role
+ttt_vampire_prime_only_convert              1       // Whether only prime vampires (e.g. players who spawn as vampire originally) are allowed to convert other players
+ttt_vampire_kill_credits                    1       // Whether the vampire receives credits when they kill another player
+ttt_vampire_loot_credits                    1       // Whether the vampire can loot credits from a dead player
 ttt_vampire_credits_starting                1       // The number of credits a vampire should start with
 
 // Quack
 ttt_quack_credits_starting                  1       // The number of credits a quack should start with
 ttt_quack_fake_cure_mode                    0       // How to handle using a fake parasite cure on someone who is not infected. 0 - Kill nobody (But use up the cure), 1 - Kill the person who uses the cure, 2 - Kill the person the cure is used on
+ttt_quack_fake_cure_time                    -1      // The amount of time (in seconds) the fake parasite cure takes to use. If set to -1, the ttt_parasite_cure_time value will be usd instead
 ttt_quack_phantom_cure                      0       // Whether to allow the quack to buy the phantom exorcism device which can remove a haunting phantom. Server must be restarted for changes to take effect
 ttt_single_doctor_quack                     0       // Whether only a single doctor or quack should spawn in a round
 
@@ -196,6 +207,7 @@ ttt_parasite_respawn_mode                   0       // The way in which the para
 ttt_parasite_respawn_health                 100     // The health on which the parasite respawns
 ttt_parasite_announce_infection             0       // Whether players are notified when they are infected with the parasite
 ttt_parasite_cure_mode                      2       // How to handle using a parasite cure on someone who is not infected. 0 - Kill nobody (But use up the cure), 1 - Kill the person who uses the cure, 2 - Kill the person the cure is used on
+ttt_parasite_cure_time                      3       // The amount of time (in seconds) the parasite cure takes to use
 ttt_parasite_credits_starting               1       // The number of credits a parasite should start with
 ttt_single_phantom_parasite                 0       // Whether only a single phantom or parasite should spawn in a round
 
@@ -220,6 +232,7 @@ ttt_phantom_killer_haunt_jump_cost          50      // The amount of power to sp
 ttt_phantom_killer_haunt_drop_cost          75      // The amount of power to spend when a phantom is making their killer drop their weapon via a haunting. Set to 0 to disable
 ttt_phantom_killer_haunt_attack_cost        100     // The amount of power to spend when a phantom is making their killer attack via a haunting. Set to 0 to disable
 ttt_phantom_killer_haunt_without_body       1       // Whether the phantom can use their powers after their body is destroyed
+ttt_phantom_cure_time                       3       // The amount of time (in seconds) the phantom exorcism device takes to use. See "ttt_traitor_phantom_cure" and "ttt_quack_phantom_cure" to enable the device itself
 
 // Revenger
 ttt_revenger_radar_timer                    15      // The amount of time between radar pings for the revenger's lover's killer
@@ -231,6 +244,9 @@ ttt_deputy_damage_penalty                   0       // Damage penalty that the d
 ttt_deputy_credits_starting                 0       // The number of credits a deputy should start with
 ttt_deputy_use_detective_icon               1       // Whether a promoted deputy should show the detective icon over their head instead of the deputy icon
 ttt_deputy_without_detective                0       // Whether a deputy can spawn without a detective in the round. Will automatically promote the deputy when they spawn
+ttt_deputy_shop_active_only                 1       // Whether the deputy's shop should be available only after they activate
+ttt_deputy_shop_delay                       0       // Whether the deputy's purchased shop items should be held until they activate
+ttt_deputy_activation_credits               0       // The number of credits to give the deputy when they are activated
 
 // Mercenary
 ttt_mercenary_credits_starting              1       // The number of credits a mercenary should start with
@@ -242,6 +258,7 @@ ttt_veteran_heal_bonus                      0       // The amount of bonus healt
 ttt_veteran_announce                        0       // Whether to announce to all other living players when the veteran is the last remaining innocent
 ttt_veteran_shop_active_only                1       // Whether the veteran's shop should be available only after they activate
 ttt_veteran_shop_delay                      0       // Whether the veteran's purchased shop items should be held until they activate
+ttt_veteran_activation_credits              0       // The number of credits to give the veteran when they are activated
 
 // Doctor
 ttt_doctor_credits_starting                 1       // The number of credits a doctor should start with
@@ -249,7 +266,9 @@ ttt_doctor_credits_starting                 1       // The number of credits a d
 // Paramedic
 ttt_paramedic_defib_as_innocent             1       // Whether the paramedic's defib brings back everyone as a vanilla innocent role
 ttt_paramedic_device_loadout                1       // Whether the paramedic's defib should be given to them when they spawn. Server must be restarted for changes to take effect
-ttt_paramedic_device_shop                   0       // Whether the paramedic's defib should be purchasable in the shop (requires ttt_shop_for_all to be enabled). Server must be restarted for changes to take effect
+ttt_paramedic_device_shop                   0       // Whether the paramedic's defib should be purchasable in the shop (requires "ttt_shop_for_all" to be enabled). Server must be restarted for changes to take effect
+ttt_paramedic_device_shop_rebuyable         0       // Whether the paramedic's defib should be purchaseable multiple times (requires "ttt_paramedic_device_shop" to be enabled). Server must be restarted for changes to take effect
+ttt_paramedic_defib_time                    8       // The amount of time (in seconds) the paramedic's defib takes to use
 
 // Trickster
 ttt_trickster_credits_starting              0       // The number of credits a trickster should start with
@@ -260,6 +279,7 @@ ttt_trickster_credits_starting              0       // The number of credits a t
 // All Detective Roles
 ttt_detective_search_only                   1       // Whether only detectives can search bodies or not
 ttt_detective_disable_looting               0       // Whether to disable a detective role's ability to loot credits from bodies
+ttt_special_detectives_armor_loadout        1       // Whether special detectives (all detective roles other than the original detective itself) get armor automatically for free
 ttt_all_search_postround                    1       // Whether non-detectives can search bodies post-round or not
 ttt_all_search_binoc                        0       // Whether non-detectives can search bodies if they are using binoculars
 
@@ -284,6 +304,7 @@ ttt_medium_credits_starting                 1       // The number of credits a m
 
 // JESTER TEAM SETTINGS
 ttt_single_jester_independent               1       // Whether a single jester OR independent should spawn in a round. If disabled, both a jester AND an independent can spawn at the same time
+ttt_single_jester_independent_max_players   0       // The maximum players to have a single jester OR independent spawn in a row. If there are more players than this both a jester AND an independent can spawn in the same row. Set to 0 to disable. Not used if "ttt_single_jester_independent" is disabled.
 ttt_jesters_trigger_traitor_testers         1       // Whether jesters trigger traitor testers as if they were traitors
 ttt_jesters_visible_to_traitors             1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to members of the traitor team
 ttt_jesters_visible_to_monsters             1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to members of the monster team
@@ -309,18 +330,21 @@ ttt_swapper_credits_starting                0       // The number of credits a s
 ttt_clown_damage_bonus                      0       // Damage bonus that the clown has after being activated (e.g. 0.5 = 50% more damage)
 ttt_clown_activation_credits                0       // The number of credits to give the clown when they are activated
 ttt_clown_hide_when_active                  0       // Whether the clown should be hidden from other players' Target ID (overhead icons) when they are activated. Server or round must be restarted for changes to take effect
+ttt_clown_use_traps_when_active             0       // Whether the clown can see and use traitor traps when they are activated
 ttt_clown_show_target_icon                  0       // Whether the clown has an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect
 ttt_clown_heal_on_activate                  0       // Whether the clown should fully heal when they activate or not
 ttt_clown_heal_bonus                        0       // The amount of bonus health to give the clown if they are healed when they are activated
 ttt_clown_shop_active_only                  1       // Whether the clown's shop should be available only after they activate
 ttt_clown_shop_delay                        0       // Whether the clown's purchased shop items should be held until they activate
 ttt_clown_credits_starting                  0       // The number of credits a clown should start with
+ttt_single_drunk_clown                      0       // Whether only a single drunk or clown should spawn in a round (Only applies if ttt_single_jester_independent is disabled)
 
 // Beggar
 ttt_beggar_reveal_traitor                   1       // Who the beggar is revealed to when they join the traitor team. 0 - No one. 1 - Everyone. 2 - Traitors. 3 - Innocents
 ttt_beggar_reveal_innocent                  2       // Who the beggar is revealed to when they join the innocent team. 0 - No one. 1 - Everyone. 2 - Traitors. 3 - Innocents
 ttt_beggar_respawn                          0       // Whether the beggar respawns when they are killed before joining another team
-ttt_beggar_respawn_delay                    3       // The delay to use when respawning the begger (if "ttt_beggar_respawn" is enabled)
+ttt_beggar_respawn_delay                    3       // The delay to use when respawning the beggar (if "ttt_beggar_respawn" is enabled)
+ttt_beggar_respawn_limit                    0       // The maximum number of times the beggar can respawn (if "ttt_beggar_respawn" is enabled). Set to 0 to allow infinite respawns
 ttt_beggar_notify_mode                      0       // The logic to use when notifying players that a beggar is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
 ttt_beggar_notify_sound                     0       // Whether to play a cheering sound when a beggar is killed
 ttt_beggar_notify_confetti                  0       // Whether to throw confetti when a beggar is a killed
@@ -333,11 +357,19 @@ ttt_bodysnatcher_reveal_traitor             1       // Who the bodysnatcher is r
 ttt_bodysnatcher_reveal_innocent            1       // Who the bodysnatcher is revealed to when they join the innocent team. 0 - No one. 1 - Everyone. 2 - Their new team
 ttt_bodysnatcher_reveal_monster             1       // Who the bodysnatcher is revealed to when they join the monster team. 0 - No one. 1 - Everyone. 2 - Their new team
 ttt_bodysnatcher_reveal_independent         1       // Who the bodysnatcher is revealed to when they join the independent team. 0 - No one. 1 - Everyone. 2 - Their new team
+ttt_bodysnatcher_respawn                    0       // Whether the bodysnatcher respawns when they are killed before joining another team
+ttt_bodysnatcher_respawn_delay              3       // The delay to use when respawning the bodysnatcher (if "ttt_bodysnatcher_respawn" is enabled)
+ttt_bodysnatcher_respawn_limit              0       // The maximum number of times the bodysnatcher can respawn (if "ttt_bodysnatcher_respawn" is enabled). Set to 0 to allow infinite respawns
+ttt_bodysnatcher_notify_mode                0       // The logic to use when notifying players that a bodysnatcher is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
+ttt_bodysnatcher_notify_sound               0       // Whether to play a cheering sound when a bodysnatcher is killed
+ttt_bodysnatcher_notify_confetti            0       // Whether to throw confetti when a bodysnatcher is a killed
+ttt_bodysnatcher_device_time                5       // The amount of time (in seconds) the bodysnatcher's device takes to use
 
 // ----------------------------------------
 
 // INDEPENDENT TEAM SETTINGS
 ttt_independents_trigger_traitor_testers    0       // Whether independents trigger traitor testers as if they were traitors
+ttt_independents_update_scoreboard          0       // Whether all independent roles show dead players as missing in action
 
 // Drunk
 ttt_drunk_sober_time                        180     // Time in seconds for the drunk to remember their role
@@ -379,10 +411,13 @@ ttt_drunk_can_be_madscientist               1       // Whether the drunk can bec
 ttt_oldman_drain_health_to                  0       // The amount of health to drain the old man down to. Set to 0 to disable
 ttt_oldman_adrenaline_rush                  5       // The time in seconds the old mans adrenaline rush lasts for. Set to 0 to disable
 ttt_oldman_adrenaline_shotgun               1       // Whether the old man is given a double barrel shotgun when their adrenaline rush is triggered
+ttt_oldman_adrenaline_shotgun_damage        10      // How much damage the double barrel shotgun should do
 
 // Killer
 ttt_killer_knife_enabled                    1       // Whether the killer knife is enabled
 ttt_killer_crowbar_enabled                  1       // Whether the killer throwable crowbar is enabled
+ttt_killer_crowbar_damage                   20      // How much damage the crowbar should do when the killer bashes another player with it
+ttt_killer_crowbar_thrown_damage            50      // How much damage the crowbar should do when the killer throws it at another player
 ttt_killer_smoke_enabled                    1       // Whether the killer smoke is enabled
 ttt_killer_smoke_timer                      60      // Number of seconds before a killer will start to smoke after their last kill
 ttt_killer_show_target_icon                 1       // Whether killers have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect
@@ -391,6 +426,7 @@ ttt_killer_damage_reduction                 0       // The fraction an attacker'
 ttt_killer_warn_all                         0       // Whether to warn all players if there is a killer. If 0, only traitors will be warned
 ttt_killer_vision_enable                    1       // Whether killers have their special vision highlights enabled
 ttt_killer_credits_starting                 2       // The number of credits a killer should start with
+ttt_killer_update_scoreboard                1       // Whether killers show dead players as missing in action (Is ignored if ttt_independents_update_scoreboard is set to 1)
 
 // Zombie
 ttt_zombies_are_monsters                    0       // Whether zombies should be treated as members of the monster team (rather than the independent team)
@@ -412,6 +448,9 @@ ttt_zombie_thrall_speed_bonus               0.15    // The amount of bonus speed
 ttt_zombie_respawn_health                   100     // The amount of health a player should respawn with when they are converted to a zombie thrall
 ttt_zombie_prime_convert_chance             1.0     // The chance that a prime zombie (e.g. player who spawned as a zombie originally) will convert other players who are killed by their claws to be zombies as well. Set to 0 to disable
 ttt_zombie_thrall_convert_chance            1.0     // The chance that a zombie thrall (e.g. non-prime zombie) will convert other players who are killed by their claws to be zombies as well. Set to 0 to disable
+
+// Mad Scientist
+ttt_madscientist_device_time                4       // The amount of time (in seconds) the mad scientist's device takes to use
 
 // ----------------------------------------
 
@@ -584,9 +623,47 @@ Thanks to [KarlOfDuty](https://github.com/KarlOfDuty) for his original version o
 
 In TTT some roles have shops where they are allowed to purchase weapons. Given the prevalence of custom weapons from the workshop, the ability to add more weapons to each role's shop has been added.
 
-### **Weapons**
+### Configuration by UI
 
-### *Adding Weapons*
+The easiest way to configure the role shops is via a user interface usable by administrators directly from a running game. To open the interface, run the `ttt_roleweapons` command from your console. The window that opens should look something like this:
+
+![Blank Role Weapons Window](images/RoleWeapons_Blank.png)
+
+#### **Explanation**
+
+This window was made to closely resemble the role equipment shop so parts of it should be fairly intuitive to use. For example: the search bar, the weapon list, and the weapon info panel are all directly copied from the weapon shop.
+
+Apart from those familiar pieces, this window also adds a few more controls specifically for configuring the role weapons shops:
+- *Search Role* - This dropdown in the top right of the window allows you to choose which role's shop to display and search through
+- The bottom right of the window houses the controls for targeting and saving the configuration changes
+  - *Save Role* - This dropdown allows you to choose which role you would update
+  - *Weapon State Checkboxes* - These checkboxes allow you to change how a weapon behaves in the role's shop
+    - *None* - Use the default buying configuration for the weapon
+    - *Include* - Mark this weapon as explicitly buyable
+    - *Exclude* - Mark this weapon as explicitly NOT buyable
+  - *No Random* - Ensure this weapon stays in the shop, regardless of randomization
+  - *Update* - Save the configuration changes
+- *Close* - This button will close the window, disgarding any unsaved changes
+
+#### **Example**
+
+To help understand the functionality of this window it might be easier to walk through an example: we are going to find the Health Station (which we know the Detective can buy) and add it to the Veteran's shop. The Veteran gets a shop when they are activated, but only if weapons are actually available to them. This is where the role weapons system comes into play.
+
+First things first: we open the window and select "Detective" from the "Search Roles" dropdown. From there we can either scroll through the list of weapons or use the search text box to search for "health". We then choose "Veteran" from the "Save Role" dropown and click the "Include" checkbox. With all that done the window should look like this:
+
+![Role Weapons Window for Detective -> Veteran](images/RoleWeapons_DetVet.png)
+
+From here, the last step is to click the "Update" button and we're done -- The Veteran now has the ability to buy a Health Station.
+
+### Configuration by Files
+
+If you cannot or do not want to use the in-game UI to set up the role shop, it is also doable by manual file manipulation. This may be useful for server operators using Docker who want to have the configurations embedded in their server image. 
+
+*NOTE*: Using the configuration UI still creates and deletes files in the backend. Given that, you can use the UI on your local game and then copy the files to a server or Docker image build as needed.
+
+#### **Weapons**
+
+#### *Adding Weapons*
 
 To add weapons to a role (that already has a shop), create an empty .txt file with the weapon class (e.g. weapon_ttt_somethingcool.txt) in the garrysmod/data/roleweapons/{rolename} folder.\
 **NOTE**: If the _roleweapons_ folder does not already exist in garrysmod/data, create it.\
@@ -594,7 +671,7 @@ To add weapons to a role (that already has a shop), create an empty .txt file wi
 
 Also note the ttt_shop_* ConVars that are available above which can help control some of the role weapon shop lists.
 
-### *Removing Weapons*
+#### *Removing Weapons*
 
 At the same time, there are some workshop weapons that are given to multiple roles that maybe you don't want to be available to certain roles. In order to handle that case, the ability to exclude weapons from a role's weapon shop has been added.
 
@@ -602,7 +679,7 @@ To remove weapons from a role's shop, create an empty .exclude.txt file with the
 **NOTE**: If the _roleweapons_ folder does not already exist in garrysmod/data, create it.\
 **NOTE**: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective/weapon_ttt_somethingcool.exclude.txt
 
-### *Bypassing Weapon Randomization*
+#### *Bypassing Weapon Randomization*
 
 With the addition of the Shop Randomization feature (and the ttt_shop_random_* ConVars), weapons may not always appear in the shop (which is the point). If, however, you want certain weapons to _always_ be in the shop while other weapons are randomized, the ability to bypass shop randomization for a weapon in a role's weapon shop has been added.
 
@@ -610,7 +687,7 @@ To stop a weapon from being removed from a role's shop via randomization, create
 **NOTE**: If the _roleweapons_ folder does not already exist in garrysmod/data, create it.\
 **NOTE**: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective/weapon_ttt_somethingcool.norandom.txt
 
-### *Finding a Weapon's Class*
+#### *Finding a Weapon's Class*
 
 To find the class name of a weapon to use above, follow the steps below
 1. Start a local server with TTT as the selected gamemode
@@ -618,14 +695,14 @@ To find the class name of a weapon to use above, follow the steps below
 3. Obtain the weapon whose class you want. If it is already available to buy from a certain role's shop, either force yourself to be that role via the _ttt\_force\_*_ commands or via a ULX plugin.
 4. Run the following command in console to get a list of all of your weapon classes: `lua_run PrintTable(player.GetHumans()[1]:GetWeapons())`
 
-### **Equipment**
-### *Adding Equipment*
+#### **Equipment**
+#### *Adding Equipment*
 
 Equipment are items that a role can use that do not take up a weapon slot, such as the body armor or radar. To add equipment items to a role (that already has a shop), create an empty .txt file with the equipment item's name (e.g. "bruh bunker.txt") in the garrysmod/data/roleweapons/{rolename} folder.\
 **NOTE**: If the _roleweapons_ folder does not already exist in garrysmod/data, create it.\
 **NOTE**: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective/bruh bunker.txt
 
-### *Removing Equipment*
+#### *Removing Equipment*
 
 Similarly there are some equipment items that you want to prevent a specific role from buying. To handle that case, the addon has the ability to exclude specific equipment items from the shop in a similar way.
 
@@ -633,7 +710,7 @@ To remove equipment from a role's shop, create an empty .exclude.txt file with t
 **NOTE**: If the _roleweapons_ folder does not already exist in garrysmod/data, create it.\
 **NOTE**: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective/bruh bunker.exclude.txt
 
-### *Finding an Equipment Item's Name*
+#### *Finding an Equipment Item's Name*
 
 To find the name of an equipment item to use above, follow the steps below
 1. Start a local server with TTT as the selected gamemode

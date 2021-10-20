@@ -1,5 +1,139 @@
 # Release Notes
 
+## 1.3.0
+**Released: October 5th, 2021**\
+Includes all beta updates from [1.2.4](#124-beta) to [1.2.8](#128-beta).
+
+## 1.2.8 (Beta)
+**Released: October 3rd, 2021**
+
+### Additions
+- Added ability for independents to see missing in action players on the scoreboard (disabled by default)
+- Added ability for the killer to see missing in action players on the scoreboard (enabled by default)
+- Added ability to control whether a vampire can loot credits (enabled by default)
+- Added ability to control whether special detectives (all detective roles other than the original detective itself) get armor automatically for free (enabled by default)
+
+## 1.2.7 (Beta)
+**Released: October 2nd, 2021**
+
+### Additions
+- Added ttt_roleweapons admin command which opens a configuration interface for the roleweapons shop configuration system
+- Added new dynamic tutorial system using HTML and hook-generated pages per role
+- Added ability to reward vampires with credits when they drain a living target using their fangs (disabled by default)
+- Added ability to set a different amount of health overheal if a vampire drains a living target (disabled by default)
+- Added ability to block rewarding vampires when they (or their allies) kill someone (disabled by default)
+- Added ability to give the veteran credits when they are activated (disabled by default)
+- Added ability to set the maximum number of players before "single jester or indepdent" is automatically disabled (disabled by default)
+
+### Changes
+- Changed custom win events to show in the end-of-round summary's Events tab with an "unknown win event" message until the new TTTEventFinishText hooks are used
+
+### Fixes
+- Fixed vampire prime death effects still happening after the round has ended
+- Fixed external roles with custom win conditions blocking jester wins
+- Fixed tip about radio usage not using the correct key
+- Fixed assassin being shown "No targets remaining" after already being told their current target was their final target
+  - This does allow players who are resurrected after the assassin is assigned their final target to slide under the radar
+- Fixed roles with custom win conditions being able to block jester, clown, and old man wins as well as drunks remembering their role
+- Fixed traitor vampires being able to drain glitches
+- Fixed promoted deputies not being grouped with other detectives in assassin targetting logic
+- Fixed independent vampire popup still having "{comrades}" placeholder
+- Fixed a drunk who becomes a clown in the same round as another jester role showing in the same row on the round summary screen
+- Fixed error when a vampire is killed after they release a target being drained but before that target gets unfrozen
+
+### Developer
+- Added TTTBlockPlayerFootstepSound hook to block a player's footstep sound
+- Added TTTKarmaGiveReward hook to block a player from receiving karma
+- Added TTTKarmaShouldGivePenalty hook to determine whether a player should have their karma rewarded or penalized
+- Added TTTPlayerSpawnForRound hook to react to when a player is spawned (or respawed)
+- Added TTTEventFinishText and TTTEventFinishIconText hooks to add detail to the round finished event row for custom win conditions
+- Added TTTPlayerRoleChanged hook to react to when a player's role changes
+- Added TTTShouldPlayerSmoke hook to affect whether a player should smoke and how that should look
+- Added TTTTutorialRolePage, TTTTutorialRoleText, and TTTTutorialRoleEnabled hooks for generating tutorial pages for an external role
+- Added TTTRolePopupParams hook to allow roles add parameters to their start-of-round popup message translation
+- Added `startingRole` and `finalRole` parameters to the TTTScoringSummaryRender hook
+- Added `plymeta:GetRoleTeam` to get the appropriate `ROLE_TEAM_*` enum value for the player
+- Added `plymeta:ShouldDelayAnnouncements` to determine whether announcements when a player is killed should be delayed for this player
+- Added `player.GetLivingRole`, `player.IsRoleLiving`, and `player.AreTeamsLiving` static methods
+- Added `player.GetRoleTeam` static method to get the appropriate `ROLE_TEAM_*` enum value for a role
+- Added ability for external roles to define their role selection predicate function
+- Added ability for external roles to run specific logic when a player is initially assigned a role or when they steal a role from someone else
+- Added `GetRoleTeamInfo` and `GetRoleTeamName` global methods
+- Changed `OnPlayerHighlightEnabled` to be globally available so other roles can use the same highlighting logic
+- Changed all `EXTERNAL_ROLE_*` tables to be named `ROLE_*` in preparation for role separation
+- Fixed returning false for the first parameter of TTTTargetIDPlayerRoleIcon not stopping the role icon from showing
+
+## 1.2.6 (Beta)
+**Released: September 25th, 2021**
+
+### Fixes
+- Fixed external roles with long names and custom win conditions having their win title cut off
+- Fixed map wins being ignored when an external role with a custom win condition was in use
+
+### Developer
+- Fixed generated win and event identifiers resetting if lua is refreshed
+
+## 1.2.5 (Beta)
+**Released: September 25th, 2021**
+
+### Additions
+- Added ability to have a jester and an independent both spawn in the same round (disabled by default)
+- Added ability for deputy/impersonator to be promoted when any detective dies, rather than all detectives (disabled by default)
+- Added ability for deputy to spawn when there isn't a detective and be pre-promoted (disabled by default)
+- Added ability for impersonator to spawn when there isn't a detective and be pre-promoted (disabled by default)
+- Added ability to configure zombie conversion to be based on chance, separately for prime and thralls (disabled by default)
+- Added ability for a paramedic's defib to convert all roles to a vanilla innocent (disabled by default)
+- Added ability to add the hypnotist's device to their shop (disabled by default)
+- Added ability to add the paramedic's defib to their shop (disabled by default, requires shop-for-all to be enabled)
+- Added ability to control whether the hypnotist spawns with their device (enabled by default)
+- Added ability to control whether the paramedic spawns with their defib (enabled by default)
+- Added ability for hypnotist device to convert detective and deputies that appear as detective to impersonator (disabled by default)
+- Added ability for traitor or quack to buy an exorcism device usable to remove a haunting phantom (disabled by default)
+- Added configuration for whether assassin damage bonus applies to weapons bought from the shop (enabled by default)
+- Added ability for bodysnatcher's role change to be hidden based on which team they joined (disbled by default)
+- Added a shop icon for the bomb station
+- Added new microphone volume tip from base TTT
+
+### Changes
+- Changed beggar to not be able to use or see traitor chat (text or voice) when the beggar reveal mode is disabled for traitors
+- Changed credit-lootable roles without a shop (like the trickster) to have starting credits convars
+- Changed bodysnatcher to automatically be given any role weapons the body had on them when they died
+- Changed bodysnatcher to inherit an assassin's target (or be given a new one) when they snatch an assassin's body
+
+### Fixes
+- Fixed zombies sometimes spawning in non-zombie rounds if they are on the traitor team
+- Fixed beggar who converted to traitor and then was resurrected by a hypnotist not showing as a traitor when beggar reveal was disabled for traitors
+- Fixed some buyable role weapons showing the "custom" icon in the shop
+- Fixed resurrected players getting their full loadouts even if they've already used their one-use weapons (like the hypnotist brainwashing device)
+- Fixed potential case where assassin's new target would get immediately cleared if a delay wasn't being used
+
+### Developer
+- Added ability for external roles to define when they are "active", tying directly into the `plymeta:IsRoleActive` function
+- Added `plymeta:ShouldActLikeJester` to determine if a player should act like a jester (damage in, damage out, appearance, etc.)
+- Added ability for external roles to define if/when they should act like a jester, tying directly into the `plymeta:ShouldActLikeJester` function
+- Added `GenerateNewEventID` method for generating a unique ID for custom scoring events
+- Added `GenerateNewWinID` method for generating a unique ID for custom win conditions
+- Added TTTTargetIDPlayerHealth hook for controlling what text to show when rendering a player's health
+- Added TTTTargetIDPlayerKarma hook for controlling what text to show when rendering a player's karma
+- Added TTTTargetIDEntityHintLabel hook for controlling what text to show when rendering a player or entity's hint label
+- Added TTTTargetIDPlayerHintText hook for controlling what text to show when rendering an entity's hint text
+- Added TTTTargetIDPlayerName hook for controlling what text to show when rendering a player's name
+- Added TTTTargetIDRagdollName hook for controlling what text to show when rendering a ragdoll's name
+- Added `plymeta:ShouldRevealBeggar` to determine if a palyer should be able to tell that a target player is no longer a beggar (e.g. converted to an innocent or traitor)
+- Added `plymeta:ShouldRevealBodysnatcher` to determine if a palyer should be able to tell that a target player is no longer a bodysnatcher (e.g. has snatched a role from a dead body)
+- Added `was_bodysnatcher` property to TTTRadarPlayerRender hook's `tgt` parameter
+- Changed the global `ShouldHideJesters` to be deprecated in favor of `plymeta:ShouldHideJesters`
+- Fixed returning false for either text value in TTTTargetIDPlayerText hook not actually stopping the original text from being used
+- Fixed ttt_debug_preventwin not blocking when TTTCheckForWin returns a value or when the round time ends
+- Fixed `plymeta:SoberDrunk` not calling PlayerLoadout hook when granting the player their new role loadout
+
+## 1.2.4 (Beta)
+**Released: September 15th, 2021**
+
+### Additions
+- Added ability for the old man to enter an adrenaline rush and hold off death for 5 seconds (enabled by default)
+- Added double barrel shotgun which is given to the old man when they enter an adrenaline rush (enabled by default)
+
 ## 1.2.3
 **Released: September 15th, 2021**
 
@@ -16,22 +150,22 @@
 - Fixed round ending when a swapper is killed by the last member of one of the teams but the attacker remains alive
 
 ### Developer
-- Added ShouldHideJesters global function to determine whether the given player should hide a jester player's role
+- Added `ShouldHideJesters` global function to determine whether the given player should hide a jester player's role
 - Added ability for external roles to define:
   - Starting credits
   - Starting health
   - Maximum health
   - Extra translations
 - Added TTTTargetIDPlayerRing hook which allows overriding whether the Target ID ring is shown and what color it should be shown as
-- Added nameLabel parameter to TTTScoringSummaryRender hook, allowing you to override what is displayed for a player's name
+- Added `nameLabel` parameter to TTTScoringSummaryRender hook, allowing you to override what is displayed for a player's name
 - Added TTTRadarPlayerRender hook which allows overriding whether a radar ping is shown and what color it should be shown as
 - Added TTTSelectRoles*Options for each team to allow external roles to affect the available roles and their weights
 - Added new table methods
-  - table.IntersectedKeys
-  - table.UnionedKeys
-  - table.ExcludedKeys
-  - table.LookupKeys
-  - table.ToLookup
+  - `table.IntersectedKeys`
+  - `table.UnionedKeys`
+  - `table.ExcludedKeys`
+  - `table.LookupKeys`
+  - `table.ToLookup`
 
 ## 1.2.2
 **Released: September 12th, 2021**
@@ -51,10 +185,10 @@
 - Adjusted medium ghost logic to hopefully fix another "floating kliener" case
 
 ### Developer
-- Added plymeta:GiveDelayedShopItems to give a player their delayed shop items
-- Added plymeta:IsRoleActive to determine if a player's role feature is active
-- Added plymeta:ShouldDelayShopPurchase to determine if a player's shop purchases should be delayed
-- Added DELAYED_SHOP_ROLES lookup table for roles whose shop purchases can be delayed
+- Added `plymeta:GiveDelayedShopItems` to give a player their delayed shop items
+- Added `plymeta:IsRoleActive` to determine if a player's role feature is active
+- Added `plymeta:ShouldDelayShopPurchase` to determine if a player's shop purchases should be delayed
+- Added `DELAYED_SHOP_ROLES` lookup table for roles whose shop purchases can be delayed
 
 ## 1.2.1
 **Released: September 6th, 2021**
@@ -63,12 +197,16 @@
 - Fixed external roles not being able to give equipment items in their loadout
 
 ## 1.2.0
+**Released: September 5th, 2021**\
+Includes all beta updates from [1.1.4](#114-beta) to [1.1.11](#1111-beta).
+
+## 1.1.11 (Beta)
 **Released: September 5th, 2021**
 
 ### Fixes
 - Fixed case where the medium ghosts would temporarily show up as floating kleiner models
 
-## 1.1.10
+## 1.1.10 (Beta)
 **Released: September 4th, 2021**
 
 ### Additions
@@ -79,7 +217,7 @@
 - Fixed vampires not being able to drain dead players
 - Fixed traitors being able to see detective, special detective, and clown icons through walls
 
-## 1.1.9
+## 1.1.9 (Beta)
 **Released: September 2nd, 2021**
 
 ### Additions
@@ -102,7 +240,7 @@
 - Fixed only assassin target or parasite infection showing on the scoreboard and target ID (when you look at a player) even if a player should see both
 
 ### Developer
-- Updated GetTeamRoles to take an optional lookup table of excluded roles
+- Updated `GetTeamRoles` to take an optional lookup table of excluded roles
 - Changed TTTScoringWinTitle hook to allow dynamically setting a secondary win role (like the old man)
 - Added new hooks to handle cases where a player would want to appear as a different role in-game
   - TTTScoreboardPlayerRole - What role/color the player should show as on the scoreboard
@@ -110,9 +248,9 @@
   - TTTTargetIDPlayerKillIcon - Whether the "KILL" icon should be shown over the target's head
   - TTTTargetIDPlayerRoleIcon - What role icon and background color should be shown over the target's head
   - TTTTargetIDPlayerText - What text and color to use for the Target ID (when you look at a player)
-- Added SWEP.ShopName to weapon_tttbase to allow for weapons to have different names for when they are in the shop as opposed to when they are an entity in world
+- Added `SWEP.ShopName` to weapon_tttbase to allow for weapons to have different names for when they are in the shop as opposed to when they are an entity in world
 
-## 1.1.8
+## 1.1.8 (Beta)
 **Released: August 26th, 2021**
 
 ### Additions
@@ -143,11 +281,11 @@
   - Creation of ttt_force_{ROLENAME} commands
   - Role selection logic
   - Role default buyable equipment
-- Added GetRoleTeamColor global client method for getting the color for a role team
+- Added `GetRoleTeamColor` global client method for getting the color for a role team
 - Added ability to give a player bonus points via a scoring event if the sid64 and bonus properties are set
-- Added ability for external roles to explicitly deny credit looting and traitor button usage via the "canlootcredits" and "canusetraitorbuttons" role table properties
+- Added ability for external roles to explicitly deny credit looting and traitor button usage via the `canlootcredits` and `canusetraitorbuttons` role table properties
 
-## 1.1.7
+## 1.1.7 (Beta)
 **Released: August 22nd, 2021**
 
 ### Additions
@@ -166,7 +304,7 @@
 ### Developer
 - Added missing tracker sprites to resource download list
 
-## 1.1.6
+## 1.1.6 (Beta)
 **Released: August 21st, 2021**
 
 ### Additions
@@ -182,9 +320,9 @@
 - Fixed error when trying to calculate the height of some models
 
 ### Developer
-- Added oldmanwins parameter to TTTScoringWinTitle hook
+- Added `oldmanwins` parameter to TTTScoringWinTitle hook
 
-## 1.1.5
+## 1.1.5 (Beta)
 **Released: August 19th, 2021**
 
 ### Fixes
@@ -194,7 +332,7 @@
 ### Developer
 - Added TTTScoringSummaryRender client hook to change how players are displayed in the round summary
 
-## 1.1.4
+## 1.1.4 (Beta)
 **Released: August 18th, 2021**
 
 ### Additions
@@ -240,6 +378,10 @@
 - Fixed assassin target not showing in start of round role summary
 
 ## 1.1.0
+**Released: August 15th, 2021**\
+Includes all beta updates from [1.0.2](#102-beta) to [1.0.15](#1015-beta).
+
+## 1.0.15 (Beta)
 **Released: August 15th, 2021**
 
 ### Additions
@@ -257,7 +399,7 @@
 - Fixed players who were moved to spectator by some external addon not showing as spectator on the scoreboard
 - Fixed buttons in shop being slightly misaligned
 
-## 1.0.14
+## 1.0.14 (Beta)
 **Released: August 14th, 2021**
 
 ### Changes
@@ -267,7 +409,7 @@
 - Added TTTScoringWinTitle client hook for determining which text and color to use for the round summary screen
 - Added TTTPrintResultMessage server hook for printing which team won as a message in the top-right corner
 
-## 1.0.13
+## 1.0.13 (Beta)
 **Released: August 13th, 2021**
 
 ### Additions
@@ -277,11 +419,11 @@
 - Re-added mistakenly deleted brainwashing device
 
 ### Developer
-- Changed Get{ROLE}Filter functions to be dynamically assigned for each role
+- Changed `Get{ROLE}Filter` functions to be dynamically assigned for each role
 - Added sanity checks for external role definitions
 - Added missing things to resource download list
 
-## 1.0.12
+## 1.0.12 (Beta)
 **Released: August 12th, 2021**
 
 ### Fixes
@@ -290,7 +432,7 @@
 ### Developer
 - Added additional replacement strings for role descriptions
 
-## 1.0.11
+## 1.0.11 (Beta)
 **Released: August 11th, 2021**
 
 ### Additions
@@ -303,9 +445,9 @@
 ### Developer
 - Added client-side command to reset the equipment cache
 - Added ability to register convars with an external role for it to be picked up by ULX
-- Changed Get{ROLE}, Is{ROLE} and IsActive{ROLE} functions to be dynamically assigned for each role
+- Changed `Get{ROLE}`, `Is{ROLE}` and `IsActive{ROLE}` functions to be dynamically assigned for each role
 
-## 1.0.10
+## 1.0.10 (Beta)
 **Released: August 10th, 2021**
 
 ### Additions
@@ -315,7 +457,7 @@
 ### Changes
 - Resized role name font for longer role names
 
-## 1.0.9
+## 1.0.9 (Beta)
 **Released: August 9th, 2021**
 
 ### Additions
@@ -339,7 +481,7 @@
 - Fixed role weapons not being removed when a player is hypnotized
 - Fixed multiple monsters spawning in one round
 
-## 1.0.8
+## 1.0.8 (Beta)
 **Released: August 7th, 2021**
 
 ### Additions
@@ -371,7 +513,7 @@
 ### Developer
 - Added ability for SWEP name, type, and description to use functions for formatting
 
-## 1.0.7
+## 1.0.7 (Beta)
 **Released: August 4th, 2021**
 
 ### Additions
@@ -400,7 +542,7 @@
 - Added the ability for SWEPs to not be randomized out of the shop by setting "SWEP.BlockShopRandomization = true"
 - Renamed ROLE_STRINGS to ROLE_STRINGS_RAW
 
-## 1.0.6
+## 1.0.6 (Beta)
 **Released: July 20th, 2021**
 
 ### Fixes
@@ -410,7 +552,7 @@
 - Fixed potential error picking an assassin target when ttt_assassin_shop_roles_last was enabled
 - Fixed "next"/"final" label sometimes being incorrect for an assassin getting their next target if ttt_assassin_shop_roles_last was enabled
 
-## 1.0.5
+## 1.0.5 (Beta)
 **Released: July 19th, 2021**
 
 ### Additions
@@ -446,14 +588,14 @@
 - Fixed monster team occurring more than it should due to calculating the number of players too late
 
 ### Developer
-- Added plymeta:StripRoleWeapons which removes all weapons with the WEAPON_CATEGORY_ROLE from a player
-- Added plymeta:MoveRoleState which moves the role NW values from a player to a target
+- Added `plymeta:StripRoleWeapons` which removes all weapons with the `WEAPON_CATEGORY_ROLE` from a player
+- Added `plymeta:MoveRoleState` which moves the role NW values from a player to a target
 - Added missing things to resource download list
 - Changed TTTCanIdentifyCorpse hook "was_traitor" parameter to be true for any role on the traitor team rather than just the vanilla traitor
 - Added ability for non-traitor roles to be configurably able to use traitor buttons
 - Added ability for non-shop roles to be configurably able to see and loot credits
 
-## 1.0.4
+## 1.0.4 (Beta)
 **Released: July 11th, 2021**
 
 ### Additions
@@ -468,7 +610,7 @@
 - Fixed "Kill" icon showing over jester players' heads when the client knows they are a Jester
 - Fixed swapper not getting zombie/vampire prime status when a prime zombie/vampire swaps with them
 
-## 1.0.3
+## 1.0.3 (Beta)
 **Released: July 11th, 2021**
 
 ### Additions
@@ -478,7 +620,7 @@
 - Changed convars to use '_ttt_ROLENAME\_\*_' formatting wherever possible
     - NOTE: Old convars still work at this stage but may be removed later. Please update to the new convars now to avoid problems later
 
-## 1.0.2
+## 1.0.2 (Beta)
 **Released: July 11th, 2021**
 
 ### Additions
@@ -510,7 +652,7 @@
 - Fixed potential errors by adding more nil protection in the vampire fangs
 
 ### Developer
-- Added plymeta:CanUseShop method which checks IsShopRole and NWBools
+- Added `plymeta:CanUseShop` method which checks `IsShopRole` and NWBools
 - Added TTTSprintStaminaPost hook which can be used to overwrite player stamina
 - Added resource download commands to avoid missing textures
 

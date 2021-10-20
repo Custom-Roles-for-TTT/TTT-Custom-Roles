@@ -40,7 +40,7 @@ local function RoleChatRecv()
 
     local name = GetPlayerName(sender)
     local visible_role = role
-    if role == ROLE_DEPUTY and sender:GetNWBool("HasPromotion", false) then
+    if role == ROLE_DEPUTY and sender:IsRoleActive() then
         visible_role = ROLE_DETECTIVE
     end
 

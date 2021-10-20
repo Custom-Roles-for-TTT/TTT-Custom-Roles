@@ -50,7 +50,7 @@ end
 
 local function ShouldHideTraitorBodysnatcher()
     local bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_traitor", BODYSNATCHER_REVEAL_ALL)
-    return bodysnatcherMode == ANNOUNCE_REVEAL_NONE
+    return bodysnatcherMode == BODYSNATCHER_REVEAL_NONE
 end
 
 -- Traitorchat
@@ -134,7 +134,7 @@ end
 
 function GetDetectiveTeamFilter(alive_only)
     -- Include promoted Deputies in this, but not Impersonators. They are included in GetTraitorTeamFilter
-    return GetPlayerFilter(function(p) return (p:IsDetectiveTeam() or (p:GetDeputy() and p:GetNWBool("HasPromotion", false))) and (not alive_only or p:IsTerror()) end)
+    return GetPlayerFilter(function(p) return (p:IsDetectiveTeam() or (p:GetDeputy() and p:IsRoleActive())) and (not alive_only or p:IsTerror()) end)
 end
 
 ---- Communication control
