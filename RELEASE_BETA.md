@@ -1,7 +1,7 @@
 # Beta Release Notes
 
 ## 1.3.1
-**Released:**
+**Released: October 19th, 2021**
 
 ### Additions
 - Added the loot goblin
