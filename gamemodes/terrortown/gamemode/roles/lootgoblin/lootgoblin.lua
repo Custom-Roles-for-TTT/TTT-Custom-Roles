@@ -23,7 +23,9 @@ local lootgoblin_announce = CreateConVar("ttt_lootgoblin_announce", "4")
 local lootgoblin_size = CreateConVar("ttt_lootgoblin_size", "0.5")
 local lootgoblin_cackle_timer_min = CreateConVar("ttt_lootgoblin_cackle_timer_min", "4")
 local lootgoblin_cackle_timer_max = CreateConVar("ttt_lootgoblin_cackle_timer_max", "12")
+local lootgoblin_cackle_enabled = CreateConVar("ttt_lootgoblin_cackle_enabled", "1")
 local lootgoblin_weapons_dropped = CreateConVar("ttt_lootgoblin_weapons_dropped", "8")
+local lootgoblin_jingle_enabled = CreateConVar("ttt_lootgoblin_jingle_enabled", "1")
 CreateConVar("ttt_lootgoblin_notify_mode", "4", FCVAR_NONE, "The logic to use when notifying players that the lootgoblin is killed", 0, 4)
 CreateConVar("ttt_lootgoblin_notify_sound", "1")
 CreateConVar("ttt_lootgoblin_notify_confetti", "1")
@@ -83,18 +85,20 @@ local function StartGoblinTimers()
             end
         end
 
-        local min = lootgoblin_cackle_timer_min:GetInt()
-        local max = lootgoblin_cackle_timer_max:GetInt()
-        timer.Create("LootGoblinCackle", math.random(min, max), 0, function()
-            for _, v in ipairs(player.GetAll()) do
-                if v:IsActiveLootGoblin() and not v:GetNWBool("LootGoblinKilled", false) then
-                    local idx = math.random(1, #cackles)
-                    local chosen_sound = cackles[idx]
-                    sound.Play(chosen_sound, v:GetPos())
+        if lootgoblin_cackle_enabled:GetBool() then
+            local min = lootgoblin_cackle_timer_min:GetInt()
+            local max = lootgoblin_cackle_timer_max:GetInt()
+            timer.Create("LootGoblinCackle", math.random(min, max), 0, function()
+                for _, v in ipairs(player.GetAll()) do
+                    if v:IsActiveLootGoblin() and not v:GetNWBool("LootGoblinKilled", false) then
+                        local idx = math.random(1, #cackles)
+                        local chosen_sound = cackles[idx]
+                        sound.Play(chosen_sound, v:GetPos())
+                    end
                 end
-            end
-            timer.Adjust("LootGoblinCackle", math.random(min, max), 0, nil)
-        end)
+                timer.Adjust("LootGoblinCackle", math.random(min, max), 0, nil)
+            end)
+        end
     end)
 end
 
@@ -152,7 +156,7 @@ local footsteps = {
     Sound("lootgoblin/jingle8.wav")
 }
 hook.Add( "PlayerFootstep", "LootGoblin_PlayerFootstep", function( ply, pos, foot, snd, volume, rf )
-    if ply:IsActiveLootGoblin() and ply:IsRoleActive() and not ply:GetNWBool("LootGoblinKilled", false) then
+    if ply:IsActiveLootGoblin() and ply:IsRoleActive() and not ply:GetNWBool("LootGoblinKilled", false) and lootgoblin_jingle_enabled:GetBool() then
         local idx = math.random(1, #footsteps)
         local chosen_sound = footsteps[idx]
         sound.Play(chosen_sound, pos, volume, 100, 1)
