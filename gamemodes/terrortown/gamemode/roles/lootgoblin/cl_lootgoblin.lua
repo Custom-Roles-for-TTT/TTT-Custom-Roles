@@ -121,7 +121,7 @@ end)
 hook.Add("TTTTutorialRoleText", "LootGoblin_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_LOOTGOBLIN then
         local roleColor = GetRoleTeamColor(ROLE_TEAM_JESTER)
-        local html = "The " .. ROLE_STRINGS[ROLE_LOOTGOBLIN] .. " is an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>independent</span> role who likes to hoard loot."
+        local html = "The " .. ROLE_STRINGS[ROLE_LOOTGOBLIN] .. " is an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>jester</span> role who likes to hoard loot."
 
         -- Activation Timer
         html = html .. "<span style='display: block; margin-top: 10px;'>After some time has passed, <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>the " .. ROLE_STRINGS[ROLE_LOOTGOBLIN] .. "</span> will transform and be revealed to players.</span>"
