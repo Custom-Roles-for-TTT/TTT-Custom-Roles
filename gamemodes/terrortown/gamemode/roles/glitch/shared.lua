@@ -1,6 +1,6 @@
 AddCSLuaFile()
 
--- Role features
+-- Initialize role features
 GLITCH_SHOW_AS_TRAITOR = 0
 GLITCH_SHOW_AS_SPECIAL_TRAITOR = 1
 GLITCH_HIDE_SPECIAL_TRAITOR_ROLES = 2
