@@ -77,8 +77,9 @@ ROLE_MADSCIENTIST = 27
 ROLE_PALADIN = 28
 ROLE_TRACKER = 29
 ROLE_MEDIUM = 30
+ROLE_LOOTGOBLIN = 31
 
-ROLE_MAX = 30
+ROLE_MAX = 31
 ROLE_EXTERNAL_START = ROLE_MAX + 1
 
 local function AddRoleAssociations(list, roles)
@@ -112,7 +113,7 @@ INNOCENT_ROLES = {}
 AddRoleAssociations(INNOCENT_ROLES, {ROLE_INNOCENT, ROLE_DETECTIVE, ROLE_GLITCH, ROLE_PHANTOM, ROLE_REVENGER, ROLE_DEPUTY, ROLE_MERCENARY, ROLE_VETERAN, ROLE_DOCTOR, ROLE_TRICKSTER, ROLE_PARAMEDIC, ROLE_PALADIN, ROLE_TRACKER, ROLE_MEDIUM})
 
 JESTER_ROLES = {}
-AddRoleAssociations(JESTER_ROLES, {ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_BEGGAR, ROLE_BODYSNATCHER})
+AddRoleAssociations(JESTER_ROLES, {ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_BEGGAR, ROLE_BODYSNATCHER, ROLE_LOOTGOBLIN})
 
 INDEPENDENT_ROLES = {}
 AddRoleAssociations(INDEPENDENT_ROLES, {ROLE_DRUNK, ROLE_OLDMAN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_MADSCIENTIST})
@@ -132,7 +133,7 @@ AddRoleAssociations(TRAITOR_BUTTON_ROLES, {ROLE_TRICKSTER})
 
 -- Shop roles get this ability by default
 CAN_LOOT_CREDITS_ROLES = {}
-AddRoleAssociations(CAN_LOOT_CREDITS_ROLES, {ROLE_TRICKSTER})
+AddRoleAssociations(CAN_LOOT_CREDITS_ROLES, {ROLE_TRICKSTER, ROLE_LOOTGOBLIN})
 
 -- Role colours
 COLOR_INNOCENT = {
@@ -449,7 +450,8 @@ ROLE_STRINGS_RAW = {
     [ROLE_MADSCIENTIST] = "madscientist",
     [ROLE_PALADIN] = "paladin",
     [ROLE_TRACKER] = "tracker",
-    [ROLE_MEDIUM] = "medium"
+    [ROLE_MEDIUM] = "medium",
+    [ROLE_LOOTGOBLIN] = "lootgoblin"
 }
 
 ROLE_STRINGS = {
@@ -483,7 +485,8 @@ ROLE_STRINGS = {
     [ROLE_MADSCIENTIST] = "Mad Scientist",
     [ROLE_PALADIN] = "Paladin",
     [ROLE_TRACKER] = "Tracker",
-    [ROLE_MEDIUM] = "Medium"
+    [ROLE_MEDIUM] = "Medium",
+    [ROLE_LOOTGOBLIN] = "Loot Goblin"
 }
 
 ROLE_STRINGS_PLURAL = {
@@ -517,7 +520,8 @@ ROLE_STRINGS_PLURAL = {
     [ROLE_MADSCIENTIST] = "Mad Scientists",
     [ROLE_PALADIN] = "Paladins",
     [ROLE_TRACKER] = "Trackers",
-    [ROLE_MEDIUM] = "Mediums"
+    [ROLE_MEDIUM] = "Mediums",
+    [ROLE_LOOTGOBLIN] = "Loot Goblins"
 }
 
 ROLE_STRINGS_EXT = {
@@ -552,7 +556,8 @@ ROLE_STRINGS_EXT = {
     [ROLE_MADSCIENTIST] = "a Mad Scientist",
     [ROLE_PALADIN] = "a Paladin",
     [ROLE_TRACKER] = "a Tracker",
-    [ROLE_MEDIUM] = "a Medium"
+    [ROLE_MEDIUM] = "a Medium",
+    [ROLE_LOOTGOBLIN] = "a Loot Goblin"
 }
 
 ROLE_STRINGS_SHORT = {
@@ -586,7 +591,8 @@ ROLE_STRINGS_SHORT = {
     [ROLE_MADSCIENTIST] = "mad",
     [ROLE_PALADIN] = "pal",
     [ROLE_TRACKER] = "trk",
-    [ROLE_MEDIUM] = "mdm"
+    [ROLE_MEDIUM] = "mdm",
+    [ROLE_LOOTGOBLIN] = "gob"
 }
 
 function StartsWithVowel(word)
