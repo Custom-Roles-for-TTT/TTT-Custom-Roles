@@ -18,12 +18,12 @@ resource.AddSingleFile("lootgoblin/jingle8.wav")
 -- CONVARS --
 -------------
 
-CreateConVar("ttt_lootgoblin_activation_timer", "30")
-CreateConVar("ttt_lootgoblin_announce", "4")
-CreateConVar("ttt_lootgoblin_size", "0.5")
-CreateConVar("ttt_lootgoblin_cackle_timer_min", "4")
-CreateConVar("ttt_lootgoblin_cackle_timer_max", "12")
-CreateConVar("ttt_lootgoblin_weapons_dropped", "8")
+local lootgoblin_activation_timer = CreateConVar("ttt_lootgoblin_activation_timer", "30")
+local lootgoblin_announce = CreateConVar("ttt_lootgoblin_announce", "4")
+local lootgoblin_size = CreateConVar("ttt_lootgoblin_size", "0.5")
+local lootgoblin_cackle_timer_min = CreateConVar("ttt_lootgoblin_cackle_timer_min", "4")
+local lootgoblin_cackle_timer_max = CreateConVar("ttt_lootgoblin_cackle_timer_max", "12")
+local lootgoblin_weapons_dropped = CreateConVar("ttt_lootgoblin_weapons_dropped", "8")
 CreateConVar("ttt_lootgoblin_notify_mode", "4", FCVAR_NONE, "The logic to use when notifying players that the lootgoblin is killed", 0, 4)
 CreateConVar("ttt_lootgoblin_notify_sound", "1")
 CreateConVar("ttt_lootgoblin_notify_confetti", "1")
@@ -55,7 +55,7 @@ local cackles = {
 }
 local lootGoblinActive = false
 local function StartGoblinTimers()
-    local goblinTime = GetConVar("ttt_lootgoblin_activation_timer"):GetInt()
+    local goblinTime = lootgoblin_activation_timer:GetInt()
     SetGlobalFloat("ttt_lootgoblin_activate", CurTime() + goblinTime)
     for _, v in ipairs(player.GetAll()) do
         if v:IsActiveLootGoblin() then
@@ -64,12 +64,12 @@ local function StartGoblinTimers()
     end
     timer.Create("LootGoblinActivate", goblinTime, 1, function()
         lootGoblinActive = true
-        local revealMode = GetConVar("ttt_lootgoblin_announce"):GetInt()
+        local revealMode = lootgoblin_announce:GetInt()
         for _, v in ipairs(player.GetAll()) do
             if v:IsActiveLootGoblin() then
                 v:SetNWBool("LootGoblinActive", true)
                 v:PrintMessage(HUD_PRINTTALK, "You have transformed into a goblin!")
-                v:SetPlayerScale(GetConVar("ttt_lootgoblin_size"):GetFloat())
+                v:SetPlayerScale(lootgoblin_size:GetFloat())
                 -- TODO: Speed/jump boost?
             elseif revealMode == JESTER_NOTIFY_EVERYONE or
                     (v:IsActiveTraitorTeam() and (revealMode == JESTER_NOTIFY_TRAITOR or JESTER_NOTIFY_DETECTIVE_AND_TRAITOR)) or
@@ -79,8 +79,8 @@ local function StartGoblinTimers()
             end
         end
 
-        local min = GetConVar("ttt_lootgoblin_cackle_timer_min"):GetInt()
-        local max = GetConVar("ttt_lootgoblin_cackle_timer_max"):GetInt()
+        local min = lootgoblin_cackle_timer_min:GetInt()
+        local max = lootgoblin_cackle_timer_max:GetInt()
         timer.Create("LootGoblinCackle", math.random(min, max), 0, function()
             for _, v in ipairs(player.GetAll()) do
                 if v:IsActiveLootGoblin() and not v:GetNWBool("LootGoblinKilled", false) then
@@ -168,7 +168,7 @@ hook.Add("PlayerDeath", "LootGoblin_PlayerDeath", function(victim, infl, attacke
                         return "The " .. ROLE_STRINGS[ROLE_LOOTGOBLIN] .. " has been killed!"
                     end)
             local lootTable = {}
-            timer.Create("LootGoblinWeaponDrop", 0.05, GetConVar("ttt_lootgoblin_weapons_dropped"):GetInt(), function()
+            timer.Create("LootGoblinWeaponDrop", 0.05, lootgoblin_weapons_dropped:GetInt(), function()
                 if #lootTable == 0 then -- Rebuild the loot table if we run out
                     for _, v in ipairs(weapons.GetList()) do
                         if v and not v.AutoSpawnable and v.CanBuy and v.AllowDrop then
@@ -224,7 +224,7 @@ hook.Add("TTTPlayerSpawnForRound", "LootGoblin_TTTPlayerSpawnForRound", function
             else
                 ply:SetNWBool("LootGoblinActive", true)
                 ply:PrintMessage(HUD_PRINTTALK, "You have transformed into a goblin!")
-                ply:SetPlayerScale(GetConVar("ttt_lootgoblin_size"):GetFloat())
+                ply:SetPlayerScale(lootgoblin_size:GetFloat())
             end
         else
             timer.UnPause("LootGoblinActivate")
@@ -242,7 +242,7 @@ hook.Add("TTTPlayerRoleChanged", "LootGoblin_TTTPlayerRoleChanged", function(ply
         if lootGoblinActive then
             ply:SetNWBool("LootGoblinActive", true)
             ply:PrintMessage(HUD_PRINTTALK, "You have transformed into a goblin!")
-            ply:SetPlayerScale(GetConVar("ttt_lootgoblin_size"):GetFloat())
+            ply:SetPlayerScale(lootgoblin_size:GetFloat())
         elseif not timer.Exists("LootGoblinActivate") then
             StartGoblinTimers()
         else
