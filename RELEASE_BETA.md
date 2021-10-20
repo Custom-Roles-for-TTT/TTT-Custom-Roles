@@ -1,5 +1,11 @@
 # Beta Release Notes
 
+## 1.3.2
+**Released:**
+
+### Changes
+- Updated some of the loot goblin's text (tutorial, round start popup) to add clarity
+
 ## 1.3.1
 **Released: October 19th, 2021**
 
