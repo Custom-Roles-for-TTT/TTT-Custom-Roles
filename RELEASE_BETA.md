@@ -4,7 +4,7 @@
 **Released:**
 
 ### Changes
-- Updated some of the loot goblin's text (tutorial, round start popup) to add clarity
+- Updated some of the loot goblin's text (tutorial, round start popup) to add clarity and fix minor errors
 
 ## 1.3.1
 **Released: October 19th, 2021**
