@@ -584,11 +584,11 @@ Methods available when called from a Player object (within the defined realm)
 *Realm:* Server\
 *Added in:* 1.3.1\
 *Parameters:*
-- *scale* - The value with which to scale the players size, relative to their current size.\
+- *scale* - The value with which to scale the players size, relative to their current size.
 
 **plymeta:ResetPlayerScale()** - Reset's the players size to default by adjusting models, step sizes, hulls and view offsets.\
 *Realm:* Server\
-*Added in:* 1.3.1\
+*Added in:* 1.3.1
 
 ### *Player Static*
 Methods available having to do with players but without needing a specific Player object
