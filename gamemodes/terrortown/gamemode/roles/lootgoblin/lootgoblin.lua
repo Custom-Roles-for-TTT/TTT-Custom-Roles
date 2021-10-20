@@ -69,8 +69,12 @@ local function StartGoblinTimers()
             if v:IsActiveLootGoblin() then
                 v:SetNWBool("LootGoblinActive", true)
                 v:PrintMessage(HUD_PRINTTALK, "You have transformed into a goblin!")
-                v:SetPlayerScale(lootgoblin_size:GetFloat())
-                -- TODO: Speed/jump boost?
+
+                local scale = lootgoblin_size:GetFloat()
+                v:SetPlayerScale(scale)
+                -- Compensate the jump power so they have roughly the same jump height as normal
+                v:SetJumpPower(160 * (scale + 1))
+                -- TODO: Speed boost?
             elseif revealMode == JESTER_NOTIFY_EVERYONE or
                     (v:IsActiveTraitorTeam() and (revealMode == JESTER_NOTIFY_TRAITOR or JESTER_NOTIFY_DETECTIVE_AND_TRAITOR)) or
                     (not v:IsActiveDetectiveLike() and (revealMode == JESTER_NOTIFY_DETECTIVE or JESTER_NOTIFY_DETECTIVE_AND_TRAITOR)) then
@@ -213,6 +217,7 @@ hook.Add("TTTPrepareRound", "LootGoblin_PrepareRound", function()
         v:SetNWBool("LootGoblinActive", false)
         v:SetNWBool("LootGoblinKilled", false)
         v:ResetPlayerScale()
+        v:SetJumpPower(160)
     end
 end)
 
@@ -226,7 +231,7 @@ hook.Add("TTTPlayerSpawnForRound", "LootGoblin_TTTPlayerSpawnForRound", function
                 ply:PrintMessage(HUD_PRINTTALK, "You have transformed into a goblin!")
                 ply:SetPlayerScale(lootgoblin_size:GetFloat())
             end
-        else
+        elseif timer.Exists("LootGoblinActivate") then
             timer.UnPause("LootGoblinActivate")
             local remaining = timer.TimeLeft("LootGoblinActivate")
             SetGlobalFloat("ttt_lootgoblin_activate", CurTime() + remaining)

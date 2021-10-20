@@ -9,6 +9,10 @@
 
 ### Changes
 - Updated some of the loot goblin's text (tutorial, round start popup) to add clarity and fix minor errors
+- Changed loot goblin to jump higher once they are activated to compensate for their smaller size
+
+### Fixes
+- Fixed error in the round after one with a loot goblin that didn't activate
 
 ## 1.3.1
 **Released: October 19th, 2021**
