@@ -1,7 +1,7 @@
 # Beta Release Notes
 
 ## 1.3.2
-**Released:**
+**Released: October 21th, 2021**
 
 ### Additions
 - Added ability for an old man having an adrenaline rush to have target ID information (icon over the head, ring and text when you look at them) (enabled by default)
@@ -17,7 +17,7 @@
 - Fixed convar creation order causing error related to the ttt_drunk_can_be_ convars and ULX
 
 ## 1.3.1
-**Released: October 19th, 2021**
+**Released: October 20th, 2021**
 
 ### Additions
 - Added the loot goblin
