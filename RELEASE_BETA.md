@@ -14,6 +14,7 @@
 
 ### Fixes
 - Fixed error in the round after one with a loot goblin that didn't activate
+- Fixed convar creation order causing error related to the ttt_drunk_can_be_ convars and ULX
 
 ## 1.3.1
 **Released: October 19th, 2021**

@@ -13,11 +13,6 @@ local drunk_notify_mode = CreateConVar("ttt_drunk_notify_mode", "0", FCVAR_NONE,
 local drunk_innocent_chance = CreateConVar("ttt_drunk_innocent_chance", "0.7")
 local drunk_become_clown = CreateConVar("ttt_drunk_become_clown", "0")
 local drunk_any_role = CreateConVar("ttt_drunk_any_role", "0")
-for role = 0, ROLE_MAX do
-    if role ~= ROLE_DRUNK and role ~= ROLE_GLITCH then
-        CreateConVar("ttt_drunk_can_be_" .. ROLE_STRINGS_RAW[role], "1")
-    end
-end
 
 hook.Add("TTTSyncGlobals", "Drunk_TTTSyncGlobals", function()
     SetGlobalBool("ttt_drunk_become_clown", drunk_become_clown:GetBool())

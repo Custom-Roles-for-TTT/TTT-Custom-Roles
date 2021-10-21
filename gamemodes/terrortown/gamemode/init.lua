@@ -160,6 +160,13 @@ CreateConVar("ttt_jesters_visible_to_independents", "1")
 CreateConVar("ttt_independents_trigger_traitor_testers", "0")
 CreateConVar("ttt_independents_update_scoreboard", "0")
 
+-- Do this here so the convars are created early enough to be used by ULX
+for role = 0, ROLE_MAX do
+    if role ~= ROLE_DRUNK and role ~= ROLE_GLITCH then
+        CreateConVar("ttt_drunk_can_be_" .. ROLE_STRINGS_RAW[role], "1")
+    end
+end
+
 -- Other custom role properties
 CreateConVar("ttt_single_deputy_impersonator", "0")
 CreateConVar("ttt_deputy_impersonator_promote_any_death", "0")
