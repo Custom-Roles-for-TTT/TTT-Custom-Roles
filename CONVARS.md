@@ -4,19 +4,19 @@
 1. [Server Configurations](#Server-Configurations)
 1. [Role Weapon Shop](#Role-Weapon-Shop)
    1. [Configuration by UI](#Configuration-by-UI)
-      1. [Explanation](#Explanation)
-      1. [Example](#Example)
+       1. [Explanation](#Explanation)
+       1. [Example](#Example)
    1. [Configuration by Files](#Configuration-by-Files)
-      1. [Weapons](#Weapons)
-         1. [Adding Weapons](#Adding-Weapons)
-         1. [Removing Weapons](#Removing-Weapons)
-         1. [Bypassing Weapon Randomization](#Bypassing-Weapon-Randomization)
-         1. [Finding a Weapon's Class](#Finding-a-Weapons-Class)
-      1. [Equipment](#Equipment)
-         1. [Adding Equipment](#Adding-Equipment)
-         1. [Removing Equipment](#Removing-Equipment)
-         1. [Bypassing Equipment Randomization](#Bypassing-Equipment-Randomization)
-         1. [Finding an Equipment Item's Name](#Finding-an-Equipment-Items-Name)
+       1. [Weapons](#Weapons)
+          1. [Adding Weapons](#Adding-Weapons)
+          1. [Removing Weapons](#Removing-Weapons)
+          1. [Bypassing Weapon Randomization](#Bypassing-Weapon-Randomization)
+          1. [Finding a Weapon's Class](#Finding-a-Weapons-Class)
+       1. [Equipment](#Equipment)
+          1. [Adding Equipment](#Adding-Equipment)
+          1. [Removing Equipment](#Removing-Equipment)
+          1. [Bypassing Equipment Randomization](#Bypassing-Equipment-Randomization)
+          1. [Finding an Equipment Item's Name](#Finding-an-Equipment-Items-Name)
 1. [Renaming Roles](#Renaming-Roles)
 
 ## Server Configurations
@@ -67,6 +67,7 @@ ttt_swapper_enabled                         0       // Whether or not the swappe
 ttt_clown_enabled                           0       // Whether or not the clown should spawn
 ttt_beggar_enabled                          0       // Whether or not the beggar should spawn
 ttt_bodysnatcher_enabled                    0       // Whether or not the bodysnatcher should spawn
+ttt_lootgoblin_enabled                      0       // Whether or not the loot goblin should spawn
 ttt_drunk_enabled                           0       // Whether or not the drunk should spawn
 ttt_oldman_enabled                          0       // Whether or not the old man should spawn
 ttt_killer_enabled                          0       // Whether or not the killer should spawn
@@ -97,6 +98,7 @@ ttt_swapper_spawn_weight                    1       // The weight assigned to sp
 ttt_clown_spawn_weight                      1       // The weight assigned to spawning the clown
 ttt_beggar_spawn_weight                     1       // The weight assigned to spawning the beggar
 ttt_bodysnatcher_spawn_weight               1       // The weight assigned to spawning the bodysnatcher
+ttt_lootgoblin_spawn_weight                 1       // The weight assigned to spawning the loot goblin
 ttt_drunk_spawn_weight                      1       // The weight assigned to spawning the drunk
 ttt_oldman_spawn_weight                     1       // The weight assigned to spawning the old man
 ttt_killer_spawn_weight                     1       // The weight assigned to spawning the killer
@@ -128,6 +130,7 @@ ttt_swapper_min_players                     0       // The minimum number of pla
 ttt_clown_min_players                       0       // The minimum number of players required to spawn the clown
 ttt_beggar_min_players                      0       // The minimum number of players required to spawn the beggar
 ttt_bodysnatcher_min_players                0       // The minimum number of players required to spawn the bodysnatcher
+ttt_lootgoblin_min_players                  0       // The minimum number of players required to spawn the loot goblin
 ttt_drunk_min_players                       0       // The minimum number of players required to spawn the drunk
 ttt_oldman_min_players                      0       // The minimum number of players required to spawn the old man
 ttt_killer_min_players                      0       // The minimum number of players required to spawn the killer
@@ -154,7 +157,9 @@ ttt_deputy_impersonator_promote_any_death   0       // Whether deputy/impersonat
 ttt_hypnotist_credits_starting              1       // The number of credits a hypnotist should start with
 ttt_hypnotist_device_loadout                1       // Whether the hypnotist's defib should be given to them when they spawn. Server must be restarted for changes to take effect
 ttt_hypnotist_device_shop                   0       // Whether the hypnotist's defib should be purchasable in the shop. Server must be restarted for changes to take effect
+ttt_hypnotist_device_shop_rebuyable         0       // Whether the hypnotist's defib should be purchaseable multiple times (requires "ttt_hypnotist_device_shop" to be enabled). Server must be restarted for changes to take effect
 ttt_hypnotist_convert_detectives            0       // Whether to convert detectives and deputies (only if ttt_deputy_use_detective_icon is enabled) to impersonator instead of just a regular traitor. Does NOT convert detective team roles like paladin, medium, or tracker. Target will be automatically promoted to appear as a detective if appropriate
+ttt_hypnotist_device_time                   8       // The amount of time (in seconds) the hypnotist's device takes to use
 ttt_single_paramedic_hypnotist              0       // Whether only a single paramedic or hynotist should spawn in a round
 
 // Assassin
@@ -192,6 +197,7 @@ ttt_vampire_credits_starting                1       // The number of credits a v
 // Quack
 ttt_quack_credits_starting                  1       // The number of credits a quack should start with
 ttt_quack_fake_cure_mode                    0       // How to handle using a fake parasite cure on someone who is not infected. 0 - Kill nobody (But use up the cure), 1 - Kill the person who uses the cure, 2 - Kill the person the cure is used on
+ttt_quack_fake_cure_time                    -1      // The amount of time (in seconds) the fake parasite cure takes to use. If set to -1, the ttt_parasite_cure_time value will be usd instead
 ttt_quack_phantom_cure                      0       // Whether to allow the quack to buy the phantom exorcism device which can remove a haunting phantom. Server must be restarted for changes to take effect
 ttt_single_doctor_quack                     0       // Whether only a single doctor or quack should spawn in a round
 
@@ -204,6 +210,7 @@ ttt_parasite_respawn_mode                   0       // The way in which the para
 ttt_parasite_respawn_health                 100     // The health on which the parasite respawns
 ttt_parasite_announce_infection             0       // Whether players are notified when they are infected with the parasite
 ttt_parasite_cure_mode                      2       // How to handle using a parasite cure on someone who is not infected. 0 - Kill nobody (But use up the cure), 1 - Kill the person who uses the cure, 2 - Kill the person the cure is used on
+ttt_parasite_cure_time                      3       // The amount of time (in seconds) the parasite cure takes to use
 ttt_parasite_credits_starting               1       // The number of credits a parasite should start with
 ttt_single_phantom_parasite                 0       // Whether only a single phantom or parasite should spawn in a round
 
@@ -228,6 +235,7 @@ ttt_phantom_killer_haunt_jump_cost          50      // The amount of power to sp
 ttt_phantom_killer_haunt_drop_cost          75      // The amount of power to spend when a phantom is making their killer drop their weapon via a haunting. Set to 0 to disable
 ttt_phantom_killer_haunt_attack_cost        100     // The amount of power to spend when a phantom is making their killer attack via a haunting. Set to 0 to disable
 ttt_phantom_killer_haunt_without_body       1       // Whether the phantom can use their powers after their body is destroyed
+ttt_phantom_cure_time                       3       // The amount of time (in seconds) the phantom exorcism device takes to use. See "ttt_traitor_phantom_cure" and "ttt_quack_phantom_cure" to enable the device itself
 
 // Revenger
 ttt_revenger_radar_timer                    15      // The amount of time between radar pings for the revenger's lover's killer
@@ -239,6 +247,9 @@ ttt_deputy_damage_penalty                   0       // Damage penalty that the d
 ttt_deputy_credits_starting                 0       // The number of credits a deputy should start with
 ttt_deputy_use_detective_icon               1       // Whether a promoted deputy should show the detective icon over their head instead of the deputy icon
 ttt_deputy_without_detective                0       // Whether a deputy can spawn without a detective in the round. Will automatically promote the deputy when they spawn
+ttt_deputy_shop_active_only                 1       // Whether the deputy's shop should be available only after they activate
+ttt_deputy_shop_delay                       0       // Whether the deputy's purchased shop items should be held until they activate
+ttt_deputy_activation_credits               0       // The number of credits to give the deputy when they are activated
 
 // Mercenary
 ttt_mercenary_credits_starting              1       // The number of credits a mercenary should start with
@@ -258,7 +269,9 @@ ttt_doctor_credits_starting                 1       // The number of credits a d
 // Paramedic
 ttt_paramedic_defib_as_innocent             1       // Whether the paramedic's defib brings back everyone as a vanilla innocent role
 ttt_paramedic_device_loadout                1       // Whether the paramedic's defib should be given to them when they spawn. Server must be restarted for changes to take effect
-ttt_paramedic_device_shop                   0       // Whether the paramedic's defib should be purchasable in the shop (requires ttt_shop_for_all to be enabled). Server must be restarted for changes to take effect
+ttt_paramedic_device_shop                   0       // Whether the paramedic's defib should be purchasable in the shop (requires "ttt_shop_for_all" to be enabled). Server must be restarted for changes to take effect
+ttt_paramedic_device_shop_rebuyable         0       // Whether the paramedic's defib should be purchaseable multiple times (requires "ttt_paramedic_device_shop" to be enabled). Server must be restarted for changes to take effect
+ttt_paramedic_defib_time                    8       // The amount of time (in seconds) the paramedic's defib takes to use
 
 // Trickster
 ttt_trickster_credits_starting              0       // The number of credits a trickster should start with
@@ -320,18 +333,21 @@ ttt_swapper_credits_starting                0       // The number of credits a s
 ttt_clown_damage_bonus                      0       // Damage bonus that the clown has after being activated (e.g. 0.5 = 50% more damage)
 ttt_clown_activation_credits                0       // The number of credits to give the clown when they are activated
 ttt_clown_hide_when_active                  0       // Whether the clown should be hidden from other players' Target ID (overhead icons) when they are activated. Server or round must be restarted for changes to take effect
+ttt_clown_use_traps_when_active             0       // Whether the clown can see and use traitor traps when they are activated
 ttt_clown_show_target_icon                  0       // Whether the clown has an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect
 ttt_clown_heal_on_activate                  0       // Whether the clown should fully heal when they activate or not
 ttt_clown_heal_bonus                        0       // The amount of bonus health to give the clown if they are healed when they are activated
 ttt_clown_shop_active_only                  1       // Whether the clown's shop should be available only after they activate
 ttt_clown_shop_delay                        0       // Whether the clown's purchased shop items should be held until they activate
 ttt_clown_credits_starting                  0       // The number of credits a clown should start with
+ttt_single_drunk_clown                      0       // Whether only a single drunk or clown should spawn in a round (Only applies if ttt_single_jester_independent is disabled)
 
 // Beggar
 ttt_beggar_reveal_traitor                   1       // Who the beggar is revealed to when they join the traitor team. 0 - No one. 1 - Everyone. 2 - Traitors. 3 - Innocents
 ttt_beggar_reveal_innocent                  2       // Who the beggar is revealed to when they join the innocent team. 0 - No one. 1 - Everyone. 2 - Traitors. 3 - Innocents
 ttt_beggar_respawn                          0       // Whether the beggar respawns when they are killed before joining another team
-ttt_beggar_respawn_delay                    3       // The delay to use when respawning the begger (if "ttt_beggar_respawn" is enabled)
+ttt_beggar_respawn_delay                    3       // The delay to use when respawning the beggar (if "ttt_beggar_respawn" is enabled)
+ttt_beggar_respawn_limit                    0       // The maximum number of times the beggar can respawn (if "ttt_beggar_respawn" is enabled). Set to 0 to allow infinite respawns
 ttt_beggar_notify_mode                      0       // The logic to use when notifying players that a beggar is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
 ttt_beggar_notify_sound                     0       // Whether to play a cheering sound when a beggar is killed
 ttt_beggar_notify_confetti                  0       // Whether to throw confetti when a beggar is a killed
@@ -344,6 +360,26 @@ ttt_bodysnatcher_reveal_traitor             1       // Who the bodysnatcher is r
 ttt_bodysnatcher_reveal_innocent            1       // Who the bodysnatcher is revealed to when they join the innocent team. 0 - No one. 1 - Everyone. 2 - Their new team
 ttt_bodysnatcher_reveal_monster             1       // Who the bodysnatcher is revealed to when they join the monster team. 0 - No one. 1 - Everyone. 2 - Their new team
 ttt_bodysnatcher_reveal_independent         1       // Who the bodysnatcher is revealed to when they join the independent team. 0 - No one. 1 - Everyone. 2 - Their new team
+ttt_bodysnatcher_respawn                    0       // Whether the bodysnatcher respawns when they are killed before joining another team
+ttt_bodysnatcher_respawn_delay              3       // The delay to use when respawning the bodysnatcher (if "ttt_bodysnatcher_respawn" is enabled)
+ttt_bodysnatcher_respawn_limit              0       // The maximum number of times the bodysnatcher can respawn (if "ttt_bodysnatcher_respawn" is enabled). Set to 0 to allow infinite respawns
+ttt_bodysnatcher_notify_mode                0       // The logic to use when notifying players that a bodysnatcher is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
+ttt_bodysnatcher_notify_sound               0       // Whether to play a cheering sound when a bodysnatcher is killed
+ttt_bodysnatcher_notify_confetti            0       // Whether to throw confetti when a bodysnatcher is a killed
+ttt_bodysnatcher_device_time                5       // The amount of time (in seconds) the bodysnatcher's device takes to use
+
+// Loot Goblin
+ttt_lootgoblin_activation_timer             30      // Time in seconds before the loot goblin is revealed
+ttt_lootgoblin_announce                     4       // The logic to use when notifying players that a loot goblin has been revealed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
+ttt_lootgoblin_size                         0.5     // The size that the loot goblin will become when they are revealed (e.g. 0.5 = 50% size)
+ttt_lootgoblin_cackle_enabled               1       // Whether to play a cackle sound periodically when a loot goblin is activated
+ttt_lootgoblin_cackle_timer_min             4       // The minimum time between loot goblin cackles
+ttt_lootgoblin_cackle_timer_max             12      // The maximum time between loot goblin cackles
+ttt_lootgoblin_weapons_dropped              8       // How many weapons the loot goblin drops when they are killed
+ttt_lootgoblin_jingle_enabled               1       // Whether to play a jingle sound when an activated loot goblin is moving
+ttt_lootgoblin_notify_mode                  4       // The logic to use when notifying players that a loot goblin is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
+ttt_lootgoblin_notify_sound                 1       // Whether to play a cheering sound when a loot goblin is killed
+ttt_lootgoblin_notify_confetti              1       // Whether to throw confetti when a loot goblin is a killed
 
 // ----------------------------------------
 
@@ -382,6 +418,7 @@ ttt_drunk_can_be_swapper                    1       // Whether the drunk can bec
 ttt_drunk_can_be_clown                      1       // Whether the drunk can become a clown
 ttt_drunk_can_be_beggar                     1       // Whether the drunk can become a beggar
 ttt_drunk_can_be_bodysnatcher               1       // Whether the drunk can become a bodysnatcher
+ttt_drunk_can_be_lootgoblin                 1       // Whether the drunk can become a loot goblin
 ttt_drunk_can_be_oldman                     1       // Whether the drunk can become an old man
 ttt_drunk_can_be_killer                     1       // Whether the drunk can become a killer
 ttt_drunk_can_be_zombie                     1       // Whether the drunk can become a zombie
@@ -391,10 +428,15 @@ ttt_drunk_can_be_madscientist               1       // Whether the drunk can bec
 ttt_oldman_drain_health_to                  0       // The amount of health to drain the old man down to. Set to 0 to disable
 ttt_oldman_adrenaline_rush                  5       // The time in seconds the old mans adrenaline rush lasts for. Set to 0 to disable
 ttt_oldman_adrenaline_shotgun               1       // Whether the old man is given a double barrel shotgun when their adrenaline rush is triggered
+ttt_oldman_adrenaline_shotgun_damage        10      // How much damage the double barrel shotgun should do
+ttt_oldman_adrenaline_ramble                1       // Whether the rambling speech sound plays when the old man is having their adrenaline rush
+ttt_oldman_hide_when_active                 0       // Whether the old man should be hidden from other players' Target ID (overhead icons) when their adrenaline rush is triggered. Server or round must be restarted for changes to take effect
 
 // Killer
 ttt_killer_knife_enabled                    1       // Whether the killer knife is enabled
 ttt_killer_crowbar_enabled                  1       // Whether the killer throwable crowbar is enabled
+ttt_killer_crowbar_damage                   20      // How much damage the crowbar should do when the killer bashes another player with it
+ttt_killer_crowbar_thrown_damage            50      // How much damage the crowbar should do when the killer throws it at another player
 ttt_killer_smoke_enabled                    1       // Whether the killer smoke is enabled
 ttt_killer_smoke_timer                      60      // Number of seconds before a killer will start to smoke after their last kill
 ttt_killer_show_target_icon                 1       // Whether killers have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect
@@ -425,6 +467,9 @@ ttt_zombie_thrall_speed_bonus               0.15    // The amount of bonus speed
 ttt_zombie_respawn_health                   100     // The amount of health a player should respawn with when they are converted to a zombie thrall
 ttt_zombie_prime_convert_chance             1.0     // The chance that a prime zombie (e.g. player who spawned as a zombie originally) will convert other players who are killed by their claws to be zombies as well. Set to 0 to disable
 ttt_zombie_thrall_convert_chance            1.0     // The chance that a zombie thrall (e.g. non-prime zombie) will convert other players who are killed by their claws to be zombies as well. Set to 0 to disable
+
+// Mad Scientist
+ttt_madscientist_device_time                4       // The amount of time (in seconds) the mad scientist's device takes to use
 
 // ----------------------------------------
 
@@ -610,13 +655,13 @@ This window was made to closely resemble the role equipment shop so parts of it 
 Apart from those familiar pieces, this window also adds a few more controls specifically for configuring the role weapons shops:
 - *Search Role* - This dropdown in the top right of the window allows you to choose which role's shop to display and search through
 - The bottom right of the window houses the controls for targeting and saving the configuration changes
-   - *Save Role* - This dropdown allows you to choose which role you would update
-   - *Weapon State Checkboxes* - These checkboxes allow you to change how a weapon behaves in the role's shop
-      - *None* - Use the default buying configuration for the weapon
-      - *Include* - Mark this weapon as explicitly buyable
-      - *Exclude* - Mark this weapon as explicitly NOT buyable
-   - *No Random* - Ensure this weapon stays in the shop, regardless of randomization
-   - *Update* - Save the configuration changes
+  - *Save Role* - This dropdown allows you to choose which role you would update
+  - *Weapon State Checkboxes* - These checkboxes allow you to change how a weapon behaves in the role's shop
+    - *None* - Use the default buying configuration for the weapon
+    - *Include* - Mark this weapon as explicitly buyable
+    - *Exclude* - Mark this weapon as explicitly NOT buyable
+  - *No Random* - Ensure this weapon stays in the shop, regardless of randomization
+  - *Update* - Save the configuration changes
 - *Close* - This button will close the window, disgarding any unsaved changes
 
 #### **Example**
@@ -631,7 +676,7 @@ From here, the last step is to click the "Update" button and we're done -- The V
 
 ### Configuration by Files
 
-If you cannot or do not want to use the in-game UI to set up the role shop, it is also doable by manual file manipulation. This may be useful for server operators using Docker who want to have the configurations embedded in their server image.
+If you cannot or do not want to use the in-game UI to set up the role shop, it is also doable by manual file manipulation. This may be useful for server operators using Docker who want to have the configurations embedded in their server image. 
 
 *NOTE*: Using the configuration UI still creates and deletes files in the backend. Given that, you can use the UI on your local game and then copy the files to a server or Docker image build as needed.
 
