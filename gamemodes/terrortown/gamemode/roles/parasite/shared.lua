@@ -10,7 +10,7 @@ PARASITE_SUICIDE_NONE = 0
 PARASITE_SUICIDE_RESPAWN_ALL = 1
 PARASITE_SUICIDE_RESPAWN_CONSOLE = 2
 
--- Role features
+-- Initialize role features
 local function InitializeEquipment()
     if DefaultEquipment then
         DefaultEquipment[ROLE_PARASITE] = {

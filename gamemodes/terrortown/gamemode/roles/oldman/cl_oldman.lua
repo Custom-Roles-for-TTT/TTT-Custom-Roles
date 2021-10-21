@@ -59,6 +59,38 @@ hook.Add("TTTEventFinishIconText", "OldMan_TTTEventFinishIconText", function(e, 
     end
 end)
 
+---------------
+-- TARGET ID --
+---------------
+
+local function IsOldManVisible(ply)
+    return IsPlayer(ply) and ply:IsOldMan() and ply:IsRoleActive() and not GetGlobalBool("ttt_oldman_hide_when_active", false)
+end
+
+-- Show the old man icon if the player is an activated old man
+hook.Add("TTTTargetIDPlayerRoleIcon", "OldMan_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, color_role, hideBeggar, showJester, hideBodysnatcher)
+    if IsOldManVisible(ply) then
+        return ROLE_OLDMAN, false, ROLE_OLDMAN
+    end
+end)
+
+-- Show the old man information and color when you look at the player
+hook.Add("TTTTargetIDPlayerRing", "OldMan_TTTTargetIDPlayerRing", function(ent, client, ring_visible)
+    if GetRoundState() < ROUND_ACTIVE then return end
+
+    if IsOldManVisible(ent) then
+        return true, ROLE_COLORS_RADAR[ROLE_OLDMAN]
+    end
+end)
+
+hook.Add("TTTTargetIDPlayerText", "OldMan_TTTTargetIDPlayerText", function(ent, client, text, col, secondary_text)
+    if GetRoundState() < ROUND_ACTIVE then return end
+
+    if IsOldManVisible(ent) then
+        return ROLE_STRINGS[ROLE_OLDMAN]:upper(), ROLE_COLORS_RADAR[ROLE_OLDMAN]
+    end
+end)
+
 --------------
 -- TUTORIAL --
 --------------

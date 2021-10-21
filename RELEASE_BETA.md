@@ -1,5 +1,21 @@
 # Beta Release Notes
 
+## 1.3.2
+**Released:**
+
+### Additions
+- Added ability for an old man having an adrenaline rush to have target ID information (icon over the head, ring and text when you look at them) (enabled by default)
+- Added ability to control whether the old man plays the rambling speech sound when they are having an adrenaline rush (enabled by default)
+- Added ability to control whether the loot goblin plays its cackle and/or jingle sounds (enabled by default)
+
+### Changes
+- Updated some of the loot goblin's text (tutorial, round start popup) to add clarity and fix minor errors
+- Changed loot goblin to jump higher once they are activated to compensate for their smaller size
+
+### Fixes
+- Fixed error in the round after one with a loot goblin that didn't activate
+- Fixed convar creation order causing error related to the ttt_drunk_can_be_ convars and ULX
+
 ## 1.3.1
 **Released: October 19th, 2021**
 
