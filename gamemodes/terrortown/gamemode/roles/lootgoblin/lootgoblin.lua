@@ -55,6 +55,7 @@ local cackles = {
     Sound("lootgoblin/cackle2.wav"),
     Sound("lootgoblin/cackle3.wav")
 }
+local defaultJumpPower = 160
 local lootGoblinActive = false
 local function StartGoblinTimers()
     local goblinTime = lootgoblin_activation_timer:GetInt()
@@ -75,7 +76,7 @@ local function StartGoblinTimers()
                 local scale = lootgoblin_size:GetFloat()
                 v:SetPlayerScale(scale)
                 -- Compensate the jump power so they have roughly the same jump height as normal
-                v:SetJumpPower(160 * (scale + 1))
+                v:SetJumpPower(defaultJumpPower * (scale + 1))
                 -- TODO: Speed boost?
             elseif revealMode == JESTER_NOTIFY_EVERYONE or
                     (v:IsActiveTraitorTeam() and (revealMode == JESTER_NOTIFY_TRAITOR or JESTER_NOTIFY_DETECTIVE_AND_TRAITOR)) or
@@ -216,12 +217,16 @@ end)
 -- CLEANUP --
 -------------
 
+local function ResetPlayer(ply)
+    ply:SetNWBool("LootGoblinActive", false)
+    ply:ResetPlayerScale()
+    ply:SetJumpPower(defaultJumpPower)
+end
+
 hook.Add("TTTPrepareRound", "LootGoblin_PrepareRound", function()
     for _, v in pairs(player.GetAll()) do
-        v:SetNWBool("LootGoblinActive", false)
         v:SetNWBool("LootGoblinKilled", false)
-        v:ResetPlayerScale()
-        v:SetJumpPower(160)
+        ResetPlayer(v)
     end
 end)
 
@@ -245,8 +250,7 @@ end)
 
 hook.Add("TTTPlayerRoleChanged", "LootGoblin_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if oldRole == ROLE_LOOTGOBLIN then
-        ply:SetNWBool("LootGoblinActive", false)
-        ply:ResetPlayerScale()
+        ResetPlayer(ply)
     elseif newRole == ROLE_LOOTGOBLIN then
         if lootGoblinActive then
             ply:SetNWBool("LootGoblinActive", true)
