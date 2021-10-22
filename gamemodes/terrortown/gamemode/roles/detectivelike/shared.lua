@@ -41,7 +41,7 @@ function plymeta:HandleDetectiveLikePromotion()
     net.Send(self)
 end
 
-function plymeta:GetDetectiveLike() return self:IsDetectiveTeam() or ((self:GetDeputy() or self:GetImpersonator()) and self:IsRoleActive()) end
+function plymeta:GetDetectiveLike() return self:IsDetectiveTeam() or ((self:IsDeputy() or self:IsImpersonator()) and self:IsRoleActive()) end
 function plymeta:GetDetectiveLikePromotable() return (self:IsDeputy() or self:IsImpersonator()) and not self:IsRoleActive() end
 function plymeta:IsActiveDetectiveLike() return self:IsActive() and self:IsDetectiveLike() end
 

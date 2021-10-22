@@ -1,5 +1,12 @@
 # Release Notes
 
+## 1.3.3 (Beta)
+**Released:**
+
+### Fixes
+- Fixed deputy and impersonator not being promoted if they spawned in a round without a detective team role and ttt_deputy_impersonator_promote_any_death was enabled
+- Fixed loot goblin jump height calculation to work for more size scales than just the default
+
 ## 1.3.2 (Beta)
 **Released: October 21th, 2021**
 
