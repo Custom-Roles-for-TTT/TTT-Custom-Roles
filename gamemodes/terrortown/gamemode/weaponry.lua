@@ -715,7 +715,7 @@ end
 
 net.Receive("TTT_ConfigureRoleWeapons", function(len, ply)
     if not IsPlayer(ply) or not ply:IsAdmin() then
-        ErrorNoHalt("Player withing admin access attempted to configure role weapons: " .. ply:Nick() .. " (" .. ply:SteamID() .. ")\n")
+        ErrorNoHalt("Player without admin access attempted to configure role weapons: " .. ply:Nick() .. " (" .. ply:SteamID() .. ")\n")
         return
     end
 

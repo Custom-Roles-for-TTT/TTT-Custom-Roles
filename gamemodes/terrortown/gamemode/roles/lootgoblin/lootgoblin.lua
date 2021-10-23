@@ -75,8 +75,17 @@ local function StartGoblinTimers()
 
                 local scale = lootgoblin_size:GetFloat()
                 v:SetPlayerScale(scale)
-                -- Compensate the jump power so they have roughly the same jump height as normal
-                v:SetJumpPower(defaultJumpPower * (scale + 1))
+                local jumpPower = defaultJumpPower
+                -- Compensate the jump power of smaller players so they have roughly the same jump height as normal
+                -- In testing, scales >= 1 all seem to work fine with the default jump power and that's not the intent of this role anyway
+                if scale < 1 then
+                    -- Derived formula is y = -120x + 280
+                    -- We take the base jump power out of this as a known constant and then
+                    -- give a small jump boost of 5 extra power to "round up" the jump estimates
+                    -- so that smaller sizes can still clear jump+crouch blocks
+                    jumpPower = jumpPower + (-(120 * scale) + 125)
+                end
+                v:SetJumpPower(jumpPower)
                 -- TODO: Speed boost?
             elseif revealMode == JESTER_NOTIFY_EVERYONE or
                     (v:IsActiveTraitorTeam() and (revealMode == JESTER_NOTIFY_TRAITOR or JESTER_NOTIFY_DETECTIVE_AND_TRAITOR)) or

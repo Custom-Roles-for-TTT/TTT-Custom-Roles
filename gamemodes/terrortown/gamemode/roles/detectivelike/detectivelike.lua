@@ -20,9 +20,10 @@ function ShouldPromoteDetectiveLike()
         end
     end
 
-    -- If they should be promoted when any detective has died, just check that there is a dead detective
-    if GetConVar("ttt_deputy_impersonator_promote_any_death"):GetBool() then
-        return dead > 0
+    -- If they should be promoted when any detective has died, promote them if there is a death
+    -- If there isn't a death, fall back to the default logic
+    if GetConVar("ttt_deputy_impersonator_promote_any_death"):GetBool() and dead > 0 then
+        return true
     end
 
     -- Otherwise, only promote if there are no living detectives
