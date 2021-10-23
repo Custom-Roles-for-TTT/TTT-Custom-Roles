@@ -1,5 +1,12 @@
 # Release Notes
 
+## 1.3.4 (Beta)
+**Released:**
+
+### Fixes
+- Fixed devices which change a player's role while resurrecting them not using the configured health and max health for the target role
+- Fixed bodysnatching device not updating the owner's max health to match that of their new role
+
 ## 1.3.3 (Beta)
 **Released: October 24th, 2021**
 

@@ -245,6 +245,7 @@ if SERVER then
         end
         ply:StripRoleWeapons()
         ply:PrintMessage(HUD_PRINTCENTER, "You have been brainwashed and are now a traitor.")
+        SetRoleHealth(ply)
 
         SafeRemoveEntity(body)
 

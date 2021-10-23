@@ -49,7 +49,6 @@ local maxdist = 64
 local success = 100
 local mutateok = 0
 local mutatemax = 0
-local spawnhealth = 100
 
 local mutate = {
     ["models/props_junk/watermelon01.mdl"] = true,
@@ -227,7 +226,7 @@ if SERVER then
         ply:SetRole(ROLE_ZOMBIE)
         ply:StripRoleWeapons()
         ply:PrintMessage(HUD_PRINTCENTER, "You have been turned into a zombie.")
-        ply:SetHealth(spawnhealth)
+        SetRoleHealth(ply)
 
         SafeRemoveEntity(body)
 

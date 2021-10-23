@@ -218,7 +218,7 @@ if SERVER then
             ply:StripRoleWeapons()
         end
         ply:PrintMessage(HUD_PRINTCENTER, "You have been revived by " .. ROLE_STRINGS_EXT[ROLE_PARAMEDIC] .. "!")
-        ply:SetHealth(ply:GetMaxHealth())
+        SetRoleHealth(ply)
 
         SafeRemoveEntity(body)
 
