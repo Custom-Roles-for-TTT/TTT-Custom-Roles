@@ -12,6 +12,7 @@ local itemSizeVar = CreateClientConVar("ttt_bem_size", 64, true, false, "Sets th
 local showCustomVar = CreateClientConVar("ttt_bem_marker_custom", 1, true, false, "Should custom items get a marker?")
 local showFavoriteVar = CreateClientConVar("ttt_bem_marker_fav", 1, true, false, "Should favorite items get a marker?")
 local showSlotVar = CreateClientConVar("ttt_bem_marker_slot", 1, true, false, "Should items get a slot-marker?")
+local showLoadoutEquipment = CreateClientConVar("ttt_show_loadout_equipment", 0, true, false, "Should loadout equipment show in shops?")
 
 -- Buyable weapons are loaded automatically. Buyable items are defined in
 -- equip_items_shd.lua
@@ -87,9 +88,8 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
         GetEquipmentForRole(ROLE_TRAITOR, false, true, block_exclusion, ignore_cache)
     end
 
-    local sync_detective_like = promoted and (role == ROLE_DEPUTY or role == ROLE_IMPERSONATOR)
     local detectivesync = GetGlobalBool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_sync", false) and DETECTIVE_ROLES[role]
-    local sync_detective_weapons = detectivesync or sync_detective_like or (rolemode > SHOP_SYNC_MODE_NONE)
+    local sync_detective_weapons = detectivesync or promoted or (rolemode > SHOP_SYNC_MODE_NONE)
 
     -- Pre-load the Detective weapons so that any that have their CanBuy modified will also apply to the enabled allied role(s)
     if sync_detective_weapons and not Equipment[ROLE_DETECTIVE] then
@@ -190,7 +190,7 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
                 -- Avoid duplicates
                 if not available[i.id] and
                     -- Detective -> Detective-like
-                    (sync_detective_like or
+                    (promoted or
                     -- Traitor OR Detective or Detective-only modes, Detective -> Sync Role
                     (rolemode == SHOP_SYNC_MODE_UNION or rolemode == SHOP_SYNC_MODE_DETECTIVE)) then
                     table.insert(tbl[role], i)
@@ -246,7 +246,7 @@ end
 
 local function CanCarryWeapon(item)
     local client = LocalPlayer()
-    -- Don't allow the clown to buy any weapon that has a kind matching one of the weapons they've already bought
+    -- Don't allow delayed shop roles to buy any weapon that has a kind matching one of the weapons they've already bought
     if item.kind and client.bought and client:ShouldDelayShopPurchase() then
         for _, id in ipairs(client.bought) do
             local wep = weapons.GetStored(id)
@@ -261,7 +261,7 @@ end
 
 local function HasEquipmentItem(item)
     local client = LocalPlayer()
-    -- Don't allow the clown to buy the same equipment item twice if delayed acceptance is enabled
+    -- Don't allow the delayed shop roles to buy the same equipment item twice if delayed acceptance is enabled
     if client.bought and client:ShouldDelayShopPurchase() then
         return table.HasValue(client.bought, tostring(item.id))
     end
@@ -434,7 +434,7 @@ local function TraitorMenuPopup()
     local m = 5
     -- item list width
     local dlistw = ((itemSize + 2) * numCols) - 2 + 15
-    local dlisth = ((itemSize + 2) * numRows) - 2 + 15
+    local dlisth = ((itemSize + 2) * numRows) - 2 + 45
     -- right column width
     local diw = 270
     -- frame size
@@ -670,7 +670,7 @@ local function TraitorMenuPopup()
 
                 -- Don't show equipment items that you already own that are listed as "loadout" because you were given it for free
                 local externalLoadout = ROLE_LOADOUT_ITEMS[ply:GetRole()] and table.HasValue(ROLE_LOADOUT_ITEMS[ply:GetRole()], item.name)
-                if not ItemIsWeapon(item) and ply:HasEquipmentItem(item.id) and (item.loadout or externalLoadout) then
+                if not ItemIsWeapon(item) and ply:HasEquipmentItem(item.id) and (item.loadout or externalLoadout) and not showLoadoutEquipment:GetBool() then
                     ic:Remove()
                 else
                     if ic.favorite then
@@ -718,7 +718,7 @@ local function TraitorMenuPopup()
             dlist:SelectPanel(dlist:GetItems()[1])
         end
         dsearch.OnValueChange = function(box, value)
-            local roleitems = GetEquipmentForRole(ply:GetRole(), ply:GetNWBool("HasPromotion", false), false)
+            local roleitems = GetEquipmentForRole(ply:GetRole(), ply:IsDetectiveLike() and not ply:IsDetectiveTeam(), false)
             local filtered = {}
             for _, v in pairs(roleitems) do
                 if v and v["name"] and string.find(SafeTranslate(v["name"]):lower(), value:lower()) then
@@ -849,7 +849,7 @@ local function TraitorMenuPopup()
             dconfirm.DoClick()
         end
 
-        FillEquipmentList(GetEquipmentForRole(ply:GetRole(), ply:GetNWBool("HasPromotion", false), false))
+        FillEquipmentList(GetEquipmentForRole(ply:GetRole(), ply:IsDetectiveLike() and not ply:IsDetectiveTeam(), false))
         show = true
     end
 

@@ -40,44 +40,7 @@ local mat_dir = "vgui/ttt/"
 -- Stick to around 35 characters per description line, and add a "\n" where you
 -- want a new line to start.
 
-EquipmentItems = {
-    [ROLE_MERCENARY] = {
-        -- body armor
-        { id = EQUIP_ARMOR,
-          loadout = true, -- default equipment for mercenaries
-          type = "item_passive",
-          material = mat_dir .. "icon_armor",
-          name = "item_armor",
-          desc = "item_armor_desc"
-        },
-
-        -- radar
-        { id = EQUIP_RADAR,
-          type = "item_active",
-          material = mat_dir .. "icon_radar",
-          name = "item_radar",
-          desc = "item_radar_desc"
-        }
-    };
-
-    [ROLE_DEPUTY] = {
-        -- body armor
-        { id = EQUIP_ARMOR,
-          type = "item_passive",
-          material = mat_dir .. "icon_armor",
-          name = "item_armor",
-          desc = "item_armor_desc"
-        },
-
-        -- radar
-        { id = EQUIP_RADAR,
-          type = "item_active",
-          material = mat_dir .. "icon_radar",
-          name = "item_radar",
-          desc = "item_radar_desc"
-        }
-    };
-};
+EquipmentItems = {}
 
 local defaultDetectiveItems = {
     -- body armor

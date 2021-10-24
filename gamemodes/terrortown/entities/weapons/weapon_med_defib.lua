@@ -45,14 +45,11 @@ SWEP.Secondary.Delay = 1.25
 SWEP.InLoadoutFor = {ROLE_PARAMEDIC}
 SWEP.InLoadoutForDefault = {ROLE_PARAMEDIC}
 
-SWEP.Charge = 0
-SWEP.Timer = -1
 SWEP.AllowDrop = false
 
 -- settings
 local maxdist = 64
 local success = 100
-local charge = 8
 local mutateok = 0
 local mutatemax = 0
 
@@ -81,17 +78,26 @@ local DEFIB_IDLE = 0
 local DEFIB_BUSY = 1
 local DEFIB_ERROR = 2
 
+if SERVER then
+    CreateConVar("ttt_paramedic_defib_time", "8")
+end
+
 if CLIENT then
     function SWEP:Initialize()
         self:AddHUDHelp("defibrillator_help_pri", "defibrillator_help_sec", true)
-        self:SetHoldType(self.HoldType)
+        return self.BaseClass.Initialize(self)
     end
 end
 
 function SWEP:SetupDataTables()
     self:NetworkVar("Int", 0, "State")
-    self:NetworkVar("Float", 1, "Begin")
+    self:NetworkVar("Int", 1, "ChargeTime")
+    self:NetworkVar("Float", 0, "Begin")
     self:NetworkVar("String", 0, "Message")
+
+    if SERVER then
+        self:SetChargeTime(GetConVar("ttt_paramedic_defib_time"):GetInt())
+    end
 end
 
 function SWEP:OnDrop()
@@ -193,13 +199,8 @@ if SERVER then
         net.WriteBool(true)
         net.Send(ply)
 
-        -- Un-haunt the player if the target was the Phantom or Parasite
         local owner = self:GetOwner()
-        if ply:IsPhantom() and ply:GetNWString("HauntingTarget", nil) == owner:SteamID64() then
-            owner:SetNWBool("Haunted", false)
-        elseif ply:IsParasite() and ply:GetNWString("InfectingTarget", nil) == owner:SteamID64() then
-            owner:SetNWBool("Infected", false)
-        end
+        hook.Run("TTTPlayerDefibRoleChange", owner, ply)
 
         ply:SpawnForRound(true)
         ply:SetCredits(credits)
@@ -257,7 +258,7 @@ if SERVER then
 
     function SWEP:Think()
         if self:GetState() == DEFIB_BUSY then
-            if self:GetBegin() + charge <= CurTime() then
+            if self:GetBegin() + self:GetChargeTime() <= CurTime() then
                 self:Defib()
             elseif not self:GetOwner():KeyDown(IN_ATTACK) or self:GetOwner():GetEyeTrace(MASK_SHOT_HULL).Entity ~= self.Target then
                 self:Error("DEFIBRILLATION ABORTED")
@@ -324,6 +325,7 @@ if CLIENT then
         local w, h = 255, 20
 
         if state == DEFIB_BUSY then
+            local charge = self:GetChargeTime()
             local time = self:GetBegin() + charge
             if time < 0 then return end
 

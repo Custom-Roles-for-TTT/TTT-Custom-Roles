@@ -4,19 +4,19 @@ AddCSLuaFile()
 -- CONVARS --
 -------------
 
-CreateConVar("ttt_assassin_show_target_icon", "0")
-CreateConVar("ttt_assassin_target_vision_enable", "0")
-CreateConVar("ttt_assassin_next_target_delay", "5")
-CreateConVar("ttt_assassin_target_damage_bonus", "1")
-CreateConVar("ttt_assassin_target_bonus_bought", "1")
-CreateConVar("ttt_assassin_wrong_damage_penalty", "0.5")
-CreateConVar("ttt_assassin_failed_damage_penalty", "0.5")
-CreateConVar("ttt_assassin_shop_roles_last", "0")
+local assassin_show_target_icon = CreateConVar("ttt_assassin_show_target_icon", "0")
+local assassin_target_vision_enable = CreateConVar("ttt_assassin_target_vision_enable", "0")
+local assassin_next_target_delay = CreateConVar("ttt_assassin_next_target_delay", "5")
+local assassin_target_damage_bonus = CreateConVar("ttt_assassin_target_damage_bonus", "1")
+local assassin_target_bonus_bought = CreateConVar("ttt_assassin_target_bonus_bought", "1")
+local assassin_wrong_damage_penalty = CreateConVar("ttt_assassin_wrong_damage_penalty", "0.5")
+local assassin_failed_damage_penalty = CreateConVar("ttt_assassin_failed_damage_penalty", "0.5")
+local assassin_shop_roles_last = CreateConVar("ttt_assassin_shop_roles_last", "0")
 
 hook.Add("TTTSyncGlobals", "Assassin_TTTSyncGlobals", function()
-    SetGlobalBool("ttt_assassin_show_target_icon", GetConVar("ttt_assassin_show_target_icon"):GetBool())
-    SetGlobalBool("ttt_assassin_target_vision_enable", GetConVar("ttt_assassin_target_vision_enable"):GetBool())
-    SetGlobalInt("ttt_assassin_next_target_delay", GetConVar("ttt_assassin_next_target_delay"):GetInt())
+    SetGlobalBool("ttt_assassin_show_target_icon", assassin_show_target_icon:GetBool())
+    SetGlobalBool("ttt_assassin_target_vision_enable", assassin_target_vision_enable:GetBool())
+    SetGlobalFloat("ttt_assassin_next_target_delay", assassin_next_target_delay:GetFloat())
 end)
 
 -----------------------
@@ -41,7 +41,7 @@ function AssignAssassinTarget(ply, start, delay)
     local detectives = {}
     local independents = {}
     local beggarMode = GetConVar("ttt_beggar_reveal_innocent"):GetInt()
-    local shopRolesFirst = GetConVar("ttt_assassin_shop_roles_last"):GetBool()
+    local shopRolesLast = assassin_shop_roles_last:GetBool()
     local bodysnatcherModeInno = GetConVar("ttt_bodysnatcher_reveal_innocent"):GetInt()
     local bodysnatcherModeMon = GetConVar("ttt_bodysnatcher_reveal_monster"):GetInt()
     local bodysnatcherModeIndep = GetConVar("ttt_bodysnatcher_reveal_independent"):GetInt()
@@ -52,7 +52,7 @@ function AssignAssassinTarget(ply, start, delay)
         if p:GetNWBool("WasBodysnatcher", false) and bodysnatcherMode ~= BODYSNATCHER_REVEAL_ALL then return end
 
         -- Put shop roles into a list if they should be targeted last
-        if shopRolesFirst and p:IsShopRole() then
+        if shopRolesLast and p:IsShopRole() then
             table.insert(shops, p:Nick())
         else
             table.insert(enemies, p:Nick())
@@ -64,13 +64,13 @@ function AssignAssassinTarget(ply, start, delay)
             -- Include all non-traitor detective-like players
             if p:IsDetectiveLike() and not p:IsTraitorTeam() then
                 table.insert(detectives, p:Nick())
-            -- Exclude Glitch from these lists so they don't get discovered immediately
+            -- Exclude Glitch from this list so they don't get discovered immediately
             elseif p:IsInnocentTeam() and not p:IsGlitch() then
                 AddEnemy(p, bodysnatcherModeInno)
-            elseif p:IsMonsterTeam() and not p:IsGlitch() then
+            elseif p:IsMonsterTeam() then
                 AddEnemy(p, bodysnatcherModeMon)
-            -- Exclude the Old Man because they just want to survive
-            elseif p:IsIndependentTeam() and not p:IsOldMan() then
+            -- Exclude roles that have a passive win because they just want to survive
+            elseif p:IsIndependentTeam() and not ROLE_HAS_PASSIVE_WIN[p:GetRole()] then
                 -- Also exclude bodysnatchers turned into an independent if their role hasn't been revealed
                 if not p:GetNWBool("WasBodysnatcher", false) or bodysnatcherModeIndep == BODYSNATCHER_REVEAL_ALL then
                     table.insert(independents, p:Nick())
@@ -159,7 +159,7 @@ hook.Add("DoPlayerDeath", "Assassin_DoPlayerDeath", function(ply, attacker, dmgi
 
             -- Don't select a new target if this was the final target
             if not v:GetNWBool("AssassinComplete", false) then
-                local delay = GetConVar("ttt_assassin_next_target_delay"):GetFloat()
+                local delay = assassin_next_target_delay:GetFloat()
                 -- Delay giving the next target if we're configured to do so
                 if delay > 0 then
                     if v:Alive() and not v:IsSpec() then
@@ -203,7 +203,7 @@ hook.Add("ScalePlayerDamage", "Assassin_ScalePlayerDamage", function(ply, hitgro
         if att:IsAssassin() and ply ~= att and not ply:IsJesterTeam() then
             local scale = 0
             if att:GetNWBool("AssassinFailed", false) then
-                scale = -GetConVar("ttt_assassin_failed_damage_penalty"):GetFloat()
+                scale = -assassin_failed_damage_penalty:GetFloat()
             elseif ply:Nick() == att:GetNWString("AssassinTarget", "") then
                 -- Get the active weapon, whather it's in the inflictor or it's from the attacker
                 local active_weapon = dmginfo:GetInflictor()
@@ -212,11 +212,11 @@ hook.Add("ScalePlayerDamage", "Assassin_ScalePlayerDamage", function(ply, hitgro
                 end
 
                 -- Only scale bought weapons if that is enabled
-                if (active_weapon.Spawnable or (not active_weapon.CanBuy or GetConVar("ttt_assassin_target_bonus_bought"):GetBool())) then
-                    scale = GetConVar("ttt_assassin_target_damage_bonus"):GetFloat()
+                if (active_weapon.Spawnable or (not active_weapon.CanBuy or assassin_target_bonus_bought:GetBool())) then
+                    scale = assassin_target_damage_bonus:GetFloat()
                 end
             else
-                scale = -GetConVar("ttt_assassin_wrong_damage_penalty"):GetFloat()
+                scale = -assassin_wrong_damage_penalty:GetFloat()
             end
             dmginfo:ScaleDamage(1 + scale)
         end

@@ -123,7 +123,7 @@ SWEP.PrimaryAnim = ACT_VM_PRIMARYATTACK
 SWEP.ReloadAnim = ACT_VM_RELOAD
 
 SWEP.fingerprints = {}
-SWEP.BoughtBuy = nil
+SWEP.BoughtBy = nil
 SWEP.BlockShopRandomization = false
 
 if CLIENT then
@@ -222,7 +222,8 @@ if CLIENT then
     local default_key_params = {
         primaryfire = Key("+attack", "LEFT MOUSE"),
         secondaryfire = Key("+attack2", "RIGHT MOUSE"),
-        usekey = Key("+use", "USE")
+        reload = Key("+reload", "R"),
+        usekey = Key("+use", "E")
     };
 
     function SWEP:AddHUDHelp(primary_text, secondary_text, translate, extra_params)

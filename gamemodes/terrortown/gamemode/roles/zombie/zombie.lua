@@ -6,24 +6,24 @@ local plymeta = FindMetaTable("Player")
 -- CONVARS --
 -------------
 
-CreateConVar("ttt_zombies_are_monsters", "0")
-CreateConVar("ttt_zombies_are_traitors", "0")
 CreateConVar("ttt_zombie_round_chance", 0.1)
-CreateConVar("ttt_zombie_show_target_icon", "0")
-CreateConVar("ttt_zombie_damage_penalty", "0.5")
-CreateConVar("ttt_zombie_damage_reduction", "0")
-CreateConVar("ttt_zombie_prime_only_weapons", "1")
-CreateConVar("ttt_zombie_prime_speed_bonus", "0.35")
-CreateConVar("ttt_zombie_thrall_speed_bonus", "0.15")
-CreateConVar("ttt_zombie_vision_enable", "0")
+local zombies_are_monsters = CreateConVar("ttt_zombies_are_monsters", "0")
+local zombies_are_traitors = CreateConVar("ttt_zombies_are_traitors", "0")
+local zombie_show_target_icon = CreateConVar("ttt_zombie_show_target_icon", "0")
+local zombie_damage_penalty = CreateConVar("ttt_zombie_damage_penalty", "0.5")
+local zombie_damage_reduction = CreateConVar("ttt_zombie_damage_reduction", "0")
+local zombie_prime_only_weapons = CreateConVar("ttt_zombie_prime_only_weapons", "1")
+local zombie_prime_speed_bonus = CreateConVar("ttt_zombie_prime_speed_bonus", "0.35")
+local zombie_thrall_speed_bonus = CreateConVar("ttt_zombie_thrall_speed_bonus", "0.15")
+local zombie_vision_enable = CreateConVar("ttt_zombie_vision_enable", "0")
 
 hook.Add("TTTSyncGlobals", "Zombie_TTTSyncGlobals", function()
-    SetGlobalBool("ttt_zombies_are_monsters", GetConVar("ttt_zombies_are_monsters"):GetBool())
-    SetGlobalBool("ttt_zombies_are_traitors", GetConVar("ttt_zombies_are_traitors"):GetBool())
-    SetGlobalBool("ttt_zombie_show_target_icon", GetConVar("ttt_zombie_show_target_icon"):GetBool())
-    SetGlobalBool("ttt_zombie_vision_enable", GetConVar("ttt_zombie_vision_enable"):GetBool())
-    SetGlobalFloat("ttt_zombie_prime_speed_bonus", GetConVar("ttt_zombie_prime_speed_bonus"):GetFloat())
-    SetGlobalFloat("ttt_zombie_thrall_speed_bonus", GetConVar("ttt_zombie_thrall_speed_bonus"):GetFloat())
+    SetGlobalBool("ttt_zombies_are_monsters", zombies_are_monsters:GetBool())
+    SetGlobalBool("ttt_zombies_are_traitors", zombies_are_traitors:GetBool())
+    SetGlobalBool("ttt_zombie_show_target_icon", zombie_show_target_icon:GetBool())
+    SetGlobalBool("ttt_zombie_vision_enable", zombie_vision_enable:GetBool())
+    SetGlobalFloat("ttt_zombie_prime_speed_bonus", zombie_prime_speed_bonus:GetFloat())
+    SetGlobalFloat("ttt_zombie_thrall_speed_bonus", zombie_thrall_speed_bonus:GetFloat())
 end)
 
 -----------
@@ -115,13 +115,13 @@ hook.Add("ScalePlayerDamage", "Zombie_ScalePlayerDamage", function(ply, hitgroup
     if IsPlayer(att) and GetRoundState() >= ROUND_ACTIVE then
         -- Monsters take less bullet damage
         if dmginfo:IsBulletDamage() and ply:IsZombie() then
-            local reduction = GetConVar("ttt_zombie_damage_reduction"):GetFloat()
+            local reduction = zombie_damage_reduction:GetFloat()
             dmginfo:ScaleDamage(1 - reduction)
         end
 
         -- Zombies do less damage when using non-claw weapons
         if att:IsZombie() and att:GetActiveWeapon():GetClass() ~= "weapon_zom_claws" then
-            local penalty = GetConVar("ttt_zombie_damage_penalty"):GetFloat()
+            local penalty = zombie_damage_penalty:GetFloat()
             dmginfo:ScaleDamage(1 - penalty)
         end
     end
@@ -167,7 +167,7 @@ hook.Add("TTTPlayerAliveThink", "Zombie_TTTPlayerAliveThink", function(ply)
 
         -- Strip all non-claw weapons for non-prime zombies if that feature is enabled
         -- Strip individual weapons instead of all because otherwise the player will have their claws added and removed constantly
-        if GetConVar("ttt_zombie_prime_only_weapons"):GetBool() and not ply:GetZombiePrime() then
+        if zombie_prime_only_weapons:GetBool() and not ply:GetZombiePrime() then
             local weapons = ply:GetWeapons()
             for _, v in pairs(weapons) do
                 local weapclass = WEPS.GetClass(v)
@@ -205,7 +205,7 @@ hook.Add("PlayerCanPickupWeapon", "Zombie_Weapons_PlayerCanPickupWeapon", functi
         return ply:IsZombie()
     end
 
-    if GetConVar("ttt_zombie_prime_only_weapons"):GetBool() and ply:IsZombie() and not ply:IsZombiePrime() and GetRoundState() == ROUND_ACTIVE then
+    if zombie_prime_only_weapons:GetBool() and ply:IsZombie() and not ply:IsZombiePrime() and GetRoundState() == ROUND_ACTIVE then
         return false
     end
 end)
