@@ -97,7 +97,16 @@
 
 ## 1.3.0
 **Released: October 5th, 2021**\
-Includes all beta updates from [1.2.4](#124-beta) to [1.2.8](#128-beta).
+Includes all beta updates from [1.2.4](#124-beta) to [1.2.9](#129-beta).
+
+## 1.2.9 (Beta)
+**Released: October 24th, 2021**
+
+### Additions
+- Added a check that prints incompatible addons to the console when the server starts
+
+### Developer
+- Added CR_BETA flag to check whether the version being played is a beta or release version
 
 ## 1.2.8 (Beta)
 **Released: October 3rd, 2021**
