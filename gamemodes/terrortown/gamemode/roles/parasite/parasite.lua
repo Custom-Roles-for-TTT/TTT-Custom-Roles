@@ -23,13 +23,6 @@ end)
 -- HAUNTING --
 --------------
 
--- Un-infect the device owner if they used their device on the Parasite
-hook.Add("TTTPlayerDefibRoleChange", "Parasite_TTTPlayerDefibRoleChange", function(ply, tgt)
-    if tgt:IsParasite() and tgt:GetNWString("InfectingTarget", nil) == ply:SteamID64() then
-        ply:SetNWBool("Infected", false)
-    end
-end)
-
 local deadParasites = {}
 hook.Add("TTTPrepareRound", "Parasite_TTTPrepareRound", function()
     for _, v in pairs(player.GetAll()) do
@@ -43,12 +36,32 @@ hook.Add("TTTPrepareRound", "Parasite_TTTPrepareRound", function()
     deadParasites = {}
 end)
 
-hook.Add("TTTPlayerSpawnForRound", "Parasite_TTTPlayerSpawnForRound", function(ply, dead_only)
+local function ResetPlayer(ply)
+    -- If this player is infecting someone else, make sure to clear them of the infection too
+    if ply:GetNWBool("Infecting", false) then
+        local sid = ply:GetNWString("InfectingTarget", nil)
+        if sid then
+            local target = player.GetBySteamID64(sid)
+            if IsPlayer(target) then
+                target:SetNWBool("Infected", false)
+            end
+        end
+    end
     ply:SetNWBool("Infecting", false)
     ply:SetNWString("InfectingTarget", nil)
     ply:SetNWInt("InfectionProgress", 0)
     timer.Remove(ply:Nick() .. "InfectionProgress")
     timer.Remove(ply:Nick() .. "InfectingSpectate")
+end
+
+hook.Add("TTTPlayerRoleChanged", "Parasite_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+    if oldRole == ROLE_PARASITE and oldRole ~= newRole then
+        ResetPlayer(ply)
+    end
+end)
+
+hook.Add("TTTPlayerSpawnForRound", "Parasite_TTTPlayerSpawnForRound", function(ply, dead_only)
+    ResetPlayer(ply)
 end)
 
 local function DoParasiteRespawnWithoutBody(parasite, hide_messages)
