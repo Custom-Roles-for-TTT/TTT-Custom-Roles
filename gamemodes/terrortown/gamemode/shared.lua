@@ -1,5 +1,6 @@
 -- Version string for display and function for version checks
 CR_VERSION = "1.3.0"
+CR_BETA = false
 
 function CRVersion(version)
     local installedVersionRaw = string.Split(CR_VERSION, ".")
