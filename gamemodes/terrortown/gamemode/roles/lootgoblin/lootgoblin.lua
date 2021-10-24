@@ -138,14 +138,7 @@ hook.Add("TTTWinCheckComplete", "LootGoblin_TTTWinCheckComplete", HandleLootGobl
 ------------
 
 hook.Add("TTTBeginRound", "LootGoblin_TTTBeginRound", function()
-    local hasLootGoblin = false
-    for _, v in ipairs(player.GetAll()) do
-        if v:IsLootGoblin() then
-            hasLootGoblin = true
-        end
-    end
-
-    if hasLootGoblin then
+    if player.IsRoleLiving(ROLE_LOOTGOBLIN) then
         StartGoblinTimers()
     end
 end)
@@ -165,7 +158,7 @@ local footsteps = {
     Sound("lootgoblin/jingle7.wav"),
     Sound("lootgoblin/jingle8.wav")
 }
-hook.Add( "PlayerFootstep", "LootGoblin_PlayerFootstep", function( ply, pos, foot, snd, volume, rf )
+hook.Add("PlayerFootstep", "LootGoblin_PlayerFootstep", function(ply, pos, foot, snd, volume, rf)
     if ply:IsActiveLootGoblin() and ply:IsRoleActive() and not ply:GetNWBool("LootGoblinKilled", false) and lootgoblin_jingle_enabled:GetBool() then
         local idx = math.random(1, #footsteps)
         local chosen_sound = footsteps[idx]
@@ -176,6 +169,15 @@ end)
 -----------
 -- DEATH --
 -----------
+
+local function PauseIfSingleGoblin()
+    if not timer.Exists("LootGoblinActivate") then return end
+    if GetRoundState() ~= ROUND_ACTIVE then return end
+
+    if not player.IsRoleLiving(ROLE_LOOTGOBLIN) then
+        timer.Pause("LootGoblinActivate")
+    end
+end
 
 hook.Add("PlayerDeath", "LootGoblin_PlayerDeath", function(victim, infl, attacker)
     if victim:IsLootGoblin() then
@@ -210,15 +212,7 @@ hook.Add("PlayerDeath", "LootGoblin_PlayerDeath", function(victim, infl, attacke
             end)
         end
 
-        local lootGoblinCount = 0
-        for _, v in pairs(player.GetAll()) do
-            if v:IsActiveLootGoblin() then
-                lootGoblinCount = lootGoblinCount + 1
-            end
-        end
-        if lootGoblinCount <= 1 then
-            timer.Pause("LootGoblinActivate")
-        end
+        PauseIfSingleGoblin()
     end
 end)
 
@@ -230,6 +224,7 @@ local function ResetPlayer(ply)
     ply:SetNWBool("LootGoblinActive", false)
     ply:ResetPlayerScale()
     ply:SetJumpPower(defaultJumpPower)
+    PauseIfSingleGoblin()
 end
 
 hook.Add("TTTPrepareRound", "LootGoblin_PrepareRound", function()
