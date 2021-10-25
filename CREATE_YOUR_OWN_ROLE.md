@@ -381,9 +381,9 @@ end
 
 ROLE.translations = {
     ["english"] = {
-        "summoner_haunt_title" = "WILLPOWER",
-        "summoner_haunt_jump" = "SPACE: Jump (Cost: {num}%)",
-        "summoner_haunt_drop" = "RIGHT CLICK: Drop (Cost: {num}%)"
+        ["summoner_haunt_title"] = "WILLPOWER",
+        ["summoner_haunt_jump"] = "SPACE: Jump (Cost: {num}%)",
+        ["summoner_haunt_drop"] = "RIGHT CLICK: Drop (Cost: {num}%)"
     }
 }
 
@@ -644,7 +644,7 @@ end
 
 ROLE.translations = {
     ["english"] = {
-        "ev_win_summoner" = "The {role}'s army of minions has won them the round!"
+        ["ev_win_summoner"] = "The {role}'s army of minions has won them the round!"
     }
 }
 ```
@@ -672,7 +672,7 @@ end
 
 ROLE.translations = {
     ["english"] = {
-        "win_summoner" = "The {role}'s minions have overwhelmed their enemies!"
+        ["win_summoner"] = "The {role}'s minions have overwhelmed their enemies!"
     }
 }
 ```
@@ -688,8 +688,8 @@ If we piece together all the bits of code from the preivous sections it would co
 ```lua
 ROLE.translations = {
     ["english"] = {
-        "ev_win_summoner" = "The {role}'s army of minions has won them the round!",
-        "win_summoner" = "The {role}'s minions have overwhelmed their enemies!"
+        ["ev_win_summoner"] = "The {role}'s army of minions has won them the round!",
+        ["win_summoner"] = "The {role}'s minions have overwhelmed their enemies!"
     }
 }
 
