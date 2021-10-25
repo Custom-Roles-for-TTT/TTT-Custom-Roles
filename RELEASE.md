@@ -3,6 +3,9 @@
 ## 1.3.4 (Beta)
 **Released: **
 
+## Additions
+- Added ability to disable warnings about incompatible addons (disabled by default)
+
 ## Developer
 - Moved role icons and sprites to their own folders
 
