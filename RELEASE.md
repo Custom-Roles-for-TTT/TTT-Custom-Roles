@@ -4,6 +4,9 @@
 
 **Released: October 25th, 2021**
 
+### Changes
+- Changed addon incompatibility check to ignore disabled addons
+
 ### Fixes
 - Fixed devices which change a player's role while resurrecting them not using the configured health and max health for the target role
 - Fixed bodysnatching device not updating the owner's max health to match that of their new role

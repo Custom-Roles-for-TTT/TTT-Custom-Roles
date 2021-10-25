@@ -42,6 +42,7 @@ AddCSLuaFile("vgui/sb_info.lua")
 
 include("shared.lua")
 
+include("incompatible_addons.lua")
 include("karma.lua")
 include("entity.lua")
 include("radar.lua")
