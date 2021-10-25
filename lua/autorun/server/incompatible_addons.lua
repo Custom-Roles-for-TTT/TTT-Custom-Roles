@@ -1,6 +1,4 @@
 if SERVER then
-    local disableWarn = CreateConVar("ttt_disable_incompatible_warn", "0")
-
     local incompatible = {
         -- Outdated Custom Roles for TTT Versions
         ["1215502383"] = { reason = "Outdated version of Custom Roles for TTT." }, -- Custom Roles for TTT by Noxx
@@ -89,14 +87,12 @@ if SERVER then
     local addons = engine.GetAddons()
 
     for _, v in pairs(addons) do
-        if not disableWarn:GetBool() then
-            local addon = incompatible[tostring(v.wsid)]
-            if addon then
-                ErrorNoHalt("WARNING: Addon \'" .. v.title .. "\' is incompatible with Custom Roles for TTT!\n")
-                ErrorNoHalt("         Reason: " .. addon.reason .. "\n")
-                if addon.alt then
-                    ErrorNoHalt("         An alternative addon is available at https://steamcommunity.com/sharedfiles/filedetails/?id=" .. addon.alt .. "\n")
-                end
+        local addon = incompatible[tostring(v.wsid)]
+        if addon and v.mounted then
+            ErrorNoHalt("WARNING: Addon \'" .. v.title .. "\' is incompatible with Custom Roles for TTT!\n")
+            ErrorNoHalt("         Reason: " .. addon.reason .. "\n")
+            if addon.alt then
+                ErrorNoHalt("         An alternative addon is available at https://steamcommunity.com/sharedfiles/filedetails/?id=" .. addon.alt .. "\n")
             end
         end
     end
