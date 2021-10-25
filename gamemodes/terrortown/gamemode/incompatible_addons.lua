@@ -17,10 +17,10 @@ local incompatible = {
 
     -- Outdated TTT or Custom Roles for TTT ULX Versions
     ["127865722"] = { reason = "Outdated version of Custom Roles for TTT ULX.", alt = "2421043753" }, -- Trouble in Terrorist Town ULX Commands
-    ["1360293938"] = { reason = "Outdated version of Custom Roles for TTT ULX", alt = "2421043753" }, -- TTT - (Addon) ULX Commands by Altamas
-    ["1217368823"] = { reason = "Outdated version of Custom Roles for TTT ULX", alt = "2421043753" }, -- ULX Module for Custom Roles for TTT by Noxx
-    ["2091700901"] = { reason = "Outdated version of Custom Roles for TTT ULX", alt = "2421043753" }, -- ULX Module for Custom Roles for TTT by Malivil
-    ["2246286292"] = { reason = "Outdated version of Custom Roles for TTT ULX", alt = "2421043753" }, -- ULX Module for Custom Roles for TTT by Squid Matty
+    ["1360293938"] = { reason = "Outdated version of Custom Roles for TTT ULX.", alt = "2421043753" }, -- TTT - (Addon) ULX Commands by Altamas
+    ["1217368823"] = { reason = "Outdated version of Custom Roles for TTT ULX.", alt = "2421043753" }, -- ULX Module for Custom Roles for TTT by Noxx
+    ["2091700901"] = { reason = "Outdated version of Custom Roles for TTT ULX.", alt = "2421043753" }, -- ULX Module for Custom Roles for TTT by Malivil
+    ["2246286292"] = { reason = "Outdated version of Custom Roles for TTT ULX.", alt = "2421043753" }, -- ULX Module for Custom Roles for TTT by Squid Matty
 
     -- TTT2
     ["1357204556"] = { reason = "Overwrites core files required for Custom Roles for TTT." }, -- TTT2 (Base)
@@ -47,7 +47,7 @@ local incompatible = {
     ["663328966"] = { reason = "Damage logs are not compatible with any non-default roles.", alt = "2306802961" }, -- TTT RDM Manager With Damage Logs by Schmatty
 
     -- Better Equipment Menu
-    ["878772496"] = { reason = "Better Equipment Meny is included in Custom Roles for TTT." }, -- [TTT] Better Equipment Menu
+    ["878772496"] = { reason = "Better Equipment Menu is included in Custom Roles for TTT." }, -- [TTT] Better Equipment Menu
 
     -- Sprint
     ["933056549"] = { reason = "Sprinting is included in Custom Roles for TTT." }, -- TTT Sprint by Fresh Garry
@@ -63,7 +63,7 @@ local incompatible = {
     ["305575144"] = { reason = "Death messages are included in Custom Roles for TTT." }, -- TTT Kill reveal / Kill notifier with colors by Thomads
 
     -- Miscellaneous
-    ["1721137539"] = { reason = "Breaks the trackers footsteps by always returning a value to PlayerFootstep hook." } -- Avengers RandoMat Event
+    ["1721137539"] = { reason = "Breaks the tracker's footsteps by always returning a value to PlayerFootstep hook." } -- Avengers RandoMat Event by Jenssons
 }
 
 if CR_BETA then
