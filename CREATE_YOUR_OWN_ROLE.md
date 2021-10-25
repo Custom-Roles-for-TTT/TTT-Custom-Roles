@@ -15,8 +15,8 @@
    1. [Role Activation](#Role-Activation)
    1. [Role Selection](#Role-Selection)
    1. [Acting Like a Jester](#Acting-Like-a-Jester)
-   1. [Custom Spectator HUD](#Custom-Spectator-HUD)
    1. [Translations](#Translations)
+   1. [Custom Spectator HUD](#Custom-Spectator-HUD)
    1. [Optional Rules](#Optional-Rules)
    1. [ConVars](#ConVars)
    1. [Custom Win Conditions](#Custom-Win-Conditions)
@@ -323,13 +323,50 @@ end
 
 Once that is defined you can use `ply:ShouldActLikeJester()` anywhere you need to check whether they should still act like a jester. Custom Roles for TTT will automatically use your defined function when doing damage calculations (damage taken and damage given) as well as role display in thinks like the radar and target ID (icon over the head, name and circle when looking at a player).
 
+### Translations
+
+Next there is a line that looks like this:
+
+```lua
+ROLE.translations = {}
+```
+
+This line allows you to define custom translations to be used elsewhere in your role. The `ROLE.translations` variable is a table that maps a language name to a list of key-value pairs where the `key` is the name of the translation and the `value` is the translated string in the desired language.
+
+For example, if we wanted to add a custom translation for the `english` language, it would look something like this:
+
+```lua
+ROLE.translations = {
+    ["english"] = {
+        ["summoner_testtranslation"] = "This is in English"
+    }
+}
+```
+
+From here you can add additional entries for each language you want to add support for. The list of currently-supported languages is available on the [Facepunch Garry's Mod GitHub](https://github.com/Facepunch/garrysmod/tree/master/garrysmod/gamemodes/terrortown/gamemode/lang). For exmaple, if we wanted to add a Spanish version of our translation then it would look like this:
+
+```lua
+ROLE.translations = {
+    ["english"] = {
+        ["summoner_testtranslation"] = "This is in English"
+    },
+    ["español"] = {
+        ["summoner_testtranslation"] = "Esto es en español"
+    }
+}
+```
+
+*(Note: At the very least there should be an english version of every translation you add. The english translation will be used as the default if a translation is not available in the client's chosen language)*
+
+Once a translation is defined, it can be used in client-side code via `LANG.GetTranslation` (or `LANG.GetParamTranslation` if it requires parameters).
+
 ### Custom Spectator HUD
 
 Some roles have features which are activated once the player dies, such as the phantom. In the phantom's case, they build up some amount of power over time and can use that power to use one of four different abilities against the player the killed them. While the power generation logic will be up to you to design and implement (you may want to look at the phantom code for reference), the spectator HUD display and action implementation have been made easier through the use of hooks and shared methods.
 
 This section of the guide will explain the pieces of the system which should make these kind of spectator HUDs easier and provide a proof-of-concept example with the summoner role.
 
-To implement a spectator HUD like the phantom has, you will need to create two hooks, one player method, and a series of translations and convars to control which powers are enabled and their costs. The translations and the `TTTSpectatorShowHUD` hook (which is what is used to render the spectator HUD itself) must be defined on the client. The convars and the `TTTSpectatorHUDKeyPress` hook (which is what is used to handle when a key is pressed by someone who has a spectator HUD shown) must be defined on the server. The `ROLE.shouldshowspectatorhud` method (which determines whether a player should currently be seeing a spectator HUD) should be defined on both client and server.
+To implement a spectator HUD like the phantom has, you will need to create two hooks, one player method, and a series of translations and convars to control which powers are enabled and their costs. The translations should be added using the role translations system that you can read about [above](#Translations). The `TTTSpectatorShowHUD` hook (which is what is used to render the spectator HUD itself) must be defined on the client. The convars and the `TTTSpectatorHUDKeyPress` hook (which is what is used to handle when a key is pressed by someone who has a spectator HUD shown) must be defined on the server. The `ROLE.shouldshowspectatorhud` method (which determines whether a player should currently be seeing a spectator HUD) should be defined on both client and server.
 
 Due to how inter-connected the pieces of this system are, we're not going to break them down into individual blocks in this guide like other sections do. Instead, we'll go over them in concept and then leave the implemented example below for you to peruse.
 
@@ -342,13 +379,15 @@ ROLE.shouldshowspectatorhud = function(ply)
     end
 end
 
-if CLIENT then
-    hook.Add("Initialize", "Summoner_Translations_Initialize", function()
-        LANG.AddToLanguage("english", "summoner_haunt_title", "WILLPOWER")
-        LANG.AddToLanguage("english", "summoner_haunt_jump", "SPACE: Jump (Cost: {num}%)")
-        LANG.AddToLanguage("english", "summoner_haunt_drop", "RIGHT CLICK: Drop (Cost: {num}%)")
-    end)
+ROLE.translations = {
+    ["english"] = {
+        "summoner_haunt_title" = "WILLPOWER",
+        "summoner_haunt_jump" = "SPACE: Jump (Cost: {num}%)",
+        "summoner_haunt_drop" = "RIGHT CLICK: Drop (Cost: {num}%)"
+    }
+}
 
+if CLIENT then
     hook.Add("TTTSpectatorShowHUD", "Summoner_TTTSpectatorShowHUD", function(cli, tgt)
         if not cli:IsSummoner() then return end
 
@@ -401,44 +440,7 @@ if SERVER then
 end
 ```
 
-*(NOTE: If your role is already using the `Initialize` and `TTTSyncGlobals` hooks elsewhere then consider merging the hooks together in your role file. If you don't want to do that, just be careful that the hook instance name (the 2nd parameter) is unique for each hook you add)*
-
-### Translations
-
-Next there is a line that looks like this:
-
-```lua
-ROLE.translations = {}
-```
-
-This line allows you to define custom translations to be used elsewhere in your role. The `ROLE.translations` variable is a table that maps a language name to a list of key-value pairs where the `key` is the name of the translation and the `value` is the translated string in the desired language.
-
-For example, if we wanted to add a custom translation for the `english` language, it would look something like this:
-
-```lua
-ROLE.translations = {
-    ["english"] = {
-        ["summoner_testtranslation"] = "This is in English"
-    }
-}
-```
-
-From here you can add additional entries for each language you want to add support for. The list of currently-supported languages is available on the [Facepunch Garry's Mod GitHub](https://github.com/Facepunch/garrysmod/tree/master/garrysmod/gamemodes/terrortown/gamemode/lang). For exmaple, if we wanted to add a Spanish version of our translation then it would look like this:
-
-```lua
-ROLE.translations = {
-    ["english"] = {
-        ["summoner_testtranslation"] = "This is in English"
-    },
-    ["español"] = {
-        ["summoner_testtranslation"] = "Esto es en español"
-    }
-}
-```
-
-*(Note: At the very least there should be an english version of every translation you add. The english translation will be used as the default if a translation is not available in the client's chosen language)*
-
-Once a translation is defined, it can be used in client-side code via `LANG.GetTranslation` (or `LANG.GetParamTranslation` if it requires parameters).
+*(NOTE: If your role is already using the `TTTSyncGlobals` hook elsewhere then consider merging the hooks together in your role file. If you don't want to do that, just be careful that the hook instance name (the 2nd parameter) is unique for each hook you add)*
 
 ### Optional Rules
 
@@ -638,20 +640,22 @@ if CLIENT then
             return win_string, ROLE_STRINGS_PLURAL[ROLE_SUMMONER]
         end
     end)
-
-    hook.Add("Initialize", "SummonerClientInitialize", function()
-        LANG.AddToLanguage("english", "ev_win_summoner", "The {role}'s army of minions has won them the round!")
-    end)
 end
+
+ROLE.translations = {
+    ["english"] = {
+        "ev_win_summoner" = "The {role}'s army of minions has won them the round!"
+    }
+}
 ```
 
-The first hook (`TTTEventFinishText`) is used to control the text to show in the row on the Events tab itself. We recommend using a translateable string (as we do in the example) but that is not strictly necessary. The `Initialize` hook in the example above is only used to set up the translation string to use.
+The first hook (`TTTEventFinishText`) is used to control the text to show in the row on the Events tab itself. We recommend using a translateable string (as we do in the example) but that is not strictly necessary. Don't forget to use the role translations system ([detailed above](#Translations)) to set up the translation string to use.
 
 The second hook (`TTTEventFinishIconText`) is used to control the text that shows when you hover over the icon in the row on the Events tab. The second hook's first return value is the name of a translation string and in most cases doesn't need to be changed at all. In the most common case the only thing you need to do is return the plural string for the winning role (or team) as the second return value.
 
 #### Round Result Message
 
-The final hook to set up our custom win condition is the one that displays the winning message in the top-right of the screen. It also prints the winning team to the server console, but that's not something the players will see. This hook is on the server side but requires a translation to be set up on the client side (after the addon has initialized) for the actual message to display.
+The final hook to set up our custom win condition is the one that displays the winning message in the top-right of the screen. It also prints the winning team to the server console, but that's not something the players will see. This hook is on the server side but requires a translation to be set up on the client side (using the role translation system [detailed above](#Translations)) for the actual message to display.
 
 The standard name we use for the translation string for this is the same as the win condition identifier global, but in all lowercase. In our example, that would be `win_summoner`. When we set up the translation we deliberately use a placeholder for the role name so that the role can be renamed dynamically. We then have to pass the role string for our role when we use the translation. The full example of the hook and the translation string setup can be seen below:
 
@@ -665,11 +669,12 @@ if SERVER then
         end    
     end)
 end
-if CLIENT then
-    hook.Add("Initialize", "SummonerClientInitialize", function()
-        LANG.AddToLanguage("english", "win_summoner", "The {role}'s minions have overwhelmed their enemies!")
-    end)
-end
+
+ROLE.translations = {
+    ["english"] = {
+        "win_summoner" = "The {role}'s minions have overwhelmed their enemies!"
+    }
+}
 ```
 
 The `LANG.Msg` call is the one that sends the message to each client and tells them to translate it. Below that, the `ServerLog` call writes a simpler message to the server console, just in case. Finally we `return true` from the hook to tell Custom Roles for TTT not to run the default logic for printing these messages since we've already handled it.
@@ -681,59 +686,59 @@ As mentioned earlier, a good rule of thumb is if you are creating a role that is
 If we piece together all the bits of code from the preivous sections it would come out looking something like this:
 
 ```lua
-    hook.Add("Initialize", "SummonerInitialize", function()
-        -- Use 245 if we're on Custom Roles for TTT earlier than version 1.2.5
-        -- 245 is summation of the ASCII values for the characters "S", "U", and "M"
-        WIN_SUMMONER = GenerateNewWinID and GenerateNewWinID() or 245
+ROLE.translations = {
+    ["english"] = {
+        "ev_win_summoner" = "The {role}'s army of minions has won them the round!",
+        "win_summoner" = "The {role}'s minions have overwhelmed their enemies!"
+    }
+}
 
-        if CLIENT then
-            LANG.AddToLanguage("english", "win_summoner", "The {role}'s minions have overwhelmed their enemies!")
-            LANG.AddToLanguage("english", "ev_win_summoner", "The {role}'s army of minions has won them the round!")
+hook.Add("Initialize", "SummonerInitialize", function()
+    -- Use 245 if we're on Custom Roles for TTT earlier than version 1.2.5
+    -- 245 is summation of the ASCII values for the characters "S", "U", and "M"
+    WIN_SUMMONER = GenerateNewWinID and GenerateNewWinID() or 245
+end)
+
+if SERVER then
+    hook.Add("TTTCheckForWin", "SummonerCheckForWin", function()
+        local summonerWins = false
+        --[[
+            Insert logic to determine whether our role should win here
+        ]]--
+
+        if summonerWins then
+            return WIN_SUMMONER
         end
     end)
 
-    if SERVER then
-        hook.Add("TTTCheckForWin", "SummonerCheckForWin", function()
-            local summonerWins = false
-            --[[
-                Insert logic to determine whether our role should win here
-            ]]--
+    hook.Add("TTTPrintResultMessage", "SummonerPrintResultMessage", function(type)
+        if type == WIN_SUMMONER then
+            LANG.Msg("win_summoner", { role = ROLE_STRINGS[ROLE_SUMMONER] })
+            ServerLog("Result: " .. ROLE_STRINGS[ROLE_SUMMONER] .. " wins.\n")
+            return true
+        end
+    end)
+end
+if CLIENT then
+    hook.Add("TTTEventFinishText", "SummonerEventFinishText", function(e)
+        if e.win == WIN_SUMMONER then
+            return LANG.GetParamTranslation("ev_win_summoner", { role = ROLE_STRINGS[ROLE_SUMMONER]:lower() })
+        end
+    end)
 
-            if summonerWins then
-                return WIN_SUMMONER
-            end
-        end)
+    hook.Add("TTTEventFinishIconText", "SummonerEventFinishIconText", function(e, win_string, role_string)
+        if e.win == WIN_SUMMONER then
+            return win_string, ROLE_STRINGS_PLURAL[ROLE_SUMMONER]
+        end
+    end)
 
-        hook.Add("TTTPrintResultMessage", "SummonerPrintResultMessage", function(type)
-            if type == WIN_SUMMONER then
-                LANG.Msg("win_summoner", { role = ROLE_STRINGS[ROLE_SUMMONER] })
-                ServerLog("Result: " .. ROLE_STRINGS[ROLE_SUMMONER] .. " wins.\n")
-                return true
-            end
-        end)
-    end
-    if CLIENT then
-        hook.Add("TTTEventFinishText", "SummonerEventFinishText", function(e)
-            if e.win == WIN_SUMMONER then
-                return LANG.GetParamTranslation("ev_win_summoner", { role = ROLE_STRINGS[ROLE_SUMMONER]:lower() })
-            end
-        end)
-
-        hook.Add("TTTEventFinishIconText", "SummonerEventFinishIconText", function(e, win_string, role_string)
-            if e.win == WIN_SUMMONER then
-                return win_string, ROLE_STRINGS_PLURAL[ROLE_SUMMONER]
-            end
-        end)
-
-        hook.Add("TTTScoringWinTitle", "SummonerScoringWinTitle", function(wintype, wintitles, title, secondaryWinRole)
-            if wintype == WIN_SUMMONER then
-                return { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_SUMMONER]:upper() }, c = ROLE_COLORS[ROLE_SUMMONER] }
-            end
-        end)
-    end
+    hook.Add("TTTScoringWinTitle", "SummonerScoringWinTitle", function(wintype, wintitles, title, secondaryWinRole)
+        if wintype == WIN_SUMMONER then
+            return { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_SUMMONER]:upper() }, c = ROLE_COLORS[ROLE_SUMMONER] }
+        end
+    end)
+end
 ```
-
-Notice that we combined the two different `Initialize` hooks into one. That is not required but if you do decide to keep two hooks make sure you give them different identifiers.
 
 ### Tutorial Page
 
