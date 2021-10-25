@@ -913,7 +913,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *ply* - The player being rendered
 - *client* - The local player
 - *color* - The background [Color](https://wiki.facepunch.com/gmod/Color) to use
-- *roleFileName* - The portion of the scoring icon path that indicates which role it belongs to. Used in the following icon path pattern: "vgui/ttt/tab_{roleFileName}.png"
+- *roleFileName* - The portion of the scoring icon path that indicates which role it belongs to. Used in one of the following icon path patterns: "vgui/ttt/tab_{roleFileName}.png" (1.1.9+), "vgui/ttt/roles/{roleFileName}/tab_{roleFileName}.png"  (1.3.4+)
 
 *Return:*
 - *color* - The new color value to use or the original passed into the hook
@@ -925,7 +925,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 *Added in:* 1.1.5\
 *Parameters:*
 - *ply* - The player being rendered
-- *roleFileName* - The portion of the scoring icon path that indicates which role it belongs to. Used in the following icon path pattern: "vgui/ttt/score_{roleFileName}.png"
+- *roleFileName* - The portion of the scoring icon path that indicates which role it belongs to. Used in one of the following icon path patterns: "vgui/ttt/score_{roleFileName}.png" (1.1.5+), "vgui/ttt/roles/{roleFileName}/score_{roleFileName}.png" (1.3.4+)
 - *groupingRole* - The role to use when determining the section to of the summary screen to put this player in
 - *roleColor* - The background [Color](https://wiki.facepunch.com/gmod/Color) to use behind the role icon
 - *nameLabel* - The name that is going to be used for this player on the round summary *(Added in 1.2.3)*

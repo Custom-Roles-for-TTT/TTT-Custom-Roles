@@ -618,6 +618,7 @@ ttt_madscientist_max_health                 100     // The maximum amount of hea
 // Logging
 ttt_debug_logkills                          1       // Whether to log when a player is killed in the console
 ttt_debug_logroles                          1       // Whether to log what roles players are assigned in the console
+ttt_disable_incompatible_warn               0       // Whether to disable warnings about incompatible addons on server launch
 
 // Karma    
 ttt_karma_jesterkill_penalty                50      // Karma penalty for killing the jester
