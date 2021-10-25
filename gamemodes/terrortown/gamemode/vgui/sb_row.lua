@@ -226,7 +226,11 @@ function PANEL:Paint(width, height)
     surface.DrawRect(0, 0, width, SB_ROW_HEIGHT)
 
     if roleStr ~= "" then
-        self.sresult:SetImage("vgui/ttt/tab_" .. roleStr .. ".png")
+        if file.Exists("materials/vgui/ttt/roles/" .. roleStr .. "/tab_" .. roleStr .. ".png", "GAME") then
+            self.sresult:SetImage("vgui/ttt/roles/" .. roleStr .. "/tab_" .. roleStr .. ".png")
+        else
+            self.sresult:SetImage("vgui/ttt/tab_" .. roleStr .. ".png")
+        end
         self.sresult:SetVisible(true)
     else
         self.sresult:SetVisible(false)

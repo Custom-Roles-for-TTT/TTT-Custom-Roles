@@ -38,7 +38,11 @@ local indicator_mat_rolefront_noz = Material("vgui/ttt/sprite_rolefront_noz")
 local indicator_mat_target_noz = Material("vgui/ttt/sprite_target_noz")
 
 local function DrawRoleIcon(role, noz, pos, dir, color_role)
-    local path = "vgui/ttt/sprite_" .. ROLE_STRINGS_SHORT[role]
+    local roleFileName = ROLE_STRINGS_SHORT[role]
+    local path = "vgui/ttt/sprite_" .. roleFileName
+    if file.Exists("materials/vgui/ttt/roles/" .. roleFileName .. "/sprite_" .. roleFileName .. ".vtf", "GAME") then
+        path = "vgui/ttt/roles/" .. roleFileName .. "/sprite_" .. roleFileName
+    end
     if noz then path = path .. "_noz" end
     local indicator_mat = Material(path)
 

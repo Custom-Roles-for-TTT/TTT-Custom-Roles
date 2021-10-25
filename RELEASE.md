@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.3.4 (Beta)
+**Released: **
+
+## Developer
+- Moved role icons and sprites to their own folders
+
 ## 1.3.3 (Beta)
 **Released: October 24th, 2021**
 
