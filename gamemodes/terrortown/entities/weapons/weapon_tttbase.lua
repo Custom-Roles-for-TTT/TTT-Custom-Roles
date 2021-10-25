@@ -220,8 +220,8 @@ if CLIENT then
 
     -- mousebuttons are enough for most weapons
     local default_key_params = {
-        primaryfire = Key("+attack", "LEFT MOUSE"),
-        secondaryfire = Key("+attack2", "RIGHT MOUSE"),
+        primaryfire = Key("+attack", "MOUSE1"),
+        secondaryfire = Key("+attack2", "MOUSE2"),
         reload = Key("+reload", "R"),
         usekey = Key("+use", "E")
     };

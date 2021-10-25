@@ -1,12 +1,19 @@
 # Release Notes
 
 ## 1.3.4 (Beta)
-**Released: **
 
-## Additions
+**Released: October 25th, 2021**
+
+### Additions
 - Added ability to disable warnings about incompatible addons (disabled by default)
 
-## Developer
+### Fixes
+- Fixed devices which change a player's role while resurrecting them not using the configured health and max health for the target role
+- Fixed bodysnatching device not updating the owner's max health to match that of their new role
+- Fixed loot goblin announcement timer not pausing if a goblin is killed and resurrected as a different role (by a hypnotist, for example)
+- Fixed parasite whose role changes after they are killed not having their infection cleared from their target
+
+### Developer
 - Moved role icons and sprites to their own folders
 
 ## 1.3.3 (Beta)

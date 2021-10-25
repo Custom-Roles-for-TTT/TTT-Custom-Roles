@@ -176,6 +176,7 @@ if SERVER then
         if GetConVar("ttt_bodysnatcher_destroy_body"):GetBool() then
             SafeRemoveEntity(body)
         end
+        SetRoleMaxHealth(owner)
 
         SendFullStateUpdate()
 
