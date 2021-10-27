@@ -186,6 +186,14 @@ Methods available globally (within the defined realm)
 *Parameters:*
 - *version* - The version number to compare against the currently installed version. Must be in the "#.#.#" format
 
+**FindRespawnLocation(pos)** - Finds a possible respawn position based on accessible areas around the given position.\
+*Realm:* Server\
+*Added in:* 1.0.0\
+*Parameters:*
+- *pos* - The position around which a respawn position will be found
+
+*Returns*: An accessible position around the given position or `false` if none can be found
+
 **GenerateNewEventID()** - Generates a new ID to be used for custom scoring events.\
 *Realm:* Client and Server\
 *Added in:* 1.2.5
@@ -197,7 +205,6 @@ Methods available globally (within the defined realm)
 **GetEquipmentItemById(id)** - Gets an equipment item's definition by their ID.\
 *Realm:* Client and Server\
 *Added in:* 1.0.0\
-*Parameters:*\
 *Parameters:*
 - *id* - The ID of the equipment item being looked up (e.g. EQUIP_RADAR)
 

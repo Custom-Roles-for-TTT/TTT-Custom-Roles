@@ -108,34 +108,6 @@ if SERVER then
 
     util.AddNetworkString("TTT_Paramedic_Revived")
 
-    local offsets = {}
-
-    for i = 0, 360, 15 do
-        table.insert(offsets, Vector(math.sin(i), math.cos(i), 0))
-    end
-
-    function SWEP:FindRespawnLocation()
-        local midsize = Vector(33, 33, 74)
-        local tstart = self:GetOwner():GetPos() + Vector(0, 0, midsize.z / 2)
-
-        for i = 1, #offsets do
-            local o = offsets[i]
-            local v = tstart + o * midsize * 1.5
-
-            local t = {
-                start = v,
-                endpos = v,
-                mins = midsize / -2,
-                maxs = midsize / 2
-            }
-            local tr = util.TraceHull(t)
-
-            if not tr.Hit then return v - Vector(0, 0, midsize.z / 2) end
-        end
-
-        return false
-    end
-
     local function validbody(body)
         return CORPSE.GetPlayerNick(body, false) ~= false
     end
@@ -269,9 +241,11 @@ if SERVER then
     function SWEP:PrimaryAttack()
         if self:GetState() ~= DEFIB_IDLE then return end
 
-        local tr = self:GetOwner():GetEyeTrace(MASK_SHOT_HULL)
+        local owner = self:GetOwner()
+        local tr = owner:GetEyeTrace(MASK_SHOT_HULL)
+        local pos = owner:GetPos()
 
-        if tr.HitPos:Distance(self:GetOwner():GetPos()) > maxdist then return end
+        if tr.HitPos:Distance(pos) > maxdist then return end
         if GetRoundState() ~= ROUND_ACTIVE then return end
 
         local ent = tr.Entity
@@ -282,7 +256,7 @@ if SERVER then
                 ent:SetModelScale(math.min(mutatemax, ent:GetModelScale() + 0.25), 1)
             elseif ent:GetClass() == "prop_ragdoll" and validbody(ent) then
                 self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-                self.Location = self:FindRespawnLocation()
+                self.Location = FindRespawnLocation(pos) or pos
 
                 if self.Location then
                     self:Begin(ent, tr.PhysicsBone)
