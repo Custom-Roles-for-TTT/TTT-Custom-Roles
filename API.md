@@ -1095,6 +1095,24 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 *Realm:* Server\
 *Added in:* 1.2.7
 
+**TTTTargetIDPlayerBlockIcon(ply, client)** - Called before a player's overhead icon is shown, allowing you to block it.\
+*Realm:* Client\
+*Added in:* 1.3.5\
+*Parameters:*
+- *ply* - The target player being rendered
+- *client* - The local player
+
+*Return:* `true` to stop this information from being rendered
+
+**TTTTargetIDPlayerBlockInfo(ply, client)** - Called before a player's target information (name, health, hint text, karma, and ring) are shown, allowing you to block it.\
+*Realm:* Client\
+*Added in:* 1.3.5\
+*Parameters:*
+- *ply* - The target player being rendered
+- *client* - The local player
+
+*Return:* `true` to stop this information from being rendered
+
 **TTTTargetIDPlayerHealth(ply, client, text, clr)** - Called before a player's heath status (shown when you look at a player) is rendered.\
 *Realm:* Client\
 *Added in:* 1.2.5\

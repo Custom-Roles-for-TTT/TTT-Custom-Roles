@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.3.5 (Beta)
+**Released:**
+
+### Developer
+- Added TTTTargetIDPlayerBlockIcon and TTTTargetIDPlayerBlockInfo hooks to block target ID information more easily
+
 ## 1.3.4 (Beta)
 
 **Released: October 25th, 2021**
