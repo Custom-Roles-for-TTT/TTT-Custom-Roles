@@ -86,6 +86,15 @@ function WEPS.ResetWeaponsCache()
 end
 
 local DoesRoleHaveWeaponCache = { }
+local RoleModes = { }
+
+local function GetRoleMode(role)
+    -- Cache these the first time
+    if not RoleModes[role] then
+        RoleModes[role] = GetGlobalInt("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_mode", SHOP_SYNC_MODE_NONE)
+    end
+    return RoleModes[role]
+end
 
 function WEPS.ResetRoleWeaponCache()
     for id, _ in pairs(ROLE_STRINGS_RAW) do
@@ -94,7 +103,7 @@ function WEPS.ResetRoleWeaponCache()
 end
 
 -- Useful for allowing roles to have a shop only if weapons are assigned to them
-function WEPS.DoesRoleHaveWeapon(role)
+function WEPS.DoesRoleHaveWeapon(role, promoted)
     if type(DoesRoleHaveWeaponCache[role]) ~= "boolean" then
         DoesRoleHaveWeaponCache[role] = nil
     end
@@ -114,6 +123,25 @@ function WEPS.DoesRoleHaveWeapon(role)
         end
     end
 
+    -- Equipment counts as well
+    if EquipmentItems[role] and #EquipmentItems[role] > 0 then
+        DoesRoleHaveWeaponCache[role] = true
+        return true
+    end
+
+    local rolemode = GetRoleMode(role)
+    -- If this role is set to sync with traitor or detective then they have weapons as traitor and detective always have weapons
+    if rolemode > SHOP_SYNC_MODE_NONE then
+        DoesRoleHaveWeaponCache[role] = true
+        return true
+    end
+
+    -- Detective-like roles get detective weapons and detectives always have weapons
+    if promoted then
+        DoesRoleHaveWeaponCache[role] = true
+        return true
+    end
+
     DoesRoleHaveWeaponCache[role] = false
     return false
 end
@@ -124,16 +152,10 @@ SHOP_SYNC_MODE_INTERSECT = 2
 SHOP_SYNC_MODE_DETECTIVE = 3
 SHOP_SYNC_MODE_TRAITOR = 4
 
-local rolemodes = {}
 function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor_weapons, sync_detective_weapons, block_exclusion)
     if wep == nil then return end
     local id = WEPS.GetClass(wep)
-
-    -- Cache these the first time
-    if not rolemodes[role] then
-        rolemodes[role] = GetGlobalInt("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_mode", SHOP_SYNC_MODE_NONE)
-    end
-    local rolemode = rolemodes[role]
+    local rolemode = GetRoleMode(role)
 
     -- Handle the other overrides
     if wep.CanBuy then

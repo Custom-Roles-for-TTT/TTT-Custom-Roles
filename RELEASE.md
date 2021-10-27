@@ -3,6 +3,9 @@
 ## 1.3.5 (Beta)
 **Released:**
 
+### Fixes
+- Fixed roles without weapons assigned directly to them (like deputy) not being able to open their shops in certain circumstances
+
 ### Developer
 - Added TTTTargetIDPlayerBlockIcon and TTTTargetIDPlayerBlockInfo hooks to block target ID information more easily
 
