@@ -116,6 +116,12 @@ function WEPS.DoesRoleHaveWeapon(role, promoted)
         return true
     end
 
+    -- Detective-like roles get detective weapons and detectives always have weapons
+    if promoted then
+        DoesRoleHaveWeaponCache[role] = true
+        return true
+    end
+
     for _, w in ipairs(weapons.GetList()) do
         if w and w.CanBuy and table.HasValue(w.CanBuy, role) then
             DoesRoleHaveWeaponCache[role] = true
@@ -132,12 +138,6 @@ function WEPS.DoesRoleHaveWeapon(role, promoted)
     local rolemode = GetRoleMode(role)
     -- If this role is set to sync with traitor or detective then they have weapons as traitor and detective always have weapons
     if rolemode > SHOP_SYNC_MODE_NONE then
-        DoesRoleHaveWeaponCache[role] = true
-        return true
-    end
-
-    -- Detective-like roles get detective weapons and detectives always have weapons
-    if promoted then
         DoesRoleHaveWeaponCache[role] = true
         return true
     end
