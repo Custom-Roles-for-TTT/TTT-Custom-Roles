@@ -14,8 +14,8 @@ hook.Add("Initialize", "Bodysnatcher_Translations_Initialize", function()
 
     -- Popup
     LANG.AddToLanguage("english", "info_popup_bodysnatcher", [[You are {role}! {traitors} think you are {ajester} and you
-    deal no damage. Use your body snatching device on a corpse
-    to take their role and join the fight!]])
+deal no damage. Use your body snatching device on a corpse
+to take their role and join the fight!]])
 end)
 
 -------------

@@ -5,9 +5,9 @@
 hook.Add("Initialize", "Innocent_Translations_Initialize", function()
     -- Popup
     LANG.AddToLanguage("english", "info_popup_innocent", [[You are {role}! But there are {traitors} around...
-    Who can you trust, and who is out to fill you with bullets?
-    
-    Watch your back and work with your comrades to get out of this alive!]])
+Who can you trust, and who is out to fill you with bullets?
+
+Watch your back and work with your comrades to get out of this alive!]])
 end)
 
 --------------
