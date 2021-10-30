@@ -73,7 +73,7 @@ function plymeta:IsShopRole()
 
     -- If this is a role with a potential shop, only give them access if there are actual things to buy
     if hasShop and (DELAYED_SHOP_ROLES[role] or self:IsJesterTeam()) then
-        local hasWeapon = WEPS.DoesRoleHaveWeapon(role)
+        local hasWeapon = WEPS.DoesRoleHaveWeapon(role, self:IsDetectiveLike())
         -- Only allow roles with a delayed shop to use it if they have weapons or will be having weapons synced and are active or "active_only" is disabled
         if DELAYED_SHOP_ROLES[role] then
             local rolestring = ROLE_STRINGS_RAW[role]

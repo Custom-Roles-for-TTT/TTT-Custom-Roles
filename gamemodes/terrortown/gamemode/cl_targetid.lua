@@ -91,7 +91,7 @@ function GM:PostDrawTranslucentRenderables()
     for _, v in pairs(player.GetAll()) do
         -- Compatibility with the disguises, Dead Ringer (810154456), and Prop Disguiser (310403737 and 2127939503)
         local hidden = v:GetNWBool("disguised", false) or (v.IsFakeDead and v:IsFakeDead()) or v:GetNWBool("PD_Disguised", false)
-        if v:IsActive() and v ~= client and not hidden then
+        if v:IsActive() and v ~= client and not hidden and not hook.Run("TTTTargetIDPlayerBlockIcon", v, client) then
             pos = v:GetPos()
             pos.z = pos.z + v:GetHeight() + 15
 
@@ -288,6 +288,8 @@ function GM:HUDDrawTargetID()
     })
     local ent = trace.Entity
     if (not IsValid(ent)) or ent.NoTarget then return end
+
+    if IsPlayer(ent) and hook.Run("TTTTargetIDPlayerBlockInfo", ent, client) then return end
 
     -- some bools for caching what kind of ent we are looking at
     local target_traitor = false
