@@ -52,11 +52,8 @@ if SERVER then
     local killer_knife_delay = CreateConVar("ttt_killer_knife_delay", "0.8")
 
     function SWEP:Initialize()
-        if SERVER then
-            SetGlobalInt("ttt_killer_knife_damage", killer_knife_damage:GetInt())
-            SetGlobalFloat("ttt_killer_knife_delay", killer_knife_delay:GetFloat())
-        end
-
+        SetGlobalInt("ttt_killer_knife_damage", killer_knife_damage:GetInt())
+        SetGlobalFloat("ttt_killer_knife_delay", killer_knife_delay:GetFloat())
         return self.BaseClass.Initialize(self)
     end
 end
