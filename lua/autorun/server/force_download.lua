@@ -15,6 +15,7 @@ if SERVER then
     resource.AddFile("materials/vgui/ttt/icon_meddefib.vmt")
     resource.AddFile("materials/vgui/ttt/icon_regen.vmt")
     resource.AddFile("materials/vgui/ttt/icon_speed.vmt")
+    resource.AddFile("materials/vgui/ttt/icon_stationbomb.vmt")
 
     -- Radar
     resource.AddFile("materials/vgui/ttt/beacon_back.vmt")

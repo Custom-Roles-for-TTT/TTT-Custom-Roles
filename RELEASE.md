@@ -5,6 +5,7 @@
 
 ### Additions
 - Added ability to configure killer knife attack speed and damage
+- Added ability for quack to buy an item which converts a health station into a bomb station (disabled by default)
 
 ### Fixes
 - Fixed roles without weapons assigned directly to them (like deputy) not being able to open their shops in certain circumstances
