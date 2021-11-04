@@ -41,7 +41,7 @@ ttt_special_detective_pct                   0.33    // Percentage of detectives,
 ttt_special_detective_chance                0.5     // The chance that a "special detectives" will spawn in each available slot made by "ttt_special_detectives_pct"
 ttt_monster_pct                             0.33    // Percentage of innocents, rounded up, that can spawn as a "monster" (e.g. zombie, vampire)
 ttt_monster_chance                          0.5     // The chance that a "monster" will spawn in each available slot made by "ttt_monster_pct"
-ttt_independent_chance                      0.5     // The chance that a single independent or jester (if ttt_single_jester_independent is eanbled) will spawn in a round (e.g. drunk, swapper, etc.)
+ttt_independent_chance                      0.5     // The chance that a single independent or jester (if ttt_single_jester_independent is enabled) will spawn in a round (e.g. drunk, swapper, etc.)
 ttt_jester_chance                           0.5     // The chance that a single jester (e.g. jester, swapper, etc.) will spawn in a round. Only used if ttt_single_jester_independent is disabled
 // (Note: Only one independent or jester can spawn per round.)
 
