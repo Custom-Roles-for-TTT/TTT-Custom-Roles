@@ -9,6 +9,7 @@
 ### Fixes
 - Fixed roles without weapons assigned directly to them (like deputy) not being able to open their shops in certain circumstances
 - Fixed loot goblin not counting as a "passive win" role for living checks
+- Fixed some role roudn start popup message spacings
 
 ### Developer
 - Added TTTTargetIDPlayerBlockIcon and TTTTargetIDPlayerBlockInfo hooks to block target ID information more easily
