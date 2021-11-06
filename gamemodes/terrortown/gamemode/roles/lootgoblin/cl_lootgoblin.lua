@@ -114,6 +114,16 @@ hook.Add("TTTHUDInfoPaint", "LootGoblin_TTTHUDInfoPaint", function(client, label
     end
 end)
 
+-------------------
+-- ROLE FEATURES --
+-------------------
+
+hook.Add("TTTSprintStaminaRecovery", "LootGoblin_TTTSprintStaminaRecovery", function(client, recovery)
+    if IsPlayer(client) and client:IsActiveLootGoblin() and client:IsRoleActive() then
+        return GetGlobalFloat("ttt_lootgoblin_sprint_recovery", 0.12)
+    end
+end)
+
 --------------
 -- TUTORIAL --
 --------------

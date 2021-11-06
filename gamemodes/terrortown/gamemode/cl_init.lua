@@ -649,7 +649,7 @@ end
 
 -- Set default Values
 local speedMultiplier = 0.4
-local recovery = 0.08
+local defaultRecovery = 0.08
 local traitorRecovery = 0.12
 local consumption = 0.3
 local stamina = 100
@@ -662,7 +662,7 @@ local recoveryTimer = CurTime()
 net.Receive("TTT_SprintGetConVars", function()
     local convars = net.ReadTable()
     speedMultiplier = convars[1]
-    recovery = convars[2]
+    defaultRecovery = convars[2]
     traitorRecovery = convars[3]
     consumption = convars[4]
 end)
@@ -701,7 +701,7 @@ local function SprintFunction()
             sprintTimer = CurTime()
         end
         stamina = stamina - (CurTime() - sprintTimer) * (math.min(math.max(consumption, 0.1), 5) * 250)
-        local result = hook.Call("TTTSprintStaminaPost", GAMEMODE, LocalPlayer(), stamina, sprintTimer, consumption)
+        local result = hook.Run("TTTSprintStaminaPost", LocalPlayer(), stamina, sprintTimer, consumption)
         -- Use the overwritten stamina if one is provided
         if result then
             stamina = result
@@ -723,7 +723,7 @@ hook.Add("TTTPrepareRound", "TTTSprintPrepareRound", function()
     -- listen for activation
     hook.Add("Think", "TTTSprintThink", function()
         local client = LocalPlayer()
-        local forward_key = hook.Call("TTTSprintKey", GAMEMODE, client) or IN_FORWARD
+        local forward_key = hook.Run("TTTSprintKey", client) or IN_FORWARD
         if client:KeyDown(forward_key) and client:KeyDown(IN_SPEED) then
             -- forward + selected key
             SprintFunction()
@@ -737,11 +737,15 @@ hook.Add("TTTPrepareRound", "TTTSprintPrepareRound", function()
             end
 
             if GetRoundState() ~= ROUND_WAIT then
+                local recovery = defaultRecovery
                 if IsPlayer(client) and (client:IsTraitorTeam() or client:IsMonsterTeam() or client:IsIndependentTeam()) then
-                    stamina = stamina + (CurTime() - recoveryTimer) * traitorRecovery * 250
-                else
-                    stamina = stamina + (CurTime() - recoveryTimer) * recovery * 250
+                    recovery = traitorRecovery
                 end
+
+                -- Allow things to change the recovery rate
+                recovery = hook.Run("TTTSprintStaminaRecovery", client, recovery) or recovery
+
+                stamina = stamina + (CurTime() - recoveryTimer) * recovery * 250
             end
 
             recoveryTimer = CurTime()

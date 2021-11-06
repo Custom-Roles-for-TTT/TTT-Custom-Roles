@@ -375,12 +375,14 @@ ttt_bodysnatcher_device_time                5       // The amount of time (in se
 // Loot Goblin
 ttt_lootgoblin_activation_timer             30      // Time in seconds before the loot goblin is revealed
 ttt_lootgoblin_announce                     4       // The logic to use when notifying players that a loot goblin has been revealed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
-ttt_lootgoblin_size                         0.5     // The size that the loot goblin will become when they are revealed (e.g. 0.5 = 50% size)
+ttt_lootgoblin_size                         0.5     // The size multiplier for the loot goblin to use when they are revealed (e.g. 0.5 = 50% size)
 ttt_lootgoblin_cackle_enabled               1       // Whether to play a cackle sound periodically when a loot goblin is activated
 ttt_lootgoblin_cackle_timer_min             4       // The minimum time between loot goblin cackles
 ttt_lootgoblin_cackle_timer_max             12      // The maximum time between loot goblin cackles
 ttt_lootgoblin_weapons_dropped              8       // How many weapons the loot goblin drops when they are killed
 ttt_lootgoblin_jingle_enabled               1       // Whether to play a jingle sound when an activated loot goblin is moving
+ttt_lootgoblin_speed_mult                   1.2     // The multiplier to use on the loot goblin's movement speed when they are activated (e.g. 1.2 = 120% normal speed)
+ttt_lootgoblin_sprint_recovery              0.12    // The amount of stamina to recover per tick when the loot goblin is activated
 ttt_lootgoblin_notify_mode                  4       // The logic to use when notifying players that a loot goblin is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
 ttt_lootgoblin_notify_sound                 1       // Whether to play a cheering sound when a loot goblin is killed
 ttt_lootgoblin_notify_confetti              1       // Whether to throw confetti when a loot goblin is a killed

@@ -26,9 +26,16 @@ local lootgoblin_cackle_timer_max = CreateConVar("ttt_lootgoblin_cackle_timer_ma
 local lootgoblin_cackle_enabled = CreateConVar("ttt_lootgoblin_cackle_enabled", "1")
 local lootgoblin_weapons_dropped = CreateConVar("ttt_lootgoblin_weapons_dropped", "8")
 local lootgoblin_jingle_enabled = CreateConVar("ttt_lootgoblin_jingle_enabled", "1")
+local lootgoblin_speed_mult = CreateConVar("ttt_lootgoblin_speed_mult", "1.2")
+local lootgoblin_sprint_recovery = CreateConVar("ttt_lootgoblin_sprint_recovery", "0.12")
 CreateConVar("ttt_lootgoblin_notify_mode", "4", FCVAR_NONE, "The logic to use when notifying players that the lootgoblin is killed", 0, 4)
 CreateConVar("ttt_lootgoblin_notify_sound", "1")
 CreateConVar("ttt_lootgoblin_notify_confetti", "1")
+
+hook.Add("TTTSyncGlobals", "LootGoblin_TTTSyncGlobals", function()
+    SetGlobalFloat("ttt_lootgoblin_speed_mult", lootgoblin_speed_mult:GetFloat())
+    SetGlobalFloat("ttt_lootgoblin_sprint_recovery", lootgoblin_sprint_recovery:GetFloat())
+end)
 
 -----------
 -- KARMA --
