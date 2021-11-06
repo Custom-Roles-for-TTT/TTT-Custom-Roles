@@ -7,6 +7,7 @@ local function InitializeEquipment()
             "weapon_par_cure",
             "weapon_pha_exorcism",
             "weapon_qua_bomb_station",
+            "weapon_qua_station_bomb",
             "weapon_qua_fake_cure",
             EQUIP_ARMOR,
             EQUIP_RADAR,
@@ -35,5 +36,14 @@ hook.Add("TTTUpdateRoleState", "Quack_TTTUpdateRoleState", function()
         end
     elseif table.HasValue(phantom_device.CanBuy, ROLE_QUACK) then
         table.RemoveByValue(phantom_device.CanBuy, ROLE_QUACK)
+    end
+
+    local station_bomb = weapons.GetStored("weapon_qua_station_bomb")
+    if GetGlobalBool("ttt_quack_station_bomb", false) then
+        if not table.HasValue(station_bomb.CanBuy, ROLE_QUACK) then
+            table.insert(station_bomb.CanBuy, ROLE_QUACK)
+        end
+    elseif table.HasValue(station_bomb.CanBuy, ROLE_QUACK) then
+        table.RemoveByValue(station_bomb.CanBuy, ROLE_QUACK)
     end
 end)

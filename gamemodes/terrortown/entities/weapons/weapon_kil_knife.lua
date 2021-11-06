@@ -47,6 +47,22 @@ SWEP.AllowDrop = false
 -- Pull out faster than standard guns
 SWEP.DeploySpeed = 2
 
+if SERVER then
+    local killer_knife_damage = CreateConVar("ttt_killer_knife_damage", "65")
+    local killer_knife_delay = CreateConVar("ttt_killer_knife_delay", "0.8")
+
+    function SWEP:Initialize()
+        SetGlobalInt("ttt_killer_knife_damage", killer_knife_damage:GetInt())
+        SetGlobalFloat("ttt_killer_knife_delay", killer_knife_delay:GetFloat())
+        return self.BaseClass.Initialize(self)
+    end
+end
+
+function SWEP:Deploy()
+    self.Primary.Damage = GetGlobalInt("ttt_killer_knife_damage", 65)
+    self.Primary.Delay = GetGlobalFloat("ttt_killer_knife_delay", 0.8)
+end
+
 function SWEP:PrimaryAttack()
     self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 

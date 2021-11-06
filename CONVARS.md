@@ -21,7 +21,9 @@
 
 ## Server Configurations
 
-Add the following to your server.cfg (for dedicated servers) or listenserver.cfg (for peer-to-peer servers):
+See below for the full list of convars that are added or modified by Custom Roles for TTT. For default TTT settings, see [here](https://www.troubleinterroristtown.com/config/settings/).
+
+Add any of the following that you want to change to your server.cfg (for dedicated servers) or listenserver.cfg (for peer-to-peer servers):
 
 ```cpp
 // ----------------------------------------
@@ -39,7 +41,7 @@ ttt_special_detective_pct                   0.33    // Percentage of detectives,
 ttt_special_detective_chance                0.5     // The chance that a "special detectives" will spawn in each available slot made by "ttt_special_detectives_pct"
 ttt_monster_pct                             0.33    // Percentage of innocents, rounded up, that can spawn as a "monster" (e.g. zombie, vampire)
 ttt_monster_chance                          0.5     // The chance that a "monster" will spawn in each available slot made by "ttt_monster_pct"
-ttt_independent_chance                      0.5     // The chance that a single independent or jester (if ttt_single_jester_independent is eanbled) will spawn in a round (e.g. drunk, swapper, etc.)
+ttt_independent_chance                      0.5     // The chance that a single independent or jester (if ttt_single_jester_independent is enabled) will spawn in a round (e.g. drunk, swapper, etc.)
 ttt_jester_chance                           0.5     // The chance that a single jester (e.g. jester, swapper, etc.) will spawn in a round. Only used if ttt_single_jester_independent is disabled
 // (Note: Only one independent or jester can spawn per round.)
 
@@ -197,8 +199,10 @@ ttt_vampire_credits_starting                1       // The number of credits a v
 // Quack
 ttt_quack_credits_starting                  1       // The number of credits a quack should start with
 ttt_quack_fake_cure_mode                    0       // How to handle using a fake parasite cure on someone who is not infected. 0 - Kill nobody (But use up the cure), 1 - Kill the person who uses the cure, 2 - Kill the person the cure is used on
-ttt_quack_fake_cure_time                    -1      // The amount of time (in seconds) the fake parasite cure takes to use. If set to -1, the ttt_parasite_cure_time value will be usd instead
+ttt_quack_fake_cure_time                    -1      // The amount of time (in seconds) the fake parasite cure takes to use. If set to -1, the ttt_parasite_cure_time value will be used instead
 ttt_quack_phantom_cure                      0       // Whether to allow the quack to buy the phantom exorcism device which can remove a haunting phantom. Server must be restarted for changes to take effect
+ttt_quack_station_bomb                      0       // Whether the quack should be able to buy a device which converts a health station to a bomb station
+ttt_quack_station_bomb_time                 4       // The amount of time (in seconds) the station bomb cure takes to plant
 ttt_single_doctor_quack                     0       // Whether only a single doctor or quack should spawn in a round
 
 // Parasite
@@ -371,12 +375,14 @@ ttt_bodysnatcher_device_time                5       // The amount of time (in se
 // Loot Goblin
 ttt_lootgoblin_activation_timer             30      // Time in seconds before the loot goblin is revealed
 ttt_lootgoblin_announce                     4       // The logic to use when notifying players that a loot goblin has been revealed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
-ttt_lootgoblin_size                         0.5     // The size that the loot goblin will become when they are revealed (e.g. 0.5 = 50% size)
+ttt_lootgoblin_size                         0.5     // The size multiplier for the loot goblin to use when they are revealed (e.g. 0.5 = 50% size)
 ttt_lootgoblin_cackle_enabled               1       // Whether to play a cackle sound periodically when a loot goblin is activated
 ttt_lootgoblin_cackle_timer_min             4       // The minimum time between loot goblin cackles
 ttt_lootgoblin_cackle_timer_max             12      // The maximum time between loot goblin cackles
 ttt_lootgoblin_weapons_dropped              8       // How many weapons the loot goblin drops when they are killed
 ttt_lootgoblin_jingle_enabled               1       // Whether to play a jingle sound when an activated loot goblin is moving
+ttt_lootgoblin_speed_mult                   1.2     // The multiplier to use on the loot goblin's movement speed when they are activated (e.g. 1.2 = 120% normal speed)
+ttt_lootgoblin_sprint_recovery              0.12    // The amount of stamina to recover per tick when the loot goblin is activated
 ttt_lootgoblin_notify_mode                  4       // The logic to use when notifying players that a loot goblin is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
 ttt_lootgoblin_notify_sound                 1       // Whether to play a cheering sound when a loot goblin is killed
 ttt_lootgoblin_notify_confetti              1       // Whether to throw confetti when a loot goblin is a killed
@@ -434,9 +440,11 @@ ttt_oldman_hide_when_active                 0       // Whether the old man shoul
 
 // Killer
 ttt_killer_knife_enabled                    1       // Whether the killer knife is enabled
+ttt_killer_knife_damage                     65      // How much damage the killer knife does. Server or round must be restarted for changes to take effect
+ttt_killer_knife_delay                      0.8     // The amount of time between knife attacks for a killer. Server or round must be restarted for changes to take effect
 ttt_killer_crowbar_enabled                  1       // Whether the killer throwable crowbar is enabled
-ttt_killer_crowbar_damage                   20      // How much damage the crowbar should do when the killer bashes another player with it
-ttt_killer_crowbar_thrown_damage            50      // How much damage the crowbar should do when the killer throws it at another player
+ttt_killer_crowbar_damage                   20      // How much damage the crowbar should do when the killer bashes another player with it. Server or round must be restarted for changes to take effect
+ttt_killer_crowbar_thrown_damage            50      // How much damage the crowbar should do when the killer throws it at another player. Server or round must be restarted for changes to take effect
 ttt_killer_smoke_enabled                    1       // Whether the killer smoke is enabled
 ttt_killer_smoke_timer                      60      // Number of seconds before a killer will start to smoke after their last kill
 ttt_killer_show_target_icon                 1       // Whether killers have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect

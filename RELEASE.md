@@ -3,12 +3,19 @@
 ## 1.3.5 (Beta)
 **Released:**
 
+### Additions
+- Added ability to configure killer knife attack speed and damage
+- Added ability for quack to buy an item which converts a health station into a bomb station (disabled by default)
+- Added adjustable speed and stamina recovery boost to activated loot goblin
+
 ### Fixes
 - Fixed roles without weapons assigned directly to them (like deputy) not being able to open their shops in certain circumstances
 - Fixed loot goblin not counting as a "passive win" role for living checks
+- Fixed some role round start popup message spacings
 
 ### Developer
 - Added TTTTargetIDPlayerBlockIcon and TTTTargetIDPlayerBlockInfo hooks to block target ID information more easily
+- Added TTTSprintStaminaRecovery hook to allow adjusting how fast a player's stamina is recovered
 
 ## 1.3.4 (Beta)
 

@@ -16,6 +16,12 @@ Appears as a health station to non-{traitors}.
 Detonates when used by a non-{traitor}.
 {traitors} can use to deplete fake charge.]])
 
+    LANG.AddToLanguage("english", "stationb_name", "Station Bomb")
+    LANG.AddToLanguage("english", "stationb_help", "Hold {primaryfire} to add a bomb to a Health Station.")
+    LANG.AddToLanguage("english", "stationb_desc", [[
+Converts a {healthstation}
+into a {bombstation}.]])
+
     -- Popup
     LANG.AddToLanguage("english", "info_popup_quack", [[You are {role}! {comrades}
 
@@ -38,6 +44,10 @@ hook.Add("TTTTutorialRoleText", "Quack_TTTTutorialRoleText", function(role, titl
 
         if GetGlobalBool("ttt_quack_phantom_cure", false) then
             html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_QUACK] .. " can also <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>buy an Exorcism Device</span> which can be used to remove a haunting " .. ROLE_STRINGS[ROLE_PHANTOM] .. ".</span>"
+        end
+
+        if GetGlobalBool("ttt_quack_station_bomb", false) then
+            html = html .. "<span style='display: block; margin-top: 10px;'>There is also a buyable <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>Station Bomb</span> which can be used to convert someone's Health Station into a Bomb Station.</span>"
         end
 
         return html

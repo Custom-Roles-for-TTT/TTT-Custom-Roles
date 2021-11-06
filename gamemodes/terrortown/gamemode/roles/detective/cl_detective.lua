@@ -5,10 +5,10 @@
 hook.Add("Initialize", "Detective_Translations_Initialize", function()
     -- Popup
     LANG.AddToLanguage("english", "info_popup_detective", [[You are {role}! HQ has given you special resources to find the {traitors}.
-    Use them to help the {innocents} survive, but be careful:
-    the {traitors} will be looking to take you down first!
-    
-    Press {menukey} to receive your equipment!]])
+Use them to help the {innocents} survive, but be careful:
+the {traitors} will be looking to take you down first!
+
+Press {menukey} to receive your equipment!]])
 end)
 
 --------------
