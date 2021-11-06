@@ -1083,7 +1083,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 
 **TTTSprintStaminaRecovery(client, recovery)** - Called before a player's sprint stamina is recovered. Used to adjust how fast the player's stamina will recover.\
 *Realm:* Client\
-*Added in:* 1.3.5\
+*Added in:* 1.3.6\
 *Parameters:*
 - *client* - The local player
 - *recovery* - Player's current stamina recovery rate
