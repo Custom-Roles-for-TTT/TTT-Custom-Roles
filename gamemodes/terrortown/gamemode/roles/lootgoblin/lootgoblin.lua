@@ -93,7 +93,6 @@ local function StartGoblinTimers()
                     jumpPower = jumpPower + (-(120 * scale) + 125)
                 end
                 v:SetJumpPower(jumpPower)
-                -- TODO: Speed boost?
             elseif revealMode == JESTER_NOTIFY_EVERYONE or
                     (v:IsActiveTraitorTeam() and (revealMode == JESTER_NOTIFY_TRAITOR or JESTER_NOTIFY_DETECTIVE_AND_TRAITOR)) or
                     (not v:IsActiveDetectiveLike() and (revealMode == JESTER_NOTIFY_DETECTIVE or JESTER_NOTIFY_DETECTIVE_AND_TRAITOR)) then
