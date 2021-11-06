@@ -15,7 +15,7 @@
 
 ### Developer
 - Added TTTTargetIDPlayerBlockIcon and TTTTargetIDPlayerBlockInfo hooks to block target ID information more easily
-- Added TTTSprintStaminaRecovery hook to allow adjust how fast a player's stamina is recovered
+- Added TTTSprintStaminaRecovery hook to allow adjusting how fast a player's stamina is recovered
 
 ## 1.3.4 (Beta)
 
