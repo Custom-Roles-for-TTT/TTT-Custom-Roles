@@ -16,9 +16,9 @@ Appears as a health station to non-{traitors}.
 Detonates when used by a non-{traitor}.
 {traitors} can use to deplete fake charge.]])
 
-LANG.AddToLanguage("english", "stationb_name", "Station Bomb")
-LANG.AddToLanguage("english", "stationb_help", "Hold {primaryfire} to add a bomb to a Health Station.")
-LANG.AddToLanguage("english", "stationb_desc", [[
+    LANG.AddToLanguage("english", "stationb_name", "Station Bomb")
+    LANG.AddToLanguage("english", "stationb_help", "Hold {primaryfire} to add a bomb to a Health Station.")
+    LANG.AddToLanguage("english", "stationb_desc", [[
 Converts a {healthstation}
 into a {bombstation}.]])
 
