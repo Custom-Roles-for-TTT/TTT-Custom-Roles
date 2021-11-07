@@ -1,7 +1,7 @@
 AddCSLuaFile()
 
 -- Role features shared by detective-like roles (Deputy, Impersonator)
-local function MoveRoleState(ply)
+local function MoveRoleState(ply, target, keep_on_source)
     if ply:IsRoleActive() then
         if not keep_on_source then ply:SetNWBool("HasPromotion", false) end
         target:HandleDetectiveLikePromotion()

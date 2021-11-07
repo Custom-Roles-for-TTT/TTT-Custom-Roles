@@ -5,6 +5,7 @@
 
 ### Fixes
 - Fixed player tag overlapping role icon on the scoreboard
+- Fixed error when bodysnatcher tried to snatch a deputy's body when the detective had been killed, preventing the bodysnatcher deputy from being promoted
 
 ## 1.3.6 (Beta)
 **Released: November 6th, 2021**
