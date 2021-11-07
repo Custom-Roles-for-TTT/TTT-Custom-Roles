@@ -1,4 +1,4 @@
-## Global
+## Global Methods
 Methods available globally (within the defined realm)
 
 **AssignAssassinTarget(ply, start, delay)** - Assigns the target player their next assassination target (if they are the assassin role).\

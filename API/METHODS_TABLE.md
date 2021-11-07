@@ -1,4 +1,4 @@
-## Table
+## Table Methods
 Methods created to help with the manipulation of tables
 
 **table.ExcludedKeys(tbl, excludes)** - Returns new table that contains the keys not present as values in in the given exclude table.\

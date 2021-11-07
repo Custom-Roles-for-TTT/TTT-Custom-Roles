@@ -1,4 +1,4 @@
-## Player Object
+## Player Object Methods
 Methods available when called from a Player object (within the defined realm)
 
 **plymeta:BeginRoleChecks()** - Sets up role logic for the player to handle role-specific events and checks.\

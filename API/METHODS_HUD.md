@@ -1,4 +1,4 @@
-## HUD
+## HUD Methods
 Helper methods that can be used when displaying client-side UIs
 
 **HUD:PaintBar(r, x, y, w, h, colors, value)** - Paints a rounded bar that is some-percentaged filled. Can be used as a progress bar.\

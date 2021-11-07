@@ -1,4 +1,4 @@
-## Player Static
+## Player Static Methods
 Methods available having to do with players but without needing a specific Player object
 
 **player.AreTeamsLiving(ignorePassiveWinners)** - Returns whether the there are members of the various teams left alive.\
