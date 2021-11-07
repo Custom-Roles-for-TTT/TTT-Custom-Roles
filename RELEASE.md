@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.3.7 (Beta)
+**Released:**
+
+### Fixes
+- Fixed player tag overlapping role icon on the scoreboard
+
 ## 1.3.6 (Beta)
 **Released: November 6th, 2021**
 
