@@ -19,3 +19,4 @@ These documents aim to explain the things that we have added to Custom Roles for
    1. [Client Commands](API/COMMANDS.md#client-commands)
    1. [Server Commands](API/COMMANDS.md#server-commands)
 1. [Net Messages](API/NET_MESSAGES.md)
+1. [Map Entities](API/MAP_ENTITIES.md)

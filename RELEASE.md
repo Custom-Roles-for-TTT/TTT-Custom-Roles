@@ -6,6 +6,10 @@
 ### Fixes
 - Fixed player tag overlapping role icon on the scoreboard
 - Fixed error when bodysnatcher tried to snatch a deputy's body when the detective had been killed, preventing the bodysnatcher deputy from being promoted
+- Fixed ttt_logic_role entity ROLE_ANY checks not working as expected
+
+### Developer
+- Split API document into multiple files to make it easier to navigate and maintain
 
 ## 1.3.6 (Beta)
 **Released: November 6th, 2021**
