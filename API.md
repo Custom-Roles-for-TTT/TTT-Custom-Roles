@@ -16,6 +16,6 @@ These documents aim to explain the things that we have added to Custom Roles for
 1. [Hooks](API/HOOKS.md)
 1. [SWEPs](API/SWEPS.md)
 1. [Commands](API/COMMANDS.md)
-   1. [Client Commands](API/COMMANDS.md#Client-Commands)
-   1. [Server Commands](API/COMMANDS.md#Server-Commands)
+   1. [Client Commands](API/COMMANDS.md#client-commands)
+   1. [Server Commands](API/COMMANDS.md#server-commands)
 1. [Net Messages](API/NET_MESSAGES.md)
