@@ -10,6 +10,8 @@
 
 ### Developer
 - Split API document into multiple files to make it easier to navigate and maintain
+- Fixed ttt_kill_target_from_random and ttt_kill_target_from_player not working when the remove_body parameter was given
+- Added ttt_damage_* commands which damage the target to aid in development and debugging
 
 ## 1.3.6 (Beta)
 **Released: November 6th, 2021**
