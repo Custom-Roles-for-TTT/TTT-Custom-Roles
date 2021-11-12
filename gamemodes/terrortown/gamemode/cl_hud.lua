@@ -8,7 +8,6 @@ local math = math
 local string = string
 
 local GetTranslation = LANG.GetTranslation
-local GetPTranslation = LANG.GetParamTranslation
 local GetLang = LANG.GetUnsafeLanguageTable
 local interp = string.Interp
 
@@ -404,17 +403,6 @@ local function InfoPaint(client)
 
     -- Allow other addons to add stuff to the player info HUD
     hook.Run("TTTHUDInfoPaint", client, label_left, label_top)
-
-    if client:IsDetectiveLike() and not client:IsDetectiveTeam() then
-        surface.SetFont("TabLarge")
-        surface.SetTextColor(255, 255, 255, 230)
-
-        text = GetPTranslation("detective_promotion_hud", { detective = ROLE_STRINGS[ROLE_DETECTIVE] })
-        local _, h = surface.GetTextSize(text)
-
-        surface.SetTextPos(label_left, ScrH() - label_top - h)
-        surface.DrawText(text)
-    end
 end
 
 -- Paints player status HUD element in the bottom left
