@@ -1327,7 +1327,7 @@ function GM:PlayerShouldTaunt(ply, actid)
     return false
 end
 
-local function GetPlayerByName(ply, name)
+local function GetTargetPlayerByName(ply, name)
     for _, v in RandomPairs(player.GetAll()) do
         if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and v:Nick() == name then
             return v
@@ -1335,7 +1335,7 @@ local function GetPlayerByName(ply, name)
     end
 end
 
-local function GetRandomPlayer(ply)
+local function GetRandomTargetPlayer(ply)
     for _, v in RandomPairs(player.GetAll()) do
         if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not v:ShouldActLikeJester() then
             return v
@@ -1401,7 +1401,7 @@ end
 concommand.Add("ttt_kill_from_random", function(ply, cmd, args)
     if not IsValid(ply) or not ply:Alive() then return end
 
-    local killer = GetRandomPlayer()
+    local killer = GetRandomTargetPlayer()
     local remove_body = #args > 0 and tobool(args[1])
     KillFromPlayer(ply, killer, remove_body)
 end, PlayerAutoComplete, "Kills the local player from a random target", FCVAR_CHEAT)
@@ -1411,7 +1411,7 @@ concommand.Add("ttt_kill_from_player", function(ply, cmd, args)
     if #args < 1 then return end
 
     local killer_name = args[1]
-    local killer = GetPlayerByName(ply, killer_name)
+    local killer = GetTargetPlayerByName(ply, killer_name)
     if not IsPlayer(killer) then
         print("No player named " .. killer_name .. " found")
         return
@@ -1425,13 +1425,13 @@ concommand.Add("ttt_kill_target_from_random", function(ply, cmd, args)
     if #args < 1 then return end
 
     local victim_name = args[1]
-    local victim = GetPlayerByName(ply, victim_name)
+    local victim = GetTargetPlayerByName(ply, victim_name)
     if not IsPlayer(victim) then
         print("No player named " .. victim_name .. " found")
         return
     end
 
-    local killer = GetRandomPlayer()
+    local killer = GetRandomTargetPlayer()
     local remove_body = #args > 1 and tobool(args[2])
     KillFromPlayer(victim, killer, remove_body)
 end, PlayerAutoComplete, "Kills a target from a random target", FCVAR_CHEAT)
@@ -1440,14 +1440,14 @@ concommand.Add("ttt_kill_target_from_player", function(ply, cmd, args)
     if #args < 2 then return end
 
     local victim_name = args[1]
-    local victim = GetPlayerByName(ply, victim_name)
+    local victim = GetTargetPlayerByName(ply, victim_name)
     if not IsPlayer(victim) then
         print("No player named " .. victim_name .. " found")
         return
     end
 
     local killer_name = args[2]
-    local killer = GetPlayerByName(ply, killer_name)
+    local killer = GetTargetPlayerByName(ply, killer_name)
     if not IsPlayer(killer) then
         print("No player named " .. killer_name .. " found")
         return
@@ -1475,7 +1475,7 @@ end
 concommand.Add("ttt_damage_from_random", function(ply, cmd, args)
     if not IsValid(ply) or not ply:Alive() then return end
 
-    local attacker = GetRandomPlayer()
+    local attacker = GetRandomTargetPlayer()
     local damage = #args > 0 and tonumber(args[1])
     DamageFromPlayer(ply, attacker, damage)
 end, PlayerAutoComplete, "Damages the local player from a random target", FCVAR_CHEAT)
@@ -1485,7 +1485,7 @@ concommand.Add("ttt_damage_from_player", function(ply, cmd, args)
     if #args < 1 then return end
 
     local attacker_name = args[1]
-    local attacker = GetPlayerByName(ply, attacker_name)
+    local attacker = GetTargetPlayerByName(ply, attacker_name)
     if not IsPlayer(attacker) then
         print("No player named " .. attacker_name .. " found")
         return
@@ -1499,13 +1499,13 @@ concommand.Add("ttt_damage_target_from_random", function(ply, cmd, args)
     if #args < 1 then return end
 
     local victim_name = args[1]
-    local victim = GetPlayerByName(ply, victim_name)
+    local victim = GetTargetPlayerByName(ply, victim_name)
     if not IsPlayer(victim) then
         print("No player named " .. victim_name .. " found")
         return
     end
 
-    local attacker = GetRandomPlayer()
+    local attacker = GetRandomTargetPlayer()
     local damage = #args > 1 and tonumber(args[2])
     DamageFromPlayer(victim, attacker, damage)
 end, PlayerAutoComplete, "Damages a target from a random target", FCVAR_CHEAT)
@@ -1514,14 +1514,14 @@ concommand.Add("ttt_damage_target_from_player", function(ply, cmd, args)
     if #args < 2 then return end
 
     local victim_name = args[1]
-    local victim = GetPlayerByName(ply, victim_name)
+    local victim = GetTargetPlayerByName(ply, victim_name)
     if not IsPlayer(victim) then
         print("No player named " .. victim_name .. " found")
         return
     end
 
     local attacker_name = args[2]
-    local attacker = GetPlayerByName(ply, attacker_name)
+    local attacker = GetTargetPlayerByName(ply, attacker_name)
     if not IsPlayer(attacker) then
         print("No player named " .. attacker_name .. " found")
         return
