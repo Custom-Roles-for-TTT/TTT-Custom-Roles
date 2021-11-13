@@ -355,11 +355,12 @@ function PANEL:LayoutColumns()
         v:SetPos(cx - v:GetWide() / 2, (SB_ROW_HEIGHT - v:GetTall()) / 2)
     end
 
-    self.tag:SizeToContents()
-    cx = cx - 90
-    self.tag:SetPos(cx - self.tag:GetWide() / 2, (SB_ROW_HEIGHT - self.tag:GetTall()) / 2)
-
+    cx = cx - 70
     self.sresult:SetPos(cx - 8, (SB_ROW_HEIGHT - 16) / 2)
+
+    self.tag:SizeToContents()
+    cx = cx - (self.tag:GetWide() / 2) - 50
+    self.tag:SetPos(cx - self.tag:GetWide() / 2, (SB_ROW_HEIGHT - self.tag:GetTall()) / 2)
 end
 
 function PANEL:PerformLayout()

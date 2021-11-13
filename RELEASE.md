@@ -1,5 +1,18 @@
 # Release Notes
 
+## 1.3.7 (Beta)
+**Released: November 13th, 2021**
+
+### Fixes
+- Fixed player tag overlapping role icon on the scoreboard
+- Fixed error when bodysnatcher tried to snatch a deputy's body when the detective had been killed, preventing the bodysnatcher deputy from being promoted
+- Fixed ttt_logic_role entity ROLE_ANY checks not working as expected
+
+### Developer
+- Split API document into multiple files to make it easier to navigate and maintain
+- Fixed ttt_kill_target_from_random and ttt_kill_target_from_player not working when the remove_body parameter was given
+- Added ttt_damage_* commands which damage the target to aid in development and debugging
+
 ## 1.3.6 (Beta)
 **Released: November 6th, 2021**
 
