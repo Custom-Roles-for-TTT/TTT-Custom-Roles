@@ -23,7 +23,7 @@
 
 See below for the full list of convars that are added or modified by Custom Roles for TTT. For default TTT settings, see [here](https://www.troubleinterroristtown.com/config/settings/).
 
-Add any of the following that you want to change to your server.cfg (for dedicated servers) or listenserver.cfg (for peer-to-peer servers):
+Add any of the following that you want to change to your server.cfg (for dedicated servers) or listenserver.cfg (for peer-to-peer servers) in the cfg folder of your Garry's Mod install:
 
 ```cpp
 // ----------------------------------------
