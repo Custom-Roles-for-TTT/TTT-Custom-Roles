@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.4.0
+**Released: November 15th, 2021**\
+Includes all beta updates from [1.3.1](#131-beta) to [1.3.7](#137-beta).
+
 ## 1.3.7 (Beta)
 **Released: November 13th, 2021**
 
