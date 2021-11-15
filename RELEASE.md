@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.4.1
+**Released:**
+
+### Developer
+- Changed TTTCanIdentifyCorpse and TTTCanSearchCorpse hooks to allow changing the corpse's stored role
+
 ## 1.4.0
 **Released: November 15th, 2021**\
 Includes all beta updates from [1.3.1](#131-beta) to [1.3.7](#137-beta).
