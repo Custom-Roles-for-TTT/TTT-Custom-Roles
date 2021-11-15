@@ -1,0 +1,7 @@
+"UnlitGeneric"
+{
+ "$basetexture" "vgui/ttt/roles/kil/icon_kil"
+ "$vertexcolor" 1
+ "$vertexalpha" 1
+ "$translucent" 1
+}

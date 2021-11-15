@@ -3,6 +3,8 @@ include("shared.lua")
 
 ENT.DidCollide = false
 
+local damage = 50
+
 function ENT:Initialize()
     self:SetModel("models/weapons/w_bugbait.mdl")
     self:PrecacheGibs()
@@ -20,7 +22,7 @@ function ENT:PhysicsCollide(data, physObj)
     if not self.DidCollide then
         if IsPlayer(data.HitEntity) then
             local dmginfo = DamageInfo()
-            dmginfo:SetDamage(50)
+            dmginfo:SetDamage(damage)
             dmginfo:SetAttacker(self:GetOwner())
             dmginfo:SetInflictor(self)
             dmginfo:SetDamageType(DMG_SLASH)
@@ -50,4 +52,8 @@ function ENT:Think()
 end
 
 function ENT:Break()
+end
+
+function ENT:SetDamage(dmg)
+    damage = dmg
 end

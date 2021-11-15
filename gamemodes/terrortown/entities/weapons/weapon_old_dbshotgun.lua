@@ -21,6 +21,11 @@ SWEP.Primary.ClipMax = 2
 SWEP.Primary.DefaultClip = 2
 SWEP.Primary.Automatic = true
 SWEP.Primary.NumShots = 12
+SWEP.Primary.Sound = "weapons/ttt/dbsingle.wav"
+SWEP.Primary.Recoil = 15
+
+SWEP.Secondary.Sound = "weapons/ttt/dbblast.wav"
+SWEP.Secondary.Recoil = 40
 
 SWEP.AllowDrop = false
 
@@ -29,13 +34,26 @@ SWEP.ViewModelFlip = false
 SWEP.ViewModelFOV = 70
 SWEP.ViewModel = "models/weapons/v_doublebarrl.mdl"
 SWEP.WorldModel = "models/weapons/w_double_barrel_shotgun.mdl"
-SWEP.Primary.Sound = "weapons/ttt/dbsingle.wav"
-SWEP.Primary.Recoil = 15
-SWEP.Secondary.Sound = "weapons/ttt/dbblast.wav"
-SWEP.Secondary.Recoil = 40
 
 SWEP.IronSightsPos = Vector(0, 0, 0)
 SWEP.IronSightsAng = Vector(0, 0, 0)
+
+if SERVER then
+    CreateConVar("ttt_oldman_adrenaline_shotgun_damage", "10")
+end
+
+function SWEP:Initialize()
+    self:SetWeaponHoldType(self.HoldType)
+
+    if SERVER then
+        SetGlobalInt("ttt_oldman_adrenaline_shotgun_damage", GetConVar("ttt_oldman_adrenaline_shotgun_damage"):GetInt())
+    end
+    return self.BaseClass.Initialize(self)
+end
+
+function SWEP:Deploy()
+    self.Primary.Damage = GetGlobalInt("ttt_oldman_adrenaline_shotgun_damage", 10)
+end
 
 function SWEP:OnDrop()
    self:Remove()

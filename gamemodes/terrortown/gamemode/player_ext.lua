@@ -322,18 +322,6 @@ function plymeta:SpawnForRound(dead_only)
 
     self:StripAll()
     self:SetTeam(TEAM_TERROR)
-    -- Disable Phantom haunting
-    self:SetNWBool("Haunting", false)
-    self:SetNWString("HauntingTarget", nil)
-    self:SetNWInt("HauntingPower", 0)
-    timer.Remove(self:Nick() .. "HauntingPower")
-    timer.Remove(self:Nick() .. "HauntingSpectate")
-    -- Disable Parasite infection
-    self:SetNWBool("Infecting", false)
-    self:SetNWString("InfectingTarget", nil)
-    self:SetNWInt("InfectionProgress", 0)
-    timer.Remove(self:Nick() .. "InfectionProgress")
-    timer.Remove(self:Nick() .. "InfectingSpectate")
 
     -- If this player was dead, mark them as being in the process of being resurrected
     if dead_only then
@@ -397,315 +385,7 @@ function plymeta:KickBan(length, reason)
     PerformKickBan(self, length, reason)
 end
 
-local function GetTraitorTeamDrunkExcludes()
-    local excludes = {}
-    -- Exclude any roles whose predicate fails
-    for r, pred in pairs(ROLE_SELECTION_PREDICATE) do
-        if TRAITOR_ROLES[r] and not pred() then
-            excludes[r] = true
-        end
-    end
-
-    return excludes
-end
-
-local function GetInnocentTeamDrunkExcludes()
-    -- Exclude detectives from the innocent list
-    local excludes = table.Copy(DETECTIVE_ROLES)
-    -- Also exclude any roles whose predicate fails
-    for r, pred in pairs(ROLE_SELECTION_PREDICATE) do
-        if INNOCENT_ROLES[r] and not pred() then
-            excludes[r] = true
-        end
-    end
-
-    -- Always exclude the glitch because a glitch suddenly appearing
-    -- in the middle of a round makes it obvious who is not a real traitor
-    excludes[ROLE_GLITCH] = true
-
-    return excludes
-end
-
-local function GetJesterTeamDrunkExcludes()
-    local excludes = {}
-    -- Exclude any roles whose predicate fails
-    for r, pred in pairs(ROLE_SELECTION_PREDICATE) do
-        if JESTER_ROLES[r] and not pred() then
-            excludes[r] = true
-        end
-    end
-
-    return excludes
-end
-
-local function GetIndependentTeamDrunkExcludes()
-    -- Exclude the drunk since they already are one
-    local excludes = {}
-    excludes[ROLE_DRUNK] = true
-
-    -- Also exclude any roles whose predicate fails
-    for r, pred in pairs(ROLE_SELECTION_PREDICATE) do
-        if INDEPENDENT_ROLES[r] and not pred() then
-            excludes[r] = true
-        end
-    end
-
-    -- Also exclude the mad scientist if zombies aren't independent (same as spawning logic)
-    if not INDEPENDENT_ROLES[ROLE_ZOMBIE] then
-        excludes[ROLE_MADSCIENTIST] = true
-    end
-
-    return excludes
-end
-
-local function GetMonsterTeamDrunkExcludes()
-    local excludes = {}
-    -- Exclude any roles whose predicate fails
-    for r, pred in pairs(ROLE_SELECTION_PREDICATE) do
-        if MONSTER_ROLES[r] and not pred() then
-            excludes[r] = true
-        end
-    end
-
-    return excludes
-end
-
-local function GetDetectiveTeamDrunkExcludes()
-    local excludes = {}
-    -- Exclude any roles whose predicate fails
-    for r, pred in pairs(ROLE_SELECTION_PREDICATE) do
-        if DETECTIVE_ROLES[r] and not pred() then
-            excludes[r] = true
-        end
-    end
-
-    return excludes
-end
-
-function plymeta:SoberDrunk(team)
-    if not self:IsActiveDrunk() then return false end
-
-    local role = nil
-    -- If any role is allowed
-    if GetConVar("ttt_drunk_any_role"):GetBool() then
-        local role_options = {}
-        -- Get the role options by team, if one was given
-        if team then
-            if team == ROLE_TEAM_TRAITOR then
-                role_options = GetTeamRoles(TRAITOR_ROLES, GetTraitorTeamDrunkExcludes())
-            elseif team == ROLE_TEAM_INNOCENT then
-                role_options = GetTeamRoles(INNOCENT_ROLES, GetInnocentTeamDrunkExcludes())
-            elseif team == ROLE_TEAM_JESTER then
-                role_options = GetTeamRoles(JESTER_ROLES, GetJesterTeamDrunkExcludes())
-            elseif team == ROLE_TEAM_INDEPENDENT then
-                role_options = GetTeamRoles(INDEPENDENT_ROLES, GetIndependentTeamDrunkExcludes())
-            elseif team == ROLE_TEAM_MONSTER then
-                role_options = GetTeamRoles(MONSTER_ROLES, GetMonsterTeamDrunkExcludes())
-            elseif team == ROLE_TEAM_DETECTIVE then
-                role_options = GetTeamRoles(DETECTIVE_ROLES, GetDetectiveTeamDrunkExcludes())
-            end
-        -- Or build a list of the options based on what team is randomly chosen (innocent vs. everything else)
-        else
-            if math.random() <= GetConVar("ttt_drunk_innocent_chance"):GetFloat() then
-                role_options = GetTeamRoles(INNOCENT_ROLES, GetInnocentTeamDrunkExcludes())
-            else
-                local excludes = GetIndependentTeamDrunkExcludes()
-                -- Add every non-innocent role (except those that are excluded)
-                for r = 0, ROLE_MAX do
-                    if not INNOCENT_ROLES[r] and not excludes[r] then
-                        table.insert(role_options, r)
-                    end
-                end
-            end
-        end
-
-        -- If there are role options, remove any that shouldn't be used
-        if #role_options > 0 then
-            -- Remove any used roles
-            for _, p in ipairs(player.GetAll()) do
-                if p:IsCustom() then
-                    table.RemoveByValue(role_options, p:GetRole())
-                end
-            end
-
-            -- Keep track of which ones are explicitly allowed because removing from tables that you are iterating over causes the iteration to skip elements
-            local allowed_options = {}
-
-            -- Remove any roles that are not enabled or allowed
-            for _, r in ipairs(role_options) do
-                local rolestring = ROLE_STRINGS_RAW[r]
-                if GetConVar("ttt_drunk_can_be_" .. rolestring):GetBool() and (DEFAULT_ROLES[r] or GetConVar("ttt_" .. rolestring .. "_enabled"):GetBool()) then
-                    table.insert(allowed_options, r)
-                end
-            end
-
-            role_options = allowed_options
-        end
-
-        -- Choose one of the roles, if there are any
-        if #role_options > 0 then
-            role = role_options[math.random(1, #role_options)]
-        end
-    end
-
-    -- If a role hasn't already been chosen, fall back to the either-or logic
-    if not role then
-        -- If a team is given, use it to choose one of the basic options
-        if team then
-            role = team == ROLE_TEAM_TRAITOR and ROLE_TRAITOR or ROLE_INNOCENT
-        -- If not, use randomization
-        elseif math.random() <= GetConVar("ttt_drunk_innocent_chance"):GetFloat() then
-            role = ROLE_INNOCENT
-        else
-            role = ROLE_TRAITOR
-        end
-    end
-
-    self:DrunkRememberRole(role)
-    return true
-end
-
-function plymeta:DrunkRememberRole(role, hidecenter)
-    if not self:IsActiveDrunk() then return false end
-
-    self:SetNWBool("WasDrunk", true)
-    self:SetRole(role)
-    self:PrintMessage(HUD_PRINTTALK, "You have remembered that you are " .. ROLE_STRINGS_EXT[role] .. ".")
-    if not hidecenter then self:PrintMessage(HUD_PRINTCENTER, "You have remembered that you are " .. ROLE_STRINGS_EXT[role] .. ".") end
-    self:SetDefaultCredits()
-
-    local mode = GetConVar("ttt_drunk_notify_mode"):GetInt()
-    if mode > 0 then
-        for _, v in pairs(player.GetAll()) do
-            if self ~= v then
-                if (v:IsTraitorTeam() and (mode == JESTER_NOTIFY_DETECTIVE_AND_TRAITOR or mode == JESTER_NOTIFY_TRAITOR)) or -- the enums here are the same as for the jester notifications so we can just use those
-                        (v:IsDetectiveLike() and (mode == JESTER_NOTIFY_DETECTIVE_AND_TRAITOR or mode == JESTER_NOTIFY_DETECTIVE)) or
-                        mode == JESTER_NOTIFY_EVERYONE then
-                    v:PrintMessage(HUD_PRINTTALK, ROLE_STRINGS_EXT[ROLE_DRUNK] .. " has remembered their role.")
-                end
-            end
-        end
-    end
-
-    -- Update role health
-    SetRoleMaxHealth(self)
-    if self:Health() > self:GetMaxHealth() then
-        self:SetHealth(self:GetMaxHealth())
-    end
-
-    -- Start role special logic checks
-    self:BeginRoleChecks()
-
-    -- Give loadout weapons
-    hook.Run("PlayerLoadout", self)
-
-    net.Start("TTT_DrunkSober")
-    net.WriteString(self:Nick())
-    net.WriteString(ROLE_STRINGS_EXT[role])
-    net.Broadcast()
-
-    SendFullStateUpdate()
-    return true
-end
-
 function plymeta:BeginRoleChecks()
-    -- Revenger logic
-    if self:IsRevenger() then
-        local potentialSoulmates = {}
-        for _, p in pairs(player.GetAll()) do
-            if p:Alive() and not p:IsSpec() and p ~= self then
-                table.insert(potentialSoulmates, p)
-            end
-        end
-        if #potentialSoulmates > 0 then
-            local revenger_lover = potentialSoulmates[math.random(#potentialSoulmates)]
-            self:SetNWString("RevengerLover", revenger_lover:SteamID64() or "")
-            self:PrintMessage(HUD_PRINTTALK, "You are in love with " .. revenger_lover:Nick() .. ".")
-            self:PrintMessage(HUD_PRINTCENTER, "You are in love with " .. revenger_lover:Nick() .. ".")
-        end
-
-        local drain_health = GetConVar("ttt_revenger_drain_health_to"):GetInt()
-        if drain_health >= 0 then
-            timer.Create("revengerhealthdrain", 3, 0, function()
-                for _, p in pairs(player.GetAll()) do
-                    local lover_sid = p:GetNWString("RevengerLover", "")
-                    if p:IsActiveRevenger() and lover_sid ~= "" then
-                        local lover = player.GetBySteamID64(lover_sid)
-                        if IsValid(lover) and (not lover:Alive() or lover:IsSpec()) then
-                            local hp = p:Health()
-                            if hp > drain_health then
-                                -- We were going to set them to 0, so just kill them instead
-                                if hp == 1 then
-                                    p:PrintMessage(HUD_PRINTTALK, "You have succumbed to the heartache of losing your lover.")
-                                    p:PrintMessage(HUD_PRINTCENTER, "You have succumbed to the heartache of losing your lover.")
-                                    p:Kill()
-                                else
-                                    p:SetHealth(hp - 1)
-                                end
-                            end
-                        end
-                    end
-                end
-            end)
-        end
-    end
-
-    -- Drunk logic
-    if self:IsDrunk() then
-        SetGlobalFloat("ttt_drunk_remember", CurTime() + GetConVar("ttt_drunk_sober_time"):GetInt())
-        timer.Create("drunkremember", GetConVar("ttt_drunk_sober_time"):GetInt(), 1, function()
-            for _, p in pairs(player.GetAll()) do
-                if p:IsActiveDrunk() then
-                    p:SoberDrunk()
-                elseif p:IsDrunk() and not p:Alive() and not timer.Exists("waitfordrunkrespawn") then
-                    timer.Create("waitfordrunkrespawn", 0.1, 0, function()
-                        local dead_drunk = false
-                        for _, p2 in pairs(player.GetAll()) do
-                            if p2:IsActiveDrunk() then
-                                p2:SoberDrunk()
-                            elseif p2:IsDrunk() and not p2:Alive() then
-                                dead_drunk = true
-                            end
-                        end
-                        if timer.Exists("waitfordrunkrespawn") and not dead_drunk then timer.Remove("waitfordrunkrespawn") end
-                    end)
-                end
-            end
-        end)
-    end
-
-    -- Old Man logic
-    local oldman_drain_health = GetConVar("ttt_oldman_drain_health_to"):GetInt()
-    if self:IsOldMan() and oldman_drain_health > 0 then
-        timer.Create("oldmanhealthdrain", 3, 0, function()
-            for _, p in pairs(player.GetAll()) do
-                if p:IsActiveOldMan() then
-                    local hp = p:Health()
-                    if hp > oldman_drain_health then
-                        p:SetHealth(hp - 1)
-                    end
-
-                    local max = p:GetMaxHealth()
-                    if max > oldman_drain_health then
-                        p:SetMaxHealth(max - 1)
-                    end
-                end
-            end
-        end)
-    end
-
-    -- Glitch logic
-    if self:IsGlitch() then
-        SetGlobalBool("ttt_glitch_round", true)
-    end
-
-    -- Deputy/Impersonator logic
-    -- If this is a promotable role and they should be promoted, promote them immediately
-    -- The logic which handles a detective dying is in the PlayerDeath hook
-    if self:IsDetectiveLikePromotable() and ShouldPromoteDetectiveLike() then
-        self:HandleDetectiveLikePromotion()
-    end
-
     -- Run role-specific logic
     if ROLE_ON_ROLE_ASSIGNED[self:GetRole()] then
         ROLE_ON_ROLE_ASSIGNED[self:GetRole()](self)
@@ -790,6 +470,63 @@ function plymeta:Ignite(dur, radius)
     -- Keep track of extended ignition information so when multiple things are causing burning the later ones don't lose their data. See PlayerTakeDamage in player.lua
     self.ignite_info_ext = {dur = dur, end_time = CurTime() + dur}
     entmeta.Ignite(self, dur, radius)
+end
+
+local player_view_offsets = {}
+local player_view_offsets_ducked = {}
+function plymeta:SetPlayerScale(scale)
+    self:SetStepSize(self:GetStepSize() * scale)
+    self:SetModelScale(self:GetModelScale() * scale, 1)
+
+    -- Save the original values
+    local sid = self:SteamID64()
+    if not player_view_offsets[sid] then
+        player_view_offsets[sid] = self:GetViewOffset()
+    end
+    if not player_view_offsets_ducked[sid] then
+        player_view_offsets_ducked[sid] = self:GetViewOffsetDucked()
+    end
+
+    -- Use the current, not the saved, values so that this can run multiple times (in theory)
+    self:SetViewOffset(self:GetViewOffset()*scale)
+    self:SetViewOffsetDucked(self:GetViewOffsetDucked()*scale)
+
+    local a, b = self:GetHull()
+    self:SetHull(a * scale, b * scale)
+
+    a, b = self:GetHullDuck()
+    self:SetHullDuck(a * scale, b * scale)
+end
+
+function plymeta:ResetPlayerScale()
+    self:SetModelScale(1, 1)
+
+    -- Retrieve the saved offsets
+    local offset = nil
+    local sid = self:SteamID64()
+    if player_view_offsets[sid] then
+        offset = player_view_offsets[sid]
+        player_view_offsets[sid] = nil
+    end
+    -- Reset the view offset to the saved value or the default (if the ec_ViewChanged is not set)
+    -- The "ec_ViewChanged" property is from the "Enhanced Camera" mod which use ViewOffset to make the camera more "realistic"
+    if offset or not self.ec_ViewChanged then
+        self:SetViewOffset(offset or Vector(0, 0, 64))
+    end
+
+    -- Retrieve the saved ducked offsets
+    local offset_ducked = nil
+    if player_view_offsets_ducked[sid] then
+        offset_ducked = player_view_offsets_ducked[sid]
+        player_view_offsets_ducked[sid] = nil
+    end
+    -- Reset the view offset to the saved value or the default (if the ec_ViewChanged is not set)
+    -- The "ec_ViewChanged" property is from the "Enhanced Camera" mod which use ViewOffset to make the camera more "realistic"
+    if offset_ducked or not self.ec_ViewChanged then
+        self:SetViewOffsetDucked(offset_ducked or Vector(0, 0, 28))
+    end
+    self:ResetHull()
+    self:SetStepSize(18)
 end
 
 -- Run these overrides when the round is preparing the first time to ensure their addons have been loaded

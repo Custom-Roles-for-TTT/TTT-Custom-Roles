@@ -1,7 +1,0 @@
-"UnlitGeneric"
-{
- "$basetexture" "vgui/ttt/icon_jes"
- "$vertexcolor" 1
- "$vertexalpha" 1
- "$translucent" 1
-}

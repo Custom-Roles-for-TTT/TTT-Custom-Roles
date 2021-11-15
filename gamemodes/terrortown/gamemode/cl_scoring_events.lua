@@ -35,18 +35,8 @@ local app_icon     = Material("icon16/application.png")
 local credit_icon = Material("icon16/coins.png")
 local wrench_icon  = Material("icon16/wrench.png")
 
-local traitor_icon = Material("icon16/user_red.png")
-local innocent_icon = Material("icon16/user_green.png")
 local heart_icon = Material("icon16/heart.png")
-local heart_add_icon = Material("icon16/heart_add.png")
-local hourglass_go_icon = Material("icon16/hourglass_go.png")
 local disconnect_icon = Material("icon16/disconnect.png")
-local swap_icon = Material("icon16/arrow_refresh_small.png")
-local promotion_icon = Material("icon16/award_star_add.png")
-local clown_icon = Material("icon16/emoticon_evilgrin.png")
-local drunk_icon = Material("icon16/drink_empty.png")
-local haunt_icon = Material("icon16/group.png")
-local bodysnatch_icon = Material("icon16/user_edit.png")
 local info_icon = Material("icon16/information.png")
 
 -- Shorter name, using it lots
@@ -64,12 +54,6 @@ Event(EVENT_FINISH,
                      return PT("ev_win_traitor", { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]:lower() })
                   elseif e.win == WIN_INNOCENT then
                      return PT("ev_win_inno", { role = ROLE_STRINGS_PLURAL[ROLE_INNOCENT]:lower() })
-                  elseif e.win == WIN_JESTER then
-                     return PT("ev_win_jester", { role = ROLE_STRINGS[ROLE_JESTER]:lower() })
-                  elseif e.win == WIN_CLOWN then
-                     return PT("ev_win_clown", { role = ROLE_STRINGS[ROLE_CLOWN]:lower() })
-                  elseif e.win == WIN_OLDMAN then
-                     return PT("ev_win_oldman", { role = ROLE_STRINGS[ROLE_OLDMAN]:lower() })
                   elseif e.win == WIN_MONSTER then
                      local monster_role = GetWinningMonsterRole()
                      if monster_role == ROLE_VAMPIRE then
@@ -91,13 +75,6 @@ Event(EVENT_FINISH,
                      role_string = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]
                   elseif e.win == WIN_INNOCENT then
                      role_string = ROLE_STRINGS_PLURAL[ROLE_INNOCENT]
-                  elseif e.win == WIN_JESTER then
-                     role_string = ROLE_STRINGS[ROLE_JESTER]
-                  elseif e.win == WIN_CLOWN then
-                     role_string = ROLE_STRINGS[ROLE_CLOWN]
-                  elseif e.win == WIN_OLDMAN then
-                     role_string = ROLE_STRINGS[ROLE_OLDMAN]
-                     win_string = "ev_win_icon_also"
                   elseif e.win == WIN_MONSTER then
                      local monster_role = GetWinningMonsterRole()
                      if monster_role == ROLE_VAMPIRE then
@@ -343,14 +320,6 @@ Event(EVENT_KILL,
     end
 })
 
-Event(EVENT_HYPNOTISED, {
-    text = function(e)
-        return PT("ev_hypno", {victim = e.vic})
-     end,
-    icon = function(e)
-        return traitor_icon, "Hypnotised"
-    end})
-
 Event(EVENT_DEFIBRILLATED, {
     text = function(e)
         return PT("ev_defi", {victim = e.vic})
@@ -367,92 +336,10 @@ Event(EVENT_DISCONNECTED, {
         return disconnect_icon, "Disconnected"
     end})
 
-Event(EVENT_SWAPPER, {
-    text = function(e)
-        return PT("ev_swap", {victim = e.vic, attacker = e.att})
-    end,
-    icon = function(e)
-        return swap_icon, "Swapped"
-    end})
-
-Event(EVENT_PROMOTION, {
-    text = function(e)
-        return PT("ev_promote", {player = e.ply, detective = ROLE_STRINGS[ROLE_DETECTIVE]})
-    end,
-    icon = function(e)
-        return promotion_icon, "Promotion"
-    end})
-
-Event(EVENT_CLOWNACTIVE, {
-    text = function(e)
-        return PT("ev_clown", {player = e.ply})
-    end,
-    icon = function(e)
-        return clown_icon, "Killer Clown"
-    end})
-
-Event(EVENT_DRUNKSOBER, {
-    text = function(e)
-        return PT("ev_drunk", {player = e.ply, team = e.team})
-    end,
-    icon = function(e)
-        return drunk_icon, "Drunk Sober"
-    end})
-
-Event(EVENT_HAUNT, {
-    text = function(e)
-        return PT("ev_haunt", {victim = e.vic, attacker = e.att})
-    end,
-    icon = function(e)
-        return haunt_icon, "Haunt"
-    end})
-
-Event(EVENT_BODYSNATCH, {
-    text = function(e)
-        return PT("ev_bodysnatch", {victim = e.vic, attacker = e.att, role = e.role})
-    end,
-    icon = function(e)
-        return bodysnatch_icon, "Bodysnatch"
-    end})
-
 Event(EVENT_LOG, {
     text = function(e)
         return e.txt
     end,
     icon = function(e)
         return info_icon, "Information"
-    end})
-
-Event(EVENT_BEGGARCONVERTED, {
-    text = function(e)
-        return PT("ev_beggar_converted", {victim = e.vic, attacker = e.att, team = e.team, beggar = ROLE_STRINGS[ROLE_BEGGAR]})
-    end,
-    icon = function(e)
-        if e.team == "an innocent" then
-            return innocent_icon, "Converted"
-        else
-            return traitor_icon, "Converted"
-        end
-    end})
-
-Event(EVENT_BEGGARKILLED, {
-   text = function(e)
-      if e.delay > 0 then
-         return PT("ev_beggar_killed_delay", {attacker = e.att, victim = e.vic, delay = e.delay, beggar = ROLE_STRINGS[ROLE_BEGGAR]})
-      end
-      return PT("ev_beggar_killed", {attacker = e.att, victim = e.vic, beggar = ROLE_STRINGS[ROLE_BEGGAR]})
-  end,
-  icon = function(e)
-      if e.delay > 0 then
-         return hourglass_go_icon, "Respawning"
-      end
-      return heart_add_icon, "Respawned"
-  end})
-
-Event(EVENT_INFECT, {
-    text = function(e)
-        return PT("ev_infect", {victim = e.vic, attacker = e.att})
-    end,
-    icon = function(e)
-        return haunt_icon, "Infected"
     end})

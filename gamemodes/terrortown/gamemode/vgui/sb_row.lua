@@ -112,7 +112,7 @@ function GM:TTTScoreboardRowColorForPlayer(ply)
 
     if ply:GetDetectiveLike() then
         return ply:GetRole()
-    elseif ply:IsClown() and ply:GetNWBool("KillerClownActive", false) then
+    elseif ply:IsClown() and ply:IsRoleActive() then
         return ROLE_CLOWN
     end
 
@@ -202,11 +202,11 @@ function PANEL:Paint(width, height)
         -- Swap the deputy/impersonator icons depending on which settings are enabled
         if ply:IsDetectiveLike() and not ply:IsDetectiveTeam() then
             if client:IsTraitorTeam() and ply:IsImpersonator() then
-                if GetGlobalBool("ttt_impersonator_use_detective_icon", false) then
+                if GetGlobalBool("ttt_impersonator_use_detective_icon", true) then
                     role = ROLE_DETECTIVE
                 end
                 color = ROLE_COLORS_SCOREBOARD[ROLE_IMPERSONATOR]
-            elseif GetGlobalBool("ttt_deputy_use_detective_icon", false) then
+            elseif GetGlobalBool("ttt_deputy_use_detective_icon", true) then
                 role = ROLE_DETECTIVE
             else
                 role = ROLE_DEPUTY
@@ -226,20 +226,18 @@ function PANEL:Paint(width, height)
     surface.DrawRect(0, 0, width, SB_ROW_HEIGHT)
 
     if roleStr ~= "" then
-        self.sresult:SetImage("vgui/ttt/tab_" .. roleStr .. ".png")
+        if file.Exists("materials/vgui/ttt/roles/" .. roleStr .. "/tab_" .. roleStr .. ".png", "GAME") then
+            self.sresult:SetImage("vgui/ttt/roles/" .. roleStr .. "/tab_" .. roleStr .. ".png")
+        else
+            self.sresult:SetImage("vgui/ttt/tab_" .. roleStr .. ".png")
+        end
         self.sresult:SetVisible(true)
     else
         self.sresult:SetVisible(false)
     end
 
-    if GetRoundState() >= ROUND_ACTIVE then
-        if client:IsRevenger() and ply:SteamID64() == client:GetNWString("RevengerLover", "") then
-            DrawFlashingBorder(width, ROLE_REVENGER)
-        elseif flash_role and flash_role > ROLE_NONE and flash_role <= ROLE_MAX then
-            DrawFlashingBorder(width, flash_role)
-        elseif client:IsTraitorTeam() and ply:GetNWBool("Infected", false) then
-            DrawFlashingBorder(width, ROLE_PARASITE)
-        end
+    if GetRoundState() >= ROUND_ACTIVE and flash_role and flash_role > ROLE_NONE and flash_role <= ROLE_MAX then
+        DrawFlashingBorder(width, flash_role)
     end
 
     if ply == client then
@@ -302,12 +300,6 @@ function PANEL:UpdatePlayerData()
     local client = LocalPlayer()
     self.nick:SetText(ply:Nick())
     if GetRoundState() >= ROUND_ACTIVE then
-        if client:IsRevenger() and ply:SteamID64() == client:GetNWString("RevengerLover", "") then
-            self.nick:SetText(ply:Nick() .. " (" .. GetTranslation("target_revenger_lover") .. ")")
-        elseif client:IsTraitorTeam() and ply:GetNWBool("Infected", false) then
-            self.nick:SetText(ply:Nick() .. " (" .. GetTranslation("target_infected") .. ")")
-        end
-
         local nick_override = hook.Run("TTTScoreboardPlayerName", ply, client, self.nick:GetText())
         if nick_override then self.nick:SetText(nick_override) end
     end
@@ -363,11 +355,12 @@ function PANEL:LayoutColumns()
         v:SetPos(cx - v:GetWide() / 2, (SB_ROW_HEIGHT - v:GetTall()) / 2)
     end
 
-    self.tag:SizeToContents()
-    cx = cx - 90
-    self.tag:SetPos(cx - self.tag:GetWide() / 2, (SB_ROW_HEIGHT - self.tag:GetTall()) / 2)
-
+    cx = cx - 70
     self.sresult:SetPos(cx - 8, (SB_ROW_HEIGHT - 16) / 2)
+
+    self.tag:SizeToContents()
+    cx = cx - (self.tag:GetWide() / 2) - 50
+    self.tag:SetPos(cx - self.tag:GetWide() / 2, (SB_ROW_HEIGHT - self.tag:GetTall()) / 2)
 end
 
 function PANEL:PerformLayout()

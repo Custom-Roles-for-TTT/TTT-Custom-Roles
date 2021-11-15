@@ -14,6 +14,10 @@ if CLIENT then
 else
     util.AddNetworkString("TTT_Vampified")
     util.AddNetworkString("TTT_Vampire_Fade")
+
+    resource.AddSingleFile("sound/weapons/ttt/vampireeat.wav")
+    resource.AddSingleFile("sound/weapons/ttt/fade.wav")
+    resource.AddSingleFile("sound/weapons/ttt/unfade.wav")
 end
 
 SWEP.InLoadoutFor = { ROLE_VAMPIRE }
@@ -74,13 +78,13 @@ function SWEP:SetupDataTables()
 end
 
 function SWEP:Initialize()
-    self:SetHoldType(self.HoldType)
     self.lastTickSecond = 0
     self.fading = false
 
     if CLIENT then
         self:AddHUDHelp("Left-click to suck blood", "Right-click to fade", false)
     end
+    return self.BaseClass.Initialize(self)
 end
 
 function SWEP:Holster()
@@ -93,7 +97,10 @@ function SWEP:OnDrop()
 end
 
 function SWEP:OnRemove()
-    self:UnfreezeTarget()
+    if IsPlayer(self.TargetEntity) then
+        self:CancelUnfreeze(self.TargetEntity)
+        self:DoUnfreeze()
+    end
     if SERVER then
         self:Reset()
     end
@@ -182,6 +189,7 @@ function SWEP:Drain(entity)
 end
 
 function SWEP:CancelUnfreeze(entity)
+    if CLIENT then return end
     if not IsPlayer(entity) then return end
     if not IsValid(self:GetOwner()) then return end
     local timerid = "VampUnfreezeDelay_" .. self:GetOwner():Nick() .. "_" .. entity:Nick()
@@ -192,17 +200,20 @@ function SWEP:CancelUnfreeze(entity)
 end
 
 function SWEP:AdjustFreezeCount(ent, adj, def)
+    if CLIENT then return end
     local freeze_count =  math.max(0, ent:GetNWInt("VampireFreezeCount", def) + adj)
     ent:SetNWInt("VampireFreezeCount", freeze_count)
     return freeze_count
 end
 
 function SWEP:DoFreeze()
+    if CLIENT then return end
     self:AdjustFreezeCount(self.TargetEntity, 1, 0)
     self.TargetEntity:Freeze(true)
 end
 
 function SWEP:DoUnfreeze()
+    if CLIENT then return end
     local freeze_count = self:AdjustFreezeCount(self.TargetEntity, -1, 1)
     -- Only unfreeze the target if nobody else is draining them
     if freeze_count == 0 then
@@ -245,12 +256,12 @@ function SWEP:DoKill()
     dmginfo:SetDamagePosition(attacker:GetPos())
     self.TargetEntity:TakeDamageInfo(dmginfo)
 
+    self:DoHeal(true)
+    self:DropBones()
+
     -- Remove the body
     local rag = self.TargetEntity.server_ragdoll or self.TargetEntity:GetRagdollEntity()
     SafeRemoveEntity(rag)
-
-    self:DoHeal(true)
-    self:DropBones()
 
     local amt = vampire_drain_credits:GetInt()
     if amt > 0 then
@@ -273,6 +284,7 @@ function SWEP:DoHeal(living)
 end
 
 function SWEP:UnfreezeTarget()
+    if CLIENT then return end
     local owner = self:GetOwner()
     if not IsPlayer(self.TargetEntity) then return end
 
@@ -395,8 +407,9 @@ function SWEP:Think()
                         self:DoKill()
                     end
                 else
-                    SafeRemoveEntity(self.TargetEntity)
+                    self:DropBones()
                     self:DoHeal()
+                    SafeRemoveEntity(self.TargetEntity)
 
                     -- Not actually an error, but it resets the things we want
                     self:FireError()

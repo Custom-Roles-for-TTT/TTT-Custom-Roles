@@ -54,26 +54,13 @@ hook.Add("TTTScoreboardPlayerRole", "Assassin_TTTScoreboardPlayerRole", function
 end)
 
 hook.Add("TTTScoreboardPlayerName", "Assassin_TTTScoreboardPlayerName", function(ply, cli, text)
-    local additionalText = ""
     if cli:IsAssassin() and ply:Nick() == cli:GetNWString("AssassinTarget", "") then
-        additionalText = LANG.GetTranslation("target_assassin_target")
-    elseif cli:IsTraitorTeam() then
-        for _, v in pairs(player.GetAll()) do
-            if v:IsAssassin() and ply:Nick() == v:GetNWString("AssassinTarget", "") and v:Alive() and not v:IsSpec() then
-                additionalText = LANG.GetParamTranslation("target_assassin_target_team", { player = v:Nick() })
-                break
-            end
+        local newText = " ("
+        if ply:GetNWBool("Infected", false) then
+            newText = newText .. LANG.GetTranslation("target_infected") .. " | "
         end
-    end
-
-    if #additionalText > 0 then
-        local parenLoc, _ = string.find(text, ")")
-        if parenLoc then
-            local startText = string.sub(text, 1, parenLoc - 1)
-            return startText .. " | " .. additionalText .. ")"
-        else
-            return text .. " (" .. additionalText .. ")"
-        end
+        newText = newText .. LANG.GetTranslation("target_assassin_target") .. ")"
+        return ply:Nick() .. newText
     end
 end)
 
@@ -171,6 +158,10 @@ hook.Add("TTTTutorialRoleText", "Assassin_TTTTutorialRoleText", function(role, t
                 html = html .. " also"
             end
             html = html .. " be identified by the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>KILL</span> icon floating over their head.</span>"
+        end
+
+        if GetGlobalBool("ttt_traitor_vision_enable", false) then
+            html = html .. "<span style='display: block; margin-top: 10px;'><span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>Constant communication</span> with their allies allows them to quickly identify friends by highlighting them in their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>team color</span>.</span>"
         end
 
         return html

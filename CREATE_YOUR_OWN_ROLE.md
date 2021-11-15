@@ -16,6 +16,7 @@
    1. [Role Selection](#Role-Selection)
    1. [Acting Like a Jester](#Acting-Like-a-Jester)
    1. [Translations](#Translations)
+   1. [Custom Spectator HUD](#Custom-Spectator-HUD)
    1. [Optional Rules](#Optional-Rules)
    1. [ConVars](#ConVars)
    1. [Custom Win Conditions](#Custom-Win-Conditions)
@@ -359,6 +360,88 @@ ROLE.translations = {
 
 Once a translation is defined, it can be used in client-side code via `LANG.GetTranslation` (or `LANG.GetParamTranslation` if it requires parameters).
 
+### Custom Spectator HUD
+
+Some roles have features which are activated once the player dies, such as the phantom. In the phantom's case, they build up some amount of power over time and can use that power to use one of four different abilities against the player the killed them. While the power generation logic will be up to you to design and implement (you may want to look at the phantom code for reference), the spectator HUD display and action implementation have been made easier through the use of hooks and shared methods.
+
+This section of the guide will explain the pieces of the system which should make these kind of spectator HUDs easier and provide a proof-of-concept example with the summoner role.
+
+To implement a spectator HUD like the phantom has, you will need to create two hooks, one player method, and a series of translations and convars to control which powers are enabled and their costs. The translations should be added using the role translations system that you can read about [above](#Translations). The `TTTSpectatorShowHUD` hook (which is what is used to render the spectator HUD itself) must be defined on the client. The convars and the `TTTSpectatorHUDKeyPress` hook (which is what is used to handle when a key is pressed by someone who has a spectator HUD shown) must be defined on the server. The `ROLE.shouldshowspectatorhud` method (which determines whether a player should currently be seeing a spectator HUD) should be defined on both client and server.
+
+Due to how inter-connected the pieces of this system are, we're not going to break them down into individual blocks in this guide like other sections do. Instead, we'll go over them in concept and then leave the implemented example below for you to peruse.
+
+For our example's sake we've taken the phantom implementation and removed half the powers to keep the code size relatively small. Going through the implementation, the `ROLE.shouldshowspectatorhud` function checks that the player (who is guaranteed to be a summoner, in this case) has the property that shows they should be seeing the spectator HUD. On the client side, we first initialize the translations used for the spectator HUD and then define the HUD itself using the `TTTSpectatorShowHUD` hook. Within that hook we prepare teh information required and call the shared `HUD:PaintPowersHUD` method which handles the rendering for us. The server side is similar, first we initialize the convars and sync the values as globals so they are available on the client. Then we use the `TTTSpectatorHUDKeyPress` hook to intercept key presses and define what action each keypress should result in. The [API](API.md) has more information about the specifics of these hooks and methods if you want to learn more. See below for the fully constructed example:
+
+```lua
+ROLE.shouldshowspectatorhud = function(ply)
+    if ply:GetNWBool("Haunting") then
+        return true
+    end
+end
+
+ROLE.translations = {
+    ["english"] = {
+        ["summoner_haunt_title"] = "WILLPOWER",
+        ["summoner_haunt_jump"] = "SPACE: Jump (Cost: {num}%)",
+        ["summoner_haunt_drop"] = "RIGHT CLICK: Drop (Cost: {num}%)"
+    }
+}
+
+if CLIENT then
+    hook.Add("TTTSpectatorShowHUD", "Summoner_TTTSpectatorShowHUD", function(cli, tgt)
+        if not cli:IsSummoner() then return end
+
+        local L = LANG.GetUnsafeLanguageTable()
+        local willpower_colors = {
+            border = COLOR_WHITE,
+            background = Color(17, 115, 135, 222),
+            fill = Color(82, 226, 255, 255)
+        }
+        local powers = {
+            [L.summoner_haunt_jump] = GetGlobalInt("ttt_summoner_killer_haunt_jump_cost", 50),
+            [L.summoner_haunt_drop] = GetGlobalInt("ttt_summoner_killer_haunt_drop_cost", 75)
+        }
+        local max_power = GetGlobalInt("ttt_summoner_killer_haunt_power_max", 100)
+        local current_power = cli:GetNWInt("HauntingPower", 0)
+
+        HUD:PaintPowersHUD(powers, max_power, current_power, willpower_colors, L.summoner_haunt_title)
+    end)
+end
+
+if SERVER then
+    local summoner_killer_haunt_power_max = CreateConVar("ttt_summoner_killer_haunt_power_max", "100")
+    local summoner_killer_haunt_jump_cost = CreateConVar("ttt_summoner_killer_haunt_jump_cost", "50")
+    local summoner_killer_haunt_drop_cost = CreateConVar("ttt_summoner_killer_haunt_drop_cost", "75")
+
+    hook.Add("TTTSyncGlobals", "Summoner_TTTSyncGlobals", function()
+        SetGlobalInt("ttt_summoner_killer_haunt_power_max", summoner_killer_haunt_power_max:GetInt())
+        SetGlobalInt("ttt_summoner_killer_haunt_jump_cost", summoner_killer_haunt_jump_cost:GetInt())
+        SetGlobalInt("ttt_summoner_killer_haunt_drop_cost", summoner_killer_haunt_drop_cost:GetInt())
+    end)
+
+    hook.Add("TTTSpectatorHUDKeyPress", "Summoner_TTTSpectatorHUDKeyPress", function(ply, tgt, powers)
+        if ply:GetNWBool("Haunting", false) and IsValid(tgt) and tgt:Alive() and not tgt:IsSpec() then
+            powers[IN_ATTACK2] = {
+                start_command = "+menu",
+                end_command = "-menu",
+                time = 0.2,
+                cost = summoner_killer_haunt_drop_cost:GetInt()
+            }
+            powers[IN_JUMP] = {
+                start_command = "+jump",
+                end_command = "-jump",
+                time = 0.2,
+                cost = summoner_killer_haunt_jump_cost:GetInt()
+            }
+
+            return true, "HauntingPower"
+        end
+    end)
+end
+```
+
+*(NOTE: If your role is already using the `TTTSyncGlobals` hook elsewhere then consider merging the hooks together in your role file. If you don't want to do that, just be careful that the hook instance name (the 2nd parameter) is unique for each hook you add)*
+
 ### Optional Rules
 
 There are a few options for roles that aren't covered in the template because they don't apply to every role. Add any of these that you want to apply to your role to the file.
@@ -367,8 +450,9 @@ There are a few options for roles that aren't covered in the template because th
 | --- | --- | --- |
 | `ROLE.canlootcredits` | Whether this role can loot credits from dead bodies. Automatically enabled if the role has a shop, but setting to `false` can make it so the role has a shop but cannot loot credits. Setting this to `true` will allow this role to loot credits regardless of whether they have a shop and will automatically create the `ttt_%NAMERAW%_credits_starting` convar. | 1.1.8 |
 | `ROLE.canusetraitorbuttons` | Whether this role can see and use traitor traps. Automatically enabled if the role is part of `ROLE_TEAM_TRAITOR`, but setting to `false` can make it so the role is a traitor that cannot use traitor traps. Setting to `true` will allow this role to use traitor traps regardless of their team association. | 1.1.8 |
-| `ROLE.shoulddelayshop` | Whether this role's shop purchases are delayed. Purchases will only be given to the player when `plymeta:GiveDelayedShopItems` is called by your own role logic. Enabling this feature will automatically create `ttt_%NAMERAW%_shop_active_only` and `ttt_%NAMERAW%_shop_delay` convars. Requires that the role has a shop and has role activation defined (see [Role Activation](#Role-Activation)) | 1.2.2 |
+| `ROLE.shoulddelayshop` | Whether this role's shop purchases are delayed. Purchases will only be given to the player when `plymeta:GiveDelayedShopItems` is called by your own role logic. Enabling this feature will automatically create `ttt_%NAMERAW%_shop_active_only` and `ttt_%NAMERAW%_shop_delay` convars. Requires that the role has a shop and has role activation defined (see [Role Activation](#Role-Activation)). | 1.2.2 |
 | `ROLE.shoulddelayannouncements` | Whether this role should delay announcements when they kill a player that shows a message (like phantom and parasite). Used for things like preventing the assassin's target update message from getting overlapped. | 1.2.7 |
+| `ROLE.haspassivewin` | Whether this role should not block another role from winning (like the old man). | 1.3.1 |
 
 The Summoner doesn't need these options to be set because it is `ROLE_TEAM_TRAITOR` and has a shop, but just for an example, here's what it would look like if we wanted to remove their credit looting and traitor trap abilities and delay their shop item delivery:
 
@@ -556,20 +640,22 @@ if CLIENT then
             return win_string, ROLE_STRINGS_PLURAL[ROLE_SUMMONER]
         end
     end)
-
-    hook.Add("Initialize", "SummonerClientInitialize", function()
-        LANG.AddToLanguage("english", "ev_win_summoner", "The {role}'s army of minions has won them the round!")
-    end)
 end
+
+ROLE.translations = {
+    ["english"] = {
+        ["ev_win_summoner"] = "The {role}'s army of minions has won them the round!"
+    }
+}
 ```
 
-The first hook (`TTTEventFinishText`) is used to control the text to show in the row on the Events tab itself. We recommend using a translateable string (as we do in the example) but that is not strictly necessary. The `Initialize` hook in the example above is only used to set up the translation string to use.
+The first hook (`TTTEventFinishText`) is used to control the text to show in the row on the Events tab itself. We recommend using a translateable string (as we do in the example) but that is not strictly necessary. Don't forget to use the role translations system ([detailed above](#Translations)) to set up the translation string to use.
 
 The second hook (`TTTEventFinishIconText`) is used to control the text that shows when you hover over the icon in the row on the Events tab. The second hook's first return value is the name of a translation string and in most cases doesn't need to be changed at all. In the most common case the only thing you need to do is return the plural string for the winning role (or team) as the second return value.
 
 #### Round Result Message
 
-The final hook to set up our custom win condition is the one that displays the winning message in the top-right of the screen. It also prints the winning team to the server console, but that's not something the players will see. This hook is on the server side but requires a translation to be set up on the client side (after the addon has initialized) for the actual message to display.
+The final hook to set up our custom win condition is the one that displays the winning message in the top-right of the screen. It also prints the winning team to the server console, but that's not something the players will see. This hook is on the server side but requires a translation to be set up on the client side (using the role translation system [detailed above](#Translations)) for the actual message to display.
 
 The standard name we use for the translation string for this is the same as the win condition identifier global, but in all lowercase. In our example, that would be `win_summoner`. When we set up the translation we deliberately use a placeholder for the role name so that the role can be renamed dynamically. We then have to pass the role string for our role when we use the translation. The full example of the hook and the translation string setup can be seen below:
 
@@ -583,11 +669,12 @@ if SERVER then
         end    
     end)
 end
-if CLIENT then
-    hook.Add("Initialize", "SummonerClientInitialize", function()
-        LANG.AddToLanguage("english", "win_summoner", "The {role}'s minions have overwhelmed their enemies!")
-    end)
-end
+
+ROLE.translations = {
+    ["english"] = {
+        ["win_summoner"] = "The {role}'s minions have overwhelmed their enemies!"
+    }
+}
 ```
 
 The `LANG.Msg` call is the one that sends the message to each client and tells them to translate it. Below that, the `ServerLog` call writes a simpler message to the server console, just in case. Finally we `return true` from the hook to tell Custom Roles for TTT not to run the default logic for printing these messages since we've already handled it.
@@ -599,59 +686,59 @@ As mentioned earlier, a good rule of thumb is if you are creating a role that is
 If we piece together all the bits of code from the preivous sections it would come out looking something like this:
 
 ```lua
-    hook.Add("Initialize", "SummonerInitialize", function()
-        -- Use 245 if we're on Custom Roles for TTT earlier than version 1.2.5
-        -- 245 is summation of the ASCII values for the characters "S", "U", and "M"
-        WIN_SUMMONER = GenerateNewWinID and GenerateNewWinID() or 245
+ROLE.translations = {
+    ["english"] = {
+        ["ev_win_summoner"] = "The {role}'s army of minions has won them the round!",
+        ["win_summoner"] = "The {role}'s minions have overwhelmed their enemies!"
+    }
+}
 
-        if CLIENT then
-            LANG.AddToLanguage("english", "win_summoner", "The {role}'s minions have overwhelmed their enemies!")
-            LANG.AddToLanguage("english", "ev_win_summoner", "The {role}'s army of minions has won them the round!")
+hook.Add("Initialize", "SummonerInitialize", function()
+    -- Use 245 if we're on Custom Roles for TTT earlier than version 1.2.5
+    -- 245 is summation of the ASCII values for the characters "S", "U", and "M"
+    WIN_SUMMONER = GenerateNewWinID and GenerateNewWinID() or 245
+end)
+
+if SERVER then
+    hook.Add("TTTCheckForWin", "SummonerCheckForWin", function()
+        local summonerWins = false
+        --[[
+            Insert logic to determine whether our role should win here
+        ]]--
+
+        if summonerWins then
+            return WIN_SUMMONER
         end
     end)
 
-    if SERVER then
-        hook.Add("TTTCheckForWin", "SummonerCheckForWin", function()
-            local summonerWins = false
-            --[[
-                Insert logic to determine whether our role should win here
-            ]]--
+    hook.Add("TTTPrintResultMessage", "SummonerPrintResultMessage", function(type)
+        if type == WIN_SUMMONER then
+            LANG.Msg("win_summoner", { role = ROLE_STRINGS[ROLE_SUMMONER] })
+            ServerLog("Result: " .. ROLE_STRINGS[ROLE_SUMMONER] .. " wins.\n")
+            return true
+        end
+    end)
+end
+if CLIENT then
+    hook.Add("TTTEventFinishText", "SummonerEventFinishText", function(e)
+        if e.win == WIN_SUMMONER then
+            return LANG.GetParamTranslation("ev_win_summoner", { role = ROLE_STRINGS[ROLE_SUMMONER]:lower() })
+        end
+    end)
 
-            if summonerWins then
-                return WIN_SUMMONER
-            end
-        end)
+    hook.Add("TTTEventFinishIconText", "SummonerEventFinishIconText", function(e, win_string, role_string)
+        if e.win == WIN_SUMMONER then
+            return win_string, ROLE_STRINGS_PLURAL[ROLE_SUMMONER]
+        end
+    end)
 
-        hook.Add("TTTPrintResultMessage", "SummonerPrintResultMessage", function(type)
-            if type == WIN_SUMMONER then
-                LANG.Msg("win_summoner", { role = ROLE_STRINGS[ROLE_SUMMONER] })
-                ServerLog("Result: " .. ROLE_STRINGS[ROLE_SUMMONER] .. " wins.\n")
-                return true
-            end
-        end)
-    end
-    if CLIENT then
-        hook.Add("TTTEventFinishText", "SummonerEventFinishText", function(e)
-            if e.win == WIN_SUMMONER then
-                return LANG.GetParamTranslation("ev_win_summoner", { role = ROLE_STRINGS[ROLE_SUMMONER]:lower() })
-            end
-        end)
-
-        hook.Add("TTTEventFinishIconText", "SummonerEventFinishIconText", function(e, win_string, role_string)
-            if e.win == WIN_SUMMONER then
-                return win_string, ROLE_STRINGS_PLURAL[ROLE_SUMMONER]
-            end
-        end)
-
-        hook.Add("TTTScoringWinTitle", "SummonerScoringWinTitle", function(wintype, wintitles, title, secondaryWinRole)
-            if wintype == WIN_SUMMONER then
-                return { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_SUMMONER]:upper() }, c = ROLE_COLORS[ROLE_SUMMONER] }
-            end
-        end)
-    end
+    hook.Add("TTTScoringWinTitle", "SummonerScoringWinTitle", function(wintype, wintitles, title, secondaryWinRole)
+        if wintype == WIN_SUMMONER then
+            return { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_SUMMONER]:upper() }, c = ROLE_COLORS[ROLE_SUMMONER] }
+        end
+    end)
+end
 ```
-
-Notice that we combined the two different `Initialize` hooks into one. That is not required but if you do decide to keep two hooks make sure you give them different identifiers.
 
 ### Tutorial Page
 

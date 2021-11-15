@@ -50,14 +50,7 @@ local function GetTextForLocalPlayer()
     if type(additionalParams) == "table" then params = table.Merge(params, additionalParams) end
 
     local roleString = client:GetRoleStringRaw()
-    if client:IsRevenger() then
-        local sid = LocalPlayer():GetNWString("RevengerLover", "")
-        local lover = player.GetBySteamID64(sid)
-        local name = "someone"
-        if IsPlayer(lover) then name = lover:Nick() end
-        return GetPTranslation("info_popup_revenger", table.Merge(params, { lover = name }))
-
-    elseif client:IsMonsterTeam() then
+    if client:IsMonsterTeam() then
         local allies = {}
         for _, ply in ipairs(player.GetAll()) do
             if ply:IsMonsterTeam() then

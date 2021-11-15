@@ -12,8 +12,6 @@ function GM:PlayerCanPickupWeapon(ply, wep)
     -- Disallow picking up for ammo
     if ply:HasWeapon(wep:GetClass()) then
         return false
-    elseif not ply:GetBodysnatcher() and wep:GetClass() == "weapon_bod_bodysnatch" then
-        return false
     elseif not ply:CanCarryWeapon(wep) then
         return false
     elseif IsEquipment(wep) and wep.IsDropped and (not ply:KeyDown(IN_USE)) then
@@ -397,10 +395,9 @@ local function OrderEquipment(ply, cmd, args)
     local traitorsync = GetGlobalBool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_sync", false) and TRAITOR_ROLES[role]
     local sync_traitor_weapons = traitorsync or (rolemode > SHOP_SYNC_MODE_NONE)
 
-    local promoted = ply:IsDetectiveLike() and role ~= ROLE_DETECTIVE
-    local sync_detective_like = promoted and (role == ROLE_DEPUTY or role == ROLE_IMPERSONATOR)
+    local promoted = ply:IsDetectiveLike() and not DETECTIVE_ROLES[role]
     local detectivesync = GetGlobalBool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_sync", false) and DETECTIVE_ROLES[role]
-    local sync_detective_weapons = detectivesync or sync_detective_like or (rolemode > SHOP_SYNC_MODE_NONE)
+    local sync_detective_weapons = detectivesync or promoted or (rolemode > SHOP_SYNC_MODE_NONE)
 
     -- If this role has a table of additional weapons and that table includes this weapon
     -- and this weapon is not currently buyable by the role then mark this weapon as buyable
@@ -694,48 +691,12 @@ concommand.Add("ttt_bot_transfer_credits", BotTransferCredits)
 
 -- Protect against non-TTT weapons that may break the HUD
 function GM:WeaponEquip(wep, ply)
-    if IsValid(wep) then
-        -- only remove if they lack critical stuff
-        if not wep.Kind then
-            wep:Remove()
-            ErrorNoHalt("Equipped weapon " .. wep:GetClass() .. " is not compatible with TTT\n")
-        end
+    if not IsValid(wep) then return end
 
-        if wep.CanBuy and not wep.AutoSpawnable then
-            if not wep.BoughtBuy then
-                wep.BoughtBuy = ply
-            elseif ply:IsBeggar() and (wep.BoughtBuy:IsTraitorTeam() or wep.BoughtBuy:IsInnocentTeam()) then
-                local role
-                local beggarMode
-                if wep.BoughtBuy:IsTraitorTeam() then
-                    role = ROLE_TRAITOR
-                    beggarMode = GetConVar("ttt_beggar_reveal_traitor"):GetInt()
-                else
-                    role = ROLE_INNOCENT
-                    beggarMode = GetConVar("ttt_beggar_reveal_innocent"):GetInt()
-                end
-
-                ply:SetRole(role)
-                ply:SetNWBool("WasBeggar", true)
-                ply:PrintMessage(HUD_PRINTTALK, "You have joined the " .. ROLE_STRINGS[role] .. " team")
-                ply:PrintMessage(HUD_PRINTCENTER, "You have joined the " .. ROLE_STRINGS[role] .. " team")
-                timer.Simple(0.5, function() SendFullStateUpdate() end) -- Slight delay to avoid flickering from beggar to the new role and back to beggar
-
-                for _, v in ipairs(player.GetAll()) do
-                    if beggarMode == BEGGAR_REVEAL_ALL or (v:IsActiveTraitorTeam() and beggarMode == BEGGAR_REVEAL_TRAITORS) or (not v:IsActiveTraitorTeam() and beggarMode == BEGGAR_REVEAL_INNOCENTS) then
-                        v:PrintMessage(HUD_PRINTTALK, "The beggar has joined the " .. ROLE_STRINGS[role] .. " team")
-                        v:PrintMessage(HUD_PRINTCENTER, "The beggar has joined the " .. ROLE_STRINGS[role] .. " team")
-                    end
-                end
-
-                net.Start("TTT_BeggarConverted")
-                net.WriteString(ply:Nick())
-                net.WriteString(wep.BoughtBuy:Nick())
-                net.WriteString(ROLE_STRINGS_EXT[role])
-                net.WriteString(ply:SteamID64())
-                net.Broadcast()
-            end
-        end
+    -- only remove if they lack critical stuff
+    if not wep.Kind then
+        wep:Remove()
+        ErrorNoHalt("Equipped weapon " .. wep:GetClass() .. " is not compatible with TTT\n")
     end
 end
 
@@ -754,7 +715,7 @@ end
 
 net.Receive("TTT_ConfigureRoleWeapons", function(len, ply)
     if not IsPlayer(ply) or not ply:IsAdmin() then
-        ErrorNoHalt("Player withing admin access attempted to configure role weapons: " .. ply:Nick() .. " (" .. ply:SteamID() .. ")\n")
+        ErrorNoHalt("Player without admin access attempted to configure role weapons: " .. ply:Nick() .. " (" .. ply:SteamID() .. ")\n")
         return
     end
 

@@ -1,6 +1,6 @@
 -- Version string for display and function for version checks
-CR_VERSION = "1.3.0"
-CR_BETA = false
+CR_VERSION = "1.4.0"
+CR_BETA = true
 
 function CRVersion(version)
     local installedVersionRaw = string.Split(CR_VERSION, ".")
@@ -78,8 +78,9 @@ ROLE_MADSCIENTIST = 27
 ROLE_PALADIN = 28
 ROLE_TRACKER = 29
 ROLE_MEDIUM = 30
+ROLE_LOOTGOBLIN = 31
 
-ROLE_MAX = 30
+ROLE_MAX = 31
 ROLE_EXTERNAL_START = ROLE_MAX + 1
 
 local function AddRoleAssociations(list, roles)
@@ -104,7 +105,7 @@ SHOP_ROLES = {}
 AddRoleAssociations(SHOP_ROLES, {ROLE_TRAITOR, ROLE_DETECTIVE, ROLE_HYPNOTIST, ROLE_DEPUTY, ROLE_IMPERSONATOR, ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_MERCENARY, ROLE_ASSASSIN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_VAMPIRE, ROLE_VETERAN, ROLE_DOCTOR, ROLE_QUACK, ROLE_PARASITE, ROLE_PALADIN, ROLE_TRACKER, ROLE_MEDIUM})
 
 DELAYED_SHOP_ROLES = {}
-AddRoleAssociations(DELAYED_SHOP_ROLES, {ROLE_CLOWN, ROLE_VETERAN})
+AddRoleAssociations(DELAYED_SHOP_ROLES, {ROLE_CLOWN, ROLE_VETERAN, ROLE_DEPUTY})
 
 TRAITOR_ROLES = {}
 AddRoleAssociations(TRAITOR_ROLES, {ROLE_TRAITOR, ROLE_HYPNOTIST, ROLE_IMPERSONATOR, ROLE_ASSASSIN, ROLE_VAMPIRE, ROLE_QUACK, ROLE_PARASITE})
@@ -113,7 +114,7 @@ INNOCENT_ROLES = {}
 AddRoleAssociations(INNOCENT_ROLES, {ROLE_INNOCENT, ROLE_DETECTIVE, ROLE_GLITCH, ROLE_PHANTOM, ROLE_REVENGER, ROLE_DEPUTY, ROLE_MERCENARY, ROLE_VETERAN, ROLE_DOCTOR, ROLE_TRICKSTER, ROLE_PARAMEDIC, ROLE_PALADIN, ROLE_TRACKER, ROLE_MEDIUM})
 
 JESTER_ROLES = {}
-AddRoleAssociations(JESTER_ROLES, {ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_BEGGAR, ROLE_BODYSNATCHER})
+AddRoleAssociations(JESTER_ROLES, {ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_BEGGAR, ROLE_BODYSNATCHER, ROLE_LOOTGOBLIN})
 
 INDEPENDENT_ROLES = {}
 AddRoleAssociations(INDEPENDENT_ROLES, {ROLE_DRUNK, ROLE_OLDMAN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_MADSCIENTIST})
@@ -133,7 +134,7 @@ AddRoleAssociations(TRAITOR_BUTTON_ROLES, {ROLE_TRICKSTER})
 
 -- Shop roles get this ability by default
 CAN_LOOT_CREDITS_ROLES = {}
-AddRoleAssociations(CAN_LOOT_CREDITS_ROLES, {ROLE_TRICKSTER})
+AddRoleAssociations(CAN_LOOT_CREDITS_ROLES, {ROLE_TRICKSTER, ROLE_LOOTGOBLIN})
 
 -- Role colours
 COLOR_INNOCENT = {
@@ -336,9 +337,7 @@ else
             local credits = "0"
             if ROLE_STARTING_CREDITS[role] then credits = ROLE_STARTING_CREDITS[role]
             elseif TRAITOR_ROLES[role] then credits = "1"
-            elseif DETECTIVE_ROLES[role] then credits = "1"
-            elseif role == ROLE_MERCENARY then credits = "1"
-            elseif role == ROLE_DOCTOR then credits = "1" end
+            elseif DETECTIVE_ROLES[role] then credits = "1" end
             CreateConVar("ttt_" .. rolestring .. "_credits_starting", credits, FCVAR_REPLICATED)
         end
     end
@@ -354,9 +353,7 @@ else
             CreateConVar("ttt_" .. rolestring .. "_shop_sync", "0", FCVAR_REPLICATED)
         end
 
-        if role == ROLE_MERCENARY then
-            CreateConVar("ttt_" .. rolestring .. "_shop_mode", "2", FCVAR_REPLICATED)
-        elseif (INDEPENDENT_ROLES[role] and role ~= ROLE_ZOMBIE) or DELAYED_SHOP_ROLES[role] then
+        if (INDEPENDENT_ROLES[role] and role ~= ROLE_ZOMBIE) or DELAYED_SHOP_ROLES[role] then
             CreateConVar("ttt_" .. rolestring .. "_shop_mode", "0", FCVAR_REPLICATED)
         end
 
@@ -454,7 +451,8 @@ ROLE_STRINGS_RAW = {
     [ROLE_MADSCIENTIST] = "madscientist",
     [ROLE_PALADIN] = "paladin",
     [ROLE_TRACKER] = "tracker",
-    [ROLE_MEDIUM] = "medium"
+    [ROLE_MEDIUM] = "medium",
+    [ROLE_LOOTGOBLIN] = "lootgoblin"
 }
 
 ROLE_STRINGS = {
@@ -488,7 +486,8 @@ ROLE_STRINGS = {
     [ROLE_MADSCIENTIST] = "Mad Scientist",
     [ROLE_PALADIN] = "Paladin",
     [ROLE_TRACKER] = "Tracker",
-    [ROLE_MEDIUM] = "Medium"
+    [ROLE_MEDIUM] = "Medium",
+    [ROLE_LOOTGOBLIN] = "Loot Goblin"
 }
 
 ROLE_STRINGS_PLURAL = {
@@ -522,7 +521,8 @@ ROLE_STRINGS_PLURAL = {
     [ROLE_MADSCIENTIST] = "Mad Scientists",
     [ROLE_PALADIN] = "Paladins",
     [ROLE_TRACKER] = "Trackers",
-    [ROLE_MEDIUM] = "Mediums"
+    [ROLE_MEDIUM] = "Mediums",
+    [ROLE_LOOTGOBLIN] = "Loot Goblins"
 }
 
 ROLE_STRINGS_EXT = {
@@ -557,7 +557,8 @@ ROLE_STRINGS_EXT = {
     [ROLE_MADSCIENTIST] = "a Mad Scientist",
     [ROLE_PALADIN] = "a Paladin",
     [ROLE_TRACKER] = "a Tracker",
-    [ROLE_MEDIUM] = "a Medium"
+    [ROLE_MEDIUM] = "a Medium",
+    [ROLE_LOOTGOBLIN] = "a Loot Goblin"
 }
 
 ROLE_STRINGS_SHORT = {
@@ -591,7 +592,8 @@ ROLE_STRINGS_SHORT = {
     [ROLE_MADSCIENTIST] = "mad",
     [ROLE_PALADIN] = "pal",
     [ROLE_TRACKER] = "trk",
-    [ROLE_MEDIUM] = "mdm"
+    [ROLE_MEDIUM] = "mdm",
+    [ROLE_LOOTGOBLIN] = "gob"
 }
 
 function StartsWithVowel(word)
@@ -658,6 +660,8 @@ ROLE_SELECTION_PREDICATE = {}
 ROLE_SHOULD_DELAY_ANNOUNCEMENTS = {}
 ROLE_MOVE_ROLE_STATE = {}
 ROLE_ON_ROLE_ASSIGNED = {}
+ROLE_HAS_PASSIVE_WIN = {}
+ROLE_SHOULD_SHOW_SPECTATOR_HUD = {}
 
 ROLE_CONVAR_TYPE_NUM = 0
 ROLE_CONVAR_TYPE_BOOL = 1
@@ -755,6 +759,10 @@ function RegisterRole(tbl)
         ROLE_SHOULD_DELAY_ANNOUNCEMENTS[roleID] = tbl.shoulddelayannouncements
     end
 
+    if type(tbl.haspassivewin) == "boolean" then
+        ROLE_HAS_PASSIVE_WIN[roleID] = tbl.haspassivewin
+    end
+
     -- Equipment
     if tbl.shop then
         ROLE_SHOP_ITEMS[roleID] = tbl.shop
@@ -780,6 +788,10 @@ function RegisterRole(tbl)
 
     if type(tbl.onroleassigned) == "function" then
         ROLE_ON_ROLE_ASSIGNED[roleID] = tbl.onroleassigned
+    end
+
+    if type(tbl.shouldshowspectatorhud) == "function" then
+        ROLE_SHOULD_SHOW_SPECTATOR_HUD[roleID] = tbl.shouldshowspectatorhud
     end
 
     -- List of objects that describe convars for ULX support, in the following format:
@@ -860,6 +872,7 @@ EVENT_VAMPPRIME_DEATH = 24
 EVENT_BEGGARCONVERTED = 25
 EVENT_BEGGARKILLED = 26
 EVENT_INFECT = 27
+EVENT_BODYSNATCHERKILLED = 26
 
 -- Don't redefine this every time we load this file
 if not EVENT_MAX then
@@ -882,10 +895,11 @@ WIN_KILLER = 8
 WIN_ZOMBIE = 9
 WIN_MONSTER = 10
 WIN_VAMPIRE = 11
+WIN_LOOTGOBLIN = 12
 
 -- Don't redefine this every time we load this file
 if not WIN_MAX then
-    WIN_MAX = 11
+    WIN_MAX = 12
 end
 
 function GenerateNewWinID()
@@ -933,37 +947,6 @@ JESTER_NOTIFY_DETECTIVE_AND_TRAITOR = 1
 JESTER_NOTIFY_TRAITOR = 2
 JESTER_NOTIFY_DETECTIVE = 3
 JESTER_NOTIFY_EVERYONE = 4
-
--- Parasite respawn modes
-PARASITE_RESPAWN_HOST = 0
-PARASITE_RESPAWN_BODY = 1
-PARASITE_RESPAWN_RANDOM = 2
-
--- Parasite infection suicide respawn modes
-PARASITE_SUICIDE_NONE = 0
-PARASITE_SUICIDE_RESPAWN_ALL = 1
-PARASITE_SUICIDE_RESPAWN_CONSOLE = 2
-
--- Swapper weapon modes
-SWAPPER_WEAPON_NONE = 0
-SWAPPER_WEAPON_ROLE = 1
-SWAPPER_WEAPON_ALL = 2
-
--- Glitch modes
-GLITCH_SHOW_AS_TRAITOR = 0
-GLITCH_SHOW_AS_SPECIAL_TRAITOR = 1
-GLITCH_HIDE_SPECIAL_TRAITOR_ROLES = 2
-
--- Beggar reveal modes
-BEGGAR_REVEAL_NONE = 0
-BEGGAR_REVEAL_ALL = 1
-BEGGAR_REVEAL_TRAITORS = 2
-BEGGAR_REVEAL_INNOCENTS = 3
-
--- Bodysnatcher reveal modes
-BODYSNATCHER_REVEAL_NONE = 0
-BODYSNATCHER_REVEAL_ALL = 1
-BODYSNATCHER_REVEAL_TEAM = 2
 
 COLOR_WHITE = Color(255, 255, 255, 255)
 COLOR_BLACK = Color(0, 0, 0, 255)
@@ -1054,41 +1037,6 @@ end
 function GM:PlayerFootstep(ply, pos, foot, sound, volume, rf)
     if not IsValid(ply) or ply:IsSpec() or not ply:Alive() then return true end
 
-    if SERVER and ply:WaterLevel() == 0 then
-        -- This player killed a Phantom. Tell everyone where their foot steps should go
-        local phantom_killer_footstep_time = GetConVar("ttt_phantom_killer_footstep_time"):GetInt()
-        local tracker_footstep_time = GetConVar("ttt_tracker_footstep_time"):GetInt()
-        if phantom_killer_footstep_time > 0 and ply:GetNWBool("Haunted", false) then
-            net.Start("TTT_PlayerFootstep")
-            net.WriteEntity(ply)
-            net.WriteVector(pos)
-            net.WriteAngle(ply:GetAimVector():Angle())
-            net.WriteBit(foot)
-            net.WriteTable(Color(138, 4, 4))
-            net.WriteUInt(phantom_killer_footstep_time, 8)
-            net.Broadcast()
-        elseif tracker_footstep_time > 0 and not ply:IsTracker() then
-            net.Start("TTT_PlayerFootstep")
-            net.WriteEntity(ply)
-            net.WriteVector(pos)
-            net.WriteAngle(ply:GetAimVector():Angle())
-            net.WriteBit(foot)
-            local col = Vector(1, 1, 1)
-            if GetConVar("ttt_tracker_footstep_color"):GetBool() then
-                col = ply:GetNWVector("PlayerColor", Vector(1, 1, 1))
-            end
-            net.WriteTable(Color(col.x * 255, col.y * 255, col.z * 255))
-            net.WriteUInt(tracker_footstep_time, 8)
-            local tab = {}
-            for k, p in pairs(player.GetAll()) do
-                if p:IsActiveTracker() then
-                    table.insert(tab, p)
-                end
-            end
-            net.Send(tab)
-        end
-    end
-
     -- Kill footsteps on player and client
     if ply:Crouching() or ply:GetMaxSpeed() < 150 then
         -- do not play anything, just prevent normal sounds from playing
@@ -1146,45 +1094,7 @@ function GetSprintMultiplier(ply, sprinting)
 end
 
 function UpdateRoleWeaponState()
-    -- If the parasite is not enabled, don't let anyone buy the cure
-    local parasite_cure = weapons.GetStored("weapon_par_cure")
-    local fake_cure = weapons.GetStored("weapon_qua_fake_cure")
-    if GetGlobalBool("ttt_parasite_enabled", false) then
-        parasite_cure.CanBuy = table.Copy(parasite_cure.CanBuyDefault)
-        fake_cure.CanBuy = table.Copy(fake_cure.CanBuyDefault)
-    else
-        table.Empty(parasite_cure.CanBuy)
-        table.Empty(fake_cure.CanBuy)
-    end
-
-    -- Paramedic
-    local paramedic_defib = weapons.GetStored("weapon_med_defib")
-    if GetGlobalBool("ttt_paramedic_device_loadout", false) then
-        paramedic_defib.InLoadoutFor = table.Copy(paramedic_defib.InLoadoutForDefault)
-    else
-        table.Empty(paramedic_defib.InLoadoutFor)
-    end
-    if GetGlobalBool("ttt_paramedic_device_shop", false) then
-        paramedic_defib.CanBuy = {ROLE_PARAMEDIC}
-    else
-        paramedic_defib.CanBuy = nil
-    end
-
-    -- Phantom
-    local phantom_device = weapons.GetStored("weapon_pha_exorcism")
-    local phantom_device_roles = {}
-    if GetGlobalBool("ttt_traitor_phantom_cure", false) then
-        table.insert(phantom_device_roles, ROLE_TRAITOR)
-    end
-    if GetGlobalBool("ttt_quack_phantom_cure", false) then
-        table.insert(phantom_device_roles, ROLE_QUACK)
-    end
-
-    if #phantom_device_roles > 0 then
-        phantom_device.CanBuy = phantom_device_roles
-    else
-        table.Empty(phantom_device.CanBuy)
-    end
+    hook.Run("TTTUpdateRoleState")
 
     if SERVER then
         net.Start("TTT_ResetBuyableWeaponsCache")
@@ -1193,16 +1103,6 @@ function UpdateRoleWeaponState()
 end
 
 function UpdateRoleState()
-    -- Team changing
-    local bodysnatchers_are_independent = GetGlobalBool("ttt_bodysnatchers_are_independent", false)
-    INDEPENDENT_ROLES[ROLE_BODYSNATCHER] = bodysnatchers_are_independent
-    JESTER_ROLES[ROLE_BODYSNATCHER] = not bodysnatchers_are_independent
-
-    -- Role Features
-    local glitch_use_traps = GetGlobalBool("ttt_glitch_use_traps", false)
-    CAN_LOOT_CREDITS_ROLES[ROLE_GLITCH] = glitch_use_traps
-    TRAITOR_BUTTON_ROLES[ROLE_GLITCH] = glitch_use_traps
-
     local disable_looting = GetGlobalBool("ttt_detective_disable_looting", false)
     local special_detectives_armor_loadout = GetGlobalBool("ttt_special_detectives_armor_loadout", true)
     for r, e in pairs(DETECTIVE_ROLES) do
@@ -1221,13 +1121,11 @@ function UpdateRoleState()
         end
     end
 
-    hook.Run("TTTUpdateRoleState")
+    -- Update which weapons are available based on role state
+    UpdateRoleWeaponState()
 
     -- Update role colors to make sure team changes have taken effect
     UpdateRoleColours()
-
-    -- Update which weapons are available based on role state
-    UpdateRoleWeaponState()
 
     -- Enable the shop for all roles if configured to do so
     if GetGlobalBool("ttt_shop_for_all", false) then
@@ -1248,12 +1146,6 @@ function GetWinningMonsterRole()
     end
     -- Otherwise just use the "Monsters" team name
     return nil
-end
-
-function ShouldHideJesters(p)
-    -- TODO: Remove this in the next beta release after 1.2.5 is released to non-beta
-    ErrorNoHaltWithStack("WARNING: ShouldHideJesters(ply) is deprecated. Please switch to ply:ShouldHideJesters()")
-    return p:ShouldHideJesters()
 end
 
 if SERVER then
@@ -1280,145 +1172,70 @@ if SERVER then
         SetRoleStartingHealth(ply)
     end
 
-    function ShouldPromoteDetectiveLike()
-        local alive, dead = 0, 0
-        for _, p in ipairs(player.GetAll()) do
-            if p:IsDetectiveTeam() then
-                if not p:IsSpec() and p:Alive() then
-                    alive = alive + 1
-                else
-                    dead = dead + 1
-                end
+    local function ShouldShowJesterNotification(target, mode)
+        -- 1 - Only notify Traitors and Detective-likes
+        -- 2 - Only notify Traitors
+        -- 3 - Only notify Detective-likes
+        -- 4 - Notify everyone
+        -- Otherwise - Don't notify anyone
+        if mode == JESTER_NOTIFY_DETECTIVE_AND_TRAITOR then
+            return target:IsDetectiveLike() or target:IsTraitorTeam()
+        elseif mode == JESTER_NOTIFY_TRAITOR then
+            return target:IsTraitorTeam()
+        elseif mode == JESTER_NOTIFY_DETECTIVE then
+            return target:IsDetectiveLike()
+        elseif mode == JESTER_NOTIFY_EVERYONE then
+            return true
+        end
+        return false
+    end
+
+    function JesterTeamKilledNotification(attacker, victim, getkillstring, shouldshow)
+        local role = victim:GetRole()
+        local cvar_role = ROLE_STRINGS_RAW[role]
+        local mode = GetConVar("ttt_" .. cvar_role .. "_notify_mode"):GetInt()
+        local play_sound = GetConVar("ttt_" .. cvar_role .. "_notify_sound"):GetBool()
+        local show_confetti = GetConVar("ttt_" .. cvar_role .. "_notify_confetti"):GetBool()
+        for _, ply in pairs(player.GetAll()) do
+            if ply == attacker then
+                local role_string = ROLE_STRINGS[role]
+                ply:PrintMessage(HUD_PRINTCENTER, "You killed the " .. role_string .. "!")
+            elseif (shouldshow == nil or shouldshow(ply)) and ShouldShowJesterNotification(ply, mode) then
+                ply:PrintMessage(HUD_PRINTCENTER, getkillstring(ply))
+            end
+
+            if play_sound or show_confetti then
+                net.Start("TTT_JesterDeathCelebration")
+                net.WriteEntity(victim)
+                net.WriteBool(play_sound)
+                net.WriteBool(show_confetti)
+                net.Send(ply)
             end
         end
+    end
+end
 
-        -- If they should be promoted when any detective has died, just check that there is a dead detective
-        if GetConVar("ttt_deputy_impersonator_promote_any_death"):GetBool() then
-            return dead > 0
+if CLIENT then
+    net.Receive("TTT_JesterDeathCelebration", function()
+        local ent = net.ReadEntity()
+        local play_sound = net.ReadBool()
+        local show_confetti = net.ReadBool()
+
+        if not IsPlayer(ent) then return end
+
+        local snd = nil
+        if play_sound then
+            snd = "birthday.wav"
         end
 
-        -- Otherwise, only promote if there are no living detectives
-        return alive == 0
-    end
+        ent:Celebrate(snd, show_confetti)
+    end)
 end
 
 -- Weapons and items that come with TTT. Weapons that are not in this list will
 -- get a little marker on their icon if they're buyable, showing they are custom
 -- and unique to the server.
 DefaultEquipment = {
-    -- traitor-buyable by default
-    [ROLE_TRAITOR] = {
-        "weapon_ttt_c4",
-        "weapon_ttt_flaregun",
-        "weapon_ttt_knife",
-        "weapon_ttt_phammer",
-        "weapon_ttt_push",
-        "weapon_ttt_radio",
-        "weapon_ttt_sipistol",
-        "weapon_ttt_teleport",
-        "weapon_ttt_decoy",
-        "weapon_pha_exorcism",
-        EQUIP_ARMOR,
-        EQUIP_RADAR,
-        EQUIP_DISGUISE
-    },
-
-    -- detective-buyable by default
-    [ROLE_DETECTIVE] = {
-        "weapon_ttt_binoculars",
-        "weapon_ttt_defuser",
-        "weapon_ttt_health_station",
-        "weapon_ttt_stungun",
-        "weapon_ttt_cse",
-        "weapon_ttt_teleport",
-        EQUIP_ARMOR,
-        EQUIP_RADAR
-    },
-
-    [ROLE_PALADIN] = {
-        EQUIP_ARMOR,
-        EQUIP_RADAR
-    },
-
-    [ROLE_MEDIUM] = {
-        EQUIP_ARMOR,
-        EQUIP_RADAR
-    },
-
-    [ROLE_TRACKER] = {
-        EQUIP_ARMOR,
-        EQUIP_RADAR
-    },
-
-    [ROLE_DEPUTY] = {
-        EQUIP_ARMOR,
-        EQUIP_RADAR
-    },
-
-    [ROLE_MERCENARY] = {
-        "weapon_ttt_health_station",
-        "weapon_ttt_teleport",
-        "weapon_ttt_confgrenade",
-        "weapon_ttt_m16",
-        "weapon_ttt_smokegrenade",
-        "weapon_zm_mac10",
-        "weapon_zm_molotov",
-        "weapon_zm_pistol",
-        "weapon_zm_revolver",
-        "weapon_zm_rifle",
-        "weapon_zm_shotgun",
-        "weapon_zm_sledge",
-        "weapon_ttt_glock",
-        EQUIP_ARMOR,
-        EQUIP_RADAR
-    },
-
-    [ROLE_HYPNOTIST] = {
-        "weapon_hyp_brainwash",
-        EQUIP_ARMOR,
-        EQUIP_RADAR,
-        EQUIP_DISGUISE
-    },
-
-    [ROLE_IMPERSONATOR] = {
-        EQUIP_ARMOR,
-        EQUIP_RADAR,
-        EQUIP_DISGUISE
-    },
-
-    [ROLE_ASSASSIN] = {
-        EQUIP_ARMOR,
-        EQUIP_RADAR,
-        EQUIP_DISGUISE
-    },
-
-    [ROLE_QUACK] = {
-        "weapon_ttt_health_station",
-        "weapon_par_cure",
-        "weapon_pha_exorcism",
-        "weapon_qua_bomb_station",
-        "weapon_qua_fake_cure",
-        EQUIP_ARMOR,
-        EQUIP_RADAR,
-        EQUIP_DISGUISE
-    },
-
-    [ROLE_PARASITE] = {
-        EQUIP_ARMOR,
-        EQUIP_RADAR,
-        EQUIP_DISGUISE
-    },
-
-    [ROLE_DOCTOR] = {
-        "weapon_ttt_health_station",
-        "weapon_par_cure",
-        "weapon_qua_fake_cure"
-    },
-
-    [ROLE_PARAMEDIC] = {
-        "weapon_med_defib"
-    },
-
     -- non-buyable
     [ROLE_NONE] = {
         "weapon_ttt_confgrenade",

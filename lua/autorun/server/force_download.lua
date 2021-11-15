@@ -15,6 +15,7 @@ if SERVER then
     resource.AddFile("materials/vgui/ttt/icon_meddefib.vmt")
     resource.AddFile("materials/vgui/ttt/icon_regen.vmt")
     resource.AddFile("materials/vgui/ttt/icon_speed.vmt")
+    resource.AddFile("materials/vgui/ttt/icon_stationbomb.vmt")
 
     -- Radar
     resource.AddFile("materials/vgui/ttt/beacon_back.vmt")
@@ -56,7 +57,6 @@ if SERVER then
 
     -- Celebration
     resource.AddSingleFile("sound/birthday.wav")
-    resource.AddSingleFile("sound/clown.wav")
 
     -- Hit Markers
     resource.AddSingleFile("sound/hitmarkers/mlghit.wav")

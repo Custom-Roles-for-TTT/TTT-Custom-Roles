@@ -1,3 +1,5 @@
+AddCSLuaFile()
+
 local function InitializeEquipment()
     if EquipmentItems then
         local mat_dir = "vgui/ttt/"

@@ -38,7 +38,11 @@ local indicator_mat_rolefront_noz = Material("vgui/ttt/sprite_rolefront_noz")
 local indicator_mat_target_noz = Material("vgui/ttt/sprite_target_noz")
 
 local function DrawRoleIcon(role, noz, pos, dir, color_role)
-    local path = "vgui/ttt/sprite_" .. ROLE_STRINGS_SHORT[role]
+    local roleFileName = ROLE_STRINGS_SHORT[role]
+    local path = "vgui/ttt/sprite_" .. roleFileName
+    if file.Exists("materials/vgui/ttt/roles/" .. roleFileName .. "/sprite_" .. roleFileName .. ".vtf", "GAME") then
+        path = "vgui/ttt/roles/" .. roleFileName .. "/sprite_" .. roleFileName
+    end
     if noz then path = path .. "_noz" end
     local indicator_mat = Material(path)
 
@@ -61,11 +65,11 @@ local propspec_outline = Material("models/props_combine/portalball001_sheet")
 
 local function GetDetectiveIconRole(is_traitor)
     if is_traitor then
-        if GetGlobalBool("ttt_impersonator_use_detective_icon", false) then
+        if GetGlobalBool("ttt_impersonator_use_detective_icon", true) then
             return ROLE_DETECTIVE
         end
         return ROLE_IMPERSONATOR
-    elseif GetGlobalBool("ttt_deputy_use_detective_icon", false) then
+    elseif GetGlobalBool("ttt_deputy_use_detective_icon", true) then
         return ROLE_DETECTIVE
     end
     return ROLE_DEPUTY
@@ -87,7 +91,7 @@ function GM:PostDrawTranslucentRenderables()
     for _, v in pairs(player.GetAll()) do
         -- Compatibility with the disguises, Dead Ringer (810154456), and Prop Disguiser (310403737 and 2127939503)
         local hidden = v:GetNWBool("disguised", false) or (v.IsFakeDead and v:IsFakeDead()) or v:GetNWBool("PD_Disguised", false)
-        if v:IsActive() and v ~= client and not hidden then
+        if v:IsActive() and v ~= client and not hidden and not hook.Run("TTTTargetIDPlayerBlockIcon", v, client) then
             pos = v:GetPos()
             pos.z = pos.z + v:GetHeight() + 15
 
@@ -96,16 +100,9 @@ function GM:PostDrawTranslucentRenderables()
             local showJester = (v:ShouldActLikeJester() or ((v:GetTraitor() or v:GetInnocent()) and hideBeggar) or hideBodysnatcher) and not client:ShouldHideJesters()
             local glitchMode = GetGlobalInt("ttt_glitch_mode", 0)
 
-            -- Only show the "KILL" target if the setting is enabled
-            local showKillIcon = (client:IsClown() and client:GetNWBool("KillerClownActive", false) and GetGlobalBool("ttt_clown_show_target_icon", false))
-                                    and not showJester
-
             -- Allow other addons (and external roles) to determine if the "KILL" icon should show
-            local newShowKillIcon = hook.Run("TTTTargetIDPlayerKillIcon", v, client, showKillIcon, showJester)
-            if type(newShowKillIcon) == "boolean" then
-                showKillIcon = newShowKillIcon
-            end
-
+            -- NOTE: Leave the permanent 'false' parameter to make sure we don't break external hook usage
+            local showKillIcon = hook.Run("TTTTargetIDPlayerKillIcon", v, client, false, showJester)
             if showKillIcon and not client:IsSameTeam(v) then -- If we are showing the "KILL" icon this should take priority over role icons
                 render.SetMaterial(indicator_mat_roleback_noz)
                 render.DrawQuadEasy(pos, dir, 8, 8, ROLE_COLORS_SPRITE[client:GetRole()], 180) -- Use the colour of whatever role the player currently is for the "KILL" icon
@@ -121,10 +118,8 @@ function GM:PostDrawTranslucentRenderables()
                 local noz = false
                 if v:IsDetectiveTeam() then
                     role = v:GetRole()
-                elseif v:GetDetectiveLike() and not (v:GetImpersonator() and client:IsTraitorTeam()) then
+                elseif v:IsDetectiveLike() and not (v:IsImpersonator() and client:IsTraitorTeam()) then
                     role = GetDetectiveIconRole(false)
-                elseif v:GetClown() and v:GetNWBool("KillerClownActive", false) and not GetGlobalBool("ttt_clown_hide_when_active", false) then
-                    role = ROLE_CLOWN
                 end
                 if not hide_roles then
                     if client:IsTraitorTeam() then
@@ -132,34 +127,28 @@ function GM:PostDrawTranslucentRenderables()
                         if showJester then
                             role = ROLE_JESTER
                             noz = false
-                        elseif v:GetTraitor() then
+                        elseif v:IsTraitor() then
                             role = ROLE_TRAITOR
-                        elseif v:GetImpersonator() then
+                        elseif v:IsTraitorTeam() then
                             -- If the impersonator is promoted, use the Detective's icon with the Impersonator's color
-                            if v:GetNWBool("HasPromotion", false) then
+                            if v:IsImpersonator() and v:IsRoleActive() then
                                 role = GetDetectiveIconRole(true)
                                 color_role = ROLE_IMPERSONATOR
-                            elseif glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES and GetGlobalBool("ttt_glitch_round", false) then
-                                role = ROLE_TRAITOR
-                            else
-                                role = ROLE_IMPERSONATOR
-                            end
-                        -- If this is a vanilla traitor they should have been handled above and are therefore a converted beggar who should be hidden
-                        elseif not v:GetTraitor() and v:IsTraitorTeam() then
-                            if v:GetZombie() then
+                            -- Explicitly set zombie role so that is shown to glitches during a zombie traitor round
+                            elseif v:IsZombie() then
                                 role = ROLE_ZOMBIE
                             elseif glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES and GetGlobalBool("ttt_glitch_round", false) then
                                 role = ROLE_TRAITOR
                             else
                                 role = v:GetRole()
                             end
-                        elseif v:GetGlitch() then
+                        elseif v:IsGlitch() then
                             if client:IsZombie() then
                                 role = ROLE_ZOMBIE
                             else
                                 role = v:GetNWInt("GlitchBluff", ROLE_TRAITOR)
                             end
-                        -- Disable "No Z" for other icons like the Clown and Detective-like roles
+                        -- Disable "No Z" for other icons like the Detective-like roles
                         else
                             noz = false
                         end
@@ -300,6 +289,8 @@ function GM:HUDDrawTargetID()
     local ent = trace.Entity
     if (not IsValid(ent)) or ent.NoTarget then return end
 
+    if IsPlayer(ent) and hook.Run("TTTTargetIDPlayerBlockInfo", ent, client) then return end
+
     -- some bools for caching what kind of ent we are looking at
     local target_traitor = false
     local target_special_traitor = false
@@ -309,13 +300,9 @@ function GM:HUDDrawTargetID()
     local target_glitch = false
 
     local target_jester = false
-    local target_clown = false
 
     local target_monster = false
     local target_independent = false
-
-    local target_revenger_lover = false
-    local target_infected = false
 
     local target_corpse = false
 
@@ -385,8 +372,6 @@ function GM:HUDDrawTargetID()
                         end
                     end
                 end
-
-                target_infected = ent:GetNWBool("Infected", false)
             elseif client:IsMonsterTeam() then
                 if showJester then
                     target_jester = showJester
@@ -407,15 +392,8 @@ function GM:HUDDrawTargetID()
             end
         end
 
-        target_detective = GetRoundState() > ROUND_PREP and (ent:IsDetective() or ((ent:IsDeputy() or (ent:IsImpersonator() and not client:IsTraitorTeam())) and ent:GetNWBool("HasPromotion", false)))
+        target_detective = GetRoundState() > ROUND_PREP and (ent:IsDetective() or ((ent:IsDeputy() or (ent:IsImpersonator() and not client:IsTraitorTeam())) and ent:IsRoleActive()))
         target_special_detective = GetRoundState() > ROUND_PREP and ent:IsDetectiveTeam() and not target_detective
-        if not GetGlobalBool("ttt_clown_hide_when_active", false) then
-            target_clown = GetRoundState() > ROUND_PREP and ent:IsClown() and ent:GetNWBool("KillerClownActive", false)
-        end
-
-        if client:IsRevenger() then
-            target_revenger_lover = (ent:SteamID64() == client:GetNWString("RevengerLover", ""))
-        end
 
         -- Allow external roles to override or block showing player name
         local new_text, new_col = hook.Run("TTTTargetIDPlayerName", ent, client, text, color)
@@ -451,7 +429,7 @@ function GM:HUDDrawTargetID()
 
     local w, h = 0, 0 -- text width/height, reused several times
 
-    local ring_visible = target_traitor or target_special_traitor or target_detective or target_special_detective or target_glitch or target_jester or target_clown or target_independent or target_monster
+    local ring_visible = target_traitor or target_special_traitor or target_detective or target_special_detective or target_glitch or target_jester or target_independent or target_monster
 
     local new_visible, color_override = hook.Run("TTTTargetIDPlayerRing", ent, client, ring_visible)
     if type(new_visible) == "boolean" then ring_visible = new_visible end
@@ -482,8 +460,6 @@ function GM:HUDDrawTargetID()
             surface.SetDrawColor(GetRoleTeamColor(ROLE_TEAM_INDEPENDENT, "radar"))
         elseif target_jester then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_JESTER])
-        elseif target_clown then
-            surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_CLOWN])
         end
         surface.DrawTexturedRect(x - 32, y - 32, 64, 64)
     end
@@ -603,13 +579,7 @@ function GM:HUDDrawTargetID()
 
     text = nil
     local secondary_text = nil
-    if target_revenger_lover then -- Prioritise soulmate message over roles
-        text = L.target_revenger_lover
-        col = ROLE_COLORS_RADAR[ROLE_REVENGER]
-    elseif target_infected then
-        text = L.target_infected
-        col = ROLE_COLORS_RADAR[ROLE_PARASITE]
-    elseif target_traitor then
+    if target_traitor then
         text = string.upper(ROLE_STRINGS[ROLE_TRAITOR])
         col = ROLE_COLORS_RADAR[ROLE_TRAITOR]
     elseif target_special_traitor then
@@ -633,9 +603,6 @@ function GM:HUDDrawTargetID()
     elseif target_jester then
         text = string.upper(ROLE_STRINGS[ROLE_JESTER])
         col = ROLE_COLORS_RADAR[ROLE_JESTER]
-    elseif target_clown then
-        text = string.upper(ROLE_STRINGS[ROLE_CLOWN])
-        col = ROLE_COLORS_RADAR[ROLE_CLOWN]
     elseif target_monster then
         text = string.upper(ROLE_STRINGS[target_monster])
         col = GetRoleTeamColor(ROLE_TEAM_MONSTER, "radar")

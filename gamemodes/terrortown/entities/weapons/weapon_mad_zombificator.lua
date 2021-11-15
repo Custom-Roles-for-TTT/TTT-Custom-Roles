@@ -42,17 +42,13 @@ SWEP.Secondary.Delay = 1.25
 
 SWEP.InLoadoutFor = {ROLE_MADSCIENTIST}
 
-SWEP.Charge = 0
-SWEP.Timer = -1
 SWEP.AllowDrop = false
 
 -- settings
 local maxdist = 64
 local success = 100
-local charge = 4
 local mutateok = 0
 local mutatemax = 0
-local spawnhealth = 100
 
 local mutate = {
     ["models/props_junk/watermelon01.mdl"] = true,
@@ -80,17 +76,26 @@ local DEFIB_BUSY = 1
 local DEFIB_ERROR = 2
 local oldScoreGroup = nil
 
+if SERVER then
+    CreateConVar("ttt_madscientist_device_time", "4")
+end
+
 if CLIENT then
     function SWEP:Initialize()
         self:AddHUDHelp("zombificator_help_pri", "zombificator_help_sec", true)
-        self:SetHoldType(self.HoldType)
+        return self.BaseClass.Initialize(self)
     end
 end
 
 function SWEP:SetupDataTables()
     self:NetworkVar("Int", 0, "State")
-    self:NetworkVar("Float", 1, "Begin")
+    self:NetworkVar("Int", 1, "ChargeTime")
+    self:NetworkVar("Float", 0, "Begin")
     self:NetworkVar("String", 0, "Message")
+
+    if SERVER then
+        self:SetChargeTime(GetConVar("ttt_madscientist_device_time"):GetInt())
+    end
 end
 
 function SWEP:OnDrop()
@@ -100,35 +105,6 @@ end
 if SERVER then
     util.AddNetworkString("TTT_Zombificator_Hide")
     util.AddNetworkString("TTT_Zombificator_Revived")
-
-    local offsets = {}
-
-    for i = 0, 360, 15 do
-        table.insert(offsets, Vector(math.sin(i), math.cos(i), 0))
-    end
-
-    function SWEP:FindRespawnLocation()
-        local midsize = Vector(33, 33, 74)
-        local tstart = self:GetOwner():GetPos() + Vector(0, 0, midsize.z / 2)
-
-        for i = 1, #offsets do
-            local o = offsets[i]
-            local v = tstart + o * midsize * 1.5
-
-            local t = {
-                start = v,
-                endpos = v,
-                mins = midsize / -2,
-                maxs = midsize / 2
-            }
-
-            local tr = util.TraceHull(t)
-
-            if not tr.Hit then return v - Vector(0, 0, midsize.z / 2) end
-        end
-
-        return false
-    end
 
     local function validbody(body)
         return CORPSE.GetPlayerNick(body, false) ~= false
@@ -207,13 +183,8 @@ if SERVER then
         net.WriteBool(true)
         net.Send(ply)
 
-        -- Un-haunt the player if the target was the Phantom or Parasite
         local owner = self:GetOwner()
-        if ply:IsPhantom() and ply:GetNWString("HauntingTarget", nil) == owner:SteamID64() then
-            owner:SetNWBool("Haunted", false)
-        elseif ply:IsParasite() and ply:GetNWString("InfectingTarget", nil) == owner:SteamID64() then
-            owner:SetNWBool("Infected", false)
-        end
+        hook.Run("TTTPlayerDefibRoleChange", owner, ply)
 
         net.Start("TTT_Zombified")
         net.WriteString(ply:Nick())
@@ -226,7 +197,7 @@ if SERVER then
         ply:SetRole(ROLE_ZOMBIE)
         ply:StripRoleWeapons()
         ply:PrintMessage(HUD_PRINTCENTER, "You have been turned into a zombie.")
-        ply:SetHealth(spawnhealth)
+        SetRoleHealth(ply)
 
         SafeRemoveEntity(body)
 
@@ -271,7 +242,7 @@ if SERVER then
 
     function SWEP:Think()
         if self:GetState() == DEFIB_BUSY then
-            if self:GetBegin() + charge <= CurTime() then
+            if self:GetBegin() + self:GetChargeTime() <= CurTime() then
                 self:Defib()
             elseif not self:GetOwner():KeyDown(IN_ATTACK) or self:GetOwner():GetEyeTrace(MASK_SHOT_HULL).Entity ~= self.Target then
                 self:Error("ZOMBIFYING ABORTED")
@@ -282,9 +253,11 @@ if SERVER then
     function SWEP:PrimaryAttack()
         if self:GetState() ~= DEFIB_IDLE then return end
 
-        local tr = self:GetOwner():GetEyeTrace(MASK_SHOT_HULL)
+        local owner = self:GetOwner()
+        local tr = owner:GetEyeTrace(MASK_SHOT_HULL)
+        local pos = owner:GetPos()
 
-        if tr.HitPos:Distance(self:GetOwner():GetPos()) > maxdist then return end
+        if tr.HitPos:Distance(pos) > maxdist then return end
         if GetRoundState() ~= ROUND_ACTIVE then return end
 
         local ent = tr.Entity
@@ -295,7 +268,7 @@ if SERVER then
                 ent:SetModelScale(math.min(mutatemax, ent:GetModelScale() + 0.25), 1)
             elseif ent:GetClass() == "prop_ragdoll" and validbody(ent) then
                 self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-                self.Location = self:FindRespawnLocation()
+                self.Location = FindRespawnLocation(pos) or pos
 
                 if self.Location then
                     self:Begin(ent, tr.PhysicsBone)
@@ -339,6 +312,7 @@ if CLIENT then
 
         if state == DEFIB_IDLE then return end
 
+        local charge = self:GetChargeTime()
         local time = self:GetBegin() + charge
 
         local x = ScrW() / 2.0

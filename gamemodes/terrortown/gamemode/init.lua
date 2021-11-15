@@ -42,6 +42,7 @@ AddCSLuaFile("vgui/sb_info.lua")
 
 include("shared.lua")
 
+include("incompatible_addons.lua")
 include("karma.lua")
 include("entity.lua")
 include("radar.lua")
@@ -100,13 +101,8 @@ for role = 0, ROLE_MAX do
         CreateConVar("ttt_" .. rolestring .. "_min_players", "0", FCVAR_REPLICATED)
     end
 
-    if role ~= ROLE_DRUNK and role ~= ROLE_GLITCH then
-        CreateConVar("ttt_drunk_can_be_" .. rolestring, "1", FCVAR_REPLICATED)
-    end
-
     local starting_health = "100"
-    if role == ROLE_OLDMAN then starting_health = "1"
-    elseif ROLE_STARTING_HEALTH[role] then starting_health = ROLE_STARTING_HEALTH[role] end
+    if ROLE_STARTING_HEALTH[role] then starting_health = ROLE_STARTING_HEALTH[role] end
 
     local max_health = nil
     if ROLE_MAX_HEALTH[role] then max_health = ROLE_MAX_HEALTH[role] end
@@ -118,85 +114,46 @@ for role = 0, ROLE_MAX do
     CreateConVar("ttt_" .. rolestring .. "_name_article", "", FCVAR_REPLICATED)
 
     -- Body icon
-    if file.Exists("materials/vgui/ttt/icon_" .. shortstring .. ".vmt", "GAME") then
+    if file.Exists("materials/vgui/ttt/roles/" .. shortstring .. "/icon_" .. shortstring .. ".vmt", "GAME") then
+        resource.AddFile("materials/vgui/ttt/roles/" .. shortstring .. "/icon_" .. shortstring .. ".vmt")
+    elseif file.Exists("materials/vgui/ttt/icon_" .. shortstring .. ".vmt", "GAME") then
         resource.AddFile("materials/vgui/ttt/icon_" .. shortstring .. ".vmt")
     end
 
     -- Round summary icon
-    if file.Exists("materials/vgui/ttt/score_" .. shortstring .. ".png", "GAME") then
+    if file.Exists("materials/vgui/ttt/roles/" .. shortstring .. "/score_" .. shortstring .. ".png", "GAME") then
+        resource.AddSingleFile("materials/vgui/ttt/roles/" .. shortstring .. "/score_" .. shortstring .. ".png")
+    elseif file.Exists("materials/vgui/ttt/score_" .. shortstring .. ".png", "GAME") then
         resource.AddSingleFile("materials/vgui/ttt/score_" .. shortstring .. ".png")
     end
 
     -- Scoreboard icon
-    if file.Exists("materials/vgui/ttt/tab_" .. shortstring .. ".png", "GAME") then
+    if file.Exists("materials/vgui/ttt/roles/" .. shortstring .. "/tab_" .. shortstring .. ".png", "GAME") then
+        resource.AddSingleFile("materials/vgui/ttt/roles/" .. shortstring .. "/tab_" .. shortstring .. ".png")
+    elseif file.Exists("materials/vgui/ttt/tab_" .. shortstring .. ".png", "GAME") then
         resource.AddSingleFile("materials/vgui/ttt/tab_" .. shortstring .. ".png")
     end
 
     -- Target ID icons
-    if file.Exists("materials/vgui/ttt/sprite_" .. shortstring .. ".vmt", "GAME") then
+    if file.Exists("materials/vgui/ttt/roles/" .. shortstring .. "/sprite_" .. shortstring .. ".vmt", "GAME") then
+        resource.AddSingleFile("materials/vgui/ttt/roles/" .. shortstring .. "/sprite_" .. shortstring .. ".vmt")
+    elseif file.Exists("materials/vgui/ttt/sprite_" .. shortstring .. ".vmt", "GAME") then
         resource.AddSingleFile("materials/vgui/ttt/sprite_" .. shortstring .. ".vmt")
     end
-    if file.Exists("materials/vgui/ttt/sprite_" .. shortstring .. "_noz.vmt", "GAME") then
+    if file.Exists("materials/vgui/ttt/roles/" .. shortstring .. "/sprite_" .. shortstring .. "_noz.vmt", "GAME") then
+        resource.AddSingleFile("materials/vgui/ttt/roles/" .. shortstring .. "/sprite_" .. shortstring .. "_noz.vmt")
+    elseif file.Exists("materials/vgui/ttt/sprite_" .. shortstring .. "_noz.vmt", "GAME") then
         resource.AddSingleFile("materials/vgui/ttt/sprite_" .. shortstring .. "_noz.vmt")
     end
-    if file.Exists("materials/vgui/ttt/sprite_" .. shortstring .. ".vtf", "GAME") then
+    if file.Exists("materials/vgui/ttt/roles/" .. shortstring .. "/sprite_" .. shortstring .. ".vtf", "GAME") then
+        resource.AddSingleFile("materials/vgui/ttt/roles/" .. shortstring .. "/sprite_" .. shortstring .. ".vtf")
+    elseif file.Exists("materials/vgui/ttt/sprite_" .. shortstring .. ".vtf", "GAME") then
         resource.AddSingleFile("materials/vgui/ttt/sprite_" .. shortstring .. ".vtf")
     end
 end
 
 -- Traitor role properties
 CreateConVar("ttt_traitor_vision_enable", "0")
-CreateConVar("ttt_traitor_phantom_cure", "0")
-
-CreateConVar("ttt_impersonator_damage_penalty", "0")
-CreateConVar("ttt_impersonator_use_detective_icon", "1")
-CreateConVar("ttt_impersonator_without_detective", "0")
-
-CreateConVar("ttt_quack_phantom_cure", "0")
-
-CreateConVar("ttt_parasite_infection_time", 45)
-CreateConVar("ttt_parasite_infection_transfer", 0)
-CreateConVar("ttt_parasite_infection_transfer_reset", 1)
-CreateConVar("ttt_parasite_infection_suicide_mode", 0)
-CreateConVar("ttt_parasite_respawn_mode", 0)
-CreateConVar("ttt_parasite_respawn_health", 100)
-CreateConVar("ttt_parasite_announce_infection", 0)
-
--- Innocent role properties
-CreateConVar("ttt_glitch_mode", "0")
-CreateConVar("ttt_glitch_use_traps", "0")
-
-CreateConVar("ttt_phantom_respawn_health", "50")
-CreateConVar("ttt_phantom_weaker_each_respawn", "0")
-CreateConVar("ttt_phantom_announce_death", "0")
-CreateConVar("ttt_phantom_killer_smoke", "0")
-CreateConVar("ttt_phantom_killer_footstep_time", "0")
-CreateConVar("ttt_phantom_killer_haunt", "1")
-CreateConVar("ttt_phantom_killer_haunt_power_max", "100")
-CreateConVar("ttt_phantom_killer_haunt_power_rate", "10")
-CreateConVar("ttt_phantom_killer_haunt_move_cost", "25")
-CreateConVar("ttt_phantom_killer_haunt_jump_cost", "50")
-CreateConVar("ttt_phantom_killer_haunt_drop_cost", "75")
-CreateConVar("ttt_phantom_killer_haunt_attack_cost", "100")
-CreateConVar("ttt_phantom_killer_haunt_without_body", "1")
-
-CreateConVar("ttt_revenger_radar_timer", "15")
-CreateConVar("ttt_revenger_damage_bonus", "0")
-CreateConVar("ttt_revenger_drain_health_to", "-1")
-
-CreateConVar("ttt_deputy_damage_penalty", "0")
-CreateConVar("ttt_deputy_use_detective_icon", "1")
-CreateConVar("ttt_deputy_without_detective", "0")
-
-CreateConVar("ttt_veteran_damage_bonus", "0.5")
-CreateConVar("ttt_veteran_full_heal", "1")
-CreateConVar("ttt_veteran_heal_bonus", "0")
-CreateConVar("ttt_veteran_announce", "0")
-CreateConVar("ttt_veteran_activation_credits", "0")
-
-CreateConVar("ttt_paramedic_defib_as_innocent", "0")
-CreateConVar("ttt_paramedic_device_loadout", "1")
-CreateConVar("ttt_paramedic_device_shop", "0")
 
 -- Detective role properties
 CreateConVar("ttt_detective_search_only", "1")
@@ -206,71 +163,22 @@ CreateConVar("ttt_all_search_binoc", "0")
 
 CreateConVar("ttt_special_detectives_armor_loadout", "1")
 
-CreateConVar("ttt_paladin_aura_radius", "5")
-CreateConVar("ttt_paladin_damage_reduction", "0.3")
-CreateConVar("ttt_paladin_heal_rate", "1")
-CreateConVar("ttt_paladin_protect_self", "0")
-CreateConVar("ttt_paladin_heal_self", "1")
-
-CreateConVar("ttt_tracker_footstep_time", "15")
-CreateConVar("ttt_tracker_footstep_color", "1")
-
-CreateConVar("ttt_medium_spirit_color", "1")
-
 -- Jester role properties
 CreateConVar("ttt_jesters_trigger_traitor_testers", "1")
 CreateConVar("ttt_jesters_visible_to_traitors", "1")
 CreateConVar("ttt_jesters_visible_to_monsters", "1")
 CreateConVar("ttt_jesters_visible_to_independents", "1")
 
-CreateConVar("ttt_jester_win_by_traitors", "1")
-CreateConVar("ttt_jester_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the jester is killed", 0, 4)
-CreateConVar("ttt_jester_notify_sound", "0")
-CreateConVar("ttt_jester_notify_confetti", "0")
-
-CreateConVar("ttt_swapper_killer_health", "100")
-CreateConVar("ttt_swapper_respawn_health", "100")
-CreateConVar("ttt_swapper_weapon_mode", "1", FCVAR_NONE, "How to handle weapons when the swapper is killed", 0, 2)
-CreateConVar("ttt_swapper_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the swapper is killed", 0, 4)
-CreateConVar("ttt_swapper_notify_sound", "0")
-CreateConVar("ttt_swapper_notify_confetti", "0")
-
-CreateConVar("ttt_clown_damage_bonus", "0")
-CreateConVar("ttt_clown_activation_credits", "0")
-CreateConVar("ttt_clown_hide_when_active", "0")
-CreateConVar("ttt_clown_show_target_icon", "0")
-CreateConVar("ttt_clown_heal_on_activate", "0")
-CreateConVar("ttt_clown_heal_bonus", "0")
-
-CreateConVar("ttt_beggar_reveal_traitor", "1", FCVAR_NONE, "Who the beggar is revealed to when they join the traitor team", 0, 3)
-CreateConVar("ttt_beggar_reveal_innocent", "2", FCVAR_NONE, "Who the beggar is revealed to when they join the innocent team", 0, 3)
-CreateConVar("ttt_beggar_respawn", "0")
-CreateConVar("ttt_beggar_respawn_delay", "3")
-CreateConVar("ttt_beggar_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the beggar is killed", 0, 4)
-CreateConVar("ttt_beggar_notify_sound", "0")
-CreateConVar("ttt_beggar_notify_confetti", "0")
-
-CreateConVar("ttt_bodysnatchers_are_independent", "0")
-CreateConVar("ttt_bodysnatcher_destroy_body", "0")
-CreateConVar("ttt_bodysnatcher_show_role", "1")
-CreateConVar("ttt_bodysnatcher_reveal_traitor", "1", FCVAR_NONE, "Who the bodysnatcher is revealed to when they join the traitor team", 0, 2)
-CreateConVar("ttt_bodysnatcher_reveal_innocent", "1", FCVAR_NONE, "Who the bodysnatcher is revealed to when they join the innocent team", 0, 2)
-CreateConVar("ttt_bodysnatcher_reveal_monster", "1", FCVAR_NONE, "Who the bodysnatcher is revealed to when they join the monster team", 0, 2)
-CreateConVar("ttt_bodysnatcher_reveal_independent", "1", FCVAR_NONE, "Who the bodysnatcher is revealed to when they join the independent team", 0, 2)
-
 -- Independent role properties
 CreateConVar("ttt_independents_trigger_traitor_testers", "0")
 CreateConVar("ttt_independents_update_scoreboard", "0")
 
-CreateConVar("ttt_drunk_sober_time", "180")
-CreateConVar("ttt_drunk_innocent_chance", "0.7")
-CreateConVar("ttt_drunk_any_role", "0")
-CreateConVar("ttt_drunk_become_clown", "0")
-CreateConVar("ttt_drunk_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the drunk sobers up", 0, 4)
-
-CreateConVar("ttt_oldman_drain_health_to", "0")
-CreateConVar("ttt_oldman_adrenaline_rush", "5")
-CreateConVar("ttt_oldman_adrenaline_shotgun", "1")
+-- Do this here so the convars are created early enough to be used by ULX
+for role = 0, ROLE_MAX do
+    if role ~= ROLE_DRUNK and role ~= ROLE_GLITCH then
+        CreateConVar("ttt_drunk_can_be_" .. ROLE_STRINGS_RAW[role], "1")
+    end
+end
 
 -- Other custom role properties
 CreateConVar("ttt_single_deputy_impersonator", "0")
@@ -280,6 +188,7 @@ CreateConVar("ttt_single_paramedic_hypnotist", "0")
 CreateConVar("ttt_single_phantom_parasite", "0")
 CreateConVar("ttt_single_jester_independent", "1")
 CreateConVar("ttt_single_jester_independent_max_players", "0")
+CreateConVar("ttt_single_drunk_clown", "0")
 
 -- Traitor credits
 CreateConVar("ttt_credits_starting", "2")
@@ -369,95 +278,6 @@ local ttt_dbgwin = CreateConVar("ttt_debug_preventwin", "0")
 CreateConVar("ttt_debug_logkills", "1")
 local ttt_dbgroles = CreateConVar("ttt_debug_logroles", "1")
 
-local function OldCVarWarning(oldName, newName)
-    cvars.AddChangeCallback(oldName, function(convar, oldValue, newValue)
-        RunConsoleCommand(newName, newValue)
-        ErrorNoHalt("WARNING: ConVar \'" .. oldName .. "\' deprecated. Use \'" .. newName .. "\' instead!\n")
-    end)
-end
-
--- OLD CVARS CHECKS
-CreateConVar("ttt_old_man_enabled", 0)
-OldCVarWarning("ttt_old_man_enabled", "ttt_oldman_enabled")
-
-CreateConVar("ttt_old_man_spawn_weight", "1")
-OldCVarWarning("ttt_old_man_spawn_weight", "ttt_oldman_spawn_weight")
-
-CreateConVar("ttt_old_man_min_players", "0")
-OldCVarWarning("ttt_old_man_min_players", "ttt_oldman_min_players")
-
-CreateConVar("ttt_old_man_starting_health", "1")
-OldCVarWarning("ttt_old_man_starting_health", "ttt_oldman_starting_health")
-
-CreateConVar("ttt_hyp_credits_starting", "1")
-OldCVarWarning("ttt_hyp_credits_starting", "ttt_hypnotist_credits_starting")
-
-CreateConVar("ttt_imp_credits_starting", "1")
-OldCVarWarning("ttt_imp_credits_starting", "ttt_impersonator_credits_starting")
-
-CreateConVar("ttt_asn_credits_starting", "1")
-OldCVarWarning("ttt_asn_credits_starting", "ttt_assassin_credits_starting")
-
-CreateConVar("ttt_vam_credits_starting", "1")
-OldCVarWarning("ttt_vam_credits_starting", "ttt_vampire_credits_starting")
-
-CreateConVar("ttt_qua_credits_starting", "1")
-OldCVarWarning("ttt_qua_credits_starting", "ttt_quack_credits_starting")
-
-CreateConVar("ttt_par_credits_starting", "1")
-OldCVarWarning("ttt_par_credits_starting", "ttt_parasite_credits_starting")
-
-CreateConVar("ttt_mer_credits_starting", "1")
-OldCVarWarning("ttt_mer_credits_starting", "ttt_mercenary_credits_starting")
-
-CreateConVar("ttt_jes_credits_starting", "0")
-OldCVarWarning("ttt_jes_credits_starting", "ttt_jester_credits_starting")
-
-CreateConVar("ttt_swa_credits_starting", "0")
-OldCVarWarning("ttt_swa_credits_starting", "ttt_swapper_credits_starting")
-
-CreateConVar("ttt_kil_credits_starting", "2")
-OldCVarWarning("ttt_kil_credits_starting", "ttt_killer_credits_starting")
-
-CreateConVar("ttt_zom_credits_starting", "0")
-OldCVarWarning("ttt_zom_credits_starting", "ttt_zombie_credits_starting")
-
-CreateConVar("ttt_shop_hyp_sync", "0")
-OldCVarWarning("ttt_shop_hyp_sync", "ttt_hypnotist_shop_sync")
-
-CreateConVar("ttt_shop_imp_sync", "0")
-OldCVarWarning("ttt_shop_imp_sync", "ttt_impersonator_shop_sync")
-
-CreateConVar("ttt_shop_asn_sync", "0")
-OldCVarWarning("ttt_shop_asn_sync", "ttt_assassin_shop_sync")
-
-CreateConVar("ttt_shop_vam_sync", "0")
-OldCVarWarning("ttt_shop_vam_sync", "ttt_vampire_shop_sync")
-
-CreateConVar("ttt_shop_zom_sync", "0")
-OldCVarWarning("ttt_shop_zom_sync", "ttt_zombie_shop_sync")
-
-CreateConVar("ttt_shop_qua_sync", "0")
-OldCVarWarning("ttt_shop_qua_sync", "ttt_quack_shop_sync")
-
-CreateConVar("ttt_shop_par_sync", "0")
-OldCVarWarning("ttt_shop_par_sync", "ttt_parasite_shop_sync")
-
-CreateConVar("ttt_shop_mer_mode", "2")
-OldCVarWarning("ttt_shop_mer_mode", "ttt_mercenary_shop_mode")
-
-CreateConVar("ttt_shop_clo_mode", "0")
-OldCVarWarning("ttt_shop_clo_mode", "ttt_clown_shop_mode")
-
-for _, role in ipairs(shop_roles) do
-    local shortstring = ROLE_STRINGS_SHORT[role]
-    local rolestring = ROLE_STRINGS_RAW[role]
-    CreateConVar("ttt_shop_random_" .. shortstring .. "_percent", "0", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown for the " .. rolestring, 0, 100)
-    OldCVarWarning("ttt_shop_random_" .. shortstring .. "_percent", "ttt_" .. rolestring .. "_shop_random_percent")
-    CreateConVar("ttt_shop_random_" .. shortstring .. "_enabled", "0", FCVAR_REPLICATED, "Whether shop randomization should run for the " .. rolestring)
-    OldCVarWarning("ttt_shop_random_" .. shortstring .. "_enabled", "ttt_" .. rolestring .. "_shop_random_enabled")
-end
-
 -- Localise stuff we use often. It's like Lua go-faster stripes.
 local math = math
 local table = table
@@ -504,7 +324,6 @@ util.AddNetworkString("TTT_Radar")
 util.AddNetworkString("TTT_Spectate")
 util.AddNetworkString("TTT_TeleportMark")
 util.AddNetworkString("TTT_ClearRadarExtras")
-util.AddNetworkString("TTT_ClownActivate")
 util.AddNetworkString("TTT_DrawHitMarker")
 util.AddNetworkString("TTT_CreateBlood")
 util.AddNetworkString("TTT_OpenMixer")
@@ -514,17 +333,8 @@ util.AddNetworkString("TTT_SprintGetConVars")
 util.AddNetworkString("TTT_SpawnedPlayers")
 util.AddNetworkString("TTT_Defibrillated")
 util.AddNetworkString("TTT_RoleChanged")
-util.AddNetworkString("TTT_SwapperSwapped")
-util.AddNetworkString("TTT_BeggarConverted")
-util.AddNetworkString("TTT_BeggarKilled")
-util.AddNetworkString("TTT_Promotion")
-util.AddNetworkString("TTT_DrunkSober")
-util.AddNetworkString("TTT_PhantomHaunt")
-util.AddNetworkString("TTT_ParasiteInfect")
 util.AddNetworkString("TTT_LogInfo")
 util.AddNetworkString("TTT_ResetScoreboard")
-util.AddNetworkString("TTT_RevengerLoverKillerRadar")
-util.AddNetworkString("TTT_UpdateOldManWins")
 util.AddNetworkString("TTT_BuyableWeapons")
 util.AddNetworkString("TTT_UpdateBuyableWeapons")
 util.AddNetworkString("TTT_ResetBuyableWeaponsCache")
@@ -577,9 +387,6 @@ function GM:Initialize()
 
     SetGlobalFloat("ttt_round_end", -1)
     SetGlobalFloat("ttt_haste_end", -1)
-
-    SetGlobalFloat("ttt_drunk_remember", -1)
-    SetGlobalBool("ttt_glitch_round", false)
 
     -- For the paranoid
     math.randomseed(os.time())
@@ -664,54 +471,13 @@ function GM:SyncGlobals()
         end
     end
 
-    SetGlobalInt("ttt_glitch_mode", GetConVar("ttt_glitch_mode"):GetInt())
-    SetGlobalBool("ttt_glitch_use_traps", GetConVar("ttt_glitch_use_traps"):GetBool())
-
-    SetGlobalBool("ttt_phantom_killer_smoke", GetConVar("ttt_phantom_killer_smoke"):GetBool())
-    SetGlobalInt("ttt_phantom_killer_haunt_power_max", GetConVar("ttt_phantom_killer_haunt_power_max"):GetInt())
-    SetGlobalInt("ttt_phantom_killer_haunt_move_cost", GetConVar("ttt_phantom_killer_haunt_move_cost"):GetInt())
-    SetGlobalInt("ttt_phantom_killer_haunt_attack_cost", GetConVar("ttt_phantom_killer_haunt_attack_cost"):GetInt())
-    SetGlobalInt("ttt_phantom_killer_haunt_jump_cost", GetConVar("ttt_phantom_killer_haunt_jump_cost"):GetInt())
-    SetGlobalInt("ttt_phantom_killer_haunt_drop_cost", GetConVar("ttt_phantom_killer_haunt_drop_cost"):GetInt())
-
-    SetGlobalBool("ttt_deputy_use_detective_icon", GetConVar("ttt_deputy_use_detective_icon"):GetBool())
-
-    SetGlobalBool("ttt_paramedic_device_loadout", GetConVar("ttt_paramedic_device_loadout"):GetBool())
-    SetGlobalBool("ttt_paramedic_device_shop", GetConVar("ttt_paramedic_device_shop"):GetBool())
-
     SetGlobalBool("ttt_special_detectives_armor_loadout", GetConVar("ttt_special_detectives_armor_loadout"):GetBool())
 
-    SetGlobalFloat("ttt_paladin_aura_radius", GetConVar("ttt_paladin_aura_radius"):GetInt() * 52.49)
-
-    SetGlobalInt("ttt_tracker_footstep_time", GetConVar("ttt_tracker_footstep_time"):GetInt())
-
     SetGlobalBool("ttt_traitor_vision_enable", GetConVar("ttt_traitor_vision_enable"):GetBool())
-    SetGlobalBool("ttt_traitor_phantom_cure", GetConVar("ttt_traitor_phantom_cure"):GetBool())
-
-    SetGlobalBool("ttt_impersonator_use_detective_icon", GetConVar("ttt_impersonator_use_detective_icon"):GetBool())
-
-    SetGlobalBool("ttt_quack_phantom_cure", GetConVar("ttt_quack_phantom_cure"):GetBool())
-
-    SetGlobalInt("ttt_parasite_infection_time", GetConVar("ttt_parasite_infection_time"):GetInt())
-    SetGlobalBool("ttt_parasite_enabled", GetConVar("ttt_parasite_enabled"):GetBool())
-
-    SetGlobalInt("ttt_revenger_radar_timer", GetConVar("ttt_revenger_radar_timer"):GetInt())
 
     SetGlobalBool("ttt_jesters_visible_to_traitors", GetConVar("ttt_jesters_visible_to_traitors"):GetBool())
     SetGlobalBool("ttt_jesters_visible_to_monsters", GetConVar("ttt_jesters_visible_to_monsters"):GetBool())
     SetGlobalBool("ttt_jesters_visible_to_independents", GetConVar("ttt_jesters_visible_to_independents"):GetBool())
-
-    SetGlobalInt("ttt_beggar_reveal_traitor", GetConVar("ttt_beggar_reveal_traitor"):GetInt())
-    SetGlobalInt("ttt_beggar_reveal_innocent", GetConVar("ttt_beggar_reveal_innocent"):GetInt())
-
-    SetGlobalBool("ttt_clown_show_target_icon", GetConVar("ttt_clown_show_target_icon"):GetBool())
-    SetGlobalBool("ttt_clown_hide_when_active", GetConVar("ttt_clown_hide_when_active"):GetBool())
-
-    SetGlobalBool("ttt_bodysnatchers_are_independent", GetConVar("ttt_bodysnatchers_are_independent"):GetBool())
-    SetGlobalInt("ttt_bodysnatcher_reveal_traitor", GetConVar("ttt_bodysnatcher_reveal_traitor"):GetInt())
-    SetGlobalInt("ttt_bodysnatcher_reveal_innocent", GetConVar("ttt_bodysnatcher_reveal_innocent"):GetInt())
-    SetGlobalInt("ttt_bodysnatcher_reveal_monster", GetConVar("ttt_bodysnatcher_reveal_monster"):GetInt())
-    SetGlobalInt("ttt_bodysnatcher_reveal_independent", GetConVar("ttt_bodysnatcher_reveal_independent"):GetInt())
 
     SetGlobalBool("ttt_independents_update_scoreboard", GetConVar("ttt_independents_update_scoreboard"):GetBool())
 
@@ -834,21 +600,6 @@ function StartNameChangeChecks()
     end
 end
 
-local function OnPlayerDeath(victim, infl, attacker)
-    if GetRoundState() ~= ROUND_ACTIVE then return end
-
-    if victim:IsJester() and IsPlayer(attacker) and (not attacker:IsJesterTeam()) then
-        -- Don't end the round if the jester was killed by a traitor
-        -- and the functionality that blocks Jester wins from traitor deaths is enabled
-        if GetConVar("ttt_jester_win_by_traitors"):GetBool() or not attacker:IsTraitorTeam() then
-            -- Stop the win checks so someone else doesn't steal the jester's win
-            StopWinChecks()
-            -- Delay the actual end for a second so the message and sound have a chance to generate a reaction
-            timer.Simple(1, function() EndRound(WIN_JESTER) end)
-        end
-    end
-end
-
 local function CleanUp()
     local et = ents.TTT
     -- if we are going to import entities, it's no use replacing HL2DM ones as
@@ -926,45 +677,10 @@ end
 
 function PrepareRound()
     for _, v in pairs(player.GetAll()) do
-        v:SetNWBool("Haunted", false)
-        v:SetNWBool("Haunting", false)
-        v:SetNWString("HauntingTarget", nil)
-        v:SetNWInt("HauntingPower", 0)
-        timer.Remove(v:Nick() .. "HauntingPower")
-        timer.Remove(v:Nick() .. "HauntingSpectate")
-        v:SetNWString("RevengerLover", "")
-        v:SetNWString("RevengerKiller", "")
-        v:SetNWString("JesterKiller", "")
-        v:SetNWString("SwappedWith", "")
-        v:SetNWBool("WasDrunk", false)
-        v:SetNWBool("WasHypnotised", false)
-        v:SetNWBool("KillerClownActive", false)
-        v:SetNWBool("HasPromotion", false)
-        v:SetNWBool("WasBeggar", false)
-        v:SetNWBool("WasBodysnatcher", false)
-        timer.Remove(v:Nick() .. "BeggarRespawn")
-        v:SetNWBool("VeteranActive", false)
-        v:SetNWBool("Infected", false)
-        v:SetNWBool("Infecting", false)
-        v:SetNWString("InfectingTarget", nil)
-        v:SetNWInt("InfectionProgress", 0)
-        timer.Remove(v:Nick() .. "InfectionProgress")
-        timer.Remove(v:Nick() .. "InfectingSpectate")
-        v:SetNWInt("GlitchBluff", ROLE_TRAITOR)
         v:SetNWVector("PlayerColor", Vector(1, 1, 1))
-        v:SetNWBool("AdrenalineRush", false)
-        timer.Remove(v:Nick() .. "AdrenalineRush")
         -- Workaround to prevent GMod sprint from working
         v:SetRunSpeed(v:GetWalkSpeed())
     end
-
-    net.Start("TTT_UpdateOldManWins")
-    net.WriteBool(false)
-    net.Broadcast()
-
-    net.Start("TTT_RevengerLoverKillerRadar")
-    net.WriteBool(false)
-    net.Broadcast()
 
     -- Check playercount
     if CheckForAbort() then return end
@@ -1203,8 +919,6 @@ function BeginRound()
 
     SCORE:HandleSelection() -- log traitors and detectives
 
-    SetGlobalBool("ttt_glitch_round", false)
-
     for _, v in pairs(player.GetAll()) do
         -- Player color
         local vec = Vector(1, 1, 1)
@@ -1217,23 +931,6 @@ function BeginRound()
 
         SetRoleHealth(v)
     end
-
-    -- Paladin Logic
-    local paladinHeal = GetConVar("ttt_paladin_heal_rate"):GetInt()
-    local paladinHealSelf = GetConVar("ttt_paladin_heal_self"):GetBool()
-    local paladinRadius = GetGlobalFloat("ttt_paladin_aura_radius", 262.45)
-    timer.Create("paladinheal", 1, 0, function()
-        for _, p in pairs(player.GetAll()) do
-            if p:IsActivePaladin() then
-                for _, v in pairs(player.GetAll()) do
-                    if v:IsActive() and (not v:IsPaladin() or paladinHealSelf) and v:GetPos():Distance(p:GetPos()) <= paladinRadius and v:Health() < v:GetMaxHealth() then
-                        local health = math.min(v:GetMaxHealth(), v:Health() + paladinHeal)
-                        v:SetHealth(health)
-                    end
-                end
-            end
-        end
-    end)
 
     net.Start("TTT_ResetScoreboard")
     net.Broadcast()
@@ -1262,9 +959,6 @@ function BeginRound()
             end
         end
     end)
-
-    -- Start watching for specific deaths
-    hook.Add("PlayerDeath", "OnPlayerDeath", OnPlayerDeath)
 
     -- Start the win condition check timer
     StartWinChecks()
@@ -1310,12 +1004,6 @@ function PrintResultMessage(type)
     elseif type == WIN_INNOCENT then
         LANG.Msg("win_innocent", { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR] })
         ServerLog("Result: " .. ROLE_STRINGS_PLURAL[ROLE_INNOCENT] .. " win.\n")
-    elseif type == WIN_JESTER then
-        LANG.Msg("win_jester", { role = ROLE_STRINGS_PLURAL[ROLE_JESTER] })
-        ServerLog("Result: " .. ROLE_STRINGS[ROLE_JESTER] .. " wins.\n")
-    elseif type == WIN_CLOWN then
-        LANG.Msg("win_clown", { role = ROLE_STRINGS_PLURAL[ROLE_CLOWN] })
-        ServerLog("Result: " .. ROLE_STRINGS[ROLE_CLOWN] .. " wins.\n")
     elseif type == WIN_MONSTER then
         local monster_role = GetWinningMonsterRole()
         -- If it wasn't a special kind of monster that won (zombie or vampire) use the "Monsters Win" label
@@ -1360,11 +1048,6 @@ function CheckForMapSwitch()
     end
 end
 
-local function StopDrunkTimers()
-    if timer.Exists("drunkremember") then timer.Remove("drunkremember") end
-    if timer.Exists("waitfordrunkrespawn") then timer.Remove("waitfordrunkrespawn") end
-end
-
 function EndRound(type)
     PrintResultMessage(type)
 
@@ -1382,14 +1065,6 @@ function EndRound(type)
 
     -- Stop checking for wins
     StopWinChecks()
-
-    SetGlobalBool("ttt_glitch_round", false)
-
-    if timer.Exists("revengerloverkiller") then timer.Remove("revengerloverkiller") end
-    if timer.Exists("revengerhealthdrain") then timer.Remove("revengerhealthdrain") end
-    if timer.Exists("oldmanhealthdrain") then timer.Remove("oldmanhealthdrain") end
-    if timer.Exists("paladinheal") then timer.Remove("paladinheal") end
-    StopDrunkTimers()
 
     -- We may need to start a timer for a mapswitch, or start a vote
     CheckForMapSwitch()
@@ -1423,88 +1098,6 @@ function GM:MapTriggeredEnd(wintype)
     end
 end
 
-local function HandleOldManWinChecks(win_type)
-    if win_type == WIN_NONE then return end
-    if not player.IsRoleLiving(ROLE_OLDMAN) then return end
-
-    net.Start("TTT_UpdateOldManWins")
-    net.WriteBool(true)
-    net.Broadcast()
-end
-
-local unblockable_wins = {WIN_TIMELIMIT}
-local function HandleClownWinBlock(win_type)
-    if win_type == WIN_NONE then return win_type end
-    if table.HasValue(unblockable_wins, win_type) then return win_type end
-
-    local clown = player.GetLivingRole(ROLE_CLOWN)
-    if not IsPlayer(clown) then return win_type end
-
-    local killer_clown_active = clown:IsRoleActive()
-    if not killer_clown_active then
-        clown:SetNWBool("KillerClownActive", true)
-        clown:PrintMessage(HUD_PRINTTALK, "KILL THEM ALL!")
-        clown:PrintMessage(HUD_PRINTCENTER, "KILL THEM ALL!")
-        clown:AddCredits(GetConVar("ttt_clown_activation_credits"):GetInt())
-        if GetConVar("ttt_clown_heal_on_activate"):GetBool() then
-            local heal_bonus = GetConVar("ttt_clown_heal_bonus"):GetInt()
-            local health = clown:GetMaxHealth() + heal_bonus
-
-            clown:SetHealth(health)
-            if heal_bonus > 0 then
-                clown:PrintMessage(HUD_PRINTTALK, "You have been fully healed (with a bonus)!")
-            else
-                clown:PrintMessage(HUD_PRINTTALK, "You have been fully healed!")
-            end
-        end
-        net.Start("TTT_ClownActivate")
-        net.WriteEntity(clown)
-        net.Broadcast()
-
-        -- Give the clown their shop items if purchase was delayed
-        if clown.bought and GetConVar("ttt_clown_shop_delay"):GetBool() then
-            clown:GiveDelayedShopItems()
-        end
-
-        return WIN_NONE
-    end
-
-    -- Clown wins if they are the only one left
-    local innocent_alive, traitor_alive, indep_alive, monster_alive, _ = player.AreTeamsLiving()
-    if not traitor_alive and not innocent_alive and not monster_alive and not indep_alive then
-        return WIN_CLOWN
-    end
-
-    return WIN_NONE
-end
-
-local function HandleDrunkWinBlock(win_type)
-    if win_type == WIN_NONE then return win_type end
-    if table.HasValue(unblockable_wins, win_type) then return win_type end
-
-    local drunk = player.GetLivingRole(ROLE_DRUNK)
-    if not IsPlayer(drunk) then return win_type end
-
-    -- Make the drunk a clown
-    if GetConVar("ttt_drunk_become_clown"):GetBool() then
-        StopDrunkTimers()
-        drunk:DrunkRememberRole(ROLE_CLOWN, true)
-        return WIN_NONE
-    end
-
-    -- Change the drunk to whichever team is about to lose
-    local innocent_alive, traitor_alive, _, _, _ = player.AreTeamsLiving()
-    if not traitor_alive then
-        StopDrunkTimers()
-        drunk:SoberDrunk(ROLE_TEAM_TRAITOR)
-        return WIN_NONE
-    elseif not innocent_alive then
-        StopDrunkTimers()
-        drunk:SoberDrunk(ROLE_TEAM_INNOCENT)
-        return WIN_NONE
-    end
-end
-
 -- Used to be in think, now a timer
 local function WinChecker()
     -- If prevent-win is enabled then don't even check the win conditions
@@ -1531,12 +1124,17 @@ local function WinChecker()
             end
 
             -- Handle role-specific checks
-            win = HandleDrunkWinBlock(win)
-            win = HandleClownWinBlock(win)
-            HandleOldManWinChecks(win)
+            local win_blocks = {}
+            hook.Run("TTTWinCheckBlocks", win_blocks)
+
+            for _, win_block in ipairs(win_blocks) do
+                win = win_block(win)
+            end
 
             -- If, after all that, we have a win condition then end the round
             if win ~= WIN_NONE then
+                hook.Run("TTTWinCheckComplete", win)
+
                 timer.Simple(0.5, function() EndRound(win) end) -- Slight delay to make sure alternate winners go through before scoring
             end
         end
@@ -1550,7 +1148,6 @@ function StartWinChecks()
 end
 
 function StopWinChecks()
-    hook.Remove("PlayerDeath", "OnPlayerDeath")
     timer.Stop("winchecker")
 end
 
@@ -1715,6 +1312,17 @@ function SelectRoles()
         end
     end
 
+    local drunk_only = false
+    local clown_only = false
+    local single_dru_clo = GetConVar("ttt_single_drunk_clown"):GetBool()
+    if single_dru_clo then
+        if math.random() <= 0.5 then
+            drunk_only = true
+        else
+            clown_only = true
+        end
+    end
+
     if choice_count == 0 then return end
 
     local choices_copy = table.Copy(choices)
@@ -1796,6 +1404,10 @@ function SelectRoles()
                     if role == ROLE_PHANTOM then phantom_only = true
                     elseif role == ROLE_PARASITE then parasite_only = true end
                 end
+                if single_dru_clo then
+                    if role == ROLE_DRUNK then drunk_only = true
+                    elseif role == ROLE_CLOWN then clown_only = true end
+                end
 
                 PrintRole(v, role)
             end
@@ -1821,7 +1433,7 @@ function SelectRoles()
     local monsterRoles = {}
 
     -- Special rules for role spawning
-    -- Role exclusion logic also needs to be copied into the drunk role selection logic in player_ext.lua -> plymeta:SoberDrunk
+    -- Role exclusion logic also needs to be copied into the drunk role selection logic in drunk.lua -> plymeta:SoberDrunk
     local rolePredicates = {
         -- Innocents
         [ROLE_DEPUTY] = function() return (detective_count > 0 or GetConVar("ttt_deputy_without_detective"):GetBool()) and not impersonator_only end,
@@ -1837,7 +1449,11 @@ function SelectRoles()
         [ROLE_PARASITE] = function() return not phantom_only end,
 
         -- Independents
-        [ROLE_MADSCIENTIST] = function() return INDEPENDENT_ROLES[ROLE_ZOMBIE] end
+        [ROLE_DRUNK] = function() return not clown_only end,
+
+        -- Jesters
+        [ROLE_CLOWN] = function() return not drunk_only end
+
     }
     -- Merge in any role predicates
     table.Merge(rolePredicates, ROLE_SELECTION_PREDICATE)

@@ -2,7 +2,7 @@
 
 # Custom Roles for TTT
 
-This is the development version of my [Custom Roles for TTT](https://steamcommunity.com/sharedfiles/filedetails/?id=2421039084) mod. Use at your own risk! This version of the mod could be unstable and is updated regularly. Do not use the development version if you need the mod to be reliable. (e.g. for streaming, youtube, etc.)
+This is the development version of [Custom Roles for TTT](https://steamcommunity.com/sharedfiles/filedetails/?id=2421039084). Use at your own risk! This version of the mod could be unstable and is updated regularly. Do not use the development version if you need the mod to be reliable. (e.g. for streaming, youtube, etc.)
 
 ## Important Notes
 
@@ -48,7 +48,7 @@ If you would like to test the available configurations, we recommend using ULX/U
 - Any other addon that adds roles such as Town of Terror, TTT2, or the outdated versions of Custom Roles for TTT. There is no reason to use more than one role addon so remove all the ones you don't want.
 - [Better Equipment Menu](https://steamcommunity.com/sharedfiles/filedetails/?id=878772496) - This has its functionality built in
 - [TTT Damage Logs](https://github.com/Tommy228/tttdamagelogs) - Use [this version](https://steamcommunity.com/sharedfiles/filedetails/?id=2306802961) instead
-- [TTT DeadRinger](https://steamcommunity.com/sharedfiles/filedetails/?id=2045444087) - Overrides several scripts that are core to TTT that this also overrides (notably, the scoreboard and client initialization). As a workaround, you can use [this version](https://steamcommunity.com/sharedfiles/filedetails/?id=810154456) instead.
+- [TTT DeadRinger](https://steamcommunity.com/sharedfiles/filedetails/?id=254779132) - Overrides several scripts that are core to TTT that this also overrides (notably, the scoreboard and client initialization). As a workaround, you can use [this version](https://steamcommunity.com/sharedfiles/filedetails/?id=810154456) instead.
 - [TTT: Advanced Body Search](https://steamcommunity.com/sharedfiles/filedetails/?id=367945571) - Overwrites the body search dialog in ways that don't keep compatibility with the changes we also make to the same dialog.
 
 ## FAQs

@@ -1,16 +1,21 @@
 AddCSLuaFile()
 
 if CLIENT then
-    SWEP.PrintName = "Phantom Exorcism Device"
+    local GetPTranslation = LANG.GetParamTranslation
+    SWEP.PrintName = "Exorcism Device"
     SWEP.Slot = 6
 
     SWEP.DrawCrosshair = false
     SWEP.ViewModelFOV = 54
 
     SWEP.EquipMenuData = {
-            type =  "Weapon",
-            desc =  [[Use on a player to exorcise a phantom]]
-        };
+        type = "item_weapon",
+        desc = function()
+            return GetPTranslation("exor_desc", {
+                phantom = ROLE_STRINGS[ROLE_PHANTOM]:lower()
+            })
+        end
+    };
 
     SWEP.Icon = "vgui/ttt/icon_exor"
 end
@@ -45,24 +50,30 @@ local DEFIB_IDLE = 0
 local DEFIB_BUSY = 1
 local DEFIB_ERROR = 2
 
-local charge = 3
-
 local beep = Sound("buttons/button17.wav")
 local hum = Sound("items/nvg_on.wav")
 local cured = Sound("items/smallmedkit1.wav")
 
+if SERVER then
+    CreateConVar("ttt_phantom_cure_time", "3")
+end
+
 if CLIENT then
     function SWEP:Initialize()
         self:AddHUDHelp("exor_help_pri", "exor_help_sec", true)
-        self:SetHoldType(self.HoldType)
         return self.BaseClass.Initialize(self)
     end
 end
 
 function SWEP:SetupDataTables()
     self:NetworkVar("Int", 0, "State")
-    self:NetworkVar("Float", 1, "Begin")
+    self:NetworkVar("Int", 1, "ChargeTime")
+    self:NetworkVar("Float", 0, "Begin")
     self:NetworkVar("String", 0, "Message")
+
+    if SERVER then
+        self:SetChargeTime(GetConVar("ttt_phantom_cure_time"):GetInt())
+    end
 end
 
 if SERVER then
@@ -137,7 +148,7 @@ if SERVER then
     function SWEP:Think()
         if self:GetState() == DEFIB_BUSY then
             local owner = self:GetOwner()
-            if self:GetBegin() + charge <= CurTime() then
+            if self:GetBegin() + self:GetChargeTime() <= CurTime() then
                 self:DoCleanse(self.Target)
                 self:Reset()
             elseif owner == self.Target then
@@ -187,6 +198,7 @@ if CLIENT then
 
         if state == DEFIB_IDLE then return end
 
+        local charge = self:GetChargeTime()
         local time = self:GetBegin() + charge
 
         local x = ScrW() / 2.0

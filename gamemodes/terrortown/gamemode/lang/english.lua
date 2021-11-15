@@ -32,12 +32,10 @@ L.round_traitors_one = "{role}, you stand alone."
 L.round_traitors_more = "{role}, these are your allies: {names}"
 
 L.win_prevented = "Map was prevented from ending the round."
+L.win_showreport = "Let's look at the round report for {num} seconds."
 L.win_time = "Time has run out. The {role} win."
 L.win_traitor = "The {role} have won!"
 L.win_innocent = "The {role} have been defeated!"
-L.win_jester = "The {role} has fooled you all!"
-L.win_clown = "The {role} has murdered you all!"
-L.win_showreport = "Let's look at the round report for {num} seconds."
 L.win_monster = "The monsters have taken over!"
 
 L.limit_round = "Round limit reached. {mapname} will load soon."
@@ -426,18 +424,6 @@ Slow recharge. Anyone can use it, and
 it can be damaged. Can be checked for
 DNA samples of its users.]]
 
--- Bomb station
-L.bstation_name = "Bomb Station"
-L.bstation_hint = "Press {usekey} to fake receiving health. Charge: {num}."
-L.bstation_broken = "Your Bomb Station has been destroyed!"
-L.bstation_help = "{primaryfire} places the Bomb Station."
-
-L.bstation_desc = [[
-Appears as a health station to non-{traitors}.
-
-Detonates when used by a non-{traitor}.
-{traitors} can use to deplete fake charge.]]
-
 -- Knife
 L.knife_name = "Knife"
 L.knife_thrown = "Thrown knife"
@@ -575,25 +561,6 @@ Teleport to a previously marked spot.
 Teleporting makes noise, and the
 number of uses is limited.]]
 
--- Parasite cure
-L.cure_help_pri = "{primaryfire} to cure another player."
-L.cure_help_sec = "{secondaryfire} to cure yourself."
-
--- Phantom exorcsim
-L.exor_help_pri = "{primaryfire} to cleanse another player."
-L.exor_help_sec = "{secondaryfire} to cleanse yourself."
-
--- Brainwashing device
-L.brainwash_help_pri = "Hold {primaryfire} to revive dead body."
-L.brainwash_help_sec = "The revived player will become a traitor."
-
--- Zombification device
-L.zombificator_help_pri = "Hold {primaryfire} to zombify dead body."
-L.zombificator_help_sec = "The revived player will become a zombie."
-
-L.defibrillator_help_pri = "Hold {primaryfire} to revive dead body."
-L.defibrillator_help_sec = "The revived player will respawn on their original team"
-
 -- Ammo names, shown when picked up
 L.ammo_pistol = "9mm ammo"
 
@@ -639,10 +606,6 @@ L.corpse_hint = "Press E to search."
 L.target_disg = " (DISGUISED)"
 L.target_unid = "Unidentified body"
 
-L.target_infected = "INFECTED WITH PARASITE"
-
-L.target_revenger_lover = "YOUR SOULMATE"
-
 L.target_credits = "Search to receive unspent credits"
 
 -- Traitor buttons (HUD buttons with hand icons that only traitors can see)
@@ -654,14 +617,6 @@ L.tbut_help = "Press {key} to activate"
 -- Equipment info lines (on the left above the health/ammo panel)
 L.disg_hud = "Disguised. Your name is hidden."
 L.radar_hud = "Radar ready for next scan in: {time}"
-
-L.drunk_hud = "You will sober up in: {time}"
-L.detective_promotion_hud = "You have been promoted to {detective}"
-L.beggar_hidden_all_hud = "You still appear as {beggar} to others"
-L.beggar_hidden_innocent_hud = "You still appear as {beggar} to {innocents}"
-L.beggar_hidden_traitor_hud = "You still appear as {beggar} to {traitors}"
-L.bodysnatcher_hidden_all_hud = "You still appear as {bodysnatcher} to others"
-L.bodysnatcher_hidden_team_hud = "Only your team knows you are no longer {bodysnatcher}"
 
 -- Spectator muting of living/dead
 L.mute_living = "Living players muted"
@@ -675,17 +630,6 @@ L.punch_help = "Move keys or jump: punch object. Crouch: leave object."
 L.punch_bonus = "Your bad score lowered your punch-o-meter limit by {num}"
 L.punch_malus = "Your good score increased your punch-o-meter limit by {num}!"
 
--- Haunt
-L.haunt_title = "WILLPOWER"
-L.haunt_move = "MOVE KEYS: Move (Cost: {num}%)"
-L.haunt_jump = "SPACE: Jump (Cost: {num}%)"
-L.haunt_drop = "RIGHT CLICK: Drop (Cost: {num}%)"
-L.haunt_attack = "LEFT CLICK: Attack (Cost: {num}%)"
-
--- Infection
-L.infect_title = "INFECTION"
-L.infect_help = "You will respawn when the infection bar is full."
-
 -- Spectators
 L.spec_help = "Click to spectate players, or press {usekey} on a physics object to possess it."
 
@@ -693,97 +637,6 @@ L.spec_help = "Click to spectate players, or press {usekey} on a physics object 
 
 -- These are spread over multiple lines, hence the square brackets instead of
 -- quotes. That's a Lua thing. Every line break (enter) will show up in-game.
-L.info_popup_innocent = [[You are {role}! But there are {traitors} around...
-Who can you trust, and who is out to fill you with bullets?
-
-Watch your back and work with your comrades to get out of this alive!]]
-
-L.info_popup_detective = [[You are {role}! HQ has given you special resources to find the {traitors}.
-Use them to help the {innocents} survive, but be careful:
-the {traitors} will be looking to take you down first!
-
-Press {menukey} to receive your equipment!]]
-
-L.info_popup_jester = [[You are {role}! You want to die but you
-deal no damage so you must be killed by some one else.]]
-
-L.info_popup_swapper = [[You are {role}! {traitors} think you are {ajester} and you
-deal no damage however, if anyone kills you, they become
-the {swapper} and you take their role and can join the fight.]]
-
-L.info_popup_glitch = [[You are {role}! The {traitors} think you are one of them.
-Try to blend in and don't give yourself away.]]
-
-L.info_popup_phantom = [[You are {role}! Try to survive and help your {innocent} friends!
-You will haunt the player who kills you causing black smoke to appear.
-If the player you are haunting dies you will be respawned!]]
-
-L.info_popup_revenger = [[You are {role}! You are helplessly in love with {lover}.
-Do whatever you can to protect them. If they die you will
-be able to track down their killer and get your revenge.]]
-
-L.info_popup_drunk = [[You are {role}!  You have forgotten what team you are on!
-Wait until you sober up and remember. Try to lay low in the meantime.]]
-
-L.info_popup_clown = [[You are {role}! {traitors} think you are {ajester} and you
-deal no damage. However if one team would win the round instead you
-become hostile, are revealed to all players and can deal damage as
-normal. Be the last player standing to win.]]
-
-L.info_popup_deputy = [[You are {role}! If the {detective} dies you will take
-over and gain the ability to buy shop items and search bodies.]]
-
-L.info_popup_beggar = [[You are {role}! {traitors} think you are {ajester} and you
-deal no damage. However, if you can convince someone to give
-you a shop item you will join their team.]]
-
-L.info_popup_oldman = [[You are {role}! The slightest breeze could kill
-you if you aren't careful. You don't care who wins as long
-as you are alive at the end of the round.]]
-
-L.info_popup_mercenary = [[You are {role}! Try to survive and help your {innocent} friends!
-
-Press {menukey} to receive your equipment!]]
-
-L.info_popup_bodysnatcher = [[You are {role}! {traitors} think you are {ajester} and you
-deal no damage. Use your body snatching device on a corpse
-to take their role and join the fight!]]
-
-L.info_popup_veteran = [[You are {role}! You work best under pressure.
-If you are the last {innocent} player alive you will
-deal extra damage.]]
-
-L.info_popup_doctor = [[You are {role}! You're here to keep your teammates alive.
-Use your tools to keep fellow {innocents} in the fight!
-
-Press {menukey} to receive your special equipment!]]
-
-L.info_popup_paramedic = [[You are {role}! You can give your fellow {innocents}
-a second chance with your defibrillator. Stay alive
-and bring back your teams strongest player.]]
-
-L.info_popup_madscientist = [[You are {role}! Try to spread your virus to
-everyone! Using your zombification device on a dead
-body will revive them as {azombie}.]]
-
-L.info_popup_paladin = [[You are {role}! As {adetective}, HQ has given you special resources to find the {traitors}.
-You have a healing aura that is visible to everyone.
-Keep your friends close but definitely don't let your enemies closer!
-
-Press {menukey} to receive your equipment!]]
-
-L.info_popup_tracker = [[You are {role}! As {adetective}, HQ has given you special resources to find the {traitors}.
-You can see players' footsteps and follow their trails.
-Use your skills to keep an eye on where players have been.
-
-Press {menukey} to receive your equipment!]]
-
-L.info_popup_medium = [[You are {role}! As {adetective}, HQ has given you special resources to find the {traitors}.
-You can see the spirits of the dead. Follow the spirits
-to uncover secrets that were taken to the grave.
-
-Press {menukey} to receive your equipment!]]
-
 L.info_popup_monster_comrades = [[Work with your allies to kill all others.
 
 These are your comrades:
@@ -808,32 +661,6 @@ BUT BEWARE! There was {aglitch} in the system and one among you does not seek th
 
 These may or may not be your comrades:
 {traitorlist}]]
-
-L.info_popup_traitor = [[You are {role}! {comrades}
-
-Press {menukey} to receive your special equipment!]]
-
-L.info_popup_impersonator = [[You are {role}! {comrades}
-
-If the {detective} dies you will appear to become a new {detective} and gain their
-abilities just like the {deputy}. However you are still working for the {traitors}.
-
-Press {menukey} to receive your special equipment!]]
-
-L.info_popup_quack = [[You are {role}! {comrades}
-
-Try to convince others that you are a real {doctor}! However, your tools harm
-instead of heal. You know that the best cure for any ailment is death.
-
-Press {menukey} to receive your special equipment!]]
-
-L.info_popup_parasite = [[You are {role}! {comrades}
-
-Infect those that kill you and wait patiently for a chance to take control.
-Make sure you lay low as your host must stay alive in order for you to
-respawn. Try to avoid getting them cured or killed!
-
-Press {menukey} to receive your special equipment!]]
 
 --- Various other text
 L.name_kick = "A player was automatically kicked for changing their name during a round."
@@ -1044,10 +871,7 @@ L.ev_start = "The round started"
 L.ev_spawn = "{player} spawned as {a} {role}"
 L.ev_role_changed = "{player} changed roles to {a} {role}"
 L.ev_win_traitor = "The dastardly {role} won the round!"
-L.ev_win_jester = "The tricky {role} won the round!"
 L.ev_win_inno = "The lovable {role} won the round!"
-L.ev_win_clown = "The vicious {role} won the round!"
-L.ev_win_oldman = "The {role} has somehow survived and also won the round!"
 L.ev_win_monster = "The evil monsters have won the round!"
 L.ev_win_time = "The {role} ran out of time and lost!"
 L.ev_win_icon = "{role} won"
@@ -1303,19 +1127,8 @@ L.idle_popup_title = "Idle"
 L.sb_playervolume = "Player Volume"
 
 -- Custom Events
-L.ev_hypno = "{victim} was hypnotised"
 L.ev_defi = "{victim} was respawned"
 L.ev_disco = "{victim} disconnected"
-L.ev_swap = "{victim} swapped with {attacker}"
-L.ev_promote = "{player} was promoted to {detective}"
-L.ev_clown = "The clown, {player}, went on a rampage"
-L.ev_drunk = "{player} remembered they are {team}"
-L.ev_haunt = "{victim} started haunting {attacker}"
-L.ev_bodysnatch = "{attacker} bodysnatched {role}, {victim}"
-L.ev_beggar_converted = "The {beggar} ({victim}) was converted to {team} by {attacker}"
-L.ev_beggar_killed = "The {beggar} ({victim}) was killed by {attacker} but respawned"
-L.ev_beggar_killed_delay = "The {beggar} ({victim}) was killed by {attacker} but will respawn in {delay} seconds"
-L.ev_infect = "{victim} infected {attacker}"
 
 -- Role Weapons Configuration
 L.roleweapons_title = "Role Weapons Configuration"

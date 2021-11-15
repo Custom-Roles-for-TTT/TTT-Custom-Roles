@@ -395,6 +395,7 @@ function HELPSCRN:Show()
     dmarker:CheckBox("Show slot marker", "ttt_bem_marker_slot")
     dmarker:CheckBox("Show custom item marker", "ttt_bem_marker_custom")
     dmarker:CheckBox("Show favourite item marker", "ttt_bem_marker_fav")
+    dmarker:CheckBox("Show loadout items", "ttt_show_loadout_equipment")
 
     dsettings:AddItem(dmarker)
 
@@ -786,7 +787,11 @@ local function ShowTutorialPage(pnl, page)
         local roleFileName = ROLE_STRINGS_SHORT[role]
         local roleIcon = vgui.Create("DImage", pnl)
         roleIcon:SetSize(16, 16)
-        roleIcon:SetImage("vgui/ttt/tab_" .. roleFileName .. ".png")
+        if file.Exists("materials/vgui/ttt/roles/" .. roleFileName .. "/tab_" .. roleFileName .. ".png", "GAME") then
+            roleIcon:SetImage("vgui/ttt/roles/" .. roleFileName .. "/tab_" .. roleFileName .. ".png")
+        else
+            roleIcon:SetImage("vgui/ttt/tab_" .. roleFileName .. ".png")
+        end
         roleIcon:MoveLeftOf(titleLabel)
         -- Center it vertically within the title bar and give it a little space from the role name
         roleIcon:SetPos(roleIcon:GetX() - 3, roleIcon:GetY() + 7)
