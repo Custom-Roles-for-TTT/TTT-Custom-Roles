@@ -3,6 +3,9 @@
 ## 1.4.1
 **Released:**
 
+### Additions
+- Added ability to give the impersonator credits when they are activated (disabled by default)
+
 ### Developer
 - Changed TTTCanIdentifyCorpse and TTTCanSearchCorpse hooks to allow changing the corpse's stored role
 
