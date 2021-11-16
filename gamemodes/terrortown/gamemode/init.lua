@@ -1521,10 +1521,9 @@ function SelectRoles()
         for _ = 1, detective_count do
             if #options > 0 then
                 local plyPick = math.random(1, #options)
-                local ply = options[plyPick]
+                local ply = table.remove(options, plyPick)
                 table.insert(detectives, ply)
                 table.RemoveByValue(choices, ply)
-                table.remove(options, plyPick)
             end
         end
     end
@@ -1534,9 +1533,8 @@ function SelectRoles()
     for _ = 1, traitor_count do
         if #choices > 0 then
             local plyPick = math.random(1, #choices)
-            local ply = choices[plyPick]
+            local ply = table.remove(choices, plyPick)
             table.insert(traitors, ply)
-            table.remove(choices, plyPick)
         end
     end
 
@@ -1553,12 +1551,11 @@ function SelectRoles()
         for _ = 1, max_special_detective_count do
             if #specialDetectiveRoles ~= 0 and math.random() <= GetConVar("ttt_special_detective_chance"):GetFloat() and #detectives > 0 then
                 local plyPick = math.random(1, #detectives)
-                local ply = detectives[plyPick]
+                local ply = table.remove(detectives, plyPick)
                 local rolePick = math.random(1, #specialDetectiveRoles)
                 local role = specialDetectiveRoles[rolePick]
                 ply:SetRole(role)
                 PrintRole(ply, role)
-                table.remove(detectives, plyPick)
                 for i = #specialDetectiveRoles, 1, -1 do
                     if specialDetectiveRoles[i] == role then
                         table.remove(specialDetectiveRoles, i)
@@ -1568,10 +1565,29 @@ function SelectRoles()
         end
     end
 
+    local has_impersonator = table.HasValue(specialTraitorRoles, ROLE_IMPERSONATOR)
+    local impersonator_chance = GetConVar("ttt_impersonator_detective_chance"):GetFloat()
     -- Any of these left are vanilla detectives
     for _, v in pairs(detectives) do
-        v:SetRole(ROLE_DETECTIVE)
-        PrintRole(v, ROLE_DETECTIVE)
+        -- By chance have this detective actually be a promoted impersonator
+        if #traitors > 0 and has_impersonator and math.random() < impersonator_chance then
+            v:SetRole(ROLE_IMPERSONATOR)
+            PrintRole(v, ROLE_IMPERSONATOR)
+            v:HandleDetectiveLikePromotion()
+
+            -- Move a player from "traitors" to "choices" and update the table copies to keep the team counts the same
+            local plyPick = math.random(1, #traitors)
+            local ply = table.remove(traitors, plyPick)
+            table.insert(choices, ply)
+            traitors_copy = table.Copy(traitors)
+            choices_copy = table.Copy(choices)
+
+            -- Only allow one to be an impersonator
+            has_impersonator = false
+        else
+            v:SetRole(ROLE_DETECTIVE)
+            PrintRole(v, ROLE_DETECTIVE)
+        end
     end
 
     if ((GetConVar("ttt_zombie_enabled"):GetBool() and math.random() <= GetConVar("ttt_zombie_round_chance"):GetFloat() and (forcedTraitorCount <= 0) and (forcedSpecialTraitorCount <= 0)) or hasRole[ROLE_ZOMBIE]) and TRAITOR_ROLES[ROLE_ZOMBIE] then
@@ -1589,12 +1605,11 @@ function SelectRoles()
             for _ = 1, max_special_traitor_count do
                 if #specialTraitorRoles ~= 0 and math.random() <= GetConVar("ttt_special_traitor_chance"):GetFloat() and #traitors > 0 then
                     local plyPick = math.random(1, #traitors)
-                    local ply = traitors[plyPick]
+                    local ply = table.remove(traitors, plyPick)
                     local rolePick = math.random(1, #specialTraitorRoles)
                     local role = specialTraitorRoles[rolePick]
                     ply:SetRole(role)
                     PrintRole(ply, role)
-                    table.remove(traitors, plyPick)
                     for i = #specialTraitorRoles, 1, -1 do
                         if specialTraitorRoles[i] == role then
                             table.remove(specialTraitorRoles, i)
@@ -1621,12 +1636,11 @@ function SelectRoles()
 
         if #independentRoles ~= 0 then
             local plyPick = math.random(1, #choices)
-            local ply = choices[plyPick]
+            local ply = table.remove(choices, plyPick)
             local rolePick = math.random(1, #independentRoles)
             local role = independentRoles[rolePick]
             ply:SetRole(role)
             PrintRole(ply, role)
-            table.remove(choices, plyPick)
             for i = #independentRoles, 1, -1 do
                 if independentRoles[i] == role then
                     table.remove(independentRoles, i)
@@ -1641,12 +1655,11 @@ function SelectRoles()
 
         if #jesterRoles ~= 0 then
             local plyPick = math.random(1, #choices)
-            local ply = choices[plyPick]
+            local ply = table.remove(choices, plyPick)
             local rolePick = math.random(1, #jesterRoles)
             local role = jesterRoles[rolePick]
             ply:SetRole(role)
             PrintRole(ply, role)
-            table.remove(choices, plyPick)
             for i = #jesterRoles, 1, -1 do
                 if jesterRoles[i] == role then
                     table.remove(jesterRoles, i)
@@ -1672,7 +1685,7 @@ function SelectRoles()
         for _ = 1, max_special_innocent_count do
             if #specialInnocentRoles ~= 0 and math.random() <= GetConVar("ttt_special_innocent_chance"):GetFloat() and #choices > 0 then
                 local plyPick = math.random(1, #choices)
-                local ply = choices[plyPick]
+                local ply = table.remove(choices, plyPick)
                 local rolePick = math.random(1, #specialInnocentRoles)
                 local role = specialInnocentRoles[rolePick]
                 if role == ROLE_GLITCH and glitch_mode == GLITCH_SHOW_AS_SPECIAL_TRAITOR then
@@ -1685,7 +1698,6 @@ function SelectRoles()
                 end
                 ply:SetRole(role)
                 PrintRole(ply, role)
-                table.remove(choices, plyPick)
                 for i = #specialInnocentRoles, 1, -1 do
                     if specialInnocentRoles[i] == role then
                         table.remove(specialInnocentRoles, i)
@@ -1703,12 +1715,11 @@ function SelectRoles()
 
             if #monsterRoles ~= 0 and math.random() <= GetConVar("ttt_monster_chance"):GetFloat() and #choices > 0 and not monster_chosen then
                 local plyPick = math.random(1, #choices)
-                local ply = choices[plyPick]
+                local ply = table.remove(choices, plyPick)
                 local rolePick = math.random(1, #monsterRoles)
                 local role = monsterRoles[rolePick]
                 ply:SetRole(role)
                 PrintRole(ply, role)
-                table.remove(choices, plyPick)
                 for i = #monsterRoles, 1, -1 do
                     if monsterRoles[i] == role then
                         table.remove(monsterRoles, i)

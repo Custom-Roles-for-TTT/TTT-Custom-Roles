@@ -153,6 +153,7 @@ ttt_impersonator_credits_starting           1       // The number of credits an 
 ttt_impersonator_use_detective_icon         1       // Whether a promoted impersonator should show the detective icon over their head instead of the impersonator icon (only for traitors, non-traitors will use the equivalent deputy setting)
 ttt_impersonator_without_detective          0       // Whether an impersonator can spawn without a detective in the round. Will automatically promote the impersonator when they spawn
 ttt_impersonator_activation_credits         0       // The number of credits to give the impersonator when they are activated
+ttt_impersonator_detective_chance           0       // The chance that a detective will spawn as a promoted impersonator instead (e.g. 0.5 = 50% chance)
 ttt_single_deputy_impersonator              0       // Whether only a single deputy or impersonator should spawn in a round
 ttt_deputy_impersonator_promote_any_death   0       // Whether deputy/impersonator should be promoted when any detective dies rather than only after all detectives have died
 
