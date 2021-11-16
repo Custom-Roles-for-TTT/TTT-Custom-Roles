@@ -586,6 +586,7 @@ ttt_swapper_starting_health                 100     // The amount of health the 
 ttt_clown_starting_health                   100     // The amount of health the clown starts with
 ttt_beggar_starting_health                  100     // The amount of health the beggar starts with
 ttt_bodysnatcher_starting_health            100     // The amount of health the bodysnatcher starts with
+ttt_lootgoblin_starting_health              50      // The amount of health the loot goblin starts with
 ttt_drunk_starting_health                   100     // The amount of health the drunk starts with
 ttt_oldman_starting_health                  1       // The amount of health the old man starts with
 ttt_killer_starting_health                  150     // The amount of health the killer starts with
@@ -619,6 +620,7 @@ ttt_swapper_max_health                      100     // The maximum amount of hea
 ttt_clown_max_health                        100     // The maximum amount of health the clown can have
 ttt_beggar_max_health                       100     // The maximum amount of health the beggar can have
 ttt_bodysnatcher_max_health                 100     // The maximum amount of health the bodysnatcher can have
+ttt_lootgoblin_max_health                   50      // The maximum amount of health the loot goblin can have
 ttt_drunk_max_health                        100     // The maximum amount of health the drunk can have
 ttt_oldman_max_health                       1       // The maximum amount of health the old man can have
 ttt_killer_max_health                       150     // The maximum amount of health the killer can have
