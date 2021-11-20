@@ -6,6 +6,7 @@
 ### Additions
 - Added ability to give the impersonator credits when they are activated (disabled by default)
 - Added ability to configure a chance for a promoted impersonator to spawn instead of a detective (disabled by default)
+- Added ability to remind players that there is a medium when they die (enabled by default)
 
 ### Developer
 - Changed TTTCanIdentifyCorpse and TTTCanSearchCorpse hooks to allow changing the corpse's stored role

@@ -307,6 +307,7 @@ ttt_tracker_credits_starting                1       // The number of credits a t
 
 // Medium
 ttt_medium_spirit_color                     1       // Whether players' spirits should have different colors
+ttt_medium_dead_notify                      1       // Whether player should be notified that there is a medium when they die
 ttt_medium_credits_starting                 1       // The number of credits a medium should start with
 
 // ----------------------------------------
