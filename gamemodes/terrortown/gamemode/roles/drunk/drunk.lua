@@ -260,10 +260,8 @@ local function StopDrunkTimers()
     if timer.Exists("waitfordrunkrespawn") then timer.Remove("waitfordrunkrespawn") end
 end
 
-local unblockable_wins = {WIN_TIMELIMIT}
 local function HandleDrunkWinBlock(win_type)
     if win_type == WIN_NONE then return win_type end
-    if table.HasValue(unblockable_wins, win_type) then return win_type end
 
     local drunk = player.GetLivingRole(ROLE_DRUNK)
     if not IsPlayer(drunk) then return win_type end

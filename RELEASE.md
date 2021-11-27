@@ -3,6 +3,9 @@
 ## 1.4.1
 **Released:**
 
+### Fixes
+- Fixed loot goblin and old man not sharing a timelimit win with the innocents
+
 ### Additions
 - Added ability to give the impersonator credits when they are activated (disabled by default)
 - Added ability to configure a chance for a promoted impersonator to spawn instead of a detective (disabled by default)
@@ -10,6 +13,7 @@
 
 ### Developer
 - Changed TTTCanIdentifyCorpse and TTTCanSearchCorpse hooks to allow changing the corpse's stored role
+- Fixed TTTWinCheckComplete not being called when the win type was WIN_TIMELIMIT
 
 ## 1.4.0
 **Released: November 15th, 2021**\

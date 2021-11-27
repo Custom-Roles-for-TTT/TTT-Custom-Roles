@@ -1098,16 +1098,36 @@ function GM:MapTriggeredEnd(wintype)
     end
 end
 
+local function HandleWinCondition(win)
+    -- Allow addons to block win conditions other than time limit
+    if win ~= WIN_TIMELIMIT then
+        -- Handle role-specific checks
+        local win_blocks = {}
+        hook.Run("TTTWinCheckBlocks", win_blocks)
+
+        for _, win_block in ipairs(win_blocks) do
+            win = win_block(win)
+        end
+    end
+
+    -- If, after all that, we have a win condition then end the round
+    if win ~= WIN_NONE then
+        hook.Run("TTTWinCheckComplete", win)
+
+        timer.Simple(0.5, function() EndRound(win) end) -- Slight delay to make sure alternate winners go through before scoring
+    end
+end
+
 -- Used to be in think, now a timer
 local function WinChecker()
     -- If prevent-win is enabled then don't even check the win conditions
     if ttt_dbgwin:GetBool() then return end
 
     if GetRoundState() == ROUND_ACTIVE then
+        local win = WIN_NONE
         if CurTime() > GetGlobalFloat("ttt_round_end", 0) then
-            EndRound(WIN_TIMELIMIT)
+            win = WIN_TIMELIMIT
         else
-            local win = WIN_NONE
             -- Check the map win first
             if GAMEMODE.MapWin ~= WIN_NONE then
                 local mw = GAMEMODE.MapWin
@@ -1122,22 +1142,9 @@ local function WinChecker()
                     ErrorNoHalt("WARNING: 'TTTCheckForWin' hook returned win ID '" .. win .. "' that exceeds the expected maximum of " .. WIN_MAX .. ". Please use GenerateNewWinID() instead to get a unique win ID.\n")
                 end
             end
-
-            -- Handle role-specific checks
-            local win_blocks = {}
-            hook.Run("TTTWinCheckBlocks", win_blocks)
-
-            for _, win_block in ipairs(win_blocks) do
-                win = win_block(win)
-            end
-
-            -- If, after all that, we have a win condition then end the round
-            if win ~= WIN_NONE then
-                hook.Run("TTTWinCheckComplete", win)
-
-                timer.Simple(0.5, function() EndRound(win) end) -- Slight delay to make sure alternate winners go through before scoring
-            end
         end
+
+        HandleWinCondition(win)
     end
 end
 
