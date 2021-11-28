@@ -71,7 +71,7 @@ hook.Add("PlayerDeath", "Medium_Spirits_PlayerDeath", function(victim, infl, att
         -- Let the player who died know there is a medium
         if medium_dead_notify:GetBool() then
             victim:PrintMessage(HUD_PRINTTALK, "The " .. ROLE_STRINGS[ROLE_MEDIUM] .. " senses your spirit.")
-            victim:PrintMessage(HUD_PRINTCENTER, "The " .. ROLE_STRINGS_EXT[ROLE_MEDIUM] .. " senses your spirit.")
+            victim:PrintMessage(HUD_PRINTCENTER, "The " .. ROLE_STRINGS[ROLE_MEDIUM] .. " senses your spirit.")
         end
     end
 end)
