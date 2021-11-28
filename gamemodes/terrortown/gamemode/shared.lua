@@ -1,5 +1,5 @@
 -- Version string for display and function for version checks
-CR_VERSION = "1.4.0"
+CR_VERSION = "1.4.1"
 CR_BETA = true
 
 function CRVersion(version)
