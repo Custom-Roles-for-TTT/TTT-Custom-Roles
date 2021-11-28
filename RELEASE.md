@@ -3,6 +3,12 @@
 ## 1.4.1
 **Released:**
 
+### Changes
+- Changed old man to lose karma if they hurt or kill players when their adrenaline rush is not active
+- Changed so innocents that hurt or kill the old man will lose karma
+- Changed old man adrenaline rush logic so it shows what player ultimately killed them in chat rather than "You killed yourself"
+- Changed old man adrenaline rush message to also show in the center of the screen to make it more obvious when it's happening
+
 ### Fixes
 - Fixed loot goblin and old man not sharing a timelimit win with the innocents
 
