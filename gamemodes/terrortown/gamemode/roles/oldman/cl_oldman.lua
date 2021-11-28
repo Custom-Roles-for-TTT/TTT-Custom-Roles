@@ -37,9 +37,9 @@ end)
 -- WIN CHECKS --
 ----------------
 
-hook.Add("TTTScoringWinTitle", "OldMan_TTTScoringWinTitle", function(wintype, wintitles, title, secondary_win_role)
+hook.Add("TTTScoringSecondaryWins", "OldMan_TTTScoringSecondaryWins", function(wintype, secondary_wins)
     if oldman_wins then
-        return title, ROLE_OLDMAN
+        table.insert(secondary_wins, ROLE_OLDMAN)
     end
 end)
 

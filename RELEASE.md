@@ -11,6 +11,7 @@
 
 ### Fixes
 - Fixed loot goblin and old man not sharing a timelimit win with the innocents
+- Fixed loot goblin and old man not sharing a win with eachother (if they are both in the same round) on the round summary screen
 
 ### Additions
 - Added ability to give the impersonator credits when they are activated (disabled by default)
@@ -20,6 +21,8 @@
 ### Developer
 - Changed TTTCanIdentifyCorpse and TTTCanSearchCorpse hooks to allow changing the corpse's stored role
 - Fixed TTTWinCheckComplete not being called when the win type was WIN_TIMELIMIT
+- Added new TTTScoringSecondaryWins hook to allow multiple roles to have secondary wins at the same time
+- **BREAKING CHANGE** - Removed secondaryWinRole parameter from TTTScoringWinTitle hook
 
 ## 1.4.0
 **Released: November 15th, 2021**\

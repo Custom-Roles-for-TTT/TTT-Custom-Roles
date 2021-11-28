@@ -121,7 +121,7 @@ net.Receive("TTT_ResetScoreboard", function(len)
     customEvents = {}
 end)
 
-local secondary_win_role = nil
+local secondary_win_roles = {}
 net.Receive("TTT_SpawnedPlayers", function(len)
     local name = net.ReadString()
     local role = net.ReadInt(8)
@@ -132,7 +132,7 @@ net.Receive("TTT_SpawnedPlayers", function(len)
         rol = role
     })
 
-    secondary_win_role = nil
+    table.Empty(secondary_win_roles)
 end)
 
 net.Receive("TTT_LogInfo", function(len)
@@ -241,9 +241,12 @@ local function GetWinTitle(wintype)
         [WIN_MONSTER] = { txt = "hilite_win_role_plural", params = { role = "MONSTERS" }, c = GetRoleTeamColor(ROLE_TEAM_MONSTER) }
     }
     local title = wintitles[wintype]
-    local new_title, new_secondary = hook.Run("TTTScoringWinTitle", wintype, wintitles, title, secondary_win_role)
+    local new_title = hook.Run("TTTScoringWinTitle", wintype, wintitles, title)
     if new_title then title = new_title end
-    if new_secondary then secondary_win_role = new_secondary end
+
+    local secondary_wins = {}
+    hook.Run("TTTScoringSecondaryWins", wintype, secondary_wins)
+    secondary_win_roles = secondary_wins
 
     -- If this was a monster win, check that both roles are part of the monsters team still
     if wintype == WIN_MONSTER then
@@ -437,6 +440,17 @@ function CLSCORE:AddAward(y, pw, award, dpanel)
 end
 
 function CLSCORE:BuildSummaryPanel(dpanel)
+    local title = GetWinTitle(WIN_INNOCENT)
+    for i = #self.Events, 1, -1 do
+        local e = self.Events[i]
+        if e.id == EVENT_FINISH then
+            local wintype = e.win
+            if wintype == WIN_TIMELIMIT then wintype = WIN_INNOCENT end
+            title = GetWinTitle(wintype)
+            break
+        end
+    end
+
     -- Gather player information
     local scores = self.Scores
     local nicks = self.Players
@@ -546,48 +560,45 @@ function CLSCORE:BuildSummaryPanel(dpanel)
 
     -- Add 33px for each extra role
     local height_extra = (player_rows - 10) * 33
+
+    local height_extra_secondaries = 0
+    if #secondary_win_roles > 1 then
+        height_extra_secondaries = (#secondary_win_roles - 1) * 28
+    end
+
     local has_indep_and_jesters = #scores_by_section[ROLE_TEAM_INDEPENDENT] > 0 and #scores_by_section[ROLE_TEAM_JESTER] > 0
     local height_extra_jester = 0
     if has_indep_and_jesters then
         height_extra_jester = 32
     end
 
+    local height_extra_total = height_extra + height_extra_jester + height_extra_secondaries
+
     -- Build the panel
     local w, h = dpanel:GetSize()
-    if height_extra > 0 or height_extra_jester > 0 then
-        h = h + height_extra + height_extra_jester
+    if height_extra_total > 0 then
+        h = h + height_extra_total
 
         -- Make the parent panel and tab container bigger
         local pw, ph = parentPanel:GetSize()
-        ph = ph + height_extra + height_extra_jester
+        ph = ph + height_extra_total
         parentPanel:SetSize(pw, ph)
 
         local tw, th = parentTabs:GetSize()
-        th = th + height_extra + height_extra_jester
+        th = th + height_extra_total
         parentTabs:SetSize(tw, th)
 
         -- Move the buttons down
         local sx, sy = saveButton:GetPos()
-        sy = sy + height_extra + height_extra_jester
+        sy = sy + height_extra_total
         saveButton:SetPos(sx, sy)
 
         local cx, cy = closeButton:GetPos()
-        cy = cy + height_extra + height_extra_jester
+        cy = cy + height_extra_total
         closeButton:SetPos(cx, cy)
 
         -- Make this inner panel bigger
         dpanel:SetSize(w, h)
-    end
-
-    local title = GetWinTitle(WIN_INNOCENT)
-    for i = #self.Events, 1, -1 do
-        local e = self.Events[i]
-        if e.id == EVENT_FINISH then
-            local wintype = e.win
-            if wintype == WIN_TIMELIMIT then wintype = WIN_INNOCENT end
-            title = GetWinTitle(wintype)
-            break
-        end
     end
 
     local bg = vgui.Create("ColoredBox", dpanel)
@@ -615,49 +626,52 @@ function CLSCORE:BuildSummaryPanel(dpanel)
     local ywin = 15
     winlbl:SetPos(xwin, ywin)
 
-    local exwinlbl = vgui.Create("DLabel", dpanel)
-    if secondary_win_role then
+    for i, r in ipairs(secondary_win_roles) do
+        local exwinlbl = vgui.Create("DLabel", dpanel)
         exwinlbl:SetFont("WinSmall")
-        exwinlbl:SetText(PT("hilite_win_role_singular_additional", { role = ROLE_STRINGS[secondary_win_role]:upper() }))
+        exwinlbl:SetText(PT("hilite_win_role_singular_additional", { role = ROLE_STRINGS[r]:upper() }))
         exwinlbl:SetTextColor(COLOR_WHITE)
         exwinlbl:SizeToContents()
         local xexwin = (w - exwinlbl:GetWide()) / 2
-        local yexwin = 61
+        local yexwin = 61 + (28 * (i - 1))
         exwinlbl:SetPos(xexwin, yexwin)
-    else
-        exwinlbl:SetText("")
     end
 
     bg.PaintOver = function()
         draw.RoundedBox(8, 8, ywin - 5, w - 14, winlbl:GetTall() + 10, title.c)
-        if secondary_win_role then draw.RoundedBoxEx(8, 8, 65, w - 14, 28, ROLE_COLORS[secondary_win_role], false, false, true, true) end
-        draw.RoundedBox(0, 8, ywin + winlbl:GetTall() + 15, 341, 329 + height_extra, Color(164, 164, 164, 255))
-        draw.RoundedBox(0, 357, ywin + winlbl:GetTall() + 15, 341, 329 + height_extra, Color(164, 164, 164, 255))
-        local loc = ywin + winlbl:GetTall() + 47
+        for i, r in ipairs(secondary_win_roles) do
+            local round_bottom = i == #secondary_win_roles
+            local height = 28
+            draw.RoundedBoxEx(8, 8, 65 + (height * (i - 1)), w - 14, height, ROLE_COLORS[r], false, false, round_bottom, round_bottom)
+        end
+        draw.RoundedBox(0, 8, ywin + winlbl:GetTall() + 15 + height_extra_secondaries, 341, 329 + height_extra, Color(164, 164, 164, 255))
+        draw.RoundedBox(0, 357, ywin + winlbl:GetTall() + 15 + height_extra_secondaries, 341, 329 + height_extra, Color(164, 164, 164, 255))
+        local loc = ywin + winlbl:GetTall() + 47 + height_extra_secondaries
         for _ = 1, player_rows do
             draw.RoundedBox(0, 8, loc, 341, 1, Color(97, 100, 102, 255))
             draw.RoundedBox(0, 357, loc, 341, 1, Color(97, 100, 102, 255))
             loc = loc + 33
         end
-        draw.RoundedBox(0, 8, ywin + winlbl:GetTall() + 352 + height_extra, 690, 32, Color(164, 164, 164, 255))
+        draw.RoundedBox(0, 8, ywin + winlbl:GetTall() + 352 + height_extra + height_extra_secondaries, 690, 32, Color(164, 164, 164, 255))
         -- Add another row for jesters if we also have independents
-        if has_indep_and_jesters then draw.RoundedBox(0, 8, ywin + winlbl:GetTall() + 352 + height_extra + height_extra_jester, 690, 32, Color(164, 164, 164, 255)) end
+        if has_indep_and_jesters then draw.RoundedBox(0, 8, ywin + winlbl:GetTall() + 354 + height_extra_total, 690, 32, Color(164, 164, 164, 255)) end
     end
 
-    if secondary_win_role then winlbl:SetPos(xwin, ywin - 15) end
+    if #secondary_win_roles > 0 then winlbl:SetPos(xwin, ywin - 15) end
 
     -- Add the players to the panel
-    self:BuildPlayerList(scores_by_section[ROLE_TEAM_INNOCENT], dpanel, 317, 8, 103, 33)
-    self:BuildPlayerList(scores_by_section[ROLE_TEAM_TRAITOR], dpanel, 666, 357, 103, 33)
+    self:BuildPlayerList(scores_by_section[ROLE_TEAM_INNOCENT], dpanel, 317, 8, 103 + height_extra_secondaries, 33)
+    self:BuildPlayerList(scores_by_section[ROLE_TEAM_TRAITOR], dpanel, 666, 357, 103 + height_extra_secondaries, 33)
     if #scores_by_section[ROLE_TEAM_INDEPENDENT] > 0 then
-        self:BuildRoleLabel(scores_by_section[ROLE_TEAM_INDEPENDENT], dpanel, 666, 8, 440 + height_extra)
+        self:BuildRoleLabel(scores_by_section[ROLE_TEAM_INDEPENDENT], dpanel, 666, 8, 440 + height_extra + height_extra_secondaries)
     end
     if #scores_by_section[ROLE_TEAM_JESTER] > 0 then
         -- Move the label down more to add space
+        local spacer = 0
         if has_indep_and_jesters then
-            height_extra_jester = height_extra_jester + 2
+            spacer = 2
         end
-        self:BuildRoleLabel(scores_by_section[ROLE_TEAM_JESTER], dpanel, 666, 8, 440 + height_extra + height_extra_jester)
+        self:BuildRoleLabel(scores_by_section[ROLE_TEAM_JESTER], dpanel, 666, 8, 440 + height_extra_total + spacer)
     end
 end
 
@@ -906,27 +920,29 @@ function CLSCORE:BuildHilitePanel(dpanel)
     local ywin = 15
     winlbl:SetPos(xwin, ywin)
 
-    local exwinlbl = vgui.Create("DLabel", dpanel)
-    if secondary_win_role then
+    for i, r in ipairs(secondary_win_roles) do
+        local exwinlbl = vgui.Create("DLabel", dpanel)
         exwinlbl:SetFont("WinSmall")
-        exwinlbl:SetText(PT("hilite_win_role_singular_additional", { role = ROLE_STRINGS[secondary_win_role]:upper() }))
+        exwinlbl:SetText(PT("hilite_win_role_singular_additional", { role = ROLE_STRINGS[r]:upper() }))
         exwinlbl:SetTextColor(COLOR_WHITE)
         exwinlbl:SizeToContents()
         local xexwin = (w - exwinlbl:GetWide()) / 2
-        local yexwin = 61
+        local yexwin = 61 + (28 * (i - 1))
         exwinlbl:SetPos(xexwin, yexwin)
-    else
-        exwinlbl:SetText("")
     end
 
     bg.PaintOver = function()
         draw.RoundedBox(8, 8, ywin - 5, w - 14, winlbl:GetTall() + 10, title.c)
-        if secondary_win_role then draw.RoundedBoxEx(8, 8, 65, w - 14, 28, ROLE_COLORS[secondary_win_role], false, false, true, true) end
+        for i, r in ipairs(secondary_win_roles) do
+            local round_bottom = i == #secondary_win_roles
+            local height = 28
+            draw.RoundedBoxEx(8, 8, 65 + (height * (i - 1)), w - 14, height, ROLE_COLORS[r], false, false, round_bottom, round_bottom)
+        end
     end
 
-    if secondary_win_role then winlbl:SetPos(xwin, ywin - 15) end
+    if #secondary_win_roles > 0 then winlbl:SetPos(xwin, ywin - 15) end
 
-    local ysubwin = ywin + winlbl:GetTall()
+    local ysubwin = ywin + winlbl:GetTall() + ((#secondary_win_roles - 1) * 28)
     local partlbl = vgui.Create("DLabel", dpanel)
 
     local plytxt = PT(numtr == 1 and "hilite_players2" or "hilite_players1",
