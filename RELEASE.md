@@ -1,6 +1,6 @@
 # Release Notes
 
-## 1.4.1
+## 1.4.1 (Beta)
 **Released:**
 
 ### Changes
