@@ -7,6 +7,8 @@ AddCSLuaFile()
 local impersonator_damage_penalty = CreateConVar("ttt_impersonator_damage_penalty", "0")
 local impersonator_use_detective_icon = CreateConVar("ttt_impersonator_use_detective_icon", "1")
 CreateConVar("ttt_impersonator_without_detective", "0")
+CreateConVar("ttt_impersonator_activation_credits", "0")
+CreateConVar("ttt_impersonator_detective_chance", "0")
 
 hook.Add("TTTSyncGlobals", "Impersonator_TTTSyncGlobals", function()
     SetGlobalBool("ttt_impersonator_use_detective_icon", impersonator_use_detective_icon:GetBool())

@@ -26,10 +26,8 @@ end)
 -- WIN CHECKS --
 ----------------
 
-local unblockable_wins = {WIN_TIMELIMIT}
 local function HandleClownWinBlock(win_type)
     if win_type == WIN_NONE then return win_type end
-    if table.HasValue(unblockable_wins, win_type) then return win_type end
 
     local clown = player.GetLivingRole(ROLE_CLOWN)
     if not IsPlayer(clown) then return win_type end

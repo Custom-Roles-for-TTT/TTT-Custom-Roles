@@ -20,16 +20,19 @@ local plymeta = FindMetaTable("Player")
 function plymeta:HandleDetectiveLikePromotion()
     self:SetNWBool("HasPromotion", true)
 
-    if self:IsDeputy() then
-        local credits = GetConVar("ttt_deputy_activation_credits"):GetInt()
+    local role = self:GetRole()
+    local rolestring = ROLE_STRINGS_RAW[role]
+    local convar = "ttt_" .. rolestring .. "_activation_credits"
+    if ConVarExists(convar) then
+        local credits = GetConVar(convar):GetInt()
         if credits > 0 then
             self:AddCredits(credits)
         end
+    end
 
-        -- Give the deputy their shop items if purchase was delayed
-        if self.bought and GetConVar("ttt_deputy_shop_delay"):GetBool() then
-            self:GiveDelayedShopItems()
-        end
+    -- Give the player their shop items if purchase was delayed
+    if DELAYED_SHOP_ROLES[role] and self.bought and GetConVar("ttt_" .. rolestring .. "_shop_delay"):GetBool() then
+        self:GiveDelayedShopItems()
     end
 
     net.Start("TTT_Promotion")

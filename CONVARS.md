@@ -152,6 +152,8 @@ ttt_impersonator_damage_penalty             0       // Damage penalty that the i
 ttt_impersonator_credits_starting           1       // The number of credits an impersonator should start with
 ttt_impersonator_use_detective_icon         1       // Whether a promoted impersonator should show the detective icon over their head instead of the impersonator icon (only for traitors, non-traitors will use the equivalent deputy setting)
 ttt_impersonator_without_detective          0       // Whether an impersonator can spawn without a detective in the round. Will automatically promote the impersonator when they spawn
+ttt_impersonator_activation_credits         0       // The number of credits to give the impersonator when they are activated
+ttt_impersonator_detective_chance           0       // The chance that a detective will spawn as a promoted impersonator instead (e.g. 0.5 = 50% chance)
 ttt_single_deputy_impersonator              0       // Whether only a single deputy or impersonator should spawn in a round
 ttt_deputy_impersonator_promote_any_death   0       // Whether deputy/impersonator should be promoted when any detective dies rather than only after all detectives have died
 
@@ -305,6 +307,7 @@ ttt_tracker_credits_starting                1       // The number of credits a t
 
 // Medium
 ttt_medium_spirit_color                     1       // Whether players' spirits should have different colors
+ttt_medium_dead_notify                      1       // Whether player should be notified that there is a medium when they die
 ttt_medium_credits_starting                 1       // The number of credits a medium should start with
 
 // ----------------------------------------
@@ -584,6 +587,7 @@ ttt_swapper_starting_health                 100     // The amount of health the 
 ttt_clown_starting_health                   100     // The amount of health the clown starts with
 ttt_beggar_starting_health                  100     // The amount of health the beggar starts with
 ttt_bodysnatcher_starting_health            100     // The amount of health the bodysnatcher starts with
+ttt_lootgoblin_starting_health              50      // The amount of health the loot goblin starts with
 ttt_drunk_starting_health                   100     // The amount of health the drunk starts with
 ttt_oldman_starting_health                  1       // The amount of health the old man starts with
 ttt_killer_starting_health                  150     // The amount of health the killer starts with
@@ -617,6 +621,7 @@ ttt_swapper_max_health                      100     // The maximum amount of hea
 ttt_clown_max_health                        100     // The maximum amount of health the clown can have
 ttt_beggar_max_health                       100     // The maximum amount of health the beggar can have
 ttt_bodysnatcher_max_health                 100     // The maximum amount of health the bodysnatcher can have
+ttt_lootgoblin_max_health                   50      // The maximum amount of health the loot goblin can have
 ttt_drunk_max_health                        100     // The maximum amount of health the drunk can have
 ttt_oldman_max_health                       1       // The maximum amount of health the old man can have
 ttt_killer_max_health                       150     // The maximum amount of health the killer can have

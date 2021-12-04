@@ -1,5 +1,29 @@
 # Release Notes
 
+## 1.4.1
+**Released:**
+
+### Changes
+- Changed old man to lose karma if they hurt or kill players when their adrenaline rush is not active
+- Changed so innocents that hurt or kill the old man will lose karma
+- Changed old man adrenaline rush logic so it shows what player ultimately killed them in chat rather than "You killed yourself"
+- Changed old man adrenaline rush message to also show in the center of the screen to make it more obvious when it's happening
+
+### Fixes
+- Fixed loot goblin and old man not sharing a timelimit win with the innocents
+- Fixed loot goblin and old man not sharing a win with eachother (if they are both in the same round) on the round summary screen
+
+### Additions
+- Added ability to give the impersonator credits when they are activated (disabled by default)
+- Added ability to configure a chance for a promoted impersonator to spawn instead of a detective (disabled by default)
+- Added ability to remind players that there is a medium when they die (enabled by default)
+
+### Developer
+- Changed TTTCanIdentifyCorpse and TTTCanSearchCorpse hooks to allow changing the corpse's stored role
+- Fixed TTTWinCheckComplete not being called when the win type was WIN_TIMELIMIT
+- Added new TTTScoringSecondaryWins hook to allow multiple roles to have secondary wins at the same time
+- **BREAKING CHANGE** - Removed secondaryWinRole parameter from TTTScoringWinTitle hook
+
 ## 1.4.0
 **Released: November 15th, 2021**\
 Includes all beta updates from [1.3.1](#131-beta) to [1.3.7](#137-beta).

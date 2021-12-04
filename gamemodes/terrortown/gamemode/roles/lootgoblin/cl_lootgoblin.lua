@@ -73,9 +73,9 @@ end)
 -- WIN CHECKS --
 ----------------
 
-hook.Add("TTTScoringWinTitle", "LootGoblin_TTTScoringWinTitle", function(wintype, wintitles, title, secondary_win_role)
+hook.Add("TTTScoringSecondaryWins", "LootGoblin_TTTScoringSecondaryWins", function(wintype, secondary_wins)
     if lootgoblin_wins then
-        return title, ROLE_LOOTGOBLIN
+        table.insert(secondary_wins, ROLE_LOOTGOBLIN)
     end
 end)
 
