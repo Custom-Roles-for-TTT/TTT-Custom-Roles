@@ -273,7 +273,7 @@ ttt_veteran_activation_credits              0       // The number of credits to 
 ttt_doctor_credits_starting                 1       // The number of credits a doctor should start with
 
 // Paramedic
-ttt_paramedic_defib_as_innocent             1       // Whether the paramedic's defib brings back everyone as a vanilla innocent role
+ttt_paramedic_defib_as_innocent             0       // Whether the paramedic's defib brings back everyone as a vanilla innocent role
 ttt_paramedic_device_loadout                1       // Whether the paramedic's defib should be given to them when they spawn. Server must be restarted for changes to take effect
 ttt_paramedic_device_shop                   0       // Whether the paramedic's defib should be purchasable in the shop (requires "ttt_shop_for_all" to be enabled). Server must be restarted for changes to take effect
 ttt_paramedic_device_shop_rebuyable         0       // Whether the paramedic's defib should be purchaseable multiple times (requires "ttt_paramedic_device_shop" to be enabled). Server must be restarted for changes to take effect
