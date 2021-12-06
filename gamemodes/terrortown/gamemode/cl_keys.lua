@@ -104,7 +104,7 @@ function GM:KeyPress(ply, key)
         timer.Simple(0.05, function()
             -- Use the new permissions system if it exists or otherwise fall back to the old way
             if permissions and permissions.EnableVoiceChat then
-                permissions.EnableVoiceChat(enabled)
+                permissions.EnableVoiceChat(true)
             else
                 RunConsoleCommand("+voicerecord")
             end
