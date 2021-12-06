@@ -696,7 +696,7 @@ function VOICE.Tick()
 
         if not VOICE.CanSpeak() then
             client.voice_battery = 0
-            RunConsoleCommand("-voicerecord")
+            VOICE.ToggleVoiceChat(false)
         end
     elseif client.voice_battery < battery_max then
         client.voice_battery = client.voice_battery + GetRechargeRate()
@@ -707,6 +707,21 @@ end
 function VOICE.IsSpeaking() return LocalPlayer().speaking end
 
 function VOICE.SetSpeaking(state) LocalPlayer().speaking = state end
+
+function VOICE.ToggleVoiceChat(enabled)
+    -- Use the new permissions system if it exists or otherwise fall back to the old way
+    if permissions and permissions.EnableVoiceChat then
+        permissions.EnableVoiceChat(enabled)
+    else
+        local command = "voicerecord"
+        if enabled then
+            command = "+" .. command
+        else
+            command = "-" .. command
+        end
+        RunConsoleCommand(command)
+    end
+end
 
 function VOICE.CanSpeak()
     if not GetGlobalBool("ttt_voice_drain", false) then return true end

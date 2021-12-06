@@ -1,7 +1,13 @@
 # Release Notes
 
-## 1.4.1 (Beta)
+## 1.4.2 (Beta)
 **Released:**
+
+### Changes
+- Ported change from base TTT: "TTT uses new permissions.EnableVoiceChat"
+
+## 1.4.1 (Beta)
+**Released: December 4th, 2021**
 
 ### Changes
 - Changed old man to lose karma if they hurt or kill players when their adrenaline rush is not active
