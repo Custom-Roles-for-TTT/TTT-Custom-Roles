@@ -101,7 +101,14 @@ function GM:KeyPress(ply, key)
     if not IsValid(ply) or ply ~= LocalPlayer() then return end
 
     if key == IN_ZOOM and ply:IsActiveTraitorTeam() then
-        timer.Simple(0.05, function() VOICE.ToggleVoiceChat(true) end)
+        timer.Simple(0.05, function()
+            -- Use the new permissions system if it exists or otherwise fall back to the old way
+            if permissions and permissions.EnableVoiceChat then
+                permissions.EnableVoiceChat(enabled)
+            else
+                RunConsoleCommand("+voicerecord")
+            end
+        end)
     end
 end
 
@@ -110,7 +117,7 @@ function GM:KeyRelease(ply, key)
     if not IsValid(ply) or ply ~= LocalPlayer() then return end
 
     if key == IN_ZOOM and ply:IsActiveTraitorTeam() then
-        timer.Simple(0.05, function() VOICE.ToggleVoiceChat(false) end)
+        timer.Simple(0.05, function() RunConsoleCommand("-voicerecord") end)
     end
 end
 
