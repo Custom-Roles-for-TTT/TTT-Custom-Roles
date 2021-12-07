@@ -23,13 +23,17 @@ Methods available globally (within the defined realm)
 
 *Returns*: An accessible position around the given position or `false` if none can be found
 
-**GenerateNewEventID()** - Generates a new ID to be used for custom scoring events.\
+**GenerateNewEventID(role)** - Generates a new ID to be used for custom scoring events.\
 *Realm:* Client and Server\
-*Added in:* 1.2.5
+*Added in:* 1.2.5\
+*Parameters:*
+- *role* - The ID of the role that the generated event ID belongs to *(Added in 1.4.2)*
 
-**GenerateNewWinID()** - Generates a new ID to be used for custom win conditions.\
+**GenerateNewWinID(role)** - Generates a new ID to be used for custom win conditions.\
 *Realm:* Client and Server\
-*Added in:* 1.2.5
+*Added in:* 1.2.5\
+*Parameters:*
+- *role* - The ID of the role that the generated win ID belongs to *(Added in 1.4.2)*
 
 **GetEquipmentItemById(id)** - Gets an equipment item's definition by their ID.\
 *Realm:* Client and Server\

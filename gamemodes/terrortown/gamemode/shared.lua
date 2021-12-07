@@ -844,6 +844,37 @@ local function AddExternalRoles()
 end
 AddExternalRoles()
 
+local function GetRoleFromStackTrace()
+    local role
+    local level = 2
+    while true do
+        local info = debug.getinfo(level, "S")
+        if not info then break end
+
+        if info.what ~= "C" then
+            -- Get the file path
+            local source = info.short_src
+            -- Extract the file name from the path and drop the extension
+            local role_name = string.StripExtension(string.GetFileFromFilename(source)):lower()
+
+            -- Find the role whose raw string matches the file name
+            for r, str in pairs(ROLE_STRINGS_RAW) do
+                if str:lower() == role_name then
+                    role = r
+                    break
+                end
+            end
+
+            -- We found a role, no need to continue
+            if role then break end
+        end
+
+        level = level + 1
+    end
+
+    return role
+end
+
 -- Game event log defs
 EVENT_KILL = 1
 EVENT_SPAWN = 2
@@ -879,8 +910,21 @@ if not EVENT_MAX then
     EVENT_MAX = 28
 end
 
-function GenerateNewEventID()
+EVENTS_BY_ROLE = {}
+function GenerateNewEventID(role)
+    if not role or role <= ROLE_NONE or role > ROLE_MAX then
+        -- Print message telling the server owners that the role dev needs to update
+        ErrorNoHalt("WARNING: Role is missing 'role' parameter when generating unique event ID. Contact developer of role and reference: GenerateNewEventID\n")
+        role = GetRoleFromStackTrace()
+    end
+
     EVENT_MAX = EVENT_MAX + 1
+
+    -- Don't assign this event ID to a role we haven't found
+    if role and role > ROLE_NONE and role <= ROLE_MAX then
+        EVENTS_BY_ROLE[role] = EVENT_MAX
+    end
+
     return EVENT_MAX
 end
 
@@ -902,8 +946,21 @@ if not WIN_MAX then
     WIN_MAX = 12
 end
 
-function GenerateNewWinID()
+WINS_BY_ROLE = {}
+function GenerateNewWinID(role)
+    if not role or role <= ROLE_NONE or role > ROLE_MAX then
+        -- Print message telling the server owners that the role dev needs to update
+        ErrorNoHalt("WARNING: Role is missing 'role' parameter when generating unique win ID. Contact developer of role and reference: GenerateNewWinID\n")
+        role = GetRoleFromStackTrace()
+    end
+
     WIN_MAX = WIN_MAX + 1
+
+    -- Don't assign this win ID to a role we haven't found
+    if role and role > ROLE_NONE and role <= ROLE_MAX then
+        WINS_BY_ROLE[role] = WIN_MAX
+    end
+
     return WIN_MAX
 end
 
