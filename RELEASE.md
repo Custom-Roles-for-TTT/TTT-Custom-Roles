@@ -6,6 +6,9 @@
 ### Changes
 - Ported change from base TTT: "TTT uses new permissions.EnableVoiceChat"
 
+### Fixes
+- Fixed bodysnatcher killed event redefining existing event ID
+
 ## 1.4.1 (Beta)
 **Released: December 4th, 2021**
 

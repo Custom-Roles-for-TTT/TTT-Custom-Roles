@@ -872,11 +872,11 @@ EVENT_VAMPPRIME_DEATH = 24
 EVENT_BEGGARCONVERTED = 25
 EVENT_BEGGARKILLED = 26
 EVENT_INFECT = 27
-EVENT_BODYSNATCHERKILLED = 26
+EVENT_BODYSNATCHERKILLED = 28
 
 -- Don't redefine this every time we load this file
 if not EVENT_MAX then
-    EVENT_MAX = 27
+    EVENT_MAX = 28
 end
 
 function GenerateNewEventID()
