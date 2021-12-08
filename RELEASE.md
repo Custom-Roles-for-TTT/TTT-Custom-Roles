@@ -8,6 +8,7 @@
 
 ### Fixes
 - Fixed bodysnatcher killed event redefining existing event ID
+- Fixed freeze in round summary when a player has multi-byte characters in their name
 
 ### Developer
 - Added parameter to `GenerateNewEventID` to allow roles to associate generated event IDs back to the role

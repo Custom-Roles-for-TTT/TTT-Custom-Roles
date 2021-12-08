@@ -798,7 +798,7 @@ function TellTraitorsAboutTraitors()
                         names = names .. name .. ", "
                     end
                 end
-                names = string.sub(names, 1, -3)
+                names = utf8.sub(names, 1, -3)
                 LANG.Msg(v, "round_traitors_more", { role = ROLE_STRINGS[ROLE_TRAITOR], names = names })
             end
         end

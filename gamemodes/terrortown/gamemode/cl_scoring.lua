@@ -733,7 +733,7 @@ function CLSCORE:BuildPlayerList(playerList, dpanel, statusX, roleX, initialY, r
         local roleIcon = GetRoleIconElement(v.roleFileName, v.roleColor, v.startingRole, v.finalRole, dpanel)
         local nicklbl = GetNickLabelElement(v.name, dpanel)
         FitNicknameLabel(nicklbl, 275, function(nickname)
-            return string.sub(nickname, 0, #nickname - 4) .. "..."
+            return utf8.sub(nickname, 0, -5) .. "..."
         end)
 
         self:AddPlayerRow(dpanel, statusX, roleX, initialY + rowY * count, roleIcon, nicklbl, v.hasDisconnected, v.hasDied)
@@ -795,9 +795,9 @@ function CLSCORE:BuildRoleLabel(playerList, dpanel, statusX, roleX, rowY)
                 local playerArg = args.player
                 local otherArg = args.other
                 if #playerArg > #otherArg then
-                    playerArg = string.sub(playerArg, 0, #playerArg - 4) .. "..."
+                    playerArg = utf8.sub(playerArg, 0, -5) .. "..."
                 else
-                    otherArg = string.sub(otherArg, 0, #otherArg - 4) .. "..."
+                    otherArg = utf8.sub(otherArg, 0, -5) .. "..."
                 end
 
                 return BuildJesterLabel(playerArg, otherArg, label), {player=playerArg, other=otherArg}
@@ -822,7 +822,7 @@ function CLSCORE:BuildRoleLabel(playerList, dpanel, statusX, roleX, rowY)
     local namesList = string.Implode(", ", names)
     local nickLbl = GetNickLabelElement(namesList, dpanel)
     FitNicknameLabel(nickLbl, maxWidth, function(nickname)
-        return string.sub(nickname, 0, #nickname - 4) .. "..."
+        return utf8.sub(nickname, 0, -5) .. "..."
     end)
 
     -- Show the normal disconnect icon if we have only 1 player and they disconnected
