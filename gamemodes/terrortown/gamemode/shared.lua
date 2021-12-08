@@ -914,7 +914,7 @@ EVENTS_BY_ROLE = {}
 function GenerateNewEventID(role)
     if not role or role < ROLE_NONE or role > ROLE_MAX then
         -- Print message telling the server owners that the role dev needs to update
-        ErrorNoHalt("WARNING: Role is missing 'role' parameter when generating unique event ID. Contact developer of role and reference: GenerateNewEventID\n")
+        ErrorNoHaltWithStack("WARNING: Role is missing 'role' parameter when generating unique event ID. Contact developer of role and reference: GenerateNewEventID\n")
         role = GetRoleFromStackTrace()
     end
 
@@ -950,7 +950,7 @@ WINS_BY_ROLE = {}
 function GenerateNewWinID(role)
     if not role or role < ROLE_NONE or role > ROLE_MAX then
         -- Print message telling the server owners that the role dev needs to update
-        ErrorNoHalt("WARNING: Role is missing 'role' parameter when generating unique win ID. Contact developer of role and reference: GenerateNewWinID\n")
+        ErrorNoHaltWithStack("WARNING: Role is missing 'role' parameter when generating unique win ID. Contact developer of role and reference: GenerateNewWinID\n")
         role = GetRoleFromStackTrace()
     end
 
