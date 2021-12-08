@@ -27,13 +27,13 @@ Methods available globally (within the defined realm)
 *Realm:* Client and Server\
 *Added in:* 1.2.5\
 *Parameters:*
-- *role* - The ID of the role that the generated event ID belongs to *(Added in 1.4.2)*
+- *role* - The ID of the role that the generated event ID belongs to. Pass `ROLE_NONE` if this should not be associated with any role *(Added in 1.4.2)*
 
 **GenerateNewWinID(role)** - Generates a new ID to be used for custom win conditions.\
 *Realm:* Client and Server\
 *Added in:* 1.2.5\
 *Parameters:*
-- *role* - The ID of the role that the generated win ID belongs to *(Added in 1.4.2)*
+- *role* - The ID of the role that the generated win ID belongs to. Pass `ROLE_NONE` if this should not be associated with any role *(Added in 1.4.2)*
 
 **GetEquipmentItemById(id)** - Gets an equipment item's definition by their ID.\
 *Realm:* Client and Server\

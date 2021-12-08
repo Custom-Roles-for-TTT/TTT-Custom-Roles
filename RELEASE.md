@@ -15,7 +15,7 @@
 - Added parameter to `GenerateNewWinID` to allow roles to associate generated win IDs back to the role
 - Added warning message to `GenerateNewWinID` when role parameter is missing so developers know to update
 
-*NOTE*: If the role parameter is not passed, we try to figure out the role that the generated ID belongs to but this is not promised to work. Developers should update to use the new parameter as soon as possible
+*NOTE*: If the role parameter is not passed, we try to figure out the role that the generated ID belongs to but this is not promised to work. Developers should update to use the new parameter as soon as possible. Developers who are using these methods to generate IDs not linked to roles should pass `ROLE_NONE`.
 
 ## 1.4.1 (Beta)
 **Released: December 4th, 2021**
