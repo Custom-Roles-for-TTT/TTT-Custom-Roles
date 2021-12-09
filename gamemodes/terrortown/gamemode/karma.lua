@@ -3,7 +3,6 @@
 local cvars = cvars
 local hook = hook
 local ipairs = ipairs
-local IsPlayer = IsPlayer
 local IsValid = IsValid
 local math = math
 

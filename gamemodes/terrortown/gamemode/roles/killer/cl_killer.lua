@@ -1,5 +1,4 @@
 local hook = hook
-local IsPlayer = IsPlayer
 local string = string
 
 ------------------

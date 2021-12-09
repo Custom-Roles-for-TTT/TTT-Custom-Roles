@@ -1,6 +1,5 @@
 local halo = halo
 local hook = hook
-local IsPlayer = IsPlayer
 local IsValid = IsValid
 local pairs = pairs
 local string = string

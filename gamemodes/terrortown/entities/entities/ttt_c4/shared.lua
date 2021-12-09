@@ -6,7 +6,6 @@ local draw = draw
 local ents = ents
 local hook = hook
 local ipairs = ipairs
-local IsPlayer = IsPlayer
 local IsValid = IsValid
 local math = math
 local net = net

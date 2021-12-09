@@ -2,7 +2,6 @@ AddCSLuaFile()
 
 local ents = ents
 local ipairs = ipairs
-local IsPlayer = IsPlayer
 local IsValid = IsValid
 local render = render
 local table = table

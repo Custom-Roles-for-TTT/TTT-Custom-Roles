@@ -225,7 +225,7 @@ local function DrawPropSpecLabels(cli)
     local text = nil
     local w = 0
     tgt = nil
-    for _, p in ipairs(GetPlayers()) do
+    for _, p in ipairs(GetAllPlayers()) do
         if p:IsSpec() then
             surface.SetTextColor(220, 200, 0, 120)
 

@@ -1,5 +1,4 @@
 local hook = hook
-local IsPlayer = IsPlayer
 local IsValid = IsValid
 local net = net
 local player = player

@@ -2,7 +2,6 @@ AddCSLuaFile()
 
 local hook = hook
 local ipairs = ipairs
-local IsPlayer = IsPlayer
 local math = math
 local net = net
 local pairs = pairs

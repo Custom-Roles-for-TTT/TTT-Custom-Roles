@@ -1,7 +1,6 @@
 ---- Customized scoring
 
 local ipairs = ipairs
-local IsPlayer = IsPlayer
 local IsValid = IsValid
 local net = net
 local pairs = pairs

@@ -1,6 +1,5 @@
 AddCSLuaFile()
 
-local IsPlayer = IsPlayer
 local IsValid = IsValid
 local math = math
 local util = util

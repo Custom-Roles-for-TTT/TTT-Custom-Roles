@@ -1,7 +1,6 @@
 AddCSLuaFile()
 
 local hook = hook
-local IsPlayer = IsPlayer
 local table = table
 
 -- Initialize role features

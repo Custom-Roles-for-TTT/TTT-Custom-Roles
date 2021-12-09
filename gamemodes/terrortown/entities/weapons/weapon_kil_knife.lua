@@ -2,7 +2,6 @@ AddCSLuaFile()
 
 local draw = draw
 local ents = ents
-local IsPlayer = IsPlayer
 local IsValid = IsValid
 local math = math
 local surface = surface

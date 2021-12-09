@@ -1,7 +1,6 @@
 AddCSLuaFile()
 
 local ents = ents
-local IsPlayer = IsPlayer
 local IsValid = IsValid
 local math = math
 local net = net

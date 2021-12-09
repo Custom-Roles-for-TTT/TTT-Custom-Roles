@@ -1,7 +1,6 @@
 AddCSLuaFile()
 
 local hook = hook
-local IsPlayer = IsPlayer
 
 -------------
 -- CONVARS --
