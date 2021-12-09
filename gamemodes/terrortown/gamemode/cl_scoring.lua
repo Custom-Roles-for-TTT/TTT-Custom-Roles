@@ -955,7 +955,11 @@ function CLSCORE:BuildHilitePanel(dpanel)
 
     if #secondary_win_roles > 0 then winlbl:SetPos(xwin, ywin - 15) end
 
-    local ysubwin = ywin + winlbl:GetTall() + ((#secondary_win_roles - 1) * 28)
+    local ysubwin = ywin + winlbl:GetTall()
+    -- Add extra space if we have more than one secondary win
+    if #secondary_win_roles > 1 then
+        ysubwin = ysubwin + (#secondary_win_roles - 1) * 28
+    end
     local partlbl = vgui.Create("DLabel", dpanel)
 
     local plytxt = PT(numtr == 1 and "hilite_players2" or "hilite_players1",
