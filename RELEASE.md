@@ -5,10 +5,12 @@
 
 ### Changes
 - Ported change from base TTT: "TTT uses new permissions.EnableVoiceChat"
+- Changed large parts across most of the addon in an attempt to increase performance
 
 ### Fixes
 - Fixed bodysnatcher killed event redefining existing event ID
 - Fixed freeze in round summary when a player has multi-byte characters in their name
+- Fixed round summary highlights player stats spacing
 
 ### Developer
 - Added parameter to `GenerateNewEventID` to allow roles to associate generated event IDs back to the role
