@@ -1339,8 +1339,9 @@ function GM:PlayerShouldTaunt(ply, actid)
 end
 
 local function GetTargetPlayerByName(ply, name)
+    name = string.lower(name)
     for _, v in RandomPairs(GetAllPlayers()) do
-        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and v:Nick() == name then
+        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and string.lower(v:Nick()) == name then
             return v
         end
     end
