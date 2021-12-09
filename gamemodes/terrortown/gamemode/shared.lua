@@ -1,3 +1,14 @@
+local file = file
+local hook = hook
+local ipairs = ipairs
+local IsValid = IsValid
+local math = math
+local net = net
+local pairs = pairs
+local string = string
+local table = table
+
+local GetAllPlayers = player.GetAll
 local StringUpper = string.upper
 local StringLower = string.lower
 local StringFind = string.find
@@ -44,18 +55,6 @@ GM.Website = "ttt.badking.net"
 GM.Version = "Custom Roles for TTT v" .. CR_VERSION
 
 GM.Customized = false
-
-local file = file
-local hook = hook
-local ipairs = ipairs
-local IsValid = IsValid
-local math = math
-local net = net
-local pairs = pairs
-local string = string
-local table = table
-
-local GetAllPlayers = player.GetAll
 
 -- Round status consts
 ROUND_WAIT = 1
