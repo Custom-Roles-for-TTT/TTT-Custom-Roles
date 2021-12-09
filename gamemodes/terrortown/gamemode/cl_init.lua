@@ -418,11 +418,9 @@ function GM:Think()
                         particle:SetColor(smokeColor.r, smokeColor.g, smokeColor.b)
                     end
                 end
-            else
-                if v.SmokeEmitter then
-                    v.SmokeEmitter:Finish()
-                    v.SmokeEmitter = nil
-                end
+            elseif v.SmokeEmitter then
+                v.SmokeEmitter:Finish()
+                v.SmokeEmitter = nil
             end
         end
     end

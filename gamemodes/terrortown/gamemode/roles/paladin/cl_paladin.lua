@@ -45,11 +45,9 @@ hook.Add("TTTPlayerAliveClientThink", "Paladin_RoleFeatures_TTTPlayerAliveClient
                 particle:SetColor(ROLE_COLORS[ROLE_PALADIN].r, ROLE_COLORS[ROLE_PALADIN].g, ROLE_COLORS[ROLE_PALADIN].b)
             end
         end
-    else
-        if ply.AuraEmitter then
-            ply.AuraEmitter:Finish()
-            ply.AuraEmitter = nil
-        end
+    elseif ply.AuraEmitter then
+        ply.AuraEmitter:Finish()
+        ply.AuraEmitter = nil
     end
 end)
 
