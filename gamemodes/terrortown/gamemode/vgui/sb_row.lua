@@ -7,7 +7,6 @@ local file = file
 local hook = hook
 local ipairs = ipairs
 local IsValid = IsValid
-local math = math
 local pairs = pairs
 local surface = surface
 local table = table
@@ -15,6 +14,11 @@ local timer = timer
 local vgui = vgui
 
 local GetTranslation = LANG.GetTranslation
+local MathClamp = math.Clamp
+local MathMax = math.max
+local MathMin = math.min
+local MathRound = math.Round
+local MathSin = math.sin
 
 SB_ROW_HEIGHT = 24 --16
 
@@ -32,17 +36,17 @@ function PANEL:Init()
     if KARMA.IsEnabled() then
         self:AddColumn(GetTranslation("sb_karma"), function(ply)
             if GetConVar("ttt_show_raw_karma_value"):GetBool() then
-                return math.Round(ply:GetBaseKarma())
+                return MathRound(ply:GetBaseKarma())
             else
                 local dmgpct = 100
                 if ply:GetBaseKarma() < 1000 then
                     local k = ply:GetBaseKarma() - 1000
                     if GetGlobalBool("ttt_karma_strict", false) then
-                        dmgpct = math.Round(math.Clamp(1 + (0.0007 * k) + (-0.000002 * (k ^ 2)), 0.1, 1.0) * 100)
+                        dmgpct = MathRound(MathClamp(1 + (0.0007 * k) + (-0.000002 * (k ^ 2)), 0.1, 1.0) * 100)
                     elseif GetGlobalBool("ttt_karma_lenient", false) then
-                        dmgpct = math.Round(math.Clamp(1 + (0.0005 * k) + (-0.0000005 * (k ^ 2)), 0.1, 1.0) * 100)
+                        dmgpct = MathRound(MathClamp(1 + (0.0005 * k) + (-0.0000005 * (k ^ 2)), 0.1, 1.0) * 100)
                     else
-                        dmgpct = math.Round(math.Clamp(1 + (-0.0000025 * (k ^ 2)), 0.1, 1.0) * 100)
+                        dmgpct = MathRound(MathClamp(1 + (-0.0000025 * (k ^ 2)), 0.1, 1.0) * 100)
                     end
                 end
                 return dmgpct .. "%"
@@ -183,7 +187,7 @@ local function ColorForPlayer(ply)
 end
 
 local function DrawFlashingBorder(width, role)
-    surface.SetDrawColor(ColorAlpha(ROLE_COLORS[role], math.Round(math.sin(RealTime() * 8) / 2 + 0.5) * 20))
+    surface.SetDrawColor(ColorAlpha(ROLE_COLORS[role], MathRound(MathSin(RealTime() * 8) / 2 + 0.5) * 20))
     surface.DrawRect(0, 0, width, SB_ROW_HEIGHT)
     surface.SetDrawColor(ROLE_COLORS_DARK[role])
     surface.DrawOutlinedRect(SB_ROW_HEIGHT, 0, width - SB_ROW_HEIGHT, SB_ROW_HEIGHT)
@@ -253,7 +257,7 @@ function PANEL:Paint(width, height)
     end
 
     if ply == client then
-        surface.SetDrawColor(200, 200, 200, math.Clamp(math.sin(RealTime() * 2) * 50, 0, 100))
+        surface.SetDrawColor(200, 200, 200, MathClamp(MathSin(RealTime() * 2) * 50, 0, 100))
         surface.DrawRect(0, 0, width, SB_ROW_HEIGHT)
     end
 
@@ -448,8 +452,8 @@ function PANEL:ShowMicVolumeSlider()
     local sliderHeight = 16
     local sliderDisplayHeight = 8
 
-    local x = math.max(gui.MouseX() - width, 0)
-    local y = math.min(gui.MouseY(), ScrH() - height)
+    local x = MathMax(gui.MouseX() - width, 0)
+    local y = MathMin(gui.MouseY(), ScrH() - height)
 
     local currentPlayerVolume = self:GetPlayer():GetVoiceVolumeScale()
     currentPlayerVolume = currentPlayerVolume ~= nil and currentPlayerVolume or 1
@@ -509,7 +513,7 @@ function PANEL:ShowMicVolumeSlider()
     -- Render slider "knob" & text
     slider.Knob.Paint = function(s, w, h)
         if slider:IsEditing() then
-            local textValue = math.Round(slider:GetSlideX() * 100) .. "%"
+            local textValue = MathRound(slider:GetSlideX() * 100) .. "%"
             local textPadding = 5
 
             -- The position of the text and size of rounded box are not relative to the text size. May cause problems if font size changes

@@ -1,11 +1,11 @@
 local hook = hook
-local math = math
 local net = net
 local surface = surface
 local string = string
 local table = table
 local util = util
 
+local MathMax = math.max
 local StringUpper = string.upper
 
 ------------------
@@ -114,7 +114,7 @@ hook.Add("TTTHUDInfoPaint", "LootGoblin_TTTHUDInfoPaint", function(client, label
         surface.SetFont("TabLarge")
         surface.SetTextColor(255, 255, 255, 230)
 
-        local remaining = math.max(0, GetGlobalFloat("ttt_lootgoblin_activate", 0) - CurTime())
+        local remaining = MathMax(0, GetGlobalFloat("ttt_lootgoblin_activate", 0) - CurTime())
 
         text = LANG.GetParamTranslation("lootgoblin_hud", { time = util.SimpleTime(remaining, "%02i:%02i") })
         local _, h = surface.GetTextSize(text)

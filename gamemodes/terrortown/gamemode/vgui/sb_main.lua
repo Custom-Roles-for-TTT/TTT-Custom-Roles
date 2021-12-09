@@ -5,7 +5,6 @@ local draw = draw
 local hook = hook
 local ipairs = ipairs
 local IsValid = IsValid
-local math = math
 local pairs = pairs
 local surface = surface
 local string = string
@@ -18,6 +17,11 @@ local GetTranslation = LANG.GetTranslation
 local GetPTranslation = LANG.GetParamTranslation
 local StringFormat = string.format
 local StringSub = string.sub
+
+local clamp = math.Clamp
+local max = math.max
+local min = math.min
+local floor = math.floor
 
 include("sb_team.lua")
 
@@ -44,8 +48,6 @@ local logo = surface.GetTextureID("vgui/ttt/score_logo")
 
 local PANEL = {}
 
-local max = math.max
-local floor = math.floor
 local function UntilMapChange()
     local rounds_left = max(0, GetGlobalInt("ttt_rounds_left", 6))
     local time_left = floor(max(0, ((GetGlobalInt("ttt_time_limit_minutes") or 60) * 60) - CurTime()))
@@ -330,12 +332,12 @@ function PANEL:PerformLayout()
     --   gui.EnableScreenClicker(scrolling)
     self.ply_frame:SetScroll(scrolling)
 
-    h = math.Clamp(h, 110 + y_logo_off, ScrH() * 0.95)
+    h = clamp(h, 110 + y_logo_off, ScrH() * 0.95)
 
-    local w = math.max(ScrW() * 0.6, 640)
+    local w = max(ScrW() * 0.6, 640)
 
     self:SetSize(w, h)
-    self:SetPos((ScrW() - w) / 2, math.min(72, (ScrH() - h) / 4))
+    self:SetPos((ScrW() - w) / 2, min(72, (ScrH() - h) / 4))
 
     self.ply_frame:SetPos(8, y_logo_off + 109)
     self.ply_frame:SetSize(self:GetWide() - 16, self:GetTall() - 109 - y_logo_off - 5)

@@ -3,6 +3,8 @@ local math = math
 local pairs = pairs
 
 local GetAllEnts = ents.GetAll
+local MathRand = math.Rand
+local MathRandom = math.random
 
 ------------------
 -- TRANSLATIONS --
@@ -37,16 +39,16 @@ hook.Add("Think", "Medium_RoleFeature_Think", function()
             if ent.WispNextPart < CurTime() then
                 if client:GetPos():Distance(pos) <= 3000 then
                     ent.WispEmitter:SetPos(pos)
-                    ent.WispNextPart = CurTime() + math.Rand(0.003, 0.01)
+                    ent.WispNextPart = CurTime() + MathRand(0.003, 0.01)
                     local particle = ent.WispEmitter:Add("particle/wisp.vmt", pos)
                     particle:SetVelocity(Vector(0, 0, 30))
                     particle:SetDieTime(1)
-                    particle:SetStartAlpha(math.random(150, 220))
+                    particle:SetStartAlpha(MathRandom(150, 220))
                     particle:SetEndAlpha(0)
-                    local size = math.random(4, 7)
+                    local size = MathRandom(4, 7)
                     particle:SetStartSize(size)
                     particle:SetEndSize(1)
-                    particle:SetRoll(math.Rand(0, math.pi))
+                    particle:SetRoll(MathRand(0, math.pi))
                     particle:SetRollDelta(0)
                     local col = ent:GetNWVector("SpiritColor", Vector(1, 1, 1))
                     particle:SetColor(col.x * 255, col.y * 255, col.z * 255)

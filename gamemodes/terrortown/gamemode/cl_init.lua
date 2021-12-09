@@ -6,7 +6,6 @@ local concommand = concommand
 local ents = ents
 local hook = hook
 local ipairs = ipairs
-local math = math
 local net = net
 local pairs = pairs
 local player = player
@@ -18,6 +17,11 @@ local util = util
 local vgui = vgui
 
 local GetAllPlayers = player.GetAll
+local MathApproach = math.Approach
+local MathMax = math.max
+local MathMin = math.min
+local MathRand = math.Rand
+local MathRandom = math.random
 local StringUpper = string.upper
 local StringLower = string.lower
 local StringExplode = string.Explode
@@ -399,14 +403,14 @@ function GM:Think()
                 if v.SmokeNextPart < CurTime() then
                     if client:GetPos():Distance(pos) <= 3000 then
                         v.SmokeEmitter:SetPos(pos)
-                        v.SmokeNextPart = CurTime() + math.Rand(0.003, 0.01)
-                        local vec = Vector(math.Rand(-8, 8), math.Rand(-8, 8), math.Rand(10, 55))
+                        v.SmokeNextPart = CurTime() + MathRand(0.003, 0.01)
+                        local vec = Vector(MathRand(-8, 8), MathRand(-8, 8), MathRand(10, 55))
                         local particle = v.SmokeEmitter:Add(smokeParticle, v:LocalToWorld(vec))
                         particle:SetVelocity(Vector(0, 0, 4) + VectorRand() * 3)
-                        particle:SetDieTime(math.Rand(0.5, 2))
-                        particle:SetStartAlpha(math.random(150, 220))
+                        particle:SetDieTime(MathRand(0.5, 2))
+                        particle:SetStartAlpha(MathRandom(150, 220))
                         particle:SetEndAlpha(0)
-                        local size = math.random(4, 7)
+                        local size = MathRandom(4, 7)
                         particle:SetStartSize(size)
                         particle:SetEndSize(size + 1)
                         particle:SetRoll(0)
@@ -627,7 +631,7 @@ hook.Add("HUDPaint", "HitmarkerDrawer", function()
         local x = ScrW() / 2
         local y = ScrH() / 2
 
-        hm_Alpha = math.Approach(hm_Alpha, 0, 5)
+        hm_Alpha = MathApproach(hm_Alpha, 0, 5)
         local col = GrabColor()
         if hm_LastHitCrit and hm_crit:GetBool() then
             col = GrabCritColor()
@@ -699,7 +703,7 @@ local function SpeedChange(bool)
     local client = LocalPlayer()
     net.Start("TTT_SprintSpeedSet")
     if bool then
-        local mul = math.min(math.max(speedMultiplier, 0.1), 2)
+        local mul = MathMin(MathMax(speedMultiplier, 0.1), 2)
         net.WriteFloat(mul)
         client.mult = 1 + mul
 
@@ -724,7 +728,7 @@ local function SprintFunction()
             sprinting = true
             sprintTimer = CurTime()
         end
-        stamina = stamina - (CurTime() - sprintTimer) * (math.min(math.max(consumption, 0.1), 5) * 250)
+        stamina = stamina - (CurTime() - sprintTimer) * (MathMin(MathMax(consumption, 0.1), 5) * 250)
         local result = hook.Run("TTTSprintStaminaPost", LocalPlayer(), stamina, sprintTimer, consumption)
         -- Use the overwritten stamina if one is provided
         if result then

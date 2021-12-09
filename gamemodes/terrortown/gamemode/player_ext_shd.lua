@@ -14,6 +14,7 @@ local timer = timer
 local util = util
 
 local GetAllPlayers = player.GetAll
+local MathAbs = math.abs
 
 function plymeta:IsTerror() return self:Team() == TEAM_TERROR end
 function plymeta:IsSpec() return self:Team() == TEAM_SPEC end
@@ -328,7 +329,7 @@ if CLIENT then
                 local matrix = self:GetBoneMatrix(headId)
                 if matrix then
                     local translation = matrix:GetTranslation()
-                    local diff = math.abs(max_bone_z - translation.z)
+                    local diff = MathAbs(max_bone_z - translation.z)
                     -- Scale the difference by the head scale
                     max_bone_z = max_bone_z + (diff * headScale.z)
                 end

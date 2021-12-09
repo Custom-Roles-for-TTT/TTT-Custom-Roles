@@ -3,7 +3,6 @@
 HUD = {}
 
 local hook = hook
-local math = math
 local pairs = pairs
 local surface = surface
 local table = table
@@ -11,6 +10,10 @@ local util = util
 
 local GetTranslation = LANG.GetTranslation
 local GetLang = LANG.GetUnsafeLanguageTable
+local MathMax = math.max
+local MathClamp = math.Clamp
+local MathRound = math.Round
+local MathCeil = math.ceil
 local TableCount = table.Count
 local interp = string.Interp
 local format = string.format
@@ -102,7 +105,7 @@ local function RoundedMeter(bs, x, y, w, h, color)
         surface.DrawTexturedRectRotated(x + w - bs / 2, y + bs / 2, bs, bs, 270)
         surface.DrawTexturedRectRotated(x + w - bs / 2, y + h - bs / 2, bs, bs, 180)
     else
-        surface.DrawRect(x + math.max(w - bs, bs), y, bs / 2, h)
+        surface.DrawRect(x + MathMax(w - bs, bs), y, bs / 2, h)
     end
 
 end
@@ -117,7 +120,7 @@ function HUD:PaintBar(r, x, y, w, h, colors, value)
     draw.RoundedBox(8, x - 1, y - 1, w + 2, h + 2, colors.background)
 
     -- Fill
-    local width = w * math.Clamp(value, 0, 1)
+    local width = w * MathClamp(value, 0, 1)
 
     if width > 0 then
         RoundedMeter(r, x, y, width, h, colors.fill)
@@ -151,7 +154,7 @@ function HUD:PaintPowersHUD(powers, max_power, current_power, colors, title, sub
         local current_command = 1
         for t, p in pairs(powers) do
             if p > 0 then
-                local percentage = math.Round(100 * (p / max_power))
+                local percentage = MathRound(100 * (p / max_power))
                 draw.SimpleText(interp(t, { num = percentage }), "TabLarge", ScrW() / 4 + ((ScrW() / (2 * (command_count + 1))) * current_command), margin, current_power >= p and COLOR_GREEN or COLOR_RED, TEXT_ALIGN_CENTER)
                 current_command = current_command + 1
             end
@@ -262,7 +265,7 @@ local function SpecHUDPaint(client)
     HUD:ShadowedText(text, "TraitorState", x + margin, round_y, COLOR_WHITE)
 
     -- Draw round/prep/post time remaining
-    text = util.SimpleTime(math.max(0, GetGlobalFloat("ttt_round_end", 0) - CurTime()), "%02i:%02i")
+    text = util.SimpleTime(MathMax(0, GetGlobalFloat("ttt_round_end", 0) - CurTime()), "%02i:%02i")
     HUD:ShadowedText(text, "TimeLeft", time_x + margin, time_y, COLOR_WHITE)
 
     local tgt = client:GetObserverTarget()
@@ -298,13 +301,13 @@ local function InfoPaint(client)
     local bar_width = width - (margin * 2)
 
     -- Draw health
-    local health = math.max(0, client:Health())
-    local maxHealth = math.max(0, client:GetMaxHealth())
+    local health = MathMax(0, client:Health())
+    local maxHealth = MathMax(0, client:GetMaxHealth())
     local health_y = y + margin
 
     HUD:PaintBar(8, x + margin, health_y, bar_width, bar_height, health_colors, health / maxHealth)
-    HUD:PaintBar(8, x + margin, health_y, bar_width, bar_height, overhealth_colors, math.max(0, health - maxHealth) / maxHealth)
-    HUD:PaintBar(8, x + margin, health_y, bar_width, bar_height, extraoverhealth_colors, math.max(0, health - (2 * maxHealth)) / maxHealth)
+    HUD:PaintBar(8, x + margin, health_y, bar_width, bar_height, overhealth_colors, MathMax(0, health - maxHealth) / maxHealth)
+    HUD:PaintBar(8, x + margin, health_y, bar_width, bar_height, extraoverhealth_colors, MathMax(0, health - (2 * maxHealth)) / maxHealth)
 
     HUD:ShadowedText(tostring(health), "HealthAmmo", bar_width, health_y, COLOR_WHITE, TEXT_ALIGN_RIGHT, TEXT_ALIGN_RIGHT)
 
@@ -367,7 +370,7 @@ local function InfoPaint(client)
     if is_haste then
         local hastetime = GetGlobalFloat("ttt_haste_end", 0) - CurTime()
         if hastetime < 0 then
-            if (not is_traitor) or (math.ceil(CurTime()) % 7 <= 2) then
+            if (not is_traitor) or (MathCeil(CurTime()) % 7 <= 2) then
                 -- innocent or blinking "overtime"
                 text = L.overtime
                 font = "Trebuchet18"
@@ -377,21 +380,21 @@ local function InfoPaint(client)
                 rx = rx - 3
             else
                 -- traitor and not blinking "overtime" right now, so standard endtime display
-                text = util.SimpleTime(math.max(0, endtime), "%02i:%02i")
+                text = util.SimpleTime(MathMax(0, endtime), "%02i:%02i")
                 color = COLOR_RED
             end
         else
             -- still in starting period
             local t = hastetime
-            if is_traitor and math.ceil(CurTime()) % 6 < 2 then
+            if is_traitor and MathCeil(CurTime()) % 6 < 2 then
                 t = endtime
                 color = COLOR_RED
             end
-            text = util.SimpleTime(math.max(0, t), "%02i:%02i")
+            text = util.SimpleTime(MathMax(0, t), "%02i:%02i")
         end
     else
         -- bog standard time when haste mode is off (or round not active)
-        text = util.SimpleTime(math.max(0, endtime), "%02i:%02i")
+        text = util.SimpleTime(MathMax(0, endtime), "%02i:%02i")
     end
 
     HUD:ShadowedText(text, font, rx, ry, color)
