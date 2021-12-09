@@ -32,6 +32,36 @@ end)
 -- TARGET ASSIGNMENT --
 -----------------------
 
+local function UpdateAssassinTargets(ply)
+    for _, v in pairs(GetAllPlayers()) do
+        local assassintarget = v:GetNWString("AssassinTarget", "")
+        if v:IsAssassin() and ply:Nick() == assassintarget then
+            -- Reset the target to clear the target overlay from the scoreboard
+            v:SetNWString("AssassinTarget", "")
+
+            -- Don't select a new target if this was the final target
+            if not v:GetNWBool("AssassinComplete", false) then
+                local delay = assassin_next_target_delay:GetFloat()
+                -- Delay giving the next target if we're configured to do so
+                if delay > 0 then
+                    if v:Alive() and not v:IsSpec() then
+                        v:PrintMessage(HUD_PRINTCENTER, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
+                        v:PrintMessage(HUD_PRINTTALK, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
+                    end
+                    timer.Create(v:Nick() .. "AssassinTarget", delay, 1, function()
+                        AssignAssassinTarget(v, false, true)
+                    end)
+                else
+                    AssignAssassinTarget(v, false, false)
+                end
+            else
+                v:PrintMessage(HUD_PRINTCENTER, "Final target eliminated.")
+                v:PrintMessage(HUD_PRINTTALK, "Final target eliminated.")
+            end
+        end
+    end
+end
+
 -- Centralize this so it can be handled on round start and on player death
 function AssignAssassinTarget(ply, start, delay)
     -- Don't let dead players, spectators, non-assassins, failed assassins, or assassins who already received their "final target" get another target
@@ -148,6 +178,23 @@ ROLE_ON_ROLE_ASSIGNED[ROLE_ASSASSIN] = function(ply)
     AssignAssassinTarget(ply, true, false)
 end
 
+local function ValidTarget(role)
+    if TRAITOR_ROLES[role] then return false end
+    if JESTER_ROLES[role] then return false end
+    if ROLE_HAS_PASSIVE_WIN[role] then return false end
+    if role == ROLE_GLITCH then return false end
+    return true
+end
+
+hook.Add("TTTPlayerRoleChanged", "Assassin_Target_TTTPlayerRoleChanged", function(ply, oldRole, role)
+    if not ply:Alive() or ply:IsSpec() then return end
+
+    -- If this player's role could have been a valid target and definitely isn't anymore, update any assassin that has them as a target
+    if ValidTarget(oldRole) and not ValidTarget(role) then
+        UpdateAssassinTargets(ply)
+    end
+end)
+
 hook.Add("DoPlayerDeath", "Assassin_DoPlayerDeath", function(ply, attacker, dmginfo)
     if ply:IsSpec() then return end
 
@@ -160,33 +207,7 @@ hook.Add("DoPlayerDeath", "Assassin_DoPlayerDeath", function(ply, attacker, dmgi
         attacker:SetNWBool("AssassinFailed", true)
     end
 
-    for _, v in pairs(GetAllPlayers()) do
-        local assassintarget = v:GetNWString("AssassinTarget", "")
-        if v:IsAssassin() and ply:Nick() == assassintarget then
-            -- Reset the target to clear the target overlay from the scoreboard
-            v:SetNWString("AssassinTarget", "")
-
-            -- Don't select a new target if this was the final target
-            if not v:GetNWBool("AssassinComplete", false) then
-                local delay = assassin_next_target_delay:GetFloat()
-                -- Delay giving the next target if we're configured to do so
-                if delay > 0 then
-                    if v:Alive() and not v:IsSpec() then
-                        v:PrintMessage(HUD_PRINTCENTER, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
-                        v:PrintMessage(HUD_PRINTTALK, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
-                    end
-                    timer.Create(v:Nick() .. "AssassinTarget", delay, 1, function()
-                        AssignAssassinTarget(v, false, true)
-                    end)
-                else
-                    AssignAssassinTarget(v, false, false)
-                end
-            else
-                v:PrintMessage(HUD_PRINTCENTER, "Final target eliminated.")
-                v:PrintMessage(HUD_PRINTTALK, "Final target eliminated.")
-            end
-        end
-    end
+    UpdateAssassinTargets(ply)
 end)
 
 -- Clear the assassin target information when the next round starts

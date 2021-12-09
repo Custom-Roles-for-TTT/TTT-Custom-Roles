@@ -16,6 +16,7 @@
 - Fixed round summary highlights player stats spacing
 - Fixed killing a jester team member causing the team kill "awards" to show on the round summary highlight tab
 - Fixed medium being told there was a medium when they died
+- Fixed assassin not getting a new target when their target's role changes to one that is an invalid target
 
 ### Developer
 - Added parameter to `GenerateNewEventID` to allow roles to associate generated event IDs back to the role
