@@ -72,7 +72,7 @@ local function GetTextForLocalPlayer()
 
             for _, ply in ipairs(allies) do
                 if ply ~= client then
-                    allylist = allylist .. StringRep(" ", 42) .. ply:Nick() .. "\n"
+                    allylist = allylist .. string.rep(" ", 42) .. ply:Nick() .. "\n"
                 end
             end
             comrades = GetPTranslation("info_popup_monster_comrades", table.Merge(params, { allylist = allylist }))
@@ -100,7 +100,7 @@ local function GetTextForLocalPlayer()
 
             for _, ply in ipairs(traitors) do
                 if ply ~= client then
-                    traitorlist = traitorlist .. StringRep(" ", 42) .. ply:Nick() .. "\n"
+                    traitorlist = traitorlist .. string.rep(" ", 42) .. ply:Nick() .. "\n"
                 end
             end
 
