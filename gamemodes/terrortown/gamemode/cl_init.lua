@@ -21,6 +21,8 @@ local GetAllPlayers = player.GetAll
 local StringUpper = string.upper
 local StringLower = string.lower
 local StringExplode = string.Explode
+local TableInsert = table.insert
+local TableHasValue = table.HasValue
 
 -- Define GM12 fonts for compatibility
 surface.CreateFont("DefaultBold", {
@@ -834,15 +836,15 @@ function OnPlayerHighlightEnabled(client, alliedRoles, showJesters, hideEnemies,
         if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= client then
             if showJesters and v:ShouldActLikeJester() then
                 if not onlyShowEnemies then
-                    table.insert(jesters, v)
+                    TableInsert(jesters, v)
                 end
-            elseif table.HasValue(alliedRoles, v:GetRole()) then
+            elseif TableHasValue(alliedRoles, v:GetRole()) then
                 if not onlyShowEnemies then
-                    table.insert(friends, v)
+                    TableInsert(friends, v)
                 end
             -- Don't even track enemies if this role can't see them
             elseif not hideEnemies then
-                table.insert(enemies, v)
+                TableInsert(enemies, v)
             end
         end
     end
@@ -873,7 +875,7 @@ local function EnableTraitorHighlights(client)
         -- Start with the list of traitors
         local allies = GetTeamRoles(TRAITOR_ROLES)
         -- And add the glitch
-        table.insert(allies, ROLE_GLITCH)
+        TableInsert(allies, ROLE_GLITCH)
 
         OnPlayerHighlightEnabled(client, allies, jesters_visible_to_traitors, true, true)
     end)
@@ -961,7 +963,7 @@ function AddFootstep(ply, pos, ang, foot, col, fade_time)
             normal = tr.HitNormal,
             col = col
         }
-        table.insert(footSteps, tbl)
+        TableInsert(footSteps, tbl)
     end
 end
 

@@ -3,6 +3,8 @@ AddCSLuaFile()
 local hook = hook
 local table = table
 
+local TableInsert = table.insert
+
 -- Initialize role features
 ROLE_STARTING_HEALTH[ROLE_LOOTGOBLIN] = 50
 ROLE_MAX_HEALTH[ROLE_LOOTGOBLIN] = 50
@@ -14,6 +16,6 @@ end
 
 hook.Add("TTTSpeedMultiplier", "LootGoblin_TTTSpeedMultiplier", function(ply, mults)
     if IsPlayer(ply) and ply:IsActiveLootGoblin() and ply:IsRoleActive() then
-        table.insert(mults, GetGlobalFloat("ttt_lootgoblin_speed_mult", 1.2))
+        TableInsert(mults, GetGlobalFloat("ttt_lootgoblin_speed_mult", 1.2))
     end
 end)

@@ -8,10 +8,8 @@ local table = table
 local timer = timer
 local vgui = vgui
 
-local GetAllPlayers = player.GetAll
 local GetTranslation = LANG.GetTranslation
 local GetPTranslation = LANG.GetParamTranslation
-local StringRep = string.rep
 
 ---- Round start
 
@@ -62,7 +60,7 @@ local function GetTextForLocalPlayer()
     local roleString = client:GetRoleStringRaw()
     if client:IsMonsterTeam() then
         local allies = {}
-        for _, ply in ipairs(GetAllPlayers()) do
+        for _, ply in ipairs(player.GetAll()) do
             if ply:IsMonsterTeam() then
                 table.insert(allies, ply)
             end
@@ -87,7 +85,7 @@ local function GetTextForLocalPlayer()
     elseif client:IsTraitorTeam() then
         local traitors = {}
         local glitches = {}
-        for _, ply in ipairs(GetAllPlayers()) do
+        for _, ply in ipairs(player.GetAll()) do
             if ply:IsTraitorTeam() then
                 table.insert(traitors, ply)
             elseif ply:IsGlitch() then

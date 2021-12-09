@@ -11,6 +11,7 @@ local util = util
 
 local GetTranslation = LANG.GetTranslation
 local GetLang = LANG.GetUnsafeLanguageTable
+local TableCount = table.Count
 local interp = string.Interp
 local format = string.format
 
@@ -139,7 +140,7 @@ function HUD:PaintPowersHUD(powers, max_power, current_power, colors, title, sub
         draw.SimpleText(subtitle, "TabLarge", ScrW() / 2, margin, COLOR_WHITE, TEXT_ALIGN_CENTER)
     end
 
-    if powers and table.Count(powers) > 0 then
+    if powers and TableCount(powers) > 0 then
         local command_count = 0
         for _, p in pairs(powers) do
             if p > 0 then

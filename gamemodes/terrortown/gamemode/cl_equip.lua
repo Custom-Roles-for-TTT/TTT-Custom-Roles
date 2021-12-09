@@ -18,6 +18,8 @@ local GetTranslation = LANG.GetTranslation
 local GetPTranslation = LANG.GetParamTranslation
 local StringFind = string.find
 local StringLower = string.lower
+local TableHasValue = table.HasValue
+local TableInsert = table.insert
 
 -- create ClientConVars
 local numColsVar = CreateClientConVar("ttt_bem_cols", 4, true, false, "Sets the number of columns in the Traitor/Detective menu's item list.")
@@ -34,8 +36,8 @@ local showLoadoutEquipment = CreateClientConVar("ttt_show_loadout_equipment", 0,
 local Equipment = { }
 
 local function UpdateWeaponList(role, lst, weapon)
-    if not table.HasValue(lst[role], weapon) then
-        table.insert(lst[role], weapon)
+    if not TableHasValue(lst[role], weapon) then
+        TableInsert(lst[role], weapon)
     end
 end
 
@@ -144,7 +146,7 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
 
                 -- add this buyable weapon to all relevant equipment tables
                 for _, r in pairs(v.CanBuy) do
-                    table.insert(tbl[r], base)
+                    TableInsert(tbl[r], base)
                 end
             end
         end
@@ -158,7 +160,7 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
             for _, i in pairs(is) do
                 if i then
                     -- Mark custom items
-                    i.custom = not table.HasValue(DefaultEquipment[r], i.id)
+                    i.custom = not TableHasValue(DefaultEquipment[r], i.id)
 
                     -- Run through this again to make sure non-custom equipment is saved to be synced below
                     if not ItemIsWeapon(i) and i.custom then
@@ -168,11 +170,11 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
                         end
 
                         if r == ROLE_TRAITOR then
-                            table.insert(traitor_equipment, i)
-                            table.insert(traitor_equipment_ids, i.id)
+                            TableInsert(traitor_equipment, i)
+                            TableInsert(traitor_equipment_ids, i.id)
                         elseif r == ROLE_DETECTIVE then
-                            table.insert(detective_equipment, i)
-                            table.insert(detective_equipment_ids, i.id)
+                            TableInsert(detective_equipment, i)
+                            TableInsert(detective_equipment_ids, i.id)
                         end
                     end
                 end
@@ -183,8 +185,8 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
         if rolemode == SHOP_SYNC_MODE_INTERSECT then
             for idx, i in pairs(traitor_equipment_ids) do
                 -- Traitor AND Detective mode, (Detective && Traitor) -> Sync Role
-                if not available[i] and table.HasValue(detective_equipment_ids, i) then
-                    table.insert(tbl[role], traitor_equipment[idx])
+                if not available[i] and TableHasValue(detective_equipment_ids, i) then
+                    TableInsert(tbl[role], traitor_equipment[idx])
                     available[i] = true
                 end
             end
@@ -196,7 +198,7 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
                     (sync_traitor_weapons or
                     -- Traitor OR Detective or Traitor-only modes, Traitor -> Sync Role
                     (rolemode == SHOP_SYNC_MODE_UNION or rolemode == SHOP_SYNC_MODE_TRAITOR)) then
-                    table.insert(tbl[role], i)
+                    TableInsert(tbl[role], i)
                     available[i.id] = true
                 end
             end
@@ -207,7 +209,7 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
                     (promoted or
                     -- Traitor OR Detective or Detective-only modes, Detective -> Sync Role
                     (rolemode == SHOP_SYNC_MODE_UNION or rolemode == SHOP_SYNC_MODE_DETECTIVE)) then
-                    table.insert(tbl[role], i)
+                    TableInsert(tbl[role], i)
                     available[i.id] = true
                 end
             end
@@ -220,7 +222,7 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
                 local equip = GetEquipmentItemByName(v)
                 -- If this exists and isn't already in the list, add it to the role's list
                 if equip ~= nil and not available[equip.id] then
-                    table.insert(tbl[role], equip)
+                    TableInsert(tbl[role], equip)
                     available[equip.id] = true
                 end
             end
@@ -277,7 +279,7 @@ local function HasEquipmentItem(item)
     local client = LocalPlayer()
     -- Don't allow the delayed shop roles to buy the same equipment item twice if delayed acceptance is enabled
     if client.bought and client:ShouldDelayShopPurchase() then
-        return table.HasValue(client.bought, tostring(item.id))
+        return TableHasValue(client.bought, tostring(item.id))
     end
 
     return client:HasEquipmentItem(item.id)
@@ -502,7 +504,7 @@ local function TraitorMenuPopup()
         local owned_ids = {}
         for _, wep in ipairs(ply:GetWeapons()) do
             if IsValid(wep) and wep.IsEquipment and wep:IsEquipment() then
-                table.insert(owned_ids, wep:GetClass())
+                TableInsert(owned_ids, wep:GetClass())
             end
         end
 
@@ -574,7 +576,7 @@ local function TraitorMenuPopup()
             local orderable = update_preqs(item)
             return (not orderable) or
                     -- already owned
-                    table.HasValue(owned_ids, item.id) or
+                    TableHasValue(owned_ids, item.id) or
                     (tonumber(item.id) and ply:HasEquipmentItem(tonumber(item.id))) or
                     -- already carrying a weapon for this slot
                     (ItemIsWeapon(item) and (not CanCarryWeapon(item))) or
@@ -683,7 +685,7 @@ local function TraitorMenuPopup()
                 end
 
                 -- Don't show equipment items that you already own that are listed as "loadout" because you were given it for free
-                local externalLoadout = ROLE_LOADOUT_ITEMS[ply:GetRole()] and table.HasValue(ROLE_LOADOUT_ITEMS[ply:GetRole()], item.name)
+                local externalLoadout = ROLE_LOADOUT_ITEMS[ply:GetRole()] and TableHasValue(ROLE_LOADOUT_ITEMS[ply:GetRole()], item.name)
                 if not ItemIsWeapon(item) and ply:HasEquipmentItem(item.id) and (item.loadout or externalLoadout) and not showLoadoutEquipment:GetBool() then
                     ic:Remove()
                 else
@@ -709,7 +711,7 @@ local function TraitorMenuPopup()
                 local panels = {}
                 for i = 1, 9 do
                     for _, p in pairs(paneltable[i]) do
-                        table.insert(panels, p)
+                        TableInsert(panels, p)
                     end
                 end
 
@@ -736,7 +738,7 @@ local function TraitorMenuPopup()
             local filtered = {}
             for _, v in pairs(roleitems) do
                 if v and v["name"] and StringFind(StringLower(SafeTranslate(v["name"])), StringLower(value)) then
-                    table.insert(filtered, v)
+                    TableInsert(filtered, v)
                 end
             end
             FillEquipmentList(filtered)
@@ -853,7 +855,7 @@ local function TraitorMenuPopup()
             local buyable_items = {}
             for _, item_panel in pairs(item_panels) do
                 if item_panel.item and not CannotBuyItem(item_panel.item) then
-                    table.insert(buyable_items, item_panel)
+                    TableInsert(buyable_items, item_panel)
                 end
             end
 
@@ -945,7 +947,7 @@ local function ReceiveBought()
     for _ = 1, num do
         local s = net.ReadString()
         if s ~= "" then
-            table.insert(ply.bought, s)
+            TableInsert(ply.bought, s)
         end
     end
 
