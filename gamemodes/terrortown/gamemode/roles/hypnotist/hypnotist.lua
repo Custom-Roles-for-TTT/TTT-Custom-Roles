@@ -1,5 +1,11 @@
 AddCSLuaFile()
 
+local hook = hook
+local IsValid = IsValid
+local pairs = pairs
+
+local GetAllPlayers = player.GetAll
+
 -------------
 -- CONVARS --
 -------------
@@ -33,7 +39,7 @@ end)
 ----------------
 
 hook.Add("TTTPrepareRound", "Hypnotist_PrepareRound", function()
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         v:SetNWBool("WasHypnotised", false)
     end
 end)

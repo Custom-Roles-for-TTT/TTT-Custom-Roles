@@ -1,5 +1,12 @@
 AddCSLuaFile()
 
+local IsPlayer = IsPlayer
+local IsValid = IsValid
+local math = math
+local net = net
+local timer = timer
+local util = util
+
 if CLIENT then
     SWEP.PrintName = "Claws"
     SWEP.EquipMenuData = {

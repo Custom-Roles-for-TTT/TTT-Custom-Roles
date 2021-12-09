@@ -1,5 +1,16 @@
 AddCSLuaFile()
 
+local hook = hook
+local ipairs = ipairs
+local IsPlayer = IsPlayer
+local IsValid = IsValid
+local math = math
+local pairs = pairs
+local player = player
+local timer = timer
+
+local GetAllPlayers = player.GetAll
+
 -------------
 -- CONVARS --
 -------------
@@ -60,7 +71,7 @@ local function HandleKillerSmokeTick()
     timer.Create("KillerTick", 0.1, 0, function()
         if GetRoundState() == ROUND_ACTIVE then
             if killerSmokeTime >= killer_smoke_timer:GetInt() then
-                for _, v in pairs(player.GetAll()) do
+                for _, v in pairs(GetAllPlayers()) do
                     if not IsValid(v) then return end
                     if v:IsKiller() and v:Alive() and not v:GetNWBool("KillerSmoke", false) then
                         v:SetNWBool("KillerSmoke", true)
@@ -115,7 +126,7 @@ end)
 
 -- Disable the smoke when the round ends, the player respawns, or they have their role changed
 hook.Add("TTTPrepareRound", "Killer_Smoke_PrepareRound", function()
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         v:SetNWBool("KillerSmoke", false)
     end
 end)
@@ -158,7 +169,7 @@ hook.Add("DoPlayerDeath", "Killer_Credits_DoPlayerDeath", function(victim, attac
         local ply_dead = 0
         local ply_total = 0
 
-        for _, ply in pairs(player.GetAll()) do
+        for _, ply in pairs(GetAllPlayers()) do
             if not ply:IsKiller() then
                 if ply:IsTerror() then
                     ply_alive = ply_alive + 1
@@ -188,7 +199,7 @@ hook.Add("DoPlayerDeath", "Killer_Credits_DoPlayerDeath", function(victim, attac
             if amt > 0 then
                 LANG.Msg(GetKillerFilter(true), "credit_all", { role = ROLE_STRINGS[ROLE_KILLER], num = amt })
 
-                for _, ply in pairs(player.GetAll()) do
+                for _, ply in pairs(GetAllPlayers()) do
                     if ply:IsActiveKiller() then
                         ply:AddCredits(amt)
                     end
@@ -280,7 +291,7 @@ end)
 -- Warn other players that there is a killer
 hook.Add("TTTBeginRound", "Killer_Announce_TTTBeginRound", function()
     timer.Simple(1.5, function()
-        local plys = player.GetAll()
+        local plys = GetAllPlayers()
 
         local hasGlitch = false
         local hasKiller = false
@@ -320,7 +331,7 @@ end)
 hook.Add("TTTCheckForWin", "Killer_TTTCheckForWin", function()
     local killer_alive = false
     local other_alive = false
-    for _, v in ipairs(player.GetAll()) do
+    for _, v in ipairs(GetAllPlayers()) do
         if v:Alive() and v:IsTerror() then
             if v:IsKiller() then
                 killer_alive = true

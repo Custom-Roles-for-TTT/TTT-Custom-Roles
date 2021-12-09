@@ -1,3 +1,6 @@
+local hook = hook
+local string = string
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -40,7 +43,7 @@ hook.Add("TTTTutorialRoleText", "Quack_TTTTutorialRoleText", function(role, titl
         local roleColor = ROLE_COLORS[ROLE_TRAITOR]
         local html = "The " .. ROLE_STRINGS[ROLE_QUACK] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitor team</span> whose goal is imitate the " .. ROLE_STRINGS[ROLE_DOCTOR] .. " and \"heal\" their patients... <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>to death</span>."
 
-        html = html .. "<span style='display: block; margin-top: 10px;'>Use the equipment shop to buy <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>a bomb station</span> or <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>fake " .. ROLE_STRINGS[ROLE_PARASITE]:lower() .. " cure</span> to help administer \"treatments\".</span>"
+        html = html .. "<span style='display: block; margin-top: 10px;'>Use the equipment shop to buy <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>a bomb station</span> or <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>fake " .. string.lower(ROLE_STRINGS[ROLE_PARASITE]) .. " cure</span> to help administer \"treatments\".</span>"
 
         if GetGlobalBool("ttt_quack_phantom_cure", false) then
             html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_QUACK] .. " can also <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>buy an Exorcism Device</span> which can be used to remove a haunting " .. ROLE_STRINGS[ROLE_PHANTOM] .. ".</span>"

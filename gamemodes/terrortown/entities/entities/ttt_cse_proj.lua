@@ -1,5 +1,13 @@
 AddCSLuaFile()
 
+local ents = ents
+local ipairs = ipairs
+local IsPlayer = IsPlayer
+local IsValid = IsValid
+local render = render
+local table = table
+local util = util
+
 if CLIENT then
     local GetPTranslation = LANG.GetParamTranslation
     local hint_params = {usekey = Key("+use", "USE"), detective = ROLE_STRINGS_PLURAL[ROLE_DETECTIVE]}

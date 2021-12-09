@@ -1,5 +1,9 @@
 AddCSLuaFile()
 
+local hook = hook
+local IsPlayer = IsPlayer
+local table = table
+
 -- Initialize role features
 ROLE_STARTING_HEALTH[ROLE_LOOTGOBLIN] = 50
 ROLE_MAX_HEALTH[ROLE_LOOTGOBLIN] = 50

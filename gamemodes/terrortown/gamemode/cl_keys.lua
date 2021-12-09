@@ -1,5 +1,9 @@
 -- Key overrides for TTT specific keyboard functions
 
+local input = input
+local string = string
+local timer = timer
+
 local function SendWeaponDrop()
     RunConsoleCommand("ttt_dropweapon")
 

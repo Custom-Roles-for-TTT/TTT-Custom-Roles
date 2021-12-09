@@ -1,5 +1,15 @@
 AddCSLuaFile()
 
+local IsPlayer = IsPlayer
+local IsValid = IsValid
+local math = math
+local pairs = pairs
+local player = player
+local surface = surface
+local string = string
+local timer = timer
+local util = util
+
 if CLIENT then
     local GetPTranslation = LANG.GetParamTranslation
     SWEP.PrintName = "Parasite Cure"
@@ -13,7 +23,7 @@ if CLIENT then
         type =  "item_weapon",
         desc = function()
             return GetPTranslation("fake_cure_desc", {
-                parasite = ROLE_STRINGS[ROLE_PARASITE]:lower()
+                parasite = string.lower(ROLE_STRINGS[ROLE_PARASITE])
             })
         end
     };

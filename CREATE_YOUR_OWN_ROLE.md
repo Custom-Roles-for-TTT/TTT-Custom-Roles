@@ -617,7 +617,7 @@ Putting all the properties together, the hook would look something like the foll
 if CLIENT then
     hook.Add("TTTScoringWinTitle", "SummonerScoringWinTitle", function(wintype, wintitles, title, secondaryWinRole)
         if wintype == WIN_SUMMONER then
-            return { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_SUMMONER]:upper() }, c = ROLE_COLORS[ROLE_SUMMONER] }
+            return { txt = "hilite_win_role_singular", params = { role = string.upper(ROLE_STRINGS[ROLE_SUMMONER]) }, c = ROLE_COLORS[ROLE_SUMMONER] }
         end
     end)
 end
@@ -631,7 +631,7 @@ Another part of the round summary screen that we want to tie into the is Events 
 if CLIENT then
     hook.Add("TTTEventFinishText", "SummonerEventFinishText", function(e)
         if e.win == WIN_SUMMONER then
-            return LANG.GetParamTranslation("ev_win_summoner", { role = ROLE_STRINGS[ROLE_SUMMONER]:lower() })
+            return LANG.GetParamTranslation("ev_win_summoner", { role = string.lower(ROLE_STRINGS[ROLE_SUMMONER]) })
         end
     end)
 
@@ -722,7 +722,7 @@ end
 if CLIENT then
     hook.Add("TTTEventFinishText", "SummonerEventFinishText", function(e)
         if e.win == WIN_SUMMONER then
-            return LANG.GetParamTranslation("ev_win_summoner", { role = ROLE_STRINGS[ROLE_SUMMONER]:lower() })
+            return LANG.GetParamTranslation("ev_win_summoner", { role = string.lower(ROLE_STRINGS[ROLE_SUMMONER]) })
         end
     end)
 
@@ -734,7 +734,7 @@ if CLIENT then
 
     hook.Add("TTTScoringWinTitle", "SummonerScoringWinTitle", function(wintype, wintitles, title, secondaryWinRole)
         if wintype == WIN_SUMMONER then
-            return { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_SUMMONER]:upper() }, c = ROLE_COLORS[ROLE_SUMMONER] }
+            return { txt = "hilite_win_role_singular", params = { role = string.upper(ROLE_STRINGS[ROLE_SUMMONER]) }, c = ROLE_COLORS[ROLE_SUMMONER] }
         end
     end)
 end

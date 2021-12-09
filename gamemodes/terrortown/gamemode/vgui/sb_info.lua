@@ -1,6 +1,10 @@
 
 ---- Player info panel, based on sandbox scoreboard's infocard
 
+local ipairs = ipairs
+local IsValid = IsValid
+local pairs = pairs
+local surface = surface
 local vgui = vgui
 
 local GetTranslation = LANG.GetTranslation

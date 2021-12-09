@@ -2,9 +2,24 @@
 
 DEFINE_BASECLASS("gamemode_base")
 
+local chat = chat
+local concommand = concommand
+local draw = draw
+local hook = hook
+local math = math
+local net = net
+local pairs = pairs
+local player = player
+local surface = surface
+local string = string
+local table = table
+local timer = timer
+local util = util
+local vgui = vgui
+
+local GetAllPlayers = GetAllPlayers
 local GetTranslation = LANG.GetTranslation
 local GetPTranslation = LANG.GetParamTranslation
-local string = string
 
 local function GetPlayerName(ply)
     local name = ply:GetNWString("PlayerName", nil)
@@ -76,7 +91,7 @@ local function AddDetectiveText(ply, text)
 end
 
 -- Use this instead of the base class so we can control the colors and name of the player
-local function OnPlayerChat(player, strText, bTeamOnly, bPlayerIsDead)
+local function OnPlayerChat(ply, strText, bTeamOnly, bPlayerIsDead)
     local tab = {}
     if bPlayerIsDead then
         table.insert(tab, Color(255, 30, 40))
@@ -90,8 +105,8 @@ local function OnPlayerChat(player, strText, bTeamOnly, bPlayerIsDead)
         table.insert(tab, Color(0, 201, 0))
     end
 
-    if IsValid(player) then
-        table.insert(tab, GetPlayerName(player))
+    if IsValid(ply) then
+        table.insert(tab, GetPlayerName(ply))
     else
         table.insert(tab, "Console")
     end
@@ -510,7 +525,7 @@ function GM:PlayerStartVoice(ply)
             end
 
             local hasGlitch = false
-            for _, v in pairs(player.GetAll()) do
+            for _, v in pairs(GetAllPlayers()) do
                 if v:IsGlitch() then hasGlitch = true end
             end
 

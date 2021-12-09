@@ -1,5 +1,7 @@
 AddCSLuaFile()
 
+local net = net
+
 -- Role features shared by detective-like roles (Deputy, Impersonator)
 local function MoveRoleState(ply, target, keep_on_source)
     if ply:IsRoleActive() then

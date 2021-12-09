@@ -1,3 +1,5 @@
+local IsPlayer = IsPlayer
+
 ENT.Type = "point"
 ENT.Base = "base_point"
 

@@ -1,3 +1,10 @@
+local hook = hook
+local IsPlayer = IsPlayer
+local math = math
+local net = net
+local surface = surface
+local util = util
+
 ------------------
 -- TRANSLATIONS --
 ------------------

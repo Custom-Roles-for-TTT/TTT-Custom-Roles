@@ -2,6 +2,14 @@
 
 include("shared.lua")
 
+local draw = draw
+local IsValid = IsValid
+local net = net
+local surface = surface
+local table = table
+local util = util
+local vgui = vgui
+
 local starttime = C4_MINIMUM_TIME
 
 local T = LANG.GetTranslation

@@ -1,7 +1,20 @@
 include("shared.lua")
 
+local concommand = concommand
+local hook = hook
+local ipairs = ipairs
+local math = math
+local net = net
+local pairs = pairs
+local surface = surface
+local string = string
+local table = table
+local vgui = vgui
+local weapons = weapons
+
 ---- Traitor equipment menu
 
+local GetWeapon = weapons.GetStored
 local GetTranslation = LANG.GetTranslation
 local GetPTranslation = LANG.GetParamTranslation
 
@@ -249,7 +262,7 @@ local function CanCarryWeapon(item)
     -- Don't allow delayed shop roles to buy any weapon that has a kind matching one of the weapons they've already bought
     if item.kind and client.bought and client:ShouldDelayShopPurchase() then
         for _, id in ipairs(client.bought) do
-            local wep = weapons.GetStored(id)
+            local wep = GetWeapon(id)
             if wep and wep.Kind == item.kind then
                 return false
             end
@@ -721,7 +734,7 @@ local function TraitorMenuPopup()
             local roleitems = GetEquipmentForRole(ply:GetRole(), ply:IsDetectiveLike() and not ply:IsDetectiveTeam(), false)
             local filtered = {}
             for _, v in pairs(roleitems) do
-                if v and v["name"] and string.find(SafeTranslate(v["name"]):lower(), value:lower()) then
+                if v and v["name"] and string.find(string.lower(SafeTranslate(v["name"])), string.lower(value)) then
                     table.insert(filtered, v)
                 end
             end

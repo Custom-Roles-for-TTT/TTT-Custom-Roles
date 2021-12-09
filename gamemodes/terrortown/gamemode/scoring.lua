@@ -1,8 +1,16 @@
 ---- Customized scoring
 
+local ipairs = ipairs
+local IsPlayer = IsPlayer
+local IsValid = IsValid
+local net = net
+local pairs = pairs
+local player = player
 local string = string
 local table = table
-local pairs = pairs
+local util = util
+
+local GetAllPlayers = player.GetAll
 
 SCORE = SCORE or {}
 SCORE.Events = SCORE.Events or {}
@@ -100,7 +108,7 @@ end
 
 function SCORE:HandleSelection()
     local roles = {}
-    for _, ply in ipairs(player.GetAll()) do
+    for _, ply in ipairs(GetAllPlayers()) do
         -- Prefix the ID value with a string to force the key to stay as a string when it gets transferred
         -- Without this, the key gets converted to a floating-point number which loses precision and causes errors during data lookup
         roles[GetRoleId(ply:SteamID64())] = ply:GetRole()
@@ -149,7 +157,7 @@ function SCORE:ApplyEventLogScores(wintype)
     local roles = {}
     local bonus = {}
 
-    for _, ply in ipairs(player.GetAll()) do
+    for _, ply in ipairs(GetAllPlayers()) do
         local sid64 = ply:SteamID64()
         scores[sid64] = {}
         roles[sid64] = ply:GetRole()

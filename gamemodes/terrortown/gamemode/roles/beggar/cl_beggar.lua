@@ -1,3 +1,8 @@
+local hook = hook
+local net = net
+local surface = surface
+local string = string
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -118,15 +123,15 @@ end)
 --------------
 
 local function GetRevealModeString(roleColor, revealMode, teamName, teamColor)
-    local modeString = "When joining the <span style='color: rgb(" .. teamColor.r .. ", " .. teamColor.g .. ", " .. teamColor.b .. ")'>" .. teamName:lower() .. "</span> team, the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. ROLE_STRINGS[ROLE_BEGGAR] .. "</span>'s new role will be revealed to "
+    local modeString = "When joining the <span style='color: rgb(" .. teamColor.r .. ", " .. teamColor.g .. ", " .. teamColor.b .. ")'>" .. string.lower(teamName) .. "</span> team, the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. ROLE_STRINGS[ROLE_BEGGAR] .. "</span>'s new role will be revealed to "
     if revealMode == BEGGAR_REVEAL_ALL then
         modeString = modeString .. "everyone"
     elseif revealMode == BEGGAR_REVEAL_TRAITORS then
         local revealColor = ROLE_COLORS[ROLE_TRAITOR]
-        modeString = modeString .. "only <span style='color: rgb(" .. revealColor.r .. ", " .. revealColor.g .. ", " .. revealColor.b .. ")'>" .. LANG.GetTranslation("traitors"):lower() .. "</span>"
+        modeString = modeString .. "only <span style='color: rgb(" .. revealColor.r .. ", " .. revealColor.g .. ", " .. revealColor.b .. ")'>" .. string.lower(LANG.GetTranslation("traitors")) .. "</span>"
     elseif revealMode == BEGGAR_REVEAL_INNOCENTS then
         local revealColor = ROLE_COLORS[ROLE_TRAITOR]
-        modeString = modeString .. "only <span style='color: rgb(" .. revealColor.r .. ", " .. revealColor.g .. ", " .. revealColor.b .. ")'>" .. LANG.GetTranslation("innocents"):lower() .. "</span>"
+        modeString = modeString .. "only <span style='color: rgb(" .. revealColor.r .. ", " .. revealColor.g .. ", " .. revealColor.b .. ")'>" .. string.lower(LANG.GetTranslation("innocents")) .. "</span>"
     else
         modeString = modeString .. "nobody"
     end

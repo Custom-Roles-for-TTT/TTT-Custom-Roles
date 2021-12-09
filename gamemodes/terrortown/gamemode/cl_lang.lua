@@ -8,6 +8,15 @@
 
 include("shared.lua")
 
+local chat = chat
+local concommand = concommand
+local cvars = cvars
+local hook = hook
+local ipairs = ipairs
+local pairs = pairs
+local string = string
+local table = table
+
 LANG.Strings = {}
 
 CreateConVar("ttt_language", "auto", FCVAR_ARCHIVE)
@@ -239,7 +248,6 @@ LANG.Styles = {
     chat_warn = function(text)
         chat.AddText(COLOR_RED, text)
     end,
-
 
     chat_plain = chat.AddText
 };

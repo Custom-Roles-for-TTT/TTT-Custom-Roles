@@ -7,6 +7,18 @@
 
 AddCSLuaFile()
 
+local hook = hook
+local IsValid = IsValid
+local math = math
+local net = net
+local pairs = pairs
+local player = player
+local surface = surface
+local string = string
+local table = table
+local timer = timer
+local util = util
+
 SWEP.HoldType = "pistol"
 SWEP.LimitedStock = true
 

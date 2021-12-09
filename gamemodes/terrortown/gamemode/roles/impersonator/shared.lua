@@ -1,5 +1,7 @@
 AddCSLuaFile()
 
+local hook = hook
+
 -- Initialize role features
 
 -- HandleDetectiveLikePromotion and ROLE_MOVE_ROLE_STATE are defined in detectivelike/shared.lua

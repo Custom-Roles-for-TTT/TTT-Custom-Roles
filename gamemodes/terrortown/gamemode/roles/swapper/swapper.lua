@@ -1,5 +1,17 @@
 AddCSLuaFile()
 
+local hook = hook
+local ipairs = ipairs
+local IsPlayer = IsPlayer
+local IsValid = IsValid
+local net = net
+local pairs = pairs
+local table = table
+local timer = timer
+local util = util
+
+local GetAllPlayers = player.GetAll
+
 util.AddNetworkString("TTT_SwapperSwapped")
 
 -------------
@@ -172,7 +184,7 @@ hook.Add("PlayerDeath", "Swapper_KillCheck_PlayerDeath", function(victim, infl, 
 end)
 
 hook.Add("TTTPrepareRound", "Swapper_PrepareRound", function()
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         v:SetNWString("SwappedWith", "")
     end
 end)

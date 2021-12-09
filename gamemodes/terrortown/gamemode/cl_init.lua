@@ -1,5 +1,25 @@
 include("shared.lua")
 
+local cam = cam
+local chat = chat
+local concommand = concommand
+local ents = ents
+local hook = hook
+local ipairs = ipairs
+local math = math
+local net = net
+local pairs = pairs
+local player = player
+local render = render
+local surface = surface
+local string = string
+local table = table
+local timer = timer
+local util = util
+local vgui = vgui
+
+local GetAllPlayers = player.GetAll
+
 -- Define GM12 fonts for compatibility
 surface.CreateFont("DefaultBold", {
     font = "Tahoma",
@@ -134,7 +154,7 @@ local function RoundStateChange(o, n)
         CLSCORE:ClearPanel()
 
         -- people may have died and been searched during prep
-        for _, p in ipairs(player.GetAll()) do
+        for _, p in ipairs(GetAllPlayers()) do
             p.search_result = nil
         end
 
@@ -159,7 +179,7 @@ local function RoundStateChange(o, n)
     end
 
     -- whatever round state we get, clear out the voice flags
-    for _, v in ipairs(player.GetAll()) do
+    for _, v in ipairs(GetAllPlayers()) do
         v.traitor_gvoice = false
     end
 end
@@ -264,7 +284,7 @@ function GM:ClearClientState()
 
     VOICE.InitBattery()
 
-    for _, p in ipairs(player.GetAll()) do
+    for _, p in ipairs(GetAllPlayers()) do
         if IsValid(p) then
             p.sb_tag = nil
             p:SetRole(ROLE_INNOCENT)
@@ -354,7 +374,7 @@ function GM:DrawDeathNotice() end
 
 function GM:Think()
     local client = LocalPlayer()
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         if v:Alive() and not v:IsSpec() then
             hook.Run("TTTPlayerAliveClientThink", client, v)
 
@@ -808,7 +828,7 @@ function OnPlayerHighlightEnabled(client, alliedRoles, showJesters, hideEnemies,
     local enemies = {}
     local friends = {}
     local jesters = {}
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= client then
             if showJesters and v:ShouldActLikeJester() then
                 if not onlyShowEnemies then

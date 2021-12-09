@@ -2,6 +2,17 @@
 
 AddCSLuaFile()
 
+local ents = ents
+local ipairs = ipairs
+local IsPlayer = IsPlayer
+local IsValid = IsValid
+local net = net
+local player = player
+local surface = surface
+local table = table
+local timer = timer
+local util = util
+
 SWEP.HoldType                = "normal"
 
 if CLIENT then

@@ -1,3 +1,6 @@
+local hook = hook
+local string = string
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -18,7 +21,7 @@ end)
 
 hook.Add("TTTScoringWinTitle", "Jester_TTTScoringWinTitle", function(wintype, wintitles, title, secondary_win_role)
     if wintype == WIN_JESTER then
-        return { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_JESTER]:upper() }, c = ROLE_COLORS[ROLE_JESTER] }
+        return { txt = "hilite_win_role_singular", params = { role = string.upper(ROLE_STRINGS[ROLE_JESTER]) }, c = ROLE_COLORS[ROLE_JESTER] }
     end
 end)
 
@@ -28,7 +31,7 @@ end)
 
 hook.Add("TTTEventFinishText", "Jester_TTTEventFinishText", function(e)
     if e.win == WIN_JESTER then
-        return LANG.GetParamTranslation("ev_win_jester", { role = ROLE_STRINGS[ROLE_JESTER]:lower() })
+        return LANG.GetParamTranslation("ev_win_jester", { role = string.lower(ROLE_STRINGS[ROLE_JESTER]) })
     end
 end)
 

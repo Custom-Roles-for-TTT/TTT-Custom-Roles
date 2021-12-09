@@ -1,5 +1,11 @@
 AddCSLuaFile()
 
+local IsPlayer = IsPlayer
+local IsValid = IsValid
+local math = math
+local timer = timer
+local util = util
+
 if CLIENT then
     ENT.Icon = "vgui/ttt/icon_bombstation"
     ENT.PrintName = "bstation_name"

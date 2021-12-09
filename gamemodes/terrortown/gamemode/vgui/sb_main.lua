@@ -1,12 +1,19 @@
 ---- VGUI panel version of the scoreboard, based on TEAM GARRY's sandbox mode
 ---- scoreboard.
 
-local surface = surface
 local draw = draw
+local hook = hook
+local ipairs = ipairs
+local IsValid = IsValid
 local math = math
+local pairs = pairs
+local surface = surface
 local string = string
+local table = table
+local timer = timer
 local vgui = vgui
 
+local GetAllPlayers = player.GetAll
 local GetTranslation = LANG.GetTranslation
 local GetPTranslation = LANG.GetParamTranslation
 
@@ -412,7 +419,7 @@ function PANEL:UpdateScoreboard(force)
 
     -- Put players where they belong. Groups will dump them as soon as they don't
     -- anymore.
-    for k, p in ipairs(player.GetAll()) do
+    for k, p in ipairs(GetAllPlayers()) do
         if IsValid(p) then
             local group = ScoreGroup(p)
             if self.ply_groups[group] and not self.ply_groups[group]:HasPlayerRow(p) then

@@ -1,3 +1,8 @@
+local hook = hook
+local IsPlayer = IsPlayer
+local net = net
+local string = string
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -52,7 +57,7 @@ hook.Add("TTTTargetIDPlayerText", "Clown_TTTTargetIDPlayerText", function(ent, c
     if GetRoundState() < ROUND_ACTIVE then return end
 
     if IsClownVisible(ent) then
-        return ROLE_STRINGS[ROLE_CLOWN]:upper(), ROLE_COLORS_RADAR[ROLE_CLOWN]
+        return string.upper(ROLE_STRINGS[ROLE_CLOWN]), ROLE_COLORS_RADAR[ROLE_CLOWN]
     end
 end)
 
@@ -105,7 +110,7 @@ end)
 
 hook.Add("TTTScoringWinTitle", "Clown_TTTScoringWinTitle", function(wintype, wintitles, title, secondary_win_role)
     if wintype == WIN_CLOWN then
-        return { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_CLOWN]:upper() }, c = ROLE_COLORS[ROLE_JESTER] }
+        return { txt = "hilite_win_role_singular", params = { role = string.upper(ROLE_STRINGS[ROLE_CLOWN]) }, c = ROLE_COLORS[ROLE_JESTER] }
     end
 end)
 
@@ -115,7 +120,7 @@ end)
 
 hook.Add("TTTEventFinishText", "Clown_TTTEventFinishText", function(e)
     if e.win == WIN_CLOWN then
-        return LANG.GetParamTranslation("ev_win_clown", { role = ROLE_STRINGS[ROLE_CLOWN]:lower() })
+        return LANG.GetParamTranslation("ev_win_clown", { role = string.lower(ROLE_STRINGS[ROLE_CLOWN]) })
     end
 end)
 

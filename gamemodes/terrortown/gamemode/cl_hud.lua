@@ -2,10 +2,13 @@
 
 HUD = {}
 
-local surface = surface
-local draw = draw
+local hook = hook
 local math = math
+local pairs = pairs
+local surface = surface
 local string = string
+local table = table
+local util = util
 
 local GetTranslation = LANG.GetTranslation
 local GetLang = LANG.GetUnsafeLanguageTable

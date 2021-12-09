@@ -1,5 +1,14 @@
 -- Body search popup
 
+local file = file
+local hook = hook
+local net = net
+local pairs = pairs
+local string = string
+local table = table
+local util = util
+local vgui = vgui
+
 local T = LANG.GetTranslation
 local PT = LANG.GetParamTranslation
 

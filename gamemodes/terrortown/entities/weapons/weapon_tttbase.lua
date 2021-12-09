@@ -2,6 +2,14 @@
 
 AddCSLuaFile()
 
+local draw = draw
+local ipairs = ipairs
+local IsValid = IsValid
+local math = math
+local surface = surface
+local table = table
+local util = util
+
 ---- TTT SPECIAL EQUIPMENT FIELDS
 
 -- This must be set to one of the WEAPON_ types in TTT weapons for weapon

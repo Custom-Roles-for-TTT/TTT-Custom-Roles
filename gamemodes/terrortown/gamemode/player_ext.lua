@@ -12,6 +12,18 @@ if not entmeta then
     return
 end
 
+local concommand = concommand
+local hook = hook
+local ipairs = ipairs
+local IsPlayer = IsPlayer
+local IsValid = IsValid
+local math = math
+local net = net
+local pairs = pairs
+local table = table
+local timer = timer
+local weapons = weapons
+
 function plymeta:SetRagdollSpec(s)
     if s then
         self.spec_ragdoll_start = CurTime()

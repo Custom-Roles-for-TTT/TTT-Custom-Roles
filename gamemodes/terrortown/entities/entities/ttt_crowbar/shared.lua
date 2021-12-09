@@ -1,4 +1,7 @@
 AddCSLuaFile()
+
+local IsValid = IsValid
+
 ENT.Type            = "anim"
 ENT.Base            = "ttt_basegrenade_proj"
 

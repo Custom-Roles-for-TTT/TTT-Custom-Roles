@@ -1,5 +1,16 @@
 AddCSLuaFile()
 
+local hook = hook
+local ipairs = ipairs
+local IsPlayer = IsPlayer
+local IsValid = IsValid
+local net = net
+local pairs = pairs
+local timer = timer
+local util = util
+
+local GetAllPlayers = player.GetAll
+
 util.AddNetworkString("TTT_BeggarConverted")
 util.AddNetworkString("TTT_BeggarKilled")
 
@@ -51,7 +62,7 @@ hook.Add("WeaponEquip", "Beggar_WeaponEquip", function(wep, ply)
         ply:PrintMessage(HUD_PRINTCENTER, "You have joined the " .. ROLE_STRINGS[role] .. " team")
         timer.Simple(0.5, function() SendFullStateUpdate() end) -- Slight delay to avoid flickering from beggar to the new role and back to beggar
 
-        for _, v in ipairs(player.GetAll()) do
+        for _, v in ipairs(GetAllPlayers()) do
             if beggarMode == BEGGAR_REVEAL_ALL or (v:IsActiveTraitorTeam() and beggarMode == BEGGAR_REVEAL_TRAITORS) or (not v:IsActiveTraitorTeam() and beggarMode == BEGGAR_REVEAL_INNOCENTS) then
                 v:PrintMessage(HUD_PRINTTALK, "The beggar has joined the " .. ROLE_STRINGS[role] .. " team")
                 v:PrintMessage(HUD_PRINTCENTER, "The beggar has joined the " .. ROLE_STRINGS[role] .. " team")
@@ -69,7 +80,7 @@ end)
 
 -- Disable tracking that this player was a beggar at the start of a new round or if their role changes again (e.g. if they go beggar -> innocent -> dead -> hypnotist res to traitor)
 hook.Add("TTTPrepareRound", "Beggar_PrepareRound", function()
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         v:SetNWBool("WasBeggar", false)
         timer.Remove(v:Nick() .. "BeggarRespawn")
     end

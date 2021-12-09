@@ -1,5 +1,15 @@
 AddCSLuaFile()
 
+local hook = hook
+local IsPlayer = IsPlayer
+local IsValid = IsValid
+local math = math
+local pairs = pairs
+local table = table
+local timer = timer
+
+local GetAllPlayers = player.GetAll
+
 -------------
 -- CONVARS --
 -------------
@@ -59,7 +69,7 @@ function AssignAssassinTarget(ply, start, delay)
         end
     end
 
-    for _, p in pairs(player.GetAll()) do
+    for _, p in pairs(GetAllPlayers()) do
         if p:Alive() and not p:IsSpec() then
             -- Include all non-traitor detective-like players
             if p:IsDetectiveLike() and not p:IsTraitorTeam() then
@@ -151,7 +161,7 @@ hook.Add("DoPlayerDeath", "Assassin_DoPlayerDeath", function(ply, attacker, dmgi
         attacker:SetNWBool("AssassinFailed", true)
     end
 
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         local assassintarget = v:GetNWString("AssassinTarget", "")
         if v:IsAssassin() and ply:Nick() == assassintarget then
             -- Reset the target to clear the target overlay from the scoreboard
@@ -182,7 +192,7 @@ end)
 
 -- Clear the assassin target information when the next round starts
 hook.Add("TTTPrepareRound", "Assassin_Smoke_PrepareRound", function()
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         v:SetNWString("AssassinTarget", "")
         v:SetNWBool("AssassinFailed", false)
         v:SetNWBool("AssassinComplete", false)

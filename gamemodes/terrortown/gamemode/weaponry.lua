@@ -1,7 +1,25 @@
 include("weaponry_shd.lua") -- inits WEPS tbl
 
+local concommand = concommand
+local file = file
+local hook = hook
+local ipairs = ipairs
+local IsPlayer = IsPlayer
+local IsValid = IsValid
+local math = math
+local net = net
+local pairs = pairs
+local player = player
+local string = string
+local table = table
+local timer = timer
+local util = util
+local weapons = weapons
+
 ---- Weapon system, pickup limits, etc
 
+local GetAllPlayers = player.GetAll
+local CreateEntity = ents.Create
 local IsEquipment = WEPS.IsEquipment
 
 -- Prevent players from picking up multiple weapons of the same type etc
@@ -146,7 +164,7 @@ local function GiveLoadoutSpecial(ply)
     if ply:IsActiveDetectiveTeam() and GetConVar("ttt_detective_hats"):GetBool() and CanWearHat(ply) then
 
         if not IsValid(ply.hat) then
-            local hat = ents.Create("ttt_hat_deerstalker")
+            local hat = CreateEntity("ttt_hat_deerstalker")
             if not IsValid(hat) then return end
 
             hat:SetPos(ply:GetPos() + Vector(0, 0, 70))
@@ -210,7 +228,7 @@ function GM:PlayerLoadout(ply)
 end
 
 function GM:UpdatePlayerLoadouts()
-    for _, ply in ipairs(player.GetAll()) do
+    for _, ply in ipairs(GetAllPlayers()) do
         hook.Call("PlayerLoadout", GAMEMODE, ply)
     end
 end
@@ -299,7 +317,7 @@ local function DropActiveAmmo(ply)
 
     ply:AnimPerformGesture(ACT_GMOD_GESTURE_ITEM_GIVE)
 
-    local box = ents.Create(wep.AmmoEnt)
+    local box = CreateEntity(wep.AmmoEnt)
     if not IsValid(box) then return end
 
     box:SetPos(pos + dir)
@@ -559,7 +577,7 @@ concommand.Add("ttt_order_equipment", OrderEquipment)
 concommand.Add("ttt_order_for_someone", function(ply, cmd, args)
     local target_name = args[1]
     local target = nil
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         if target_name == v:Nick() then
             target = v
             break
@@ -719,12 +737,12 @@ net.Receive("TTT_ConfigureRoleWeapons", function(len, ply)
         return
     end
 
-    local id = net.ReadString():lower()
+    local id = string.lower(net.ReadString())
     local role = net.ReadInt(8)
     local includeSelected = net.ReadBool()
     local excludeSelected = net.ReadBool()
     local noRandomSelected = net.ReadBool()
-    local roleName = ROLE_STRINGS_RAW[role]:lower()
+    local roleName = string.lower(ROLE_STRINGS_RAW[role])
 
     -- Ensure directories exist
     if not file.IsDir("roleweapons", "DATA") then

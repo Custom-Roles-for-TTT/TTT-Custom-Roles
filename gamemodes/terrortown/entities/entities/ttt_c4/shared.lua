@@ -1,6 +1,20 @@
 -- c4 explosive
 
+local cam = cam
+local concommand = concommand
+local draw = draw
+local ents = ents
+local hook = hook
+local ipairs = ipairs
+local IsPlayer = IsPlayer
+local IsValid = IsValid
 local math = math
+local net = net
+local player = player
+local surface = surface
+local table = table
+local timer = timer
+local util = util
 
 if SERVER then
     AddCSLuaFile("cl_init.lua")

@@ -1,5 +1,11 @@
 include("shared.lua")
 
+local math = math
+local pairs = pairs
+local surface = surface
+local string = string
+local table = table
+
 local TryTranslation = LANG.TryTranslation
 
 GM.PickupHistory = {}

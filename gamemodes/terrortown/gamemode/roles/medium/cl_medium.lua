@@ -1,3 +1,9 @@
+local hook = hook
+local math = math
+local pairs = pairs
+
+local GetAllEnts = ents.GetAll
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -19,7 +25,7 @@ hook.Add("Think", "Medium_RoleFeature_Think", function()
     local client = LocalPlayer()
     if not client:IsActiveMedium() then return end
 
-    for _, ent in pairs(ents.GetAll()) do
+    for _, ent in pairs(GetAllEnts()) do
         if ent:GetNWBool("MediumSpirit", false) then
             ent:SetNoDraw(true)
             ent:SetRenderMode(RENDERMODE_NONE)

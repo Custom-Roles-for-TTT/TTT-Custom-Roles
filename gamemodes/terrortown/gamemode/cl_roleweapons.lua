@@ -1,5 +1,14 @@
 include("shared.lua")
 
+local concommand = concommand
+local math = math
+local net = net
+local pairs = pairs
+local string = string
+local table = table
+local timer = timer
+local vgui = vgui
+
 local GetTranslation = LANG.GetTranslation
 local SafeTranslate = LANG.TryTranslation
 
@@ -215,7 +224,7 @@ local function OpenDialog(client)
         local roleitems = GetEquipmentForRole(role, false, true, true, true)
         local filtered = {}
         for _, v in pairs(roleitems) do
-            if v and v["name"] and string.find(SafeTranslate(v["name"]):lower(), value:lower()) then
+            if v and v["name"] and string.find(string.lower(SafeTranslate(v["name"])), string.lower(value)) then
                 table.insert(filtered, v)
             end
         end

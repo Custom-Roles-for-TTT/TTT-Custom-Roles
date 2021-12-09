@@ -5,6 +5,18 @@ CORPSE = {}
 
 include("corpse_shd.lua")
 
+local concommand = concommand
+local hook = hook
+local math = math
+local net = net
+local pairs = pairs
+local player = player
+local table = table
+local timer = timer
+local util = util
+
+local CreateEntity = ents.Create
+
 --- networked data abstraction layer
 local dti = CORPSE.dti
 
@@ -401,7 +413,7 @@ local rag_collide = CreateConVar("ttt_ragdoll_collide", "0")
 function CORPSE.Create(ply, attacker, dmginfo)
     if not IsValid(ply) then return end
 
-    local rag = ents.Create("prop_ragdoll")
+    local rag = CreateEntity("prop_ragdoll")
     if not IsValid(rag) then return nil end
 
     rag:SetPos(ply:GetPos())

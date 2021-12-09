@@ -1,3 +1,6 @@
+local hook = hook
+local math = math
+
 ------------------
 -- TRANSLATIONS --
 ------------------

@@ -1,10 +1,17 @@
 ---- Communicating game state to players
 
+local concommand = concommand
+local hook = hook
+local ipairs = ipairs
+local IsPlayer = IsPlayer
+local IsValid = IsValid
+local math = math
 local net = net
+local pairs = pairs
 local string = string
 local table = table
-local ipairs = ipairs
-local IsValid = IsValid
+
+local GetAllPlayers = player.GetAll
 
 -- NOTE: most uses of the Msg functions here have been moved to the LANG
 -- functions. These functions are essentially deprecated, though they won't be
@@ -70,7 +77,7 @@ end
 
 -- Round start info popup
 function ShowRoundStartPopup()
-    for _, v in ipairs(player.GetAll()) do
+    for _, v in ipairs(GetAllPlayers()) do
         if IsValid(v) and v:Team() == TEAM_TERROR and v:Alive() then
             v:ConCommand("ttt_cl_startpopup")
         end
@@ -79,7 +86,7 @@ end
 
 function GetPlayerFilter(pred)
     local filter = {}
-    for _, v in ipairs(player.GetAll()) do
+    for _, v in ipairs(GetAllPlayers()) do
         if IsValid(v) and pred(v) then
             table.insert(filter, v)
         end
@@ -204,7 +211,7 @@ function GM:PlayerSay(ply, text, team_only)
             return table.concat(filtered, " ")
         elseif team_only and not team and (ply:IsTraitorTeam() or ply:IsDetectiveLike() or ply:IsMonsterTeam()) then
             local hasGlitch = false
-            for _, v in pairs(player.GetAll()) do
+            for _, v in pairs(GetAllPlayers()) do
                 if v:IsGlitch() then hasGlitch = true end
             end
             if ply:IsTraitorTeam() and hasGlitch then
@@ -267,7 +274,7 @@ function GM:PlayerCanHearPlayersVoice(listener, speaker)
     -- Traitors "team" chat by default, non-locationally
     if speaker:IsActiveTraitorTeam() then
         local hasGlitch = false
-        for _, v in pairs(player.GetAll()) do
+        for _, v in pairs(GetAllPlayers()) do
             if v:IsGlitch() then hasGlitch = true end
         end
 
@@ -315,7 +322,7 @@ local function TraitorGlobalVoice(ply, cmd, args)
     ply.traitor_gvoice = (state == 1)
 
     local hasGlitch = false
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         if v:IsGlitch() then hasGlitch = true end
     end
 

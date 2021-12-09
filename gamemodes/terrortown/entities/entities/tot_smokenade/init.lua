@@ -2,6 +2,12 @@ AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 include("shared.lua")
 
+local ents = ents
+local IsValid = IsValid
+local math = math
+local timer = timer
+local util = util
+
 -- Initialize
 function ENT:Initialize()
     util.PrecacheSound("weapons/ar2/npc_ar2_altfire.wav")

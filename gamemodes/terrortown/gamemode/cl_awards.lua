@@ -4,8 +4,10 @@
 -- not and another one should be tried.
 
 -- some globals we'll use a lot
-local table = table
+local math = math
 local pairs = pairs
+local table = table
+local util = util
 
 local is_dmg = function(dmg_t, bit)
                         -- deal with large-number workaround for TableToJSON by
@@ -22,21 +24,21 @@ local function GetRoleName(s)
 end
 
 local function GetRole(players, id)
-    local player = players[id]
-    return player and player.role or ROLE_NONE
+    local ply = players[id]
+    return ply and ply.role or ROLE_NONE
 end
 
 local function GetName(players, id)
-    local player = players[id]
-    return player and player.nick or nil
+    local ply = players[id]
+    return ply and ply.nick or nil
 end
 
 local function GetNameAndRole(players, id)
-    local player = players[id]
-    if not player then return nil, nil end
+    local ply = players[id]
+    if not ply then return nil, nil end
 
-    local name = player.nick or nil
-    local role = player.role or ROLE_NONE
+    local name = ply.nick or nil
+    local role = ply.role or ROLE_NONE
     return name, role
 end
 

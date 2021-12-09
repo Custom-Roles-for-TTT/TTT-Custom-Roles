@@ -1,5 +1,14 @@
 AddCSLuaFile()
 
+local hook = hook
+local ipairs = ipairs
+local IsPlayer = IsPlayer
+local math = math
+local pairs = pairs
+local table = table
+
+local GetAllPlayers = player.GetAll
+
 -------------
 -- CONVARS --
 -------------
@@ -21,7 +30,7 @@ end)
 hook.Add("PlayerDeath", "Veteran_RoleFeatures_PlayerDeath", function(victim, infl, attacker)
     local innocents_alive = 0
     local veterans = {}
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         if v:IsActiveInnocentTeam() then innocents_alive = innocents_alive + 1 end
         if v:IsActiveVeteran() then table.insert(veterans, v) end
     end
@@ -34,7 +43,7 @@ hook.Add("PlayerDeath", "Veteran_RoleFeatures_PlayerDeath", function(victim, inf
                 v:PrintMessage(HUD_PRINTTALK, "You are the last " .. ROLE_STRINGS[ROLE_INNOCENT] .. " alive!")
                 v:PrintMessage(HUD_PRINTCENTER, "You are the last " .. ROLE_STRINGS[ROLE_INNOCENT] .. " alive!")
                 if veteran_announce:GetBool() then
-                    for _, p in ipairs(player.GetAll()) do
+                    for _, p in ipairs(GetAllPlayers()) do
                         if p ~= v and p:Alive() and not p:IsSpec() then
                             p:PrintMessage(HUD_PRINTTALK, "The last " .. ROLE_STRINGS[ROLE_INNOCENT] .. " alive is " .. ROLE_STRINGS_EXT[ROLE_VETERAN] .. "!")
                             p:PrintMessage(HUD_PRINTCENTER, "The last " .. ROLE_STRINGS[ROLE_INNOCENT] .. " alive is " .. ROLE_STRINGS_EXT[ROLE_VETERAN] .. "!")
@@ -75,7 +84,7 @@ hook.Add("ScalePlayerDamage", "Veteran_ScalePlayerDamage", function(ply, hitgrou
 end)
 
 hook.Add("TTTPrepareRound", "Veteran_RoleFeatures_PrepareRound", function()
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         v:SetNWBool("VeteranActive", false)
     end
 end)

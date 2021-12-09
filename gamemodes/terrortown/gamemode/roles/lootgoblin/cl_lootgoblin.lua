@@ -1,3 +1,12 @@
+local hook = hook
+local IsPlayer = IsPlayer
+local math = math
+local net = net
+local surface = surface
+local string = string
+local table = table
+local util = util
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -85,7 +94,7 @@ end)
 
 hook.Add("TTTEventFinishText", "LootGoblin_TTTEventFinishText", function(e)
     if e.win == WIN_LOOTGOBLIN then
-        return LANG.GetParamTranslation("ev_win_lootgoblin", { role = ROLE_STRINGS[ROLE_LOOTGOBLIN]:lower() })
+        return LANG.GetParamTranslation("ev_win_lootgoblin", { role = string.lower(ROLE_STRINGS[ROLE_LOOTGOBLIN]) })
     end
 end)
 

@@ -58,6 +58,27 @@ include("player_ext_shd.lua")
 include("player_ext.lua")
 include("player.lua")
 
+-- Localise stuff we use often. It's like Lua go-faster stripes.
+local concommand = concommand
+local cvars = cvars
+local ents = ents
+local file = file
+local hook = hook
+local ipairs = ipairs
+local IsPlayer = IsPlayer
+local IsValid = IsValid
+local math = math
+local net = net
+local pairs = pairs
+local player = player
+local resource = resource
+local string = string
+local table = table
+local timer = timer
+local util = util
+
+local GetAllPlayers = player.GetAll
+
 -- Round times
 CreateConVar("ttt_roundtime_minutes", "10", FCVAR_NOTIFY)
 CreateConVar("ttt_preptime_seconds", "30", FCVAR_NOTIFY)
@@ -277,14 +298,6 @@ local ttt_minply = CreateConVar("ttt_minimum_players", "2", FCVAR_ARCHIVE + FCVA
 local ttt_dbgwin = CreateConVar("ttt_debug_preventwin", "0")
 CreateConVar("ttt_debug_logkills", "1")
 local ttt_dbgroles = CreateConVar("ttt_debug_logroles", "1")
-
--- Localise stuff we use often. It's like Lua go-faster stripes.
-local math = math
-local table = table
-local net = net
-local player = player
-local timer = timer
-local util = util
 
 -- Pool some network names.
 util.AddNetworkString("TTT_RoundState")
@@ -514,7 +527,7 @@ end
 local function EnoughPlayers()
     local ready = 0
     -- only count truly available players, ie. no forced specs
-    for _, ply in ipairs(player.GetAll()) do
+    for _, ply in ipairs(GetAllPlayers()) do
         if IsValid(ply) and ply:ShouldSpawn() then
             ready = ready + 1
         end
@@ -547,7 +560,7 @@ end
 -- we regularly check for these broken spectators while we wait for players
 -- and immediately fix them.
 function FixSpectators()
-    for k, ply in ipairs(player.GetAll()) do
+    for k, ply in ipairs(GetAllPlayers()) do
         if ply:IsSpec() and not ply:GetRagdollSpec() and ply:GetMoveType() < MOVETYPE_NOCLIP then
             ply:Spectate(OBS_MODE_ROAMING)
         end
@@ -591,7 +604,7 @@ function StartNameChangeChecks()
     if not GetConVar("ttt_namechange_kick"):GetBool() then return end
 
     -- bring nicks up to date, may have been changed during prep/post
-    for _, ply in pairs(player.GetAll()) do
+    for _, ply in pairs(GetAllPlayers()) do
         ply.spawn_nick = GetPlayerName(ply)
     end
 
@@ -613,7 +626,7 @@ local function CleanUp()
     et.FixParentedPostCleanup()
 
     -- Strip players now, so that their weapons are not seen by ReplaceEntities
-    for k, v in ipairs(player.GetAll()) do
+    for k, v in ipairs(GetAllPlayers()) do
         if IsValid(v) then
             v:StripWeapons()
         end
@@ -676,7 +689,7 @@ function GM:TTTDelayRoundStartForVote()
 end
 
 function PrepareRound()
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         v:SetNWVector("PlayerColor", Vector(1, 1, 1))
         -- Workaround to prevent GMod sprint from working
         v:SetRunSpeed(v:GetWalkSpeed())
@@ -766,7 +779,7 @@ function IncRoundEnd(incr)
 end
 
 function TellTraitorsAboutTraitors()
-    local plys = player.GetAll()
+    local plys = GetAllPlayers()
 
     local traitornicks = {}
     local hasGlitch = false
@@ -806,7 +819,7 @@ function TellTraitorsAboutTraitors()
 end
 
 function SpawnWillingPlayers(dead_only)
-    local plys = player.GetAll()
+    local plys = GetAllPlayers()
     local wave_delay = GetConVar("ttt_spawn_wave_interval"):GetFloat()
 
     -- simple method, should make this a case of the other method once that has
@@ -919,7 +932,7 @@ function BeginRound()
 
     SCORE:HandleSelection() -- log traitors and detectives
 
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         -- Player color
         local vec = Vector(1, 1, 1)
         vec.x = math.Rand(0, 1)
@@ -935,7 +948,7 @@ function BeginRound()
     net.Start("TTT_ResetScoreboard")
     net.Broadcast()
 
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         if v:Alive() and v:IsTerror() then
             net.Start("TTT_SpawnedPlayers")
             net.WriteString(v:Nick())
@@ -950,7 +963,7 @@ function BeginRound()
 
     -- EQUIP_REGEN health regeneration tick
     timer.Create("RegenEquipmentTick", 0.66, 0, function()
-        for _, v in pairs(player.GetAll()) do
+        for _, v in pairs(GetAllPlayers()) do
             if v:Alive() and not v:IsSpec() and v:HasEquipmentItem(EQUIP_REGEN) then
                 local hp = v:Health()
                 if hp < v:GetMaxHealth() then
@@ -1012,7 +1025,7 @@ function PrintResultMessage(type)
             ServerLog("Result: Monsters win.\n")
         else
             local plural = ROLE_STRINGS_PLURAL[monster_role]
-            LANG.Msg("win_" .. plural:lower(), { role = plural })
+            LANG.Msg("win_" .. string.lower(plural), { role = plural })
             ServerLog("Result: " .. plural .. " win.\n")
         end
     else
@@ -1164,7 +1177,7 @@ function GM:TTTCheckForWin()
     local innocent_alive = false
     local monster_alive = false
 
-    for _, v in ipairs(player.GetAll()) do
+    for _, v in ipairs(GetAllPlayers()) do
         if v:Alive() and v:IsTerror() then
             if v:IsTraitorTeam() then
                 traitor_alive = true
@@ -1255,7 +1268,7 @@ function SelectRoles()
 
     if not GAMEMODE.LastRole then GAMEMODE.LastRole = {} end
 
-    local plys = player.GetAll()
+    local plys = GetAllPlayers()
 
     for _, v in ipairs(plys) do
         if IsValid(v) then
@@ -1357,7 +1370,7 @@ function SelectRoles()
     end
 
     PrintRoleText("-----CHECKING EXTERNALLY CHOSEN ROLES-----")
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         if IsValid(v) and (not v:IsSpec()) then
             local role = v:GetRole()
             if role > ROLE_NONE and role <= ROLE_MAX then
@@ -1922,18 +1935,18 @@ function HandleRoleEquipment()
             local norandom = false
             -- Extract the weapon name from the file name
             local lastdotpos = v:find("%.")
-            local weaponname = v:sub(0, lastdotpos - 1)
+            local weaponname = string.sub(v, 0, lastdotpos - 1)
 
             -- Check that there isn't a two-part extension (e.g. "something.exclude.txt")
-            local extension = v:sub(lastdotpos + 1, #v)
+            local extension = string.sub(v, lastdotpos + 1, #v)
             lastdotpos = extension:find("%.")
 
             -- If there is, check if it equals "exclude"
             if lastdotpos ~= nil then
-                extension = extension:sub(0, lastdotpos - 1)
-                if extension:lower() == "exclude" then
+                extension = string.sub(extension, 0, lastdotpos - 1)
+                if string.lower(extension) == "exclude" then
                     exclude = true
-                elseif extension:lower() == "norandom" then
+                elseif string.lower(extension) == "norandom" then
                     norandom = true
                 end
             end

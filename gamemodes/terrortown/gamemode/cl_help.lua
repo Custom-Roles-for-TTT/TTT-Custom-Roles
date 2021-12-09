@@ -1,5 +1,17 @@
 ---- Help screen
 
+local concommand = concommand
+local cvars = cvars
+local file = file
+local hook = hook
+local ipairs = ipairs
+local pairs = pairs
+local surface = surface
+local string = string
+local table = table
+local timer = timer
+local vgui = vgui
+
 local GetTranslation = LANG.GetTranslation
 local GetPTranslation = LANG.GetParamTranslation
 
@@ -676,7 +688,7 @@ local function TutorialUsefulKeys(pnl, lbl)
 
     -- Fifth line
         htmlData = htmlData .. "<div style='height: 40px;'>"
-            key = GetConVar("ttt_radio_button"):GetString():upper()
+            key = string.upper(GetConVar("ttt_radio_button"):GetString())
             htmlData = htmlData .. "<span style='" .. fontStyle .. keyMappingStyles .. "'>" .. key .. "</span>"
             htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> will open the </span>"
             color = ROLE_COLORS[ROLE_INNOCENT]

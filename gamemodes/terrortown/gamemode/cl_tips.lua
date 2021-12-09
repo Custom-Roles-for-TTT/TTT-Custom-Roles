@@ -2,7 +2,15 @@
 
 CreateConVar("ttt_tips_enable", "1", FCVAR_ARCHIVE)
 
+local concommand = concommand
+local cvars = cvars
 local draw = draw
+local math = math
+local pairs = pairs
+local surface = surface
+local table = table
+local timer = timer
+local vgui = vgui
 
 TIPS = {}
 

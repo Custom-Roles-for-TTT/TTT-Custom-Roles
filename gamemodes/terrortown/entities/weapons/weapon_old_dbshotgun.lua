@@ -1,5 +1,8 @@
 if SERVER then AddCSLuaFile() end
 
+local IsValid = IsValid
+local math = math
+
 SWEP.HoldType = "shotgun"
 
 if CLIENT then

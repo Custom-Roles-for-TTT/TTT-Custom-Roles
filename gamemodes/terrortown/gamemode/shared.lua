@@ -39,6 +39,19 @@ GM.Version = "Custom Roles for TTT v" .. CR_VERSION
 
 GM.Customized = false
 
+local file = file
+local hook = hook
+local ipairs = ipairs
+local IsPlayer = IsPlayer
+local IsValid = IsValid
+local math = math
+local net = net
+local pairs = pairs
+local string = string
+local table = table
+
+local GetAllPlayers = player.GetAll
+
 -- Round status consts
 ROUND_WAIT = 1
 ROUND_PREP = 2
@@ -613,11 +626,11 @@ function UpdateRoleStrings()
 
             local plural = GetGlobalString("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name_plural", "")
             if plural == "" then -- Fallback if no plural is given. Does NOT handle all cases properly
-                local lastChar = string.sub(name, name:len(), name:len()):lower()
+                local lastChar = string.lower(string.sub(name, #name, #name))
                 if lastChar == "s" then
                     ROLE_STRINGS_PLURAL[role] = name .. "es"
                 elseif lastChar == "y" then
-                    ROLE_STRINGS_PLURAL[role] = string.sub(name, 1, name:len() - 1) .. "ies"
+                    ROLE_STRINGS_PLURAL[role] = string.sub(name, 1, #name - 1) .. "ies"
                 else
                     ROLE_STRINGS_PLURAL[role] = name .. "s"
                 end
@@ -855,11 +868,11 @@ local function GetRoleFromStackTrace()
             -- Get the file path
             local source = info.short_src
             -- Extract the file name from the path and drop the extension
-            local role_name = string.StripExtension(string.GetFileFromFilename(source)):lower()
+            local role_name = string.lower(string.StripExtension(string.GetFileFromFilename(source)))
 
             -- Find the role whose raw string matches the file name
             for r, str in pairs(ROLE_STRINGS_RAW) do
-                if str:lower() == role_name then
+                if string.lower(str) == role_name then
                     role = r
                     break
                 end
@@ -1253,7 +1266,7 @@ if SERVER then
         local mode = GetConVar("ttt_" .. cvar_role .. "_notify_mode"):GetInt()
         local play_sound = GetConVar("ttt_" .. cvar_role .. "_notify_sound"):GetBool()
         local show_confetti = GetConVar("ttt_" .. cvar_role .. "_notify_confetti"):GetBool()
-        for _, ply in pairs(player.GetAll()) do
+        for _, ply in pairs(GetAllPlayers()) do
             if ply == attacker then
                 local role_string = ROLE_STRINGS[role]
                 ply:PrintMessage(HUD_PRINTCENTER, "You killed the " .. role_string .. "!")

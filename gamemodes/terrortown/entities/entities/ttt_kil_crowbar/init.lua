@@ -1,6 +1,10 @@
 AddCSLuaFile("shared.lua")
 include("shared.lua")
 
+local ents = ents
+local IsPlayer = IsPlayer
+local IsValid = IsValid
+
 ENT.DidCollide = false
 
 local damage = 50

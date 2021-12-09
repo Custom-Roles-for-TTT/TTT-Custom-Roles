@@ -1,7 +1,14 @@
 -- Traitor radar rendering
 
-local surface = surface
+local hook = hook
 local math = math
+local net = net
+local pairs = pairs
+local surface = surface
+local table = table
+local timer = timer
+local util = util
+local vgui = vgui
 
 RADAR = {}
 RADAR.targets = {}

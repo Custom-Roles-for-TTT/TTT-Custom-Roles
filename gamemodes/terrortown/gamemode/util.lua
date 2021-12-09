@@ -2,10 +2,19 @@
 
 if not util then return end
 
+local cvars = cvars
+local input = input
+local ipairs = ipairs
+local IsValid = IsValid
 local math = math
+local pairs = pairs
+local scripted_ents = scripted_ents
 local string = string
 local table = table
-local pairs = pairs
+local timer = timer
+local weapons = weapons
+
+local GetAllPlayers = player.GetAll
 
 -- attempts to get the weapon used from a DamageInfo instance needed because the
 -- GetAmmoType value is useless and inflictor isn't properly set (yet)
@@ -53,7 +62,7 @@ end
 
 function util.GetAlivePlayers()
     local alive = {}
-    for _, p in ipairs(player.GetAll()) do
+    for _, p in ipairs(GetAllPlayers()) do
         if IsValid(p) and p:Alive() and p:IsTerror() then
             table.insert(alive, p)
         end

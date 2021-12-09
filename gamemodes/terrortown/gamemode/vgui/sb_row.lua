@@ -2,6 +2,18 @@
 
 include("sb_info.lua")
 
+local draw = draw
+local file = file
+local hook = hook
+local ipairs = ipairs
+local IsValid = IsValid
+local math = math
+local pairs = pairs
+local surface = surface
+local table = table
+local timer = timer
+local vgui = vgui
+
 local GetTranslation = LANG.GetTranslation
 
 SB_ROW_HEIGHT = 24 --16

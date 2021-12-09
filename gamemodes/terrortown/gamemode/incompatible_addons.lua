@@ -1,3 +1,5 @@
+local pairs = pairs
+
 local incompatible = {
     -- Outdated Custom Roles for TTT Versions
     ["1215502383"] = { reason = "Outdated version of Custom Roles for TTT." }, -- Custom Roles for TTT by Noxx

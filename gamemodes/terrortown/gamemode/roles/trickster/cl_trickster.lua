@@ -1,3 +1,5 @@
+local hook = hook
+
 ------------------
 -- TRANSLATIONS --
 ------------------

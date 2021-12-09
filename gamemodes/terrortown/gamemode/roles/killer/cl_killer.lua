@@ -1,3 +1,7 @@
+local hook = hook
+local IsPlayer = IsPlayer
+local string = string
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -95,7 +99,7 @@ end)
 
 hook.Add("TTTScoringWinTitle", "Killer_TTTScoringWinTitle", function(wintype, wintitles, title, secondary_win_role)
     if wintype == WIN_KILLER then
-        return { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_KILLER]:upper() }, c = ROLE_COLORS[ROLE_KILLER] }
+        return { txt = "hilite_win_role_singular", params = { role = string.upper(ROLE_STRINGS[ROLE_KILLER]) }, c = ROLE_COLORS[ROLE_KILLER] }
     end
 end)
 
@@ -105,7 +109,7 @@ end)
 
 hook.Add("TTTEventFinishText", "Killer_TTTEventFinishText", function(e)
     if e.win == WIN_KILLER then
-        return LANG.GetParamTranslation("ev_win_killer", { role = ROLE_STRINGS[ROLE_KILLER]:lower() })
+        return LANG.GetParamTranslation("ev_win_killer", { role = string.lower(ROLE_STRINGS[ROLE_KILLER]) })
     end
 end)
 

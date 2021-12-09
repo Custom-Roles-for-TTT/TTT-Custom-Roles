@@ -1,5 +1,14 @@
 AddCSLuaFile()
 
+local hook = hook
+local IsValid = IsValid
+local pairs = pairs
+local player = player
+local table = table
+
+local GetAllPlayers = player.GetAll
+local CreateEntity = ents.Create
+
 -------------
 -- CONVARS --
 -------------
@@ -50,11 +59,11 @@ end)
 hook.Add("PlayerDeath", "Medium_Spirits_PlayerDeath", function(victim, infl, attacker)
     -- Create spirit for the medium
     local mediums = {}
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         if v:IsMedium() then table.insert(mediums, v) end
     end
     if #mediums > 0 then
-        local spirit = ents.Create("npc_kleiner")
+        local spirit = CreateEntity("npc_kleiner")
         spirit:SetPos(victim:GetPos())
         spirit:SetRenderMode(RENDERMODE_NONE)
         spirit:SetNotSolid(true)
