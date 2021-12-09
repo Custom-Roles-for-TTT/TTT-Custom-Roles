@@ -14,10 +14,12 @@ local CreateEntity = ents.Create
 -------------
 
 local medium_spirit_color = CreateConVar("ttt_medium_spirit_color", "1")
+local medium_spirit_vision = CreateConVar("ttt_medium_spirit_vision", "1")
 local medium_dead_notify = CreateConVar("ttt_medium_dead_notify", "1")
 
 hook.Add("TTTSyncGlobals", "Medium_TTTSyncGlobals", function()
     SetGlobalBool("ttt_medium_spirit_color", medium_spirit_color:GetBool())
+    SetGlobalBool("ttt_medium_spirit_vision", medium_spirit_vision:GetBool())
 end)
 
 -------------------
@@ -77,8 +79,8 @@ hook.Add("PlayerDeath", "Medium_Spirits_PlayerDeath", function(victim, infl, att
         spirit:Spawn()
         spirits[victim:SteamID64()] = spirit
 
-        -- Let the player who died know there is a medium
-        if medium_dead_notify:GetBool() then
+        -- Let the player who died know there is a medium and this player isn't the only medium
+        if medium_dead_notify:GetBool() and (#mediums > 1 or not victim:IsMedium()) then
             victim:PrintMessage(HUD_PRINTTALK, "The " .. ROLE_STRINGS[ROLE_MEDIUM] .. " senses your spirit.")
             victim:PrintMessage(HUD_PRINTCENTER, "The " .. ROLE_STRINGS[ROLE_MEDIUM] .. " senses your spirit.")
         end
