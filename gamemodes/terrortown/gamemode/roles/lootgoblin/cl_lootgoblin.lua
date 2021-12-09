@@ -6,6 +6,8 @@ local string = string
 local table = table
 local util = util
 
+local StringUpper = string.upper
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -42,7 +44,7 @@ end)
 
 hook.Add("TTTTargetIDPlayerText", "LootGoblin_TTTTargetIDPlayerText", function(ent, client, text, clr, secondaryText)
     if IsPlayer(ent) and ent:IsActiveLootGoblin() and ent:IsRoleActive() then
-        return string.upper(ROLE_STRINGS[ROLE_LOOTGOBLIN]), ROLE_COLORS_RADAR[ROLE_LOOTGOBLIN]
+        return StringUpper(ROLE_STRINGS[ROLE_LOOTGOBLIN]), ROLE_COLORS_RADAR[ROLE_LOOTGOBLIN]
     end
 end)
 

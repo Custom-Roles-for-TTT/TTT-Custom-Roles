@@ -12,13 +12,15 @@ local pairs = pairs
 local player = player
 local render = render
 local surface = surface
-local string = string
 local table = table
 local timer = timer
 local util = util
 local vgui = vgui
 
 local GetAllPlayers = player.GetAll
+local StringUpper = string.upper
+local StringLower = string.lower
+local StringExplode = string.Explode
 
 -- Define GM12 fonts for compatibility
 surface.CreateFont("DefaultBold", {
@@ -229,7 +231,7 @@ local function ReceiveRole()
 
     if role > ROLE_NONE then
         Msg("You are: ")
-        MsgN(string.upper(client:GetRoleString()))
+        MsgN(StringUpper(client:GetRoleString()))
     end
 end
 net.Receive("TTT_Role", ReceiveRole)
@@ -523,7 +525,7 @@ local hm_CanPlayS = true
 local hm_Alpha = 0
 
 local function GrabColor() -- Used for retrieving the console color
-    local coltable = string.Explode(",", hm_color:GetString())
+    local coltable = StringExplode(",", hm_color:GetString())
     local newcol = {}
 
     for k, v in pairs(coltable) do
@@ -537,7 +539,7 @@ local function GrabColor() -- Used for retrieving the console color
 end
 
 local function GrabCritColor() -- Used for retrieving the console color
-    local coltable = string.Explode(",", hm_critcolor:GetString())
+    local coltable = StringExplode(",", hm_critcolor:GetString())
     local newcol = {}
 
     for k, v in pairs(coltable) do
@@ -631,7 +633,7 @@ hook.Add("HUDPaint", "HitmarkerDrawer", function()
         col.a = hm_Alpha
         surface.SetDrawColor(col)
 
-        local sel = string.lower(hm_type:GetString())
+        local sel = StringLower(hm_type:GetString())
         -- The drawing part of the hitmarkers and the various types you can choose
         if sel == "lines" then
             surface.DrawLine(x - 6, y - 5, x - 11, y - 10)

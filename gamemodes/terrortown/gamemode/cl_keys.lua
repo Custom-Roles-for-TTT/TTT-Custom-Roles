@@ -4,6 +4,8 @@ local input = input
 local string = string
 local timer = timer
 
+local StringSub = string.sub
+
 local function SendWeaponDrop()
     RunConsoleCommand("ttt_dropweapon")
 
@@ -57,8 +59,8 @@ function GM:PlayerBindPress(ply, bind, pressed)
         elseif TBHUD:PlayerIsFocused() then
             return TBHUD:UseFocused()
         end
-    elseif string.sub(bind, 1, 4) == "slot" and pressed then
-        local idx = tonumber(string.sub(bind, 5, -1)) or 1
+    elseif StringSub(bind, 1, 4) == "slot" and pressed then
+        local idx = tonumber(StringSub(bind, 5, -1)) or 1
 
         -- if radiomenu is open, override weapon select
         if RADIO.Show then

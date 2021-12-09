@@ -15,6 +15,9 @@ local timer = timer
 local weapons = weapons
 
 local GetAllPlayers = player.GetAll
+local StringUpper = string.upper
+local StringFormat = string.format
+local StringSub = string.sub
 
 -- attempts to get the weapon used from a DamageInfo instance needed because the
 -- GetAmmoType value is useless and inflictor isn't properly set (yet)
@@ -98,7 +101,7 @@ end
 
 -- Uppercases the first character only
 function string.Capitalize(str)
-    return string.upper(string.sub(str, 1, 1)) .. string.sub(str, 2)
+    return StringUpper(StringSub(str, 1, 1)) .. StringSub(str, 2)
 end
 util.Capitalize = string.Capitalize
 
@@ -337,7 +340,7 @@ function Key(binding, default)
     local b = input.LookupBinding(binding)
     if not b then return default end
 
-    return string.upper(b)
+    return StringUpper(b)
 end
 
 local exp = math.exp
@@ -442,5 +445,5 @@ function util.SimpleTime(seconds, fmt)
     seconds = (seconds - s) / 60
     local m = seconds % 60
 
-    return string.format(fmt, m, s, ms)
+    return StringFormat(fmt, m, s, ms)
 end

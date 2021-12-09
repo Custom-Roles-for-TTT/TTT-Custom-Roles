@@ -77,6 +77,10 @@ local timer = timer
 local util = util
 
 local GetAllPlayers = player.GetAll
+local StringLower = string.lower
+local StringUpper = string.upper
+local StringSub = string.sub
+local StringStartsWith = string.StartWith
 
 -- Round times
 CreateConVar("ttt_roundtime_minutes", "10", FCVAR_NOTIFY)
@@ -1024,7 +1028,7 @@ function PrintResultMessage(type)
             ServerLog("Result: Monsters win.\n")
         else
             local plural = ROLE_STRINGS_PLURAL[monster_role]
-            LANG.Msg("win_" .. string.lower(plural), { role = plural })
+            LANG.Msg("win_" .. StringLower(plural), { role = plural })
             ServerLog("Result: " .. plural .. " win.\n")
         end
     else
@@ -1039,7 +1043,7 @@ function CheckForMapSwitch()
 
     local time_left = math.max(0, (GetConVar("ttt_time_limit_minutes"):GetInt() * 60) - CurTime())
     local switchmap = false
-    local nextmap = string.upper(game.GetMapNext())
+    local nextmap = StringUpper(game.GetMapNext())
 
     if rounds_left <= 0 then
         LANG.Msg("limit_round", { mapname = nextmap })
@@ -1834,13 +1838,13 @@ hook.Add("ScaleNPCDamage", "HitmarkerPlayerCritDetector", function(npc, hitgroup
 end)
 
 hook.Add("PlayerSay", "ColorMixerOpen", function(ply, text, team_only)
-    text = string.lower(text)
-    if (string.sub(text, 1, 12) == "!hmcritcolor") then
+    text = StringLower(text)
+    if (StringSub(text, 1, 12) == "!hmcritcolor") then
         net.Start("TTT_OpenMixer")
         net.WriteBool(true)
         net.Send(ply)
         return false
-    elseif (string.sub(text, 1, 8) == "!hmcolor") then
+    elseif (StringSub(text, 1, 8) == "!hmcolor") then
         net.Start("TTT_OpenMixer")
         net.WriteBool(false)
         net.Send(ply)
@@ -1860,7 +1864,7 @@ hook.Add("PlayerDeath", "TTT_ClientDeathNotify", function(victim, entity, killer
         elseif killer == victim then
             reason = "suicide"
         elseif IsValid(entity) then
-            if victim:IsPlayer() and (string.StartWith(entity:GetClass(), "prop_physics") or entity:GetClass() == "prop_dynamic") then
+            if victim:IsPlayer() and (StringStartsWith(entity:GetClass(), "prop_physics") or entity:GetClass() == "prop_dynamic") then
                 -- If the killer is also a prop
                 reason = "prop"
             elseif IsValid(killer) then
@@ -1934,18 +1938,18 @@ function HandleRoleEquipment()
             local norandom = false
             -- Extract the weapon name from the file name
             local lastdotpos = v:find("%.")
-            local weaponname = string.sub(v, 0, lastdotpos - 1)
+            local weaponname = StringSub(v, 0, lastdotpos - 1)
 
             -- Check that there isn't a two-part extension (e.g. "something.exclude.txt")
-            local extension = string.sub(v, lastdotpos + 1, #v)
+            local extension = StringSub(v, lastdotpos + 1, #v)
             lastdotpos = extension:find("%.")
 
             -- If there is, check if it equals "exclude"
             if lastdotpos ~= nil then
-                extension = string.sub(extension, 0, lastdotpos - 1)
-                if string.lower(extension) == "exclude" then
+                extension = StringSub(extension, 0, lastdotpos - 1)
+                if StringLower(extension) == "exclude" then
                     exclude = true
-                elseif string.lower(extension) == "norandom" then
+                elseif StringLower(extension) == "norandom" then
                     norandom = true
                 end
             end

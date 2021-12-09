@@ -3,6 +3,8 @@ local net = net
 local string = string
 local table = table
 
+local StringUpper = string.upper
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -92,7 +94,7 @@ hook.Add("TTTTargetIDPlayerText", "OldMan_TTTTargetIDPlayerText", function(ent, 
     if GetRoundState() < ROUND_ACTIVE then return end
 
     if IsOldManVisible(ent) then
-        return string.upper(ROLE_STRINGS[ROLE_OLDMAN]), ROLE_COLORS_RADAR[ROLE_OLDMAN]
+        return StringUpper(ROLE_STRINGS[ROLE_OLDMAN]), ROLE_COLORS_RADAR[ROLE_OLDMAN]
     end
 end)
 

@@ -10,6 +10,7 @@ local table = table
 local util = util
 
 local GetAllPlayers = player.GetAll
+local StringSub = string.sub
 
 SCORE = SCORE or {}
 SCORE.Events = SCORE.Events or {}
@@ -252,7 +253,7 @@ function SCORE:StreamToClients()
 
         repeat
             net.Start("TTT_ReportStream_Part")
-            net.WriteData(string.sub(events, curpos + 1, curpos + MaxStreamLength + 1), MaxStreamLength)
+            net.WriteData(StringSub(events, curpos + 1, curpos + MaxStreamLength + 1), MaxStreamLength)
             net.Broadcast()
 
             curpos = curpos + MaxStreamLength + 1
@@ -260,7 +261,7 @@ function SCORE:StreamToClients()
 
         net.Start("TTT_ReportStream")
         net.WriteUInt(len, 16)
-        net.WriteData(string.sub(events, curpos + 1, len), len - curpos)
+        net.WriteData(StringSub(events, curpos + 1, len), len - curpos)
         net.Broadcast()
     end
 end

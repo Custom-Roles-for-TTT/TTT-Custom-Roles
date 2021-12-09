@@ -20,6 +20,7 @@ local weapons = weapons
 local GetAllPlayers = player.GetAll
 local CreateEntity = ents.Create
 local IsEquipment = WEPS.IsEquipment
+local StringLower = string.lower
 
 -- Prevent players from picking up multiple weapons of the same type etc
 function GM:PlayerCanPickupWeapon(ply, wep)
@@ -736,12 +737,12 @@ net.Receive("TTT_ConfigureRoleWeapons", function(len, ply)
         return
     end
 
-    local id = string.lower(net.ReadString())
+    local id = StringLower(net.ReadString())
     local role = net.ReadInt(8)
     local includeSelected = net.ReadBool()
     local excludeSelected = net.ReadBool()
     local noRandomSelected = net.ReadBool()
-    local roleName = string.lower(ROLE_STRINGS_RAW[role])
+    local roleName = StringLower(ROLE_STRINGS_RAW[role])
 
     -- Ensure directories exist
     if not file.IsDir("roleweapons", "DATA") then

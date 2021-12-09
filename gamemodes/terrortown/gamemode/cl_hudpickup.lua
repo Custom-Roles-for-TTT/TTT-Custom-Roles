@@ -3,10 +3,11 @@ include("shared.lua")
 local math = math
 local pairs = pairs
 local surface = surface
-local string = string
 local table = table
 
 local TryTranslation = LANG.TryTranslation
+local StringUpper = string.upper
+local StringLower = string.lower
 
 GM.PickupHistory = {}
 GM.PickupHistoryLast = 0
@@ -37,7 +38,7 @@ function GM:HUDWeaponPickedUp(wep)
 
     local pickup = {}
     pickup.time = CurTime()
-    pickup.name = string.upper(name)
+    pickup.name = StringUpper(name)
     pickup.holdtime = 5
     pickup.font = "DefaultBold"
     pickup.fadein = 0.04
@@ -94,7 +95,7 @@ end
 function GM:HUDAmmoPickedUp(itemname, amount)
     if not (IsValid(LocalPlayer()) and LocalPlayer():Alive()) then return end
 
-    local itemname_trans = TryTranslation(string.lower("ammo_" .. itemname))
+    local itemname_trans = TryTranslation(StringLower("ammo_" .. itemname))
 
     if custom_ammo:GetBool() then
         if itemname == "alyxgun" then
@@ -108,7 +109,7 @@ function GM:HUDAmmoPickedUp(itemname, amount)
 
     if self.PickupHistory then
 
-        local localized_name = string.upper(itemname_trans)
+        local localized_name = StringUpper(itemname_trans)
         for k, v in pairs(self.PickupHistory) do
             if v.name == localized_name then
 
@@ -121,7 +122,7 @@ function GM:HUDAmmoPickedUp(itemname, amount)
 
     local pickup = {}
     pickup.time = CurTime()
-    pickup.name = string.upper(itemname_trans)
+    pickup.name = StringUpper(itemname_trans)
     pickup.holdtime = 5
     pickup.font = "DefaultBold"
     pickup.fadein = 0.04

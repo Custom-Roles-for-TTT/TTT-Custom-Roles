@@ -14,6 +14,7 @@ local util = util
 local GetAllPlayers = player.GetAll
 local GetPTranslation = LANG.GetParamTranslation
 local GetRaw = LANG.GetRawTranslation
+local StringUpper = string.upper
 
 local key_params = { usekey = Key("+use", "USE"), walkkey = Key("+walk", "WALK") }
 
@@ -589,34 +590,34 @@ function GM:HUDDrawTargetID()
     text = nil
     local secondary_text = nil
     if target_traitor then
-        text = string.upper(ROLE_STRINGS[ROLE_TRAITOR])
+        text = StringUpper(ROLE_STRINGS[ROLE_TRAITOR])
         col = ROLE_COLORS_RADAR[ROLE_TRAITOR]
     elseif target_special_traitor then
         local role = ent:GetRole()
-        text = string.upper(ROLE_STRINGS[role])
+        text = StringUpper(ROLE_STRINGS[role])
         col = ROLE_COLORS_RADAR[role]
     elseif target_glitch then
         local bluff = ent:GetNWInt("GlitchBluff", ROLE_TRAITOR)
         if client:IsZombie() and client:IsTraitorTeam() then
             bluff = ROLE_ZOMBIE
         end
-        text = string.upper(ROLE_STRINGS[bluff])
+        text = StringUpper(ROLE_STRINGS[bluff])
         col = ROLE_COLORS_RADAR[bluff]
     elseif target_detective then
-        text = string.upper(ROLE_STRINGS[ROLE_DETECTIVE])
+        text = StringUpper(ROLE_STRINGS[ROLE_DETECTIVE])
         col = ROLE_COLORS_RADAR[ROLE_DETECTIVE]
     elseif target_special_detective then
         local role = ent:GetRole()
-        text = string.upper(ROLE_STRINGS[role])
+        text = StringUpper(ROLE_STRINGS[role])
         col = ROLE_COLORS_RADAR[role]
     elseif target_jester then
-        text = string.upper(ROLE_STRINGS[ROLE_JESTER])
+        text = StringUpper(ROLE_STRINGS[ROLE_JESTER])
         col = ROLE_COLORS_RADAR[ROLE_JESTER]
     elseif target_monster then
-        text = string.upper(ROLE_STRINGS[target_monster])
+        text = StringUpper(ROLE_STRINGS[target_monster])
         col = GetRoleTeamColor(ROLE_TEAM_MONSTER, "radar")
     elseif target_independent then
-        text = string.upper(ROLE_STRINGS[target_independent])
+        text = StringUpper(ROLE_STRINGS[target_independent])
         col = GetRoleTeamColor(ROLE_TEAM_INDEPENDENT, "radar")
     elseif ent.sb_tag and ent.sb_tag.txt ~= nil then
         text = L[ent.sb_tag.txt]

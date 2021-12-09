@@ -1,16 +1,22 @@
+local StringUpper = string.upper
+local StringLower = string.lower
+local StringFind = string.find
+local StringSplit = string.Split
+local StringSub = string.sub
+
 -- Version string for display and function for version checks
 CR_VERSION = "1.4.2"
 CR_BETA = true
 
 function CRVersion(version)
-    local installedVersionRaw = string.Split(CR_VERSION, ".")
+    local installedVersionRaw = StringSplit(CR_VERSION, ".")
     local installedVersion = {
         major = tonumber(installedVersionRaw[1]),
         minor = tonumber(installedVersionRaw[2]),
         patch = tonumber(installedVersionRaw[3])
     }
 
-    local neededVersionRaw = string.Split(version, ".")
+    local neededVersionRaw = StringSplit(version, ".")
     local neededVersion = {
         major = tonumber(neededVersionRaw[1]),
         minor = tonumber(neededVersionRaw[2]),
@@ -609,7 +615,7 @@ ROLE_STRINGS_SHORT = {
 }
 
 function StartsWithVowel(word)
-    local firstletter = string.sub(word, 1, 1)
+    local firstletter = StringSub(word, 1, 1)
     return firstletter == "a" or
         firstletter == "e" or
         firstletter == "i" or
@@ -625,11 +631,11 @@ function UpdateRoleStrings()
 
             local plural = GetGlobalString("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name_plural", "")
             if plural == "" then -- Fallback if no plural is given. Does NOT handle all cases properly
-                local lastChar = string.lower(string.sub(name, #name, #name))
+                local lastChar = StringLower(StringSub(name, #name, #name))
                 if lastChar == "s" then
                     ROLE_STRINGS_PLURAL[role] = name .. "es"
                 elseif lastChar == "y" then
-                    ROLE_STRINGS_PLURAL[role] = string.sub(name, 1, #name - 1) .. "ies"
+                    ROLE_STRINGS_PLURAL[role] = StringSub(name, 1, #name - 1) .. "ies"
                 else
                     ROLE_STRINGS_PLURAL[role] = name .. "s"
                 end
@@ -698,7 +704,7 @@ function RegisterRole(tbl)
     end
 
     local roleID = ROLE_MAX + 1
-    _G["ROLE_" .. string.upper(tbl.nameraw)] = roleID
+    _G["ROLE_" .. StringUpper(tbl.nameraw)] = roleID
     ROLE_MAX = roleID
 
     ROLE_STRINGS_RAW[roleID] = tbl.nameraw
@@ -831,8 +837,8 @@ local function AddInternalRoles()
     for _, dir in ipairs(dirs) do
         local files, _ = file.Find(root .. dir .. "/*.lua", "LUA")
         for _, fil in ipairs(files) do
-            local isClientFile = string.find(fil, "cl_")
-            local isSharedFile = fil == "shared.lua" or string.find(fil, "sh_")
+            local isClientFile = StringFind(fil, "cl_")
+            local isSharedFile = fil == "shared.lua" or StringFind(fil, "sh_")
 
             if SERVER then
                 -- Send client and shared files to clients
@@ -867,11 +873,11 @@ local function GetRoleFromStackTrace()
             -- Get the file path
             local source = info.short_src
             -- Extract the file name from the path and drop the extension
-            local role_name = string.lower(string.StripExtension(string.GetFileFromFilename(source)))
+            local role_name = StringLower(string.StripExtension(string.GetFileFromFilename(source)))
 
             -- Find the role whose raw string matches the file name
             for r, str in pairs(ROLE_STRINGS_RAW) do
-                if string.lower(str) == role_name then
+                if StringLower(str) == role_name then
                     role = r
                     break
                 end

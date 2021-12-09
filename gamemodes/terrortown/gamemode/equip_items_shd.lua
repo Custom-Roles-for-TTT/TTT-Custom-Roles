@@ -3,6 +3,8 @@ local pairs = pairs
 local string = string
 local table = table
 
+local StringLower = string.lower
+
 -- This table is used by the client to show items in the equipment menu, and by
 -- the server to check if a certain role is allowed to buy a certain item.
 
@@ -144,7 +146,7 @@ function GetEquipmentItemByName(name)
     PopulateEquipmentCache()
 
     for _, equip in pairs(EquipmentCache) do
-        if string.lower(equip.name) == string.lower(name) then
+        if StringLower(equip.name) == StringLower(name) then
             return equip
         end
     end

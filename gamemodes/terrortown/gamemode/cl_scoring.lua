@@ -21,6 +21,8 @@ local util = util
 local vgui = vgui
 local parentPanel, parentTabs, closeButton, saveButton
 
+local StringUpper = string.upper
+
 CLSCORE = {}
 CLSCORE.Events = {}
 CLSCORE.Scores = {}
@@ -249,8 +251,8 @@ end
 
 local function GetWinTitle(wintype)
     local wintitles = {
-        [WIN_INNOCENT] = { txt = "hilite_win_role_plural", params = { role = string.upper(ROLE_STRINGS_PLURAL[ROLE_INNOCENT]) }, c = ROLE_COLORS[ROLE_INNOCENT] },
-        [WIN_TRAITOR] = { txt = "hilite_win_role_plural", params = { role = string.upper(ROLE_STRINGS_PLURAL[ROLE_TRAITOR]) }, c = ROLE_COLORS[ROLE_TRAITOR] },
+        [WIN_INNOCENT] = { txt = "hilite_win_role_plural", params = { role = StringUpper(ROLE_STRINGS_PLURAL[ROLE_INNOCENT]) }, c = ROLE_COLORS[ROLE_INNOCENT] },
+        [WIN_TRAITOR] = { txt = "hilite_win_role_plural", params = { role = StringUpper(ROLE_STRINGS_PLURAL[ROLE_TRAITOR]) }, c = ROLE_COLORS[ROLE_TRAITOR] },
         [WIN_MONSTER] = { txt = "hilite_win_role_plural", params = { role = "MONSTERS" }, c = GetRoleTeamColor(ROLE_TEAM_MONSTER) }
     }
     local title = wintitles[wintype]
@@ -266,7 +268,7 @@ local function GetWinTitle(wintype)
         local monster_role = GetWinningMonsterRole()
         -- If a single support role (zombies or vampires) won as the "monsters team", use their role as the label
         if monster_role then
-            title.params = { role = string.upper(ROLE_STRINGS_PLURAL[monster_role]) }
+            title.params = { role = StringUpper(ROLE_STRINGS_PLURAL[monster_role]) }
         -- Otherwise use the monsters label
         else
             title.params = { role = "MONSTERS" }
@@ -419,7 +421,7 @@ end
 function CLSCORE:AddAward(y, pw, award, dpanel)
     local nick = award.nick
     local text = award.text
-    local title = string.upper(award.title)
+    local title = StringUpper(award.title)
 
     local titlelbl = vgui.Create("DLabel", dpanel)
     titlelbl:SetText(title)
@@ -642,7 +644,7 @@ function CLSCORE:BuildSummaryPanel(dpanel)
     for i, r in ipairs(secondary_win_roles) do
         local exwinlbl = vgui.Create("DLabel", dpanel)
         exwinlbl:SetFont("WinSmall")
-        exwinlbl:SetText(PT("hilite_win_role_singular_additional", { role = string.upper(ROLE_STRINGS[r]) }))
+        exwinlbl:SetText(PT("hilite_win_role_singular_additional", { role = StringUpper(ROLE_STRINGS[r]) }))
         exwinlbl:SetTextColor(COLOR_WHITE)
         exwinlbl:SizeToContents()
         local xexwin = (w - exwinlbl:GetWide()) / 2
@@ -936,7 +938,7 @@ function CLSCORE:BuildHilitePanel(dpanel)
     for i, r in ipairs(secondary_win_roles) do
         local exwinlbl = vgui.Create("DLabel", dpanel)
         exwinlbl:SetFont("WinSmall")
-        exwinlbl:SetText(PT("hilite_win_role_singular_additional", { role = string.upper(ROLE_STRINGS[r]) }))
+        exwinlbl:SetText(PT("hilite_win_role_singular_additional", { role = StringUpper(ROLE_STRINGS[r]) }))
         exwinlbl:SetTextColor(COLOR_WHITE)
         exwinlbl:SizeToContents()
         local xexwin = (w - exwinlbl:GetWide()) / 2

@@ -2,6 +2,8 @@ local hook = hook
 local net = net
 local string = string
 
+local StringUpper = string.upper
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -56,7 +58,7 @@ hook.Add("TTTTargetIDPlayerText", "Clown_TTTTargetIDPlayerText", function(ent, c
     if GetRoundState() < ROUND_ACTIVE then return end
 
     if IsClownVisible(ent) then
-        return string.upper(ROLE_STRINGS[ROLE_CLOWN]), ROLE_COLORS_RADAR[ROLE_CLOWN]
+        return StringUpper(ROLE_STRINGS[ROLE_CLOWN]), ROLE_COLORS_RADAR[ROLE_CLOWN]
     end
 end)
 
@@ -109,7 +111,7 @@ end)
 
 hook.Add("TTTScoringWinTitle", "Clown_TTTScoringWinTitle", function(wintype, wintitles, title, secondary_win_role)
     if wintype == WIN_CLOWN then
-        return { txt = "hilite_win_role_singular", params = { role = string.upper(ROLE_STRINGS[ROLE_CLOWN]) }, c = ROLE_COLORS[ROLE_JESTER] }
+        return { txt = "hilite_win_role_singular", params = { role = StringUpper(ROLE_STRINGS[ROLE_CLOWN]) }, c = ROLE_COLORS[ROLE_JESTER] }
     end
 end)
 

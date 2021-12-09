@@ -16,6 +16,8 @@ local vgui = vgui
 local GetAllPlayers = player.GetAll
 local GetTranslation = LANG.GetTranslation
 local GetPTranslation = LANG.GetParamTranslation
+local StringFormat = string.format
+local StringSub = string.sub
 
 include("sb_team.lua")
 
@@ -54,7 +56,7 @@ local function UntilMapChange()
     time_left = time_left - floor(m * 60)
     local s = floor(time_left)
 
-    return rounds_left, string.format("%02i:%02i:%02i", h, m, s)
+    return rounds_left, StringFormat("%02i:%02i:%02i", h, m, s)
 end
 
 GROUP_TERROR = 1
@@ -350,7 +352,7 @@ function PANEL:PerformLayout()
     local hname = self.hostname:GetValue()
     local tw, _ = surface.GetTextSize(hname)
     while tw > hw do
-        hname = string.sub(hname, 1, -6) .. "..."
+        hname = StringSub(hname, 1, -6) .. "..."
         tw, _ = surface.GetTextSize(hname)
     end
 

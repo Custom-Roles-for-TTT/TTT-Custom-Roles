@@ -4,7 +4,6 @@ local concommand = concommand
 local draw = draw
 local hook = hook
 local ipairs = ipairs
-local string = string
 local table = table
 local timer = timer
 local vgui = vgui
@@ -12,6 +11,7 @@ local vgui = vgui
 local GetAllPlayers = player.GetAll
 local GetTranslation = LANG.GetTranslation
 local GetPTranslation = LANG.GetParamTranslation
+local StringRep = string.rep
 
 ---- Round start
 
@@ -74,7 +74,7 @@ local function GetTextForLocalPlayer()
 
             for _, ply in ipairs(allies) do
                 if ply ~= client then
-                    allylist = allylist .. string.rep(" ", 42) .. ply:Nick() .. "\n"
+                    allylist = allylist .. StringRep(" ", 42) .. ply:Nick() .. "\n"
                 end
             end
             comrades = GetPTranslation("info_popup_monster_comrades", table.Merge(params, { allylist = allylist }))
@@ -102,7 +102,7 @@ local function GetTextForLocalPlayer()
 
             for _, ply in ipairs(traitors) do
                 if ply ~= client then
-                    traitorlist = traitorlist .. string.rep(" ", 42) .. ply:Nick() .. "\n"
+                    traitorlist = traitorlist .. StringRep(" ", 42) .. ply:Nick() .. "\n"
                 end
             end
 

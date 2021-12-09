@@ -7,7 +7,6 @@ local math = math
 local net = net
 local pairs = pairs
 local surface = surface
-local string = string
 local table = table
 local vgui = vgui
 local weapons = weapons
@@ -17,6 +16,8 @@ local weapons = weapons
 local GetWeapon = weapons.GetStored
 local GetTranslation = LANG.GetTranslation
 local GetPTranslation = LANG.GetParamTranslation
+local StringFind = string.find
+local StringLower = string.lower
 
 -- create ClientConVars
 local numColsVar = CreateClientConVar("ttt_bem_cols", 4, true, false, "Sets the number of columns in the Traitor/Detective menu's item list.")
@@ -734,7 +735,7 @@ local function TraitorMenuPopup()
             local roleitems = GetEquipmentForRole(ply:GetRole(), ply:IsDetectiveLike() and not ply:IsDetectiveTeam(), false)
             local filtered = {}
             for _, v in pairs(roleitems) do
-                if v and v["name"] and string.find(string.lower(SafeTranslate(v["name"])), string.lower(value)) then
+                if v and v["name"] and StringFind(StringLower(SafeTranslate(v["name"])), StringLower(value)) then
                     table.insert(filtered, v)
                 end
             end
