@@ -11,6 +11,7 @@
 - Fixed bodysnatcher killed event redefining existing event ID
 - Fixed freeze in round summary when a player has multi-byte characters in their name
 - Fixed round summary highlights player stats spacing
+- Fixed killing a jester team member causing the team kill "awards" to show on the round summary highlight tab
 
 ### Developer
 - Added parameter to `GenerateNewEventID` to allow roles to associate generated event IDs back to the role
