@@ -2,7 +2,6 @@
 ---- scoreboard.
 
 local draw = draw
-local hook = hook
 local ipairs = ipairs
 local IsValid = IsValid
 local pairs = pairs
@@ -12,6 +11,7 @@ local table = table
 local timer = timer
 local vgui = vgui
 
+local CallHook = hook.Call
 local GetAllPlayers = player.GetAll
 local GetTranslation = LANG.GetTranslation
 local GetPTranslation = LANG.GetParamTranslation
@@ -83,7 +83,7 @@ function ScoreGroup(p)
     if not IsValid(p) then return -1 end -- will not match any group panel
 
     local fake_dead = (p.IsFakeDead and p:IsFakeDead())
-    local group = hook.Call("TTTScoreGroup", nil, p)
+    local group = CallHook("TTTScoreGroup", nil, p)
     -- Ignore the Dead Ringer's scoreboard override because it doesn't work with custom roles
     -- Otherwise, if that hook gave us a group, use it
     if group and not fake_dead then
@@ -181,7 +181,7 @@ function PANEL:Init()
         self.ply_groups[GROUP_SEARCHED] = t
     end
 
-    hook.Call("TTTScoreGroups", nil, self.ply_frame:GetCanvas(), self.ply_groups)
+    CallHook("TTTScoreGroups", nil, self.ply_frame:GetCanvas(), self.ply_groups)
 
     -- the various score column headers
     self.cols = {}
@@ -198,7 +198,7 @@ function PANEL:Init()
     self:AddFakeColumn(GetTranslation("equip_spec_name"), nil, 70, "name")
 
     -- Let hooks add their column headers (via AddColumn() or AddFakeColumn())
-    hook.Call("TTTScoreboardColumns", nil, self)
+    CallHook("TTTScoreboardColumns", nil, self)
 
     self:UpdateScoreboard()
     self:StartUpdateTimer()

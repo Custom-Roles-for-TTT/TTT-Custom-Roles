@@ -1,7 +1,6 @@
 ---- Player spawning/dying
 
 local concommand = concommand
-local hook = hook
 local ipairs = ipairs
 local IsValid = IsValid
 local math = math
@@ -12,6 +11,8 @@ local table = table
 local timer = timer
 local util = util
 
+local CallHook = hook.Call
+local RunHook = hook.Run
 local GetAllPlayers = player.GetAll
 local CreateEntity = ents.Create
 local FindEntsInBox = ents.FindInBox
@@ -104,12 +105,12 @@ function GM:PlayerSpawn(ply)
             end
         end
     else
-        hook.Call("PlayerLoadout", GAMEMODE, ply)
+        RunHook("PlayerLoadout", ply)
     end
 
     -- ye olde hooks
-    hook.Call("PlayerSetModel", GAMEMODE, ply)
-    hook.Call("TTTPlayerSetColor", GAMEMODE, ply)
+    RunHook("PlayerSetModel", ply)
+    RunHook("TTTPlayerSetColor", ply)
 
     ply:SetupHands()
 
@@ -358,7 +359,7 @@ function GM:KeyPress(ply, key)
         if ply:ShouldShowSpectatorHUD() then
             local tgt = ply:GetObserverTarget()
             local powers = {}
-            local skip, power_property = hook.Call("TTTSpectatorHUDKeyPress", nil, ply, tgt, powers)
+            local skip, power_property = CallHook("TTTSpectatorHUDKeyPress", nil, ply, tgt, powers)
             if power_property then
                 -- Get the player's current power and make sure they can do something with the key the pressed
                 local current_power = ply:GetNWInt(power_property, 0)
@@ -1286,7 +1287,7 @@ function GM:Tick()
                 ply.scanner_weapon:Think()
             end
 
-            hook.Call("TTTPlayerAliveThink", nil, ply)
+            CallHook("TTTPlayerAliveThink", nil, ply)
         elseif tm == TEAM_SPEC then
             if ply.propspec then
                 PROPSPEC.Recharge(ply)

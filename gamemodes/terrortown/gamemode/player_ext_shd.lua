@@ -3,7 +3,6 @@
 local plymeta = FindMetaTable("Player")
 if not plymeta then return end
 
-local hook = hook
 local ipairs = ipairs
 local IsValid = IsValid
 local math = math
@@ -13,6 +12,7 @@ local table = table
 local timer = timer
 local util = util
 
+local CallHook = hook.Call
 local GetAllPlayers = player.GetAll
 local MathAbs = math.abs
 
@@ -25,7 +25,7 @@ local oldSetRole = plymeta.SetRole
 function plymeta:SetRole(role)
     local oldRole = self:GetRole()
     oldSetRole(self, role)
-    hook.Call("TTTPlayerRoleChanged", nil, self, oldRole, role)
+    CallHook("TTTPlayerRoleChanged", nil, self, oldRole, role)
 end
 
 -- Player is alive and in an active round

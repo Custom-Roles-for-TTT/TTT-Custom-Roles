@@ -1,5 +1,4 @@
 local file = file
-local hook = hook
 local ipairs = ipairs
 local IsValid = IsValid
 local math = math
@@ -8,6 +7,8 @@ local pairs = pairs
 local string = string
 local table = table
 
+local CallHook = hook.Call
+local RunHook = hook.Run
 local GetAllPlayers = player.GetAll
 local StringUpper = string.upper
 local StringLower = string.lower
@@ -1117,7 +1118,7 @@ function GM:PlayerFootstep(ply, pos, foot, sound, volume, rf)
         return true
     end
 
-    if hook.Call("TTTBlockPlayerFootstepSound", nil, ply) then
+    if CallHook("TTTBlockPlayerFootstepSound", nil, ply) then
         return true
     end
 end
@@ -1133,7 +1134,7 @@ function GM:Move(ply, mv)
             basemul = 120 / 220
             slowed = true
         end
-        local mul = hook.Call("TTTPlayerSpeedModifier", GAMEMODE, ply, slowed, mv) or 1
+        local mul = RunHook("TTTPlayerSpeedModifier", ply, slowed, mv) or 1
         mul = basemul * mul
         mv:SetMaxClientSpeed(mv:GetMaxClientSpeed() * mul)
         mv:SetMaxSpeed(mv:GetMaxSpeed() * mul)
@@ -1144,7 +1145,7 @@ function GetSprintMultiplier(ply, sprinting)
     local mult = 1
     if IsValid(ply) then
         local mults = {}
-        hook.Call("TTTSpeedMultiplier", nil, ply, mults)
+        CallHook("TTTSpeedMultiplier", nil, ply, mults)
         for _, m in pairs(mults) do
             mult = mult * m
         end
@@ -1168,7 +1169,7 @@ function GetSprintMultiplier(ply, sprinting)
 end
 
 function UpdateRoleWeaponState()
-    hook.Call("TTTUpdateRoleState", nil)
+    CallHook("TTTUpdateRoleState", nil)
 
     if SERVER then
         net.Start("TTT_ResetBuyableWeaponsCache")

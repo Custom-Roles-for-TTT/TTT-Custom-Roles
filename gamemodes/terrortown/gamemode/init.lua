@@ -76,6 +76,8 @@ local table = table
 local timer = timer
 local util = util
 
+local CallHook = hook.Call
+local RunHook = hook.Run
 local GetAllPlayers = player.GetAll
 local StringLower = string.lower
 local StringUpper = string.upper
@@ -447,7 +449,7 @@ end
 -- I don't like it any more than you do, dear reader.
 function GM:SyncGlobals()
     -- For some reason hooking "SyncGlobals" directly is unreliable so... here we go
-    hook.Call("TTTSyncGlobals", nil)
+    CallHook("TTTSyncGlobals", nil)
 
     SetGlobalBool("ttt_detective", ttt_detective:GetBool())
     SetGlobalBool("ttt_haste", ttt_haste:GetBool())
@@ -587,7 +589,7 @@ local function NameChangeKick()
     if GetRoundState() == ROUND_ACTIVE then
         for _, ply in ipairs(player.GetHumans()) do
             if ply.spawn_nick then
-                if ply.has_spawned and ply.spawn_nick ~= GetPlayerName(ply) and not hook.Call("TTTNameChangeKick", GAMEMODE, ply) then
+                if ply.has_spawned and ply.spawn_nick ~= GetPlayerName(ply) and not RunHook("TTTNameChangeKick", ply) then
                     local t = GetConVar("ttt_namechange_bantime"):GetInt()
                     local msg = "Changed name during a round"
                     if t > 0 then
@@ -701,7 +703,7 @@ function PrepareRound()
     -- Check playercount
     if CheckForAbort() then return end
 
-    local delay_round, delay_length = hook.Call("TTTDelayRoundStartForVote", GAMEMODE)
+    local delay_round, delay_length = RunHook("TTTDelayRoundStartForVote")
 
     if delay_round then
         delay_length = delay_length or 30
@@ -729,7 +731,7 @@ function PrepareRound()
 
     -- New look. Random if no forced model set.
     GAMEMODE.playermodel = GAMEMODE.force_plymodel == "" and GetRandomPlayerModel() or GAMEMODE.force_plymodel
-    GAMEMODE.playercolor = hook.Call("TTTPlayerColor", GAMEMODE, GAMEMODE.playermodel)
+    GAMEMODE.playercolor = RunHook("TTTPlayerColor", GAMEMODE.playermodel)
 
     if CheckForAbort() then return end
 
@@ -768,7 +770,7 @@ function PrepareRound()
     timer.Simple(1, SendRoleReset)
 
     -- Tell hooks and map we started prep
-    hook.Call("TTTPrepareRound")
+    RunHook("TTTPrepareRound")
     ClearAllFootsteps()
     ents.TTT.TriggerRoundStateOutputs(ROUND_PREP)
 end
@@ -1000,7 +1002,7 @@ function BeginRound()
     ClearAllFootsteps()
     GAMEMODE:UpdatePlayerLoadouts() -- needs to happen when round_active
 
-    hook.Call("TTTBeginRound")
+    RunHook("TTTBeginRound")
 
     ents.TTT.TriggerRoundStateOutputs(ROUND_BEGIN)
 end
@@ -1008,7 +1010,7 @@ end
 function PrintResultMessage(type)
     ServerLog("Round ended.\n")
 
-    local overriden = hook.Call("TTTPrintResultMessage", nil, type)
+    local overriden = CallHook("TTTPrintResultMessage", nil, type)
     if overriden then return end
 
     if type == WIN_TIMELIMIT then
@@ -1100,7 +1102,7 @@ function EndRound(type)
 
     -- server plugins might want to start a map vote here or something
     -- these hooks are not used by TTT internally
-    hook.Call("TTTEndRound", GAMEMODE, type)
+    RunHook("TTTEndRound", type)
 
     ents.TTT.TriggerRoundStateOutputs(ROUND_POST, type)
 end
@@ -1119,7 +1121,7 @@ local function HandleWinCondition(win)
     if win ~= WIN_TIMELIMIT then
         -- Handle role-specific checks
         local win_blocks = {}
-        hook.Call("TTTWinCheckBlocks", nil, win_blocks)
+        CallHook("TTTWinCheckBlocks", nil, win_blocks)
 
         for _, win_block in ipairs(win_blocks) do
             win = win_block(win)
@@ -1128,7 +1130,7 @@ local function HandleWinCondition(win)
 
     -- If, after all that, we have a win condition then end the round
     if win ~= WIN_NONE then
-        hook.Call("TTTWinCheckComplete", nil, win)
+        CallHook("TTTWinCheckComplete", nil, win)
 
         timer.Simple(0.5, function() EndRound(win) end) -- Slight delay to make sure alternate winners go through before scoring
     end
@@ -1153,7 +1155,7 @@ local function WinChecker()
 
             -- If this isn't a map win, call the hook
             if win == WIN_NONE then
-                win = hook.Call("TTTCheckForWin", GAMEMODE)
+                win = RunHook("TTTCheckForWin")
                 if win > WIN_MAX then
                     ErrorNoHalt("WARNING: 'TTTCheckForWin' hook returned win ID '" .. win .. "' that exceeds the expected maximum of " .. WIN_MAX .. ". Please use GenerateNewWinID() instead to get a unique win ID.\n")
                 end
@@ -1351,7 +1353,7 @@ function SelectRoles()
     local choices_copy = table.Copy(choices)
     local prev_roles_copy = table.Copy(prev_roles)
 
-    hook.Call("TTTSelectRoles", nil, choices_copy, prev_roles_copy)
+    CallHook("TTTSelectRoles", nil, choices_copy, prev_roles_copy)
 
     local forcedTraitorCount = 0
     local forcedSpecialTraitorCount = 0
@@ -1569,7 +1571,7 @@ function SelectRoles()
     -- pick special detectives
     if max_special_detective_count > 0 then
         -- Allow external addons to modify available roles and their weights
-        hook.Call("TTTSelectRolesDetectiveOptions", nil, specialDetectiveRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+        CallHook("TTTSelectRolesDetectiveOptions", nil, specialDetectiveRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
 
         for _ = 1, max_special_detective_count do
             if #specialDetectiveRoles ~= 0 and math.random() <= GetConVar("ttt_special_detective_chance"):GetFloat() and #detectives > 0 then
@@ -1623,7 +1625,7 @@ function SelectRoles()
         -- pick special traitors
         if max_special_traitor_count > 0 then
             -- Allow external addons to modify available roles and their weights
-            hook.Call("TTTSelectRolesTraitorOptions", nil, specialTraitorRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+            CallHook("TTTSelectRolesTraitorOptions", nil, specialTraitorRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
 
             for _ = 1, max_special_traitor_count do
                 if #specialTraitorRoles ~= 0 and math.random() <= GetConVar("ttt_special_traitor_chance"):GetFloat() and #traitors > 0 then
@@ -1652,9 +1654,9 @@ function SelectRoles()
     -- pick independent
     if forcedIndependentCount == 0 and independent_count > 0 and #choices > 0 then
         -- Allow external addons to modify available roles and their weights
-        hook.Call("TTTSelectRolesIndependentOptions", nil, independentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+        CallHook("TTTSelectRolesIndependentOptions", nil, independentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
         if singleJesterIndependent then
-            hook.Call("TTTSelectRolesJesterOptions", nil, independentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+            CallHook("TTTSelectRolesJesterOptions", nil, independentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
         end
 
         if #independentRoles ~= 0 then
@@ -1674,7 +1676,7 @@ function SelectRoles()
 
     -- pick jester
     if not singleJesterIndependent and forcedJesterCount == 0 and jester_count > 0 and #choices > 0 then
-        hook.Call("TTTSelectRolesJesterOptions", nil, jesterRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+        CallHook("TTTSelectRolesJesterOptions", nil, jesterRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
 
         if #jesterRoles ~= 0 then
             local plyPick = math.random(1, #choices)
@@ -1703,7 +1705,7 @@ function SelectRoles()
         end
 
         -- Allow external addons to modify available roles and their weights
-        hook.Call("TTTSelectRolesInnocentOptions", nil, specialInnocentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+        CallHook("TTTSelectRolesInnocentOptions", nil, specialInnocentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
 
         for _ = 1, max_special_innocent_count do
             if #specialInnocentRoles ~= 0 and math.random() <= GetConVar("ttt_special_innocent_chance"):GetFloat() and #choices > 0 then
@@ -1734,7 +1736,7 @@ function SelectRoles()
         local monster_chosen = false
         for _ = 1, monster_count do
             -- Allow external addons to modify available roles and their weights
-            hook.Call("TTTSelectRolesMonsterOptions", nil, monsterRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+            CallHook("TTTSelectRolesMonsterOptions", nil, monsterRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
 
             if #monsterRoles ~= 0 and math.random() <= GetConVar("ttt_monster_chance"):GetFloat() and #choices > 0 and not monster_chosen then
                 local plyPick = math.random(1, #choices)
@@ -1786,7 +1788,7 @@ local function ForceRoundRestart(ply, command, args)
         StopRoundTimers()
 
         -- Let addons know that a round ended
-        hook.Call("TTTEndRound", GAMEMODE, WIN_NONE)
+        RunHook("TTTEndRound", WIN_NONE)
 
         -- do prep
         PrepareRound()

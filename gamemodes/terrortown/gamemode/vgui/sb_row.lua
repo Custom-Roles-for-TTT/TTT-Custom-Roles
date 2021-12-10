@@ -13,6 +13,8 @@ local table = table
 local timer = timer
 local vgui = vgui
 
+local CallHook = hook.Call
+local RunHook = hook.Run
 local GetTranslation = LANG.GetTranslation
 local MathClamp = math.Clamp
 local MathMax = math.max
@@ -55,7 +57,7 @@ function PANEL:Init()
     end
 
     -- Let hooks add their custom columns
-    hook.Call("TTTScoreboardColumns", nil, self)
+    CallHook("TTTScoreboardColumns", nil, self)
 
     for _, c in ipairs(self.cols) do
         c:SetMouseInputEnabled(false)
@@ -174,7 +176,7 @@ end
 
 local function ColorForPlayer(ply)
     if IsValid(ply) then
-        local c = hook.Call("TTTScoreboardColorForPlayer", GAMEMODE, ply)
+        local c = RunHook("TTTScoreboardColorForPlayer", ply)
 
         -- verify that we got a proper color
         if c and istable(c) and c.r and c.b and c.g and c.a then
@@ -202,7 +204,7 @@ function PANEL:Paint(width, height)
     --   end
 
     local ply = self.Player
-    local c = hook.Run("TTTScoreboardRowColorForPlayer", ply)
+    local c = RunHook("TTTScoreboardRowColorForPlayer", ply)
 
     -- Use the default color for players without roles
     if type(c) == "number" and c <= ROLE_NONE then
@@ -234,7 +236,7 @@ function PANEL:Paint(width, height)
     end
 
     -- Allow external addons (like new roles) to manipulate how a player appears on the scoreboard
-    local new_color, new_role_str, flash_role = hook.Call("TTTScoreboardPlayerRole", nil, ply, client, c, roleStr)
+    local new_color, new_role_str, flash_role = CallHook("TTTScoreboardPlayerRole", nil, ply, client, c, roleStr)
     if new_color then c = new_color end
     if new_role_str then roleStr = new_role_str end
 
@@ -316,7 +318,7 @@ function PANEL:UpdatePlayerData()
     local client = LocalPlayer()
     self.nick:SetText(ply:Nick())
     if GetRoundState() >= ROUND_ACTIVE then
-        local nick_override = hook.Call("TTTScoreboardPlayerName", nil, ply, client, self.nick:GetText())
+        local nick_override = CallHook("TTTScoreboardPlayerName", nil, ply, client, self.nick:GetText())
         if nick_override then self.nick:SetText(nick_override) end
     end
 
@@ -435,7 +437,7 @@ function PANEL:DoRightClick()
     local menu = DermaMenu()
     menu.Player = self:GetPlayer()
 
-    local close = hook.Call("TTTScoreboardMenu", nil, menu)
+    local close = CallHook("TTTScoreboardMenu", nil, menu)
     if close then
         menu:Remove()
         return

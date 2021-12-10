@@ -1,11 +1,12 @@
 ---- Karma system stuff
 
 local cvars = cvars
-local hook = hook
 local ipairs = ipairs
 local IsValid = IsValid
 local math = math
 
+local CallHook = hook.Call
+local RunHook = hook.Run
 local GetAllPlayers = player.GetAll
 
 KARMA = {}
@@ -80,7 +81,7 @@ function KARMA.GetKillReward()
 end
 
 function KARMA.GivePenalty(ply, penalty, victim)
-    if not hook.Call("TTTKarmaGivePenalty", nil, ply, penalty, victim) then
+    if not CallHook("TTTKarmaGivePenalty", nil, ply, penalty, victim) then
         ply:SetLiveKarma(math.max(ply:GetLiveKarma() - penalty, 0))
         ply:SetCleanRound(false)
         ply:SetCleanRounds(0)
@@ -90,7 +91,7 @@ function KARMA.GivePenalty(ply, penalty, victim)
 end
 
 function KARMA.GiveReward(ply, reward, victim)
-    if not hook.Call("TTTKarmaGiveReward", nil, ply, reward, victim) then
+    if not CallHook("TTTKarmaGiveReward", nil, ply, reward, victim) then
         reward = KARMA.DecayedMultiplier(ply) * reward
         ply:SetLiveKarma(math.min(ply:GetLiveKarma() + reward, config.max:GetFloat()))
         return reward
@@ -133,7 +134,7 @@ local function WasAvoidable(attacker, victim, dmginfo)
 end
 
 local function ShouldReduceKarma(attacker, victim)
-    local result = hook.Call("TTTKarmaShouldGivePenalty", nil, attacker, victim)
+    local result = CallHook("TTTKarmaShouldGivePenalty", nil, attacker, victim)
     if type(result) == "boolean" then
         return result
     end
@@ -377,7 +378,7 @@ end
 local reason = "Karma too low"
 function KARMA.CheckAutoKick(ply)
     if ply:GetBaseKarma() <= config.kicklevel:GetInt() then
-        if hook.Call("TTTKarmaLow", GAMEMODE, ply) == false then
+        if RunHook("TTTKarmaLow", ply) == false then
             return
         end
         ServerLog(ply:Nick() .. " autokicked/banned for low karma.\n")

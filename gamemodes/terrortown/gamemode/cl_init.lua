@@ -16,6 +16,8 @@ local timer = timer
 local util = util
 local vgui = vgui
 
+local CallHook = hook.Call
+local RunHook = hook.Run
 local GetAllPlayers = player.GetAll
 local MathApproach = math.Approach
 local MathMax = math.max
@@ -179,11 +181,11 @@ local function RoundStateChange(o, n)
     -- players, which hooking code may not expect
     if n == ROUND_PREP then
         -- can enter PREP from any phase due to ttt_roundrestart
-        hook.Call("TTTPrepareRound", GAMEMODE)
+        RunHook("TTTPrepareRound")
     elseif (o == ROUND_PREP) and (n == ROUND_ACTIVE) then
-        hook.Call("TTTBeginRound", GAMEMODE)
+        RunHook("TTTBeginRound")
     elseif (o == ROUND_ACTIVE) and (n == ROUND_POST) then
-        hook.Call("TTTEndRound", GAMEMODE)
+        RunHook("TTTEndRound")
     end
 
     -- whatever round state we get, clear out the voice flags
@@ -384,14 +386,14 @@ function GM:Think()
     local client = LocalPlayer()
     for _, v in pairs(GetAllPlayers()) do
         if v:Alive() and not v:IsSpec() then
-            hook.Call("TTTPlayerAliveClientThink", nil, client, v)
+            CallHook("TTTPlayerAliveClientThink", nil, client, v)
 
             local smokeColor = COLOR_BLACK
             local smokeParticle = "particle/snow.vmt"
             local smokeOffset = Vector(0, 0, 30)
 
             -- Allow other addons to manipulate whether and how players smoke
-            local shouldSmoke, newSmokeColor, newSmokeParticle, newSmokeOffset = hook.Call("TTTShouldPlayerSmoke", nil, v, client, false, smokeColor, smokeParticle, smokeOffset)
+            local shouldSmoke, newSmokeColor, newSmokeParticle, newSmokeOffset = CallHook("TTTShouldPlayerSmoke", nil, v, client, false, smokeColor, smokeParticle, smokeOffset)
             if newSmokeColor then smokeColor = newSmokeColor end
             if newSmokeParticle then smokeParticle = newSmokeParticle end
             if newSmokeOffset then smokeOffset = newSmokeOffset end
@@ -727,7 +729,7 @@ local function SprintFunction()
             sprintTimer = CurTime()
         end
         stamina = stamina - (CurTime() - sprintTimer) * (MathMin(MathMax(consumption, 0.1), 5) * 250)
-        local result = hook.Call("TTTSprintStaminaPost", nil, LocalPlayer(), stamina, sprintTimer, consumption)
+        local result = CallHook("TTTSprintStaminaPost", nil, LocalPlayer(), stamina, sprintTimer, consumption)
         -- Use the overwritten stamina if one is provided
         if result then
             stamina = result
@@ -749,7 +751,7 @@ hook.Add("TTTPrepareRound", "TTTSprintPrepareRound", function()
     -- listen for activation
     hook.Add("Think", "TTTSprintThink", function()
         local client = LocalPlayer()
-        local forward_key = hook.Call("TTTSprintKey", nil, client) or IN_FORWARD
+        local forward_key = CallHook("TTTSprintKey", nil, client) or IN_FORWARD
         if client:KeyDown(forward_key) and client:KeyDown(IN_SPEED) then
             -- forward + selected key
             SprintFunction()
@@ -769,7 +771,7 @@ hook.Add("TTTPrepareRound", "TTTSprintPrepareRound", function()
                 end
 
                 -- Allow things to change the recovery rate
-                recovery = hook.Call("TTTSprintStaminaRecovery", nil, client, recovery) or recovery
+                recovery = CallHook("TTTSprintStaminaRecovery", nil, client, recovery) or recovery
 
                 stamina = stamina + (CurTime() - recoveryTimer) * recovery * 250
             end

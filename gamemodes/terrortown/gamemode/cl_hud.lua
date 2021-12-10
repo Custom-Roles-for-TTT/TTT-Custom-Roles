@@ -2,12 +2,13 @@
 
 HUD = {}
 
-local hook = hook
 local pairs = pairs
 local surface = surface
 local table = table
 local util = util
 
+local CallHook = hook.Call
+local RunHook = hook.Run
 local GetTranslation = LANG.GetTranslation
 local GetLang = LANG.GetUnsafeLanguageTable
 local MathMax = math.max
@@ -270,7 +271,7 @@ local function SpecHUDPaint(client)
 
     local tgt = client:GetObserverTarget()
     if client:ShouldShowSpectatorHUD() then
-        hook.Call("TTTSpectatorShowHUD", nil, client, tgt)
+        CallHook("TTTSpectatorShowHUD", nil, client, tgt)
     elseif IsPlayer(tgt) then
         HUD:ShadowedText(tgt:Nick(), "TimeLeft", ScrW() / 2, margin, COLOR_WHITE, TEXT_ALIGN_CENTER)
     elseif IsValid(tgt) and tgt:GetNWEntity("spec_owner", nil) == client then
@@ -409,55 +410,55 @@ local function InfoPaint(client)
     end
 
     -- Allow other addons to add stuff to the player info HUD
-    hook.Call("TTTHUDInfoPaint", nil, client, label_left, label_top)
+    CallHook("TTTHUDInfoPaint", nil, client, label_left, label_top)
 end
 
 -- Paints player status HUD element in the bottom left
 function GM:HUDPaint()
     local client = LocalPlayer()
 
-    if hook.Call("HUDShouldDraw", GAMEMODE, "TTTTargetID") then
-        hook.Call("HUDDrawTargetID", GAMEMODE)
+    if RunHook("HUDShouldDraw", "TTTTargetID") then
+        RunHook("HUDDrawTargetID")
     end
 
-    if hook.Call("HUDShouldDraw", GAMEMODE, "TTTMStack") then
+    if RunHook("HUDShouldDraw", "TTTMStack") then
         MSTACK:Draw(client)
     end
 
     if (not client:Alive()) or client:Team() == TEAM_SPEC then
-        if hook.Call("HUDShouldDraw", GAMEMODE, "TTTSpecHUD") then
+        if RunHook("HUDShouldDraw", "TTTSpecHUD") then
             SpecHUDPaint(client)
         end
 
         return
     end
 
-    if hook.Call("HUDShouldDraw", GAMEMODE, "TTTRadar") then
+    if RunHook("HUDShouldDraw", "TTTRadar") then
         RADAR:Draw(client)
     end
 
-    if hook.Call("HUDShouldDraw", GAMEMODE, "TTTTButton") then
+    if RunHook("HUDShouldDraw", "TTTTButton") then
         TBHUD:Draw(client)
     end
 
-    if hook.Call("HUDShouldDraw", GAMEMODE, "TTTWSwitch") then
+    if RunHook("HUDShouldDraw", "TTTWSwitch") then
         WSWITCH:Draw(client)
     end
 
-    if hook.Call("HUDShouldDraw", GAMEMODE, "TTTVoice") then
+    if RunHook("HUDShouldDraw", "TTTVoice") then
         VOICE.Draw(client)
     end
 
-    if hook.Call("HUDShouldDraw", GAMEMODE, "TTTDisguise") then
+    if RunHook("HUDShouldDraw", "TTTDisguise") then
         DISGUISE.Draw(client)
     end
 
-    if hook.Call("HUDShouldDraw", GAMEMODE, "TTTPickupHistory") then
-        hook.Call("HUDDrawPickupHistory", GAMEMODE)
+    if RunHook("HUDShouldDraw", "TTTPickupHistory") then
+        RunHook("HUDDrawPickupHistory")
     end
 
     -- Draw bottom left info panel
-    if hook.Call("HUDShouldDraw", GAMEMODE, "TTTInfoPanel") then
+    if RunHook("HUDShouldDraw", "TTTInfoPanel") then
         InfoPaint(client)
     end
 end

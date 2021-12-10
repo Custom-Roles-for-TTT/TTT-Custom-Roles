@@ -10,6 +10,8 @@ local timer = timer
 local util = util
 local vgui = vgui
 
+local CallHook = hook.Call
+
 RADAR = {}
 RADAR.targets = {}
 RADAR.enable = false
@@ -173,7 +175,7 @@ function RADAR:Draw(client)
         end
     end
 
-    hook.Call("TTTRadarRender", nil, client)
+    CallHook("TTTRadarRender", nil, client)
 
     -- Player radar
     if not self.enable then return end
@@ -231,7 +233,7 @@ function RADAR:Draw(client)
             -- If the target is an active clown but they should be hidden, hide them from the radar
             local hidden = tgt.killer_clown_active and GetGlobalBool("ttt_clown_hide_when_active", false)
 
-            local newColor, newHidden = hook.Call("TTTRadarPlayerRender", nil, client, tgt, color, hidden)
+            local newColor, newHidden = CallHook("TTTRadarPlayerRender", nil, client, tgt, color, hidden)
             if newColor then color = newColor end
             if type(newHidden) == "boolean" then hidden = newHidden end
 
