@@ -133,7 +133,7 @@ local function WasAvoidable(attacker, victim, dmginfo)
 end
 
 local function ShouldReduceKarma(attacker, victim)
-    local result = hook.Run("TTTKarmaShouldGivePenalty", attacker, victim)
+    local result = hook.Call("TTTKarmaShouldGivePenalty", nil, attacker, victim)
     if type(result) == "boolean" then
         return result
     end

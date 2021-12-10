@@ -358,7 +358,7 @@ function GM:KeyPress(ply, key)
         if ply:ShouldShowSpectatorHUD() then
             local tgt = ply:GetObserverTarget()
             local powers = {}
-            local skip, power_property = hook.Run("TTTSpectatorHUDKeyPress", ply, tgt, powers)
+            local skip, power_property = hook.Call("TTTSpectatorHUDKeyPress", nil, ply, tgt, powers)
             if power_property then
                 -- Get the player's current power and make sure they can do something with the key the pressed
                 local current_power = ply:GetNWInt(power_property, 0)
@@ -1286,7 +1286,7 @@ function GM:Tick()
                 ply.scanner_weapon:Think()
             end
 
-            hook.Run("TTTPlayerAliveThink", ply)
+            hook.Call("TTTPlayerAliveThink", nil, ply)
         elseif tm == TEAM_SPEC then
             if ply.propspec then
                 PROPSPEC.Recharge(ply)

@@ -51,7 +51,7 @@ local is_dmg = util.BitSet
 -- Round end event
 Event(EVENT_FINISH,
       { text = function(e)
-                  local result = hook.Run("TTTEventFinishText", e)
+                  local result = hook.Call("TTTEventFinishText", nil, e)
                   if result then return result end
 
                   if e.win == WIN_TRAITOR then
@@ -92,7 +92,7 @@ Event(EVENT_FINISH,
                      win_string = "ev_win_icon_time"
                   end
 
-                  local new_win_string, new_role_string = hook.Run("TTTEventFinishIconText", e, win_string, role_string)
+                  local new_win_string, new_role_string = hook.Call("TTTEventFinishIconText", nil, e, win_string, role_string)
                   if new_win_string then win_string = new_win_string end
                   if new_role_string then role_string = new_role_string end
 

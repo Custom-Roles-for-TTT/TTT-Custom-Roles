@@ -234,7 +234,7 @@ function PANEL:Paint(width, height)
     end
 
     -- Allow external addons (like new roles) to manipulate how a player appears on the scoreboard
-    local new_color, new_role_str, flash_role = hook.Run("TTTScoreboardPlayerRole", ply, client, c, roleStr)
+    local new_color, new_role_str, flash_role = hook.Call("TTTScoreboardPlayerRole", nil, ply, client, c, roleStr)
     if new_color then c = new_color end
     if new_role_str then roleStr = new_role_str end
 
@@ -316,7 +316,7 @@ function PANEL:UpdatePlayerData()
     local client = LocalPlayer()
     self.nick:SetText(ply:Nick())
     if GetRoundState() >= ROUND_ACTIVE then
-        local nick_override = hook.Run("TTTScoreboardPlayerName", ply, client, self.nick:GetText())
+        local nick_override = hook.Call("TTTScoreboardPlayerName", nil, ply, client, self.nick:GetText())
         if nick_override then self.nick:SetText(nick_override) end
     end
 

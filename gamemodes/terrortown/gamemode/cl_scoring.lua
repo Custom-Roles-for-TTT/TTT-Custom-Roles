@@ -256,11 +256,11 @@ local function GetWinTitle(wintype)
         [WIN_MONSTER] = { txt = "hilite_win_role_plural", params = { role = "MONSTERS" }, c = GetRoleTeamColor(ROLE_TEAM_MONSTER) }
     }
     local title = wintitles[wintype]
-    local new_title = hook.Run("TTTScoringWinTitle", wintype, wintitles, title)
+    local new_title = hook.Call("TTTScoringWinTitle", nil, wintype, wintitles, title)
     if new_title then title = new_title end
 
     local secondary_wins = {}
-    hook.Run("TTTScoringSecondaryWins", wintype, secondary_wins)
+    hook.Call("TTTScoringSecondaryWins", nil, wintype, secondary_wins)
     secondary_win_roles = secondary_wins
 
     -- If this was a monster win, check that both roles are part of the monsters team still
@@ -538,7 +538,7 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                 local groupingRole = finalRole
 
                 -- Allow developers to override role icon, grouping, and color
-                local roleFile, groupRole, iconColor, newName = hook.Run("TTTScoringSummaryRender", ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
+                local roleFile, groupRole, iconColor, newName = hook.Call("TTTScoringSummaryRender", nil, ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
                 if roleFile then roleFileName = roleFile end
                 if groupRole then groupingRole = groupRole end
                 if iconColor then roleColor = iconColor end

@@ -1117,7 +1117,7 @@ function GM:PlayerFootstep(ply, pos, foot, sound, volume, rf)
         return true
     end
 
-    if hook.Run("TTTBlockPlayerFootstepSound", ply) then
+    if hook.Call("TTTBlockPlayerFootstepSound", nil, ply) then
         return true
     end
 end
@@ -1144,7 +1144,7 @@ function GetSprintMultiplier(ply, sprinting)
     local mult = 1
     if IsValid(ply) then
         local mults = {}
-        hook.Run("TTTSpeedMultiplier", ply, mults)
+        hook.Call("TTTSpeedMultiplier", nil, ply, mults)
         for _, m in pairs(mults) do
             mult = mult * m
         end
@@ -1168,7 +1168,7 @@ function GetSprintMultiplier(ply, sprinting)
 end
 
 function UpdateRoleWeaponState()
-    hook.Run("TTTUpdateRoleState")
+    hook.Call("TTTUpdateRoleState", nil)
 
     if SERVER then
         net.Start("TTT_ResetBuyableWeaponsCache")

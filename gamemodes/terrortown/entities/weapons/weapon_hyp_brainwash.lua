@@ -201,7 +201,7 @@ if SERVER then
         net.Send(ply)
 
         local owner = self:GetOwner()
-        hook.Run("TTTPlayerDefibRoleChange", owner, ply)
+        hook.Call("TTTPlayerDefibRoleChange", nil, owner, ply)
 
         net.Start("TTT_Hypnotised")
         net.WriteString(ply:Nick())

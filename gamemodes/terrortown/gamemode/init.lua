@@ -447,7 +447,7 @@ end
 -- I don't like it any more than you do, dear reader.
 function GM:SyncGlobals()
     -- For some reason hooking "SyncGlobals" directly is unreliable so... here we go
-    hook.Run("TTTSyncGlobals")
+    hook.Call("TTTSyncGlobals", nil)
 
     SetGlobalBool("ttt_detective", ttt_detective:GetBool())
     SetGlobalBool("ttt_haste", ttt_haste:GetBool())
@@ -1119,7 +1119,7 @@ local function HandleWinCondition(win)
     if win ~= WIN_TIMELIMIT then
         -- Handle role-specific checks
         local win_blocks = {}
-        hook.Run("TTTWinCheckBlocks", win_blocks)
+        hook.Call("TTTWinCheckBlocks", nil, win_blocks)
 
         for _, win_block in ipairs(win_blocks) do
             win = win_block(win)
@@ -1128,7 +1128,7 @@ local function HandleWinCondition(win)
 
     -- If, after all that, we have a win condition then end the round
     if win ~= WIN_NONE then
-        hook.Run("TTTWinCheckComplete", win)
+        hook.Call("TTTWinCheckComplete", nil, win)
 
         timer.Simple(0.5, function() EndRound(win) end) -- Slight delay to make sure alternate winners go through before scoring
     end
@@ -1351,7 +1351,7 @@ function SelectRoles()
     local choices_copy = table.Copy(choices)
     local prev_roles_copy = table.Copy(prev_roles)
 
-    hook.Run("TTTSelectRoles", choices_copy, prev_roles_copy)
+    hook.Call("TTTSelectRoles", nil, choices_copy, prev_roles_copy)
 
     local forcedTraitorCount = 0
     local forcedSpecialTraitorCount = 0
@@ -1569,7 +1569,7 @@ function SelectRoles()
     -- pick special detectives
     if max_special_detective_count > 0 then
         -- Allow external addons to modify available roles and their weights
-        hook.Run("TTTSelectRolesDetectiveOptions", specialDetectiveRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+        hook.Call("TTTSelectRolesDetectiveOptions", nil, specialDetectiveRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
 
         for _ = 1, max_special_detective_count do
             if #specialDetectiveRoles ~= 0 and math.random() <= GetConVar("ttt_special_detective_chance"):GetFloat() and #detectives > 0 then
@@ -1623,7 +1623,7 @@ function SelectRoles()
         -- pick special traitors
         if max_special_traitor_count > 0 then
             -- Allow external addons to modify available roles and their weights
-            hook.Run("TTTSelectRolesTraitorOptions", specialTraitorRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+            hook.Call("TTTSelectRolesTraitorOptions", nil, specialTraitorRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
 
             for _ = 1, max_special_traitor_count do
                 if #specialTraitorRoles ~= 0 and math.random() <= GetConVar("ttt_special_traitor_chance"):GetFloat() and #traitors > 0 then
@@ -1652,9 +1652,9 @@ function SelectRoles()
     -- pick independent
     if forcedIndependentCount == 0 and independent_count > 0 and #choices > 0 then
         -- Allow external addons to modify available roles and their weights
-        hook.Run("TTTSelectRolesIndependentOptions", independentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+        hook.Call("TTTSelectRolesIndependentOptions", nil, independentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
         if singleJesterIndependent then
-            hook.Run("TTTSelectRolesJesterOptions", independentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+            hook.Call("TTTSelectRolesJesterOptions", nil, independentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
         end
 
         if #independentRoles ~= 0 then
@@ -1674,7 +1674,7 @@ function SelectRoles()
 
     -- pick jester
     if not singleJesterIndependent and forcedJesterCount == 0 and jester_count > 0 and #choices > 0 then
-        hook.Run("TTTSelectRolesJesterOptions", jesterRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+        hook.Call("TTTSelectRolesJesterOptions", nil, jesterRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
 
         if #jesterRoles ~= 0 then
             local plyPick = math.random(1, #choices)
@@ -1703,7 +1703,7 @@ function SelectRoles()
         end
 
         -- Allow external addons to modify available roles and their weights
-        hook.Run("TTTSelectRolesInnocentOptions", specialInnocentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+        hook.Call("TTTSelectRolesInnocentOptions", nil, specialInnocentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
 
         for _ = 1, max_special_innocent_count do
             if #specialInnocentRoles ~= 0 and math.random() <= GetConVar("ttt_special_innocent_chance"):GetFloat() and #choices > 0 then
@@ -1734,7 +1734,7 @@ function SelectRoles()
         local monster_chosen = false
         for _ = 1, monster_count do
             -- Allow external addons to modify available roles and their weights
-            hook.Run("TTTSelectRolesMonsterOptions", monsterRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+            hook.Call("TTTSelectRolesMonsterOptions", nil, monsterRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
 
             if #monsterRoles ~= 0 and math.random() <= GetConVar("ttt_monster_chance"):GetFloat() and #choices > 0 and not monster_chosen then
                 local plyPick = math.random(1, #choices)

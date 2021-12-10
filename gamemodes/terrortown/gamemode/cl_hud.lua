@@ -270,7 +270,7 @@ local function SpecHUDPaint(client)
 
     local tgt = client:GetObserverTarget()
     if client:ShouldShowSpectatorHUD() then
-        hook.Run("TTTSpectatorShowHUD", client, tgt)
+        hook.Call("TTTSpectatorShowHUD", nil, client, tgt)
     elseif IsPlayer(tgt) then
         HUD:ShadowedText(tgt:Nick(), "TimeLeft", ScrW() / 2, margin, COLOR_WHITE, TEXT_ALIGN_CENTER)
     elseif IsValid(tgt) and tgt:GetNWEntity("spec_owner", nil) == client then
@@ -409,7 +409,7 @@ local function InfoPaint(client)
     end
 
     -- Allow other addons to add stuff to the player info HUD
-    hook.Run("TTTHUDInfoPaint", client, label_left, label_top)
+    hook.Call("TTTHUDInfoPaint", nil, client, label_left, label_top)
 end
 
 -- Paints player status HUD element in the bottom left

@@ -25,7 +25,7 @@ local oldSetRole = plymeta.SetRole
 function plymeta:SetRole(role)
     local oldRole = self:GetRole()
     oldSetRole(self, role)
-    hook.Run("TTTPlayerRoleChanged", self, oldRole, role)
+    hook.Call("TTTPlayerRoleChanged", nil, self, oldRole, role)
 end
 
 -- Player is alive and in an active round

@@ -384,14 +384,14 @@ function GM:Think()
     local client = LocalPlayer()
     for _, v in pairs(GetAllPlayers()) do
         if v:Alive() and not v:IsSpec() then
-            hook.Run("TTTPlayerAliveClientThink", client, v)
+            hook.Call("TTTPlayerAliveClientThink", nil, client, v)
 
             local smokeColor = COLOR_BLACK
             local smokeParticle = "particle/snow.vmt"
             local smokeOffset = Vector(0, 0, 30)
 
             -- Allow other addons to manipulate whether and how players smoke
-            local shouldSmoke, newSmokeColor, newSmokeParticle, newSmokeOffset = hook.Run("TTTShouldPlayerSmoke", v, client, false, smokeColor, smokeParticle, smokeOffset)
+            local shouldSmoke, newSmokeColor, newSmokeParticle, newSmokeOffset = hook.Call("TTTShouldPlayerSmoke", nil, v, client, false, smokeColor, smokeParticle, smokeOffset)
             if newSmokeColor then smokeColor = newSmokeColor end
             if newSmokeParticle then smokeParticle = newSmokeParticle end
             if newSmokeOffset then smokeOffset = newSmokeOffset end
@@ -727,7 +727,7 @@ local function SprintFunction()
             sprintTimer = CurTime()
         end
         stamina = stamina - (CurTime() - sprintTimer) * (MathMin(MathMax(consumption, 0.1), 5) * 250)
-        local result = hook.Run("TTTSprintStaminaPost", LocalPlayer(), stamina, sprintTimer, consumption)
+        local result = hook.Call("TTTSprintStaminaPost", nil, LocalPlayer(), stamina, sprintTimer, consumption)
         -- Use the overwritten stamina if one is provided
         if result then
             stamina = result
@@ -749,7 +749,7 @@ hook.Add("TTTPrepareRound", "TTTSprintPrepareRound", function()
     -- listen for activation
     hook.Add("Think", "TTTSprintThink", function()
         local client = LocalPlayer()
-        local forward_key = hook.Run("TTTSprintKey", client) or IN_FORWARD
+        local forward_key = hook.Call("TTTSprintKey", nil, client) or IN_FORWARD
         if client:KeyDown(forward_key) and client:KeyDown(IN_SPEED) then
             -- forward + selected key
             SprintFunction()
@@ -769,7 +769,7 @@ hook.Add("TTTPrepareRound", "TTTSprintPrepareRound", function()
                 end
 
                 -- Allow things to change the recovery rate
-                recovery = hook.Run("TTTSprintStaminaRecovery", client, recovery) or recovery
+                recovery = hook.Call("TTTSprintStaminaRecovery", nil, client, recovery) or recovery
 
                 stamina = stamina + (CurTime() - recoveryTimer) * recovery * 250
             end
