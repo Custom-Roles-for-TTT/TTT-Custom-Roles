@@ -38,32 +38,32 @@ end)
 local deadParasites = {}
 hook.Add("TTTPrepareRound", "Parasite_TTTPrepareRound", function()
     for _, v in pairs(GetAllPlayers()) do
-        v:SetNWBool("Infected", false)
-        v:SetNWBool("Infecting", false)
-        v:SetNWString("InfectingTarget", nil)
-        v:SetNWInt("InfectionProgress", 0)
-        timer.Remove(v:Nick() .. "InfectionProgress")
-        timer.Remove(v:Nick() .. "InfectingSpectate")
+        v:SetNWBool("ParasiteInfected", false)
+        v:SetNWBool("ParasiteInfecting", false)
+        v:SetNWString("ParasiteInfectingTarget", nil)
+        v:SetNWInt("ParasiteInfectionProgress", 0)
+        timer.Remove(v:Nick() .. "ParasiteInfectionProgress")
+        timer.Remove(v:Nick() .. "ParasiteInfectingSpectate")
     end
     deadParasites = {}
 end)
 
 local function ResetPlayer(ply)
     -- If this player is infecting someone else, make sure to clear them of the infection too
-    if ply:GetNWBool("Infecting", false) then
-        local sid = ply:GetNWString("InfectingTarget", nil)
+    if ply:GetNWBool("ParasiteInfecting", false) then
+        local sid = ply:GetNWString("ParasiteInfectingTarget", nil)
         if sid then
             local target = player.GetBySteamID64(sid)
             if IsPlayer(target) then
-                target:SetNWBool("Infected", false)
+                target:SetNWBool("ParasiteInfected", false)
             end
         end
     end
-    ply:SetNWBool("Infecting", false)
-    ply:SetNWString("InfectingTarget", nil)
-    ply:SetNWInt("InfectionProgress", 0)
-    timer.Remove(ply:Nick() .. "InfectionProgress")
-    timer.Remove(ply:Nick() .. "InfectingSpectate")
+    ply:SetNWBool("ParasiteInfecting", false)
+    ply:SetNWString("ParasiteInfectingTarget", nil)
+    ply:SetNWInt("ParasiteInfectionProgress", 0)
+    timer.Remove(ply:Nick() .. "ParasiteInfectionProgress")
+    timer.Remove(ply:Nick() .. "ParasiteInfectingSpectate")
 end
 
 hook.Add("TTTPlayerRoleChanged", "Parasite_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
@@ -93,12 +93,12 @@ end
 
 local function DoParasiteRespawn(parasite, attacker, hide_messages)
     if parasite:IsParasite() and not parasite:Alive() then
-        attacker:SetNWBool("Infected", false)
-        parasite:SetNWBool("Infecting", false)
-        parasite:SetNWString("InfectingTarget", nil)
-        parasite:SetNWInt("InfectionProgress", 0)
-        timer.Remove(parasite:Nick() .. "InfectionProgress")
-        timer.Remove(parasite:Nick() .. "InfectingSpectate")
+        attacker:SetNWBool("ParasiteInfected", false)
+        parasite:SetNWBool("ParasiteInfecting", false)
+        parasite:SetNWString("ParasiteInfectingTarget", nil)
+        parasite:SetNWInt("ParasiteInfectionProgress", 0)
+        timer.Remove(parasite:Nick() .. "ParasiteInfectionProgress")
+        timer.Remove(parasite:Nick() .. "ParasiteInfectingSpectate")
 
         local parasiteBody = parasite.server_ragdoll or parasite:GetRagdollEntity()
 
@@ -166,29 +166,29 @@ local function ShouldParasiteRespawnBySuicide(mode, victim, attacker, dmginfo)
 end
 
 local function HandleParasiteInfection(attacker, victim, keep_progress)
-    attacker:SetNWBool("Infected", true)
-    victim:SetNWBool("Infecting", true)
-    victim:SetNWString("InfectingTarget", attacker:SteamID64())
+    attacker:SetNWBool("ParasiteInfected", true)
+    victim:SetNWBool("ParasiteInfecting", true)
+    victim:SetNWString("ParasiteInfectingTarget", attacker:SteamID64())
     if not keep_progress then
-        victim:SetNWInt("InfectionProgress", 0)
+        victim:SetNWInt("ParasiteInfectionProgress", 0)
     end
-    timer.Create(victim:Nick() .. "InfectionProgress", 1, 0, function()
+    timer.Create(victim:Nick() .. "ParasiteInfectionProgress", 1, 0, function()
         -- Make sure the victim is still in the correct spectate mode
         local spec_mode = victim:GetObserverMode()
         if spec_mode ~= OBS_MODE_CHASE and spec_mode ~= OBS_MODE_IN_EYE then
             victim:Spectate(OBS_MODE_CHASE)
         end
 
-        local progress = victim:GetNWInt("InfectionProgress", 0) + 1
+        local progress = victim:GetNWInt("ParasiteInfectionProgress", 0) + 1
         if progress >= parasite_infection_time:GetInt() then -- respawn the parasite
             DoParasiteRespawn(victim, attacker)
         else
-            victim:SetNWInt("InfectionProgress", progress)
+            victim:SetNWInt("ParasiteInfectionProgress", progress)
         end
     end)
 
     -- Lock the victim's view on their attacker
-    timer.Create(victim:Nick() .. "InfectingSpectate", 1, 1, function()
+    timer.Create(victim:Nick() .. "ParasiteInfectingSpectate", 1, 1, function()
         victim:SetRagdollSpec(false)
         victim:Spectate(OBS_MODE_CHASE)
         victim:SpectateEntity(attacker)
@@ -224,7 +224,7 @@ hook.Add("PlayerDeath", "Parasite_PlayerDeath", function(victim, infl, attacker)
 end)
 
 hook.Add("TTTSpectatorHUDKeyPress", "Parasite_TTTSpectatorHUDKeyPress", function(ply, tgt, powers)
-    if ply:GetNWBool("Infecting", false) then
+    if ply:GetNWBool("ParasiteInfecting", false) then
         return true
     end
 end)
@@ -236,7 +236,7 @@ end)
 hook.Add("DoPlayerDeath", "Parasite_DoPlayerDeath", function(ply, attacker, dmginfo)
     if ply:IsSpec() then return end
 
-    if ply:GetNWBool("Infected", false) then
+    if ply:GetNWBool("ParasiteInfected", false) then
         local parasiteUsers = table.GetKeys(deadParasites)
         for _, key in pairs(parasiteUsers) do
             local parasite = deadParasites[key]
@@ -258,11 +258,11 @@ hook.Add("DoPlayerDeath", "Parasite_DoPlayerDeath", function(ply, attacker, dmgi
                     deadParasite:PrintMessage(HUD_PRINTCENTER, "Your host has killed themselves, allowing your infection to take over.")
                     DoParasiteRespawn(deadParasite, attacker, true)
                 else
-                    deadParasite:SetNWBool("Infecting", false)
-                    deadParasite:SetNWString("InfectingTarget", nil)
-                    deadParasite:SetNWInt("InfectionProgress", 0)
-                    timer.Remove(deadParasite:Nick() .. "InfectionProgress")
-                    timer.Remove(deadParasite:Nick() .. "InfectingSpectate")
+                    deadParasite:SetNWBool("ParasiteInfecting", false)
+                    deadParasite:SetNWString("ParasiteInfectingTarget", nil)
+                    deadParasite:SetNWInt("ParasiteInfectionProgress", 0)
+                    timer.Remove(deadParasite:Nick() .. "ParasiteInfectionProgress")
+                    timer.Remove(deadParasite:Nick() .. "ParasiteInfectingSpectate")
                     if parasiteDead then
                         deadParasite:PrintMessage(HUD_PRINTCENTER, "Your host has died.")
                     end
@@ -270,6 +270,6 @@ hook.Add("DoPlayerDeath", "Parasite_DoPlayerDeath", function(ply, attacker, dmgi
             end
         end
 
-        ply:SetNWBool("Infected", false)
+        ply:SetNWBool("ParasiteInfected", false)
     end
 end)

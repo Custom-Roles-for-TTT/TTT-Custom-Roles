@@ -69,7 +69,7 @@ end)
 
 hook.Add("TTTTargetIDPlayerText", "Parasite_TTTTargetIDPlayerText", function(ent, cli, text, col, secondary_text)
     -- Skip this for Assassin so they can have their own Current Target logic (it also handles parasite infection there)
-    if cli:IsTraitorTeam() and not cli:IsAssassin() and IsPlayer(ent) and ent:GetNWBool("Infected", false) then
+    if cli:IsTraitorTeam() and not cli:IsAssassin() and IsPlayer(ent) and ent:GetNWBool("ParasiteInfected", false) then
         return LANG.GetTranslation("target_infected"), ROLE_COLORS_RADAR[ROLE_PARASITE]
     end
 end)
@@ -79,7 +79,7 @@ end)
 ----------------
 
 hook.Add("TTTScoreboardPlayerRole", "Parasite_TTTScoreboardPlayerRole", function(ply, client, c, roleStr)
-    if client:IsTraitorTeam() and ply:GetNWBool("Infected", false) then
+    if client:IsTraitorTeam() and ply:GetNWBool("ParasiteInfected", false) then
         return c, roleStr, ROLE_PARASITE
     end
 end)
@@ -89,7 +89,7 @@ hook.Add("TTTScoreboardPlayerName", "Parasite_TTTScoreboardPlayerName", function
     if not cli:IsTraitorTeam() or cli:IsAssassin() then return end
 
     -- Show Assassin + Parasite logic if that applies
-    local infected = ply:GetNWBool("Infected", false)
+    local infected = ply:GetNWBool("ParasiteInfected", false)
     for _, v in pairs(GetAllPlayers()) do
         if ply:Nick() == v:GetNWString("AssassinTarget", "") then
             local newText = " ("
@@ -121,7 +121,7 @@ hook.Add("TTTSpectatorShowHUD", "Parasite_Infecting_TTTSpectatorShowHUD", functi
         fill = Color(255, 127, 39, 255)
     }
     local max_power = GetGlobalInt("ttt_parasite_infection_time", 90)
-    local current_power = cli:GetNWInt("InfectionProgress", 0)
+    local current_power = cli:GetNWInt("ParasiteInfectionProgress", 0)
 
     HUD:PaintPowersHUD(nil, max_power, current_power, infection_colors, L.infect_title, L.infect_help)
 end)
