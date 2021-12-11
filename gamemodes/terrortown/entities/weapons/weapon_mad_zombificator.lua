@@ -192,7 +192,6 @@ if SERVER then
         end
 
         net.Start("TTT_Zombificator_Revived")
-        net.WriteBool(true)
         net.Send(ply)
 
         local owner = self:GetOwner()
@@ -294,15 +293,12 @@ if SERVER then
 end
 
 if CLIENT then
-    net.Receive("TTT_Zombificator_Hide", function(len, ply)
-        if ply or len <= 0 then return end
-
+    net.Receive("TTT_Zombificator_Hide", function()
         local hply = net.ReadEntity()
         hply.MadZomHide = net.ReadBool()
     end)
 
-    net.Receive("TTT_Zombificator_Revived", function(len, ply)
-        if ply or len <= 0 then return end
+    net.Receive("TTT_Zombificator_Revived", function()
         surface.PlaySound(revived)
     end)
 

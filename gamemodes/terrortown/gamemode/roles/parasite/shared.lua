@@ -34,7 +34,7 @@ hook.Add("TTTPrepareRound", "Parasite__Shared_TTTPrepareRound", function()
 end)
 
 ROLE_SHOULD_SHOW_SPECTATOR_HUD[ROLE_PARASITE] = function(ply)
-    if ply:GetNWBool("Infecting") then
+    if ply:GetNWBool("ParasiteInfecting") then
         return true
     end
 end

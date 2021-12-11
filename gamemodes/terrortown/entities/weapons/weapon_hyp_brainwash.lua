@@ -197,7 +197,6 @@ if SERVER then
         end
 
         net.Start("TTT_Defib_Revived")
-        net.WriteBool(true)
         net.Send(ply)
 
         local owner = self:GetOwner()
@@ -322,15 +321,12 @@ if SERVER then
 end
 
 if CLIENT then
-    net.Receive("TTT_Defib_Hide", function(len, ply)
-        if ply or len <= 0 then return end
-
+    net.Receive("TTT_Defib_Hide", function()
         local hply = net.ReadEntity()
         hply.DefibHide = net.ReadBool()
     end)
 
-    net.Receive("TTT_Defib_Revived", function(len, ply)
-        if ply or len <= 0 then return end
+    net.Receive("TTT_Defib_Revived", function()
         surface.PlaySound(revived)
     end)
 

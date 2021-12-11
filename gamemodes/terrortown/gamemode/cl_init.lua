@@ -558,7 +558,7 @@ local function GrabCritColor() -- Used for retrieving the console color
     return Color(newcol[1], newcol[2], newcol[3]) -- Returns the finished color
 end
 
-net.Receive("TTT_OpenMixer", function(len, ply) -- Receive the server message
+net.Receive("TTT_OpenMixer", function() -- Receive the server message
     local crit = net.ReadBool()
 
     -- Creating the color mixer panel
@@ -599,7 +599,7 @@ net.Receive("TTT_OpenMixer", function(len, ply) -- Receive the server message
     end
 end)
 
-net.Receive("TTT_DrawHitMarker", function(len, ply)
+net.Receive("TTT_DrawHitMarker", function()
     hm_DrawHitM = true
     hm_CanPlayS = true
     if net.ReadBool() then
