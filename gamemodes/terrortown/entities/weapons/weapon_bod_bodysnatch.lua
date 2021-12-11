@@ -165,7 +165,6 @@ if SERVER then
         local owner = self:GetOwner()
 
         net.Start("TTT_Bodysnatched")
-        net.WriteBool(true)
         net.Send(ply)
 
         local role = body.was_role or ply:GetRole()
@@ -256,8 +255,7 @@ if SERVER then
 end
 
 if CLIENT then
-    net.Receive("TTT_Bodysnatched", function(len, ply)
-        if ply or len <= 0 then return end
+    net.Receive("TTT_Bodysnatched", function()
         surface.PlaySound(revived)
     end)
 

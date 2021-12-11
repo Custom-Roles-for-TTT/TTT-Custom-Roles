@@ -290,8 +290,7 @@ if SERVER then
 end
 
 if CLIENT then
-    net.Receive("TTT_Paramedic_Revived", function(len, ply)
-        if ply or len <= 0 then return end
+    net.Receive("TTT_Paramedic_Revived", function()
         surface.PlaySound(revived)
     end)
 
