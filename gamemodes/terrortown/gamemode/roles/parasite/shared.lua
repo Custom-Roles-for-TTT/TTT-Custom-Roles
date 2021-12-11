@@ -26,10 +26,10 @@ local function InitializeEquipment()
 end
 InitializeEquipment()
 
-hook.Add("Initialize", "Parasite__Shared_Initialize", function()
+hook.Add("Initialize", "Parasite_Shared_Initialize", function()
     InitializeEquipment()
 end)
-hook.Add("TTTPrepareRound", "Parasite__Shared_TTTPrepareRound", function()
+hook.Add("TTTPrepareRound", "Parasite_Shared_TTTPrepareRound", function()
     InitializeEquipment()
 end)
 
@@ -43,7 +43,7 @@ end
 -- ROLE WEAPONS --
 ------------------
 
-hook.Add("TTTUpdateRoleState", "Parasite__TTTUpdateRoleState", function()
+hook.Add("TTTUpdateRoleState", "Parasite_TTTUpdateRoleState", function()
     local parasite_cure = weapons.GetStored("weapon_par_cure")
     local fake_cure = weapons.GetStored("weapon_qua_fake_cure")
     if GetGlobalBool("ttt_parasite_enabled", false) then
