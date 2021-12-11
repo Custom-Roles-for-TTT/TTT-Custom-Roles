@@ -1,5 +1,15 @@
 AddCSLuaFile()
 
+local hook = hook
+local net = net
+local pairs = pairs
+local player = player
+local resource = resource
+local table = table
+local util = util
+
+local GetAllPlayers = player.GetAll
+
 util.AddNetworkString("TTT_ClownActivate")
 
 resource.AddSingleFile("sound/clown.wav")
@@ -99,7 +109,7 @@ end)
 
 -- Disable tracking that this player was is the active clown at the start of a new round or if their role changes
 hook.Add("TTTPrepareRound", "Clown_PrepareRound", function()
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         v:SetNWBool("KillerClownActive", false)
     end
 end)

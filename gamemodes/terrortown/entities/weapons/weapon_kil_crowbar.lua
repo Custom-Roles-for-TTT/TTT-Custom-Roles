@@ -1,3 +1,7 @@
+local ents = ents
+local IsValid = IsValid
+local util = util
+
 SWEP.HoldType  = "melee"
 
 if CLIENT then

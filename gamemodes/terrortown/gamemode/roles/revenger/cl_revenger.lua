@@ -1,3 +1,10 @@
+local hook = hook
+local net = net
+local pairs = pairs
+local player = player
+local surface = surface
+local timer = timer
+
 local function IsLover(cli, ply)
     return ply:SteamID64() == cli:GetNWString("RevengerLover", "")
 end

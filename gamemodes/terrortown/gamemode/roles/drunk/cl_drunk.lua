@@ -1,3 +1,10 @@
+local hook = hook
+local net = net
+local surface = surface
+local util = util
+
+local MathMax = math.max
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -71,7 +78,7 @@ hook.Add("TTTHUDInfoPaint", "Drunk_TTTHUDInfoPaint", function(client, label_left
         surface.SetFont("TabLarge")
         surface.SetTextColor(255, 255, 255, 230)
 
-        local remaining = math.max(0, GetGlobalFloat("ttt_drunk_remember", 0) - CurTime())
+        local remaining = MathMax(0, GetGlobalFloat("ttt_drunk_remember", 0) - CurTime())
 
         text = LANG.GetParamTranslation("drunk_hud", { time = util.SimpleTime(remaining, "%02i:%02i") })
         local _, h = surface.GetTextSize(text)

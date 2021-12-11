@@ -1,6 +1,11 @@
 AddCSLuaFile("shared.lua")
 include("shared.lua")
 
+local concommand = concommand
+local hook = hook
+local IsValid = IsValid
+local net = net
+
 -- serverside only
 ENT.RemoveOnPress = false
 

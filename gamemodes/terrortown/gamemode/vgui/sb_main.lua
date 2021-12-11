@@ -1,14 +1,27 @@
 ---- VGUI panel version of the scoreboard, based on TEAM GARRY's sandbox mode
 ---- scoreboard.
 
-local surface = surface
 local draw = draw
-local math = math
+local ipairs = ipairs
+local IsValid = IsValid
+local pairs = pairs
+local surface = surface
 local string = string
+local table = table
+local timer = timer
 local vgui = vgui
 
+local CallHook = hook.Call
+local GetAllPlayers = player.GetAll
 local GetTranslation = LANG.GetTranslation
 local GetPTranslation = LANG.GetParamTranslation
+local StringFormat = string.format
+local StringSub = string.sub
+
+local clamp = math.Clamp
+local max = math.max
+local min = math.min
+local floor = math.floor
 
 include("sb_team.lua")
 
@@ -35,8 +48,6 @@ local logo = surface.GetTextureID("vgui/ttt/score_logo")
 
 local PANEL = {}
 
-local max = math.max
-local floor = math.floor
 local function UntilMapChange()
     local rounds_left = max(0, GetGlobalInt("ttt_rounds_left", 6))
     local time_left = floor(max(0, ((GetGlobalInt("ttt_time_limit_minutes") or 60) * 60) - CurTime()))
@@ -47,7 +58,7 @@ local function UntilMapChange()
     time_left = time_left - floor(m * 60)
     local s = floor(time_left)
 
-    return rounds_left, string.format("%02i:%02i:%02i", h, m, s)
+    return rounds_left, StringFormat("%02i:%02i:%02i", h, m, s)
 end
 
 GROUP_TERROR = 1
@@ -72,7 +83,7 @@ function ScoreGroup(p)
     if not IsValid(p) then return -1 end -- will not match any group panel
 
     local fake_dead = (p.IsFakeDead and p:IsFakeDead())
-    local group = hook.Call("TTTScoreGroup", nil, p)
+    local group = CallHook("TTTScoreGroup", nil, p)
     -- Ignore the Dead Ringer's scoreboard override because it doesn't work with custom roles
     -- Otherwise, if that hook gave us a group, use it
     if group and not fake_dead then
@@ -170,7 +181,7 @@ function PANEL:Init()
         self.ply_groups[GROUP_SEARCHED] = t
     end
 
-    hook.Call("TTTScoreGroups", nil, self.ply_frame:GetCanvas(), self.ply_groups)
+    CallHook("TTTScoreGroups", nil, self.ply_frame:GetCanvas(), self.ply_groups)
 
     -- the various score column headers
     self.cols = {}
@@ -187,7 +198,7 @@ function PANEL:Init()
     self:AddFakeColumn(GetTranslation("equip_spec_name"), nil, 70, "name")
 
     -- Let hooks add their column headers (via AddColumn() or AddFakeColumn())
-    hook.Call("TTTScoreboardColumns", nil, self)
+    CallHook("TTTScoreboardColumns", nil, self)
 
     self:UpdateScoreboard()
     self:StartUpdateTimer()
@@ -321,12 +332,12 @@ function PANEL:PerformLayout()
     --   gui.EnableScreenClicker(scrolling)
     self.ply_frame:SetScroll(scrolling)
 
-    h = math.Clamp(h, 110 + y_logo_off, ScrH() * 0.95)
+    h = clamp(h, 110 + y_logo_off, ScrH() * 0.95)
 
-    local w = math.max(ScrW() * 0.6, 640)
+    local w = max(ScrW() * 0.6, 640)
 
     self:SetSize(w, h)
-    self:SetPos((ScrW() - w) / 2, math.min(72, (ScrH() - h) / 4))
+    self:SetPos((ScrW() - w) / 2, min(72, (ScrH() - h) / 4))
 
     self.ply_frame:SetPos(8, y_logo_off + 109)
     self.ply_frame:SetSize(self:GetWide() - 16, self:GetTall() - 109 - y_logo_off - 5)
@@ -343,7 +354,7 @@ function PANEL:PerformLayout()
     local hname = self.hostname:GetValue()
     local tw, _ = surface.GetTextSize(hname)
     while tw > hw do
-        hname = string.sub(hname, 1, -6) .. "..."
+        hname = StringSub(hname, 1, -6) .. "..."
         tw, _ = surface.GetTextSize(hname)
     end
 
@@ -412,7 +423,7 @@ function PANEL:UpdateScoreboard(force)
 
     -- Put players where they belong. Groups will dump them as soon as they don't
     -- anymore.
-    for k, p in ipairs(player.GetAll()) do
+    for k, p in ipairs(GetAllPlayers()) do
         if IsValid(p) then
             local group = ScoreGroup(p)
             if self.ply_groups[group] and not self.ply_groups[group]:HasPlayerRow(p) then

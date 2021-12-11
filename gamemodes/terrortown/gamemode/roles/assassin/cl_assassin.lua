@@ -1,3 +1,11 @@
+local halo = halo
+local hook = hook
+local IsValid = IsValid
+local pairs = pairs
+local string = string
+
+local GetAllPlayers = player.GetAll
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -75,10 +83,10 @@ local client = nil
 local function EnableAssassinTargetHighlights()
     hook.Add("PreDrawHalos", "Assassin_Highlight_PreDrawHalos", function()
         local target_nick = client:GetNWString("AssassinTarget", "")
-        if not target_nick or target_nick:len() == 0 then return end
+        if not target_nick or #target_nick == 0 then return end
 
         local target = nil
-        for _, v in pairs(player.GetAll()) do
+        for _, v in pairs(GetAllPlayers()) do
             if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= client and v:Nick() == target_nick then
                 target = v
                 break

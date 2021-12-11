@@ -2,6 +2,13 @@ AddCSLuaFile()
 
 local plymeta = FindMetaTable("Player")
 
+local hook = hook
+local ipairs = ipairs
+local IsValid = IsValid
+local pairs = pairs
+
+local GetAllPlayers = player.GetAll
+
 -------------
 -- CONVARS --
 -------------
@@ -37,7 +44,7 @@ function plymeta:SetZombiePrime(p) self:SetNWBool("zombie_prime", p) end
 -----------------
 
 hook.Add("TTTBeginRound", "Zombie_RoleFeatures_PrepareRound", function()
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         if v:IsZombie() then
             v:SetZombiePrime(true)
         end
@@ -45,7 +52,7 @@ hook.Add("TTTBeginRound", "Zombie_RoleFeatures_PrepareRound", function()
 end)
 
 hook.Add("TTTPrepareRound", "Zombie_RoleFeatures_PrepareRound", function()
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         v:SetNWBool("IsZombifying", false)
         -- Keep previous naming scheme for backwards compatibility
         v:SetNWBool("zombie_prime", false)
@@ -69,7 +76,7 @@ hook.Add("TTTCheckForWin", "Zombie_TTTCheckForWin", function()
 
     local zombie_alive = false
     local other_alive = false
-    for _, v in ipairs(player.GetAll()) do
+    for _, v in ipairs(GetAllPlayers()) do
         if v:Alive() and v:IsTerror() then
             if v:IsZombie() or v:IsMadScientist() then
                 zombie_alive = true

@@ -1,8 +1,16 @@
 ---- Customized scoring
 
+local ipairs = ipairs
+local IsValid = IsValid
+local net = net
+local pairs = pairs
+local player = player
 local string = string
 local table = table
-local pairs = pairs
+local util = util
+
+local GetAllPlayers = player.GetAll
+local StringSub = string.sub
 
 SCORE = SCORE or {}
 SCORE.Events = SCORE.Events or {}
@@ -77,7 +85,7 @@ function SCORE:HandleKill(victim, attacker, dmginfo)
         e.att.jes = attacker:IsJesterTeam()
         e.att.ind = attacker:IsIndependentTeam()
         e.att.mon = attacker:IsMonsterTeam()
-        e.tk = (e.att.tr and e.vic.tr) or (e.att.inno and e.vic.inno) or (e.att.mon and e.vic.mon) or e.vic.jes
+        e.tk = (e.att.tr and e.vic.tr) or (e.att.inno and e.vic.inno) or (e.att.mon and e.vic.mon)
 
         -- If a traitor gets himself killed by another traitor's C4, it's his own
         -- damn fault for ignoring the indicator.
@@ -100,7 +108,7 @@ end
 
 function SCORE:HandleSelection()
     local roles = {}
-    for _, ply in ipairs(player.GetAll()) do
+    for _, ply in ipairs(GetAllPlayers()) do
         -- Prefix the ID value with a string to force the key to stay as a string when it gets transferred
         -- Without this, the key gets converted to a floating-point number which loses precision and causes errors during data lookup
         roles[GetRoleId(ply:SteamID64())] = ply:GetRole()
@@ -149,7 +157,7 @@ function SCORE:ApplyEventLogScores(wintype)
     local roles = {}
     local bonus = {}
 
-    for _, ply in ipairs(player.GetAll()) do
+    for _, ply in ipairs(GetAllPlayers()) do
         local sid64 = ply:SteamID64()
         scores[sid64] = {}
         roles[sid64] = ply:GetRole()
@@ -245,7 +253,7 @@ function SCORE:StreamToClients()
 
         repeat
             net.Start("TTT_ReportStream_Part")
-            net.WriteData(string.sub(events, curpos + 1, curpos + MaxStreamLength + 1), MaxStreamLength)
+            net.WriteData(StringSub(events, curpos + 1, curpos + MaxStreamLength + 1), MaxStreamLength)
             net.Broadcast()
 
             curpos = curpos + MaxStreamLength + 1
@@ -253,7 +261,7 @@ function SCORE:StreamToClients()
 
         net.Start("TTT_ReportStream")
         net.WriteUInt(len, 16)
-        net.WriteData(string.sub(events, curpos + 1, len), len - curpos)
+        net.WriteData(StringSub(events, curpos + 1, len), len - curpos)
         net.Broadcast()
     end
 end

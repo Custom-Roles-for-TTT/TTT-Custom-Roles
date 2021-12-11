@@ -1,6 +1,14 @@
 -- Altered version of gmod's SpawnIcon
 -- This panel does not deal with models and such
 
+local draw = draw
+local ipairs = ipairs
+local IsValid = IsValid
+local math = math
+local pairs = pairs
+local surface = surface
+local table = table
+local vgui = vgui
 
 local matHover = Material( "vgui/spawnmenu/hover" )
 

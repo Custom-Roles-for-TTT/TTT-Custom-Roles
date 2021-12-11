@@ -1,5 +1,7 @@
 AddCSLuaFile()
 
+local hook = hook
+
 local function InitializeEquipment()
     if DefaultEquipment then
         DefaultEquipment[ROLE_TRICKSTER] = {

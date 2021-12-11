@@ -1,5 +1,9 @@
 AddCSLuaFile()
 
+local hook = hook
+local table = table
+local weapons = weapons
+
 -- Parasite respawn modes
 PARASITE_RESPAWN_HOST = 0
 PARASITE_RESPAWN_BODY = 1

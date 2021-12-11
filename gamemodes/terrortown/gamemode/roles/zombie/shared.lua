@@ -1,5 +1,9 @@
 AddCSLuaFile()
 
+local hook = hook
+local IsValid = IsValid
+local table = table
+
 local function InitializeEquipment()
     if EquipmentItems then
         local mat_dir = "vgui/ttt/"

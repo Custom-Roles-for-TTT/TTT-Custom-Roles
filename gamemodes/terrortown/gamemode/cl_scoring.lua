@@ -2,11 +2,26 @@
 
 include("cl_awards.lua")
 
-local table = table
-local string = string
-local vgui = vgui
+local chat = chat
+local concommand = concommand
+local draw = draw
+local file = file
+local hook = hook
+local input = input
+local ipairs = ipairs
+local math = math
+local net = net
 local pairs = pairs
+local player = player
+local surface = surface
+local string = string
+local table = table
+local timer = timer
+local util = util
+local vgui = vgui
 local parentPanel, parentTabs, closeButton, saveButton
+
+local StringUpper = string.upper
 
 CLSCORE = {}
 CLSCORE.Events = {}
@@ -236,16 +251,16 @@ end
 
 local function GetWinTitle(wintype)
     local wintitles = {
-        [WIN_INNOCENT] = { txt = "hilite_win_role_plural", params = { role = ROLE_STRINGS_PLURAL[ROLE_INNOCENT]:upper() }, c = ROLE_COLORS[ROLE_INNOCENT] },
-        [WIN_TRAITOR] = { txt = "hilite_win_role_plural", params = { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]:upper() }, c = ROLE_COLORS[ROLE_TRAITOR] },
+        [WIN_INNOCENT] = { txt = "hilite_win_role_plural", params = { role = StringUpper(ROLE_STRINGS_PLURAL[ROLE_INNOCENT]) }, c = ROLE_COLORS[ROLE_INNOCENT] },
+        [WIN_TRAITOR] = { txt = "hilite_win_role_plural", params = { role = StringUpper(ROLE_STRINGS_PLURAL[ROLE_TRAITOR]) }, c = ROLE_COLORS[ROLE_TRAITOR] },
         [WIN_MONSTER] = { txt = "hilite_win_role_plural", params = { role = "MONSTERS" }, c = GetRoleTeamColor(ROLE_TEAM_MONSTER) }
     }
     local title = wintitles[wintype]
-    local new_title = hook.Run("TTTScoringWinTitle", wintype, wintitles, title)
+    local new_title = hook.Call("TTTScoringWinTitle", nil, wintype, wintitles, title)
     if new_title then title = new_title end
 
     local secondary_wins = {}
-    hook.Run("TTTScoringSecondaryWins", wintype, secondary_wins)
+    hook.Call("TTTScoringSecondaryWins", nil, wintype, secondary_wins)
     secondary_win_roles = secondary_wins
 
     -- If this was a monster win, check that both roles are part of the monsters team still
@@ -253,7 +268,7 @@ local function GetWinTitle(wintype)
         local monster_role = GetWinningMonsterRole()
         -- If a single support role (zombies or vampires) won as the "monsters team", use their role as the label
         if monster_role then
-            title.params = { role = ROLE_STRINGS_PLURAL[monster_role]:upper() }
+            title.params = { role = StringUpper(ROLE_STRINGS_PLURAL[monster_role]) }
         -- Otherwise use the monsters label
         else
             title.params = { role = "MONSTERS" }
@@ -406,7 +421,7 @@ end
 function CLSCORE:AddAward(y, pw, award, dpanel)
     local nick = award.nick
     local text = award.text
-    local title = award.title:upper()
+    local title = StringUpper(award.title)
 
     local titlelbl = vgui.Create("DLabel", dpanel)
     titlelbl:SetText(title)
@@ -523,7 +538,7 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                 local groupingRole = finalRole
 
                 -- Allow developers to override role icon, grouping, and color
-                local roleFile, groupRole, iconColor, newName = hook.Run("TTTScoringSummaryRender", ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
+                local roleFile, groupRole, iconColor, newName = hook.Call("TTTScoringSummaryRender", nil, ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
                 if roleFile then roleFileName = roleFile end
                 if groupRole then groupingRole = groupRole end
                 if iconColor then roleColor = iconColor end
@@ -629,7 +644,7 @@ function CLSCORE:BuildSummaryPanel(dpanel)
     for i, r in ipairs(secondary_win_roles) do
         local exwinlbl = vgui.Create("DLabel", dpanel)
         exwinlbl:SetFont("WinSmall")
-        exwinlbl:SetText(PT("hilite_win_role_singular_additional", { role = ROLE_STRINGS[r]:upper() }))
+        exwinlbl:SetText(PT("hilite_win_role_singular_additional", { role = StringUpper(ROLE_STRINGS[r]) }))
         exwinlbl:SetTextColor(COLOR_WHITE)
         exwinlbl:SizeToContents()
         local xexwin = (w - exwinlbl:GetWide()) / 2
@@ -733,7 +748,7 @@ function CLSCORE:BuildPlayerList(playerList, dpanel, statusX, roleX, initialY, r
         local roleIcon = GetRoleIconElement(v.roleFileName, v.roleColor, v.startingRole, v.finalRole, dpanel)
         local nicklbl = GetNickLabelElement(v.name, dpanel)
         FitNicknameLabel(nicklbl, 275, function(nickname)
-            return string.sub(nickname, 0, #nickname - 4) .. "..."
+            return utf8.sub(nickname, 0, -5) .. "..."
         end)
 
         self:AddPlayerRow(dpanel, statusX, roleX, initialY + rowY * count, roleIcon, nicklbl, v.hasDisconnected, v.hasDied)
@@ -795,9 +810,9 @@ function CLSCORE:BuildRoleLabel(playerList, dpanel, statusX, roleX, rowY)
                 local playerArg = args.player
                 local otherArg = args.other
                 if #playerArg > #otherArg then
-                    playerArg = string.sub(playerArg, 0, #playerArg - 4) .. "..."
+                    playerArg = utf8.sub(playerArg, 0, -5) .. "..."
                 else
-                    otherArg = string.sub(otherArg, 0, #otherArg - 4) .. "..."
+                    otherArg = utf8.sub(otherArg, 0, -5) .. "..."
                 end
 
                 return BuildJesterLabel(playerArg, otherArg, label), {player=playerArg, other=otherArg}
@@ -822,7 +837,7 @@ function CLSCORE:BuildRoleLabel(playerList, dpanel, statusX, roleX, rowY)
     local namesList = string.Implode(", ", names)
     local nickLbl = GetNickLabelElement(namesList, dpanel)
     FitNicknameLabel(nickLbl, maxWidth, function(nickname)
-        return string.sub(nickname, 0, #nickname - 4) .. "..."
+        return utf8.sub(nickname, 0, -5) .. "..."
     end)
 
     -- Show the normal disconnect icon if we have only 1 player and they disconnected
@@ -923,7 +938,7 @@ function CLSCORE:BuildHilitePanel(dpanel)
     for i, r in ipairs(secondary_win_roles) do
         local exwinlbl = vgui.Create("DLabel", dpanel)
         exwinlbl:SetFont("WinSmall")
-        exwinlbl:SetText(PT("hilite_win_role_singular_additional", { role = ROLE_STRINGS[r]:upper() }))
+        exwinlbl:SetText(PT("hilite_win_role_singular_additional", { role = StringUpper(ROLE_STRINGS[r]) }))
         exwinlbl:SetTextColor(COLOR_WHITE)
         exwinlbl:SizeToContents()
         local xexwin = (w - exwinlbl:GetWide()) / 2
@@ -942,7 +957,11 @@ function CLSCORE:BuildHilitePanel(dpanel)
 
     if #secondary_win_roles > 0 then winlbl:SetPos(xwin, ywin - 15) end
 
-    local ysubwin = ywin + winlbl:GetTall() + ((#secondary_win_roles - 1) * 28)
+    local ysubwin = ywin + winlbl:GetTall()
+    -- Add extra space if we have more than one secondary win
+    if #secondary_win_roles > 1 then
+        ysubwin = ysubwin + (#secondary_win_roles - 1) * 28
+    end
     local partlbl = vgui.Create("DLabel", dpanel)
 
     local plytxt = PT(numtr == 1 and "hilite_players2" or "hilite_players1",

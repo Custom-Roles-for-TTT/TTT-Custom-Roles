@@ -1,3 +1,8 @@
+local hook = hook
+local net = net
+local surface = surface
+local string = string
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -118,7 +123,7 @@ end)
 --------------
 
 local function GetRevealModeString(roleColor, revealMode, teamName, teamColor)
-    local modeString = "When joining the <span style='color: rgb(" .. teamColor.r .. ", " .. teamColor.g .. ", " .. teamColor.b .. ")'>" .. teamName:lower() .. "</span> team, the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. ROLE_STRINGS[ROLE_BODYSNATCHER] .. "</span>'s new role will be revealed to "
+    local modeString = "When joining the <span style='color: rgb(" .. teamColor.r .. ", " .. teamColor.g .. ", " .. teamColor.b .. ")'>" .. string.lower(teamName) .. "</span> team, the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. ROLE_STRINGS[ROLE_BODYSNATCHER] .. "</span>'s new role will be revealed to "
     if revealMode == BODYSNATCHER_REVEAL_ALL then
         modeString = modeString .. "everyone"
     elseif revealMode == BODYSNATCHER_REVEAL_TEAM then

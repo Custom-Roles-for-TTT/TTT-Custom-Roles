@@ -3,7 +3,16 @@
 -- should mirror client
 local chargetime = 30
 
+local concommand = concommand
+local ipairs = ipairs
+local IsValid = IsValid
 local math = math
+local net = net
+local player = player
+local table = table
+
+local GetAllPlayers = player.GetAll
+local FindEntsByClass = ents.FindByClass
 
 local function RadarScan(ply, cmd, args)
     if IsValid(ply) and ply:IsTerror() then
@@ -16,8 +25,8 @@ local function RadarScan(ply, cmd, args)
 
             ply.radar_charge = CurTime() + chargetime
 
-            local scan_ents = player.GetAll()
-            table.Add(scan_ents, ents.FindByClass("ttt_decoy"))
+            local scan_ents = GetAllPlayers()
+            table.Add(scan_ents, FindEntsByClass("ttt_decoy"))
 
             local targets = {}
             for _, p in ipairs(scan_ents) do

@@ -1,5 +1,17 @@
 AddCSLuaFile()
 
+local hook = hook
+local ipairs = ipairs
+local IsValid = IsValid
+local net = net
+local pairs = pairs
+local player = player
+local table = table
+local timer = timer
+local util = util
+
+local GetAllPlayers = player.GetAll
+
 util.AddNetworkString("TTT_ParasiteInfect")
 
 -------------
@@ -25,7 +37,7 @@ end)
 
 local deadParasites = {}
 hook.Add("TTTPrepareRound", "Parasite_TTTPrepareRound", function()
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         v:SetNWBool("Infected", false)
         v:SetNWBool("Infecting", false)
         v:SetNWString("InfectingTarget", nil)

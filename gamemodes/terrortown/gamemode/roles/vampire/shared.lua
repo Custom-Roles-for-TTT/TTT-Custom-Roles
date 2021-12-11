@@ -1,5 +1,9 @@
 AddCSLuaFile()
 
+local hook = hook
+local IsValid = IsValid
+local table = table
+
 -- Vampire prime death modes
 VAMPIRE_DEATH_NONE = 0
 VAMPIRE_DEATH_KILL_CONVERTED = 1

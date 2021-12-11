@@ -1,5 +1,11 @@
 -- Key overrides for TTT specific keyboard functions
 
+local input = input
+local string = string
+local timer = timer
+
+local StringSub = string.sub
+
 local function SendWeaponDrop()
     RunConsoleCommand("ttt_dropweapon")
 
@@ -53,8 +59,8 @@ function GM:PlayerBindPress(ply, bind, pressed)
         elseif TBHUD:PlayerIsFocused() then
             return TBHUD:UseFocused()
         end
-    elseif string.sub(bind, 1, 4) == "slot" and pressed then
-        local idx = tonumber(string.sub(bind, 5, -1)) or 1
+    elseif StringSub(bind, 1, 4) == "slot" and pressed then
+        local idx = tonumber(StringSub(bind, 5, -1)) or 1
 
         -- if radiomenu is open, override weapon select
         if RADIO.Show then
@@ -101,7 +107,14 @@ function GM:KeyPress(ply, key)
     if not IsValid(ply) or ply ~= LocalPlayer() then return end
 
     if key == IN_ZOOM and ply:IsActiveTraitorTeam() then
-        timer.Simple(0.05, function() RunConsoleCommand("+voicerecord") end)
+        timer.Simple(0.05, function()
+            -- Use the new permissions system if it exists or otherwise fall back to the old way
+            if permissions and permissions.EnableVoiceChat then
+                permissions.EnableVoiceChat(true)
+            else
+                RunConsoleCommand("+voicerecord")
+            end
+        end)
     end
 end
 

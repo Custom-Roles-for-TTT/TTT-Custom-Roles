@@ -561,15 +561,15 @@ To create a custom win condition, you will need to define a global unique win id
 
 #### Win Identifier
 
-The identifier must be unique to make sure you can differentiate between your role's win and any other role's win. Starting in version 1.2.5, Custom Roles for TTT provides a method for generating a unique win identifier for you. If you want to ensure compatibility with Custom Roles for TTT prior to version 1.2.5 you shoud come up with your own unique number for your role.
+The identifier must be unique to make sure you can differentiate between your role's win and any other role's win. Starting in version 1.2.5, Custom Roles for TTT provides a method for generating a unique win identifier for you. If you want to ensure compatibility with Custom Roles for TTT prior to version 1.2.5 you should come up with your own unique number for your role.
 
-The following code should be run on both the server and the client and will generate a new win condition identifier. It then saves the generated value to the global `WIN_SUMMONER` value to be used later:
+The following code should be run on both the server and the client and will generate a new win condition identifier. Be sure to use the role ID for your new role when calling the `GenerateNewWinID` method. After the `GenerateNewWinID` method is called, the code below then saves the generated value to the global `WIN_SUMMONER` value to be used later:
 
 ```lua
 hook.Add("Initialize", "SummonerInitialize", function()
     -- Use 245 if we're on Custom Roles for TTT earlier than version 1.2.5
     -- 245 is summation of the ASCII values for the characters "S", "U", and "M"
-    WIN_SUMMONER = GenerateNewWinID and GenerateNewWinID() or 245
+    WIN_SUMMONER = GenerateNewWinID and GenerateNewWinID(ROLE_SUMMONER) or 245
 end)
 ```
 
@@ -617,7 +617,7 @@ Putting all the properties together, the hook would look something like the foll
 if CLIENT then
     hook.Add("TTTScoringWinTitle", "SummonerScoringWinTitle", function(wintype, wintitles, title, secondaryWinRole)
         if wintype == WIN_SUMMONER then
-            return { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_SUMMONER]:upper() }, c = ROLE_COLORS[ROLE_SUMMONER] }
+            return { txt = "hilite_win_role_singular", params = { role = string.upper(ROLE_STRINGS[ROLE_SUMMONER]) }, c = ROLE_COLORS[ROLE_SUMMONER] }
         end
     end)
 end
@@ -631,7 +631,7 @@ Another part of the round summary screen that we want to tie into the is Events 
 if CLIENT then
     hook.Add("TTTEventFinishText", "SummonerEventFinishText", function(e)
         if e.win == WIN_SUMMONER then
-            return LANG.GetParamTranslation("ev_win_summoner", { role = ROLE_STRINGS[ROLE_SUMMONER]:lower() })
+            return LANG.GetParamTranslation("ev_win_summoner", { role = string.lower(ROLE_STRINGS[ROLE_SUMMONER]) })
         end
     end)
 
@@ -696,7 +696,7 @@ ROLE.translations = {
 hook.Add("Initialize", "SummonerInitialize", function()
     -- Use 245 if we're on Custom Roles for TTT earlier than version 1.2.5
     -- 245 is summation of the ASCII values for the characters "S", "U", and "M"
-    WIN_SUMMONER = GenerateNewWinID and GenerateNewWinID() or 245
+    WIN_SUMMONER = GenerateNewWinID and GenerateNewWinID(ROLE_SUMMONER) or 245
 end)
 
 if SERVER then
@@ -722,7 +722,7 @@ end
 if CLIENT then
     hook.Add("TTTEventFinishText", "SummonerEventFinishText", function(e)
         if e.win == WIN_SUMMONER then
-            return LANG.GetParamTranslation("ev_win_summoner", { role = ROLE_STRINGS[ROLE_SUMMONER]:lower() })
+            return LANG.GetParamTranslation("ev_win_summoner", { role = string.lower(ROLE_STRINGS[ROLE_SUMMONER]) })
         end
     end)
 
@@ -734,7 +734,7 @@ if CLIENT then
 
     hook.Add("TTTScoringWinTitle", "SummonerScoringWinTitle", function(wintype, wintitles, title, secondaryWinRole)
         if wintype == WIN_SUMMONER then
-            return { txt = "hilite_win_role_singular", params = { role = ROLE_STRINGS[ROLE_SUMMONER]:upper() }, c = ROLE_COLORS[ROLE_SUMMONER] }
+            return { txt = "hilite_win_role_singular", params = { role = string.upper(ROLE_STRINGS[ROLE_SUMMONER]) }, c = ROLE_COLORS[ROLE_SUMMONER] }
         end
     end)
 end

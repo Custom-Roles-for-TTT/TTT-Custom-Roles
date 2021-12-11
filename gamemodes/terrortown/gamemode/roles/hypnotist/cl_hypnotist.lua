@@ -1,3 +1,6 @@
+local hook = hook
+local net = net
+
 ------------------
 -- TRANSLATIONS --
 ------------------

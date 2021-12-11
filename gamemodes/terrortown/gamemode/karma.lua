@@ -1,5 +1,14 @@
 ---- Karma system stuff
 
+local cvars = cvars
+local ipairs = ipairs
+local IsValid = IsValid
+local math = math
+
+local CallHook = hook.Call
+local RunHook = hook.Run
+local GetAllPlayers = player.GetAll
+
 KARMA = {}
 
 -- ply steamid -> karma table for disconnected players who might reconnect
@@ -35,8 +44,6 @@ KARMA.cv.bantime = CreateConVar("ttt_karma_low_ban_minutes", "60")
 local config = KARMA.cv
 
 local function IsDebug() return config.debug:GetBool() end
-
-local math = math
 
 cvars.AddChangeCallback("ttt_karma_max", function(cvar, old, new)
     SetGlobalInt("ttt_karma_max", new)
@@ -74,7 +81,7 @@ function KARMA.GetKillReward()
 end
 
 function KARMA.GivePenalty(ply, penalty, victim)
-    if not hook.Call("TTTKarmaGivePenalty", nil, ply, penalty, victim) then
+    if not CallHook("TTTKarmaGivePenalty", nil, ply, penalty, victim) then
         ply:SetLiveKarma(math.max(ply:GetLiveKarma() - penalty, 0))
         ply:SetCleanRound(false)
         ply:SetCleanRounds(0)
@@ -84,7 +91,7 @@ function KARMA.GivePenalty(ply, penalty, victim)
 end
 
 function KARMA.GiveReward(ply, reward, victim)
-    if not hook.Call("TTTKarmaGiveReward", nil, ply, reward, victim) then
+    if not CallHook("TTTKarmaGiveReward", nil, ply, reward, victim) then
         reward = KARMA.DecayedMultiplier(ply) * reward
         ply:SetLiveKarma(math.min(ply:GetLiveKarma() + reward, config.max:GetFloat()))
         return reward
@@ -127,7 +134,7 @@ local function WasAvoidable(attacker, victim, dmginfo)
 end
 
 local function ShouldReduceKarma(attacker, victim)
-    local result = hook.Run("TTTKarmaShouldGivePenalty", attacker, victim)
+    local result = CallHook("TTTKarmaShouldGivePenalty", nil, attacker, victim)
     if type(result) == "boolean" then
         return result
     end
@@ -238,7 +245,7 @@ function KARMA.RoundIncrement()
     local healbonus = config.roundheal:GetFloat()
     local cleanbonus = config.clean:GetFloat()
 
-    for _, ply in ipairs(player.GetAll()) do
+    for _, ply in ipairs(GetAllPlayers()) do
         if ply:IsDeadTerror() and ply.death_type ~= KILL_SUICIDE or not ply:IsSpec() then
             local bonus = healbonus + (ply:GetCleanRound() and math.Clamp(math.floor(cleanbonus * config.cleanmult:GetFloat() ^ (ply:GetCleanRounds() - 1)), 0, config.cleanmax:GetFloat()) or 0)
             KARMA.GiveReward(ply, bonus)
@@ -254,7 +261,7 @@ end
 
 -- When a new round starts, Live karma becomes Base karma
 function KARMA.Rebase()
-    for _, ply in ipairs(player.GetAll()) do
+    for _, ply in ipairs(GetAllPlayers()) do
         if IsDebug() then
             print(ply, "rebased from", ply:GetBaseKarma(), "to", ply:GetLiveKarma())
         end
@@ -265,7 +272,7 @@ end
 
 -- Apply karma to damage factor for all players
 function KARMA.ApplyKarmaAll()
-    for _, ply in ipairs(player.GetAll()) do
+    for _, ply in ipairs(GetAllPlayers()) do
         KARMA.ApplyKarma(ply)
     end
 end
@@ -304,7 +311,7 @@ function KARMA.RoundBegin()
     KARMA.InitState()
 
     if KARMA.IsEnabled() then
-        for _, ply in ipairs(player.GetAll()) do
+        for _, ply in ipairs(GetAllPlayers()) do
             KARMA.ApplyKarma(ply)
 
             KARMA.NotifyPlayer(ply)
@@ -363,7 +370,7 @@ function KARMA.LateRecallAndSet(ply)
 end
 
 function KARMA.RememberAll()
-    for _, ply in ipairs(player.GetAll()) do
+    for _, ply in ipairs(GetAllPlayers()) do
         KARMA.Remember(ply)
     end
 end
@@ -371,7 +378,7 @@ end
 local reason = "Karma too low"
 function KARMA.CheckAutoKick(ply)
     if ply:GetBaseKarma() <= config.kicklevel:GetInt() then
-        if hook.Call("TTTKarmaLow", GAMEMODE, ply) == false then
+        if RunHook("TTTKarmaLow", ply) == false then
             return
         end
         ServerLog(ply:Nick() .. " autokicked/banned for low karma.\n")
@@ -395,13 +402,13 @@ function KARMA.CheckAutoKick(ply)
 end
 
 function KARMA.CheckAutoKickAll()
-   for _, ply in ipairs(player.GetAll()) do
+   for _, ply in ipairs(GetAllPlayers()) do
       KARMA.CheckAutoKick(ply)
    end
 end
 
 function KARMA.PrintAll(printfn)
-    for _, ply in ipairs(player.GetAll()) do
+    for _, ply in ipairs(GetAllPlayers()) do
         printfn(Format("%s : Live = %f -- Base = %f -- Dmg = %f\n",
                 ply:Nick(),
                 ply:GetLiveKarma(), ply:GetBaseKarma(),

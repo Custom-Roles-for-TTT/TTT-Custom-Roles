@@ -2,6 +2,16 @@
 
 AddCSLuaFile()
 
+local draw = draw
+local ents = ents
+local ipairs = ipairs
+local IsValid = IsValid
+local math = math
+local pairs = pairs
+local player = player
+local timer = timer
+local util = util
+
 DEFINE_BASECLASS "weapon_tttbase"
 
 SWEP.HoldType               = "pistol"

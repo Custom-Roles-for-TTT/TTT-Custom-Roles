@@ -1,5 +1,17 @@
 AddCSLuaFile()
 
+local hook = hook
+local IsValid = IsValid
+local math = math
+local net = net
+local pairs = pairs
+local player = player
+local table = table
+local timer = timer
+local util = util
+
+local GetAllPlayers = player.GetAll
+
 util.AddNetworkString("TTT_RevengerLoverKillerRadar")
 
 -------------
@@ -31,7 +43,7 @@ end)
 
 -- Clear out the revenger data when the round starts
 hook.Add("TTTPrepareRound", "Revenger_RoleFeatures_PrepareRound", function()
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         v:SetNWString("RevengerLover", "")
         v:SetNWString("RevengerKiller", "")
     end
@@ -48,7 +60,7 @@ end)
 -- Handle revenger lover death
 hook.Add("PlayerDeath", "Revenger_PlayerDeath", function(victim, infl, attacker)
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         if v:IsRevenger() and v:GetNWString("RevengerLover", "") == victim:SteamID64() then
             local message
             if v == attacker then
@@ -124,7 +136,7 @@ end
 
 ROLE_ON_ROLE_ASSIGNED[ROLE_REVENGER] = function(ply)
     local potentialSoulmates = {}
-    for _, p in pairs(player.GetAll()) do
+    for _, p in pairs(GetAllPlayers()) do
         if p:Alive() and not p:IsSpec() and p ~= ply then
             table.insert(potentialSoulmates, p)
         end
@@ -139,7 +151,7 @@ ROLE_ON_ROLE_ASSIGNED[ROLE_REVENGER] = function(ply)
     local drain_health = revenger_drain_health_to:GetInt()
     if drain_health >= 0 then
         timer.Create("revengerhealthdrain", 3, 0, function()
-            for _, p in pairs(player.GetAll()) do
+            for _, p in pairs(GetAllPlayers()) do
                 local lover_sid = p:GetNWString("RevengerLover", "")
                 if p:IsActiveRevenger() and lover_sid ~= "" then
                     local lover = player.GetBySteamID64(lover_sid)

@@ -20,6 +20,10 @@
 -- Note that custom events don't have to be in this file, just any file that is
 -- loaded on the client.
 
+local hook = hook
+local string = string
+local util = util
+
 -- Translation helpers
 local T  = LANG.GetTranslation
 local PT = LANG.GetParamTranslation
@@ -47,23 +51,23 @@ local is_dmg = util.BitSet
 -- Round end event
 Event(EVENT_FINISH,
       { text = function(e)
-                  local result = hook.Run("TTTEventFinishText", e)
+                  local result = hook.Call("TTTEventFinishText", nil, e)
                   if result then return result end
 
                   if e.win == WIN_TRAITOR then
-                     return PT("ev_win_traitor", { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]:lower() })
+                     return PT("ev_win_traitor", { role = string.lower(ROLE_STRINGS_PLURAL[ROLE_TRAITOR]) })
                   elseif e.win == WIN_INNOCENT then
-                     return PT("ev_win_inno", { role = ROLE_STRINGS_PLURAL[ROLE_INNOCENT]:lower() })
+                     return PT("ev_win_inno", { role = string.lower(ROLE_STRINGS_PLURAL[ROLE_INNOCENT]) })
                   elseif e.win == WIN_MONSTER then
                      local monster_role = GetWinningMonsterRole()
                      if monster_role == ROLE_VAMPIRE then
-                        return PT("ev_win_vampire", { role = ROLE_STRINGS_PLURAL[ROLE_VAMPIRE]:lower() })
+                        return PT("ev_win_vampire", { role = string.lower(ROLE_STRINGS_PLURAL[ROLE_VAMPIRE]) })
                      elseif monster_role == ROLE_ZOMBIE then
-                        return PT("ev_win_zombie", { role = ROLE_STRINGS[ROLE_ZOMBIE]:lower() })
+                        return PT("ev_win_zombie", { role = string.lower(ROLE_STRINGS[ROLE_ZOMBIE]) })
                      end
                      return T("ev_win_monster")
                   elseif e.win == WIN_TIMELIMIT then
-                     return PT("ev_win_time", { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR]:lower() })
+                     return PT("ev_win_time", { role = string.lower(ROLE_STRINGS_PLURAL[ROLE_TRAITOR]) })
                   end
 
                   return PT("ev_win_unknown", { id = e.win })
@@ -88,7 +92,7 @@ Event(EVENT_FINISH,
                      win_string = "ev_win_icon_time"
                   end
 
-                  local new_win_string, new_role_string = hook.Run("TTTEventFinishIconText", e, win_string, role_string)
+                  local new_win_string, new_role_string = hook.Call("TTTEventFinishIconText", nil, e, win_string, role_string)
                   if new_win_string then win_string = new_win_string end
                   if new_role_string then role_string = new_role_string end
 

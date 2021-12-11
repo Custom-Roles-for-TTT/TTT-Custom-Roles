@@ -1,5 +1,7 @@
 AddCSLuaFile()
 
+local hook = hook
+
 -------------
 -- CONVARS --
 -------------

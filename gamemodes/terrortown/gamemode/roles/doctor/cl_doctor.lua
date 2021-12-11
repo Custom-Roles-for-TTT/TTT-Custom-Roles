@@ -1,3 +1,6 @@
+local hook = hook
+local string = string
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -19,7 +22,7 @@ hook.Add("TTTTutorialRoleText", "Doctor_TTTTutorialRoleText", function(role, tit
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local html = "The " .. ROLE_STRINGS[ROLE_DOCTOR] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> whose goal is to heal their patients."
 
-        html = html .. "<span style='display: block; margin-top: 10px;'>Use the equipment shop to buy <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>a health station</span> or <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. ROLE_STRINGS[ROLE_PARASITE]:lower() .. " cure</span> to help administer treatments.</span>"
+        html = html .. "<span style='display: block; margin-top: 10px;'>Use the equipment shop to buy <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>a health station</span> or <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. string.lower(ROLE_STRINGS[ROLE_PARASITE]) .. " cure</span> to help administer treatments.</span>"
 
         return html
     end

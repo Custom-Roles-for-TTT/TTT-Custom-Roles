@@ -1,9 +1,21 @@
-local util = util
-local surface = surface
+local cam = cam
 local draw = draw
+local file = file
+local ipairs = ipairs
+local math = math
+local pairs = pairs
+local render = render
+local surface = surface
+local string = string
+local table = table
+local util = util
 
+local CallHook = hook.Call
+local RunHook = hook.Run
+local GetAllPlayers = player.GetAll
 local GetPTranslation = LANG.GetParamTranslation
 local GetRaw = LANG.GetRawTranslation
+local StringUpper = string.upper
 
 local key_params = { usekey = Key("+use", "USE"), walkkey = Key("+walk", "WALK") }
 
@@ -59,7 +71,6 @@ local function DrawRoleIcon(role, noz, pos, dir, color_role)
 end
 
 local client, plys, ply, pos, dir, tgt
-local GetPlayers = player.GetAll
 
 local propspec_outline = Material("models/props_combine/portalball001_sheet")
 
@@ -79,7 +90,7 @@ end
 -- happen before certain entities are drawn, which then clip over the sprite
 function GM:PostDrawTranslucentRenderables()
     client = LocalPlayer()
-    plys = GetPlayers()
+    plys = GetAllPlayers()
 
     dir = client:GetForward() * -1
 
@@ -88,10 +99,10 @@ function GM:PostDrawTranslucentRenderables()
         hide_roles = GetConVar("ttt_hide_role"):GetBool()
     end
 
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(plys) do
         -- Compatibility with the disguises, Dead Ringer (810154456), and Prop Disguiser (310403737 and 2127939503)
         local hidden = v:GetNWBool("disguised", false) or (v.IsFakeDead and v:IsFakeDead()) or v:GetNWBool("PD_Disguised", false)
-        if v:IsActive() and v ~= client and not hidden and not hook.Run("TTTTargetIDPlayerBlockIcon", v, client) then
+        if v:IsActive() and v ~= client and not hidden and not CallHook("TTTTargetIDPlayerBlockIcon", nil, v, client) then
             pos = v:GetPos()
             pos.z = pos.z + v:GetHeight() + 15
 
@@ -102,7 +113,7 @@ function GM:PostDrawTranslucentRenderables()
 
             -- Allow other addons (and external roles) to determine if the "KILL" icon should show
             -- NOTE: Leave the permanent 'false' parameter to make sure we don't break external hook usage
-            local showKillIcon = hook.Run("TTTTargetIDPlayerKillIcon", v, client, false, showJester)
+            local showKillIcon = CallHook("TTTTargetIDPlayerKillIcon", nil, v, client, false, showJester)
             if showKillIcon and not client:IsSameTeam(v) then -- If we are showing the "KILL" icon this should take priority over role icons
                 render.SetMaterial(indicator_mat_roleback_noz)
                 render.DrawQuadEasy(pos, dir, 8, 8, ROLE_COLORS_SPRITE[client:GetRole()], 180) -- Use the colour of whatever role the player currently is for the "KILL" icon
@@ -169,7 +180,7 @@ function GM:PostDrawTranslucentRenderables()
                     end
                 end
 
-                local newRole, newNoZ, newColorRole = hook.Run("TTTTargetIDPlayerRoleIcon", v, client, role, noz, color_role, hideBeggar, showJester, hideBodysnatcher)
+                local newRole, newNoZ, newColorRole = CallHook("TTTTargetIDPlayerRoleIcon", nil, v, client, role, noz, color_role, hideBeggar, showJester, hideBodysnatcher)
                 if newRole or (type(newRole) == "boolean" and not newRole) then role = newRole end
                 if type(newNoZ) == "boolean" then noz = newNoZ end
                 if newColorRole then color_role = newColorRole end
@@ -216,7 +227,7 @@ local function DrawPropSpecLabels(cli)
     local text = nil
     local w = 0
     tgt = nil
-    for _, p in ipairs(GetPlayers()) do
+    for _, p in ipairs(GetAllPlayers()) do
         if p:IsSpec() then
             surface.SetTextColor(220, 200, 0, 120)
 
@@ -271,7 +282,7 @@ function GM:HUDDrawTargetID()
 
     local L = GetLang()
 
-    if hook.Call("HUDShouldDraw", GAMEMODE, "TTTPropSpec") then
+    if RunHook("HUDShouldDraw", "TTTPropSpec") then
         DrawPropSpecLabels(client)
     end
 
@@ -289,7 +300,7 @@ function GM:HUDDrawTargetID()
     local ent = trace.Entity
     if (not IsValid(ent)) or ent.NoTarget then return end
 
-    if IsPlayer(ent) and hook.Run("TTTTargetIDPlayerBlockInfo", ent, client) then return end
+    if IsPlayer(ent) and CallHook("TTTTargetIDPlayerBlockInfo", nil, ent, client) then return end
 
     -- some bools for caching what kind of ent we are looking at
     local target_traitor = false
@@ -396,7 +407,7 @@ function GM:HUDDrawTargetID()
         target_special_detective = GetRoundState() > ROUND_PREP and ent:IsDetectiveTeam() and not target_detective
 
         -- Allow external roles to override or block showing player name
-        local new_text, new_col = hook.Run("TTTTargetIDPlayerName", ent, client, text, color)
+        local new_text, new_col = CallHook("TTTTargetIDPlayerName", nil, ent, client, text, color)
         -- If the first return value is a boolean and it's "false" then save that so we know to skip rendering the text
         if new_text or (type(new_text) == "boolean" and not new_text) then text = new_text end
         if new_col then color = new_col end
@@ -414,7 +425,7 @@ function GM:HUDDrawTargetID()
         end
 
         -- Allow external roles to override or block showing a ragdoll's name
-        local new_text, new_col = hook.Run("TTTTargetIDRagdollName", ent, client, text, color)
+        local new_text, new_col = CallHook("TTTTargetIDRagdollName", nil, ent, client, text, color)
         -- If the first return value is a boolean and it's "false" then save that so we know to skip rendering the text
         if new_text or (type(new_text) == "boolean" and not new_text) then text = new_text end
         if new_col then color = new_col end
@@ -431,7 +442,7 @@ function GM:HUDDrawTargetID()
 
     local ring_visible = target_traitor or target_special_traitor or target_detective or target_special_detective or target_glitch or target_jester or target_independent or target_monster
 
-    local new_visible, color_override = hook.Run("TTTTargetIDPlayerRing", ent, client, ring_visible)
+    local new_visible, color_override = CallHook("TTTTargetIDPlayerRing", nil, ent, client, ring_visible)
     if type(new_visible) == "boolean" then ring_visible = new_visible end
 
     if ring_visible then
@@ -502,7 +513,7 @@ function GM:HUDDrawTargetID()
         text = L[text]
 
         -- Allow external roles to override or block showing health
-        local new_text, new_col = hook.Run("TTTTargetIDPlayerHealth", ent, client, text, col)
+        local new_text, new_col = CallHook("TTTTargetIDPlayerHealth", nil, ent, client, text, col)
         -- If the first return value is a boolean and it's "false" then save that so we know to skip rendering the text
         if new_text or (type(new_text) == "boolean" and not new_text) then text = new_text end
         if new_col then col = new_col end
@@ -510,7 +521,7 @@ function GM:HUDDrawTargetID()
         text = GetRaw(hint.name) or hint.name
 
         -- Allow external roles to override or block showing the hint label
-        local new_text, new_col = hook.Run("TTTTargetIDEntityHintLabel", ent, client, text, col)
+        local new_text, new_col = CallHook("TTTTargetIDEntityHintLabel", nil, ent, client, text, col)
         -- If the first return value is a boolean and it's "false" then save that so we know to skip rendering the text
         if new_text or (type(new_text) == "boolean" and not new_text) then text = new_text end
         if new_col then col = new_col end
@@ -538,7 +549,7 @@ function GM:HUDDrawTargetID()
         text = L[text]
 
         -- Allow external roles to override or block showing karma
-        local new_text, new_col = hook.Run("TTTTargetIDPlayerKarma", ent, client, text, col)
+        local new_text, new_col = CallHook("TTTTargetIDPlayerKarma", nil, ent, client, text, col)
         -- If the first return value is a boolean and it's "false" then save that so we know to skip rendering the text
         if new_text or (type(new_text) == "boolean" and not new_text) then text = new_text end
         if new_col then col = new_col end
@@ -563,7 +574,7 @@ function GM:HUDDrawTargetID()
         end
 
         -- Allow external roles to override or block showing karma
-        local new_text, new_col = hook.Run("TTTTargetIDPlayerHintText", ent, client, text, col)
+        local new_text, new_col = CallHook("TTTTargetIDPlayerHintText", nil, ent, client, text, col)
         -- If the first return value is a boolean and it's "false" then save that so we know to skip rendering the text
         if new_text or (type(new_text) == "boolean" and not new_text) then text = new_text end
         if new_col then col = new_col end
@@ -580,34 +591,34 @@ function GM:HUDDrawTargetID()
     text = nil
     local secondary_text = nil
     if target_traitor then
-        text = string.upper(ROLE_STRINGS[ROLE_TRAITOR])
+        text = StringUpper(ROLE_STRINGS[ROLE_TRAITOR])
         col = ROLE_COLORS_RADAR[ROLE_TRAITOR]
     elseif target_special_traitor then
         local role = ent:GetRole()
-        text = string.upper(ROLE_STRINGS[role])
+        text = StringUpper(ROLE_STRINGS[role])
         col = ROLE_COLORS_RADAR[role]
     elseif target_glitch then
         local bluff = ent:GetNWInt("GlitchBluff", ROLE_TRAITOR)
         if client:IsZombie() and client:IsTraitorTeam() then
             bluff = ROLE_ZOMBIE
         end
-        text = string.upper(ROLE_STRINGS[bluff])
+        text = StringUpper(ROLE_STRINGS[bluff])
         col = ROLE_COLORS_RADAR[bluff]
     elseif target_detective then
-        text = string.upper(ROLE_STRINGS[ROLE_DETECTIVE])
+        text = StringUpper(ROLE_STRINGS[ROLE_DETECTIVE])
         col = ROLE_COLORS_RADAR[ROLE_DETECTIVE]
     elseif target_special_detective then
         local role = ent:GetRole()
-        text = string.upper(ROLE_STRINGS[role])
+        text = StringUpper(ROLE_STRINGS[role])
         col = ROLE_COLORS_RADAR[role]
     elseif target_jester then
-        text = string.upper(ROLE_STRINGS[ROLE_JESTER])
+        text = StringUpper(ROLE_STRINGS[ROLE_JESTER])
         col = ROLE_COLORS_RADAR[ROLE_JESTER]
     elseif target_monster then
-        text = string.upper(ROLE_STRINGS[target_monster])
+        text = StringUpper(ROLE_STRINGS[target_monster])
         col = GetRoleTeamColor(ROLE_TEAM_MONSTER, "radar")
     elseif target_independent then
-        text = string.upper(ROLE_STRINGS[target_independent])
+        text = StringUpper(ROLE_STRINGS[target_independent])
         col = GetRoleTeamColor(ROLE_TEAM_INDEPENDENT, "radar")
     elseif ent.sb_tag and ent.sb_tag.txt ~= nil then
         text = L[ent.sb_tag.txt]
@@ -617,7 +628,7 @@ function GM:HUDDrawTargetID()
         col = COLOR_YELLOW
     end
 
-    local new_text, new_color, new_secondary = hook.Run("TTTTargetIDPlayerText", ent, client, text, col, secondary_text)
+    local new_text, new_color, new_secondary = CallHook("TTTTargetIDPlayerText", nil, ent, client, text, col, secondary_text)
     -- If either text return value is a boolean and it's "false" then save that so we know to skip rendering the text
     if new_text or (type(new_text) == "boolean" and not new_text) then text = new_text end
     if new_color then col = new_color end

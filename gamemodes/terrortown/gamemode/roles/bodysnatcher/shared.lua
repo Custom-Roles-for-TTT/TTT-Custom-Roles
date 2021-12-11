@@ -1,5 +1,7 @@
 AddCSLuaFile()
 
+local hook = hook
+
 -- Bodysnatcher reveal modes
 BODYSNATCHER_REVEAL_NONE = 0
 BODYSNATCHER_REVEAL_ALL = 1

@@ -2,7 +2,25 @@
 
 include("sb_info.lua")
 
+local draw = draw
+local file = file
+local hook = hook
+local ipairs = ipairs
+local IsValid = IsValid
+local pairs = pairs
+local surface = surface
+local table = table
+local timer = timer
+local vgui = vgui
+
+local CallHook = hook.Call
+local RunHook = hook.Run
 local GetTranslation = LANG.GetTranslation
+local MathClamp = math.Clamp
+local MathMax = math.max
+local MathMin = math.min
+local MathRound = math.Round
+local MathSin = math.sin
 
 SB_ROW_HEIGHT = 24 --16
 
@@ -20,17 +38,17 @@ function PANEL:Init()
     if KARMA.IsEnabled() then
         self:AddColumn(GetTranslation("sb_karma"), function(ply)
             if GetConVar("ttt_show_raw_karma_value"):GetBool() then
-                return math.Round(ply:GetBaseKarma())
+                return MathRound(ply:GetBaseKarma())
             else
                 local dmgpct = 100
                 if ply:GetBaseKarma() < 1000 then
                     local k = ply:GetBaseKarma() - 1000
                     if GetGlobalBool("ttt_karma_strict", false) then
-                        dmgpct = math.Round(math.Clamp(1 + (0.0007 * k) + (-0.000002 * (k ^ 2)), 0.1, 1.0) * 100)
+                        dmgpct = MathRound(MathClamp(1 + (0.0007 * k) + (-0.000002 * (k ^ 2)), 0.1, 1.0) * 100)
                     elseif GetGlobalBool("ttt_karma_lenient", false) then
-                        dmgpct = math.Round(math.Clamp(1 + (0.0005 * k) + (-0.0000005 * (k ^ 2)), 0.1, 1.0) * 100)
+                        dmgpct = MathRound(MathClamp(1 + (0.0005 * k) + (-0.0000005 * (k ^ 2)), 0.1, 1.0) * 100)
                     else
-                        dmgpct = math.Round(math.Clamp(1 + (-0.0000025 * (k ^ 2)), 0.1, 1.0) * 100)
+                        dmgpct = MathRound(MathClamp(1 + (-0.0000025 * (k ^ 2)), 0.1, 1.0) * 100)
                     end
                 end
                 return dmgpct .. "%"
@@ -39,7 +57,7 @@ function PANEL:Init()
     end
 
     -- Let hooks add their custom columns
-    hook.Call("TTTScoreboardColumns", nil, self)
+    CallHook("TTTScoreboardColumns", nil, self)
 
     for _, c in ipairs(self.cols) do
         c:SetMouseInputEnabled(false)
@@ -158,7 +176,7 @@ end
 
 local function ColorForPlayer(ply)
     if IsValid(ply) then
-        local c = hook.Call("TTTScoreboardColorForPlayer", GAMEMODE, ply)
+        local c = RunHook("TTTScoreboardColorForPlayer", ply)
 
         -- verify that we got a proper color
         if c and istable(c) and c.r and c.b and c.g and c.a then
@@ -171,7 +189,7 @@ local function ColorForPlayer(ply)
 end
 
 local function DrawFlashingBorder(width, role)
-    surface.SetDrawColor(ColorAlpha(ROLE_COLORS[role], math.Round(math.sin(RealTime() * 8) / 2 + 0.5) * 20))
+    surface.SetDrawColor(ColorAlpha(ROLE_COLORS[role], MathRound(MathSin(RealTime() * 8) / 2 + 0.5) * 20))
     surface.DrawRect(0, 0, width, SB_ROW_HEIGHT)
     surface.SetDrawColor(ROLE_COLORS_DARK[role])
     surface.DrawOutlinedRect(SB_ROW_HEIGHT, 0, width - SB_ROW_HEIGHT, SB_ROW_HEIGHT)
@@ -186,7 +204,7 @@ function PANEL:Paint(width, height)
     --   end
 
     local ply = self.Player
-    local c = hook.Run("TTTScoreboardRowColorForPlayer", ply)
+    local c = RunHook("TTTScoreboardRowColorForPlayer", ply)
 
     -- Use the default color for players without roles
     if type(c) == "number" and c <= ROLE_NONE then
@@ -218,7 +236,7 @@ function PANEL:Paint(width, height)
     end
 
     -- Allow external addons (like new roles) to manipulate how a player appears on the scoreboard
-    local new_color, new_role_str, flash_role = hook.Run("TTTScoreboardPlayerRole", ply, client, c, roleStr)
+    local new_color, new_role_str, flash_role = CallHook("TTTScoreboardPlayerRole", nil, ply, client, c, roleStr)
     if new_color then c = new_color end
     if new_role_str then roleStr = new_role_str end
 
@@ -241,7 +259,7 @@ function PANEL:Paint(width, height)
     end
 
     if ply == client then
-        surface.SetDrawColor(200, 200, 200, math.Clamp(math.sin(RealTime() * 2) * 50, 0, 100))
+        surface.SetDrawColor(200, 200, 200, MathClamp(MathSin(RealTime() * 2) * 50, 0, 100))
         surface.DrawRect(0, 0, width, SB_ROW_HEIGHT)
     end
 
@@ -300,7 +318,7 @@ function PANEL:UpdatePlayerData()
     local client = LocalPlayer()
     self.nick:SetText(ply:Nick())
     if GetRoundState() >= ROUND_ACTIVE then
-        local nick_override = hook.Run("TTTScoreboardPlayerName", ply, client, self.nick:GetText())
+        local nick_override = CallHook("TTTScoreboardPlayerName", nil, ply, client, self.nick:GetText())
         if nick_override then self.nick:SetText(nick_override) end
     end
 
@@ -419,7 +437,7 @@ function PANEL:DoRightClick()
     local menu = DermaMenu()
     menu.Player = self:GetPlayer()
 
-    local close = hook.Call("TTTScoreboardMenu", nil, menu)
+    local close = CallHook("TTTScoreboardMenu", nil, menu)
     if close then
         menu:Remove()
         return
@@ -436,8 +454,8 @@ function PANEL:ShowMicVolumeSlider()
     local sliderHeight = 16
     local sliderDisplayHeight = 8
 
-    local x = math.max(gui.MouseX() - width, 0)
-    local y = math.min(gui.MouseY(), ScrH() - height)
+    local x = MathMax(gui.MouseX() - width, 0)
+    local y = MathMin(gui.MouseY(), ScrH() - height)
 
     local currentPlayerVolume = self:GetPlayer():GetVoiceVolumeScale()
     currentPlayerVolume = currentPlayerVolume ~= nil and currentPlayerVolume or 1
@@ -497,7 +515,7 @@ function PANEL:ShowMicVolumeSlider()
     -- Render slider "knob" & text
     slider.Knob.Paint = function(s, w, h)
         if slider:IsEditing() then
-            local textValue = math.Round(slider:GetSlideX() * 100) .. "%"
+            local textValue = MathRound(slider:GetSlideX() * 100) .. "%"
             local textPadding = 5
 
             -- The position of the text and size of rounded box are not relative to the text size. May cause problems if font size changes

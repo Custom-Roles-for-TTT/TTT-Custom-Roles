@@ -1,5 +1,17 @@
 ---- Help screen
 
+local concommand = concommand
+local cvars = cvars
+local file = file
+local hook = hook
+local ipairs = ipairs
+local pairs = pairs
+local surface = surface
+local string = string
+local table = table
+local timer = timer
+local vgui = vgui
+
 local GetTranslation = LANG.GetTranslation
 local GetPTranslation = LANG.GetParamTranslation
 
@@ -676,7 +688,7 @@ local function TutorialUsefulKeys(pnl, lbl)
 
     -- Fifth line
         htmlData = htmlData .. "<div style='height: 40px;'>"
-            key = GetConVar("ttt_radio_button"):GetString():upper()
+            key = string.upper(GetConVar("ttt_radio_button"):GetString())
             htmlData = htmlData .. "<span style='" .. fontStyle .. keyMappingStyles .. "'>" .. key .. "</span>"
             htmlData = htmlData .. "<span style='" .. fontStyle .. " color: white;'> will open the </span>"
             color = ROLE_COLORS[ROLE_INNOCENT]
@@ -797,8 +809,8 @@ local function ShowTutorialPage(pnl, page)
         roleIcon:SetPos(roleIcon:GetX() - 3, roleIcon:GetY() + 7)
 
         -- If nobody wants to handle this page themselves,
-        if not hook.Run("TTTTutorialRolePage", role, pnl, titleLabel, roleIcon) then
-            local roleText = hook.Run("TTTTutorialRoleText", role, titleLabel, roleIcon)
+        if not hook.Call("TTTTutorialRolePage", nil, role, pnl, titleLabel, roleIcon) then
+            local roleText = hook.Call("TTTTutorialRoleText", nil, role, titleLabel, roleIcon)
 
             local html = vgui.Create("DHTML", pnl)
             html:Dock(FILL)
@@ -839,7 +851,7 @@ local function ShowRoleTutorial(role)
     end
 
     -- Otherwise check if there are special rules for this role
-    if hook.Run("TTTTutorialRoleEnabled", role) then
+    if hook.Call("TTTTutorialRoleEnabled", nil, role) then
         return true
     end
     return false

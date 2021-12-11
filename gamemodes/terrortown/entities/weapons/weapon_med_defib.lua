@@ -7,6 +7,16 @@
 
 AddCSLuaFile()
 
+local hook = hook
+local IsValid = IsValid
+local math = math
+local net = net
+local player = player
+local surface = surface
+local string = string
+local timer = timer
+local util = util
+
 SWEP.HoldType = "pistol"
 SWEP.LimitedStock = true
 
@@ -172,7 +182,7 @@ if SERVER then
         net.Send(ply)
 
         local owner = self:GetOwner()
-        hook.Run("TTTPlayerDefibRoleChange", owner, ply)
+        hook.Call("TTTPlayerDefibRoleChange", nil, owner, ply)
 
         ply:SpawnForRound(true)
         ply:SetCredits(credits)

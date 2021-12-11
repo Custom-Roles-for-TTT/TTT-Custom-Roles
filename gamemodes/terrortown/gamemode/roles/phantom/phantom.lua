@@ -1,5 +1,17 @@
 AddCSLuaFile()
 
+local hook = hook
+local IsValid = IsValid
+local math = math
+local net = net
+local pairs = pairs
+local player = player
+local table = table
+local timer = timer
+local util = util
+
+local GetAllPlayers = player.GetAll
+
 util.AddNetworkString("TTT_PhantomHaunt")
 
 -------------
@@ -43,7 +55,7 @@ end)
 
 local deadPhantoms = {}
 hook.Add("TTTPrepareRound", "Phantom_TTTPrepareRound", function()
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         v:SetNWBool("Haunted", false)
         v:SetNWBool("Haunting", false)
         v:SetNWString("HauntingTarget", nil)
@@ -119,7 +131,7 @@ hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
         end
         victim:PrintMessage(HUD_PRINTCENTER, "Your attacker has been haunted.")
         if phantom_announce_death:GetBool() then
-            for _, v in pairs(player.GetAll()) do
+            for _, v in pairs(GetAllPlayers()) do
                 if v ~= attacker and v:IsDetectiveLike() and v:Alive() and not v:IsSpec() then
                     v:PrintMessage(HUD_PRINTCENTER, "The " .. ROLE_STRINGS[ROLE_PHANTOM] .. " has been killed.")
                 end
@@ -239,7 +251,7 @@ hook.Add("DoPlayerDeath", "Phantom_DoPlayerDeath", function(ply, attacker, dmgin
         end
 
         if respawn and phantom_announce_death:GetBool() then
-            for _, v in pairs(player.GetAll()) do
+            for _, v in pairs(GetAllPlayers()) do
                 if v:IsDetectiveLike() and v:Alive() and not v:IsSpec() then
                     v:PrintMessage(HUD_PRINTCENTER, "The " .. ROLE_STRINGS[ROLE_PHANTOM] .. " has been respawned.")
                 end

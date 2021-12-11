@@ -1,5 +1,17 @@
 AddCSLuaFile()
 
+local hook = hook
+local ipairs = ipairs
+local IsValid = IsValid
+local net = net
+local pairs = pairs
+local player = player
+local resource = resource
+local timer = timer
+local util = util
+
+local GetAllPlayers = player.GetAll
+
 util.AddNetworkString("TTT_UpdateOldManWins")
 
 resource.AddSingleFile("sound/oldmanramble.wav")
@@ -48,7 +60,7 @@ ROLE_ON_ROLE_ASSIGNED[ROLE_OLDMAN] = function(ply)
     local oldman_drain_health = oldman_drain_health_to:GetInt()
     if oldman_drain_health > 0 then
         timer.Create("oldmanhealthdrain", 3, 0, function()
-            for _, p in pairs(player.GetAll()) do
+            for _, p in pairs(GetAllPlayers()) do
                 if p:IsActiveOldMan() then
                     local hp = p:Health()
                     if hp > oldman_drain_health then
@@ -129,7 +141,7 @@ hook.Add("EntityTakeDamage", "OldMan_EntityTakeDamage", function(ent, dmginfo)
 end)
 
 hook.Add("TTTPrepareRound", "OldMan_Adrenaline_TTTPrepareRound", function()
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         v:SetNWBool("AdrenalineRush", false)
         v:SetNWBool("AdrenalineRushed", false)
         timer.Remove(v:Nick() .. "AdrenalineRush")

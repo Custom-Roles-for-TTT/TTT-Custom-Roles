@@ -1,7 +1,33 @@
 # Release Notes
 
-## 1.4.1 (Beta)
+## 1.4.2 (Beta)
 **Released:**
+
+### Additions
+- Added ability to allow spirits to see eachother when there is a medium (enabled by default)
+
+### Changes
+- Ported change from base TTT: "TTT uses new permissions.EnableVoiceChat"
+- Changed large parts across most of the addon in an attempt to increase performance
+
+### Fixes
+- Fixed bodysnatcher killed event redefining existing event ID
+- Fixed freeze in round summary when a player has multi-byte characters in their name
+- Fixed round summary highlights player stats spacing
+- Fixed killing a jester team member causing the team kill "awards" to show on the round summary highlight tab
+- Fixed medium being told there was a medium when they died
+- Fixed assassin not getting a new target when their target's role changes to one that is an invalid target
+
+### Developer
+- Added parameter to `GenerateNewEventID` to allow roles to associate generated event IDs back to the role
+- Added warning message to `GenerateNewEventID` when role parameter is missing so developers know to update
+- Added parameter to `GenerateNewWinID` to allow roles to associate generated win IDs back to the role
+- Added warning message to `GenerateNewWinID` when role parameter is missing so developers know to update
+
+*NOTE*: If the role parameter is not passed, we try to figure out the role that the generated ID belongs to but this is not promised to work. Developers should update to use the new parameter as soon as possible. Developers who are using these methods to generate IDs not linked to roles should pass `ROLE_NONE`.
+
+## 1.4.1 (Beta)
+**Released: December 4th, 2021**
 
 ### Changes
 - Changed old man to lose karma if they hurt or kill players when their adrenaline rush is not active

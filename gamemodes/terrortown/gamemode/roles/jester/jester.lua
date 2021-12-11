@@ -1,5 +1,11 @@
 AddCSLuaFile()
 
+local hook = hook
+local pairs = pairs
+local timer = timer
+
+local GetAllPlayers = player.GetAll
+
 -------------
 -- CONVARS --
 -------------
@@ -57,7 +63,7 @@ hook.Add("TTTPrintResultMessage", "Killer_TTTPrintResultMessage", function(type)
 end)
 
 hook.Add("TTTPrepareRound", "Jester_PrepareRound", function()
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         v:SetNWString("JesterKiller", "")
     end
 end)

@@ -1,5 +1,8 @@
 AddCSLuaFile()
 
+local hook = hook
+local IsValid = IsValid
+
 -------------
 -- CONVARS --
 -------------

@@ -1,3 +1,9 @@
+local hook = hook
+local net = net
+local pairs = pairs
+
+local GetAllPlayers = player.GetAll
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -84,7 +90,7 @@ hook.Add("TTTScoreboardPlayerName", "Parasite_TTTScoreboardPlayerName", function
 
     -- Show Assassin + Parasite logic if that applies
     local infected = ply:GetNWBool("Infected", false)
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         if ply:Nick() == v:GetNWString("AssassinTarget", "") then
             local newText = " ("
             if infected then

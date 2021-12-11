@@ -1,3 +1,10 @@
+local hook = hook
+local net = net
+local string = string
+local table = table
+
+local StringUpper = string.upper
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -49,7 +56,7 @@ end)
 
 hook.Add("TTTEventFinishText", "OldMan_TTTEventFinishText", function(e)
     if e.win == WIN_OLDMAN then
-        return LANG.GetParamTranslation("ev_win_oldman", { role = ROLE_STRINGS[ROLE_OLDMAN]:lower() })
+        return LANG.GetParamTranslation("ev_win_oldman", { role = string.lower(ROLE_STRINGS[ROLE_OLDMAN]) })
     end
 end)
 
@@ -87,7 +94,7 @@ hook.Add("TTTTargetIDPlayerText", "OldMan_TTTTargetIDPlayerText", function(ent, 
     if GetRoundState() < ROUND_ACTIVE then return end
 
     if IsOldManVisible(ent) then
-        return ROLE_STRINGS[ROLE_OLDMAN]:upper(), ROLE_COLORS_RADAR[ROLE_OLDMAN]
+        return StringUpper(ROLE_STRINGS[ROLE_OLDMAN]), ROLE_COLORS_RADAR[ROLE_OLDMAN]
     end
 end)
 

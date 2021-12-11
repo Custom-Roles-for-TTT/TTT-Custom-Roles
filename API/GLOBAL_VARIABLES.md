@@ -53,6 +53,10 @@ Variables available globally (within the defined realm)
 *Realm:* Client and Server\
 *Added in:* 1.2.5
 
+**EVENTS_BY_ROLE** - Table of event IDs for each role.\
+*Realm:* Client and Server\
+*Added in:* 1.4.2
+
 **INDEPENDENT_ROLES** - Lookup table for whether a role is on the independent team.\
 *Realm:* Client and Server\
 *Added in:* 1.0.0
@@ -116,3 +120,7 @@ Variables available globally (within the defined realm)
 **WIN_MAX** - The maximum win state identifier.\
 *Realm:* Client and Server\
 *Added in:* 1.2.5
+
+**WINS_BY_ROLE** - Table of win IDs for each role.\
+*Realm:* Client and Server\
+*Added in:* 1.4.2

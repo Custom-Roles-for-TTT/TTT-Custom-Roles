@@ -1,16 +1,34 @@
+local file = file
+local ipairs = ipairs
+local IsValid = IsValid
+local math = math
+local net = net
+local pairs = pairs
+local string = string
+local table = table
+
+local CallHook = hook.Call
+local RunHook = hook.Run
+local GetAllPlayers = player.GetAll
+local StringUpper = string.upper
+local StringLower = string.lower
+local StringFind = string.find
+local StringSplit = string.Split
+local StringSub = string.sub
+
 -- Version string for display and function for version checks
-CR_VERSION = "1.4.1"
+CR_VERSION = "1.4.2"
 CR_BETA = true
 
 function CRVersion(version)
-    local installedVersionRaw = string.Split(CR_VERSION, ".")
+    local installedVersionRaw = StringSplit(CR_VERSION, ".")
     local installedVersion = {
         major = tonumber(installedVersionRaw[1]),
         minor = tonumber(installedVersionRaw[2]),
         patch = tonumber(installedVersionRaw[3])
     }
 
-    local neededVersionRaw = string.Split(version, ".")
+    local neededVersionRaw = StringSplit(version, ".")
     local neededVersion = {
         major = tonumber(neededVersionRaw[1]),
         minor = tonumber(neededVersionRaw[2]),
@@ -597,7 +615,7 @@ ROLE_STRINGS_SHORT = {
 }
 
 function StartsWithVowel(word)
-    local firstletter = string.sub(word, 1, 1)
+    local firstletter = StringSub(word, 1, 1)
     return firstletter == "a" or
         firstletter == "e" or
         firstletter == "i" or
@@ -613,11 +631,11 @@ function UpdateRoleStrings()
 
             local plural = GetGlobalString("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name_plural", "")
             if plural == "" then -- Fallback if no plural is given. Does NOT handle all cases properly
-                local lastChar = string.sub(name, name:len(), name:len()):lower()
+                local lastChar = StringLower(StringSub(name, #name, #name))
                 if lastChar == "s" then
                     ROLE_STRINGS_PLURAL[role] = name .. "es"
                 elseif lastChar == "y" then
-                    ROLE_STRINGS_PLURAL[role] = string.sub(name, 1, name:len() - 1) .. "ies"
+                    ROLE_STRINGS_PLURAL[role] = StringSub(name, 1, #name - 1) .. "ies"
                 else
                     ROLE_STRINGS_PLURAL[role] = name .. "s"
                 end
@@ -686,7 +704,7 @@ function RegisterRole(tbl)
     end
 
     local roleID = ROLE_MAX + 1
-    _G["ROLE_" .. string.upper(tbl.nameraw)] = roleID
+    _G["ROLE_" .. StringUpper(tbl.nameraw)] = roleID
     ROLE_MAX = roleID
 
     ROLE_STRINGS_RAW[roleID] = tbl.nameraw
@@ -819,8 +837,8 @@ local function AddInternalRoles()
     for _, dir in ipairs(dirs) do
         local files, _ = file.Find(root .. dir .. "/*.lua", "LUA")
         for _, fil in ipairs(files) do
-            local isClientFile = string.find(fil, "cl_")
-            local isSharedFile = fil == "shared.lua" or string.find(fil, "sh_")
+            local isClientFile = StringFind(fil, "cl_")
+            local isSharedFile = fil == "shared.lua" or StringFind(fil, "sh_")
 
             if SERVER then
                 -- Send client and shared files to clients
@@ -843,6 +861,37 @@ local function AddExternalRoles()
     end
 end
 AddExternalRoles()
+
+local function GetRoleFromStackTrace()
+    local role
+    local level = 2
+    while true do
+        local info = debug.getinfo(level, "S")
+        if not info then break end
+
+        if info.what ~= "C" then
+            -- Get the file path
+            local source = info.short_src
+            -- Extract the file name from the path and drop the extension
+            local role_name = StringLower(string.StripExtension(string.GetFileFromFilename(source)))
+
+            -- Find the role whose raw string matches the file name
+            for r, str in pairs(ROLE_STRINGS_RAW) do
+                if StringLower(str) == role_name then
+                    role = r
+                    break
+                end
+            end
+
+            -- We found a role, no need to continue
+            if role then break end
+        end
+
+        level = level + 1
+    end
+
+    return role
+end
 
 -- Game event log defs
 EVENT_KILL = 1
@@ -872,15 +921,28 @@ EVENT_VAMPPRIME_DEATH = 24
 EVENT_BEGGARCONVERTED = 25
 EVENT_BEGGARKILLED = 26
 EVENT_INFECT = 27
-EVENT_BODYSNATCHERKILLED = 26
+EVENT_BODYSNATCHERKILLED = 28
 
 -- Don't redefine this every time we load this file
 if not EVENT_MAX then
-    EVENT_MAX = 27
+    EVENT_MAX = 28
 end
 
-function GenerateNewEventID()
+EVENTS_BY_ROLE = {}
+function GenerateNewEventID(role)
+    if not role or role < ROLE_NONE or role > ROLE_MAX then
+        -- Print message telling the server owners that the role dev needs to update
+        ErrorNoHaltWithStack("WARNING: Role is missing 'role' parameter when generating unique event ID. Contact developer of role and reference: GenerateNewEventID\n")
+        role = GetRoleFromStackTrace()
+    end
+
     EVENT_MAX = EVENT_MAX + 1
+
+    -- Don't assign this event ID to a role we haven't found
+    if role and role > ROLE_NONE and role <= ROLE_MAX then
+        EVENTS_BY_ROLE[role] = EVENT_MAX
+    end
+
     return EVENT_MAX
 end
 
@@ -902,8 +964,21 @@ if not WIN_MAX then
     WIN_MAX = 12
 end
 
-function GenerateNewWinID()
+WINS_BY_ROLE = {}
+function GenerateNewWinID(role)
+    if not role or role < ROLE_NONE or role > ROLE_MAX then
+        -- Print message telling the server owners that the role dev needs to update
+        ErrorNoHaltWithStack("WARNING: Role is missing 'role' parameter when generating unique win ID. Contact developer of role and reference: GenerateNewWinID\n")
+        role = GetRoleFromStackTrace()
+    end
+
     WIN_MAX = WIN_MAX + 1
+
+    -- Don't assign this win ID to a role we haven't found
+    if role and role > ROLE_NONE and role <= ROLE_MAX then
+        WINS_BY_ROLE[role] = WIN_MAX
+    end
+
     return WIN_MAX
 end
 
@@ -1043,7 +1118,7 @@ function GM:PlayerFootstep(ply, pos, foot, sound, volume, rf)
         return true
     end
 
-    if hook.Run("TTTBlockPlayerFootstepSound", ply) then
+    if CallHook("TTTBlockPlayerFootstepSound", nil, ply) then
         return true
     end
 end
@@ -1059,7 +1134,7 @@ function GM:Move(ply, mv)
             basemul = 120 / 220
             slowed = true
         end
-        local mul = hook.Call("TTTPlayerSpeedModifier", GAMEMODE, ply, slowed, mv) or 1
+        local mul = RunHook("TTTPlayerSpeedModifier", ply, slowed, mv) or 1
         mul = basemul * mul
         mv:SetMaxClientSpeed(mv:GetMaxClientSpeed() * mul)
         mv:SetMaxSpeed(mv:GetMaxSpeed() * mul)
@@ -1070,7 +1145,7 @@ function GetSprintMultiplier(ply, sprinting)
     local mult = 1
     if IsValid(ply) then
         local mults = {}
-        hook.Run("TTTSpeedMultiplier", ply, mults)
+        CallHook("TTTSpeedMultiplier", nil, ply, mults)
         for _, m in pairs(mults) do
             mult = mult * m
         end
@@ -1094,7 +1169,7 @@ function GetSprintMultiplier(ply, sprinting)
 end
 
 function UpdateRoleWeaponState()
-    hook.Run("TTTUpdateRoleState")
+    CallHook("TTTUpdateRoleState", nil)
 
     if SERVER then
         net.Start("TTT_ResetBuyableWeaponsCache")
@@ -1196,7 +1271,7 @@ if SERVER then
         local mode = GetConVar("ttt_" .. cvar_role .. "_notify_mode"):GetInt()
         local play_sound = GetConVar("ttt_" .. cvar_role .. "_notify_sound"):GetBool()
         local show_confetti = GetConVar("ttt_" .. cvar_role .. "_notify_confetti"):GetBool()
-        for _, ply in pairs(player.GetAll()) do
+        for _, ply in pairs(GetAllPlayers()) do
             if ply == attacker then
                 local role_string = ROLE_STRINGS[role]
                 ply:PrintMessage(HUD_PRINTCENTER, "You killed the " .. role_string .. "!")

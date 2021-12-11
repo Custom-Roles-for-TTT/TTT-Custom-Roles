@@ -3,7 +3,18 @@
 local plymeta = FindMetaTable("Player")
 if not plymeta then return end
 
+local ipairs = ipairs
+local IsValid = IsValid
 local math = math
+local net = net
+local string = string
+local table = table
+local timer = timer
+local util = util
+
+local CallHook = hook.Call
+local GetAllPlayers = player.GetAll
+local MathAbs = math.abs
 
 function plymeta:IsTerror() return self:Team() == TEAM_TERROR end
 function plymeta:IsSpec() return self:Team() == TEAM_SPEC end
@@ -14,7 +25,7 @@ local oldSetRole = plymeta.SetRole
 function plymeta:SetRole(role)
     local oldRole = self:GetRole()
     oldSetRole(self, role)
-    hook.Run("TTTPlayerRoleChanged", self, oldRole, role)
+    CallHook("TTTPlayerRoleChanged", nil, self, oldRole, role)
 end
 
 -- Player is alive and in an active round
@@ -318,7 +329,7 @@ if CLIENT then
                 local matrix = self:GetBoneMatrix(headId)
                 if matrix then
                     local translation = matrix:GetTranslation()
-                    local diff = math.abs(max_bone_z - translation.z)
+                    local diff = MathAbs(max_bone_z - translation.z)
                     -- Scale the difference by the head scale
                     max_bone_z = max_bone_z + (diff * headScale.z)
                 end
@@ -519,7 +530,7 @@ function player.GetRoleTeam(role, detectivesAreInnocent)
 end
 
 function player.GetLivingRole(role)
-    for _, v in ipairs(player.GetAll()) do
+    for _, v in ipairs(GetAllPlayers()) do
         if v:Alive() and v:IsTerror() and v:IsRole(role) then
             return v
         end
@@ -534,7 +545,7 @@ function player.TeamLivingCount(ignorePassiveWinners)
     local indep_alive = 0
     local monster_alive = 0
     local jester_alive = 0
-    for _, v in ipairs(player.GetAll()) do
+    for _, v in ipairs(GetAllPlayers()) do
         -- If the player is alive
         if v:Alive() and v:IsTerror() then
             -- If we're either not ignoring passive winners or this isn't a passive winning role
@@ -570,7 +581,7 @@ function player.AreTeamsLiving(ignorePassiveWinners)
 end
 
 function player.ExecuteAgainstTeamPlayers(roleTeam, detectivesAreInnocent, aliveOnly, callback)
-    for _, v in ipairs(player.GetAll()) do
+    for _, v in ipairs(GetAllPlayers()) do
         if not aliveOnly or (v:Alive() and v:IsTerror()) then
             local playerTeam = player.GetRoleTeam(v:GetRole(), detectivesAreInnocent)
             if playerTeam == roleTeam then
@@ -590,7 +601,7 @@ end
 
 function player.LivingCount(ignorePassiveWinners)
     local players_alive = 0
-    for _, v in ipairs(player.GetAll()) do
+    for _, v in ipairs(GetAllPlayers()) do
         -- If the player is alive and we're either not ignoring passive winners or this isn't a passive winning role
         if (v:Alive() and v:IsTerror() and (not ignorePassiveWinners or not ROLE_HAS_PASSIVE_WIN[v:GetRole()])) or
             -- Handle zombification differently because the player's original role should have no impact on this

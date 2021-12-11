@@ -2,14 +2,22 @@
 
 HUD = {}
 
+local pairs = pairs
 local surface = surface
-local draw = draw
-local math = math
-local string = string
+local table = table
+local util = util
 
+local CallHook = hook.Call
+local RunHook = hook.Run
 local GetTranslation = LANG.GetTranslation
 local GetLang = LANG.GetUnsafeLanguageTable
+local MathMax = math.max
+local MathClamp = math.Clamp
+local MathRound = math.Round
+local MathCeil = math.ceil
+local TableCount = table.Count
 local interp = string.Interp
+local format = string.format
 
 local hide_role = false
 
@@ -98,7 +106,7 @@ local function RoundedMeter(bs, x, y, w, h, color)
         surface.DrawTexturedRectRotated(x + w - bs / 2, y + bs / 2, bs, bs, 270)
         surface.DrawTexturedRectRotated(x + w - bs / 2, y + h - bs / 2, bs, bs, 180)
     else
-        surface.DrawRect(x + math.max(w - bs, bs), y, bs / 2, h)
+        surface.DrawRect(x + MathMax(w - bs, bs), y, bs / 2, h)
     end
 
 end
@@ -113,7 +121,7 @@ function HUD:PaintBar(r, x, y, w, h, colors, value)
     draw.RoundedBox(8, x - 1, y - 1, w + 2, h + 2, colors.background)
 
     -- Fill
-    local width = w * math.Clamp(value, 0, 1)
+    local width = w * MathClamp(value, 0, 1)
 
     if width > 0 then
         RoundedMeter(r, x, y, width, h, colors.fill)
@@ -136,7 +144,7 @@ function HUD:PaintPowersHUD(powers, max_power, current_power, colors, title, sub
         draw.SimpleText(subtitle, "TabLarge", ScrW() / 2, margin, COLOR_WHITE, TEXT_ALIGN_CENTER)
     end
 
-    if powers and table.Count(powers) > 0 then
+    if powers and TableCount(powers) > 0 then
         local command_count = 0
         for _, p in pairs(powers) do
             if p > 0 then
@@ -147,7 +155,7 @@ function HUD:PaintPowersHUD(powers, max_power, current_power, colors, title, sub
         local current_command = 1
         for t, p in pairs(powers) do
             if p > 0 then
-                local percentage = math.Round(100 * (p / max_power))
+                local percentage = MathRound(100 * (p / max_power))
                 draw.SimpleText(interp(t, { num = percentage }), "TabLarge", ScrW() / 4 + ((ScrW() / (2 * (command_count + 1))) * current_command), margin, current_power >= p and COLOR_GREEN or COLOR_RED, TEXT_ALIGN_CENTER)
                 current_command = current_command + 1
             end
@@ -258,12 +266,12 @@ local function SpecHUDPaint(client)
     HUD:ShadowedText(text, "TraitorState", x + margin, round_y, COLOR_WHITE)
 
     -- Draw round/prep/post time remaining
-    text = util.SimpleTime(math.max(0, GetGlobalFloat("ttt_round_end", 0) - CurTime()), "%02i:%02i")
+    text = util.SimpleTime(MathMax(0, GetGlobalFloat("ttt_round_end", 0) - CurTime()), "%02i:%02i")
     HUD:ShadowedText(text, "TimeLeft", time_x + margin, time_y, COLOR_WHITE)
 
     local tgt = client:GetObserverTarget()
     if client:ShouldShowSpectatorHUD() then
-        hook.Run("TTTSpectatorShowHUD", client, tgt)
+        CallHook("TTTSpectatorShowHUD", nil, client, tgt)
     elseif IsPlayer(tgt) then
         HUD:ShadowedText(tgt:Nick(), "TimeLeft", ScrW() / 2, margin, COLOR_WHITE, TEXT_ALIGN_CENTER)
     elseif IsValid(tgt) and tgt:GetNWEntity("spec_owner", nil) == client then
@@ -294,13 +302,13 @@ local function InfoPaint(client)
     local bar_width = width - (margin * 2)
 
     -- Draw health
-    local health = math.max(0, client:Health())
-    local maxHealth = math.max(0, client:GetMaxHealth())
+    local health = MathMax(0, client:Health())
+    local maxHealth = MathMax(0, client:GetMaxHealth())
     local health_y = y + margin
 
     HUD:PaintBar(8, x + margin, health_y, bar_width, bar_height, health_colors, health / maxHealth)
-    HUD:PaintBar(8, x + margin, health_y, bar_width, bar_height, overhealth_colors, math.max(0, health - maxHealth) / maxHealth)
-    HUD:PaintBar(8, x + margin, health_y, bar_width, bar_height, extraoverhealth_colors, math.max(0, health - (2 * maxHealth)) / maxHealth)
+    HUD:PaintBar(8, x + margin, health_y, bar_width, bar_height, overhealth_colors, MathMax(0, health - maxHealth) / maxHealth)
+    HUD:PaintBar(8, x + margin, health_y, bar_width, bar_height, extraoverhealth_colors, MathMax(0, health - (2 * maxHealth)) / maxHealth)
 
     HUD:ShadowedText(tostring(health), "HealthAmmo", bar_width, health_y, COLOR_WHITE, TEXT_ALIGN_RIGHT, TEXT_ALIGN_RIGHT)
 
@@ -315,7 +323,7 @@ local function InfoPaint(client)
         if ammo_clip ~= -1 then
             local ammo_y = health_y + bar_height + margin
             HUD:PaintBar(8, x + margin, ammo_y, bar_width, bar_height, ammo_colors, ammo_clip / ammo_max)
-            local text = string.format("%i + %02i", ammo_clip, ammo_inv)
+            local text = format("%i + %02i", ammo_clip, ammo_inv)
 
             HUD:ShadowedText(text, "HealthAmmo", bar_width, ammo_y, COLOR_WHITE, TEXT_ALIGN_RIGHT, TEXT_ALIGN_RIGHT)
         end
@@ -363,7 +371,7 @@ local function InfoPaint(client)
     if is_haste then
         local hastetime = GetGlobalFloat("ttt_haste_end", 0) - CurTime()
         if hastetime < 0 then
-            if (not is_traitor) or (math.ceil(CurTime()) % 7 <= 2) then
+            if (not is_traitor) or (MathCeil(CurTime()) % 7 <= 2) then
                 -- innocent or blinking "overtime"
                 text = L.overtime
                 font = "Trebuchet18"
@@ -373,21 +381,21 @@ local function InfoPaint(client)
                 rx = rx - 3
             else
                 -- traitor and not blinking "overtime" right now, so standard endtime display
-                text = util.SimpleTime(math.max(0, endtime), "%02i:%02i")
+                text = util.SimpleTime(MathMax(0, endtime), "%02i:%02i")
                 color = COLOR_RED
             end
         else
             -- still in starting period
             local t = hastetime
-            if is_traitor and math.ceil(CurTime()) % 6 < 2 then
+            if is_traitor and MathCeil(CurTime()) % 6 < 2 then
                 t = endtime
                 color = COLOR_RED
             end
-            text = util.SimpleTime(math.max(0, t), "%02i:%02i")
+            text = util.SimpleTime(MathMax(0, t), "%02i:%02i")
         end
     else
         -- bog standard time when haste mode is off (or round not active)
-        text = util.SimpleTime(math.max(0, endtime), "%02i:%02i")
+        text = util.SimpleTime(MathMax(0, endtime), "%02i:%02i")
     end
 
     HUD:ShadowedText(text, font, rx, ry, color)
@@ -402,55 +410,55 @@ local function InfoPaint(client)
     end
 
     -- Allow other addons to add stuff to the player info HUD
-    hook.Run("TTTHUDInfoPaint", client, label_left, label_top)
+    CallHook("TTTHUDInfoPaint", nil, client, label_left, label_top)
 end
 
 -- Paints player status HUD element in the bottom left
 function GM:HUDPaint()
     local client = LocalPlayer()
 
-    if hook.Call("HUDShouldDraw", GAMEMODE, "TTTTargetID") then
-        hook.Call("HUDDrawTargetID", GAMEMODE)
+    if RunHook("HUDShouldDraw", "TTTTargetID") then
+        RunHook("HUDDrawTargetID")
     end
 
-    if hook.Call("HUDShouldDraw", GAMEMODE, "TTTMStack") then
+    if RunHook("HUDShouldDraw", "TTTMStack") then
         MSTACK:Draw(client)
     end
 
     if (not client:Alive()) or client:Team() == TEAM_SPEC then
-        if hook.Call("HUDShouldDraw", GAMEMODE, "TTTSpecHUD") then
+        if RunHook("HUDShouldDraw", "TTTSpecHUD") then
             SpecHUDPaint(client)
         end
 
         return
     end
 
-    if hook.Call("HUDShouldDraw", GAMEMODE, "TTTRadar") then
+    if RunHook("HUDShouldDraw", "TTTRadar") then
         RADAR:Draw(client)
     end
 
-    if hook.Call("HUDShouldDraw", GAMEMODE, "TTTTButton") then
+    if RunHook("HUDShouldDraw", "TTTTButton") then
         TBHUD:Draw(client)
     end
 
-    if hook.Call("HUDShouldDraw", GAMEMODE, "TTTWSwitch") then
+    if RunHook("HUDShouldDraw", "TTTWSwitch") then
         WSWITCH:Draw(client)
     end
 
-    if hook.Call("HUDShouldDraw", GAMEMODE, "TTTVoice") then
+    if RunHook("HUDShouldDraw", "TTTVoice") then
         VOICE.Draw(client)
     end
 
-    if hook.Call("HUDShouldDraw", GAMEMODE, "TTTDisguise") then
+    if RunHook("HUDShouldDraw", "TTTDisguise") then
         DISGUISE.Draw(client)
     end
 
-    if hook.Call("HUDShouldDraw", GAMEMODE, "TTTPickupHistory") then
-        hook.Call("HUDDrawPickupHistory", GAMEMODE)
+    if RunHook("HUDShouldDraw", "TTTPickupHistory") then
+        RunHook("HUDDrawPickupHistory")
     end
 
     -- Draw bottom left info panel
-    if hook.Call("HUDShouldDraw", GAMEMODE, "TTTInfoPanel") then
+    if RunHook("HUDShouldDraw", "TTTInfoPanel") then
         InfoPaint(client)
     end
 end

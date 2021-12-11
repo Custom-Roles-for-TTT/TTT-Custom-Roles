@@ -1,6 +1,10 @@
 
 AddCSLuaFile()
 
+local ents = ents
+local IsValid = IsValid
+local util = util
+
 SWEP.HoldType              = "normal"
 
 if CLIENT then
