@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.4.3
-**Released: December, 15th, 2021**\
+**Released: December 15th, 2021**\
 Includes all beta updates from [1.4.1](#141-beta) to [1.4.2](#142-beta).
 
 ### Changes
@@ -11,7 +11,7 @@ Includes all beta updates from [1.4.1](#141-beta) to [1.4.2](#142-beta).
 - Fixed parasite's infection conflicting with the brain parasite weapon from the workshop
 
 ## 1.4.2 (Beta)
-**Released: December, 10th, 2021**
+**Released: December 10th, 2021**
 
 ### Additions
 - Added ability to allow spirits to see eachother when there is a medium (enabled by default)
