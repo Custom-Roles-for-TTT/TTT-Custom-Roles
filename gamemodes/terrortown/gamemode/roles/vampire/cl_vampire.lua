@@ -1,3 +1,9 @@
+local hook = hook
+local IsValid = IsValid
+local net = net
+local player = player
+local string = string
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -106,7 +112,7 @@ end)
 
 hook.Add("TTTScoringWinTitle", "Vampire_TTTScoringWinTitle", function(wintype, wintitles, title, secondary_win_role)
     if wintype == WIN_VAMPIRE then
-        return { txt = "hilite_win_role_plural", params = { role = ROLE_STRINGS_PLURAL[ROLE_VAMPIRE]:upper() }, c = ROLE_COLORS[ROLE_VAMPIRE] }
+        return { txt = "hilite_win_role_plural", params = { role = string.upper(ROLE_STRINGS_PLURAL[ROLE_VAMPIRE]) }, c = ROLE_COLORS[ROLE_VAMPIRE] }
     end
 end)
 
@@ -116,7 +122,7 @@ end)
 
 hook.Add("TTTEventFinishText", "Vampire_TTTEventFinishText", function(e)
     if e.win == WIN_VAMPIRE then
-        return LANG.GetParamTranslation("ev_win_vampire", { role = ROLE_STRINGS[ROLE_VAMPIRE]:lower() })
+        return LANG.GetParamTranslation("ev_win_vampire", { role = string.lower(ROLE_STRINGS[ROLE_VAMPIRE]) })
     end
 end)
 
@@ -209,7 +215,7 @@ hook.Add("TTTTutorialRoleText", "Vampire_TTTTutorialRoleText", function(role, ti
         local roleTeam = player.GetRoleTeam(ROLE_VAMPIRE, true)
         local roleTeamString, roleTeamColor = GetRoleTeamInfo(roleTeam, true)
 
-        local html = "The " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " is a member of the <span style='color: rgb(" .. roleTeamColor.r .. ", " .. roleTeamColor.g .. ", " .. roleTeamColor.b .. ")'>" .. roleTeamString:lower() .. " team</span>."
+        local html = "The " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " is a member of the <span style='color: rgb(" .. roleTeamColor.r .. ", " .. roleTeamColor.g .. ", " .. roleTeamColor.b .. ")'>" .. string.lower(roleTeamString) .. " team</span>."
 
         -- Draining
         html = html .. "<span style='display: block; margin-top: 10px;'>They can heal themselves by <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>draining blood</span> from "

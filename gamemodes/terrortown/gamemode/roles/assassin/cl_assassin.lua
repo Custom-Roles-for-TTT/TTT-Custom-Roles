@@ -1,3 +1,11 @@
+local halo = halo
+local hook = hook
+local IsValid = IsValid
+local pairs = pairs
+local string = string
+
+local GetAllPlayers = player.GetAll
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -35,7 +43,7 @@ end)
 
 hook.Add("TTTTargetIDPlayerText", "Assassin_TTTTargetIDPlayerText", function(ent, cli, text, col, secondary_text)
     if cli:IsAssassin() and IsPlayer(ent) and ent:Nick() == cli:GetNWString("AssassinTarget", "") then
-        if ent:GetNWBool("Infected", false) then
+        if ent:GetNWBool("ParasiteInfected", false) then
             secondary_text = LANG.GetTranslation("target_infected")
         end
         return LANG.GetTranslation("target_current_target"), ROLE_COLORS_RADAR[ROLE_ASSASSIN], secondary_text
@@ -56,7 +64,7 @@ end)
 hook.Add("TTTScoreboardPlayerName", "Assassin_TTTScoreboardPlayerName", function(ply, cli, text)
     if cli:IsAssassin() and ply:Nick() == cli:GetNWString("AssassinTarget", "") then
         local newText = " ("
-        if ply:GetNWBool("Infected", false) then
+        if ply:GetNWBool("ParasiteInfected", false) then
             newText = newText .. LANG.GetTranslation("target_infected") .. " | "
         end
         newText = newText .. LANG.GetTranslation("target_assassin_target") .. ")"
@@ -75,10 +83,10 @@ local client = nil
 local function EnableAssassinTargetHighlights()
     hook.Add("PreDrawHalos", "Assassin_Highlight_PreDrawHalos", function()
         local target_nick = client:GetNWString("AssassinTarget", "")
-        if not target_nick or target_nick:len() == 0 then return end
+        if not target_nick or #target_nick == 0 then return end
 
         local target = nil
-        for _, v in pairs(player.GetAll()) do
+        for _, v in pairs(GetAllPlayers()) do
             if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= client and v:Nick() == target_nick then
                 target = v
                 break

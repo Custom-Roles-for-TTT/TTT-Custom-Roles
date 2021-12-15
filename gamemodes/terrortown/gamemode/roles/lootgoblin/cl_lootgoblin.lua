@@ -1,3 +1,13 @@
+local hook = hook
+local net = net
+local surface = surface
+local string = string
+local table = table
+local util = util
+
+local MathMax = math.max
+local StringUpper = string.upper
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -34,7 +44,7 @@ end)
 
 hook.Add("TTTTargetIDPlayerText", "LootGoblin_TTTTargetIDPlayerText", function(ent, client, text, clr, secondaryText)
     if IsPlayer(ent) and ent:IsActiveLootGoblin() and ent:IsRoleActive() then
-        return string.upper(ROLE_STRINGS[ROLE_LOOTGOBLIN]), ROLE_COLORS_RADAR[ROLE_LOOTGOBLIN]
+        return StringUpper(ROLE_STRINGS[ROLE_LOOTGOBLIN]), ROLE_COLORS_RADAR[ROLE_LOOTGOBLIN]
     end
 end)
 
@@ -73,9 +83,9 @@ end)
 -- WIN CHECKS --
 ----------------
 
-hook.Add("TTTScoringWinTitle", "LootGoblin_TTTScoringWinTitle", function(wintype, wintitles, title, secondary_win_role)
+hook.Add("TTTScoringSecondaryWins", "LootGoblin_TTTScoringSecondaryWins", function(wintype, secondary_wins)
     if lootgoblin_wins then
-        return title, ROLE_LOOTGOBLIN
+        table.insert(secondary_wins, ROLE_LOOTGOBLIN)
     end
 end)
 
@@ -85,7 +95,7 @@ end)
 
 hook.Add("TTTEventFinishText", "LootGoblin_TTTEventFinishText", function(e)
     if e.win == WIN_LOOTGOBLIN then
-        return LANG.GetParamTranslation("ev_win_lootgoblin", { role = ROLE_STRINGS[ROLE_LOOTGOBLIN]:lower() })
+        return LANG.GetParamTranslation("ev_win_lootgoblin", { role = string.lower(ROLE_STRINGS[ROLE_LOOTGOBLIN]) })
     end
 end)
 
@@ -104,7 +114,7 @@ hook.Add("TTTHUDInfoPaint", "LootGoblin_TTTHUDInfoPaint", function(client, label
         surface.SetFont("TabLarge")
         surface.SetTextColor(255, 255, 255, 230)
 
-        local remaining = math.max(0, GetGlobalFloat("ttt_lootgoblin_activate", 0) - CurTime())
+        local remaining = MathMax(0, GetGlobalFloat("ttt_lootgoblin_activate", 0) - CurTime())
 
         text = LANG.GetParamTranslation("lootgoblin_hud", { time = util.SimpleTime(remaining, "%02i:%02i") })
         local _, h = surface.GetTextSize(text)

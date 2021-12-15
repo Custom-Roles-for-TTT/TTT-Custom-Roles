@@ -1,3 +1,8 @@
+local hook = hook
+
+local MathCos = math.cos
+local MathSin = math.sin
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -27,7 +32,7 @@ hook.Add("TTTPlayerAliveClientThink", "Paladin_RoleFeatures_TTTPlayerAliveClient
                 ply.AuraNextPart = CurTime() + 0.02
                 ply.AuraDir = ply.AuraDir + 0.05
                 local radius = GetGlobalFloat("ttt_paladin_aura_radius", 262.45)
-                local vec = Vector(math.sin(ply.AuraDir) * radius, math.cos(ply.AuraDir) * radius, 10)
+                local vec = Vector(MathSin(ply.AuraDir) * radius, MathCos(ply.AuraDir) * radius, 10)
                 local particle = ply.AuraEmitter:Add("particle/shield.vmt", ply:GetPos() + vec)
                 particle:SetVelocity(Vector(0, 0, 20))
                 particle:SetDieTime(1)
@@ -40,11 +45,9 @@ hook.Add("TTTPlayerAliveClientThink", "Paladin_RoleFeatures_TTTPlayerAliveClient
                 particle:SetColor(ROLE_COLORS[ROLE_PALADIN].r, ROLE_COLORS[ROLE_PALADIN].g, ROLE_COLORS[ROLE_PALADIN].b)
             end
         end
-    else
-        if ply.AuraEmitter then
-            ply.AuraEmitter:Finish()
-            ply.AuraEmitter = nil
-        end
+    elseif ply.AuraEmitter then
+        ply.AuraEmitter:Finish()
+        ply.AuraEmitter = nil
     end
 end)
 

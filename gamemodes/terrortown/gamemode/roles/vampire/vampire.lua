@@ -2,6 +2,18 @@ AddCSLuaFile()
 
 local plymeta = FindMetaTable("Player")
 
+local hook = hook
+local ipairs = ipairs
+local IsValid = IsValid
+local math = math
+local net = net
+local pairs = pairs
+local resource = resource
+local table = table
+local util = util
+
+local GetAllPlayers = player.GetAll
+
 util.AddNetworkString("TTT_VampirePrimeDeath")
 
 resource.AddSingleFile("sound/weapons/ttt/fade.wav")
@@ -59,7 +71,7 @@ hook.Add("DoPlayerDeath", "Vampire_Credits_DoPlayerDeath", function(victim, atta
         local ply_dead = 0
         local ply_total = 0
 
-        for _, ply in pairs(player.GetAll()) do
+        for _, ply in pairs(GetAllPlayers()) do
             if not ply:IsVampireAlly() then
                 if ply:IsTerror() then
                     ply_alive = ply_alive + 1
@@ -89,7 +101,7 @@ hook.Add("DoPlayerDeath", "Vampire_Credits_DoPlayerDeath", function(victim, atta
             if amt > 0 then
                 LANG.Msg(GetVampireFilter(true), "credit_all", { role = ROLE_STRINGS[ROLE_VAMPIRE], num = amt })
 
-                for _, ply in pairs(player.GetAll()) do
+                for _, ply in pairs(GetAllPlayers()) do
                     if ply:IsActiveVampire() then
                         ply:AddCredits(amt)
                     end
@@ -114,7 +126,7 @@ hook.Add("PlayerDeath", "Vampire_PrimeDeath_PlayerDeath", function(victim, infl,
         local living_vampire_primes = 0
         local vampires = {}
         -- Find all the living vampires anmd count the primes
-        for _, v in pairs(player.GetAll()) do
+        for _, v in pairs(GetAllPlayers()) do
             if v:Alive() and v:IsTerror() and v:IsVampire() then
                 if v:IsVampirePrime() then
                     living_vampire_primes = living_vampire_primes + 1
@@ -169,7 +181,7 @@ function plymeta:SetVampirePreviousRole(r) self:SetNWInt("vampire_previous_role"
 -----------------
 
 hook.Add("TTTBeginRound", "Vampire_RoleFeatures_PrepareRound", function()
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         if v:IsVampire() then
             v:SetVampirePrime(true)
         end
@@ -177,7 +189,7 @@ hook.Add("TTTBeginRound", "Vampire_RoleFeatures_PrepareRound", function()
 end)
 
 hook.Add("TTTPrepareRound", "Vampire_RoleFeatures_PrepareRound", function()
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         v:SetNWInt("VampireFreezeCount", 0)
         -- Keep previous naming scheme for backwards compatibility
         v:SetNWBool("vampire_prime", false)
@@ -202,7 +214,7 @@ hook.Add("TTTCheckForWin", "Vampire_TTTCheckForWin", function()
 
     local vampire_alive = false
     local other_alive = false
-    for _, v in ipairs(player.GetAll()) do
+    for _, v in ipairs(GetAllPlayers()) do
         if v:Alive() and v:IsTerror() then
             if v:IsVampire() then
                 vampire_alive = true

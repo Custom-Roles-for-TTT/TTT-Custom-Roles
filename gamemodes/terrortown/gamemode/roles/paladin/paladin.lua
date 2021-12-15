@@ -1,5 +1,12 @@
 AddCSLuaFile()
 
+local hook = hook
+local math = math
+local pairs = pairs
+local timer = timer
+
+local GetAllPlayers = player.GetAll
+
 -------------
 -- CONVARS --
 -------------
@@ -25,9 +32,9 @@ hook.Add("TTTBeginRound", "Paladin_RoleFeatures_TTTBeginRound", function()
     local paladinHealSelf = paladin_heal_self:GetBool()
     local paladinRadius = GetGlobalFloat("ttt_paladin_aura_radius", 262.45)
     timer.Create("paladinheal", 1, 0, function()
-        for _, p in pairs(player.GetAll()) do
+        for _, p in pairs(GetAllPlayers()) do
             if p:IsActivePaladin() then
-                for _, v in pairs(player.GetAll()) do
+                for _, v in pairs(GetAllPlayers()) do
                     if v:IsActive() and (not v:IsPaladin() or paladinHealSelf) and v:GetPos():Distance(p:GetPos()) <= paladinRadius and v:Health() < v:GetMaxHealth() then
                         local health = math.min(v:GetMaxHealth(), v:Health() + paladinHeal)
                         v:SetHealth(health)
@@ -52,7 +59,7 @@ hook.Add("ScalePlayerDamage", "Paladin_ScalePlayerDamage", function(ply, hitgrou
         if not ply:IsPaladin() or paladin_protect_self:GetBool() then
             local withPaladin = false
             local radius = GetGlobalFloat("ttt_paladin_aura_radius", 262.45)
-            for _, v in pairs(player.GetAll()) do
+            for _, v in pairs(GetAllPlayers()) do
                 if v:IsPaladin() and v:GetPos():Distance(ply:GetPos()) <= radius then
                     withPaladin = true
                     break

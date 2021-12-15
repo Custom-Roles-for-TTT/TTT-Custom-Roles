@@ -1,5 +1,7 @@
 AddCSLuaFile()
 
+local hook = hook
+
 -- Initialize role features
 ROLE_STARTING_CREDITS[ROLE_DOCTOR] = 1
 local function InitializeEquipment()

@@ -1,5 +1,15 @@
 AddCSLuaFile()
 
+local ents = ents
+local IsValid = IsValid
+local math = math
+local net = net
+local player = player
+local resource = resource
+local surface = surface
+local timer = timer
+local util = util
+
 if CLIENT then
     SWEP.PrintName = "Fangs"
     SWEP.EquipMenuData = {
@@ -308,31 +318,32 @@ function SWEP:FireError()
     self:SetNextPrimaryFire(CurTime() + 0.1)
 end
 
+local CreateEntity = ents.Create
 function SWEP:DropBones()
     local pos = self.TargetEntity:GetPos()
 
-    local skull = ents.Create("prop_physics")
+    local skull = CreateEntity("prop_physics")
     if not IsValid(skull) then return end
     skull:SetModel("models/Gibs/HGIBS.mdl")
     skull:SetPos(pos)
     skull:Spawn()
     skull:SetCollisionGroup(COLLISION_GROUP_WEAPON)
 
-    local ribs = ents.Create("prop_physics")
+    local ribs = CreateEntity("prop_physics")
     if not IsValid(ribs) then return end
     ribs:SetModel("models/Gibs/HGIBS_rib.mdl")
     ribs:SetPos(pos + Vector(0, 0, 15))
     ribs:Spawn()
     ribs:SetCollisionGroup(COLLISION_GROUP_WEAPON)
 
-    local spine = ents.Create("prop_physics")
+    local spine = CreateEntity("prop_physics")
     if not IsValid(ribs) then return end
     spine:SetModel("models/Gibs/HGIBS_spine.mdl")
     spine:SetPos(pos + Vector(0, 0, 30))
     spine:Spawn()
     spine:SetCollisionGroup(COLLISION_GROUP_WEAPON)
 
-    local scapula = ents.Create("prop_physics")
+    local scapula = CreateEntity("prop_physics")
     if not IsValid(scapula) then return end
     scapula:SetModel("models/Gibs/HGIBS_scapula.mdl")
     scapula:SetPos(pos + Vector(0, 0, 45))

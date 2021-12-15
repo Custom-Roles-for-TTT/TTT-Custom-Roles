@@ -1,5 +1,13 @@
 -- Some popup window stuff
 
+local concommand = concommand
+local draw = draw
+local hook = hook
+local ipairs = ipairs
+local table = table
+local timer = timer
+local vgui = vgui
+
 local GetTranslation = LANG.GetTranslation
 local GetPTranslation = LANG.GetParamTranslation
 
@@ -46,7 +54,7 @@ local function GetTextForLocalPlayer()
     }
 
     -- Allow roles to specify their extra parameters
-    local additionalParams = hook.Run("TTTRolePopupParams", client)
+    local additionalParams = hook.Call("TTTRolePopupParams", nil, client)
     if type(additionalParams) == "table" then params = table.Merge(params, additionalParams) end
 
     local roleString = client:GetRoleStringRaw()

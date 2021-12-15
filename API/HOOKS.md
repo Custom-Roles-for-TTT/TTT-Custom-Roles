@@ -177,6 +177,13 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *roleFileName* - The new roleFileName value to use or the original passed into the hook
 - *flashRole* - If a valid role is provided, this will cause the target player's scoreboard role to have a flashing border in the given role's color (see ROLE_* global enumeration)
 
+**TTTScoringSecondaryWins(wintype, secondaryWins)** - Called before each round summary screen is shown with the winning team. Used to add roles to the secondary win display (e.g. AND THE OLD MAN WINS).\
+*Realm:* Client\
+*Added in:* 1.4.1\
+*Parameters:*
+- *wintype* - The round win type
+- *secondaryWins* - The table of role identifiers for roles who should have a secondary win on the round summary. Insert any role identifiers you would like to display into this table
+
 **TTTScoringSummaryRender(ply, roleFileName, groupingRole, roleColor, nameLabel, startingRole, finalRole)** - Called before the round summary screen is shown. Used to modify the color, position, and icon for a player.\
 *Realm:* Client\
 *Added in:* 1.1.5\
@@ -195,21 +202,19 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *roleColor* - The new roleColor value to use or the original passed into the hook
 - *newName* - The new nameLabel value to use for the original passed into the hook *(Added in 1.2.3)*
 
-**TTTScoringWinTitle(wintype, wintitles, title, secondaryWinRole)** - Called before each round summary screen is shown with the winning team. Return the win title object to use on the summary screen.\
+**TTTScoringWinTitle(wintype, wintitles, title)** - Called before each round summary screen is shown with the winning team. Return the win title object to use on the summary screen.\
 *Realm:* Client\
 *Added in:* 1.0.14\
 *Parameters:*
 - *wintype* - The round win type
 - *wintitles* - Table of default win title parameters
 - *title* - The currently selected win title
-- *secondaryWinRole* - Which role (if any) is sharing the win for this round (see ROLE_* global enumeration) *(Added in 1.1.9)*
 
 *Return:*
 - *newTitle*
   - *txt* - The translation string to use to get the winning team text
   - *c* - The background [Color](https://wiki.facepunch.com/gmod/Color) to use
-  - *params* - Any parameters to use when translating `txt` (Optional if `new_secondary_win_role` is also omitted)
-- *newSecondaryWinRole* - Which role should share in the win for this round (see ROLE_* global enumeration) (Optional) *(Added in 1.1.9)*
+  - *params* - Any parameters to use when translating `txt`
 
 **TTTSelectRoles(choices, prevRoles)** - Called before players are randomly assigned roles. If a player is assigned a role during this hook, they will not be randomly assigned one later.\
 *Realm:* Server\

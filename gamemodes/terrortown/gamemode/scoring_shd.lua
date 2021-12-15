@@ -3,6 +3,13 @@
 -- 2^16 bytes - 4 (header) - 2 (UInt length in TTT_ReportStream) - 1 (terminanting byte)
 (SERVER and SCORE or CLSCORE).MaxStreamLength = 65529
 
+local IsValid = IsValid
+local math = math
+local pairs = pairs
+local scripted_ents = scripted_ents
+local util = util
+local weapons = weapons
+
 function GetRoleId(id)
     return "ID_" .. id
 end

@@ -1,5 +1,14 @@
 AddCSLuaFile()
 
+local IsValid = IsValid
+local math = math
+local pairs = pairs
+local player = player
+local surface = surface
+local string = string
+local timer = timer
+local util = util
+
 if CLIENT then
     local GetPTranslation = LANG.GetParamTranslation
     SWEP.PrintName = "Parasite Cure"
@@ -13,7 +22,7 @@ if CLIENT then
         type =  "item_weapon",
         desc = function()
             return GetPTranslation("fake_cure_desc", {
-                parasite = ROLE_STRINGS[ROLE_PARASITE]:lower()
+                parasite = string.lower(ROLE_STRINGS[ROLE_PARASITE])
             })
         end
     };
@@ -115,9 +124,9 @@ if SERVER then
         if IsPlayer(ply) then
             ply:EmitSound(cured)
 
-            if ply:GetNWBool("Infected", false) then
+            if ply:GetNWBool("ParasiteInfected", false) then
                 for _, v in pairs(player.GetAll()) do
-                    if v:GetNWString("InfectingTarget", "") == ply:SteamID64() then
+                    if v:GetNWString("ParasiteInfectingTarget", "") == ply:SteamID64() then
                         v:PrintMessage(HUD_PRINTCENTER, "A fake cure has been used on your host.")
                     end
                 end
@@ -206,7 +215,7 @@ if SERVER then
 
     function SWEP:Equip(newowner)
         if newowner:IsTraitorTeam() then
-            newowner:PrintMessage(HUD_PRINTTALK, "The parasite cure you are holding is a fake.")
+            newowner:PrintMessage(HUD_PRINTTALK, ROLE_STRINGS[ROLE_TRAITOR] .. ", the parasite cure you are holding is a fake.")
         end
     end
 end

@@ -1,4 +1,6 @@
 if SERVER then
+    local resource = resource
+
     ---------------
     -- Materials --
     ---------------

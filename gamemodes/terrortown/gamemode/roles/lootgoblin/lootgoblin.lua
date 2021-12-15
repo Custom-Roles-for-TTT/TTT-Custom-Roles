@@ -1,5 +1,20 @@
 AddCSLuaFile()
 
+local hook = hook
+local ipairs = ipairs
+local math = math
+local net = net
+local pairs = pairs
+local player = player
+local resource = resource
+local table = table
+local timer = timer
+local util = util
+local weapons = weapons
+
+local GetAllPlayers = player.GetAll
+local CreateEntity = ents.Create
+
 util.AddNetworkString("TTT_UpdateLootGoblinWins")
 
 resource.AddSingleFile("lootgoblin/cackle1.wav")
@@ -67,7 +82,7 @@ local lootGoblinActive = false
 local function StartGoblinTimers()
     local goblinTime = lootgoblin_activation_timer:GetInt()
     SetGlobalFloat("ttt_lootgoblin_activate", CurTime() + goblinTime)
-    for _, v in ipairs(player.GetAll()) do
+    for _, v in ipairs(GetAllPlayers()) do
         if v:IsActiveLootGoblin() then
             v:PrintMessage(HUD_PRINTTALK, "You will transform into a goblin in " .. tostring(goblinTime) .. " seconds!")
         end
@@ -75,7 +90,7 @@ local function StartGoblinTimers()
     timer.Create("LootGoblinActivate", goblinTime, 1, function()
         lootGoblinActive = true
         local revealMode = lootgoblin_announce:GetInt()
-        for _, v in ipairs(player.GetAll()) do
+        for _, v in ipairs(GetAllPlayers()) do
             if v:IsActiveLootGoblin() then
                 v:SetNWBool("LootGoblinActive", true)
                 v:PrintMessage(HUD_PRINTTALK, "You have transformed into a goblin!")
@@ -105,7 +120,7 @@ local function StartGoblinTimers()
             local min = lootgoblin_cackle_timer_min:GetInt()
             local max = lootgoblin_cackle_timer_max:GetInt()
             timer.Create("LootGoblinCackle", math.random(min, max), 0, function()
-                for _, v in ipairs(player.GetAll()) do
+                for _, v in ipairs(GetAllPlayers()) do
                     if v:IsActiveLootGoblin() and not v:GetNWBool("LootGoblinKilled", false) then
                         local idx = math.random(1, #cackles)
                         local chosen_sound = cackles[idx]
@@ -126,7 +141,7 @@ local function HandleLootGoblinWinChecks(win_type)
     if win_type == WIN_NONE then return end
 
     local hasLootGoblin = false
-    for _, v in ipairs(player.GetAll()) do
+    for _, v in ipairs(GetAllPlayers()) do
         if v:IsActiveLootGoblin() and not v:GetNWBool("LootGoblinKilled", false) then
             hasLootGoblin = true
         end
@@ -209,7 +224,7 @@ hook.Add("PlayerDeath", "LootGoblin_PlayerDeath", function(victim, infl, attacke
                 local idx = math.random(1, #lootTable)
                 local wep = lootTable[idx]
                 table.remove(lootTable, idx)
-                local ent = ents.Create(wep)
+                local ent = CreateEntity(wep)
                 ent:SetPos(pos)
                 ent:Spawn()
 
@@ -234,7 +249,7 @@ local function ResetPlayer(ply)
 end
 
 hook.Add("TTTPrepareRound", "LootGoblin_PrepareRound", function()
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         v:SetNWBool("LootGoblinKilled", false)
         ResetPlayer(v)
     end

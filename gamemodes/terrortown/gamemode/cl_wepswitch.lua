@@ -2,8 +2,11 @@
 
 include("shared.lua")
 
-local math = math
+local concommand = concommand
 local draw = draw
+local input = input
+local math = math
+local pairs = pairs
 local surface = surface
 local table = table
 

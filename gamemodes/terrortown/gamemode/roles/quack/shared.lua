@@ -1,5 +1,9 @@
 AddCSLuaFile()
 
+local hook = hook
+local table = table
+local weapons = weapons
+
 local function InitializeEquipment()
     if DefaultEquipment then
         DefaultEquipment[ROLE_QUACK] = {

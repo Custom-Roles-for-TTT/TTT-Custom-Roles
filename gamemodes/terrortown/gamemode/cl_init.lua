@@ -1,5 +1,35 @@
 include("shared.lua")
 
+local cam = cam
+local chat = chat
+local concommand = concommand
+local ents = ents
+local hook = hook
+local ipairs = ipairs
+local net = net
+local pairs = pairs
+local player = player
+local render = render
+local surface = surface
+local table = table
+local timer = timer
+local util = util
+local vgui = vgui
+
+local CallHook = hook.Call
+local RunHook = hook.Run
+local GetAllPlayers = player.GetAll
+local MathApproach = math.Approach
+local MathMax = math.max
+local MathMin = math.min
+local MathRand = math.Rand
+local MathRandom = math.random
+local StringUpper = string.upper
+local StringLower = string.lower
+local StringExplode = string.Explode
+local TableInsert = table.insert
+local TableHasValue = table.HasValue
+
 -- Define GM12 fonts for compatibility
 surface.CreateFont("DefaultBold", {
     font = "Tahoma",
@@ -134,7 +164,7 @@ local function RoundStateChange(o, n)
         CLSCORE:ClearPanel()
 
         -- people may have died and been searched during prep
-        for _, p in ipairs(player.GetAll()) do
+        for _, p in ipairs(GetAllPlayers()) do
             p.search_result = nil
         end
 
@@ -151,15 +181,15 @@ local function RoundStateChange(o, n)
     -- players, which hooking code may not expect
     if n == ROUND_PREP then
         -- can enter PREP from any phase due to ttt_roundrestart
-        hook.Call("TTTPrepareRound", GAMEMODE)
+        RunHook("TTTPrepareRound")
     elseif (o == ROUND_PREP) and (n == ROUND_ACTIVE) then
-        hook.Call("TTTBeginRound", GAMEMODE)
+        RunHook("TTTBeginRound")
     elseif (o == ROUND_ACTIVE) and (n == ROUND_POST) then
-        hook.Call("TTTEndRound", GAMEMODE)
+        RunHook("TTTEndRound")
     end
 
     -- whatever round state we get, clear out the voice flags
-    for _, v in ipairs(player.GetAll()) do
+    for _, v in ipairs(GetAllPlayers()) do
         v.traitor_gvoice = false
     end
 end
@@ -209,7 +239,7 @@ local function ReceiveRole()
 
     if role > ROLE_NONE then
         Msg("You are: ")
-        MsgN(string.upper(client:GetRoleString()))
+        MsgN(StringUpper(client:GetRoleString()))
     end
 end
 net.Receive("TTT_Role", ReceiveRole)
@@ -264,7 +294,7 @@ function GM:ClearClientState()
 
     VOICE.InitBattery()
 
-    for _, p in ipairs(player.GetAll()) do
+    for _, p in ipairs(GetAllPlayers()) do
         if IsValid(p) then
             p.sb_tag = nil
             p:SetRole(ROLE_INNOCENT)
@@ -354,16 +384,16 @@ function GM:DrawDeathNotice() end
 
 function GM:Think()
     local client = LocalPlayer()
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         if v:Alive() and not v:IsSpec() then
-            hook.Run("TTTPlayerAliveClientThink", client, v)
+            CallHook("TTTPlayerAliveClientThink", nil, client, v)
 
             local smokeColor = COLOR_BLACK
             local smokeParticle = "particle/snow.vmt"
             local smokeOffset = Vector(0, 0, 30)
 
             -- Allow other addons to manipulate whether and how players smoke
-            local shouldSmoke, newSmokeColor, newSmokeParticle, newSmokeOffset = hook.Run("TTTShouldPlayerSmoke", v, client, false, smokeColor, smokeParticle, smokeOffset)
+            local shouldSmoke, newSmokeColor, newSmokeParticle, newSmokeOffset = CallHook("TTTShouldPlayerSmoke", nil, v, client, false, smokeColor, smokeParticle, smokeOffset)
             if newSmokeColor then smokeColor = newSmokeColor end
             if newSmokeParticle then smokeParticle = newSmokeParticle end
             if newSmokeOffset then smokeOffset = newSmokeOffset end
@@ -375,14 +405,14 @@ function GM:Think()
                 if v.SmokeNextPart < CurTime() then
                     if client:GetPos():Distance(pos) <= 3000 then
                         v.SmokeEmitter:SetPos(pos)
-                        v.SmokeNextPart = CurTime() + math.Rand(0.003, 0.01)
-                        local vec = Vector(math.Rand(-8, 8), math.Rand(-8, 8), math.Rand(10, 55))
+                        v.SmokeNextPart = CurTime() + MathRand(0.003, 0.01)
+                        local vec = Vector(MathRand(-8, 8), MathRand(-8, 8), MathRand(10, 55))
                         local particle = v.SmokeEmitter:Add(smokeParticle, v:LocalToWorld(vec))
                         particle:SetVelocity(Vector(0, 0, 4) + VectorRand() * 3)
-                        particle:SetDieTime(math.Rand(0.5, 2))
-                        particle:SetStartAlpha(math.random(150, 220))
+                        particle:SetDieTime(MathRand(0.5, 2))
+                        particle:SetStartAlpha(MathRandom(150, 220))
                         particle:SetEndAlpha(0)
-                        local size = math.random(4, 7)
+                        local size = MathRandom(4, 7)
                         particle:SetStartSize(size)
                         particle:SetEndSize(size + 1)
                         particle:SetRoll(0)
@@ -390,11 +420,9 @@ function GM:Think()
                         particle:SetColor(smokeColor.r, smokeColor.g, smokeColor.b)
                     end
                 end
-            else
-                if v.SmokeEmitter then
-                    v.SmokeEmitter:Finish()
-                    v.SmokeEmitter = nil
-                end
+            elseif v.SmokeEmitter then
+                v.SmokeEmitter:Finish()
+                v.SmokeEmitter = nil
             end
         end
     end
@@ -503,7 +531,7 @@ local hm_CanPlayS = true
 local hm_Alpha = 0
 
 local function GrabColor() -- Used for retrieving the console color
-    local coltable = string.Explode(",", hm_color:GetString())
+    local coltable = StringExplode(",", hm_color:GetString())
     local newcol = {}
 
     for k, v in pairs(coltable) do
@@ -517,7 +545,7 @@ local function GrabColor() -- Used for retrieving the console color
 end
 
 local function GrabCritColor() -- Used for retrieving the console color
-    local coltable = string.Explode(",", hm_critcolor:GetString())
+    local coltable = StringExplode(",", hm_critcolor:GetString())
     local newcol = {}
 
     for k, v in pairs(coltable) do
@@ -530,7 +558,7 @@ local function GrabCritColor() -- Used for retrieving the console color
     return Color(newcol[1], newcol[2], newcol[3]) -- Returns the finished color
 end
 
-net.Receive("TTT_OpenMixer", function(len, ply) -- Receive the server message
+net.Receive("TTT_OpenMixer", function() -- Receive the server message
     local crit = net.ReadBool()
 
     -- Creating the color mixer panel
@@ -571,7 +599,7 @@ net.Receive("TTT_OpenMixer", function(len, ply) -- Receive the server message
     end
 end)
 
-net.Receive("TTT_DrawHitMarker", function(len, ply)
+net.Receive("TTT_DrawHitMarker", function()
     hm_DrawHitM = true
     hm_CanPlayS = true
     if net.ReadBool() then
@@ -603,7 +631,7 @@ hook.Add("HUDPaint", "HitmarkerDrawer", function()
         local x = ScrW() / 2
         local y = ScrH() / 2
 
-        hm_Alpha = math.Approach(hm_Alpha, 0, 5)
+        hm_Alpha = MathApproach(hm_Alpha, 0, 5)
         local col = GrabColor()
         if hm_LastHitCrit and hm_crit:GetBool() then
             col = GrabCritColor()
@@ -611,7 +639,7 @@ hook.Add("HUDPaint", "HitmarkerDrawer", function()
         col.a = hm_Alpha
         surface.SetDrawColor(col)
 
-        local sel = string.lower(hm_type:GetString())
+        local sel = StringLower(hm_type:GetString())
         -- The drawing part of the hitmarkers and the various types you can choose
         if sel == "lines" then
             surface.DrawLine(x - 6, y - 5, x - 11, y - 10)
@@ -675,7 +703,7 @@ local function SpeedChange(bool)
     local client = LocalPlayer()
     net.Start("TTT_SprintSpeedSet")
     if bool then
-        local mul = math.min(math.max(speedMultiplier, 0.1), 2)
+        local mul = MathMin(MathMax(speedMultiplier, 0.1), 2)
         net.WriteFloat(mul)
         client.mult = 1 + mul
 
@@ -700,8 +728,8 @@ local function SprintFunction()
             sprinting = true
             sprintTimer = CurTime()
         end
-        stamina = stamina - (CurTime() - sprintTimer) * (math.min(math.max(consumption, 0.1), 5) * 250)
-        local result = hook.Run("TTTSprintStaminaPost", LocalPlayer(), stamina, sprintTimer, consumption)
+        stamina = stamina - (CurTime() - sprintTimer) * (MathMin(MathMax(consumption, 0.1), 5) * 250)
+        local result = CallHook("TTTSprintStaminaPost", nil, LocalPlayer(), stamina, sprintTimer, consumption)
         -- Use the overwritten stamina if one is provided
         if result then
             stamina = result
@@ -723,7 +751,7 @@ hook.Add("TTTPrepareRound", "TTTSprintPrepareRound", function()
     -- listen for activation
     hook.Add("Think", "TTTSprintThink", function()
         local client = LocalPlayer()
-        local forward_key = hook.Run("TTTSprintKey", client) or IN_FORWARD
+        local forward_key = CallHook("TTTSprintKey", nil, client) or IN_FORWARD
         if client:KeyDown(forward_key) and client:KeyDown(IN_SPEED) then
             -- forward + selected key
             SprintFunction()
@@ -743,7 +771,7 @@ hook.Add("TTTPrepareRound", "TTTSprintPrepareRound", function()
                 end
 
                 -- Allow things to change the recovery rate
-                recovery = hook.Run("TTTSprintStaminaRecovery", client, recovery) or recovery
+                recovery = CallHook("TTTSprintStaminaRecovery", nil, client, recovery) or recovery
 
                 stamina = stamina + (CurTime() - recoveryTimer) * recovery * 250
             end
@@ -808,19 +836,19 @@ function OnPlayerHighlightEnabled(client, alliedRoles, showJesters, hideEnemies,
     local enemies = {}
     local friends = {}
     local jesters = {}
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= client then
             if showJesters and v:ShouldActLikeJester() then
                 if not onlyShowEnemies then
-                    table.insert(jesters, v)
+                    TableInsert(jesters, v)
                 end
-            elseif table.HasValue(alliedRoles, v:GetRole()) then
+            elseif TableHasValue(alliedRoles, v:GetRole()) then
                 if not onlyShowEnemies then
-                    table.insert(friends, v)
+                    TableInsert(friends, v)
                 end
             -- Don't even track enemies if this role can't see them
             elseif not hideEnemies then
-                table.insert(enemies, v)
+                TableInsert(enemies, v)
             end
         end
     end
@@ -851,7 +879,7 @@ local function EnableTraitorHighlights(client)
         -- Start with the list of traitors
         local allies = GetTeamRoles(TRAITOR_ROLES)
         -- And add the glitch
-        table.insert(allies, ROLE_GLITCH)
+        TableInsert(allies, ROLE_GLITCH)
 
         OnPlayerHighlightEnabled(client, allies, jesters_visible_to_traitors, true, true)
     end)
@@ -939,7 +967,7 @@ function AddFootstep(ply, pos, ang, foot, col, fade_time)
             normal = tr.HitNormal,
             col = col
         }
-        table.insert(footSteps, tbl)
+        TableInsert(footSteps, tbl)
     end
 end
 

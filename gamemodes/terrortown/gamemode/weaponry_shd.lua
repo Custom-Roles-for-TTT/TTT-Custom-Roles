@@ -1,5 +1,14 @@
 WEPS = {}
 
+local ipairs = ipairs
+local IsValid = IsValid
+local math = math
+local pairs = pairs
+local table = table
+local util = util
+
+local GetWeapons = weapons.GetList
+
 function WEPS.TypeForWeapon(class)
     local tbl = util.WeaponForClass(class)
     return tbl and tbl.Kind or WEAPON_NONE
@@ -73,7 +82,7 @@ end
 
 function WEPS.ResetWeaponsCache()
     -- Reset the CanBuy list or save the original for next time
-    for _, v in pairs(weapons.GetList()) do
+    for _, v in pairs(GetWeapons()) do
         if v and v.CanBuy then
             if v.CanBuyOrig then
                 v.CanBuy = table.Copy(v.CanBuyOrig)
@@ -122,7 +131,7 @@ function WEPS.DoesRoleHaveWeapon(role, promoted)
         return true
     end
 
-    for _, w in ipairs(weapons.GetList()) do
+    for _, w in ipairs(GetWeapons()) do
         if w and w.CanBuy and table.HasValue(w.CanBuy, role) then
             DoesRoleHaveWeaponCache[role] = true
             return true

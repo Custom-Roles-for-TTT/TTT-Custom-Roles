@@ -1,3 +1,8 @@
+local ipairs = ipairs
+local IsValid = IsValid
+
+local GetAllPlayers = player.GetAll
+
 ENT.Type = "brush"
 ENT.Base = "base_brush"
 
@@ -19,7 +24,7 @@ function ENT:CountTraitors()
     local maxs = self:LocalToWorld(self:OBBMaxs())
 
     local trs = 0
-    for _, ply in ipairs(player.GetAll()) do
+    for _, ply in ipairs(GetAllPlayers()) do
         if (IsValid(ply) and ply:Alive()) and
                 (ply:IsActiveTraitorTeam() or
                 (ply:IsActiveJesterTeam() and GetConVar("ttt_jesters_trigger_traitor_testers"):GetBool()) or

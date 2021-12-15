@@ -1,6 +1,10 @@
 
 AddCSLuaFile()
 
+local concommand = concommand
+local ents = ents
+local IsValid = IsValid
+
 ENT.Type = "anim"
 ENT.Base = "base_anim"
 

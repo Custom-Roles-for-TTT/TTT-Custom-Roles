@@ -1,7 +1,17 @@
 include("shared.lua")
 
+local concommand = concommand
+local math = math
+local net = net
+local pairs = pairs
+local table = table
+local timer = timer
+local vgui = vgui
+
 local GetTranslation = LANG.GetTranslation
 local SafeTranslate = LANG.TryTranslation
+local StringFind = string.find
+local StringLower = string.lower
 
 local function ItemIsWeapon(item) return not tonumber(item.id) end
 
@@ -215,7 +225,7 @@ local function OpenDialog(client)
         local roleitems = GetEquipmentForRole(role, false, true, true, true)
         local filtered = {}
         for _, v in pairs(roleitems) do
-            if v and v["name"] and string.find(SafeTranslate(v["name"]):lower(), value:lower()) then
+            if v and v["name"] and StringFind(StringLower(SafeTranslate(v["name"])), StringLower(value)) then
                 table.insert(filtered, v)
             end
         end

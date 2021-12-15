@@ -1,5 +1,64 @@
 # Release Notes
 
+## 1.4.3 (Beta)
+**Released: December, 11th, 2021**
+
+### Changes
+- Changed parasite cures (real and fake) to mention in the message that it's directed at traitors
+
+### Fixes
+- Fixed parasite's infection conflicting with the brain parasite weapon from the workshop
+
+## 1.4.2 (Beta)
+**Released: December, 10th, 2021**
+
+### Additions
+- Added ability to allow spirits to see eachother when there is a medium (enabled by default)
+
+### Changes
+- Ported change from base TTT: "TTT uses new permissions.EnableVoiceChat"
+- Changed large parts across most of the addon in an attempt to increase performance
+
+### Fixes
+- Fixed bodysnatcher killed event redefining existing event ID
+- Fixed freeze in round summary when a player has multi-byte characters in their name
+- Fixed round summary highlights player stats spacing
+- Fixed killing a jester team member causing the team kill "awards" to show on the round summary highlight tab
+- Fixed medium being told there was a medium when they died
+- Fixed assassin not getting a new target when their target's role changes to one that is an invalid target
+
+### Developer
+- Added parameter to `GenerateNewEventID` to allow roles to associate generated event IDs back to the role
+- Added warning message to `GenerateNewEventID` when role parameter is missing so developers know to update
+- Added parameter to `GenerateNewWinID` to allow roles to associate generated win IDs back to the role
+- Added warning message to `GenerateNewWinID` when role parameter is missing so developers know to update
+
+*NOTE*: If the role parameter is not passed, we try to figure out the role that the generated ID belongs to but this is not promised to work. Developers should update to use the new parameter as soon as possible. Developers who are using these methods to generate IDs not linked to roles should pass `ROLE_NONE`.
+
+## 1.4.1 (Beta)
+**Released: December 4th, 2021**
+
+### Changes
+- Changed old man to lose karma if they hurt or kill players when their adrenaline rush is not active
+- Changed so innocents that hurt or kill the old man will lose karma
+- Changed old man adrenaline rush logic so it shows what player ultimately killed them in chat rather than "You killed yourself"
+- Changed old man adrenaline rush message to also show in the center of the screen to make it more obvious when it's happening
+
+### Fixes
+- Fixed loot goblin and old man not sharing a timelimit win with the innocents
+- Fixed loot goblin and old man not sharing a win with eachother (if they are both in the same round) on the round summary screen
+
+### Additions
+- Added ability to give the impersonator credits when they are activated (disabled by default)
+- Added ability to configure a chance for a promoted impersonator to spawn instead of a detective (disabled by default)
+- Added ability to remind players that there is a medium when they die (enabled by default)
+
+### Developer
+- Changed TTTCanIdentifyCorpse and TTTCanSearchCorpse hooks to allow changing the corpse's stored role
+- Fixed TTTWinCheckComplete not being called when the win type was WIN_TIMELIMIT
+- Added new TTTScoringSecondaryWins hook to allow multiple roles to have secondary wins at the same time
+- **BREAKING CHANGE** - Removed secondaryWinRole parameter from TTTScoringWinTitle hook
+
 ## 1.4.0
 **Released: November 15th, 2021**\
 Includes all beta updates from [1.3.1](#131-beta) to [1.3.7](#137-beta).

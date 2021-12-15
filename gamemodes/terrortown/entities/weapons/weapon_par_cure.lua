@@ -1,5 +1,14 @@
 AddCSLuaFile()
 
+local IsValid = IsValid
+local math = math
+local pairs = pairs
+local player = player
+local surface = surface
+local string = string
+local timer = timer
+local util = util
+
 if CLIENT then
     local GetPTranslation = LANG.GetParamTranslation
     SWEP.PrintName = "Parasite Cure"
@@ -12,7 +21,7 @@ if CLIENT then
         type =  "item_weapon",
         desc = function()
             return GetPTranslation("cure_desc", {
-                parasites = ROLE_STRINGS_PLURAL[ROLE_PARASITE]:lower()
+                parasites = string.lower(ROLE_STRINGS_PLURAL[ROLE_PARASITE])
             })
         end
     };
@@ -109,15 +118,15 @@ if SERVER then
         if IsPlayer(ply) then
             ply:EmitSound(cured)
 
-            if ply:GetNWBool("Infected", false) then
+            if ply:GetNWBool("ParasiteInfected", false) then
                 for _, v in pairs(player.GetAll()) do
-                    if v:GetNWString("InfectingTarget", "") == ply:SteamID64() then
-                        ply:SetNWBool("Infected", false)
-                        v:SetNWBool("Infecting", false)
-                        v:SetNWString("InfectingTarget", nil)
-                        v:SetNWInt("InfectionProgress", 0)
-                        timer.Remove(v:Nick() .. "InfectionProgress")
-                        timer.Remove(v:Nick() .. "InfectingSpectate")
+                    if v:GetNWString("ParasiteInfectingTarget", "") == ply:SteamID64() then
+                        ply:SetNWBool("ParasiteInfected", false)
+                        v:SetNWBool("ParasiteInfecting", false)
+                        v:SetNWString("ParasiteInfectingTarget", nil)
+                        v:SetNWInt("ParasiteInfectionProgress", 0)
+                        timer.Remove(v:Nick() .. "ParasiteInfectionProgress")
+                        timer.Remove(v:Nick() .. "ParasiteInfectingSpectate")
                         v:PrintMessage(HUD_PRINTCENTER, "Your host has been cured.")
                     end
                 end
@@ -206,7 +215,7 @@ if SERVER then
 
     function SWEP:Equip(newowner)
         if newowner:IsTraitorTeam() then
-            newowner:PrintMessage(HUD_PRINTTALK, "The parasite cure you are holding is real.")
+            newowner:PrintMessage(HUD_PRINTTALK, ROLE_STRINGS[ROLE_TRAITOR] .. ", the parasite cure you are holding is real.")
         end
     end
 end

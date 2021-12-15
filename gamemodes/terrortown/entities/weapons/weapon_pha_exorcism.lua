@@ -1,5 +1,14 @@
 AddCSLuaFile()
 
+local IsValid = IsValid
+local math = math
+local pairs = pairs
+local player = player
+local surface = surface
+local string = string
+local timer = timer
+local util = util
+
 if CLIENT then
     local GetPTranslation = LANG.GetParamTranslation
     SWEP.PrintName = "Exorcism Device"
@@ -12,7 +21,7 @@ if CLIENT then
         type = "item_weapon",
         desc = function()
             return GetPTranslation("exor_desc", {
-                phantom = ROLE_STRINGS[ROLE_PHANTOM]:lower()
+                phantom = string.lower(ROLE_STRINGS[ROLE_PHANTOM])
             })
         end
     };

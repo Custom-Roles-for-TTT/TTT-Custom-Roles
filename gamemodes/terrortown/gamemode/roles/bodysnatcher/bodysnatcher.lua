@@ -1,5 +1,14 @@
 AddCSLuaFile()
 
+local hook = hook
+local IsValid = IsValid
+local net = net
+local pairs = pairs
+local timer = timer
+local util = util
+
+local GetAllPlayers = player.GetAll
+
 util.AddNetworkString("TTT_BodysnatcherKilled")
 
 -------------
@@ -37,7 +46,7 @@ end)
 
 -- Disable tracking that this player was a bodysnatcher at the start of a new round or if their role changes again (e.g. if they go bodysnatcher -> innocent -> dead -> hypnotist res to traitor)
 hook.Add("TTTPrepareRound", "Bodysnatcher_PrepareRound", function()
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         v:SetNWBool("WasBodysnatcher", false)
         timer.Remove(v:Nick() .. "BodysnatcherRespawn")
     end

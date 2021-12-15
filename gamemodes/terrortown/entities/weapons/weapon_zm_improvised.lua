@@ -1,5 +1,9 @@
 AddCSLuaFile()
 
+local IsValid = IsValid
+local math = math
+local util = util
+
 SWEP.HoldType = "melee"
 
 if CLIENT then

@@ -1,10 +1,22 @@
 ---- Player spawning/dying
 
+local concommand = concommand
+local ipairs = ipairs
+local IsValid = IsValid
 local math = math
-local table = table
-local player = player
-local timer = timer
+local net = net
 local pairs = pairs
+local string = string
+local table = table
+local timer = timer
+local util = util
+
+local CallHook = hook.Call
+local RunHook = hook.Run
+local GetAllPlayers = player.GetAll
+local CreateEntity = ents.Create
+local FindEntsInBox = ents.FindInBox
+local FindEntsByClass = ents.FindByClass
 
 CreateConVar("ttt_bots_are_spectators", "0", FCVAR_ARCHIVE)
 CreateConVar("ttt_dyingshot", "0")
@@ -41,7 +53,7 @@ end
 
 function GM:NetworkIDValidated(name, steamid)
     -- edge case where player authed after initspawn
-    for _, p in ipairs(player.GetAll()) do
+    for _, p in ipairs(GetAllPlayers()) do
         if IsValid(p) and p:SteamID() == steamid and p.delay_karma_recall then
             KARMA.LateRecallAndSet(p)
             return
@@ -93,12 +105,12 @@ function GM:PlayerSpawn(ply)
             end
         end
     else
-        hook.Call("PlayerLoadout", GAMEMODE, ply)
+        RunHook("PlayerLoadout", ply)
     end
 
     -- ye olde hooks
-    hook.Call("PlayerSetModel", GAMEMODE, ply)
-    hook.Call("TTTPlayerSetColor", GAMEMODE, ply)
+    RunHook("PlayerSetModel", ply)
+    RunHook("TTTPlayerSetColor", ply)
 
     ply:SetupHands()
 
@@ -131,7 +143,7 @@ function GM:IsSpawnpointSuitable(ply, spwn, force, rigged)
 
     if not util.IsInWorld(pos) then return false end
 
-    local blocking = ents.FindInBox(pos + Vector(-16, -16, 0), pos + Vector(16, 16, 64))
+    local blocking = FindEntsInBox(pos + Vector(-16, -16, 0), pos + Vector(16, 16, 64))
 
     for _, p in ipairs(blocking) do
         if IsPlayer(p) and p:IsTerror() and p:Alive() then
@@ -154,7 +166,7 @@ local SpawnTypes = { "info_player_deathmatch", "info_player_combine",
 function GetSpawnEnts(shuffled, force_all)
     local tbl = {}
     for k, classname in ipairs(SpawnTypes) do
-        for _, e in ipairs(ents.FindByClass(classname)) do
+        for _, e in ipairs(FindEntsByClass(classname)) do
             if IsValid(e) and (not e.BeingRemoved) then
                 table.insert(tbl, e)
             end
@@ -165,7 +177,7 @@ function GetSpawnEnts(shuffled, force_all)
     -- uses it for observer starts that are in places where players cannot really
     -- spawn well. At all.
     if force_all or #tbl == 0 then
-        for _, e in ipairs(ents.FindByClass("info_player_start")) do
+        for _, e in ipairs(FindEntsByClass("info_player_start")) do
             if IsValid(e) and (not e.BeingRemoved) then
                 table.insert(tbl, e)
             end
@@ -241,7 +253,7 @@ function GM:PlayerSelectSpawn(ply)
         local rigged = PointsAroundSpawn(spwn)
         for _, rig in pairs(rigged) do
             if self:IsSpawnpointSuitable(ply, rig, false, true) then
-                local rig_spwn = ents.Create("info_player_terrorist")
+                local rig_spwn = CreateEntity("info_player_terrorist")
                 if IsValid(rig_spwn) then
                     rig_spwn:SetPos(rig)
                     rig_spwn:Spawn()
@@ -347,7 +359,7 @@ function GM:KeyPress(ply, key)
         if ply:ShouldShowSpectatorHUD() then
             local tgt = ply:GetObserverTarget()
             local powers = {}
-            local skip, power_property = hook.Run("TTTSpectatorHUDKeyPress", ply, tgt, powers)
+            local skip, power_property = CallHook("TTTSpectatorHUDKeyPress", nil, ply, tgt, powers)
             if power_property then
                 -- Get the player's current power and make sure they can do something with the key the pressed
                 local current_power = ply:GetNWInt(power_property, 0)
@@ -563,7 +575,7 @@ local function CheckCreditAward(victim, attacker)
 
         -- If size is 0, awards are off
         if amt > 0 then
-            for _, ply in ipairs(player.GetAll()) do
+            for _, ply in ipairs(GetAllPlayers()) do
                 if ply:IsActiveDetectiveTeam() or (ply:IsActiveDeputy() and ply:IsRoleActive()) then
                     ply:AddCredits(amt)
                 end
@@ -579,7 +591,7 @@ local function CheckCreditAward(victim, attacker)
         local inno_dead = 0
         local inno_total = 0
 
-        for _, ply in ipairs(player.GetAll()) do
+        for _, ply in ipairs(GetAllPlayers()) do
             if not ply:IsTraitorTeam() then
                 if ply:IsTerror() then
                     inno_alive = inno_alive + 1
@@ -616,7 +628,7 @@ local function CheckCreditAward(victim, attacker)
                 end
                 LANG.Msg(GetPlayerFilter(predicate), "credit_all", { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR], num = amt })
 
-                for _, ply in ipairs(player.GetAll()) do
+                for _, ply in ipairs(GetAllPlayers()) do
                     if predicate(ply) then
                         ply:AddCredits(amt)
                     end
@@ -827,7 +839,7 @@ function GM:SpectatorThink(ply)
             ply:Spectate(OBS_MODE_ROAMING)
 
             -- move to spectator spawn if mapper defined any
-            local spec_spawns = ents.FindByClass("ttt_spectator_spawn")
+            local spec_spawns = FindEntsByClass("ttt_spectator_spawn")
             if spec_spawns and #spec_spawns > 0 then
                 local spawn = table.Random(spec_spawns)
                 ply:SetPos(spawn:GetPos())
@@ -1235,7 +1247,7 @@ function GM:OnNPCKilled() end
 -- Drowning and such
 function GM:Tick()
     -- three cheers for micro-optimizations
-    local plys = player.GetAll()
+    local plys = GetAllPlayers()
     local tm = nil
     local ply = nil
     for i = 1, #plys do
@@ -1275,7 +1287,7 @@ function GM:Tick()
                 ply.scanner_weapon:Think()
             end
 
-            hook.Run("TTTPlayerAliveThink", ply)
+            CallHook("TTTPlayerAliveThink", nil, ply)
         elseif tm == TEAM_SPEC then
             if ply.propspec then
                 PROPSPEC.Recharge(ply)
@@ -1328,15 +1340,16 @@ function GM:PlayerShouldTaunt(ply, actid)
 end
 
 local function GetTargetPlayerByName(ply, name)
-    for _, v in RandomPairs(player.GetAll()) do
-        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and v:Nick() == name then
+    name = string.lower(name)
+    for _, v in RandomPairs(GetAllPlayers()) do
+        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and string.lower(v:Nick()) == name then
             return v
         end
     end
 end
 
 local function GetRandomTargetPlayer(ply)
-    for _, v in RandomPairs(player.GetAll()) do
+    for _, v in RandomPairs(GetAllPlayers()) do
         if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= ply and not v:ShouldActLikeJester() then
             return v
         end
@@ -1365,7 +1378,7 @@ local function PlayerAutoComplete(cmd, args)
 
     -- Find player options that match the given value (or all if there is no given value)
     local options = {}
-    for _, v in ipairs(player.GetAll()) do
+    for _, v in ipairs(GetAllPlayers()) do
         if #name == 0 or string.find(string.lower(v:Nick()), name) then
             table.insert(options, cmd .. other_args .. " \"" .. v:Nick() .. "\"")
         end

@@ -7,6 +7,18 @@
 
 AddCSLuaFile()
 
+local hook = hook
+local IsValid = IsValid
+local math = math
+local net = net
+local pairs = pairs
+local player = player
+local surface = surface
+local string = string
+local table = table
+local timer = timer
+local util = util
+
 SWEP.HoldType = "pistol"
 SWEP.LimitedStock = true
 
@@ -185,11 +197,10 @@ if SERVER then
         end
 
         net.Start("TTT_Defib_Revived")
-        net.WriteBool(true)
         net.Send(ply)
 
         local owner = self:GetOwner()
-        hook.Run("TTTPlayerDefibRoleChange", owner, ply)
+        hook.Call("TTTPlayerDefibRoleChange", nil, owner, ply)
 
         net.Start("TTT_Hypnotised")
         net.WriteString(ply:Nick())
@@ -310,15 +321,12 @@ if SERVER then
 end
 
 if CLIENT then
-    net.Receive("TTT_Defib_Hide", function(len, ply)
-        if ply or len <= 0 then return end
-
+    net.Receive("TTT_Defib_Hide", function()
         local hply = net.ReadEntity()
         hply.DefibHide = net.ReadBool()
     end)
 
-    net.Receive("TTT_Defib_Revived", function(len, ply)
-        if ply or len <= 0 then return end
+    net.Receive("TTT_Defib_Revived", function()
         surface.PlaySound(revived)
     end)
 

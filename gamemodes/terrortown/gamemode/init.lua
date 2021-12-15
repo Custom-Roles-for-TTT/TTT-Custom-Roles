@@ -58,6 +58,32 @@ include("player_ext_shd.lua")
 include("player_ext.lua")
 include("player.lua")
 
+-- Localise stuff we use often. It's like Lua go-faster stripes.
+local concommand = concommand
+local cvars = cvars
+local ents = ents
+local file = file
+local hook = hook
+local ipairs = ipairs
+local IsValid = IsValid
+local math = math
+local net = net
+local pairs = pairs
+local player = player
+local resource = resource
+local string = string
+local table = table
+local timer = timer
+local util = util
+
+local CallHook = hook.Call
+local RunHook = hook.Run
+local GetAllPlayers = player.GetAll
+local StringLower = string.lower
+local StringUpper = string.upper
+local StringSub = string.sub
+local StringStartsWith = string.StartWith
+
 -- Round times
 CreateConVar("ttt_roundtime_minutes", "10", FCVAR_NOTIFY)
 CreateConVar("ttt_preptime_seconds", "30", FCVAR_NOTIFY)
@@ -278,14 +304,6 @@ local ttt_dbgwin = CreateConVar("ttt_debug_preventwin", "0")
 CreateConVar("ttt_debug_logkills", "1")
 local ttt_dbgroles = CreateConVar("ttt_debug_logroles", "1")
 
--- Localise stuff we use often. It's like Lua go-faster stripes.
-local math = math
-local table = table
-local net = net
-local player = player
-local timer = timer
-local util = util
-
 -- Pool some network names.
 util.AddNetworkString("TTT_RoundState")
 util.AddNetworkString("TTT_RagdollSearch")
@@ -431,7 +449,7 @@ end
 -- I don't like it any more than you do, dear reader.
 function GM:SyncGlobals()
     -- For some reason hooking "SyncGlobals" directly is unreliable so... here we go
-    hook.Run("TTTSyncGlobals")
+    CallHook("TTTSyncGlobals", nil)
 
     SetGlobalBool("ttt_detective", ttt_detective:GetBool())
     SetGlobalBool("ttt_haste", ttt_haste:GetBool())
@@ -514,7 +532,7 @@ end
 local function EnoughPlayers()
     local ready = 0
     -- only count truly available players, ie. no forced specs
-    for _, ply in ipairs(player.GetAll()) do
+    for _, ply in ipairs(GetAllPlayers()) do
         if IsValid(ply) and ply:ShouldSpawn() then
             ready = ready + 1
         end
@@ -547,7 +565,7 @@ end
 -- we regularly check for these broken spectators while we wait for players
 -- and immediately fix them.
 function FixSpectators()
-    for k, ply in ipairs(player.GetAll()) do
+    for k, ply in ipairs(GetAllPlayers()) do
         if ply:IsSpec() and not ply:GetRagdollSpec() and ply:GetMoveType() < MOVETYPE_NOCLIP then
             ply:Spectate(OBS_MODE_ROAMING)
         end
@@ -571,7 +589,7 @@ local function NameChangeKick()
     if GetRoundState() == ROUND_ACTIVE then
         for _, ply in ipairs(player.GetHumans()) do
             if ply.spawn_nick then
-                if ply.has_spawned and ply.spawn_nick ~= GetPlayerName(ply) and not hook.Call("TTTNameChangeKick", GAMEMODE, ply) then
+                if ply.has_spawned and ply.spawn_nick ~= GetPlayerName(ply) and not RunHook("TTTNameChangeKick", ply) then
                     local t = GetConVar("ttt_namechange_bantime"):GetInt()
                     local msg = "Changed name during a round"
                     if t > 0 then
@@ -591,7 +609,7 @@ function StartNameChangeChecks()
     if not GetConVar("ttt_namechange_kick"):GetBool() then return end
 
     -- bring nicks up to date, may have been changed during prep/post
-    for _, ply in pairs(player.GetAll()) do
+    for _, ply in pairs(GetAllPlayers()) do
         ply.spawn_nick = GetPlayerName(ply)
     end
 
@@ -613,7 +631,7 @@ local function CleanUp()
     et.FixParentedPostCleanup()
 
     -- Strip players now, so that their weapons are not seen by ReplaceEntities
-    for k, v in ipairs(player.GetAll()) do
+    for k, v in ipairs(GetAllPlayers()) do
         if IsValid(v) then
             v:StripWeapons()
         end
@@ -676,7 +694,7 @@ function GM:TTTDelayRoundStartForVote()
 end
 
 function PrepareRound()
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         v:SetNWVector("PlayerColor", Vector(1, 1, 1))
         -- Workaround to prevent GMod sprint from working
         v:SetRunSpeed(v:GetWalkSpeed())
@@ -685,7 +703,7 @@ function PrepareRound()
     -- Check playercount
     if CheckForAbort() then return end
 
-    local delay_round, delay_length = hook.Call("TTTDelayRoundStartForVote", GAMEMODE)
+    local delay_round, delay_length = RunHook("TTTDelayRoundStartForVote")
 
     if delay_round then
         delay_length = delay_length or 30
@@ -713,7 +731,7 @@ function PrepareRound()
 
     -- New look. Random if no forced model set.
     GAMEMODE.playermodel = GAMEMODE.force_plymodel == "" and GetRandomPlayerModel() or GAMEMODE.force_plymodel
-    GAMEMODE.playercolor = hook.Call("TTTPlayerColor", GAMEMODE, GAMEMODE.playermodel)
+    GAMEMODE.playercolor = RunHook("TTTPlayerColor", GAMEMODE.playermodel)
 
     if CheckForAbort() then return end
 
@@ -752,7 +770,7 @@ function PrepareRound()
     timer.Simple(1, SendRoleReset)
 
     -- Tell hooks and map we started prep
-    hook.Call("TTTPrepareRound")
+    RunHook("TTTPrepareRound")
     ClearAllFootsteps()
     ents.TTT.TriggerRoundStateOutputs(ROUND_PREP)
 end
@@ -766,7 +784,7 @@ function IncRoundEnd(incr)
 end
 
 function TellTraitorsAboutTraitors()
-    local plys = player.GetAll()
+    local plys = GetAllPlayers()
 
     local traitornicks = {}
     local hasGlitch = false
@@ -798,7 +816,7 @@ function TellTraitorsAboutTraitors()
                         names = names .. name .. ", "
                     end
                 end
-                names = string.sub(names, 1, -3)
+                names = utf8.sub(names, 1, -3)
                 LANG.Msg(v, "round_traitors_more", { role = ROLE_STRINGS[ROLE_TRAITOR], names = names })
             end
         end
@@ -806,7 +824,7 @@ function TellTraitorsAboutTraitors()
 end
 
 function SpawnWillingPlayers(dead_only)
-    local plys = player.GetAll()
+    local plys = GetAllPlayers()
     local wave_delay = GetConVar("ttt_spawn_wave_interval"):GetFloat()
 
     -- simple method, should make this a case of the other method once that has
@@ -919,7 +937,7 @@ function BeginRound()
 
     SCORE:HandleSelection() -- log traitors and detectives
 
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         -- Player color
         local vec = Vector(1, 1, 1)
         vec.x = math.Rand(0, 1)
@@ -935,7 +953,7 @@ function BeginRound()
     net.Start("TTT_ResetScoreboard")
     net.Broadcast()
 
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         if v:Alive() and v:IsTerror() then
             net.Start("TTT_SpawnedPlayers")
             net.WriteString(v:Nick())
@@ -950,7 +968,7 @@ function BeginRound()
 
     -- EQUIP_REGEN health regeneration tick
     timer.Create("RegenEquipmentTick", 0.66, 0, function()
-        for _, v in pairs(player.GetAll()) do
+        for _, v in pairs(GetAllPlayers()) do
             if v:Alive() and not v:IsSpec() and v:HasEquipmentItem(EQUIP_REGEN) then
                 local hp = v:Health()
                 if hp < v:GetMaxHealth() then
@@ -984,7 +1002,7 @@ function BeginRound()
     ClearAllFootsteps()
     GAMEMODE:UpdatePlayerLoadouts() -- needs to happen when round_active
 
-    hook.Call("TTTBeginRound")
+    RunHook("TTTBeginRound")
 
     ents.TTT.TriggerRoundStateOutputs(ROUND_BEGIN)
 end
@@ -992,7 +1010,7 @@ end
 function PrintResultMessage(type)
     ServerLog("Round ended.\n")
 
-    local overriden = hook.Call("TTTPrintResultMessage", nil, type)
+    local overriden = CallHook("TTTPrintResultMessage", nil, type)
     if overriden then return end
 
     if type == WIN_TIMELIMIT then
@@ -1012,7 +1030,7 @@ function PrintResultMessage(type)
             ServerLog("Result: Monsters win.\n")
         else
             local plural = ROLE_STRINGS_PLURAL[monster_role]
-            LANG.Msg("win_" .. plural:lower(), { role = plural })
+            LANG.Msg("win_" .. StringLower(plural), { role = plural })
             ServerLog("Result: " .. plural .. " win.\n")
         end
     else
@@ -1027,7 +1045,7 @@ function CheckForMapSwitch()
 
     local time_left = math.max(0, (GetConVar("ttt_time_limit_minutes"):GetInt() * 60) - CurTime())
     local switchmap = false
-    local nextmap = string.upper(game.GetMapNext())
+    local nextmap = StringUpper(game.GetMapNext())
 
     if rounds_left <= 0 then
         LANG.Msg("limit_round", { mapname = nextmap })
@@ -1084,7 +1102,7 @@ function EndRound(type)
 
     -- server plugins might want to start a map vote here or something
     -- these hooks are not used by TTT internally
-    hook.Call("TTTEndRound", GAMEMODE, type)
+    RunHook("TTTEndRound", type)
 
     ents.TTT.TriggerRoundStateOutputs(ROUND_POST, type)
 end
@@ -1098,16 +1116,36 @@ function GM:MapTriggeredEnd(wintype)
     end
 end
 
+local function HandleWinCondition(win)
+    -- Allow addons to block win conditions other than time limit
+    if win ~= WIN_TIMELIMIT then
+        -- Handle role-specific checks
+        local win_blocks = {}
+        CallHook("TTTWinCheckBlocks", nil, win_blocks)
+
+        for _, win_block in ipairs(win_blocks) do
+            win = win_block(win)
+        end
+    end
+
+    -- If, after all that, we have a win condition then end the round
+    if win ~= WIN_NONE then
+        CallHook("TTTWinCheckComplete", nil, win)
+
+        timer.Simple(0.5, function() EndRound(win) end) -- Slight delay to make sure alternate winners go through before scoring
+    end
+end
+
 -- Used to be in think, now a timer
 local function WinChecker()
     -- If prevent-win is enabled then don't even check the win conditions
     if ttt_dbgwin:GetBool() then return end
 
     if GetRoundState() == ROUND_ACTIVE then
+        local win = WIN_NONE
         if CurTime() > GetGlobalFloat("ttt_round_end", 0) then
-            EndRound(WIN_TIMELIMIT)
+            win = WIN_TIMELIMIT
         else
-            local win = WIN_NONE
             -- Check the map win first
             if GAMEMODE.MapWin ~= WIN_NONE then
                 local mw = GAMEMODE.MapWin
@@ -1117,27 +1155,14 @@ local function WinChecker()
 
             -- If this isn't a map win, call the hook
             if win == WIN_NONE then
-                win = hook.Call("TTTCheckForWin", GAMEMODE)
+                win = RunHook("TTTCheckForWin")
                 if win > WIN_MAX then
                     ErrorNoHalt("WARNING: 'TTTCheckForWin' hook returned win ID '" .. win .. "' that exceeds the expected maximum of " .. WIN_MAX .. ". Please use GenerateNewWinID() instead to get a unique win ID.\n")
                 end
             end
-
-            -- Handle role-specific checks
-            local win_blocks = {}
-            hook.Run("TTTWinCheckBlocks", win_blocks)
-
-            for _, win_block in ipairs(win_blocks) do
-                win = win_block(win)
-            end
-
-            -- If, after all that, we have a win condition then end the round
-            if win ~= WIN_NONE then
-                hook.Run("TTTWinCheckComplete", win)
-
-                timer.Simple(0.5, function() EndRound(win) end) -- Slight delay to make sure alternate winners go through before scoring
-            end
         end
+
+        HandleWinCondition(win)
     end
 end
 
@@ -1157,7 +1182,7 @@ function GM:TTTCheckForWin()
     local innocent_alive = false
     local monster_alive = false
 
-    for _, v in ipairs(player.GetAll()) do
+    for _, v in ipairs(GetAllPlayers()) do
         if v:Alive() and v:IsTerror() then
             if v:IsTraitorTeam() then
                 traitor_alive = true
@@ -1248,7 +1273,7 @@ function SelectRoles()
 
     if not GAMEMODE.LastRole then GAMEMODE.LastRole = {} end
 
-    local plys = player.GetAll()
+    local plys = GetAllPlayers()
 
     for _, v in ipairs(plys) do
         if IsValid(v) then
@@ -1328,7 +1353,7 @@ function SelectRoles()
     local choices_copy = table.Copy(choices)
     local prev_roles_copy = table.Copy(prev_roles)
 
-    hook.Run("TTTSelectRoles", choices_copy, prev_roles_copy)
+    CallHook("TTTSelectRoles", nil, choices_copy, prev_roles_copy)
 
     local forcedTraitorCount = 0
     local forcedSpecialTraitorCount = 0
@@ -1350,7 +1375,7 @@ function SelectRoles()
     end
 
     PrintRoleText("-----CHECKING EXTERNALLY CHOSEN ROLES-----")
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         if IsValid(v) and (not v:IsSpec()) then
             local role = v:GetRole()
             if role > ROLE_NONE and role <= ROLE_MAX then
@@ -1521,10 +1546,9 @@ function SelectRoles()
         for _ = 1, detective_count do
             if #options > 0 then
                 local plyPick = math.random(1, #options)
-                local ply = options[plyPick]
+                local ply = table.remove(options, plyPick)
                 table.insert(detectives, ply)
                 table.RemoveByValue(choices, ply)
-                table.remove(options, plyPick)
             end
         end
     end
@@ -1534,9 +1558,8 @@ function SelectRoles()
     for _ = 1, traitor_count do
         if #choices > 0 then
             local plyPick = math.random(1, #choices)
-            local ply = choices[plyPick]
+            local ply = table.remove(choices, plyPick)
             table.insert(traitors, ply)
-            table.remove(choices, plyPick)
         end
     end
 
@@ -1548,17 +1571,16 @@ function SelectRoles()
     -- pick special detectives
     if max_special_detective_count > 0 then
         -- Allow external addons to modify available roles and their weights
-        hook.Run("TTTSelectRolesDetectiveOptions", specialDetectiveRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+        CallHook("TTTSelectRolesDetectiveOptions", nil, specialDetectiveRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
 
         for _ = 1, max_special_detective_count do
             if #specialDetectiveRoles ~= 0 and math.random() <= GetConVar("ttt_special_detective_chance"):GetFloat() and #detectives > 0 then
                 local plyPick = math.random(1, #detectives)
-                local ply = detectives[plyPick]
+                local ply = table.remove(detectives, plyPick)
                 local rolePick = math.random(1, #specialDetectiveRoles)
                 local role = specialDetectiveRoles[rolePick]
                 ply:SetRole(role)
                 PrintRole(ply, role)
-                table.remove(detectives, plyPick)
                 for i = #specialDetectiveRoles, 1, -1 do
                     if specialDetectiveRoles[i] == role then
                         table.remove(specialDetectiveRoles, i)
@@ -1568,10 +1590,29 @@ function SelectRoles()
         end
     end
 
+    local has_impersonator = table.HasValue(specialTraitorRoles, ROLE_IMPERSONATOR)
+    local impersonator_chance = GetConVar("ttt_impersonator_detective_chance"):GetFloat()
     -- Any of these left are vanilla detectives
     for _, v in pairs(detectives) do
-        v:SetRole(ROLE_DETECTIVE)
-        PrintRole(v, ROLE_DETECTIVE)
+        -- By chance have this detective actually be a promoted impersonator
+        if #traitors > 0 and has_impersonator and math.random() < impersonator_chance then
+            v:SetRole(ROLE_IMPERSONATOR)
+            PrintRole(v, ROLE_IMPERSONATOR)
+            v:HandleDetectiveLikePromotion()
+
+            -- Move a player from "traitors" to "choices" and update the table copies to keep the team counts the same
+            local plyPick = math.random(1, #traitors)
+            local ply = table.remove(traitors, plyPick)
+            table.insert(choices, ply)
+            traitors_copy = table.Copy(traitors)
+            choices_copy = table.Copy(choices)
+
+            -- Only allow one to be an impersonator
+            has_impersonator = false
+        else
+            v:SetRole(ROLE_DETECTIVE)
+            PrintRole(v, ROLE_DETECTIVE)
+        end
     end
 
     if ((GetConVar("ttt_zombie_enabled"):GetBool() and math.random() <= GetConVar("ttt_zombie_round_chance"):GetFloat() and (forcedTraitorCount <= 0) and (forcedSpecialTraitorCount <= 0)) or hasRole[ROLE_ZOMBIE]) and TRAITOR_ROLES[ROLE_ZOMBIE] then
@@ -1584,17 +1625,16 @@ function SelectRoles()
         -- pick special traitors
         if max_special_traitor_count > 0 then
             -- Allow external addons to modify available roles and their weights
-            hook.Run("TTTSelectRolesTraitorOptions", specialTraitorRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+            CallHook("TTTSelectRolesTraitorOptions", nil, specialTraitorRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
 
             for _ = 1, max_special_traitor_count do
                 if #specialTraitorRoles ~= 0 and math.random() <= GetConVar("ttt_special_traitor_chance"):GetFloat() and #traitors > 0 then
                     local plyPick = math.random(1, #traitors)
-                    local ply = traitors[plyPick]
+                    local ply = table.remove(traitors, plyPick)
                     local rolePick = math.random(1, #specialTraitorRoles)
                     local role = specialTraitorRoles[rolePick]
                     ply:SetRole(role)
                     PrintRole(ply, role)
-                    table.remove(traitors, plyPick)
                     for i = #specialTraitorRoles, 1, -1 do
                         if specialTraitorRoles[i] == role then
                             table.remove(specialTraitorRoles, i)
@@ -1614,19 +1654,18 @@ function SelectRoles()
     -- pick independent
     if forcedIndependentCount == 0 and independent_count > 0 and #choices > 0 then
         -- Allow external addons to modify available roles and their weights
-        hook.Run("TTTSelectRolesIndependentOptions", independentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+        CallHook("TTTSelectRolesIndependentOptions", nil, independentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
         if singleJesterIndependent then
-            hook.Run("TTTSelectRolesJesterOptions", independentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+            CallHook("TTTSelectRolesJesterOptions", nil, independentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
         end
 
         if #independentRoles ~= 0 then
             local plyPick = math.random(1, #choices)
-            local ply = choices[plyPick]
+            local ply = table.remove(choices, plyPick)
             local rolePick = math.random(1, #independentRoles)
             local role = independentRoles[rolePick]
             ply:SetRole(role)
             PrintRole(ply, role)
-            table.remove(choices, plyPick)
             for i = #independentRoles, 1, -1 do
                 if independentRoles[i] == role then
                     table.remove(independentRoles, i)
@@ -1637,16 +1676,15 @@ function SelectRoles()
 
     -- pick jester
     if not singleJesterIndependent and forcedJesterCount == 0 and jester_count > 0 and #choices > 0 then
-        hook.Run("TTTSelectRolesJesterOptions", jesterRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+        CallHook("TTTSelectRolesJesterOptions", nil, jesterRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
 
         if #jesterRoles ~= 0 then
             local plyPick = math.random(1, #choices)
-            local ply = choices[plyPick]
+            local ply = table.remove(choices, plyPick)
             local rolePick = math.random(1, #jesterRoles)
             local role = jesterRoles[rolePick]
             ply:SetRole(role)
             PrintRole(ply, role)
-            table.remove(choices, plyPick)
             for i = #jesterRoles, 1, -1 do
                 if jesterRoles[i] == role then
                     table.remove(jesterRoles, i)
@@ -1667,12 +1705,12 @@ function SelectRoles()
         end
 
         -- Allow external addons to modify available roles and their weights
-        hook.Run("TTTSelectRolesInnocentOptions", specialInnocentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+        CallHook("TTTSelectRolesInnocentOptions", nil, specialInnocentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
 
         for _ = 1, max_special_innocent_count do
             if #specialInnocentRoles ~= 0 and math.random() <= GetConVar("ttt_special_innocent_chance"):GetFloat() and #choices > 0 then
                 local plyPick = math.random(1, #choices)
-                local ply = choices[plyPick]
+                local ply = table.remove(choices, plyPick)
                 local rolePick = math.random(1, #specialInnocentRoles)
                 local role = specialInnocentRoles[rolePick]
                 if role == ROLE_GLITCH and glitch_mode == GLITCH_SHOW_AS_SPECIAL_TRAITOR then
@@ -1685,7 +1723,6 @@ function SelectRoles()
                 end
                 ply:SetRole(role)
                 PrintRole(ply, role)
-                table.remove(choices, plyPick)
                 for i = #specialInnocentRoles, 1, -1 do
                     if specialInnocentRoles[i] == role then
                         table.remove(specialInnocentRoles, i)
@@ -1699,16 +1736,15 @@ function SelectRoles()
         local monster_chosen = false
         for _ = 1, monster_count do
             -- Allow external addons to modify available roles and their weights
-            hook.Run("TTTSelectRolesMonsterOptions", monsterRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+            CallHook("TTTSelectRolesMonsterOptions", nil, monsterRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
 
             if #monsterRoles ~= 0 and math.random() <= GetConVar("ttt_monster_chance"):GetFloat() and #choices > 0 and not monster_chosen then
                 local plyPick = math.random(1, #choices)
-                local ply = choices[plyPick]
+                local ply = table.remove(choices, plyPick)
                 local rolePick = math.random(1, #monsterRoles)
                 local role = monsterRoles[rolePick]
                 ply:SetRole(role)
                 PrintRole(ply, role)
-                table.remove(choices, plyPick)
                 for i = #monsterRoles, 1, -1 do
                     if monsterRoles[i] == role then
                         table.remove(monsterRoles, i)
@@ -1752,7 +1788,7 @@ local function ForceRoundRestart(ply, command, args)
         StopRoundTimers()
 
         -- Let addons know that a round ended
-        hook.Call("TTTEndRound", GAMEMODE, WIN_NONE)
+        RunHook("TTTEndRound", WIN_NONE)
 
         -- do prep
         PrepareRound()
@@ -1804,13 +1840,13 @@ hook.Add("ScaleNPCDamage", "HitmarkerPlayerCritDetector", function(npc, hitgroup
 end)
 
 hook.Add("PlayerSay", "ColorMixerOpen", function(ply, text, team_only)
-    text = string.lower(text)
-    if (string.sub(text, 1, 12) == "!hmcritcolor") then
+    text = StringLower(text)
+    if (StringSub(text, 1, 12) == "!hmcritcolor") then
         net.Start("TTT_OpenMixer")
         net.WriteBool(true)
         net.Send(ply)
         return false
-    elseif (string.sub(text, 1, 8) == "!hmcolor") then
+    elseif (StringSub(text, 1, 8) == "!hmcolor") then
         net.Start("TTT_OpenMixer")
         net.WriteBool(false)
         net.Send(ply)
@@ -1830,7 +1866,7 @@ hook.Add("PlayerDeath", "TTT_ClientDeathNotify", function(victim, entity, killer
         elseif killer == victim then
             reason = "suicide"
         elseif IsValid(entity) then
-            if victim:IsPlayer() and (string.StartWith(entity:GetClass(), "prop_physics") or entity:GetClass() == "prop_dynamic") then
+            if victim:IsPlayer() and (StringStartsWith(entity:GetClass(), "prop_physics") or entity:GetClass() == "prop_dynamic") then
                 -- If the killer is also a prop
                 reason = "prop"
             elseif IsValid(killer) then
@@ -1904,18 +1940,18 @@ function HandleRoleEquipment()
             local norandom = false
             -- Extract the weapon name from the file name
             local lastdotpos = v:find("%.")
-            local weaponname = v:sub(0, lastdotpos - 1)
+            local weaponname = StringSub(v, 0, lastdotpos - 1)
 
             -- Check that there isn't a two-part extension (e.g. "something.exclude.txt")
-            local extension = v:sub(lastdotpos + 1, #v)
+            local extension = StringSub(v, lastdotpos + 1, #v)
             lastdotpos = extension:find("%.")
 
             -- If there is, check if it equals "exclude"
             if lastdotpos ~= nil then
-                extension = extension:sub(0, lastdotpos - 1)
-                if extension:lower() == "exclude" then
+                extension = StringSub(extension, 0, lastdotpos - 1)
+                if StringLower(extension) == "exclude" then
                     exclude = true
-                elseif extension:lower() == "norandom" then
+                elseif StringLower(extension) == "norandom" then
                     norandom = true
                 end
             end

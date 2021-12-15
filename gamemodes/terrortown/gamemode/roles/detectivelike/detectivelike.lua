@@ -1,5 +1,12 @@
 AddCSLuaFile()
 
+local hook = hook
+local ipairs = ipairs
+local pairs = pairs
+local util = util
+
+local GetAllPlayers = player.GetAll
+
 util.AddNetworkString("TTT_Promotion")
 
 -- Server-side functions shared by detective-like roles (Deputy, Impersonator)
@@ -10,7 +17,7 @@ util.AddNetworkString("TTT_Promotion")
 
 function ShouldPromoteDetectiveLike()
     local alive, dead = 0, 0
-    for _, p in ipairs(player.GetAll()) do
+    for _, p in ipairs(GetAllPlayers()) do
         if p:IsDetectiveTeam() then
             if not p:IsSpec() and p:Alive() then
                 alive = alive + 1
@@ -42,14 +49,14 @@ ROLE_ON_ROLE_ASSIGNED[ROLE_DEPUTY] = BeginRoleChecks
 ROLE_ON_ROLE_ASSIGNED[ROLE_IMPERSONATOR] = BeginRoleChecks
 
 hook.Add("TTTPrepareRound", "DetectiveLike_RoleState_TTTPrepareRound", function()
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         v:SetNWBool("HasPromotion", false)
     end
 end)
 
 hook.Add("PlayerDeath", "DetectiveLike_RoleState_PlayerDeath", function(victim, infl, attacker)
     if victim:IsDetectiveTeam() and GetRoundState() == ROUND_ACTIVE and ShouldPromoteDetectiveLike() then
-        for _, ply in pairs(player.GetAll()) do
+        for _, ply in pairs(GetAllPlayers()) do
             if ply:IsDetectiveLikePromotable() then
                 local alive = ply:Alive()
                 if alive then
@@ -59,7 +66,7 @@ hook.Add("PlayerDeath", "DetectiveLike_RoleState_PlayerDeath", function(victim, 
 
                 -- If the player is an Impersonator, tell all their team members when they get promoted
                 if ply:IsImpersonator() then
-                    for _, v in pairs(player.GetAll()) do
+                    for _, v in pairs(GetAllPlayers()) do
                         if v ~= ply and v:IsTraitorTeam() and v:Alive() and not v:IsSpec() then
                             local message = "The " .. ROLE_STRINGS[ROLE_IMPERSONATOR] .. " has been promoted to " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "!"
                             if not alive then

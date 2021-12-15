@@ -1,7 +1,11 @@
 --- Display of and interaction with ttt_traitor_button
-local surface = surface
-local pairs = pairs
+local ents = ents
+local ipairs = ipairs
 local math = math
+local net = net
+local pairs = pairs
+local surface = surface
+local table = table
 local abs = math.abs
 
 TBHUD = {}

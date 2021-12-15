@@ -1,5 +1,7 @@
 AddCSLuaFile()
 
+local hook = hook
+
 -- Initialize role features
 GLITCH_SHOW_AS_TRAITOR = 0
 GLITCH_SHOW_AS_SPECIAL_TRAITOR = 1

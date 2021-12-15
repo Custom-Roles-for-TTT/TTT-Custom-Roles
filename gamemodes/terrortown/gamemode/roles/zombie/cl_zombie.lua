@@ -1,3 +1,9 @@
+local hook = hook
+local IsValid = IsValid
+local net = net
+local player = player
+local string = string
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -81,7 +87,7 @@ end)
 
 hook.Add("TTTScoringWinTitle", "Zombie_TTTScoringWinTitle", function(wintype, wintitles, title, secondary_win_role)
     if wintype == WIN_ZOMBIE then
-        return { txt = "hilite_win_role_plural", params = { role = ROLE_STRINGS_PLURAL[ROLE_ZOMBIE]:upper() }, c = ROLE_COLORS[ROLE_ZOMBIE] }
+        return { txt = "hilite_win_role_plural", params = { role = string.upper(ROLE_STRINGS_PLURAL[ROLE_ZOMBIE]) }, c = ROLE_COLORS[ROLE_ZOMBIE] }
     end
 end)
 
@@ -91,7 +97,7 @@ end)
 
 hook.Add("TTTEventFinishText", "Zombie_TTTEventFinishText", function(e)
     if e.win == WIN_ZOMBIE then
-        return LANG.GetParamTranslation("ev_win_zombie", { role = ROLE_STRINGS[ROLE_ZOMBIE]:lower() })
+        return LANG.GetParamTranslation("ev_win_zombie", { role = string.lower(ROLE_STRINGS[ROLE_ZOMBIE]) })
     end
 end)
 
@@ -191,7 +197,7 @@ hook.Add("TTTTutorialRoleText", "Zombie_TTTTutorialRoleText", function(role, tit
         local roleTeam = player.GetRoleTeam(ROLE_ZOMBIE, true)
         local roleTeamString, roleTeamColor = GetRoleTeamInfo(roleTeam, true)
 
-        local html = "The " .. ROLE_STRINGS[ROLE_ZOMBIE] .. " is a member of the <span style='color: rgb(" .. roleTeamColor.r .. ", " .. roleTeamColor.g .. ", " .. roleTeamColor.b .. ")'>" .. roleTeamString:lower() .. " team</span> that uses their claws to attack their enemies."
+        local html = "The " .. ROLE_STRINGS[ROLE_ZOMBIE] .. " is a member of the <span style='color: rgb(" .. roleTeamColor.r .. ", " .. roleTeamColor.g .. ", " .. roleTeamColor.b .. ")'>" .. string.lower(roleTeamString) .. " team</span> that uses their claws to attack their enemies."
 
         -- Convert
         html = html .. "<span style='display: block; margin-top: 10px;'>Killing a player with their claws will <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>turn the target</span> into a " .. ROLE_STRINGS[ROLE_ZOMBIE] .. " thrall.</span>"

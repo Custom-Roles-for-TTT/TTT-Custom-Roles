@@ -1,3 +1,7 @@
+local hook = hook
+local net = net
+local surface = surface
+
 ------------------
 -- TRANSLATIONS --
 ------------------

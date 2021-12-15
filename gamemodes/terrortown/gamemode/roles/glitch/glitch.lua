@@ -1,5 +1,11 @@
 AddCSLuaFile()
 
+local hook = hook
+local pairs = pairs
+local player = player
+
+local GetAllPlayers = player.GetAll
+
 -------------
 -- CONVARS --
 -------------
@@ -25,7 +31,7 @@ hook.Add("Initialize", "Glitch_RoleFeatures_Initialize", function()
 end)
 
 hook.Add("TTTPrepareRound", "Glitch_RoleFeatures_PrepareRound", function()
-    for _, v in pairs(player.GetAll()) do
+    for _, v in pairs(GetAllPlayers()) do
         v:SetNWInt("GlitchBluff", ROLE_TRAITOR)
     end
 end)

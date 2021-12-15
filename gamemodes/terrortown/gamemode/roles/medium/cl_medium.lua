@@ -1,3 +1,12 @@
+local hook = hook
+local math = math
+local pairs = pairs
+
+local GetAllPlayers = player.GetAll
+local GetAllEnts = ents.GetAll
+local MathRand = math.Rand
+local MathRandom = math.random
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -15,11 +24,52 @@ end)
 -- ROLE FEATURE --
 ------------------
 
-hook.Add("Think", "Medium_RoleFeature_Think", function()
-    local client = LocalPlayer()
-    if not client:IsActiveMedium() then return end
+local medium_spirit_vision = true
+hook.Add("TTTUpdateRoleState", "Medium_RoleFeature_TTTUpdateRoleState", function()
+    medium_spirit_vision = GetGlobalBool("ttt_medium_spirit_vision", true)
+end)
 
-    for _, ent in pairs(ents.GetAll()) do
+local cacheTime = CurTime()
+local cacheLength = 5
+local lastResult = nil
+local function ShouldSeeSpirits(ply)
+    -- Mediums can always see spirits
+    if ply:IsActiveMedium() then return true end
+    -- If spirit vision is disabled, non-Mediums can never see spirits
+    if not medium_spirit_vision then return false end
+    -- If the player is alive, they can never see spirits
+    if ply:Alive() or not ply:IsSpec() then return false end
+
+    -- If the last result is too old, clear it
+    if (CurTime() - cacheTime) > cacheLength then
+        lastResult = nil
+    end
+
+    -- If we have a valid last result, use it again
+    if type(lastResult) == "boolean" then return lastResult end
+
+    -- Otherwise, calculate the result and cache it
+    cacheTime = CurTime()
+
+    -- Only allow dead people to see spirits if there is a medium
+    for _, v in pairs(GetAllPlayers()) do
+        if v:IsMedium() then
+            lastResult = true
+            return true
+        end
+    end
+
+    lastResult = false
+    return false
+end
+
+hook.Add("Think", "Medium_RoleFeature_Think", function()
+    if GetRoundState() ~= ROUND_ACTIVE then return end
+
+    local client = LocalPlayer()
+    if not ShouldSeeSpirits(client) then return end
+
+    for _, ent in pairs(GetAllEnts()) do
         if ent:GetNWBool("MediumSpirit", false) then
             ent:SetNoDraw(true)
             ent:SetRenderMode(RENDERMODE_NONE)
@@ -31,26 +81,24 @@ hook.Add("Think", "Medium_RoleFeature_Think", function()
             if ent.WispNextPart < CurTime() then
                 if client:GetPos():Distance(pos) <= 3000 then
                     ent.WispEmitter:SetPos(pos)
-                    ent.WispNextPart = CurTime() + math.Rand(0.003, 0.01)
+                    ent.WispNextPart = CurTime() + MathRand(0.003, 0.01)
                     local particle = ent.WispEmitter:Add("particle/wisp.vmt", pos)
                     particle:SetVelocity(Vector(0, 0, 30))
                     particle:SetDieTime(1)
-                    particle:SetStartAlpha(math.random(150, 220))
+                    particle:SetStartAlpha(MathRandom(150, 220))
                     particle:SetEndAlpha(0)
-                    local size = math.random(4, 7)
+                    local size = MathRandom(4, 7)
                     particle:SetStartSize(size)
                     particle:SetEndSize(1)
-                    particle:SetRoll(math.Rand(0, math.pi))
+                    particle:SetRoll(MathRand(0, math.pi))
                     particle:SetRollDelta(0)
                     local col = ent:GetNWVector("SpiritColor", Vector(1, 1, 1))
                     particle:SetColor(col.x * 255, col.y * 255, col.z * 255)
                 end
             end
-        else
-            if ent.WispEmitter then
-                ent.WispEmitter:Finish()
-                ent.WispEmitter = nil
-            end
+        elseif ent.WispEmitter then
+            ent.WispEmitter:Finish()
+            ent.WispEmitter = nil
         end
     end
 end)
