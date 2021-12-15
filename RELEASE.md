@@ -9,6 +9,7 @@ Includes all beta updates from [1.4.1](#141-beta) to [1.4.2](#142-beta).
 
 ### Fixes
 - Fixed parasite's infection conflicting with the brain parasite weapon from the workshop
+- Fixed voice chat UI error
 
 ## 1.4.2 (Beta)
 **Released: December 10th, 2021**
