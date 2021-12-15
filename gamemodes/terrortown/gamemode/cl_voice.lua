@@ -17,7 +17,7 @@ local timer = timer
 local util = util
 local vgui = vgui
 
-local GetAllPlayers = GetAllPlayers
+local GetAllPlayers = player.GetAll
 local GetTranslation = LANG.GetTranslation
 local GetPTranslation = LANG.GetParamTranslation
 
