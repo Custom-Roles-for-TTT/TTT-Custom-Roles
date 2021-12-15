@@ -1,7 +1,8 @@
 # Release Notes
 
-## 1.4.3 (Beta)
-**Released: December, 11th, 2021**
+## 1.4.3
+**Released: December 15th, 2021**\
+Includes all beta updates from [1.4.1](#141-beta) to [1.4.2](#142-beta).
 
 ### Changes
 - Changed parasite cures (real and fake) to mention in the message that it's directed at traitors
@@ -10,7 +11,7 @@
 - Fixed parasite's infection conflicting with the brain parasite weapon from the workshop
 
 ## 1.4.2 (Beta)
-**Released: December, 10th, 2021**
+**Released: December 10th, 2021**
 
 ### Additions
 - Added ability to allow spirits to see eachother when there is a medium (enabled by default)
