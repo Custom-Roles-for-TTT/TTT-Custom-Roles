@@ -1,7 +1,7 @@
 # Release Notes
 
-## 1.4.3 (Beta)
-**Released: December, 11th, 2021**
+## 1.4.3
+**Released: December, 15th, 2021**
 
 ### Changes
 - Changed parasite cures (real and fake) to mention in the message that it's directed at traitors
