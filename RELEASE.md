@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.4.4
+**Released:**
+
+### Fixes
+- Fixed old man's adrenaline rush ability being triggered by things that don't cause damage (Thanks for the idea Spaaz)
+
 ## 1.4.3
 **Released: December 15th, 2021**\
 Includes all beta updates from [1.4.1](#141-beta) to [1.4.2](#142-beta).
