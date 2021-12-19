@@ -77,7 +77,6 @@ ROLE_ON_ROLE_ASSIGNED[ROLE_OLDMAN] = function(ply)
     end
 end
 
-
 local tempHealth = 10000
 hook.Add("EntityTakeDamage", "OldMan_EntityTakeDamage", function(ent, dmginfo)
     if GetRoundState() ~= ROUND_ACTIVE then return end
