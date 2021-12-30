@@ -77,24 +77,52 @@ ROLE_ON_ROLE_ASSIGNED[ROLE_OLDMAN] = function(ply)
     end
 end
 
+local tempHealth = 10000
 hook.Add("EntityTakeDamage", "OldMan_EntityTakeDamage", function(ent, dmginfo)
     if GetRoundState() ~= ROUND_ACTIVE then return end
     if not IsPlayer(ent) or not ent:IsOldMan() then return end
 
-    local adrenalineTime = oldman_adrenaline_rush:GetInt()
+    -- If they are mid adrenaline rush then they take no damage
+    if ent:IsRoleActive() then
+        dmginfo:ScaleDamage(0)
+        dmginfo:SetDamage(0)
+        return
+    end
+
+    -- Only give the Old Man an adrenaline rush once
+    if ent:GetNWBool("AdrenalineRushed", false) then return end
+
+    -- Save their real health
+    ent.damageHealth = ent:Health()
+    -- Set their health to a high number so we can detect if they take damage
+    ent:SetHealth(tempHealth)
+end)
+
+hook.Add("PostEntityTakeDamage", "OldMan_PostEntityTakeDamage", function(ent, dmginfo, took)
+    if GetRoundState() ~= ROUND_ACTIVE then return end
+    if not IsPlayer(ent) or not ent:IsOldMan() then return end
+    if ent:IsRoleActive() then return end
+
+    -- Check if they took damage
+    local damage = tempHealth - ent:Health()
+    -- Reset their health to the real amount
+    ent:SetHealth(ent.damageHealth)
+
+    -- If they didn't take damage then we don't care
+    if not took then return end
+    if damage <= 0 then return end
+
     -- Don't run this if adrenaline rush is disabled
+    local adrenalineTime = oldman_adrenaline_rush:GetInt()
     if adrenalineTime <= 0 then return end
 
     -- Only give the Old Man an adrenaline rush once
     if ent:GetNWBool("AdrenalineRushed", false) then return end
 
     local att = dmginfo:GetAttacker()
-    local damage = dmginfo:GetDamage()
-    local health = ent:Health()
-    if ent:IsRoleActive() then -- If they are mid adrenaline rush then they take no damage
-        dmginfo:ScaleDamage(0)
-        dmginfo:SetDamage(0)
-    elseif IsPlayer(att) and damage >= health then -- If they are attacked by a player that would have killed them they enter an adrenaline rush
+    local health = ent.damageHealth
+    -- If they are attacked by a player that would have killed them they enter an adrenaline rush
+    if IsPlayer(att) and damage >= health then
         dmginfo:SetDamage(health - 1)
         ent:SetNWBool("AdrenalineRush", true)
         if oldman_adrenaline_ramble:GetBool() then
