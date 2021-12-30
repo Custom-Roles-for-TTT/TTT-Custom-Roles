@@ -8,7 +8,7 @@ local T = LANG.GetTranslation
 
 function DISGUISE.CreateMenu(parent)
     local dform = vgui.Create("DForm", parent)
-    dform:SetName(trans("disg_menutitle"))
+    dform:SetName(T("disg_menutitle"))
     dform:StretchToParent(0,0,0,0)
     dform:SetAutoSize(false)
 

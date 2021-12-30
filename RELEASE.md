@@ -1,10 +1,11 @@
 # Release Notes
 
 ## 1.4.4
-**Released:**
+**Released: December 30th, 2021**
 
 ### Fixes
 - Fixed old man's adrenaline rush ability being triggered by things that don't cause damage (Thanks for the idea Spaaz)
+- Fixed error in disguiser UI caused by refactoring
 
 ## 1.4.3
 **Released: December 15th, 2021**\
