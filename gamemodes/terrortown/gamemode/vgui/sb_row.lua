@@ -39,6 +39,11 @@ function PANEL:Init()
         self:AddColumn(GetTranslation("sb_karma"), function(ply)
             if GetConVar("ttt_show_raw_karma_value"):GetBool() then
                 return MathRound(ply:GetBaseKarma())
+            elseif GetConVar("ttt_show_karma_total_pct"):GetBool() then
+                local k = ply:GetBaseKarma()
+                local max = GetGlobalInt("ttt_karma_max", 1000)
+                local pct = MathRound(MathClamp(k / max, 0.1, 1.0) * 100)
+                return pct .. "%"
             else
                 local dmgpct = 100
                 if ply:GetBaseKarma() < 1000 then

@@ -23,6 +23,7 @@ surface.CreateFont("TutorialTitle", {
 CreateClientConVar("ttt_spectator_mode", "0", true, false)
 CreateClientConVar("ttt_mute_team_check", "0", true, false)
 CreateClientConVar("ttt_show_raw_karma_value", "0", true, false)
+CreateClientConVar("ttt_show_karma_total_pct", "0", true, false)
 CreateClientConVar("ttt_color_mode", "default", true, false)
 
 CreateClientConVar("ttt_custom_inn_color_r", "25", true, false)
@@ -164,6 +165,9 @@ function HELPSCRN:Show()
 
     cb = dgui:CheckBox(GetTranslation("set_raw_karma"), "ttt_show_raw_karma_value")
     cb:SetTooltip(GetTranslation("set_raw_karma_tip"))
+
+    cb = dgui:CheckBox(GetTranslation("set_karma_total_pct"), "ttt_show_karma_total_pct")
+    cb:SetTooltip(GetTranslation("set_karma_total_pct_tip"))
 
     cb = dgui:CheckBox(GetTranslation("set_hide_role"), "ttt_hide_role")
     cb:SetTooltip(GetTranslation("set_hide_role_tip"))
