@@ -126,6 +126,12 @@ _G.sboard_sort = {
     ping = function(plya, plyb)
         return plya:Ping() - plyb:Ping()
     end,
+    deaths = function (plya, plyb)
+        return plya:Deaths() - plyb:Deaths()
+    end,
+    score = function (plya, plyb)
+        return plya:Frags() - plyb:Frags()
+    end,
     karma = function(plya, plyb)
         return (plya:GetBaseKarma() or 0) - (plyb:GetBaseKarma() or 0)
     end
@@ -186,6 +192,12 @@ function PANEL:Init()
     -- the various score column headers
     self.cols = {}
     self:AddColumn(GetTranslation("sb_ping"), nil, nil, "ping")
+    if GetGlobalBool("ttt_scoreboard_deaths", false) then
+        self:AddColumn(GetTranslation("sb_deaths"), nil, nil, "deaths")
+    end
+    if GetGlobalBool("ttt_scoreboard_score", false) then
+        self:AddColumn(GetTranslation("sb_score"), nil, nil, "score")
+    end
 
     if KARMA.IsEnabled() then
         self:AddColumn(GetTranslation("sb_karma"), nil, nil, "karma")

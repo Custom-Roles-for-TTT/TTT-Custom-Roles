@@ -34,6 +34,12 @@ function PANEL:Init()
 
     self.cols = {}
     self:AddColumn(GetTranslation("sb_ping"), function(ply) return ply:Ping() end)
+    if GetGlobalBool("ttt_scoreboard_deaths", false) then
+        self:AddColumn(GetTranslation("sb_deaths"), function(ply) return ply:Deaths() end)
+    end
+    if GetGlobalBool("ttt_scoreboard_score", false) then
+        self:AddColumn(GetTranslation("sb_score"), function(ply) return ply:Frags() end)
+    end
 
     if KARMA.IsEnabled() then
         self:AddColumn(GetTranslation("sb_karma"), function(ply)

@@ -648,6 +648,10 @@ ttt_bem_allow_change                        1       // Allow clients to change t
 ttt_bem_sv_cols                             4       // Sets the number of columns in the shop menu's item list (serverside)
 ttt_bem_sv_rows                             5       // Sets the number of rows in the shop menu's item list (serverside)
 ttt_bem_sv_size                             64      // Sets the item size in the shop menu's item list (serverside)
+
+// Scoreboard
+ttt_scoreboard_deaths                       0       // Whether to show the deaths column on the scoreboard. Server must be restarted for changes to take effect
+ttt_scoreboard_score                        0       // Whether to show the score column on the scoreboard. Server must be restarted for changes to take effect
 ```
 
 Thanks to [KarlOfDuty](https://github.com/KarlOfDuty) for his original version of this document, [here](https://github.com/KarlOfDuty/TTT-Custom-Roles/blob/patch-1/README.md).

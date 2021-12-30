@@ -5,6 +5,7 @@
 
 ### Added
 - Added the ability to show karma on the scoreboard as a percentage of the total
+- Added the ability to re-add score and deaths columns to the scoreboard
 
 ## 1.4.4
 **Released: December 30th, 2021**
