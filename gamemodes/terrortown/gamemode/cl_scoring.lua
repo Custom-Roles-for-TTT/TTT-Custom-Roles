@@ -1036,6 +1036,40 @@ function CLSCORE:BuildHilitePanel(dpanel)
     end
 end
 
+local tabs = {
+    ["summary"] = function(panel, padding)
+        local dtabsummary = vgui.Create("DPanel", parentTabs)
+        dtabsummary:SetPaintBackground(false)
+        dtabsummary:StretchToParent(padding, padding, padding, padding)
+        panel:BuildSummaryPanel(dtabsummary)
+
+        parentTabs:AddSheet(T("report_tab_summary"), dtabsummary, "icon16/book_open.png", false, false, T("report_tab_summary_tip"))
+    end,
+    ["hilite"] = function(panel, padding)
+        local dtabhilite = vgui.Create("DPanel", parentTabs)
+        dtabhilite:SetPaintBackground(false)
+        dtabhilite:StretchToParent(padding, padding, padding, padding)
+        panel:BuildHilitePanel(dtabhilite)
+
+        parentTabs:AddSheet(T("report_tab_hilite"), dtabhilite, "icon16/star.png", false, false, T("report_tab_hilite_tip"))
+    end,
+    ["events"] = function(panel, padding)
+        local dtabevents = vgui.Create("DPanel", parentTabs)
+        dtabevents:StretchToParent(padding, padding, padding, padding)
+        panel:BuildEventLogPanel(dtabevents)
+
+        parentTabs:AddSheet(T("report_tab_events"), dtabevents, "icon16/application_view_detail.png", false, false, T("report_tab_events_tip"))
+    end,
+    ["scores"] = function(panel, padding)
+        local dtabscores = vgui.Create("DPanel", parentTabs)
+        dtabscores:SetPaintBackground(false)
+        dtabscores:StretchToParent(padding, padding, padding, padding)
+        panel:BuildScorePanel(dtabscores)
+
+        parentTabs:AddSheet(T("report_tab_scores"), dtabscores, "icon16/user.png", false, false, T("report_tab_scores_tip"))
+    end
+}
+
 function CLSCORE:ShowPanel()
     parentPanel = vgui.Create("DFrame")
     local w, h = 750, 588
@@ -1076,36 +1110,20 @@ function CLSCORE:ShowPanel()
     parentTabs:SetSize(w - margin*2, h - margin*3 - bh)
     local padding = parentTabs:GetPadding()
 
-    -- Summary tab
-    local dtabsummary = vgui.Create("DPanel", parentTabs)
-    dtabsummary:SetPaintBackground(false)
-    dtabsummary:StretchToParent(padding, padding, padding, padding)
-    self:BuildSummaryPanel(dtabsummary)
+    local summary_tabs = GetGlobalString("ttt_round_summary_tabs", "summary,hilite,events,scores")
+    local tab_order = string.Explode(",", summary_tabs, false)
 
-    parentTabs:AddSheet(T("report_tab_summary"), dtabsummary, "icon16/book_open.png", false, false, T("report_tab_summary_tip"))
+    -- If the convar is empty, use the default list
+    if #summary_tabs == 0 then
+        tab_order = table.GetKeys(tabs)
+    end
 
-    -- Highlight tab
-    local dtabhilite = vgui.Create("DPanel", parentTabs)
-    dtabhilite:SetPaintBackground(false)
-    dtabhilite:StretchToParent(padding, padding, padding, padding)
-    self:BuildHilitePanel(dtabhilite)
-
-    parentTabs:AddSheet(T("report_tab_hilite"), dtabhilite, "icon16/star.png", false, false, T("report_tab_hilite_tip"))
-
-    -- Event log tab
-    local dtabevents = vgui.Create("DPanel", parentTabs)
-    dtabevents:StretchToParent(padding, padding, padding, padding)
-    self:BuildEventLogPanel(dtabevents)
-
-    parentTabs:AddSheet(T("report_tab_events"), dtabevents, "icon16/application_view_detail.png", false, false, T("report_tab_events_tip"))
-
-    -- Score tab
-    local dtabscores = vgui.Create("DPanel", parentTabs)
-    dtabscores:SetPaintBackground(false)
-    dtabscores:StretchToParent(padding, padding, padding, padding)
-    self:BuildScorePanel(dtabscores)
-
-    parentTabs:AddSheet(T("report_tab_scores"), dtabscores, "icon16/user.png", false, false, T("report_tab_scores_tip"))
+    -- Add all the tabs in order
+    for _, tab in ipairs(tab_order) do
+        if tabs[tab] then
+            tabs[tab](self, padding)
+        end
+    end
 
     parentPanel:MakePopup()
 

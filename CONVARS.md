@@ -652,6 +652,9 @@ ttt_bem_sv_size                             64      // Sets the item size in the
 // Scoreboard
 ttt_scoreboard_deaths                       0       // Whether to show the deaths column on the scoreboard. Server must be restarted for changes to take effect
 ttt_scoreboard_score                        0       // Whether to show the score column on the scoreboard. Server must be restarted for changes to take effect
+
+// Round Summary
+ttt_round_summary_tabs                      summary,hilite,events,scores // The tabs to show in the round summary screen. Changing the order of the values will change the order of the tabs. Excluding a value from the comma-delimited list will prevent that tab from showing. Invalid values will be ignored. Round must be restarted for changes to take effect
 ```
 
 Thanks to [KarlOfDuty](https://github.com/KarlOfDuty) for his original version of this document, [here](https://github.com/KarlOfDuty/TTT-Custom-Roles/blob/patch-1/README.md).

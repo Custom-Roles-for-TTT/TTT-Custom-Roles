@@ -6,6 +6,7 @@
 ### Added
 - Added the ability to show karma on the scoreboard as a percentage of the total
 - Added the ability to re-add score and deaths columns to the scoreboard
+- Added the ability to rearrage and disable the tabs in the round summary window
 
 ## 1.4.4
 **Released: December 30th, 2021**
