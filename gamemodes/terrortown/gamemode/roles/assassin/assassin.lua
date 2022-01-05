@@ -196,7 +196,8 @@ hook.Add("TTTPlayerRoleChanged", "Assassin_Target_TTTPlayerRoleChanged", functio
 end)
 
 hook.Add("DoPlayerDeath", "Assassin_DoPlayerDeath", function(ply, attacker, dmginfo)
-    if ply:IsSpec() then return end
+    -- Let Assassins kill Loot Goblins without penalty
+    if not IsValid(ply) or (ply:IsLootGoblin() and ply:IsRoleActive()) then return end
 
     local attackertarget = attacker:GetNWString("AssassinTarget", "")
     if IsPlayer(attacker) and attacker:IsAssassin() and ply ~= attacker and ply:Nick() ~= attackertarget and (attackertarget ~= "" or timer.Exists(attacker:Nick() .. "AssassinTarget")) then

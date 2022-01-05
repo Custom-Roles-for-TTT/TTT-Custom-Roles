@@ -3,11 +3,14 @@
 ## 1.4.5 (Beta)
 **Released:**
 
-### Added
+### Additions
 - Added the ability to show karma on the scoreboard as a percentage of the total
 - Added the ability to re-add score and deaths columns to the scoreboard
 - Added the ability to rearrange and disable the tabs in the round summary window
 - Added more incompatible addons to the list
+
+### Fixes
+- Fixed assassin being penalized for killing the loot goblin
 
 ## 1.4.4
 **Released: December 30th, 2021**
@@ -56,6 +59,11 @@ Includes all beta updates from [1.4.1](#141-beta) to [1.4.2](#142-beta).
 ## 1.4.1 (Beta)
 **Released: December 4th, 2021**
 
+### Additions
+- Added ability to give the impersonator credits when they are activated (disabled by default)
+- Added ability to configure a chance for a promoted impersonator to spawn instead of a detective (disabled by default)
+- Added ability to remind players that there is a medium when they die (enabled by default)
+
 ### Changes
 - Changed old man to lose karma if they hurt or kill players when their adrenaline rush is not active
 - Changed so innocents that hurt or kill the old man will lose karma
@@ -65,11 +73,6 @@ Includes all beta updates from [1.4.1](#141-beta) to [1.4.2](#142-beta).
 ### Fixes
 - Fixed loot goblin and old man not sharing a timelimit win with the innocents
 - Fixed loot goblin and old man not sharing a win with eachother (if they are both in the same round) on the round summary screen
-
-### Additions
-- Added ability to give the impersonator credits when they are activated (disabled by default)
-- Added ability to configure a chance for a promoted impersonator to spawn instead of a detective (disabled by default)
-- Added ability to remind players that there is a medium when they die (enabled by default)
 
 ### Developer
 - Changed TTTCanIdentifyCorpse and TTTCanSearchCorpse hooks to allow changing the corpse's stored role
