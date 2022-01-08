@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.4.5 (Beta)
-**Released:**
+**Released: January 8th, 2022**
 
 ### Additions
 - Added the ability to show karma on the scoreboard as a percentage of the total
