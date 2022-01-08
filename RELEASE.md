@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.4.6 (Beta)
+**Released:**
+
+### Fixes
+- Fixed error caused by vampire fangs when trying to consume a body that didn't contain player information
+
 ## 1.4.5 (Beta)
 **Released: January 8th, 2022**
 

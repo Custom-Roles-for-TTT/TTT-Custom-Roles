@@ -121,8 +121,18 @@ function SWEP:CanConvert()
 end
 
 local function GetPlayerFromBody(body)
-    local ply = player.GetBySteamID64(body.sid64) or player.GetBySteamID(body.sid)
+    local ply = false
+
+    if body.sid64 then
+        ply = player.GetBySteamID64(body.sid64)
+    elseif body.sid == "BOT" then
+        ply = player.GetByUniqueID(body.uqid)
+    else
+        ply = player.GetBySteamID(body.sid)
+    end
+
     if not IsValid(ply) then return false end
+
     return ply
 end
 
