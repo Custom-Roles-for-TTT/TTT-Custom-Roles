@@ -34,11 +34,22 @@ function PANEL:Init()
 
     self.cols = {}
     self:AddColumn(GetTranslation("sb_ping"), function(ply) return ply:Ping() end)
+    if GetGlobalBool("ttt_scoreboard_deaths", false) then
+        self:AddColumn(GetTranslation("sb_deaths"), function(ply) return ply:Deaths() end)
+    end
+    if GetGlobalBool("ttt_scoreboard_score", false) then
+        self:AddColumn(GetTranslation("sb_score"), function(ply) return ply:Frags() end)
+    end
 
     if KARMA.IsEnabled() then
         self:AddColumn(GetTranslation("sb_karma"), function(ply)
             if GetConVar("ttt_show_raw_karma_value"):GetBool() then
                 return MathRound(ply:GetBaseKarma())
+            elseif GetConVar("ttt_show_karma_total_pct"):GetBool() then
+                local k = ply:GetBaseKarma()
+                local max = GetGlobalInt("ttt_karma_max", 1000)
+                local pct = MathRound(MathClamp(k / max, 0.1, 1.0) * 100)
+                return pct .. "%"
             else
                 local dmgpct = 100
                 if ply:GetBaseKarma() < 1000 then

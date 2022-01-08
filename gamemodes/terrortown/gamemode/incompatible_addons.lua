@@ -42,8 +42,10 @@ local incompatible = {
     ["1818951122"] = { reason = "Overwrites core files required for Custom Roles for TTT." }, -- [GM] More Roles [TTT] by Selfridge
 
     -- Other Core File Overwrites
+    ["107658972"] = { reason = "Overwrites core files required for Custom Roles for TTT." }, -- TTT Round End Slowmotion by TheTrueLor
     ["254779132"] = { reason = "Overwrites core files required for Custom Roles for TTT.", alt = "810154456" }, -- TTT DeadRinger by Porter
     ["367945571"] = { reason = "Overwrites core files required for Custom Roles for TTT." }, -- TTT: Advanced Body Search
+    ["2520210407"] = { reason = "Overwrites core files required for Custom Roles for TTT." }, -- TTT Weapon Balance by Emzatin.
 
     -- Damage Logs
     ["663328966"] = { reason = "Damage logs are not compatible with any non-default roles.", alt = "2306802961" }, -- TTT RDM Manager With Damage Logs by Schmatty
