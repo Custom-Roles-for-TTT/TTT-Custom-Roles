@@ -6,6 +6,13 @@
 ### Fixes
 - Fixed error caused by vampire fangs when trying to consume a body that didn't contain player information
 
+### Developer
+- Reworked Event ID and Win ID generation to fix case where external roles could have their conditions conflict due to the client and server not generating IDs in the same order. This involved the following changes:
+  - **BREAKING CHANGE** - Deprecated `GenerateNewEventID` on the client and made it a no-op that prints an error message reminding the developer to update
+  - **BREAKING CHANGE** - Deprecated `GenerateNewWinID` on the client and made it a no-op that prints an error message reminding the developer to update
+  - Added TTTSyncEventIDs hook to allow developers to get generated Event IDs on the client after they have been synced
+  - Added TTTSyncWinIDs hook to allow developers to get generated Win IDs on the client after they have been synced
+
 ## 1.4.5 (Beta)
 **Released: January 8th, 2022**
 

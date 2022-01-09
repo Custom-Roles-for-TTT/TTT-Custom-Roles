@@ -362,9 +362,17 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *smokeParticle* - The new smokeParticle value to use or the original passed into the hook
 - *smokeOffset* - The new smokeOffset value to use or the original passed into the hook
 
+**TTTSyncEventIDs()** - Called when the server is syncing generated event IDs to the client.\
+*Realm:* Client\
+*Added in:* 1.4.6
+
 **TTTSyncGlobals()** - Called when the server is syncing convars to global variables for client access.\
 *Realm:* Server\
 *Added in:* 1.2.7
+
+**TTTSyncWinIDs()** - Called when the server is syncing generated win IDs to the client.\
+*Realm:* Client\
+*Added in:* 1.4.6
 
 **TTTTargetIDPlayerBlockIcon(ply, client)** - Called before a player's overhead icon is shown, allowing you to block it.\
 *Realm:* Client\
