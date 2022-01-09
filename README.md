@@ -17,14 +17,14 @@ See the links below for the list of available roles in each available version:
 - Beta/Development - Please see [this](https://steamcommunity.com/workshop/filedetails/discussion/2404251054/3110277460812045123/) discussion on the Steam Workshop
 ### *Renaming*
 If you would like to rename one of the existing roles, see below for how to do it for each available version:
-- Release - See [here](CONVARS.md#Renaming-Roles)
-- Beta/Development - See [here](CONVARS_BETA.md#Renaming-Roles)
+- Release - See [here](https://github.com/NoxxFlame/TTT-Custom-Roles/blob/release/CONVARS.md#Renaming-Roles)
+- Beta/Development - See [here](https://github.com/NoxxFlame/TTT-Custom-Roles/blob/beta/CONVARS.md#Renaming-Roles)
 ### *Creating Custom Roles*
 If you would like to create your own role to integrate with Custom Roles for TTT, see, see [here](CREATE_YOUR_OWN_ROLE.md).
 
 ## Configuration
 This addon has many ConVars available so it can be customized to how you want your server to run. All custom roles are disabled by default.\
-A full list of ConVars can be found [here](CONVARS.md) (for the release version) or [here](CONVARS_BETA.md) (for the beta and development versions).\
+A full list of ConVars can be found [here](https://github.com/NoxxFlame/TTT-Custom-Roles/blob/release/CONVARS.md) (for the release version) or [here](https://github.com/NoxxFlame/TTT-Custom-Roles/blob/beta/CONVARS.md) (for the beta and development versions).\
 \
 If you would like to test the available configurations, we recommend using ULX/ULib and our ULX plugin for Custom Roles for TTT. See below for links to the various versions:
 - [Release](https://steamcommunity.com/sharedfiles/filedetails/?id=2421043753)
