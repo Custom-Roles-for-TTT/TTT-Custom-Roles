@@ -5,6 +5,7 @@
 
 ### Fixes
 - Fixed error caused by vampire fangs when trying to consume a body that didn't contain player information
+- Fixed the "A loot goblin has been spotted!" message not updating when the role is renamed
 
 ### Developer
 - Reworked Event ID and Win ID generation to fix case where external roles could have their conditions conflict due to the client and server not generating IDs in the same order. This involved the following changes:

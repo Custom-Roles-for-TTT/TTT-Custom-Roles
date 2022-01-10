@@ -111,8 +111,9 @@ local function StartGoblinTimers()
             elseif revealMode == JESTER_NOTIFY_EVERYONE or
                     (v:IsActiveTraitorTeam() and (revealMode == JESTER_NOTIFY_TRAITOR or JESTER_NOTIFY_DETECTIVE_AND_TRAITOR)) or
                     (not v:IsActiveDetectiveLike() and (revealMode == JESTER_NOTIFY_DETECTIVE or JESTER_NOTIFY_DETECTIVE_AND_TRAITOR)) then
-                v:PrintMessage(HUD_PRINTTALK, "A loot goblin has been spotted!")
-                v:PrintMessage(HUD_PRINTCENTER, "A loot goblin has been spotted!")
+                local message = string.Capitalize(ROLE_STRINGS_EXT[ROLE_LOOTGOBLIN]) .. " has been spotted!"
+                v:PrintMessage(HUD_PRINTTALK, message)
+                v:PrintMessage(HUD_PRINTCENTER, message)
             end
         end
 
