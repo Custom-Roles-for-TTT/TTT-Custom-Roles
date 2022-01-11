@@ -53,7 +53,7 @@ If you would like to test the available configurations, we recommend using ULX/U
 
 ## FAQs
 **Do I need the other versions of Custom Roles or Town of Terror as well?**\
-No, you should only use one addon that adds roles. That means only this version of Custom Roles, no Town of Terror, no TT2, etc.
+No, you should only use one addon that adds roles. That means only this version of Custom Roles, no Town of Terror, no TTT2, etc.
 
 **This lags everyone when I play on my peer-to-peer (aka listen, aka local) server/game**\
 Everyone needs to subscribe to this workshop item, not just the host. We're not sure why that is, but having everyone subscribed to the addon seems to help.\
