@@ -54,3 +54,9 @@
 - *target_name* - The name of the player who will be killed
 - *killer_name* - The name of the player who will kill the target player
 - *remove_body* - Whether to remove the target player's body after killing them (Defaults to `false`)
+
+**ttt_order_for_someone** - Orders a shop item on behalf of a another player with the given name. *NOTE*: Cheats must be enabled to use this command.\
+*Added in:* 1.0.0\
+*Parameters:*
+- *target_name* - The name of the player who will be killed
+- *order* - The weapon class string or equipment ID number to be ordered
