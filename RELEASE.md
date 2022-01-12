@@ -3,6 +3,9 @@
 ## 1.4.6 (Beta)
 **Released:**
 
+### Changes
+- Changed role selection logic to shuffle the list of players to hopefully help the randomization
+
 ### Fixes
 - Fixed error caused by vampire fangs when trying to consume a body that didn't contain player information
 - Fixed the "A loot goblin has been spotted!" message not updating when the role is renamed

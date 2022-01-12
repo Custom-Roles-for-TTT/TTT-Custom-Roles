@@ -1302,6 +1302,7 @@ function SelectRoles()
         end
     end
 
+    table.Shuffle(choices)
     local choice_count = #choices
 
     -- special spawning cvars
