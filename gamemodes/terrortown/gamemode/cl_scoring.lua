@@ -642,9 +642,15 @@ function CLSCORE:BuildSummaryPanel(dpanel)
     winlbl:SetPos(xwin, ywin)
 
     for i, r in ipairs(secondary_win_roles) do
+        local role_string
+        if type(r) == "table" then
+            role_string = r.txt
+        else
+            role_string = PT("hilite_win_role_singular_additional", { role = StringUpper(ROLE_STRINGS[r]) })
+        end
         local exwinlbl = vgui.Create("DLabel", dpanel)
         exwinlbl:SetFont("WinSmall")
-        exwinlbl:SetText(PT("hilite_win_role_singular_additional", { role = StringUpper(ROLE_STRINGS[r]) }))
+        exwinlbl:SetText(role_string)
         exwinlbl:SetTextColor(COLOR_WHITE)
         exwinlbl:SizeToContents()
         local xexwin = (w - exwinlbl:GetWide()) / 2
@@ -655,9 +661,15 @@ function CLSCORE:BuildSummaryPanel(dpanel)
     bg.PaintOver = function()
         draw.RoundedBox(8, 8, ywin - 5, w - 14, winlbl:GetTall() + 10, title.c)
         for i, r in ipairs(secondary_win_roles) do
+            local role_color
+            if type(r) == "table" then
+                role_color = r.col
+            else
+                role_color = ROLE_COLORS[r]
+            end
             local round_bottom = i == #secondary_win_roles
             local height = 28
-            draw.RoundedBoxEx(8, 8, 65 + (height * (i - 1)), w - 14, height, ROLE_COLORS[r], false, false, round_bottom, round_bottom)
+            draw.RoundedBoxEx(8, 8, 65 + (height * (i - 1)), w - 14, height, role_color, false, false, round_bottom, round_bottom)
         end
         draw.RoundedBox(0, 8, ywin + winlbl:GetTall() + 15 + height_extra_secondaries, 341, 329 + height_extra, Color(164, 164, 164, 255))
         draw.RoundedBox(0, 357, ywin + winlbl:GetTall() + 15 + height_extra_secondaries, 341, 329 + height_extra, Color(164, 164, 164, 255))
@@ -936,9 +948,15 @@ function CLSCORE:BuildHilitePanel(dpanel)
     winlbl:SetPos(xwin, ywin)
 
     for i, r in ipairs(secondary_win_roles) do
+        local role_string
+        if type(r) == "table" then
+            role_string = r.txt
+        else
+            role_string = PT("hilite_win_role_singular_additional", { role = StringUpper(ROLE_STRINGS[r]) })
+        end
         local exwinlbl = vgui.Create("DLabel", dpanel)
         exwinlbl:SetFont("WinSmall")
-        exwinlbl:SetText(PT("hilite_win_role_singular_additional", { role = StringUpper(ROLE_STRINGS[r]) }))
+        exwinlbl:SetText(role_string)
         exwinlbl:SetTextColor(COLOR_WHITE)
         exwinlbl:SizeToContents()
         local xexwin = (w - exwinlbl:GetWide()) / 2
@@ -949,9 +967,15 @@ function CLSCORE:BuildHilitePanel(dpanel)
     bg.PaintOver = function()
         draw.RoundedBox(8, 8, ywin - 5, w - 14, winlbl:GetTall() + 10, title.c)
         for i, r in ipairs(secondary_win_roles) do
+            local role_color
+            if type(r) == "table" then
+                role_color = r.col
+            else
+                role_color = ROLE_COLORS[r]
+            end
             local round_bottom = i == #secondary_win_roles
             local height = 28
-            draw.RoundedBoxEx(8, 8, 65 + (height * (i - 1)), w - 14, height, ROLE_COLORS[r], false, false, round_bottom, round_bottom)
+            draw.RoundedBoxEx(8, 8, 65 + (height * (i - 1)), w - 14, height, role_color, false, false, round_bottom, round_bottom)
         end
     end
 

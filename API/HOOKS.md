@@ -182,7 +182,10 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 *Added in:* 1.4.1\
 *Parameters:*
 - *wintype* - The round win type
-- *secondaryWins* - The table of role identifiers for roles who should have a secondary win on the round summary. Insert any role identifiers you would like to display into this table
+- *secondaryWins* - The table of role information for who should have a secondary win on the round summary. Insert any role data you would like to display into this table. Role data can either be the role's identifier (to use the default text and color logic) or, *as of version 1.4.6*, a table of the following data (to use your own text and colors):
+  - rol - The role identifier
+  - txt - The text to display
+  - col - The background color to use
 
 **TTTScoringSummaryRender(ply, roleFileName, groupingRole, roleColor, nameLabel, startingRole, finalRole)** - Called before the round summary screen is shown. Used to modify the color, position, and icon for a player.\
 *Realm:* Client\

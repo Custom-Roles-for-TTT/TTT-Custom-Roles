@@ -11,6 +11,7 @@
 - Fixed the "A loot goblin has been spotted!" message not updating when the role is renamed
 
 ### Developer
+- Added ability to pass a table of role data to the TTTScoringSecondaryWins hook to customize how secondary wins are displayed
 - Reworked Event ID and Win ID generation to fix case where external roles could have their conditions conflict due to the client and server not generating IDs in the same order. This involved the following changes:
   - **BREAKING CHANGE** - Deprecated `GenerateNewEventID` on the client and made it a no-op that prints an error message reminding the developer to update
   - **BREAKING CHANGE** - Deprecated `GenerateNewWinID` on the client and made it a no-op that prints an error message reminding the developer to update
