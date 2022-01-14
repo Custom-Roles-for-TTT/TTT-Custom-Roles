@@ -5,6 +5,7 @@
 
 ### Changes
 - Changed role selection logic to shuffle the list of players to hopefully help the randomization
+- Changed role vision logic to hopefully increase performance for traitors
 
 ### Fixes
 - Fixed error caused by vampire fangs when trying to consume a body that didn't contain player information
