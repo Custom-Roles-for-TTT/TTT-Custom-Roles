@@ -561,16 +561,24 @@ To create a custom win condition, you will need to define a global unique win id
 
 #### Win Identifier
 
-The identifier must be unique to make sure you can differentiate between your role's win and any other role's win. Starting in version 1.2.5, Custom Roles for TTT provides a method for generating a unique win identifier for you. If you want to ensure compatibility with Custom Roles for TTT prior to version 1.2.5 you should come up with your own unique number for your role.
+The identifier must be unique to make sure you can differentiate between your role's win and any other role's win. The Win ID should be generated on the server and will be automatically synced to the client.
 
-The following code should be run on both the server and the client and will generate a new win condition identifier. Be sure to use the role ID for your new role when calling the `GenerateNewWinID` method. After the `GenerateNewWinID` method is called, the code below then saves the generated value to the global `WIN_SUMMONER` value to be used later:
-
+Be sure to use the role ID for your new role when calling the `GenerateNewWinID` method. After the `GenerateNewWinID` method is called, the code below then saves the generated value to the global `WIN_SUMMONER` value to be used on the server later:
 ```lua
-hook.Add("Initialize", "SummonerInitialize", function()
-    -- Use 245 if we're on Custom Roles for TTT earlier than version 1.2.5
-    -- 245 is summation of the ASCII values for the characters "S", "U", and "M"
-    WIN_SUMMONER = GenerateNewWinID and GenerateNewWinID(ROLE_SUMMONER) or 245
-end)
+if SERVER then
+    hook.Add("Initialize", "SummonerInitialize", function()
+        WIN_SUMMONER = GenerateNewWinID(ROLE_SUMMONER)
+    end)
+end
+```
+
+In order for your code to use it on the client, however, you will need to use the `TTTSyncWinIDs` hook to know when you can pull the ID from the `WINS_BY_ROLE` global table by doing the following:
+```lua
+if CLIENT then
+    hook.Add("TTTSyncWinIDs", "SummonerTTTWinIDsSynced", function()
+        WIN_SUMMONER = WINS_BY_ROLE[ROLE_SUMMONER]
+    end)
+end
 ```
 
 Once we have our unique win condition identifier created it's time to write the code that uses it.
@@ -693,13 +701,11 @@ ROLE.translations = {
     }
 }
 
-hook.Add("Initialize", "SummonerInitialize", function()
-    -- Use 245 if we're on Custom Roles for TTT earlier than version 1.2.5
-    -- 245 is summation of the ASCII values for the characters "S", "U", and "M"
-    WIN_SUMMONER = GenerateNewWinID and GenerateNewWinID(ROLE_SUMMONER) or 245
-end)
-
 if SERVER then
+    hook.Add("Initialize", "SummonerInitialize", function()
+        WIN_SUMMONER = GenerateNewWinID(ROLE_SUMMONER)
+    end)
+
     hook.Add("TTTCheckForWin", "SummonerCheckForWin", function()
         local summonerWins = false
         --[[
@@ -720,6 +726,10 @@ if SERVER then
     end)
 end
 if CLIENT then
+    hook.Add("TTTSyncWinIDs", "SummonerTTTWinIDsSynced", function()
+        WIN_SUMMONER = WINS_BY_ROLE[ROLE_SUMMONER]
+    end)
+
     hook.Add("TTTEventFinishText", "SummonerEventFinishText", function(e)
         if e.win == WIN_SUMMONER then
             return LANG.GetParamTranslation("ev_win_summoner", { role = string.lower(ROLE_STRINGS[ROLE_SUMMONER]) })

@@ -1,5 +1,24 @@
 # Release Notes
 
+## 1.4.6 (Beta)
+**Released:**
+
+### Changes
+- Changed role selection logic to shuffle the list of players to hopefully help the randomization
+- Changed role vision logic to hopefully increase performance for traitors
+
+### Fixes
+- Fixed error caused by vampire fangs when trying to consume a body that didn't contain player information
+- Fixed the "A loot goblin has been spotted!" message not updating when the role is renamed
+
+### Developer
+- Added ability to pass a table of role data to the TTTScoringSecondaryWins hook to customize how secondary wins are displayed
+- Reworked Event ID and Win ID generation to fix case where external roles could have their conditions conflict due to the client and server not generating IDs in the same order. This involved the following changes:
+  - **BREAKING CHANGE** - Deprecated `GenerateNewEventID` on the client and made it a no-op that prints an error message reminding the developer to update
+  - **BREAKING CHANGE** - Deprecated `GenerateNewWinID` on the client and made it a no-op that prints an error message reminding the developer to update
+  - Added TTTSyncEventIDs hook to allow developers to get generated Event IDs on the client after they have been synced
+  - Added TTTSyncWinIDs hook to allow developers to get generated Win IDs on the client after they have been synced
+
 ## 1.4.5 (Beta)
 **Released: January 8th, 2022**
 
@@ -257,7 +276,7 @@ Includes all beta updates from [1.2.4](#124-beta) to [1.2.9](#129-beta).
 - Added ability to set a different amount of health overheal if a vampire drains a living target (disabled by default)
 - Added ability to block rewarding vampires when they (or their allies) kill someone (disabled by default)
 - Added ability to give the veteran credits when they are activated (disabled by default)
-- Added ability to set the maximum number of players before "single jester or indepdent" is automatically disabled (disabled by default)
+- Added ability to set the maximum number of players before "single jester or independent" is automatically disabled (disabled by default)
 
 ### Changes
 - Changed custom win events to show in the end-of-round summary's Events tab with an "unknown win event" message until the new TTTEventFinishText hooks are used
@@ -270,7 +289,7 @@ Includes all beta updates from [1.2.4](#124-beta) to [1.2.9](#129-beta).
   - This does allow players who are resurrected after the assassin is assigned their final target to slide under the radar
 - Fixed roles with custom win conditions being able to block jester, clown, and old man wins as well as drunks remembering their role
 - Fixed traitor vampires being able to drain glitches
-- Fixed promoted deputies not being grouped with other detectives in assassin targetting logic
+- Fixed promoted deputies not being grouped with other detectives in assassin targeting logic
 - Fixed independent vampire popup still having "{comrades}" placeholder
 - Fixed a drunk who becomes a clown in the same round as another jester role showing in the same row on the round summary screen
 - Fixed error when a vampire is killed after they release a target being drained but before that target gets unfrozen
@@ -279,7 +298,7 @@ Includes all beta updates from [1.2.4](#124-beta) to [1.2.9](#129-beta).
 - Added TTTBlockPlayerFootstepSound hook to block a player's footstep sound
 - Added TTTKarmaGiveReward hook to block a player from receiving karma
 - Added TTTKarmaShouldGivePenalty hook to determine whether a player should have their karma rewarded or penalized
-- Added TTTPlayerSpawnForRound hook to react to when a player is spawned (or respawed)
+- Added TTTPlayerSpawnForRound hook to react to when a player is spawned (or respawned)
 - Added TTTEventFinishText and TTTEventFinishIconText hooks to add detail to the round finished event row for custom win conditions
 - Added TTTPlayerRoleChanged hook to react to when a player's role changes
 - Added TTTShouldPlayerSmoke hook to affect whether a player should smoke and how that should look
@@ -324,7 +343,7 @@ Includes all beta updates from [1.2.4](#124-beta) to [1.2.9](#129-beta).
 - Added ability for hypnotist device to convert detective and deputies that appear as detective to impersonator (disabled by default)
 - Added ability for traitor or quack to buy an exorcism device usable to remove a haunting phantom (disabled by default)
 - Added configuration for whether assassin damage bonus applies to weapons bought from the shop (enabled by default)
-- Added ability for bodysnatcher's role change to be hidden based on which team they joined (disbled by default)
+- Added ability for bodysnatcher's role change to be hidden based on which team they joined (disabled by default)
 - Added a shop icon for the bomb station
 - Added new microphone volume tip from base TTT
 
@@ -353,8 +372,8 @@ Includes all beta updates from [1.2.4](#124-beta) to [1.2.9](#129-beta).
 - Added TTTTargetIDPlayerHintText hook for controlling what text to show when rendering an entity's hint text
 - Added TTTTargetIDPlayerName hook for controlling what text to show when rendering a player's name
 - Added TTTTargetIDRagdollName hook for controlling what text to show when rendering a ragdoll's name
-- Added `plymeta:ShouldRevealBeggar` to determine if a palyer should be able to tell that a target player is no longer a beggar (e.g. converted to an innocent or traitor)
-- Added `plymeta:ShouldRevealBodysnatcher` to determine if a palyer should be able to tell that a target player is no longer a bodysnatcher (e.g. has snatched a role from a dead body)
+- Added `plymeta:ShouldRevealBeggar` to determine if a player should be able to tell that a target player is no longer a beggar (e.g. converted to an innocent or traitor)
+- Added `plymeta:ShouldRevealBodysnatcher` to determine if a player should be able to tell that a target player is no longer a bodysnatcher (e.g. has snatched a role from a dead body)
 - Added `was_bodysnatcher` property to TTTRadarPlayerRender hook's `tgt` parameter
 - Changed the global `ShouldHideJesters` to be deprecated in favor of `plymeta:ShouldHideJesters`
 - Fixed returning false for either text value in TTTTargetIDPlayerText hook not actually stopping the original text from being used
@@ -416,7 +435,7 @@ Includes all beta updates from [1.2.4](#124-beta) to [1.2.9](#129-beta).
 - Fixed translations in C4 UI not working sometimes
 - Fixed a player who is turning into a zombie not stopping the round from ending
 - Fixed medium ghosts creating shadows
-- Adjusted medium ghost logic to hopefully fix another "floating kliener" case
+- Adjusted medium ghost logic to hopefully fix another "floating kleiner" case
 
 ### Developer
 - Added `plymeta:GiveDelayedShopItems` to give a player their delayed shop items

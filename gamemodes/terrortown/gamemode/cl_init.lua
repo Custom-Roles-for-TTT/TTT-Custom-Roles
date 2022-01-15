@@ -18,6 +18,7 @@ local vgui = vgui
 
 local CallHook = hook.Call
 local RunHook = hook.Run
+local RemoveHook = hook.Remove
 local GetAllPlayers = player.GetAll
 local MathApproach = math.Approach
 local MathMax = math.max
@@ -233,7 +234,7 @@ local function ReceiveRole()
 
     -- Disable highlights on role change
     if vision_enabled then
-        hook.Remove("PreDrawHalos", "AddPlayerHighlights")
+        RemoveHook("PreDrawHalos", "AddPlayerHighlights")
         vision_enabled = false
     end
 
@@ -887,7 +888,7 @@ end
 function HandleRoleHighlights(client)
     if not IsValid(client) then return end
 
-    if client:IsTraitorTeam() and traitor_vision then
+    if traitor_vision and client:IsTraitorTeam() then
         if not vision_enabled then
             EnableTraitorHighlights(client)
             vision_enabled = true
@@ -896,8 +897,8 @@ function HandleRoleHighlights(client)
         vision_enabled = false
     end
 
-    if not vision_enabled then
-        hook.Remove("PreDrawHalos", "AddPlayerHighlights")
+    if traitor_vision and not vision_enabled then
+        RemoveHook("PreDrawHalos", "AddPlayerHighlights")
     end
 end
 

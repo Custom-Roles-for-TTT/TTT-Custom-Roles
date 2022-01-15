@@ -17,7 +17,7 @@ local StringSplit = string.Split
 local StringSub = string.sub
 
 -- Version string for display and function for version checks
-CR_VERSION = "1.4.5"
+CR_VERSION = "1.4.6"
 CR_BETA = true
 
 function CRVersion(version)
@@ -929,21 +929,45 @@ if not EVENT_MAX then
 end
 
 EVENTS_BY_ROLE = {}
-function GenerateNewEventID(role)
-    if not role or role < ROLE_NONE or role > ROLE_MAX then
-        -- Print message telling the server owners that the role dev needs to update
-        ErrorNoHaltWithStack("WARNING: Role is missing 'role' parameter when generating unique event ID. Contact developer of role and reference: GenerateNewEventID\n")
-        role = GetRoleFromStackTrace()
+if SERVER then
+    util.AddNetworkString("TTT_SyncEventIDs")
+
+    function GenerateNewEventID(role)
+        if not role or role < ROLE_NONE or role > ROLE_MAX then
+            -- Print message telling the server owners that the role dev needs to update
+            ErrorNoHaltWithStack("WARNING: Role is missing 'role' parameter when generating unique event ID. Contact developer of role and reference: GenerateNewEventID\n")
+            role = GetRoleFromStackTrace()
+        end
+
+        EVENT_MAX = EVENT_MAX + 1
+
+        -- Don't assign this event ID to a role we haven't found
+        if role and role > ROLE_NONE and role <= ROLE_MAX then
+            EVENTS_BY_ROLE[role] = EVENT_MAX
+        end
+
+        return EVENT_MAX
     end
 
-    EVENT_MAX = EVENT_MAX + 1
-
-    -- Don't assign this event ID to a role we haven't found
-    if role and role > ROLE_NONE and role <= ROLE_MAX then
-        EVENTS_BY_ROLE[role] = EVENT_MAX
+    -- Sync the Event IDs to all clients
+    hook.Add("TTTPrepareRound", "EventID_TTTPrepareRound", function()
+        net.Start("TTT_SyncEventIDs")
+        net.WriteTable(EVENTS_BY_ROLE)
+        net.WriteUInt(EVENT_MAX, 16)
+        net.Broadcast()
+    end)
+end
+if CLIENT then
+    function GenerateNewEventID(role)
+        ErrorNoHaltWithStack("WARNING: Role is using 'GenerateNewEventID' on the client. This is deprecated as of v1.4.6 and should be replaced with the new 'TTTSyncEventIDs' hook.\n")
     end
 
-    return EVENT_MAX
+    net.Receive("TTT_SyncEventIDs", function()
+        EVENTS_BY_ROLE = net.ReadTable()
+        EVENT_MAX = net.ReadUInt(16)
+
+        CallHook("TTTSyncEventIDs", nil)
+    end)
 end
 
 WIN_NONE = 1
@@ -965,21 +989,45 @@ if not WIN_MAX then
 end
 
 WINS_BY_ROLE = {}
-function GenerateNewWinID(role)
-    if not role or role < ROLE_NONE or role > ROLE_MAX then
-        -- Print message telling the server owners that the role dev needs to update
-        ErrorNoHaltWithStack("WARNING: Role is missing 'role' parameter when generating unique win ID. Contact developer of role and reference: GenerateNewWinID\n")
-        role = GetRoleFromStackTrace()
+if SERVER then
+    util.AddNetworkString("TTT_SyncWinIDs")
+
+    function GenerateNewWinID(role)
+        if not role or role < ROLE_NONE or role > ROLE_MAX then
+            -- Print message telling the server owners that the role dev needs to update
+            ErrorNoHaltWithStack("WARNING: Role is missing 'role' parameter when generating unique win ID. Contact developer of role and reference: GenerateNewWinID\n")
+            role = GetRoleFromStackTrace()
+        end
+
+        WIN_MAX = WIN_MAX + 1
+
+        -- Don't assign this win ID to a role we haven't found
+        if role and role > ROLE_NONE and role <= ROLE_MAX then
+            WINS_BY_ROLE[role] = WIN_MAX
+        end
+
+        return WIN_MAX
     end
 
-    WIN_MAX = WIN_MAX + 1
-
-    -- Don't assign this win ID to a role we haven't found
-    if role and role > ROLE_NONE and role <= ROLE_MAX then
-        WINS_BY_ROLE[role] = WIN_MAX
+    -- Sync the Event IDs to all clients
+    hook.Add("TTTPrepareRound", "WinID_TTTPrepareRound", function()
+        net.Start("TTT_SyncWinIDs")
+        net.WriteTable(WINS_BY_ROLE)
+        net.WriteUInt(WIN_MAX, 16)
+        net.Broadcast()
+    end)
+end
+if CLIENT then
+    function GenerateNewWinID(role)
+        ErrorNoHaltWithStack("WARNING: Role is using 'GenerateNewWinID' on the client. This is deprecated as of v1.4.6 and should be replaced with the new 'TTTSyncWinIDs' hook.\n")
     end
 
-    return WIN_MAX
+    net.Receive("TTT_SyncWinIDs", function()
+        WINS_BY_ROLE = net.ReadTable()
+        WIN_MAX = net.ReadUInt(16)
+
+        CallHook("TTTSyncWinIDs", nil)
+    end)
 end
 
 -- Weapon categories, you can only carry one of each
