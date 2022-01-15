@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.4.6 (Beta)
-**Released:**
+**Released: January 15th, 2022**
 
 ### Changes
 - Changed role selection logic to shuffle the list of players to hopefully help the randomization
