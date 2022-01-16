@@ -87,3 +87,9 @@ hook.Add("TTTPrepareRound", "Veteran_RoleFeatures_PrepareRound", function()
         v:SetNWBool("VeteranActive", false)
     end
 end)
+
+hook.Add("TTTPlayerRoleChanged", "Veteran_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+    if oldRole == ROLE_VETERAN then
+        ply:SetNWBool("VeteranActive", false)
+    end
+end)
