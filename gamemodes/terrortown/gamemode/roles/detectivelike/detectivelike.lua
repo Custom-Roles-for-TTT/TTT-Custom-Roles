@@ -45,6 +45,34 @@ local function BeginRoleChecks(ply)
     end
 end
 
+local function FindAndPromoteDetectiveLike()
+    for _, ply in pairs(GetAllPlayers()) do
+        if ply:IsDetectiveLikePromotable() then
+            local alive = ply:Alive()
+            if alive then
+                ply:PrintMessage(HUD_PRINTTALK, "You have been promoted to " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "!")
+                ply:PrintMessage(HUD_PRINTCENTER, "You have been promoted to " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "!")
+            end
+
+            -- If the player is an Impersonator, tell all their team members when they get promoted
+            if ply:IsImpersonator() then
+                for _, v in pairs(GetAllPlayers()) do
+                    if v ~= ply and v:IsTraitorTeam() and v:Alive() and not v:IsSpec() then
+                        local message = "The " .. ROLE_STRINGS[ROLE_IMPERSONATOR] .. " has been promoted to " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "!"
+                        if not alive then
+                            message = message .. " Too bad they're dead..."
+                        end
+                        v:PrintMessage(HUD_PRINTTALK, message)
+                        v:PrintMessage(HUD_PRINTCENTER, message)
+                    end
+                end
+            end
+
+            ply:HandleDetectiveLikePromotion()
+        end
+    end
+end
+
 ROLE_ON_ROLE_ASSIGNED[ROLE_DEPUTY] = BeginRoleChecks
 ROLE_ON_ROLE_ASSIGNED[ROLE_IMPERSONATOR] = BeginRoleChecks
 
@@ -56,30 +84,12 @@ end)
 
 hook.Add("PlayerDeath", "DetectiveLike_RoleState_PlayerDeath", function(victim, infl, attacker)
     if victim:IsDetectiveTeam() and GetRoundState() == ROUND_ACTIVE and ShouldPromoteDetectiveLike() then
-        for _, ply in pairs(GetAllPlayers()) do
-            if ply:IsDetectiveLikePromotable() then
-                local alive = ply:Alive()
-                if alive then
-                    ply:PrintMessage(HUD_PRINTTALK, "You have been promoted to " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "!")
-                    ply:PrintMessage(HUD_PRINTCENTER, "You have been promoted to " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "!")
-                end
+        FindAndPromoteDetectiveLike()
+    end
+end)
 
-                -- If the player is an Impersonator, tell all their team members when they get promoted
-                if ply:IsImpersonator() then
-                    for _, v in pairs(GetAllPlayers()) do
-                        if v ~= ply and v:IsTraitorTeam() and v:Alive() and not v:IsSpec() then
-                            local message = "The " .. ROLE_STRINGS[ROLE_IMPERSONATOR] .. " has been promoted to " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "!"
-                            if not alive then
-                                message = message .. " Too bad they're dead..."
-                            end
-                            v:PrintMessage(HUD_PRINTTALK, message)
-                            v:PrintMessage(HUD_PRINTCENTER, message)
-                        end
-                    end
-                end
-
-                ply:HandleDetectiveLikePromotion()
-            end
-        end
+hook.Add("TTTPlayerRoleChanged", "DetectiveLike_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+    if DETECTIVE_ROLES[oldRole] and GetRoundState() == ROUND_ACTIVE and ShouldPromoteDetectiveLike() then
+        FindAndPromoteDetectiveLike()
     end
 end)
