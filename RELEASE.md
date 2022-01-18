@@ -6,6 +6,7 @@
 ### Fixes
 - Fixed detective-like players (deputy, impersonator) not being promoted when the active detective team player's role is changed
 - Fixed veteran buff state not being reset if their role was changed
+- Fixed role logic not starting if someone's role was changed
 
 ## 1.4.6 (Beta)
 **Released: January 15th, 2022**

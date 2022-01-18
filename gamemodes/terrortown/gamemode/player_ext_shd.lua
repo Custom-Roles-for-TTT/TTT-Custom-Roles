@@ -26,6 +26,7 @@ function plymeta:SetRole(role)
     local oldRole = self:GetRole()
     oldSetRole(self, role)
     CallHook("TTTPlayerRoleChanged", nil, self, oldRole, role)
+    self:BeginRoleChecks()
 end
 
 -- Player is alive and in an active round
