@@ -3,6 +3,9 @@
 ## 1.4.7 (Beta)
 **Released:**
 
+### Additions
+- Added map name to scoreboard and round summary title
+
 ### Fixes
 - Fixed detective-like players (deputy, impersonator) not being promoted when the active detective team player's role is changed
 - Fixed veteran buff state not being reset if their role was changed
