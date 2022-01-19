@@ -6,6 +6,9 @@
 ### Additions
 - Added map name to scoreboard and round summary title
 
+### Changes
+- Changed head icon placement to hopefully work better with scaled-up heads
+
 ### Fixes
 - Fixed detective-like players (deputy, impersonator) not being promoted when the active detective team player's role is changed
 - Fixed veteran buff state not being reset if their role was changed

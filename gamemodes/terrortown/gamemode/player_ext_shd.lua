@@ -293,6 +293,26 @@ function plymeta:GetEyeTrace(mask)
 end
 
 if CLIENT then
+    local function GetMaxBoneZ(ply, pred)
+        local max_bone_z = 0
+        for b = 0, ply:GetBoneCount() - 1 do
+            local name = ply:GetBoneName(b)
+            local bone = ply:LookupBone(name)
+            if bone and (not pred or pred(b, name, bone)) then
+                local matrix = ply:GetBoneMatrix(bone)
+                if matrix then
+                    local translation = matrix:GetTranslation()
+                    -- Translate the bone position from being relative to the world to being relative to the player's position
+                    local z = translation.z - ply:GetPos().z
+                    if z > max_bone_z then
+                        max_bone_z = z
+                    end
+                end
+            end
+        end
+        return max_bone_z
+    end
+
     local height_cache = {}
     function plymeta:GetHeight()
         local id = self:UniqueID()
@@ -306,35 +326,23 @@ if CLIENT then
         end
 
         -- Find the bone with the highest z point
-        local max_bone_z = 0
-        for b = 0, self:GetBoneCount() - 1 do
-            local name = self:GetBoneName(b)
-            local bone = self:LookupBone(name)
-            if bone then
-                local matrix = self:GetBoneMatrix(bone)
-                if matrix then
-                    local translation = matrix:GetTranslation()
-                    -- Translate the bone position from being relative to the world to being relative to the player's position
-                    local z = translation.z - self:GetPos().z
-                    if z > max_bone_z then
-                        max_bone_z = z
-                    end
-                end
-            end
-        end
+        local max_bone_z = GetMaxBoneZ(self)
 
         -- Check to see if the player's head is scaled
         local headId = self:LookupBone("ValveBiped.Bip01_Head1")
         if headId then
+            local max_headless_z = GetMaxBoneZ(self, function(b, name, bone)
+                return name ~= "ValveBiped.Bip01_Head1"
+            end)
             local headScale = self:GetManipulateBoneScale(headId)
             if headScale.z ~= 1 then
-                -- If it has, get the difference between the previous largest Z position and the head position
+                -- If it is, get the difference between the previous largest Z position and the head position
                 local matrix = self:GetBoneMatrix(headId)
                 if matrix then
                     local translation = matrix:GetTranslation()
-                    local diff = MathAbs(max_bone_z - translation.z)
+                    local diff = MathAbs(max_headless_z - translation.z)
                     -- Scale the difference by the head scale
-                    max_bone_z = max_bone_z + (diff * headScale.z)
+                    max_bone_z = max_headless_z + (diff * (headScale.z + 1))
                 end
             end
         end
