@@ -5,6 +5,7 @@
 
 ### Additions
 - Added map name to scoreboard and round summary title
+- Added "Find my rRole" button to the tutorial page
 
 ### Changes
 - Changed head icon placement to hopefully work better with scaled-up heads
