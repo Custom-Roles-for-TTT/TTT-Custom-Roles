@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.4.7 (Beta)
-**Released:**
+**Released: January 23rd, 2022**
 
 ### Additions
 - Added map name to scoreboard and round summary title
