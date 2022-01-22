@@ -21,7 +21,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 *Parameters:*
 - *ply* - The player who is attempting to identify a corpse
 - *rag* - The ragdoll being identified
-- *wasTraitor* - Whether the player who the targetted ragdoll represents belonged to the traitor team
+- *wasTraitor* - Whether the player who the targeted ragdoll represents belonged to the traitor team
 
 *Return:* Whether or not the given player should be able to identify the given corpse (Defaults to `false`).
 
@@ -105,7 +105,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 *Added in:* 1.2.7\
 *Parameters:*
 - *ply* - The player who is being spawned or respawned
-- *deadOnly* - Whether this call is specifically targetted at dead players
+- *deadOnly* - Whether this call is specifically targeted at dead players
 
 **TTTPrintResultMessage(type)** - Called before the round win results message is printed to the top-right corner of the screen. Can be used to print a replacement message for custom win types that this would not normally handle.\
 *Realm:* Server\

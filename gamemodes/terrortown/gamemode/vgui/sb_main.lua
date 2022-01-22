@@ -17,6 +17,7 @@ local GetTranslation = LANG.GetTranslation
 local GetPTranslation = LANG.GetParamTranslation
 local StringFormat = string.format
 local StringSub = string.sub
+local StringUpper = string.upper
 
 local clamp = math.Clamp
 local max = math.max
@@ -142,7 +143,7 @@ _G.sboard_sort = {
 function PANEL:Init()
 
     self.hostdesc = vgui.Create("DLabel", self)
-    self.hostdesc:SetText(GetPTranslation("sb_playing", { version = GAMEMODE.Version }))
+    self.hostdesc:SetText(GetPTranslation("sb_playing", { version = GAMEMODE.Version, map = StringUpper(game.GetMap())}))
     self.hostdesc:SetContentAlignment(9)
 
     self.hostname = vgui.Create("DLabel", self)

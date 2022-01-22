@@ -1100,7 +1100,7 @@ function CLSCORE:ShowPanel()
     local margin = 15
     parentPanel:SetSize(w, h)
     parentPanel:Center()
-    parentPanel:SetTitle("Round Report - " .. GAMEMODE.Version)
+    parentPanel:SetTitle("Round Report - " .. GAMEMODE.Version .. " - " .. StringUpper(game.GetMap()))
     parentPanel:SetVisible(true)
     parentPanel:ShowCloseButton(true)
     parentPanel:SetMouseInputEnabled(true)
