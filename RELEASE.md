@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.4.8 (Beta)
+**Released:**
+
+### Changes
+- Changed loot goblin activation timer to be a random number of seconds within a configurable range
+
 ## 1.4.7 (Beta)
 **Released: January 23rd, 2022**
 
