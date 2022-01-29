@@ -1,5 +1,14 @@
 # Release Notes
 
+## 1.4.8 (Beta)
+**Released: January 29th, 2022**
+
+### Changes
+- Changed loot goblin activation timer to be a random number of seconds within a configurable range
+
+### Developer
+- Added new hooks for controlling who, when, and how many credits to award when players are killed
+
 ## 1.4.7 (Beta)
 **Released: January 23rd, 2022**
 

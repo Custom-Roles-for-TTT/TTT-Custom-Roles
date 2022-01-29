@@ -143,6 +143,61 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 *Parameters:*
 - *client* - The local player
 
+**TTTRewardDetectiveTraitorDeathAmount(victim, attacker, amount)** - Called before all detectives are awarded credits for a traitor being killed.\
+*Realm:* Server\
+*Added in:* 1.4.8\
+*Parameters:*
+- *victim* - The player who was killed
+- *attacker* - The player who killed the victim
+- *amount* - The number of credits that all detectives will be awarded
+
+*Return:*
+- *new_amount* - The new number of credits that all detectives will be awarded
+
+**TTTRewardDetectiveTraitorDeath(ply, victim, attacker, amount)** - Called before a player awarded credits for a traitor being killed.\
+*Realm:* Server\
+*Added in:* 1.4.8\
+*Parameters:*
+- *ply* - The player who is being given credits
+- *victim* - The player who was killed
+- *attacker* - The player who killed the victim
+- *amount* - The number of credits being awarded
+
+*Return:* `true` to prevent the given player from being awarded credits
+
+**TTTRewardPlayerKilledAmount(victim, attacker, amount)** - Called before a player is awarded credits for killing an opponent.\
+*Realm:* Server\
+*Added in:* 1.4.8\
+*Parameters:*
+- *victim* - The player who was killed
+- *attacker* - The player who killed the victim
+- *amount* - The number of credits that the attacker will be awarded
+
+*Return:*
+- *new_amount* - The new number of credits that the attacker will be awarded
+
+**TTTRewardTraitorInnocentDeathAmount(victim, attacker, amount)** - Called before all traitors are awarded credits for a non-traitor being killed.\
+*Realm:* Server\
+*Added in:* 1.4.8\
+*Parameters:*
+- *victim* - The player who was killed
+- *attacker* - The player who killed the victim
+- *amount* - The number of credits that all traitors will be awarded
+
+*Return:*
+- *new_amount* - The new number of credits that all traitors will be awarded
+
+**TTTRewardTraitorInnocentDeath(ply, victim, attacker, amount)** - Called before a player awarded credits for a non-traitor being killed.\
+*Realm:* Server\
+*Added in:* 1.4.8\
+*Parameters:*
+- *ply* - The player who is being given credits
+- *victim* - The player who was killed
+- *attacker* - The player who killed the victim
+- *amount* - The number of credits being awarded
+
+*Return:* `true` to prevent the given player from being awarded credits
+
 **TTTRolePopupParams(client)** - Called before a player's role start-of-round popup message is displayed, allowing the parameters to be added to.\
 *Realm:* Client\
 *Added in:* 1.2.7\

@@ -573,15 +573,25 @@ local function CheckCreditAward(victim, attacker)
     if valid_attacker and not (victim:IsInnocentTeam() or victim:IsJesterTeam()) then
         local amt = GetConVar("ttt_det_credits_traitordead"):GetInt()
 
+        local new_amt = CallHook("TTTRewardDetectiveTraitorDeathAmount", nil, victim, attacker, amt)
+        if type(new_amt) == "number" then amt = new_amt end
+
         -- If size is 0, awards are off
         if amt > 0 then
+            local predicate = function(p)
+                if CallHook("TTTRewardDetectiveTraitorDeath", nil, p, victim, attacker, amt) then
+                    return false
+                end
+                return p:IsActiveDetectiveTeam() or (p:IsActiveDeputy() and p:IsRoleActive())
+            end
+
             for _, ply in ipairs(GetAllPlayers()) do
-                if ply:IsActiveDetectiveTeam() or (ply:IsActiveDeputy() and ply:IsRoleActive()) then
+                if predicate(ply) then
                     ply:AddCredits(amt)
                 end
             end
 
-            LANG.Msg(GetDetectiveTeamFilter(true), "credit_all", { role = ROLE_STRINGS_PLURAL[ROLE_DETECTIVE], num = amt })
+            LANG.Msg(GetDetectiveTeamFilter(true, predicate), "credit_all", { role = ROLE_STRINGS_PLURAL[ROLE_DETECTIVE], num = amt })
         end
     end
 
@@ -617,10 +627,16 @@ local function CheckCreditAward(victim, attacker)
             -- Traitors have killed sufficient people to get an award
             local amt = GetConVar("ttt_credits_award_size"):GetInt()
 
+            local new_amt = CallHook("TTTRewardTraitorInnocentDeathAmount", nil, victim, attacker, amt)
+            if type(new_amt) == "number" then amt = new_amt end
+
             -- If size is 0, awards are off
             if amt > 0 then
                 local vampire_kill_credits = GetConVar("ttt_vampire_kill_credits"):GetBool()
                 local predicate = function(p)
+                    if CallHook("TTTRewardTraitorInnocentDeath", nil, p, victim, attacker, amt) then
+                        return false
+                    end
                     if p:Alive() and not p:IsSpec() and p:IsTraitorTeam() and p:IsShopRole() then
                         return not p:IsVampire() or vampire_kill_credits
                     end
@@ -778,6 +794,9 @@ function GM:DoPlayerDeath(ply, attacker, dmginfo)
         elseif (attacker:IsActiveDetectiveTeam() or (attacker:IsActiveDeputy() and attacker:IsRoleActive())) and ply:IsTraitorTeam() then
             reward = math.ceil(GetConVar("ttt_det_credits_traitorkill"):GetInt())
         end
+
+        local new_reward = CallHook("TTTRewardPlayerKilledAmount", nil, ply, attacker, reward)
+        if type(new_reward) == "number" then reward = new_reward end
 
         if reward > 0 then
             attacker:AddCredits(reward)
