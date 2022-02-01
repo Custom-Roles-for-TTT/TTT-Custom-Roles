@@ -5,6 +5,7 @@
 
 ### Fixes
 - Fixed shop sync not working for custom equipment items for special detectives
+- Fixed external detective roles not being able to be configured to disallow looting credits
 
 ## 1.4.8 (Beta)
 **Released: January 29th, 2022**

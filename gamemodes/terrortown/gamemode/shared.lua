@@ -665,6 +665,8 @@ ROLE_TEAM_INDEPENDENT = 3
 ROLE_TEAM_MONSTER = 4
 ROLE_TEAM_DETECTIVE = 5
 
+ROLE_DATA_EXTERNAL = {}
+
 ROLE_TRANSLATIONS = {}
 ROLE_SHOP_ITEMS = {}
 ROLE_LOADOUT_ITEMS = {}
@@ -706,6 +708,8 @@ function RegisterRole(tbl)
     local roleID = ROLE_MAX + 1
     _G["ROLE_" .. StringUpper(tbl.nameraw)] = roleID
     ROLE_MAX = roleID
+
+    ROLE_DATA_EXTERNAL[roleID] = tbl
 
     ROLE_STRINGS_RAW[roleID] = tbl.nameraw
     ROLE_STRINGS[roleID] = tbl.name
@@ -1230,7 +1234,10 @@ function UpdateRoleState()
     local special_detectives_armor_loadout = GetGlobalBool("ttt_special_detectives_armor_loadout", true)
     for r, e in pairs(DETECTIVE_ROLES) do
         if e then
-            CAN_LOOT_CREDITS_ROLES[r] = not disable_looting
+            -- Don't overwrite custom roles that have this specifically disabled
+            if ROLE_DATA_EXTERNAL[r] and ROLE_DATA_EXTERNAL[r].canlootcredits ~= false then
+                CAN_LOOT_CREDITS_ROLES[r] = not disable_looting
+            end
 
             -- If this isn't a regular detective, update the armor equipment loadout status to match the setting
             if not DEFAULT_ROLES[r] then
