@@ -3,6 +3,10 @@
 ## 1.4.9 (Beta)
 **Released: February 6th, 2022**
 
+### Changes
+- Changed vampire unfreeze delay to be longer by default to help vampires with high pings
+- Changed vampire weapon hint to be translatable and to show that the primary fire button must be held to drain blood
+
 ### Fixes
 - Fixed shop sync not working for custom equipment items for special detectives
 - Fixed external detective roles not being able to be configured to disallow looting credits
