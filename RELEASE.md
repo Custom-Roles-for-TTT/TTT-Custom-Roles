@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.4.9 (Beta)
-**Released:**
+**Released: February 6th, 2022**
 
 ### Fixes
 - Fixed shop sync not working for custom equipment items for special detectives
