@@ -544,7 +544,7 @@ Includes all beta updates from [1.1.4](#114-beta) to [1.1.11](#1111-beta).
 - Added the option for the mediums' spirits to be colored similar to tracker footsteps (enabled by default)
 
 ### Changes
-- Changed round summary role tooltip to be translateable
+- Changed round summary role tooltip to be translatable
 - Changed some role features to give the player bonus points when used successfully (hypnotist, bodysnatcher, swapper, beggar)
 
 ### Fixes

@@ -77,7 +77,7 @@ Variables available globally (within the defined realm)
 *Realm:* Client and Server\
 *Added in:* 1.0.10
 
-**ROLE_DATA_EXTERNAL** - Table of definition data fir each external role.\
+**ROLE_DATA_EXTERNAL** - Table of definition data for each external role.\
 *Realm:* Client and Server\
 *Added in:* 1.4.9
 
