@@ -253,7 +253,7 @@ ROLE.startinghealth = nil
 ROLE.maxhealth = nil
 ```
 
-If these aren't set the role will use *100* for the starting and maxmium health by default. Also, if you only set the `ROLE.startinghealth` property then the maximum health will match by default as well.
+If these aren't set the role will use *100* for the starting and maximum health by default. Also, if you only set the `ROLE.startinghealth` property then the maximum health will match by default as well.
 
 For the Summoner we want to keep it at the *100* default health, but for the sake of this example we're going to change the starting and maximum health so they start with *125* but have a maximum of *150*, allowing them to heal a little:
 
@@ -343,7 +343,7 @@ ROLE.translations = {
 }
 ```
 
-From here you can add additional entries for each language you want to add support for. The list of currently-supported languages is available on the [Facepunch Garry's Mod GitHub](https://github.com/Facepunch/garrysmod/tree/master/garrysmod/gamemodes/terrortown/gamemode/lang). For exmaple, if we wanted to add a Spanish version of our translation then it would look like this:
+From here you can add additional entries for each language you want to add support for. The list of currently-supported languages is available on the [Facepunch Garry's Mod GitHub](https://github.com/Facepunch/garrysmod/tree/master/garrysmod/gamemodes/terrortown/gamemode/lang). For example, if we wanted to add a Spanish version of our translation then it would look like this:
 
 ```lua
 ROLE.translations = {
@@ -370,7 +370,7 @@ To implement a spectator HUD like the phantom has, you will need to create two h
 
 Due to how inter-connected the pieces of this system are, we're not going to break them down into individual blocks in this guide like other sections do. Instead, we'll go over them in concept and then leave the implemented example below for you to peruse.
 
-For our example's sake we've taken the phantom implementation and removed half the powers to keep the code size relatively small. Going through the implementation, the `ROLE.shouldshowspectatorhud` function checks that the player (who is guaranteed to be a summoner, in this case) has the property that shows they should be seeing the spectator HUD. On the client side, we first initialize the translations used for the spectator HUD and then define the HUD itself using the `TTTSpectatorShowHUD` hook. Within that hook we prepare teh information required and call the shared `HUD:PaintPowersHUD` method which handles the rendering for us. The server side is similar, first we initialize the convars and sync the values as globals so they are available on the client. Then we use the `TTTSpectatorHUDKeyPress` hook to intercept key presses and define what action each keypress should result in. The [API](API.md) has more information about the specifics of these hooks and methods if you want to learn more. See below for the fully constructed example:
+For our example's sake we've taken the phantom implementation and removed half the powers to keep the code size relatively small. Going through the implementation, the `ROLE.shouldshowspectatorhud` function checks that the player (who is guaranteed to be a summoner, in this case) has the property that shows they should be seeing the spectator HUD. On the client side, we first initialize the translations used for the spectator HUD and then define the HUD itself using the `TTTSpectatorShowHUD` hook. Within that hook we prepare the information required and call the shared `HUD:PaintPowersHUD` method which handles the rendering for us. The server side is similar, first we initialize the convars and sync the values as globals so they are available on the client. Then we use the `TTTSpectatorHUDKeyPress` hook to intercept key presses and define what action each keypress should result in. The [API](API.md) has more information about the specifics of these hooks and methods if you want to learn more. See below for the fully constructed example:
 
 ```lua
 ROLE.shouldshowspectatorhud = function(ply)
@@ -585,7 +585,7 @@ Once we have our unique win condition identifier created it's time to write the 
 
 #### Win Condition
 
-The first piece of code that will use our new win condition identifier is the code that determines if our role should win the round. To do that we have to hook the `TTTCheckForWin` method on the server side. For this hook it is important to only return a value if you want to have a specific result. For example, if you want to block the round from ending you return `WIN_NONE` and if you want your role to win then you return the win condition identifer we made above (in our example case: `WIN_SUMMONER`). If you return nothing then the default win condition logic will run as normal. See below for a template example of how to set up this hook:
+The first piece of code that will use our new win condition identifier is the code that determines if our role should win the round. To do that we have to hook the `TTTCheckForWin` method on the server side. For this hook it is important to only return a value if you want to have a specific result. For example, if you want to block the round from ending you return `WIN_NONE` and if you want your role to win then you return the win condition identifier we made above (in our example case: `WIN_SUMMONER`). If you return nothing then the default win condition logic will run as normal. See below for a template example of how to set up this hook:
 
 ```lua
 if SERVER then
@@ -657,7 +657,7 @@ ROLE.translations = {
 }
 ```
 
-The first hook (`TTTEventFinishText`) is used to control the text to show in the row on the Events tab itself. We recommend using a translateable string (as we do in the example) but that is not strictly necessary. Don't forget to use the role translations system ([detailed above](#Translations)) to set up the translation string to use.
+The first hook (`TTTEventFinishText`) is used to control the text to show in the row on the Events tab itself. We recommend using a translatable string (as we do in the example) but that is not strictly necessary. Don't forget to use the role translations system ([detailed above](#Translations)) to set up the translation string to use.
 
 The second hook (`TTTEventFinishIconText`) is used to control the text that shows when you hover over the icon in the row on the Events tab. The second hook's first return value is the name of a translation string and in most cases doesn't need to be changed at all. In the most common case the only thing you need to do is return the plural string for the winning role (or team) as the second return value.
 
@@ -691,7 +691,7 @@ The `LANG.Msg` call is the one that sends the message to each client and tells t
 
 As mentioned earlier, a good rule of thumb is if you are creating a role that is `ROLE_TEAM_JESTER` or `ROLE_TEAM_INDEPENDENT` then you will probably need a custom win condition. In the case of the Summoner none of this is required as it is `ROLE_TEAM_TRAITOR` and we want the summoner to win with the traitors, but it is left here as an example.
 
-If we piece together all the bits of code from the preivous sections it would come out looking something like this:
+If we piece together all the bits of code from the previous sections it would come out looking something like this:
 
 ```lua
 ROLE.translations = {
@@ -770,7 +770,7 @@ if CLIENT then
 end
 ```
 
-*(Note: If you would like to make this information translateable, see the [Translations](#Translations) section of this document. )*
+*(Note: If you would like to make this information translatable, see the [Translations](#Translations) section of this document. )*
 
 For a more complex example, lets take the same string from before but change the phrase "traitor team" to be the color of the traitor team in TTT. To do that, we're going to use some fairly basic HTML instead of just raw text:
 
@@ -787,7 +787,7 @@ end
 
 ### Role Registration
 
-The next line simply tells CR for TTT to register your role and passes through all the relevent information. You do not need to edit this line. CR for TTT automatically defines an enumeration for your role, `ROLE_%NAMERAW%` as well as helper functions `Get%NAMERAW%`, `Is%NAMERAW%` and `IsActive%NAMERAW%` if you would like to use them to add extra logic for your role.
+The next line simply tells CR for TTT to register your role and passes through all the relevant information. You do not need to edit this line. CR for TTT automatically defines an enumeration for your role, `ROLE_%NAMERAW%` as well as helper functions `Get%NAMERAW%`, `Is%NAMERAW%` and `IsActive%NAMERAW%` if you would like to use them to add extra logic for your role.
 
 ### Final Block
 

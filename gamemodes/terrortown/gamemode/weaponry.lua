@@ -473,8 +473,8 @@ local function OrderEquipment(ply, cmd, args)
             allowed = GetEquipmentItem(ROLE_TRAITOR, id)
         end
 
-        -- Detective -> Detective-like
-        if not allowed and promoted then
+        -- Detective -> Detective-like, Detective -> Special Detective
+        if not allowed and (promoted or sync_detective_weapons) then
             allowed = GetEquipmentItem(ROLE_DETECTIVE, id)
         end
 

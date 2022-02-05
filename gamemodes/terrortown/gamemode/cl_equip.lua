@@ -205,8 +205,8 @@ function GetEquipmentForRole(role, promoted, block_randomization, block_exclusio
             for _, i in pairs(detective_equipment) do
                 -- Avoid duplicates
                 if not available[i.id] and
-                    -- Detective -> Detective-like
-                    (promoted or
+                    -- Detective -> Detective-like, Detective -> Special Detective
+                    (promoted or sync_detective_weapons or
                     -- Traitor OR Detective or Detective-only modes, Detective -> Sync Role
                     (rolemode == SHOP_SYNC_MODE_UNION or rolemode == SHOP_SYNC_MODE_DETECTIVE)) then
                     TableInsert(tbl[role], i)
