@@ -139,7 +139,7 @@ local function GiveLoadoutItems(ply)
     for _, id in pairs(loadout_items) do
         ply:GiveEquipmentItem(id)
 
-        hook.Call("TTTOrderedEquipment", GAMEMODE, ply, id, true)
+        hook.Call("TTTOrderedEquipment", GAMEMODE, ply, id, tonumber(id))
         ply:AddBought(id)
 
         net.Start("TTT_BoughtItem")
