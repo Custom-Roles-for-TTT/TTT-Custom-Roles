@@ -14,6 +14,7 @@ local weapons = weapons
 
 local GetAllPlayers = player.GetAll
 local CreateEntity = ents.Create
+local MathRandom = math.random
 
 util.AddNetworkString("TTT_UpdateLootGoblinWins")
 
@@ -34,6 +35,7 @@ resource.AddSingleFile("lootgoblin/jingle8.wav")
 -------------
 
 local lootgoblin_activation_timer = CreateConVar("ttt_lootgoblin_activation_timer", "30")
+local lootgoblin_activation_timer_max = CreateConVar("ttt_lootgoblin_activation_timer_max", "60")
 local lootgoblin_announce = CreateConVar("ttt_lootgoblin_announce", "4")
 local lootgoblin_size = CreateConVar("ttt_lootgoblin_size", "0.5")
 local lootgoblin_cackle_timer_min = CreateConVar("ttt_lootgoblin_cackle_timer_min", "4")
@@ -80,7 +82,12 @@ local cackles = {
 local defaultJumpPower = 160
 local lootGoblinActive = false
 local function StartGoblinTimers()
-    local goblinTime = lootgoblin_activation_timer:GetInt()
+    local goblinTimeMin = lootgoblin_activation_timer:GetInt()
+    local goblinTimeMax = lootgoblin_activation_timer_max:GetInt()
+    if goblinTimeMax < goblinTimeMin then
+        goblinTimeMax = goblinTimeMin
+    end
+    local goblinTime = MathRandom(goblinTimeMin, goblinTimeMax)
     SetGlobalFloat("ttt_lootgoblin_activate", CurTime() + goblinTime)
     for _, v in ipairs(GetAllPlayers()) do
         if v:IsActiveLootGoblin() then
@@ -111,23 +118,24 @@ local function StartGoblinTimers()
             elseif revealMode == JESTER_NOTIFY_EVERYONE or
                     (v:IsActiveTraitorTeam() and (revealMode == JESTER_NOTIFY_TRAITOR or JESTER_NOTIFY_DETECTIVE_AND_TRAITOR)) or
                     (not v:IsActiveDetectiveLike() and (revealMode == JESTER_NOTIFY_DETECTIVE or JESTER_NOTIFY_DETECTIVE_AND_TRAITOR)) then
-                v:PrintMessage(HUD_PRINTTALK, "A loot goblin has been spotted!")
-                v:PrintMessage(HUD_PRINTCENTER, "A loot goblin has been spotted!")
+                local message = string.Capitalize(ROLE_STRINGS_EXT[ROLE_LOOTGOBLIN]) .. " has been spotted!"
+                v:PrintMessage(HUD_PRINTTALK, message)
+                v:PrintMessage(HUD_PRINTCENTER, message)
             end
         end
 
         if lootgoblin_cackle_enabled:GetBool() then
             local min = lootgoblin_cackle_timer_min:GetInt()
             local max = lootgoblin_cackle_timer_max:GetInt()
-            timer.Create("LootGoblinCackle", math.random(min, max), 0, function()
+            timer.Create("LootGoblinCackle", MathRandom(min, max), 0, function()
                 for _, v in ipairs(GetAllPlayers()) do
                     if v:IsActiveLootGoblin() and not v:GetNWBool("LootGoblinKilled", false) then
-                        local idx = math.random(1, #cackles)
+                        local idx = MathRandom(1, #cackles)
                         local chosen_sound = cackles[idx]
                         sound.Play(chosen_sound, v:GetPos())
                     end
                 end
-                timer.Adjust("LootGoblinCackle", math.random(min, max), 0, nil)
+                timer.Adjust("LootGoblinCackle", MathRandom(min, max), 0, nil)
             end)
         end
     end)
@@ -181,7 +189,7 @@ local footsteps = {
 }
 hook.Add("PlayerFootstep", "LootGoblin_PlayerFootstep", function(ply, pos, foot, snd, volume, rf)
     if ply:IsActiveLootGoblin() and ply:IsRoleActive() and not ply:GetNWBool("LootGoblinKilled", false) and lootgoblin_jingle_enabled:GetBool() then
-        local idx = math.random(1, #footsteps)
+        local idx = MathRandom(1, #footsteps)
         local chosen_sound = footsteps[idx]
         sound.Play(chosen_sound, pos, volume, 100, 1)
     end
@@ -221,7 +229,7 @@ hook.Add("PlayerDeath", "LootGoblin_PlayerDeath", function(victim, infl, attacke
                 local ragdoll = victim.server_ragdoll or victim:GetRagdollEntity()
                 local pos = ragdoll:GetPos() + Vector(0, 0, 25)
 
-                local idx = math.random(1, #lootTable)
+                local idx = MathRandom(1, #lootTable)
                 local wep = lootTable[idx]
                 table.remove(lootTable, idx)
                 local ent = CreateEntity(wep)

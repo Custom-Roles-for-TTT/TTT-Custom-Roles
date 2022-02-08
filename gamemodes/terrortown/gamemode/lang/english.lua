@@ -207,7 +207,7 @@ L.search_eyes = "Using your investigative skills, you identified the last person
 
 
 -- Scoreboard
-L.sb_playing = "You are playing {version} on..."
+L.sb_playing = "You are playing {map} with {version} on..."
 L.sb_mapchange = "Map changes in {num} rounds or in {time}"
 
 L.sb_mia = "Missing In Action"
@@ -234,6 +234,7 @@ L.help_title = "Help and Settings"
 -- Tabs
 L.help_tut = "Tutorial"
 L.help_tut_tip = "How TTT works, in just a few steps"
+L.help_tut_find_role = "Find my role"
 
 L.help_settings = "Settings"
 L.help_settings_tip = "Client-side settings"
@@ -263,6 +264,8 @@ L.set_swselect_tip = "By default the weapon switcher closes when a weapon is sel
 L.set_cues = "Play sound cue when a round begins or ends"
 L.set_raw_karma = "Show the raw karma value"
 L.set_raw_karma_tip = "Shows the raw karma value in the scoreboard instead of the percentage of damage each player deals"
+L.set_karma_total_pct = "Show karma as percent of total"
+L.set_karma_total_pct_tip = "Shows the karma value in the scoreboard as a percentage of the total karma possible instead of the percentage of damage each player deals"
 L.set_color_mode = "Color settings"
 L.set_hide_role = "Hide your role in the HUD"
 L.set_hide_role_tip = "By default your role will appear in the bottom left of the HUD. Turn this on to prevent screen cheating."

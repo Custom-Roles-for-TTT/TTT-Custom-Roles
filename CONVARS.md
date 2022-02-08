@@ -192,7 +192,8 @@ ttt_vampire_fang_dead_timer                 0       // The amount of time fangs 
 ttt_vampire_fang_heal                       50      // The amount of health a vVampire will heal by when they fully drain a target's blood
 ttt_vampire_fang_overheal                   25      // The amount over the vampire's normal maximum health (e.g. 100 + this ConVar) that the vampire can heal to by drinking blood.
 ttt_vampire_fang_overheal_living            -1      // The amount of overheal (see "ttt_vampire_fang_overheal") to give if the vampire's target is living. Set to -1 to use the same amount as "ttt_vampire_fang_overheal" instead
-ttt_vampire_prime_death_mode                0       // What to do when the prime vampire(s) (e.g. playters who spawn as vampires originally) are killed. 0 - Do nothing. 1 - Kill all vampire thralls (non-prime vampires). 2 - Revert all vampire thralls (non-prime vampires) to their original role
+ttt_vampire_fang_unfreeze_delay             2       // The number of seconds before players who were frozen in place by the fangs should be released if the vampire stops using the fangs on them
+ttt_vampire_prime_death_mode                0       // What to do when the prime vampire(s) (e.g. players who spawn as vampires originally) are killed. 0 - Do nothing. 1 - Kill all vampire thralls (non-prime vampires). 2 - Revert all vampire thralls (non-prime vampires) to their original role
 ttt_vampire_prime_only_convert              1       // Whether only prime vampires (e.g. players who spawn as vampire originally) are allowed to convert other players
 ttt_vampire_kill_credits                    1       // Whether the vampire receives credits when they kill another player
 ttt_vampire_loot_credits                    1       // Whether the vampire can loot credits from a dead player
@@ -400,9 +401,9 @@ ttt_independents_update_scoreboard          0       // Whether all independent r
 // Drunk
 ttt_drunk_sober_time                        180     // Time in seconds for the drunk to remember their role
 ttt_drunk_innocent_chance                   0.7     // Chance that the drunk will become an innocent role when remembering their role
-ttt_drunk_any_role                          0       // Whether the drunk can become any enabled role (other than the drunk, the glitch, or roles that were already used this round)
 ttt_drunk_become_clown                      0       // Whether the drunk should become a clown (instead of joining the losing team) if the round would end before they sober up
 ttt_drunk_notify_mode                       0       // The logic to use when notifying players that a drunk has sobered up. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
+ttt_drunk_any_role                          0       // Whether the drunk can become any enabled role (other than the drunk, the glitch, or roles that were already used this round). The ttt_drunk_can_be_* convars below can be used to prevent the drunk from becoming specific roles
 ttt_drunk_can_be_traitor                    1       // Whether the drunk can become a traitor
 ttt_drunk_can_be_hypnotist                  1       // Whether the drunk can become a hypnotist
 ttt_drunk_can_be_impersonator               1       // Whether the drunk can become an impersonator
@@ -467,7 +468,7 @@ ttt_zombie_vision_enable                    0       // Whether zombies have thei
 ttt_zombie_spit_enable                      1       // Whether zombies have their spit attack enabled
 ttt_zombie_leap_enable                      1       // Whether zombies have their leap attack enabled
 ttt_zombie_show_target_icon                 0       // Whether zombies have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect
-ttt_zombie_damage_penalty                   0.5     // The fraction a zombie's damage will be scaled by when they are attacking without using their claws
+ttt_zombie_damage_penalty                   0.5     // The fraction a zombie's damage will be scaled by when they are attacking without using their claws. For example, setting this to 0.25 will let the zombie deal 75% of normal gun damage, and 0.66 will let the zombie deal 33% of normal damage
 ttt_zombie_damage_reduction                 0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a zombie
 ttt_zombie_prime_only_weapons               1       // Whether only prime zombies (e.g. players who spawn as zombies originally) are allowed to pick up weapons
 ttt_zombie_prime_attack_damage              65      // The amount of a damage a prime zombie (e.g. player who spawned as a zombie originally) does with their claws. Server or round must be restarted for changes to take effect
@@ -648,6 +649,13 @@ ttt_bem_allow_change                        1       // Allow clients to change t
 ttt_bem_sv_cols                             4       // Sets the number of columns in the shop menu's item list (serverside)
 ttt_bem_sv_rows                             5       // Sets the number of rows in the shop menu's item list (serverside)
 ttt_bem_sv_size                             64      // Sets the item size in the shop menu's item list (serverside)
+
+// Scoreboard
+ttt_scoreboard_deaths                       0       // Whether to show the deaths column on the scoreboard. Server must be restarted for changes to take effect
+ttt_scoreboard_score                        0       // Whether to show the score column on the scoreboard. Server must be restarted for changes to take effect
+
+// Round Summary
+ttt_round_summary_tabs                      summary,hilite,events,scores // The tabs to show in the round summary screen. Changing the order of the values will change the order of the tabs. Excluding a value from the comma-delimited list will prevent that tab from showing. Invalid values will be ignored. Round must be restarted for changes to take effect
 ```
 
 Thanks to [KarlOfDuty](https://github.com/KarlOfDuty) for his original version of this document, [here](https://github.com/KarlOfDuty/TTT-Custom-Roles/blob/patch-1/README.md).

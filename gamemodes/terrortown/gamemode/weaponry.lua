@@ -139,7 +139,7 @@ local function GiveLoadoutItems(ply)
     for _, id in pairs(loadout_items) do
         ply:GiveEquipmentItem(id)
 
-        hook.Call("TTTOrderedEquipment", GAMEMODE, ply, id, true)
+        hook.Call("TTTOrderedEquipment", GAMEMODE, ply, id, tonumber(id))
         ply:AddBought(id)
 
         net.Start("TTT_BoughtItem")
@@ -473,8 +473,8 @@ local function OrderEquipment(ply, cmd, args)
             allowed = GetEquipmentItem(ROLE_TRAITOR, id)
         end
 
-        -- Detective -> Detective-like
-        if not allowed and promoted then
+        -- Detective -> Detective-like, Detective -> Special Detective
+        if not allowed and (promoted or sync_detective_weapons) then
             allowed = GetEquipmentItem(ROLE_DETECTIVE, id)
         end
 

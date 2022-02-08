@@ -73,6 +73,14 @@ Variables available globally (within the defined realm)
 *Realm:* Client and Server\
 *Added in:* 1.0.0
 
+**ROLE_EXTERNAL_START** - The role number where the externally-loaded roles start.\
+*Realm:* Client and Server\
+*Added in:* 1.0.10
+
+**ROLE_DATA_EXTERNAL** - Table of definition data for each external role.\
+*Realm:* Client and Server\
+*Added in:* 1.4.9
+
 **ROLE_NONE** - Updated to be -1 so players who have not been given a role can be identified.\
 *Realm:* Client and Server\
 *Added in:* 1.0.0
@@ -80,10 +88,6 @@ Variables available globally (within the defined realm)
 **ROLE_MAX** - The maximum role number.\
 *Realm:* Client and Server\
 *Added in:* 1.0.0
-
-**ROLE_EXTERNAL_START** - The role number where the externally-loaded roles start.\
-*Realm:* Client and Server\
-*Added in:* 1.0.10
 
 **ROLE_STRINGS** - Table of title-case names for each role.\
 *Realm:* Client and Server\

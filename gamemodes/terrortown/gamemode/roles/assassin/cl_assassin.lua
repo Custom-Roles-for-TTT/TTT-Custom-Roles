@@ -4,6 +4,7 @@ local IsValid = IsValid
 local pairs = pairs
 local string = string
 
+local RemoveHook = hook.Remove
 local GetAllPlayers = player.GetAll
 
 ------------------
@@ -106,7 +107,7 @@ hook.Add("TTTUpdateRoleState", "Assassin_Highlight_TTTUpdateRoleState", function
 
     -- Disable highlights on role change
     if vision_enabled then
-        hook.Remove("PreDrawHalos", "Assassin_Highlight_PreDrawHalos")
+        RemoveHook("PreDrawHalos", "Assassin_Highlight_PreDrawHalos")
         vision_enabled = false
     end
 end)
@@ -124,8 +125,8 @@ hook.Add("Think", "Assassin_Highlight_Think", function()
         vision_enabled = false
     end
 
-    if not vision_enabled then
-        hook.Remove("PreDrawHalos", "Assassin_Highlight_PreDrawHalos")
+    if assassin_target_vision and not vision_enabled then
+        RemoveHook("PreDrawHalos", "Assassin_Highlight_PreDrawHalos")
     end
 end)
 

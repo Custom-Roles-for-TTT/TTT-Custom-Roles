@@ -4,6 +4,8 @@ local net = net
 local player = player
 local string = string
 
+local RemoveHook = hook.Remove
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -18,10 +20,14 @@ hook.Add("Initialize", "Vampire_Translations_Initialize", function()
     LANG.AddToLanguage("english", "ev_vampi_revert_converted", "The last {vampire} Prime ({prime}) was killed and all their thralls had their humanity restored")
     LANG.AddToLanguage("english", "ev_vampi_kill_converted", "The last {vampire} Prime ({prime}) was killed and took all their thralls with them")
 
+    -- Fangs
+    LANG.AddToLanguage("english", "vam_fangs_help_pri", "Hold {primaryfire} to suck blood")
+    LANG.AddToLanguage("english", "vam_fangs_help_sec", "Press {secondaryfire} to fade from view")
+
     -- Popup
     LANG.AddToLanguage("english", "info_popup_vampire", [[You are {role}! {comrades}
 
-You can use your fangs (left-click) to drink blood and refill your health or to fade from view (right-click).
+You can use your fangs (hold left-click) to drink blood and refill your health or to fade from view (right-click).
     
 Press {menukey} to receive your special equipment!]])
 end)
@@ -181,7 +187,7 @@ hook.Add("TTTUpdateRoleState", "Vampire_Highlight_TTTUpdateRoleState", function(
 
     -- Disable highlights on role change
     if vision_enabled then
-        hook.Remove("PreDrawHalos", "Vampire_Highlight_PreDrawHalos")
+        RemoveHook("PreDrawHalos", "Vampire_Highlight_PreDrawHalos")
         vision_enabled = false
     end
 end)
@@ -199,8 +205,8 @@ hook.Add("Think", "Vampire_Highlight_Think", function()
         vision_enabled = false
     end
 
-    if not vision_enabled then
-        hook.Remove("PreDrawHalos", "Vampire_Highlight_PreDrawHalos")
+    if vampire_vision and not vision_enabled then
+        RemoveHook("PreDrawHalos", "Vampire_Highlight_PreDrawHalos")
     end
 end)
 

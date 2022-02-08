@@ -21,7 +21,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 *Parameters:*
 - *ply* - The player who is attempting to identify a corpse
 - *rag* - The ragdoll being identified
-- *wasTraitor* - Whether the player who the targetted ragdoll represents belonged to the traitor team
+- *wasTraitor* - Whether the player who the targeted ragdoll represents belonged to the traitor team
 
 *Return:* Whether or not the given player should be able to identify the given corpse (Defaults to `false`).
 
@@ -105,7 +105,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 *Added in:* 1.2.7\
 *Parameters:*
 - *ply* - The player who is being spawned or respawned
-- *deadOnly* - Whether this call is specifically targetted at dead players
+- *deadOnly* - Whether this call is specifically targeted at dead players
 
 **TTTPrintResultMessage(type)** - Called before the round win results message is printed to the top-right corner of the screen. Can be used to print a replacement message for custom win types that this would not normally handle.\
 *Realm:* Server\
@@ -142,6 +142,61 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 *Added in:* 1.3.1\
 *Parameters:*
 - *client* - The local player
+
+**TTTRewardDetectiveTraitorDeathAmount(victim, attacker, amount)** - Called before all detectives are awarded credits for a traitor being killed.\
+*Realm:* Server\
+*Added in:* 1.4.8\
+*Parameters:*
+- *victim* - The player who was killed
+- *attacker* - The player who killed the victim
+- *amount* - The number of credits that all detectives will be awarded
+
+*Return:*
+- *new_amount* - The new number of credits that all detectives will be awarded
+
+**TTTRewardDetectiveTraitorDeath(ply, victim, attacker, amount)** - Called before a player awarded credits for a traitor being killed.\
+*Realm:* Server\
+*Added in:* 1.4.8\
+*Parameters:*
+- *ply* - The player who is being given credits
+- *victim* - The player who was killed
+- *attacker* - The player who killed the victim
+- *amount* - The number of credits being awarded
+
+*Return:* `true` to prevent the given player from being awarded credits
+
+**TTTRewardPlayerKilledAmount(victim, attacker, amount)** - Called before a player is awarded credits for killing an opponent.\
+*Realm:* Server\
+*Added in:* 1.4.8\
+*Parameters:*
+- *victim* - The player who was killed
+- *attacker* - The player who killed the victim
+- *amount* - The number of credits that the attacker will be awarded
+
+*Return:*
+- *new_amount* - The new number of credits that the attacker will be awarded
+
+**TTTRewardTraitorInnocentDeathAmount(victim, attacker, amount)** - Called before all traitors are awarded credits for a non-traitor being killed.\
+*Realm:* Server\
+*Added in:* 1.4.8\
+*Parameters:*
+- *victim* - The player who was killed
+- *attacker* - The player who killed the victim
+- *amount* - The number of credits that all traitors will be awarded
+
+*Return:*
+- *new_amount* - The new number of credits that all traitors will be awarded
+
+**TTTRewardTraitorInnocentDeath(ply, victim, attacker, amount)** - Called before a player awarded credits for a non-traitor being killed.\
+*Realm:* Server\
+*Added in:* 1.4.8\
+*Parameters:*
+- *ply* - The player who is being given credits
+- *victim* - The player who was killed
+- *attacker* - The player who killed the victim
+- *amount* - The number of credits being awarded
+
+*Return:* `true` to prevent the given player from being awarded credits
 
 **TTTRolePopupParams(client)** - Called before a player's role start-of-round popup message is displayed, allowing the parameters to be added to.\
 *Realm:* Client\
@@ -182,7 +237,10 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 *Added in:* 1.4.1\
 *Parameters:*
 - *wintype* - The round win type
-- *secondaryWins* - The table of role identifiers for roles who should have a secondary win on the round summary. Insert any role identifiers you would like to display into this table
+- *secondaryWins* - The table of role information for who should have a secondary win on the round summary. Insert any role data you would like to display into this table. Role data can either be the role's identifier (to use the default text and color logic) or, *as of version 1.4.6*, a table of the following data (to use your own text and colors):
+  - rol - The role identifier
+  - txt - The text to display
+  - col - The background color to use
 
 **TTTScoringSummaryRender(ply, roleFileName, groupingRole, roleColor, nameLabel, startingRole, finalRole)** - Called before the round summary screen is shown. Used to modify the color, position, and icon for a player.\
 *Realm:* Client\
@@ -362,9 +420,17 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *smokeParticle* - The new smokeParticle value to use or the original passed into the hook
 - *smokeOffset* - The new smokeOffset value to use or the original passed into the hook
 
+**TTTSyncEventIDs()** - Called when the server is syncing generated event IDs to the client.\
+*Realm:* Client\
+*Added in:* 1.4.6
+
 **TTTSyncGlobals()** - Called when the server is syncing convars to global variables for client access.\
 *Realm:* Server\
 *Added in:* 1.2.7
+
+**TTTSyncWinIDs()** - Called when the server is syncing generated win IDs to the client.\
+*Realm:* Client\
+*Added in:* 1.4.6
 
 **TTTTargetIDPlayerBlockIcon(ply, client)** - Called before a player's overhead icon is shown, allowing you to block it.\
 *Realm:* Client\

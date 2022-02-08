@@ -118,6 +118,13 @@ CreateConVar("ttt_jester_chance", 0.5)
 CreateConVar("ttt_monster_pct", 0.33)
 CreateConVar("ttt_monster_chance", 0.5)
 
+-- Scoreboard
+CreateConVar("ttt_scoreboard_deaths", "0")
+CreateConVar("ttt_scoreboard_score", "0")
+
+-- Round Summary
+CreateConVar("ttt_round_summary_tabs", "summary,hilite,events,scores")
+
 for role = 0, ROLE_MAX do
     local rolestring = ROLE_STRINGS_RAW[role]
     local shortstring = ROLE_STRINGS_SHORT[role]
@@ -505,6 +512,11 @@ function GM:SyncGlobals()
     SetGlobalInt("ttt_bem_sv_size", GetConVar("ttt_bem_sv_size"):GetBool())
 
     SetGlobalBool("sv_voiceenable", GetConVar("sv_voiceenable"):GetBool())
+
+    SetGlobalString("ttt_round_summary_tabs", GetConVar("ttt_round_summary_tabs"):GetString())
+
+    SetGlobalBool("ttt_scoreboard_deaths", GetConVar("ttt_scoreboard_deaths"):GetBool())
+    SetGlobalBool("ttt_scoreboard_score", GetConVar("ttt_scoreboard_score"):GetBool())
 
     UpdateRoleState()
 end
@@ -1290,6 +1302,7 @@ function SelectRoles()
         end
     end
 
+    table.Shuffle(choices)
     local choice_count = #choices
 
     -- special spawning cvars

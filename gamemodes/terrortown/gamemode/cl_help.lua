@@ -23,6 +23,7 @@ surface.CreateFont("TutorialTitle", {
 CreateClientConVar("ttt_spectator_mode", "0", true, false)
 CreateClientConVar("ttt_mute_team_check", "0", true, false)
 CreateClientConVar("ttt_show_raw_karma_value", "0", true, false)
+CreateClientConVar("ttt_show_karma_total_pct", "0", true, false)
 CreateClientConVar("ttt_color_mode", "default", true, false)
 
 CreateClientConVar("ttt_custom_inn_color_r", "25", true, false)
@@ -164,6 +165,9 @@ function HELPSCRN:Show()
 
     cb = dgui:CheckBox(GetTranslation("set_raw_karma"), "ttt_show_raw_karma_value")
     cb:SetTooltip(GetTranslation("set_raw_karma_tip"))
+
+    cb = dgui:CheckBox(GetTranslation("set_karma_total_pct"), "ttt_show_karma_total_pct")
+    cb:SetTooltip(GetTranslation("set_karma_total_pct_tip"))
 
     cb = dgui:CheckBox(GetTranslation("set_hide_role"), "ttt_hide_role")
     cb:SetTooltip(GetTranslation("set_hide_role_tip"))
@@ -879,7 +883,7 @@ function HELPSCRN:CreateTutorial(parent)
 
     maxPages = #enabledPages + #enabledRoles
 
-    local bw, bh = 96, 30
+    local bw, bh = 88, 30
 
     local tut = vgui.Create("DPanel", parent)
     tut:StretchToParent(0, 0, 0, 0)
@@ -905,9 +909,9 @@ function HELPSCRN:CreateTutorial(parent)
     end
 
     local bar = vgui.Create("TTTProgressBar", parent)
-    bar:SetSize(200, bh)
+    bar:SetSize(198, bh)
     bar:MoveBelow(tut)
-    bar:CenterHorizontal()
+    bar:AlignLeft((bw * 2) + 5)
     bar:SetMin(1)
     bar:SetMax(maxPages)
     bar:SetValue(1)
@@ -928,12 +932,20 @@ function HELPSCRN:CreateTutorial(parent)
     bnext:CopyPos(bar)
     bnext:AlignRight(1)
 
+    local brole = vgui.Create("DButton", parent)
+    brole:SetSize(24, bh)
+    brole:SetText("")
+    brole:SetImage("icon16/arrow_in.png")
+    brole:SetTooltip(GetTranslation("help_tut_find_role"))
+    brole:CopyPos(bar)
+    brole:MoveLeftOf(bnext)
+
     local bprev = vgui.Create("DButton", parent)
     bprev:SetFont("Trebuchet22")
     bprev:SetSize(bw, bh)
     bprev:SetText(GetTranslation("prev"))
     bprev:CopyPos(bar)
-    bprev:MoveLeftOf(bnext)
+    bprev:MoveLeftOf(brole)
 
     pageSelect.OnSelect = function(pnl, index, label, data)
         tut.current = data
@@ -943,19 +955,31 @@ function HELPSCRN:CreateTutorial(parent)
 
     bnext.DoClick = function()
         if tut.current < maxPages then
-            tut.current = tut.current + 1
-            bar:SetValue(tut.current)
-            ShowTutorialPage(tut, tut.current)
-            pageSelect:ChooseOptionID(tut.current)
+            pageSelect:ChooseOptionID(tut.current + 1)
         end
     end
 
     bprev.DoClick = function()
         if tut.current > 1 then
-            tut.current = tut.current - 1
-            bar:SetValue(tut.current)
-            ShowTutorialPage(tut, tut.current)
-            pageSelect:ChooseOptionID(tut.current)
+            pageSelect:ChooseOptionID(tut.current - 1)
         end
+    end
+
+    brole.DoClick = function()
+        local client = LocalPlayer()
+        local role = client:GetRole()
+        if not IsValid(client) or role <= ROLE_NONE or role > ROLE_MAX then return end
+
+        local page = nil
+        for i = #enabledPages, maxPages do
+            if role == enabledRoles[i - #enabledPages] then
+                page = i
+                break
+            end
+        end
+
+        if not page then return end
+
+        pageSelect:ChooseOptionID(page)
     end
 end

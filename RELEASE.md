@@ -1,5 +1,79 @@
 # Release Notes
 
+## 1.5.0
+**Released: February 9th, 2022**
+Includes all beta updates from [1.4.5](#145-beta) to [1.4.9](#149-beta).
+
+### Fixes
+- Fixed very minor bug with loadout items hook, making it consistent with normal shop usage
+- Fixed vampire fang usage hint not showing
+
+### Changes
+- Changed vampire unfreeze delay to be longer by default to help vampires with high pings
+- Changed vampire fang usage hint to be translatable and to show that the primary fire button must be held to drain blood
+
+## 1.4.9 (Beta)
+**Released: February 6th, 2022**
+
+### Fixes
+- Fixed shop sync not working for custom equipment items for special detectives
+- Fixed external detective roles not being able to be configured to disallow looting credits
+
+## 1.4.8 (Beta)
+**Released: January 29th, 2022**
+
+### Changes
+- Changed loot goblin activation timer to be a random number of seconds within a configurable range
+
+### Developer
+- Added new hooks for controlling who, when, and how many credits to award when players are killed
+
+## 1.4.7 (Beta)
+**Released: January 23rd, 2022**
+
+### Additions
+- Added map name to scoreboard and round summary title
+- Added "Find my role" button to the tutorial page
+
+### Changes
+- Changed head icon placement to hopefully work better with scaled-up heads
+
+### Fixes
+- Fixed detective-like players (deputy, impersonator) not being promoted when the active detective team player's role is changed
+- Fixed veteran buff state not being reset if their role was changed
+- Fixed role logic not starting if someone's role was changed
+
+## 1.4.6 (Beta)
+**Released: January 15th, 2022**
+
+### Changes
+- Changed role selection logic to shuffle the list of players to hopefully help the randomization
+- Changed role vision logic to hopefully increase performance for traitors
+
+### Fixes
+- Fixed error caused by vampire fangs when trying to consume a body that didn't contain player information
+- Fixed the "A loot goblin has been spotted!" message not updating when the role is renamed
+
+### Developer
+- Added ability to pass a table of role data to the TTTScoringSecondaryWins hook to customize how secondary wins are displayed
+- Reworked Event ID and Win ID generation to fix case where external roles could have their conditions conflict due to the client and server not generating IDs in the same order. This involved the following changes:
+  - **BREAKING CHANGE** - Deprecated `GenerateNewEventID` on the client and made it a no-op that prints an error message reminding the developer to update
+  - **BREAKING CHANGE** - Deprecated `GenerateNewWinID` on the client and made it a no-op that prints an error message reminding the developer to update
+  - Added TTTSyncEventIDs hook to allow developers to get generated Event IDs on the client after they have been synced
+  - Added TTTSyncWinIDs hook to allow developers to get generated Win IDs on the client after they have been synced
+
+## 1.4.5 (Beta)
+**Released: January 8th, 2022**
+
+### Additions
+- Added the ability to show karma on the scoreboard as a percentage of the total
+- Added the ability to re-add score and deaths columns to the scoreboard
+- Added the ability to rearrange and disable the tabs in the round summary window
+- Added more incompatible addons to the list
+
+### Fixes
+- Fixed assassin being penalized for killing the loot goblin
+
 ## 1.4.4
 **Released: December 30th, 2021**
 
@@ -47,6 +121,11 @@ Includes all beta updates from [1.4.1](#141-beta) to [1.4.2](#142-beta).
 ## 1.4.1 (Beta)
 **Released: December 4th, 2021**
 
+### Additions
+- Added ability to give the impersonator credits when they are activated (disabled by default)
+- Added ability to configure a chance for a promoted impersonator to spawn instead of a detective (disabled by default)
+- Added ability to remind players that there is a medium when they die (enabled by default)
+
 ### Changes
 - Changed old man to lose karma if they hurt or kill players when their adrenaline rush is not active
 - Changed so innocents that hurt or kill the old man will lose karma
@@ -56,11 +135,6 @@ Includes all beta updates from [1.4.1](#141-beta) to [1.4.2](#142-beta).
 ### Fixes
 - Fixed loot goblin and old man not sharing a timelimit win with the innocents
 - Fixed loot goblin and old man not sharing a win with eachother (if they are both in the same round) on the round summary screen
-
-### Additions
-- Added ability to give the impersonator credits when they are activated (disabled by default)
-- Added ability to configure a chance for a promoted impersonator to spawn instead of a detective (disabled by default)
-- Added ability to remind players that there is a medium when they die (enabled by default)
 
 ### Developer
 - Changed TTTCanIdentifyCorpse and TTTCanSearchCorpse hooks to allow changing the corpse's stored role
@@ -245,7 +319,7 @@ Includes all beta updates from [1.2.4](#124-beta) to [1.2.9](#129-beta).
 - Added ability to set a different amount of health overheal if a vampire drains a living target (disabled by default)
 - Added ability to block rewarding vampires when they (or their allies) kill someone (disabled by default)
 - Added ability to give the veteran credits when they are activated (disabled by default)
-- Added ability to set the maximum number of players before "single jester or indepdent" is automatically disabled (disabled by default)
+- Added ability to set the maximum number of players before "single jester or independent" is automatically disabled (disabled by default)
 
 ### Changes
 - Changed custom win events to show in the end-of-round summary's Events tab with an "unknown win event" message until the new TTTEventFinishText hooks are used
@@ -258,7 +332,7 @@ Includes all beta updates from [1.2.4](#124-beta) to [1.2.9](#129-beta).
   - This does allow players who are resurrected after the assassin is assigned their final target to slide under the radar
 - Fixed roles with custom win conditions being able to block jester, clown, and old man wins as well as drunks remembering their role
 - Fixed traitor vampires being able to drain glitches
-- Fixed promoted deputies not being grouped with other detectives in assassin targetting logic
+- Fixed promoted deputies not being grouped with other detectives in assassin targeting logic
 - Fixed independent vampire popup still having "{comrades}" placeholder
 - Fixed a drunk who becomes a clown in the same round as another jester role showing in the same row on the round summary screen
 - Fixed error when a vampire is killed after they release a target being drained but before that target gets unfrozen
@@ -267,7 +341,7 @@ Includes all beta updates from [1.2.4](#124-beta) to [1.2.9](#129-beta).
 - Added TTTBlockPlayerFootstepSound hook to block a player's footstep sound
 - Added TTTKarmaGiveReward hook to block a player from receiving karma
 - Added TTTKarmaShouldGivePenalty hook to determine whether a player should have their karma rewarded or penalized
-- Added TTTPlayerSpawnForRound hook to react to when a player is spawned (or respawed)
+- Added TTTPlayerSpawnForRound hook to react to when a player is spawned (or respawned)
 - Added TTTEventFinishText and TTTEventFinishIconText hooks to add detail to the round finished event row for custom win conditions
 - Added TTTPlayerRoleChanged hook to react to when a player's role changes
 - Added TTTShouldPlayerSmoke hook to affect whether a player should smoke and how that should look
@@ -312,7 +386,7 @@ Includes all beta updates from [1.2.4](#124-beta) to [1.2.9](#129-beta).
 - Added ability for hypnotist device to convert detective and deputies that appear as detective to impersonator (disabled by default)
 - Added ability for traitor or quack to buy an exorcism device usable to remove a haunting phantom (disabled by default)
 - Added configuration for whether assassin damage bonus applies to weapons bought from the shop (enabled by default)
-- Added ability for bodysnatcher's role change to be hidden based on which team they joined (disbled by default)
+- Added ability for bodysnatcher's role change to be hidden based on which team they joined (disabled by default)
 - Added a shop icon for the bomb station
 - Added new microphone volume tip from base TTT
 
@@ -341,8 +415,8 @@ Includes all beta updates from [1.2.4](#124-beta) to [1.2.9](#129-beta).
 - Added TTTTargetIDPlayerHintText hook for controlling what text to show when rendering an entity's hint text
 - Added TTTTargetIDPlayerName hook for controlling what text to show when rendering a player's name
 - Added TTTTargetIDRagdollName hook for controlling what text to show when rendering a ragdoll's name
-- Added `plymeta:ShouldRevealBeggar` to determine if a palyer should be able to tell that a target player is no longer a beggar (e.g. converted to an innocent or traitor)
-- Added `plymeta:ShouldRevealBodysnatcher` to determine if a palyer should be able to tell that a target player is no longer a bodysnatcher (e.g. has snatched a role from a dead body)
+- Added `plymeta:ShouldRevealBeggar` to determine if a player should be able to tell that a target player is no longer a beggar (e.g. converted to an innocent or traitor)
+- Added `plymeta:ShouldRevealBodysnatcher` to determine if a player should be able to tell that a target player is no longer a bodysnatcher (e.g. has snatched a role from a dead body)
 - Added `was_bodysnatcher` property to TTTRadarPlayerRender hook's `tgt` parameter
 - Changed the global `ShouldHideJesters` to be deprecated in favor of `plymeta:ShouldHideJesters`
 - Fixed returning false for either text value in TTTTargetIDPlayerText hook not actually stopping the original text from being used
@@ -404,7 +478,7 @@ Includes all beta updates from [1.2.4](#124-beta) to [1.2.9](#129-beta).
 - Fixed translations in C4 UI not working sometimes
 - Fixed a player who is turning into a zombie not stopping the round from ending
 - Fixed medium ghosts creating shadows
-- Adjusted medium ghost logic to hopefully fix another "floating kliener" case
+- Adjusted medium ghost logic to hopefully fix another "floating kleiner" case
 
 ### Developer
 - Added `plymeta:GiveDelayedShopItems` to give a player their delayed shop items
@@ -482,7 +556,7 @@ Includes all beta updates from [1.1.4](#114-beta) to [1.1.11](#1111-beta).
 - Added the option for the mediums' spirits to be colored similar to tracker footsteps (enabled by default)
 
 ### Changes
-- Changed round summary role tooltip to be translateable
+- Changed round summary role tooltip to be translatable
 - Changed some role features to give the player bonus points when used successfully (hypnotist, bodysnatcher, swapper, beggar)
 
 ### Fixes

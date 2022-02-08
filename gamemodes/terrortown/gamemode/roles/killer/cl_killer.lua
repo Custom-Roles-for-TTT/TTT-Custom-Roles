@@ -1,6 +1,8 @@
 local hook = hook
 local string = string
 
+local RemoveHook = hook.Remove
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -69,7 +71,7 @@ hook.Add("TTTUpdateRoleState", "Killer_Highlight_TTTUpdateRoleState", function()
 
     -- Disable highlights on role change
     if vision_enabled then
-        hook.Remove("PreDrawHalos", "Killer_Highlight_PreDrawHalos")
+        RemoveHook("PreDrawHalos", "Killer_Highlight_PreDrawHalos")
         vision_enabled = false
     end
 end)
@@ -87,8 +89,8 @@ hook.Add("Think", "Killer_Highlight_Think", function()
         vision_enabled = false
     end
 
-    if not vision_enabled then
-        hook.Remove("PreDrawHalos", "Killer_Highlight_PreDrawHalos")
+    if killer_vision and not vision_enabled then
+        RemoveHook("PreDrawHalos", "Killer_Highlight_PreDrawHalos")
     end
 end)
 

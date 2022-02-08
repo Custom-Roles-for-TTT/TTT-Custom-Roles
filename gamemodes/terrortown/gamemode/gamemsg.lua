@@ -138,9 +138,9 @@ function GetMonsterTeamFilter(alive_only)
     return GetPlayerFilter(function(p) return p:IsMonsterTeam() and (not alive_only or p:IsTerror()) end)
 end
 
-function GetDetectiveTeamFilter(alive_only)
+function GetDetectiveTeamFilter(alive_only, pred)
     -- Include promoted Deputies in this, but not Impersonators. They are included in GetTraitorTeamFilter
-    return GetPlayerFilter(function(p) return (p:IsDetectiveTeam() or (p:GetDeputy() and p:IsRoleActive())) and (not alive_only or p:IsTerror()) end)
+    return GetPlayerFilter(function(p) return (p:IsDetectiveTeam() or (p:GetDeputy() and p:IsRoleActive())) and (not alive_only or p:IsTerror()) and (not pred or pred(p)) end)
 end
 
 ---- Communication control

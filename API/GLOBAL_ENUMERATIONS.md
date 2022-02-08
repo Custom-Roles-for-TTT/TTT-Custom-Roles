@@ -10,8 +10,8 @@ Enumerations available globally (within the defined realm). There are additional
 *Added in:* 1.0.11\
 *Values:*
 - ROLE_CONVAR_TYPE_NUM - A number. Will use a slider in the configuration UI.
-- ROLE_CONVAR_TYPE_BOOL = A boolean. Will use a checkbox in the configuration UI.
-- ROLE_CONVAR_TYPE_TEXT = A text value. Will use a text box in the configuration UI.
+- ROLE_CONVAR_TYPE_BOOL - A boolean. Will use a checkbox in the configuration UI.
+- ROLE_CONVAR_TYPE_TEXT - A text value. Will use a text box in the configuration UI.
 
 **ROLE_TEAM_\*** - Which role team an external role is registered to. A "role team" is a way of grouping roles by common functionality and mostly maps to the logical team with the exception of the detective role team. The detective role team is part of the innocent logical team.\
 *Realm:* Client and Server\

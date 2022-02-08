@@ -296,36 +296,35 @@ function SWEP:DoAttack(pickup)
 
         if pickup then
             if (ply:EyePos() - trace.HitPos):Length() < self:GetRange(ent) then
-
                 if self:AllowPickup(ent) then
-                self:Pickup()
-                self:SendWeaponAnim( ACT_VM_HITCENTER )
+                    self:Pickup()
+                    self:SendWeaponAnim( ACT_VM_HITCENTER )
 
-                -- make the refire slower to avoid immediately dropping
-                local delay = (ent:GetClass() == "prop_ragdoll") and 0.8 or 0.5
+                    -- make the refire slower to avoid immediately dropping
+                    local delay = (ent:GetClass() == "prop_ragdoll") and 0.8 or 0.5
 
-                self:SetNextSecondaryFire(CurTime() + delay)
-                return
-                else
-                local is_ragdoll = trace.Entity:GetClass() == "prop_ragdoll"
-
-                -- pull heavy stuff
-                ent = trace.Entity
-                phys = ent:GetPhysicsObject()
-                local pdir = trace.Normal * -1
-
-                if is_ragdoll then
-
-                    phys = ent:GetPhysicsObjectNum(trace.PhysicsBone)
-
-                    -- increase refire to make rags easier to drag
-                    --self.Weapon:SetNextSecondaryFire(CurTime() + 0.04)
-                end
-
-                if IsValid(phys) then
-                    self:MoveObject(phys, pdir, 6000, is_ragdoll)
+                    self:SetNextSecondaryFire(CurTime() + delay)
                     return
-                end
+                else
+                    local is_ragdoll = trace.Entity:GetClass() == "prop_ragdoll"
+
+                    -- pull heavy stuff
+                    ent = trace.Entity
+                    phys = ent:GetPhysicsObject()
+                    local pdir = trace.Normal * -1
+
+                    if is_ragdoll then
+
+                        phys = ent:GetPhysicsObjectNum(trace.PhysicsBone)
+
+                        -- increase refire to make rags easier to drag
+                        --self.Weapon:SetNextSecondaryFire(CurTime() + 0.04)
+                    end
+
+                    if IsValid(phys) then
+                        self:MoveObject(phys, pdir, 6000, is_ragdoll)
+                        return
+                    end
                 end
             end
         else
