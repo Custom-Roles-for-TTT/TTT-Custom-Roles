@@ -14,6 +14,7 @@ Includes all beta updates from [1.4.5](#145-beta) to [1.4.9](#149-beta).
 ### Fixes
 - Fixed very minor bug with loadout items hook, making it consistent with normal shop usage
 - Fixed vampire fang usage hint not showing
+- Fixed roles without shop items being able to open the shop and to loot credits if Shop For All was enabled
 
 ### Changes
 - Changed vampire unfreeze delay to be longer by default to help vampires with high pings
