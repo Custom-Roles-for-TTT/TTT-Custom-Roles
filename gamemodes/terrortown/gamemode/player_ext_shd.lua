@@ -110,7 +110,7 @@ function plymeta:CanUseShop()
     local isShopRole = self:IsShopRole()
     -- Don't perform the additional checks if "shop for all" is enabled
     if GetGlobalBool("ttt_shop_for_all", false) then
-        return isShopRole
+        return isShopRole and WEPS.DoesRoleHaveWeapon(self:GetRole(), self:IsDetectiveLike())
     end
 
     return isShopRole
@@ -142,7 +142,7 @@ function plymeta:CanLootCredits(active_only)
     if type(can_loot) == "boolean" then
         return can_loot
     end
-    return self:IsShopRole()
+    return self:CanUseShop()
 end
 
 function plymeta:ShouldActLikeJester()
