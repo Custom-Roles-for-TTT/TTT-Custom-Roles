@@ -7,12 +7,12 @@ Includes all beta updates from [1.4.5](#145-beta) to [1.4.9](#149-beta).
 ### Fixes
 - Fixed very minor bug with loadout items hook, making it consistent with normal shop usage
 
-## 1.4.9 (Beta)
-**Released: February 6th, 2022**
-
 ### Changes
 - Changed vampire unfreeze delay to be longer by default to help vampires with high pings
 - Changed vampire weapon hint to be translatable and to show that the primary fire button must be held to drain blood
+
+## 1.4.9 (Beta)
+**Released: February 6th, 2022**
 
 ### Fixes
 - Fixed shop sync not working for custom equipment items for special detectives
