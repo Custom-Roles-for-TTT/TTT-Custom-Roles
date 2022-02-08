@@ -71,7 +71,7 @@ local vampire_fang_timer = CreateConVar("ttt_vampire_fang_timer", "5")
 local vampire_fang_heal = CreateConVar("ttt_vampire_fang_heal", "50")
 local vampire_fang_overheal = CreateConVar("ttt_vampire_fang_overheal", "25")
 local vampire_fang_overheal_living = CreateConVar("ttt_vampire_fang_overheal_living", "-1")
-local vampire_fang_unfreeze_delay = CreateConVar("ttt_vampire_fang_unfreeze_delay", "1")
+local vampire_fang_unfreeze_delay = CreateConVar("ttt_vampire_fang_unfreeze_delay", "2")
 local vampire_prime_convert = CreateConVar("ttt_vampire_prime_only_convert", "1")
 
 function SWEP:SetupDataTables()
@@ -92,7 +92,7 @@ function SWEP:Initialize()
     self.fading = false
 
     if CLIENT then
-        self:AddHUDHelp("Left-click to suck blood", "Right-click to fade", false)
+        self:AddHUDHelp("vam_fangs_help_pri", "vam_fangs_help_sec", true)
     end
     return self.BaseClass.Initialize(self)
 end
@@ -457,6 +457,8 @@ end
 
 if CLIENT then
     function SWEP:DrawHUD()
+        self.BaseClass.DrawHUD(self)
+
         local x = ScrW() / 2.0
         local y = ScrH() / 2.0
 

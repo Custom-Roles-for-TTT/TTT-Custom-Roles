@@ -1,5 +1,17 @@
 # Release Notes
 
+## 1.5.0
+**Released: February 9th, 2022**
+Includes all beta updates from [1.4.5](#145-beta) to [1.4.9](#149-beta).
+
+### Fixes
+- Fixed very minor bug with loadout items hook, making it consistent with normal shop usage
+- Fixed vampire fang usage hint not showing
+
+### Changes
+- Changed vampire unfreeze delay to be longer by default to help vampires with high pings
+- Changed vampire fang usage hint to be translatable and to show that the primary fire button must be held to drain blood
+
 ## 1.4.9 (Beta)
 **Released: February 6th, 2022**
 

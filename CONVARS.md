@@ -192,7 +192,8 @@ ttt_vampire_fang_dead_timer                 0       // The amount of time fangs 
 ttt_vampire_fang_heal                       50      // The amount of health a vVampire will heal by when they fully drain a target's blood
 ttt_vampire_fang_overheal                   25      // The amount over the vampire's normal maximum health (e.g. 100 + this ConVar) that the vampire can heal to by drinking blood.
 ttt_vampire_fang_overheal_living            -1      // The amount of overheal (see "ttt_vampire_fang_overheal") to give if the vampire's target is living. Set to -1 to use the same amount as "ttt_vampire_fang_overheal" instead
-ttt_vampire_prime_death_mode                0       // What to do when the prime vampire(s) (e.g. playters who spawn as vampires originally) are killed. 0 - Do nothing. 1 - Kill all vampire thralls (non-prime vampires). 2 - Revert all vampire thralls (non-prime vampires) to their original role
+ttt_vampire_fang_unfreeze_delay             2       // The number of seconds before players who were frozen in place by the fangs should be released if the vampire stops using the fangs on them
+ttt_vampire_prime_death_mode                0       // What to do when the prime vampire(s) (e.g. players who spawn as vampires originally) are killed. 0 - Do nothing. 1 - Kill all vampire thralls (non-prime vampires). 2 - Revert all vampire thralls (non-prime vampires) to their original role
 ttt_vampire_prime_only_convert              1       // Whether only prime vampires (e.g. players who spawn as vampire originally) are allowed to convert other players
 ttt_vampire_kill_credits                    1       // Whether the vampire receives credits when they kill another player
 ttt_vampire_loot_credits                    1       // Whether the vampire can loot credits from a dead player
