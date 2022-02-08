@@ -457,6 +457,8 @@ end
 
 if CLIENT then
     function SWEP:DrawHUD()
+        self.BaseClass.DrawHUD(self)
+
         local x = ScrW() / 2.0
         local y = ScrH() / 2.0
 
