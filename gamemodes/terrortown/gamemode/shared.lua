@@ -17,7 +17,7 @@ local StringSplit = string.Split
 local StringSub = string.sub
 
 -- Version string for display and function for version checks
-CR_VERSION = "1.5.0"
+CR_VERSION = "1.5.1"
 CR_BETA = true
 
 function CRVersion(version)
@@ -962,10 +962,6 @@ if SERVER then
     end)
 end
 if CLIENT then
-    function GenerateNewEventID(role)
-        ErrorNoHaltWithStack("WARNING: Role is using 'GenerateNewEventID' on the client. This is deprecated as of v1.4.6 and should be replaced with the new 'TTTSyncEventIDs' hook.\n")
-    end
-
     net.Receive("TTT_SyncEventIDs", function()
         EVENTS_BY_ROLE = net.ReadTable()
         EVENT_MAX = net.ReadUInt(16)
@@ -1022,10 +1018,6 @@ if SERVER then
     end)
 end
 if CLIENT then
-    function GenerateNewWinID(role)
-        ErrorNoHaltWithStack("WARNING: Role is using 'GenerateNewWinID' on the client. This is deprecated as of v1.4.6 and should be replaced with the new 'TTTSyncWinIDs' hook.\n")
-    end
-
     net.Receive("TTT_SyncWinIDs", function()
         WINS_BY_ROLE = net.ReadTable()
         WIN_MAX = net.ReadUInt(16)

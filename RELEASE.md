@@ -1,5 +1,12 @@
 # Release Notes
 
+## 1.5.1
+**Released:**
+
+### Developer
+- Removed deprecated global `GenerateNewEventID` from the client realm. Use the `TTTSyncEventIDs` hook instead
+- Removed deprecated global `GenerateNewWinID` from the client realm. Use the `TTTSyncWinIDs` hook instead
+
 ## 1.5.0
 **Released: February 9th, 2022**\
 Includes all beta updates from [1.4.5](#145-beta) to [1.4.9](#149-beta).

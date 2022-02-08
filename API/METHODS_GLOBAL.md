@@ -24,7 +24,7 @@ Methods available globally (within the defined realm)
 *Returns*: An accessible position around the given position or `false` if none can be found
 
 **GenerateNewEventID(role)** - Generates a new ID to be used for custom scoring events.\
-*Realm:* Client *(Deprecated in 1.4.6)* and Server\
+*Realm:* Server\
 *Added in:* 1.2.5\
 *Parameters:*
 - *role* - The ID of the role that the generated event ID belongs to. Pass `ROLE_NONE` if this should not be associated with any role *(Added in 1.4.2)*
@@ -32,7 +32,7 @@ Methods available globally (within the defined realm)
 *NOTE:* To get this value on the client, use the `TTTSyncEventIDs` hook and pull the value out of the `EVENTS_BY_ROLE` global table
 
 **GenerateNewWinID(role)** - Generates a new ID to be used for custom win conditions.\
-*Realm:* Client *(Deprecated in 1.4.6)* and Server\
+*Realm:* Server\
 *Added in:* 1.2.5\
 *Parameters:*
 - *role* - The ID of the role that the generated win ID belongs to. Pass `ROLE_NONE` if this should not be associated with any role *(Added in 1.4.2)*
