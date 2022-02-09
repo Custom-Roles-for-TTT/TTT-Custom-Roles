@@ -3,6 +3,9 @@
 ## 1.5.1 (Beta)
 **Released:**
 
+### Fixes
+- Fixed a few cases where roles without items in their shop could open the shop when Shop For All was enabled
+
 ### Developer
 - Removed deprecated global `GenerateNewEventID` from the client realm. Use the `TTTSyncEventIDs` hook instead
 - Removed deprecated global `GenerateNewWinID` from the client realm. Use the `TTTSyncWinIDs` hook instead
