@@ -123,7 +123,7 @@ hook.Add("TTTSpectatorShowHUD", "Parasite_Infecting_TTTSpectatorShowHUD", functi
     local max_power = GetGlobalInt("ttt_parasite_infection_time", 90)
     local current_power = cli:GetNWInt("ParasiteInfectionProgress", 0)
 
-    HUD:PaintPowersHUD(nil, max_power, current_power, infection_colors, L.infect_title, L.infect_help)
+    CRHUD:PaintPowersHUD(nil, max_power, current_power, infection_colors, L.infect_title, L.infect_help)
 end)
 
 --------------
