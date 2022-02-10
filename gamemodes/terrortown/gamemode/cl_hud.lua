@@ -1,6 +1,6 @@
 -- HUD HUD HUD
 
-HUD = {}
+CRHUD = {}
 
 local pairs = pairs
 local surface = surface
@@ -115,7 +115,7 @@ end
 ---- http://wiki.garrysmod.com/?title=Creating_a_HUD
 
 -- Paints a graphical meter bar
-function HUD:PaintBar(r, x, y, w, h, colors, value)
+function CRHUD:PaintBar(r, x, y, w, h, colors, value)
     -- Background
     -- slightly enlarged to make a subtle border
     draw.RoundedBox(8, x - 1, y - 1, w + 2, h + 2, colors.background)
@@ -128,14 +128,14 @@ function HUD:PaintBar(r, x, y, w, h, colors, value)
     end
 end
 
-function HUD:PaintPowersHUD(powers, max_power, current_power, colors, title, subtitle)
+function CRHUD:PaintPowersHUD(powers, max_power, current_power, colors, title, subtitle)
     local margin = 10
     local width, height = 200, 25
     local x = ScrW() / 2 - width / 2
     local y = margin / 2 + height
     local power_percentage = current_power / max_power
 
-    HUD:PaintBar(8, x, y, width, height, colors, power_percentage)
+    CRHUD:PaintBar(8, x, y, width, height, colors, power_percentage)
 
     local color = bg_colors.background_main
 
@@ -206,7 +206,7 @@ local function DrawBg(x, y, width, height, client)
     draw.RoundedBoxEx(8, x, y, tw, th, col, true, false, false, true)
 end
 
-function HUD:ShadowedText(text, font, x, y, color, xalign, yalign)
+function CRHUD:ShadowedText(text, font, x, y, color, xalign, yalign)
     draw.SimpleText(text, font, x + 2, y + 2, COLOR_BLACK, xalign, yalign)
     draw.SimpleText(text, font, x, y, color, xalign, yalign)
 end
@@ -222,7 +222,7 @@ local function PunchPaint(client)
     local x = ScrW() / 2 - width / 2
     local y = margin / 2 + height
 
-    HUD:PaintBar(8, x, y, width, height, ammo_colors, punch)
+    CRHUD:PaintBar(8, x, y, width, height, ammo_colors, punch)
 
     local color = bg_colors.background_main
 
@@ -263,21 +263,21 @@ local function SpecHUDPaint(client)
     draw.RoundedBox(8, x, round_y, time_x - x, height, bg_colors.noround)
 
     local text = L[roundstate_string[GAMEMODE.round_state]]
-    HUD:ShadowedText(text, "TraitorState", x + margin, round_y, COLOR_WHITE)
+    CRHUD:ShadowedText(text, "TraitorState", x + margin, round_y, COLOR_WHITE)
 
     -- Draw round/prep/post time remaining
     text = util.SimpleTime(MathMax(0, GetGlobalFloat("ttt_round_end", 0) - CurTime()), "%02i:%02i")
-    HUD:ShadowedText(text, "TimeLeft", time_x + margin, time_y, COLOR_WHITE)
+    CRHUD:ShadowedText(text, "TimeLeft", time_x + margin, time_y, COLOR_WHITE)
 
     local tgt = client:GetObserverTarget()
     if client:ShouldShowSpectatorHUD() then
         CallHook("TTTSpectatorShowHUD", nil, client, tgt)
     elseif IsPlayer(tgt) then
-        HUD:ShadowedText(tgt:Nick(), "TimeLeft", ScrW() / 2, margin, COLOR_WHITE, TEXT_ALIGN_CENTER)
+        CRHUD:ShadowedText(tgt:Nick(), "TimeLeft", ScrW() / 2, margin, COLOR_WHITE, TEXT_ALIGN_CENTER)
     elseif IsValid(tgt) and tgt:GetNWEntity("spec_owner", nil) == client then
         PunchPaint(client)
     else
-        HUD:ShadowedText(interp(L.spec_help, key_params), "TabLarge", ScrW() / 2, margin, COLOR_WHITE, TEXT_ALIGN_CENTER)
+        CRHUD:ShadowedText(interp(L.spec_help, key_params), "TabLarge", ScrW() / 2, margin, COLOR_WHITE, TEXT_ALIGN_CENTER)
     end
 end
 
@@ -306,11 +306,11 @@ local function InfoPaint(client)
     local maxHealth = MathMax(0, client:GetMaxHealth())
     local health_y = y + margin
 
-    HUD:PaintBar(8, x + margin, health_y, bar_width, bar_height, health_colors, health / maxHealth)
-    HUD:PaintBar(8, x + margin, health_y, bar_width, bar_height, overhealth_colors, MathMax(0, health - maxHealth) / maxHealth)
-    HUD:PaintBar(8, x + margin, health_y, bar_width, bar_height, extraoverhealth_colors, MathMax(0, health - (2 * maxHealth)) / maxHealth)
+    CRHUD:PaintBar(8, x + margin, health_y, bar_width, bar_height, health_colors, health / maxHealth)
+    CRHUD:PaintBar(8, x + margin, health_y, bar_width, bar_height, overhealth_colors, MathMax(0, health - maxHealth) / maxHealth)
+    CRHUD:PaintBar(8, x + margin, health_y, bar_width, bar_height, extraoverhealth_colors, MathMax(0, health - (2 * maxHealth)) / maxHealth)
 
-    HUD:ShadowedText(tostring(health), "HealthAmmo", bar_width, health_y, COLOR_WHITE, TEXT_ALIGN_RIGHT, TEXT_ALIGN_RIGHT)
+    CRHUD:ShadowedText(tostring(health), "HealthAmmo", bar_width, health_y, COLOR_WHITE, TEXT_ALIGN_RIGHT, TEXT_ALIGN_RIGHT)
 
     if ttt_health_label:GetBool() then
         local health_status = util.HealthToString(health, client:GetMaxHealth())
@@ -322,17 +322,17 @@ local function InfoPaint(client)
         local ammo_clip, ammo_max, ammo_inv = GetAmmo(client)
         if ammo_clip ~= -1 then
             local ammo_y = health_y + bar_height + margin
-            HUD:PaintBar(8, x + margin, ammo_y, bar_width, bar_height, ammo_colors, ammo_clip / ammo_max)
+            CRHUD:PaintBar(8, x + margin, ammo_y, bar_width, bar_height, ammo_colors, ammo_clip / ammo_max)
             local text = format("%i + %02i", ammo_clip, ammo_inv)
 
-            HUD:ShadowedText(text, "HealthAmmo", bar_width, ammo_y, COLOR_WHITE, TEXT_ALIGN_RIGHT, TEXT_ALIGN_RIGHT)
+            CRHUD:ShadowedText(text, "HealthAmmo", bar_width, ammo_y, COLOR_WHITE, TEXT_ALIGN_RIGHT, TEXT_ALIGN_RIGHT)
         end
     end
 
     local sprint_y = health_y + (2 * (bar_height + margin))
     bar_height = 4
 
-    HUD:PaintBar(2, x + margin, sprint_y, bar_width, bar_height, sprint_colors, client:GetNWFloat("sprintMeter", 0) / 100)
+    CRHUD:PaintBar(2, x + margin, sprint_y, bar_width, bar_height, sprint_colors, client:GetNWFloat("sprintMeter", 0) / 100)
 
     -- Draw traitor state
     local round_state = GAMEMODE.round_state
@@ -350,9 +350,9 @@ local function InfoPaint(client)
     end
 
     if #text > 10 then
-        HUD:ShadowedText(text, "TraitorStateSmall", x + margin + 74, traitor_y + 2, COLOR_WHITE, TEXT_ALIGN_CENTER)
+        CRHUD:ShadowedText(text, "TraitorStateSmall", x + margin + 74, traitor_y + 2, COLOR_WHITE, TEXT_ALIGN_CENTER)
     else
-        HUD:ShadowedText(text, "TraitorState", x + margin + 74, traitor_y, COLOR_WHITE, TEXT_ALIGN_CENTER)
+        CRHUD:ShadowedText(text, "TraitorState", x + margin + 74, traitor_y, COLOR_WHITE, TEXT_ALIGN_CENTER)
     end
 
     -- Draw round time
@@ -398,7 +398,7 @@ local function InfoPaint(client)
         text = util.SimpleTime(MathMax(0, endtime), "%02i:%02i")
     end
 
-    HUD:ShadowedText(text, font, rx, ry, color)
+    CRHUD:ShadowedText(text, font, rx, ry, color)
 
     local label_top = 140
     local label_left = 36

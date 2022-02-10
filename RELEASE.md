@@ -23,6 +23,9 @@ Includes all beta updates from [1.4.5](#145-beta) to [1.4.9](#149-beta).
 - Changed vampire unfreeze delay to be longer by default to help vampires with high pings
 - Changed vampire fang usage hint to be translatable and to show that the primary fire button must be held to drain blood
 
+### Developer
+- Renamed HUD namespace to CRHUD to avoid conflicts
+
 ## 1.4.9 (Beta)
 **Released: February 6th, 2022**
 
