@@ -51,9 +51,9 @@ local function RadarScan(ply, cmd, args)
                             pos = pos,
                             was_beggar = p:GetNWBool("WasBeggar", false),
                             was_bodysnatcher = p:GetNWBool("WasBodysnatcher", false),
-                            killer_clown_active = p:IsClown() and p:IsRoleActive(),
-                            should_act_like_jester = p:ShouldActLikeJester(),
-                            sid64 = p:SteamID64()
+                            killer_clown_active = p:IsPlayer() and p:IsClown() and p:IsRoleActive(),
+                            should_act_like_jester = p:IsPlayer() and p:ShouldActLikeJester(),
+                            sid64 = p:IsPlayer() and p:SteamID64() or ""
                         })
                     end
                 end
