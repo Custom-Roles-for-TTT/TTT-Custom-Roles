@@ -5,6 +5,7 @@
 
 ### Fixes
 - Fixed a few cases where roles without items in their shop could open the shop when Shop For All was enabled
+- Fixed errors displaying radar points when there was a decoy being used
 
 ### Developer
 - Removed deprecated global `GenerateNewEventID` from the client realm. Use the `TTTSyncEventIDs` hook instead
