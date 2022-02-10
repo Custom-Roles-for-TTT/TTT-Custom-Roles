@@ -76,7 +76,7 @@ hook.Add("TTTSpectatorShowHUD", "Phantom_Haunting_TTTSpectatorShowHUD", function
     local max_power = GetGlobalInt("ttt_phantom_killer_haunt_power_max", 100)
     local current_power = cli:GetNWInt("HauntingPower", 0)
 
-    HUD:PaintPowersHUD(powers, max_power, current_power, willpower_colors, L.haunt_title)
+    CRHUD:PaintPowersHUD(powers, max_power, current_power, willpower_colors, L.haunt_title)
 end)
 
 hook.Add("TTTShouldPlayerSmoke", "Phantom_Haunting_TTTShouldPlayerSmoke", function(v, client, shouldSmoke, smokeColor, smokeParticle, smokeOffset)
