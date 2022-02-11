@@ -927,12 +927,9 @@ EVENT_BEGGARKILLED = 26
 EVENT_INFECT = 27
 EVENT_BODYSNATCHERKILLED = 28
 
--- Don't redefine this every time we load this file
-if not EVENT_MAX then
-    EVENT_MAX = 28
-end
+EVENT_MAX = EVENT_MAX or 28
+EVENTS_BY_ROLE = EVENTS_BY_ROLE or {}
 
-EVENTS_BY_ROLE = {}
 if SERVER then
     util.AddNetworkString("TTT_SyncEventIDs")
 
@@ -983,12 +980,9 @@ WIN_MONSTER = 10
 WIN_VAMPIRE = 11
 WIN_LOOTGOBLIN = 12
 
--- Don't redefine this every time we load this file
-if not WIN_MAX then
-    WIN_MAX = 12
-end
+WIN_MAX = WIN_MAX or 12
+WINS_BY_ROLE = WINS_BY_ROLE or {}
 
-WINS_BY_ROLE = {}
 if SERVER then
     util.AddNetworkString("TTT_SyncWinIDs")
 

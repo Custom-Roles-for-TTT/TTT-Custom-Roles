@@ -10,6 +10,7 @@
 ### Developer
 - Removed deprecated global `GenerateNewEventID` from the client realm. Use the `TTTSyncEventIDs` hook instead
 - Removed deprecated global `GenerateNewWinID` from the client realm. Use the `TTTSyncWinIDs` hook instead
+- Changed custom win and event tracking to be protected against file reloading, preventing errors while debugging
 
 ## 1.5.0
 **Released: February 9th, 2022**\
