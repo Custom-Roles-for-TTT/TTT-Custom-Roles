@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.5.1 (Beta)
-**Released:**
+**Released: February 12th, 2022**
 
 ### Fixes
 - Fixed a few cases where roles without items in their shop could open the shop when Shop For All was enabled
