@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.5.2 (Beta)
+### Fixes
+- Fixed old man being invincible if adrenaline rush was disabled
+
 ## 1.5.1 (Beta)
 **Released: February 12th, 2022**
 

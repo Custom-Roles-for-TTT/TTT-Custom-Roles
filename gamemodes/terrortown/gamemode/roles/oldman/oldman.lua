@@ -79,6 +79,10 @@ end
 
 local tempHealth = 10000
 hook.Add("EntityTakeDamage", "OldMan_EntityTakeDamage", function(ent, dmginfo)
+    -- Don't run this if adrenaline rush is disabled
+    local adrenalineTime = oldman_adrenaline_rush:GetInt()
+    if adrenalineTime <= 0 then return end
+
     if GetRoundState() ~= ROUND_ACTIVE then return end
     if not IsPlayer(ent) or not ent:IsOldMan() then return end
 
@@ -99,6 +103,10 @@ hook.Add("EntityTakeDamage", "OldMan_EntityTakeDamage", function(ent, dmginfo)
 end)
 
 hook.Add("PostEntityTakeDamage", "OldMan_PostEntityTakeDamage", function(ent, dmginfo, took)
+    -- Don't run this if adrenaline rush is disabled
+    local adrenalineTime = oldman_adrenaline_rush:GetInt()
+    if adrenalineTime <= 0 then return end
+
     if GetRoundState() ~= ROUND_ACTIVE then return end
     if not IsPlayer(ent) or not ent:IsOldMan() then return end
     if ent:IsRoleActive() then return end
@@ -111,10 +119,6 @@ hook.Add("PostEntityTakeDamage", "OldMan_PostEntityTakeDamage", function(ent, dm
     -- If they didn't take damage then we don't care
     if not took then return end
     if damage <= 0 then return end
-
-    -- Don't run this if adrenaline rush is disabled
-    local adrenalineTime = oldman_adrenaline_rush:GetInt()
-    if adrenalineTime <= 0 then return end
 
     -- Only give the Old Man an adrenaline rush once
     if ent:GetNWBool("AdrenalineRushed", false) then return end
