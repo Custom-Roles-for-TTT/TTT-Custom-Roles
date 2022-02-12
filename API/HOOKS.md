@@ -546,7 +546,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *client* - The local player
 - *role* - What role is currently being shown for the target player
 - *noZ* - Whether the icon is currently visible through walls
-- *colorRole* - What role is being used for the icon background color (Only used when a different color than the only belonging to *role* is being used)
+- *colorRole* - What role is being used for the icon background color (Only used when a different color than the one belonging to *role* is being used)
 - *hideBeggar* - Whether the target was a beggar whose new role should be hidden
 - *showJester* - Whether the target is a jester and the local player would normally know that
 - *hideBodysnatcher* - Whether the target is a bodysnatcher whose new role should be hidden *(Added in 1.2.5)*
