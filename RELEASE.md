@@ -3,8 +3,12 @@
 ## 1.5.2 (Beta)
 **Released:**
 
+### Additions
+- Added shield icon on the left of the health bar when a player has body armor equipped
+
 ### Fixes
 - Fixed old man being invincible if adrenaline rush was disabled
+- Fixed HL2 neurotoxin suit overlay showing when a player took poison damage
 
 ## 1.5.1 (Beta)
 **Released: February 12th, 2022**
