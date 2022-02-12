@@ -1,6 +1,8 @@
 # Release Notes
 
 ## 1.5.2 (Beta)
+**Released:**
+
 ### Fixes
 - Fixed old man being invincible if adrenaline rush was disabled
 
