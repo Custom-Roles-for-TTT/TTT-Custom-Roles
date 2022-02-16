@@ -65,6 +65,8 @@ local TypeToMat = {
     eq_armor = "armor",
     eq_radar = "radar",
     eq_disg = "disguise",
+    eq_speed = "speed",
+    eq_regen = "regen",
     role = function(role) return ROLE_STRINGS_SHORT[role] end,
     c4 = "code",
     dmg = DmgToMat,
@@ -139,6 +141,16 @@ function PreprocSearch(raw)
             if d then
                 search[t].text = T("search_radar")
                 search[t].p = 19
+            end
+        elseif t == "eq_speed" then
+            if d then
+                search[t].text = T("search_speed")
+                search[t].p = 20
+            end
+        elseif t == "eq_regen" then
+            if d then
+                search[t].text = T("search_regen")
+                search[t].p = 21
             end
         elseif t == "c4" then
             if d > 0 then
@@ -466,6 +478,8 @@ local function ReceiveRagdollSearch()
     search.eq_armor = util.BitSet(eq, EQUIP_ARMOR)
     search.eq_radar = util.BitSet(eq, EQUIP_RADAR)
     search.eq_disg = util.BitSet(eq, EQUIP_DISGUISE)
+    search.eq_speed = util.BitSet(eq, EQUIP_SPEED)
+    search.eq_regen = util.BitSet(eq, EQUIP_REGEN)
 
     -- Traitor things
     search.role = net.ReadUInt(8)

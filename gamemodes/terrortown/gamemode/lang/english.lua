@@ -182,6 +182,8 @@ L.search_words = "Something tells you some of this person's last words were: '{l
 L.search_armor = "They were wearing nonstandard body armor."
 L.search_disg = "They were carrying a device that could hide their identity."
 L.search_radar = "They were carrying some sort of radar. It is no longer functioning."
+L.search_speed = "Surgically attached to their legs were devices that appeared to make them move faster."
+L.search_regen = "You find a device hooked into their veins that seems to cause some sort of increased healing factor. It cannot be removed."
 L.search_c4 = "In a pocket you found a note. It states that cutting wire {num} will safely disarm the bomb."
 
 L.search_dmg_crush = "Many of their bones are broken. It seems the impact of a heavy object killed them."

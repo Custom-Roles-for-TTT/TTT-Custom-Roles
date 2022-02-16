@@ -5,6 +5,7 @@
 
 ### Additions
 - Added shield icon on the left of the health bar when a player has body armor equipped
+- Added icons for speed and regeneration equipments to the body search dialog
 
 ### Fixes
 - Fixed old man being invincible if adrenaline rush was disabled
