@@ -20,6 +20,10 @@ Includes all beta updates from [1.4.5](#145-beta) to [1.4.9](#149-beta).
 - Fixed very minor bug with loadout items hook, making it consistent with normal shop usage
 - Fixed vampire fang usage hint not showing
 - Fixed roles without shop items being able to open the shop and to loot credits if Shop For All was enabled
+- Fixed old man being invincible if adrenaline rush was disabled
+- Fixed errors displaying radar points when there was a decoy being used
+- Fixed roles added after the initial load not showing their role icon in the body search dialog
+- Fixed some external role icons not working in the body search dialog
 
 ### Changes
 - Changed vampire unfreeze delay to be longer by default to help vampires with high pings
