@@ -9,8 +9,6 @@
 
 ### Fixes
 - Fixed HL2 neurotoxin suit overlay showing when a player took poison damage
-- Fixed roles added after the initial load not showing their role icon in the body search dialog
-- Fixed some external role icons not working in the body search dialog
 
 ## 1.5.1 (Beta)
 **Released: February 12th, 2022**
