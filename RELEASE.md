@@ -8,7 +8,6 @@
 - Added icons for speed and regeneration equipments to the body search dialog
 
 ### Fixes
-- Fixed old man being invincible if adrenaline rush was disabled
 - Fixed HL2 neurotoxin suit overlay showing when a player took poison damage
 - Fixed roles added after the initial load not showing their role icon in the body search dialog
 - Fixed some external role icons not working in the body search dialog
@@ -18,7 +17,6 @@
 
 ### Fixes
 - Fixed a few cases where roles without items in their shop could open the shop when Shop For All was enabled
-- Fixed errors displaying radar points when there was a decoy being used
 
 ### Developer
 - Removed deprecated global `GenerateNewEventID` from the client realm. Use the `TTTSyncEventIDs` hook instead
