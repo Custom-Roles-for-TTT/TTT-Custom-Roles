@@ -9,6 +9,7 @@
 
 ### Fixes
 - Fixed HL2 neurotoxin suit overlay showing when a player took poison damage
+- Fixed veteran damage bonus getting removed if something assigned them the same role again
 
 ## 1.5.1 (Beta)
 **Released: February 12th, 2022**
