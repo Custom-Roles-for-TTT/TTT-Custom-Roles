@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.5.2 (Beta)
-**Released:**
+**Released: February 20th, 2022**
 
 ### Additions
 - Added shield icon on the left of the health bar when a player has body armor equipped
