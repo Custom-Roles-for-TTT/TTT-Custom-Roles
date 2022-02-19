@@ -70,7 +70,7 @@ function PANEL:PerformLayout()
    self.Help:SetPos(5, 5)
 end
 
-function PANEL:UpdatePlayerData()
+function PANEL:UpdatePlayerData(force)
    if not IsValid(self.Player) then return end
    if not self.Player.search_result then
       self.Help:SetVisible(true)
@@ -79,7 +79,7 @@ function PANEL:UpdatePlayerData()
 
    self.Help:SetVisible(false)
 
-   if self.Search == self.Player.search_result then return end
+   if not force and self.Search == self.Player.search_result then return end
 
    self.List:Clear(true)
    self.Scroll.Panels = {}
@@ -107,15 +107,10 @@ function PANEL:UpdatePlayerData()
          ic:SetIconText(info.text_icon)
       else
          local parent = self.List
-         if t == "role" then
-            parent = vgui.Create("DShape", self.List)
-            parent:SetType("Rect")
-            parent:SetColor(info.color)
-            parent:SetSize(54, 54)
-            parent:SetPos(8, 8)
-            parent:SetZPos(-5)
-         end
          ic = vgui.Create("SimpleIcon", parent)
+         if t == "role" then
+            ic:SetBackgroundColor(info.color)
+         end
       end
 
       ic:SetIconSize(64)

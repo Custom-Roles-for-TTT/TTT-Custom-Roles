@@ -18,6 +18,8 @@ local dtt = { search_dmg_crush = DMG_CRUSH, search_dmg_bullet = DMG_BULLET, sear
               search_dmg_boom = DMG_BLAST, search_dmg_club = DMG_CLUB, search_dmg_drown = DMG_DROWN, search_dmg_stab = DMG_SLASH,
               search_dmg_burn = DMG_BURN, search_dmg_tele = DMG_SONIC, search_dmg_car = DMG_VEHICLE }
 
+local client
+
 -- "From his body you can tell XXX"
 local function DmgToText(d)
     for k, v in pairs(dtt) do
@@ -108,12 +110,28 @@ local function IconForInfoType(t, data)
     end
 end
 
+local function ShowSearchInfo(dataType, detectiveSearchOnly, owner)
+    if detectiveSearchOnly then return true end
+    if IsValid(owner) and owner:GetNWBool("body_searched_det", false) then
+        return true
+    end
+    if not client then
+        client = LocalPlayer()
+    end
+    if client:IsDetectiveLike() then return true end
+    return not GetGlobalBool("ttt_detective_search_only_" .. dataType, false)
+end
+
 function PreprocSearch(raw)
+    local detectiveSearchOnly = GetGlobalBool("ttt_detective_search_only", true) and not (GetGlobalBool("ttt_all_search_postround", true) and GetRoundState() ~= ROUND_ACTIVE)
     local search = {}
     for t, d in pairs(raw) do
         search[t] = { img = nil, text = "", p = 10 }
 
-        if t == "nick" then
+        local convar = string.StartWith(t, "eq_") and "equipment" or t
+        if not ShowSearchInfo(convar, detectiveSearchOnly, raw.owner) then
+            search[t] = nil
+        elseif t == "nick" then
             search[t].text = PT("search_nick", { player = d })
             search[t].p = 1
             search[t].nick = d
@@ -268,7 +286,9 @@ local function SearchInfoController(search, dback, dactive, dtext)
 end
 
 local function ShowSearchScreen(search_raw)
-    local client = LocalPlayer()
+    if not client then
+        client = LocalPlayer()
+    end
     if not IsValid(client) then return end
 
     local m = 8
@@ -415,6 +435,11 @@ local function ShowSearchScreen(search_raw)
             ic = vgui.Create("SimpleIcon", dlist)
         end
 
+        -- Use whichever icon comes first if the normal default is not available
+        if not start_icon then
+            start_icon = ic
+        end
+
         ic:SetIconSize(64)
         ic:SetIcon(info.img)
         ic:SetBackgroundColor(info.color or Color(0, 0, 0, 0))
@@ -459,6 +484,10 @@ end
 
 local search = {}
 local function ReceiveRagdollSearch()
+    if not client then
+        client = LocalPlayer()
+    end
+
     search = {}
 
     -- Basic info
@@ -508,7 +537,7 @@ local function ReceiveRagdollSearch()
     -- should we show a menu for this result?
     search.finder = net.ReadUInt(8)
 
-    search.show = (LocalPlayer():EntIndex() == search.finder)
+    search.show = (client:EntIndex() == search.finder)
 
     --
     -- last words

@@ -80,11 +80,12 @@ local function IdentifyBody(ply, rag)
         })
     end
 
+    -- will return either false or a valid ply
+    local deadply = player.GetBySteamID64(rag.sid64) or player.GetBySteamID(rag.sid)
+
     -- Register find
     if not CORPSE.GetFound(rag, false) then
-        -- will return either false or a valid ply
-        local deadply = player.GetBySteamID64(rag.sid64) or player.GetBySteamID(rag.sid)
-        if deadply then
+        if IsValid(deadply) then
             deadply:SetNWBool("body_searched", true)
             deadply:SetNWBool("body_found", true)
 
@@ -97,6 +98,11 @@ local function IdentifyBody(ply, rag)
         end
         hook.Call("TTTBodyFound", GAMEMODE, ply, deadply, rag)
         CORPSE.SetFound(rag, true)
+    end
+
+    -- Keep track if this body was searched specifically by a detective
+    if IsValid(deadply) and ply:IsDetectiveLike() then
+        deadply:SetNWBool("body_searched_det", true)
     end
 
     -- Handle kill list
@@ -192,6 +198,15 @@ function GM:TTTCanSearchCorpse(ply, corpse, is_covert, is_long_range, was_traito
     return true
 end
 
+local function IsAllDetectiveOnly()
+    for _, dataType in ipairs(CORPSE_ICON_TYPES) do
+        if not GetGlobalBool("ttt_detective_search_only_" .. dataType, false) then
+            return false
+        end
+    end
+    return true
+end
+
 -- Send a usermessage to client containing search results
 function CORPSE.ShowSearch(ply, rag, covert, long_range)
     if not IsValid(ply) or not IsValid(rag) then return end
@@ -223,7 +238,7 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
     -- basic sanity check
     if nick == nil or eq == nil or role == nil then return end
 
-    local detectiveSearchOnly = GetGlobalBool("ttt_detective_search_only", true) and
+    local detectiveSearchOnly = (GetGlobalBool("ttt_detective_search_only", true) or IsAllDetectiveOnly()) and
                                     not (GetGlobalBool("ttt_all_search_postround", true) and GetRoundState() ~= ROUND_ACTIVE) and
                                     not (GetGlobalBool("ttt_all_search_binoc", false) and ply:GetActiveWeapon() and WEPS.GetClass(ply:GetActiveWeapon()) == "weapon_ttt_binoculars")
     local credits = CORPSE.GetCredits(rag, 0)
@@ -235,7 +250,7 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
         SCORE:HandleCreditFound(ply, nick, credits)
         return
     elseif DetectiveMode() then
-        if ply:IsDetectiveLike() or not detectiveSearchOnly then
+        if ply:IsDetectiveLike() or not detectiveSearchOnly or (IsValid(ownerEnt) and ownerEnt:GetNWBool("body_searched", false)) then
             IdentifyBody(ply, rag)
         elseif IsValid(ownerEnt) and not ply:IsSpec() and not ownerEnt:GetNWBool("det_called", false) and not ownerEnt:GetNWBool("body_searched", false) then
             if IsValid(rag) and rag:GetPos():Distance(ply:GetPos()) < 128 then

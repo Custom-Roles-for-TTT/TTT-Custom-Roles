@@ -6,10 +6,12 @@
 ### Additions
 - Added shield icon on the left of the health bar when a player has body armor equipped
 - Added icons for speed and regeneration equipments to the body search dialog
+- Added ability to control which parts of the corpse search window are visible to non-detectives (if ttt_detective_search_only is disabled)
 
 ### Fixes
 - Fixed HL2 neurotoxin suit overlay showing when a player took poison damage
 - Fixed veteran damage bonus getting removed if something assigned them the same role again
+- Fixed players not always being able to look at a body that was already searched by a detective when ttt_detective_search_only is enabled
 
 ## 1.5.1 (Beta)
 **Released: February 12th, 2022**
@@ -126,7 +128,7 @@ Includes all beta updates from [1.4.1](#141-beta) to [1.4.2](#142-beta).
 **Released: December 10th, 2021**
 
 ### Additions
-- Added ability to allow spirits to see eachother when there is a medium (enabled by default)
+- Added ability to allow spirits to see each other when there is a medium (enabled by default)
 
 ### Changes
 - Ported change from base TTT: "TTT uses new permissions.EnableVoiceChat"
@@ -164,7 +166,7 @@ Includes all beta updates from [1.4.1](#141-beta) to [1.4.2](#142-beta).
 
 ### Fixes
 - Fixed loot goblin and old man not sharing a timelimit win with the innocents
-- Fixed loot goblin and old man not sharing a win with eachother (if they are both in the same round) on the round summary screen
+- Fixed loot goblin and old man not sharing a win with each other (if they are both in the same round) on the round summary screen
 
 ### Developer
 - Changed TTTCanIdentifyCorpse and TTTCanSearchCorpse hooks to allow changing the corpse's stored role
