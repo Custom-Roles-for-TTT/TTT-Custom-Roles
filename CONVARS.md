@@ -74,7 +74,7 @@ ttt_drunk_enabled                           0       // Whether or not the drunk 
 ttt_oldman_enabled                          0       // Whether or not the old man should spawn
 ttt_killer_enabled                          0       // Whether or not the killer should spawn
 ttt_zombie_enabled                          0       // Whether or not the zombie should spawn
-ttt_madscientist_enabled                    0       // Whether or not the madscientist should spawn
+ttt_madscientist_enabled                    0       // Whether or not the mad scientist should spawn
 
 // Individual Role Spawn Weights
 ttt_hypnotist_spawn_weight                  1       // The weight assigned to spawning the hypnotist
@@ -105,7 +105,7 @@ ttt_drunk_spawn_weight                      1       // The weight assigned to sp
 ttt_oldman_spawn_weight                     1       // The weight assigned to spawning the old man
 ttt_killer_spawn_weight                     1       // The weight assigned to spawning the killer
 ttt_zombie_spawn_weight                     1       // The weight assigned to spawning the zombie
-ttt_madscientist_spawn_weight               1       // The weight assigned to spawning the madscientist
+ttt_madscientist_spawn_weight               1       // The weight assigned to spawning the mad scientist
 // (Note: Each role is limited to one player per round.)
 
 // Individual Role Minimum Player Requirements
@@ -164,7 +164,7 @@ ttt_hypnotist_device_shop                   0       // Whether the hypnotist's d
 ttt_hypnotist_device_shop_rebuyable         0       // Whether the hypnotist's defib should be purchaseable multiple times (requires "ttt_hypnotist_device_shop" to be enabled). Server must be restarted for changes to take effect
 ttt_hypnotist_convert_detectives            0       // Whether to convert detectives and deputies (only if ttt_deputy_use_detective_icon is enabled) to impersonator instead of just a regular traitor. Does NOT convert detective team roles like paladin, medium, or tracker. Target will be automatically promoted to appear as a detective if appropriate
 ttt_hypnotist_device_time                   8       // The amount of time (in seconds) the hypnotist's device takes to use
-ttt_single_paramedic_hypnotist              0       // Whether only a single paramedic or hynotist should spawn in a round
+ttt_single_paramedic_hypnotist              0       // Whether only a single paramedic or hypnotist should spawn in a round
 
 // Assassin
 ttt_assassin_show_target_icon               0       // Whether assassins have an icon over their target's heads showing who to kill. Server or round must be restarted for changes to take effect
@@ -288,6 +288,18 @@ ttt_trickster_credits_starting              0       // The number of credits a t
 // DETECTIVE TEAM SETTINGS
 // All Detective Roles
 ttt_detective_search_only                   1       // Whether only detectives can search bodies or not
+ttt_detective_search_only_c4                0       // Whether only detectives can reveal a body's C4 disarm code. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
+ttt_detective_search_only_dmg               0       // Whether only detectives can reveal the type of damage used to kill a body. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
+ttt_detective_search_only_dtime             0       // Whether only detectives can reveal a body's death time. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
+ttt_detective_search_only_equipment         0       // Whether only detectives can reveal a body's equipment. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
+ttt_detective_search_only_head              0       // Whether only detectives can reveal whether a body was killed by a head shot. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
+ttt_detective_search_only_kills             0       // Whether only detectives can reveal a body's kills. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
+ttt_detective_search_only_lastid            0       // Whether only detectives can reveal the last player a body saw before death. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
+ttt_detective_search_only_nick              0       // Whether only detectives can reveal a body's name. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
+ttt_detective_search_only_role              0       // Whether only detectives can reveal a body's role. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
+ttt_detective_search_only_stime             0       // Whether only detectives can reveal a body's DNA decay time. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
+ttt_detective_search_only_wep               0       // Whether only detectives can reveal the weapon used to kill a body. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
+ttt_detective_search_only_words             0       // Whether only detectives can reveal a body's last words (if last words is enabled). Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
 ttt_detective_disable_looting               0       // Whether to disable a detective role's ability to loot credits from bodies
 ttt_special_detectives_armor_loadout        1       // Whether special detectives (all detective roles other than the original detective itself) get armor automatically for free
 ttt_all_search_postround                    1       // Whether non-detectives can search bodies post-round or not
@@ -308,7 +320,7 @@ ttt_tracker_credits_starting                1       // The number of credits a t
 
 // Medium
 ttt_medium_spirit_color                     1       // Whether players' spirits should have different colors
-ttt_medium_spirit_vision                    1       // Whether players' spirits should be able to see eachother
+ttt_medium_spirit_vision                    1       // Whether players' spirits should be able to see each other
 ttt_medium_dead_notify                      1       // Whether player should be notified that there is a medium when they die
 ttt_medium_credits_starting                 1       // The number of credits a medium should start with
 
@@ -594,7 +606,7 @@ ttt_drunk_starting_health                   100     // The amount of health the 
 ttt_oldman_starting_health                  1       // The amount of health the old man starts with
 ttt_killer_starting_health                  150     // The amount of health the killer starts with
 ttt_zombie_starting_health                  100     // The amount of health the zombie starts with
-ttt_madscientist_starting_health            100     // The amount of health the mads cientist starts with
+ttt_madscientist_starting_health            100     // The amount of health the mad scientist starts with
 
 // Individual Role Max Health
 ttt_traitor_max_health                      100     // The maximum amount of health a traitor can have
@@ -646,9 +658,9 @@ ttt_sprint_consume                          0.2     // Stamina consumption speed
 
 // Better Equipment Menu
 ttt_bem_allow_change                        1       // Allow clients to change the look of the shop menu
-ttt_bem_sv_cols                             4       // Sets the number of columns in the shop menu's item list (serverside)
-ttt_bem_sv_rows                             5       // Sets the number of rows in the shop menu's item list (serverside)
-ttt_bem_sv_size                             64      // Sets the item size in the shop menu's item list (serverside)
+ttt_bem_sv_cols                             4       // Sets the number of columns in the shop menu's item list (server-side)
+ttt_bem_sv_rows                             5       // Sets the number of rows in the shop menu's item list (server-side)
+ttt_bem_sv_size                             64      // Sets the item size in the shop menu's item list (server-side)
 
 // Scoreboard
 ttt_scoreboard_deaths                       0       // Whether to show the deaths column on the scoreboard. Server must be restarted for changes to take effect
@@ -684,13 +696,13 @@ Apart from those familiar pieces, this window also adds a few more controls spec
     - *Exclude* - Mark this weapon as explicitly NOT buyable
   - *No Random* - Ensure this weapon stays in the shop, regardless of randomization
   - *Update* - Save the configuration changes
-- *Close* - This button will close the window, disgarding any unsaved changes
+- *Close* - This button will close the window, discarding any unsaved changes
 
 #### **Example**
 
 To help understand the functionality of this window it might be easier to walk through an example: we are going to find the Health Station (which we know the Detective can buy) and add it to the Veteran's shop. The Veteran gets a shop when they are activated, but only if weapons are actually available to them. This is where the role weapons system comes into play.
 
-First things first: we open the window and select "Detective" from the "Search Roles" dropdown. From there we can either scroll through the list of weapons or use the search text box to search for "health". We then choose "Veteran" from the "Save Role" dropown and click the "Include" checkbox. With all that done the window should look like this:
+First things first: we open the window and select "Detective" from the "Search Roles" dropdown. From there we can either scroll through the list of weapons or use the search text box to search for "health". We then choose "Veteran" from the "Save Role" dropdown and click the "Include" checkbox. With all that done the window should look like this:
 
 ![Role Weapons Window for Detective -> Veteran](images/RoleWeapons_DetVet.png)
 

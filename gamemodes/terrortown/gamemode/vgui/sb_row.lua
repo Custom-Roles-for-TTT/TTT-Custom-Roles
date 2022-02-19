@@ -348,7 +348,7 @@ function PANEL:UpdatePlayerData()
     self:LayoutColumns()
 
     if self.info then
-        self.info:UpdatePlayerData()
+        self.info:UpdatePlayerData(true)
     end
 
     if self.Player ~= client then

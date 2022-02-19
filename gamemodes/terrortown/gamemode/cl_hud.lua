@@ -283,6 +283,7 @@ end
 
 local ttt_health_label = CreateClientConVar("ttt_health_label", "0", true)
 
+local armor_img = nil
 local function InfoPaint(client)
     local L = GetLang()
 
@@ -312,9 +313,25 @@ local function InfoPaint(client)
 
     CRHUD:ShadowedText(tostring(health), "HealthAmmo", bar_width, health_y, COLOR_WHITE, TEXT_ALIGN_RIGHT, TEXT_ALIGN_RIGHT)
 
+    local health_offset = 0
+    if client:HasEquipmentItem(EQUIP_ARMOR) then
+        if not armor_img then
+            armor_img = vgui.Create("DImage", nil)
+            armor_img:SetSize(16, 16)
+            armor_img:SetPos(x + margin + 5, health_y + 5)
+            armor_img:SetImage("vgui/ttt/equip/armor.png")
+        end
+
+        -- Move the rest of the health information it over
+        health_offset = margin + 5
+    elseif armor_img then
+        armor_img:Remove()
+        armor_img = nil
+    end
+
     if ttt_health_label:GetBool() then
         local health_status = util.HealthToString(health, client:GetMaxHealth())
-        draw.SimpleText(L[health_status], "TabLarge", x + margin * 2, health_y + bar_height / 2, COLOR_WHITE, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+        draw.SimpleText(L[health_status], "TabLarge", x + health_offset + margin * 2, health_y + bar_height / 2, COLOR_WHITE, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
     end
 
     -- Draw ammo
@@ -464,7 +481,7 @@ function GM:HUDPaint()
 end
 
 -- Hide the standard HUD stuff
-local hud = { ["CHudHealth"] = true, ["CHudBattery"] = true, ["CHudAmmo"] = true, ["CHudSecondaryAmmo"] = true }
+local hud = { ["CHudHealth"] = true, ["CHudBattery"] = true, ["CHudAmmo"] = true, ["CHudSecondaryAmmo"] = true, ["CHudSuitPower"] = true, ["CHudPoisonDamageIndicator"] = true }
 function GM:HUDShouldDraw(name)
     if hud[name] then return false end
 

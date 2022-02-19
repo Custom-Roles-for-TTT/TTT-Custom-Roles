@@ -189,6 +189,7 @@ function plymeta:ResetRoundFlags()
     self:SetNWBool("det_called", false)
     self:SetNWBool("body_found", false)
     self:SetNWBool("body_searched", false)
+    self:SetNWBool("body_searched_det", false)
 
     self.kills = {}
 

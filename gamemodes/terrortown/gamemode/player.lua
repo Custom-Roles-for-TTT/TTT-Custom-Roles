@@ -920,7 +920,7 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
             if att:ShouldActLikeJester() then
                 dmginfo:ScaleDamage(0)
             end
-        -- Players cant deal damage to eachother before the round starts
+        -- Players cant deal damage to each other before the round starts
         else
             dmginfo:ScaleDamage(0)
         end

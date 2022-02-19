@@ -190,6 +190,9 @@ CreateConVar("ttt_traitor_vision_enable", "0")
 
 -- Detective role properties
 CreateConVar("ttt_detective_search_only", "1")
+for _, dataType in ipairs(CORPSE_ICON_TYPES) do
+    CreateConVar("ttt_detective_search_only_" .. dataType, "0")
+end
 CreateConVar("ttt_detective_disable_looting", "0")
 CreateConVar("ttt_all_search_postround", "1")
 CreateConVar("ttt_all_search_binoc", "0")
@@ -474,7 +477,9 @@ function GM:SyncGlobals()
     SetGlobalFloat("ttt_karma_lenient", GetConVar("ttt_karma_lenient"):GetBool())
 
     SetGlobalBool("ttt_detective_search_only", GetConVar("ttt_detective_search_only"):GetBool())
-    SetGlobalBool("ttt_detective_disable_looting", GetConVar("ttt_detective_disable_looting"):GetBool())
+    for _, dataType in ipairs(CORPSE_ICON_TYPES) do
+        SetGlobalBool("ttt_detective_search_only_" .. dataType, GetConVar("ttt_detective_search_only_" .. dataType):GetBool())
+    end
     SetGlobalBool("ttt_all_search_postround", GetConVar("ttt_all_search_postround"):GetBool())
     SetGlobalBool("ttt_all_search_binoc", GetConVar("ttt_all_search_binoc"):GetBool())
 

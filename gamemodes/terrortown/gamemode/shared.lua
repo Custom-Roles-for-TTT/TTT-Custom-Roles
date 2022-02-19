@@ -17,7 +17,7 @@ local StringSplit = string.Split
 local StringSub = string.sub
 
 -- Version string for display and function for version checks
-CR_VERSION = "1.5.1"
+CR_VERSION = "1.5.2"
 CR_BETA = true
 
 function CRVersion(version)
@@ -1060,6 +1060,22 @@ JESTER_NOTIFY_DETECTIVE_AND_TRAITOR = 1
 JESTER_NOTIFY_TRAITOR = 2
 JESTER_NOTIFY_DETECTIVE = 3
 JESTER_NOTIFY_EVERYONE = 4
+
+-- Corpse stuff
+CORPSE_ICON_TYPES = {
+    "c4",
+    "dmg",
+    "dtime",
+    "equipment",
+    "head",
+    "kills",
+    "lastid",
+    "nick",
+    "role",
+    "stime",
+    "wep",
+    "words"
+}
 
 COLOR_WHITE = Color(255, 255, 255, 255)
 COLOR_BLACK = Color(0, 0, 0, 255)
