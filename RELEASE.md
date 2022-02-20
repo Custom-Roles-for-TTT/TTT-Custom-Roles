@@ -1,5 +1,13 @@
 # Release Notes
 
+## 1.5.3 (Beta)
+**Released:**
+
+### Fixes
+- Fixed assassin target information not being cleared from the scoreboard if an assassin's role was changed
+- Fixed parasite infection not being cured on a player if they resurrected the parasite and changed their role
+- Fixed phantom haunting state not being cleared when their role was changed
+
 ## 1.5.2 (Beta)
 **Released: February 20th, 2022**
 

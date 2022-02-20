@@ -46,13 +46,6 @@ end)
 -- HAUNTING --
 --------------
 
--- Un-haunt the device owner if they used their device on the Phantom
-hook.Add("TTTPlayerDefibRoleChange", "Phantom_TTTPlayerDefibRoleChange", function(ply, tgt)
-    if tgt:IsPhantom() and tgt:GetNWString("HauntingTarget", nil) == ply:SteamID64() then
-        ply:SetNWBool("Haunted", false)
-    end
-end)
-
 local deadPhantoms = {}
 hook.Add("TTTPrepareRound", "Phantom_TTTPrepareRound", function()
     for _, v in pairs(GetAllPlayers()) do
@@ -66,12 +59,39 @@ hook.Add("TTTPrepareRound", "Phantom_TTTPrepareRound", function()
     deadPhantoms = {}
 end)
 
-hook.Add("TTTPlayerSpawnForRound", "Phantom_TTTPlayerSpawnForRound", function(ply, dead_only)
+local function ResetPlayer(ply)
+    -- If this player is haunting someone else, make sure to clear them of the haunt too
+    if ply:GetNWBool("Haunting", false) then
+        local sid = ply:GetNWString("HauntingTarget", nil)
+        if sid then
+            local target = player.GetBySteamID64(sid)
+            if IsPlayer(target) then
+                target:SetNWBool("Haunted", false)
+            end
+        end
+    end
     ply:SetNWBool("Haunting", false)
     ply:SetNWString("HauntingTarget", nil)
     ply:SetNWInt("HauntingPower", 0)
     timer.Remove(ply:Nick() .. "HauntingPower")
     timer.Remove(ply:Nick() .. "HauntingSpectate")
+end
+
+hook.Add("TTTPlayerRoleChanged", "Phantom_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+    if oldRole == ROLE_PHANTOM and oldRole ~= newRole then
+        ResetPlayer(ply)
+    end
+end)
+
+hook.Add("TTTPlayerSpawnForRound", "Phantom_TTTPlayerSpawnForRound", function(ply, dead_only)
+    ResetPlayer(ply)
+end)
+
+-- Un-haunt the device owner if they used their device on the phantom
+hook.Add("TTTPlayerDefibRoleChange", "Phantom_TTTPlayerDefibRoleChange", function(ply, tgt)
+    if tgt:IsPhantom() and tgt:GetNWString("HauntingTarget", nil) == ply:SteamID64() then
+        ply:SetNWBool("Haunted", false)
+    end
 end)
 
 hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
