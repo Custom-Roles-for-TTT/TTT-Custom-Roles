@@ -839,11 +839,20 @@ local function ShowTutorialPage(pnl, page)
                 htmlData = htmlData .. roleText
             end
 
+            -- Allow other addons to add more information to this role's tutorial text
+            local updatedHtml = hook.Call("TTTTutorialRoleTextExtra", nil, role, titleLabel, roleIcon, htmlData)
+            if updatedHtml and #updatedHtml > 0 then
+                htmlData = updatedHtml
+            end
+
             -- Close the page
             htmlData = htmlData .. "</div>"
 
             html:SetHTML(htmlData)
         end
+
+        -- Allow other addons to add more information to this role's tutorial page
+        hook.Call("TTTTutorialRolePageExtra", nil, role, pnl, titleLabel, roleIcon)
     end
 end
 

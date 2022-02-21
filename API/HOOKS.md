@@ -603,6 +603,15 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 
 *Return:* `true` to tell the tutorial page to use the content set in this hook rather than calling the `TTTTutorialRoleText` hook
 
+**TTTTutorialRolePageExtra(role, parentPanel, titleLabel, roleIcon)** - Called after a role's tutorial page is rendered. This can be used to provide additional data to show for a role.\
+*Realm:* Client\
+*Added in:* 1.5.3\
+*Parameters:*
+- *role* - Which role's tutorial page is being rendered
+- *parentPanel* - The parent [DPanel](https://wiki.facepunch.com/gmod/DPanel) that this tutorial page is being rendered within
+- *titleLabel* - The [DLabel](https://wiki.facepunch.com/gmod/DLabel) that is being used as the title of the rendered tutorial page. Has the role's name automatically set as the label text
+- *roleIcon* - The [DImage](https://wiki.facepunch.com/gmod/DImage) that is being used to show the role's icon on the rendered tutorial page
+
 **TTTTutorialRoleText(role, titleLabel, roleIcon)** - Called before a role's tutorial page is rendered. This can be used to provide the text to show for a role.\
 *Realm:* Client\
 *Added in:* 1.2.7\
@@ -612,6 +621,17 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *roleIcon* - The [DImage](https://wiki.facepunch.com/gmod/DImage) that is being used to show the role's icon on the rendered tutorial page
 
 *Return:* The string value to show on the tutorial page for this role. Can be HTML and will be rendered within a `<div>`
+
+**TTTTutorialRoleTextExtra(role, titleLabel, roleIcon, htmlData)** - Called before a role's tutorial page is rendered but after `TTTTutorialRoleText` is called. This can be used to provide additional text to show for a role.\
+*Realm:* Client\
+*Added in:* 1.5.3\
+*Parameters:*
+- *role* - Which role's tutorial page is being rendered
+- *titleLabel* - The [DLabel](https://wiki.facepunch.com/gmod/DLabel) that is being used as the title of the rendered tutorial page. Has the role's name automatically set as the label text
+- *roleIcon* - The [DImage](https://wiki.facepunch.com/gmod/DImage) that is being used to show the role's icon on the rendered tutorial page
+- *htmlData* - The string HTML data that would be shown for the given role. It does not include the closing `</div>` tag, meaning additional HTML can be appended to the end without worrying about proper structure.
+
+*Return:* The full string value to show on the tutorial page for this role. Should not include the closing `</div>` tag as this is appended automatically.
 
 **TTTUpdateRoleState()** - Called after globals are synced but but before role colors and strings are set. Can be used to update role states (team membership) and role weapon (buyable, loadout, etc.) states based on configurations.\
 *Realm:* Client and Server\
