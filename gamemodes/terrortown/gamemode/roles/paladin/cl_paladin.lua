@@ -21,7 +21,7 @@ end)
 -------------------
 
 hook.Add("TTTPlayerAliveClientThink", "Paladin_RoleFeatures_TTTPlayerAliveClientThink", function(client, ply)
-    if ply:IsPaladin() then
+    if ply:IsPaladin() and not GetGlobalBool("ttt_detective_hide_special", false) then
         if not ply.AuraEmitter then ply.AuraEmitter = ParticleEmitter(ply:GetPos()) end
         if not ply.AuraNextPart then ply.AuraNextPart = CurTime() end
         if not ply.AuraDir then ply.AuraDir = 0 end

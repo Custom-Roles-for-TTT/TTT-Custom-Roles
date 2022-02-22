@@ -76,7 +76,7 @@ function WSWITCH:DrawBarBg(x, y, w, h, col)
     local b = 8 --bordersize
     local bh = b / 2
 
-    local role = LocalPlayer().GetRole and LocalPlayer():GetRole() or ROLE_INNOCENT
+    local role = LocalPlayer().GetDisplayedRole and LocalPlayer():GetDisplayedRole() or ROLE_INNOCENT
     local hide_role = false
     if ConVarExists("ttt_hide_role") then
         hide_role = GetConVar("ttt_hide_role"):GetBool()

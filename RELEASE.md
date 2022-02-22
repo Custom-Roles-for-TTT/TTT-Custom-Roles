@@ -5,6 +5,7 @@
 
 ### Additions
 - Added ability to hide weapon ammo display
+- Added ability to hide a special detective's true role, showing "detective" everywhere instead
 
 ### Fixes
 - Fixed assassin target information not being cleared from the scoreboard if an assassin's role was changed

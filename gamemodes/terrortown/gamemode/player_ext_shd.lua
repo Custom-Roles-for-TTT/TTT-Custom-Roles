@@ -196,14 +196,21 @@ function plymeta:IsRoleActive()
     return true
 end
 
+function plymeta:GetDisplayedRole()
+    if self:IsDetectiveTeam() and GetGlobalBool("ttt_detective_hide_special", false) then
+        return ROLE_DETECTIVE
+    end
+    return self:GetRole()
+end
+
 -- Returns printable role
 function plymeta:GetRoleString()
-    return ROLE_STRINGS[self:GetRole()]
+    return ROLE_STRINGS[self:GetDisplayedRole()]
 end
 
 -- Returns role language string id, caller must translate if desired
 function plymeta:GetRoleStringRaw()
-    return ROLE_STRINGS_RAW[self:GetRole()]
+    return ROLE_STRINGS_RAW[self:GetDisplayedRole()]
 end
 
 function plymeta:GetBaseKarma() return self:GetNWFloat("karma", 1000) end

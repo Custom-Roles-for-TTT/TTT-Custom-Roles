@@ -196,7 +196,7 @@ local function DrawBg(x, y, width, height, client)
     draw.RoundedBox(8, x, y, width, height, bg_colors.background_main)
 
     -- main border, traitor based
-    local col = ROLE_COLORS[client:GetRole()]
+    local col = ROLE_COLORS[client:GetDisplayedRole()]
     if GAMEMODE.round_state ~= ROUND_ACTIVE then
         col = bg_colors.noround
     elseif hide_role then

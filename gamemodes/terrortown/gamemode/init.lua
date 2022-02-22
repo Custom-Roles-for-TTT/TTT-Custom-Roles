@@ -194,6 +194,7 @@ for _, dataType in ipairs(CORPSE_ICON_TYPES) do
     CreateConVar("ttt_detective_search_only_" .. dataType, "0")
 end
 CreateConVar("ttt_detective_disable_looting", "0")
+CreateConVar("ttt_detective_hide_special", "0")
 CreateConVar("ttt_all_search_postround", "1")
 CreateConVar("ttt_all_search_binoc", "0")
 
@@ -480,6 +481,7 @@ function GM:SyncGlobals()
     for _, dataType in ipairs(CORPSE_ICON_TYPES) do
         SetGlobalBool("ttt_detective_search_only_" .. dataType, GetConVar("ttt_detective_search_only_" .. dataType):GetBool())
     end
+    SetGlobalBool("ttt_detective_hide_special", GetConVar("ttt_detective_hide_special"):GetBool())
     SetGlobalBool("ttt_all_search_postround", GetConVar("ttt_all_search_postround"):GetBool())
     SetGlobalBool("ttt_all_search_binoc", GetConVar("ttt_all_search_binoc"):GetBool())
 

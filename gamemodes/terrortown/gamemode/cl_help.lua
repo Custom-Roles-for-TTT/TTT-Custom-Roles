@@ -980,7 +980,7 @@ function HELPSCRN:CreateTutorial(parent)
 
     brole.DoClick = function()
         local client = LocalPlayer()
-        local role = client:GetRole()
+        local role = client:GetDisplayedRole()
         if not IsValid(client) or role <= ROLE_NONE or role > ROLE_MAX then return end
 
         local page = nil

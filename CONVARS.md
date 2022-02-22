@@ -301,6 +301,7 @@ ttt_detective_search_only_stime             0       // Whether only detectives c
 ttt_detective_search_only_wep               0       // Whether only detectives can reveal the weapon used to kill a body. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
 ttt_detective_search_only_words             0       // Whether only detectives can reveal a body's last words (if last words is enabled). Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
 ttt_detective_disable_looting               0       // Whether to disable a detective role's ability to loot credits from bodies
+ttt_detective_hide_special                  0       // Whether to hide a special detective's role, displaying it as "detective" instead
 ttt_special_detectives_armor_loadout        1       // Whether special detectives (all detective roles other than the original detective itself) get armor automatically for free
 ttt_all_search_postround                    1       // Whether non-detectives can search bodies post-round or not
 ttt_all_search_binoc                        0       // Whether non-detectives can search bodies if they are using binoculars
