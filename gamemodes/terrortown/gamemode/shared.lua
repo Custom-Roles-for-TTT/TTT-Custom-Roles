@@ -858,19 +858,61 @@ end
 AddInternalRoles()
 
 local function AddExternalRoles()
-    local files, _ = file.Find("customroles/*.lua", "LUA")
-    for _, fil in ipairs(files) do
-        if SERVER then AddCSLuaFile("customroles/" .. fil) end
-        include("customroles/" .. fil)
+    local root = "customroles/"
+    local rootfiles, dirs = file.Find(root .. "*", "LUA")
+    for _, dir in ipairs(dirs) do
+        local files, _ = file.Find(root .. dir .. "/*.lua", "LUA")
+        for _, fil in ipairs(files) do
+            local isClientFile = StringFind(fil, "cl_")
+            local isSharedFile = fil == "shared.lua" or StringFind(fil, "sh_")
+
+            if SERVER then
+                -- Send client and shared files to clients
+                if isClientFile or isSharedFile then AddCSLuaFile(root .. dir .. "/" .. fil) end
+                -- Include non-client files
+                if not isClientFile then include(root .. dir .. "/" .. fil) end
+            end
+            -- Include client and shared files
+            if CLIENT and (isClientFile or isSharedFile) then include(root .. dir .. "/" .. fil) end
+        end
+    end
+
+    -- Include and send client any files using the single file method
+    for _, fil in ipairs(rootfiles) do
+        if string.GetExtensionFromFilename(fil) == "lua" then
+            if SERVER then AddCSLuaFile(root .. fil) end
+            include(root .. fil)
+        end
     end
 end
 AddExternalRoles()
 
 local function AddRoleModifications()
-    local files, _ = file.Find("rolemodifications/*.lua", "LUA")
-    for _, fil in ipairs(files) do
-        if SERVER then AddCSLuaFile("rolemodifications/" .. fil) end
-        include("rolemodifications/" .. fil)
+    local root = "rolemodifications/"
+    local rootfiles, dirs = file.Find(root .. "*", "LUA")
+    for _, dir in ipairs(dirs) do
+        local files, _ = file.Find(root .. dir .. "/*.lua", "LUA")
+        for _, fil in ipairs(files) do
+            local isClientFile = StringFind(fil, "cl_")
+            local isSharedFile = fil == "shared.lua" or StringFind(fil, "sh_")
+
+            if SERVER then
+                -- Send client and shared files to clients
+                if isClientFile or isSharedFile then AddCSLuaFile(root .. dir .. "/" .. fil) end
+                -- Include non-client files
+                if not isClientFile then include(root .. dir .. "/" .. fil) end
+            end
+            -- Include client and shared files
+            if CLIENT and (isClientFile or isSharedFile) then include(root .. dir .. "/" .. fil) end
+        end
+    end
+
+    -- Include and send client any files using the single file method
+    for _, fil in ipairs(rootfiles) do
+        if string.GetExtensionFromFilename(fil) == "lua" then
+            if SERVER then AddCSLuaFile(root .. fil) end
+            include(root .. fil)
+        end
     end
 end
 AddRoleModifications()
