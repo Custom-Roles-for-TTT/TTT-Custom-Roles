@@ -390,7 +390,8 @@ ttt_bodysnatcher_notify_confetti            0       // Whether to throw confetti
 ttt_bodysnatcher_device_time                5       // The amount of time (in seconds) the bodysnatcher's device takes to use
 
 // Loot Goblin
-ttt_lootgoblin_activation_timer             30      // Time in seconds before the loot goblin is revealed
+ttt_lootgoblin_activation_timer             30      // Minimum time in seconds before the loot goblin is revealed
+ttt_lootgoblin_activation_timer_max         60      // Maximum time in seconds before the loot goblin is revealed
 ttt_lootgoblin_announce                     4       // The logic to use when notifying players that a loot goblin has been revealed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
 ttt_lootgoblin_size                         0.5     // The size multiplier for the loot goblin to use when they are revealed (e.g. 0.5 = 50% size)
 ttt_lootgoblin_cackle_enabled               1       // Whether to play a cackle sound periodically when a loot goblin is activated
