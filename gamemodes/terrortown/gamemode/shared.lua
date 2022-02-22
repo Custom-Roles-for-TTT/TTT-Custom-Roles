@@ -835,30 +835,7 @@ function RegisterRole(tbl)
     end
 end
 
-local function AddInternalRoles()
-    local root = "terrortown/gamemode/roles/"
-    local _, dirs = file.Find(root .. "*", "LUA")
-    for _, dir in ipairs(dirs) do
-        local files, _ = file.Find(root .. dir .. "/*.lua", "LUA")
-        for _, fil in ipairs(files) do
-            local isClientFile = StringFind(fil, "cl_")
-            local isSharedFile = fil == "shared.lua" or StringFind(fil, "sh_")
-
-            if SERVER then
-                -- Send client and shared files to clients
-                if isClientFile or isSharedFile then AddCSLuaFile(root .. dir .. "/" .. fil) end
-                -- Include non-client files
-                if not isClientFile then include(root .. dir .. "/" .. fil) end
-            end
-            -- Include client and shared files
-            if CLIENT and (isClientFile or isSharedFile) then include(root .. dir .. "/" .. fil) end
-        end
-    end
-end
-AddInternalRoles()
-
-local function AddExternalRoles()
-    local root = "customroles/"
+local function AddRoleFiles(root)
     local rootfiles, dirs = file.Find(root .. "*", "LUA")
     for _, dir in ipairs(dirs) do
         local files, _ = file.Find(root .. dir .. "/*.lua", "LUA")
@@ -885,37 +862,9 @@ local function AddExternalRoles()
         end
     end
 end
-AddExternalRoles()
-
-local function AddRoleModifications()
-    local root = "rolemodifications/"
-    local rootfiles, dirs = file.Find(root .. "*", "LUA")
-    for _, dir in ipairs(dirs) do
-        local files, _ = file.Find(root .. dir .. "/*.lua", "LUA")
-        for _, fil in ipairs(files) do
-            local isClientFile = StringFind(fil, "cl_")
-            local isSharedFile = fil == "shared.lua" or StringFind(fil, "sh_")
-
-            if SERVER then
-                -- Send client and shared files to clients
-                if isClientFile or isSharedFile then AddCSLuaFile(root .. dir .. "/" .. fil) end
-                -- Include non-client files
-                if not isClientFile then include(root .. dir .. "/" .. fil) end
-            end
-            -- Include client and shared files
-            if CLIENT and (isClientFile or isSharedFile) then include(root .. dir .. "/" .. fil) end
-        end
-    end
-
-    -- Include and send client any files using the single file method
-    for _, fil in ipairs(rootfiles) do
-        if string.GetExtensionFromFilename(fil) == "lua" then
-            if SERVER then AddCSLuaFile(root .. fil) end
-            include(root .. fil)
-        end
-    end
-end
-AddRoleModifications()
+AddRoleFiles("terrortown/gamemode/roles/") -- Internal roles
+AddRoleFiles("customroles/") -- External roles
+AddRoleFiles("rolemodifications/") -- Role modifications
 
 local function GetRoleFromStackTrace()
     local role
