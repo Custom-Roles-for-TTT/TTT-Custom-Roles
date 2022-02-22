@@ -644,7 +644,7 @@ local function TraitorMenuPopup()
                     if ItemIsWeapon(item) and showSlotVar:GetBool() then
                         local slot = vgui.Create("SimpleIconLabelled")
                         slot:SetIcon("vgui/ttt/slot_cap")
-                        slot:SetIconColor(ROLE_COLORS[ply:GetRole()] or COLOR_GREY)
+                        slot:SetIconColor(ROLE_COLORS[ply:GetDisplayedRole()] or COLOR_GREY)
                         slot:SetIconSize(16)
 
                         slot:SetIconText(item.slot)
