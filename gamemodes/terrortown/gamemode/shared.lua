@@ -833,6 +833,8 @@ function RegisterRole(tbl)
     if tbl.convars then
         ROLE_CONVARS[roleID] = tbl.convars
     end
+
+    hook.Call("TTTRoleRegistered", nil, roleID)
 end
 
 local function AddRoleFiles(root)
@@ -865,6 +867,7 @@ end
 AddRoleFiles("terrortown/gamemode/roles/") -- Internal roles
 AddRoleFiles("customroles/") -- External roles
 AddRoleFiles("rolemodifications/") -- Role modifications
+hook.Call("TTTRolesLoaded", nil)
 
 local function GetRoleFromStackTrace()
     local role

@@ -207,6 +207,16 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 *Return:*
 - *params* - Table of name-value parameters to be used in this player's role start-of-round popup message
 
+**TTTRolesLoaded()** - Called after all roles and role modifications have been loaded.\
+*Realm:* Client\
+*Added in:* 1.5.3
+
+**TTTRoleRegistered(roleID)** - Called after an external role has been registered.\
+*Realm:* Client\
+*Added in:* 1.5.3\
+*Parameters:*
+- *roleID* - The unique identifier for the registered role
+
 **TTTScoreboardPlayerName(ply, client, currentName)** - Called before a player's row in the scoreboard (tab menu) is shown, allowing the name to be changed.\
 *Realm:* Client\
 *Added in:* 1.1.9\

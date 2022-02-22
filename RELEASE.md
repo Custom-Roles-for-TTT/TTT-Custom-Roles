@@ -14,6 +14,8 @@
 ### Developer
 - Added new `TTTTutorialRoleTextExtra` hook to allow addons to provide more text information for a role's tutorial page
 - Added new `TTTTutorialRolePageExtra` hook to allow addons to manipulate the tutorial page controls for a role
+- Added new `TTTRolesLoaded` hook which is called after all roles and role modifications and loaded
+- Added new `TTTRoleRegistered` hook which is called after an external role has been registered
 - Added the ability to load role modifications immediately after roles are initially loaded
 - Added the ability to spread external role logic between client, server and shared files
 - Added convars for default roles to ROLE_CONVARS table to allow for dynamic loading with ULX
