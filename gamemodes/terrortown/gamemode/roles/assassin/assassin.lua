@@ -186,11 +186,19 @@ local function ValidTarget(role)
     return true
 end
 
-hook.Add("TTTPlayerRoleChanged", "Assassin_Target_TTTPlayerRoleChanged", function(ply, oldRole, role)
+hook.Add("TTTPlayerRoleChanged", "Assassin_Target_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if not ply:Alive() or ply:IsSpec() then return end
 
+    -- If this player is not longer an assassin, clear out thier target
+    if oldRole == ROLE_ASSASSIN and oldRole ~= newRole then
+        ply:SetNWString("AssassinTarget", "")
+        ply:SetNWBool("AssassinFailed", false)
+        ply:SetNWBool("AssassinComplete", false)
+        timer.Remove(ply:Nick() .. "AssassinTarget")
+    end
+
     -- If this player's role could have been a valid target and definitely isn't anymore, update any assassin that has them as a target
-    if ValidTarget(oldRole) and not ValidTarget(role) then
+    if ValidTarget(oldRole) and not ValidTarget(newRole) then
         UpdateAssassinTargets(ply)
     end
 end)

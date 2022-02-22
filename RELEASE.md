@@ -1,5 +1,20 @@
 # Release Notes
 
+## 1.5.3 (Beta)
+**Released:**
+
+### Additions
+- Added ability to hide weapon ammo display
+
+### Fixes
+- Fixed assassin target information not being cleared from the scoreboard if an assassin's role was changed
+- Fixed parasite infection not being cured on a player if they resurrected the parasite and changed their role
+- Fixed phantom haunting state not being cleared when their role was changed
+
+### Developer
+- Added new `TTTTutorialRoleTextExtra` hook to allow addons to provide more text information for a role's tutorial page
+- Added new `TTTTutorialRolePageExtra` hook to allow addons to manipulate the tutorial page controls for a role
+
 ## 1.5.2 (Beta)
 **Released: February 20th, 2022**
 

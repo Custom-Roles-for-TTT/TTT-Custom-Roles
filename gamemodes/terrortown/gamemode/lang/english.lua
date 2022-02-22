@@ -271,6 +271,8 @@ L.set_karma_total_pct_tip = "Shows the karma value in the scoreboard as a percen
 L.set_color_mode = "Color settings"
 L.set_hide_role = "Hide your role in the HUD"
 L.set_hide_role_tip = "By default your role will appear in the bottom left of the HUD. Turn this on to prevent screen cheating."
+L.set_hide_ammo = "Hide your weapon ammo in the HUD"
+L.set_hide_ammo_tip = "By default your weapon ammo will appear in the bottom left of the HUD. Turn this on if you have another addon that does that for you."
 L.set_radio_button = "Radio menu button"
 L.set_radio_button_tip = "What button to press to open/close the radio menu"
 

@@ -76,6 +76,13 @@ hook.Add("TTTPlayerSpawnForRound", "Parasite_TTTPlayerSpawnForRound", function(p
     ResetPlayer(ply)
 end)
 
+-- Un-haunt the device owner if they used their device on the parasite
+hook.Add("TTTPlayerDefibRoleChange", "Parasite_TTTPlayerDefibRoleChange", function(ply, tgt)
+    if tgt:IsParasite() and tgt:GetNWString("ParasiteInfectingTarget", nil) == ply:SteamID64() then
+        ply:SetNWBool("ParasiteInfected", false)
+    end
+end)
+
 local function DoParasiteRespawnWithoutBody(parasite, hide_messages)
     if not hide_messages then
         parasite:PrintMessage(HUD_PRINTCENTER, "You have drained your host of energy and created a new body.")
