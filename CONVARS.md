@@ -205,7 +205,7 @@ ttt_quack_fake_cure_mode                    0       // How to handle using a fak
 ttt_quack_fake_cure_time                    -1      // The amount of time (in seconds) the fake parasite cure takes to use. If set to -1, the ttt_parasite_cure_time value will be used instead
 ttt_quack_phantom_cure                      0       // Whether to allow the quack to buy the phantom exorcism device which can remove a haunting phantom. Server must be restarted for changes to take effect
 ttt_quack_station_bomb                      0       // Whether the quack should be able to buy a device which converts a health station to a bomb station
-ttt_quack_station_bomb_time                 4       // The amount of time (in seconds) the station bomb cure takes to plant
+ttt_quack_station_bomb_time                 4       // The amount of time (in seconds) the station bomb takes to plant
 ttt_single_doctor_quack                     0       // Whether only a single doctor or quack should spawn in a round
 
 // Parasite
