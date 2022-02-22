@@ -335,7 +335,7 @@ local function InfoPaint(client)
     end
 
     -- Draw ammo
-    if client:GetActiveWeapon().Primary then
+    if client:GetActiveWeapon().Primary and not GetConVar("ttt_hide_ammo"):GetBool() then
         local ammo_clip, ammo_max, ammo_inv = GetAmmo(client)
         if ammo_clip ~= -1 then
             local ammo_y = health_y + bar_height + margin

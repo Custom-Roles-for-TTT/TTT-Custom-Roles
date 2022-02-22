@@ -3,6 +3,9 @@
 ## 1.5.3 (Beta)
 **Released:**
 
+### Additions
+- Added ability to hide weapon ammo display
+
 ### Fixes
 - Fixed assassin target information not being cleared from the scoreboard if an assassin's role was changed
 - Fixed parasite infection not being cured on a player if they resurrected the parasite and changed their role

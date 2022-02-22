@@ -64,7 +64,8 @@ CreateClientConVar("ttt_custom_mon_color_b", "0", true, false)
 UpdateRoleColours()
 
 CreateClientConVar("ttt_avoid_detective", "0", true, true)
-CreateClientConVar("ttt_hide_role", "0", true, true)
+CreateClientConVar("ttt_hide_role", "0", true, false)
+CreateClientConVar("ttt_hide_ammo", "0", true, false)
 
 HELPSCRN = {}
 
@@ -171,6 +172,9 @@ function HELPSCRN:Show()
 
     cb = dgui:CheckBox(GetTranslation("set_hide_role"), "ttt_hide_role")
     cb:SetTooltip(GetTranslation("set_hide_role_tip"))
+
+    cb = dgui:CheckBox(GetTranslation("set_hide_ammo"), "ttt_hide_ammo")
+    cb:SetTooltip(GetTranslation("set_hide_ammo_tip"))
 
     cb = dgui:TextEntry(GetTranslation("set_radio_button"), "ttt_radio_button")
     cb:SetTooltip(GetTranslation("set_radio_button_tip"))
