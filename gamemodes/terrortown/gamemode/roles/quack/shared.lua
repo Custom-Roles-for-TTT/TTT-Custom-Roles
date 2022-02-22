@@ -51,3 +51,32 @@ hook.Add("TTTUpdateRoleState", "Quack_TTTUpdateRoleState", function()
         table.RemoveByValue(station_bomb.CanBuy, ROLE_QUACK)
     end
 end)
+
+------------------
+-- ROLE CONVARS --
+------------------
+
+ROLE_CONVARS[ROLE_QUACK] = {}
+table.insert(ROLE_CONVARS[ROLE_QUACK], {
+    cvar = "ttt_quack_fake_cure_mode",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_QUACK], {
+    cvar = "ttt_quack_fake_cure_time",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_QUACK], {
+    cvar = "ttt_quack_phantom_cure",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_QUACK], {
+    cvar = "ttt_quack_station_bomb",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_QUACK], {
+    cvar = "ttt_quack_station_bomb_time",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})

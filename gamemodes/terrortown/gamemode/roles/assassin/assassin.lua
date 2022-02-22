@@ -15,11 +15,11 @@ local GetAllPlayers = player.GetAll
 
 local assassin_show_target_icon = CreateConVar("ttt_assassin_show_target_icon", "0")
 local assassin_target_vision_enable = CreateConVar("ttt_assassin_target_vision_enable", "0")
-local assassin_next_target_delay = CreateConVar("ttt_assassin_next_target_delay", "5")
-local assassin_target_damage_bonus = CreateConVar("ttt_assassin_target_damage_bonus", "1")
+local assassin_next_target_delay = CreateConVar("ttt_assassin_next_target_delay", "5", FCVAR_NONE, "The delay (in seconds) before an assassin is assigned their next target", 0, 30)
+local assassin_target_damage_bonus = CreateConVar("ttt_assassin_target_damage_bonus", "1", FCVAR_NONE, "Damage bonus that the assassin has against their target (e.g. 0.5 = 50% extra damage)", 0, 1)
 local assassin_target_bonus_bought = CreateConVar("ttt_assassin_target_bonus_bought", "1")
-local assassin_wrong_damage_penalty = CreateConVar("ttt_assassin_wrong_damage_penalty", "0.5")
-local assassin_failed_damage_penalty = CreateConVar("ttt_assassin_failed_damage_penalty", "0.5")
+local assassin_wrong_damage_penalty = CreateConVar("ttt_assassin_wrong_damage_penalty", "0.5", FCVAR_NONE, "Damage penalty that the assassin has when attacking someone who is not their target (e.g. 0.5 = 50% less damage)", 0, 1)
+local assassin_failed_damage_penalty = CreateConVar("ttt_assassin_failed_damage_penalty", "0.5", FCVAR_NONE, "Damage penalty that the assassin has after they have failed their contract by killing the wrong person (e.g. 0.5 = 50% less damage)", 0, 1)
 local assassin_shop_roles_last = CreateConVar("ttt_assassin_shop_roles_last", "0")
 
 hook.Add("TTTSyncGlobals", "Assassin_TTTSyncGlobals", function()

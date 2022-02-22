@@ -69,7 +69,7 @@ local DEFIB_BUSY = 1
 local DEFIB_ERROR = 2
 
 if SERVER then
-    CreateConVar("ttt_quack_station_bomb_time", "4")
+    CreateConVar("ttt_quack_station_bomb_time", "4", FCVAR_NONE, "The amount of time (in seconds) the station bomb cure takes to plant", 0, 30)
 end
 
 if CLIENT then

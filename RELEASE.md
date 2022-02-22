@@ -16,6 +16,7 @@
 - Added new `TTTTutorialRolePageExtra` hook to allow addons to manipulate the tutorial page controls for a role
 - Added the ability to load role modifications immediately after roles are initially loaded
 - Added the ability to spread external role logic between client, server and shared files
+- Added convars for default roles to ROLE_CONVARS table to allow for dynamic loading with ULX
 
 ## 1.5.2 (Beta)
 **Released: February 20th, 2022**

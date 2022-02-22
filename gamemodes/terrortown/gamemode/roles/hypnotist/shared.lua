@@ -42,3 +42,30 @@ hook.Add("TTTUpdateRoleState", "Hypnotist_TTTUpdateRoleState", function()
         hypnotist_defib.LimitedStock = true
     end
 end)
+
+------------------
+-- ROLE CONVARS --
+------------------
+
+ROLE_CONVARS[ROLE_HYPNOTIST] = {}
+table.insert(ROLE_CONVARS[ROLE_HYPNOTIST], {
+    cvar = "ttt_hypnotist_device_loadout",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_HYPNOTIST], {
+    cvar = "ttt_hypnotist_device_shop",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_HYPNOTIST], {
+    cvar = "ttt_hypnotist_device_shop_rebuyable",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_HYPNOTIST], {
+    cvar = "ttt_hypnotist_convert_detectives",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_HYPNOTIST], {
+    cvar = "ttt_hypnotist_device_time",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
