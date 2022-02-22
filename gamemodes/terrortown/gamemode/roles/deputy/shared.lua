@@ -1,6 +1,7 @@
 AddCSLuaFile()
 
 local hook = hook
+local table = table
 
 -- Initialize role features
 
@@ -48,3 +49,27 @@ end)
 hook.Add("TTTPrepareRound", "Deputy_Shared_TTTPrepareRound", function()
     InitializeEquipment()
 end)
+
+------------------
+-- ROLE CONVARS --
+------------------
+
+ROLE_CONVARS[ROLE_DEPUTY] = {}
+table.insert(ROLE_CONVARS[ROLE_DEPUTY], {
+    cvar = "ttt_deputy_damage_penalty",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 2
+})
+table.insert(ROLE_CONVARS[ROLE_DEPUTY], {
+    cvar = "ttt_deputy_use_detective_icon",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_DEPUTY], {
+    cvar = "ttt_deputy_without_detective",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_DEPUTY], {
+    cvar = "ttt_deputy_activation_credits",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
