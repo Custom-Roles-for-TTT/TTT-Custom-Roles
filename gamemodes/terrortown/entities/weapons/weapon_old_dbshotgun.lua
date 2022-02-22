@@ -42,7 +42,7 @@ SWEP.IronSightsPos = Vector(0, 0, 0)
 SWEP.IronSightsAng = Vector(0, 0, 0)
 
 if SERVER then
-    CreateConVar("ttt_oldman_adrenaline_shotgun_damage", "10")
+    CreateConVar("ttt_oldman_adrenaline_shotgun_damage", "10", FCVAR_NONE, "How much damage the double barrel shotgun should do", 0, 100)
 end
 
 function SWEP:Initialize()
