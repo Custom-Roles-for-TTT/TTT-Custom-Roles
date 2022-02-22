@@ -866,6 +866,15 @@ local function AddExternalRoles()
 end
 AddExternalRoles()
 
+local function AddRoleModifications()
+    local files, _ = file.Find("rolemodifications/*.lua", "LUA")
+    for _, fil in ipairs(files) do
+        if SERVER then AddCSLuaFile("rolemodifications/" .. fil) end
+        include("rolemodifications/" .. fil)
+    end
+end
+AddRoleModifications()
+
 local function GetRoleFromStackTrace()
     local role
     local level = 2

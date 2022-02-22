@@ -14,6 +14,7 @@
 ### Developer
 - Added new `TTTTutorialRoleTextExtra` hook to allow addons to provide more text information for a role's tutorial page
 - Added new `TTTTutorialRolePageExtra` hook to allow addons to manipulate the tutorial page controls for a role
+- Added the ability to load role modifications immediately after roles are initially loaded
 
 ## 1.5.2 (Beta)
 **Released: February 20th, 2022**
