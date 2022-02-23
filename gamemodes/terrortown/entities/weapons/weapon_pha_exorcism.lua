@@ -64,7 +64,7 @@ local hum = Sound("items/nvg_on.wav")
 local cured = Sound("items/smallmedkit1.wav")
 
 if SERVER then
-    CreateConVar("ttt_phantom_cure_time", "3")
+    CreateConVar("ttt_phantom_cure_time", "3", FCVAR_NONE, "The amount of time (in seconds) the phantom exorcism device takes to use. See \"ttt_traitor_phantom_cure\" and \"ttt_quack_phantom_cure\" to enable the device itself", 0, 60)
 end
 
 if CLIENT then

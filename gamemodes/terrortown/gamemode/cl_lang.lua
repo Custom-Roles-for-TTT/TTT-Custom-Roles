@@ -240,7 +240,7 @@ LANG.Styles = {
         if hide_role then
             MSTACK:AddMessage(text)
         else
-            MSTACK:AddColoredBgMessage(text, ROLE_COLORS[LocalPlayer():GetRole()])
+            MSTACK:AddColoredBgMessage(text, ROLE_COLORS[LocalPlayer():GetDisplayedRole()])
         end
         print("TTT:   " .. text)
     end,
@@ -367,8 +367,16 @@ local styledmessages = {
 };
 
 local set_style = LANG.SetStyle
-for style, msgs in pairs(styledmessages) do
-    for _, name in ipairs(msgs) do
-        set_style(name, style)
+
+local function SetMessageStyles()
+    for style, msgs in pairs(styledmessages) do
+        for _, name in ipairs(msgs) do
+            set_style(name, style)
+        end
     end
 end
+SetMessageStyles()
+
+hook.Add("TTTUpdateRoleState", "Lang_TTTUpdateRoleState", function()
+    SetMessageStyles()
+end)

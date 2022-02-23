@@ -196,14 +196,37 @@ function plymeta:IsRoleActive()
     return true
 end
 
+function plymeta:GetDisplayedRole()
+    if self:IsDetectiveTeam() and not self:IsDetective() then
+        local special_detective_mode = GetGlobalInt("ttt_detective_hide_special_mode", SPECIAL_DETECTIVE_HIDE_NONE)
+        -- By default, show detective unless this is disabled
+        local show_detective = special_detective_mode ~= SPECIAL_DETECTIVE_HIDE_NONE
+
+        -- But if we're on the client
+        if show_detective and CLIENT then
+            local client = LocalPlayer()
+            -- Check if the local player is the special detective
+            -- If they are, don't hide their role if we're only hiding for others
+            if client == self and special_detective_mode == SPECIAL_DETECTIVE_HIDE_FOR_OTHERS then
+                show_detective = false
+            end
+        end
+
+        if show_detective then
+            return ROLE_DETECTIVE
+        end
+    end
+    return self:GetRole()
+end
+
 -- Returns printable role
 function plymeta:GetRoleString()
-    return ROLE_STRINGS[self:GetRole()]
+    return ROLE_STRINGS[self:GetDisplayedRole()]
 end
 
 -- Returns role language string id, caller must translate if desired
 function plymeta:GetRoleStringRaw()
-    return ROLE_STRINGS_RAW[self:GetRole()]
+    return ROLE_STRINGS_RAW[self:GetDisplayedRole()]
 end
 
 function plymeta:GetBaseKarma() return self:GetNWFloat("karma", 1000) end

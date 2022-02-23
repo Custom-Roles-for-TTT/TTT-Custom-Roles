@@ -89,7 +89,7 @@ local DEFIB_ERROR = 2
 local oldScoreGroup = nil
 
 if SERVER then
-    CreateConVar("ttt_madscientist_device_time", "4")
+    CreateConVar("ttt_madscientist_device_time", "4", FCVAR_NONE, "The amount of time (in seconds) the mad scientist's device takes to use", 0, 60)
 end
 
 if CLIENT then

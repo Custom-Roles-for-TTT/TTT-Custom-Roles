@@ -55,8 +55,8 @@ SWEP.AllowDrop = false
 SWEP.DeploySpeed = 2
 
 if SERVER then
-    local killer_knife_damage = CreateConVar("ttt_killer_knife_damage", "65")
-    local killer_knife_delay = CreateConVar("ttt_killer_knife_delay", "0.8")
+    local killer_knife_damage = CreateConVar("ttt_killer_knife_damage", "65", FCVAR_NONE, "How much damage the killer knife does. Server or round must be restarted for changes to take effect", 1, 100)
+    local killer_knife_delay = CreateConVar("ttt_killer_knife_delay", "0.8", FCVAR_NONE, "The amount of time between knife attacks for a killer. Server or round must be restarted for changes to take effect", 0.1, 3)
 
     function SWEP:Initialize()
         SetGlobalInt("ttt_killer_knife_damage", killer_knife_damage:GetInt())

@@ -833,6 +833,8 @@ function RegisterRole(tbl)
     if tbl.convars then
         ROLE_CONVARS[roleID] = tbl.convars
     end
+
+    hook.Call("TTTRoleRegistered", nil, roleID)
 end
 
 local function AddRoleFiles(root)
@@ -865,6 +867,7 @@ end
 AddRoleFiles("terrortown/gamemode/roles/") -- Internal roles
 AddRoleFiles("customroles/") -- External roles
 AddRoleFiles("rolemodifications/") -- Role modifications
+hook.Call("TTTRolesLoaded", nil)
 
 local function GetRoleFromStackTrace()
     local role
@@ -1060,6 +1063,11 @@ JESTER_NOTIFY_DETECTIVE_AND_TRAITOR = 1
 JESTER_NOTIFY_TRAITOR = 2
 JESTER_NOTIFY_DETECTIVE = 3
 JESTER_NOTIFY_EVERYONE = 4
+
+-- Special detective hide modes
+SPECIAL_DETECTIVE_HIDE_NONE = 0
+SPECIAL_DETECTIVE_HIDE_FOR_ALL = 1
+SPECIAL_DETECTIVE_HIDE_FOR_OTHERS = 2
 
 -- Corpse stuff
 CORPSE_ICON_TYPES = {

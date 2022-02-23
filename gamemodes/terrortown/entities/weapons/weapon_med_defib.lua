@@ -89,7 +89,7 @@ local DEFIB_BUSY = 1
 local DEFIB_ERROR = 2
 
 if SERVER then
-    CreateConVar("ttt_paramedic_defib_time", "8")
+    CreateConVar("ttt_paramedic_defib_time", "8", FCVAR_NONE, "The amount of time (in seconds) the paramedic's defib takes to use", 0, 60)
 end
 
 if CLIENT then

@@ -20,8 +20,8 @@ resource.AddSingleFile("sound/oldmanramble.wav")
 -- CONVARS --
 -------------
 
-local oldman_drain_health_to = CreateConVar("ttt_oldman_drain_health_to", "0")
-local oldman_adrenaline_rush = CreateConVar("ttt_oldman_adrenaline_rush", "5")
+local oldman_drain_health_to = CreateConVar("ttt_oldman_drain_health_to", "0", FCVAR_NONE, "The amount of health to drain the old man down to. Set to 0 to disable", 0, 200)
+local oldman_adrenaline_rush = CreateConVar("ttt_oldman_adrenaline_rush", "5", FCVAR_NONE, "The time in seconds the old mans adrenaline rush lasts for. Set to 0 to disable", 0, 30)
 local oldman_adrenaline_shotgun = CreateConVar("ttt_oldman_adrenaline_shotgun", "1")
 local oldman_adrenaline_ramble = CreateConVar("ttt_oldman_adrenaline_ramble", "1")
 local oldman_hide_when_active = CreateConVar("ttt_oldman_hide_when_active", "0")

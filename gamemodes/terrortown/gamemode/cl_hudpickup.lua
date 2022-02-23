@@ -18,7 +18,7 @@ GM.PickupHistoryCorner = surface.GetTextureID("gui/corner8")
 local custom_ammo = CreateClientConVar("ttt_custom_ammo", 0, true, false, "Use custom ammo names.")
 
 local function GetPickupColor()
-    local role = LocalPlayer().GetRole and LocalPlayer():GetRole() or ROLE_INNOCENT
+    local role = LocalPlayer().GetDisplayedRole and LocalPlayer():GetDisplayedRole() or ROLE_INNOCENT
     local hide_role = false
     if ConVarExists("ttt_hide_role") then
         hide_role = GetConVar("ttt_hide_role"):GetBool()

@@ -17,7 +17,7 @@ local function GetTextForLocalPlayer()
     local client = LocalPlayer()
     -- Common parameters, mostly for custom role names
     local params = {
-        role = ROLE_STRINGS_EXT[client:GetRole()],
+        role = ROLE_STRINGS_EXT[client:GetDisplayedRole()],
         -- "The deputy"
         deputy = ROLE_STRINGS[ROLE_DEPUTY],
         -- "The detective"

@@ -205,7 +205,7 @@ ttt_quack_fake_cure_mode                    0       // How to handle using a fak
 ttt_quack_fake_cure_time                    -1      // The amount of time (in seconds) the fake parasite cure takes to use. If set to -1, the ttt_parasite_cure_time value will be used instead
 ttt_quack_phantom_cure                      0       // Whether to allow the quack to buy the phantom exorcism device which can remove a haunting phantom. Server must be restarted for changes to take effect
 ttt_quack_station_bomb                      0       // Whether the quack should be able to buy a device which converts a health station to a bomb station
-ttt_quack_station_bomb_time                 4       // The amount of time (in seconds) the station bomb cure takes to plant
+ttt_quack_station_bomb_time                 4       // The amount of time (in seconds) the station bomb takes to plant
 ttt_single_doctor_quack                     0       // Whether only a single doctor or quack should spawn in a round
 
 // Parasite
@@ -301,6 +301,7 @@ ttt_detective_search_only_stime             0       // Whether only detectives c
 ttt_detective_search_only_wep               0       // Whether only detectives can reveal the weapon used to kill a body. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
 ttt_detective_search_only_words             0       // Whether only detectives can reveal a body's last words (if last words is enabled). Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
 ttt_detective_disable_looting               0       // Whether to disable a detective role's ability to loot credits from bodies
+ttt_detective_hide_special_mode             0       // How to handle special detective role information. 0 - Show the special detective's role to everyone. 1 - Hide the special detective's role from everyone (just show detective instead). 2 - Hide the special detective's role for everyone but themselves (only they can see their true role)
 ttt_special_detectives_armor_loadout        1       // Whether special detectives (all detective roles other than the original detective itself) get armor automatically for free
 ttt_all_search_postround                    1       // Whether non-detectives can search bodies post-round or not
 ttt_all_search_binoc                        0       // Whether non-detectives can search bodies if they are using binoculars
@@ -390,7 +391,8 @@ ttt_bodysnatcher_notify_confetti            0       // Whether to throw confetti
 ttt_bodysnatcher_device_time                5       // The amount of time (in seconds) the bodysnatcher's device takes to use
 
 // Loot Goblin
-ttt_lootgoblin_activation_timer             30      // Time in seconds before the loot goblin is revealed
+ttt_lootgoblin_activation_timer             30      // Minimum time in seconds before the loot goblin is revealed
+ttt_lootgoblin_activation_timer_max         60      // Maximum time in seconds before the loot goblin is revealed
 ttt_lootgoblin_announce                     4       // The logic to use when notifying players that a loot goblin has been revealed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
 ttt_lootgoblin_size                         0.5     // The size multiplier for the loot goblin to use when they are revealed (e.g. 0.5 = 50% size)
 ttt_lootgoblin_cackle_enabled               1       // Whether to play a cackle sound periodically when a loot goblin is activated

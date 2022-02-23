@@ -10,7 +10,7 @@ local GetAllPlayers = player.GetAll
 -- CONVARS --
 -------------
 
-local glitch_mode = CreateConVar("ttt_glitch_mode", "0")
+local glitch_mode = CreateConVar("ttt_glitch_mode", "0", FCVAR_NONE, "The way in which the glitch appears to traitors. 0 - Appears as a regular traitor. 1 - Can appear as a special traitor. 2 - Causes all traitors, regular or special, to appear as regular traitors and appears as a regular traitor themselves.", 0, 2)
 local glitch_use_traps = CreateConVar("ttt_glitch_use_traps", "0")
 
 hook.Add("TTTSyncGlobals", "Glitch_TTTSyncGlobals", function()

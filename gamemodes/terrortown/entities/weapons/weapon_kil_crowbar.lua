@@ -56,8 +56,8 @@ SWEP.AllowDrop = true
 local sound_single = Sound("Weapon_Crowbar.Single")
 
 if SERVER then
-    CreateConVar("ttt_killer_crowbar_damage", "20")
-    CreateConVar("ttt_killer_crowbar_thrown_damage", "50")
+    CreateConVar("ttt_killer_crowbar_damage", "20", FCVAR_NONE, "How much damage the crowbar should do when the killer bashes another player with it. Server or round must be restarted for changes to take effect", 1, 100)
+    CreateConVar("ttt_killer_crowbar_thrown_damage", "50", FCVAR_NONE, "How much damage the crowbar should do when the killer throws it at another player. Server or round must be restarted for changes to take effect", 1, 100)
 end
 
 function SWEP:Initialize()

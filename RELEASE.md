@@ -5,6 +5,8 @@
 
 ### Additions
 - Added ability to hide weapon ammo display
+- Added ability to hide a special detective's true role, showing "detective" everywhere instead
+  - This can be set to only hide the role for other players (e.g. the special detective can see their real role but others can't) or for everyone
 
 ### Fixes
 - Fixed assassin target information not being cleared from the scoreboard if an assassin's role was changed
@@ -14,6 +16,8 @@
 ### Developer
 - Added new `TTTTutorialRoleTextExtra` hook to allow addons to provide more text information for a role's tutorial page
 - Added new `TTTTutorialRolePageExtra` hook to allow addons to manipulate the tutorial page controls for a role
+- Added new `TTTRolesLoaded` hook which is called after all roles and role modifications and loaded
+- Added new `TTTRoleRegistered` hook which is called after an external role has been registered
 - Added the ability to load role modifications immediately after roles are initially loaded
 - Added the ability to spread external role logic between client, server and shared files
 - Added convars for default roles to ROLE_CONVARS table to allow for dynamic loading with ULX

@@ -67,15 +67,15 @@ if SERVER then
     CreateConVar("ttt_zombie_leap_enable", "1")
     CreateConVar("ttt_zombie_spit_enable", "1")
 
-    CreateConVar("ttt_zombie_prime_convert_chance", "1")
-    CreateConVar("ttt_zombie_thrall_convert_chance", "1")
+    CreateConVar("ttt_zombie_prime_convert_chance", "1", FCVAR_NONE, "The chance that a prime zombie (e.g. player who spawned as a zombie originally) will convert other players who are killed by their claws to be zombies as well. Set to 0 to disable", 0, 1)
+    CreateConVar("ttt_zombie_thrall_convert_chance", "1", FCVAR_NONE, "The chance that a zombie thrall (e.g. non-prime zombie) will convert other players who are killed by their claws to be zombies as well. Set to 0 to disable", 0, 1)
 
-    CreateConVar("ttt_zombie_respawn_health", "100")
+    CreateConVar("ttt_zombie_respawn_health", "100", FCVAR_NONE, "The amount of health a player should respawn with when they are converted to a zombie thrall", 1, 200)
 
-    CreateConVar("ttt_zombie_prime_attack_damage", "65")
-    CreateConVar("ttt_zombie_thrall_attack_damage", "45")
-    CreateConVar("ttt_zombie_prime_attack_delay", "0.7")
-    CreateConVar("ttt_zombie_thrall_attack_delay", "1.4")
+    CreateConVar("ttt_zombie_prime_attack_damage", "65", FCVAR_NONE, "The amount of a damage a prime zombie (e.g. player who spawned as a zombie originally) does with their claws. Server or round must be restarted for changes to take effect", 1, 100)
+    CreateConVar("ttt_zombie_thrall_attack_damage", "45", FCVAR_NONE, "The amount of a damage a zombie thrall (e.g. non-prime zombie) does with their claws. Server or round must be restarted for changes to take effect", 1, 100)
+    CreateConVar("ttt_zombie_prime_attack_delay", "0.7", FCVAR_NONE, "The amount of time between claw attacks for a prime zombie (e.g. player who spawned as a zombie originally). Server or round must be restarted for changes to take effect", 0.1, 3)
+    CreateConVar("ttt_zombie_thrall_attack_delay", "1.4", FCVAR_NONE, "The amount of time between claw attacks for a zombie thrall (e.g. non-prime zombie). Server or round must be restarted for changes to take effect", 0.1, 3)
 end
 
 function SWEP:Initialize()

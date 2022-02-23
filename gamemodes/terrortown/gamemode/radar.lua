@@ -44,7 +44,7 @@ local function RadarScan(ply, cmd, args)
                         pos.y = math.Round(pos.y)
                         pos.z = math.Round(pos.z)
 
-                        local role = p:IsPlayer() and p:GetRole() or -1
+                        local role = p:IsPlayer() and p:GetDisplayedRole() or -1
 
                         table.insert(targets, {
                             role = role,

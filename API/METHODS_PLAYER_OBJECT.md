@@ -12,6 +12,48 @@ Methods available when called from a Player object (within the defined realm)
 - *snd* - What sound to play (if any) as part of this celebration
 - *showConfetti* - Whether to show confetti as part of this celebration
 
+**plymeta:CanLootCredits(activeOnly)** - Whether the player can loot credits from a corpse that has them.\
+*Realm:* Client and Server\
+*Added in:* 1.0.5\
+*Parameters:*
+- *activeOnly* - Whether the player must also be active (Defaults to `false`)
+
+**plymeta:CanUseShop()** - Whether the player can currently open the shop menu.\
+*Realm:* Client and Server\
+*Added in:* 1.0.2
+
+**plymeta:CanUseTraitorButton(activeOnly)** - Whether the player can see and use traitor buttons.\
+*Realm:* Client and Server\
+*Added in:* 1.0.5\
+*Parameters:*
+- *activeOnly* - Whether the player must also be active (Defaults to `false`)
+
+**plymeta:GetDisplayedRole()** - Gets the role that should be displayed for the player.\
+*Realm:* Client and Server\
+*Added in:* 1.5.3
+
+**plymeta:GetHeight()** - Gets the *estimated* height of the player based on their player model.\
+*Realm:* Client\
+*Added in:* 1.0.2
+
+**plymeta:GetRoleTeam(detectivesAreInnocent)** - Gets which "role team" a player belongs to (see ROLE_TEAM_* global enumeration).\
+*Realm:* Client and Server\
+*Added in:* 1.2.7\
+*Parameters:*
+- *detectivesAreInnocent* - Whether to include members of the detective "role team" in the innocent "role team" to match the logical teams
+
+**plymeta:GetVampirePreviousRole()** - Gets the player's previous role if they are a Vampire that has been converted or `ROLE_NONE` otherwise.\
+*Realm:* Client and Server\
+*Added in:* 1.0.0
+
+**plymeta:GiveDelayedShopItems()** - Give the player their shop items that were being held due to the role having a delayed shop.\
+*Realm:* Server\
+*Added in:* 1.2.2
+
+**plymeta:HandleDetectiveLikePromotion()** - Handles the player's promotion as a detective-like role (deputy/impersonator). Promotes the player and sends necessary net events.\
+*Realm:* Server\
+*Added in:* 1.2.5
+
 **plymeta:Is{RoleName}()/plymeta:Get{RoleName}()** - Dynamically created functions for each role that returns whether the player is that role. For example: `plymeta:IsTraitor()` and `plymeta:IsPhantom()` return whether the player is a traitor or a phantom, respectively.\
 *Realm:* Client and Server\
 *Added in:* Whenever each role is added
@@ -51,44 +93,6 @@ Methods available when called from a Player object (within the defined realm)
 **plymeta:IsActiveShopRole()** - Whether `plymeta:IsActiveShopRole` returns `true` and the player is active.\
 *Realm:* Client and Server\
 *Added in:* 1.0.0
-
-**plymeta:CanLootCredits(activeOnly)** - Whether the player can loot credits from a corpse that has them.\
-*Realm:* Client and Server\
-*Added in:* 1.0.5\
-*Parameters:*
-- *activeOnly* - Whether the player must also be active (Defaults to `false`)
-
-**plymeta:CanUseShop()** - Whether the player can currently open the shop menu.\
-*Realm:* Client and Server\
-*Added in:* 1.0.2
-
-**plymeta:CanUseTraitorButton(activeOnly)** - Whether the player can see and use traitor buttons.\
-*Realm:* Client and Server\
-*Added in:* 1.0.5\
-*Parameters:*
-- *activeOnly* - Whether the player must also be active (Defaults to `false`)
-
-**plymeta:GetHeight()** - Gets the *estimated* height of the player based on their player model.\
-*Realm:* Client\
-*Added in:* 1.0.2
-
-**plymeta:GetRoleTeam(detectivesAreInnocent)** - Gets which "role team" a player belongs to (see ROLE_TEAM_* global enumeration).\
-*Realm:* Client and Server\
-*Added in:* 1.2.7\
-*Parameters:*
-- *detectivesAreInnocent* - Whether to include members of the detective "role team" in the innocent "role team" to match the logical teams
-
-**plymeta:GetVampirePreviousRole()** - Gets the player's previous role if they are a Vampire that has been converted or `ROLE_NONE` otherwise.\
-*Realm:* Client and Server\
-*Added in:* 1.0.0
-
-**plymeta:GiveDelayedShopItems()** - Give the player their shop items that were being held due to the role having a delayed shop.\
-*Realm:* Server\
-*Added in:* 1.2.2
-
-**plymeta:HandleDetectiveLikePromotion()** - Handles the player's promotion as a detective-like role (deputy/impersonator). Promotes the player and sends necessary net events.\
-*Realm:* Server\
-*Added in:* 1.2.5
 
 **plymeta:IsCustom()** - Whether the player's role is not one of the three default TTT roles.\
 *Realm:* Client and Server\

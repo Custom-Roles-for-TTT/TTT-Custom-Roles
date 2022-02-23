@@ -1,6 +1,7 @@
 AddCSLuaFile()
 
 local hook = hook
+local table = table
 
 -- Bodysnatcher reveal modes
 BODYSNATCHER_REVEAL_NONE = 0
@@ -39,3 +40,73 @@ function plymeta:ShouldRevealBodysnatcher(tgt)
     -- Check the setting value and whether the player and the target are the same team
     return bodysnatcherMode == BODYSNATCHER_REVEAL_ALL or (self:IsSameTeam(tgt) and bodysnatcherMode == BODYSNATCHER_REVEAL_TEAM)
 end
+
+------------------
+-- ROLE CONVARS --
+------------------
+
+ROLE_CONVARS[ROLE_BODYSNATCHER] = {}
+table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
+    cvar = "ttt_bodysnatcher_notify_mode",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
+    cvar = "ttt_bodysnatcher_notify_sound",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
+    cvar = "ttt_bodysnatcher_notify_confetti",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
+    cvar = "ttt_bodysnatcher_destroy_body",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
+    cvar = "ttt_bodysnatcher_show_role",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
+    cvar = "ttt_bodysnatchers_are_independent",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
+    cvar = "ttt_bodysnatcher_reveal_traitor",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
+    cvar = "ttt_bodysnatcher_reveal_innocent",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
+    cvar = "ttt_bodysnatcher_reveal_monster",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
+    cvar = "ttt_bodysnatcher_reveal_independent",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
+    cvar = "ttt_bodysnatcher_respawn",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
+    cvar = "ttt_bodysnatcher_respawn_limit",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
+    cvar = "ttt_bodysnatcher_respawn_delay",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
+    cvar = "ttt_bodysnatcher_device_time",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})

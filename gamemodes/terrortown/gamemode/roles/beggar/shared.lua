@@ -1,5 +1,7 @@
 AddCSLuaFile()
 
+local table = table
+
 -- Beggar reveal modes
 BEGGAR_REVEAL_NONE = 0
 BEGGAR_REVEAL_ALL = 1
@@ -30,3 +32,46 @@ function plymeta:ShouldRevealBeggar(tgt)
     -- Check the setting value and the player's team to see we if should reveal this beggar
     return beggarMode == BEGGAR_REVEAL_ALL or sameTeam
 end
+
+------------------
+-- ROLE CONVARS --
+------------------
+
+ROLE_CONVARS[ROLE_BEGGAR] = {}
+table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
+    cvar = "ttt_beggar_notify_mode",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
+    cvar = "ttt_beggar_notify_sound",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
+    cvar = "ttt_beggar_notify_confetti",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
+    cvar = "ttt_beggar_reveal_traitor",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
+    cvar = "ttt_beggar_reveal_innocent",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
+    cvar = "ttt_beggar_respawn",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
+    cvar = "ttt_beggar_respawn_limit",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
+    cvar = "ttt_beggar_respawn_delay",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
