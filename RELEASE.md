@@ -6,6 +6,7 @@
 ### Additions
 - Added ability to hide weapon ammo display
 - Added ability to hide a special detective's true role, showing "detective" everywhere instead
+  - This can be set to only hide the role for other players (e.g. the special detective can see their real role but others can't) or for everyone
 
 ### Fixes
 - Fixed assassin target information not being cleared from the scoreboard if an assassin's role was changed
