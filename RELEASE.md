@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.5.4 (Beta)
+**Released:**
+
+### Additions
+- Added ability to control how often a revenger loses health after their lover is killed, if that is enabled
+
 ## 1.5.3 (Beta)
 **Released: February 23rd, 2022**
 

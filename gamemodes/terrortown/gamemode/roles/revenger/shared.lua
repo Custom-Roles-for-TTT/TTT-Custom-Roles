@@ -22,3 +22,8 @@ table.insert(ROLE_CONVARS[ROLE_REVENGER], {
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
 })
+table.insert(ROLE_CONVARS[ROLE_REVENGER], {
+    cvar = "ttt_revenger_drain_health_rate",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
