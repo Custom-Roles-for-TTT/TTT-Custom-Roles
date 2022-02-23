@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.5.3 (Beta)
-**Released:**
+**Released: February 23rd, 2022**
 
 ### Additions
 - Added ability to hide weapon ammo display
