@@ -447,6 +447,11 @@ function GM:HUDPaint()
             SpecHUDPaint(client)
         end
 
+        if armor_img then
+            armor_img:Remove()
+            armor_img = nil
+        end
+
         return
     end
 
