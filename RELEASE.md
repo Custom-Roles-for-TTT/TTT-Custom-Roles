@@ -8,6 +8,7 @@
 
 ### Fixes
 - Fixed body armor icon not going away once you died
+- Fixed players converted to vampire not being unfrozen immediately
 
 ## 1.5.3 (Beta)
 **Released: February 23rd, 2022**

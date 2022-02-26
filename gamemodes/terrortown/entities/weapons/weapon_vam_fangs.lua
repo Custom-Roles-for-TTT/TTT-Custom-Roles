@@ -259,6 +259,7 @@ function SWEP:DoConvert()
 
     -- Not actually an error, but it resets the things we want
     self:FireError()
+    self:DoUnfreeze()
 
     SendFullStateUpdate()
     -- Reset the victim's max health
