@@ -85,3 +85,94 @@ hook.Add("TTTSpeedMultiplier", "Vampire_TTTSpeedMultiplier", function(ply, mults
         table.insert(mults, 3)
     end
 end)
+
+------------------
+-- ROLE CONVARS --
+------------------
+
+ROLE_CONVARS[ROLE_VAMPIRE] = {}
+table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
+    cvar = "ttt_vampires_are_monsters",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
+    cvar = "ttt_vampires_are_independent",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
+    cvar = "ttt_vampire_convert_enable",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
+    cvar = "ttt_vampire_drain_enable",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
+    cvar = "ttt_vampire_drain_first",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
+    cvar = "ttt_vampire_drain_credits",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
+    cvar = "ttt_vampire_kill_credits",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
+    cvar = "ttt_vampire_loot_credits",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
+    cvar = "ttt_vampire_fang_timer",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
+    cvar = "ttt_vampire_fang_dead_timer",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
+    cvar = "ttt_vampire_fang_heal",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
+    cvar = "ttt_vampire_fang_overheal",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
+    cvar = "ttt_vampire_fang_overheal_living",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
+    cvar = "ttt_vampire_fang_unfreeze_delay",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
+    cvar = "ttt_vampire_damage_reduction",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 2
+})
+table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
+    cvar = "ttt_vampire_prime_only_convert",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
+    cvar = "ttt_vampire_prime_death_mode",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
+    cvar = "ttt_vampire_show_target_icon",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
+    cvar = "ttt_vampire_vision_enable",
+    type = ROLE_CONVAR_TYPE_BOOL
+})

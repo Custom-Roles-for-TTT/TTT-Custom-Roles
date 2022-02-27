@@ -1,5 +1,65 @@
 # Release Notes
 
+## 1.5.5
+**Released: February 28th, 2022**\
+Includes all beta updates from [1.5.1](#151-beta) to [1.5.4](#154-beta).
+
+## 1.5.4 (Beta)
+**Released: February 26th, 2022**
+
+### Additions
+- Added ability to control how often a revenger loses health after their lover is killed, if that is enabled
+
+### Fixes
+- Fixed body armor icon not going away once you died
+- Fixed players converted to vampire not being unfrozen immediately
+
+## 1.5.3 (Beta)
+**Released: February 23rd, 2022**
+
+### Additions
+- Added ability to hide weapon ammo display
+- Added ability to hide a special detective's true role, showing "detective" everywhere instead
+  - This can be set to only hide the role for other players (e.g. the special detective can see their real role but others can't) or for everyone
+
+### Fixes
+- Fixed assassin target information not being cleared from the scoreboard if an assassin's role was changed
+- Fixed parasite infection not being cured on a player if they resurrected the parasite and changed their role
+- Fixed phantom haunting state not being cleared when their role was changed
+
+### Developer
+- Added new `TTTTutorialRoleTextExtra` hook to allow addons to provide more text information for a role's tutorial page
+- Added new `TTTTutorialRolePageExtra` hook to allow addons to manipulate the tutorial page controls for a role
+- Added new `TTTRolesLoaded` hook which is called after all roles and role modifications and loaded
+- Added new `TTTRoleRegistered` hook which is called after an external role has been registered
+- Added the ability to load role modifications immediately after roles are initially loaded
+- Added the ability to spread external role logic between client, server and shared files
+- Added convars for default roles to ROLE_CONVARS table to allow for dynamic loading with ULX
+
+## 1.5.2 (Beta)
+**Released: February 20th, 2022**
+
+### Additions
+- Added shield icon on the left of the health bar when a player has body armor equipped
+- Added icons for speed and regeneration equipments to the body search dialog
+- Added ability to control which parts of the corpse search window are visible to non-detectives (if ttt_detective_search_only is disabled)
+
+### Fixes
+- Fixed HL2 neurotoxin suit overlay showing when a player took poison damage
+- Fixed veteran damage bonus getting removed if something assigned them the same role again
+- Fixed players not always being able to look at a body that was already searched by a detective when ttt_detective_search_only is enabled
+
+## 1.5.1 (Beta)
+**Released: February 12th, 2022**
+
+### Fixes
+- Fixed a few cases where roles without items in their shop could open the shop when Shop For All was enabled
+
+### Developer
+- Removed deprecated global `GenerateNewEventID` from the client realm. Use the `TTTSyncEventIDs` hook instead
+- Removed deprecated global `GenerateNewWinID` from the client realm. Use the `TTTSyncWinIDs` hook instead
+- Changed custom win and event tracking to be protected against file reloading, preventing errors while debugging
+
 ## 1.5.0
 **Released: February 9th, 2022**\
 Includes all beta updates from [1.4.5](#145-beta) to [1.4.9](#149-beta).
@@ -104,7 +164,7 @@ Includes all beta updates from [1.4.1](#141-beta) to [1.4.2](#142-beta).
 **Released: December 10th, 2021**
 
 ### Additions
-- Added ability to allow spirits to see eachother when there is a medium (enabled by default)
+- Added ability to allow spirits to see each other when there is a medium (enabled by default)
 
 ### Changes
 - Ported change from base TTT: "TTT uses new permissions.EnableVoiceChat"
@@ -142,7 +202,7 @@ Includes all beta updates from [1.4.1](#141-beta) to [1.4.2](#142-beta).
 
 ### Fixes
 - Fixed loot goblin and old man not sharing a timelimit win with the innocents
-- Fixed loot goblin and old man not sharing a win with eachother (if they are both in the same round) on the round summary screen
+- Fixed loot goblin and old man not sharing a win with each other (if they are both in the same round) on the round summary screen
 
 ### Developer
 - Changed TTTCanIdentifyCorpse and TTTCanSearchCorpse hooks to allow changing the corpse's stored role

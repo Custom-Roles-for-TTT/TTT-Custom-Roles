@@ -46,3 +46,13 @@ hook.Add("TTTUpdateRoleState", "Traitor_TTTUpdateRoleState", function()
         table.RemoveByValue(phantom_device.CanBuy, ROLE_TRAITOR)
     end
 end)
+
+------------------
+-- ROLE CONVARS --
+------------------
+
+ROLE_CONVARS[ROLE_TRAITOR] = {}
+table.insert(ROLE_CONVARS[ROLE_TRAITOR], {
+    cvar = "ttt_traitor_phantom_cure",
+    type = ROLE_CONVAR_TYPE_BOOL
+})

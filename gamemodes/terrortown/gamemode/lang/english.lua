@@ -182,6 +182,8 @@ L.search_words = "Something tells you some of this person's last words were: '{l
 L.search_armor = "They were wearing nonstandard body armor."
 L.search_disg = "They were carrying a device that could hide their identity."
 L.search_radar = "They were carrying some sort of radar. It is no longer functioning."
+L.search_speed = "Surgically attached to their legs were devices that appeared to make them move faster."
+L.search_regen = "You find a device hooked into their veins that seems to cause some sort of increased healing factor. It cannot be removed."
 L.search_c4 = "In a pocket you found a note. It states that cutting wire {num} will safely disarm the bomb."
 
 L.search_dmg_crush = "Many of their bones are broken. It seems the impact of a heavy object killed them."
@@ -269,6 +271,8 @@ L.set_karma_total_pct_tip = "Shows the karma value in the scoreboard as a percen
 L.set_color_mode = "Color settings"
 L.set_hide_role = "Hide your role in the HUD"
 L.set_hide_role_tip = "By default your role will appear in the bottom left of the HUD. Turn this on to prevent screen cheating."
+L.set_hide_ammo = "Hide your weapon ammo in the HUD"
+L.set_hide_ammo_tip = "By default your weapon ammo will appear in the bottom left of the HUD. Turn this on if you have another addon that does that for you."
 L.set_radio_button = "Radio menu button"
 L.set_radio_button_tip = "What button to press to open/close the radio menu"
 

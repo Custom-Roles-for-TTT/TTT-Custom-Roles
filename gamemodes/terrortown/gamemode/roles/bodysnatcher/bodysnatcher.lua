@@ -26,8 +26,8 @@ local bodysnatcher_reveal_innocent = CreateConVar("ttt_bodysnatcher_reveal_innoc
 local bodysnatcher_reveal_monster = CreateConVar("ttt_bodysnatcher_reveal_monster", "1", FCVAR_NONE, "Who the bodysnatcher is revealed to when they join the monster team", 0, 2)
 local bodysnatcher_reveal_independent = CreateConVar("ttt_bodysnatcher_reveal_independent", "1", FCVAR_NONE, "Who the bodysnatcher is revealed to when they join the independent team", 0, 2)
 local bodysnatcher_respawn = CreateConVar("ttt_bodysnatcher_respawn", "0")
-local bodysnatcher_respawn_limit = CreateConVar("ttt_bodysnatcher_respawn_limit", "0")
-local bodysnatcher_respawn_delay = CreateConVar("ttt_bodysnatcher_respawn_delay", "3")
+local bodysnatcher_respawn_limit = CreateConVar("ttt_bodysnatcher_respawn_limit", "0", FCVAR_NONE, "The maximum number of times the bodysnatcher can respawn (if \"ttt_bodysnatcher_respawn\" is enabled). Set to 0 to allow infinite respawns", 0, 30)
+local bodysnatcher_respawn_delay = CreateConVar("ttt_bodysnatcher_respawn_delay", "3", FCVAR_NONE, "The delay to use when respawning the bodysnatcher (if \"ttt_bodysnatcher_respawn\" is enabled)", 0, 60)
 
 hook.Add("TTTSyncGlobals", "Bodysnatcher_TTTSyncGlobals", function()
     SetGlobalBool("ttt_bodysnatchers_are_independent", bodysnatchers_are_independent:GetBool())

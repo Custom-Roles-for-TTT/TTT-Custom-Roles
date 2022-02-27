@@ -13,15 +13,15 @@ local GetAllPlayers = player.GetAll
 -- CONVARS --
 -------------
 
-CreateConVar("ttt_zombie_round_chance", 0.1)
+CreateConVar("ttt_zombie_round_chance", 0.1, FCVAR_NONE, "The chance that a \"zombie round\" will occur where all players who would have been traitors are made zombies instead. Only usable when \"ttt_zombies_are_traitors\" is set to \"1\"", 0, 1)
 local zombies_are_monsters = CreateConVar("ttt_zombies_are_monsters", "0")
 local zombies_are_traitors = CreateConVar("ttt_zombies_are_traitors", "0")
 local zombie_show_target_icon = CreateConVar("ttt_zombie_show_target_icon", "0")
-local zombie_damage_penalty = CreateConVar("ttt_zombie_damage_penalty", "0.5")
-local zombie_damage_reduction = CreateConVar("ttt_zombie_damage_reduction", "0")
+local zombie_damage_penalty = CreateConVar("ttt_zombie_damage_penalty", "0.5", FCVAR_NONE, "The fraction a zombie's damage will be scaled by when they are attacking without using their claws. For example, setting this to 0.25 will let the zombie deal 75% of normal gun damage, and 0.66 will let the zombie deal 33% of normal damage", 0, 1)
+local zombie_damage_reduction = CreateConVar("ttt_zombie_damage_reduction", "0", FCVAR_NONE, "The fraction an attacker's bullet damage will be reduced by when they are shooting a zombie", 0, 1)
 local zombie_prime_only_weapons = CreateConVar("ttt_zombie_prime_only_weapons", "1")
-local zombie_prime_speed_bonus = CreateConVar("ttt_zombie_prime_speed_bonus", "0.35")
-local zombie_thrall_speed_bonus = CreateConVar("ttt_zombie_thrall_speed_bonus", "0.15")
+local zombie_prime_speed_bonus = CreateConVar("ttt_zombie_prime_speed_bonus", "0.35", FCVAR_NONE, "The amount of bonus speed a prime zombie (e.g. player who spawned as a zombie originally) should get when using their claws. Server or round must be restarted for changes to take effect", 0, 1)
+local zombie_thrall_speed_bonus = CreateConVar("ttt_zombie_thrall_speed_bonus", "0.15", FCVAR_NONE, "The amount of bonus speed a zombie thrall (e.g. non-prime zombie) should get when using their claws. Server or round must be restarted for changes to take effect", 0, 1)
 local zombie_vision_enable = CreateConVar("ttt_zombie_vision_enable", "0")
 
 hook.Add("TTTSyncGlobals", "Zombie_TTTSyncGlobals", function()

@@ -128,7 +128,7 @@ function GM:PostDrawTranslucentRenderables()
                 local color_role = nil
                 local noz = false
                 if v:IsDetectiveTeam() then
-                    role = v:GetRole()
+                    role = v:GetDisplayedRole()
                 elseif v:IsDetectiveLike() and not (v:IsImpersonator() and client:IsTraitorTeam()) then
                     role = GetDetectiveIconRole(false)
                 end
@@ -403,8 +403,13 @@ function GM:HUDDrawTargetID()
             end
         end
 
-        target_detective = GetRoundState() > ROUND_PREP and (ent:IsDetective() or ((ent:IsDeputy() or (ent:IsImpersonator() and not client:IsTraitorTeam())) and ent:IsRoleActive()))
-        target_special_detective = GetRoundState() > ROUND_PREP and ent:IsDetectiveTeam() and not target_detective
+        if GetRoundState() > ROUND_PREP then
+            if ent:GetDisplayedRole() == ROLE_DETECTIVE or ((ent:IsDeputy() or (ent:IsImpersonator() and not client:IsTraitorTeam())) and ent:IsRoleActive()) then
+                target_detective = true
+            elseif ent:IsDetectiveTeam() and not target_detective then
+                target_special_detective = true
+            end
+        end
 
         -- Allow external roles to override or block showing player name
         local new_text, new_col = CallHook("TTTTargetIDPlayerName", nil, ent, client, text, color)

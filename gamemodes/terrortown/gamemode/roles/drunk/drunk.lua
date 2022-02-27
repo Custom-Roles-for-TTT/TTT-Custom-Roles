@@ -20,9 +20,9 @@ util.AddNetworkString("TTT_DrunkSober")
 -- CONVARS --
 -------------
 
-local drunk_sober_time = CreateConVar("ttt_drunk_sober_time", "180")
+local drunk_sober_time = CreateConVar("ttt_drunk_sober_time", "180", FCVAR_NONE, "Time in seconds for the drunk to remember their role", 0, 300)
 local drunk_notify_mode = CreateConVar("ttt_drunk_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the drunk sobers up", 0, 4)
-local drunk_innocent_chance = CreateConVar("ttt_drunk_innocent_chance", "0.7")
+local drunk_innocent_chance = CreateConVar("ttt_drunk_innocent_chance", "0.7", FCVAR_NONE, "Chance that the drunk will become an innocent role when remembering their role", 0, 1)
 local drunk_become_clown = CreateConVar("ttt_drunk_become_clown", "0")
 local drunk_any_role = CreateConVar("ttt_drunk_any_role", "0")
 

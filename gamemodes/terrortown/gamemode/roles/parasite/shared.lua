@@ -54,3 +54,51 @@ hook.Add("TTTUpdateRoleState", "Parasite_TTTUpdateRoleState", function()
         table.Empty(fake_cure.CanBuy)
     end
 end)
+
+------------------
+-- ROLE CONVARS --
+------------------
+
+ROLE_CONVARS[ROLE_PARASITE] = {}
+table.insert(ROLE_CONVARS[ROLE_PARASITE], {
+    cvar = "ttt_parasite_infection_time",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_PARASITE], {
+    cvar = "ttt_parasite_infection_transfer",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_PARASITE], {
+    cvar = "ttt_parasite_infection_transfer_reset",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_PARASITE], {
+    cvar = "ttt_parasite_infection_suicide_mode",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_PARASITE], {
+    cvar = "ttt_parasite_respawn_mode",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_PARASITE], {
+    cvar = "ttt_parasite_respawn_health",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_PARASITE], {
+    cvar = "ttt_parasite_announce_infection",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_PARASITE], {
+    cvar = "ttt_parasite_cure_mode",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_PARASITE], {
+    cvar = "ttt_parasite_cure_time",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})

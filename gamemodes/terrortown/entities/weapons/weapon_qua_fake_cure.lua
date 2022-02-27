@@ -70,7 +70,7 @@ local hum = Sound("items/nvg_on.wav")
 local cured = Sound("items/smallmedkit1.wav")
 
 if SERVER then
-    CreateConVar("ttt_quack_fake_cure_time", "-1")
+    CreateConVar("ttt_quack_fake_cure_time", "-1", FCVAR_NONE, "The amount of time (in seconds) the fake parasite cure takes to use. If set to -1, the ttt_parasite_cure_time value will be used instead", -1, 30)
 end
 
 if CLIENT then
@@ -97,7 +97,7 @@ function SWEP:SetupDataTables()
 end
 
 if SERVER then
-    local CureMode = CreateConVar("ttt_quack_fake_cure_mode", "0")
+    local CureMode = CreateConVar("ttt_quack_fake_cure_mode", "0", FCVAR_NONE, "How to handle using a fake parasite cure on someone who is not infected. 0 - Kill nobody (But use up the cure), 1 - Kill the person who uses the cure, 2 - Kill the person the cure is used on", 0, 2)
 
     function SWEP:Reset()
         self:SetState(DEFIB_IDLE)

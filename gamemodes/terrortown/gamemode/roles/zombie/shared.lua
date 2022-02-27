@@ -105,3 +105,97 @@ hook.Add("TTTSpeedMultiplier", "Zombie_TTTSpeedMultiplier", function(ply, mults)
         table.insert(mults, speed_bonus)
     end
 end)
+
+------------------
+-- ROLE CONVARS --
+------------------
+
+ROLE_CONVARS[ROLE_ZOMBIE] = {}
+table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
+    cvar = "ttt_zombie_round_chance",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 2
+})
+table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
+    cvar = "ttt_zombies_are_monsters",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
+    cvar = "ttt_zombies_are_traitors",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
+    cvar = "ttt_zombie_show_target_icon",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
+    cvar = "ttt_zombie_damage_penalty",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 2
+})
+table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
+    cvar = "ttt_zombie_damage_reduction",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 2
+})
+table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
+    cvar = "ttt_zombie_prime_only_weapons",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
+    cvar = "ttt_zombie_prime_speed_bonus",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 2
+})
+table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
+    cvar = "ttt_zombie_thrall_speed_bonus",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 2
+})
+table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
+    cvar = "ttt_zombie_vision_enable",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
+    cvar = "ttt_zombie_leap_enable",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
+    cvar = "ttt_zombie_spit_enable",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
+    cvar = "ttt_zombie_prime_convert_chance",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 2
+})
+table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
+    cvar = "ttt_zombie_thrall_convert_chance",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 2
+})
+table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
+    cvar = "ttt_zombie_respawn_health",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
+    cvar = "ttt_zombie_prime_attack_damage",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
+    cvar = "ttt_zombie_thrall_attack_damage",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
+    cvar = "ttt_zombie_prime_attack_delay",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 2
+})
+table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
+    cvar = "ttt_zombie_thrall_attack_delay",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 2
+})

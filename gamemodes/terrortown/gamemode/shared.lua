@@ -17,7 +17,7 @@ local StringSplit = string.Split
 local StringSub = string.sub
 
 -- Version string for display and function for version checks
-CR_VERSION = "1.5.0"
+CR_VERSION = "1.5.5"
 CR_BETA = false
 
 function CRVersion(version)
@@ -833,11 +833,12 @@ function RegisterRole(tbl)
     if tbl.convars then
         ROLE_CONVARS[roleID] = tbl.convars
     end
+
+    hook.Call("TTTRoleRegistered", nil, roleID)
 end
 
-local function AddInternalRoles()
-    local root = "terrortown/gamemode/roles/"
-    local _, dirs = file.Find(root .. "*", "LUA")
+local function AddRoleFiles(root)
+    local rootfiles, dirs = file.Find(root .. "*", "LUA")
     for _, dir in ipairs(dirs) do
         local files, _ = file.Find(root .. dir .. "/*.lua", "LUA")
         for _, fil in ipairs(files) do
@@ -854,17 +855,19 @@ local function AddInternalRoles()
             if CLIENT and (isClientFile or isSharedFile) then include(root .. dir .. "/" .. fil) end
         end
     end
-end
-AddInternalRoles()
 
-local function AddExternalRoles()
-    local files, _ = file.Find("customroles/*.lua", "LUA")
-    for _, fil in ipairs(files) do
-        if SERVER then AddCSLuaFile("customroles/" .. fil) end
-        include("customroles/" .. fil)
+    -- Include and send client any files using the single file method
+    for _, fil in ipairs(rootfiles) do
+        if string.GetExtensionFromFilename(fil) == "lua" then
+            if SERVER then AddCSLuaFile(root .. fil) end
+            include(root .. fil)
+        end
     end
 end
-AddExternalRoles()
+AddRoleFiles("terrortown/gamemode/roles/") -- Internal roles
+AddRoleFiles("customroles/") -- External roles
+AddRoleFiles("rolemodifications/") -- Role modifications
+hook.Call("TTTRolesLoaded", nil)
 
 local function GetRoleFromStackTrace()
     local role
@@ -927,12 +930,9 @@ EVENT_BEGGARKILLED = 26
 EVENT_INFECT = 27
 EVENT_BODYSNATCHERKILLED = 28
 
--- Don't redefine this every time we load this file
-if not EVENT_MAX then
-    EVENT_MAX = 28
-end
+EVENT_MAX = EVENT_MAX or 28
+EVENTS_BY_ROLE = EVENTS_BY_ROLE or {}
 
-EVENTS_BY_ROLE = {}
 if SERVER then
     util.AddNetworkString("TTT_SyncEventIDs")
 
@@ -962,10 +962,6 @@ if SERVER then
     end)
 end
 if CLIENT then
-    function GenerateNewEventID(role)
-        ErrorNoHaltWithStack("WARNING: Role is using 'GenerateNewEventID' on the client. This is deprecated as of v1.4.6 and should be replaced with the new 'TTTSyncEventIDs' hook.\n")
-    end
-
     net.Receive("TTT_SyncEventIDs", function()
         EVENTS_BY_ROLE = net.ReadTable()
         EVENT_MAX = net.ReadUInt(16)
@@ -987,12 +983,9 @@ WIN_MONSTER = 10
 WIN_VAMPIRE = 11
 WIN_LOOTGOBLIN = 12
 
--- Don't redefine this every time we load this file
-if not WIN_MAX then
-    WIN_MAX = 12
-end
+WIN_MAX = WIN_MAX or 12
+WINS_BY_ROLE = WINS_BY_ROLE or {}
 
-WINS_BY_ROLE = {}
 if SERVER then
     util.AddNetworkString("TTT_SyncWinIDs")
 
@@ -1022,10 +1015,6 @@ if SERVER then
     end)
 end
 if CLIENT then
-    function GenerateNewWinID(role)
-        ErrorNoHaltWithStack("WARNING: Role is using 'GenerateNewWinID' on the client. This is deprecated as of v1.4.6 and should be replaced with the new 'TTTSyncWinIDs' hook.\n")
-    end
-
     net.Receive("TTT_SyncWinIDs", function()
         WINS_BY_ROLE = net.ReadTable()
         WIN_MAX = net.ReadUInt(16)
@@ -1074,6 +1063,27 @@ JESTER_NOTIFY_DETECTIVE_AND_TRAITOR = 1
 JESTER_NOTIFY_TRAITOR = 2
 JESTER_NOTIFY_DETECTIVE = 3
 JESTER_NOTIFY_EVERYONE = 4
+
+-- Special detective hide modes
+SPECIAL_DETECTIVE_HIDE_NONE = 0
+SPECIAL_DETECTIVE_HIDE_FOR_ALL = 1
+SPECIAL_DETECTIVE_HIDE_FOR_OTHERS = 2
+
+-- Corpse stuff
+CORPSE_ICON_TYPES = {
+    "c4",
+    "dmg",
+    "dtime",
+    "equipment",
+    "head",
+    "kills",
+    "lastid",
+    "nick",
+    "role",
+    "stime",
+    "wep",
+    "words"
+}
 
 COLOR_WHITE = Color(255, 255, 255, 255)
 COLOR_BLACK = Color(0, 0, 0, 255)

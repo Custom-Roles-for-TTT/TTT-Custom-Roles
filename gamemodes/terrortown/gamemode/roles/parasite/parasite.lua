@@ -18,12 +18,12 @@ util.AddNetworkString("TTT_ParasiteInfect")
 -- CONVARS --
 -------------
 
-local parasite_infection_time = CreateConVar("ttt_parasite_infection_time", 45)
+local parasite_infection_time = CreateConVar("ttt_parasite_infection_time", 45, FCVAR_NONE, "The time it takes in seconds for the parasite to fully infect someone", 0, 300)
 local parasite_infection_transfer = CreateConVar("ttt_parasite_infection_transfer", 0)
 local parasite_infection_transfer_reset = CreateConVar("ttt_parasite_infection_transfer_reset", 1)
-local parasite_infection_suicide_mode = CreateConVar("ttt_parasite_infection_suicide_mode", 0)
-local parasite_respawn_mode = CreateConVar("ttt_parasite_respawn_mode", 0)
-local parasite_respawn_health = CreateConVar("ttt_parasite_respawn_health", 100)
+local parasite_infection_suicide_mode = CreateConVar("ttt_parasite_infection_suicide_mode", 0, FCVAR_NONE, "The way to handle when a player infected by the parasite kills themselves. 0 - Do nothing. 1 - Respawn the parasite. 2 - Respawn the parasite ONLY IF the infected player killed themselves with a console command like \"kill\"", 0, 2)
+local parasite_respawn_mode = CreateConVar("ttt_parasite_respawn_mode", 0, FCVAR_NONE, "The way in which the parasite respawns. 0 - Take over host. 1 - Respawn at the parasite's body. 2 - Respawn at a random location.", 0, 2)
+local parasite_respawn_health = CreateConVar("ttt_parasite_respawn_health", 100, FCVAR_NONE, "The health on which the parasite respawns", 0, 100)
 local parasite_announce_infection = CreateConVar("ttt_parasite_announce_infection", 0)
 
 hook.Add("TTTSyncGlobals", "Parasite_TTTSyncGlobals", function()
@@ -74,6 +74,13 @@ end)
 
 hook.Add("TTTPlayerSpawnForRound", "Parasite_TTTPlayerSpawnForRound", function(ply, dead_only)
     ResetPlayer(ply)
+end)
+
+-- Un-haunt the device owner if they used their device on the parasite
+hook.Add("TTTPlayerDefibRoleChange", "Parasite_TTTPlayerDefibRoleChange", function(ply, tgt)
+    if tgt:IsParasite() and tgt:GetNWString("ParasiteInfectingTarget", nil) == ply:SteamID64() then
+        ply:SetNWBool("ParasiteInfected", false)
+    end
 end)
 
 local function DoParasiteRespawnWithoutBody(parasite, hide_messages)

@@ -39,3 +39,30 @@ hook.Add("TTTUpdateRoleState", "Paramedic_TTTUpdateRoleState", function()
         paramedic_defib.LimitedStock = true
     end
 end)
+
+------------------
+-- ROLE CONVARS --
+------------------
+
+ROLE_CONVARS[ROLE_PARAMEDIC] = {}
+table.insert(ROLE_CONVARS[ROLE_PARAMEDIC], {
+    cvar = "ttt_paramedic_defib_as_innocent",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_PARAMEDIC], {
+    cvar = "ttt_paramedic_device_loadout",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_PARAMEDIC], {
+    cvar = "ttt_paramedic_device_shop",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_PARAMEDIC], {
+    cvar = "ttt_paramedic_device_shop_rebuyable",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_PARAMEDIC], {
+    cvar = "ttt_paramedic_defib_time",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})

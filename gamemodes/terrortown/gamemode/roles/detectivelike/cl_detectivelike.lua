@@ -12,6 +12,7 @@ hook.Add("Initialize", "DetectiveLike_Translations_Initialize", function()
 
     -- HUD
     LANG.AddToLanguage("english", "detective_promotion_hud", "You have been promoted to {detective}")
+    LANG.AddToLanguage("english", "detective_special_hidden_hud", "You appear as {detective} to others")
 end)
 
 -------------
@@ -44,7 +45,21 @@ end)
 ---------
 
 hook.Add("TTTHUDInfoPaint", "DetectiveLike_TTTHUDInfoPaint", function(client, label_left, label_top)
-    if client:IsDetectiveLike() and not client:IsDetectiveTeam() then
+    if client:IsDetectiveTeam() then
+        if GetGlobalInt("ttt_detective_hide_special_mode", SPECIAL_DETECTIVE_HIDE_NONE) == SPECIAL_DETECTIVE_HIDE_FOR_OTHERS then
+            surface.SetFont("TabLarge")
+            surface.SetTextColor(255, 255, 255, 230)
+
+            text = LANG.GetParamTranslation("detective_special_hidden_hud", { detective = ROLE_STRINGS_EXT[ROLE_DETECTIVE] })
+            local _, h = surface.GetTextSize(text)
+
+            surface.SetTextPos(label_left, ScrH() - label_top - h)
+            surface.DrawText(text)
+
+            -- Move the label up for the next one
+            label_top = label_top + 20
+        end
+    elseif client:IsDetectiveLike() then
         surface.SetFont("TabLarge")
         surface.SetTextColor(255, 255, 255, 230)
 

@@ -64,7 +64,8 @@ CreateClientConVar("ttt_custom_mon_color_b", "0", true, false)
 UpdateRoleColours()
 
 CreateClientConVar("ttt_avoid_detective", "0", true, true)
-CreateClientConVar("ttt_hide_role", "0", true, true)
+CreateClientConVar("ttt_hide_role", "0", true, false)
+CreateClientConVar("ttt_hide_ammo", "0", true, false)
 
 HELPSCRN = {}
 
@@ -171,6 +172,9 @@ function HELPSCRN:Show()
 
     cb = dgui:CheckBox(GetTranslation("set_hide_role"), "ttt_hide_role")
     cb:SetTooltip(GetTranslation("set_hide_role_tip"))
+
+    cb = dgui:CheckBox(GetTranslation("set_hide_ammo"), "ttt_hide_ammo")
+    cb:SetTooltip(GetTranslation("set_hide_ammo_tip"))
 
     cb = dgui:TextEntry(GetTranslation("set_radio_button"), "ttt_radio_button")
     cb:SetTooltip(GetTranslation("set_radio_button_tip"))
@@ -839,11 +843,20 @@ local function ShowTutorialPage(pnl, page)
                 htmlData = htmlData .. roleText
             end
 
+            -- Allow other addons to add more information to this role's tutorial text
+            local updatedHtml = hook.Call("TTTTutorialRoleTextExtra", nil, role, titleLabel, roleIcon, htmlData)
+            if updatedHtml and #updatedHtml > 0 then
+                htmlData = updatedHtml
+            end
+
             -- Close the page
             htmlData = htmlData .. "</div>"
 
             html:SetHTML(htmlData)
         end
+
+        -- Allow other addons to add more information to this role's tutorial page
+        hook.Call("TTTTutorialRolePageExtra", nil, role, pnl, titleLabel, roleIcon)
     end
 end
 
@@ -967,7 +980,7 @@ function HELPSCRN:CreateTutorial(parent)
 
     brole.DoClick = function()
         local client = LocalPlayer()
-        local role = client:GetRole()
+        local role = client:GetDisplayedRole()
         if not IsValid(client) or role <= ROLE_NONE or role > ROLE_MAX then return end
 
         local page = nil

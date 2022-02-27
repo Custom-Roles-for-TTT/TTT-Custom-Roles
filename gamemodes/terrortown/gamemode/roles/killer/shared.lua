@@ -1,6 +1,7 @@
 AddCSLuaFile()
 
 local hook = hook
+local table = table
 
 -- Initialize role features
 ROLE_STARTING_HEALTH[ROLE_KILLER] = 150
@@ -68,3 +69,72 @@ end)
 hook.Add("TTTPrepareRound", "Killer_Shared_TTTPrepareRound", function()
     InitializeEquipment()
 end)
+
+------------------
+-- ROLE CONVARS --
+------------------
+
+ROLE_CONVARS[ROLE_KILLER] = {}
+table.insert(ROLE_CONVARS[ROLE_KILLER], {
+    cvar = "ttt_killer_knife_enabled",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_KILLER], {
+    cvar = "ttt_killer_crowbar_enabled",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_KILLER], {
+    cvar = "ttt_killer_smoke_enabled",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_KILLER], {
+    cvar = "ttt_killer_smoke_timer",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_KILLER], {
+    cvar = "ttt_killer_show_target_icon",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_KILLER], {
+    cvar = "ttt_killer_damage_penalty",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 2
+})
+table.insert(ROLE_CONVARS[ROLE_KILLER], {
+    cvar = "ttt_killer_damage_reduction",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 2
+})
+table.insert(ROLE_CONVARS[ROLE_KILLER], {
+    cvar = "ttt_killer_warn_all",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_KILLER], {
+    cvar = "ttt_killer_vision_enable",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_KILLER], {
+    cvar = "ttt_killer_update_scoreboard",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_KILLER], {
+    cvar = "ttt_killer_knife_damage",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_KILLER], {
+    cvar = "ttt_killer_knife_delay",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 2
+})
+table.insert(ROLE_CONVARS[ROLE_KILLER], {
+    cvar = "ttt_killer_crowbar_damage",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_KILLER], {
+    cvar = "ttt_killer_crowbar_thrown_damage",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})

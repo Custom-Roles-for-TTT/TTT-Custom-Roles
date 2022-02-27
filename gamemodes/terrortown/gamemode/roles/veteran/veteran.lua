@@ -12,11 +12,11 @@ local GetAllPlayers = player.GetAll
 -- CONVARS --
 -------------
 
-local veteran_damage_bonus = CreateConVar("ttt_veteran_damage_bonus", "0.5")
+local veteran_damage_bonus = CreateConVar("ttt_veteran_damage_bonus", "0.5", FCVAR_NONE, "Damage bonus that the veteran has when they are the last innocent alive (e.g. 0.5 = 50% more damage)", 0, 1)
 local veteran_full_heal = CreateConVar("ttt_veteran_full_heal", "1")
-local veteran_heal_bonus = CreateConVar("ttt_veteran_heal_bonus", "0")
+local veteran_heal_bonus = CreateConVar("ttt_veteran_heal_bonus", "0", FCVAR_NONE, "The amount of bonus health to give the veteran when they are healed as the last remaining innocent", 0, 100)
 local veteran_announce = CreateConVar("ttt_veteran_announce", "0")
-local veteran_activation_credits = CreateConVar("ttt_veteran_activation_credits", "0")
+local veteran_activation_credits = CreateConVar("ttt_veteran_activation_credits", "0", FCVAR_NONE, "The number of credits to give the veteran when they are activated", 0, 10)
 
 hook.Add("TTTSyncGlobals", "Veteran_TTTSyncGlobals", function()
     SetGlobalBool("ttt_veteran_full_heal", veteran_full_heal:GetBool())
@@ -89,7 +89,7 @@ hook.Add("TTTPrepareRound", "Veteran_RoleFeatures_PrepareRound", function()
 end)
 
 hook.Add("TTTPlayerRoleChanged", "Veteran_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
-    if oldRole == ROLE_VETERAN then
+    if oldRole == ROLE_VETERAN and newRole ~= ROLE_VETERAN then
         ply:SetNWBool("VeteranActive", false)
     end
 end)

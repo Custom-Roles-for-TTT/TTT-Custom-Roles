@@ -190,7 +190,11 @@ CreateConVar("ttt_traitor_vision_enable", "0")
 
 -- Detective role properties
 CreateConVar("ttt_detective_search_only", "1")
+for _, dataType in ipairs(CORPSE_ICON_TYPES) do
+    CreateConVar("ttt_detective_search_only_" .. dataType, "0")
+end
 CreateConVar("ttt_detective_disable_looting", "0")
+CreateConVar("ttt_detective_hide_special_mode", SPECIAL_DETECTIVE_HIDE_NONE, FCVAR_NONE, "How to handle special detective role information. 0 - Show the special detective's role to everyone. 1 - Hide the special detective's role from everyone (just show detective instead). 2 - Hide the special detective's role for everyone but themselves (only they can see their true role)", SPECIAL_DETECTIVE_HIDE_NONE, SPECIAL_DETECTIVE_HIDE_FOR_OTHERS)
 CreateConVar("ttt_all_search_postround", "1")
 CreateConVar("ttt_all_search_binoc", "0")
 
@@ -474,7 +478,10 @@ function GM:SyncGlobals()
     SetGlobalFloat("ttt_karma_lenient", GetConVar("ttt_karma_lenient"):GetBool())
 
     SetGlobalBool("ttt_detective_search_only", GetConVar("ttt_detective_search_only"):GetBool())
-    SetGlobalBool("ttt_detective_disable_looting", GetConVar("ttt_detective_disable_looting"):GetBool())
+    for _, dataType in ipairs(CORPSE_ICON_TYPES) do
+        SetGlobalBool("ttt_detective_search_only_" .. dataType, GetConVar("ttt_detective_search_only_" .. dataType):GetBool())
+    end
+    SetGlobalInt("ttt_detective_hide_special_mode", GetConVar("ttt_detective_hide_special_mode"):GetInt())
     SetGlobalBool("ttt_all_search_postround", GetConVar("ttt_all_search_postround"):GetBool())
     SetGlobalBool("ttt_all_search_binoc", GetConVar("ttt_all_search_binoc"):GetBool())
 

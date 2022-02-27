@@ -37,6 +37,10 @@ Variables available globally (within the defined realm)
 *Realm:* Client and Server\
 *Added in:* 1.0.0
 
+**CORPSE_ICON_TYPES** - Table of the types of icons shown in the corpse search dialog.\
+*Realm:* Client and Server\
+*Added in:* 1.5.2
+
 **CR_VERSION** - The current version number for Custom Roles for TTT.\
 *Realm:* Client and Server\
 *Added in:* 1.0.0

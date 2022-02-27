@@ -18,13 +18,13 @@ resource.AddSingleFile("sound/clown.wav")
 -- CONVARS --
 -------------
 
-local clown_damage_bonus = CreateConVar("ttt_clown_damage_bonus", "0")
-local clown_activation_credits = CreateConVar("ttt_clown_activation_credits", "0")
+local clown_damage_bonus = CreateConVar("ttt_clown_damage_bonus", "0", FCVAR_NONE, "Damage bonus that the clown has after being activated (e.g. 0.5 = 50% more damage)", 0, 1)
+local clown_activation_credits = CreateConVar("ttt_clown_activation_credits", "0", FCVAR_NONE, "The number of credits to give the clown when they are activated", 0, 10)
 local clown_hide_when_active = CreateConVar("ttt_clown_hide_when_active", "0")
 local clown_use_traps_when_active = CreateConVar("ttt_clown_use_traps_when_active", "0")
 local clown_show_target_icon = CreateConVar("ttt_clown_show_target_icon", "0")
 local clown_heal_on_activate = CreateConVar("ttt_clown_heal_on_activate", "0")
-local clown_heal_bonus = CreateConVar("ttt_clown_heal_bonus", "0")
+local clown_heal_bonus = CreateConVar("ttt_clown_heal_bonus", "0", FCVAR_NONE, "The amount of bonus health to give the clown if they are healed when they are activated", 0, 100)
 
 hook.Add("TTTSyncGlobals", "Clown_TTTSyncGlobals", function()
     SetGlobalBool("ttt_clown_show_target_icon", clown_show_target_icon:GetBool())

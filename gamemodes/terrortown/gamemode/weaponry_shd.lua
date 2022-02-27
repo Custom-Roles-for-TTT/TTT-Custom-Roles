@@ -113,6 +113,7 @@ end
 
 -- Useful for allowing roles to have a shop only if weapons are assigned to them
 function WEPS.DoesRoleHaveWeapon(role, promoted)
+    WEPS.PrepWeaponsLists(role)
     if type(DoesRoleHaveWeaponCache[role]) ~= "boolean" then
         DoesRoleHaveWeaponCache[role] = nil
     end
@@ -120,28 +121,36 @@ function WEPS.DoesRoleHaveWeapon(role, promoted)
     if DoesRoleHaveWeaponCache[role] ~= nil then
         return DoesRoleHaveWeaponCache[role]
     end
-    if WEPS.BuyableWeapons[role] ~= nil and table.Count(WEPS.BuyableWeapons[role]) > 0 then
-        DoesRoleHaveWeaponCache[role] = true
-        return true
-    end
 
-    -- Detective-like roles get detective weapons and detectives always have weapons
-    if promoted then
-        DoesRoleHaveWeaponCache[role] = true
-        return true
-    end
-
+    local excludes = WEPS.ExcludeWeapons[role]
     for _, w in ipairs(GetWeapons()) do
-        if w and w.CanBuy and table.HasValue(w.CanBuy, role) then
+        -- If there is a weapon that this role can buy that isn't excluded then we can stop looking
+        if w and w.CanBuy and table.HasValue(w.CanBuy, role) and not table.HasValue(excludes, WEPS.GetClass(w)) then
             DoesRoleHaveWeaponCache[role] = true
             return true
         end
     end
 
-    -- Equipment counts as well
-    if EquipmentItems[role] and #EquipmentItems[role] > 0 then
+    -- If there are any additional weapons for the role then we can stop looking
+    if WEPS.BuyableWeapons[role] ~= nil and table.Count(WEPS.BuyableWeapons[role]) > 0 then
         DoesRoleHaveWeaponCache[role] = true
         return true
+    end
+
+    -- Detective-like roles get detective weapons so if detectives have weapons then so do they
+    if promoted and WEPS.DoesRoleHaveWeapon(ROLE_DETECTIVE, false) then
+        DoesRoleHaveWeaponCache[role] = true
+        return true
+    end
+
+    -- Equipment counts as well
+    if EquipmentItems[role] then
+        for _, e in ipairs(EquipmentItems[role]) do
+            if not table.HasValue(excludes, e.name) then
+                DoesRoleHaveWeaponCache[role] = true
+                return true
+            end
+        end
     end
 
     local rolemode = GetRoleMode(role)

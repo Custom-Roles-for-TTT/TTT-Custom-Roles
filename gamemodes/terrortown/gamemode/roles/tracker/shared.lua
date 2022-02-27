@@ -18,3 +18,18 @@ end)
 hook.Add("TTTPrepareRound", "Tracker_Shared_TTTPrepareRound", function()
     InitializeEquipment()
 end)
+
+------------------
+-- ROLE CONVARS --
+------------------
+
+ROLE_CONVARS[ROLE_TRACKER] = {}
+table.insert(ROLE_CONVARS[ROLE_TRACKER], {
+    cvar = "ttt_tracker_footstep_time",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_TRACKER], {
+    cvar = "ttt_tracker_footstep_color",
+    type = ROLE_CONVAR_TYPE_BOOL
+})

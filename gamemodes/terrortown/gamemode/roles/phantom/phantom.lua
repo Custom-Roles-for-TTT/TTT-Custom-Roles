@@ -18,18 +18,18 @@ util.AddNetworkString("TTT_PhantomHaunt")
 -- CONVARS --
 -------------
 
-local phantom_respawn_health = CreateConVar("ttt_phantom_respawn_health", "50")
+local phantom_respawn_health = CreateConVar("ttt_phantom_respawn_health", "50", FCVAR_NONE, "The amount of health a phantom will respawn with", 1, 100)
 local phantom_weaker_each_respawn = CreateConVar("ttt_phantom_weaker_each_respawn", "0")
 local phantom_announce_death = CreateConVar("ttt_phantom_announce_death", "0")
 local phantom_killer_smoke = CreateConVar("ttt_phantom_killer_smoke", "0")
-local phantom_killer_footstep_time = CreateConVar("ttt_phantom_killer_footstep_time", "0")
+local phantom_killer_footstep_time = CreateConVar("ttt_phantom_killer_footstep_time", "0", FCVAR_NONE, "The amount of time a phantom's killer's footsteps should show before fading. Set to 0 to disable", 1, 60)
 local phantom_killer_haunt = CreateConVar("ttt_phantom_killer_haunt", "1")
-local phantom_killer_haunt_power_max = CreateConVar("ttt_phantom_killer_haunt_power_max", "100")
-local phantom_killer_haunt_power_rate = CreateConVar("ttt_phantom_killer_haunt_power_rate", "10")
-local phantom_killer_haunt_move_cost = CreateConVar("ttt_phantom_killer_haunt_move_cost", "25")
-local phantom_killer_haunt_jump_cost = CreateConVar("ttt_phantom_killer_haunt_jump_cost", "50")
-local phantom_killer_haunt_drop_cost = CreateConVar("ttt_phantom_killer_haunt_drop_cost", "75")
-local phantom_killer_haunt_attack_cost = CreateConVar("ttt_phantom_killer_haunt_attack_cost", "100")
+local phantom_killer_haunt_power_max = CreateConVar("ttt_phantom_killer_haunt_power_max", "100", FCVAR_NONE, "The maximum amount of power a phantom can have when haunting their killer", 1, 200)
+local phantom_killer_haunt_power_rate = CreateConVar("ttt_phantom_killer_haunt_power_rate", "10", FCVAR_NONE, "The amount of power to regain per second when a phantom is haunting their killer", 1, 25)
+local phantom_killer_haunt_move_cost = CreateConVar("ttt_phantom_killer_haunt_move_cost", "25", FCVAR_NONE, "The amount of power to spend when a phantom is moving their killer via a haunting. Set to 0 to disable", 1, 100)
+local phantom_killer_haunt_jump_cost = CreateConVar("ttt_phantom_killer_haunt_jump_cost", "50", FCVAR_NONE, "The amount of power to spend when a phantom is making their killer jump via a haunting. Set to 0 to disable", 1, 100)
+local phantom_killer_haunt_drop_cost = CreateConVar("ttt_phantom_killer_haunt_drop_cost", "75", FCVAR_NONE, "The amount of power to spend when a phantom is making their killer drop their weapon via a haunting. Set to 0 to disable", 1, 100)
+local phantom_killer_haunt_attack_cost = CreateConVar("ttt_phantom_killer_haunt_attack_cost", "100", FCVAR_NONE, "The amount of power to spend when a phantom is making their killer attack via a haunting. Set to 0 to disable", 1, 100)
 local phantom_killer_haunt_without_body = CreateConVar("ttt_phantom_killer_haunt_without_body", "1")
 
 hook.Add("TTTSyncGlobals", "Phantom_TTTSyncGlobals", function()
@@ -46,13 +46,6 @@ end)
 -- HAUNTING --
 --------------
 
--- Un-haunt the device owner if they used their device on the Phantom
-hook.Add("TTTPlayerDefibRoleChange", "Phantom_TTTPlayerDefibRoleChange", function(ply, tgt)
-    if tgt:IsPhantom() and tgt:GetNWString("HauntingTarget", nil) == ply:SteamID64() then
-        ply:SetNWBool("Haunted", false)
-    end
-end)
-
 local deadPhantoms = {}
 hook.Add("TTTPrepareRound", "Phantom_TTTPrepareRound", function()
     for _, v in pairs(GetAllPlayers()) do
@@ -66,12 +59,39 @@ hook.Add("TTTPrepareRound", "Phantom_TTTPrepareRound", function()
     deadPhantoms = {}
 end)
 
-hook.Add("TTTPlayerSpawnForRound", "Phantom_TTTPlayerSpawnForRound", function(ply, dead_only)
+local function ResetPlayer(ply)
+    -- If this player is haunting someone else, make sure to clear them of the haunt too
+    if ply:GetNWBool("Haunting", false) then
+        local sid = ply:GetNWString("HauntingTarget", nil)
+        if sid then
+            local target = player.GetBySteamID64(sid)
+            if IsPlayer(target) then
+                target:SetNWBool("Haunted", false)
+            end
+        end
+    end
     ply:SetNWBool("Haunting", false)
     ply:SetNWString("HauntingTarget", nil)
     ply:SetNWInt("HauntingPower", 0)
     timer.Remove(ply:Nick() .. "HauntingPower")
     timer.Remove(ply:Nick() .. "HauntingSpectate")
+end
+
+hook.Add("TTTPlayerRoleChanged", "Phantom_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+    if oldRole == ROLE_PHANTOM and oldRole ~= newRole then
+        ResetPlayer(ply)
+    end
+end)
+
+hook.Add("TTTPlayerSpawnForRound", "Phantom_TTTPlayerSpawnForRound", function(ply, dead_only)
+    ResetPlayer(ply)
+end)
+
+-- Un-haunt the device owner if they used their device on the phantom
+hook.Add("TTTPlayerDefibRoleChange", "Phantom_TTTPlayerDefibRoleChange", function(ply, tgt)
+    if tgt:IsPhantom() and tgt:GetNWString("HauntingTarget", nil) == ply:SteamID64() then
+        ply:SetNWBool("Haunted", false)
+    end
 end)
 
 hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
