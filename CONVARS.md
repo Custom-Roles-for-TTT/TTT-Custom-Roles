@@ -406,6 +406,9 @@ ttt_lootgoblin_sprint_recovery              0.12    // The amount of stamina to 
 ttt_lootgoblin_notify_mode                  4       // The logic to use when notifying players that a loot goblin is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
 ttt_lootgoblin_notify_sound                 1       // Whether to play a cheering sound when a loot goblin is killed
 ttt_lootgoblin_notify_confetti              1       // Whether to throw confetti when a loot goblin is a killed
+ttt_lootgoblin_regen_mode                   2       // Whether the loot goblin should regenerate health and using what logic. 0 - No regeneration. 1 - Constant regen while active. 2 - Regen while standing still. 3 - Regen after taking damage
+ttt_lootgoblin_regen_rate                   3       // How often (in seconds) a loot goblin should regain health while regenerating
+ttt_lootgoblin_regen_delay                  0       // The length of the delay (in seconds) before the loot goblin's health will start to regenerate
 
 // ----------------------------------------
 

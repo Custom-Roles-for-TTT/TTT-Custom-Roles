@@ -1,5 +1,15 @@
 # Release Notes
 
+### 1.5.6 (Beta)
+**Released:**
+
+### Additions
+- Added the ability for loot goblins to regenerate health under certain circumstances
+  - By default, the loot goblin will now regen health slowly while standing still
+
+### Fixes
+- Fixed players whose roles are changed to loot goblin not being granted the jump boost
+
 ## 1.5.5
 **Released: February 28th, 2022**\
 Includes all beta updates from [1.5.1](#151-beta) to [1.5.4](#154-beta).

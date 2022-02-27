@@ -152,6 +152,22 @@ hook.Add("TTTTutorialRoleText", "LootGoblin_TTTTutorialRoleText", function(role,
         -- Win condition
         html = html .. "<span style='display: block; margin-top: 10px;'>If <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>the " .. ROLE_STRINGS[ROLE_LOOTGOBLIN] .. "</span> survives until another team wins the round, they will share the win with that team.</span>"
 
+        -- Regeneration
+        local regenMode = GetGlobalInt("ttt_lootgoblin_regen_mode", LOOTGOBLIN_REGEN_MODE_STILL)
+        if regenMode > LOOTGOBLIN_REGEN_MODE_NONE then
+            html = html .. "<span style='display: block; margin-top: 10px;'>While activated, <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>the " .. ROLE_STRINGS[ROLE_LOOTGOBLIN] .. "</span> will regenerate health "
+
+            if regenMode == LOOTGOBLIN_REGEN_MODE_ALWAYS then
+                html = html .. "constantly"
+            elseif regenMode == LOOTGOBLIN_REGEN_MODE_STILL then
+                html = html .. "while not moving"
+            else
+                html = html .. "after taking damage"
+            end
+
+            html = html .. ".</span>"
+        end
+
         return html
     end
 end)
