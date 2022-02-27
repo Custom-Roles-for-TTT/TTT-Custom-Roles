@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.5.5
+**Released: February 28th, 2022**\
+Includes all beta updates from [1.5.1](#151-beta) to [1.5.4](#154-beta).
+
 ## 1.5.4 (Beta)
 **Released: February 26th, 2022**
 
