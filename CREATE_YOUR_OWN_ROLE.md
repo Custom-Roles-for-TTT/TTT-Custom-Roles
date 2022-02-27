@@ -30,6 +30,8 @@
    1. [Role Registration](#Role-Registration)
    1. [Final Block](#Final-Block)
    1. [Example File](#Example-File)
+   1. [File Separation](#File-Separation)
+   1. [Role Modifications](#Role-Modifications)
 1. [Sprites](#Sprites)
    1. [Finding a Role Icon](#Finding-a-Role-Icon)
    1. [Tab File](#Tab-File)
@@ -840,6 +842,35 @@ if CLIENT then
    end)
 end
 ```
+
+### File Separation 
+
+When working with larger roles, having everything in the one file can easily become messy. In this situation you can ***optionally*** split your code across client, server, and shared files.
+
+To do this first create a folder inside of the 'lua/customroles' folder with the name of your role. *(e.g. lua/customroles/summoner)*
+
+Inside this folder you can create three separate files:
+- '**%NAMERAW%.lua**' for any code you want to run server-side only. This should be any code you have inside an `if SERVER then` or similar block.
+- '**cl\_%NAMERAW%.lua**' for any code you want to run client-side only. This should be any code you have inside an `if CLIENT then` or similar block.
+- '**shared.lua**' or '**sh\_%NAMERAW%.lua**' for any code you want to run both server-side and client-side.
+
+For example in the case of the summoner, if I wanted to use this method my file structure should look like this:
+``` 
+└─ lua
+   └─ customroles
+      └─ summoner
+         ├─ cl_summoner.lua
+         ├─ shared.lua
+         └─ summoner.lua
+```
+
+### Role Modifications
+
+If instead of creating your own role from scratch you would like to modify a pre-existing role, you can do this by placing your code inside of 'lua/rolemodifications' instead of 'lua/customroles'.
+
+You can either place your code inside a single file, or you can split it between three separate client, server, and shared files as is described in the [File Separation](#File-Separation) section.
+
+Modifying pre-existing roles can end up being more confusing than creating one from scratch if you don't know what you are doing, and unfortunately as the scope of modifying a role is almost endless an in depth walkthrough would be impossible. It is strongly recommended that you familiarise yourself with Lua, Garry's Mod and Custom Roles for TTT before getting started with a role modification. 
 
 ## Sprites
 
