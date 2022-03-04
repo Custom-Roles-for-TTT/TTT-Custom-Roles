@@ -866,11 +866,11 @@ For example in the case of the summoner, if I wanted to use this method my file 
 
 ### Role Modifications
 
-If instead of creating your own role from scratch you would like to modify a pre-existing role, you can do this by placing your code inside of 'lua/rolemodifications' instead of 'lua/customroles'.
+If instead of creating your own role from scratch you would like to modify a pre-existing role, you can do this by placing your code inside of 'lua/rolemodifications' instead of 'lua/customroles'. You *SHOULD NOT* create the `ROLE` table or call `RegisterRole(ROLE)` when creating a role modification as the role you are modifying already exists.
 
 You can either place your code inside a single file, or you can split it between three separate client, server, and shared files as is described in the [File Separation](#File-Separation) section.
 
-Modifying pre-existing roles can end up being more confusing than creating one from scratch if you don't know what you are doing, and unfortunately as the scope of modifying a role is almost endless an in depth walkthrough would be impossible. It is strongly recommended that you familiarise yourself with Lua, Garry's Mod and Custom Roles for TTT before getting started with a role modification.
+Modifying pre-existing roles can end up being more confusing than creating one from scratch if you don't know what you are doing, and unfortunately as the scope of modifying a role is almost endless an in depth walkthrough would be impossible. It is strongly recommended that you familiarise yourself with Lua, Garry's Mod and Custom Roles for TTT before getting started with a role modification. If you would like to see an example of a role modification you can look at the code behind the enhanced detectives pack [here](https://github.com/NoxxFlame/TTT-Enhanced-Detectives).
 
 ## Sprites
 
