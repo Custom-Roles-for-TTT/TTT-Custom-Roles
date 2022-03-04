@@ -142,6 +142,7 @@ hook.Add("PostEntityTakeDamage", "OldMan_PostEntityTakeDamage", function(ent, dm
                     ent:StripWeapon(wep:GetClass())
                 end
             end
+            ent:SetFOV(0, 0)
             ent:Give("weapon_old_dbshotgun")
             ent:SelectWeapon("weapon_old_dbshotgun")
         end
