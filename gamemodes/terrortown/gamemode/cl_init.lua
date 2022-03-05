@@ -839,7 +839,9 @@ function OnPlayerHighlightEnabled(client, alliedRoles, showJesters, hideEnemies,
     local jesters = {}
     for _, v in pairs(GetAllPlayers()) do
         if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= client then
-            if showJesters and v:ShouldActLikeJester() then
+            local hideBeggar = v:GetNWBool("WasBeggar", false) and not client:ShouldRevealBeggar(v)
+            local hideBodysnatcher = v:GetNWBool("WasBodysnatcher", false) and not client:ShouldRevealBodysnatcher(v)
+            if showJesters and (v:ShouldActLikeJester() or hideBeggar or hideBodysnatcher) then
                 if not onlyShowEnemies then
                     TableInsert(jesters, v)
                 end

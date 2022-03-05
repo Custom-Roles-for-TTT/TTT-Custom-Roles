@@ -3,6 +3,10 @@
 ### 1.5.7 (Beta)
 **Released:**
 
+### Fixes
+- Fixed beggar changed to traitor showing traitor highlighting when beggar reveal is disabled
+- Fixed bodysnatcher changed to traitor showing traitor highlighting when bodysnatcher reveal is disabled
+
 ### Changes
 - Changed zombies to no longer be able to drown
 
