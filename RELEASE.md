@@ -9,6 +9,7 @@
 
 ### Fixes
 - Fixed players whose roles are changed to loot goblin not being granted the jump boost
+- Fixed old man's view being stuck if their adrenaline rush activated while they were using a scoped weapon (Thanks Lillie!)
 
 ## 1.5.5
 **Released: February 28th, 2022**\
@@ -317,7 +318,7 @@ Includes all beta updates from [1.3.1](#131-beta) to [1.3.7](#137-beta).
 - Added ability to use common jester notifications (message, sound, confetti) when the bodysnatcher is killed (disabled by default)
 - Added ability to make the paramedic defib rebuyable if ttt_paramedic_device_shop is enabled (disabled by default)
 - Added ability to make the hypnotist brainwashing device rebuyable if ttt_hypnotist_device_shop is enabled (disabled by default)
-- Added ability to prevent the drunk and clown from being selected in the same round (disabled by default)
+- Added ability to prevent the drunk and clown from being selected in the same round (disabled by default) (Thanks Matty!)
 - Added ability to show loadout equipment in shops (disabled by default)
 - Added ability to configure the amount of time the various role devices take to be used
   - Bodysnatching Device
@@ -382,8 +383,8 @@ Includes all beta updates from [1.2.4](#124-beta) to [1.2.9](#129-beta).
 **Released: October 3rd, 2021**
 
 ### Additions
-- Added ability for independents to see missing in action players on the scoreboard (disabled by default)
-- Added ability for the killer to see missing in action players on the scoreboard (enabled by default)
+- Added ability for independents to see missing in action players on the scoreboard (disabled by default) (Thanks Matty!)
+- Added ability for the killer to see missing in action players on the scoreboard (enabled by default) (Thanks Matty!)
 - Added ability to control whether a vampire can loot credits (enabled by default)
 - Added ability to control whether special detectives (all detective roles other than the original detective itself) get armor automatically for free (enabled by default)
 
@@ -910,7 +911,7 @@ Includes all beta updates from [1.0.2](#102-beta) to [1.0.15](#1015-beta).
 - Fixed missing ttt_clown_shop_mode
 - Fixed weapons added to detective or traitor via the roleweapons system not being buyable by roles using the shop mode convars
 - Fixed old man not also winning when a map declares a winning team
-- Fixed the glitch from being shown as a traitor to zombies if zombies are on the traitor team
+- Fixed the glitch from being shown as a traitor to zombies if zombies are on the traitor team (Thanks Matty!)
 
 ### Developer
 - Added the ability for SWEPs to not be randomized out of the shop by setting "SWEP.BlockShopRandomization = true"
@@ -936,8 +937,8 @@ Includes all beta updates from [1.0.2](#102-beta) to [1.0.15](#1015-beta).
 - Added a message to a parasite victim when they are killed by the parasite coming back to life
 - Added a message to a non-prime vampire when they are killed/reverted if the prime was killed
 - Ported "TTT: add more validation to corpse commands" from base TTT
-- Added new Assassin target priority convar
-- Added new convar to heal the Clown when they activate
+- Added new Assassin target priority convar (Thanks Matty!)
+- Added new convar to heal the clown when they activate (Thanks Matty!)
 
 ### Changes
 - Changed revenger to receive a different message if their lover is killed when they are already dead
