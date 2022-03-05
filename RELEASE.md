@@ -1,7 +1,7 @@
 # Release Notes
 
 ### 1.5.6 (Beta)
-**Released:**
+**Released: March 6th, 2022**
 
 ### Additions
 - Added the ability for loot goblins to regenerate health under certain circumstances
