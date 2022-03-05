@@ -1293,7 +1293,8 @@ function GM:Tick()
                         -- have started drowning properly
                         ply.drowning = CurTime() + 1
                     end
-                else
+                -- Don't let roles who shouldn't drown start taking drowning damage
+                elseif not ply:ShouldNotDrown() then
                     -- will start drowning soon
                     ply.drowning = CurTime() + 8
                 end

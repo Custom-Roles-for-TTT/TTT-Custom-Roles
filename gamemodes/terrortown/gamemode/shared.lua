@@ -17,7 +17,7 @@ local StringSplit = string.Split
 local StringSub = string.sub
 
 -- Version string for display and function for version checks
-CR_VERSION = "1.5.6"
+CR_VERSION = "1.5.7"
 CR_BETA = true
 
 function CRVersion(version)
@@ -682,6 +682,7 @@ ROLE_MOVE_ROLE_STATE = {}
 ROLE_ON_ROLE_ASSIGNED = {}
 ROLE_HAS_PASSIVE_WIN = {}
 ROLE_SHOULD_SHOW_SPECTATOR_HUD = {}
+ROLE_SHOULD_NOT_DROWN = {}
 
 ROLE_CONVAR_TYPE_NUM = 0
 ROLE_CONVAR_TYPE_BOOL = 1
@@ -783,6 +784,10 @@ function RegisterRole(tbl)
 
     if type(tbl.haspassivewin) == "boolean" then
         ROLE_HAS_PASSIVE_WIN[roleID] = tbl.haspassivewin
+    end
+
+    if type(tbl.shouldnotdrown) == "boolean" then
+        ROLE_SHOULD_NOT_DROWN[roleID] = tbl.shouldnotdrown
     end
 
     -- Equipment

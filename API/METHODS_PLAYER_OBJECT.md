@@ -203,6 +203,10 @@ Methods available when called from a Player object (within the defined realm)
 *Realm:* Client and Server\
 *Added in:* 1.2.5
 
+**plymeta:ShouldNotDrown()** - Whether the player should not show the drown effect or take drowning damage.\
+*Realm:* Client and Server\
+*Added in:* 1.5.7
+
 **plymeta:ShouldRevealBeggar(tgt)** - Whether the player should reveal the fact that the target player is no longer a beggar (e.g. converted to an innocent or traitor).\
 *Realm:* Client and Server\
 *Added in:* 1.2.5\

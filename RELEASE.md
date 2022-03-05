@@ -1,5 +1,15 @@
 # Release Notes
 
+### 1.5.7 (Beta)
+**Released:**
+
+### Changes
+- Changed zombies to no longer be able to drown
+
+### Developer
+- Added new `plymeta:ShouldNotDrown` to determine if a player should drown
+- Added new `ROLE.shouldnotdrown` optional rule for external roles
+
 ### 1.5.6 (Beta)
 **Released: March 6th, 2022**
 
