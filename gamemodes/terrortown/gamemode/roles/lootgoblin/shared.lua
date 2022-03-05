@@ -5,6 +5,11 @@ local table = table
 
 local TableInsert = table.insert
 
+LOOTGOBLIN_REGEN_MODE_NONE = 0
+LOOTGOBLIN_REGEN_MODE_ALWAYS = 1
+LOOTGOBLIN_REGEN_MODE_STILL = 2
+LOOTGOBLIN_REGEN_MODE_AFTER_DAMAGE = 3
+
 -- Initialize role features
 ROLE_STARTING_HEALTH[ROLE_LOOTGOBLIN] = 50
 ROLE_MAX_HEALTH[ROLE_LOOTGOBLIN] = 50
@@ -90,4 +95,19 @@ table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
     cvar = "ttt_lootgoblin_sprint_recovery",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 2
+})
+table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
+    cvar = "ttt_lootgoblin_regen_mode",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
+    cvar = "ttt_lootgoblin_regen_rate",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
+    cvar = "ttt_lootgoblin_regen_delay",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
 })
