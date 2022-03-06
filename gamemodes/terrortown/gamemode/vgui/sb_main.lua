@@ -284,17 +284,23 @@ function PANEL:AddFakeColumn(label, _, width, sort_id, sort_func)
     return column_label_work(self, self.sort_headers, label, width, sort_id, sort_func)
 end
 
-function PANEL:StartUpdateTimer()
-    if not timer.Exists("TTTScoreboardUpdater") then
-        timer.Create("TTTScoreboardUpdater", 0.3, 0,
-                function()
-                    local pnl = GAMEMODE:GetScoreboardPanel()
-                    if IsValid(pnl) then
-                        pnl:UpdateScoreboard()
-                    end
-                end)
+local function UpdateScoreboard(force)
+    local pnl = GAMEMODE:GetScoreboardPanel()
+    if IsValid(pnl) then
+        pnl:UpdateScoreboard(force)
     end
 end
+
+function PANEL:StartUpdateTimer()
+    if not timer.Exists("TTTScoreboardUpdater") then
+        timer.Create("TTTScoreboardUpdater", 0.3, 0, UpdateScoreboard)
+    end
+end
+
+net.Receive("TTT_ScoreboardUpdate", function()
+    local force = net.ReadBool()
+    UpdateScoreboard(force)
+end)
 
 local colors = {
     bg = Color(30, 30, 30, 235),
@@ -449,7 +455,7 @@ function PANEL:UpdateScoreboard(force)
     for k, group in pairs(self.ply_groups) do
         if IsValid(group) then
             group:SetVisible(group:HasRows())
-            group:UpdatePlayerData()
+            group:UpdatePlayerData(force)
         end
     end
 

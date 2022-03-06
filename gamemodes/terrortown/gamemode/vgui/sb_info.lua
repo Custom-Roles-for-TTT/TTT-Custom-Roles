@@ -70,7 +70,6 @@ function PANEL:PerformLayout()
    self.Help:SetPos(5, 5)
 end
 
-local lastUpdate = 0
 function PANEL:UpdatePlayerData(force)
    if not IsValid(self.Player) then return end
    if not self.Player.search_result then
@@ -81,8 +80,6 @@ function PANEL:UpdatePlayerData(force)
    self.Help:SetVisible(false)
 
    if not force and self.Search == self.Player.search_result then return end
-   if lastUpdate + 5 > CurTime() then return end
-   lastUpdate = CurTime()
 
    self.List:Clear(true)
    self.Scroll.Panels = {}

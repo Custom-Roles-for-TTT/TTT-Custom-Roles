@@ -318,7 +318,7 @@ end
 
 function PANEL:GetPlayer() return self.Player end
 
-function PANEL:UpdatePlayerData()
+function PANEL:UpdatePlayerData(force)
     if not IsValid(self.Player) then return end
 
     local ply = self.Player
@@ -350,7 +350,7 @@ function PANEL:UpdatePlayerData()
     self:LayoutColumns()
 
     if self.info then
-        self.info:UpdatePlayerData(true)
+        self.info:UpdatePlayerData(force)
     end
 
     if self.Player ~= client then
