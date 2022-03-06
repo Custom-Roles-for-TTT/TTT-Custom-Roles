@@ -514,33 +514,45 @@ ttt_shop_random_position                    0       // Whether to randomize the 
 ttt_traitor_shop_random_percent             0       // The percent chance that a weapon in the shop will be not be shown for traitors
 ttt_detective_shop_random_percent           0       // The percent chance that a weapon in the shop will be not be shown for detectives
 ttt_hypnotist_shop_random_percent           0       // The percent chance that a weapon in the shop will be not be shown for hypnotists
-ttt_deputy_shop_random_percent              0       // The percent chance that a weapon in the shop will be not be shown for deputies
 ttt_impersonator_shop_random_percent        0       // The percent chance that a weapon in the shop will be not be shown for impersonators
 ttt_assassin_shop_random_percent            0       // The percent chance that a weapon in the shop will be not be shown for assassins
-ttt_killer_shop_random_percent              0       // The percent chance that a weapon in the shop will be not be shown for killers
-ttt_jester_shop_random_percent              0       // The percent chance that a weapon in the shop will be not be shown for jesters
-ttt_swapper_shop_random_percent             0       // The percent chance that a weapon in the shop will be not be shown for swappers
-ttt_zombie_shop_random_percent              0       // The percent chance that a weapon in the shop will be not be shown for zombies
 ttt_vampire_shop_random_percent             0       // The percent chance that a weapon in the shop will be not be shown for vampires
-ttt_clown_shop_random_percent               0       // The percent chance that a weapon in the shop will be not be shown for clowns
 ttt_quack_shop_random_percent               0       // The percent chance that a weapon in the shop will be not be shown for quacks
 ttt_parasite_shop_random_percent            0       // The percent chance that a weapon in the shop will be not be shown for parasites
+ttt_deputy_shop_random_percent              0       // The percent chance that a weapon in the shop will be not be shown for deputies
+ttt_mercenary_shop_random_percent           0       // The percent chance that a weapon in the shop will be not be shown for mercenaries
+ttt_veteran_shop_random_percent             0       // The percent chance that a weapon in the shop will be not be shown for veterans
+ttt_doctor_shop_random_percent              0       // The percent chance that a weapon in the shop will be not be shown for doctors
+ttt_paladin_shop_random_percent             0       // The percent chance that a weapon in the shop will be not be shown for paladins
+ttt_tracker_shop_random_percent             0       // The percent chance that a weapon in the shop will be not be shown for trackers
+ttt_medium_shop_random_percent              0       // The percent chance that a weapon in the shop will be not be shown for mediums
+ttt_jester_shop_random_percent              0       // The percent chance that a weapon in the shop will be not be shown for jesters
+ttt_swapper_shop_random_percent             0       // The percent chance that a weapon in the shop will be not be shown for swappers
+ttt_clown_shop_random_percent               0       // The percent chance that a weapon in the shop will be not be shown for clowns
+ttt_killer_shop_random_percent              0       // The percent chance that a weapon in the shop will be not be shown for killers
+ttt_zombie_shop_random_percent              0       // The percent chance that a weapon in the shop will be not be shown for zombies
 
 // Enable/Disable Individual Role Random Shop Restrictions
 ttt_traitor_shop_random_enabled             0       // Whether role shop randomization is enabled for traitors
 ttt_detective_shop_random_enabled           0       // Whether role shop randomization is enabled for detectives
 ttt_hypnotist_shop_random_enabled           0       // Whether role shop randomization is enabled for hypnotists
-ttt_deputy_shop_random_enabled              0       // Whether role shop randomization is enabled for deputies
 ttt_impersonator_shop_random_enabled        0       // Whether role shop randomization is enabled for impersonators
 ttt_assassin_shop_random_enabled            0       // Whether role shop randomization is enabled for assassins
-ttt_killer_shop_random_enabled              0       // Whether role shop randomization is enabled for killers
-ttt_jester_shop_random_enabled              0       // Whether role shop randomization is enabled for jesters
-ttt_swapper_shop_random_enabled             0       // Whether role shop randomization is enabled for swappers
-ttt_zombie_shop_random_enabled              0       // Whether role shop randomization is enabled for zombies
 ttt_vampire_shop_random_enabled             0       // Whether role shop randomization is enabled for vampires
-ttt_clown_shop_random_enabled               0       // Whether role shop randomization is enabled for clowns
 ttt_quack_shop_random_enabled               0       // Whether role shop randomization is enabled for quacks
 ttt_parasite_shop_random_enabled            0       // Whether role shop randomization is enabled for parasites
+ttt_deputy_shop_random_enabled              0       // Whether role shop randomization is enabled for deputies
+ttt_mercenary_shop_random_enabled           0       // Whether role shop randomization is enabled for mercenaries
+ttt_veteran_shop_random_enabled             0       // Whether role shop randomization is enabled for veterans
+ttt_doctor_shop_random_enabled              0       // Whether role shop randomization is enabled for doctors
+ttt_paladin_shop_random_enabled             0       // Whether role shop randomization is enabled for paladins
+ttt_tracker_shop_random_enabled             0       // Whether role shop randomization is enabled for trackers
+ttt_medium_shop_random_enabled              0       // Whether role shop randomization is enabled for mediums
+ttt_jester_shop_random_enabled              0       // Whether role shop randomization is enabled for jesters
+ttt_swapper_shop_random_enabled             0       // Whether role shop randomization is enabled for swappers
+ttt_clown_shop_random_enabled               0       // Whether role shop randomization is enabled for clowns
+ttt_killer_shop_random_enabled              0       // Whether role shop randomization is enabled for killers
+ttt_zombie_shop_random_enabled              0       // Whether role shop randomization is enabled for zombies
 
 // Role Shop Mode (Server or round must be restarted for changes to take effect)
 // Mode explanation:
