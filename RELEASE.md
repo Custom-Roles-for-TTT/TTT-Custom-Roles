@@ -6,6 +6,7 @@
 ### Fixes
 - Fixed beggar changed to traitor showing traitor highlighting when beggar reveal is disabled
 - Fixed bodysnatcher changed to traitor showing traitor highlighting when bodysnatcher reveal is disabled
+- Fixed scoreboard search icons not having tooltips due to them refreshing too often
 
 ### Changes
 - Changed zombies to no longer be able to drown
