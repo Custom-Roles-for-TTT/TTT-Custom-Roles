@@ -7,6 +7,7 @@
 - Fixed beggar changed to traitor showing traitor highlighting when beggar reveal is disabled
 - Fixed bodysnatcher changed to traitor showing traitor highlighting when bodysnatcher reveal is disabled
 - Fixed scoreboard search icons not having tooltips due to them refreshing too often
+- Fixed body armor icon showing when the info UI was not (e.g. when scoped in and when the main menu is open)
 
 ### Changes
 - Changed zombies to no longer be able to drown
