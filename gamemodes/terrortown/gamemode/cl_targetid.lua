@@ -109,7 +109,7 @@ function GM:PostDrawTranslucentRenderables()
             local hideBeggar = v:GetNWBool("WasBeggar", false) and not client:ShouldRevealBeggar(v)
             local hideBodysnatcher = v:GetNWBool("WasBodysnatcher", false) and not client:ShouldRevealBodysnatcher(v)
             local showJester = (v:ShouldActLikeJester() or ((v:GetTraitor() or v:GetInnocent()) and hideBeggar) or hideBodysnatcher) and not client:ShouldHideJesters()
-            local glitchMode = GetGlobalInt("ttt_glitch_mode", 0)
+            local glitchMode = GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR)
 
             -- Allow other addons (and external roles) to determine if the "KILL" icon should show
             -- NOTE: Leave the permanent 'false' parameter to make sure we don't break external hook usage
@@ -317,7 +317,7 @@ function GM:HUDDrawTargetID()
 
     local target_corpse = false
 
-    local glitchMode = GetGlobalInt("ttt_glitch_mode", 0)
+    local glitchMode = GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR)
 
     local text = nil
     local color = COLOR_WHITE
