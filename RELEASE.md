@@ -9,6 +9,7 @@
 - Fixed scoreboard search icons not having tooltips due to them refreshing too often
 - Fixed body armor icon showing when the info UI was not (e.g. when scoped in and when the main menu is open)
 - Fixed glitch being revealed by assassin target information on the scoreboard when ttt_glitch_mode was not the default of 0
+- Fixed casing on "A Drunk has remembered their role" message
 
 ### Changes
 - Changed zombies to no longer be able to drown
