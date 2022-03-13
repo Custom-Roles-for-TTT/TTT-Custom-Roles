@@ -3,6 +3,9 @@
 ### 1.5.7 (Beta)
 **Released:**
 
+### Additions
+- Added convars to control whether the assassin is allowed to kill the loot goblin, zombie, or vampire even if they aren't the target (Enabled by default)
+
 ### Fixes
 - Fixed beggar changed to traitor showing traitor highlighting when beggar reveal is disabled
 - Fixed bodysnatcher changed to traitor showing traitor highlighting when bodysnatcher reveal is disabled
