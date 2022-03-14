@@ -5,6 +5,7 @@
 
 ### Additions
 - Added convars to control whether the assassin is allowed to kill the loot goblin, zombie, or vampire even if they aren't the target (Enabled by default)
+- Added ability for search in role shop and roleweapons config menu to search by item description as well
 
 ### Fixes
 - Fixed beggar changed to traitor showing traitor highlighting when beggar reveal is disabled
@@ -13,6 +14,7 @@
 - Fixed body armor icon showing when the info UI was not (e.g. when scoped in and when the main menu is open)
 - Fixed glitch being revealed by assassin target information on the scoreboard when ttt_glitch_mode was not the default of 0
 - Fixed casing on "A Drunk has remembered their role" message
+- Fixed roleweapons config menu not applying search bar value when updating the same role as the one the search was used on
 
 ### Changes
 - Changed zombies to no longer be able to drown

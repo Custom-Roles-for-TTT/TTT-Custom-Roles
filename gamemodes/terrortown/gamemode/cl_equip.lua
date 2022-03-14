@@ -435,6 +435,10 @@ local function ForceCloseTraitorMenu(ply, cmd, args)
 end
 concommand.Add("ttt_cl_traitorpopup_close", ForceCloseTraitorMenu)
 
+local function DoesValueMatch(item, data, value)
+    return item[data] and StringFind(StringLower(SafeTranslate(item[data])), StringLower(value))
+end
+
 local function TraitorMenuPopup()
     local numCols = GetGlobalInt("ttt_bem_sv_cols", 4)
     local numRows = GetGlobalInt("ttt_bem_sv_rows", 5)
@@ -737,7 +741,7 @@ local function TraitorMenuPopup()
             local roleitems = GetEquipmentForRole(ply:GetRole(), ply:IsDetectiveLike() and not ply:IsDetectiveTeam(), false)
             local filtered = {}
             for _, v in pairs(roleitems) do
-                if v and v["name"] and StringFind(StringLower(SafeTranslate(v["name"])), StringLower(value)) then
+                if v and (DoesValueMatch(v, "name", value) or DoesValueMatch(v, "desc", value)) then
                     TableInsert(filtered, v)
                 end
             end
