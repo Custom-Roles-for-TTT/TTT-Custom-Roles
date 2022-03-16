@@ -160,7 +160,7 @@ if SERVER then
         local att = dmginfo:GetAttacker()
         local placer = self:GetPlacer()
         if IsPlayer(att) then
-            DamageLog(Format("DMG: \t %s [%s] damaged health station [%s] for %d dmg", att:Nick(), att:GetRoleString(), IsPlayer(placer) and placer:Nick() or "<disconnected>", dmginfo:GetDamage()))
+            DamageLog(Format("DMG: \t %s [%s] damaged bomb station [%s] for %d dmg", att:Nick(), ROLE_STRINGS[att:GetRole()], IsPlayer(placer) and placer:Nick() or "<disconnected>", dmginfo:GetDamage()))
         end
 
         if self:Health() < 0 then
