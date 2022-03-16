@@ -332,6 +332,9 @@ function GM:HUDDrawTargetID()
     local cls = ent:GetClass()
     local minimal = minimalist:GetBool()
     local hint = (not minimal) and (ent.TargetIDHint or ClassHint[cls])
+    if type(hint) == "function" then
+        hint = hint()
+    end
 
     local hide_roles = false
     if ConVarExists("ttt_hide_role") then

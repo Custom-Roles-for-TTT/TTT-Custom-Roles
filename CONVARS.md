@@ -345,6 +345,7 @@ ttt_jester_notify_mode                      0       // The logic to use when not
 ttt_jester_notify_sound                     0       // Whether to play a cheering sound when a jester is killed
 ttt_jester_notify_confetti                  0       // Whether to throw confetti when a jester is a killed
 ttt_jester_credits_starting                 0       // The number of credits a jester should start with
+ttt_jester_healthstation_reduce_max         1       // Whether the jester's max health should be reduced to match their current health when using a health station, instead of being healed
 
 // Swapper
 ttt_swapper_respawn_health                  100     // What amount of health to give the swapper when they are killed and respawned
@@ -354,6 +355,7 @@ ttt_swapper_notify_sound                    0       // Whether to play a cheerin
 ttt_swapper_notify_confetti                 0       // Whether to throw confetti when a swapper is a killed
 ttt_swapper_killer_health                   100     // What amount of health to give the person who killed the swapper. Set to "0" to kill them
 ttt_swapper_credits_starting                0       // The number of credits a swapper should start with
+ttt_swapper_healthstation_reduce_max        1       // Whether the swapper's max health should be reduced to match their current health when using a health station, instead of being healed
 
 // Clown
 ttt_clown_damage_bonus                      0       // Damage bonus that the clown has after being activated (e.g. 0.5 = 50% more damage)

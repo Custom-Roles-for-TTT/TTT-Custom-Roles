@@ -6,19 +6,6 @@ if CLIENT then
    -- this entity can be DNA-sampled so we need some display info
    ENT.Icon = "vgui/ttt/icon_health"
    ENT.PrintName = "hstation_name"
-
-   local GetPTranslation = LANG.GetParamTranslation
-
-   ENT.TargetIDHint = {
-      name = "hstation_name",
-      hint = "hstation_hint",
-      fmt  = function(ent, txt)
-                return GetPTranslation(txt,
-                                       { usekey = Key("+use", "USE"),
-                                         num    = ent:GetStoredHealth() or 0 } )
-             end
-   };
-
 end
 
 ENT.Type = "anim"
@@ -38,6 +25,13 @@ ENT.HealFreq = 0.2
 AccessorFuncDT(ENT, "StoredHealth", "StoredHealth")
 
 AccessorFunc(ENT, "Placer", "Placer")
+
+
+local function ShouldReduceHealth(ply)
+    local rolestring = ROLE_STRINGS_RAW[ply:GetRole()]
+    local convar = "ttt_" .. rolestring .. "_healthstation_reduce_max"
+    return ConVarExists(convar) and GetConVar(convar):GetBool()
+end
 
 function ENT:SetupDataTables()
    self:DTVar("Int", 0, "StoredHealth")
@@ -75,8 +69,27 @@ function ENT:Initialize()
     self.NextHeal = 0
 
     self.fingerprints = {}
-end
 
+    if CLIENT then
+        local GetPTranslation = LANG.GetParamTranslation
+        self.TargetIDHint = function()
+            local hint = "hstation_hint"
+            if ShouldReduceHealth(LocalPlayer()) then
+                hint = hint .. "_reduce"
+            end
+
+            return {
+                name = "hstation_name",
+                hint = hint,
+                fmt  = function(ent, txt)
+                    return GetPTranslation(txt,
+                            { usekey = Key("+use", "USE"),
+                            num = ent:GetStoredHealth() or 0 } )
+                end
+            };
+        end
+    end
+end
 
 function ENT:AddToStorage(amount)
     self:SetStoredHealth(math.min(self.MaxStored, self:GetStoredHealth() + amount))
@@ -100,10 +113,16 @@ function ENT:GiveHealth(ply, max_heal)
         if dmg > 0 then
             -- constant clamping, no risks
             local healed = self:TakeFromStorage(math.min(max_heal, dmg))
-            local new = math.min(ply:GetMaxHealth(), ply:Health() + healed)
+            local should_reduce = ShouldReduceHealth(ply)
+            if should_reduce then
+                local new = math.max(ply:Health(), ply:GetMaxHealth() - healed)
+                ply:SetMaxHealth(new)
+            else
+                local new = math.min(ply:GetMaxHealth(), ply:Health() + healed)
+                ply:SetHealth(new)
+            end
 
-            ply:SetHealth(new)
-            hook.Run("TTTPlayerUsedHealthStation", ply, self, healed)
+            hook.Run("TTTPlayerUsedHealthStation", ply, self, healed, should_reduce)
 
             if last_sound_time + 2 < CurTime() then
                 self:EmitSound(healsound)

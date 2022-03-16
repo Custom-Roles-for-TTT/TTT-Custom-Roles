@@ -24,3 +24,7 @@ table.insert(ROLE_CONVARS[ROLE_JESTER], {
     cvar = "ttt_jester_win_by_traitors",
     type = ROLE_CONVAR_TYPE_BOOL
 })
+table.insert(ROLE_CONVARS[ROLE_JESTER], {
+    cvar = "ttt_jester_healthstation_reduce_max",
+    type = ROLE_CONVAR_TYPE_BOOL
+})

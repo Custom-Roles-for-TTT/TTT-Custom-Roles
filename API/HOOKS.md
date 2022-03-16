@@ -113,6 +113,15 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *ply* - The player who is being spawned or respawned
 - *deadOnly* - Whether this call is specifically targeted at dead players
 
+**TTTPlayerUsedHealthStation(ply, station, healed, should_reduce)** - Called after a player uses a health station. Added `should_reduce` parameter which is not present in vanilla TTT.\
+*Realm:* Server\
+*Added in:* 1.0.0\
+*Parameters:*
+- *ply* - The player who is using the health station
+- *station* - The health station being used
+- *healed* - The amount the player's health changed
+- *should_reduce* - Whether the player's max health was reduced instead of their health being increased *(Added in 1.5.7)*
+
 **TTTPrintResultMessage(type)** - Called before the round win results message is printed to the top-right corner of the screen. Can be used to print a replacement message for custom win types that this would not normally handle.\
 *Realm:* Server\
 *Added in:* 1.0.14\
