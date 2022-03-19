@@ -17,6 +17,7 @@
 - Fixed casing on "A Drunk has remembered their role" message
 - Fixed roleweapons config menu not applying search bar value when updating the same role as the one the search was used on
 - Fixed tooltip on bomb station not updating if a player's role changed after it was placed
+- Fixed role checks not starting for the role with the highest role ID
 
 ### Changes
 - Changed zombies to no longer be able to drown
