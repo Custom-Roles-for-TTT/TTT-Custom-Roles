@@ -1,7 +1,7 @@
 # Release Notes
 
 ### 1.5.7 (Beta)
-**Released:**
+**Released: March 19th, 2022**
 
 ### Additions
 - Added convars to control whether the assassin is allowed to kill the loot goblin, zombie, or vampire even if they aren't the target (enabled by default)
