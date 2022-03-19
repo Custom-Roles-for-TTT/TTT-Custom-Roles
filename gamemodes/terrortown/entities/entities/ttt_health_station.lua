@@ -26,9 +26,13 @@ AccessorFuncDT(ENT, "StoredHealth", "StoredHealth")
 
 AccessorFunc(ENT, "Placer", "Placer")
 
-
 local function ShouldReduceHealth(ply)
-    local rolestring = ROLE_STRINGS_RAW[ply:GetRole()]
+    if not ply:Alive() or ply:IsSpec() then return false end
+
+    local role = ply:GetRole()
+    if role <= ROLE_NONE or role > ROLE_MAX then return false end
+
+    local rolestring = ROLE_STRINGS_RAW[role]
     local convar = "ttt_" .. rolestring .. "_healthstation_reduce_max"
     return ConVarExists(convar) and GetConVar(convar):GetBool()
 end
