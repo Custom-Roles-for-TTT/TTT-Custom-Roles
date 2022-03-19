@@ -42,7 +42,7 @@ hook.Add("PlayerDeath", "Jester_WinCheck_PlayerDeath", function(victim, infl, at
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     if not valid_kill then return end
 
-    if victim:IsJester() and (not attacker:IsJesterTeam()) then
+    if victim:IsJester() then
         JesterKilledNotification(attacker, victim)
         victim:SetNWString("JesterKiller", attacker:Nick())
 
