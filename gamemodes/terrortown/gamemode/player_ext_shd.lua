@@ -164,6 +164,7 @@ function plymeta:ShouldHideJesters()
 end
 
 function plymeta:ShouldDelayAnnouncements() return ROLE_SHOULD_DELAY_ANNOUNCEMENTS[self:GetRole()] or false end
+function plymeta:ShouldNotDrown() return ROLE_SHOULD_NOT_DROWN[self:GetRole()] or false end
 
 function plymeta:ShouldShowSpectatorHUD()
     -- Check if this role has an external definition for whether to show a spectator HUD and use that

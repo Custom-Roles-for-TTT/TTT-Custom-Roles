@@ -79,7 +79,7 @@ end)
 ----------------
 
 hook.Add("TTTScoreboardPlayerRole", "Parasite_TTTScoreboardPlayerRole", function(ply, client, c, roleStr)
-    if client:IsTraitorTeam() and ply:GetNWBool("ParasiteInfected", false) then
+    if client:IsTraitorTeam() and ShouldShowTraitorExtraInfo() and ply:GetNWBool("ParasiteInfected", false) then
         return c, roleStr, ROLE_PARASITE
     end
 end)
@@ -87,8 +87,9 @@ end)
 hook.Add("TTTScoreboardPlayerName", "Parasite_TTTScoreboardPlayerName", function(ply, cli, text)
     -- Skip this for Assassin so they can have their own Current Target logic (it also handles parasite infection there)
     if not cli:IsTraitorTeam() or cli:IsAssassin() then return end
+    if not ShouldShowTraitorExtraInfo() then return end
 
-    -- Show Assassin + Parasite logic if that applies
+    -- Show Assassin and Parasite logic if necessary
     local infected = ply:GetNWBool("ParasiteInfected", false)
     for _, v in pairs(GetAllPlayers()) do
         if ply:Nick() == v:GetNWString("AssassinTarget", "") then

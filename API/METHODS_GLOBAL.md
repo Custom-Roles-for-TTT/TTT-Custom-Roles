@@ -167,6 +167,10 @@ Methods available globally (within the defined realm)
 *Parameters:*
 - *ply* - The target player
 
+**ShouldShowTraitorExtraInfo()** - Whether extra information should be shown for the traitor team (e.g. teammate assassin's target and teammate parasite's infection).\
+*Realm:* Client and Server\
+*Added in:* 1.5.7
+
 **ShouldPromoteDetectiveLike()** - Whether an unpromoted detective-like player (deputy/impersonator) should be promoted.\
 *Realm:* Server\
 *Added in:* 1.2.5

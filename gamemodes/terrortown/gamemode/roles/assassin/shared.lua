@@ -65,3 +65,15 @@ table.insert(ROLE_CONVARS[ROLE_ASSASSIN], {
     cvar = "ttt_assassin_shop_roles_last",
     type = ROLE_CONVAR_TYPE_BOOL
 })
+table.insert(ROLE_CONVARS[ROLE_ASSASSIN], {
+    cvar = "ttt_assassin_allow_lootgoblin_kill",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_ASSASSIN], {
+    cvar = "ttt_assassin_allow_zombie_kill",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_ASSASSIN], {
+    cvar = "ttt_assassin_allow_vampire_kill",
+    type = ROLE_CONVAR_TYPE_BOOL
+})

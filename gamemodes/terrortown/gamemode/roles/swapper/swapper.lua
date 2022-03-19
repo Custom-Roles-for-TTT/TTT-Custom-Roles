@@ -20,12 +20,14 @@ util.AddNetworkString("TTT_SwapperSwapped")
 CreateConVar("ttt_swapper_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the swapper is killed", 0, 4)
 CreateConVar("ttt_swapper_notify_sound", "0")
 CreateConVar("ttt_swapper_notify_confetti", "0")
+local swapper_healthstation_reduce_max = CreateConVar("ttt_swapper_healthstation_reduce_max", "1")
 local swapper_killer_health = CreateConVar("ttt_swapper_killer_health", "100")
 local swapper_respawn_health = CreateConVar("ttt_swapper_respawn_health", "100")
 local swapper_weapon_mode = CreateConVar("ttt_swapper_weapon_mode", "1", FCVAR_NONE, "How to handle weapons when the swapper is killed", 0, 2)
 
 hook.Add("TTTSyncGlobals", "Swapper_TTTSyncGlobals", function()
     SetGlobalInt("ttt_swapper_killer_health", swapper_killer_health:GetInt())
+    SetGlobalBool("ttt_swapper_healthstation_reduce_max", swapper_healthstation_reduce_max:GetBool())
 end)
 
 -----------------

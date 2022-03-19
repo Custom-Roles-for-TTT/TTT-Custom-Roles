@@ -148,7 +148,7 @@ function GM:TTTScoreboardRowColorForPlayer(ply)
     local hideBeggar = ply:GetNWBool("WasBeggar", false) and not client:ShouldRevealBeggar(ply)
     local hideBodysnatcher = ply:GetNWBool("WasBodysnatcher", false) and not client:ShouldRevealBodysnatcher(ply)
     local showJester = (ply:ShouldActLikeJester() or ((ply:IsTraitor() or ply:IsInnocent()) and hideBeggar) or hideBodysnatcher) and not client:ShouldHideJesters()
-    local glitchMode = GetGlobalInt("ttt_glitch_mode", 0)
+    local glitchMode = GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR)
 
     if client:IsTraitorTeam() then
         if showJester then
@@ -318,7 +318,7 @@ end
 
 function PANEL:GetPlayer() return self.Player end
 
-function PANEL:UpdatePlayerData()
+function PANEL:UpdatePlayerData(force)
     if not IsValid(self.Player) then return end
 
     local ply = self.Player
@@ -350,7 +350,7 @@ function PANEL:UpdatePlayerData()
     self:LayoutColumns()
 
     if self.info then
-        self.info:UpdatePlayerData(true)
+        self.info:UpdatePlayerData(force)
     end
 
     if self.Player ~= client then

@@ -15,6 +15,10 @@ local StringLower = string.lower
 
 local function ItemIsWeapon(item) return not tonumber(item.id) end
 
+local function DoesValueMatch(item, data, value)
+    return item[data] and StringFind(StringLower(SafeTranslate(item[data])), StringLower(value))
+end
+
 local function OpenDialog(client)
     if not client:IsAdmin() then
         ErrorNoHalt("ERROR: You must be an administrator to open the Role Weapons Configuration dialog\n")
@@ -225,7 +229,7 @@ local function OpenDialog(client)
         local roleitems = GetEquipmentForRole(role, false, true, true, true)
         local filtered = {}
         for _, v in pairs(roleitems) do
-            if v and v["name"] and StringFind(StringLower(SafeTranslate(v["name"])), StringLower(value)) then
+            if v and (DoesValueMatch(v, "name", value) or DoesValueMatch(v, "desc", value)) then
                 table.insert(filtered, v)
             end
         end
@@ -458,7 +462,7 @@ local function OpenDialog(client)
         if role == save_role then
             LocalPlayer():ConCommand("ttt_reset_weapons_cache")
             timer.Simple(0.25, function()
-                FillEquipmentList(GetEquipmentForRole(role, false, true, true, true))
+                dsearch.OnValueChange(dsearch, dsearch:GetText())
             end)
         end
     end

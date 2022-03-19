@@ -373,6 +373,7 @@ util.AddNetworkString("TTT_ClearPlayerFootsteps")
 util.AddNetworkString("TTT_JesterDeathCelebration")
 util.AddNetworkString("TTT_LoadMonsterEquipment")
 util.AddNetworkString("TTT_UpdateRoleNames")
+util.AddNetworkString("TTT_ScoreboardUpdate")
 
 local function ClearAllFootsteps()
     net.Start("TTT_ClearPlayerFootsteps")

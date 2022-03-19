@@ -21,6 +21,9 @@ local assassin_target_bonus_bought = CreateConVar("ttt_assassin_target_bonus_bou
 local assassin_wrong_damage_penalty = CreateConVar("ttt_assassin_wrong_damage_penalty", "0.5", FCVAR_NONE, "Damage penalty that the assassin has when attacking someone who is not their target (e.g. 0.5 = 50% less damage)", 0, 1)
 local assassin_failed_damage_penalty = CreateConVar("ttt_assassin_failed_damage_penalty", "0.5", FCVAR_NONE, "Damage penalty that the assassin has after they have failed their contract by killing the wrong person (e.g. 0.5 = 50% less damage)", 0, 1)
 local assassin_shop_roles_last = CreateConVar("ttt_assassin_shop_roles_last", "0")
+CreateConVar("ttt_assassin_allow_lootgoblin_kill", "1")
+CreateConVar("ttt_assassin_allow_zombie_kill", "1")
+CreateConVar("ttt_assassin_allow_vampire_kill", "1")
 
 hook.Add("TTTSyncGlobals", "Assassin_TTTSyncGlobals", function()
     SetGlobalBool("ttt_assassin_show_target_icon", assassin_show_target_icon:GetBool())
@@ -204,16 +207,20 @@ hook.Add("TTTPlayerRoleChanged", "Assassin_Target_TTTPlayerRoleChanged", functio
 end)
 
 hook.Add("DoPlayerDeath", "Assassin_DoPlayerDeath", function(ply, attacker, dmginfo)
-    -- Let Assassins kill Loot Goblins without penalty
-    if not IsValid(ply) or (ply:IsLootGoblin() and ply:IsRoleActive()) then return end
+    if not IsValid(ply) then return end
 
     local attackertarget = attacker:GetNWString("AssassinTarget", "")
-    if IsPlayer(attacker) and attacker:IsAssassin() and ply ~= attacker and ply:Nick() ~= attackertarget and (attackertarget ~= "" or timer.Exists(attacker:Nick() .. "AssassinTarget")) then
-        timer.Remove(attacker:Nick() .. "AssassinTarget")
-        attacker:PrintMessage(HUD_PRINTCENTER, "Contract failed. You killed the wrong player.")
-        attacker:PrintMessage(HUD_PRINTTALK, "Contract failed. You killed the wrong player.")
-        attacker:SetNWString("AssassinTarget", "")
-        attacker:SetNWBool("AssassinFailed", true)
+    if IsPlayer(attacker) and attacker:IsAssassin() and ply ~= attacker then
+        local wasNotTarget = ply:Nick() ~= attackertarget and (attackertarget ~= "" or timer.Exists(attacker:Nick() .. "AssassinTarget"))
+        local convar = "ttt_assassin_allow_" .. ROLE_STRINGS_RAW[ply:GetRole()] .. "_kill"
+        local skipPenalty = ConVarExists(convar) and GetConVar(convar):GetBool() and ply:IsRoleActive()
+        if wasNotTarget and not skipPenalty then
+            timer.Remove(attacker:Nick() .. "AssassinTarget")
+            attacker:PrintMessage(HUD_PRINTCENTER, "Contract failed. You killed the wrong player.")
+            attacker:PrintMessage(HUD_PRINTTALK, "Contract failed. You killed the wrong player.")
+            attacker:SetNWBool("AssassinFailed", true)
+            attacker:SetNWString("AssassinTarget", "")
+        end
     end
 
     UpdateAssassinTargets(ply)

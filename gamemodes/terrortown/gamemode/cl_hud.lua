@@ -283,7 +283,7 @@ end
 
 local ttt_health_label = CreateClientConVar("ttt_health_label", "0", true)
 
-local armor_img = nil
+local armor_tex = surface.GetTextureID("vgui/ttt/equip/armor")
 local function InfoPaint(client)
     local L = GetLang()
 
@@ -315,18 +315,12 @@ local function InfoPaint(client)
 
     local health_offset = 0
     if client:HasEquipmentItem(EQUIP_ARMOR) then
-        if not armor_img then
-            armor_img = vgui.Create("DImage", nil)
-            armor_img:SetSize(16, 16)
-            armor_img:SetPos(x + margin + 5, health_y + 5)
-            armor_img:SetImage("vgui/ttt/equip/armor.png")
-        end
+        surface.SetTexture(armor_tex)
+        surface.SetDrawColor(255, 255, 255, 255)
+        surface.DrawTexturedRect(x + margin + 5, health_y + 5, 16, 16)
 
         -- Move the rest of the health information it over
         health_offset = margin + 5
-    elseif armor_img then
-        armor_img:Remove()
-        armor_img = nil
     end
 
     if ttt_health_label:GetBool() then
@@ -445,11 +439,6 @@ function GM:HUDPaint()
     if (not client:Alive()) or client:Team() == TEAM_SPEC then
         if RunHook("HUDShouldDraw", "TTTSpecHUD") then
             SpecHUDPaint(client)
-        end
-
-        if armor_img then
-            armor_img:Remove()
-            armor_img = nil
         end
 
         return
