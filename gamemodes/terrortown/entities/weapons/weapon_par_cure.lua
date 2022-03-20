@@ -47,8 +47,19 @@ SWEP.Secondary.Ammo           = "none"
 SWEP.Secondary.Delay          = 2
 
 SWEP.Kind = WEAPON_EQUIP
-SWEP.CanBuy = { ROLE_DETECTIVE, ROLE_DOCTOR, ROLE_QUACK }
-SWEP.CanBuyDefault = { ROLE_DETECTIVE, ROLE_DOCTOR, ROLE_QUACK  }
+SWEP.CanBuy = { ROLE_DOCTOR, ROLE_QUACK }
+for role = 0, ROLE_MAX do
+    if DETECTIVE_ROLES[role] then
+        table.insert(SWEP.CanBuy, role)
+        if not istable(DefaultEquipment[role]) then
+            DefaultEquipment[role] = {}
+        end
+        if not table.HasValue(DefaultEquipment[role], "weapon_par_cure") then
+            table.insert(DefaultEquipment[role], "weapon_par_cure")
+        end
+    end
+end
+SWEP.CanBuyDefault = table.Copy(SWEP.CanBuy)
 SWEP.NoSights = true
 SWEP.HoldType = "slam"
 

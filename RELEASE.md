@@ -23,6 +23,7 @@
 - Changed zombies to no longer be able to drown
 - Changed the activated clown to be able to see other jesters so they don't kill them
 - Changed the jester to win, like normal, if they are somehow to killed by other members of the jester team
+- Changed the parasite cure to be available to all special detectives when the parasite is enabled
 
 ### Developer
 - Added new `plymeta:ShouldNotDrown` to determine if a player should drown
