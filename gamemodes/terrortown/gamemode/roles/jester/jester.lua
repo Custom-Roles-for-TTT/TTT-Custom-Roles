@@ -13,10 +13,12 @@ local GetAllPlayers = player.GetAll
 CreateConVar("ttt_jester_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the jester is killed", 0, 4)
 CreateConVar("ttt_jester_notify_sound", "0")
 CreateConVar("ttt_jester_notify_confetti", "0")
+local jester_healthstation_reduce_max = CreateConVar("ttt_jester_healthstation_reduce_max", "1")
 local jester_win_by_traitors = CreateConVar("ttt_jester_win_by_traitors", "1")
 
 hook.Add("TTTSyncGlobals", "Jester_TTTSyncGlobals", function()
     SetGlobalBool("ttt_jester_win_by_traitors", jester_win_by_traitors:GetBool())
+    SetGlobalBool("ttt_jester_healthstation_reduce_max", jester_healthstation_reduce_max:GetBool())
 end)
 
 ----------------
@@ -40,7 +42,7 @@ hook.Add("PlayerDeath", "Jester_WinCheck_PlayerDeath", function(victim, infl, at
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     if not valid_kill then return end
 
-    if victim:IsJester() and (not attacker:IsJesterTeam()) then
+    if victim:IsJester() then
         JesterKilledNotification(attacker, victim)
         victim:SetNWString("JesterKiller", attacker:Nick())
 

@@ -455,6 +455,7 @@ There are a few options for roles that aren't covered in the template because th
 | `ROLE.shoulddelayshop` | Whether this role's shop purchases are delayed. Purchases will only be given to the player when `plymeta:GiveDelayedShopItems` is called by your own role logic. Enabling this feature will automatically create `ttt_%NAMERAW%_shop_active_only` and `ttt_%NAMERAW%_shop_delay` convars. Requires that the role has a shop and has role activation defined (see [Role Activation](#Role-Activation)). | 1.2.2 |
 | `ROLE.shoulddelayannouncements` | Whether this role should delay announcements when they kill a player that shows a message (like phantom and parasite). Used for things like preventing the assassin's target update message from getting overlapped. | 1.2.7 |
 | `ROLE.haspassivewin` | Whether this role should not block another role from winning (like the old man). | 1.3.1 |
+| `ROLE.shouldnotdrown` | Whether the player should not show the drown effect or take drowning damage. | 1.5.7 |
 
 The Summoner doesn't need these options to be set because it is `ROLE_TEAM_TRAITOR` and has a shop, but just for an example, here's what it would look like if we wanted to remove their credit looting and traitor trap abilities and delay their shop item delivery:
 
@@ -843,7 +844,7 @@ if CLIENT then
 end
 ```
 
-### File Separation 
+### File Separation
 
 When working with larger roles, having everything in the one file can easily become messy. In this situation you can ***optionally*** split your code across client, server, and shared files.
 

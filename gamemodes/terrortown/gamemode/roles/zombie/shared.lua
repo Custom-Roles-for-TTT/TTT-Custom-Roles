@@ -4,6 +4,9 @@ local hook = hook
 local IsValid = IsValid
 local table = table
 
+-- Initialize role features
+ROLE_SHOULD_NOT_DROWN[ROLE_ZOMBIE] = true
+
 local function InitializeEquipment()
     if EquipmentItems then
         local mat_dir = "vgui/ttt/"

@@ -88,6 +88,10 @@ local function IdentifyBody(ply, rag)
         if IsValid(deadply) then
             deadply:SetNWBool("body_searched", true)
             deadply:SetNWBool("body_found", true)
+            -- Keep track if this body was searched specifically by a detective
+            if ply:IsDetectiveLike() then
+                deadply:SetNWBool("body_searched_det", true)
+            end
 
             -- Don't cache this in case the hook wants to change the corpse's role
             if TRAITOR_ROLES[role] then
@@ -98,11 +102,13 @@ local function IdentifyBody(ply, rag)
         end
         hook.Call("TTTBodyFound", GAMEMODE, ply, deadply, rag)
         CORPSE.SetFound(rag, true)
-    end
-
     -- Keep track if this body was searched specifically by a detective
-    if IsValid(deadply) and ply:IsDetectiveLike() then
+    -- Also force the scoreboard to update
+    elseif IsValid(deadply) and not deadply:GetNWBool("body_searched_det", false) then
         deadply:SetNWBool("body_searched_det", true)
+        net.Start("TTT_ScoreboardUpdate")
+        net.WriteBool(true)
+        net.Broadcast()
     end
 
     -- Handle kill list

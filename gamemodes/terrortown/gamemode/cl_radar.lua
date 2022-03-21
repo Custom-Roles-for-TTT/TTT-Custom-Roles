@@ -187,7 +187,7 @@ function RADAR:Draw(client)
 
     local mpos = Vector(ScrW() / 2, ScrH() / 2, 0)
 
-    local glitchMode = GetGlobalInt("ttt_glitch_mode", 0)
+    local glitchMode = GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR)
     local beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", ANNOUNCE_REVEAL_ALL)
     local bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_traitor", BODYSNATCHER_REVEAL_ALL)
     local role, alpha, scrpos, md
@@ -205,7 +205,7 @@ function RADAR:Draw(client)
 
             local color = nil
             if client:IsTraitorTeam() then
-                local hideSpecialTraitors = glitchMode == 2 and GetGlobalBool("ttt_glitch_round", false)
+                local hideSpecialTraitors = glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES and GetGlobalBool("ttt_glitch_round", false)
                 local hideBeggar = tgt.was_beggar and (beggarMode == ANNOUNCE_REVEAL_NONE or beggarMode == ANNOUNCE_REVEAL_INNOCENTS)
                 local hideBodysnatcher = tgt.was_bodysnatcher and not (bodysnatcherMode == BODYSNATCHER_REVEAL_ALL or (TRAITOR_ROLES[role] and bodysnatcherMode == BODYSNATCHER_REVEAL_TEAM))
                 local showJester = (tgt.should_act_like_jester or ((role == ROLE_TRAITOR or role == ROLE_INNOCENT) and hideBeggar) or hideBodysnatcher) and not client:ShouldHideJesters()

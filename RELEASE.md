@@ -1,5 +1,51 @@
 # Release Notes
 
+### 1.5.8
+**Released: March 22nd, 2022**
+Includes beta updates [1.5.6](#156-beta) and [1.5.7](#157-beta).
+
+### 1.5.7 (Beta)
+**Released: March 19th, 2022**
+
+### Additions
+- Added convars to control whether the assassin is allowed to kill the loot goblin, zombie, or vampire even if they aren't the target (enabled by default)
+- Added ability for search in role shop and roleweapons config menu to search by item description as well
+- Added ability for jester and swapper to have their max health reduced by a health station instead of being healed (enabled by default)
+
+### Fixes
+- Fixed beggar changed to traitor showing traitor highlighting when beggar reveal is disabled
+- Fixed bodysnatcher changed to traitor showing traitor highlighting when bodysnatcher reveal is disabled
+- Fixed scoreboard search icons not having tooltips due to them refreshing too often
+- Fixed body armor icon showing when the info UI was not (e.g. when scoped in and when the main menu is open)
+- Fixed glitch being revealed by assassin target information on the scoreboard when ttt_glitch_mode was not the default of 0
+- Fixed casing on "A Drunk has remembered their role" message
+- Fixed roleweapons config menu not applying search bar value when updating the same role as the one the search was used on
+- Fixed tooltip on bomb station not updating if a player's role changed after it was placed
+- Fixed role checks not starting for the role with the highest role ID
+
+### Changes
+- Changed zombies to no longer be able to drown
+- Changed the activated clown to be able to see other jesters so they don't kill them
+- Changed the jester to win, like normal, if they are somehow to killed by other members of the jester team
+- Changed the parasite cure to be available to all special detectives when the parasite is enabled
+
+### Developer
+- Added new `plymeta:ShouldNotDrown` to determine if a player should drown
+- Added new `ROLE.shouldnotdrown` optional rule for external roles
+- Added `should_reduce` parameter to `TTTPlayerUsedHealthStation` hook
+- Added ability for entities to use a function for their `TargetIDHint` value
+
+### 1.5.6 (Beta)
+**Released: March 6th, 2022**
+
+### Additions
+- Added the ability for loot goblins to regenerate health under certain circumstances
+  - By default, the loot goblin will now regen health slowly while standing still
+
+### Fixes
+- Fixed players whose roles are changed to loot goblin not being granted the jump boost
+- Fixed old man's view being stuck if their adrenaline rush activated while they were using a scoped weapon (Thanks Lillie!)
+
 ## 1.5.5
 **Released: February 28th, 2022**\
 Includes all beta updates from [1.5.1](#151-beta) to [1.5.4](#154-beta).
@@ -307,7 +353,7 @@ Includes all beta updates from [1.3.1](#131-beta) to [1.3.7](#137-beta).
 - Added ability to use common jester notifications (message, sound, confetti) when the bodysnatcher is killed (disabled by default)
 - Added ability to make the paramedic defib rebuyable if ttt_paramedic_device_shop is enabled (disabled by default)
 - Added ability to make the hypnotist brainwashing device rebuyable if ttt_hypnotist_device_shop is enabled (disabled by default)
-- Added ability to prevent the drunk and clown from being selected in the same round (disabled by default)
+- Added ability to prevent the drunk and clown from being selected in the same round (disabled by default) (Thanks Matty!)
 - Added ability to show loadout equipment in shops (disabled by default)
 - Added ability to configure the amount of time the various role devices take to be used
   - Bodysnatching Device
@@ -372,8 +418,8 @@ Includes all beta updates from [1.2.4](#124-beta) to [1.2.9](#129-beta).
 **Released: October 3rd, 2021**
 
 ### Additions
-- Added ability for independents to see missing in action players on the scoreboard (disabled by default)
-- Added ability for the killer to see missing in action players on the scoreboard (enabled by default)
+- Added ability for independents to see missing in action players on the scoreboard (disabled by default) (Thanks Matty!)
+- Added ability for the killer to see missing in action players on the scoreboard (enabled by default) (Thanks Matty!)
 - Added ability to control whether a vampire can loot credits (enabled by default)
 - Added ability to control whether special detectives (all detective roles other than the original detective itself) get armor automatically for free (enabled by default)
 
@@ -900,7 +946,7 @@ Includes all beta updates from [1.0.2](#102-beta) to [1.0.15](#1015-beta).
 - Fixed missing ttt_clown_shop_mode
 - Fixed weapons added to detective or traitor via the roleweapons system not being buyable by roles using the shop mode convars
 - Fixed old man not also winning when a map declares a winning team
-- Fixed the glitch from being shown as a traitor to zombies if zombies are on the traitor team
+- Fixed the glitch from being shown as a traitor to zombies if zombies are on the traitor team (Thanks Matty!)
 
 ### Developer
 - Added the ability for SWEPs to not be randomized out of the shop by setting "SWEP.BlockShopRandomization = true"
@@ -926,8 +972,8 @@ Includes all beta updates from [1.0.2](#102-beta) to [1.0.15](#1015-beta).
 - Added a message to a parasite victim when they are killed by the parasite coming back to life
 - Added a message to a non-prime vampire when they are killed/reverted if the prime was killed
 - Ported "TTT: add more validation to corpse commands" from base TTT
-- Added new Assassin target priority convar
-- Added new convar to heal the Clown when they activate
+- Added new Assassin target priority convar (Thanks Matty!)
+- Added new convar to heal the clown when they activate (Thanks Matty!)
 
 ### Changes
 - Changed revenger to receive a different message if their lover is killed when they are already dead

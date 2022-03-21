@@ -8,18 +8,6 @@ local util = util
 if CLIENT then
     ENT.Icon = "vgui/ttt/icon_bombstation"
     ENT.PrintName = "bstation_name"
-
-    local GetPTranslation = LANG.GetParamTranslation
-
-    ENT.TargetIDHint = {
-        name = "hstation_name",
-        hint = "hstation_hint",
-        fmt  = function(ent, txt)
-            return GetPTranslation(txt,
-                    { usekey = Key("+use", "USE"),
-                      num    = ent:GetStoredHealth() or 0 } )
-            end
-    };
 end
 
 ENT.Type = "anim"
@@ -102,24 +90,18 @@ function ENT:Initialize()
 
     if CLIENT then
         local GetPTranslation = LANG.GetParamTranslation
-        if LocalPlayer():IsTraitorTeam() then
-            self.TargetIDHint = {
-                name = "bstation_name",
-                hint = "bstation_hint",
+        self.TargetIDHint = function()
+            local station_type = "h"
+            if LocalPlayer():IsTraitorTeam() then
+                station_type = "b"
+            end
+            return {
+                name = station_type .. "station_name",
+                hint = station_type .. "station_hint",
                 fmt  = function(ent, txt)
                     return GetPTranslation(txt,
                             { usekey = Key("+use", "USE"),
-                              num = self:GetStoredHealth() or 0 } )
-                end
-            };
-        else
-            self.TargetIDHint = {
-                name = "hstation_name",
-                hint = "hstation_hint",
-                fmt  = function(ent, txt)
-                    return GetPTranslation(txt,
-                            { usekey = Key("+use", "USE"),
-                              num = self:GetStoredHealth() or 0 } )
+                              num = ent:GetStoredHealth() or 0 } )
                 end
             };
         end

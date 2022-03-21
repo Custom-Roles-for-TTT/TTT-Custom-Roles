@@ -17,7 +17,7 @@ local StringSplit = string.Split
 local StringSub = string.sub
 
 -- Version string for display and function for version checks
-CR_VERSION = "1.5.5"
+CR_VERSION = "1.5.8"
 CR_BETA = false
 
 function CRVersion(version)
@@ -682,6 +682,7 @@ ROLE_MOVE_ROLE_STATE = {}
 ROLE_ON_ROLE_ASSIGNED = {}
 ROLE_HAS_PASSIVE_WIN = {}
 ROLE_SHOULD_SHOW_SPECTATOR_HUD = {}
+ROLE_SHOULD_NOT_DROWN = {}
 
 ROLE_CONVAR_TYPE_NUM = 0
 ROLE_CONVAR_TYPE_BOOL = 1
@@ -783,6 +784,10 @@ function RegisterRole(tbl)
 
     if type(tbl.haspassivewin) == "boolean" then
         ROLE_HAS_PASSIVE_WIN[roleID] = tbl.haspassivewin
+    end
+
+    if type(tbl.shouldnotdrown) == "boolean" then
+        ROLE_SHOULD_NOT_DROWN[roleID] = tbl.shouldnotdrown
     end
 
     -- Equipment
@@ -1286,6 +1291,15 @@ function GetWinningMonsterRole()
     end
     -- Otherwise just use the "Monsters" team name
     return nil
+end
+
+function ShouldShowTraitorExtraInfo()
+    -- Don't display Parasite and Assassin information if there is a glitch that is distorting the role information
+    -- If the glitch mode is "Show as Special Traitor" then we don't want to show this because it reveals which of the traitors is real (because this doesn't show for glitches)
+    -- If the glitch mode is "Hide Special Traitor Roles" then we don't want to show anything that reveals what role a traitor really is
+    local glitchMode = GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR)
+    local hasGlitch = GetGlobalBool("ttt_glitch_round", false)
+    return not hasGlitch or glitchMode == GLITCH_SHOW_AS_TRAITOR
 end
 
 if SERVER then

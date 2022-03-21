@@ -34,29 +34,45 @@ hook.Add("TTTTargetIDPlayerKillIcon", "Clown_TTTTargetIDPlayerKillIcon", functio
     end
 end)
 
-local function IsClownVisible(ply)
-    return IsPlayer(ply) and ply:IsClown() and ply:IsRoleActive() and not GetGlobalBool("ttt_clown_hide_when_active", false)
+local function IsClownActive(ply)
+    return IsPlayer(ply) and ply:IsClown() and ply:IsRoleActive()
 end
 
--- Show the clown icon if the player is an activated clown
+local function IsClownVisible(ply)
+    return IsClownActive(ply) and not GetGlobalBool("ttt_clown_hide_when_active", false)
+end
+
 hook.Add("TTTTargetIDPlayerRoleIcon", "Clown_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, color_role, hideBeggar, showJester, hideBodysnatcher)
+    -- If the local client is an activated clown and the target is a jester, show the jester icon
+    if IsClownActive(cli) and ply:ShouldActLikeJester() then
+        return ROLE_JESTER, false, ROLE_JESTER
+    end
+    -- Show the clown icon if the target is an activated clown
     if IsClownVisible(ply) then
         return ROLE_CLOWN, false, ROLE_CLOWN
     end
 end)
 
--- Show the clown information and color when you look at the player
-hook.Add("TTTTargetIDPlayerRing", "Clown_TTTTargetIDPlayerRing", function(ent, client, ring_visible)
+hook.Add("TTTTargetIDPlayerRing", "Clown_TTTTargetIDPlayerRing", function(ent, cli, ring_visible)
     if GetRoundState() < ROUND_ACTIVE then return end
 
+    -- If the local client is an activated clown and the target is a jester, show the jester information
+    if IsPlayer(ent) and IsClownActive(cli) and ent:ShouldActLikeJester() then
+        return true, ROLE_COLORS_RADAR[ROLE_JESTER]
+    end
+    -- Show the clown information and color when you look at the target
     if IsClownVisible(ent) then
         return true, ROLE_COLORS_RADAR[ROLE_CLOWN]
     end
 end)
 
-hook.Add("TTTTargetIDPlayerText", "Clown_TTTTargetIDPlayerText", function(ent, client, text, col, secondary_text)
+hook.Add("TTTTargetIDPlayerText", "Clown_TTTTargetIDPlayerText", function(ent, cli, text, col, secondary_text)
     if GetRoundState() < ROUND_ACTIVE then return end
 
+    -- If the local client is an activated clown and the target is a jester, show the jester information
+    if IsPlayer(ent) and IsClownActive(cli) and ent:ShouldActLikeJester() then
+        return StringUpper(ROLE_STRINGS[ROLE_JESTER]), ROLE_COLORS_RADAR[ROLE_JESTER]
+    end
     if IsClownVisible(ent) then
         return StringUpper(ROLE_STRINGS[ROLE_CLOWN]), ROLE_COLORS_RADAR[ROLE_CLOWN]
     end

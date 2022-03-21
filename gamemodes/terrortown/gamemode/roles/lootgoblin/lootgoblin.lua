@@ -48,10 +48,15 @@ local lootgoblin_weapons_dropped = CreateConVar("ttt_lootgoblin_weapons_dropped"
 local lootgoblin_jingle_enabled = CreateConVar("ttt_lootgoblin_jingle_enabled", "1")
 local lootgoblin_speed_mult = CreateConVar("ttt_lootgoblin_speed_mult", "1.2", FCVAR_NONE, "The multiplier to use on the loot goblin's movement speed when they are activated (e.g. 1.2 = 120% normal speed)", 1, 2)
 local lootgoblin_sprint_recovery = CreateConVar("ttt_lootgoblin_sprint_recovery", "0.12", FCVAR_NONE, "The amount of stamina to recover per tick when the loot goblin is activated", 0, 1)
+local lootgoblin_regen_mode = CreateConVar("ttt_lootgoblin_regen_mode", "2", FCVAR_NONE, "Whether the loot goblin should regenerate health and using what logic. 0 - No regeneration. 1 - Constant regen while active. 2 - Regen while standing still. 3 - Regen after taking damage", 0, 3)
+local lootgoblin_regen_rate = CreateConVar("ttt_lootgoblin_regen_rate", "3", FCVAR_NONE, "How often (in seconds) a loot goblin should regain health while regenerating", 1, 60)
+local lootgoblin_regen_delay = CreateConVar("ttt_lootgoblin_regen_delay", "0", FCVAR_NONE, "The length of the delay (in seconds) before the loot goblin's health will start to regenerate", 0, 60)
 
 hook.Add("TTTSyncGlobals", "LootGoblin_TTTSyncGlobals", function()
     SetGlobalFloat("ttt_lootgoblin_speed_mult", lootgoblin_speed_mult:GetFloat())
     SetGlobalFloat("ttt_lootgoblin_sprint_recovery", lootgoblin_sprint_recovery:GetFloat())
+    SetGlobalInt("ttt_lootgoblin_regen_mode", lootgoblin_regen_mode:GetInt())
+    SetGlobalInt("ttt_lootgoblin_regen_delay", lootgoblin_regen_delay:GetInt())
 end)
 
 -----------
@@ -70,6 +75,73 @@ hook.Add("TTTKarmaGiveReward", "LootGoblin_TTTKarmaGiveReward", function(ply, re
     end
 end)
 
+-----------
+-- REGEN --
+-----------
+
+local function StartRegen(ply)
+    local rate = lootgoblin_regen_rate:GetInt()
+    timer.Create("LootGoblinRegen_" .. ply:SteamID64(), rate, 0, function()
+        if ply:Alive() and not ply:IsSpec() and ply:IsLootGoblin() then
+            local hp = ply:Health()
+            if hp < ply:GetMaxHealth() then
+                ply:SetHealth(hp + 1)
+            end
+        end
+    end)
+end
+
+local function StopRegen(ply)
+    timer.Remove("LootGoblinRegen_" .. ply:SteamID64())
+    timer.Remove("LootGoblinRegenDelay_" .. ply:SteamID64())
+end
+
+local function HandleRegen(ply, delay_override)
+    local delay = delay_override or lootgoblin_regen_delay:GetInt()
+    if delay > 0 then
+        timer.Create("LootGoblinRegenDelay_" .. ply:SteamID64(), delay, 0, function()
+            StartRegen(ply)
+        end)
+    else
+        StartRegen(ply)
+    end
+end
+
+local playermoveloc = {}
+hook.Add("FinishMove", "LootGoblin_FinishMove", function(ply, mv)
+    local mode = lootgoblin_regen_mode:GetInt()
+    if mode ~= LOOTGOBLIN_REGEN_MODE_STILL then return end
+
+    if ply:IsActiveLootGoblin() and ply:IsRoleActive() then
+        local loc = ply:GetPos()
+        local sid64 = ply:SteamID64()
+        -- Keep track of when a player moves and stop regeneration when they do
+        if playermoveloc[sid64] == nil or math.abs(playermoveloc[sid64]:Distance(loc)) > 0 then
+            StopRegen(ply)
+            playermoveloc[sid64] = loc
+        -- If regen stuff hasn't started yet, do it
+        elseif not timer.Exists("LootGoblinRegen_" .. sid64) and not timer.Exists("LootGoblinRegenDelay_" .. sid64) then
+            HandleRegen(ply)
+        end
+    end
+end)
+
+hook.Add("PostEntityTakeDamage", "LootGoblin_PostEntityTakeDamage", function(ent, dmginfo, taken)
+    if not taken then return end
+    if not IsPlayer(ent) then return end
+
+    local dmg = dmginfo:GetDamage()
+    if dmg <= 0 then return end
+
+    if not ent:IsActiveLootGoblin() or not ent:IsRoleActive() then return end
+
+    local mode = lootgoblin_regen_mode:GetInt()
+    if mode ~= LOOTGOBLIN_REGEN_MODE_AFTER_DAMAGE then return end
+
+    StopRegen(ent)
+    HandleRegen(ent)
+end)
+
 ----------------------
 -- HELPER FUNCTIONS --
 ----------------------
@@ -81,6 +153,31 @@ local cackles = {
 }
 local defaultJumpPower = 160
 local lootGoblinActive = false
+
+local function ActivateLootGoblin(ply)
+    ply:SetNWBool("LootGoblinActive", true)
+    ply:PrintMessage(HUD_PRINTTALK, "You have transformed into a goblin!")
+
+    local mode = lootgoblin_regen_mode:GetInt()
+    if mode == LOOTGOBLIN_REGEN_MODE_ALWAYS then
+        HandleRegen(ply)
+    end
+
+    local scale = lootgoblin_size:GetFloat()
+    ply:SetPlayerScale(scale)
+    local jumpPower = defaultJumpPower
+    -- Compensate the jump power of smaller players so they have roughly the same jump height as normal
+    -- In testing, scales >= 1 all seem to work fine with the default jump power and that's not the intent of this role anyway
+    if scale < 1 then
+        -- Derived formula is y = -120x + 280
+        -- We take the base jump power out of this as a known constant and then
+        -- give a small jump boost of 5 extra power to "round up" the jump estimates
+        -- so that smaller sizes can still clear jump+crouch blocks
+        jumpPower = jumpPower + (-(120 * scale) + 125)
+    end
+    ply:SetJumpPower(jumpPower)
+end
+
 local function StartGoblinTimers()
     local goblinTimeMin = lootgoblin_activation_timer:GetInt()
     local goblinTimeMax = lootgoblin_activation_timer_max:GetInt()
@@ -99,22 +196,7 @@ local function StartGoblinTimers()
         local revealMode = lootgoblin_announce:GetInt()
         for _, v in ipairs(GetAllPlayers()) do
             if v:IsActiveLootGoblin() then
-                v:SetNWBool("LootGoblinActive", true)
-                v:PrintMessage(HUD_PRINTTALK, "You have transformed into a goblin!")
-
-                local scale = lootgoblin_size:GetFloat()
-                v:SetPlayerScale(scale)
-                local jumpPower = defaultJumpPower
-                -- Compensate the jump power of smaller players so they have roughly the same jump height as normal
-                -- In testing, scales >= 1 all seem to work fine with the default jump power and that's not the intent of this role anyway
-                if scale < 1 then
-                    -- Derived formula is y = -120x + 280
-                    -- We take the base jump power out of this as a known constant and then
-                    -- give a small jump boost of 5 extra power to "round up" the jump estimates
-                    -- so that smaller sizes can still clear jump+crouch blocks
-                    jumpPower = jumpPower + (-(120 * scale) + 125)
-                end
-                v:SetJumpPower(jumpPower)
+                ActivateLootGoblin(v)
             elseif revealMode == JESTER_NOTIFY_EVERYONE or
                     (v:IsActiveTraitorTeam() and (revealMode == JESTER_NOTIFY_TRAITOR or JESTER_NOTIFY_DETECTIVE_AND_TRAITOR)) or
                     (not v:IsActiveDetectiveLike() and (revealMode == JESTER_NOTIFY_DETECTIVE or JESTER_NOTIFY_DETECTIVE_AND_TRAITOR)) then
@@ -241,6 +323,7 @@ hook.Add("PlayerDeath", "LootGoblin_PlayerDeath", function(victim, infl, attacke
             end)
         end
 
+        StopRegen(victim)
         PauseIfSingleGoblin()
     end
 end)
@@ -253,6 +336,7 @@ local function ResetPlayer(ply)
     ply:SetNWBool("LootGoblinActive", false)
     ply:ResetPlayerScale()
     ply:SetJumpPower(defaultJumpPower)
+    StopRegen(ply)
     PauseIfSingleGoblin()
 end
 
@@ -269,9 +353,7 @@ hook.Add("TTTPlayerSpawnForRound", "LootGoblin_TTTPlayerSpawnForRound", function
             if ply:IsRoleActive() then
                 ply:SetNWBool("LootGoblinKilled", true)
             else
-                ply:SetNWBool("LootGoblinActive", true)
-                ply:PrintMessage(HUD_PRINTTALK, "You have transformed into a goblin!")
-                ply:SetPlayerScale(lootgoblin_size:GetFloat())
+                ActivateLootGoblin(ply)
             end
         elseif timer.Exists("LootGoblinActivate") then
             timer.UnPause("LootGoblinActivate")
@@ -286,9 +368,7 @@ hook.Add("TTTPlayerRoleChanged", "LootGoblin_TTTPlayerRoleChanged", function(ply
         ResetPlayer(ply)
     elseif newRole == ROLE_LOOTGOBLIN then
         if lootGoblinActive then
-            ply:SetNWBool("LootGoblinActive", true)
-            ply:PrintMessage(HUD_PRINTTALK, "You have transformed into a goblin!")
-            ply:SetPlayerScale(lootgoblin_size:GetFloat())
+            ActivateLootGoblin(ply)
         elseif not timer.Exists("LootGoblinActivate") then
             StartGoblinTimers()
         else

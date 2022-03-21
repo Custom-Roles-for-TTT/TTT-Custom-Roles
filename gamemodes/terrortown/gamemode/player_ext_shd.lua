@@ -30,9 +30,9 @@ function plymeta:SetRole(role)
     -- Role checks only run on the server
     if not SERVER then return end
     -- Only do this if they had an old role. This handles the case where they were assigned a role at the beginning of the round
-    if not oldRole or oldRole <= ROLE_NONE or oldRole >= ROLE_MAX then return end
+    if not oldRole or oldRole <= ROLE_NONE or oldRole > ROLE_MAX then return end
     -- Only do this if the new role is valid. This is not strictly necessary since there wouldn't be a role check for an invalid role, but just for safety
-    if not role or role <= ROLE_NONE or role >= ROLE_MAX then return end
+    if not role or role <= ROLE_NONE or role > ROLE_MAX then return end
     -- Only do this if the player's role actually changed
     if oldRole == role then return end
 
@@ -164,6 +164,7 @@ function plymeta:ShouldHideJesters()
 end
 
 function plymeta:ShouldDelayAnnouncements() return ROLE_SHOULD_DELAY_ANNOUNCEMENTS[self:GetRole()] or false end
+function plymeta:ShouldNotDrown() return ROLE_SHOULD_NOT_DROWN[self:GetRole()] or false end
 
 function plymeta:ShouldShowSpectatorHUD()
     -- Check if this role has an external definition for whether to show a spectator HUD and use that

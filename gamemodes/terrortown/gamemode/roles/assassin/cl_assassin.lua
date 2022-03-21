@@ -57,7 +57,7 @@ end)
 
 -- Flash the assassin target's row on the scoreboard
 hook.Add("TTTScoreboardPlayerRole", "Assassin_TTTScoreboardPlayerRole", function(ply, cli, c, roleStr)
-    if cli:IsAssassin() and ply:Nick() == cli:GetNWString("AssassinTarget", "") then
+    if cli:IsAssassin() and ShouldShowTraitorExtraInfo() and ply:Nick() == cli:GetNWString("AssassinTarget", "") then
         return c, roleStr, ROLE_ASSASSIN
     end
 end)
@@ -65,7 +65,7 @@ end)
 hook.Add("TTTScoreboardPlayerName", "Assassin_TTTScoreboardPlayerName", function(ply, cli, text)
     if cli:IsAssassin() and ply:Nick() == cli:GetNWString("AssassinTarget", "") then
         local newText = " ("
-        if ply:GetNWBool("ParasiteInfected", false) then
+        if ShouldShowTraitorExtraInfo() and ply:GetNWBool("ParasiteInfected", false) then
             newText = newText .. LANG.GetTranslation("target_infected") .. " | "
         end
         newText = newText .. LANG.GetTranslation("target_assassin_target") .. ")"
