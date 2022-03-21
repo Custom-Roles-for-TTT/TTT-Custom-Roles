@@ -1,5 +1,9 @@
 # Release Notes
 
+### 1.5.8
+**Released: March 22nd, 2022**
+Includes beta updates [1.5.6](#156-beta) and [1.5.7](#157-beta).
+
 ### 1.5.7 (Beta)
 **Released: March 19th, 2022**
 
