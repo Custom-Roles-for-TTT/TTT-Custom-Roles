@@ -1,5 +1,11 @@
 # Release Notes
 
+### 1.5.9 (Beta)
+**Released:**
+
+### Fixes
+- Fixed roles without shops by default belonging to teams that normally get shops by default not having the "shop sync" convars created
+
 ### 1.5.8
 **Released: March 22nd, 2022**
 Includes beta updates [1.5.6](#156-beta) and [1.5.7](#157-beta).

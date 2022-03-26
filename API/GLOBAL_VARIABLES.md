@@ -93,6 +93,10 @@ Variables available globally (within the defined realm)
 *Realm:* Client and Server\
 *Added in:* 1.0.0
 
+**ROLE_TEAMS_WITH_SHOP** - The lookup table of which *ROLE_TEAM_* enumeration values normally have a shop.\
+*Realm:* Client and Server\
+*Added in:* 1.5.9
+
 **ROLE_STRINGS** - Table of title-case names for each role.\
 *Realm:* Client and Server\
 *Added in:* 1.0.0
