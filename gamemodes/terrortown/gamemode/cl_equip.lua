@@ -436,7 +436,13 @@ end
 concommand.Add("ttt_cl_traitorpopup_close", ForceCloseTraitorMenu)
 
 local function DoesValueMatch(item, data, value)
-    return item[data] and StringFind(StringLower(SafeTranslate(item[data])), StringLower(value))
+    if not item[data] then return false end
+
+    local itemdata = item[data]
+    if isfunction(itemdata) then
+        itemdata = itemdata()
+    end
+    return itemdata and StringFind(StringLower(SafeTranslate(itemdata)), StringLower(value))
 end
 
 local function TraitorMenuPopup()

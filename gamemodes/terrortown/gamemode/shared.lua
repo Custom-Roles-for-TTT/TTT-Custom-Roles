@@ -18,7 +18,7 @@ local StringSub = string.sub
 
 -- Version string for display and function for version checks
 CR_VERSION = "1.5.8"
-CR_BETA = true
+CR_BETA = false
 
 function CRVersion(version)
     local installedVersionRaw = StringSplit(CR_VERSION, ".")
@@ -665,6 +665,9 @@ ROLE_TEAM_INDEPENDENT = 3
 ROLE_TEAM_MONSTER = 4
 ROLE_TEAM_DETECTIVE = 5
 
+ROLE_TEAMS_WITH_SHOP = {}
+AddRoleAssociations(ROLE_TEAMS_WITH_SHOP, {ROLE_TEAM_TRAITOR, ROLE_TEAM_INDEPENDENT, ROLE_TEAM_MONSTER, ROLE_TEAM_DETECTIVE})
+
 ROLE_DATA_EXTERNAL = {}
 
 ROLE_TRANSLATIONS = {}
@@ -791,7 +794,9 @@ function RegisterRole(tbl)
     end
 
     -- Equipment
-    if tbl.shop then
+    -- Make sure teams that normally have shops are added to the shop list, even if they don't have things in their shop by default
+    -- This allows the "sync" and "mode" convars to be created
+    if tbl.shop or ROLE_TEAMS_WITH_SHOP[tbl.team] then
         ROLE_SHOP_ITEMS[roleID] = tbl.shop
         AddRoleAssociations(SHOP_ROLES, {roleID})
     end
