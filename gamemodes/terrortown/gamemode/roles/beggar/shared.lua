@@ -18,22 +18,20 @@ function plymeta:ShouldRevealBeggar(tgt)
     -- If we weren't given a target, use ourselves
     if not tgt then tgt = self end
 
-    -- Use what role they changed to to determine which setting to use and whether they should be revealed
+    -- Use what role they changed to to determine which setting to use
     local beggarMode = nil
-    local sameTeam = false
-    local otherTeam = false
     if tgt:IsTraitor() then
         beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", BEGGAR_REVEAL_ALL)
-        sameTeam = self:IsTraitorTeam() and beggarMode == BEGGAR_REVEAL_TRAITORS
-        otherTeam = self:IsInnocentTeam() and beggarMode == BEGGAR_REVEAL_INNOCENTS
     elseif tgt:IsInnocent() then
         beggarMode = GetGlobalInt("ttt_beggar_reveal_innocent", BEGGAR_REVEAL_TRAITORS)
-        sameTeam = self:IsInnocentTeam() and beggarMode == BEGGAR_REVEAL_INNOCENTS
-        otherTeam = self:IsTraitorTeam() and beggarMode == BEGGAR_REVEAL_TRAITORS
     end
 
+    -- Then determine whether this player should show for the client's team
+    local traitorTeam = self:IsTraitorTeam() and beggarMode == BEGGAR_REVEAL_TRAITORS
+    local innocentTeam = self:IsInnocentTeam() and beggarMode == BEGGAR_REVEAL_INNOCENTS
+
     -- Check the setting value and whether the client's team matches the reveal mode
-    return beggarMode == BEGGAR_REVEAL_ALL or sameTeam or otherTeam
+    return beggarMode == BEGGAR_REVEAL_ALL or traitorTeam or innocentTeam
 end
 
 ------------------
