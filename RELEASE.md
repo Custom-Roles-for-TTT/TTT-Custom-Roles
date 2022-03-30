@@ -3,6 +3,9 @@
 ### 1.5.9
 **Released:**
 
+### Fixes
+- Fixed beggar converted to innocent still showing as a jester to traitors when ttt_beggar_reveal_innocent was set to "traitors"
+
 ### Changes
 - Changed head icon height calculation again to hopefully help more with model scaling
 
