@@ -335,7 +335,7 @@ if CLIENT then
                 if matrix then
                     local translation = matrix:GetTranslation()
                     -- Translate the bone position from being relative to the world to being relative to the player's position
-                    local z = translation.z - ply:GetPos().z
+                    local z = MathAbs(translation.z - ply:GetPos().z)
                     if z > max_bone_z then
                         max_bone_z = z
                     end
@@ -363,19 +363,9 @@ if CLIENT then
         -- Check to see if the player's head is scaled
         local headId = self:LookupBone("ValveBiped.Bip01_Head1")
         if headId then
-            local max_headless_z = GetMaxBoneZ(self, function(b, name, bone)
-                return name ~= "ValveBiped.Bip01_Head1"
-            end)
             local headScale = self:GetManipulateBoneScale(headId)
             if headScale.z ~= 1 then
-                -- If it is, get the difference between the previous largest Z position and the head position
-                local matrix = self:GetBoneMatrix(headId)
-                if matrix then
-                    local translation = matrix:GetTranslation()
-                    local diff = MathAbs(max_headless_z - translation.z)
-                    -- Scale the difference by the head scale
-                    max_bone_z = max_headless_z + (diff * (headScale.z + 1))
-                end
+                max_bone_z = max_bone_z + ((headScale.z - 1) * 10)
             end
         end
 
