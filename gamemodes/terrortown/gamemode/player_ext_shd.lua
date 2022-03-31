@@ -364,7 +364,7 @@ if CLIENT then
         local headId = self:LookupBone("ValveBiped.Bip01_Head1")
         if headId then
             local headScale = self:GetManipulateBoneScale(headId)
-            if headScale.z ~= 1 then
+            if headScale.z > 1 then
                 max_bone_z = max_bone_z + ((headScale.z - 1) * 10)
             end
         end
