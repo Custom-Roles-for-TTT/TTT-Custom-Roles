@@ -1,7 +1,7 @@
 # Release Notes
 
 ### 1.5.9 (Beta)
-**Released:**
+**Released: April 3rd, 2022**
 
 ### Fixes
 - Fixed beggar converted to innocent still showing as a jester to traitors when ttt_beggar_reveal_innocent was set to "traitors"
