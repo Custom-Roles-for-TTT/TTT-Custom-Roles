@@ -1,5 +1,14 @@
 # Release Notes
 
+### 1.5.9 (Beta)
+**Released: April 3rd, 2022**
+
+### Fixes
+- Fixed beggar converted to innocent still showing as a jester to traitors when ttt_beggar_reveal_innocent was set to "traitors"
+
+### Changes
+- Changed head icon height calculation again to hopefully help more with model scaling
+
 ### 1.5.8
 **Released: March 22nd, 2022**
 Includes beta updates [1.5.6](#156-beta) and [1.5.7](#157-beta).
@@ -7,7 +16,7 @@ Includes beta updates [1.5.6](#156-beta) and [1.5.7](#157-beta).
 ### Fixes
 - Fixed roles without shops by default belonging to teams that normally get shops by default not having the "shop sync" convars created
 - Fixed error using search in shop or role weapons config menu
-- Fixed loot goblins being shown by traitor vision when it was enabled
+- Fixed loot goblins being shown in traitor vision when it was enabled
 
 ### 1.5.7 (Beta)
 **Released: March 19th, 2022**
