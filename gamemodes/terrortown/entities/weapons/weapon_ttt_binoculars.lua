@@ -2,7 +2,13 @@ AddCSLuaFile()
 
 DEFINE_BASECLASS "weapon_tttbase"
 
-SWEP.HoldType               = "normal"
+SWEP.HoldType               = "slam"
+
+if SERVER then
+    resource.AddFile("models/weapons/v_binoculars.mdl")
+    resource.AddFile("models/weapons/w_binoculars.mdl")
+    resource.AddFile("materials/models/weapons/v_binoculars/binocular2.vmt")
+end
 
 if CLIENT then
    SWEP.PrintName           = "binoc_name"
@@ -22,8 +28,8 @@ end
 
 SWEP.Base                   = "weapon_tttbase"
 
-SWEP.ViewModel              = "models/weapons/v_crowbar.mdl"
-SWEP.WorldModel             = "models/props/cs_office/paper_towels.mdl"
+SWEP.ViewModel		        = "models/weapons/v_binoculars.mdl"
+SWEP.WorldModel		        = "models/weapons/w_binoculars.mdl"
 
 SWEP.Primary.ClipSize       = -1
 SWEP.Primary.DefaultClip    = -1
@@ -52,14 +58,20 @@ SWEP.ZoomLevels = {
 
 SWEP.ProcessingDelay       = 5
 
+SWEP.WorldModelAttachment  = "ValveBiped.Bip01_R_Hand"
+SWEP.WorldModelVector      = Vector(5, -5, 0)
+SWEP.WorldModelAngle       = Angle(180, 180, 0)
+SWEP.ViewModelDistance     = 100
+
 function SWEP:SetupDataTables()
     self:DTVar("Bool",  0, "processing")
     self:DTVar("Float", 0, "start_time")
     self:DTVar("Int",   1, "zoom")
+    -- Zoom levels are 1-based
+    self.dt.zoom = 1
 
     return self.BaseClass.SetupDataTables(self)
 end
-
 
 function SWEP:PrimaryAttack()
     self:SetNextPrimaryFire( CurTime() + 0.1 )
@@ -91,10 +103,27 @@ end
 function SWEP:SetZoom(level)
     if SERVER then
         self.dt.zoom = level
-        self:GetOwner():SetFOV(self.ZoomLevels[level], 0.3)
+        local owner = self:GetOwner()
+        owner:SetFOV(self.ZoomLevels[level], 0.3)
 
-        self:GetOwner():DrawViewModel(false)
+        -- Only show the view model when we're not zoomed in
+        if level <= 1 then
+            timer.Simple(0.25, function()
+                if IsValid(owner) then
+                    owner:DrawViewModel(true)
+                end
+            end)
+        else
+            owner:DrawViewModel(false)
+        end
     end
+end
+
+function SWEP:GetViewModelPosition(pos, ang)
+	local forward = ang:Forward()
+    -- Move the model away from the player camera so it doesn't take up half the screen
+    local dist = Vector(-forward.x * self.ViewModelDistance, -forward.y * self.ViewModelDistance, -forward.z * self.ViewModelDistance)
+	return pos - dist, ang
 end
 
 function SWEP:CycleZoom()
@@ -125,7 +154,6 @@ function SWEP:Deploy()
     return true
 end
 
-
 function SWEP:Reload()
     return false
 end
@@ -135,7 +163,7 @@ function SWEP:IsTargetingCorpse()
     local ent = tr.Entity
 
     return IsValid(ent) and ent:GetClass() == "prop_ragdoll" and
-            CORPSE.GetPlayerNick(ent, false) != false
+            CORPSE.GetPlayerNick(ent, false) ~= false
 end
 
 local confirm = Sound("npc/turret_floor/click1.wav")
@@ -228,11 +256,32 @@ if CLIENT then
         end
     end
 
-
     function SWEP:DrawWorldModel()
-        if not IsValid(self:GetOwner()) then
-            self:DrawModel()
+        if not self.WorldModelEnt then
+            self.WorldModelEnt = ClientsideModel(self.WorldModel)
+            self.WorldModelEnt:SetNoDraw(true)
         end
+
+        local owner = self:GetOwner()
+        if IsValid(owner) then
+            local boneid = owner:LookupBone(self.WorldModelAttachment)
+            if not boneid or boneid <= 0 then return end
+
+            local matrix = owner:GetBoneMatrix(boneid)
+            if not matrix then return end
+
+            local newPos, newAng = LocalToWorld(self.WorldModelVector, self.WorldModelAngle, matrix:GetTranslation(), matrix:GetAngles())
+
+            self.WorldModelEnt:SetPos(newPos)
+            self.WorldModelEnt:SetAngles(newAng)
+
+            self.WorldModelEnt:SetupBones()
+        else
+            self.WorldModelEnt:SetPos(self:GetPos())
+            self.WorldModelEnt:SetAngles(self:GetAngles())
+        end
+
+        self.WorldModelEnt:DrawModel()
     end
 
     function SWEP:AdjustMouseSensitivity()

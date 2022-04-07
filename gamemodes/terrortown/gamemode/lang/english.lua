@@ -487,8 +487,8 @@ from a long distance away.
 Unlimited uses, but identification
 takes a few seconds.]]
 
-L.binoc_help_pri = "{primaryfire} identifies a body."
-L.binoc_help_sec = "{secondaryfire} changes zoom level."
+L.binoc_help_pri = "Hold {primaryfire} to identify a body"
+L.binoc_help_sec = "Press {secondaryfire} to change zoom level"
 
 -- UMP
 L.ump_desc = [[

@@ -3,6 +3,9 @@
 ## 1.5.10 (Beta)
 **Released:**
 
+### Additions
+* Added model for the detective binocular weapon
+
 ### Fixes
 * Fixed rare case where a player could get the role weapons from their previous role in a new round
 
