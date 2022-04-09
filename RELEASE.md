@@ -1,6 +1,15 @@
 # Release Notes
 
-### 1.5.9 (Beta)
+## 1.5.10 (Beta)
+**Released: April 9th, 2022**
+
+### Additions
+* Added model for the detective binocular weapon
+
+### Fixes
+* Fixed rare case where a player could get the role weapons from their previous role in a new round
+
+## 1.5.9 (Beta)
 **Released: April 3rd, 2022**
 
 ### Fixes
@@ -9,7 +18,7 @@
 ### Changes
 - Changed head icon height calculation again to hopefully help more with model scaling
 
-### 1.5.8
+## 1.5.8
 **Released: March 22nd, 2022**
 Includes beta updates [1.5.6](#156-beta) and [1.5.7](#157-beta).
 
@@ -18,7 +27,7 @@ Includes beta updates [1.5.6](#156-beta) and [1.5.7](#157-beta).
 - Fixed error using search in shop or role weapons config menu
 - Fixed loot goblins being shown in traitor vision when it was enabled
 
-### 1.5.7 (Beta)
+## 1.5.7 (Beta)
 **Released: March 19th, 2022**
 
 ### Additions
@@ -49,7 +58,7 @@ Includes beta updates [1.5.6](#156-beta) and [1.5.7](#157-beta).
 - Added `should_reduce` parameter to `TTTPlayerUsedHealthStation` hook
 - Added ability for entities to use a function for their `TargetIDHint` value
 
-### 1.5.6 (Beta)
+## 1.5.6 (Beta)
 **Released: March 6th, 2022**
 
 ### Additions

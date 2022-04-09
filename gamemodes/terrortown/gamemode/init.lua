@@ -718,6 +718,9 @@ function PrepareRound()
         v:SetNWVector("PlayerColor", Vector(1, 1, 1))
         -- Workaround to prevent GMod sprint from working
         v:SetRunSpeed(v:GetWalkSpeed())
+        -- Clear out the resurrection checking data so roles don't get their old weapons back next round in specific circumstances
+        v.Resurrecting = false
+        v.DeathRoleWeapons = nil
     end
 
     -- Check playercount
