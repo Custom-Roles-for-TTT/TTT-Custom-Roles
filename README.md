@@ -50,6 +50,7 @@ If you would like to test the available configurations, we recommend using ULX/U
 - [TTT Damage Logs](https://github.com/Tommy228/tttdamagelogs) - Use [this version](https://steamcommunity.com/sharedfiles/filedetails/?id=2306802961) instead
 - [TTT DeadRinger](https://steamcommunity.com/sharedfiles/filedetails/?id=254779132) - Overrides several scripts that are core to TTT that this also overrides (notably, the scoreboard and client initialization). As a workaround, you can use [this version](https://steamcommunity.com/sharedfiles/filedetails/?id=810154456) instead.
 - [TTT: Advanced Body Search](https://steamcommunity.com/sharedfiles/filedetails/?id=367945571) - Overwrites the body search dialog in ways that don't keep compatibility with the changes we also make to the same dialog.
+- [TTT SimpleHUD](https://steamcommunity.com/sharedfiles/filedetails/?id=2209392671) - Overrides several scripts that are core to TTT that this also overrides (notably, the weapon switch HUD). Claims compatibility with Custom Roles, but only supports the outdated version.
 
 ## FAQs
 **Do I need the other versions of Custom Roles or Town of Terror as well?**\
