@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.5.10 (Beta)
-**Released:**
+**Released: April 9th, 2022**
 
 ### Additions
 * Added model for the detective binocular weapon
