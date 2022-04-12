@@ -3,6 +3,9 @@
 ## 1.5.11 (Beta)
 **Released:**
 
+### Fixes
+- Fixed bodysnatcher role popup and tutorial not showing the correct team when they are configured to be independent
+
 ### Developer
 - Added new `TTTRolePopupRoleStringOverride` hook to allow overriding the role string used when building the role start-of-round popup
 
