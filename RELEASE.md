@@ -3,6 +3,9 @@
 ## 1.5.11 (Beta)
 **Released:**
 
+### Additions
+- Added ability for beggar to be on the independent team (disabled by default)
+
 ### Fixes
 - Fixed bodysnatcher role popup and tutorial not showing the correct team when they are configured to be independent
 
