@@ -222,6 +222,16 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 *Return:*
 - *params* - Table of name-value parameters to be used in this player's role start-of-round popup message
 
+**TTTRolePopupRoleStringOverride(client, roleString)** - Called before a player's role start-of-round popup message is displayed, allowing the target translation string to be changed.\
+*Realm:* Client\
+*Added in:* 1.5.11\
+*Parameters:*
+- *client* - The local player
+- *roleString* - The string representing role of the local player. Is normally used to build the role info popup translation
+
+*Return:*
+- *roleString* - The new string to use when building the role info popup translation
+
 **TTTRolesLoaded()** - Called after all roles and role modifications have been loaded.\
 *Realm:* Client\
 *Added in:* 1.5.3
