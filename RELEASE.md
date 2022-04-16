@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.5.11 (Beta)
-**Released:**
+**Released: April 16th, 2022**
 
 ### Additions
 - Added ability for beggar to be on the independent team (disabled by default)
