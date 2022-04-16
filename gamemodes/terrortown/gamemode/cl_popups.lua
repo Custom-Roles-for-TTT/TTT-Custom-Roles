@@ -58,6 +58,9 @@ local function GetTextForLocalPlayer()
     if type(additionalParams) == "table" then params = table.Merge(params, additionalParams) end
 
     local roleString = client:GetRoleStringRaw()
+    local newRoleString = hook.Call("TTTRolePopupRoleStringOverride", nil, client, roleString)
+    if type(newRoleString) == "string" then roleString = newRoleString end
+
     if client:IsMonsterTeam() then
         local allies = {}
         for _, ply in ipairs(player.GetAll()) do

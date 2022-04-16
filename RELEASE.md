@@ -1,13 +1,25 @@
 # Release Notes
 
+## 1.5.11 (Beta)
+**Released: April 16th, 2022**
+
+### Additions
+- Added ability for beggar to be on the independent team (disabled by default)
+
+### Fixes
+- Fixed bodysnatcher role popup and tutorial not showing the correct team when they are configured to be independent
+
+### Developer
+- Added new `TTTRolePopupRoleStringOverride` hook to allow overriding the role string used when building the role start-of-round popup
+
 ## 1.5.10 (Beta)
 **Released: April 9th, 2022**
 
 ### Additions
-* Added model for the detective binocular weapon
+- Added model for the detective binocular weapon
 
 ### Fixes
-* Fixed rare case where a player could get the role weapons from their previous role in a new round
+- Fixed rare case where a player could get the role weapons from their previous role in a new round
 
 ## 1.5.9 (Beta)
 **Released: April 3rd, 2022**

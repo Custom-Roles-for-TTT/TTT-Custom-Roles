@@ -8,6 +8,13 @@ BEGGAR_REVEAL_ALL = 1
 BEGGAR_REVEAL_TRAITORS = 2
 BEGGAR_REVEAL_INNOCENTS = 3
 
+-- Update their team
+hook.Add("TTTUpdateRoleState", "Beggar_TTTUpdateRoleState", function()
+    local beggars_are_independent = GetGlobalBool("ttt_beggars_are_independent", false)
+    INDEPENDENT_ROLES[ROLE_BEGGAR] = beggars_are_independent
+    JESTER_ROLES[ROLE_BEGGAR] = not beggars_are_independent
+end)
+
 --------------------
 -- PLAYER METHODS --
 --------------------
@@ -50,6 +57,10 @@ table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
 })
 table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
     cvar = "ttt_beggar_notify_confetti",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
+    cvar = "ttt_beggars_are_independent",
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_BEGGAR], {

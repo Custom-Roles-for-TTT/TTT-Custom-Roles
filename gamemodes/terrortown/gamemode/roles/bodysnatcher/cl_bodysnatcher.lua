@@ -17,10 +17,19 @@ hook.Add("Initialize", "Bodysnatcher_Translations_Initialize", function()
     LANG.AddToLanguage("english", "bodysnatcher_hidden_all_hud", "You still appear as {bodysnatcher} to others")
     LANG.AddToLanguage("english", "bodysnatcher_hidden_team_hud", "Only your team knows you are no longer {bodysnatcher}")
 
-    -- Popup
-    LANG.AddToLanguage("english", "info_popup_bodysnatcher", [[You are {role}! {traitors} think you are {ajester} and you
+    -- Popups
+    LANG.AddToLanguage("english", "info_popup_bodysnatcher_jester", [[You are {role}! {traitors} think you are {ajester} and you
 deal no damage. Use your body snatching device on a corpse
 to take their role and join the fight!]])
+    LANG.AddToLanguage("english", "info_popup_bodysnatcher_indep", [[You are {role}! Use your body snatching device on a corpse
+to take their role and join the winning team!]])
+end)
+
+hook.Add("TTTRolePopupRoleStringOverride", "Bodysnatcher_TTTRolePopupRoleStringOverride", function(client, roleString)
+    if GetGlobalBool("ttt_bodysnatchers_are_independent", false) then
+        return roleString .. "_indep"
+    end
+    return roleString .. "_jester"
 end)
 
 -------------
@@ -136,8 +145,9 @@ end
 
 hook.Add("TTTTutorialRoleText", "Bodysnatcher_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_BODYSNATCHER then
-        local roleColor = GetRoleTeamColor(ROLE_TEAM_JESTER)
-        local html = "The " .. ROLE_STRINGS[ROLE_BODYSNATCHER] .. " is a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>jester</span> role whose goal is to steal the role of a dead player using their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>bodysnatching device</span>."
+        local roleTeam = player.GetRoleTeam(ROLE_BODYSNATCHER, true)
+        local roleTeamName, roleColor = GetRoleTeamInfo(roleTeam)
+        local html = "The " .. ROLE_STRINGS[ROLE_BODYSNATCHER] .. " is a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. roleTeamName .. "</span> role whose goal is to steal the role of a dead player using their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>bodysnatching device</span>."
 
         html = html .. "<span style='display: block; margin-top: 10px;'>After <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>stealing a corpse's role</span>, they take over the goal of their new role.</span>"
 
