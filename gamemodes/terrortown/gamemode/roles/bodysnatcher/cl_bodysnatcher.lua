@@ -26,6 +26,8 @@ to take their role and join the winning team!]])
 end)
 
 hook.Add("TTTRolePopupRoleStringOverride", "Bodysnatcher_TTTRolePopupRoleStringOverride", function(client, roleString)
+    if not IsPlayer(client) or not client:IsBodysnatcher() then return end
+
     if GetGlobalBool("ttt_bodysnatchers_are_independent", false) then
         return roleString .. "_indep"
     end
