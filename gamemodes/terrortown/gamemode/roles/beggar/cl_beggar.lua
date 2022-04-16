@@ -27,6 +27,8 @@ you a shop item you will join their team.]])
 end)
 
 hook.Add("TTTRolePopupRoleStringOverride", "Beggar_TTTRolePopupRoleStringOverride", function(client, roleString)
+    if not IsPlayer(client) or not client:IsBeggar() then return end
+
     if GetGlobalBool("ttt_beggars_are_independent", false) then
         return roleString .. "_indep"
     end
