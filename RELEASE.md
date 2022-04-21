@@ -5,6 +5,7 @@
 
 ### Fixes
 - Fixed zombie respawn notification getting trampled by the "medium can sense your spirit" notification
+- Fixed minor grammatical problem in the zombie tutorial when the role is renamed
 
 ### Developer
 - Added `plymeta:IsZombifying()` to check whether a player is respawning as a zombie

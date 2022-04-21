@@ -202,7 +202,7 @@ hook.Add("TTTTutorialRoleText", "Zombie_TTTTutorialRoleText", function(role, tit
         local html = "The " .. ROLE_STRINGS[ROLE_ZOMBIE] .. " is a member of the <span style='color: rgb(" .. roleTeamColor.r .. ", " .. roleTeamColor.g .. ", " .. roleTeamColor.b .. ")'>" .. string.lower(roleTeamString) .. " team</span> that uses their claws to attack their enemies."
 
         -- Convert
-        html = html .. "<span style='display: block; margin-top: 10px;'>Killing a player with their claws will <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>turn the target</span> into a " .. ROLE_STRINGS[ROLE_ZOMBIE] .. " thrall.</span>"
+        html = html .. "<span style='display: block; margin-top: 10px;'>Killing a player with their claws will <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>turn the target</span> into " .. ROLE_STRINGS_EXT[ROLE_ZOMBIE] .. " thrall.</span>"
 
         -- Leap
         if GetGlobalBool("ttt_zombie_leap_enable", true) then
