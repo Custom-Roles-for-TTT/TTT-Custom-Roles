@@ -2,8 +2,6 @@ AddCSLuaFile()
 
 local IsValid = IsValid
 local math = math
-local net = net
-local timer = timer
 local util = util
 
 if CLIENT then
@@ -16,8 +14,6 @@ if CLIENT then
     SWEP.Slot = 8 -- add 1 to get the slot number key
     SWEP.ViewModelFOV = 54
     SWEP.ViewModelFlip = false
-else
-    util.AddNetworkString("TTT_Zombified")
 end
 
 SWEP.InLoadoutFor = { ROLE_ZOMBIE }
@@ -69,8 +65,6 @@ if SERVER then
 
     CreateConVar("ttt_zombie_prime_convert_chance", "1", FCVAR_NONE, "The chance that a prime zombie (e.g. player who spawned as a zombie originally) will convert other players who are killed by their claws to be zombies as well. Set to 0 to disable", 0, 1)
     CreateConVar("ttt_zombie_thrall_convert_chance", "1", FCVAR_NONE, "The chance that a zombie thrall (e.g. non-prime zombie) will convert other players who are killed by their claws to be zombies as well. Set to 0 to disable", 0, 1)
-
-    CreateConVar("ttt_zombie_respawn_health", "100", FCVAR_NONE, "The amount of health a player should respawn with when they are converted to a zombie thrall", 1, 200)
 
     CreateConVar("ttt_zombie_prime_attack_damage", "65", FCVAR_NONE, "The amount of a damage a prime zombie (e.g. player who spawned as a zombie originally) does with their claws. Server or round must be restarted for changes to take effect", 1, 100)
     CreateConVar("ttt_zombie_thrall_attack_damage", "45", FCVAR_NONE, "The amount of a damage a zombie thrall (e.g. non-prime zombie) does with their claws. Server or round must be restarted for changes to take effect", 1, 100)
@@ -166,36 +160,7 @@ function SWEP:PrimaryAttack()
             if hitEnt:Health() <= self.Primary.Damage and self:ShouldConvert() then
                 owner:AddCredits(1)
                 LANG.Msg(owner, "credit_all", { role = ROLE_STRINGS[ROLE_ZOMBIE], num = 1 })
-                hitEnt:PrintMessage(HUD_PRINTCENTER, "You will respawn as a zombie in 3 seconds.")
-                hitEnt:SetNWBool("IsZombifying", true)
-
-                net.Start("TTT_Zombified")
-                net.WriteString(hitEnt:Nick())
-                net.Broadcast()
-
-                timer.Simple(3, function()
-                    -- Don't respawn the player if they were already zombified by something else
-                    if hitEnt:GetRole() ~= ROLE_ZOMBIE then
-                        local body = hitEnt.server_ragdoll or hitEnt:GetRagdollEntity()
-                        hitEnt:SetRole(ROLE_ZOMBIE)
-                        hitEnt:SetZombiePrime(false)
-                        hitEnt:SpawnForRound(true)
-
-                        local health = GetConVar("ttt_zombie_respawn_health"):GetInt()
-                        hitEnt:SetMaxHealth(health)
-                        hitEnt:SetHealth(health)
-
-                        hitEnt:StripAll()
-                        hitEnt:Give("weapon_zom_claws")
-                        if IsValid(body) then
-                            hitEnt:SetPos(FindRespawnLocation(body:GetPos()) or body:GetPos())
-                            hitEnt:SetEyeAngles(Angle(0, body:GetAngles().y, 0))
-                            body:Remove()
-                        end
-                    end
-                    hitEnt:SetNWBool("IsZombifying", false)
-                    SendFullStateUpdate()
-                end)
+                hitEnt:RespawnAsZombie()
             end
 
             local dmg = DamageInfo()

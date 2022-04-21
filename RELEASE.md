@@ -1,5 +1,15 @@
 # Release Notes
 
+## 1.5.12 (Beta)
+**Released:**
+
+### Fixes
+- Fixed zombie respawn notification getting trampled by the "medium can sense your spirit" notification
+
+### Developer
+- Added `plymeta:IsZombifying()` to check whether a player is respawning as a zombie
+- Added `plymeta:RespawnAsZombie()` to allow respawning a player as a zombie
+
 ## 1.5.11 (Beta)
 **Released: April 16th, 2022**
 

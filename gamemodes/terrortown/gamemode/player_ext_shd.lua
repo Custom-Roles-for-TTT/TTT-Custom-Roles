@@ -596,7 +596,7 @@ function player.TeamLivingCount(ignorePassiveWinners)
                 end
             end
         -- Handle zombification differently because the player's original role should have no impact on this
-        elseif v:GetNWBool("IsZombifying", false) then
+        elseif v:IsZombifying() then
             if TRAITOR_ROLES[ROLE_ZOMBIE] then
                 traitor_alive = traitor_alive + 1
             elseif INDEPENDENT_ROLES[ROLE_ZOMBIE] then
@@ -638,7 +638,7 @@ function player.LivingCount(ignorePassiveWinners)
         -- If the player is alive and we're either not ignoring passive winners or this isn't a passive winning role
         if (v:Alive() and v:IsTerror() and (not ignorePassiveWinners or not ROLE_HAS_PASSIVE_WIN[v:GetRole()])) or
             -- Handle zombification differently because the player's original role should have no impact on this
-            v:GetNWBool("IsZombifying", false) then
+            v:IsZombifying() then
             players_alive = players_alive + 1
         end
     end

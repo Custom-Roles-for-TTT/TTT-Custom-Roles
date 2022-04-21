@@ -204,7 +204,7 @@ end
 
 hook.Add("PlayerDeath", "Parasite_PlayerDeath", function(victim, infl, attacker)
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
-    if valid_kill and victim:IsParasite() and not victim:GetNWBool("IsZombifying", false) then
+    if valid_kill and victim:IsParasite() and not victim:IsZombifying() then
         HandleParasiteInfection(attacker, victim)
 
         -- Delay this message so the player can see the target update message

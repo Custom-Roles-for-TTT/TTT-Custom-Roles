@@ -28,6 +28,12 @@ Methods available when called from a Player object (within the defined realm)
 *Parameters:*
 - *activeOnly* - Whether the player must also be active (Defaults to `false`)
 
+**plymeta:DrunkRememberRole(role)** - Sets the drunk's role and runs required checks for that role.\
+*Realm:* Server\
+*Added in:* 1.1.9\
+*Parameters:*
+- *role* - Which role to set the drunk to (see ROLE_* global enumeration)
+
 **plymeta:GetDisplayedRole()** - Gets the role that should be displayed for the player.\
 *Realm:* Client and Server\
 *Added in:* 1.5.3
@@ -156,12 +162,24 @@ Methods available when called from a Player object (within the defined realm)
 *Realm:* Client and Server\
 *Added in:* 1.0.0
 
+**plymeta:IsZombifying()** - Whether the player is in the process of respawning as a zombie.\
+*Realm:* Client and Server\
+*Added in:* 1.5.12
+
 **plymeta:MoveRoleState(target, keepOnSource)** - Moves role state data (such as promotion and monster prime status) to the target.\
 *Realm:* Client and Server\
 *Added in:* 1.0.5\
 *Parameters:*
 - *target* - The player to move the role state data to
-- *keepOnSource* - Wheter the source player should also keep the role state data (Defaults to `false`)
+- *keepOnSource* - Whether the source player should also keep the role state data (Defaults to `false`)
+
+**plymeta:ResetPlayerScale()** - Reset's the players size to default by adjusting models, step sizes, hulls and view offsets.\
+*Realm:* Server\
+*Added in:* 1.3.1
+
+**plymeta:RespawnAsZombie()** - Respawns the player as a zombie after a 3 second delay.\
+*Realm:* Server\
+*Added in:* 1.5.12
 
 **plymeta:SetRoleAndBroadcast(role)** - Sets the player's role to the given one and (if called on the server) broadcasts the change to all clients for scoreboard tracking.\
 *Realm:* Client and Server\
@@ -229,12 +247,6 @@ Methods available when called from a Player object (within the defined realm)
 *Parameters:*
 - *team* - Which team to choose a role from (see ROLE_TEAM_* global enumeration)
 
-**plymeta:DrunkRememberRole(role)** - Sets the drunk's role and runs required checks for that role.\
-*Realm:* Server\
-*Added in:* 1.1.9\
-*Parameters:*
-- *role* - Which role to set the drunk to (see ROLE_* global enumeration)
-
 **plymeta:StripRoleWeapons()** - Strips all weapons from the player whose `Category` property matches the global `WEAPON_CATEGORY_ROLE` value.\
 *Realm:* Client and Server\
 *Added in:* 1.0.5
@@ -244,7 +256,3 @@ Methods available when called from a Player object (within the defined realm)
 *Added in:* 1.3.1\
 *Parameters:*
 - *scale* - The value with which to scale the players size, relative to their current size.
-
-**plymeta:ResetPlayerScale()** - Reset's the players size to default by adjusting models, step sizes, hulls and view offsets.\
-*Realm:* Server\
-*Added in:* 1.3.1

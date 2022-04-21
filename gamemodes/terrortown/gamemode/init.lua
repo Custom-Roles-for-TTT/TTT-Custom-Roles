@@ -1215,7 +1215,7 @@ function GM:TTTCheckForWin()
                 innocent_alive = true
             end
         -- Handle zombification differently because the player's original role should have no impact on this
-        elseif v:GetNWBool("IsZombifying", false) then
+        elseif v:IsZombifying() then
             if TRAITOR_ROLES[ROLE_ZOMBIE] then
                 traitor_alive = true
             elseif MONSTER_ROLES[ROLE_ZOMBIE] then
