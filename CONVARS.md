@@ -507,6 +507,7 @@ ttt_zombie_thrall_convert_chance            1.0     // The chance that a zombie 
 
 // Mad Scientist
 ttt_madscientist_device_time                4       // The amount of time (in seconds) the mad scientist's device takes to use
+ttt_madscientist_respawn_enable             0       // Whether the mad scientist should respawn as a zombie when they are killed
 
 // ----------------------------------------
 

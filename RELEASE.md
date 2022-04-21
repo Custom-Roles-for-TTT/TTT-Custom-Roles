@@ -3,6 +3,9 @@
 ## 1.5.12 (Beta)
 **Released:**
 
+### Additions
+- Added ability for mad scientist to respawn as a zombie when they die (disabled by default)
+
 ### Fixes
 - Fixed zombie respawn notification getting trampled by the "medium can sense your spirit" notification
 - Fixed minor grammatical problem in the zombie tutorial when the role is renamed
