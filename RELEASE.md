@@ -1,5 +1,19 @@
 # Release Notes
 
+## 1.5.12 (Beta)
+**Released: April 23rd, 2022**
+
+### Additions
+- Added ability for mad scientist to respawn as a zombie when they die (disabled by default)
+
+### Fixes
+- Fixed zombie respawn notification getting trampled by the "medium can sense your spirit" notification
+- Fixed minor grammatical problem in the zombie tutorial when the role is renamed
+
+### Developer
+- Added `plymeta:IsZombifying()` to check whether a player is respawning as a zombie
+- Added `plymeta:RespawnAsZombie()` to allow respawning a player as a zombie
+
 ## 1.5.11 (Beta)
 **Released: April 16th, 2022**
 

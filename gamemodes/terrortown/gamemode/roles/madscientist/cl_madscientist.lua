@@ -23,6 +23,13 @@ hook.Add("TTTTutorialRoleText", "MadScientist_TTTTutorialRoleText", function(rol
     if role == ROLE_MADSCIENTIST then
         local roleColor = GetRoleTeamColor(ROLE_TEAM_INDEPENDENT)
         local traitorColor = ROLE_COLORS[ROLE_TRAITOR]
-        return "The " .. ROLE_STRINGS[ROLE_MADSCIENTIST] .. " is an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>independent</span> role whose goal is to resurrect dead bodies as their <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>" .. ROLE_STRINGS[ROLE_ZOMBIE] .. " minions</span>."
+        local html = "The " .. ROLE_STRINGS[ROLE_MADSCIENTIST] .. " is an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>independent</span> role whose goal is to resurrect dead bodies as their <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>" .. ROLE_STRINGS[ROLE_ZOMBIE] .. " minions</span>."
+
+        -- Respawn
+        if GetGlobalBool("ttt_madscientist_respawn_enable", false) then
+            html = html .. "<span style='display: block; margin-top: 10px;'>If the " .. ROLE_STRINGS[ROLE_MADSCIENTIST] .. " is killed they will <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>respawn as " .. ROLE_STRINGS_EXT[ROLE_ZOMBIE] .. " thrall</spawn>.</span>"
+        end
+
+        return html
     end
 end)

@@ -96,7 +96,7 @@ end)
 
 hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
-    if valid_kill and victim:IsPhantom() and not victim:GetNWBool("IsZombifying", false) then
+    if valid_kill and victim:IsPhantom() and not victim:IsZombifying() then
         attacker:SetNWBool("Haunted", true)
 
         if phantom_killer_haunt:GetBool() then
