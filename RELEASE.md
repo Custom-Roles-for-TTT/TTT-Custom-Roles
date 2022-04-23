@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.5.12 (Beta)
-**Released:**
+**Released: April 23rd, 2022**
 
 ### Additions
 - Added ability for mad scientist to respawn as a zombie when they die (disabled by default)
