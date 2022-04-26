@@ -295,7 +295,7 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *roleColor* - The new roleColor value to use or the original passed into the hook
 - *newName* - The new nameLabel value to use for the original passed into the hook *(Added in 1.2.3)*
 
-**TTTScoringWinTitle(wintype, wintitles, title)** - Called before each round summary screen is shown with the winning team. Return the win title object to use on the summary screen.\
+**TTTScoringWinTitle(wintype, wintitles, title)** - Called multiple times before the round end screen is shown with the winning team. For each tab of the round end screen that shows the winning team, this hook is first called with `WIN_INNOCENT` to get the default value and then called with the actual winning team. Return a new win title object to override what would normally be shown on the round end screen.\
 *Realm:* Client\
 *Added in:* 1.0.14\
 *Parameters:*
