@@ -31,7 +31,7 @@ If you would like to test the available configurations, we recommend using ULX/U
 - [Beta](https://steamcommunity.com/sharedfiles/filedetails/?id=2414297330)
 - [Development](https://github.com/NoxxFlame/TTT-Custom-Roles-ULX)
 
-**NOTE**: Changing settings via the ULX module will *NOT* save them when the map changes or server restarts. You can use the ULX module to test settings changes and identify which ones to put in the appropriate configuration file for your server (see above).
+**NOTE**: Changing settings via the ULX module will *NOT* save them when the map changes or server restarts. You can use the ULX module to test settings changes and identify which ones to put in the appropriate configuration file (server.cfg for dedicated servers or listenserver.cfg for peer-to-peer, listen, and local servers)
 
 ## Special Thanks:
 - [Jenssons](https://steamcommunity.com/profiles/76561198044525091) for the ['Town of Terror'](https://steamcommunity.com/sharedfiles/filedetails/?id=1092556189) mod which was the foundation of this mod.
@@ -52,6 +52,18 @@ If you would like to test the available configurations, we recommend using ULX/U
 - [TTT: Advanced Body Search](https://steamcommunity.com/sharedfiles/filedetails/?id=367945571) - Overwrites the body search dialog in ways that don't keep compatibility with the changes we also make to the same dialog.
 
 ## FAQs
+**How do I use Custom Roles for TTT?**\
+To use CR for TTT, subscribe to the addon in the Steam workshop and refer to the [Configuration](#Configuration) section above for how to change settings (including enabling the new roles).
+
+**How do I get this on my server?**\
+The easiest way to get CR for TTT onto a dedicated server is to create use an addon collection. See [this guide](https://wiki.facepunch.com/gmod/Workshop_for_Dedicated_Servers) on how to create and use a collection for your dedicated server.
+
+If you're using a peer-to-peer, listen, or local server then we still recommend using an addon collection, but any addon you subscribe to and have enabled will automatically be loaded when you start the server. Having an addon collection makes it easier for your players to get the same addons without having to download them from you each time they want to play.
+
+**How do I get the changed convars to save? The settings I change reset when I restart the server -- how do I save them?**\
+The convars added in Custom Roles for TTT follow the precedent of many of the convars from the base TTT: They do not archive (save) automatically.
+To save the convar changes, add the changed values to your server.cfg (for dedicated servers) or listenserver.cfg (for peer-to-peer, listen, and local servers).
+
 **Do I need the other versions of Custom Roles or Town of Terror as well?**\
 No, you should only use one addon that adds roles. That means only this version of Custom Roles, no Town of Terror, no TTT2, etc.
 
@@ -60,8 +72,8 @@ Everyone needs to subscribe to this workshop item, not just the host. We're not 
 \
 We would suggest making a workshop collection of the addons you have and then having your friends subscribe to them all.
 
-**How do I change X, Y, or Z?**\
-Check out the [Configuration](#Configuration) section above and add the setting value you want in your server.cfg (for dedicated servers) or listenserver.cfg (For peer-to-peer, listen, and local servers). If you don't see a setting for what you want to change, leave a comment on the workshop or join the Discord server (see below) and we'll either help you find it or try to add one.
+**How do I enable the new roles? How do I change X, Y, or Z?**\
+Check out the [Configuration](#Configuration) section above and add the setting value you want in your server.cfg (for dedicated servers) or listenserver.cfg (for peer-to-peer, listen, and local servers). If you don't see a setting for what you want to change, leave a comment on the workshop or join the Discord server (see below) and we'll either help you find it or try to add one.
 
 **How do I make a Detective spawn every round?**\
 Set the following settings:\
