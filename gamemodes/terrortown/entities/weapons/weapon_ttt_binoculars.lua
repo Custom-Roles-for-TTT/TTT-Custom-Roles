@@ -109,7 +109,8 @@ function SWEP:SetZoom(level)
         -- Only show the view model when we're not zoomed in
         if level <= 1 then
             timer.Simple(0.25, function()
-                if IsValid(owner) then
+                -- Don't use the cached owner because we need to make sure the binocs weren't dropped
+                if IsValid(self:GetOwner()) then
                     owner:DrawViewModel(true)
                 end
             end)
@@ -257,31 +258,31 @@ if CLIENT then
     end
 
     function SWEP:DrawWorldModel()
-        if not self.WorldModelEnt then
-            self.WorldModelEnt = ClientsideModel(self.WorldModel)
-            self.WorldModelEnt:SetNoDraw(true)
-        end
+       if not self.WorldModelEnt then
+           self.WorldModelEnt = ClientsideModel(self.WorldModel)
+           self.WorldModelEnt:SetNoDraw(true)
+       end
 
-        local owner = self:GetOwner()
-        if IsValid(owner) then
-            local boneid = owner:LookupBone(self.WorldModelAttachment)
-            if not boneid or boneid <= 0 then return end
+       local owner = self:GetOwner()
+       if IsValid(owner) then
+           local boneid = owner:LookupBone(self.WorldModelAttachment)
+           if not boneid or boneid <= 0 then return end
 
-            local matrix = owner:GetBoneMatrix(boneid)
-            if not matrix then return end
+           local matrix = owner:GetBoneMatrix(boneid)
+           if not matrix then return end
 
-            local newPos, newAng = LocalToWorld(self.WorldModelVector, self.WorldModelAngle, matrix:GetTranslation(), matrix:GetAngles())
+           local newPos, newAng = LocalToWorld(self.WorldModelVector, self.WorldModelAngle, matrix:GetTranslation(), matrix:GetAngles())
 
-            self.WorldModelEnt:SetPos(newPos)
-            self.WorldModelEnt:SetAngles(newAng)
+           self.WorldModelEnt:SetPos(newPos)
+           self.WorldModelEnt:SetAngles(newAng)
 
-            self.WorldModelEnt:SetupBones()
-        else
-            self.WorldModelEnt:SetPos(self:GetPos())
-            self.WorldModelEnt:SetAngles(self:GetAngles())
-        end
+           self.WorldModelEnt:SetupBones()
+       else
+           self.WorldModelEnt:SetPos(self:GetPos())
+           self.WorldModelEnt:SetAngles(self:GetAngles())
+       end
 
-        self.WorldModelEnt:DrawModel()
+       self.WorldModelEnt:DrawModel()
     end
 
     function SWEP:AdjustMouseSensitivity()
