@@ -6,6 +6,9 @@
 ### Fixes
 - Fixed binoculars showing while a player is dead if they died while their binoculars are out
 
+### Changes
+- Increased head icon offset when a player's head is scaled up so the icon is visible on models with larger heads
+
 ## 1.5.12 (Beta)
 **Released: April 23rd, 2022**
 

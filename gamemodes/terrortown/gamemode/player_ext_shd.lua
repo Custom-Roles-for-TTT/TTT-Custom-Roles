@@ -365,7 +365,7 @@ if CLIENT then
         if headId then
             local headScale = self:GetManipulateBoneScale(headId)
             if headScale.z > 1 then
-                max_bone_z = max_bone_z + ((headScale.z - 1) * 10)
+                max_bone_z = max_bone_z + ((headScale.z - 1) * 25)
             end
         end
 
