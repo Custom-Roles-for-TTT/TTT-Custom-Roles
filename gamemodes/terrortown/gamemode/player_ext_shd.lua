@@ -107,13 +107,7 @@ function plymeta:IsShopRole()
     return hasShop
 end
 function plymeta:CanUseShop()
-    local isShopRole = self:IsShopRole()
-    -- Don't perform the additional checks if "shop for all" is enabled
-    if GetGlobalBool("ttt_shop_for_all", false) then
-        return isShopRole and WEPS.DoesRoleHaveWeapon(self:GetRole(), self:IsDetectiveLike())
-    end
-
-    return isShopRole
+    return self:IsShopRole() and WEPS.DoesRoleHaveWeapon(self:GetRole(), self:IsDetectiveLike())
 end
 function plymeta:ShouldDelayShopPurchase()
     local role = self:GetRole()
@@ -365,7 +359,7 @@ if CLIENT then
         if headId then
             local headScale = self:GetManipulateBoneScale(headId)
             if headScale.z > 1 then
-                max_bone_z = max_bone_z + ((headScale.z - 1) * 10)
+                max_bone_z = max_bone_z + ((headScale.z - 1) * 25)
             end
         end
 

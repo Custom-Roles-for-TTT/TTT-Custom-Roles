@@ -1,5 +1,15 @@
 # Release Notes
 
+## 1.5.13 (Beta)
+**Released:**
+
+### Fixes
+- Fixed binoculars showing while a player is dead if they died while their binoculars are out
+
+### Changes
+- Increased head icon offset when a player's head is scaled up so the icon is visible on models with larger heads
+- Changed the shop to only be openable if the player has buyable items (previously this behavior only happened when shop-for-all was enabled)
+
 ## 1.5.12 (Beta)
 **Released: April 23rd, 2022**
 
