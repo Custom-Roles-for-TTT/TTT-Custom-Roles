@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.5.13 (Beta)
-**Released:**
+**Released: May 6th, 2022**
 
 ### Fixes
 - Fixed binoculars showing while a player is dead if they died while their binoculars are out
