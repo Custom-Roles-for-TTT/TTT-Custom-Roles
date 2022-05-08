@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.5.14 (Beta)
+**Released:**
+
+### Additions
+- Added convar to control whether killer notification messages are enabled (enabled by default)
+
 ## 1.5.13 (Beta)
 **Released: May 6th, 2022**
 

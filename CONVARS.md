@@ -693,6 +693,9 @@ ttt_scoreboard_score                        0       // Whether to show the score
 
 // Round Summary
 ttt_round_summary_tabs                      summary,hilite,events,scores // The tabs to show in the round summary screen. Changing the order of the values will change the order of the tabs. Excluding a value from the comma-delimited list will prevent that tab from showing. Invalid values will be ignored. Round must be restarted for changes to take effect
+
+// Misc.
+ttt_death_notifier_enable                   1       // Whether the name and role of a player's killer should be shown to the victim
 ```
 
 Thanks to [KarlOfDuty](https://github.com/KarlOfDuty) for his original version of this document, [here](https://github.com/KarlOfDuty/TTT-Custom-Roles/blob/patch-1/README.md).
