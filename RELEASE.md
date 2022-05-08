@@ -6,6 +6,9 @@
 ### Additions
 - Added convar to control whether killer notification messages are enabled (enabled by default)
 
+### Developer
+- Added `TTTDeathNotifyOverride` hook to allow developers to change what name and role shows in the death notification message
+
 ## 1.5.13 (Beta)
 **Released: May 6th, 2022**
 
