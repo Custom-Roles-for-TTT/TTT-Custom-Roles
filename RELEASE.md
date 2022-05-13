@@ -4,6 +4,7 @@
 **Released:**
 
 ### Additions
+- Added new role: the turncoat
 - Added convar to control whether killer notification messages are enabled (enabled by default)
 
 ### Developer
