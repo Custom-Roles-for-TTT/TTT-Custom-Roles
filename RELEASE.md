@@ -9,6 +9,8 @@
 
 ### Developer
 - Added `TTTDeathNotifyOverride` hook to allow developers to change what name and role shows in the death notification message
+- Added `plymeta:CanSeeC4` to determine whether the player can see the C4 radar icon like traitors
+- Added ability for external roles to define whether they should see the C4 radar icon like traitors
 
 ## 1.5.13 (Beta)
 **Released: May 6th, 2022**
