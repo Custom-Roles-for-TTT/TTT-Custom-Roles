@@ -160,7 +160,7 @@ end
 function plymeta:ShouldDelayAnnouncements() return ROLE_SHOULD_DELAY_ANNOUNCEMENTS[self:GetRole()] or false end
 function plymeta:ShouldNotDrown() return ROLE_SHOULD_NOT_DROWN[self:GetRole()] or false end
 function plymeta:CanSeeC4()
-    if plymeta:IsActiveTraitorTeam() then
+    if self:IsActiveTraitorTeam() then
         return true
     end
     return ROLE_CAN_SEE_C4[self:GetRole()] or false

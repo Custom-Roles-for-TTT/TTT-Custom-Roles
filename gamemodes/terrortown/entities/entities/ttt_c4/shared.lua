@@ -387,7 +387,7 @@ if SERVER then
             net.WriteVector(self:GetPos())
             net.WriteFloat(self:GetExplodeTime())
         end
-        net.Send(GetTraitorTeamFilter(true))
+        net.Send(GetPlayerFilter(function(p) return p:CanSeeC4() and p:IsTerror() end))
     end
 
     function ENT:OnRemove()
