@@ -15,6 +15,17 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 
 *Return:* Whether or not the given player's footstep sounds should be stopped (Defaults to `false`).
 
+***TTTC4Disarm(bomb, result, ply)** - Modified to allow changing the defusal result via the new return value.\
+*Realm:* Server\
+*Added in:* 1.5.14\
+*Parameters:*
+- *bomb* - The bomb entity being defused
+- *result* - Whether the defusal was successful
+- *ply* - The player defusing the bomb
+
+*Return:*
+- *result* - The new result value to use or the original passed into the hook
+
 **TTTCanIdentifyCorpse(ply, rag, wasTraitor)** - Changed `was_traitor` parameter to be `true` for any member of the traitor team, rather than just the traitor role.\
 *Realm:* Server\
 *Added in:* 1.0.5\
