@@ -339,9 +339,9 @@ ttt_medium_credits_starting                 1       // The number of credits a m
 // Sapper
 ttt_sapper_aura_radius                      5       // The radius of the sapper's aura in meters
 ttt_sapper_protect_self                     1       // Whether the sapper's protection aura will protect themselves or not
-ttt_sapper_fire_immune                      1       // Whether sapper's protection aura also grands fire immunity
-ttt_sapper_can_see_c4                       1       // Whether the sapper can see C4 pings on their radar like traitors
-ttt_sapper_c4_guaranteed_defuse             1       // Whether the sapper is guaranteed to always successfully defuse C4
+ttt_sapper_fire_immune                      0       // Whether sapper's protection aura also grands fire immunity
+ttt_sapper_can_see_c4                       0       // Whether the sapper can see C4 pings on their radar like traitors
+ttt_sapper_c4_guaranteed_defuse             0       // Whether the sapper is guaranteed to always successfully defuse C4
 
 // ----------------------------------------
 
