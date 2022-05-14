@@ -1,0 +1,7 @@
+"UnlitGeneric"
+{
+	"$basetexture" "particle/sap_barrel"
+	"$translucent" 1
+	"$vertexcolor" 1
+	"$vertexalpha" 1
+}

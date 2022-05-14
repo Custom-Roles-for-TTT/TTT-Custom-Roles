@@ -1,4 +1,5 @@
 local hook = hook
+local math = math
 
 local MathCos = math.cos
 local MathSin = math.sin
@@ -48,6 +49,8 @@ hook.Add("TTTPlayerAliveClientThink", "Paladin_RoleFeatures_TTTPlayerAliveClient
     elseif ply.AuraEmitter then
         ply.AuraEmitter:Finish()
         ply.AuraEmitter = nil
+        ply.AuraDir = nil
+        ply.AuraNextPart = nil
     end
 end)
 

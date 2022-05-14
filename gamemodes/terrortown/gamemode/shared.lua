@@ -17,7 +17,7 @@ local StringSplit = string.Split
 local StringSub = string.sub
 
 -- Version string for display and function for version checks
-CR_VERSION = "1.5.13"
+CR_VERSION = "1.5.14"
 CR_BETA = true
 
 function CRVersion(version)
@@ -97,8 +97,10 @@ ROLE_PALADIN = 28
 ROLE_TRACKER = 29
 ROLE_MEDIUM = 30
 ROLE_LOOTGOBLIN = 31
+ROLE_TURNCOAT = 32
+ROLE_SAPPER = 33
 
-ROLE_MAX = 31
+ROLE_MAX = 33
 ROLE_EXTERNAL_START = ROLE_MAX + 1
 
 local function AddRoleAssociations(list, roles)
@@ -129,7 +131,7 @@ TRAITOR_ROLES = {}
 AddRoleAssociations(TRAITOR_ROLES, {ROLE_TRAITOR, ROLE_HYPNOTIST, ROLE_IMPERSONATOR, ROLE_ASSASSIN, ROLE_VAMPIRE, ROLE_QUACK, ROLE_PARASITE})
 
 INNOCENT_ROLES = {}
-AddRoleAssociations(INNOCENT_ROLES, {ROLE_INNOCENT, ROLE_DETECTIVE, ROLE_GLITCH, ROLE_PHANTOM, ROLE_REVENGER, ROLE_DEPUTY, ROLE_MERCENARY, ROLE_VETERAN, ROLE_DOCTOR, ROLE_TRICKSTER, ROLE_PARAMEDIC, ROLE_PALADIN, ROLE_TRACKER, ROLE_MEDIUM})
+AddRoleAssociations(INNOCENT_ROLES, {ROLE_INNOCENT, ROLE_DETECTIVE, ROLE_GLITCH, ROLE_PHANTOM, ROLE_REVENGER, ROLE_DEPUTY, ROLE_MERCENARY, ROLE_VETERAN, ROLE_DOCTOR, ROLE_TRICKSTER, ROLE_PARAMEDIC, ROLE_PALADIN, ROLE_TRACKER, ROLE_MEDIUM, ROLE_TURNCOAT, ROLE_SAPPER})
 
 JESTER_ROLES = {}
 AddRoleAssociations(JESTER_ROLES, {ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_BEGGAR, ROLE_BODYSNATCHER, ROLE_LOOTGOBLIN})
@@ -141,7 +143,7 @@ MONSTER_ROLES = {}
 AddRoleAssociations(MONSTER_ROLES, {})
 
 DETECTIVE_ROLES = {}
-AddRoleAssociations(DETECTIVE_ROLES, {ROLE_DETECTIVE, ROLE_PALADIN, ROLE_TRACKER, ROLE_MEDIUM})
+AddRoleAssociations(DETECTIVE_ROLES, {ROLE_DETECTIVE, ROLE_PALADIN, ROLE_TRACKER, ROLE_MEDIUM, ROLE_SAPPER})
 
 DEFAULT_ROLES = {}
 AddRoleAssociations(DEFAULT_ROLES, {ROLE_INNOCENT, ROLE_TRAITOR, ROLE_DETECTIVE})
@@ -470,7 +472,9 @@ ROLE_STRINGS_RAW = {
     [ROLE_PALADIN] = "paladin",
     [ROLE_TRACKER] = "tracker",
     [ROLE_MEDIUM] = "medium",
-    [ROLE_LOOTGOBLIN] = "lootgoblin"
+    [ROLE_LOOTGOBLIN] = "lootgoblin",
+    [ROLE_TURNCOAT] = "turncoat",
+    [ROLE_SAPPER] = "sapper"
 }
 
 ROLE_STRINGS = {
@@ -505,7 +509,9 @@ ROLE_STRINGS = {
     [ROLE_PALADIN] = "Paladin",
     [ROLE_TRACKER] = "Tracker",
     [ROLE_MEDIUM] = "Medium",
-    [ROLE_LOOTGOBLIN] = "Loot Goblin"
+    [ROLE_LOOTGOBLIN] = "Loot Goblin",
+    [ROLE_TURNCOAT] = "Turncoat",
+    [ROLE_SAPPER] = "Sapper"
 }
 
 ROLE_STRINGS_PLURAL = {
@@ -540,7 +546,9 @@ ROLE_STRINGS_PLURAL = {
     [ROLE_PALADIN] = "Paladins",
     [ROLE_TRACKER] = "Trackers",
     [ROLE_MEDIUM] = "Mediums",
-    [ROLE_LOOTGOBLIN] = "Loot Goblins"
+    [ROLE_LOOTGOBLIN] = "Loot Goblins",
+    [ROLE_TURNCOAT] = "Turncoats",
+    [ROLE_SAPPER] = "Sappers"
 }
 
 ROLE_STRINGS_EXT = {
@@ -576,7 +584,9 @@ ROLE_STRINGS_EXT = {
     [ROLE_PALADIN] = "a Paladin",
     [ROLE_TRACKER] = "a Tracker",
     [ROLE_MEDIUM] = "a Medium",
-    [ROLE_LOOTGOBLIN] = "a Loot Goblin"
+    [ROLE_LOOTGOBLIN] = "a Loot Goblin",
+    [ROLE_TURNCOAT] = "a Turncoat",
+    [ROLE_SAPPER] = "a Sapper"
 }
 
 ROLE_STRINGS_SHORT = {
@@ -611,7 +621,9 @@ ROLE_STRINGS_SHORT = {
     [ROLE_PALADIN] = "pal",
     [ROLE_TRACKER] = "trk",
     [ROLE_MEDIUM] = "mdm",
-    [ROLE_LOOTGOBLIN] = "gob"
+    [ROLE_LOOTGOBLIN] = "gob",
+    [ROLE_TURNCOAT] = "tur",
+    [ROLE_SAPPER] = "sap"
 }
 
 function StartsWithVowel(word)
@@ -686,6 +698,7 @@ ROLE_ON_ROLE_ASSIGNED = {}
 ROLE_HAS_PASSIVE_WIN = {}
 ROLE_SHOULD_SHOW_SPECTATOR_HUD = {}
 ROLE_SHOULD_NOT_DROWN = {}
+ROLE_CAN_SEE_C4 = {}
 
 ROLE_CONVAR_TYPE_NUM = 0
 ROLE_CONVAR_TYPE_BOOL = 1
@@ -791,6 +804,10 @@ function RegisterRole(tbl)
 
     if type(tbl.shouldnotdrown) == "boolean" then
         ROLE_SHOULD_NOT_DROWN[roleID] = tbl.shouldnotdrown
+    end
+
+    if type(tbl.canseec4) == "boolean" then
+        ROLE_CAN_SEE_C4[roleID] = tbl.canseec4
     end
 
     -- Equipment
@@ -939,8 +956,9 @@ EVENT_BEGGARCONVERTED = 25
 EVENT_BEGGARKILLED = 26
 EVENT_INFECT = 27
 EVENT_BODYSNATCHERKILLED = 28
+EVENT_TURNCOATCHANGED = 29
 
-EVENT_MAX = EVENT_MAX or 28
+EVENT_MAX = EVENT_MAX or 29
 EVENTS_BY_ROLE = EVENTS_BY_ROLE or {}
 
 if SERVER then
