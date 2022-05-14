@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.5.14 (Beta)
-**Released:**
+**Released: May 15th, 2022**
 
 ### Additions
 - Added new special innocent role: the turncoat
