@@ -10,7 +10,7 @@ local StringUpper = string.upper
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Glitch_Translations_Initialize", function()
+hook.Add("Initialize", "Informant_Translations_Initialize", function()
     -- Popup
     LANG.AddToLanguage("english", "info_popup_informant", [[You are {role}! {comrades}
 
