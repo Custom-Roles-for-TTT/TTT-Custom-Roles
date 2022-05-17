@@ -615,8 +615,8 @@ L.target_unid = "Unidentified body"
 
 L.target_credits = "Search to receive unspent credits"
 
-L.target_unknown_team = "UNKNOWN {target_type}"
-L.target_unconfirmed_role = "UNCONFIRMED {target_type}"
+L.target_unknown_team = "UNKNOWN {targettype}"
+L.target_unconfirmed_role = "UNCONFIRMED {targettype}"
 
 -- Traitor buttons (HUD buttons with hand icons that only traitors can see)
 L.tbut_single = "Single use"
