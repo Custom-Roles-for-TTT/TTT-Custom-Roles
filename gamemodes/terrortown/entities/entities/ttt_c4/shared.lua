@@ -387,7 +387,7 @@ if SERVER then
             net.WriteVector(self:GetPos())
             net.WriteFloat(self:GetExplodeTime())
         end
-        net.Send(GetTraitorTeamFilter(true))
+        net.Send(GetPlayerFilter(function(p) return p:CanSeeC4() and p:IsTerror() end))
     end
 
     function ENT:OnRemove()
@@ -506,12 +506,15 @@ if SERVER then
     concommand.Add("ttt_c4_config", ReceiveC4Config)
 
     local function SendDisarmResult(ply, bomb, result)
-        hook.Call("TTTC4Disarm", nil, bomb, result, ply)
+        local new_result = hook.Call("TTTC4Disarm", nil, bomb, result, ply)
+        if type(new_result) == "boolean" then result = new_result end
 
         net.Start("TTT_C4DisarmResult")
         net.WriteEntity(bomb)
         net.WriteBit(result) -- this way we can squeeze this bit into 16
         net.Send(ply)
+
+        return result
     end
 
     local function ReceiveC4Disarm(ply, cmd, args)
@@ -523,18 +526,15 @@ if SERVER then
 
         local bomb = ents.GetByIndex(idx)
         if IsValid(bomb) and bomb:GetClass() == "ttt_c4" and not bomb.DisarmCausedExplosion and bomb:GetArmed() then
-            if bomb:GetPos():Distance(ply:GetPos()) > 256 then
-                return
-            elseif bomb.SafeWires[wire] or ply:IsTraitorTeam() or ply == bomb:GetOwner() then
+            if bomb:GetPos():Distance(ply:GetPos()) > 256 then return end
+
+            local result = bomb.SafeWires[wire] or ply:IsTraitorTeam() or ply == bomb:GetOwner()
+            result = SendDisarmResult(ply, bomb, result)
+            if result then
                 LANG.Msg(ply, "c4_disarmed")
 
                 bomb:Disarm(ply)
-
-                -- only case with success net message
-                SendDisarmResult(ply, bomb, true)
             else
-                SendDisarmResult(ply, bomb, false)
-
                 -- wrong wire = bomb goes boom
                 bomb:FailedDisarm(ply)
             end

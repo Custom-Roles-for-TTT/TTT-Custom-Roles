@@ -1,5 +1,19 @@
 # Release Notes
 
+## 1.5.14 (Beta)
+**Released: May 15th, 2022**
+
+### Additions
+- Added new special innocent role: the turncoat
+- Added new special detective role: the sapper
+- Added convar to control whether killer notification messages are enabled (enabled by default)
+
+### Developer
+- Added `TTTDeathNotifyOverride` hook to allow developers to change what name and role shows in the death notification message
+- Added `plymeta:CanSeeC4` to determine whether the player can see the C4 radar icon like traitors
+- Added ability for external roles to define whether they should see the C4 radar icon like traitors
+- Changed the `TTTC4Disarm` hook to allow changing the defusal result via the new return value
+
 ## 1.5.13 (Beta)
 **Released: May 6th, 2022**
 

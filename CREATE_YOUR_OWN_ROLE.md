@@ -456,6 +456,7 @@ There are a few options for roles that aren't covered in the template because th
 | `ROLE.shoulddelayannouncements` | Whether this role should delay announcements when they kill a player that shows a message (like phantom and parasite). Used for things like preventing the assassin's target update message from getting overlapped. | 1.2.7 |
 | `ROLE.haspassivewin` | Whether this role should not block another role from winning (like the old man). | 1.3.1 |
 | `ROLE.shouldnotdrown` | Whether the player should not show the drown effect or take drowning damage. | 1.5.7 |
+| `ROLE.canseec4` | Whether the player should be able to see the C4 icons like traitors can. | 1.5.14 |
 
 The Summoner doesn't need these options to be set because it is `ROLE_TEAM_TRAITOR` and has a shop, but just for an example, here's what it would look like if we wanted to remove their credit looting and traitor trap abilities and delay their shop item delivery:
 

@@ -18,6 +18,10 @@ Methods available when called from a Player object (within the defined realm)
 *Parameters:*
 - *activeOnly* - Whether the player must also be active (Defaults to `false`)
 
+**plymeta:CanSeeC4()** - Whether the player can see the C4 icons like traitors can.\
+*Realm:* Client and Server\
+*Added in:* 1.5.14
+
 **plymeta:CanUseShop()** - Whether the player can currently open the shop menu.\
 *Realm:* Client and Server\
 *Added in:* 1.0.2

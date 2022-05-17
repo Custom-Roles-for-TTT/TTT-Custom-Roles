@@ -94,6 +94,18 @@ hook.Add("TTTPlayerDefibRoleChange", "Phantom_TTTPlayerDefibRoleChange", functio
     end
 end)
 
+-- Hide the role of the player that killed the phantom if haunting is enabled
+hook.Add("TTTDeathNotifyOverride", "Phantom_TTTDeathNotifyOverride", function(victim, inflictor, attacker, reason, killerName, role)
+    if GetRoundState() ~= ROUND_ACTIVE then return end
+    if not IsValid(inflictor) or not IsValid(attacker) then return end
+    if not attacker:IsPlayer() then return end
+    if victim == attacker then return end
+    if not victim:IsPhantom() then return end
+    if not phantom_killer_haunt:GetBool() then return end
+
+    return reason, killerName, ROLE_NONE
+end)
+
 hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     if valid_kill and victim:IsPhantom() and not victim:IsZombifying() then

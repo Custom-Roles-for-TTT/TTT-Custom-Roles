@@ -19,6 +19,7 @@ hook.Add("TTTPrepareRound", "Paladin_Shared_TTTPrepareRound", function()
     InitializeEquipment()
 end)
 
+------------------
 -- ROLE CONVARS --
 ------------------
 

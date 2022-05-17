@@ -61,6 +61,7 @@ ttt_veteran_enabled                         0       // Whether or not the vetera
 ttt_doctor_enabled                          0       // Whether or not the doctor should spawn
 ttt_trickster_enabled                       0       // Whether or not the trickster should spawn
 ttt_paramedic_enabled                       0       // Whether or not the paramedic should spawn
+ttt_turncoat_enabled                        0       // Whether or not the turncoat should spawn
 ttt_paladin_enabled                         0       // Whether or not the paladin should spawn
 ttt_tracker_enabled                         0       // Whether or not the tracker should spawn
 ttt_medium_enabled                          0       // Whether or not the medium should spawn
@@ -92,6 +93,7 @@ ttt_veteran_spawn_weight                    1       // The weight assigned to sp
 ttt_doctor_spawn_weight                     1       // The weight assigned to spawning the doctor
 ttt_trickster_spawn_weight                  1       // The weight assigned to spawning the trickster
 ttt_paramedic_spawn_weight                  1       // The weight assigned to spawning the paramedic
+ttt_turncoat_spawn_weight                   1       // The weight assigned to spawning the turncoat
 ttt_paladin_spawn_weight                    1       // The weight assigned to spawning the paladin
 ttt_tracker_spawn_weight                    1       // The weight assigned to spawning the tracker
 ttt_medium_spawn_weight                     1       // The weight assigned to spawning the medium
@@ -124,6 +126,7 @@ ttt_veteran_min_players                     0       // The minimum number of pla
 ttt_doctor_min_players                      0       // The minimum number of players required to spawn the doctor
 ttt_trickster_min_players                   0       // The minimum number of players required to spawn the trickster
 ttt_paramedic_min_players                   0       // The minimum number of players required to spawn the paramedic
+ttt_turncoat_min_players                    0       // The minimum number of players required to spawn the turncoat
 ttt_paladin_min_players                     0       // The minimum number of players required to spawn the paladin
 ttt_tracker_min_players                     0       // The minimum number of players required to spawn the tracker
 ttt_medium_min_players                      0       // The minimum number of players required to spawn the medium
@@ -287,6 +290,10 @@ ttt_paramedic_defib_time                    8       // The amount of time (in se
 // Trickster
 ttt_trickster_credits_starting              0       // The number of credits a trickster should start with
 
+// Turncoat
+ttt_turncoat_change_health                  10      // The amount of health to set the turncoat to when they change teams
+ttt_turncoat_change_max_health              1       // Whether to change the turncoat's max health when they change teams
+
 // ----------------------------------------
 
 // DETECTIVE TEAM SETTINGS
@@ -328,6 +335,13 @@ ttt_medium_spirit_color                     1       // Whether players' spirits 
 ttt_medium_spirit_vision                    1       // Whether players' spirits should be able to see each other
 ttt_medium_dead_notify                      1       // Whether player should be notified that there is a medium when they die
 ttt_medium_credits_starting                 1       // The number of credits a medium should start with
+
+// Sapper
+ttt_sapper_aura_radius                      5       // The radius of the sapper's aura in meters
+ttt_sapper_protect_self                     1       // Whether the sapper's protection aura will protect themselves or not
+ttt_sapper_fire_immune                      0       // Whether sapper's protection aura also grands fire immunity
+ttt_sapper_can_see_c4                       0       // Whether the sapper can see C4 pings on their radar like traitors
+ttt_sapper_c4_guaranteed_defuse             0       // Whether the sapper is guaranteed to always successfully defuse C4
 
 // ----------------------------------------
 
@@ -617,6 +631,7 @@ ttt_veteran_starting_health                 100     // The amount of health the 
 ttt_doctor_starting_health                  100     // The amount of health the doctor starts with
 ttt_trickster_starting_health               100     // The amount of health the trickster starts with
 ttt_paramedic_starting_health               100     // The amount of health the paramedic starts with
+ttt_turncoat_starting_health                100     // The amount of health the turncoat starts with
 ttt_detective_starting_health               100     // The amount of health the detective starts with
 ttt_paladin_starting_health                 100     // The amount of health the paladin starts with
 ttt_tracker_starting_health                 100     // The amount of health the tracker starts with
@@ -651,6 +666,7 @@ ttt_veteran_max_health                      100     // The maximum amount of hea
 ttt_doctor_max_health                       100     // The maximum amount of health the doctor can have
 ttt_trickster_max_health                    100     // The maximum amount of health the trickster can have
 ttt_paramedic_max_health                    100     // The maximum amount of health the paramedic can have
+ttt_turncoat_max_health                     100     // The maximum amount of health the turncoat can have
 ttt_detective_max_health                    100     // The maximum amount of health the detective can have
 ttt_paladin_max_health                      100     // The maximum amount of health the paladin can have
 ttt_tracker_max_health                      100     // The maximum amount of health the tracker can have
@@ -693,6 +709,9 @@ ttt_scoreboard_score                        0       // Whether to show the score
 
 // Round Summary
 ttt_round_summary_tabs                      summary,hilite,events,scores // The tabs to show in the round summary screen. Changing the order of the values will change the order of the tabs. Excluding a value from the comma-delimited list will prevent that tab from showing. Invalid values will be ignored. Round must be restarted for changes to take effect
+
+// Misc.
+ttt_death_notifier_enable                   1       // Whether the name and role of a player's killer should be shown to the victim
 ```
 
 Thanks to [KarlOfDuty](https://github.com/KarlOfDuty) for his original version of this document, [here](https://github.com/KarlOfDuty/TTT-Custom-Roles/blob/patch-1/README.md).
