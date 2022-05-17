@@ -40,7 +40,7 @@ local function GetTeamRole(ply)
 end
 
 hook.Add("TTTTargetIDPlayerRoleIcon", "Informant_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
-    if cli:IsInformant() or (cli:IsTraitorTeam() and SetGlobalBool("ttt_informant_share_scans", true)) then
+    if cli:IsInformant() or (cli:IsTraitorTeam() and GetGlobalBool("ttt_informant_share_scans", true)) then
         local state = ply:GetNWInt("TTTInformantScanStage", 0)
 
         local newRole = role
@@ -67,7 +67,7 @@ end)
 hook.Add("TTTTargetIDPlayerRing", "Informant_TTTTargetIDPlayerRing", function(ent, cli, ringVisible)
     if GetRoundState() < ROUND_ACTIVE then return end
 
-    if IsPlayer(ent) and cli:IsInformant() or (cli:IsTraitorTeam() and SetGlobalBool("ttt_informant_share_scans", true)) then
+    if IsPlayer(ent) and cli:IsInformant() or (cli:IsTraitorTeam() and GetGlobalBool("ttt_informant_share_scans", true)) then
         local state = ent:GetNWInt("TTTInformantScanStage", 0)
 
         local newRingVisible = ringVisible
@@ -89,7 +89,7 @@ end)
 hook.Add("TTTTargetIDPlayerText", "Informant_TTTTargetIDPlayerText", function(ent, cli, text, col, secondaryText)
     if GetRoundState() < ROUND_ACTIVE then return end
 
-    if IsPlayer(ent) and cli:IsInformant() or (cli:IsTraitorTeam() and SetGlobalBool("ttt_informant_share_scans", true)) then
+    if IsPlayer(ent) and cli:IsInformant() or (cli:IsTraitorTeam() and GetGlobalBool("ttt_informant_share_scans", true)) then
         local state = ent:GetNWInt("TTTInformantScanStage", 0)
 
         local newText = text
@@ -103,7 +103,7 @@ hook.Add("TTTTargetIDPlayerText", "Informant_TTTTargetIDPlayerText", function(en
                 if glitchMode == GLITCH_SHOW_AS_TRAITOR or glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES then
                     newText = "UNKNOWN TRAITOR"
                 elseif glitchMode == GLITCH_SHOW_AS_SPECIAL_TRAITOR then
-                    newText = "UNCONFIRMED " StringUpper(ROLE_STRINGS[role])
+                    newText = "UNCONFIRMED " .. StringUpper(ROLE_STRINGS[role])
                 end
             elseif DETECTIVE_ROLES[role] then newText = "UNKNOWN DETECTIVE"
             elseif INNOCENT_ROLES[role] then newText = "UNKNOWN INNOCENT"
