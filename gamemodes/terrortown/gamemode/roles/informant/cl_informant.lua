@@ -1,4 +1,10 @@
 local hook = hook
+local string = string
+
+local T = LANG.GetTranslation
+local PT = LANG.GetParamTranslation
+
+local StringUpper = string.upper
 
 ------------------
 -- TRANSLATIONS --
@@ -83,7 +89,6 @@ hook.Add("TTTTargetIDPlayerRing", "Informant_TTTTargetIDPlayerRing", function(en
 
         return newRingVisible, newColor
     end
-
 end)
 
 hook.Add("TTTTargetIDPlayerText", "Informant_TTTTargetIDPlayerText", function(ent, cli, text, col, secondaryText)
@@ -99,17 +104,22 @@ hook.Add("TTTTargetIDPlayerText", "Informant_TTTTargetIDPlayerText", function(en
             local role = GetTeamRole(ply)
             newColor = ROLE_COLORS_RADAR[role]
 
+            local label_name = "target_unknown_team"
+            local label_param
             if TRAITOR_ROLES[role] then
                 if glitchMode == GLITCH_SHOW_AS_TRAITOR or glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES then
-                    newText = "UNKNOWN TRAITOR"
+                    label_param = T("Traitor")
                 elseif glitchMode == GLITCH_SHOW_AS_SPECIAL_TRAITOR then
-                    newText = "UNCONFIRMED " .. StringUpper(ROLE_STRINGS[role])
+                    label_name = "label_unconfirmed_role"
+                    label_param = ROLE_STRINGS[role]
                 end
-            elseif DETECTIVE_ROLES[role] then newText = "UNKNOWN DETECTIVE"
-            elseif INNOCENT_ROLES[role] then newText = "UNKNOWN INNOCENT"
-            elseif INDEPENDENT_ROLES[role] then newText = "UNKNOWN INDEPENDENT"
-            elseif JESTER_ROLES[role] then newText = "UNKNOWN JESTER"
-            elseif MONSTER_ROLES[role] then newText = "UNKNOWN MONSTER" end
+            elseif DETECTIVE_ROLES[role] then label_param = ROLE_STRINGS[ROLE_DETECTIVE]
+            elseif INNOCENT_ROLES[role] then label_param = T("Innocent")
+            elseif INDEPENDENT_ROLES[role] then label_param = T("Independent")
+            elseif JESTER_ROLES[role] then label_param = T("Jester")
+            elseif MONSTER_ROLES[role] then label_param = T("Monster") end
+
+            newText = PT(label_name, { target_type = StringUpper(label_param) })
         elseif state >= INFORMANT_SCANNED_ROLE then
             newColor = ROLE_COLORS_RADAR[ent:GetRole()]
             newText = StringUpper(ROLE_STRINGS[ply:GetRole()])
