@@ -1,5 +1,14 @@
 # Release Notes
 
+## 1.5.15 (Beta)
+**Released: **
+
+### Additions
+- Added new special traitor role: the informant
+
+### Changes
+- Changed jester team to show question mark icons over their head instead of the jester icon
+
 ## 1.5.14 (Beta)
 **Released: May 15th, 2022**
 

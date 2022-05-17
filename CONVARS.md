@@ -52,6 +52,7 @@ ttt_assassin_enabled                        0       // Whether or not the assass
 ttt_vampire_enabled                         0       // Whether or not the vampire should spawn
 ttt_quack_enabled                           0       // Whether or not the quack should spawn
 ttt_parasite_enabled                        0       // Whether or not the parasite should spawn
+ttt_informant_enabled                       0       // Whether or not the informant should spawn
 ttt_glitch_enabled                          0       // Whether or not the glitch should spawn
 ttt_phantom_enabled                         0       // Whether or not the phantom should spawn
 ttt_revenger_enabled                        0       // Whether or not the revenger should spawn
@@ -84,6 +85,7 @@ ttt_assassin_spawn_weight                   1       // The weight assigned to sp
 ttt_vampire_spawn_weight                    1       // The weight assigned to spawning the vampire
 ttt_quack_spawn_weight                      1       // The weight assigned to spawning the quack
 ttt_parasite_spawn_weight                   1       // The weight assigned to spawning the parasite
+ttt_informant_spawn_weight                  1       // The weight assigned to spawning the informant
 ttt_glitch_spawn_weight                     1       // The weight assigned to spawning the glitch
 ttt_phantom_spawn_weight                    1       // The weight assigned to spawning the phantom
 ttt_revenger_spawn_weight                   1       // The weight assigned to spawning the revenger
@@ -117,6 +119,7 @@ ttt_assassin_min_players                    0       // The minimum number of pla
 ttt_vampire_min_players                     0       // The minimum number of players required to spawn the vampire
 ttt_quack_min_players                       0       // The minimum number of players required to spawn the quack
 ttt_parasite_min_players                    0       // The minimum number of players required to spawn the parasite
+ttt_informant_min_players                   0       // The minimum number of players required to spawn the informant
 ttt_glitch_min_players                      0       // The minimum number of players required to spawn the glitch
 ttt_phantom_min_players                     0       // The minimum number of players required to spawn the phantom
 ttt_revenger_min_players                    0       // The minimum number of players required to spawn the revenger
@@ -226,6 +229,14 @@ ttt_parasite_cure_mode                      2       // How to handle using a par
 ttt_parasite_cure_time                      3       // The amount of time (in seconds) the parasite cure takes to use
 ttt_parasite_credits_starting               1       // The number of credits a parasite should start with
 ttt_single_phantom_parasite                 0       // Whether only a single phantom or parasite should spawn in a round
+
+// Informant
+ttt_informant_share_scans                   1       // Whether the informant should automatically share their information with fellow traitors or not
+ttt_informant_can_scan_jesters              0       // Whether the informant should be able to scan jesters
+ttt_informant_can_scan_glitches             0       // Whether the informant should be able to scan glitches
+ttt_informant_scanner_time                  5       // The amount of time (in seconds) the informant's scanner takes to use
+ttt_informant_scanner_float_time            1       // The amount of time (in seconds) it takes for the informant's scanner to lose it's target without line of sight
+ttt_informant_scanner_cooldown              3       // The amount of time (in seconds) the informant's tracker goes on cooldown for after losing it's target
 
 // ----------------------------------------
 

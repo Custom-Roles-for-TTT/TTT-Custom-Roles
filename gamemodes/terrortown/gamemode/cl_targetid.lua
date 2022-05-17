@@ -136,7 +136,8 @@ function GM:PostDrawTranslucentRenderables()
                     if client:IsTraitorTeam() then
                         noz = true
                         if showJester then
-                            role = ROLE_JESTER
+                            role = ROLE_NONE
+                            color_role = ROLE_JESTER
                             noz = false
                         elseif v:IsTraitor() then
                             role = ROLE_TRAITOR
@@ -165,14 +166,16 @@ function GM:PostDrawTranslucentRenderables()
                         end
                     elseif client:IsMonsterTeam() then
                         if showJester then
-                            role = ROLE_JESTER
+                            role = ROLE_NONE
+                            color_role = ROLE_JESTER
                         elseif v:IsMonsterTeam() then
                             role = v:GetRole()
                             noz = true
                         end
                     elseif client:IsIndependentTeam() then
                         if showJester then
-                            role = ROLE_JESTER
+                            role = ROLE_NONE
+                            color_role = ROLE_JESTER
                         elseif v:IsIndependentTeam() then
                             role = v:GetRole()
                             noz = true
@@ -620,7 +623,7 @@ function GM:HUDDrawTargetID()
         text = StringUpper(ROLE_STRINGS[role])
         col = ROLE_COLORS_RADAR[role]
     elseif target_jester then
-        text = StringUpper(ROLE_STRINGS[ROLE_JESTER])
+        text = StringUpper("UNKNOWN JESTER")
         col = ROLE_COLORS_RADAR[ROLE_JESTER]
     elseif target_monster then
         text = StringUpper(ROLE_STRINGS[target_monster])

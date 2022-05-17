@@ -17,7 +17,7 @@ local StringSplit = string.Split
 local StringSub = string.sub
 
 -- Version string for display and function for version checks
-CR_VERSION = "1.5.14"
+CR_VERSION = "1.5.15"
 CR_BETA = true
 
 function CRVersion(version)
@@ -99,8 +99,9 @@ ROLE_MEDIUM = 30
 ROLE_LOOTGOBLIN = 31
 ROLE_TURNCOAT = 32
 ROLE_SAPPER = 33
+ROLE_INFORMANT = 34
 
-ROLE_MAX = 33
+ROLE_MAX = 34
 ROLE_EXTERNAL_START = ROLE_MAX + 1
 
 local function AddRoleAssociations(list, roles)
@@ -128,7 +129,7 @@ DELAYED_SHOP_ROLES = {}
 AddRoleAssociations(DELAYED_SHOP_ROLES, {ROLE_CLOWN, ROLE_VETERAN, ROLE_DEPUTY})
 
 TRAITOR_ROLES = {}
-AddRoleAssociations(TRAITOR_ROLES, {ROLE_TRAITOR, ROLE_HYPNOTIST, ROLE_IMPERSONATOR, ROLE_ASSASSIN, ROLE_VAMPIRE, ROLE_QUACK, ROLE_PARASITE})
+AddRoleAssociations(TRAITOR_ROLES, {ROLE_TRAITOR, ROLE_HYPNOTIST, ROLE_IMPERSONATOR, ROLE_ASSASSIN, ROLE_VAMPIRE, ROLE_QUACK, ROLE_PARASITE, ROLE_INFORMANT})
 
 INNOCENT_ROLES = {}
 AddRoleAssociations(INNOCENT_ROLES, {ROLE_INNOCENT, ROLE_DETECTIVE, ROLE_GLITCH, ROLE_PHANTOM, ROLE_REVENGER, ROLE_DEPUTY, ROLE_MERCENARY, ROLE_VETERAN, ROLE_DOCTOR, ROLE_TRICKSTER, ROLE_PARAMEDIC, ROLE_PALADIN, ROLE_TRACKER, ROLE_MEDIUM, ROLE_TURNCOAT, ROLE_SAPPER})
@@ -474,7 +475,8 @@ ROLE_STRINGS_RAW = {
     [ROLE_MEDIUM] = "medium",
     [ROLE_LOOTGOBLIN] = "lootgoblin",
     [ROLE_TURNCOAT] = "turncoat",
-    [ROLE_SAPPER] = "sapper"
+    [ROLE_SAPPER] = "sapper",
+    [ROLE_INFORMANT] = "informant"
 }
 
 ROLE_STRINGS = {
@@ -511,7 +513,8 @@ ROLE_STRINGS = {
     [ROLE_MEDIUM] = "Medium",
     [ROLE_LOOTGOBLIN] = "Loot Goblin",
     [ROLE_TURNCOAT] = "Turncoat",
-    [ROLE_SAPPER] = "Sapper"
+    [ROLE_SAPPER] = "Sapper",
+    [ROLE_INFORMANT] = "Informant"
 }
 
 ROLE_STRINGS_PLURAL = {
@@ -548,7 +551,8 @@ ROLE_STRINGS_PLURAL = {
     [ROLE_MEDIUM] = "Mediums",
     [ROLE_LOOTGOBLIN] = "Loot Goblins",
     [ROLE_TURNCOAT] = "Turncoats",
-    [ROLE_SAPPER] = "Sappers"
+    [ROLE_SAPPER] = "Sappers",
+    [ROLE_INFORMANT] = "Informants"
 }
 
 ROLE_STRINGS_EXT = {
@@ -586,10 +590,12 @@ ROLE_STRINGS_EXT = {
     [ROLE_MEDIUM] = "a Medium",
     [ROLE_LOOTGOBLIN] = "a Loot Goblin",
     [ROLE_TURNCOAT] = "a Turncoat",
-    [ROLE_SAPPER] = "a Sapper"
+    [ROLE_SAPPER] = "a Sapper",
+    [ROLE_INFORMANT] = "an Informant"
 }
 
 ROLE_STRINGS_SHORT = {
+    [ROLE_NONE] = "nil",
     [ROLE_INNOCENT] = "inn",
     [ROLE_TRAITOR] = "tra",
     [ROLE_DETECTIVE] = "det",
@@ -623,7 +629,8 @@ ROLE_STRINGS_SHORT = {
     [ROLE_MEDIUM] = "mdm",
     [ROLE_LOOTGOBLIN] = "gob",
     [ROLE_TURNCOAT] = "tur",
-    [ROLE_SAPPER] = "sap"
+    [ROLE_SAPPER] = "sap",
+    [ROLE_INFORMANT] = "inf"
 }
 
 function StartsWithVowel(word)
