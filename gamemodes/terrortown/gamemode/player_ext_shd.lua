@@ -395,8 +395,8 @@ if CLIENT then
         local role = self:GetRole()
         if ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[role] then return ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[role](self, target) end
 
-        ------ name,  color, icon
-        return false, false, false
+        ------ name,  role
+        return false, false
     end
 
     function plymeta:AnimApplyGesture(act, weight)

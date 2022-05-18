@@ -150,8 +150,7 @@ Methods available when called from a Player object (within the defined realm)
 
 *Returns:*
 - *isNameOverridden* - Whether the player name is currently overridden
-- *isColorOverridden* - Whether the row color is currently overridden
-- *isIconOverridden* - Whether the role icon is currently overridden
+- *isRoleOverridden* - Whether the role color or icon is currently overridden
 
 **plymeta:IsShopRole()** - Whether the player has a shop (see `plymeta:CanUseShop` for determining if it is openable).\
 *Realm:* Client and Server\
