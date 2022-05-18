@@ -706,6 +706,7 @@ ROLE_CONVARS = {}
 ROLE_SHOULD_DELAY_ANNOUNCEMENTS = {}
 ROLE_HAS_PASSIVE_WIN = {}
 ROLE_SHOULD_NOT_DROWN = {}
+ROLE_CAN_SEE_C4 = {}
 
 -- Player functions
 ROLE_IS_ACTIVE = {}
@@ -713,7 +714,6 @@ ROLE_SHOULD_ACT_LIKE_JESTER = {}
 ROLE_MOVE_ROLE_STATE = {}
 ROLE_ON_ROLE_ASSIGNED = {}
 ROLE_SHOULD_SHOW_SPECTATOR_HUD = {}
-ROLE_CAN_SEE_C4 = {}
 ROLE_IS_TARGETID_OVERRIDDEN = {}
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN = {}
 
@@ -823,6 +823,10 @@ function RegisterRole(tbl)
         ROLE_SHOULD_NOT_DROWN[roleID] = tbl.shouldnotdrown
     end
 
+    if type(tbl.canseec4) == "boolean" then
+        ROLE_CAN_SEE_C4[roleID] = tbl.canseec4
+    end
+
     -- Equipment
     -- Make sure teams that normally have shops are added to the shop list, even if they don't have things in their shop by default
     -- This allows the "sync" and "mode" convars to be created
@@ -854,10 +858,6 @@ function RegisterRole(tbl)
 
     if type(tbl.shouldshowspectatorhud) == "function" then
         ROLE_SHOULD_SHOW_SPECTATOR_HUD[roleID] = tbl.shouldshowspectatorhud
-    end
-
-    if type(tbl.canseec4) == "boolean" then
-        ROLE_CAN_SEE_C4[roleID] = tbl.canseec4
     end
 
     if type(tbl.istargetidoverridden) == "function" then
