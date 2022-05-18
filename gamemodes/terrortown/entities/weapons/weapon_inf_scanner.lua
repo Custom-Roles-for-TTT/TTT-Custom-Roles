@@ -113,13 +113,6 @@ if SERVER then
         return (IsPlayer(ent) and ent:IsActive()) and ent or false
     end
 
-    function SWEP:Reset()
-        self:SetState(SCANNER_IDLE)
-        self:SetTarget("")
-        self:SetScanStart(-1)
-        self:SetMessage("")
-    end
-
     function SWEP:TargetLost()
         self:SetState(SCANNER_LOST)
         self:SetTarget("")
@@ -132,7 +125,7 @@ if SERVER then
         local owner = self:GetOwner()
         if not IsValid(owner) then return end
 
-        owner:PrintMessage(HUD_PRINTTALK, message)
+        owner:PrintMessage(HUD_PRINTTALK, "You have " .. message)
         if not GetGlobalBool("ttt_informant_share_scans", true) then return end
 
         for _, p in pairs(GetAllPlayers()) do
@@ -142,52 +135,40 @@ if SERVER then
         end
     end
 
+    function SWEP:ScanAllowed(target)
+        if not IsPlayer(target) then return false end
+        if not target:IsActive() then return false end
+        if target:IsJesterTeam() and not GetConVar("ttt_informant_can_scan_jesters"):GetBool() then return false end
+        if (target:IsGlitch() or target:IsTraitorTeam()) then
+            if not GetConVar("ttt_informant_can_scan_glitches"):GetBool() return false end
+            if target:IsGlitch() then return true end
+            local glitchMode = GetConVar("ttt_glitch_mode"):GetInt()
+            if GetGlobalBool("ttt_glitch_round", false) and ((glitchMode == GLITCH_SHOW_AS_TRAITOR and target:IsTraitor()) or glitchMode >= GLITCH_SHOW_AS_SPECIAL_TRAITOR) then
+                return true
+            else
+                return false
+            end
+        end
+        return true
+    end
+
     function SWEP:Scan(target)
         if target:IsActive() then
             local stage = target:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
-            if target:IsDetectiveTeam() and stage == INFORMANT_UNSCANNED then
-                if GetConVar("ttt_detective_hide_special_mode"):GetInt() >= SPECIAL_DETECTIVE_HIDE_FOR_ALL then
-                    stage = INFORMANT_SCANNED_TEAM
-                else
-                    stage = INFORMANT_SCANNED_ROLE
-                end
-                target:SetNWInt("TTTInformantScanStage", stage)
-            elseif target:IsJesterTeam() then
-                if GetConVar("ttt_informant_can_scan_jesters"):GetBool() then
-                    if stage == INFORMANT_UNSCANNED then
-                        target:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_TEAM)
-                    end
-                else
-                    self:Reset()
-                    return false
-                end
-            elseif target:IsTraitorTeam() then
-                if GetConVar("ttt_informant_can_scan_glitches"):GetBool() then
-                    local glitchMode = GetConVar("ttt_glitch_mode"):GetInt()
-                    -- TODO: Check there is a glitch? GetGlobalBool("ttt_glitch_round", false)
-                    if ((glitchMode == GLITCH_SHOW_AS_TRAITOR and target:IsTraitor()) or glitchMode >= GLITCH_SHOW_AS_SPECIAL_TRAITOR) and stage == INFORMANT_UNSCANNED then
+            if stage == INFORMANT_UNSCANNED then
+                if target:IsDetectiveTeam() then
+                    if GetConVar("ttt_detective_hide_special_mode"):GetInt() >= SPECIAL_DETECTIVE_HIDE_FOR_ALL then
                         target:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_TEAM)
                     else
-                        self:Reset()
-                        return false
+                        target:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_ROLE)
                     end
-                else
-                    self:Reset()
-                    return false
-                end
-            elseif target:IsGlitch() then
-                if GetConVar("ttt_informant_can_scan_glitches"):GetBool() and stage == INFORMANT_UNSCANNED then
+                elseif target:IsJesterTeam() or target:IsTraitorTeam() or target:IsGlitch() then
                     target:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_TEAM)
-                else
-                    self:Reset()
-                    return false
                 end
-            end
-
-            if CurTime() - self:GetScanStart() >= GetConVar("ttt_informant_scanner_time"):GetInt() then
+            elseif CurTime() - self:GetScanStart() >= GetConVar("ttt_informant_scanner_time"):GetInt() then
                 stage = stage + 1
                 if stage == INFORMANT_SCANNED_TEAM then
-                    local message = "You have discovered that " .. target:Nick() .. " is "
+                    local message = "discovered that " .. target:Nick() .. " is "
                     if target:IsInnocentTeam() then
                         message = message .. "an innocent role."
                     elseif target:IsIndependentTeam() then
@@ -198,11 +179,14 @@ if SERVER then
 
                     self:Announce(message)
                 elseif stage == INFORMANT_SCANNED_ROLE then
-                    self:Announce("You have discovered that " .. target:Nick() .. " is " .. ROLE_STRINGS_EXT[target:GetRole()] .. ".")
+                    self:Announce("discovered that " .. target:Nick() .. " is " .. ROLE_STRINGS_EXT[target:GetRole()] .. ".")
                 elseif stage == INFORMANT_SCANNED_TRACKED then
-                    self:Announce("You have tracked the movements of " .. target:Nick() .. " (" .. ROLE_STRINGS[target:GetRole()] .. ").")
+                    self:Announce("tracked the movements of " .. target:Nick() .. " (" .. ROLE_STRINGS[target:GetRole()] .. ").")
                 end
-                self:Reset()
+                self:SetState(SCANNER_IDLE)
+                self:SetTarget("")
+                self:SetScanStart(-1)
+                self:SetMessage("")
                 target:SetNWInt("TTTInformantScanStage", stage)
             end
         else
@@ -215,7 +199,7 @@ if SERVER then
         if state == SCANNER_IDLE then
             local target = self:IsTargetingPlayer()
             if target then
-                if target:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED) < INFORMANT_SCANNED_TRACKED then
+                if target:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED) < INFORMANT_SCANNED_TRACKED and self:ScanAllowed(target) then
                     self:SetState(SCANNER_LOCKED)
                     self:SetTarget(target:SteamID64())
                     self:SetScanStart(CurTime())
