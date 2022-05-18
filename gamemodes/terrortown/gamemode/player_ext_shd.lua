@@ -386,6 +386,7 @@ if CLIENT then
         local role = self:GetRole()
         if ROLE_IS_TARGETID_OVERRIDDEN[role] then return ROLE_IS_TARGETID_OVERRIDDEN[role](self, target, showJester) end
 
+        ------ icon,  ring,  text
         return false, false, false
     end
 
@@ -394,6 +395,7 @@ if CLIENT then
         local role = self:GetRole()
         if ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[role] then return ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[role](self, target) end
 
+        ------ name,  color, icon
         return false, false, false
     end
 
