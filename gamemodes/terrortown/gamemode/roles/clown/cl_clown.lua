@@ -112,6 +112,16 @@ net.Receive("TTT_ClownActivate", function()
     })
 end)
 
+----------------
+-- SCOREBOARD --
+----------------
+
+hook.Add("TTTScoreboardPlayerRole", "Clown_TTTScoreboardPlayerRole", function(ply, client, color, roleFileName)
+    if ply:IsActiveClown() and ply:IsRoleActive() then
+        return ROLE_COLORS_SCOREBOARD[ROLE_CLOWN], ROLE_STRINGS_SHORT[ROLE_CLOWN]
+    end
+end)
+
 -------------------
 -- ROLE FEATURES --
 -------------------

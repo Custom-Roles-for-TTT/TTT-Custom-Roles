@@ -98,6 +98,16 @@ hook.Add("TTTTargetIDPlayerText", "OldMan_TTTTargetIDPlayerText", function(ent, 
     end
 end)
 
+----------------
+-- SCOREBOARD --
+----------------
+
+hook.Add("TTTScoreboardPlayerRole", "OldMan_TTTScoreboardPlayerRole", function(ply, client, color, roleFileName)
+    if ply:IsActiveOldMan() and ply:IsRoleActive() then
+        return ROLE_COLORS_SCOREBOARD[ROLE_OLDMAN], ROLE_STRINGS_SHORT[ROLE_OLDMAN]
+    end
+end)
+
 --------------
 -- TUTORIAL --
 --------------

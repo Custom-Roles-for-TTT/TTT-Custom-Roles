@@ -5,6 +5,8 @@
 
 ### Additions
 - Added new special traitor role: the informant
+- Added information on the scoreboard when the clown is activated
+- Added information on the scoreboard when the old man is activated
 
 ### Changes
 - Changed jester team to show question mark icons over their head instead of the jester icon
