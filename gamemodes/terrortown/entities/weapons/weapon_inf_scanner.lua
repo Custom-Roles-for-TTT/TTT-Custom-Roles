@@ -194,6 +194,20 @@ if SERVER then
         end
     end
 
+    function SWEP:InRange(target)
+        if not self:GetOwner():IsLineOfSightClear(target) then return false end
+
+        local ownerPos = self:GetOwner():GetPos()
+        local targetPos = target:GetPos()
+        if ownerPos:Distance(targetPos) > 1000 then return false end -- TODO: Update max distance
+
+        local dir = targetPos:Sub(ownerPos):GetNormalized()
+        local eye = self:GetOwner():EyeAngles():Forward()
+        if math.acos(dir:Dot(eye)) > 1 then return false end -- TODO: Update max angle
+        
+        return true
+    end
+
     function SWEP:Think()
         local state = self:GetState()
         if state == SCANNER_IDLE then
@@ -209,13 +223,12 @@ if SERVER then
         elseif state == SCANNER_LOCKED then
             local target = player.GetBySteamID64(self:GetTarget())
             if target:IsActive() then
-                if self:GetOwner():IsLineOfSightClear(target) then
-                    self:Scan(target)
-                else
+                if not self:InRange(target) then
                     self:SetState(SCANNER_SEARCHING)
                     self:SetTargetLost(CurTime())
                     self:SetMessage("SCANNING " .. string.upper(target:Nick()) .. "(LOSING TARGET)")
                 end
+                self:Scan(target)
             else
                 self:TargetLost()
             end
@@ -224,12 +237,12 @@ if SERVER then
             if target:IsActive() then
                 if (CurTime() - self:GetTargetLost()) >= GetConVar("ttt_informant_scanner_float_time"):GetInt() then
                     self:TargetLost()
-                elseif self:GetOwner():IsLineOfSightClear(target) then
-                    self:SetState(SCANNER_LOCKED)
-                    self:SetTargetLost(-1)
-                    self:SetMessage("SCANNING " .. string.upper(target:Nick()))
-                    self:Scan(target)
                 else
+                    if self:InRange(target) then
+                        self:SetState(SCANNER_LOCKED)
+                        self:SetTargetLost(-1)
+                        self:SetMessage("SCANNING " .. string.upper(target:Nick()))
+                    end
                     self:Scan(target)
                 end
             else
