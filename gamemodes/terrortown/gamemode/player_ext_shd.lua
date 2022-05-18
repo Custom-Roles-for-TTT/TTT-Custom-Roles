@@ -389,6 +389,14 @@ if CLIENT then
         return false, false, false
     end
 
+    function plymeta:IsScoreboardInfoOverridden()
+        -- Check if this role has an external definition for "IsScoreboardInfoOverridden" and use that
+        local role = self:GetRole()
+        if ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[role] then return ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[role](self) end
+
+        return false, false, false
+    end
+
     function plymeta:AnimApplyGesture(act, weight)
         self:AnimRestartGesture(GESTURE_SLOT_CUSTOM, act, true) -- true = autokill
         self:AnimSetGestureWeight(GESTURE_SLOT_CUSTOM, weight)

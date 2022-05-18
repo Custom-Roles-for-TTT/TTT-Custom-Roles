@@ -142,18 +142,27 @@ Methods available when called from a Player object (within the defined realm)
 *Parameters:*
 - *target* - The other player whose team is being compared
 
-**plymeta:IsShopRole()** - Whether the player has a shop (see `plymeta:CanUseShop` for determining if it is openable).\
-*Realm:* Client and Server\
-*Added in:* 1.0.0
-
-**plymeta:IsTargetIDOverridden()** - Whether the player is currently overriding a piece of Target ID information.\
+**plymeta:IsScoreboardInfoOverridden()** - Whether the player is currently overriding a piece of scoreboard information.\
 *Realm:* Client\
 *Added in:* 1.5.15
 
 *Returns:*
-- *isIconOverridden* - Whether the Target ID role icon is currently overridden
-- *isRingOverridden* - Whether the Target ID identification ring is currently overridden
-- *isTextOverridden* - Whether the Target ID text is currently overridden
+- *isNameOverridden* - Whether the player name is currently overridden
+- *isColorOverridden* - Whether the row color is currently overridden
+- *isIconOverridden* - Whether the role icon is currently overridden
+
+**plymeta:IsShopRole()** - Whether the player has a shop (see `plymeta:CanUseShop` for determining if it is openable).\
+*Realm:* Client and Server\
+*Added in:* 1.0.0
+
+**plymeta:IsTargetIDOverridden()** - Whether the player is currently overriding a piece of target ID information.\
+*Realm:* Client\
+*Added in:* 1.5.15
+
+*Returns:*
+- *isIconOverridden* - Whether the target ID role icon is currently overridden
+- *isRingOverridden* - Whether the target ID identification ring is currently overridden
+- *isTextOverridden* - Whether the target ID text is currently overridden
 
 **plymeta:IsTraitorTeam()** - Whether the player is on the traitor team.\
 *Realm:* Client and Server\

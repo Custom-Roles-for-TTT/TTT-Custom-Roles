@@ -458,6 +458,7 @@ There are a few options for roles that aren't covered in the template because th
 | `ROLE.shouldnotdrown` | boolean |  Whether the player should not show the drown effect or take drowning damage. | 1.5.7 |
 | `ROLE.canseec4` | function | Whether the player should be able to see the C4 icons like traitors can. Called by the `plymeta:CanSeeC4` function. See [the API](API/METHODS_PLAYER_OBJECT.md) for more information on the function. | 1.5.14 |
 | `ROLE.istargetidoverridden` | function | Whether the player's target ID information (role icon, circle, text) are being overridden by a hook. Called by the `plymeta:IsTargetIDOverridden` function. See [the API](API/METHODS_PLAYER_OBJECT.md) for more information on the function. | 1.5.15 |
+| `ROLE.isscoreboardinfooverridden` | function | Whether the player's scoreboard (player name, row color, role icon) are being overridden by a hook. Called by the `plymeta:IsScoreboardInfoOverridden` function. See [the API](API/METHODS_PLAYER_OBJECT.md) for more information on the function. | 1.5.15 |
 
 The Summoner doesn't need these options to be set because it is `ROLE_TEAM_TRAITOR` and has a shop, but just for an example, here's what it would look like if we wanted to remove their credit looting and traitor trap abilities and delay their shop item delivery:
 

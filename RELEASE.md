@@ -14,6 +14,8 @@
 ### Developer
 - Added `plymeta:IsTargetIDOverridden` to determine whether the player is currently overriding a piece of Target ID information
 - Added ability for external roles to define their own `plymeta:IsTargetIDOverridden`
+- Added `plymeta:IsScoreboardInfoOverridden` to determine whether the player is currently overriding a piece of scoreboard information
+- Added ability for external roles to define their own `plymeta:IsScoreboardInfoOverridden`
 
 ## 1.5.14 (Beta)
 **Released: May 15th, 2022**
