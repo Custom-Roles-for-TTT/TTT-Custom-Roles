@@ -51,6 +51,18 @@ hook.Add("TTTTargetIDPlayerText", "Assassin_TTTTargetIDPlayerText", function(ent
     end
 end)
 
+ROLE_IS_TARGETID_OVERRIDDEN[ROLE_ASSASSIN] = function(ply, target, showJester)
+    if not ply:IsAssassin() then return end
+    if not IsPlayer(target) then return end
+
+    -- Shared logic
+    local show = (target:Nick() == ply:GetNWString("AssassinTarget", "")) and not showJester
+
+    local icon = show and GetGlobalBool("ttt_assassin_show_target_icon", false)
+    ------ icon,  ring, text
+    return icon, false, show
+end
+
 ----------------
 -- SCOREBOARD --
 ----------------
@@ -72,6 +84,18 @@ hook.Add("TTTScoreboardPlayerName", "Assassin_TTTScoreboardPlayerName", function
         return ply:Nick() .. newText
     end
 end)
+
+ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_ASSASSIN] = function(ply, target)
+    if not ply:IsAssassin() then return end
+    if not IsPlayer(target) then return end
+
+    -- Shared logic
+    local show = target:Nick() == ply:GetNWString("AssassinTarget", "")
+
+    local name = show and ShouldShowTraitorExtraInfo()
+    ------ name,  role
+    return name, show
+end
 
 ------------------
 -- HIGHLIGHTING --

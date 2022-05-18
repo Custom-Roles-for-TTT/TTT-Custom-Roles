@@ -57,6 +57,14 @@ hook.Add("TTTTargetIDPlayerText", "Revenger_TTTTargetIDPlayerText", function(ent
     end
 end)
 
+ROLE_IS_TARGETID_OVERRIDDEN[ROLE_REVENGER] = function(ply, target)
+    if not ply:IsRevenger() then return end
+    if not IsPlayer(target) then return end
+
+    ------ icon,  ring,  text
+    return false, false, IsLover(ply, target)
+end
+
 -----------
 -- RADAR --
 -----------
@@ -130,6 +138,15 @@ hook.Add("TTTScoreboardPlayerName", "Revenger_TTTScoreboardPlayerName", function
         return ply:Nick() .. " (" .. LANG.GetTranslation("target_revenger_lover") .. ")"
     end
 end)
+
+ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_REVENGER] = function(ply, target)
+    if not ply:IsRevenger() then return end
+    if not IsPlayer(target) then return end
+    if not IsLover(ply, target) then return end
+
+    ------ name, role
+    return true, true
+end
 
 --------------
 -- TUTORIAL --

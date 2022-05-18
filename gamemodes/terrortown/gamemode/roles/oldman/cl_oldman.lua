@@ -98,15 +98,29 @@ hook.Add("TTTTargetIDPlayerText", "OldMan_TTTTargetIDPlayerText", function(ent, 
     end
 end)
 
+ROLE_IS_TARGETID_OVERRIDDEN[ROLE_OLDMAN] = function(ply, target)
+    if not IsOldManVisible(target) then return end
+
+    ------ icon, ring, text
+    return true, true, true
+end
+
 ----------------
 -- SCOREBOARD --
 ----------------
 
 hook.Add("TTTScoreboardPlayerRole", "OldMan_TTTScoreboardPlayerRole", function(ply, client, color, roleFileName)
-    if ply:IsActiveOldMan() and ply:IsRoleActive() then
+    if IsOldManVisible(ply) then
         return ROLE_COLORS_SCOREBOARD[ROLE_OLDMAN], ROLE_STRINGS_SHORT[ROLE_OLDMAN]
     end
 end)
+
+ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_OLDMAN] = function(ply, target)
+    if not IsOldManVisible(target) then return end
+
+    ------ name,  role
+    return false, true
+end
 
 --------------
 -- TUTORIAL --

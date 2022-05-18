@@ -49,6 +49,16 @@ hook.Add("TTTTargetIDPlayerKillIcon", "Zombie_TTTTargetIDPlayerKillIcon", functi
     end
 end)
 
+ROLE_IS_TARGETID_OVERRIDDEN[ROLE_ZOMBIE] = function(ply, target, showJester)
+    if not ply:IsZombie() then return end
+    if not IsPlayer(target) then return end
+
+    local show = GetGlobalBool("ttt_zombie_show_target_icon", false) and cli.GetActiveWeapon and IsValid(cli:GetActiveWeapon()) and cli:GetActiveWeapon():GetClass() == "weapon_zom_claws" and not showJester
+
+    ------ icon, ring,  text
+    return show, false, false
+end
+
 -------------
 -- SCORING --
 -------------

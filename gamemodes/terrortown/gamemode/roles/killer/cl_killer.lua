@@ -51,6 +51,17 @@ hook.Add("TTTTargetIDPlayerRoleIcon", "Killer_TTTTargetIDPlayerRoleIcon", functi
     end
 end)
 
+ROLE_IS_TARGETID_OVERRIDDEN[ROLE_KILLER] = function(ply, target, showJester)
+    if not ply:IsKiller() then return end
+    if not IsPlayer(target) then return end
+
+    local show_kill = GetGlobalBool("ttt_killer_show_target_icon", false) and not showJester
+    local show_role = showJester
+
+    ------ icon,                   ring,  text
+    return show_kill or show_role, false, false
+end
+
 ------------------
 -- HIGHLIGHTING --
 ------------------

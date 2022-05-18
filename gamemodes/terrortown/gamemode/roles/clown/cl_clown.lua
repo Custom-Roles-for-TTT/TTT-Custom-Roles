@@ -78,6 +78,16 @@ hook.Add("TTTTargetIDPlayerText", "Clown_TTTTargetIDPlayerText", function(ent, c
     end
 end)
 
+ROLE_IS_TARGETID_OVERRIDDEN[ROLE_CLOWN] = function(ply, target)
+    if not IsPlayer(target) then return end
+
+    local target_jester = IsClownActive(ply) and target:ShouldActLikeJester()
+    local visible = target_jester or IsClownVisible(target)
+
+    ------ icon,    ring,    text
+    return visible, visible, visible
+end
+
 -------------
 -- SCORING --
 -------------
@@ -117,10 +127,17 @@ end)
 ----------------
 
 hook.Add("TTTScoreboardPlayerRole", "Clown_TTTScoreboardPlayerRole", function(ply, client, color, roleFileName)
-    if ply:IsActiveClown() and ply:IsRoleActive() then
+    if IsClownVisible(ply) then
         return ROLE_COLORS_SCOREBOARD[ROLE_CLOWN], ROLE_STRINGS_SHORT[ROLE_CLOWN]
     end
 end)
+
+ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_CLOWN] = function(ply, target)
+    if not IsClownVisible(target) then return end
+
+    ------ name,  role
+    return false, true
+end
 
 -------------------
 -- ROLE FEATURES --

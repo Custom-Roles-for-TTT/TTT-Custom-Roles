@@ -48,6 +48,15 @@ hook.Add("TTTTargetIDPlayerText", "LootGoblin_TTTTargetIDPlayerText", function(e
     end
 end)
 
+ROLE_IS_TARGETID_OVERRIDDEN[ROLE_LOOTGOBLIN] = function(ply, target)
+    if not IsPlayer(target) then return end
+    if not target:IsActiveLootGoblin() then return end
+    if not target:IsRoleActive() then return end
+
+    ------ icon, ring, text
+    return true, true, true
+end
+
 ----------------
 -- SCOREBOARD --
 ----------------
@@ -57,6 +66,15 @@ hook.Add("TTTScoreboardPlayerRole", "LootGoblin_TTTScoreboardPlayerRole", functi
         return ROLE_COLORS_SCOREBOARD[ROLE_LOOTGOBLIN], ROLE_STRINGS_SHORT[ROLE_LOOTGOBLIN]
     end
 end)
+
+ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_LOOTGOBLIN] = function(ply, target)
+    if not IsPlayer(target) then return end
+    if not target:IsActiveLootGoblin() then return end
+    if not target:IsRoleActive() then return end
+
+    ------ name,  role
+    return false, true
+end
 
 -------------
 -- SCORING --
