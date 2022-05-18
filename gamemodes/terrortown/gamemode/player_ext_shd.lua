@@ -381,10 +381,10 @@ if CLIENT then
         return self:Crouching() and 28 or 64
     end
 
-    function plymeta:IsTargetIDOverridden(target)
+    function plymeta:IsTargetIDOverridden(target, showJester)
         -- Check if this role has an external definition for "IsTargetIDOverridden" and use that
         local role = self:GetRole()
-        if ROLE_IS_TARGETID_OVERRIDDEN[role] then return ROLE_IS_TARGETID_OVERRIDDEN[role](self, target) end
+        if ROLE_IS_TARGETID_OVERRIDDEN[role] then return ROLE_IS_TARGETID_OVERRIDDEN[role](self, target, showJester) end
 
         return false, false, false
     end
