@@ -142,9 +142,11 @@ Methods available when called from a Player object (within the defined realm)
 *Parameters:*
 - *target* - The other player whose team is being compared
 
-**plymeta:IsScoreboardInfoOverridden()** - Whether the player is currently overriding a piece of scoreboard information.\
+**plymeta:IsScoreboardInfoOverridden(target)** - Whether the player is currently overriding a piece of scoreboard information.\
 *Realm:* Client\
-*Added in:* 1.5.15
+*Added in:* 1.5.15\
+*Parameters:*
+- *target* - The player whose scoreboard info is being rendered
 
 *Returns:*
 - *isNameOverridden* - Whether the player name is currently overridden
@@ -155,9 +157,11 @@ Methods available when called from a Player object (within the defined realm)
 *Realm:* Client and Server\
 *Added in:* 1.0.0
 
-**plymeta:IsTargetIDOverridden()** - Whether the player is currently overriding a piece of target ID information.\
+**plymeta:IsTargetIDOverridden(target)** - Whether the player is currently overriding a piece of target ID information.\
 *Realm:* Client\
-*Added in:* 1.5.15
+*Added in:* 1.5.15\
+*Parameters:*
+- *target* - The player whose scoreboard info is being rendered
 
 *Returns:*
 - *isIconOverridden* - Whether the target ID role icon is currently overridden

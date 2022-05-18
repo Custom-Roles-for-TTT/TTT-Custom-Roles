@@ -381,18 +381,18 @@ if CLIENT then
         return self:Crouching() and 28 or 64
     end
 
-    function plymeta:IsTargetIDOverridden()
+    function plymeta:IsTargetIDOverridden(target)
         -- Check if this role has an external definition for "IsTargetIDOverridden" and use that
         local role = self:GetRole()
-        if ROLE_IS_TARGETID_OVERRIDDEN[role] then return ROLE_IS_TARGETID_OVERRIDDEN[role](self) end
+        if ROLE_IS_TARGETID_OVERRIDDEN[role] then return ROLE_IS_TARGETID_OVERRIDDEN[role](self, target) end
 
         return false, false, false
     end
 
-    function plymeta:IsScoreboardInfoOverridden()
+    function plymeta:IsScoreboardInfoOverridden(target)
         -- Check if this role has an external definition for "IsScoreboardInfoOverridden" and use that
         local role = self:GetRole()
-        if ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[role] then return ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[role](self) end
+        if ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[role] then return ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[role](self, target) end
 
         return false, false, false
     end
