@@ -9,7 +9,7 @@
 - Added information on the scoreboard when the old man is activated
 
 ### Changes
-- Changed jester team to show question mark icons over their head instead of the jester icon
+- Changed jester team to show question mark icons over their head and on the scoreboard instead of the jester icon
 
 ### Developer
 - Added `plymeta:IsTargetIDOverridden` to determine whether the player is currently overriding a piece of Target ID information
