@@ -399,6 +399,14 @@ if CLIENT then
         return false, false
     end
 
+    function plymeta:IsTargetHighlighted(target)
+        -- Check if this role has an external definition for "IsTargetHighlighted" and use that
+        local role = self:GetRole()
+        if ROLE_IS_TARGET_HIGHLIGHTED[role] then return ROLE_IS_TARGET_HIGHLIGHTED[role](self, target) end
+
+        return false
+    end
+
     function plymeta:AnimApplyGesture(act, weight)
         self:AnimRestartGesture(GESTURE_SLOT_CUSTOM, act, true) -- true = autokill
         self:AnimSetGestureWeight(GESTURE_SLOT_CUSTOM, weight)

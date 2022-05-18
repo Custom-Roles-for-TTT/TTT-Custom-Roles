@@ -716,6 +716,7 @@ ROLE_ON_ROLE_ASSIGNED = {}
 ROLE_SHOULD_SHOW_SPECTATOR_HUD = {}
 ROLE_IS_TARGETID_OVERRIDDEN = {}
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN = {}
+ROLE_IS_TARGET_HIGHLIGHTED = {}
 
 ROLE_CONVAR_TYPE_NUM = 0
 ROLE_CONVAR_TYPE_BOOL = 1
@@ -866,6 +867,10 @@ function RegisterRole(tbl)
 
     if type(tbl.isscoreboardinfooverridden) == "function" then
         ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[roleID] = tbl.isscoreboardinfooverridden
+    end
+
+    if type(tbl.istargethighlighted) == "function" then
+        ROLE_IS_TARGET_HIGHLIGHTED[roleID] = tbl.istargethighlighted
     end
 
     -- List of objects that describe convars for ULX support, in the following format:

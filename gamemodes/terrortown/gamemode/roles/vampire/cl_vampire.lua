@@ -220,6 +220,13 @@ hook.Add("Think", "Vampire_Highlight_Think", function()
     end
 end)
 
+ROLE_IS_TARGET_HIGHLIGHTED[ROLE_VAMPIRE] = function(ply, target)
+    if not ply:IsVampire() then return end
+
+    local hasFangs = ply.GetActiveWeapon and IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() == "weapon_vam_fangs"
+    return vampire_vision and hasFangs
+end
+
 --------------
 -- TUTORIAL --
 --------------

@@ -16,6 +16,8 @@
 - Added ability for external roles to define their own `plymeta:IsTargetIDOverridden`
 - Added `plymeta:IsScoreboardInfoOverridden` to determine whether the player is currently overriding a piece of scoreboard information
 - Added ability for external roles to define their own `plymeta:IsScoreboardInfoOverridden`
+- Added `plymeta:IsTargetHighlighted` to determine whether the target is being highlighted per the player's role rules
+- Added ability for external roles to define their own `plymeta:IsTargetHighlighted`
 
 ## 1.5.14 (Beta)
 **Released: May 15th, 2022**

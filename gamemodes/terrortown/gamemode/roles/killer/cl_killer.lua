@@ -105,6 +105,11 @@ hook.Add("Think", "Killer_Highlight_Think", function()
     end
 end)
 
+ROLE_IS_TARGET_HIGHLIGHTED[ROLE_ASSASSIN] = function(ply, target)
+    if not ply:IsKiller() then return end
+    return killer_vision
+end
+
 ----------------
 -- WIN CHECKS --
 ----------------

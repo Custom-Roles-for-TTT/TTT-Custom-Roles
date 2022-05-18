@@ -134,8 +134,8 @@ local function EnableZombieHighlights()
     -- Handle zombie targeting and non-traitor team logic
     -- Traitor logic is handled in cl_init and does not need to be duplicated here
     hook.Add("PreDrawHalos", "Zombie_Highlight_PreDrawHalos", function()
-        local hasFangs = client.GetActiveWeapon and IsValid(client:GetActiveWeapon()) and client:GetActiveWeapon():GetClass() == "weapon_zom_claws"
-        local hideEnemies = not zombie_vision or not hasFangs
+        local hasClaws = client.GetActiveWeapon and IsValid(client:GetActiveWeapon()) and client:GetActiveWeapon():GetClass() == "weapon_zom_claws"
+        local hideEnemies = not zombie_vision or not hasClaws
 
         -- Handle logic differently depending on which team they are on
         local allies = {}
@@ -190,6 +190,13 @@ hook.Add("Think", "Zombie_Highlight_Think", function()
         RemoveHook("PreDrawHalos", "Zombie_Highlight_PreDrawHalos")
     end
 end)
+
+ROLE_IS_TARGET_HIGHLIGHTED[ROLE_ZOMBIE] = function(ply, target)
+    if not ply:IsZombie() then return end
+
+    local hasClaws = ply.GetActiveWeapon and IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() == "weapon_zom_claws"
+    return zombie_vision and hasClaws
+end
 
 --------------
 -- TUTORIAL --

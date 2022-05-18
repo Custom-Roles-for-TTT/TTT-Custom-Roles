@@ -156,6 +156,12 @@ Methods available when called from a Player object (within the defined realm)
 *Realm:* Client and Server\
 *Added in:* 1.0.0
 
+**plymeta:IsTargetHighlighted(target)** - Whether the target player is highlighted based the player's role rules.\
+*Realm:* Client\
+*Added in:* 1.5.15\
+*Parameters:*
+- *target* - The player whose scoreboard info is being rendered
+
 **plymeta:IsTargetIDOverridden(target, showJester)** - Whether the player is currently overriding a piece of target ID information.\
 *Realm:* Client\
 *Added in:* 1.5.15\

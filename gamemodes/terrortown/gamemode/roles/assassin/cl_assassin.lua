@@ -154,6 +154,17 @@ hook.Add("Think", "Assassin_Highlight_Think", function()
     end
 end)
 
+ROLE_IS_TARGET_HIGHLIGHTED[ROLE_ASSASSIN] = function(ply, target)
+    if not ply:IsAssassin() then return end
+    if not IsPlayer(target) then return end
+
+    local target_nick = ply:GetNWString("AssassinTarget", "")
+    if not target_nick or #target_nick == 0 then return end
+
+    local isTarget = target_nick == target:Nick()
+    return assassin_target_vision and isTarget
+end
+
 ----------------
 -- ROLE POPUP --
 ----------------
