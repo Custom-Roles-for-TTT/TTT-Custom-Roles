@@ -599,7 +599,6 @@ L.hp_wounded = "Wounded"
 L.hp_badwnd = "Badly Wounded"
 L.hp_death = "Near Death"
 
-
 -- TargetID karma status
 L.karma_max = "Renowned"
 L.karma_high = "Reputable"
@@ -615,6 +614,9 @@ L.target_disg = " (DISGUISED)"
 L.target_unid = "Unidentified body"
 
 L.target_credits = "Search to receive unspent credits"
+
+L.target_unknown_team = "UNKNOWN {targettype}"
+L.target_unconfirmed_role = "UNCONFIRMED {targettype}"
 
 -- Traitor buttons (HUD buttons with hand icons that only traitors can see)
 L.tbut_single = "Single use"

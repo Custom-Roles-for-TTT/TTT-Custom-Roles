@@ -1,10 +1,17 @@
 local hook = hook
+local string = string
+
+local StringUpper = string.upper
 
 ------------------
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Glitch_Translations_Initialize", function()
+hook.Add("Initialize", "Informant_Translations_Initialize", function()
+    -- Weapons
+    LANG.AddToLanguage("english", "infscanner_help_pri", "Look at a player to start scanning.")
+    LANG.AddToLanguage("english", "infscanner_help_sec", "Keep light of sight or you will lose your target.")
+
     -- Popup
     LANG.AddToLanguage("english", "info_popup_informant", [[You are {role}! {comrades}
 
@@ -18,6 +25,7 @@ end)
 ---------------
 
 local function GetTeamRole(ply)
+    -- TODO: Check there is a glitch? GetGlobalBool("ttt_glitch_round", false)
     local glitchMode = GetGlobalInt("ttt_glitch_mode", 0)
 
     if ply:IsGlitch() then
@@ -40,7 +48,7 @@ local function GetTeamRole(ply)
 end
 
 hook.Add("TTTTargetIDPlayerRoleIcon", "Informant_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
-    if cli:IsInformant() or (cli:IsTraitorTeam() and SetGlobalBool("ttt_informant_share_scans", true)) then
+    if cli:IsInformant() or (cli:IsTraitorTeam() and GetGlobalBool("ttt_informant_share_scans", true)) then
         local state = ply:GetNWInt("TTTInformantScanStage", 0)
 
         local newRole = role
@@ -53,6 +61,7 @@ hook.Add("TTTTargetIDPlayerRoleIcon", "Informant_TTTTargetIDPlayerRoleIcon", fun
         end
 
         if state >= INFORMANT_SCANNED_ROLE then
+            newColorRole = ply:GetRole()
             newRole = ply:GetRole()
         end
 
@@ -67,14 +76,14 @@ end)
 hook.Add("TTTTargetIDPlayerRing", "Informant_TTTTargetIDPlayerRing", function(ent, cli, ringVisible)
     if GetRoundState() < ROUND_ACTIVE then return end
 
-    if IsPlayer(ent) and cli:IsInformant() or (cli:IsTraitorTeam() and SetGlobalBool("ttt_informant_share_scans", true)) then
+    if IsPlayer(ent) and cli:IsInformant() or (cli:IsTraitorTeam() and GetGlobalBool("ttt_informant_share_scans", true)) then
         local state = ent:GetNWInt("TTTInformantScanStage", 0)
 
         local newRingVisible = ringVisible
         local newColor = false
 
         if state == INFORMANT_SCANNED_TEAM then
-            newColor = ROLE_COLORS_RADAR[GetTeamRole(ply)]
+            newColor = ROLE_COLORS_RADAR[GetTeamRole(ent)]
             newRingVisible = true
         elseif state >= INFORMANT_SCANNED_ROLE then
             newColor = ROLE_COLORS_RADAR[ent:GetRole()]
@@ -83,36 +92,42 @@ hook.Add("TTTTargetIDPlayerRing", "Informant_TTTTargetIDPlayerRing", function(en
 
         return newRingVisible, newColor
     end
-
 end)
 
 hook.Add("TTTTargetIDPlayerText", "Informant_TTTTargetIDPlayerText", function(ent, cli, text, col, secondaryText)
     if GetRoundState() < ROUND_ACTIVE then return end
 
-    if IsPlayer(ent) and cli:IsInformant() or (cli:IsTraitorTeam() and SetGlobalBool("ttt_informant_share_scans", true)) then
+    if IsPlayer(ent) and cli:IsInformant() or (cli:IsTraitorTeam() and GetGlobalBool("ttt_informant_share_scans", true)) then
         local state = ent:GetNWInt("TTTInformantScanStage", 0)
 
         local newText = text
         local newColor = col
 
         if state == INFORMANT_SCANNED_TEAM then
-            local role = GetTeamRole(ply)
+            local T = LANG.GetTranslation
+            local PT = LANG.GetParamTranslation
+            local role = GetTeamRole(ent)
             newColor = ROLE_COLORS_RADAR[role]
 
+            local label_name = "target_unknown_team"
+            local label_param
             if TRAITOR_ROLES[role] then
                 if glitchMode == GLITCH_SHOW_AS_TRAITOR or glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES then
-                    newText = "UNKNOWN TRAITOR"
+                    label_param = T("traitor")
                 elseif glitchMode == GLITCH_SHOW_AS_SPECIAL_TRAITOR then
-                    newText = "UNCONFIRMED " StringUpper(ROLE_STRINGS[role])
+                    label_name = "label_unconfirmed_role"
+                    label_param = ROLE_STRINGS[role]
                 end
-            elseif DETECTIVE_ROLES[role] then newText = "UNKNOWN DETECTIVE"
-            elseif INNOCENT_ROLES[role] then newText = "UNKNOWN INNOCENT"
-            elseif INDEPENDENT_ROLES[role] then newText = "UNKNOWN INDEPENDENT"
-            elseif JESTER_ROLES[role] then newText = "UNKNOWN JESTER"
-            elseif MONSTER_ROLES[role] then newText = "UNKNOWN MONSTER" end
+            elseif DETECTIVE_ROLES[role] then label_param = ROLE_STRINGS[ROLE_DETECTIVE]
+            elseif INNOCENT_ROLES[role] then label_param = T("innocent")
+            elseif INDEPENDENT_ROLES[role] then label_param = T("independent")
+            elseif JESTER_ROLES[role] then label_param = T("jester")
+            elseif MONSTER_ROLES[role] then label_param = T("monster") end
+
+            newText = PT(label_name, { targettype = StringUpper(label_param) })
         elseif state >= INFORMANT_SCANNED_ROLE then
             newColor = ROLE_COLORS_RADAR[ent:GetRole()]
-            newText = StringUpper(ROLE_STRINGS[ply:GetRole()])
+            newText = StringUpper(ROLE_STRINGS[ent:GetRole()])
         end
 
         return newText, newColor, false

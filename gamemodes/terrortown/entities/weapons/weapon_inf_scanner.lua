@@ -7,6 +7,8 @@ local player = player
 local surface = surface
 local string = string
 
+local GetAllPlayers = player.GetAll
+
 DEFINE_BASECLASS "weapon_tttbase"
 
 SWEP.HoldType               = "normal"
@@ -24,17 +26,10 @@ if CLIENT then
    SWEP.ViewModelFOV        = 10
    SWEP.ViewModelFlip       = false
    SWEP.DrawCrosshair       = false
-
-   SWEP.EquipMenuData = {
-      type  = "item_weapon",
-      desc  = "binoc_desc"
-   };
-
-   SWEP.Icon                = "vgui/ttt/icon_binoc"
 end
 
 SWEP.Base                   = "weapon_tttbase"
-SWEP.Category = WEAPON_CATEGORY_ROLE
+SWEP.Category               = WEAPON_CATEGORY_ROLE
 
 SWEP.ViewModel		        = "models/weapons/v_binoculars.mdl"
 SWEP.WorldModel		        = "models/weapons/w_binoculars.mdl"
@@ -53,7 +48,7 @@ SWEP.Secondary.Delay        = 0
 
 SWEP.Kind                   = WEAPON_ROLE
 
-SWEP.InLoadoutFor = {ROLE_INFORMANT}
+SWEP.InLoadoutFor           = {ROLE_INFORMANT}
 
 SWEP.AllowDrop              = false
 
@@ -115,14 +110,43 @@ if SERVER then
         local tr = self:GetOwner():GetEyeTrace(MASK_SHOT)
         local ent = tr.Entity
 
-        return (IsValid(ent) and ent:IsPlayer() and ent:IsActive()) and ent or false
+        return (IsPlayer(ent) and ent:IsActive()) and ent or false
+    end
+
+    function SWEP:Reset()
+        self:SetState(SCANNER_IDLE)
+        self:SetTarget("")
+        self:SetScanStart(-1)
+        self:SetMessage("")
+    end
+
+    function SWEP:TargetLost()
+        self:SetState(SCANNER_LOST)
+        self:SetTarget("")
+        self:SetScanStart(-1)
+        self:SetCooldown(CurTime())
+        self:SetMessage("TARGET LOST")
+    end
+
+    function SWEP:Announce(message)
+        local owner = self:GetOwner()
+        if not IsValid(owner) then return end
+
+        owner:PrintMessage(HUD_PRINTTALK, message)
+        if not GetGlobalBool("ttt_informant_share_scans", true) then return end
+
+        for _, p in pairs(GetAllPlayers()) do
+            if p:IsActiveTraitorTeam() and p ~= owner then
+                p:PrintMessage(HUD_PRINTTALK, "The informant has " .. message)
+            end
+        end
     end
 
     function SWEP:Scan(target)
         if target:IsActive() then
-            local stage = target:GetNWInt("TTTInformantScanStage", 0)
+            local stage = target:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
             if target:IsDetectiveTeam() and stage == INFORMANT_UNSCANNED then
-                if GetConVar("ttt_detective_hide_special_mode"):GetInt() >= 1 then
+                if GetConVar("ttt_detective_hide_special_mode"):GetInt() >= SPECIAL_DETECTIVE_HIDE_FOR_ALL then
                     stage = INFORMANT_SCANNED_TEAM
                 else
                     stage = INFORMANT_SCANNED_ROLE
@@ -134,49 +158,36 @@ if SERVER then
                         target:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_TEAM)
                     end
                 else
-                    self:SetState(SCANNER_IDLE)
-                    self:SetTarget("")
-                    self:SetScanStart(-1)
-                    self:SetMessage("")
+                    self:Reset()
                     return false
                 end
             elseif target:IsTraitorTeam() then
                 if GetConVar("ttt_informant_can_scan_glitches"):GetBool() then
                     local glitchMode = GetConVar("ttt_glitch_mode"):GetInt()
+                    -- TODO: Check there is a glitch? GetGlobalBool("ttt_glitch_round", false)
                     if ((glitchMode == GLITCH_SHOW_AS_TRAITOR and target:IsTraitor()) or glitchMode >= GLITCH_SHOW_AS_SPECIAL_TRAITOR) and stage == INFORMANT_UNSCANNED then
                         target:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_TEAM)
                     else
-                        self:SetState(SCANNER_IDLE)
-                        self:SetTarget("")
-                        self:SetScanStart(-1)
-                        self:SetMessage("")
+                        self:Reset()
                         return false
                     end
                 else
-                    self:SetState(SCANNER_IDLE)
-                    self:SetTarget("")
-                    self:SetScanStart(-1)
-                    self:SetMessage("")
+                    self:Reset()
                     return false
                 end
             elseif target:IsGlitch() then
                 if GetConVar("ttt_informant_can_scan_glitches"):GetBool() and stage == INFORMANT_UNSCANNED then
                     target:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_TEAM)
                 else
-                    self:SetState(SCANNER_IDLE)
-                    self:SetTarget("")
-                    self:SetScanStart(-1)
-                    self:SetMessage("")
+                    self:Reset()
                     return false
                 end
             end
 
-            local share = GetGlobalBool("ttt_informant_share_scans", true)
             if CurTime() - self:GetScanStart() >= GetConVar("ttt_informant_scanner_time"):GetInt() then
                 stage = stage + 1
-                local owner = self:GetOwner()
                 if stage == INFORMANT_SCANNED_TEAM then
-                    local message = " discovered that " .. target:Nick() .. " is "
+                    local message = "You have discovered that " .. target:Nick() .. " is "
                     if target:IsInnocentTeam() then
                         message = message .. "an innocent role."
                     elseif target:IsIndependentTeam() then
@@ -184,45 +195,18 @@ if SERVER then
                     elseif target:IsMonsterTeam() then
                         message = message .. "a monster role."
                     end
-                    owner:PrintMessage(HUD_PRINTTALK, "You have" .. message)
-                    if share then
-                        for _, p in pairs(GetAllPlayers()) do
-                            if p:IsActiveTraitorTeam() and not p:IsInformant() then
-                                p:PrintMessage(HUD_PRINTTALK, "The informant has " .. message)
-                            end
-                        end
-                    end
+
+                    self:Announce(message)
                 elseif stage == INFORMANT_SCANNED_ROLE then
-                    owner:PrintMessage(HUD_PRINTTALK,  "You have discovered that " .. target:Nick() .. " is " .. ROLE_STRINGS_EXT[target:GetRole()] .. ".")
-                    if share then
-                        for _, p in pairs(GetAllPlayers()) do
-                            if p:IsActiveTraitorTeam() and not p:IsInformant() then
-                                p:PrintMessage(HUD_PRINTTALK,  "The informant has discovered that " .. target:Nick() .. " is " .. ROLE_STRINGS_EXT[target:GetRole()] .. ".")
-                            end
-                        end
-                    end
+                    self:Announce("You have discovered that " .. target:Nick() .. " is " .. ROLE_STRINGS_EXT[target:GetRole()] .. ".")
                 elseif stage == INFORMANT_SCANNED_TRACKED then
-                    owner:PrintMessage(HUD_PRINTTALK, "You have tracked the movements of " .. target:Nick() .. " (" .. ROLE_STRINGS[target:GetRole()] .. ").")
-                    if share then
-                        for _, p in pairs(GetAllPlayers()) do
-                            if p:IsActiveTraitorTeam() and not p:IsInformant() then
-                                p:PrintMessage(HUD_PRINTTALK, "The informant has tracked the movements of " .. target:Nick() .. " (" .. ROLE_STRINGS[target:GetRole()] .. ").")
-                            end
-                        end
-                    end
+                    self:Announce("You have tracked the movements of " .. target:Nick() .. " (" .. ROLE_STRINGS[target:GetRole()] .. ").")
                 end
-                self:SetState(SCANNER_IDLE)
-                self:SetTarget("")
-                self:SetScanStart(-1)
-                self:SetMessage("")
+                self:Reset()
                 target:SetNWInt("TTTInformantScanStage", stage)
             end
         else
-            self:SetState(SCANNER_LOST)
-            self:SetTarget("")
-            self:SetScanStart(-1)
-            self:SetCooldown(CurTime())
-            self:SetMessage("TARGET LOST")
+            self:TargetLost()
         end
     end
 
@@ -231,7 +215,7 @@ if SERVER then
         if state == SCANNER_IDLE then
             local target = self:IsTargetingPlayer()
             if target then
-                if target:GetNWInt("TTTInformantScanStage", 0) < INFORMANT_SCANNED_TRACKED then
+                if target:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED) < INFORMANT_SCANNED_TRACKED then
                     self:SetState(SCANNER_LOCKED)
                     self:SetTarget(target:SteamID64())
                     self:SetScanStart(CurTime())
@@ -249,21 +233,13 @@ if SERVER then
                     self:SetMessage("SCANNING " .. string.upper(target:Nick()) .. "(LOSING TARGET)")
                 end
             else
-                self:SetState(SCANNER_LOST)
-                self:SetTarget("")
-                self:SetScanStart(-1)
-                self:SetCooldown(CurTime())
-                self:SetMessage("TARGET LOST")
+                self:TargetLost()
             end
         elseif state == SCANNER_SEARCHING then
             local target = player.GetBySteamID64(self:GetTarget())
             if target:IsActive() then
-                if CurTime() - self:GetTargetLost() >= GetConVar("ttt_informant_scanner_float_time"):GetInt() then
-                    self:SetState(SCANNER_LOST)
-                    self:SetTarget("")
-                    self:SetScanStart(-1)
-                    self:SetCooldown(CurTime())
-                    self:SetMessage("TARGET LOST")
+                if (CurTime() - self:GetTargetLost()) >= GetConVar("ttt_informant_scanner_float_time"):GetInt() then
+                    self:TargetLost()
                 elseif self:GetOwner():IsLineOfSightClear(target) then
                     self:SetState(SCANNER_LOCKED)
                     self:SetTargetLost(-1)
@@ -273,14 +249,10 @@ if SERVER then
                     self:Scan(target)
                 end
             else
-                self:SetState(SCANNER_LOST)
-                self:SetTarget("")
-                self:SetScanStart(-1)
-                self:SetCooldown(CurTime())
-                self:SetMessage("TARGET LOST")
+                self:TargetLost()
             end
         elseif state == SCANNER_LOST then
-            if CurTime() - self:GetCooldown() >= GetConVar("ttt_informant_scanner_cooldown"):GetInt() then
+            if (CurTime() - self:GetCooldown()) >= GetConVar("ttt_informant_scanner_cooldown"):GetInt() then
                 self:SetState(SCANNER_IDLE)
                 self:SetCooldown(-1)
                 self:SetMessage("")
@@ -291,12 +263,11 @@ end
 
 if CLIENT then
     function SWEP:Initialize()
-        self:AddHUDHelp("Look at a player to start scanning", "Keep light of sight or you will lose your target", false)
+        self:AddHUDHelp("infscanner_help_pri", "infscanner_help_sec", true)
 
         return self.BaseClass.Initialize(self)
     end
 
-    local T = LANG.GetTranslation
     function SWEP:DrawHUD()
         local state = self:GetState()
         self.BaseClass.DrawHUD(self)
@@ -330,7 +301,16 @@ if CLIENT then
             surface.DrawOutlinedRect(x + m + w / 2, y - h, w, h)
 
             local target = player.GetBySteamID64(self:GetTarget())
-            local targetState = target:GetNWInt("TTTInformantScanStage", 0)
+            -- TODO: Remove this
+            if not IsPlayer(target) then
+                for _, ply in ipairs(GetAllPlayers()) do
+                    if ply:Nick() == "Bot01" then
+                        target = ply
+                        break
+                    end
+                end
+            end
+            local targetState = target:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
 
             if targetState == INFORMANT_UNSCANNED then
                 surface.DrawRect(x - m - (3 * w) / 2, y - h, w * cc, h)

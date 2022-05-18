@@ -13,6 +13,7 @@ local util = util
 local CallHook = hook.Call
 local RunHook = hook.Run
 local GetAllPlayers = player.GetAll
+local GetTranslation = LANG.GetTranslation
 local GetPTranslation = LANG.GetParamTranslation
 local GetRaw = LANG.GetRawTranslation
 local StringUpper = string.upper
@@ -623,7 +624,7 @@ function GM:HUDDrawTargetID()
         text = StringUpper(ROLE_STRINGS[role])
         col = ROLE_COLORS_RADAR[role]
     elseif target_jester then
-        text = StringUpper("UNKNOWN JESTER")
+        text = GetPTranslation(target_unknown_team, { targettype = StringUpper(GetTranslation("jester")) })
         col = ROLE_COLORS_RADAR[ROLE_JESTER]
     elseif target_monster then
         text = StringUpper(ROLE_STRINGS[target_monster])
