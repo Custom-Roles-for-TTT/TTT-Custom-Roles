@@ -283,6 +283,31 @@ if CLIENT then
         return self.BaseClass.Initialize(self)
     end
 
+    function SWEP:DrawStructure(x, y, w, h, m, color)
+        local r, g, b, a = color:Unpack()
+        surface.SetDrawColor(r, g, b, a)
+        surface.DrawCircle(x, ScrH() / 2, math.Round(ScrW() / 6), r, g, b, a)
+
+        surface.DrawOutlinedRect(x - m - (3 * w) / 2, y - h, w, h)
+        surface.DrawOutlinedRect(x - w / 2, y - h, w, h)
+        surface.DrawOutlinedRect(x + m + w / 2, y - h, w, h)
+
+        surface.SetFont("TabLarge")
+        surface.SetTextColor(255, 255, 255, 180)
+        surface.SetTextPos((x - m - (3 * w) / 2) + 3, y - h - 15)
+        surface.DrawText(self:GetMessage())
+
+        local T = LANG.GetTranslation
+        surface.SetTextPos((x - m - (3 * w) / 2) +  (w / 3), y - h + 3)
+        surface.DrawText(T("infscanner_team"))
+
+        surface.SetTextPos((x - m - (3 * w) / 2) + w + (w / 2) - 3, y - h + 3)
+        surface.DrawText(T("infscanner_role"))
+
+        surface.SetTextPos((x - m - (3 * w) / 2) + (2 * w) + (w / 2), y - h + 3)
+        surface.DrawText(T("infscanner_track"))
+    end
+
     function SWEP:DrawHUD()
         local state = self:GetState()
         self.BaseClass.DrawHUD(self)
@@ -306,19 +331,12 @@ if CLIENT then
         if state == SCANNER_LOCKED or state == SCANNER_SEARCHING then
             if time < 0 then return end
 
-            local cc = math.min(1, 1 - ((time - CurTime()) / scan))
-
+            local color = Color(255, 255, 0, 155)
             if state == SCANNER_LOCKED then
-                surface.SetDrawColor(0, 255, 0, 155)
-                surface.DrawCircle(x, ScrH() / 2, math.Round(ScrW() / 6), 0, 255, 0, 155)
-            else
-                surface.SetDrawColor(255, 255, 0, 155)
-                surface.DrawCircle(x, ScrH() / 2, math.Round(ScrW() / 6), 255, 255, 0, 155)
+                color = Color(0, 255, 0, 155)
             end
 
-            surface.DrawOutlinedRect(x - m - (3 * w) / 2, y - h, w, h)
-            surface.DrawOutlinedRect(x - w / 2, y - h, w, h)
-            surface.DrawOutlinedRect(x + m + w / 2, y - h, w, h)
+            self:DrawStructure(x, y, w, h, m, color)
 
             local target = player.GetBySteamID64(self:GetTarget())
             -- TODO: Remove this
@@ -332,6 +350,7 @@ if CLIENT then
             end
             local targetState = target:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
 
+            local cc = math.min(1, 1 - ((time - CurTime()) / scan))
             if targetState == INFORMANT_UNSCANNED then
                 surface.DrawRect(x - m - (3 * w) / 2, y - h, w * cc, h)
             elseif targetState == INFORMANT_SCANNED_TEAM then
@@ -342,27 +361,13 @@ if CLIENT then
                 surface.DrawRect(x - w / 2, y - h, w, h)
                 surface.DrawRect(x + m + w / 2, y - h, w * cc, h)
             end
-
-            surface.SetFont("TabLarge")
-            surface.SetTextColor(255, 255, 255, 180)
-            surface.SetTextPos((x - m - (3 * w) / 2) + 3, y - h - 15)
-            surface.DrawText(self:GetMessage())
         elseif state == SCANNER_LOST then
-            surface.SetDrawColor(200 + math.sin(CurTime() * 32) * 50, 0, 0, 155)
-            surface.DrawCircle(x, ScrH() / 2, math.Round(ScrW() / 6), 200 + math.sin(CurTime() * 32) * 50, 0, 0, 155)
-
-            surface.DrawOutlinedRect(x - m - (3 * w) / 2, y - h, w, h)
-            surface.DrawOutlinedRect(x - w / 2, y - h, w, h)
-            surface.DrawOutlinedRect(x + m + w / 2, y - h, w, h)
+            local color = Color(200 + math.sin(CurTime() * 32) * 50, 0, 0, 155)
+            self:DrawStructure(x, y, w, h, m, color)
 
             surface.DrawRect(x - m - (3 * w) / 2, y - h, w, h)
             surface.DrawRect(x - w / 2, y - h, w, h)
             surface.DrawRect(x + m + w / 2, y - h, w, h)
-
-            surface.SetFont("TabLarge")
-            surface.SetTextColor(255, 255, 255, 180)
-            surface.SetTextPos((x - m - (3 * w) / 2) + 3, y - h - 15)
-            surface.DrawText(self:GetMessage())
         end
     end
 

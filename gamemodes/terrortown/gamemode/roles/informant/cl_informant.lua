@@ -11,6 +11,9 @@ hook.Add("Initialize", "Informant_Translations_Initialize", function()
     -- Weapons
     LANG.AddToLanguage("english", "infscanner_help_pri", "Look at a player to start scanning.")
     LANG.AddToLanguage("english", "infscanner_help_sec", "Keep light of sight or you will lose your target.")
+    LANG.AddToLanguage("english", "infscanner_team", "TEAM")
+    LANG.AddToLanguage("english", "infscanner_role", "ROLE")
+    LANG.AddToLanguage("english", "infscanner_track", "TRACK")
 
     -- Popup
     LANG.AddToLanguage("english", "info_popup_informant", [[You are {role}! {comrades}
