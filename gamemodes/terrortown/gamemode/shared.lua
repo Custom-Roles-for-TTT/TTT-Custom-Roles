@@ -689,23 +689,32 @@ AddRoleAssociations(ROLE_TEAMS_WITH_SHOP, {ROLE_TEAM_TRAITOR, ROLE_TEAM_INDEPEND
 
 ROLE_DATA_EXTERNAL = {}
 
+-- Role strings
 ROLE_TRANSLATIONS = {}
+
+-- Role features
 ROLE_SHOP_ITEMS = {}
 ROLE_LOADOUT_ITEMS = {}
-ROLE_CONVARS = {}
 ROLE_STARTING_CREDITS = {}
 ROLE_STARTING_HEALTH = {}
 ROLE_MAX_HEALTH = {}
+ROLE_SELECTION_PREDICATE = {}
+
+ROLE_CONVARS = {}
+
+-- Optional features
+ROLE_SHOULD_DELAY_ANNOUNCEMENTS = {}
+ROLE_HAS_PASSIVE_WIN = {}
+ROLE_SHOULD_NOT_DROWN = {}
+
+-- Player functions
 ROLE_IS_ACTIVE = {}
 ROLE_SHOULD_ACT_LIKE_JESTER = {}
-ROLE_SELECTION_PREDICATE = {}
-ROLE_SHOULD_DELAY_ANNOUNCEMENTS = {}
 ROLE_MOVE_ROLE_STATE = {}
 ROLE_ON_ROLE_ASSIGNED = {}
-ROLE_HAS_PASSIVE_WIN = {}
 ROLE_SHOULD_SHOW_SPECTATOR_HUD = {}
-ROLE_SHOULD_NOT_DROWN = {}
 ROLE_CAN_SEE_C4 = {}
+ROLE_IS_TARGETID_OVERRIDDEN = {}
 
 ROLE_CONVAR_TYPE_NUM = 0
 ROLE_CONVAR_TYPE_BOOL = 1
@@ -813,10 +822,6 @@ function RegisterRole(tbl)
         ROLE_SHOULD_NOT_DROWN[roleID] = tbl.shouldnotdrown
     end
 
-    if type(tbl.canseec4) == "boolean" then
-        ROLE_CAN_SEE_C4[roleID] = tbl.canseec4
-    end
-
     -- Equipment
     -- Make sure teams that normally have shops are added to the shop list, even if they don't have things in their shop by default
     -- This allows the "sync" and "mode" convars to be created
@@ -848,6 +853,14 @@ function RegisterRole(tbl)
 
     if type(tbl.shouldshowspectatorhud) == "function" then
         ROLE_SHOULD_SHOW_SPECTATOR_HUD[roleID] = tbl.shouldshowspectatorhud
+    end
+
+    if type(tbl.canseec4) == "boolean" then
+        ROLE_CAN_SEE_C4[roleID] = tbl.canseec4
+    end
+
+    if type(tbl.istargetidoverridden) == "function" then
+        ROLE_IS_TARGETID_OVERRIDDEN[roleID] = tbl.istargetidoverridden
     end
 
     -- List of objects that describe convars for ULX support, in the following format:

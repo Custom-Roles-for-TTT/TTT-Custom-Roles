@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.5.15 (Beta)
-**Released: **
+**Released:**
 
 ### Additions
 - Added new special traitor role: the informant
@@ -10,6 +10,10 @@
 
 ### Changes
 - Changed jester team to show question mark icons over their head instead of the jester icon
+
+### Developer
+- Added `plymeta:IsTargetIDOverridden` to determine whether the player is currently overriding a piece of Target ID information
+- Added ability for external roles to define their own `plymeta:IsTargetIDOverridden`
 
 ## 1.5.14 (Beta)
 **Released: May 15th, 2022**
@@ -22,7 +26,7 @@
 ### Developer
 - Added `TTTDeathNotifyOverride` hook to allow developers to change what name and role shows in the death notification message
 - Added `plymeta:CanSeeC4` to determine whether the player can see the C4 radar icon like traitors
-- Added ability for external roles to define whether they should see the C4 radar icon like traitors
+- Added ability for external roles to define their own `plymeta:CanSeeC4`
 - Changed the `TTTC4Disarm` hook to allow changing the defusal result via the new return value
 
 ## 1.5.13 (Beta)

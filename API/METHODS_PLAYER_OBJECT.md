@@ -146,6 +146,15 @@ Methods available when called from a Player object (within the defined realm)
 *Realm:* Client and Server\
 *Added in:* 1.0.0
 
+**plymeta:IsTargetIDOverridden()** - Whether the player is currently overriding a piece of Target ID information.\
+*Realm:* Client\
+*Added in:* 1.5.15
+
+*Returns:*
+- *isIconOverridden* - Whether the Target ID role icon is currently overridden
+- *isRingOverridden* - Whether the Target ID identification ring is currently overridden
+- *isTextOverridden* - Whether the Target ID text is currently overridden
+
 **plymeta:IsTraitorTeam()** - Whether the player is on the traitor team.\
 *Realm:* Client and Server\
 *Added in:* 1.0.0

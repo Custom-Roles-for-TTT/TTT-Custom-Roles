@@ -381,6 +381,14 @@ if CLIENT then
         return self:Crouching() and 28 or 64
     end
 
+    function plymeta:IsTargetIDOverridden()
+        -- Check if this role has an external definition for "IsTargetIDOverridden" and use that
+        local role = self:GetRole()
+        if ROLE_IS_TARGETID_OVERRIDDEN[role] then return ROLE_IS_TARGETID_OVERRIDDEN[role](self) end
+
+        return false, false, false
+    end
+
     function plymeta:AnimApplyGesture(act, weight)
         self:AnimRestartGesture(GESTURE_SLOT_CUSTOM, act, true) -- true = autokill
         self:AnimSetGestureWeight(GESTURE_SLOT_CUSTOM, weight)
