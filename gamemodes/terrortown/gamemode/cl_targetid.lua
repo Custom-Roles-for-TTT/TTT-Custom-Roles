@@ -624,7 +624,7 @@ function GM:HUDDrawTargetID()
         text = StringUpper(ROLE_STRINGS[role])
         col = ROLE_COLORS_RADAR[role]
     elseif target_jester then
-        text = GetPTranslation(target_unknown_team, { targettype = StringUpper(GetTranslation("jester")) })
+        text = GetPTranslation("target_unknown_team", { targettype = StringUpper(GetTranslation("jester")) })
         col = ROLE_COLORS_RADAR[ROLE_JESTER]
     elseif target_monster then
         text = StringUpper(ROLE_STRINGS[target_monster])

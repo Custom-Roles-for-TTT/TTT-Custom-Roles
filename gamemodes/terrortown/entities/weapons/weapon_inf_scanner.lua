@@ -88,7 +88,17 @@ end
 function SWEP:SecondaryAttack()
 end
 
-function SWEP:GetViewModelPosition(pos, ang)
+function SWEP:Holster()
+    self:SetState(SCANNER_IDLE)
+    self:SetTarget("")
+    self:SetMessage("")
+    self:SetScanStart(-1)
+    self:SetTargetLost(-1)
+    self:SetCooldown(-1)
+    return true
+end
+
+function SWEP:GetViewModelPosition(pos, ang) -- TODO: Move out of way of crosshair
 	local forward = ang:Forward()
     -- Move the model away from the player camera so it doesn't take up half the screen
     local dist = Vector(-forward.x * self.ViewModelDistance, -forward.y * self.ViewModelDistance, -forward.z * self.ViewModelDistance)
@@ -135,12 +145,28 @@ if SERVER then
         end
     end
 
+    function SWEP:InRange(target)
+        if not self:GetOwner():IsLineOfSightClear(target) then return false end
+
+        local ownerPos = self:GetOwner():GetPos()
+        local targetPos = target:GetPos()
+        if ownerPos:Distance(targetPos) > 2500 then return false end
+
+        local dir = targetPos - ownerPos
+        dir:Normalize()
+        local eye = self:GetOwner():EyeAngles():Forward()
+        if math.acos(dir:Dot(eye)) > 0.35 then return false end
+
+        return true
+    end
+
     function SWEP:ScanAllowed(target)
         if not IsPlayer(target) then return false end
         if not target:IsActive() then return false end
+        if not self:InRange(target) then return false end
         if target:IsJesterTeam() and not GetConVar("ttt_informant_can_scan_jesters"):GetBool() then return false end
         if (target:IsGlitch() or target:IsTraitorTeam()) then
-            if not GetConVar("ttt_informant_can_scan_glitches"):GetBool() return false end
+            if not GetConVar("ttt_informant_can_scan_glitches"):GetBool() then return false end
             if target:IsGlitch() then return true end
             local glitchMode = GetConVar("ttt_glitch_mode"):GetInt()
             if GetGlobalBool("ttt_glitch_round", false) and ((glitchMode == GLITCH_SHOW_AS_TRAITOR and target:IsTraitor()) or glitchMode >= GLITCH_SHOW_AS_SPECIAL_TRAITOR) then
@@ -159,13 +185,17 @@ if SERVER then
                 if target:IsDetectiveTeam() then
                     if GetConVar("ttt_detective_hide_special_mode"):GetInt() >= SPECIAL_DETECTIVE_HIDE_FOR_ALL then
                         target:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_TEAM)
+                        stage = INFORMANT_SCANNED_TEAM
                     else
                         target:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_ROLE)
+                        stage = INFORMANT_SCANNED_ROLE
                     end
                 elseif target:IsJesterTeam() or target:IsTraitorTeam() or target:IsGlitch() then
                     target:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_TEAM)
+                    stage = INFORMANT_SCANNED_TEAM
                 end
-            elseif CurTime() - self:GetScanStart() >= GetConVar("ttt_informant_scanner_time"):GetInt() then
+            end
+            if CurTime() - self:GetScanStart() >= GetConVar("ttt_informant_scanner_time"):GetInt() then
                 stage = stage + 1
                 if stage == INFORMANT_SCANNED_TEAM then
                     local message = "discovered that " .. target:Nick() .. " is "
@@ -178,34 +208,22 @@ if SERVER then
                     end
 
                     self:Announce(message)
+                    self:SetScanStart(CurTime())
                 elseif stage == INFORMANT_SCANNED_ROLE then
                     self:Announce("discovered that " .. target:Nick() .. " is " .. ROLE_STRINGS_EXT[target:GetRole()] .. ".")
+                    self:SetScanStart(CurTime())
                 elseif stage == INFORMANT_SCANNED_TRACKED then
                     self:Announce("tracked the movements of " .. target:Nick() .. " (" .. ROLE_STRINGS[target:GetRole()] .. ").")
+                    self:SetState(SCANNER_IDLE)
+                    self:SetTarget("")
+                    self:SetScanStart(-1)
+                    self:SetMessage("")
                 end
-                self:SetState(SCANNER_IDLE)
-                self:SetTarget("")
-                self:SetScanStart(-1)
-                self:SetMessage("")
                 target:SetNWInt("TTTInformantScanStage", stage)
             end
         else
             self:TargetLost()
         end
-    end
-
-    function SWEP:InRange(target)
-        if not self:GetOwner():IsLineOfSightClear(target) then return false end
-
-        local ownerPos = self:GetOwner():GetPos()
-        local targetPos = target:GetPos()
-        if ownerPos:Distance(targetPos) > 1000 then return false end -- TODO: Update max distance
-
-        local dir = targetPos:Sub(ownerPos):GetNormalized()
-        local eye = self:GetOwner():EyeAngles():Forward()
-        if math.acos(dir:Dot(eye)) > 1 then return false end -- TODO: Update max angle
-        
-        return true
     end
 
     function SWEP:Think()
@@ -226,7 +244,7 @@ if SERVER then
                 if not self:InRange(target) then
                     self:SetState(SCANNER_SEARCHING)
                     self:SetTargetLost(CurTime())
-                    self:SetMessage("SCANNING " .. string.upper(target:Nick()) .. "(LOSING TARGET)")
+                    self:SetMessage("SCANNING " .. string.upper(target:Nick()) .. " (LOSING TARGET)")
                 end
                 self:Scan(target)
             else
@@ -269,7 +287,10 @@ if CLIENT then
         local state = self:GetState()
         self.BaseClass.DrawHUD(self)
 
-        if state == SCANNER_IDLE then return end
+        if state == SCANNER_IDLE then
+            surface.DrawCircle(ScrW() / 2, ScrH() / 2, math.Round(ScrW() / 6), 0, 255, 0, 155)
+            return
+        end
 
         local scan = self:GetScanTime()
         local time = self:GetScanStart() + scan
@@ -289,8 +310,10 @@ if CLIENT then
 
             if state == SCANNER_LOCKED then
                 surface.SetDrawColor(0, 255, 0, 155)
+                surface.DrawCircle(x, ScrH() / 2, math.Round(ScrW() / 6), 0, 255, 0, 155)
             else
                 surface.SetDrawColor(255, 255, 0, 155)
+                surface.DrawCircle(x, ScrH() / 2, math.Round(ScrW() / 6), 255, 255, 0, 155)
             end
 
             surface.DrawOutlinedRect(x - m - (3 * w) / 2, y - h, w, h)
@@ -326,6 +349,7 @@ if CLIENT then
             surface.DrawText(self:GetMessage())
         elseif state == SCANNER_LOST then
             surface.SetDrawColor(200 + math.sin(CurTime() * 32) * 50, 0, 0, 155)
+            surface.DrawCircle(x, ScrH() / 2, math.Round(ScrW() / 6), 200 + math.sin(CurTime() * 32) * 50, 0, 0, 155)
 
             surface.DrawOutlinedRect(x - m - (3 * w) / 2, y - h, w, h)
             surface.DrawOutlinedRect(x - w / 2, y - h, w, h)

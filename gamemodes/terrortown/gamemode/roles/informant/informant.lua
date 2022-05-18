@@ -43,3 +43,21 @@ hook.Add("TTTPrepareRound", "Informant_PrepareRound", function()
         v:SetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
     end
 end)
+
+------------------
+-- ROLE CHANGES --
+------------------
+
+hook.Add("TTTPlayerRoleChanged", "Informant_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+    if ply:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED) > INFORMANT_UNSCANNED then
+        local share = GetGlobalBool("ttt_informant_share_scans", true)
+        for _, v in pairs(GetAllPlayers()) do
+            if v:IsActiveInformant() then
+                v:PrintMessage(HUD_PRINTTALK, ply:Nick() .. " has changed roles. You will need to rescan them.")
+            elseif v:IsActiveTraitorTeam() and share then
+                v:PrintMessage(HUD_PRINTTALK, ply:Nick() .. " has changed roles. The informant will need to rescan them.")
+            end
+        end
+        ply:SetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
+    end
+end)

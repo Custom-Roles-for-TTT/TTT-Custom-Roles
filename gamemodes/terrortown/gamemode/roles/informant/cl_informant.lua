@@ -25,7 +25,6 @@ end)
 ---------------
 
 local function GetTeamRole(ply)
-    -- TODO: Check there is a glitch? GetGlobalBool("ttt_glitch_round", false)
     local glitchMode = GetGlobalInt("ttt_glitch_mode", 0)
 
     if ply:IsGlitch() then
@@ -49,7 +48,7 @@ end
 
 hook.Add("TTTTargetIDPlayerRoleIcon", "Informant_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
     if cli:IsInformant() or (cli:IsTraitorTeam() and GetGlobalBool("ttt_informant_share_scans", true)) then
-        local state = ply:GetNWInt("TTTInformantScanStage", 0)
+        local state = ply:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
 
         local newRole = role
         local newNoZ = noZ
@@ -77,7 +76,7 @@ hook.Add("TTTTargetIDPlayerRing", "Informant_TTTTargetIDPlayerRing", function(en
     if GetRoundState() < ROUND_ACTIVE then return end
 
     if IsPlayer(ent) and cli:IsInformant() or (cli:IsTraitorTeam() and GetGlobalBool("ttt_informant_share_scans", true)) then
-        local state = ent:GetNWInt("TTTInformantScanStage", 0)
+        local state = ent:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
 
         local newRingVisible = ringVisible
         local newColor = false
@@ -98,7 +97,7 @@ hook.Add("TTTTargetIDPlayerText", "Informant_TTTTargetIDPlayerText", function(en
     if GetRoundState() < ROUND_ACTIVE then return end
 
     if IsPlayer(ent) and cli:IsInformant() or (cli:IsTraitorTeam() and GetGlobalBool("ttt_informant_share_scans", true)) then
-        local state = ent:GetNWInt("TTTInformantScanStage", 0)
+        local state = ent:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
 
         local newText = text
         local newColor = col
@@ -124,7 +123,9 @@ hook.Add("TTTTargetIDPlayerText", "Informant_TTTTargetIDPlayerText", function(en
             elseif JESTER_ROLES[role] then label_param = T("jester")
             elseif MONSTER_ROLES[role] then label_param = T("monster") end
 
-            newText = PT(label_name, { targettype = StringUpper(label_param) })
+            if not (TRAITOR_ROLES[role] and not GetGlobalBool("ttt_glitch_round", false)) then
+                newText = PT(label_name, { targettype = StringUpper(label_param) })
+            end
         elseif state >= INFORMANT_SCANNED_ROLE then
             newColor = ROLE_COLORS_RADAR[ent:GetRole()]
             newText = StringUpper(ROLE_STRINGS[ent:GetRole()])
