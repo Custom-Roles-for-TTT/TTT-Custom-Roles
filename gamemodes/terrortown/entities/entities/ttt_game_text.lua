@@ -10,8 +10,11 @@ local RECEIVE_ALL = 1
 local RECEIVE_DETECTIVE = 2
 local RECEIVE_TRAITOR = 3
 local RECEIVE_INNOCENT = 4
+local RECEIVE_JESTER = 5
+local RECEIVE_INDEPENDENT = 6
+local RECEIVE_MONSTER = 7
 
-local RECEIVE_MAX = RECEIVE_INNOCENT
+local RECEIVE_MAX = RECEIVE_MONSTER
 ENT.Receiver = RECEIVE_ACTIVATOR
 
 function ENT:KeyValue(key, value)
@@ -43,11 +46,17 @@ function ENT:AcceptInput(name, activator)
         if r == RECEIVE_ALL then
             recv = nil
         elseif r == RECEIVE_DETECTIVE then
-            recv = GetDetectiveFilter()
+            recv = GetDetectiveTeamFilter()
         elseif r == RECEIVE_TRAITOR then
-            recv = GetTraitorFilter()
+            recv = GetTraitorTeamFilter()
         elseif r == RECEIVE_INNOCENT then
-            recv = GetInnocentFilter()
+            recv = GetInnocentTeamFilter()
+        elseif r == RECEIVE_JESTER then
+            recv = GetJesterTeamFilter()
+        elseif r == RECEIVE_INDEPENDENT then
+            recv = GetIndependentTeamFilter()
+        elseif r == RECEIVE_MONSTER then
+            recv = GetMonsterTeamFilter()
         elseif r == RECEIVE_ACTIVATOR then
             if not (IsValid(activator) and activator:IsPlayer()) then
                 ErrorNoHalt("ttt_game_text tried to show message to invalid !activator\n")
