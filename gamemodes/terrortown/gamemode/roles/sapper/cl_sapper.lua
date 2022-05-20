@@ -84,7 +84,7 @@ hook.Add("TTTTutorialRoleText", "Sapper_TTTTutorialRoleText", function(role, tit
     if role == ROLE_SAPPER then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local detectiveColor = GetRoleTeamColor(ROLE_TEAM_DETECTIVE)
-        local html = "The " .. ROLE_STRINGS[ROLE_SAPPER] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> whose job is to find and eliminate their enemies."
+        local html = "The " .. ROLE_STRINGS[ROLE_SAPPER] .. " is a " .. ROLE_STRINGS[ROLE_DETECTIVE] .. " and a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> whose job is to find and eliminate their enemies."
 
         local fire_immune = GetGlobalBool("ttt_sapper_fire_immune", false)
         local andfire = ""
@@ -109,6 +109,16 @@ hook.Add("TTTTutorialRoleText", "Sapper_TTTTutorialRoleText", function(role, tit
         if GetGlobalBool("ttt_sapper_c4_guaranteed_defuse", false) then
             html = html .. "<span style='display: block; margin-top: 10px;'>When defusing C4, the " .. ROLE_STRINGS[ROLE_SAPPER] .. " <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>will always succeeed</span>.</span>"
         end
+
+        html = html .. "<span style='display: block; margin-top: 10px;'>Other players will know you are " .. ROLE_STRINGS_EXT[ROLE_DETECTIVE] .. " just by <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>looking at you</span>"
+        local special_detective_mode = GetGlobalInt("ttt_detective_hide_special_mode", SPECIAL_DETECTIVE_HIDE_NONE)
+        if special_detective_mode > SPECIAL_DETECTIVE_HIDE_NONE then
+            html = html .. ", but not what specific type of " .. ROLE_STRINGS[ROLE_DETECTIVE]
+            if special_detective_mode == SPECIAL_DETECTIVE_HIDE_FOR_ALL then
+                html = html .. ". <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>Not even you know what type of " .. ROLE_STRINGS[ROLE_DETECTIVE] .. " you are</span>"
+            end
+        end
+        html = html .. ".</span>"
 
         return html
     end

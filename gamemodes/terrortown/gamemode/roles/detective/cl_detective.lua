@@ -26,6 +26,16 @@ hook.Add("TTTTutorialRoleText", "Detective_TTTTutorialRoleText", function(role, 
             html = html .. "<span style='display: block; margin-top: 10px;'>" .. ROLE_STRINGS_PLURAL[ROLE_DETECTIVE] .. " are the only roles allowed to <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>search bodies</span> to find information about who they were and how they died."
         end
 
-        return html .. "<span style='display: block; margin-top: 10px;'>Other players will know you are " .. ROLE_STRINGS_EXT[ROLE_DETECTIVE] .. " just by <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>looking at you</span>."
+        html = html .. "<span style='display: block; margin-top: 10px;'>Other players will know you are " .. ROLE_STRINGS_EXT[ROLE_DETECTIVE] .. " just by <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>looking at you</span>"
+        local special_detective_mode = GetGlobalInt("ttt_detective_hide_special_mode", SPECIAL_DETECTIVE_HIDE_NONE)
+        if special_detective_mode > SPECIAL_DETECTIVE_HIDE_NONE then
+            html = html .. ", but not what specific type of " .. ROLE_STRINGS[ROLE_DETECTIVE]
+            if special_detective_mode == SPECIAL_DETECTIVE_HIDE_FOR_ALL then
+                html = html .. ". <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>Not even you know what type of " .. ROLE_STRINGS[ROLE_DETECTIVE] .. " you are</span>"
+            end
+        end
+        html = html .. ".</span>"
+
+        return html
     end
 end)
