@@ -124,6 +124,9 @@ hook.Add("TTTTargetIDPlayerText", "Informant_TTTTargetIDPlayerText", function(en
 
             local label_name = "target_unknown_team"
             local label_param
+
+            local glitchMode = GetGlobalInt("ttt_glitch_mode", 0)
+
             if TRAITOR_ROLES[role] then
                 if glitchMode == GLITCH_SHOW_AS_TRAITOR or glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES then
                     label_param = T("traitor")
