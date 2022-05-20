@@ -245,7 +245,12 @@ function PANEL:Paint(width, height)
         end
 
         c = color or ROLE_COLORS_SCOREBOARD[role]
-        roleStr = ROLE_STRINGS_SHORT[role]
+        -- Show the question mark icon for jesters
+        if role == ROLE_JESTER then
+            roleStr = ROLE_STRINGS_SHORT[ROLE_NONE]
+        else
+            roleStr = ROLE_STRINGS_SHORT[role]
+        end
     end
 
     -- Allow external addons (like new roles) to manipulate how a player appears on the scoreboard

@@ -43,6 +43,14 @@ if SERVER then
     resource.AddSingleFile("materials/vgui/ttt/sprite_target_noz.vmt")
     resource.AddSingleFile("materials/vgui/ttt/sprite_target.vtf")
 
+    -- "Nil" role
+    resource.AddFile("materials/vgui/ttt/roles/nil/icon_nil.vmt")
+    resource.AddSingleFile("materials/vgui/ttt/roles/nil/score_nil.png")
+    resource.AddSingleFile("materials/vgui/ttt/roles/nil/tab_nil.png")
+    resource.AddSingleFile("materials/vgui/ttt/roles/nil/sprite_nil.vmt")
+    resource.AddSingleFile("materials/vgui/ttt/roles/nil/sprite_nil_noz.vmt")
+    resource.AddSingleFile("materials/vgui/ttt/roles/nil/sprite_nil.vtf")
+
     -- Misc
     resource.AddFile("materials/thieves/footprint.vmt")
     resource.AddFile("materials/vgui/ttt/tele_mark.vmt")

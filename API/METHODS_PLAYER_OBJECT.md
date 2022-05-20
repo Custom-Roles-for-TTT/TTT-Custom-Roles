@@ -142,9 +142,37 @@ Methods available when called from a Player object (within the defined realm)
 *Parameters:*
 - *target* - The other player whose team is being compared
 
+**plymeta:IsScoreboardInfoOverridden(target)** - Whether the player is currently overriding a piece of scoreboard information.\
+*Realm:* Client\
+*Added in:* 1.5.15\
+*Parameters:*
+- *target* - The player whose scoreboard info is being rendered
+
+*Returns:*
+- *isNameOverridden* - Whether the player name is currently overridden
+- *isRoleOverridden* - Whether the role color or icon is currently overridden
+
 **plymeta:IsShopRole()** - Whether the player has a shop (see `plymeta:CanUseShop` for determining if it is openable).\
 *Realm:* Client and Server\
 *Added in:* 1.0.0
+
+**plymeta:IsTargetHighlighted(target)** - Whether the target player is highlighted based the player's role rules.\
+*Realm:* Client\
+*Added in:* 1.5.15\
+*Parameters:*
+- *target* - The player whose scoreboard info is being rendered
+
+**plymeta:IsTargetIDOverridden(target, showJester)** - Whether the player is currently overriding a piece of target ID information.\
+*Realm:* Client\
+*Added in:* 1.5.15\
+*Parameters:*
+- *target* - The player whose scoreboard info is being rendered
+- *showJester* - Whether the target is a jester and the local player would normally know that
+
+*Returns:*
+- *isIconOverridden* - Whether the target ID role icon is currently overridden
+- *isRingOverridden* - Whether the target ID identification ring is currently overridden
+- *isTextOverridden* - Whether the target ID text is currently overridden
 
 **plymeta:IsTraitorTeam()** - Whether the player is on the traitor team.\
 *Realm:* Client and Server\

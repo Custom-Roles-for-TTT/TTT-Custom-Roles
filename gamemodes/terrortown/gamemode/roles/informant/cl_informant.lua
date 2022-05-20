@@ -11,6 +11,9 @@ hook.Add("Initialize", "Informant_Translations_Initialize", function()
     -- Weapons
     LANG.AddToLanguage("english", "infscanner_help_pri", "Look at a player to start scanning.")
     LANG.AddToLanguage("english", "infscanner_help_sec", "Keep light of sight or you will lose your target.")
+    LANG.AddToLanguage("english", "infscanner_team", "TEAM")
+    LANG.AddToLanguage("english", "infscanner_role", "ROLE")
+    LANG.AddToLanguage("english", "infscanner_track", "TRACK")
 
     -- Popup
     LANG.AddToLanguage("english", "info_popup_informant", [[You are {role}! {comrades}
@@ -47,6 +50,11 @@ local function GetTeamRole(ply)
 end
 
 hook.Add("TTTTargetIDPlayerRoleIcon", "Informant_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
+    if GetRoundState() < ROUND_ACTIVE then return end
+
+    local override, _, _ = cli:IsTargetIDOverridden(ply, showJester)
+    if override then return end
+
     if cli:IsInformant() or (cli:IsTraitorTeam() and GetGlobalBool("ttt_informant_share_scans", true)) then
         local state = ply:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
 
@@ -75,6 +83,9 @@ end)
 hook.Add("TTTTargetIDPlayerRing", "Informant_TTTTargetIDPlayerRing", function(ent, cli, ringVisible)
     if GetRoundState() < ROUND_ACTIVE then return end
 
+    local _, override, _ = cli:IsTargetIDOverridden(ply)
+    if override then return end
+
     if IsPlayer(ent) and cli:IsInformant() or (cli:IsTraitorTeam() and GetGlobalBool("ttt_informant_share_scans", true)) then
         local state = ent:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
 
@@ -95,6 +106,9 @@ end)
 
 hook.Add("TTTTargetIDPlayerText", "Informant_TTTTargetIDPlayerText", function(ent, cli, text, col, secondaryText)
     if GetRoundState() < ROUND_ACTIVE then return end
+
+    local _, _, override = cli:IsTargetIDOverridden(ply)
+    if override then return end
 
     if IsPlayer(ent) and cli:IsInformant() or (cli:IsTraitorTeam() and GetGlobalBool("ttt_informant_share_scans", true)) then
         local state = ent:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)

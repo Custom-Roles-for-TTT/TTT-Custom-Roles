@@ -381,6 +381,32 @@ if CLIENT then
         return self:Crouching() and 28 or 64
     end
 
+    function plymeta:IsTargetIDOverridden(target, showJester)
+        -- Check if this role has an external definition for "IsTargetIDOverridden" and use that
+        local role = self:GetRole()
+        if ROLE_IS_TARGETID_OVERRIDDEN[role] then return ROLE_IS_TARGETID_OVERRIDDEN[role](self, target, showJester) end
+
+        ------ icon,  ring,  text
+        return false, false, false
+    end
+
+    function plymeta:IsScoreboardInfoOverridden(target)
+        -- Check if this role has an external definition for "IsScoreboardInfoOverridden" and use that
+        local role = self:GetRole()
+        if ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[role] then return ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[role](self, target) end
+
+        ------ name,  role
+        return false, false
+    end
+
+    function plymeta:IsTargetHighlighted(target)
+        -- Check if this role has an external definition for "IsTargetHighlighted" and use that
+        local role = self:GetRole()
+        if ROLE_IS_TARGET_HIGHLIGHTED[role] then return ROLE_IS_TARGET_HIGHLIGHTED[role](self, target) end
+
+        return false
+    end
+
     function plymeta:AnimApplyGesture(act, weight)
         self:AnimRestartGesture(GESTURE_SLOT_CUSTOM, act, true) -- true = autokill
         self:AnimSetGestureWeight(GESTURE_SLOT_CUSTOM, weight)

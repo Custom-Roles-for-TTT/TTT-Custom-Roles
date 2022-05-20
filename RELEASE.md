@@ -1,13 +1,26 @@
 # Release Notes
 
 ## 1.5.15 (Beta)
-**Released: **
+**Released:**
 
 ### Additions
 - Added new special traitor role: the informant
+- Added information on the scoreboard when the clown is activated
+- Added information on the scoreboard when the old man is activated
 
 ### Changes
-- Changed jester team to show question mark icons over their head instead of the jester icon
+- Changed jester team to show question mark icons over their head and on the scoreboard instead of the jester icon
+- Changed maps which send messages to specific vanilla roles to instead send those messages to the equivalent team
+
+### Developer
+- Added `plymeta:IsTargetIDOverridden` to determine whether the player is currently overriding a piece of Target ID information
+- Added ability for external roles to define their own `plymeta:IsTargetIDOverridden`
+- Added `plymeta:IsScoreboardInfoOverridden` to determine whether the player is currently overriding a piece of scoreboard information
+- Added ability for external roles to define their own `plymeta:IsScoreboardInfoOverridden`
+- Added `plymeta:IsTargetHighlighted` to determine whether the target is being highlighted per the player's role rules
+- Added ability for external roles to define their own `plymeta:IsTargetHighlighted`
+- Changed `ttt_game_text` entity to use the team-equivalent for existing role receivers (e.g. RECEIVE_TRAITOR now sends to the traitor team, not just the traitor role)
+- Added ability for `ttt_game_text` entity to set the receiver to be jesters (5), independents (6), or monsters (7)
 
 ## 1.5.14 (Beta)
 **Released: May 15th, 2022**
@@ -20,7 +33,7 @@
 ### Developer
 - Added `TTTDeathNotifyOverride` hook to allow developers to change what name and role shows in the death notification message
 - Added `plymeta:CanSeeC4` to determine whether the player can see the C4 radar icon like traitors
-- Added ability for external roles to define whether they should see the C4 radar icon like traitors
+- Added ability for external roles to define their own `plymeta:CanSeeC4`
 - Changed the `TTTC4Disarm` hook to allow changing the defusal result via the new return value
 
 ## 1.5.13 (Beta)
