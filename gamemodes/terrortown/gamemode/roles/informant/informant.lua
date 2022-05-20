@@ -38,16 +38,6 @@ end)
 -- ROLE STATE --
 ----------------
 
-hook.Add("TTTPrepareRound", "Informant_PrepareRound", function()
-    for _, v in pairs(GetAllPlayers()) do
-        v:SetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
-    end
-end)
-
-------------------
--- ROLE CHANGES --
-------------------
-
 local function SetDefaultScanState(ply)
     if ply:IsDetectiveTeam() then
         -- If the detective's role is not known, only skip the team scan
@@ -57,15 +47,34 @@ local function SetDefaultScanState(ply)
         else
             ply:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_ROLE)
         end
+    -- Handle traitor logic specially so we don't expose roles when there is a glitch
+    elseif (ply:IsTraitorTeam() and not ply:IsInformant()) or ply:IsGlitch() then
+        if GetGlobalBool("ttt_glitch_round", false) then
+            ply:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_TEAM)
+        else
+            ply:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_ROLE)
+        end
     -- Skip the team scanning stage for any role whose team is already known by a traitor
-    elseif ply:IsJesterTeam() or (ply:IsTraitorTeam() and not ply:IsInformant()) or ply:IsGlitch() then
+    elseif ply:IsJesterTeam() then
         ply:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_TEAM)
+    else
+        ply:SetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
     end
 end
 
+hook.Add("TTTBeginRound", "Informant_TTTBeginRound", function()
+    for _, v in pairs(GetAllPlayers()) do
+        SetDefaultScanState(v)
+    end
+end)
+
+------------------
+-- ROLE CHANGES --
+------------------
+
 hook.Add("TTTPlayerRoleChanged", "Informant_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
-    if oldRole ~= newRole then
-        if GetRoundState() == ROUND_ACTIVE and ply:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED) > INFORMANT_UNSCANNED then
+    if oldRole ~= newRole and GetRoundState() == ROUND_ACTIVE then
+        if ply:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED) > INFORMANT_UNSCANNED then
             local share = GetGlobalBool("ttt_informant_share_scans", true)
             for _, v in pairs(GetAllPlayers()) do
                 if v:IsActiveInformant() then
