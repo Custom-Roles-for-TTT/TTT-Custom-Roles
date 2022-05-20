@@ -65,7 +65,7 @@ end
 
 hook.Add("TTTPlayerRoleChanged", "Informant_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if oldRole ~= newRole then
-        if ply:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED) > INFORMANT_UNSCANNED then
+        if GetRoundState() == ROUND_ACTIVE and ply:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED) > INFORMANT_UNSCANNED then
             local share = GetGlobalBool("ttt_informant_share_scans", true)
             for _, v in pairs(GetAllPlayers()) do
                 if v:IsActiveInformant() then
