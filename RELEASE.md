@@ -10,8 +10,9 @@
 
 ### Changes
 - Changed jester team to show question mark icons over their head and on the scoreboard instead of the jester icon
-- Changed detective team to show question mark icons over their head and on the scoreboard instead of the detective icon if roles are hidden
 - Changed maps which send messages to specific vanilla roles to instead send those messages to the equivalent team
+- Changed detective team to show question mark icons over their head and on the scoreboard instead of the detective icon if roles are hidden
+- Changed hidden detective HUD text to make it clear that the role is unknown but others still know its a detective
 
 ### Developer
 - Added `plymeta:IsTargetIDOverridden` to determine whether the player is currently overriding a piece of Target ID information
