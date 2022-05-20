@@ -129,7 +129,14 @@ function GM:PostDrawTranslucentRenderables()
                 local color_role = nil
                 local noz = false
                 if v:IsDetectiveTeam() then
-                    role = v:GetDisplayedRole()
+                    local disp_role, changed = v:GetDisplayedRole()
+                    -- If the displayed role was changed, use it for the color but use the question mark for the icon
+                    if changed then
+                        color_role = disp_role
+                        role = ROLE_NONE
+                    else
+                        role = disp_role
+                    end
                 elseif v:IsDetectiveLike() and not (v:IsImpersonator() and client:IsTraitorTeam()) then
                     role = GetDetectiveIconRole(false)
                 end
@@ -310,6 +317,7 @@ function GM:HUDDrawTargetID()
     local target_traitor = false
     local target_special_traitor = false
     local target_detective = false
+    local target_unknown_detective = false
     local target_special_detective = false
 
     local target_glitch = false
@@ -411,9 +419,12 @@ function GM:HUDDrawTargetID()
         end
 
         if GetRoundState() > ROUND_PREP then
-            if ent:GetDisplayedRole() == ROLE_DETECTIVE or ((ent:IsDeputy() or (ent:IsImpersonator() and not client:IsTraitorTeam())) and ent:IsRoleActive()) then
+            local _, changed = ent:GetDisplayedRole()
+            if (ent:IsDetective() and not changed) or ((ent:IsDeputy() or (ent:IsImpersonator() and not client:IsTraitorTeam())) and ent:IsRoleActive()) then
                 target_detective = true
-            elseif ent:IsDetectiveTeam() and not target_detective then
+            elseif changed then
+                target_unknown_detective = true
+            elseif ent:IsDetectiveTeam() then
                 target_special_detective = true
             end
         end
@@ -452,7 +463,7 @@ function GM:HUDDrawTargetID()
 
     local w, h = 0, 0 -- text width/height, reused several times
 
-    local ring_visible = target_traitor or target_special_traitor or target_detective or target_special_detective or target_glitch or target_jester or target_independent or target_monster
+    local ring_visible = target_traitor or target_special_traitor or target_detective or target_unknown_detective or target_special_detective or target_glitch or target_jester or target_independent or target_monster
 
     local new_visible, color_override = CallHook("TTTTargetIDPlayerRing", nil, ent, client, ring_visible)
     if type(new_visible) == "boolean" then ring_visible = new_visible end
@@ -466,7 +477,7 @@ function GM:HUDDrawTargetID()
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_TRAITOR])
         elseif target_special_traitor then
             surface.SetDrawColor(GetRoleTeamColor(ROLE_TEAM_TRAITOR, "radar"))
-        elseif target_detective then
+        elseif target_detective or target_unknown_detective then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_DETECTIVE])
         elseif target_special_detective then
             surface.SetDrawColor(GetRoleTeamColor(ROLE_TEAM_DETECTIVE, "radar"))
@@ -623,6 +634,9 @@ function GM:HUDDrawTargetID()
         local role = ent:GetRole()
         text = StringUpper(ROLE_STRINGS[role])
         col = ROLE_COLORS_RADAR[role]
+    elseif target_unknown_detective then
+        text = GetPTranslation("target_unknown_team", { targettype = StringUpper(ROLE_STRINGS[ROLE_DETECTIVE]) })
+        col = ROLE_COLORS_RADAR[ROLE_DETECTIVE]
     elseif target_jester then
         text = GetPTranslation("target_unknown_team", { targettype = StringUpper(GetTranslation("jester")) })
         col = ROLE_COLORS_RADAR[ROLE_JESTER]
