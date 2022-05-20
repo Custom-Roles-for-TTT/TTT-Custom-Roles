@@ -28,7 +28,7 @@ end)
 ---------------
 
 local function GetTeamRole(ply)
-    local glitchMode = GetGlobalInt("ttt_glitch_mode", 0)
+    local glitchMode = GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR)
 
     if ply:IsGlitch() then
         if glitchMode == GLITCH_SHOW_AS_TRAITOR or glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES then
@@ -128,11 +128,11 @@ hook.Add("TTTTargetIDPlayerText", "Informant_TTTTargetIDPlayerText", function(en
             local labelParam
 
             if TRAITOR_ROLES[role] then
-                local glitchMode = GetGlobalInt("ttt_glitch_mode", 0)
+                local glitchMode = GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR)
                 if glitchMode == GLITCH_SHOW_AS_TRAITOR or glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES then
                     labelParam = T("traitor")
                 elseif glitchMode == GLITCH_SHOW_AS_SPECIAL_TRAITOR then
-                    labelName = "label_unconfirmed_role"
+                    labelName = "target_unconfirmed_role"
                     labelParam = ROLE_STRINGS[role]
                 end
             elseif DETECTIVE_ROLES[role] then labelParam = ROLE_STRINGS[ROLE_DETECTIVE]
