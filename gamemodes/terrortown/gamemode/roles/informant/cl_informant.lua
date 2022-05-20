@@ -149,6 +149,34 @@ hook.Add("TTTTargetIDPlayerText", "Informant_TTTTargetIDPlayerText", function(en
     end
 end)
 
+----------------
+-- SCOREBOARD --
+----------------
+
+hook.Add("TTTScoreboardPlayerRole", "Informant_TTTScoreboardPlayerRole", function(ply, cli, c, roleStr)
+    if GetRoundState() < ROUND_ACTIVE then return end
+
+    local _, override = cli:IsScoreboardInfoOverridden(ply)
+    if override then return end
+
+    if IsPlayer(ply) and cli:IsInformant() or (cli:IsTraitorTeam() and GetGlobalBool("ttt_informant_share_scans", true)) then
+        local state = ply:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
+
+        local newColor = c
+        local newRoleStr = roleStr
+
+        if state == INFORMANT_SCANNED_TEAM then
+            newColor = ROLE_COLORS_SCOREBOARD[GetTeamRole(ply)]
+            newRoleStr = "nil"
+        elseif state >= INFORMANT_SCANNED_ROLE then
+            newColor = ROLE_COLORS_SCOREBOARD[ply:GetRole()]
+            newRoleStr = ROLE_STRINGS_SHORT[ply:GetRole()]
+        end
+
+        return newColor, newRoleStr
+    end
+end)
+
 --------------
 -- TUTORIAL --
 --------------
@@ -156,7 +184,29 @@ end)
 hook.Add("TTTTutorialRoleText", "Informant_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_INFORMANT then
         local roleColor = ROLE_COLORS[ROLE_TRAITOR]
+        local jesterColor = ROLE_COLORS[ROLE_JESTER]
+        local glitchColor = ROLE_COLORS[ROLE_GLITCH]
         local html = "The " .. ROLE_STRINGS[ROLE_INFORMANT] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitor team</span> whose goal is to learn more about their enemies using their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>scanner</span>."
+
+        local scanJesters = GetGlobalBool("ttt_informant_can_scan_jesters", false)
+        local scanGlitches = GetGlobalBool("ttt_informant_can_scan_glitches", false)
+        if not (scanJesters and scanGlitches) then
+            html = html + "<span style='display: block; margin-top: 10px;'>You cannot scan "
+            if not scanJesters then
+                html = html + "<span style='color: rgb(" .. jesterColor.r .. ", " .. jesterColor.g .. ", " .. jesterColor.b .. ")'>jesters</span>"
+            end
+            if not scanJesters and not scanGlitches then
+                html = html + " or "
+            end
+            if not scanGlitches then
+                html = html + "<span style='color: rgb(" .. glitchColor.r .. ", " .. glitchColor.g .. ", " .. glitchColor.b .. ")'>glitches</span>"
+            end
+            html = html + ".</span>"
+        end
+
+        if GetGlobalBool("ttt_informant_share_scans", false) then
+            html = html + "<span style='display: block; margin-top: 10px;'>Information you discover is automatically shared with fellow <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitors</span>.</span>"
+        end
 
         return html
     end

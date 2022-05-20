@@ -11,7 +11,7 @@ local GetAllPlayers = player.GetAll
 -------------
 
 local informant_share_scans = CreateConVar("ttt_informant_share_scans", "1")
-local informant_can_scan_jesters = CreateConVar("ttt_informant_can_scan_jesters", "1")
+local informant_can_scan_jesters = CreateConVar("ttt_informant_can_scan_jesters", "0")
 local informant_can_scan_glitches = CreateConVar("ttt_informant_can_scan_glitches", "0")
 
 hook.Add("TTTSyncGlobals", "Informant_TTTSyncGlobals", function()
