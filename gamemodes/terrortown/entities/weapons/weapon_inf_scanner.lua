@@ -315,15 +315,6 @@ if CLIENT then
             self:DrawStructure(x, y, w, h, m, color)
 
             local target = player.GetBySteamID64(self:GetTarget())
-            -- TODO: Remove this
-            if not IsPlayer(target) then
-                for _, ply in ipairs(GetAllPlayers()) do
-                    if ply:Nick() == "Bot01" then
-                        target = ply
-                        break
-                    end
-                end
-            end
             local targetState = target:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
 
             local cc = math.min(1, 1 - ((time - CurTime()) / scan))
