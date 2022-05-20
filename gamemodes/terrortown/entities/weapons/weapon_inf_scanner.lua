@@ -63,7 +63,7 @@ local SCANNER_SEARCHING = 2
 local SCANNER_LOST = 3
 
 if SERVER then
-    CreateConVar("ttt_informant_scanner_time", "5", FCVAR_NONE, "The amount of time (in seconds) the informant's scanner takes to use", 0, 60)
+    CreateConVar("ttt_informant_scanner_time", "8", FCVAR_NONE, "The amount of time (in seconds) the informant's scanner takes to use", 0, 60)
     CreateConVar("ttt_informant_scanner_float_time", "1", FCVAR_NONE, "The amount of time (in seconds) it takes for the informant's scanner to lose it's target without line of sight", 0, 60)
     CreateConVar("ttt_informant_scanner_cooldown", "3", FCVAR_NONE, "The amount of time (in seconds) the informant's tracker goes on cooldown for after losing it's target", 0, 60)
 end
