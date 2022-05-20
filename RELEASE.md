@@ -10,6 +10,7 @@
 
 ### Changes
 - Changed jester team to show question mark icons over their head and on the scoreboard instead of the jester icon
+- Changed detective team to show question mark icons over their head and on the scoreboard instead of the detective icon if roles are hidden
 - Changed maps which send messages to specific vanilla roles to instead send those messages to the equivalent team
 
 ### Developer

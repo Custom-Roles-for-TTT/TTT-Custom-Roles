@@ -140,7 +140,7 @@ function GM:TTTScoreboardRowColorForPlayer(ply)
     end
 
     if ply:GetDetectiveLike() then
-        return ply:GetDisplayedRole()
+        return ROLE_DETECTIVE
     elseif ply:IsClown() and ply:IsRoleActive() then
         return ROLE_CLOWN
     end
@@ -232,6 +232,9 @@ function PANEL:Paint(width, height)
         if ply:IsDetectiveLike() then
             if ply:IsDetectiveTeam() then
                 role = ply:GetDisplayedRole()
+                if role == ROLE_NONE then
+                    color = ROLE_COLORS_SCOREBOARD[ROLE_DETECTIVE]
+                end
             elseif client:IsTraitorTeam() and ply:IsImpersonator() then
                 if GetGlobalBool("ttt_impersonator_use_detective_icon", true) then
                     role = ROLE_DETECTIVE

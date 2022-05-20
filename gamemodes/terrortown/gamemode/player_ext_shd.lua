@@ -198,23 +198,23 @@ function plymeta:IsRoleActive()
 end
 
 function plymeta:GetDisplayedRole()
-    if self:IsDetectiveTeam() and not self:IsDetective() then
+    if self:IsDetectiveTeam() then
         local special_detective_mode = GetGlobalInt("ttt_detective_hide_special_mode", SPECIAL_DETECTIVE_HIDE_NONE)
-        -- By default, show detective unless this is disabled
-        local show_detective = special_detective_mode ~= SPECIAL_DETECTIVE_HIDE_NONE
+        -- By default, show the question mark unless this is disabled
+        local role_hidden = special_detective_mode ~= SPECIAL_DETECTIVE_HIDE_NONE
 
         -- But if we're on the client
-        if show_detective and CLIENT then
+        if role_hidden and CLIENT then
             local client = LocalPlayer()
             -- Check if the local player is the special detective
             -- If they are, don't hide their role if we're only hiding for others
             if client == self and special_detective_mode == SPECIAL_DETECTIVE_HIDE_FOR_OTHERS then
-                show_detective = false
+                role_hidden = false
             end
         end
 
-        if show_detective then
-            return ROLE_DETECTIVE
+        if role_hidden then
+            return ROLE_NONE
         end
     end
     return self:GetRole()
