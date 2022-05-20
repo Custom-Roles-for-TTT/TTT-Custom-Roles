@@ -48,16 +48,34 @@ end)
 -- ROLE CHANGES --
 ------------------
 
+local function SetDefaultScanState(ply)
+    if ply:IsDetectiveTeam() then
+        -- If the detective's role is not known, only skip the team scan
+        if GetConVar("ttt_detective_hide_special_mode"):GetInt() >= SPECIAL_DETECTIVE_HIDE_FOR_ALL then
+            ply:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_TEAM)
+        -- Otherwise skip the team and role scan
+        else
+            ply:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_ROLE)
+        end
+    -- Skip the team scanning stage for any role whose team is already known by a traitor
+    elseif ply:IsJesterTeam() or (ply:IsTraitorTeam() and not ply:IsInformant()) or ply:IsGlitch() then
+        ply:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_TEAM)
+    end
+end
+
 hook.Add("TTTPlayerRoleChanged", "Informant_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
-    if oldRole ~= newRole and ply:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED) > INFORMANT_UNSCANNED then
-        local share = GetGlobalBool("ttt_informant_share_scans", true)
-        for _, v in pairs(GetAllPlayers()) do
-            if v:IsActiveInformant() then
-                v:PrintMessage(HUD_PRINTTALK, ply:Nick() .. " has changed roles. You will need to rescan them.")
-            elseif v:IsActiveTraitorTeam() and share then
-                v:PrintMessage(HUD_PRINTTALK, ply:Nick() .. " has changed roles. The " .. ROLE_STRINGS[ROLE_INFORMANT] .. " will need to rescan them.")
+    if oldRole ~= newRole then
+        if ply:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED) > INFORMANT_UNSCANNED then
+            local share = GetGlobalBool("ttt_informant_share_scans", true)
+            for _, v in pairs(GetAllPlayers()) do
+                if v:IsActiveInformant() then
+                    v:PrintMessage(HUD_PRINTTALK, ply:Nick() .. " has changed roles. You will need to rescan them.")
+                elseif v:IsActiveTraitorTeam() and share then
+                    v:PrintMessage(HUD_PRINTTALK, ply:Nick() .. " has changed roles. The " .. ROLE_STRINGS[ROLE_INFORMANT] .. " will need to rescan them.")
+                end
             end
         end
-        ply:SetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
+
+        SetDefaultScanState(ply)
     end
 end)
