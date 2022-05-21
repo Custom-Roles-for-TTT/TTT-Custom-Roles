@@ -41,8 +41,7 @@ If you would like to test the available configurations, we recommend using ULX/U
 - [Fresh Garry](https://steamcommunity.com/id/Fresh_Garry) for the ['TTT Sprint'](https://steamcommunity.com/sharedfiles/filedetails/?id=933056549) mod which was used as the base for this mod's sprinting mechanics.
 - [Lykrast](https://steamcommunity.com/id/Lykrast) for the code and models used to create the old man's double barrel shotgun taken from ['Lykrast's TTT Weapon Collection'](https://steamcommunity.com/sharedfiles/filedetails/?id=337994500).
 - [Game icons](https://game-icons.net), [Noun Project](https://thenounproject.com), and [Icons8](https://icons8.com) for the role icons.
-- Kommandos, Lix3, FunCheetah, B1andy413, Cooliew, The_Samarox, Arack12, and Aspirin for helping us test.
-- Everyone on the Discord server for their suggestions and help testing.
+- Our friends and everyone on the Discord server for their suggestions and help testing.
 
 ## Conflicts
 - Any other addon that adds roles such as Town of Terror, TTT2, or the outdated versions of Custom Roles for TTT. There is no reason to use more than one role addon so remove all the ones you don't want.
