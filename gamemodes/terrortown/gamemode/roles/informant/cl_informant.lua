@@ -195,21 +195,21 @@ hook.Add("TTTTutorialRoleText", "Informant_TTTTutorialRoleText", function(role, 
         local scanJesters = GetGlobalBool("ttt_informant_can_scan_jesters", false)
         local scanGlitches = GetGlobalBool("ttt_informant_can_scan_glitches", false)
         if not (scanJesters and scanGlitches) then
-            html = html + "<span style='display: block; margin-top: 10px;'>You cannot scan "
+            html = html .. "<span style='display: block; margin-top: 10px;'>You cannot scan "
             if not scanJesters then
-                html = html + "<span style='color: rgb(" .. jesterColor.r .. ", " .. jesterColor.g .. ", " .. jesterColor.b .. ")'>jesters</span>"
+                html = html .. "<span style='color: rgb(" .. jesterColor.r .. ", " .. jesterColor.g .. ", " .. jesterColor.b .. ")'>jesters</span>"
             end
             if not scanJesters and not scanGlitches then
-                html = html + " or "
+                html = html .. " or "
             end
             if not scanGlitches then
-                html = html + "<span style='color: rgb(" .. glitchColor.r .. ", " .. glitchColor.g .. ", " .. glitchColor.b .. ")'>glitches</span>"
+                html = html .. "<span style='color: rgb(" .. glitchColor.r .. ", " .. glitchColor.g .. ", " .. glitchColor.b .. ")'>glitches</span>"
             end
-            html = html + ".</span>"
+            html = html .. ".</span>"
         end
 
         if GetGlobalBool("ttt_informant_share_scans", false) then
-            html = html + "<span style='display: block; margin-top: 10px;'>Information you discover is automatically shared with fellow <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitors</span>.</span>"
+            html = html .. "<span style='display: block; margin-top: 10px;'>Information you discover is automatically shared with fellow <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitors</span>.</span>"
         end
 
         return html
