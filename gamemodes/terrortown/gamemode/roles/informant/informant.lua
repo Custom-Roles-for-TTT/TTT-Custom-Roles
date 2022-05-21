@@ -38,6 +38,15 @@ end)
 -- ROLE STATE --
 ----------------
 
+local function HasInformant()
+    for _, v in ipairs(GetAllPlayers()) do
+        if v:IsInformant() then
+            return true
+        end
+    end
+    return false
+end
+
 local function SetDefaultScanState(ply)
     if ply:IsDetectiveTeam() then
         -- If the detective's role is not known, only skip the team scan
@@ -63,6 +72,8 @@ local function SetDefaultScanState(ply)
 end
 
 hook.Add("TTTBeginRound", "Informant_TTTBeginRound", function()
+    if not HasInformant() then return end
+
     for _, v in pairs(GetAllPlayers()) do
         SetDefaultScanState(v)
     end
@@ -73,18 +84,20 @@ end)
 ------------------
 
 hook.Add("TTTPlayerRoleChanged", "Informant_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
-    if oldRole ~= newRole and GetRoundState() == ROUND_ACTIVE then
-        if ply:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED) > INFORMANT_UNSCANNED then
-            local share = GetGlobalBool("ttt_informant_share_scans", true)
-            for _, v in pairs(GetAllPlayers()) do
-                if v:IsActiveInformant() then
-                    v:PrintMessage(HUD_PRINTTALK, ply:Nick() .. " has changed roles. You will need to rescan them.")
-                elseif v:IsActiveTraitorTeam() and share then
-                    v:PrintMessage(HUD_PRINTTALK, ply:Nick() .. " has changed roles. The " .. ROLE_STRINGS[ROLE_INFORMANT] .. " will need to rescan them.")
-                end
+    if oldRole == newRole then return end
+    if GetRoundState() ~= ROUND_ACTIVE then return end
+    if not HasInformant() then return end
+
+    if ply:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED) > INFORMANT_UNSCANNED then
+        local share = GetGlobalBool("ttt_informant_share_scans", true)
+        for _, v in pairs(GetAllPlayers()) do
+            if v:IsActiveInformant() then
+                v:PrintMessage(HUD_PRINTTALK, ply:Nick() .. " has changed roles. You will need to rescan them.")
+            elseif v:IsActiveTraitorTeam() and share then
+                v:PrintMessage(HUD_PRINTTALK, ply:Nick() .. " has changed roles. The " .. ROLE_STRINGS[ROLE_INFORMANT] .. " will need to rescan them.")
             end
         end
-
-        SetDefaultScanState(ply)
     end
+
+    SetDefaultScanState(ply)
 end)
