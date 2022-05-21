@@ -52,10 +52,7 @@ SWEP.InLoadoutFor           = {ROLE_INFORMANT}
 
 SWEP.AllowDrop              = false
 
-SWEP.WorldModelAttachment  = "ValveBiped.Bip01_R_Hand"
-SWEP.WorldModelVector      = Vector(5, -5, 0)
-SWEP.WorldModelAngle       = Angle(180, 180, 0)
-SWEP.ViewModelDistance     = 100
+SWEP.ViewModelOffset        = Vector(4, 100, -1)
 
 local SCANNER_IDLE = 0
 local SCANNER_LOCKED = 1
@@ -63,7 +60,7 @@ local SCANNER_SEARCHING = 2
 local SCANNER_LOST = 3
 
 if SERVER then
-    CreateConVar("ttt_informant_scanner_time", "5", FCVAR_NONE, "The amount of time (in seconds) the informant's scanner takes to use", 0, 60)
+    CreateConVar("ttt_informant_scanner_time", "8", FCVAR_NONE, "The amount of time (in seconds) the informant's scanner takes to use", 0, 60)
     CreateConVar("ttt_informant_scanner_float_time", "1", FCVAR_NONE, "The amount of time (in seconds) it takes for the informant's scanner to lose it's target without line of sight", 0, 60)
     CreateConVar("ttt_informant_scanner_cooldown", "3", FCVAR_NONE, "The amount of time (in seconds) the informant's tracker goes on cooldown for after losing it's target", 0, 60)
 end
@@ -96,13 +93,6 @@ function SWEP:Holster()
     self:SetTargetLost(-1)
     self:SetCooldown(-1)
     return true
-end
-
-function SWEP:GetViewModelPosition(pos, ang) -- TODO: Move out of way of crosshair
-	local forward = ang:Forward()
-    -- Move the model away from the player camera so it doesn't take up half the screen
-    local dist = Vector(-forward.x * self.ViewModelDistance, -forward.y * self.ViewModelDistance, -forward.z * self.ViewModelDistance)
-	return pos - dist, ang
 end
 
 function SWEP:Deploy()
@@ -181,20 +171,6 @@ if SERVER then
     function SWEP:Scan(target)
         if target:IsActive() then
             local stage = target:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
-            if stage == INFORMANT_UNSCANNED then
-                if target:IsDetectiveTeam() then
-                    if GetConVar("ttt_detective_hide_special_mode"):GetInt() >= SPECIAL_DETECTIVE_HIDE_FOR_ALL then
-                        target:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_TEAM)
-                        stage = INFORMANT_SCANNED_TEAM
-                    else
-                        target:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_ROLE)
-                        stage = INFORMANT_SCANNED_ROLE
-                    end
-                elseif target:IsJesterTeam() or target:IsTraitorTeam() or target:IsGlitch() then
-                    target:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_TEAM)
-                    stage = INFORMANT_SCANNED_TEAM
-                end
-            end
             if CurTime() - self:GetScanStart() >= GetConVar("ttt_informant_scanner_time"):GetInt() then
                 stage = stage + 1
                 if stage == INFORMANT_SCANNED_TEAM then
@@ -339,15 +315,6 @@ if CLIENT then
             self:DrawStructure(x, y, w, h, m, color)
 
             local target = player.GetBySteamID64(self:GetTarget())
-            -- TODO: Remove this
-            if not IsPlayer(target) then
-                for _, ply in ipairs(GetAllPlayers()) do
-                    if ply:Nick() == "Bot01" then
-                        target = ply
-                        break
-                    end
-                end
-            end
             local targetState = target:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
 
             local cc = math.min(1, 1 - ((time - CurTime()) / scan))
@@ -372,6 +339,19 @@ if CLIENT then
     end
 
     function SWEP:DrawWorldModel()
+    end
+
+    function SWEP:GetViewModelPosition(pos, ang)
+        local right = ang:Right()
+        local up = ang:Up()
+        local forward = ang:Forward()
+        local offset = self.ViewModelOffset
+
+        pos = pos + offset.x * right
+        pos = pos + offset.y * forward
+        pos = pos + offset.z * up
+
+        return pos, ang
     end
 end
 

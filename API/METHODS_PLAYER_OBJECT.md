@@ -42,6 +42,10 @@ Methods available when called from a Player object (within the defined realm)
 *Realm:* Client and Server\
 *Added in:* 1.5.3
 
+*Returns:*
+- *display_role* - The role that should be displayed for the player.
+- *changed* - Whether the return value was changed and should be hidden
+
 **plymeta:GetHeight()** - Gets the *estimated* height of the player based on their player model.\
 *Realm:* Client\
 *Added in:* 1.0.2

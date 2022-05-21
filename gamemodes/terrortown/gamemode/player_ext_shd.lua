@@ -214,10 +214,10 @@ function plymeta:GetDisplayedRole()
         end
 
         if show_detective then
-            return ROLE_DETECTIVE
+            return ROLE_DETECTIVE, true
         end
     end
-    return self:GetRole()
+    return self:GetRole(), false
 end
 
 -- Returns printable role

@@ -28,7 +28,7 @@ end)
 ---------------
 
 local function GetTeamRole(ply)
-    local glitchMode = GetGlobalInt("ttt_glitch_mode", 0)
+    local glitchMode = GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR)
 
     if ply:IsGlitch() then
         if glitchMode == GLITCH_SHOW_AS_TRAITOR or glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES then
@@ -82,11 +82,12 @@ end)
 
 hook.Add("TTTTargetIDPlayerRing", "Informant_TTTTargetIDPlayerRing", function(ent, cli, ringVisible)
     if GetRoundState() < ROUND_ACTIVE then return end
+    if not IsPlayer(ent) then return end
 
-    local _, override, _ = cli:IsTargetIDOverridden(ply)
+    local _, override, _ = cli:IsTargetIDOverridden(ent)
     if override then return end
 
-    if IsPlayer(ent) and cli:IsInformant() or (cli:IsTraitorTeam() and GetGlobalBool("ttt_informant_share_scans", true)) then
+    if cli:IsInformant() or (cli:IsTraitorTeam() and GetGlobalBool("ttt_informant_share_scans", true)) then
         local state = ent:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
 
         local newRingVisible = ringVisible
@@ -106,11 +107,12 @@ end)
 
 hook.Add("TTTTargetIDPlayerText", "Informant_TTTTargetIDPlayerText", function(ent, cli, text, col, secondaryText)
     if GetRoundState() < ROUND_ACTIVE then return end
+    if not IsPlayer(ent) then return end
 
-    local _, _, override = cli:IsTargetIDOverridden(ply)
+    local _, _, override = cli:IsTargetIDOverridden(ent)
     if override then return end
 
-    if IsPlayer(ent) and cli:IsInformant() or (cli:IsTraitorTeam() and GetGlobalBool("ttt_informant_share_scans", true)) then
+    if cli:IsInformant() or (cli:IsTraitorTeam() and GetGlobalBool("ttt_informant_share_scans", true)) then
         local state = ent:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
 
         local newText = text
@@ -122,26 +124,25 @@ hook.Add("TTTTargetIDPlayerText", "Informant_TTTTargetIDPlayerText", function(en
             local role = GetTeamRole(ent)
             newColor = ROLE_COLORS_RADAR[role]
 
-            local label_name = "target_unknown_team"
-            local label_param
-
-            local glitchMode = GetGlobalInt("ttt_glitch_mode", 0)
+            local labelName = "target_unknown_team"
+            local labelParam
 
             if TRAITOR_ROLES[role] then
+                local glitchMode = GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR)
                 if glitchMode == GLITCH_SHOW_AS_TRAITOR or glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES then
-                    label_param = T("traitor")
+                    labelParam = T("traitor")
                 elseif glitchMode == GLITCH_SHOW_AS_SPECIAL_TRAITOR then
-                    label_name = "label_unconfirmed_role"
-                    label_param = ROLE_STRINGS[role]
+                    labelName = "target_unconfirmed_role"
+                    labelParam = ROLE_STRINGS[role]
                 end
-            elseif DETECTIVE_ROLES[role] then label_param = ROLE_STRINGS[ROLE_DETECTIVE]
-            elseif INNOCENT_ROLES[role] then label_param = T("innocent")
-            elseif INDEPENDENT_ROLES[role] then label_param = T("independent")
-            elseif JESTER_ROLES[role] then label_param = T("jester")
-            elseif MONSTER_ROLES[role] then label_param = T("monster") end
+            elseif DETECTIVE_ROLES[role] then labelParam = ROLE_STRINGS[ROLE_DETECTIVE]
+            elseif INNOCENT_ROLES[role] then labelParam = T("innocent")
+            elseif INDEPENDENT_ROLES[role] then labelParam = T("independent")
+            elseif JESTER_ROLES[role] then labelParam = T("jester")
+            elseif MONSTER_ROLES[role] then labelParam = T("monster") end
 
             if not (TRAITOR_ROLES[role] and not GetGlobalBool("ttt_glitch_round", false)) then
-                newText = PT(label_name, { targettype = StringUpper(label_param) })
+                newText = PT(labelName, { targettype = StringUpper(labelParam) })
             end
         elseif state >= INFORMANT_SCANNED_ROLE then
             newColor = ROLE_COLORS_RADAR[ent:GetRole()]
