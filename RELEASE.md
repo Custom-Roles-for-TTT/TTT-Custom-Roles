@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.5.15 (Beta)
-**Released:**
+**Released: May 21st, 2022**
 
 ### Additions
 - Added new special traitor role: the informant
