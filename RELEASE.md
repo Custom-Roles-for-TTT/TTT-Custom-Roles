@@ -6,6 +6,10 @@
 ### Additions
 - Added ability to configure maximum informant scanner distance
 
+### Changes
+- Changed traitor team to show question mark icons over their head and on the scoreboard when there is a glitch
+  - Which specific roles show as a question mark depends on the ttt_glitch_mode convar
+
 ## 1.5.15 (Beta)
 **Released: May 21st, 2022**
 
