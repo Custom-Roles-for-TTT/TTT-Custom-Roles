@@ -40,3 +40,8 @@ table.insert(ROLE_CONVARS[ROLE_INFORMANT], {
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
 })
+table.insert(ROLE_CONVARS[ROLE_INFORMANT], {
+    cvar = "ttt_informant_scanner_distance",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
