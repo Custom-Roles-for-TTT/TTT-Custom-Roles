@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.5.16 (Beta)
-**Released:**
+**Released: May 29th, 2022**
 
 ### Additions
 - Added ability to configure maximum informant scanner distance
