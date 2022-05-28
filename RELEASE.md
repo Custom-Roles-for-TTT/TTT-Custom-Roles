@@ -5,6 +5,7 @@
 
 ### Fixes
 - Fixed an error that can occur when a player disconnects while respawning
+- Fixed some players' roles being revealed to traitors the round after they are a detective
 
 ### Additions
 - Added ability to configure maximum informant scanner distance
