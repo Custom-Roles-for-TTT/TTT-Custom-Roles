@@ -55,9 +55,10 @@ hook.Add("TTTTargetIDPlayerRoleIcon", "Informant_TTTTargetIDPlayerRoleIcon", fun
     local override, _, _ = cli:IsTargetIDOverridden(ply, showJester)
     if override then return end
 
-    if cli:IsInformant() or (cli:IsTraitorTeam() and GetGlobalBool("ttt_informant_share_scans", true)) then
-        local state = ply:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
+    local state = ply:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
+    if state <= INFORMANT_UNSCANNED then return end
 
+    if cli:IsInformant() or (cli:IsTraitorTeam() and GetGlobalBool("ttt_informant_share_scans", true)) then
         local newRole = role
         local newNoZ = noZ
         local newColorRole = colorRole
@@ -87,9 +88,10 @@ hook.Add("TTTTargetIDPlayerRing", "Informant_TTTTargetIDPlayerRing", function(en
     local _, override, _ = cli:IsTargetIDOverridden(ent)
     if override then return end
 
-    if cli:IsInformant() or (cli:IsTraitorTeam() and GetGlobalBool("ttt_informant_share_scans", true)) then
-        local state = ent:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
+    local state = ent:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
+    if state <= INFORMANT_UNSCANNED then return end
 
+    if cli:IsInformant() or (cli:IsTraitorTeam() and GetGlobalBool("ttt_informant_share_scans", true)) then
         local newRingVisible = ringVisible
         local newColor = false
 
@@ -112,9 +114,10 @@ hook.Add("TTTTargetIDPlayerText", "Informant_TTTTargetIDPlayerText", function(en
     local _, _, override = cli:IsTargetIDOverridden(ent)
     if override then return end
 
-    if cli:IsInformant() or (cli:IsTraitorTeam() and GetGlobalBool("ttt_informant_share_scans", true)) then
-        local state = ent:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
+    local state = ent:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
+    if state <= INFORMANT_UNSCANNED then return end
 
+    if cli:IsInformant() or (cli:IsTraitorTeam() and GetGlobalBool("ttt_informant_share_scans", true)) then
         local newText = text
         local newColor = col
 
@@ -163,9 +166,10 @@ hook.Add("TTTScoreboardPlayerRole", "Informant_TTTScoreboardPlayerRole", functio
     local _, override = cli:IsScoreboardInfoOverridden(ply)
     if override then return end
 
-    if IsPlayer(ply) and cli:IsInformant() or (cli:IsTraitorTeam() and GetGlobalBool("ttt_informant_share_scans", true)) then
-        local state = ply:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
+    local state = ply:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
+    if state <= INFORMANT_UNSCANNED then return end
 
+    if IsPlayer(ply) and cli:IsInformant() or (cli:IsTraitorTeam() and GetGlobalBool("ttt_informant_share_scans", true)) then
         local newColor = c
         local newRoleStr = roleStr
 

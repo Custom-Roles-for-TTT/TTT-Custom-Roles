@@ -353,6 +353,8 @@ function plymeta:SpawnForRound(dead_only)
 
     -- Make sure players who are respawning get their default weapons
     timer.Simple(1, function()
+        if not IsPlayer(self) then return end
+
         if not self:HasWeapon("weapon_ttt_unarmed") then
             self:Give("weapon_ttt_unarmed")
         end

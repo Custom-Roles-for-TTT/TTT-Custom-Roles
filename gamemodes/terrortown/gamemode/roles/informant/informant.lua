@@ -71,6 +71,12 @@ local function SetDefaultScanState(ply)
     end
 end
 
+hook.Add("TTTPrepareRound", "Informant_TTTPrepareRound", function()
+    for _, v in pairs(GetAllPlayers()) do
+        v:SetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
+    end
+end)
+
 hook.Add("TTTBeginRound", "Informant_TTTBeginRound", function()
     if not HasInformant() then return end
 
