@@ -22,7 +22,7 @@ local function DoesValueMatch(item, data, value)
     if isfunction(itemdata) then
         itemdata = itemdata()
     end
-    return itemdata and StringFind(StringLower(SafeTranslate(itemdata)), StringLower(value))
+    return itemdata and StringFind(StringLower(SafeTranslate(itemdata)), StringLower(value), 1, true)
 end
 
 local function OpenDialog(client)
