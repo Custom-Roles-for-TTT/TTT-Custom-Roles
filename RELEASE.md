@@ -3,6 +3,9 @@
 ## 1.5.16 (Beta)
 **Released: May 29th, 2022**
 
+### Fixes
+- Fixed an error that can occur when a player disconnects while respawning
+
 ### Additions
 - Added ability to configure maximum informant scanner distance
 
