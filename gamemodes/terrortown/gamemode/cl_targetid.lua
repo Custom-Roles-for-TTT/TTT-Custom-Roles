@@ -87,6 +87,24 @@ local function GetDetectiveIconRole(is_traitor)
     return ROLE_DEPUTY
 end
 
+local function GetGlitchedRole(p, glitchMode)
+    -- Use the player's role if they are a traitor, otherwise this is a glitch and we should use their fake role
+    local role = p:IsTraitorTeam() and p:GetRole() or p:GetNWInt("GlitchBluff", ROLE_TRAITOR)
+    -- Only hide vanilla traitors
+    if glitchMode == GLITCH_SHOW_AS_TRAITOR then
+        if role == ROLE_TRAITOR then
+            return ROLE_NONE, ROLE_TRAITOR
+        end
+        return role, nil
+    -- Hide all traitors, but show whether they are special or not based on the color
+    elseif glitchMode == GLITCH_SHOW_AS_SPECIAL_TRAITOR then
+        return ROLE_NONE, role
+    end
+
+    -- Hide all traitors, period
+    return ROLE_NONE, ROLE_TRAITOR
+end
+
 -- using this hook instead of pre/postplayerdraw because playerdraw seems to
 -- happen before certain entities are drawn, which then clip over the sprite
 function GM:PostDrawTranslucentRenderables()
@@ -95,6 +113,8 @@ function GM:PostDrawTranslucentRenderables()
 
     dir = client:GetForward() * -1
 
+    local glitchMode = GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR)
+    local glitchRound = GetGlobalBool("ttt_glitch_round", false)
     local hide_roles = false
     if ConVarExists("ttt_hide_role") then
         hide_roles = GetConVar("ttt_hide_role"):GetBool()
@@ -110,7 +130,6 @@ function GM:PostDrawTranslucentRenderables()
             local hideBeggar = v:GetNWBool("WasBeggar", false) and not client:ShouldRevealBeggar(v)
             local hideBodysnatcher = v:GetNWBool("WasBodysnatcher", false) and not client:ShouldRevealBodysnatcher(v)
             local showJester = (v:ShouldActLikeJester() or ((v:GetTraitor() or v:GetInnocent()) and hideBeggar) or hideBodysnatcher) and not client:ShouldHideJesters()
-            local glitchMode = GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR)
 
             -- Allow other addons (and external roles) to determine if the "KILL" icon should show
             -- NOTE: Leave the permanent 'false' parameter to make sure we don't break external hook usage
@@ -147,18 +166,13 @@ function GM:PostDrawTranslucentRenderables()
                             role = ROLE_NONE
                             color_role = ROLE_JESTER
                             noz = false
-                        elseif v:IsTraitor() then
-                            role = ROLE_TRAITOR
                         elseif v:IsTraitorTeam() then
                             -- If the impersonator is promoted, use the Detective's icon with the Impersonator's color
                             if v:IsImpersonator() and v:IsRoleActive() then
                                 role = GetDetectiveIconRole(true)
                                 color_role = ROLE_IMPERSONATOR
-                            -- Explicitly set zombie role so that is shown to glitches during a zombie traitor round
-                            elseif v:IsZombie() then
-                                role = ROLE_ZOMBIE
-                            elseif glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES and GetGlobalBool("ttt_glitch_round", false) then
-                                role = ROLE_TRAITOR
+                            elseif glitchRound then
+                                role, color_role = GetGlitchedRole(v, glitchMode)
                             else
                                 role = v:GetRole()
                             end
@@ -166,7 +180,7 @@ function GM:PostDrawTranslucentRenderables()
                             if client:IsZombie() then
                                 role = ROLE_ZOMBIE
                             else
-                                role = v:GetNWInt("GlitchBluff", ROLE_TRAITOR)
+                                role, color_role = GetGlitchedRole(v, glitchMode)
                             end
                         -- Disable "No Z" for other icons like the Detective-like roles
                         else
@@ -315,7 +329,10 @@ function GM:HUDDrawTargetID()
 
     -- some bools for caching what kind of ent we are looking at
     local target_traitor = false
+    local target_unknown_traitor = false
     local target_special_traitor = false
+    local target_unknown_special_traitor = false
+
     local target_detective = false
     local target_unknown_detective = false
     local target_special_detective = false
@@ -330,6 +347,7 @@ function GM:HUDDrawTargetID()
     local target_corpse = false
 
     local glitchMode = GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR)
+    local glitchRound = GetGlobalBool("ttt_glitch_round", false)
 
     local text = nil
     local color = COLOR_WHITE
@@ -390,12 +408,12 @@ function GM:HUDDrawTargetID()
                     target_special_traitor = ent:IsTraitorTeam() and not ent:IsTraitor()
                     target_glitch = ent:IsGlitch()
 
-                    if glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES and GetGlobalBool("ttt_glitch_round", false) then
-                        if target_traitor or target_special_traitor or target_glitch then
-                            target_traitor = false
-                            target_special_traitor = false
-                            target_glitch = true
-                        end
+                    if glitchRound and (target_traitor or target_special_traitor or target_glitch) then
+                        local role, color_role = GetGlitchedRole(ent, glitchMode)
+                        target_traitor = role == ROLE_TRAITOR
+                        target_unknown_traitor = role == ROLE_NONE and color_role == ROLE_TRAITOR
+                        target_special_traitor = role ~= ROLE_NONE and role ~= ROLE_TRAITOR
+                        target_unknown_special_traitor = role == ROLE_NONE and color_role ~= ROLE_TRAITOR
                     end
                 end
             elseif client:IsMonsterTeam() then
@@ -463,7 +481,7 @@ function GM:HUDDrawTargetID()
 
     local w, h = 0, 0 -- text width/height, reused several times
 
-    local ring_visible = target_traitor or target_special_traitor or target_detective or target_unknown_detective or target_special_detective or target_glitch or target_jester or target_independent or target_monster
+    local ring_visible = target_traitor or target_unknown_traitor or target_special_traitor or target_unknown_special_traitor or target_detective or target_unknown_detective or target_special_detective or target_glitch or target_jester or target_independent or target_monster
 
     local new_visible, color_override = CallHook("TTTTargetIDPlayerRing", nil, ent, client, ring_visible)
     if type(new_visible) == "boolean" then ring_visible = new_visible end
@@ -473,9 +491,9 @@ function GM:HUDDrawTargetID()
 
         if color_override then
             surface.SetDrawColor(color_override)
-        elseif target_traitor then
+        elseif target_traitor or target_unknown_traitor then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_TRAITOR])
-        elseif target_special_traitor then
+        elseif target_special_traitor or target_unknown_special_traitor then
             surface.SetDrawColor(GetRoleTeamColor(ROLE_TEAM_TRAITOR, "radar"))
         elseif target_detective or target_unknown_detective then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_DETECTIVE])
@@ -616,10 +634,16 @@ function GM:HUDDrawTargetID()
     if target_traitor then
         text = StringUpper(ROLE_STRINGS[ROLE_TRAITOR])
         col = ROLE_COLORS_RADAR[ROLE_TRAITOR]
+    elseif target_unknown_traitor then
+        text = GetPTranslation("target_unknown_team", { targettype = StringUpper(GetTranslation("traitor")) })
+        col = ROLE_COLORS_RADAR[ROLE_TRAITOR]
     elseif target_special_traitor then
         local role = ent:GetRole()
         text = StringUpper(ROLE_STRINGS[role])
         col = ROLE_COLORS_RADAR[role]
+    elseif target_unknown_special_traitor then
+        text = GetPTranslation("target_unknown_team", { targettype = StringUpper(GetTranslation("traitor")) })
+        col = ROLE_COLORS_RADAR[ROLE_ASSASSIN]
     elseif target_glitch then
         local bluff = ent:GetNWInt("GlitchBluff", ROLE_TRAITOR)
         if client:IsZombie() and client:IsTraitorTeam() then

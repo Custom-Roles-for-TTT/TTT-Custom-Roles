@@ -1,5 +1,16 @@
 # Release Notes
 
+## 1.5.16 (Beta)
+**Released: May 29th, 2022**
+
+### Additions
+- Added ability to configure maximum informant scanner distance
+
+### Changes
+- Changed traitor team to show question mark icons over their head and on the scoreboard when there is a glitch
+  - Which specific roles show as a question mark depends on the ttt_glitch_mode convar
+- Ported "TTT: fix weapons disappearing during round reset" from base TTT
+
 ## 1.5.15 (Beta)
 **Released: May 21st, 2022**
 

@@ -131,6 +131,24 @@ function GM:TTTScoreboardColorForPlayer(ply)
     return namecolor.default
 end
 
+local function GetGlitchedRole(p, glitchMode)
+    -- Use the player's role if they are a traitor, otherwise this is a glitch and we should use their fake role
+    local role = p:IsTraitorTeam() and p:GetRole() or p:GetNWInt("GlitchBluff", ROLE_TRAITOR)
+    -- Only hide vanilla traitors
+    if glitchMode == GLITCH_SHOW_AS_TRAITOR then
+        if role == ROLE_TRAITOR then
+            return ROLE_NONE, ROLE_TRAITOR
+        end
+        return role, nil
+    -- Hide all traitors, but show whether they are special or not based on the color
+    elseif glitchMode == GLITCH_SHOW_AS_SPECIAL_TRAITOR then
+        return ROLE_NONE, role
+    end
+
+    -- Hide all traitors, period
+    return ROLE_NONE, ROLE_TRAITOR
+end
+
 function GM:TTTScoreboardRowColorForPlayer(ply)
     if not IsValid(ply) or GetRoundState() == ROUND_WAIT or GetRoundState() == ROUND_PREP then return defaultcolor end
 
@@ -148,19 +166,12 @@ function GM:TTTScoreboardRowColorForPlayer(ply)
     local hideBeggar = ply:GetNWBool("WasBeggar", false) and not client:ShouldRevealBeggar(ply)
     local hideBodysnatcher = ply:GetNWBool("WasBodysnatcher", false) and not client:ShouldRevealBodysnatcher(ply)
     local showJester = (ply:ShouldActLikeJester() or ((ply:IsTraitor() or ply:IsInnocent()) and hideBeggar) or hideBodysnatcher) and not client:ShouldHideJesters()
-    local glitchMode = GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR)
 
     if client:IsTraitorTeam() then
         if showJester then
             return ROLE_JESTER
         elseif ply:IsTraitorTeam() then
-            if ply:IsZombie() then
-                return ROLE_ZOMBIE
-            elseif glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES and GetGlobalBool("ttt_glitch_round", false) then
-                return ROLE_TRAITOR
-            else
-                return ply:GetRole()
-            end
+            return ply:GetRole()
         elseif ply:IsGlitch() then
             if client:IsZombie() then
                 return ROLE_ZOMBIE
@@ -239,15 +250,23 @@ function PANEL:Paint(width, height)
                 else
                     role = disp_role
                 end
-            elseif client:IsTraitorTeam() and ply:IsImpersonator() then
-                if GetGlobalBool("ttt_impersonator_use_detective_icon", true) then
-                    role = ROLE_DETECTIVE
-                end
-                color = ROLE_COLORS_SCOREBOARD[ROLE_IMPERSONATOR]
             elseif GetGlobalBool("ttt_deputy_use_detective_icon", true) then
                 role = ROLE_DETECTIVE
             else
                 role = ROLE_DEPUTY
+            end
+        elseif client:IsTraitorTeam() then
+            if ply:IsImpersonator() then
+                if GetGlobalBool("ttt_impersonator_use_detective_icon", true) then
+                    role = ROLE_DETECTIVE
+                end
+                color = ROLE_COLORS_SCOREBOARD[ROLE_IMPERSONATOR]
+            elseif GetGlobalBool("ttt_glitch_round", false) and (ply:IsTraitorTeam() or ply:IsGlitch()) and client ~= ply then
+                local glitch_role, color_role = GetGlitchedRole(ply, GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR))
+                role = glitch_role
+                if color_role then
+                    color = ROLE_COLORS_SCOREBOARD[color_role]
+                end
             end
         end
 

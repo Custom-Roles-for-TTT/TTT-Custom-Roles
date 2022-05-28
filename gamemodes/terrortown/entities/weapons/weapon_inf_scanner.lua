@@ -63,6 +63,7 @@ if SERVER then
     CreateConVar("ttt_informant_scanner_time", "8", FCVAR_NONE, "The amount of time (in seconds) the informant's scanner takes to use", 0, 60)
     CreateConVar("ttt_informant_scanner_float_time", "1", FCVAR_NONE, "The amount of time (in seconds) it takes for the informant's scanner to lose it's target without line of sight", 0, 60)
     CreateConVar("ttt_informant_scanner_cooldown", "3", FCVAR_NONE, "The amount of time (in seconds) the informant's tracker goes on cooldown for after losing it's target", 0, 60)
+    CreateConVar("ttt_informant_scanner_distance", "2500", FCVAR_NONE, "The maximum distance away the scanner target can be", 1000, 10000)
 end
 
 function SWEP:SetupDataTables()
@@ -140,7 +141,7 @@ if SERVER then
 
         local ownerPos = self:GetOwner():GetPos()
         local targetPos = target:GetPos()
-        if ownerPos:Distance(targetPos) > 2500 then return false end
+        if ownerPos:Distance(targetPos) > GetConVar("ttt_informant_scanner_distance"):GetInt() then return false end
 
         local dir = targetPos - ownerPos
         dir:Normalize()
