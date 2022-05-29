@@ -517,9 +517,9 @@ function GM:SyncGlobals()
     SetGlobalBool("ttt_independents_update_scoreboard", GetConVar("ttt_independents_update_scoreboard"):GetBool())
 
     SetGlobalBool("ttt_bem_allow_change", GetConVar("ttt_bem_allow_change"):GetBool())
-    SetGlobalInt("ttt_bem_sv_cols", GetConVar("ttt_bem_sv_cols"):GetBool())
-    SetGlobalInt("ttt_bem_sv_rows", GetConVar("ttt_bem_sv_rows"):GetBool())
-    SetGlobalInt("ttt_bem_sv_size", GetConVar("ttt_bem_sv_size"):GetBool())
+    SetGlobalInt("ttt_bem_sv_cols", GetConVar("ttt_bem_sv_cols"):GetInt())
+    SetGlobalInt("ttt_bem_sv_rows", GetConVar("ttt_bem_sv_rows"):GetInt())
+    SetGlobalInt("ttt_bem_sv_size", GetConVar("ttt_bem_sv_size"):GetInt())
 
     SetGlobalBool("sv_voiceenable", GetConVar("sv_voiceenable"):GetBool())
 
