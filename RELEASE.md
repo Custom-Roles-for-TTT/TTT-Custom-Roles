@@ -7,6 +7,7 @@
 - Fixed an error that can occur when a player disconnects while respawning
 - Fixed some players' roles being revealed to traitors the round after they are a detective
 - Fixed error in the shop search when certain symbols were entered
+- Fixed error opening the shop when `ttt_bem_allow_change` was disabled
 
 ### Additions
 - Added ability to configure maximum informant scanner distance
