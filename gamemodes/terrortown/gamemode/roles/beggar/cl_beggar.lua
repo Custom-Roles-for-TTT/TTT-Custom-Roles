@@ -106,6 +106,13 @@ end)
 ---------
 
 hook.Add("TTTHUDInfoPaint", "Beggar_TTTHUDInfoPaint", function(client, label_left, label_top)
+    local hide_role = false
+    if ConVarExists("ttt_hide_role") then
+        hide_role = GetConVar("ttt_hide_role"):GetBool()
+    end
+
+    if hide_role then return end
+
     if (client:IsInnocent() or client:IsTraitor()) and client:GetNWBool("WasBeggar", false) then
         local beggarMode = BEGGAR_REVEAL_ALL
         if client:IsInnocent() then beggarMode = GetGlobalInt("ttt_beggar_reveal_innocent", BEGGAR_REVEAL_TRAITORS)
