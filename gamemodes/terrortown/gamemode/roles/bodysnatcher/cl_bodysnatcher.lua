@@ -106,6 +106,13 @@ end)
 ---------
 
 hook.Add("TTTHUDInfoPaint", "Bodysnatcher_TTTHUDInfoPaint", function(client, label_left, label_top)
+    local hide_role = false
+    if ConVarExists("ttt_hide_role") then
+        hide_role = GetConVar("ttt_hide_role"):GetBool()
+    end
+
+    if hide_role then return end
+
     if client:GetNWBool("WasBodysnatcher", false) then
         local bodysnatcherMode = BODYSNATCHER_REVEAL_ALL
         if client:IsInnocentTeam() then bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_innocent", BODYSNATCHER_REVEAL_ALL)
