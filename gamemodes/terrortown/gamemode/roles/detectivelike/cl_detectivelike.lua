@@ -60,6 +60,13 @@ hook.Add("TTTHUDInfoPaint", "DetectiveLike_TTTHUDInfoPaint", function(client, la
             label_top = label_top + 20
         end
     elseif client:IsDetectiveLike() then
+        local hide_role = false
+        if ConVarExists("ttt_hide_role") then
+            hide_role = GetConVar("ttt_hide_role"):GetBool()
+        end
+            
+        if hide_role == true then return end
+            
         surface.SetFont("TabLarge")
         surface.SetTextColor(255, 255, 255, 230)
 
