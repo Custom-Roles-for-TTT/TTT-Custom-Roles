@@ -128,6 +128,13 @@ end)
 ---------
 
 hook.Add("TTTHUDInfoPaint", "LootGoblin_TTTHUDInfoPaint", function(client, label_left, label_top)
+    local hide_role = false
+    if ConVarExists("ttt_hide_role") then
+        hide_role = GetConVar("ttt_hide_role"):GetBool()
+    end
+
+    if hide_role then return end
+
     if client:IsActiveLootGoblin() and not client:IsRoleActive() then
         surface.SetFont("TabLarge")
         surface.SetTextColor(255, 255, 255, 230)
