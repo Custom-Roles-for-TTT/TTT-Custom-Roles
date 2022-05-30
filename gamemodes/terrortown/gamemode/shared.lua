@@ -17,7 +17,7 @@ local StringSplit = string.Split
 local StringSub = string.sub
 
 -- Version string for display and function for version checks
-CR_VERSION = "1.5.16"
+CR_VERSION = "1.5.17"
 CR_BETA = true
 
 function CRVersion(version)
