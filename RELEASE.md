@@ -5,6 +5,7 @@
 
 ### Changes
 - Changed additional role messages and features to be hidden or disabled when `ttt_hide_role` is enabled (Thanks Callum!)
+- Ported Steam chat filtering from base TTT
 
 ## 1.5.16 (Beta)
 **Released: May 29th, 2022**
