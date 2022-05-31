@@ -140,8 +140,7 @@ hook.Add("TTTHUDInfoPaint", "LootGoblin_TTTHUDInfoPaint", function(client, label
         surface.SetTextColor(255, 255, 255, 230)
 
         local remaining = MathMax(0, GetGlobalFloat("ttt_lootgoblin_activate", 0) - CurTime())
-
-        text = LANG.GetParamTranslation("lootgoblin_hud", { time = util.SimpleTime(remaining, "%02i:%02i") })
+        local text = LANG.GetParamTranslation("lootgoblin_hud", { time = util.SimpleTime(remaining, "%02i:%02i") })
         local _, h = surface.GetTextSize(text)
 
         surface.SetTextPos(label_left, ScrH() - label_top - h)

@@ -121,6 +121,7 @@ hook.Add("TTTHUDInfoPaint", "Beggar_TTTHUDInfoPaint", function(client, label_lef
             surface.SetFont("TabLarge")
             surface.SetTextColor(255, 255, 255, 230)
 
+            local text
             if beggarMode == BEGGAR_REVEAL_NONE then
                 text = LANG.GetParamTranslation("beggar_hidden_all_hud", { beggar = ROLE_STRINGS_EXT[ROLE_BEGGAR] })
             elseif beggarMode == BEGGAR_REVEAL_TRAITORS then

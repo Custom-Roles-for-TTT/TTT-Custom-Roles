@@ -57,26 +57,20 @@ hook.Add("TTTHUDInfoPaint", "DetectiveLike_TTTHUDInfoPaint", function(client, la
             surface.SetFont("TabLarge")
             surface.SetTextColor(255, 255, 255, 230)
 
-            text = LANG.GetParamTranslation("detective_special_hidden_hud", { detective = ROLE_STRINGS[ROLE_DETECTIVE] })
+            local text = LANG.GetParamTranslation("detective_special_hidden_hud", { detective = ROLE_STRINGS[ROLE_DETECTIVE] })
             local _, h = surface.GetTextSize(text)
 
             surface.SetTextPos(label_left, ScrH() - label_top - h)
             surface.DrawText(text)
-
-            -- Move the label up for the next one
-            label_top = label_top + 20
         end
     elseif client:IsDetectiveLike() then
         surface.SetFont("TabLarge")
         surface.SetTextColor(255, 255, 255, 230)
 
-        text = LANG.GetParamTranslation("detective_promotion_hud", { detective = ROLE_STRINGS[ROLE_DETECTIVE] })
+        local text = LANG.GetParamTranslation("detective_promotion_hud", { detective = ROLE_STRINGS[ROLE_DETECTIVE] })
         local _, h = surface.GetTextSize(text)
 
         surface.SetTextPos(label_left, ScrH() - label_top - h)
         surface.DrawText(text)
-
-        -- Move the label up for the next one
-        label_top = label_top + 20
     end
 end)
