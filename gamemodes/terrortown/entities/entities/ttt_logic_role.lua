@@ -24,6 +24,7 @@ function ENT:AcceptInput(name, activator)
         if IsPlayer(activator) then
             local traitorTest = false
             local innocentTest =  false
+            local detectiveTest = false
             local jesterTest = false
             local independentTest = false
             local detectiveTest = false
@@ -55,7 +56,7 @@ function ENT:AcceptInput(name, activator)
                 end
             end
 
-            if traitorTest or innocentTest or jesterTest or independentTest or specificTest or detectiveTest or anyTest then
+            if traitorTest or innocentTest or detectiveTest or jesterTest or independentTest or specificTest or detectiveTest or anyTest then
                 Dev(2, activator, "passed logic_role test of", self:GetName())
                 self:TriggerOutput("OnPass", activator)
             else
