@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.5.17 (Beta)
-**Released:**
+**Released: June 4th, 2022**
 
 ### Changes
 - Changed additional role messages and features to be hidden or disabled when `ttt_hide_role` is enabled (Thanks Callum!)
