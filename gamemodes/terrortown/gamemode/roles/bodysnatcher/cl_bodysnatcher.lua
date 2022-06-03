@@ -123,6 +123,7 @@ hook.Add("TTTHUDInfoPaint", "Bodysnatcher_TTTHUDInfoPaint", function(client, lab
             surface.SetFont("TabLarge")
             surface.SetTextColor(255, 255, 255, 230)
 
+            local text
             if bodysnatcherMode == BODYSNATCHER_REVEAL_NONE then
                 text = LANG.GetParamTranslation("bodysnatcher_hidden_all_hud", { bodysnatcher = ROLE_STRINGS_EXT[ROLE_BODYSNATCHER] })
             elseif bodysnatcherMode == BODYSNATCHER_REVEAL_TEAM then
