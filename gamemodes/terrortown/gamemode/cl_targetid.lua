@@ -408,7 +408,7 @@ function GM:HUDDrawTargetID()
                     target_special_traitor = ent:IsTraitorTeam() and not ent:IsTraitor()
                     target_glitch = ent:IsGlitch()
 
-                    if glitchRound and (target_traitor or target_special_traitor or target_glitch) then
+                    if glitchRound and (target_traitor or target_special_traitor or (target_glitch and not GetGlobalBool("ttt_zombie_round", false))) then
                         local role, color_role = GetGlitchedRole(ent, glitchMode)
                         target_traitor = role == ROLE_TRAITOR
                         target_unknown_traitor = role == ROLE_NONE and color_role == ROLE_TRAITOR

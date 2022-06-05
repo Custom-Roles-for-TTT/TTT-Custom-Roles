@@ -1651,6 +1651,8 @@ function SelectRoles()
             v:SetRole(ROLE_ZOMBIE)
             PrintRole(v, ROLE_ZOMBIE)
         end
+
+        SetGlobalBool("ttt_zombie_round", true)
     else
         -- pick special traitors
         if max_special_traitor_count > 0 then
@@ -1679,6 +1681,8 @@ function SelectRoles()
             v:SetRole(ROLE_TRAITOR)
             PrintRole(v, ROLE_TRAITOR)
         end
+
+        SetGlobalBool("ttt_zombie_round", false)
     end
 
     -- pick independent
