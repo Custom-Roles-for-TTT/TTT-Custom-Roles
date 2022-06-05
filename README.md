@@ -41,8 +41,7 @@ If you would like to test the available configurations, we recommend using ULX/U
 - [Fresh Garry](https://steamcommunity.com/id/Fresh_Garry) for the ['TTT Sprint'](https://steamcommunity.com/sharedfiles/filedetails/?id=933056549) mod which was used as the base for this mod's sprinting mechanics.
 - [Lykrast](https://steamcommunity.com/id/Lykrast) for the code and models used to create the old man's double barrel shotgun taken from ['Lykrast's TTT Weapon Collection'](https://steamcommunity.com/sharedfiles/filedetails/?id=337994500).
 - [Game icons](https://game-icons.net), [Noun Project](https://thenounproject.com), and [Icons8](https://icons8.com) for the role icons.
-- Kommandos, Lix3, FunCheetah, B1andy413, Cooliew, The_Samarox, Arack12, and Aspirin for helping us test.
-- Everyone on the Discord server for their suggestions and help testing.
+- Our friends and everyone on the Discord server for their suggestions and help testing.
 
 ## Conflicts
 - Any other addon that adds roles such as Town of Terror, TTT2, or the outdated versions of Custom Roles for TTT. There is no reason to use more than one role addon so remove all the ones you don't want.
@@ -50,6 +49,7 @@ If you would like to test the available configurations, we recommend using ULX/U
 - [TTT Damage Logs](https://github.com/Tommy228/tttdamagelogs) - Use [this version](https://steamcommunity.com/sharedfiles/filedetails/?id=2306802961) instead
 - [TTT DeadRinger](https://steamcommunity.com/sharedfiles/filedetails/?id=254779132) - Overrides several scripts that are core to TTT that this also overrides (notably, the scoreboard and client initialization). As a workaround, you can use [this version](https://steamcommunity.com/sharedfiles/filedetails/?id=810154456) instead.
 - [TTT: Advanced Body Search](https://steamcommunity.com/sharedfiles/filedetails/?id=367945571) - Overwrites the body search dialog in ways that don't keep compatibility with the changes we also make to the same dialog.
+- [TTT SimpleHUD](https://steamcommunity.com/sharedfiles/filedetails/?id=2209392671) - Overrides several scripts that are core to TTT that this also overrides (notably, the weapon switch HUD). Claims compatibility with Custom Roles, but only supports the outdated version.
 
 ## FAQs
 **How do I use Custom Roles for TTT?**\

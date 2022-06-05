@@ -323,24 +323,33 @@ function CLSCORE:BuildScorePanel(dpanel)
             break
         end
     end
-    local colnames = { "", "col_player", "col_role", "col_kills1", "col_kills2", "col_kills3", "col_kills4" }
+    local colnames = { { "", 18 }, "col_player", "col_role", { "col_kills1", 52 }, { "col_kills2", 60 }, "col_kills3", "col_kills4" }
     if monsters_exist then
-        table.insert(colnames, "col_kills5")
+        table.insert(colnames, { "col_kills5", 52 })
     end
-    table.Add(colnames, { "col_points", "col_team", "col_total" })
+    table.Add(colnames, { { "col_totalkills", 52 }, { "col_points", 40 }, "col_team", "col_total" })
 
     for _, name in pairs(colnames) do
+        local width = nil
+        -- If this column has a width defined, extract that out
+        if type(name) == "table" then
+            width = name[2]
+            name = name[1]
+        end
+        local col
         if name == "" then
             -- skull icon column
-            local c = dlist:AddColumn("")
-            c:SetFixedWidth(18)
+            col = dlist:AddColumn("")
         else
             local colname = PT(name, {
-                innocent = ROLE_STRINGS[ROLE_INNOCENT],
                 traitor = ROLE_STRINGS[ROLE_TRAITOR],
                 jester = ROLE_STRINGS[ROLE_JESTER]
             })
-            dlist:AddColumn(colname)
+            col = dlist:AddColumn(colname)
+        end
+
+        if width ~= nil then
+            col:SetFixedWidth(width)
         end
     end
 
@@ -394,11 +403,12 @@ function CLSCORE:BuildScorePanel(dpanel)
             end
             local points_total = points_own + points_team
 
+            local total_kills = s.innos + s.traitors + s.jesters + s.indeps
             local l
             if monsters_exist then
-                l = dlist:AddLine(surv, nicks[id], role_string, s.innos, s.traitors, s.jesters, s.indeps, s.monsters, points_own, points_team, points_total)
+                l = dlist:AddLine(surv, nicks[id], role_string, s.innos, s.traitors, s.jesters, s.indeps, s.monsters, total_kills + s.monsters, points_own, points_team, points_total)
             else
-                l = dlist:AddLine(surv, nicks[id], role_string, s.innos, s.traitors, s.jesters, s.indeps, points_own, points_team, points_total)
+                l = dlist:AddLine(surv, nicks[id], role_string, s.innos, s.traitors, s.jesters, s.indeps, total_kills, points_own, points_team, points_total)
             end
 
             -- center align

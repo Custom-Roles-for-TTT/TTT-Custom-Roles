@@ -49,6 +49,16 @@ hook.Add("TTTTargetIDPlayerKillIcon", "Zombie_TTTTargetIDPlayerKillIcon", functi
     end
 end)
 
+ROLE_IS_TARGETID_OVERRIDDEN[ROLE_ZOMBIE] = function(ply, target, showJester)
+    if not ply:IsZombie() then return end
+    if not IsPlayer(target) then return end
+
+    local show = GetGlobalBool("ttt_zombie_show_target_icon", false) and ply.GetActiveWeapon and IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() == "weapon_zom_claws" and not showJester
+
+    ------ icon, ring,  text
+    return show, false, false
+end
+
 -------------
 -- SCORING --
 -------------
@@ -124,8 +134,8 @@ local function EnableZombieHighlights()
     -- Handle zombie targeting and non-traitor team logic
     -- Traitor logic is handled in cl_init and does not need to be duplicated here
     hook.Add("PreDrawHalos", "Zombie_Highlight_PreDrawHalos", function()
-        local hasFangs = client.GetActiveWeapon and IsValid(client:GetActiveWeapon()) and client:GetActiveWeapon():GetClass() == "weapon_zom_claws"
-        local hideEnemies = not zombie_vision or not hasFangs
+        local hasClaws = client.GetActiveWeapon and IsValid(client:GetActiveWeapon()) and client:GetActiveWeapon():GetClass() == "weapon_zom_claws"
+        local hideEnemies = not zombie_vision or not hasClaws
 
         -- Handle logic differently depending on which team they are on
         local allies = {}
@@ -181,6 +191,13 @@ hook.Add("Think", "Zombie_Highlight_Think", function()
     end
 end)
 
+ROLE_IS_TARGET_HIGHLIGHTED[ROLE_ZOMBIE] = function(ply, target)
+    if not ply:IsZombie() then return end
+
+    local hasClaws = ply.GetActiveWeapon and IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() == "weapon_zom_claws"
+    return zombie_vision and hasClaws
+end
+
 --------------
 -- TUTORIAL --
 --------------
@@ -202,7 +219,7 @@ hook.Add("TTTTutorialRoleText", "Zombie_TTTTutorialRoleText", function(role, tit
         local html = "The " .. ROLE_STRINGS[ROLE_ZOMBIE] .. " is a member of the <span style='color: rgb(" .. roleTeamColor.r .. ", " .. roleTeamColor.g .. ", " .. roleTeamColor.b .. ")'>" .. string.lower(roleTeamString) .. " team</span> that uses their claws to attack their enemies."
 
         -- Convert
-        html = html .. "<span style='display: block; margin-top: 10px;'>Killing a player with their claws will <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>turn the target</span> into a " .. ROLE_STRINGS[ROLE_ZOMBIE] .. " thrall.</span>"
+        html = html .. "<span style='display: block; margin-top: 10px;'>Killing a player with their claws will <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>turn the target</span> into " .. ROLE_STRINGS_EXT[ROLE_ZOMBIE] .. " thrall.</span>"
 
         -- Leap
         if GetGlobalBool("ttt_zombie_leap_enable", true) then

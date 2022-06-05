@@ -1,4 +1,5 @@
 local hook = hook
+local math = math
 
 local MathCos = math.cos
 local MathSin = math.sin
@@ -48,6 +49,8 @@ hook.Add("TTTPlayerAliveClientThink", "Paladin_RoleFeatures_TTTPlayerAliveClient
     elseif ply.AuraEmitter then
         ply.AuraEmitter:Finish()
         ply.AuraEmitter = nil
+        ply.AuraDir = nil
+        ply.AuraNextPart = nil
     end
 end)
 
@@ -59,7 +62,7 @@ hook.Add("TTTTutorialRoleText", "Paladin_TTTTutorialRoleText", function(role, ti
     if role == ROLE_PALADIN then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local detectiveColor = GetRoleTeamColor(ROLE_TEAM_DETECTIVE)
-        local html = "The " .. ROLE_STRINGS[ROLE_PALADIN] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> whose job is to find and eliminate their enemies."
+        local html = "The " .. ROLE_STRINGS[ROLE_PALADIN] .. " is a " .. ROLE_STRINGS[ROLE_DETECTIVE] .. " and a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> whose job is to find and eliminate their enemies."
 
         html = html .. "<span style='display: block; margin-top: 10px;'>Instead of getting a DNA Scanner like a vanilla <span style='color: rgb(" .. detectiveColor.r .. ", " .. detectiveColor.g .. ", " .. detectiveColor.b .. ")'>" .. ROLE_STRINGS[ROLE_DETECTIVE] .. "</span>, they have a healing and damage reduction aura.</span>"
 
@@ -78,6 +81,16 @@ hook.Add("TTTTutorialRoleText", "Paladin_TTTTutorialRoleText", function(role, ti
             html = html .. "affects them as well"
         else
             html = html .. "does NOT affect them, unfortunately"
+        end
+        html = html .. ".</span>"
+
+        html = html .. "<span style='display: block; margin-top: 10px;'>Other players will know you are " .. ROLE_STRINGS_EXT[ROLE_DETECTIVE] .. " just by <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>looking at you</span>"
+        local special_detective_mode = GetGlobalInt("ttt_detective_hide_special_mode", SPECIAL_DETECTIVE_HIDE_NONE)
+        if special_detective_mode > SPECIAL_DETECTIVE_HIDE_NONE then
+            html = html .. ", but not what specific type of " .. ROLE_STRINGS[ROLE_DETECTIVE]
+            if special_detective_mode == SPECIAL_DETECTIVE_HIDE_FOR_ALL then
+                html = html .. ". <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>Not even you know what type of " .. ROLE_STRINGS[ROLE_DETECTIVE] .. " you are</span>"
+            end
         end
         html = html .. ".</span>"
 

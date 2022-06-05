@@ -107,13 +107,7 @@ function plymeta:IsShopRole()
     return hasShop
 end
 function plymeta:CanUseShop()
-    local isShopRole = self:IsShopRole()
-    -- Don't perform the additional checks if "shop for all" is enabled
-    if GetGlobalBool("ttt_shop_for_all", false) then
-        return isShopRole and WEPS.DoesRoleHaveWeapon(self:GetRole(), self:IsDetectiveLike())
-    end
-
-    return isShopRole
+    return self:IsShopRole() and WEPS.DoesRoleHaveWeapon(self:GetRole(), self:IsDetectiveLike())
 end
 function plymeta:ShouldDelayShopPurchase()
     local role = self:GetRole()
@@ -165,6 +159,12 @@ end
 
 function plymeta:ShouldDelayAnnouncements() return ROLE_SHOULD_DELAY_ANNOUNCEMENTS[self:GetRole()] or false end
 function plymeta:ShouldNotDrown() return ROLE_SHOULD_NOT_DROWN[self:GetRole()] or false end
+function plymeta:CanSeeC4()
+    if self:IsActiveTraitorTeam() then
+        return true
+    end
+    return ROLE_CAN_SEE_C4[self:GetRole()] or false
+end
 
 function plymeta:ShouldShowSpectatorHUD()
     -- Check if this role has an external definition for whether to show a spectator HUD and use that
@@ -214,10 +214,10 @@ function plymeta:GetDisplayedRole()
         end
 
         if show_detective then
-            return ROLE_DETECTIVE
+            return ROLE_DETECTIVE, true
         end
     end
-    return self:GetRole()
+    return self:GetRole(), false
 end
 
 -- Returns printable role
@@ -335,7 +335,7 @@ if CLIENT then
                 if matrix then
                     local translation = matrix:GetTranslation()
                     -- Translate the bone position from being relative to the world to being relative to the player's position
-                    local z = translation.z - ply:GetPos().z
+                    local z = MathAbs(translation.z - ply:GetPos().z)
                     if z > max_bone_z then
                         max_bone_z = z
                     end
@@ -363,19 +363,9 @@ if CLIENT then
         -- Check to see if the player's head is scaled
         local headId = self:LookupBone("ValveBiped.Bip01_Head1")
         if headId then
-            local max_headless_z = GetMaxBoneZ(self, function(b, name, bone)
-                return name ~= "ValveBiped.Bip01_Head1"
-            end)
             local headScale = self:GetManipulateBoneScale(headId)
-            if headScale.z ~= 1 then
-                -- If it is, get the difference between the previous largest Z position and the head position
-                local matrix = self:GetBoneMatrix(headId)
-                if matrix then
-                    local translation = matrix:GetTranslation()
-                    local diff = MathAbs(max_headless_z - translation.z)
-                    -- Scale the difference by the head scale
-                    max_bone_z = max_headless_z + (diff * (headScale.z + 1))
-                end
+            if headScale.z > 1 then
+                max_bone_z = max_bone_z + ((headScale.z - 1) * 25)
             end
         end
 
@@ -389,6 +379,32 @@ if CLIENT then
 
         -- Fallback to default player heights
         return self:Crouching() and 28 or 64
+    end
+
+    function plymeta:IsTargetIDOverridden(target, showJester)
+        -- Check if this role has an external definition for "IsTargetIDOverridden" and use that
+        local role = self:GetRole()
+        if ROLE_IS_TARGETID_OVERRIDDEN[role] then return ROLE_IS_TARGETID_OVERRIDDEN[role](self, target, showJester) end
+
+        ------ icon,  ring,  text
+        return false, false, false
+    end
+
+    function plymeta:IsScoreboardInfoOverridden(target)
+        -- Check if this role has an external definition for "IsScoreboardInfoOverridden" and use that
+        local role = self:GetRole()
+        if ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[role] then return ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[role](self, target) end
+
+        ------ name,  role
+        return false, false
+    end
+
+    function plymeta:IsTargetHighlighted(target)
+        -- Check if this role has an external definition for "IsTargetHighlighted" and use that
+        local role = self:GetRole()
+        if ROLE_IS_TARGET_HIGHLIGHTED[role] then return ROLE_IS_TARGET_HIGHLIGHTED[role](self, target) end
+
+        return false
     end
 
     function plymeta:AnimApplyGesture(act, weight)
@@ -606,7 +622,7 @@ function player.TeamLivingCount(ignorePassiveWinners)
                 end
             end
         -- Handle zombification differently because the player's original role should have no impact on this
-        elseif v:GetNWBool("IsZombifying", false) then
+        elseif v:IsZombifying() then
             if TRAITOR_ROLES[ROLE_ZOMBIE] then
                 traitor_alive = traitor_alive + 1
             elseif INDEPENDENT_ROLES[ROLE_ZOMBIE] then
@@ -648,7 +664,7 @@ function player.LivingCount(ignorePassiveWinners)
         -- If the player is alive and we're either not ignoring passive winners or this isn't a passive winning role
         if (v:Alive() and v:IsTerror() and (not ignorePassiveWinners or not ROLE_HAS_PASSIVE_WIN[v:GetRole()])) or
             -- Handle zombification differently because the player's original role should have no impact on this
-            v:GetNWBool("IsZombifying", false) then
+            v:IsZombifying() then
             players_alive = players_alive + 1
         end
     end

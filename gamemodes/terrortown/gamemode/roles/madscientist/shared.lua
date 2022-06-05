@@ -18,3 +18,7 @@ table.insert(ROLE_CONVARS[ROLE_MADSCIENTIST], {
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
 })
+table.insert(ROLE_CONVARS[ROLE_MADSCIENTIST], {
+    cvar = "ttt_madscientist_respawn_enable",
+    type = ROLE_CONVAR_TYPE_BOOL
+})

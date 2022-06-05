@@ -111,8 +111,11 @@ local function OnPlayerChat(ply, strText, bTeamOnly, bPlayerIsDead)
         table.insert(tab, "Console")
     end
 
+    local filter_context = TEXT_FILTER_GAME_CONTENT
+    if bit.band(GetConVar("cl_chatfilters"):GetInt(), 64) ~= 0 then filter_context = TEXT_FILTER_CHAT end
+
     table.insert(tab, color_white)
-    table.insert(tab, ": " .. strText)
+    table.insert(tab, ": " .. util.FilterText(strText, filter_context, IsValid(ply) and ply or nil))
 
     chat.AddText(unpack(tab))
 

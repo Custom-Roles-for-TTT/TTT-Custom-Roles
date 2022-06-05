@@ -6,8 +6,13 @@ local hook = hook
 local ipairs = ipairs
 local IsValid = IsValid
 local pairs = pairs
+local net = net
+local timer = timer
+local util = util
 
 local GetAllPlayers = player.GetAll
+
+util.AddNetworkString("TTT_Zombified")
 
 -------------
 -- CONVARS --
@@ -23,6 +28,7 @@ local zombie_prime_only_weapons = CreateConVar("ttt_zombie_prime_only_weapons", 
 local zombie_prime_speed_bonus = CreateConVar("ttt_zombie_prime_speed_bonus", "0.35", FCVAR_NONE, "The amount of bonus speed a prime zombie (e.g. player who spawned as a zombie originally) should get when using their claws. Server or round must be restarted for changes to take effect", 0, 1)
 local zombie_thrall_speed_bonus = CreateConVar("ttt_zombie_thrall_speed_bonus", "0.15", FCVAR_NONE, "The amount of bonus speed a zombie thrall (e.g. non-prime zombie) should get when using their claws. Server or round must be restarted for changes to take effect", 0, 1)
 local zombie_vision_enable = CreateConVar("ttt_zombie_vision_enable", "0")
+local zombie_respawn_health = CreateConVar("ttt_zombie_respawn_health", "100", FCVAR_NONE, "The amount of health a player should respawn with when they are converted to a zombie thrall", 1, 200)
 
 hook.Add("TTTSyncGlobals", "Zombie_TTTSyncGlobals", function()
     SetGlobalBool("ttt_zombies_are_monsters", zombies_are_monsters:GetBool())
@@ -216,3 +222,40 @@ hook.Add("PlayerCanPickupWeapon", "Zombie_Weapons_PlayerCanPickupWeapon", functi
         return false
     end
 end)
+
+----------------
+-- RESPAWNING --
+----------------
+
+function plymeta:RespawnAsZombie()
+    self:PrintMessage(HUD_PRINTCENTER, "You will respawn as " .. ROLE_STRINGS_EXT[ROLE_ZOMBIE] .. " in 3 seconds.")
+    self:SetNWBool("IsZombifying", true)
+
+    net.Start("TTT_Zombified")
+    net.WriteString(self:Nick())
+    net.Broadcast()
+
+    timer.Simple(3, function()
+        -- Don't respawn the player if they were already zombified by something else
+        if not self:IsZombie() then
+            local body = self.server_ragdoll or self:GetRagdollEntity()
+            self:SetRole(ROLE_ZOMBIE)
+            self:SetZombiePrime(false)
+            self:SpawnForRound(true)
+
+            local health = zombie_respawn_health:GetInt()
+            self:SetMaxHealth(health)
+            self:SetHealth(health)
+
+            self:StripAll()
+            self:Give("weapon_zom_claws")
+            if IsValid(body) then
+                self:SetPos(FindRespawnLocation(body:GetPos()) or body:GetPos())
+                self:SetEyeAngles(Angle(0, body:GetAngles().y, 0))
+                body:Remove()
+            end
+        end
+        self:SetNWBool("IsZombifying", false)
+        SendFullStateUpdate()
+    end)
+end

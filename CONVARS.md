@@ -52,6 +52,7 @@ ttt_assassin_enabled                        0       // Whether or not the assass
 ttt_vampire_enabled                         0       // Whether or not the vampire should spawn
 ttt_quack_enabled                           0       // Whether or not the quack should spawn
 ttt_parasite_enabled                        0       // Whether or not the parasite should spawn
+ttt_informant_enabled                       0       // Whether or not the informant should spawn
 ttt_glitch_enabled                          0       // Whether or not the glitch should spawn
 ttt_phantom_enabled                         0       // Whether or not the phantom should spawn
 ttt_revenger_enabled                        0       // Whether or not the revenger should spawn
@@ -61,6 +62,7 @@ ttt_veteran_enabled                         0       // Whether or not the vetera
 ttt_doctor_enabled                          0       // Whether or not the doctor should spawn
 ttt_trickster_enabled                       0       // Whether or not the trickster should spawn
 ttt_paramedic_enabled                       0       // Whether or not the paramedic should spawn
+ttt_turncoat_enabled                        0       // Whether or not the turncoat should spawn
 ttt_paladin_enabled                         0       // Whether or not the paladin should spawn
 ttt_tracker_enabled                         0       // Whether or not the tracker should spawn
 ttt_medium_enabled                          0       // Whether or not the medium should spawn
@@ -83,6 +85,7 @@ ttt_assassin_spawn_weight                   1       // The weight assigned to sp
 ttt_vampire_spawn_weight                    1       // The weight assigned to spawning the vampire
 ttt_quack_spawn_weight                      1       // The weight assigned to spawning the quack
 ttt_parasite_spawn_weight                   1       // The weight assigned to spawning the parasite
+ttt_informant_spawn_weight                  1       // The weight assigned to spawning the informant
 ttt_glitch_spawn_weight                     1       // The weight assigned to spawning the glitch
 ttt_phantom_spawn_weight                    1       // The weight assigned to spawning the phantom
 ttt_revenger_spawn_weight                   1       // The weight assigned to spawning the revenger
@@ -92,6 +95,7 @@ ttt_veteran_spawn_weight                    1       // The weight assigned to sp
 ttt_doctor_spawn_weight                     1       // The weight assigned to spawning the doctor
 ttt_trickster_spawn_weight                  1       // The weight assigned to spawning the trickster
 ttt_paramedic_spawn_weight                  1       // The weight assigned to spawning the paramedic
+ttt_turncoat_spawn_weight                   1       // The weight assigned to spawning the turncoat
 ttt_paladin_spawn_weight                    1       // The weight assigned to spawning the paladin
 ttt_tracker_spawn_weight                    1       // The weight assigned to spawning the tracker
 ttt_medium_spawn_weight                     1       // The weight assigned to spawning the medium
@@ -115,6 +119,7 @@ ttt_assassin_min_players                    0       // The minimum number of pla
 ttt_vampire_min_players                     0       // The minimum number of players required to spawn the vampire
 ttt_quack_min_players                       0       // The minimum number of players required to spawn the quack
 ttt_parasite_min_players                    0       // The minimum number of players required to spawn the parasite
+ttt_informant_min_players                   0       // The minimum number of players required to spawn the informant
 ttt_glitch_min_players                      0       // The minimum number of players required to spawn the glitch
 ttt_phantom_min_players                     0       // The minimum number of players required to spawn the phantom
 ttt_revenger_min_players                    0       // The minimum number of players required to spawn the revenger
@@ -124,6 +129,7 @@ ttt_veteran_min_players                     0       // The minimum number of pla
 ttt_doctor_min_players                      0       // The minimum number of players required to spawn the doctor
 ttt_trickster_min_players                   0       // The minimum number of players required to spawn the trickster
 ttt_paramedic_min_players                   0       // The minimum number of players required to spawn the paramedic
+ttt_turncoat_min_players                    0       // The minimum number of players required to spawn the turncoat
 ttt_paladin_min_players                     0       // The minimum number of players required to spawn the paladin
 ttt_tracker_min_players                     0       // The minimum number of players required to spawn the tracker
 ttt_medium_min_players                      0       // The minimum number of players required to spawn the medium
@@ -224,6 +230,14 @@ ttt_parasite_cure_time                      3       // The amount of time (in se
 ttt_parasite_credits_starting               1       // The number of credits a parasite should start with
 ttt_single_phantom_parasite                 0       // Whether only a single phantom or parasite should spawn in a round
 
+// Informant
+ttt_informant_share_scans                   1       // Whether the informant should automatically share their information with fellow traitors or not
+ttt_informant_can_scan_jesters              0       // Whether the informant should be able to scan jesters
+ttt_informant_can_scan_glitches             0       // Whether the informant should be able to scan glitches
+ttt_informant_scanner_time                  8       // The amount of time (in seconds) the informant's scanner takes to use
+ttt_informant_scanner_float_time            1       // The amount of time (in seconds) it takes for the informant's scanner to lose it's target without line of sight
+ttt_informant_scanner_cooldown              3       // The amount of time (in seconds) the informant's tracker goes on cooldown for after losing it's target
+
 // ----------------------------------------
 
 // INNOCENT TEAM SETTINGS
@@ -287,6 +301,10 @@ ttt_paramedic_defib_time                    8       // The amount of time (in se
 // Trickster
 ttt_trickster_credits_starting              0       // The number of credits a trickster should start with
 
+// Turncoat
+ttt_turncoat_change_health                  10      // The amount of health to set the turncoat to when they change teams
+ttt_turncoat_change_max_health              1       // Whether to change the turncoat's max health when they change teams
+
 // ----------------------------------------
 
 // DETECTIVE TEAM SETTINGS
@@ -328,6 +346,13 @@ ttt_medium_spirit_color                     1       // Whether players' spirits 
 ttt_medium_spirit_vision                    1       // Whether players' spirits should be able to see each other
 ttt_medium_dead_notify                      1       // Whether player should be notified that there is a medium when they die
 ttt_medium_credits_starting                 1       // The number of credits a medium should start with
+
+// Sapper
+ttt_sapper_aura_radius                      5       // The radius of the sapper's aura in meters
+ttt_sapper_protect_self                     1       // Whether the sapper's protection aura will protect themselves or not
+ttt_sapper_fire_immune                      0       // Whether sapper's protection aura also grands fire immunity
+ttt_sapper_can_see_c4                       0       // Whether the sapper can see C4 pings on their radar like traitors
+ttt_sapper_c4_guaranteed_defuse             0       // Whether the sapper is guaranteed to always successfully defuse C4
 
 // ----------------------------------------
 
@@ -371,6 +396,7 @@ ttt_clown_credits_starting                  0       // The number of credits a c
 ttt_single_drunk_clown                      0       // Whether only a single drunk or clown should spawn in a round (Only applies if ttt_single_jester_independent is disabled)
 
 // Beggar
+ttt_beggars_are_independent                 0       // Whether beggars should be treated as members of the independent team (rather than the jester team)
 ttt_beggar_reveal_traitor                   1       // Who the beggar is revealed to when they join the traitor team. 0 - No one. 1 - Everyone. 2 - Traitors. 3 - Innocents
 ttt_beggar_reveal_innocent                  2       // Who the beggar is revealed to when they join the innocent team. 0 - No one. 1 - Everyone. 2 - Traitors. 3 - Innocents
 ttt_beggar_respawn                          0       // Whether the beggar respawns when they are killed before joining another team
@@ -506,6 +532,7 @@ ttt_zombie_thrall_convert_chance            1.0     // The chance that a zombie 
 
 // Mad Scientist
 ttt_madscientist_device_time                4       // The amount of time (in seconds) the mad scientist's device takes to use
+ttt_madscientist_respawn_enable             0       // Whether the mad scientist should respawn as a zombie when they are killed
 
 // ----------------------------------------
 
@@ -615,6 +642,7 @@ ttt_veteran_starting_health                 100     // The amount of health the 
 ttt_doctor_starting_health                  100     // The amount of health the doctor starts with
 ttt_trickster_starting_health               100     // The amount of health the trickster starts with
 ttt_paramedic_starting_health               100     // The amount of health the paramedic starts with
+ttt_turncoat_starting_health                100     // The amount of health the turncoat starts with
 ttt_detective_starting_health               100     // The amount of health the detective starts with
 ttt_paladin_starting_health                 100     // The amount of health the paladin starts with
 ttt_tracker_starting_health                 100     // The amount of health the tracker starts with
@@ -649,6 +677,7 @@ ttt_veteran_max_health                      100     // The maximum amount of hea
 ttt_doctor_max_health                       100     // The maximum amount of health the doctor can have
 ttt_trickster_max_health                    100     // The maximum amount of health the trickster can have
 ttt_paramedic_max_health                    100     // The maximum amount of health the paramedic can have
+ttt_turncoat_max_health                     100     // The maximum amount of health the turncoat can have
 ttt_detective_max_health                    100     // The maximum amount of health the detective can have
 ttt_paladin_max_health                      100     // The maximum amount of health the paladin can have
 ttt_tracker_max_health                      100     // The maximum amount of health the tracker can have
@@ -691,6 +720,9 @@ ttt_scoreboard_score                        0       // Whether to show the score
 
 // Round Summary
 ttt_round_summary_tabs                      summary,hilite,events,scores // The tabs to show in the round summary screen. Changing the order of the values will change the order of the tabs. Excluding a value from the comma-delimited list will prevent that tab from showing. Invalid values will be ignored. Round must be restarted for changes to take effect
+
+// Misc.
+ttt_death_notifier_enable                   1       // Whether the name and role of a player's killer should be shown to the victim
 ```
 
 Thanks to [KarlOfDuty](https://github.com/KarlOfDuty) for his original version of this document, [here](https://github.com/KarlOfDuty/TTT-Custom-Roles/blob/patch-1/README.md).

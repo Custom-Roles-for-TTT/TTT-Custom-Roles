@@ -8,6 +8,13 @@ BEGGAR_REVEAL_ALL = 1
 BEGGAR_REVEAL_TRAITORS = 2
 BEGGAR_REVEAL_INNOCENTS = 3
 
+-- Update their team
+hook.Add("TTTUpdateRoleState", "Beggar_TTTUpdateRoleState", function()
+    local beggars_are_independent = GetGlobalBool("ttt_beggars_are_independent", false)
+    INDEPENDENT_ROLES[ROLE_BEGGAR] = beggars_are_independent
+    JESTER_ROLES[ROLE_BEGGAR] = not beggars_are_independent
+end)
+
 --------------------
 -- PLAYER METHODS --
 --------------------
@@ -18,19 +25,20 @@ function plymeta:ShouldRevealBeggar(tgt)
     -- If we weren't given a target, use ourselves
     if not tgt then tgt = self end
 
-    -- Determine whether which setting we should check based on what role they changed to
+    -- Use what role they changed to to determine which setting to use
     local beggarMode = nil
-    local sameTeam = false
     if tgt:IsTraitor() then
         beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", BEGGAR_REVEAL_ALL)
-        sameTeam = self:IsTraitorTeam() and beggarMode == BEGGAR_REVEAL_TRAITORS
     elseif tgt:IsInnocent() then
         beggarMode = GetGlobalInt("ttt_beggar_reveal_innocent", BEGGAR_REVEAL_TRAITORS)
-        sameTeam = self:IsInnocentTeam() and beggarMode == BEGGAR_REVEAL_INNOCENTS
     end
 
-    -- Check the setting value and the player's team to see we if should reveal this beggar
-    return beggarMode == BEGGAR_REVEAL_ALL or sameTeam
+    -- Then determine whether this player should show for the client's team
+    local traitorTeam = self:IsTraitorTeam() and beggarMode == BEGGAR_REVEAL_TRAITORS
+    local innocentTeam = self:IsInnocentTeam() and beggarMode == BEGGAR_REVEAL_INNOCENTS
+
+    -- Check the setting value and whether the client's team matches the reveal mode
+    return beggarMode == BEGGAR_REVEAL_ALL or traitorTeam or innocentTeam
 end
 
 ------------------
@@ -49,6 +57,10 @@ table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
 })
 table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
     cvar = "ttt_beggar_notify_confetti",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
+    cvar = "ttt_beggars_are_independent",
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_BEGGAR], {

@@ -1,15 +1,137 @@
 # Release Notes
 
-### 1.5.8
+## 1.6.0
+**Released: June 6th, 2022**
+Includes beta updates [1.5.9](#159-beta) and [1.5.17](#1517-beta).
+
+## 1.5.17 (Beta)
+**Released: June 4th, 2022**
+
+### Changes
+- Changed additional role messages and features to be hidden or disabled when `ttt_hide_role` is enabled (Thanks Callum!)
+- Ported Steam chat filtering from base TTT
+
+## 1.5.16 (Beta)
+**Released: May 29th, 2022**
+
+### Fixes
+- Fixed an error that can occur when a player disconnects while respawning
+- Fixed some players' roles being revealed to traitors the round after they are a detective
+- Fixed error in the shop search when certain symbols were entered
+- Fixed error opening the shop when `ttt_bem_allow_change` was disabled
+
+### Additions
+- Added ability to configure maximum informant scanner distance
+- Added total kills to the round summary score tab
+
+### Changes
+- Changed traitor team to show question mark icons over their head and on the scoreboard when there is a glitch
+  - Which specific roles show as a question mark depends on the ttt_glitch_mode convar
+- Ported "TTT: fix weapons disappearing during round reset" from base TTT
+
+## 1.5.15 (Beta)
+**Released: May 21st, 2022**
+
+### Additions
+- Added new special traitor role: the informant
+- Added information on the scoreboard when the clown is activated
+- Added information on the scoreboard when the old man is activated
+
+### Changes
+- Changed jester team to show question mark icons over their head and on the scoreboard instead of the jester icon
+- Changed maps which send messages to specific vanilla roles to instead send those messages to the equivalent team
+- Changed detective team to show question mark icons over their head and on the scoreboard instead of the detective icon if roles are hidden
+- Changed hidden detective HUD text to make it clear that the role is unknown but others still know its a detective
+- Updated detective tutorials to explain role hiding logic
+
+### Developer
+- Added `plymeta:IsTargetIDOverridden` to determine whether the player is currently overriding a piece of Target ID information
+- Added ability for external roles to define their own `plymeta:IsTargetIDOverridden`
+- Added `plymeta:IsScoreboardInfoOverridden` to determine whether the player is currently overriding a piece of scoreboard information
+- Added ability for external roles to define their own `plymeta:IsScoreboardInfoOverridden`
+- Added `plymeta:IsTargetHighlighted` to determine whether the target is being highlighted per the player's role rules
+- Added ability for external roles to define their own `plymeta:IsTargetHighlighted`
+- Changed `ttt_game_text` entity to use the team-equivalent for existing role receivers (e.g. RECEIVE_TRAITOR now sends to the traitor team, not just the traitor role)
+- Added ability for `ttt_game_text` entity to set the receiver to be jesters (5), independents (6), or monsters (7)
+
+## 1.5.14 (Beta)
+**Released: May 15th, 2022**
+
+### Additions
+- Added new special innocent role: the turncoat
+- Added new special detective role: the sapper
+- Added convar to control whether killer notification messages are enabled (enabled by default)
+
+### Developer
+- Added `TTTDeathNotifyOverride` hook to allow developers to change what name and role shows in the death notification message
+- Added `plymeta:CanSeeC4` to determine whether the player can see the C4 radar icon like traitors
+- Added ability for external roles to define their own `plymeta:CanSeeC4`
+- Changed the `TTTC4Disarm` hook to allow changing the defusal result via the new return value
+
+## 1.5.13 (Beta)
+**Released: May 6th, 2022**
+
+### Fixes
+- Fixed binoculars showing while a player is dead if they died while their binoculars are out
+
+### Changes
+- Increased head icon offset when a player's head is scaled up so the icon is visible on models with larger heads
+- Changed the shop to only be openable if the player has buyable items (previously this behavior only happened when shop-for-all was enabled)
+
+## 1.5.12 (Beta)
+**Released: April 23rd, 2022**
+
+### Additions
+- Added ability for mad scientist to respawn as a zombie when they die (disabled by default)
+
+### Fixes
+- Fixed zombie respawn notification getting trampled by the "medium can sense your spirit" notification
+- Fixed minor grammatical problem in the zombie tutorial when the role is renamed
+
+### Developer
+- Added `plymeta:IsZombifying()` to check whether a player is respawning as a zombie
+- Added `plymeta:RespawnAsZombie()` to allow respawning a player as a zombie
+
+## 1.5.11 (Beta)
+**Released: April 16th, 2022**
+
+### Additions
+- Added ability for beggar to be on the independent team (disabled by default)
+
+### Fixes
+- Fixed bodysnatcher role popup and tutorial not showing the correct team when they are configured to be independent
+
+### Developer
+- Added new `TTTRolePopupRoleStringOverride` hook to allow overriding the role string used when building the role start-of-round popup
+
+## 1.5.10 (Beta)
+**Released: April 9th, 2022**
+
+### Additions
+- Added model for the detective binocular weapon
+
+### Fixes
+- Fixed rare case where a player could get the role weapons from their previous role in a new round
+
+## 1.5.9 (Beta)
+**Released: April 3rd, 2022**
+
+### Fixes
+- Fixed beggar converted to innocent still showing as a jester to traitors when ttt_beggar_reveal_innocent was set to "traitors"
+
+### Changes
+- Changed head icon height calculation again to hopefully help more with model scaling
+
+## 1.5.8
 **Released: March 22nd, 2022**
 Includes beta updates [1.5.6](#156-beta) and [1.5.7](#157-beta).
 
 ### Fixes
 - Fixed roles without shops by default belonging to teams that normally get shops by default not having the "shop sync" convars created
 - Fixed error using search in shop or role weapons config menu
-- Fixed loot goblins being shown by traitor vision when it was enabled
+- Fixed loot goblins being shown in traitor vision when it was enabled
 
-### 1.5.7 (Beta)
+## 1.5.7 (Beta)
 **Released: March 19th, 2022**
 
 ### Additions
@@ -40,7 +162,7 @@ Includes beta updates [1.5.6](#156-beta) and [1.5.7](#157-beta).
 - Added `should_reduce` parameter to `TTTPlayerUsedHealthStation` hook
 - Added ability for entities to use a function for their `TargetIDHint` value
 
-### 1.5.6 (Beta)
+## 1.5.6 (Beta)
 **Released: March 6th, 2022**
 
 ### Additions

@@ -48,6 +48,15 @@ hook.Add("TTTTargetIDPlayerText", "LootGoblin_TTTTargetIDPlayerText", function(e
     end
 end)
 
+ROLE_IS_TARGETID_OVERRIDDEN[ROLE_LOOTGOBLIN] = function(ply, target)
+    if not IsPlayer(target) then return end
+    if not target:IsActiveLootGoblin() then return end
+    if not target:IsRoleActive() then return end
+
+    ------ icon, ring, text
+    return true, true, true
+end
+
 ----------------
 -- SCOREBOARD --
 ----------------
@@ -57,6 +66,15 @@ hook.Add("TTTScoreboardPlayerRole", "LootGoblin_TTTScoreboardPlayerRole", functi
         return ROLE_COLORS_SCOREBOARD[ROLE_LOOTGOBLIN], ROLE_STRINGS_SHORT[ROLE_LOOTGOBLIN]
     end
 end)
+
+ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_LOOTGOBLIN] = function(ply, target)
+    if not IsPlayer(target) then return end
+    if not target:IsActiveLootGoblin() then return end
+    if not target:IsRoleActive() then return end
+
+    ------ name,  role
+    return false, true
+end
 
 -------------
 -- SCORING --
@@ -110,13 +128,19 @@ end)
 ---------
 
 hook.Add("TTTHUDInfoPaint", "LootGoblin_TTTHUDInfoPaint", function(client, label_left, label_top)
+    local hide_role = false
+    if ConVarExists("ttt_hide_role") then
+        hide_role = GetConVar("ttt_hide_role"):GetBool()
+    end
+
+    if hide_role then return end
+
     if client:IsActiveLootGoblin() and not client:IsRoleActive() then
         surface.SetFont("TabLarge")
         surface.SetTextColor(255, 255, 255, 230)
 
         local remaining = MathMax(0, GetGlobalFloat("ttt_lootgoblin_activate", 0) - CurTime())
-
-        text = LANG.GetParamTranslation("lootgoblin_hud", { time = util.SimpleTime(remaining, "%02i:%02i") })
+        local text = LANG.GetParamTranslation("lootgoblin_hud", { time = util.SimpleTime(remaining, "%02i:%02i") })
         local _, h = surface.GetTextSize(text)
 
         surface.SetTextPos(label_left, ScrH() - label_top - h)

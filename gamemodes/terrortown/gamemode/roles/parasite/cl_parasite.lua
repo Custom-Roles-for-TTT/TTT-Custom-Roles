@@ -74,6 +74,14 @@ hook.Add("TTTTargetIDPlayerText", "Parasite_TTTTargetIDPlayerText", function(ent
     end
 end)
 
+ROLE_IS_TARGETID_OVERRIDDEN[ROLE_PARASITE] = function(ply, target)
+    if not ply:IsTraitorTeam() or ply:IsAssassin() then return end
+    if not IsPlayer(target) then return end
+
+    ------ icon,  ring,  text
+    return false, false, target:GetNWBool("ParasiteInfected", false)
+end
+
 ----------------
 -- SCOREBOARD --
 ----------------
@@ -107,6 +115,16 @@ hook.Add("TTTScoreboardPlayerName", "Parasite_TTTScoreboardPlayerName", function
         return ply:Nick() .. " (" .. LANG.GetTranslation("target_infected") .. ")"
     end
 end)
+
+ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_PARASITE] = function(ply, target)
+    if not ply:IsTraitorTeam() or ply:IsAssassin() then return end
+    if not IsPlayer(target) then return end
+    if not ShouldShowTraitorExtraInfo() then return end
+    if not target:GetNWBool("ParasiteInfected", false) then return end
+
+    ------ name, role
+    return true, true
+end
 
 ---------------
 -- INFECTING --

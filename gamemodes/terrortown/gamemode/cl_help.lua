@@ -979,6 +979,13 @@ function HELPSCRN:CreateTutorial(parent)
     end
 
     brole.DoClick = function()
+        local hide_role = false
+        if ConVarExists("ttt_hide_role") then
+            hide_role = GetConVar("ttt_hide_role"):GetBool()
+        end
+
+        if hide_role then return end
+
         local client = LocalPlayer()
         local role = client:GetDisplayedRole()
         if not IsValid(client) or role <= ROLE_NONE or role > ROLE_MAX then return end

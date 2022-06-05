@@ -487,8 +487,8 @@ from a long distance away.
 Unlimited uses, but identification
 takes a few seconds.]]
 
-L.binoc_help_pri = "{primaryfire} identifies a body."
-L.binoc_help_sec = "{secondaryfire} changes zoom level."
+L.binoc_help_pri = "Hold {primaryfire} to identify a body"
+L.binoc_help_sec = "Press {secondaryfire} to change zoom level"
 
 -- UMP
 L.ump_desc = [[
@@ -599,7 +599,6 @@ L.hp_wounded = "Wounded"
 L.hp_badwnd = "Badly Wounded"
 L.hp_death = "Near Death"
 
-
 -- TargetID karma status
 L.karma_max = "Renowned"
 L.karma_high = "Reputable"
@@ -615,6 +614,9 @@ L.target_disg = " (DISGUISED)"
 L.target_unid = "Unidentified body"
 
 L.target_credits = "Search to receive unspent credits"
+
+L.target_unknown_team = "UNKNOWN {targettype}"
+L.target_unconfirmed_role = "UNCONFIRMED {targettype}"
 
 -- Traitor buttons (HUD buttons with hand icons that only traitors can see)
 L.tbut_single = "Single use"
@@ -814,11 +816,12 @@ L.col_time = "Time"
 L.col_event = "Event"
 L.col_player = "Player"
 L.col_role = "Starting Role"
-L.col_kills1 = "{innocent} kills"
+L.col_kills1 = "Inno. kills"
 L.col_kills2 = "{traitor} kills"
 L.col_kills3 = "{jester} kills"
 L.col_kills4 = "Indep. kills"
-L.col_kills5 = "Monster kills"
+L.col_kills5 = "Mon. kills"
+L.col_totalkills = "Total kills"
 L.col_points = "Points"
 L.col_team = "Team bonus"
 L.col_total = "Total points"

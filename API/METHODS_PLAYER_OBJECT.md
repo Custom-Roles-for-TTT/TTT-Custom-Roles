@@ -18,6 +18,10 @@ Methods available when called from a Player object (within the defined realm)
 *Parameters:*
 - *activeOnly* - Whether the player must also be active (Defaults to `false`)
 
+**plymeta:CanSeeC4()** - Whether the player can see the C4 icons like traitors can.\
+*Realm:* Client and Server\
+*Added in:* 1.5.14
+
 **plymeta:CanUseShop()** - Whether the player can currently open the shop menu.\
 *Realm:* Client and Server\
 *Added in:* 1.0.2
@@ -28,9 +32,19 @@ Methods available when called from a Player object (within the defined realm)
 *Parameters:*
 - *activeOnly* - Whether the player must also be active (Defaults to `false`)
 
+**plymeta:DrunkRememberRole(role)** - Sets the drunk's role and runs required checks for that role.\
+*Realm:* Server\
+*Added in:* 1.1.9\
+*Parameters:*
+- *role* - Which role to set the drunk to (see ROLE_* global enumeration)
+
 **plymeta:GetDisplayedRole()** - Gets the role that should be displayed for the player.\
 *Realm:* Client and Server\
 *Added in:* 1.5.3
+
+*Returns:*
+- *display_role* - The role that should be displayed for the player.
+- *changed* - Whether the return value was changed and should be hidden
 
 **plymeta:GetHeight()** - Gets the *estimated* height of the player based on their player model.\
 *Realm:* Client\
@@ -132,9 +146,37 @@ Methods available when called from a Player object (within the defined realm)
 *Parameters:*
 - *target* - The other player whose team is being compared
 
+**plymeta:IsScoreboardInfoOverridden(target)** - Whether the player is currently overriding a piece of scoreboard information.\
+*Realm:* Client\
+*Added in:* 1.5.15\
+*Parameters:*
+- *target* - The player whose scoreboard info is being rendered
+
+*Returns:*
+- *isNameOverridden* - Whether the player name is currently overridden
+- *isRoleOverridden* - Whether the role color or icon is currently overridden
+
 **plymeta:IsShopRole()** - Whether the player has a shop (see `plymeta:CanUseShop` for determining if it is openable).\
 *Realm:* Client and Server\
 *Added in:* 1.0.0
+
+**plymeta:IsTargetHighlighted(target)** - Whether the target player is highlighted based the player's role rules.\
+*Realm:* Client\
+*Added in:* 1.5.15\
+*Parameters:*
+- *target* - The player whose scoreboard info is being rendered
+
+**plymeta:IsTargetIDOverridden(target, showJester)** - Whether the player is currently overriding a piece of target ID information.\
+*Realm:* Client\
+*Added in:* 1.5.15\
+*Parameters:*
+- *target* - The player whose scoreboard info is being rendered
+- *showJester* - Whether the target is a jester and the local player would normally know that
+
+*Returns:*
+- *isIconOverridden* - Whether the target ID role icon is currently overridden
+- *isRingOverridden* - Whether the target ID identification ring is currently overridden
+- *isTextOverridden* - Whether the target ID text is currently overridden
 
 **plymeta:IsTraitorTeam()** - Whether the player is on the traitor team.\
 *Realm:* Client and Server\
@@ -156,12 +198,24 @@ Methods available when called from a Player object (within the defined realm)
 *Realm:* Client and Server\
 *Added in:* 1.0.0
 
+**plymeta:IsZombifying()** - Whether the player is in the process of respawning as a zombie.\
+*Realm:* Client and Server\
+*Added in:* 1.5.12
+
 **plymeta:MoveRoleState(target, keepOnSource)** - Moves role state data (such as promotion and monster prime status) to the target.\
 *Realm:* Client and Server\
 *Added in:* 1.0.5\
 *Parameters:*
 - *target* - The player to move the role state data to
-- *keepOnSource* - Wheter the source player should also keep the role state data (Defaults to `false`)
+- *keepOnSource* - Whether the source player should also keep the role state data (Defaults to `false`)
+
+**plymeta:ResetPlayerScale()** - Reset's the players size to default by adjusting models, step sizes, hulls and view offsets.\
+*Realm:* Server\
+*Added in:* 1.3.1
+
+**plymeta:RespawnAsZombie()** - Respawns the player as a zombie after a 3 second delay.\
+*Realm:* Server\
+*Added in:* 1.5.12
 
 **plymeta:SetRoleAndBroadcast(role)** - Sets the player's role to the given one and (if called on the server) broadcasts the change to all clients for scoreboard tracking.\
 *Realm:* Client and Server\
@@ -229,12 +283,6 @@ Methods available when called from a Player object (within the defined realm)
 *Parameters:*
 - *team* - Which team to choose a role from (see ROLE_TEAM_* global enumeration)
 
-**plymeta:DrunkRememberRole(role)** - Sets the drunk's role and runs required checks for that role.\
-*Realm:* Server\
-*Added in:* 1.1.9\
-*Parameters:*
-- *role* - Which role to set the drunk to (see ROLE_* global enumeration)
-
 **plymeta:StripRoleWeapons()** - Strips all weapons from the player whose `Category` property matches the global `WEAPON_CATEGORY_ROLE` value.\
 *Realm:* Client and Server\
 *Added in:* 1.0.5
@@ -244,7 +292,3 @@ Methods available when called from a Player object (within the defined realm)
 *Added in:* 1.3.1\
 *Parameters:*
 - *scale* - The value with which to scale the players size, relative to their current size.
-
-**plymeta:ResetPlayerScale()** - Reset's the players size to default by adjusting models, step sizes, hulls and view offsets.\
-*Realm:* Server\
-*Added in:* 1.3.1

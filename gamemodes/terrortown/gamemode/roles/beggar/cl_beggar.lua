@@ -19,9 +19,20 @@ hook.Add("Initialize", "Beggar_Translations_Initialize", function()
     LANG.AddToLanguage("english", "beggar_hidden_traitor_hud", "You still appear as {beggar} to {traitors}")
 
     -- Popup
-    LANG.AddToLanguage("english", "info_popup_beggar", [[You are {role}! {traitors} think you are {ajester} and you
+    LANG.AddToLanguage("english", "info_popup_beggar_jester", [[You are {role}! {traitors} think you are {ajester} and you
 deal no damage. However, if you can convince someone to give
 you a shop item you will join their team.]])
+    LANG.AddToLanguage("english", "info_popup_beggar_indep", [[You are {role}! If you can convince someone to give
+you a shop item you will join their team.]])
+end)
+
+hook.Add("TTTRolePopupRoleStringOverride", "Beggar_TTTRolePopupRoleStringOverride", function(client, roleString)
+    if not IsPlayer(client) or not client:IsBeggar() then return end
+
+    if GetGlobalBool("ttt_beggars_are_independent", false) then
+        return roleString .. "_indep"
+    end
+    return roleString .. "_jester"
 end)
 
 -------------
@@ -95,6 +106,13 @@ end)
 ---------
 
 hook.Add("TTTHUDInfoPaint", "Beggar_TTTHUDInfoPaint", function(client, label_left, label_top)
+    local hide_role = false
+    if ConVarExists("ttt_hide_role") then
+        hide_role = GetConVar("ttt_hide_role"):GetBool()
+    end
+
+    if hide_role then return end
+
     if (client:IsInnocent() or client:IsTraitor()) and client:GetNWBool("WasBeggar", false) then
         local beggarMode = BEGGAR_REVEAL_ALL
         if client:IsInnocent() then beggarMode = GetGlobalInt("ttt_beggar_reveal_innocent", BEGGAR_REVEAL_TRAITORS)
@@ -103,6 +121,7 @@ hook.Add("TTTHUDInfoPaint", "Beggar_TTTHUDInfoPaint", function(client, label_lef
             surface.SetFont("TabLarge")
             surface.SetTextColor(255, 255, 255, 230)
 
+            local text
             if beggarMode == BEGGAR_REVEAL_NONE then
                 text = LANG.GetParamTranslation("beggar_hidden_all_hud", { beggar = ROLE_STRINGS_EXT[ROLE_BEGGAR] })
             elseif beggarMode == BEGGAR_REVEAL_TRAITORS then
@@ -140,8 +159,9 @@ end
 
 hook.Add("TTTTutorialRoleText", "Beggar_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_BEGGAR then
-        local roleColor = GetRoleTeamColor(ROLE_TEAM_JESTER)
-        local html = "The " .. ROLE_STRINGS[ROLE_BEGGAR] .. " is a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>jester</span> role whose goal is to convince another players to give them a shop item."
+        local roleTeam = player.GetRoleTeam(ROLE_BEGGAR, true)
+        local roleTeamName, roleColor = GetRoleTeamInfo(roleTeam)
+        local html = "The " .. ROLE_STRINGS[ROLE_BEGGAR] .. " is a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. roleTeamName .. "</span> role whose goal is to convince another players to give them a shop item."
 
         html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_BEGGAR] .. " then <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>joins the team</span> of whichever player <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>bought the item</span> they are given.</span>"
 

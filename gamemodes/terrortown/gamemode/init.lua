@@ -295,6 +295,8 @@ CreateConVar("ttt_namechange_bantime", "10")
 CreateConVar("ttt_disable_headshots", "0")
 CreateConVar("ttt_disable_mapwin", "0")
 
+CreateConVar("ttt_death_notifier_enable", "1")
+
 -- bem server convars
 CreateConVar("ttt_bem_allow_change", 1, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Allow clients to change the look of the shop menu")
 CreateConVar("ttt_bem_sv_cols", 4, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Sets the number of columns in the shop menu's item list (serverside)")
@@ -515,9 +517,9 @@ function GM:SyncGlobals()
     SetGlobalBool("ttt_independents_update_scoreboard", GetConVar("ttt_independents_update_scoreboard"):GetBool())
 
     SetGlobalBool("ttt_bem_allow_change", GetConVar("ttt_bem_allow_change"):GetBool())
-    SetGlobalInt("ttt_bem_sv_cols", GetConVar("ttt_bem_sv_cols"):GetBool())
-    SetGlobalInt("ttt_bem_sv_rows", GetConVar("ttt_bem_sv_rows"):GetBool())
-    SetGlobalInt("ttt_bem_sv_size", GetConVar("ttt_bem_sv_size"):GetBool())
+    SetGlobalInt("ttt_bem_sv_cols", GetConVar("ttt_bem_sv_cols"):GetInt())
+    SetGlobalInt("ttt_bem_sv_rows", GetConVar("ttt_bem_sv_rows"):GetInt())
+    SetGlobalInt("ttt_bem_sv_size", GetConVar("ttt_bem_sv_size"):GetInt())
 
     SetGlobalBool("sv_voiceenable", GetConVar("sv_voiceenable"):GetBool())
 
@@ -681,6 +683,9 @@ local function SpawnEntities()
         et.ReplaceWeaponsFromPools()
     end
 
+    -- We're done resetting the map, unlock weapon pickups for the players about to respawn
+    GAMEMODE.RespawningWeapons = false
+
     -- Finally, get players in there
     SpawnWillingPlayers()
 end
@@ -718,6 +723,9 @@ function PrepareRound()
         v:SetNWVector("PlayerColor", Vector(1, 1, 1))
         -- Workaround to prevent GMod sprint from working
         v:SetRunSpeed(v:GetWalkSpeed())
+        -- Clear out the resurrection checking data so roles don't get their old weapons back next round in specific circumstances
+        v.Resurrecting = false
+        v.DeathRoleWeapons = nil
     end
 
     -- Check playercount
@@ -734,7 +742,8 @@ function PrepareRound()
         return
     end
 
-    -- Cleanup
+    -- Reset the map entities
+    GAMEMODE.RespawningWeapons = true
     CleanUp()
 
     GAMEMODE.MapWin = WIN_NONE
@@ -1212,7 +1221,7 @@ function GM:TTTCheckForWin()
                 innocent_alive = true
             end
         -- Handle zombification differently because the player's original role should have no impact on this
-        elseif v:GetNWBool("IsZombifying", false) then
+        elseif v:IsZombifying() then
             if TRAITOR_ROLES[ROLE_ZOMBIE] then
                 traitor_alive = true
             elseif MONSTER_ROLES[ROLE_ZOMBIE] then
@@ -1876,46 +1885,46 @@ hook.Add("PlayerSay", "ColorMixerOpen", function(ply, text, team_only)
 end)
 
 -- Death messages
-hook.Add("PlayerDeath", "TTT_ClientDeathNotify", function(victim, entity, killer)
-    if gmod.GetGamemode().Name == "Trouble in Terrorist Town" then
-        local reason = "nil"
-        local killerName = "nil"
-        local role = ROLE_NONE
+hook.Add("PlayerDeath", "TTT_ClientDeathNotify", function(victim, inflictor, attacker)
+    if gmod.GetGamemode().Name ~= "Trouble in Terrorist Town" then return end
+    if not GetConVar("ttt_death_notifier_enable"):GetBool() then return end
 
-        if victim.DiedByWater then
-            reason = "water"
-        elseif killer == victim then
-            reason = "suicide"
-        elseif IsValid(entity) then
-            if victim:IsPlayer() and (StringStartsWith(entity:GetClass(), "prop_physics") or entity:GetClass() == "prop_dynamic") then
-                -- If the killer is also a prop
-                reason = "prop"
-            elseif IsValid(killer) then
-                if entity:GetClass() == "entityflame" and killer:GetClass() == "entityflame" then
-                    reason = "burned"
-                elseif entity:GetClass() == "worldspawn" and killer:GetClass() == "worldspawn" then
-                    reason = "fell"
-                elseif killer:IsPlayer() and victim ~= killer then
-                    reason = "ply"
-                    killerName = killer:Nick()
+    local reason = "nil"
+    local killerName = "nil"
+    local role = ROLE_NONE
 
-                    -- If this Phantom was killed by a player and they are supposed to haunt them, hide their killer's role
-                    if GetRoundState() == ROUND_ACTIVE and victim:IsPhantom() and GetConVar("ttt_phantom_killer_haunt"):GetBool() then
-                        role = ROLE_NONE
-                    else
-                        role = killer:GetRole()
-                    end
-                end
+    if victim.DiedByWater then
+        reason = "water"
+    elseif attacker == victim then
+        reason = "suicide"
+    elseif IsValid(inflictor) then
+        if victim:IsPlayer() and (StringStartsWith(inflictor:GetClass(), "prop_physics") or inflictor:GetClass() == "prop_dynamic") then
+            -- If the killer is also a prop
+            reason = "prop"
+        elseif IsValid(attacker) then
+            if inflictor:GetClass() == "entityflame" and attacker:GetClass() == "entityflame" then
+                reason = "burned"
+            elseif inflictor:GetClass() == "worldspawn" and attacker:GetClass() == "worldspawn" then
+                reason = "fell"
+            elseif attacker:IsPlayer() and victim ~= attacker then
+                reason = "ply"
+                killerName = attacker:Nick()
+                role = attacker:GetRole()
             end
         end
-
-        -- Send the buffer message with the death information to the victim
-        net.Start("TTT_ClientDeathNotify")
-        net.WriteString(killerName)
-        net.WriteInt(role, 8)
-        net.WriteString(reason)
-        net.Send(victim)
     end
+
+    local new_reason, new_killer, new_role = CallHook("TTTDeathNotifyOverride", nil, victim, inflictor, attacker, reason, killerName, role)
+    if type(new_reason) == "string" then reason = new_reason end
+    if type(new_killer) == "string" then killerName = new_killer end
+    if type(new_role) == "number" and new_role >= ROLE_NONE and new_role <= ROLE_MAX then role = new_role end
+
+    -- Send the buffer message with the death information to the victim
+    net.Start("TTT_ClientDeathNotify")
+    net.WriteString(killerName)
+    net.WriteInt(role, 8)
+    net.WriteString(reason)
+    net.Send(victim)
 end)
 
 -- Sprint

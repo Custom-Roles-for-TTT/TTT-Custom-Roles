@@ -15,6 +15,17 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 
 *Return:* Whether or not the given player's footstep sounds should be stopped (Defaults to `false`).
 
+***TTTC4Disarm(bomb, result, ply)** - Modified to allow changing the defusal result via the new return value.\
+*Realm:* Server\
+*Added in:* 1.5.14\
+*Parameters:*
+- *bomb* - The bomb entity being defused
+- *result* - Whether the defusal was successful
+- *ply* - The player defusing the bomb
+
+*Return:*
+- *result* - The new result value to use or the original passed into the hook
+
 **TTTCanIdentifyCorpse(ply, rag, wasTraitor)** - Changed `was_traitor` parameter to be `true` for any member of the traitor team, rather than just the traitor role.\
 *Realm:* Server\
 *Added in:* 1.0.5\
@@ -24,6 +35,22 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 - *wasTraitor* - Whether the player who the targeted ragdoll represents belonged to the traitor team
 
 *Return:* Whether or not the given player should be able to identify the given corpse (Defaults to `false`).
+
+**TTTDeathNotifyOverride(victim, inflictor, attacker, reason, killerName, role)** - Called before the name and role of a player's killer is shown to the victim. Used to change the death message reason, killer name, and/or killer role.\
+*Realm:* Server\
+*Added in:* 1.5.14\
+*Parameters:*
+- *victim* - The player who was killed
+- *inflictor* - The thing that was used to kill them
+- *attacker* - The player that killed the victim
+- *reason* - The kind of death the player experienced (e.g. `water`, `suicide`, `prop`, `burned`, `fell`, or `ply`)
+- *killerName* - The name of the player that killed the victim (used when `reason` is `ply`)
+- *role* - The role of the player that killed the victim (used when `reason` is `ply`)
+
+*Return:*
+- *reason* - The new reason value to use or the original passed into the hook
+- *killerName* - The new killerName value to use or the original passed into the hook
+- *role* - The new role value to use or the original passed into the hook. Use `ROLE_NONE` to hide the attacker's role from the victim
 
 **TTTEventFinishText(e)** - Called before the event text for the "round finished" event is rendered in the end-of-round summary's Events tab.\
 *Realm:* Client\
@@ -221,6 +248,16 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 
 *Return:*
 - *params* - Table of name-value parameters to be used in this player's role start-of-round popup message
+
+**TTTRolePopupRoleStringOverride(client, roleString)** - Called before a player's role start-of-round popup message is displayed, allowing the target translation string to be changed.\
+*Realm:* Client\
+*Added in:* 1.5.11\
+*Parameters:*
+- *client* - The local player
+- *roleString* - The string representing role of the local player. Is normally used to build the role info popup translation
+
+*Return:*
+- *roleString* - The new string to use when building the role info popup translation
 
 **TTTRolesLoaded()** - Called after all roles and role modifications have been loaded.\
 *Realm:* Client\

@@ -50,6 +50,16 @@ hook.Add("TTTTargetIDPlayerKillIcon", "Vampire_TTTTargetIDPlayerKillIcon", funct
     end
 end)
 
+ROLE_IS_TARGETID_OVERRIDDEN[ROLE_VAMPIRE] = function(ply, target, showJester)
+    if not ply:IsVampire() then return end
+    if not IsPlayer(target) then return end
+
+    local show = GetGlobalBool("ttt_vampire_show_target_icon", false) and not showJester
+
+    ------ icon, ring,  text
+    return show, false, false
+end
+
 -------------
 -- SCORING --
 -------------
@@ -209,6 +219,13 @@ hook.Add("Think", "Vampire_Highlight_Think", function()
         RemoveHook("PreDrawHalos", "Vampire_Highlight_PreDrawHalos")
     end
 end)
+
+ROLE_IS_TARGET_HIGHLIGHTED[ROLE_VAMPIRE] = function(ply, target)
+    if not ply:IsVampire() then return end
+
+    local hasFangs = ply.GetActiveWeapon and IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() == "weapon_vam_fangs"
+    return vampire_vision and hasFangs
+end
 
 --------------
 -- TUTORIAL --

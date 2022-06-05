@@ -74,13 +74,19 @@ end)
 ---------
 
 hook.Add("TTTHUDInfoPaint", "Drunk_TTTHUDInfoPaint", function(client, label_left, label_top)
+    local hide_role = false
+    if ConVarExists("ttt_hide_role") then
+        hide_role = GetConVar("ttt_hide_role"):GetBool()
+    end
+
+    if hide_role then return end
+
     if client:IsDrunk() then
         surface.SetFont("TabLarge")
         surface.SetTextColor(255, 255, 255, 230)
 
         local remaining = MathMax(0, GetGlobalFloat("ttt_drunk_remember", 0) - CurTime())
-
-        text = LANG.GetParamTranslation("drunk_hud", { time = util.SimpleTime(remaining, "%02i:%02i") })
+        local text = LANG.GetParamTranslation("drunk_hud", { time = util.SimpleTime(remaining, "%02i:%02i") })
         local _, h = surface.GetTextSize(text)
 
         surface.SetTextPos(label_left, ScrH() - label_top - h)
