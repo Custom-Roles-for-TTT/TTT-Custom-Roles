@@ -261,7 +261,7 @@ function PANEL:Paint(width, height)
                     role = ROLE_DETECTIVE
                 end
                 color = ROLE_COLORS_SCOREBOARD[ROLE_IMPERSONATOR]
-            elseif GetGlobalBool("ttt_glitch_round", false) and (ply:IsTraitorTeam() or ply:IsGlitch()) and client ~= ply then
+            elseif GetGlobalBool("ttt_glitch_round", false) and (ply:IsTraitorTeam() or (ply:IsGlitch() and not GetGlobalBool("ttt_zombie_round", false))) and client ~= ply then
                 local glitch_role, color_role = GetGlitchedRole(ply, GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR))
                 role = glitch_role
                 if color_role then
