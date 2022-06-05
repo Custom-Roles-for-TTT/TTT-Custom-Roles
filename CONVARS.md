@@ -463,6 +463,7 @@ ttt_drunk_can_be_assassin                   1       // Whether the drunk can bec
 ttt_drunk_can_be_vampire                    1       // Whether the drunk can become a vampire
 ttt_drunk_can_be_quack                      1       // Whether the drunk can become a quack
 ttt_drunk_can_be_parasite                   1       // Whether the drunk can become a parasite
+ttt_drunk_can_be_informant                  1       // Whether the drunk can become an informant
 ttt_drunk_can_be_innocent                   1       // Whether the drunk can become an innocent
 ttt_drunk_can_be_phantom                    1       // Whether the drunk can become a phantom
 ttt_drunk_can_be_revenger                   1       // Whether the drunk can become a revenger
@@ -472,10 +473,12 @@ ttt_drunk_can_be_veteran                    1       // Whether the drunk can bec
 ttt_drunk_can_be_doctor                     1       // Whether the drunk can become a doctor
 ttt_drunk_can_be_trickster                  1       // Whether the drunk can become a trickster
 ttt_drunk_can_be_paramedic                  1       // Whether the drunk can become a paramedic
+ttt_drunk_can_be_turncoat                   1       // Whether the drunk can become a turncoat
 ttt_drunk_can_be_detective                  1       // Whether the drunk can become a detective
 ttt_drunk_can_be_paladin                    1       // Whether the drunk can become a paladin
 ttt_drunk_can_be_tracker                    1       // Whether the drunk can become a tracker
 ttt_drunk_can_be_medium                     1       // Whether the drunk can become a medium
+ttt_drunk_can_be_sapper                     1       // Whether the drunk can become a sapper
 ttt_drunk_can_be_jester                     1       // Whether the drunk can become a jester
 ttt_drunk_can_be_swapper                    1       // Whether the drunk can become a swapper
 ttt_drunk_can_be_clown                      1       // Whether the drunk can become a clown
@@ -554,6 +557,7 @@ ttt_assassin_shop_random_percent            0       // The percent chance that a
 ttt_vampire_shop_random_percent             0       // The percent chance that a weapon in the shop will be not be shown for vampires
 ttt_quack_shop_random_percent               0       // The percent chance that a weapon in the shop will be not be shown for quacks
 ttt_parasite_shop_random_percent            0       // The percent chance that a weapon in the shop will be not be shown for parasites
+ttt_informant_shop_random_percent           0       // The percent chance that a weapon in the shop will be not be shown for informants
 ttt_deputy_shop_random_percent              0       // The percent chance that a weapon in the shop will be not be shown for deputies
 ttt_mercenary_shop_random_percent           0       // The percent chance that a weapon in the shop will be not be shown for mercenaries
 ttt_veteran_shop_random_percent             0       // The percent chance that a weapon in the shop will be not be shown for veterans
@@ -577,6 +581,7 @@ ttt_assassin_shop_random_enabled            0       // Whether role shop randomi
 ttt_vampire_shop_random_enabled             0       // Whether role shop randomization is enabled for vampires
 ttt_quack_shop_random_enabled               0       // Whether role shop randomization is enabled for quacks
 ttt_parasite_shop_random_enabled            0       // Whether role shop randomization is enabled for parasites
+ttt_informant_shop_random_enabled           0       // Whether role shop randomization is enabled for informants
 ttt_deputy_shop_random_enabled              0       // Whether role shop randomization is enabled for deputies
 ttt_mercenary_shop_random_enabled           0       // Whether role shop randomization is enabled for mercenaries
 ttt_veteran_shop_random_enabled             0       // Whether role shop randomization is enabled for veterans
@@ -620,6 +625,7 @@ ttt_vampire_shop_sync                       0       // Whether vampires should h
 ttt_zombie_shop_sync                        0       // Whether zombies should have all weapons that vanilla traitors have in their weapon shop (if they are a traitor)
 ttt_quack_shop_sync                         0       // Whether quacks should have all weapons that vanilla traitors have in their weapon shop
 ttt_parasite_shop_sync                      0       // Whether parasites should have all weapons that vanilla traitors have in their weapon shop
+ttt_informant_shop_sync                     0       // Whether informants should have all weapons that vanilla traitors have in their weapon shop
 
 // Detective Role Shop Sync (Server or round must be restarted for changes to take effect)
 ttt_paladin_shop_sync                       0       // Whether paladins should have all weapons that vanilla detectives have in their weapon shop
@@ -638,6 +644,7 @@ ttt_assassin_starting_health                100     // The amount of health the 
 ttt_vampire_starting_health                 100     // The amount of health the vampire starts with
 ttt_quack_starting_health                   100     // The amount of health the quack starts with
 ttt_parasite_starting_health                100     // The amount of health the parasite starts with
+ttt_informant_starting_health               100     // The amount of health the informant starts with
 ttt_innocent_starting_health                100     // The amount of health an innocent starts with
 ttt_glitch_starting_health                  100     // The amount of health the glitch starts with
 ttt_phantom_starting_health                 100     // The amount of health the phantom starts with
@@ -674,6 +681,7 @@ ttt_assassin_max_health                     100     // The maximum amount of hea
 ttt_vampire_max_health                      100     // The maximum amount of health the vampire can have
 ttt_quack_max_health                        100     // The maximum amount of health the quack can have
 ttt_parasite_max_health                     100     // The maximum amount of health the parasite can have
+ttt_informant_max_health                    100     // The maximum amount of health the informant can have
 ttt_innocent_max_health                     100     // The maximum amount of health an innocent can have
 ttt_glitch_max_health                       100     // The maximum amount of health the glitch can have
 ttt_phantom_max_health                      100     // The maximum amount of health the phantom can have
