@@ -66,6 +66,7 @@ ttt_turncoat_enabled                        0       // Whether or not the turnco
 ttt_paladin_enabled                         0       // Whether or not the paladin should spawn
 ttt_tracker_enabled                         0       // Whether or not the tracker should spawn
 ttt_medium_enabled                          0       // Whether or not the medium should spawn
+ttt_sapper_enabled                          0       // Whether or not the sapper should spawn
 ttt_jester_enabled                          0       // Whether or not the jester should spawn
 ttt_swapper_enabled                         0       // Whether or not the swapper should spawn
 ttt_clown_enabled                           0       // Whether or not the clown should spawn
@@ -99,6 +100,7 @@ ttt_turncoat_spawn_weight                   1       // The weight assigned to sp
 ttt_paladin_spawn_weight                    1       // The weight assigned to spawning the paladin
 ttt_tracker_spawn_weight                    1       // The weight assigned to spawning the tracker
 ttt_medium_spawn_weight                     1       // The weight assigned to spawning the medium
+ttt_sapper_spawn_weight                     1       // The weight assigned to spawning the sapper
 ttt_jester_spawn_weight                     1       // The weight assigned to spawning the jester
 ttt_swapper_spawn_weight                    1       // The weight assigned to spawning the swapper
 ttt_clown_spawn_weight                      1       // The weight assigned to spawning the clown
@@ -133,6 +135,7 @@ ttt_turncoat_min_players                    0       // The minimum number of pla
 ttt_paladin_min_players                     0       // The minimum number of players required to spawn the paladin
 ttt_tracker_min_players                     0       // The minimum number of players required to spawn the tracker
 ttt_medium_min_players                      0       // The minimum number of players required to spawn the medium
+ttt_sapper_min_players                      0       // The minimum number of players required to spawn the sapper
 ttt_jester_min_players                      0       // The minimum number of players required to spawn the jester
 ttt_swapper_min_players                     0       // The minimum number of players required to spawn the swapper
 ttt_clown_min_players                       0       // The minimum number of players required to spawn the clown
@@ -168,7 +171,7 @@ ttt_hypnotist_credits_starting              1       // The number of credits a h
 ttt_hypnotist_device_loadout                1       // Whether the hypnotist's defib should be given to them when they spawn. Server must be restarted for changes to take effect
 ttt_hypnotist_device_shop                   0       // Whether the hypnotist's defib should be purchasable in the shop. Server must be restarted for changes to take effect
 ttt_hypnotist_device_shop_rebuyable         0       // Whether the hypnotist's defib should be purchaseable multiple times (requires "ttt_hypnotist_device_shop" to be enabled). Server must be restarted for changes to take effect
-ttt_hypnotist_convert_detectives            0       // Whether to convert detectives and deputies (only if ttt_deputy_use_detective_icon is enabled) to impersonator instead of just a regular traitor. Does NOT convert detective team roles like paladin, medium, or tracker. Target will be automatically promoted to appear as a detective if appropriate
+ttt_hypnotist_convert_detectives            0       // Whether to convert detectives and deputies (only if ttt_deputy_use_detective_icon is enabled) to impersonator instead of just a regular traitor. Does NOT convert detective team roles like paladin, medium, tracker, or sapper. Target will be automatically promoted to appear as a detective if appropriate
 ttt_hypnotist_device_time                   8       // The amount of time (in seconds) the hypnotist's device takes to use
 ttt_single_paramedic_hypnotist              0       // Whether only a single paramedic or hypnotist should spawn in a round
 
@@ -558,6 +561,7 @@ ttt_doctor_shop_random_percent              0       // The percent chance that a
 ttt_paladin_shop_random_percent             0       // The percent chance that a weapon in the shop will be not be shown for paladins
 ttt_tracker_shop_random_percent             0       // The percent chance that a weapon in the shop will be not be shown for trackers
 ttt_medium_shop_random_percent              0       // The percent chance that a weapon in the shop will be not be shown for mediums
+ttt_sapper_shop_random_percent              0       // The percent chance that a weapon in the shop will be not be shown for sappers
 ttt_jester_shop_random_percent              0       // The percent chance that a weapon in the shop will be not be shown for jesters
 ttt_swapper_shop_random_percent             0       // The percent chance that a weapon in the shop will be not be shown for swappers
 ttt_clown_shop_random_percent               0       // The percent chance that a weapon in the shop will be not be shown for clowns
@@ -580,6 +584,7 @@ ttt_doctor_shop_random_enabled              0       // Whether role shop randomi
 ttt_paladin_shop_random_enabled             0       // Whether role shop randomization is enabled for paladins
 ttt_tracker_shop_random_enabled             0       // Whether role shop randomization is enabled for trackers
 ttt_medium_shop_random_enabled              0       // Whether role shop randomization is enabled for mediums
+ttt_sapper_shop_random_enabled              0       // Whether role shop randomization is enabled for sappers
 ttt_jester_shop_random_enabled              0       // Whether role shop randomization is enabled for jesters
 ttt_swapper_shop_random_enabled             0       // Whether role shop randomization is enabled for swappers
 ttt_clown_shop_random_enabled               0       // Whether role shop randomization is enabled for clowns
@@ -620,6 +625,7 @@ ttt_parasite_shop_sync                      0       // Whether parasites should 
 ttt_paladin_shop_sync                       0       // Whether paladins should have all weapons that vanilla detectives have in their weapon shop
 ttt_tracker_shop_sync                       0       // Whether trackers should have all weapons that vanilla detectives have in their weapon shop
 ttt_medium_shop_sync                        0       // Whether mediums should have all weapons that vanilla detectives have in their weapon shop
+ttt_sapper_shop_sync                        0       // Whether sappers should have all weapons that vanilla detectives have in their weapon shop
 
 // ----------------------------------------
 
@@ -647,6 +653,7 @@ ttt_detective_starting_health               100     // The amount of health the 
 ttt_paladin_starting_health                 100     // The amount of health the paladin starts with
 ttt_tracker_starting_health                 100     // The amount of health the tracker starts with
 ttt_medium_starting_health                  100     // The amount of health the medium starts with
+ttt_sapper_starting_health                  100     // The amount of health the sapper starts with
 ttt_jester_starting_health                  100     // The amount of health the jester starts with
 ttt_swapper_starting_health                 100     // The amount of health the swapper starts with
 ttt_clown_starting_health                   100     // The amount of health the clown starts with
@@ -682,6 +689,7 @@ ttt_detective_max_health                    100     // The maximum amount of hea
 ttt_paladin_max_health                      100     // The maximum amount of health the paladin can have
 ttt_tracker_max_health                      100     // The maximum amount of health the tracker can have
 ttt_medium_max_health                       100     // The maximum amount of health the medium can have
+ttt_sapper_max_health                       100     // The maximum amount of health the sapper can have
 ttt_jester_max_health                       100     // The maximum amount of health the jester can have
 ttt_swapper_max_health                      100     // The maximum amount of health the swapper can have
 ttt_clown_max_health                        100     // The maximum amount of health the clown can have
