@@ -240,6 +240,7 @@ ttt_informant_can_scan_glitches             0       // Whether the informant sho
 ttt_informant_scanner_time                  8       // The amount of time (in seconds) the informant's scanner takes to use
 ttt_informant_scanner_float_time            1       // The amount of time (in seconds) it takes for the informant's scanner to lose it's target without line of sight
 ttt_informant_scanner_cooldown              3       // The amount of time (in seconds) the informant's tracker goes on cooldown for after losing it's target
+ttt_informant_scanner_distance              2500    // The maximum distance away the scanner target can be
 
 // ----------------------------------------
 
