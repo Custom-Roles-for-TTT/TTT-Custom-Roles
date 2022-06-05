@@ -1,5 +1,9 @@
 # Release Notes
 
+## 1.6.0
+**Released: June 6th, 2022**
+Includes beta updates [1.5.9](#159-beta) and [1.5.17](#1517-beta).
+
 ## 1.5.17 (Beta)
 **Released: June 4th, 2022**
 
