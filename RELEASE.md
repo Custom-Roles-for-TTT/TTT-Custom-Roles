@@ -1,8 +1,8 @@
 # Release Notes
 
 ## 1.6.0
-**Released: June 6th, 2022**
-Includes beta updates [1.5.9](#159-beta) and [1.5.17](#1517-beta).
+**Released: June 6th, 2022**\
+Includes all beta updates from [1.5.9](#159-beta) to [1.5.17](#1517-beta).
 
 ## 1.5.17 (Beta)
 **Released: June 4th, 2022**
@@ -123,7 +123,7 @@ Includes beta updates [1.5.9](#159-beta) and [1.5.17](#1517-beta).
 - Changed head icon height calculation again to hopefully help more with model scaling
 
 ## 1.5.8
-**Released: March 22nd, 2022**
+**Released: March 22nd, 2022**\
 Includes beta updates [1.5.6](#156-beta) and [1.5.7](#157-beta).
 
 ### Fixes
