@@ -601,28 +601,45 @@ function CLSCORE:BuildSummaryPanel(dpanel)
 
     -- Build the panel
     local w, h = dpanel:GetSize()
+    -- The DScrollPanel has a gap at the bottom for some reason so just close the height to get rid of it
+    h = h - 22
     if height_extra_total > 0 then
-        h = h + height_extra_total
+        local screen_height = ScrH()
+        local parent_top = parentPanel:GetY()
+        -- Decrease the max height by 10 to give a gap at the bottom matching the left HUD for aesthetics
+        local max_height = (screen_height - parent_top) - 10
 
         -- Make the parent panel and tab container bigger
         local pw, ph = parentPanel:GetSize()
-        ph = ph + height_extra_total
+        local height_extra_total_parent = height_extra_total
+        local width_extra_total_parent = 0
+        -- If the height of the panel would be larger than the available space,
+        -- shrink the parent panel to force the inner panel to scroll
+        -- Then add width to the parent panel so the scrollbar doesn't overlap the inner panel
+        if (ph + height_extra_total) > max_height then
+            height_extra_total_parent = (max_height - ph)
+            width_extra_total_parent = 18
+        end
+        ph = ph + height_extra_total_parent
+        pw = pw + width_extra_total_parent
         parentPanel:SetSize(pw, ph)
 
         local tw, th = parentTabs:GetSize()
-        th = th + height_extra_total
+        th = th + height_extra_total_parent
+        tw = tw + width_extra_total_parent
         parentTabs:SetSize(tw, th)
 
         -- Move the buttons down
         local sx, sy = saveButton:GetPos()
-        sy = sy + height_extra_total
+        sy = sy + height_extra_total_parent
         saveButton:SetPos(sx, sy)
 
         local cx, cy = closeButton:GetPos()
-        cy = cy + height_extra_total
+        cy = cy + height_extra_total_parent
         closeButton:SetPos(cx, cy)
 
         -- Make this inner panel bigger
+        h = h + height_extra_total
         dpanel:SetSize(w, h)
     end
 
@@ -1072,7 +1089,7 @@ end
 
 local tabs = {
     ["summary"] = function(panel, padding)
-        local dtabsummary = vgui.Create("DPanel", parentTabs)
+        local dtabsummary = vgui.Create("DScrollPanel", parentTabs)
         dtabsummary:SetPaintBackground(false)
         dtabsummary:StretchToParent(padding, padding, padding, padding)
         panel:BuildSummaryPanel(dtabsummary)

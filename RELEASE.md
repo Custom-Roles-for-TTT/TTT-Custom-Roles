@@ -1,5 +1,11 @@
 # Release Notes
 
+### 1.6.1 (Beta)
+**Released:**
+
+### Changes
+- Changed round end summary tab to have a scrollbar if it is too tall to fit on the screen
+
 ## 1.6.0
 **Released: June 6th, 2022**\
 Includes all beta updates from [1.5.9](#159-beta) to [1.5.17](#1517-beta).
