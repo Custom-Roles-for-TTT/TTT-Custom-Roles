@@ -720,6 +720,7 @@ ttt_karma_jesterkill_penalty                50      // Karma penalty for killing
 ttt_karma_jesterdmg_ratio                   0.5     // Ratio of damage to jesters, to be taken from karma
 
 // Sprint
+ttt_sprint_enabled                          1       // Whether sprint is enabled
 ttt_sprint_bonus_rel                        0.4     // The relative speed bonus given while sprinting (e.g. 0.4 = 40% speed increase)
 ttt_sprint_regenerate_innocent              0.08    // Stamina regeneration for non-traitors
 ttt_sprint_regenerate_traitor               0.12    // Stamina regeneration for traitors

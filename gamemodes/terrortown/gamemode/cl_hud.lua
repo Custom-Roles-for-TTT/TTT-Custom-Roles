@@ -340,10 +340,13 @@ local function InfoPaint(client)
         end
     end
 
-    local sprint_y = health_y + (2 * (bar_height + margin))
-    bar_height = 4
+    -- Sprint stamina
+    if GetGlobalBool("ttt_sprint_enabled", true) then
+        local sprint_y = health_y + (2 * (bar_height + margin))
+        bar_height = 4
 
-    CRHUD:PaintBar(2, x + margin, sprint_y, bar_width, bar_height, sprint_colors, client:GetNWFloat("sprintMeter", 0) / 100)
+        CRHUD:PaintBar(2, x + margin, sprint_y, bar_width, bar_height, sprint_colors, client:GetNWFloat("sprintMeter", 0) / 100)
+    end
 
     -- Draw traitor state
     local round_state = GAMEMODE.round_state

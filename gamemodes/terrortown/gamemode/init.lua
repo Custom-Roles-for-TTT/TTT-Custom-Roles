@@ -304,6 +304,7 @@ CreateConVar("ttt_bem_sv_rows", 5, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERV
 CreateConVar("ttt_bem_sv_size", 64, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Sets the item size in the shop menu's item list (serverside)")
 
 -- sprint convars
+local sprintEnabled = CreateConVar("ttt_sprint_enabled", "1", FCVAR_SERVER_CAN_EXECUTE, "Whether sprint is enabled")
 local speedMultiplier = CreateConVar("ttt_sprint_bonus_rel", "0.4", FCVAR_SERVER_CAN_EXECUTE, "The relative speed bonus given while sprinting. Def: 0.4")
 local recovery = CreateConVar("ttt_sprint_regenerate_innocent", "0.08", FCVAR_SERVER_CAN_EXECUTE, "Sets stamina regeneration for innocents. Def: 0.08")
 local traitorRecovery = CreateConVar("ttt_sprint_regenerate_traitor", "0.12", FCVAR_SERVER_CAN_EXECUTE, "Sets stamina regeneration speed for traitors. Def: 0.12")
@@ -527,6 +528,8 @@ function GM:SyncGlobals()
 
     SetGlobalBool("ttt_scoreboard_deaths", GetConVar("ttt_scoreboard_deaths"):GetBool())
     SetGlobalBool("ttt_scoreboard_score", GetConVar("ttt_scoreboard_score"):GetBool())
+
+    SetGlobalBool("ttt_sprint_enabled", GetConVar("ttt_sprint_enabled"):GetBool())
 
     UpdateRoleState()
 end
@@ -1933,6 +1936,11 @@ end)
 
 -- Sprint
 net.Receive("TTT_SprintSpeedSet", function(len, ply)
+    if not sprintEnabled:GetBool() then
+        ply.mult = nil
+        return
+    end
+
     local mul = net.ReadFloat()
     if mul ~= 0 then
         ply.mult = 1 + mul
@@ -1944,10 +1952,11 @@ end)
 -- Send ConVars if requested
 net.Receive("TTT_SprintGetConVars", function(len, ply)
     local convars = {
-        [1] = speedMultiplier:GetFloat();
-        [2] = recovery:GetFloat();
-        [3] = traitorRecovery:GetFloat();
-        [4] = consumption:GetFloat();
+        [1] = sprintEnabled:GetBool(),
+        [2] = speedMultiplier:GetFloat(),
+        [3] = recovery:GetFloat(),
+        [4] = traitorRecovery:GetFloat(),
+        [5] = consumption:GetFloat()
     }
     net.Start("TTT_SprintGetConVars")
     net.WriteTable(convars)
@@ -1956,7 +1965,7 @@ end)
 
 -- return Speed
 hook.Add("TTTPlayerSpeedModifier", "TTTSprintPlayerSpeed", function(ply, _, _)
-    return GetSprintMultiplier(ply, ply.mult ~= nil)
+    return GetSprintMultiplier(ply, sprintEnabled:GetBool() and ply.mult ~= nil)
 end)
 
 -- If this logic or the list of roles who can buy is changed, it must also be updated in weaponry.lua and cl_equip.lua

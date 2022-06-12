@@ -3,6 +3,9 @@
 ### 1.6.1 (Beta)
 **Released:**
 
+### Additions
+- Added setting to control whether sprint is enabled (enabled by default)
+
 ### Changes
 - Changed round end summary tab to have a scrollbar if it is too tall to fit on the screen
 
