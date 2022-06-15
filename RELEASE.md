@@ -3,8 +3,13 @@
 ### 1.6.1 (Beta)
 **Released:**
 
+### Fixes
+- Fixed monster role count logic not working for external monster roles
+
 ### Additions
 - Added setting to control whether sprint is enabled (enabled by default)
+- Added setting to move the mad scientist to the monster team (disabled by default)
+- Added setting to control the maximum number of monsters to spawn each round (defaults to 1)
 
 ### Changes
 - Changed round end summary tab to have a scrollbar if it is too tall to fit on the screen

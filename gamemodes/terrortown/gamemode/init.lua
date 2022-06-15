@@ -115,6 +115,8 @@ CreateConVar("ttt_special_detective_pct", 0.33)
 CreateConVar("ttt_special_detective_chance", 0.5)
 CreateConVar("ttt_independent_chance", 0.5)
 CreateConVar("ttt_jester_chance", 0.5)
+
+CreateConVar("ttt_monster_max", "1")
 CreateConVar("ttt_monster_pct", 0.33)
 CreateConVar("ttt_monster_chance", 0.5)
 
@@ -1280,10 +1282,12 @@ local function GetSpecialDetectiveCount(ply_count)
 end
 
 local function GetMonsterCount(ply_count)
-    if not MONSTER_ROLES[ROLE_ZOMBIE] and not MONSTER_ROLES[ROLE_VAMPIRE] then
+    if #GetTeamRoles(MONSTER_ROLES) == 0 then
         return 0
     end
-    return math.ceil(ply_count * math.Round(GetConVar("ttt_monster_pct"):GetFloat(), 3))
+
+    local monster_count = math.ceil(ply_count * math.Round(GetConVar("ttt_monster_pct"):GetFloat(), 3))
+    return math.Clamp(monster_count, 0, GetConVar("ttt_monster_max"):GetInt())
 end
 
 local function PrintRoleText(text)

@@ -21,9 +21,11 @@ end)
 
 hook.Add("TTTTutorialRoleText", "MadScientist_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_MADSCIENTIST then
-        local roleColor = GetRoleTeamColor(ROLE_TEAM_INDEPENDENT)
         local traitorColor = ROLE_COLORS[ROLE_TRAITOR]
-        local html = "The " .. ROLE_STRINGS[ROLE_MADSCIENTIST] .. " is an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>independent</span> role whose goal is to resurrect dead bodies as their <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>" .. ROLE_STRINGS[ROLE_ZOMBIE] .. " minions</span>."
+        local roleTeam = player.GetRoleTeam(ROLE_MADSCIENTIST, true)
+        local roleTeamString, roleColor = GetRoleTeamInfo(roleTeam, true)
+
+        local html = "The " .. ROLE_STRINGS[ROLE_MADSCIENTIST] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. roleTeamString .. "</span> team whose goal is to resurrect dead bodies as their <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>" .. ROLE_STRINGS[ROLE_ZOMBIE] .. " minions</span>."
 
         -- Respawn
         if GetGlobalBool("ttt_madscientist_respawn_enable", false) then
