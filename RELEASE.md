@@ -5,12 +5,12 @@
 
 ### Fixes
 - Fixed monster role count logic not working for external monster roles
-- Fixed body search window title showing the name of the body for non-detective-like players when `ttt_detective_search_only` was disabled and `ttt_detective_search_only_nick` was enabled
+- Fixed body search window title showing the name of the body for non-detectives when `ttt_detective_search_only` was disabled and `ttt_detective_search_only_nick` was enabled
 - Fixed non-detectives triggering "body found" messages including player name and role when those pieces of information should be hidden based on the `ttt_detective_search_only_*` convars
 - Fixed non-detectives triggering "confirmed the death of..." messages being sent when `ttt_detective_search_only` was disabled and `ttt_detective_search_only_nick` was enabled
 - Fixed non-detectives searching a body a second time revealing information that should be hidden based on the `ttt_detective_search_only_*` convars
-- Fixed a dead player's name showing when their body is looked at after a non-detective searched them when `ttt_detective_search_only` was disabled and `ttt_detective_search_only_nick` was enabled
-- Fixed a dead player being moved on the scoreboard when their body was found by a non-detective when `ttt_detective_search_only` was disabled and `ttt_detective_search_only_nick` was enabled
+- Fixed non-detectives searching a body causing the dead player's name to show when looking at the body when `ttt_detective_search_only` was disabled and `ttt_detective_search_only_nick` was enabled
+- Fixed non-detectives searching a body causing the dead player to move on the scoreboard and revealing their name when `ttt_detective_search_only` was disabled and `ttt_detective_search_only_nick` was enabled
 
 ### Additions
 - Added setting to control whether sprint is enabled (enabled by default)
