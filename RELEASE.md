@@ -5,6 +5,7 @@
 
 ### Fixes
 - Fixed monster role count logic not working for external monster roles
+- Fixed body search window title showing the name of the body for non-detective-like players when `ttt_detective_search_only` was disabled and `ttt_detective_search_only_nick` was enabled
 
 ### Additions
 - Added setting to control whether sprint is enabled (enabled by default)
