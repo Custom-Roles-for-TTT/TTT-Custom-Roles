@@ -48,6 +48,24 @@ end
 -- If detective mode, announce when someone's body is found
 local bodyfound = CreateConVar("ttt_announce_body_found", "1")
 
+local function AnnounceBodyName(p)
+    -- If only detectives can search, only announce if this player is a detective
+    if GetGlobalBool("ttt_detective_search_only", true) then return p:IsDetectiveLike() end
+    -- If only detectives can see the name, only announce if this player is a detective
+    if GetGlobalBool("ttt_detective_search_only_nick", false) then return p:IsDetectiveLike() end
+    -- Otherwise everyone can see it
+    return true
+end
+
+local function AnnounceBodyRole(p)
+    -- If only detectives can search, only announce if this player is a detective
+    if GetGlobalBool("ttt_detective_search_only", true) then return p:IsDetectiveLike() end
+    -- If only detectives can see the role, only announce if this player is a detective
+    if GetGlobalBool("ttt_detective_search_only_role", false) then return p:IsDetectiveLike() end
+    -- Otherwise everyone can see it
+    return true
+end
+
 function GM:TTTCanIdentifyCorpse(ply, corpse, was_traitor)
     -- return true to allow corpse identification, false to disallow
     return true
@@ -73,10 +91,19 @@ local function IdentifyBody(ply, rag)
 
     -- Announce body
     if bodyfound:GetBool() and not CORPSE.GetFound(rag, false) then
+        local name = "someone"
+        if AnnounceBodyName(ply) then
+            name = nick
+        end
+        local role_string = "an unknown role"
+        if AnnounceBodyRole(ply) then
+            role_string = ROLE_STRINGS_EXT[role]
+        end
+
         LANG.Msg("body_found", {
             finder = finder,
-            victim = nick,
-            role = ROLE_STRINGS_EXT[role]
+            victim = name,
+            role = role_string
         })
     end
 
@@ -118,7 +145,10 @@ local function IdentifyBody(ply, rag)
 
         -- is this an unconfirmed dead?
         if IsValid(vic) and (not vic:GetNWBool("body_searched", false)) and (not vic:GetNWBool("body_found", false)) then
-            LANG.Msg("body_confirm", { finder = finder, victim = vic:Nick() })
+            LANG.Msg("body_confirm", {
+                finder = finder,
+                victim = vic:Nick()
+            })
 
             -- update scoreboard status
             vic:SetNWBool("body_found", true)
