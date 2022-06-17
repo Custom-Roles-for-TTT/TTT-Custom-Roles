@@ -93,9 +93,10 @@ local function IdentifyBody(ply, rag)
     local deadply = player.GetBySteamID64(rag.sid64) or player.GetBySteamID(rag.sid)
 
     -- Announce body
+    local announceName = AnnounceBodyName(ply)
     if bodyfound:GetBool() and not CORPSE.GetFound(rag, false) and (not IsValid(deadply) or not deadply:GetNWBool("body_found", false)) then
         local name = "someone"
-        if AnnounceBodyName(ply) then
+        if announceName then
             name = nick
         end
         local role_string = "an unknown role"
@@ -113,8 +114,12 @@ local function IdentifyBody(ply, rag)
     -- Register find
     if not CORPSE.GetFound(rag, false) then
         if IsValid(deadply) then
-            deadply:SetNWBool("body_searched", true)
-            deadply:SetNWBool("body_found", true)
+            -- Only reveal that this body was searched and found if they were searched by someone who can know its name
+            -- Otherwise the scoreboard gets updated which reveals their name anyway
+            if announceName then
+                deadply:SetNWBool("body_found", true)
+                deadply:SetNWBool("body_searched", true)
+            end
             -- Keep track if this body was searched specifically by a detective
             if ply:IsDetectiveLike() then
                 deadply:SetNWBool("body_searched_det", true)
@@ -128,17 +133,19 @@ local function IdentifyBody(ply, rag)
             SCORE:HandleBodyFound(ply, deadply)
         end
         hook.Call("TTTBodyFound", GAMEMODE, ply, deadply, rag)
-        CORPSE.SetFound(rag, AnnounceBodyName(ply))
+        CORPSE.SetFound(rag, announceName)
     -- Keep track if this body was searched specifically by a detective
     -- Also force the scoreboard to update
     elseif IsValid(deadply) and ply:IsDetectiveLike() and not deadply:GetNWBool("body_searched_det", false) then
+        deadply:SetNWBool("body_found", true)
+        deadply:SetNWBool("body_searched", true)
         deadply:SetNWBool("body_searched_det", true)
         net.Start("TTT_ScoreboardUpdate")
         net.WriteBool(true)
         net.Broadcast()
     end
 
-    if not AnnounceBodyName(ply) then return end
+    if not announceName then return end
 
     -- Handle kill list
     for _, vicsid in pairs(rag.kills) do
