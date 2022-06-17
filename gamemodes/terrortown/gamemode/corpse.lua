@@ -94,7 +94,7 @@ local function IdentifyBody(ply, rag)
 
     -- Announce body
     local announceName = AnnounceBodyName(ply)
-    if bodyfound:GetBool() and not CORPSE.GetFound(rag, false) and (not IsValid(deadply) or not deadply:GetNWBool("body_found", false)) then
+    if bodyfound:GetBool() and not CORPSE.GetFound(rag, false) and (not IsValid(deadply) or announceName or not deadply:GetNWBool("body_found", false)) then
         local name = "someone"
         if announceName then
             name = nick
