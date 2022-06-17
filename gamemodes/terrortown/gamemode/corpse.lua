@@ -131,7 +131,7 @@ local function IdentifyBody(ply, rag)
         CORPSE.SetFound(rag, true)
     -- Keep track if this body was searched specifically by a detective
     -- Also force the scoreboard to update
-    elseif IsValid(deadply) and not deadply:GetNWBool("body_searched_det", false) then
+    elseif IsValid(deadply) and ply:IsDetectiveLike() and not deadply:GetNWBool("body_searched_det", false) then
         deadply:SetNWBool("body_searched_det", true)
         net.Start("TTT_ScoreboardUpdate")
         net.WriteBool(true)
