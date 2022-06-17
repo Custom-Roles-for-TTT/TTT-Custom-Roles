@@ -89,8 +89,11 @@ local function IdentifyBody(ply, rag)
     local finder = ply:Nick()
     local nick = CORPSE.GetPlayerNick(rag, "")
 
+    -- will return either false or a valid ply
+    local deadply = player.GetBySteamID64(rag.sid64) or player.GetBySteamID(rag.sid)
+
     -- Announce body
-    if bodyfound:GetBool() and not CORPSE.GetFound(rag, false) then
+    if bodyfound:GetBool() and not CORPSE.GetFound(rag, false) and (not IsValid(deadply) or not deadply:GetNWBool("body_found", false)) then
         local name = "someone"
         if AnnounceBodyName(ply) then
             name = nick
@@ -106,9 +109,6 @@ local function IdentifyBody(ply, rag)
             role = role_string
         })
     end
-
-    -- will return either false or a valid ply
-    local deadply = player.GetBySteamID64(rag.sid64) or player.GetBySteamID(rag.sid)
 
     -- Register find
     if not CORPSE.GetFound(rag, false) then
@@ -128,7 +128,7 @@ local function IdentifyBody(ply, rag)
             SCORE:HandleBodyFound(ply, deadply)
         end
         hook.Call("TTTBodyFound", GAMEMODE, ply, deadply, rag)
-        CORPSE.SetFound(rag, true)
+        CORPSE.SetFound(rag, AnnounceBodyName(ply))
     -- Keep track if this body was searched specifically by a detective
     -- Also force the scoreboard to update
     elseif IsValid(deadply) and ply:IsDetectiveLike() and not deadply:GetNWBool("body_searched_det", false) then
