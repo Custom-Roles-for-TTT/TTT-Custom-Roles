@@ -138,6 +138,8 @@ local function IdentifyBody(ply, rag)
         net.Broadcast()
     end
 
+    if not AnnounceBodyName(ply) then return end
+
     -- Handle kill list
     for _, vicsid in pairs(rag.kills) do
         -- filter out disconnected
