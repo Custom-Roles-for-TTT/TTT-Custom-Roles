@@ -1,7 +1,7 @@
 # Release Notes
 
 ### 1.6.1 (Beta)
-**Released:**
+**Released: June 18th, 2022**
 
 ### Fixes
 - Fixed monster role count logic not working for external monster roles
