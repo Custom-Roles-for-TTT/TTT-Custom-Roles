@@ -1,6 +1,6 @@
 # Release Notes
 
-### 1.6.1 (Beta)
+## 1.6.1 (Beta)
 **Released: June 18th, 2022**
 
 ### Fixes
