@@ -677,6 +677,7 @@ local function ConVars()
 end
 
 -- Set default Values
+local sprintEnabled = false
 local speedMultiplier = 0.4
 local defaultRecovery = 0.08
 local traitorRecovery = 0.12
@@ -690,10 +691,11 @@ local recoveryTimer = CurTime()
 -- Receive ConVars (SERVER)
 net.Receive("TTT_SprintGetConVars", function()
     local convars = net.ReadTable()
-    speedMultiplier = convars[1]
-    defaultRecovery = convars[2]
-    traitorRecovery = convars[3]
-    consumption = convars[4]
+    sprintEnabled = convars[1]
+    speedMultiplier = convars[2]
+    defaultRecovery = convars[3]
+    traitorRecovery = convars[4]
+    consumption = convars[5]
 end)
 
 -- Requesting ConVars first time
@@ -723,6 +725,8 @@ end
 
 -- Sprint activated (sprint if there is stamina)
 local function SprintFunction()
+    if not sprintEnabled then return end
+
     if stamina > 0 then
         if not sprinting then
             SpeedChange(true)
@@ -751,6 +755,8 @@ hook.Add("TTTPrepareRound", "TTTSprintPrepareRound", function()
 
     -- listen for activation
     hook.Add("Think", "TTTSprintThink", function()
+        if not sprintEnabled then return end
+
         local client = LocalPlayer()
         local forward_key = CallHook("TTTSprintKey", nil, client) or IN_FORWARD
         if client:KeyDown(forward_key) and client:KeyDown(IN_SPEED) then
@@ -798,7 +804,7 @@ end)
 -- Set Sprint Speed
 hook.Add("TTTPlayerSpeedModifier", "TTTSprintPlayerSpeed", function(sply, _, _)
     if sply ~= LocalPlayer() then return end
-    return GetSprintMultiplier(sply, sprinting)
+    return GetSprintMultiplier(sply, sprintEnabled and sprinting)
 end)
 
 -- Death messages

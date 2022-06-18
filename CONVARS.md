@@ -39,6 +39,7 @@ ttt_special_innocent_pct                    0.33    // Percentage of innocents, 
 ttt_special_innocent_chance                 0.5     // The chance that a "special innocent" will spawn in each available slot made by "ttt_special_innocent_pct"
 ttt_special_detective_pct                   0.33    // Percentage of detectives, rounded up, that can spawn as a "special detectives" (e.g. paladin, tracker, etc.)
 ttt_special_detective_chance                0.5     // The chance that a "special detectives" will spawn in each available slot made by "ttt_special_detectives_pct"
+ttt_monster_max                             1       // The maximum number of players that can spawn as a "monster" (e.g. zombie, vampire)
 ttt_monster_pct                             0.33    // Percentage of innocents, rounded up, that can spawn as a "monster" (e.g. zombie, vampire)
 ttt_monster_chance                          0.5     // The chance that a "monster" will spawn in each available slot made by "ttt_monster_pct"
 ttt_independent_chance                      0.5     // The chance that a single independent or jester (if ttt_single_jester_independent is enabled) will spawn in a round (e.g. drunk, swapper, etc.)
@@ -538,6 +539,7 @@ ttt_zombie_prime_convert_chance             1.0     // The chance that a prime z
 ttt_zombie_thrall_convert_chance            1.0     // The chance that a zombie thrall (e.g. non-prime zombie) will convert other players who are killed by their claws to be zombies as well. Set to 0 to disable
 
 // Mad Scientist
+ttt_madscientist_is_monster                 0       // Whether the mad scientist should be treated as a member of the monster team (rather than the independent team)
 ttt_madscientist_device_time                4       // The amount of time (in seconds) the mad scientist's device takes to use
 ttt_madscientist_respawn_enable             0       // Whether the mad scientist should respawn as a zombie when they are killed
 
@@ -720,6 +722,7 @@ ttt_karma_jesterkill_penalty                50      // Karma penalty for killing
 ttt_karma_jesterdmg_ratio                   0.5     // Ratio of damage to jesters, to be taken from karma
 
 // Sprint
+ttt_sprint_enabled                          1       // Whether sprint is enabled
 ttt_sprint_bonus_rel                        0.4     // The relative speed bonus given while sprinting (e.g. 0.4 = 40% speed increase)
 ttt_sprint_regenerate_innocent              0.08    // Stamina regeneration for non-traitors
 ttt_sprint_regenerate_traitor               0.12    // Stamina regeneration for traitors

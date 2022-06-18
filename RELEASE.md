@@ -1,5 +1,25 @@
 # Release Notes
 
+### 1.6.1 (Beta)
+**Released: June 18th, 2022**
+
+### Fixes
+- Fixed monster role count logic not working for external monster roles
+- Fixed body search window title showing the name of the body for non-detectives when `ttt_detective_search_only` was disabled and `ttt_detective_search_only_nick` was enabled
+- Fixed non-detectives triggering "body found" messages including player name and role when those pieces of information should be hidden based on the `ttt_detective_search_only_*` convars
+- Fixed non-detectives triggering "confirmed the death of..." messages when `ttt_detective_search_only` was disabled and `ttt_detective_search_only_nick` was enabled
+- Fixed non-detectives searching a body a second time revealing information that should be hidden based on the `ttt_detective_search_only_*` convars
+- Fixed non-detectives searching a dead player causing their name to show when looking at the body when `ttt_detective_search_only` was disabled and `ttt_detective_search_only_nick` was enabled
+- Fixed non-detectives searching a dead player causing them to move on the scoreboard and revealing their name when `ttt_detective_search_only` was disabled and `ttt_detective_search_only_nick` was enabled
+
+### Additions
+- Added setting to control whether sprint is enabled (enabled by default)
+- Added setting to move the mad scientist to the monster team (disabled by default)
+- Added setting to control the maximum number of monsters to spawn each round (defaults to 1)
+
+### Changes
+- Changed round end summary tab to have a scrollbar if it is too tall to fit on the screen
+
 ## 1.6.0
 **Released: June 6th, 2022**\
 Includes all beta updates from [1.5.9](#159-beta) to [1.5.17](#1517-beta).

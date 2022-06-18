@@ -311,10 +311,14 @@ local function ShowSearchScreen(search_raw)
 
     ry = ry + desch + m
 
+    -- Finalize search data, prune stuff that won't be shown etc
+    -- search is a table of tables that have an img and text key
+    local search = PreprocSearch(search_raw)
+
     local dframe = vgui.Create("DFrame")
     dframe:SetSize(w, h)
     dframe:Center()
-    dframe:SetTitle(T("search_title") .. " - " .. (search_raw.nick or "???"))
+    dframe:SetTitle(T("search_title") .. " - " .. ((search.nick or {}).nick or "???"))
     dframe:SetVisible(true)
     dframe:ShowCloseButton(true)
     dframe:SetMouseInputEnabled(true)
@@ -402,10 +406,6 @@ local function ShowSearchScreen(search_raw)
     dconfirm:SetSize(bw, bh)
     dconfirm:SetText(T("close"))
     dconfirm.DoClick = function() dframe:Close() end
-
-    -- Finalize search data, prune stuff that won't be shown etc
-    -- search is a table of tables that have an img and text key
-    local search = PreprocSearch(search_raw)
 
     -- Install info controller that will link up the icons to the text etc
     dlist.OnActivePanelChanged = SearchInfoController(search, dback, dactive, dtext)
