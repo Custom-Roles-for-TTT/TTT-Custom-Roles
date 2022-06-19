@@ -13,6 +13,7 @@
 ### Developer
 - Added `plymeta:ShouldAvoidDetective` as an alias for `plymeta:GetAvoidDetective`
 - Added `plymeta:GetBypassCulling`/`plymeta:ShouldBypassCulling` as a way to get a player's `ttt_bypass_culling` setting value
+- Added `plymeta:IsOnScreen` to determine if an entity or position is on screen within a value limit
 
 ### Fixes
 - Fixed monster role count logic not working for external monster roles
