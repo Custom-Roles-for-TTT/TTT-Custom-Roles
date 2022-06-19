@@ -1561,7 +1561,7 @@ function SelectRoles()
         local tertiary_options = {}
         for _, p in ipairs(choices) do
             if not KARMA.IsEnabled() or p:GetBaseKarma() >= min_karma then
-                if not p:GetAvoidDetective() then
+                if not p:ShouldAvoidDetective() then
                     table.insert(options, p)
                 end
                 table.insert(secondary_options, p)

@@ -275,6 +275,8 @@ L.set_hide_ammo = "Hide your weapon ammo in the HUD"
 L.set_hide_ammo_tip = "By default your weapon ammo will appear in the bottom left of the HUD. Turn this on if you have another addon that does that for you."
 L.set_radio_button = "Radio menu button"
 L.set_radio_button_tip = "What button to press to open/close the radio menu"
+L.set_bypass_culling = "Bypass map culling"
+L.set_bypass_culling_tip = "Whether to bypass vis leafs and culling in maps for player icons and highlighting. Disable for performance if you don't care about icons and highlighting lagging behind players sometimes."
 
 L.set_title_play = "Gameplay settings"
 

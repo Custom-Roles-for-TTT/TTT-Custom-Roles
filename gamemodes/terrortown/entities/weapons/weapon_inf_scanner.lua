@@ -143,12 +143,7 @@ if SERVER then
         local targetPos = target:GetPos()
         if ownerPos:Distance(targetPos) > GetConVar("ttt_informant_scanner_distance"):GetInt() then return false end
 
-        local dir = targetPos - ownerPos
-        dir:Normalize()
-        local eye = self:GetOwner():EyeAngles():Forward()
-        if math.acos(dir:Dot(eye)) > 0.35 then return false end
-
-        return true
+        return self:GetOwner():IsOnScreen(target, 0.35)
     end
 
     function SWEP:ScanAllowed(target)

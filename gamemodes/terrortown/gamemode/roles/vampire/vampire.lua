@@ -298,3 +298,27 @@ hook.Add("PlayerCanPickupWeapon", "Vampire_Weapons_PlayerCanPickupWeapon", funct
         return ply:IsVampire()
     end
 end)
+
+-----------------------
+-- PLAYER VISIBILITY --
+-----------------------
+
+-- Add all players to the PVS for the vampire if highlighting or Kill icon are enabled
+hook.Add("SetupPlayerVisibility", "Vampire_SetupPlayerVisibility", function(ply)
+    if not ply:ShouldBypassCulling() then return end
+    if not ply:IsActiveVampire() then return end
+    if not vampire_vision_enable:GetBool() and not vampire_show_target_icon:GetBool() then return end
+
+    -- Only use this when the vampire would see the highlighting and icons (when they have their fangs out)
+    local hasFangs = ply.GetActiveWeapon and IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() == "weapon_vam_fangs"
+    if not hasFangs then return end
+
+    for _, v in ipairs(GetAllPlayers()) do
+        if ply:TestPVS(v) then continue end
+
+        local pos = v:GetPos()
+        if ply:IsOnScreen(pos) then
+            AddOriginToPVS(pos)
+        end
+    end
+end)

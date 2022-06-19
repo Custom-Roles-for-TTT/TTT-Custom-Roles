@@ -67,6 +67,8 @@ CreateClientConVar("ttt_avoid_detective", "0", true, true)
 CreateClientConVar("ttt_hide_role", "0", true, false)
 CreateClientConVar("ttt_hide_ammo", "0", true, false)
 
+CreateClientConVar("ttt_bypass_culling", "1", true, true, "Whether to bypass vis leafs and culling in maps for player icons and highlighting", 0, 1)
+
 HELPSCRN = {}
 
 local dframe
@@ -178,6 +180,9 @@ function HELPSCRN:Show()
 
     cb = dgui:TextEntry(GetTranslation("set_radio_button"), "ttt_radio_button")
     cb:SetTooltip(GetTranslation("set_radio_button_tip"))
+
+    cb = dgui:CheckBox(GetTranslation("set_bypass_culling"), "ttt_bypass_culling")
+    cb:SetTooltip(GetTranslation("set_bypass_culling_tip"))
 
     dsettings:AddItem(dgui)
 

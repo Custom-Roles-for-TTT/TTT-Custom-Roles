@@ -479,6 +479,12 @@ end
 function plymeta:GetAvoidDetective()
     return self:GetInfoNum("ttt_avoid_detective", 0) > 0
 end
+plymeta.ShouldAvoidDetective = plymeta.GetAvoidDetective
+
+function plymeta:GetBypassCulling()
+    return self:GetInfoNum("ttt_bypass_culling", 1) > 0
+end
+plymeta.ShouldBypassCulling = plymeta.GetBypassCulling
 
 function plymeta:Ignite(dur, radius)
     -- Keep track of extended ignition information so when multiple things are causing burning the later ones don't lose their data. See PlayerTakeDamage in player.lua
