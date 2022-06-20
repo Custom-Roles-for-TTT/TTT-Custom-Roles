@@ -167,12 +167,12 @@ function GM:PostDrawTranslucentRenderables()
                             color_role = ROLE_JESTER
                             noz = false
                         elseif v:IsTraitorTeam() then
+                            if glitchRound then
+                                role, color_role = GetGlitchedRole(v, glitchMode)
                             -- If the impersonator is promoted, use the Detective's icon with the Impersonator's color
-                            if v:IsImpersonator() and v:IsRoleActive() then
+                            elseif v:IsImpersonator() and v:IsRoleActive() then
                                 role = GetDetectiveIconRole(true)
                                 color_role = ROLE_IMPERSONATOR
-                            elseif glitchRound then
-                                role, color_role = GetGlitchedRole(v, glitchMode)
                             else
                                 role = v:GetRole()
                             end

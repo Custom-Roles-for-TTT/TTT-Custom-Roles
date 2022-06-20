@@ -239,8 +239,21 @@ function PANEL:Paint(width, height)
         local role = c
         local color = nil
 
+        if client:IsTraitorTeam() then
+            if GetGlobalBool("ttt_glitch_round", false) and (ply:IsTraitorTeam() or (ply:IsGlitch() and not GetGlobalBool("ttt_zombie_round", false))) and client ~= ply then
+                local glitch_role, color_role = GetGlitchedRole(ply, GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR))
+                role = glitch_role
+                if color_role then
+                    color = ROLE_COLORS_SCOREBOARD[color_role]
+                end
+            elseif ply:IsImpersonator() then
+                if GetGlobalBool("ttt_impersonator_use_detective_icon", true) then
+                    role = ROLE_DETECTIVE
+                end
+                color = ROLE_COLORS_SCOREBOARD[ROLE_IMPERSONATOR]
+            end
         -- Swap the deputy/impersonator icons depending on which settings are enabled
-        if ply:IsDetectiveLike() then
+        elseif ply:IsDetectiveLike() then
             if ply:IsDetectiveTeam() then
                 local disp_role, changed = ply:GetDisplayedRole()
                 -- If the displayed role was changed, use it for the color but use the question mark for the icon
@@ -254,19 +267,6 @@ function PANEL:Paint(width, height)
                 role = ROLE_DETECTIVE
             else
                 role = ROLE_DEPUTY
-            end
-        elseif client:IsTraitorTeam() then
-            if ply:IsImpersonator() then
-                if GetGlobalBool("ttt_impersonator_use_detective_icon", true) then
-                    role = ROLE_DETECTIVE
-                end
-                color = ROLE_COLORS_SCOREBOARD[ROLE_IMPERSONATOR]
-            elseif GetGlobalBool("ttt_glitch_round", false) and (ply:IsTraitorTeam() or (ply:IsGlitch() and not GetGlobalBool("ttt_zombie_round", false))) and client ~= ply then
-                local glitch_role, color_role = GetGlitchedRole(ply, GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR))
-                role = glitch_role
-                if color_role then
-                    color = ROLE_COLORS_SCOREBOARD[color_role]
-                end
             end
         end
 
