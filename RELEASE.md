@@ -3,9 +3,6 @@
 ## 1.6.2 (Beta)
 **Released:**
 
-## 1.6.1 (Beta)
-**Released: June 18th, 2022**
-
 ### Changes
 - Changed player role icons (over their heads) and highlighting to ignore map optimizations which prevented them from updating regularly (Thanks to wget for the logic help!)
   - This is controlled by a new client-side convar, `ttt_bypass_culling`, which is enabled by default
@@ -14,6 +11,9 @@
 - Added `plymeta:ShouldAvoidDetective` as an alias for `plymeta:GetAvoidDetective`
 - Added `plymeta:GetBypassCulling`/`plymeta:ShouldBypassCulling` as a way to get a player's `ttt_bypass_culling` setting value
 - Added `plymeta:IsOnScreen` to determine if an entity or position is on screen within a value limit
+
+## 1.6.1 (Beta)
+**Released: June 18th, 2022**
 
 ### Fixes
 - Fixed monster role count logic not working for external monster roles
