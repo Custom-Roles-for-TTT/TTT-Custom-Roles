@@ -1644,6 +1644,9 @@ function SelectRoles()
             traitors_copy = table.Copy(traitors)
             choices_copy = table.Copy(choices)
 
+            -- Remove the option so we don't have 2 impersonators
+            table.RemoveByValue(specialTraitorRoles, ROLE_IMPERSONATOR)
+
             -- Only allow one to be an impersonator
             has_impersonator = false
         else

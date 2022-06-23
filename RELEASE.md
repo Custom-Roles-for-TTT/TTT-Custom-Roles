@@ -7,6 +7,7 @@
 - Fixed scoreboard showing the impersonator color and icon when there was a glitch and `ttt_glitch_mode` was `2`
 - Fixed scoreboard showing the detective color and icon for a promoted impersonator when `ttt_impersonator_use_detective_icon` was `0`
 - Fixed overhead role icon showing the impersonator color and icon when there was a glitch and `ttt_glitch_mode` was `2`
+- Fixed chance of two impersonators spawning when `ttt_impersonator_detective_chance` is used
 
 ### Changes
 - Changed player role icons (over their heads) and highlighting to ignore map optimizations which prevented them from updating regularly (Thanks to wget for the logic help!)
