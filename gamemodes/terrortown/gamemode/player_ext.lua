@@ -72,7 +72,7 @@ function plymeta:AddCredits(amt)
 end
 function plymeta:SubtractCredits(amt) self:AddCredits(-amt) end
 
-function plymeta:SetDefaultCredits()
+function plymeta:SetDefaultCredits(keep_existing)
     if self:IsSpec() or self:GetRole() == ROLE_NONE then return end
 
     local c = 0
@@ -94,7 +94,11 @@ function plymeta:SetDefaultCredits()
         end
     end
 
-    self:SetCredits(c)
+    if not keep_existing then
+        self:SetCredits(c)
+    else
+        self:AddCredits(c)
+    end
 end
 
 function plymeta:SendCredits()

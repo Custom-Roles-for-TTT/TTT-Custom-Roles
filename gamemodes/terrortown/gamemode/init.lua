@@ -1816,7 +1816,8 @@ function SelectRoles()
                 ply:SetRole(ROLE_INNOCENT)
             end
 
-            ply:SetDefaultCredits()
+            -- Keep existing credits so pre-promoted roles have their bonuses
+            ply:SetDefaultCredits(true)
         end
 
         -- store a steamid -> role map

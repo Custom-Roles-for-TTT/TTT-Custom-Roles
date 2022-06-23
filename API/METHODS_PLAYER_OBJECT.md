@@ -232,6 +232,12 @@ Methods available when called from a Player object (within the defined realm)
 *Realm:* Server\
 *Added in:* 1.5.12
 
+**plymeta:SetDefaultCredits(keep_existing)** - Sets the credits on the player based on their role's starting credits convars.\
+*Realm:* Server\
+*Added in:* 1.0.0\
+*Parameters:*
+- *keep_existing* - Whether to keep the player's existing credits (Defaults to `false`) *(Added in 1.6.2)*
+
 **plymeta:SetRoleAndBroadcast(role)** - Sets the player's role to the given one and (if called on the server) broadcasts the change to all clients for scoreboard tracking.\
 *Realm:* Client and Server\
 *Added in:* 1.0.0\
