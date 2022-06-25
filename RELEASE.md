@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.6.2 (Beta)
-**Released:**
+**Released: June 26th, 2022**
 
 ### Fixes
 - Fixed scoreboard showing the impersonator color and icon when there was a glitch and `ttt_glitch_mode` was `2`
@@ -12,7 +12,7 @@
 
 ### Changes
 - Changed player role icons (over their heads) and highlighting to ignore map optimizations which prevented them from updating regularly (Thanks to wget for the logic help!)
-  - This is controlled by a new client-side convar, `ttt_bypass_culling`, which is enabled by default
+  - This is controlled by a new client-side convar, `ttt_bypass_culling`, which is enabled by default and available in the F1 settings menu
 
 ### Developer
 - Added `plymeta:ShouldAvoidDetective` as an alias for `plymeta:GetAvoidDetective`
