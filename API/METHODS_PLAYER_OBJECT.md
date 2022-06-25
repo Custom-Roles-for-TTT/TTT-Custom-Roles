@@ -38,6 +38,14 @@ Methods available when called from a Player object (within the defined realm)
 *Parameters:*
 - *role* - Which role to set the drunk to (see ROLE_* global enumeration)
 
+**plymeta:GetAvoidDetective()/plymeta:ShouldAvoidDetective() (Added in 1.6.2)** - Whether this player wants to avoid being a detective role.\
+*Realm:* Server\
+*Added in:* 1.0.0
+
+**plymeta:GetBypassCulling()/plymeta:ShouldBypassCulling()** - Whether this player wants to bypass map optimizations like vis leafs and culling for things like role head icons and highlighting.\
+*Realm:* Server\
+*Added in:* 1.6.2
+
 **plymeta:GetDisplayedRole()** - Gets the role that should be displayed for the player.\
 *Realm:* Client and Server\
 *Added in:* 1.5.3
@@ -136,6 +144,13 @@ Methods available when called from a Player object (within the defined realm)
 *Realm:* Client and Server\
 *Added in:* 1.0.0
 
+**plymeta:IsOnScreen(ent_or_pos, limit)** - Whether the entity or position given is on screen for the player, within the given value limit.\
+*Realm:* Client and Server\
+*Added in:* 1.6.2\
+*Parameters:*
+- *ent_or_pos* - The entity or position vector that is being checked
+- *limit* - The maximum value limit before a player is determined to be "off screen" (Defaults to 1)
+
 **plymeta:IsRoleActive()** - Whether the player's role feature has been activated.\
 *Realm:* Client and Server\
 *Added in:* 1.2.2
@@ -216,6 +231,12 @@ Methods available when called from a Player object (within the defined realm)
 **plymeta:RespawnAsZombie()** - Respawns the player as a zombie after a 3 second delay.\
 *Realm:* Server\
 *Added in:* 1.5.12
+
+**plymeta:SetDefaultCredits(keep_existing)** - Sets the credits on the player based on their role's starting credits convars.\
+*Realm:* Server\
+*Added in:* 1.0.0\
+*Parameters:*
+- *keep_existing* - Whether to keep the player's existing credits (Defaults to `false`) *(Added in 1.6.2)*
 
 **plymeta:SetRoleAndBroadcast(role)** - Sets the player's role to the given one and (if called on the server) broadcasts the change to all clients for scoreboard tracking.\
 *Realm:* Client and Server\

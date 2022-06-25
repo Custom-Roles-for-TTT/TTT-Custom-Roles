@@ -1,5 +1,25 @@
 # Release Notes
 
+## 1.6.2 (Beta)
+**Released: June 26th, 2022**
+
+### Fixes
+- Fixed scoreboard showing the impersonator color and icon when there was a glitch and `ttt_glitch_mode` was `2`
+- Fixed scoreboard showing the detective color and icon for a promoted impersonator when `ttt_impersonator_use_detective_icon` was `0`
+- Fixed overhead role icon showing the impersonator color and icon when there was a glitch and `ttt_glitch_mode` was `2`
+- Fixed chance of two impersonators spawning when `ttt_impersonator_detective_chance` is used
+- Fixed impersonator not getting activation credits when they are immediately promoted because `ttt_impersonator_detective_chance` is used
+
+### Changes
+- Changed player role icons (over their heads) and highlighting to ignore map optimizations which prevented them from updating regularly (Thanks to wget for the logic help!)
+  - This is controlled by a new client-side convar, `ttt_bypass_culling`, which is enabled by default and available in the F1 settings menu
+
+### Developer
+- Added `plymeta:ShouldAvoidDetective` as an alias for `plymeta:GetAvoidDetective`
+- Added `plymeta:GetBypassCulling`/`plymeta:ShouldBypassCulling` as a way to get a player's `ttt_bypass_culling` setting value
+- Added `plymeta:IsOnScreen` to determine if an entity or position is on screen within a value limit
+- Added optional `keep_existing` parameter to `plymeta:SetDefaultCredits`
+
 ## 1.6.1 (Beta)
 **Released: June 18th, 2022**
 

@@ -15,6 +15,7 @@ local util = util
 local CallHook = hook.Call
 local GetAllPlayers = player.GetAll
 local MathAbs = math.abs
+local MathAcos = math.acos
 
 function plymeta:IsTerror() return self:Team() == TEAM_TERROR end
 function plymeta:IsSpec() return self:Team() == TEAM_SPEC end
@@ -322,6 +323,19 @@ function plymeta:GetEyeTrace(mask)
     self.PlayerTrace = tr
 
     return tr
+end
+
+function plymeta:IsOnScreen(ent_or_pos, limit)
+    local ent_pos = ent_or_pos
+    if type(ent_pos) ~= "Vector" then
+        ent_pos = ent_pos:GetPos()
+    end
+    if not limit then limit = 1 end
+
+    local dir = ent_pos - self:GetPos()
+    dir:Normalize()
+    local eye = self:EyeAngles():Forward()
+    return MathAcos(dir:Dot(eye)) <= limit
 end
 
 if CLIENT then

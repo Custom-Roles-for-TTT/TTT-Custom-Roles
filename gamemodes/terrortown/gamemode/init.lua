@@ -1561,7 +1561,7 @@ function SelectRoles()
         local tertiary_options = {}
         for _, p in ipairs(choices) do
             if not KARMA.IsEnabled() or p:GetBaseKarma() >= min_karma then
-                if not p:GetAvoidDetective() then
+                if not p:ShouldAvoidDetective() then
                     table.insert(options, p)
                 end
                 table.insert(secondary_options, p)
@@ -1643,6 +1643,9 @@ function SelectRoles()
             table.insert(choices, ply)
             traitors_copy = table.Copy(traitors)
             choices_copy = table.Copy(choices)
+
+            -- Remove the option so we don't have 2 impersonators
+            table.RemoveByValue(specialTraitorRoles, ROLE_IMPERSONATOR)
 
             -- Only allow one to be an impersonator
             has_impersonator = false
@@ -1813,7 +1816,8 @@ function SelectRoles()
                 ply:SetRole(ROLE_INNOCENT)
             end
 
-            ply:SetDefaultCredits()
+            -- Keep existing credits so pre-promoted roles have their bonuses
+            ply:SetDefaultCredits(true)
         end
 
         -- store a steamid -> role map
