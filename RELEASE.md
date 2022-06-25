@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.6.3 (Beta)
+**Released:**
+
+### Fixes
+- Fixed NPC hack used for medium ghost positions being targeted by AI like manhacks
+
 ## 1.6.2 (Beta)
 **Released: June 26th, 2022**
 
