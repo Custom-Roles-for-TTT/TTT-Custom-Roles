@@ -269,7 +269,7 @@ local function FillRoleColors(list, type)
     local modeCVar = GetConVar("ttt_color_mode")
     local mode = modeCVar and modeCVar:GetString() or "default"
 
-    for r = -1, ROLE_MAX do
+    for r = ROLE_NONE, ROLE_MAX do
         local c = nil
         if mode == "custom" then
             if r == ROLE_DETECTIVE then c = ColorFromCustomConVars("ttt_custom_det_color") or COLOR_DETECTIVE["default"]
@@ -281,6 +281,10 @@ local function FillRoleColors(list, type)
             elseif JESTER_ROLES[r] then c = ColorFromCustomConVars("ttt_custom_jes_color") or COLOR_JESTER["default"]
             elseif INDEPENDENT_ROLES[r] then c = ColorFromCustomConVars("ttt_custom_ind_color") or COLOR_INDEPENDENT["default"]
             elseif MONSTER_ROLES[r] then c = ColorFromCustomConVars("ttt_custom_mon_color") or COLOR_MONSTER["default"]
+            else
+                -- Don't modify this color because changing the saturation of it makes it red for some reason...
+                list[r] = COLOR_DGREY
+                continue
             end
         else
             if r == ROLE_DETECTIVE then c = COLOR_DETECTIVE[mode]
@@ -292,6 +296,10 @@ local function FillRoleColors(list, type)
             elseif JESTER_ROLES[r] then c = COLOR_JESTER[mode]
             elseif INDEPENDENT_ROLES[r] then c = COLOR_INDEPENDENT[mode]
             elseif MONSTER_ROLES[r] then c = COLOR_MONSTER[mode]
+            else
+                -- Don't modify this color because changing the saturation of it makes it red for some reason...
+                list[r] = COLOR_DGREY
+                continue
             end
         end
 
@@ -1150,6 +1158,11 @@ COLOR_DGREEN = Color(0, 100, 0, 255)
 COLOR_RED = Color(255, 0, 0, 255)
 COLOR_YELLOW = Color(200, 200, 0, 255)
 COLOR_LGRAY = Color(200, 200, 200, 255)
+COLOR_LGREY = COLOR_LGRAY
+COLOR_GRAY = Color(100, 100, 100, 255)
+COLOR_GREY = COLOR_GRAY
+COLOR_DGRAY = Color(75, 75, 75, 255)
+COLOR_DGREY = COLOR_DGRAY
 COLOR_BLUE = Color(0, 0, 255, 255)
 COLOR_NAVY = Color(0, 0, 100, 255)
 COLOR_PINK = Color(255, 0, 255, 255)

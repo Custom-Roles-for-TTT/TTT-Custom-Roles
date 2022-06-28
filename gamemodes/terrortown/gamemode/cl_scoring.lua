@@ -253,9 +253,14 @@ local function GetWinTitle(wintype)
     local wintitles = {
         [WIN_INNOCENT] = { txt = "hilite_win_role_plural", params = { role = StringUpper(ROLE_STRINGS_PLURAL[ROLE_INNOCENT]) }, c = ROLE_COLORS[ROLE_INNOCENT] },
         [WIN_TRAITOR] = { txt = "hilite_win_role_plural", params = { role = StringUpper(ROLE_STRINGS_PLURAL[ROLE_TRAITOR]) }, c = ROLE_COLORS[ROLE_TRAITOR] },
-        [WIN_MONSTER] = { txt = "hilite_win_role_plural", params = { role = "MONSTERS" }, c = GetRoleTeamColor(ROLE_TEAM_MONSTER) }
+        [WIN_MONSTER] = { txt = "hilite_win_role_plural", params = { role = StringUpper(T("monsters")) }, c = GetRoleTeamColor(ROLE_TEAM_MONSTER) }
     }
-    wintitles[WIN_TIMELIMIT] = wintitles[WIN_INNOCENT]
+    if GetGlobalBool("ttt_roundtime_win_draw", false) then
+        wintitles[WIN_TIMELIMIT] = { txt = "hilite_win_draw", c = ROLE_COLORS[ROLE_NONE] }
+    else
+        -- If it's not a draw, the innocents win
+        wintitles[WIN_TIMELIMIT] = wintitles[WIN_INNOCENT]
+    end
     local title = wintitles[wintype]
     local new_title = hook.Call("TTTScoringWinTitle", nil, wintype, wintitles, title)
     if new_title then title = new_title end
@@ -272,7 +277,7 @@ local function GetWinTitle(wintype)
             title.params = { role = StringUpper(ROLE_STRINGS_PLURAL[monster_role]) }
         -- Otherwise use the monsters label
         else
-            title.params = { role = "MONSTERS" }
+            title.params = { role = StringUpper(T("monsters")) }
         end
     end
 

@@ -86,6 +86,7 @@ local StringStartsWith = string.StartWith
 
 -- Round times
 CreateConVar("ttt_roundtime_minutes", "10", FCVAR_NOTIFY)
+CreateConVar("ttt_roundtime_win_draw", "0")
 CreateConVar("ttt_preptime_seconds", "30", FCVAR_NOTIFY)
 CreateConVar("ttt_posttime_seconds", "30", FCVAR_NOTIFY)
 CreateConVar("ttt_firstpreptime", "60")
@@ -527,6 +528,7 @@ function GM:SyncGlobals()
     SetGlobalBool("sv_voiceenable", GetConVar("sv_voiceenable"):GetBool())
 
     SetGlobalString("ttt_round_summary_tabs", GetConVar("ttt_round_summary_tabs"):GetString())
+    SetGlobalBool("ttt_roundtime_win_draw", GetConVar("ttt_roundtime_win_draw"):GetBool())
 
     SetGlobalBool("ttt_scoreboard_deaths", GetConVar("ttt_scoreboard_deaths"):GetBool())
     SetGlobalBool("ttt_scoreboard_score", GetConVar("ttt_scoreboard_score"):GetBool())
@@ -1048,8 +1050,13 @@ function PrintResultMessage(type)
     if overriden then return end
 
     if type == WIN_TIMELIMIT then
-        LANG.Msg("win_time", { role = ROLE_STRINGS_PLURAL[ROLE_INNOCENT] })
-        ServerLog("Result: timelimit reached, " .. ROLE_STRINGS_PLURAL[ROLE_TRAITOR] .. " lose.\n")
+        if GetGlobalBool("ttt_roundtime_win_draw", false) then
+            LANG.Msg("win_draw")
+            ServerLog("Result: timelimit reached, draw.\n")
+        else
+            LANG.Msg("win_time", { role = ROLE_STRINGS_PLURAL[ROLE_INNOCENT] })
+            ServerLog("Result: timelimit reached, " .. ROLE_STRINGS_PLURAL[ROLE_TRAITOR] .. " lose.\n")
+        end
     elseif type == WIN_TRAITOR then
         LANG.Msg("win_traitor", { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR] })
         ServerLog("Result: " .. ROLE_STRINGS_PLURAL[ROLE_TRAITOR] .. " win.\n")

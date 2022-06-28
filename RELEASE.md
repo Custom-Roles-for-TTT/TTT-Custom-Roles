@@ -6,6 +6,10 @@
 ### Fixes
 - Fixed NPC hack used for medium ghost positions being targeted by AI like manhacks
 - Fixed timeout wins not being detectable by `TTTScoringWinTitle` and `TTTScoringSecondaryWins` hooks
+- Fixed a few instances of not using the "monsters" translation in the round summary window
+
+### Additions
+- Added ability for time limit wins to be counted as draws, controlled by the new `ttt_roundtime_win_draw` convar (disabled by default)
 
 ## 1.6.2 (Beta)
 **Released: June 26th, 2022**

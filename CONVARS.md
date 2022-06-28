@@ -713,6 +713,9 @@ ttt_killer_max_health                       150     // The maximum amount of hea
 ttt_zombie_max_health                       100     // The maximum amount of health the zombie can have
 ttt_madscientist_max_health                 100     // The maximum amount of health the mad scientist can have
 
+// Round Time
+ttt_roundtime_win_draw                     0       // Whether a round that ends because the round time limit has passed counts as a draw. If it is not a draw, the traitor team loses
+
 // Logging
 ttt_debug_logkills                          1       // Whether to log when a player is killed in the console
 ttt_debug_logroles                          1       // Whether to log what roles players are assigned in the console
