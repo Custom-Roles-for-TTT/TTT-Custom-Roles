@@ -5,6 +5,7 @@
 
 ### Fixes
 - Fixed NPC hack used for medium ghost positions being targeted by AI like manhacks
+- Fixed timeout wins not being detectable by `TTTScoringWinTitle` and `TTTScoringSecondaryWins` hooks
 
 ## 1.6.2 (Beta)
 **Released: June 26th, 2022**

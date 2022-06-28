@@ -255,6 +255,7 @@ local function GetWinTitle(wintype)
         [WIN_TRAITOR] = { txt = "hilite_win_role_plural", params = { role = StringUpper(ROLE_STRINGS_PLURAL[ROLE_TRAITOR]) }, c = ROLE_COLORS[ROLE_TRAITOR] },
         [WIN_MONSTER] = { txt = "hilite_win_role_plural", params = { role = "MONSTERS" }, c = GetRoleTeamColor(ROLE_TEAM_MONSTER) }
     }
+    wintitles[WIN_TIMELIMIT] = wintitles[WIN_INNOCENT]
     local title = wintitles[wintype]
     local new_title = hook.Call("TTTScoringWinTitle", nil, wintype, wintitles, title)
     if new_title then title = new_title end
@@ -469,9 +470,7 @@ function CLSCORE:BuildSummaryPanel(dpanel)
     for i = #self.Events, 1, -1 do
         local e = self.Events[i]
         if e.id == EVENT_FINISH then
-            local wintype = e.win
-            if wintype == WIN_TIMELIMIT then wintype = WIN_INNOCENT end
-            title = GetWinTitle(wintype)
+            title = GetWinTitle(e.win)
             break
         end
     end
@@ -931,16 +930,12 @@ function CLSCORE:BuildHilitePanel(dpanel)
         local e = self.Events[i]
         if e.id == EVENT_FINISH then
            endtime = e.t
-           -- when win is due to timeout, innocents win
-           local wintype = e.win
-           if wintype == WIN_TIMELIMIT then wintype = WIN_INNOCENT end
-           title = GetWinTitle(wintype)
+           title = GetWinTitle(e.win)
            break
         end
     end
 
     local roundtime = endtime - self.StartTime
-
     local numply = table.Count(self.Players)
     local numtr = 0
     for _, role in pairs(self.Roles) do
