@@ -117,6 +117,10 @@ Variables available globally (within the defined realm)
 *Realm:* Client and Server\
 *Added in:* 1.0.0
 
+**ROLE_TAB_ICON_MATERIALS** - Table of cached [Materials](https://wiki.facepunch.com/gmod/IMaterial) representing the `tab` (16x16) icons for each role by their role short string.\
+*Realm:* Client and Server\
+*Added in:* 1.6.3
+
 **SHOP_ROLES** - Lookup table for whether a role has a shop.\
 *Realm:* Client and Server\
 *Added in:* 1.0.0

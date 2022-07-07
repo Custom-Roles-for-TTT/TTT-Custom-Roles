@@ -10,6 +10,9 @@
 - Fixed radio only being usable by vanilla traitors
 - Fixed incompatibility with the cloaking device on the workshop
 
+### Changes
+- Changed small role icons to be cached to improve performance when rendering the scoreboard (Thanks @TheXnator!)
+
 ### Additions
 - Added ability for time limit wins to be counted as draws, controlled by the new `ttt_roundtime_win_draw` convar (disabled by default)
 - Added ability for detectives to glow the the detective role color (disabled by default)

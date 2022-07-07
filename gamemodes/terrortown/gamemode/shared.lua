@@ -13,6 +13,7 @@ local GetAllPlayers = player.GetAll
 local StringUpper = string.upper
 local StringLower = string.lower
 local StringFind = string.find
+local StringFormat = string.format
 local StringSplit = string.Split
 local StringSub = string.sub
 
@@ -641,12 +642,6 @@ ROLE_STRINGS_SHORT = {
     [ROLE_INFORMANT] = "inf"
 }
 
-ROLE_MATERIAL_ICONS = {}
-for k, v in pairs(ROLE_STRINGS_SHORT) do
-    local filepath = string.format("materials/vgui/ttt/roles/%s/tab_%s.png", v, v)
-    ROLE_MATERIAL_ICONS[k] = Material(file.Exists(filepath, "GAME") and filepath or string.format("vgui/ttt/tab_%s.png", v))
-end
-
 function StartsWithVowel(word)
     local firstletter = StringSub(word, 1, 1)
     return firstletter == "a" or
@@ -700,6 +695,17 @@ ROLE_TEAM_DETECTIVE = 5
 
 ROLE_TEAMS_WITH_SHOP = {}
 AddRoleAssociations(ROLE_TEAMS_WITH_SHOP, {ROLE_TEAM_TRAITOR, ROLE_TEAM_INDEPENDENT, ROLE_TEAM_MONSTER, ROLE_TEAM_DETECTIVE})
+
+-- Role icon caching
+ROLE_TAB_ICON_MATERIALS = {}
+local function CacheRoleTabIcon(role_str)
+    local filepath = StringFormat("materials/vgui/ttt/roles/%s/tab_%s.png", role_str, role_str)
+    ROLE_TAB_ICON_MATERIALS[role_str] = Material(file.Exists(filepath, "GAME") and filepath or StringFormat("vgui/ttt/tab_%s.png", role_str))
+end
+
+for _, v in pairs(ROLE_STRINGS_SHORT) do
+    CacheRoleTabIcon(v)
+end
 
 ROLE_DATA_EXTERNAL = {}
 
@@ -766,6 +772,8 @@ function RegisterRole(tbl)
     ROLE_STRINGS_PLURAL[roleID] = tbl.nameplural
     ROLE_STRINGS_EXT[roleID] = tbl.nameext
     ROLE_STRINGS_SHORT[roleID] = tbl.nameshort
+
+    CacheRoleTabIcon(tbl.nameshort)
 
     if tbl.team == ROLE_TEAM_INNOCENT then
         AddRoleAssociations(INNOCENT_ROLES, {roleID})

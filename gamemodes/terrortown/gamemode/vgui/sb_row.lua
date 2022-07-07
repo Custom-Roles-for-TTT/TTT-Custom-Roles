@@ -3,7 +3,6 @@
 include("sb_info.lua")
 
 local draw = draw
-local file = file
 local hook = hook
 local ipairs = ipairs
 local IsValid = IsValid
@@ -287,8 +286,8 @@ function PANEL:Paint(width, height)
     surface.SetDrawColor(c)
     surface.DrawRect(0, 0, width, SB_ROW_HEIGHT)
 
-    if ROLE_MATERIAL_ICONS and ROLE_MATERIAL_ICONS[role] then
-        self.sresult:SetMaterial(ROLE_MATERIAL_ICONS[role])
+    if ROLE_TAB_ICON_MATERIALS[roleStr] then
+        self.sresult:SetMaterial(ROLE_TAB_ICON_MATERIALS[roleStr])
         self.sresult:SetVisible(true)
     else
         self.sresult:SetVisible(false)
