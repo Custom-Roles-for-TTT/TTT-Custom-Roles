@@ -406,7 +406,7 @@ function PANEL:ApplySchemeSettings()
     self.tag:SetFont("treb_small")
 
     self.sresult:SetImage("icon16/magnifier.png")
-    self.sresult:SetImageColor(Color(255, 255, 255, 255))
+    self.sresult:SetImageColor(COLOR_WHITE)
 end
 
 function PANEL:LayoutColumns()
@@ -525,7 +525,7 @@ function PANEL:ShowMicVolumeSlider()
     label:SetPos(padding, padding)
     label:SetFont("cool_small")
     label:SetSize(width - padding * 2, 20)
-    label:SetColor(Color(255, 255, 255, 255))
+    label:SetColor(COLOR_WHITE)
     label:SetText(LANG.GetTranslation("sb_playervolume"))
 
     -- Slider
@@ -571,10 +571,10 @@ function PANEL:ShowMicVolumeSlider()
                 sliderHeight + textPadding * 2, -- Height
                 Color(52, 54, 57, 255)
             )
-            draw.DrawText(textValue, "cool_small", sliderHeight / 2, -20, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER)
+            draw.DrawText(textValue, "cool_small", sliderHeight / 2, -20, COLOR_WHITE, TEXT_ALIGN_CENTER)
         end
 
-        draw.RoundedBox(100, 0, 0, sliderHeight, sliderHeight, Color(255, 255, 255, 255))
+        draw.RoundedBox(100, 0, 0, sliderHeight, sliderHeight, COLOR_WHITE)
     end
  end
 
