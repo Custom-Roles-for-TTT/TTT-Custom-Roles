@@ -17,10 +17,11 @@ local timer = timer
 local util = util
 local vgui = vgui
 
+local HaloAdd = halo.Add
 local CallHook = hook.Call
+local AddHook = hook.Add
 local RunHook = hook.Run
 local RemoveHook = hook.Remove
-local HaloAdd = halo.Add
 local GetAllPlayers = player.GetAll
 local MathApproach = math.Approach
 local MathMax = math.max
@@ -621,7 +622,7 @@ net.Receive("TTT_CreateBlood", function()
     util.Effect("bloodimpact", effect)
 end)
 
-hook.Add("HUDPaint", "HitmarkerDrawer", function()
+AddHook("HUDPaint", "HitmarkerDrawer", function()
     if hm_toggle:GetBool() == false then return end -- Enables/Disables the hitmarkers
     if hm_Alpha == 0 then hm_DrawHitM = false hm_CanPlayS = true end -- Removes them after they decay
 
@@ -750,13 +751,13 @@ local function SprintFunction()
     end
 end
 
-hook.Add("TTTPrepareRound", "TTTSprintPrepareRound", function()
+AddHook("TTTPrepareRound", "TTTSprintPrepareRound", function()
     -- reset every round
     stamina = 100
     ConVars()
 
     -- listen for activation
-    hook.Add("Think", "TTTSprintThink", function()
+    AddHook("Think", "TTTSprintThink", function()
         if not sprintEnabled then return end
 
         local client = LocalPlayer()
@@ -804,7 +805,7 @@ hook.Add("TTTPrepareRound", "TTTSprintPrepareRound", function()
 end)
 
 -- Set Sprint Speed
-hook.Add("TTTPlayerSpeedModifier", "TTTSprintPlayerSpeed", function(sply, _, _)
+AddHook("TTTPlayerSpeedModifier", "TTTSprintPlayerSpeed", function(sply, _, _)
     if sply ~= LocalPlayer() then return end
     return GetSprintMultiplier(sply, sprintEnabled and sprinting)
 end)
@@ -890,7 +891,7 @@ function OnPlayerHighlightEnabled(client, alliedRoles, showJesters, hideEnemies,
 end
 
 local function EnableTraitorHighlights(client)
-    hook.Add("PreDrawHalos", "AddPlayerHighlights", function()
+    AddHook("PreDrawHalos", "AddPlayerHighlights", function()
         -- Start with the list of traitors
         local allies = GetTeamRoles(TRAITOR_ROLES)
         -- And add the glitch
@@ -1001,6 +1002,6 @@ net.Receive("TTT_ClearPlayerFootsteps", function()
     table.Empty(footSteps)
 end)
 
-hook.Add("PostDrawTranslucentRenderables", "FootstepRender", function(depth, skybox)
+AddHook("PostDrawTranslucentRenderables", "FootstepRender", function(depth, skybox)
     DrawFootprints()
 end)
