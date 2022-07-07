@@ -235,8 +235,8 @@ function PANEL:Paint(width, height)
 
     local client = LocalPlayer()
     local roleStr = ""
+    local role = c
     if c ~= defaultcolor then
-        local role = c
         local color = nil
 
         if client:IsTraitorTeam() then
@@ -287,12 +287,8 @@ function PANEL:Paint(width, height)
     surface.SetDrawColor(c)
     surface.DrawRect(0, 0, width, SB_ROW_HEIGHT)
 
-    if roleStr ~= "" then
-        if file.Exists("materials/vgui/ttt/roles/" .. roleStr .. "/tab_" .. roleStr .. ".png", "GAME") then
-            self.sresult:SetImage("vgui/ttt/roles/" .. roleStr .. "/tab_" .. roleStr .. ".png")
-        else
-            self.sresult:SetImage("vgui/ttt/tab_" .. roleStr .. ".png")
-        end
+    if ROLE_MATERIAL_ICONS and ROLE_MATERIAL_ICONS[role] then
+        self.sresult:SetMaterial(ROLE_MATERIAL_ICONS[role])
         self.sresult:SetVisible(true)
     else
         self.sresult:SetVisible(false)
