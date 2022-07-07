@@ -45,7 +45,8 @@ function ENT:Initialize()
 end
 
 function ENT:UseOverride(activator)
-    if IsValid(activator) and activator:IsPlayer() and activator:IsActiveTraitor() then
+    local owner = self:GetOwner()
+    if IsPlayer(activator) and IsPlayer(owner) and activator:Alive() and not activator:IsSpec() and activator:IsSameTeam(owner) then
         local prints = self.fingerprints or {}
         self:Remove()
 
@@ -261,7 +262,7 @@ if SERVER then
     };
 
     local function RadioCmd(ply, cmd, args)
-        if not IsValid(ply) or not ply:IsActiveTraitor() then return end
+        if not IsValid(ply) then return end
         if #args ~= 2 then return end
 
         local eidx = tonumber(args[1])
