@@ -4,6 +4,7 @@ local cam = cam
 local chat = chat
 local concommand = concommand
 local ents = ents
+local halo = halo
 local hook = hook
 local ipairs = ipairs
 local net = net
@@ -19,6 +20,7 @@ local vgui = vgui
 local CallHook = hook.Call
 local RunHook = hook.Run
 local RemoveHook = hook.Remove
+local HaloAdd = halo.Add
 local GetAllPlayers = player.GetAll
 local MathApproach = math.Approach
 local MathMax = math.max
@@ -868,23 +870,23 @@ function OnPlayerHighlightEnabled(client, alliedRoles, showJesters, hideEnemies,
 
     -- If the allies of this role are Traitors, show them in red to be thematic
     if traitorAllies then
-        halo.Add(friends, ROLE_COLORS[ROLE_TRAITOR], 1, 1, 1, true, true)
+        HaloAdd(friends, ROLE_COLORS[ROLE_TRAITOR], 1, 1, 1, true, true)
     -- Otherwise green is good
     else
-        halo.Add(friends, ROLE_COLORS[ROLE_INNOCENT], 1, 1, 1, true, true)
+        HaloAdd(friends, ROLE_COLORS[ROLE_INNOCENT], 1, 1, 1, true, true)
     end
 
     -- Don't show enemies if we're hiding them
     if not hideEnemies then
         -- If the allies of this role are Traitors, show enemies as green to be difference
         if traitorAllies then
-            halo.Add(enemies, ROLE_COLORS[ROLE_INNOCENT], 1, 1, 1, true, true)
+            HaloAdd(enemies, ROLE_COLORS[ROLE_INNOCENT], 1, 1, 1, true, true)
         else
-            halo.Add(enemies, ROLE_COLORS[ROLE_TRAITOR], 1, 1, 1, true, true)
+            HaloAdd(enemies, ROLE_COLORS[ROLE_TRAITOR], 1, 1, 1, true, true)
         end
     end
 
-    halo.Add(jesters, ROLE_COLORS[ROLE_JESTER], 1, 1, 1, true, true)
+    HaloAdd(jesters, ROLE_COLORS[ROLE_JESTER], 1, 1, 1, true, true)
 end
 
 local function EnableTraitorHighlights(client)
