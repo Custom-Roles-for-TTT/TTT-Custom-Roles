@@ -93,9 +93,9 @@ Variables available globally (within the defined realm)
 *Realm:* Client and Server\
 *Added in:* 1.0.0
 
-**ROLE_TEAMS_WITH_SHOP** - The lookup table of which *ROLE_TEAM_* enumeration values normally have a shop.\
+**ROLE_SPRITE_ICON_MATERIALS** - Table of cached [Materials](https://wiki.facepunch.com/gmod/IMaterial) representing the `sprite` (32x32) icons for each role by their role short string.\
 *Realm:* Client and Server\
-*Added in:* 1.5.8
+*Added in:* 1.6.3
 
 **ROLE_STRINGS** - Table of title-case names for each role.\
 *Realm:* Client and Server\
@@ -120,6 +120,10 @@ Variables available globally (within the defined realm)
 **ROLE_TAB_ICON_MATERIALS** - Table of cached [Materials](https://wiki.facepunch.com/gmod/IMaterial) representing the `tab` (16x16) icons for each role by their role short string.\
 *Realm:* Client and Server\
 *Added in:* 1.6.3
+
+**ROLE_TEAMS_WITH_SHOP** - The lookup table of which *ROLE_TEAM_* enumeration values normally have a shop.\
+*Realm:* Client and Server\
+*Added in:* 1.5.8
 
 **SHOP_ROLES** - Lookup table for whether a role has a shop.\
 *Realm:* Client and Server\
