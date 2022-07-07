@@ -641,6 +641,12 @@ ROLE_STRINGS_SHORT = {
     [ROLE_INFORMANT] = "inf"
 }
 
+ROLE_MATERIAL_ICONS = {}
+for k, v in pairs(ROLE_STRINGS_SHORT) do
+    local filepath = string.format("materials/vgui/ttt/roles/%s/tab_%s.png", v, v)
+    ROLE_MATERIAL_ICONS[k] = Material(file.Exists(filepath, "GAME") and filepath or string.format("vgui/ttt/tab_%s.png", v))
+end
+
 function StartsWithVowel(word)
     local firstletter = StringSub(word, 1, 1)
     return firstletter == "a" or
