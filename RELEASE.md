@@ -12,6 +12,7 @@
 
 ### Additions
 - Added ability for time limit wins to be counted as draws, controlled by the new `ttt_roundtime_win_draw` convar (disabled by default)
+- Added ability for detectives to glow the the detective role color (disabled by default)
 
 ## 1.6.2 (Beta)
 **Released: June 26th, 2022**

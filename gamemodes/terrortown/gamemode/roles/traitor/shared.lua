@@ -56,3 +56,14 @@ table.insert(ROLE_CONVARS[ROLE_TRAITOR], {
     cvar = "ttt_traitor_phantom_cure",
     type = ROLE_CONVAR_TYPE_BOOL
 })
+
+--------------------
+-- PLAYER METHODS --
+--------------------
+
+ROLETEAM_IS_TARGET_HIGHLIGHTED[ROLE_TEAM_TRAITOR] = function(ply, tgt)
+    local traitor_vision = GetGlobalBool("ttt_traitor_vision_enable", false)
+    if ply:IsActiveTraitorTeam() and tgt:IsActiveTraitorTeam() then return traitor_vision end
+    if ply:IsActiveTraitorTeam() and tgt:IsActiveJesterTeam() then return traitor_vision and GetGlobalBool("ttt_jesters_visible_to_traitors", false) end
+    return false
+end
