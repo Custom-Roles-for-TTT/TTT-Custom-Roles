@@ -12,6 +12,7 @@
 
 ### Changes
 - Changed small role icons to be cached to improve performance when rendering the scoreboard (Thanks @TheXnator!)
+- Changed overhead role icons to be cached to improve performance
 
 ### Additions
 - Added ability for time limit wins to be counted as draws, controlled by the new `ttt_roundtime_win_draw` convar (disabled by default)

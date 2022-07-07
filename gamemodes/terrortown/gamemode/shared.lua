@@ -7,6 +7,7 @@ local pairs = pairs
 local string = string
 local table = table
 
+local FileExists = file.Exists
 local CallHook = hook.Call
 local RunHook = hook.Run
 local GetAllPlayers = player.GetAll
@@ -697,14 +698,32 @@ ROLE_TEAMS_WITH_SHOP = {}
 AddRoleAssociations(ROLE_TEAMS_WITH_SHOP, {ROLE_TEAM_TRAITOR, ROLE_TEAM_INDEPENDENT, ROLE_TEAM_MONSTER, ROLE_TEAM_DETECTIVE})
 
 -- Role icon caching
+local function CacheRoleIcon(tbl, role_str, typ, ext)
+    local file_path = StringFormat("vgui/ttt/roles/%s/%s_%s%s", role_str, typ, role_str, ext)
+    if not FileExists(StringFormat("materials/%s", file_path), "GAME") then
+        file_path = StringFormat("vgui/ttt/%s_%s%s", typ, role_str, ext)
+    end
+    tbl[role_str] = Material(file_path)
+end
+
 ROLE_TAB_ICON_MATERIALS = {}
 local function CacheRoleTabIcon(role_str)
-    local filepath = StringFormat("materials/vgui/ttt/roles/%s/tab_%s.png", role_str, role_str)
-    ROLE_TAB_ICON_MATERIALS[role_str] = Material(file.Exists(filepath, "GAME") and filepath or StringFormat("vgui/ttt/tab_%s.png", role_str))
+    CacheRoleIcon(ROLE_TAB_ICON_MATERIALS, role_str, "tab", ".png")
+end
+
+ROLE_SPRITE_ICON_MATERIALS = {}
+local function CacheRoleSpriteIcon(role_str)
+    CacheRoleIcon(ROLE_SPRITE_ICON_MATERIALS, role_str, "sprite", ".vmt")
+    CacheRoleIcon(ROLE_SPRITE_ICON_MATERIALS, role_str, "sprite", "_noz.vmt")
+end
+
+local function CacheRoleIcons(role_str)
+    CacheRoleTabIcon(role_str)
+    CacheRoleSpriteIcon(role_str)
 end
 
 for _, v in pairs(ROLE_STRINGS_SHORT) do
-    CacheRoleTabIcon(v)
+    CacheRoleIcons(v)
 end
 
 ROLE_DATA_EXTERNAL = {}
@@ -773,7 +792,7 @@ function RegisterRole(tbl)
     ROLE_STRINGS_EXT[roleID] = tbl.nameext
     ROLE_STRINGS_SHORT[roleID] = tbl.nameshort
 
-    CacheRoleTabIcon(tbl.nameshort)
+    CacheRoleIcons(tbl.nameshort)
 
     if tbl.team == ROLE_TEAM_INNOCENT then
         AddRoleAssociations(INNOCENT_ROLES, {roleID})
