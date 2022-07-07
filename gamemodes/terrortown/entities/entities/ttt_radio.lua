@@ -212,7 +212,7 @@ function ENT:PlaySound(snd)
          timer.Simple(t,
                       function()
                          if IsValid(this) then
-                            this:PlayDelayedSound(gunsound.sound, gunsound.ampl or 90, (i == times))
+                            this:PlayDelayedSound(gunsound.sound, gunsound.ampl or 90, i == times)
                          end
                       end)
          if gunsound.burst then
@@ -228,11 +228,11 @@ function ENT:PlaySound(snd)
       local t = 0
       local idx = 1
       for i=1, times do
-         local sound = serialsound.sound[idx]
+         local chosen = serialsound.sound[idx]
          timer.Simple(t,
                       function()
                          if IsValid(this) then
-                            this:PlayDelayedSound(sound, serialsound.ampl or 75, (i == times))
+                            this:PlayDelayedSound(chosen, serialsound.ampl or 75, i == times)
                          end
                       end)
 
@@ -276,8 +276,8 @@ if SERVER then
 
       local radio = Entity(eidx)
       if not IsValid(radio) then return end
-      if not (radio:GetOwner() == ply) then return end
-      if not (radio:GetClass() == "ttt_radio") then return end
+      if radio:GetOwner() ~= ply then return end
+      if radio:GetClass() ~= "ttt_radio" then return end
 
       if not table.HasValue(soundtypes, snd) then
          print("Received radio sound not in table from", ply)
