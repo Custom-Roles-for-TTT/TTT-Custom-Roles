@@ -2,6 +2,25 @@
 
 AddCSLuaFile()
 
+local concommand = concommand
+local IsValid = IsValid
+local math = math
+local table = table
+local sound = sound
+local timer = timer
+local util = util
+
+local MathRand = math.Rand
+local MathRandom = math.random
+local SoundPlay = sound.Play
+local TableAdd = table.Add
+local TableHasValue = table.HasValue
+local TableInsert = table.insert
+local TableRandom = table.Random
+local TableRemove = table.remove
+local TimerSimple = timer.Simple
+local UtilEffect = util.Effect
+
 if CLIENT then
    -- this entity can be DNA-sampled so we need some display info
    ENT.Icon = "vgui/ttt/icon_radio"
@@ -53,7 +72,7 @@ function ENT:UseOverride(activator)
         local wep = activator:Give("weapon_ttt_radio")
         if IsValid(wep) then
             wep.fingerprints = wep.fingerprints or {}
-            table.Add(wep.fingerprints, prints)
+            TableAdd(wep.fingerprints, prints)
         end
     end
 end
@@ -68,8 +87,8 @@ function ENT:OnTakeDamage(dmginfo)
 
         local effect = EffectData()
         effect:SetOrigin(self:GetPos())
-        util.Effect("cball_explode", effect)
-        sound.Play(zapsound, self:GetPos())
+        UtilEffect("cball_explode", effect)
+        SoundPlay(zapsound, self:GetPos())
 
         if IsValid(self:GetOwner()) then
             LANG.Msg(self:GetOwner(), "radio_broken")
@@ -87,7 +106,7 @@ end
 
 function ENT:AddSound(snd)
     if #self.SoundQueue < self.SoundLimit then
-        table.insert(self.SoundQueue, snd)
+        TableInsert(self.SoundQueue, snd)
     end
 end
 
@@ -188,10 +207,10 @@ function ENT:PlayDelayedSound(snd, ampl, last)
     -- maybe we can get destroyed while a timer is still up
     if IsValid(self) then
         if istable(snd) then
-            snd = table.Random(snd)
+            snd = TableRandom(snd)
         end
 
-        sound.Play(snd, self:GetPos(), ampl)
+        SoundPlay(snd, self:GetPos(), ampl)
         self.Playing = not last
     end
 end
@@ -200,33 +219,34 @@ function ENT:PlaySound(snd)
     local pos = self:GetPos()
     local this = self
     if simplesounds[snd] then
-        sound.Play(table.Random(simplesounds[snd]), pos)
+        SoundPlay(TableRandom(simplesounds[snd]), pos)
     elseif gunsounds[snd] then
         local gunsound = gunsounds[snd]
-        local times = math.random(gunsound.times[1], gunsound.times[2])
+        local times = MathRandom(gunsound.times[1], gunsound.times[2])
         local t = 0
         for i=1, times do
-            timer.Simple(t,
+            TimerSimple(t,
                         function()
                             if IsValid(this) then
                                 this:PlayDelayedSound(gunsound.sound, gunsound.ampl or 90, i == times)
                             end
                         end)
+
             if gunsound.burst then
                 t = t + gunsound.delay
             else
-                t = t + math.Rand(gunsound.delay, gunsound.delay * 2)
+                t = t + MathRand(gunsound.delay, gunsound.delay * 2)
             end
         end
     elseif serialsounds[snd] then
         local serialsound = serialsounds[snd]
         local num = #serialsound.sound
-        local times = math.random(serialsound.times[1], serialsound.times[2])
+        local times = MathRandom(serialsound.times[1], serialsound.times[2])
         local t = 0
         local idx = 1
         for i=1, times do
             local chosen = serialsound.sound[idx]
-            timer.Simple(t,
+            TimerSimple(t,
                         function()
                             if IsValid(this) then
                                 this:PlayDelayedSound(chosen, serialsound.ampl or 75, i == times)
@@ -244,7 +264,7 @@ local nextplay = 0
 function ENT:Think()
     if CurTime() > nextplay and #self.SoundQueue > 0 then
         if not self.Playing then
-            local snd = table.remove(self.SoundQueue, 1)
+            local snd = TableRemove(self.SoundQueue, 1)
             self:PlaySound(snd)
         end
 
@@ -274,7 +294,7 @@ if SERVER then
         if radio:GetOwner() ~= ply then return end
         if radio:GetClass() ~= "ttt_radio" then return end
 
-        if not table.HasValue(soundtypes, snd) then
+        if not TableHasValue(soundtypes, snd) then
             print("Received radio sound not in table from", ply)
             return
         end
