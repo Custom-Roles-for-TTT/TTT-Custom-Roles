@@ -1,12 +1,21 @@
+local halo = halo
 local hook = hook
+local ipairs = ipairs
 local net = net
 local surface = surface
+local table = table
+
+local GetAllPlayers = player.GetAll
+local HaloAdd = halo.Add
+local AddHook = hook.Add
+local RemoveHook = hook.Remove
+local TableInsert = table.insert
 
 ------------------
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "DetectiveLike_Translations_Initialize", function()
+AddHook("Initialize", "DetectiveLike_Translations_Initialize", function()
     -- Event
     LANG.AddToLanguage("english", "ev_promote", "{player} was promoted to {detective}")
 
@@ -19,7 +28,7 @@ end)
 -- SCORING --
 -------------
 
-hook.Add("Initialize", "DetectiveLike_Scoring_Initialize", function()
+AddHook("Initialize", "DetectiveLike_Scoring_Initialize", function()
     local promotion_icon = Material("icon16/award_star_add.png")
     local Event = CLSCORE.DeclareEventDisplay
     local PT = LANG.GetParamTranslation
@@ -44,7 +53,7 @@ end)
 -- HUD --
 ---------
 
-hook.Add("TTTHUDInfoPaint", "DetectiveLike_TTTHUDInfoPaint", function(client, label_left, label_top)
+AddHook("TTTHUDInfoPaint", "DetectiveLike_TTTHUDInfoPaint", function(client, label_left, label_top)
     local hide_role = false
     if ConVarExists("ttt_hide_role") then
         hide_role = GetConVar("ttt_hide_role"):GetBool()
@@ -72,5 +81,57 @@ hook.Add("TTTHUDInfoPaint", "DetectiveLike_TTTHUDInfoPaint", function(client, la
 
         surface.SetTextPos(label_left, ScrH() - label_top - h)
         surface.DrawText(text)
+    end
+end)
+
+------------------
+-- HIGHLIGHTING --
+------------------
+
+local detective_glow = false
+local client = nil
+
+local function EnableDetectiveLikeHighlights()
+    AddHook("PreDrawHalos", "DetectiveLike_Highlight_PreDrawHalos", function()
+        local detectives = {}
+        for _, v in ipairs(GetAllPlayers()) do
+            if not v:IsActiveDetectiveLike() then continue end
+            -- Don't highlight players who are already highlighted by things like traitor vision
+            if client:IsTargetHighlighted(v) then continue end
+            TableInsert(detectives, v)
+        end
+
+        if #detectives == 0 then return end
+
+        HaloAdd(detectives, ROLE_COLORS[ROLE_DETECTIVE], 1, 1, 1, true, true)
+    end)
+end
+
+AddHook("TTTUpdateRoleState", "DetectiveLike_Highlight_TTTUpdateRoleState", function()
+    client = LocalPlayer()
+    detective_glow = GetGlobalBool("ttt_detective_glow_enable", false)
+
+    -- Disable highlights on role change
+    if vision_enabled then
+        RemoveHook("PreDrawHalos", "DetectiveLike_Highlight_PreDrawHalos")
+        vision_enabled = false
+    end
+end)
+
+-- Handle enabling and disabling of highlighting
+AddHook("Think", "DetectiveLike_Highlight_Think", function()
+    if not IsPlayer(client) or not client:Alive() or client:IsSpec() then return end
+
+    if detective_glow then
+        if not vision_enabled then
+            EnableDetectiveLikeHighlights()
+            vision_enabled = true
+        end
+    else
+        vision_enabled = false
+    end
+
+    if detective_glow and not vision_enabled then
+        RemoveHook("PreDrawHalos", "DetectiveLike_Highlight_PreDrawHalos")
     end
 end)

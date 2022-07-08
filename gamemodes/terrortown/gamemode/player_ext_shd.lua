@@ -414,9 +414,11 @@ if CLIENT then
     end
 
     function plymeta:IsTargetHighlighted(target)
-        -- Check if this role has an external definition for "IsTargetHighlighted" and use that
+        -- Check if this role or team has an external definition for "IsTargetHighlighted" and use that
         local role = self:GetRole()
         if ROLE_IS_TARGET_HIGHLIGHTED[role] then return ROLE_IS_TARGET_HIGHLIGHTED[role](self, target) end
+        local roleteam = player.GetRoleTeam(role)
+        if ROLETEAM_IS_TARGET_HIGHLIGHTED[roleteam] then return ROLETEAM_IS_TARGET_HIGHLIGHTED[roleteam](self, target) end
 
         return false
     end

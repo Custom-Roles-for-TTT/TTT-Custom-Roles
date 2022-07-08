@@ -329,6 +329,7 @@ ttt_detective_search_only_wep               0       // Whether only detectives c
 ttt_detective_search_only_words             0       // Whether only detectives can reveal a body's last words (if last words is enabled). Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
 ttt_detective_disable_looting               0       // Whether to disable a detective role's ability to loot credits from bodies
 ttt_detective_hide_special_mode             0       // How to handle special detective role information. 0 - Show the special detective's role to everyone. 1 - Hide the special detective's role from everyone (just show detective instead). 2 - Hide the special detective's role for everyone but themselves (only they can see their true role)
+ttt_detective_glow_enable                   0       // Whether members of the detective team (and active detective-like players) can be seen through walls via a highlight effect
 ttt_special_detectives_armor_loadout        1       // Whether special detectives (all detective roles other than the original detective itself) get armor automatically for free
 ttt_all_search_postround                    1       // Whether non-detectives can search bodies post-round or not
 ttt_all_search_binoc                        0       // Whether non-detectives can search bodies if they are using binoculars
@@ -712,6 +713,9 @@ ttt_oldman_max_health                       1       // The maximum amount of hea
 ttt_killer_max_health                       150     // The maximum amount of health the killer can have
 ttt_zombie_max_health                       100     // The maximum amount of health the zombie can have
 ttt_madscientist_max_health                 100     // The maximum amount of health the mad scientist can have
+
+// Round Time
+ttt_roundtime_win_draw                     0       // Whether a round that ends because the round time limit has passed counts as a draw. If it is not a draw, the traitor team loses
 
 // Logging
 ttt_debug_logkills                          1       // Whether to log when a player is killed in the console

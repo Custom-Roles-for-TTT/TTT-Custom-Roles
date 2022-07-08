@@ -59,6 +59,7 @@ end)
 
 hook.Add("TTTPrepareRound", "Zombie_RoleFeatures_PrepareRound", function()
     for _, v in pairs(GetAllPlayers()) do
+        v.WasZombieColored = false
         v:SetNWBool("IsZombifying", false)
         -- Keep previous naming scheme for backwards compatibility
         v:SetNWBool("zombie_prime", false)
@@ -171,11 +172,11 @@ hook.Add("TTTPlayerAliveThink", "Zombie_TTTPlayerAliveThink", function(ply)
 
     if ply:IsZombie() then
         if ply.GetActiveWeapon and IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() == "weapon_zom_claws" then
+            ply.WasZombieColored = true
             ply:SetColor(Color(70, 100, 25, 255))
-            ply:SetRenderMode(RENDERMODE_NORMAL)
-        elseif ply:GetRenderMode() ~= RENDERMODE_TRANSALPHA then
-            ply:SetColor(Color(255, 255, 255, 255))
-            ply:SetRenderMode(RENDERMODE_TRANSALPHA)
+        elseif ply.WasZombieColored then
+            ply.WasZombieColored = false
+            ply:SetColor(COLOR_WHITE)
         end
 
         -- Strip all non-claw weapons for non-prime zombies if that feature is enabled
@@ -194,9 +195,9 @@ hook.Add("TTTPlayerAliveThink", "Zombie_TTTPlayerAliveThink", function(ply)
         if not ply:HasWeapon("weapon_zom_claws") then
             ply:Give("weapon_zom_claws")
         end
-    elseif ply:GetRenderMode() ~= RENDERMODE_TRANSALPHA then
-        ply:SetColor(Color(255, 255, 255, 255))
-        ply:SetRenderMode(RENDERMODE_TRANSALPHA)
+    elseif ply.WasZombieColored then
+        ply.WasZombieColored = false
+        ply:SetColor(COLOR_WHITE)
     end
 end)
 

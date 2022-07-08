@@ -57,7 +57,7 @@ local function GetColors(dark)
         bg = Color(20, 20, 20, 250),
 
         text_empty = Color(200, 20, 20, 255),
-        text = Color(255, 255, 255, 255),
+        text = COLOR_WHITE,
 
         none = Color(90, 90, 90, 255),
 

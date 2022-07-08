@@ -79,9 +79,8 @@ function GM:PlayerSpawn(ply)
     ply.has_spawned = true
 
     -- Reset player color, transparency, and render mode
-    ply:SetColor(Color(255, 255, 255, 255))
+    ply:SetColor(COLOR_WHITE)
     ply:SetMaterial("models/glass")
-    ply:SetRenderMode(RENDERMODE_TRANSALPHA)
 
     -- let the client do things on spawn
     net.Start("TTT_PlayerSpawned")

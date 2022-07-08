@@ -7,17 +7,19 @@ local pairs = pairs
 local string = string
 local table = table
 
+local FileExists = file.Exists
 local CallHook = hook.Call
 local RunHook = hook.Run
 local GetAllPlayers = player.GetAll
 local StringUpper = string.upper
 local StringLower = string.lower
 local StringFind = string.find
+local StringFormat = string.format
 local StringSplit = string.Split
 local StringSub = string.sub
 
 -- Version string for display and function for version checks
-CR_VERSION = "1.6.2"
+CR_VERSION = "1.6.3"
 CR_BETA = true
 
 function CRVersion(version)
@@ -269,7 +271,7 @@ local function FillRoleColors(list, type)
     local modeCVar = GetConVar("ttt_color_mode")
     local mode = modeCVar and modeCVar:GetString() or "default"
 
-    for r = -1, ROLE_MAX do
+    for r = ROLE_NONE, ROLE_MAX do
         local c = nil
         if mode == "custom" then
             if r == ROLE_DETECTIVE then c = ColorFromCustomConVars("ttt_custom_det_color") or COLOR_DETECTIVE["default"]
@@ -281,6 +283,10 @@ local function FillRoleColors(list, type)
             elseif JESTER_ROLES[r] then c = ColorFromCustomConVars("ttt_custom_jes_color") or COLOR_JESTER["default"]
             elseif INDEPENDENT_ROLES[r] then c = ColorFromCustomConVars("ttt_custom_ind_color") or COLOR_INDEPENDENT["default"]
             elseif MONSTER_ROLES[r] then c = ColorFromCustomConVars("ttt_custom_mon_color") or COLOR_MONSTER["default"]
+            else
+                -- Don't modify this color because changing the saturation of it makes it red for some reason...
+                list[r] = COLOR_DGREY
+                continue
             end
         else
             if r == ROLE_DETECTIVE then c = COLOR_DETECTIVE[mode]
@@ -292,6 +298,10 @@ local function FillRoleColors(list, type)
             elseif JESTER_ROLES[r] then c = COLOR_JESTER[mode]
             elseif INDEPENDENT_ROLES[r] then c = COLOR_INDEPENDENT[mode]
             elseif MONSTER_ROLES[r] then c = COLOR_MONSTER[mode]
+            else
+                -- Don't modify this color because changing the saturation of it makes it red for some reason...
+                list[r] = COLOR_DGREY
+                continue
             end
         end
 
@@ -633,12 +643,6 @@ ROLE_STRINGS_SHORT = {
     [ROLE_INFORMANT] = "inf"
 }
 
-ROLE_MATERIAL_ICONS = {}
-for k, v in pairs(ROLE_STRINGS_SHORT) do
-    local filepath = string.format("materials/vgui/ttt/roles/%s/tab_%s.png", v, v)
-    ROLE_MATERIAL_ICONS[k] = Material(file.Exists(filepath, "GAME") and filepath or string.format("vgui/ttt/tab_%s.png", v))
-end
-
 function StartsWithVowel(word)
     local firstletter = StringSub(word, 1, 1)
     return firstletter == "a" or
@@ -693,6 +697,35 @@ ROLE_TEAM_DETECTIVE = 5
 ROLE_TEAMS_WITH_SHOP = {}
 AddRoleAssociations(ROLE_TEAMS_WITH_SHOP, {ROLE_TEAM_TRAITOR, ROLE_TEAM_INDEPENDENT, ROLE_TEAM_MONSTER, ROLE_TEAM_DETECTIVE})
 
+-- Role icon caching
+local function CacheRoleIcon(tbl, role_str, typ, ext)
+    local file_path = StringFormat("vgui/ttt/roles/%s/%s_%s%s", role_str, typ, role_str, ext)
+    if not FileExists(StringFormat("materials/%s", file_path), "GAME") then
+        file_path = StringFormat("vgui/ttt/%s_%s%s", typ, role_str, ext)
+    end
+    tbl[role_str] = Material(file_path)
+end
+
+ROLE_TAB_ICON_MATERIALS = {}
+local function CacheRoleTabIcon(role_str)
+    CacheRoleIcon(ROLE_TAB_ICON_MATERIALS, role_str, "tab", ".png")
+end
+
+ROLE_SPRITE_ICON_MATERIALS = {}
+local function CacheRoleSpriteIcon(role_str)
+    CacheRoleIcon(ROLE_SPRITE_ICON_MATERIALS, role_str, "sprite", ".vmt")
+    CacheRoleIcon(ROLE_SPRITE_ICON_MATERIALS, role_str, "sprite", "_noz.vmt")
+end
+
+local function CacheRoleIcons(role_str)
+    CacheRoleTabIcon(role_str)
+    CacheRoleSpriteIcon(role_str)
+end
+
+for _, v in pairs(ROLE_STRINGS_SHORT) do
+    CacheRoleIcons(v)
+end
+
 ROLE_DATA_EXTERNAL = {}
 
 -- Role strings
@@ -723,6 +756,7 @@ ROLE_SHOULD_SHOW_SPECTATOR_HUD = {}
 ROLE_IS_TARGETID_OVERRIDDEN = {}
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN = {}
 ROLE_IS_TARGET_HIGHLIGHTED = {}
+ROLETEAM_IS_TARGET_HIGHLIGHTED = {}
 
 ROLE_CONVAR_TYPE_NUM = 0
 ROLE_CONVAR_TYPE_BOOL = 1
@@ -757,6 +791,8 @@ function RegisterRole(tbl)
     ROLE_STRINGS_PLURAL[roleID] = tbl.nameplural
     ROLE_STRINGS_EXT[roleID] = tbl.nameext
     ROLE_STRINGS_SHORT[roleID] = tbl.nameshort
+
+    CacheRoleIcons(tbl.nameshort)
 
     if tbl.team == ROLE_TEAM_INNOCENT then
         AddRoleAssociations(INNOCENT_ROLES, {roleID})
@@ -1156,6 +1192,11 @@ COLOR_DGREEN = Color(0, 100, 0, 255)
 COLOR_RED = Color(255, 0, 0, 255)
 COLOR_YELLOW = Color(200, 200, 0, 255)
 COLOR_LGRAY = Color(200, 200, 200, 255)
+COLOR_LGREY = COLOR_LGRAY
+COLOR_GRAY = Color(100, 100, 100, 255)
+COLOR_GREY = COLOR_GRAY
+COLOR_DGRAY = Color(75, 75, 75, 255)
+COLOR_DGREY = COLOR_DGRAY
 COLOR_BLUE = Color(0, 0, 255, 255)
 COLOR_NAVY = Color(0, 0, 100, 255)
 COLOR_PINK = Color(255, 0, 255, 255)

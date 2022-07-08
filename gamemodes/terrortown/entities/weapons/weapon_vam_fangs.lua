@@ -370,26 +370,27 @@ function SWEP:Think()
         self.lastTickSecond = CurTime()
     end
 
+    local owner = self:GetOwner()
     if self:Clip1() < 15 and not self.fading then
         self.fading = true
-        self:GetOwner():SetColor(Color(255, 255, 255, 0))
-        self:GetOwner():SetMaterial("sprites/heatwave")
-        self:GetOwner():EmitSound("weapons/ttt/fade.wav")
+        owner:SetColor(Color(255, 255, 255, 0))
+        owner:SetMaterial("sprites/heatwave")
+        owner:EmitSound("weapons/ttt/fade.wav")
     elseif self:Clip1() >= 40 and self.fading then
         self.fading = false
-        self:GetOwner():SetColor(Color(255, 255, 255, 255))
-        self:GetOwner():SetMaterial("models/glass")
-        self:GetOwner():EmitSound("weapons/ttt/unfade.wav")
+        owner:SetColor(COLOR_WHITE)
+        owner:SetMaterial("models/glass")
+        owner:EmitSound("weapons/ttt/unfade.wav")
     end
 
     if self:GetState() >= STATE_EAT then
-        if not IsValid(self:GetOwner()) then
+        if not IsValid(owner) then
             self:FireError()
             return
         end
 
         local tr = self:GetTraceEntity()
-        if not self:GetOwner():KeyDown(IN_ATTACK) or tr.Entity ~= self.TargetEntity then
+        if not owner:KeyDown(IN_ATTACK) or tr.Entity ~= self.TargetEntity then
             -- Only allow doing the 1/2 progress actions if there are 2 actions enabled (e.g. drain and convert)
             if self:CanConvert() and IsPlayer(self.TargetEntity) and not self.TargetEntity:IsVampire() then
                 if self:GetState() == STATE_KILL then

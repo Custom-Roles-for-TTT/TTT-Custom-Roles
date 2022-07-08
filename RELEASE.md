@@ -1,5 +1,23 @@
 # Release Notes
 
+## 1.6.3 (Beta)
+**Released:**
+
+### Fixes
+- Fixed NPC hack used for medium ghost positions being targeted by AI like manhacks
+- Fixed timeout wins not being detectable by `TTTScoringWinTitle` and `TTTScoringSecondaryWins` hooks
+- Fixed a few instances of not using the "monsters" translation in the round summary window
+- Fixed radio only being usable by vanilla traitors
+- Fixed incompatibility with the cloaking device on the workshop
+
+### Changes
+- Changed small role icons to be cached to improve performance when rendering the scoreboard (Thanks @TheXnator!)
+- Changed overhead role icons to be cached to improve performance
+
+### Additions
+- Added ability for time limit wins to be counted as draws, controlled by the new `ttt_roundtime_win_draw` convar (disabled by default)
+- Added ability for detectives to glow the the detective role color (disabled by default)
+
 ## 1.6.2 (Beta)
 **Released: June 26th, 2022**
 
