@@ -166,6 +166,8 @@ end)
 -- ROLE WEAPONS --
 ------------------
 
+local zombie_color = Color(70, 100, 25, 255)
+
 -- Make sure the zombie keeps their appropriate weapons and coloring
 hook.Add("TTTPlayerAliveThink", "Zombie_TTTPlayerAliveThink", function(ply)
     if not IsValid(ply) or ply:IsSpec() or GetRoundState() ~= ROUND_ACTIVE then return end
@@ -173,7 +175,7 @@ hook.Add("TTTPlayerAliveThink", "Zombie_TTTPlayerAliveThink", function(ply)
     if ply:IsZombie() then
         if ply.GetActiveWeapon and IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() == "weapon_zom_claws" then
             ply.WasZombieColored = true
-            ply:SetColor(Color(70, 100, 25, 255))
+            ply:SetColor(zombie_color)
         elseif ply.WasZombieColored then
             ply.WasZombieColored = false
             ply:SetColor(COLOR_WHITE)

@@ -698,28 +698,27 @@ ROLE_TEAMS_WITH_SHOP = {}
 AddRoleAssociations(ROLE_TEAMS_WITH_SHOP, {ROLE_TEAM_TRAITOR, ROLE_TEAM_INDEPENDENT, ROLE_TEAM_MONSTER, ROLE_TEAM_DETECTIVE})
 
 -- Role icon caching
-local function CacheRoleIcon(tbl, role_str, typ, ext)
-    local file_path = StringFormat("vgui/ttt/roles/%s/%s_%s%s", role_str, typ, role_str, ext)
-    if not FileExists(StringFormat("materials/%s", file_path), "GAME") then
-        file_path = StringFormat("vgui/ttt/%s_%s%s", typ, role_str, ext)
+local function CacheRoleIcon(tbl, role_str, typ, ext, cache_key)
+    -- Use the role string as the cache key and file name if a specific cache key is not provided
+    if not cache_key then
+        cache_key = role_str
     end
-
-    local cache_key = role_str
-    if ext == "_noz.vmt" then -- TODO: Come up with an actual fix
-        cache_key = StringFormat("%s_noz", role_str)
+    local file_path = StringFormat("vgui/ttt/roles/%s/%s_%s.%s", role_str, typ, cache_key, ext)
+    if not FileExists(StringFormat("materials/%s", file_path), "GAME") then
+        file_path = StringFormat("vgui/ttt/%s_%s.%s", typ, cache_key, ext)
     end
     tbl[cache_key] = Material(file_path)
 end
 
 ROLE_TAB_ICON_MATERIALS = {}
 local function CacheRoleTabIcon(role_str)
-    CacheRoleIcon(ROLE_TAB_ICON_MATERIALS, role_str, "tab", ".png")
+    CacheRoleIcon(ROLE_TAB_ICON_MATERIALS, role_str, "tab", "png")
 end
 
 ROLE_SPRITE_ICON_MATERIALS = {}
 local function CacheRoleSpriteIcon(role_str)
-    CacheRoleIcon(ROLE_SPRITE_ICON_MATERIALS, role_str, "sprite", ".vmt")
-    CacheRoleIcon(ROLE_SPRITE_ICON_MATERIALS, role_str, "sprite", "_noz.vmt")
+    CacheRoleIcon(ROLE_SPRITE_ICON_MATERIALS, role_str, "sprite", "vmt")
+    CacheRoleIcon(ROLE_SPRITE_ICON_MATERIALS, role_str, "sprite", "vmt", StringFormat("%s_noz", role_str))
 end
 
 local function CacheRoleIcons(role_str)
