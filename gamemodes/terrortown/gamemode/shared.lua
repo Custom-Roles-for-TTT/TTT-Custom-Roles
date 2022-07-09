@@ -703,7 +703,12 @@ local function CacheRoleIcon(tbl, role_str, typ, ext)
     if not FileExists(StringFormat("materials/%s", file_path), "GAME") then
         file_path = StringFormat("vgui/ttt/%s_%s%s", typ, role_str, ext)
     end
-    tbl[role_str] = Material(file_path)
+
+    local cache_key = role_str
+    if ext == "_noz.vmt" then -- TODO: Come up with an actual fix
+        cache_key = StringFormat("%s_noz", role_str)
+    end
+    tbl[cache_key] = Material(file_path)
 end
 
 ROLE_TAB_ICON_MATERIALS = {}
