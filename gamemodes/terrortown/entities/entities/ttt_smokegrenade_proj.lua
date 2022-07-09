@@ -13,6 +13,10 @@ function ENT:Initialize()
     return self.BaseClass.Initialize(self)
 end
 
+if SERVER then
+    CreateConVar("ttt_smokegrenade_extinguish", "1", FCVAR_NONE, "Whether smoke grenades should extinguish fire")
+end
+
 if CLIENT then
     local smokeparticles = {
         Model("particle/particle_smokegrenade"),
@@ -54,6 +58,8 @@ if CLIENT then
     end
 end
 
+local extinguish = Sound("extinguish.wav")
+
 function ENT:Explode(tr)
     if SERVER then
         self:SetNoDraw(true)
@@ -64,12 +70,30 @@ function ENT:Explode(tr)
             self:SetPos(tr.HitPos + tr.HitNormal * 0.6)
         end
 
+        -- Extinguish fire that is close enough to the grenade
+        if GetConVar("ttt_smokegrenade_extinguish"):GetBool() then
+            local target_ents = {"ttt_flame", "env_fire", "_firesmoke"}
+            local pos = self:GetPos()
+            local entities = ents.FindInSphere(pos, 100)
+            local was_extinguished = false
+            for _, e in ipairs(entities) do
+                if table.HasValue(target_ents, e:GetClass()) then
+                    SafeRemoveEntity(e)
+                    was_extinguished = true
+                end
+            end
+
+            -- Play a sound if something was extinguished
+            if was_extinguished then
+                self:EmitSound(extinguish)
+            end
+        end
+
         self:Remove()
     else
         local spos = self:GetPos()
         local trs = util.TraceLine({start=spos + Vector(0,0,64), endpos=spos + Vector(0,0,-128), filter=self})
         util.Decal("SmallScorch", trs.HitPos + trs.HitNormal, trs.HitPos - trs.HitNormal)
-
         self:SetDetonateExact(0)
 
         if tr.Fraction != 1.0 then

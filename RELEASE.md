@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.6.5 (Beta)
+**Released:**
+
+### Additions
+- Added ability for smoke grenades to extinguish fire (enabled by default)
+
 ## 1.6.4 
 **Released: July 9th, 2022**\
 Includes all beta updates from [1.6.1](#161-beta) to [1.6.3](#163-beta).

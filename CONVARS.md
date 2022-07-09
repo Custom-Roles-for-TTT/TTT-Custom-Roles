@@ -747,6 +747,7 @@ ttt_round_summary_tabs                      summary,hilite,events,scores // The 
 
 // Misc.
 ttt_death_notifier_enable                   1       // Whether the name and role of a player's killer should be shown to the victim
+ttt_smokegrenade_extinguish                 1       // Whether smoke grenades should extinguish fire
 ```
 
 Thanks to [KarlOfDuty](https://github.com/KarlOfDuty) for his original version of this document, [here](https://github.com/KarlOfDuty/TTT-Custom-Roles/blob/patch-1/README.md).

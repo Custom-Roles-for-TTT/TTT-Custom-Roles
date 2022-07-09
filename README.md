@@ -41,6 +41,7 @@ If you would like to test the available configurations, we recommend using ULX/U
 - [Fresh Garry](https://steamcommunity.com/id/Fresh_Garry) for the ['TTT Sprint'](https://steamcommunity.com/sharedfiles/filedetails/?id=933056549) mod which was used as the base for this mod's sprinting mechanics.
 - [Lykrast](https://steamcommunity.com/id/Lykrast) for the code and models used to create the old man's double barrel shotgun taken from ['Lykrast's TTT Weapon Collection'](https://steamcommunity.com/sharedfiles/filedetails/?id=337994500).
 - [Game icons](https://game-icons.net), [Noun Project](https://thenounproject.com), and [Icons8](https://icons8.com) for the role icons.
+- [Videvo](https://www.videvo.net/profile/videvo/) for the royalty-free [extinguish sound](https://www.videvo.net/sound-effect/short-light-fire-exti-pe363704/255924/).
 - Our friends and everyone on the Discord server for their suggestions and help testing.
 
 ## Conflicts

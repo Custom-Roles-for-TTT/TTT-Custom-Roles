@@ -69,6 +69,9 @@ if SERVER then
     -- Celebration
     resource.AddSingleFile("sound/birthday.wav")
 
+    -- Smoke grenade
+    resource.AddSingleFile("sound/extinguish.wav")
+
     -- Hit Markers
     resource.AddSingleFile("sound/hitmarkers/mlghit.wav")
 end
