@@ -15,6 +15,7 @@ local util = util
 local CallHook = hook.Call
 local GetAllPlayers = player.GetAll
 local MathAbs = math.abs
+local MathAcos = math.acos
 
 function plymeta:IsTerror() return self:Team() == TEAM_TERROR end
 function plymeta:IsSpec() return self:Team() == TEAM_SPEC end
@@ -324,6 +325,19 @@ function plymeta:GetEyeTrace(mask)
     return tr
 end
 
+function plymeta:IsOnScreen(ent_or_pos, limit)
+    local ent_pos = ent_or_pos
+    if type(ent_pos) ~= "Vector" then
+        ent_pos = ent_pos:GetPos()
+    end
+    if not limit then limit = 1 end
+
+    local dir = ent_pos - self:GetPos()
+    dir:Normalize()
+    local eye = self:EyeAngles():Forward()
+    return MathAcos(dir:Dot(eye)) <= limit
+end
+
 if CLIENT then
     local function GetMaxBoneZ(ply, pred)
         local max_bone_z = 0
@@ -400,9 +414,11 @@ if CLIENT then
     end
 
     function plymeta:IsTargetHighlighted(target)
-        -- Check if this role has an external definition for "IsTargetHighlighted" and use that
+        -- Check if this role or team has an external definition for "IsTargetHighlighted" and use that
         local role = self:GetRole()
         if ROLE_IS_TARGET_HIGHLIGHTED[role] then return ROLE_IS_TARGET_HIGHLIGHTED[role](self, target) end
+        local roleteam = player.GetRoleTeam(role)
+        if ROLETEAM_IS_TARGET_HIGHLIGHTED[roleteam] then return ROLETEAM_IS_TARGET_HIGHLIGHTED[roleteam](self, target) end
 
         return false
     end

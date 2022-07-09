@@ -4,6 +4,7 @@ local cam = cam
 local chat = chat
 local concommand = concommand
 local ents = ents
+local halo = halo
 local hook = hook
 local ipairs = ipairs
 local net = net
@@ -16,7 +17,9 @@ local timer = timer
 local util = util
 local vgui = vgui
 
+local HaloAdd = halo.Add
 local CallHook = hook.Call
+local AddHook = hook.Add
 local RunHook = hook.Run
 local RemoveHook = hook.Remove
 local GetAllPlayers = player.GetAll
@@ -619,7 +622,7 @@ net.Receive("TTT_CreateBlood", function()
     util.Effect("bloodimpact", effect)
 end)
 
-hook.Add("HUDPaint", "HitmarkerDrawer", function()
+AddHook("HUDPaint", "HitmarkerDrawer", function()
     if hm_toggle:GetBool() == false then return end -- Enables/Disables the hitmarkers
     if hm_Alpha == 0 then hm_DrawHitM = false hm_CanPlayS = true end -- Removes them after they decay
 
@@ -677,6 +680,7 @@ local function ConVars()
 end
 
 -- Set default Values
+local sprintEnabled = false
 local speedMultiplier = 0.4
 local defaultRecovery = 0.08
 local traitorRecovery = 0.12
@@ -690,10 +694,11 @@ local recoveryTimer = CurTime()
 -- Receive ConVars (SERVER)
 net.Receive("TTT_SprintGetConVars", function()
     local convars = net.ReadTable()
-    speedMultiplier = convars[1]
-    defaultRecovery = convars[2]
-    traitorRecovery = convars[3]
-    consumption = convars[4]
+    sprintEnabled = convars[1]
+    speedMultiplier = convars[2]
+    defaultRecovery = convars[3]
+    traitorRecovery = convars[4]
+    consumption = convars[5]
 end)
 
 -- Requesting ConVars first time
@@ -723,6 +728,8 @@ end
 
 -- Sprint activated (sprint if there is stamina)
 local function SprintFunction()
+    if not sprintEnabled then return end
+
     if stamina > 0 then
         if not sprinting then
             SpeedChange(true)
@@ -744,13 +751,15 @@ local function SprintFunction()
     end
 end
 
-hook.Add("TTTPrepareRound", "TTTSprintPrepareRound", function()
+AddHook("TTTPrepareRound", "TTTSprintPrepareRound", function()
     -- reset every round
     stamina = 100
     ConVars()
 
     -- listen for activation
-    hook.Add("Think", "TTTSprintThink", function()
+    AddHook("Think", "TTTSprintThink", function()
+        if not sprintEnabled then return end
+
         local client = LocalPlayer()
         local forward_key = CallHook("TTTSprintKey", nil, client) or IN_FORWARD
         if client:KeyDown(forward_key) and client:KeyDown(IN_SPEED) then
@@ -796,9 +805,9 @@ hook.Add("TTTPrepareRound", "TTTSprintPrepareRound", function()
 end)
 
 -- Set Sprint Speed
-hook.Add("TTTPlayerSpeedModifier", "TTTSprintPlayerSpeed", function(sply, _, _)
+AddHook("TTTPlayerSpeedModifier", "TTTSprintPlayerSpeed", function(sply, _, _)
     if sply ~= LocalPlayer() then return end
-    return GetSprintMultiplier(sply, sprinting)
+    return GetSprintMultiplier(sply, sprintEnabled and sprinting)
 end)
 
 -- Death messages
@@ -862,27 +871,27 @@ function OnPlayerHighlightEnabled(client, alliedRoles, showJesters, hideEnemies,
 
     -- If the allies of this role are Traitors, show them in red to be thematic
     if traitorAllies then
-        halo.Add(friends, ROLE_COLORS[ROLE_TRAITOR], 1, 1, 1, true, true)
+        HaloAdd(friends, ROLE_COLORS[ROLE_TRAITOR], 1, 1, 1, true, true)
     -- Otherwise green is good
     else
-        halo.Add(friends, ROLE_COLORS[ROLE_INNOCENT], 1, 1, 1, true, true)
+        HaloAdd(friends, ROLE_COLORS[ROLE_INNOCENT], 1, 1, 1, true, true)
     end
 
     -- Don't show enemies if we're hiding them
     if not hideEnemies then
         -- If the allies of this role are Traitors, show enemies as green to be difference
         if traitorAllies then
-            halo.Add(enemies, ROLE_COLORS[ROLE_INNOCENT], 1, 1, 1, true, true)
+            HaloAdd(enemies, ROLE_COLORS[ROLE_INNOCENT], 1, 1, 1, true, true)
         else
-            halo.Add(enemies, ROLE_COLORS[ROLE_TRAITOR], 1, 1, 1, true, true)
+            HaloAdd(enemies, ROLE_COLORS[ROLE_TRAITOR], 1, 1, 1, true, true)
         end
     end
 
-    halo.Add(jesters, ROLE_COLORS[ROLE_JESTER], 1, 1, 1, true, true)
+    HaloAdd(jesters, ROLE_COLORS[ROLE_JESTER], 1, 1, 1, true, true)
 end
 
 local function EnableTraitorHighlights(client)
-    hook.Add("PreDrawHalos", "AddPlayerHighlights", function()
+    AddHook("PreDrawHalos", "AddPlayerHighlights", function()
         -- Start with the list of traitors
         local allies = GetTeamRoles(TRAITOR_ROLES)
         -- And add the glitch
@@ -993,6 +1002,6 @@ net.Receive("TTT_ClearPlayerFootsteps", function()
     table.Empty(footSteps)
 end)
 
-hook.Add("PostDrawTranslucentRenderables", "FootstepRender", function(depth, skybox)
+AddHook("PostDrawTranslucentRenderables", "FootstepRender", function(depth, skybox)
     DrawFootprints()
 end)

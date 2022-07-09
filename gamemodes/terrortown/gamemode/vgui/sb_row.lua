@@ -3,7 +3,6 @@
 include("sb_info.lua")
 
 local draw = draw
-local file = file
 local hook = hook
 local ipairs = ipairs
 local IsValid = IsValid
@@ -235,12 +234,25 @@ function PANEL:Paint(width, height)
 
     local client = LocalPlayer()
     local roleStr = ""
+    local role = c
     if c ~= defaultcolor then
-        local role = c
         local color = nil
 
+        if client:IsTraitorTeam() then
+            if GetGlobalBool("ttt_glitch_round", false) and (ply:IsTraitorTeam() or (ply:IsGlitch() and not GetGlobalBool("ttt_zombie_round", false))) and client ~= ply then
+                local glitch_role, color_role = GetGlitchedRole(ply, GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR))
+                role = glitch_role
+                if color_role then
+                    color = ROLE_COLORS_SCOREBOARD[color_role]
+                end
+            elseif ply:IsImpersonator() then
+                if GetGlobalBool("ttt_impersonator_use_detective_icon", true) then
+                    role = ROLE_DETECTIVE
+                end
+                color = ROLE_COLORS_SCOREBOARD[ROLE_IMPERSONATOR]
+            end
         -- Swap the deputy/impersonator icons depending on which settings are enabled
-        if ply:IsDetectiveLike() then
+        elseif ply:IsDetectiveLike() then
             if ply:IsDetectiveTeam() then
                 local disp_role, changed = ply:GetDisplayedRole()
                 -- If the displayed role was changed, use it for the color but use the question mark for the icon
@@ -254,19 +266,6 @@ function PANEL:Paint(width, height)
                 role = ROLE_DETECTIVE
             else
                 role = ROLE_DEPUTY
-            end
-        elseif client:IsTraitorTeam() then
-            if ply:IsImpersonator() then
-                if GetGlobalBool("ttt_impersonator_use_detective_icon", true) then
-                    role = ROLE_DETECTIVE
-                end
-                color = ROLE_COLORS_SCOREBOARD[ROLE_IMPERSONATOR]
-            elseif GetGlobalBool("ttt_glitch_round", false) and (ply:IsTraitorTeam() or (ply:IsGlitch() and not GetGlobalBool("ttt_zombie_round", false))) and client ~= ply then
-                local glitch_role, color_role = GetGlitchedRole(ply, GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR))
-                role = glitch_role
-                if color_role then
-                    color = ROLE_COLORS_SCOREBOARD[color_role]
-                end
             end
         end
 
@@ -287,12 +286,8 @@ function PANEL:Paint(width, height)
     surface.SetDrawColor(c)
     surface.DrawRect(0, 0, width, SB_ROW_HEIGHT)
 
-    if roleStr ~= "" then
-        if file.Exists("materials/vgui/ttt/roles/" .. roleStr .. "/tab_" .. roleStr .. ".png", "GAME") then
-            self.sresult:SetImage("vgui/ttt/roles/" .. roleStr .. "/tab_" .. roleStr .. ".png")
-        else
-            self.sresult:SetImage("vgui/ttt/tab_" .. roleStr .. ".png")
-        end
+    if ROLE_TAB_ICON_MATERIALS[roleStr] then
+        self.sresult:SetMaterial(ROLE_TAB_ICON_MATERIALS[roleStr])
         self.sresult:SetVisible(true)
     else
         self.sresult:SetVisible(false)
@@ -406,7 +401,7 @@ function PANEL:ApplySchemeSettings()
     self.tag:SetFont("treb_small")
 
     self.sresult:SetImage("icon16/magnifier.png")
-    self.sresult:SetImageColor(Color(255, 255, 255, 255))
+    self.sresult:SetImageColor(COLOR_WHITE)
 end
 
 function PANEL:LayoutColumns()
@@ -525,7 +520,7 @@ function PANEL:ShowMicVolumeSlider()
     label:SetPos(padding, padding)
     label:SetFont("cool_small")
     label:SetSize(width - padding * 2, 20)
-    label:SetColor(Color(255, 255, 255, 255))
+    label:SetColor(COLOR_WHITE)
     label:SetText(LANG.GetTranslation("sb_playervolume"))
 
     -- Slider
@@ -571,10 +566,10 @@ function PANEL:ShowMicVolumeSlider()
                 sliderHeight + textPadding * 2, -- Height
                 Color(52, 54, 57, 255)
             )
-            draw.DrawText(textValue, "cool_small", sliderHeight / 2, -20, Color(255, 255, 255, 255), TEXT_ALIGN_CENTER)
+            draw.DrawText(textValue, "cool_small", sliderHeight / 2, -20, COLOR_WHITE, TEXT_ALIGN_CENTER)
         end
 
-        draw.RoundedBox(100, 0, 0, sliderHeight, sliderHeight, Color(255, 255, 255, 255))
+        draw.RoundedBox(100, 0, 0, sliderHeight, sliderHeight, COLOR_WHITE)
     end
  end
 

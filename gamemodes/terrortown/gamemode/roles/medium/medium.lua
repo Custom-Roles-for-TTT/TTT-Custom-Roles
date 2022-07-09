@@ -71,6 +71,7 @@ hook.Add("PlayerDeath", "Medium_Spirits_PlayerDeath", function(victim, infl, att
         spirit:SetNotSolid(true)
         spirit:DrawShadow(false)
         spirit:SetNWBool("MediumSpirit", true)
+        spirit:AddFlags(FL_NOTARGET)
         local col = Vector(1, 1, 1)
         if medium_spirit_color:GetBool() then
             col = victim:GetNWVector("PlayerColor", Vector(1, 1, 1))

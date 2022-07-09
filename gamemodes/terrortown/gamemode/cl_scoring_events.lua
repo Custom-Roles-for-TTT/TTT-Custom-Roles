@@ -67,7 +67,11 @@ Event(EVENT_FINISH,
                      end
                      return T("ev_win_monster")
                   elseif e.win == WIN_TIMELIMIT then
-                     return PT("ev_win_time", { role = string.lower(ROLE_STRINGS_PLURAL[ROLE_TRAITOR]) })
+                     if GetGlobalBool("ttt_roundtime_win_draw", false) then
+                       return T("ev_win_draw")
+                     else
+                       return PT("ev_win_time", { role = string.lower(ROLE_STRINGS_PLURAL[ROLE_TRAITOR]) })
+                     end
                   end
 
                   return PT("ev_win_unknown", { id = e.win })
@@ -86,9 +90,10 @@ Event(EVENT_FINISH,
                      elseif monster_role == ROLE_ZOMBIE then
                         role_string = ROLE_STRINGS_PLURAL[ROLE_ZOMBIE]
                      else
-                        role_string = "Monsters"
+                        role_string = string.Capitalize(T("monsters"))
                      end
                   elseif e.win == WIN_TIMELIMIT then
+                     -- Use the same icon regardless of whether it's a draw
                      win_string = "ev_win_icon_time"
                   end
 

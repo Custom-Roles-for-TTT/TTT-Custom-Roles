@@ -1,5 +1,67 @@
 # Release Notes
 
+## 1.6.4 
+**Released: July 9th, 2022**\
+Includes all beta updates from [1.6.1](#161-beta) to [1.6.3](#163-beta).
+
+## 1.6.3 (Beta)
+**Released: July 8th, 2022**
+
+### Fixes
+- Fixed NPC hack used for medium ghost positions being targeted by AI like manhacks
+- Fixed timeout wins not being detectable by `TTTScoringWinTitle` and `TTTScoringSecondaryWins` hooks
+- Fixed a few instances of not using the "monsters" translation in the round summary window
+- Fixed radio only being usable by vanilla traitors
+- Fixed incompatibility with the cloaking device on the workshop
+
+### Changes
+- Changed small role icons to be cached to improve performance when rendering the scoreboard (Thanks @TheXnator!)
+- Changed overhead role icons to be cached to improve performance
+
+### Additions
+- Added ability for time limit wins to be counted as draws, controlled by the new `ttt_roundtime_win_draw` convar (disabled by default)
+- Added ability for detectives to glow the detective role color (disabled by default)
+
+## 1.6.2 (Beta)
+**Released: June 26th, 2022**
+
+### Fixes
+- Fixed scoreboard showing the impersonator color and icon when there was a glitch and `ttt_glitch_mode` was `2`
+- Fixed scoreboard showing the detective color and icon for a promoted impersonator when `ttt_impersonator_use_detective_icon` was `0`
+- Fixed overhead role icon showing the impersonator color and icon when there was a glitch and `ttt_glitch_mode` was `2`
+- Fixed chance of two impersonators spawning when `ttt_impersonator_detective_chance` is used
+- Fixed impersonator not getting activation credits when they are immediately promoted because `ttt_impersonator_detective_chance` is used
+
+### Changes
+- Changed player role icons (over their heads) and highlighting to ignore map optimizations which prevented them from updating regularly (Thanks to wget for the logic help!)
+  - This is controlled by a new client-side convar, `ttt_bypass_culling`, which is enabled by default and available in the F1 settings menu
+
+### Developer
+- Added `plymeta:ShouldAvoidDetective` as an alias for `plymeta:GetAvoidDetective`
+- Added `plymeta:GetBypassCulling`/`plymeta:ShouldBypassCulling` as a way to get a player's `ttt_bypass_culling` setting value
+- Added `plymeta:IsOnScreen` to determine if an entity or position is on screen within a value limit
+- Added optional `keep_existing` parameter to `plymeta:SetDefaultCredits`
+
+## 1.6.1 (Beta)
+**Released: June 18th, 2022**
+
+### Fixes
+- Fixed monster role count logic not working for external monster roles
+- Fixed body search window title showing the name of the body for non-detectives when `ttt_detective_search_only` was disabled and `ttt_detective_search_only_nick` was enabled
+- Fixed non-detectives triggering "body found" messages including player name and role when those pieces of information should be hidden based on the `ttt_detective_search_only_*` convars
+- Fixed non-detectives triggering "confirmed the death of..." messages when `ttt_detective_search_only` was disabled and `ttt_detective_search_only_nick` was enabled
+- Fixed non-detectives searching a body a second time revealing information that should be hidden based on the `ttt_detective_search_only_*` convars
+- Fixed non-detectives searching a dead player causing their name to show when looking at the body when `ttt_detective_search_only` was disabled and `ttt_detective_search_only_nick` was enabled
+- Fixed non-detectives searching a dead player causing them to move on the scoreboard and revealing their name when `ttt_detective_search_only` was disabled and `ttt_detective_search_only_nick` was enabled
+
+### Additions
+- Added setting to control whether sprint is enabled (enabled by default)
+- Added setting to move the mad scientist to the monster team (disabled by default)
+- Added setting to control the maximum number of monsters to spawn each round (defaults to 1)
+
+### Changes
+- Changed round end summary tab to have a scrollbar if it is too tall to fit on the screen
+
 ## 1.6.0
 **Released: June 6th, 2022**\
 Includes all beta updates from [1.5.9](#159-beta) to [1.5.17](#1517-beta).

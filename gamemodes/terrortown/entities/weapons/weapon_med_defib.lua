@@ -278,7 +278,7 @@ if SERVER then
                 self:SetNextPrimaryFire(CurTime() + 0.1)
                 ent:EmitSound(zap, 100, math.random(98, 102))
                 ent:Freeze(true)
-                ent:ScreenFade(SCREENFADE.IN, Color(255, 255, 255, 255), 1, 10)
+                ent:ScreenFade(SCREENFADE.IN, COLOR_WHITE, 1, 10)
                 timer.Simple(10, function()
                     if IsValid(ent) then
                         ent:Freeze(false)

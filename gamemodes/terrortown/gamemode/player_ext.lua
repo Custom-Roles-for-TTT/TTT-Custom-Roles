@@ -72,7 +72,7 @@ function plymeta:AddCredits(amt)
 end
 function plymeta:SubtractCredits(amt) self:AddCredits(-amt) end
 
-function plymeta:SetDefaultCredits()
+function plymeta:SetDefaultCredits(keep_existing)
     if self:IsSpec() or self:GetRole() == ROLE_NONE then return end
 
     local c = 0
@@ -94,7 +94,11 @@ function plymeta:SetDefaultCredits()
         end
     end
 
-    self:SetCredits(c)
+    if not keep_existing then
+        self:SetCredits(c)
+    else
+        self:AddCredits(c)
+    end
 end
 
 function plymeta:SendCredits()
@@ -479,6 +483,12 @@ end
 function plymeta:GetAvoidDetective()
     return self:GetInfoNum("ttt_avoid_detective", 0) > 0
 end
+plymeta.ShouldAvoidDetective = plymeta.GetAvoidDetective
+
+function plymeta:GetBypassCulling()
+    return self:GetInfoNum("ttt_bypass_culling", 1) > 0
+end
+plymeta.ShouldBypassCulling = plymeta.GetBypassCulling
 
 function plymeta:Ignite(dur, radius)
     -- Keep track of extended ignition information so when multiple things are causing burning the later ones don't lose their data. See PlayerTakeDamage in player.lua

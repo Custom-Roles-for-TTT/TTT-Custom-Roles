@@ -173,7 +173,7 @@ local wire_colors = {
     Color(200, 0, 0, 255), -- red
     Color(255, 255, 0, 255), -- yellow
     Color(90, 90, 250, 255), -- blue
-    Color(255, 255, 255, 255), -- white/grey
+    COLOR_WHITE, -- white/grey
     Color(20, 200, 20, 255), -- green
     Color(255, 160, 50, 255)  -- brown
 };

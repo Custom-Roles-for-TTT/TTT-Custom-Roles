@@ -353,3 +353,23 @@ hook.Add("TTTPrintResultMessage", "Killer_TTTPrintResultMessage", function(type)
         ServerLog("Result: " .. ROLE_STRINGS[ROLE_KILLER] .. " wins.\n")
     end
 end)
+
+-----------------------
+-- PLAYER VISIBILITY --
+-----------------------
+
+-- Add all players to the PVS for the killer if highlighting or Kill icon are enabled
+hook.Add("SetupPlayerVisibility", "Killer_SetupPlayerVisibility", function(ply)
+    if not ply:ShouldBypassCulling() then return end
+    if not ply:IsActiveKiller() then return end
+    if not killer_vision_enable:GetBool() and not killer_show_target_icon:GetBool() then return end
+
+    for _, v in ipairs(GetAllPlayers()) do
+        if ply:TestPVS(v) then continue end
+
+        local pos = v:GetPos()
+        if ply:IsOnScreen(pos) then
+            AddOriginToPVS(pos)
+        end
+    end
+end)

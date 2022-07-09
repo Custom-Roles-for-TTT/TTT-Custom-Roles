@@ -48,6 +48,24 @@ end
 -- If detective mode, announce when someone's body is found
 local bodyfound = CreateConVar("ttt_announce_body_found", "1")
 
+local function AnnounceBodyName(p)
+    -- If only detectives can search, only announce if this player is a detective
+    if GetGlobalBool("ttt_detective_search_only", true) then return p:IsDetectiveLike() end
+    -- If only detectives can see the name, only announce if this player is a detective
+    if GetGlobalBool("ttt_detective_search_only_nick", false) then return p:IsDetectiveLike() end
+    -- Otherwise everyone can see it
+    return true
+end
+
+local function AnnounceBodyRole(p)
+    -- If only detectives can search, only announce if this player is a detective
+    if GetGlobalBool("ttt_detective_search_only", true) then return p:IsDetectiveLike() end
+    -- If only detectives can see the role, only announce if this player is a detective
+    if GetGlobalBool("ttt_detective_search_only_role", false) then return p:IsDetectiveLike() end
+    -- Otherwise everyone can see it
+    return true
+end
+
 function GM:TTTCanIdentifyCorpse(ply, corpse, was_traitor)
     -- return true to allow corpse identification, false to disallow
     return true
@@ -71,23 +89,37 @@ local function IdentifyBody(ply, rag)
     local finder = ply:Nick()
     local nick = CORPSE.GetPlayerNick(rag, "")
 
-    -- Announce body
-    if bodyfound:GetBool() and not CORPSE.GetFound(rag, false) then
-        LANG.Msg("body_found", {
-            finder = finder,
-            victim = nick,
-            role = ROLE_STRINGS_EXT[role]
-        })
-    end
-
     -- will return either false or a valid ply
     local deadply = player.GetBySteamID64(rag.sid64) or player.GetBySteamID(rag.sid)
+
+    -- Announce body
+    local announceName = AnnounceBodyName(ply)
+    if bodyfound:GetBool() and not CORPSE.GetFound(rag, false) and (not IsValid(deadply) or announceName or not deadply:GetNWBool("body_found", false)) then
+        local name = "someone"
+        if announceName then
+            name = nick
+        end
+        local role_string = "an unknown role"
+        if AnnounceBodyRole(ply) then
+            role_string = ROLE_STRINGS_EXT[role]
+        end
+
+        LANG.Msg("body_found", {
+            finder = finder,
+            victim = name,
+            role = role_string
+        })
+    end
 
     -- Register find
     if not CORPSE.GetFound(rag, false) then
         if IsValid(deadply) then
-            deadply:SetNWBool("body_searched", true)
-            deadply:SetNWBool("body_found", true)
+            -- Only reveal that this body was searched and found if they were searched by someone who can know its name
+            -- Otherwise the scoreboard gets updated which reveals their name anyway
+            if announceName then
+                deadply:SetNWBool("body_found", true)
+                deadply:SetNWBool("body_searched", true)
+            end
             -- Keep track if this body was searched specifically by a detective
             if ply:IsDetectiveLike() then
                 deadply:SetNWBool("body_searched_det", true)
@@ -101,15 +133,19 @@ local function IdentifyBody(ply, rag)
             SCORE:HandleBodyFound(ply, deadply)
         end
         hook.Call("TTTBodyFound", GAMEMODE, ply, deadply, rag)
-        CORPSE.SetFound(rag, true)
+        CORPSE.SetFound(rag, announceName)
     -- Keep track if this body was searched specifically by a detective
     -- Also force the scoreboard to update
-    elseif IsValid(deadply) and not deadply:GetNWBool("body_searched_det", false) then
+    elseif IsValid(deadply) and ply:IsDetectiveLike() and not deadply:GetNWBool("body_searched_det", false) then
+        deadply:SetNWBool("body_found", true)
+        deadply:SetNWBool("body_searched", true)
         deadply:SetNWBool("body_searched_det", true)
         net.Start("TTT_ScoreboardUpdate")
         net.WriteBool(true)
         net.Broadcast()
     end
+
+    if not announceName then return end
 
     -- Handle kill list
     for _, vicsid in pairs(rag.kills) do
@@ -118,7 +154,10 @@ local function IdentifyBody(ply, rag)
 
         -- is this an unconfirmed dead?
         if IsValid(vic) and (not vic:GetNWBool("body_searched", false)) and (not vic:GetNWBool("body_found", false)) then
-            LANG.Msg("body_confirm", { finder = finder, victim = vic:Nick() })
+            LANG.Msg("body_confirm", {
+                finder = finder,
+                victim = vic:Nick()
+            })
 
             -- update scoreboard status
             vic:SetNWBool("body_found", true)

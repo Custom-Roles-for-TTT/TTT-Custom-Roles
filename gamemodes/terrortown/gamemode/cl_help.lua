@@ -2,7 +2,6 @@
 
 local concommand = concommand
 local cvars = cvars
-local file = file
 local hook = hook
 local ipairs = ipairs
 local pairs = pairs
@@ -67,6 +66,8 @@ CreateClientConVar("ttt_avoid_detective", "0", true, true)
 CreateClientConVar("ttt_hide_role", "0", true, false)
 CreateClientConVar("ttt_hide_ammo", "0", true, false)
 
+CreateClientConVar("ttt_bypass_culling", "1", true, true, "Whether to bypass vis leafs and culling in maps for player icons and highlighting", 0, 1)
+
 HELPSCRN = {}
 
 local dframe
@@ -106,7 +107,7 @@ function HELPSCRN:Show()
 
     local dsettings = vgui.Create("DPanelList", dtabs)
     dsettings:StretchToParent(0, 0, padding, 0)
-    dsettings:EnableVerticalScrollbar(true)
+    dsettings:EnableVerticalScrollbar()
     dsettings:SetPadding(10)
     dsettings:SetSpacing(10)
 
@@ -178,6 +179,9 @@ function HELPSCRN:Show()
 
     cb = dgui:TextEntry(GetTranslation("set_radio_button"), "ttt_radio_button")
     cb:SetTooltip(GetTranslation("set_radio_button_tip"))
+
+    cb = dgui:CheckBox(GetTranslation("set_bypass_culling"), "ttt_bypass_culling")
+    cb:SetTooltip(GetTranslation("set_bypass_culling_tip"))
 
     dsettings:AddItem(dgui)
 
@@ -388,7 +392,7 @@ function HELPSCRN:Show()
 
     dsettings = vgui.Create("DPanelList", dtabs)
     dsettings:StretchToParent(0, 0, padding, 0)
-    dsettings:EnableVerticalScrollbar(true)
+    dsettings:EnableVerticalScrollbar()
     dsettings:SetPadding(10)
     dsettings:SetSpacing(10)
 
@@ -428,7 +432,7 @@ function HELPSCRN:Show()
 
     dsettings = vgui.Create("DPanelList", dtabs)
     dsettings:StretchToParent(0, 0, padding, 0)
-    dsettings:EnableVerticalScrollbar(true)
+    dsettings:EnableVerticalScrollbar()
     dsettings:SetPadding(10)
     dsettings:SetSpacing(10)
 
@@ -807,11 +811,7 @@ local function ShowTutorialPage(pnl, page)
         local roleFileName = ROLE_STRINGS_SHORT[role]
         local roleIcon = vgui.Create("DImage", pnl)
         roleIcon:SetSize(16, 16)
-        if file.Exists("materials/vgui/ttt/roles/" .. roleFileName .. "/tab_" .. roleFileName .. ".png", "GAME") then
-            roleIcon:SetImage("vgui/ttt/roles/" .. roleFileName .. "/tab_" .. roleFileName .. ".png")
-        else
-            roleIcon:SetImage("vgui/ttt/tab_" .. roleFileName .. ".png")
-        end
+        roleIcon:SetMaterial(ROLE_TAB_ICON_MATERIALS[roleFileName])
         roleIcon:MoveLeftOf(titleLabel)
         -- Center it vertically within the title bar and give it a little space from the role name
         roleIcon:SetPos(roleIcon:GetX() - 3, roleIcon:GetY() + 7)

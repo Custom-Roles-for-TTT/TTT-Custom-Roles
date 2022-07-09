@@ -86,6 +86,7 @@ local StringStartsWith = string.StartWith
 
 -- Round times
 CreateConVar("ttt_roundtime_minutes", "10", FCVAR_NOTIFY)
+CreateConVar("ttt_roundtime_win_draw", "0")
 CreateConVar("ttt_preptime_seconds", "30", FCVAR_NOTIFY)
 CreateConVar("ttt_posttime_seconds", "30", FCVAR_NOTIFY)
 CreateConVar("ttt_firstpreptime", "60")
@@ -115,6 +116,8 @@ CreateConVar("ttt_special_detective_pct", 0.33)
 CreateConVar("ttt_special_detective_chance", 0.5)
 CreateConVar("ttt_independent_chance", 0.5)
 CreateConVar("ttt_jester_chance", 0.5)
+
+CreateConVar("ttt_monster_max", "1")
 CreateConVar("ttt_monster_pct", 0.33)
 CreateConVar("ttt_monster_chance", 0.5)
 
@@ -304,6 +307,7 @@ CreateConVar("ttt_bem_sv_rows", 5, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERV
 CreateConVar("ttt_bem_sv_size", 64, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Sets the item size in the shop menu's item list (serverside)")
 
 -- sprint convars
+local sprintEnabled = CreateConVar("ttt_sprint_enabled", "1", FCVAR_SERVER_CAN_EXECUTE, "Whether sprint is enabled")
 local speedMultiplier = CreateConVar("ttt_sprint_bonus_rel", "0.4", FCVAR_SERVER_CAN_EXECUTE, "The relative speed bonus given while sprinting. Def: 0.4")
 local recovery = CreateConVar("ttt_sprint_regenerate_innocent", "0.08", FCVAR_SERVER_CAN_EXECUTE, "Sets stamina regeneration for innocents. Def: 0.08")
 local traitorRecovery = CreateConVar("ttt_sprint_regenerate_traitor", "0.12", FCVAR_SERVER_CAN_EXECUTE, "Sets stamina regeneration speed for traitors. Def: 0.12")
@@ -524,9 +528,12 @@ function GM:SyncGlobals()
     SetGlobalBool("sv_voiceenable", GetConVar("sv_voiceenable"):GetBool())
 
     SetGlobalString("ttt_round_summary_tabs", GetConVar("ttt_round_summary_tabs"):GetString())
+    SetGlobalBool("ttt_roundtime_win_draw", GetConVar("ttt_roundtime_win_draw"):GetBool())
 
     SetGlobalBool("ttt_scoreboard_deaths", GetConVar("ttt_scoreboard_deaths"):GetBool())
     SetGlobalBool("ttt_scoreboard_score", GetConVar("ttt_scoreboard_score"):GetBool())
+
+    SetGlobalBool("ttt_sprint_enabled", GetConVar("ttt_sprint_enabled"):GetBool())
 
     UpdateRoleState()
 end
@@ -1043,8 +1050,13 @@ function PrintResultMessage(type)
     if overriden then return end
 
     if type == WIN_TIMELIMIT then
-        LANG.Msg("win_time", { role = ROLE_STRINGS_PLURAL[ROLE_INNOCENT] })
-        ServerLog("Result: timelimit reached, " .. ROLE_STRINGS_PLURAL[ROLE_TRAITOR] .. " lose.\n")
+        if GetGlobalBool("ttt_roundtime_win_draw", false) then
+            LANG.Msg("win_draw")
+            ServerLog("Result: timelimit reached, draw.\n")
+        else
+            LANG.Msg("win_time", { role = ROLE_STRINGS_PLURAL[ROLE_INNOCENT] })
+            ServerLog("Result: timelimit reached, " .. ROLE_STRINGS_PLURAL[ROLE_TRAITOR] .. " lose.\n")
+        end
     elseif type == WIN_TRAITOR then
         LANG.Msg("win_traitor", { role = ROLE_STRINGS_PLURAL[ROLE_TRAITOR] })
         ServerLog("Result: " .. ROLE_STRINGS_PLURAL[ROLE_TRAITOR] .. " win.\n")
@@ -1277,10 +1289,12 @@ local function GetSpecialDetectiveCount(ply_count)
 end
 
 local function GetMonsterCount(ply_count)
-    if not MONSTER_ROLES[ROLE_ZOMBIE] and not MONSTER_ROLES[ROLE_VAMPIRE] then
+    if #GetTeamRoles(MONSTER_ROLES) == 0 then
         return 0
     end
-    return math.ceil(ply_count * math.Round(GetConVar("ttt_monster_pct"):GetFloat(), 3))
+
+    local monster_count = math.ceil(ply_count * math.Round(GetConVar("ttt_monster_pct"):GetFloat(), 3))
+    return math.Clamp(monster_count, 0, GetConVar("ttt_monster_max"):GetInt())
 end
 
 local function PrintRoleText(text)
@@ -1554,7 +1568,7 @@ function SelectRoles()
         local tertiary_options = {}
         for _, p in ipairs(choices) do
             if not KARMA.IsEnabled() or p:GetBaseKarma() >= min_karma then
-                if not p:GetAvoidDetective() then
+                if not p:ShouldAvoidDetective() then
                     table.insert(options, p)
                 end
                 table.insert(secondary_options, p)
@@ -1636,6 +1650,9 @@ function SelectRoles()
             table.insert(choices, ply)
             traitors_copy = table.Copy(traitors)
             choices_copy = table.Copy(choices)
+
+            -- Remove the option so we don't have 2 impersonators
+            table.RemoveByValue(specialTraitorRoles, ROLE_IMPERSONATOR)
 
             -- Only allow one to be an impersonator
             has_impersonator = false
@@ -1806,7 +1823,8 @@ function SelectRoles()
                 ply:SetRole(ROLE_INNOCENT)
             end
 
-            ply:SetDefaultCredits()
+            -- Keep existing credits so pre-promoted roles have their bonuses
+            ply:SetDefaultCredits(true)
         end
 
         -- store a steamid -> role map
@@ -1933,6 +1951,11 @@ end)
 
 -- Sprint
 net.Receive("TTT_SprintSpeedSet", function(len, ply)
+    if not sprintEnabled:GetBool() then
+        ply.mult = nil
+        return
+    end
+
     local mul = net.ReadFloat()
     if mul ~= 0 then
         ply.mult = 1 + mul
@@ -1944,10 +1967,11 @@ end)
 -- Send ConVars if requested
 net.Receive("TTT_SprintGetConVars", function(len, ply)
     local convars = {
-        [1] = speedMultiplier:GetFloat();
-        [2] = recovery:GetFloat();
-        [3] = traitorRecovery:GetFloat();
-        [4] = consumption:GetFloat();
+        [1] = sprintEnabled:GetBool(),
+        [2] = speedMultiplier:GetFloat(),
+        [3] = recovery:GetFloat(),
+        [4] = traitorRecovery:GetFloat(),
+        [5] = consumption:GetFloat()
     }
     net.Start("TTT_SprintGetConVars")
     net.WriteTable(convars)
@@ -1956,7 +1980,7 @@ end)
 
 -- return Speed
 hook.Add("TTTPlayerSpeedModifier", "TTTSprintPlayerSpeed", function(ply, _, _)
-    return GetSprintMultiplier(ply, ply.mult ~= nil)
+    return GetSprintMultiplier(ply, sprintEnabled:GetBool() and ply.mult ~= nil)
 end)
 
 -- If this logic or the list of roles who can buy is changed, it must also be updated in weaponry.lua and cl_equip.lua

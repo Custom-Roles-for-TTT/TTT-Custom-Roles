@@ -59,6 +59,7 @@ end)
 
 hook.Add("TTTPrepareRound", "Zombie_RoleFeatures_PrepareRound", function()
     for _, v in pairs(GetAllPlayers()) do
+        v.WasZombieColored = false
         v:SetNWBool("IsZombifying", false)
         -- Keep previous naming scheme for backwards compatibility
         v:SetNWBool("zombie_prime", false)
@@ -165,17 +166,17 @@ end)
 -- ROLE WEAPONS --
 ------------------
 
--- Make sure the vampire keeps their appropriate weapons
+-- Make sure the zombie keeps their appropriate weapons and coloring
 hook.Add("TTTPlayerAliveThink", "Zombie_TTTPlayerAliveThink", function(ply)
     if not IsValid(ply) or ply:IsSpec() or GetRoundState() ~= ROUND_ACTIVE then return end
 
     if ply:IsZombie() then
         if ply.GetActiveWeapon and IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() == "weapon_zom_claws" then
+            ply.WasZombieColored = true
             ply:SetColor(Color(70, 100, 25, 255))
-            ply:SetRenderMode(RENDERMODE_NORMAL)
-        elseif ply:GetRenderMode() ~= RENDERMODE_TRANSALPHA then
-            ply:SetColor(Color(255, 255, 255, 255))
-            ply:SetRenderMode(RENDERMODE_TRANSALPHA)
+        elseif ply.WasZombieColored then
+            ply.WasZombieColored = false
+            ply:SetColor(COLOR_WHITE)
         end
 
         -- Strip all non-claw weapons for non-prime zombies if that feature is enabled
@@ -194,9 +195,9 @@ hook.Add("TTTPlayerAliveThink", "Zombie_TTTPlayerAliveThink", function(ply)
         if not ply:HasWeapon("weapon_zom_claws") then
             ply:Give("weapon_zom_claws")
         end
-    elseif ply:GetRenderMode() ~= RENDERMODE_TRANSALPHA then
-        ply:SetColor(Color(255, 255, 255, 255))
-        ply:SetRenderMode(RENDERMODE_TRANSALPHA)
+    elseif ply.WasZombieColored then
+        ply.WasZombieColored = false
+        ply:SetColor(COLOR_WHITE)
     end
 end)
 
@@ -259,3 +260,27 @@ function plymeta:RespawnAsZombie()
         SendFullStateUpdate()
     end)
 end
+
+-----------------------
+-- PLAYER VISIBILITY --
+-----------------------
+
+-- Add all players to the PVS for the zombie if highlighting or Kill icon are enabled
+hook.Add("SetupPlayerVisibility", "Zombie_SetupPlayerVisibility", function(ply)
+    if not ply:ShouldBypassCulling() then return end
+    if not ply:IsActiveZombie() then return end
+    if not zombie_vision_enable:GetBool() and not zombie_show_target_icon:GetBool() then return end
+
+    -- Only use this when the zombie would see the highlighting and icons (when they have their claws out)
+    local hasFangs = ply.GetActiveWeapon and IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() == "weapon_zom_claws"
+    if not hasFangs then return end
+
+    for _, v in ipairs(GetAllPlayers()) do
+        if ply:TestPVS(v) then continue end
+
+        local pos = v:GetPos()
+        if ply:IsOnScreen(pos) then
+            AddOriginToPVS(pos)
+        end
+    end
+end)

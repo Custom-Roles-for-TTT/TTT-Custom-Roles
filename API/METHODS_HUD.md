@@ -1,7 +1,8 @@
-## HUD Methods
+# HUD Methods
 Helper methods that can be used when displaying client-side UIs
 
-**CRHUD:PaintBar(r, x, y, w, h, colors, value)** - Paints a rounded bar that is some-percentaged filled. Can be used as a progress bar.\
+### CRHUD:PaintBar(r, x, y, w, h, colors, value)
+Paints a rounded bar that is some-percentaged filled. Can be used as a progress bar.\
 *Realm:* Client\
 *Added in:* 1.3.1\
 *Parameters:*
@@ -15,7 +16,8 @@ Helper methods that can be used when displaying client-side UIs
   - *fill* - The color to use to show the percentage of the bar filled
 - *value* - The percent of the bar to be filled
 
-**CRHUD:PaintPowersHUD(powers, max_power, current_power, colors, title, subtitle)** - Paints a HUD for showing available powers and their associated costs. Used for roles such as the Phantom.\
+### CRHUD:PaintPowersHUD(powers, max_power, current_power, colors, title, subtitle)
+Paints a HUD for showing available powers and their associated costs. Used for roles such as the Phantom.\
 *Realm:* Client\
 *Added in:* 1.3.1\
 *Parameters:*
@@ -28,7 +30,8 @@ Helper methods that can be used when displaying client-side UIs
 - *title* - Title text to show within the power level progress bar
 - *subtitle* - The sub-title text, used for hints, that is shown in small text above the power level progress bar
 
-**CRHUD:ShadowedText(text, font, x, y, color, xalign, yalign)** - Renders text with an offset black background to emulate a shadow.\
+### CRHUD:ShadowedText(text, font, x, y, color, xalign, yalign)
+Renders text with an offset black background to emulate a shadow.\
 *Realm:* Client\
 *Added in:* 1.3.1\
 *Parameters:*

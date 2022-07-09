@@ -1,6 +1,5 @@
 local cam = cam
 local draw = draw
-local file = file
 local ipairs = ipairs
 local math = math
 local pairs = pairs
@@ -16,6 +15,7 @@ local GetAllPlayers = player.GetAll
 local GetTranslation = LANG.GetTranslation
 local GetPTranslation = LANG.GetParamTranslation
 local GetRaw = LANG.GetRawTranslation
+local StringFormat = string.format
 local StringUpper = string.upper
 
 local key_params = { usekey = Key("+use", "USE"), walkkey = Key("+walk", "WALK") }
@@ -51,13 +51,12 @@ local indicator_mat_rolefront_noz = Material("vgui/ttt/sprite_rolefront_noz")
 local indicator_mat_target_noz = Material("vgui/ttt/sprite_target_noz")
 
 local function DrawRoleIcon(role, noz, pos, dir, color_role)
-    local roleFileName = ROLE_STRINGS_SHORT[role]
-    local path = "vgui/ttt/sprite_" .. roleFileName
-    if file.Exists("materials/vgui/ttt/roles/" .. roleFileName .. "/sprite_" .. roleFileName .. ".vtf", "GAME") then
-        path = "vgui/ttt/roles/" .. roleFileName .. "/sprite_" .. roleFileName
+    local role_file_name = ROLE_STRINGS_SHORT[role]
+    local cache_key = role_file_name
+    if noz then
+        cache_key = StringFormat("%s_noz", cache_key)
     end
-    if noz then path = path .. "_noz" end
-    local indicator_mat = Material(path)
+    local indicator_mat = ROLE_SPRITE_ICON_MATERIALS[cache_key]
 
     if noz then render.SetMaterial(indicator_mat_roleback_noz)
     else render.SetMaterial(indicator_mat_roleback) end
@@ -167,12 +166,12 @@ function GM:PostDrawTranslucentRenderables()
                             color_role = ROLE_JESTER
                             noz = false
                         elseif v:IsTraitorTeam() then
+                            if glitchRound then
+                                role, color_role = GetGlitchedRole(v, glitchMode)
                             -- If the impersonator is promoted, use the Detective's icon with the Impersonator's color
-                            if v:IsImpersonator() and v:IsRoleActive() then
+                            elseif v:IsImpersonator() and v:IsRoleActive() then
                                 role = GetDetectiveIconRole(true)
                                 color_role = ROLE_IMPERSONATOR
-                            elseif glitchRound then
-                                role, color_role = GetGlitchedRole(v, glitchMode)
                             else
                                 role = v:GetRole()
                             end
