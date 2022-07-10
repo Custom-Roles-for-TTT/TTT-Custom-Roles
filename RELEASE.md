@@ -5,6 +5,7 @@
 
 ### Additions
 - Added ability for smoke grenades to extinguish fire (enabled by default)
+- Added ability for non-prime vampires to have their damage against prime vampires reflected back on them (disabled by default) (Thanks @Excentyl!)
 
 ## 1.6.4 
 **Released: July 9th, 2022**\
