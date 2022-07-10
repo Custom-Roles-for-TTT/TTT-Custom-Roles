@@ -32,6 +32,7 @@ local vampire_prime_death_mode = CreateConVar("ttt_vampire_prime_death_mode", "0
 local vampire_vision_enable = CreateConVar("ttt_vampire_vision_enable", "0")
 local vampire_kill_credits = CreateConVar("ttt_vampire_kill_credits", "1")
 local vampire_loot_credits = CreateConVar("ttt_vampire_loot_credits", "1")
+local vampire_prime_reflect_friendly_fire = CreateConVar("ttt_vampire_prime_reflect_friendly_fire", "0")
 
 hook.Add("TTTSyncGlobals", "Vampire_TTTSyncGlobals", function()
     SetGlobalBool("ttt_vampires_are_monsters", vampires_are_monsters:GetBool())
@@ -42,6 +43,7 @@ hook.Add("TTTSyncGlobals", "Vampire_TTTSyncGlobals", function()
     SetGlobalBool("ttt_vampire_drain_enable", GetConVar("ttt_vampire_drain_enable"):GetBool())
     SetGlobalBool("ttt_vampire_prime_only_convert", GetConVar("ttt_vampire_prime_only_convert"):GetBool())
     SetGlobalBool("ttt_vampire_loot_credits", vampire_loot_credits:GetBool())
+    SetGlobalBool("ttt_vampire_prime_reflect_friendly_fire", vampire_prime_reflect_friendly_fire:GetBool())
     SetGlobalInt("ttt_vampire_prime_death_mode", vampire_prime_death_mode:GetInt())
 end)
 
@@ -261,6 +263,34 @@ hook.Add("ScalePlayerDamage", "Vampire_ScalePlayerDamage", function(ply, hitgrou
         if dmginfo:IsBulletDamage() and ply:IsVampire() then
             local reduction = vampire_damage_reduction:GetFloat()
             dmginfo:ScaleDamage(1 - reduction)
+        end
+    end
+end)
+
+-- Vampire friendly fire damage scaling and reflecting
+hook.Add("ScalePlayerDamage", "Vampire_FriendlyFire", function(ply, hitgroup, dmginfo)
+    if vampire_prime_reflect_friendly_fire:GetBool() then
+        local att = dmginfo:GetAttacker()
+        -- Only apply damage scaling after the round starts
+        if IsPlayer(att) and GetRoundState() >= ROUND_ACTIVE then
+            -- Check for friendly fire by a thrall against a prime
+            if att:IsVampire() and ply:IsVampirePrime() and not(att:IsVampirePrime()) then
+                -- Store the amount of damage to be reflected
+                local damage = dmginfo:GetDamage()
+
+                -- Remove the damage dealt to the prime
+                dmginfo:ScaleDamage(0)
+                dmginfo:SetDamage(0)
+
+                -- Reflect the damage back onto the attacker
+                local health = att:Health() - damage
+
+                if health <= 0 then
+                    att:Kill()
+                else
+                    att:SetHealth(health)
+                end
+            end
         end
     end
 end)
