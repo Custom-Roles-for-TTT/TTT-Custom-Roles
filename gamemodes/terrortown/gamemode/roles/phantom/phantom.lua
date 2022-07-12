@@ -26,6 +26,7 @@ local phantom_killer_footstep_time = CreateConVar("ttt_phantom_killer_footstep_t
 local phantom_killer_haunt = CreateConVar("ttt_phantom_killer_haunt", "1")
 local phantom_killer_haunt_power_max = CreateConVar("ttt_phantom_killer_haunt_power_max", "100", FCVAR_NONE, "The maximum amount of power a phantom can have when haunting their killer", 1, 200)
 local phantom_killer_haunt_power_rate = CreateConVar("ttt_phantom_killer_haunt_power_rate", "10", FCVAR_NONE, "The amount of power to regain per second when a phantom is haunting their killer", 1, 25)
+local phantom_killer_haunt_power_starting = CreateConVar("ttt_phantom_killer_haunt_power_starting", "0", FCVAR_NONE, "The amount of power to the phantom starts with", 0, 200)
 local phantom_killer_haunt_move_cost = CreateConVar("ttt_phantom_killer_haunt_move_cost", "25", FCVAR_NONE, "The amount of power to spend when a phantom is moving their killer via a haunting. Set to 0 to disable", 1, 100)
 local phantom_killer_haunt_jump_cost = CreateConVar("ttt_phantom_killer_haunt_jump_cost", "50", FCVAR_NONE, "The amount of power to spend when a phantom is making their killer jump via a haunting. Set to 0 to disable", 1, 100)
 local phantom_killer_haunt_drop_cost = CreateConVar("ttt_phantom_killer_haunt_drop_cost", "75", FCVAR_NONE, "The amount of power to spend when a phantom is making their killer drop their weapon via a haunting. Set to 0 to disable", 1, 100)
@@ -114,7 +115,7 @@ hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
         if phantom_killer_haunt:GetBool() then
             victim:SetNWBool("Haunting", true)
             victim:SetNWString("HauntingTarget", attacker:SteamID64())
-            victim:SetNWInt("HauntingPower", 0)
+            victim:SetNWInt("HauntingPower", phantom_killer_haunt_power_starting:GetInt())
             timer.Create(victim:Nick() .. "HauntingPower", 1, 0, function()
                 -- If haunting without a body is disabled, check to make sure the body exists still
                 if not phantom_killer_haunt_without_body:GetBool() then

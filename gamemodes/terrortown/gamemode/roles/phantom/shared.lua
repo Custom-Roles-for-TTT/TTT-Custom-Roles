@@ -51,6 +51,11 @@ table.insert(ROLE_CONVARS[ROLE_PHANTOM], {
     decimal = 0
 })
 table.insert(ROLE_CONVARS[ROLE_PHANTOM], {
+    cvar = "ttt_phantom_killer_haunt_power_starting",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_PHANTOM], {
     cvar = "ttt_phantom_killer_haunt_move_cost",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0

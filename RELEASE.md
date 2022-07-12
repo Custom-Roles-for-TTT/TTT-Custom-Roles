@@ -6,6 +6,7 @@
 ### Additions
 - Added ability for smoke grenades to extinguish fire (enabled by default)
 - Added ability for non-prime vampires to have their damage against prime vampires reflected back on them (disabled by default) (Thanks @Excentyl!)
+- Added ability to configure the amount of haunting willpower a phantom starts with when they are killed (0 by default)
 
 ## 1.6.4 
 **Released: July 9th, 2022**\
