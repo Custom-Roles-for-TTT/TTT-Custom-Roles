@@ -1075,7 +1075,7 @@ function PrintResultMessage(type)
             ServerLog("Result: " .. plural .. " win.\n")
         end
     else
-        ServerLog("Result: unknown victory condition!\n")
+        ServerLog("Result: unknown victory condition (" .. tostring(type) .. ")!\n")
     end
 end
 
@@ -1165,7 +1165,11 @@ local function HandleWinCondition(win)
         CallHook("TTTWinCheckBlocks", nil, win_blocks)
 
         for _, win_block in ipairs(win_blocks) do
-            win = win_block(win)
+            local new_win = win_block(win)
+            -- Protect against blocking functions which don't always return
+            if new_win then
+                win = new_win
+            end
         end
     end
 

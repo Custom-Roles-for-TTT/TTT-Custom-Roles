@@ -3,6 +3,10 @@
 ## 1.6.5 (Beta)
 **Released:**
 
+### Fixes
+- Fixed roles which can block wins from causing invalid win conditions if their logic doesn't return anything
+  - Fixes an error that occurred when a round ended due to a map win or time limit win before the drunk had sobered up
+
 ### Additions
 - Added ability for smoke grenades to extinguish fire (enabled by default)
 - Added ability for non-prime vampires to have their damage against prime vampires reflected back on them (disabled by default) (Thanks @Excentyl!)
