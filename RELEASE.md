@@ -7,6 +7,7 @@
 - Fixed roles which can block wins from causing invalid win conditions if their logic doesn't return anything
   - Fixes an error that occurred when a round ended due to a map win or time limit win before the drunk had sobered up
 - Fixed the drunk not joining a team when the round ended due to a map win or time limit win before they had sobered up
+- Fixed turncoat who was an assassin's target changing teams not causing the assassin to get a new target
 
 ### Additions
 - Added ability for smoke grenades to extinguish fire (enabled by default)
