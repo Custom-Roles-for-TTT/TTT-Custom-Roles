@@ -1500,7 +1500,7 @@ local function DamageFromPlayer(victim, attacker, damage)
     dmginfo:SetDamage(damage or 1)
     dmginfo:SetAttacker(attacker)
     dmginfo:SetInflictor(attacker)
-    dmginfo:SetDamageType(DMG_BULLET)
+    dmginfo:SetDamagePosition(attacker:GetPos())
     victim:TakeDamageInfo(dmginfo)
 end
 
