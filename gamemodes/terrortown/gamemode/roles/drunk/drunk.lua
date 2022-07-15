@@ -201,11 +201,6 @@ function plymeta:SoberDrunk(team)
     return true
 end
 
-local function StopDrunkTimers()
-    if timer.Exists("drunkremember") then timer.Remove("drunkremember") end
-    if timer.Exists("waitfordrunkrespawn") then timer.Remove("waitfordrunkrespawn") end
-end
-
 function plymeta:DrunkRememberRole(role, hidecenter)
     if not self:IsActiveDrunk() then return false end
 
@@ -214,7 +209,6 @@ function plymeta:DrunkRememberRole(role, hidecenter)
     self:PrintMessage(HUD_PRINTTALK, "You have remembered that you are " .. ROLE_STRINGS_EXT[role] .. ".")
     if not hidecenter then self:PrintMessage(HUD_PRINTCENTER, "You have remembered that you are " .. ROLE_STRINGS_EXT[role] .. ".") end
     self:SetDefaultCredits()
-    StopDrunkTimers()
 
     local mode = drunk_notify_mode:GetInt()
     if mode > 0 then
@@ -273,6 +267,11 @@ ROLE_ON_ROLE_ASSIGNED[ROLE_DRUNK] = function(ply)
     end)
 end
 
+local function StopDrunkTimers()
+    if timer.Exists("drunkremember") then timer.Remove("drunkremember") end
+    if timer.Exists("waitfordrunkrespawn") then timer.Remove("waitfordrunkrespawn") end
+end
+
 local function HandleDrunkWinBlock(win_type)
     if win_type == WIN_NONE then return win_type end
 
@@ -281,6 +280,7 @@ local function HandleDrunkWinBlock(win_type)
 
     -- Make the drunk a clown
     if drunk_become_clown:GetBool() then
+        StopDrunkTimers()
         drunk:DrunkRememberRole(ROLE_CLOWN, true)
         return WIN_NONE
     end
@@ -288,9 +288,11 @@ local function HandleDrunkWinBlock(win_type)
     -- Change the drunk to whichever team is about to lose
     local traitor_alive, innocent_alive, _, _, _ = player.AreTeamsLiving()
     if not traitor_alive then
+        StopDrunkTimers()
         drunk:SoberDrunk(ROLE_TEAM_TRAITOR)
         return WIN_NONE
     elseif not innocent_alive then
+        StopDrunkTimers()
         drunk:SoberDrunk(ROLE_TEAM_INNOCENT)
         return WIN_NONE
     end
