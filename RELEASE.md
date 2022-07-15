@@ -9,6 +9,9 @@
 - Fixed the drunk not joining a team when the round ended due to a map win or time limit win before they had sobered up
 - Fixed turncoat who was an assassin's target changing teams not causing the assassin to get a new target
 
+### Changes
+- Changed how round end logic interacts with different roles to hopefully prevent an error from stopping the round from ending
+
 ### Additions
 - Added ability for smoke grenades to extinguish fire (enabled by default)
 - Added ability for non-prime vampires to have their damage against prime vampires reflected back on them (disabled by default) (Thanks @Excentyl!)
