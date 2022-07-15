@@ -293,14 +293,6 @@ local function HandleDrunkWinBlock(win_type)
     elseif not innocent_alive then
         drunk:SoberDrunk(ROLE_TEAM_INNOCENT)
         return WIN_NONE
-    -- Special logic for if both teams are still alive (usually due to a time limit or map win)
-    -- Sober the drunk so they join a team, but don't actually block the win
-    elseif math.random() <= drunk_innocent_chance:GetFloat() then
-        drunk:DrunkRememberRole(ROLE_INNOCENT)
-        return win_type
-    else
-        drunk:DrunkRememberRole(ROLE_TRAITOR)
-        return win_type
     end
 end
 
