@@ -260,6 +260,7 @@ ttt_phantom_killer_footstep_time            0       // The amount of time a phan
 ttt_phantom_killer_haunt                    1       // Whether to have the phantom haunt their killer
 ttt_phantom_killer_haunt_power_max          100     // The maximum amount of power a phantom can have when haunting their killer
 ttt_phantom_killer_haunt_power_rate         10      // The amount of power to regain per second when a phantom is haunting their killer
+ttt_phantom_killer_haunt_power_starting     0       // The amount of power to the phantom starts with
 ttt_phantom_killer_haunt_move_cost          25      // The amount of power to spend when a phantom is moving their killer via a haunting. Set to 0 to disable
 ttt_phantom_killer_haunt_jump_cost          50      // The amount of power to spend when a phantom is making their killer jump via a haunting. Set to 0 to disable
 ttt_phantom_killer_haunt_drop_cost          75      // The amount of power to spend when a phantom is making their killer drop their weapon via a haunting. Set to 0 to disable
@@ -748,6 +749,7 @@ ttt_round_summary_tabs                      summary,hilite,events,scores // The 
 
 // Misc.
 ttt_death_notifier_enable                   1       // Whether the name and role of a player's killer should be shown to the victim
+ttt_smokegrenade_extinguish                 1       // Whether smoke grenades should extinguish fire
 ```
 
 Thanks to [KarlOfDuty](https://github.com/KarlOfDuty) for his original version of this document, [here](https://github.com/KarlOfDuty/TTT-Custom-Roles/blob/patch-1/README.md).

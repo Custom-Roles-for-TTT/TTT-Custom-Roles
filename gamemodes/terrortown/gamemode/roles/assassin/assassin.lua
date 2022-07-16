@@ -35,7 +35,7 @@ end)
 -- TARGET ASSIGNMENT --
 -----------------------
 
-local function UpdateAssassinTargets(ply)
+function UpdateAssassinTargets(ply)
     for _, v in pairs(GetAllPlayers()) do
         local assassintarget = v:GetNWString("AssassinTarget", "")
         if v:IsAssassin() and ply:Nick() == assassintarget then

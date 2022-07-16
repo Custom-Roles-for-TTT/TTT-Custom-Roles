@@ -60,7 +60,7 @@ function SWEP:PrimaryAttack()
         local owner = self:GetOwner()
         if IsPlayer(owner) then
             -- Change team and broadcast to everyone
-            SetTurncoatTeam(owner:Nick(), true)
+            SetTurncoatTeam(owner, true)
 
             -- Announce the role change
             for _, ply in ipairs(GetAllPlayers()) do

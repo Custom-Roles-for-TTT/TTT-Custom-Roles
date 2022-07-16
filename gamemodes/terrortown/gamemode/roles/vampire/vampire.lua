@@ -43,7 +43,6 @@ hook.Add("TTTSyncGlobals", "Vampire_TTTSyncGlobals", function()
     SetGlobalBool("ttt_vampire_drain_enable", GetConVar("ttt_vampire_drain_enable"):GetBool())
     SetGlobalBool("ttt_vampire_prime_only_convert", GetConVar("ttt_vampire_prime_only_convert"):GetBool())
     SetGlobalBool("ttt_vampire_loot_credits", vampire_loot_credits:GetBool())
-    SetGlobalBool("ttt_vampire_prime_reflect_friendly_fire", vampire_prime_reflect_friendly_fire:GetBool())
     SetGlobalInt("ttt_vampire_prime_death_mode", vampire_prime_death_mode:GetInt())
 end)
 
@@ -256,42 +255,45 @@ end)
 -- DAMAGE --
 ------------
 
+-- Vampire damage scaling and friendly fire reflecting
 hook.Add("ScalePlayerDamage", "Vampire_ScalePlayerDamage", function(ply, hitgroup, dmginfo)
+    if GetRoundState() < ROUND_ACTIVE then return end
+
+    -- Only run these checks if we're handling damage to a vampire
+    if not ply:IsVampire() then return end
+
+    -- Only scale and reflect damage from players
     local att = dmginfo:GetAttacker()
-    -- Only apply damage scaling after the round starts
-    if IsPlayer(att) and GetRoundState() >= ROUND_ACTIVE then
-        if dmginfo:IsBulletDamage() and ply:IsVampire() then
-            local reduction = vampire_damage_reduction:GetFloat()
-            dmginfo:ScaleDamage(1 - reduction)
+    if not IsPlayer(att) then return end
+
+    -- Don't scale or reflect self damage
+    if ply == att then return end
+
+    -- When enabled: If the target is the prime vampire and they are attacked by a non-prime vampire then reflect the damage
+    if vampire_prime_reflect_friendly_fire:GetBool() and ply:IsVampirePrime() and att:IsVampire() and not att:IsVampirePrime() then
+        local infl = dmginfo:GetInflictor()
+        if not IsValid(infl) then
+            infl = game.GetWorld()
         end
-    end
-end)
 
--- Vampire friendly fire damage scaling and reflecting
-hook.Add("ScalePlayerDamage", "Vampire_FriendlyFire", function(ply, hitgroup, dmginfo)
-    if vampire_prime_reflect_friendly_fire:GetBool() then
-        local att = dmginfo:GetAttacker()
-        -- Only apply damage scaling after the round starts
-        if IsPlayer(att) and GetRoundState() >= ROUND_ACTIVE then
-            -- Check for friendly fire by a thrall against a prime
-            if att:IsVampire() and ply:IsVampirePrime() and not(att:IsVampirePrime()) then
-                -- Store the amount of damage to be reflected
-                local damage = dmginfo:GetDamage()
+        -- Copy the original damage info and send it back on the attacker
+        local newinfo = DamageInfo()
+        newinfo:SetDamage(dmginfo:GetDamage())
+        newinfo:SetDamageType(dmginfo:GetDamageType())
+        newinfo:SetAttacker(att)
+        newinfo:SetInflictor(infl)
+        newinfo:SetDamageForce(dmginfo:GetDamageForce())
+        newinfo:SetDamagePosition(dmginfo:GetDamagePosition())
+        newinfo:SetReportedPosition(dmginfo:GetReportedPosition())
+        att:TakeDamageInfo(newinfo)
 
-                -- Remove the damage dealt to the prime
-                dmginfo:ScaleDamage(0)
-                dmginfo:SetDamage(0)
-
-                -- Reflect the damage back onto the attacker
-                local health = att:Health() - damage
-
-                if health <= 0 then
-                    att:Kill()
-                else
-                    att:SetHealth(health)
-                end
-            end
-        end
+        -- Remove the damage dealt to the prime
+        dmginfo:ScaleDamage(0)
+        dmginfo:SetDamage(0)
+    -- Otherwise apply damage scaling
+    elseif dmginfo:IsBulletDamage() then
+        local reduction = vampire_damage_reduction:GetFloat()
+        dmginfo:ScaleDamage(1 - reduction)
     end
 end)
 

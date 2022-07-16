@@ -478,7 +478,24 @@ function GM:HUDPaint()
 end
 
 -- Hide the standard HUD stuff
-local hud = { ["CHudHealth"] = true, ["CHudBattery"] = true, ["CHudAmmo"] = true, ["CHudSecondaryAmmo"] = true, ["CHudSuitPower"] = true, ["CHudPoisonDamageIndicator"] = true }
+local hud = {
+    -- Stuff we replace
+    ["CHudHealth"] = true,
+    ["CHudAmmo"] = true,
+    ["CHudSecondaryAmmo"] = true,
+    -- Stuff we don't want to show
+    ["CHudBattery"] = true,
+    ["CHudSuitPower"] = true,
+    -- Annoying damage stuff
+    ["CHudPoisonDamageIndicator"] = true,
+    -- This one handles a lot of things related to on-screen effects for damage. Things like:
+    -- 1. The poison yellow screen flash (that doens't happen to everyone, for some reason)
+    -- 2. The high-damage red screen flash (left, right, or full-screen based on direction)
+    -- 3. The death red screen flash
+    -- Given that there are mods to disable this, if needed, and there are more benefits to it being enabled,
+    -- we don't disable it but leave it here for documentation purposes
+    --["CHudDamageIndicator"] = true
+}
 function GM:HUDShouldDraw(name)
     if hud[name] then return false end
 

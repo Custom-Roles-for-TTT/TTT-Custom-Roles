@@ -1,5 +1,21 @@
 # Release Notes
 
+## 1.6.5 (Beta)
+**Released:**
+
+### Fixes
+- Fixed roles which can block wins from causing invalid win conditions if their logic doesn't return anything
+  - Fixes an error that occurred when a round ended due to a map win or time limit win before the drunk had sobered up
+- Fixed turncoat who was an assassin's target changing teams not causing the assassin to get a new target
+
+### Changes
+- Changed how round end logic interacts with different roles to hopefully prevent an error from stopping the round from ending
+
+### Additions
+- Added ability for smoke grenades to extinguish fire (enabled by default)
+- Added ability for non-prime vampires to have their damage against prime vampires reflected back on them (disabled by default) (Thanks @Excentyl!)
+- Added ability to configure the amount of haunting willpower a phantom starts with when they are killed (0 by default)
+
 ## 1.6.4 
 **Released: July 9th, 2022**\
 Includes all beta updates from [1.6.1](#161-beta) to [1.6.3](#163-beta).

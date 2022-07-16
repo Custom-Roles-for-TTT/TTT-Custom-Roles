@@ -1075,7 +1075,7 @@ function PrintResultMessage(type)
             ServerLog("Result: " .. plural .. " win.\n")
         end
     else
-        ServerLog("Result: unknown victory condition!\n")
+        ServerLog("Result: unknown victory condition (" .. tostring(type) .. ")!\n")
     end
 end
 
@@ -1162,16 +1162,33 @@ local function HandleWinCondition(win)
     if win ~= WIN_TIMELIMIT then
         -- Handle role-specific checks
         local win_blocks = {}
-        CallHook("TTTWinCheckBlocks", nil, win_blocks)
+        xpcall(function()
+            CallHook("TTTWinCheckBlocks", nil, win_blocks)
+        end, function(err)
+            ErrorNoHalt("ERROR: Error occurred when running the 'TTTWinCheckBlocks' hook. Report this to the developers! Win Type: " .. win .. ", Error:\n", err, "\n")
+        end)
 
         for _, win_block in ipairs(win_blocks) do
-            win = win_block(win)
+            local new_win
+            xpcall(function()
+                new_win = win_block(win)
+            end, function(err)
+                ErrorNoHalt("ERROR: Error occurred when running a win check block function from the 'TTTWinCheckBlocks' hook. Report this to the developers! Win Type: " .. win .. ", Error:\n", err, "\n")
+            end)
+            -- Protect against blocking functions which don't always return
+            if new_win then
+                win = new_win
+            end
         end
     end
 
     -- If, after all that, we have a win condition then end the round
     if win ~= WIN_NONE then
-        CallHook("TTTWinCheckComplete", nil, win)
+        xpcall(function()
+            CallHook("TTTWinCheckComplete", nil, win)
+        end, function(err)
+            ErrorNoHalt("ERROR: Error occurred when running the 'TTTWinCheckComplete' hook. Report this to the developers! Win Type: " .. win .. ", Error:\n", err, "\n")
+        end)
 
         timer.Simple(0.5, function() EndRound(win) end) -- Slight delay to make sure alternate winners go through before scoring
     end
@@ -1196,7 +1213,11 @@ local function WinChecker()
 
             -- If this isn't a map win, call the hook
             if win == WIN_NONE then
-                win = RunHook("TTTCheckForWin")
+                xpcall(function()
+                    win = RunHook("TTTCheckForWin")
+                end, function(err)
+                    ErrorNoHalt("ERROR: Error occurred when running the 'TTTCheckForWin' hook. Report this to the developers! Win Type: " .. win .. ", Error:\n", err, "\n")
+                end)
                 if win > WIN_MAX then
                     ErrorNoHalt("WARNING: 'TTTCheckForWin' hook returned win ID '" .. win .. "' that exceeds the expected maximum of " .. WIN_MAX .. ". Please use GenerateNewWinID() instead to get a unique win ID.\n")
                 end
