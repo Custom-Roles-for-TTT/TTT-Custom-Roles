@@ -195,3 +195,17 @@ hook.Add("TTTKarmaShouldGivePenalty", "OldMan_TTTKarmaShouldGivePenalty", functi
         return not attacker:GetNWBool("AdrenalineRush", false)
     end
 end)
+
+-------------
+-- CREDITS --
+-------------
+
+local function OldManCreditLogic(victim, attacker, amt)
+    if victim:IsOldMan() then
+        return 0
+    end
+end
+
+-- Nobody should be rewarded for killing the old man
+hook.Add("TTTRewardDetectiveTraitorDeathAmount", "OldMan_TTTRewardDetectiveTraitorDeathAmount", OldManCreditLogic)
+hook.Add("TTTRewardTraitorInnocentDeathAmount", "OldMan_TTTRewardTraitorInnocentDeathAmount", OldManCreditLogic)

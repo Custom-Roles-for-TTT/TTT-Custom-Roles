@@ -11,6 +11,7 @@
 
 ### Changes
 - Changed turncoat's announcement message to say explicitly that they joined the traitors
+- Changed so killing the old man does not award credits to anyone
 
 ## 1.6.5 (Beta)
 **Released: July 16th, 2022**
