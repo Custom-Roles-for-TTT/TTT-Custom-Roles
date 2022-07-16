@@ -6,7 +6,7 @@ local hook = hook
 
 hook.Add("Initialize", "Turncoat_Translations_Initialize", function()
     -- Events
-    LANG.AddToLanguage("english", "ev_turncoat", "{nick} is {role} and changed teams")
+    LANG.AddToLanguage("english", "ev_turncoat", "{nick} is {role} and has joined the {traitors}")
 
     -- Weapons
     LANG.AddToLanguage("english", "tur_changer", "Team Changer")
@@ -26,11 +26,16 @@ end)
 hook.Add("Initialize", "Turncoat_Scoring_Initialize", function()
     local traitor_icon = Material("icon16/user_red.png")
     local Event = CLSCORE.DeclareEventDisplay
+    local T = LANG.GetTranslation
     local PT = LANG.GetParamTranslation
 
     Event(EVENT_TURNCOATCHANGED, {
         text = function(e)
-            return PT("ev_turncoat", {nick = e.nic, role = ROLE_STRINGS_EXT[ROLE_TURNCOAT]})
+            return PT("ev_turncoat", {
+                nick = e.nic,
+                role = ROLE_STRINGS_EXT[ROLE_TURNCOAT],
+                traitors = T("traitors")
+            })
         end,
         icon = function(e)
             return traitor_icon, "Changed Teams"

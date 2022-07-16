@@ -64,8 +64,8 @@ function SWEP:PrimaryAttack()
 
             -- Announce the role change
             for _, ply in ipairs(GetAllPlayers()) do
-                ply:PrintMessage(HUD_PRINTTALK, owner:Nick() .. " is " .. ROLE_STRINGS_EXT[ROLE_TURNCOAT] .. " and has changed teams!")
-                ply:PrintMessage(HUD_PRINTCENTER, owner:Nick() .. " is " .. ROLE_STRINGS_EXT[ROLE_TURNCOAT] .. " and has changed teams!")
+                ply:PrintMessage(HUD_PRINTTALK, owner:Nick() .. " is " .. ROLE_STRINGS_EXT[ROLE_TURNCOAT] .. " and has joined the " .. ROLE_STRINGS_PLURAL[ROLE_TRAITOR] .. "!")
+                ply:PrintMessage(HUD_PRINTCENTER, owner:Nick() .. " is " .. ROLE_STRINGS_EXT[ROLE_TURNCOAT] .. " and has joined the " .. ROLE_STRINGS_PLURAL[ROLE_TRAITOR] .. "!")
             end
 
             -- Change health

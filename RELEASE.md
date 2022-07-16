@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.6.6 (Beta)
+**Released:**
+
+### Changes
+- Changed turncoat's announcement message to say explicitly that they joined the traitors
+
 ## 1.6.5 (Beta)
 **Released: July 16th, 2022**
 
