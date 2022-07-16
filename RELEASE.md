@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.6.5 (Beta)
-**Released:**
+**Released: July 16th, 2022**
 
 ### Fixes
 - Fixed roles which can block wins from causing invalid win conditions if their logic doesn't return anything
