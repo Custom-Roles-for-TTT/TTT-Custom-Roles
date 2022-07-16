@@ -6,6 +6,7 @@
 ### Fixes
 - Fixed traitors seeing the deputy role icon on the scoreboard for promoted deputies instead of the detective icon
 - Fixed traitors seeing the detective role icon on the scoreboard for impersonators who haven't been promoted yet when `ttt_impersonator_use_detective_icon` is enabled
+- Fixed error rendering the weapon switch and HUD with certain workshop weapons
 
 ### Changes
 - Changed turncoat's announcement message to say explicitly that they joined the traitors
