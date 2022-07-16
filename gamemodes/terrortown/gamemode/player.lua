@@ -648,10 +648,10 @@ local function CheckCreditAward(victim, attacker)
                         ply:AddCredits(amt)
                     end
                 end
-            end
 
-            GAMEMODE.AwardedCredits = true
-            GAMEMODE.AwardedCreditsDead = inno_dead + GAMEMODE.AwardedCreditsDead
+                GAMEMODE.AwardedCredits = true
+                GAMEMODE.AwardedCreditsDead = inno_dead + GAMEMODE.AwardedCreditsDead
+            end
         end
     end
 end
