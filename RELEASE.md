@@ -9,6 +9,7 @@
 - Fixed error rendering the weapon switch and HUD with certain workshop weapons
 - Fixed traitors not being awarded credits if `ttt_credits_award_repeat` is disabled and something caused the first credit award amount to be 0
 - Fixed error switching tabs in the equipment window if shop tab wasn't displaying any items (Thanks @Callum!)
+- Fixed beggar sometimes being shown duplicate team join notifications depending on the `ttt_beggar_reveal_*` convars
 
 ### Changes
 - Changed turncoat's announcement message to say explicitly that they joined the traitors
