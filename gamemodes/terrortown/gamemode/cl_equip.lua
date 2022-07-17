@@ -813,8 +813,11 @@ local function TraitorMenuPopup()
         dsheet.OnTabChanged = function(s, old, new)
             if not IsValid(new) then return end
 
+            local pnl = dlist.SelectedPanel
+            if not pnl or not pnl.item then return end
+
             if new:GetPanel() == dequip then
-                can_order = update_preqs(dlist.SelectedPanel.item)
+                can_order = update_preqs(pnl.item)
                 dconfirm:SetDisabled(not can_order)
             end
         end
