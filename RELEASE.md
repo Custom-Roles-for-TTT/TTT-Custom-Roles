@@ -3,6 +3,9 @@
 ## 1.6.6 (Beta)
 **Released:**
 
+### Additions
+- Added option to have turncoat automatically change teams when they kill a innocent team member (disabled by default)
+
 ### Fixes
 - Fixed traitors seeing the deputy role icon on the scoreboard for promoted deputies instead of the detective icon
 - Fixed traitors seeing the detective role icon on the scoreboard for impersonators who haven't been promoted yet when `ttt_impersonator_use_detective_icon` is enabled

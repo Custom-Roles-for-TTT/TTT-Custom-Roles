@@ -51,10 +51,14 @@ hook.Add("TTTTutorialRoleText", "Turncoat_TTTTutorialRoleText", function(role, t
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local html = "The " .. ROLE_STRINGS[ROLE_TURNCOAT] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span>."
 
-        roleColor = ROLE_COLORS[ROLE_TRAITOR]
-        html = html .. "<span style='display: block; margin-top: 10px;'>They are given a one-time-use Team Changer device which moves them to the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitor team</span> and <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>announces their role to everyone</span>.</span>"
+        local traitorColor = ROLE_COLORS[ROLE_TRAITOR]
+        html = html .. "<span style='display: block; margin-top: 10px;'>They are given a one-time-use Team Changer device which moves them to the <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>traitor team</span> and <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>announces their role to everyone</span>.</span>"
+
+        if GetGlobalBool("ttt_turncoat_change_innocent_kill", false) then
+            html = html .. "<span style='display: block; margin-top: 10px;'>If they kill a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> then they will change teams automatically.</span>"
+        end
 
         local health = GetGlobalInt("ttt_turncoat_change_health", 10)
-        return html .. "<span style='display: block; margin-top: 10px;'>At the same time, their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>health is changed to</span> " .. health .. ".</span>"
+        return html .. "<span style='display: block; margin-top: 10px;'>At the same time, their <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>health is changed to</span> " .. health .. ".</span>"
     end
 end)

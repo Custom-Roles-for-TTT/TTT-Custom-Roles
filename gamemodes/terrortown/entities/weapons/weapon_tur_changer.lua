@@ -31,8 +31,6 @@ SWEP.Primary.Cone           = 0
 SWEP.Primary.Ammo           = nil
 SWEP.Primary.Sound          = ""
 
-local GetAllPlayers = player.GetAll
-
 function SWEP:Initialize()
     self:SendWeaponAnim(ACT_SLAM_DETONATOR_DRAW)
 
@@ -59,23 +57,7 @@ function SWEP:PrimaryAttack()
     if SERVER then
         local owner = self:GetOwner()
         if IsPlayer(owner) then
-            -- Change team and broadcast to everyone
-            SetTurncoatTeam(owner, true)
-
-            -- Announce the role change
-            for _, ply in ipairs(GetAllPlayers()) do
-                ply:PrintMessage(HUD_PRINTTALK, owner:Nick() .. " is " .. ROLE_STRINGS_EXT[ROLE_TURNCOAT] .. " and has joined the " .. ROLE_STRINGS_PLURAL[ROLE_TRAITOR] .. "!")
-                ply:PrintMessage(HUD_PRINTCENTER, owner:Nick() .. " is " .. ROLE_STRINGS_EXT[ROLE_TURNCOAT] .. " and has joined the " .. ROLE_STRINGS_PLURAL[ROLE_TRAITOR] .. "!")
-            end
-
-            -- Change health
-            local health = GetConVar("ttt_turncoat_change_health"):GetInt()
-            -- Don't heal the owner if they already have less health that the convar
-            owner:SetHealth(math.Min(owner:Health(), health))
-            if GetConVar("ttt_turncoat_change_max_health"):GetBool() then
-                owner:SetMaxHealth(health)
-            end
-
+            owner:ChangeTurncoatTeam()
             self:Remove()
         end
     end

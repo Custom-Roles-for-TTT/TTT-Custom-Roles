@@ -55,3 +55,7 @@ table.insert(ROLE_CONVARS[ROLE_TURNCOAT], {
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
 })
+table.insert(ROLE_CONVARS[ROLE_TURNCOAT], {
+    cvar = "ttt_turncoat_change_innocent_kill",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
