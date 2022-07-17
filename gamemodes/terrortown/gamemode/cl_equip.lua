@@ -814,7 +814,9 @@ local function TraitorMenuPopup()
             if not IsValid(new) then return end
 
             if new:GetPanel() == dequip then
-                can_order = update_preqs(dlist.SelectedPanel.item)
+                if pnl and pnl.item then
+                    can_order = update_preqs(pnl.item)
+                end
                 dconfirm:SetDisabled(not can_order)
             end
         end
