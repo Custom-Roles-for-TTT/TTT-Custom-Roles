@@ -1,5 +1,13 @@
 # Release Notes
 
+## 1.6.7 (Beta)
+**Released:**
+
+## Fixes
+- Fixed award for killing all monsters not using the translation for "monsters"
+- Fixed award for killing all innocents assuming the player was a traitor
+- Fixed award for killing all traitors assuming the player was an innocent
+
 ## 1.6.6 (Beta)
 **Released: July 24th, 2022**
 

@@ -922,13 +922,13 @@ L.aw_fst4_title = "First Blow"
 L.aw_fst4_text = "struck the first blow for the {innocent} by making the first death {traitor}'s."
 
 L.aw_all1_title = "Deadliest Among Equals"
-L.aw_all1_text = "was responsible for every kill made by the {innocent} this round."
+L.aw_all1_text = "was responsible for killing every {traitor} this round."
 
 L.aw_all2_title = "Lone Wolf"
-L.aw_all2_text = "was responsible for every kill made by {traitor} this round."
+L.aw_all2_text = "was responsible for killing every {innocent} this round."
 
 L.aw_all3_title = "Van Helsing"
-L.aw_all3_text = "was responsible for every monster killed this round."
+L.aw_all3_text = "was responsible for every {monster} killed this round."
 
 L.aw_nkt1_title = "I Got One, Boss!"
 L.aw_nkt1_text = "managed to kill a single {innocent}. Sweet!"

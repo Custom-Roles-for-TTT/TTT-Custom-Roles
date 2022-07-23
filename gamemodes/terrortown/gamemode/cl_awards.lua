@@ -200,7 +200,7 @@ local function AllKills(events, scores, players)
         if not TRAITOR_ROLES[role] then
             if not killer then return nil end
 
-            return {nick=killer, title=T("aw_all1_title"), text=PT("aw_all1_text", {innocent=ROLE_STRINGS_PLURAL[ROLE_INNOCENT]}), priority=math.random(0, table.Count(players))}
+            return {nick=killer, title=T("aw_all1_title"), text=PT("aw_all1_text", {traitor=ROLE_STRINGS[ROLE_TRAITOR]}), priority=math.random(0, table.Count(players))}
         end
     end
 
@@ -212,7 +212,7 @@ local function AllKills(events, scores, players)
         if not INNOCENT_ROLES[role] then
             if not killer then return nil end
 
-            return {nick=killer, title=T("aw_all2_title"), text=PT("aw_all2_text", {traitor=ROLE_STRINGS_EXT[ROLE_TRAITOR]}), priority=math.random(0, table.Count(players))}
+            return {nick=killer, title=T("aw_all2_title"), text=PT("aw_all2_text", {innocent=ROLE_STRINGS[ROLE_INNOCENT]}), priority=math.random(0, table.Count(players))}
         end
     end
 
@@ -224,7 +224,7 @@ local function AllKills(events, scores, players)
         if not MONSTER_ROLES[role] then
             if not killer then return nil end
 
-            return {nick=killer, title=T("aw_all3_title"), text=T("aw_all3_text"), priority=math.random(0, table.Count(players))}
+            return {nick=killer, title=T("aw_all3_title"), text=PT("aw_all3_text", {monster=T("monster")}), priority=math.random(0, table.Count(players))}
         end
     end
 
