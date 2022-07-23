@@ -1,5 +1,23 @@
 # Release Notes
 
+## 1.6.6 (Beta)
+**Released: July 24th, 2022**
+
+### Additions
+- Added option to have turncoat automatically change teams when they kill a innocent team member (disabled by default)
+
+### Fixes
+- Fixed traitors seeing the deputy role icon on the scoreboard for promoted deputies instead of the detective icon
+- Fixed traitors seeing the detective role icon on the scoreboard for impersonators who haven't been promoted yet when `ttt_impersonator_use_detective_icon` is enabled
+- Fixed error rendering the weapon switch and HUD with certain workshop weapons
+- Fixed traitors not being awarded credits if `ttt_credits_award_repeat` is disabled and something caused the first credit award amount to be 0
+- Fixed error switching tabs in the equipment window if shop tab wasn't displaying any items (Thanks @Callum!)
+- Fixed beggar sometimes being shown duplicate team join notifications depending on the `ttt_beggar_reveal_*` convars
+
+### Changes
+- Changed turncoat's announcement message to say explicitly that they joined the traitors
+- Changed so killing the old man does not award credits to anyone
+
 ## 1.6.5 (Beta)
 **Released: July 16th, 2022**
 

@@ -244,15 +244,20 @@ function PANEL:Paint(width, height)
                 role = glitch_role
                 if color_role then
                     color = ROLE_COLORS_SCOREBOARD[color_role]
+                else
+                    color = ROLE_COLORS_SCOREBOARD[role]
                 end
             elseif ply:IsImpersonator() then
-                if GetGlobalBool("ttt_impersonator_use_detective_icon", true) then
+                if ply:IsRoleActive() and GetGlobalBool("ttt_impersonator_use_detective_icon", true) then
                     role = ROLE_DETECTIVE
                 end
                 color = ROLE_COLORS_SCOREBOARD[ROLE_IMPERSONATOR]
             end
+        end
+
         -- Swap the deputy/impersonator icons depending on which settings are enabled
-        elseif ply:IsDetectiveLike() then
+        -- Only do this if we haven't set a value above
+        if not color and ply:IsDetectiveLike() then
             if ply:IsDetectiveTeam() then
                 local disp_role, changed = ply:GetDisplayedRole()
                 -- If the displayed role was changed, use it for the color but use the question mark for the icon

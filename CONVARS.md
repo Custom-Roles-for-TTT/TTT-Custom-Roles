@@ -311,6 +311,7 @@ ttt_trickster_credits_starting              0       // The number of credits a t
 // Turncoat
 ttt_turncoat_change_health                  10      // The amount of health to set the turncoat to when they change teams
 ttt_turncoat_change_max_health              1       // Whether to change the turncoat's max health when they change teams
+ttt_turncoat_change_innocent_kill           0       // Whether to change the turncoat's team when they kill a member of the innocent team
 
 // ----------------------------------------
 
