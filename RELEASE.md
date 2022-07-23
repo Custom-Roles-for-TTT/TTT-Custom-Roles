@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.6.6 (Beta)
-**Released:**
+**Released: July 24th, 2022**
 
 ### Additions
 - Added option to have turncoat automatically change teams when they kill a innocent team member (disabled by default)
