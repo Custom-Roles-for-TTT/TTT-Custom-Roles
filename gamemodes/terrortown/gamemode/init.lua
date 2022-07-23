@@ -79,10 +79,12 @@ local util = util
 local CallHook = hook.Call
 local RunHook = hook.Run
 local GetAllPlayers = player.GetAll
+local StringFormat = string.format
 local StringLower = string.lower
 local StringUpper = string.upper
 local StringSub = string.sub
 local StringStartsWith = string.StartWith
+local StringTrim = string.Trim
 
 -- Round times
 CreateConVar("ttt_roundtime_minutes", "10", FCVAR_NOTIFY)
@@ -448,6 +450,23 @@ end
 -- point.
 function GM:InitCvars()
     MsgN("TTT initializing convar settings...")
+
+    local map_config = StringFormat("cfg/%s.cfg", game.GetMap())
+    if file.Exists(map_config, "GAME") then
+        MsgN("Loading map-specific config from " .. map_config)
+        local map_config_content = file.Read(map_config, "GAME")
+        local lines = string.Explode("\n", map_config_content)
+        for _, line in ipairs(lines) do
+            line = StringTrim(line)
+            if #line == 0 then continue end
+            if StringStartsWith(line, "exec") then
+                MsgN("Loading additional config files is not allowed, skipping: " .. line)
+                continue
+            end
+
+            game.ConsoleCommand(StringFormat("%s\n", line))
+        end
+    end
 
     -- Initialize game state that is synced with client
     SetGlobalInt("ttt_rounds_left", GetConVar("ttt_round_limit"):GetInt())

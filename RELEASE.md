@@ -3,7 +3,11 @@
 ## 1.6.7 (Beta)
 **Released:**
 
-## Fixes
+### Additions
+- Added ability to have map-specific config files
+  - Create a `.cfg` file with the map's name (e.g. `ttt_lego.cfg`) in the `cfg` directory
+
+### Fixes
 - Fixed award for killing all monsters not using the translation for "monsters"
 - Fixed award for killing all innocents assuming the player was a traitor
 - Fixed award for killing all traitors assuming the player was an innocent
