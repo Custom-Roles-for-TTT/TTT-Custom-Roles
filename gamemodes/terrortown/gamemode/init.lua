@@ -453,7 +453,7 @@ function GM:InitCvars()
     local map_config = StringFormat("cfg/%s.cfg", game.GetMap())
     if file.Exists(map_config, "GAME") then
         MsgN("Loading map-specific config from " .. map_config)
-        util.ExecFile(map_config)
+        util.ExecFile(map_config, true)
     end
 
     -- Initialize game state that is synced with client
