@@ -468,7 +468,7 @@ if SERVER then
 
             if StringStartWith(line, "exec ") then
                 local subFile = StringTrimLeft(line, "exec ")
-                util.ExecFile(subFile)
+                util.ExecFile(subFile, errorIfMissing)
                 continue
             end
 
