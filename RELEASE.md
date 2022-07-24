@@ -12,6 +12,9 @@
 - Fixed award for killing all innocents assuming the player was a traitor
 - Fixed award for killing all traitors assuming the player was an innocent
 
+### Developer
+- Added `util.ExecFile` for executing the contents of a file
+
 ## 1.6.6 (Beta)
 **Released: July 24th, 2022**
 

@@ -83,8 +83,7 @@ local StringFormat = string.format
 local StringLower = string.lower
 local StringUpper = string.upper
 local StringSub = string.sub
-local StringStartsWith = string.StartWith
-local StringTrim = string.Trim
+local StringStartWith = string.StartWith
 
 -- Round times
 CreateConVar("ttt_roundtime_minutes", "10", FCVAR_NOTIFY)
@@ -454,18 +453,7 @@ function GM:InitCvars()
     local map_config = StringFormat("cfg/%s.cfg", game.GetMap())
     if file.Exists(map_config, "GAME") then
         MsgN("Loading map-specific config from " .. map_config)
-        local map_config_content = file.Read(map_config, "GAME")
-        local lines = string.Explode("\n", map_config_content)
-        for _, line in ipairs(lines) do
-            line = StringTrim(line)
-            if #line == 0 then continue end
-            if StringStartsWith(line, "exec") then
-                MsgN("Loading additional config files is not allowed, skipping: " .. line)
-                continue
-            end
-
-            game.ConsoleCommand(StringFormat("%s\n", line))
-        end
+        util.ExecFile(map_config)
     end
 
     -- Initialize game state that is synced with client
@@ -1960,7 +1948,7 @@ hook.Add("PlayerDeath", "TTT_ClientDeathNotify", function(victim, inflictor, att
     elseif attacker == victim then
         reason = "suicide"
     elseif IsValid(inflictor) then
-        if victim:IsPlayer() and (StringStartsWith(inflictor:GetClass(), "prop_physics") or inflictor:GetClass() == "prop_dynamic") then
+        if victim:IsPlayer() and (StringStartWith(inflictor:GetClass(), "prop_physics") or inflictor:GetClass() == "prop_dynamic") then
             -- If the killer is also a prop
             reason = "prop"
         elseif IsValid(attacker) then
