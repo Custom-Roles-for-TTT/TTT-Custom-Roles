@@ -455,7 +455,7 @@ if SERVER then
     function util.ExecFile(filePath, errorIfMissing)
         if not file.Exists(filePath, "GAME") then
             if errorIfMissing then
-                ErrorNoHalt("File not found when trying to execute: " .. filePath)
+                ErrorNoHalt(StringFormat("File not found when trying to execute: %s\n", filePath))
             end
             return
         end
