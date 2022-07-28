@@ -61,6 +61,7 @@ local incompatible = {
     -- Glowing Traitors
     ["690007939"] = { reason = "Player outlines are included in Custom Roles for TTT." }, -- TTT Glowing Traitors by kuma7
     ["1821994127"] = { reason = "Player outlines are included in Custom Roles for TTT." }, -- [GM] Glowing Traitors [TTT]
+    ["1137493106"] = { reason = "Player outlines are included in Custom Roles for TTT." }, -- [TTT/2] Glowing Teammates by LillyPoh
 
     -- Killer Notifier
     ["167547072"] = { reason = "Death messages are included in Custom Roles for TTT." }, -- TTT Killer Notifier by StarFox
