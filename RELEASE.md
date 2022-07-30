@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.6.7 (Beta)
-**Released:**
+**Released: July 30th, 2022**
 
 ### Additions
 - Added ability to have map-specific config files
