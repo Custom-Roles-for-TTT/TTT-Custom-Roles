@@ -79,10 +79,11 @@ local util = util
 local CallHook = hook.Call
 local RunHook = hook.Run
 local GetAllPlayers = player.GetAll
+local StringFormat = string.format
 local StringLower = string.lower
 local StringUpper = string.upper
 local StringSub = string.sub
-local StringStartsWith = string.StartWith
+local StringStartWith = string.StartWith
 
 -- Round times
 CreateConVar("ttt_roundtime_minutes", "10", FCVAR_NOTIFY)
@@ -448,6 +449,12 @@ end
 -- point.
 function GM:InitCvars()
     MsgN("TTT initializing convar settings...")
+
+    local map_config = StringFormat("cfg/%s.cfg", game.GetMap())
+    if file.Exists(map_config, "GAME") then
+        MsgN("Loading map-specific config from " .. map_config)
+        util.ExecFile(map_config, true)
+    end
 
     -- Initialize game state that is synced with client
     SetGlobalInt("ttt_rounds_left", GetConVar("ttt_round_limit"):GetInt())
@@ -1941,7 +1948,7 @@ hook.Add("PlayerDeath", "TTT_ClientDeathNotify", function(victim, inflictor, att
     elseif attacker == victim then
         reason = "suicide"
     elseif IsValid(inflictor) then
-        if victim:IsPlayer() and (StringStartsWith(inflictor:GetClass(), "prop_physics") or inflictor:GetClass() == "prop_dynamic") then
+        if victim:IsPlayer() and (StringStartWith(inflictor:GetClass(), "prop_physics") or inflictor:GetClass() == "prop_dynamic") then
             -- If the killer is also a prop
             reason = "prop"
         elseif IsValid(attacker) then

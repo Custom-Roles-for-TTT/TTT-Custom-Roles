@@ -42,7 +42,7 @@ local incompatible = {
     ["1818951122"] = { reason = "Overwrites core files required for Custom Roles for TTT." }, -- [GM] More Roles [TTT] by Selfridge
 
     -- Other Core File Overwrites
-    ["107658972"] = { reason = "Overwrites core files required for Custom Roles for TTT." }, -- TTT Round End Slowmotion by TheTrueLor
+    ["107658972"] = { reason = "Overwrites core files required for Custom Roles for TTT.", alt = "686457995" }, -- TTT Round End Slowmotion by TheTrueLor
     ["254779132"] = { reason = "Overwrites core files required for Custom Roles for TTT.", alt = "810154456" }, -- TTT DeadRinger by Porter
     ["367945571"] = { reason = "Overwrites core files required for Custom Roles for TTT." }, -- TTT: Advanced Body Search
     ["2520210407"] = { reason = "Overwrites core files required for Custom Roles for TTT." }, -- TTT Weapon Balance by Emzatin.
@@ -61,6 +61,7 @@ local incompatible = {
     -- Glowing Traitors
     ["690007939"] = { reason = "Player outlines are included in Custom Roles for TTT." }, -- TTT Glowing Traitors by kuma7
     ["1821994127"] = { reason = "Player outlines are included in Custom Roles for TTT." }, -- [GM] Glowing Traitors [TTT]
+    ["1137493106"] = { reason = "Player outlines are included in Custom Roles for TTT." }, -- [TTT/2] Glowing Teammates by LillyPoh
 
     -- Killer Notifier
     ["167547072"] = { reason = "Death messages are included in Custom Roles for TTT." }, -- TTT Killer Notifier by StarFox

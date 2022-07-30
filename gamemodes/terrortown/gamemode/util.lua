@@ -18,6 +18,9 @@ local GetAllPlayers = player.GetAll
 local StringUpper = string.upper
 local StringFormat = string.format
 local StringSub = string.sub
+local StringStartWith = string.StartWith
+local StringTrim = string.Trim
+local StringTrimLeft = string.TrimLeft
 
 -- attempts to get the weapon used from a DamageInfo instance needed because the
 -- GetAmmoType value is useless and inflictor isn't properly set (yet)
@@ -446,4 +449,30 @@ function util.SimpleTime(seconds, fmt)
     local m = seconds % 60
 
     return StringFormat(fmt, m, s, ms)
+end
+
+if SERVER then
+    function util.ExecFile(filePath, errorIfMissing)
+        if not file.Exists(filePath, "GAME") then
+            if errorIfMissing then
+                ErrorNoHalt(StringFormat("File not found when trying to execute: %s\n", filePath))
+            end
+            return
+        end
+
+        local fileContent = file.Read(filePath, "GAME")
+        local lines = string.Explode("\n", fileContent)
+        for _, line in ipairs(lines) do
+            line = StringTrim(line)
+            if #line == 0 then continue end
+
+            if StringStartWith(line, "exec ") then
+                local subFile = StringTrimLeft(line, "exec ")
+                util.ExecFile(subFile, errorIfMissing)
+                continue
+            end
+
+            game.ConsoleCommand(StringFormat("%s\n", line))
+        end
+    end
 end
