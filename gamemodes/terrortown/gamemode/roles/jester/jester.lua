@@ -11,10 +11,10 @@ local GetAllPlayers = player.GetAll
 -------------
 
 CreateConVar("ttt_jester_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the jester is killed", 0, 4)
-CreateConVar("ttt_jester_notify_sound", "0")
-CreateConVar("ttt_jester_notify_confetti", "0")
-local jester_healthstation_reduce_max = CreateConVar("ttt_jester_healthstation_reduce_max", "1")
-local jester_win_by_traitors = CreateConVar("ttt_jester_win_by_traitors", "1")
+CreateConVar("ttt_jester_notify_sound", "0", FCVAR_NONE, "Whether to play a cheering sound when a jester is killed", 0, 1)
+CreateConVar("ttt_jester_notify_confetti", "0", FCVAR_NONE, "Whether to throw confetti when a jester is a killed", 0, 1)
+local jester_healthstation_reduce_max = CreateConVar("ttt_jester_healthstation_reduce_max", "1", FCVAR_NONE, "Whether the jester's max health should be reduced to match their current health", 0, 1)
+local jester_win_by_traitors = CreateConVar("ttt_jester_win_by_traitors", "1", FCVAR_NONE, "Whether the jester will win the round if they are killed by a traitor", 0, 1)
 
 hook.Add("TTTSyncGlobals", "Jester_TTTSyncGlobals", function()
     SetGlobalBool("ttt_jester_win_by_traitors", jester_win_by_traitors:GetBool())
