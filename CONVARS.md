@@ -411,6 +411,7 @@ ttt_beggar_reveal_innocent                  2       // Who the beggar is reveale
 ttt_beggar_respawn                          0       // Whether the beggar respawns when they are killed before joining another team
 ttt_beggar_respawn_delay                    3       // The delay to use when respawning the beggar (if "ttt_beggar_respawn" is enabled)
 ttt_beggar_respawn_limit                    0       // The maximum number of times the beggar can respawn (if "ttt_beggar_respawn" is enabled). Set to 0 to allow infinite respawns
+ttt_beggar_respawn_change_role              0       // Whether to change the role of the respawning the beggar (if "ttt_beggar_respawn" is enabled). Their role will be Traitor if killed by an innocent player and Innocent otherwise
 ttt_beggar_notify_mode                      0       // The logic to use when notifying players that a beggar is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
 ttt_beggar_notify_sound                     0       // Whether to play a cheering sound when a beggar is killed
 ttt_beggar_notify_confetti                  0       // Whether to throw confetti when a beggar is a killed

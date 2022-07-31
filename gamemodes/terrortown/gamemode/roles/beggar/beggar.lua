@@ -18,20 +18,22 @@ util.AddNetworkString("TTT_BeggarKilled")
 -------------
 
 CreateConVar("ttt_beggar_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the beggar is killed", 0, 4)
-CreateConVar("ttt_beggar_notify_sound", "0")
-CreateConVar("ttt_beggar_notify_confetti", "0")
-local beggars_are_independent = CreateConVar("ttt_beggars_are_independent", "0")
+CreateConVar("ttt_beggar_notify_sound", "0", FCVAR_NONE, "Whether to play a cheering sound when a beggar is killed", 0, 1)
+CreateConVar("ttt_beggar_notify_confetti", "0", FCVAR_NONE, "Whether to throw confetti when a beggar is a killed", 0, 1)
+local beggars_are_independent = CreateConVar("ttt_beggars_are_independent", "0", FCVAR_NONE, "Whether beggars should be treated as members of the independent team", 0, 1)
 local beggar_reveal_traitor = CreateConVar("ttt_beggar_reveal_traitor", "1", FCVAR_NONE, "Who the beggar is revealed to when they join the traitor team", 0, 3)
 local beggar_reveal_innocent = CreateConVar("ttt_beggar_reveal_innocent", "2", FCVAR_NONE, "Who the beggar is revealed to when they join the innocent team", 0, 3)
-local beggar_respawn = CreateConVar("ttt_beggar_respawn", "0")
+local beggar_respawn = CreateConVar("ttt_beggar_respawn", "0", FCVAR_NONE, "Whether the beggar respawns when they are killed before joining another team", 0, 1)
 local beggar_respawn_limit = CreateConVar("ttt_beggar_respawn_limit", "0", FCVAR_NONE, "The maximum number of times the beggar can respawn (if \"ttt_beggar_respawn\" is enabled). Set to 0 to allow infinite", 0, 30)
 local beggar_respawn_delay = CreateConVar("ttt_beggar_respawn_delay", "3", FCVAR_NONE, "The delay to use when respawning the beggar (if \"ttt_beggar_respawn\" is enabled)", 0, 60)
+local beggar_respawn_change_role = CreateConVar("ttt_beggar_respawn_change_role", "0", FCVAR_NONE, "Whether to change the role of the respawning the beggar (if \"ttt_beggar_respawn\" is enabled)", 0, 1)
 
 hook.Add("TTTSyncGlobals", "Beggar_TTTSyncGlobals", function()
     SetGlobalBool("ttt_beggars_are_independent", beggars_are_independent:GetBool())
     SetGlobalBool("ttt_beggar_respawn", beggar_respawn:GetBool())
     SetGlobalInt("ttt_beggar_respawn_limit", beggar_respawn_limit:GetInt())
     SetGlobalInt("ttt_beggar_respawn_delay", beggar_respawn_delay:GetInt())
+    SetGlobalBool("ttt_beggar_respawn_change_role", beggar_respawn_change_role:GetBool())
     SetGlobalInt("ttt_beggar_reveal_traitor", beggar_reveal_traitor:GetInt())
     SetGlobalInt("ttt_beggar_reveal_innocent", beggar_reveal_innocent:GetInt())
 end)
@@ -120,16 +122,42 @@ hook.Add("PlayerDeath", "Beggar_KillCheck_PlayerDeath", function(victim, infl, a
     local respawnLimit = beggar_respawn_limit:GetInt()
     if beggar_respawn:GetBool() and (respawnLimit == 0 or victim.BeggarRespawn < respawnLimit) then
         victim.BeggarRespawn = victim.BeggarRespawn + 1
-        local delay = beggar_respawn_limit:GetInt()
+
+        local change_role = beggar_respawn_change_role:GetBool()
+        local message_extra = ""
+        if change_role then
+            message_extra = " with a new role"
+        end
+
+        local delay = beggar_respawn_delay:GetInt()
         if delay > 0 then
-            victim:PrintMessage(HUD_PRINTCENTER, "You were killed but will respawn in " .. delay .. " seconds.")
+            victim:PrintMessage(HUD_PRINTTALK, "You were killed but will respawn" .. message_extra .. " in " .. delay .. " seconds.")
+            victim:PrintMessage(HUD_PRINTCENTER, "You were killed but will respawn" .. message_extra .. " in " .. delay .. " seconds.")
         else
-            victim:PrintMessage(HUD_PRINTCENTER, "You were killed but are about to respawn.")
+            victim:PrintMessage(HUD_PRINTTALK, "You were killed but are about to respawn" .. message_extra .. ".")
+            victim:PrintMessage(HUD_PRINTCENTER, "You were killed but are about to respawn" .. message_extra .. ".")
             -- Introduce a slight delay to prevent player getting stuck as a spectator
             delay = 0.1
         end
+
         timer.Create(victim:Nick() .. "BeggarRespawn", delay, 1, function()
             local body = victim.server_ragdoll or victim:GetRagdollEntity()
+
+            if change_role then
+                -- Use the opposite role of the person that killed them
+                local role = ROLE_INNOCENT
+                if attacker:IsInnocentTeam() then
+                    role = ROLE_TRAITOR
+                end
+
+                victim:SetRoleAndBroadcast(role)
+                SendFullStateUpdate()
+                SetRoleHealth(victim)
+                timer.Simple(0.25, function()
+                    victim:SetDefaultCredits()
+                end)
+            end
+
             victim:SpawnForRound(true)
             victim:SetHealth(victim:GetMaxHealth())
             SafeRemoveEntity(body)

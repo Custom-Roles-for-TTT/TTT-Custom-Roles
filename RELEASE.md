@@ -1,5 +1,14 @@
 # Release Notes
 
+## 1.6.8 (Beta)
+**Released:**
+
+### Additions
+- Added ability for the beggar to respawn as the opposite role of the person that killed them (disabled by default)
+
+### Fixes
+- Fixed the `ttt_beggar_respawn_delay` convar not working
+
 ## 1.6.7 (Beta)
 **Released: July 30th, 2022**
 
