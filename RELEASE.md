@@ -9,6 +9,9 @@
 ### Fixes
 - Fixed the `ttt_beggar_respawn_delay` convar not working
 
+### Changes
+- Changed the shop to refresh when an item is added or removed from your favorites (Thanks @Callum!)
+
 ## 1.6.7 (Beta)
 **Released: July 30th, 2022**
 
