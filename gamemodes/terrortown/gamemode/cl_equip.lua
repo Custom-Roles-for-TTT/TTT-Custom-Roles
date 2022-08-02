@@ -852,6 +852,8 @@ local function TraitorMenuPopup()
             else
                 AddFavorite(guid, role, weapon)
             end
+            
+            dsearch:OnTextChanged()
         end
 
         local drdm = vgui.Create("DButton", dinfobg)
