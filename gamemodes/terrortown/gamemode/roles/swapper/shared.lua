@@ -31,6 +31,11 @@ table.insert(ROLE_CONVARS[ROLE_SWAPPER], {
     decimal = 0
 })
 table.insert(ROLE_CONVARS[ROLE_SWAPPER], {
+    cvar = "ttt_swapper_killer_max_health",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_SWAPPER], {
     cvar = "ttt_swapper_respawn_health",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0

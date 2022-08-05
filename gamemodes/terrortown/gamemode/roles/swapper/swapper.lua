@@ -21,7 +21,8 @@ CreateConVar("ttt_swapper_notify_mode", "0", FCVAR_NONE, "The logic to use when 
 CreateConVar("ttt_swapper_notify_sound", "0", FCVAR_NONE, "Whether to play a cheering sound when a swapper is killed", 0, 1)
 CreateConVar("ttt_swapper_notify_confetti", "0", FCVAR_NONE, "Whether to throw confetti when a swapper is a killed", 0, 1)
 local swapper_healthstation_reduce_max = CreateConVar("ttt_swapper_healthstation_reduce_max", "1", FCVAR_NONE, "Whether the swappers's max health should be reduced to match their current health", 0, 1)
-local swapper_killer_health = CreateConVar("ttt_swapper_killer_health", "100", FCVAR_NONE, "What amount of health to give the person who killed the swapper. Set to \"0\" to kill them", 0, 200)
+local swapper_killer_health = CreateConVar("ttt_swapper_killer_health", "100", FCVAR_NONE, "The amount of health the swapper's killer should set to. Set to \"0\" to kill them", 0, 200)
+local swapper_killer_max_health = CreateConVar("ttt_swapper_killer_max_health", "0", FCVAR_NONE, "The maximum health value to set on the swapper's killer. Set to \"0\" to kill them", 0, 200)
 local swapper_respawn_health = CreateConVar("ttt_swapper_respawn_health", "100", FCVAR_NONE, "What amount of health to give the swapper when they are killed and respawned", 1, 200)
 local swapper_weapon_mode = CreateConVar("ttt_swapper_weapon_mode", "1", FCVAR_NONE, "How to handle weapons when the swapper is killed", 0, 2)
 
@@ -132,6 +133,13 @@ hook.Add("PlayerDeath", "Swapper_KillCheck_PlayerDeath", function(victim, infl, 
             attacker:Kill()
         else
             attacker:SetHealth(health)
+
+            local max_health = swapper_killer_max_health:GetInt()
+            if max_health == 0 then
+                SetRoleMaxHealth(attacker)
+            else
+                attacker:SetMaxHealth(max_health)
+            end
         end
 
         timer.Simple(0.2, function()

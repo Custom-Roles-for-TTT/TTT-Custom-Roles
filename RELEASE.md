@@ -5,6 +5,7 @@
 
 ### Additions
 - Added ability for the beggar to respawn as the opposite role of the person that killed them (disabled by default)
+- Added ability to set the maximum health of the swapper's killer (disabled by default)
 
 ### Fixes
 - Fixed the `ttt_beggar_respawn_delay` convar not working
