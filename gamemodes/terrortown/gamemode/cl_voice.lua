@@ -214,7 +214,7 @@ function RADIO:ShowRadioCommands(state)
 
             radioframe:CenterVertical()
 
-            -- ASS
+            -- This is not how you should do things
             radioframe.ForceResize = function(s)
                 w = 0
                 local label = nil
