@@ -87,3 +87,7 @@ table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
 })
+table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
+    cvar = "ttt_beggar_respawn_change_role",
+    type = ROLE_CONVAR_TYPE_BOOL
+})

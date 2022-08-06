@@ -180,6 +180,10 @@ hook.Add("TTTTutorialRoleText", "Beggar_TTTTutorialRoleText", function(role, tit
             end
 
             html = html .. ".</span>"
+
+            if GetGlobalBool("ttt_beggar_respawn_change_role", false) then
+                html = html .. "<span style='display: block; margin-top: 10px;'>When respawning, the " .. ROLE_STRINGS[ROLE_BEGGAR] .. " will switch to the opposite team of their killer.</span>"
+            end
         end
 
         -- Innocent Reveal

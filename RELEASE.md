@@ -1,5 +1,18 @@
 # Release Notes
 
+## 1.6.8 (Beta)
+**Released: August 7th, 2022**
+
+### Additions
+- Added ability for the beggar to respawn as the opposite role of the person that killed them (disabled by default)
+- Added ability to set the maximum health of the swapper's killer (disabled by default)
+
+### Fixes
+- Fixed the `ttt_beggar_respawn_delay` convar not working
+
+### Changes
+- Changed the shop to refresh when an item is added or removed from your favorites (Thanks @Callum!)
+
 ## 1.6.7 (Beta)
 **Released: July 30th, 2022**
 
