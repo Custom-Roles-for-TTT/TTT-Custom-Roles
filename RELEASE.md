@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.6.8 (Beta)
-**Released:**
+**Released: August 7th, 2022**
 
 ### Additions
 - Added ability for the beggar to respawn as the opposite role of the person that killed them (disabled by default)
