@@ -4,7 +4,7 @@
 **Released:**
 
 ### Fixes
-- Fixed paladins's damage reduction aura working even when they were dead
+- Fixed paladin's damage reduction aura working even when they were dead
 - Fixed sapper's explosion protection working even when they were dead
 
 ## 1.6.8 (Beta)
