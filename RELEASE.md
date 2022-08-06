@@ -1,5 +1,12 @@
 # Release Notes
 
+## 1.6.9 (Beta)
+**Released:**
+
+### Fixes
+- Fixed paladins's damage reduction aura working even when they were dead
+- Fixed sapper's explosion protection working even when they were dead
+
 ## 1.6.8 (Beta)
 **Released: August 7th, 2022**
 
