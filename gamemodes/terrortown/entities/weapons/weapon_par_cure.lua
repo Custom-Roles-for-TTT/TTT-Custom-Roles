@@ -229,6 +229,11 @@ if SERVER then
             newowner:PrintMessage(HUD_PRINTTALK, ROLE_STRINGS[ROLE_TRAITOR] .. ", the parasite cure you are holding is real.")
         end
     end
+
+    function SWEP:Holster()
+        self:Reset()
+        return true
+    end
 end
 
 if CLIENT then

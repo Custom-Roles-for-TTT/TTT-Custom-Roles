@@ -198,6 +198,11 @@ if SERVER then
             end
         end
     end
+
+    function SWEP:Holster()
+        self:Reset()
+        return true
+    end
 end
 
 if CLIENT then
