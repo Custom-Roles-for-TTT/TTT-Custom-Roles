@@ -60,7 +60,7 @@ hook.Add("ScalePlayerDamage", "Paladin_ScalePlayerDamage", function(ply, hitgrou
             local withPaladin = false
             local radius = GetGlobalFloat("ttt_paladin_aura_radius", 262.45)
             for _, v in pairs(GetAllPlayers()) do
-                if v:IsPaladin() and v:GetPos():Distance(ply:GetPos()) <= radius then
+                if v:IsActivePaladin() and v:GetPos():Distance(ply:GetPos()) <= radius then
                     withPaladin = true
                     break
                 end

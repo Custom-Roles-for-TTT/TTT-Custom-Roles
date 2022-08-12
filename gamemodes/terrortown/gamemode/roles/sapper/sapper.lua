@@ -40,7 +40,7 @@ hook.Add("EntityTakeDamage", "Sapper_EntityTakeDamage", function(ent, dmginfo)
             local sapper = nil
             local radius = GetGlobalFloat("ttt_sapper_aura_radius", 262.45)
             for _, v in pairs(GetAllPlayers()) do
-                if v:IsSapper() and v:GetPos():Distance(ent:GetPos()) <= radius then
+                if v:IsActiveSapper() and v:GetPos():Distance(ent:GetPos()) <= radius then
                     sapper = v
                     break
                 end

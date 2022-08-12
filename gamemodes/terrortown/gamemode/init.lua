@@ -2032,12 +2032,12 @@ function HandleRoleEquipment()
             local extension = StringSub(v, lastdotpos + 1, #v)
             lastdotpos = extension:find("%.")
 
-            -- If there is, check if it equals "exclude"
+            -- If there is, check if it equals one of our expected types
             if lastdotpos ~= nil then
-                extension = StringSub(extension, 0, lastdotpos - 1)
-                if StringLower(extension) == "exclude" then
+                extension = StringLower(StringSub(extension, 0, lastdotpos - 1))
+                if extension == "exclude" then
                     exclude = true
-                elseif StringLower(extension) == "norandom" then
+                elseif extension == "norandom" then
                     norandom = true
                 end
             end

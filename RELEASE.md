@@ -1,5 +1,13 @@
 # Release Notes
 
+## 1.6.9 (Beta)
+**Released: August 13th, 2022**
+
+### Fixes
+- Fixed paladin's damage reduction aura working even when they were dead
+- Fixed sapper's explosion protection working even when they were dead
+- Fixed role weapons which have a progress bar not resetting to 0% when the player switches to another weapon
+
 ## 1.6.8 (Beta)
 **Released: August 7th, 2022**
 
