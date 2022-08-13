@@ -91,6 +91,9 @@ This is probably due to another mod conflicting with this one. Check for things 
 **Nothing happens when I search a body as a detective**
 This is most likely caused by a conflict with a mod like 'TTT: Advanced Body Search'. If removing that doesn't fix the problem, join the Discord server (see below) and we'll try to help you identify any other conflicts.
 
+**The addon doesn't load when I place it in the `addons` folder on my server**
+If you are using a Linux machine to host your server you may need to lowercase the folder name for it to be loaded properly. For example, `[INSTALL_DIR]/serverfiles/garrysmod/addons/TTT-Custom-Roles` would become `[INSTALL_DIR]/serverfiles/garrysmod/ttt-custom-roles`. See [Gmod Linux Dedicated Server Hosting](https://wiki.facepunch.com/gmod/Linux_Dedicated_Server_Hosting#addonsnotworking) for details.
+
 ## Official Links:
 - GitHub: https://github.com/NoxxFlame/TTT-Custom-Roles
 - Steam Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=2421039084
