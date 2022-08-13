@@ -88,8 +88,11 @@ _ttt_detective_max_ 1
 **My shop is not working for anyone but the Detective and Traitor/I am getting errors when I try to open the shop/My shop is not loading correctly, it's just a blank grey window**\
 This is probably due to another mod conflicting with this one. Check for things like the 'Better Equipment Menu' mod (which is integrated into this one). If removing that doesn't fix the problem, join the Discord server (see below) and we'll try to help you identify any other conflicts.
 
-**Nothing happens when I search a body as a detective**
+**Nothing happens when I search a body as a detective**\
 This is most likely caused by a conflict with a mod like 'TTT: Advanced Body Search'. If removing that doesn't fix the problem, join the Discord server (see below) and we'll try to help you identify any other conflicts.
+
+**The addon doesn't load when I place it in the `addons` folder on my server**\
+If you are using a Linux machine to host your server you may need to lowercase the folder name for it to be loaded properly. For example, `[INSTALL_DIR]/garrysmod/addons/TTT-Custom-Roles` would become `[INSTALL_DIR]/garrysmod/ttt-custom-roles`. See [GMod Linux Dedicated Server Hosting](https://wiki.facepunch.com/gmod/Linux_Dedicated_Server_Hosting#addonsnotworking) for details.
 
 ## Official Links:
 - GitHub: https://github.com/NoxxFlame/TTT-Custom-Roles
