@@ -169,8 +169,9 @@ table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
     decimal = 0
 })
 table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
-    cvar = "ttt_vampire_prime_reflect_friendly_fire",
-    type = ROLE_CONVAR_TYPE_BOOL
+    cvar = "ttt_vampire_prime_friendly_fire",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
 })
 table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
     cvar = "ttt_vampire_show_target_icon",

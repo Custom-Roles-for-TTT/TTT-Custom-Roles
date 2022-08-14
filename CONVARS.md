@@ -210,7 +210,7 @@ ttt_vampire_prime_death_mode                0       // What to do when the prime
 ttt_vampire_prime_only_convert              1       // Whether only prime vampires (e.g. players who spawn as vampire originally) are allowed to convert other players
 ttt_vampire_kill_credits                    1       // Whether the vampire receives credits when they kill another player
 ttt_vampire_loot_credits                    1       // Whether the vampire can loot credits from a dead player
-ttt_vampire_prime_reflect_friendly_fire     0       // Whether to reflect friendly fire by a thrall against a prime back onto the attacker
+ttt_vampire_prime_friendly_fire             0       // How to handle friendly fire damage to the prime vampire(s) from their thralls. 0 - Do nothing. 1 - Reflect damage back to the attacker (non-prime vampire). 2 - Negate damage to the prime vampire.
 ttt_vampire_credits_starting                1       // The number of credits a vampire should start with
 
 // Quack
