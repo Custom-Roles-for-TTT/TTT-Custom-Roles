@@ -272,6 +272,10 @@ hook.Add("ScalePlayerDamage", "Vampire_ScalePlayerDamage", function(ply, hitgrou
     -- When enabled: If the target is the prime vampire and they are attacked by a non-prime vampire then reflect the damage
     local prime_friendly_fire_mode = vampire_prime_friendly_fire:GetInt()
     if prime_friendly_fire_mode > VAMPIRE_THRALL_FF_MODE_NONE and ply:IsVampirePrime() and att:IsVampire() and not att:IsVampirePrime() then
+        local custom_damage = dmginfo:GetDamageCustom()
+        -- If this is set, assume that we're the ones that set it and don't check this damage info
+        if custom_damage == DMG_AIRBOAT then return end
+
         -- Copy the original damage info and send it back on the attacker
         if prime_friendly_fire_mode == VAMPIRE_THRALL_FF_MODE_REFLECT then
             local infl = dmginfo:GetInflictor()
@@ -280,6 +284,8 @@ hook.Add("ScalePlayerDamage", "Vampire_ScalePlayerDamage", function(ply, hitgrou
             end
 
             local newinfo = DamageInfo()
+            -- Set this so that we can check for it since it is not normally used in GMod
+            newinfo:SetDamageCustom(DMG_AIRBOAT)
             newinfo:SetDamage(dmginfo:GetDamage())
             newinfo:SetDamageType(dmginfo:GetDamageType())
             newinfo:SetAttacker(att)
