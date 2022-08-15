@@ -272,13 +272,13 @@ hook.Add("ScalePlayerDamage", "Vampire_ScalePlayerDamage", function(ply, hitgrou
     -- When enabled: If the target is the prime vampire and they are attacked by a non-prime vampire then reflect the damage
     local prime_friendly_fire_mode = vampire_prime_friendly_fire:GetInt()
     if prime_friendly_fire_mode > VAMPIRE_THRALL_FF_MODE_NONE and ply:IsVampirePrime() and att:IsVampire() and not att:IsVampirePrime() then
-        local infl = dmginfo:GetInflictor()
-        if not IsValid(infl) then
-            infl = game.GetWorld()
-        end
-
         -- Copy the original damage info and send it back on the attacker
         if prime_friendly_fire_mode == VAMPIRE_THRALL_FF_MODE_REFLECT then
+            local infl = dmginfo:GetInflictor()
+            if not IsValid(infl) then
+                infl = game.GetWorld()
+            end
+
             local newinfo = DamageInfo()
             newinfo:SetDamage(dmginfo:GetDamage())
             newinfo:SetDamageType(dmginfo:GetDamageType())
