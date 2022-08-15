@@ -1,7 +1,14 @@
 # Release Notes
 
+## 1.6.10 (Beta)
+**Released:**
+
 ## 1.6.9 (Beta)
 **Released: August 13th, 2022**
+
+### Changes
+- Changed vampire (thrall -> prime) friendly-fire handling to allow damage negation instead of reflection (disabled by default)
+  - Setting renamed from `ttt_vampire_prime_reflect_friendly_fire` to `ttt_vampire_prime_friendly_fire`
 
 ### Fixes
 - Fixed paladin's damage reduction aura working even when they were dead
