@@ -9,6 +9,11 @@ VAMPIRE_DEATH_NONE = 0
 VAMPIRE_DEATH_KILL_CONVERTED = 1
 VAMPIRE_DEATH_REVERT_CONVERTED = 2
 
+-- Vampire thrall friendly fire modes
+VAMPIRE_THRALL_FF_MODE_NONE = 0
+VAMPIRE_THRALL_FF_MODE_REFLECT = 1
+VAMPIRE_THRALL_FF_MODE_IMMUNE = 2
+
 local function InitializeEquipment()
     if EquipmentItems then
         local mat_dir = "vgui/ttt/"
@@ -169,8 +174,9 @@ table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
     decimal = 0
 })
 table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
-    cvar = "ttt_vampire_prime_reflect_friendly_fire",
-    type = ROLE_CONVAR_TYPE_BOOL
+    cvar = "ttt_vampire_prime_friendly_fire",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
 })
 table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
     cvar = "ttt_vampire_show_target_icon",
