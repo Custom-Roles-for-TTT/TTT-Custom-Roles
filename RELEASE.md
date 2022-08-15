@@ -3,8 +3,14 @@
 ## 1.6.10 (Beta)
 **Released:**
 
+### Additions
+- Added ability to change how zombie-to-zombie friendly-fire is handled
+  - There are three options: 0 - Do nothing, 1 - Reflect damage on to attacker, 2 - Negate damage
+  - Defaults to negating damage which was the previous behavior
+
 ### Changes
-- Changed vampire (thrall -> prime) friendly-fire handling to allow damage negation instead of reflection (disabled by default)
+- Changed vampire (thrall -> prime) friendly-fire handling to allow damage negation instead of reflection (disabled by default) (Thanks @neon_leitz!)
+  - There are now three options: 0 - Do nothing, 1 - Reflect damage on to attacker, 2 - Negate damage
   - Setting renamed from `ttt_vampire_prime_reflect_friendly_fire` to `ttt_vampire_prime_friendly_fire`
 
 ## 1.6.9 (Beta)
