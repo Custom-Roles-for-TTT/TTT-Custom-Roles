@@ -288,6 +288,10 @@ hook.Add("ScalePlayerDamage", "Vampire_ScalePlayerDamage", function(ply, hitgrou
             newinfo:SetDamagePosition(dmginfo:GetDamagePosition())
             newinfo:SetReportedPosition(dmginfo:GetReportedPosition())
             att:TakeDamageInfo(newinfo)
+
+            -- Remove the damage dealt to the prime
+            dmginfo:ScaleDamage(0)
+            dmginfo:SetDamage(0)
         -- Remove the damage dealt to the prime
         elseif prime_friendly_fire_mode == VAMPIRE_THRALL_FF_MODE_IMMUNE then
             dmginfo:ScaleDamage(0)
