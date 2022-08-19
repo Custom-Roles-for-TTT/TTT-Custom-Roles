@@ -12,6 +12,7 @@
 - Changed vampire (thrall -> prime) friendly-fire handling to allow damage negation instead of reflection (disabled by default) (Thanks @neon_leitz!)
   - There are now three options: 0 - Do nothing, 1 - Reflect damage on to attacker, 2 - Negate damage
   - Setting renamed from `ttt_vampire_prime_reflect_friendly_fire` to `ttt_vampire_prime_friendly_fire`
+- Changed quack's station bomb to be on a different sub-slot so it can be bought at the same time as the health station
 
 ## 1.6.9 (Beta)
 **Released: August 13th, 2022**

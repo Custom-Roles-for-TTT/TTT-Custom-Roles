@@ -53,7 +53,7 @@ local hum = Sound("items/nvg_on.wav")
 local zap = Sound("weapons/c4_initiate.mp3")
 
 -- This is special equipment
-SWEP.Kind = WEAPON_EQUIP
+SWEP.Kind = WEAPON_EQUIP2
 SWEP.CanBuy = { ROLE_QUACK }
 SWEP.LimitedStock = true
 SWEP.WeaponID = AMMO_STATIONBOMB
