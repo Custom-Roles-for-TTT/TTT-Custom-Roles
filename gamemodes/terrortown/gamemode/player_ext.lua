@@ -184,6 +184,14 @@ function plymeta:ResetRoundFlags()
 
     self:ResetBought()
 
+    -- Change some gmod defaults
+    self:SetCanZoom(false)
+    self:SetJumpPower(160)
+    self:SetCrouchedWalkSpeed(0.3)
+    self:SetRunSpeed(220)
+    self:SetWalkSpeed(220)
+    self:SetMaxSpeed(220)
+
     -- equipment stuff
     self.bomb_wire = nil
     self.radar_charge = 0
@@ -379,14 +387,6 @@ function plymeta:InitialSpawn()
 
     -- The team the player spawns on depends on the round state
     self:SetTeam(GetRoundState() == ROUND_PREP and TEAM_TERROR or TEAM_SPEC)
-
-    -- Change some gmod defaults
-    self:SetCanZoom(false)
-    self:SetJumpPower(160)
-    self:SetCrouchedWalkSpeed(0.3)
-    self:SetRunSpeed(220)
-    self:SetWalkSpeed(220)
-    self:SetMaxSpeed(220)
 
     -- Always spawn innocent initially, traitor will be selected later
     self:ResetStatus()
