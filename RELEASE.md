@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.6.10 (Beta)
-**Released:**
+**Released: August 21st, 2022**
 
 ### Additions
 - Added ability to change how zombie-to-zombie friendly-fire is handled
