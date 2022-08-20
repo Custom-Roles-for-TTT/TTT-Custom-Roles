@@ -32,7 +32,7 @@ local vampire_prime_death_mode = CreateConVar("ttt_vampire_prime_death_mode", "0
 local vampire_vision_enable = CreateConVar("ttt_vampire_vision_enable", "0")
 local vampire_kill_credits = CreateConVar("ttt_vampire_kill_credits", "1")
 local vampire_loot_credits = CreateConVar("ttt_vampire_loot_credits", "1")
-local vampire_prime_friendly_fire = CreateConVar("ttt_vampire_prime_friendly_fire", "0", FCVAR_NONE, "How to handle friendly fire damage to the prime vampire(s) from their thralls. 0 - Do nothing. 1 - Reflect damage back to the attacker (non-prime vampire). 2 - Negate damage to the prime vampire. ", 0, 2)
+local vampire_prime_friendly_fire = CreateConVar("ttt_vampire_prime_friendly_fire", "0", FCVAR_NONE, "How to handle friendly fire damage to the prime vampire(s) from their thralls. 0 - Do nothing. 1 - Reflect damage back to the attacker (non-prime vampire). 2 - Negate damage to the prime vampire.", 0, 2)
 
 hook.Add("TTTSyncGlobals", "Vampire_TTTSyncGlobals", function()
     SetGlobalBool("ttt_vampires_are_monsters", vampires_are_monsters:GetBool())
@@ -272,6 +272,10 @@ hook.Add("ScalePlayerDamage", "Vampire_ScalePlayerDamage", function(ply, hitgrou
     -- When enabled: If the target is the prime vampire and they are attacked by a non-prime vampire then reflect the damage
     local prime_friendly_fire_mode = vampire_prime_friendly_fire:GetInt()
     if prime_friendly_fire_mode > VAMPIRE_THRALL_FF_MODE_NONE and ply:IsVampirePrime() and att:IsVampire() and not att:IsVampirePrime() then
+        local custom_damage = dmginfo:GetDamageCustom()
+        -- If this is set, assume that we're the ones that set it and don't check this damage info
+        if custom_damage == DMG_AIRBOAT then return end
+
         -- Copy the original damage info and send it back on the attacker
         if prime_friendly_fire_mode == VAMPIRE_THRALL_FF_MODE_REFLECT then
             local infl = dmginfo:GetInflictor()
@@ -280,6 +284,8 @@ hook.Add("ScalePlayerDamage", "Vampire_ScalePlayerDamage", function(ply, hitgrou
             end
 
             local newinfo = DamageInfo()
+            -- Set this so that we can check for it since it is not normally used in GMod
+            newinfo:SetDamageCustom(DMG_AIRBOAT)
             newinfo:SetDamage(dmginfo:GetDamage())
             newinfo:SetDamageType(dmginfo:GetDamageType())
             newinfo:SetAttacker(att)
@@ -288,15 +294,12 @@ hook.Add("ScalePlayerDamage", "Vampire_ScalePlayerDamage", function(ply, hitgrou
             newinfo:SetDamagePosition(dmginfo:GetDamagePosition())
             newinfo:SetReportedPosition(dmginfo:GetReportedPosition())
             att:TakeDamageInfo(newinfo)
-
-            -- Remove the damage dealt to the prime
-            dmginfo:ScaleDamage(0)
-            dmginfo:SetDamage(0)
-        -- Remove the damage dealt to the prime
-        elseif prime_friendly_fire_mode == VAMPIRE_THRALL_FF_MODE_IMMUNE then
-            dmginfo:ScaleDamage(0)
-            dmginfo:SetDamage(0)
         end
+
+        -- In either case, remove the damage dealt to the prime
+        -- This is used by both VAMPIRE_THRALL_FF_MODE_REFLECT and VAMPIRE_THRALL_FF_MODE_IMMUNE
+        dmginfo:ScaleDamage(0)
+        dmginfo:SetDamage(0)
     -- Otherwise apply damage scaling
     elseif dmginfo:IsBulletDamage() then
         local reduction = vampire_damage_reduction:GetFloat()

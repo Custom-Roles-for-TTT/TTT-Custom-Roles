@@ -29,6 +29,7 @@ local zombie_prime_speed_bonus = CreateConVar("ttt_zombie_prime_speed_bonus", "0
 local zombie_thrall_speed_bonus = CreateConVar("ttt_zombie_thrall_speed_bonus", "0.15", FCVAR_NONE, "The amount of bonus speed a zombie thrall (e.g. non-prime zombie) should get when using their claws. Server or round must be restarted for changes to take effect", 0, 1)
 local zombie_vision_enable = CreateConVar("ttt_zombie_vision_enable", "0")
 local zombie_respawn_health = CreateConVar("ttt_zombie_respawn_health", "100", FCVAR_NONE, "The amount of health a player should respawn with when they are converted to a zombie thrall", 1, 200)
+local zombie_friendly_fire = CreateConVar("ttt_zombie_friendly_fire", "2", FCVAR_NONE, "How to handle friendly fire damage between zombies. 0 - Do nothing. 1 - Reflect the damage back to the attacker. 2 - Negate the damage.", 0, 2)
 
 hook.Add("TTTSyncGlobals", "Zombie_TTTSyncGlobals", function()
     SetGlobalBool("ttt_zombies_are_monsters", zombies_are_monsters:GetBool())
@@ -141,18 +142,45 @@ hook.Add("ScalePlayerDamage", "Zombie_ScalePlayerDamage", function(ply, hitgroup
     end
 end)
 
+-- Handle zombie team killing - this can be funny, but it can also be used by frustrated players who didn't appreciate being zombified
 hook.Add("EntityTakeDamage", "Zombie_EntityTakeDamage", function(ent, dmginfo)
-    if not IsValid(ent) then return end
+    if GetRoundState() < ROUND_ACTIVE then return end
+    if not IsPlayer(ent) or not ent:IsZombie() then return end
+
+    local zombie_friendly_fire_mode = zombie_friendly_fire:GetInt()
+    if zombie_friendly_fire_mode <= ZOMBIE_FF_MODE_NONE then return end
+
+    local custom_damage = dmginfo:GetDamageCustom()
+    -- If this is set, assume that we're the ones that set it and don't check this damage info
+    if custom_damage == DMG_AIRBOAT then return end
 
     local att = dmginfo:GetAttacker()
-    if GetRoundState() >= ROUND_ACTIVE and ent:IsPlayer() then
-        -- No zombie team killing
-        -- This can be funny, but it can also be used by frustrated players who didn't appreciate being zombified
-        if ent:IsZombie() and IsPlayer(att) and att:IsZombieAlly() then
-            dmginfo:ScaleDamage(0)
-            dmginfo:SetDamage(0)
+    if not IsPlayer(att) or not att:IsZombieAlly() then return end
+
+    -- Copy the original damage info and send it back on the attacker
+    if zombie_friendly_fire_mode == ZOMBIE_FF_MODE_REFLECT then
+        local infl = dmginfo:GetInflictor()
+        if not IsValid(infl) then
+            infl = game.GetWorld()
         end
+
+        local newinfo = DamageInfo()
+        -- Set this so that we can check for it since it is not normally used in GMod
+        newinfo:SetDamageCustom(DMG_AIRBOAT)
+        newinfo:SetDamage(dmginfo:GetDamage())
+        newinfo:SetDamageType(dmginfo:GetDamageType())
+        newinfo:SetAttacker(att)
+        newinfo:SetInflictor(infl)
+        newinfo:SetDamageForce(dmginfo:GetDamageForce())
+        newinfo:SetDamagePosition(dmginfo:GetDamagePosition())
+        newinfo:SetReportedPosition(dmginfo:GetReportedPosition())
+        att:TakeDamageInfo(newinfo)
     end
+
+    -- In either case, remove the damage
+    -- This is used by both ZOMBIE_FF_MODE_REFLECT and ZOMBIE_FF_MODE_IMMUNE
+    dmginfo:ScaleDamage(0)
+    dmginfo:SetDamage(0)
 end)
 
 -- Zombies don't take fall damage

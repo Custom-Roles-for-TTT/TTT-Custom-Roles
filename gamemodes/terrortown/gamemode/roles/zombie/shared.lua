@@ -4,6 +4,11 @@ local hook = hook
 local IsValid = IsValid
 local table = table
 
+-- Zombie friendly fire modes
+ZOMBIE_FF_MODE_NONE = 0
+ZOMBIE_FF_MODE_REFLECT = 1
+ZOMBIE_FF_MODE_IMMUNE = 2
+
 -- Initialize role features
 ROLE_SHOULD_NOT_DROWN[ROLE_ZOMBIE] = true
 
@@ -203,4 +208,9 @@ table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
     cvar = "ttt_zombie_thrall_attack_delay",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 2
+})
+table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
+    cvar = "ttt_zombie_friendly_fire",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
 })

@@ -624,7 +624,7 @@ L.target_unconfirmed_role = "UNCONFIRMED {targettype}"
 -- Traitor buttons (HUD buttons with hand icons that only traitors can see)
 L.tbut_single = "Single use"
 L.tbut_reuse = "Reusable"
-L.tbut_retime = "Reusable after {num} sec"
+L.tbut_retime = "Reusable after {num} seconds"
 L.tbut_help = "Press {key} to activate"
 
 -- Equipment info lines (on the left above the health/ammo panel)
