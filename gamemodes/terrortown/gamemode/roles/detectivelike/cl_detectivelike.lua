@@ -53,7 +53,7 @@ end)
 -- HUD --
 ---------
 
-AddHook("TTTHUDInfoPaint", "DetectiveLike_TTTHUDInfoPaint", function(client, label_left, label_top)
+AddHook("TTTHUDInfoPaint", "DetectiveLike_TTTHUDInfoPaint", function(client, label_left, label_top, active_labels)
     local hide_role = false
     if ConVarExists("ttt_hide_role") then
         hide_role = GetConVar("ttt_hide_role"):GetBool()
@@ -69,8 +69,14 @@ AddHook("TTTHUDInfoPaint", "DetectiveLike_TTTHUDInfoPaint", function(client, lab
             local text = LANG.GetParamTranslation("detective_special_hidden_hud", { detective = ROLE_STRINGS[ROLE_DETECTIVE] })
             local _, h = surface.GetTextSize(text)
 
+            -- Move this up based on how many other labels here are
+            label_top = label_top + (20 * #active_labels)
+
             surface.SetTextPos(label_left, ScrH() - label_top - h)
             surface.DrawText(text)
+
+            -- Track that the label was added so others can position accurately
+            table.insert(active_labels, "detective_team")
         end
     elseif client:IsDetectiveLike() then
         surface.SetFont("TabLarge")
@@ -79,8 +85,14 @@ AddHook("TTTHUDInfoPaint", "DetectiveLike_TTTHUDInfoPaint", function(client, lab
         local text = LANG.GetParamTranslation("detective_promotion_hud", { detective = ROLE_STRINGS[ROLE_DETECTIVE] })
         local _, h = surface.GetTextSize(text)
 
+        -- Move this up based on how many other labels here are
+        label_top = label_top + (20 * #active_labels)
+
         surface.SetTextPos(label_left, ScrH() - label_top - h)
         surface.DrawText(text)
+
+        -- Track that the label was added so others can position accurately
+        table.insert(active_labels, "detective_like")
     end
 end)
 
