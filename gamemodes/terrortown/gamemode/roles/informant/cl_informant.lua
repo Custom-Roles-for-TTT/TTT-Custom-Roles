@@ -185,6 +185,95 @@ hook.Add("TTTScoreboardPlayerRole", "Informant_TTTScoreboardPlayerRole", functio
     end
 end)
 
+-----------------
+-- SCANNER HUD --
+-----------------
+
+local function DrawStructure(ply, x, y, w, h, m, color)
+    local r, g, b, a = color:Unpack()
+    surface.SetDrawColor(r, g, b, a)
+    surface.DrawCircle(x, ScrH() / 2, math.Round(ScrW() / 6), r, g, b, a)
+
+    surface.DrawOutlinedRect(x - m - (3 * w) / 2, y - h, w, h)
+    surface.DrawOutlinedRect(x - w / 2, y - h, w, h)
+    surface.DrawOutlinedRect(x + m + w / 2, y - h, w, h)
+
+    surface.SetFont("TabLarge")
+    surface.SetTextColor(255, 255, 255, 180)
+    surface.SetTextPos((x - m - (3 * w) / 2) + 3, y - h - 15)
+    surface.DrawText(ply:GetNWString("TTTInformantScannerMessage", ""))
+
+    local T = LANG.GetTranslation
+    surface.SetTextPos((x - m - (3 * w) / 2) +  (w / 3), y - h + 3)
+    surface.DrawText(T("infscanner_team"))
+
+    surface.SetTextPos((x - m - (3 * w) / 2) + w + (w / 2) - 3, y - h + 3)
+    surface.DrawText(T("infscanner_role"))
+
+    surface.SetTextPos((x - m - (3 * w) / 2) + (2 * w) + (w / 2), y - h + 3)
+    surface.DrawText(T("infscanner_track"))
+end
+
+hook.Add("HUDPaint", "Informant_HUDPaint", function()
+    local ply = LocalPlayer()
+
+    if not IsValid(ply) or ply:IsSpec() or GetRoundState() ~= ROUND_ACTIVE then return end
+
+    if ply:IsInformant() and (not GetGlobalBool("ttt_informant_requires_scanner", false) or (ply.GetActiveWeapon and IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() == "weapon_inf_scanner")) then
+
+        local state = ply:GetNWInt("TTTInformantScannerState", INFORMANT_SCANNER_IDLE)
+
+        if state == INFORMANT_SCANNER_IDLE then
+            surface.DrawCircle(ScrW() / 2, ScrH() / 2, math.Round(ScrW() / 6), 0, 255, 0, 155)
+            return
+        end
+
+        local scan = GetGlobalInt("ttt_informant_scanner_time", 8)
+        local time = ply:GetNWFloat("TTTInformantScannerStartTime", -1) + scan
+
+        local x = ScrW() / 2.0
+        local y = ScrH() / 2.0
+
+        y = y + (y / 3)
+
+        local w, h = 100, 20
+        local m = 10
+
+        if state == INFORMANT_SCANNER_LOCKED or state == INFORMANT_SCANNER_SEARCHING then
+            if time < 0 then return end
+
+            local color = Color(255, 255, 0, 155)
+            if state == INFORMANT_SCANNER_LOCKED then
+                color = Color(0, 255, 0, 155)
+            end
+
+            DrawStructure(ply, x, y, w, h, m, color)
+
+            local target = player.GetBySteamID64(ply:GetNWString("TTTInformantScannerTarget", ""))
+            local targetState = target:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
+
+            local cc = math.min(1, 1 - ((time - CurTime()) / scan))
+            if targetState == INFORMANT_UNSCANNED then
+                surface.DrawRect(x - m - (3 * w) / 2, y - h, w * cc, h)
+            elseif targetState == INFORMANT_SCANNED_TEAM then
+                surface.DrawRect(x - m - (3 * w) / 2, y - h, w, h)
+                surface.DrawRect(x - w / 2, y - h, w * cc, h)
+            elseif targetState == INFORMANT_SCANNED_ROLE then
+                surface.DrawRect(x - m - (3 * w) / 2, y - h, w, h)
+                surface.DrawRect(x - w / 2, y - h, w, h)
+                surface.DrawRect(x + m + w / 2, y - h, w * cc, h)
+            end
+        elseif state == INFORMANT_SCANNER_LOST then
+            local color = Color(200 + math.sin(CurTime() * 32) * 50, 0, 0, 155)
+            DrawStructure(ply, x, y, w, h, m, color)
+
+            surface.DrawRect(x - m - (3 * w) / 2, y - h, w, h)
+            surface.DrawRect(x - w / 2, y - h, w, h)
+            surface.DrawRect(x + m + w / 2, y - h, w, h)
+        end
+    end
+end)
+
 --------------
 -- TUTORIAL --
 --------------

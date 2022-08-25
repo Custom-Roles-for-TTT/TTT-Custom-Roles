@@ -8,6 +8,24 @@ INFORMANT_SCANNED_TEAM = 1
 INFORMANT_SCANNED_ROLE = 2
 INFORMANT_SCANNED_TRACKED = 3
 
+INFORMANT_SCANNER_IDLE = 0
+INFORMANT_SCANNER_LOCKED = 1
+INFORMANT_SCANNER_SEARCHING = 2
+INFORMANT_SCANNER_LOST = 3
+
+-----------------
+-- ROLE WEAPON --
+-----------------
+
+hook.Add("TTTUpdateRoleState", "Informant_TTTUpdateRoleState", function()
+    local informant_scanner = weapons.GetStored("weapon_inf_scanner")
+    if GetGlobalBool("ttt_informant_requires_scanner", false) then
+        informant_scanner.InLoadoutFor = table.Copy(informant_scanner.InLoadoutForDefault)
+    else
+        table.Empty(informant_scanner.InLoadoutFor)
+    end
+end)
+
 ------------------
 -- ROLE CONVARS --
 ------------------
@@ -23,6 +41,10 @@ table.insert(ROLE_CONVARS[ROLE_INFORMANT], {
 })
 table.insert(ROLE_CONVARS[ROLE_INFORMANT], {
     cvar = "ttt_informant_can_scan_glitches",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_INFORMANT], {
+    cvar = "ttt_informant_requires_scanner",
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_INFORMANT], {
