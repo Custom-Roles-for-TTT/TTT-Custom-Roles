@@ -424,7 +424,8 @@ local function InfoPaint(client)
     end
 
     -- Allow other addons to add stuff to the player info HUD
-    CallHook("TTTHUDInfoPaint", nil, client, label_left, label_top)
+    local active_labels = {}
+    CallHook("TTTHUDInfoPaint", nil, client, label_left, label_top, active_labels)
 end
 
 -- Paints player status HUD element in the bottom left

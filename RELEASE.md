@@ -1,10 +1,13 @@
 # Release Notes
 
 ## 1.6.11 (Beta)
-**Released: **
+**Released:**
 
 ### Changes
 - Changed informant to be able to scan players passively without needed to hold the scanner (enabled by default)
+
+### Developer
+- Added new `activeLabels` parameter to TTTHUDInfoPaint hook to allow position offset based on the number of existing labels
 
 ## 1.6.10 (Beta)
 **Released: August 21st, 2022**

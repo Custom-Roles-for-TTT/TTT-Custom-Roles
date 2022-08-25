@@ -127,7 +127,7 @@ end)
 -- HUD --
 ---------
 
-hook.Add("TTTHUDInfoPaint", "LootGoblin_TTTHUDInfoPaint", function(client, label_left, label_top)
+hook.Add("TTTHUDInfoPaint", "LootGoblin_TTTHUDInfoPaint", function(client, label_left, label_top, active_labels)
     local hide_role = false
     if ConVarExists("ttt_hide_role") then
         hide_role = GetConVar("ttt_hide_role"):GetBool()
@@ -143,8 +143,14 @@ hook.Add("TTTHUDInfoPaint", "LootGoblin_TTTHUDInfoPaint", function(client, label
         local text = LANG.GetParamTranslation("lootgoblin_hud", { time = util.SimpleTime(remaining, "%02i:%02i") })
         local _, h = surface.GetTextSize(text)
 
+        -- Move this up based on how many other labels here are
+        label_top = label_top + (20 * #active_labels)
+
         surface.SetTextPos(label_left, ScrH() - label_top - h)
         surface.DrawText(text)
+
+        -- Track that the label was added so others can position accurately
+        table.insert(active_labels, "lootgoblin")
     end
 end)
 

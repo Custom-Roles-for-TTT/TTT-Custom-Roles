@@ -105,7 +105,7 @@ end)
 -- HUD --
 ---------
 
-hook.Add("TTTHUDInfoPaint", "Bodysnatcher_TTTHUDInfoPaint", function(client, label_left, label_top)
+hook.Add("TTTHUDInfoPaint", "Bodysnatcher_TTTHUDInfoPaint", function(client, label_left, label_top, active_labels)
     local hide_role = false
     if ConVarExists("ttt_hide_role") then
         hide_role = GetConVar("ttt_hide_role"):GetBool()
@@ -131,8 +131,14 @@ hook.Add("TTTHUDInfoPaint", "Bodysnatcher_TTTHUDInfoPaint", function(client, lab
             end
             local _, h = surface.GetTextSize(text)
 
+            -- Move this up based on how many other labels here are
+            label_top = label_top + (20 * #active_labels)
+
             surface.SetTextPos(label_left, ScrH() - label_top - h)
             surface.DrawText(text)
+
+            -- Track that the label was added so others can position accurately
+            table.insert(active_labels, "bodysnatcher")
         end
     end
 end)
