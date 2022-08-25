@@ -3,6 +3,9 @@
 ## 1.6.11 (Beta)
 **Released:**
 
+### Additions
+- Added ability to control whether player colors are set each time they spawn (enabled by default)
+
 ### Changes
 - Changed informant to be able to scan players passively without needed to hold the scanner (enabled by default)
 
