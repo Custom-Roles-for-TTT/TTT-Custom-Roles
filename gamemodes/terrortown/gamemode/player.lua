@@ -24,6 +24,8 @@ CreateConVar("ttt_dyingshot", "0")
 CreateConVar("ttt_killer_dna_range", "550")
 CreateConVar("ttt_killer_dna_basetime", "100")
 
+local player_set_color = CreateConVar("ttt_player_set_color", "1", FCVAR_NONE, "Whether to set the player's color when they spawn", 0, 1)
+
 -- First spawn on the server
 function GM:PlayerInitialSpawn(ply)
     if not GAMEMODE.cvar_init then
@@ -286,6 +288,8 @@ function GM:PlayerSetModel(ply)
 end
 
 function GM:TTTPlayerSetColor(ply)
+    if not player_set_color:GetBool() then return end
+
     local clr = COLOR_WHITE
     if GAMEMODE.playercolor then
         -- If this player has a colorable model, always use the same color as all
