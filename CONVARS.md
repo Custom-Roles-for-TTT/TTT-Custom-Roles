@@ -234,12 +234,12 @@ ttt_parasite_cure_mode                      2       // How to handle using a par
 ttt_parasite_cure_time                      3       // The amount of time (in seconds) the parasite cure takes to use
 ttt_parasite_credits_starting               1       // The number of credits a parasite should start with
 ttt_single_phantom_parasite                 0       // Whether only a single phantom or parasite should spawn in a round
-
-// Informant
+Informant
+// 
 ttt_informant_share_scans                   1       // Whether the informant should automatically share their information with fellow traitors or not
 ttt_informant_can_scan_jesters              0       // Whether the informant should be able to scan jesters
 ttt_informant_can_scan_glitches             0       // Whether the informant should be able to scan glitches
-informant_requires_scanner                  0       // Whetehr the informant needs to hold the scanner item to be able to scan players
+ttt_informant_requires_scanner              0       // Whether the informant needs to hold the scanner item to be able to scan players
 ttt_informant_scanner_time                  8       // The amount of time (in seconds) the informant's scanner takes to use
 ttt_informant_scanner_float_time            1       // The amount of time (in seconds) it takes for the informant's scanner to lose it's target without line of sight
 ttt_informant_scanner_cooldown              3       // The amount of time (in seconds) the informant's tracker goes on cooldown for after losing it's target
