@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.6.11 (Beta)
+**Released: **
+
+### Changes
+- Changed informant to be able to scan players passively without needed to hold the scanner (enabled by default)
+
 ## 1.6.10 (Beta)
 **Released: August 21st, 2022**
 

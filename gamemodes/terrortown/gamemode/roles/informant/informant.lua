@@ -13,11 +13,18 @@ local GetAllPlayers = player.GetAll
 local informant_share_scans = CreateConVar("ttt_informant_share_scans", "1")
 local informant_can_scan_jesters = CreateConVar("ttt_informant_can_scan_jesters", "0")
 local informant_can_scan_glitches = CreateConVar("ttt_informant_can_scan_glitches", "0")
+local informant_requires_scanner = CreateConVar("ttt_informant_requires_scanner", "0")
+local informant_scanner_time = CreateConVar("ttt_informant_scanner_time", "8", FCVAR_NONE, "The amount of time (in seconds) the informant's scanner takes to use", 0, 60)
+local informant_scanner_float_time = CreateConVar("ttt_informant_scanner_float_time", "1", FCVAR_NONE, "The amount of time (in seconds) it takes for the informant's scanner to lose it's target without line of sight", 0, 60)
+local informant_scanner_cooldown = CreateConVar("ttt_informant_scanner_cooldown", "3", FCVAR_NONE, "The amount of time (in seconds) the informant's tracker goes on cooldown for after losing it's target", 0, 60)
+local informant_scanner_distance = CreateConVar("ttt_informant_scanner_distance", "2500", FCVAR_NONE, "The maximum distance away the scanner target can be", 1000, 10000)
 
 hook.Add("TTTSyncGlobals", "Informant_TTTSyncGlobals", function()
     SetGlobalBool("ttt_informant_share_scans", informant_share_scans:GetBool())
     SetGlobalBool("ttt_informant_can_scan_jesters", informant_can_scan_jesters:GetBool())
     SetGlobalBool("ttt_informant_can_scan_glitches", informant_can_scan_glitches:GetBool())
+    SetGlobalBool("ttt_informant_requires_scanner", informant_requires_scanner:GetBool())
+    SetGlobalInt("ttt_informant_scanner_time", informant_scanner_time:GetInt())
 end)
 
 ------------------
@@ -74,6 +81,12 @@ end
 hook.Add("TTTPrepareRound", "Informant_TTTPrepareRound", function()
     for _, v in pairs(GetAllPlayers()) do
         v:SetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
+        v:SetNWInt("TTTInformantScannerState", INFORMANT_SCANNER_IDLE)
+        v:SetNWString("TTTInformantScannerTarget", "")
+        v:SetNWString("TTTInformantScannerMessage", "")
+        v:SetNWFloat("TTTInformantScannerStartTime", -1)
+        v:SetNWFloat("TTTInformantScannerTargetLostTime", -1)
+        v:SetNWFloat("TTTInformantScannerCooldown", -1)
     end
 end)
 
@@ -92,6 +105,16 @@ end)
 hook.Add("TTTPlayerRoleChanged", "Informant_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if oldRole == newRole then return end
     if GetRoundState() ~= ROUND_ACTIVE then return end
+
+    if oldRole == ROLE_INFORMANT then
+        ply:SetNWInt("TTTInformantScannerState", INFORMANT_SCANNER_IDLE)
+        ply:SetNWString("TTTInformantScannerTarget", "")
+        ply:SetNWString("TTTInformantScannerMessage", "")
+        ply:SetNWFloat("TTTInformantScannerStartTime", -1)
+        ply:SetNWFloat("TTTInformantScannerTargetLostTime", -1)
+        ply:SetNWFloat("TTTInformantScannerCooldown", -1)
+    end
+
     if not HasInformant() then return end
 
     if ply:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED) > INFORMANT_UNSCANNED then
@@ -106,4 +129,160 @@ hook.Add("TTTPlayerRoleChanged", "Informant_TTTPlayerRoleChanged", function(ply,
     end
 
     SetDefaultScanState(ply)
+end)
+
+-------------
+-- SCANNER --
+-------------
+
+local function IsTargetingPlayer(ply)
+    if not IsValid(ply) then return false end
+
+    local tr = ply:GetEyeTrace(MASK_SHOT)
+    local ent = tr.Entity
+
+    return (IsPlayer(ent) and ent:IsActive()) and ent or false
+end
+
+local function TargetLost(ply)
+    if not IsValid(ply) then return end
+
+    ply:SetNWInt("TTTInformantScannerState", INFORMANT_SCANNER_LOST)
+    ply:SetNWString("TTTInformantScannerTarget", "")
+    ply:SetNWString("TTTInformantScannerMessage", "TARGET LOST")
+    ply:SetNWFloat("TTTInformantScannerStartTime", -1)
+    ply:SetNWFloat("TTTInformantScannerCooldown", CurTime())
+end
+
+local function Announce(ply, message)
+    if not IsValid(ply) then return end
+
+    ply:PrintMessage(HUD_PRINTTALK, "You have " .. message)
+    if not GetGlobalBool("ttt_informant_share_scans", true) then return end
+
+    for _, p in pairs(GetAllPlayers()) do
+        if p:IsActiveTraitorTeam() and p ~= ply then
+            p:PrintMessage(HUD_PRINTTALK, "The informant has " .. message)
+        end
+    end
+end
+
+local function InRange(ply, target)
+    if not IsValid(ply) or not IsValid(target) then return false end
+
+    if not ply:IsLineOfSightClear(target) then return false end
+
+    local plyPos = ply:GetPos()
+    local targetPos = target:GetPos()
+    if plyPos:Distance(targetPos) > informant_scanner_distance:GetInt() then return false end
+
+    return ply:IsOnScreen(target, 0.35)
+end
+
+local function ScanAllowed(ply, target)
+    if not IsValid(ply) or not IsValid(target) then return false end
+    if not IsPlayer(target) then return false end
+    if not target:IsActive() then return false end
+    if not InRange(ply, target) then return false end
+    if target:IsJesterTeam() and not GetConVar("ttt_informant_can_scan_jesters"):GetBool() then return false end
+    if (target:IsGlitch() or target:IsTraitorTeam()) then
+        if not GetConVar("ttt_informant_can_scan_glitches"):GetBool() then return false end
+        if target:IsGlitch() then return true end
+        local glitchMode = GetConVar("ttt_glitch_mode"):GetInt()
+        if GetGlobalBool("ttt_glitch_round", false) and ((glitchMode == GLITCH_SHOW_AS_TRAITOR and target:IsTraitor()) or glitchMode >= GLITCH_SHOW_AS_SPECIAL_TRAITOR) then
+            return true
+        else
+            return false
+        end
+    end
+    return true
+end
+
+local function Scan(ply, target)
+    if not IsValid(ply) or not IsValid(target) then return end
+
+    if target:IsActive() then
+        local stage = target:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
+        if CurTime() - ply:GetNWFloat("TTTInformantScannerStartTime", -1) >= informant_scanner_time:GetInt() then
+            stage = stage + 1
+            if stage == INFORMANT_SCANNED_TEAM then
+                local message = "discovered that " .. target:Nick() .. " is "
+                if target:IsInnocentTeam() then
+                    message = message .. "an innocent role."
+                elseif target:IsIndependentTeam() then
+                    message = message .. "an independent role."
+                elseif target:IsMonsterTeam() then
+                    message = message .. "a monster role."
+                end
+
+                Announce(ply, message)
+                ply:SetNWFloat("TTTInformantScannerStartTime", CurTime())
+            elseif stage == INFORMANT_SCANNED_ROLE then
+                Announce(ply, "discovered that " .. target:Nick() .. " is " .. ROLE_STRINGS_EXT[target:GetRole()] .. ".")
+                ply:SetNWFloat("TTTInformantScannerStartTime", CurTime())
+            elseif stage == INFORMANT_SCANNED_TRACKED then
+                Announce(ply, "tracked the movements of " .. target:Nick() .. " (" .. ROLE_STRINGS[target:GetRole()] .. ").")
+                ply:SetNWInt("TTTInformantScannerState", INFORMANT_SCANNER_IDLE)
+                ply:SetNWString("TTTInformantScannerTarget", "")
+                ply:SetNWString("TTTInformantScannerMessage", "")
+                ply:SetNWFloat("TTTInformantScannerStartTime", -1)
+            end
+            target:SetNWInt("TTTInformantScanStage", stage)
+        end
+    else
+        TargetLost(ply)
+    end
+end
+
+hook.Add("TTTPlayerAliveThink", "Informant_TTTPlayerAliveThink", function(ply)
+    if not IsValid(ply) or ply:IsSpec() or GetRoundState() ~= ROUND_ACTIVE then return end
+
+    if ply:IsInformant() then
+        local state = ply:GetNWInt("TTTInformantScannerState", INFORMANT_SCANNER_IDLE)
+        if state == INFORMANT_SCANNER_IDLE then
+            local target = IsTargetingPlayer(ply)
+            if target and (not GetGlobalBool("ttt_informant_requires_scanner", false) or (ply.GetActiveWeapon and IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() == "weapon_inf_scanner")) then
+                if target:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED) < INFORMANT_SCANNED_TRACKED and ScanAllowed(ply, target) then
+                    ply:SetNWInt("TTTInformantScannerState", INFORMANT_SCANNER_LOCKED)
+                    ply:SetNWString("TTTInformantScannerTarget", target:SteamID64())
+                    ply:SetNWString("TTTInformantScannerMessage", "SCANNING " .. string.upper(target:Nick()))
+                    ply:SetNWFloat("TTTInformantScannerStartTime", CurTime())
+                end
+            end
+        elseif state == INFORMANT_SCANNER_LOCKED then
+            local target = player.GetBySteamID64(ply:GetNWString("TTTInformantScannerTarget", ""))
+            if target:IsActive() then
+                if not InRange(ply, target) then
+                    ply:SetNWInt("TTTInformantScannerState", INFORMANT_SCANNER_SEARCHING)
+                    ply:SetNWString("TTTInformantScannerMessage", "SCANNING " .. string.upper(target:Nick()) .. " (LOSING TARGET)")
+                    ply:SetNWFloat("TTTInformantScannerTargetLostTime", CurTime())
+                end
+                Scan(ply, target)
+            else
+                TargetLost(ply)
+            end
+        elseif state == INFORMANT_SCANNER_SEARCHING then
+            local target = player.GetBySteamID64(ply:GetNWString("TTTInformantScannerTarget", ""))
+            if target:IsActive() then
+                if (CurTime() - ply:GetNWInt("TTTInformantScannerTargetLostTime", -1)) >= informant_scanner_float_time:GetInt() then
+                    TargetLost(ply)
+                else
+                    if InRange(ply, target) then
+                        ply:SetNWInt("TTTInformantScannerState", INFORMANT_SCANNER_LOCKED)
+                        ply:SetNWString("TTTInformantScannerMessage", "SCANNING " .. string.upper(target:Nick()))
+                        ply:SetNWFloat("TTTInformantScannerTargetLostTime", -1)
+                    end
+                    Scan(ply, target)
+                end
+            else
+                TargetLost(ply)
+            end
+        elseif state == INFORMANT_SCANNER_LOST then
+            if (CurTime() - ply:GetNWFloat("TTTInformantScannerCooldown", -1)) >= informant_scanner_cooldown:GetInt() then
+                ply:SetNWInt("TTTInformantScannerState", INFORMANT_SCANNER_IDLE)
+                ply:SetNWString("TTTInformantScannerMessage", "")
+                ply:SetNWFloat("TTTInformantScannerCooldown", -1)
+            end
+        end
+    end
 end)

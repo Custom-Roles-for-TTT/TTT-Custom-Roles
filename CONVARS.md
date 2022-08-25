@@ -239,6 +239,7 @@ ttt_single_phantom_parasite                 0       // Whether only a single pha
 ttt_informant_share_scans                   1       // Whether the informant should automatically share their information with fellow traitors or not
 ttt_informant_can_scan_jesters              0       // Whether the informant should be able to scan jesters
 ttt_informant_can_scan_glitches             0       // Whether the informant should be able to scan glitches
+informant_requires_scanner                  0       // Whetehr the informant needs to hold the scanner item to be able to scan players
 ttt_informant_scanner_time                  8       // The amount of time (in seconds) the informant's scanner takes to use
 ttt_informant_scanner_float_time            1       // The amount of time (in seconds) it takes for the informant's scanner to lose it's target without line of sight
 ttt_informant_scanner_cooldown              3       // The amount of time (in seconds) the informant's tracker goes on cooldown for after losing it's target
