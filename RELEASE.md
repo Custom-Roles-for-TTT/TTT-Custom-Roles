@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.6.11 (Beta)
-**Released:**
+**Released: August 27th, 2022**
 
 ### Additions
 - Added ability to control whether player colors are set each time they spawn (enabled by default)
