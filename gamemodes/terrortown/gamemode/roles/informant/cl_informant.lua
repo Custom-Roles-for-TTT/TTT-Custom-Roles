@@ -192,7 +192,7 @@ end)
 local function DrawStructure(ply, x, y, w, h, m, color)
     local r, g, b, a = color:Unpack()
     surface.SetDrawColor(r, g, b, a)
-    surface.DrawCircle(x, ScrH() / 2, math.Round(ScrW() / 6), r, g, b, a)
+    surface.DrawCircle(x, ScrH() / 2, math.Round(ScrW() / 6), r, g, b, 77)
 
     surface.DrawOutlinedRect(x - m - (3 * w) / 2, y - h, w, h)
     surface.DrawOutlinedRect(x - w / 2, y - h, w, h)
