@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.6.12 (Beta)
+**Released:**
+
+### Additions
+- Added ability to set chance a drunk will become a traitor explicitly rather than the default logic where traitor roles have the same chance as all non-innocent roles (disabled by default)
+
 ## 1.6.11 (Beta)
 **Released: August 27th, 2022**
 

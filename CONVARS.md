@@ -462,6 +462,7 @@ ttt_independents_update_scoreboard          0       // Whether all independent r
 // Drunk
 ttt_drunk_sober_time                        180     // Time in seconds for the drunk to remember their role
 ttt_drunk_innocent_chance                   0.7     // Chance that the drunk will become an innocent role when remembering their role
+ttt_drunk_traitor_chance                    0       // Chance that the drunk will become a traitor role when remembering their role and ttt_drunk_any_role is enabled. If disabled (0), player chance of becoming a traitor is equal to every other non-innocent role
 ttt_drunk_become_clown                      0       // Whether the drunk should become a clown (instead of joining the losing team) if the round would end before they sober up
 ttt_drunk_notify_mode                       0       // The logic to use when notifying players that a drunk has sobered up. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
 ttt_drunk_any_role                          0       // Whether the drunk can become any enabled role (other than the drunk, the glitch, or roles that were already used this round). The ttt_drunk_can_be_* convars below can be used to prevent the drunk from becoming specific roles
