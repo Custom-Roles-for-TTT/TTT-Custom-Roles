@@ -197,6 +197,7 @@ ttt_vampire_vision_enable                   0       // Whether vampires have the
 ttt_vampire_drain_enable                    1       // Whether vampires have the ability to drain a living target's blood using their fangs
 ttt_vampire_drain_first                     0       // Whether vampires should drain a living target's blood first rather than converting first
 ttt_vampire_drain_credits                   0       // How many credits a vampire should get for draining a living target
+ttt_vampire_drain_mute_target               0       // Whether players being drained by a vampire should be muted
 ttt_vampire_convert_enable                  0       // Whether vampires have the ability to convert living targets to a vampire thrall using their fangs
 ttt_vampire_show_target_icon                0       // Whether vampires have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect.
 ttt_vampire_damage_reduction                0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a vampire
@@ -462,6 +463,7 @@ ttt_independents_update_scoreboard          0       // Whether all independent r
 // Drunk
 ttt_drunk_sober_time                        180     // Time in seconds for the drunk to remember their role
 ttt_drunk_innocent_chance                   0.7     // Chance that the drunk will become an innocent role when remembering their role
+ttt_drunk_traitor_chance                    0       // Chance that the drunk will become a traitor role when remembering their role and ttt_drunk_any_role is enabled. If disabled (0), player chance of becoming a traitor is equal to every other non-innocent role
 ttt_drunk_become_clown                      0       // Whether the drunk should become a clown (instead of joining the losing team) if the round would end before they sober up
 ttt_drunk_notify_mode                       0       // The logic to use when notifying players that a drunk has sobered up. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
 ttt_drunk_any_role                          0       // Whether the drunk can become any enabled role (other than the drunk, the glitch, or roles that were already used this round). The ttt_drunk_can_be_* convars below can be used to prevent the drunk from becoming specific roles

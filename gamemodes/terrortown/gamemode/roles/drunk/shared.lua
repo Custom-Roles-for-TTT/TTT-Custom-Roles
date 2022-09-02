@@ -24,6 +24,11 @@ table.insert(ROLE_CONVARS[ROLE_DRUNK], {
     decimal = 2
 })
 table.insert(ROLE_CONVARS[ROLE_DRUNK], {
+    cvar = "ttt_drunk_traitor_chance",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 2
+})
+table.insert(ROLE_CONVARS[ROLE_DRUNK], {
     cvar = "ttt_drunk_become_clown",
     type = ROLE_CONVAR_TYPE_BOOL
 })

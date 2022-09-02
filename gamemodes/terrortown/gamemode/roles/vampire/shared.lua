@@ -122,6 +122,10 @@ table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
     decimal = 0
 })
 table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
+    cvar = "ttt_vampire_drain_mute_target",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
     cvar = "ttt_vampire_kill_credits",
     type = ROLE_CONVAR_TYPE_BOOL
 })
