@@ -49,11 +49,11 @@
 - Added ability for the beggar to respawn as the opposite role of the person that killed them (disabled by default)
 - Added ability to set the maximum health of the swapper's killer (disabled by default)
 
-### Fixes
-- Fixed the `ttt_beggar_respawn_delay` convar not working
-
 ### Changes
 - Changed the shop to refresh when an item is added or removed from your favorites (Thanks @Callum!)
+
+### Fixes
+- Fixed the `ttt_beggar_respawn_delay` convar not working
 
 ## 1.6.7 (Beta)
 **Released: July 30th, 2022**
@@ -76,6 +76,10 @@
 ### Additions
 - Added option to have turncoat automatically change teams when they kill a innocent team member (disabled by default)
 
+### Changes
+- Changed turncoat's announcement message to say explicitly that they joined the traitors
+- Changed so killing the old man does not award credits to anyone
+
 ### Fixes
 - Fixed traitors seeing the deputy role icon on the scoreboard for promoted deputies instead of the detective icon
 - Fixed traitors seeing the detective role icon on the scoreboard for impersonators who haven't been promoted yet when `ttt_impersonator_use_detective_icon` is enabled
@@ -84,25 +88,21 @@
 - Fixed error switching tabs in the equipment window if shop tab wasn't displaying any items (Thanks @Callum!)
 - Fixed beggar sometimes being shown duplicate team join notifications depending on the `ttt_beggar_reveal_*` convars
 
-### Changes
-- Changed turncoat's announcement message to say explicitly that they joined the traitors
-- Changed so killing the old man does not award credits to anyone
-
 ## 1.6.5 (Beta)
 **Released: July 16th, 2022**
-
-### Fixes
-- Fixed roles which can block wins from causing invalid win conditions if their logic doesn't return anything
-  - Fixes an error that occurred when a round ended due to a map win or time limit win before the drunk had sobered up
-- Fixed turncoat who was an assassin's target changing teams not causing the assassin to get a new target
-
-### Changes
-- Changed how round end logic interacts with different roles to hopefully prevent an error from stopping the round from ending
 
 ### Additions
 - Added ability for smoke grenades to extinguish fire (enabled by default)
 - Added ability for non-prime vampires to have their damage against prime vampires reflected back on them (disabled by default) (Thanks @Excentyl!)
 - Added ability to configure the amount of haunting willpower a phantom starts with when they are killed (0 by default)
+
+### Changes
+- Changed how round end logic interacts with different roles to hopefully prevent an error from stopping the round from ending
+
+### Fixes
+- Fixed roles which can block wins from causing invalid win conditions if their logic doesn't return anything
+  - Fixes an error that occurred when a round ended due to a map win or time limit win before the drunk had sobered up
+- Fixed turncoat who was an assassin's target changing teams not causing the assassin to get a new target
 
 ## 1.6.4 
 **Released: July 9th, 2022**\
@@ -111,6 +111,14 @@ Includes all beta updates from [1.6.1](#161-beta) to [1.6.3](#163-beta).
 ## 1.6.3 (Beta)
 **Released: July 8th, 2022**
 
+### Additions
+- Added ability for time limit wins to be counted as draws, controlled by the new `ttt_roundtime_win_draw` convar (disabled by default)
+- Added ability for detectives to glow the detective role color (disabled by default)
+
+### Changes
+- Changed small role icons to be cached to improve performance when rendering the scoreboard (Thanks @TheXnator!)
+- Changed overhead role icons to be cached to improve performance
+
 ### Fixes
 - Fixed NPC hack used for medium ghost positions being targeted by AI like manhacks
 - Fixed timeout wins not being detectable by `TTTScoringWinTitle` and `TTTScoringSecondaryWins` hooks
@@ -118,16 +126,12 @@ Includes all beta updates from [1.6.1](#161-beta) to [1.6.3](#163-beta).
 - Fixed radio only being usable by vanilla traitors
 - Fixed incompatibility with the cloaking device on the workshop
 
-### Changes
-- Changed small role icons to be cached to improve performance when rendering the scoreboard (Thanks @TheXnator!)
-- Changed overhead role icons to be cached to improve performance
-
-### Additions
-- Added ability for time limit wins to be counted as draws, controlled by the new `ttt_roundtime_win_draw` convar (disabled by default)
-- Added ability for detectives to glow the detective role color (disabled by default)
-
 ## 1.6.2 (Beta)
 **Released: June 26th, 2022**
+
+### Changes
+- Changed player role icons (over their heads) and highlighting to ignore map optimizations which prevented them from updating regularly (Thanks to wget for the logic help!)
+  - This is controlled by a new client-side convar, `ttt_bypass_culling`, which is enabled by default and available in the F1 settings menu
 
 ### Fixes
 - Fixed scoreboard showing the impersonator color and icon when there was a glitch and `ttt_glitch_mode` was `2`
@@ -135,10 +139,6 @@ Includes all beta updates from [1.6.1](#161-beta) to [1.6.3](#163-beta).
 - Fixed overhead role icon showing the impersonator color and icon when there was a glitch and `ttt_glitch_mode` was `2`
 - Fixed chance of two impersonators spawning when `ttt_impersonator_detective_chance` is used
 - Fixed impersonator not getting activation credits when they are immediately promoted because `ttt_impersonator_detective_chance` is used
-
-### Changes
-- Changed player role icons (over their heads) and highlighting to ignore map optimizations which prevented them from updating regularly (Thanks to wget for the logic help!)
-  - This is controlled by a new client-side convar, `ttt_bypass_culling`, which is enabled by default and available in the F1 settings menu
 
 ### Developer
 - Added `plymeta:ShouldAvoidDetective` as an alias for `plymeta:GetAvoidDetective`
@@ -149,6 +149,14 @@ Includes all beta updates from [1.6.1](#161-beta) to [1.6.3](#163-beta).
 ## 1.6.1 (Beta)
 **Released: June 18th, 2022**
 
+### Additions
+- Added setting to control whether sprint is enabled (enabled by default)
+- Added setting to move the mad scientist to the monster team (disabled by default)
+- Added setting to control the maximum number of monsters to spawn each round (defaults to 1)
+
+### Changes
+- Changed round end summary tab to have a scrollbar if it is too tall to fit on the screen
+
 ### Fixes
 - Fixed monster role count logic not working for external monster roles
 - Fixed body search window title showing the name of the body for non-detectives when `ttt_detective_search_only` was disabled and `ttt_detective_search_only_nick` was enabled
@@ -157,14 +165,6 @@ Includes all beta updates from [1.6.1](#161-beta) to [1.6.3](#163-beta).
 - Fixed non-detectives searching a body a second time revealing information that should be hidden based on the `ttt_detective_search_only_*` convars
 - Fixed non-detectives searching a dead player causing their name to show when looking at the body when `ttt_detective_search_only` was disabled and `ttt_detective_search_only_nick` was enabled
 - Fixed non-detectives searching a dead player causing them to move on the scoreboard and revealing their name when `ttt_detective_search_only` was disabled and `ttt_detective_search_only_nick` was enabled
-
-### Additions
-- Added setting to control whether sprint is enabled (enabled by default)
-- Added setting to move the mad scientist to the monster team (disabled by default)
-- Added setting to control the maximum number of monsters to spawn each round (defaults to 1)
-
-### Changes
-- Changed round end summary tab to have a scrollbar if it is too tall to fit on the screen
 
 ## 1.6.0
 **Released: June 6th, 2022**\
@@ -180,12 +180,6 @@ Includes all beta updates from [1.5.9](#159-beta) to [1.5.17](#1517-beta).
 ## 1.5.16 (Beta)
 **Released: May 29th, 2022**
 
-### Fixes
-- Fixed an error that can occur when a player disconnects while respawning
-- Fixed some players' roles being revealed to traitors the round after they are a detective
-- Fixed error in the shop search when certain symbols were entered
-- Fixed error opening the shop when `ttt_bem_allow_change` was disabled
-
 ### Additions
 - Added ability to configure maximum informant scanner distance
 - Added total kills to the round summary score tab
@@ -194,6 +188,12 @@ Includes all beta updates from [1.5.9](#159-beta) to [1.5.17](#1517-beta).
 - Changed traitor team to show question mark icons over their head and on the scoreboard when there is a glitch
   - Which specific roles show as a question mark depends on the ttt_glitch_mode convar
 - Ported "TTT: fix weapons disappearing during round reset" from base TTT
+
+### Fixes
+- Fixed an error that can occur when a player disconnects while respawning
+- Fixed some players' roles being revealed to traitors the round after they are a detective
+- Fixed error in the shop search when certain symbols were entered
+- Fixed error opening the shop when `ttt_bem_allow_change` was disabled
 
 ## 1.5.15 (Beta)
 **Released: May 21st, 2022**
@@ -237,12 +237,12 @@ Includes all beta updates from [1.5.9](#159-beta) to [1.5.17](#1517-beta).
 ## 1.5.13 (Beta)
 **Released: May 6th, 2022**
 
-### Fixes
-- Fixed binoculars showing while a player is dead if they died while their binoculars are out
-
 ### Changes
 - Increased head icon offset when a player's head is scaled up so the icon is visible on models with larger heads
 - Changed the shop to only be openable if the player has buyable items (previously this behavior only happened when shop-for-all was enabled)
+
+### Fixes
+- Fixed binoculars showing while a player is dead if they died while their binoculars are out
 
 ## 1.5.12 (Beta)
 **Released: April 23rd, 2022**
@@ -282,11 +282,11 @@ Includes all beta updates from [1.5.9](#159-beta) to [1.5.17](#1517-beta).
 ## 1.5.9 (Beta)
 **Released: April 3rd, 2022**
 
-### Fixes
-- Fixed beggar converted to innocent still showing as a jester to traitors when ttt_beggar_reveal_innocent was set to "traitors"
-
 ### Changes
 - Changed head icon height calculation again to hopefully help more with model scaling
+
+### Fixes
+- Fixed beggar converted to innocent still showing as a jester to traitors when ttt_beggar_reveal_innocent was set to "traitors"
 
 ## 1.5.8
 **Released: March 22nd, 2022**\
@@ -305,6 +305,12 @@ Includes beta updates [1.5.6](#156-beta) and [1.5.7](#157-beta).
 - Added ability for search in role shop and roleweapons config menu to search by item description as well
 - Added ability for jester and swapper to have their max health reduced by a health station instead of being healed (enabled by default)
 
+### Changes
+- Changed zombies to no longer be able to drown
+- Changed the activated clown to be able to see other jesters so they don't kill them
+- Changed the jester to win, like normal, if they are somehow to killed by other members of the jester team
+- Changed the parasite cure to be available to all special detectives when the parasite is enabled
+
 ### Fixes
 - Fixed beggar changed to traitor showing traitor highlighting when beggar reveal is disabled
 - Fixed bodysnatcher changed to traitor showing traitor highlighting when bodysnatcher reveal is disabled
@@ -315,12 +321,6 @@ Includes beta updates [1.5.6](#156-beta) and [1.5.7](#157-beta).
 - Fixed roleweapons config menu not applying search bar value when updating the same role as the one the search was used on
 - Fixed tooltip on bomb station not updating if a player's role changed after it was placed
 - Fixed role checks not starting for the role with the highest role ID
-
-### Changes
-- Changed zombies to no longer be able to drown
-- Changed the activated clown to be able to see other jesters so they don't kill them
-- Changed the jester to win, like normal, if they are somehow to killed by other members of the jester team
-- Changed the parasite cure to be available to all special detectives when the parasite is enabled
 
 ### Developer
 - Added new `plymeta:ShouldNotDrown` to determine if a player should drown
@@ -403,6 +403,10 @@ Includes all beta updates from [1.5.1](#151-beta) to [1.5.4](#154-beta).
 **Released: February 9th, 2022**\
 Includes all beta updates from [1.4.5](#145-beta) to [1.4.9](#149-beta).
 
+### Changes
+- Changed vampire unfreeze delay to be longer by default to help vampires with high pings
+- Changed vampire fang usage hint to be translatable and to show that the primary fire button must be held to drain blood
+
 ### Fixes
 - Fixed very minor bug with loadout items hook, making it consistent with normal shop usage
 - Fixed vampire fang usage hint not showing
@@ -411,10 +415,6 @@ Includes all beta updates from [1.4.5](#145-beta) to [1.4.9](#149-beta).
 - Fixed errors displaying radar points when there was a decoy being used
 - Fixed roles added after the initial load not showing their role icon in the body search dialog
 - Fixed some external role icons not working in the body search dialog
-
-### Changes
-- Changed vampire unfreeze delay to be longer by default to help vampires with high pings
-- Changed vampire fang usage hint to be translatable and to show that the primary fire button must be held to drain blood
 
 ### Developer
 - Renamed HUD namespace to CRHUD to avoid conflicts
