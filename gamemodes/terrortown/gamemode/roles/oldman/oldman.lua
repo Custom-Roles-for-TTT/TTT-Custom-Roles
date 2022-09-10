@@ -170,6 +170,9 @@ hook.Add("PostEntityTakeDamage", "OldMan_PostEntityTakeDamage", function(ent, dm
                 ent:TakeDamageInfo(dmg)
             end
         end)
+    -- If this wasn't enough to kill the player, reduce their health by the damage amount
+    else
+        ent:SetHealth(ent.damageHealth - damage)
     end
 end)
 
