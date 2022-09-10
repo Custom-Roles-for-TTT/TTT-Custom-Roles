@@ -6,6 +6,7 @@ Includes all beta updates from [1.6.5](#165-beta) to [1.6.12](#1612-beta).
 
 ### Fixes
 - Fixed Old Man being invincible if they didn't take enough damage to die
+- Fixed Old Man with more than 10 health not dying after their adrenaline rush
 
 ## 1.6.12 (Beta)
 **Released: September 3rd, 2022**

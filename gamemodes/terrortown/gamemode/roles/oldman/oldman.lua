@@ -127,7 +127,7 @@ hook.Add("PostEntityTakeDamage", "OldMan_PostEntityTakeDamage", function(ent, dm
     local health = ent.damageHealth
     -- If they are attacked by a player that would have killed them they enter an adrenaline rush
     if IsPlayer(att) and damage >= health then
-        dmginfo:SetDamage(health - 1)
+        ent:SetHealth(1)
         ent:SetNWBool("AdrenalineRush", true)
         if oldman_adrenaline_ramble:GetBool() then
             ent:EmitSound("oldmanramble.wav")
