@@ -694,7 +694,7 @@ local function GetDrainRate()
     local ply = LocalPlayer()
     if (not IsValid(ply)) or ply:IsSpec() then return 0 end
 
-    if ply:IsAdmin() or ply:IsDetectiveTeam() then
+    if ply:IsAdmin() or ply:IsSuperAdmin() or ply:IsDetectiveTeam() then
         return GetGlobalFloat("ttt_voice_drain_admin", 0)
     else
         return GetGlobalFloat("ttt_voice_drain_normal", 0)

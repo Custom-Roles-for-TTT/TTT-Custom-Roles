@@ -739,7 +739,9 @@ function WEPS.ForcePrecache()
 end
 
 net.Receive("TTT_ConfigureRoleWeapons", function(len, ply)
-    if not IsPlayer(ply) or not ply:IsAdmin() then
+    if not IsPlayer(ply) then return end
+
+    if not ply:IsAdmin() and not ply:IsSuperAdmin() then
         ErrorNoHalt("Player without admin access attempted to configure role weapons: " .. ply:Nick() .. " (" .. ply:SteamID() .. ")\n")
         return
     end
