@@ -7,6 +7,9 @@
 - Changed usages of `IsAdmin` to check `IsSuperAdmin` as well to work around the rare case where `IsAdmin` was `false` where `IsSuperAdmin` was `true`
   - Fixes locking SuperAdmins out of the Role Weapons system in certain circumstances
 
+### Fixes
+- Fixed Old Man not dying when taking damage from something other than a player
+
 ## 1.6.13
 **Released: September 10th, 2022**\
 Includes all beta updates from [1.6.5](#165-beta) to [1.6.12](#1612-beta).
