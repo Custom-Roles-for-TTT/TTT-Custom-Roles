@@ -124,7 +124,7 @@ function GM:TTTScoreboardColorForPlayer(ply)
 
     if ply:SteamID() == "STEAM_0:0:1963640" then
         return namecolor.dev
-    elseif ply:IsAdmin() and GetGlobalBool("ttt_highlight_admins", true) then
+    elseif (ply:IsAdmin() or ply:IsSuperAdmin()) and GetGlobalBool("ttt_highlight_admins", true) then
         return namecolor.admin
     end
     return namecolor.default

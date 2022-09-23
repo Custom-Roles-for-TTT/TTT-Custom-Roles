@@ -26,7 +26,7 @@ local function DoesValueMatch(item, data, value)
 end
 
 local function OpenDialog(client)
-    if not client:IsAdmin() then
+    if not client:IsAdmin() and not client:IsSuperAdmin() then
         ErrorNoHalt("ERROR: You must be an administrator to open the Role Weapons Configuration dialog\n")
         return
     end

@@ -125,51 +125,58 @@ hook.Add("PostEntityTakeDamage", "OldMan_PostEntityTakeDamage", function(ent, dm
 
     local att = dmginfo:GetAttacker()
     local health = ent.damageHealth
-    -- If they are attacked by a player that would have killed them they enter an adrenaline rush
-    if IsPlayer(att) and damage >= health then
-        ent:SetHealth(1)
-        ent:SetNWBool("AdrenalineRush", true)
-        if oldman_adrenaline_ramble:GetBool() then
-            ent:EmitSound("oldmanramble.wav")
-        end
-        local message = "You are having an adrenaline rush! You will die in " .. tostring(adrenalineTime) .. " seconds."
-        ent:PrintMessage(HUD_PRINTTALK, message)
-        ent:PrintMessage(HUD_PRINTCENTER, message)
 
-        if oldman_adrenaline_shotgun:GetBool() then
-            for _, wep in ipairs(ent:GetWeapons()) do
-                if wep.Kind == WEAPON_HEAVY then
-                    ent:StripWeapon(wep:GetClass())
-                end
+    -- If the damage would have killed them then...
+    if damage >= health then
+        -- If they are attacked by a player, enter an adrenaline rush
+        if IsPlayer(att) then
+            ent:SetHealth(1)
+            ent:SetNWBool("AdrenalineRush", true)
+            if oldman_adrenaline_ramble:GetBool() then
+                ent:EmitSound("oldmanramble.wav")
             end
-            ent:SetFOV(0, 0)
-            ent:Give("weapon_old_dbshotgun")
-            ent:SelectWeapon("weapon_old_dbshotgun")
-        end
+            local message = "You are having an adrenaline rush! You will die in " .. tostring(adrenalineTime) .. " seconds."
+            ent:PrintMessage(HUD_PRINTTALK, message)
+            ent:PrintMessage(HUD_PRINTCENTER, message)
 
-        timer.Create(ent:Nick() .. "AdrenalineRush", adrenalineTime, 1, function()
-            ent:SetNWBool("AdrenalineRush", false)
-            ent:SetNWBool("AdrenalineRushed", true)
-            -- Only kill them if they are still the old man
-            if ent:IsActiveOldMan() then
-                local inflictor = dmginfo:GetInflictor()
-                if not IsValid(inflictor) then
-                    inflictor = att
+            if oldman_adrenaline_shotgun:GetBool() then
+                for _, wep in ipairs(ent:GetWeapons()) do
+                    if wep.Kind == WEAPON_HEAVY then
+                        ent:StripWeapon(wep:GetClass())
+                    end
                 end
-
-                -- Use TakeDamage instead of Kill so it properly applies karma
-                local dmg = DamageInfo()
-                dmg:SetDamageType(dmginfo:GetDamageType())
-                dmg:SetAttacker(att)
-                dmg:SetInflictor(inflictor)
-                -- Use 10 so damage scaling doesn't mess with it. The worse damage factor (0.1) will still deal 1 damage after scaling a 10 down
-                -- Karma ignores excess damage anyway
-                dmg:SetDamage(10)
-                dmg:SetDamageForce(Vector(0, 0, 1))
-
-                ent:TakeDamageInfo(dmg)
+                ent:SetFOV(0, 0)
+                ent:Give("weapon_old_dbshotgun")
+                ent:SelectWeapon("weapon_old_dbshotgun")
             end
-        end)
+
+            timer.Create(ent:Nick() .. "AdrenalineRush", adrenalineTime, 1, function()
+                ent:SetNWBool("AdrenalineRush", false)
+                ent:SetNWBool("AdrenalineRushed", true)
+                -- Only kill them if they are still the old man
+                if ent:IsActiveOldMan() then
+                    local inflictor = dmginfo:GetInflictor()
+                    if not IsValid(inflictor) then
+                        inflictor = att
+                    end
+
+                    -- Use TakeDamage instead of Kill so it properly applies karma
+                    local dmg = DamageInfo()
+                    dmg:SetDamageType(dmginfo:GetDamageType())
+                    dmg:SetAttacker(att)
+                    dmg:SetInflictor(inflictor)
+                    -- Use 10 so damage scaling doesn't mess with it. The worse damage factor (0.1) will still deal 1 damage after scaling a 10 down
+                    -- Karma ignores excess damage anyway
+                    dmg:SetDamage(10)
+                    dmg:SetDamageForce(Vector(0, 0, 1))
+
+                    ent:TakeDamageInfo(dmg)
+                end
+            end)
+        -- Otherwise just let them die
+        else
+            ent:Kill()
+        end
     -- If this wasn't enough to kill the player, reduce their health by the damage amount
     else
         ent:SetHealth(ent.damageHealth - damage)
