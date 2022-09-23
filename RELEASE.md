@@ -9,6 +9,7 @@
 
 ### Fixes
 - Fixed Old Man not dying when taking damage from something other than a player
+- Fixed error in the weapon switch HUD when dropping weapons that use the base GMod weapon instead of the base TTT weapon
 
 ## 1.6.13
 **Released: September 10th, 2022**\
