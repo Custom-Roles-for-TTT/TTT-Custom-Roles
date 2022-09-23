@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.6.14
-**Released:**
+**Released: September 24th, 2022**
 
 ### Changes
 - Changed usages of `IsAdmin` to check `IsSuperAdmin` as well to work around the rare case where `IsAdmin` was `false` where `IsSuperAdmin` was `true`
