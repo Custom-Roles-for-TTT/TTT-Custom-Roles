@@ -6,6 +6,10 @@ local net = net
 -- ROLE FEATURES --
 -------------------
 
+ROLE_IS_ACTIVE[ROLE_TURNCOAT] = function(ply)
+    return ply:IsTraitorTeam()
+end
+
 function SetTurncoatTeam(ply, traitor)
     if SERVER then
         net.Start("TTT_TurncoatTeamChange")

@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.6.15
+**Released:**
+
+### Developer
+- Added definition of `IsRoleActive` for the turncoat
+
 ## 1.6.14
 **Released: September 24th, 2022**
 
@@ -8,7 +14,7 @@
   - Fixes locking SuperAdmins out of the Role Weapons system in certain circumstances
 
 ### Fixes
-- Fixed Old Man not dying when taking damage from something other than a player
+- Fixed old man not dying when taking damage from something other than a player
 - Fixed error in the weapon switch HUD when dropping weapons that use the base GMod weapon instead of the base TTT weapon
 
 ## 1.6.13
@@ -16,8 +22,8 @@
 Includes all beta updates from [1.6.5](#165-beta) to [1.6.12](#1612-beta).
 
 ### Fixes
-- Fixed Old Man being invincible if they didn't take enough damage to die
-- Fixed Old Man with more than 10 health not dying after their adrenaline rush
+- Fixed old man being invincible if they didn't take enough damage to die
+- Fixed old man with more than 10 health not dying after their adrenaline rush
 
 ## 1.6.12 (Beta)
 **Released: September 3rd, 2022**
