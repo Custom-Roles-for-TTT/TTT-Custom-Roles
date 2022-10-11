@@ -708,16 +708,15 @@ ConVars()
 local function SpeedChange(bool)
     local client = LocalPlayer()
     net.Start("TTT_SprintSpeedSet")
+    net.WriteBool(bool)
     if bool then
         local mul = MathMin(MathMax(speedMultiplier, 0.1), 2)
-        net.WriteFloat(mul)
         client.mult = 1 + mul
 
         local tmp = GetConVar("ttt_crosshair_size")
         crosshairSize = tmp and tmp:GetString() or 1
         RunConsoleCommand("ttt_crosshair_size", "2")
     else
-        net.WriteFloat(0)
         client.mult = nil
 
         RunConsoleCommand("ttt_crosshair_size", crosshairSize)

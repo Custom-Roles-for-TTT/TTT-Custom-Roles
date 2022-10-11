@@ -1984,9 +1984,8 @@ net.Receive("TTT_SprintSpeedSet", function(len, ply)
         return
     end
 
-    local mul = net.ReadFloat()
-    if mul ~= 0 then
-        ply.mult = 1 + mul
+    if net.ReadBool() then
+        ply.mult = 1 + speedMultiplier:GetFloat()
     else
         ply.mult = nil
     end

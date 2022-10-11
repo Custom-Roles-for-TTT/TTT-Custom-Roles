@@ -3,6 +3,9 @@
 ## 1.6.15
 **Released:**
 
+### Changes
+- Changed sprint speed to be more resistant to client-side speed hacking (Thanks wget for letting us know!)
+
 ### Developer
 - Added definition of `IsRoleActive` for the turncoat
 
