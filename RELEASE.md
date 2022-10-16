@@ -3,6 +3,9 @@
 ## 1.6.15
 **Released:**
 
+### Additions
+- Added new special detective role: the marshal
+
 ### Changes
 - Changed sprint speed to be more resistant to client-side speed hacking (Thanks wget for letting us know!)
 - Changed the round summary screen to automatically lower the font size of the winning team if it's more than 18 characters, down from 20

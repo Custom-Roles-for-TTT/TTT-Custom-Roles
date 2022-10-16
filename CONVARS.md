@@ -68,6 +68,7 @@ ttt_paladin_enabled                         0       // Whether or not the paladi
 ttt_tracker_enabled                         0       // Whether or not the tracker should spawn
 ttt_medium_enabled                          0       // Whether or not the medium should spawn
 ttt_sapper_enabled                          0       // Whether or not the sapper should spawn
+ttt_marshal_enabled                         0       // Whether or not the marshal should spawn
 ttt_jester_enabled                          0       // Whether or not the jester should spawn
 ttt_swapper_enabled                         0       // Whether or not the swapper should spawn
 ttt_clown_enabled                           0       // Whether or not the clown should spawn
@@ -102,6 +103,7 @@ ttt_paladin_spawn_weight                    1       // The weight assigned to sp
 ttt_tracker_spawn_weight                    1       // The weight assigned to spawning the tracker
 ttt_medium_spawn_weight                     1       // The weight assigned to spawning the medium
 ttt_sapper_spawn_weight                     1       // The weight assigned to spawning the sapper
+ttt_marshal_spawn_weight                    1       // The weight assigned to spawning the marshal
 ttt_jester_spawn_weight                     1       // The weight assigned to spawning the jester
 ttt_swapper_spawn_weight                    1       // The weight assigned to spawning the swapper
 ttt_clown_spawn_weight                      1       // The weight assigned to spawning the clown
@@ -137,6 +139,7 @@ ttt_paladin_min_players                     0       // The minimum number of pla
 ttt_tracker_min_players                     0       // The minimum number of players required to spawn the tracker
 ttt_medium_min_players                      0       // The minimum number of players required to spawn the medium
 ttt_sapper_min_players                      0       // The minimum number of players required to spawn the sapper
+ttt_marshal_min_players                     0       // The minimum number of players required to spawn the marshal
 ttt_jester_min_players                      0       // The minimum number of players required to spawn the jester
 ttt_swapper_min_players                     0       // The minimum number of players required to spawn the swapper
 ttt_clown_min_players                       0       // The minimum number of players required to spawn the clown
@@ -364,6 +367,13 @@ ttt_sapper_protect_self                     1       // Whether the sapper's prot
 ttt_sapper_fire_immune                      0       // Whether sapper's protection aura also grands fire immunity
 ttt_sapper_can_see_c4                       0       // Whether the sapper can see C4 pings on their radar like traitors
 ttt_sapper_c4_guaranteed_defuse             0       // Whether the sapper is guaranteed to always successfully defuse C4
+
+// Marshal
+ttt_marshal_independent_deputy_chance       0.5     // The chance that a independent will become a deputy. -1 to disable
+ttt_marshal_jester_deputy_chance            0.5     // The chance that a jester will become a deputy. -1 to disable
+ttt_marshal_monster_deputy_chance           0.5     // The chance that a monster will become a deputy. -1 to disable
+ttt_marshal_announce_deputy                 1       // Whether a player being deputized will be announced to everyone
+ttt_marshal_badge_time                      8       // The amount of time (in seconds) the marshal's badge takes to use
 
 // ----------------------------------------
 

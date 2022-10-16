@@ -1528,6 +1528,8 @@ function SelectRoles()
     local independentRoles = {}
     local jesterRoles = {}
     local monsterRoles = {}
+    local detectives = {}
+    local traitors = {}
 
     -- Special rules for role spawning
     -- Role exclusion logic also needs to be copied into the drunk role selection logic in drunk.lua -> plymeta:SoberDrunk
@@ -1538,6 +1540,11 @@ function SelectRoles()
         [ROLE_PARAMEDIC] = function() return not hypnotist_only end,
         [ROLE_PHANTOM] = function() return not parasite_only end,
         [ROLE_REVENGER] = function() return choice_count > 1 end,
+        [ROLE_GLITCH] = function()
+            local glitch_mode = GetConVar("ttt_glitch_mode"):GetInt()
+            return (glitch_mode == GLITCH_SHOW_AS_TRAITOR and #traitors > 1) or
+                    ((glitch_mode == GLITCH_SHOW_AS_SPECIAL_TRAITOR or glitch_mode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES) and traitor_count > 1)
+        end,
 
         -- Traitors
         [ROLE_HYPNOTIST] = function() return not paramedic_only end,
@@ -1550,20 +1557,43 @@ function SelectRoles()
 
         -- Jesters
         [ROLE_CLOWN] = function() return not drunk_only end
-
     }
-    -- Merge in any role predicates
-    table.Merge(rolePredicates, ROLE_SELECTION_PREDICATE)
+
+    local function DoesRolePassPredicate(role)
+        -- If the default predicate exists for this role but returns false then this role shouldn't be chosen
+        if rolePredicates[role] and not rolePredicates[role]() then return false end
+        -- If the override predicate exists for this role but returns false then this role shouldn't be chosen
+        if ROLE_SELECTION_PREDICATE[role] and not ROLE_SELECTION_PREDICATE[role]() then return false end
+        -- Otherwise let the role be chosen
+        return true
+    end
+
+    local function IsRoleAvailable(role)
+        return not hasRole[role] and GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_enabled"):GetBool() and choice_count >= GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_min_players"):GetInt() and DoesRolePassPredicate(role)
+    end
+
+    local function HandleDelayedRole(role, tbl, pred)
+        if not IsRoleAvailable(role) then return end
+        if pred and not pred() then return end
+
+        for _ = 1, GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_spawn_weight"):GetInt() do
+            table.insert(tbl, role)
+        end
+    end
 
     -- Roles that required their checks to be delayed because they rely on other role selection information
     local delayedCheckRoles = {
         -- Glitch requires the number of traitors that have been selected
-        [ROLE_GLITCH] = true
+        [ROLE_GLITCH] = true,
+        -- Deputy, Impersonator, and Marshal all need to know whether a player with the other roles exist before spawning
+        [ROLE_DEPUTY] = true,
+        [ROLE_IMPERSONATOR] = true,
+        [ROLE_MARSHAL] = true
     }
 
     -- Build the weighted lists for all non-default roles
     for r = ROLE_DETECTIVE + 1, ROLE_MAX do
-        if not delayedCheckRoles[r] and not hasRole[r] and GetConVar("ttt_" .. ROLE_STRINGS_RAW[r] .. "_enabled"):GetBool() and choice_count >= GetConVar("ttt_" .. ROLE_STRINGS_RAW[r] .. "_min_players"):GetInt() and ((not rolePredicates[r]) or rolePredicates[r]()) then
+        if not delayedCheckRoles[r] and IsRoleAvailable(r) then
             for _ = 1, GetConVar("ttt_" .. ROLE_STRINGS_RAW[r] .. "_spawn_weight"):GetInt() do
                 -- Don't include zombies in the traitor list since they will spawn as a special "zombie round" sometimes if they are traitors
                 if TRAITOR_ROLES[r] and r ~= ROLE_ZOMBIE then
@@ -1588,7 +1618,6 @@ function SelectRoles()
     end
 
     -- pick detectives
-    local detectives = {}
     if choice_count >= GetConVar("ttt_detective_min_players"):GetInt() then
         local min_karma = GetConVar("ttt_detective_karma_min"):GetInt()
         local options = {}
@@ -1626,7 +1655,6 @@ function SelectRoles()
     end
 
     -- pick traitors
-    local traitors = {}
     for _ = 1, traitor_count do
         if #choices > 0 then
             local plyPick = math.random(1, #choices)
@@ -1642,6 +1670,11 @@ function SelectRoles()
 
     -- pick special detectives
     if max_special_detective_count > 0 then
+        for r, delayed in pairs(delayedCheckRoles) do
+            if not delayed or not DETECTIVE_ROLES[r] then continue end
+            HandleDelayedRole(r, specialDetectiveRoles)
+        end
+
         -- Allow external addons to modify available roles and their weights
         CallHook("TTTSelectRolesDetectiveOptions", nil, specialDetectiveRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
 
@@ -1701,6 +1734,11 @@ function SelectRoles()
     else
         -- pick special traitors
         if max_special_traitor_count > 0 then
+            for r, delayed in pairs(delayedCheckRoles) do
+                if not delayed or not TRAITOR_ROLES[r] then continue end
+                HandleDelayedRole(r, specialTraitorRoles)
+            end
+
             -- Allow external addons to modify available roles and their weights
             CallHook("TTTSelectRolesTraitorOptions", nil, specialTraitorRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
 
@@ -1732,9 +1770,18 @@ function SelectRoles()
 
     -- pick independent
     if forcedIndependentCount == 0 and independent_count > 0 and #choices > 0 then
+        for r, delayed in pairs(delayedCheckRoles) do
+            if not delayed or not INDEPENDENT_ROLES[r] then continue end
+            HandleDelayedRole(r, independentRoles)
+        end
+
         -- Allow external addons to modify available roles and their weights
         CallHook("TTTSelectRolesIndependentOptions", nil, independentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
         if singleJesterIndependent then
+            for r, delayed in pairs(delayedCheckRoles) do
+                if not delayed or not JESTER_ROLES[r] then continue end
+                HandleDelayedRole(r, independentRoles)
+            end
             CallHook("TTTSelectRolesJesterOptions", nil, independentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
         end
 
@@ -1755,6 +1802,10 @@ function SelectRoles()
 
     -- pick jester
     if not singleJesterIndependent and forcedJesterCount == 0 and jester_count > 0 and #choices > 0 then
+        for r, delayed in pairs(delayedCheckRoles) do
+            if not delayed or not JESTER_ROLES[r] then continue end
+            HandleDelayedRole(r, jesterRoles)
+        end
         CallHook("TTTSelectRolesJesterOptions", nil, jesterRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
 
         if #jesterRoles ~= 0 then
@@ -1775,12 +1826,10 @@ function SelectRoles()
     -- pick special innocents
     local max_special_innocent_count = GetSpecialInnocentCount(#choices) - forcedSpecialInnocentCount
     if max_special_innocent_count > 0 then
-        local glitch_mode = GetConVar("ttt_glitch_mode"):GetInt()
-        if not hasRole[ROLE_GLITCH] and GetConVar("ttt_glitch_enabled"):GetBool() and choice_count >= GetConVar("ttt_glitch_min_players"):GetInt()
-            and ((glitch_mode == GLITCH_SHOW_AS_TRAITOR and #traitors > 1) or ((glitch_mode == GLITCH_SHOW_AS_SPECIAL_TRAITOR or glitch_mode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES) and traitor_count > 1)) then
-            for _ = 1, GetConVar("ttt_glitch_spawn_weight"):GetInt() do
-                table.insert(specialInnocentRoles, ROLE_GLITCH)
-            end
+        for r, delayed in pairs(delayedCheckRoles) do
+            -- Skip detective roles even though they are innocent because they are handled above
+            if not delayed or not INNOCENT_ROLES[r] or DETECTIVE_ROLES[r] then continue end
+            HandleDelayedRole(r, specialInnocentRoles)
         end
 
         -- Allow external addons to modify available roles and their weights
@@ -1814,6 +1863,11 @@ function SelectRoles()
     if monster_count > 0 then
         local monster_chosen = false
         for _ = 1, monster_count do
+            for r, delayed in pairs(delayedCheckRoles) do
+                if not delayed or not MONSTER_ROLES[r] then continue end
+                HandleDelayedRole(r, monsterRoles)
+            end
+
             -- Allow external addons to modify available roles and their weights
             CallHook("TTTSelectRolesMonsterOptions", nil, monsterRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
 

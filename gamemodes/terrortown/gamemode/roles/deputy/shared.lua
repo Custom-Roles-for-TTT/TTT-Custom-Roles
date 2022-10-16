@@ -1,9 +1,22 @@
 AddCSLuaFile()
 
 local hook = hook
+local player = player
 local table = table
 
+local GetAllPlayers = player.GetAll
+
 -- Initialize role features
+
+ROLE_SELECTION_PREDICATE[ROLE_DEPUTY] = function()
+    -- Don't allow the deputy to spawn if there's already a marshal
+    for _, p in ipairs(GetAllPlayers()) do
+        if p:IsMarshal() then
+            return false
+        end
+    end
+    return true
+end
 
 -- HandleDetectiveLikePromotion and ROLE_MOVE_ROLE_STATE are defined in detectivelike/shared.lua
 -- ROLE_ON_ROLE_ASSIGNED is defined in detectivelike/detectivelike.lua
