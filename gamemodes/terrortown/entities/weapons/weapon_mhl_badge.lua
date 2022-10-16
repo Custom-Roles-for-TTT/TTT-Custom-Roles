@@ -184,19 +184,19 @@ if SERVER then
         end
 
         local marshal_monster_deputy_chance = GetConVar("ttt_marshal_monster_deputy_chance"):GetFloat()
-        if ply:IsMonsterTeam() and marshal_monster_deputy_chance == -1 then
+        if ply:IsMonsterTeam() and marshal_monster_deputy_chance < 0 then
             self:Error("INVALID TARGET")
             return
         end
 
         local marshal_jester_deputy_chance = GetConVar("ttt_marshal_jester_deputy_chance"):GetFloat()
-        if ply:IsJesterTeam() and marshal_jester_deputy_chance == -1 then
+        if ply:IsJesterTeam() and marshal_jester_deputy_chance < 0 then
             self:Error("INVALID TARGET")
             return
         end
 
         local marshal_independent_deputy_chance = GetConVar("ttt_marshal_independent_deputy_chance"):GetFloat()
-        if ply:IsIndependentTeam() and marshal_independent_deputy_chance == -1 then
+        if ply:IsIndependentTeam() and marshal_independent_deputy_chance < 0 then
             self:Error("INVALID TARGET")
             return
         end
