@@ -9,6 +9,7 @@
 ### Changes
 - Changed sprint speed to be more resistant to client-side speed hacking (Thanks wget for letting us know!)
 - Changed the round summary screen to automatically lower the font size of the winning team if it's more than 18 characters, down from 20
+- Changed loot goblin cackle min and max convars to not cause problems when the min is greater than the max
 
 ### Fixes
 - Fixed players who respawn as zombies when `ttt_zombie_prime_only_weapons` is disabled still losing their default weapons in some cases

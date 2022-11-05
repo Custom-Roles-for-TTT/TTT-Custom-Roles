@@ -209,6 +209,9 @@ local function StartGoblinTimers()
         if lootgoblin_cackle_enabled:GetBool() then
             local min = lootgoblin_cackle_timer_min:GetInt()
             local max = lootgoblin_cackle_timer_max:GetInt()
+            if max < min then
+                max = min
+            end
             timer.Create("LootGoblinCackle", MathRandom(min, max), 0, function()
                 for _, v in ipairs(GetAllPlayers()) do
                     if v:IsActiveLootGoblin() and not v:GetNWBool("LootGoblinKilled", false) then
