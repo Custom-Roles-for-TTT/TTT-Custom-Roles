@@ -10,8 +10,12 @@
 - Changed sprint speed to be more resistant to client-side speed hacking (Thanks wget for letting us know!)
 - Changed the round summary screen to automatically lower the font size of the winning team if it's more than 18 characters, down from 20
 
+### Fixes
+- Fixed players who respawn as zombies when `ttt_zombie_prime_only_weapons` is disabled still losing their default weapons in some cases
+
 ### Developer
 - Added definition of `IsRoleActive` for the turncoat
+- Added `prime` parameter to `RespawnAsZombie`
 
 ## 1.6.14
 **Released: September 24th, 2022**

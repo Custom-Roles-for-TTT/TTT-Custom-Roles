@@ -258,7 +258,7 @@ end)
 -- RESPAWNING --
 ----------------
 
-function plymeta:RespawnAsZombie()
+function plymeta:RespawnAsZombie(prime)
     self:PrintMessage(HUD_PRINTCENTER, "You will respawn as " .. ROLE_STRINGS_EXT[ROLE_ZOMBIE] .. " in 3 seconds.")
     self:SetNWBool("IsZombifying", true)
 
@@ -271,14 +271,20 @@ function plymeta:RespawnAsZombie()
         if not self:IsZombie() then
             local body = self.server_ragdoll or self:GetRagdollEntity()
             self:SetRole(ROLE_ZOMBIE)
-            self:SetZombiePrime(false)
+            if type(prime) ~= "boolean" then
+                prime = false
+            end
+            self:SetZombiePrime(prime)
             self:SpawnForRound(true)
 
             local health = zombie_respawn_health:GetInt()
             self:SetMaxHealth(health)
             self:SetHealth(health)
 
-            self:StripAll()
+            -- Don't strip weapons if this player is allowed to keep them
+            if not prime or not zombie_prime_only_weapons:GetBool() then
+                self:StripAll()
+            end
             self:Give("weapon_zom_claws")
             if IsValid(body) then
                 self:SetPos(FindRespawnLocation(body:GetPos()) or body:GetPos())
