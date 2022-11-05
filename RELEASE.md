@@ -5,6 +5,7 @@
 
 ### Additions
 - Added new special detective role: the marshal
+- Added new special innocent role: the infected
 
 ### Changes
 - Changed sprint speed to be more resistant to client-side speed hacking (Thanks wget for letting us know!)
