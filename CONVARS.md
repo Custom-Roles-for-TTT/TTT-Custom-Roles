@@ -64,6 +64,7 @@ ttt_doctor_enabled                          0       // Whether or not the doctor
 ttt_trickster_enabled                       0       // Whether or not the trickster should spawn
 ttt_paramedic_enabled                       0       // Whether or not the paramedic should spawn
 ttt_turncoat_enabled                        0       // Whether or not the turncoat should spawn
+ttt_infected_enabled                        0       // Whether or not the infected should spawn
 ttt_paladin_enabled                         0       // Whether or not the paladin should spawn
 ttt_tracker_enabled                         0       // Whether or not the tracker should spawn
 ttt_medium_enabled                          0       // Whether or not the medium should spawn
@@ -99,6 +100,7 @@ ttt_doctor_spawn_weight                     1       // The weight assigned to sp
 ttt_trickster_spawn_weight                  1       // The weight assigned to spawning the trickster
 ttt_paramedic_spawn_weight                  1       // The weight assigned to spawning the paramedic
 ttt_turncoat_spawn_weight                   1       // The weight assigned to spawning the turncoat
+ttt_infected_spawn_weight                   1       // The weight assigned to spawning the infected
 ttt_paladin_spawn_weight                    1       // The weight assigned to spawning the paladin
 ttt_tracker_spawn_weight                    1       // The weight assigned to spawning the tracker
 ttt_medium_spawn_weight                     1       // The weight assigned to spawning the medium
@@ -135,6 +137,7 @@ ttt_doctor_min_players                      0       // The minimum number of pla
 ttt_trickster_min_players                   0       // The minimum number of players required to spawn the trickster
 ttt_paramedic_min_players                   0       // The minimum number of players required to spawn the paramedic
 ttt_turncoat_min_players                    0       // The minimum number of players required to spawn the turncoat
+ttt_infected_min_players                    0       // The minimum number of players required to spawn the infected
 ttt_paladin_min_players                     0       // The minimum number of players required to spawn the paladin
 ttt_tracker_min_players                     0       // The minimum number of players required to spawn the tracker
 ttt_medium_min_players                      0       // The minimum number of players required to spawn the medium
@@ -317,6 +320,16 @@ ttt_trickster_credits_starting              0       // The number of credits a t
 ttt_turncoat_change_health                  10      // The amount of health to set the turncoat to when they change teams
 ttt_turncoat_change_max_health              1       // Whether to change the turncoat's max health when they change teams
 ttt_turncoat_change_innocent_kill           0       // Whether to change the turncoat's team when they kill a member of the innocent team
+
+// Infected
+ttt_infected_succumb_time                   180     // Time in seconds for the infected to succumb to their disease
+ttt_infected_full_health                    1       // Whether the infected's health is refilled when they become a zombie
+ttt_infected_prime                          1       // Whether the infected will become a prime zombie
+ttt_infected_respawn_enable                 0       // Whether the infected will respawn as a zombie when killed
+ttt_infected_show_icon                      1       // Whether to show the infected icon over their head for zombies and zombie allies
+ttt_infected_cough_enabled                  1       // Whether the infected coughs periodically
+ttt_infected_cough_timer_min                30      // The minimum time between infected coughs
+ttt_infected_cough_timer_max                60      // The maximum time between infected coughs
 
 // ----------------------------------------
 
