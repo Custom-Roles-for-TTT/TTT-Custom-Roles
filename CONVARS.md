@@ -601,6 +601,7 @@ ttt_paladin_shop_random_percent             0       // The percent chance that a
 ttt_tracker_shop_random_percent             0       // The percent chance that a weapon in the shop will be not be shown for trackers
 ttt_medium_shop_random_percent              0       // The percent chance that a weapon in the shop will be not be shown for mediums
 ttt_sapper_shop_random_percent              0       // The percent chance that a weapon in the shop will be not be shown for sappers
+ttt_marshal_shop_random_percent             0       // The percent chance that a weapon in the shop will be not be shown for marshals
 ttt_jester_shop_random_percent              0       // The percent chance that a weapon in the shop will be not be shown for jesters
 ttt_swapper_shop_random_percent             0       // The percent chance that a weapon in the shop will be not be shown for swappers
 ttt_clown_shop_random_percent               0       // The percent chance that a weapon in the shop will be not be shown for clowns
@@ -625,6 +626,7 @@ ttt_paladin_shop_random_enabled             0       // Whether role shop randomi
 ttt_tracker_shop_random_enabled             0       // Whether role shop randomization is enabled for trackers
 ttt_medium_shop_random_enabled              0       // Whether role shop randomization is enabled for mediums
 ttt_sapper_shop_random_enabled              0       // Whether role shop randomization is enabled for sappers
+ttt_marshal_shop_random_enabled             0       // Whether role shop randomization is enabled for marshals
 ttt_jester_shop_random_enabled              0       // Whether role shop randomization is enabled for jesters
 ttt_swapper_shop_random_enabled             0       // Whether role shop randomization is enabled for swappers
 ttt_clown_shop_random_enabled               0       // Whether role shop randomization is enabled for clowns
@@ -667,6 +669,7 @@ ttt_paladin_shop_sync                       0       // Whether paladins should h
 ttt_tracker_shop_sync                       0       // Whether trackers should have all weapons that vanilla detectives have in their weapon shop
 ttt_medium_shop_sync                        0       // Whether mediums should have all weapons that vanilla detectives have in their weapon shop
 ttt_sapper_shop_sync                        0       // Whether sappers should have all weapons that vanilla detectives have in their weapon shop
+ttt_marshal_shop_sync                        0      // Whether marshals should have all weapons that vanilla detectives have in their weapon shop
 
 // ----------------------------------------
 
@@ -691,11 +694,13 @@ ttt_doctor_starting_health                  100     // The amount of health the 
 ttt_trickster_starting_health               100     // The amount of health the trickster starts with
 ttt_paramedic_starting_health               100     // The amount of health the paramedic starts with
 ttt_turncoat_starting_health                100     // The amount of health the turncoat starts with
+ttt_infected_starting_health                100     // The amount of health the infected starts with
 ttt_detective_starting_health               100     // The amount of health the detective starts with
 ttt_paladin_starting_health                 100     // The amount of health the paladin starts with
 ttt_tracker_starting_health                 100     // The amount of health the tracker starts with
 ttt_medium_starting_health                  100     // The amount of health the medium starts with
 ttt_sapper_starting_health                  100     // The amount of health the sapper starts with
+ttt_marshal_starting_health                 100     // The amount of health the marshal starts with
 ttt_jester_starting_health                  100     // The amount of health the jester starts with
 ttt_swapper_starting_health                 100     // The amount of health the swapper starts with
 ttt_clown_starting_health                   100     // The amount of health the clown starts with
@@ -728,11 +733,13 @@ ttt_doctor_max_health                       100     // The maximum amount of hea
 ttt_trickster_max_health                    100     // The maximum amount of health the trickster can have
 ttt_paramedic_max_health                    100     // The maximum amount of health the paramedic can have
 ttt_turncoat_max_health                     100     // The maximum amount of health the turncoat can have
+ttt_infected_max_health                     100     // The maximum amount of health the infected can have
 ttt_detective_max_health                    100     // The maximum amount of health the detective can have
 ttt_paladin_max_health                      100     // The maximum amount of health the paladin can have
 ttt_tracker_max_health                      100     // The maximum amount of health the tracker can have
 ttt_medium_max_health                       100     // The maximum amount of health the medium can have
 ttt_sapper_max_health                       100     // The maximum amount of health the sapper can have
+ttt_marshal_max_health                      100     // The maximum amount of health the marshal can have
 ttt_jester_max_health                       100     // The maximum amount of health the jester can have
 ttt_swapper_max_health                      100     // The maximum amount of health the swapper can have
 ttt_clown_max_health                        100     // The maximum amount of health the clown can have
