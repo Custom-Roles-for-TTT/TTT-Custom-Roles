@@ -275,10 +275,12 @@ Reset's the players size to default by adjusting models, step sizes, hulls and v
 *Realm:* Server\
 *Added in:* 1.3.1
 
-### plymeta:RespawnAsZombie()
+### plymeta:RespawnAsZombie(prime)
 Respawns the player as a zombie after a 3 second delay.\
 *Realm:* Server\
-*Added in:* 1.5.12
+*Added in:* 1.5.12\
+*Parameters:*
+- *prime* - Whether to mark the respawning player as the prime zombie *(Added in 1.6.15)*
 
 ### plymeta:SetDefaultCredits(keep_existing)
 Sets the credits on the player based on their role's starting credits convars.\

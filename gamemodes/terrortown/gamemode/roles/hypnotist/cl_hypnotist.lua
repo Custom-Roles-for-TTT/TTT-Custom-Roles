@@ -20,6 +20,7 @@ You can use your brain washing device on a corpse to revive them as {atraitor}.
 
 Press {menukey} to receive your special equipment!]])
 end)
+
 -------------
 -- SCORING --
 -------------

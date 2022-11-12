@@ -1,5 +1,24 @@
 # Release Notes
 
+## 1.6.15
+**Released:**
+
+### Additions
+- Added new special detective role: the marshal
+- Added new special innocent role: the infected
+
+### Changes
+- Changed sprint speed to be more resistant to client-side speed hacking (Thanks wget for letting us know!)
+- Changed the round summary screen to automatically lower the font size of the winning team if it's more than 18 characters, down from 20
+- Changed loot goblin cackle min and max convars to not cause problems when the min is greater than the max
+
+### Fixes
+- Fixed players who respawn as zombies when `ttt_zombie_prime_only_weapons` is disabled still losing their default weapons in some cases
+
+### Developer
+- Added definition of `IsRoleActive` for the turncoat
+- Added `prime` parameter to `RespawnAsZombie`
+
 ## 1.6.14
 **Released: September 24th, 2022**
 
@@ -8,7 +27,7 @@
   - Fixes locking SuperAdmins out of the Role Weapons system in certain circumstances
 
 ### Fixes
-- Fixed Old Man not dying when taking damage from something other than a player
+- Fixed old man not dying when taking damage from something other than a player
 - Fixed error in the weapon switch HUD when dropping weapons that use the base GMod weapon instead of the base TTT weapon
 
 ## 1.6.13
@@ -16,8 +35,8 @@
 Includes all beta updates from [1.6.5](#165-beta) to [1.6.12](#1612-beta).
 
 ### Fixes
-- Fixed Old Man being invincible if they didn't take enough damage to die
-- Fixed Old Man with more than 10 health not dying after their adrenaline rush
+- Fixed old man being invincible if they didn't take enough damage to die
+- Fixed old man with more than 10 health not dying after their adrenaline rush
 
 ## 1.6.12 (Beta)
 **Released: September 3rd, 2022**

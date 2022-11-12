@@ -656,7 +656,7 @@ function CLSCORE:BuildSummaryPanel(dpanel)
     local winfont = "WinHuge"
     local wintxt = PT(title.txt, title.params or {})
     -- Scale the title down if there are too many letters
-    if #wintxt > 20 then
+    if #wintxt > 18 then
         winfont = "WinLarge"
     end
     winlbl:SetFont(winfont)
@@ -958,7 +958,7 @@ function CLSCORE:BuildHilitePanel(dpanel)
     local winfont = "WinHuge"
     local wintxt = PT(title.txt, title.params or {})
     -- Scale the title down if there are too many letters
-    if #wintxt > 20 then
+    if #wintxt > 18 then
         winfont = "WinLarge"
     end
     winlbl:SetFont(winfont)

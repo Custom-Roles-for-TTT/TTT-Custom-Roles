@@ -21,13 +21,6 @@ hook.Add("Initialize", "Drunk_Translations_Initialize", function()
 Wait until you sober up and remember. Try to lay low in the meantime.]])
 end)
 
--- If this is an independent Vampire, replace the "comrades" list with a generic kill message
-hook.Add("TTTRolePopupParams", "Drunk_TTTRolePopupParams", function(cli)
-    if cli:IsVampire() and cli:IsIndependentTeam() then
-        return {comrades = "\n\nKill all others to win!"}
-    end
-end)
-
 -------------
 -- SCORING --
 -------------
