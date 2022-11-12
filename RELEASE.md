@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.6.15
-**Released:**
+**Released: November 12th, 2022**
 
 ### Additions
 - Added new special detective role: the marshal
