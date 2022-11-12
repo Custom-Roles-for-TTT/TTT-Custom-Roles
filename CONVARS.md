@@ -669,7 +669,7 @@ ttt_paladin_shop_sync                       0       // Whether paladins should h
 ttt_tracker_shop_sync                       0       // Whether trackers should have all weapons that vanilla detectives have in their weapon shop
 ttt_medium_shop_sync                        0       // Whether mediums should have all weapons that vanilla detectives have in their weapon shop
 ttt_sapper_shop_sync                        0       // Whether sappers should have all weapons that vanilla detectives have in their weapon shop
-ttt_marshal_shop_sync                        0      // Whether marshals should have all weapons that vanilla detectives have in their weapon shop
+ttt_marshal_shop_sync                       0       // Whether marshals should have all weapons that vanilla detectives have in their weapon shop
 
 // ----------------------------------------
 
@@ -753,7 +753,7 @@ ttt_zombie_max_health                       100     // The maximum amount of hea
 ttt_madscientist_max_health                 100     // The maximum amount of health the mad scientist can have
 
 // Round Time
-ttt_roundtime_win_draw                     0       // Whether a round that ends because the round time limit has passed counts as a draw. If it is not a draw, the traitor team loses
+ttt_roundtime_win_draw                      0       // Whether a round that ends because the round time limit has passed counts as a draw. If it is not a draw, the traitor team loses
 
 // Logging
 ttt_debug_logkills                          1       // Whether to log when a player is killed in the console
