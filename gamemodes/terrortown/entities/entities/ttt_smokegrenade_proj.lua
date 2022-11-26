@@ -1,4 +1,9 @@
 
+local hook = hook
+local math = math
+
+local CallHook = hook.Call
+
 AddCSLuaFile()
 
 ENT.Type = "anim"
@@ -81,7 +86,7 @@ function ENT:Explode(tr)
                 if table.HasValue(target_ents, ent_class) then
                     SafeRemoveEntity(e)
                     was_extinguished = true
-                    hook.Call("TTTSmokeGrenadeExtinguish", nil, ent_class, pos)
+                    CallHook("TTTSmokeGrenadeExtinguish", nil, ent_class, pos)
                 end
             end
 
