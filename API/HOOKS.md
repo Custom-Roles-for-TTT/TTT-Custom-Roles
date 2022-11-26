@@ -784,6 +784,24 @@ Called after globals are synced but but before role colors and strings are set. 
 *Realm:* Client and Server\
 *Added in:* 1.2.7
 
+### TTTVampireBodyEaten(ply, ent, living, healed)
+Called after a vampire eats a body.\
+*Realm:* Server\
+*Added in:* 1.6.16\
+*Parameters:*
+- *ply* - The vampire eating the body
+- *ent* - The target entity. Generally either a player or a ragdoll
+- *living* - Whether the target entity was living at the time they were eaten
+- *healed* - The amount of health the player gained from eating the body
+
+### TTTVampireInvisibilityChange(ply, invisible)
+Called when a vampire starts or ends their invisibility.\
+*Realm:* Server\
+*Added in:* 1.6.16\
+*Parameters:*
+- *ply* - The vampire changing invisibility state
+- *ent* - The target entity. Generally either a player or a ragdoll
+
 ### TTTWinCheckBlocks(winBlocks)
 Called after the `TTTCheckForWins` has already been called, allowing for an addon to block a win. Used for roles like the clown and the drunk to have them activate when the round would normally end the first time.\
 *Realm:* Server\

@@ -7,6 +7,7 @@
 - Deprecated `TTTPlayerDefibRoleChange`
 - Added `TTTPlayerRoleChangedByItem` to replace `TTTPlayerDefibRoleChange` and implemented it for bodysnatcher, hypnotist, mad scientist, marshal, paramedic, vampire, and zombie
 - Added `TTTTurncoatTeamChanged` which is called when the turncoat changes teams
+- Added `TTTVampireBodyEaten` and `TTTVampireInvisibilityChange` to help track vampire ability usage
 
 ## 1.6.15
 **Released: November 12th, 2022**
