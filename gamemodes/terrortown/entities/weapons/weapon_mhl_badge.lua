@@ -164,6 +164,7 @@ if SERVER then
         SendFullStateUpdate()
 
         local owner = self:GetOwner()
+        hook.Call("TTTPlayerRoleChangedByItem", nil, owner, ply, self)
 
         -- Broadcast the event
         net.Start("TTT_Deputized")

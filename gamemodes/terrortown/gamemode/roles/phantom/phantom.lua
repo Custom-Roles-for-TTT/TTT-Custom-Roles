@@ -89,7 +89,7 @@ hook.Add("TTTPlayerSpawnForRound", "Phantom_TTTPlayerSpawnForRound", function(pl
 end)
 
 -- Un-haunt the device owner if they used their device on the phantom
-hook.Add("TTTPlayerDefibRoleChange", "Phantom_TTTPlayerDefibRoleChange", function(ply, tgt)
+hook.Add("TTTPlayerRoleChangedByItem", "Phantom_TTTPlayerRoleChangedByItem", function(ply, tgt, item)
     if tgt:IsPhantom() and tgt:GetNWString("HauntingTarget", nil) == ply:SteamID64() then
         ply:SetNWBool("Haunted", false)
     end

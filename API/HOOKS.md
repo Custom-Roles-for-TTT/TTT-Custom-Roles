@@ -134,6 +134,7 @@ Called for each player who is alive during the `Tick` hook.\
 Called after a player has been resurrected by a device that also changes their role.\
 *Realm:* Server\
 *Added in:* 1.3.1\
+*Deprecated in:* 1.6.16\
 *Parameters:*
 - *ply* - The player using the resurrection device
 - *tgt* - The target player being resurrected
@@ -146,6 +147,15 @@ Called after a player's role has changed.\
 - *ply* - The player whose role is being changed
 - *oldRole* - The role the player had before this change
 - *newRole* - The role the player is changing to
+
+### TTTPlayerRoleChangedByItem(ply, tgt, item)
+Called after a player's role has been changed by a weapon or item.\
+*Realm:* Server\
+*Added in:* 1.6.16\
+*Parameters:*
+- *ply* - The player using the resurrection device
+- *tgt* - The target player being resurrected
+- *item* - The weapon or item used to change the target's role
 
 ### TTTPlayerSpawnForRound(ply, deadOnly)
 Called before a player is spawned for a round. Also used when reviving a player (via a defib, zombie conversion, etc.).\
@@ -706,6 +716,14 @@ Called before a ragdoll's name (shown when you look at a ragdoll) is rendered.\
 *Return:*
 - *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
 - *clr* - The new clr value to use or the original passed into the hook
+
+### TTTTurncoatTeamChanged(ply, traitor)
+Called when a turncoat's team is changed
+*Realm:* Server\
+*Added in:* 1.6.16\
+*Parameters:*
+- *ply* - The player who triggered the turncoat team change (most likely would be the turncoat themselves)
+- *traitor* - Whether the turncoat is changing to the traitor team
 
 ### TTTTutorialRoleEnabled(role)
 Called before a role's tutorial page is rendered. This can be used to allow a page to be shown when it normally would not be because the role is disabled. Useful for situations like showing the Zombie tutorial page when the Mad Scientist is enabled (because the Mad Scientist creates Zombies).\

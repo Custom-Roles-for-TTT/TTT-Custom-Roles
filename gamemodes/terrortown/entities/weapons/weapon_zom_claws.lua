@@ -160,6 +160,7 @@ function SWEP:PrimaryAttack()
             if hitEnt:Health() <= self.Primary.Damage and self:ShouldConvert() then
                 owner:AddCredits(1)
                 LANG.Msg(owner, "credit_all", { role = ROLE_STRINGS[ROLE_ZOMBIE], num = 1 })
+                hook.Call("TTTPlayerRoleChangedByItem", nil, owner, hitEnt, self)
                 hitEnt:RespawnAsZombie()
             end
 

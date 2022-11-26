@@ -11,6 +11,11 @@ ROLE_IS_ACTIVE[ROLE_TURNCOAT] = function(ply)
 end
 
 function SetTurncoatTeam(ply, traitor)
+    TRAITOR_ROLES[ROLE_TURNCOAT] = traitor
+    INNOCENT_ROLES[ROLE_TURNCOAT] = not traitor
+
+    UpdateRoleColours()
+
     if SERVER then
         net.Start("TTT_TurncoatTeamChange")
         net.WriteBool(traitor)
@@ -22,12 +27,8 @@ function SetTurncoatTeam(ply, traitor)
         if IsPlayer(ply) then
             UpdateAssassinTargets(ply)
         end
+        hook.Call("TTTTurncoatTeamChanged", nil, ply, traitor)
     end
-
-    TRAITOR_ROLES[ROLE_TURNCOAT] = traitor
-    INNOCENT_ROLES[ROLE_TURNCOAT] = not traitor
-
-    UpdateRoleColours()
 end
 
 if CLIENT then

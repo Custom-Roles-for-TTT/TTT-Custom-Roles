@@ -286,6 +286,9 @@ function SWEP:DoConvert()
     ply:SetVampirePrime(false)
     ply:PrintMessage(HUD_PRINTCENTER, "You have become a Vampire! Use your fangs to suck blood or fade from view")
 
+    local owner = self:GetOwner()
+    hook.Call("TTTPlayerRoleChangedByItem", nil, owner, ply, self)
+
     net.Start("TTT_Vampified")
     net.WriteString(ply:Nick())
     net.Broadcast()

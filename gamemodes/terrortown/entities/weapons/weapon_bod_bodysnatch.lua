@@ -163,6 +163,7 @@ if SERVER then
         end
 
         local owner = self:GetOwner()
+        hook.Call("TTTPlayerRoleChangedByItem", nil, owner, owner, self)
 
         net.Start("TTT_Bodysnatched")
         net.Send(ply)
@@ -176,9 +177,7 @@ if SERVER then
         net.Broadcast()
 
         owner:SetRole(role)
-        if SERVER then
-            ply:MoveRoleState(owner, true)
-        end
+        ply:MoveRoleState(owner, true)
         owner:SelectWeapon("weapon_zm_carry")
         owner:SetNWBool("WasBodysnatcher", true)
 
