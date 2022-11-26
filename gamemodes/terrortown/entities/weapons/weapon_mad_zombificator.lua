@@ -195,7 +195,9 @@ if SERVER then
         net.Send(ply)
 
         local owner = self:GetOwner()
+        -- DEPRECATED in 1.6.16
         hook.Call("TTTPlayerDefibRoleChange", nil, owner, ply)
+        hook.Call("TTTPlayerRoleChangedByItem", nil, owner, ply, self)
 
         net.Start("TTT_Zombified")
         net.WriteString(ply:Nick())
@@ -230,6 +232,9 @@ if SERVER then
 
     function SWEP:Begin(body, bone)
         local ply = bodyply(body)
+        local owner = self:GetOwner()
+
+        hook.Call("TTTMadScientistZombifyBegin", nil, owner, ply)
 
         if not ply then
             self:Error("INVALID TARGET")
@@ -245,7 +250,7 @@ if SERVER then
         self:SetBegin(CurTime())
         self:SetMessage("ZOMBIFYING " .. string.upper(ply:Nick()))
 
-        self:GetOwner():EmitSound(hum, 75, math.random(98, 102), 1)
+        owner:EmitSound(hum, 75, math.random(98, 102), 1)
 
         self.Target = body
         self.Bone = bone

@@ -227,6 +227,7 @@ local function Scan(ply, target)
                 ply:SetNWString("TTTInformantScannerMessage", "")
                 ply:SetNWFloat("TTTInformantScannerStartTime", -1)
             end
+            hook.Call("TTTInformantScanStageChanged", nil, ply, target, stage)
             target:SetNWInt("TTTInformantScanStage", stage)
         end
     else

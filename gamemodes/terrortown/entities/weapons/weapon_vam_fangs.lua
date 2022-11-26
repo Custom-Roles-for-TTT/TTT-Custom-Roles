@@ -286,6 +286,9 @@ function SWEP:DoConvert()
     ply:SetVampirePrime(false)
     ply:PrintMessage(HUD_PRINTCENTER, "You have become a Vampire! Use your fangs to suck blood or fade from view")
 
+    local owner = self:GetOwner()
+    hook.Call("TTTPlayerRoleChangedByItem", nil, owner, ply, self)
+
     net.Start("TTT_Vampified")
     net.WriteString(ply:Nick())
     net.Broadcast()
@@ -334,7 +337,10 @@ function SWEP:DoHeal(living)
     end
 
     local vamheal = vampire_fang_heal:GetInt()
-    self:GetOwner():SetHealth(math.min(self:GetOwner():Health() + vamheal, self:GetOwner():GetMaxHealth() + vamoverheal))
+    local owner = self:GetOwner()
+    local health = math.min(owner:Health() + vamheal, owner:GetMaxHealth() + vamoverheal)
+    hook.Call("TTTVampireBodyEaten", nil, owner, self.TargetEntity, living, health - owner:Health())
+    owner:SetHealth(health)
 end
 
 function SWEP:UnfreezeTarget()
@@ -409,11 +415,13 @@ function SWEP:Think()
         owner:SetColor(Color(255, 255, 255, 0))
         owner:SetMaterial("sprites/heatwave")
         owner:EmitSound("weapons/ttt/fade.wav")
+        hook.Call("TTTVampireInvisibilityChange", nil, owner, true)
     elseif self:Clip1() >= 40 and self.fading then
         self.fading = false
         owner:SetColor(COLOR_WHITE)
         owner:SetMaterial("models/glass")
         owner:EmitSound("weapons/ttt/unfade.wav")
+        hook.Call("TTTVampireInvisibilityChange", nil, owner, false)
     end
 
     if self:GetState() >= STATE_EAT then

@@ -1,13 +1,6 @@
 AddCSLuaFile()
 
 local IsValid = IsValid
-local math = math
-local pairs = pairs
-local player = player
-local surface = surface
-local string = string
-
-local GetAllPlayers = player.GetAll
 
 DEFINE_BASECLASS "weapon_tttbase"
 
@@ -63,12 +56,13 @@ end
 
 function SWEP:Holster()
     if SERVER and IsValid(self:GetOwner()) then
-        self:GetOwner():SetNWInt("TTTInformantScannerState", INFORMANT_SCANNER_IDLE)
-        self:GetOwner():SetNWString("TTTInformantScannerTarget", "")
-        self:GetOwner():SetNWString("TTTInformantScannerMessage", "")
-        self:GetOwner():SetNWFloat("TTTInformantScannerStartTime", -1)
-        self:GetOwner():SetNWFloat("TTTInformantScannerTargetLostTime", -1)
-        self:GetOwner():SetNWFloat("TTTInformantScannerCooldown", -1)
+        local owner = self:GetOwner()
+        owner:SetNWInt("TTTInformantScannerState", INFORMANT_SCANNER_IDLE)
+        owner:SetNWString("TTTInformantScannerTarget", "")
+        owner:SetNWString("TTTInformantScannerMessage", "")
+        owner:SetNWFloat("TTTInformantScannerStartTime", -1)
+        owner:SetNWFloat("TTTInformantScannerTargetLostTime", -1)
+        owner:SetNWFloat("TTTInformantScannerCooldown", -1)
     end
     return true
 end

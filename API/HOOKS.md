@@ -94,6 +94,15 @@ Called after player information such as role, health, and ammo and equipment inf
 - *labelY* - The Y value representing the first clear space to add information
 - *activeLabels* - The list of current active additional labels. Used to determine the labelY offset to use via: `labelY = labelY + (20 * #activeLabels)`. Be sure to insert an entry when you add your own label so other addons can space appropriately. *(Added in 1.6.11)*
 
+### TTTInformantScanStageChanged(ply, tgt, stage)
+Called when an informant has scanned additional information from a target player.\
+*Realm:* Server\
+*Added in:* 1.6.16\
+*Parameters:*
+- *ply* - The informant performing the scan
+- *tgt* - The player being scanned
+- *stage* - The new scan stage
+
 ### TTTKarmaGiveReward(ply, reward, victim)
 Called before a player is rewarded with karma. Used to block a player's karma reward.\
 *Realm:* Server\
@@ -115,6 +124,23 @@ Called before a player's karma effect is decided. Used to determine if a player 
 
 *Return:* `true` if the attacker should be penalized or `false` if they should not. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
 
+### TTTMadScientistZombifyBegin(ply, tgt)
+Called when a mad scientist begins zombifying a target.\
+*Realm:* Server\
+*Added in:* 1.6.16\
+*Parameters:*
+- *ply* - The mad scientist doing the zombifying
+- *tgt* - The target being zombified
+
+### TTTPaladinAuraHealed(ply, tgt, healed)
+Called when a paladin heals a target.\
+*Realm:* Server\
+*Added in:* 1.6.16\
+*Parameters:*
+- *ply* - The paladin doing the healing
+- *tgt* - The target being healed
+- *healed* - The amount healed
+
 ### TTTPlayerAliveClientThink(client, ply)
 Called for each player who is alive during the `Think` hook.\
 *Realm:* Client\
@@ -134,6 +160,7 @@ Called for each player who is alive during the `Tick` hook.\
 Called after a player has been resurrected by a device that also changes their role.\
 *Realm:* Server\
 *Added in:* 1.3.1\
+*Deprecated in:* 1.6.16\
 *Parameters:*
 - *ply* - The player using the resurrection device
 - *tgt* - The target player being resurrected
@@ -146,6 +173,15 @@ Called after a player's role has changed.\
 - *ply* - The player whose role is being changed
 - *oldRole* - The role the player had before this change
 - *newRole* - The role the player is changing to
+
+### TTTPlayerRoleChangedByItem(ply, tgt, item)
+Called after a player's role has been changed by a weapon or item.\
+*Realm:* Server\
+*Added in:* 1.6.16\
+*Parameters:*
+- *ply* - The player using the resurrection device
+- *tgt* - The target player being resurrected
+- *item* - The weapon or item used to change the target's role
 
 ### TTTPlayerSpawnForRound(ply, deadOnly)
 Called before a player is spawned for a round. Also used when reviving a player (via a defib, zombie conversion, etc.).\
@@ -455,6 +491,22 @@ Called before players are assigned a traitor role, allowing the available roles 
 - *detectives* - The table of available player choices that will be (or have already been) assigned a detective role. Manipulating this table will have no effect
 - *detectiveCount* - The number of players that will be (or have already been) assigned a detective role
 
+### TTTShopRandomBought(client, item)
+Called when a player buys a random item from the shop.\
+*Realm:* Client\
+*Added in:* 1.6.16\
+*Parameters:*
+- *client* - The player who is buying a random item
+- *item* - The random item that was selected
+
+### TTTSmokeGrenadeExtinguish(ent_class, ent_pos)
+Called when a smoke grenade extinguishes a fire entity.\
+*Realm:* Server\
+*Added in:* 1.6.16\
+*Parameters:*
+- *ent_class* - The class of fire entity that was extinguished
+- *ent_pos* - The position of the fire entity that was extinguished
+
 ### TTTSpectatorHUDKeyPress(ply, tgt, powers)
 Called when a player who is being shown a role-specific spectator HUD presses a button, allowing the hook to intercept that button press and perform specific logic if necessary.\
 *Realm:* Server\
@@ -707,6 +759,14 @@ Called before a ragdoll's name (shown when you look at a ragdoll) is rendered.\
 - *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
 - *clr* - The new clr value to use or the original passed into the hook
 
+### TTTTurncoatTeamChanged(ply, traitor)
+Called when a turncoat's team is changed
+*Realm:* Server\
+*Added in:* 1.6.16\
+*Parameters:*
+- *ply* - The player who triggered the turncoat team change (most likely would be the turncoat themselves)
+- *traitor* - Whether the turncoat is changing to the traitor team
+
 ### TTTTutorialRoleEnabled(role)
 Called before a role's tutorial page is rendered. This can be used to allow a page to be shown when it normally would not be because the role is disabled. Useful for situations like showing the Zombie tutorial page when the Mad Scientist is enabled (because the Mad Scientist creates Zombies).\
 *Realm:* Client\
@@ -765,6 +825,24 @@ Called before a role's tutorial page is rendered but after `TTTTutorialRoleText`
 Called after globals are synced but but before role colors and strings are set. Can be used to update role states (team membership) and role weapon (buyable, loadout, etc.) states based on configurations.\
 *Realm:* Client and Server\
 *Added in:* 1.2.7
+
+### TTTVampireBodyEaten(ply, ent, living, healed)
+Called after a vampire eats a body.\
+*Realm:* Server\
+*Added in:* 1.6.16\
+*Parameters:*
+- *ply* - The vampire eating the body
+- *ent* - The target entity. Generally either a player or a ragdoll
+- *living* - Whether the target entity was living at the time they were eaten
+- *healed* - The amount of health the player gained from eating the body
+
+### TTTVampireInvisibilityChange(ply, invisible)
+Called when a vampire starts or ends their invisibility.\
+*Realm:* Server\
+*Added in:* 1.6.16\
+*Parameters:*
+- *ply* - The vampire changing invisibility state
+- *ent* - The target entity. Generally either a player or a ragdoll
 
 ### TTTWinCheckBlocks(winBlocks)
 Called after the `TTTCheckForWins` has already been called, allowing for an addon to block a win. Used for roles like the clown and the drunk to have them activate when the round would normally end the first time.\

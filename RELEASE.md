@@ -1,5 +1,19 @@
 # Release Notes
 
+## 1.6.16
+**Released: November 26th, 2022**
+
+### Developer
+- Deprecated `TTTPlayerDefibRoleChange`
+- Added `TTTInformantScanStageChanged` which is called when an informant has scanned additional information from a target player
+- Added `TTTMadScientistZombifyBegin` which is called when a mad scientist begins to zombify a target
+- Added `TTTPaladinAuraHealed` which is called when a paladin heals a target with their aura
+- Added `TTTPlayerRoleChangedByItem` to replace `TTTPlayerDefibRoleChange` and implemented it for bodysnatcher, hypnotist, mad scientist, marshal, paramedic, vampire, and zombie
+- Added `TTTShopRandomBought` which is called when a player buys a random item from the shop
+- Added `TTTSmokeGrenadeExtinguish` which is called when a smoke grenade extinguishes a fire entity
+- Added `TTTTurncoatTeamChanged` which is called when the turncoat changes teams
+- Added `TTTVampireBodyEaten` and `TTTVampireInvisibilityChange` to help track vampire ability usage
+
 ## 1.6.15
 **Released: November 12th, 2022**
 

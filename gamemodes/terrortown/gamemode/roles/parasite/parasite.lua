@@ -77,7 +77,7 @@ hook.Add("TTTPlayerSpawnForRound", "Parasite_TTTPlayerSpawnForRound", function(p
 end)
 
 -- Un-haunt the device owner if they used their device on the parasite
-hook.Add("TTTPlayerDefibRoleChange", "Parasite_TTTPlayerDefibRoleChange", function(ply, tgt)
+hook.Add("TTTPlayerRoleChangedByItem", "Parasite_TTTPlayerRoleChangedByItem", function(ply, tgt, item)
     if tgt:IsParasite() and tgt:GetNWString("ParasiteInfectingTarget", nil) == ply:SteamID64() then
         ply:SetNWBool("ParasiteInfected", false)
     end
