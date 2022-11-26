@@ -340,7 +340,7 @@ function SWEP:DoHeal(living)
     local owner = self:GetOwner()
     local health = math.min(owner:Health() + vamheal, owner:GetMaxHealth() + vamoverheal)
     hook.Call("TTTVampireBodyEaten", nil, owner, self.TargetEntity, living, health - owner:Health())
-    owner:SetHealth(healh)
+    owner:SetHealth(health)
 end
 
 function SWEP:UnfreezeTarget()
