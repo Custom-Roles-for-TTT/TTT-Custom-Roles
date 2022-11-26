@@ -465,6 +465,14 @@ Called before players are assigned a traitor role, allowing the available roles 
 - *detectives* - The table of available player choices that will be (or have already been) assigned a detective role. Manipulating this table will have no effect
 - *detectiveCount* - The number of players that will be (or have already been) assigned a detective role
 
+### TTTSmokeGrenadeExtinguish(ent_class, ent_pos)
+Called when a smoke grenade extinguishes a fire entity.\
+*Realm:* Server\
+*Added in:* 1.6.16\
+*Parameters:*
+- *ent_class* - The class of fire entity that was extinguished
+- *ent_pos* - The position of the fire entity that was extinguished
+
 ### TTTSpectatorHUDKeyPress(ply, tgt, powers)
 Called when a player who is being shown a role-specific spectator HUD presses a button, allowing the hook to intercept that button press and perform specific logic if necessary.\
 *Realm:* Server\

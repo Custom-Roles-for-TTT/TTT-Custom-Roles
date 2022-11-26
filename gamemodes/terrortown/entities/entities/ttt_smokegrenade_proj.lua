@@ -77,9 +77,11 @@ function ENT:Explode(tr)
             local entities = ents.FindInSphere(pos, 100)
             local was_extinguished = false
             for _, e in ipairs(entities) do
-                if table.HasValue(target_ents, e:GetClass()) then
+                local ent_class = e:GetClass()
+                if table.HasValue(target_ents, ent_class) then
                     SafeRemoveEntity(e)
                     was_extinguished = true
+                    hook.Call("TTTSmokeGrenadeExtinguish", nil, ent_class, pos)
                 end
             end
 

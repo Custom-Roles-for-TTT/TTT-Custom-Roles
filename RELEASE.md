@@ -6,6 +6,7 @@
 ### Developer
 - Deprecated `TTTPlayerDefibRoleChange`
 - Added `TTTPlayerRoleChangedByItem` to replace `TTTPlayerDefibRoleChange` and implemented it for bodysnatcher, hypnotist, mad scientist, marshal, paramedic, vampire, and zombie
+- Added `TTTSmokeGrenadeExtinguish` which is called when a smoke grenade extinguishes a fire entity
 - Added `TTTTurncoatTeamChanged` which is called when the turncoat changes teams
 - Added `TTTVampireBodyEaten` and `TTTVampireInvisibilityChange` to help track vampire ability usage
 
