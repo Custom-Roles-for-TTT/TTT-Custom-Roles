@@ -491,6 +491,14 @@ Called before players are assigned a traitor role, allowing the available roles 
 - *detectives* - The table of available player choices that will be (or have already been) assigned a detective role. Manipulating this table will have no effect
 - *detectiveCount* - The number of players that will be (or have already been) assigned a detective role
 
+### TTTShopRandomBought(client, item)
+Called when a player buys a random item from the shop.\
+*Realm:* Client\
+*Added in:* 1.6.16\
+*Parameters:*
+- *client* - The player who is buying a random item
+- *item* - The random item that was selected
+
 ### TTTSmokeGrenadeExtinguish(ent_class, ent_pos)
 Called when a smoke grenade extinguishes a fire entity.\
 *Realm:* Server\

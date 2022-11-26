@@ -876,8 +876,10 @@ local function TraitorMenuPopup()
 
             if #buyable_items == 0 then return end
 
-            dlist:SelectPanel(buyable_items[math.random(1, #buyable_items)])
+            local random_panel = buyable_items[math.random(1, #buyable_items)]
+            dlist:SelectPanel(random_panel)
             dconfirm.DoClick()
+            hook.Call("TTTShopRandomBought", nil, LocalPlayer(), random_panel.item)
         end
 
         FillEquipmentList(GetEquipmentForRole(ply:GetRole(), ply:IsDetectiveLike() and not ply:IsDetectiveTeam(), false))
