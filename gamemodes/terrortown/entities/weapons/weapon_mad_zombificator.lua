@@ -232,6 +232,9 @@ if SERVER then
 
     function SWEP:Begin(body, bone)
         local ply = bodyply(body)
+        local owner = self:GetOwner()
+
+        hook.Call("TTTMadScientistZombifyBegin", nil, owner, ply)
 
         if not ply then
             self:Error("INVALID TARGET")
@@ -247,7 +250,7 @@ if SERVER then
         self:SetBegin(CurTime())
         self:SetMessage("ZOMBIFYING " .. string.upper(ply:Nick()))
 
-        self:GetOwner():EmitSound(hum, 75, math.random(98, 102), 1)
+        owner:EmitSound(hum, 75, math.random(98, 102), 1)
 
         self.Target = body
         self.Bone = bone

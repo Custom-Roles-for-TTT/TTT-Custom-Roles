@@ -115,6 +115,14 @@ Called before a player's karma effect is decided. Used to determine if a player 
 
 *Return:* `true` if the attacker should be penalized or `false` if they should not. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
 
+### TTTMadScientistZombifyBegin(ply, tgt)
+Called when a mad scientist begins zombifying a target.\
+*Realm:* Server\
+*Added in:* 1.6.16\
+*Parameters:*
+- *ply* - The mad scientist doing the zombifying
+- *tgt* - The target being zombified
+
 ### TTTPaladinAuraHealed(ply, tgt, healed)
 Called when a paladin heals a target.\
 *Realm:* Server\
