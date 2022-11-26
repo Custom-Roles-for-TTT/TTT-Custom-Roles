@@ -94,6 +94,15 @@ Called after player information such as role, health, and ammo and equipment inf
 - *labelY* - The Y value representing the first clear space to add information
 - *activeLabels* - The list of current active additional labels. Used to determine the labelY offset to use via: `labelY = labelY + (20 * #activeLabels)`. Be sure to insert an entry when you add your own label so other addons can space appropriately. *(Added in 1.6.11)*
 
+### TTTInformantScanStageChanged(ply, tgt, stage)
+Called when an informant has scanned additional information from a target player.\
+*Realm:* Server\
+*Added in:* 1.6.16\
+*Parameters:*
+- *ply* - The informant performing the scan
+- *tgt* - The player being scanned
+- *stage* - The new scan stage
+
 ### TTTKarmaGiveReward(ply, reward, victim)
 Called before a player is rewarded with karma. Used to block a player's karma reward.\
 *Realm:* Server\

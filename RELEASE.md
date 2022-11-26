@@ -5,6 +5,7 @@
 
 ### Developer
 - Deprecated `TTTPlayerDefibRoleChange`
+- Added `TTTInformantScanStageChanged` which is called when an informant has scanned additional information from a target player
 - Added `TTTMadScientistZombifyBegin` which is called when a mad scientist begins to zombify a target
 - Added `TTTPaladinAuraHealed` which is called when a paladin heals a target with their aura
 - Added `TTTPlayerRoleChangedByItem` to replace `TTTPlayerDefibRoleChange` and implemented it for bodysnatcher, hypnotist, mad scientist, marshal, paramedic, vampire, and zombie
