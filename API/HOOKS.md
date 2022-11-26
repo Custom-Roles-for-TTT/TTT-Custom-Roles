@@ -115,6 +115,15 @@ Called before a player's karma effect is decided. Used to determine if a player 
 
 *Return:* `true` if the attacker should be penalized or `false` if they should not. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
 
+### TTTPaladinAuraHealed(ply, tgt, healed)
+Called when a paladin heals a target.\
+*Realm:* Server\
+*Added in:* 1.6.16\
+*Parameters:*
+- *ply* - The paladin doing the healing
+- *tgt* - The target being healed
+- *healed* - The amount healed
+
 ### TTTPlayerAliveClientThink(client, ply)
 Called for each player who is alive during the `Think` hook.\
 *Realm:* Client\

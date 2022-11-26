@@ -37,6 +37,7 @@ hook.Add("TTTBeginRound", "Paladin_RoleFeatures_TTTBeginRound", function()
                 for _, v in pairs(GetAllPlayers()) do
                     if v:IsActive() and (not v:IsPaladin() or paladinHealSelf) and v:GetPos():Distance(p:GetPos()) <= paladinRadius and v:Health() < v:GetMaxHealth() then
                         local health = math.min(v:GetMaxHealth(), v:Health() + paladinHeal)
+                        hook.Call("TTTPaladinAuraHealed", nil, p, v, health - v:Health())
                         v:SetHealth(health)
                     end
                 end
