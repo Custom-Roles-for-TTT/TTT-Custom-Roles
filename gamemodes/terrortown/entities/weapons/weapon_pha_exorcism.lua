@@ -108,7 +108,7 @@ if SERVER then
 
     function SWEP:DoCleanse(ply)
         local owner = self:GetOwner()
-        if IsPlayer(ply) then
+        if IsPlayer(ply) and ply:Alive() and not ply:IsSpec() then
             ply:EmitSound(cured)
 
             if ply:GetNWBool("Haunted", false) then

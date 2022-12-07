@@ -170,7 +170,7 @@ if SERVER then
 
     function SWEP:DoRespawn(body)
         local ply = bodyply(body)
-        if not ply or ply:Alive() and not ply:IsSpec() then
+        if not IsPlayer(ply) or (ply:Alive() and not ply:IsSpec()) then
             self:DoRespawnFailure()
             return
         end

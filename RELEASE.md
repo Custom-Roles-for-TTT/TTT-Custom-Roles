@@ -1,5 +1,13 @@
 # Release Notes
 
+## 1.6.17
+**Released:**
+
+### Fixes
+- Fixed minor typo in jester tutorial
+- Fixed hypnotist device being usable on fake bodies, causing living players to change roles and teleport
+- Fixed marshal's deputy badge not removing role weapons or restoring default weapons when changing someone's role
+
 ## 1.6.16
 **Released: November 26th, 2022**
 
