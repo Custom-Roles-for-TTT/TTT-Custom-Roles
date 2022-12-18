@@ -3,6 +3,9 @@
 ## 1.6.17
 **Released:**
 
+### Changes
+- Changed round summary panel to use increasingly smaller fonts to try and fix text into the box
+
 ### Fixes
 - Fixed minor typo in jester tutorial
 - Fixed hypnotist device being usable on fake bodies, causing living players to change roles and teleport
