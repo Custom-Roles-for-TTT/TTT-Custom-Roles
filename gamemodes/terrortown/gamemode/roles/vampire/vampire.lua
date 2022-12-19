@@ -8,11 +8,13 @@ local IsValid = IsValid
 local math = math
 local net = net
 local pairs = pairs
+local player = player
 local resource = resource
 local table = table
 local util = util
 
 local GetAllPlayers = player.GetAll
+local MathRandom = math.random
 
 util.AddNetworkString("TTT_VampirePrimeDeath")
 
@@ -174,6 +176,34 @@ hook.Add("PlayerDeath", "Vampire_PrimeDeath_PlayerDeath", function(victim, infl,
     end
 end)
 
+-- If the last vampire prime leaves, randomly choose a new one
+hook.Add("PlayerDisconnected", "Vampire_Prime_PlayerDisconnected", function(ply)
+    if not ply:IsVampire() then return end
+    if not ply:IsVampirePrime() then return end
+
+    local vampires = {}
+    for _, v in pairs(GetAllPlayers()) do
+        if v:Alive() and v:IsTerror() and v:IsVampire() then
+            -- If we already have another prime, we're all set
+            if ply ~= v and v:IsVampirePrime() then
+                return
+            end
+
+            table.insert(vampires, v)
+        end
+    end
+
+    if #vampires == 0 then return end
+
+    local idx = MathRandom(1, #vampires)
+    local new_prime = vampires[idx]
+    new_prime:SetVampirePrime(true)
+
+    local message = "The prime " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " has faded away and you've seized power in their absence!"
+    new_prime:PrintMessage(HUD_PRINTCENTER, message)
+    new_prime:PrintMessage(HUD_PRINTTALK, message)
+end)
+
 function plymeta:SetVampirePrime(p) self:SetNWBool("vampire_prime", p) end
 function plymeta:SetVampirePreviousRole(r) self:SetNWInt("vampire_previous_role", r) end
 
@@ -315,10 +345,8 @@ end)
 hook.Add("TTTPlayerAliveThink", "Vampire_TTTPlayerAliveThink", function(ply)
     if not IsValid(ply) or ply:IsSpec() or GetRoundState() ~= ROUND_ACTIVE then return end
 
-    if ply:IsVampire() then
-        if not ply:HasWeapon("weapon_vam_fangs") then
-            ply:Give("weapon_vam_fangs")
-        end
+    if ply:IsVampire() and not ply:HasWeapon("weapon_vam_fangs") then
+        ply:Give("weapon_vam_fangs")
     end
 end)
 
