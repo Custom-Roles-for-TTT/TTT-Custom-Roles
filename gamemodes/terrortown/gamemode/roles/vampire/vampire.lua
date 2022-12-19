@@ -183,9 +183,9 @@ hook.Add("PlayerDisconnected", "Vampire_Prime_PlayerDisconnected", function(ply)
 
     local vampires = {}
     for _, v in pairs(GetAllPlayers()) do
-        if v:Alive() and v:IsTerror() and v:IsVampire() then
+        if v:Alive() and v:IsTerror() and v:IsVampire() and v ~= ply then
             -- If we already have another prime, we're all set
-            if ply ~= v and v:IsVampirePrime() then
+            if v:IsVampirePrime() then
                 return
             end
 
