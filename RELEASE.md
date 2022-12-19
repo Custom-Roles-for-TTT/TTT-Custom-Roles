@@ -7,6 +7,7 @@
 - Changed round summary panel to use increasingly smaller fonts to try and fix text into the box
 - Changed vampire prime to get randomly assigned to a vampire thrall if the prime leaves the game
 - Changed zombie prime to get randomly assigned to a zombie thrall if the prime leaves the game
+- Changed revenger to be randomly assigned a new lover if their lover leaves the game
 
 ### Fixes
 - Fixed minor typo in jester tutorial
