@@ -1,0 +1,18 @@
+VertexLitGeneric
+{
+	$basetexture "models/weapons/huntingbow/steelarrow"
+	$bumpmap     "models/weapons/huntingbow/steelarrow_n"
+
+	$envmap      "env_cubemap"
+	$envmapmask  "models/weapons/huntingbow/steelarrow_m"
+
+	$normalmapalphaenvmapmask   1
+	$phong                      1
+	$phongexponent              10
+	$phongboost                 1
+	$phongfresnelranges         "[1 1 1]"
+    $envmaptint                 "[0.01 0.01 0.01]"
+
+	$phongalbedotint    1
+	$halflambert        1
+}
