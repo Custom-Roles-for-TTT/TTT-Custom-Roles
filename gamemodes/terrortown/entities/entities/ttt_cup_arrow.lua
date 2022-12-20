@@ -116,7 +116,7 @@ function ENT:Touch(ent)
                                 end
 
                                 if mode == CUPID_REVEAL_ALL or (v:IsTraitorTeam() and mode == CUPID_REVEAL_TRAITORS) or (v:IsInnocentTeam() and mode == CUPID_REVEAL_INNOCENTS) then
-                                    v:PrintMessage(HUD_PRINTCENTER, "Cupid has made two players fall in love!")
+                                    v:PrintMessage(HUD_PRINTCENTER, ROLE_STRINGS_EXT[ROLE_CUPID] .. " has made two players fall in love!")
                                 end
                             end
                         end

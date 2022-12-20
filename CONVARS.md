@@ -76,6 +76,7 @@ ttt_clown_enabled                           0       // Whether or not the clown 
 ttt_beggar_enabled                          0       // Whether or not the beggar should spawn
 ttt_bodysnatcher_enabled                    0       // Whether or not the bodysnatcher should spawn
 ttt_lootgoblin_enabled                      0       // Whether or not the loot goblin should spawn
+ttt_cupid_enabled                           0       // Whether or not the cupid should spawn
 ttt_drunk_enabled                           0       // Whether or not the drunk should spawn
 ttt_oldman_enabled                          0       // Whether or not the old man should spawn
 ttt_killer_enabled                          0       // Whether or not the killer should spawn
@@ -112,6 +113,7 @@ ttt_clown_spawn_weight                      1       // The weight assigned to sp
 ttt_beggar_spawn_weight                     1       // The weight assigned to spawning the beggar
 ttt_bodysnatcher_spawn_weight               1       // The weight assigned to spawning the bodysnatcher
 ttt_lootgoblin_spawn_weight                 1       // The weight assigned to spawning the loot goblin
+ttt_cupid_spawn_weight                      1       // The weight assigned to spawning the cupid
 ttt_drunk_spawn_weight                      1       // The weight assigned to spawning the drunk
 ttt_oldman_spawn_weight                     1       // The weight assigned to spawning the old man
 ttt_killer_spawn_weight                     1       // The weight assigned to spawning the killer
@@ -149,6 +151,7 @@ ttt_clown_min_players                       0       // The minimum number of pla
 ttt_beggar_min_players                      0       // The minimum number of players required to spawn the beggar
 ttt_bodysnatcher_min_players                0       // The minimum number of players required to spawn the bodysnatcher
 ttt_lootgoblin_min_players                  0       // The minimum number of players required to spawn the loot goblin
+ttt_cupid_min_players                       0       // The minimum number of players required to spawn the cupid
 ttt_drunk_min_players                       0       // The minimum number of players required to spawn the drunk
 ttt_oldman_min_players                      0       // The minimum number of players required to spawn the old man
 ttt_killer_min_players                      0       // The minimum number of players required to spawn the killer
@@ -477,6 +480,17 @@ ttt_lootgoblin_regen_mode                   2       // Whether the loot goblin s
 ttt_lootgoblin_regen_rate                   3       // How often (in seconds) a loot goblin should regain health while regenerating
 ttt_lootgoblin_regen_delay                  0       // The length of the delay (in seconds) before the loot goblin's health will start to regenerate
 
+// Cupid
+ttt_cupids_are_independent                  0       // Whether cupids should be treated as members of the independent team (rather than the jester team)
+ttt_cupid_lovers_notify_mode                1       // Who is notified with cupid makes two players fall in love 0 - No one. 1 - Everyone. 2 - Traitors. 3 - Innocents
+ttt_cupid_can_damage_lovers                 0       // Whether cupid should be able to damage the lovers
+ttt_cupid_lovers_can_damage_lovers          1       // Whether the lovers should be able to damage each other
+ttt_cupid_lovers_can_damage_cupid           0       // Whether the lovers should be able to damage cupid
+ttt_cupid_lover_vision_enable               1       // Whether the lovers can see outlines of each other through walls
+ttt_beggar_notify_mode                      0       // The logic to use when notifying players that a cupid is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
+ttt_beggar_notify_sound                     0       // Whether to play a cheering sound when a cupid is killed
+ttt_beggar_notify_confetti                  0       // Whether to throw confetti when a cupid is a killed
+
 // ----------------------------------------
 
 // INDEPENDENT TEAM SETTINGS
@@ -707,6 +721,7 @@ ttt_clown_starting_health                   100     // The amount of health the 
 ttt_beggar_starting_health                  100     // The amount of health the beggar starts with
 ttt_bodysnatcher_starting_health            100     // The amount of health the bodysnatcher starts with
 ttt_lootgoblin_starting_health              50      // The amount of health the loot goblin starts with
+ttt_cupid_starting_health                   100     // The amount of health the cupid starts with
 ttt_drunk_starting_health                   100     // The amount of health the drunk starts with
 ttt_oldman_starting_health                  1       // The amount of health the old man starts with
 ttt_killer_starting_health                  150     // The amount of health the killer starts with
@@ -746,6 +761,7 @@ ttt_clown_max_health                        100     // The maximum amount of hea
 ttt_beggar_max_health                       100     // The maximum amount of health the beggar can have
 ttt_bodysnatcher_max_health                 100     // The maximum amount of health the bodysnatcher can have
 ttt_lootgoblin_max_health                   50      // The maximum amount of health the loot goblin can have
+ttt_cupid_max_health                        100     // The maximum amount of health the cupid can have
 ttt_drunk_max_health                        100     // The maximum amount of health the drunk can have
 ttt_oldman_max_health                       1       // The maximum amount of health the old man can have
 ttt_killer_max_health                       150     // The maximum amount of health the killer can have

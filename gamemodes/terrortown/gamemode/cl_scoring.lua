@@ -555,6 +555,8 @@ function CLSCORE:BuildSummaryPanel(dpanel)
 
                 local swappedWith = ""
                 local jesterKiller = ""
+                local lover1 = ""
+                local lover2 = ""
                 if IsValid(ply) then
                     alive = ply:Alive() and not ply:IsSpec()
                     finalRole = ply:GetRole()
@@ -582,6 +584,13 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                         jesterKiller = ply:GetNWString("JesterKiller", "")
                     elseif ply:IsSwapper() then
                         swappedWith = ply:GetNWString("SwappedWith", "")
+                    elseif ply:IsCupid() then
+                        local sid641 = ply:GetNWString("TTTCupidTarget1", "")
+                        local sid642 = ply:GetNWString("TTTCupidTarget2", "")
+                        if sid641 ~= "" and sid642 ~= "" then
+                            lover1 = player.GetBySteamID64(sid641):Nick()
+                            lover2 = player.GetBySteamID64(sid642):Nick()
+                        end
                     end
                 else
                     hasDisconnected = true
@@ -606,6 +615,8 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                     hasDisconnected = hasDisconnected,
                     jesterKiller = jesterKiller,
                     swappedWith = swappedWith,
+                    lover1 = lover1,
+                    lover2 = lover2,
                     startingRole = startingRole,
                     finalRole = finalRole
                 }
@@ -875,6 +886,9 @@ function CLSCORE:BuildRoleLabel(playerList, dpanel, statusX, roleX, rowY)
         elseif v.swappedWith ~= "" and v.roleFileName == ROLE_STRINGS_SHORT[ROLE_SWAPPER] then
             label = "Killed"
             otherName = v.swappedWith
+        elseif v.lover1 ~= "" and v.roleFileName == ROLE_STRINGS_SHORT[ROLE_CUPID] then
+            label = "Paired"
+            otherName = v.lover1 .. " and " .. v.lover2
         end
 
         if otherName ~= nil then

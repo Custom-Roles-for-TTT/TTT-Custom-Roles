@@ -23,9 +23,11 @@ local cupids_are_independent = CreateConVar("ttt_cupids_are_independent", "0", F
 local cupid_can_damage_lovers = CreateConVar("ttt_cupid_can_damage_lovers", "0", FCVAR_NONE, "Whether cupid should be able to damage the lovers", 0, 1)
 local cupid_lovers_can_damage_lovers = CreateConVar("ttt_cupid_lovers_can_damage_lovers", "1", FCVAR_NONE, "Whether the lovers should be able to damage each other", 0, 1)
 local cupid_lovers_can_damage_cupid = CreateConVar("ttt_cupid_lovers_can_damage_cupid", "0", FCVAR_NONE, "Whether the lovers should be able to damage cupid", 0, 1)
+local cupid_lover_vision_enable = CreateConVar("ttt_cupid_lover_vision_enable", "1", FCVAR_NONE, "Whether the lovers can see outlines of each other through walls", 0, 1)
 
 hook.Add("TTTSyncGlobals", "Cupid_TTTSyncGlobals", function()
     SetGlobalBool("ttt_cupids_are_independent", cupids_are_independent:GetBool())
+    SetGlobalBool("ttt_cupid_lover_vision_enable", cupid_lover_vision_enable:GetBool())
 end)
 
 ----------------
@@ -77,6 +79,35 @@ hook.Add("ScalePlayerDamage", "Cupid_ScalePlayerDamage", function(ply, hitgroup,
     end
 end)
 
+--------------------------
+-- DISCONNECTION CHECKS --
+--------------------------
+
+hook.Add("PlayerDisconnected", "Cupid_PlayerDisconnected", function(ply)
+    local sid64 = ply:SteamID64()
+
+    for _, p in pairs(GetAllPlayers()) do
+        if p:GetNWString("TTTCupidLover", "") == sid64 then
+            p:PrintMessage(HUD_PRINTCENTER, "Your lover has disappeared ;_;")
+            p:SetNWString("TTTCupidLover", "")
+        elseif p:GetNWString("TTTCupidTarget1", "") == sid64 then
+            p:PrintMessage(HUD_PRINTCENTER, "A player hit by your arrow has disconnected")
+            local target2 = p:GetNWString("TTTCupidTarget2", "")
+            if target2 == "" then
+                p:SetNWString("TTTCupidTarget1", "")
+            else
+                p:SetNWString("TTTCupidTarget1", target2)
+                p:SetNWString("TTTCupidTarget2", "")
+                p:Give("weapon_cup_bow")
+            end
+        elseif p:GetNWString("TTTCupidTarget2", "") == sid64 then
+            p:PrintMessage(HUD_PRINTCENTER, "A player hit by your arrow has disconnected")
+            p:SetNWString("TTTCupidTarget2", "")
+            p:Give("weapon_cup_bow")
+        end
+    end
+end)
+
 ----------------
 -- WIN CHECKS --
 ----------------
@@ -104,12 +135,9 @@ hook.Add("PlayerDeath", "Cupid_PlayerDeath", function(victim, infl, attacker)
     end
 end)
 
-hook.Add("TTTPrintResultMessage", "Killer_TTTPrintResultMessage", function(type)
-    if type == WIN_JESTER then
-        LANG.Msg("win_jester", { role = ROLE_STRINGS_PLURAL[ROLE_JESTER] })
-        ServerLog("Result: " .. ROLE_STRINGS[ROLE_JESTER] .. " wins.\n")
+hook.Add("TTTPrintResultMessage", "Cupid_TTTPrintResultMessage", function(type)
+    if type == WIN_CUPID then
+        LANG.Msg("win_lovers", { role = ROLE_STRINGS_PLURAL[ROLE_CUPID] })
+        ServerLog("Result: " .. ROLE_STRINGS[ROLE_CUPID] .. " wins.\n")
     end
 end)
-
--- TODO: Add convars to CONVARS.md
--- TODO: Lover outline through walls
