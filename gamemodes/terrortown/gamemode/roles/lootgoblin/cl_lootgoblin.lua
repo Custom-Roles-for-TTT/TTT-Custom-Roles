@@ -7,6 +7,8 @@ local util = util
 
 local MathMax = math.max
 local StringUpper = string.upper
+local GetAllPlayers = player.GetAll
+local TableAdd = table.Add
 
 ------------------
 -- TRANSLATIONS --
@@ -56,6 +58,64 @@ ROLE_IS_TARGETID_OVERRIDDEN[ROLE_LOOTGOBLIN] = function(ply, target)
     ------ icon, ring, text
     return true, true, true
 end
+
+-----------
+-- RADAR --
+-----------
+
+local beacon_back = surface.GetTextureID("vgui/ttt/beacon_back")
+local beacon_gob = surface.GetTextureID("vgui/ttt/beacon_gob")
+local lootgoblins = {}
+
+hook.Add("TTTRadarRender", "LootGoblin_TTTRadarRender", function(cli)
+    if #lootgoblins then
+        surface.SetTexture(beacon_back)
+        surface.SetTextColor(0, 0, 0, 0)
+        surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_LOOTGOBLIN])
+
+        for _, target in pairs(lootgoblins) do
+            RADAR:DrawTarget(target, 16, 0.5)
+        end
+
+        surface.SetTexture(beacon_gob)
+        surface.SetTextColor(255, 255, 255, 255)
+        surface.SetDrawColor(255, 255, 255, 255)
+
+        for _, target in pairs(lootgoblins) do
+            RADAR:DrawTarget(target, 16, 0.5)
+        end
+    end
+end)
+
+local beep_success = Sound("buttons/blip2.wav")
+local function SetLootGoblinPosition()
+    local cli = LocalPlayer()
+    if not cli:IsActiveLootGoblin() then
+        lootgoblins = {}
+        for k, v in ipairs(GetAllPlayers()) do
+            if v:IsActiveLootGoblin() and v:IsRoleActive() then
+                lootgoblins[k] = { pos = v:GetNWVector("TTTLootGoblinRadar", Vector(0, 0, 0)) }
+                if cli:IsActive() then surface.PlaySound(beep_success) end
+            end
+        end
+    end
+end
+
+local function UpdateLootGoblin()
+    if timer.Exists("updatelootgoblin") then timer.Remove("updatelootgoblin") end
+    local active = net.ReadBool()
+    if active then
+        SetLootGoblinPosition()
+        timer.Create("updatelootgoblin", GetGlobalInt("ttt_revenger_radar_timer", 15), 0, SetLootGoblinPosition)
+    else
+        lootgoblins = {}
+    end
+end
+net.Receive("TTT_LootGoblinRadar", UpdateLootGoblin)
+
+hook.Add("TTTEndRound", "LootGoblin_Radar_TTTEndRound", function()
+    if timer.Exists("updatelootgoblin") then timer.Remove("updatelootgoblin") end
+end)
 
 ----------------
 -- SCOREBOARD --
