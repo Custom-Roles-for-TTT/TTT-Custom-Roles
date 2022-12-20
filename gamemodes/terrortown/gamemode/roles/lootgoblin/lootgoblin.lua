@@ -15,8 +15,11 @@ local weapons = weapons
 local GetAllPlayers = player.GetAll
 local CreateEntity = ents.Create
 local MathRandom = math.random
+local TableInsert = table.insert
+local TableRemove = table.remove
 
 util.AddNetworkString("TTT_UpdateLootGoblinWins")
+util.AddNetworkString("TTT_LootGoblinRadar")
 
 resource.AddSingleFile("lootgoblin/cackle1.wav")
 resource.AddSingleFile("lootgoblin/cackle2.wav")
@@ -51,12 +54,16 @@ local lootgoblin_sprint_recovery = CreateConVar("ttt_lootgoblin_sprint_recovery"
 local lootgoblin_regen_mode = CreateConVar("ttt_lootgoblin_regen_mode", "2", FCVAR_NONE, "Whether the loot goblin should regenerate health and using what logic. 0 - No regeneration. 1 - Constant regen while active. 2 - Regen while standing still. 3 - Regen after taking damage", 0, 3)
 local lootgoblin_regen_rate = CreateConVar("ttt_lootgoblin_regen_rate", "3", FCVAR_NONE, "How often (in seconds) a loot goblin should regain health while regenerating", 1, 60)
 local lootgoblin_regen_delay = CreateConVar("ttt_lootgoblin_regen_delay", "0", FCVAR_NONE, "The length of the delay (in seconds) before the loot goblin's health will start to regenerate", 0, 60)
+local lootgoblin_radar_enabled = CreateConVar("ttt_lootgoblin_radar_enabled", "0", FCVAR_NONE, "Whether the radar ping for the loot goblin should be enabled or not", 0, 1)
+local lootgoblin_radar_timer = CreateConVar("ttt_lootgoblin_radar_timer", "15", FCVAR_NONE, "How often (in seconds) the radar ping for the loot goblin should update", 1, 60)
+local lootgoblin_radar_delay = CreateConVar("ttt_lootgoblin_radar_delay", "15", FCVAR_NONE, "How dealyed (in seconds) the radar ping for the loot goblin should be", 1, 60)
 
 hook.Add("TTTSyncGlobals", "LootGoblin_TTTSyncGlobals", function()
     SetGlobalFloat("ttt_lootgoblin_speed_mult", lootgoblin_speed_mult:GetFloat())
     SetGlobalFloat("ttt_lootgoblin_sprint_recovery", lootgoblin_sprint_recovery:GetFloat())
     SetGlobalInt("ttt_lootgoblin_regen_mode", lootgoblin_regen_mode:GetInt())
     SetGlobalInt("ttt_lootgoblin_regen_delay", lootgoblin_regen_delay:GetInt())
+    SetGlobalInt("ttt_revenger_radar_timer", lootgoblin_radar_timer:GetInt())
 end)
 
 -----------
@@ -176,6 +183,12 @@ local function ActivateLootGoblin(ply)
         jumpPower = jumpPower + (-(120 * scale) + 125)
     end
     ply:SetJumpPower(jumpPower)
+
+    if lootgoblin_radar_enabled:GetBool() then
+        net.Start("TTT_LootGoblinRadar")
+        net.WriteBool(true)
+        net.Broadcast()
+    end
 end
 
 local function StartGoblinTimers()
@@ -331,6 +344,34 @@ hook.Add("PlayerDeath", "LootGoblin_PlayerDeath", function(victim, infl, attacke
     end
 end)
 
+-----------
+-- RADAR --
+-----------
+
+local goblins = {}
+hook.Add("TTTBeginRound", "LootGoblin_Radar_TTTBeginRound", function()
+    for _, v in ipairs(GetAllPlayers()) do
+        v:SetNWVector("TTTLootGoblinRadar", v:LocalToWorld(v:OBBCenter())) -- Fallback just in case
+    end
+
+    timer.Create("LootGoblinRadarDelay", 1, 0, function()
+        for _, v in ipairs(GetAllPlayers()) do
+            if v:IsActiveLootGoblin() then
+                local locations = goblins[v:SteamID64()]
+                if locations == nil then
+                    locations = {}
+                end
+                TableInsert(locations, v:LocalToWorld(v:OBBCenter()))
+                if #locations > lootgoblin_radar_delay:GetInt() then
+                    v:SetNWVector("TTTLootGoblinRadar", locations[1])
+                    TableRemove(locations, 1)
+                end
+                goblins[v:SteamID64()] = locations
+            end
+        end
+    end)
+end)
+
 -------------
 -- CLEANUP --
 -------------
@@ -346,8 +387,12 @@ end
 hook.Add("TTTPrepareRound", "LootGoblin_PrepareRound", function()
     for _, v in pairs(GetAllPlayers()) do
         v:SetNWBool("LootGoblinKilled", false)
+        v:SetNWVector("TTTLootGoblinRadar", Vector(0, 0, 0))
         ResetPlayer(v)
     end
+    net.Start("TTT_LootGoblinRadar")
+    net.WriteBool(false)
+    net.Broadcast()
 end)
 
 hook.Add("TTTPlayerSpawnForRound", "LootGoblin_TTTPlayerSpawnForRound", function(ply, deadOnly)
@@ -385,5 +430,6 @@ end)
 hook.Add("TTTEndRound", "LootGoblin_TTTEndRound", function()
     timer.Remove("LootGoblinActivate")
     timer.Remove("LootGoblinCackle")
+    timer.Remove("LootGoblinRadarDelay")
     lootGoblinActive = false
 end)

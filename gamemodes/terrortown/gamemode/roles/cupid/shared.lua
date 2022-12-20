@@ -54,3 +54,7 @@ table.insert(ROLE_CONVARS[ROLE_CUPID], {
     cvar = "ttt_cupid_lovers_can_damage_cupid",
     type = ROLE_CONVAR_TYPE_BOOL
 })
+table.insert(ROLE_CONVARS[ROLE_CUPID], {
+    cvar = "ttt_cupid_lover_vision_enable",
+    type = ROLE_CONVAR_TYPE_BOOL
+})

@@ -5,6 +5,7 @@
 
 ### Additions
 - Added new jester role: cupid
+- Added option to enable a radar that reveals the previous location of the loot goblin (disabled by default)
 
 ### Changes
 - Changed round summary panel to use increasingly smaller fonts to try and fix text into the box

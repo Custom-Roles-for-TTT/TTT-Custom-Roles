@@ -111,3 +111,17 @@ table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
 })
+table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
+    cvar = "ttt_lootgoblin_radar_enabled",
+    type = ROLE_CONVAR_TYPE_BOOL,
+})
+table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
+    cvar = "ttt_lootgoblin_radar_timer",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
+    cvar = "ttt_lootgoblin_radar_delay",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
