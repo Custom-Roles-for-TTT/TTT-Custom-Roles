@@ -22,7 +22,11 @@
 
 ### Developer
 - Added new `otherName` and `label` return values to the `TTTScoringSummaryRender` hook
-- Changed how jester and swapper round summary information is rendered to be cleaner and less hard-coded
+- Changed how the following round summary information is rendered to be cleaner and less hard-coded
+  - Jester "Killed by"
+  - Swapper "Killed"
+  - Beggars who joined a team
+  - People who were hypnotized
 
 ## 1.6.16
 **Released: November 26th, 2022**

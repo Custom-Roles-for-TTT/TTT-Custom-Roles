@@ -564,19 +564,6 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                     -- Update the icon to use the final role, in case it changed
                     roleFileName = ROLE_STRINGS_SHORT[finalRole]
                     roleColor = ROLE_COLORS[finalRole]
-                    if ply:IsInnocent() then
-                        if ply:GetNWBool("WasBeggar", false) then
-                            roleFileName = ROLE_STRINGS_SHORT[ROLE_BEGGAR]
-                        end
-                    elseif ply:IsTraitor() then
-                        if ply:GetNWBool("WasBeggar", false) then
-                            roleFileName = ROLE_STRINGS_SHORT[ROLE_BEGGAR]
-                        elseif ply:GetNWBool("WasHypnotised", false) then
-                            roleFileName = ROLE_STRINGS_SHORT[startingRole]
-                        end
-                    elseif ply:IsImpersonator() and ply:GetNWBool("WasHypnotised", false) then
-                        roleFileName = ROLE_STRINGS_SHORT[startingRole]
-                    end
                 else
                     hasDisconnected = true
                 end
