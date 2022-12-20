@@ -111,6 +111,5 @@ hook.Add("TTTPrintResultMessage", "Killer_TTTPrintResultMessage", function(type)
     end
 end)
 
--- TODO: Role icons
 -- TODO: Add convars to CONVARS.md
 -- TODO: Lover outline through walls
