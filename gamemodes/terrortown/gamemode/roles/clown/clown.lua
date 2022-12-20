@@ -91,6 +91,7 @@ hook.Add("TTTPrintResultMessage", "Clown_TTTPrintResultMessage", function(type)
     if type == WIN_CLOWN then
         LANG.Msg("win_clown", { role = ROLE_STRINGS_PLURAL[ROLE_CLOWN] })
         ServerLog("Result: " .. ROLE_STRINGS[ROLE_CLOWN] .. " wins.\n")
+        return true
     end
 end)
 

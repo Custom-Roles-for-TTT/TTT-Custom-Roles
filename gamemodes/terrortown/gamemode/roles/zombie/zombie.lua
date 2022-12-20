@@ -137,6 +137,7 @@ hook.Add("TTTPrintResultMessage", "Zombie_TTTPrintResultMessage", function(type)
         local plural = ROLE_STRINGS_PLURAL[ROLE_ZOMBIE]
         LANG.Msg("win_zombies", { role = plural })
         ServerLog("Result: " .. plural .. " win.\n")
+        return true
     end
 end)
 

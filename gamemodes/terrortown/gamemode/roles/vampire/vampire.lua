@@ -267,6 +267,7 @@ hook.Add("TTTPrintResultMessage", "Vampire_TTTPrintResultMessage", function(type
         local plural = ROLE_STRINGS_PLURAL[ROLE_VAMPIRE]
         LANG.Msg("win_vampires", { role = plural })
         ServerLog("Result: " .. plural .. " win.\n")
+        return true
     end
 end)
 

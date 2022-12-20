@@ -20,12 +20,25 @@ AddHook("Initialize", "Cupid_Translations_Initialize", function()
     LANG.AddToLanguage("english", "hilite_lovers_secondary", "AND THE LOVERS WIN")
     LANG.AddToLanguage("english", "ev_win_lovers", "The lovers won the round!")
 
+    -- Scoring
+    LANG.AddToLanguage("english", "score_cupid_pairnames", "{lover1} and {lover2}")
+    LANG.AddToLanguage("english", "score_cupid_paired", "Paired")
+
     -- Popup
     LANG.AddToLanguage("english", "info_popup_cupid_jester", [[You are {role}! {traitors} think you are {ajester} and you
 deal no damage. However, you can use your bow to make two
 players fall in love so that they win/die together.]])
     LANG.AddToLanguage("english", "info_popup_cupid_indep", [[You are {role}! You can use your bow to make two
 players fall in love so that they win/die together.]])
+end)
+
+hook.Add("TTTRolePopupRoleStringOverride", "Cupid_TTTRolePopupRoleStringOverride", function(client, roleString)
+    if not IsPlayer(client) or not client:IsCupid() then return end
+
+    if GetGlobalBool("ttt_cupids_are_independent", false) then
+        return roleString .. "_indep"
+    end
+    return roleString .. "_jester"
 end)
 
 ----------------
@@ -76,6 +89,30 @@ AddHook("TTTEventFinishIconText", "Cupid_TTTEventFinishIconText", function(e, wi
     end
 end)
 
+-------------
+-- SCORING --
+-------------
+
+-- Show who the cupid paired (if anyone)
+AddHook("TTTScoringSummaryRender", "Cupid_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
+    if ply:IsCupid() then
+        local lover1_sid64 = ply:GetNWString("TTTCupidTarget1", "")
+        local lover2_sid64 = ply:GetNWString("TTTCupidTarget2", "")
+        if lover1_sid64 == "" or lover2_sid64 == "" then return end
+
+        local lover1 = player.GetBySteamID64(lover1_sid64)
+        if not IsPlayer(lover1) then return end
+
+        local lover2 = player.GetBySteamID64(lover2_sid64)
+        if not IsPlayer(lover2) then return end
+
+        local lover1_name = lover1:Nick()
+        local lover2_name = lover2:Nick()
+
+        return roleFileName, groupingRole, roleColor, name, LANG.GetParamTranslation("score_cupid_pairnames", {lover1=lover1_name, lover2=lover2_name}), LANG.GetTranslation("score_cupid_paired")
+    end
+end)
+
 ------------
 -- HEARTS --
 ------------
@@ -92,7 +129,7 @@ end)
 -- TARGET ID --
 ---------------
 
-AddHook("TTTTargetIDPlayerRoleIcon", "Cupid_TTTTargetIDPlayerRoleIcon", function(ply, client, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
+AddHook("TTTTargetIDPlayerRoleIcon", "Cupid_TTTTargetIDPlayerRoleIcon", function(ply, client, role, noz, colorRole, hideBeggar, showJester, hideCupid)
     if ply:IsActiveCupid() and ply:SteamID64() == client:GetNWString("TTTCupidShooter", "") then
         return ROLE_CUPID, true
     elseif ply:SteamID64() == client:GetNWString("TTTCupidLover", "") then

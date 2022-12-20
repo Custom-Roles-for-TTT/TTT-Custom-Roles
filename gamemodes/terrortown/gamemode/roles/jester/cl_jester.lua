@@ -10,6 +10,9 @@ hook.Add("Initialize", "Jester_Translations_Initialize", function()
     LANG.AddToLanguage("english", "win_jester", "The {role} has fooled you all!")
     LANG.AddToLanguage("english", "ev_win_jester", "The tricky {role} won the round!")
 
+    -- Scoring
+    LANG.AddToLanguage("english", "score_jester_killedby", "Killed by")
+
     -- Popup
     LANG.AddToLanguage("english", "info_popup_jester", [[You are {role}! You want to die but you
 deal no damage so you must be killed by some one else.]])
@@ -38,6 +41,20 @@ end)
 hook.Add("TTTEventFinishIconText", "Jester_TTTEventFinishIconText", function(e, win_string, role_string)
     if e.win == WIN_JESTER then
         return win_string, ROLE_STRINGS[ROLE_JESTER]
+    end
+end)
+
+-------------
+-- SCORING --
+-------------
+
+-- Show who killed the jester (if anyone)
+hook.Add("TTTScoringSummaryRender", "Jester_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
+    if ply:IsJester() then
+        local jesterKiller = ply:GetNWString("JesterKiller", "")
+        if jesterKiller ~= "" then
+            return roleFileName, groupingRole, roleColor, name, jesterKiller, LANG.GetTranslation("score_jester_killedby")
+        end
     end
 end)
 
