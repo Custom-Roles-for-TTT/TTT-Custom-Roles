@@ -5,12 +5,15 @@ local plymeta = FindMetaTable("Player")
 local hook = hook
 local ipairs = ipairs
 local IsValid = IsValid
-local pairs = pairs
+local math = math
 local net = net
-local timer = timer
+local pairs = pairs
+local player = player
+local table = table
 local util = util
 
 local GetAllPlayers = player.GetAll
+local MathRandom = math.random
 
 util.AddNetworkString("TTT_Zombified")
 
@@ -43,6 +46,34 @@ end)
 -----------
 -- PRIME --
 -----------
+
+-- If the last zombie prime leaves, randomly choose a new one
+hook.Add("PlayerDisconnected", "Zombie_Prime_PlayerDisconnected", function(ply)
+    if not ply:IsZombie() then return end
+    if not ply:IsZombiePrime() then return end
+
+    local zombies = {}
+    for _, v in pairs(GetAllPlayers()) do
+        if v:Alive() and v:IsTerror() and v:IsZombie() and v ~= ply then
+            -- If we already have another prime, we're all set
+            if v:IsZombiePrime() then
+                return
+            end
+
+            table.insert(zombies, v)
+        end
+    end
+
+    if #zombies == 0 then return end
+
+    local idx = MathRandom(1, #zombies)
+    local new_prime = zombies[idx]
+    new_prime:SetZombiePrime(true)
+
+    local message = "The prime " .. ROLE_STRINGS[ROLE_ZOMBIE] .. " has been lost and you've seized power in their absence!"
+    new_prime:PrintMessage(HUD_PRINTCENTER, message)
+    new_prime:PrintMessage(HUD_PRINTTALK, message)
+end)
 
 function plymeta:SetZombiePrime(p) self:SetNWBool("zombie_prime", p) end
 

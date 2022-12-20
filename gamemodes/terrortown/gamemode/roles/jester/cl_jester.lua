@@ -52,7 +52,7 @@ hook.Add("TTTTutorialRoleText", "Jester_TTTTutorialRoleText", function(role, tit
 
         if not GetGlobalBool("ttt_jester_win_by_traitors", true) then
             local traitorColor = ROLE_COLORS[ROLE_TRAITOR]
-            html = html .. "<span style='display: block; margin-top: 10px;'>Be careful! Jesters <span style='text-decoration: underline'>DO NOT</span> win if they are killed by a member of the <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>traitor team!</span>.</span>"
+            html = html .. "<span style='display: block; margin-top: 10px;'>Be careful! Jesters <span style='text-decoration: underline'>DO NOT</span> win if they are killed by a member of the <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>traitor team</span>!</span>"
         end
 
         return html

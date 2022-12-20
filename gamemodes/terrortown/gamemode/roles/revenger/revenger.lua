@@ -176,6 +176,36 @@ ROLE_ON_ROLE_ASSIGNED[ROLE_REVENGER] = function(ply)
     end
 end
 
+-- Assign a new lover if they disconnected
+hook.Add("PlayerDisconnected", "Revenger_Lover_PlayerDisconnected", function(ply)
+    local sid64 = ply:SteamID64()
+    local potentialSoulmates = {}
+    local revenger = nil
+    for _, p in pairs(GetAllPlayers()) do
+        if p:IsRevenger() then
+            if p:GetNWString("RevengerLover", "") == sid64 then
+                revenger = p
+            end
+        elseif p:Alive() and not p:IsSpec() and p ~= ply then
+            table.insert(potentialSoulmates, p)
+        end
+    end
+
+    if not revenger then return end
+
+    local message = "Your lover has disappeared ;_;"
+    if #potentialSoulmates > 0 then
+        local revenger_lover = potentialSoulmates[math.random(#potentialSoulmates)]
+        revenger:SetNWString("RevengerLover", revenger_lover:SteamID64() or "")
+        message = message .. " You are now in love with " .. revenger_lover:Nick() .. " instead."
+    else
+        revenger:SetNWString("RevengerLover", "")
+    end
+
+    revenger:PrintMessage(HUD_PRINTTALK, message)
+    revenger:PrintMessage(HUD_PRINTCENTER, message)
+end)
+
 ------------------
 -- SCALE DAMAGE --
 ------------------

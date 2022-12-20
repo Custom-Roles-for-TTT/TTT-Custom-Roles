@@ -157,7 +157,7 @@ if SERVER then
 
     function SWEP:DoBodysnatch(body)
         local ply = bodyply(body)
-        if not ply or ply:Alive() and not ply:IsSpec() then
+        if not IsPlayer(ply) or (ply:Alive() and not ply:IsSpec()) then
             self:DoBodysnatchFailure()
             return
         end

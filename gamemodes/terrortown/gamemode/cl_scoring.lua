@@ -53,9 +53,25 @@ surface.CreateFont("WinLarge", {
     extended = true
 })
 
+surface.CreateFont("WinMedium", {
+    font = "Trebuchet24",
+    size = 40,
+    weight = 1000,
+    shadow = true,
+    extended = true
+})
+
 surface.CreateFont("WinSmall", {
     font = "Trebuchet24",
     size = 32,
+    weight = 1000,
+    shadow = true,
+    extended = true
+})
+
+surface.CreateFont("WinTiny", {
+    font = "Trebuchet24",
+    size = 24,
     weight = 1000,
     shadow = true,
     extended = true
@@ -282,6 +298,29 @@ local function GetWinTitle(wintype)
     end
 
     return title
+end
+
+function GetFontForWinTitle(wintxt, width)
+    -- Scale the title down if it's too wide
+    local winfont_options = {"WinHuge", "WinLarge", "WinMedium", "WinSmall", "WinTiny"}
+    local winfont = "WinHuge"
+    for _, font in ipairs(winfont_options) do
+        -- If we got to this loop iteration we want to use this font
+        winfont = font
+
+        surface.SetFont(font)
+        local textWidth, _ = surface.GetTextSize(wintxt)
+
+        print("Text width is " .. textWidth .. " when using font '" .. font .. "' compared to parent's " .. width)
+        if textWidth < width then
+            break
+        end
+    end
+
+    -- Reset the font now that we're done messing with it
+    surface.SetFont("Default")
+
+    return winfont
 end
 
 function CLSCORE:BuildEventLogPanel(dpanel)
@@ -653,13 +692,8 @@ function CLSCORE:BuildSummaryPanel(dpanel)
     bg:SetPos(0, 0)
 
     local winlbl = vgui.Create("DLabel", dpanel)
-    local winfont = "WinHuge"
     local wintxt = PT(title.txt, title.params or {})
-    -- Scale the title down if there are too many letters
-    if #wintxt > 18 then
-        winfont = "WinLarge"
-    end
-    winlbl:SetFont(winfont)
+    winlbl:SetFont(GetFontForWinTitle(wintxt, w - 20))
     winlbl:SetText(wintxt)
     winlbl:SetTextColor(COLOR_WHITE)
     winlbl:SizeToContents()
@@ -955,13 +989,8 @@ function CLSCORE:BuildHilitePanel(dpanel)
     bg:SetPos(0,0)
 
     local winlbl = vgui.Create("DLabel", dpanel)
-    local winfont = "WinHuge"
     local wintxt = PT(title.txt, title.params or {})
-    -- Scale the title down if there are too many letters
-    if #wintxt > 18 then
-        winfont = "WinLarge"
-    end
-    winlbl:SetFont(winfont)
+    winlbl:SetFont(GetFontForWinTitle(wintxt, w - 20))
     winlbl:SetText(wintxt)
     winlbl:SetTextColor(COLOR_WHITE)
     winlbl:SizeToContents()

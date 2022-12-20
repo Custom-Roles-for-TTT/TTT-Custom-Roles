@@ -236,6 +236,11 @@ hook.Add("TTTPrepareRound", "Assassin_Smoke_PrepareRound", function()
     end
 end)
 
+-- Update assassin target when a player disconnects
+hook.Add("PlayerDisconnected", "Assassin_Target_PlayerDisconnected", function(ply)
+    UpdateAssassinTargets(ply)
+end)
+
 ------------
 -- DAMAGE --
 ------------

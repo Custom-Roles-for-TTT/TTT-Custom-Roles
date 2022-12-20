@@ -135,7 +135,7 @@ if SERVER then
         if not IsFirstTimePredicted() then return end
 
         local ply = self.Target
-        if not IsPlayer(ply) then
+        if not IsPlayer(ply) or not ply:Alive() or ply:IsSpec() then
             self:Error("INVALID TARGET")
             return
         end
@@ -162,6 +162,17 @@ if SERVER then
 
         ply:SetRole(role)
         SendFullStateUpdate()
+
+        ply:StripRoleWeapons()
+        if not ply:HasWeapon("weapon_ttt_unarmed") then
+            ply:Give("weapon_ttt_unarmed")
+        end
+        if not ply:HasWeapon("weapon_zm_carry") then
+            ply:Give("weapon_zm_carry")
+        end
+        if not ply:HasWeapon("weapon_zm_improvised") then
+            ply:Give("weapon_zm_improvised")
+        end
 
         local owner = self:GetOwner()
         hook.Call("TTTPlayerRoleChangedByItem", nil, owner, ply, self)

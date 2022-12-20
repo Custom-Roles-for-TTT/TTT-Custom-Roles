@@ -177,8 +177,23 @@ if SERVER then
         return false
     end
 
+    function SWEP:DoRespawnFailure()
+        local phys = self.Target:GetPhysicsObjectNum(self.Bone)
+
+        if IsValid(phys) then
+            phys:ApplyForceCenter(Vector(0, 0, 4096))
+        end
+
+        self:Error("ATTEMPT FAILED TRY AGAIN")
+    end
+
     function SWEP:DoRespawn(body)
         local ply = bodyply(body)
+        if not IsPlayer(ply) or (ply:Alive() and not ply:IsSpec()) then
+            self:DoRespawnFailure()
+            return
+        end
+
         local credits = CORPSE.GetCredits(body, 0) or 0
 
         if ply:IsTraitor() and CORPSE.GetFound(body, false) == true then
@@ -243,13 +258,7 @@ if SERVER then
         sound.Play(zap, self.Target:GetPos(), 75, math.random(95, 105), 1)
 
         if math.random(0, 100) > success then
-            local phys = self.Target:GetPhysicsObjectNum(self.Bone)
-
-            if IsValid(phys) then
-                phys:ApplyForceCenter(Vector(0, 0, 4096))
-            end
-
-            self:Error("ATTEMPT FAILED TRY AGAIN")
+            self:DoRespawnFailure()
             return
         end
         if not IsFirstTimePredicted() then return end
