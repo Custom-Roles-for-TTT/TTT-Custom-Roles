@@ -480,8 +480,8 @@ ttt_lootgoblin_regen_mode                   2       // Whether the loot goblin s
 ttt_lootgoblin_regen_rate                   3       // How often (in seconds) a loot goblin should regain health while regenerating
 ttt_lootgoblin_regen_delay                  0       // The length of the delay (in seconds) before the loot goblin's health will start to regenerate
 ttt_lootgoblin_radar_enabled                0       // Whether the radar ping for the loot goblin should be enabled or not
-ttt_revenger_radar_timer                    15      // How often (in seconds) the radar ping for the loot goblin should update
-ttt_revenger_radar_delay                    15      // How dealyed (in seconds) the radar ping for the loot goblin should be
+ttt_lootgoblin_radar_timer                  15      // How often (in seconds) the radar ping for the loot goblin should update
+ttt_lootgoblin_radar_delay                  15      // How delayed (in seconds) the radar ping for the loot goblin should be
 
 // Cupid
 ttt_cupids_are_independent                  0       // Whether cupids should be treated as members of the independent team (rather than the jester team)
