@@ -92,6 +92,8 @@ end)
 
 -- Show who the cupid paired (if anyone)
 AddHook("TTTScoringSummaryRender", "Cupid_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
+    if not IsPlayer(ply) then return end
+
     if ply:IsCupid() then
         local lover1_sid64 = ply:GetNWString("TTTCupidTarget1", "")
         local lover2_sid64 = ply:GetNWString("TTTCupidTarget2", "")

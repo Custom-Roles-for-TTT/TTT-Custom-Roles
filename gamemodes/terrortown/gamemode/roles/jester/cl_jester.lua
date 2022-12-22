@@ -50,6 +50,8 @@ end)
 
 -- Show who killed the jester (if anyone)
 hook.Add("TTTScoringSummaryRender", "Jester_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
+    if not IsPlayer(ply) then return end
+
     if ply:IsJester() then
         local jesterKiller = ply:GetNWString("JesterKiller", "")
         if jesterKiller ~= "" then

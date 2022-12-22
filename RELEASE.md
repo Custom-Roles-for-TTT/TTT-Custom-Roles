@@ -19,6 +19,7 @@
 - Fixed marshal's deputy badge not removing role weapons or restoring default weapons when changing someone's role
 - Fixed assassin not getting new target when their current target leaves the game
 - Fixed some roles with custom win conditions causing "unknown win condition" server logs when they won
+- Fixed a client error that can occur when a player disconnecting ends the round
 
 ### Developer
 - Added new `otherName` and `label` return values to the `TTTScoringSummaryRender` hook

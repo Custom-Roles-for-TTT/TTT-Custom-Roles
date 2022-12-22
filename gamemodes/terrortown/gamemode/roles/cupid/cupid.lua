@@ -7,6 +7,8 @@ local timer = timer
 
 local GetAllPlayers = player.GetAll
 
+resource.AddFile("materials/particle/heart.vmt")
+
 -------------
 -- CONVARS --
 -------------
