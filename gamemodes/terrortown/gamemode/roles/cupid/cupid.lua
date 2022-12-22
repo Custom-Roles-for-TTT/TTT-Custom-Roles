@@ -109,6 +109,8 @@ end)
 ----------------
 
 hook.Add("PlayerDeath", "Cupid_PlayerDeath", function(victim, infl, attacker)
+    if GetRoundState() ~= ROUND_ACTIVE then return end
+
     local cupidWin = true
     for _, v in pairs(GetAllPlayers()) do
         if v:IsActive() then

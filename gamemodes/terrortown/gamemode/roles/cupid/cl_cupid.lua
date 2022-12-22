@@ -8,6 +8,7 @@ local HaloAdd = halo.Add
 local AddHook = hook.Add
 local RemoveHook = hook.Remove
 local TableInsert = table.insert
+local StringUpper = string.upper
 
 ------------------
 -- TRANSLATIONS --
@@ -47,7 +48,7 @@ end)
 
 AddHook("TTTScoringWinTitle", "Cupid_TTTScoringWinTitle", function(wintype, wintitles, title, secondary_win_role)
     if wintype == WIN_CUPID then
-        return { txt = "hilite_lovers_primary" }
+        return { txt = "hilite_lovers_primary", c = ROLE_COLORS[ROLE_CUPID] }
     end
 end)
 
@@ -56,19 +57,15 @@ AddHook("TTTScoringSecondaryWins", "Cupid_TTTScoringSecondaryWins", function(win
 
     for _, p in ipairs(GetAllPlayers()) do
         local lover = p:GetNWString("TTTCupidLover", "")
-        if p:IsActive() and lover ~= "" then
-            if player.GetBySteamID64(lover):IsActive() then -- This shouldn't be necessary because if one lover dies the other should too but we check just in case
+        if p:Alive() and lover ~= "" then
+            if player.GetBySteamID64(lover):Alive() then -- This shouldn't be necessary because if one lover dies the other should too but we check just in case
                 TableInsert(secondary_wins, {
                     rol = ROLE_CUPID,
                     txt = LANG.GetTranslation("hilite_lovers_secondary"),
                     col = ROLE_COLORS[ROLE_CUPID]
                 })
-                CLSCORE:AddEvent({ -- Log the win event with an offset to force it to the end
-                    id = EVENT_FINISH,
-                    win = WIN_CUPID
-                }, 1)
+                return
             end
-            return
         end
     end
 end)
@@ -133,7 +130,7 @@ AddHook("TTTTargetIDPlayerRoleIcon", "Cupid_TTTTargetIDPlayerRoleIcon", function
     if ply:IsActiveCupid() and ply:SteamID64() == client:GetNWString("TTTCupidShooter", "") then
         return ROLE_CUPID, true
     elseif ply:SteamID64() == client:GetNWString("TTTCupidLover", "") then
-        return role, true
+        return ply:GetRole(), true
     end
 end)
 
@@ -152,14 +149,8 @@ AddHook("TTTTargetIDPlayerText", "Cupid_TTTTargetIDPlayerText", function(ent, cl
         if ent:IsActiveCupid() and ent:SteamID64() == client:GetNWString("TTTCupidShooter", "") then
             return StringUpper(ROLE_STRINGS[ROLE_CUPID]), ROLE_COLORS_RADAR[ROLE_CUPID]
         elseif ent:SteamID64() == client:GetNWString("TTTCupidLover", "") then
-            return StringUpper(ROLE_STRINGS[ent:GetRole()]), ROLE_COLORS_RADAR[ent:GetRole()]
+            return StringUpper(ROLE_STRINGS[ent:GetRole()]), ROLE_COLORS_RADAR[ent:GetRole()], "LOVER", Color(230, 90, 200, 255)
         end
-    end
-end)
-
-AddHook("TTTTargetIDPlayerHintText", "Cupid_TTTTargetIDPlayerHintText", function(ent, client, text, clr)
-    if IsPlayer(ent) and ent:SteamID64() == client:GetNWString("TTTCupidLover", "") then
-        return "LOVER", Color(230, 90, 200, 255)
     end
 end)
 
