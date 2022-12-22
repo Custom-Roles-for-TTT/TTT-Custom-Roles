@@ -8,6 +8,9 @@ SWEP.HoldType = "shotgun"
 if SERVER then
     resource.AddFile("models/weapons/v_doublebarrl.mdl")
     resource.AddFile("models/weapons/w_double_barrel_shotgun.mdl")
+
+    resource.AddFile("sound/weapons/ttt/dbblast.wav")
+    resource.AddFile("sound/weapons/ttt/dbsingle.wav")
 end
 
 if CLIENT then

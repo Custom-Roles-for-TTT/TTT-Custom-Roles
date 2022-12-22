@@ -3,6 +3,22 @@ SWEP.HoldType = "pistol"
 if SERVER then
     resource.AddFile("models/weapons/v_huntingbow.mdl")
     resource.AddFile("models/weapons/w_huntingbow.mdl")
+    resource.AddFile("materials/models/weapons/huntingbow/steelbow.vmt")
+
+    resource.AddSingleFile("sound/cupid/nock_1.wav")
+    resource.AddSingleFile("sound/cupid/nock_2.wav")
+    resource.AddSingleFile("sound/cupid/nock_3.wav")
+
+    resource.AddSingleFile("sound/cupid/pull_1.wav")
+    resource.AddSingleFile("sound/cupid/pull_2.wav")
+    resource.AddSingleFile("sound/cupid/pull_3.wav")
+
+    resource.AddSingleFile("sound/cupid/shoot_1.wav")
+    resource.AddSingleFile("sound/cupid/shoot_2.wav")
+    resource.AddSingleFile("sound/cupid/shoot_3.wav")
+
+    resource.AddSingleFile("sound/cupid/zoomin.wav")
+    resource.AddSingleFile("sound/cupid/zoomout.wav")
 end
 
 if CLIENT then
