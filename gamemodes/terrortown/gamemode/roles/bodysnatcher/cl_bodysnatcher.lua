@@ -96,6 +96,8 @@ end)
 
 -- Show the player's starting role icon if they were originally a bodysnatcher
 hook.Add("TTTScoringSummaryRender", "Bodysnatcher_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
+    if not IsPlayer(ply) then return end
+
     if startingRole == ROLE_BODYSNATCHER then
         return ROLE_STRINGS_SHORT[ROLE_BODYSNATCHER]
     end

@@ -88,6 +88,8 @@ end)
 
 -- Show the player's starting role icon if they were converted to a zombie and group them with their original team
 hook.Add("TTTScoringSummaryRender", "Zombie_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
+    if not IsPlayer(ply) then return end
+
     if finalRole == ROLE_ZOMBIE then
         return ROLE_STRINGS_SHORT[startingRole], startingRole
     end
