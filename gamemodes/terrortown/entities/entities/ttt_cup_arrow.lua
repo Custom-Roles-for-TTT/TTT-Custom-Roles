@@ -5,6 +5,10 @@ ENT.Spawnable = false
 
 ENT.Model = "models/weapons/w_huntingbow_arrow.mdl"
 
+if SERVER then
+    resource.AddFile("models/weapons/w_huntingbow_arrow.mdl")
+end
+
 local ARROW_MINS = Vector(-0.25, -0.25, 0.25)
 local ARROW_MAXS = Vector(0.25, 0.25, 0.25)
 

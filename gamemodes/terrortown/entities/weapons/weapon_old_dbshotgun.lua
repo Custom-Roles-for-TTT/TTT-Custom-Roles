@@ -5,6 +5,11 @@ local math = math
 
 SWEP.HoldType = "shotgun"
 
+if SERVER then
+    resource.AddFile("models/weapons/v_doublebarrl.mdl")
+    resource.AddFile("models/weapons/w_double_barrel_shotgun.mdl")
+end
+
 if CLIENT then
     SWEP.PrintName = "Double Barrel"
     SWEP.Slot = 2

@@ -1,5 +1,10 @@
 SWEP.HoldType = "pistol"
 
+if SERVER then
+    resource.AddFile("models/weapons/v_huntingbow.mdl")
+    resource.AddFile("models/weapons/w_huntingbow.mdl")
+end
+
 if CLIENT then
     SWEP.PrintName = "Cupid's Bow"
     SWEP.Slot = 8
