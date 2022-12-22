@@ -21,17 +21,17 @@ local TableRemove = table.remove
 util.AddNetworkString("TTT_UpdateLootGoblinWins")
 util.AddNetworkString("TTT_LootGoblinRadar")
 
-resource.AddSingleFile("lootgoblin/cackle1.wav")
-resource.AddSingleFile("lootgoblin/cackle2.wav")
-resource.AddSingleFile("lootgoblin/cackle3.wav")
-resource.AddSingleFile("lootgoblin/jingle1.wav")
-resource.AddSingleFile("lootgoblin/jingle2.wav")
-resource.AddSingleFile("lootgoblin/jingle3.wav")
-resource.AddSingleFile("lootgoblin/jingle4.wav")
-resource.AddSingleFile("lootgoblin/jingle5.wav")
-resource.AddSingleFile("lootgoblin/jingle6.wav")
-resource.AddSingleFile("lootgoblin/jingle7.wav")
-resource.AddSingleFile("lootgoblin/jingle8.wav")
+resource.AddSingleFile("sound/lootgoblin/cackle1.wav")
+resource.AddSingleFile("sound/lootgoblin/cackle2.wav")
+resource.AddSingleFile("sound/lootgoblin/cackle3.wav")
+resource.AddSingleFile("sound/lootgoblin/jingle1.wav")
+resource.AddSingleFile("sound/lootgoblin/jingle2.wav")
+resource.AddSingleFile("sound/lootgoblin/jingle3.wav")
+resource.AddSingleFile("sound/lootgoblin/jingle4.wav")
+resource.AddSingleFile("sound/lootgoblin/jingle5.wav")
+resource.AddSingleFile("sound/lootgoblin/jingle6.wav")
+resource.AddSingleFile("sound/lootgoblin/jingle7.wav")
+resource.AddSingleFile("sound/lootgoblin/jingle8.wav")
 
 -------------
 -- CONVARS --
