@@ -1,12 +1,8 @@
 AddCSLuaFile()
 
 local hook = hook
-local IsValid = IsValid
-local math = math
-local net = net
 local pairs = pairs
 local player = player
-local table = table
 local timer = timer
 
 local GetAllPlayers = player.GetAll
@@ -139,5 +135,6 @@ hook.Add("TTTPrintResultMessage", "Cupid_TTTPrintResultMessage", function(type)
     if type == WIN_CUPID then
         LANG.Msg("win_lovers", { role = ROLE_STRINGS_PLURAL[ROLE_CUPID] })
         ServerLog("Result: " .. ROLE_STRINGS[ROLE_CUPID] .. " wins.\n")
+        return true
     end
 end)

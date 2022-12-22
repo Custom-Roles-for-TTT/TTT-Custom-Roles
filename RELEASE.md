@@ -18,6 +18,15 @@
 - Fixed hypnotist device being usable on fake bodies, causing living players to change roles and teleport
 - Fixed marshal's deputy badge not removing role weapons or restoring default weapons when changing someone's role
 - Fixed assassin not getting new target when their current target leaves the game
+- Fixed some roles with custom win conditions causing "unknown win condition" server logs when they won
+
+### Developer
+- Added new `otherName` and `label` return values to the `TTTScoringSummaryRender` hook
+- Changed how the following round summary information is rendered to be cleaner and less hard-coded
+  - Jester "Killed by"
+  - Swapper "Killed"
+  - Beggars who joined a team
+  - People who were hypnotized
 
 ## 1.6.16
 **Released: November 26th, 2022**

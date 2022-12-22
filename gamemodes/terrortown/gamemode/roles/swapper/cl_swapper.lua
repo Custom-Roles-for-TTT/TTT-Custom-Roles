@@ -9,6 +9,9 @@ hook.Add("Initialize", "Swapper_Translations_Initialize", function()
     -- Event
     LANG.AddToLanguage("english", "ev_swap", "{victim} swapped with {attacker}")
 
+    -- Scoring
+    LANG.AddToLanguage("english", "score_swapper_killed", "Killed")
+
     -- Popup
     LANG.AddToLanguage("english", "info_popup_swapper", [[You are {role}! {traitors} think you are {ajester} and you
 deal no damage however, if anyone kills you, they become
@@ -44,6 +47,16 @@ net.Receive("TTT_SwapperSwapped", function(len)
         sid64 = vicsid,
         bonus = 2
     })
+end)
+
+-- Show who the current swapper killed (if anyone)
+hook.Add("TTTScoringSummaryRender", "Swapper_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
+    if ply:IsSwapper() then
+        local swappedWith = ply:GetNWString("SwappedWith", "")
+        if swappedWith ~= "" then
+            return roleFileName, groupingRole, roleColor, name, swappedWith, LANG.GetTranslation("score_swapper_killed")
+        end
+    end
 end)
 
 --------------

@@ -389,6 +389,8 @@ Called before the round summary screen is shown. Used to modify the color, posit
 - *groupingRole* - The new groupingRole value to use or the original passed into the hook
 - *roleColor* - The new roleColor value to use or the original passed into the hook
 - *newName* - The new nameLabel value to use for the original passed into the hook *(Added in 1.2.3)*
+- *otherName* - Another name to pair with the label parameter (below) when rendering this player's information. Parameters will be used like "newName (label otherName)" *(Added in 1.6.17)*
+- *label* - The label to use when pairing the name and otherName together (see above) *(Added in 1.6.17)*
 
 ### TTTScoringWinTitle(wintype, wintitles, title)
 Called multiple times before the round end screen is shown with the winning team. For each tab of the round end screen that shows the winning team, this hook is first called with `WIN_INNOCENT` to get the default value and then called with the actual winning team. Return a new win title object to override what would normally be shown on the round end screen.\

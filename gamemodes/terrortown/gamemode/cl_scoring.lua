@@ -553,10 +553,6 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                 local roleColor = ROLE_COLORS[startingRole]
                 local finalRole = startingRole
 
-                local swappedWith = ""
-                local jesterKiller = ""
-                local lover1 = ""
-                local lover2 = ""
                 if IsValid(ply) then
                     alive = ply:Alive() and not ply:IsSpec()
                     finalRole = ply:GetRole()
@@ -568,30 +564,6 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                     -- Update the icon to use the final role, in case it changed
                     roleFileName = ROLE_STRINGS_SHORT[finalRole]
                     roleColor = ROLE_COLORS[finalRole]
-                    if ply:IsInnocent() then
-                        if ply:GetNWBool("WasBeggar", false) then
-                            roleFileName = ROLE_STRINGS_SHORT[ROLE_BEGGAR]
-                        end
-                    elseif ply:IsTraitor() then
-                        if ply:GetNWBool("WasBeggar", false) then
-                            roleFileName = ROLE_STRINGS_SHORT[ROLE_BEGGAR]
-                        elseif ply:GetNWBool("WasHypnotised", false) then
-                            roleFileName = ROLE_STRINGS_SHORT[startingRole]
-                        end
-                    elseif ply:IsImpersonator() and ply:GetNWBool("WasHypnotised", false) then
-                        roleFileName = ROLE_STRINGS_SHORT[startingRole]
-                    elseif ply:IsJester() then
-                        jesterKiller = ply:GetNWString("JesterKiller", "")
-                    elseif ply:IsSwapper() then
-                        swappedWith = ply:GetNWString("SwappedWith", "")
-                    elseif ply:IsCupid() then
-                        local sid641 = ply:GetNWString("TTTCupidTarget1", "")
-                        local sid642 = ply:GetNWString("TTTCupidTarget2", "")
-                        if sid641 ~= "" and sid642 ~= "" then
-                            lover1 = player.GetBySteamID64(sid641):Nick()
-                            lover2 = player.GetBySteamID64(sid642):Nick()
-                        end
-                    end
                 else
                     hasDisconnected = true
                 end
@@ -600,7 +572,7 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                 local groupingRole = finalRole
 
                 -- Allow developers to override role icon, grouping, and color
-                local roleFile, groupRole, iconColor, newName = hook.Call("TTTScoringSummaryRender", nil, ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
+                local roleFile, groupRole, iconColor, newName, otherName, label = hook.Call("TTTScoringSummaryRender", nil, ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
                 if roleFile then roleFileName = roleFile end
                 if groupRole then groupingRole = groupRole end
                 if iconColor then roleColor = iconColor end
@@ -609,14 +581,12 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                 local playerInfo = {
                     ply = ply,
                     name = name,
+                    otherName = otherName,
+                    label = label,
                     roleColor = roleColor,
                     roleFileName = roleFileName,
                     hasDied = not alive,
                     hasDisconnected = hasDisconnected,
-                    jesterKiller = jesterKiller,
-                    swappedWith = swappedWith,
-                    lover1 = lover1,
-                    lover2 = lover2,
                     startingRole = startingRole,
                     finalRole = finalRole
                 }
@@ -878,18 +848,8 @@ function CLSCORE:BuildRoleLabel(playerList, dpanel, statusX, roleX, rowY)
         end
 
         local name = v.name
-        local label = nil
-        local otherName = nil
-        if v.jesterKiller ~= "" and v.roleFileName == ROLE_STRINGS_SHORT[ROLE_JESTER] then
-            label = "Killed by"
-            otherName = v.jesterKiller
-        elseif v.swappedWith ~= "" and v.roleFileName == ROLE_STRINGS_SHORT[ROLE_SWAPPER] then
-            label = "Killed"
-            otherName = v.swappedWith
-        elseif v.lover1 ~= "" and v.roleFileName == ROLE_STRINGS_SHORT[ROLE_CUPID] then
-            label = "Paired"
-            otherName = v.lover1 .. " and " .. v.lover2
-        end
+        local label = v.label
+        local otherName = v.otherName
 
         if otherName ~= nil then
             name = BuildJesterLabel(name, otherName, label)
