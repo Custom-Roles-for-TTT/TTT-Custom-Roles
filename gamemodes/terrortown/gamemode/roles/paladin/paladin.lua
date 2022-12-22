@@ -8,6 +8,8 @@ local timer = timer
 local GetAllPlayers = player.GetAll
 local CallHook = hook.Call
 
+resource.AddFile("materials/particle/shield.vmt")
+
 -------------
 -- CONVARS --
 -------------

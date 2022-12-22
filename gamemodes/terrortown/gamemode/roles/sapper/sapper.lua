@@ -8,6 +8,8 @@ local util = util
 
 local GetAllPlayers = player.GetAll
 
+resource.AddFile("materials/particle/sap_barrel.vmt")
+
 util.AddNetworkString("Sapper_ShowDamageAura")
 
 -------------
