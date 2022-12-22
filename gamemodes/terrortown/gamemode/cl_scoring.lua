@@ -311,7 +311,6 @@ function GetFontForWinTitle(wintxt, width)
         surface.SetFont(font)
         local textWidth, _ = surface.GetTextSize(wintxt)
 
-        print("Text width is " .. textWidth .. " when using font '" .. font .. "' compared to parent's " .. width)
         if textWidth < width then
             break
         end

@@ -27,6 +27,7 @@
   - Swapper "Killed"
   - Beggars who joined a team
   - People who were hypnotized
+- Added new `secondary_color` return value to `TTTTargetIDPlayerText`
 
 ## 1.6.16
 **Released: November 26th, 2022**

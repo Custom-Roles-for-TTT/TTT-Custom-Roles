@@ -658,6 +658,8 @@ Called before an entity's hint text (shown when you look at an entity) is render
 *Return:*
 - *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
 - *clr* - The new clr value to use or the original passed into the hook
+- *secondary_text* - A secondary text value to show under `text`. Return `false` or nothing to not show secondary text at all
+- *secondary_color* - The [Color](https://wiki.facepunch.com/gmod/Color) to use for `secondary_text`. If not provided, `clr` value will be used instead *(Added in 1.6.17)*
 
 ### TTTTargetIDPlayerKarma(ply, client, text, clr)
 Called before a player's karma status text (shown when you look at a player) is rendered.\

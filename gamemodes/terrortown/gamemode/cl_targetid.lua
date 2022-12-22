@@ -629,7 +629,6 @@ function GM:HUDDrawTargetID()
     end
 
     text = nil
-    local secondary_text = nil
     if target_traitor then
         text = StringUpper(ROLE_STRINGS[ROLE_TRAITOR])
         col = ROLE_COLORS_RADAR[ROLE_TRAITOR]
@@ -677,11 +676,10 @@ function GM:HUDDrawTargetID()
         col = COLOR_YELLOW
     end
 
-    local new_text, new_color, new_secondary = CallHook("TTTTargetIDPlayerText", nil, ent, client, text, col, secondary_text)
+    local new_text, new_color, secondary_text, secondary_col = CallHook("TTTTargetIDPlayerText", nil, ent, client, text, col)
     -- If either text return value is a boolean and it's "false" then save that so we know to skip rendering the text
     if new_text or (type(new_text) == "boolean" and not new_text) then text = new_text end
     if new_color then col = new_color end
-    if new_secondary or (type(new_secondary) == "boolean" and not new_secondary) then secondary_text = new_secondary end
 
     if text then
         w, h = surface.GetTextSize(text)
@@ -697,6 +695,6 @@ function GM:HUDDrawTargetID()
         y = y + h + 5
 
         draw.SimpleText(secondary_text, font, x + 1, y + 1, COLOR_BLACK)
-        draw.SimpleText(secondary_text, font, x, y, col)
+        draw.SimpleText(secondary_text, font, x, y, secondary_col or col)
     end
 end
