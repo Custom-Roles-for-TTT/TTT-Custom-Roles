@@ -1,5 +1,6 @@
 WEPS = {}
 
+local hook = hook
 local ipairs = ipairs
 local IsValid = IsValid
 local math = math
@@ -7,6 +8,7 @@ local pairs = pairs
 local table = table
 local util = util
 
+local CallHook = hook.Call
 local GetWeapons = weapons.GetList
 
 function WEPS.TypeForWeapon(class)
@@ -78,6 +80,7 @@ function WEPS.UpdateWeaponLists(role, weapon, includeSelected, excludeSelected, 
     else
         table.RemoveByValue(WEPS.BypassRandomWeapons[role], weapon)
     end
+    CallHook("TTTRoleWeaponUpdated", nil, role, weapon, includeSelected, excludeSelected, noRandomSelected)
 end
 
 function WEPS.ResetWeaponsCache()

@@ -375,6 +375,7 @@ util.AddNetworkString("TTT_BuyableWeapons")
 util.AddNetworkString("TTT_UpdateBuyableWeapons")
 util.AddNetworkString("TTT_ResetBuyableWeaponsCache")
 util.AddNetworkString("TTT_ConfigureRoleWeapons")
+util.AddNetworkString("TTT_RoleWeaponsLoaded")
 util.AddNetworkString("TTT_PlayerFootstep")
 util.AddNetworkString("TTT_ClearPlayerFootsteps")
 util.AddNetworkString("TTT_JesterDeathCelebration")
@@ -2130,4 +2131,8 @@ function HandleRoleEquipment()
         net.Start("TTT_ResetBuyableWeaponsCache")
         net.Broadcast()
     end
+
+    net.Start("TTT_RoleWeaponsLoaded")
+    net.Broadcast()
+    CallHook("TTTRoleWeaponsLoaded")
 end
