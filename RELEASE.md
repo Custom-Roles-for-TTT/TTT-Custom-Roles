@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.6.17
-**Released:**
+**Released: December 23rd, 2022**
 
 ### Additions
 - Added new jester role: cupid
