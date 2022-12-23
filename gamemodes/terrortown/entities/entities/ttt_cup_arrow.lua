@@ -8,6 +8,10 @@ ENT.Model = "models/weapons/w_huntingbow_arrow.mdl"
 local ARROW_MINS = Vector(-0.25, -0.25, 0.25)
 local ARROW_MAXS = Vector(0.25, 0.25, 0.25)
 
+if SERVER then
+    util.AddNetworkString("TTT_CupidPaired")
+end
+
 function ENT:Initialize()
     if SERVER then
         self:SetModel(self.Model)
@@ -107,6 +111,13 @@ function ENT:Touch(ent)
                         ent2:PrintMessage(HUD_PRINTCENTER, "You have fallen in love with " .. ent:Nick() .. "!")
                         ent:PrintMessage(HUD_PRINTCENTER, "You have fallen in love with " .. ent2:Nick() .. "!")
                         owner:StripWeapon("weapon_cup_bow")
+
+                        net.Start("TTT_CupidPaired")
+                        net.WriteString(owner:Nick())
+                        net.WriteString(ent:Nick())
+                        net.WriteString(ent2:Nick())
+                        net.WriteString(owner:SteamID64())
+                        net.Broadcast()
 
                         local mode = GetConVar("ttt_cupid_notify_mode"):GetInt()
                         if mode ~= CUPID_REVEAL_NONE then

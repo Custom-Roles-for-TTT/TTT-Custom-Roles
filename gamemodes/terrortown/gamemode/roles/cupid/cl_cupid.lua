@@ -25,6 +25,9 @@ AddHook("Initialize", "Cupid_Translations_Initialize", function()
     LANG.AddToLanguage("english", "score_cupid_pairnames", "{lover1} and {lover2}")
     LANG.AddToLanguage("english", "score_cupid_paired", "Paired")
 
+    -- Event
+    LANG.AddToLanguage("english", "ev_cupid_paired", "{cupid} made {lover1} and {lover2} fall in love")
+
     -- Popup
     LANG.AddToLanguage("english", "info_popup_cupid_jester", [[You are {role}! {traitors} think you are {ajester} and you
 deal no damage. However, you can use your bow to make two
@@ -84,6 +87,50 @@ AddHook("TTTEventFinishIconText", "Cupid_TTTEventFinishIconText", function(e, wi
     if e.win == WIN_CUPID then
         return win_string, ROLE_STRINGS[ROLE_CUPID]
     end
+end)
+
+AddHook("TTTEndRound", "Cupid_SecondaryWinEvent_TTTEndRound", function()
+    for _, p in ipairs(GetAllPlayers()) do
+        local lover = p:GetNWString("TTTCupidLover", "")
+        if p:Alive() and lover ~= "" then
+            if player.GetBySteamID64(lover):Alive() then -- This shouldn't be necessary because if one lover dies the other should too but we check just in case
+                CLSCORE:AddEvent({ -- Log the win event with an offset to force it to the end
+                    id = EVENT_FINISH,
+                    win = WIN_CUPID
+                }, 1)
+                return
+            end
+        end
+    end
+end)
+
+-- Register the scoring events for cupid
+hook.Add("Initialize", "Cupid_Scoring_Initialize", function()
+    local heart_icon = Material("icon16/heart.png")
+    local Event = CLSCORE.DeclareEventDisplay
+    local PT = LANG.GetParamTranslation
+    Event(EVENT_CUPIDPAIRED, {
+        text = function(e)
+            return PT("ev_cupid_paired", {cupid = e.cupid, lover1 = e.lover1, lover2 = e.lover2})
+         end,
+        icon = function(e)
+            return heart_icon, "Paired"
+        end})
+end)
+
+net.Receive("TTT_CupidPaired", function(len)
+    local cupid = net.ReadString()
+    local lover1 = net.ReadString()
+    local lover2 = net.ReadString()
+    local cupid = net.ReadString()
+    CLSCORE:AddEvent({
+        id = EVENT_CUPIDPAIRED,
+        cupid = cupid,
+        lover1 = lover1,
+        lover2 = lover2,
+        sid64 = sid64,
+        bonus = 1
+    })
 end)
 
 -------------
