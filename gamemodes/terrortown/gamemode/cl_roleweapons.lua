@@ -452,9 +452,6 @@ local function OpenDialog(client)
             id = choice.name
         end
 
-        -- Update tables
-        WEPS.UpdateWeaponLists(save_role, id, includeSelected, excludeSelected, noRandomSelected)
-
         -- Send message to server to update tables and files
         net.Start("TTT_ConfigureRoleWeapons")
         net.WriteString(id)

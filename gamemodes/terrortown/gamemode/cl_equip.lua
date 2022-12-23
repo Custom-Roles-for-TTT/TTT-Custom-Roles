@@ -13,6 +13,7 @@ local weapons = weapons
 
 ---- Traitor equipment menu
 
+local CallHook = hook.Call
 local GetWeapon = weapons.GetStored
 local GetTranslation = LANG.GetTranslation
 local GetPTranslation = LANG.GetParamTranslation
@@ -74,6 +75,10 @@ net.Receive("TTT_BuyableWeapons", function()
     for _, v in pairs(norandomweapons) do
         UpdateWeaponList(role, WEPS.BypassRandomWeapons, v)
     end
+end)
+
+net.Receive("TTT_RoleWeaponsLoaded", function()
+    CallHook("TTTRoleWeaponsLoaded")
 end)
 
 net.Receive("TTT_UpdateBuyableWeapons", function()

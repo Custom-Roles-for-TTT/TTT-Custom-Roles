@@ -333,6 +333,22 @@ Called after an external role has been registered.\
 *Parameters:*
 - *roleID* - The unique identifier for the registered role
 
+### TTTRoleWeaponsLoaded()
+Called after the role weapons configuration is loaded.\
+*Realm:* Client and Server\
+*Added in:* 1.6.17
+
+### TTTRoleWeaponUpdated(role, weapon, include, exclude, noRandom)
+Called after a role weapon configuration is changed for a specific role and weapon.\
+*Realm:* Client and Server\
+*Added in:* 1.6.17\
+*Parameters:*
+- *role* - The role being updated
+- *weapon* - The weapon class or equipment name being updated
+- *include* - Whether this weapon is being added to `WEPS.BuyableWeapons`
+- *exclude* - Whether this weapon is being added to `WEPS.ExcludeWeapons`
+- *noRandom* - Whether this weapon is being added to `WEPS.BypassRandomWeapons`
+
 ### TTTScoreboardPlayerName(ply, client, currentName)
 Called before a player's row in the scoreboard (tab menu) is shown, allowing the name to be changed.\
 *Realm:* Client\

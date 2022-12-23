@@ -29,6 +29,8 @@
   - Beggars who joined a team
   - People who were hypnotized
 - Added new `secondary_color` return value to the `TTTTargetIDPlayerText` hook
+- Added new `TTTRoleWeaponsLoaded` hook which is called on both the server and client when the role weapons configuration is loaded
+- Added new `TTTRoleWeaponUpdated` hook which is called on both the server and client when a role weapon configuration is changed for a specific role and weapon
 
 ## 1.6.16
 **Released: November 26th, 2022**
