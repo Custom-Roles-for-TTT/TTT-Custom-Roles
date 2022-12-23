@@ -310,7 +310,6 @@ function GetFontForWinTitle(wintxt, width)
 
         surface.SetFont(font)
         local textWidth, _ = surface.GetTextSize(wintxt)
-
         if textWidth < width then
             break
         end
