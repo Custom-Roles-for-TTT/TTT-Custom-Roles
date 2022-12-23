@@ -5,6 +5,11 @@ ENT.Spawnable = false
 
 ENT.Model = "models/weapons/w_huntingbow_arrow.mdl"
 
+if SERVER then
+    resource.AddFile("models/weapons/w_huntingbow_arrow.mdl")
+    resource.AddFile("materials/models/weapons/huntingbow/steelarrow.vmt")
+end
+
 local ARROW_MINS = Vector(-0.25, -0.25, 0.25)
 local ARROW_MAXS = Vector(0.25, 0.25, 0.25)
 
@@ -51,6 +56,15 @@ local FleshSound = {
     "cupid/impact_arrow_flesh_3.wav",
     "cupid/impact_arrow_flesh_4.wav"
 }
+
+if SERVER then
+    for _, s in ipairs(StickSound) do
+        resource.AddSingleFile("sound/" .. s)
+    end
+    for _, s in ipairs(FleshSound) do
+        resource.AddSingleFile("sound/" .. s)
+    end
+end
 
 function ENT:Touch(ent)
     local owner = self:GetOwner()

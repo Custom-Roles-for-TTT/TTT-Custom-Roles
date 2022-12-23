@@ -9,6 +9,8 @@ local table = table
 local GetAllPlayers = player.GetAll
 local CreateEntity = ents.Create
 
+resource.AddFile("materials/particle/wisp.vmt")
+
 -------------
 -- CONVARS --
 -------------

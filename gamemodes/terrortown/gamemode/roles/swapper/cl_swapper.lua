@@ -51,6 +51,8 @@ end)
 
 -- Show who the current swapper killed (if anyone)
 hook.Add("TTTScoringSummaryRender", "Swapper_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
+    if not IsPlayer(ply) then return end
+
     if ply:IsSwapper() then
         local swappedWith = ply:GetNWString("SwappedWith", "")
         if swappedWith ~= "" then

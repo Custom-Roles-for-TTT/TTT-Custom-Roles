@@ -52,6 +52,8 @@ end)
 
 -- Show that this person was their original role via the icon
 hook.Add("TTTScoringSummaryRender", "Hypnotist_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
+    if not IsPlayer(ply) then return end
+
     if (ply:IsTraitor() or ply:IsImpersonator()) and ply:GetNWBool("WasHypnotised", false) then
         return ROLE_STRINGS_SHORT[startingRole], groupingRole, roleColor, name
     end

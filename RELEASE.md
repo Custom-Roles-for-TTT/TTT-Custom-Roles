@@ -8,17 +8,18 @@
 - Added option to enable a radar that reveals the previous location of the loot goblin (disabled by default)
 
 ### Changes
-- Changed round summary panel to use increasingly smaller fonts to try and fix text into the box
+- Changed round summary panel to use increasingly smaller fonts to try and fit text into the box
 - Changed vampire prime to get randomly assigned to a vampire thrall if the prime leaves the game
 - Changed zombie prime to get randomly assigned to a zombie thrall if the prime leaves the game
 - Changed revenger to be randomly assigned a new lover if their lover leaves the game
 
 ### Fixes
 - Fixed minor typo in jester tutorial
-- Fixed hypnotist device being usable on fake bodies, causing living players to change roles and teleport
+- Fixed hypnotist device being usable on fake bodies which caused living players to change roles and teleport
 - Fixed marshal's deputy badge not removing role weapons or restoring default weapons when changing someone's role
 - Fixed assassin not getting new target when their current target leaves the game
 - Fixed some roles with custom win conditions causing "unknown win condition" server logs when they won
+- Fixed a client error that can occur when a player disconnecting ends the round
 
 ### Developer
 - Added new `otherName` and `label` return values to the `TTTScoringSummaryRender` hook
@@ -27,7 +28,9 @@
   - Swapper "Killed"
   - Beggars who joined a team
   - People who were hypnotized
-- Added new `secondary_color` return value to `TTTTargetIDPlayerText`
+- Added new `secondary_color` return value to the `TTTTargetIDPlayerText` hook
+- Added new `TTTRoleWeaponsLoaded` hook which is called on both the server and client when the role weapons configuration is loaded
+- Added new `TTTRoleWeaponUpdated` hook which is called on both the server and client when a role weapon configuration is changed for a specific role and weapon
 
 ## 1.6.16
 **Released: November 26th, 2022**

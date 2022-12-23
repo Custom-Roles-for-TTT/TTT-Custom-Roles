@@ -103,6 +103,8 @@ end)
 
 -- Show that this person was a beggar via the icon
 hook.Add("TTTScoringSummaryRender", "Beggar_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
+    if not IsPlayer(ply) then return end
+
     if (ply:IsInnocent() or ply:IsTraitor()) and ply:GetNWBool("WasBeggar", false) then
         return ROLE_STRINGS_SHORT[ROLE_BEGGAR], groupingRole, roleColor, name
     end
