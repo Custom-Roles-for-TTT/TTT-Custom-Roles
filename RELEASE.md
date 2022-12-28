@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.6.18
-**Released:**
+**Released: December 28th, 2022**
 
 ### Additions
 - Added option to disable the ring that shows the approximate radius of the informant's scanner (enabled by default)
