@@ -46,6 +46,11 @@ hook.Add("PlayerDeath", "Jester_WinCheck_PlayerDeath", function(victim, infl, at
         JesterKilledNotification(attacker, victim)
         victim:SetNWString("JesterKiller", attacker:Nick())
 
+        -- If we're debugging, don't end the round
+        if GetConVar("ttt_debug_preventwin"):GetBool() then
+            return
+        end
+
         -- Don't end the round if the jester was killed by a traitor
         -- and the functionality that blocks Jester wins from traitor deaths is enabled
         if jester_win_by_traitors:GetBool() or not attacker:IsTraitorTeam() then

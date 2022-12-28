@@ -4,13 +4,14 @@
 **Released:**
 
 ### Additions
-- Added option to disable the ring that shows the approximate radius of the Informant's scanner (enabled by default)
+- Added option to disable the ring that shows the approximate radius of the informant's scanner (enabled by default)
 
 ### Changes
 - Changed vampire convert/drain UI to show separate segments for converting and draining progress
 
 ### Fixes
 - Fixed cupid winning the round if all players died, regardless of whether cupid was even in the round to begin with
+- Fixed killing the jester causing the round to end even if `ttt_debug_preventwin` was enabled
 
 ## 1.6.17
 **Released: December 23rd, 2022**
