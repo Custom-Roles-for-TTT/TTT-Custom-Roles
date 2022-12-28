@@ -23,6 +23,8 @@ hook.Add("Initialize", "Vampire_Translations_Initialize", function()
     -- Fangs
     LANG.AddToLanguage("english", "vam_fangs_help_pri", "Hold {primaryfire} to suck blood")
     LANG.AddToLanguage("english", "vam_fangs_help_sec", "Press {secondaryfire} to fade from view")
+    LANG.AddToLanguage("english", "vam_fangs_convert", "CONVERT")
+    LANG.AddToLanguage("english", "vam_fangs_drain", "DRAIN")
 
     -- Popup
     LANG.AddToLanguage("english", "info_popup_vampire", [[You are {role}! {comrades}

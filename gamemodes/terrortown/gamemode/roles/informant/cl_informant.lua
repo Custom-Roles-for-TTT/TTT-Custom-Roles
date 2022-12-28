@@ -192,7 +192,9 @@ end)
 local function DrawStructure(ply, x, y, w, h, m, color)
     local r, g, b, a = color:Unpack()
     surface.SetDrawColor(r, g, b, a)
-    surface.DrawCircle(x, ScrH() / 2, math.Round(ScrW() / 6), r, g, b, 77)
+    if GetGlobalBool("ttt_informant_show_scan_radius", false) then
+        surface.DrawCircle(x, ScrH() / 2, math.Round(ScrW() / 6), r, g, b, 77)
+    end
 
     surface.DrawOutlinedRect(x - m - (3 * w) / 2, y - h, w, h)
     surface.DrawOutlinedRect(x - w / 2, y - h, w, h)
@@ -224,7 +226,9 @@ hook.Add("HUDPaint", "Informant_HUDPaint", function()
         local state = ply:GetNWInt("TTTInformantScannerState", INFORMANT_SCANNER_IDLE)
 
         if state == INFORMANT_SCANNER_IDLE then
-            surface.DrawCircle(ScrW() / 2, ScrH() / 2, math.Round(ScrW() / 6), 0, 255, 0, 155)
+            if GetGlobalBool("ttt_informant_show_scan_radius", false) then
+                surface.DrawCircle(ScrW() / 2, ScrH() / 2, math.Round(ScrW() / 6), 0, 255, 0, 155)
+            end
             return
         end
 

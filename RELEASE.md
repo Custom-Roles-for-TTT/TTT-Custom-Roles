@@ -1,5 +1,17 @@
 # Release Notes
 
+## 1.6.18
+**Released:**
+
+### Additions
+- Added option to disable the ring that shows the approximate radius of the Informant's scanner (enabled by default)
+
+### Changes
+- Changed vampire convert/drain UI to show separate segments for converting and draining progress
+
+### Fixes
+- Fixed cupid winning the round if all players died, regardless of whether cupid was even in the round to begin with
+
 ## 1.6.17
 **Released: December 23rd, 2022**
 
@@ -1405,7 +1417,7 @@ Includes all beta updates from [1.0.2](#102-beta) to [1.0.15](#1015-beta).
 
 ### Changes
 - Changed convars to use '_ttt_ROLENAME\_\*_' formatting wherever possible
-    - NOTE: Old convars still work at this stage but may be removed later. Please update to the new convars now to avoid problems later
+    - *NOTE*: Old convars still work at this stage but may be removed later. Please update to the new convars now to avoid problems later
 
 ## 1.0.2 (Beta)
 **Released: July 11th, 2021**

@@ -11,6 +11,8 @@ local surface = surface
 local timer = timer
 local util = util
 
+local MathRound = math.Round
+
 if CLIENT then
     SWEP.PrintName = "Fangs"
     SWEP.EquipMenuData = {
@@ -84,6 +86,7 @@ function SWEP:SetupDataTables()
     self:NetworkVar("Int", 2, "DeadFangTime")
     self:NetworkVar("Float", 0, "StartTime")
     self:NetworkVar("String", 0, "Message")
+    self:NetworkVar("Bool", 0, "TargetIsBody")
     if SERVER then
         self:SetFangTime(vampire_fang_timer:GetInt())
         self:SetDeadFangTime(vampire_fang_dead_timer:GetInt())
@@ -174,6 +177,7 @@ function SWEP:PrimaryAttack()
     if IsValid(tr.Entity) then
         local ent = tr.Entity
         if ent:GetClass() == "prop_ragdoll" then
+            self:SetTargetIsBody(true)
             local ply = GetPlayerFromBody(ent)
             if not IsValid(ply) or ply:Alive() then
                 self:Error("INVALID TARGET")
@@ -182,6 +186,7 @@ function SWEP:PrimaryAttack()
 
             self:Eat(tr.Entity)
         elseif ent:IsPlayer() and vampire_drain:GetBool() then
+            self:SetTargetIsBody(false)
             if ent:ShouldActLikeJester() then
                 self:Error("TARGET IS A JESTER")
             -- Don't allow draining allies or glitches when the vampire is a traitor
@@ -499,6 +504,31 @@ function SWEP:Think()
 end
 
 if CLIENT then
+    function SWEP:DrawStructure(x, y, w, h, m, split, swap, color)
+        local r, g, b, a = color:Unpack()
+        surface.SetDrawColor(r, g, b, a)
+
+        surface.SetFont("TabLarge")
+        surface.SetTextColor(255, 255, 255, 180)
+        surface.SetTextPos((x - w / 2) + 3, y - h - 15)
+        surface.DrawText(self:GetMessage())
+
+        local T = LANG.GetTranslation
+        if split then
+            w = MathRound((w - m) / 2)
+            surface.DrawOutlinedRect(x - w - m / 2, y - h, w, h)
+            surface.DrawOutlinedRect(x + m / 2, y - h, w, h)
+            local offset = swap and 44 or 37
+            surface.SetTextPos(x - w - m / 2 + offset, y - h + 3)
+            surface.DrawText(swap and T("vam_fangs_drain") or T("vam_fangs_convert"))
+            offset = swap and 37 or 44
+            surface.SetTextPos(x + m / 2 + offset, y - h + 3)
+            surface.DrawText(swap and T("vam_fangs_convert") or T("vam_fangs_drain"))
+        else
+            surface.DrawOutlinedRect(x - w / 2, y - h, w, h)
+        end
+    end
+
     function SWEP:DrawHUD()
         self.BaseClass.DrawHUD(self)
 
@@ -508,6 +538,10 @@ if CLIENT then
         y = y + (y / 3)
 
         local w, h = 255, 20
+        local m = 10
+
+        local split = self:CanConvert() and not self:GetTargetIsBody()
+        local swap = GetGlobalBool("ttt_vampire_drain_first", false)
 
         if self:GetState() >= STATE_EAT then
             local progress = math.TimeFraction(self:GetStartTime(), self:GetStartTime() + self:GetFangDuration(), CurTime())
@@ -516,27 +550,27 @@ if CLIENT then
 
             progress = math.Clamp(progress, 0, 1)
 
-            surface.SetDrawColor(0, 255, 0, 155)
+            self:DrawStructure(x, y, w, h, m, split, swap, Color(0, 255, 0, 155))
 
-            surface.DrawOutlinedRect(x - w / 2, y - h, w, h)
-
-            surface.DrawRect(x - w / 2, y - h, w * progress, h)
-
-            surface.SetFont("TabLarge")
-            surface.SetTextColor(255, 255, 255, 180)
-            surface.SetTextPos((x - w / 2) + 3, y - h - 15)
-            surface.DrawText(self:GetMessage())
+            if split then
+                w = MathRound((w - m) / 2)
+                local progressL = math.Clamp(progress * 2, 0, 1)
+                local progressR = math.Clamp(progress * 2 - 1, 0, 1)
+                surface.DrawRect(x - w - m / 2, y - h, w * progressL, h)
+                surface.DrawRect(x + m / 2, y - h, w * progressR, h)
+            else
+                surface.DrawRect(x - w / 2, y - h, w * progress, h)
+            end
         elseif self:GetState() == STATE_ERROR then
-            surface.SetDrawColor(200 + math.sin(CurTime() * 32) * 50, 0, 0, 155)
+            self:DrawStructure(x, y, w, h, m, split, swap, Color(200 + math.sin(CurTime() * 32) * 50, 0, 0, 155))
 
-            surface.DrawOutlinedRect(x - w / 2, y - h, w, h)
-
-            surface.DrawRect(x - w / 2, y - h, w, h)
-
-            surface.SetFont("TabLarge")
-            surface.SetTextColor(255, 255, 255, 180)
-            surface.SetTextPos((x - w / 2) + 3, y - h - 15)
-            surface.DrawText(self:GetMessage())
+            if split then
+                w = MathRound((w - m) / 2)
+                surface.DrawRect(x - w - m / 2, y - h, w, h)
+                surface.DrawRect(x + m / 2, y - h, w, h)
+            else
+                surface.DrawRect(x - w / 2, y - h, w, h)
+            end
         end
     end
 else

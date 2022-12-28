@@ -254,6 +254,7 @@ ttt_informant_scanner_time                  8       // The amount of time (in se
 ttt_informant_scanner_float_time            1       // The amount of time (in seconds) it takes for the informant's scanner to lose it's target without line of sight
 ttt_informant_scanner_cooldown              3       // The amount of time (in seconds) the informant's tracker goes on cooldown for after losing it's target
 ttt_informant_scanner_distance              2500    // The maximum distance away the scanner target can be
+ttt_informant_show_scan_radius              0       // Whether to show the ring that shows the approximate radius of the informant's scanner
 
 // ----------------------------------------
 
