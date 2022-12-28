@@ -110,12 +110,12 @@ end)
 -- WIN CHECKS --
 ----------------
 
-hook.Add("PlayerDeath", "Cupid_PlayerDeath", function(victim, infl, attacker)
-    if GetRoundState() ~= ROUND_ACTIVE then return end
-
+hook.Add("TTTCheckForWin", "Cupid_TTTCheckForWin", function(victim, infl, attacker)
     local cupidWin = true
+    local playerAlive = false
     for _, v in pairs(GetAllPlayers()) do
         if v:IsActive() then
+            playerAlive = true
             local lover = v:GetNWString("TTTCupidLover", "")
             if lover ~= "" then
                 if not player.GetBySteamID64(lover):IsActive() then
@@ -129,9 +129,8 @@ hook.Add("PlayerDeath", "Cupid_PlayerDeath", function(victim, infl, attacker)
         end
     end
 
-    if cupidWin then
-        StopWinChecks()
-        EndRound(WIN_CUPID)
+    if cupidWin and playerAlive then
+        return WIN_CUPID
     end
 end)
 
