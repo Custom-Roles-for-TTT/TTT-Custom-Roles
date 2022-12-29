@@ -692,7 +692,7 @@ ttt_marshal_shop_sync                       0       // Whether marshals should h
 // ----------------------------------------
 
 // OTHER SETTINGS
-// Individual Role Starting Health
+// Individual Role Starting Health. Set to 0 or -1 to use the game's default starting health.
 ttt_traitor_starting_health                 100     // The amount of health a traitor starts with
 ttt_hypnotist_starting_health               100     // The amount of health the hypnotist starts with
 ttt_impersonator_starting_health            100     // The amount of health the impersonator starts with
@@ -732,7 +732,7 @@ ttt_killer_starting_health                  150     // The amount of health the 
 ttt_zombie_starting_health                  100     // The amount of health the zombie starts with
 ttt_madscientist_starting_health            100     // The amount of health the mad scientist starts with
 
-// Individual Role Max Health
+// Individual Role Max Health. Set to 0 or -1 to use the game's default maximum health.
 ttt_traitor_max_health                      100     // The maximum amount of health a traitor can have
 ttt_hypnotist_max_health                    100     // The maximum amount of health the hypnotist can have
 ttt_impersonator_max_health                 100     // The maximum amount of health the impersonator can have
