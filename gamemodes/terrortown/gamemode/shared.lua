@@ -1434,6 +1434,7 @@ if SERVER then
         if role <= ROLE_NONE or role > ROLE_MAX then return end
 
         local health = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_starting_health"):GetInt()
+        if health <= 0 then return end
         ply:SetHealth(health)
     end
 
@@ -1443,6 +1444,7 @@ if SERVER then
         if role <= ROLE_NONE or role > ROLE_MAX then return end
 
         local maxhealth = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_max_health"):GetInt()
+        if maxhealth <= 0 then return end
         ply:SetMaxHealth(maxhealth)
     end
 

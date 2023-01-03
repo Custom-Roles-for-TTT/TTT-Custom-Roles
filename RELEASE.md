@@ -11,6 +11,7 @@
 
 ### Additions
 - Added option to disable the ring that shows the approximate radius of the informant's scanner (enabled by default)
+- Added option to disable setting starting and maximum health for each role (set the role's health convars to 0 or -1 to disable)
 
 ### Changes
 - Changed vampire convert/drain UI to show separate segments for converting and draining progress
