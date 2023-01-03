@@ -30,6 +30,21 @@ Paints a HUD for showing available powers and their associated costs. Used for r
 - *title* - Title text to show within the power level progress bar
 - *subtitle* - The sub-title text, used for hints, that is shown in small text above the power level progress bar
 
+### CRHUD:PaintProgressBar(x, y, w, color, heading, progress, segments, titles, m)
+Paints a HUD for showing a progress bar, optionally divided into multiple segments
+*Realm:* Client\
+*Added in:* 1.6.19\
+*Parameters:*
+- *x* - The position of the centre of the progress bar from the left of the screen
+- *y* - The position from the top of the screen
+- *w* - The width of the progress bar
+- *color* - The [Color](https://wiki.facepunch.com/gmod/Color) of the progress bar
+- *heading* - The heading to be displayed above the progress bar (Defaults to "")
+- *progress* - The progress the bar should display as a value from 0 to 1 (Defaults to 1)
+- *segments* - The number of segments the progress bar should have (Defaults to 1)
+- *titles* - A table of strings containing the titles for each segment. Must have length equal to the number of segments. Ignored if segments is equal to 1 (Defaults to {})
+- *m* - The margin between each segment (Defaults to 10)
+
 ### CRHUD:ShadowedText(text, font, x, y, color, xalign, yalign)
 Renders text with an offset black background to emulate a shadow.\
 *Realm:* Client\

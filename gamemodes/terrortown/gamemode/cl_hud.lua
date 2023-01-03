@@ -163,6 +163,48 @@ function CRHUD:PaintPowersHUD(powers, max_power, current_power, colors, title, s
     end
 end
 
+function CRHUD:PaintProgressBar(x, y, width, color, heading, progress, segments, titles, m)
+    heading = heading or ""
+    progress = progress or 1
+    segments = segments or 1
+    titles = titles or {}
+    m = m or 10
+
+    local left = x - width / 2
+    local height = 20
+
+    surface.SetFont("TabLarge")
+    surface.SetTextColor(255, 255, 255, 180)
+    surface.SetTextPos(left + 3, y - height - 15)
+    surface.DrawText(heading)
+
+    local r, g, b, a = color:Unpack()
+    surface.SetDrawColor(r, g, b, a)
+
+    if segments == 1 then
+        surface.DrawOutlinedRect(left, y - height, width, height)
+        surface.DrawRect(left, y - height, width * progress, height)
+    elseif segments > 1 then
+        local segmentWidth = (width - m * (segments - 1)) / segments
+        for segment = 0, segments - 1 do
+            local segmentProgress = math.Clamp(progress * segments - segment, 0, 1)
+            surface.DrawOutlinedRect(left + (segmentWidth + m) * segment, y - height, segmentWidth, height)
+            surface.DrawRect(left + (segmentWidth + m) * segment, y - height, segmentWidth * segmentProgress, height)
+        end
+        if #titles ~= segments then
+            if #titles ~= 0 then
+                ErrorNoHalt("Number of titles does not match the number of segments.")
+            end
+        else
+            for segment = 0, segments - 1 do
+                local offset = (segmentWidth - surface.GetTextSize(titles[segment + 1])) / 2
+                surface.SetTextPos(left + (segmentWidth + m) * segment + offset, y - height + 3)
+                surface.DrawText(titles[segment + 1])
+            end
+        end
+    end
+end
+
 local roundstate_string = {
     [ROUND_WAIT] = "round_wait",
     [ROUND_PREP] = "round_prep",

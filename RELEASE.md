@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.6.19
+**Released:**
+
+### Developer
+- Added `PaintProgressBar` global method
+
 ## 1.6.18
 **Released: December 28th, 2022**
 

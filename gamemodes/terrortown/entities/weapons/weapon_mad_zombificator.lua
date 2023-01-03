@@ -338,34 +338,14 @@ if CLIENT then
 
         y = y + (y / 3)
 
-        local w, h = 255, 20
+        local w = 255
 
         if state == DEFIB_BUSY then
             if time < 0 then return end
-
-            local cc = math.min(1, 1 - ((time - CurTime()) / charge))
-
-            surface.SetDrawColor(0, 255, 0, 155)
-
-            surface.DrawOutlinedRect(x - w / 2, y - h, w, h)
-
-            surface.DrawRect(x - w / 2, y - h, w * cc, h)
-
-            surface.SetFont("TabLarge")
-            surface.SetTextColor(255, 255, 255, 180)
-            surface.SetTextPos((x - w / 2) + 3, y - h - 15)
-            surface.DrawText(self:GetMessage())
+            local progress = math.min(1, 1 - ((time - CurTime()) / charge))
+            CRHUD:PaintProgressBar(x, y, w, Color(0, 255, 0, 155), self:GetMessage(), progress)
         elseif state == DEFIB_ERROR then
-            surface.SetDrawColor(200 + math.sin(CurTime() * 32) * 50, 0, 0, 155)
-
-            surface.DrawOutlinedRect(x - w / 2, y - h, w, h)
-
-            surface.DrawRect(x - w / 2, y - h, w, h)
-
-            surface.SetFont("TabLarge")
-            surface.SetTextColor(255, 255, 255, 180)
-            surface.SetTextPos((x - w / 2) + 3, y - h - 15)
-            surface.DrawText(self:GetMessage())
+            CRHUD:PaintProgressBar(x, y, w, Color(200 + math.sin(CurTime() * 32) * 50, 0, 0, 155), self:GetMessage(), progress)
         end
     end
 
