@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.6.19
-**Released:**
+**Released: January 4th, 2023**
 
 ### Additions
 - Added option to give detectives and traitors credits over time (disabled by default)
