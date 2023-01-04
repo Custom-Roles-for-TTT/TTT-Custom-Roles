@@ -1,6 +1,6 @@
 # Release Notes
 
-## 1.6.19
+## 1.6.19 (Beta)
 **Released: January 4th, 2023**
 
 ### Additions
@@ -12,7 +12,7 @@
 ### Developer
 - Added `CRHUD:PaintProgressBar` global method
 
-## 1.6.18
+## 1.6.18 (Beta)
 **Released: December 28th, 2022**
 
 ### Additions
@@ -26,7 +26,7 @@
 - Fixed cupid winning the round if all players died, regardless of whether cupid was even in the round to begin with
 - Fixed killing the jester causing the round to end even if `ttt_debug_preventwin` was enabled
 
-## 1.6.17
+## 1.6.17 (Beta)
 **Released: December 23rd, 2022**
 
 ### Additions
@@ -58,7 +58,7 @@
 - Added new `TTTRoleWeaponsLoaded` hook which is called on both the server and client when the role weapons configuration is loaded
 - Added new `TTTRoleWeaponUpdated` hook which is called on both the server and client when a role weapon configuration is changed for a specific role and weapon
 
-## 1.6.16
+## 1.6.16 (Beta)
 **Released: November 26th, 2022**
 
 ### Developer
@@ -72,7 +72,7 @@
 - Added `TTTTurncoatTeamChanged` which is called when the turncoat changes teams
 - Added `TTTVampireBodyEaten` and `TTTVampireInvisibilityChange` to help track vampire ability usage
 
-## 1.6.15
+## 1.6.15 (Beta)
 **Released: November 12th, 2022**
 
 ### Additions
@@ -91,7 +91,7 @@
 - Added definition of `IsRoleActive` for the turncoat
 - Added `prime` parameter to `RespawnAsZombie`
 
-## 1.6.14
+## 1.6.14 (Beta)
 **Released: September 24th, 2022**
 
 ### Changes
