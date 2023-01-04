@@ -9,6 +9,7 @@ local GetAllPlayers = player.GetAll
 -------------
 
 local traitor_phantom_cure = CreateConVar("ttt_traitor_phantom_cure", "0")
+local traitor_credits_timer = CreateConVar("ttt_traitor_credits_timer", "0")
 
 hook.Add("TTTSyncGlobals", "Traitor_TTTSyncGlobals", function()
     SetGlobalBool("ttt_traitor_phantom_cure", traitor_phantom_cure:GetBool())
@@ -32,4 +33,26 @@ hook.Add("SetupPlayerVisibility", "Traitors_SetupPlayerVisibility", function(ply
             AddOriginToPVS(pos)
         end
     end
+end)
+
+------------------
+-- AUTO CREDITS --
+------------------
+
+hook.Add("TTTBeginRound", "Traitors_TTTBeginRound", function()
+    local credit_timer = traitor_credits_timer:GetInt()
+    if credit_timer <= 0 then return end
+
+    timer.Create("TraitorCreditTimer", credit_timer, 0, function()
+        for _, v in pairs(GetAllPlayers()) do
+            if v:Alive() and not v:IsSpec() and v:IsTraitorTeam() then
+                v:AddCredits(1)
+                LANG.Msg(v, "credit_all", { role = ROLE_STRINGS[v:GetRole()], num = 1 })
+            end
+        end
+    end)
+end)
+
+hook.Add("TTTEndRound", "Traitors_TTTEndRound", function()
+    timer.Remove("TraitorCreditTimer")
 end)

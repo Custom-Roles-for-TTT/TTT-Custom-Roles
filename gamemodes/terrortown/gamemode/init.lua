@@ -238,13 +238,11 @@ CreateConVar("ttt_credits_award_size", "1")
 CreateConVar("ttt_credits_award_repeat", "1")
 CreateConVar("ttt_credits_detectivekill", "1")
 CreateConVar("ttt_credits_alonebonus", "1")
-CreateConVar("ttt_traitor_credits_timer", "0")
 
 -- Detective credits
 CreateConVar("ttt_det_credits_starting", "1")
 CreateConVar("ttt_det_credits_traitorkill", "0")
 CreateConVar("ttt_det_credits_traitordead", "1")
-CreateConVar("ttt_detective_credits_timer", "0")
 
 -- Shop parameters
 CreateConVar("ttt_shop_for_all", 0, FCVAR_REPLICATED)
@@ -1023,31 +1021,6 @@ function BeginRound()
         end
     end)
 
-    -- Start traitor/detective credit timers
-    local tCreditTimer = GetConVar("ttt_traitor_credits_timer"):GetInt()
-    if tCreditTimer > 0 then
-        timer.Create("TraitorCreditTimer", tCreditTimer, 0, function()
-            for _, v in pairs(GetAllPlayers()) do
-                if v:Alive() and not v:IsSpec() and v:IsTraitorTeam() then
-                    v:AddCredits(1)
-                    LANG.Msg(v, "credit_all", { role = ROLE_STRINGS[v:GetRole()], num = 1 })
-                end
-            end
-        end)
-    end
-
-    local dCreditTimer = GetConVar("ttt_detective_credits_timer"):GetInt()
-    if dCreditTimer > 0 then
-        timer.Create("DetectiveCreditTimer", dCreditTimer, 0, function()
-            for _, v in pairs(GetAllPlayers()) do
-                if v:Alive() and not v:IsSpec() and v:IsDetectiveLike() then
-                    v:AddCredits(1)
-                    LANG.Msg(v, "credit_all", { role = ROLE_STRINGS[v:GetRole()], num = 1 })
-                end
-            end
-        end)
-    end
-
     -- Start the win condition check timer
     StartWinChecks()
     StartNameChangeChecks()
@@ -1155,10 +1128,6 @@ function EndRound(type)
     SetRoundEnd(CurTime() + ptime)
 
     timer.Create("restartmute", ptime - 1, 1, function() MuteForRestart(true) end)
-
-    -- Stop traitor/detective credit timers
-    timer.Remove("TraitorCreditTimer")
-    timer.Remove("DetectiveCreditTimer")
 
     -- Stop checking for wins
     StopWinChecks()
