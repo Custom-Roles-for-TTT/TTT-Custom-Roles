@@ -1002,7 +1002,7 @@ local tabs = {
 
 function CLSCORE:ShowPanel()
     parentPanel = vgui.Create("DFrame")
-    local w, h = 750, 291
+    local w, h = 750, 588
     local margin = 15
     parentPanel:SetSize(w, h)
     parentPanel:Center()

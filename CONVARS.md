@@ -162,6 +162,7 @@ ttt_madscientist_min_players                0       // The minimum number of pla
 
 // TRAITOR TEAM SETTINGS
 ttt_traitor_vision_enable                   0       // Whether members of the traitor team can see other members of the traitor team (including Glitches) through walls via a highlight effect
+ttt_traitor_credits_timer                   0       // How often in seconds to give members of the traitor team a credit (set to 0 to disable)
 
 // Traitor
 ttt_traitor_phantom_cure                    0       // Whether to allow the traitor to buy the phantom exorcism device which can remove a haunting phantom. Server must be restarted for changes to take effect
@@ -358,6 +359,7 @@ ttt_detective_glow_enable                   0       // Whether members of the de
 ttt_special_detectives_armor_loadout        1       // Whether special detectives (all detective roles other than the original detective itself) get armor automatically for free
 ttt_all_search_postround                    1       // Whether non-detectives can search bodies post-round or not
 ttt_all_search_binoc                        0       // Whether non-detectives can search bodies if they are using binoculars
+ttt_detective_credits_timer                 0       // How often in seconds to give members of the detective team a credit (set to 0 to disable)
 
 // Paladin
 ttt_paladin_aura_radius                     5       // The radius of the paladin's aura in meters

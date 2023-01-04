@@ -3,6 +3,9 @@
 ## 1.6.19
 **Released:**
 
+### Additions
+- Added option to give detectives and traitors credits over time (disabled by default)
+
 ### Changes
 - Changed round summary to show multiple jester/independent players on individual rows
 
