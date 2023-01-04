@@ -10,7 +10,7 @@
 - Changed round summary to show multiple jester/independent players on individual rows
 
 ### Developer
-- Added `PaintProgressBar` global method
+- Added `CRHUD:PaintProgressBar` global method
 
 ## 1.6.18
 **Released: December 28th, 2022**
