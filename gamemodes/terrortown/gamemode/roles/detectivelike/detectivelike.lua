@@ -14,6 +14,7 @@ util.AddNetworkString("TTT_Promotion")
 -------------
 
 local detective_glow_enable = CreateConVar("ttt_detective_glow_enable", "0")
+local detective_credits_timer = CreateConVar("ttt_detective_credits_timer", "0")
 
 hook.Add("TTTSyncGlobals", "DetectiveLike_TTTSyncGlobals", function()
     SetGlobalBool("ttt_detective_glow_enable", detective_glow_enable:GetBool())
@@ -102,4 +103,26 @@ hook.Add("TTTPlayerRoleChanged", "DetectiveLike_TTTPlayerRoleChanged", function(
     if DETECTIVE_ROLES[oldRole] and GetRoundState() == ROUND_ACTIVE and ShouldPromoteDetectiveLike() then
         FindAndPromoteDetectiveLike()
     end
+end)
+
+------------------
+-- AUTO CREDITS --
+------------------
+
+hook.Add("TTTBeginRound", "DetectiveLike_TTTBeginRound", function()
+    local credit_timer = detective_credits_timer:GetInt()
+    if credit_timer <= 0 then return end
+
+    timer.Create("DetectiveCreditTimer", credit_timer, 0, function()
+        for _, v in pairs(GetAllPlayers()) do
+            if v:Alive() and not v:IsSpec() and v:IsDetectiveLike() then
+                v:AddCredits(1)
+                LANG.Msg(v, "credit_all", { role = ROLE_STRINGS[v:GetRole()], num = 1 })
+            end
+        end
+    end)
+end)
+
+hook.Add("TTTEndRound", "DetectiveLike_TTTEndRound", function()
+    timer.Remove("DetectiveCreditTimer")
 end)
