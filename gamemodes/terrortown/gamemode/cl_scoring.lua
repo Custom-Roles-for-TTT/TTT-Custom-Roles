@@ -524,7 +524,6 @@ function CLSCORE:BuildSummaryPanel(dpanel)
     local scores_by_section = {
         [ROLE_TEAM_INNOCENT] = {},
         [ROLE_TEAM_TRAITOR] = {},
-        [ROLE_TEAM_INDEPENDENT] = {},
         [ROLE_TEAM_JESTER] = {}
     }
 
@@ -593,8 +592,6 @@ function CLSCORE:BuildSummaryPanel(dpanel)
                     table.insert(scores_by_section[ROLE_TEAM_INNOCENT], playerInfo)
                 elseif TRAITOR_ROLES[groupingRole] or MONSTER_ROLES[groupingRole] then
                     table.insert(scores_by_section[ROLE_TEAM_TRAITOR], playerInfo)
-                elseif INDEPENDENT_ROLES[groupingRole] then
-                    table.insert(scores_by_section[ROLE_TEAM_INDEPENDENT], playerInfo)
                 else
                     table.insert(scores_by_section[ROLE_TEAM_JESTER], playerInfo)
                 end
@@ -602,21 +599,19 @@ function CLSCORE:BuildSummaryPanel(dpanel)
         end
     end
 
-    -- Minimum of 10 rows, maximum of whichever team has more players
-    local player_rows = math.max(10, math.max(#scores_by_section[ROLE_TEAM_INNOCENT], #scores_by_section[ROLE_TEAM_TRAITOR]))
+    -- Add 33px for each extra jester/independent
+    local jester_rows = math.max(1, #scores_by_section[ROLE_TEAM_JESTER])
+    local height_extra_jester = (jester_rows - 1) * 33
+
+    -- Minimum of 10 rows minus any extra jesters, maximum of whichever team has more players
+    local player_rows = math.max(1, 10 - (jester_rows - 1), math.max(#scores_by_section[ROLE_TEAM_INNOCENT], #scores_by_section[ROLE_TEAM_TRAITOR]))
 
     -- Add 33px for each extra role
-    local height_extra = (player_rows - 10) * 33
+    local height_extra = (player_rows - 1) * 33
 
     local height_extra_secondaries = 0
     if #secondary_win_roles > 1 then
         height_extra_secondaries = (#secondary_win_roles - 1) * 28
-    end
-
-    local has_indep_and_jesters = #scores_by_section[ROLE_TEAM_INDEPENDENT] > 0 and #scores_by_section[ROLE_TEAM_JESTER] > 0
-    local height_extra_jester = 0
-    if has_indep_and_jesters then
-        height_extra_jester = 32
     end
 
     local height_extra_total = height_extra + height_extra_jester + height_extra_secondaries
@@ -627,9 +622,9 @@ function CLSCORE:BuildSummaryPanel(dpanel)
     h = h - 22
     if height_extra_total > 0 then
         local screen_height = ScrH()
-        local parent_top = parentPanel:GetY()
-        -- Decrease the max height by 10 to give a gap at the bottom matching the left HUD for aesthetics
-        local max_height = (screen_height - parent_top) - 10
+
+        -- Decrease the max height by 20 to give a gap at the top and bottom matching the left HUD for aesthetics
+        local max_height = screen_height - 20
 
         -- Make the parent panel and tab container bigger
         local pw, ph = parentPanel:GetSize()
@@ -645,6 +640,7 @@ function CLSCORE:BuildSummaryPanel(dpanel)
         ph = ph + height_extra_total_parent
         pw = pw + width_extra_total_parent
         parentPanel:SetSize(pw, ph)
+        parentPanel:Center()
 
         local tw, th = parentTabs:GetSize()
         th = th + height_extra_total_parent
@@ -715,17 +711,20 @@ function CLSCORE:BuildSummaryPanel(dpanel)
             local height = 28
             draw.RoundedBoxEx(8, 8, 65 + (height * (i - 1)), w - 14, height, role_color, false, false, round_bottom, round_bottom)
         end
-        draw.RoundedBox(0, 8, ywin + winlbl:GetTall() + 15 + height_extra_secondaries, 341, 329 + height_extra, Color(164, 164, 164, 255))
-        draw.RoundedBox(0, 357, ywin + winlbl:GetTall() + 15 + height_extra_secondaries, 341, 329 + height_extra, Color(164, 164, 164, 255))
+        draw.RoundedBox(0, 8, ywin + winlbl:GetTall() + 15 + height_extra_secondaries, 341, 32 + height_extra, Color(164, 164, 164, 255))
+        draw.RoundedBox(0, 357, ywin + winlbl:GetTall() + 15 + height_extra_secondaries, 341, 32 + height_extra, Color(164, 164, 164, 255))
+        draw.RoundedBox(0, 8, ywin + winlbl:GetTall() + 55 + height_extra + height_extra_secondaries, 690, 32 + height_extra_jester, Color(164, 164, 164, 255))
         local loc = ywin + winlbl:GetTall() + 47 + height_extra_secondaries
         for _ = 1, player_rows do
             draw.RoundedBox(0, 8, loc, 341, 1, Color(97, 100, 102, 255))
             draw.RoundedBox(0, 357, loc, 341, 1, Color(97, 100, 102, 255))
             loc = loc + 33
         end
-        draw.RoundedBox(0, 8, ywin + winlbl:GetTall() + 352 + height_extra + height_extra_secondaries, 690, 32, Color(164, 164, 164, 255))
-        -- Add another row for jesters if we also have independents
-        if has_indep_and_jesters then draw.RoundedBox(0, 8, ywin + winlbl:GetTall() + 354 + height_extra_total, 690, 32, Color(164, 164, 164, 255)) end
+        loc = ywin + winlbl:GetTall() + 87 + height_extra + height_extra_secondaries
+        for _ = 1, jester_rows do
+            draw.RoundedBox(0, 8, loc, 690, 1, Color(97, 100, 102, 255))
+            loc = loc + 33
+        end
     end
 
     if #secondary_win_roles > 0 then winlbl:SetPos(xwin, ywin - 15) end
@@ -733,17 +732,7 @@ function CLSCORE:BuildSummaryPanel(dpanel)
     -- Add the players to the panel
     self:BuildPlayerList(scores_by_section[ROLE_TEAM_INNOCENT], dpanel, 317, 8, 103 + height_extra_secondaries, 33)
     self:BuildPlayerList(scores_by_section[ROLE_TEAM_TRAITOR], dpanel, 666, 357, 103 + height_extra_secondaries, 33)
-    if #scores_by_section[ROLE_TEAM_INDEPENDENT] > 0 then
-        self:BuildRoleLabel(scores_by_section[ROLE_TEAM_INDEPENDENT], dpanel, 666, 8, 440 + height_extra + height_extra_secondaries)
-    end
-    if #scores_by_section[ROLE_TEAM_JESTER] > 0 then
-        -- Move the label down more to add space
-        local spacer = 0
-        if has_indep_and_jesters then
-            spacer = 2
-        end
-        self:BuildRoleLabel(scores_by_section[ROLE_TEAM_JESTER], dpanel, 666, 8, 440 + height_extra_total + spacer)
-    end
+    self:BuildPlayerList(scores_by_section[ROLE_TEAM_JESTER], dpanel, 666, 8, 143 + height_extra + height_extra_secondaries, 33)
 end
 
 local function GetRoleIconElement(roleFileName, roleColor, startingRole, finalRole, dpanel)
@@ -802,133 +791,22 @@ function CLSCORE:BuildPlayerList(playerList, dpanel, statusX, roleX, initialY, r
     local count = 0
     for _, v in pairs(playerList) do
         local roleIcon = GetRoleIconElement(v.roleFileName, v.roleColor, v.startingRole, v.finalRole, dpanel)
-        local nicklbl = GetNickLabelElement(v.name, dpanel)
-        FitNicknameLabel(nicklbl, 275, function(nickname)
+
+        local name = v.name
+        local label = v.label
+        local otherName = v.otherName
+        local nicklbl = ""
+        if otherName ~= nil then
+            nicklbl = GetNickLabelElement(BuildJesterLabel(name, otherName, label), dpanel)
+        else
+            nicklbl = GetNickLabelElement(v.name, dpanel)
+        end
+        FitNicknameLabel(nicklbl, statusX - roleX - 34, function(nickname)
             return utf8.sub(nickname, 0, -5) .. "..."
         end)
 
         self:AddPlayerRow(dpanel, statusX, roleX, initialY + rowY * count, roleIcon, nicklbl, v.hasDisconnected, v.hasDied)
         count = count + 1
-    end
-end
-
-function CLSCORE:BuildRoleLabel(playerList, dpanel, statusX, roleX, rowY)
-    local playerCount = #playerList
-    if playerCount == 0 then return end
-
-    local maxWidth = 600
-    local names = {}
-    local deathCount = 0
-    local disconnectCount = 0
-    local roleFile = nil
-    local roleColor = nil
-    local startingRole = nil
-    local finalRole = nil
-
-    for _, v in pairs(playerList) do
-        if roleFile == nil then
-            roleFile = v.roleFileName
-        end
-        if roleColor == nil then
-            roleColor = v.roleColor
-        end
-        if startingRole == nil then
-            startingRole = v.startingRole
-        end
-        if finalRole == nil then
-            finalRole = v.finalRole
-        end
-        -- Don't count a disconnect as a death
-        if v.hasDisconnected then
-            disconnectCount = disconnectCount + 1
-        elseif v.hasDied then
-            deathCount = deathCount + 1
-        end
-
-        local name = v.name
-        local label = v.label
-        local otherName = v.otherName
-
-        if otherName ~= nil then
-            name = BuildJesterLabel(name, otherName, label)
-
-            local nickTmp = GetNickLabelElement(name, dpanel)
-
-            -- Then use the Jester/Swapper label and auto-resize until it fits
-            FitNicknameLabel(nickTmp, maxWidth, function(_, args)
-                local playerArg = args.player
-                local otherArg = args.other
-                if #playerArg > #otherArg then
-                    playerArg = utf8.sub(playerArg, 0, -5) .. "..."
-                else
-                    otherArg = utf8.sub(otherArg, 0, -5) .. "..."
-                end
-
-                return BuildJesterLabel(playerArg, otherArg, label), {player=playerArg, other=otherArg}
-            end, {player=v.name, other=otherName})
-
-            -- Save the resized text
-            name = nickTmp:GetText()
-            -- Remove the temporary label
-            nickTmp:Remove()
-
-            -- Insert this one at the beginning so it's readable as a round-over reason
-            table.insert(names, 1, name)
-        else
-            table.insert(names, name)
-        end
-    end
-
-    if disconnectCount > 0 and deathCount > 0 then
-        maxWidth = maxWidth - 30
-    end
-
-    local namesList = string.Implode(", ", names)
-    local nickLbl = GetNickLabelElement(namesList, dpanel)
-    FitNicknameLabel(nickLbl, maxWidth, function(nickname)
-        return utf8.sub(nickname, 0, -5) .. "..."
-    end)
-
-    -- Show the normal disconnect icon if we have only 1 player and they disconnected
-    local singlePlayerDisconnect = playerCount == 1 and disconnectCount == 1
-    -- Show the normal death icon if we have only 1 player and they died
-    local singlePlayerDeath = playerCount == 1 and deathCount == 1
-    self:AddPlayerRow(dpanel, statusX, roleX, rowY, GetRoleIconElement(roleFile, roleColor, startingRole, finalRole, dpanel), nickLbl, singlePlayerDisconnect, singlePlayerDeath)
-
-    -- Add disconnect icon with count if there are disconnects and it wasn't a single player doing it
-    if disconnectCount > 0 and playerCount > 1 then
-        local disconLbl = vgui.Create("DLabel", dpanel)
-        disconLbl:SetFont("IconText")
-        disconLbl:SetText(disconnectCount)
-        disconLbl:SetTextColor(COLOR_BLACK)
-        disconLbl:SizeToContents()
-        disconLbl:SetPos(statusX - 10, rowY + 2)
-
-        local disconIcon = vgui.Create("DImage", dpanel)
-        disconIcon:SetSize(32, 32)
-        disconIcon:SetPos(statusX, rowY)
-        disconIcon:SetImage("vgui/ttt/score_disconicon.png")
-    end
-
-    -- Add death icon with count if there are deaths and it wasn't a single player doing it
-    if deathCount > 0 and playerCount > 1 then
-        local offset = 0
-        -- If there was also a disconnect, offset the icon more
-        if disconnectCount > 0 then
-            offset = 40
-        end
-
-        local deathLbl = vgui.Create("DLabel", dpanel)
-        deathLbl:SetFont("IconText")
-        deathLbl:SetText(deathCount)
-        deathLbl:SetTextColor(COLOR_BLACK)
-        deathLbl:SizeToContents()
-        deathLbl:SetPos(statusX - offset - 10, rowY + 2)
-
-        local deathIcon = vgui.Create("DImage", dpanel)
-        deathIcon:SetSize(32, 32)
-        deathIcon:SetPos(statusX - offset, rowY)
-        deathIcon:SetImage("vgui/ttt/score_skullicon.png")
     end
 end
 
@@ -1124,7 +1002,7 @@ local tabs = {
 
 function CLSCORE:ShowPanel()
     parentPanel = vgui.Create("DFrame")
-    local w, h = 750, 588
+    local w, h = 750, 291
     local margin = 15
     parentPanel:SetSize(w, h)
     parentPanel:Center()
