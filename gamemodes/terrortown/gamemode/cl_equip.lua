@@ -21,6 +21,7 @@ local StringFind = string.find
 local StringLower = string.lower
 local TableHasValue = table.HasValue
 local TableInsert = table.insert
+local TableSort = table.sort
 
 -- create ClientConVars
 local numColsVar = CreateClientConVar("ttt_bem_cols", 4, true, false, "Sets the number of columns in the Traitor/Detective menu's item list.")
@@ -30,6 +31,7 @@ local showCustomVar = CreateClientConVar("ttt_bem_marker_custom", 1, true, false
 local showFavoriteVar = CreateClientConVar("ttt_bem_marker_fav", 1, true, false, "Should favorite items get a marker?")
 local showSlotVar = CreateClientConVar("ttt_bem_marker_slot", 1, true, false, "Should items get a slot-marker?")
 local showLoadoutEquipment = CreateClientConVar("ttt_show_loadout_equipment", 0, true, false, "Should loadout equipment show in shops?")
+local sortBySlotFirst = CreateClientConVar("ttt_sort_by_slot_first", 0, true, false, "Should the shop sort by slot first?")
 
 -- Buyable weapons are loaded automatically. Buyable items are defined in
 -- equip_items_shd.lua
@@ -605,12 +607,12 @@ local function TraitorMenuPopup()
             -- temp table for sorting
             local paneltablefav = {}
             local paneltable = {}
-            for i = 1, 9 do
+            for i = 0, 9 do
                 paneltablefav[i] = {}
                 paneltable[i] = {}
             end
 
-            for k, item in pairs(itemlist) do
+            for _, item in pairs(itemlist) do
                 local ic = nil
 
                 -- Create icon panel
@@ -655,29 +657,33 @@ local function TraitorMenuPopup()
                     end
 
                     -- Slot marker icon
-                    ic.slot = 1
-                    if ItemIsWeapon(item) and showSlotVar:GetBool() then
-                        local slot = vgui.Create("SimpleIconLabelled")
-                        slot:SetIcon("vgui/ttt/slot_cap")
-                        slot:SetIconColor(ROLE_COLORS[ply:GetDisplayedRole()] or COLOR_GREY)
-                        slot:SetIconSize(16)
+                    ic.slot = 0
+                    if ItemIsWeapon(item) then
+                        if showSlotVar:GetBool() then
+                            local slot = vgui.Create("SimpleIconLabelled")
+                            slot:SetIcon("vgui/ttt/slot_cap")
+                            slot:SetIconColor(ROLE_COLORS[ply:GetDisplayedRole()] or COLOR_GREY)
+                            slot:SetIconSize(16)
 
-                        slot:SetIconText(item.slot)
-                        ic.slot = item.slot
+                            slot:SetIconText(item.slot)
+                            ic.slot = item.slot
 
-                        -- Credit to @Angela and @Technofrood on the Lonely Yogs Discord for the fix!
-                        -- Clamp the item slot within the correct limits
-                        if ic.slot ~= nil then
-                            ic.slot = math.Clamp(ic.slot, 1, #paneltable)
+                            -- Credit to @Angela and @Technofrood on the Lonely Yogs Discord for the fix!
+                            -- Clamp the item slot within the correct limits
+                            if ic.slot ~= nil then
+                                ic.slot = math.Clamp(ic.slot, 1, #paneltable)
+                            end
+
+                            slot:SetIconProperties(COLOR_WHITE,
+                                    "DefaultBold",
+                                    { opacity = 220, offset = 1 },
+                                    { 9, 8 })
+
+                            ic:AddLayer(slot)
+                            ic:EnableMousePassthrough(slot)
+                        else
+                            ic.slot = 1 -- Separate equipment items from weapons
                         end
-
-                        slot:SetIconProperties(COLOR_WHITE,
-                            "DefaultBold",
-                            { opacity = 220, offset = 1 },
-                            { 9, 8 })
-
-                        ic:AddLayer(slot)
-                        ic:EnableMousePassthrough(slot)
                     end
 
                     ic:SetIconSize(itemSize)
@@ -705,17 +711,42 @@ local function TraitorMenuPopup()
                     ic:Remove()
                 else
                     if ic.favorite then
-                        paneltablefav[ic.slot or 1][k] = ic
+                        TableInsert(paneltablefav[ic.slot or 1], ic)
                     else
-                        paneltable[ic.slot or 1][k] = ic
+                        TableInsert(paneltable[ic.slot or 1], ic)
                     end
                 end
             end
 
             -- add favorites first
-            for i = 1, 9 do
-                for _, panel in pairs(paneltablefav[i]) do
-                    dlist:AddPanel(panel)
+            for i = 0, 9 do
+                if sortBySlotFirst:GetBool() then
+                    TableSort(paneltablefav[i], function(a, b) return string.upper(a.item.name) < string.upper(b.item.name) end)
+                    for _, panel in pairs(paneltablefav[i]) do
+                        dlist:AddPanel(panel)
+                    end
+                else
+                    -- Add equipment items separately
+                    TableSort(paneltablefav[0], function(a, b) return string.upper(a.item.name) < string.upper(b.item.name) end)
+                    for _, panel in pairs(paneltablefav[0]) do
+                        dlist:AddPanel(panel)
+                    end
+
+                    -- Gather all the other panels into one list
+                    local panels = {}
+                    for i = 1, 9 do
+                        for _, p in pairs(paneltablefav[i]) do
+                            TableInsert(panels, p)
+                        end
+                    end
+
+                    -- Sort it
+                    TableSort(panels, function(a, b) return string.upper(a.item.name) < string.upper(b.item.name) end)
+
+                    -- Add them all to the list
+                    for _, p in ipairs(panels) do
+                        dlist:AddPanel(p)
+                    end
                 end
             end
 
@@ -724,7 +755,7 @@ local function TraitorMenuPopup()
             if GetGlobalBool("ttt_shop_random_position", false) then
                 -- Gather all the panels into one list
                 local panels = {}
-                for i = 1, 9 do
+                for i = 0, 9 do
                     for _, p in pairs(paneltable[i]) do
                         TableInsert(panels, p)
                     end
@@ -737,11 +768,34 @@ local function TraitorMenuPopup()
                 for _, p in ipairs(panels) do
                     dlist:AddPanel(p)
                 end
-            else
-                for i = 1, 9 do
+            elseif sortBySlotFirst:GetBool() then
+                for i = 0, 9 do
+                    TableSort(paneltable[i], function(a, b) return string.upper(a.item.name) < string.upper(b.item.name) end)
                     for _, panel in pairs(paneltable[i]) do
                         dlist:AddPanel(panel)
                     end
+                end
+            else
+                -- Add equipment items separately
+                TableSort(paneltable[0], function(a, b) return string.upper(a.item.name) < string.upper(b.item.name) end)
+                for _, panel in pairs(paneltable[0]) do
+                    dlist:AddPanel(panel)
+                end
+
+                -- Gather all the panels into one list
+                local panels = {}
+                for i = 1, 9 do
+                    for _, p in pairs(paneltable[i]) do
+                        TableInsert(panels, p)
+                    end
+                end
+
+                -- Sort it
+                TableSort(panels, function(a, b) return string.upper(a.item.name) < string.upper(b.item.name) end)
+
+                -- Add them all to the list
+                for _, p in ipairs(panels) do
+                    dlist:AddPanel(p)
                 end
             end
 

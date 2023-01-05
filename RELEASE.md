@@ -8,6 +8,8 @@
 
 ### Changes
 - Changed round summary to show multiple jester/independent players on individual rows
+- Changed the shop to sort items alphabetically
+  - Optionally this can sort by slot first, then alphabetically (disabled by default)
 
 ### Developer
 - Added `CRHUD:PaintProgressBar` global method
