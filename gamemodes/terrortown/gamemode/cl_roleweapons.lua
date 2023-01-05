@@ -12,6 +12,8 @@ local GetTranslation = LANG.GetTranslation
 local SafeTranslate = LANG.TryTranslation
 local StringFind = string.find
 local StringLower = string.lower
+local TableInsert = table.insert
+local TableSort = table.sort
 
 local function ItemIsWeapon(item) return not tonumber(item.id) end
 
@@ -144,7 +146,7 @@ local function OpenDialog(client)
 
         -- temp table for sorting
         local paneltable = {}
-        for i = 1, 9 do
+        for i = 0, 9 do
             paneltable[i] = {}
         end
 
@@ -172,7 +174,7 @@ local function OpenDialog(client)
                 end
 
                 -- Slot marker icon
-                ic.slot = 1
+                ic.slot = 0
                 if ItemIsWeapon(item) then
                     local slot = vgui.Create("SimpleIconLabelled")
                     slot:SetIcon("vgui/ttt/slot_cap")
@@ -216,14 +218,34 @@ local function OpenDialog(client)
             if not ItemIsWeapon(item) and (item.loadout or externalLoadout) then
                 ic:Remove()
             else
-                paneltable[ic.slot or 1][k] = ic
+                TableInsert(paneltable[ic.slot or 1], ic)
             end
         end
 
-        for i = 1, 9 do
-            for _, panel in pairs(paneltable[i]) do
+        local AddNameSortedItems = function(panels)
+            TableSort(panels, function(a, b) return StringLower(a.item.name) < StringLower(b.item.name) end)
+            for _, panel in pairs(panels) do
                 dlist:AddPanel(panel)
             end
+        end
+
+        -- Add equipment items separately
+        AddNameSortedItems(paneltable[0])
+
+        if GetConVar("ttt_sort_by_slot_first"):GetBool() then
+            for i = 1, 9 do
+                AddNameSortedItems(paneltable[i])
+            end
+        else
+            -- Gather all the panels into one list
+            local panels = {}
+            for i = 1, 9 do
+                for _, p in pairs(paneltable[i]) do
+                    TableInsert(panels, p)
+                end
+            end
+
+            AddNameSortedItems(panels)
         end
 
         -- select first

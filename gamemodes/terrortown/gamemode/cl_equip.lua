@@ -768,34 +768,31 @@ local function TraitorMenuPopup()
                 for _, p in ipairs(panels) do
                     dlist:AddPanel(p)
                 end
-            elseif sortBySlotFirst:GetBool() then
-                for i = 0, 9 do
-                    TableSort(paneltable[i], function(a, b) return string.upper(a.item.name) < string.upper(b.item.name) end)
-                    for _, panel in pairs(paneltable[i]) do
+            else
+                local AddNameSortedItems = function(panels)
+                    TableSort(panels, function(a, b) return StringLower(a.item.name) < StringLower(b.item.name) end)
+                    for _, panel in pairs(panels) do
                         dlist:AddPanel(panel)
                     end
                 end
-            else
+
                 -- Add equipment items separately
-                TableSort(paneltable[0], function(a, b) return string.upper(a.item.name) < string.upper(b.item.name) end)
-                for _, panel in pairs(paneltable[0]) do
-                    dlist:AddPanel(panel)
-                end
+                AddNameSortedItems(paneltable[0])
 
-                -- Gather all the panels into one list
-                local panels = {}
-                for i = 1, 9 do
-                    for _, p in pairs(paneltable[i]) do
-                        TableInsert(panels, p)
+                if sortBySlotFirst:GetBool() then
+                    for i = 1, 9 do
+                        AddNameSortedItems(paneltable[i])
                     end
-                end
+                else
+                    -- Gather all the panels into one list
+                    local panels = {}
+                    for i = 1, 9 do
+                        for _, p in pairs(paneltable[i]) do
+                            TableInsert(panels, p)
+                        end
+                    end
 
-                -- Sort it
-                TableSort(panels, function(a, b) return string.upper(a.item.name) < string.upper(b.item.name) end)
-
-                -- Add them all to the list
-                for _, p in ipairs(panels) do
-                    dlist:AddPanel(p)
+                    AddNameSortedItems(panels)
                 end
             end
 
