@@ -31,6 +31,7 @@ local showCustomVar = CreateClientConVar("ttt_bem_marker_custom", 1, true, false
 local showFavoriteVar = CreateClientConVar("ttt_bem_marker_fav", 1, true, false, "Should favorite items get a marker?")
 local showSlotVar = CreateClientConVar("ttt_bem_marker_slot", 1, true, false, "Should items get a slot-marker?")
 local showLoadoutEquipment = CreateClientConVar("ttt_show_loadout_equipment", 0, true, false, "Should loadout equipment show in shops?")
+local sortAlphabetically = CreateClientConVar("ttt_sort_alphabetically", 1, true, false, "Should the shop sort alphabetically?")
 local sortBySlotFirst = CreateClientConVar("ttt_sort_by_slot_first", 0, true, false, "Should the shop sort by slot first?")
 
 -- Buyable weapons are loaded automatically. Buyable items are defined in
@@ -718,36 +719,33 @@ local function TraitorMenuPopup()
                 end
             end
 
+            local AddNameSortedItems = function(panels)
+                if sortAlphabetically:GetBool() then
+                    TableSort(panels, function(a, b) return StringLower(a.item.name) < StringLower(b.item.name) end)
+                end
+                for _, panel in pairs(panels) do
+                    dlist:AddPanel(panel)
+                end
+            end
+
             -- add favorites first
-            for i = 0, 9 do
-                if sortBySlotFirst:GetBool() then
-                    TableSort(paneltablefav[i], function(a, b) return string.upper(a.item.name) < string.upper(b.item.name) end)
-                    for _, panel in pairs(paneltablefav[i]) do
-                        dlist:AddPanel(panel)
-                    end
-                else
-                    -- Add equipment items separately
-                    TableSort(paneltablefav[0], function(a, b) return string.upper(a.item.name) < string.upper(b.item.name) end)
-                    for _, panel in pairs(paneltablefav[0]) do
-                        dlist:AddPanel(panel)
-                    end
+            -- Add equipment items separately
+            AddNameSortedItems(paneltablefav[0])
 
-                    -- Gather all the other panels into one list
-                    local panels = {}
-                    for i = 1, 9 do
-                        for _, p in pairs(paneltablefav[i]) do
-                            TableInsert(panels, p)
-                        end
-                    end
-
-                    -- Sort it
-                    TableSort(panels, function(a, b) return string.upper(a.item.name) < string.upper(b.item.name) end)
-
-                    -- Add them all to the list
-                    for _, p in ipairs(panels) do
-                        dlist:AddPanel(p)
+            if sortBySlotFirst:GetBool() then
+                for i = 1, 9 do
+                    AddNameSortedItems(paneltablefav[i])
+                end
+            else
+                -- Gather all the panels into one list
+                local panels = {}
+                for i = 1, 9 do
+                    for _, p in pairs(paneltablefav[i]) do
+                        TableInsert(panels, p)
                     end
                 end
+
+                AddNameSortedItems(panels)
             end
 
             -- non favorites second
@@ -769,13 +767,6 @@ local function TraitorMenuPopup()
                     dlist:AddPanel(p)
                 end
             else
-                local AddNameSortedItems = function(panels)
-                    TableSort(panels, function(a, b) return StringLower(a.item.name) < StringLower(b.item.name) end)
-                    for _, panel in pairs(panels) do
-                        dlist:AddPanel(panel)
-                    end
-                end
-
                 -- Add equipment items separately
                 AddNameSortedItems(paneltable[0])
 

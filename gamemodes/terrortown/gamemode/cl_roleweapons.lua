@@ -223,7 +223,9 @@ local function OpenDialog(client)
         end
 
         local AddNameSortedItems = function(panels)
-            TableSort(panels, function(a, b) return StringLower(a.item.name) < StringLower(b.item.name) end)
+            if GetConVar("ttt_sort_alphabetically"):GetBool() then
+                TableSort(panels, function(a, b) return StringLower(a.item.name) < StringLower(b.item.name) end)
+            end
             for _, panel in pairs(panels) do
                 dlist:AddPanel(panel)
             end

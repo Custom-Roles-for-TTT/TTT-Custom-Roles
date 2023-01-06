@@ -420,6 +420,7 @@ function HELPSCRN:Show()
     dmarker:CheckBox("Show custom item marker", "ttt_bem_marker_custom")
     dmarker:CheckBox("Show favourite item marker", "ttt_bem_marker_fav")
     dmarker:CheckBox("Show loadout items", "ttt_show_loadout_equipment")
+    dmarker:CheckBox("Sort alphabetically", "ttt_sort_alphabetically")
     dmarker:CheckBox("Sort by slot first", "ttt_sort_by_slot_first")
 
     dsettings:AddItem(dmarker)

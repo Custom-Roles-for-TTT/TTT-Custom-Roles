@@ -8,7 +8,7 @@
 
 ### Changes
 - Changed round summary to show multiple jester/independent players on individual rows
-- Changed the shop to sort items alphabetically
+- Changed the shop to sort items alphabetically (enabled by default)
   - Optionally this can sort by slot first, then alphabetically (disabled by default)
 
 ### Developer
