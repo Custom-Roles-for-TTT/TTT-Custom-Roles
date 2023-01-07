@@ -111,7 +111,9 @@ function ENT:Touch(ent)
                     ent:SetNWString("TTTCupidShooter", owner:SteamID64())
                     owner:SetNWString("TTTCupidTarget1", ent:SteamID64())
                     owner:PrintMessage(HUD_PRINTCENTER, ent:Nick() .. " has been hit with your first arrow.")
+                    owner:PrintMessage(HUD_PRINTTALK, ent:Nick() .. " has been hit with your first arrow.")
                     ent:PrintMessage(HUD_PRINTCENTER, "You have been hit by cupids arrow!")
+                    ent:PrintMessage(HUD_PRINTTALK, "You have been hit by cupids arrow!")
                 elseif owner:GetNWString("TTTCupidTarget2", "") == "" then
                     if ent:SteamID64() == target1 then
                         owner:PrintMessage(HUD_PRINTCENTER, "You cannot make someone fall in love with themselves.")
@@ -122,8 +124,11 @@ function ENT:Touch(ent)
                         ent2:SetNWString("TTTCupidLover", ent:SteamID64())
                         owner:SetNWString("TTTCupidTarget2", ent:SteamID64())
                         owner:PrintMessage(HUD_PRINTCENTER, ent:Nick() .. " has fallen in love with " .. ent2:Nick() .. ".")
+                        owner:PrintMessage(HUD_PRINTTALK, ent:Nick() .. " has fallen in love with " .. ent2:Nick() .. ".")
                         ent2:PrintMessage(HUD_PRINTCENTER, "You have fallen in love with " .. ent:Nick() .. "!")
+                        ent2:PrintMessage(HUD_PRINTTALK, "You have fallen in love with " .. ent:Nick() .. "!")
                         ent:PrintMessage(HUD_PRINTCENTER, "You have fallen in love with " .. ent2:Nick() .. "!")
+                        ent:PrintMessage(HUD_PRINTTALK, "You have fallen in love with " .. ent2:Nick() .. "!")
                         owner:StripWeapon("weapon_cup_bow")
 
                         net.Start("TTT_CupidPaired")
@@ -142,6 +147,7 @@ function ENT:Touch(ent)
 
                                 if mode == CUPID_REVEAL_ALL or (v:IsTraitorTeam() and mode == CUPID_REVEAL_TRAITORS) or (v:IsInnocentTeam() and mode == CUPID_REVEAL_INNOCENTS) then
                                     v:PrintMessage(HUD_PRINTCENTER, ROLE_STRINGS_EXT[ROLE_CUPID] .. " has made two players fall in love!")
+                                    v:PrintMessage(HUD_PRINTTALK, ROLE_STRINGS_EXT[ROLE_CUPID] .. " has made two players fall in love!")
                                 end
                             end
                         end

@@ -21,6 +21,10 @@ AddHook("Initialize", "Cupid_Translations_Initialize", function()
     LANG.AddToLanguage("english", "hilite_lovers_secondary", "AND THE LOVERS WIN")
     LANG.AddToLanguage("english", "ev_win_lovers", "The lovers won the round!")
 
+    -- SCOREBOARD
+    LANG.AddToLanguage("english", "scoreboard_cupid_your_lover", "YOUR LOVER")
+    LANG.AddToLanguage("english", "scoreboard_cupid_lover", "LOVER")
+
     -- Scoring
     LANG.AddToLanguage("english", "score_cupid_pairnames", "{lover1} and {lover2}")
     LANG.AddToLanguage("english", "score_cupid_paired", "Paired")
@@ -198,8 +202,30 @@ AddHook("TTTTargetIDPlayerText", "Cupid_TTTTargetIDPlayerText", function(ent, cl
         if ent:IsActiveCupid() and ent:SteamID64() == client:GetNWString("TTTCupidShooter", "") then
             return StringUpper(ROLE_STRINGS[ROLE_CUPID]), ROLE_COLORS_RADAR[ROLE_CUPID]
         elseif ent:SteamID64() == client:GetNWString("TTTCupidLover", "") then
-            return StringUpper(ROLE_STRINGS[ent:GetRole()]), ROLE_COLORS_RADAR[ent:GetRole()], "LOVER", Color(230, 90, 200, 255)
+            return StringUpper(ROLE_STRINGS[ent:GetRole()]), ROLE_COLORS_RADAR[ent:GetRole()], LANG.GetTranslation("scoreboard_cupid_lover"), Color(230, 90, 200, 255)
         end
+    end
+end)
+
+----------------
+-- SCOREBOARD --
+----------------
+
+hook.Add("TTTScoreboardPlayerRole", "Cupid_TTTScoreboardPlayerRole", function(ply, cli, c, roleStr)
+    if ply:IsActiveCupid() and ply:SteamID64() == cli:GetNWString("TTTCupidShooter", "") then
+        return ROLE_COLORS_SCOREBOARD[ROLE_CUPID], ROLE_STRINGS_SHORT[ROLE_CUPID]
+    elseif ply:SteamID64() == cli:GetNWString("TTTCupidLover", "") then
+        return ROLE_COLORS_SCOREBOARD[ply:GetRole()], ROLE_STRINGS_SHORT[ply:GetRole()], ply:GetRole()
+    elseif ply:SteamID64() == cli:GetNWString("TTTCupidTarget1", "") or ply:SteamID64() == cli:GetNWString("TTTCupidTarget2", "") then
+        return c, roleStr, ROLE_CUPID
+    end
+end)
+
+hook.Add("TTTScoreboardPlayerName", "Cupid_TTTScoreboardPlayerName", function(ply, cli, nickTxt)
+    if ply:SteamID64() == cli:GetNWString("TTTCupidLover", "") then
+        return ply:Nick() .. " (" .. LANG.GetTranslation("scoreboard_cupid_your_lover") .. ")"
+    elseif ply:SteamID64() == cli:GetNWString("TTTCupidTarget1", "") or ply:SteamID64() == cli:GetNWString("TTTCupidTarget2", "") then
+        return ply:Nick() .. " (" .. LANG.GetTranslation("scoreboard_cupid_lover") .. ")"
     end
 end)
 

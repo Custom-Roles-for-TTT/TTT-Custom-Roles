@@ -87,9 +87,11 @@ hook.Add("PlayerDisconnected", "Cupid_PlayerDisconnected", function(ply)
     for _, p in pairs(GetAllPlayers()) do
         if p:GetNWString("TTTCupidLover", "") == sid64 then
             p:PrintMessage(HUD_PRINTCENTER, "Your lover has disappeared ;_;")
+            p:PrintMessage(HUD_PRINTTALK, "Your lover has disappeared ;_;")
             p:SetNWString("TTTCupidLover", "")
         elseif p:GetNWString("TTTCupidTarget1", "") == sid64 then
             p:PrintMessage(HUD_PRINTCENTER, "A player hit by your arrow has disconnected")
+            p:PrintMessage(HUD_PRINTTALK, "A player hit by your arrow has disconnected")
             local target2 = p:GetNWString("TTTCupidTarget2", "")
             if target2 == "" then
                 p:SetNWString("TTTCupidTarget1", "")
@@ -100,8 +102,26 @@ hook.Add("PlayerDisconnected", "Cupid_PlayerDisconnected", function(ply)
             end
         elseif p:GetNWString("TTTCupidTarget2", "") == sid64 then
             p:PrintMessage(HUD_PRINTCENTER, "A player hit by your arrow has disconnected")
+            p:PrintMessage(HUD_PRINTTALK, "A player hit by your arrow has disconnected")
             p:SetNWString("TTTCupidTarget2", "")
             p:Give("weapon_cup_bow")
+        end
+    end
+end)
+
+---------------------------------
+-- PLAYER DEATH DURING PAIRING --
+---------------------------------
+
+hook.Add("PlayerDeath", "Cupid_PlayerDeath", function(ply)
+    local sid64 = ply:SteamID64()
+
+    for _, p in pairs(GetAllPlayers()) do
+        if p:GetNWString("TTTCupidTarget1", "") == sid64 and p:GetNWString("TTTCupidTarget2", "") == "" then
+            p:PrintMessage(HUD_PRINTCENTER, "The player hit by your arrow has died")
+            p:PrintMessage(HUD_PRINTTALK, "The player hit by your arrow has died")
+            p:SetNWString("TTTCupidTarget1", "")
+            ply:SetNWString("TTTCupidShooter", "")
         end
     end
 end)

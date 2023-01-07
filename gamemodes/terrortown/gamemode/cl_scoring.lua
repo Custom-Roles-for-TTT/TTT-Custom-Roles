@@ -620,6 +620,8 @@ function CLSCORE:BuildSummaryPanel(dpanel)
     local w, h = dpanel:GetSize()
     -- The DScrollPanel has a gap at the bottom for some reason so just close the height to get rid of it
     h = h - 22
+    -- Remove 9 rows of padding here so that the window is the correct size if the summary tab isn't enabled
+    h = h - 297
     if height_extra_total > 0 then
         local screen_height = ScrH()
 
@@ -1002,7 +1004,7 @@ local tabs = {
 
 function CLSCORE:ShowPanel()
     parentPanel = vgui.Create("DFrame")
-    local w, h = 750, 291
+    local w, h = 750, 588
     local margin = 15
     parentPanel:SetSize(w, h)
     parentPanel:Center()
