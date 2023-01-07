@@ -307,6 +307,9 @@ if CLIENT then
 
         if state == DEFIB_IDLE then return end
 
+        local charge = self:GetChargeTime()
+        local time = self:GetBegin() + charge
+
         local x = ScrW() / 2.0
         local y = ScrH() / 2.0
 

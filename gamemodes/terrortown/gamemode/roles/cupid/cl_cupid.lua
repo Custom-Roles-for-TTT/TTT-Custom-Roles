@@ -253,7 +253,7 @@ AddHook("TTTTutorialRoleText", "Cupid_TTTTutorialRoleText", function(role, title
         local roleTeamName, roleColor = GetRoleTeamInfo(roleTeam)
         local html = "The " .. ROLE_STRINGS[ROLE_CUPID] .. " is a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. roleTeamName .. "</span> role that wins by making two players fall in love and helping them win together. However, players that fall in love die together and cannot survive while the other is dead."
         html = html .. "<span style='display: block; margin-top: 10px;'>They are given a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>bow</span> that will cause a player to fall in love when they are shot. Once two players have fallen in love they win the round by surviving until the end of the round or being the last players left standing.</span>"
-        html = html .. "<span style='display: block; margin-top: 10px;'>As <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>ROLE_STRINGS_EXT[ROLE_CUPID]</span> you do not need to survive until the end of the round to win. As long as the lovers survive you still win.</span>"
+        html = html .. "<span style='display: block; margin-top: 10px;'>As <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. ROLE_STRINGS_EXT[ROLE_CUPID] .. "</span> you do not need to survive until the end of the round to win. As long as the lovers survive you still win.</span>"
         return html
     end
 end)
