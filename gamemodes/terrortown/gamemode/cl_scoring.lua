@@ -606,8 +606,9 @@ function CLSCORE:BuildSummaryPanel(dpanel)
     -- Minimum of 10 rows minus any extra jesters, maximum of whichever team has more players
     local player_rows = math.max(1, 10 - (jester_rows - 1), math.max(#scores_by_section[ROLE_TEAM_INNOCENT], #scores_by_section[ROLE_TEAM_TRAITOR]))
 
-    -- Add 33px for each extra role
-    local height_extra = (player_rows - 1) * 33
+    -- Add padding for each extra role
+    local padding = 33
+    local height_extra = (player_rows - 1) * padding
 
     local height_extra_secondaries = 0
     if #secondary_win_roles > 1 then
@@ -621,7 +622,8 @@ function CLSCORE:BuildSummaryPanel(dpanel)
     -- The DScrollPanel has a gap at the bottom for some reason so just close the height to get rid of it
     h = h - 22
     -- Remove 9 rows of padding here so that the window is the correct size if the summary tab isn't enabled
-    h = h - 297
+    local extra_row_padding = 9 * padding
+    h = h - extra_row_padding
     if height_extra_total > 0 then
         local screen_height = ScrH()
 
@@ -630,7 +632,7 @@ function CLSCORE:BuildSummaryPanel(dpanel)
 
         -- Make the parent panel and tab container bigger
         local pw, ph = parentPanel:GetSize()
-        local height_extra_total_parent = height_extra_total
+        local height_extra_total_parent = height_extra_total - extra_row_padding
         local width_extra_total_parent = 0
         -- If the height of the panel would be larger than the available space,
         -- shrink the parent panel to force the inner panel to scroll
