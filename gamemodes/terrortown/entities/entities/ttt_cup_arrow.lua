@@ -68,6 +68,9 @@ end
 
 function ENT:Touch(ent)
     local owner = self:GetOwner()
+    if not IsValid(owner) then
+        return
+    end
 
     local tr = self:GetTouchTrace()
     local tr2
@@ -86,17 +89,17 @@ function ENT:Touch(ent)
         })
     end
 
-    if not IsValid(ent) then
-        return
-    end
-
-    if ent:IsWorld() then
+    if ent and ent:IsWorld() then
         sound.Play(table.Random(StickSound), tr.HitPos)
 
         self:SetMoveType(MOVETYPE_NONE)
         self:PhysicsInit(SOLID_NONE)
 
         SafeRemoveEntityDelayed(self, 10)
+        return
+    end
+
+    if not IsValid(ent) then
         return
     end
 
