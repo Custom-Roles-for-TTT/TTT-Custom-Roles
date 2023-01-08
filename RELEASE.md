@@ -1,5 +1,21 @@
 # Release Notes
 
+## 1.7.0
+**Released: January 8th, 2023**\
+Includes all beta updates from [1.6.14](#1614-beta) to [1.6.19](#1619-beta).
+
+## Additions
+- Added messages in chat when hit by cupid's arrow or paired with another player
+- Added information about cupid and the lovers to the scoreboard
+
+## Fixes
+- Fixed round summary window appearing shorter if the summary tab was disabled
+- Fixed minor error in cupid's tutorial page
+- Fixed issue caused when one player was hit by cupid's arrow then died before being paired with another player
+
+## Developer
+-  Fixed not being able to target yourself using the `ttt_kill_target_*` and `ttt_damage_target_*` debug commands
+
 ## 1.6.19 (Beta)
 **Released: January 4th, 2023**
 
