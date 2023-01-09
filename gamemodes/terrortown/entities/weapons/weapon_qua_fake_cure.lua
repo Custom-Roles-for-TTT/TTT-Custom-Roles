@@ -4,7 +4,6 @@ local IsValid = IsValid
 local math = math
 local pairs = pairs
 local player = player
-local surface = surface
 local string = string
 local timer = timer
 local util = util
