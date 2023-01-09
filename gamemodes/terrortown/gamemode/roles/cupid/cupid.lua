@@ -130,26 +130,29 @@ end)
 -- WIN CHECKS --
 ----------------
 
-hook.Add("TTTCheckForWin", "Cupid_TTTCheckForWin", function(victim, infl, attacker)
+hook.Add("TTTCheckForWin", "Cupid_TTTCheckForWin", function()
     local cupidWin = true
-    local playerAlive = false
+    local loverAlive = false
     for _, v in pairs(GetAllPlayers()) do
-        if v:IsActive() then
-            playerAlive = true
-            local lover = v:GetNWString("TTTCupidLover", "")
-            if lover ~= "" then
-                if not player.GetBySteamID64(lover):IsActive() then
-                    cupidWin = false
-                    break
-                end
-            elseif not v:IsCupid() then
+        if not v:Alive() or v:IsSpec() then
+            continue
+        end
+
+        local lover = v:GetNWString("TTTCupidLover", "")
+        if lover ~= "" then
+            local loverPly = player.GetBySteamID64(lover)
+            if not IsPlayer(loverPly) or not loverPly:Alive() or loverPly:IsSpec() then
                 cupidWin = false
                 break
             end
+            loverAlive = true
+        elseif not v:IsCupid() then
+            cupidWin = false
+            break
         end
     end
 
-    if cupidWin and playerAlive then
+    if cupidWin and loverAlive then
         return WIN_CUPID
     end
 end)

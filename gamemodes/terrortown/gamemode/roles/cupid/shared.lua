@@ -2,12 +2,6 @@ AddCSLuaFile()
 
 local table = table
 
--- Cupid reveal modes
-CUPID_REVEAL_NONE = 0
-CUPID_REVEAL_ALL = 1
-CUPID_REVEAL_TRAITORS = 2
-CUPID_REVEAL_INNOCENTS = 3
-
 -- Update their team
 hook.Add("TTTUpdateRoleState", "Cupid_TTTUpdateRoleState", function()
     local cupids_are_independent = GetGlobalBool("ttt_cupids_are_independent", false)

@@ -90,7 +90,7 @@ function AssignAssassinTarget(ply, start, delay)
 
     local function AddEnemy(p, bodysnatcherMode)
         -- Don't add the former beggar to the list of enemies unless the "reveal" setting is enabled
-        if p:IsInnocent() and p:GetNWBool("WasBeggar", false) and beggarMode ~= BEGGAR_REVEAL_ALL and beggarMode ~= BEGGAR_REVEAL_TRAITORS then return end
+        if p:IsInnocent() and p:GetNWBool("WasBeggar", false) and beggarMode ~= ANNOUNCE_REVEAL_ALL and beggarMode ~= ANNOUNCE_REVEAL_TRAITORS then return end
         if p:GetNWBool("WasBodysnatcher", false) and bodysnatcherMode ~= BODYSNATCHER_REVEAL_ALL then return end
 
         -- Put shop roles into a list if they should be targeted last

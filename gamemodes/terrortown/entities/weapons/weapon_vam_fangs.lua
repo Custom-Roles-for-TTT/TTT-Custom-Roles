@@ -7,11 +7,8 @@ local math = math
 local net = net
 local player = player
 local resource = resource
-local surface = surface
 local timer = timer
 local util = util
-
-local MathRound = math.Round
 
 if CLIENT then
     SWEP.PrintName = "Fangs"
