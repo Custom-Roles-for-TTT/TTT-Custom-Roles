@@ -1,5 +1,3 @@
-**WORK IN PROGRESS - MORE ROLES WILL BE ADDED OVER TIME**
-
 # Custom Roles for TTT
 
 This is the development version of [Custom Roles for TTT](https://steamcommunity.com/sharedfiles/filedetails/?id=2421039084). Use at your own risk! This version of the mod could be unstable and is updated regularly. Do not use the development version if you need the mod to be reliable. (e.g. for streaming, youtube, etc.)
@@ -40,6 +38,7 @@ If you would like to test the available configurations, we recommend using ULX/U
 - [Minty](https://steamcommunity.com/id/_Minty_) for the code used in many items taken from the ['Defibrillator for TTT'](https://steamcommunity.com/sharedfiles/filedetails/?id=801433502) mod.
 - [Fresh Garry](https://steamcommunity.com/id/Fresh_Garry) for the ['TTT Sprint'](https://steamcommunity.com/sharedfiles/filedetails/?id=933056549) mod which was used as the base for this mod's sprinting mechanics.
 - [Lykrast](https://steamcommunity.com/id/Lykrast) for the code and models used to create the old man's double barrel shotgun taken from ['Lykrast's TTT Weapon Collection'](https://steamcommunity.com/sharedfiles/filedetails/?id=337994500).
+- [Shad](https://steamcommunity.com/id/Shad686) and [Juckey](https://steamcommunity.com/id/mzku) for the code and models used to create cupid's bow taken from ['Hunting Bow'](https://steamcommunity.com/sharedfiles/filedetails/?id=1323286207).
 - [Game icons](https://game-icons.net), [Noun Project](https://thenounproject.com), and [Icons8](https://icons8.com) for the role icons.
 - [Videvo](https://www.videvo.net/profile/videvo/) for the royalty-free [extinguish sound](https://www.videvo.net/sound-effect/short-light-fire-exti-pe363704/255924/) and cough sounds: [1](https://www.videvo.net/sound-effect/human-cough-33/427996/), [2](https://www.videvo.net/sound-effect/human-cough-36/427999/), [3](https://www.videvo.net/sound-effect/human-cough-39/428002/), [4](https://www.videvo.net/sound-effect/human-cough-63/428026/)
 - Our friends and everyone on the Discord server for their suggestions and help testing.
