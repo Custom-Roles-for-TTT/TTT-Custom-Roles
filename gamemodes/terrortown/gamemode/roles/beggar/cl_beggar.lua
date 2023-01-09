@@ -123,19 +123,19 @@ hook.Add("TTTHUDInfoPaint", "Beggar_TTTHUDInfoPaint", function(client, label_lef
     if hide_role then return end
 
     if (client:IsInnocent() or client:IsTraitor()) and client:GetNWBool("WasBeggar", false) then
-        local beggarMode = BEGGAR_REVEAL_ALL
-        if client:IsInnocent() then beggarMode = GetGlobalInt("ttt_beggar_reveal_innocent", BEGGAR_REVEAL_TRAITORS)
-        elseif client:IsTraitor() then beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", BEGGAR_REVEAL_ALL) end
-        if beggarMode ~= BEGGAR_REVEAL_ALL then
+        local beggarMode = ANNOUNCE_REVEAL_ALL
+        if client:IsInnocent() then beggarMode = GetGlobalInt("ttt_beggar_reveal_innocent", ANNOUNCE_REVEAL_TRAITORS)
+        elseif client:IsTraitor() then beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", ANNOUNCE_REVEAL_ALL) end
+        if beggarMode ~= ANNOUNCE_REVEAL_ALL then
             surface.SetFont("TabLarge")
             surface.SetTextColor(255, 255, 255, 230)
 
             local text
-            if beggarMode == BEGGAR_REVEAL_NONE then
+            if beggarMode == ANNOUNCE_REVEAL_NONE then
                 text = LANG.GetParamTranslation("beggar_hidden_all_hud", { beggar = ROLE_STRINGS_EXT[ROLE_BEGGAR] })
-            elseif beggarMode == BEGGAR_REVEAL_TRAITORS then
+            elseif beggarMode == ANNOUNCE_REVEAL_TRAITORS then
                 text = LANG.GetParamTranslation("beggar_hidden_innocent_hud", { beggar = ROLE_STRINGS_EXT[ROLE_BEGGAR], innocents = ROLE_STRINGS_PLURAL[ROLE_INNOCENT] })
-            elseif beggarMode == BEGGAR_REVEAL_INNOCENTS then
+            elseif beggarMode == ANNOUNCE_REVEAL_INNOCENTS then
                 text = LANG.GetParamTranslation("beggar_hidden_traitor_hud", { beggar = ROLE_STRINGS_EXT[ROLE_BEGGAR], traitors = ROLE_STRINGS_PLURAL[ROLE_TRAITOR] })
             end
             local _, h = surface.GetTextSize(text)
@@ -158,12 +158,12 @@ end)
 
 local function GetRevealModeString(roleColor, revealMode, teamName, teamColor)
     local modeString = "When joining the <span style='color: rgb(" .. teamColor.r .. ", " .. teamColor.g .. ", " .. teamColor.b .. ")'>" .. string.lower(teamName) .. "</span> team, the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. ROLE_STRINGS[ROLE_BEGGAR] .. "</span>'s new role will be revealed to "
-    if revealMode == BEGGAR_REVEAL_ALL then
+    if revealMode == ANNOUNCE_REVEAL_ALL then
         modeString = modeString .. "everyone"
-    elseif revealMode == BEGGAR_REVEAL_TRAITORS then
+    elseif revealMode == ANNOUNCE_REVEAL_TRAITORS then
         local revealColor = ROLE_COLORS[ROLE_TRAITOR]
         modeString = modeString .. "only <span style='color: rgb(" .. revealColor.r .. ", " .. revealColor.g .. ", " .. revealColor.b .. ")'>" .. string.lower(LANG.GetTranslation("traitors")) .. "</span>"
-    elseif revealMode == BEGGAR_REVEAL_INNOCENTS then
+    elseif revealMode == ANNOUNCE_REVEAL_INNOCENTS then
         local revealColor = ROLE_COLORS[ROLE_TRAITOR]
         modeString = modeString .. "only <span style='color: rgb(" .. revealColor.r .. ", " .. revealColor.g .. ", " .. revealColor.b .. ")'>" .. string.lower(LANG.GetTranslation("innocents")) .. "</span>"
     else
@@ -202,12 +202,12 @@ hook.Add("TTTTutorialRoleText", "Beggar_TTTTutorialRoleText", function(role, tit
         end
 
         -- Innocent Reveal
-        local revealMode = GetGlobalInt("ttt_beggar_reveal_innocent", BEGGAR_REVEAL_TRAITORS)
+        local revealMode = GetGlobalInt("ttt_beggar_reveal_innocent", ANNOUNCE_REVEAL_TRAITORS)
         local teamName, teamColor = GetRoleTeamInfo(ROLE_TEAM_INNOCENT, true)
         html = html .. "<span style='display: block; margin-top: 10px;'>" .. GetRevealModeString(roleColor, revealMode, teamName, teamColor) .. "</span>"
 
         -- Traitor Reveal
-        revealMode = GetGlobalInt("ttt_beggar_reveal_traitor", BEGGAR_REVEAL_ALL)
+        revealMode = GetGlobalInt("ttt_beggar_reveal_traitor", ANNOUNCE_REVEAL_ALL)
         teamName, teamColor = GetRoleTeamInfo(ROLE_TEAM_TRAITOR, true)
         html = html .. "<span style='display: block; margin-top: 10px;'>" .. GetRevealModeString(roleColor, revealMode, teamName, teamColor) .. "</span>"
 

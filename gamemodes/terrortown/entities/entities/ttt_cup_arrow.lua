@@ -142,13 +142,13 @@ function ENT:Touch(ent)
                         net.Broadcast()
 
                         local mode = GetConVar("ttt_cupid_notify_mode"):GetInt()
-                        if mode ~= CUPID_REVEAL_NONE then
+                        if mode ~= ANNOUNCE_REVEAL_NONE then
                             for _, v in pairs(player.GetAll()) do
                                 if v == ent or v == ent2 or v == owner then
                                     continue
                                 end
 
-                                if mode == CUPID_REVEAL_ALL or (v:IsTraitorTeam() and mode == CUPID_REVEAL_TRAITORS) or (v:IsInnocentTeam() and mode == CUPID_REVEAL_INNOCENTS) then
+                                if mode == ANNOUNCE_REVEAL_ALL or (v:IsTraitorTeam() and mode == ANNOUNCE_REVEAL_TRAITORS) or (v:IsInnocentTeam() and mode == ANNOUNCE_REVEAL_INNOCENTS) then
                                     v:PrintMessage(HUD_PRINTCENTER, ROLE_STRINGS_EXT[ROLE_CUPID] .. " has made two players fall in love!")
                                     v:PrintMessage(HUD_PRINTTALK, ROLE_STRINGS_EXT[ROLE_CUPID] .. " has made two players fall in love!")
                                 end

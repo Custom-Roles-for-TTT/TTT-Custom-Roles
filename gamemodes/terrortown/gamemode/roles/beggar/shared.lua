@@ -2,12 +2,6 @@ AddCSLuaFile()
 
 local table = table
 
--- Beggar reveal modes
-BEGGAR_REVEAL_NONE = 0
-BEGGAR_REVEAL_ALL = 1
-BEGGAR_REVEAL_TRAITORS = 2
-BEGGAR_REVEAL_INNOCENTS = 3
-
 -- Update their team
 hook.Add("TTTUpdateRoleState", "Beggar_TTTUpdateRoleState", function()
     local beggars_are_independent = GetGlobalBool("ttt_beggars_are_independent", false)
@@ -28,17 +22,17 @@ function plymeta:ShouldRevealBeggar(tgt)
     -- Use what role they changed to to determine which setting to use
     local beggarMode = nil
     if tgt:IsTraitor() then
-        beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", BEGGAR_REVEAL_ALL)
+        beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", ANNOUNCE_REVEAL_ALL)
     elseif tgt:IsInnocent() then
-        beggarMode = GetGlobalInt("ttt_beggar_reveal_innocent", BEGGAR_REVEAL_TRAITORS)
+        beggarMode = GetGlobalInt("ttt_beggar_reveal_innocent", ANNOUNCE_REVEAL_TRAITORS)
     end
 
     -- Then determine whether this player should show for the client's team
-    local traitorTeam = self:IsTraitorTeam() and beggarMode == BEGGAR_REVEAL_TRAITORS
-    local innocentTeam = self:IsInnocentTeam() and beggarMode == BEGGAR_REVEAL_INNOCENTS
+    local traitorTeam = self:IsTraitorTeam() and beggarMode == ANNOUNCE_REVEAL_TRAITORS
+    local innocentTeam = self:IsInnocentTeam() and beggarMode == ANNOUNCE_REVEAL_INNOCENTS
 
     -- Check the setting value and whether the client's team matches the reveal mode
-    return beggarMode == BEGGAR_REVEAL_ALL or traitorTeam or innocentTeam
+    return beggarMode == ANNOUNCE_REVEAL_ALL or traitorTeam or innocentTeam
 end
 
 ------------------
