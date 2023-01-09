@@ -10,7 +10,6 @@ AddCSLuaFile()
 local IsValid = IsValid
 local math = math
 local net = net
-local surface = surface
 local string = string
 local timer = timer
 local util = util

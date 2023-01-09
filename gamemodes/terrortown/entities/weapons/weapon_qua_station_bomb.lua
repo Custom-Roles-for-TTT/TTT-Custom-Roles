@@ -3,7 +3,6 @@ AddCSLuaFile()
 local ents = ents
 local IsValid = IsValid
 local math = math
-local surface = surface
 local timer = timer
 
 SWEP.HoldType = "slam"
