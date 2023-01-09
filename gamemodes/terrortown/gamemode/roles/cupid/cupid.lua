@@ -130,7 +130,7 @@ end)
 -- WIN CHECKS --
 ----------------
 
-hook.Add("TTTCheckForWin", "Cupid_TTTCheckForWin", function(victim, infl, attacker)
+hook.Add("TTTCheckForWin", "Cupid_TTTCheckForWin", function()
     local cupidWin = true
     local playerAlive = false
     for _, v in pairs(GetAllPlayers()) do
