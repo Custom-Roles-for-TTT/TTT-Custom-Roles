@@ -126,7 +126,7 @@ net.Receive("TTT_CupidPaired", function(len)
     local cupid = net.ReadString()
     local lover1 = net.ReadString()
     local lover2 = net.ReadString()
-    local cupid = net.ReadString()
+    local sid64 = net.ReadString()
     CLSCORE:AddEvent({
         id = EVENT_CUPIDPAIRED,
         cupid = cupid,
