@@ -7,6 +7,7 @@ Includes all beta updates from [1.6.14](#1614-beta) to [1.6.19](#1619-beta).
 ## Additions
 - Added messages in chat when hit by cupid's arrow or paired with another player
 - Added information about cupid and the lovers to the scoreboard
+- Added message for the target when a player is being deputized by the marshal
 
 ## Fixes
 - Fixed round summary window appearing shorter if the summary tab was disabled

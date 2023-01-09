@@ -215,6 +215,7 @@ if SERVER then
         self:SetState(DEFIB_BUSY)
         self:SetBegin(CurTime())
         self:SetMessage("DEPUTIZING " .. string.upper(ply:Nick()))
+        ply:PrintMessage(HUD_PRINTCENTER, "The " .. ROLE_STRINGS[ROLE_MARSHAL] .. " is promoting you.")
 
         self.Target = ply
     end
