@@ -1,7 +1,5 @@
 # Custom Roles for TTT
 
-This is the development version of [Custom Roles for TTT](https://steamcommunity.com/sharedfiles/filedetails/?id=2421039084). Use at your own risk! This version of the mod could be unstable and is updated regularly. Do not use the development version if you need the mod to be reliable. (e.g. for streaming, youtube, etc.)
-
 ## Important Notes
 
 1. All custom roles are disabled by default. Please read the ConVar list to find out how to turn them on.
