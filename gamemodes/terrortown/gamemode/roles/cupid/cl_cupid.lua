@@ -64,8 +64,10 @@ AddHook("TTTScoringSecondaryWins", "Cupid_TTTScoringSecondaryWins", function(win
 
     for _, p in ipairs(GetAllPlayers()) do
         local lover = p:GetNWString("TTTCupidLover", "")
-        if p:Alive() and lover ~= "" then
-            if player.GetBySteamID64(lover):Alive() then -- This shouldn't be necessary because if one lover dies the other should too but we check just in case
+        if p:Alive() and p:IsTerror() and lover ~= "" then
+            local loverPly = player.GetBySteamID64(lover)
+            -- This shouldn't be necessary because if one lover dies the other should too but we check just in case
+            if IsPlayer(loverPly) and loverPly:Alive() and loverPly:IsTerror() then
                 TableInsert(secondary_wins, {
                     rol = ROLE_CUPID,
                     txt = LANG.GetTranslation("hilite_lovers_secondary"),
@@ -96,8 +98,10 @@ end)
 AddHook("TTTEndRound", "Cupid_SecondaryWinEvent_TTTEndRound", function()
     for _, p in ipairs(GetAllPlayers()) do
         local lover = p:GetNWString("TTTCupidLover", "")
-        if p:Alive() and lover ~= "" then
-            if player.GetBySteamID64(lover):Alive() then -- This shouldn't be necessary because if one lover dies the other should too but we check just in case
+        if p:Alive() and p:IsTerror() and lover ~= "" then
+            local loverPly = player.GetBySteamID64(lover)
+            -- This shouldn't be necessary because if one lover dies the other should too but we check just in case
+            if IsPlayer(loverPly) and loverPly:Alive() and loverPly:IsTerror() then
                 CLSCORE:AddEvent({ -- Log the win event with an offset to force it to the end
                     id = EVENT_FINISH,
                     win = WIN_CUPID
@@ -239,11 +243,11 @@ local client = nil
 
 local function EnableLoverHighlights()
     AddHook("PreDrawHalos", "Cupid_Highlight_PreDrawHalos", function()
-        local lover = { player.GetBySteamID64(client:GetNWString("TTTCupidLover", "")) }
+        local lover = client:GetNWString("TTTCupidLover", "")
+        local loverPly = player.GetBySteamID64(lover)
+        if not IsPlayer(loverPly) or not loverPly:Alive() or not loverPly:IsTerror() then return end
 
-        if #lover == 0 then return end
-
-        HaloAdd(lover, Color(230, 90, 200, 255), 1, 1, 1, true, true)
+        HaloAdd({ loverPly }, Color(230, 90, 200, 255), 1, 1, 1, true, true)
     end)
 end
 

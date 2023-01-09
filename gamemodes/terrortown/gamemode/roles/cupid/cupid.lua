@@ -134,11 +134,12 @@ hook.Add("TTTCheckForWin", "Cupid_TTTCheckForWin", function(victim, infl, attack
     local cupidWin = true
     local playerAlive = false
     for _, v in pairs(GetAllPlayers()) do
-        if v:IsActive() then
+        if v:Alive() and v:IsTerror() then
             playerAlive = true
             local lover = v:GetNWString("TTTCupidLover", "")
             if lover ~= "" then
-                if not player.GetBySteamID64(lover):IsActive() then
+                local loverPly = player.GetBySteamID64(lover)
+                if not IsPlayer(loverPly) or not loverPly:Alive() or not loverPly:IsTerror() then
                     cupidWin = false
                     break
                 end
