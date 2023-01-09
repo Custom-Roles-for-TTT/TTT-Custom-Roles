@@ -15,6 +15,7 @@ Includes all beta updates from [1.6.14](#1614-beta) to [1.6.19](#1619-beta).
 - Fixed issue caused when one player was hit by cupid's arrow then died before being paired with another player
 - Fixed cupid pairing score event attribution
 - Fixed round not ending when it was just cupid and the lovers on opposite teams remaining
+- Fixed some beggar information not being properly hidden when `ttt_beggar_reveal_traitor` was `0`
 
 ## Developer
 -  Fixed not being able to target yourself using the `ttt_kill_target_*` and `ttt_damage_target_*` debug commands
