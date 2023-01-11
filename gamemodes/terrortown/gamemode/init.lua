@@ -222,6 +222,9 @@ for role = 0, ROLE_MAX do
 end
 
 -- Other custom role properties
+CreateConVar("ttt_multiple_jesters_independents", "0")
+CreateConVar("ttt_jester_independent_pct", "0.13")
+CreateConVar("ttt_jester_independent_max", "2")
 CreateConVar("ttt_single_deputy_impersonator", "0")
 CreateConVar("ttt_deputy_impersonator_promote_any_death", "0")
 CreateConVar("ttt_single_doctor_quack", "0")
@@ -1316,6 +1319,12 @@ local function GetSpecialDetectiveCount(ply_count)
     return math.ceil(ply_count * math.Round(GetConVar("ttt_special_detective_pct"):GetFloat(), 3))
 end
 
+local function GetJesterIndependentCount(ply_count)
+    -- get number of jesters and independents: pct of players rounded up
+    local jester_independent_count =  math.ceil(ply_count * math.Round(GetConVar("ttt_jester_independent_pct"):GetFloat(), 3))
+    return math.Clamp(jester_independent_count, 1, GetConVar("ttt_jester_independent_max"):GetInt())
+end
+
 local function GetMonsterCount(ply_count)
     if #GetTeamRoles(MONSTER_ROLES) == 0 then
         return 0
@@ -1438,6 +1447,7 @@ function SelectRoles()
 
     local hasRole = {}
 
+    local multipleJesterIndependent = GetConVar("ttt_multiple_jesters_independents"):GetBool()
     local singleJesterIndependent = GetConVar("ttt_single_jester_independent"):GetBool()
 
     -- If we have more players than the maximum for a single jester OR independent, force allowing both
@@ -1520,6 +1530,7 @@ function SelectRoles()
     local max_special_traitor_count = GetSpecialTraitorCount(traitor_count) - forcedSpecialTraitorCount
     local independent_count = ((math.random() <= GetConVar("ttt_independent_chance"):GetFloat()) and 1 or 0) - forcedIndependentCount
     local jester_count = ((math.random() <= GetConVar("ttt_jester_chance"):GetFloat()) and 1 or 0) - forcedJesterCount
+    local jester_independent_count = GetJesterIndependentCount(choice_count) - forcedIndependentCount - forcedJesterCount
     local monster_count = GetMonsterCount(choice_count) - forcedMonsterCount
 
     local specialTraitorRoles = {}
@@ -1603,7 +1614,7 @@ function SelectRoles()
                 elseif INNOCENT_ROLES[r] then
                     table.insert(specialInnocentRoles, r)
                 elseif JESTER_ROLES[r] then
-                    if singleJesterIndependent then
+                    if singleJesterIndependent or multipleJesterIndependent then
                         table.insert(independentRoles, r)
                     else
                         table.insert(jesterRoles, r)
@@ -1768,56 +1779,91 @@ function SelectRoles()
         SetGlobalBool("ttt_zombie_round", false)
     end
 
-    -- pick independent
-    if forcedIndependentCount == 0 and independent_count > 0 and #choices > 0 then
-        for r, delayed in pairs(delayedCheckRoles) do
-            if not delayed or not INDEPENDENT_ROLES[r] then continue end
-            HandleDelayedRole(r, independentRoles)
-        end
 
-        -- Allow external addons to modify available roles and their weights
-        CallHook("TTTSelectRolesIndependentOptions", nil, independentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
-        if singleJesterIndependent then
+    if multipleJesterIndependent then
+        if jester_independent_count > 0 and #choices > 0 then
+            for r, delayed in pairs(delayedCheckRoles) do
+                if not delayed or not INDEPENDENT_ROLES[r] then continue end
+                HandleDelayedRole(r, independentRoles)
+            end
+            -- Allow external addons to modify available roles and their weights
+            CallHook("TTTSelectRolesIndependentOptions", nil, independentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+
             for r, delayed in pairs(delayedCheckRoles) do
                 if not delayed or not JESTER_ROLES[r] then continue end
                 HandleDelayedRole(r, independentRoles)
             end
+            -- Allow external addons to modify available roles and their weights
             CallHook("TTTSelectRolesJesterOptions", nil, independentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
         end
 
-        if #independentRoles ~= 0 then
-            local plyPick = math.random(1, #choices)
-            local ply = table.remove(choices, plyPick)
-            local rolePick = math.random(1, #independentRoles)
-            local role = independentRoles[rolePick]
-            ply:SetRole(role)
-            PrintRole(ply, role)
-            for i = #independentRoles, 1, -1 do
-                if independentRoles[i] == role then
-                    table.remove(independentRoles, i)
+        for _ = 1, jester_independent_count do
+            if #independentRoles ~= 0 and #choices > 0 then
+                local plyPick = math.random(1, #choices)
+                local ply = table.remove(choices, plyPick)
+                local rolePick = math.random(1, #independentRoles)
+                local role = independentRoles[rolePick]
+                ply:SetRole(role)
+                PrintRole(ply, role)
+                for i = #independentRoles, 1, -1 do
+                    if independentRoles[i] == role then
+                        table.remove(independentRoles, i)
+                    end
                 end
             end
         end
-    end
+    else
+        -- pick independent
+        if forcedIndependentCount == 0 and independent_count > 0 and #choices > 0 then
+            for r, delayed in pairs(delayedCheckRoles) do
+                if not delayed or not INDEPENDENT_ROLES[r] then continue end
+                HandleDelayedRole(r, independentRoles)
+            end
 
-    -- pick jester
-    if not singleJesterIndependent and forcedJesterCount == 0 and jester_count > 0 and #choices > 0 then
-        for r, delayed in pairs(delayedCheckRoles) do
-            if not delayed or not JESTER_ROLES[r] then continue end
-            HandleDelayedRole(r, jesterRoles)
+            -- Allow external addons to modify available roles and their weights
+            CallHook("TTTSelectRolesIndependentOptions", nil, independentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+            if singleJesterIndependent then
+                for r, delayed in pairs(delayedCheckRoles) do
+                    if not delayed or not JESTER_ROLES[r] then continue end
+                    HandleDelayedRole(r, independentRoles)
+                end
+                CallHook("TTTSelectRolesJesterOptions", nil, independentRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+            end
+
+            if #independentRoles ~= 0 then
+                local plyPick = math.random(1, #choices)
+                local ply = table.remove(choices, plyPick)
+                local rolePick = math.random(1, #independentRoles)
+                local role = independentRoles[rolePick]
+                ply:SetRole(role)
+                PrintRole(ply, role)
+                for i = #independentRoles, 1, -1 do
+                    if independentRoles[i] == role then
+                        table.remove(independentRoles, i)
+                    end
+                end
+            end
         end
-        CallHook("TTTSelectRolesJesterOptions", nil, jesterRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
 
-        if #jesterRoles ~= 0 then
-            local plyPick = math.random(1, #choices)
-            local ply = table.remove(choices, plyPick)
-            local rolePick = math.random(1, #jesterRoles)
-            local role = jesterRoles[rolePick]
-            ply:SetRole(role)
-            PrintRole(ply, role)
-            for i = #jesterRoles, 1, -1 do
-                if jesterRoles[i] == role then
-                    table.remove(jesterRoles, i)
+        -- pick jester
+        if not singleJesterIndependent and forcedJesterCount == 0 and jester_count > 0 and #choices > 0 then
+            for r, delayed in pairs(delayedCheckRoles) do
+                if not delayed or not JESTER_ROLES[r] then continue end
+                HandleDelayedRole(r, jesterRoles)
+            end
+            CallHook("TTTSelectRolesJesterOptions", nil, jesterRoles, choices_copy, choice_count, traitors_copy, traitor_count, detectives_copy, detective_count)
+
+            if #jesterRoles ~= 0 then
+                local plyPick = math.random(1, #choices)
+                local ply = table.remove(choices, plyPick)
+                local rolePick = math.random(1, #jesterRoles)
+                local role = jesterRoles[rolePick]
+                ply:SetRole(role)
+                PrintRole(ply, role)
+                for i = #jesterRoles, 1, -1 do
+                    if jesterRoles[i] == role then
+                        table.remove(jesterRoles, i)
+                    end
                 end
             end
         end
