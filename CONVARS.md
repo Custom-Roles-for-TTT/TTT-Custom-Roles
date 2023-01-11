@@ -42,9 +42,12 @@ ttt_special_detective_chance                0.5     // The chance that a "specia
 ttt_monster_max                             1       // The maximum number of players that can spawn as a "monster" (e.g. zombie, vampire)
 ttt_monster_pct                             0.33    // Percentage of innocents, rounded up, that can spawn as a "monster" (e.g. zombie, vampire)
 ttt_monster_chance                          0.5     // The chance that a "monster" will spawn in each available slot made by "ttt_monster_pct"
-ttt_independent_chance                      0.5     // The chance that a single independent or jester (if ttt_single_jester_independent is enabled) will spawn in a round (e.g. drunk, swapper, etc.)
-ttt_jester_chance                           0.5     // The chance that a single jester (e.g. jester, swapper, etc.) will spawn in a round. Only used if ttt_single_jester_independent is disabled
-// (Note: Only one independent or jester can spawn per round.)
+ttt_independent_chance                      0.5     // The chance that a single independent (or jester if ttt_single_jester_independent is enabled) will spawn in a round. Only used if ttt_multiple_jesters_independents is disabled
+ttt_jester_chance                           0.5     // The chance that a single jester will spawn in a round. Only used if ttt_single_jester_independent and ttt_multiple_jesters_independents are disabled
+ttt_multiple_jesters_independents           0       // Whether more than one jester/independent should be allowed to spawn in each round. Enabling this will ignore ttt_independent_chance, ttt_jester_chance, ttt_single_jester_independent, and ttt_single_jester_independent_max_players
+ttt_jester_independent_pct                  0.13    // Percentage of players, rounded up, that can spawn as a jester or independent. Only used if ttt_multiple_jesters_independents is enabled
+ttt_jester_independent_max                  2       // The maximum number of players that can spawn as a jester or independent. Only used if ttt_multiple_jesters_independents is enabled
+// (Note: Only one independent or jester can spawn per round by default.)
 
 // Enable/Disable Individual Roles
 ttt_hypnotist_enabled                       0       // Whether or not the hypnotist should spawn
