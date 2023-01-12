@@ -703,6 +703,6 @@ function player.GetByEnhancedSteamID64(sid64)
             if botSID64 == sid64 then return v end
         end
     else
-        return player:GetBySteamID64(sid64)
+        return player.GetBySteamID64(sid64)
     end
 end
