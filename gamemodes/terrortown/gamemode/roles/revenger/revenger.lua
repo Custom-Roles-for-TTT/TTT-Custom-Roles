@@ -33,7 +33,7 @@ end)
 
 -- If the attacker is a revenger, don't reduce thier karma if they killed the person who killed their target
 hook.Add("TTTKarmaShouldGivePenalty", "Revenger_TTTKarmaShouldGivePenalty", function(attacker, victim)
-    if attacker:IsRevenger() and victim:SteamID64() == attacker:GetNWString("RevengerKiller", "") then
+    if attacker:IsRevenger() and victim:EnhancedSteamID64() == attacker:GetNWString("RevengerKiller", "") then
         return false
     end
 end)
@@ -62,7 +62,7 @@ end)
 hook.Add("PlayerDeath", "Revenger_PlayerDeath", function(victim, infl, attacker)
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     for _, v in pairs(GetAllPlayers()) do
-        if v:IsRevenger() and v:GetNWString("RevengerLover", "") == victim:SteamID64() then
+        if v:IsRevenger() and v:GetNWString("RevengerLover", "") == victim:EnhancedSteamID64() then
             local message
             if v == attacker then
                 message = "Your love has died by your hand."
@@ -71,7 +71,7 @@ hook.Add("PlayerDeath", "Revenger_PlayerDeath", function(victim, infl, attacker)
                     if v:Alive() then
                         message = "Your love has died. Track down their killer."
                     end
-                    v:SetNWString("RevengerKiller", attacker:SteamID64())
+                    v:SetNWString("RevengerKiller", attacker:EnhancedSteamID64())
                     timer.Simple(1, function() -- Slight delay needed for NW variables to be sent
                         net.Start("TTT_RevengerLoverKillerRadar")
                         net.WriteBool(true)
@@ -105,14 +105,14 @@ ROLE_MOVE_ROLE_STATE[ROLE_REVENGER] = function(ply, target, keep_on_source)
         if not keep_on_source then ply:SetNWString("RevengerLover", "") end
         target:SetNWString("RevengerLover", lover)
 
-        local revenger_lover = player.GetBySteamID64(lover)
+        local revenger_lover = player.GetByEnhancedSteamID64(lover)
         if IsValid(revenger_lover) then
             target:PrintMessage(HUD_PRINTTALK, "You are now in love with " .. revenger_lover:Nick() .. ".")
             target:PrintMessage(HUD_PRINTCENTER, "You are now in love with " .. revenger_lover:Nick() .. ".")
 
             if not revenger_lover:Alive() or revenger_lover:IsSpec() then
                 local message
-                if killer == target:SteamID64() then
+                if killer == target:EnhancedSteamID64() then
                     message = "Your love has died by your hand."
                 elseif killer then
                     message = "Your love has died. Track down their killer."
@@ -144,7 +144,7 @@ ROLE_ON_ROLE_ASSIGNED[ROLE_REVENGER] = function(ply)
     end
     if #potentialSoulmates > 0 then
         local revenger_lover = potentialSoulmates[math.random(#potentialSoulmates)]
-        ply:SetNWString("RevengerLover", revenger_lover:SteamID64() or "")
+        ply:SetNWString("RevengerLover", revenger_lover:EnhancedSteamID64() or "")
         ply:PrintMessage(HUD_PRINTTALK, "You are in love with " .. revenger_lover:Nick() .. ".")
         ply:PrintMessage(HUD_PRINTCENTER, "You are in love with " .. revenger_lover:Nick() .. ".")
     end
@@ -156,7 +156,7 @@ ROLE_ON_ROLE_ASSIGNED[ROLE_REVENGER] = function(ply)
             for _, p in pairs(GetAllPlayers()) do
                 local lover_sid = p:GetNWString("RevengerLover", "")
                 if p:IsActiveRevenger() and lover_sid ~= "" then
-                    local lover = player.GetBySteamID64(lover_sid)
+                    local lover = player.GetByEnhancedSteamID64(lover_sid)
                     if IsValid(lover) and (not lover:Alive() or lover:IsSpec()) then
                         local hp = p:Health()
                         if hp > drain_health then
@@ -178,7 +178,7 @@ end
 
 -- Assign a new lover if they disconnected
 hook.Add("PlayerDisconnected", "Revenger_Lover_PlayerDisconnected", function(ply)
-    local sid64 = ply:SteamID64()
+    local sid64 = ply:EnhancedSteamID64()
     local potentialSoulmates = {}
     local revenger = nil
     for _, p in pairs(GetAllPlayers()) do
@@ -196,7 +196,7 @@ hook.Add("PlayerDisconnected", "Revenger_Lover_PlayerDisconnected", function(ply
     local message = "Your lover has disappeared ;_;"
     if #potentialSoulmates > 0 then
         local revenger_lover = potentialSoulmates[math.random(#potentialSoulmates)]
-        revenger:SetNWString("RevengerLover", revenger_lover:SteamID64() or "")
+        revenger:SetNWString("RevengerLover", revenger_lover:EnhancedSteamID64() or "")
         message = message .. " You are now in love with " .. revenger_lover:Nick() .. " instead."
     else
         revenger:SetNWString("RevengerLover", "")
@@ -214,7 +214,7 @@ hook.Add("ScalePlayerDamage", "Revenger_ScalePlayerDamage", function(ply, hitgro
     local att = dmginfo:GetAttacker()
     if IsPlayer(att) and GetRoundState() >= ROUND_ACTIVE then
         -- Revengers deal extra damage to their lovers killer
-        if att:IsRevenger() and ply:SteamID64() == att:GetNWString("RevengerKiller", "") then
+        if att:IsRevenger() and ply:EnhancedSteamID64() == att:GetNWString("RevengerKiller", "") then
             local bonus = revenger_damage_bonus:GetFloat()
             dmginfo:ScaleDamage(1 + bonus)
         end

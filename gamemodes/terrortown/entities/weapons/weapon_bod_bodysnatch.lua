@@ -113,7 +113,7 @@ if SERVER then
         local ply = false
 
         if body.sid64 then
-            ply = player.GetBySteamID64(body.sid64)
+            ply = player.GetByEnhancedSteamID64(body.sid64)
         elseif body.sid == "BOT" then
             ply = player.GetByUniqueID(body.uqid)
         else
@@ -173,7 +173,7 @@ if SERVER then
         net.WriteString(ply:Nick())
         net.WriteString(owner:Nick())
         net.WriteString(ROLE_STRINGS_EXT[role])
-        net.WriteString(owner:SteamID64())
+        net.WriteString(owner:EnhancedSteamID64())
         net.Broadcast()
 
         owner:SetRole(role)

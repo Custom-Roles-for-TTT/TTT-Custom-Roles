@@ -227,7 +227,7 @@ hook.Add("HUDPaint", "Informant_HUDPaint", function()
                 color = Color(0, 255, 0, 155)
             end
 
-            local target = player.GetBySteamID64(ply:GetNWString("TTTInformantScannerTarget", ""))
+            local target = player.GetByEnhancedSteamID64(ply:GetNWString("TTTInformantScannerTarget", ""))
             local targetState = target:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
 
             local cc = math.min(1, 1 - ((time - CurTime()) / scan))

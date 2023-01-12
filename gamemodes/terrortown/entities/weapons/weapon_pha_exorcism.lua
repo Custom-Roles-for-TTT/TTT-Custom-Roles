@@ -112,7 +112,7 @@ if SERVER then
 
             if ply:GetNWBool("Haunted", false) then
                 for _, v in pairs(player.GetAll()) do
-                    if v:GetNWString("HauntingTarget", "") == ply:SteamID64() then
+                    if v:GetNWString("HauntingTarget", "") == ply:EnhancedSteamID64() then
                         ply:SetNWBool("Haunted", false)
                         v:SetNWBool("Haunting", false)
                         v:SetNWString("HauntingTarget", nil)
