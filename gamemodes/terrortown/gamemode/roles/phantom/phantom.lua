@@ -65,7 +65,7 @@ local function ResetPlayer(ply)
     if ply:GetNWBool("Haunting", false) then
         local sid = ply:GetNWString("HauntingTarget", nil)
         if sid then
-            local target = player.GetByNetworkedSteamID64(sid)
+            local target = player.GetBySteamID64(sid)
             if IsPlayer(target) then
                 target:SetNWBool("Haunted", false)
             end
@@ -90,7 +90,7 @@ end)
 
 -- Un-haunt the device owner if they used their device on the phantom
 hook.Add("TTTPlayerRoleChangedByItem", "Phantom_TTTPlayerRoleChangedByItem", function(ply, tgt, item)
-    if tgt:IsPhantom() and tgt:GetNWString("HauntingTarget", nil) == ply:NetworkedSteamID64() then
+    if tgt:IsPhantom() and tgt:GetNWString("HauntingTarget", nil) == ply:SteamID64() then
         ply:SetNWBool("Haunted", false)
     end
 end)
@@ -114,7 +114,7 @@ hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
 
         if phantom_killer_haunt:GetBool() then
             victim:SetNWBool("Haunting", true)
-            victim:SetNWString("HauntingTarget", attacker:NetworkedSteamID64())
+            victim:SetNWString("HauntingTarget", attacker:SteamID64())
             victim:SetNWInt("HauntingPower", phantom_killer_haunt_power_starting:GetInt())
             timer.Create(victim:Nick() .. "HauntingPower", 1, 0, function()
                 -- If haunting without a body is disabled, check to make sure the body exists still
@@ -171,12 +171,12 @@ hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
             end
         end
 
-        local sid = victim:NetworkedSteamID64()
+        local sid = victim:SteamID64()
         -- Keep track of how many times this Phantom has been killed and by who
         if not deadPhantoms[sid] then
-            deadPhantoms[sid] = {times = 1, player = victim, attacker = attacker:NetworkedSteamID64()}
+            deadPhantoms[sid] = {times = 1, player = victim, attacker = attacker:SteamID64()}
         else
-            deadPhantoms[sid] = {times = deadPhantoms[sid].times + 1, player = victim, attacker = attacker:NetworkedSteamID64()}
+            deadPhantoms[sid] = {times = deadPhantoms[sid].times + 1, player = victim, attacker = attacker:SteamID64()}
         end
 
         net.Start("TTT_PhantomHaunt")
@@ -247,7 +247,7 @@ hook.Add("DoPlayerDeath", "Phantom_DoPlayerDeath", function(ply, attacker, dmgin
         local phantomUsers = table.GetKeys(deadPhantoms)
         for _, key in pairs(phantomUsers) do
             local phantom = deadPhantoms[key]
-            if phantom.attacker == ply:NetworkedSteamID64() and IsValid(phantom.player) then
+            if phantom.attacker == ply:SteamID64() and IsValid(phantom.player) then
                 local deadPhantom = phantom.player
                 deadPhantom:SetNWBool("Haunting", false)
                 deadPhantom:SetNWString("HauntingTarget", nil)

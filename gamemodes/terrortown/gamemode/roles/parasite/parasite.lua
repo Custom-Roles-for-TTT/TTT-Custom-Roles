@@ -53,7 +53,7 @@ local function ResetPlayer(ply)
     if ply:GetNWBool("ParasiteInfecting", false) then
         local sid = ply:GetNWString("ParasiteInfectingTarget", nil)
         if sid then
-            local target = player.GetByNetworkedSteamID64(sid)
+            local target = player.GetBySteamID64(sid)
             if IsPlayer(target) then
                 target:SetNWBool("ParasiteInfected", false)
             end
@@ -78,7 +78,7 @@ end)
 
 -- Un-haunt the device owner if they used their device on the parasite
 hook.Add("TTTPlayerRoleChangedByItem", "Parasite_TTTPlayerRoleChangedByItem", function(ply, tgt, item)
-    if tgt:IsParasite() and tgt:GetNWString("ParasiteInfectingTarget", nil) == ply:NetworkedSteamID64() then
+    if tgt:IsParasite() and tgt:GetNWString("ParasiteInfectingTarget", nil) == ply:SteamID64() then
         ply:SetNWBool("ParasiteInfected", false)
     end
 end)
@@ -175,7 +175,7 @@ end
 local function HandleParasiteInfection(attacker, victim, keep_progress)
     attacker:SetNWBool("ParasiteInfected", true)
     victim:SetNWBool("ParasiteInfecting", true)
-    victim:SetNWString("ParasiteInfectingTarget", attacker:NetworkedSteamID64())
+    victim:SetNWString("ParasiteInfectingTarget", attacker:SteamID64())
     if not keep_progress then
         victim:SetNWInt("ParasiteInfectionProgress", 0)
     end
@@ -219,9 +219,9 @@ hook.Add("PlayerDeath", "Parasite_PlayerDeath", function(victim, infl, attacker)
         end
         victim:PrintMessage(HUD_PRINTCENTER, "Your attacker has been infected.")
 
-        local sid = victim:NetworkedSteamID64()
+        local sid = victim:SteamID64()
         -- Keep track of who killed this parasite
-        deadParasites[sid] = {player = victim, attacker = attacker:NetworkedSteamID64()}
+        deadParasites[sid] = {player = victim, attacker = attacker:SteamID64()}
 
         net.Start("TTT_ParasiteInfect")
         net.WriteString(victim:Nick())
@@ -247,14 +247,14 @@ hook.Add("DoPlayerDeath", "Parasite_DoPlayerDeath", function(ply, attacker, dmgi
         local parasiteUsers = table.GetKeys(deadParasites)
         for _, key in pairs(parasiteUsers) do
             local parasite = deadParasites[key]
-            if parasite.attacker == ply:NetworkedSteamID64() and IsValid(parasite.player) then
+            if parasite.attacker == ply:SteamID64() and IsValid(parasite.player) then
                 local deadParasite = parasite.player
                 local parasiteDead = deadParasite:IsParasite() and not deadParasite:Alive()
                 local transfer = parasite_infection_transfer:GetBool()
                 local suicideMode = parasite_infection_suicide_mode:GetInt()
                 -- Transfer the infection to the new attacker if there is one, they are alive, the parasite is still alive, and the transfer feature is enabled
                 if IsPlayer(attacker) and attacker:Alive() and parasiteDead and transfer then
-                    deadParasites[key].attacker = attacker:NetworkedSteamID64()
+                    deadParasites[key].attacker = attacker:SteamID64()
                     HandleParasiteInfection(attacker, deadParasite, not parasite_infection_transfer_reset:GetBool())
                     deadParasite:PrintMessage(HUD_PRINTCENTER, "Your host has been killed and your infection has spread to their killer.")
                     net.Start("TTT_ParasiteInfect")

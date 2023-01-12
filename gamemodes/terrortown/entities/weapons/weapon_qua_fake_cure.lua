@@ -125,7 +125,7 @@ if SERVER then
 
             if ply:GetNWBool("ParasiteInfected", false) then
                 for _, v in pairs(player.GetAll()) do
-                    if v:GetNWString("ParasiteInfectingTarget", "") == ply:NetworkedSteamID64() then
+                    if v:GetNWString("ParasiteInfectingTarget", "") == ply:SteamID64() then
                         v:PrintMessage(HUD_PRINTCENTER, "A fake cure has been used on your host.")
                     end
                 end

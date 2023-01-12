@@ -88,7 +88,7 @@ end)
 
 local function StartRegen(ply)
     local rate = lootgoblin_regen_rate:GetInt()
-    timer.Create("LootGoblinRegen_" .. ply:NetworkedSteamID64(), rate, 0, function()
+    timer.Create("LootGoblinRegen_" .. ply:SteamID64(), rate, 0, function()
         if ply:Alive() and not ply:IsSpec() and ply:IsLootGoblin() then
             local hp = ply:Health()
             if hp < ply:GetMaxHealth() then
@@ -99,14 +99,14 @@ local function StartRegen(ply)
 end
 
 local function StopRegen(ply)
-    timer.Remove("LootGoblinRegen_" .. ply:NetworkedSteamID64())
-    timer.Remove("LootGoblinRegenDelay_" .. ply:NetworkedSteamID64())
+    timer.Remove("LootGoblinRegen_" .. ply:SteamID64())
+    timer.Remove("LootGoblinRegenDelay_" .. ply:SteamID64())
 end
 
 local function HandleRegen(ply, delay_override)
     local delay = delay_override or lootgoblin_regen_delay:GetInt()
     if delay > 0 then
-        timer.Create("LootGoblinRegenDelay_" .. ply:NetworkedSteamID64(), delay, 0, function()
+        timer.Create("LootGoblinRegenDelay_" .. ply:SteamID64(), delay, 0, function()
             StartRegen(ply)
         end)
     else
@@ -121,7 +121,7 @@ hook.Add("FinishMove", "LootGoblin_FinishMove", function(ply, mv)
 
     if ply:IsActiveLootGoblin() and ply:IsRoleActive() then
         local loc = ply:GetPos()
-        local sid64 = ply:NetworkedSteamID64()
+        local sid64 = ply:SteamID64()
         -- Keep track of when a player moves and stop regeneration when they do
         if playermoveloc[sid64] == nil or math.abs(playermoveloc[sid64]:Distance(loc)) > 0 then
             StopRegen(ply)
@@ -357,7 +357,7 @@ hook.Add("TTTBeginRound", "LootGoblin_Radar_TTTBeginRound", function()
     timer.Create("LootGoblinRadarDelay", 1, 0, function()
         for _, v in ipairs(GetAllPlayers()) do
             if v:IsActiveLootGoblin() then
-                local locations = goblins[v:NetworkedSteamID64()]
+                local locations = goblins[v:SteamID64()]
                 if locations == nil then
                     locations = {}
                 end
@@ -366,7 +366,7 @@ hook.Add("TTTBeginRound", "LootGoblin_Radar_TTTBeginRound", function()
                     v:SetNWVector("TTTLootGoblinRadar", locations[1])
                     TableRemove(locations, 1)
                 end
-                goblins[v:NetworkedSteamID64()] = locations
+                goblins[v:SteamID64()] = locations
             end
         end
     end)

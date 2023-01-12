@@ -37,7 +37,7 @@ hook.Add("TTTBeginRound", "Cupid_TTTBeginRound", function()
         for _, v in pairs(GetAllPlayers()) do
             local lover = v:GetNWString("TTTCupidLover", "")
             if lover ~= "" then
-                if v:IsActive() and not player.GetByNetworkedSteamID64(lover):IsActive() then
+                if v:IsActive() and not player.GetBySteamID64(lover):IsActive() then
                     v:Kill()
                     v:PrintMessage(HUD_PRINTCENTER, "Your lover has died!")
                     v:PrintMessage(HUD_PRINTTALK, "Your lover has died!")
@@ -67,7 +67,7 @@ end)
 
 hook.Add("ScalePlayerDamage", "Cupid_ScalePlayerDamage", function(ply, hitgroup, dmginfo)
     local att = dmginfo:GetAttacker()
-    local target = ply:NetworkedSteamID64()
+    local target = ply:SteamID64()
     if IsPlayer(att) and GetRoundState() >= ROUND_ACTIVE then
         if (att:IsCupid() and (att:GetNWString("TTTCupidTarget1", "") == target or att:GetNWString("TTTCupidTarget2", "") == target) and not cupid_can_damage_lovers:GetBool())
                 or (att:GetNWString("TTTCupidLover", "") == target and not cupid_lovers_can_damage_lovers:GetBool())
@@ -82,7 +82,7 @@ end)
 --------------------------
 
 hook.Add("PlayerDisconnected", "Cupid_PlayerDisconnected", function(ply)
-    local sid64 = ply:NetworkedSteamID64()
+    local sid64 = ply:SteamID64()
 
     for _, p in pairs(GetAllPlayers()) do
         if p:GetNWString("TTTCupidLover", "") == sid64 then
@@ -114,7 +114,7 @@ end)
 ---------------------------------
 
 hook.Add("PlayerDeath", "Cupid_PlayerDeath", function(ply)
-    local sid64 = ply:NetworkedSteamID64()
+    local sid64 = ply:SteamID64()
 
     for _, p in pairs(GetAllPlayers()) do
         if p:GetNWString("TTTCupidTarget1", "") == sid64 and p:GetNWString("TTTCupidTarget2", "") == "" then
@@ -140,7 +140,7 @@ hook.Add("TTTCheckForWin", "Cupid_TTTCheckForWin", function()
 
         local lover = v:GetNWString("TTTCupidLover", "")
         if lover ~= "" then
-            local loverPly = player.GetByNetworkedSteamID64(lover)
+            local loverPly = player.GetBySteamID64(lover)
             if not IsPlayer(loverPly) or not loverPly:Alive() or loverPly:IsSpec() then
                 cupidWin = false
                 break

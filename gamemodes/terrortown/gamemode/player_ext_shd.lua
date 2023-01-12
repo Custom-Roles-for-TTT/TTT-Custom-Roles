@@ -20,6 +20,17 @@ local MathAcos = math.acos
 function plymeta:IsTerror() return self:Team() == TEAM_TERROR end
 function plymeta:IsSpec() return self:Team() == TEAM_SPEC end
 
+if CLIENT then
+    local oldSteamID64 = plymeta.SteamID64
+    function plymeta:SteamID64()
+        if self:IsBot() then
+            return self:GetNWString("BotSteamID64", "90071996842377216") -- 90071996842377216 is the first SteamID64 used by bots
+        else
+            return oldSteamID64(self)
+        end
+    end
+end
+
 AccessorFunc(plymeta, "role", "Role", FORCE_NUMBER)
 
 local oldSetRole = plymeta.SetRole
@@ -338,14 +349,6 @@ function plymeta:IsOnScreen(ent_or_pos, limit)
     return MathAcos(dir:Dot(eye)) <= limit
 end
 
-function plymeta:NetworkedSteamID64()
-    if self:IsBot() then
-        return self:GetNWString("BotSteamID64", "90071996842377216") -- 90071996842377216 is the first SteamID64 used by bots
-    else
-        return self:SteamID64()
-    end
-end
-
 if CLIENT then
     local function GetMaxBoneZ(ply, pred)
         local max_bone_z = 0
@@ -595,6 +598,21 @@ else
     end
 end
 
+if CLIENT then
+    local oldGetBySteamID64 = player.GetBySteamID64
+    function player.GetBySteamID64(sid64)
+        local minSID64 = "90071996842377216" -- 90071996842377216 is the first SteamID64 used by bots
+        if sid64 >= minSID64 then -- We compare using strings instead of numbers here because these numbers are so large that lua's arithmetic is inaccurate
+            for _, v in pairs(player.GetBots()) do
+                local botSID64 = v:GetNWString("BotSteamID64", "90071996842377216")
+                if botSID64 == sid64 then return v end
+            end
+        else
+            return oldGetBySteamID64(sid64)
+        end
+    end
+end
+
 function player.GetRoleTeam(role, detectivesAreInnocent)
     if TRAITOR_ROLES[role] then
         return ROLE_TEAM_TRAITOR
@@ -693,16 +711,4 @@ function player.LivingCount(ignorePassiveWinners)
         end
     end
     return players_alive
-end
-
-function player.GetByNetworkedSteamID64(sid64)
-    local minSID64 = "90071996842377216" -- 90071996842377216 is the first SteamID64 used by bots
-    if sid64 >= minSID64 then -- We compare using strings instead of numbers here because these numbers are so large that lua's arithmetic is inaccurate
-        for _, v in pairs(player.GetBots()) do
-            local botSID64 = v:GetNWString("BotSteamID64", "90071996842377216")
-            if botSID64 == sid64 then return v end
-        end
-    else
-        return player.GetBySteamID64(sid64)
-    end
 end

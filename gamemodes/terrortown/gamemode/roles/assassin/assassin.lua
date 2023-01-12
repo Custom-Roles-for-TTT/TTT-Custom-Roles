@@ -38,7 +38,7 @@ end)
 function UpdateAssassinTargets(ply)
     for _, v in pairs(GetAllPlayers()) do
         local assassintarget = v:GetNWString("AssassinTarget", "")
-        if v:IsAssassin() and ply:NetworkedSteamID64() == assassintarget then
+        if v:IsAssassin() and ply:SteamID64() == assassintarget then
             -- Reset the target to clear the target overlay from the scoreboard
             v:SetNWString("AssassinTarget", "")
 
@@ -95,9 +95,9 @@ function AssignAssassinTarget(ply, start, delay)
 
         -- Put shop roles into a list if they should be targeted last
         if shopRolesLast and p:IsShopRole() then
-            table.insert(shops, p:NetworkedSteamID64())
+            table.insert(shops, p:SteamID64())
         else
-            table.insert(enemies, p:NetworkedSteamID64())
+            table.insert(enemies, p:SteamID64())
         end
     end
 
@@ -105,7 +105,7 @@ function AssignAssassinTarget(ply, start, delay)
         if p:Alive() and not p:IsSpec() then
             -- Include all non-traitor detective-like players
             if p:IsDetectiveLike() and not p:IsTraitorTeam() then
-                table.insert(detectives, p:NetworkedSteamID64())
+                table.insert(detectives, p:SteamID64())
             -- Exclude Glitch from this list so they don't get discovered immediately
             elseif p:IsInnocentTeam() and not p:IsGlitch() then
                 AddEnemy(p, bodysnatcherModeInno)
@@ -115,7 +115,7 @@ function AssignAssassinTarget(ply, start, delay)
             elseif p:IsIndependentTeam() and not ROLE_HAS_PASSIVE_WIN[p:GetRole()] then
                 -- Also exclude bodysnatchers turned into an independent if their role hasn't been revealed
                 if not p:GetNWBool("WasBodysnatcher", false) or bodysnatcherModeIndep == BODYSNATCHER_REVEAL_ALL then
-                    table.insert(independents, p:NetworkedSteamID64())
+                    table.insert(independents, p:SteamID64())
                 end
             end
         end
@@ -144,7 +144,7 @@ function AssignAssassinTarget(ply, start, delay)
             targetCount = "final"
             ply:SetNWBool("AssassinComplete", true)
         end
-        targetMessage = "Your " .. targetCount .. " target is " .. player.GetByNetworkedSteamID64(target):Nick() .. "."
+        targetMessage = "Your " .. targetCount .. " target is " .. player.GetBySteamID64(target):Nick() .. "."
     else
         targetMessage = "No further targets available."
     end
@@ -167,7 +167,7 @@ ROLE_MOVE_ROLE_STATE[ROLE_ASSASSIN] = function(ply, target, keep_on_source)
     if #assassinTarget > 0 then
         if not keep_on_source then ply:SetNWString("AssassinTarget", "") end
         target:SetNWString("AssassinTarget", assassinTarget)
-        local target_nick = player.GetByNetworkedSteamID64(assassinTarget):Nick()
+        local target_nick = player.GetBySteamID64(assassinTarget):Nick()
         target:PrintMessage(HUD_PRINTCENTER, "You have learned that your predecessor's target was " .. target_nick)
         target:PrintMessage(HUD_PRINTTALK, "You have learned that your predecessor's target was " .. target_nick)
     elseif ply:IsAssassin() then
@@ -212,7 +212,7 @@ hook.Add("DoPlayerDeath", "Assassin_DoPlayerDeath", function(ply, attacker, dmgi
 
     local attackertarget = attacker:GetNWString("AssassinTarget", "")
     if IsPlayer(attacker) and attacker:IsAssassin() and ply ~= attacker then
-        local wasNotTarget = ply:NetworkedSteamID64() ~= attackertarget and (attackertarget ~= "" or timer.Exists(attacker:Nick() .. "AssassinTarget"))
+        local wasNotTarget = ply:SteamID64() ~= attackertarget and (attackertarget ~= "" or timer.Exists(attacker:Nick() .. "AssassinTarget"))
         local convar = "ttt_assassin_allow_" .. ROLE_STRINGS_RAW[ply:GetRole()] .. "_kill"
         local skipPenalty = ConVarExists(convar) and GetConVar(convar):GetBool() and ply:IsRoleActive()
         if wasNotTarget and not skipPenalty then
@@ -256,7 +256,7 @@ hook.Add("ScalePlayerDamage", "Assassin_ScalePlayerDamage", function(ply, hitgro
             local scale = 0
             if att:GetNWBool("AssassinFailed", false) then
                 scale = -assassin_failed_damage_penalty:GetFloat()
-            elseif ply:NetworkedSteamID64() == att:GetNWString("AssassinTarget", "") then
+            elseif ply:SteamID64() == att:GetNWString("AssassinTarget", "") then
                 -- Get the active weapon, whather it's in the inflictor or it's from the attacker
                 local active_weapon = dmginfo:GetInflictor()
                 if not IsValid(active_weapon) or IsPlayer(active_weapon) then
@@ -287,7 +287,7 @@ hook.Add("SetupPlayerVisibility", "Assassin_SetupPlayerVisibility", function(ply
 
     local target_nick = ply:GetNWString("AssassinTarget", "")
     for _, v in ipairs(GetAllPlayers()) do
-        if v:NetworkedSteamID64() ~= target_nick then continue end
+        if v:SteamID64() ~= target_nick then continue end
         if ply:TestPVS(v) then continue end
 
         local pos = v:GetPos()

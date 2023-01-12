@@ -65,7 +65,7 @@ AddHook("TTTScoringSecondaryWins", "Cupid_TTTScoringSecondaryWins", function(win
     for _, p in ipairs(GetAllPlayers()) do
         local lover = p:GetNWString("TTTCupidLover", "")
         if p:Alive() and p:IsTerror() and lover ~= "" then
-            local loverPly = player.GetByNetworkedSteamID64(lover)
+            local loverPly = player.GetBySteamID64(lover)
             -- This shouldn't be necessary because if one lover dies the other should too but we check just in case
             if IsPlayer(loverPly) and loverPly:Alive() and loverPly:IsTerror() then
                 TableInsert(secondary_wins, {
@@ -99,7 +99,7 @@ AddHook("TTTEndRound", "Cupid_SecondaryWinEvent_TTTEndRound", function()
     for _, p in ipairs(GetAllPlayers()) do
         local lover = p:GetNWString("TTTCupidLover", "")
         if p:Alive() and p:IsTerror() and lover ~= "" then
-            local loverPly = player.GetByNetworkedSteamID64(lover)
+            local loverPly = player.GetBySteamID64(lover)
             -- This shouldn't be necessary because if one lover dies the other should too but we check just in case
             if IsPlayer(loverPly) and loverPly:Alive() and loverPly:IsTerror() then
                 CLSCORE:AddEvent({ -- Log the win event with an offset to force it to the end
@@ -154,10 +154,10 @@ AddHook("TTTScoringSummaryRender", "Cupid_TTTScoringSummaryRender", function(ply
         local lover2_sid64 = ply:GetNWString("TTTCupidTarget2", "")
         if lover1_sid64 == "" or lover2_sid64 == "" then return end
 
-        local lover1 = player.GetByNetworkedSteamID64(lover1_sid64)
+        local lover1 = player.GetBySteamID64(lover1_sid64)
         if not IsPlayer(lover1) then return end
 
-        local lover2 = player.GetByNetworkedSteamID64(lover2_sid64)
+        local lover2 = player.GetBySteamID64(lover2_sid64)
         if not IsPlayer(lover2) then return end
 
         local lover1_name = lover1:Nick()
@@ -172,7 +172,7 @@ end)
 ------------
 
 AddHook("TTTShouldPlayerSmoke", "Cupid_TTTShouldPlayerSmoke", function(ply, cli, shouldSmoke, smokeColor, smokeParticle, smokeOffset)
-    local target = ply:NetworkedSteamID64()
+    local target = ply:SteamID64()
     if (cli:IsCupid() and (target == cli:GetNWString("TTTCupidTarget1", "") or target == cli:GetNWString("TTTCupidTarget2", "")))
         or (target == cli:GetNWString("TTTCupidLover", "")) then
         return true, Color(230, 90, 200, 255), "particle/heart.vmt"
@@ -184,18 +184,18 @@ end)
 ---------------
 
 AddHook("TTTTargetIDPlayerRoleIcon", "Cupid_TTTTargetIDPlayerRoleIcon", function(ply, client, role, noz, colorRole, hideBeggar, showJester, hideCupid)
-    if ply:IsActiveCupid() and ply:NetworkedSteamID64() == client:GetNWString("TTTCupidShooter", "") then
+    if ply:IsActiveCupid() and ply:SteamID64() == client:GetNWString("TTTCupidShooter", "") then
         return ROLE_CUPID, true
-    elseif ply:NetworkedSteamID64() == client:GetNWString("TTTCupidLover", "") then
+    elseif ply:SteamID64() == client:GetNWString("TTTCupidLover", "") then
         return ply:GetRole(), true
     end
 end)
 
 AddHook("TTTTargetIDPlayerRing", "Cupid_TTTTargetIDPlayerRing", function(ent, client, ringVisible)
     if IsPlayer(ent) then
-        if ent:IsActiveCupid() and ent:NetworkedSteamID64() == client:GetNWString("TTTCupidShooter", "") then
+        if ent:IsActiveCupid() and ent:SteamID64() == client:GetNWString("TTTCupidShooter", "") then
             return true, ROLE_COLORS_RADAR[ROLE_CUPID]
-        elseif ent:NetworkedSteamID64() == client:GetNWString("TTTCupidLover", "") then
+        elseif ent:SteamID64() == client:GetNWString("TTTCupidLover", "") then
             return true, ROLE_COLORS_RADAR[ent:GetRole()]
         end
     end
@@ -203,9 +203,9 @@ end)
 
 AddHook("TTTTargetIDPlayerText", "Cupid_TTTTargetIDPlayerText", function(ent, client, text, clr, secondaryText)
     if IsPlayer(ent) then
-        if ent:IsActiveCupid() and ent:NetworkedSteamID64() == client:GetNWString("TTTCupidShooter", "") then
+        if ent:IsActiveCupid() and ent:SteamID64() == client:GetNWString("TTTCupidShooter", "") then
             return StringUpper(ROLE_STRINGS[ROLE_CUPID]), ROLE_COLORS_RADAR[ROLE_CUPID]
-        elseif ent:NetworkedSteamID64() == client:GetNWString("TTTCupidLover", "") then
+        elseif ent:SteamID64() == client:GetNWString("TTTCupidLover", "") then
             return StringUpper(ROLE_STRINGS[ent:GetRole()]), ROLE_COLORS_RADAR[ent:GetRole()], LANG.GetTranslation("scoreboard_cupid_lover"), Color(230, 90, 200, 255)
         end
     end
@@ -216,19 +216,19 @@ end)
 ----------------
 
 hook.Add("TTTScoreboardPlayerRole", "Cupid_TTTScoreboardPlayerRole", function(ply, cli, c, roleStr)
-    if ply:IsActiveCupid() and ply:NetworkedSteamID64() == cli:GetNWString("TTTCupidShooter", "") then
+    if ply:IsActiveCupid() and ply:SteamID64() == cli:GetNWString("TTTCupidShooter", "") then
         return ROLE_COLORS_SCOREBOARD[ROLE_CUPID], ROLE_STRINGS_SHORT[ROLE_CUPID]
-    elseif ply:NetworkedSteamID64() == cli:GetNWString("TTTCupidLover", "") then
+    elseif ply:SteamID64() == cli:GetNWString("TTTCupidLover", "") then
         return ROLE_COLORS_SCOREBOARD[ply:GetRole()], ROLE_STRINGS_SHORT[ply:GetRole()], ply:GetRole()
-    elseif ply:NetworkedSteamID64() == cli:GetNWString("TTTCupidTarget1", "") or ply:NetworkedSteamID64() == cli:GetNWString("TTTCupidTarget2", "") then
+    elseif ply:SteamID64() == cli:GetNWString("TTTCupidTarget1", "") or ply:SteamID64() == cli:GetNWString("TTTCupidTarget2", "") then
         return c, roleStr, ROLE_CUPID
     end
 end)
 
 hook.Add("TTTScoreboardPlayerName", "Cupid_TTTScoreboardPlayerName", function(ply, cli, nickTxt)
-    if ply:NetworkedSteamID64() == cli:GetNWString("TTTCupidLover", "") then
+    if ply:SteamID64() == cli:GetNWString("TTTCupidLover", "") then
         return ply:Nick() .. " (" .. LANG.GetTranslation("scoreboard_cupid_your_lover") .. ")"
-    elseif ply:NetworkedSteamID64() == cli:GetNWString("TTTCupidTarget1", "") or ply:NetworkedSteamID64() == cli:GetNWString("TTTCupidTarget2", "") then
+    elseif ply:SteamID64() == cli:GetNWString("TTTCupidTarget1", "") or ply:SteamID64() == cli:GetNWString("TTTCupidTarget2", "") then
         return ply:Nick() .. " (" .. LANG.GetTranslation("scoreboard_cupid_lover") .. ")"
     end
 end)
@@ -244,7 +244,7 @@ local client = nil
 local function EnableLoverHighlights()
     AddHook("PreDrawHalos", "Cupid_Highlight_PreDrawHalos", function()
         local lover = client:GetNWString("TTTCupidLover", "")
-        local loverPly = player.GetByNetworkedSteamID64(lover)
+        local loverPly = player.GetBySteamID64(lover)
         if not IsPlayer(loverPly) or not loverPly:Alive() or not loverPly:IsTerror() then return end
 
         HaloAdd({ loverPly }, Color(230, 90, 200, 255), 1, 1, 1, true, true)

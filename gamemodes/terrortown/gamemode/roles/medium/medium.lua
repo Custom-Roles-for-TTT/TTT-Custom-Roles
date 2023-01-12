@@ -37,13 +37,13 @@ hook.Add("TTTPrepareRound", "Medium_Spirits_TTTPrepareRound", function()
 end)
 
 hook.Add("PlayerSpawn", "Medium_Spirits_PlayerSpawn", function(ply)
-    local sid = ply:NetworkedSteamID64()
+    local sid = ply:SteamID64()
     SafeRemoveEntity(spirits[sid])
     spirits[sid] = nil
 end)
 
 hook.Add("PlayerDisconnected", "Medium_Spirits_PlayerDisconnected", function(ply)
-    local sid = ply:NetworkedSteamID64()
+    local sid = ply:SteamID64()
     SafeRemoveEntity(spirits[sid])
     spirits[sid] = nil
 end)
@@ -51,7 +51,7 @@ end)
 hook.Add("FinishMove", "Medium_Spirits_FinishMove", function(ply, mv)
     if not IsValid(ply) or not ply:IsSpec() then return end
 
-    local spirit = spirits[ply:NetworkedSteamID64()]
+    local spirit = spirits[ply:SteamID64()]
     if not IsValid(spirit) then return end
 
     spirit:SetPos(ply:GetPos())
@@ -80,7 +80,7 @@ hook.Add("PlayerDeath", "Medium_Spirits_PlayerDeath", function(victim, infl, att
         end
         spirit:SetNWVector("SpiritColor", col)
         spirit:Spawn()
-        spirits[victim:NetworkedSteamID64()] = spirit
+        spirits[victim:SteamID64()] = spirit
 
         -- Let the player who died know there is a medium as long as this player isn't the only medium and they are not turning into a zombie
         if medium_dead_notify:GetBool() and (#mediums > 1 or not victim:IsMedium()) and not victim:IsZombifying() then
