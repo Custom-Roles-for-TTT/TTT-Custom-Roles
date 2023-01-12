@@ -171,7 +171,7 @@ end
 
 hook.Add("TTTRolePopupParams", "Assassin_TTTRolePopupParams", function(cli)
     if cli:IsAssassin() then
-        return { assassintarget = string.rep(" ", 42) .. cli:GetNWString("AssassinTarget", "") }
+        return { assassintarget = string.rep(" ", 42) .. player.GetByEnhancedSteamID64(cli:GetNWString("AssassinTarget", "")):Nick() }
     end
 end)
 
