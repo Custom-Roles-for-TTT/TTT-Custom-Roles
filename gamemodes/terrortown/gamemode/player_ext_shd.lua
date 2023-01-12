@@ -340,7 +340,7 @@ end
 
 function plymeta:EnhancedSteamID64()
     if self:IsBot() then
-        return self:GetNWString("BotSteamID64", "76561197960265727") -- 76561197960265728 is the first SteamID64 used by a real player
+        return self:GetNWString("BotSteamID64", "90071996842377216") -- 90071996842377216 is the first SteamID64 used by bots
     else
         return self:SteamID64()
     end
@@ -696,10 +696,10 @@ function player.LivingCount(ignorePassiveWinners)
 end
 
 function player.GetByEnhancedSteamID64(sid64)
-    local minSID64 = "76561197960265727" -- 76561197960265728 is the first SteamID64 used by a real player
-    if sid64 <= minSID64 then -- We compare using strings instead of numbers here because these numbers are so large that lua's arithmetic is inaccurate
+    local minSID64 = "90071996842377216"
+    if sid64 >= minSID64 then -- We compare using strings instead of numbers here because these numbers are so large that lua's arithmetic is inaccurate
         for _, v in pairs(player.GetBots()) do
-            local botSID64 = v:GetNWString("BotSteamID64", "76561197960265727")
+            local botSID64 = v:GetNWString("BotSteamID64", "90071996842377216")
             if botSID64 == sid64 then return v end
         end
     else
