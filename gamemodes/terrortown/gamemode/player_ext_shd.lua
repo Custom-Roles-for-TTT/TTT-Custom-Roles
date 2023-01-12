@@ -338,6 +338,14 @@ function plymeta:IsOnScreen(ent_or_pos, limit)
     return MathAcos(dir:Dot(eye)) <= limit
 end
 
+function plymeta:EnhancedSteamID64()
+    if self:IsBot() then
+        return self:GetNWString("BotSteamID64", "76561197960265727") -- 76561197960265728 is the first SteamID64 used by a real player
+    else
+        return self:SteamID64()
+    end
+end
+
 if CLIENT then
     local function GetMaxBoneZ(ply, pred)
         local max_bone_z = 0
@@ -685,4 +693,16 @@ function player.LivingCount(ignorePassiveWinners)
         end
     end
     return players_alive
+end
+
+function player.GetByEnhancedSteamID64(sid64)
+    local minSID64 = "76561197960265727" -- 76561197960265728 is the first SteamID64 used by a real player
+    if sid64 <= minSID64 then -- We compare using strings instead of numbers here because these numbers are so large that lua's arithmetic is inaccurate
+        for _, v in pairs(player.GetBots()) do
+            local botSID64 = v:GetNWString("BotSteamID64", "76561197960265727")
+            if botSID64 == sid64 then return v end
+        end
+    else
+        return player:GetBySteamID64(sid64)
+    end
 end

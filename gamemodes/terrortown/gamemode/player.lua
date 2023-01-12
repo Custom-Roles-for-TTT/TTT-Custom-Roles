@@ -46,10 +46,20 @@ function GM:PlayerInitialSpawn(ply)
         SendAllLists(ply)
     end
 
-    -- Handle spec bots
-    if ply:IsBot() and GetConVar("ttt_bots_are_spectators"):GetBool() then
-        ply:SetTeam(TEAM_SPEC)
-        ply:SetForceSpec(true)
+
+    if ply:IsBot() then
+        -- Assign bot IDs (AccountID returns 0 for the first bot, 1 for the second and so on and 76561197960265728 is
+        -- the first real SteamID64 so we should be able to safely use any values below this without issues)
+        -- These numbers are so large that lua's arithmetic is inaccurate so we only use the last 5 digits and hope
+        -- that no one ever uses more than 65728 bots and lives to tell the tale
+        local minSID64 = 65727
+        ply:SetNWString("BotSteamID64", string.format("765611979602%.0f", minSID64 - ply:AccountID()))
+
+        -- Handle spec bots
+        if GetConVar("ttt_bots_are_spectators"):GetBool() then
+            ply:SetTeam(TEAM_SPEC)
+            ply:SetForceSpec(true)
+        end
     end
 end
 
