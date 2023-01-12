@@ -637,7 +637,7 @@ function CLSCORE:BuildSummaryPanel(dpanel)
         -- If the height of the panel would be larger than the available space,
         -- shrink the parent panel to force the inner panel to scroll
         -- Then add width to the parent panel so the scrollbar doesn't overlap the inner panel
-        if (ph + height_extra_total) > max_height then
+        if (ph + height_extra_total_parent) > max_height then
             height_extra_total_parent = (max_height - ph)
             width_extra_total_parent = 18
         end
