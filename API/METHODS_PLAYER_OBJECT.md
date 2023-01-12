@@ -380,7 +380,7 @@ Sets the player's size by adjusting models, step sizes, hulls and view offsets.\
 *Parameters:*
 - *scale* - The value with which to scale the players size, relative to their current size.
 
-### plymeta:EnhancedSteamID64()
-Gets the player's SteamID64 or if the player is a bot returns an equivalent unique identifier.\
+### plymeta:NetworkedSteamID64()
+Gets the player's SteamID64, even when the method is called on bots client-side.\
 *Realm:* Client and Server\
 *Added in:* 1.7.1

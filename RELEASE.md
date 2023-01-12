@@ -10,7 +10,7 @@
 - Fixed scoreboard incorrectly resizing when running the game as windowed
 
 ## Developer
-- Added `EnhancedSteamID64` and `GetByEnhancedSteamID64` methods which extend SteamID64 to add compatibility for bots
+- Added `NetworkedSteamID64` and `GetByNetworkedSteamID64` methods which extend SteamID64 to add compatibility for bots
 
 ## 1.7.0
 **Released: January 8th, 2023**\

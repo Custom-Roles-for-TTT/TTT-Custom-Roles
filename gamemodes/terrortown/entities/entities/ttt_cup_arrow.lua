@@ -111,21 +111,21 @@ function ENT:Touch(ent)
             else
                 local target1 = owner:GetNWString("TTTCupidTarget1", "")
                 if target1 == "" then
-                    ent:SetNWString("TTTCupidShooter", owner:EnhancedSteamID64())
-                    owner:SetNWString("TTTCupidTarget1", ent:EnhancedSteamID64())
+                    ent:SetNWString("TTTCupidShooter", owner:NetworkedSteamID64())
+                    owner:SetNWString("TTTCupidTarget1", ent:NetworkedSteamID64())
                     owner:PrintMessage(HUD_PRINTCENTER, ent:Nick() .. " has been hit with your first arrow.")
                     owner:PrintMessage(HUD_PRINTTALK, ent:Nick() .. " has been hit with your first arrow.")
                     ent:PrintMessage(HUD_PRINTCENTER, "You have been hit by cupids arrow!")
                     ent:PrintMessage(HUD_PRINTTALK, "You have been hit by cupids arrow!")
                 elseif owner:GetNWString("TTTCupidTarget2", "") == "" then
-                    if ent:EnhancedSteamID64() == target1 then
+                    if ent:NetworkedSteamID64() == target1 then
                         owner:PrintMessage(HUD_PRINTCENTER, "You cannot make someone fall in love with themselves.")
                     else
-                        local ent2 = player.GetByEnhancedSteamID64(target1)
-                        ent:SetNWString("TTTCupidShooter", owner:EnhancedSteamID64())
+                        local ent2 = player.GetByNetworkedSteamID64(target1)
+                        ent:SetNWString("TTTCupidShooter", owner:NetworkedSteamID64())
                         ent:SetNWString("TTTCupidLover", target1)
-                        ent2:SetNWString("TTTCupidLover", ent:EnhancedSteamID64())
-                        owner:SetNWString("TTTCupidTarget2", ent:EnhancedSteamID64())
+                        ent2:SetNWString("TTTCupidLover", ent:NetworkedSteamID64())
+                        owner:SetNWString("TTTCupidTarget2", ent:NetworkedSteamID64())
                         owner:PrintMessage(HUD_PRINTCENTER, ent:Nick() .. " has fallen in love with " .. ent2:Nick() .. ".")
                         owner:PrintMessage(HUD_PRINTTALK, ent:Nick() .. " has fallen in love with " .. ent2:Nick() .. ".")
                         ent2:PrintMessage(HUD_PRINTCENTER, "You have fallen in love with " .. ent:Nick() .. "!")
@@ -138,7 +138,7 @@ function ENT:Touch(ent)
                         net.WriteString(owner:Nick())
                         net.WriteString(ent:Nick())
                         net.WriteString(ent2:Nick())
-                        net.WriteString(owner:EnhancedSteamID64())
+                        net.WriteString(owner:NetworkedSteamID64())
                         net.Broadcast()
 
                         local mode = GetConVar("ttt_cupid_notify_mode"):GetInt()

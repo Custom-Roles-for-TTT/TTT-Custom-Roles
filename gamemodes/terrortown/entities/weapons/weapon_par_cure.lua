@@ -130,7 +130,7 @@ if SERVER then
 
             if ply:GetNWBool("ParasiteInfected", false) then
                 for _, v in pairs(player.GetAll()) do
-                    if v:GetNWString("ParasiteInfectingTarget", "") == ply:EnhancedSteamID64() then
+                    if v:GetNWString("ParasiteInfectingTarget", "") == ply:NetworkedSteamID64() then
                         ply:SetNWBool("ParasiteInfected", false)
                         v:SetNWBool("ParasiteInfecting", false)
                         v:SetNWString("ParasiteInfectingTarget", nil)

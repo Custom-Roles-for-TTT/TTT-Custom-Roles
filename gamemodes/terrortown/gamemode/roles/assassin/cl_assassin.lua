@@ -37,13 +37,13 @@ end)
 
 -- Show "KILL" icon over the target's head
 hook.Add("TTTTargetIDPlayerKillIcon", "Assassin_TTTTargetIDPlayerKillIcon", function(ply, cli, showKillIcon, showJester)
-    if cli:IsAssassin() and GetGlobalBool("ttt_assassin_show_target_icon", false) and cli:GetNWString("AssassinTarget") == ply:EnhancedSteamID64() and not showJester then
+    if cli:IsAssassin() and GetGlobalBool("ttt_assassin_show_target_icon", false) and cli:GetNWString("AssassinTarget") == ply:NetworkedSteamID64() and not showJester then
         return true
     end
 end)
 
 hook.Add("TTTTargetIDPlayerText", "Assassin_TTTTargetIDPlayerText", function(ent, cli, text, col, secondary_text)
-    if cli:IsAssassin() and IsPlayer(ent) and ent:EnhancedSteamID64() == cli:GetNWString("AssassinTarget", "") then
+    if cli:IsAssassin() and IsPlayer(ent) and ent:NetworkedSteamID64() == cli:GetNWString("AssassinTarget", "") then
         if ent:GetNWBool("ParasiteInfected", false) then
             secondary_text = LANG.GetTranslation("target_infected")
         end
@@ -56,7 +56,7 @@ ROLE_IS_TARGETID_OVERRIDDEN[ROLE_ASSASSIN] = function(ply, target, showJester)
     if not IsPlayer(target) then return end
 
     -- Shared logic
-    local show = (target:EnhancedSteamID64() == ply:GetNWString("AssassinTarget", "")) and not showJester
+    local show = (target:NetworkedSteamID64() == ply:GetNWString("AssassinTarget", "")) and not showJester
 
     local icon = show and GetGlobalBool("ttt_assassin_show_target_icon", false)
     ------ icon,  ring, text
@@ -69,13 +69,13 @@ end
 
 -- Flash the assassin target's row on the scoreboard
 hook.Add("TTTScoreboardPlayerRole", "Assassin_TTTScoreboardPlayerRole", function(ply, cli, c, roleStr)
-    if cli:IsAssassin() and ShouldShowTraitorExtraInfo() and ply:EnhancedSteamID64() == cli:GetNWString("AssassinTarget", "") then
+    if cli:IsAssassin() and ShouldShowTraitorExtraInfo() and ply:NetworkedSteamID64() == cli:GetNWString("AssassinTarget", "") then
         return c, roleStr, ROLE_ASSASSIN
     end
 end)
 
 hook.Add("TTTScoreboardPlayerName", "Assassin_TTTScoreboardPlayerName", function(ply, cli, text)
-    if cli:IsAssassin() and ply:EnhancedSteamID64() == cli:GetNWString("AssassinTarget", "") then
+    if cli:IsAssassin() and ply:NetworkedSteamID64() == cli:GetNWString("AssassinTarget", "") then
         local newText = " ("
         if ShouldShowTraitorExtraInfo() and ply:GetNWBool("ParasiteInfected", false) then
             newText = newText .. LANG.GetTranslation("target_infected") .. " | "
@@ -90,7 +90,7 @@ ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_ASSASSIN] = function(ply, target)
     if not IsPlayer(target) then return end
 
     -- Shared logic
-    local show = target:EnhancedSteamID64() == ply:GetNWString("AssassinTarget", "")
+    local show = target:NetworkedSteamID64() == ply:GetNWString("AssassinTarget", "")
 
     local name = show and ShouldShowTraitorExtraInfo()
     ------ name,  role
@@ -112,7 +112,7 @@ local function EnableAssassinTargetHighlights()
 
         local target = nil
         for _, v in pairs(GetAllPlayers()) do
-            if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= client and v:EnhancedSteamID64() == target_sid64 then
+            if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= client and v:NetworkedSteamID64() == target_sid64 then
                 target = v
                 break
             end
@@ -161,7 +161,7 @@ ROLE_IS_TARGET_HIGHLIGHTED[ROLE_ASSASSIN] = function(ply, target)
     local target_sid64 = ply:GetNWString("AssassinTarget", "")
     if not target_sid64 or #target_sid64 == 0 then return end
 
-    local isTarget = target_sid64 == target:EnhancedSteamID64()
+    local isTarget = target_sid64 == target:NetworkedSteamID64()
     return assassin_target_vision and isTarget
 end
 
@@ -171,7 +171,7 @@ end
 
 hook.Add("TTTRolePopupParams", "Assassin_TTTRolePopupParams", function(cli)
     if cli:IsAssassin() then
-        return { assassintarget = string.rep(" ", 42) .. player.GetByEnhancedSteamID64(cli:GetNWString("AssassinTarget", "")):Nick() }
+        return { assassintarget = string.rep(" ", 42) .. player.GetByNetworkedSteamID64(cli:GetNWString("AssassinTarget", "")):Nick() }
     end
 end)
 

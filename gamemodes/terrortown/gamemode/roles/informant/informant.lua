@@ -247,13 +247,13 @@ hook.Add("TTTPlayerAliveThink", "Informant_TTTPlayerAliveThink", function(ply)
             if target and (not GetGlobalBool("ttt_informant_requires_scanner", false) or (ply.GetActiveWeapon and IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() == "weapon_inf_scanner")) then
                 if target:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED) < INFORMANT_SCANNED_TRACKED and ScanAllowed(ply, target) then
                     ply:SetNWInt("TTTInformantScannerState", INFORMANT_SCANNER_LOCKED)
-                    ply:SetNWString("TTTInformantScannerTarget", target:EnhancedSteamID64())
+                    ply:SetNWString("TTTInformantScannerTarget", target:NetworkedSteamID64())
                     ply:SetNWString("TTTInformantScannerMessage", "SCANNING " .. string.upper(target:Nick()))
                     ply:SetNWFloat("TTTInformantScannerStartTime", CurTime())
                 end
             end
         elseif state == INFORMANT_SCANNER_LOCKED then
-            local target = player.GetByEnhancedSteamID64(ply:GetNWString("TTTInformantScannerTarget", ""))
+            local target = player.GetByNetworkedSteamID64(ply:GetNWString("TTTInformantScannerTarget", ""))
             if target:IsActive() then
                 if not InRange(ply, target) then
                     ply:SetNWInt("TTTInformantScannerState", INFORMANT_SCANNER_SEARCHING)
@@ -265,7 +265,7 @@ hook.Add("TTTPlayerAliveThink", "Informant_TTTPlayerAliveThink", function(ply)
                 TargetLost(ply)
             end
         elseif state == INFORMANT_SCANNER_SEARCHING then
-            local target = player.GetByEnhancedSteamID64(ply:GetNWString("TTTInformantScannerTarget", ""))
+            local target = player.GetByNetworkedSteamID64(ply:GetNWString("TTTInformantScannerTarget", ""))
             if target:IsActive() then
                 if (CurTime() - ply:GetNWInt("TTTInformantScannerTargetLostTime", -1)) >= informant_scanner_float_time:GetInt() then
                     TargetLost(ply)

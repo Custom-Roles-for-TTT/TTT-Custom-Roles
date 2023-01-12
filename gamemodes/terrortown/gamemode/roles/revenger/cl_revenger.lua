@@ -6,17 +6,17 @@ local surface = surface
 local timer = timer
 
 local function IsLover(cli, ply)
-    return ply:EnhancedSteamID64() == cli:GetNWString("RevengerLover", "")
+    return ply:NetworkedSteamID64() == cli:GetNWString("RevengerLover", "")
 end
 
 local function GetLover(cli)
     local sid = cli:GetNWString("RevengerLover", "")
-    return player.GetByEnhancedSteamID64(sid)
+    return player.GetByNetworkedSteamID64(sid)
 end
 
 local function GetLoverKiller(cli)
     local sid = cli:GetNWString("RevengerKiller", "")
-    return player.GetByEnhancedSteamID64(sid)
+    return player.GetByNetworkedSteamID64(sid)
 end
 
 ------------------

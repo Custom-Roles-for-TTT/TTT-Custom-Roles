@@ -76,7 +76,7 @@ hook.Add("WeaponEquip", "Beggar_WeaponEquip", function(wep, ply)
         net.WriteString(ply:Nick())
         net.WriteString(wep.BoughtBy:Nick())
         net.WriteString(ROLE_STRINGS_EXT[role])
-        net.WriteString(ply:EnhancedSteamID64())
+        net.WriteString(ply:NetworkedSteamID64())
         net.Broadcast()
     end
 end)

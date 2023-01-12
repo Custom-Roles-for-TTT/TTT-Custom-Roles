@@ -180,7 +180,7 @@ if SERVER then
         net.Start("TTT_Deputized")
         net.WriteString(owner:Nick())
         net.WriteString(ply:Nick())
-        net.WriteString(ply:EnhancedSteamID64())
+        net.WriteString(ply:NetworkedSteamID64())
         net.Broadcast()
 
         owner:ConCommand("lastinv")

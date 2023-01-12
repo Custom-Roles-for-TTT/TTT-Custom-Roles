@@ -77,9 +77,9 @@ Returns the number of members of the various teams left alive.\
 - *monster_alive* - The number of members of the monster team left alive
 - *jester_alive* - The number of members of the jester team left alive
 
-### player.GetByEnhancedSteamID64(sid64)
-Returns the player with the provided SteamID64, or a bot when provided with an identifier from `plymeta:EnhancedSteamID64()`.\
+### player.GetByNetworkedSteamID64(sid64)
+Returns the player with the provided SteamID64, even when the SteamID64 belongs to a bot and the method is called client-side.\
 *Realm:* Client and Server\
 *Added in:* 1.7.1\
 *Parameters:*
-- *sid64* - The SteamID64 of the player you want to find, or an identifier from `plymeta:EnhancedSteamID64()` when searching for a bot.
+- *sid64* - The SteamID64 of the player you want to find

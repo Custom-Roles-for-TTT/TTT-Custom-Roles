@@ -126,7 +126,7 @@ if SERVER then
         local ply = false
 
         if body.sid64 then
-            ply = player.GetByEnhancedSteamID64(body.sid64)
+            ply = player.GetByNetworkedSteamID64(body.sid64)
         elseif body.sid == "BOT" then
             ply = player.GetByUniqueID(body.uqid)
         else

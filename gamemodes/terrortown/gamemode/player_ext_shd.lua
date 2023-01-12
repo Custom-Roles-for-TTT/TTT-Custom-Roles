@@ -338,7 +338,7 @@ function plymeta:IsOnScreen(ent_or_pos, limit)
     return MathAcos(dir:Dot(eye)) <= limit
 end
 
-function plymeta:EnhancedSteamID64()
+function plymeta:NetworkedSteamID64()
     if self:IsBot() then
         return self:GetNWString("BotSteamID64", "90071996842377216") -- 90071996842377216 is the first SteamID64 used by bots
     else
@@ -695,8 +695,8 @@ function player.LivingCount(ignorePassiveWinners)
     return players_alive
 end
 
-function player.GetByEnhancedSteamID64(sid64)
-    local minSID64 = "90071996842377216"
+function player.GetByNetworkedSteamID64(sid64)
+    local minSID64 = "90071996842377216" -- 90071996842377216 is the first SteamID64 used by bots
     if sid64 >= minSID64 then -- We compare using strings instead of numbers here because these numbers are so large that lua's arithmetic is inaccurate
         for _, v in pairs(player.GetBots()) do
             local botSID64 = v:GetNWString("BotSteamID64", "90071996842377216")
