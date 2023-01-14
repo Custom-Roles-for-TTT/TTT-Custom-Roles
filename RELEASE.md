@@ -8,6 +8,7 @@
 
 ## Fixes
 - Fixed scoreboard incorrectly resizing when running the game as windowed
+- Fixed hypnotist brainwashing device not converting special detectives to impersonator when `ttt_hypnotist_convert_detectives` is enabled
 
 ## Developer
 - Updated `SteamID64` and `GetBySteamID64` methods so that they can be called client-side on bots

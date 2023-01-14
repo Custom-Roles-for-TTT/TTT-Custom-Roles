@@ -168,7 +168,7 @@ if SERVER then
         if not ConvertDetectives:GetBool() then
             return false
         end
-        if ply:IsDetective() then
+        if ply:IsDetectiveTeam() then
             return true
         end
         if ply:IsDeputy() then
@@ -232,7 +232,7 @@ if SERVER then
         -- If detectives and deputies that look like detectives should be converted
         if self:ShouldConvertToImpersonator(ply) then
             -- Keep track of whether they should be promoted
-            local promote = (ply:IsDetective() or ShouldPromoteDetectiveLike())
+            local promote = (ply:IsDetectiveTeam() or ShouldPromoteDetectiveLike())
 
             -- Convert them to an impersonator and promote them if appropriate
             ply:SetRole(ROLE_IMPERSONATOR)
