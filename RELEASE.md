@@ -1,5 +1,19 @@
 # Release Notes
 
+## 1.7.1
+**Released: January 16th, 2023**
+
+## Additions
+- Add options to merge jester and independent role pools and allow multiple jesters and independents to spawn in each round
+
+## Fixes
+- Fixed scoreboard incorrectly resizing when running the game as windowed
+- Fixed hypnotist brainwashing device not converting special detectives to impersonator when `ttt_hypnotist_convert_detectives` is enabled
+- Fixed assassin round start popup not displaying properly when there are no valid targets
+
+## Developer
+- Updated `SteamID64` and `GetBySteamID64` methods so that they can be called client-side on bots
+
 ## 1.7.0
 **Released: January 8th, 2023**\
 Includes all beta updates from [1.6.14](#1614-beta) to [1.6.19](#1619-beta).
@@ -84,7 +98,7 @@ Includes all beta updates from [1.6.14](#1614-beta) to [1.6.19](#1619-beta).
 **Released: November 26th, 2022**
 
 ### Developer
-- Deprecated `TTTPlayerDefibRoleChange`
+- **BREAKING CHANGE** - Deprecated `TTTPlayerDefibRoleChange`
 - Added `TTTInformantScanStageChanged` which is called when an informant has scanned additional information from a target player
 - Added `TTTMadScientistZombifyBegin` which is called when a mad scientist begins to zombify a target
 - Added `TTTPaladinAuraHealed` which is called when a paladin heals a target with their aura

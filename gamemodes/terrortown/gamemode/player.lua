@@ -46,10 +46,15 @@ function GM:PlayerInitialSpawn(ply)
         SendAllLists(ply)
     end
 
-    -- Handle spec bots
-    if ply:IsBot() and GetConVar("ttt_bots_are_spectators"):GetBool() then
-        ply:SetTeam(TEAM_SPEC)
-        ply:SetForceSpec(true)
+
+    if ply:IsBot() then
+        ply:SetNWString("BotSteamID64", ply:SteamID64())
+
+        -- Handle spec bots
+        if GetConVar("ttt_bots_are_spectators"):GetBool() then
+            ply:SetTeam(TEAM_SPEC)
+            ply:SetForceSpec(true)
+        end
     end
 end
 

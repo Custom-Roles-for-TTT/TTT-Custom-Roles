@@ -374,7 +374,7 @@ Strips all weapons from the player whose `Category` property matches the global 
 *Added in:* 1.0.5
 
 ### plymeta:SetPlayerScale(scale)
-Set's the players size by adjusting models, step sizes, hulls and view offsets.\
+Sets the player's size by adjusting models, step sizes, hulls and view offsets.\
 *Realm:* Server\
 *Added in:* 1.3.1\
 *Parameters:*

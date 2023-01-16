@@ -100,7 +100,7 @@ hook.Add("TTTScoreboardPlayerName", "Parasite_TTTScoreboardPlayerName", function
     -- Show Assassin and Parasite logic if necessary
     local infected = ply:GetNWBool("ParasiteInfected", false)
     for _, v in pairs(GetAllPlayers()) do
-        if ply:Nick() == v:GetNWString("AssassinTarget", "") then
+        if ply:SteamID64() == v:GetNWString("AssassinTarget", "") then
             local newText = " ("
             if infected then
                 newText = newText .. LANG.GetTranslation("target_infected") .. " | "
