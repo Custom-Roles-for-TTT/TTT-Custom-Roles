@@ -1,7 +1,7 @@
 # Release Notes
 
-## 1.7.1 (Beta)
-**Released: January 14th, 2023**
+## 1.7.1
+**Released: January 16th, 2023**
 
 ## Additions
 - Add options to merge jester and independent role pools and allow multiple jesters and independents to spawn in each round
