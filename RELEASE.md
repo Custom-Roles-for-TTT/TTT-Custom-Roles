@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.7.2 (Beta)
+**Released:**
+
+### Developer
+- Removed deprecated `TTTPlayerDefibRoleChange`
+
 ## 1.7.1
 **Released: January 16th, 2023**
 

@@ -156,15 +156,6 @@ Called for each player who is alive during the `Tick` hook.\
 *Parameters:*
 - *ply* - The current alive player target
 
-### TTTPlayerDefibRoleChange(ply, tgt)
-Called after a player has been resurrected by a device that also changes their role.\
-*Realm:* Server\
-*Added in:* 1.3.1\
-*Deprecated in:* 1.6.16\
-*Parameters:*
-- *ply* - The player using the resurrection device
-- *tgt* - The target player being resurrected
-
 ### TTTPlayerRoleChanged(ply, oldRole, newRole)
 Called after a player's role has changed.\
 *Realm:* Client and Server\
