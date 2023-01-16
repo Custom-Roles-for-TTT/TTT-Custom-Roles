@@ -3,27 +3,27 @@
 ## 1.7.1
 **Released: January 16th, 2023**
 
-## Additions
+### Additions
 - Add options to merge jester and independent role pools and allow multiple jesters and independents to spawn in each round
 
-## Fixes
+### Fixes
 - Fixed scoreboard incorrectly resizing when running the game as windowed
 - Fixed hypnotist brainwashing device not converting special detectives to impersonator when `ttt_hypnotist_convert_detectives` is enabled
 - Fixed assassin round start popup not displaying properly when there are no valid targets
 
-## Developer
+### Developer
 - Updated `SteamID64` and `GetBySteamID64` methods so that they can be called client-side on bots
 
 ## 1.7.0
 **Released: January 8th, 2023**\
 Includes all beta updates from [1.6.14](#1614-beta) to [1.6.19](#1619-beta).
 
-## Additions
+### Additions
 - Added messages in chat when hit by cupid's arrow or paired with another player
 - Added information about cupid and the lovers to the scoreboard
 - Added message for the target when a player is being deputized by the marshal
 
-## Fixes
+### Fixes
 - Fixed round summary window appearing shorter if the summary tab was disabled
 - Fixed minor error in cupid's tutorial page
 - Fixed issue caused when one player was hit by cupid's arrow then died before being paired with another player
@@ -31,7 +31,7 @@ Includes all beta updates from [1.6.14](#1614-beta) to [1.6.19](#1619-beta).
 - Fixed round not ending when it was just cupid and the lovers on opposite teams remaining
 - Fixed some beggar information not being properly hidden when `ttt_beggar_reveal_traitor` was `0`
 
-## Developer
+### Developer
 -  Fixed not being able to target yourself using the `ttt_kill_target_*` and `ttt_damage_target_*` debug commands
 
 ## 1.6.19 (Beta)
