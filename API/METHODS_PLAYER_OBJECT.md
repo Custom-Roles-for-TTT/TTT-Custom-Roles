@@ -38,6 +38,11 @@ Whether the player can see and use traitor buttons.\
 *Parameters:*
 - *activeOnly* - Whether the player must also be active (Defaults to `false`)
 
+### plymeta:DrunkJoinLosingTeam()
+Attempts to find the losing team and calls `self:SoberDrunk(team)` using the losing team as the *team* parameter.\
+*Realm:* Server\
+*Added in:* 1.7.2\
+
 ### plymeta:DrunkRememberRole(role)
 Sets the drunk's role and runs required checks for that role.\
 *Realm:* Server\

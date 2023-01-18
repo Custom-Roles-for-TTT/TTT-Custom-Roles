@@ -1,10 +1,17 @@
 # Release Notes
 
+## 1.7.2 (Beta)
+**Released:**
+
+### Additions
+- Added option for the drunk to join the losing team when their sober timer runs out
+  - *NOTE*: We can't actually know for sure which team is losing, but we can make an educated guess based on the total amount of health each team has and how that compares to the percentage of players that should spawn as traitors. If you are curious the full algorithm can be found in `plymeta:DrunkJoinLosingTeam`.
+
 ## 1.7.1
 **Released: January 16th, 2023**
 
 ### Additions
-- Add options to merge jester and independent role pools and allow multiple jesters and independents to spawn in each round
+- Added options to merge jester and independent role pools and allow multiple jesters and independents to spawn in each round
 
 ### Fixes
 - Fixed scoreboard incorrectly resizing when running the game as windowed
