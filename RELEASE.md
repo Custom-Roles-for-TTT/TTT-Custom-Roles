@@ -12,6 +12,7 @@
 
 ### Fixes
 - Fixed new vampire drain UI not working on dedicated servers
+- Fixed vampire weapon convars being created on the client
 
 ### Developer
 - Removed deprecated `TTTPlayerDefibRoleChange`
