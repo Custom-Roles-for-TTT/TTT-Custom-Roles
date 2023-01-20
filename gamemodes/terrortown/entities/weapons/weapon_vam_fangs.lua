@@ -504,32 +504,45 @@ if CLIENT then
     function SWEP:DrawHUD()
         self.BaseClass.DrawHUD(self)
 
-        local x = ScrW() / 2.0
-        local y = ScrH() / 2.0
+        local firstVerb
+        local secondVerb
+        if GetGlobalBool("ttt_vampire_drain_first", false) then
+            firstVerb = "vam_fangs_kill"
+            secondVerb = "vam_fangs_convert"
+        else
+            firstVerb = "vam_fangs_convert"
+            secondVerb = "vam_fangs_kill"
+        end
 
-        y = y + (y / 3)
+        local progress
+        local color
+        if self:GetState() == STATE_ERROR then
+            progress = 1
+            color = Color(200 + math.sin(CurTime() * 32) * 50, 0, 0, 155)
+        elseif self:GetState() >= STATE_EAT then
+            progress = math.TimeFraction(self:GetStartTime(), self:GetStartTime() + self:GetFangDuration(), CurTime())
+            color = Color(0, 255, 0, 155)
 
-        local w = 255
+            if progress < 0.5 then
+                firstVerb = firstVerb .. "ing"
+                secondVerb = ""
+            else
+                secondVerb = secondVerb .. "ing"
+            end
+        else
+            return
+        end
 
-        local split = self:CanConvert() and not self:GetTargetIsBody()
+        if progress < 0 then return end
+
+        progress = math.Clamp(progress, 0, 1)
 
         local T = LANG.GetTranslation
-        local titles = {T("vam_fangs_convert"), T("vam_fangs_drain")}
-        if GetGlobalBool("ttt_vampire_drain_first", false) then
-            titles = {T("vam_fangs_drain"), T("vam_fangs_convert")}
-        end
-
-        if self:GetState() >= STATE_EAT then
-            local progress = math.TimeFraction(self:GetStartTime(), self:GetStartTime() + self:GetFangDuration(), CurTime())
-
-            if progress < 0 then return end
-
-            progress = math.Clamp(progress, 0, 1)
-
-            CRHUD:PaintProgressBar(x, y, w, Color(0, 255, 0, 155), self:GetMessage(), progress, split and 2 or 1, titles)
-        elseif self:GetState() == STATE_ERROR then
-            CRHUD:PaintProgressBar(x, y, w, Color(200 + math.sin(CurTime() * 32) * 50, 0, 0, 155), self:GetMessage(), 1, split and 2 or 1, titles)
-        end
+        local split = self:CanConvert() and not self:GetTargetIsBody()
+        local x = ScrW() / 2.0
+        local y = ScrH() / 2.0
+        y = y + (y / 3)
+        CRHUD:PaintProgressBar(x, y, 255, color, self:GetMessage(), progress, split and 2 or 1, {T(firstVerb), T(secondVerb)})
     end
 else
     function SWEP:Reset()
