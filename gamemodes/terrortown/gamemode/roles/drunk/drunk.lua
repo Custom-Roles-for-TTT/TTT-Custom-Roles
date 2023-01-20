@@ -26,6 +26,7 @@ local drunk_innocent_chance = CreateConVar("ttt_drunk_innocent_chance", "0.7", F
 local drunk_traitor_chance = CreateConVar("ttt_drunk_traitor_chance", "0", FCVAR_NONE, "Chance that the drunk will become a traitor role when remembering their role and \"all roles\" logic is enabled. If disabled (0), player chance of becoming a traitor is equal to every other non-innocent role", 0, 1)
 local drunk_become_clown = CreateConVar("ttt_drunk_become_clown", "0")
 local drunk_any_role = CreateConVar("ttt_drunk_any_role", "0")
+local drunk_join_losing_team = CreateConVar("ttt_drunk_join_losing_team", "0")
 
 hook.Add("TTTSyncGlobals", "Drunk_TTTSyncGlobals", function()
     SetGlobalBool("ttt_drunk_become_clown", drunk_become_clown:GetBool())
@@ -117,6 +118,91 @@ local function GetDetectiveTeamDrunkExcludes()
     end
 
     return excludes
+end
+
+function plymeta:DrunkJoinLosingTeam()
+    if not self:IsActiveDrunk() then return false end
+
+    local players = 0
+    local innocentHealth = 0
+    local traitorHealth = 0
+    for _, v in ipairs(GetAllPlayers()) do
+        if IsValid(v) and v:GetRole() ~= ROLE_NONE then
+            players = players + 1
+            if v:IsActiveInnocentTeam() then
+                innocentHealth = innocentHealth + v:Health()
+            end
+            if v:IsActiveTraitorTeam() then
+                traitorHealth = traitorHealth + v:Health()
+            end
+        end
+    end
+
+    -- Find the average number of jesters and independents that spawn in each round
+    local jestersIndependents = 0
+    local singleJesIndMax = GetConVar("ttt_single_jester_independent_max_players"):GetInt()
+    local indChance = GetConVar("ttt_independent_chance"):GetFloat()
+    if GetConVar("ttt_multiple_jesters_independents"):GetBool() then
+        -- Multiple jesters and independents
+        jestersIndependents = math.ceil(players * math.Round(GetConVar("ttt_jester_independent_pct"):GetFloat(), 3))
+        jestersIndependents = math.min(jestersIndependents, GetConVar("ttt_jester_independent_max"):GetInt())
+    elseif not GetConVar("ttt_single_jester_independent"):GetBool() or (singleJesIndMax > 0 and players > singleJesIndMax) then
+        -- One jester AND one independent
+        jestersIndependents = GetConVar("ttt_jester_chance"):GetFloat() + indChance
+    else
+        -- One jester OR one independent
+        jestersIndependents = indChance
+    end
+
+    -- Find the average number of monsters that spawn in each round
+    local monsters = 0
+    if #GetTeamRoles(MONSTER_ROLES) > 0 then
+        monsters = math.ceil(players * math.Round(GetConVar("ttt_monster_pct"):GetFloat(), 3))
+        monsters = math.min(monsters, GetConVar("ttt_monster_max"):GetInt()) * GetConVar("ttt_monster_chance"):GetFloat()
+    end
+
+    -- Find the number of traitors that spawn in each round
+    local traitors = math.ceil(players * math.Round(GetConVar("ttt_traitor_pct"):GetFloat(), 3))
+    traitors = math.min(traitors, GetConVar("ttt_traitor_max"):GetInt())
+
+    -- Find the average percentage of players that are traitors in each round ignoring jesters, independents, and monsters
+    local traitorPct = traitors / (players - jestersIndependents - monsters)
+
+    -- Find whether the drunk joining the innocent, traitor, or another team will bring the ratio of traitor health to traitor and innocent health closest to the value calculated above
+    local drunkHealth = self:Health()
+
+    local innocentHealthRatio = traitorHealth / (innocentHealth + drunkHealth + traitorHealth)
+    local traitorHealthRatio = (traitorHealth + drunkHealth) / (innocentHealth + traitorHealth + drunkHealth)
+    local otherHealthRatio = traitorHealth / (innocentHealth + traitorHealth)
+
+    local innocentDiff = math.abs(innocentHealthRatio - traitorPct)
+    local traitorDiff = math.abs(traitorHealthRatio - traitorPct)
+    local otherDiff = math.abs(otherHealthRatio - traitorPct)
+
+    local losingTeam = ROLE_TEAM_TRAITOR
+    if otherDiff <= innocentDiff and otherDiff <= traitorDiff then
+        local rand = math.random()
+        if #GetTeamRoles(MONSTER_ROLES) > 0 then
+            if rand < 1/3 then
+                losingTeam = ROLE_TEAM_JESTER
+            elseif rand < 2/3 then
+                losingTeam = ROLE_TEAM_INDEPENDENT
+            else
+                losingTeam = ROLE_TEAM_MONSTER
+            end
+        else
+            if rand < 0.5 then
+                losingTeam = ROLE_TEAM_JESTER
+            else
+                losingTeam = ROLE_TEAM_INDEPENDENT
+            end
+        end
+    elseif innocentDiff <= traitorDiff then
+        losingTeam = ROLE_TEAM_INNOCENT
+    end
+
+    self:SoberDrunk(losingTeam)
+    return true
 end
 
 function plymeta:SoberDrunk(team)
@@ -252,13 +338,21 @@ ROLE_ON_ROLE_ASSIGNED[ROLE_DRUNK] = function(ply)
     timer.Create("drunkremember", drunk_sober_time:GetInt(), 1, function()
         for _, p in pairs(GetAllPlayers()) do
             if p:IsActiveDrunk() then
-                p:SoberDrunk()
+                if drunk_join_losing_team:GetBool() then
+                    p:DrunkJoinLosingTeam()
+                else
+                    p:SoberDrunk()
+                end
             elseif p:IsDrunk() and not p:Alive() and not timer.Exists("waitfordrunkrespawn") then
                 timer.Create("waitfordrunkrespawn", 0.1, 0, function()
                     local dead_drunk = false
                     for _, p2 in pairs(GetAllPlayers()) do
                         if p2:IsActiveDrunk() then
-                            p2:SoberDrunk()
+                            if drunk_join_losing_team:GetBool() then
+                                p2:DrunkJoinLosingTeam()
+                            else
+                                p2:SoberDrunk()
+                            end
                         elseif p2:IsDrunk() and not p2:Alive() then
                             dead_drunk = true
                         end
