@@ -10,6 +10,9 @@
 ### Changes
 - Changed vampire drain UI to be clearer which action is in progress
 
+### Fixes
+- Fixed new vampire drain UI not working on dedicated servers
+
 ### Developer
 - Removed deprecated `TTTPlayerDefibRoleChange`
 

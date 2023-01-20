@@ -99,6 +99,13 @@ function SWEP:Initialize()
         self:AddHUDHelp("vam_fangs_help_pri", "vam_fangs_help_sec", true)
     end
 
+    if SERVER then
+        SetGlobalBool("ttt_vampire_convert_enable", vampire_convert:GetBool())
+        SetGlobalBool("ttt_vampire_drain_enable", vampire_drain:GetBool())
+        SetGlobalBool("ttt_vampire_drain_first", vampire_drain_first:GetBool())
+        SetGlobalBool("ttt_vampire_prime_only_convert", vampire_prime_convert:GetBool())
+    end
+
     if SERVER and vampire_drain_mute_target:GetBool() then
         hook.Add("PlayerCanSeePlayersChat", "Vampire_PlayerCanSeePlayersChat_" .. self:EntIndex(), function(text, team_only, listener, speaker)
             if not IsPlayer(listener) or not IsPlayer(speaker) then return end
@@ -148,7 +155,7 @@ function SWEP:OnRemove()
 end
 
 function SWEP:CanConvert()
-    return vampire_convert:GetBool() and (not vampire_prime_convert:GetBool() or self:GetOwner():IsVampirePrime())
+    return GetGlobalBool("ttt_vampire_convert_enable", false) and (not GetGlobalBool("ttt_vampire_prime_only_convert", true) or self:GetOwner():IsVampirePrime())
 end
 
 local function GetPlayerFromBody(body)
