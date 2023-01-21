@@ -513,6 +513,7 @@ ttt_drunk_traitor_chance                    0       // Chance that the drunk wil
 ttt_drunk_become_clown                      0       // Whether the drunk should become a clown (instead of joining the losing team) if the round would end before they sober up
 ttt_drunk_notify_mode                       0       // The logic to use when notifying players that a drunk has sobered up. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
 ttt_drunk_any_role                          0       // Whether the drunk can become any enabled role (other than the drunk, the glitch, or roles that were already used this round). The ttt_drunk_can_be_* convars below can be used to prevent the drunk from becoming specific roles
+ttt_drunk_join_losing_team                  0       // Whether the drunk should join the losing team when their sober timer runs out. Please note this isn't 100% accurate as we can't know for sure which team is losing but we can try based on the available information
 ttt_drunk_can_be_traitor                    1       // Whether the drunk can become a traitor
 ttt_drunk_can_be_hypnotist                  1       // Whether the drunk can become a hypnotist
 ttt_drunk_can_be_impersonator               1       // Whether the drunk can become an impersonator
@@ -531,17 +532,20 @@ ttt_drunk_can_be_doctor                     1       // Whether the drunk can bec
 ttt_drunk_can_be_trickster                  1       // Whether the drunk can become a trickster
 ttt_drunk_can_be_paramedic                  1       // Whether the drunk can become a paramedic
 ttt_drunk_can_be_turncoat                   1       // Whether the drunk can become a turncoat
+ttt_drunk_can_be_infected                   1       // Whether the drunk can become an infected
 ttt_drunk_can_be_detective                  1       // Whether the drunk can become a detective
 ttt_drunk_can_be_paladin                    1       // Whether the drunk can become a paladin
 ttt_drunk_can_be_tracker                    1       // Whether the drunk can become a tracker
 ttt_drunk_can_be_medium                     1       // Whether the drunk can become a medium
 ttt_drunk_can_be_sapper                     1       // Whether the drunk can become a sapper
+ttt_drunk_can_be_marshal                    1       // Whether the drunk can become a marshal
 ttt_drunk_can_be_jester                     1       // Whether the drunk can become a jester
 ttt_drunk_can_be_swapper                    1       // Whether the drunk can become a swapper
 ttt_drunk_can_be_clown                      1       // Whether the drunk can become a clown
 ttt_drunk_can_be_beggar                     1       // Whether the drunk can become a beggar
 ttt_drunk_can_be_bodysnatcher               1       // Whether the drunk can become a bodysnatcher
 ttt_drunk_can_be_lootgoblin                 1       // Whether the drunk can become a loot goblin
+ttt_drunk_can_be_cupid                      1       // Whether the drunk can become a cupid
 ttt_drunk_can_be_oldman                     1       // Whether the drunk can become an old man
 ttt_drunk_can_be_killer                     1       // Whether the drunk can become a killer
 ttt_drunk_can_be_zombie                     1       // Whether the drunk can become a zombie
