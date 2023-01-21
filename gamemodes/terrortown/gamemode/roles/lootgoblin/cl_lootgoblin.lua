@@ -8,7 +8,7 @@ local util = util
 local MathMax = math.max
 local StringUpper = string.upper
 local GetAllPlayers = player.GetAll
-local TableAdd = table.Add
+local TableInsert = table.insert
 
 ------------------
 -- TRANSLATIONS --
@@ -163,7 +163,7 @@ end)
 
 hook.Add("TTTScoringSecondaryWins", "LootGoblin_TTTScoringSecondaryWins", function(wintype, secondary_wins)
     if lootgoblin_wins then
-        table.insert(secondary_wins, ROLE_LOOTGOBLIN)
+        TableInsert(secondary_wins, ROLE_LOOTGOBLIN)
     end
 end)
 
@@ -210,7 +210,7 @@ hook.Add("TTTHUDInfoPaint", "LootGoblin_TTTHUDInfoPaint", function(client, label
         surface.DrawText(text)
 
         -- Track that the label was added so others can position accurately
-        table.insert(active_labels, "lootgoblin")
+        TableInsert(active_labels, "lootgoblin")
     end
 end)
 

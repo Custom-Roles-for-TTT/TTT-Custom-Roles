@@ -4,14 +4,24 @@
 **Released:**
 
 ### Additions
-- Added option for the drunk to join the losing team when their sober timer runs out (disblaed by default)
+- Added option for the drunk to join the losing team when their sober timer runs out (disabled by default)
   - *NOTE*: We can't actually know for sure which team is losing, but we can make an educated guess based on the total amount of health each team has and how that compares to the percentage of players that should spawn as traitors. If you are curious the full algorithm can be found in `plymeta:DrunkJoinLosingTeam`.
+
+### Changes
+- Changed vampire drain UI to be clearer which action is in progress
+
+### Fixes
+- Fixed new vampire drain UI not working on dedicated servers
+- Fixed vampire weapon convars being created on the client
+
+### Developer
+- Removed deprecated `TTTPlayerDefibRoleChange`
 
 ## 1.7.1
 **Released: January 16th, 2023**
 
 ### Additions
-- Added options to merge jester and independent role pools and allow multiple jesters and independents to spawn in each round (disblaed by default)
+- Added options to merge jester and independent role pools and allow multiple jesters and independents to spawn in each round (disabled by default)
 
 ### Fixes
 - Fixed scoreboard incorrectly resizing when running the game as windowed
