@@ -1,4 +1,9 @@
 # Release Notes
+## 1.7.3 (Beta)
+**Released:**
+
+### Fixes
+- Fixed some traitor role weapons being randomly removed from the shop when shop randomization is enabled
 
 ## 1.7.2 (Beta)
 **Released: January 21st, 2023**
