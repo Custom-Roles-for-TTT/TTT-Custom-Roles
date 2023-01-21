@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.7.2 (Beta)
-**Released:**
+**Released: January 21st, 2023**
 
 ### Additions
 - Added option for the drunk to join the losing team when their sober timer runs out (disabled by default)
