@@ -400,9 +400,24 @@ Called before the round summary screen is shown. Used to modify the color, posit
 - *label* - The label to use when pairing the name and otherName together (see above) *(Added in 1.6.17)*
 
 ### TTTScoringWinTitle(wintype, wintitles, title)
-Called multiple times before the round end screen is shown with the winning team. For each tab of the round end screen that shows the winning team, this hook is first called with `WIN_INNOCENT` to get the default value and then called with the actual winning team. Return a new win title object to override what would normally be shown on the round end screen.\
+Called multiple times before the round end screen is shown with the winning team. For each tab of the round end screen that shows the winning team, this hook is first called with `WIN_INNOCENT` to get the default value and then called with the actual winning team. Return a new win title object to override what would normally be shown on the round end screen. This should be used by roles to customize what is shown on the round summary screen.\
 *Realm:* Client\
 *Added in:* 1.0.14\
+*Parameters:*
+- *wintype* - The round win type
+- *wintitles* - Table of default win title parameters
+- *title* - The currently selected win title
+
+*Return:*
+- *newTitle*
+  - *txt* - The translation string to use to get the winning team text
+  - *c* - The background [Color](https://wiki.facepunch.com/gmod/Color) to use
+  - *params* - Any parameters to use when translating `txt`
+
+### TTTScoringWinTitleOverride(wintype, wintitles, title)
+Called multiple times before the round end screen is shown with the winning team. For each tab of the round end screen that shows the winning team this is called with the winning team. Return a new win title object to override what would normally be shown on the round end screen. This should be used by external addons to change the look of the round summary screen, *not* by roles to set their custom win titles. For a role's custom win title, use `TTTScoringWinTitle` instead.\
+*Realm:* Client\
+*Added in:* 1.7.3\
 *Parameters:*
 - *wintype* - The round win type
 - *wintitles* - Table of default win title parameters

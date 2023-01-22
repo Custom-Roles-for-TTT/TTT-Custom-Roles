@@ -5,6 +5,9 @@
 ### Fixes
 - Fixed some traitor role weapons being randomly removed from the shop when shop randomization is enabled
 
+### Developer
+- Added new `TTTScoringWinTitleOverride` hook for non-role addons to override the title and color shown on round summary screens
+
 ## 1.7.2 (Beta)
 **Released: January 21st, 2023**
 
