@@ -84,6 +84,15 @@ Called before the event icon for the "round finished" event is rendered in the e
 - *winString* - The new winString value to use or the original passed into the hook
 - *roleString* - The new roleString value to use or the original passed into the hook
 
+### TTTEquipmentTabs(dsheet)
+Allows creation of new tabs for the equipment (shop) menu.\
+*Realm:* Client\
+*Added in:* 1.0.0\
+*Parameters:*
+- *dsheet* - The [DPropertySheet](https://wiki.facepunch.com/gmod/DPropertySheet) used by the equipment window
+
+*Return:* If `true`, the equipment window will show even if the player doesn't have any of the default tabs. *(Added in 1.7.3)*
+
 ### TTTHUDInfoPaint(client, labelX, labelY, activeLabels)
 Called after player information such as role, health, and ammo and equipment information such as radar cooldown and disguiser activation are drawn on the screen. Used to write additional persistent text on the screen for player reference.\
 *Realm:* Client\
