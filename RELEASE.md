@@ -4,6 +4,7 @@
 
 ### Fixes
 - Fixed some traitor role weapons being randomly removed from the shop when shop randomization is enabled
+- Fixed `ttt_vampire_drain_mute_target` only blocking messages the first time
 
 ### Developer
 - Added new `TTTScoringWinTitleOverride` hook for non-role addons to override the title and color shown on round summary screens

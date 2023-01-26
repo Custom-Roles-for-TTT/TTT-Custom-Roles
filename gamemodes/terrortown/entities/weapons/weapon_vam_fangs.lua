@@ -110,22 +110,24 @@ function SWEP:Initialize()
         if GetConVar("ttt_vampire_drain_mute_target"):GetBool() then
             hook.Add("PlayerCanSeePlayersChat", "Vampire_PlayerCanSeePlayersChat_" .. self:EntIndex(), function(text, team_only, listener, speaker)
                 if not IsPlayer(listener) or not IsPlayer(speaker) then return end
-                if self.TargetEntityChatWarned then return end
 
                 if speaker == self.TargetEntity then
-                    self.TargetEntityChatWarned = true
-                    speaker:PrintMessage(HUD_PRINTTALK, "You cannot speak while " .. ROLE_STRINGS_EXT[ROLE_VAMPIRE]  .. " is draining your blood.")
+                    if not self.TargetEntityChatWarned then
+                        self.TargetEntityChatWarned = true
+                        speaker:PrintMessage(HUD_PRINTTALK, "You cannot speak while " .. ROLE_STRINGS_EXT[ROLE_VAMPIRE]  .. " is draining your blood.")
+                    end
                     return false
                 end
             end)
 
             hook.Add("PlayerCanHearPlayersVoice", "Vampire_PlayerCanHearPlayersVoice_" .. self:EntIndex(), function(listener, speaker)
                 if not IsPlayer(listener) or not IsPlayer(speaker) then return end
-                if self.TargetEntityVoiceWarned then return end
 
                 if speaker == self.TargetEntity then
-                    self.TargetEntityVoiceWarned = true
-                    speaker:PrintMessage(HUD_PRINTTALK, "You cannot speak while " .. ROLE_STRINGS_EXT[ROLE_VAMPIRE]  .. " is draining your blood.")
+                    if not self.TargetEntityVoiceWarned then
+                        self.TargetEntityVoiceWarned = true
+                        speaker:PrintMessage(HUD_PRINTTALK, "You cannot speak while " .. ROLE_STRINGS_EXT[ROLE_VAMPIRE]  .. " is draining your blood.")
+                    end
                     return false, false
                 end
             end)
