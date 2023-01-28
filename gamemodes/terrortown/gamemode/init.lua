@@ -225,6 +225,7 @@ end
 CreateConVar("ttt_multiple_jesters_independents", "0")
 CreateConVar("ttt_jester_independent_pct", "0.13")
 CreateConVar("ttt_jester_independent_max", "2")
+CreateConVar("ttt_jester_independent_chance", "0.5")
 CreateConVar("ttt_single_deputy_impersonator", "0")
 CreateConVar("ttt_deputy_impersonator_promote_any_death", "0")
 CreateConVar("ttt_single_doctor_quack", "0")
@@ -1798,7 +1799,7 @@ function SelectRoles()
         end
 
         for _ = 1, jester_independent_count do
-            if #independentRoles ~= 0 and #choices > 0 then
+            if #independentRoles ~= 0 and math.random() <= GetConVar("ttt_jester_independent_chance"):GetFloat() and #choices > 0 then
                 local plyPick = math.random(1, #choices)
                 local ply = table.remove(choices, plyPick)
                 local rolePick = math.random(1, #independentRoles)

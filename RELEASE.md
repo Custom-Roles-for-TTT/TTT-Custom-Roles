@@ -1,6 +1,10 @@
 # Release Notes
+
 ## 1.7.3 (Beta)
 **Released:**
+
+### Additions
+- Added `ttt_jester_independent_chance` convar to control the chance of a jester or independent when `ttt_multiple_jesters_independents` is enabled
 
 ### Fixes
 - Fixed some traitor role weapons being randomly removed from the shop when shop randomization is enabled

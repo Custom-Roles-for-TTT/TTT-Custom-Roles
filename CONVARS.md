@@ -47,6 +47,7 @@ ttt_jester_chance                           0.5     // The chance that a single 
 ttt_multiple_jesters_independents           0       // Whether more than one jester/independent should be allowed to spawn in each round. Enabling this will ignore ttt_independent_chance, ttt_jester_chance, ttt_single_jester_independent, and ttt_single_jester_independent_max_players
 ttt_jester_independent_pct                  0.13    // Percentage of players, rounded up, that can spawn as a jester or independent. Only used if ttt_multiple_jesters_independents is enabled
 ttt_jester_independent_max                  2       // The maximum number of players that can spawn as a jester or independent. Only used if ttt_multiple_jesters_independents is enabled
+ttt_jester_independent_chance               0.5     // The chance that a jester or independent will spawn in a round. Only used if ttt_multiple_jesters_independents is enabled
 // (Note: Only one independent or jester can spawn per round by default.)
 
 // Enable/Disable Individual Roles
