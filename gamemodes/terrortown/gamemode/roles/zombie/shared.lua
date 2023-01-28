@@ -85,7 +85,7 @@ function plymeta:GetZombieAlly()
     elseif TRAITOR_ROLES[ROLE_ZOMBIE] then
         return TRAITOR_ROLES[role]
     end
-    return INDEPENDENT_ROLES[role]
+    return role == ROLE_ZOMBIE or role == ROLE_MADSCIENTIST
 end
 
 plymeta.IsZombiePrime = plymeta.GetZombiePrime

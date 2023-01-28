@@ -13,6 +13,7 @@
 ### Developer
 - Added new `TTTScoringWinTitleOverride` hook for non-role addons to override the title and color shown on round summary screens
 - Added new return value to the `TTTEquipmentTabs` hook, allowing addons to add new tabs that open the dialog even if none of the default tabs normally would
+- Fixed `plymeta:IsZombieAlly` returning `true` for all independent roles rather than just other zombies and the mad scientist
 
 ## 1.7.2 (Beta)
 **Released: January 21st, 2023**
