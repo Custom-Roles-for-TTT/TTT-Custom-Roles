@@ -59,6 +59,18 @@ ROLE_IS_TARGETID_OVERRIDDEN[ROLE_ZOMBIE] = function(ply, target, showJester)
     return show, false, false
 end
 
+----------------
+-- SCOREBOARD --
+----------------
+
+hook.Add("TTTScoreboardPlayerRole", "Zombie_TTTScoreboardPlayerRole", function(ply, client, color, roleFileName)
+    if client:IsActiveZombie() and ply:IsZombieAlly() then
+        return ROLE_COLORS_SCOREBOARD[ply:GetRole()], ROLE_STRINGS_SHORT[ply:GetRole()]
+    elseif client:IsZombieAlly() and ply:IsActiveZombie() then
+        return ROLE_COLORS_SCOREBOARD[ROLE_ZOMBIE], ROLE_STRINGS_SHORT[ROLE_ZOMBIE]
+    end
+end)
+
 -------------
 -- SCORING --
 -------------
