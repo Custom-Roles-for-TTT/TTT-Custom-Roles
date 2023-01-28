@@ -539,6 +539,17 @@ Called after the Config tab of the help menu has been created, allowing develope
 *Parameters:*
 - *parentPanel* - The parent [DScrollPanel](https://wiki.facepunch.com/gmod/DScrollPanel) for the tab
 
+### TTTSettingsRolesTabSections(role, parentForm)
+Called for each role, allowing developers to add a configuration section for it.\
+*Realm:* Client\
+*Added in:* 1.7.3\
+*Parameters:*
+- *role* - The ID of the role whose setting section is being added
+- *parentForm* - The parent [DForm](https://wiki.facepunch.com/gmod/DForm) for the role being processed
+
+*Return:*
+- *add_section* - Return `true` to add this role config section to the dialog. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
+
 ### TTTShopRandomBought(client, item)
 Called when a player buys a random item from the shop.\
 *Realm:* Client\

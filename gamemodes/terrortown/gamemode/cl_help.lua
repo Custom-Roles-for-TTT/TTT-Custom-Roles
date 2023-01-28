@@ -13,6 +13,7 @@ local vgui = vgui
 
 local GetTranslation = LANG.GetTranslation
 local GetPTranslation = LANG.GetParamTranslation
+local HookCall = hook.Call
 
 surface.CreateFont("TutorialTitle", {
     font = "Trebuchet MS",
@@ -104,17 +105,27 @@ function HELPSCRN:Show()
 
     dtabs:AddSheet(GetTranslation("help_tut"), tutparent, "icon16/book_open.png", false, false, GetTranslation("help_tut_tip"))
 
-    -- Settings
+    -- Config
     local dsettings = vgui.Create("DScrollPanel", dtabs)
     dsettings:StretchToParent(0, 0, padding, 0)
     dsettings:SetPadding(10)
 
     self:CreateConfig(dsettings)
-    hook.Call("TTTSettingsConfigTabSections", nil, dsettings)
+    HookCall("TTTSettingsConfigTabSections", nil, dsettings)
 
     dtabs:AddSheet(GetTranslation("help_settings"), dsettings, "icon16/wrench.png", false, false, GetTranslation("help_settings_tip"))
 
-    hook.Call("TTTSettingsTabs", GAMEMODE, dtabs)
+    -- Roles
+
+    local droles = vgui.Create("DScrollPanel", dtabs)
+    droles:StretchToParent(0, 0, padding, 0)
+    droles:SetPadding(10)
+
+    if self:CreateRoles(droles) then
+        dtabs:AddSheet(GetTranslation("help_roles"), droles, "icon16/group.png", false, false, GetTranslation("help_roles_tip"))
+    end
+
+    HookCall("TTTSettingsTabs", GAMEMODE, dtabs)
 
     dframe:MakePopup()
 end
@@ -478,8 +489,8 @@ local function ShowTutorialPage(pnl, page)
         roleIcon:SetPos(roleIcon:GetX() - 3, roleIcon:GetY() + 7)
 
         -- If nobody wants to handle this page themselves,
-        if not hook.Call("TTTTutorialRolePage", nil, role, pnl, titleLabel, roleIcon) then
-            local roleText = hook.Call("TTTTutorialRoleText", nil, role, titleLabel, roleIcon)
+        if not HookCall("TTTTutorialRolePage", nil, role, pnl, titleLabel, roleIcon) then
+            local roleText = HookCall("TTTTutorialRoleText", nil, role, titleLabel, roleIcon)
 
             local html = vgui.Create("DHTML", pnl)
             html:Dock(FILL)
@@ -505,7 +516,7 @@ local function ShowTutorialPage(pnl, page)
             end
 
             -- Allow other addons to add more information to this role's tutorial text
-            local updatedHtml = hook.Call("TTTTutorialRoleTextExtra", nil, role, titleLabel, roleIcon, htmlData)
+            local updatedHtml = HookCall("TTTTutorialRoleTextExtra", nil, role, titleLabel, roleIcon, htmlData)
             if updatedHtml and #updatedHtml > 0 then
                 htmlData = updatedHtml
             end
@@ -517,7 +528,7 @@ local function ShowTutorialPage(pnl, page)
         end
 
         -- Allow other addons to add more information to this role's tutorial page
-        hook.Call("TTTTutorialRolePageExtra", nil, role, pnl, titleLabel, roleIcon)
+        HookCall("TTTTutorialRolePageExtra", nil, role, pnl, titleLabel, roleIcon)
     end
 end
 
@@ -529,7 +540,7 @@ local function ShowRoleTutorial(role)
     end
 
     -- Otherwise check if there are special rules for this role
-    if hook.Call("TTTTutorialRoleEnabled", nil, role) then
+    if HookCall("TTTTutorialRoleEnabled", nil, role) then
         return true
     end
     return false
@@ -740,7 +751,7 @@ function HELPSCRN:CreateConfig(dsettings)
     cb = dgui:CheckBox(GetTranslation("set_bypass_culling"), "ttt_bypass_culling")
     cb:SetTooltip(GetTranslation("set_bypass_culling_tip"))
 
-    hook.Call("TTTSettingsConfigTabFields", nil, "Interface", dgui)
+    HookCall("TTTSettingsConfigTabFields", nil, "Interface", dgui)
 
     dsettings:AddItem(dgui)
 
@@ -763,7 +774,7 @@ function HELPSCRN:CreateConfig(dsettings)
     mute:SetValue(GetConVar("ttt_mute_team_check"):GetBool())
     mute:SetTooltip(GetTranslation("set_mute_tip"))
 
-    hook.Call("TTTSettingsConfigTabFields", nil, "Gameplay", dplay)
+    HookCall("TTTSettingsConfigTabFields", nil, "Gameplay", dplay)
 
     dsettings:AddItem(dplay)
 
@@ -926,7 +937,7 @@ function HELPSCRN:CreateConfig(dsettings)
 
     dcolor:AddItem(dcolmon)
 
-    hook.Call("TTTSettingsConfigTabFields", nil, "Color", dcolor)
+    HookCall("TTTSettingsConfigTabFields", nil, "Color", dcolor)
 
     dsettings:AddItem(dcolor)
 
@@ -954,7 +965,7 @@ function HELPSCRN:CreateConfig(dsettings)
     dlanguage:Help(GetTranslation("set_lang"))
     dlanguage:AddItem(dlang)
 
-    hook.Call("TTTSettingsConfigTabFields", nil, "Language", dlanguage)
+    HookCall("TTTSettingsConfigTabFields", nil, "Language", dlanguage)
 
     dsettings:AddItem(dlanguage)
 
@@ -982,7 +993,7 @@ function HELPSCRN:CreateConfig(dsettings)
     dbemsettings:CheckBox("Sort alphabetically", "ttt_sort_alphabetically")
     dbemsettings:CheckBox("Sort by slot first", "ttt_sort_by_slot_first")
 
-    hook.Call("TTTSettingsConfigTabFields", nil, "BEM", dbemsettings)
+    HookCall("TTTSettingsConfigTabFields", nil, "BEM", dbemsettings)
 
     dsettings:AddItem(dbemsettings)
 
@@ -1003,7 +1014,39 @@ function HELPSCRN:CreateConfig(dsettings)
     dmarkers:CheckBox("Show criticals", "hm_showcrits")
     dmarkers:CheckBox("Play hit sound", "hm_hitsound")
 
-    hook.Call("TTTSettingsConfigTabFields", nil, "Hitmarkers", dmarkers)
+    HookCall("TTTSettingsConfigTabFields", nil, "Hitmarkers", dmarkers)
 
     dsettings:AddItem(dmarkers)
+end
+
+function HELPSCRN:CreateRoles(droles)
+    -- Preprocess the roles so we can sort them by name later
+    local enabled_roles = {}
+    for r = ROLE_NONE + 1, ROLE_MAX do
+        -- Skip disabled roles
+        if not DEFAULT_ROLES[r] and not GetGlobalBool("ttt_" .. ROLE_STRINGS_RAW[r] .. "_enabled", false) then continue end
+
+        table.insert(enabled_roles, {role = r, role_string = ROLE_STRINGS[r]})
+    end
+
+    local has_section = false
+    -- Add a section for each role that has settings, in alphabetical order
+    for r, info in SortedPairsByMemberValue(enabled_roles, "role_string") do
+        local drole = vgui.Create("DForm", droles)
+        drole:Dock(TOP)
+        drole:DockMargin(0, 0, 5, 10)
+        drole:DoExpansion(false)
+        drole:SetName(info.role_string)
+
+        -- Only add a section for this role if something adds to the form
+        local add_section = HookCall("TTTSettingsRolesTabSections", nil, info.role, drole)
+        if add_section then
+            has_section = true
+            droles:AddItem(drole)
+        else
+            drole:Remove()
+        end
+    end
+
+    return has_section
 end
