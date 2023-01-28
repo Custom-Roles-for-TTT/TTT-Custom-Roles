@@ -214,3 +214,7 @@ table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
 })
+table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
+    cvar = "ttt_zombie_respawn_block_win",
+    type = ROLE_CONVAR_TYPE_BOOL
+})

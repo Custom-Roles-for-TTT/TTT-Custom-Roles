@@ -5,6 +5,7 @@
 
 ### Additions
 - Added `ttt_jester_independent_chance` convar to control the chance of a jester or independent when `ttt_multiple_jesters_independents` is enabled
+- Added `ttt_zombie_respawn_block_win` convar to control whether a player respawning as a zombie will block the end of the round (defaults to disabled)
 
 ### Fixes
 - Fixed some traitor role weapons being randomly removed from the shop when shop randomization is enabled

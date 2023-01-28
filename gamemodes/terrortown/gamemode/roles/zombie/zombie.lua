@@ -33,6 +33,7 @@ local zombie_thrall_speed_bonus = CreateConVar("ttt_zombie_thrall_speed_bonus", 
 local zombie_vision_enable = CreateConVar("ttt_zombie_vision_enable", "0")
 local zombie_respawn_health = CreateConVar("ttt_zombie_respawn_health", "100", FCVAR_NONE, "The amount of health a player should respawn with when they are converted to a zombie thrall", 1, 200)
 local zombie_friendly_fire = CreateConVar("ttt_zombie_friendly_fire", "2", FCVAR_NONE, "How to handle friendly fire damage between zombies. 0 - Do nothing. 1 - Reflect the damage back to the attacker. 2 - Negate the damage.", 0, 2)
+local zombie_respawn_block_win = CreateConVar("ttt_zombie_respawn_block_win", "0")
 
 hook.Add("TTTSyncGlobals", "Zombie_TTTSyncGlobals", function()
     SetGlobalBool("ttt_zombies_are_monsters", zombies_are_monsters:GetBool())
@@ -108,6 +109,18 @@ end
 ----------------
 -- WIN CHECKS --
 ----------------
+
+hook.Add("TTTWinCheckBlocks", "Zombie_TTTWinCheckBlocks", function(win_blocks)
+    if not zombie_respawn_block_win:GetBool() then return end
+
+    table.insert(win_blocks, function(win)
+        for _, v in ipairs(GetAllPlayers()) do
+            if v:IsZombifying() then
+                return WIN_NONE
+            end
+        end
+    end)
+end)
 
 hook.Add("TTTCheckForWin", "Zombie_TTTCheckForWin", function()
     -- Only run the win check if the zombies win by themselves (or with the Mad Scientist)
