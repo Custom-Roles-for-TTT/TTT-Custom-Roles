@@ -7,6 +7,9 @@
 - Added `ttt_jester_independent_chance` convar to control the chance of a jester or independent when `ttt_multiple_jesters_independents` is enabled
 - Added `ttt_zombie_respawn_block_win` convar to control whether a player respawning as a zombie will block the end of the round (defaults to disabled)
 
+### Changes
+- Changed BEM and Hitmarkers settings to be in the Settings tabs instead of in their own tabs
+
 ### Fixes
 - Fixed some traitor role weapons being randomly removed from the shop when shop randomization is enabled
 - Fixed `ttt_vampire_drain_mute_target` only blocking messages the first time
