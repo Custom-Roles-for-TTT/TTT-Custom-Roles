@@ -105,13 +105,12 @@ function HELPSCRN:Show()
     dtabs:AddSheet(GetTranslation("help_tut"), tutparent, "icon16/book_open.png", false, false, GetTranslation("help_tut_tip"))
 
     -- Settings
-    local dsettings = vgui.Create("DPanelList", dtabs)
+    local dsettings = vgui.Create("DScrollPanel", dtabs)
     dsettings:StretchToParent(0, 0, padding, 0)
-    dsettings:EnableVerticalScrollbar()
     dsettings:SetPadding(10)
-    dsettings:SetSpacing(10)
 
-    self:CreateSettings(dsettings)
+    self:CreateConfig(dsettings)
+    hook.Call("TTTSettingsConfigTabSections", nil, dsettings)
 
     dtabs:AddSheet(GetTranslation("help_settings"), dsettings, "icon16/wrench.png", false, false, GetTranslation("help_settings_tip"))
 
@@ -666,10 +665,12 @@ function HELPSCRN:CreateTutorial(parent)
     end
 end
 
-function HELPSCRN:CreateSettings(dsettings)
+function HELPSCRN:CreateConfig(dsettings)
     --- Interface area
 
     local dgui = vgui.Create("DForm", dsettings)
+    dgui:Dock(TOP)
+    dgui:DockMargin(0, 0, 5, 10)
     dgui:SetName(GetTranslation("set_title_gui"))
 
     local cb = nil
@@ -739,11 +740,15 @@ function HELPSCRN:CreateSettings(dsettings)
     cb = dgui:CheckBox(GetTranslation("set_bypass_culling"), "ttt_bypass_culling")
     cb:SetTooltip(GetTranslation("set_bypass_culling_tip"))
 
+    hook.Call("TTTSettingsConfigTabFields", nil, "Interface", dgui)
+
     dsettings:AddItem(dgui)
 
     --- Gameplay area
 
     local dplay = vgui.Create("DForm", dsettings)
+    dplay:Dock(TOP)
+    dplay:DockMargin(0, 0, 5, 10)
     dplay:SetName(GetTranslation("set_title_play"))
 
     cb = dplay:CheckBox(GetPTranslation("set_avoid_det", {detective = ROLE_STRINGS[ROLE_DETECTIVE]}), "ttt_avoid_detective")
@@ -758,11 +763,15 @@ function HELPSCRN:CreateSettings(dsettings)
     mute:SetValue(GetConVar("ttt_mute_team_check"):GetBool())
     mute:SetTooltip(GetTranslation("set_mute_tip"))
 
+    hook.Call("TTTSettingsConfigTabFields", nil, "Gameplay", dplay)
+
     dsettings:AddItem(dplay)
 
     -- Color area
 
     local dcolor = vgui.Create("DForm", dsettings)
+    dcolor:Dock(TOP)
+    dcolor:DockMargin(0, 0, 5, 10)
     dcolor:DoExpansion(false)
     dcolor:SetName(GetTranslation("set_color_mode"))
 
@@ -917,11 +926,15 @@ function HELPSCRN:CreateSettings(dsettings)
 
     dcolor:AddItem(dcolmon)
 
+    hook.Call("TTTSettingsConfigTabFields", nil, "Color", dcolor)
+
     dsettings:AddItem(dcolor)
 
     --- Language area
 
     local dlanguage = vgui.Create("DForm", dsettings)
+    dlanguage:Dock(TOP)
+    dlanguage:DockMargin(0, 0, 5, 10)
     dlanguage:DoExpansion(false)
     dlanguage:SetName(GetTranslation("set_title_lang"))
 
@@ -941,11 +954,15 @@ function HELPSCRN:CreateSettings(dsettings)
     dlanguage:Help(GetTranslation("set_lang"))
     dlanguage:AddItem(dlang)
 
+    hook.Call("TTTSettingsConfigTabFields", nil, "Language", dlanguage)
+
     dsettings:AddItem(dlanguage)
 
     -- BEM settings
 
     local dbemsettings = vgui.Create("DForm", dsettings)
+    dbemsettings:Dock(TOP)
+    dbemsettings:DockMargin(0, 0, 5, 10)
     dbemsettings:DoExpansion(false)
     dbemsettings:SetName("BEM settings")
 
@@ -965,11 +982,15 @@ function HELPSCRN:CreateSettings(dsettings)
     dbemsettings:CheckBox("Sort alphabetically", "ttt_sort_alphabetically")
     dbemsettings:CheckBox("Sort by slot first", "ttt_sort_by_slot_first")
 
+    hook.Call("TTTSettingsConfigTabFields", nil, "BEM", dbemsettings)
+
     dsettings:AddItem(dbemsettings)
 
     -- Hitmarkers settings
 
     local dmarkers = vgui.Create("DForm", dsettings)
+    dmarkers:Dock(TOP)
+    dmarkers:DockMargin(0, 0, 5, 10)
     dmarkers:DoExpansion(false)
     dmarkers:SetName("Hitmarkers settings")
 
@@ -981,6 +1002,8 @@ function HELPSCRN:CreateSettings(dsettings)
     dmarkers:CheckBox("Enabled", "hm_enabled")
     dmarkers:CheckBox("Show criticals", "hm_showcrits")
     dmarkers:CheckBox("Play hit sound", "hm_hitsound")
+
+    hook.Call("TTTSettingsConfigTabFields", nil, "Hitmarkers", dmarkers)
 
     dsettings:AddItem(dmarkers)
 end

@@ -524,6 +524,21 @@ Called before players are assigned a traitor role, allowing the available roles 
 - *detectives* - The table of available player choices that will be (or have already been) assigned a detective role. Manipulating this table will have no effect
 - *detectiveCount* - The number of players that will be (or have already been) assigned a detective role
 
+### TTTSettingsConfigTabFields(sectionName, parentForm)
+Called after each section of the help menu's Config tab has been created, allowing developers to add controls to that section.\
+*Realm:* Client\
+*Added in:* 1.7.3\
+*Parameters:*
+- *sectionName* - The name of the section of the help menu's Settings tab that is being created. Expected values: Interface, Gameplay, Color, Language, BEM, Hitmarkers
+- *parentForm* - The parent [DForm](https://wiki.facepunch.com/gmod/DForm) for the section being processed
+
+### TTTSettingsConfigTabSections(parentPanel)
+Called after the Config tab of the help menu has been created, allowing developers to add sections to it.\
+*Realm:* Client\
+*Added in:* 1.7.3\
+*Parameters:*
+- *parentPanel* - The parent [DScrollPanel](https://wiki.facepunch.com/gmod/DScrollPanel) for the tab
+
 ### TTTShopRandomBought(client, item)
 Called when a player buys a random item from the shop.\
 *Realm:* Client\

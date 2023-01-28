@@ -239,8 +239,8 @@ L.help_tut = "Tutorial"
 L.help_tut_tip = "How TTT works, in just a few steps"
 L.help_tut_find_role = "Find my role"
 
-L.help_settings = "Settings"
-L.help_settings_tip = "Client-side settings"
+L.help_settings = "Config"
+L.help_settings_tip = "Client-side configuration"
 
 -- Settings
 L.set_title_gui = "Interface settings"
