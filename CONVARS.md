@@ -2,6 +2,7 @@
 
 ## Table of Contents
 1. [Server Configurations](#Server-Configurations)
+1. [Client Configurations](#Client-Configurations)
 1. [Role Weapon Shop](#Role-Weapon-Shop)
    1. [Configuration by UI](#Configuration-by-UI)
        1. [Explanation](#Explanation)
