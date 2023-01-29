@@ -84,6 +84,15 @@ Called before the event icon for the "round finished" event is rendered in the e
 - *winString* - The new winString value to use or the original passed into the hook
 - *roleString* - The new roleString value to use or the original passed into the hook
 
+### TTTEquipmentTabs(dsheet)
+Allows creation of new tabs for the equipment (shop) menu.\
+*Realm:* Client\
+*Added in:* 1.0.0\
+*Parameters:*
+- *dsheet* - The [DPropertySheet](https://wiki.facepunch.com/gmod/DPropertySheet) used by the equipment window
+
+*Return:* If `true`, the equipment window will show even if the player doesn't have any of the default tabs. *(Added in 1.7.3)*
+
 ### TTTHUDInfoPaint(client, labelX, labelY, activeLabels)
 Called after player information such as role, health, and ammo and equipment information such as radar cooldown and disguiser activation are drawn on the screen. Used to write additional persistent text on the screen for player reference.\
 *Realm:* Client\
@@ -400,9 +409,24 @@ Called before the round summary screen is shown. Used to modify the color, posit
 - *label* - The label to use when pairing the name and otherName together (see above) *(Added in 1.6.17)*
 
 ### TTTScoringWinTitle(wintype, wintitles, title)
-Called multiple times before the round end screen is shown with the winning team. For each tab of the round end screen that shows the winning team, this hook is first called with `WIN_INNOCENT` to get the default value and then called with the actual winning team. Return a new win title object to override what would normally be shown on the round end screen.\
+Called multiple times before the round end screen is shown with the winning team. For each tab of the round end screen that shows the winning team, this hook is first called with `WIN_INNOCENT` to get the default value and then called with the actual winning team. Return a new win title object to override what would normally be shown on the round end screen. This should be used by roles to customize what is shown on the round summary screen.\
 *Realm:* Client\
 *Added in:* 1.0.14\
+*Parameters:*
+- *wintype* - The round win type
+- *wintitles* - Table of default win title parameters
+- *title* - The currently selected win title
+
+*Return:*
+- *newTitle*
+  - *txt* - The translation string to use to get the winning team text
+  - *c* - The background [Color](https://wiki.facepunch.com/gmod/Color) to use
+  - *params* - Any parameters to use when translating `txt`
+
+### TTTScoringWinTitleOverride(wintype, wintitles, title)
+Called multiple times before the round end screen is shown with the winning team. For each tab of the round end screen that shows the winning team this is called with the winning team. Return a new win title object to override what would normally be shown on the round end screen. This should be used by external addons to change the look of the round summary screen, *not* by roles to set their custom win titles. For a role's custom win title, use `TTTScoringWinTitle` instead.\
+*Realm:* Client\
+*Added in:* 1.7.3\
 *Parameters:*
 - *wintype* - The round win type
 - *wintitles* - Table of default win title parameters
@@ -499,6 +523,32 @@ Called before players are assigned a traitor role, allowing the available roles 
 - *traitorCount* - The number of players that will be (or have already been) assigned a traitor role
 - *detectives* - The table of available player choices that will be (or have already been) assigned a detective role. Manipulating this table will have no effect
 - *detectiveCount* - The number of players that will be (or have already been) assigned a detective role
+
+### TTTSettingsConfigTabFields(sectionName, parentForm)
+Called after each section of the help menu's Config tab has been created, allowing developers to add controls to that section.\
+*Realm:* Client\
+*Added in:* 1.7.3\
+*Parameters:*
+- *sectionName* - The name of the section of the help menu's Settings tab that is being created. Expected values: Interface, Gameplay, Color, Language, BEM, Hitmarkers
+- *parentForm* - The parent [DForm](https://wiki.facepunch.com/gmod/DForm) for the section being processed
+
+### TTTSettingsConfigTabSections(parentPanel)
+Called after the Config tab of the help menu has been created, allowing developers to add sections to it.\
+*Realm:* Client\
+*Added in:* 1.7.3\
+*Parameters:*
+- *parentPanel* - The parent [DScrollPanel](https://wiki.facepunch.com/gmod/DScrollPanel) for the tab
+
+### TTTSettingsRolesTabSections(role, parentForm)
+Called for each role, allowing developers to add a configuration section for it.\
+*Realm:* Client\
+*Added in:* 1.7.3\
+*Parameters:*
+- *role* - The ID of the role whose setting section is being added
+- *parentForm* - The parent [DForm](https://wiki.facepunch.com/gmod/DForm) for the role being processed
+
+*Return:*
+- *add_section* - Return `true` to add this role config section to the dialog. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
 
 ### TTTShopRandomBought(client, item)
 Called when a player buys a random item from the shop.\

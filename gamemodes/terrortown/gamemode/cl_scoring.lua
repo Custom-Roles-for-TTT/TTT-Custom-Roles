@@ -297,7 +297,8 @@ local function GetWinTitle(wintype)
         end
     end
 
-    return title
+    -- Let other addons override this after the roles have set their own win screens
+    return hook.Call("TTTScoringWinTitleOverride", nil, wintype, wintitles, title) or title
 end
 
 function GetFontForWinTitle(wintxt, width)

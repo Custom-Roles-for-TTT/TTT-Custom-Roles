@@ -47,6 +47,7 @@ ttt_jester_chance                           0.5     // The chance that a single 
 ttt_multiple_jesters_independents           0       // Whether more than one jester/independent should be allowed to spawn in each round. Enabling this will ignore ttt_independent_chance, ttt_jester_chance, ttt_single_jester_independent, and ttt_single_jester_independent_max_players
 ttt_jester_independent_pct                  0.13    // Percentage of players, rounded up, that can spawn as a jester or independent. Only used if ttt_multiple_jesters_independents is enabled
 ttt_jester_independent_max                  2       // The maximum number of players that can spawn as a jester or independent. Only used if ttt_multiple_jesters_independents is enabled
+ttt_jester_independent_chance               0.5     // The chance that a jester or independent will spawn in a round. Only used if ttt_multiple_jesters_independents is enabled
 // (Note: Only one independent or jester can spawn per round by default.)
 
 // Enable/Disable Individual Roles
@@ -596,6 +597,8 @@ ttt_zombie_thrall_speed_bonus               0.15    // The amount of bonus speed
 ttt_zombie_respawn_health                   100     // The amount of health a player should respawn with when they are converted to a zombie thrall
 ttt_zombie_prime_convert_chance             1.0     // The chance that a prime zombie (e.g. player who spawned as a zombie originally) will convert other players who are killed by their claws to be zombies as well. Set to 0 to disable
 ttt_zombie_thrall_convert_chance            1.0     // The chance that a zombie thrall (e.g. non-prime zombie) will convert other players who are killed by their claws to be zombies as well. Set to 0 to disable
+ttt_zombie_friendly_fire                    2       // How to handle friendly fire damage between zombies. 0 - Do nothing. 1 - Reflect the damage back to the attacker. 2 - Negate the damage.
+ttt_zombie_respawn_block_win                0       // Whether a player respawning as a zombie blocks the round from ending, allowing them to join the winning team
 
 // Mad Scientist
 ttt_madscientist_is_monster                 0       // Whether the mad scientist should be treated as a member of the monster team (rather than the independent team)

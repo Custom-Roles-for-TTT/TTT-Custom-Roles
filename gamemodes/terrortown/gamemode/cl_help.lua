@@ -13,6 +13,7 @@ local vgui = vgui
 
 local GetTranslation = LANG.GetTranslation
 local GetPTranslation = LANG.GetParamTranslation
+local HookCall = hook.Call
 
 surface.CreateFont("TutorialTitle", {
     font = "Trebuchet MS",
@@ -93,10 +94,9 @@ function HELPSCRN:Show()
     dtabs:SetPos(margin, margin * 2)
     dtabs:SetSize(w - margin * 2, h - margin * 3 - bh)
 
-    local padding = dtabs:GetPadding()
+    local padding = dtabs:GetPadding() * 2
 
-    padding = padding * 2
-
+    -- Tutorial
     local tutparent = vgui.Create("DPanel", dtabs)
     tutparent:SetPaintBackground(false)
     tutparent:StretchToParent(margin, 0, 0, 0)
@@ -105,357 +105,27 @@ function HELPSCRN:Show()
 
     dtabs:AddSheet(GetTranslation("help_tut"), tutparent, "icon16/book_open.png", false, false, GetTranslation("help_tut_tip"))
 
-    local dsettings = vgui.Create("DPanelList", dtabs)
+    -- Config
+    local dsettings = vgui.Create("DScrollPanel", dtabs)
     dsettings:StretchToParent(0, 0, padding, 0)
-    dsettings:EnableVerticalScrollbar()
     dsettings:SetPadding(10)
-    dsettings:SetSpacing(10)
 
-    --- Interface area
-
-    local dgui = vgui.Create("DForm", dsettings)
-    dgui:SetName(GetTranslation("set_title_gui"))
-
-    local cb = nil
-
-    dgui:CheckBox(GetTranslation("set_tips"), "ttt_tips_enable")
-
-    cb = dgui:NumSlider(GetTranslation("set_startpopup"), "ttt_startpopup_duration", 0, 60, 0)
-    if cb.Label then
-        cb.Label:SetWrap(true)
-    end
-    cb:SetTooltip(GetTranslation("set_startpopup_tip"))
-
-    cb = dgui:NumSlider(GetTranslation("set_cross_opacity"), "ttt_ironsights_crosshair_opacity", 0, 1, 1)
-    if cb.Label then
-        cb.Label:SetWrap(true)
-    end
-    cb:SetTooltip(GetTranslation("set_cross_opacity"))
-
-    cb = dgui:NumSlider(GetTranslation("set_cross_brightness"), "ttt_crosshair_brightness", 0, 1, 1)
-    if cb.Label then
-        cb.Label:SetWrap(true)
-    end
-
-    cb = dgui:NumSlider(GetTranslation("set_cross_size"), "ttt_crosshair_size", 0.1, 3, 1)
-    if cb.Label then
-        cb.Label:SetWrap(true)
-    end
-
-    dgui:CheckBox(GetTranslation("set_cross_disable"), "ttt_disable_crosshair")
-
-    dgui:CheckBox(GetTranslation("set_minimal_id"), "ttt_minimal_targetid")
-
-    dgui:CheckBox(GetTranslation("set_healthlabel"), "ttt_health_label")
-
-    cb = dgui:CheckBox(GetTranslation("set_lowsights"), "ttt_ironsights_lowered")
-    cb:SetTooltip(GetTranslation("set_lowsights_tip"))
-
-    cb = dgui:CheckBox(GetTranslation("set_fastsw"), "ttt_weaponswitcher_fast")
-    cb:SetTooltip(GetTranslation("set_fastsw_tip"))
-
-    cb = dgui:CheckBox(GetTranslation("set_fastsw_menu"), "ttt_weaponswitcher_displayfast")
-    cb:SetTooltip(GetTranslation("set_fastswmenu_tip"))
-
-    cb = dgui:CheckBox(GetTranslation("set_wswitch"), "ttt_weaponswitcher_stay")
-    cb:SetTooltip(GetTranslation("set_wswitch_tip"))
-
-    cb = dgui:CheckBox(GetTranslation("set_swselect"), "ttt_weaponswitcher_close")
-    cb:SetTooltip(GetTranslation("set_swselect_tip"))
-
-    cb = dgui:CheckBox(GetTranslation("set_cues"), "ttt_cl_soundcues")
-
-    cb = dgui:CheckBox(GetTranslation("set_raw_karma"), "ttt_show_raw_karma_value")
-    cb:SetTooltip(GetTranslation("set_raw_karma_tip"))
-
-    cb = dgui:CheckBox(GetTranslation("set_karma_total_pct"), "ttt_show_karma_total_pct")
-    cb:SetTooltip(GetTranslation("set_karma_total_pct_tip"))
-
-    cb = dgui:CheckBox(GetTranslation("set_hide_role"), "ttt_hide_role")
-    cb:SetTooltip(GetTranslation("set_hide_role_tip"))
-
-    cb = dgui:CheckBox(GetTranslation("set_hide_ammo"), "ttt_hide_ammo")
-    cb:SetTooltip(GetTranslation("set_hide_ammo_tip"))
-
-    cb = dgui:TextEntry(GetTranslation("set_radio_button"), "ttt_radio_button")
-    cb:SetTooltip(GetTranslation("set_radio_button_tip"))
-
-    cb = dgui:CheckBox(GetTranslation("set_bypass_culling"), "ttt_bypass_culling")
-    cb:SetTooltip(GetTranslation("set_bypass_culling_tip"))
-
-    dsettings:AddItem(dgui)
-
-    local dcolor = vgui.Create("DForm", dsettings)
-    dcolor:SetName(GetTranslation("set_color_mode"))
-    dcolor:DoExpansion(false)
-
-    local dcol = vgui.Create("DComboBox", dcolor)
-    dcol:SetConVar("ttt_color_mode")
-    dcol:SetSortItems(false)
-    dcol:AddChoice("Default", "default")
-    dcol:AddChoice("Simplified", "simple")
-    dcol:AddChoice("Protanomaly", "protan")
-    dcol:AddChoice("Deuteranomaly", "deutan")
-    dcol:AddChoice("Tritanomaly", "tritan")
-    dcol:AddChoice("Custom", "custom")
-
-    dcol.OnSelect = function(idx, val, data)
-        local mode = data -- For some reason it grabs the name and not the actual data so fix that here
-        if mode == "Default" then mode = "default"
-        elseif mode == "Simplified" then mode = "simple"
-        elseif mode == "Protanomaly" then mode = "protan"
-        elseif mode == "Deuteranomaly" then mode = "deutan"
-        elseif mode == "Tritanomaly" then mode = "tritan"
-        elseif mode == "Custom" then mode = "custom"
-        end
-        RunConsoleCommand("ttt_color_mode", mode)
-        timer.Simple(0.5, function() UpdateRoleColours() end)
-    end
-
-    dcolor:AddItem(dcol)
-
-    local dcolinn = vgui.Create("DColorMixer", dcolor)
-    dcolinn:SetAlphaBar(false)
-    dcolinn:SetWangs(false)
-    dcolinn:SetPalette(false)
-    dcolinn:SetLabel("Custom innocent color:")
-    dcolinn:SetConVarR("ttt_custom_inn_color_r")
-    dcolinn:SetConVarG("ttt_custom_inn_color_g")
-    dcolinn:SetConVarB("ttt_custom_inn_color_b")
-    dcolinn.ValueChanged = function(col)
-        timer.Simple(0.5, function() UpdateRoleColours() end)
-    end
-
-    dcolor:AddItem(dcolinn)
-
-    local dcolspecinn = vgui.Create("DColorMixer", dcolor)
-    dcolspecinn:SetAlphaBar(false)
-    dcolspecinn:SetWangs(false)
-    dcolspecinn:SetPalette(false)
-    dcolspecinn:SetLabel("Custom special innocent color:")
-    dcolspecinn:SetConVarR("ttt_custom_spec_inn_color_r")
-    dcolspecinn:SetConVarG("ttt_custom_spec_inn_color_g")
-    dcolspecinn:SetConVarB("ttt_custom_spec_inn_color_b")
-    dcolspecinn.ValueChanged = function(col)
-        timer.Simple(0.5, function() UpdateRoleColours() end)
-    end
-
-    dcolor:AddItem(dcolspecinn)
-
-    local dcoltra = vgui.Create("DColorMixer", dcolor)
-    dcoltra:SetAlphaBar(false)
-    dcoltra:SetWangs(false)
-    dcoltra:SetPalette(false)
-    dcoltra:SetLabel("Custom traitor color:")
-    dcoltra:SetConVarR("ttt_custom_tra_color_r")
-    dcoltra:SetConVarG("ttt_custom_tra_color_g")
-    dcoltra:SetConVarB("ttt_custom_tra_color_b")
-    dcoltra.ValueChanged = function(col)
-        timer.Simple(0.5, function() UpdateRoleColours() end)
-    end
-
-    dcolor:AddItem(dcoltra)
-
-    local dcolspectra = vgui.Create("DColorMixer", dcolor)
-    dcolspectra:SetAlphaBar(false)
-    dcolspectra:SetWangs(false)
-    dcolspectra:SetPalette(false)
-    dcolspectra:SetLabel("Custom special traitor color:")
-    dcolspectra:SetConVarR("ttt_custom_spec_tra_color_r")
-    dcolspectra:SetConVarG("ttt_custom_spec_tra_color_g")
-    dcolspectra:SetConVarB("ttt_custom_spec_tra_color_b")
-    dcolspectra.ValueChanged = function(col)
-        timer.Simple(0.5, function() UpdateRoleColours() end)
-    end
-
-    dcolor:AddItem(dcolspectra)
-
-    local dcoldet = vgui.Create("DColorMixer", dcolor)
-    dcoldet:SetAlphaBar(false)
-    dcoldet:SetWangs(false)
-    dcoldet:SetPalette(false)
-    dcoldet:SetLabel("Custom detective color:")
-    dcoldet:SetConVarR("ttt_custom_det_color_r")
-    dcoldet:SetConVarG("ttt_custom_det_color_g")
-    dcoldet:SetConVarB("ttt_custom_det_color_b")
-    dcoldet.ValueChanged = function(col)
-        timer.Simple(0.5, function() UpdateRoleColours() end)
-    end
-
-    dcolor:AddItem(dcoldet)
-
-    local dcolspecdet = vgui.Create("DColorMixer", dcolor)
-    dcolspecdet:SetAlphaBar(false)
-    dcolspecdet:SetWangs(false)
-    dcolspecdet:SetPalette(false)
-    dcolspecdet:SetLabel("Custom detective color:")
-    dcolspecdet:SetConVarR("ttt_custom_spec_det_color_r")
-    dcolspecdet:SetConVarG("ttt_custom_spec_det_color_g")
-    dcolspecdet:SetConVarB("ttt_custom_spec_det_color_b")
-    dcolspecdet.ValueChanged = function(col)
-        timer.Simple(0.5, function() UpdateRoleColours() end)
-    end
-
-    dcolor:AddItem(dcolspecdet)
-
-    local dcoljes = vgui.Create("DColorMixer", dcolor)
-    dcoljes:SetAlphaBar(false)
-    dcoljes:SetWangs(false)
-    dcoljes:SetPalette(false)
-    dcoljes:SetLabel("Custom jester color:")
-    dcoljes:SetConVarR("ttt_custom_jes_color_r")
-    dcoljes:SetConVarG("ttt_custom_jes_color_g")
-    dcoljes:SetConVarB("ttt_custom_jes_color_b")
-    dcoljes.ValueChanged = function(col)
-        timer.Simple(0.5, function() UpdateRoleColours() end)
-    end
-
-    dcolor:AddItem(dcoljes)
-
-    local dcolind = vgui.Create("DColorMixer", dcolor)
-    dcolind:SetAlphaBar(false)
-    dcolind:SetWangs(false)
-    dcolind:SetPalette(false)
-    dcolind:SetLabel("Custom independent color:")
-    dcolind:SetConVarR("ttt_custom_ind_color_r")
-    dcolind:SetConVarG("ttt_custom_ind_color_g")
-    dcolind:SetConVarB("ttt_custom_ind_color_b")
-    dcolind.ValueChanged = function(col)
-        timer.Simple(0.5, function() UpdateRoleColours() end)
-    end
-
-    dcolor:AddItem(dcolind)
-
-    local dcolmon = vgui.Create("DColorMixer", dcolor)
-    dcolmon:SetAlphaBar(false)
-    dcolmon:SetWangs(false)
-    dcolmon:SetPalette(false)
-    dcolmon:SetLabel("Custom monster color:")
-    dcolmon:SetConVarR("ttt_custom_mon_color_r")
-    dcolmon:SetConVarG("ttt_custom_mon_color_g")
-    dcolmon:SetConVarB("ttt_custom_mon_color_b")
-    dcolmon.ValueChanged = function(col)
-        timer.Simple(0.5, function() UpdateRoleColours() end)
-    end
-
-    dcolor:AddItem(dcolmon)
-
-    dsettings:AddItem(dcolor)
-
-    --- Gameplay area
-
-    local dplay = vgui.Create("DForm", dsettings)
-    dplay:SetName(GetTranslation("set_title_play"))
-
-    cb = dplay:CheckBox(GetPTranslation("set_avoid_det", {detective = ROLE_STRINGS[ROLE_DETECTIVE]}), "ttt_avoid_detective")
-    cb:SetTooltip(GetPTranslation("set_avoid_det_tip", {detective = ROLE_STRINGS[ROLE_DETECTIVE], traitor = ROLE_STRINGS[ROLE_TRAITOR]}))
-
-    cb = dplay:CheckBox(GetTranslation("set_specmode"), "ttt_spectator_mode")
-    cb:SetTooltip(GetTranslation("set_specmode_tip"))
-
-    -- For some reason this one defaulted to on, unlike other checkboxes, so
-    -- force it to the actual value of the cvar (which defaults to off)
-    local mute = dplay:CheckBox(GetTranslation("set_mute"), "ttt_mute_team_check")
-    mute:SetValue(GetConVar("ttt_mute_team_check"):GetBool())
-    mute:SetTooltip(GetTranslation("set_mute_tip"))
-
-    dsettings:AddItem(dplay)
-
-    --- Language area
-    local dlanguage = vgui.Create("DForm", dsettings)
-    dlanguage:SetName(GetTranslation("set_title_lang"))
-
-    local dlang = vgui.Create("DComboBox", dlanguage)
-    dlang:SetConVar("ttt_language")
-
-    dlang:AddChoice("Server default", "auto")
-    for _, lang in pairs(LANG.GetLanguages()) do
-        dlang:AddChoice(string.Capitalize(lang), lang)
-    end
-    -- Why is DComboBox not updating the cvar by default?
-    dlang.OnSelect = function(idx, val, data)
-        RunConsoleCommand("ttt_language", data)
-    end
-    dlang.Think = dlang.ConVarStringThink
-
-    dlanguage:Help(GetTranslation("set_lang"))
-    dlanguage:AddItem(dlang)
-
-    dsettings:AddItem(dlanguage)
+    self:CreateConfig(dsettings)
+    HookCall("TTTSettingsConfigTabSections", nil, dsettings)
 
     dtabs:AddSheet(GetTranslation("help_settings"), dsettings, "icon16/wrench.png", false, false, GetTranslation("help_settings_tip"))
 
-    -- BEM settings
+    -- Roles
 
-    padding = dtabs:GetPadding()
-    padding = padding * 2
+    local droles = vgui.Create("DScrollPanel", dtabs)
+    droles:StretchToParent(0, 0, padding, 0)
+    droles:SetPadding(10)
 
-    dsettings = vgui.Create("DPanelList", dtabs)
-    dsettings:StretchToParent(0, 0, padding, 0)
-    dsettings:EnableVerticalScrollbar()
-    dsettings:SetPadding(10)
-    dsettings:SetSpacing(10)
+    if self:CreateRoles(droles) then
+        dtabs:AddSheet(GetTranslation("help_roles"), droles, "icon16/group.png", false, false, GetTranslation("help_roles_tip"))
+    end
 
-    -- info text
-    local dlabel = vgui.Create("DLabel", dsettings)
-    dlabel:SetText("All changes made here are clientside and will only apply to your own menu!")
-    dlabel:SetTextColor(Color(0, 0, 0, 255))
-    dsettings:AddItem(dlabel)
-
-    -- layout section
-    local dlayout = vgui.Create("DForm", dsettings)
-    dlayout:SetName("Item List Layout")
-
-    dlayout:NumSlider("Number of columns (def. 4)", "ttt_bem_cols", 1, 20, 0)
-    dlayout:NumSlider("Number of rows (def. 5)", "ttt_bem_rows", 1, 20, 0)
-    dlayout:NumSlider("Icon size (def. 64)", "ttt_bem_size", 32, 128, 0)
-
-    dsettings:AddItem(dlayout)
-
-    -- marker section
-    local dmarker = vgui.Create("DForm", dsettings)
-    dmarker:SetName("Item Marker Settings")
-
-    dmarker:CheckBox("Show slot marker", "ttt_bem_marker_slot")
-    dmarker:CheckBox("Show custom item marker", "ttt_bem_marker_custom")
-    dmarker:CheckBox("Show favourite item marker", "ttt_bem_marker_fav")
-    dmarker:CheckBox("Show loadout items", "ttt_show_loadout_equipment")
-    dmarker:CheckBox("Sort alphabetically", "ttt_sort_alphabetically")
-    dmarker:CheckBox("Sort by slot first", "ttt_sort_by_slot_first")
-
-    dsettings:AddItem(dmarker)
-
-    dtabs:AddSheet("BEM settings", dsettings, "icon16/cog.png", false, false, "Better Equipment Menu Settings")
-
-    -- Hitmarkers Settings
-
-    padding = dtabs:GetPadding()
-    padding = padding * 2
-
-    dsettings = vgui.Create("DPanelList", dtabs)
-    dsettings:StretchToParent(0, 0, padding, 0)
-    dsettings:EnableVerticalScrollbar()
-    dsettings:SetPadding(10)
-    dsettings:SetSpacing(10)
-
-    dlabel = vgui.Create("DLabel", dsettings)
-    dlabel:SetText("All changes made here are clientside and will only apply to your own menu!\nUse the !hmcolor command in chat to change the marker colors.\nUse the !hmcritcolor command in chat to change the color of critical hit markers.")
-    dlabel:SetTextColor(Color(0, 0, 0, 255))
-    dlabel:SizeToContents()
-    dsettings:AddItem(dlabel)
-
-    local dmarkers = vgui.Create("DForm", dsettings)
-    dmarkers:SetName("Hitmarkers")
-
-    dmarkers:CheckBox("Enabled", "hm_enabled")
-    dmarkers:CheckBox("Show criticals", "hm_showcrits")
-    dmarkers:CheckBox("Play hit sound", "hm_hitsound")
-
-    dsettings:AddItem(dmarkers)
-
-    dtabs:AddSheet("HM settings", dsettings, "icon16/cross.png", false, false, "Hitmarker settings")
-
-    hook.Call("TTTSettingsTabs", GAMEMODE, dtabs)
+    HookCall("TTTSettingsTabs", GAMEMODE, dtabs)
 
     dframe:MakePopup()
 end
@@ -819,8 +489,8 @@ local function ShowTutorialPage(pnl, page)
         roleIcon:SetPos(roleIcon:GetX() - 3, roleIcon:GetY() + 7)
 
         -- If nobody wants to handle this page themselves,
-        if not hook.Call("TTTTutorialRolePage", nil, role, pnl, titleLabel, roleIcon) then
-            local roleText = hook.Call("TTTTutorialRoleText", nil, role, titleLabel, roleIcon)
+        if not HookCall("TTTTutorialRolePage", nil, role, pnl, titleLabel, roleIcon) then
+            local roleText = HookCall("TTTTutorialRoleText", nil, role, titleLabel, roleIcon)
 
             local html = vgui.Create("DHTML", pnl)
             html:Dock(FILL)
@@ -846,7 +516,7 @@ local function ShowTutorialPage(pnl, page)
             end
 
             -- Allow other addons to add more information to this role's tutorial text
-            local updatedHtml = hook.Call("TTTTutorialRoleTextExtra", nil, role, titleLabel, roleIcon, htmlData)
+            local updatedHtml = HookCall("TTTTutorialRoleTextExtra", nil, role, titleLabel, roleIcon, htmlData)
             if updatedHtml and #updatedHtml > 0 then
                 htmlData = updatedHtml
             end
@@ -858,7 +528,7 @@ local function ShowTutorialPage(pnl, page)
         end
 
         -- Allow other addons to add more information to this role's tutorial page
-        hook.Call("TTTTutorialRolePageExtra", nil, role, pnl, titleLabel, roleIcon)
+        HookCall("TTTTutorialRolePageExtra", nil, role, pnl, titleLabel, roleIcon)
     end
 end
 
@@ -870,7 +540,7 @@ local function ShowRoleTutorial(role)
     end
 
     -- Otherwise check if there are special rules for this role
-    if hook.Call("TTTTutorialRoleEnabled", nil, role) then
+    if HookCall("TTTTutorialRoleEnabled", nil, role) then
         return true
     end
     return false
@@ -1004,4 +674,379 @@ function HELPSCRN:CreateTutorial(parent)
 
         pageSelect:ChooseOptionID(page)
     end
+end
+
+function HELPSCRN:CreateConfig(dsettings)
+    --- Interface area
+
+    local dgui = vgui.Create("DForm", dsettings)
+    dgui:Dock(TOP)
+    dgui:DockMargin(0, 0, 5, 10)
+    dgui:SetName(GetTranslation("set_title_gui"))
+
+    local cb = nil
+
+    dgui:CheckBox(GetTranslation("set_tips"), "ttt_tips_enable")
+
+    cb = dgui:NumSlider(GetTranslation("set_startpopup"), "ttt_startpopup_duration", 0, 60, 0)
+    if cb.Label then
+        cb.Label:SetWrap(true)
+    end
+    cb:SetTooltip(GetTranslation("set_startpopup_tip"))
+
+    cb = dgui:NumSlider(GetTranslation("set_cross_opacity"), "ttt_ironsights_crosshair_opacity", 0, 1, 1)
+    if cb.Label then
+        cb.Label:SetWrap(true)
+    end
+    cb:SetTooltip(GetTranslation("set_cross_opacity"))
+
+    cb = dgui:NumSlider(GetTranslation("set_cross_brightness"), "ttt_crosshair_brightness", 0, 1, 1)
+    if cb.Label then
+        cb.Label:SetWrap(true)
+    end
+
+    cb = dgui:NumSlider(GetTranslation("set_cross_size"), "ttt_crosshair_size", 0.1, 3, 1)
+    if cb.Label then
+        cb.Label:SetWrap(true)
+    end
+
+    dgui:CheckBox(GetTranslation("set_cross_disable"), "ttt_disable_crosshair")
+
+    dgui:CheckBox(GetTranslation("set_minimal_id"), "ttt_minimal_targetid")
+
+    dgui:CheckBox(GetTranslation("set_healthlabel"), "ttt_health_label")
+
+    cb = dgui:CheckBox(GetTranslation("set_lowsights"), "ttt_ironsights_lowered")
+    cb:SetTooltip(GetTranslation("set_lowsights_tip"))
+
+    cb = dgui:CheckBox(GetTranslation("set_fastsw"), "ttt_weaponswitcher_fast")
+    cb:SetTooltip(GetTranslation("set_fastsw_tip"))
+
+    cb = dgui:CheckBox(GetTranslation("set_fastsw_menu"), "ttt_weaponswitcher_displayfast")
+    cb:SetTooltip(GetTranslation("set_fastswmenu_tip"))
+
+    cb = dgui:CheckBox(GetTranslation("set_wswitch"), "ttt_weaponswitcher_stay")
+    cb:SetTooltip(GetTranslation("set_wswitch_tip"))
+
+    cb = dgui:CheckBox(GetTranslation("set_swselect"), "ttt_weaponswitcher_close")
+    cb:SetTooltip(GetTranslation("set_swselect_tip"))
+
+    cb = dgui:CheckBox(GetTranslation("set_cues"), "ttt_cl_soundcues")
+
+    cb = dgui:CheckBox(GetTranslation("set_raw_karma"), "ttt_show_raw_karma_value")
+    cb:SetTooltip(GetTranslation("set_raw_karma_tip"))
+
+    cb = dgui:CheckBox(GetTranslation("set_karma_total_pct"), "ttt_show_karma_total_pct")
+    cb:SetTooltip(GetTranslation("set_karma_total_pct_tip"))
+
+    cb = dgui:CheckBox(GetTranslation("set_hide_role"), "ttt_hide_role")
+    cb:SetTooltip(GetTranslation("set_hide_role_tip"))
+
+    cb = dgui:CheckBox(GetTranslation("set_hide_ammo"), "ttt_hide_ammo")
+    cb:SetTooltip(GetTranslation("set_hide_ammo_tip"))
+
+    cb = dgui:TextEntry(GetTranslation("set_radio_button"), "ttt_radio_button")
+    cb:SetTooltip(GetTranslation("set_radio_button_tip"))
+
+    cb = dgui:CheckBox(GetTranslation("set_bypass_culling"), "ttt_bypass_culling")
+    cb:SetTooltip(GetTranslation("set_bypass_culling_tip"))
+
+    HookCall("TTTSettingsConfigTabFields", nil, "Interface", dgui)
+
+    dsettings:AddItem(dgui)
+
+    --- Gameplay area
+
+    local dplay = vgui.Create("DForm", dsettings)
+    dplay:Dock(TOP)
+    dplay:DockMargin(0, 0, 5, 10)
+    dplay:SetName(GetTranslation("set_title_play"))
+
+    cb = dplay:CheckBox(GetPTranslation("set_avoid_det", {detective = ROLE_STRINGS[ROLE_DETECTIVE]}), "ttt_avoid_detective")
+    cb:SetTooltip(GetPTranslation("set_avoid_det_tip", {detective = ROLE_STRINGS[ROLE_DETECTIVE], traitor = ROLE_STRINGS[ROLE_TRAITOR]}))
+
+    cb = dplay:CheckBox(GetTranslation("set_specmode"), "ttt_spectator_mode")
+    cb:SetTooltip(GetTranslation("set_specmode_tip"))
+
+    -- For some reason this one defaulted to on, unlike other checkboxes, so
+    -- force it to the actual value of the cvar (which defaults to off)
+    local mute = dplay:CheckBox(GetTranslation("set_mute"), "ttt_mute_team_check")
+    mute:SetValue(GetConVar("ttt_mute_team_check"):GetBool())
+    mute:SetTooltip(GetTranslation("set_mute_tip"))
+
+    HookCall("TTTSettingsConfigTabFields", nil, "Gameplay", dplay)
+
+    dsettings:AddItem(dplay)
+
+    -- Color area
+
+    local dcolor = vgui.Create("DForm", dsettings)
+    dcolor:Dock(TOP)
+    dcolor:DockMargin(0, 0, 5, 10)
+    dcolor:DoExpansion(false)
+    dcolor:SetName(GetTranslation("set_color_mode"))
+
+    local dcol = vgui.Create("DComboBox", dcolor)
+    dcol:SetConVar("ttt_color_mode")
+    dcol:SetSortItems(false)
+    dcol:AddChoice("Default", "default")
+    dcol:AddChoice("Simplified", "simple")
+    dcol:AddChoice("Protanomaly", "protan")
+    dcol:AddChoice("Deuteranomaly", "deutan")
+    dcol:AddChoice("Tritanomaly", "tritan")
+    dcol:AddChoice("Custom", "custom")
+
+    dcol.OnSelect = function(idx, val, data)
+        local mode = data -- For some reason it grabs the name and not the actual data so fix that here
+        if mode == "Default" then mode = "default"
+        elseif mode == "Simplified" then mode = "simple"
+        elseif mode == "Protanomaly" then mode = "protan"
+        elseif mode == "Deuteranomaly" then mode = "deutan"
+        elseif mode == "Tritanomaly" then mode = "tritan"
+        elseif mode == "Custom" then mode = "custom"
+        end
+        RunConsoleCommand("ttt_color_mode", mode)
+        timer.Simple(0.5, function() UpdateRoleColours() end)
+    end
+
+    dcolor:AddItem(dcol)
+
+    local dcolinn = vgui.Create("DColorMixer", dcolor)
+    dcolinn:SetAlphaBar(false)
+    dcolinn:SetWangs(false)
+    dcolinn:SetPalette(false)
+    dcolinn:SetLabel("Custom innocent color:")
+    dcolinn:SetConVarR("ttt_custom_inn_color_r")
+    dcolinn:SetConVarG("ttt_custom_inn_color_g")
+    dcolinn:SetConVarB("ttt_custom_inn_color_b")
+    dcolinn.ValueChanged = function(col)
+        timer.Simple(0.5, function() UpdateRoleColours() end)
+    end
+
+    dcolor:AddItem(dcolinn)
+
+    local dcolspecinn = vgui.Create("DColorMixer", dcolor)
+    dcolspecinn:SetAlphaBar(false)
+    dcolspecinn:SetWangs(false)
+    dcolspecinn:SetPalette(false)
+    dcolspecinn:SetLabel("Custom special innocent color:")
+    dcolspecinn:SetConVarR("ttt_custom_spec_inn_color_r")
+    dcolspecinn:SetConVarG("ttt_custom_spec_inn_color_g")
+    dcolspecinn:SetConVarB("ttt_custom_spec_inn_color_b")
+    dcolspecinn.ValueChanged = function(col)
+        timer.Simple(0.5, function() UpdateRoleColours() end)
+    end
+
+    dcolor:AddItem(dcolspecinn)
+
+    local dcoltra = vgui.Create("DColorMixer", dcolor)
+    dcoltra:SetAlphaBar(false)
+    dcoltra:SetWangs(false)
+    dcoltra:SetPalette(false)
+    dcoltra:SetLabel("Custom traitor color:")
+    dcoltra:SetConVarR("ttt_custom_tra_color_r")
+    dcoltra:SetConVarG("ttt_custom_tra_color_g")
+    dcoltra:SetConVarB("ttt_custom_tra_color_b")
+    dcoltra.ValueChanged = function(col)
+        timer.Simple(0.5, function() UpdateRoleColours() end)
+    end
+
+    dcolor:AddItem(dcoltra)
+
+    local dcolspectra = vgui.Create("DColorMixer", dcolor)
+    dcolspectra:SetAlphaBar(false)
+    dcolspectra:SetWangs(false)
+    dcolspectra:SetPalette(false)
+    dcolspectra:SetLabel("Custom special traitor color:")
+    dcolspectra:SetConVarR("ttt_custom_spec_tra_color_r")
+    dcolspectra:SetConVarG("ttt_custom_spec_tra_color_g")
+    dcolspectra:SetConVarB("ttt_custom_spec_tra_color_b")
+    dcolspectra.ValueChanged = function(col)
+        timer.Simple(0.5, function() UpdateRoleColours() end)
+    end
+
+    dcolor:AddItem(dcolspectra)
+
+    local dcoldet = vgui.Create("DColorMixer", dcolor)
+    dcoldet:SetAlphaBar(false)
+    dcoldet:SetWangs(false)
+    dcoldet:SetPalette(false)
+    dcoldet:SetLabel("Custom detective color:")
+    dcoldet:SetConVarR("ttt_custom_det_color_r")
+    dcoldet:SetConVarG("ttt_custom_det_color_g")
+    dcoldet:SetConVarB("ttt_custom_det_color_b")
+    dcoldet.ValueChanged = function(col)
+        timer.Simple(0.5, function() UpdateRoleColours() end)
+    end
+
+    dcolor:AddItem(dcoldet)
+
+    local dcolspecdet = vgui.Create("DColorMixer", dcolor)
+    dcolspecdet:SetAlphaBar(false)
+    dcolspecdet:SetWangs(false)
+    dcolspecdet:SetPalette(false)
+    dcolspecdet:SetLabel("Custom detective color:")
+    dcolspecdet:SetConVarR("ttt_custom_spec_det_color_r")
+    dcolspecdet:SetConVarG("ttt_custom_spec_det_color_g")
+    dcolspecdet:SetConVarB("ttt_custom_spec_det_color_b")
+    dcolspecdet.ValueChanged = function(col)
+        timer.Simple(0.5, function() UpdateRoleColours() end)
+    end
+
+    dcolor:AddItem(dcolspecdet)
+
+    local dcoljes = vgui.Create("DColorMixer", dcolor)
+    dcoljes:SetAlphaBar(false)
+    dcoljes:SetWangs(false)
+    dcoljes:SetPalette(false)
+    dcoljes:SetLabel("Custom jester color:")
+    dcoljes:SetConVarR("ttt_custom_jes_color_r")
+    dcoljes:SetConVarG("ttt_custom_jes_color_g")
+    dcoljes:SetConVarB("ttt_custom_jes_color_b")
+    dcoljes.ValueChanged = function(col)
+        timer.Simple(0.5, function() UpdateRoleColours() end)
+    end
+
+    dcolor:AddItem(dcoljes)
+
+    local dcolind = vgui.Create("DColorMixer", dcolor)
+    dcolind:SetAlphaBar(false)
+    dcolind:SetWangs(false)
+    dcolind:SetPalette(false)
+    dcolind:SetLabel("Custom independent color:")
+    dcolind:SetConVarR("ttt_custom_ind_color_r")
+    dcolind:SetConVarG("ttt_custom_ind_color_g")
+    dcolind:SetConVarB("ttt_custom_ind_color_b")
+    dcolind.ValueChanged = function(col)
+        timer.Simple(0.5, function() UpdateRoleColours() end)
+    end
+
+    dcolor:AddItem(dcolind)
+
+    local dcolmon = vgui.Create("DColorMixer", dcolor)
+    dcolmon:SetAlphaBar(false)
+    dcolmon:SetWangs(false)
+    dcolmon:SetPalette(false)
+    dcolmon:SetLabel("Custom monster color:")
+    dcolmon:SetConVarR("ttt_custom_mon_color_r")
+    dcolmon:SetConVarG("ttt_custom_mon_color_g")
+    dcolmon:SetConVarB("ttt_custom_mon_color_b")
+    dcolmon.ValueChanged = function(col)
+        timer.Simple(0.5, function() UpdateRoleColours() end)
+    end
+
+    dcolor:AddItem(dcolmon)
+
+    HookCall("TTTSettingsConfigTabFields", nil, "Color", dcolor)
+
+    dsettings:AddItem(dcolor)
+
+    --- Language area
+
+    local dlanguage = vgui.Create("DForm", dsettings)
+    dlanguage:Dock(TOP)
+    dlanguage:DockMargin(0, 0, 5, 10)
+    dlanguage:DoExpansion(false)
+    dlanguage:SetName(GetTranslation("set_title_lang"))
+
+    local dlang = vgui.Create("DComboBox", dlanguage)
+    dlang:SetConVar("ttt_language")
+
+    dlang:AddChoice("Server default", "auto")
+    for _, lang in pairs(LANG.GetLanguages()) do
+        dlang:AddChoice(string.Capitalize(lang), lang)
+    end
+    -- Why is DComboBox not updating the cvar by default?
+    dlang.OnSelect = function(idx, val, data)
+        RunConsoleCommand("ttt_language", data)
+    end
+    dlang.Think = dlang.ConVarStringThink
+
+    dlanguage:Help(GetTranslation("set_lang"))
+    dlanguage:AddItem(dlang)
+
+    HookCall("TTTSettingsConfigTabFields", nil, "Language", dlanguage)
+
+    dsettings:AddItem(dlanguage)
+
+    -- BEM settings
+
+    local dbemsettings = vgui.Create("DForm", dsettings)
+    dbemsettings:Dock(TOP)
+    dbemsettings:DockMargin(0, 0, 5, 10)
+    dbemsettings:DoExpansion(false)
+    dbemsettings:SetName("BEM settings")
+
+    local dlabel = vgui.Create("DLabel", dbemsettings)
+    dlabel:SetText("All changes made here are clientside and will only apply to your own menu!")
+    dlabel:SetTextColor(Color(0, 0, 0, 255))
+    dbemsettings:AddItem(dlabel)
+
+    dbemsettings:NumSlider("Number of columns (def. 4)", "ttt_bem_cols", 1, 20, 0)
+    dbemsettings:NumSlider("Number of rows (def. 5)", "ttt_bem_rows", 1, 20, 0)
+    dbemsettings:NumSlider("Icon size (def. 64)", "ttt_bem_size", 32, 128, 0)
+
+    dbemsettings:CheckBox("Show slot marker", "ttt_bem_marker_slot")
+    dbemsettings:CheckBox("Show custom item marker", "ttt_bem_marker_custom")
+    dbemsettings:CheckBox("Show favourite item marker", "ttt_bem_marker_fav")
+    dbemsettings:CheckBox("Show loadout items", "ttt_show_loadout_equipment")
+    dbemsettings:CheckBox("Sort alphabetically", "ttt_sort_alphabetically")
+    dbemsettings:CheckBox("Sort by slot first", "ttt_sort_by_slot_first")
+
+    HookCall("TTTSettingsConfigTabFields", nil, "BEM", dbemsettings)
+
+    dsettings:AddItem(dbemsettings)
+
+    -- Hitmarkers settings
+
+    local dmarkers = vgui.Create("DForm", dsettings)
+    dmarkers:Dock(TOP)
+    dmarkers:DockMargin(0, 0, 5, 10)
+    dmarkers:DoExpansion(false)
+    dmarkers:SetName("Hitmarkers settings")
+
+    dlabel:SetText("All changes made here are clientside and will only apply to your own menu!\nUse the !hmcolor command in chat to change the marker colors.\nUse the !hmcritcolor command in chat to change the color of critical hit markers.")
+    dlabel:SetTextColor(Color(0, 0, 0, 255))
+    dlabel:SizeToContents()
+    dmarkers:AddItem(dlabel)
+
+    dmarkers:CheckBox("Enabled", "hm_enabled")
+    dmarkers:CheckBox("Show criticals", "hm_showcrits")
+    dmarkers:CheckBox("Play hit sound", "hm_hitsound")
+
+    HookCall("TTTSettingsConfigTabFields", nil, "Hitmarkers", dmarkers)
+
+    dsettings:AddItem(dmarkers)
+end
+
+function HELPSCRN:CreateRoles(droles)
+    -- Preprocess the roles so we can sort them by name later
+    local enabled_roles = {}
+    for r = ROLE_NONE + 1, ROLE_MAX do
+        -- Skip disabled roles
+        if not DEFAULT_ROLES[r] and not GetGlobalBool("ttt_" .. ROLE_STRINGS_RAW[r] .. "_enabled", false) then continue end
+
+        table.insert(enabled_roles, {role = r, role_string = ROLE_STRINGS[r]})
+    end
+
+    local has_section = false
+    -- Add a section for each role that has settings, in alphabetical order
+    for r, info in SortedPairsByMemberValue(enabled_roles, "role_string") do
+        local drole = vgui.Create("DForm", droles)
+        drole:Dock(TOP)
+        drole:DockMargin(0, 0, 5, 10)
+        drole:DoExpansion(false)
+        drole:SetName(info.role_string)
+
+        -- Only add a section for this role if something adds to the form
+        local add_section = HookCall("TTTSettingsRolesTabSections", nil, info.role, drole)
+        if add_section then
+            has_section = true
+            droles:AddItem(drole)
+        else
+            drole:Remove()
+        end
+    end
+
+    return has_section
 end
