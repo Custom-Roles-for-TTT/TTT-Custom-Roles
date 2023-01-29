@@ -18,7 +18,7 @@ local GetAllPlayers = player.GetAll
 local StringUpper = string.upper
 local StringFormat = string.format
 local StringSub = string.sub
-local StringStartWith = string.StartWith
+local StringStartsWith = string.StartsWith
 local StringTrim = string.Trim
 local StringTrimLeft = string.TrimLeft
 
@@ -466,7 +466,7 @@ if SERVER then
             line = StringTrim(line)
             if #line == 0 then continue end
 
-            if StringStartWith(line, "exec ") then
+            if StringStartsWith(line, "exec ") then
                 local subFile = StringTrimLeft(line, "exec ")
                 util.ExecFile(subFile, errorIfMissing)
                 continue
