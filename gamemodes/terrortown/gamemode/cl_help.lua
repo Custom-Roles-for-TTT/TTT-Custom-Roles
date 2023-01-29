@@ -1019,6 +1019,7 @@ function HELPSCRN:CreateConfig(dsettings)
     dsettings:AddItem(dmarkers)
 end
 
+local roleExpandState = {}
 function HELPSCRN:CreateRoles(droles)
     -- Preprocess the roles so we can sort them by name later
     local enabled_roles = {}
@@ -1035,8 +1036,12 @@ function HELPSCRN:CreateRoles(droles)
         local drole = vgui.Create("DForm", droles)
         drole:Dock(TOP)
         drole:DockMargin(0, 0, 5, 10)
-        drole:DoExpansion(false)
+        drole:DoExpansion(roleExpandState[r] or false)
         drole:SetName(info.role_string)
+        -- Keep track of the expanded state so you don't have to open it multiple times
+        drole.OnToggle = function(panel, state)
+            roleExpandState[r] = state
+        end
 
         -- Only add a section for this role if something adds to the form
         local add_section = HookCall("TTTSettingsRolesTabSections", nil, info.role, drole)

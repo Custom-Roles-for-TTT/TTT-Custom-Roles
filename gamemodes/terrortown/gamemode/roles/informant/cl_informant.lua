@@ -15,12 +15,28 @@ hook.Add("Initialize", "Informant_Translations_Initialize", function()
     LANG.AddToLanguage("english", "infscanner_role", "ROLE")
     LANG.AddToLanguage("english", "infscanner_track", "TRACK")
 
+    -- ConVars
+    LANG.AddToLanguage("english", "informant_config_show_radius", "Show tracking radius circle")
+
     -- Popup
     LANG.AddToLanguage("english", "info_popup_informant", [[You are {role}! {comrades}
 
 Hold out your scanner while looking at a player to learn more about them.
 
 Press {menukey} to receive your special equipment!]])
+end)
+
+-------------
+-- CONVARS --
+-------------
+
+local informant_show_scan_radius = CreateClientConVar("ttt_informant_show_scan_radius", "0", true, false, "Whether the scan radius circle should show", 0, 1)
+
+hook.Add("TTTSettingsRolesTabSections", "TTTSettingsRolesTabSections_Informant", function(role, parentForm)
+    if role ~= ROLE_INFORMANT then return end
+
+    parentForm:CheckBox(LANG.GetTranslation("informant_config_show_radius"), "ttt_informant_show_scan_radius")
+    return true
 end)
 
 ---------------
@@ -198,10 +214,11 @@ hook.Add("HUDPaint", "Informant_HUDPaint", function()
 
         local state = ply:GetNWInt("TTTInformantScannerState", INFORMANT_SCANNER_IDLE)
 
+        if informant_show_scan_radius:GetBool() then
+            surface.DrawCircle(ScrW() / 2, ScrH() / 2, math.Round(ScrW() / 6), 0, 255, 0, 155)
+        end
+
         if state == INFORMANT_SCANNER_IDLE then
-            if GetGlobalBool("ttt_informant_show_scan_radius", false) then
-                surface.DrawCircle(ScrW() / 2, ScrH() / 2, math.Round(ScrW() / 6), 0, 255, 0, 155)
-            end
             return
         end
 
