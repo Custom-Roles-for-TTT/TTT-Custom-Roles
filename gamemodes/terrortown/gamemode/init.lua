@@ -83,7 +83,7 @@ local StringFormat = string.format
 local StringLower = string.lower
 local StringUpper = string.upper
 local StringSub = string.sub
-local StringStartWith = string.StartWith
+local StringStartsWith = string.StartsWith
 
 -- Round times
 CreateConVar("ttt_roundtime_minutes", "10", FCVAR_NOTIFY)
@@ -2042,7 +2042,7 @@ hook.Add("PlayerDeath", "TTT_ClientDeathNotify", function(victim, inflictor, att
     elseif attacker == victim then
         reason = "suicide"
     elseif IsValid(inflictor) then
-        if victim:IsPlayer() and (StringStartWith(inflictor:GetClass(), "prop_physics") or inflictor:GetClass() == "prop_dynamic") then
+        if victim:IsPlayer() and (StringStartsWith(inflictor:GetClass(), "prop_physics") or inflictor:GetClass() == "prop_dynamic") then
             -- If the killer is also a prop
             reason = "prop"
         elseif IsValid(attacker) then
