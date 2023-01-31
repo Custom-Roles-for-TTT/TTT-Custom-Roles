@@ -123,6 +123,8 @@ function HELPSCRN:Show()
 
     if self:CreateRoles(droles) then
         dtabs:AddSheet(GetTranslation("help_roles"), droles, "icon16/group.png", false, false, GetTranslation("help_roles_tip"))
+    else
+        droles:Remove()
     end
 
     HookCall("TTTSettingsTabs", GAMEMODE, dtabs)
