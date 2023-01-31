@@ -1344,7 +1344,7 @@ function GetSprintMultiplier(ply, sprinting)
     local mult = 1
     if IsValid(ply) then
         local mults = {}
-        CallHook("TTTSpeedMultiplier", nil, ply, mults)
+        CallHook("TTTSpeedMultiplier", nil, ply, mults, sprinting)
         for _, m in pairs(mults) do
             mult = mult * m
         end

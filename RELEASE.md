@@ -22,6 +22,7 @@
 - Added new `TTTSettingsConfigTabFields` hook to make it easier to add to the existing help menu's Config tab sections
 - Added new `TTTSettingsConfigTabSections` hook to make it easier to add new sections to the help menu's Config tab
 - Added new `TTTSettingsRolesTabSections` hook to allow developers to add a configuration section for a role to the help menu's Roles tab
+- Added new `sprinting` parameter to the `TTTSpeedMultiplier` hook
 - Changed the help menu's Config tab to use `DScrollPanel` instead of the deprecated `DPanelList`
 - Fixed `plymeta:IsZombieAlly` returning `true` for all independent roles rather than just other zombies and the mad scientist
 
