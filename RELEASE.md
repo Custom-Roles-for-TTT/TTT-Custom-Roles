@@ -10,11 +10,13 @@
 ### Changes
 - Changed BEM and Hitmarkers settings to be in the Settings tabs instead of in their own tabs
 - Renamed the "Settings" tab of the Help/Settings dialog to "Config" to make it slightly less confusing
+- Changed informant's `ttt_informant_show_scan_radius` convar to be client-side and added it to the new `Roles` tab in the Help and Settings menu
 
 ### Fixes
 - Fixed some traitor role weapons being randomly removed from the shop when shop randomization is enabled
 - Fixed `ttt_vampire_drain_mute_target` only blocking messages the first time
 - Fixed all independent roles seeing each other on the scoreboard
+- Fixed informant's scan radius circle disappearing when the scan was in progress
 
 ### Developer
 - Added new `TTTScoringWinTitleOverride` hook for non-role addons to override the title and color shown on round summary screens

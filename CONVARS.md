@@ -2,6 +2,7 @@
 
 ## Table of Contents
 1. [Server Configurations](#Server-Configurations)
+1. [Client Configurations](#Client-Configurations)
 1. [Role Weapon Shop](#Role-Weapon-Shop)
    1. [Configuration by UI](#Configuration-by-UI)
        1. [Explanation](#Explanation)
@@ -259,7 +260,6 @@ ttt_informant_scanner_time                  8       // The amount of time (in se
 ttt_informant_scanner_float_time            1       // The amount of time (in seconds) it takes for the informant's scanner to lose it's target without line of sight
 ttt_informant_scanner_cooldown              3       // The amount of time (in seconds) the informant's tracker goes on cooldown for after losing it's target
 ttt_informant_scanner_distance              2500    // The maximum distance away the scanner target can be
-ttt_informant_show_scan_radius              0       // Whether to show the ring that shows the approximate radius of the informant's scanner
 
 // ----------------------------------------
 
@@ -822,6 +822,20 @@ ttt_player_set_color                        1       // Whether player colors are
 ```
 
 Thanks to [KarlOfDuty](https://github.com/KarlOfDuty) for his original version of this document, [here](https://github.com/KarlOfDuty/TTT-Custom-Roles/blob/patch-1/README.md).
+
+## Client Configurations
+
+The below role settings are for each player to set individually. They are all available on the F1 Help and Settings menu in the Roles tab
+
+```cpp
+// ----------------------------------------
+// Custom Role Settings
+// ----------------------------------------
+
+// TRAITOR TEAM SETTINGS
+// Informant
+ttt_informant_show_scan_radius              0       // Whether to show the ring that shows the approximate radius of the informant's scanner
+```
 
 ## Role Weapon Shop
 
