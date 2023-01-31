@@ -591,13 +591,14 @@ Called when a player should be shown a role-specific spectator HUD, allowing tha
 - *client* - The local player
 - *tgt* - The target playing being spectated
 
-### TTTSpeedMultiplier(ply, mults)
+### TTTSpeedMultiplier(ply, mults, sprinting)
 Called when determining what speed the player should be moving at.\
 *Realm:* Client and Server\
 *Added in:* 1.0.0\
 *Parameters:*
 - *ply* - The target player
 - *mults* - The table of speed multipliers that should be applied to this player. Insert any multipliers you would like to apply to the target player into this table
+- *sprinting* - Whether the player is currently sprinting *(Added in 1.7.3)*
 
 ### TTTSprintStaminaPost(ply, stamina, sprintTimer, consumption)
 Called after a player's sprint stamina is reduced. Return value is the new stamina value for the player.\
