@@ -57,6 +57,10 @@ local FleshSound = {
     "cupid/impact_arrow_flesh_4.wav"
 }
 
+local CollisionIgnoreClasses = {
+    "trigger_*"
+}
+
 if SERVER then
     for _, s in ipairs(StickSound) do
         resource.AddSingleFile("sound/" .. s)
@@ -64,6 +68,15 @@ if SERVER then
     for _, s in ipairs(FleshSound) do
         resource.AddSingleFile("sound/" .. s)
     end
+end
+
+local function ShouldIgnoreCollision(ent)
+    for _, c in ipairs(CollisionIgnoreClasses) do
+        if string.gmatch(ent:GetClass(), c) then
+            return true
+        end
+    end
+    return false
 end
 
 function ENT:Touch(ent)
@@ -160,7 +173,7 @@ function ENT:Touch(ent)
         end
 
         self:Remove()
-    else
+    elseif not ShouldIgnoreCollision(ent) then
         self:SetParent(ent)
         sound.Play(table.Random(StickSound), tr.HitPos)
 
