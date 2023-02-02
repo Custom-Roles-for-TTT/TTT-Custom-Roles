@@ -145,7 +145,7 @@ function plymeta:DrunkJoinLosingTeam()
     if GetConVar("ttt_multiple_jesters_independents"):GetBool() then
         -- Multiple jesters and independents
         jestersIndependents = math.ceil(players * math.Round(GetConVar("ttt_jester_independent_pct"):GetFloat(), 3))
-        jestersIndependents = math.min(jestersIndependents, GetConVar("ttt_jester_independent_max"):GetInt())
+        jestersIndependents = math.min(jestersIndependents, GetConVar("ttt_jester_independent_max"):GetInt()) * GetConVar("ttt_jester_independent_chance"):GetFloat()
     elseif not GetConVar("ttt_single_jester_independent"):GetBool() or (singleJesIndMax > 0 and players > singleJesIndMax) then
         -- One jester AND one independent
         jestersIndependents = GetConVar("ttt_jester_chance"):GetFloat() + indChance
