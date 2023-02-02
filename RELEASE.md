@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.7.3 (Beta)
-**Released:**
+**Released: February 2nd, 2023**
 
 ### Additions
 - Added new independent role: shadow
