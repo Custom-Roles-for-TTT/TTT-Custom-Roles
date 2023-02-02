@@ -180,6 +180,7 @@ ttt_impersonator_without_detective          0       // Whether an impersonator c
 ttt_impersonator_activation_credits         0       // The number of credits to give the impersonator when they are activated
 ttt_impersonator_detective_chance           0       // The chance that a detective will spawn as a promoted impersonator instead (e.g. 0.5 = 50% chance)
 ttt_single_deputy_impersonator              0       // Whether only a single deputy or impersonator should spawn in a round
+ttt_single_deputy_impersonator_chance       0.5     // The chance that a deputy should have an opportunity to spawn instead of an impersonator (e.g. 0.7 = 70% chance for deputy, 30% chance for impersonator. Only applies if ttt_single_deputy_impersonator is enabled)
 ttt_deputy_impersonator_promote_any_death   0       // Whether deputy/impersonator should be promoted when any detective dies rather than only after all detectives have died
 
 // Hypnotist
@@ -190,6 +191,7 @@ ttt_hypnotist_device_shop_rebuyable         0       // Whether the hypnotist's d
 ttt_hypnotist_convert_detectives            0       // Whether to convert detectives and deputies (only if ttt_deputy_use_detective_icon is enabled) to impersonator instead of just a regular traitor. Does NOT convert detective team roles like paladin, medium, tracker, or sapper. Target will be automatically promoted to appear as a detective if appropriate
 ttt_hypnotist_device_time                   8       // The amount of time (in seconds) the hypnotist's device takes to use
 ttt_single_paramedic_hypnotist              0       // Whether only a single paramedic or hypnotist should spawn in a round
+ttt_single_paramedic_hypnotist_chance       0.5     // The chance that a paramedic should have an opportunity to spawn instead of a hypnotist (e.g. 0.7 = 70% chance for paramedic, 30% chance for hypnotist. Only applies if ttt_single_paramedic_hypnotist is enabled)
 
 // Assassin
 ttt_assassin_show_target_icon               0       // Whether assassins have an icon over their target's heads showing who to kill. Server or round must be restarted for changes to take effect
@@ -237,6 +239,7 @@ ttt_quack_phantom_cure                      0       // Whether to allow the quac
 ttt_quack_station_bomb                      0       // Whether the quack should be able to buy a device which converts a health station to a bomb station
 ttt_quack_station_bomb_time                 4       // The amount of time (in seconds) the station bomb takes to plant
 ttt_single_doctor_quack                     0       // Whether only a single doctor or quack should spawn in a round
+ttt_single_doctor_quack_chance              0.5     // The chance that a doctor should have an opportunity to spawn instead of a quack (e.g. 0.7 = 70% chance for doctor, 30% chance for quack. Only applies if ttt_single_doctor_quack is enabled)
 
 // Parasite
 ttt_parasite_infection_time                 45      // The time it takes in seconds for the parasite to fully infect someone
@@ -250,6 +253,7 @@ ttt_parasite_cure_mode                      2       // How to handle using a par
 ttt_parasite_cure_time                      3       // The amount of time (in seconds) the parasite cure takes to use
 ttt_parasite_credits_starting               1       // The number of credits a parasite should start with
 ttt_single_phantom_parasite                 0       // Whether only a single phantom or parasite should spawn in a round
+ttt_single_phantom_parasite_chance          0.5     // The chance that a phantom should have an opportunity to spawn instead of a parasite (e.g. 0.7 = 70% chance for phantom, 30% chance for parasite. Only applies if ttt_single_phantom_parasite is enabled)
 
 // Informant
 ttt_informant_share_scans                   1       // Whether the informant should automatically share their information with fellow traitors or not
@@ -415,6 +419,8 @@ ttt_jester_notify_sound                     0       // Whether to play a cheerin
 ttt_jester_notify_confetti                  0       // Whether to throw confetti when a jester is a killed
 ttt_jester_credits_starting                 0       // The number of credits a jester should start with
 ttt_jester_healthstation_reduce_max         1       // Whether the jester's max health should be reduced to match their current health when using a health station, instead of being healed
+ttt_single_jester_swapper                   0       // Whether only a single jester or swapper should spawn in a round (Only applies if ttt_multiple_jesters_independents is enabled)
+ttt_single_jester_swapper_chance            0.5     // The chance that a jester should have an opportunity to spawn instead of a swapper (e.g. 0.7 = 70% chance for jester, 30% chance for swapper. Only applies if ttt_single_jester_swapper is enabled)
 
 // Swapper
 ttt_swapper_respawn_health                  100     // What amount of health to give the swapper when they are killed and respawned
@@ -439,6 +445,7 @@ ttt_clown_shop_active_only                  1       // Whether the clown's shop 
 ttt_clown_shop_delay                        0       // Whether the clown's purchased shop items should be held until they activate
 ttt_clown_credits_starting                  0       // The number of credits a clown should start with
 ttt_single_drunk_clown                      0       // Whether only a single drunk or clown should spawn in a round (Only applies if ttt_single_jester_independent is disabled)
+ttt_single_drunk_clown_chance               0.5     // The chance that a drunk should have an opportunity to spawn instead of a clown (e.g. 0.7 = 70% chance for drunk, 30% chance for clown. Only applies if ttt_single_drunk_clown is enabled)
 
 // Beggar
 ttt_beggars_are_independent                 0       // Whether beggars should be treated as members of the independent team (rather than the jester team)

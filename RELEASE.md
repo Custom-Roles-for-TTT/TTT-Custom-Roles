@@ -4,8 +4,10 @@
 **Released:**
 
 ### Additions
-- Added `ttt_jester_independent_chance` convar to control the chance of a jester or independent when `ttt_multiple_jesters_independents` is enabled
-- Added `ttt_zombie_respawn_block_win` convar to control whether a player respawning as a zombie will block the end of the round (defaults to disabled)
+- Added `ttt_jester_independent_chance` convar to control the chance of a jester or independent spawning when `ttt_multiple_jesters_independents` is enabled (0.5 by default)
+- Added `ttt_zombie_respawn_block_win` convar to control whether a player respawning as a zombie will block the end of the round (disabled by default)
+- Added `ttt_single_jester_swapper` convar which prevents a jester and a swapper from spawning in the same round when `ttt_multiple_jesters_independents` is enabled (disabled by default)
+- Added `ttt_single_*_*_chance` convars which control how likely it is for one role to spawn over the other when using convars such as `ttt_single_jester_swapper` or `ttt_single_deputy_impersonator` (0.5 by default)
 
 ### Changes
 - Changed BEM and Hitmarkers settings to be in the Settings tabs instead of in their own tabs
@@ -18,6 +20,7 @@
 - Fixed `ttt_vampire_drain_mute_target` only blocking messages the first time
 - Fixed all independent roles seeing each other on the scoreboard
 - Fixed informant's scan radius circle disappearing when the scan was in progress
+- Fixed issue where the turncoat would change team if they killed themselves when `turncoat_change_innocent_kill` was enabled
 - Fixed cupid's arrow getting stuck on some maps
 
 ### Developer
