@@ -19,6 +19,7 @@
 - Fixed `ttt_vampire_drain_mute_target` only blocking messages the first time
 - Fixed all independent roles seeing each other on the scoreboard
 - Fixed informant's scan radius circle disappearing when the scan was in progress
+- Fixed issue where the turncoat would change team if they killed themselves when `turncoat_change_innocent_kill` was enabled
 
 ### Developer
 - Added new `TTTScoringWinTitleOverride` hook for non-role addons to override the title and color shown on round summary screens

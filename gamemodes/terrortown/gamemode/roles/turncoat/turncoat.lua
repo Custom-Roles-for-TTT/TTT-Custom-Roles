@@ -65,6 +65,7 @@ hook.Add("DoPlayerDeath", "Turncoat_DoPlayerDeath", function(ply, attacker, dmgi
     if not IsPlayer(attacker) then return end
     if not ply:IsInnocentTeam() then return end
     if not attacker:IsTurncoat() then return end
+    if ply == attacker then return end
     if attacker:IsTraitorTeam() then return end
 
     attacker:ChangeTurncoatTeam(" by killing " .. ROLE_STRINGS_EXT[ROLE_INNOCENT])
