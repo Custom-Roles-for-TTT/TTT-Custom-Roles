@@ -10,8 +10,8 @@ if SERVER then
     resource.AddFile("materials/models/weapons/huntingbow/steelarrow.vmt")
 end
 
-local ARROW_MINS = Vector(-0.25, -0.25, 0.25)
-local ARROW_MAXS = Vector(0.25, 0.25, 0.25)
+local ARROW_MINS = Vector(-0.3, -0.3, 0.3)
+local ARROW_MAXS = Vector(0.3, 0.3, 0.3)
 
 if SERVER then
     util.AddNetworkString("TTT_CupidPaired")

@@ -11,6 +11,7 @@
 - Changed BEM and Hitmarkers settings to be in the Settings tabs instead of in their own tabs
 - Renamed the "Settings" tab of the Help/Settings dialog to "Config" to make it slightly less confusing
 - Changed informant's `ttt_informant_show_scan_radius` convar to be client-side and added it to the new `Roles` tab in the Help and Settings menu
+- Changed cupid's arrow to make it a little easier to hit players
 
 ### Fixes
 - Fixed some traitor role weapons being randomly removed from the shop when shop randomization is enabled
