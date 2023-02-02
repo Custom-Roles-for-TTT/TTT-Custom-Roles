@@ -87,6 +87,7 @@ ttt_oldman_enabled                          0       // Whether or not the old ma
 ttt_killer_enabled                          0       // Whether or not the killer should spawn
 ttt_zombie_enabled                          0       // Whether or not the zombie should spawn
 ttt_madscientist_enabled                    0       // Whether or not the mad scientist should spawn
+ttt_shadow_enabled                          0       // Whether or not the shadow should spawn
 
 // Individual Role Spawn Weights
 ttt_hypnotist_spawn_weight                  1       // The weight assigned to spawning the hypnotist
@@ -124,6 +125,7 @@ ttt_oldman_spawn_weight                     1       // The weight assigned to sp
 ttt_killer_spawn_weight                     1       // The weight assigned to spawning the killer
 ttt_zombie_spawn_weight                     1       // The weight assigned to spawning the zombie
 ttt_madscientist_spawn_weight               1       // The weight assigned to spawning the mad scientist
+ttt_shadow_spawn_weight                     1       // The weight assigned to spawning the shadow
 // (Note: Each role is limited to one player per round.)
 
 // Individual Role Minimum Player Requirements
@@ -162,6 +164,7 @@ ttt_oldman_min_players                      0       // The minimum number of pla
 ttt_killer_min_players                      0       // The minimum number of players required to spawn the killer
 ttt_zombie_min_players                      0       // The minimum number of players required to spawn the zombie
 ttt_madscientist_min_players                0       // The minimum number of players required to spawn the mad scientist
+ttt_shadow_min_players                      0       // The minimum number of players required to spawn the shadow
 
 // ----------------------------------------
 
@@ -558,6 +561,7 @@ ttt_drunk_can_be_oldman                     1       // Whether the drunk can bec
 ttt_drunk_can_be_killer                     1       // Whether the drunk can become a killer
 ttt_drunk_can_be_zombie                     1       // Whether the drunk can become a zombie
 ttt_drunk_can_be_madscientist               1       // Whether the drunk can become a mad scientist
+ttt_drunk_can_be_shadow                     1       // Whether the drunk can become a shadow
 
 // Old Man
 ttt_oldman_drain_health_to                  0       // The amount of health to drain the old man down to. Set to 0 to disable
@@ -611,6 +615,12 @@ ttt_zombie_respawn_block_win                0       // Whether a player respawni
 ttt_madscientist_is_monster                 0       // Whether the mad scientist should be treated as a member of the monster team (rather than the independent team)
 ttt_madscientist_device_time                4       // The amount of time (in seconds) the mad scientist's device takes to use
 ttt_madscientist_respawn_enable             0       // Whether the mad scientist should respawn as a zombie when they are killed
+
+// Shadow
+ttt_shadow_start_timer                      30      // How much time (in seconds) the shadow has to find their target at the start of the round
+ttt_shadow_buffer_timer                     7       // How much time (in seconds) the shadow can stay of their target's radius without dying
+ttt_shadow_alive_radius                     8       // The radius (in meters) from the living target that the shadow has to stay within
+ttt_shadow_dead_radius                      3       // The radius (in meters) from the death target that the shadow has to stay within
 
 // ----------------------------------------
 
@@ -750,6 +760,7 @@ ttt_oldman_starting_health                  1       // The amount of health the 
 ttt_killer_starting_health                  150     // The amount of health the killer starts with
 ttt_zombie_starting_health                  100     // The amount of health the zombie starts with
 ttt_madscientist_starting_health            100     // The amount of health the mad scientist starts with
+ttt_shadow_starting_health                  100     // The amount of health the shadow starts with
 
 // Individual Role Max Health. Set to 0 or -1 to use the game's default maximum health.
 ttt_traitor_max_health                      100     // The maximum amount of health a traitor can have
@@ -790,6 +801,7 @@ ttt_oldman_max_health                       1       // The maximum amount of hea
 ttt_killer_max_health                       150     // The maximum amount of health the killer can have
 ttt_zombie_max_health                       100     // The maximum amount of health the zombie can have
 ttt_madscientist_max_health                 100     // The maximum amount of health the mad scientist can have
+ttt_shadow_max_health                       100     // The maximum amount of health the shadow can have
 
 // Round Time
 ttt_roundtime_win_draw                      0       // Whether a round that ends because the round time limit has passed counts as a draw. If it is not a draw, the traitor team loses

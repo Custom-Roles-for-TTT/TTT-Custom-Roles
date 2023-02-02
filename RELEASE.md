@@ -4,6 +4,7 @@
 **Released:**
 
 ### Additions
+- Added new independent role: shadow
 - Added `ttt_jester_independent_chance` convar to control the chance of a jester or independent spawning when `ttt_multiple_jesters_independents` is enabled (0.5 by default)
 - Added `ttt_zombie_respawn_block_win` convar to control whether a player respawning as a zombie will block the end of the round (disabled by default)
 - Added `ttt_single_jester_swapper` convar which prevents a jester and a swapper from spawning in the same round when `ttt_multiple_jesters_independents` is enabled (disabled by default)
