@@ -85,7 +85,7 @@ function plymeta:GetZombieAlly()
     elseif TRAITOR_ROLES[ROLE_ZOMBIE] then
         return TRAITOR_ROLES[role]
     end
-    return INDEPENDENT_ROLES[role]
+    return role == ROLE_ZOMBIE or role == ROLE_MADSCIENTIST
 end
 
 plymeta.IsZombiePrime = plymeta.GetZombiePrime
@@ -213,4 +213,8 @@ table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
     cvar = "ttt_zombie_friendly_fire",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
+    cvar = "ttt_zombie_respawn_block_win",
+    type = ROLE_CONVAR_TYPE_BOOL
 })

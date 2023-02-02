@@ -50,6 +50,7 @@ SWEP.WeaponID = AMMO_HEALTHSTATION
 
 SWEP.AllowDrop = false
 SWEP.NoSights = true
+SWEP.BlockShopRandomization = true
 
 function SWEP:OnDrop()
     self:Remove()

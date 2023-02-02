@@ -83,7 +83,7 @@ local StringFormat = string.format
 local StringLower = string.lower
 local StringUpper = string.upper
 local StringSub = string.sub
-local StringStartWith = string.StartWith
+local StringStartsWith = string.StartsWith
 
 -- Round times
 CreateConVar("ttt_roundtime_minutes", "10", FCVAR_NOTIFY)
@@ -225,14 +225,25 @@ end
 CreateConVar("ttt_multiple_jesters_independents", "0")
 CreateConVar("ttt_jester_independent_pct", "0.13")
 CreateConVar("ttt_jester_independent_max", "2")
-CreateConVar("ttt_single_deputy_impersonator", "0")
+CreateConVar("ttt_jester_independent_chance", "0.5")
 CreateConVar("ttt_deputy_impersonator_promote_any_death", "0")
-CreateConVar("ttt_single_doctor_quack", "0")
-CreateConVar("ttt_single_paramedic_hypnotist", "0")
-CreateConVar("ttt_single_phantom_parasite", "0")
 CreateConVar("ttt_single_jester_independent", "1")
 CreateConVar("ttt_single_jester_independent_max_players", "0")
-CreateConVar("ttt_single_drunk_clown", "0")
+
+local paired_role_blocks = {
+    {ROLE_DEPUTY, ROLE_IMPERSONATOR},
+    {ROLE_DOCTOR, ROLE_QUACK},
+    {ROLE_PARAMEDIC, ROLE_HYPNOTIST},
+    {ROLE_PHANTOM, ROLE_PARASITE},
+    {ROLE_DRUNK, ROLE_CLOWN},
+    {ROLE_JESTER, ROLE_SWAPPER}
+}
+
+for _, v in ipairs(paired_role_blocks) do
+    local cvar_name = "ttt_single_" .. ROLE_STRINGS_RAW[v[1]] .. "_" .. ROLE_STRINGS_RAW[v[2]]
+    CreateConVar(cvar_name, "0")
+    CreateConVar(cvar_name .. "_chance", "0.5")
+end
 
 -- Traitor credits
 CreateConVar("ttt_credits_starting", "2")
@@ -1263,13 +1274,6 @@ function GM:TTTCheckForWin()
             elseif v:IsInnocentTeam() then
                 innocent_alive = true
             end
-        -- Handle zombification differently because the player's original role should have no impact on this
-        elseif v:IsZombifying() then
-            if TRAITOR_ROLES[ROLE_ZOMBIE] then
-                traitor_alive = true
-            elseif MONSTER_ROLES[ROLE_ZOMBIE] then
-                monster_alive = true
-            end
         end
     end
 
@@ -1374,58 +1378,16 @@ function SelectRoles()
     local choice_count = #choices
 
     -- special spawning cvars
-    local deputy_only = false
-    local impersonator_only = false
-    local single_dep_imp = GetConVar("ttt_single_deputy_impersonator"):GetBool()
-    if single_dep_imp then
-        if math.random() <= 0.5 then
-            deputy_only = true
-        else
-            impersonator_only = true
-        end
-    end
+    local blocked_roles = {}
 
-    local doctor_only = false
-    local quack_only = false
-    local single_doc_qua = GetConVar("ttt_single_doctor_quack"):GetBool()
-    if single_doc_qua then
-        if math.random() <= 0.5 then
-            doctor_only = true
-        else
-            quack_only = true
-        end
-    end
-
-    local paramedic_only = false
-    local hypnotist_only = false
-    local single_med_hyp = GetConVar("ttt_single_paramedic_hypnotist"):GetBool()
-    if single_med_hyp then
-        if math.random() <= 0.5 then
-            paramedic_only = true
-        else
-            hypnotist_only = true
-        end
-    end
-
-    local phantom_only = false
-    local parasite_only = false
-    local single_pha_par = GetConVar("ttt_single_phantom_parasite"):GetBool()
-    if single_pha_par then
-        if math.random() <= 0.5 then
-            phantom_only = true
-        else
-            parasite_only = true
-        end
-    end
-
-    local drunk_only = false
-    local clown_only = false
-    local single_dru_clo = GetConVar("ttt_single_drunk_clown"):GetBool()
-    if single_dru_clo then
-        if math.random() <= 0.5 then
-            drunk_only = true
-        else
-            clown_only = true
+    for _, v in ipairs(paired_role_blocks) do
+        local cvar_name = "ttt_single_" .. ROLE_STRINGS_RAW[v[1]] .. "_" .. ROLE_STRINGS_RAW[v[2]]
+        if GetConVar(cvar_name):GetBool() then
+            if math.random() <= GetConVar(cvar_name .. "_chance"):GetFloat() then
+                blocked_roles[v[2]] = true
+            else
+                blocked_roles[v[1]] = true
+            end
         end
     end
 
@@ -1495,25 +1457,17 @@ function SelectRoles()
                     forcedMonsterCount = forcedMonsterCount + 1
                 end
 
-                if single_dep_imp then
-                    if role == ROLE_DEPUTY then deputy_only = true
-                    elseif role == ROLE_IMPERSONATOR then impersonator_only = true end
-                end
-                if single_doc_qua then
-                    if role == ROLE_DOCTOR then doctor_only = true
-                    elseif role == ROLE_QUACK then quack_only = true end
-                end
-                if single_med_hyp then
-                    if role == ROLE_PARAMEDIC then paramedic_only = true
-                    elseif role == ROLE_HYPNOTIST then hypnotist_only = true end
-                end
-                if single_pha_par then
-                    if role == ROLE_PHANTOM then phantom_only = true
-                    elseif role == ROLE_PARASITE then parasite_only = true end
-                end
-                if single_dru_clo then
-                    if role == ROLE_DRUNK then drunk_only = true
-                    elseif role == ROLE_CLOWN then clown_only = true end
+                for _, v in ipairs(paired_role_blocks) do
+                    if role == v[1] or role == v[2] then
+                        local cvar_name = "ttt_single_" .. ROLE_STRINGS_RAW[v[1]] .. "_" .. ROLE_STRINGS_RAW[v[2]]
+                        if GetConVar(cvar_name):GetBool() then
+                            if role == v[1] then
+                                blocked_roles[v[2]] = true
+                            else
+                                blocked_roles[v[1]] = true
+                            end
+                        end
+                    end
                 end
 
                 PrintRole(v, role)
@@ -1546,10 +1500,7 @@ function SelectRoles()
     -- Role exclusion logic also needs to be copied into the drunk role selection logic in drunk.lua -> plymeta:SoberDrunk
     local rolePredicates = {
         -- Innocents
-        [ROLE_DEPUTY] = function() return (detective_count > 0 or GetConVar("ttt_deputy_without_detective"):GetBool()) and not impersonator_only end,
-        [ROLE_DOCTOR] = function() return not quack_only end,
-        [ROLE_PARAMEDIC] = function() return not hypnotist_only end,
-        [ROLE_PHANTOM] = function() return not parasite_only end,
+        [ROLE_DEPUTY] = function() return (detective_count > 0 or GetConVar("ttt_deputy_without_detective"):GetBool()) end,
         [ROLE_REVENGER] = function() return choice_count > 1 end,
         [ROLE_GLITCH] = function()
             local glitch_mode = GetConVar("ttt_glitch_mode"):GetInt()
@@ -1558,16 +1509,7 @@ function SelectRoles()
         end,
 
         -- Traitors
-        [ROLE_HYPNOTIST] = function() return not paramedic_only end,
-        [ROLE_IMPERSONATOR] = function() return (detective_count > 0 or GetConVar("ttt_impersonator_without_detective"):GetBool()) and not deputy_only end,
-        [ROLE_QUACK] = function() return not doctor_only end,
-        [ROLE_PARASITE] = function() return not phantom_only end,
-
-        -- Independents
-        [ROLE_DRUNK] = function() return not clown_only end,
-
-        -- Jesters
-        [ROLE_CLOWN] = function() return not drunk_only end
+        [ROLE_IMPERSONATOR] = function() return (detective_count > 0 or GetConVar("ttt_impersonator_without_detective"):GetBool()) end,
     }
 
     local function DoesRolePassPredicate(role)
@@ -1575,6 +1517,8 @@ function SelectRoles()
         if rolePredicates[role] and not rolePredicates[role]() then return false end
         -- If the override predicate exists for this role but returns false then this role shouldn't be chosen
         if ROLE_SELECTION_PREDICATE[role] and not ROLE_SELECTION_PREDICATE[role]() then return false end
+        -- If the role has been blocked by a single_role1_role2 convar then this role shouldn't be chosen
+        if blocked_roles[role] then return false end
         -- Otherwise let the role be chosen
         return true
     end
@@ -1798,7 +1742,7 @@ function SelectRoles()
         end
 
         for _ = 1, jester_independent_count do
-            if #independentRoles ~= 0 and #choices > 0 then
+            if #independentRoles ~= 0 and math.random() <= GetConVar("ttt_jester_independent_chance"):GetFloat() and #choices > 0 then
                 local plyPick = math.random(1, #choices)
                 local ply = table.remove(choices, plyPick)
                 local rolePick = math.random(1, #independentRoles)
@@ -2048,7 +1992,7 @@ hook.Add("PlayerDeath", "TTT_ClientDeathNotify", function(victim, inflictor, att
     elseif attacker == victim then
         reason = "suicide"
     elseif IsValid(inflictor) then
-        if victim:IsPlayer() and (StringStartWith(inflictor:GetClass(), "prop_physics") or inflictor:GetClass() == "prop_dynamic") then
+        if victim:IsPlayer() and (StringStartsWith(inflictor:GetClass(), "prop_physics") or inflictor:GetClass() == "prop_dynamic") then
             -- If the killer is also a prop
             reason = "prop"
         elseif IsValid(attacker) then

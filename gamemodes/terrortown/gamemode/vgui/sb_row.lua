@@ -181,8 +181,6 @@ function GM:TTTScoreboardRowColorForPlayer(ply)
     elseif client:IsIndependentTeam() then
         if showJester then
             return ROLE_JESTER
-        elseif ply:IsIndependentTeam() then
-            return ply:GetRole()
         end
     elseif client:IsMonsterTeam() then
         if showJester then

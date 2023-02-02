@@ -85,6 +85,7 @@ SWEP.WorldModel = "models/weapons/w_c4.mdl"
 
 SWEP.AutoSpawnable = false
 SWEP.NoSights = true
+SWEP.BlockShopRandomization = true
 
 local DEFIB_IDLE = 0
 local DEFIB_BUSY = 1
