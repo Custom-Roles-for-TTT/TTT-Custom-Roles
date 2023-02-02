@@ -18,6 +18,11 @@ local StringFormat = string.format
 local StringSplit = string.Split
 local StringSub = string.sub
 
+-- HACK: Workaround to make sure this is defined until the x86-64 branch is updated
+if not string.StartsWith then
+    string.StartsWith = string.StartWith
+end
+
 -- Version string for display and function for version checks
 CR_VERSION = "1.7.3"
 CR_BETA = true
