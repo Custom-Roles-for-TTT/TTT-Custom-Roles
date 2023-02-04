@@ -11,7 +11,7 @@
 - Added `ttt_single_*_*_chance` convars which control how likely it is for one role to spawn over the other when using convars such as `ttt_single_jester_swapper` or `ttt_single_deputy_impersonator` (0.5 by default)
 
 ### Changes
-- Changed BEM and Hitmarkers settings to be in the Settings tabs instead of in their own tabs
+- Changed BEM and Hitmarkers settings to be in the Settings tab instead of in their own tabs
 - Renamed the "Settings" tab of the Help/Settings dialog to "Config" to make it slightly less confusing
 - Changed informant's `ttt_informant_show_scan_radius` convar to be client-side and added it to the new `Roles` tab in the Help and Settings menu
 - Changed cupid's arrow to make it a little easier to hit players
@@ -21,7 +21,7 @@
 - Fixed `ttt_vampire_drain_mute_target` only blocking messages the first time
 - Fixed all independent roles seeing each other on the scoreboard
 - Fixed informant's scan radius circle disappearing when the scan was in progress
-- Fixed issue where the turncoat would change team if they killed themselves when `turncoat_change_innocent_kill` was enabled
+- Fixed issue where the turncoat would change team if they killed themselves when `ttt_turncoat_change_innocent_kill` was enabled
 - Fixed cupid's arrow getting stuck on some maps
 - Fixed parasites gaining role weapons when successfully taking over other players
 
