@@ -127,6 +127,8 @@ local function DoParasiteRespawn(parasite, attacker, hide_messages)
             attacker:StripAll()
             parasite:StripAll()
             for _, v in ipairs(weaps) do
+                -- Don't give the parastie role weapons
+                if v.Category == WEAPON_CATEGORY_ROLE then continue end
                 local wep_class = WEPS.GetClass(v)
                 parasite:Give(wep_class)
             end
