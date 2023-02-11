@@ -24,6 +24,7 @@
 - Fixed issue where the turncoat would change team if they killed themselves when `ttt_turncoat_change_innocent_kill` was enabled
 - Fixed cupid's arrow getting stuck on some maps
 - Fixed parasites gaining role weapons when successfully taking over other players
+- Fixed client-side error in certain win conditions when a player joins late
 
 ### Developer
 - Added new `TTTScoringWinTitleOverride` hook for non-role addons to override the title and color shown on round summary screens
