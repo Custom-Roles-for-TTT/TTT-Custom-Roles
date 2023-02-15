@@ -36,6 +36,10 @@ table.insert(ROLE_CONVARS[ROLE_DRUNK], {
     cvar = "ttt_drunk_any_role",
     type = ROLE_CONVAR_TYPE_BOOL
 })
+table.insert(ROLE_CONVARS[ROLE_DRUNK], {
+    cvar = "ttt_drunk_join_losing_team",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
 
 for r = 0, ROLE_MAX do
     if r ~= ROLE_DRUNK and r ~= ROLE_GLITCH then

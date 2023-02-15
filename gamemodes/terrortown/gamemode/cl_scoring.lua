@@ -297,7 +297,8 @@ local function GetWinTitle(wintype)
         end
     end
 
-    return title
+    -- Let other addons override this after the roles have set their own win screens
+    return hook.Call("TTTScoringWinTitleOverride", nil, wintype, wintitles, title) or title
 end
 
 function GetFontForWinTitle(wintxt, width)
@@ -508,13 +509,19 @@ function CLSCORE:AddAward(y, pw, award, dpanel)
 end
 
 function CLSCORE:BuildSummaryPanel(dpanel)
-    local title = GetWinTitle(WIN_INNOCENT)
+    local default_title = GetWinTitle(WIN_INNOCENT)
+    local title
     for i = #self.Events, 1, -1 do
         local e = self.Events[i]
         if e.id == EVENT_FINISH then
             title = GetWinTitle(e.win)
             break
         end
+    end
+
+    -- Sanity check for late joiners since this info isn't synced to them
+    if not title then
+        title = default_title
     end
 
     -- Gather player information
@@ -818,7 +825,8 @@ function CLSCORE:BuildHilitePanel(dpanel)
     local w, h = dpanel:GetSize()
 
     local endtime = self.StartTime
-    local title = GetWinTitle(WIN_INNOCENT)
+    local default_title = GetWinTitle(WIN_INNOCENT)
+    local title
     for i=#self.Events, 1, -1 do
         local e = self.Events[i]
         if e.id == EVENT_FINISH then
@@ -826,6 +834,11 @@ function CLSCORE:BuildHilitePanel(dpanel)
            title = GetWinTitle(e.win)
            break
         end
+    end
+
+    -- Sanity check for late joiners since this info isn't synced to them
+    if not title then
+        title = default_title
     end
 
     local roundtime = endtime - self.StartTime

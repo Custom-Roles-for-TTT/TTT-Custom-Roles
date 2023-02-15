@@ -195,8 +195,6 @@ if SERVER then
         net.Send(ply)
 
         local owner = self:GetOwner()
-        -- DEPRECATED in 1.6.16
-        hook.Call("TTTPlayerDefibRoleChange", nil, owner, ply)
         hook.Call("TTTPlayerRoleChangedByItem", nil, owner, ply, self)
 
         net.Start("TTT_Zombified")

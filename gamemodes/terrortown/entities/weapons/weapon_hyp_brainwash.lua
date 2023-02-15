@@ -85,6 +85,7 @@ SWEP.WorldModel = "models/weapons/w_c4.mdl"
 
 SWEP.AutoSpawnable = false
 SWEP.NoSights = true
+SWEP.BlockShopRandomization = true
 
 local DEFIB_IDLE = 0
 local DEFIB_BUSY = 1
@@ -215,8 +216,6 @@ if SERVER then
         net.Send(ply)
 
         local owner = self:GetOwner()
-        -- DEPRECATED in 1.6.16
-        hook.Call("TTTPlayerDefibRoleChange", nil, owner, ply)
         hook.Call("TTTPlayerRoleChangedByItem", nil, owner, ply, self)
 
         net.Start("TTT_Hypnotised")

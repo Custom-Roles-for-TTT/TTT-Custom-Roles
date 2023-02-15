@@ -128,7 +128,7 @@ function PreprocSearch(raw)
     for t, d in pairs(raw) do
         search[t] = { img = nil, text = "", p = 10 }
 
-        local convar = string.StartWith(t, "eq_") and "equipment" or t
+        local convar = string.StartsWith(t, "eq_") and "equipment" or t
         if not ShowSearchInfo(convar, detectiveSearchOnly, raw.owner) then
             search[t] = nil
         elseif t == "nick" then

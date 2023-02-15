@@ -1,10 +1,69 @@
 # Release Notes
 
+## 1.8.0
+**Released: February 15th, 2023**\
+Includes beta updates [1.7.2](#172-beta) and [1.7.3](#173-beta).
+
+### Fixes
+- Fixed client-side error in certain win conditions when a player joins late
+
+## 1.7.3 (Beta)
+**Released: February 2nd, 2023**
+
+### Additions
+- Added new independent role: shadow
+- Added `ttt_jester_independent_chance` convar to control the chance of a jester or independent spawning when `ttt_multiple_jesters_independents` is enabled (0.5 by default)
+- Added `ttt_zombie_respawn_block_win` convar to control whether a player respawning as a zombie will block the end of the round (disabled by default)
+- Added `ttt_single_jester_swapper` convar which prevents a jester and a swapper from spawning in the same round when `ttt_multiple_jesters_independents` is enabled (disabled by default)
+- Added `ttt_single_*_*_chance` convars which control how likely it is for one role to spawn over the other when using convars such as `ttt_single_jester_swapper` or `ttt_single_deputy_impersonator` (0.5 by default)
+
+### Changes
+- Changed BEM and Hitmarkers settings to be in the Settings tab instead of in their own tabs
+- Renamed the "Settings" tab of the Help/Settings dialog to "Config" to make it slightly less confusing
+- Changed informant's `ttt_informant_show_scan_radius` convar to be client-side and added it to the new `Roles` tab in the Help and Settings menu
+- Changed cupid's arrow to make it a little easier to hit players
+
+### Fixes
+- Fixed some traitor role weapons being randomly removed from the shop when shop randomization is enabled
+- Fixed `ttt_vampire_drain_mute_target` only blocking messages the first time
+- Fixed all independent roles seeing each other on the scoreboard
+- Fixed informant's scan radius circle disappearing when the scan was in progress
+- Fixed issue where the turncoat would change team if they killed themselves when `ttt_turncoat_change_innocent_kill` was enabled
+- Fixed cupid's arrow getting stuck on some maps
+- Fixed parasites gaining role weapons when successfully taking over other players
+
+### Developer
+- Added new `TTTScoringWinTitleOverride` hook for non-role addons to override the title and color shown on round summary screens
+- Added new return value to the `TTTEquipmentTabs` hook, allowing addons to add new tabs that open the dialog even if none of the default tabs normally would
+- Added new `TTTSettingsConfigTabFields` hook to make it easier to add to the existing help menu's Config tab sections
+- Added new `TTTSettingsConfigTabSections` hook to make it easier to add new sections to the help menu's Config tab
+- Added new `TTTSettingsRolesTabSections` hook to allow developers to add a configuration section for a role to the help menu's Roles tab
+- Added new `sprinting` parameter to the `TTTSpeedMultiplier` hook
+- Changed the help menu's Config tab to use `DScrollPanel` instead of the deprecated `DPanelList`
+- Fixed `plymeta:IsZombieAlly` returning `true` for all independent roles rather than just other zombies and the mad scientist
+
+## 1.7.2 (Beta)
+**Released: January 21st, 2023**
+
+### Additions
+- Added option for the drunk to join the losing team when their sober timer runs out (disabled by default)
+  - *NOTE*: We can't actually know for sure which team is losing, but we can make an educated guess based on the total amount of health each team has and how that compares to the percentage of players that should spawn as traitors. If you are curious the full algorithm can be found in `plymeta:DrunkJoinLosingTeam`.
+
+### Changes
+- Changed vampire drain UI to be clearer which action is in progress
+
+### Fixes
+- Fixed new vampire drain UI not working on dedicated servers
+- Fixed vampire weapon convars being created on the client
+
+### Developer
+- Removed deprecated `TTTPlayerDefibRoleChange`
+
 ## 1.7.1
 **Released: January 16th, 2023**
 
 ### Additions
-- Add options to merge jester and independent role pools and allow multiple jesters and independents to spawn in each round
+- Added options to merge jester and independent role pools and allow multiple jesters and independents to spawn in each round (disabled by default)
 
 ### Fixes
 - Fixed scoreboard incorrectly resizing when running the game as windowed

@@ -18,8 +18,13 @@ local StringFormat = string.format
 local StringSplit = string.Split
 local StringSub = string.sub
 
+-- HACK: Workaround to make sure this is defined until the x86-64 branch is updated
+if not string.StartsWith then
+    string.StartsWith = string.StartWith
+end
+
 -- Version string for display and function for version checks
-CR_VERSION = "1.7.1"
+CR_VERSION = "1.8.0"
 CR_BETA = false
 
 function CRVersion(version)
@@ -105,8 +110,9 @@ ROLE_INFORMANT = 34
 ROLE_MARSHAL = 35
 ROLE_INFECTED = 36
 ROLE_CUPID = 37
+ROLE_SHADOW = 38
 
-ROLE_MAX = 37
+ROLE_MAX = 38
 ROLE_EXTERNAL_START = ROLE_MAX + 1
 
 local function AddRoleAssociations(list, roles)
@@ -143,7 +149,7 @@ JESTER_ROLES = {}
 AddRoleAssociations(JESTER_ROLES, {ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_BEGGAR, ROLE_BODYSNATCHER, ROLE_LOOTGOBLIN, ROLE_CUPID})
 
 INDEPENDENT_ROLES = {}
-AddRoleAssociations(INDEPENDENT_ROLES, {ROLE_DRUNK, ROLE_OLDMAN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_MADSCIENTIST})
+AddRoleAssociations(INDEPENDENT_ROLES, {ROLE_DRUNK, ROLE_OLDMAN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_MADSCIENTIST, ROLE_SHADOW})
 
 MONSTER_ROLES = {}
 AddRoleAssociations(MONSTER_ROLES, {})
@@ -492,7 +498,8 @@ ROLE_STRINGS_RAW = {
     [ROLE_INFORMANT] = "informant",
     [ROLE_MARSHAL] = "marshal",
     [ROLE_INFECTED] = "infected",
-    [ROLE_CUPID] = "cupid"
+    [ROLE_CUPID] = "cupid",
+    [ROLE_SHADOW] = "shadow"
 }
 
 ROLE_STRINGS = {
@@ -533,7 +540,8 @@ ROLE_STRINGS = {
     [ROLE_INFORMANT] = "Informant",
     [ROLE_MARSHAL] = "Marshal",
     [ROLE_INFECTED] = "Infected",
-    [ROLE_CUPID] = "Cupid"
+    [ROLE_CUPID] = "Cupid",
+    [ROLE_SHADOW] = "Shadow"
 }
 
 ROLE_STRINGS_PLURAL = {
@@ -574,7 +582,8 @@ ROLE_STRINGS_PLURAL = {
     [ROLE_INFORMANT] = "Informants",
     [ROLE_MARSHAL] = "Marshals",
     [ROLE_INFECTED] = "Infected",
-    [ROLE_CUPID] = "Cupids"
+    [ROLE_CUPID] = "Cupids",
+    [ROLE_SHADOW] = "Shadows"
 }
 
 ROLE_STRINGS_EXT = {
@@ -616,7 +625,8 @@ ROLE_STRINGS_EXT = {
     [ROLE_INFORMANT] = "an Informant",
     [ROLE_MARSHAL] = "a Marshal",
     [ROLE_INFECTED] = "an Infected",
-    [ROLE_CUPID] = "a Cupid"
+    [ROLE_CUPID] = "a Cupid",
+    [ROLE_SHADOW] = "a Shadow"
 }
 
 ROLE_STRINGS_SHORT = {
@@ -658,7 +668,8 @@ ROLE_STRINGS_SHORT = {
     [ROLE_INFORMANT] = "inf",
     [ROLE_MARSHAL] = "mhl",
     [ROLE_INFECTED] = "ifd",
-    [ROLE_CUPID] = "cup"
+    [ROLE_CUPID] = "cup",
+    [ROLE_SHADOW] = "sha"
 }
 
 function StartsWithVowel(word)
@@ -1108,8 +1119,9 @@ WIN_MONSTER = 10
 WIN_VAMPIRE = 11
 WIN_LOOTGOBLIN = 12
 WIN_CUPID = 13
+WIN_SHADOW = 14
 
-WIN_MAX = WIN_MAX or 13
+WIN_MAX = WIN_MAX or 14
 WINS_BY_ROLE = WINS_BY_ROLE or {}
 
 if SERVER then
@@ -1344,7 +1356,7 @@ function GetSprintMultiplier(ply, sprinting)
     local mult = 1
     if IsValid(ply) then
         local mults = {}
-        CallHook("TTTSpeedMultiplier", nil, ply, mults)
+        CallHook("TTTSpeedMultiplier", nil, ply, mults, sprinting)
         for _, m in pairs(mults) do
             mult = mult * m
         end

@@ -2,6 +2,7 @@
 
 ## Table of Contents
 1. [Server Configurations](#Server-Configurations)
+1. [Client Configurations](#Client-Configurations)
 1. [Role Weapon Shop](#Role-Weapon-Shop)
    1. [Configuration by UI](#Configuration-by-UI)
        1. [Explanation](#Explanation)
@@ -47,6 +48,7 @@ ttt_jester_chance                           0.5     // The chance that a single 
 ttt_multiple_jesters_independents           0       // Whether more than one jester/independent should be allowed to spawn in each round. Enabling this will ignore ttt_independent_chance, ttt_jester_chance, ttt_single_jester_independent, and ttt_single_jester_independent_max_players
 ttt_jester_independent_pct                  0.13    // Percentage of players, rounded up, that can spawn as a jester or independent. Only used if ttt_multiple_jesters_independents is enabled
 ttt_jester_independent_max                  2       // The maximum number of players that can spawn as a jester or independent. Only used if ttt_multiple_jesters_independents is enabled
+ttt_jester_independent_chance               0.5     // The chance that a jester or independent will spawn in a round. Only used if ttt_multiple_jesters_independents is enabled
 // (Note: Only one independent or jester can spawn per round by default.)
 
 // Enable/Disable Individual Roles
@@ -85,6 +87,7 @@ ttt_oldman_enabled                          0       // Whether or not the old ma
 ttt_killer_enabled                          0       // Whether or not the killer should spawn
 ttt_zombie_enabled                          0       // Whether or not the zombie should spawn
 ttt_madscientist_enabled                    0       // Whether or not the mad scientist should spawn
+ttt_shadow_enabled                          0       // Whether or not the shadow should spawn
 
 // Individual Role Spawn Weights
 ttt_hypnotist_spawn_weight                  1       // The weight assigned to spawning the hypnotist
@@ -122,6 +125,7 @@ ttt_oldman_spawn_weight                     1       // The weight assigned to sp
 ttt_killer_spawn_weight                     1       // The weight assigned to spawning the killer
 ttt_zombie_spawn_weight                     1       // The weight assigned to spawning the zombie
 ttt_madscientist_spawn_weight               1       // The weight assigned to spawning the mad scientist
+ttt_shadow_spawn_weight                     1       // The weight assigned to spawning the shadow
 // (Note: Each role is limited to one player per round.)
 
 // Individual Role Minimum Player Requirements
@@ -160,6 +164,7 @@ ttt_oldman_min_players                      0       // The minimum number of pla
 ttt_killer_min_players                      0       // The minimum number of players required to spawn the killer
 ttt_zombie_min_players                      0       // The minimum number of players required to spawn the zombie
 ttt_madscientist_min_players                0       // The minimum number of players required to spawn the mad scientist
+ttt_shadow_min_players                      0       // The minimum number of players required to spawn the shadow
 
 // ----------------------------------------
 
@@ -178,6 +183,7 @@ ttt_impersonator_without_detective          0       // Whether an impersonator c
 ttt_impersonator_activation_credits         0       // The number of credits to give the impersonator when they are activated
 ttt_impersonator_detective_chance           0       // The chance that a detective will spawn as a promoted impersonator instead (e.g. 0.5 = 50% chance)
 ttt_single_deputy_impersonator              0       // Whether only a single deputy or impersonator should spawn in a round
+ttt_single_deputy_impersonator_chance       0.5     // The chance that a deputy should have an opportunity to spawn instead of an impersonator (e.g. 0.7 = 70% chance for deputy, 30% chance for impersonator. Only applies if ttt_single_deputy_impersonator is enabled)
 ttt_deputy_impersonator_promote_any_death   0       // Whether deputy/impersonator should be promoted when any detective dies rather than only after all detectives have died
 
 // Hypnotist
@@ -188,6 +194,7 @@ ttt_hypnotist_device_shop_rebuyable         0       // Whether the hypnotist's d
 ttt_hypnotist_convert_detectives            0       // Whether to convert detectives and deputies (only if ttt_deputy_use_detective_icon is enabled) to impersonator instead of just a regular traitor. Does NOT convert detective team roles like paladin, medium, tracker, or sapper. Target will be automatically promoted to appear as a detective if appropriate
 ttt_hypnotist_device_time                   8       // The amount of time (in seconds) the hypnotist's device takes to use
 ttt_single_paramedic_hypnotist              0       // Whether only a single paramedic or hypnotist should spawn in a round
+ttt_single_paramedic_hypnotist_chance       0.5     // The chance that a paramedic should have an opportunity to spawn instead of a hypnotist (e.g. 0.7 = 70% chance for paramedic, 30% chance for hypnotist. Only applies if ttt_single_paramedic_hypnotist is enabled)
 
 // Assassin
 ttt_assassin_show_target_icon               0       // Whether assassins have an icon over their target's heads showing who to kill. Server or round must be restarted for changes to take effect
@@ -235,6 +242,7 @@ ttt_quack_phantom_cure                      0       // Whether to allow the quac
 ttt_quack_station_bomb                      0       // Whether the quack should be able to buy a device which converts a health station to a bomb station
 ttt_quack_station_bomb_time                 4       // The amount of time (in seconds) the station bomb takes to plant
 ttt_single_doctor_quack                     0       // Whether only a single doctor or quack should spawn in a round
+ttt_single_doctor_quack_chance              0.5     // The chance that a doctor should have an opportunity to spawn instead of a quack (e.g. 0.7 = 70% chance for doctor, 30% chance for quack. Only applies if ttt_single_doctor_quack is enabled)
 
 // Parasite
 ttt_parasite_infection_time                 45      // The time it takes in seconds for the parasite to fully infect someone
@@ -248,6 +256,7 @@ ttt_parasite_cure_mode                      2       // How to handle using a par
 ttt_parasite_cure_time                      3       // The amount of time (in seconds) the parasite cure takes to use
 ttt_parasite_credits_starting               1       // The number of credits a parasite should start with
 ttt_single_phantom_parasite                 0       // Whether only a single phantom or parasite should spawn in a round
+ttt_single_phantom_parasite_chance          0.5     // The chance that a phantom should have an opportunity to spawn instead of a parasite (e.g. 0.7 = 70% chance for phantom, 30% chance for parasite. Only applies if ttt_single_phantom_parasite is enabled)
 
 // Informant
 ttt_informant_share_scans                   1       // Whether the informant should automatically share their information with fellow traitors or not
@@ -258,7 +267,6 @@ ttt_informant_scanner_time                  8       // The amount of time (in se
 ttt_informant_scanner_float_time            1       // The amount of time (in seconds) it takes for the informant's scanner to lose it's target without line of sight
 ttt_informant_scanner_cooldown              3       // The amount of time (in seconds) the informant's tracker goes on cooldown for after losing it's target
 ttt_informant_scanner_distance              2500    // The maximum distance away the scanner target can be
-ttt_informant_show_scan_radius              0       // Whether to show the ring that shows the approximate radius of the informant's scanner
 
 // ----------------------------------------
 
@@ -414,6 +422,8 @@ ttt_jester_notify_sound                     0       // Whether to play a cheerin
 ttt_jester_notify_confetti                  0       // Whether to throw confetti when a jester is a killed
 ttt_jester_credits_starting                 0       // The number of credits a jester should start with
 ttt_jester_healthstation_reduce_max         1       // Whether the jester's max health should be reduced to match their current health when using a health station, instead of being healed
+ttt_single_jester_swapper                   0       // Whether only a single jester or swapper should spawn in a round (Only applies if ttt_multiple_jesters_independents is enabled)
+ttt_single_jester_swapper_chance            0.5     // The chance that a jester should have an opportunity to spawn instead of a swapper (e.g. 0.7 = 70% chance for jester, 30% chance for swapper. Only applies if ttt_single_jester_swapper is enabled)
 
 // Swapper
 ttt_swapper_respawn_health                  100     // What amount of health to give the swapper when they are killed and respawned
@@ -438,6 +448,7 @@ ttt_clown_shop_active_only                  1       // Whether the clown's shop 
 ttt_clown_shop_delay                        0       // Whether the clown's purchased shop items should be held until they activate
 ttt_clown_credits_starting                  0       // The number of credits a clown should start with
 ttt_single_drunk_clown                      0       // Whether only a single drunk or clown should spawn in a round (Only applies if ttt_single_jester_independent is disabled)
+ttt_single_drunk_clown_chance               0.5     // The chance that a drunk should have an opportunity to spawn instead of a clown (e.g. 0.7 = 70% chance for drunk, 30% chance for clown. Only applies if ttt_single_drunk_clown is enabled)
 
 // Beggar
 ttt_beggars_are_independent                 0       // Whether beggars should be treated as members of the independent team (rather than the jester team)
@@ -513,6 +524,7 @@ ttt_drunk_traitor_chance                    0       // Chance that the drunk wil
 ttt_drunk_become_clown                      0       // Whether the drunk should become a clown (instead of joining the losing team) if the round would end before they sober up
 ttt_drunk_notify_mode                       0       // The logic to use when notifying players that a drunk has sobered up. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
 ttt_drunk_any_role                          0       // Whether the drunk can become any enabled role (other than the drunk, the glitch, or roles that were already used this round). The ttt_drunk_can_be_* convars below can be used to prevent the drunk from becoming specific roles
+ttt_drunk_join_losing_team                  0       // Whether the drunk should join the losing team when their sober timer runs out. Please note this isn't 100% accurate as we can't know for sure which team is losing but we can try based on the available information
 ttt_drunk_can_be_traitor                    1       // Whether the drunk can become a traitor
 ttt_drunk_can_be_hypnotist                  1       // Whether the drunk can become a hypnotist
 ttt_drunk_can_be_impersonator               1       // Whether the drunk can become an impersonator
@@ -531,21 +543,25 @@ ttt_drunk_can_be_doctor                     1       // Whether the drunk can bec
 ttt_drunk_can_be_trickster                  1       // Whether the drunk can become a trickster
 ttt_drunk_can_be_paramedic                  1       // Whether the drunk can become a paramedic
 ttt_drunk_can_be_turncoat                   1       // Whether the drunk can become a turncoat
+ttt_drunk_can_be_infected                   1       // Whether the drunk can become an infected
 ttt_drunk_can_be_detective                  1       // Whether the drunk can become a detective
 ttt_drunk_can_be_paladin                    1       // Whether the drunk can become a paladin
 ttt_drunk_can_be_tracker                    1       // Whether the drunk can become a tracker
 ttt_drunk_can_be_medium                     1       // Whether the drunk can become a medium
 ttt_drunk_can_be_sapper                     1       // Whether the drunk can become a sapper
+ttt_drunk_can_be_marshal                    1       // Whether the drunk can become a marshal
 ttt_drunk_can_be_jester                     1       // Whether the drunk can become a jester
 ttt_drunk_can_be_swapper                    1       // Whether the drunk can become a swapper
 ttt_drunk_can_be_clown                      1       // Whether the drunk can become a clown
 ttt_drunk_can_be_beggar                     1       // Whether the drunk can become a beggar
 ttt_drunk_can_be_bodysnatcher               1       // Whether the drunk can become a bodysnatcher
 ttt_drunk_can_be_lootgoblin                 1       // Whether the drunk can become a loot goblin
+ttt_drunk_can_be_cupid                      1       // Whether the drunk can become a cupid
 ttt_drunk_can_be_oldman                     1       // Whether the drunk can become an old man
 ttt_drunk_can_be_killer                     1       // Whether the drunk can become a killer
 ttt_drunk_can_be_zombie                     1       // Whether the drunk can become a zombie
 ttt_drunk_can_be_madscientist               1       // Whether the drunk can become a mad scientist
+ttt_drunk_can_be_shadow                     1       // Whether the drunk can become a shadow
 
 // Old Man
 ttt_oldman_drain_health_to                  0       // The amount of health to drain the old man down to. Set to 0 to disable
@@ -592,11 +608,19 @@ ttt_zombie_thrall_speed_bonus               0.15    // The amount of bonus speed
 ttt_zombie_respawn_health                   100     // The amount of health a player should respawn with when they are converted to a zombie thrall
 ttt_zombie_prime_convert_chance             1.0     // The chance that a prime zombie (e.g. player who spawned as a zombie originally) will convert other players who are killed by their claws to be zombies as well. Set to 0 to disable
 ttt_zombie_thrall_convert_chance            1.0     // The chance that a zombie thrall (e.g. non-prime zombie) will convert other players who are killed by their claws to be zombies as well. Set to 0 to disable
+ttt_zombie_friendly_fire                    2       // How to handle friendly fire damage between zombies. 0 - Do nothing. 1 - Reflect the damage back to the attacker. 2 - Negate the damage.
+ttt_zombie_respawn_block_win                0       // Whether a player respawning as a zombie blocks the round from ending, allowing them to join the winning team
 
 // Mad Scientist
 ttt_madscientist_is_monster                 0       // Whether the mad scientist should be treated as a member of the monster team (rather than the independent team)
 ttt_madscientist_device_time                4       // The amount of time (in seconds) the mad scientist's device takes to use
 ttt_madscientist_respawn_enable             0       // Whether the mad scientist should respawn as a zombie when they are killed
+
+// Shadow
+ttt_shadow_start_timer                      30      // How much time (in seconds) the shadow has to find their target at the start of the round
+ttt_shadow_buffer_timer                     7       // How much time (in seconds) the shadow can stay of their target's radius without dying
+ttt_shadow_alive_radius                     8       // The radius (in meters) from the living target that the shadow has to stay within
+ttt_shadow_dead_radius                      3       // The radius (in meters) from the death target that the shadow has to stay within
 
 // ----------------------------------------
 
@@ -736,6 +760,7 @@ ttt_oldman_starting_health                  1       // The amount of health the 
 ttt_killer_starting_health                  150     // The amount of health the killer starts with
 ttt_zombie_starting_health                  100     // The amount of health the zombie starts with
 ttt_madscientist_starting_health            100     // The amount of health the mad scientist starts with
+ttt_shadow_starting_health                  100     // The amount of health the shadow starts with
 
 // Individual Role Max Health. Set to 0 or -1 to use the game's default maximum health.
 ttt_traitor_max_health                      100     // The maximum amount of health a traitor can have
@@ -776,6 +801,7 @@ ttt_oldman_max_health                       1       // The maximum amount of hea
 ttt_killer_max_health                       150     // The maximum amount of health the killer can have
 ttt_zombie_max_health                       100     // The maximum amount of health the zombie can have
 ttt_madscientist_max_health                 100     // The maximum amount of health the mad scientist can have
+ttt_shadow_max_health                       100     // The maximum amount of health the shadow can have
 
 // Round Time
 ttt_roundtime_win_draw                      0       // Whether a round that ends because the round time limit has passed counts as a draw. If it is not a draw, the traitor team loses
@@ -815,6 +841,20 @@ ttt_player_set_color                        1       // Whether player colors are
 ```
 
 Thanks to [KarlOfDuty](https://github.com/KarlOfDuty) for his original version of this document, [here](https://github.com/KarlOfDuty/TTT-Custom-Roles/blob/patch-1/README.md).
+
+## Client Configurations
+
+The below role settings are for each player to set individually. They are all available on the F1 Help and Settings menu in the Roles tab
+
+```cpp
+// ----------------------------------------
+// Custom Role Settings
+// ----------------------------------------
+
+// TRAITOR TEAM SETTINGS
+// Informant
+ttt_informant_show_scan_radius              0       // Whether to show the ring that shows the approximate radius of the informant's scanner
+```
 
 ## Role Weapon Shop
 

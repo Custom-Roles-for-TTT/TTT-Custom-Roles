@@ -59,6 +59,7 @@ SWEP.WeaponID = AMMO_STATIONBOMB
 
 SWEP.AllowDrop = false
 SWEP.NoSights = true
+SWEP.BlockShopRandomization = true
 
 -- settings
 local maxdist = 64
