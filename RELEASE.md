@@ -1,5 +1,12 @@
 # Release Notes
 
+## 1.8.0
+**Released: February 15th, 2023**\
+Includes beta updates [1.7.2](#172-beta) and [1.7.3](#173-beta).
+
+### Fixes
+- Fixed client-side error in certain win conditions when a player joins late
+
 ## 1.7.3 (Beta)
 **Released: February 2nd, 2023**
 
@@ -24,7 +31,6 @@
 - Fixed issue where the turncoat would change team if they killed themselves when `ttt_turncoat_change_innocent_kill` was enabled
 - Fixed cupid's arrow getting stuck on some maps
 - Fixed parasites gaining role weapons when successfully taking over other players
-- Fixed client-side error in certain win conditions when a player joins late
 
 ### Developer
 - Added new `TTTScoringWinTitleOverride` hook for non-role addons to override the title and color shown on round summary screens
