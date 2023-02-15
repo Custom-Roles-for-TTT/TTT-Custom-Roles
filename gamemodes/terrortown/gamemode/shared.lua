@@ -25,7 +25,7 @@ end
 
 -- Version string for display and function for version checks
 CR_VERSION = "1.8.0"
-CR_BETA = true
+CR_BETA = false
 
 function CRVersion(version)
     local installedVersionRaw = StringSplit(CR_VERSION, ".")
