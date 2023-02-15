@@ -1,5 +1,12 @@
 # Release Notes
 
+## 1.8.0
+**Released: February 15th, 2023**\
+Includes beta updates [1.7.2](#172-beta) and [1.7.3](#173-beta).
+
+### Fixes
+- Fixed client-side error in certain win conditions when a player joins late
+
 ## 1.7.3 (Beta)
 **Released: February 2nd, 2023**
 
