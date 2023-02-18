@@ -6,6 +6,9 @@
 ### Changes
 - Ported "Translatability improvements and fixes" from base TTT
 
+### Fixes
+- Fixed checkboxes not being accurate in the `ttt_roleweapons` configuration window when an equipment item's name wasn't translated and had capitol letters (e.g. Bruh Bunker)
+
 ## 1.8.0
 **Released: February 15th, 2023**\
 Includes beta updates [1.7.2](#172-beta) and [1.7.3](#173-beta).
