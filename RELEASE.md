@@ -8,6 +8,7 @@
 
 ### Fixes
 - Fixed checkboxes not being accurate in the `ttt_roleweapons` configuration window when an equipment item's name wasn't translated and had capitol letters (e.g. Bruh Bunker)
+- Fixed minor plurality issue in the server log message when the killer wins
 
 ## 1.8.0
 **Released: February 15th, 2023**\
