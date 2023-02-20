@@ -228,7 +228,7 @@ hook.Add("DoPlayerDeath", "Assassin_DoPlayerDeath", function(ply, attacker, dmgi
 end)
 
 -- Clear the assassin target information when the next round starts
-hook.Add("TTTPrepareRound", "Assassin_Smoke_PrepareRound", function()
+hook.Add("TTTPrepareRound", "Assassin_Target_PrepareRound", function()
     for _, v in pairs(GetAllPlayers()) do
         v:SetNWString("AssassinTarget", "")
         v:SetNWBool("AssassinFailed", false)
