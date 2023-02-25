@@ -37,9 +37,9 @@ end)
 
 -- Centralize this so it can be handled on round start and on player death
 local function AssignAssassinTarget(ply, start, delay)
-    -- Don't let dead players, spectators, non-assassins, failed assassins, or assassins who already received their "final target" get another target
+    -- Don't let non-players, non-assassins, failed assassins, or assassins who already received their "final target" get another target
     -- And don't assign targets if the round isn't currently running
-    if not IsValid(ply) or GetRoundState() > ROUND_ACTIVE or
+    if not IsPlayer(ply) or GetRoundState() > ROUND_ACTIVE or
         not ply:IsAssassin() or ply:GetNWBool("AssassinFailed", false) or ply:GetNWBool("AssassinComplete", false)
     then
         return
