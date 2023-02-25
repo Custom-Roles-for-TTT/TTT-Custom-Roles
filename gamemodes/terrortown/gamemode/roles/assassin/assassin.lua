@@ -35,38 +35,8 @@ end)
 -- TARGET ASSIGNMENT --
 -----------------------
 
-function UpdateAssassinTargets(ply)
-    for _, v in pairs(GetAllPlayers()) do
-        local assassintarget = v:GetNWString("AssassinTarget", "")
-        if v:IsAssassin() and ply:SteamID64() == assassintarget then
-            -- Reset the target to clear the target overlay from the scoreboard
-            v:SetNWString("AssassinTarget", "")
-
-            -- Don't select a new target if this was the final target
-            if not v:GetNWBool("AssassinComplete", false) then
-                local delay = assassin_next_target_delay:GetFloat()
-                -- Delay giving the next target if we're configured to do so
-                if delay > 0 then
-                    if v:Alive() and not v:IsSpec() then
-                        v:PrintMessage(HUD_PRINTCENTER, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
-                        v:PrintMessage(HUD_PRINTTALK, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
-                    end
-                    timer.Create(v:Nick() .. "AssassinTarget", delay, 1, function()
-                        AssignAssassinTarget(v, false, true)
-                    end)
-                else
-                    AssignAssassinTarget(v, false, false)
-                end
-            else
-                v:PrintMessage(HUD_PRINTCENTER, "Final target eliminated.")
-                v:PrintMessage(HUD_PRINTTALK, "Final target eliminated.")
-            end
-        end
-    end
-end
-
 -- Centralize this so it can be handled on round start and on player death
-function AssignAssassinTarget(ply, start, delay)
+local function AssignAssassinTarget(ply, start, delay)
     -- Don't let dead players, spectators, non-assassins, failed assassins, or assassins who already received their "final target" get another target
     -- And don't assign targets if the round isn't currently running
     if not IsValid(ply) or GetRoundState() > ROUND_ACTIVE or
@@ -156,6 +126,36 @@ function AssignAssassinTarget(ply, start, delay)
     end
 end
 
+local function UpdateAssassinTargets(ply)
+    for _, v in pairs(GetAllPlayers()) do
+        local assassintarget = v:GetNWString("AssassinTarget", "")
+        if v:IsAssassin() and ply:SteamID64() == assassintarget then
+            -- Reset the target to clear the target overlay from the scoreboard
+            v:SetNWString("AssassinTarget", "")
+
+            -- Don't select a new target if this was the final target
+            if not v:GetNWBool("AssassinComplete", false) then
+                local delay = assassin_next_target_delay:GetFloat()
+                -- Delay giving the next target if we're configured to do so
+                if delay > 0 then
+                    if v:Alive() and not v:IsSpec() then
+                        v:PrintMessage(HUD_PRINTCENTER, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
+                        v:PrintMessage(HUD_PRINTTALK, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
+                    end
+                    timer.Create(v:Nick() .. "AssassinTarget", delay, 1, function()
+                        AssignAssassinTarget(v, false, true)
+                    end)
+                else
+                    AssignAssassinTarget(v, false, false)
+                end
+            else
+                v:PrintMessage(HUD_PRINTCENTER, "Final target eliminated.")
+                v:PrintMessage(HUD_PRINTTALK, "Final target eliminated.")
+            end
+        end
+    end
+end
+
 ROLE_MOVE_ROLE_STATE[ROLE_ASSASSIN] = function(ply, target, keep_on_source)
     local assassinComplete = ply:GetNWBool("AssassinComplete", false)
     if assassinComplete then
@@ -205,6 +205,13 @@ hook.Add("TTTPlayerRoleChanged", "Assassin_Target_TTTPlayerRoleChanged", functio
     if ValidTarget(oldRole) and not ValidTarget(newRole) then
         UpdateAssassinTargets(ply)
     end
+end)
+
+hook.Add("TTTTurncoatTeamChanged", "Assassin_TTTTurncoatTeamChanged", function(ply, traitor)
+    if not IsPlayer(ply) then return end
+
+    -- Update any assassin targets since this player isn't a threat anymore
+    UpdateAssassinTargets(ply)
 end)
 
 hook.Add("DoPlayerDeath", "Assassin_DoPlayerDeath", function(ply, attacker, dmginfo)
