@@ -193,7 +193,7 @@ end
 hook.Add("TTTPlayerRoleChanged", "Assassin_Target_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if not ply:Alive() or ply:IsSpec() then return end
 
-    -- If this player is not longer an assassin, clear out thier target
+    -- If this player is no longer an assassin, clear out thier target
     if oldRole == ROLE_ASSASSIN and oldRole ~= newRole then
         ply:SetNWString("AssassinTarget", "")
         ply:SetNWBool("AssassinFailed", false)
