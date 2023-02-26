@@ -3,6 +3,9 @@
 ## 1.8.1 (Beta)
 **Released:**
 
+### Additions
+- Added ability for deputies and impersonators to start promoted (defaults to disabled)
+
 ### Changes
 - Ported "Translatability improvements and fixes" from base TTT
 

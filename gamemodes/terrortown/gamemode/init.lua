@@ -227,6 +227,7 @@ CreateConVar("ttt_jester_independent_pct", "0.13")
 CreateConVar("ttt_jester_independent_max", "2")
 CreateConVar("ttt_jester_independent_chance", "0.5")
 CreateConVar("ttt_deputy_impersonator_promote_any_death", "0")
+CreateConVar("ttt_deputy_impersonator_start_promoted", "0")
 CreateConVar("ttt_single_jester_independent", "1")
 CreateConVar("ttt_single_jester_independent_max_players", "0")
 
