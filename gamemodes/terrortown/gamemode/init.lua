@@ -239,8 +239,8 @@ local paired_role_blocks = {
     {ROLE_JESTER, ROLE_SWAPPER}
 }
 
-for _, v in ipairs(paired_role_blocks) do
-    local cvar_name = "ttt_single_" .. ROLE_STRINGS_RAW[v[1]] .. "_" .. ROLE_STRINGS_RAW[v[2]]
+for _, r in ipairs(paired_role_blocks) do
+    local cvar_name = "ttt_single_" .. ROLE_STRINGS_RAW[r[1]] .. "_" .. ROLE_STRINGS_RAW[r[2]]
     CreateConVar(cvar_name, "0")
     CreateConVar(cvar_name .. "_chance", "0.5")
 end
@@ -1380,13 +1380,13 @@ function SelectRoles()
     -- special spawning cvars
     local blocked_roles = {}
 
-    for _, v in ipairs(paired_role_blocks) do
-        local cvar_name = "ttt_single_" .. ROLE_STRINGS_RAW[v[1]] .. "_" .. ROLE_STRINGS_RAW[v[2]]
+    for _, r in ipairs(paired_role_blocks) do
+        local cvar_name = "ttt_single_" .. ROLE_STRINGS_RAW[r[1]] .. "_" .. ROLE_STRINGS_RAW[r[2]]
         if GetConVar(cvar_name):GetBool() then
             if math.random() <= GetConVar(cvar_name .. "_chance"):GetFloat() then
-                blocked_roles[v[2]] = true
+                blocked_roles[r[2]] = true
             else
-                blocked_roles[v[1]] = true
+                blocked_roles[r[1]] = true
             end
         end
     end
@@ -1457,14 +1457,16 @@ function SelectRoles()
                     forcedMonsterCount = forcedMonsterCount + 1
                 end
 
-                for _, v in ipairs(paired_role_blocks) do
-                    if role == v[1] or role == v[2] then
-                        local cvar_name = "ttt_single_" .. ROLE_STRINGS_RAW[v[1]] .. "_" .. ROLE_STRINGS_RAW[v[2]]
+                for _, r in ipairs(paired_role_blocks) do
+                    local role_pair1 = r[1]
+                    local role_pair2 = r[2]
+                    if role == role_pair1 or role == role_pair2 then
+                        local cvar_name = "ttt_single_" .. ROLE_STRINGS_RAW[role_pair1] .. "_" .. ROLE_STRINGS_RAW[role_pair2]
                         if GetConVar(cvar_name):GetBool() then
-                            if role == v[1] then
-                                blocked_roles[v[2]] = true
+                            if role == role_pair1 then
+                                blocked_roles[role_pair2] = true
                             else
-                                blocked_roles[v[1]] = true
+                                blocked_roles[role_pair1] = true
                             end
                         end
                     end
@@ -1500,7 +1502,7 @@ function SelectRoles()
     -- Role exclusion logic also needs to be copied into the drunk role selection logic in drunk.lua -> plymeta:SoberDrunk
     local rolePredicates = {
         -- Innocents
-        [ROLE_DEPUTY] = function() return (detective_count > 0 or GetConVar("ttt_deputy_without_detective"):GetBool()) end,
+        [ROLE_DEPUTY] = function() return detective_count > 0 or GetConVar("ttt_deputy_without_detective"):GetBool() end,
         [ROLE_REVENGER] = function() return choice_count > 1 end,
         [ROLE_GLITCH] = function()
             local glitch_mode = GetConVar("ttt_glitch_mode"):GetInt()
@@ -1509,7 +1511,7 @@ function SelectRoles()
         end,
 
         -- Traitors
-        [ROLE_IMPERSONATOR] = function() return (detective_count > 0 or GetConVar("ttt_impersonator_without_detective"):GetBool()) end,
+        [ROLE_IMPERSONATOR] = function() return detective_count > 0 or GetConVar("ttt_impersonator_without_detective"):GetBool() end,
     }
 
     local function DoesRolePassPredicate(role)
