@@ -7,8 +7,6 @@ local string = string
 local RemoveHook = hook.Remove
 local StringUpper = string.upper
 
-local client = nil
-
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -107,12 +105,9 @@ ROLE_IS_TARGETID_OVERRIDDEN[ROLE_ZOMBIE] = function(ply, target, showJester)
     -- Traitor logic is already handled elsewhere
     if TRAITOR_ROLES[ROLE_ZOMBIE] then return end
 
-    if not client then
-        client = LocalPlayer()
-    end
-
     -- Override all three pieces for allies
-    if (client:IsActiveZombie() and ply:IsZombieAlly()) or (client:IsZombieAlly() and ply:IsActiveZombie()) then
+    if (ply:IsActiveZombie() and target:IsZombieAlly()) or
+        (ply:IsZombieAlly() and target:IsActiveZombie()) then
         ------ icon, ring, text
         return true, true, true
     end
@@ -139,11 +134,8 @@ ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_ZOMBIE] = function(ply, target)
     -- Traitor logic is already handled elsewhere
     if TRAITOR_ROLES[ROLE_ZOMBIE] then return end
 
-    if not client then
-        client = LocalPlayer()
-    end
-
-    local show = (client:IsActiveZombie() and ply:IsZombieAlly()) or (client:IsZombieAlly() and ply:IsActiveZombie())
+    local show = (ply:IsActiveZombie() and target:IsZombieAlly()) or
+                    (ply:IsZombieAlly() and target:IsActiveZombie())
 
     ------ name,  role
     return false, show
@@ -220,6 +212,7 @@ local jesters_visible_to_traitors = false
 local jesters_visible_to_monsters = false
 local jesters_visible_to_independents = false
 local vision_enabled = false
+local client = nil
 
 local function EnableZombieHighlights()
     -- Handle zombie targeting and non-traitor team logic
