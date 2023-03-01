@@ -6,6 +6,8 @@ local string = string
 
 local RemoveHook = hook.Remove
 
+local client = nil
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -63,13 +65,24 @@ end
 -- SCOREBOARD --
 ----------------
 
-hook.Add("TTTScoreboardPlayerRole", "Zombie_TTTScoreboardPlayerRole", function(ply, client, color, roleFileName)
-    if client:IsActiveZombie() and ply:IsZombieAlly() then
+hook.Add("TTTScoreboardPlayerRole", "Zombie_TTTScoreboardPlayerRole", function(ply, cli, color, roleFileName)
+    if cli:IsActiveZombie() and ply:IsZombieAlly() then
         return ROLE_COLORS_SCOREBOARD[ply:GetRole()], ROLE_STRINGS_SHORT[ply:GetRole()]
-    elseif client:IsZombieAlly() and ply:IsActiveZombie() then
+    elseif cli:IsZombieAlly() and ply:IsActiveZombie() then
         return ROLE_COLORS_SCOREBOARD[ROLE_ZOMBIE], ROLE_STRINGS_SHORT[ROLE_ZOMBIE]
     end
 end)
+
+ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_ZOMBIE] = function(ply, target)
+    if not client then
+        client = LocalPlayer()
+    end
+
+    local show = (client:IsActiveZombie() and ply:IsZombieAlly()) or (client:IsZombieAlly() and ply:IsActiveZombie())
+
+    ------ name,  role
+    return false, show
+end
 
 -------------
 -- SCORING --
@@ -142,7 +155,6 @@ local jesters_visible_to_traitors = false
 local jesters_visible_to_monsters = false
 local jesters_visible_to_independents = false
 local vision_enabled = false
-local client = nil
 
 local function EnableZombieHighlights()
     -- Handle zombie targeting and non-traitor team logic
