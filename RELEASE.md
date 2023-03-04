@@ -8,6 +8,7 @@
 
 ### Changes
 - Ported "Translatability improvements and fixes" from base TTT
+- Changed jesters to be able to do damage after the round ends (if `ttt_postround_dm` is enabled)
 
 ### Fixes
 - Fixed checkboxes not being accurate in the `ttt_roleweapons` configuration window when an equipment item's name wasn't translated and had capitol letters (e.g. Bruh Bunker)
