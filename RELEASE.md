@@ -14,6 +14,7 @@
 - Fixed checkboxes not being accurate in the `ttt_roleweapons` configuration window when an equipment item's name wasn't translated and had capitol letters (e.g. Bruh Bunker)
 - Fixed minor plurality issue in the server log message when the killer wins
 - Fixed independents being able to see each other's Target ID (icon, target ring, role text) information
+- Fixed target ID ring and role text for deputies showing detective when `ttt_deputy_use_detective_icon` was disabled
 
 ## 1.8.0
 **Released: February 15th, 2023**\
