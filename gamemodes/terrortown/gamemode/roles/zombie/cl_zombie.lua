@@ -5,6 +5,7 @@ local player = player
 local string = string
 
 local RemoveHook = hook.Remove
+local StringUpper = string.upper
 
 ------------------
 -- TRANSLATIONS --
@@ -49,27 +50,96 @@ hook.Add("TTTTargetIDPlayerKillIcon", "Zombie_TTTTargetIDPlayerKillIcon", functi
     end
 end)
 
+-- Show the correct role icon for zombies and their allies
+hook.Add("TTTTargetIDPlayerRoleIcon", "Zombie_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
+    -- This logic is not needed if zombies are traitors
+    -- Traitor logic is already handled elsewhere
+    if TRAITOR_ROLES[ROLE_ZOMBIE] then return end
+
+    if cli:IsActiveZombie() and ply:IsZombieAlly() then
+        return ply:GetRole(), true
+    elseif cli:IsZombieAlly() and ply:IsActiveZombie() then
+        return ROLE_ZOMBIE, true
+    end
+end)
+
+-- Show the correct target ring for zombies and their allies
+hook.Add("TTTTargetIDPlayerRing", "Zombie_TTTTargetIDPlayerRing", function(ent, cli, ringVisible)
+    -- This logic is not needed if zombies are traitors
+    -- Traitor logic is already handled elsewhere
+    if TRAITOR_ROLES[ROLE_ZOMBIE] then return end
+    if not IsPlayer(ent) then return end
+
+    if cli:IsActiveZombie() and ent:IsZombieAlly() then
+        return true, ROLE_COLORS_RADAR[ent:GetRole()]
+    elseif cli:IsZombieAlly() and ent:IsActiveZombie() then
+        return true, ROLE_COLORS_RADAR[ROLE_ZOMBIE]
+    end
+end)
+
+-- Show the correct role name for zombies and their allies
+hook.Add("TTTTargetIDPlayerText", "Zombie_TTTTargetIDPlayerText", function(ent, cli, text, col)
+    -- This logic is not needed if zombies are traitors
+    -- Traitor logic is already handled elsewhere
+    if TRAITOR_ROLES[ROLE_ZOMBIE] then return end
+    if not IsPlayer(ent) then return end
+
+    if cli:IsActiveZombie() and ent:IsZombieAlly() then
+        local role = ent:GetRole()
+        return StringUpper(ROLE_STRINGS[role]), ROLE_COLORS_RADAR[role]
+    elseif cli:IsZombieAlly() and ent:IsActiveZombie() then
+        return StringUpper(ROLE_STRINGS[ROLE_ZOMBIE]), ROLE_COLORS_RADAR[ROLE_ZOMBIE]
+    end
+end)
+
 ROLE_IS_TARGETID_OVERRIDDEN[ROLE_ZOMBIE] = function(ply, target, showJester)
-    if not ply:IsZombie() then return end
     if not IsPlayer(target) then return end
 
-    local show = GetGlobalBool("ttt_zombie_show_target_icon", false) and ply.GetActiveWeapon and IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() == "weapon_zom_claws" and not showJester
+    -- Overriding the icon to show "KILL"
+    if ply:IsZombie() and GetGlobalBool("ttt_zombie_show_target_icon", false) and ply.GetActiveWeapon and IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() == "weapon_zom_claws" and not showJester then
+        ------ icon, ring,  text
+        return true, false, false
+    end
 
-    ------ icon, ring,  text
-    return show, false, false
+    -- The rest of this logic is not needed if zombies are traitors
+    -- Traitor logic is already handled elsewhere
+    if TRAITOR_ROLES[ROLE_ZOMBIE] then return end
+
+    -- Override all three pieces for allies
+    if (ply:IsActiveZombie() and target:IsZombieAlly()) or
+        (ply:IsZombieAlly() and target:IsActiveZombie()) then
+        ------ icon, ring, text
+        return true, true, true
+    end
 end
 
 ----------------
 -- SCOREBOARD --
 ----------------
 
-hook.Add("TTTScoreboardPlayerRole", "Zombie_TTTScoreboardPlayerRole", function(ply, client, color, roleFileName)
-    if client:IsActiveZombie() and ply:IsZombieAlly() then
+hook.Add("TTTScoreboardPlayerRole", "Zombie_TTTScoreboardPlayerRole", function(ply, cli, color, roleFileName)
+    -- This logic is not needed if zombies are traitors
+    -- Traitor logic is already handled elsewhere
+    if TRAITOR_ROLES[ROLE_ZOMBIE] then return end
+
+    if cli:IsActiveZombie() and ply:IsZombieAlly() then
         return ROLE_COLORS_SCOREBOARD[ply:GetRole()], ROLE_STRINGS_SHORT[ply:GetRole()]
-    elseif client:IsZombieAlly() and ply:IsActiveZombie() then
+    elseif cli:IsZombieAlly() and ply:IsActiveZombie() then
         return ROLE_COLORS_SCOREBOARD[ROLE_ZOMBIE], ROLE_STRINGS_SHORT[ROLE_ZOMBIE]
     end
 end)
+
+ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_ZOMBIE] = function(ply, target)
+    -- This logic is not needed if zombies are traitors
+    -- Traitor logic is already handled elsewhere
+    if TRAITOR_ROLES[ROLE_ZOMBIE] then return end
+
+    local show = (ply:IsActiveZombie() and target:IsZombieAlly()) or
+                    (ply:IsZombieAlly() and target:IsActiveZombie())
+
+    ------ name,  role
+    return false, show
+end
 
 -------------
 -- SCORING --

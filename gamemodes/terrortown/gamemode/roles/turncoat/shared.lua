@@ -23,10 +23,6 @@ function SetTurncoatTeam(ply, traitor)
             net.WriteString(ply:Nick())
         end
         net.Broadcast()
-        -- Also update any assassin targets since this player isn't a threat anymore
-        if IsPlayer(ply) then
-            UpdateAssassinTargets(ply)
-        end
         hook.Call("TTTTurncoatTeamChanged", nil, ply, traitor)
     end
 end
