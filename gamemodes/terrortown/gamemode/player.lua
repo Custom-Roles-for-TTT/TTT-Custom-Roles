@@ -922,8 +922,8 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
 
     local att = dmginfo:GetAttacker()
     if IsPlayer(att) then
-        -- Only apply damage scaling after the round starts
-        if GetRoundState() >= ROUND_ACTIVE then
+        -- Only apply damage scaling while the round is active
+        if GetRoundState() == ROUND_ACTIVE then
             -- Jesters can't deal damage
             if att:ShouldActLikeJester() then
                 dmginfo:ScaleDamage(0)
@@ -978,7 +978,7 @@ local fallsounds = {
 };
 
 function GM:OnPlayerHitGround(ply, in_water, on_floater, speed)
-    if ply:ShouldActLikeJester() and GetRoundState() >= ROUND_ACTIVE then
+    if ply:ShouldActLikeJester() and GetRoundState() == ROUND_ACTIVE then
         -- Jester team don't take fall damage
         return
     else
