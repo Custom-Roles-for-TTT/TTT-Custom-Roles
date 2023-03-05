@@ -292,9 +292,9 @@ hook.Add("SetupPlayerVisibility", "Assassin_SetupPlayerVisibility", function(ply
     if not ply:IsActiveAssassin() then return end
     if not assassin_target_vision_enable:GetBool() and not assassin_show_target_icon:GetBool() then return end
 
-    local target_nick = ply:GetNWString("AssassinTarget", "")
+    local target_sid64 = ply:GetNWString("AssassinTarget", "")
     for _, v in ipairs(GetAllPlayers()) do
-        if v:SteamID64() ~= target_nick then continue end
+        if v:SteamID64() ~= target_sid64 then continue end
         if ply:TestPVS(v) then continue end
 
         local pos = v:GetPos()
