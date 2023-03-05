@@ -68,7 +68,7 @@ end)
 hook.Add("ScalePlayerDamage", "Cupid_ScalePlayerDamage", function(ply, hitgroup, dmginfo)
     local att = dmginfo:GetAttacker()
     local target = ply:SteamID64()
-    if IsPlayer(att) and GetRoundState() >= ROUND_ACTIVE then
+    if IsPlayer(att) and GetRoundState() == ROUND_ACTIVE then
         if (att:IsCupid() and (att:GetNWString("TTTCupidTarget1", "") == target or att:GetNWString("TTTCupidTarget2", "") == target) and not cupid_can_damage_lovers:GetBool())
                 or (att:GetNWString("TTTCupidLover", "") == target and not cupid_lovers_can_damage_lovers:GetBool())
                 or (att:GetNWString("TTTCupidShooter", "") == target and not cupid_lovers_can_damage_cupid:GetBool()) then
