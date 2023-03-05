@@ -1058,7 +1058,7 @@ function GM:EntityTakeDamage(ent, dmginfo)
     if not IsValid(ent) then return end
 
     local att = dmginfo:GetAttacker()
-    if GetRoundState() >= ROUND_ACTIVE and ent:IsPlayer() then
+    if GetRoundState() == ROUND_ACTIVE and ent:IsPlayer() then
         -- Jesters don't take environmental damage
         if ent:ShouldActLikeJester() then
             -- Damage type DMG_GENERIC is "0" which doesn't seem to work with IsDamageType

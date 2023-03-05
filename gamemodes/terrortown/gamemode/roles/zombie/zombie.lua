@@ -189,7 +189,7 @@ end)
 
 -- Handle zombie team killing - this can be funny, but it can also be used by frustrated players who didn't appreciate being zombified
 hook.Add("EntityTakeDamage", "Zombie_EntityTakeDamage", function(ent, dmginfo)
-    if GetRoundState() < ROUND_ACTIVE then return end
+    if GetRoundState() ~= ROUND_ACTIVE then return end
     if not IsPlayer(ent) or not ent:IsZombie() then return end
 
     local zombie_friendly_fire_mode = zombie_friendly_fire:GetInt()
