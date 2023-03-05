@@ -285,7 +285,7 @@ end)
 
 -- Vampire damage scaling and friendly fire reflecting
 hook.Add("ScalePlayerDamage", "Vampire_ScalePlayerDamage", function(ply, hitgroup, dmginfo)
-    if GetRoundState() < ROUND_ACTIVE then return end
+    if GetRoundState() ~= ROUND_ACTIVE then return end
 
     -- Only run these checks if we're handling damage to a vampire
     if not ply:IsVampire() then return end

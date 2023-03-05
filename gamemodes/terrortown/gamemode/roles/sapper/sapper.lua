@@ -37,7 +37,7 @@ end)
 hook.Add("EntityTakeDamage", "Sapper_EntityTakeDamage", function(ent, dmginfo)
     if not IsValid(ent) then return end
 
-    if GetRoundState() >= ROUND_ACTIVE and ent:IsPlayer() and (dmginfo:IsExplosionDamage() or (sapper_fire_immune:GetBool() and dmginfo:IsDamageType(DMG_BURN))) then
+    if GetRoundState() == ROUND_ACTIVE and ent:IsPlayer() and (dmginfo:IsExplosionDamage() or (sapper_fire_immune:GetBool() and dmginfo:IsDamageType(DMG_BURN))) then
         if not ent:IsSapper() or sapper_protect_self:GetBool() then
             local sapper = nil
             local radius = GetGlobalFloat("ttt_sapper_aura_radius", 262.45)
