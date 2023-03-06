@@ -484,7 +484,11 @@ function GM:HUDDrawTargetID()
         elseif target_special_traitor or target_unknown_special_traitor then
             surface.SetDrawColor(GetRoleTeamColor(ROLE_TEAM_TRAITOR, "radar"))
         elseif target_detective then
-            local detective_role = GetDetectiveIconRole(client:IsTraitorTeam())
+            local detective_role = ROLE_DETECTIVE
+            -- Only override the info for non-detective detective-likes
+            if not ent:IsDetectiveTeam() then
+                detective_role = GetDetectiveIconRole(false)
+            end
             surface.SetDrawColor(ROLE_COLORS_RADAR[detective_role])
         elseif target_unknown_detective then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_DETECTIVE])
@@ -640,7 +644,11 @@ function GM:HUDDrawTargetID()
         text = StringUpper(ROLE_STRINGS[bluff])
         col = ROLE_COLORS_RADAR[bluff]
     elseif target_detective then
-        local detective_role = GetDetectiveIconRole(client:IsTraitorTeam())
+        local detective_role = ROLE_DETECTIVE
+        -- Only override the info for non-detective detective-likes
+        if not ent:IsDetectiveTeam() then
+            detective_role = GetDetectiveIconRole(false)
+        end
         text = StringUpper(ROLE_STRINGS[detective_role])
         col = ROLE_COLORS_RADAR[detective_role]
     elseif target_special_detective then
