@@ -1,7 +1,7 @@
 # Release Notes
 
-## 1.8.1 (Beta)
-**Released: March 5th, 2023**
+## 1.8.1
+**Released: March 6th, 2023**
 
 ### Additions
 - Added ability for deputies and impersonators to start promoted (defaults to disabled)
