@@ -27,6 +27,11 @@ end)
 -------------------
 
 function ShouldPromoteDetectiveLike()
+    -- Promote immediately
+    if GetConVar("ttt_deputy_impersonator_start_promoted"):GetBool() then
+        return true
+    end
+
     local alive, dead = 0, 0
     for _, p in ipairs(GetAllPlayers()) do
         if p:IsDetectiveTeam() then

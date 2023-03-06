@@ -342,7 +342,7 @@ local function OpenDialog(client)
     local function UpdateRadioButtonState(item)
         -- Update checkbox state based on tables
         if ItemIsWeapon(item) then
-            local weap_class = item.id
+            local weap_class = StringLower(item.id)
             if WEPS.BuyableWeapons[save_role] and table.HasValue(WEPS.BuyableWeapons[save_role], weap_class) then
                 dradioinclude:SetValue(true)
             elseif WEPS.ExcludeWeapons[save_role] and table.HasValue(WEPS.ExcludeWeapons[save_role], weap_class) then
@@ -353,7 +353,7 @@ local function OpenDialog(client)
 
             dradionorandom:SetValue(WEPS.BypassRandomWeapons[save_role] and table.HasValue(WEPS.BypassRandomWeapons[save_role], weap_class))
         else
-            local name = item.name
+            local name = StringLower(item.name)
             if WEPS.BuyableWeapons[save_role] and table.HasValue(WEPS.BuyableWeapons[save_role], name) then
                 dradioinclude:SetValue(true)
             elseif WEPS.ExcludeWeapons[save_role] and table.HasValue(WEPS.ExcludeWeapons[save_role], name) then

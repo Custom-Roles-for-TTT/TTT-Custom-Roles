@@ -197,9 +197,6 @@ function GM:PostDrawTranslucentRenderables()
                         if showJester then
                             role = ROLE_NONE
                             color_role = ROLE_JESTER
-                        elseif v:IsIndependentTeam() then
-                            role = v:GetRole()
-                            noz = true
                         end
                     end
                 end
@@ -341,7 +338,6 @@ function GM:HUDDrawTargetID()
     local target_jester = false
 
     local target_monster = false
-    local target_independent = false
 
     local target_corpse = false
 
@@ -424,13 +420,6 @@ function GM:HUDDrawTargetID()
             elseif client:IsIndependentTeam() then
                 if showJester then
                     target_jester = showJester
-                elseif ent:IsIndependentTeam() then
-                    -- Only show other independent players if they are the same role or are "teamed"
-                    if ent:GetRole() == client:GetRole() or
-                        (ent:IsZombie() and client:IsMadScientist()) or
-                        (ent:IsMadScientist() and client:IsZombie()) then
-                        target_independent = ent:GetRole()
-                    end
                 end
             end
         end
@@ -480,7 +469,7 @@ function GM:HUDDrawTargetID()
 
     local w, h = 0, 0 -- text width/height, reused several times
 
-    local ring_visible = target_traitor or target_unknown_traitor or target_special_traitor or target_unknown_special_traitor or target_detective or target_unknown_detective or target_special_detective or target_glitch or target_jester or target_independent or target_monster
+    local ring_visible = target_traitor or target_unknown_traitor or target_special_traitor or target_unknown_special_traitor or target_detective or target_unknown_detective or target_special_detective or target_glitch or target_jester or target_monster
 
     local new_visible, color_override = CallHook("TTTTargetIDPlayerRing", nil, ent, client, ring_visible)
     if type(new_visible) == "boolean" then ring_visible = new_visible end
@@ -494,7 +483,14 @@ function GM:HUDDrawTargetID()
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_TRAITOR])
         elseif target_special_traitor or target_unknown_special_traitor then
             surface.SetDrawColor(GetRoleTeamColor(ROLE_TEAM_TRAITOR, "radar"))
-        elseif target_detective or target_unknown_detective then
+        elseif target_detective then
+            local detective_role = ROLE_DETECTIVE
+            -- Only override the info for non-detective detective-likes
+            if not ent:IsDetectiveTeam() then
+                detective_role = GetDetectiveIconRole(false)
+            end
+            surface.SetDrawColor(ROLE_COLORS_RADAR[detective_role])
+        elseif target_unknown_detective then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_DETECTIVE])
         elseif target_special_detective then
             surface.SetDrawColor(GetRoleTeamColor(ROLE_TEAM_DETECTIVE, "radar"))
@@ -507,8 +503,6 @@ function GM:HUDDrawTargetID()
             end
         elseif target_monster then
             surface.SetDrawColor(GetRoleTeamColor(ROLE_TEAM_MONSTER, "radar"))
-        elseif target_independent then
-            surface.SetDrawColor(GetRoleTeamColor(ROLE_TEAM_INDEPENDENT, "radar"))
         elseif target_jester then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_JESTER])
         end
@@ -650,8 +644,13 @@ function GM:HUDDrawTargetID()
         text = StringUpper(ROLE_STRINGS[bluff])
         col = ROLE_COLORS_RADAR[bluff]
     elseif target_detective then
-        text = StringUpper(ROLE_STRINGS[ROLE_DETECTIVE])
-        col = ROLE_COLORS_RADAR[ROLE_DETECTIVE]
+        local detective_role = ROLE_DETECTIVE
+        -- Only override the info for non-detective detective-likes
+        if not ent:IsDetectiveTeam() then
+            detective_role = GetDetectiveIconRole(false)
+        end
+        text = StringUpper(ROLE_STRINGS[detective_role])
+        col = ROLE_COLORS_RADAR[detective_role]
     elseif target_special_detective then
         local role = ent:GetRole()
         text = StringUpper(ROLE_STRINGS[role])
@@ -665,9 +664,6 @@ function GM:HUDDrawTargetID()
     elseif target_monster then
         text = StringUpper(ROLE_STRINGS[target_monster])
         col = GetRoleTeamColor(ROLE_TEAM_MONSTER, "radar")
-    elseif target_independent then
-        text = StringUpper(ROLE_STRINGS[target_independent])
-        col = GetRoleTeamColor(ROLE_TEAM_INDEPENDENT, "radar")
     elseif ent.sb_tag and ent.sb_tag.txt ~= nil then
         text = L[ent.sb_tag.txt]
         col = ent.sb_tag.color

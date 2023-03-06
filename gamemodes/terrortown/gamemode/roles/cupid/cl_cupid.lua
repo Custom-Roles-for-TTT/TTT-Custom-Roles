@@ -40,8 +40,8 @@ players fall in love so that they win/die together.]])
 players fall in love so that they win/die together.]])
 end)
 
-hook.Add("TTTRolePopupRoleStringOverride", "Cupid_TTTRolePopupRoleStringOverride", function(client, roleString)
-    if not IsPlayer(client) or not client:IsCupid() then return end
+AddHook("TTTRolePopupRoleStringOverride", "Cupid_TTTRolePopupRoleStringOverride", function(cli, roleString)
+    if not IsPlayer(cli) or not cli:IsCupid() then return end
 
     if GetGlobalBool("ttt_cupids_are_independent", false) then
         return roleString .. "_indep"
@@ -113,7 +113,7 @@ AddHook("TTTEndRound", "Cupid_SecondaryWinEvent_TTTEndRound", function()
 end)
 
 -- Register the scoring events for cupid
-hook.Add("Initialize", "Cupid_Scoring_Initialize", function()
+AddHook("Initialize", "Cupid_Scoring_Initialize", function()
     local heart_icon = Material("icon16/heart.png")
     local Event = CLSCORE.DeclareEventDisplay
     local PT = LANG.GetParamTranslation
@@ -183,39 +183,47 @@ end)
 -- TARGET ID --
 ---------------
 
-AddHook("TTTTargetIDPlayerRoleIcon", "Cupid_TTTTargetIDPlayerRoleIcon", function(ply, client, role, noz, colorRole, hideBeggar, showJester, hideCupid)
-    if ply:IsActiveCupid() and ply:SteamID64() == client:GetNWString("TTTCupidShooter", "") then
+AddHook("TTTTargetIDPlayerRoleIcon", "Cupid_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideCupid)
+    if ply:IsActiveCupid() and ply:SteamID64() == cli:GetNWString("TTTCupidShooter", "") then
         return ROLE_CUPID, true
-    elseif ply:SteamID64() == client:GetNWString("TTTCupidLover", "") then
+    elseif ply:SteamID64() == cli:GetNWString("TTTCupidLover", "") then
         return ply:GetRole(), true
     end
 end)
 
-AddHook("TTTTargetIDPlayerRing", "Cupid_TTTTargetIDPlayerRing", function(ent, client, ringVisible)
-    if IsPlayer(ent) then
-        if ent:IsActiveCupid() and ent:SteamID64() == client:GetNWString("TTTCupidShooter", "") then
-            return true, ROLE_COLORS_RADAR[ROLE_CUPID]
-        elseif ent:SteamID64() == client:GetNWString("TTTCupidLover", "") then
-            return true, ROLE_COLORS_RADAR[ent:GetRole()]
-        end
+AddHook("TTTTargetIDPlayerRing", "Cupid_TTTTargetIDPlayerRing", function(ent, cli, ringVisible)
+    if not IsPlayer(ent) then return end
+
+    if ent:IsActiveCupid() and ent:SteamID64() == cli:GetNWString("TTTCupidShooter", "") then
+        return true, ROLE_COLORS_RADAR[ROLE_CUPID]
+    elseif ent:SteamID64() == cli:GetNWString("TTTCupidLover", "") then
+        return true, ROLE_COLORS_RADAR[ent:GetRole()]
     end
 end)
 
-AddHook("TTTTargetIDPlayerText", "Cupid_TTTTargetIDPlayerText", function(ent, client, text, clr, secondaryText)
-    if IsPlayer(ent) then
-        if ent:IsActiveCupid() and ent:SteamID64() == client:GetNWString("TTTCupidShooter", "") then
-            return StringUpper(ROLE_STRINGS[ROLE_CUPID]), ROLE_COLORS_RADAR[ROLE_CUPID]
-        elseif ent:SteamID64() == client:GetNWString("TTTCupidLover", "") then
-            return StringUpper(ROLE_STRINGS[ent:GetRole()]), ROLE_COLORS_RADAR[ent:GetRole()], LANG.GetTranslation("scoreboard_cupid_lover"), Color(230, 90, 200, 255)
-        end
+AddHook("TTTTargetIDPlayerText", "Cupid_TTTTargetIDPlayerText", function(ent, cli, text, clr, secondaryText)
+    if not IsPlayer(ent) then return end
+
+    if ent:IsActiveCupid() and ent:SteamID64() == cli:GetNWString("TTTCupidShooter", "") then
+        return StringUpper(ROLE_STRINGS[ROLE_CUPID]), ROLE_COLORS_RADAR[ROLE_CUPID]
+    elseif ent:SteamID64() == cli:GetNWString("TTTCupidLover", "") then
+        return StringUpper(ROLE_STRINGS[ent:GetRole()]), ROLE_COLORS_RADAR[ent:GetRole()], LANG.GetTranslation("scoreboard_cupid_lover"), Color(230, 90, 200, 255)
     end
 end)
+
+ROLE_IS_TARGETID_OVERRIDDEN[ROLE_CUPID] = function(ply, target, showJester)
+    if (target:IsActiveCupid() and target:SteamID64() == ply:GetNWString("TTTCupidShooter", "")) or
+        (target:SteamID64() == ply:GetNWString("TTTCupidLover", "")) then
+        ------ icon, ring, text
+        return true, true, true
+    end
+end
 
 ----------------
 -- SCOREBOARD --
 ----------------
 
-hook.Add("TTTScoreboardPlayerRole", "Cupid_TTTScoreboardPlayerRole", function(ply, cli, c, roleStr)
+AddHook("TTTScoreboardPlayerRole", "Cupid_TTTScoreboardPlayerRole", function(ply, cli, c, roleStr)
     if ply:IsActiveCupid() and ply:SteamID64() == cli:GetNWString("TTTCupidShooter", "") then
         return ROLE_COLORS_SCOREBOARD[ROLE_CUPID], ROLE_STRINGS_SHORT[ROLE_CUPID]
     elseif ply:SteamID64() == cli:GetNWString("TTTCupidLover", "") then
@@ -225,13 +233,29 @@ hook.Add("TTTScoreboardPlayerRole", "Cupid_TTTScoreboardPlayerRole", function(pl
     end
 end)
 
-hook.Add("TTTScoreboardPlayerName", "Cupid_TTTScoreboardPlayerName", function(ply, cli, nickTxt)
+AddHook("TTTScoreboardPlayerName", "Cupid_TTTScoreboardPlayerName", function(ply, cli, nickTxt)
     if ply:SteamID64() == cli:GetNWString("TTTCupidLover", "") then
         return ply:Nick() .. " (" .. LANG.GetTranslation("scoreboard_cupid_your_lover") .. ")"
     elseif ply:SteamID64() == cli:GetNWString("TTTCupidTarget1", "") or ply:SteamID64() == cli:GetNWString("TTTCupidTarget2", "") then
         return ply:Nick() .. " (" .. LANG.GetTranslation("scoreboard_cupid_lover") .. ")"
     end
 end)
+
+ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_CUPID] = function(ply, target, showJester)
+    local name = false
+    -- Cupid itself only gets the role info shown
+    local role = target:IsActiveCupid() and target:SteamID64() == ply:GetNWString("TTTCupidShooter", "")
+
+    -- The lovers get role and color shown
+    if (target:SteamID64() == ply:GetNWString("TTTCupidLover", "")) or
+        (target:SteamID64() == ply:GetNWString("TTTCupidTarget1", "") or target:SteamID64() == ply:GetNWString("TTTCupidTarget2", "")) then
+        name = true
+        role = true
+    end
+
+    ------ name, role
+    return name, role
+end
 
 ------------------
 -- HIGHLIGHTING --

@@ -18,13 +18,13 @@ Survive until the end of the round to win.]])
     -- HUD
     LANG.AddToLanguage("english", "shadow_find_target", "FIND YOUR TARGET - {time}")
     LANG.AddToLanguage("english", "shadow_return_target", "RETURN TO YOUR TARGET - {time}")
-    
+
     -- Target ID
     LANG.AddToLanguage("english", "shadow_target", "YOUR TARGET")
-    
+
     -- Win conditions
     LANG.AddToLanguage("english", "ev_win_shadow","The {role} stayed close to their target and also won the round!")
-    
+
     -- Scoreboard
     LANG.AddToLanguage("english", "score_shadow_following", "Following")
 end)
@@ -204,13 +204,13 @@ end)
 -- PARTICLES --
 ---------------
 
-local function DrawRadius(client, ent, r)
+local function DrawRadius(ply, ent, r)
     if not ent.RadiusEmitter then ent.RadiusEmitter = ParticleEmitter(ent:GetPos()) end
     if not ent.RadiusNextPart then ent.RadiusNextPart = CurTime() end
     if not ent.RadiusDir then ent.RadiusDir = 0 end
     local pos = ent:GetPos() + Vector(0, 0, 30)
     if ent.RadiusNextPart < CurTime() then
-        if client:GetPos():Distance(pos) <= 3000 then
+        if ply:GetPos():Distance(pos) <= 3000 then
             for _ = 1, 24 do
                 ent.RadiusEmitter:SetPos(pos)
                 ent.RadiusNextPart = CurTime() + 0.02
@@ -226,7 +226,7 @@ local function DrawRadius(client, ent, r)
                 particle:SetRoll(math.Rand(0, math.pi))
                 particle:SetRollDelta(0)
                 local color = ROLE_COLORS[ROLE_TRAITOR]
-                if client:GetPos():Distance(ent:GetPos()) <= r then
+                if ply:GetPos():Distance(ent:GetPos()) <= r then
                     color = ROLE_COLORS[ROLE_INNOCENT]
                 end
                 particle:SetColor(color.r, color.g, color.b)
@@ -245,11 +245,11 @@ local function RemoveRadius(ent)
     end
 end
 
-local function DrawLink(client, ent)
+local function DrawLink(ply, ent)
     if not ent.LinkEmitter then ent.LinkEmitter = ParticleEmitter(ent:GetPos()) end
     if not ent.LinkNextPart then ent.LinkNextPart = CurTime() end
     if not ent.LinkOffset then ent.LinkOffset = 0 end
-    local startPos = client:GetPos() + Vector(0, 0, 30)
+    local startPos = ply:GetPos() + Vector(0, 0, 30)
     local endPos = ent:GetPos() + Vector(0, 0, 30)
     local dir = endPos - startPos
     dir = dir:GetNormalized() * 50

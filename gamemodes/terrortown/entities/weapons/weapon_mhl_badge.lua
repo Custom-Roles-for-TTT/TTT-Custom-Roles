@@ -74,12 +74,6 @@ if SERVER then
     CreateConVar("ttt_marshal_badge_time", "8", FCVAR_NONE, "The amount of time (in seconds) the marshal's badge takes to use", 0, 60)
 end
 
-if CLIENT then
-    function SWEP:GetPrintName()
-        return ROLE_STRINGS[ROLE_DEPUTY] .. " Badge --TESTREMOVE"
-    end
-end
-
 function SWEP:Initialize()
     self:SendWeaponAnim(ACT_SLAM_DETONATOR_DRAW)
     if CLIENT then

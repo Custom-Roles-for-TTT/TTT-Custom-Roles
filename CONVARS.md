@@ -185,6 +185,7 @@ ttt_impersonator_detective_chance           0       // The chance that a detecti
 ttt_single_deputy_impersonator              0       // Whether only a single deputy or impersonator should spawn in a round
 ttt_single_deputy_impersonator_chance       0.5     // The chance that a deputy should have an opportunity to spawn instead of an impersonator (e.g. 0.7 = 70% chance for deputy, 30% chance for impersonator. Only applies if ttt_single_deputy_impersonator is enabled)
 ttt_deputy_impersonator_promote_any_death   0       // Whether deputy/impersonator should be promoted when any detective dies rather than only after all detectives have died
+ttt_deputy_impersonator_start_promoted      0       // Whether deputy/impersonator should start the round promoted
 
 // Hypnotist
 ttt_hypnotist_credits_starting              1       // The number of credits a hypnotist should start with

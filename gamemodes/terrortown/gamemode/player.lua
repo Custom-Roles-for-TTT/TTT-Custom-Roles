@@ -922,14 +922,15 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
 
     local att = dmginfo:GetAttacker()
     if IsPlayer(att) then
-        -- Only apply damage scaling after the round starts
-        if GetRoundState() >= ROUND_ACTIVE then
+        local round_state = GetRoundState()
+        -- Only apply damage scaling while the round is active
+        if round_state == ROUND_ACTIVE then
             -- Jesters can't deal damage
             if att:ShouldActLikeJester() then
                 dmginfo:ScaleDamage(0)
             end
         -- Players cant deal damage to each other before the round starts
-        else
+        elseif round_state < ROUND_ACTIVE then
             dmginfo:ScaleDamage(0)
         end
     end
@@ -978,7 +979,7 @@ local fallsounds = {
 };
 
 function GM:OnPlayerHitGround(ply, in_water, on_floater, speed)
-    if ply:ShouldActLikeJester() and GetRoundState() >= ROUND_ACTIVE then
+    if ply:ShouldActLikeJester() and GetRoundState() == ROUND_ACTIVE then
         -- Jester team don't take fall damage
         return
     else
@@ -1057,7 +1058,7 @@ function GM:EntityTakeDamage(ent, dmginfo)
     if not IsValid(ent) then return end
 
     local att = dmginfo:GetAttacker()
-    if GetRoundState() >= ROUND_ACTIVE and ent:IsPlayer() then
+    if GetRoundState() == ROUND_ACTIVE and ent:IsPlayer() then
         -- Jesters don't take environmental damage
         if ent:ShouldActLikeJester() then
             -- Damage type DMG_GENERIC is "0" which doesn't seem to work with IsDamageType

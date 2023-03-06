@@ -349,7 +349,7 @@ end)
 
 hook.Add("TTTPrintResultMessage", "Killer_TTTPrintResultMessage", function(type)
     if type == WIN_KILLER then
-        LANG.Msg("win_killer", { role = ROLE_STRINGS_PLURAL[ROLE_KILLER] })
+        LANG.Msg("win_killer", { role = ROLE_STRINGS[ROLE_KILLER] })
         ServerLog("Result: " .. ROLE_STRINGS[ROLE_KILLER] .. " wins.\n")
         return true
     end
