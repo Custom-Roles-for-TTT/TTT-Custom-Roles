@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.8.2 (Beta)
+**Released:**
+
+### Developer
+- Added new `TTTParasiteRespawn` hook to detect when a parasite respawns
+
 ## 1.8.1
 **Released: March 6th, 2023**
 

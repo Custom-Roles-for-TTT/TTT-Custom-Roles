@@ -150,6 +150,14 @@ Called when a paladin heals a target.\
 - *tgt* - The target being healed
 - *healed* - The amount healed
 
+### TTTParasiteRespawn(parasite, attacker)
+Called when a parasite respawns.\
+*Realm:* Server\
+*Added in:* 1.8.2\
+*Parameters:*
+- *parasite* - The parasite that is respawning
+- *attacker* - The player that originally killed the parasite (aka the "host")
+
 ### TTTPlayerAliveClientThink(client, ply)
 Called for each player who is alive during the `Think` hook.\
 *Realm:* Client\
