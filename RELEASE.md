@@ -3,6 +3,9 @@
 ## 1.8.2 (Beta)
 **Released:**
 
+### Fixes
+- Fixed tips and idle warning messages not using the new config tab name
+
 ### Developer
 - Added new `TTTParasiteRespawn` hook to detect when a parasite respawns
 
