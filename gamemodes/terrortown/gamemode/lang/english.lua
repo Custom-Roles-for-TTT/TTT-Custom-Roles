@@ -683,14 +683,14 @@ L.name_kick = "A player was automatically kicked for changing their name during 
 
 L.idle_popup = [[You were idle for {num} seconds and were moved into Spectator-only mode as a result. While you are in this mode, you will not spawn when a new round starts.
 
-You can toggle Spectator-only mode at any time by pressing {helpkey} and unchecking the box in the Settings tab. You can also choose to disable it right now.]]
+You can toggle Spectator-only mode at any time by pressing {helpkey} and unchecking the box in the Config tab. You can also choose to disable it right now.]]
 
 L.idle_popup_close = "Do nothing"
 L.idle_popup_off = "Disable Spectator-only mode now"
 
 L.idle_warning = "Warning: you appear to be idle/AFK, and will be made to spectate unless you show activity!"
 
-L.spec_mode_warning = "You are in Spectator Mode and will not spawn when a round starts. To disable this mode, press F1, go to Settings and uncheck 'Spectate-only mode'."
+L.spec_mode_warning = "You are in Spectator Mode and will not spawn when a round starts. To disable this mode, press F1, go to Config and uncheck 'Spectate-only mode'."
 
 
 --- Tips, shown at bottom of screen to spectators
@@ -757,7 +757,7 @@ L.tip27 = "As {adetective}, corpses with a magnifying glass after the nickname h
 
 L.tip28 = "Spectators can press {mutekey} to cycle through muting other spectators or living players."
 
-L.tip29 = "If the server has installed additional languages, you can switch to a different language at any time in the Settings menu."
+L.tip29 = "If the server has installed additional languages, you can switch to a different language at any time in the Config menu."
 
 L.tip30 = "Quickchat or 'radio' commands can be used by pressing {radiokey}."
 

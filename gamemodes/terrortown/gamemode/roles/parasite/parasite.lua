@@ -158,6 +158,8 @@ local function DoParasiteRespawn(parasite, attacker, hide_messages)
             attacker:PrintMessage(HUD_PRINTCENTER, "Your parasite has drained you of your energy.")
             attacker:PrintMessage(HUD_PRINTTALK, "Your parasite has drained you of your energy.")
         end
+
+        hook.Call("TTTParasiteRespawn", nil, parasite, attacker)
     end
 end
 

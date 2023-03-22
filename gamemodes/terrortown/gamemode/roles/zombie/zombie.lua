@@ -342,6 +342,12 @@ function plymeta:RespawnAsZombie(prime)
     end)
 end
 
+hook.Add("TTTCupidShouldLoverSurvive", "Zombie_TTTCupidShouldLoverSurvive", function(ply, lover)
+    if ply:IsZombifying() or lover:IsZombifying() then
+        return true
+    end
+end)
+
 -----------------------
 -- PLAYER VISIBILITY --
 -----------------------

@@ -1,5 +1,18 @@
 # Release Notes
 
+## 1.8.2 (Beta)
+**Released:**
+
+### Changes
+- Changed players who are in a lovers pair due to cupid's arrow to not be killed if their lover is converting to a zombie
+
+### Fixes
+- Fixed tips and idle warning messages not using the new config tab name
+
+### Developer
+- Added new `TTTParasiteRespawn` hook to detect when a parasite respawns
+- Added new `TTTCupidShouldLoverSurvive` hook to detect when a cupid lover is about to be killed because their lover is dead
+
 ## 1.8.1
 **Released: March 6th, 2023**
 
