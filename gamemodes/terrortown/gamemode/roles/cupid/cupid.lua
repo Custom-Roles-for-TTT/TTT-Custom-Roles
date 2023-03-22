@@ -152,7 +152,7 @@ hook.Add("TTTCheckForWin", "Cupid_TTTCheckForWin", function()
                 break
             end
             loverAlive = true
-        elseif not v:IsCupid() then
+        elseif not v:IsCupid() and not v:ShouldActLikeJester() and not ROLE_HAS_PASSIVE_WIN[v:GetRole()] then
             cupidWin = false
             break
         end
