@@ -201,7 +201,7 @@ end
 local function ClearLateLoadoutTimer(id)
     local timer_id = "lateloadout" .. id
     timer.Remove(timer_id)
-    table.remove(retry_timers, timer_id)
+    retry_timers[timer_id] = nil
 end
 
 -- Sometimes, in cramped map locations, giving players weapons fails. A timer
@@ -394,7 +394,7 @@ local function GiveEquipmentWeapon(sid, cls)
     else
         -- can stop retrying, if we were
         timer.Remove(tmr)
-        table.remove(retry_timers, tmr)
+        retry_timers[tmr] = nil
 
         if w.WasBought then
             -- some weapons give extra ammo after being bought, etc
