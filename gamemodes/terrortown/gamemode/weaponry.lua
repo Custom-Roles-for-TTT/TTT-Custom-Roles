@@ -190,13 +190,27 @@ local function GiveLoadoutSpecial(ply)
     end
 end
 
+local retry_timers = {}
+function WEPS.ClearRetryTimers()
+    for timer_id, _ in pairs(retry_timers) do
+        timer.Remove(timer_id)
+    end
+    table.Empty(retry_timers)
+end
+
+local function ClearLateLoadoutTimer(id)
+    local timer_id = "lateloadout" .. id
+    timer.Remove(timer_id)
+    table.remove(retry_timers, timer_id)
+end
+
 -- Sometimes, in cramped map locations, giving players weapons fails. A timer
 -- calling this function is used to get them the weapons anyway as soon as
 -- possible.
 local function LateLoadout(id)
     local ply = Entity(id)
     if not IsPlayer(ply) then
-        timer.Remove("lateloadout" .. id)
+        ClearLateLoadoutTimer(id)
         return
     end
 
@@ -204,7 +218,7 @@ local function LateLoadout(id)
         GiveLoadoutWeapons(ply)
 
         if HasLoadoutWeapons(ply) then
-            timer.Remove("lateloadout" .. id)
+            ClearLateLoadoutTimer(id)
         end
     end
 end
@@ -227,8 +241,9 @@ function GM:PlayerLoadout(ply)
 
             if not HasLoadoutWeapons(ply) then
                 MsgN("Could not spawn all loadout weapons for " .. ply:Nick() .. ", will retry.")
-                timer.Create("lateloadout" .. ply:EntIndex(), 1, 0,
-                        function() LateLoadout(ply:EntIndex()) end)
+                local timer_id = "lateloadout" .. ply:EntIndex()
+                retry_timers[timer_id] = true
+                timer.Create(timer_id, 1, 60, function() LateLoadout(ply:EntIndex()) end)
             end
         end
     end
@@ -371,13 +386,15 @@ local function GiveEquipmentWeapon(sid, cls)
 
     if (not IsValid(w)) or (not ply:HasWeapon(cls)) then
         if not timer.Exists(tmr) then
-            timer.Create(tmr, 1, 0, function() GiveEquipmentWeapon(sid, cls) end)
+            retry_timers[tmr] = true
+            timer.Create(tmr, 1, 60, function() GiveEquipmentWeapon(sid, cls) end)
         end
 
         -- we will be retrying
     else
         -- can stop retrying, if we were
         timer.Remove(tmr)
+        table.remove(retry_timers, tmr)
 
         if w.WasBought then
             -- some weapons give extra ammo after being bought, etc
