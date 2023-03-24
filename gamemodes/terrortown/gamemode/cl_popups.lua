@@ -123,28 +123,40 @@ local function GetTextForLocalPlayer()
     end
 end
 
+local popupframe = nil
+local function RoundStartPopupClose()
+    if IsValid(popupframe) then
+        popupframe:Remove()
+        popupframe = nil
+    end
+end
+
 local startshowtime = CreateConVar("ttt_startpopup_duration", "17", FCVAR_ARCHIVE)
 -- shows info about goal and fellow traitors (if any)
 local function RoundStartPopup()
     -- based on Derma_Message
 
+    -- close last round's if it's still there
+    RoundStartPopupClose()
+    timer.Remove("roundstartpopupclose")
+
     if startshowtime:GetInt() <= 0 then return end
 
     if not LocalPlayer() then return end
 
-    local dframe = vgui.Create("Panel")
-    dframe:SetDrawOnTop(true)
-    dframe:SetMouseInputEnabled(false)
-    dframe:SetKeyboardInputEnabled(false)
+    popupframe = vgui.Create("Panel")
+    popupframe:SetDrawOnTop(true)
+    popupframe:SetMouseInputEnabled(false)
+    popupframe:SetKeyboardInputEnabled(false)
 
     local color = Color(0, 0, 0, 200)
-    dframe.Paint = function(s)
+    popupframe.Paint = function(s)
         draw.RoundedBox(8, 0, 0, s:GetWide(), s:GetTall(), color)
     end
 
     local text = GetTextForLocalPlayer()
 
-    local dtext = vgui.Create("DLabel", dframe)
+    local dtext = vgui.Create("DLabel", popupframe)
     dtext:SetFont("TabLarge")
     dtext:SetText(text)
     dtext:SizeToContents()
@@ -156,12 +168,12 @@ local function RoundStartPopup()
 
     dtext:SetPos(m, m)
 
-    dframe:SetSize(w + m * 2, h + m * 2)
-    dframe:Center()
+    popupframe:SetSize(w + m * 2, h + m * 2)
+    popupframe:Center()
 
-    dframe:AlignBottom(10)
+    popupframe:AlignBottom(10)
 
-    timer.Simple(startshowtime:GetInt(), function() dframe:Remove() end)
+    timer.Create("roundstartpopupclose", startshowtime:GetInt(), 1, RoundStartPopupClose)
 end
 concommand.Add("ttt_cl_startpopup", RoundStartPopup)
 
