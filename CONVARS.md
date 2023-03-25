@@ -33,7 +33,11 @@ Add any of the following that you want to change to your server.cfg (for dedicat
 
 // ROLE SPAWN REQUIREMENTS
 ttt_traitor_pct                             0.25    // Percentage of players, rounded up, that can spawn as a traitor or "special traitor"
-ttt_detective_pct                           0.13    // Percentage of players, rounded up, that can spawn as a detective
+ttt_traitor_max                             32      // The maximum number of players that can spawn as a traitor or "special traitor"
+ttt_detective_pct                           0.13    // Percentage of players, rounded up, that can spawn as a detective role
+ttt_detective_max                           32      // The maximum number of players that can spawn as a detective role
+ttt_detective_min_players                   8       // The minimum number of players required to spawn a detective role
+ttt_detective_karma_min                     600     // The minimum amount of karma required for a player to be selected to spawn as a detective role
 ttt_special_traitor_pct                     0.33    // Percentage of traitors, rounded up, that can spawn as a "special traitor" (e.g. hypnotist, impersonator, etc.)
 ttt_special_traitor_chance                  0.5     // The chance that a "special traitor" will spawn in each available slot made by "ttt_special_traitor_pct"
 ttt_special_innocent_pct                    0.33    // Percentage of innocents, rounded up, that can spawn as a "special innocent" (e.g. glitch, phantom, etc.)
