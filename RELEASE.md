@@ -11,6 +11,7 @@
 ### Fixes
 - Fixed tips and idle warning messages not using the new config tab name
 - Fixed cupid & lovers not winning with jesters or roles with passive wins were left in the round
+- Fixed covert body search not working properly
 
 ### Developer
 - Added new `TTTParasiteRespawn` hook to detect when a parasite respawns
