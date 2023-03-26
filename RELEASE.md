@@ -5,6 +5,8 @@
 
 ### Changes
 - Changed players who are in a lovers pair due to cupid's arrow to not be killed if their lover is converting to a zombie
+- Changed shop and player loadout retry timers to stop retrying after 60 seconds or when a new round is being prepared, whichever comes first
+- Changed round start popups to close at the start of the next round if they are still around
 
 ### Fixes
 - Fixed tips and idle warning messages not using the new config tab name

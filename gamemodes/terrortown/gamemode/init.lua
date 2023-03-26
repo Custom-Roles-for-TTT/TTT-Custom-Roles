@@ -786,6 +786,7 @@ function PrepareRound()
 
     WEPS.ResetWeaponsCache()
     WEPS.ResetRoleWeaponCache()
+    WEPS.ClearRetryTimers()
 
     -- New look. Random if no forced model set.
     GAMEMODE.playermodel = GAMEMODE.force_plymodel == "" and GetRandomPlayerModel() or GAMEMODE.force_plymodel
