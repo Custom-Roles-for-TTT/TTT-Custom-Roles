@@ -66,6 +66,15 @@ local function AnnounceBodyRole(p)
     return true
 end
 
+local function AnnounceBodyTeam(p)
+    -- If only detectives can search, only announce if this player is a detective
+    if GetGlobalBool("ttt_detective_search_only", true) then return p:IsDetectiveLike() end
+    -- If only detectives can see the team, only announce if this player is a detective
+    if GetGlobalBool("ttt_detective_search_only_team", false) then return p:IsDetectiveLike() end
+    -- Otherwise everyone can see it
+    return true
+end
+
 function GM:TTTCanIdentifyCorpse(ply, corpse, was_traitor)
     -- return true to allow corpse identification, false to disallow
     return true
@@ -102,6 +111,10 @@ local function IdentifyBody(ply, rag)
         local role_string = "an unknown role"
         if AnnounceBodyRole(ply) then
             role_string = ROLE_STRINGS_EXT[role]
+        elseif AnnounceBodyTeam(ply) then
+            local roleTeam = player.GetRoleTeam(role)
+            local teamName = GetRoleTeamName(roleTeam)
+            role_string = "on the " .. teamName .. " team"
         end
 
         LANG.Msg("body_found", {
