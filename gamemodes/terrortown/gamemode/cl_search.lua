@@ -383,22 +383,28 @@ local function ShowSearchScreen(search_raw)
         dident:SetSize(bw_large, bh)
         dident:SetText(T("search_confirm"))
         local id = search_raw.eidx + search_raw.dtime
-        dident.DoClick = function() RunConsoleCommand("ttt_confirm_death", search_raw.eidx, id) end
-        dident:SetDisabled(client:IsSpec() or (not client:KeyDownLast(IN_WALK)))
-
-        local dcall = vgui.Create("DButton", dcont)
-        dcall:SetPos(m * 2 + bw_large, by)
-        dcall:SetSize(bw_large, bh)
-        dcall:SetText(PT("search_call", { role = ROLE_STRINGS[ROLE_DETECTIVE] }))
-        dcall.DoClick = function(s)
-            client.called_corpses = client.called_corpses or {}
-            table.insert(client.called_corpses, search_raw.eidx)
-            s:SetDisabled(true)
-
-            RunConsoleCommand("ttt_call_detective", search_raw.eidx, search_raw.sid)
+        dident.DoClick = function()
+            RunConsoleCommand("ttt_confirm_death", search_raw.eidx, id)
+            dident:SetDisabled(true)
         end
+        local rag = Entity(search_raw.eidx)
+        dident:SetDisabled(client:IsSpec() or (not client:KeyDownLast(IN_WALK)) or CORPSE.GetFound(rag, false))
 
-        dcall:SetDisabled(client:IsSpec() or table.HasValue(client.called_corpses or {}, search_raw.eidx))
+        if not client:IsDetectiveLike() then
+            local dcall = vgui.Create("DButton", dcont)
+            dcall:SetPos(m * 2 + bw_large, by)
+            dcall:SetSize(bw_large, bh)
+            dcall:SetText(PT("search_call", { role = ROLE_STRINGS[ROLE_DETECTIVE] }))
+            dcall.DoClick = function(s)
+                client.called_corpses = client.called_corpses or {}
+                table.insert(client.called_corpses, search_raw.eidx)
+                s:SetDisabled(true)
+
+                RunConsoleCommand("ttt_call_detective", search_raw.eidx, search_raw.sid)
+            end
+
+            dcall:SetDisabled(client:IsSpec() or table.HasValue(client.called_corpses or {}, search_raw.eidx))
+        end
     end
 
     local dconfirm = vgui.Create("DButton", dcont)
