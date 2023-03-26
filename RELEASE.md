@@ -22,6 +22,7 @@
 - Changed lovers who are in love with a parasite or a phantom to not die when their lover is dead as long as their lover is infecting/haunting another player (enabled by default)
 - Changed shop and player loadout retry timers to stop retrying after 60 seconds or when a new round is being prepared, whichever comes first
 - Changed round start popups to close at the start of the next round if they are still around
+- Changed "call detective" button on body search dialog to be hidden when the local player is a detective
 
 ### Fixes
 - Fixed tips and idle warning messages not using the new config tab name
