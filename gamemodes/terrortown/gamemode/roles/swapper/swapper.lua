@@ -25,6 +25,7 @@ local swapper_killer_health = CreateConVar("ttt_swapper_killer_health", "100", F
 local swapper_killer_max_health = CreateConVar("ttt_swapper_killer_max_health", "0", FCVAR_NONE, "The maximum health value to set on the swapper's killer. Set to \"0\" to kill them", 0, 200)
 local swapper_respawn_health = CreateConVar("ttt_swapper_respawn_health", "100", FCVAR_NONE, "What amount of health to give the swapper when they are killed and respawned", 1, 200)
 local swapper_weapon_mode = CreateConVar("ttt_swapper_weapon_mode", "1", FCVAR_NONE, "How to handle weapons when the swapper is killed", 0, 2)
+local swapper_swap_lovers = CreateConVar("ttt_swapper_swap_lovers", "1", FCVAR_NONE, "Whether the swapper should swap lovers with their attacker or not", 0, 1)
 
 hook.Add("TTTSyncGlobals", "Swapper_TTTSyncGlobals", function()
     SetGlobalInt("ttt_swapper_killer_health", swapper_killer_health:GetInt())
@@ -97,11 +98,76 @@ local function StripPlayerWeaponAndAmmo(ply, weap_info)
     end
 end
 
+local function SwapCupidLovers(attacker, swapper)
+    local attCupidSID = attacker:GetNWString("TTTCupidShooter", "")
+    local attCupid = player.GetBySteamID64(attCupidSID)
+    local attLoverSID = attacker:GetNWString("TTTCupidLover", "")
+    local attLover = player.GetBySteamID64(attLoverSID)
+
+    local swaCupidSID = swapper:GetNWString("TTTCupidShooter", "")
+    local swaCupid = player.GetBySteamID64(swaCupidSID)
+    local swaLoverSID = swapper:GetNWString("TTTCupidLover", "")
+    local swaLover = player.GetBySteamID64(swaLoverSID)
+
+    local message = ""
+
+    -- Copy attacker values to swapper
+    swapper:SetNWString("TTTCupidShooter", attCupidSID)
+    swapper:SetNWString("TTTCupidLover", attLoverSID)
+    if attCupid then
+        if attCupid:GetNWString("TTTCupidTarget1", "") == attacker:SteamID64() then
+            attCupid:SetNWString("TTTCupidTarget1", swapper:SteamID64())
+        else
+            attCupid:SetNWString("TTTCupidTarget2", swapper:SteamID64())
+        end
+        if attLoverSID == "" then
+            message = swapper:Nick() .. " has swapped with " .. attacker:Nick() .. " and is now waiting to be paired with a lover."
+        else
+            message = swapper:Nick() .. " has swapped with " .. attacker:Nick() .. " and is now in love with " .. attLover:Nick() .. "."
+        end
+        attCupid:PrintMessage(HUD_PRINTCENTER, message)
+        attCupid:PrintMessage(HUD_PRINTTALK, message)
+    end
+    if attLoverSID == "" then
+        message = attacker:Nick() .. " had been hit by cupid's arrow so you are now waiting to be paired with a lover."
+    else
+        message = attacker:Nick() .. " was in love so you are now in love with " .. attLover:Nick() .. "."
+    end
+    swapper:PrintMessage(HUD_PRINTCENTER, message)
+    swapper:PrintMessage(HUD_PRINTTALK, message)
+
+    -- Copy swapper values to attacker
+    attacker:SetNWString("TTTCupidShooter", swaCupidSID)
+    attacker:SetNWString("TTTCupidLover", swaLoverSID)
+    if swaCupid then
+        if swaCupid:GetNWString("TTTCupidTarget1", "") == swapper:SteamID64() then
+            swaCupid:SetNWString("TTTCupidTarget1", attacker:SteamID64())
+        else
+            swaCupid:SetNWString("TTTCupidTarget2", attacker:SteamID64())
+        end
+        if attLoverSID == "" then
+            message = attacker:Nick() .. " has swapped with " .. swapper:Nick() .. " and is now waiting to be paired with a lover."
+        else
+            message = attacker:Nick() .. " has swapped with " .. swapper:Nick() .. " and is now in love with " .. swaLover:Nick() .. "."
+        end
+        swaCupid:PrintMessage(HUD_PRINTCENTER, message)
+        swaCupid:PrintMessage(HUD_PRINTTALK, message)
+    end
+    if swaLoverSID == "" then
+        message = swapper:Nick() .. " had been hit by cupid's arrow so you are now waiting to be paired with a lover."
+    else
+        message = swapper:Nick() .. " was in love so you are now in love with " .. swaLover:Nick() .. "."
+    end
+    attacker:PrintMessage(HUD_PRINTCENTER, message)
+    attacker:PrintMessage(HUD_PRINTTALK, message)
+end
+
 hook.Add("PlayerDeath", "Swapper_KillCheck_PlayerDeath", function(victim, infl, attacker)
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     if not valid_kill then return end
     if not victim:IsSwapper() then return end
 
+    victim:SetNWBool("IsSwapping", true)
     SwapperKilledNotification(attacker, victim)
     attacker:SetNWString("SwappedWith", victim:Nick())
 
@@ -129,9 +195,18 @@ hook.Add("PlayerDeath", "Swapper_KillCheck_PlayerDeath", function(victim, infl, 
         SendFullStateUpdate()
 
         local health = swapper_killer_health:GetInt()
+        local attCupidSID = attacker:GetNWString("TTTCupidLover", "")
+        local vicCupidSID = victim:GetNWString("TTTCupidLover", "")
         if health == 0 then
+            if swapper_swap_lovers:GetBool() and attCupidSID ~= "" and vicCupidSID == "" then -- If the attacker is going to die, only swap lovers if the swap doesn't cause a lover to die elsewhere
+                SwapCupidLovers(attacker, victim)
+            end
             attacker:Kill()
+
         else
+            if swapper_swap_lovers:GetBool() and (attCupidSID ~= "" or vicCupidSID ~= "") and attCupidSID ~= vicCupidSID then -- If the attacker is going to live, only swap lovers if the attacker and the swapper arent in love with each other
+                SwapCupidLovers(attacker, victim)
+            end
             attacker:SetHealth(health)
 
             local max_health = swapper_killer_max_health:GetInt()
@@ -141,6 +216,8 @@ hook.Add("PlayerDeath", "Swapper_KillCheck_PlayerDeath", function(victim, infl, 
                 attacker:SetMaxHealth(max_health)
             end
         end
+
+        victim:SetNWBool("IsSwapping", false)
 
         timer.Simple(0.2, function()
             if weapon_mode == SWAPPER_WEAPON_ALL then
@@ -192,8 +269,15 @@ hook.Add("PlayerDeath", "Swapper_KillCheck_PlayerDeath", function(victim, infl, 
     net.Broadcast()
 end)
 
+hook.Add("TTTCupidShouldLoverSurvive", "Zombie_TTTCupidShouldLoverSurvive", function(ply, lover)
+    if ply:GetNWBool("IsSwapping", false) or lover:GetNWBool("IsSwapping", false) then
+        return true
+    end
+end)
+
 hook.Add("TTTPrepareRound", "Swapper_PrepareRound", function()
     for _, v in pairs(GetAllPlayers()) do
         v:SetNWString("SwappedWith", "")
+        v:SetNWBool("IsSwapping", false)
     end
 end)

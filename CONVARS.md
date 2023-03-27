@@ -440,6 +440,7 @@ ttt_swapper_killer_health                   100     // The amount of health the 
 ttt_swapper_killer_max_health               0       // The maximum health value to set on the swapper's killer. Set to "0" to use the swapper's default
 ttt_swapper_credits_starting                0       // The number of credits a swapper should start with
 ttt_swapper_healthstation_reduce_max        1       // Whether the swapper's max health should be reduced to match their current health when using a health station, instead of being healed
+ttt_swapper_swap_lovers                     1       // Whether the swapper should swap lovers with their attacker or not
 
 // Clown
 ttt_clown_damage_bonus                      0       // Damage bonus that the clown has after being activated (e.g. 0.5 = 50% more damage)
