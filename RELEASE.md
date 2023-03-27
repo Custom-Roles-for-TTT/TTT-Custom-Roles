@@ -13,11 +13,13 @@
 ### Fixes
 - Fixed tips and idle warning messages not using the new config tab name
 - Fixed cupid & lovers not winning with jesters or roles with passive wins were left in the round
-- Fixed covert body search not working properly
+- Fixed covert body search not working properly and text hint missing
+- Fixed body search text hint not using correct key if it was rebound
 
 ### Developer
 - Added new `TTTParasiteRespawn` hook to detect when a parasite respawns
 - Added new `TTTCupidShouldLoverSurvive` hook to detect when a cupid lover is about to be killed because their lover is dead
+- Added new `CORPSE.CanBeSearched` method to make it easier to check if a corpse can be searched by a player
 
 ## 1.8.1
 **Released: March 6th, 2023**
