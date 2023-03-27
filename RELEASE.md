@@ -3,6 +3,9 @@
 ## 1.8.2 (Beta)
 **Released:**
 
+### Fixes
+- Fixed missing space before "YOUR TARGET" scoreboard marker for shadow
+
 ### Changes
 - Changed players who are in a lovers pair due to cupid's arrow to not be killed if their lover died but is guaranteed to respawn (e.g. death by zombie claws, being killed as the swapper, etc.)
 - Changed lovers who are in love with a swapper or a swapper's attacker to swap lovers between the swapper and their attacker when the swapper swaps (enabled by default)
