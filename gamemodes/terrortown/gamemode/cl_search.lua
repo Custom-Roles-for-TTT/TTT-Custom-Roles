@@ -309,8 +309,7 @@ local function ShowSearchScreen(search_raw)
     if not IsValid(client) then return end
 
     local m = 8
-    local bw, bh = 100, 25
-    local bw_large = 125
+    local bw, bh = 125, 25
     local w, h = 425, 260
 
     local rw, rh = (w - m * 2), (h - 25 - m * 2)
@@ -397,7 +396,7 @@ local function ShowSearchScreen(search_raw)
     if not detectiveSearchOnly then
         local dident = vgui.Create("DButton", dcont)
         dident:SetPos(m, by)
-        dident:SetSize(bw_large, bh)
+        dident:SetSize(bw, bh)
         dident:SetText(T("search_confirm"))
         local id = search_raw.eidx + search_raw.dtime
         dident.DoClick = function()
@@ -407,10 +406,11 @@ local function ShowSearchScreen(search_raw)
         local rag = Entity(search_raw.eidx)
         dident:SetDisabled(client:IsSpec() or (not client:KeyDownLast(IN_WALK)) or CORPSE.GetFound(rag, false))
 
+        local buttons = 1
         if not client:IsDetectiveLike() then
             local dcall = vgui.Create("DButton", dcont)
-            dcall:SetPos(m * 2 + bw_large, by)
-            dcall:SetSize(bw_large, bh)
+            dcall:SetPos(m * 2 + bw, by)
+            dcall:SetSize(bw, bh)
             dcall:SetText(PT("search_call", { role = ROLE_STRINGS[ROLE_DETECTIVE] }))
             dcall.DoClick = function(s)
                 client.called_corpses = client.called_corpses or {}
@@ -421,14 +421,23 @@ local function ShowSearchScreen(search_raw)
             end
 
             dcall:SetDisabled(client:IsSpec() or table.HasValue(client.called_corpses or {}, search_raw.eidx))
+            buttons = buttons + 1
         end
-    end
 
-    local dconfirm = vgui.Create("DButton", dcont)
-    dconfirm:SetPos(rw - m - bw, by)
-    dconfirm:SetSize(bw, bh)
-    dconfirm:SetText(T("close"))
-    dconfirm.DoClick = function() dframe:Close() end
+        local discan = vgui.Create("DButton", dcont)
+        discan:SetPos((m * (buttons + 1)) + (bw * buttons), by)
+        discan:SetSize(bw, bh)
+        -- TODO: Figure out how to get whether a player's DNA scanner has a sample, given that it's only tracked on the server side
+        -- if has_sample then
+            discan:SetText(T("search_scan"))
+        --else
+            --discan:SetText(T("search_scan_open"))
+        --end
+        discan.DoClick = function()
+            -- TODO
+        end
+        discan:SetDisabled(client:IsSpec())
+    end
 
     -- Install info controller that will link up the icons to the text etc
     dlist.OnActivePanelChanged = SearchInfoController(search, dback, dactive, dtext)

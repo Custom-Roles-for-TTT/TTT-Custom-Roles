@@ -615,7 +615,8 @@ L.karma_min = "Liability"
 
 -- TargetID misc
 L.corpse = "Corpse"
-L.corpse_hint = "Press E to search."
+L.corpse_hint = "Press {usekey} to search."
+L.corpse_hint_covert = "Press {usekey} to search. Press {walkkey}+{usekey} to search covertly."
 
 L.target_disg = " (DISGUISED)"
 L.target_unid = "Unidentified body"
