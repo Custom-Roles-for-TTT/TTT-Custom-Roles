@@ -7,7 +7,8 @@
 - Added showing a player's team in the body search dialog if `ttt_detective_search_only` is disabled and `ttt_detective_search_only_role` is enabled
 
 ### Changes
-- Changed players who are in a lovers pair due to cupid's arrow to not be killed if their lover is converting to a zombie
+- Changed players who are in a lovers pair due to cupid's arrow to not be killed if their lover died but is guaranteed to respawn (e.g. death by zombie claws, being killed as the swapper, etc.)
+- Changed lovers who are in love with a swapper or a swapper's attacker to swap lovers between the swapper and their attacker when the swapper swaps (enabled by default)
 - Changed shop and player loadout retry timers to stop retrying after 60 seconds or when a new round is being prepared, whichever comes first
 - Changed round start popups to close at the start of the next round if they are still around
 

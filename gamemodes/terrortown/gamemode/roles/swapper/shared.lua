@@ -49,3 +49,7 @@ table.insert(ROLE_CONVARS[ROLE_SWAPPER], {
     cvar = "ttt_swapper_healthstation_reduce_max",
     type = ROLE_CONVAR_TYPE_BOOL
 })
+table.insert(ROLE_CONVARS[ROLE_SWAPPER], {
+    cvar = "ttt_swapper_swap_lovers",
+    type = ROLE_CONVAR_TYPE_BOOL
+})

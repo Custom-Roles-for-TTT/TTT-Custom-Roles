@@ -128,8 +128,8 @@ function ENT:Touch(ent)
                     owner:SetNWString("TTTCupidTarget1", ent:SteamID64())
                     owner:PrintMessage(HUD_PRINTCENTER, ent:Nick() .. " has been hit with your first arrow.")
                     owner:PrintMessage(HUD_PRINTTALK, ent:Nick() .. " has been hit with your first arrow.")
-                    ent:PrintMessage(HUD_PRINTCENTER, "You have been hit by cupids arrow!")
-                    ent:PrintMessage(HUD_PRINTTALK, "You have been hit by cupids arrow!")
+                    ent:PrintMessage(HUD_PRINTCENTER, "You have been hit by cupid's arrow!")
+                    ent:PrintMessage(HUD_PRINTTALK, "You have been hit by cupid's arrow!")
                 elseif owner:GetNWString("TTTCupidTarget2", "") == "" then
                     if ent:SteamID64() == target1 then
                         owner:PrintMessage(HUD_PRINTCENTER, "You cannot make someone fall in love with themselves.")
