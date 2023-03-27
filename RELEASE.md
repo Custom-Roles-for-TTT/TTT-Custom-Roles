@@ -34,6 +34,7 @@
 ### Developer
 - Added new `TTTParasiteRespawn` hook to detect when a parasite respawns
 - Added new `TTTCupidShouldLoverSurvive` hook to detect when a cupid lover is about to be killed because their lover is dead
+- Added new `CORPSE.CanBeSearched` method to make it easier to check if a corpse can be searched by a player
 
 ## 1.8.1
 **Released: March 6th, 2023**
