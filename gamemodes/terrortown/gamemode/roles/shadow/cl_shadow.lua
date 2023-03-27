@@ -134,7 +134,7 @@ end)
 
 hook.Add("TTTScoreboardPlayerName", "Shadow_TTTScoreboardPlayerName", function(ply, cli, text)
     if cli:IsActiveShadow() and ply:SteamID64() == cli:GetNWString("ShadowTarget", "") then
-        return ply:Nick() .. "(" .. LANG.GetTranslation("shadow_target") .. ")"
+        return ply:Nick() .. " (" .. LANG.GetTranslation("shadow_target") .. ")"
     end
 end)
 
