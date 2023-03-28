@@ -6,6 +6,9 @@ local net = net
 ------------------
 
 hook.Add("Initialize", "Phantom_Translations_Initialize", function()
+    -- Target ID
+    LANG.AddToLanguage("english", "target_haunted", "HAUNTED BY PHANTOM")
+
     -- HUD
     LANG.AddToLanguage("english", "haunt_title", "WILLPOWER")
     LANG.AddToLanguage("english", "haunt_move", "MOVE KEYS: Move (Cost: {num}%)")
@@ -53,6 +56,59 @@ net.Receive("TTT_PhantomHaunt", function(len)
         att = attacker
     })
 end)
+
+------------------
+-- CUPID LOVERS --
+------------------
+
+local function IsLoverHaunting(cli, target)
+    local loverSID = cli:GetNWString("TTTCupidLover", "")
+    local lover = player.GetBySteamID64(loverSID)
+    return IsPlayer(target) and IsPlayer(lover) and target:GetNWBool("PhantomHaunted", false) and lover:GetNWString("PhantomHauntingTarget", "") == target:SteamID64()
+end
+
+---------------
+-- TARGET ID --
+---------------
+
+hook.Add("TTTTargetIDPlayerText", "Phantom_TTTTargetIDPlayerText", function(ent, cli, text, col, secondary_text)
+    if IsLoverHaunting(cli, ent) then
+        return LANG.GetTranslation("target_haunted"), ROLE_COLORS_RADAR[ROLE_PHANTOM]
+    end
+end)
+
+ROLE_IS_TARGETID_OVERRIDDEN[ROLE_PHANTOM] = function(ply, target)
+    if not IsPlayer(target) then return end
+    if not IsLoverHaunting(ply, target) then return end
+
+    ------ icon,  ring,  text
+    return false, false, target:GetNWBool("PhantomHaunted", false)
+end
+
+----------------
+-- SCOREBOARD --
+----------------
+
+hook.Add("TTTScoreboardPlayerRole", "Phantom_TTTScoreboardPlayerRole", function(ply, client, c, roleStr)
+    if IsLoverHaunting(client, ply) then
+        return c, roleStr, ROLE_PHANTOM
+    end
+end)
+
+hook.Add("TTTScoreboardPlayerName", "Phantom_TTTScoreboardPlayerName", function(ply, cli, text)
+
+    if IsLoverHaunting(cli, ply) then
+        return ply:Nick() .. " (" .. LANG.GetTranslation("target_haunted") .. ")"
+    end
+end)
+
+ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_PHANTOM] = function(ply, target)
+    if not IsPlayer(target) then return end
+    if not IsLoverHaunting(ply, target) then return end
+
+    ------ name, role
+    return true, true
+end
 
 --------------
 -- HAUNTING --
