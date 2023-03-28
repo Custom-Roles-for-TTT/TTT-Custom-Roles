@@ -85,6 +85,7 @@ end)
 hook.Add("TTTPrepareRound", "Beggar_PrepareRound", function()
     for _, v in pairs(GetAllPlayers()) do
         v:SetNWBool("WasBeggar", false)
+        v:SetNWBool("BeggarIsRespawning", false)
         timer.Remove(v:Nick() .. "BeggarRespawn")
     end
 end)
@@ -140,6 +141,8 @@ hook.Add("PlayerDeath", "Beggar_KillCheck_PlayerDeath", function(victim, infl, a
             delay = 0.1
         end
 
+        victim:SetNWBool("BeggarIsRespawning", true)
+
         timer.Create(victim:Nick() .. "BeggarRespawn", delay, 1, function()
             local body = victim.server_ragdoll or victim:GetRagdollEntity()
 
@@ -161,6 +164,7 @@ hook.Add("PlayerDeath", "Beggar_KillCheck_PlayerDeath", function(victim, infl, a
             victim:SpawnForRound(true)
             victim:SetHealth(victim:GetMaxHealth())
             SafeRemoveEntity(body)
+            victim:SetNWBool("BeggarIsRespawning", false)
         end)
 
         net.Start("TTT_BeggarKilled")
@@ -168,5 +172,15 @@ hook.Add("PlayerDeath", "Beggar_KillCheck_PlayerDeath", function(victim, infl, a
         net.WriteString(attacker:Nick())
         net.WriteUInt(delay, 8)
         net.Broadcast()
+    end
+end)
+
+------------------
+-- CUPID LOVERS --
+------------------
+
+hook.Add("TTTCupidShouldLoverSurvive", "Beggar_TTTCupidShouldLoverSurvive", function(ply, lover)
+    if ply:GetNWBool("BeggarIsRespawning", false) or lover:GetNWBool("BeggarIsRespawning", false) then
+        return true
     end
 end)

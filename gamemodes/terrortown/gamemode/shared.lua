@@ -24,7 +24,7 @@ if not string.StartsWith then
 end
 
 -- Version string for display and function for version checks
-CR_VERSION = "1.8.1"
+CR_VERSION = "1.8.2"
 CR_BETA = true
 
 function CRVersion(version)
@@ -422,6 +422,19 @@ else
             SetGlobalBool("ttt_" .. rolestring .. "_shop_active_only", GetConVar("ttt_" .. rolestring .. "_shop_active_only"):GetBool())
             SetGlobalBool("ttt_" .. rolestring .. "_shop_delay", GetConVar("ttt_" .. rolestring .. "_shop_delay"):GetBool())
         end
+    end
+
+    function GetRoleTeamName(role_team)
+        if role_team == ROLE_TEAM_TRAITOR then
+            return "traitor"
+        elseif role_team == ROLE_TEAM_MONSTER then
+            return "monster"
+        elseif role_team == ROLE_TEAM_JESTER then
+            return "jester"
+        elseif role_team == ROLE_TEAM_INDEPENDENT then
+            return "independent"
+        end
+        return "innocent"
     end
 end
 
@@ -1224,6 +1237,7 @@ CORPSE_ICON_TYPES = {
     "lastid",
     "nick",
     "role",
+    "team",
     "stime",
     "wep",
     "words"

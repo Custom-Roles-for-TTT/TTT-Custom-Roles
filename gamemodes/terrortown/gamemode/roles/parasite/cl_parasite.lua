@@ -63,20 +63,31 @@ net.Receive("TTT_ParasiteInfect", function(len)
     })
 end)
 
+------------------
+-- CUPID LOVERS --
+------------------
+
+local function IsLoverInfecting(cli, target)
+    local loverSID = cli:GetNWString("TTTCupidLover", "")
+    local lover = player.GetBySteamID64(loverSID)
+    return IsPlayer(target) and IsPlayer(lover) and target:GetNWBool("ParasiteInfected", false) and lover:GetNWString("ParasiteInfectingTarget", "") == target:SteamID64()
+end
+
 ---------------
 -- TARGET ID --
 ---------------
 
 hook.Add("TTTTargetIDPlayerText", "Parasite_TTTTargetIDPlayerText", function(ent, cli, text, col, secondary_text)
+
     -- Skip this for Assassin so they can have their own Current Target logic (it also handles parasite infection there)
-    if cli:IsTraitorTeam() and not cli:IsAssassin() and IsPlayer(ent) and ent:GetNWBool("ParasiteInfected", false) then
+    if ((IsPlayer(ent) and ent:GetNWBool("ParasiteInfected", false) and cli:IsTraitorTeam()) or IsLoverInfecting(cli, ent)) and not cli:IsAssassin() then
         return LANG.GetTranslation("target_infected"), ROLE_COLORS_RADAR[ROLE_PARASITE]
     end
 end)
 
 ROLE_IS_TARGETID_OVERRIDDEN[ROLE_PARASITE] = function(ply, target)
-    if not ply:IsTraitorTeam() or ply:IsAssassin() then return end
     if not IsPlayer(target) then return end
+    if not (ply:IsTraitorTeam() and not ply:IsAssassin()) and not IsLoverInfecting(ply, target) then return end
 
     ------ icon,  ring,  text
     return false, false, target:GetNWBool("ParasiteInfected", false)
@@ -87,40 +98,40 @@ end
 ----------------
 
 hook.Add("TTTScoreboardPlayerRole", "Parasite_TTTScoreboardPlayerRole", function(ply, client, c, roleStr)
-    if client:IsTraitorTeam() and ShouldShowTraitorExtraInfo() and ply:GetNWBool("ParasiteInfected", false) then
+    if (client:IsTraitorTeam() and ShouldShowTraitorExtraInfo() and ply:GetNWBool("ParasiteInfected", false)) or IsLoverInfecting(client, ply) then
         return c, roleStr, ROLE_PARASITE
     end
 end)
 
 hook.Add("TTTScoreboardPlayerName", "Parasite_TTTScoreboardPlayerName", function(ply, cli, text)
     -- Skip this for Assassin so they can have their own Current Target logic (it also handles parasite infection there)
-    if not cli:IsTraitorTeam() or cli:IsAssassin() then return end
-    if not ShouldShowTraitorExtraInfo() then return end
+    local shouldShowTraitor = cli:IsTraitorTeam() and not cli:IsAssassin() and ShouldShowTraitorExtraInfo()
 
     -- Show Assassin and Parasite logic if necessary
     local infected = ply:GetNWBool("ParasiteInfected", false)
-    for _, v in pairs(GetAllPlayers()) do
-        if ply:SteamID64() == v:GetNWString("AssassinTarget", "") then
-            local newText = " ("
-            if infected then
-                newText = newText .. LANG.GetTranslation("target_infected") .. " | "
+    if shouldShowTraitor then
+        for _, v in pairs(GetAllPlayers()) do
+            if ply:SteamID64() == v:GetNWString("AssassinTarget", "") then
+                local newText = " ("
+                if infected then
+                    newText = newText .. LANG.GetTranslation("target_infected") .. " | "
+                end
+                newText = newText .. LANG.GetPTranslation("target_assassin_target_team", { player = v:Nick() }) .. ")"
+                return ply:Nick() .. newText
             end
-            newText = newText .. LANG.GetPTranslation("target_assassin_target_team", { player = v:Nick() }) .. ")"
-            return ply:Nick() .. newText
         end
     end
 
     -- If we got here then we don't have to worry about the Assassin target, just check for infection
-    if infected then
+    if infected and (shouldShowTraitor or IsLoverInfecting(cli, ply)) then
         return ply:Nick() .. " (" .. LANG.GetTranslation("target_infected") .. ")"
     end
 end)
 
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_PARASITE] = function(ply, target)
-    if not ply:IsTraitorTeam() or ply:IsAssassin() then return end
     if not IsPlayer(target) then return end
-    if not ShouldShowTraitorExtraInfo() then return end
     if not target:GetNWBool("ParasiteInfected", false) then return end
+    if not (ply:IsTraitorTeam() and not ply:IsAssassin() and ShouldShowTraitorExtraInfo()) and not IsLoverInfecting(ply, target) then return end
 
     ------ name, role
     return true, true

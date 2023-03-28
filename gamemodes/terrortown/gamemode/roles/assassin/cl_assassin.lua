@@ -93,7 +93,7 @@ ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_ASSASSIN] = function(ply, target)
     local show = target:SteamID64() == ply:GetNWString("AssassinTarget", "")
 
     local name = show and ShouldShowTraitorExtraInfo()
-    ------ name,  role
+    ------ name, role
     return name, show
 end
 

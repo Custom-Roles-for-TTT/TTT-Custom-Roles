@@ -87,9 +87,9 @@ hook.Add("TTTBeginRound", "Shadow_TTTBeginRound", function()
     end)
 end)
 
-hook.Add("PlayerSpawn", "Shadow_PlayerSpawn", function(player, transition)
-    if player:IsShadow() then
-        player:SetNWFloat("ShadowTimer", CurTime() + start_timer:GetInt())
+hook.Add("PlayerSpawn", "Shadow_PlayerSpawn", function(ply, transition)
+    if ply:IsShadow() then
+        ply:SetNWFloat("ShadowTimer", CurTime() + start_timer:GetInt())
     end
 end)
 

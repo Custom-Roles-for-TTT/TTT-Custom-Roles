@@ -39,6 +39,16 @@ Changed `was_traitor` parameter to be `true` for any member of the traitor team,
 
 *Return:* Whether or not the given player should be able to identify the given corpse (Defaults to `false`).
 
+### TTTCupidShouldLoverSurvive(ply, lover)
+Called before a player is killed because their lover (as set by Cupid's arrows) has been killed. Allows developers to prevent the player from being killed.\
+*Realm:* Server\
+*Added in:* 1.8.2\
+*Parameters:*
+- *ply* - The player who may be killed
+- *lover* - The player's lover who is already dead
+
+*Return:* If `ply` should not be killed, return `true`. Otherwise do not return anything.
+
 ### TTTDeathNotifyOverride(victim, inflictor, attacker, reason, killerName, role)
 Called before the name and role of a player's killer is shown to the victim. Used to change the death message reason, killer name, and/or killer role.\
 *Realm:* Server\
@@ -149,6 +159,14 @@ Called when a paladin heals a target.\
 - *ply* - The paladin doing the healing
 - *tgt* - The target being healed
 - *healed* - The amount healed
+
+### TTTParasiteRespawn(parasite, attacker)
+Called when a parasite respawns.\
+*Realm:* Server\
+*Added in:* 1.8.2\
+*Parameters:*
+- *parasite* - The parasite that is respawning
+- *attacker* - The player that originally killed the parasite (aka the "host")
 
 ### TTTPlayerAliveClientThink(client, ply)
 Called for each player who is alive during the `Think` hook.\
