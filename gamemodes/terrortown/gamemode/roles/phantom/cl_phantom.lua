@@ -74,13 +74,13 @@ hook.Add("TTTSpectatorShowHUD", "Phantom_Haunting_TTTSpectatorShowHUD", function
         [L.haunt_attack] = GetGlobalInt("ttt_phantom_killer_haunt_attack_cost", 100)
     }
     local max_power = GetGlobalInt("ttt_phantom_killer_haunt_power_max", 100)
-    local current_power = cli:GetNWInt("HauntingPower", 0)
+    local current_power = cli:GetNWInt("PhantomPossessingPower", 0)
 
     CRHUD:PaintPowersHUD(powers, max_power, current_power, willpower_colors, L.haunt_title)
 end)
 
 hook.Add("TTTShouldPlayerSmoke", "Phantom_Haunting_TTTShouldPlayerSmoke", function(v, client, shouldSmoke, smokeColor, smokeParticle, smokeOffset)
-    if v:GetNWBool("Haunted", false) and GetGlobalBool("ttt_phantom_killer_smoke", false) then
+    if v:GetNWBool("PhantomHaunted", false) and GetGlobalBool("ttt_phantom_killer_smoke", false) then
         return true
     end
 end)
@@ -102,7 +102,7 @@ hook.Add("TTTTutorialRoleText", "Phantom_TTTTutorialRoleText", function(role, ti
             html = html .. "<span style='display: block; margin-top: 10px;'>Before the " .. ROLE_STRINGS[ROLE_PHANTOM] .. " is respawned, their killer is enveloped in a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>shroud of smoke</span>, revealing themselves as the " .. ROLE_STRINGS[ROLE_PHANTOM] .. "'s killer to other players.</span>"
         end
 
-        -- Haunting
+        -- Possessing
         if GetGlobalBool("ttt_phantom_killer_haunt", true) then
             local max = GetGlobalInt("ttt_phantom_killer_haunt_power_max", 100)
             local move_cost = GetGlobalInt("ttt_phantom_killer_haunt_move_cost", 25)
@@ -110,7 +110,7 @@ hook.Add("TTTTutorialRoleText", "Phantom_TTTTutorialRoleText", function(role, ti
             local drop_cost = GetGlobalInt("ttt_phantom_killer_haunt_drop_cost", 75)
             local attack_cost = GetGlobalInt("ttt_phantom_killer_haunt_attack_cost", 100)
 
-            -- Haunting powers
+            -- Possessing powers
             if move_cost > 0 or jump_cost > 0 or drop_cost > 0 or attack_cost > 0 then
                 html = html .. "<span style='display: block; margin-top: 10px'>While dead, the " .. ROLE_STRINGS[ROLE_PHANTOM] .. " will haunt their killer, generating up to <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. max .. " haunting power</span> over time. This haunting power can be used on the following actions:</span>"
 

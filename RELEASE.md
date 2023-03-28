@@ -9,6 +9,7 @@
 ### Changes
 - Changed players who are in a lovers pair due to cupid's arrow to not be killed if their lover died but is guaranteed to respawn (e.g. death by zombie claws, being killed as the swapper, etc.)
 - Changed lovers who are in love with a swapper or a swapper's attacker to swap lovers between the swapper and their attacker when the swapper swaps (enabled by default)
+- Changed lovers who are in love with a parasite or a phantom to not die when their lover is dead as long as their lover is infecting/haunting another player (enabled by default)
 - Changed shop and player loadout retry timers to stop retrying after 60 seconds or when a new round is being prepared, whichever comes first
 - Changed round start popups to close at the start of the next round if they are still around
 

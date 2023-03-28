@@ -259,6 +259,7 @@ ttt_parasite_respawn_health                 100     // The health on which the p
 ttt_parasite_announce_infection             0       // Whether players are notified when they are infected with the parasite
 ttt_parasite_cure_mode                      2       // How to handle using a parasite cure on someone who is not infected. 0 - Kill nobody (But use up the cure), 1 - Kill the person who uses the cure, 2 - Kill the person the cure is used on
 ttt_parasite_cure_time                      3       // The amount of time (in seconds) the parasite cure takes to use
+ttt_parasite_infection_saves_lover          1       // Whether the parasite's lover should survive if the parasite is infecting a player
 ttt_parasite_credits_starting               1       // The number of credits a parasite should start with
 ttt_single_phantom_parasite                 0       // Whether only a single phantom or parasite should spawn in a round
 ttt_single_phantom_parasite_chance          0.5     // The chance that a phantom should have an opportunity to spawn instead of a parasite (e.g. 0.7 = 70% chance for phantom, 30% chance for parasite. Only applies if ttt_single_phantom_parasite is enabled)
@@ -296,6 +297,7 @@ ttt_phantom_killer_haunt_drop_cost          75      // The amount of power to sp
 ttt_phantom_killer_haunt_attack_cost        100     // The amount of power to spend when a phantom is making their killer attack via a haunting. Set to 0 to disable
 ttt_phantom_killer_haunt_without_body       1       // Whether the phantom can use their powers after their body is destroyed
 ttt_phantom_cure_time                       3       // The amount of time (in seconds) the phantom exorcism device takes to use. See "ttt_traitor_phantom_cure" and "ttt_quack_phantom_cure" to enable the device itself
+ttt_phantom_haunt_saves_lover               1       // Whether the phantom's lover should survive if the phantom is haunting a player
 
 // Revenger
 ttt_revenger_radar_timer                    15      // The amount of time between radar pings for the revenger's lover's killer

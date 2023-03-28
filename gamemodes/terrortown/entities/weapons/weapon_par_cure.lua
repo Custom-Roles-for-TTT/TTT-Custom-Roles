@@ -138,6 +138,14 @@ if SERVER then
                         timer.Remove(v:Nick() .. "ParasiteInfectionProgress")
                         timer.Remove(v:Nick() .. "ParasiteInfectingSpectate")
                         v:PrintMessage(HUD_PRINTCENTER, "Your host has been cured.")
+
+                        if GetConVar("ttt_parasite_infection_saves_lover"):GetBool() then
+                            local loverSID = v:GetNWString("TTTCupidLover", "")
+                            if loverSID ~= "" then
+                                local lover = player.GetBySteamID64(loverSID)
+                                lover:PrintMessage(HUD_PRINTTALK, "Your lover's host was cured!")
+                            end
+                        end
                     end
                 end
             else

@@ -32,6 +32,8 @@ local phantom_killer_haunt_jump_cost = CreateConVar("ttt_phantom_killer_haunt_ju
 local phantom_killer_haunt_drop_cost = CreateConVar("ttt_phantom_killer_haunt_drop_cost", "75", FCVAR_NONE, "The amount of power to spend when a phantom is making their killer drop their weapon via a haunting. Set to 0 to disable", 1, 100)
 local phantom_killer_haunt_attack_cost = CreateConVar("ttt_phantom_killer_haunt_attack_cost", "100", FCVAR_NONE, "The amount of power to spend when a phantom is making their killer attack via a haunting. Set to 0 to disable", 1, 100)
 local phantom_killer_haunt_without_body = CreateConVar("ttt_phantom_killer_haunt_without_body", "1")
+local phantom_haunt_saves_lover = CreateConVar("ttt_phantom_haunt_saves_lover", "1", FCVAR_NONE, "Whether the phantom's lover should survive if the phantom is haunting a player", 0, 1)
+
 
 hook.Add("TTTSyncGlobals", "Phantom_TTTSyncGlobals", function()
     SetGlobalBool("ttt_phantom_killer_smoke", phantom_killer_smoke:GetBool())
@@ -50,32 +52,34 @@ end)
 local deadPhantoms = {}
 hook.Add("TTTPrepareRound", "Phantom_TTTPrepareRound", function()
     for _, v in pairs(GetAllPlayers()) do
-        v:SetNWBool("Haunted", false)
-        v:SetNWBool("Haunting", false)
-        v:SetNWString("HauntingTarget", nil)
-        v:SetNWInt("HauntingPower", 0)
-        timer.Remove(v:Nick() .. "HauntingPower")
-        timer.Remove(v:Nick() .. "HauntingSpectate")
+        v:SetNWBool("PhantomHaunted", false)
+        v:SetNWBool("PhantomHaunting", false)
+        v:SetNWString("PhantomHauntingTarget", nil)
+        v:SetNWBool("PhantomPossessing", false)
+        v:SetNWInt("PhantomPossessingPower", 0)
+        timer.Remove(v:Nick() .. "PhantomPossessingPower")
+        timer.Remove(v:Nick() .. "PhantomPossessingSpectate")
     end
     deadPhantoms = {}
 end)
 
 local function ResetPlayer(ply)
     -- If this player is haunting someone else, make sure to clear them of the haunt too
-    if ply:GetNWBool("Haunting", false) then
-        local sid = ply:GetNWString("HauntingTarget", nil)
+    if ply:GetNWBool("PhantomHaunting", false) then
+        local sid = ply:GetNWString("PhantomHauntingTarget", nil)
         if sid then
             local target = player.GetBySteamID64(sid)
             if IsPlayer(target) then
-                target:SetNWBool("Haunted", false)
+                target:SetNWBool("PhantomHaunted", false)
             end
         end
     end
-    ply:SetNWBool("Haunting", false)
-    ply:SetNWString("HauntingTarget", nil)
-    ply:SetNWInt("HauntingPower", 0)
-    timer.Remove(ply:Nick() .. "HauntingPower")
-    timer.Remove(ply:Nick() .. "HauntingSpectate")
+    ply:SetNWBool("PhantomHaunting", false)
+    ply:SetNWString("PhantomHauntingTarget", nil)
+    ply:SetNWBool("PhantomPossessing", false)
+    ply:SetNWInt("PhantomPossessingPower", 0)
+    timer.Remove(ply:Nick() .. "PhantomPossessingPower")
+    timer.Remove(ply:Nick() .. "PhantomPossessingSpectate")
 end
 
 hook.Add("TTTPlayerRoleChanged", "Phantom_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
@@ -90,8 +94,8 @@ end)
 
 -- Un-haunt the device owner if they used their device on the phantom
 hook.Add("TTTPlayerRoleChangedByItem", "Phantom_TTTPlayerRoleChangedByItem", function(ply, tgt, item)
-    if tgt:IsPhantom() and tgt:GetNWString("HauntingTarget", nil) == ply:SteamID64() then
-        ply:SetNWBool("Haunted", false)
+    if tgt:IsPhantom() and tgt:GetNWString("PhantomHauntingTarget", nil) == ply:SteamID64() then
+        ply:SetNWBool("PhantomHaunted", false)
     end
 end)
 
@@ -110,26 +114,36 @@ end)
 hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     if valid_kill and victim:IsPhantom() and not victim:IsZombifying() then
-        attacker:SetNWBool("Haunted", true)
+        attacker:SetNWBool("PhantomHaunted", true)
+        victim:SetNWBool("PhantomHaunting", true)
+        victim:SetNWString("PhantomHauntingTarget", attacker:SteamID64())
 
         if phantom_killer_haunt:GetBool() then
-            victim:SetNWBool("Haunting", true)
-            victim:SetNWString("HauntingTarget", attacker:SteamID64())
-            victim:SetNWInt("HauntingPower", phantom_killer_haunt_power_starting:GetInt())
-            timer.Create(victim:Nick() .. "HauntingPower", 1, 0, function()
+            victim:SetNWBool("PhantomPossessing", true)
+            victim:SetNWInt("PhantomPossessingPower", phantom_killer_haunt_power_starting:GetInt())
+            timer.Create(victim:Nick() .. "PhantomPossessingPower", 1, 0, function()
                 -- If haunting without a body is disabled, check to make sure the body exists still
                 if not phantom_killer_haunt_without_body:GetBool() then
                     local phantomBody = victim.server_ragdoll or victim:GetRagdollEntity()
                     if not IsValid(phantomBody) then
-                        timer.Remove(victim:Nick() .. "HauntingPower")
-                        timer.Remove(victim:Nick() .. "HauntingSpectate")
-                        attacker:SetNWBool("Haunted", false)
-                        victim:SetNWBool("Haunting", false)
-                        victim:SetNWString("HauntingTarget", nil)
-                        victim:SetNWInt("HauntingPower", 0)
+                        timer.Remove(victim:Nick() .. "PhantomPossessingPower")
+                        timer.Remove(victim:Nick() .. "PhantomPossessingSpectate")
+                        attacker:SetNWBool("PhantomHaunted", false)
+                        victim:SetNWBool("PhantomHaunting", false)
+                        victim:SetNWString("PhantomHauntingTarget", nil)
+                        victim:SetNWBool("PhantomPossessing", false)
+                        victim:SetNWInt("PhantomPossessingPower", 0)
 
                         victim:PrintMessage(HUD_PRINTCENTER, "Your body has been destroyed, removing your tether to the world.")
                         victim:PrintMessage(HUD_PRINTTALK, "Your body has been destroyed, removing your tether to the world.")
+
+                        if phantom_haunt_saves_lover:GetBool() then
+                            local loverSID = victim:GetNWString("TTTCupidLover", "")
+                            if loverSID ~= "" then
+                                local lover = player.GetBySteamID64(loverSID)
+                                lover:PrintMessage(HUD_PRINTTALK, "Your lover's body was destroyed!")
+                            end
+                        end
                         return
                     end
                 end
@@ -140,14 +154,14 @@ hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
                     victim:Spectate(OBS_MODE_CHASE)
                 end
 
-                local power = victim:GetNWInt("HauntingPower", 0)
+                local power = victim:GetNWInt("PhantomPossessingPower", 0)
                 local power_rate = phantom_killer_haunt_power_rate:GetInt()
                 local new_power = math.Clamp(power + power_rate, 0, phantom_killer_haunt_power_max:GetInt())
-                victim:SetNWInt("HauntingPower", new_power)
+                victim:SetNWInt("PhantomPossessingPower", new_power)
             end)
 
             -- Lock the victim's view on their attacker
-            timer.Create(victim:Nick() .. "HauntingSpectate", 1, 1, function()
+            timer.Create(victim:Nick() .. "PhantomPossessingSpectate", 1, 1, function()
                 victim:SetRagdollSpec(false)
                 victim:Spectate(OBS_MODE_CHASE)
                 victim:SpectateEntity(attacker)
@@ -163,9 +177,19 @@ hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
             attacker:PrintMessage(HUD_PRINTCENTER, "You have been haunted.")
         end
         victim:PrintMessage(HUD_PRINTCENTER, "Your attacker has been haunted.")
+
+        local loverSID = ""
+        if phantom_haunt_saves_lover:GetBool() then
+            loverSID = victim:GetNWString("TTTCupidLover", "")
+            if loverSID ~= "" then
+                local lover = player.GetBySteamID64(loverSID)
+                lover:PrintMessage(HUD_PRINTCENTER, "Your lover has died... but they are haunting someone!")
+            end
+        end
+
         if phantom_announce_death:GetBool() then
             for _, v in pairs(GetAllPlayers()) do
-                if v ~= attacker and v:IsDetectiveLike() and v:Alive() and not v:IsSpec() then
+                if v ~= attacker and v:IsDetectiveLike() and v:Alive() and not v:IsSpec() and v:SteamID64() ~= loverSID then
                     v:PrintMessage(HUD_PRINTCENTER, "The " .. ROLE_STRINGS[ROLE_PHANTOM] .. " has been killed.")
                 end
             end
@@ -187,7 +211,7 @@ hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
 end)
 
 hook.Add("TTTSpectatorHUDKeyPress", "Phantom_TTTSpectatorHUDKeyPress", function(ply, tgt, powers)
-    if ply:GetNWBool("Haunting", false) and IsValid(tgt) and tgt:Alive() and not tgt:IsSpec() then
+    if ply:GetNWBool("PhantomPossessing", false) and IsValid(tgt) and tgt:Alive() and not tgt:IsSpec() then
         powers[IN_ATTACK] = {
             start_command = "+attack",
             end_command = "-attack",
@@ -231,7 +255,7 @@ hook.Add("TTTSpectatorHUDKeyPress", "Phantom_TTTSpectatorHUDKeyPress", function(
             cost = phantom_killer_haunt_jump_cost:GetInt()
         }
 
-        return true, "HauntingPower"
+        return true, "PhantomPossessingPower"
     end
 end)
 
@@ -242,18 +266,19 @@ end)
 hook.Add("DoPlayerDeath", "Phantom_DoPlayerDeath", function(ply, attacker, dmginfo)
     if ply:IsSpec() then return end
 
-    if ply:GetNWBool("Haunted", false) then
+    if ply:GetNWBool("PhantomHaunted", false) then
         local respawn = false
         local phantomUsers = table.GetKeys(deadPhantoms)
         for _, key in pairs(phantomUsers) do
             local phantom = deadPhantoms[key]
             if phantom.attacker == ply:SteamID64() and IsValid(phantom.player) then
                 local deadPhantom = phantom.player
-                deadPhantom:SetNWBool("Haunting", false)
-                deadPhantom:SetNWString("HauntingTarget", nil)
-                deadPhantom:SetNWInt("HauntingPower", 0)
-                timer.Remove(deadPhantom:Nick() .. "HauntingPower")
-                timer.Remove(deadPhantom:Nick() .. "HauntingSpectate")
+                deadPhantom:SetNWBool("PhantomHaunting", false)
+                deadPhantom:SetNWString("PhantomHauntingTarget", nil)
+                deadPhantom:SetNWBool("PhantomPossessing", false)
+                deadPhantom:SetNWInt("PhantomPossessingPower", 0)
+                timer.Remove(deadPhantom:Nick() .. "PhantomPossessingPower")
+                timer.Remove(deadPhantom:Nick() .. "PhantomPossessingSpectate")
                 if deadPhantom:IsPhantom() and not deadPhantom:Alive() then
                     -- Find the Phantom's corpse
                     local phantomBody = deadPhantom.server_ragdoll or deadPhantom:GetRagdollEntity()
@@ -291,7 +316,7 @@ hook.Add("DoPlayerDeath", "Phantom_DoPlayerDeath", function(ply, attacker, dmgin
             end
         end
 
-        ply:SetNWBool("Haunted", false)
+        ply:SetNWBool("PhantomHaunted", false)
         SendFullStateUpdate()
     end
 end)
@@ -303,7 +328,7 @@ end)
 hook.Add("PlayerFootstep", "Phantom_PlayerFootstep", function(ply, pos, foot, sound, volume, rf)
     if not IsValid(ply) or ply:IsSpec() or not ply:Alive() then return true end
     if ply:WaterLevel() ~= 0 then return end
-    if not ply:GetNWBool("Haunted", false) then return end
+    if not ply:GetNWBool("PhantomHaunted", false) then return end
 
     local killer_footstep_time = phantom_killer_footstep_time:GetInt()
     if killer_footstep_time <= 0 then return end
@@ -317,4 +342,33 @@ hook.Add("PlayerFootstep", "Phantom_PlayerFootstep", function(ply, pos, foot, so
     net.WriteTable(Color(138, 4, 4))
     net.WriteUInt(killer_footstep_time, 8)
     net.Broadcast()
+end)
+
+------------------
+-- CUPID LOVERS --
+------------------
+
+local function IsPhantomHaunting(ply)
+    return ply:GetNWBool("PhantomHaunting", false) and ply:IsPhantom() and not ply:Alive()
+end
+
+hook.Add("TTTCupidShouldLoverSurvive", "Phantom_TTTCupidShouldLoverSurvive", function(ply, lover)
+    if phantom_haunt_saves_lover:GetBool() and (IsPhantomHaunting(ply) or IsPhantomHaunting(lover)) then
+        return true
+    end
+end)
+
+hook.Add("PlayerDeath", "Phantom_Lovers_PlayerDeath", function(ply)
+    if ply:IsSpec() then return end
+
+    local loverSID = ply:GetNWString("TTTCupidLover", "")
+    if loverSID == "" then return end
+
+    local lover = player.GetBySteamID64(loverSID)
+    if not IsPlayer(lover) then return end
+
+    if IsPhantomHaunting(lover) then
+        lover:PrintMessage(HUD_PRINTTALK, "Your lover has died and so you will not survive if you respawn!")
+        lover:PrintMessage(HUD_PRINTCENTER, "Your lover has died and so you will not survive if you respawn!")
+    end
 end)
