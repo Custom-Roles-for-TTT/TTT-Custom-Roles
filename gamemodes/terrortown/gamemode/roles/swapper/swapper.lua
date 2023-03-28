@@ -114,6 +114,7 @@ local function SwapCupidLovers(attacker, swapper)
     -- Copy attacker values to swapper
     swapper:SetNWString("TTTCupidShooter", attCupidSID)
     swapper:SetNWString("TTTCupidLover", attLoverSID)
+    attLover:SetNWString("TTTCupidLover", swapper:SteamID64())
     if attCupid then
         if attCupid:GetNWString("TTTCupidTarget1", "") == attacker:SteamID64() then
             attCupid:SetNWString("TTTCupidTarget1", swapper:SteamID64())
@@ -139,6 +140,7 @@ local function SwapCupidLovers(attacker, swapper)
     -- Copy swapper values to attacker
     attacker:SetNWString("TTTCupidShooter", swaCupidSID)
     attacker:SetNWString("TTTCupidLover", swaLoverSID)
+    swaLover:SetNWString("TTTCupidLover", attacker:SteamID64())
     if swaCupid then
         if swaCupid:GetNWString("TTTCupidTarget1", "") == swapper:SteamID64() then
             swaCupid:SetNWString("TTTCupidTarget1", attacker:SteamID64())
