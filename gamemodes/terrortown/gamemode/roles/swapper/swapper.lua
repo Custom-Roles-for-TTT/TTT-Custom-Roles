@@ -178,8 +178,8 @@ hook.Add("PlayerDeath", "Swapper_KillCheck_PlayerDeath", function(victim, infl, 
         SendFullStateUpdate()
 
         local health = swapper_killer_health:GetInt()
-        local attCupidSID = attacker:GetNWString("TTTCupidLover", "")
-        local vicCupidSID = victim:GetNWString("TTTCupidLover", "")
+        local attCupidSID = attacker:GetNWString("TTTCupidShooter", "")
+        local vicCupidSID = victim:GetNWString("TTTCupidShooter", "")
         if health == 0 then
             if swapper_swap_lovers:GetBool() and attCupidSID ~= "" and vicCupidSID == "" then -- If the attacker is going to die, only swap lovers if the swap doesn't cause a lover to die elsewhere
                 SwapCupidLovers(attacker, victim)
