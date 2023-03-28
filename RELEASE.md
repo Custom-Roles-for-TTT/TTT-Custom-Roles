@@ -15,6 +15,7 @@
 ### Fixes
 - Fixed tips and idle warning messages not using the new config tab name
 - Fixed cupid & lovers not winning with jesters or roles with passive wins were left in the round
+- Fixed missing space before "YOUR TARGET" scoreboard marker for shadow
 
 ### Developer
 - Added new `TTTParasiteRespawn` hook to detect when a parasite respawns

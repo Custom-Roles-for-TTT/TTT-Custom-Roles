@@ -269,7 +269,7 @@ hook.Add("PlayerDeath", "Swapper_KillCheck_PlayerDeath", function(victim, infl, 
     net.Broadcast()
 end)
 
-hook.Add("TTTCupidShouldLoverSurvive", "Zombie_TTTCupidShouldLoverSurvive", function(ply, lover)
+hook.Add("TTTCupidShouldLoverSurvive", "Swapper_TTTCupidShouldLoverSurvive", function(ply, lover)
     if ply:GetNWBool("IsSwapping", false) or lover:GetNWBool("IsSwapping", false) then
         return true
     end
