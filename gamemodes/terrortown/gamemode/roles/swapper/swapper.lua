@@ -104,7 +104,12 @@ local function CopyLoverNWVars(copyTo, copyFrom, cupidSID, loverSID)
 
     copyTo:SetNWString("TTTCupidShooter", cupidSID)
     copyTo:SetNWString("TTTCupidLover", loverSID)
-    lover:SetNWString("TTTCupidLover", copyTo:SteamID64())
+    if lover and IsPlayer(lover) then
+        lover:SetNWString("TTTCupidLover", copyTo:SteamID64())
+        local message = copyTo:Nick() .. " has swapped with " .. copyFrom:Nick() .. " and is now your lover."
+        lover:PrintMessage(HUD_PRINTCENTER, message)
+        lover:PrintMessage(HUD_PRINTTALK, message)
+    end
 
     if cupid then
         if cupid:GetNWString("TTTCupidTarget1", "") == copyFrom:SteamID64() then

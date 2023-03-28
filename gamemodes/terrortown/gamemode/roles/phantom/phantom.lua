@@ -358,7 +358,7 @@ hook.Add("TTTCupidShouldLoverSurvive", "Phantom_TTTCupidShouldLoverSurvive", fun
     end
 end)
 
-hook.Add("PlayerDeath", "Phantom_Lovers_PlayerDeath", function(ply)
+hook.Add("PlayerDeath", "Phantom_Lovers_PlayerDeath", function(ply) -- TODO: For some reason this message doesn't appear
     if ply:IsSpec() then return end
 
     local loverSID = ply:GetNWString("TTTCupidLover", "")

@@ -168,7 +168,7 @@ end
 -- CUPID LOVERS --
 ------------------
 
-hook.Add("TTTCupidShouldLoverSurvive", "Parasite_TTTCupidShouldLoverSurvive", function(ply, lover)
+hook.Add("TTTCupidShouldLoverSurvive", "Infected_TTTCupidShouldLoverSurvive", function(ply, lover)
     if ply:GetNWBool("InfectedIsZombifying", false) or lover:GetNWBool("InfectedIsZombifying", false) then
         return true
     end
