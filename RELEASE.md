@@ -3,9 +3,15 @@
 ## 1.8.3 (Beta)
 **Released:**
 
+### Changes
+- Changed "call detective" button on body search dialog to be hidden when the local player is a detective
+
 ### Fixes
 - Fixed covert body search not working properly and text hint missing
 - Fixed body search text hint not using correct key if it was rebound
+
+### Developer
+- Added new `CORPSE.CanBeSearched` method to make it easier to check if a corpse can be searched by a player
 
 ## 1.8.2 (Beta)
 **Released: March 29rd, 2023**
@@ -19,7 +25,6 @@
 - Changed lovers who are in love with a parasite or a phantom to not die when their lover is dead as long as their lover is infecting/haunting another player (enabled by default)
 - Changed shop and player loadout retry timers to stop retrying after 60 seconds or when a new round is being prepared, whichever comes first
 - Changed round start popups to close at the start of the next round if they are still around
-- Changed "call detective" button on body search dialog to be hidden when the local player is a detective
 
 ### Fixes
 - Fixed tips and idle warning messages not using the new config tab name
@@ -29,7 +34,6 @@
 ### Developer
 - Added new `TTTParasiteRespawn` hook to detect when a parasite respawns
 - Added new `TTTCupidShouldLoverSurvive` hook to detect when a cupid lover is about to be killed because their lover is dead
-- Added new `CORPSE.CanBeSearched` method to make it easier to check if a corpse can be searched by a player
 
 ## 1.8.1
 **Released: March 6th, 2023**
