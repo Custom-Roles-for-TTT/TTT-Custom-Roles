@@ -14,7 +14,7 @@
 - Added new `CORPSE.CanBeSearched` method to make it easier to check if a corpse can be searched by a player
 
 ## 1.8.2 (Beta)
-**Released: March 29rd, 2023**
+**Released: March 29th, 2023**
 
 ### Additions
 - Added showing a player's team in the body search dialog if `ttt_detective_search_only` is disabled and `ttt_detective_search_only_role` is enabled
