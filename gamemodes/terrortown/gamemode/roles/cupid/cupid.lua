@@ -6,6 +6,7 @@ local player = player
 local timer = timer
 
 local GetAllPlayers = player.GetAll
+local HookCall = hook.Call
 
 resource.AddFile("materials/particle/heart.vmt")
 
@@ -35,18 +36,23 @@ end)
 hook.Add("TTTBeginRound", "Cupid_TTTBeginRound", function()
     timer.Create("TTTCupidTimer", 0.1, 0, function()
         for _, v in pairs(GetAllPlayers()) do
-            local lover = v:GetNWString("TTTCupidLover", "")
-            if lover ~= "" then
-                if v:IsActive() and not player.GetBySteamID64(lover):IsActive() then
-                    v:Kill()
-                    v:PrintMessage(HUD_PRINTCENTER, "Your lover has died!")
-                    v:PrintMessage(HUD_PRINTTALK, "Your lover has died!")
-                end
-            end
+            if not v:IsActive() then continue end
+
+            local lover_sid64 = v:GetNWString("TTTCupidLover", "")
+            if lover_sid64 == "" then continue end
+
+            local lover = player.GetBySteamID64(lover_sid64)
+            if not IsPlayer(lover) or lover:IsActive() then continue end
+
+            local should_survive = HookCall("TTTCupidShouldLoverSurvive", nil, v, lover)
+            if type(should_survive) == "boolean" and should_survive then continue end
+
+            v:Kill()
+            v:PrintMessage(HUD_PRINTCENTER, "Your lover has died!")
+            v:PrintMessage(HUD_PRINTTALK, "Your lover has died!")
         end
     end)
 end)
-
 
 -------------
 -- CLEANUP --
@@ -146,7 +152,7 @@ hook.Add("TTTCheckForWin", "Cupid_TTTCheckForWin", function()
                 break
             end
             loverAlive = true
-        elseif not v:IsCupid() then
+        elseif not v:IsCupid() and not v:ShouldActLikeJester() and not ROLE_HAS_PASSIVE_WIN[v:GetRole()] then
             cupidWin = false
             break
         end
@@ -157,8 +163,8 @@ hook.Add("TTTCheckForWin", "Cupid_TTTCheckForWin", function()
     end
 end)
 
-hook.Add("TTTPrintResultMessage", "Cupid_TTTPrintResultMessage", function(type)
-    if type == WIN_CUPID then
+hook.Add("TTTPrintResultMessage", "Cupid_TTTPrintResultMessage", function(win_type)
+    if win_type == WIN_CUPID then
         LANG.Msg("win_lovers", { role = ROLE_STRINGS_PLURAL[ROLE_CUPID] })
         ServerLog("Result: " .. ROLE_STRINGS[ROLE_CUPID] .. " wins.\n")
         return true

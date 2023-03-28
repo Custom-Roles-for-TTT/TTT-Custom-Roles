@@ -115,10 +115,12 @@ Gets the name and color belonging to the specified role team (see ROLE_TEAM_* gl
 
 ### GetRoleTeamName(roleTeam)
 Gets the name belonging to the specified role team (see ROLE_TEAM_* global enumeration).\
-*Realm:* Client\
-*Added in:* 1.2.7\
+*Realm:* Client and Server\
+*Added in:* 1.2.7 on Client and 1.8.2 on Server\
 *Parameters:*
 - *roleTeam* - Which team role to get the color for (see ROLE_TEAM_* global enumeration)
+
+*NOTE:* This will not use translated names when called on the server
 
 ### GetSprintMultiplier(ply, sprinting)
 Gets the given player's current sprint multiplier.\

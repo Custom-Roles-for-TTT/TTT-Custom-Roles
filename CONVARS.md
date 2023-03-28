@@ -33,7 +33,11 @@ Add any of the following that you want to change to your server.cfg (for dedicat
 
 // ROLE SPAWN REQUIREMENTS
 ttt_traitor_pct                             0.25    // Percentage of players, rounded up, that can spawn as a traitor or "special traitor"
-ttt_detective_pct                           0.13    // Percentage of players, rounded up, that can spawn as a detective
+ttt_traitor_max                             32      // The maximum number of players that can spawn as a traitor or "special traitor"
+ttt_detective_pct                           0.13    // Percentage of players, rounded up, that can spawn as a detective role
+ttt_detective_max                           32      // The maximum number of players that can spawn as a detective role
+ttt_detective_min_players                   8       // The minimum number of players required to spawn a detective role
+ttt_detective_karma_min                     600     // The minimum amount of karma required for a player to be selected to spawn as a detective role
 ttt_special_traitor_pct                     0.33    // Percentage of traitors, rounded up, that can spawn as a "special traitor" (e.g. hypnotist, impersonator, etc.)
 ttt_special_traitor_chance                  0.5     // The chance that a "special traitor" will spawn in each available slot made by "ttt_special_traitor_pct"
 ttt_special_innocent_pct                    0.33    // Percentage of innocents, rounded up, that can spawn as a "special innocent" (e.g. glitch, phantom, etc.)
@@ -255,6 +259,7 @@ ttt_parasite_respawn_health                 100     // The health on which the p
 ttt_parasite_announce_infection             0       // Whether players are notified when they are infected with the parasite
 ttt_parasite_cure_mode                      2       // How to handle using a parasite cure on someone who is not infected. 0 - Kill nobody (But use up the cure), 1 - Kill the person who uses the cure, 2 - Kill the person the cure is used on
 ttt_parasite_cure_time                      3       // The amount of time (in seconds) the parasite cure takes to use
+ttt_parasite_infection_saves_lover          1       // Whether the parasite's lover should survive if the parasite is infecting a player
 ttt_parasite_credits_starting               1       // The number of credits a parasite should start with
 ttt_single_phantom_parasite                 0       // Whether only a single phantom or parasite should spawn in a round
 ttt_single_phantom_parasite_chance          0.5     // The chance that a phantom should have an opportunity to spawn instead of a parasite (e.g. 0.7 = 70% chance for phantom, 30% chance for parasite. Only applies if ttt_single_phantom_parasite is enabled)
@@ -292,6 +297,7 @@ ttt_phantom_killer_haunt_drop_cost          75      // The amount of power to sp
 ttt_phantom_killer_haunt_attack_cost        100     // The amount of power to spend when a phantom is making their killer attack via a haunting. Set to 0 to disable
 ttt_phantom_killer_haunt_without_body       1       // Whether the phantom can use their powers after their body is destroyed
 ttt_phantom_cure_time                       3       // The amount of time (in seconds) the phantom exorcism device takes to use. See "ttt_traitor_phantom_cure" and "ttt_quack_phantom_cure" to enable the device itself
+ttt_phantom_haunt_saves_lover               1       // Whether the phantom's lover should survive if the phantom is haunting a player
 
 // Revenger
 ttt_revenger_radar_timer                    15      // The amount of time between radar pings for the revenger's lover's killer
@@ -362,6 +368,7 @@ ttt_detective_search_only_kills             0       // Whether only detectives c
 ttt_detective_search_only_lastid            0       // Whether only detectives can reveal the last player a body saw before death. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
 ttt_detective_search_only_nick              0       // Whether only detectives can reveal a body's name. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
 ttt_detective_search_only_role              0       // Whether only detectives can reveal a body's role. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
+ttt_detective_search_only_team              0       // Whether only detectives can reveal a body's tea,. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled or "ttt_detective_search_only_role" is disabled.
 ttt_detective_search_only_stime             0       // Whether only detectives can reveal a body's DNA decay time. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
 ttt_detective_search_only_wep               0       // Whether only detectives can reveal the weapon used to kill a body. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
 ttt_detective_search_only_words             0       // Whether only detectives can reveal a body's last words (if last words is enabled). Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
@@ -436,6 +443,7 @@ ttt_swapper_killer_health                   100     // The amount of health the 
 ttt_swapper_killer_max_health               0       // The maximum health value to set on the swapper's killer. Set to "0" to use the swapper's default
 ttt_swapper_credits_starting                0       // The number of credits a swapper should start with
 ttt_swapper_healthstation_reduce_max        1       // Whether the swapper's max health should be reduced to match their current health when using a health station, instead of being healed
+ttt_swapper_swap_lovers                     1       // Whether the swapper should swap lovers with their attacker or not
 
 // Clown
 ttt_clown_damage_bonus                      0       // Damage bonus that the clown has after being activated (e.g. 0.5 = 50% more damage)
