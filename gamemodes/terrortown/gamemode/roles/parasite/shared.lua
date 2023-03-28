@@ -102,3 +102,7 @@ table.insert(ROLE_CONVARS[ROLE_PARASITE], {
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
 })
+table.insert(ROLE_CONVARS[ROLE_PARASITE], {
+    cvar = "ttt_parasite_infection_saves_lover",
+    type = ROLE_CONVAR_TYPE_BOOL
+})

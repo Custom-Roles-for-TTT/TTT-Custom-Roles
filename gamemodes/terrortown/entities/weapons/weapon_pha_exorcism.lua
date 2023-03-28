@@ -110,16 +110,25 @@ if SERVER then
         if IsPlayer(ply) and ply:Alive() and not ply:IsSpec() then
             ply:EmitSound(cured)
 
-            if ply:GetNWBool("Haunted", false) then
+            if ply:GetNWBool("PhantomHaunted", false) then
                 for _, v in pairs(player.GetAll()) do
-                    if v:GetNWString("HauntingTarget", "") == ply:SteamID64() then
-                        ply:SetNWBool("Haunted", false)
-                        v:SetNWBool("Haunting", false)
-                        v:SetNWString("HauntingTarget", nil)
-                        v:SetNWInt("HauntingPower", 0)
-                        timer.Remove(v:Nick() .. "HauntingPower")
-                        timer.Remove(v:Nick() .. "HauntingSpectate")
+                    if v:GetNWString("PhantomHauntingTarget", "") == ply:SteamID64() then
+                        ply:SetNWBool("PhantomHaunted", false)
+                        v:SetNWBool("PhantomHaunting", false)
+                        v:SetNWString("PhantomHauntingTarget", nil)
+                        v:SetNWBool("PhantomPossessing", false)
+                        v:SetNWInt("PhantomPossessingPower", 0)
+                        timer.Remove(v:Nick() .. "PhantomPossessingPower")
+                        timer.Remove(v:Nick() .. "PhantomPossessingSpectate")
                         v:PrintMessage(HUD_PRINTCENTER, "Your spirit has been cleansed from your target.")
+
+                        if GetConVar("ttt_phantom_haunt_saves_lover"):GetBool() then
+                            local loverSID = v:GetNWString("TTTCupidLover", "")
+                            if loverSID ~= "" then
+                                local lover = player.GetBySteamID64(loverSID)
+                                lover:PrintMessage(HUD_PRINTTALK, "Your lover was exorcised from their host!")
+                            end
+                        end
                     end
                 end
             end

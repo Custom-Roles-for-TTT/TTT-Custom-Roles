@@ -404,7 +404,7 @@ if CLIENT then
             [L.summoner_haunt_drop] = GetGlobalInt("ttt_summoner_killer_haunt_drop_cost", 75)
         }
         local max_power = GetGlobalInt("ttt_summoner_killer_haunt_power_max", 100)
-        local current_power = cli:GetNWInt("HauntingPower", 0)
+        local current_power = cli:GetNWInt("PhantomPossessingPower", 0)
 
         CRHUD:PaintPowersHUD(powers, max_power, current_power, willpower_colors, L.summoner_haunt_title)
     end)
@@ -422,7 +422,7 @@ if SERVER then
     end)
 
     hook.Add("TTTSpectatorHUDKeyPress", "Summoner_TTTSpectatorHUDKeyPress", function(ply, tgt, powers)
-        if ply:GetNWBool("Haunting", false) and IsValid(tgt) and tgt:Alive() and not tgt:IsSpec() then
+        if ply:GetNWBool("PhantomHaunting", false) and IsValid(tgt) and tgt:Alive() and not tgt:IsSpec() then
             powers[IN_ATTACK2] = {
                 start_command = "+menu",
                 end_command = "-menu",
@@ -436,7 +436,7 @@ if SERVER then
                 cost = summoner_killer_haunt_jump_cost:GetInt()
             }
 
-            return true, "HauntingPower"
+            return true, "PhantomPossessingPower"
         end
     end)
 end
