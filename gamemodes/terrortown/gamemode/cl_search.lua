@@ -70,6 +70,7 @@ local TypeToMat = {
     eq_speed = "speed",
     eq_regen = "regen",
     role = function(role) return ROLE_STRINGS_SHORT[role] end,
+    team = "team",
     c4 = "code",
     dmg = DmgToMat,
     wep = WeaponToIcon,
@@ -124,6 +125,7 @@ end
 
 function PreprocSearch(raw)
     local detectiveSearchOnly = GetGlobalBool("ttt_detective_search_only", true) and not (GetGlobalBool("ttt_all_search_postround", true) and GetRoundState() ~= ROUND_ACTIVE)
+    local hasRole = false
     local search = {}
     for t, d in pairs(raw) do
         search[t] = { img = nil, text = "", p = 10 }
@@ -139,6 +141,21 @@ function PreprocSearch(raw)
             search[t].text = PT("search_role", { role = ROLE_STRINGS_EXT[d] })
             search[t].color = ROLE_COLORS[d]
             search[t].p = 2
+
+            -- Don't show team if we're already showing role
+            hasRole = true
+            search["team"] = nil
+        elseif t == "team" then
+            -- Don't show team if we're already showing role
+            if hasRole then
+                search[t] = nil
+            else
+                local roleTeam = player.GetRoleTeam(d)
+                local name, color = GetRoleTeamInfo(roleTeam, true)
+                search[t].text = PT("search_team", { team = name })
+                search[t].color = color
+                search[t].p = 2
+            end
         elseif t == "words" then
             if d ~= "" then
                 -- only append "--" if there's no ending interpunction
@@ -512,6 +529,7 @@ local function ReceiveRagdollSearch()
 
     -- Traitor things
     search.role = net.ReadUInt(8)
+    search.team = player.GetRoleTeam(search.role)
     search.c4 = net.ReadInt(bitsRequired(C4_WIRE_COUNT) + 1)
 
     -- Kill info

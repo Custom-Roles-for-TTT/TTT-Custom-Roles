@@ -178,6 +178,7 @@ L.search_call = "Call {role}"
 -- Descriptions of pieces of information found
 L.search_nick = "This is the body of {player}."
 L.search_role = "This person was {role}."
+L.search_team = "This person was on the {team} team."
 
 L.search_words = "Something tells you some of this person's last words were: '{lastwords}'"
 L.search_armor = "They were wearing nonstandard body armor."

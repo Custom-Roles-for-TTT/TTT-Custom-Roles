@@ -108,7 +108,7 @@ function PANEL:UpdatePlayerData(force)
       else
          local parent = self.List
          ic = vgui.Create("SimpleIcon", parent)
-         if t == "role" then
+         if t == "role" or t == "team" then
             ic:SetBackgroundColor(info.color)
          end
       end

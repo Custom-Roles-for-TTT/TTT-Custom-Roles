@@ -3,8 +3,8 @@
 ## 1.8.2 (Beta)
 **Released:**
 
-### Fixes
-- Fixed missing space before "YOUR TARGET" scoreboard marker for shadow
+### Additions
+- Added showing a player's team in the body search dialog if `ttt_detective_search_only` is disabled and `ttt_detective_search_only_role` is enabled
 
 ### Changes
 - Changed players who are in a lovers pair due to cupid's arrow to not be killed if their lover died but is guaranteed to respawn (e.g. death by zombie claws, being killed as the swapper, etc.)
@@ -15,6 +15,7 @@
 ### Fixes
 - Fixed tips and idle warning messages not using the new config tab name
 - Fixed cupid & lovers not winning with jesters or roles with passive wins were left in the round
+- Fixed missing space before "YOUR TARGET" scoreboard marker for shadow
 
 ### Developer
 - Added new `TTTParasiteRespawn` hook to detect when a parasite respawns

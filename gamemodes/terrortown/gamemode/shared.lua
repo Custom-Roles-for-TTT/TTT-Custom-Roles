@@ -423,6 +423,19 @@ else
             SetGlobalBool("ttt_" .. rolestring .. "_shop_delay", GetConVar("ttt_" .. rolestring .. "_shop_delay"):GetBool())
         end
     end
+
+    function GetRoleTeamName(role_team)
+        if role_team == ROLE_TEAM_TRAITOR then
+            return "traitor"
+        elseif role_team == ROLE_TEAM_MONSTER then
+            return "monster"
+        elseif role_team == ROLE_TEAM_JESTER then
+            return "jester"
+        elseif role_team == ROLE_TEAM_INDEPENDENT then
+            return "independent"
+        end
+        return "innocent"
+    end
 end
 
 ROLE_COLORS = {}
@@ -1224,6 +1237,7 @@ CORPSE_ICON_TYPES = {
     "lastid",
     "nick",
     "role",
+    "team",
     "stime",
     "wep",
     "words"
