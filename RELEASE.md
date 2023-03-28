@@ -6,12 +6,15 @@
 ### Additions
 - Added new jester role: sponge
 
+### Changes
+- Changed "call detective" button on body search dialog to be hidden when the local player is a detective
+
 ### Fixes
 - Fixed killer win server log being overridden by jester win server log
 - Fixed minor plurality issue in the server log message when the jester wins
 
-## 1.8.2
-**Released: April 2nd, 2023**
+## 1.8.2 (Beta)
+**Released: March 29rd, 2023**
 
 ### Additions
 - Added showing a player's team in the body search dialog if `ttt_detective_search_only` is disabled and `ttt_detective_search_only_role` is enabled
@@ -22,7 +25,6 @@
 - Changed lovers who are in love with a parasite or a phantom to not die when their lover is dead as long as their lover is infecting/haunting another player (enabled by default)
 - Changed shop and player loadout retry timers to stop retrying after 60 seconds or when a new round is being prepared, whichever comes first
 - Changed round start popups to close at the start of the next round if they are still around
-- Changed "call detective" button on body search dialog to be hidden when the local player is a detective
 
 ### Fixes
 - Fixed tips and idle warning messages not using the new config tab name
@@ -34,7 +36,6 @@
 ### Developer
 - Added new `TTTParasiteRespawn` hook to detect when a parasite respawns
 - Added new `TTTCupidShouldLoverSurvive` hook to detect when a cupid lover is about to be killed because their lover is dead
-- Added new `CORPSE.CanBeSearched` method to make it easier to check if a corpse can be searched by a player
 
 ## 1.8.1
 **Released: March 6th, 2023**
