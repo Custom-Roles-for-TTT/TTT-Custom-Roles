@@ -8,7 +8,7 @@
 - Fixed body search text hint not using correct key if it was rebound
 
 ## 1.8.2 (Beta)
-**Released: March 29rg, 2023**
+**Released: March 29rd, 2023**
 
 ### Additions
 - Added showing a player's team in the body search dialog if `ttt_detective_search_only` is disabled and `ttt_detective_search_only_role` is enabled
