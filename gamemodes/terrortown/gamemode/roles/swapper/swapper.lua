@@ -185,7 +185,6 @@ hook.Add("PlayerDeath", "Swapper_KillCheck_PlayerDeath", function(victim, infl, 
                 SwapCupidLovers(attacker, victim)
             end
             attacker:Kill()
-
         else
             if swapper_swap_lovers:GetBool() and (attCupidSID ~= "" or vicCupidSID ~= "") and attCupidSID ~= vicCupidSID then -- If the attacker is going to live, only swap lovers if the attacker and the swapper arent in love with each other
                 SwapCupidLovers(attacker, victim)
