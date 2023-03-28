@@ -148,8 +148,10 @@ hook.Add("PlayerDeath", "Infected_KillCheck_PlayerDeath", function(victim, infl,
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     if not valid_kill then return end
     if not victim:IsInfected() then return end
+    victim:SetNWBool("InfectedIsZombifying", true)
     timer.Simple(0.25, function()
         InfectedSuccumb(victim, true)
+        victim:SetNWBool("InfectedIsZombifying", false)
     end)
 end)
 
@@ -162,6 +164,16 @@ ROLE_ON_ROLE_ASSIGNED[ROLE_INFECTED] = function()
     StartCoughTimer()
 end
 
+------------------
+-- CUPID LOVERS --
+------------------
+
+hook.Add("TTTCupidShouldLoverSurvive", "Parasite_TTTCupidShouldLoverSurvive", function(ply, lover)
+    if ply:GetNWBool("InfectedIsZombifying", false) or lover:GetNWBool("InfectedIsZombifying", false) then
+        return true
+    end
+end)
+
 -------------
 -- CLEANUP --
 -------------
@@ -170,4 +182,10 @@ hook.Add("TTTEndRound", "Infected_TTTEndRound", function()
     if timer.Exists("InfectedSuccumb") then timer.Remove("InfectedSuccumb") end
     if timer.Exists("WaitForInfectedRespawn") then timer.Remove("WaitForInfectedRespawn") end
     if timer.Exists("InfectedCough") then timer.Remove("InfectedCough") end
+end)
+
+hook.Add("TTTPrepareRound", "Infected_PrepareRound", function()
+    for _, v in pairs(GetAllPlayers()) do
+        v:SetNWBool("InfectedIsZombifying", false)
+    end
 end)
