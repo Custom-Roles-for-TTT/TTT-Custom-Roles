@@ -115,9 +115,8 @@ hook.Add("TTTPlayerRoleChanged", "Informant_TTTPlayerRoleChanged", function(ply,
         ply:SetNWFloat("TTTInformantScannerCooldown", -1)
     end
 
-    if not HasInformant() then return end
-
-    if ply:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED) > INFORMANT_UNSCANNED then
+    -- Only notify if there is an informant and the player had some info being reset
+    if HasInformant() and ply:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED) > INFORMANT_UNSCANNED then
         local share = GetGlobalBool("ttt_informant_share_scans", true)
         for _, v in pairs(GetAllPlayers()) do
             if v:IsActiveInformant() then
