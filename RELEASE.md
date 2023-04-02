@@ -1,7 +1,7 @@
 # Release Notes
 
-## 1.8.2 (Beta)
-**Released: March 29th, 2023**
+## 1.8.2
+**Released: April 2nd, 2023**
 
 ### Additions
 - Added showing a player's team in the body search dialog if `ttt_detective_search_only` is disabled and `ttt_detective_search_only_role` is enabled
