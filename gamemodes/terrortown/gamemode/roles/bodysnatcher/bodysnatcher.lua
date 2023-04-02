@@ -48,6 +48,7 @@ end)
 hook.Add("TTTPrepareRound", "Bodysnatcher_PrepareRound", function()
     for _, v in pairs(GetAllPlayers()) do
         v:SetNWBool("WasBodysnatcher", false)
+        v:SetNWBool("BodysnatcherIsRespawning", false)
         timer.Remove(v:Nick() .. "BodysnatcherRespawn")
     end
 end)
@@ -107,11 +108,14 @@ hook.Add("PlayerDeath", "Bodysnatcher_KillCheck_PlayerDeath", function(victim, i
             -- Introduce a slight delay to prevent player getting stuck as a spectator
             delay = 0.1
         end
+        victim:SetNWBool("BodysnatcherIsRespawning", true)
+
         timer.Create(victim:Nick() .. "BodysnatcherRespawn", delay, 1, function()
             local body = victim.server_ragdoll or victim:GetRagdollEntity()
             victim:SpawnForRound(true)
             victim:SetHealth(victim:GetMaxHealth())
             SafeRemoveEntity(body)
+            victim:SetNWBool("BodysnatcherIsRespawning", false)
         end)
 
         net.Start("TTT_BodysnatcherKilled")
@@ -119,5 +123,15 @@ hook.Add("PlayerDeath", "Bodysnatcher_KillCheck_PlayerDeath", function(victim, i
         net.WriteString(attacker:Nick())
         net.WriteUInt(delay, 8)
         net.Broadcast()
+    end
+end)
+
+------------------
+-- CUPID LOVERS --
+------------------
+
+hook.Add("TTTCupidShouldLoverSurvive", "Bodysnatcher_TTTCupidShouldLoverSurvive", function(ply, lover)
+    if ply:GetNWBool("BodysnatcherIsRespawning", false) or lover:GetNWBool("BodysnatcherIsRespawning", false) then
+        return true
     end
 end)

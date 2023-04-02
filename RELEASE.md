@@ -1,5 +1,28 @@
 # Release Notes
 
+## 1.8.2
+**Released: April 2nd, 2023**
+
+### Additions
+- Added showing a player's team in the body search dialog if `ttt_detective_search_only` is disabled and `ttt_detective_search_only_role` is enabled
+
+### Changes
+- Changed players who are in a lovers pair due to cupid's arrow to not be killed if their lover died but is guaranteed to respawn (e.g. death by zombie claws, being killed as the swapper, etc.)
+- Changed lovers who are in love with a swapper or a swapper's attacker to swap lovers between the swapper and their attacker when the swapper swaps (enabled by default)
+- Changed lovers who are in love with a parasite or a phantom to not die when their lover is dead as long as their lover is infecting/haunting another player (enabled by default)
+- Changed shop and player loadout retry timers to stop retrying after 60 seconds or when a new round is being prepared, whichever comes first
+- Changed round start popups to close at the start of the next round if they are still around
+
+### Fixes
+- Fixed tips and idle warning messages not using the new config tab name
+- Fixed cupid & lovers not winning with jesters or roles with passive wins were left in the round
+- Fixed missing space before "YOUR TARGET" scoreboard marker for shadow
+- Fixed some player role information showing on the scoreboard when there was an informant at the start of the round but then roles were switched by something external, like a Randomat event
+
+### Developer
+- Added new `TTTParasiteRespawn` hook to detect when a parasite respawns
+- Added new `TTTCupidShouldLoverSurvive` hook to detect when a cupid lover is about to be killed because their lover is dead
+
 ## 1.8.1
 **Released: March 6th, 2023**
 

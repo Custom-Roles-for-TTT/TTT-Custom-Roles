@@ -23,8 +23,10 @@ local parasite_infection_transfer = CreateConVar("ttt_parasite_infection_transfe
 local parasite_infection_transfer_reset = CreateConVar("ttt_parasite_infection_transfer_reset", 1)
 local parasite_infection_suicide_mode = CreateConVar("ttt_parasite_infection_suicide_mode", 0, FCVAR_NONE, "The way to handle when a player infected by the parasite kills themselves. 0 - Do nothing. 1 - Respawn the parasite. 2 - Respawn the parasite ONLY IF the infected player killed themselves with a console command like \"kill\"", 0, 2)
 local parasite_respawn_mode = CreateConVar("ttt_parasite_respawn_mode", 0, FCVAR_NONE, "The way in which the parasite respawns. 0 - Take over host. 1 - Respawn at the parasite's body. 2 - Respawn at a random location.", 0, 2)
-local parasite_respawn_health = CreateConVar("ttt_parasite_respawn_health", 100, FCVAR_NONE, "The health on which the parasite respawns", 0, 100)
+local parasite_respawn_health = CreateConVar("ttt_parasite_respawn_health", 100, FCVAR_NONE, "The health on which the parasite respawns", 1, 100)
 local parasite_announce_infection = CreateConVar("ttt_parasite_announce_infection", 0)
+local parasite_infection_saves_lover = CreateConVar("ttt_parasite_infection_saves_lover", "1", FCVAR_NONE, "Whether the parasite's lover should survive if the parasite is infecting a player", 0, 1)
+
 
 hook.Add("TTTSyncGlobals", "Parasite_TTTSyncGlobals", function()
     SetGlobalInt("ttt_parasite_infection_time", parasite_infection_time:GetInt())
@@ -158,6 +160,8 @@ local function DoParasiteRespawn(parasite, attacker, hide_messages)
             attacker:PrintMessage(HUD_PRINTCENTER, "Your parasite has drained you of your energy.")
             attacker:PrintMessage(HUD_PRINTTALK, "Your parasite has drained you of your energy.")
         end
+
+        hook.Call("TTTParasiteRespawn", nil, parasite, attacker)
     end
 end
 
@@ -221,6 +225,14 @@ hook.Add("PlayerDeath", "Parasite_PlayerDeath", function(victim, infl, attacker)
         end
         victim:PrintMessage(HUD_PRINTCENTER, "Your attacker has been infected.")
 
+        if parasite_infection_saves_lover:GetBool() then
+            local loverSID = victim:GetNWString("TTTCupidLover", "")
+            if loverSID ~= "" then
+                local lover = player.GetBySteamID64(loverSID)
+                lover:PrintMessage(HUD_PRINTCENTER, "Your lover has died... but they are infecting someone!")
+            end
+        end
+
         local sid = victim:SteamID64()
         -- Keep track of who killed this parasite
         deadParasites[sid] = {player = victim, attacker = attacker:SteamID64()}
@@ -274,11 +286,46 @@ hook.Add("DoPlayerDeath", "Parasite_DoPlayerDeath", function(ply, attacker, dmgi
                     timer.Remove(deadParasite:Nick() .. "ParasiteInfectingSpectate")
                     if parasiteDead then
                         deadParasite:PrintMessage(HUD_PRINTCENTER, "Your host has died.")
+
+                        if parasite_infection_saves_lover:GetBool() then
+                            local loverSID = deadParasite:GetNWString("TTTCupidLover", "")
+                            if loverSID ~= "" then
+                                local lover = player.GetBySteamID64(loverSID)
+                                lover:PrintMessage(HUD_PRINTTALK, "Your lover's host has died!")
+                            end
+                        end
                     end
                 end
             end
         end
 
         ply:SetNWBool("ParasiteInfected", false)
+    end
+end)
+
+------------------
+-- CUPID LOVERS --
+------------------
+
+local function IsParasiteInfecting(ply)
+    return ply:GetNWBool("ParasiteInfecting", false) and ply:IsParasite() and not ply:Alive()
+end
+
+hook.Add("TTTCupidShouldLoverSurvive", "Parasite_TTTCupidShouldLoverSurvive", function(ply, lover)
+    if parasite_infection_saves_lover:GetBool() and (IsParasiteInfecting(ply) or IsParasiteInfecting(lover)) then
+        return true
+    end
+end)
+
+hook.Add("PostPlayerDeath", "Parasite_Lovers_PostPlayerDeath", function(ply)
+    local loverSID = ply:GetNWString("TTTCupidLover", "")
+    if loverSID == "" then return end
+
+    local lover = player.GetBySteamID64(loverSID)
+    if not IsPlayer(lover) then return end
+
+    if IsParasiteInfecting(lover) then
+        lover:PrintMessage(HUD_PRINTTALK, "Your lover has died and so you will not survive if you respawn!")
+        lover:PrintMessage(HUD_PRINTCENTER, "Your lover has died and so you will not survive if you respawn!")
     end
 end)

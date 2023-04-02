@@ -3,6 +3,7 @@ AddCSLuaFile()
 local table = table
 
 -- Initialize role features
+ROLE_HAS_PASSIVE_WIN[ROLE_SHADOW] = true
 ROLE_IS_ACTIVE[ROLE_SHADOW] = function(ply)
     return ply:GetNWBool("ShadowActive", false)
 end

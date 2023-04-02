@@ -4,7 +4,7 @@ local table = table
 
 -- Initialize role features
 ROLE_SHOULD_SHOW_SPECTATOR_HUD[ROLE_PHANTOM] = function(ply)
-    if ply:GetNWBool("Haunting") then
+    if ply:GetNWBool("PhantomPossessing") then
         return true
     end
 end
@@ -83,4 +83,8 @@ table.insert(ROLE_CONVARS[ROLE_PHANTOM], {
     cvar = "ttt_phantom_cure_time",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_PHANTOM], {
+    cvar = "ttt_phantom_haunt_saves_lover",
+    type = ROLE_CONVAR_TYPE_BOOL
 })
