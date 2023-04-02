@@ -1,7 +1,7 @@
 # Release Notes
 
-## 1.8.2 (Beta)
-**Released: March 29th, 2023**
+## 1.8.2
+**Released: April 2nd, 2023**
 
 ### Additions
 - Added showing a player's team in the body search dialog if `ttt_detective_search_only` is disabled and `ttt_detective_search_only_role` is enabled
@@ -17,6 +17,7 @@
 - Fixed tips and idle warning messages not using the new config tab name
 - Fixed cupid & lovers not winning with jesters or roles with passive wins were left in the round
 - Fixed missing space before "YOUR TARGET" scoreboard marker for shadow
+- Fixed some player role information showing on the scoreboard when there was an informant at the start of the round but then roles were switched by something external, like a Randomat event
 
 ### Developer
 - Added new `TTTParasiteRespawn` hook to detect when a parasite respawns
