@@ -17,6 +17,7 @@
 - Fixed tips and idle warning messages not using the new config tab name
 - Fixed cupid & lovers not winning with jesters or roles with passive wins were left in the round
 - Fixed missing space before "YOUR TARGET" scoreboard marker for shadow
+- Fixed some player role information showing on the scoreboard when there was an informant at the start of the round but then roles were switched by something external, like a Randomat event
 
 ### Developer
 - Added new `TTTParasiteRespawn` hook to detect when a parasite respawns
