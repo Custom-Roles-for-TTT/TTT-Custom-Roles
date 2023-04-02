@@ -187,7 +187,7 @@ AddHook("TTTTargetIDPlayerRoleIcon", "Cupid_TTTTargetIDPlayerRoleIcon", function
     if ply:IsActiveCupid() and ply:SteamID64() == cli:GetNWString("TTTCupidShooter", "") then
         return ROLE_CUPID, true
     elseif ply:SteamID64() == cli:GetNWString("TTTCupidLover", "") then
-        return ply:GetRole(), true
+        return ply:GetRole(), true, ply:GetRole()
     end
 end)
 
