@@ -302,18 +302,6 @@ local function SearchInfoController(search, dback, dactive, dtext)
     end
 end
 
--- Helper to get at a player's scanner, if they have one
-local function GetTester(ply)
-    if IsValid(ply) then
-        for _, w in ipairs(ply:GetWeapons()) do
-            if w:GetClass() == "weapon_ttt_wtester" then
-                return w
-            end
-        end
-    end
-    return nil
-end
-
 local function ShowSearchScreen(search_raw)
     if not client then
         client = LocalPlayer()
@@ -405,80 +393,103 @@ local function ShowSearchScreen(search_raw)
     local by = rh - bh - (m / 2)
 
     local rag = Entity(search_raw.eidx)
-    local buttons = 0
+    local buttons = {}
     local detectiveSearchOnly = GetGlobalBool("ttt_detective_search_only", true) and not (GetGlobalBool("ttt_all_search_postround", true) and GetRoundState() ~= ROUND_ACTIVE)
     if not detectiveSearchOnly then
-        local dident = vgui.Create("DButton", dcont)
-        dident:SetPos(m, by)
-        dident:SetSize(bw, bh)
-        dident:SetText(T("search_confirm"))
-        local id = search_raw.eidx + search_raw.dtime
-        dident.DoClick = function()
-            RunConsoleCommand("ttt_confirm_death", search_raw.eidx, id)
-            dident:SetDisabled(true)
-        end
-        dident:SetDisabled(client:IsSpec() or (not client:KeyDownLast(IN_WALK)) or CORPSE.GetFound(rag, false))
-        buttons = buttons + 1
+        table.insert(buttons, {
+            text = T("search_confirm"),
+            doclick = function(btn)
+                RunConsoleCommand("ttt_confirm_death", search_raw.eidx, search_raw.eidx + search_raw.dtime)
+                btn:SetDisabled(true)
+            end,
+            disabled = function()
+                return client:IsSpec() or (not client:KeyDownLast(IN_WALK)) or CORPSE.GetFound(rag, false)
+            end
+        })
 
         if not client:IsDetectiveLike() then
-            local dcall = vgui.Create("DButton", dcont)
-            dcall:SetPos(m * 2 + bw, by)
-            dcall:SetSize(bw, bh)
-            dcall:SetText(PT("search_call", { role = ROLE_STRINGS[ROLE_DETECTIVE] }))
-            dcall.DoClick = function(s)
-                client.called_corpses = client.called_corpses or {}
-                table.insert(client.called_corpses, search_raw.eidx)
-                s:SetDisabled(true)
+            table.insert(buttons, {
+                text = PT("search_call", { role = ROLE_STRINGS[ROLE_DETECTIVE] }),
+                doclick = function(btn)
+                    client.called_corpses = client.called_corpses or {}
+                    table.insert(client.called_corpses, search_raw.eidx)
+                    btn:SetDisabled(true)
 
-                RunConsoleCommand("ttt_call_detective", search_raw.eidx, search_raw.sid)
-            end
-
-            dcall:SetDisabled(client:IsSpec() or table.HasValue(client.called_corpses or {}, search_raw.eidx))
-            buttons = buttons + 1
+                    RunConsoleCommand("ttt_call_detective", search_raw.eidx, search_raw.sid)
+                end,
+                disabled = function()
+                    return client:IsSpec() or table.HasValue(client.called_corpses or {}, search_raw.eidx)
+                end
+            })
         end
     end
 
-    -- Show a  button for the DNA Scanner if the player has a scanner
-    local tester = GetTester(client)
-    if IsValid(tester) then
-        local discan = vgui.Create("DButton", dcont)
-        discan:SetPos((m * (buttons + 1)) + (bw * buttons), by)
-        discan:SetSize(bw, bh)
+    hook.Call("TTTBodySearchButtons", nil, client, rag, buttons, search_raw, detectiveSearchOnly)
 
-        -- Check if this player has a sample for this ragdoll
-        local has_sample = false
-        if #tester.ItemSamples > 0 then
-            for _, s in ipairs(tester.ItemSamples) do
-                if s.type ~= tester.SAMPLE_PLAYER then continue end
-                if s.source ~= rag then continue end
+    -- Add the close button last
+    table.insert(buttons, {
+        text = T("close"),
+        doclick = function() dframe:Close() end,
+        rightjustify = true
+    })
 
-                has_sample = true
-                break
-            end
+    local buttonsPerRow = 3
+    local buttonCount = #buttons
+
+    -- Make window larger to fit more buttons
+    local buttonRows = math.ceil(buttonCount / buttonsPerRow)
+    local buttonHeightAdditional = ((bh + m) * (buttonRows - 1))
+    dframe:SetSize(w, h + buttonHeightAdditional)
+    dcont:SetSize(rw, rh + buttonHeightAdditional)
+
+    local row = 1
+    local button = 1
+    local dbuttons = {}
+    for i, btn in ipairs(buttons) do
+        -- If this is the last button in the list and we're told to right-justify
+        -- it, then put it in the right column
+        if i == #buttons and btn.rightjustify then
+            button = buttonsPerRow
         end
 
-        local function SetupOpenButton()
-            discan:SetText(T("search_scan_open"))
-            discan.DoClick = function()
-                net.Start("TTT_ShowPrints")
-                net.SendToServer()
-            end
-        end
+        local dbtn = vgui.Create("DButton", dcont)
+        -- Move the button over based on which button in the row it is
+        -- and move it down based on which row we're on
+        dbtn:SetPos((m * button) + (bw * (button - 1)), by + ((bh + m) * (row - 1)))
+        dbtn:SetSize(bw, bh)
+        dbtn:SetText(btn.text)
+        dbtn.DoClick = function(s)
+            btn.doclick(s)
 
-        -- If they have a sample, make this button open the dialog
-        if has_sample then
-            SetupOpenButton()
-        -- Otherwise have this button perform the scan
-        else
-            discan:SetText(T("search_sample"))
-            discan.DoClick = function()
-                net.Start("TTT_TakeSample")
-                    net.WriteUInt(search_raw.eidx, 16)
-                net.SendToServer()
-                SetupOpenButton()
-            end
+            -- Simple delay to allow for the click action to go through
+            timer.Simple(0.25, function()
+                -- Update all button states when a button is clicked in case
+                -- one button's actions (e.g. inspect body) enables another's
+                -- actions (e.g. scan for DNA)
+                for _, dbutton in ipairs(dbuttons) do
+                    if not dbutton or not dbutton.data then continue end
+                    if type(dbutton.data.disabled) == "function" then
+                        dbutton:SetDisabled(dbutton.data.disabled())
+                    end
+                end
+            end)
         end
-        discan:SetDisabled(client:IsSpec() or search_raw.stime <= 0)
+        if type(btn.disabled) == "function" then
+            dbtn:SetDisabled(btn.disabled())
+        elseif type(btn.disabled) == "boolean" then
+            dbtn:SetDisabled(btn.disabled)
+        end
+        dbtn.data = btn
+        table.insert(dbuttons, dbtn)
+
+        -- Move to the next button index
+        button = button + 1
+
+        -- Move down a row if we've reached the max for this row
+        if i % buttonsPerRow == 0 then
+            row = row + 1
+            button = 1
+        end
     end
 
     -- Install info controller that will link up the icons to the text etc
