@@ -5,9 +5,11 @@
 
 ### Additions
 - Added new jester role: sponge
+- Added button on body search dialog to take DNA sample or open DNA scanner UI if sample already taken
 
 ### Changes
 - Changed "call detective" button on body search dialog to be hidden when the local player is a detective
+- Changed corpse icons on DNA scanner UI to have the player's name in the hover tooltip
 
 ### Fixes
 - Fixed killer win server log being overridden by jester win server log

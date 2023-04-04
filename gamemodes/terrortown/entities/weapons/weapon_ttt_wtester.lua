@@ -61,8 +61,8 @@ local CHARGE_DELAY = 0.1
 local CHARGE_RATE = 3
 local MAX_CHARGE = 1250
 
-local SAMPLE_PLAYER = 1
-local SAMPLE_ITEM   = 2
+SWEP.SAMPLE_PLAYER = 1
+SWEP.SAMPLE_ITEM   = 2
 
 AccessorFuncDT(SWEP, "charge", "Charge")
 AccessorFuncDT(SWEP, "last_scanned", "LastScanned")
@@ -187,9 +187,10 @@ end
 
 function SWEP:AddPlayerSample(corpse, killer)
     if #self.ItemSamples < self.MaxItemSamples then
-        local prnt = {source=corpse, ply=killer, type=SAMPLE_PLAYER, cls=killer:GetClass()}
+        local prnt = {source=corpse, ply=killer, type=self.SAMPLE_PLAYER, cls=killer:GetClass()}
         if not table.HasTable(self.ItemSamples, prnt) then
             table.insert(self.ItemSamples, prnt)
+            self:SendSamples()
 
             DamageLog("SAMPLE:\t " .. self:GetOwner():Nick() .. " retrieved DNA of " .. (IsValid(killer) and killer:Nick() or "<disconnected>") .. " from corpse of " .. (IsValid(corpse) and CORPSE.GetPlayerNick(corpse) or "<invalid>"))
 
@@ -208,7 +209,7 @@ function SWEP:AddItemSample(ent)
         local old = 0
         local own = 0
         for _, p in pairs(ent.fingerprints) do
-            local prnt = {source=ent, ply=p, type=SAMPLE_ITEM, cls=ent:GetClass()}
+            local prnt = {source=ent, ply=p, type=self.SAMPLE_ITEM, cls=ent:GetClass()}
 
             if p == self:GetOwner() then
                 own = own + 1
@@ -216,6 +217,7 @@ function SWEP:AddItemSample(ent)
                 old = old + 1
             else
                 table.insert(self.ItemSamples, prnt)
+                self:SendSamples()
 
                 DamageLog("SAMPLE:\t " .. self:GetOwner():Nick() .. " retrieved DNA of " .. (IsValid(p) and p:Nick() or "<disconnected>") .. " from " .. ent:GetClass())
 
@@ -236,6 +238,7 @@ function SWEP:RemoveItemSample(idx)
 
         table.remove(self.ItemSamples, idx)
         self:SendPrints(false)
+        self:SendSamples()
     end
 end
 
@@ -247,6 +250,18 @@ function SWEP:SecondaryAttack()
     self:SendPrints(true)
 end
 
+-- Helper to get at a player's scanner, if they have one
+local function GetTester(ply)
+    if IsValid(ply) then
+        for _, w in ipairs(ply:GetWeapons()) do
+            if w:GetClass() == "weapon_ttt_wtester" then
+                return w
+            end
+        end
+    end
+    return nil
+end
+
 if SERVER then
     -- Sending this all in one umsg limits the max number of samples. 17 player
     -- samples and 20 item samples (with 20 matches) has been verified as
@@ -256,7 +271,7 @@ if SERVER then
             net.WriteBit(should_open)
             net.WriteUInt(#self.ItemSamples, 8)
 
-            for k, v in ipairs(self.ItemSamples) do
+            for _, v in ipairs(self.ItemSamples) do
                 net.WriteString(v.cls)
             end
         net.Send(self:GetOwner())
@@ -268,6 +283,19 @@ if SERVER then
             net.WriteBit(clear)
             if not clear then
                 net.WriteVector(pos)
+            end
+        net.Send(self:GetOwner())
+    end
+
+    function SWEP:SendSamples()
+        net.Start("TTT_SendSamples", self:GetOwner())
+            net.WriteUInt(#self.ItemSamples, 8)
+
+            for _, v in ipairs(self.ItemSamples) do
+                net.WriteUInt(v.source:EntIndex(), 16)
+                net.WriteString(v.ply:SteamID64())
+                net.WriteUInt(v.type, 2)
+                net.WriteString(v.cls)
             end
         net.Send(self:GetOwner())
     end
@@ -344,19 +372,24 @@ if SERVER then
 
         return true
     end
-end
 
--- Helper to get at a player's scanner, if he has one
-local function GetTester(ply)
-    if IsValid(ply) then
-        local tester = ply:GetActiveWeapon()
-        if IsValid(tester) and tester:GetClass() == "weapon_ttt_wtester" then
-            return tester
-        end
+    local function RecvTakeSample(len, ply)
+        local tester = GetTester(ply)
+        if not IsValid(tester) then return end
+
+        local entIndex = net.ReadUInt(16)
+        tester:GatherRagdollSample(Entity(entIndex))
     end
-    return nil
-end
+    net.Receive("TTT_TakeSample", RecvTakeSample)
 
+    local function RecvShowPrints(len, ply)
+        local tester = GetTester(ply)
+        if not IsValid(tester) then return end
+
+        tester:SendPrints(true)
+    end
+    net.Receive("TTT_ShowPrints", RecvShowPrints)
+end
 
 if CLIENT then
 
@@ -418,7 +451,7 @@ if CLIENT then
     end
 
     local basedir = "vgui/ttt/icon_"
-    local function GetDisplayData(cls)
+    local function GetDisplayData(cls, idx, tester)
         local wep = util.WeaponForClass(cls)
 
         local img = basedir .. "nades"
@@ -427,6 +460,11 @@ if CLIENT then
         if cls == "player" then
             img  = basedir .. "corpse"
             name = "corpse"
+            -- Get the player name if we have that information
+            if IsValid(tester) and idx > 0 and #tester.ItemSamples >= idx then
+                local sample = tester.ItemSamples[idx]
+                name = CORPSE.GetPlayerNick(sample.source, "corpse")
+            end
         elseif wep then
             img  = wep.Icon      or img
             name = wep.PrintName or name
@@ -505,7 +543,7 @@ if CLIENT then
 
                                     ic:SetIconSize(64)
 
-                                    local img, name = GetDisplayData(v)
+                                    local img, name = GetDisplayData(v, k, tester)
 
                                     ic:SetIcon(img)
 
@@ -723,6 +761,26 @@ if CLIENT then
         surface.PlaySound(beep_success)
     end
     net.Receive("TTT_ScanResult", RecvScan)
+
+    local function RecvSamples()
+        local tester = GetTester(LocalPlayer())
+        table.Empty(tester.ItemSamples)
+
+        local numItemSamples = net.ReadUInt(8)
+        for _ = 0, numItemSamples do
+            local sourceEntIndex = net.ReadUInt(16)
+            local plySid64 = net.ReadString()
+
+            local entry = {
+                source = Entity(sourceEntIndex),
+                ply = player.GetBySteamID64(plySid64),
+                type = net.ReadUInt(2),
+                cls = net.ReadString()
+            }
+            table.insert(tester.ItemSamples, entry)
+        end
+    end
+    net.Receive("TTT_SendSamples", RecvSamples)
 
     function SWEP:ClosePrintsPanel()
         if IsValid(printspanel) then

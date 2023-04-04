@@ -174,6 +174,8 @@ L.search_title = "Body Search Results"
 L.search_info = "Information"
 L.search_confirm = "Confirm Death"
 L.search_call = "Call {role}"
+L.search_sample = "Take DNA Sample"
+L.search_scan_open = "Open DNA Scanner"
 
 -- Descriptions of pieces of information found
 L.search_nick = "This is the body of {player}."

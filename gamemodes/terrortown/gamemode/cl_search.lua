@@ -302,6 +302,18 @@ local function SearchInfoController(search, dback, dactive, dtext)
     end
 end
 
+-- Helper to get at a player's scanner, if they have one
+local function GetTester(ply)
+    if IsValid(ply) then
+        for _, w in ipairs(ply:GetWeapons()) do
+            if w:GetClass() == "weapon_ttt_wtester" then
+                return w
+            end
+        end
+    end
+    return nil
+end
+
 local function ShowSearchScreen(search_raw)
     if not client then
         client = LocalPlayer()
@@ -392,6 +404,8 @@ local function ShowSearchScreen(search_raw)
     -- buttons
     local by = rh - bh - (m / 2)
 
+    local rag = Entity(search_raw.eidx)
+    local buttons = 0
     local detectiveSearchOnly = GetGlobalBool("ttt_detective_search_only", true) and not (GetGlobalBool("ttt_all_search_postround", true) and GetRoundState() ~= ROUND_ACTIVE)
     if not detectiveSearchOnly then
         local dident = vgui.Create("DButton", dcont)
@@ -403,10 +417,9 @@ local function ShowSearchScreen(search_raw)
             RunConsoleCommand("ttt_confirm_death", search_raw.eidx, id)
             dident:SetDisabled(true)
         end
-        local rag = Entity(search_raw.eidx)
         dident:SetDisabled(client:IsSpec() or (not client:KeyDownLast(IN_WALK)) or CORPSE.GetFound(rag, false))
+        buttons = buttons + 1
 
-        local buttons = 1
         if not client:IsDetectiveLike() then
             local dcall = vgui.Create("DButton", dcont)
             dcall:SetPos(m * 2 + bw, by)
@@ -423,20 +436,49 @@ local function ShowSearchScreen(search_raw)
             dcall:SetDisabled(client:IsSpec() or table.HasValue(client.called_corpses or {}, search_raw.eidx))
             buttons = buttons + 1
         end
+    end
 
+    -- Show a  button for the DNA Scanner if the player has a scanner
+    local tester = GetTester(client)
+    if IsValid(tester) then
         local discan = vgui.Create("DButton", dcont)
         discan:SetPos((m * (buttons + 1)) + (bw * buttons), by)
         discan:SetSize(bw, bh)
-        -- TODO: Figure out how to get whether a player's DNA scanner has a sample, given that it's only tracked on the server side
-        -- if has_sample then
-            discan:SetText(T("search_scan"))
-        --else
-            --discan:SetText(T("search_scan_open"))
-        --end
-        discan.DoClick = function()
-            -- TODO
+
+        -- Check if this player has a sample for this ragdoll
+        local has_sample = false
+        if #tester.ItemSamples > 0 then
+            for _, s in ipairs(tester.ItemSamples) do
+                if s.type ~= tester.SAMPLE_PLAYER then continue end
+                if s.source ~= rag then continue end
+
+                has_sample = true
+                break
+            end
         end
-        discan:SetDisabled(client:IsSpec())
+
+        local function SetupOpenButton()
+            discan:SetText(T("search_scan_open"))
+            discan.DoClick = function()
+                net.Start("TTT_ShowPrints")
+                net.SendToServer()
+            end
+        end
+
+        -- If they have a sample, make this button open the dialog
+        if has_sample then
+            SetupOpenButton()
+        -- Otherwise have this button perform the scan
+        else
+            discan:SetText(T("search_sample"))
+            discan.DoClick = function()
+                net.Start("TTT_TakeSample")
+                    net.WriteUInt(search_raw.eidx, 16)
+                net.SendToServer()
+                SetupOpenButton()
+            end
+        end
+        discan:SetDisabled(client:IsSpec() or search_raw.stime <= 0)
     end
 
     -- Install info controller that will link up the icons to the text etc
