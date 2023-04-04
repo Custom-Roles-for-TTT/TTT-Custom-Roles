@@ -91,6 +91,55 @@ function SWEP:Initialize()
 
     if CLIENT then
         self:AddHUDHelp("dna_help_primary", "dna_help_secondary", true)
+
+        local T = LANG.GetTranslation
+        hook.Add("TTTBodySearchButtons", "TTTBodySearchButtons_" .. self:EntIndex(), function(client, rag, buttons, search_raw, detectiveSearchOnly)
+            if client ~= self:GetOwner() then return end
+
+            -- Check if this player has a sample for this ragdoll
+            local has_sample = false
+            if #self.ItemSamples > 0 then
+                for _, s in ipairs(self.ItemSamples) do
+                    if s.type ~= self.SAMPLE_PLAYER then continue end
+                    if s.source ~= rag then continue end
+
+                    has_sample = true
+                    break
+                end
+            end
+
+            local button = {
+                disabled = function()
+                    return client:IsSpec() or search_raw.stime <= 0 or not CORPSE.GetFound(rag, false)
+                end
+            }
+
+            -- If they have a sample, make this button open the dialog
+            if has_sample then
+                button.text = T("search_scan_open")
+                button.doclick = function()
+                    net.Start("TTT_ShowPrints")
+                    net.SendToServer()
+                end
+            -- Otherwise have this button perform the scan
+            else
+                button.text = T("search_sample")
+                button.doclick = function(dbtn)
+                    net.Start("TTT_TakeSample")
+                        net.WriteUInt(search_raw.eidx, 16)
+                    net.SendToServer()
+
+                    -- Change the button to open the UI now
+                    dbtn:SetText(T("search_scan_open"))
+                    dbtn.DoClick = function()
+                        net.Start("TTT_ShowPrints")
+                        net.SendToServer()
+                    end
+                end
+            end
+
+            table.insert(buttons, button)
+        end)
     end
 
     return self.BaseClass.Initialize(self)
@@ -159,7 +208,7 @@ function SWEP:GatherRagdollSample(ent)
                 self:PerformScan(#self.ItemSamples)
             end
         end
-    elseif ply != nil then
+    elseif ply ~= nil then
         -- not valid but not nil -> disconnected?
         self:Report("dna_no_killer")
     else
@@ -791,7 +840,7 @@ if CLIENT then
 else -- SERVER
 
     local function ScanPrint(ply, cmd, args)
-        if #args != 1 then return end
+        if #args ~= 1 then return end
 
         local tester = GetTester(ply)
         if IsValid(tester) then
@@ -805,7 +854,7 @@ else -- SERVER
     concommand.Add("ttt_wtester_scan", ScanPrint)
 
     local function RemoveSample(ply, cmd, args)
-        if #args != 1 then return end
+        if #args ~= 1 then return end
 
         local idx = tonumber(args[1])
         if not idx then return end
