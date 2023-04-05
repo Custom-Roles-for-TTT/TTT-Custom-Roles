@@ -61,8 +61,8 @@ local CHARGE_DELAY = 0.1
 local CHARGE_RATE = 3
 local MAX_CHARGE = 1250
 
-SWEP.SAMPLE_PLAYER = 1
-SWEP.SAMPLE_ITEM   = 2
+local SAMPLE_PLAYER = 1
+local SAMPLE_ITEM   = 2
 
 AccessorFuncDT(SWEP, "charge", "Charge")
 AccessorFuncDT(SWEP, "last_scanned", "LastScanned")
@@ -103,7 +103,7 @@ function SWEP:Initialize()
             local has_sample = false
             if #self.ItemSamples > 0 then
                 for _, s in ipairs(self.ItemSamples) do
-                    if s.type ~= self.SAMPLE_PLAYER then continue end
+                    if s.type ~= SAMPLE_PLAYER then continue end
                     if s.source ~= rag then continue end
 
                     has_sample = true
@@ -241,7 +241,7 @@ end
 
 function SWEP:AddPlayerSample(corpse, killer)
     if #self.ItemSamples < self.MaxItemSamples then
-        local prnt = {source=corpse, ply=killer, type=self.SAMPLE_PLAYER, cls=killer:GetClass()}
+        local prnt = {source=corpse, ply=killer, type=SAMPLE_PLAYER, cls=killer:GetClass()}
         if not table.HasTable(self.ItemSamples, prnt) then
             table.insert(self.ItemSamples, prnt)
             self:SendSamples()
@@ -263,7 +263,7 @@ function SWEP:AddItemSample(ent)
         local old = 0
         local own = 0
         for _, p in pairs(ent.fingerprints) do
-            local prnt = {source=ent, ply=p, type=self.SAMPLE_ITEM, cls=ent:GetClass()}
+            local prnt = {source=ent, ply=p, type=SAMPLE_ITEM, cls=ent:GetClass()}
 
             if p == self:GetOwner() then
                 own = own + 1
