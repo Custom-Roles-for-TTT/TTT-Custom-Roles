@@ -62,7 +62,7 @@ hook.Add("PlayerDeath", "Jester_WinCheck_PlayerDeath", function(victim, infl, at
     end
 end)
 
-hook.Add("TTTPrintResultMessage", "Killer_TTTPrintResultMessage", function(type)
+hook.Add("TTTPrintResultMessage", "Jester_TTTPrintResultMessage", function(type)
     if type == WIN_JESTER then
         LANG.Msg("win_jester", { role = ROLE_STRINGS_PLURAL[ROLE_JESTER] })
         ServerLog("Result: " .. ROLE_STRINGS[ROLE_JESTER] .. " wins.\n")
