@@ -25,12 +25,7 @@ local ClassHint = {
         name = "corpse",
         hint = "corpse_hint",
 
-        fmt = function(ent, txt)
-            if DetectiveMode() and CORPSE.CanBeSearched(LocalPlayer(), ent) then
-                txt = txt .. "_covert"
-            end
-            return GetPTranslation(txt, key_params)
-        end
+        fmt = function(ent, txt) return GetPTranslation(txt, key_params) end
     }
 };
 

@@ -7,20 +7,6 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 
 ***NOTE:*** Be careful that you only return from a hook when you absolutely want to change something. Due to the way GMod hooks work, whichever hook instance returns first causes the *remaining hook instances to be completely skipped*. This is useful for certain hooks when you want to stop a behavior from happening, but it can also accidentally cause functionality to break because its code is completely ignored.
 
-### TTTBodySearchButtons(ply, rag, buttons, searchRaw, detectiveSearchOnly)
-Called when a player opens the body search dialog. Used to add new buttons to the dialog.\
-*Realm:* Client\
-*Added in:* 1.8.3\
-*Parameters:*
-- *ply* - The player who is opening the body search dialog
-- *rag* - The `prop_ragdoll` representing a player's body being searched
-- *buttons* - The table of buttons being rendered on the body search dialog. Insert a new descriptive object into this table to add a button to the window. The possible descriptive object properties are:
-  - *text* - The text to show on the button
-  - *onclick* - The function to call when the button is clicked. The only parameter passed to this function is the [DButton](https://wiki.facepunch.com/gmod/DButton) instance.
-  - *disabled* - A boolean or function which returns a boolean used to determine whether this button should be clickable. Defaults to `true` if not provided.
-- *searchRaw* - The raw search data
-- *detectiveSearchOnly* - Whether only detectives should be able to search bodies
-
 ### TTTBlockPlayerFootstepSound(ply)
 Called when a player is making a footstep. Used to determine if the player's footstep sound should be stopped.\
 *Realm:* Client and Server\

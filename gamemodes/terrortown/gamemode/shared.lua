@@ -24,7 +24,7 @@ if not string.StartsWith then
 end
 
 -- Version string for display and function for version checks
-CR_VERSION = "1.8.3"
+CR_VERSION = "1.8.2"
 CR_BETA = true
 
 function CRVersion(version)
