@@ -86,6 +86,7 @@ ttt_beggar_enabled                          0       // Whether or not the beggar
 ttt_bodysnatcher_enabled                    0       // Whether or not the bodysnatcher should spawn
 ttt_lootgoblin_enabled                      0       // Whether or not the loot goblin should spawn
 ttt_cupid_enabled                           0       // Whether or not the cupid should spawn
+ttt_sponge_enabled                          0       // Whether or not the sponge should spawn
 ttt_drunk_enabled                           0       // Whether or not the drunk should spawn
 ttt_oldman_enabled                          0       // Whether or not the old man should spawn
 ttt_killer_enabled                          0       // Whether or not the killer should spawn
@@ -124,6 +125,7 @@ ttt_beggar_spawn_weight                     1       // The weight assigned to sp
 ttt_bodysnatcher_spawn_weight               1       // The weight assigned to spawning the bodysnatcher
 ttt_lootgoblin_spawn_weight                 1       // The weight assigned to spawning the loot goblin
 ttt_cupid_spawn_weight                      1       // The weight assigned to spawning the cupid
+ttt_sponge_spawn_weight                     1       // The weight assigned to spawning the sponge
 ttt_drunk_spawn_weight                      1       // The weight assigned to spawning the drunk
 ttt_oldman_spawn_weight                     1       // The weight assigned to spawning the old man
 ttt_killer_spawn_weight                     1       // The weight assigned to spawning the killer
@@ -163,6 +165,7 @@ ttt_beggar_min_players                      0       // The minimum number of pla
 ttt_bodysnatcher_min_players                0       // The minimum number of players required to spawn the bodysnatcher
 ttt_lootgoblin_min_players                  0       // The minimum number of players required to spawn the loot goblin
 ttt_cupid_min_players                       0       // The minimum number of players required to spawn the cupid
+ttt_sponge_min_players                      0       // The minimum number of players required to spawn the sponge
 ttt_drunk_min_players                       0       // The minimum number of players required to spawn the drunk
 ttt_oldman_min_players                      0       // The minimum number of players required to spawn the old man
 ttt_killer_min_players                      0       // The minimum number of players required to spawn the killer
@@ -520,6 +523,12 @@ ttt_cupid_notify_mode                       0       // The logic to use when not
 ttt_cupid_notify_sound                      0       // Whether to play a cheering sound when a cupid is killed
 ttt_cupid_notify_confetti                   0       // Whether to throw confetti when a cupid is a killed
 
+// Sponge
+ttt_sponge_aura_radius                      5       // The radius of the sponge's aura in meters
+ttt_sponge_notify_mode                      0       // The logic to use when notifying players that the sponge is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
+ttt_sponge_notify_sound                     0       // Whether to play a cheering sound when a sponge is killed
+ttt_sponge_notify_confetti                  0       // Whether to throw confetti when a sponge is a killed
+
 // ----------------------------------------
 
 // INDEPENDENT TEAM SETTINGS
@@ -566,6 +575,7 @@ ttt_drunk_can_be_beggar                     1       // Whether the drunk can bec
 ttt_drunk_can_be_bodysnatcher               1       // Whether the drunk can become a bodysnatcher
 ttt_drunk_can_be_lootgoblin                 1       // Whether the drunk can become a loot goblin
 ttt_drunk_can_be_cupid                      1       // Whether the drunk can become a cupid
+ttt_drunk_can_be_sponge                     1       // Whether the drunk can become a sponge
 ttt_drunk_can_be_oldman                     1       // Whether the drunk can become an old man
 ttt_drunk_can_be_killer                     1       // Whether the drunk can become a killer
 ttt_drunk_can_be_zombie                     1       // Whether the drunk can become a zombie
@@ -764,6 +774,7 @@ ttt_beggar_starting_health                  100     // The amount of health the 
 ttt_bodysnatcher_starting_health            100     // The amount of health the bodysnatcher starts with
 ttt_lootgoblin_starting_health              50      // The amount of health the loot goblin starts with
 ttt_cupid_starting_health                   100     // The amount of health the cupid starts with
+ttt_sponge_starting_health                  150     // The amount of health the sponge starts with
 ttt_drunk_starting_health                   100     // The amount of health the drunk starts with
 ttt_oldman_starting_health                  1       // The amount of health the old man starts with
 ttt_killer_starting_health                  150     // The amount of health the killer starts with
@@ -805,6 +816,7 @@ ttt_beggar_max_health                       100     // The maximum amount of hea
 ttt_bodysnatcher_max_health                 100     // The maximum amount of health the bodysnatcher can have
 ttt_lootgoblin_max_health                   50      // The maximum amount of health the loot goblin can have
 ttt_cupid_max_health                        100     // The maximum amount of health the cupid can have
+ttt_sponge_max__health                      150     // The maximum amount of health the sponge can have
 ttt_drunk_max_health                        100     // The maximum amount of health the drunk can have
 ttt_oldman_max_health                       1       // The maximum amount of health the old man can have
 ttt_killer_max_health                       150     // The maximum amount of health the killer can have
