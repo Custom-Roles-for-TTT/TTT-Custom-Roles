@@ -26,6 +26,7 @@ end
 -- Version string for display and function for version checks
 CR_VERSION = "1.8.3"
 CR_BETA = true
+CR_WORKSHOP_ID = CR_BETA and "2404251054" or "2421039084"
 
 function CRVersion(version)
     local installedVersionRaw = StringSplit(CR_VERSION, ".")
@@ -63,6 +64,45 @@ GM.Website = "ttt.badking.net"
 GM.Version = "Custom Roles for TTT v" .. CR_VERSION
 
 GM.Customized = false
+
+local function IsCustomRolesMounted()
+    for _, a in ipairs(engine.GetAddons()) do
+        if tostring(a.wsid) == CR_WORKSHOP_ID and a.mounted then
+            return true
+        end
+    end
+    return false
+end
+
+CrDebug = CrDebug or {
+    -- Only enable this on beta when we're not mounted from the workshop
+    Enabled = CR_BETA and not IsCustomRolesMounted(),
+    -- These keys (in "{EventName}_{Identifier}" format) are known to re-register themselves
+    IgnoredHookDupes = {
+        "InitPostEntity_CreateVoiceVGUI",
+        "PreDrawViewModels_PreDrawViewModels_TFA_INSPECT",
+        "NeedsDepthPass_aaaaaaaaaaaaaaaaaaNeedsDepthPass_TFA_Inspect"
+    }
+}
+
+-- Only run this when we're debugging and only do it once
+if CrDebug.Enabled and not CrDebug.HooksChecked then
+    CrDebug.HooksChecked = CrDebug.HooksChecked or {}
+    local oldHookAdd = hook.Add
+    hook.Add = function(eventName, identifier, func)
+        local key = eventName .. "_" .. tostring(identifier)
+        -- Keep track of which ones we've checked already so we don't spam ourselves on reload
+        -- Also ignore the ones that are known to replace themselves... for whatever reason
+        if not CrDebug.HooksChecked[key] and not table.HasValue(CrDebug.IgnoredHookDupes, key) then
+            local hooks = hook.GetTable()
+            if hooks[eventName] and hooks[eventName][identifier] then
+                ErrorNoHaltWithStack("Hook for '" .. eventName .. "' with identifier '" .. identifier .. "' already exists!")
+            end
+            CrDebug.HooksChecked[key] = true
+        end
+        oldHookAdd(eventName, identifier, func)
+    end
+end
 
 -- Round status consts
 ROUND_WAIT = 1
