@@ -150,8 +150,7 @@ function PreprocSearch(raw)
             if hasRole then
                 search[t] = nil
             else
-                local roleTeam = player.GetRoleTeam(d)
-                local name, color = GetRoleTeamInfo(roleTeam, true)
+                local name, color = GetRoleTeamInfo(d, true)
                 search[t].text = PT("search_team", { team = name })
                 search[t].color = color
                 search[t].p = 2
