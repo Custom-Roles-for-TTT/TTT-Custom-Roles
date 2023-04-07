@@ -3,6 +3,9 @@
 ## 1.8.3
 **Released:**
 
+### Additions
+- Added new jester role: sponge
+
 ### Fixes
 - Fixed killer win server log being overridden by jester win server log
 - Fixed minor plurality issue in the server log message when the jester wins
