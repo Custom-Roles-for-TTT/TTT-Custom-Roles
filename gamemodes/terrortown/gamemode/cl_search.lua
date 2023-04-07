@@ -596,7 +596,7 @@ local function ReceiveRagdollSearch()
 
     -- Traitor things
     search.role = net.ReadUInt(8)
-    search.team = player.GetRoleTeam(search.role, true)
+    search.team = player.GetRoleTeam(search.role)
     search.c4 = net.ReadInt(bitsRequired(C4_WIRE_COUNT) + 1)
 
     -- Kill info
