@@ -1,5 +1,24 @@
 # Release Notes
 
+## 1.8.3 (Beta)
+**Released:**
+
+### Additions
+- Added button to body search dialog to take a DNA sample (or open the DNA scanner UI if a sample was already taken) when the player has a DNA Tester
+  - Can be disabled via the new `ttt_dna_scan_on_dialog` convar
+
+### Changes
+- Changed "call detective" button on body search dialog to be hidden when the local player is a detective
+- Changed corpse icons on DNA scanner UI to have the player's name in the hover tooltip
+
+### Fixes
+- Fixed covert body search not working properly and text hint missing
+- Fixed body search text hint not using correct key if it was rebound
+
+### Developer
+- Added new `CORPSE.CanBeSearched` method to make it easier to check if a corpse can be searched by a player
+- Added new `TTTBodySearchButtons` hook to add buttons to the body search dialog
+
 ## 1.8.2
 **Released: April 2nd, 2023**
 

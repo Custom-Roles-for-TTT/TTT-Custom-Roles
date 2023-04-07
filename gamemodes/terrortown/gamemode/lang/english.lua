@@ -174,6 +174,8 @@ L.search_title = "Body Search Results"
 L.search_info = "Information"
 L.search_confirm = "Confirm Death"
 L.search_call = "Call {role}"
+L.search_sample = "Take DNA Sample"
+L.search_scan_open = "Open DNA Scanner"
 
 -- Descriptions of pieces of information found
 L.search_nick = "This is the body of {player}."
@@ -615,7 +617,8 @@ L.karma_min = "Liability"
 
 -- TargetID misc
 L.corpse = "Corpse"
-L.corpse_hint = "Press E to search."
+L.corpse_hint = "Press {usekey} to search."
+L.corpse_hint_covert = "Press {usekey} to search. Press {walkkey}+{usekey} to search covertly."
 
 L.target_disg = " (DISGUISED)"
 L.target_unid = "Unidentified body"
