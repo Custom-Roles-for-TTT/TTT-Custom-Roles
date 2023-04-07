@@ -24,7 +24,7 @@ if not string.StartsWith then
 end
 
 -- Version string for display and function for version checks
-CR_VERSION = "1.8.2"
+CR_VERSION = "1.8.3"
 CR_BETA = true
 
 function CRVersion(version)
@@ -1225,6 +1225,10 @@ ANNOUNCE_REVEAL_INNOCENTS = 3
 SPECIAL_DETECTIVE_HIDE_NONE = 0
 SPECIAL_DETECTIVE_HIDE_FOR_ALL = 1
 SPECIAL_DETECTIVE_HIDE_FOR_OTHERS = 2
+
+-- Misc. role constants
+UNITS_PER_METER = 52.49
+UNITS_PER_FIVE_METERS = UNITS_PER_METER * 5
 
 -- Corpse stuff
 CORPSE_ICON_TYPES = {
