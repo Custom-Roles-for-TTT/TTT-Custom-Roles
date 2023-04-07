@@ -97,6 +97,7 @@ function SWEP:Initialize()
         local T = LANG.GetTranslation
         hook.Add("TTTBodySearchButtons", "TTTBodySearchButtons_" .. self:EntIndex(), function(client, rag, buttons, search_raw, detectiveSearchOnly)
             if not GetGlobalBool("ttt_dna_scan_on_dialog", true) then return end
+            if not IsValid(self) or not IsPlayer(self:GetOwner()) then return end
             if client ~= self:GetOwner() then return end
 
             -- Check if this player has a sample for this ragdoll
