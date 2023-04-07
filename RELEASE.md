@@ -1,6 +1,6 @@
 # Release Notes
 
-## 1.8.3
+## 1.8.3 (Beta)
 **Released:**
 
 ### Additions
