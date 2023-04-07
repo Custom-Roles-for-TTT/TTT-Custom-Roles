@@ -5,6 +5,7 @@
 
 ### Fixes
 - Fixed killer win server log being overridden by jester win server log
+- Fixed minor plurality issue in the server log message when the jester wins
 
 ## 1.8.2
 **Released: April 2nd, 2023**

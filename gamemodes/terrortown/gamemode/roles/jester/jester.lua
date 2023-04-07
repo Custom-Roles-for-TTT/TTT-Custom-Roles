@@ -64,7 +64,7 @@ end)
 
 hook.Add("TTTPrintResultMessage", "Jester_TTTPrintResultMessage", function(type)
     if type == WIN_JESTER then
-        LANG.Msg("win_jester", { role = ROLE_STRINGS_PLURAL[ROLE_JESTER] })
+        LANG.Msg("win_jester", { role = ROLE_STRINGS[ROLE_JESTER] })
         ServerLog("Result: " .. ROLE_STRINGS[ROLE_JESTER] .. " wins.\n")
         return true
     end
