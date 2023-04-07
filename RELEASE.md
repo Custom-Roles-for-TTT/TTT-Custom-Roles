@@ -13,6 +13,8 @@
 - Changed corpse icons on DNA scanner UI to have the player's name in the hover tooltip
 
 ### Fixes
+- Fixed covert body search not working properly and text hint missing
+- Fixed body search text hint not using correct key if it was rebound
 - Fixed killer win server log being overridden by jester win server log
 - Fixed minor plurality issue in the server log message when the jester wins
 - Fixed shadow role translations overriding sapper translations
