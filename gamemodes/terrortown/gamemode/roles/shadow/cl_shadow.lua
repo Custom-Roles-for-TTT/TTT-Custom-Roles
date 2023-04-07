@@ -8,7 +8,7 @@ local math = math
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Sapper_Translations_Initialize", function()
+hook.Add("Initialize", "Shadow_Translations_Initialize", function()
     -- Popup
     LANG.AddToLanguage("english", "info_popup_shadow", [[You are {role}! Find your target quickly
 and stay close to them. If you don't you die.
@@ -23,7 +23,7 @@ Survive until the end of the round to win.]])
     LANG.AddToLanguage("english", "shadow_target", "YOUR TARGET")
 
     -- Win conditions
-    LANG.AddToLanguage("english", "ev_win_shadow","The {role} stayed close to their target and also won the round!")
+    LANG.AddToLanguage("english", "ev_win_shadow", "The {role} stayed close to their target and also won the round!")
 
     -- Scoreboard
     LANG.AddToLanguage("english", "score_shadow_following", "Following")
