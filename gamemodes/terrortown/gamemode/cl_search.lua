@@ -150,8 +150,7 @@ function PreprocSearch(raw)
             if hasRole then
                 search[t] = nil
             else
-                local roleTeam = player.GetRoleTeam(d)
-                local name, color = GetRoleTeamInfo(roleTeam, true)
+                local name, color = GetRoleTeamInfo(d, true)
                 search[t].text = PT("search_team", { team = name })
                 search[t].color = color
                 search[t].p = 2
@@ -597,7 +596,7 @@ local function ReceiveRagdollSearch()
 
     -- Traitor things
     search.role = net.ReadUInt(8)
-    search.team = player.GetRoleTeam(search.role)
+    search.team = player.GetRoleTeam(search.role, true, true)
     search.c4 = net.ReadInt(bitsRequired(C4_WIRE_COUNT) + 1)
 
     -- Kill info

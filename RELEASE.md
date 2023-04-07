@@ -16,6 +16,7 @@
 - Fixed killer win server log being overridden by jester win server log
 - Fixed minor plurality issue in the server log message when the jester wins
 - Fixed shadow role translations overriding sapper translations
+- Fixed role team name and color being incorrect in the body search dialog
 
 ### Developer
 - Added new `CORPSE.CanBeSearched` method to make it easier to check if a corpse can be searched by a player
