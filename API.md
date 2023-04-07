@@ -8,7 +8,6 @@ These documents aim to explain the things that we have added to Custom Roles for
 1. [Global Variables](API/GLOBAL_VARIABLES.md)
 1. [Global Enumerations](API/GLOBAL_ENUMERATIONS.md)
 1. Methods
-   1. [CORPSE](API/METHODS_CORPSE.md)
    1. [HUD](API/METHODS_HUD.md)
    1. [Global](API/METHODS_GLOBAL.md)
    1. [Player Object](API/METHODS_PLAYER_OBJECT.md)

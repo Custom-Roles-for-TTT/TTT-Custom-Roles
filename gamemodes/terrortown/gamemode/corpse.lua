@@ -256,6 +256,15 @@ function GM:TTTCanSearchCorpse(ply, corpse, is_covert, is_long_range, was_traito
     return true
 end
 
+local function IsAllDetectiveOnly()
+    for _, dataType in ipairs(CORPSE_ICON_TYPES) do
+        if not GetGlobalBool("ttt_detective_search_only_" .. dataType, false) then
+            return false
+        end
+    end
+    return true
+end
+
 -- Send a usermessage to client containing search results
 function CORPSE.ShowSearch(ply, rag, covert, long_range)
     if not IsValid(ply) or not IsValid(rag) then return end
@@ -287,6 +296,9 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
     -- basic sanity check
     if nick == nil or eq == nil or role == nil then return end
 
+    local detectiveSearchOnly = (GetGlobalBool("ttt_detective_search_only", true) or IsAllDetectiveOnly()) and
+                                    not (GetGlobalBool("ttt_all_search_postround", true) and GetRoundState() ~= ROUND_ACTIVE) and
+                                    not (GetGlobalBool("ttt_all_search_binoc", false) and ply:GetActiveWeapon() and WEPS.GetClass(ply:GetActiveWeapon()) == "weapon_ttt_binoculars")
     local credits = CORPSE.GetCredits(rag, 0)
     if ply:CanLootCredits(true) and credits > 0 and (not long_range) then
         LANG.Msg(ply, "body_credits", { num = credits })
@@ -296,10 +308,8 @@ function CORPSE.ShowSearch(ply, rag, covert, long_range)
         SCORE:HandleCreditFound(ply, nick, credits)
         return
     elseif DetectiveMode() then
-        if CORPSE.CanBeSearched(ply, rag) then
-            if not covert then
-                IdentifyBody(ply, rag)
-            end
+        if ply:IsDetectiveLike() or not detectiveSearchOnly or (IsValid(ownerEnt) and ownerEnt:GetNWBool("body_searched", false)) then
+            IdentifyBody(ply, rag)
         elseif IsValid(ownerEnt) and not ply:IsSpec() and not ownerEnt:GetNWBool("det_called", false) and not ownerEnt:GetNWBool("body_searched", false) then
             if IsValid(rag) and rag:GetPos():Distance(ply:GetPos()) < 128 then
                 hook.Call("TTTBodyFound", GAMEMODE, ply, ownerEnt, rag)
