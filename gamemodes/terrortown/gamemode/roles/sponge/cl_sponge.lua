@@ -13,6 +13,10 @@ hook.Add("Initialize", "Sponge_Translations_Initialize", function()
     LANG.AddToLanguage("english", "win_sponge", "The {role} has absorbed themselves to death!")
     LANG.AddToLanguage("english", "ev_win_sponge", "The absorbant {role} won the round!")
 
+    -- Scoring
+    LANG.AddToLanguage("english", "score_sponge_killedby", "Killed by")
+    LANG.AddToLanguage("english", "score_sponge_damaging", "{attacker} damaging")
+
     -- Popup
     LANG.AddToLanguage("english", "info_popup_sponge", [[You are {role}! You want to die but you
 deal no damage so you must be killed by absorbing
@@ -80,6 +84,26 @@ end)
 hook.Add("TTTEventFinishIconText", "Sponge_TTTEventFinishIconText", function(e, win_string, role_string)
     if e.win == WIN_SPONGE then
         return win_string, ROLE_STRINGS[ROLE_SPONGE]
+    end
+end)
+
+-------------
+-- SCORING --
+-------------
+
+-- Show who killed the sponge (if anyone)
+hook.Add("TTTScoringSummaryRender", "Sponge_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
+    if not IsPlayer(ply) then return end
+
+    if ply:IsSponge() then
+        local spongeKiller = ply:GetNWString("SpongeKiller", "")
+        local spongeProtecting = ply:GetNWString("SpongeProtecting", "")
+        if spongeKiller ~= "" then
+            if spongeProtecting ~= "" then
+                return roleFileName, groupingRole, roleColor, name, spongeProtecting, LANG.GetParamTranslation("score_sponge_damaging", {attacker = spongeKiller})
+            end
+            return roleFileName, groupingRole, roleColor, name, spongeKiller, LANG.GetTranslation("score_sponge_killedby")
+        end
     end
 end)
 

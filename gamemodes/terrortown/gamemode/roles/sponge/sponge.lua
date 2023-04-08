@@ -50,6 +50,11 @@ hook.Add("EntityTakeDamage", "Sponge_EntityTakeDamage", function(target, dmginfo
         if #living_players == #util.GetAlivePlayers() then continue end
 
         -- Transfer the damage to the sponge instead
+        -- But before we do, check if they are going to be killed by it and record that for scoring
+        local damage = dmginfo:GetDamage()
+        if damage >= p:Health() then
+            p:SetNWString("SpongeProtecting", target:Nick())
+        end
         p:TakeDamageInfo(dmginfo)
         dmginfo:SetDamage(0)
     end
@@ -91,6 +96,7 @@ hook.Add("PlayerDeath", "Sponge_WinCheck_PlayerDeath", function(victim, infl, at
 
     if victim:IsSponge() then
         SpongeKilledNotification(attacker, victim)
+        victim:SetNWString("SpongeKiller", attacker:Nick())
 
         -- If we're debugging, don't end the round
         if GetConVar("ttt_debug_preventwin"):GetBool() then
@@ -109,5 +115,12 @@ hook.Add("TTTPrintResultMessage", "Sponge_TTTPrintResultMessage", function(type)
         LANG.Msg("win_sponge", { role = ROLE_STRINGS[ROLE_SPONGE] })
         ServerLog("Result: " .. ROLE_STRINGS[ROLE_SPONGE] .. " wins.\n")
         return true
+    end
+end)
+
+hook.Add("TTTPrepareRound", "Sponge_PrepareRound", function()
+    for _, v in pairs(GetAllPlayers()) do
+        v:SetNWString("SpongeKiller", "")
+        v:SetNWString("SpongeProtecting", "")
     end
 end)
