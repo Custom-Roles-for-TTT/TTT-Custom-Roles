@@ -54,6 +54,20 @@ hook.Add("TTTPlayerAliveClientThink", "Paladin_RoleFeatures_TTTPlayerAliveClient
     end
 end)
 
+hook.Add("HUDPaintBackground", "Paladin_HUDPaintBackground", function()
+    local client = LocalPlayer()
+    if not client:Alive() then return end
+    if client:IsPaladin() then return end
+
+    local inside = false
+    for _, p in pairs(player.GetAll()) do
+        if p:GetDisplayedRole() == ROLE_PALADIN and client:GetPos():Distance(p:GetPos()) <= GetGlobalFloat("ttt_paladin_aura_radius", UNITS_PER_FIVE_METERS) then
+            inside = true
+        end
+    end
+    CRHUD:PaintStatusEffect(inside, ROLE_COLORS[ROLE_PALADIN], Material("particle/shield.vmt"), "PaladinAura")
+end)
+
 --------------
 -- TUTORIAL --
 --------------

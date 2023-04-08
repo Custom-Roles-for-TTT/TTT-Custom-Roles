@@ -15,6 +15,10 @@ local MathMax = math.max
 local MathClamp = math.Clamp
 local MathRound = math.Round
 local MathCeil = math.ceil
+local MathRand = math.Rand
+local MathCos = math.cos
+local MathSin = math.sin
+local MathAbs = math.abs
 local TableCount = table.Count
 local interp = string.Interp
 local format = string.format
@@ -204,6 +208,74 @@ function CRHUD:PaintProgressBar(x, y, width, color, heading, progress, segments,
         end
     end
 end
+
+local function GenerateStatusEffectParticlePos(index)
+    local segmentWidth = (ScrW() - 100) / 5
+    local x = 50 + segmentWidth * (index - 1) + MathRand(0, segmentWidth)
+    local y = MathRand(ScrH() - 150, ScrH() - 50)
+    return x, y
+end
+
+local statusEffects = {}
+function CRHUD:PaintStatusEffect(shouldPaint, color, material, identifier)
+    if not statusEffects[identifier] then
+        statusEffects[identifier] = {alpha=0, particles=nil, color=nil}
+    end
+    if not statusEffects[identifier].particles then
+        statusEffects[identifier].particles = {
+            {x=0, y=0, alpha=0.4},
+            {x=0, y=0, alpha=1.2},
+            {x=0, y=0, alpha=1.6},
+            {x=0, y=0, alpha=0.8},
+            {x=0, y=0, alpha=2}
+        }
+        for i = 1, 5 do
+            statusEffects[identifier].particles[i].x, statusEffects[identifier].particles[i].y = GenerateStatusEffectParticlePos(i)
+        end
+    end
+
+    if shouldPaint and statusEffects[identifier].alpha < 1 then
+        statusEffects[identifier].alpha = statusEffects[identifier].alpha + 0.01
+    elseif statusEffects[identifier].alpha > 0 then
+        statusEffects[identifier].alpha = statusEffects[identifier].alpha - 0.01
+    end
+    statusEffects[identifier].alpha = MathClamp(statusEffects[identifier].alpha, 0, 1)
+
+    statusEffects[identifier].color = {
+        ["$pp_colour_addr"] = color.r/255 * statusEffects[identifier].alpha * 0.05,
+        ["$pp_colour_addg"] = color.g/255 * statusEffects[identifier].alpha * 0.05,
+        ["$pp_colour_addb"] = color.b/255 * statusEffects[identifier].alpha * 0.05,
+        ["$pp_colour_brightness"] = 0,
+        ["$pp_colour_contrast"] = 1,
+        ["$pp_colour_colour"] = 1,
+        ["$pp_colour_mulr"] = 0,
+        ["$pp_colour_mulg"] = 0,
+        ["$pp_colour_mulb"] = 0
+    }
+
+    if statusEffects[identifier].alpha > 0 then
+        for i = 1, 5 do
+            statusEffects[identifier].particles[i].alpha = statusEffects[identifier].particles[i].alpha - 0.01
+            if statusEffects[identifier].particles[i].alpha <= 0 then
+                statusEffects[identifier].particles[i].alpha = 2
+                statusEffects[identifier].particles[i].x, statusEffects[identifier].particles[i].y = GenerateStatusEffectParticlePos(i)
+            end
+            statusEffects[identifier].particles[i].y = statusEffects[identifier].particles[i].y - 0.25
+            local alpha = (1 - MathAbs(1 - statusEffects[identifier].particles[i].alpha)) * statusEffects[identifier].alpha * 255
+            surface.SetDrawColor(color.r, color.g, color.b, alpha)
+            surface.SetMaterial(material)
+            surface.DrawTexturedRect(statusEffects[identifier].particles[i].x, statusEffects[identifier].particles[i].y, 50, 50)
+        end
+    end
+end
+
+hook.Add("RenderScreenspaceEffects", "CRStatusEffects_RenderScreenspaceEffects", function()
+    for _, effect in pairs(statusEffects) do
+        if effect.alpha > 0 then
+            DrawColorModify(effect.color)
+        end
+    end
+end)
 
 local roundstate_string = {
     [ROUND_WAIT] = "round_wait",
