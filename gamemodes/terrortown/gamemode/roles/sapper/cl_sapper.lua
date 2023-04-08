@@ -3,6 +3,7 @@ local math = math
 
 local MathCos = math.cos
 local MathSin = math.sin
+local GetAllPlayers = player.GetAll
 
 ------------------
 -- TRANSLATIONS --
@@ -42,7 +43,7 @@ net.Receive("Sapper_ShowDamageAura", function()
     local pos = sapperPos + Vector(0, 0, 30)
     if client:GetPos():Distance(pos) > 3000 then return end
 
-    local radius = GetGlobalFloat("ttt_sapper_aura_radius", 262.45)
+    local radius = GetGlobalFloat("ttt_sapper_aura_radius", UNITS_PER_FIVE_METERS)
     local auraEmitter = ParticleEmitter(sapperPos)
     auraEmitter:SetPos(pos)
 
@@ -59,14 +60,12 @@ hook.Add("TTTPlayerAliveClientThink", "Sapper_RoleFeatures_TTTPlayerAliveClientT
         if not ply.SapAuraNextPart then ply.SapAuraNextPart = CurTime() end
         if not ply.SapAuraDir then ply.SapAuraDir = 0 end
         local pos = ply:GetPos() + Vector(0, 0, 30)
-        if ply.SapAuraNextPart < CurTime() then
-            if client:GetPos():Distance(pos) <= 3000 then
-                ply.SapAuraEmitter:SetPos(pos)
-                ply.SapAuraNextPart = CurTime() + 0.02
-                ply.SapAuraDir = ply.SapAuraDir + 0.05
-                local radius = GetGlobalFloat("ttt_sapper_aura_radius", 262.45)
-                CreateParticle(ply.SapAuraDir, ply:GetPos(), radius, ply.SapAuraEmitter)
-            end
+        if ply.SapAuraNextPart < CurTime() and client:GetPos():Distance(pos) <= 3000 then
+            ply.SapAuraEmitter:SetPos(pos)
+            ply.SapAuraNextPart = CurTime() + 0.02
+            ply.SapAuraDir = ply.SapAuraDir + 0.05
+            local radius = GetGlobalFloat("ttt_sapper_aura_radius", UNITS_PER_FIVE_METERS)
+            CreateParticle(ply.SapAuraDir, ply:GetPos(), radius, ply.SapAuraEmitter)
         end
     elseif ply.SapAuraEmitter then
         ply.SapAuraEmitter:Finish()
@@ -74,6 +73,25 @@ hook.Add("TTTPlayerAliveClientThink", "Sapper_RoleFeatures_TTTPlayerAliveClientT
         ply.SapAuraDir = nil
         ply.SapAuraNextPart = nil
     end
+end)
+
+local client = nil
+local barrel = Material("particle/sap_barrel.vmt")
+hook.Add("HUDPaintBackground", "Sapper_HUDPaintBackground", function()
+    if not client then client = LocalPlayer() end
+
+    if not IsPlayer(client) then return end
+    if not client:Alive() then return end
+    if client:IsSapper() then return end
+
+    local inside = false
+    for _, p in pairs(GetAllPlayers()) do
+        if p:GetDisplayedRole() == ROLE_SAPPER and client:GetPos():Distance(p:GetPos()) <= GetGlobalFloat("ttt_sapper_aura_radius", UNITS_PER_FIVE_METERS) then
+            inside = true
+            break
+        end
+    end
+    CRHUD:PaintStatusEffect(inside, ROLE_COLORS[ROLE_SAPPER], barrel, "SapperAura")
 end)
 
 --------------

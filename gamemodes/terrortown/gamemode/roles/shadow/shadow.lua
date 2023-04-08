@@ -19,8 +19,8 @@ local dead_radius = CreateConVar("ttt_shadow_dead_radius", "3", FCVAR_NONE, "The
 hook.Add("TTTSyncGlobals", "Shadow_TTTSyncGlobals", function()
     SetGlobalInt("ttt_shadow_start_timer", start_timer:GetInt())
     SetGlobalInt("ttt_shadow_buffer_timer", buffer_timer:GetInt())
-    SetGlobalFloat("ttt_shadow_alive_radius", alive_radius:GetFloat() * 52.49)
-    SetGlobalFloat("ttt_shadow_dead_radius", dead_radius:GetFloat() * 52.49)
+    SetGlobalFloat("ttt_shadow_alive_radius", alive_radius:GetFloat() * UNITS_PER_METER)
+    SetGlobalFloat("ttt_shadow_dead_radius", dead_radius:GetFloat() * UNITS_PER_METER)
 end)
 
 -----------------------
@@ -65,10 +65,10 @@ hook.Add("TTTBeginRound", "Shadow_TTTBeginRound", function()
                 else
                     local target = player.GetBySteamID64(v:GetNWString("ShadowTarget", ""))
                     local ent = target
-                    local radius = alive_radius:GetFloat() * 52.49
+                    local radius = alive_radius:GetFloat() * UNITS_PER_METER
                     if not target:IsActive() then
                         ent = target.server_ragdoll or target:GetRagdollEntity()
-                        radius = dead_radius:GetFloat() * 52.49
+                        radius = dead_radius:GetFloat() * UNITS_PER_METER
                     end
 
                     if IsValid(ent) then

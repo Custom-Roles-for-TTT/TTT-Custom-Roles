@@ -23,7 +23,7 @@ local sapper_can_see_c4 = CreateConVar("ttt_sapper_can_see_c4", "0")
 local sapper_c4_guaranteed_defuse = CreateConVar("ttt_sapper_c4_guaranteed_defuse", "0")
 
 hook.Add("TTTSyncGlobals", "Sapper_TTTSyncGlobals", function()
-    SetGlobalFloat("ttt_sapper_aura_radius", sapper_aura_radius:GetInt() * 52.49)
+    SetGlobalFloat("ttt_sapper_aura_radius", sapper_aura_radius:GetInt() * UNITS_PER_METER)
     SetGlobalBool("ttt_sapper_protect_self", sapper_protect_self:GetBool())
     SetGlobalBool("ttt_sapper_fire_immune", sapper_fire_immune:GetBool())
     SetGlobalBool("ttt_sapper_can_see_c4", sapper_can_see_c4:GetBool())
@@ -40,7 +40,7 @@ hook.Add("EntityTakeDamage", "Sapper_EntityTakeDamage", function(ent, dmginfo)
     if GetRoundState() == ROUND_ACTIVE and ent:IsPlayer() and (dmginfo:IsExplosionDamage() or (sapper_fire_immune:GetBool() and dmginfo:IsDamageType(DMG_BURN))) then
         if not ent:IsSapper() or sapper_protect_self:GetBool() then
             local sapper = nil
-            local radius = GetGlobalFloat("ttt_sapper_aura_radius", 262.45)
+            local radius = GetGlobalFloat("ttt_sapper_aura_radius", UNITS_PER_FIVE_METERS)
             for _, v in pairs(GetAllPlayers()) do
                 if v:IsActiveSapper() and v:GetPos():Distance(ent:GetPos()) <= radius then
                     sapper = v

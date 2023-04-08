@@ -25,6 +25,14 @@ Executes a callback function against the players that are members of the specifi
 - *aliveOnly* - Whether to only include alive players
 - *callback* - The function to execute against each "role team" player. Takes a player as the single argument
 
+### player.GetLivingInRadius(pos, radius)
+Returns a table of all players who are alive and within `radius` units of `pos`.\
+*Realm:* Client and Server\
+*Added in:* 1.8.3\
+*Parameters:*
+- *pos* - The position of the center of the area to search
+- *radius* - The radius from the center `pos` to search out to
+
 ### player.GetLivingRole(role)
 Returns a single player that is alive and belongs to the given role (or `nil` if none exist). Useful when trying to get the player belonging to a role that can only occur once in a round.\
 *Realm:* Client and Server\
