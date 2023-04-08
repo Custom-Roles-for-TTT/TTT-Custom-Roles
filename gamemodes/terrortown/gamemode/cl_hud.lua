@@ -209,6 +209,7 @@ function CRHUD:PaintProgressBar(x, y, width, color, heading, progress, segments,
     end
 end
 
+-- Generates a random coordinate on the bottom of the player's screen within one of 5 regions so that the particles can't clump together.
 local function GenerateStatusEffectParticlePos(index)
     local segmentWidth = (ScrW() - 100) / 5
     local x = 50 + segmentWidth * (index - 1) + MathRand(0, segmentWidth)
@@ -222,27 +223,27 @@ function CRHUD:PaintStatusEffect(shouldPaint, color, material, identifier)
         statusEffects[identifier] = {alpha=0, particles=nil, color=nil}
     end
     if not statusEffects[identifier].particles then
-        statusEffects[identifier].particles = {
-            {x=0, y=0, alpha=0.4},
-            {x=0, y=0, alpha=1.2},
-            {x=0, y=0, alpha=1.6},
-            {x=0, y=0, alpha=0.8},
-            {x=0, y=0, alpha=2}
+        statusEffects[identifier].particles = { --We split lifetime evenly and vary the order so they dont spawn in a line.
+            {x=0, y=0, lifetime=0.4},
+            {x=0, y=0, lifetime=1.2},
+            {x=0, y=0, lifetime=1.6},
+            {x=0, y=0, lifetime=0.8},
+            {x=0, y=0, lifetime=2}
         }
         for i = 1, #statusEffects[identifier].particles do
             statusEffects[identifier].particles[i].x, statusEffects[identifier].particles[i].y = GenerateStatusEffectParticlePos(i)
         end
     end
 
-    if shouldPaint and statusEffects[identifier].alpha < 1 then
+    if shouldPaint and statusEffects[identifier].alpha < 1 then -- Slowly increase alpha until it reaches 1 if we should paint
         statusEffects[identifier].alpha = statusEffects[identifier].alpha + 0.01
-    elseif statusEffects[identifier].alpha > 0 then
+    elseif statusEffects[identifier].alpha > 0 then -- Slowly decrease alpha until it reaches 0 if we shouldn't paint
         statusEffects[identifier].alpha = statusEffects[identifier].alpha - 0.01
     end
     statusEffects[identifier].alpha = MathClamp(statusEffects[identifier].alpha, 0, 1)
 
     if statusEffects[identifier].alpha > 0 then
-        statusEffects[identifier].color = {
+        statusEffects[identifier].color = { -- This table is used to determine the color of the tint applied to the screen. It maxes out at 5% opacity and scales according to the current alpha value so that it fades in and out smoothly.
             ["$pp_colour_addr"] = color.r/255 * statusEffects[identifier].alpha * 0.05,
             ["$pp_colour_addg"] = color.g/255 * statusEffects[identifier].alpha * 0.05,
             ["$pp_colour_addb"] = color.b/255 * statusEffects[identifier].alpha * 0.05,
@@ -255,13 +256,13 @@ function CRHUD:PaintStatusEffect(shouldPaint, color, material, identifier)
         }
 
         for i = 1, #statusEffects[identifier].particles do
-            statusEffects[identifier].particles[i].alpha = statusEffects[identifier].particles[i].alpha - 0.01
-            if statusEffects[identifier].particles[i].alpha <= 0 then
-                statusEffects[identifier].particles[i].alpha = 2
+            statusEffects[identifier].particles[i].lifetime = statusEffects[identifier].particles[i].lifetime - 0.01
+            if statusEffects[identifier].particles[i].lifetime <= 0 then -- When a particle's lifetime reaches zero we reset it and move it to a new location
+                statusEffects[identifier].particles[i].lifetime = 2
                 statusEffects[identifier].particles[i].x, statusEffects[identifier].particles[i].y = GenerateStatusEffectParticlePos(i)
             end
-            statusEffects[identifier].particles[i].y = statusEffects[identifier].particles[i].y - 0.25
-            local alpha = (1 - MathAbs(1 - statusEffects[identifier].particles[i].alpha)) * statusEffects[identifier].alpha * 255
+            statusEffects[identifier].particles[i].y = statusEffects[identifier].particles[i].y - 0.25 -- Particles slowly move up over time
+            local alpha = (1 - MathAbs(1 - statusEffects[identifier].particles[i].lifetime)) * statusEffects[identifier].alpha * 255 -- The alpha value of each particle fades in and out depending on remaining lifetime and reaches it's peak when lifetime is equal to 1. This is also scaled by the overall alpha value of the effect.
             surface.SetDrawColor(color.r, color.g, color.b, alpha)
             surface.SetMaterial(material)
             surface.DrawTexturedRect(statusEffects[identifier].particles[i].x, statusEffects[identifier].particles[i].y, 50, 50)
