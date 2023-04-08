@@ -30,28 +30,32 @@ end)
 
 hook.Add("TTTPlayerAliveClientThink", "Sponge_RoleFeatures_TTTPlayerAliveClientThink", function(client, ply)
     if ply:GetRole() == ROLE_SPONGE then
-        if not ply.SpongeAuraEmitter then ply.SpongeAuraEmitter = ParticleEmitter(ply:GetPos()) end
+        local ply_pos = ply:GetPos()
+        if not ply.SpongeAuraEmitter then ply.SpongeAuraEmitter = ParticleEmitter(ply_pos) end
         if not ply.SpongeAuraNextPart then ply.SpongeAuraNextPart = CurTime() end
         if not ply.SpongeAuraDir then ply.SpongeAuraDir = 0 end
-        local pos = ply:GetPos() + Vector(0, 0, 30)
-        if ply.SpongeAuraNextPart < CurTime() then
-            if client:GetPos():Distance(pos) <= 3000 then
-                ply.SpongeAuraEmitter:SetPos(pos)
-                ply.SpongeAuraNextPart = CurTime() + 0.02
-                ply.SpongeAuraDir = ply.SpongeAuraDir + 0.05
-                local radius = GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_FIVE_METERS)
-                local vec = Vector(MathSin(ply.SpongeAuraDir) * radius, MathCos(ply.SpongeAuraDir) * radius, 10)
-                local particle = ply.SpongeAuraEmitter:Add("particle/sponge.vmt", ply:GetPos() + vec)
-                particle:SetVelocity(Vector(0, 0, 20))
-                particle:SetDieTime(1)
-                particle:SetStartAlpha(200)
-                particle:SetEndAlpha(0)
-                particle:SetStartSize(3)
-                particle:SetEndSize(2)
-                particle:SetRoll(0)
-                particle:SetRollDelta(0)
-                particle:SetColor(ROLE_COLORS[ROLE_SPONGE].r, ROLE_COLORS[ROLE_SPONGE].g, ROLE_COLORS[ROLE_SPONGE].b)
+        local pos = ply_pos + Vector(0, 0, 30)
+        if ply.SpongeAuraNextPart < CurTime() and client:GetPos():Distance(pos) <= 3000 then
+            ply.SpongeAuraEmitter:SetPos(pos)
+            ply.SpongeAuraNextPart = CurTime() + 0.02
+            ply.SpongeAuraDir = ply.SpongeAuraDir + 0.05
+            local radius = GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_FIVE_METERS)
+            local vec = Vector(MathSin(ply.SpongeAuraDir) * radius, MathCos(ply.SpongeAuraDir) * radius, 10)
+            local particle = ply.SpongeAuraEmitter:Add("particle/sponge.vmt", ply_pos + vec)
+            particle:SetVelocity(Vector(0, 0, 20))
+            particle:SetDieTime(1)
+            particle:SetStartAlpha(200)
+            particle:SetEndAlpha(0)
+            particle:SetStartSize(3)
+            particle:SetEndSize(2)
+            particle:SetRoll(0)
+            particle:SetRollDelta(0)
+            local color = ROLE_COLORS[ROLE_SPONGE]
+            -- If all living players are within the aura, change the color to red
+            if ply:GetNWBool("SpongeAllInRadius", false) then
+                color = COLOR_RED
             end
+            particle:SetColor(color.r, color.g, color.b)
         end
     elseif ply.SpongeAuraEmitter then
         ply.SpongeAuraEmitter:Finish()
@@ -119,7 +123,7 @@ hook.Add("TTTTutorialRoleText", "Sponge_TTTTutorialRoleText", function(role, tit
         local traitorColor = ROLE_COLORS[ROLE_TRAITOR]
         html = html .. "<span style='display: block; margin-top: 10px;'>The main way " .. ROLE_STRINGS_PLURAL[ROLE_SPONGE] .. " take damage is by absorbing it from other players who are <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>damaged within their aura</span>. Keep other players close to secure the win!</span>"
 
-        html = html .. "<span style='display: block; margin-top: 10px;'>Be careful! If all players are within the " .. ROLE_STRINGS[ROLE_SPONGE] .. "'s aura, <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>it will stop working</span>.</span>"
+        html = html .. "<span style='display: block; margin-top: 10px;'>Be careful! If all players are within the " .. ROLE_STRINGS[ROLE_SPONGE] .. "'s aura, <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>it will stop working</span>. Watch out for when it changes color to red!</span>"
 
         html = html .. "<span style='display: block; margin-top: 10px;'>Another thing to watch out for: The aura will <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>shrink in size</span> as more players die!</span>"
 
