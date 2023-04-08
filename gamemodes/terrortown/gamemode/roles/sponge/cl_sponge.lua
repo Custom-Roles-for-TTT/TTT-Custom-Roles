@@ -3,6 +3,7 @@ local math = math
 
 local MathCos = math.cos
 local MathSin = math.sin
+local StringUpper = string.upper
 local GetAllPlayers = player.GetAll
 
 ------------------
@@ -73,7 +74,7 @@ hook.Add("HUDPaintBackground", "Sponge_HUDPaintBackground", function()
 
     if not IsPlayer(client) then return end
     if not client:Alive() then return end
-    if client:IsSapper() then return end
+    if client:IsSponge() then return end
 
     local inside = false
     local allInside = false
