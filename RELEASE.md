@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.8.3 (Beta)
-**Released:**
+**Released: April 8th, 2023**
 
 ### Additions
 - Added new jester role: sponge
