@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.8.4 (Beta)
+**Released:**
+
+### Fixes
+- Fixed ragdoll spectator flag not being reset immediately when a player un-spectates
+
 ## 1.8.3 (Beta)
 **Released: April 8th, 2023**
 

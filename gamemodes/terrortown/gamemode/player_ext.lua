@@ -465,6 +465,7 @@ local oldUnSpectate = plymeta.UnSpectate
 function plymeta:UnSpectate()
     oldUnSpectate(self)
     self:SetNoTarget(false)
+    self:SetRagdollSpec(false)
 end
 
 local oldSetTeam = plymeta.SetTeam
