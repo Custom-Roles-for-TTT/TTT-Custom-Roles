@@ -21,16 +21,6 @@ end)
 -- DAMAGE TRANSFER --
 ---------------------
 
-local function FindLivingPlayersInRadius(ply, radius)
-    local living_players = {}
-    local ply_pos = ply:GetPos()
-    for _, p in ipairs(GetAllPlayers()) do
-        if p:GetPos():Distance(ply_pos) > radius then continue end
-        table.insert(living_players, p)
-    end
-    return living_players
-end
-
 hook.Add("EntityTakeDamage", "Sponge_EntityTakeDamage", function(target, dmginfo)
     if not IsPlayer(target) then return end
     -- Don't transfer damage done to sponges, even if two sponges are next to eachother
@@ -46,18 +36,23 @@ hook.Add("EntityTakeDamage", "Sponge_EntityTakeDamage", function(target, dmginfo
         if target:GetPos():Distance(p:GetPos()) > radius then continue end
 
         -- If all living players are within the sponge's radius then don't transfer the damage
-        local living_players = FindLivingPlayersInRadius(p, radius)
+        local living_players = player.GetLivingInRadius(p:GetPos(), radius)
         if #living_players == #util.GetAlivePlayers() then continue end
 
         -- Transfer the damage to the sponge instead
+        -- But before we do, check if they are going to be killed by it and record that for scoring
+        local damage = dmginfo:GetDamage()
+        if damage >= p:Health() then
+            p:SetNWString("SpongeProtecting", target:Nick())
+        end
         p:TakeDamageInfo(dmginfo)
         dmginfo:SetDamage(0)
     end
 end)
 
----------------
--- AURA SIZE --
----------------
+----------
+-- AURA --
+----------
 
 -- Calculate how much the radius should decrease per player death
 local diff_per_death = 0
@@ -68,9 +63,43 @@ hook.Add("TTTBeginRound", "Sponge_AuraSize_TTTBeginRound", function()
 end)
 
 -- Decrease the aura radius for each player death
+local aura_deaths = {}
 hook.Add("PostPlayerDeath", "Sponge_AuraSize_PostPlayerDeath", function(ply)
     local radius = GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_FIVE_METERS)
     SetGlobalFloat("ttt_sponge_aura_radius", radius - diff_per_death)
+    aura_deaths[ply:SteamID64()] = true
+end)
+
+-- Increase the aura radius for each player who died but then respawned
+hook.Add("PlayerSpawn", "Sponge_AuraSize_PlayerSpawn", function(ply, transition)
+    if transition or not IsValid(ply) then return end
+
+    local sid64 = ply:SteamID64()
+    if not aura_deaths[sid64] then return end
+
+    local radius = GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_FIVE_METERS)
+    SetGlobalFloat("ttt_sponge_aura_radius", radius + diff_per_death)
+    aura_deaths[sid64] = false
+end)
+
+hook.Add("TTTPrepareRound", "Sponge_AuraSize_PrepareRound", function()
+    table.Empty(aura_deaths)
+end)
+
+-- Flag a sponge when all living players are within their radius
+hook.Add("Think", "Sponge_Aura_Think", function()
+    local radius = GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_FIVE_METERS)
+    local alive_players = #util.GetAlivePlayers()
+    for _, p in ipairs(GetAllPlayers()) do
+        if not p:Alive() or p:IsSpec() then continue end
+        if not p:IsSponge() then continue end
+
+        local all_in_radius = p:GetNWBool("SpongeAllInRadius", false)
+        local should_all_in_radius = alive_players == #player.GetLivingInRadius(p:GetPos(), radius)
+        if all_in_radius ~= should_all_in_radius then
+            p:SetNWBool("SpongeAllInRadius", should_all_in_radius)
+        end
+    end
 end)
 
 ----------------
@@ -91,6 +120,7 @@ hook.Add("PlayerDeath", "Sponge_WinCheck_PlayerDeath", function(victim, infl, at
 
     if victim:IsSponge() then
         SpongeKilledNotification(attacker, victim)
+        victim:SetNWString("SpongeKiller", attacker:Nick())
 
         -- If we're debugging, don't end the round
         if GetConVar("ttt_debug_preventwin"):GetBool() then
@@ -109,5 +139,13 @@ hook.Add("TTTPrintResultMessage", "Sponge_TTTPrintResultMessage", function(type)
         LANG.Msg("win_sponge", { role = ROLE_STRINGS[ROLE_SPONGE] })
         ServerLog("Result: " .. ROLE_STRINGS[ROLE_SPONGE] .. " wins.\n")
         return true
+    end
+end)
+
+hook.Add("TTTPrepareRound", "Sponge_PrepareRound", function()
+    for _, v in pairs(GetAllPlayers()) do
+        v:SetNWString("SpongeKiller", "")
+        v:SetNWString("SpongeProtecting", "")
+        v:SetNWBool("SpongeAllInRadius", false)
     end
 end)
