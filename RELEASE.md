@@ -7,6 +7,7 @@
 - Added new jester role: sponge
 - Added button to body search dialog to take a DNA sample (or open the DNA scanner UI if a sample was already taken) when the player has a DNA Tester
   - Can be disabled via the new `ttt_dna_scan_on_dialog` convar
+- Added screen effect when a player is inside an aura to make it more clear they are being affected
 
 ### Changes
 - Changed "call detective" button on body search dialog to be hidden when the local player is a detective

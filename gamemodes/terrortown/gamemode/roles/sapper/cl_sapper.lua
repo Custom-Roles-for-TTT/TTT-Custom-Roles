@@ -60,14 +60,12 @@ hook.Add("TTTPlayerAliveClientThink", "Sapper_RoleFeatures_TTTPlayerAliveClientT
         if not ply.SapAuraNextPart then ply.SapAuraNextPart = CurTime() end
         if not ply.SapAuraDir then ply.SapAuraDir = 0 end
         local pos = ply:GetPos() + Vector(0, 0, 30)
-        if ply.SapAuraNextPart < CurTime() then
-            if client:GetPos():Distance(pos) <= 3000 then
-                ply.SapAuraEmitter:SetPos(pos)
-                ply.SapAuraNextPart = CurTime() + 0.02
-                ply.SapAuraDir = ply.SapAuraDir + 0.05
-                local radius = GetGlobalFloat("ttt_sapper_aura_radius", UNITS_PER_FIVE_METERS)
-                CreateParticle(ply.SapAuraDir, ply:GetPos(), radius, ply.SapAuraEmitter)
-            end
+        if ply.SapAuraNextPart < CurTime() and client:GetPos():Distance(pos) <= 3000 then
+            ply.SapAuraEmitter:SetPos(pos)
+            ply.SapAuraNextPart = CurTime() + 0.02
+            ply.SapAuraDir = ply.SapAuraDir + 0.05
+            local radius = GetGlobalFloat("ttt_sapper_aura_radius", UNITS_PER_FIVE_METERS)
+            CreateParticle(ply.SapAuraDir, ply:GetPos(), radius, ply.SapAuraEmitter)
         end
     elseif ply.SapAuraEmitter then
         ply.SapAuraEmitter:Finish()
@@ -78,6 +76,7 @@ hook.Add("TTTPlayerAliveClientThink", "Sapper_RoleFeatures_TTTPlayerAliveClientT
 end)
 
 local client = nil
+local barrel = Material("particle/sap_barrel.vmt")
 hook.Add("HUDPaintBackground", "Sapper_HUDPaintBackground", function()
     if not client then client = LocalPlayer() end
 
@@ -92,8 +91,7 @@ hook.Add("HUDPaintBackground", "Sapper_HUDPaintBackground", function()
             break
         end
     end
-    local mat = Material("particle/sap_barrel.vmt")
-    CRHUD:PaintStatusEffect(inside, ROLE_COLORS[ROLE_SAPPER], mat, "SapperAura")
+    CRHUD:PaintStatusEffect(inside, ROLE_COLORS[ROLE_SAPPER], barrel, "SapperAura")
 end)
 
 --------------
