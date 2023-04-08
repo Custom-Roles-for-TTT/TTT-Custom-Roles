@@ -21,11 +21,11 @@ end)
 -- DAMAGE TRANSFER --
 ---------------------
 
-local function FindLivingPlayersInRadius(ply, radius)
+local function FindLivingPlayersInRadius(pos, radius)
     local living_players = {}
-    local ply_pos = ply:GetPos()
     for _, p in ipairs(GetAllPlayers()) do
-        if p:GetPos():Distance(ply_pos) > radius then continue end
+        if not p:Alive() or p:IsSpec() then continue end
+        if p:GetPos():Distance(pos) > radius then continue end
         table.insert(living_players, p)
     end
     return living_players
@@ -46,7 +46,7 @@ hook.Add("EntityTakeDamage", "Sponge_EntityTakeDamage", function(target, dmginfo
         if target:GetPos():Distance(p:GetPos()) > radius then continue end
 
         -- If all living players are within the sponge's radius then don't transfer the damage
-        local living_players = FindLivingPlayersInRadius(p, radius)
+        local living_players = FindLivingPlayersInRadius(p:GetPos(), radius)
         if #living_players == #util.GetAlivePlayers() then continue end
 
         -- Transfer the damage to the sponge instead
