@@ -67,6 +67,7 @@ hook.Add("TTTPlayerAliveClientThink", "Sponge_RoleFeatures_TTTPlayerAliveClientT
 end)
 
 local client = nil
+local sponge = Material("particle/sponge.vmt")
 hook.Add("HUDPaintBackground", "Sponge_HUDPaintBackground", function()
     if not client then client = LocalPlayer() end
 
@@ -85,9 +86,8 @@ hook.Add("HUDPaintBackground", "Sponge_HUDPaintBackground", function()
             break
         end
     end
-    local mat = Material("particle/sponge.vmt")
-    CRHUD:PaintStatusEffect(inside and not allInside, ROLE_COLORS[ROLE_SPONGE], mat, "SpongeAura")
-    CRHUD:PaintStatusEffect(allInside, COLOR_RED, mat, "SpongeDisabledAura")
+    CRHUD:PaintStatusEffect(inside and not allInside, ROLE_COLORS[ROLE_SPONGE], sponge, "SpongeAura")
+    CRHUD:PaintStatusEffect(allInside, COLOR_RED, sponge, "SpongeDisabledAura")
 end)
 
 ----------------
