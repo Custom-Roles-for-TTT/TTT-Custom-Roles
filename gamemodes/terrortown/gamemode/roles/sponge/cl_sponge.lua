@@ -90,6 +90,36 @@ hook.Add("HUDPaintBackground", "Sponge_HUDPaintBackground", function()
     CRHUD:PaintStatusEffect(allInside, COLOR_RED, sponge, "SpongeDisabledAura")
 end)
 
+---------------
+-- TARGET ID --
+---------------
+
+hook.Add("TTTTargetIDPlayerRoleIcon", "Sponge_TTTTargetIDPlayerRoleIcon", function(ply, client, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
+    if ply:IsActiveSponge() then
+        return ROLE_SPONGE, false
+    end
+end)
+
+hook.Add("TTTTargetIDPlayerRing", "Sponge_TTTTargetIDPlayerRing", function(ent, client, ringVisible)
+    if IsPlayer(ent) and ent:IsActiveSponge() then
+        return true, ROLE_COLORS_RADAR[ROLE_SPONGE]
+    end
+end)
+
+hook.Add("TTTTargetIDPlayerText", "Sponge_TTTTargetIDPlayerText", function(ent, client, text, clr, secondaryText)
+    if IsPlayer(ent) and ent:IsActiveSponge() then
+        return StringUpper(ROLE_STRINGS[ROLE_SPONGE]), ROLE_COLORS_RADAR[ROLE_SPONGE]
+    end
+end)
+
+ROLE_IS_TARGETID_OVERRIDDEN[ROLE_SPONGE] = function(ply, target)
+    if not IsPlayer(target) then return end
+    if not target:IsActiveSponge() then return end
+
+    ------ icon, ring, text
+    return true, true, true
+end
+
 ----------------
 -- WIN CHECKS --
 ----------------
