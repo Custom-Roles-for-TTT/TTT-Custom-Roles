@@ -73,9 +73,27 @@ hook.Add("TTTBeginRound", "Sponge_AuraSize_TTTBeginRound", function()
 end)
 
 -- Decrease the aura radius for each player death
+local aura_deaths = {}
 hook.Add("PostPlayerDeath", "Sponge_AuraSize_PostPlayerDeath", function(ply)
     local radius = GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_FIVE_METERS)
     SetGlobalFloat("ttt_sponge_aura_radius", radius - diff_per_death)
+    aura_deaths[ply:SteamID64()] = true
+end)
+
+-- Increase the aura radius for each player who died but then respawned
+hook.Add("PlayerSpawn", "Sponge_AuraSize_PlayerSpawn", function(ply, transition)
+    if transition or not IsValid(ply) then return end
+
+    local sid64 = ply:SteamID64()
+    if not aura_deaths[sid64] then return end
+
+    local radius = GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_FIVE_METERS)
+    SetGlobalFloat("ttt_sponge_aura_radius", radius + diff_per_death)
+    aura_deaths[sid64] = false
+end)
+
+hook.Add("TTTPrepareRound", "Sponge_AuraSize_PrepareRound", function()
+    table.Empty(aura_deaths)
 end)
 
 ----------------
