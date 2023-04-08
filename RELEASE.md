@@ -23,6 +23,7 @@
 ### Developer
 - Added new `CORPSE.CanBeSearched` method to make it easier to check if a corpse can be searched by a player
 - Added new `TTTBodySearchButtons` hook to add buttons to the body search dialog
+- Added `player.GetLivingInRadius` to get all living players within a radius of the given position
 
 ## 1.8.2
 **Released: April 2nd, 2023**

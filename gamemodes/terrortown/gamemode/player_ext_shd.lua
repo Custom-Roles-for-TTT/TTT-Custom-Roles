@@ -640,6 +640,16 @@ function player.GetLivingRole(role)
 end
 function player.IsRoleLiving(role) return IsPlayer(player.GetLivingRole(role)) end
 
+function player.GetLivingInRadius(pos, radius)
+    local living_players = {}
+    for _, p in ipairs(GetAllPlayers()) do
+        if not p:Alive() or p:IsSpec() then continue end
+        if p:GetPos():Distance(pos) > radius then continue end
+        table.insert(living_players, p)
+    end
+    return living_players
+end
+
 function player.TeamLivingCount(ignorePassiveWinners)
     local innocent_alive = 0
     local traitor_alive = 0
