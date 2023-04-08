@@ -3,6 +3,7 @@ local math = math
 
 local MathCos = math.cos
 local MathSin = math.sin
+local GetAllPlayers = player.GetAll
 
 ------------------
 -- TRANSLATIONS --
@@ -76,18 +77,23 @@ hook.Add("TTTPlayerAliveClientThink", "Sapper_RoleFeatures_TTTPlayerAliveClientT
     end
 end)
 
+local client = nil
 hook.Add("HUDPaintBackground", "Sapper_HUDPaintBackground", function()
-    local client = LocalPlayer()
+    if not client then client = LocalPlayer() end
+
+    if not IsPlayer(client) then return end
     if not client:Alive() then return end
     if client:IsSapper() then return end
 
     local inside = false
-    for _, p in pairs(player.GetAll()) do
+    for _, p in pairs(GetAllPlayers()) do
         if p:GetDisplayedRole() == ROLE_SAPPER and client:GetPos():Distance(p:GetPos()) <= GetGlobalFloat("ttt_sapper_aura_radius", UNITS_PER_FIVE_METERS) then
             inside = true
+            break
         end
     end
-    CRHUD:PaintStatusEffect(inside, ROLE_COLORS[ROLE_SAPPER], Material("particle/sap_barrel.vmt"), "SapperAura")
+    local mat = Material("particle/sap_barrel.vmt")
+    CRHUD:PaintStatusEffect(inside, ROLE_COLORS[ROLE_SAPPER], mat, "SapperAura")
 end)
 
 --------------

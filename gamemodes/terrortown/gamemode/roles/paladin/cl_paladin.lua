@@ -3,6 +3,7 @@ local math = math
 
 local MathCos = math.cos
 local MathSin = math.sin
+local GetAllPlayers = player.GetAll
 
 ------------------
 -- TRANSLATIONS --
@@ -54,18 +55,23 @@ hook.Add("TTTPlayerAliveClientThink", "Paladin_RoleFeatures_TTTPlayerAliveClient
     end
 end)
 
+local client = nil
 hook.Add("HUDPaintBackground", "Paladin_HUDPaintBackground", function()
-    local client = LocalPlayer()
+    if not client then client = LocalPlayer() end
+
+    if not IsPlayer(client) then return end
     if not client:Alive() then return end
     if client:IsPaladin() then return end
 
     local inside = false
-    for _, p in pairs(player.GetAll()) do
+    for _, p in pairs(GetAllPlayers()) do
         if p:GetDisplayedRole() == ROLE_PALADIN and client:GetPos():Distance(p:GetPos()) <= GetGlobalFloat("ttt_paladin_aura_radius", UNITS_PER_FIVE_METERS) then
             inside = true
+            break
         end
     end
-    CRHUD:PaintStatusEffect(inside, ROLE_COLORS[ROLE_PALADIN], Material("particle/shield.vmt"), "PaladinAura")
+    local mat = Material("particle/shield.vmt")
+    CRHUD:PaintStatusEffect(inside, ROLE_COLORS[ROLE_PALADIN], mat, "PaladinAura")
 end)
 
 --------------

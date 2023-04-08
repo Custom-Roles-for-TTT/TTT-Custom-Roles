@@ -229,7 +229,7 @@ function CRHUD:PaintStatusEffect(shouldPaint, color, material, identifier)
             {x=0, y=0, alpha=0.8},
             {x=0, y=0, alpha=2}
         }
-        for i = 1, 5 do
+        for i = 1, #statusEffects[identifier].particles do
             statusEffects[identifier].particles[i].x, statusEffects[identifier].particles[i].y = GenerateStatusEffectParticlePos(i)
         end
     end
@@ -241,20 +241,20 @@ function CRHUD:PaintStatusEffect(shouldPaint, color, material, identifier)
     end
     statusEffects[identifier].alpha = MathClamp(statusEffects[identifier].alpha, 0, 1)
 
-    statusEffects[identifier].color = {
-        ["$pp_colour_addr"] = color.r/255 * statusEffects[identifier].alpha * 0.05,
-        ["$pp_colour_addg"] = color.g/255 * statusEffects[identifier].alpha * 0.05,
-        ["$pp_colour_addb"] = color.b/255 * statusEffects[identifier].alpha * 0.05,
-        ["$pp_colour_brightness"] = 0,
-        ["$pp_colour_contrast"] = 1,
-        ["$pp_colour_colour"] = 1,
-        ["$pp_colour_mulr"] = 0,
-        ["$pp_colour_mulg"] = 0,
-        ["$pp_colour_mulb"] = 0
-    }
-
     if statusEffects[identifier].alpha > 0 then
-        for i = 1, 5 do
+        statusEffects[identifier].color = {
+            ["$pp_colour_addr"] = color.r/255 * statusEffects[identifier].alpha * 0.05,
+            ["$pp_colour_addg"] = color.g/255 * statusEffects[identifier].alpha * 0.05,
+            ["$pp_colour_addb"] = color.b/255 * statusEffects[identifier].alpha * 0.05,
+            ["$pp_colour_brightness"] = 0,
+            ["$pp_colour_contrast"] = 1,
+            ["$pp_colour_colour"] = 1,
+            ["$pp_colour_mulr"] = 0,
+            ["$pp_colour_mulg"] = 0,
+            ["$pp_colour_mulb"] = 0
+        }
+
+        for i = 1, #statusEffects[identifier].particles do
             statusEffects[identifier].particles[i].alpha = statusEffects[identifier].particles[i].alpha - 0.01
             if statusEffects[identifier].particles[i].alpha <= 0 then
                 statusEffects[identifier].particles[i].alpha = 2

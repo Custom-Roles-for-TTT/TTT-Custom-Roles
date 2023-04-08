@@ -3,6 +3,7 @@ local math = math
 
 local MathCos = math.cos
 local MathSin = math.sin
+local GetAllPlayers = player.GetAll
 
 ------------------
 -- TRANSLATIONS --
@@ -63,6 +64,30 @@ hook.Add("TTTPlayerAliveClientThink", "Sponge_RoleFeatures_TTTPlayerAliveClientT
         ply.SpongeAuraDir = nil
         ply.SpongeAuraNextPart = nil
     end
+end)
+
+local client = nil
+hook.Add("HUDPaintBackground", "Sponge_HUDPaintBackground", function()
+    if not client then client = LocalPlayer() end
+
+    if not IsPlayer(client) then return end
+    if not client:Alive() then return end
+    if client:IsSapper() then return end
+
+    local inside = false
+    local allInside = false
+    for _, p in pairs(GetAllPlayers()) do
+        if p:IsSponge() and client:GetPos():Distance(p:GetPos()) <= GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_FIVE_METERS) then
+            inside = true
+            if p:GetNWBool("SpongeAllInRadius", false) then
+                allInside = true
+            end
+            break
+        end
+    end
+    local mat = Material("particle/sponge.vmt")
+    CRHUD:PaintStatusEffect(inside and not allInside, ROLE_COLORS[ROLE_SPONGE], mat, "SpongeAura")
+    CRHUD:PaintStatusEffect(allInside, COLOR_RED, mat, "SpongeDisabledAura")
 end)
 
 ----------------
