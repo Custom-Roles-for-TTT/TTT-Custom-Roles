@@ -76,6 +76,20 @@ hook.Add("TTTPlayerAliveClientThink", "Sapper_RoleFeatures_TTTPlayerAliveClientT
     end
 end)
 
+hook.Add("HUDPaintBackground", "Sapper_HUDPaintBackground", function()
+    local client = LocalPlayer()
+    if not client:Alive() then return end
+    if client:IsSapper() then return end
+
+    local inside = false
+    for _, p in pairs(player.GetAll()) do
+        if p:GetDisplayedRole() == ROLE_SAPPER and client:GetPos():Distance(p:GetPos()) <= GetGlobalFloat("ttt_sapper_aura_radius", UNITS_PER_FIVE_METERS) then
+            inside = true
+        end
+    end
+    CRHUD:PaintStatusEffect(inside, ROLE_COLORS[ROLE_SAPPER], Material("particle/sap_barrel.vmt"), "SapperAura")
+end)
+
 --------------
 -- TUTORIAL --
 --------------

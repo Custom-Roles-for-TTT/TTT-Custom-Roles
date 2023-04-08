@@ -45,6 +45,16 @@ Paints a HUD for showing a progress bar, optionally divided into multiple segmen
 - *titles* - A table of strings containing the titles for each segment. Must have length equal to the number of segments. Ignored if segments is equal to 1 (Defaults to {})
 - *m* - The margin between each segment (Defaults to 10)
 
+### CRHUD:PaintStatusEffect(shouldPaint, color, material, identifier)
+Slightly tints the screen and paints floating particles on the bottom of the clients HUD
+*Realm:* Client\
+*Added in:* 1.8.3\
+*Parameters:*
+- *shouldPaint* - Whether the status effect should be painted or not. (Note: Whenever you are not painting a status effect you should still call this method with shouldPaint as `false` so that the effect properly fades in and out)
+- *color* - The [Color](https://wiki.facepunch.com/gmod/Color) of the effect
+- *material* - The [Material](https://wiki.facepunch.com/gmod/Global.Material) to use for the particle effects
+- *identifier* - A string that is a unique identifier for this status effect 
+
 ### CRHUD:ShadowedText(text, font, x, y, color, xalign, yalign)
 Renders text with an offset black background to emulate a shadow.\
 *Realm:* Client\

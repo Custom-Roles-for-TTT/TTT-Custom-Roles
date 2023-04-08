@@ -23,6 +23,7 @@
 ### Developer
 - Added new `CORPSE.CanBeSearched` method to make it easier to check if a corpse can be searched by a player
 - Added new `TTTBodySearchButtons` hook to add buttons to the body search dialog
+- Added new `CRHUD:PaintStatusEffect` method to slightly tint the screen and add floating particle effects to the bottom of the HUD
 
 ## 1.8.2
 **Released: April 2nd, 2023**
