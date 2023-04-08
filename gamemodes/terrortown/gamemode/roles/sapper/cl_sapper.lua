@@ -42,7 +42,7 @@ net.Receive("Sapper_ShowDamageAura", function()
     local pos = sapperPos + Vector(0, 0, 30)
     if client:GetPos():Distance(pos) > 3000 then return end
 
-    local radius = GetGlobalFloat("ttt_sapper_aura_radius", 262.45)
+    local radius = GetGlobalFloat("ttt_sapper_aura_radius", UNITS_PER_FIVE_METERS)
     local auraEmitter = ParticleEmitter(sapperPos)
     auraEmitter:SetPos(pos)
 
@@ -64,7 +64,7 @@ hook.Add("TTTPlayerAliveClientThink", "Sapper_RoleFeatures_TTTPlayerAliveClientT
                 ply.SapAuraEmitter:SetPos(pos)
                 ply.SapAuraNextPart = CurTime() + 0.02
                 ply.SapAuraDir = ply.SapAuraDir + 0.05
-                local radius = GetGlobalFloat("ttt_sapper_aura_radius", 262.45)
+                local radius = GetGlobalFloat("ttt_sapper_aura_radius", UNITS_PER_FIVE_METERS)
                 CreateParticle(ply.SapAuraDir, ply:GetPos(), radius, ply.SapAuraEmitter)
             end
         end

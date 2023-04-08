@@ -26,6 +26,7 @@ end
 -- Version string for display and function for version checks
 CR_VERSION = "1.8.3"
 CR_BETA = true
+CR_WORKSHOP_ID = CR_BETA and "2404251054" or "2421039084"
 
 function CRVersion(version)
     local installedVersionRaw = StringSplit(CR_VERSION, ".")
@@ -63,6 +64,45 @@ GM.Website = "ttt.badking.net"
 GM.Version = "Custom Roles for TTT v" .. CR_VERSION
 
 GM.Customized = false
+
+local function IsCustomRolesMounted()
+    for _, a in ipairs(engine.GetAddons()) do
+        if tostring(a.wsid) == CR_WORKSHOP_ID and a.mounted then
+            return true
+        end
+    end
+    return false
+end
+
+CrDebug = CrDebug or {
+    -- Only enable this on beta when we're not mounted from the workshop
+    Enabled = CR_BETA and not IsCustomRolesMounted(),
+    -- These keys (in "{EventName}_{Identifier}" format) are known to re-register themselves
+    IgnoredHookDupes = {
+        "InitPostEntity_CreateVoiceVGUI",
+        "PreDrawViewModels_PreDrawViewModels_TFA_INSPECT",
+        "NeedsDepthPass_aaaaaaaaaaaaaaaaaaNeedsDepthPass_TFA_Inspect"
+    }
+}
+
+-- Only run this when we're debugging and only do it once
+if CrDebug.Enabled and not CrDebug.HooksChecked then
+    CrDebug.HooksChecked = CrDebug.HooksChecked or {}
+    local oldHookAdd = hook.Add
+    hook.Add = function(eventName, identifier, func)
+        local key = eventName .. "_" .. tostring(identifier)
+        -- Keep track of which ones we've checked already so we don't spam ourselves on reload
+        -- Also ignore the ones that are known to replace themselves... for whatever reason
+        if not CrDebug.HooksChecked[key] and not table.HasValue(CrDebug.IgnoredHookDupes, key) then
+            local hooks = hook.GetTable()
+            if hooks[eventName] and hooks[eventName][identifier] then
+                ErrorNoHaltWithStack("Hook for '" .. eventName .. "' with identifier '" .. identifier .. "' already exists!")
+            end
+            CrDebug.HooksChecked[key] = true
+        end
+        oldHookAdd(eventName, identifier, func)
+    end
+end
 
 -- Round status consts
 ROUND_WAIT = 1
@@ -111,8 +151,9 @@ ROLE_MARSHAL = 35
 ROLE_INFECTED = 36
 ROLE_CUPID = 37
 ROLE_SHADOW = 38
+ROLE_SPONGE = 39
 
-ROLE_MAX = 38
+ROLE_MAX = 39
 ROLE_EXTERNAL_START = ROLE_MAX + 1
 
 local function AddRoleAssociations(list, roles)
@@ -146,7 +187,7 @@ INNOCENT_ROLES = {}
 AddRoleAssociations(INNOCENT_ROLES, {ROLE_INNOCENT, ROLE_DETECTIVE, ROLE_GLITCH, ROLE_PHANTOM, ROLE_REVENGER, ROLE_DEPUTY, ROLE_MERCENARY, ROLE_VETERAN, ROLE_DOCTOR, ROLE_TRICKSTER, ROLE_PARAMEDIC, ROLE_PALADIN, ROLE_TRACKER, ROLE_MEDIUM, ROLE_TURNCOAT, ROLE_SAPPER, ROLE_MARSHAL, ROLE_INFECTED})
 
 JESTER_ROLES = {}
-AddRoleAssociations(JESTER_ROLES, {ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_BEGGAR, ROLE_BODYSNATCHER, ROLE_LOOTGOBLIN, ROLE_CUPID})
+AddRoleAssociations(JESTER_ROLES, {ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_BEGGAR, ROLE_BODYSNATCHER, ROLE_LOOTGOBLIN, ROLE_CUPID, ROLE_SPONGE})
 
 INDEPENDENT_ROLES = {}
 AddRoleAssociations(INDEPENDENT_ROLES, {ROLE_DRUNK, ROLE_OLDMAN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_MADSCIENTIST, ROLE_SHADOW})
@@ -512,7 +553,8 @@ ROLE_STRINGS_RAW = {
     [ROLE_MARSHAL] = "marshal",
     [ROLE_INFECTED] = "infected",
     [ROLE_CUPID] = "cupid",
-    [ROLE_SHADOW] = "shadow"
+    [ROLE_SHADOW] = "shadow",
+    [ROLE_SPONGE] = "sponge"
 }
 
 ROLE_STRINGS = {
@@ -554,7 +596,8 @@ ROLE_STRINGS = {
     [ROLE_MARSHAL] = "Marshal",
     [ROLE_INFECTED] = "Infected",
     [ROLE_CUPID] = "Cupid",
-    [ROLE_SHADOW] = "Shadow"
+    [ROLE_SHADOW] = "Shadow",
+    [ROLE_SPONGE] = "Sponge"
 }
 
 ROLE_STRINGS_PLURAL = {
@@ -596,7 +639,8 @@ ROLE_STRINGS_PLURAL = {
     [ROLE_MARSHAL] = "Marshals",
     [ROLE_INFECTED] = "Infected",
     [ROLE_CUPID] = "Cupids",
-    [ROLE_SHADOW] = "Shadows"
+    [ROLE_SHADOW] = "Shadows",
+    [ROLE_SPONGE] = "Sponges"
 }
 
 ROLE_STRINGS_EXT = {
@@ -639,7 +683,8 @@ ROLE_STRINGS_EXT = {
     [ROLE_MARSHAL] = "a Marshal",
     [ROLE_INFECTED] = "an Infected",
     [ROLE_CUPID] = "a Cupid",
-    [ROLE_SHADOW] = "a Shadow"
+    [ROLE_SHADOW] = "a Shadow",
+    [ROLE_SPONGE] = "a Sponge"
 }
 
 ROLE_STRINGS_SHORT = {
@@ -682,7 +727,8 @@ ROLE_STRINGS_SHORT = {
     [ROLE_MARSHAL] = "mhl",
     [ROLE_INFECTED] = "ifd",
     [ROLE_CUPID] = "cup",
-    [ROLE_SHADOW] = "sha"
+    [ROLE_SHADOW] = "sha",
+    [ROLE_SPONGE] = "spn"
 }
 
 function StartsWithVowel(word)
@@ -1133,8 +1179,9 @@ WIN_VAMPIRE = 11
 WIN_LOOTGOBLIN = 12
 WIN_CUPID = 13
 WIN_SHADOW = 14
+WIN_SPONGE = 15
 
-WIN_MAX = WIN_MAX or 14
+WIN_MAX = WIN_MAX or 15
 WINS_BY_ROLE = WINS_BY_ROLE or {}
 
 if SERVER then
@@ -1225,6 +1272,10 @@ ANNOUNCE_REVEAL_INNOCENTS = 3
 SPECIAL_DETECTIVE_HIDE_NONE = 0
 SPECIAL_DETECTIVE_HIDE_FOR_ALL = 1
 SPECIAL_DETECTIVE_HIDE_FOR_OTHERS = 2
+
+-- Misc. role constants
+UNITS_PER_METER = 52.49
+UNITS_PER_FIVE_METERS = UNITS_PER_METER * 5
 
 -- Corpse stuff
 CORPSE_ICON_TYPES = {

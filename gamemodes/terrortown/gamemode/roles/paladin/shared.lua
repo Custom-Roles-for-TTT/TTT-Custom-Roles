@@ -1,6 +1,7 @@
 AddCSLuaFile()
 
 local hook = hook
+local table = table
 
 local function InitializeEquipment()
     if DefaultEquipment then

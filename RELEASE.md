@@ -4,6 +4,7 @@
 **Released:**
 
 ### Additions
+- Added new jester role: sponge
 - Added button to body search dialog to take a DNA sample (or open the DNA scanner UI if a sample was already taken) when the player has a DNA Tester
   - Can be disabled via the new `ttt_dna_scan_on_dialog` convar
 
@@ -14,6 +15,10 @@
 ### Fixes
 - Fixed covert body search not working properly and text hint missing
 - Fixed body search text hint not using correct key if it was rebound
+- Fixed killer win server log being overridden by jester win server log
+- Fixed minor plurality issue in the server log message when the jester wins
+- Fixed shadow role translations overriding sapper translations
+- Fixed role team name and color being incorrect in the body search dialog
 
 ### Developer
 - Added new `CORPSE.CanBeSearched` method to make it easier to check if a corpse can be searched by a player
