@@ -74,31 +74,33 @@ local function IsCustomRolesMounted()
     return false
 end
 
-CrDebug = CrDebug or {
+CRDebug = CRDebug or {
     -- Only enable this on beta when we're not mounted from the workshop
     Enabled = CR_BETA and not IsCustomRolesMounted(),
     -- These keys (in "{EventName}_{Identifier}" format) are known to re-register themselves
     IgnoredHookDupes = {
-        "InitPostEntity_CreateVoiceVGUI",
-        "PreDrawViewModels_PreDrawViewModels_TFA_INSPECT",
-        "NeedsDepthPass_aaaaaaaaaaaaaaaaaaNeedsDepthPass_TFA_Inspect"
+        "InitPostEntity_CreateVoiceVGUI"
     }
 }
 
 -- Only run this when we're debugging and only do it once
-if CrDebug.Enabled and not CrDebug.HooksChecked then
-    CrDebug.HooksChecked = CrDebug.HooksChecked or {}
+if CRDebug.Enabled and not CRDebug.HooksChecked then
+    CRDebug.HooksChecked = CRDebug.HooksChecked or {}
     local oldHookAdd = hook.Add
     hook.Add = function(eventName, identifier, func)
-        local key = eventName .. "_" .. tostring(identifier)
-        -- Keep track of which ones we've checked already so we don't spam ourselves on reload
-        -- Also ignore the ones that are known to replace themselves... for whatever reason
-        if not CrDebug.HooksChecked[key] and not table.HasValue(CrDebug.IgnoredHookDupes, key) then
-            local hooks = hook.GetTable()
-            if hooks[eventName] and hooks[eventName][identifier] then
-                ErrorNoHaltWithStack("Hook for '" .. eventName .. "' with identifier '" .. identifier .. "' already exists!")
+        local info = debug.getinfo(2, "S")
+        -- Only run the hook checks for custom roles code
+        if StringFind(info.short_src, "custom-roles", 1, true) or StringFind(info.short_src, "customroles", 1, true) then
+            local key = eventName .. "_" .. tostring(identifier)
+            -- Keep track of which ones we've checked already so we don't spam ourselves on reload
+            -- Also ignore the ones that are known to replace themselves... for whatever reason
+            if not CRDebug.HooksChecked[key] and not table.HasValue(CRDebug.IgnoredHookDupes, key) then
+                local hooks = hook.GetTable()
+                if hooks[eventName] and hooks[eventName][identifier] then
+                    ErrorNoHaltWithStack("Hook for '" .. eventName .. "' with identifier '" .. identifier .. "' already exists!")
+                end
+                CRDebug.HooksChecked[key] = true
             end
-            CrDebug.HooksChecked[key] = true
         end
         oldHookAdd(eventName, identifier, func)
     end
