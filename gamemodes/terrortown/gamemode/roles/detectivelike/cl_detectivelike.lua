@@ -101,6 +101,7 @@ end)
 ------------------
 
 local detective_glow = false
+local vision_enabled = false
 local client = nil
 
 local function EnableDetectiveLikeHighlights()
