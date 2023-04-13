@@ -324,7 +324,7 @@ local function FillRoleColors(list, type)
     local mode = modeCVar and modeCVar:GetString() or "default"
 
     for r = ROLE_NONE, ROLE_MAX do
-        local c = nil
+        local c
         if mode == "custom" then
             if r == ROLE_DETECTIVE then c = ColorFromCustomConVars("ttt_custom_det_color") or COLOR_DETECTIVE["default"]
             elseif DETECTIVE_ROLES[r] then c = ColorFromCustomConVars("ttt_custom_spec_det_color") or COLOR_SPECIAL_DETECTIVE["default"]

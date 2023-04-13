@@ -69,7 +69,6 @@ hook.Add("DoPlayerDeath", "Vampire_Credits_DoPlayerDeath", function(victim, atta
     if kill_credits and valid_attacker and not TRAITOR_ROLES[ROLE_VAMPIRE] and attacker:IsActiveVampire() and (not (victim:IsMonsterTeam() or victim:IsJesterTeam())) and (not GAMEMODE.AwardedVampireCredits or GetConVar("ttt_credits_award_repeat"):GetBool()) then
         local ply_alive = 0
         local ply_dead = 0
-        local ply_total = 0
 
         for _, ply in pairs(GetAllPlayers()) do
             if not ply:IsVampireAlly() then
@@ -85,7 +84,7 @@ hook.Add("DoPlayerDeath", "Vampire_Credits_DoPlayerDeath", function(victim, atta
         -- Alive(), so add one to dead count and sub one from living
         ply_dead = ply_dead + 1
         ply_alive = math.max(ply_alive - 1, 0)
-        ply_total = ply_alive + ply_dead
+        local ply_total = ply_alive + ply_dead
 
         -- Only repeat-award if we have reached the pct again since last time
         if GAMEMODE.AwardedVampireCredits then

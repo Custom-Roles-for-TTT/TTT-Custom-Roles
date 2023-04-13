@@ -686,11 +686,9 @@ function HELPSCRN:CreateConfig(dsettings)
     dgui:DockMargin(0, 0, 5, 10)
     dgui:SetName(GetTranslation("set_title_gui"))
 
-    local cb = nil
-
     dgui:CheckBox(GetTranslation("set_tips"), "ttt_tips_enable")
 
-    cb = dgui:NumSlider(GetTranslation("set_startpopup"), "ttt_startpopup_duration", 0, 60, 0)
+    local cb = dgui:NumSlider(GetTranslation("set_startpopup"), "ttt_startpopup_duration", 0, 60, 0)
     if cb.Label then
         cb.Label:SetWrap(true)
     end
@@ -733,7 +731,7 @@ function HELPSCRN:CreateConfig(dsettings)
     cb = dgui:CheckBox(GetTranslation("set_swselect"), "ttt_weaponswitcher_close")
     cb:SetTooltip(GetTranslation("set_swselect_tip"))
 
-    cb = dgui:CheckBox(GetTranslation("set_cues"), "ttt_cl_soundcues")
+    dgui:CheckBox(GetTranslation("set_cues"), "ttt_cl_soundcues")
 
     cb = dgui:CheckBox(GetTranslation("set_raw_karma"), "ttt_show_raw_karma_value")
     cb:SetTooltip(GetTranslation("set_raw_karma_tip"))

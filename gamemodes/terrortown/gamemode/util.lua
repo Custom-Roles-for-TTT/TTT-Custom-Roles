@@ -247,7 +247,7 @@ function table.CopyKeys(tbl, keys)
     if not (tbl and keys) then return end
 
     local out = {}
-    local val = nil
+    local val
     for _, k in pairs(keys) do
         val = tbl[k]
         if istable(val) then
