@@ -523,6 +523,7 @@ globals = {
 	"AddScoreGroup",
 	"Angle",
 	"BaseClass",
+	"BeginRound",
 	"ChatInterrupt",
 	"CheckForMapSwitch",
 	"CheckIdle",
@@ -1021,15 +1022,19 @@ std = {
 				Count = {},
 				Empty = {},
 				EqualValues = {},
+				ExcludedKeys = {},
 				GetKeys = {},
 				HasTable = {},
 				HasValue = {},
+				IntersectedKeys  = {},
 				IsEmpty = {},
+				LookupKeys = {},
 				Merge = {},
 				Random = {},
 				RemoveByValue = {},
 				Shuffle = {},
 				SortByMember = {},
+				ToLookup = {},
 				UnionedKeys = {}
 			}
 		}
