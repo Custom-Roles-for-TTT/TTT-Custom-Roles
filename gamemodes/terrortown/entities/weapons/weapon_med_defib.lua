@@ -123,7 +123,7 @@ if SERVER then
     end
 
     local function bodyply(body)
-        local ply = false
+        local ply
 
         if body.sid64 then
             ply = player.GetBySteamID64(body.sid64)
