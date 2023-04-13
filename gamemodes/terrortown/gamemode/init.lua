@@ -1501,6 +1501,7 @@ function SelectRoles()
     local monsterRoles = {}
     local detectives = {}
     local traitors = {}
+    local glitch_mode = GetConVar("ttt_glitch_mode"):GetInt()
 
     -- Special rules for role spawning
     -- Role exclusion logic also needs to be copied into the drunk role selection logic in drunk.lua -> plymeta:SoberDrunk
@@ -1509,7 +1510,6 @@ function SelectRoles()
         [ROLE_DEPUTY] = function() return detective_count > 0 or GetConVar("ttt_deputy_without_detective"):GetBool() end,
         [ROLE_REVENGER] = function() return choice_count > 1 end,
         [ROLE_GLITCH] = function()
-            local glitch_mode = GetConVar("ttt_glitch_mode"):GetInt()
             return (glitch_mode == GLITCH_SHOW_AS_TRAITOR and #traitors > 1) or
                     ((glitch_mode == GLITCH_SHOW_AS_SPECIAL_TRAITOR or glitch_mode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES) and traitor_count > 1)
         end,
