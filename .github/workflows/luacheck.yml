@@ -29,7 +29,7 @@ jobs:
         uses: leafo/gh-actions-luarocks@v4
 
       - name: Move to gluacheck dir
-        run: cd gluacheck
+        run: cd gluacheck && ls -al
 
       - name: Setup dependencies
         run: luarocks install --deps-only luacheck-dev-1.rockspec
