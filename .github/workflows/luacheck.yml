@@ -29,7 +29,7 @@ jobs:
           luarocks install --deps-only luacheck-dev-1.rockspec
 
       - name: Build ‘luacheck’ (bootstrap)
-        run: luarocks make
+        run: luarocks make ./gluacheck/luacheck-dev-1.rockspec
 
       - name: Run ‘luacheck’ (dogfood)
         run: luacheck .
