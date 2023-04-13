@@ -28,6 +28,9 @@ jobs:
         run: |
           luarocks install --deps-only luacheck-dev-1.rockspec
 
+      - name: Dir
+        run: ls -al
+
       - name: Build ‘luacheck’ (bootstrap)
         run: luarocks make ./gluacheck/luacheck-dev-1.rockspec
 
