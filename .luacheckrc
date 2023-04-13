@@ -4,7 +4,7 @@ exclude_files = {
 	"templates\\Role Addon Template\\lua\\customroles\\%NAMERAW%.lua"
 }
 -- Ignore "Loop can be executed at most once." which is inaccurately reported due to incomplete "continue" support
-ignore = 512
+ignore = { "512" }
 globals = {
 	-- Standard constants
 	"ACT_GMOD_GESTURE_AGREE",
