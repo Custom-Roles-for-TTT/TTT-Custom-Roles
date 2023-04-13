@@ -28,17 +28,11 @@ jobs:
       - name: Setup ‘luarocks’
         uses: leafo/gh-actions-luarocks@v4
 
-      - name: Move to gluacheck dir
-        run: cd gluacheck && ls -al
-
       - name: Setup dependencies
-        run: luarocks install --deps-only luacheck-dev-1.rockspec
+        run: luarocks install --deps-only gluacheck/luacheck-dev-1.rockspec
 
       - name: Build ‘luacheck’ (bootstrap)
-        run: luarocks make luacheck-dev-1.rockspec
-
-      - name: Move back to root dir
-        run: cd ..
+        run: luarocks make gluacheck/luacheck-dev-1.rockspec
 
       - name: Run ‘luacheck’ (dogfood)
         run: gluacheck/luacheck .
