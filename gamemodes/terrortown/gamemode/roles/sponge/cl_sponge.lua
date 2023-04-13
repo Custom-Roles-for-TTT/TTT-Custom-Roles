@@ -95,19 +95,19 @@ end)
 -- TARGET ID --
 ---------------
 
-hook.Add("TTTTargetIDPlayerRoleIcon", "Sponge_TTTTargetIDPlayerRoleIcon", function(ply, client, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
+hook.Add("TTTTargetIDPlayerRoleIcon", "Sponge_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
     if ply:IsActiveSponge() then
         return ROLE_SPONGE, false
     end
 end)
 
-hook.Add("TTTTargetIDPlayerRing", "Sponge_TTTTargetIDPlayerRing", function(ent, client, ringVisible)
+hook.Add("TTTTargetIDPlayerRing", "Sponge_TTTTargetIDPlayerRing", function(ent, cli, ringVisible)
     if IsPlayer(ent) and ent:IsActiveSponge() then
         return true, ROLE_COLORS_RADAR[ROLE_SPONGE]
     end
 end)
 
-hook.Add("TTTTargetIDPlayerText", "Sponge_TTTTargetIDPlayerText", function(ent, client, text, clr, secondaryText)
+hook.Add("TTTTargetIDPlayerText", "Sponge_TTTTargetIDPlayerText", function(ent, cli, text, clr, secondaryText)
     if IsPlayer(ent) and ent:IsActiveSponge() then
         return StringUpper(ROLE_STRINGS[ROLE_SPONGE]), ROLE_COLORS_RADAR[ROLE_SPONGE]
     end

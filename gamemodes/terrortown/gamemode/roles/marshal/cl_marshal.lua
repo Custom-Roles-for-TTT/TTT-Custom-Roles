@@ -24,7 +24,7 @@ Press {menukey} to receive your equipment!]])
 end)
 
 hook.Add("TTTRolePopupParams", "Marshal_TTTRolePopupParams", function(client)
-    return { deputy, ROLE_STRINGS[ROLE_DEPUTY], animpersonator = ROLE_STRINGS_EXT[ROLE_IMPERSONATOR] }
+    return { animpersonator = ROLE_STRINGS_EXT[ROLE_IMPERSONATOR] }
 end)
 
 -------------

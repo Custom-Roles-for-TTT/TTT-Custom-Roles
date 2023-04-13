@@ -95,7 +95,7 @@ function PANEL:UpdatePlayerData(force)
    -- Create table of SimpleIcons, each standing for a piece of search
    -- information.
    for t, info in SortedPairsByMemberValue(search, "p") do
-      local ic = nil
+      local ic
 
       -- Certain items need a special icon conveying additional information
       if t == "lastid" then

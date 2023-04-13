@@ -153,7 +153,7 @@ local function EnableShadowTargetHighlights()
         local target = player.GetBySteamID64(sid64)
         if not IsValid(target) then return end
 
-        local ent = nil
+        local ent
         local r = GetGlobalFloat("ttt_shadow_alive_radius", 419.92)
         if target:IsActive() then
             ent = target
@@ -351,8 +351,8 @@ hook.Add("HUDPaint", "Shadow_HUDPaint", function()
         local remaining = math.max(0, t - CurTime())
 
         local PT = LANG.GetParamTranslation
-        local message = ""
-        local total = 0
+        local message
+        local total
         if ply:IsRoleActive() then
             message = PT("shadow_return_target", { time = util.SimpleTime(remaining, "%02i:%02i") })
             total = GetGlobalInt("ttt_shadow_buffer_timer", 7)

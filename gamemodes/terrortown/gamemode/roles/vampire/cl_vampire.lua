@@ -32,7 +32,7 @@ hook.Add("Initialize", "Vampire_Translations_Initialize", function()
     LANG.AddToLanguage("english", "info_popup_vampire", [[You are {role}! {comrades}
 
 You can use your fangs (hold left-click) to drink blood and refill your health or to fade from view (right-click).
-    
+
 Press {menukey} to receive your special equipment!]])
 end)
 
@@ -173,8 +173,8 @@ local function EnableVampireHighlights()
         local hideEnemies = not vampire_vision or not hasFangs
 
         -- Handle logic differently depending on which team they are on
-        local allies = {}
-        local showJesters = false
+        local allies
+        local showJesters
         local traitorAllies = false
         local onlyShowEnemies = false
         if MONSTER_ROLES[ROLE_VAMPIRE] then
