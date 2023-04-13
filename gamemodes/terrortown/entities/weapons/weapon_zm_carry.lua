@@ -12,6 +12,8 @@ local player = player
 local timer = timer
 local util = util
 
+local CurTime = CurTime
+
 DEFINE_BASECLASS "weapon_tttbase"
 
 SWEP.HoldType               = "pistol"
@@ -72,10 +74,6 @@ local wep_range = CreateConVar("ttt_weapon_carrying_range", "50")
 CARRY_WEIGHT_LIMIT = 45
 
 local PIN_RAG_RANGE = 90
-
-local player = player
-local IsValid = IsValid
-local CurTime = CurTime
 
 local function SetSubPhysMotionEnabled(ent, enable)
     if not IsValid(ent) then return end
@@ -567,9 +565,6 @@ function SWEP:OnDrop()
 end
 
 if CLIENT then
-    local draw = draw
-    local util = util
-
     local PT = LANG.GetParamTranslation
     local key_params = {primaryfire = Key("+attack", "LEFT MOUSE")}
     function SWEP:DrawHUD()

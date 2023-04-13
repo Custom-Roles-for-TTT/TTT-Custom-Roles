@@ -22,14 +22,14 @@ Press {menukey} to receive your special equipment!]])
 Gravely wounds living targets quietly.
 Kills wounded targets instantly and
 silently.
-    
+
 Can drop a smoke grenade using alternate fire.]])
 
     -- Killer's Crowbar
     LANG.AddToLanguage("english", "kil_crowbar_name", "Throwable Crowbar")
     LANG.AddToLanguage("english", "kil_crowbar_desc", [[
 Used to blend in with other players and do minor damage.
-    
+
 Can be thrown using alternate fire.]])
 end)
 
