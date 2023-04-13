@@ -29,10 +29,10 @@ jobs:
         uses: leafo/gh-actions-luarocks@v4
 
       - name: Setup dependencies
-        run: luarocks install --deps-only gluacheck/luacheck-dev-1.rockspec
+        run: luarocks install --deps-only gluacheck/luacheck.rockspec
 
       - name: Build ‘luacheck’ (bootstrap)
-        run: luarocks make gluacheck/luacheck-dev-1.rockspec
+        run: luarocks make gluacheck/luacheck.rockspec
 
       - name: Run ‘luacheck’ (dogfood)
         run: gluacheck/luacheck .
