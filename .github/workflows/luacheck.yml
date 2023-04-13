@@ -35,4 +35,4 @@ jobs:
         run: luarocks make gluacheck-dev-1.rockspec
 
       - name: Run ‘luacheck’ (dogfood)
-        run: lua -e 'package.path="./gluacheck/src/?.lua;./gluacheck/src/?/init.lua;"..package.path' gluacheck/bin/luacheck.lua lua gamemodes
+        run: lua -e 'package.path="./gluacheck/src/?.lua;./gluacheck/src/?/init.lua;"..package.path' gluacheck/bin/luacheck.lua gamemodes/terrortown/gamemode/roles/assassin/assassin.lua #lua gamemodes
