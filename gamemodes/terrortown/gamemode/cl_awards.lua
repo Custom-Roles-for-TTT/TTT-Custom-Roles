@@ -830,7 +830,7 @@ local function TimeOfDeath(events, scores, players)
     local innocent_win = nil
     local monster_win = nil
 
-    local e = nil
+    local e
     for i=#events, 1, -1 do
         e = events[i]
 

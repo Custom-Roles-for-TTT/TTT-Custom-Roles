@@ -301,7 +301,7 @@ local function GetWinTitle(wintype)
     return hook.Call("TTTScoringWinTitleOverride", nil, wintype, wintitles, title) or title
 end
 
-function GetFontForWinTitle(wintxt, width)
+local function GetFontForWinTitle(wintxt, width)
     -- Scale the title down if it's too wide
     local winfont_options = {"WinHuge", "WinLarge", "WinMedium", "WinSmall", "WinTiny"}
     local winfont = "WinHuge"
@@ -806,7 +806,7 @@ function CLSCORE:BuildPlayerList(playerList, dpanel, statusX, roleX, initialY, r
         local name = v.name
         local label = v.label
         local otherName = v.otherName
-        local nicklbl = ""
+        local nicklbl
         if otherName ~= nil then
             nicklbl = GetNickLabelElement(BuildJesterLabel(name, otherName, label), dpanel)
         else
@@ -852,8 +852,8 @@ function CLSCORE:BuildHilitePanel(dpanel)
 
     local bg = vgui.Create("ColoredBox", dpanel)
     bg:SetColor(Color(50, 50, 50, 255))
-    bg:SetSize(w,h)
-    bg:SetPos(0,0)
+    bg:SetSize(w, h)
+    bg:SetPos(0, 0)
 
     local winlbl = vgui.Create("DLabel", dpanel)
     local wintxt = PT(title.txt, title.params or {})
@@ -1030,8 +1030,8 @@ function CLSCORE:ShowPanel()
     parentPanel:SetKeyboardInputEnabled(true)
     parentPanel.OnKeyCodePressed = util.BasicKeyHandler
 
-    function parentPanel:Think()
-        self:MoveToFront()
+    parentPanel.Think = function()
+        parentPanel:MoveToFront()
     end
 
     -- keep it around so we can reopen easily

@@ -227,7 +227,7 @@ if CLIENT then
             local progress = math.min(1, 1 - ((time - CurTime()) / charge))
             CRHUD:PaintProgressBar(x, y, w, Color(0, 255, 0, 155), self:GetMessage(), progress)
         elseif state == DEFIB_ERROR then
-            CRHUD:PaintProgressBar(x, y, w, Color(200 + math.sin(CurTime() * 32) * 50, 0, 0, 155), self:GetMessage(), progress)
+            CRHUD:PaintProgressBar(x, y, w, Color(200 + math.sin(CurTime() * 32) * 50, 0, 0, 155), self:GetMessage(), 1)
         end
     end
 

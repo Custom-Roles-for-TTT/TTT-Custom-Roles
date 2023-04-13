@@ -180,9 +180,9 @@ function ENT:SphereDamage(dmgowner, center, radius)
 
 
     -- pre-declare to avoid realloc
-    local d = 0.0
-    local diff = nil
-    local dmg = 0
+    local d
+    local diff
+    local dmg
     for _, ent in ipairs(player.GetAll()) do
         if IsValid(ent) and ent:Team() == TEAM_TERROR then
 
@@ -293,8 +293,8 @@ end
 function ENT:IsDetectiveNear()
     local center = self:GetPos()
     local r = self.DetectiveNearRadius ^ 2
-    local d = 0.0
-    local diff = nil
+    local d
+    local diff
     for _, ent in ipairs(player.GetAll()) do
         if IsValid(ent) and ent:IsActiveDetectiveLike() then
             -- dot of the difference with itself is distance squared

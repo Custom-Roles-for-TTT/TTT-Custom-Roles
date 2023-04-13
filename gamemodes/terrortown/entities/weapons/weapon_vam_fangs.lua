@@ -163,7 +163,7 @@ function SWEP:CanConvert()
 end
 
 local function GetPlayerFromBody(body)
-    local ply = false
+    local ply
 
     if body.sid64 then
         ply = player.GetBySteamID64(body.sid64)

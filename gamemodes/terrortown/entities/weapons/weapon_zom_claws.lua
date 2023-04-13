@@ -43,7 +43,7 @@ SWEP.Secondary.Delay = 2
 
 SWEP.Tertiary = {}
 SWEP.Tertiary.Damage = 25
-SWEP.Tertiary.NumShots = SWEP.Primary.NumShots
+SWEP.Tertiary.NumShots = 1
 SWEP.Tertiary.Recoil = 5
 SWEP.Tertiary.Cone = 0.02
 SWEP.Tertiary.Delay = 3
@@ -220,7 +220,7 @@ function SWEP:CSShootBullet(dmg, recoil, numbul, cone)
     local owner = self:GetOwner()
     local bullet = {}
     bullet.Attacker      = owner
-    bullet.Num           = 1
+    bullet.Num           = numbul
     bullet.Src           = owner:GetShootPos()    -- Source
     bullet.Dir           = owner:GetAimVector()   -- Dir of bullet
     bullet.Spread        = Vector(cone, 0, 0)     -- Aim Cone

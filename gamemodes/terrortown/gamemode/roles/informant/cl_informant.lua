@@ -76,7 +76,7 @@ hook.Add("TTTTargetIDPlayerRoleIcon", "Informant_TTTTargetIDPlayerRoleIcon", fun
 
     if cli:IsInformant() or (cli:IsTraitorTeam() and GetGlobalBool("ttt_informant_share_scans", true)) then
         local newRole = role
-        local newNoZ = noZ
+        local newNoZ = noz
         local newColorRole = colorRole
 
         if state >= INFORMANT_SCANNED_TEAM then
