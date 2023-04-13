@@ -806,7 +806,7 @@ function CLSCORE:BuildPlayerList(playerList, dpanel, statusX, roleX, initialY, r
         local name = v.name
         local label = v.label
         local otherName = v.otherName
-        local nicklbl = ""
+        local nicklbl
         if otherName ~= nil then
             nicklbl = GetNickLabelElement(BuildJesterLabel(name, otherName, label), dpanel)
         else
@@ -1030,8 +1030,8 @@ function CLSCORE:ShowPanel()
     parentPanel:SetKeyboardInputEnabled(true)
     parentPanel.OnKeyCodePressed = util.BasicKeyHandler
 
-    function parentPanel:Think()
-        self:MoveToFront()
+    parentPanel.Think = function()
+        parentPanel:MoveToFront()
     end
 
     -- keep it around so we can reopen easily
