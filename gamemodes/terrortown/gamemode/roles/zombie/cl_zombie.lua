@@ -222,8 +222,8 @@ local function EnableZombieHighlights()
         local hideEnemies = not zombie_vision or not hasClaws
 
         -- Handle logic differently depending on which team they are on
-        local allies = {}
-        local showJesters = false
+        local allies
+        local showJesters
         local traitorAllies = false
         local onlyShowEnemies = false
         if MONSTER_ROLES[ROLE_ZOMBIE] then

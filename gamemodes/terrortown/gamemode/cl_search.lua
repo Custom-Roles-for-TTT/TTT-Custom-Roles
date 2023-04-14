@@ -324,7 +324,7 @@ local function ShowSearchScreen(search_raw)
     local descw, desch = rw - m * 2, 80
     local descx, descy = rx, ry
 
-    ry = ry + desch + m
+    --ry = ry + desch + m
 
     -- Finalize search data, prune stuff that won't be shown etc
     -- search is a table of tables that have an img and text key
@@ -498,7 +498,7 @@ local function ShowSearchScreen(search_raw)
     -- information.
     local start_icon = nil
     for t, info in SortedPairsByMemberValue(search, "p") do
-        local ic = nil
+        local ic
 
         -- Certain items need a special icon conveying additional information
         if t == "nick" then

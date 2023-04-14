@@ -166,7 +166,6 @@ hook.Add("DoPlayerDeath", "Killer_Credits_DoPlayerDeath", function(victim, attac
     if valid_attacker and attacker:IsActiveKiller() and (not (victim:IsKiller() or victim:IsJesterTeam())) and (not GAMEMODE.AwardedKillerCredits or GetConVar("ttt_credits_award_repeat"):GetBool()) then
         local ply_alive = 0
         local ply_dead = 0
-        local ply_total = 0
 
         for _, ply in pairs(GetAllPlayers()) do
             if not ply:IsKiller() then
@@ -182,7 +181,7 @@ hook.Add("DoPlayerDeath", "Killer_Credits_DoPlayerDeath", function(victim, attac
         -- Alive(), so add one to dead count and sub one from living
         ply_dead = ply_dead + 1
         ply_alive = math.max(ply_alive - 1, 0)
-        ply_total = ply_alive + ply_dead
+        local ply_total = ply_alive + ply_dead
 
         -- Only repeat-award if we have reached the pct again since last time
         if GAMEMODE.AwardedKillerCredits then
@@ -284,7 +283,7 @@ hook.Add("PlayerCanPickupWeapon", "Killer_Weapons_PlayerCanPickupWeapon", functi
 end)
 
 ------------------
--- ANNOUNCEMENT -- 
+-- ANNOUNCEMENT --
 ------------------
 
 -- Warn other players that there is a killer

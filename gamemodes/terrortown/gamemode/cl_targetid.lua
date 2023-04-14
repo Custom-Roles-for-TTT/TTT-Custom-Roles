@@ -249,9 +249,9 @@ local function DrawPropSpecLabels(cli)
 
     surface.SetFont("TabLarge")
 
-    local scrpos = nil
-    local text = nil
-    local w = 0
+    local scrpos
+    local text
+    local w
     tgt = nil
     for _, p in ipairs(GetAllPlayers()) do
         if p:IsSpec() then
@@ -472,7 +472,7 @@ function GM:HUDDrawTargetID()
     local x = x_orig
     local y = ScrH() / 2.0
 
-    local w, h = 0, 0 -- text width/height, reused several times
+    local w, h -- text width/height, reused several times
 
     local ring_visible = target_traitor or target_unknown_traitor or target_special_traitor or target_unknown_special_traitor or target_detective or target_unknown_detective or target_special_detective or target_glitch or target_jester or target_monster
 
@@ -571,7 +571,7 @@ function GM:HUDDrawTargetID()
 
     if text and col then
         surface.SetFont(font)
-        w, h = surface.GetTextSize(text)
+        w, _ = surface.GetTextSize(text)
         x = x_orig - w / 2
 
         draw.SimpleText(text, font, x + 1, y + 1, COLOR_BLACK)

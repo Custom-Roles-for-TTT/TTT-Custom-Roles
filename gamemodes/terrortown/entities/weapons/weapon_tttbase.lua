@@ -175,7 +175,7 @@ if CLIENT then
 
         -- somehow it seems this can be called before my player metatable
         -- additions have loaded
-        local color = nil
+        local color
         if hide_role then
             color = COLOR_WHITE
         elseif client.IsTraitorTeam and client:IsTraitorTeam() then

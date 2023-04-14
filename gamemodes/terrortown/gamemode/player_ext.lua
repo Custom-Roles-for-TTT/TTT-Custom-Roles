@@ -76,7 +76,7 @@ function plymeta:SetDefaultCredits(keep_existing)
     if self:IsSpec() or self:GetRole() == ROLE_NONE then return end
 
     local c = 0
-    local cvar = nil
+    local cvar
     if self:IsTraitor() then
         cvar = "ttt_credits_starting"
     elseif self:IsDetective() then
@@ -465,6 +465,7 @@ local oldUnSpectate = plymeta.UnSpectate
 function plymeta:UnSpectate()
     oldUnSpectate(self)
     self:SetNoTarget(false)
+    self:SetRagdollSpec(false)
 end
 
 local oldSetTeam = plymeta.SetTeam

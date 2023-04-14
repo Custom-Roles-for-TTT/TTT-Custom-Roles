@@ -607,7 +607,6 @@ local function CheckCreditAward(victim, attacker)
     if valid_attacker and not (victim:IsTraitorTeam() or victim:IsJesterTeam()) and (not GAMEMODE.AwardedCredits or GetConVar("ttt_credits_award_repeat"):GetBool()) then
         local inno_alive = 0
         local inno_dead = 0
-        local inno_total = 0
 
         for _, ply in ipairs(GetAllPlayers()) do
             if not ply:IsTraitorTeam() then
@@ -623,7 +622,7 @@ local function CheckCreditAward(victim, attacker)
         -- Alive(), so add one to dead count and sub one from living
         inno_dead = inno_dead + 1
         inno_alive = math.max(inno_alive - 1, 0)
-        inno_total = inno_dead + inno_alive
+        local inno_total = inno_dead + inno_alive
 
         -- Only repeat-award if we have reached the pct again since last time
         if GAMEMODE.AwardedCredits then
@@ -1276,8 +1275,8 @@ function GM:OnNPCKilled() end
 function GM:Tick()
     -- three cheers for micro-optimizations
     local plys = GetAllPlayers()
-    local tm = nil
-    local ply = nil
+    local tm
+    local ply
     for i = 1, #plys do
         ply = plys[i]
         tm = ply:Team()

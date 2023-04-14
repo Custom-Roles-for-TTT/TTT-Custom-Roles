@@ -22,7 +22,7 @@ local StringLower = string.lower
 
 
 -- Special equipment bitflags. Every unique piece of equipment needs its own
--- id. 
+-- id.
 --
 -- Use the GenerateNewEquipmentID function (see below) to get a unique ID for
 -- your equipment. This is guaranteed not to clash with other addons (as long

@@ -139,7 +139,7 @@ function plymeta:DrunkJoinLosingTeam()
     end
 
     -- Find the average number of jesters and independents that spawn in each round
-    local jestersIndependents = 0
+    local jestersIndependents
     local singleJesIndMax = GetConVar("ttt_single_jester_independent_max_players"):GetInt()
     local indChance = GetConVar("ttt_independent_chance"):GetFloat()
     if GetConVar("ttt_multiple_jesters_independents"):GetBool() then

@@ -166,7 +166,7 @@ function WSWITCH:Draw(client)
     local x = ScrW() - width - margin * 2
     local y = ScrH() - (#weps * (height + margin))
 
-    local col = nil
+    local col
     for k, wep in pairs(weps) do
         if self.Selected == k then
             col = GetColors(false)

@@ -16,8 +16,6 @@ local MathClamp = math.Clamp
 local MathRound = math.Round
 local MathCeil = math.ceil
 local MathRand = math.Rand
-local MathCos = math.cos
-local MathSin = math.sin
 local MathAbs = math.abs
 local TableCount = table.Count
 local interp = string.Interp
@@ -467,7 +465,7 @@ local function InfoPaint(client)
     local round_state = GAMEMODE.round_state
 
     local traitor_y = y - 30
-    local text = nil
+    local text
     if round_state == ROUND_ACTIVE then
         if hide_role then
             text = GetTranslation("hidden")

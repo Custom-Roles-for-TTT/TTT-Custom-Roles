@@ -170,8 +170,7 @@ function SWEP:PrimaryAttack()
 
     if SERVER then
         -- Do another trace that sees nodraw stuff like func_button
-        local tr_all = nil
-        tr_all = util.TraceLine({ start = spos, endpos = sdest, filter = owner })
+        local tr_all = util.TraceLine({ start = spos, endpos = sdest, filter = owner })
 
         owner:SetAnimation(PLAYER_ATTACK1)
 

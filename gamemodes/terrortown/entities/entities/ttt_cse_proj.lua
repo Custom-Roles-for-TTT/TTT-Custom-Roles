@@ -52,7 +52,7 @@ function ENT:GetNearbyCorpses()
 
     local near_corpses = {}
 
-    local ent = nil
+    local ent
     for i=1, #near do
         ent = near[i]
         if IsValid(ent) and ent.player_ragdoll and ent.scene then

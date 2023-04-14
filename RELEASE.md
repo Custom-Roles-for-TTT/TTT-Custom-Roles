@@ -1,5 +1,12 @@
 # Release Notes
 
+## 1.8.4 (Beta)
+**Released:**
+
+### Fixes
+- Fixed ragdoll spectator flag not being reset immediately when a player un-spectates
+- Fixed glitch bluff role never getting set to a special traitor when `ttt_glitch_mode` was set to `1`
+
 ## 1.8.3 (Beta)
 **Released: April 8th, 2023**
 

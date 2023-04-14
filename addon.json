@@ -7,11 +7,12 @@
     "*.md",
     "*.iml",
     ".idea*",
+    ".luacheckrc",
     "*.psd",
     "*.vcproj",
     "*.svn*",
     "LICENSE",
-	"templates*",
+    "templates*",
     "images*"
   ]
 }

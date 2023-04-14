@@ -137,7 +137,7 @@ function PANEL:SetTip(idx)
 
     local tip_id = tip_ids[idx]
 
-    local text = nil
+    local text
     if tip_params[tip_id] then
         text = GetPTranslation("tip" .. tip_id, tip_params[tip_id])
     else
