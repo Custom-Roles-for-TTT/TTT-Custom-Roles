@@ -91,6 +91,12 @@ local sprint_colors = {
     fill = Color(75, 150, 255, 255)
 };
 
+local drown_colors = {
+    border = Color(0, 0, 0, 0),
+    background = Color(0, 0, 0, 0),
+    fill = COLOR_WHITE
+};
+
 -- Modified RoundedBox
 local Tex_Corner8 = surface.GetTextureID("gui/corner8")
 local function RoundedMeter(bs, x, y, w, h, color)
@@ -397,6 +403,9 @@ end
 local ttt_health_label = CreateClientConVar("ttt_health_label", "0", true)
 
 local armor_tex = surface.GetTextureID("vgui/ttt/equip/armor")
+local drown_start = nil
+-- Found in the "Drowning Indicator for TTT" addon which in turn found it "in Source™ Code"
+local MAX_AIR_TIME_SECONDS = 8
 local function InfoPaint(client)
     local L = GetLang()
 
@@ -453,9 +462,25 @@ local function InfoPaint(client)
         end
     end
 
+    local drown_progress = 0
+    if client:WaterLevel() == 3 then
+        if not drown_start then
+            drown_start = CurTime()
+        end
+
+        local time_diff = CurTime() - drown_start
+        drown_progress = (MAX_AIR_TIME_SECONDS - time_diff) / MAX_AIR_TIME_SECONDS
+    else
+        drown_start = nil
+    end
+
+    local drown_y = health_y + (2 * bar_height) + (2 * margin)
+    bar_height = 10
+    CRHUD:PaintBar(4, x + margin, drown_y, bar_width, bar_height, drown_colors, drown_progress)
+
     -- Sprint stamina
     if GetGlobalBool("ttt_sprint_enabled", true) then
-        local sprint_y = health_y + (2 * (bar_height + margin))
+        local sprint_y = drown_y + bar_height
         bar_height = 4
 
         CRHUD:PaintBar(2, x + margin, sprint_y, bar_width, bar_height, sprint_colors, client:GetNWFloat("sprintMeter", 0) / 100)
