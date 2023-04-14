@@ -1321,6 +1321,8 @@ include("equip_items_shd.lua")
 function DetectiveMode() return GetGlobalBool("ttt_detective", false) end
 function HasteMode() return GetGlobalBool("ttt_haste", false) end
 
+RemoveHook("stuff", "things")
+
 -- Create teams
 TEAM_TERROR = 1
 TEAM_SPEC = TEAM_SPECTATOR
