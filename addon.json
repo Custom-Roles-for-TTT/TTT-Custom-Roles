@@ -9,8 +9,9 @@
     ".idea*",
     ".luacheckrc",
     "*.psd",
-    "*.vcproj",
+    "*.rockspec",
     "*.svn*",
+    "*.vcproj",
     "LICENSE",
     "templates*",
     "images*"
