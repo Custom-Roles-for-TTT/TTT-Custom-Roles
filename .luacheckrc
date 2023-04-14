@@ -618,6 +618,7 @@ globals = {
 	"PlayerMsg",
 	"PrepareRound",
 	"PreprocSearch",
+	"PrintMessage",
 	"PrintResultMessage",
 	"PrintTable",
 	"RandomPairs",
