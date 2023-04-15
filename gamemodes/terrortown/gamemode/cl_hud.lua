@@ -91,6 +91,12 @@ local sprint_colors = {
     fill = Color(75, 150, 255, 255)
 };
 
+local drown_colors = {
+    border = Color(0, 0, 0, 0),
+    background = Color(255, 255, 255, 1),
+    fill = COLOR_WHITE
+};
+
 -- Modified RoundedBox
 local Tex_Corner8 = surface.GetTextureID("gui/corner8")
 local function RoundedMeter(bs, x, y, w, h, color)
@@ -397,6 +403,9 @@ end
 local ttt_health_label = CreateClientConVar("ttt_health_label", "0", true)
 
 local armor_tex = surface.GetTextureID("vgui/ttt/equip/armor")
+local drown_start = nil
+-- Found in the "Drowning Indicator for TTT" addon which in turn found it "in Source™ Code"
+local MAX_AIR_TIME_SECONDS = 8
 local function InfoPaint(client)
     local L = GetLang()
 
@@ -413,6 +422,7 @@ local function InfoPaint(client)
     DrawBg(x, y, width, height, client)
 
     local bar_height = 25
+    local sprint_bar_height = 4
     local bar_width = width - (margin * 2)
 
     -- Draw health
@@ -456,9 +466,22 @@ local function InfoPaint(client)
     -- Sprint stamina
     if GetGlobalBool("ttt_sprint_enabled", true) then
         local sprint_y = health_y + (2 * (bar_height + margin))
-        bar_height = 4
 
-        CRHUD:PaintBar(2, x + margin, sprint_y, bar_width, bar_height, sprint_colors, client:GetNWFloat("sprintMeter", 0) / 100)
+        CRHUD:PaintBar(2, x + margin, sprint_y, bar_width, sprint_bar_height, sprint_colors, client:GetNWFloat("sprintMeter", 0) / 100)
+    end
+
+    if client:WaterLevel() == 3 then
+        if not drown_start then
+            drown_start = CurTime()
+        end
+
+        local time_diff = CurTime() - drown_start
+        local drown_progress = (MAX_AIR_TIME_SECONDS - time_diff) / MAX_AIR_TIME_SECONDS
+        -- Position this bar as if the sprint bar is there even if it isn't so we're consitent
+        local drown_y = health_y + (2 * (bar_height + margin)) + sprint_bar_height + 2
+        CRHUD:PaintBar(4, x + margin, drown_y, bar_width, 6, drown_colors, drown_progress)
+    else
+        drown_start = nil
     end
 
     -- Draw traitor state

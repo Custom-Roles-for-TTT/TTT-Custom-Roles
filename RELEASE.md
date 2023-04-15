@@ -1,7 +1,10 @@
 # Release Notes
 
 ## 1.8.4 (Beta)
-**Released:**
+**Released: April 16th, 2023**
+
+### Additions
+- Added HUD element for tracking player breath when under water
 
 ### Fixes
 - Fixed ragdoll spectator flag not being reset immediately when a player un-spectates
