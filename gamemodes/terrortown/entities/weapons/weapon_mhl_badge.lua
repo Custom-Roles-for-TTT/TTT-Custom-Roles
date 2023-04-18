@@ -30,7 +30,7 @@ SWEP.Weight                 = 2
 SWEP.Base                   = "weapon_tttbase"
 SWEP.Category               = WEAPON_CATEGORY_ROLE
 
-SWEP.Spawnable              = true
+SWEP.Spawnable              = false
 SWEP.AutoSpawnable          = false
 SWEP.HoldType               = "slam"
 SWEP.Kind                   = WEAPON_ROLE
