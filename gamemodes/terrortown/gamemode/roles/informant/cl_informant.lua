@@ -174,6 +174,19 @@ hook.Add("TTTTargetIDPlayerText", "Informant_TTTTargetIDPlayerText", function(en
     end
 end)
 
+ROLE_IS_TARGETID_OVERRIDDEN[ROLE_INFORMANT] = function(ply, target, showJester)
+    if not IsPlayer(target) then return end
+
+    local state = target:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
+    if state <= INFORMANT_UNSCANNED then return end
+
+    -- Info is only overridden for the informant or members of their team when enabled
+    if not ply:IsInformant() and (not ply:IsTraitorTeam() or not GetGlobalBool("ttt_informant_share_scans", true)) then return end
+
+    ------ icon, ring, text
+    return true, true, true
+end
+
 ----------------
 -- SCOREBOARD --
 ----------------
@@ -202,6 +215,19 @@ hook.Add("TTTScoreboardPlayerRole", "Informant_TTTScoreboardPlayerRole", functio
         return newColor, newRoleStr
     end
 end)
+
+ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_INFORMANT] = function(ply, target)
+    if not IsPlayer(target) then return end
+
+    local state = target:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
+    if state <= INFORMANT_UNSCANNED then return end
+
+    -- Info is only overridden for the informant or members of their team when enabled
+    if not ply:IsInformant() and (not ply:IsTraitorTeam() or not GetGlobalBool("ttt_informant_share_scans", true)) then return end
+
+    ------ name,  role
+    return false, true
+end
 
 -----------------
 -- SCANNER HUD --
