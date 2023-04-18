@@ -78,7 +78,6 @@ end
 ---------------
 
 hook.Add("TTTTargetIDPlayerText", "Parasite_TTTTargetIDPlayerText", function(ent, cli, text, col, secondary_text)
-
     -- Skip this for Assassin so they can have their own Current Target logic (it also handles parasite infection there)
     if ((IsPlayer(ent) and ent:GetNWBool("ParasiteInfected", false) and cli:IsTraitorTeam()) or IsLoverInfecting(cli, ent)) and not cli:IsAssassin() then
         return LANG.GetTranslation("target_infected"), ROLE_COLORS_RADAR[ROLE_PARASITE]
