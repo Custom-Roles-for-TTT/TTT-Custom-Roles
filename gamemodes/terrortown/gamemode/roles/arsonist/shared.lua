@@ -24,3 +24,13 @@ table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
 })
+table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
+    cvar = "ttt_arsonist_douse_notify_delay_min",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
+    cvar = "ttt_arsonist_douse_notify_delay_max",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})

@@ -5,6 +5,7 @@ local ipairs = ipairs
 local player = player
 
 local GetAllPlayers = player.GetAll
+local MathRandom = math.random
 
 -------------
 -- CONVARS --
@@ -12,6 +13,8 @@ local GetAllPlayers = player.GetAll
 
 local arsonist_douse_time = CreateConVar("ttt_arsonist_douse_time", "8", FCVAR_NONE, "The amount of time (in seconds) the arsonist takes to douse someone", 0, 60)
 local arsonist_douse_distance = CreateConVar("ttt_arsonist_douse_distance", "150", FCVAR_NONE, "The maximum distance away the dousing target can be", 50, 300)
+local arsonist_douse_notify_delay_min = CreateConVar("ttt_arsonist_douse_notify_delay_min", "3", FCVAR_NONE, "The minimum delay before a player is notified they've been doused", 0, 30)
+local arsonist_douse_notify_delay_max = CreateConVar("ttt_arsonist_douse_notify_delay_max", "5", FCVAR_NONE, "The delay delay before a player is notified they've been doused", 3, 60)
 
 hook.Add("TTTSyncGlobals", "Informant_TTTSyncGlobals", function()
     SetGlobalInt("ttt_arsonist_douse_time", arsonist_douse_time:GetInt())
@@ -55,6 +58,12 @@ end
 hook.Add("Think", "Arsonist_Douse_Think", function()
     local douse_time = arsonist_douse_time:GetInt()
     local douse_distance = arsonist_douse_distance:GetFloat()
+    local douse_notify_delay_min = arsonist_douse_notify_delay_min:GetInt()
+    local douse_notify_delay_max = arsonist_douse_notify_delay_max:GetInt()
+    if douse_notify_delay_min > douse_notify_delay_max then
+        douse_notify_delay_min = douse_notify_delay_max
+    end
+
     -- If the target's distance is 75% of the max distance they should be in the "LOSING" stage
     local losing_distance = douse_distance * 0.75
     for _, p in ipairs(GetAllPlayers()) do
@@ -103,6 +112,19 @@ hook.Add("Think", "Arsonist_Douse_Think", function()
                 target:SetNWInt("TTTArsonistDouseStage", ARSONIST_DOUSED)
                 p:SetNWFloat("TTTArsonistDouseStartTime", -1)
                 p:SetNWString("TTTArsonistDouseTarget", "")
+
+                -- Send message (after a random delay) that this player has been doused, but only if it's enabled
+                if douse_notify_delay_min > 0 then
+                    local delay = MathRandom(douse_notify_delay_min, douse_notify_delay_max)
+                    timer.Create("TTTArsonistNotifyDelay_" .. target_sid64, delay, 1, function()
+                        if not IsPlayer(target) then return end
+                        if not target:Alive() or target:IsSpec() then return end
+
+                        local message = "You have been doused by the " .. ROLE_STRINGS[ROLE_ARSONIST] .. "!"
+                        target:PrintMessage(HUD_PRINTCENTER, message)
+                        target:PrintMessage(HUD_PRINTTALK, message)
+                    end)
+                end
             end
         -- Otherwise mark them as "dousing" and the start time so the progress bar can show
         elseif stage ~= ARSONIST_DOUSING then
@@ -118,6 +140,7 @@ hook.Add("TTTPrepareRound", "Arsonist_TTTPrepareRound", function()
         v:SetNWString("TTTArsonistDouseTarget", "")
         v:SetNWFloat("TTTArsonistDouseStartTime", -1)
         v:SetNWBool("TTTArsonistDouseComplete", false)
+        timer.Remove("TTTArsonistNotifyDelay_" .. v:SteamID64())
     end
 end)
 
