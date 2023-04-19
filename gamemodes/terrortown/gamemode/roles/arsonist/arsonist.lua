@@ -159,6 +159,9 @@ hook.Add("TTTPlayerSpawnForRound", "Arsonist_TTTPlayerSpawnForRound", function(p
         -- Reset any arsonist who has been flagged as "complete"
         for _, p in ipairs(GetAllPlayers()) do
             if not p:IsArsonist() then continue end
+            -- Don't reset hte flag on a player that already used their igniter
+            if not p:HasWeapon("weapon_ars_igniter") then continue end
+
             if p:GetNWBool("TTTArsonistDouseComplete", false) then
                 p:SetNWBool("TTTArsonistDouseComplete", false)
 
