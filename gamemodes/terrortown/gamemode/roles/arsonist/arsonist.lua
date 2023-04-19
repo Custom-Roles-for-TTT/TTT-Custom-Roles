@@ -76,6 +76,10 @@ hook.Add("Think", "Arsonist_Douse_Think", function()
             local complete = FindArsonistTarget(p, douse_distance)
             if complete then
                 p:SetNWBool("TTTArsonistDouseComplete", true)
+
+                local message = "You've doused everyone alive in gasoline. Your igniter is now active!"
+                p:PrintMessage(HUD_PRINTCENTER, message)
+                p:PrintMessage(HUD_PRINTTALK, message)
             end
             continue
         end
@@ -120,7 +124,7 @@ hook.Add("Think", "Arsonist_Douse_Think", function()
                         if not IsPlayer(target) then return end
                         if not target:Alive() or target:IsSpec() then return end
 
-                        local message = "You have been doused by the " .. ROLE_STRINGS[ROLE_ARSONIST] .. "!"
+                        local message = "You have been doused in gasoline by the " .. ROLE_STRINGS[ROLE_ARSONIST] .. "!"
                         target:PrintMessage(HUD_PRINTCENTER, message)
                         target:PrintMessage(HUD_PRINTTALK, message)
                     end)
@@ -141,6 +145,28 @@ hook.Add("TTTPrepareRound", "Arsonist_TTTPrepareRound", function()
         v:SetNWFloat("TTTArsonistDouseStartTime", -1)
         v:SetNWBool("TTTArsonistDouseComplete", false)
         timer.Remove("TTTArsonistNotifyDelay_" .. v:SteamID64())
+    end
+end)
+
+hook.Add("TTTPlayerSpawnForRound", "Arsonist_TTTPlayerSpawnForRound", function(ply, dead_only)
+    if dead_only and ply:Alive() and not ply:IsSpec() then return end
+
+    -- Player is respawning that has not been doused
+    if ply:GetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED) == ARSONIST_UNDOUSED then
+        local message = "You've detected a new target player! Douse them in gasoline!"
+        -- Reset any arsonist who has been flagged as "complete"
+        for _, p in ipairs(GetAllPlayers()) do
+            if not p:IsArsonist() then continue end
+            if p:GetNWBool("TTTArsonistDouseComplete", false) then
+                p:SetNWBool("TTTArsonistDouseComplete", false)
+
+                -- Let the arsonist know they have more work to do
+                if p:Alive() and not p:IsSpec() then
+                    p:PrintMessage(HUD_PRINTCENTER, message)
+                    p:PrintMessage(HUD_PRINTTALK, message)
+                end
+            end
+        end
     end
 end)
 

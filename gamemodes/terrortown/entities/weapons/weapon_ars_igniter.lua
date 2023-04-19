@@ -85,7 +85,7 @@ function SWEP:PrimaryAttack()
     -- Don't ignite if all players aren't doused
     if not owner:GetNWBool("TTTArsonistDouseComplete", false) then
         if SERVER then
-            local message = "Not all players have been doused yet"
+            local message = "Not all players have been doused in gasoline yet"
             owner:PrintMessage(HUD_PRINTCENTER, message)
             owner:PrintMessage(HUD_PRINTTALK, message)
         end
