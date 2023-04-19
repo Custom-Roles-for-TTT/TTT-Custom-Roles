@@ -103,7 +103,7 @@ function SWEP:PrimaryAttack()
         -- Arbitrarily high number so they burn to death
         p:Ignite(1000)
 
-        local message = "You've been ignited by the " .. ROLE_STRINGS[ROLE_ARSONIST]
+        local message = "You've been ignited by " .. ROLE_STRINGS_EXT[ROLE_ARSONIST]
         p:PrintMessage(HUD_PRINTCENTER, message)
         p:PrintMessage(HUD_PRINTTALK, message)
     end

@@ -3,6 +3,9 @@
 ## 1.8.5 (Beta)
 **Released:**
 
+### Additions
+- Added new independent role: arsonist
+
 ### Changes
 - Ported "TTT: Fix ironsight position when in singleplayer" from base TTT
 
