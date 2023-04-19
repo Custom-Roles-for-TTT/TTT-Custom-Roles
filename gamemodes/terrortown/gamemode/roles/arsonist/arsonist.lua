@@ -12,7 +12,7 @@ local MathRandom = math.random
 -------------
 
 local arsonist_douse_time = CreateConVar("ttt_arsonist_douse_time", "8", FCVAR_NONE, "The amount of time (in seconds) the arsonist takes to douse someone", 0, 60)
-local arsonist_douse_distance = CreateConVar("ttt_arsonist_douse_distance", "150", FCVAR_NONE, "The maximum distance away the dousing target can be", 50, 300)
+local arsonist_douse_distance = CreateConVar("ttt_arsonist_douse_distance", "200", FCVAR_NONE, "The maximum distance away the dousing target can be", 50, 1000)
 local arsonist_douse_notify_delay_min = CreateConVar("ttt_arsonist_douse_notify_delay_min", "3", FCVAR_NONE, "The minimum delay before a player is notified they've been doused", 0, 30)
 local arsonist_douse_notify_delay_max = CreateConVar("ttt_arsonist_douse_notify_delay_max", "5", FCVAR_NONE, "The delay delay before a player is notified they've been doused", 3, 60)
 

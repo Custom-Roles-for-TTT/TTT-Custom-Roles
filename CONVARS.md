@@ -647,7 +647,7 @@ ttt_shadow_dead_radius                      3       // The radius (in meters) fr
 
 // Arsonist
 ttt_arsonist_douse_time                     8       // The amount of time (in seconds) the arsonist takes to douse someone
-ttt_arsonist_douse_distance                 150     // The maximum distance away the dousing target can be
+ttt_arsonist_douse_distance                 200     // The maximum distance away the dousing target can be
 ttt_arsonist_douse_notify_delay_min         3       // The minimum delay before a player is notified they've been doused
 ttt_arsonist_douse_notify_delay_max         5       // The maximum delay before a player is notified they've been doused
 
