@@ -212,7 +212,26 @@ end)
 
 hook.Add("TTTTutorialRoleText", "Arsonist_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_ARSONIST then
-        -- TODO
-        return "Burn, baby, burn"
+        local roleColor = GetRoleTeamColor(ROLE_TEAM_INDEPENDENT)
+        local html = "The " .. ROLE_STRINGS[ROLE_ARSONIST] .. " is an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>independent</span> role whose goal is to be the last player standing."
+
+        -- Use this for highlighting things like "burn"
+        roleColor = ROLE_COLORS[ROLE_TRAITOR]
+
+        html = html .. "<span style='display: block; margin-top: 10px;'>To help accomplish this, they can <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>douse players in gasoline</span> by standing near them.</span>"
+        html = html .. "<span style='display: block; margin-top: 10px;'>Once every player has been doused, they can use their igniter to <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>burn</span> all the doused players.</span>"
+
+        -- Show a warning about the notification delay if its enabled
+        local delay_min = GetGlobalInt("ttt_arsonist_douse_notify_delay_min", 3)
+        local delay_max = GetGlobalInt("ttt_arsonist_douse_notify_delay_max", 5)
+        if delay_min > delay_max then
+            delay_min = delay_max
+        end
+
+        if delay_min > 0 then
+            html = html .. "<span style='display: block; margin-top: 10px;'>Be careful though! Players <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>are notified when they are doused</span> after a short delay. Be sure to be sneaky or blend in with other players to disguise that you are the " .. ROLE_STRINGS[ROLE_ARSONIST] .. ".</span>"
+        end
+
+        return html
     end
 end)

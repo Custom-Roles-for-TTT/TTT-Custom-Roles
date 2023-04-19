@@ -18,6 +18,8 @@ local arsonist_douse_notify_delay_max = CreateConVar("ttt_arsonist_douse_notify_
 
 hook.Add("TTTSyncGlobals", "Informant_TTTSyncGlobals", function()
     SetGlobalInt("ttt_arsonist_douse_time", arsonist_douse_time:GetInt())
+    SetGlobalInt("ttt_arsonist_douse_notify_delay_min", arsonist_douse_notify_delay_min:GetInt())
+    SetGlobalInt("ttt_arsonist_douse_notify_delay_max", arsonist_douse_notify_delay_max:GetInt())
 end)
 
 --------------------
