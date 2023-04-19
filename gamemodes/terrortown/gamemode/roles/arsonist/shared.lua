@@ -34,3 +34,13 @@ table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
 })
+table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
+    cvar = "ttt_arsonist_damage_penalty",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 2
+})
+table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
+    cvar = "ttt_arsonist_burn_damage",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})

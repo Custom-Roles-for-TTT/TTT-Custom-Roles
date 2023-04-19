@@ -15,6 +15,8 @@ local arsonist_douse_time = CreateConVar("ttt_arsonist_douse_time", "8", FCVAR_N
 local arsonist_douse_distance = CreateConVar("ttt_arsonist_douse_distance", "200", FCVAR_NONE, "The maximum distance away the dousing target can be", 50, 1000)
 local arsonist_douse_notify_delay_min = CreateConVar("ttt_arsonist_douse_notify_delay_min", "3", FCVAR_NONE, "The minimum delay before a player is notified they've been doused", 0, 30)
 local arsonist_douse_notify_delay_max = CreateConVar("ttt_arsonist_douse_notify_delay_max", "5", FCVAR_NONE, "The delay delay before a player is notified they've been doused", 3, 60)
+local arsonist_damage_penalty = CreateConVar("ttt_arsonist_damage_penalty", "0.2", FCVAR_NONE, "Damage penalty that the arsonist has when attacking before igniting everyone (e.g. 0.2 = 20% less damage)", 0, 1)
+local arsonist_burn_damage = CreateConVar("ttt_arsonist_burn_damage", "2", FCVAR_NONE, "Damage done per fire tick to players ignited by the arsonist", 1, 10)
 
 hook.Add("TTTSyncGlobals", "Informant_TTTSyncGlobals", function()
     SetGlobalInt("ttt_arsonist_douse_time", arsonist_douse_time:GetInt())
@@ -172,6 +174,42 @@ hook.Add("TTTPlayerSpawnForRound", "Arsonist_TTTPlayerSpawnForRound", function(p
                 end
             end
         end
+    end
+end)
+
+hook.Add("ScalePlayerDamage", "Arsonist_ScalePlayerDamage", function(ply, hitgroup, dmginfo)
+    -- Only apply damage scaling after the round starts
+    if GetRoundState() < ROUND_ACTIVE then return end
+
+    local att = dmginfo:GetAttacker()
+    if not IsPlayer(att) or not att:IsArsonist() then return end
+
+    -- Scale the player's damage down if they haven't ignited everyone
+    if not att:GetNWBool("TTTArsonistDouseComplete", false) then
+        dmginfo:ScaleDamage(1 - arsonist_damage_penalty:GetFloat())
+    end
+end)
+
+hook.Add("EntityTakeDamage", "Arsonist_EntityTakeDamage", function(ent, dmginfo)
+    if not IsPlayer(ent) then return end
+
+    -- Make sure the player is on fire and being damaged by fire
+    if not ent:IsOnFire() then return end
+    if not dmginfo:IsDamageType(DMG_BURN) then return end
+    local att = dmginfo:GetAttacker()
+    if not IsValid(att) then return end
+    if att:GetClass() ~= "entityflame" then return end
+
+    -- Make sure the person responsible for the damage is an arsonist
+    if not ent.ignite_info then return end
+    if not IsPlayer(ent.ignite_info.att) then return end
+    if not ent.ignite_info.att:IsArsonist() then return end
+
+    -- If this player was doused, set the person responsible and set the damage
+    if ent:GetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED) == ARSONIST_DOUSED then
+        dmginfo:SetAttacker(ent.ignite_info.att)
+        dmginfo:SetInflictor(ent.ignite_info.infl)
+        dmginfo:SetDamage(arsonist_burn_damage:GetInt())
     end
 end)
 

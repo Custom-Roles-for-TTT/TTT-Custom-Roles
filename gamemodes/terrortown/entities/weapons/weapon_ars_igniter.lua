@@ -102,6 +102,8 @@ function SWEP:PrimaryAttack()
 
         -- Arbitrarily high number so they burn to death
         p:Ignite(1000)
+        -- Normally we would set the inflictor to be the igniter, but since we're destroying it below it won't be valid anymore
+        p.ignite_info = {att=owner, infl=owner}
 
         local message = "You have been ignited by the " .. ROLE_STRINGS[ROLE_ARSONIST] .. "!"
         p:PrintMessage(HUD_PRINTCENTER, message)
