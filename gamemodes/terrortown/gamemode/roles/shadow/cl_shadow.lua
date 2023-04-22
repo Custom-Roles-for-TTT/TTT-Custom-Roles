@@ -111,14 +111,11 @@ end)
 ---------------
 
 hook.Add("TTTTargetIDPlayerText", "Shadow_TTTTargetIDPlayerText", function(ent, client, text, clr, secondaryText)
-    if IsPlayer(ent) then
-        if client:IsActiveShadow() and ent:SteamID64() == client:GetNWString("ShadowTarget", "") then
-            if text == nil then
-                return LANG.GetTranslation("shadow_target"), ROLE_COLORS_RADAR[ROLE_SHADOW]
-            else
-                return text, clr, LANG.GetTranslation("shadow_target"), ROLE_COLORS_RADAR[ROLE_SHADOW]
-            end
+    if IsPlayer(ent) and client:IsActiveShadow() and ent:SteamID64() == client:GetNWString("ShadowTarget", "") then
+        if text == nil then
+            return LANG.GetTranslation("shadow_target"), ROLE_COLORS_RADAR[ROLE_SHADOW]
         end
+        return text, clr, LANG.GetTranslation("shadow_target"), ROLE_COLORS_RADAR[ROLE_SHADOW]
     end
 end)
 

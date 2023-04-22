@@ -3,6 +3,8 @@ local string = string
 
 local StringUpper = string.upper
 
+local client = nil
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -68,9 +70,6 @@ end
 hook.Add("TTTTargetIDPlayerRoleIcon", "Informant_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
     if GetRoundState() < ROUND_ACTIVE then return end
 
-    local override, _, _ = cli:IsTargetIDOverridden(ply, showJester)
-    if override then return end
-
     local state = ply:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
     if state <= INFORMANT_UNSCANNED then return end
 
@@ -101,9 +100,6 @@ hook.Add("TTTTargetIDPlayerRing", "Informant_TTTTargetIDPlayerRing", function(en
     if GetRoundState() < ROUND_ACTIVE then return end
     if not IsPlayer(ent) then return end
 
-    local _, override, _ = cli:IsTargetIDOverridden(ent)
-    if override then return end
-
     local state = ent:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
     if state <= INFORMANT_UNSCANNED then return end
 
@@ -126,9 +122,6 @@ end)
 hook.Add("TTTTargetIDPlayerText", "Informant_TTTTargetIDPlayerText", function(ent, cli, text, col, secondaryText)
     if GetRoundState() < ROUND_ACTIVE then return end
     if not IsPlayer(ent) then return end
-
-    local _, _, override = cli:IsTargetIDOverridden(ent)
-    if override then return end
 
     local state = ent:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
     if state <= INFORMANT_UNSCANNED then return end
@@ -172,15 +165,25 @@ hook.Add("TTTTargetIDPlayerText", "Informant_TTTTargetIDPlayerText", function(en
     end
 end)
 
+ROLE_IS_TARGETID_OVERRIDDEN[ROLE_INFORMANT] = function(ply, target, showJester)
+    if not IsPlayer(target) then return end
+
+    local state = target:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
+    if state <= INFORMANT_UNSCANNED then return end
+
+    -- Info is only overridden for the informant or members of their team when enabled
+    if not ply:IsInformant() and (not ply:IsTraitorTeam() or not GetGlobalBool("ttt_informant_share_scans", true)) then return end
+
+    ------ icon, ring, text
+    return true, true, true
+end
+
 ----------------
 -- SCOREBOARD --
 ----------------
 
 hook.Add("TTTScoreboardPlayerRole", "Informant_TTTScoreboardPlayerRole", function(ply, cli, c, roleStr)
     if GetRoundState() < ROUND_ACTIVE then return end
-
-    local _, override = cli:IsScoreboardInfoOverridden(ply)
-    if override then return end
 
     local state = ply:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
     if state <= INFORMANT_UNSCANNED then return end
@@ -201,18 +204,33 @@ hook.Add("TTTScoreboardPlayerRole", "Informant_TTTScoreboardPlayerRole", functio
     end
 end)
 
+ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_INFORMANT] = function(ply, target)
+    if not IsPlayer(target) then return end
+
+    local state = target:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
+    if state <= INFORMANT_UNSCANNED then return end
+
+    -- Info is only overridden for the informant or members of their team when enabled
+    if not ply:IsInformant() and (not ply:IsTraitorTeam() or not GetGlobalBool("ttt_informant_share_scans", true)) then return end
+
+    ------ name,  role
+    return false, true
+end
+
 -----------------
 -- SCANNER HUD --
 -----------------
 
 hook.Add("HUDPaint", "Informant_HUDPaint", function()
-    local ply = LocalPlayer()
+    if not client then
+        client = LocalPlayer()
+    end
 
-    if not IsValid(ply) or ply:IsSpec() or GetRoundState() ~= ROUND_ACTIVE then return end
+    if not IsValid(client) or client:IsSpec() or GetRoundState() ~= ROUND_ACTIVE then return end
+    if not client:IsInformant() then return end
 
-    if ply:IsInformant() and (not GetGlobalBool("ttt_informant_requires_scanner", false) or (ply.GetActiveWeapon and IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() == "weapon_inf_scanner")) then
-
-        local state = ply:GetNWInt("TTTInformantScannerState", INFORMANT_SCANNER_IDLE)
+    if not GetGlobalBool("ttt_informant_requires_scanner", false) or (client.GetActiveWeapon and IsValid(client:GetActiveWeapon()) and client:GetActiveWeapon():GetClass() == "weapon_inf_scanner") then
+        local state = client:GetNWInt("TTTInformantScannerState", INFORMANT_SCANNER_IDLE)
 
         if informant_show_scan_radius:GetBool() then
             surface.DrawCircle(ScrW() / 2, ScrH() / 2, math.Round(ScrW() / 6), 0, 255, 0, 155)
@@ -223,7 +241,7 @@ hook.Add("HUDPaint", "Informant_HUDPaint", function()
         end
 
         local scan = GetGlobalInt("ttt_informant_scanner_time", 8)
-        local time = ply:GetNWFloat("TTTInformantScannerStartTime", -1) + scan
+        local time = client:GetNWFloat("TTTInformantScannerStartTime", -1) + scan
 
         local x = ScrW() / 2.0
         local y = ScrH() / 2.0
@@ -235,7 +253,6 @@ hook.Add("HUDPaint", "Informant_HUDPaint", function()
         local T = LANG.GetTranslation
         local titles = {T("infscanner_team"), T("infscanner_role"), T("infscanner_track")}
 
-
         if state == INFORMANT_SCANNER_LOCKED or state == INFORMANT_SCANNER_SEARCHING then
             if time < 0 then return end
 
@@ -244,16 +261,16 @@ hook.Add("HUDPaint", "Informant_HUDPaint", function()
                 color = Color(0, 255, 0, 155)
             end
 
-            local target = player.GetBySteamID64(ply:GetNWString("TTTInformantScannerTarget", ""))
+            local target = player.GetBySteamID64(client:GetNWString("TTTInformantScannerTarget", ""))
             local targetState = target:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
 
             local cc = math.min(1, 1 - ((time - CurTime()) / scan))
             local progress = (cc + targetState) / 3
 
-            CRHUD:PaintProgressBar(x, y, w, color, ply:GetNWString("TTTInformantScannerMessage", ""), progress, 3, titles)
+            CRHUD:PaintProgressBar(x, y, w, color, client:GetNWString("TTTInformantScannerMessage", ""), progress, 3, titles)
         elseif state == INFORMANT_SCANNER_LOST then
             local color = Color(200 + math.sin(CurTime() * 32) * 50, 0, 0, 155)
-            CRHUD:PaintProgressBar(x, y, w, color, ply:GetNWString("TTTInformantScannerMessage", ""), 1, 3, titles)
+            CRHUD:PaintProgressBar(x, y, w, color, client:GetNWString("TTTInformantScannerMessage", ""), 1, 3, titles)
         end
     end
 end)

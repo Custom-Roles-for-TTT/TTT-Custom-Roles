@@ -24,7 +24,7 @@ if not string.StartsWith then
 end
 
 -- Version string for display and function for version checks
-CR_VERSION = "1.8.4"
+CR_VERSION = "1.8.5"
 CR_BETA = true
 CR_WORKSHOP_ID = CR_BETA and "2404251054" or "2421039084"
 
@@ -154,8 +154,9 @@ ROLE_INFECTED = 36
 ROLE_CUPID = 37
 ROLE_SHADOW = 38
 ROLE_SPONGE = 39
+ROLE_ARSONIST = 40
 
-ROLE_MAX = 39
+ROLE_MAX = 40
 ROLE_EXTERNAL_START = ROLE_MAX + 1
 
 local function AddRoleAssociations(list, roles)
@@ -192,7 +193,7 @@ JESTER_ROLES = {}
 AddRoleAssociations(JESTER_ROLES, {ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_BEGGAR, ROLE_BODYSNATCHER, ROLE_LOOTGOBLIN, ROLE_CUPID, ROLE_SPONGE})
 
 INDEPENDENT_ROLES = {}
-AddRoleAssociations(INDEPENDENT_ROLES, {ROLE_DRUNK, ROLE_OLDMAN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_MADSCIENTIST, ROLE_SHADOW})
+AddRoleAssociations(INDEPENDENT_ROLES, {ROLE_DRUNK, ROLE_OLDMAN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_MADSCIENTIST, ROLE_SHADOW, ROLE_ARSONIST})
 
 MONSTER_ROLES = {}
 AddRoleAssociations(MONSTER_ROLES, {})
@@ -556,7 +557,8 @@ ROLE_STRINGS_RAW = {
     [ROLE_INFECTED] = "infected",
     [ROLE_CUPID] = "cupid",
     [ROLE_SHADOW] = "shadow",
-    [ROLE_SPONGE] = "sponge"
+    [ROLE_SPONGE] = "sponge",
+    [ROLE_ARSONIST] = "arsonist"
 }
 
 ROLE_STRINGS = {
@@ -599,7 +601,8 @@ ROLE_STRINGS = {
     [ROLE_INFECTED] = "Infected",
     [ROLE_CUPID] = "Cupid",
     [ROLE_SHADOW] = "Shadow",
-    [ROLE_SPONGE] = "Sponge"
+    [ROLE_SPONGE] = "Sponge",
+    [ROLE_ARSONIST] = "Arsonist"
 }
 
 ROLE_STRINGS_PLURAL = {
@@ -642,7 +645,8 @@ ROLE_STRINGS_PLURAL = {
     [ROLE_INFECTED] = "Infected",
     [ROLE_CUPID] = "Cupids",
     [ROLE_SHADOW] = "Shadows",
-    [ROLE_SPONGE] = "Sponges"
+    [ROLE_SPONGE] = "Sponges",
+    [ROLE_ARSONIST] = "Arsonists"
 }
 
 ROLE_STRINGS_EXT = {
@@ -686,7 +690,8 @@ ROLE_STRINGS_EXT = {
     [ROLE_INFECTED] = "an Infected",
     [ROLE_CUPID] = "a Cupid",
     [ROLE_SHADOW] = "a Shadow",
-    [ROLE_SPONGE] = "a Sponge"
+    [ROLE_SPONGE] = "a Sponge",
+    [ROLE_ARSONIST] = "an Arsonist"
 }
 
 ROLE_STRINGS_SHORT = {
@@ -730,7 +735,8 @@ ROLE_STRINGS_SHORT = {
     [ROLE_INFECTED] = "ifd",
     [ROLE_CUPID] = "cup",
     [ROLE_SHADOW] = "sha",
-    [ROLE_SPONGE] = "spn"
+    [ROLE_SPONGE] = "spn",
+    [ROLE_ARSONIST] = "ars"
 }
 
 function StartsWithVowel(word)
@@ -1126,8 +1132,9 @@ EVENT_TURNCOATCHANGED = 29
 EVENT_DEPUTIZED = 30
 EVENT_INFECTEDSUCCUMBED = 31
 EVENT_CUPIDPAIRED = 32
+EVENT_ARSONISTIGNITED = 33
 
-EVENT_MAX = EVENT_MAX or 32
+EVENT_MAX = EVENT_MAX or 33
 EVENTS_BY_ROLE = EVENTS_BY_ROLE or {}
 
 if SERVER then
@@ -1182,8 +1189,9 @@ WIN_LOOTGOBLIN = 12
 WIN_CUPID = 13
 WIN_SHADOW = 14
 WIN_SPONGE = 15
+WIN_ARSONIST = 16
 
-WIN_MAX = WIN_MAX or 15
+WIN_MAX = WIN_MAX or 16
 WINS_BY_ROLE = WINS_BY_ROLE or {}
 
 if SERVER then
