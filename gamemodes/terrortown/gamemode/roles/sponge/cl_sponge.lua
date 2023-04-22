@@ -96,29 +96,47 @@ end)
 ---------------
 
 hook.Add("TTTTargetIDPlayerRoleIcon", "Sponge_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
-    if ply:IsActiveSponge() then
+    if ply:IsActiveSponge() and ply:Alive() then
         return ROLE_SPONGE, false
     end
 end)
 
 hook.Add("TTTTargetIDPlayerRing", "Sponge_TTTTargetIDPlayerRing", function(ent, cli, ringVisible)
-    if IsPlayer(ent) and ent:IsActiveSponge() then
+    if IsPlayer(ent) and ent:IsActiveSponge() and ent:Alive() then
         return true, ROLE_COLORS_RADAR[ROLE_SPONGE]
     end
 end)
 
 hook.Add("TTTTargetIDPlayerText", "Sponge_TTTTargetIDPlayerText", function(ent, cli, text, clr, secondaryText)
-    if IsPlayer(ent) and ent:IsActiveSponge() then
+    if IsPlayer(ent) and ent:IsActiveSponge() and ent:Alive() then
         return StringUpper(ROLE_STRINGS[ROLE_SPONGE]), ROLE_COLORS_RADAR[ROLE_SPONGE]
     end
 end)
 
 ROLE_IS_TARGETID_OVERRIDDEN[ROLE_SPONGE] = function(ply, target)
     if not IsPlayer(target) then return end
-    if not target:IsActiveSponge() then return end
+    if not target:IsActiveSponge() or not target:Alive() then return end
 
     ------ icon, ring, text
     return true, true, true
+end
+
+----------------
+-- SCOREBOARD --
+----------------
+
+hook.Add("TTTScoreboardPlayerRole", "Sponge_TTTScoreboardPlayerRole", function(ply, cli, color, roleFileName)
+    if ply:IsSponge() then
+        return ROLE_COLORS_SCOREBOARD[ROLE_SPONGE], ROLE_STRINGS_SHORT[ROLE_SPONGE]
+    end
+end)
+
+ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_SPONGE] = function(ply, target)
+    if not IsPlayer(target) then return end
+    if not target:IsSponge() then return end
+
+    ------ name,  role
+    return false, true
 end
 
 ----------------

@@ -5,6 +5,7 @@
 
 ### Changes
 - Changed hint text for a player corpse to show "call a Detective" instead of "search" when `ttt_detective_search_only` was set to `1`
+- Changed sponge to show icon and color on the scoreboard for everyone
 
 ### Fixes
 - Fixed covert search hint text showing on a player corpse that has already been searched
