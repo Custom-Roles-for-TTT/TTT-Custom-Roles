@@ -1,5 +1,14 @@
 # Release Notes
 
+### 1.8.6 (Beta)
+**Released:**
+
+### Changes
+- Changed hint text for a player corpse to show "call a Detective" instead of "search" when `ttt_detective_search_only` was set to `1`
+
+### Fixes
+- Fixed covert search hint text showing on a player corpse that has already been searched
+
 ## 1.8.5 (Beta)
 **Released: April 22nd, 2023**
 

@@ -18,7 +18,7 @@ local GetRaw = LANG.GetRawTranslation
 local StringFormat = string.format
 local StringUpper = string.upper
 
-local key_params = { usekey = Key("+use", "USE"), walkkey = Key("+walk", "WALK") }
+local key_params = { usekey = Key("+use", "USE"), walkkey = Key("+walk", "WALK"), adetective = ROLE_STRINGS_EXT[ROLE_DETECTIVE] }
 
 local ClassHint = {
     prop_ragdoll = {
@@ -26,8 +26,18 @@ local ClassHint = {
         hint = "corpse_hint",
 
         fmt = function(ent, txt)
-            if DetectiveMode() and CORPSE.CanBeSearched(LocalPlayer(), ent) then
-                txt = txt .. "_covert"
+            if DetectiveMode() then
+                -- Only show covert search label if the body can be searched
+                if CORPSE.CanBeSearched(LocalPlayer(), ent) then
+                    local ownerEnt = CORPSE.GetPlayer(ent)
+                    -- and has not already
+                    if IsValid(ownerEnt) and not ownerEnt:GetNWBool("body_searched", false) then
+                        txt = txt .. "_covert"
+                    end
+                -- If the body can't be searched, change the label to say "call a Detective" instead
+                else
+                    txt = txt .. "_call"
+                end
             end
             return GetPTranslation(txt, key_params)
         end
