@@ -115,19 +115,26 @@ hook.Add("TTTPlayerRoleChanged", "Informant_TTTPlayerRoleChanged", function(ply,
         ply:SetNWFloat("TTTInformantScannerCooldown", -1)
     end
 
-    -- Only notify if there is an informant and the player had some info being reset
-    if HasInformant() and ply:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED) > INFORMANT_UNSCANNED then
-        local share = GetGlobalBool("ttt_informant_share_scans", true)
-        for _, v in pairs(GetAllPlayers()) do
-            if v:IsActiveInformant() then
-                v:PrintMessage(HUD_PRINTTALK, ply:Nick() .. " has changed roles. You will need to rescan them.")
-            elseif v:IsActiveTraitorTeam() and share then
-                v:PrintMessage(HUD_PRINTTALK, ply:Nick() .. " has changed roles. The " .. ROLE_STRINGS[ROLE_INFORMANT] .. " will need to rescan them.")
+    -- Set the default role state if there is an informant
+    local scanStage = ply:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
+    if HasInformant() then
+        -- Only notify if there is an informant and the player had some info being reset
+        if scanStage > INFORMANT_UNSCANNED then
+            local share = GetGlobalBool("ttt_informant_share_scans", true)
+            for _, v in pairs(GetAllPlayers()) do
+                if v:IsActiveInformant() then
+                    v:PrintMessage(HUD_PRINTTALK, ply:Nick() .. " has changed roles. You will need to rescan them.")
+                elseif v:IsActiveTraitorTeam() and share then
+                    v:PrintMessage(HUD_PRINTTALK, ply:Nick() .. " has changed roles. The " .. ROLE_STRINGS[ROLE_INFORMANT] .. " will need to rescan them.")
+                end
             end
         end
-    end
 
-    SetDefaultScanState(ply)
+        SetDefaultScanState(ply)
+    -- If there is not, make sure this role is set to "unscanned"
+    elseif scanStage > INFORMANT_UNSCANNED then
+        ply:SetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
+    end
 end)
 
 -------------
