@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.8.5 (Beta)
-**Released:**
+**Released: April 22nd, 2023**
 
 ### Additions
 - Added new independent role: arsonist
