@@ -8,6 +8,7 @@
 
 ### Fixes
 - Fixed covert search hint text showing on a player corpse that has already been searched
+- Fixed aura icons showing on the bottom of the screen even when the source player has died
 
 ## 1.8.5 (Beta)
 **Released: April 22nd, 2023**

@@ -86,7 +86,7 @@ hook.Add("HUDPaintBackground", "Sapper_HUDPaintBackground", function()
 
     local inside = false
     for _, p in pairs(GetAllPlayers()) do
-        if p:GetDisplayedRole() == ROLE_SAPPER and client:GetPos():Distance(p:GetPos()) <= GetGlobalFloat("ttt_sapper_aura_radius", UNITS_PER_FIVE_METERS) then
+        if p:IsActive() and p:Alive() and p:GetDisplayedRole() == ROLE_SAPPER and client:GetPos():Distance(p:GetPos()) <= GetGlobalFloat("ttt_sapper_aura_radius", UNITS_PER_FIVE_METERS) then
             inside = true
             break
         end
