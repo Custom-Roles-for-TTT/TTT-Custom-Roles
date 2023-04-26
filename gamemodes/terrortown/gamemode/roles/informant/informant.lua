@@ -192,7 +192,7 @@ local function ScanAllowed(ply, target)
     if not InRange(ply, target) then return false end
     if target:IsJesterTeam() and not GetConVar("ttt_informant_can_scan_jesters"):GetBool() then return false end
     if (target:IsGlitch() or target:IsTraitorTeam()) then
-        if not GetConVar("ttt_informant_can_scan_glitches"):GetBool() then return false end
+        if not informant_can_scan_glitches:GetBool() then return false end
         if target:IsGlitch() then return true end
         local glitchMode = GetConVar("ttt_glitch_mode"):GetInt()
         if GetGlobalBool("ttt_glitch_round", false) and ((glitchMode == GLITCH_SHOW_AS_TRAITOR and target:IsTraitor()) or glitchMode >= GLITCH_SHOW_AS_SPECIAL_TRAITOR) then
