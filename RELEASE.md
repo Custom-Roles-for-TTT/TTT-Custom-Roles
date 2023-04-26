@@ -7,6 +7,7 @@
 - Changed hint text for a player corpse to show "call a Detective" instead of "search" when `ttt_detective_search_only` was set to `1`
 - Changed sponge to show icon and color on the scoreboard for everyone
 - Changed arsonist notification message delay time range to be longer by default
+- Changed arsonist douse max distance to be larger by default
 - Ported "TTT: fix knife effect_fn not being cleared" from base TTT
 
 ### Fixes
