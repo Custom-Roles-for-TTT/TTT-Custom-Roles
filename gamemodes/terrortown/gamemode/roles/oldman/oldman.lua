@@ -78,7 +78,6 @@ ROLE_ON_ROLE_ASSIGNED[ROLE_OLDMAN] = function(ply)
 end
 
 local tempHealth = 10000
-local damageHealths = {}
 hook.Add("EntityTakeDamage", "OldMan_EntityTakeDamage", function(ent, dmginfo)
     -- Don't run this if adrenaline rush is disabled
     local adrenalineTime = oldman_adrenaline_rush:GetInt()
@@ -97,10 +96,13 @@ hook.Add("EntityTakeDamage", "OldMan_EntityTakeDamage", function(ent, dmginfo)
     -- Only give the Old Man an adrenaline rush once
     if ent:GetNWBool("AdrenalineRushed", false) then return end
 
-    -- Save their real health in a queue so we can handle multiple damage events
-    table.insert(damageHealths, ent:Health())
-    -- Set their health to a high number so we can detect if they take damage
-    ent:SetHealth(tempHealth)
+    -- If we're not already processing one of these events
+    if not ent.damageHealth then
+        -- Save their real health
+        ent.damageHealth = ent:Health()
+        -- Set their health to a high number so we can detect if they take damage
+        ent:SetHealth(tempHealth)
+    end
 end)
 
 hook.Add("PostEntityTakeDamage", "OldMan_PostEntityTakeDamage", function(ent, dmginfo, took)
@@ -110,12 +112,14 @@ hook.Add("PostEntityTakeDamage", "OldMan_PostEntityTakeDamage", function(ent, dm
 
     if GetRoundState() ~= ROUND_ACTIVE then return end
     if not IsPlayer(ent) or not ent:IsOldMan() then return end
-    if #damageHealths == 0 then return end
 
-    -- Check if they took damage
+    -- Retrieve their original health
+    local health = ent.damageHealth
+    ent.damageHealth = nil
+    if not health then return end
+
+    -- And check if they took damage
     local damage = dmginfo:GetDamage()
-    -- And retrieve their original health
-    local health = table.remove(damageHealths, 1)
 
     -- If they didn't take damage then we don't care
     -- but be sure to set their health back to the original
@@ -136,7 +140,7 @@ hook.Add("PostEntityTakeDamage", "OldMan_PostEntityTakeDamage", function(ent, dm
             ent:SetNWBool("AdrenalineRush", true)
             -- Delay the health change here slightly so that any other damage events can fully clear first
             -- Without this delay, double damage events (from, e.g. a Holy Hand Grenade explosion) will cause the player to die
-            timer.Simple(0.1, function()
+            timer.Simple(0, function()
                 ent:SetHealth(1)
             end)
             if oldman_adrenaline_ramble:GetBool() then
@@ -191,8 +195,8 @@ hook.Add("PostEntityTakeDamage", "OldMan_PostEntityTakeDamage", function(ent, dm
 end)
 
 hook.Add("TTTPrepareRound", "OldMan_Adrenaline_TTTPrepareRound", function()
-    table.Empty(damageHealths)
     for _, v in pairs(GetAllPlayers()) do
+        v.damageHealth = nil
         v:SetNWBool("AdrenalineRush", false)
         v:SetNWBool("AdrenalineRushed", false)
         timer.Remove(v:Nick() .. "AdrenalineRush")
