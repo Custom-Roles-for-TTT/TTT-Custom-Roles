@@ -45,7 +45,7 @@ end)
 -- TARGET ID --
 ---------------
 
-local function GetTeamRole(ply)
+local function GetTeamRole(ply, cli)
     local glitchMode = GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR)
 
     if ply:IsGlitch() then
@@ -55,7 +55,11 @@ local function GetTeamRole(ply)
             return ply:GetNWInt("GlitchBluff", ROLE_TRAITOR)
         end
     elseif ply:IsTraitorTeam() then
-        if glitchMode == GLITCH_SHOW_AS_TRAITOR or glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES then
+        if ply:GetNWBool("WasBeggar", false) and not cli:ShouldRevealBeggar(ply) then
+            return ROLE_JESTER
+        elseif ply:GetNWBool("WasBodysnatcher", false) and not cli:ShouldRevealBodysnatcher(ply) then
+            return ROLE_JESTER
+        elseif glitchMode == GLITCH_SHOW_AS_TRAITOR or glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES then
             return ROLE_TRAITOR
         elseif glitchMode == GLITCH_SHOW_AS_SPECIAL_TRAITOR then
             return ply:GetRole()
@@ -79,7 +83,7 @@ hook.Add("TTTTargetIDPlayerRoleIcon", "Informant_TTTTargetIDPlayerRoleIcon", fun
         local newColorRole = colorRole
 
         if state >= INFORMANT_SCANNED_TEAM then
-            newColorRole = GetTeamRole(ply)
+            newColorRole = GetTeamRole(ply, cli)
             newRole = ROLE_NONE
         end
 
@@ -108,7 +112,7 @@ hook.Add("TTTTargetIDPlayerRing", "Informant_TTTTargetIDPlayerRing", function(en
         local newColor = false
 
         if state == INFORMANT_SCANNED_TEAM then
-            newColor = ROLE_COLORS_RADAR[GetTeamRole(ent)]
+            newColor = ROLE_COLORS_RADAR[GetTeamRole(ent, cli)]
             newRingVisible = true
         elseif state >= INFORMANT_SCANNED_ROLE then
             newColor = ROLE_COLORS_RADAR[ent:GetRole()]
@@ -133,7 +137,7 @@ hook.Add("TTTTargetIDPlayerText", "Informant_TTTTargetIDPlayerText", function(en
         if state == INFORMANT_SCANNED_TEAM then
             local T = LANG.GetTranslation
             local PT = LANG.GetParamTranslation
-            local role = GetTeamRole(ent)
+            local role = GetTeamRole(ent, cli)
             newColor = ROLE_COLORS_RADAR[role]
 
             local labelName = "target_unknown_team"
@@ -193,7 +197,7 @@ hook.Add("TTTScoreboardPlayerRole", "Informant_TTTScoreboardPlayerRole", functio
         local newRoleStr = roleStr
 
         if state == INFORMANT_SCANNED_TEAM then
-            newColor = ROLE_COLORS_SCOREBOARD[GetTeamRole(ply)]
+            newColor = ROLE_COLORS_SCOREBOARD[GetTeamRole(ply, cli)]
             newRoleStr = "nil"
         elseif state >= INFORMANT_SCANNED_ROLE then
             newColor = ROLE_COLORS_SCOREBOARD[ply:GetRole()]

@@ -14,7 +14,7 @@
 - Fixed covert search hint text showing on a player corpse that has already been searched
 - Fixed aura icons showing on the bottom of the screen even when the source player has died
 - Fixed shadow seeing their target highlighted even after they've died
-- Fixed conflict between informant default scan state and convars that controlled beggar and bodysnatcher role change reveal scope
+- Fixed conflict between informant logic and convars that controlled beggar and bodysnatcher role change reveal scope
 - Fixed old man getting stuck with a huge amount of health when they are hit by two damage events simultaneously (e.g. by a Holy Hand Grenade explosion)
 
 ## 1.8.5 (Beta)
