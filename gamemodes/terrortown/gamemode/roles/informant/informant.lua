@@ -54,7 +54,20 @@ local function HasInformant()
     return false
 end
 
-local function SetDefaultScanState(ply, oldRole)
+local function ShouldHideRoleForTraitors(oldRole, newRole)
+    -- If this was a beggar or bodysnatcher and we're not revealing it to traitors, hide their role
+    if oldRole == ROLE_BEGGAR or oldRole == ROLE_BODYSNATCHER then
+        local convar_team = "traitor"
+        if INNOCENT_ROLES[newRole] then
+            convar_team = "innocent"
+        end
+        local reveal_traitor = GetGlobalInt("ttt_" .. ROLE_STRINGS_RAW[oldRole] .. "_reveal_" .. convar_team, ANNOUNCE_REVEAL_ALL)
+        return reveal_traitor ~= ANNOUNCE_REVEAL_ALL and reveal_traitor ~= ANNOUNCE_REVEAL_TRAITORS
+    end
+    return false
+end
+
+local function SetDefaultScanState(ply, oldRole, newRole)
     if ply:IsDetectiveTeam() then
         -- If the detective's role is not known, only skip the team scan
         if GetConVar("ttt_detective_hide_special_mode"):GetInt() >= SPECIAL_DETECTIVE_HIDE_FOR_ALL then
@@ -65,19 +78,8 @@ local function SetDefaultScanState(ply, oldRole)
         end
     -- Handle traitor logic specially so we don't expose roles when there is a glitch
     elseif (ply:IsTraitorTeam() and not ply:IsInformant()) or ply:IsGlitch() then
-        -- If this was a beggar and we're not revealing it to traitors, hide their role
-        local hideBeggar = false
-        if oldRole == ROLE_BEGGAR then
-            local beggar_reveal = GetGlobalInt("ttt_beggar_reveal_traitor", ANNOUNCE_REVEAL_ALL)
-            hideBeggar = beggar_reveal ~= ANNOUNCE_REVEAL_ALL and beggar_reveal ~= ANNOUNCE_REVEAL_TRAITORS
-        end
-        -- If this was a bodysnatcher and we're not revealing it to traitors, hide their role
-        local hideBodysnatcher = false
-        if oldRole == ROLE_BODYSNATCHER then
-            local bodysnatcher_reveal = GetGlobalInt("ttt_bodysnatcher_reveal_traitor", ANNOUNCE_REVEAL_ALL)
-            hideBodysnatcher = bodysnatcher_reveal ~= ANNOUNCE_REVEAL_ALL and bodysnatcher_reveal ~= ANNOUNCE_REVEAL_TRAITORS
-        end
-        if hideBeggar or hideBodysnatcher or GetGlobalBool("ttt_glitch_round", false) then
+        -- Hide specific team roles if there is a glitch or if the role they are changing from should be hidden based on convars
+        if ShouldHideRoleForTraitors(oldRole, newRole) or GetGlobalBool("ttt_glitch_round", false) then
             ply:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_TEAM)
         else
             ply:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_ROLE)
@@ -133,10 +135,10 @@ hook.Add("TTTPlayerRoleChanged", "Informant_TTTPlayerRoleChanged", function(ply,
         -- Only notify if there is an informant and the player had some info being reset
         if scanStage > INFORMANT_UNSCANNED then
             local share = GetGlobalBool("ttt_informant_share_scans", true)
+            local hideRole = ShouldHideRoleForTraitors(oldRole, newRole)
             for _, v in pairs(GetAllPlayers()) do
-                -- Don't tell people when the beggar or bodysnatcher changes roles if we're not revealing them
-                if oldRole == ROLE_BEGGAR and not v:ShouldRevealBeggar(ply) then continue end
-                if oldRole == ROLE_BODYSNATCHER and not v:ShouldRevealBodysnatcher(ply) then continue end
+                -- Don't tell people about this role change if we're not revealing them
+                if hideRole then continue end
 
                 if v:IsActiveInformant() then
                     v:PrintMessage(HUD_PRINTTALK, ply:Nick() .. " has changed roles. You will need to rescan them.")
@@ -146,7 +148,7 @@ hook.Add("TTTPlayerRoleChanged", "Informant_TTTPlayerRoleChanged", function(ply,
             end
         end
 
-        SetDefaultScanState(ply, oldRole)
+        SetDefaultScanState(ply, oldRole, newRole)
     -- If there is not, make sure this role is set to "unscanned"
     elseif scanStage > INFORMANT_UNSCANNED then
         ply:SetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
@@ -209,7 +211,7 @@ local function ScanAllowed(ply, target)
 
     if target:IsJesterTeam() and not informant_can_scan_jesters:GetBool() then return false end
 
-    -- Pretend that beggars and bodysnatchers that aren't revealed to this player are still jesters
+    -- Pretend that beggars and bodysnatchers that aren't revealed to this player are still on the jester team
     if target:GetNWBool("WasBeggar", false) and not ply:ShouldRevealBeggar(target) then return informant_can_scan_jesters:GetBool() end
     if target:GetNWBool("WasBodysnatcher", false) and not ply:ShouldRevealBodysnatcher(target) then return informant_can_scan_jesters:GetBool() end
 

@@ -55,9 +55,9 @@ local function GetTeamRole(ply, cli)
             return ply:GetNWInt("GlitchBluff", ROLE_TRAITOR)
         end
     elseif ply:IsTraitorTeam() then
-        if ply:GetNWBool("WasBeggar", false) and not cli:ShouldRevealBeggar(ply) then
-            return ROLE_JESTER
-        elseif ply:GetNWBool("WasBodysnatcher", false) and not cli:ShouldRevealBodysnatcher(ply) then
+        -- Treat hidden beggars and bodysnatchers as if they are still on the jester team
+        if (ply:GetNWBool("WasBeggar", false) and not cli:ShouldRevealBeggar(ply)) or
+            (ply:GetNWBool("WasBodysnatcher", false) and not cli:ShouldRevealBodysnatcher(ply)) then
             return ROLE_JESTER
         elseif glitchMode == GLITCH_SHOW_AS_TRAITOR or glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES then
             return ROLE_TRAITOR
@@ -65,7 +65,13 @@ local function GetTeamRole(ply, cli)
             return ply:GetRole()
         end
     elseif ply:IsDetectiveTeam() then return ROLE_DETECTIVE
-    elseif ply:IsInnocentTeam() then return ROLE_INNOCENT
+    elseif ply:IsInnocentTeam() then
+        -- Treat hidden beggars and bodysnatchers as if they are still on the jester team
+        if (ply:GetNWBool("WasBeggar", false) and not cli:ShouldRevealBeggar(ply)) or
+            (ply:GetNWBool("WasBodysnatcher", false) and not cli:ShouldRevealBodysnatcher(ply)) then
+            return ROLE_JESTER
+        end
+        return ROLE_INNOCENT
     elseif ply:IsIndependentTeam() then return ROLE_DRUNK
     elseif ply:IsJesterTeam() then return ROLE_JESTER
     elseif ply:IsMonsterTeam() then return ply:GetRole() end
