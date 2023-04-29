@@ -619,6 +619,7 @@ L.karma_min = "Liability"
 L.corpse = "Corpse"
 L.corpse_hint = "Press {usekey} to search."
 L.corpse_hint_covert = "Press {usekey} to search. Press {walkkey}+{usekey} to search covertly."
+L.corpse_hint_call = "Press {usekey} to call {adetective}."
 
 L.target_disg = " (DISGUISED)"
 L.target_unid = "Unidentified body"

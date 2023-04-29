@@ -181,19 +181,16 @@ end)
 
 -- Handle enabling and disabling of highlighting
 hook.Add("Think", "Shadow_Highlight_Think", function()
-    if not IsPlayer(client) or not client:Alive() or client:IsSpec() then return end
+    if not IsPlayer(client) then return end
 
-    if client:IsActiveShadow() then
+    if client:IsActiveShadow() and client:Alive() then
         if not vision_enabled then
             EnableShadowTargetHighlights()
             vision_enabled = true
         end
-    else
-        vision_enabled = false
-    end
-
-    if not vision_enabled then
+    elseif vision_enabled then
         hook.Remove("PreDrawHalos", "Shadow_Highlight_PreDrawHalos")
+        vision_enabled = false
     end
 end)
 

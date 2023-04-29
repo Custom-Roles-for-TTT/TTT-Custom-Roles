@@ -485,6 +485,7 @@ ttt_bodysnatcher_reveal_traitor             1       // Who the bodysnatcher is r
 ttt_bodysnatcher_reveal_innocent            1       // Who the bodysnatcher is revealed to when they join the innocent team. 0 - No one. 1 - Everyone. 2 - Their new team
 ttt_bodysnatcher_reveal_monster             1       // Who the bodysnatcher is revealed to when they join the monster team. 0 - No one. 1 - Everyone. 2 - Their new team
 ttt_bodysnatcher_reveal_independent         1       // Who the bodysnatcher is revealed to when they join the independent team. 0 - No one. 1 - Everyone. 2 - Their new team
+ttt_bodysnatcher_reveal_jester              1       // Who the bodysnatcher is revealed to when they join the jester team. 0 - No one. 1 - Everyone. 2 - Their new team
 ttt_bodysnatcher_respawn                    0       // Whether the bodysnatcher respawns when they are killed before joining another team
 ttt_bodysnatcher_respawn_delay              3       // The delay to use when respawning the bodysnatcher (if "ttt_bodysnatcher_respawn" is enabled)
 ttt_bodysnatcher_respawn_limit              0       // The maximum number of times the bodysnatcher can respawn (if "ttt_bodysnatcher_respawn" is enabled). Set to 0 to allow infinite respawns
@@ -647,9 +648,9 @@ ttt_shadow_dead_radius                      3       // The radius (in meters) fr
 
 // Arsonist
 ttt_arsonist_douse_time                     8       // The amount of time (in seconds) the arsonist takes to douse someone
-ttt_arsonist_douse_distance                 200     // The maximum distance away the dousing target can be
-ttt_arsonist_douse_notify_delay_min         3       // The minimum delay before a player is notified they've been doused
-ttt_arsonist_douse_notify_delay_max         5       // The maximum delay before a player is notified they've been doused
+ttt_arsonist_douse_distance                 250     // The maximum distance away the dousing target can be
+ttt_arsonist_douse_notify_delay_min         10      // The minimum delay before a player is notified they've been doused
+ttt_arsonist_douse_notify_delay_max         30      // The maximum delay before a player is notified they've been doused
 
 // ----------------------------------------
 
