@@ -54,13 +54,11 @@ local function HasInformant()
     return false
 end
 
-local function ShouldHideRoleForTraitors(oldRole, newRole)
+local function ShouldHideRoleForTraitors(ply, oldRole, newRole)
     -- If this was a beggar or bodysnatcher and we're not revealing it to traitors, hide their role
-    if oldRole == ROLE_BEGGAR or oldRole == ROLE_BODYSNATCHER then
-        local convar_team = "traitor"
-        if INNOCENT_ROLES[newRole] then
-            convar_team = "innocent"
-        end
+    if (oldRole == ROLE_BEGGAR and ply:GetNWBool("WasBeggar")) or (oldRole == ROLE_BODYSNATCHER and ply:GetNWBool("WasBodysnatcher")) then
+        local role_team = player.GetRoleTeam(newRole, true)
+        local convar_team = GetRoleTeamName(role_team)
         local reveal_traitor = GetGlobalInt("ttt_" .. ROLE_STRINGS_RAW[oldRole] .. "_reveal_" .. convar_team, ANNOUNCE_REVEAL_ALL)
         return reveal_traitor ~= ANNOUNCE_REVEAL_ALL and reveal_traitor ~= ANNOUNCE_REVEAL_TRAITORS
     end
@@ -68,7 +66,10 @@ local function ShouldHideRoleForTraitors(oldRole, newRole)
 end
 
 local function SetDefaultScanState(ply, oldRole, newRole)
-    if ply:IsDetectiveTeam() then
+    -- Players that change roles and should remain hidden only skip the team scan
+    if ShouldHideRoleForTraitors(ply, oldRole, newRole) then
+        ply:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_TEAM)
+    elseif ply:IsDetectiveTeam() then
         -- If the detective's role is not known, only skip the team scan
         if GetConVar("ttt_detective_hide_special_mode"):GetInt() >= SPECIAL_DETECTIVE_HIDE_FOR_ALL then
             ply:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_TEAM)
@@ -78,8 +79,8 @@ local function SetDefaultScanState(ply, oldRole, newRole)
         end
     -- Handle traitor logic specially so we don't expose roles when there is a glitch
     elseif (ply:IsTraitorTeam() and not ply:IsInformant()) or ply:IsGlitch() then
-        -- Hide specific team roles if there is a glitch or if the role they are changing from should be hidden based on convars
-        if ShouldHideRoleForTraitors(oldRole, newRole) or GetGlobalBool("ttt_glitch_round", false) then
+        -- Hide specific team roles if there is a glitch
+        if GetGlobalBool("ttt_glitch_round", false) then
             ply:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_TEAM)
         else
             ply:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_ROLE)
@@ -135,7 +136,7 @@ hook.Add("TTTPlayerRoleChanged", "Informant_TTTPlayerRoleChanged", function(ply,
         -- Only notify if there is an informant and the player had some info being reset
         if scanStage > INFORMANT_UNSCANNED then
             local share = GetGlobalBool("ttt_informant_share_scans", true)
-            local hideRole = ShouldHideRoleForTraitors(oldRole, newRole)
+            local hideRole = ShouldHideRoleForTraitors(ply, oldRole, newRole)
             for _, v in pairs(GetAllPlayers()) do
                 -- Don't tell people about this role change if we're not revealing them
                 if hideRole then continue end
