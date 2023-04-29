@@ -1,7 +1,7 @@
 # Release Notes
 
 ### 1.8.6 (Beta)
-**Released:**
+**Released: April 30th, 2023**
 
 ### Additions
 - Added convar to control who a bodysnatcher's role change is revealed to when they join the jester team (`ttt_bodysnatcher_reveal_jester`)
