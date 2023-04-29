@@ -991,6 +991,7 @@ globals = {
 	"GetJesterTeamFilter",
 	"GetKillerFilter",
 	"GetMonsterTeamFilter",
+	"GetRawRoleTeamName",
 	"GetRoleTeamColor",
 	"GetRoleTeamInfo",
 	"GetRoleTeamName",

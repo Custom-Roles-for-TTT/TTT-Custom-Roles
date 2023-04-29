@@ -362,6 +362,19 @@ local function FillRoleColors(list, type)
     end
 end
 
+function GetRawRoleTeamName(role_team)
+    if role_team == ROLE_TEAM_TRAITOR then
+        return "traitor"
+    elseif role_team == ROLE_TEAM_MONSTER then
+        return "monster"
+    elseif role_team == ROLE_TEAM_JESTER then
+        return "jester"
+    elseif role_team == ROLE_TEAM_INDEPENDENT then
+        return "independent"
+    end
+    return "innocent"
+end
+
 if CLIENT then
     function GetRoleTeamColor(role_team, type)
         local modeCVar = GetConVar("ttt_color_mode")
@@ -389,16 +402,7 @@ if CLIENT then
     end
 
     function GetRoleTeamName(role_team)
-        if role_team == ROLE_TEAM_TRAITOR then
-            return LANG.GetTranslation("traitor")
-        elseif role_team == ROLE_TEAM_MONSTER then
-            return LANG.GetTranslation("monster")
-        elseif role_team == ROLE_TEAM_JESTER then
-            return LANG.GetTranslation("jester")
-        elseif role_team == ROLE_TEAM_INDEPENDENT then
-            return LANG.GetTranslation("independent")
-        end
-        return LANG.GetTranslation("innocent")
+        return LANG.GetTranslation(GetRawRoleTeamName(role_team))
     end
 
     function GetRoleTeamInfo(role_team, simple_color)
@@ -468,18 +472,7 @@ else
         end
     end
 
-    function GetRoleTeamName(role_team)
-        if role_team == ROLE_TEAM_TRAITOR then
-            return "traitor"
-        elseif role_team == ROLE_TEAM_MONSTER then
-            return "monster"
-        elseif role_team == ROLE_TEAM_JESTER then
-            return "jester"
-        elseif role_team == ROLE_TEAM_INDEPENDENT then
-            return "independent"
-        end
-        return "innocent"
-    end
+    GetRoleTeamName = GetRawRoleTeamName
 end
 
 ROLE_COLORS = {}

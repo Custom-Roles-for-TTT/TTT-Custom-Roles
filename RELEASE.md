@@ -3,6 +3,9 @@
 ### 1.8.6 (Beta)
 **Released:**
 
+### Additions
+- Added convar to control who a bodysnatcher's role change is revealed to when they join the jester team (`ttt_bodysnatcher_reveal_jester`)
+
 ### Changes
 - Changed hint text for a player corpse to show "call a Detective" instead of "search" when `ttt_detective_search_only` was set to `1`
 - Changed sponge to show icon and color on the scoreboard for everyone
@@ -16,6 +19,9 @@
 - Fixed shadow seeing their target highlighted even after they've died
 - Fixed conflict between informant logic and convars that controlled beggar and bodysnatcher role change reveal scope
 - Fixed old man getting stuck with a huge amount of health when they are hit by two damage events simultaneously (e.g. by a Holy Hand Grenade explosion)
+
+### Developer
+- Added `GetRawRoleTeamName` global function to get the untranslated name of a team by `ROLE_TEAM_*` enumeration
 
 ## 1.8.5 (Beta)
 **Released: April 22nd, 2023**

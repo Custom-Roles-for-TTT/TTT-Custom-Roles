@@ -58,7 +58,7 @@ local function ShouldHideRoleForTraitors(ply, oldRole, newRole)
     -- If this was a beggar or bodysnatcher and we're not revealing it to traitors, hide their role
     if (oldRole == ROLE_BEGGAR and ply:GetNWBool("WasBeggar")) or (oldRole == ROLE_BODYSNATCHER and ply:GetNWBool("WasBodysnatcher")) then
         local role_team = player.GetRoleTeam(newRole, true)
-        local convar_team = GetRoleTeamName(role_team)
+        local convar_team = GetRawRoleTeamName(role_team)
         local reveal_traitor = GetGlobalInt("ttt_" .. ROLE_STRINGS_RAW[oldRole] .. "_reveal_" .. convar_team, ANNOUNCE_REVEAL_ALL)
         return reveal_traitor ~= ANNOUNCE_REVEAL_ALL and reveal_traitor ~= ANNOUNCE_REVEAL_TRAITORS
     end

@@ -120,7 +120,8 @@ hook.Add("TTTHUDInfoPaint", "Bodysnatcher_TTTHUDInfoPaint", function(client, lab
         if client:IsInnocentTeam() then bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_innocent", BODYSNATCHER_REVEAL_ALL)
         elseif client:IsTraitorTeam() then bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_traitor", BODYSNATCHER_REVEAL_ALL)
         elseif client:IsMonsterTeam() then bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_monster", BODYSNATCHER_REVEAL_ALL)
-        elseif client:IsIndependentTeam() then bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_independent", BODYSNATCHER_REVEAL_ALL) end
+        elseif client:IsIndependentTeam() then bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_independent", BODYSNATCHER_REVEAL_ALL)
+        elseif client:IsJesterTeam() then bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_jester", BODYSNATCHER_REVEAL_ALL) end
         if bodysnatcherMode ~= BODYSNATCHER_REVEAL_ALL then
             surface.SetFont("TabLarge")
             surface.SetTextColor(255, 255, 255, 230)
@@ -204,6 +205,11 @@ hook.Add("TTTTutorialRoleText", "Bodysnatcher_TTTTutorialRoleText", function(rol
         -- Independent Reveal
         revealMode = GetGlobalInt("ttt_bodysnatcher_reveal_independent", BODYSNATCHER_REVEAL_ALL)
         teamName, teamColor = GetRoleTeamInfo(ROLE_TEAM_INDEPENDENT, true)
+        html = html .. "<span style='display: block; margin-top: 10px;'>" .. GetRevealModeString(roleColor, revealMode, teamName, teamColor) .. "</span>"
+
+        -- Jester Reveal
+        revealMode = GetGlobalInt("ttt_bodysnatcher_reveal_jester", BODYSNATCHER_REVEAL_ALL)
+        teamName, teamColor = GetRoleTeamInfo(ROLE_TEAM_JESTER, true)
         html = html .. "<span style='display: block; margin-top: 10px;'>" .. GetRevealModeString(roleColor, revealMode, teamName, teamColor) .. "</span>"
 
         return html
