@@ -1,5 +1,11 @@
 # Release Notes
 
+### 1.8.7 (Beta)
+**Released:**
+
+### Developer
+- Added `table.HasItemWithPropertyValue` static method
+
 ### 1.8.6 (Beta)
 **Released: April 30th, 2023**
 

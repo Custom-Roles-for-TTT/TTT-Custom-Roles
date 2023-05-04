@@ -214,6 +214,15 @@ function table.HasValue(tbl, val)
     return false
 end
 
+function table.HasItemWithPropertyValue(tbl, key, val)
+    if not tbl or not key then return end
+
+    for _, v in pairs(tbl) do
+        if v[key] and v[key] == val then return true end
+    end
+    return false
+end
+
 -- Value equality for tables
 function table.EqualValues(a, b)
     if a == b then return true end
