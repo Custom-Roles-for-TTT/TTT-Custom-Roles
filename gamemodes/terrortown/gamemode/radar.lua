@@ -13,6 +13,7 @@ local table = table
 
 local GetAllPlayers = player.GetAll
 local FindEntsByClass = ents.FindByClass
+local MathRound = math.Round
 
 local function RadarScan(ply, cmd, args)
     if IsValid(ply) and ply:IsTerror() then
@@ -40,9 +41,9 @@ local function RadarScan(ply, cmd, args)
                         local pos = p:LocalToWorld(p:OBBCenter())
 
                         -- Round off, easier to send and inaccuracy does not matter
-                        pos.x = math.Round(pos.x)
-                        pos.y = math.Round(pos.y)
-                        pos.z = math.Round(pos.z)
+                        pos.x = MathRound(pos.x)
+                        pos.y = MathRound(pos.y)
+                        pos.z = MathRound(pos.z)
 
                         local role = p:IsPlayer() and p:GetDisplayedRole() or -1
 
