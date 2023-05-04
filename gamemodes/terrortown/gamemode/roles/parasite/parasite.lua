@@ -19,6 +19,7 @@ util.AddNetworkString("TTT_ParasiteInfect")
 -------------
 
 local parasite_infection_time = CreateConVar("ttt_parasite_infection_time", 45, FCVAR_NONE, "The time it takes in seconds for the parasite to fully infect someone", 0, 300)
+local parasite_infection_warning_time = CreateConVar("ttt_parasite_infection_warning_time", 0, FCVAR_NONE, "The time in seconds after infection to warn the victim", 0, 300)
 local parasite_infection_transfer = CreateConVar("ttt_parasite_infection_transfer", 0)
 local parasite_infection_transfer_reset = CreateConVar("ttt_parasite_infection_transfer_reset", 1)
 local parasite_infection_suicide_mode = CreateConVar("ttt_parasite_infection_suicide_mode", 0, FCVAR_NONE, "The way to handle when a player infected by the parasite kills themselves. 0 - Do nothing. 1 - Respawn the parasite. 2 - Respawn the parasite ONLY IF the infected player killed themselves with a console command like \"kill\"", 0, 2)
@@ -26,7 +27,6 @@ local parasite_respawn_mode = CreateConVar("ttt_parasite_respawn_mode", 0, FCVAR
 local parasite_respawn_health = CreateConVar("ttt_parasite_respawn_health", 100, FCVAR_NONE, "The health on which the parasite respawns", 1, 100)
 local parasite_announce_infection = CreateConVar("ttt_parasite_announce_infection", 0)
 local parasite_infection_saves_lover = CreateConVar("ttt_parasite_infection_saves_lover", "1", FCVAR_NONE, "Whether the parasite's lover should survive if the parasite is infecting a player", 0, 1)
-
 
 hook.Add("TTTSyncGlobals", "Parasite_TTTSyncGlobals", function()
     SetGlobalInt("ttt_parasite_infection_time", parasite_infection_time:GetInt())
@@ -37,18 +37,14 @@ end)
 -- HAUNTING --
 --------------
 
-local deadParasites = {}
-hook.Add("TTTPrepareRound", "Parasite_TTTPrepareRound", function()
-    for _, v in pairs(GetAllPlayers()) do
-        v:SetNWBool("ParasiteInfected", false)
-        v:SetNWBool("ParasiteInfecting", false)
-        v:SetNWString("ParasiteInfectingTarget", nil)
-        v:SetNWInt("ParasiteInfectionProgress", 0)
-        timer.Remove(v:Nick() .. "ParasiteInfectionProgress")
-        timer.Remove(v:Nick() .. "ParasiteInfectingSpectate")
-    end
-    deadParasites = {}
-end)
+local function ClearParasiteState(ply)
+    ply:SetNWBool("ParasiteInfecting", false)
+    ply:SetNWString("ParasiteInfectingTarget", nil)
+    ply:SetNWInt("ParasiteInfectionProgress", 0)
+    timer.Remove(ply:Nick() .. "ParasiteInfectionProgress")
+    timer.Remove(ply:Nick() .. "ParasiteInfectingSpectate")
+    timer.Remove(ply:Nick() .. "ParasiteInfectingWarning")
+end
 
 local function ResetPlayer(ply)
     -- If this player is infecting someone else, make sure to clear them of the infection too
@@ -61,12 +57,17 @@ local function ResetPlayer(ply)
             end
         end
     end
-    ply:SetNWBool("ParasiteInfecting", false)
-    ply:SetNWString("ParasiteInfectingTarget", nil)
-    ply:SetNWInt("ParasiteInfectionProgress", 0)
-    timer.Remove(ply:Nick() .. "ParasiteInfectionProgress")
-    timer.Remove(ply:Nick() .. "ParasiteInfectingSpectate")
+    ClearParasiteState(ply)
 end
+
+local deadParasites = {}
+hook.Add("TTTPrepareRound", "Parasite_TTTPrepareRound", function()
+    for _, v in pairs(GetAllPlayers()) do
+        v:SetNWBool("ParasiteInfected", false)
+        ClearParasiteState(v)
+    end
+    deadParasites = {}
+end)
 
 hook.Add("TTTPlayerRoleChanged", "Parasite_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if oldRole == ROLE_PARASITE and oldRole ~= newRole then
@@ -103,11 +104,7 @@ end
 local function DoParasiteRespawn(parasite, attacker, hide_messages)
     if parasite:IsParasite() and not parasite:Alive() then
         attacker:SetNWBool("ParasiteInfected", false)
-        parasite:SetNWBool("ParasiteInfecting", false)
-        parasite:SetNWString("ParasiteInfectingTarget", nil)
-        parasite:SetNWInt("ParasiteInfectionProgress", 0)
-        timer.Remove(parasite:Nick() .. "ParasiteInfectionProgress")
-        timer.Remove(parasite:Nick() .. "ParasiteInfectingSpectate")
+        ClearParasiteState(parasite)
 
         local parasiteBody = parasite.server_ragdoll or parasite:GetRagdollEntity()
 
@@ -206,6 +203,18 @@ local function HandleParasiteInfection(attacker, victim, keep_progress)
         victim:Spectate(OBS_MODE_CHASE)
         victim:SpectateEntity(attacker)
     end)
+
+    local warning_time = parasite_infection_warning_time:GetInt()
+    -- If it's enabled, warn the victim that they are infected
+    if warning_time > 0 and warning_time < parasite_infection_time:GetInt() then
+        -- Track this timer on the parasite's name since there can only be 1 parasite killer and it's easier to remove later
+        timer.Create(victim:Nick() .. "ParasiteInfectingWarning", warning_time, 1, function()
+            if not IsPlayer(attacker) or not attacker:Alive() or attacker:IsSpec() then return end
+
+            attacker:PrintMessage(HUD_PRINTTALK, "You feel a strange wriggling under your skin.")
+            attacker:PrintMessage(HUD_PRINTCENTER, "You feel a strange wriggling under your skin.")
+        end)
+    end
 end
 
 hook.Add("PlayerDeath", "Parasite_PlayerDeath", function(victim, infl, attacker)
@@ -279,11 +288,7 @@ hook.Add("DoPlayerDeath", "Parasite_DoPlayerDeath", function(ply, attacker, dmgi
                     deadParasite:PrintMessage(HUD_PRINTCENTER, "Your host has killed themselves, allowing your infection to take over.")
                     DoParasiteRespawn(deadParasite, attacker, true)
                 else
-                    deadParasite:SetNWBool("ParasiteInfecting", false)
-                    deadParasite:SetNWString("ParasiteInfectingTarget", nil)
-                    deadParasite:SetNWInt("ParasiteInfectionProgress", 0)
-                    timer.Remove(deadParasite:Nick() .. "ParasiteInfectionProgress")
-                    timer.Remove(deadParasite:Nick() .. "ParasiteInfectingSpectate")
+                    ClearParasiteState(deadParasite)
                     if parasiteDead then
                         deadParasite:PrintMessage(HUD_PRINTCENTER, "Your host has died.")
 
