@@ -3,6 +3,9 @@
 ### 1.8.7 (Beta)
 **Released:**
 
+### Additions
+- Added buyable Death Radar for the mad scientist which will update periodically to mark dead bodies
+
 ### Developer
 - Added `table.HasItemWithPropertyValue` static method
 - Added equipment frame as parameter to `TTTEquipmentTabs`
