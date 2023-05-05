@@ -5,6 +5,8 @@ local string = string
 
 local StringUpper = string.upper
 
+local client = nil
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -31,8 +33,8 @@ you a shop item you will join their team.]])
 you a shop item you will join their team.]])
 end)
 
-hook.Add("TTTRolePopupRoleStringOverride", "Beggar_TTTRolePopupRoleStringOverride", function(client, roleString)
-    if not IsPlayer(client) or not client:IsBeggar() then return end
+hook.Add("TTTRolePopupRoleStringOverride", "Beggar_TTTRolePopupRoleStringOverride", function(cli, roleString)
+    if not IsPlayer(cli) or not cli:IsBeggar() then return end
 
     if GetGlobalBool("ttt_beggars_are_independent", false) then
         return roleString .. "_indep"
@@ -173,7 +175,7 @@ ROLE_IS_TARGETID_OVERRIDDEN[ROLE_BEGGAR] = function(ply, target, showJester)
     local state = target:GetNWInt("TTTBeggarScanStage", BEGGAR_UNSCANNED)
     if state ~= BEGGAR_SCANNED_TEAM then return end
 
-    -- Info is only overridden for traitors viewed by the beggar 
+    -- Info is only overridden for traitors viewed by the beggar
     if not ply:IsBeggar() or not target:IsTraitorTeam() then return end
 
     ------ icon, ring, text
@@ -201,7 +203,7 @@ ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_BEGGAR] = function(ply, target)
     local state = target:GetNWInt("TTTBeggarScanStage", BEGGAR_UNSCANNED)
     if state ~= BEGGAR_SCANNED_TEAM then return end
 
-    -- Info is only overridden for traitors viewed by the beggar 
+    -- Info is only overridden for traitors viewed by the beggar
     if not ply:IsBeggar() or not target:IsTraitorTeam() then return end
 
     ------ name,  role
@@ -212,7 +214,7 @@ end
 -- HUD INFO --
 --------------
 
-hook.Add("TTTHUDInfoPaint", "Beggar_TTTHUDInfoPaint", function(client, label_left, label_top, active_labels)
+hook.Add("TTTHUDInfoPaint", "Beggar_TTTHUDInfoPaint", function(cli, label_left, label_top, active_labels)
     local hide_role = false
     if ConVarExists("ttt_hide_role") then
         hide_role = GetConVar("ttt_hide_role"):GetBool()
@@ -220,10 +222,10 @@ hook.Add("TTTHUDInfoPaint", "Beggar_TTTHUDInfoPaint", function(client, label_lef
 
     if hide_role then return end
 
-    if (client:IsInnocent() or client:IsTraitor()) and client:GetNWBool("WasBeggar", false) then
+    if (cli:IsInnocent() or cli:IsTraitor()) and cli:GetNWBool("WasBeggar", false) then
         local beggarMode = ANNOUNCE_REVEAL_ALL
-        if client:IsInnocent() then beggarMode = GetGlobalInt("ttt_beggar_reveal_innocent", ANNOUNCE_REVEAL_TRAITORS)
-        elseif client:IsTraitor() then beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", ANNOUNCE_REVEAL_ALL) end
+        if cli:IsInnocent() then beggarMode = GetGlobalInt("ttt_beggar_reveal_innocent", ANNOUNCE_REVEAL_TRAITORS)
+        elseif cli:IsTraitor() then beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", ANNOUNCE_REVEAL_ALL) end
         if beggarMode ~= ANNOUNCE_REVEAL_ALL then
             surface.SetFont("TabLarge")
             surface.SetTextColor(255, 255, 255, 230)
