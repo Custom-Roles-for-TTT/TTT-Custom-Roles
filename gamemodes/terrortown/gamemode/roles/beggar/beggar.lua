@@ -300,7 +300,7 @@ local function Scan(ply, target)
 
     if target:IsActive() then
         if CurTime() - ply:GetNWFloat("TTTBeggarScannerStartTime", -1) >= beggar_traitor_scan_time:GetInt() then
-            stage = BEGGAR_SCANNED_TEAM
+            local stage = BEGGAR_SCANNED_TEAM
             local message = "You have discovered that " .. target:Nick() .. " is "
             if not target:IsTraitorTeam() then
                 message = message .. "not "
