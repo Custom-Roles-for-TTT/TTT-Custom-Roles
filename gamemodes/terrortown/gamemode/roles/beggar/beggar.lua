@@ -27,15 +27,22 @@ local beggar_respawn = CreateConVar("ttt_beggar_respawn", "0", FCVAR_NONE, "Whet
 local beggar_respawn_limit = CreateConVar("ttt_beggar_respawn_limit", "0", FCVAR_NONE, "The maximum number of times the beggar can respawn (if \"ttt_beggar_respawn\" is enabled). Set to 0 to allow infinite", 0, 30)
 local beggar_respawn_delay = CreateConVar("ttt_beggar_respawn_delay", "3", FCVAR_NONE, "The delay to use when respawning the beggar (if \"ttt_beggar_respawn\" is enabled)", 0, 60)
 local beggar_respawn_change_role = CreateConVar("ttt_beggar_respawn_change_role", "0", FCVAR_NONE, "Whether to change the role of the respawning the beggar (if \"ttt_beggar_respawn\" is enabled)", 0, 1)
+local beggar_traitor_scan = CreateConVar("ttt_beggar_traitor_scan", "0", FCVAR_NONE, "Whether the beggar can scan players to see if they are traitors", 0, 1)
+local beggar_traitor_scan_time = CreateConVar("ttt_beggar_traitor_scan_time", "15", FCVAR_NONE, "The amount of time (in seconds) the beggar's scanner takes to use", 0, 60)
+local beggar_traitor_scan_float_time = CreateConVar("ttt_beggar_traitor_scan_float_time", "1", FCVAR_NONE, "The amount of time (in seconds) it takes for the beggar's scanner to lose it's target without line of sight", 0, 60)
+local beggar_traitor_scan_cooldown = CreateConVar("ttt_beggar_traitor_scan_cooldown", "3", FCVAR_NONE, "The amount of time (in seconds) the beggar's tracker goes on cooldown for after losing it's target", 0, 60)
+local beggar_traitor_scan_distance = CreateConVar("ttt_beggar_traitor_scan_distance", "2500", FCVAR_NONE, "The maximum distance away the scanner target can be", 1000, 10000)
 
 hook.Add("TTTSyncGlobals", "Beggar_TTTSyncGlobals", function()
     SetGlobalBool("ttt_beggars_are_independent", beggars_are_independent:GetBool())
     SetGlobalBool("ttt_beggar_respawn", beggar_respawn:GetBool())
+    SetGlobalBool("ttt_beggar_traitor_scan", beggar_traitor_scan:GetBool())
     SetGlobalInt("ttt_beggar_respawn_limit", beggar_respawn_limit:GetInt())
     SetGlobalInt("ttt_beggar_respawn_delay", beggar_respawn_delay:GetInt())
     SetGlobalBool("ttt_beggar_respawn_change_role", beggar_respawn_change_role:GetBool())
     SetGlobalInt("ttt_beggar_reveal_traitor", beggar_reveal_traitor:GetInt())
     SetGlobalInt("ttt_beggar_reveal_innocent", beggar_reveal_innocent:GetInt())
+    SetGlobalInt("ttt_beggar_traitor_scan_time", beggar_traitor_scan_time:GetInt())
 end)
 
 -------------------
@@ -182,5 +189,186 @@ end)
 hook.Add("TTTCupidShouldLoverSurvive", "Beggar_TTTCupidShouldLoverSurvive", function(ply, lover)
     if ply:GetNWBool("BeggarIsRespawning", false) or lover:GetNWBool("BeggarIsRespawning", false) then
         return true
+    end
+end)
+
+----------------
+-- ROLE STATE --
+----------------
+
+local function HasBeggar()
+    for _, v in ipairs(GetAllPlayers()) do
+        if v:IsBeggar() then
+            return true
+        end
+    end
+    return false
+end
+
+hook.Add("TTTPrepareRound", "Beggar_TTTPrepareRound", function()
+    for _, v in pairs(GetAllPlayers()) do
+        v:SetNWInt("TTTBeggarScanStage", BEGGAR_UNSCANNED)
+        v:SetNWInt("TTTBeggarScannerState", BEGGAR_SCANNER_IDLE)
+        v:SetNWString("TTTBeggarScannerTarget", "")
+        v:SetNWString("TTTBeggarScannerMessage", "")
+        v:SetNWFloat("TTTBeggarScannerStartTime", -1)
+        v:SetNWFloat("TTTBeggarScannerTargetLostTime", -1)
+        v:SetNWFloat("TTTBeggarScannerCooldown", -1)
+    end
+end)
+
+------------------
+-- ROLE CHANGES --
+------------------
+
+hook.Add("TTTPlayerRoleChanged", "Beggar_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+    if not beggar_traitor_scan:GetBool() then return end
+    if oldRole == newRole then return end
+    if GetRoundState() ~= ROUND_ACTIVE then return end
+
+    if oldRole == ROLE_BEGGAR then
+        ply:SetNWInt("TTTBeggarScannerState", BEGGAR_SCANNER_IDLE)
+        ply:SetNWString("TTTBeggarScannerTarget", "")
+        ply:SetNWString("TTTBeggarScannerMessage", "")
+        ply:SetNWFloat("TTTBeggarScannerStartTime", -1)
+        ply:SetNWFloat("TTTBeggarScannerTargetLostTime", -1)
+        ply:SetNWFloat("TTTBeggarScannerCooldown", -1)
+    end
+
+    -- Set the default role state if there is an beggar
+    local scanStage = ply:GetNWInt("TTTBeggarScanStage", BEGGAR_UNSCANNED)
+    if HasBeggar() then
+        -- Only notify if there is an beggar and the player had some info being reset
+        if scanStage > BEGGAR_UNSCANNED then
+            for _, v in pairs(GetAllPlayers()) do
+                if v:IsActiveBeggar() then
+                    v:PrintMessage(HUD_PRINTTALK, ply:Nick() .. " has changed roles. You will need to rescan them.")
+                end
+            end
+        end
+    -- If there is not, make sure this role is set to "unscanned"
+    elseif scanStage > BEGGAR_UNSCANNED then
+        ply:SetNWInt("TTTBeggarScanStage", BEGGAR_UNSCANNED)
+    end
+end)
+
+-------------
+-- SCANNER --
+-------------
+
+local function IsTargetingPlayer(ply)
+    if not IsValid(ply) then return false end
+
+    local tr = ply:GetEyeTrace(MASK_SHOT)
+    local ent = tr.Entity
+
+    return (IsPlayer(ent) and ent:IsActive()) and ent or false
+end
+
+local function TargetLost(ply)
+    if not IsValid(ply) then return end
+
+    ply:SetNWInt("TTTBeggarScannerState", BEGGAR_SCANNER_LOST)
+    ply:SetNWString("TTTBeggarScannerTarget", "")
+    ply:SetNWString("TTTBeggarScannerMessage", "TARGET LOST")
+    ply:SetNWFloat("TTTBeggarScannerStartTime", -1)
+    ply:SetNWFloat("TTTBeggarScannerCooldown", CurTime())
+end
+
+local function InRange(ply, target)
+    if not IsValid(ply) or not IsValid(target) then return false end
+
+    if not ply:IsLineOfSightClear(target) then return false end
+
+    local plyPos = ply:GetPos()
+    local targetPos = target:GetPos()
+    if plyPos:Distance(targetPos) > beggar_traitor_scan_distance:GetInt() then return false end
+
+    return ply:IsOnScreen(target, 0.35)
+end
+
+local function ScanAllowed(ply, target)
+    if not beggar_traitor_scan:GetBool() then return false end
+    if not IsValid(ply) or not IsValid(target) then return false end
+    if not IsPlayer(target) then return false end
+    if not target:IsActive() then return false end
+    return InRange(ply, target)
+end
+
+local function Scan(ply, target)
+    if not IsValid(ply) or not IsValid(target) then return end
+
+    if target:IsActive() then
+        local stage = target:GetNWInt("TTTBeggarScanStage", BEGGAR_UNSCANNED)
+        if CurTime() - ply:GetNWFloat("TTTBeggarScannerStartTime", -1) >= beggar_traitor_scan_time:GetInt() then
+            stage = BEGGAR_SCANNED_TEAM
+            local message = "You have discovered that " .. target:Nick() .. " is "
+            if not target:IsTraitorTeam() then
+                message = message .. "not "
+                stage = BEGGAR_SCANNED_HIDDEN
+            end
+            message = message .. "a traitor role."
+
+            ply:PrintMessage(HUD_PRINTTALK, message)
+            ply:SetNWInt("TTTBeggarScannerState", BEGGAR_SCANNER_IDLE)
+            ply:SetNWString("TTTBeggarScannerTarget", "")
+            ply:SetNWString("TTTBeggarScannerMessage", "")
+            ply:SetNWFloat("TTTBeggarScannerStartTime", -1)
+            target:SetNWInt("TTTBeggarScanStage", stage)
+            hook.Call("TTTBeggarScanStageChanged", nil, ply, target, stage)
+        end
+    else
+        TargetLost(ply)
+    end
+end
+
+hook.Add("TTTPlayerAliveThink", "Beggar_TTTPlayerAliveThink", function(ply)
+    if not IsValid(ply) or ply:IsSpec() or GetRoundState() ~= ROUND_ACTIVE then return end
+
+    if ply:IsBeggar() then
+        local state = ply:GetNWInt("TTTBeggarScannerState", BEGGAR_SCANNER_IDLE)
+        if state == BEGGAR_SCANNER_IDLE then
+            local target = IsTargetingPlayer(ply)
+            if target and target:GetNWInt("TTTBeggarScanStage", BEGGAR_UNSCANNED) < BEGGAR_SCANNED_HIDDEN and ScanAllowed(ply, target) then
+                ply:SetNWInt("TTTBeggarScannerState", BEGGAR_SCANNER_LOCKED)
+                ply:SetNWString("TTTBeggarScannerTarget", target:SteamID64())
+                ply:SetNWString("TTTBeggarScannerMessage", "SCANNING " .. string.upper(target:Nick()))
+                ply:SetNWFloat("TTTBeggarScannerStartTime", CurTime())
+            end
+        elseif state == BEGGAR_SCANNER_LOCKED then
+            local target = player.GetBySteamID64(ply:GetNWString("TTTBeggarScannerTarget", ""))
+            if target:IsActive() then
+                if not InRange(ply, target) then
+                    ply:SetNWInt("TTTBeggarScannerState", BEGGAR_SCANNER_SEARCHING)
+                    ply:SetNWString("TTTBeggarScannerMessage", "SCANNING " .. string.upper(target:Nick()) .. " (LOSING TARGET)")
+                    ply:SetNWFloat("TTTBeggarScannerTargetLostTime", CurTime())
+                end
+                Scan(ply, target)
+            else
+                TargetLost(ply)
+            end
+        elseif state == BEGGAR_SCANNER_SEARCHING then
+            local target = player.GetBySteamID64(ply:GetNWString("TTTBeggarScannerTarget", ""))
+            if target:IsActive() then
+                if (CurTime() - ply:GetNWInt("TTTBeggarScannerTargetLostTime", -1)) >= beggar_traitor_scan_float_time:GetInt() then
+                    TargetLost(ply)
+                else
+                    if InRange(ply, target) then
+                        ply:SetNWInt("TTTBeggarScannerState", BEGGAR_SCANNER_LOCKED)
+                        ply:SetNWString("TTTBeggarScannerMessage", "SCANNING " .. string.upper(target:Nick()))
+                        ply:SetNWFloat("TTTBeggarScannerTargetLostTime", -1)
+                    end
+                    Scan(ply, target)
+                end
+            else
+                TargetLost(ply)
+            end
+        elseif state == BEGGAR_SCANNER_LOST then
+            if (CurTime() - ply:GetNWFloat("TTTBeggarScannerCooldown", -1)) >= beggar_traitor_scan_cooldown:GetInt() then
+                ply:SetNWInt("TTTBeggarScannerState", BEGGAR_SCANNER_IDLE)
+                ply:SetNWString("TTTBeggarScannerMessage", "")
+                ply:SetNWFloat("TTTBeggarScannerCooldown", -1)
+            end
+        end
     end
 end)
