@@ -1,7 +1,7 @@
 # Release Notes
 
 ### 1.8.7 (Beta)
-**Released:**
+**Released: May 6th, 2023**
 
 ### Additions
 - Added ability for the beggar to scan players (`ttt_beggar_traitor_scan`) to determine whether they are traitors (disabled by default)
