@@ -9,6 +9,7 @@
 ### Developer
 - Added `table.HasItemWithPropertyValue` static method
 - Added equipment frame as parameter to `TTTEquipmentTabs`
+- Added ability to warn a player infected by the parasite after a configurable (`ttt_parasite_infection_warning_time`) amount of time (disabled by default)
 
 ### 1.8.6 (Beta)
 **Released: April 30th, 2023**

@@ -66,6 +66,11 @@ table.insert(ROLE_CONVARS[ROLE_PARASITE], {
     decimal = 0
 })
 table.insert(ROLE_CONVARS[ROLE_PARASITE], {
+    cvar = "ttt_parasite_infection_warning_time",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_PARASITE], {
     cvar = "ttt_parasite_infection_transfer",
     type = ROLE_CONVAR_TYPE_BOOL
 })
