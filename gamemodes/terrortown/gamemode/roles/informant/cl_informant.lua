@@ -34,7 +34,7 @@ end)
 
 local informant_show_scan_radius = CreateClientConVar("ttt_informant_show_scan_radius", "0", true, false, "Whether the scan radius circle should show", 0, 1)
 
-hook.Add("TTTSettingsRolesTabSections", "TTTSettingsRolesTabSections_Informant", function(role, parentForm)
+hook.Add("TTTSettingsRolesTabSections", "Informant_TTTSettingsRolesTabSections", function(role, parentForm)
     if role ~= ROLE_INFORMANT then return end
 
     parentForm:CheckBox(LANG.GetTranslation("informant_config_show_radius"), "ttt_informant_show_scan_radius")

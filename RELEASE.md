@@ -4,6 +4,7 @@
 **Released:**
 
 ### Additions
+- Added ability for the beggar to scan players (`ttt_beggar_traitor_scan`) to determine whether they are traitors (disabled by default)
 - Added buyable Death Radar for the mad scientist which will update periodically to mark dead bodies
 
 ### Developer

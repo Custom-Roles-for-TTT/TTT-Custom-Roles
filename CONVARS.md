@@ -477,6 +477,11 @@ ttt_beggar_respawn_change_role              0       // Whether to change the rol
 ttt_beggar_notify_mode                      0       // The logic to use when notifying players that a beggar is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
 ttt_beggar_notify_sound                     0       // Whether to play a cheering sound when a beggar is killed
 ttt_beggar_notify_confetti                  0       // Whether to throw confetti when a beggar is a killed
+ttt_beggar_traitor_scan                     0       // Whether the beggar can scan players to see if they are traitors
+ttt_beggar_traitor_scan_time                15      // The amount of time (in seconds) the beggar's scanner takes to use
+ttt_beggar_traitor_scan_float_time          1       // The amount of time (in seconds) it takes for the beggar's scanner to lose it's target without line of sight
+ttt_beggar_traitor_scan_cooldown            3       // The amount of time (in seconds) the beggar's tracker goes on cooldown for after losing it's target
+ttt_beggar_traitor_scan_distance            2500    // The maximum distance away the scanner target can be
 
 // Bodysnatcher
 ttt_bodysnatchers_are_independent           0       // Whether bodysnatchers should be treated as members of the independent team (rather than the jester team)
