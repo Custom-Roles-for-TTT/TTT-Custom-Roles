@@ -81,18 +81,18 @@ hook.Add("Initialize", "Beggar_Scoring_Initialize", function()
         end})
 
     Event(EVENT_BEGGARKILLED, {
-       text = function(e)
-          if e.delay > 0 then
-             return PT("ev_beggar_killed_delay", {attacker = e.att, victim = e.vic, delay = e.delay, beggar = ROLE_STRINGS[ROLE_BEGGAR]})
-          end
-          return PT("ev_beggar_killed", {attacker = e.att, victim = e.vic, beggar = ROLE_STRINGS[ROLE_BEGGAR]})
-      end,
-      icon = function(e)
-          if e.delay > 0 then
-             return hourglass_go_icon, "Respawning"
-          end
-          return heart_add_icon, "Respawned"
-      end})
+        text = function(e)
+            if e.delay > 0 then
+                return PT("ev_beggar_killed_delay", {attacker = e.att, victim = e.vic, delay = e.delay, beggar = ROLE_STRINGS[ROLE_BEGGAR]})
+            end
+            return PT("ev_beggar_killed", {attacker = e.att, victim = e.vic, beggar = ROLE_STRINGS[ROLE_BEGGAR]})
+        end,
+        icon = function(e)
+            if e.delay > 0 then
+                return hourglass_go_icon, "Respawning"
+            end
+            return heart_add_icon, "Respawned"
+        end})
 end)
 
 net.Receive("TTT_BeggarConverted", function(len)
@@ -162,10 +162,15 @@ hook.Add("TTTTargetIDPlayerText", "Beggar_TTTTargetIDPlayerText", function(ent, 
     if not IsPlayer(ent) then return end
 
     local state = ent:GetNWInt("TTTBeggarScanStage", BEGGAR_UNSCANNED)
-    if state == BEGGAR_SCANNED_TEAM and ent:IsTraitorTeam()then
+    if state > BEGGAR_UNSCANNED then
         local PT = LANG.GetParamTranslation
-        local newText = PT("target_unconfirmed_role", { targettype = StringUpper(ROLE_STRINGS[ROLE_TRAITOR]) })
-        return newText, ROLE_COLORS_RADAR[ROLE_TRAITOR], false
+        local newText = "NON-" .. StringUpper(ROLE_STRINGS[ROLE_TRAITOR])
+        local newCol = ROLE_COLORS_RADAR[ROLE_INNOCENT]
+        if state == BEGGAR_SCANNED_TEAM and ent:IsTraitorTeam() then
+            newText = PT("target_unconfirmed_role", { targettype = StringUpper(ROLE_STRINGS[ROLE_TRAITOR]) })
+            newCol = ROLE_COLORS_RADAR[ROLE_TRAITOR]
+        end
+        return newText, newCol, false
     end
 end)
 
@@ -173,13 +178,14 @@ ROLE_IS_TARGETID_OVERRIDDEN[ROLE_BEGGAR] = function(ply, target, showJester)
     if not IsPlayer(target) then return end
 
     local state = target:GetNWInt("TTTBeggarScanStage", BEGGAR_UNSCANNED)
-    if state ~= BEGGAR_SCANNED_TEAM then return end
+    if state == BEGGAR_UNSCANNED then return end
 
     -- Info is only overridden for traitors viewed by the beggar
-    if not ply:IsBeggar() or not target:IsTraitorTeam() then return end
+    if not ply:IsBeggar() then return end
 
+    local targetIsTraitor = target:IsTraitorTeam()
     ------ icon, ring, text
-    return true, true, true
+    return targetIsTraitor, targetIsTraitor, true
 end
 
 ----------------
