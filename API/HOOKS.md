@@ -108,12 +108,13 @@ Called before the event icon for the "round finished" event is rendered in the e
 - *winString* - The new winString value to use or the original passed into the hook
 - *roleString* - The new roleString value to use or the original passed into the hook
 
-### TTTEquipmentTabs(dsheet)
+### TTTEquipmentTabs(dsheet, dframe)
 Allows creation of new tabs for the equipment (shop) menu.\
 *Realm:* Client\
 *Added in:* 1.0.0\
 *Parameters:*
 - *dsheet* - The [DPropertySheet](https://wiki.facepunch.com/gmod/DPropertySheet) used by the equipment window
+- *dframe* - The [DFrame](https://wiki.facepunch.com/gmod/DFrame) representing the equipment window *(Added in 1.8.7)*
 
 *Return:* If `true`, the equipment window will show even if the player doesn't have any of the default tabs. *(Added in 1.7.3)*
 

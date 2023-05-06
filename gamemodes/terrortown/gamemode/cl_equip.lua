@@ -960,7 +960,7 @@ local function TraitorMenuPopup()
         show = true
     end
 
-    local new_show = hook.Run("TTTEquipmentTabs", dsheet)
+    local new_show = hook.Run("TTTEquipmentTabs", dsheet, dframe)
     if new_show then show = new_show end
 
     dframe:MakePopup()
