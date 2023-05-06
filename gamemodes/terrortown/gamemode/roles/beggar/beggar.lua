@@ -292,6 +292,7 @@ local function ScanAllowed(ply, target)
     if not IsValid(ply) or not IsValid(target) then return false end
     if not IsPlayer(target) then return false end
     if not target:IsActive() then return false end
+    if target:IsDetectiveLike() then return false end
     return InRange(ply, target)
 end
 
