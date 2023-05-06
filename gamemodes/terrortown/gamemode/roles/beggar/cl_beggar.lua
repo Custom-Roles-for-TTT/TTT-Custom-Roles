@@ -140,7 +140,7 @@ hook.Add("TTTTargetIDPlayerRoleIcon", "Beggar_TTTTargetIDPlayerRoleIcon", functi
     if not cli:IsBeggar() then return end
 
     local state = ply:GetNWInt("TTTBeggarScanStage", BEGGAR_UNSCANNED)
-    if state == BEGGAR_SCANNED_TEAM and ply:IsTraitorTeam()then
+    if state == BEGGAR_SCANNED_TEAM and ply:IsTraitorTeam() then
         return ROLE_NONE, noz, ROLE_TRAITOR
     end
 end)
@@ -151,7 +151,7 @@ hook.Add("TTTTargetIDPlayerRing", "Beggar_TTTTargetIDPlayerRing", function(ent, 
     if not IsPlayer(ent) then return end
 
     local state = ent:GetNWInt("TTTBeggarScanStage", BEGGAR_UNSCANNED)
-    if state == BEGGAR_SCANNED_TEAM and ent:IsTraitorTeam()then
+    if state == BEGGAR_SCANNED_TEAM and ent:IsTraitorTeam() then
         return true, ROLE_COLORS_RADAR[ROLE_TRAITOR]
     end
 end)
@@ -164,13 +164,13 @@ hook.Add("TTTTargetIDPlayerText", "Beggar_TTTTargetIDPlayerText", function(ent, 
     local state = ent:GetNWInt("TTTBeggarScanStage", BEGGAR_UNSCANNED)
     if state > BEGGAR_UNSCANNED then
         local PT = LANG.GetParamTranslation
-        local newText = "NON-" .. StringUpper(ROLE_STRINGS[ROLE_TRAITOR])
+        local labelName = "target_not_role"
         local newCol = ROLE_COLORS_RADAR[ROLE_INNOCENT]
         if state == BEGGAR_SCANNED_TEAM and ent:IsTraitorTeam() then
-            newText = PT("target_unconfirmed_role", { targettype = StringUpper(ROLE_STRINGS[ROLE_TRAITOR]) })
+            labelName = "target_unknown_team"
             newCol = ROLE_COLORS_RADAR[ROLE_TRAITOR]
         end
-        return newText, newCol, false
+        return PT(labelName, { targettype = StringUpper(ROLE_STRINGS[ROLE_TRAITOR]) }), newCol, false
     end
 end)
 
@@ -178,13 +178,14 @@ ROLE_IS_TARGETID_OVERRIDDEN[ROLE_BEGGAR] = function(ply, target, showJester)
     if not IsPlayer(target) then return end
 
     local state = target:GetNWInt("TTTBeggarScanStage", BEGGAR_UNSCANNED)
-    if state == BEGGAR_UNSCANNED then return end
+    if state <= BEGGAR_UNSCANNED then return end
 
-    -- Info is only overridden for traitors viewed by the beggar
+    -- Info is only overridden for players viewed by the beggar
     if not ply:IsBeggar() then return end
 
+    -- Icon and ring are shown for traitors, text is shown for everyone
     local targetIsTraitor = target:IsTraitorTeam()
-    ------ icon, ring, text
+    ------ icon,            ring,            text
     return targetIsTraitor, targetIsTraitor, true
 end
 
