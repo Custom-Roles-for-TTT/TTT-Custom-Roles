@@ -257,6 +257,7 @@ ttt_single_doctor_quack_chance              0.5     // The chance that a doctor 
 
 // Parasite
 ttt_parasite_infection_time                 45      // The time it takes in seconds for the parasite to fully infect someone
+ttt_parasite_infection_warning_time         0       // The time in seconds after infection to warn the victim. Set to 0 to disable.
 ttt_parasite_infection_transfer             0       // Whether the parasite's infection will transfer if the parasite's killer is killed by another player
 ttt_parasite_infection_transfer_reset       1       // Whether the parasite's infection progress will reset if their infection is transferred to another player
 ttt_parasite_infection_suicide_mode         0       // The way to handle when a player infected by the parasite kills themselves. 0 - Do nothing. 1 - Respawn the parasite. 2 - Respawn the parasite ONLY IF the infected player killed themselves with a console command like "kill"
@@ -476,6 +477,11 @@ ttt_beggar_respawn_change_role              0       // Whether to change the rol
 ttt_beggar_notify_mode                      0       // The logic to use when notifying players that a beggar is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
 ttt_beggar_notify_sound                     0       // Whether to play a cheering sound when a beggar is killed
 ttt_beggar_notify_confetti                  0       // Whether to throw confetti when a beggar is a killed
+ttt_beggar_traitor_scan                     0       // Whether the beggar can scan players to see if they are traitors
+ttt_beggar_traitor_scan_time                15      // The amount of time (in seconds) the beggar's scanner takes to use
+ttt_beggar_traitor_scan_float_time          1       // The amount of time (in seconds) it takes for the beggar's scanner to lose it's target without line of sight
+ttt_beggar_traitor_scan_cooldown            3       // The amount of time (in seconds) the beggar's tracker goes on cooldown for after losing it's target
+ttt_beggar_traitor_scan_distance            2500    // The maximum distance away the scanner target can be
 
 // Bodysnatcher
 ttt_bodysnatchers_are_independent           0       // Whether bodysnatchers should be treated as members of the independent team (rather than the jester team)

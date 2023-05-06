@@ -1,5 +1,17 @@
 # Release Notes
 
+### 1.8.7 (Beta)
+**Released: May 6th, 2023**
+
+### Additions
+- Added ability for the beggar to scan players (`ttt_beggar_traitor_scan`) to determine whether they are traitors (disabled by default)
+- Added buyable Death Radar for the mad scientist which will update periodically to mark dead bodies
+- Added ability to warn a player infected by the parasite after a configurable (`ttt_parasite_infection_warning_time`) amount of time (disabled by default)
+
+### Developer
+- Added `table.HasItemWithPropertyValue` static method
+- Added equipment frame as parameter to `TTTEquipmentTabs`
+
 ### 1.8.6 (Beta)
 **Released: April 30th, 2023**
 
