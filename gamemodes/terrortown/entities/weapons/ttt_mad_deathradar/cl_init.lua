@@ -67,7 +67,7 @@ function DEATHRADAR:Timeout()
 end
 
 local beacon_back = surface.GetTextureID("vgui/ttt/beacon_back")
-local beacon_det = surface.GetTextureID("vgui/ttt/beacon_det")
+local beacon_skull = surface.GetTextureID("vgui/ttt/beacon_skull")
 
 local GetPTranslation = LANG.GetParamTranslation
 local FormatTime = util.SimpleTime
@@ -87,7 +87,7 @@ function DEATHRADAR:Draw(client)
         RADAR:DrawTarget(target, 16, 0.5)
     end
 
-    surface.SetTexture(beacon_det)
+    surface.SetTexture(beacon_skull)
     surface.SetTextColor(255, 255, 255, 255)
     surface.SetDrawColor(255, 255, 255, 255)
 
