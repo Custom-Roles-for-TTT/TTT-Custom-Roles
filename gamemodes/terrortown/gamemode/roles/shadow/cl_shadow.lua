@@ -110,8 +110,8 @@ end)
 -- TARGET ID --
 ---------------
 
-hook.Add("TTTTargetIDPlayerText", "Shadow_TTTTargetIDPlayerText", function(ent, client, text, clr, secondaryText)
-    if IsPlayer(ent) and client:IsActiveShadow() and ent:SteamID64() == client:GetNWString("ShadowTarget", "") then
+hook.Add("TTTTargetIDPlayerText", "Shadow_TTTTargetIDPlayerText", function(ent, cli, text, clr, secondaryText)
+    if IsPlayer(ent) and cli:IsActiveShadow() and ent:SteamID64() == cli:GetNWString("ShadowTarget", "") then
         if text == nil then
             return LANG.GetTranslation("shadow_target"), ROLE_COLORS_RADAR[ROLE_SHADOW]
         end
@@ -170,7 +170,7 @@ local function EnableShadowTargetHighlights()
 end
 
 hook.Add("TTTUpdateRoleState", "Shadow_Highlight_TTTUpdateRoleState", function()
-    client = LocalPlayer()
+    client = client or LocalPlayer()
 
     -- Disable highlights on role change
     if vision_enabled then
@@ -298,25 +298,28 @@ local function TargetCleanup()
 end
 
 hook.Add("Think", "Shadow_Think", function()
-    local ply = LocalPlayer()
-    if ply:IsActiveShadow() then
-        targetPlayer = targetPlayer or player.GetBySteamID64(ply:GetNWString("ShadowTarget", ""))
+    if not IsPlayer(client) then
+        client = LocalPlayer()
+    end
+
+    if client:IsActiveShadow() then
+        targetPlayer = targetPlayer or player.GetBySteamID64(client:GetNWString("ShadowTarget", ""))
         if IsValid(targetPlayer) then
             if targetPlayer:IsActive() then
                 local alive_radius = GetGlobalFloat("ttt_shadow_alive_radius", 419.92)
-                DrawRadius(ply, targetPlayer, alive_radius)
-                if ply:GetPos():Distance(targetPlayer:GetPos()) > alive_radius then
-                    DrawLink(ply, targetPlayer)
+                DrawRadius(client, targetPlayer, alive_radius)
+                if client:GetPos():Distance(targetPlayer:GetPos()) > alive_radius then
+                    DrawLink(client, targetPlayer)
                 end
             else
                 RemoveRadius(targetPlayer)
                 RemoveLink(targetPlayer)
-                targetBody = targetBody or ClientGetRagdollEntity(ply:GetNWString("ShadowTarget", ""))
+                targetBody = targetBody or ClientGetRagdollEntity(client:GetNWString("ShadowTarget", ""))
                 if IsValid(targetBody) then
                     local dead_radius = GetGlobalFloat("ttt_shadow_dead_radius", 157.47)
-                    DrawRadius(ply, targetBody, dead_radius)
-                    if ply:GetPos():Distance(targetBody:GetPos()) > dead_radius then
-                        DrawLink(ply, targetBody)
+                    DrawRadius(client, targetBody, dead_radius)
+                    if client:GetPos():Distance(targetBody:GetPos()) > dead_radius then
+                        DrawLink(client, targetBody)
                     end
                 end
             end
@@ -335,19 +338,21 @@ end)
 ---------
 
 hook.Add("HUDPaint", "Shadow_HUDPaint", function()
-    local ply = LocalPlayer()
+    if not IsPlayer(client) then
+        client = LocalPlayer()
+    end
 
-    if not IsValid(ply) or ply:IsSpec() or GetRoundState() ~= ROUND_ACTIVE then return end
+    if not IsValid(client) or client:IsSpec() or GetRoundState() ~= ROUND_ACTIVE then return end
 
-    local t = ply:GetNWFloat("ShadowTimer", -1)
+    local t = client:GetNWFloat("ShadowTimer", -1)
 
-    if ply:IsActiveShadow() and t > 0 then
+    if client:IsActiveShadow() and t > 0 then
         local remaining = math.max(0, t - CurTime())
 
         local PT = LANG.GetParamTranslation
         local message
         local total
-        if ply:IsRoleActive() then
+        if client:IsRoleActive() then
             message = PT("shadow_return_target", { time = util.SimpleTime(remaining, "%02i:%02i") })
             total = GetGlobalInt("ttt_shadow_buffer_timer", 7)
         else
