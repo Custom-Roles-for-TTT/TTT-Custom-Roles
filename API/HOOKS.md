@@ -634,8 +634,8 @@ Called when determining what speed the player should be moving at.\
 
 ### TTTSprintKey(ply)
 Called when determining if a player is sprinting. Allows overriding of which directional key needs to be pressed for sprinting to start.
-*Realm:* Client\
-*Added in:* 1.0.0\
+*Realm:* Client and Server\
+*Added in:* 1.0.0 on Client and 1.8.8 on Server\
 *Parameters:*
 - *ply* - Player who is being checked for sprinting
 
@@ -643,8 +643,8 @@ Called when determining if a player is sprinting. Allows overriding of which dir
 
 ### TTTSprintStaminaPost(ply, stamina, sprintTimer, consumption)
 Called after a player's sprint stamina is reduced. Used to adjust the player's new stamina amount.\
-*Realm:* Client\
-*Added in:* 1.0.2\
+*Realm:* Client and Server\
+*Added in:* 1.0.2 on Client and 1.8.8 on Server\
 *Parameters:*
 - *ply* - Player whose stamina is being adjusted
 - *stamina* - Player's current stamina
@@ -653,15 +653,24 @@ Called after a player's sprint stamina is reduced. Used to adjust the player's n
 
 *Return:* The stamina value to assign to the player. If none is provided, the player's stamina will not be changed.
 
-### TTTSprintStaminaRecovery(client, recovery)
+### TTTSprintStaminaRecovery(ply, recovery)
 Called before a player's sprint stamina is recovered. Used to adjust how fast the player's stamina will recover.\
-*Realm:* Client\
-*Added in:* 1.3.6\
+*Realm:* Client and Server\
+*Added in:* 1.3.6 on Client and 1.8.8 on Server\
 *Parameters:*
-- *client* - The local player
+- *ply* - Player whose stamina is being adjusted
 - *recovery* - Player's current stamina recovery rate
 
 *Return:* The stamina recovery rate to assign to the player. If none is provided, the player's default stamina recovery rate will be used.
+
+### TTTSprintStateChange(ply, sprinting, wasSprinting)
+Called when a player starts or stops sprinting
+*Realm:* Client and Server\
+*Added in:* 1.8.8\
+*Parameters:*
+- *ply* - Player whose sprint state changed
+- *sprinting* - Whether the player is now sprinting
+- *wasSprinting* - Whether the player was sprinting
 
 ### TTTShouldPlayerSmoke(ply, client, shouldSmoke, smokeColor, smokeParticle, smokeOffset)
 .\

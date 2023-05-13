@@ -467,7 +467,7 @@ local function InfoPaint(client)
     if GetGlobalBool("ttt_sprint_enabled", true) then
         local sprint_y = health_y + (2 * (bar_height + margin))
 
-        CRHUD:PaintBar(2, x + margin, sprint_y, bar_width, sprint_bar_height, sprint_colors, client:GetNWFloat("sprintMeter", 0) / 100)
+        CRHUD:PaintBar(2, x + margin, sprint_y, bar_width, sprint_bar_height, sprint_colors, client:GetSprintStamina() / 100)
     end
 
     if client:WaterLevel() == 3 then
