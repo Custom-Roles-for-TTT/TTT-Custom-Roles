@@ -1,7 +1,6 @@
 include("shared.lua")
 
 local cam = cam
-local chat = chat
 local concommand = concommand
 local ents = ents
 local halo = halo
@@ -76,6 +75,7 @@ include("cl_equip.lua")
 include("cl_voice.lua")
 include("cl_roleweapons.lua")
 include("cl_hitmarkers.lua")
+include("cl_deathnotify.lua")
 
 local traitor_vision = false
 local jesters_visible_to_traitors = false
@@ -652,35 +652,6 @@ end)
 AddHook("TTTPlayerSpeedModifier", "TTTSprintPlayerSpeed", function(sply, _, _)
     if sply ~= LocalPlayer() then return end
     return GetSprintMultiplier(sply, sprintEnabled and sprinting)
-end)
-
--- Death messages
-net.Receive("TTT_ClientDeathNotify", function()
-    -- Read the variables from the message
-    local name = net.ReadString()
-    local role = net.ReadInt(8)
-    local reason = net.ReadString()
-
-    -- Format the number role into a human readable role and identifying color
-    local roleString = ROLE_STRINGS_EXT[role]
-    local col = ROLE_COLORS_HIGHLIGHT[role]
-
-    -- Format the reason for their death
-    if reason == "suicide" then
-        chat.AddText(COLOR_WHITE, "You killed yourself!")
-    elseif reason == "burned" then
-        chat.AddText(COLOR_WHITE, "You burned to death!")
-    elseif reason == "prop" then
-        chat.AddText(COLOR_WHITE, "You were killed by a prop!")
-    elseif reason == "ply" then
-        chat.AddText(COLOR_WHITE, "You were killed by ", col, name, COLOR_WHITE, ", they were ", col, roleString .. "!")
-    elseif reason == "fell" then
-        chat.AddText(COLOR_WHITE, "You fell to your death!")
-    elseif reason == "water" then
-        chat.AddText(COLOR_WHITE, "You drowned!")
-    else
-        chat.AddText(COLOR_WHITE, "You died!")
-    end
 end)
 
 -- Player highlights

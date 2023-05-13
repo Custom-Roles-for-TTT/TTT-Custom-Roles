@@ -40,6 +40,7 @@ AddCSLuaFile("vgui/sb_row.lua")
 AddCSLuaFile("vgui/sb_team.lua")
 AddCSLuaFile("vgui/sb_info.lua")
 AddCSLuaFile("cl_hitmarkers.lua")
+AddCSLuaFile("cl_deathnotify.lua")
 
 include("shared.lua")
 
@@ -59,6 +60,7 @@ include("player_ext_shd.lua")
 include("player_ext.lua")
 include("player.lua")
 include("hitmarkers.lua")
+include("deathnotify.lua")
 
 -- Localise stuff we use often. It's like Lua go-faster stripes.
 local concommand = concommand
@@ -85,7 +87,6 @@ local StringFormat = string.format
 local StringLower = string.lower
 local StringUpper = string.upper
 local StringSub = string.sub
-local StringStartsWith = string.StartsWith
 
 -- Round times
 CreateConVar("ttt_roundtime_minutes", "10", FCVAR_NOTIFY)
@@ -315,8 +316,6 @@ CreateConVar("ttt_namechange_bantime", "10")
 CreateConVar("ttt_disable_headshots", "0")
 CreateConVar("ttt_disable_mapwin", "0")
 
-CreateConVar("ttt_death_notifier_enable", "1")
-
 -- bem server convars
 CreateConVar("ttt_bem_allow_change", 1, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Allow clients to change the look of the shop menu")
 CreateConVar("ttt_bem_sv_cols", 4, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Sets the number of columns in the shop menu's item list (serverside)")
@@ -378,7 +377,6 @@ util.AddNetworkString("TTT_Radar")
 util.AddNetworkString("TTT_Spectate")
 util.AddNetworkString("TTT_TeleportMark")
 util.AddNetworkString("TTT_ClearRadarExtras")
-util.AddNetworkString("TTT_ClientDeathNotify")
 util.AddNetworkString("TTT_SprintSpeedSet")
 util.AddNetworkString("TTT_SprintGetConVars")
 util.AddNetworkString("TTT_SpawnedPlayers")
@@ -1936,49 +1934,6 @@ function ShowVersion(ply)
     end
 end
 concommand.Add("ttt_version", ShowVersion)
-
--- Death messages
-hook.Add("PlayerDeath", "TTT_ClientDeathNotify", function(victim, inflictor, attacker)
-    if gmod.GetGamemode().Name ~= "Trouble in Terrorist Town" then return end
-    if not GetConVar("ttt_death_notifier_enable"):GetBool() then return end
-
-    local reason = "nil"
-    local killerName = "nil"
-    local role = ROLE_NONE
-
-    if victim.DiedByWater then
-        reason = "water"
-    elseif attacker == victim then
-        reason = "suicide"
-    elseif IsValid(inflictor) then
-        if victim:IsPlayer() and (StringStartsWith(inflictor:GetClass(), "prop_physics") or inflictor:GetClass() == "prop_dynamic") then
-            -- If the killer is also a prop
-            reason = "prop"
-        elseif IsValid(attacker) then
-            if inflictor:GetClass() == "entityflame" and attacker:GetClass() == "entityflame" then
-                reason = "burned"
-            elseif inflictor:GetClass() == "worldspawn" and attacker:GetClass() == "worldspawn" then
-                reason = "fell"
-            elseif attacker:IsPlayer() and victim ~= attacker then
-                reason = "ply"
-                killerName = attacker:Nick()
-                role = attacker:GetRole()
-            end
-        end
-    end
-
-    local new_reason, new_killer, new_role = CallHook("TTTDeathNotifyOverride", nil, victim, inflictor, attacker, reason, killerName, role)
-    if type(new_reason) == "string" then reason = new_reason end
-    if type(new_killer) == "string" then killerName = new_killer end
-    if type(new_role) == "number" and new_role >= ROLE_NONE and new_role <= ROLE_MAX then role = new_role end
-
-    -- Send the buffer message with the death information to the victim
-    net.Start("TTT_ClientDeathNotify")
-    net.WriteString(killerName)
-    net.WriteInt(role, 8)
-    net.WriteString(reason)
-    net.Send(victim)
-end)
 
 -- Sprint
 net.Receive("TTT_SprintSpeedSet", function(len, ply)
