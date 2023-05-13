@@ -632,8 +632,17 @@ Called when determining what speed the player should be moving at.\
 - *mults* - The table of speed multipliers that should be applied to this player. Insert any multipliers you would like to apply to the target player into this table
 - *sprinting* - Whether the player is currently sprinting *(Added in 1.7.3)*
 
+### TTTSprintKey(ply)
+Called when determining if a player is sprinting. Allows overriding of which directional key needs to be pressed for sprinting to start.
+*Realm:* Client\
+*Added in:* 1.0.0\
+*Parameters:*
+- *ply* - Player who is being checked for sprinting
+
+*Return:* The [IN_*](https://wiki.facepunch.com/gmod/Enums/IN) enum value representing the key that must be pressed in addition to `IN_SPEED` to start sprinting. If none provided, default of `IN_FORWARD` will be used.
+
 ### TTTSprintStaminaPost(ply, stamina, sprintTimer, consumption)
-Called after a player's sprint stamina is reduced. Return value is the new stamina value for the player.\
+Called after a player's sprint stamina is reduced. Used to adjust the player's new stamina amount.\
 *Realm:* Client\
 *Added in:* 1.0.2\
 *Parameters:*
