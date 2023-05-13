@@ -384,6 +384,7 @@ end
 local CreateEntity = ents.Create
 function SWEP:DropBones()
     local pos = self.TargetEntity:GetPos()
+    local fingerprints = { self:GetOwner() }
 
     local skull = CreateEntity("prop_physics")
     if not IsValid(skull) then return end
@@ -391,6 +392,7 @@ function SWEP:DropBones()
     skull:SetPos(pos)
     skull:Spawn()
     skull:SetCollisionGroup(COLLISION_GROUP_WEAPON)
+    skull.fingerprints = fingerprints
 
     local ribs = CreateEntity("prop_physics")
     if not IsValid(ribs) then return end
@@ -398,6 +400,7 @@ function SWEP:DropBones()
     ribs:SetPos(pos + Vector(0, 0, 15))
     ribs:Spawn()
     ribs:SetCollisionGroup(COLLISION_GROUP_WEAPON)
+    ribs.fingerprints = fingerprints
 
     local spine = CreateEntity("prop_physics")
     if not IsValid(ribs) then return end
@@ -405,6 +408,7 @@ function SWEP:DropBones()
     spine:SetPos(pos + Vector(0, 0, 30))
     spine:Spawn()
     spine:SetCollisionGroup(COLLISION_GROUP_WEAPON)
+    spine.fingerprints = fingerprints
 
     local scapula = CreateEntity("prop_physics")
     if not IsValid(scapula) then return end
@@ -412,6 +416,7 @@ function SWEP:DropBones()
     scapula:SetPos(pos + Vector(0, 0, 45))
     scapula:Spawn()
     scapula:SetCollisionGroup(COLLISION_GROUP_WEAPON)
+    scapula.fingerprints = fingerprints
 end
 
 function SWEP:Think()
