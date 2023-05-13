@@ -23,7 +23,7 @@ local TableHasValue = table.HasValue
 local TableInsert = table.insert
 local TableSort = table.sort
 
--- create ClientConVars
+-- BEM client convars and config menu
 local numColsVar = CreateClientConVar("ttt_bem_cols", 4, true, false, "Sets the number of columns in the Traitor/Detective menu's item list.")
 local numRowsVar = CreateClientConVar("ttt_bem_rows", 5, true, false, "Sets the number of rows in the Traitor/Detective menu's item list.")
 local itemSizeVar = CreateClientConVar("ttt_bem_size", 64, true, false, "Sets the item size in the Traitor/Detective menu's item list.")
@@ -33,6 +33,45 @@ local showSlotVar = CreateClientConVar("ttt_bem_marker_slot", 1, true, false, "S
 local showLoadoutEquipment = CreateClientConVar("ttt_show_loadout_equipment", 0, true, false, "Should loadout equipment show in shops?")
 local sortAlphabetically = CreateClientConVar("ttt_sort_alphabetically", 1, true, false, "Should the shop sort alphabetically?")
 local sortBySlotFirst = CreateClientConVar("ttt_sort_by_slot_first", 0, true, false, "Should the shop sort by slot first?")
+
+hook.Add("Initialize", "EquipmentMenu_Initialize", function()
+    LANG.AddToLanguage("english", "set_title_equipment", "Equipment/Shop settings")
+    LANG.AddToLanguage("english", "set_label_equipment", "All changes made here are clientside and will only apply to your own menu!")
+    LANG.AddToLanguage("english", "set_equipment_convar_slot", "Show slot marker")
+    LANG.AddToLanguage("english", "set_equipment_convar_custom", "Show custom item marker")
+    LANG.AddToLanguage("english", "set_equipment_convar_fav", "Show favourite item marker")
+    LANG.AddToLanguage("english", "set_equipment_convar_loadout", "Show loadout items")
+    LANG.AddToLanguage("english", "set_equipment_convar_alpha", "Sort alphabetically")
+    LANG.AddToLanguage("english", "set_equipment_convar_sort_by_slot", "Sort by slot first")
+end)
+
+hook.Add("TTTSettingsConfigTabSections", "EquipmentMenu_TTTSettingsConfigTabSections", function(dsettings)
+    local dbemsettings = vgui.Create("DForm", dsettings)
+    dbemsettings:Dock(TOP)
+    dbemsettings:DockMargin(0, 0, 5, 10)
+    dbemsettings:DoExpansion(false)
+    dbemsettings:SetName(GetTranslation("set_title_equipment"))
+
+    local dlabel = vgui.Create("DLabel", dbemsettings)
+    dlabel:SetText(GetTranslation("set_label_equipment"))
+    dlabel:SetTextColor(Color(0, 0, 0, 255))
+    dbemsettings:AddItem(dlabel)
+
+    dbemsettings:NumSlider("Number of columns (def. 4)", "ttt_bem_cols", 1, 20, 0)
+    dbemsettings:NumSlider("Number of rows (def. 5)", "ttt_bem_rows", 1, 20, 0)
+    dbemsettings:NumSlider("Icon size (def. 64)", "ttt_bem_size", 32, 128, 0)
+
+    dbemsettings:CheckBox(GetTranslation("set_equipment_convar_slot"), "ttt_bem_marker_slot")
+    dbemsettings:CheckBox(GetTranslation("set_equipment_convar_custom"), "ttt_bem_marker_custom")
+    dbemsettings:CheckBox(GetTranslation("set_equipment_convar_fav"), "ttt_bem_marker_fav")
+    dbemsettings:CheckBox(GetTranslation("set_equipment_convar_loadout"), "ttt_show_loadout_equipment")
+    dbemsettings:CheckBox(GetTranslation("set_equipment_convar_alpha"), "ttt_sort_alphabetically")
+    dbemsettings:CheckBox(GetTranslation("set_equipment_convar_sort_by_slot"), "ttt_sort_by_slot_first")
+
+    CallHook("TTTSettingsConfigTabFields", nil, "BEM", dbemsettings)
+
+    dsettings:AddItem(dbemsettings)
+end)
 
 -- Buyable weapons are loaded automatically. Buyable items are defined in
 -- equip_items_shd.lua

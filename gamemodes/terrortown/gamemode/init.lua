@@ -39,6 +39,7 @@ AddCSLuaFile("vgui/sb_main.lua")
 AddCSLuaFile("vgui/sb_row.lua")
 AddCSLuaFile("vgui/sb_team.lua")
 AddCSLuaFile("vgui/sb_info.lua")
+AddCSLuaFile("cl_hitmarkers.lua")
 
 include("shared.lua")
 
@@ -57,6 +58,7 @@ include("corpse.lua")
 include("player_ext_shd.lua")
 include("player_ext.lua")
 include("player.lua")
+include("hitmarkers.lua")
 
 -- Localise stuff we use often. It's like Lua go-faster stripes.
 local concommand = concommand
@@ -376,9 +378,6 @@ util.AddNetworkString("TTT_Radar")
 util.AddNetworkString("TTT_Spectate")
 util.AddNetworkString("TTT_TeleportMark")
 util.AddNetworkString("TTT_ClearRadarExtras")
-util.AddNetworkString("TTT_DrawHitMarker")
-util.AddNetworkString("TTT_CreateBlood")
-util.AddNetworkString("TTT_OpenMixer")
 util.AddNetworkString("TTT_ClientDeathNotify")
 util.AddNetworkString("TTT_SprintSpeedSet")
 util.AddNetworkString("TTT_SprintGetConVars")
@@ -1937,52 +1936,6 @@ function ShowVersion(ply)
     end
 end
 concommand.Add("ttt_version", ShowVersion)
-
--- Hit Markers
--- Creator: Exho
-
-resource.AddFile("sound/hitmarkers/mlghit.wav")
-hook.Add("EntityTakeDamage", "HitmarkerDetector", function(ent, dmginfo)
-    local att = dmginfo:GetAttacker()
-    local pos = dmginfo:GetDamagePosition()
-
-    if IsPlayer(att) and att ~= ent then
-        if (ent:IsPlayer() or ent:IsNPC()) then -- Only players and NPCs show hitmarkers
-            local drawCrit = ent:GetNWBool("LastHitCrit") and not GetConVar("ttt_disable_headshots"):GetBool()
-
-            net.Start("TTT_DrawHitMarker")
-            net.WriteBool(drawCrit)
-            net.Send(att) -- Send the message to the attacker
-
-            net.Start("TTT_CreateBlood")
-            net.WriteVector(pos)
-            net.Broadcast()
-        end
-    end
-end)
-
-hook.Add("ScalePlayerDamage", "HitmarkerPlayerCritDetector", function(ply, hitgroup, dmginfo)
-    ply:SetNWBool("LastHitCrit", hitgroup == HITGROUP_HEAD)
-end)
-
-hook.Add("ScaleNPCDamage", "HitmarkerPlayerCritDetector", function(npc, hitgroup, dmginfo)
-    npc:SetNWBool("LastHitCrit", hitgroup == HITGROUP_HEAD)
-end)
-
-hook.Add("PlayerSay", "ColorMixerOpen", function(ply, text, team_only)
-    text = StringLower(text)
-    if (StringSub(text, 1, 12) == "!hmcritcolor") then
-        net.Start("TTT_OpenMixer")
-        net.WriteBool(true)
-        net.Send(ply)
-        return false
-    elseif (StringSub(text, 1, 8) == "!hmcolor") then
-        net.Start("TTT_OpenMixer")
-        net.WriteBool(false)
-        net.Send(ply)
-        return false
-    end
-end)
 
 -- Death messages
 hook.Add("PlayerDeath", "TTT_ClientDeathNotify", function(victim, inflictor, attacker)
