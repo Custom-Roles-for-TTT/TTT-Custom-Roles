@@ -1,6 +1,5 @@
 local gmod = gmod
 local hook = hook
-local IsValid = IsValid
 local net = net
 local string = string
 local util = util
@@ -24,16 +23,17 @@ hook.Add("PlayerDeath", "TTT_ClientDeathNotify", function(victim, inflictor, att
         reason = "water"
     elseif attacker == victim then
         reason = "suicide"
-    elseif IsValid(inflictor) then
-        if victim:IsPlayer() and (StringStartsWith(inflictor:GetClass(), "prop_physics") or inflictor:GetClass() == "prop_dynamic") then
+    elseif inflictor then
+        if IsPlayer(victim) and (StringStartsWith(inflictor:GetClass(), "prop_physics") or inflictor:GetClass() == "prop_dynamic") then
             -- If the killer is also a prop
             reason = "prop"
-        elseif IsValid(attacker) then
-            if inflictor:GetClass() == "entityflame" and attacker:GetClass() == "entityflame" then
+        elseif attacker then
+            if (inflictor:GetClass() == "entityflame" and attacker:GetClass() == "entityflame") or
+                (inflictor:GetClass() == "env_fire" and attacker:GetClass() == "env_fire") then
                 reason = "burned"
             elseif inflictor:GetClass() == "worldspawn" and attacker:GetClass() == "worldspawn" then
                 reason = "fell"
-            elseif attacker:IsPlayer() and victim ~= attacker then
+            elseif IsPlayer(attacker) and victim ~= attacker then
                 reason = "ply"
                 killerName = attacker:Nick()
                 role = attacker:GetRole()
