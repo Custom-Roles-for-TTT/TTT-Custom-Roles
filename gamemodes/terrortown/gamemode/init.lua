@@ -41,6 +41,8 @@ AddCSLuaFile("vgui/sb_team.lua")
 AddCSLuaFile("vgui/sb_info.lua")
 AddCSLuaFile("cl_hitmarkers.lua")
 AddCSLuaFile("cl_deathnotify.lua")
+AddCSLuaFile("cl_sprint.lua")
+AddCSLuaFile("sprint_shd.lua")
 
 include("shared.lua")
 
@@ -61,6 +63,8 @@ include("player_ext.lua")
 include("player.lua")
 include("hitmarkers.lua")
 include("deathnotify.lua")
+include("sprint.lua")
+include("sprint_shd.lua")
 
 -- Localise stuff we use often. It's like Lua go-faster stripes.
 local concommand = concommand
@@ -321,13 +325,6 @@ CreateConVar("ttt_bem_sv_cols", 4, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERV
 CreateConVar("ttt_bem_sv_rows", 5, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Sets the number of rows in the shop menu's item list (serverside)")
 CreateConVar("ttt_bem_sv_size", 64, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Sets the item size in the shop menu's item list (serverside)")
 
--- sprint convars
-local sprintEnabled = CreateConVar("ttt_sprint_enabled", "1", FCVAR_SERVER_CAN_EXECUTE, "Whether sprint is enabled")
-local speedMultiplier = CreateConVar("ttt_sprint_bonus_rel", "0.4", FCVAR_SERVER_CAN_EXECUTE, "The relative speed bonus given while sprinting. Def: 0.4")
-local recovery = CreateConVar("ttt_sprint_regenerate_innocent", "0.08", FCVAR_SERVER_CAN_EXECUTE, "Sets stamina regeneration for innocents. Def: 0.08")
-local traitorRecovery = CreateConVar("ttt_sprint_regenerate_traitor", "0.12", FCVAR_SERVER_CAN_EXECUTE, "Sets stamina regeneration speed for traitors. Def: 0.12")
-local consumption = CreateConVar("ttt_sprint_consume", "0.2", FCVAR_SERVER_CAN_EXECUTE, "Sets stamina consumption speed. Def: 0.2")
-
 local ttt_detective = CreateConVar("ttt_sherlock_mode", "1", FCVAR_ARCHIVE + FCVAR_NOTIFY)
 local ttt_minply = CreateConVar("ttt_minimum_players", "2", FCVAR_ARCHIVE + FCVAR_NOTIFY)
 
@@ -376,8 +373,6 @@ util.AddNetworkString("TTT_Radar")
 util.AddNetworkString("TTT_Spectate")
 util.AddNetworkString("TTT_TeleportMark")
 util.AddNetworkString("TTT_ClearRadarExtras")
-util.AddNetworkString("TTT_SprintSpeedSet")
-util.AddNetworkString("TTT_SprintGetConVars")
 util.AddNetworkString("TTT_SpawnedPlayers")
 util.AddNetworkString("TTT_Defibrillated")
 util.AddNetworkString("TTT_RoleChanged")
@@ -552,8 +547,6 @@ function GM:SyncGlobals()
 
     SetGlobalBool("ttt_scoreboard_deaths", GetConVar("ttt_scoreboard_deaths"):GetBool())
     SetGlobalBool("ttt_scoreboard_score", GetConVar("ttt_scoreboard_score"):GetBool())
-
-    SetGlobalBool("ttt_sprint_enabled", GetConVar("ttt_sprint_enabled"):GetBool())
 
     UpdateRoleState()
 end
@@ -1933,36 +1926,3 @@ function ShowVersion(ply)
     end
 end
 concommand.Add("ttt_version", ShowVersion)
-
--- Sprint
-net.Receive("TTT_SprintSpeedSet", function(len, ply)
-    if not sprintEnabled:GetBool() then
-        ply.mult = nil
-        return
-    end
-
-    if net.ReadBool() then
-        ply.mult = 1 + speedMultiplier:GetFloat()
-    else
-        ply.mult = nil
-    end
-end)
-
--- Send ConVars if requested
-net.Receive("TTT_SprintGetConVars", function(len, ply)
-    local convars = {
-        [1] = sprintEnabled:GetBool(),
-        [2] = speedMultiplier:GetFloat(),
-        [3] = recovery:GetFloat(),
-        [4] = traitorRecovery:GetFloat(),
-        [5] = consumption:GetFloat()
-    }
-    net.Start("TTT_SprintGetConVars")
-    net.WriteTable(convars)
-    net.Send(ply)
-end)
-
--- return Speed
-hook.Add("TTTPlayerSpeedModifier", "TTTSprintPlayerSpeed", function(ply, _, _)
-    return GetSprintMultiplier(ply, sprintEnabled:GetBool() and ply.mult ~= nil)
-end)
