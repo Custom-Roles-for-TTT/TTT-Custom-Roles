@@ -17,10 +17,12 @@ local weapons = weapons
 
 ---- Weapon system, pickup limits, etc
 
-local GetAllPlayers = player.GetAll
+local CallHook = hook.Call
 local CreateEntity = ents.Create
+local GetAllPlayers = player.GetAll
 local IsEquipment = WEPS.IsEquipment
 local StringLower = string.lower
+local StringSub = string.sub
 
 -- Prevent players from picking up multiple weapons of the same type etc
 function GM:PlayerCanPickupWeapon(ply, wep)
@@ -753,6 +755,80 @@ function WEPS.ForcePrecache()
             util.PrecacheModel(w.ViewModel)
         end
     end
+end
+
+-- Roleweapons
+
+-- If this logic or the list of roles who can buy is changed, it must also be updated in OrderEquipment above and cl_equip.lua
+-- This also sends a cache reset request to every client so that things like shop randomization happen every round
+function WEPS.HandleRoleEquipment()
+    local handled = false
+    for id, name in pairs(ROLE_STRINGS_RAW) do
+        WEPS.PrepWeaponsLists(id)
+        local rolefiles, _ = file.Find("roleweapons/" .. name .. "/*.txt", "DATA")
+        local roleexcludes = { }
+        local roleenorandoms = { }
+        local roleweapons = { }
+        for _, v in pairs(rolefiles) do
+            local exclude = false
+            local norandom = false
+            -- Extract the weapon name from the file name
+            local lastdotpos = v:find("%.")
+            local weaponname = StringSub(v, 0, lastdotpos - 1)
+
+            -- Check that there isn't a two-part extension (e.g. "something.exclude.txt")
+            local extension = StringSub(v, lastdotpos + 1, #v)
+            lastdotpos = extension:find("%.")
+
+            -- If there is, check if it equals one of our expected types
+            if lastdotpos ~= nil then
+                extension = StringLower(StringSub(extension, 0, lastdotpos - 1))
+                if extension == "exclude" then
+                    exclude = true
+                elseif extension == "norandom" then
+                    norandom = true
+                end
+            end
+
+            if exclude then
+                table.insert(WEPS.ExcludeWeapons[id], weaponname)
+                table.insert(roleexcludes, weaponname)
+            elseif norandom then
+                table.insert(WEPS.BypassRandomWeapons[id], weaponname)
+                table.insert(roleenorandoms, weaponname)
+            else
+                table.insert(WEPS.BuyableWeapons[id], weaponname)
+                table.insert(roleweapons, weaponname)
+            end
+        end
+
+        if id >= ROLE_EXTERNAL_START and ROLE_SHOP_ITEMS[id] then
+            for _, v in pairs(ROLE_SHOP_ITEMS[id]) do
+                table.insert(WEPS.BuyableWeapons[id], v)
+                table.insert(roleweapons, v)
+            end
+        end
+
+        if #roleweapons > 0 or #roleexcludes > 0 or #roleenorandoms > 0 then
+            net.Start("TTT_BuyableWeapons")
+            net.WriteInt(id, 16)
+            net.WriteTable(roleweapons)
+            net.WriteTable(roleexcludes)
+            net.WriteTable(roleenorandoms)
+            net.Broadcast()
+            handled = true
+        end
+    end
+
+    -- Send this once if the roleweapons feature wasn't used (which resets the cache on its own)
+    if not handled then
+        net.Start("TTT_ResetBuyableWeaponsCache")
+        net.Broadcast()
+    end
+
+    net.Start("TTT_RoleWeaponsLoaded")
+    net.Broadcast()
+    CallHook("TTTRoleWeaponsLoaded")
 end
 
 net.Receive("TTT_ConfigureRoleWeapons", function(len, ply)
