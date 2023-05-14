@@ -968,55 +968,6 @@ function HELPSCRN:CreateConfig(dsettings)
     HookCall("TTTSettingsConfigTabFields", nil, "Language", dlanguage)
 
     dsettings:AddItem(dlanguage)
-
-    -- BEM settings
-
-    local dbemsettings = vgui.Create("DForm", dsettings)
-    dbemsettings:Dock(TOP)
-    dbemsettings:DockMargin(0, 0, 5, 10)
-    dbemsettings:DoExpansion(false)
-    dbemsettings:SetName("BEM settings")
-
-    local dlabel = vgui.Create("DLabel", dbemsettings)
-    dlabel:SetText("All changes made here are clientside and will only apply to your own menu!")
-    dlabel:SetTextColor(Color(0, 0, 0, 255))
-    dbemsettings:AddItem(dlabel)
-
-    dbemsettings:NumSlider("Number of columns (def. 4)", "ttt_bem_cols", 1, 20, 0)
-    dbemsettings:NumSlider("Number of rows (def. 5)", "ttt_bem_rows", 1, 20, 0)
-    dbemsettings:NumSlider("Icon size (def. 64)", "ttt_bem_size", 32, 128, 0)
-
-    dbemsettings:CheckBox("Show slot marker", "ttt_bem_marker_slot")
-    dbemsettings:CheckBox("Show custom item marker", "ttt_bem_marker_custom")
-    dbemsettings:CheckBox("Show favourite item marker", "ttt_bem_marker_fav")
-    dbemsettings:CheckBox("Show loadout items", "ttt_show_loadout_equipment")
-    dbemsettings:CheckBox("Sort alphabetically", "ttt_sort_alphabetically")
-    dbemsettings:CheckBox("Sort by slot first", "ttt_sort_by_slot_first")
-
-    HookCall("TTTSettingsConfigTabFields", nil, "BEM", dbemsettings)
-
-    dsettings:AddItem(dbemsettings)
-
-    -- Hitmarkers settings
-
-    local dmarkers = vgui.Create("DForm", dsettings)
-    dmarkers:Dock(TOP)
-    dmarkers:DockMargin(0, 0, 5, 10)
-    dmarkers:DoExpansion(false)
-    dmarkers:SetName("Hitmarkers settings")
-
-    dlabel:SetText("All changes made here are clientside and will only apply to your own menu!\nUse the !hmcolor command in chat to change the marker colors.\nUse the !hmcritcolor command in chat to change the color of critical hit markers.")
-    dlabel:SetTextColor(Color(0, 0, 0, 255))
-    dlabel:SizeToContents()
-    dmarkers:AddItem(dlabel)
-
-    dmarkers:CheckBox("Enabled", "hm_enabled")
-    dmarkers:CheckBox("Show criticals", "hm_showcrits")
-    dmarkers:CheckBox("Play hit sound", "hm_hitsound")
-
-    HookCall("TTTSettingsConfigTabFields", nil, "Hitmarkers", dmarkers)
-
-    dsettings:AddItem(dmarkers)
 end
 
 local roleExpandState = {}

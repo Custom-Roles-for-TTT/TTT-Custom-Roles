@@ -6,6 +6,15 @@
 ### Additions
 - Added ability to use the DNA scanner on the body parts left behind when a vampire eats a player or corpse
 
+### Changes
+- Changed Hitmarkers settings menu labels to be translatable
+- Changed Equipment/sHop settings menu labels to be translatable
+- Changed death notification messages to be translatable
+
+### Fixes
+- Fixed "You fell to death!" death notification not working
+- Fixed "You burned to death!" death notification not working for some types of fires
+
 ### 1.8.7 (Beta)
 **Released: May 6th, 2023**
 
