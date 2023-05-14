@@ -11,10 +11,15 @@ local CallHook = hook.Call
 local GetAllPlayers = player.GetAll
 local MathClamp = math.Clamp
 
-function plymeta:GetSprinting() return self.Sprinting or false end
-function plymeta:SetSprinting(sprinting) self.Sprinting = sprinting end
-function plymeta:GetSprintStamina() return self.SprintStamina or 0 end
-function plymeta:SetSprintStamina(stamina) self.SprintStamina = stamina end
+local oldSetupDataTables = oldSetupDataTables or plymeta.SetupDataTables
+function plymeta:SetupDataTables()
+    if oldSetupDataTables then
+        oldSetupDataTables(self)
+    end
+
+    self:NetworkVar("Bool", 0, "Sprinting")
+    self:NetworkVar("Float", 0, "SprintStamina")
+end
 
 local staminaMax = 100
 local sprintEnabled = true
@@ -51,7 +56,10 @@ function GetSprintMultiplier(ply, sprinting)
 end
 
 local function ResetPlayerSprintState(ply)
-    ply:SetSprintStamina(staminaMax)
+    -- Just in case the data tables haven't been set up yet
+    if ply.SetSprintStamina then
+        ply:SetSprintStamina(staminaMax)
+    end
     ply.LastSprintStaminaRecoveryTime = nil
     ply.LastSprintStaminaConsumptionTime = nil
 end
@@ -166,4 +174,4 @@ end)
 
 
 
--- TODO: Prediction errors when out of stamina and when stamina recovery first starts
+-- TODO: Single prediction error when out of stamina
