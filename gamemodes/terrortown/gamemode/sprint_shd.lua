@@ -131,12 +131,12 @@ AddHook("TTTPrepareRound", "TTTSprintPrepareRound", function()
     -- Add all the hooks in TTTPrepareRound so addons which remove them to disable sprinting (e.g. Randomats) are undone in each new round
 
     AddHook("Move", "TTTSprintMove", function(ply, _)
-        local forward_key = CallHook("TTTSprintKey", nil, ply) or IN_FORWARD
-        local sprinting = ply:KeyDown(forward_key) and ply:KeyDown(IN_SPEED)
-        local oldSprinting = ply:GetSprinting()
+        local forwardKey = CallHook("TTTSprintKey", nil, ply) or IN_FORWARD
+        local wasSprinting = ply:GetSprinting()
+        local pressingSprint = ply:KeyDown(forwardKey) and ply:KeyDown(IN_SPEED)
 
         -- Only do this if the sprint state is actually changing
-        if oldSprinting ~= sprinting then
+        if wasSprinting ~= pressingSprint then
             -- Unset the opposite last-use time since we're not doing that thing anymore
             if sprinting then
                 ply.LastSprintStaminaRecoveryTime = nil
@@ -144,11 +144,11 @@ AddHook("TTTPrepareRound", "TTTSprintPrepareRound", function()
                 ply.LastSprintStaminaConsumptionTime = nil
             end
 
-            ply:SetSprinting(sprinting)
-            CallHook("TTTSprintStateChange", nil, ply, sprinting, oldSprinting)
+            ply:SetSprinting(pressingSprint)
+            CallHook("TTTSprintStateChange", nil, ply, pressingSprint, wasSprinting)
         -- Also call this hook if the player is still holding the button down but they are out of stamina
         -- so that things are notified that they have changed back to non-sprinting speed
-        elseif sprinting and ply:GetSprintStamina() == 0 then
+        elseif pressingSprint and ply:GetSprintStamina() == 0 then
             CallHook("TTTSprintStateChange", nil, ply, false, true)
         end
     end)
