@@ -138,7 +138,7 @@ AddHook("TTTPrepareRound", "TTTSprintPrepareRound", function()
         -- Only do this if the sprint state is actually changing
         if wasSprinting ~= pressingSprint then
             -- Unset the opposite last-use time since we're not doing that thing anymore
-            if sprinting then
+            if pressingSprint then
                 ply.LastSprintStaminaRecoveryTime = nil
             else
                 ply.LastSprintStaminaConsumptionTime = nil
