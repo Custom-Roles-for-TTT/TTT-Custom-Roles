@@ -625,6 +625,7 @@ Called when a player should be shown a role-specific spectator HUD, allowing tha
 
 ### TTTSpeedMultiplier(ply, mults, sprinting)
 Called when determining what speed the player should be moving at.\
+*NOTE:* This hook is [predicted](https://wiki.facepunch.com/gmod/prediction). This means that in singleplayer, it will not be called in the Client realm.\
 *Realm:* Client and Server\
 *Added in:* 1.0.0\
 *Parameters:*
@@ -633,7 +634,8 @@ Called when determining what speed the player should be moving at.\
 - *sprinting* - Whether the player is currently sprinting *(Added in 1.7.3)*
 
 ### TTTSprintKey(ply)
-Called when determining if a player is sprinting. Allows overriding of which directional key needs to be pressed for sprinting to start.
+Called when determining if a player is sprinting. Allows overriding of which directional key needs to be pressed for sprinting to start.\
+*NOTE:* This hook is [predicted](https://wiki.facepunch.com/gmod/prediction). This means that in singleplayer, it will not be called in the Client realm.\
 *Realm:* Client and Server\
 *Added in:* 1.0.0 on Client and 1.8.8 on Server\
 *Parameters:*
@@ -643,6 +645,7 @@ Called when determining if a player is sprinting. Allows overriding of which dir
 
 ### TTTSprintStaminaPost(ply, stamina, sprintTimer, consumption)
 Called after a player's sprint stamina is reduced. Used to adjust the player's new stamina amount.\
+*NOTE:* This hook is [predicted](https://wiki.facepunch.com/gmod/prediction). This means that in singleplayer, it will not be called in the Client realm.\
 *Realm:* Client and Server\
 *Added in:* 1.0.2 on Client and 1.8.8 on Server\
 *Parameters:*
@@ -655,6 +658,7 @@ Called after a player's sprint stamina is reduced. Used to adjust the player's n
 
 ### TTTSprintStaminaRecovery(ply, recovery)
 Called before a player's sprint stamina is recovered. Used to adjust how fast the player's stamina will recover.\
+*NOTE:* This hook is [predicted](https://wiki.facepunch.com/gmod/prediction). This means that in singleplayer, it will not be called in the Client realm.\
 *Realm:* Client and Server\
 *Added in:* 1.3.6 on Client and 1.8.8 on Server\
 *Parameters:*
@@ -666,6 +670,7 @@ Called before a player's sprint stamina is recovered. Used to adjust how fast th
 ### TTTSprintStateChange(ply, sprinting, wasSprinting)
 Called when a player starts or stops sprinting.\
 *NOTE*: This represents the change in player speed, not the change in the `Sprinting` player variable.\
+*NOTE:* This hook is [predicted](https://wiki.facepunch.com/gmod/prediction). This means that in singleplayer, it will not be called in the Client realm.\
 *Realm:* Client and Server\
 *Added in:* 1.8.8\
 *Parameters:*

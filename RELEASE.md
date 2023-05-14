@@ -7,7 +7,7 @@
 - Added ability to use the DNA scanner on the body parts left behind when a vampire eats a player or corpse
 
 ### Changes
-- Overhauled sprinting system to fix prediction issues (Thanks @wgetJane for letting us know!)
+- Overhauled sprinting system to fix prediction issues (Thanks @wgetJane for letting us know and helping to fix parts of it!)
 - Changed Hitmarkers settings menu labels to be translatable
 - Changed Equipment/sHop settings menu labels to be translatable
 - Changed death notification messages to be translatable

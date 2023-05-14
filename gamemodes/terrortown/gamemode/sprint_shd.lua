@@ -47,33 +47,21 @@ local function ResetPlayerSprintState(ply)
     if ply.SetSprintStamina then
         ply:SetSprintStamina(staminaMax)
     end
-    ply.LastSprintStaminaRecoveryTime = nil
-    ply.LastSprintStaminaConsumptionTime = nil
 end
 
 local function HandleSprintStaminaComsumption(ply)
-    if not ply.LastSprintStaminaConsumptionTime then
-        ply.LastSprintStaminaConsumptionTime = CurTime()
-    end
-
     -- Decrease the player's stamina based on the amount of time since the last tick
-    local stamina = ply:GetSprintStamina() - (CurTime() - ply.LastSprintStaminaConsumptionTime) * (MathClamp(consumption, 0.1, 5) * 250)
+    local stamina = ply:GetSprintStamina() - FrameTime() * (MathClamp(consumption, 0.1, 5) * 250)
 
     -- Allow things to change the consumption rate
-    local result = CallHook("TTTSprintStaminaPost", nil, ply, stamina, ply.LastSprintStaminaConsumptionTime, consumption)
+    local result = CallHook("TTTSprintStaminaPost", nil, ply, stamina, CurTime() - FrameTime(), consumption)
     -- Use the overwritten stamina if one is provided
     if result then stamina = result end
 
     ply:SetSprintStamina(MathClamp(stamina, 0, staminaMax))
-
-    ply.LastSprintStaminaConsumptionTime = CurTime()
 end
 
 local function HandleSprintStaminaRecovery(ply)
-    if not ply.LastSprintStaminaRecoveryTime then
-        ply.LastSprintStaminaRecoveryTime = CurTime()
-    end
-
     local recovery = defaultRecovery
     if ply:IsTraitorTeam() or ply:IsMonsterTeam() or ply:IsIndependentTeam() then
         recovery = traitorRecovery
@@ -83,22 +71,10 @@ local function HandleSprintStaminaRecovery(ply)
     recovery = CallHook("TTTSprintStaminaRecovery", nil, ply, recovery) or recovery
 
     -- Increase the player's stamina based on the amount of time since the last tick
-    local stamina = ply:GetSprintStamina() + (CurTime() - ply.LastSprintStaminaRecoveryTime) * recovery * 250
+    local stamina = ply:GetSprintStamina() + FrameTime() * recovery * 250
     stamina = MathClamp(stamina, 0, staminaMax)
 
     ply:SetSprintStamina(MathClamp(stamina, 0, staminaMax))
-
-    ply.LastSprintStaminaRecoveryTime = CurTime()
-end
-
-local function HandleSprintStamina(ply)
-    if not IsPlayer(ply) or not ply:Alive() or ply:IsSpec() then return end
-
-    if ply:GetSprinting() then
-        HandleSprintStaminaComsumption(ply)
-    else
-        HandleSprintStaminaRecovery(ply)
-    end
 end
 
 AddHook("TTTPrepareRound", "TTTSprintPrepareRound", function()
@@ -125,13 +101,6 @@ AddHook("TTTPrepareRound", "TTTSprintPrepareRound", function()
 
         -- Only do this if the sprint state is actually changing
         if wasSprinting ~= pressingSprint then
-            -- Unset the opposite last-use time since we're not doing that thing anymore
-            if pressingSprint then
-                ply.LastSprintStaminaRecoveryTime = nil
-            else
-                ply.LastSprintStaminaConsumptionTime = nil
-            end
-
             ply:SetSprinting(pressingSprint)
             CallHook("TTTSprintStateChange", nil, ply, pressingSprint, wasSprinting)
         -- Also call this hook if the player is still holding the button down but they are out of stamina
@@ -141,15 +110,14 @@ AddHook("TTTPrepareRound", "TTTSprintPrepareRound", function()
         end
     end)
 
-    AddHook("Think", "TTTSprintThink", function()
+    AddHook("FinishMove", "TTTSprintFinishMove", function(ply, _, _)
         if GetRoundState() == ROUND_WAIT then return end
+        if not IsPlayer(ply) or not ply:Alive() or ply:IsSpec() then return end
 
-        if CLIENT then
-            HandleSprintStamina(LocalPlayer())
+        if ply:GetSprinting() then
+            HandleSprintStaminaComsumption(ply)
         else
-            for _, p in ipairs(GetAllPlayers()) do
-                HandleSprintStamina(p)
-            end
+            HandleSprintStaminaRecovery(ply)
         end
     end)
 
@@ -158,7 +126,3 @@ AddHook("TTTPrepareRound", "TTTSprintPrepareRound", function()
         return GetSprintMultiplier(ply, sprintEnabled and ply:GetSprinting() and ply:GetSprintStamina() > 0)
     end)
 end)
-
-
-
--- TODO: Single prediction error when out of stamina
