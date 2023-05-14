@@ -9,14 +9,14 @@ local player = player
 local AddHook = hook.Add
 local CallHook = hook.Call
 local GetAllPlayers = player.GetAll
-local MathMax = math.max
-local MathMin = math.min
+local MathClamp = math.Clamp
 
 function plymeta:GetSprinting() return self.Sprinting or false end
 function plymeta:SetSprinting(sprinting) self.Sprinting = sprinting end
 function plymeta:GetSprintStamina() return self.SprintStamina or 0 end
 function plymeta:SetSprintStamina(stamina) self.SprintStamina = stamina end
 
+local staminaMax = 100
 local sprintEnabled = true
 local speedMultiplier = 0.4
 local defaultRecovery = 0.08
@@ -51,7 +51,7 @@ function GetSprintMultiplier(ply, sprinting)
 end
 
 local function ResetPlayerSprintState(ply)
-    ply:SetSprintStamina(100)
+    ply:SetSprintStamina(staminaMax)
     ply.LastSprintStaminaRecoveryTime = nil
     ply.LastSprintStaminaConsumptionTime = nil
 end
@@ -62,18 +62,14 @@ local function HandleSprintStaminaComsumption(ply)
     end
 
     -- Decrease the player's stamina based on the amount of time since the last tick
-    local stamina = ply:GetSprintStamina() - (CurTime() - ply.LastSprintStaminaConsumptionTime) * (MathMin(MathMax(consumption, 0.1), 5) * 250)
+    local stamina = ply:GetSprintStamina() - (CurTime() - ply.LastSprintStaminaConsumptionTime) * (MathClamp(consumption, 0.1, 5) * 250)
 
     -- Allow things to change the consumption rate
     local result = CallHook("TTTSprintStaminaPost", nil, ply, stamina, ply.LastSprintStaminaConsumptionTime, consumption)
     -- Use the overwritten stamina if one is provided
     if result then stamina = result end
 
-    -- Just in case
-    if stamina < 0 then
-        stamina = 0
-    end
-    ply:SetSprintStamina(stamina)
+    ply:SetSprintStamina(MathClamp(stamina, 0, staminaMax))
 
     ply.LastSprintStaminaConsumptionTime = CurTime()
 end
@@ -93,12 +89,9 @@ local function HandleSprintStaminaRecovery(ply)
 
     -- Increase the player's stamina based on the amount of time since the last tick
     local stamina = ply:GetSprintStamina() + (CurTime() - ply.LastSprintStaminaRecoveryTime) * recovery * 250
+    stamina = MathClamp(stamina, 0, staminaMax)
 
-    -- Just in case
-    if stamina > 100 then
-        stamina = 100
-    end
-    ply:SetSprintStamina(stamina)
+    ply:SetSprintStamina(MathClamp(stamina, 0, staminaMax))
 
     ply.LastSprintStaminaRecoveryTime = CurTime()
 end
