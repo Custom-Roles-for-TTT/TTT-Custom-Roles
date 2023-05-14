@@ -1,6 +1,3 @@
-local plymeta = FindMetaTable("Player")
-if not plymeta then return end
-
 local hook = hook
 local ipairs = ipairs
 local math = math
@@ -10,16 +7,6 @@ local AddHook = hook.Add
 local CallHook = hook.Call
 local GetAllPlayers = player.GetAll
 local MathClamp = math.Clamp
-
-local oldSetupDataTables = oldSetupDataTables or plymeta.SetupDataTables
-function plymeta:SetupDataTables()
-    if oldSetupDataTables then
-        oldSetupDataTables(self)
-    end
-
-    self:NetworkVar("Bool", 0, "Sprinting")
-    self:NetworkVar("Float", 0, "SprintStamina")
-end
 
 local staminaMax = 100
 local sprintEnabled = true
