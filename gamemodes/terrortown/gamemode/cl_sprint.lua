@@ -11,7 +11,7 @@ AddHook("TTTSprintStateChange", "Sprinting_Crosshair_TTTSprintStateChange", func
         if not crosshairSize then
             crosshairSize = GetConVar("ttt_crosshair_size"):GetInt()
         end
-        RunConsoleCommand("ttt_crosshair_size", 2)
+        RunConsoleCommand("ttt_crosshair_size", crosshairSize + 1)
     elseif crosshairSize then
         RunConsoleCommand("ttt_crosshair_size", crosshairSize)
     end
