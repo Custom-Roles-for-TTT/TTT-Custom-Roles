@@ -69,6 +69,8 @@ function GM:NetworkIDValidated(name, steamid)
 end
 
 function GM:PlayerSpawn(ply)
+    player_manager.SetPlayerClass(ply, "player_ttt")
+
     -- stop bleeding
     util.StopBleeding(ply)
 
