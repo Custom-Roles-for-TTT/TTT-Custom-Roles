@@ -74,7 +74,7 @@ end
 
 AddHook("Move", "TTTSprintMove", function(ply, _)
     local forward_key = CallHook("TTTSprintKey", nil, ply) or IN_FORWARD
-    local sprinting = ply:KeyDown(forward_key) and ply:KeyDown(IN_SPEED) and ply:GetSprintStamina() > 0
+    local sprinting = ply:KeyDown(forward_key) and ply:KeyDown(IN_SPEED)
     local oldSprinting = ply:GetSprinting()
 
     -- Only do this if the sprint state is actually changing
@@ -88,6 +88,10 @@ AddHook("Move", "TTTSprintMove", function(ply, _)
 
         ply:SetSprinting(sprinting)
         CallHook("TTTSprintStateChange", nil, ply, sprinting, oldSprinting)
+    -- Also call this hook if the player is still holding the button down but they are out of stamina
+    -- so that things are notified that they have changed back to non-sprinting speed
+    elseif sprinting and ply:GetSprintStamina() == 0 then
+        CallHook("TTTSprintStateChange", nil, ply, false, true)
     end
 end)
 
@@ -162,7 +166,7 @@ end)
 
 AddHook("TTTPlayerSpeedModifier", "TTTSprintPlayerSpeed", function(ply, _, _)
     if CLIENT and ply ~= LocalPlayer() then return end
-    return GetSprintMultiplier(ply, sprintEnabled and ply:GetSprinting())
+    return GetSprintMultiplier(ply, sprintEnabled and ply:GetSprinting() and ply:GetSprintStamina() > 0)
 end)
 
 

@@ -664,7 +664,8 @@ Called before a player's sprint stamina is recovered. Used to adjust how fast th
 *Return:* The stamina recovery rate to assign to the player. If none is provided, the player's default stamina recovery rate will be used.
 
 ### TTTSprintStateChange(ply, sprinting, wasSprinting)
-Called when a player starts or stops sprinting
+Called when a player starts or stops sprinting.\
+*NOTE*: This represents the change in player speed, not the change in the `Sprinting` player variable.\
 *Realm:* Client and Server\
 *Added in:* 1.8.8\
 *Parameters:*
