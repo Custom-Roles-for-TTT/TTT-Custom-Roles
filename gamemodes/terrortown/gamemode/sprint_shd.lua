@@ -49,9 +49,9 @@ local function ResetPlayerSprintState(ply)
     end
 end
 
-local function HandleSprintStaminaComsumption(ply)
+local function HandleSprintStaminaConsumption(ply)
     -- Decrease the player's stamina based on the amount of time since the last tick
-    local stamina = ply:GetSprintStamina() - FrameTime() * (MathClamp(consumption, 0.1, 5) * 250)
+    local stamina = ply:GetSprintStamina() - (FrameTime() * MathClamp(consumption, 0.1, 5) * 250)
 
     -- Allow things to change the consumption rate
     local result = CallHook("TTTSprintStaminaPost", nil, ply, stamina, CurTime() - FrameTime(), consumption)
@@ -71,7 +71,7 @@ local function HandleSprintStaminaRecovery(ply)
     recovery = CallHook("TTTSprintStaminaRecovery", nil, ply, recovery) or recovery
 
     -- Increase the player's stamina based on the amount of time since the last tick
-    local stamina = ply:GetSprintStamina() + FrameTime() * recovery * 250
+    local stamina = ply:GetSprintStamina() + (FrameTime() * recovery * 250)
     stamina = MathClamp(stamina, 0, staminaMax)
 
     ply:SetSprintStamina(MathClamp(stamina, 0, staminaMax))
@@ -95,6 +95,10 @@ AddHook("TTTPrepareRound", "TTTSprintPrepareRound", function()
     -- Add all the hooks in TTTPrepareRound so addons which remove them to disable sprinting (e.g. Randomats) are undone in each new round
 
     AddHook("Move", "TTTSprintMove", function(ply, _)
+        if GetRoundState() == ROUND_WAIT then return end
+        if CLIENT and ply ~= LocalPlayer() then return end
+        if not IsPlayer(ply) or not ply:Alive() or ply:IsSpec() then return end
+
         local forwardKey = CallHook("TTTSprintKey", nil, ply) or IN_FORWARD
         local wasSprinting = ply:GetSprinting()
         local pressingSprint = ply:KeyDown(forwardKey) and ply:KeyDown(IN_SPEED)
@@ -112,17 +116,21 @@ AddHook("TTTPrepareRound", "TTTSprintPrepareRound", function()
 
     AddHook("FinishMove", "TTTSprintFinishMove", function(ply, _, _)
         if GetRoundState() == ROUND_WAIT then return end
+        if CLIENT and ply ~= LocalPlayer() then return end
         if not IsPlayer(ply) or not ply:Alive() or ply:IsSpec() then return end
 
         if ply:GetSprinting() then
-            HandleSprintStaminaComsumption(ply)
+            HandleSprintStaminaConsumption(ply)
         else
             HandleSprintStaminaRecovery(ply)
         end
     end)
 
     AddHook("TTTPlayerSpeedModifier", "TTTSprintPlayerSpeed", function(ply, _, _)
+        if GetRoundState() == ROUND_WAIT then return end
         if CLIENT and ply ~= LocalPlayer() then return end
+        if not IsPlayer(ply) or not ply:Alive() or ply:IsSpec() then return end
+
         return GetSprintMultiplier(ply, sprintEnabled and ply:GetSprinting() and ply:GetSprintStamina() > 0)
     end)
 end)
