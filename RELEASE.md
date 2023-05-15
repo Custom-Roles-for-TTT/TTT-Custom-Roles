@@ -15,6 +15,7 @@
 ### Fixes
 - Fixed "You fell to death!" death notification not working
 - Fixed "You burned to death!" death notification not working for some types of fires
+- Fixed hit sound playing if enable hitmarkers after shooting someone with them disabled
 
 ### Developer
 - Changed `TTTSprintKey`, `TTTSprintStaminaPost`, and `TTTSprintStaminaRecovery` to also run on the server
