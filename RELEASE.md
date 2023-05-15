@@ -14,6 +14,7 @@
 ### Fixes
 - Fixed "You fell to death!" death notification not working
 - Fixed "You burned to death!" death notification not working for some types of fires
+- Fixed hit sound playing if enable hitmarkers after shooting someone with them disabled
 
 ### Developer
 - Changed the DNA Tester to be marked a role weapon for easier interaction with addons that expect that
