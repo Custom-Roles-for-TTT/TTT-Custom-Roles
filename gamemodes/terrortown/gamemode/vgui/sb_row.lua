@@ -274,7 +274,7 @@ function PANEL:Paint(width, height)
 
         c = color or ROLE_COLORS_SCOREBOARD[role]
         -- Show the question mark icon for jesters who haven't been searched
-        if not ply:GetNWBool("body_searched", false) and role == ROLE_JESTER then
+        if role == ROLE_JESTER and not ply:GetNWBool("body_searched", false) then
             roleStr = ROLE_STRINGS_SHORT[ROLE_NONE]
         else
             roleStr = ROLE_STRINGS_SHORT[role]
