@@ -15,6 +15,9 @@
 - Fixed "You fell to death!" death notification not working
 - Fixed "You burned to death!" death notification not working for some types of fires
 
+### Developer
+- Changed the DNA Tester to be marked a role weapon for easier interaction with addons that expect that
+
 ### 1.8.7 (Beta)
 **Released: May 6th, 2023**
 

@@ -22,6 +22,7 @@ if CLIENT then
 end
 
 SWEP.Base                  = "weapon_tttbase"
+SWEP.Category              = WEAPON_CATEGORY_ROLE
 
 SWEP.ViewModel             = "models/weapons/v_crowbar.mdl"
 SWEP.WorldModel            = "models/props_lab/huladoll.mdl"

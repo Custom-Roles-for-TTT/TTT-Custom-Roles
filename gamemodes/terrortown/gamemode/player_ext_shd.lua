@@ -305,9 +305,6 @@ function plymeta:StripRoleWeapons()
             self:StripWeapon(weap_class)
         end
     end
-
-    -- Remove the DNA scanner explcitly since it's a role weapon but not a CR role weapon so it's not tagged with the category
-    self:StripWeapon("weapon_ttt_wtester")
 end
 
 -- Override GetEyeTrace for an optional trace mask param. Technically traces
