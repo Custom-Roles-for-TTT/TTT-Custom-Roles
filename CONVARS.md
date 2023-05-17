@@ -895,6 +895,10 @@ The below role settings are for each player to set individually. They are all av
 // TRAITOR TEAM SETTINGS
 // Informant
 ttt_informant_show_scan_radius              0       // Whether to show the ring that shows the approximate radius of the informant's scanner
+
+// JESTER TEAM SETTINGS
+// Beggar
+ttt_beggar_show_scan_radius                 0       // Whether to show the ring that shows the approximate radius of the beggar's traitor scanner (when it's enabled)
 ```
 
 ## Role Weapon Shop

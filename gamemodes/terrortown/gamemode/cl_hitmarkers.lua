@@ -129,6 +129,7 @@ net.Receive("TTT_OpenMixer", function() -- Receive the server message
 end)
 
 net.Receive("TTT_DrawHitMarker", function()
+    if hm_toggle:GetBool() == false then return end -- Enables/Disables the hitmarkers
     hm_DrawHitM = true
     hm_CanPlayS = true
     if net.ReadBool() then
