@@ -1,7 +1,7 @@
 # Release Notes
 
 ### 1.8.8 (Beta)
-**Released:**
+**Released: May 20th, 2023**
 
 ### Additions
 - Added ability to use the DNA scanner on the body parts left behind when a vampire eats a player or corpse
@@ -17,6 +17,7 @@
 - Fixed "You burned to death!" death notification not working for some types of fires
 - Fixed hit sound playing if enable hitmarkers after shooting someone with them disabled
 - Fixed jesters who have been searched showing question mark icons on the scoreboard
+- Ported "TTT: Fix wrong argument in SortByMember" from base TTT
 
 ### Developer
 - Changed the DNA Tester to be marked a role weapon for easier interaction with addons that expect that
