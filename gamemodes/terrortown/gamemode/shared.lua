@@ -24,6 +24,8 @@ if not string.StartsWith then
     string.StartsWith = string.StartWith
 end
 
+include("player_class/player_ttt.lua")
+
 -- Version string for display and function for version checks
 CR_VERSION = "1.8.8"
 CR_BETA = true

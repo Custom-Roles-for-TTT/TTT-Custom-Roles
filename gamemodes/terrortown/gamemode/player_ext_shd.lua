@@ -20,6 +20,11 @@ local MathAcos = math.acos
 function plymeta:IsTerror() return self:Team() == TEAM_TERROR end
 function plymeta:IsSpec() return self:Team() == TEAM_SPEC end
 
+function plymeta:SetupDataTables()
+    self:NetworkVar("Bool", 0, "Sprinting")
+    self:NetworkVar("Float", 0, "SprintStamina")
+end
+
 if CLIENT then
     local oldSteamID64 = plymeta.SteamID64
     function plymeta:SteamID64()
