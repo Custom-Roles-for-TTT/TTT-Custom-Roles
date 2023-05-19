@@ -81,6 +81,16 @@ Gets which "role team" a player belongs to (see ROLE_TEAM_* global enumeration).
 *Parameters:*
 - *detectivesAreInnocent* - Whether to include members of the detective "role team" in the innocent "role team" to match the logical teams
 
+### plymeta:GetSprinting()
+Gets whether the player is currently sprinting.\
+*Realm:* Client and Server\
+*Added in:* 1.8.8
+
+### plymeta:GetSprintStamina()
+Gets the player's current sprint stamina.\
+*Realm:* Client and Server\
+*Added in:* 1.8.8
+
 ### plymeta:GetVampirePreviousRole()
 Gets the player's previous role if they are a Vampire that has been converted or `ROLE_NONE` otherwise.\
 *Realm:* Client and Server\
@@ -300,6 +310,20 @@ Sets the player's role to the given one and (if called on the server) broadcasts
 *Added in:* 1.0.0\
 *Parameters:*
 - *role* - The role number to set this player to
+
+### plymeta:SetSprinting(sprinting)
+Sets whether the player is currently sprinting.\
+*Realm:* Client and Server\
+*Added in:* 1.8.8
+*Parameters:*
+- *sprinting* - Whether the player is sprinting
+
+### plymeta:SetSprintStamina(stamina)
+Sets the player's current sprint stamina.\
+*Realm:* Client and Server\
+*Added in:* 1.8.8
+*Parameters:*
+- *stamina* - The player's new sprint stamina
 
 ### plymeta:SetVampirePreviousRole(previousRole)
 Sets the player's previous role for when they are turned into a vampire.\

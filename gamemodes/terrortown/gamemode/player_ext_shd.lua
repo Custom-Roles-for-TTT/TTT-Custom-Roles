@@ -20,6 +20,11 @@ local MathAcos = math.acos
 function plymeta:IsTerror() return self:Team() == TEAM_TERROR end
 function plymeta:IsSpec() return self:Team() == TEAM_SPEC end
 
+function plymeta:SetupDataTables()
+    self:NetworkVar("Bool", 0, "Sprinting")
+    self:NetworkVar("Float", 0, "SprintStamina")
+end
+
 if CLIENT then
     local oldSteamID64 = plymeta.SteamID64
     function plymeta:SteamID64()
@@ -305,9 +310,6 @@ function plymeta:StripRoleWeapons()
             self:StripWeapon(weap_class)
         end
     end
-
-    -- Remove the DNA scanner explcitly since it's a role weapon but not a CR role weapon so it's not tagged with the category
-    self:StripWeapon("weapon_ttt_wtester")
 end
 
 -- Override GetEyeTrace for an optional trace mask param. Technically traces

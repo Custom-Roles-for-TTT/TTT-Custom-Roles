@@ -1,5 +1,30 @@
 # Release Notes
 
+### 1.8.8 (Beta)
+**Released: May 20th, 2023**
+
+### Additions
+- Added ability to use the DNA scanner on the body parts left behind when a vampire eats a player or corpse
+
+### Changes
+- Overhauled sprinting system to fix prediction issues (Thanks @wgetJane for letting us know and helping to fix parts of it!)
+- Changed Hitmarkers settings menu labels to be translatable
+- Changed Equipment/sHop settings menu labels to be translatable
+- Changed death notification messages to be translatable
+
+### Fixes
+- Fixed "You fell to death!" death notification not working
+- Fixed "You burned to death!" death notification not working for some types of fires
+- Fixed hit sound playing if enable hitmarkers after shooting someone with them disabled
+- Fixed jesters who have been searched showing question mark icons on the scoreboard
+- Ported "TTT: Fix wrong argument in SortByMember" from base TTT
+
+### Developer
+- Changed the DNA Tester to be marked a role weapon for easier interaction with addons that expect that
+- Changed `TTTSprintKey`, `TTTSprintStaminaPost`, and `TTTSprintStaminaRecovery` to also run on the server
+- Added `TTTSprintStateChange` hook which runs when a player starts or stops sprinting
+- Added `plymeta:GetSprinting`, `plymeta:SetSprinting`, `plymeta:GetSprintStamina`, and `plymeta:SetSprintStamina`
+
 ### 1.8.7 (Beta)
 **Released: May 6th, 2023**
 
@@ -296,7 +321,7 @@ Includes all beta updates from [1.6.14](#1614-beta) to [1.6.19](#1619-beta).
 - Added new special innocent role: the infected
 
 ### Changes
-- Changed sprint speed to be more resistant to client-side speed hacking (Thanks wget for letting us know!)
+- Changed sprint speed to be more resistant to client-side speed hacking (Thanks @wgetJane for letting us know!)
 - Changed the round summary screen to automatically lower the font size of the winning team if it's more than 18 characters, down from 20
 - Changed loot goblin cackle min and max convars to not cause problems when the min is greater than the max
 
@@ -456,7 +481,7 @@ Includes all beta updates from [1.6.1](#161-beta) to [1.6.3](#163-beta).
 **Released: June 26th, 2022**
 
 ### Changes
-- Changed player role icons (over their heads) and highlighting to ignore map optimizations which prevented them from updating regularly (Thanks to wget for the logic help!)
+- Changed player role icons (over their heads) and highlighting to ignore map optimizations which prevented them from updating regularly (Thanks to @wgetJane for the logic help!)
   - This is controlled by a new client-side convar, `ttt_bypass_culling`, which is enabled by default and available in the F1 settings menu
 
 ### Fixes

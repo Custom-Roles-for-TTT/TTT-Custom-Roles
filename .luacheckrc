@@ -1011,7 +1011,6 @@ globals = {
 	"GetTraitors",
 	"GetVampireFilter",
 	"GetWinningMonsterRole",
-	"HandleRoleEquipment",
 	"HandleRoleHighlights",
 	"JesterTeamKilledNotification",
 	"LoadMonsterEquipment",

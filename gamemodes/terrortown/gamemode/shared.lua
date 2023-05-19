@@ -1,4 +1,5 @@
 local file = file
+local hook = hook
 local ipairs = ipairs
 local IsValid = IsValid
 local math = math
@@ -23,8 +24,10 @@ if not string.StartsWith then
     string.StartsWith = string.StartWith
 end
 
+include("player_class/player_ttt.lua")
+
 -- Version string for display and function for version checks
-CR_VERSION = "1.8.7"
+CR_VERSION = "1.8.8"
 CR_BETA = true
 CR_WORKSHOP_ID = CR_BETA and "2404251054" or "2421039084"
 
@@ -1418,33 +1421,6 @@ function GM:Move(ply, mv)
         mv:SetMaxClientSpeed(mv:GetMaxClientSpeed() * mul)
         mv:SetMaxSpeed(mv:GetMaxSpeed() * mul)
     end
-end
-
-function GetSprintMultiplier(ply, sprinting)
-    local mult = 1
-    if IsValid(ply) then
-        local mults = {}
-        CallHook("TTTSpeedMultiplier", nil, ply, mults, sprinting)
-        for _, m in pairs(mults) do
-            mult = mult * m
-        end
-
-        if sprinting and ply.mult then
-            mult = mult * ply.mult
-        end
-
-        local wep = ply:GetActiveWeapon()
-        if IsValid(wep) then
-            local weaponClass = wep:GetClass()
-            if weaponClass == "genji_melee" then
-                return 1.4 * mult
-            elseif weaponClass == "weapon_ttt_homebat" then
-                return 1.25 * mult
-            end
-        end
-    end
-
-    return mult
 end
 
 function UpdateRoleWeaponState()
