@@ -1,7 +1,7 @@
 # Release Notes
 
 ### 1.8.8 (Beta)
-**Released:**
+**Released: May 20th, 2023**
 
 ### Additions
 - Added ability to use the DNA scanner on the body parts left behind when a vampire eats a player or corpse
