@@ -50,7 +50,7 @@ local beggar_show_scan_radius = CreateClientConVar("ttt_beggar_show_scan_radius"
 
 hook.Add("TTTSettingsRolesTabSections", "Beggar_TTTSettingsRolesTabSections", function(role, parentForm)
     if role ~= ROLE_BEGGAR then return end
-    if not GetGlobalBool("ttt_beggar_traitor_scan", false) then return true end
+    if not GetGlobalBool("ttt_beggar_traitor_scan", false) then return end
 
     parentForm:CheckBox(LANG.GetTranslation("beggar_config_show_radius"), "ttt_beggar_show_scan_radius")
     return true
