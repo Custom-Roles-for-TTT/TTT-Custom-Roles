@@ -1,5 +1,11 @@
 # Release Notes
 
+### 1.8.9 (Beta)
+**Released:**
+
+### Fixes
+- Fixed beggar client config section showing when traitor scans are not enabled
+
 ### 1.8.8 (Beta)
 **Released: May 20th, 2023**
 
