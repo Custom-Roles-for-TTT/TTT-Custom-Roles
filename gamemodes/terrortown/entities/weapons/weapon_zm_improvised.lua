@@ -91,6 +91,8 @@ function SWEP:OpenEnt(hitEnt)
                 hitEnt:Fire("Unlock", nil, 0)
             end
 
+            -- The 256 bit for door spawn flags is "Use Opens"
+            -- If the use key would open this, hitting it with a crowbar should too
             if unlock or hitEnt:HasSpawnFlags(256) then
                 if openable == OPEN_ROT then
                     hitEnt:Fire("OpenAwayFrom", self:GetOwner(), 0)
