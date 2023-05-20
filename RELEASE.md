@@ -9,7 +9,7 @@
 ### Changes
 - Overhauled sprinting system to fix prediction issues (Thanks @wgetJane for letting us know and helping to fix parts of it!)
 - Changed Hitmarkers settings menu labels to be translatable
-- Changed Equipment/sHop settings menu labels to be translatable
+- Changed Equipment/Shop settings menu labels to be translatable
 - Changed death notification messages to be translatable
 
 ### Fixes
