@@ -921,19 +921,9 @@ function GM:ScalePlayerDamage(ply, hitgroup, dmginfo)
         dmginfo:ScaleDamage(0.7)
     end
 
-    local att = dmginfo:GetAttacker()
-    if IsPlayer(att) then
-        local round_state = GetRoundState()
-        -- Only apply damage scaling while the round is active
-        if round_state == ROUND_ACTIVE then
-            -- Jesters can't deal damage
-            if att:ShouldActLikeJester() then
-                dmginfo:ScaleDamage(0)
-            end
-        -- Players cant deal damage to each other before the round starts
-        elseif round_state < ROUND_ACTIVE then
-            dmginfo:ScaleDamage(0)
-        end
+    -- Players cant deal damage to each other before the round starts
+    if IsPlayer(dmginfo:GetAttacker()) and GetRoundState() < ROUND_ACTIVE then
+        dmginfo:ScaleDamage(0)
     end
 
     ply.was_headshot = false
