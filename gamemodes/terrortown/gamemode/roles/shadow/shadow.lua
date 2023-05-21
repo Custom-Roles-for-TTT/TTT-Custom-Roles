@@ -138,7 +138,7 @@ hook.Add("TTTBeginRound", "Shadow_TTTBeginRound", function()
                     end
                     v:SetNWFloat("ShadowTimer", -1)
 
-                    -- If the target is alive and we're not already counting down to buff, do that
+                    -- If the target is alive and buffs are enabled, try to create the buff timer
                     if targetAlive and target_buff:GetInt() > SHADOW_BUFF_NONE then
                         CreateBuffTimer(v, target)
                     end
