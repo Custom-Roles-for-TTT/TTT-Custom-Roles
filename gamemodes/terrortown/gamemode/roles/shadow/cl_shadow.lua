@@ -1,8 +1,16 @@
 local hook = hook
-local util = util
-local table = table
-local string = string
 local math = math
+local net = net
+local string = string
+local surface = surface
+local table = table
+local util = util
+
+local MathMax = math.max
+local MathSin = math.sin
+local MathCos = math.cos
+local MathPi = math.pi
+local MathRand = math.Rand
 
 ------------------
 -- TRANSLATIONS --
@@ -18,6 +26,11 @@ Survive until the end of the round to win.]])
     -- HUD
     LANG.AddToLanguage("english", "shadow_find_target", "FIND YOUR TARGET - {time}")
     LANG.AddToLanguage("english", "shadow_return_target", "RETURN TO YOUR TARGET - {time}")
+    LANG.AddToLanguage("english", "shadow_buff_hud_active", "Target {buff} active")
+    LANG.AddToLanguage("english", "shadow_buff_hud_time", "Time until target {buff} active: {time}")
+    LANG.AddToLanguage("english", "shadow_buff_1", "healing")
+    LANG.AddToLanguage("english", "shadow_buff_2", "respawn")
+    LANG.AddToLanguage("english", "shadow_buff_3", "damage bonus")
 
     -- Target ID
     LANG.AddToLanguage("english", "shadow_target", "YOUR TARGET")
@@ -208,8 +221,8 @@ local function DrawRadius(ply, ent, r)
             for _ = 1, 24 do
                 ent.RadiusEmitter:SetPos(pos)
                 ent.RadiusNextPart = CurTime() + 0.02
-                ent.RadiusDir = ent.RadiusDir + math.pi / 12
-                local vec = Vector(math.sin(ent.RadiusDir) * r, math.cos(ent.RadiusDir) * r, 10)
+                ent.RadiusDir = ent.RadiusDir + MathPi / 12
+                local vec = Vector(MathSin(ent.RadiusDir) * r, MathCos(ent.RadiusDir) * r, 10)
                 local particle = ent.RadiusEmitter:Add("particle/wisp.vmt", ent:GetPos() + vec)
                 particle:SetVelocity(Vector(0, 0, 80))
                 particle:SetDieTime(0.5)
@@ -217,7 +230,7 @@ local function DrawRadius(ply, ent, r)
                 particle:SetEndAlpha(0)
                 particle:SetStartSize(3)
                 particle:SetEndSize(2)
-                particle:SetRoll(math.Rand(0, math.pi))
+                particle:SetRoll(MathRand(0, MathPi))
                 particle:SetRollDelta(0)
                 local color = ROLE_COLORS[ROLE_TRAITOR]
                 if ply:GetPos():Distance(ent:GetPos()) <= r then
@@ -259,7 +272,7 @@ local function DrawLink(ply, ent)
             particle:SetEndAlpha(0)
             particle:SetStartSize(3)
             particle:SetEndSize(2)
-            particle:SetRoll(math.Rand(0, math.pi))
+            particle:SetRoll(MathRand(0, MathPi))
             particle:SetRollDelta(0)
             local color = ROLE_COLORS[ROLE_TRAITOR]
             particle:SetColor(color.r, color.g, color.b)
@@ -347,7 +360,7 @@ hook.Add("HUDPaint", "Shadow_HUDPaint", function()
     local t = client:GetNWFloat("ShadowTimer", -1)
 
     if client:IsActiveShadow() and t > 0 then
-        local remaining = math.max(0, t - CurTime())
+        local remaining = MathMax(0, t - CurTime())
 
         local PT = LANG.GetParamTranslation
         local message
@@ -367,10 +380,49 @@ hook.Add("HUDPaint", "Shadow_HUDPaint", function()
 
         local w = 300
         local progress = 1 - (remaining / total)
-        local color = Color(200 + math.sin(CurTime() * 32) * 50, 0, 0, 155)
+        local color = Color(200 + MathSin(CurTime() * 32) * 50, 0, 0, 155)
 
         CRHUD:PaintProgressBar(x, y, w, color, message, progress)
     end
+end)
+
+hook.Add("TTTHUDInfoPaint", "Shadow_TTTHUDInfoPaint", function(cli, label_left, label_top, active_labels)
+    if not cli:IsShadow() then return end
+
+    local hide_role = false
+    if ConVarExists("ttt_hide_role") then
+        hide_role = GetConVar("ttt_hide_role"):GetBool()
+    end
+
+    if hide_role then return end
+
+    local shadowBuff = GetGlobalInt("ttt_shadow_target_buff", 1)
+    if shadowBuff <= SHADOW_BUFF_NONE then return end
+
+    local buffTimer = cli:GetNWFloat("ShadowBuffTimer", -1)
+    if buffTimer < 0 then return end
+
+    surface.SetFont("TabLarge")
+    surface.SetTextColor(255, 255, 255, 230)
+
+    local remaining = MathMax(0, buffTimer - CurTime())
+    local buff = LANG.GetTranslation("shadow_buff_" .. shadowBuff)
+    local text
+    if remaining == 0 then
+        text = LANG.GetParamTranslation("shadow_buff_hud_active", { buff = buff })
+    else
+        text = LANG.GetParamTranslation("shadow_buff_hud_time", { buff = buff, time = util.SimpleTime(remaining, "%02i:%02i") })
+    end
+    local _, h = surface.GetTextSize(text)
+
+    -- Move this up based on how many other labels here are
+    label_top = label_top + (20 * #active_labels)
+
+    surface.SetTextPos(label_left, ScrH() - label_top - h)
+    surface.DrawText(text)
+
+    -- Track that the label was added so others can position accurately
+    table.insert(active_labels, "shadow")
 end)
 
 --------------
@@ -387,6 +439,9 @@ hook.Add("TTTTutorialRoleText", "Shadow_TTTTutorialRoleText", function(role, tit
         html = html .. "<span style='display: block; margin-top: 10px;'>They can see their target through walls and are given <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. start_timer .. " seconds</span> to find them at the start of the round. Once the shadow has found their target, they are given a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. buffer_timer .. " second</span> warning if they start to get too far away. If either of these timers run out before the shadow can find their target, the shadow dies.</span>"
 
         html = html .. "<span style='display: block; margin-top: 10px;'>If your target dies you still need to stay close to their body. Staying too far away from their body for more than <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. buffer_timer .. " seconds</span> will kill you.</span>"
+
+        -- TODO: Add buff information
+
         return html
     end
 end)

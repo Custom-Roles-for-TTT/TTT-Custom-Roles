@@ -2,6 +2,12 @@ AddCSLuaFile()
 
 local table = table
 
+-- Shadow buff types
+SHADOW_BUFF_NONE = 0
+SHADOW_BUFF_HEAL = 1
+SHADOW_BUFF_RESPAWN = 2
+SHADOW_BUFF_DAMAGE = 3
+
 -- Initialize role features
 ROLE_HAS_PASSIVE_WIN[ROLE_SHADOW] = true
 ROLE_IS_ACTIVE[ROLE_SHADOW] = function(ply)
