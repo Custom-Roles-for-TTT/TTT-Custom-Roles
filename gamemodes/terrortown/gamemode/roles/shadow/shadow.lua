@@ -1,9 +1,11 @@
 AddCSLuaFile()
 
 local hook = hook
+local math = math
 local timer = timer
 
 local GetAllPlayers = player.GetAll
+local MathClamp = math.Clamp
 
 util.AddNetworkString("TTT_UpdateShadowWins")
 
@@ -64,6 +66,8 @@ local function ClearShadowState(ply)
     ply:SetNWString("ShadowTarget", "")
     ply:SetNWFloat("ShadowTimer", -1)
     ply:SetNWFloat("ShadowBuffTimer", -1)
+    ply:SetNWBool("ShadowBuffActive", false)
+    ply:SetNWBool("ShadowBuffDepleted", false)
 end
 
 local buffTimers = {}
@@ -73,14 +77,27 @@ local function ClearBuffTimer(shadow, target)
     local timerId = "TTTShadowBuffTimer_" .. shadow:SteamID64() .. "_" .. target:SteamID64()
     if buffTimers[timerId] then
         shadow:SetNWFloat("ShadowBuffTimer", -1)
+        target:SetNWBool("ShadowBuffActive", false)
         timer.Remove(timerId)
         buffTimers[timerId] = nil
     end
 end
 
 -- TODO: Show center message when buff timer starts/stops?
+-- TODO: Show center message when buff activates? Show to who? Shadow? Target? Both?
 
-local function CreateBuffTimer(shadow, target, timerId)
+local function CreateHealTimer(shadow, target, timerId)
+    timer.Create(timerId, target_buff_heal_interval:GetInt(), 0, function()
+        if not IsPlayer(target) or not target:Alive() or target:IsSpec() then return end
+        local health = target:Health()
+        local maxHealth = target:GetMaxHealth()
+
+        target:SetHealth(MathClamp(health + target_buff_heal_amount:GetInt(), maxHealth))
+    end)
+end
+
+local function CreateBuffTimer(shadow, target)
+    local timerId = "TTTShadowBuffTimer_" .. shadow:SteamID64() .. "_" .. target:SteamID64()
     if buffTimers[timerId] then return end
 
     local buffDelay = target_buff_delay:GetInt()
@@ -94,17 +111,56 @@ local function CreateBuffTimer(shadow, target, timerId)
         local buff = target_buff:GetInt()
         if buff <= SHADOW_BUFF_NONE then return end
 
-        -- TODO
-        print("ACTIVATE BUFF", buff)
+        target:SetNWBool("ShadowBuffActive", true)
         if buff == SHADOW_BUFF_HEAL then
-            print("Heal!")
-        elseif buff == SHADOW_BUFF_RESPAWN then
-            print("Respawn!")
-        elseif buff == SHADOW_BUFF_DAMAGE then
-            print("Damage!")
+            CreateHealTimer(shadow, target, timerId)
         end
     end)
 end
+
+hook.Add("ScalePlayerDamage", "Shadow_Buff_ScalePlayerDamage", function(ply, hitgroup, dmginfo)
+    local att = dmginfo:GetAttacker()
+    -- Only apply damage scaling after the round starts
+    if not IsPlayer(att) or GetRoundState() < ROUND_ACTIVE then return end
+
+    -- Make sure we're buffing damage and the attacker's buff is active
+    if target_buff:GetInt() ~= SHADOW_BUFF_DAMAGE then return end
+    if not att:GetNWBool("ShadowBuffActive", false) then return end
+
+    dmginfo:ScaleDamage(1 + target_buff_damage_bonus:GetFloat())
+end)
+
+hook.Add("PostPlayerDeath", "Shadow_Buff_PostPlayerDeath", function(ply)
+    local vicSid64 = ply:SteamID64()
+    -- If the player is going to respawn because they are being buffed by a shadow, start that process
+    if target_buff:GetInt() == SHADOW_BUFF_RESPAWN and ply:GetNWBool("ShadowBuffActive", false) then
+        -- Find the shadow that "belongs" to this player
+        local shadow = nil
+        for p, _ in ipairs(GetAllPlayers()) do
+            if not p:IsShadow() then continue end
+            if vicSid64 ~= p:GetNWString("ShadowTarget", "") then continue end
+
+            shadow = p
+            break
+        end
+
+        -- Just in case
+        if not IsPlayer(shadow) then return end
+
+        -- TODO: Let the player know they are going to respawn?
+
+        local timerId = "TTTShadowBuffTimer_" .. shadow:SteamID64() .. "_" .. ply:SteamID64()
+        timer.Create(timerId, target_buff_respawn_delay:GetInt(), 1, function()
+            -- TODO: Respawn them on their body so the shadow doesn't get screwed over
+        end)
+    else
+        for p, _ in ipairs(GetAllPlayers()) do
+            if not p:IsShadow() then continue end
+            if vicSid64 ~= p:GetNWString("ShadowTarget", "") then continue end
+            ClearBuffTimer(p, ply)
+        end
+    end
+end)
 
 hook.Add("TTTBeginRound", "Shadow_TTTBeginRound", function()
     timer.Create("TTTShadowTimer", 0.1, 0, function()
@@ -170,15 +226,6 @@ hook.Add("PlayerDeath", "Shadow_KillCheck_PlayerDeath", function(victim, infl, a
         attacker:PrintMessage(HUD_PRINTTALK, "You killed your target!")
         ClearBuffTimer(attacker, victim)
         ClearShadowState(attacker)
-    end
-end)
-
-hook.Add("PostPlayerDeath", "Shadow_BuffTimer_PostPlayerDeath", function(ply)
-    local vicSid64 = ply:SteamID64()
-    for p, _ in ipairs(GetAllPlayers()) do
-        if not p:IsShadow() then continue end
-        if vicSid64 ~= p:GetNWString("ShadowTarget", "") then continue end
-        ClearBuffTimer(p, ply)
     end
 end)
 
