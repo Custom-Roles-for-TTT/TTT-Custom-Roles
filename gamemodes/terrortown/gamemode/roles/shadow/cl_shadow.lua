@@ -28,7 +28,7 @@ Survive until the end of the round to win.]])
     LANG.AddToLanguage("english", "shadow_return_target", "RETURN TO YOUR TARGET - {time}")
     LANG.AddToLanguage("english", "shadow_buff_hud_active", "Target {buff} active")
     LANG.AddToLanguage("english", "shadow_buff_hud_time", "Time until target {buff} active: {time}")
-    LANG.AddToLanguage("english", "shadow_buff_1", "healing")
+    LANG.AddToLanguage("english", "shadow_buff_1", "health regen")
     LANG.AddToLanguage("english", "shadow_buff_2", "respawn")
     LANG.AddToLanguage("english", "shadow_buff_3", "damage bonus")
 
@@ -216,30 +216,29 @@ local function DrawRadius(ply, ent, r)
     if not ent.RadiusNextPart then ent.RadiusNextPart = CurTime() end
     if not ent.RadiusDir then ent.RadiusDir = 0 end
     local pos = ent:GetPos() + Vector(0, 0, 30)
-    if ent.RadiusNextPart < CurTime() then
-        if ply:GetPos():Distance(pos) <= 3000 then
-            for _ = 1, 24 do
-                ent.RadiusEmitter:SetPos(pos)
-                ent.RadiusNextPart = CurTime() + 0.02
-                ent.RadiusDir = ent.RadiusDir + MathPi / 12
-                local vec = Vector(MathSin(ent.RadiusDir) * r, MathCos(ent.RadiusDir) * r, 10)
-                local particle = ent.RadiusEmitter:Add("particle/wisp.vmt", ent:GetPos() + vec)
-                particle:SetVelocity(Vector(0, 0, 80))
-                particle:SetDieTime(0.5)
-                particle:SetStartAlpha(200)
-                particle:SetEndAlpha(0)
-                particle:SetStartSize(3)
-                particle:SetEndSize(2)
-                particle:SetRoll(MathRand(0, MathPi))
-                particle:SetRollDelta(0)
-                local color = ROLE_COLORS[ROLE_TRAITOR]
-                if ply:GetPos():Distance(ent:GetPos()) <= r then
-                    color = ROLE_COLORS[ROLE_INNOCENT]
-                end
-                particle:SetColor(color.r, color.g, color.b)
+
+    if ent.RadiusNextPart < CurTime() and ply:GetPos():Distance(pos) <= 3000 then
+        for _ = 1, 24 do
+            ent.RadiusEmitter:SetPos(pos)
+            ent.RadiusNextPart = CurTime() + 0.02
+            ent.RadiusDir = ent.RadiusDir + MathPi / 12
+            local vec = Vector(MathSin(ent.RadiusDir) * r, MathCos(ent.RadiusDir) * r, 10)
+            local particle = ent.RadiusEmitter:Add("particle/wisp.vmt", ent:GetPos() + vec)
+            particle:SetVelocity(Vector(0, 0, 80))
+            particle:SetDieTime(0.5)
+            particle:SetStartAlpha(200)
+            particle:SetEndAlpha(0)
+            particle:SetStartSize(3)
+            particle:SetEndSize(2)
+            particle:SetRoll(MathRand(0, MathPi))
+            particle:SetRollDelta(0)
+            local color = ROLE_COLORS[ROLE_TRAITOR]
+            if ply:GetPos():Distance(ent:GetPos()) <= r then
+                color = ROLE_COLORS[ROLE_INNOCENT]
             end
-            ent.RadiusDir = ent.RadiusDir + 0.02
+            particle:SetColor(color.r, color.g, color.b)
         end
+        ent.RadiusDir = ent.RadiusDir + 0.02
     end
 end
 
@@ -402,6 +401,11 @@ hook.Add("TTTHUDInfoPaint", "Shadow_TTTHUDInfoPaint", function(cli, label_left, 
     local buffTimer = cli:GetNWFloat("ShadowBuffTimer", -1)
     if buffTimer < 0 then return end
 
+    local target = player.GetBySteamID64(cli:GetNWString("ShadowTarget", ""))
+    if not IsPlayer(target) then return end
+    -- If their target player has already had their buff and can't get it again, don't bother showing the HUD info
+    if target:GetNWBool("ShadowBuffDepleted", false) then return end
+
     surface.SetFont("TabLarge")
     surface.SetTextColor(255, 255, 255, 230)
 
@@ -440,7 +444,16 @@ hook.Add("TTTTutorialRoleText", "Shadow_TTTTutorialRoleText", function(role, tit
 
         html = html .. "<span style='display: block; margin-top: 10px;'>If your target dies you still need to stay close to their body. Staying too far away from their body for more than <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. buffer_timer .. " seconds</span> will kill you.</span>"
 
-        -- TODO: Add buff information
+        local buff = GetGlobalInt("ttt_shadow_target_buff", SHADOW_BUFF_NONE)
+        if buff ~= SHADOW_BUFF_NONE then
+            local buffDelay = GetGlobalInt("ttt_shadow_target_buff_delay", -1)
+            local buffType = LANG.GetTranslation("shadow_buff_" .. buff)
+            html = html .. "<span style='display: block; margin-top: 10px;'>If you stay with your target for " .. buffDelay .. " seconds they will <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>receive a " .. buffType .. "</span>! Beware, however, that if you get too far away the buff will disappear and you'll have to wait all over again.</span>"
+
+            if buff == SHADOW_BUFF_RESPAWN then
+                html = html .. "<span style='display: block; margin-top: 10px;'>The first time your target dies while the buff is active, they will <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>respawn</span> after a short delay.</span>"
+            end
+        end
 
         return html
     end
