@@ -5,7 +5,7 @@ local math = math
 local timer = timer
 
 local GetAllPlayers = player.GetAll
-local MathClamp = math.Clamp
+local MathMin = math.min
 
 util.AddNetworkString("TTT_UpdateShadowWins")
 
@@ -95,7 +95,7 @@ local function CreateHealTimer(shadow, target, timerId)
         local health = target:Health()
         local maxHealth = target:GetMaxHealth()
 
-        target:SetHealth(MathClamp(health + target_buff_heal_amount:GetInt(), maxHealth))
+        target:SetHealth(MathMin(health + target_buff_heal_amount:GetInt(), maxHealth))
     end)
 end
 
@@ -151,7 +151,7 @@ hook.Add("PostPlayerDeath", "Shadow_Buff_PostPlayerDeath", function(ply)
     if target_buff:GetInt() == SHADOW_BUFF_RESPAWN and ply:GetNWBool("ShadowBuffActive", false) and not ply:GetNWBool("ShadowBuffDepleted", false) then
         -- Find the shadow that "belongs" to this player
         local shadow = nil
-        for p, _ in ipairs(GetAllPlayers()) do
+        for _, p in ipairs(GetAllPlayers()) do
             if not p:IsShadow() then continue end
             if vicSid64 ~= p:GetNWString("ShadowTarget", "") then continue end
 
@@ -179,9 +179,15 @@ hook.Add("PostPlayerDeath", "Shadow_Buff_PostPlayerDeath", function(ply)
             ply:SetPos(FindRespawnLocation(corpse:GetPos()) or corpse:GetPos())
             ply:SetEyeAngles(Angle(0, corpse:GetAngles().y, 0))
             SafeRemoveEntity(corpse)
+
+            if IsValid(shadow) then
+                message = "Your target has respawned!"
+                shadow:PrintMessage(HUD_PRINTCENTER, message)
+                shadow:PrintMessage(HUD_PRINTTALK, message)
+            end
         end)
     else
-        for p, _ in ipairs(GetAllPlayers()) do
+        for _, p in ipairs(GetAllPlayers()) do
             if not p:IsShadow() then continue end
             if vicSid64 ~= p:GetNWString("ShadowTarget", "") then continue end
             ClearBuffTimer(p, ply)
