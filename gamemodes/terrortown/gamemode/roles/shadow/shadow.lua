@@ -133,7 +133,7 @@ end)
 hook.Add("PostPlayerDeath", "Shadow_Buff_PostPlayerDeath", function(ply)
     local vicSid64 = ply:SteamID64()
     -- If the player is going to respawn because they are being buffed by a shadow, start that process
-    if target_buff:GetInt() == SHADOW_BUFF_RESPAWN and ply:GetNWBool("ShadowBuffActive", false) then
+    if target_buff:GetInt() == SHADOW_BUFF_RESPAWN and ply:GetNWBool("ShadowBuffActive", false) and not ply:GetNWBool("ShadowBuffDepleted", false) then
         -- Find the shadow that "belongs" to this player
         local shadow = nil
         for p, _ in ipairs(GetAllPlayers()) do
@@ -151,7 +151,15 @@ hook.Add("PostPlayerDeath", "Shadow_Buff_PostPlayerDeath", function(ply)
 
         local timerId = "TTTShadowBuffTimer_" .. shadow:SteamID64() .. "_" .. ply:SteamID64()
         timer.Create(timerId, target_buff_respawn_delay:GetInt(), 1, function()
-            -- TODO: Respawn them on their body so the shadow doesn't get screwed over
+            if not IsValid(ply) or ply:Alive() or not ply:IsSpec() then return end
+
+            -- Respawn them on their body so the shadow doesn't get screwed over
+            local corpse = ply.server_ragdoll or ply:GetRagdollEntity()
+            ply:SetNWBool("ShadowBuffDepleted", true)
+            ply:SpawnForRound(true)
+            ply:SetPos(FindRespawnLocation(corpse:GetPos()) or corpse:GetPos())
+            ply:SetEyeAngles(Angle(0, corpse:GetAngles().y, 0))
+            SafeRemoveEntity(corpse)
         end)
     else
         for p, _ in ipairs(GetAllPlayers()) do
