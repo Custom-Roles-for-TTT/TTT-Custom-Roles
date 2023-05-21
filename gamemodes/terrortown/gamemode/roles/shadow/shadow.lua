@@ -71,20 +71,23 @@ local function ClearShadowState(ply)
 end
 
 local buffTimers = {}
-local function ClearBuffTimer(shadow, target)
+local function ClearBuffTimer(shadow, target, sendMessage)
     if not target then return end
 
     local timerId = "TTTShadowBuffTimer_" .. shadow:SteamID64() .. "_" .. target:SteamID64()
     if buffTimers[timerId] then
+        if sendMessage then
+            local message = "You got too far from your target and stopped buffing them!"
+            shadow:PrintMessage(HUD_PRINTCENTER, message)
+            shadow:PrintMessage(HUD_PRINTTALK, message)
+        end
+
         shadow:SetNWFloat("ShadowBuffTimer", -1)
         target:SetNWBool("ShadowBuffActive", false)
         timer.Remove(timerId)
         buffTimers[timerId] = nil
     end
 end
-
--- TODO: Show center message when buff timer starts/stops?
--- TODO: Show center message when buff activates? Show to who? Shadow? Target? Both?
 
 local function CreateHealTimer(shadow, target, timerId)
     timer.Create(timerId, target_buff_heal_interval:GetInt(), 0, function()
@@ -101,6 +104,10 @@ local function CreateBuffTimer(shadow, target)
     if buffTimers[timerId] then return end
 
     local buffDelay = target_buff_delay:GetInt()
+    local message = "Stay with your target for " .. buffDelay .. " seconds to give them a buff!"
+    shadow:PrintMessage(HUD_PRINTCENTER, message)
+    shadow:PrintMessage(HUD_PRINTTALK, message)
+
     buffTimers[timerId] = true
     shadow:SetNWFloat("ShadowBuffTimer", CurTime() + buffDelay)
     timer.Create(timerId, buffDelay, 1, function()
@@ -110,6 +117,14 @@ local function CreateBuffTimer(shadow, target)
 
         local buff = target_buff:GetInt()
         if buff <= SHADOW_BUFF_NONE then return end
+
+        message = "A buff is now active on your target. Stay with them to keep it up!"
+        shadow:PrintMessage(HUD_PRINTCENTER, message)
+        shadow:PrintMessage(HUD_PRINTTALK, message)
+
+        message = "Your " .. ROLE_STRINGS[ROLE_SHADOW] .. " is buffing you. Stay with them to keep it up!"
+        target:PrintMessage(HUD_PRINTCENTER, message)
+        target:PrintMessage(HUD_PRINTTALK, message)
 
         target:SetNWBool("ShadowBuffActive", true)
         if buff == SHADOW_BUFF_HEAL then
@@ -147,10 +162,14 @@ hook.Add("PostPlayerDeath", "Shadow_Buff_PostPlayerDeath", function(ply)
         -- Just in case
         if not IsPlayer(shadow) then return end
 
-        -- TODO: Let the player know they are going to respawn?
+        -- Let the player know they are going to respawn
+        local respawnDelay = target_buff_respawn_delay:GetInt()
+        local message = "Your " .. ROLE_STRINGS[ROLE_SHADOW] .. " will respawn you in " .. respawnDelay .. " seconds"
+        ply:PrintMessage(HUD_PRINTCENTER, message)
+        ply:PrintMessage(HUD_PRINTTALK, message)
 
         local timerId = "TTTShadowBuffTimer_" .. shadow:SteamID64() .. "_" .. ply:SteamID64()
-        timer.Create(timerId, target_buff_respawn_delay:GetInt(), 1, function()
+        timer.Create(timerId, respawnDelay, 1, function()
             if not IsValid(ply) or ply:Alive() or not ply:IsSpec() then return end
 
             -- Respawn them on their body so the shadow doesn't get screwed over
@@ -207,7 +226,7 @@ hook.Add("TTTBeginRound", "Shadow_TTTBeginRound", function()
                         CreateBuffTimer(v, target)
                     end
                 else
-                    ClearBuffTimer(v, target)
+                    ClearBuffTimer(v, target, true)
                     if v:GetNWFloat("ShadowTimer", -1) < 0 then
                         v:SetNWFloat("ShadowTimer", CurTime() + buffer_timer:GetInt())
                     end
