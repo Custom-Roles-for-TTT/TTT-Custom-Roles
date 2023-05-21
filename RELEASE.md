@@ -7,6 +7,9 @@
 - Added a buff to the shadow's target after they have been together for enough time
   - By default the buff is health regeneration, but it can be disabled and or configured as a single respawn or a damage bonus instead
 
+### Changes
+- Changed jester team roles to no longer be immune to map-triggered damage (such as "out of map" kill zones)
+
 ### Fixes
 - Fixed beggar client config section showing when traitor scans are not enabled
 

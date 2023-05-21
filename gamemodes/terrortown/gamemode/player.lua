@@ -1050,13 +1050,13 @@ function GM:EntityTakeDamage(ent, dmginfo)
 
     local att = dmginfo:GetAttacker()
     if GetRoundState() == ROUND_ACTIVE and ent:IsPlayer() then
-        -- Jesters don't take environmental damage
-        if ent:ShouldActLikeJester() then
-            -- Damage type DMG_GENERIC is "0" which doesn't seem to work with IsDamageType
-            if dmginfo:IsExplosionDamage() or dmginfo:IsDamageType(DMG_BURN) or dmginfo:IsDamageType(DMG_CRUSH) or dmginfo:IsFallDamage() or dmginfo:IsDamageType(DMG_DROWN) or dmginfo:GetDamageType() == 0 or dmginfo:IsDamageType(DMG_DISSOLVE) then
-                dmginfo:ScaleDamage(0)
-                dmginfo:SetDamage(0)
-            end
+        -- Block environmental damage to this jester-like player as long as it isn't a map trigger doing it
+        -- Damage type DMG_GENERIC is "0" which doesn't seem to work with IsDamageType
+        if ent:ShouldActLikeJester() and (not IsValid(att) or att:GetClass() ~= "trigger_hurt") and
+              (dmginfo:IsExplosionDamage() or dmginfo:IsDamageType(DMG_BURN) or dmginfo:IsDamageType(DMG_CRUSH) or
+               dmginfo:IsDamageType(DMG_DROWN) or dmginfo:GetDamageType() == 0 or dmginfo:IsDamageType(DMG_DISSOLVE)) then
+            dmginfo:ScaleDamage(0)
+            dmginfo:SetDamage(0)
         end
 
         -- Prevent damage from jesters
