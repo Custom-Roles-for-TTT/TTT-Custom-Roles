@@ -39,3 +39,33 @@ table.insert(ROLE_CONVARS[ROLE_SHADOW], {
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 1
 })
+table.insert(ROLE_CONVARS[ROLE_SHADOW], {
+    cvar = "ttt_shadow_target_buff",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_SHADOW], {
+    cvar = "ttt_shadow_target_buff_delay",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_SHADOW], {
+    cvar = "ttt_shadow_target_buff_heal_amount",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_SHADOW], {
+    cvar = "ttt_shadow_target_buff_heal_interval",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_SHADOW], {
+    cvar = "ttt_shadow_target_buff_respawn_delay",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_SHADOW], {
+    cvar = "ttt_shadow_target_buff_damage_bonus",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 2
+})

@@ -67,11 +67,10 @@ local function ClearShadowState(ply)
 end
 
 local buffTimers = {}
-local function GetBuffTimerId(shadowSid64, targetSid64)
-    return "TTTShadowBuffTimer_" .. shadowSid64 .. "_" .. targetSid64
-end
+local function ClearBuffTimer(shadow, target)
+    if not target then return end
 
-local function ClearBuffTimerById(shadow, timerId)
+    local timerId = "TTTShadowBuffTimer_" .. shadow:SteamID64() .. "_" .. target:SteamID64()
     if buffTimers[timerId] then
         shadow:SetNWFloat("ShadowBuffTimer", -1)
         timer.Remove(timerId)
@@ -79,14 +78,11 @@ local function ClearBuffTimerById(shadow, timerId)
     end
 end
 
-local function ClearBuffTimer(shadow, targetSid64)
-    local timerId = GetBuffTimerId(shadow:SteamID64(), targetSid64)
-    ClearBuffTimerById(shadow, timerId)
-end
-
 -- TODO: Show center message when buff timer starts/stops?
 
 local function CreateBuffTimer(shadow, target, timerId)
+    if buffTimers[timerId] then return end
+
     local buffDelay = target_buff_delay:GetInt()
     buffTimers[timerId] = true
     shadow:SetNWFloat("ShadowBuffTimer", CurTime() + buffDelay)
@@ -115,9 +111,7 @@ hook.Add("TTTBeginRound", "Shadow_TTTBeginRound", function()
         for _, v in pairs(GetAllPlayers()) do
             if not v:IsActiveShadow() or v:IsSpec() then continue end
 
-            local targetSid64 = v:GetNWString("ShadowTarget", "")
-            local timerId = GetBuffTimerId(v:SteamID64(), targetSid64)
-
+            local target = player.GetBySteamID64(v:GetNWString("ShadowTarget", ""))
             local t = v:GetNWFloat("ShadowTimer", -1)
             if t > 0 and CurTime() > t then
                 v:Kill()
@@ -126,9 +120,8 @@ hook.Add("TTTBeginRound", "Shadow_TTTBeginRound", function()
                 v:SetNWBool("ShadowActive", false)
                 v:SetNWFloat("ShadowTimer", -1)
                 v:SetNWFloat("ShadowBuffTimer", -1)
-                ClearBuffTimerById(v, timerId)
+                ClearBuffTimer(v, target)
             else
-                local target = player.GetBySteamID64(targetSid64)
                 local ent = target
                 local radius = alive_radius:GetFloat() * UNITS_PER_METER
                 local targetAlive = target:Alive() and not target:IsSpec()
@@ -146,11 +139,11 @@ hook.Add("TTTBeginRound", "Shadow_TTTBeginRound", function()
                     v:SetNWFloat("ShadowTimer", -1)
 
                     -- If the target is alive and we're not already counting down to buff, do that
-                    if targetAlive and not buffTimers[timerId] and target_buff:GetInt() > SHADOW_BUFF_NONE then
-                        CreateBuffTimer(v, target, timerId)
+                    if targetAlive and target_buff:GetInt() > SHADOW_BUFF_NONE then
+                        CreateBuffTimer(v, target)
                     end
                 else
-                    ClearBuffTimerById(v, timerId)
+                    ClearBuffTimer(v, target)
                     if v:GetNWFloat("ShadowTimer", -1) < 0 then
                         v:SetNWFloat("ShadowTimer", CurTime() + buffer_timer:GetInt())
                     end
@@ -171,12 +164,11 @@ hook.Add("PlayerDeath", "Shadow_KillCheck_PlayerDeath", function(victim, infl, a
     if not valid_kill then return end
     if attacker:IsShadow() then return end
 
-    local vicSid64 = victim:SteamID64()
-    if vicSid64 == attacker:GetNWString("ShadowTarget", "") then
+    if victim:SteamID64() == attacker:GetNWString("ShadowTarget", "") then
         attacker:Kill()
         attacker:PrintMessage(HUD_PRINTCENTER, "You killed your target!")
         attacker:PrintMessage(HUD_PRINTTALK, "You killed your target!")
-        ClearBuffTimer(attacker, vicSid64)
+        ClearBuffTimer(attacker, victim)
         ClearShadowState(attacker)
     end
 end)
@@ -186,7 +178,7 @@ hook.Add("PostPlayerDeath", "Shadow_BuffTimer_PostPlayerDeath", function(ply)
     for p, _ in ipairs(GetAllPlayers()) do
         if not p:IsShadow() then continue end
         if vicSid64 ~= p:GetNWString("ShadowTarget", "") then continue end
-        ClearBuffTimer(p, vicSid64)
+        ClearBuffTimer(p, ply)
     end
 end)
 
@@ -221,7 +213,8 @@ end)
 
 hook.Add("TTTPlayerRoleChanged", "Shadow_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if oldRole == ROLE_SHADOW and oldRole ~= newRole then
-        ClearBuffTimer(ply, ply:GetNWString("ShadowTarget", ""))
+        local target = player.GetBySteamID64(ply:GetNWString("ShadowTarget", ""))
+        ClearBuffTimer(ply, target)
         ClearShadowState(ply)
     end
 end)
