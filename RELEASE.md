@@ -1,7 +1,7 @@
 # Release Notes
 
 ### 1.8.9 (Beta)
-**Released:**
+**Released: May 28th, 2023**
 
 ### Additions
 - Added a buff to the shadow's target after they have been together for enough time
