@@ -13,6 +13,7 @@
     "*.svn*",
     "*.vcproj",
     "LICENSE",
+    "scripts*",
     "templates*",
     "images*"
   ]
