@@ -174,7 +174,7 @@ ttt_killer_min_players                      0       // The minimum number of pla
 ttt_zombie_min_players                      0       // The minimum number of players required to spawn the zombie
 ttt_madscientist_min_players                0       // The minimum number of players required to spawn the mad scientist
 ttt_shadow_min_players                      0       // The minimum number of players required to spawn the shadow
-ttt_arsonist_min_players                      0       // The minimum number of players required to spawn the arsonist
+ttt_arsonist_min_players                    0       // The minimum number of players required to spawn the arsonist
 
 // ----------------------------------------
 
