@@ -11,7 +11,8 @@
     "*.vcproj",
     "*.svn*",
     "LICENSE",
-	"templates*",
+    "scripts*",
+    "templates*",
     "images*"
   ]
 }
