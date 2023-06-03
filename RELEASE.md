@@ -12,6 +12,7 @@
 
 ### Fixes
 - Fixed beggar client config section showing when traitor scans are not enabled
+- Fixed error in the shadow client code if a non-player ragdoll exists
 
 ### 1.8.8 (Beta)
 **Released: May 20th, 2023**
