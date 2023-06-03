@@ -51,7 +51,7 @@ local function ClientGetRagdollEntity(sid64)
     local bodies = ents.FindByClass("prop_ragdoll")
     for _, v in pairs(bodies) do
         local body = CORPSE.GetPlayer(v)
-        if body:SteamID64() == sid64 then
+        if IsPlayer(body) and body:SteamID64() == sid64 then
             return v
         end
     end
