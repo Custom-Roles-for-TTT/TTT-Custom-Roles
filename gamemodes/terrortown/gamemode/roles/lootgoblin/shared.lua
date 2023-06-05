@@ -125,3 +125,7 @@ table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
 })
+table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
+    cvar = "ttt_lootgoblin_active_display",
+    type = ROLE_CONVAR_TYPE_BOOL,
+})
