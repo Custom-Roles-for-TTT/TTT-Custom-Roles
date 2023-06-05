@@ -106,7 +106,7 @@ local function UpdateLootGoblin()
     local active = net.ReadBool()
     if active then
         SetLootGoblinPosition()
-        timer.Create("updatelootgoblin", GetGlobalInt("ttt_revenger_radar_timer", 15), 0, SetLootGoblinPosition)
+        timer.Create("updatelootgoblin", GetGlobalInt("ttt_lootgoblin_radar_timer", 15), 0, SetLootGoblinPosition)
     else
         lootgoblins = {}
     end

@@ -1,5 +1,11 @@
 # Release Notes
 
+### 1.8.10 (Beta)
+**Released:**
+
+### Fixes
+- Fixed conflict between loot goblin and revenger radar timing convars
+
 ### 1.8.9 (Beta)
 **Released: May 28th, 2023**
 

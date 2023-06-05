@@ -63,7 +63,7 @@ hook.Add("TTTSyncGlobals", "LootGoblin_TTTSyncGlobals", function()
     SetGlobalFloat("ttt_lootgoblin_sprint_recovery", lootgoblin_sprint_recovery:GetFloat())
     SetGlobalInt("ttt_lootgoblin_regen_mode", lootgoblin_regen_mode:GetInt())
     SetGlobalInt("ttt_lootgoblin_regen_delay", lootgoblin_regen_delay:GetInt())
-    SetGlobalInt("ttt_revenger_radar_timer", lootgoblin_radar_timer:GetInt())
+    SetGlobalInt("ttt_lootgoblin_radar_timer", lootgoblin_radar_timer:GetInt())
 end)
 
 -----------
