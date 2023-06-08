@@ -50,7 +50,7 @@ hook.Add("TTTSprintStaminaRecovery", "Shadow_TTTSprintStaminaRecovery", function
         if max_recovery <= 0 then return end
 
         -- Sanity check
-        if max_recovery <= recovery_value then
+        if max_recovery < recovery_value then
             max_recovery = recovery_value
         end
 
@@ -75,7 +75,7 @@ hook.Add("TTTSpeedMultiplier", "Shadow_TTTSpeedMultiplier", function(ply, mults)
         if max_speed <= 0 then return end
 
         -- Sanity check
-        if max_speed <= speed_value then
+        if max_speed < speed_value then
             max_speed = speed_value
         end
 
