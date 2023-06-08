@@ -62,7 +62,8 @@ hook.Add("TTTSprintStaminaRecovery", "Shadow_TTTSprintStaminaRecovery", function
 end)
 
 hook.Add("TTTSpeedMultiplier", "Shadow_TTTSpeedMultiplier", function(ply, mults)
-    if ShouldHaveSprintBoost(ply) then
+    -- Only increase this player's movement speed when they are sprinting (and all the other checks pass)
+    if ShouldHaveSprintBoost(ply) and ply:GetSprinting() then
         local target = player.GetBySteamID64(ply:GetNWString("ShadowTarget", ""))
         -- Check to make sure the target is alive
         if not IsPlayer(target) or not target:Alive() or target:IsSpec() then return end
