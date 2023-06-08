@@ -5,6 +5,9 @@
 
 ### Additions
 - Added new convar (`ttt_lootgoblin_active_display`) to control whether the loot goblin's role is revealed when they are activated (defaults to enabled to keep current behavior)
+- Added sprint speed and stamina recovery bonuses to the shadow when they are outside of their target's radius
+  - Both values are configurable and can be disabled
+  - Both values also scale up to a maximum value (also configurable) the further the shadow is from their target
 
 ### Fixes
 - Fixed conflict between loot goblin and revenger radar timing convars
