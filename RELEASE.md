@@ -8,6 +8,7 @@
 
 ### Fixes
 - Fixed conflict between loot goblin and revenger radar timing convars
+- Fixed loot goblin stamina recovery not being synced across client and server
 
 ### 1.8.9 (Beta)
 **Released: May 28th, 2023**
