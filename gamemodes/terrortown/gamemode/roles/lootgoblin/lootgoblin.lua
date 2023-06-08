@@ -56,14 +56,16 @@ local lootgoblin_regen_rate = CreateConVar("ttt_lootgoblin_regen_rate", "3", FCV
 local lootgoblin_regen_delay = CreateConVar("ttt_lootgoblin_regen_delay", "0", FCVAR_NONE, "The length of the delay (in seconds) before the loot goblin's health will start to regenerate", 0, 60)
 local lootgoblin_radar_enabled = CreateConVar("ttt_lootgoblin_radar_enabled", "0", FCVAR_NONE, "Whether the radar ping for the loot goblin should be enabled or not", 0, 1)
 local lootgoblin_radar_timer = CreateConVar("ttt_lootgoblin_radar_timer", "15", FCVAR_NONE, "How often (in seconds) the radar ping for the loot goblin should update", 1, 60)
-local lootgoblin_radar_delay = CreateConVar("ttt_lootgoblin_radar_delay", "15", FCVAR_NONE, "How dealyed (in seconds) the radar ping for the loot goblin should be", 1, 60)
+local lootgoblin_radar_delay = CreateConVar("ttt_lootgoblin_radar_delay", "15", FCVAR_NONE, "How delayed (in seconds) the radar ping for the loot goblin should be", 1, 60)
+local lootgoblin_active_display = CreateConVar("ttt_lootgoblin_active_display", "1", FCVAR_NONE, "Whether to show the loot goblin's information over their head and on the scoreboard once they are activated", 0, 1)
 
 hook.Add("TTTSyncGlobals", "LootGoblin_TTTSyncGlobals", function()
     SetGlobalFloat("ttt_lootgoblin_speed_mult", lootgoblin_speed_mult:GetFloat())
     SetGlobalFloat("ttt_lootgoblin_sprint_recovery", lootgoblin_sprint_recovery:GetFloat())
     SetGlobalInt("ttt_lootgoblin_regen_mode", lootgoblin_regen_mode:GetInt())
     SetGlobalInt("ttt_lootgoblin_regen_delay", lootgoblin_regen_delay:GetInt())
-    SetGlobalInt("ttt_revenger_radar_timer", lootgoblin_radar_timer:GetInt())
+    SetGlobalInt("ttt_lootgoblin_radar_timer", lootgoblin_radar_timer:GetInt())
+    SetGlobalBool("ttt_lootgoblin_active_display", lootgoblin_active_display:GetBool())
 end)
 
 -----------

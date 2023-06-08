@@ -1,5 +1,14 @@
 # Release Notes
 
+### 1.8.10 (Beta)
+**Released:**
+
+### Additions
+- Added new convar (`ttt_lootgoblin_active_display`) to control whether the loot goblin's role is revealed when they are activated (defaults to enabled to keep current behavior)
+
+### Fixes
+- Fixed conflict between loot goblin and revenger radar timing convars
+
 ### 1.8.9 (Beta)
 **Released: May 28th, 2023**
 

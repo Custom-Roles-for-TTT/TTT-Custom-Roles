@@ -33,19 +33,19 @@ end)
 
 -- Reveal the loot goblin to all players once activated
 hook.Add("TTTTargetIDPlayerRoleIcon", "LootGoblin_TTTTargetIDPlayerRoleIcon", function(ply, client, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
-    if ply:IsActiveLootGoblin() and ply:IsRoleActive() then
+    if ply:IsActiveLootGoblin() and ply:IsRoleActive() and GetGlobalBool("ttt_lootgoblin_active_display", true) then
         return ROLE_LOOTGOBLIN, false
     end
 end)
 
 hook.Add("TTTTargetIDPlayerRing", "LootGoblin_TTTTargetIDPlayerRing", function(ent, client, ringVisible)
-    if IsPlayer(ent) and ent:IsActiveLootGoblin() and ent:IsRoleActive() then
+    if IsPlayer(ent) and ent:IsActiveLootGoblin() and ent:IsRoleActive() and GetGlobalBool("ttt_lootgoblin_active_display", true) then
         return true, ROLE_COLORS_RADAR[ROLE_LOOTGOBLIN]
     end
 end)
 
 hook.Add("TTTTargetIDPlayerText", "LootGoblin_TTTTargetIDPlayerText", function(ent, client, text, clr, secondaryText)
-    if IsPlayer(ent) and ent:IsActiveLootGoblin() and ent:IsRoleActive() then
+    if IsPlayer(ent) and ent:IsActiveLootGoblin() and ent:IsRoleActive() and GetGlobalBool("ttt_lootgoblin_active_display", true) then
         return StringUpper(ROLE_STRINGS[ROLE_LOOTGOBLIN]), ROLE_COLORS_RADAR[ROLE_LOOTGOBLIN]
     end
 end)
@@ -54,6 +54,7 @@ ROLE_IS_TARGETID_OVERRIDDEN[ROLE_LOOTGOBLIN] = function(ply, target)
     if not IsPlayer(target) then return end
     if not target:IsActiveLootGoblin() then return end
     if not target:IsRoleActive() then return end
+    if not GetGlobalBool("ttt_lootgoblin_active_display", true) then return end
 
     ------ icon, ring, text
     return true, true, true
@@ -106,7 +107,7 @@ local function UpdateLootGoblin()
     local active = net.ReadBool()
     if active then
         SetLootGoblinPosition()
-        timer.Create("updatelootgoblin", GetGlobalInt("ttt_revenger_radar_timer", 15), 0, SetLootGoblinPosition)
+        timer.Create("updatelootgoblin", GetGlobalInt("ttt_lootgoblin_radar_timer", 15), 0, SetLootGoblinPosition)
     else
         lootgoblins = {}
     end
@@ -122,7 +123,7 @@ end)
 ----------------
 
 hook.Add("TTTScoreboardPlayerRole", "LootGoblin_TTTScoreboardPlayerRole", function(ply, client, color, roleFileName)
-    if ply:IsActiveLootGoblin() and ply:IsRoleActive() then
+    if ply:IsActiveLootGoblin() and ply:IsRoleActive() and GetGlobalBool("ttt_lootgoblin_active_display", true) then
         return ROLE_COLORS_SCOREBOARD[ROLE_LOOTGOBLIN], ROLE_STRINGS_SHORT[ROLE_LOOTGOBLIN]
     end
 end)
@@ -131,6 +132,7 @@ ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_LOOTGOBLIN] = function(ply, target)
     if not IsPlayer(target) then return end
     if not target:IsActiveLootGoblin() then return end
     if not target:IsRoleActive() then return end
+    if not GetGlobalBool("ttt_lootgoblin_active_display", true) then return end
 
     ------ name,  role
     return false, true
