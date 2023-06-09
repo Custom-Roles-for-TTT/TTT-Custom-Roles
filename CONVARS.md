@@ -658,8 +658,8 @@ ttt_shadow_target_buff_heal_amount          5       // The amount of health the 
 ttt_shadow_target_buff_heal_interval        10      // How often (in seconds) the shadow's target should be healed
 ttt_shadow_target_buff_respawn_delay        10      // How often (in seconds) before the shadow's target should respawn
 ttt_shadow_target_buff_damage_bonus         0.15    // Damage bonus the shadow's target should get (e.g. 0.15 = 15% extra damage)
-ttt_shadow_speed_mult                       1.1     // The minimum multiplier to use on the shadow's movement speed when they are outside of their target radius (e.g. 1.1 = 110% normal speed)
-ttt_shadow_speed_mult_max                   1.5     // The maximum multiplier to use on the shadow's movement speed when they are FAR outside of their target radius (e.g. 1.5 = 150% normal speed)
+ttt_shadow_speed_mult                       1.1     // The minimum multiplier to use on the shadow's sprint speed when they are outside of their target radius (e.g. 1.1 = 110% normal speed)
+ttt_shadow_speed_mult_max                   1.5     // The maximum multiplier to use on the shadow's sprint speed when they are FAR outside of their target radius (e.g. 1.5 = 150% normal speed)
 ttt_shadow_sprint_recovery                  0.1     // The minimum amount of stamina to recover per tick when the shadow is outside of their target radius
 ttt_shadow_sprint_recovery_max              0.5     // The maximum amount of stamina to recover per tick when the shadow is FAR outside of their target radius
 

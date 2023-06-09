@@ -23,8 +23,8 @@ local target_buff_heal_amount = CreateConVar("ttt_shadow_target_buff_heal_amount
 local target_buff_heal_interval = CreateConVar("ttt_shadow_target_buff_heal_interval", "10", FCVAR_NONE, "How often (in seconds) the shadow's target should be healed", 1, 100)
 local target_buff_respawn_delay = CreateConVar("ttt_shadow_target_buff_respawn_delay", "10", FCVAR_NONE, "How often (in seconds) before the shadow's target should respawn", 1, 120)
 local target_buff_damage_bonus = CreateConVar("ttt_shadow_target_buff_damage_bonus", "0.15", FCVAR_NONE, "Damage bonus the shadow's target should get (e.g. 0.15 = 15% extra damage)", 0.05, 1)
-local speed_mult = CreateConVar("ttt_shadow_speed_mult", "1.1", FCVAR_NONE, "The minimum multiplier to use on the shadow's movement speed when they are outside of their target radius (e.g. 1.1 = 110% normal speed)", 1, 2)
-local speed_mult_max = CreateConVar("ttt_shadow_speed_mult_max", "1.5", FCVAR_NONE, "The maximum multiplier to use on the shadow's movement speed when they are FAR outside of their target radius (e.g. 1.5 = 150% normal speed)", 1, 2)
+local speed_mult = CreateConVar("ttt_shadow_speed_mult", "1.1", FCVAR_NONE, "The minimum multiplier to use on the shadow's sprint speed when they are outside of their target radius (e.g. 1.1 = 110% normal speed)", 1, 2)
+local speed_mult_max = CreateConVar("ttt_shadow_speed_mult_max", "1.5", FCVAR_NONE, "The maximum multiplier to use on the shadow's sprint speed when they are FAR outside of their target radius (e.g. 1.5 = 150% normal speed)", 1, 2)
 local sprint_recovery = CreateConVar("ttt_shadow_sprint_recovery", "0.1", FCVAR_NONE, "The minimum amount of stamina to recover per tick when the shadow is outside of their target radius", 0, 1)
 local sprint_recovery_max = CreateConVar("ttt_shadow_sprint_recovery_max", "0.5", FCVAR_NONE, "The maximum amount of stamina to recover per tick when the shadow is FAR outside of their target radius", 0, 1)
 

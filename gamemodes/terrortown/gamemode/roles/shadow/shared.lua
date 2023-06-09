@@ -26,7 +26,7 @@ end
 local function ShouldHaveSprintBoost(ply)
     -- We want to buff the shadow's speed and stamina if they are outside of the target radius
     -- When they are outside the radius a timer is shown, so we are just checking the timer status instead of doing distance math again
-    return IsPlayer(ply) and ply:IsActiveShadow() and ply:GetNWFloat("ShadowTimer", -1) > 0
+    return GetGlobalBool("ttt_sprint_enabled", true) and IsPlayer(ply) and ply:IsActiveShadow() and ply:GetNWFloat("ShadowTimer", -1) > 0
 end
 
 local function ScaleSprintValue(value, min_value, max_value, distance, min_distance)
