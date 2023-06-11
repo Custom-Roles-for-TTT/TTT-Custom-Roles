@@ -17,7 +17,8 @@ local start_timer = CreateConVar("ttt_shadow_start_timer", "30", FCVAR_NONE, "Ho
 local buffer_timer = CreateConVar("ttt_shadow_buffer_timer", "7", FCVAR_NONE, "How much time (in seconds) the shadow can stay of their target's radius", 1, 30)
 local alive_radius = CreateConVar("ttt_shadow_alive_radius", "8", FCVAR_NONE, "The radius (in meters) from the living target that the shadow has to stay within", 1, 15)
 local dead_radius = CreateConVar("ttt_shadow_dead_radius", "3", FCVAR_NONE, "The radius (in meters) from the death target that the shadow has to stay within", 1, 15)
-local target_buff = CreateConVar("ttt_shadow_target_buff", "1", FCVAR_NONE, "The type of buff to shadow's target should get. 0 - None. 1 - Heal over time. 2 - Single respawn. 3 - Damage bonus", 0, 3)
+local target_buff = CreateConVar("ttt_shadow_target_buff", "1", FCVAR_NONE, "The type of buff to shadow's target should get. 0 - None. 1 - Heal over time. 2 - Single respawn. 3 - Damage bonus. 4 - Team join", 0, 3)
+local target_buff_notify = CreateConVar("ttt_shadow_target_buff_notify", "1", FCVAR_NONE, "Whether the shadow's target should be notified when they are buffed", 0, 1)
 local target_buff_delay = CreateConVar("ttt_shadow_target_buff_delay", "60", FCVAR_NONE, "How long (in seconds) the shadow needs to be near their target before the buff takes effect", 1, 120)
 local target_buff_heal_amount = CreateConVar("ttt_shadow_target_buff_heal_amount", "5", FCVAR_NONE, "The amount of health the shadow's target should be healed per-interval", 1, 100)
 local target_buff_heal_interval = CreateConVar("ttt_shadow_target_buff_heal_interval", "10", FCVAR_NONE, "How often (in seconds) the shadow's target should be healed", 1, 100)
@@ -27,6 +28,8 @@ local speed_mult = CreateConVar("ttt_shadow_speed_mult", "1.1", FCVAR_NONE, "The
 local speed_mult_max = CreateConVar("ttt_shadow_speed_mult_max", "1.5", FCVAR_NONE, "The maximum multiplier to use on the shadow's sprint speed when they are FAR outside of their target radius (e.g. 1.5 = 150% normal speed)", 1, 2)
 local sprint_recovery = CreateConVar("ttt_shadow_sprint_recovery", "0.1", FCVAR_NONE, "The minimum amount of stamina to recover per tick when the shadow is outside of their target radius", 0, 1)
 local sprint_recovery_max = CreateConVar("ttt_shadow_sprint_recovery_max", "0.5", FCVAR_NONE, "The maximum amount of stamina to recover per tick when the shadow is FAR outside of their target radius", 0, 1)
+local target_jester = CreateConVar("ttt_shadow_target_jester", "1", FCVAR_NONE, "Whether the shadow should be able to target a member of the jester team", 0, 1)
+local target_independent = CreateConVar("ttt_shadow_target_independent", "1", FCVAR_NONE, "Whether the shadow should be able to target an independent player", 0, 1)
 
 hook.Add("TTTSyncGlobals", "Shadow_TTTSyncGlobals", function()
     SetGlobalInt("ttt_shadow_start_timer", start_timer:GetInt())
@@ -49,7 +52,9 @@ ROLE_ON_ROLE_ASSIGNED[ROLE_SHADOW] = function(ply)
     local closestTarget = nil
     local closestDistance = -1
     for _, p in pairs(GetAllPlayers()) do
-        if p:Alive() and not p:IsSpec() and p ~= ply then
+        if p:Alive() and not p:IsSpec() and p ~= ply and
+            (target_jester:GetBool() or not p:IsJesterTeam()) and
+            (target_independent:GetBool() or not p:IsIndependentTeam()) then
             local distance = ply:GetPos():Distance(p:GetPos())
             if closestDistance == -1 or distance < closestDistance then
                 closestTarget = p
@@ -126,15 +131,23 @@ local function CreateBuffTimer(shadow, target)
         local buff = target_buff:GetInt()
         if buff <= SHADOW_BUFF_NONE then return end
 
+        target:SetNWBool("ShadowBuffActive", true)
+
+        if buff == SHADOW_BUFF_TEAM_JOIN then
+            -- TODO: Team join logic here
+            return
+        end
+
         message = "A buff is now active on your target. Stay with them to keep it up!"
         shadow:PrintMessage(HUD_PRINTCENTER, message)
         shadow:PrintMessage(HUD_PRINTTALK, message)
 
-        message = "Your " .. ROLE_STRINGS[ROLE_SHADOW] .. " is buffing you. Stay with them to keep it up!"
-        target:PrintMessage(HUD_PRINTCENTER, message)
-        target:PrintMessage(HUD_PRINTTALK, message)
+        if target_buff_notify:GetBool() then
+            message = "Your " .. ROLE_STRINGS[ROLE_SHADOW] .. " is buffing you. Stay with them to keep it up!"
+            target:PrintMessage(HUD_PRINTCENTER, message)
+            target:PrintMessage(HUD_PRINTTALK, message)
+        end
 
-        target:SetNWBool("ShadowBuffActive", true)
         if buff == SHADOW_BUFF_HEAL then
             CreateHealTimer(shadow, target, timerId)
         end
@@ -170,11 +183,14 @@ hook.Add("PostPlayerDeath", "Shadow_Buff_PostPlayerDeath", function(ply)
         -- Just in case
         if not IsPlayer(shadow) then return end
 
-        -- Let the player know they are going to respawn
         local respawnDelay = target_buff_respawn_delay:GetInt()
-        local message = "Your " .. ROLE_STRINGS[ROLE_SHADOW] .. " will respawn you in " .. respawnDelay .. " seconds"
-        ply:PrintMessage(HUD_PRINTCENTER, message)
-        ply:PrintMessage(HUD_PRINTTALK, message)
+
+        -- Let the player know they are going to respawn
+        if target_buff_notify:GetBool() then
+            local message = "Your " .. ROLE_STRINGS[ROLE_SHADOW] .. " will respawn you in " .. respawnDelay .. " seconds"
+            ply:PrintMessage(HUD_PRINTCENTER, message)
+            ply:PrintMessage(HUD_PRINTTALK, message)
+        end
 
         local timerId = "TTTShadowBuffTimer_" .. shadow:SteamID64() .. "_" .. ply:SteamID64()
         timer.Create(timerId, respawnDelay, 1, function()

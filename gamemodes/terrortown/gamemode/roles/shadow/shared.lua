@@ -12,6 +12,7 @@ SHADOW_BUFF_NONE = 0
 SHADOW_BUFF_HEAL = 1
 SHADOW_BUFF_RESPAWN = 2
 SHADOW_BUFF_DAMAGE = 3
+SHADOW_BUFF_TEAM_JOIN = 4
 
 -- Initialize role features
 ROLE_HAS_PASSIVE_WIN[ROLE_SHADOW] = true
@@ -118,6 +119,10 @@ table.insert(ROLE_CONVARS[ROLE_SHADOW], {
     decimal = 0
 })
 table.insert(ROLE_CONVARS[ROLE_SHADOW], {
+    cvar = "ttt_shadow_target_buff_notify",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_SHADOW], {
     cvar = "ttt_shadow_target_buff_delay",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
@@ -161,4 +166,12 @@ table.insert(ROLE_CONVARS[ROLE_SHADOW], {
     cvar = "ttt_shadow_sprint_recovery_max",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 2
+})
+table.insert(ROLE_CONVARS[ROLE_SHADOW], {
+    cvar = "ttt_shadow_target_jester",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_SHADOW], {
+    cvar = "ttt_shadow_target_independent",
+    type = ROLE_CONVAR_TYPE_BOOL
 })

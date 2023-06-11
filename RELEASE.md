@@ -9,6 +9,9 @@
   - Both values are configurable and can be disabled
   - Both values also scale up to a maximum value (also configurable) the further the shadow is from their target
 - Added the ability to move the parasite onto the monster team (disabled by default)
+- Added the ability to control whether the shadow's target is notified when they are buffed (enabled by default)
+- Added the ability to control whether the shadow can target jesters (enabled by default)
+- Added the ability to control whether the shadow can target independents (enabled by default)
 
 ### Fixes
 - Fixed conflict between loot goblin and revenger radar timing convars
