@@ -256,6 +256,7 @@ ttt_single_doctor_quack                     0       // Whether only a single doc
 ttt_single_doctor_quack_chance              0.5     // The chance that a doctor should have an opportunity to spawn instead of a quack (e.g. 0.7 = 70% chance for doctor, 30% chance for quack. Only applies if ttt_single_doctor_quack is enabled)
 
 // Parasite
+ttt_parasite_is_monster                     0       // Whether the parasite should be treated as a member of the monster team (rather than the traitor team)
 ttt_parasite_infection_time                 45      // The time it takes in seconds for the parasite to fully infect someone
 ttt_parasite_infection_warning_time         0       // The time in seconds after infection to warn the victim. Set to 0 to disable.
 ttt_parasite_infection_transfer             0       // Whether the parasite's infection will transfer if the parasite's killer is killed by another player

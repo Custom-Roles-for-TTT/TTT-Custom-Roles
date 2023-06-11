@@ -8,6 +8,7 @@
 - Added sprint speed and stamina recovery bonuses to the shadow when they are outside of their target's radius
   - Both values are configurable and can be disabled
   - Both values also scale up to a maximum value (also configurable) the further the shadow is from their target
+- Added the ability to move the parasite onto the monster team (disabled by default)
 
 ### Fixes
 - Fixed conflict between loot goblin and revenger radar timing convars
