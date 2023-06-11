@@ -205,7 +205,7 @@ hook.Add("PostPlayerDeath", "Shadow_Buff_PostPlayerDeath", function(ply)
             SafeRemoveEntity(corpse)
 
             if IsValid(shadow) then
-                message = "Your target has respawned!"
+                local message = "Your target has respawned!"
                 shadow:PrintMessage(HUD_PRINTCENTER, message)
                 shadow:PrintMessage(HUD_PRINTTALK, message)
             end
