@@ -16,6 +16,7 @@
 ### Fixes
 - Fixed conflict between loot goblin and revenger radar timing convars
 - Fixed loot goblin stamina recovery not being synced across client and server
+- Fixed disabling invisibility setting the glass material which should be clear but isn't for everyone
 
 ### 1.8.9 (Beta)
 **Released: May 28th, 2023**

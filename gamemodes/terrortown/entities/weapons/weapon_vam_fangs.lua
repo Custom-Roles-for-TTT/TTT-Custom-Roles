@@ -437,7 +437,7 @@ function SWEP:Think()
     elseif self:Clip1() >= 40 and self.fading then
         self.fading = false
         owner:SetColor(COLOR_WHITE)
-        owner:SetMaterial("models/glass")
+        owner:SetMaterial("")
         owner:EmitSound("weapons/ttt/unfade.wav")
         hook.Call("TTTVampireInvisibilityChange", nil, owner, false)
     end
