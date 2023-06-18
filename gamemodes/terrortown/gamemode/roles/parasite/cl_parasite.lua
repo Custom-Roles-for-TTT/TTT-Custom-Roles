@@ -161,17 +161,19 @@ end)
 
 hook.Add("TTTTutorialRoleText", "Parasite_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_PARASITE then
-        local roleColor = ROLE_COLORS[ROLE_TRAITOR]
-        local html = "The " .. ROLE_STRINGS[ROLE_PARASITE] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitor team</span> whose goal is to help defeat their team's enemies."
+        local traitorColor = ROLE_COLORS[ROLE_TRAITOR]
+        local roleTeam = player.GetRoleTeam(ROLE_PARASITE, true)
+        local roleTeamName, roleColor = GetRoleTeamInfo(roleTeam)
+        local html = "The " .. ROLE_STRINGS[ROLE_PARASITE] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. roleTeamName .. " team</span> whose goal is to help defeat their team's enemies."
 
         -- Infection
-        html = html .. "<span style='display: block; margin-top: 10px;'>If they are killed, they <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>infect their killer</span> watching and biding their time while the infection spreads.</span>"
+        html = html .. "<span style='display: block; margin-top: 10px;'>If they are killed, they <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>infect their killer</span> watching and biding their time while the infection spreads.</span>"
 
         -- Respawn
         local infection_time = GetGlobalInt("ttt_parasite_infection_time", 45)
-        html = html .. "<span style='display: block; margin-top: 10px;'>After " .. infection_time .. " seconds, the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>infection becomes terminal</span>, respawning the " .. ROLE_STRINGS[ROLE_PARASITE] .. " and killing their killer.</span>"
+        html = html .. "<span style='display: block; margin-top: 10px;'>After " .. infection_time .. " seconds, the <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>infection becomes terminal</span>, respawning the " .. ROLE_STRINGS[ROLE_PARASITE] .. " and killing their killer.</span>"
 
-        html = html .. "<span style='display: block; margin-top: 10px;'>Members of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitor team</span> will know who is infected via text when they look at the player or the scoreboard. This helps to let them know <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>not to kill that person</span> which would prevent the " .. ROLE_STRINGS[ROLE_PARASITE] .. " from respawning.</span>"
+        html = html .. "<span style='display: block; margin-top: 10px;'>Members of the <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>traitor team</span> will know who is infected via text when they look at the player or the scoreboard. This helps to let them know <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>not to kill that person</span> which would prevent the " .. ROLE_STRINGS[ROLE_PARASITE] .. " from respawning.</span>"
 
         return html
     end
