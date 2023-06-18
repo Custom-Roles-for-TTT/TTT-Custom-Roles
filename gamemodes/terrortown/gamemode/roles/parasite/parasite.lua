@@ -18,6 +18,7 @@ util.AddNetworkString("TTT_ParasiteInfect")
 -- CONVARS --
 -------------
 
+local parasite_is_monster = CreateConVar("ttt_parasite_is_monster", "0", FCVAR_NONE, "Whether the parasite should be treated as a member of the monster team (rather than the traitor team)", 0, 1)
 local parasite_infection_time = CreateConVar("ttt_parasite_infection_time", 45, FCVAR_NONE, "The time it takes in seconds for the parasite to fully infect someone", 0, 300)
 local parasite_infection_warning_time = CreateConVar("ttt_parasite_infection_warning_time", 0, FCVAR_NONE, "The time in seconds after infection to warn the victim", 0, 300)
 local parasite_infection_transfer = CreateConVar("ttt_parasite_infection_transfer", 0)
@@ -31,6 +32,7 @@ local parasite_infection_saves_lover = CreateConVar("ttt_parasite_infection_save
 hook.Add("TTTSyncGlobals", "Parasite_TTTSyncGlobals", function()
     SetGlobalInt("ttt_parasite_infection_time", parasite_infection_time:GetInt())
     SetGlobalBool("ttt_parasite_enabled", GetConVar("ttt_parasite_enabled"):GetBool())
+    SetGlobalBool("ttt_parasite_is_monster", parasite_is_monster:GetBool())
 end)
 
 --------------

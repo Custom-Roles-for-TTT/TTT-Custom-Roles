@@ -19,6 +19,16 @@ ROLE_IS_ACTIVE[ROLE_LOOTGOBLIN] = function(ply)
     return ply:GetNWBool("LootGoblinActive", false)
 end
 
+-------------------
+-- ROLE FEATURES --
+-------------------
+
+hook.Add("TTTSprintStaminaRecovery", "LootGoblin_TTTSprintStaminaRecovery", function(ply, recovery)
+    if IsPlayer(ply) and ply:IsActiveLootGoblin() and ply:IsRoleActive() then
+        return GetGlobalFloat("ttt_lootgoblin_sprint_recovery", 0.12)
+    end
+end)
+
 hook.Add("TTTSpeedMultiplier", "LootGoblin_TTTSpeedMultiplier", function(ply, mults)
     if IsPlayer(ply) and ply:IsActiveLootGoblin() and ply:IsRoleActive() then
         TableInsert(mults, GetGlobalFloat("ttt_lootgoblin_speed_mult", 1.2))

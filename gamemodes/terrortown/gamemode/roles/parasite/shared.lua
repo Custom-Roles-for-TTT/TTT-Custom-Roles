@@ -39,6 +39,12 @@ ROLE_SHOULD_SHOW_SPECTATOR_HUD[ROLE_PARASITE] = function(ply)
     end
 end
 
+hook.Add("TTTUpdateRoleState", "Parasite_Team_TTTUpdateRoleState", function()
+    local parasite_is_monster = GetGlobalBool("ttt_parasite_is_monster", false)
+    MONSTER_ROLES[ROLE_PARASITE] = parasite_is_monster
+    TRAITOR_ROLES[ROLE_PARASITE] = not parasite_is_monster
+end)
+
 ------------------
 -- ROLE WEAPONS --
 ------------------
@@ -109,5 +115,9 @@ table.insert(ROLE_CONVARS[ROLE_PARASITE], {
 })
 table.insert(ROLE_CONVARS[ROLE_PARASITE], {
     cvar = "ttt_parasite_infection_saves_lover",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_PARASITE], {
+    cvar = "ttt_parasite_is_monster",
     type = ROLE_CONVAR_TYPE_BOOL
 })

@@ -5,9 +5,18 @@
 
 ### Additions
 - Added new convar (`ttt_lootgoblin_active_display`) to control whether the loot goblin's role is revealed when they are activated (defaults to enabled to keep current behavior)
+- Added sprint speed and stamina recovery bonuses to the shadow when they are outside of their target's radius
+  - Both values are configurable and can be disabled
+  - Both values also scale up to a maximum value (also configurable) the further the shadow is from their target
+- Added the ability to move the parasite onto the monster team (disabled by default)
+- Added the ability to control whether the shadow's target is notified when they are buffed (enabled by default)
+- Added the ability to control whether the shadow can target jesters (enabled by default)
+- Added the ability to control whether the shadow can target independents (enabled by default)
 
 ### Fixes
 - Fixed conflict between loot goblin and revenger radar timing convars
+- Fixed loot goblin stamina recovery not being synced across client and server
+- Fixed disabling invisibility setting the glass material which should be clear but isn't for everyone
 
 ### 1.8.9 (Beta)
 **Released: May 28th, 2023**
