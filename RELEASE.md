@@ -13,10 +13,15 @@
 - Added the ability to control whether the shadow can target jesters (enabled by default)
 - Added the ability to control whether the shadow can target independents (enabled by default)
 
+### Changes
+- **BREAKING CHANGE** - Renamed `ttt_beggar_traitor_scan*` convars to `ttt_beggar_scan*`
+- Changed `ttt_beggar_scan` to have a second mode (`ttt_beggar_scan 2`) which allows beggars to scan whether a player has a shop
+
 ### Fixes
 - Fixed conflict between loot goblin and revenger radar timing convars
 - Fixed loot goblin stamina recovery not being synced across client and server
 - Fixed disabling invisibility setting the glass material which should be clear but isn't for everyone
+- Fixed beggar scanning circle showing even when beggar scanning was disabled
 
 ### 1.8.9 (Beta)
 **Released: May 28th, 2023**
