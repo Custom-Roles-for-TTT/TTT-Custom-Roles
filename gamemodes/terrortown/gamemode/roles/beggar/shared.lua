@@ -101,7 +101,8 @@ table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
 })
 table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
     cvar = "ttt_beggar_scan",
-    type = ROLE_CONVAR_TYPE_BOOL
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
 })
 table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
     cvar = "ttt_beggar_scan_time",
