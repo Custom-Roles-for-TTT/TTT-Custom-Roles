@@ -1,7 +1,7 @@
 # Release Notes
 
 ### 1.8.10 (Beta)
-**Released:**
+**Released: June 25th, 2023**
 
 ### Additions
 - Added new convar (`ttt_lootgoblin_active_display`) to control whether the loot goblin's role is revealed when they are activated (defaults to enabled to keep current behavior)
