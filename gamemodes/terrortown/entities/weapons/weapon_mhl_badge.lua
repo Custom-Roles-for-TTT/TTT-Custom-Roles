@@ -156,6 +156,12 @@ if SERVER then
         ply:SetRole(role)
         SendFullStateUpdate()
 
+        -- Update the player's health
+        SetRoleMaxHealth(ply)
+        if ply:Health() > ply:GetMaxHealth() then
+            ply:SetHealth(ply:GetMaxHealth())
+        end
+
         ply:StripRoleWeapons()
         if not ply:HasWeapon("weapon_ttt_unarmed") then
             ply:Give("weapon_ttt_unarmed")
