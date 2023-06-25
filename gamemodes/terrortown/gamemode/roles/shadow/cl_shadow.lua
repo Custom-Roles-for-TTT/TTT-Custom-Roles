@@ -31,6 +31,7 @@ Survive until the end of the round to win.]])
     LANG.AddToLanguage("english", "shadow_buff_1", "health regen")
     LANG.AddToLanguage("english", "shadow_buff_2", "respawn")
     LANG.AddToLanguage("english", "shadow_buff_3", "damage bonus")
+    LANG.AddToLanguage("english", "shadow_buff_4", "team join")
 
     -- Target ID
     LANG.AddToLanguage("english", "shadow_target", "YOUR TARGET")
@@ -448,7 +449,13 @@ hook.Add("TTTTutorialRoleText", "Shadow_TTTTutorialRoleText", function(role, tit
         if buff ~= SHADOW_BUFF_NONE then
             local buffDelay = GetGlobalInt("ttt_shadow_target_buff_delay", -1)
             local buffType = LANG.GetTranslation("shadow_buff_" .. buff)
-            html = html .. "<span style='display: block; margin-top: 10px;'>If you stay with your target for " .. buffDelay .. " seconds they will <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>receive a " .. buffType .. "</span>! Beware, however, that if you get too far away the buff will disappear and you'll have to wait all over again.</span>"
+            html = html .. "<span style='display: block; margin-top: 10px;'>If you stay with your target for " .. buffDelay .. " seconds "
+            if buff == SHADOW_BUFF_TEAM_JOIN then
+                html = html .. "you will <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>join their team</span>!"
+            else
+                html = html .. "they will <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>receive a " .. buffType .. "</span>! Beware, however, that if you get too far away the buff will disappear and you'll have to wait all over again."
+            end
+            html = html .. "</span>"
 
             if buff == SHADOW_BUFF_RESPAWN then
                 html = html .. "<span style='display: block; margin-top: 10px;'>The first time your target dies while the buff is active, they will <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>respawn</span> after a short delay.</span>"

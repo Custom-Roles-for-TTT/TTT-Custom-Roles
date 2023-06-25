@@ -50,7 +50,8 @@ local beggar_show_scan_radius = CreateClientConVar("ttt_beggar_show_scan_radius"
 
 hook.Add("TTTSettingsRolesTabSections", "Beggar_TTTSettingsRolesTabSections", function(role, parentForm)
     if role ~= ROLE_BEGGAR then return end
-    if not GetGlobalBool("ttt_beggar_traitor_scan", false) then return end
+    local scanMode = GetGlobalInt("ttt_beggar_scan", BEGGAR_SCAN_MODE_DISABLED)
+    if scanMode == BEGGAR_SCAN_MODE_DISABLED then return end
 
     parentForm:CheckBox(LANG.GetTranslation("beggar_config_show_radius"), "ttt_beggar_show_scan_radius")
     return true
@@ -140,8 +141,18 @@ hook.Add("TTTTargetIDPlayerRoleIcon", "Beggar_TTTTargetIDPlayerRoleIcon", functi
     if not cli:IsBeggar() then return end
 
     local state = ply:GetNWInt("TTTBeggarScanStage", BEGGAR_UNSCANNED)
-    if state == BEGGAR_SCANNED_TEAM and ply:IsTraitorTeam() then
-        return ROLE_NONE, noz, ROLE_TRAITOR
+    if state ~= BEGGAR_SCANNED_TEAM then return end
+
+    -- This should already be covered by the scan stage check, but just in case
+    local scanMode = GetGlobalInt("ttt_beggar_scan", BEGGAR_SCAN_MODE_DISABLED)
+    if scanMode == BEGGAR_SCAN_MODE_DISABLED then return end
+
+    if scanMode == BEGGAR_SCAN_MODE_TRAITORS then
+        if ply:IsTraitorTeam() then
+            return ROLE_NONE, noz, ROLE_TRAITOR
+        end
+    elseif ply:IsShopRole() then
+        return ROLE_NONE, noz, ROLE_NONE
     end
 end)
 
@@ -151,8 +162,18 @@ hook.Add("TTTTargetIDPlayerRing", "Beggar_TTTTargetIDPlayerRing", function(ent, 
     if not IsPlayer(ent) then return end
 
     local state = ent:GetNWInt("TTTBeggarScanStage", BEGGAR_UNSCANNED)
-    if state == BEGGAR_SCANNED_TEAM and ent:IsTraitorTeam() then
-        return true, ROLE_COLORS_RADAR[ROLE_TRAITOR]
+    if state ~= BEGGAR_SCANNED_TEAM then return end
+
+    -- This should already be covered by the scan stage check, but just in case
+    local scanMode = GetGlobalInt("ttt_beggar_scan", BEGGAR_SCAN_MODE_DISABLED)
+    if scanMode == BEGGAR_SCAN_MODE_DISABLED then return end
+
+    if scanMode == BEGGAR_SCAN_MODE_TRAITORS then
+        if ent:IsTraitorTeam() then
+            return true, ROLE_COLORS_RADAR[ROLE_TRAITOR]
+        end
+    elseif ent:IsShopRole() then
+        return true, ROLE_COLORS_RADAR[ROLE_NONE]
     end
 end)
 
@@ -162,8 +183,14 @@ hook.Add("TTTTargetIDPlayerText", "Beggar_TTTTargetIDPlayerText", function(ent, 
     if not IsPlayer(ent) then return end
 
     local state = ent:GetNWInt("TTTBeggarScanStage", BEGGAR_UNSCANNED)
-    if state > BEGGAR_UNSCANNED then
-        local PT = LANG.GetParamTranslation
+    if state <= BEGGAR_UNSCANNED then return end
+
+    -- This should already be covered by the scan stage check, but just in case
+    local scanMode = GetGlobalInt("ttt_beggar_scan", BEGGAR_SCAN_MODE_DISABLED)
+    if scanMode == BEGGAR_SCAN_MODE_DISABLED then return end
+
+    local PT = LANG.GetParamTranslation
+    if scanMode == BEGGAR_SCAN_MODE_TRAITORS then
         local labelName = "target_not_role"
         local newCol = ROLE_COLORS_RADAR[ROLE_INNOCENT]
         if state == BEGGAR_SCANNED_TEAM and ent:IsTraitorTeam() then
@@ -171,6 +198,14 @@ hook.Add("TTTTargetIDPlayerText", "Beggar_TTTTargetIDPlayerText", function(ent, 
             newCol = ROLE_COLORS_RADAR[ROLE_TRAITOR]
         end
         return PT(labelName, { targettype = StringUpper(ROLE_STRINGS[ROLE_TRAITOR]) }), newCol, false
+    else
+        local T = LANG.GetTranslation
+        local labelName = "target_not_role"
+        local newCol = ROLE_COLORS_RADAR[ROLE_NONE]
+        if state == BEGGAR_SCANNED_TEAM and ent:IsShopRole() then
+            labelName = "target_unknown_team"
+        end
+        return PT(labelName, { targettype = StringUpper(T("shoprole")) }), newCol, false
     end
 end)
 
@@ -183,10 +218,22 @@ ROLE_IS_TARGETID_OVERRIDDEN[ROLE_BEGGAR] = function(ply, target, showJester)
     -- Info is only overridden for players viewed by the beggar
     if not ply:IsBeggar() then return end
 
-    -- Icon and ring are shown for traitors, text is shown for everyone
-    local targetIsTraitor = target:IsTraitorTeam()
-    ------ icon,            ring,            text
-    return targetIsTraitor, targetIsTraitor, true
+    -- This should already be covered by the scan stage check, but just in case
+    local scanMode = GetGlobalInt("ttt_beggar_scan", BEGGAR_SCAN_MODE_DISABLED)
+    if scanMode == BEGGAR_SCAN_MODE_DISABLED then return end
+
+    -- Icon and ring are shown for the target group, text is shown for everyone
+    local infoShown = false
+    if scanMode == BEGGAR_SCAN_MODE_TRAITORS then
+        if target:IsTraitorTeam() then
+            infoShown = true
+        end
+    elseif target:IsShopRole() then
+        infoShown = true
+    end
+
+    ------ icon,      ring,      text
+    return infoShown, infoShown, true
 end
 
 ----------------
@@ -199,22 +246,44 @@ hook.Add("TTTScoreboardPlayerRole", "Beggar_TTTScoreboardPlayerRole", function(p
     if not IsPlayer(ply) then return end
 
     local state = ply:GetNWInt("TTTBeggarScanStage", BEGGAR_UNSCANNED)
-    if state == BEGGAR_SCANNED_TEAM and ply:IsTraitorTeam()then
-        return ROLE_COLORS_SCOREBOARD[ROLE_TRAITOR], "nil"
+    if state ~= BEGGAR_SCANNED_TEAM then return end
+
+    -- This should already be covered by the scan stage check, but just in case
+    local scanMode = GetGlobalInt("ttt_beggar_scan", BEGGAR_SCAN_MODE_DISABLED)
+    if scanMode == BEGGAR_SCAN_MODE_DISABLED then return end
+
+    if scanMode == BEGGAR_SCAN_MODE_TRAITORS then
+        if ply:IsTraitorTeam() then
+            return ROLE_COLORS_SCOREBOARD[ROLE_TRAITOR], "nil"
+        end
+    elseif ply:IsShopRole() then
+        return ROLE_COLORS_SCOREBOARD[ROLE_NONE], "nil"
     end
 end)
 
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_BEGGAR] = function(ply, target)
+    if not ply:IsBeggar() then return end
     if not IsPlayer(target) then return end
 
     local state = target:GetNWInt("TTTBeggarScanStage", BEGGAR_UNSCANNED)
     if state ~= BEGGAR_SCANNED_TEAM then return end
 
-    -- Info is only overridden for traitors viewed by the beggar
-    if not ply:IsBeggar() or not target:IsTraitorTeam() then return end
+    -- This should already be covered by the scan stage check, but just in case
+    local scanMode = GetGlobalInt("ttt_beggar_scan", BEGGAR_SCAN_MODE_DISABLED)
+    if scanMode == BEGGAR_SCAN_MODE_DISABLED then return end
+
+    -- Info is only overridden for targetted players viewed by the beggar
+    local infoShown = false
+    if scanMode == BEGGAR_SCAN_MODE_TRAITORS then
+        if target:IsTraitorTeam() then
+            infoShown = true
+        end
+    elseif target:IsShopRole() then
+        infoShown = true
+    end
 
     ------ name,  role
-    return false, true
+    return false, infoShown
 end
 
 --------------
@@ -271,6 +340,9 @@ hook.Add("HUDPaint", "Beggar_HUDPaint", function()
     if not IsValid(client) or client:IsSpec() or GetRoundState() ~= ROUND_ACTIVE then return end
     if not client:IsBeggar() then return end
 
+    local scanMode = GetGlobalInt("ttt_beggar_scan", BEGGAR_SCAN_MODE_DISABLED)
+    if scanMode == BEGGAR_SCAN_MODE_DISABLED then return end
+
     if beggar_show_scan_radius:GetBool() then
         surface.DrawCircle(ScrW() / 2, ScrH() / 2, math.Round(ScrW() / 6), 0, 255, 0, 155)
     end
@@ -280,7 +352,7 @@ hook.Add("HUDPaint", "Beggar_HUDPaint", function()
         return
     end
 
-    local scan = GetGlobalInt("ttt_beggar_traitor_scan_time", 15)
+    local scan = GetGlobalInt("ttt_beggar_scan_time", 15)
     local time = client:GetNWFloat("TTTBeggarScannerStartTime", -1) + scan
 
     local x = ScrW() / 2.0
@@ -367,8 +439,15 @@ hook.Add("TTTTutorialRoleText", "Beggar_TTTTutorialRoleText", function(role, tit
         html = html .. "<span style='display: block; margin-top: 10px;'>" .. GetRevealModeString(roleColor, revealMode, teamName, teamColor) .. "</span>"
 
         -- Traitor scanning
-        if GetGlobalBool("ttt_beggar_traitor_scan", false) then
-            html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_BEGGAR] .. " also has the ability to scan players to find members of the " .. LANG.GetTranslation("traitor") ..  " team.</span>"
+        local scanMode = GetGlobalInt("ttt_beggar_scan", BEGGAR_SCAN_MODE_DISABLED)
+        if scanMode > BEGGAR_SCAN_MODE_DISABLED then
+            local mode_string
+            if scanMode == BEGGAR_SCAN_MODE_TRAITORS then
+                mode_string = "members of the " .. LANG.GetTranslation("traitor") ..  " team"
+            else
+                mode_string = "out if they have a shop"
+            end
+            html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_BEGGAR] .. " also has the ability to scan players to find " .. mode_string .. ".</span>"
         end
 
         return html

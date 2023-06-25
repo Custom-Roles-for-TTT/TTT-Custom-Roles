@@ -27,22 +27,22 @@ local beggar_respawn = CreateConVar("ttt_beggar_respawn", "0", FCVAR_NONE, "Whet
 local beggar_respawn_limit = CreateConVar("ttt_beggar_respawn_limit", "0", FCVAR_NONE, "The maximum number of times the beggar can respawn (if \"ttt_beggar_respawn\" is enabled). Set to 0 to allow infinite", 0, 30)
 local beggar_respawn_delay = CreateConVar("ttt_beggar_respawn_delay", "3", FCVAR_NONE, "The delay to use when respawning the beggar (if \"ttt_beggar_respawn\" is enabled)", 0, 60)
 local beggar_respawn_change_role = CreateConVar("ttt_beggar_respawn_change_role", "0", FCVAR_NONE, "Whether to change the role of the respawning the beggar (if \"ttt_beggar_respawn\" is enabled)", 0, 1)
-local beggar_traitor_scan = CreateConVar("ttt_beggar_traitor_scan", "0", FCVAR_NONE, "Whether the beggar can scan players to see if they are traitors", 0, 1)
-local beggar_traitor_scan_time = CreateConVar("ttt_beggar_traitor_scan_time", "15", FCVAR_NONE, "The amount of time (in seconds) the beggar's scanner takes to use", 0, 60)
-local beggar_traitor_scan_float_time = CreateConVar("ttt_beggar_traitor_scan_float_time", "1", FCVAR_NONE, "The amount of time (in seconds) it takes for the beggar's scanner to lose it's target without line of sight", 0, 60)
-local beggar_traitor_scan_cooldown = CreateConVar("ttt_beggar_traitor_scan_cooldown", "3", FCVAR_NONE, "The amount of time (in seconds) the beggar's tracker goes on cooldown for after losing it's target", 0, 60)
-local beggar_traitor_scan_distance = CreateConVar("ttt_beggar_traitor_scan_distance", "2500", FCVAR_NONE, "The maximum distance away the scanner target can be", 1000, 10000)
+local beggar_scan = CreateConVar("ttt_beggar_scan", "0", FCVAR_NONE, "Whether the beggar can scan players to see if they are traitors. 0 - Disabled. 1 - Can only scan traitors. 2 - Can scan any role that has a shop.", 0, 2)
+local beggar_scan_time = CreateConVar("ttt_beggar_scan_time", "15", FCVAR_NONE, "The amount of time (in seconds) the beggar's scanner takes to use", 0, 60)
+local beggar_scan_float_time = CreateConVar("ttt_beggar_scan_float_time", "1", FCVAR_NONE, "The amount of time (in seconds) it takes for the beggar's scanner to lose it's target without line of sight", 0, 60)
+local beggar_scan_cooldown = CreateConVar("ttt_beggar_scan_cooldown", "3", FCVAR_NONE, "The amount of time (in seconds) the beggar's tracker goes on cooldown for after losing it's target", 0, 60)
+local beggar_scan_distance = CreateConVar("ttt_beggar_scan_distance", "2500", FCVAR_NONE, "The maximum distance away the scanner target can be", 1000, 10000)
 
 hook.Add("TTTSyncGlobals", "Beggar_TTTSyncGlobals", function()
     SetGlobalBool("ttt_beggars_are_independent", beggars_are_independent:GetBool())
     SetGlobalBool("ttt_beggar_respawn", beggar_respawn:GetBool())
-    SetGlobalBool("ttt_beggar_traitor_scan", beggar_traitor_scan:GetBool())
     SetGlobalInt("ttt_beggar_respawn_limit", beggar_respawn_limit:GetInt())
     SetGlobalInt("ttt_beggar_respawn_delay", beggar_respawn_delay:GetInt())
     SetGlobalBool("ttt_beggar_respawn_change_role", beggar_respawn_change_role:GetBool())
     SetGlobalInt("ttt_beggar_reveal_traitor", beggar_reveal_traitor:GetInt())
     SetGlobalInt("ttt_beggar_reveal_innocent", beggar_reveal_innocent:GetInt())
-    SetGlobalInt("ttt_beggar_traitor_scan_time", beggar_traitor_scan_time:GetInt())
+    SetGlobalInt("ttt_beggar_scan", beggar_scan:GetInt())
+    SetGlobalInt("ttt_beggar_scan_time", beggar_scan_time:GetInt())
 end)
 
 -------------------
@@ -222,7 +222,7 @@ end)
 ------------------
 
 hook.Add("TTTPlayerRoleChanged", "Beggar_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
-    if not beggar_traitor_scan:GetBool() then return end
+    if beggar_scan:GetInt() <= BEGGAR_SCAN_MODE_DISABLED then return end
     if oldRole == newRole then return end
     if GetRoundState() ~= ROUND_ACTIVE then return end
 
@@ -282,13 +282,13 @@ local function InRange(ply, target)
 
     local plyPos = ply:GetPos()
     local targetPos = target:GetPos()
-    if plyPos:Distance(targetPos) > beggar_traitor_scan_distance:GetInt() then return false end
+    if plyPos:Distance(targetPos) > beggar_scan_distance:GetInt() then return false end
 
     return ply:IsOnScreen(target, 0.35)
 end
 
 local function ScanAllowed(ply, target)
-    if not beggar_traitor_scan:GetBool() then return false end
+    if beggar_scan:GetInt() <= BEGGAR_SCAN_MODE_DISABLED then return false end
     if not IsValid(ply) or not IsValid(target) then return false end
     if not IsPlayer(target) then return false end
     if not target:IsActive() then return false end
@@ -300,14 +300,26 @@ local function Scan(ply, target)
     if not IsValid(ply) or not IsValid(target) then return end
 
     if target:IsActive() then
-        if CurTime() - ply:GetNWFloat("TTTBeggarScannerStartTime", -1) >= beggar_traitor_scan_time:GetInt() then
+        if CurTime() - ply:GetNWFloat("TTTBeggarScannerStartTime", -1) >= beggar_scan_time:GetInt() then
             local stage = BEGGAR_SCANNED_TEAM
-            local message = "You have discovered that " .. target:Nick() .. " is "
-            if not target:IsTraitorTeam() then
-                message = message .. "not "
-                stage = BEGGAR_SCANNED_HIDDEN
+            local message = "You have discovered that " .. target:Nick()
+            local scan_mode = beggar_scan:GetInt()
+            if scan_mode == BEGGAR_SCAN_MODE_TRAITORS then
+                message = message .. " is "
+                if not target:IsTraitorTeam() then
+                    message = message .. "not "
+                    stage = BEGGAR_SCANNED_HIDDEN
+                end
+                message = message .. "a traitor role."
+            else
+                if target:IsShopRole() then
+                    message = message .. " has "
+                else
+                    message = message .. " does not have "
+                    stage = BEGGAR_SCANNED_HIDDEN
+                end
+                message = message .. "a shop."
             end
-            message = message .. "a traitor role."
 
             ply:PrintMessage(HUD_PRINTTALK, message)
             ply:SetNWInt("TTTBeggarScannerState", BEGGAR_SCANNER_IDLE)
@@ -350,7 +362,7 @@ hook.Add("TTTPlayerAliveThink", "Beggar_TTTPlayerAliveThink", function(ply)
         elseif state == BEGGAR_SCANNER_SEARCHING then
             local target = player.GetBySteamID64(ply:GetNWString("TTTBeggarScannerTarget", ""))
             if target:IsActive() then
-                if (CurTime() - ply:GetNWInt("TTTBeggarScannerTargetLostTime", -1)) >= beggar_traitor_scan_float_time:GetInt() then
+                if (CurTime() - ply:GetNWInt("TTTBeggarScannerTargetLostTime", -1)) >= beggar_scan_float_time:GetInt() then
                     TargetLost(ply)
                 else
                     if InRange(ply, target) then
@@ -364,7 +376,7 @@ hook.Add("TTTPlayerAliveThink", "Beggar_TTTPlayerAliveThink", function(ply)
                 TargetLost(ply)
             end
         elseif state == BEGGAR_SCANNER_LOST then
-            if (CurTime() - ply:GetNWFloat("TTTBeggarScannerCooldown", -1)) >= beggar_traitor_scan_cooldown:GetInt() then
+            if (CurTime() - ply:GetNWFloat("TTTBeggarScannerCooldown", -1)) >= beggar_scan_cooldown:GetInt() then
                 ply:SetNWInt("TTTBeggarScannerState", BEGGAR_SCANNER_IDLE)
                 ply:SetNWString("TTTBeggarScannerMessage", "")
                 ply:SetNWFloat("TTTBeggarScannerCooldown", -1)

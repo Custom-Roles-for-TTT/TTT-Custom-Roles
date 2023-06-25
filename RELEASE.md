@@ -1,5 +1,31 @@
 # Release Notes
 
+### 1.8.10 (Beta)
+**Released: June 25th, 2023**
+
+### Additions
+- Added new convar (`ttt_lootgoblin_active_display`) to control whether the loot goblin's role is revealed when they are activated (defaults to enabled to keep current behavior)
+- Added sprint speed and stamina recovery bonuses to the shadow when they are outside of their target's radius
+  - Both values are configurable and can be disabled
+  - Both values also scale up to a maximum value (also configurable) the further the shadow is from their target
+- Added the ability to move the parasite onto the monster team (disabled by default)
+- Added the ability to control whether the shadow's target is notified when they are buffed (enabled by default)
+- Added the ability to control whether the shadow can target jesters (enabled by default)
+- Added the ability to control whether the shadow can target independents (enabled by default)
+- Added a new buff option (`ttt_shadow_target_buff 4`) for the shadow: joining their target's team
+  - If this is enabled, the shadow will join the same team as their target after the buff delay has elapsed
+
+### Changes
+- **BREAKING CHANGE** - Renamed `ttt_beggar_traitor_scan*` convars to `ttt_beggar_scan*`
+- Changed `ttt_beggar_scan` to have a second mode (`ttt_beggar_scan 2`) which allows beggars to scan whether a player has a shop
+
+### Fixes
+- Fixed conflict between loot goblin and revenger radar timing convars
+- Fixed loot goblin stamina recovery not being synced across client and server
+- Fixed disabling invisibility setting the glass material which should be clear but isn't for everyone
+- Fixed beggar scanning circle showing even when beggar scanning was disabled
+- Fixed roles promoted by the marshal not having their health adjusted
+
 ### 1.8.9 (Beta)
 **Released: May 28th, 2023**
 
