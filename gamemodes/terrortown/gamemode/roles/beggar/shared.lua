@@ -12,6 +12,10 @@ BEGGAR_SCANNER_LOCKED = 1
 BEGGAR_SCANNER_SEARCHING = 2
 BEGGAR_SCANNER_LOST = 3
 
+BEGGAR_SCAN_MODE_DISABLED = 0
+BEGGAR_SCAN_MODE_TRAITORS = 1
+BEGGAR_SCAN_MODE_SHOPS = 2
+
 -- Update their team
 hook.Add("TTTUpdateRoleState", "Beggar_TTTUpdateRoleState", function()
     local beggars_are_independent = GetGlobalBool("ttt_beggars_are_independent", false)
@@ -96,26 +100,27 @@ table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
-    cvar = "ttt_beggar_traitor_scan",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
-    cvar = "ttt_beggar_traitor_scan_time",
+    cvar = "ttt_beggar_scan",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
 })
 table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
-    cvar = "ttt_beggar_traitor_scan_float_time",
+    cvar = "ttt_beggar_scan_time",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
 })
 table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
-    cvar = "ttt_beggar_traitor_scan_cooldown",
+    cvar = "ttt_beggar_scan_float_time",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
 })
 table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
-    cvar = "ttt_beggar_traitor_scan_distance",
+    cvar = "ttt_beggar_scan_cooldown",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
+    cvar = "ttt_beggar_scan_distance",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
 })

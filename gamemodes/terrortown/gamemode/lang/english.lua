@@ -20,6 +20,8 @@ L.independents = "Independents"
 L.innocent = "Innocent"
 L.innocents = "Innocents"
 
+L.shoprole = "Shop Role"
+
 --- Round status messages
 L.round_minplayers = "Not enough players to start a new round..."
 L.round_voting = "Vote in progress, delaying new round by {num} seconds..."
