@@ -17,7 +17,7 @@ local start_timer = CreateConVar("ttt_shadow_start_timer", "30", FCVAR_NONE, "Ho
 local buffer_timer = CreateConVar("ttt_shadow_buffer_timer", "7", FCVAR_NONE, "How much time (in seconds) the shadow can stay of their target's radius", 1, 30)
 local alive_radius = CreateConVar("ttt_shadow_alive_radius", "8", FCVAR_NONE, "The radius (in meters) from the living target that the shadow has to stay within", 1, 15)
 local dead_radius = CreateConVar("ttt_shadow_dead_radius", "3", FCVAR_NONE, "The radius (in meters) from the death target that the shadow has to stay within", 1, 15)
-local target_buff = CreateConVar("ttt_shadow_target_buff", "1", FCVAR_NONE, "The type of buff to shadow's target should get. 0 - None. 1 - Heal over time. 2 - Single respawn. 3 - Damage bonus. 4 - Team join", 0, 3)
+local target_buff = CreateConVar("ttt_shadow_target_buff", "1", FCVAR_NONE, "The type of buff to shadow's target should get. 0 - None. 1 - Heal over time. 2 - Single respawn. 3 - Damage bonus. 4 - Team join", 0, 4)
 local target_buff_notify = CreateConVar("ttt_shadow_target_buff_notify", "1", FCVAR_NONE, "Whether the shadow's target should be notified when they are buffed", 0, 1)
 local target_buff_delay = CreateConVar("ttt_shadow_target_buff_delay", "60", FCVAR_NONE, "How long (in seconds) the shadow needs to be near their target before the buff takes effect", 1, 120)
 local target_buff_heal_amount = CreateConVar("ttt_shadow_target_buff_heal_amount", "5", FCVAR_NONE, "The amount of health the shadow's target should be healed per-interval", 1, 100)
@@ -134,7 +134,37 @@ local function CreateBuffTimer(shadow, target)
         target:SetNWBool("ShadowBuffActive", true)
 
         if buff == SHADOW_BUFF_TEAM_JOIN then
-            -- TODO: Team join logic here
+            local role = ROLE_INNOCENT
+            local role_team = target:GetRoleTeam(true)
+            -- Copy the player's role if they are on a team that is usually one role by itself
+            if role_team == ROLE_TEAM_JESTER or
+                    role_team == ROLE_TEAM_INDEPENDENT or
+                    role_team == ROLE_TEAM_MONSTER then
+                role = target:GetRole()
+            -- Otherwise, become the basic role of the target team
+            elseif role_team == ROLE_TEAM_TRAITOR then
+                role = ROLE_TRAITOR
+            end
+
+            message = "You've stayed with your target long enough to join their team! You are now " .. ROLE_STRINGS_EXT[role]
+            shadow:PrintMessage(HUD_PRINTCENTER, message)
+            shadow:PrintMessage(HUD_PRINTTALK, message)
+
+            if target_buff_notify:GetBool() then
+                message = "Your " .. ROLE_STRINGS[ROLE_SHADOW] .. " has stayed with you long enough to join your team!"
+                target:PrintMessage(HUD_PRINTCENTER, message)
+                target:PrintMessage(HUD_PRINTTALK, message)
+            end
+
+            shadow:SetRole(role)
+            SendFullStateUpdate()
+
+            -- Update the player's health
+            SetRoleMaxHealth(shadow)
+            if shadow:Health() > shadow:GetMaxHealth() then
+                shadow:SetHealth(shadow:GetMaxHealth())
+            end
+
             return
         end
 
