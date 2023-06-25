@@ -134,7 +134,28 @@ local function CreateBuffTimer(shadow, target)
         target:SetNWBool("ShadowBuffActive", true)
 
         if buff == SHADOW_BUFF_TEAM_JOIN then
-            -- TODO: Team join logic here
+            local role_team = target:GetRoleTeam(true)
+            -- Copy the player's role if they are on a team that is usually one role by itself
+            if role_team == ROLE_TEAM_JESTER or
+                    role_team == ROLE_TEAM_INDEPENDENT or
+                    role_team == ROLE_TEAM_MONSTER then
+                role = target:GetRole()
+            -- Otherwise, become the basic role of the target team
+            elseif role_team == ROLE_TEAM_TRAITOR then
+                role = ROLE_TRAITOR
+            else
+                role = ROLE_INNOCENT
+            end
+
+            message = "You've stayed with your target long enough to join their team! You are now " .. ROLE_STRINGS_EXT[role]
+            shadow:PrintMessage(HUD_PRINTCENTER, message)
+            shadow:PrintMessage(HUD_PRINTTALK, message)
+
+            if target_buff_notify:GetBool() then
+                message = "Your " .. ROLE_STRINGS[ROLE_SHADOW] .. " has stayed with you long enough to join your team!"
+                target:PrintMessage(HUD_PRINTCENTER, message)
+                target:PrintMessage(HUD_PRINTTALK, message)
+            end
             return
         end
 

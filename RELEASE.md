@@ -12,6 +12,8 @@
 - Added the ability to control whether the shadow's target is notified when they are buffed (enabled by default)
 - Added the ability to control whether the shadow can target jesters (enabled by default)
 - Added the ability to control whether the shadow can target independents (enabled by default)
+- Added a new buff option (`ttt_shadow_target_buff 4`) for the shadow: joining their target's team
+  - If this is enabled, the shadow will join the same team as their target after the buff delay has elapsed
 
 ### Changes
 - **BREAKING CHANGE** - Renamed `ttt_beggar_traitor_scan*` convars to `ttt_beggar_scan*`
