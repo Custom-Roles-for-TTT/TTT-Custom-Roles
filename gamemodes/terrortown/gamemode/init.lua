@@ -1645,12 +1645,12 @@ function SelectRoles()
         end
     end
 
-    local has_impersonator = table.HasValue(specialTraitorRoles, ROLE_IMPERSONATOR)
+    local can_have_impersonator = IsRoleAvailable(ROLE_IMPERSONATOR)
     local impersonator_chance = GetConVar("ttt_impersonator_detective_chance"):GetFloat()
     -- Any of these left are vanilla detectives
     for _, v in pairs(detectives) do
         -- By chance have this detective actually be a promoted impersonator
-        if #traitors > 0 and has_impersonator and math.random() < impersonator_chance then
+        if can_have_impersonator and #traitors > 0 and math.random() < impersonator_chance then
             v:SetRole(ROLE_IMPERSONATOR)
             PrintRole(v, ROLE_IMPERSONATOR)
             v:HandleDetectiveLikePromotion()
@@ -1662,11 +1662,11 @@ function SelectRoles()
             traitors_copy = table.Copy(traitors)
             choices_copy = table.Copy(choices)
 
-            -- Remove the option so we don't have 2 impersonators
-            table.RemoveByValue(specialTraitorRoles, ROLE_IMPERSONATOR)
+            -- Mark this role as taken so we don't have 2 impersonators
+            hasRole[ROLE_IMPERSONATOR] = true
 
             -- Only allow one to be an impersonator
-            has_impersonator = false
+            can_have_impersonator = false
         else
             v:SetRole(ROLE_DETECTIVE)
             PrintRole(v, ROLE_DETECTIVE)
