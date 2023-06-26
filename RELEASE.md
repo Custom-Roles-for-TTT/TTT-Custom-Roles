@@ -25,6 +25,7 @@
 - Fixed disabling invisibility setting the glass material which should be clear but isn't for everyone
 - Fixed beggar scanning circle showing even when beggar scanning was disabled
 - Fixed roles promoted by the marshal not having their health adjusted
+- Fixed `ttt_impersonator_detective_chance` not working
 
 ### 1.8.9 (Beta)
 **Released: May 28th, 2023**
