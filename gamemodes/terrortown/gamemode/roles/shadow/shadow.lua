@@ -45,6 +45,7 @@ hook.Add("TTTSyncGlobals", "Shadow_TTTSyncGlobals", function()
     SetGlobalFloat("ttt_shadow_speed_mult_max", speed_mult_max:GetFloat())
     SetGlobalFloat("ttt_shadow_sprint_recovery", sprint_recovery:GetFloat())
     SetGlobalFloat("ttt_shadow_sprint_recovery_max", sprint_recovery_max:GetFloat())
+    SetGlobalBool("ttt_shadow_soul_link", soul_link:GetBool())
 end)
 
 -----------------------
