@@ -1,6 +1,12 @@
 # Release Notes
 
-### 1.8.10 (Beta)
+## 1.8.11 (Beta)
+**Released:**
+
+### Changes
+- Changed shadow buff to "team join" by default
+
+## 1.8.10 (Beta)
 **Released: June 25th, 2023**
 
 ### Additions
@@ -27,7 +33,7 @@
 - Fixed roles promoted by the marshal not having their health adjusted
 - Fixed `ttt_impersonator_detective_chance` not working
 
-### 1.8.9 (Beta)
+## 1.8.9 (Beta)
 **Released: May 28th, 2023**
 
 ### Additions
@@ -41,7 +47,7 @@
 - Fixed beggar client config section showing when traitor scans are not enabled
 - Fixed error in the shadow client code if a non-player ragdoll exists
 
-### 1.8.8 (Beta)
+## 1.8.8 (Beta)
 **Released: May 20th, 2023**
 
 ### Additions
@@ -66,7 +72,7 @@
 - Added `TTTSprintStateChange` hook which runs when a player starts or stops sprinting
 - Added `plymeta:GetSprinting`, `plymeta:SetSprinting`, `plymeta:GetSprintStamina`, and `plymeta:SetSprintStamina`
 
-### 1.8.7 (Beta)
+## 1.8.7 (Beta)
 **Released: May 6th, 2023**
 
 ### Additions
@@ -78,7 +84,7 @@
 - Added `table.HasItemWithPropertyValue` static method
 - Added equipment frame as parameter to `TTTEquipmentTabs`
 
-### 1.8.6 (Beta)
+## 1.8.6 (Beta)
 **Released: April 30th, 2023**
 
 ### Additions
