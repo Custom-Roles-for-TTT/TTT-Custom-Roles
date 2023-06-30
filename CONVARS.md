@@ -653,7 +653,7 @@ ttt_shadow_start_timer                      30      // How much time (in seconds
 ttt_shadow_buffer_timer                     7       // How much time (in seconds) the shadow can stay of their target's radius without dying
 ttt_shadow_alive_radius                     8       // The radius (in meters) from the living target that the shadow has to stay within
 ttt_shadow_dead_radius                      3       // The radius (in meters) from the death target that the shadow has to stay within
-ttt_shadow_target_buff                      1       // The type of buff to shadow's target should get. 0 - None. 1 - Heal over time. 2 - Single respawn. 3 - Damage bonus. 4 - Team join
+ttt_shadow_target_buff                      4       // The type of buff to shadow's target should get. 0 - None. 1 - Heal over time. 2 - Single respawn. 3 - Damage bonus. 4 - Team join
 ttt_shadow_target_buff_notify               1       // Whether the shadow's target should be notified when they are buffed
 ttt_shadow_target_buff_delay                60      // How long (in seconds) the shadow needs to be near their target before the buff takes effect
 ttt_shadow_target_buff_heal_amount          5       // The amount of health the shadow's target should be healed per-interval
