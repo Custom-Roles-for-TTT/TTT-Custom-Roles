@@ -148,6 +148,10 @@ table.insert(ROLE_CONVARS[ROLE_SHADOW], {
     decimal = 2
 })
 table.insert(ROLE_CONVARS[ROLE_SHADOW], {
+    cvar = "ttt_shadow_target_buff_role_copy",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_SHADOW], {
     cvar = "ttt_shadow_speed_mult",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 1
@@ -173,5 +177,13 @@ table.insert(ROLE_CONVARS[ROLE_SHADOW], {
 })
 table.insert(ROLE_CONVARS[ROLE_SHADOW], {
     cvar = "ttt_shadow_target_independent",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_SHADOW], {
+    cvar = "ttt_shadow_soul_link",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_SHADOW], {
+    cvar = "ttt_shadow_soul_link_kill_credit",
     type = ROLE_CONVAR_TYPE_BOOL
 })
