@@ -3,12 +3,16 @@
 ## 1.8.11 (Beta)
 **Released:**
 
-### Changes
-- Changed shadow buff to "team join" by default
-- Changed messages displayed to the shadow if the join team buff is active to be more accurate
+### Additions
 - Added `ttt_shadow_target_buff_role_copy` convar to control whether the shadow copies the role of the target player if the team join buff is active (disabled by default)
 - Added `ttt_shadow_soul_link` convar to control whether the shadow dies when their target dies and vice-versa (disabled by default)
 - Added description in the F1 help menu for the shadow's soul link, if it's turned on
+
+### Changes
+- Changed shadow buff to "team join" by default
+- Changed messages displayed to the shadow if the join team buff is active to be more accurate
+
+### Fixes
 - Fixed the shadow not dying if they kill their target
 
 ## 1.8.10 (Beta)
