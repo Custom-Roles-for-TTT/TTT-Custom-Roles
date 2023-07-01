@@ -668,7 +668,6 @@ ttt_shadow_sprint_recovery_max              0.5     // The maximum amount of sta
 ttt_shadow_target_jester                    1       // Whether the shadow should be able to target a member of the jester team
 ttt_shadow_target_independent               1       // Whether the shadow should be able to target an independent player
 ttt_shadow_soul_link                        0       // Whether the shadow should die when their target dies and vice-versa
-ttt_shadow_soul_link_kill_credit            0       // Whether a player responsible for killing a soul-linked player should get the credit for it (e.g. If a shadow and jester are separated and the shadow dies, the jester wins)
 
 // Arsonist
 ttt_arsonist_douse_time                     8       // The amount of time (in seconds) the arsonist takes to douse someone

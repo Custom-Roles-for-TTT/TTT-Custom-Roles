@@ -32,7 +32,6 @@ local sprint_recovery_max = CreateConVar("ttt_shadow_sprint_recovery_max", "0.5"
 local target_jester = CreateConVar("ttt_shadow_target_jester", "1", FCVAR_NONE, "Whether the shadow should be able to target a member of the jester team", 0, 1)
 local target_independent = CreateConVar("ttt_shadow_target_independent", "1", FCVAR_NONE, "Whether the shadow should be able to target an independent player", 0, 1)
 local soul_link = CreateConVar("ttt_shadow_soul_link", "0", FCVAR_NONE, "Whether the shadow should die when their target dies and vice-versa", 0, 1)
-local soul_link_kill_credit = CreateConVar("ttt_shadow_soul_link_kill_credit", "0", FCVAR_NONE, "Whether a player responsible for killing a soul-linked player should get the credit for it (e.g. If a shadow and jester are separated and the shadow dies, the jester wins)", 0, 1)
 
 hook.Add("TTTSyncGlobals", "Shadow_TTTSyncGlobals", function()
     SetGlobalInt("ttt_shadow_start_timer", start_timer:GetInt())
@@ -212,34 +211,12 @@ hook.Add("ScalePlayerDamage", "Shadow_Buff_ScalePlayerDamage", function(ply, hit
 end)
 
 -- Used for the shadow's soul-link convar
-local function CopyKillPlayer(ply, attacker, dmg, msg)
-    if not IsPlayer(ply) then return end
-
-    local killDmg = DamageInfo()
-    killDmg:SetDamage(ply:Health() + 1)
-    killDmg:SetDamageType(dmg:GetDamageType())
-    -- If disabled, prevents things like the jester winning if their soul-linked shadow dies
-    if soul_link_kill_credit:GetBool() then
-        local inflictor = dmg:GetInflictor()
-        if IsValid(inflictor) then
-            killDmg:SetInflictor(inflictor)
-        end
-        if IsPlayer(attacker) then
-            killDmg:SetAttacker(attacker)
-        end
-    else
-        killDmg:SetAttacker(ply)
-    end
-    ply:TakeDamageInfo(killDmg)
-
-    -- If the player somehow survives, force-kill them
-    timer.Simple(0.1, function()
-        if IsPlayer(ply) and ply:Alive() and not ply:IsSpec() then
-            ply:Kill()
-        end
+local function KillSoulLinkedPlayer(ply, msg)
+    if IsPlayer(ply) and ply:Alive() and not ply:IsSpec() then
+        ply:Kill()
         ply:PrintMessage(HUD_PRINTCENTER, msg)
         ply:PrintMessage(HUD_PRINTTALK, msg)
-    end)
+    end
 end
 
 hook.Add("DoPlayerDeath", "Shadow_SoulLink_DoPlayerDeath", function(ply, attacker, dmg)
@@ -248,7 +225,7 @@ hook.Add("DoPlayerDeath", "Shadow_SoulLink_DoPlayerDeath", function(ply, attacke
     if ply:IsShadow() then
         local target = player.GetBySteamID64(ply:GetNWString("ShadowTarget", ""))
         if IsPlayer(target) and target:Alive() and not target:IsSpec() then
-            CopyKillPlayer(target, attacker, dmg, ply:Nick() .. " was your Shadow and died!")
+            KillSoulLinkedPlayer(target, ply:Nick() .. " was your Shadow and died!")
         end
     else
         -- Find the shadows that "belong" to this player, and kill them
@@ -256,7 +233,7 @@ hook.Add("DoPlayerDeath", "Shadow_SoulLink_DoPlayerDeath", function(ply, attacke
             if p:IsShadow() then
                 local target = player.GetBySteamID64(ply:GetNWString("ShadowTarget", ""))
                 if IsPlayer(target) and target == ply and p:Alive() and not p:IsSpec() then
-                    CopyKillPlayer(p, attacker, dmg, "Your target died!")
+                    KillSoulLinkedPlayer(p, "Your target died!")
                 end
             end
         end

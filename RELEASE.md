@@ -8,7 +8,6 @@
 - Changed messages displayed to the shadow if the join team buff is active to be more accurate
 - Added `ttt_shadow_target_buff_role_copy` convar to control whether the shadow copies the role of the target player if the team join buff is active (disabled by default)
 - Added `ttt_shadow_soul_link` convar to control whether the shadow dies when their target dies and vice-versa (disabled by default)
-- Added `ttt_shadow_soul_link_kill_credit` convar to control whether a player responsible for killing a soul-linked player should get the credit for it, e.g. if a shadow and jester are separated and the shadow dies, the jester wins (disabled by default)
 - Added description in the F1 help menu for the shadow's soul link, if it's turned on
 
 ## 1.8.10 (Beta)

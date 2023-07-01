@@ -183,7 +183,3 @@ table.insert(ROLE_CONVARS[ROLE_SHADOW], {
     cvar = "ttt_shadow_soul_link",
     type = ROLE_CONVAR_TYPE_BOOL
 })
-table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_soul_link_kill_credit",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
