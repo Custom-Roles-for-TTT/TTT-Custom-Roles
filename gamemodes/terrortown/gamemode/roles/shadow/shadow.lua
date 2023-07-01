@@ -225,7 +225,7 @@ hook.Add("DoPlayerDeath", "Shadow_SoulLink_DoPlayerDeath", function(ply, attacke
     if ply:IsShadow() then
         local target = player.GetBySteamID64(ply:GetNWString("ShadowTarget", ""))
         if IsPlayer(target) and target:Alive() and not target:IsSpec() then
-            KillSoulLinkedPlayer(target, ply:Nick() .. " was your Shadow and died!")
+            KillSoulLinkedPlayer(target, ply:Nick() .. " was your " .. ROLE_STRINGS[ROLE_SHADOW] .. " and died!")
         end
     else
         -- Find the shadows that "belong" to this player, and kill them
@@ -349,6 +349,7 @@ end)
 hook.Add("PlayerDeath", "Shadow_KillCheck_PlayerDeath", function(victim, infl, attacker)
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     if not valid_kill then return end
+    if attacker:IsShadow() then return end
 
     if victim:SteamID64() == attacker:GetNWString("ShadowTarget", "") then
         attacker:Kill()
