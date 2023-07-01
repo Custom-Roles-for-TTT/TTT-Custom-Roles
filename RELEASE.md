@@ -12,9 +12,6 @@
 - Changed shadow buff to "team join" by default
 - Changed messages displayed to the shadow if the join team buff is active to be more accurate
 
-### Fixes
-- Fixed the shadow not dying if they kill their target
-
 ## 1.8.10 (Beta)
 **Released: June 25th, 2023**
 
