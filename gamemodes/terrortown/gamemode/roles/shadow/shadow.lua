@@ -95,7 +95,7 @@ local function ClearBuffTimer(shadow, target, sendMessage)
     if buffTimers[timerId] then
         if sendMessage then
             local message = "You got too far from your target and "
-            if target_buff:GetInt() == 4 then
+            if target_buff:GetInt() == SHADOW_BUFF_TEAM_JOIN then
                 message = message .. "stopped joining their team!"
             else
                 message = message .. "stopped buffing them!"
@@ -127,7 +127,7 @@ local function CreateBuffTimer(shadow, target)
 
     local buffDelay = target_buff_delay:GetInt()
     local message = "Stay with your target for " .. buffDelay .. " seconds to "
-    if target_buff:GetInt() == 4 then
+    if target_buff:GetInt() == SHADOW_BUFF_TEAM_JOIN then
         message = message .. "join their team!"
     else
         message = message .. "give them a buff!"
@@ -252,7 +252,7 @@ hook.Add("DoPlayerDeath", "Shadow_SoulLink_DoPlayerDeath", function(ply, attacke
         end
     else
         -- Find the shadows that "belong" to this player, and kill them
-        for _, p in ipairs(player.GetAll()) do
+        for _, p in ipairs(GetAllPlayers()) do
             if p:IsShadow() then
                 local target = player.GetBySteamID64(ply:GetNWString("ShadowTarget", ""))
                 if IsPlayer(target) and target == ply and p:Alive() and not p:IsSpec() then
