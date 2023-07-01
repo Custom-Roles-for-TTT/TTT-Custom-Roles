@@ -9,6 +9,7 @@
 - Added `ttt_shadow_target_buff_role_copy` convar to control whether the shadow copies the role of the target player if the team join buff is active (disabled by default)
 - Added `ttt_shadow_soul_link` convar to control whether the shadow dies when their target dies and vice-versa (disabled by default)
 - Added description in the F1 help menu for the shadow's soul link, if it's turned on
+- Fixed the shadow not dying if they kill their target
 
 ## 1.8.10 (Beta)
 **Released: June 25th, 2023**
