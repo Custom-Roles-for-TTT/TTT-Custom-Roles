@@ -231,7 +231,7 @@ hook.Add("DoPlayerDeath", "Shadow_SoulLink_DoPlayerDeath", function(ply, attacke
         -- Find the shadows that "belong" to this player, and kill them
         for _, p in ipairs(GetAllPlayers()) do
             if p:IsShadow() then
-                local target = player.GetBySteamID64(ply:GetNWString("ShadowTarget", ""))
+                local target = player.GetBySteamID64(p:GetNWString("ShadowTarget", ""))
                 if IsPlayer(target) and target == ply and p:Alive() and not p:IsSpec() then
                     KillSoulLinkedPlayer(p, "Your target died!")
                 end
