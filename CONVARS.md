@@ -653,19 +653,21 @@ ttt_shadow_start_timer                      30      // How much time (in seconds
 ttt_shadow_buffer_timer                     7       // How much time (in seconds) the shadow can stay of their target's radius without dying
 ttt_shadow_alive_radius                     8       // The radius (in meters) from the living target that the shadow has to stay within
 ttt_shadow_dead_radius                      3       // The radius (in meters) from the death target that the shadow has to stay within
-ttt_shadow_target_buff                      1       // The type of buff to shadow's target should get. 0 - None. 1 - Heal over time. 2 - Single respawn. 3 - Damage bonus. 4 - Team join
+ttt_shadow_target_buff                      4       // The type of buff to shadow's target should get. 0 - None. 1 - Heal over time. 2 - Single respawn. 3 - Damage bonus. 4 - Team join
 ttt_shadow_target_buff_notify               1       // Whether the shadow's target should be notified when they are buffed
 ttt_shadow_target_buff_delay                60      // How long (in seconds) the shadow needs to be near their target before the buff takes effect
 ttt_shadow_target_buff_heal_amount          5       // The amount of health the shadow's target should be healed per-interval
 ttt_shadow_target_buff_heal_interval        10      // How often (in seconds) the shadow's target should be healed
 ttt_shadow_target_buff_respawn_delay        10      // How often (in seconds) before the shadow's target should respawn
 ttt_shadow_target_buff_damage_bonus         0.15    // Damage bonus the shadow's target should get (e.g. 0.15 = 15% extra damage)
+ttt_shadow_target_buff_role_copy            0       // Whether the shadow should instead copy the role of their target if the team join buff is enabled
 ttt_shadow_speed_mult                       1.1     // The minimum multiplier to use on the shadow's sprint speed when they are outside of their target radius (e.g. 1.1 = 110% normal speed)
 ttt_shadow_speed_mult_max                   1.5     // The maximum multiplier to use on the shadow's sprint speed when they are FAR outside of their target radius (e.g. 1.5 = 150% normal speed)
 ttt_shadow_sprint_recovery                  0.1     // The minimum amount of stamina to recover per tick when the shadow is outside of their target radius
 ttt_shadow_sprint_recovery_max              0.5     // The maximum amount of stamina to recover per tick when the shadow is FAR outside of their target radius
 ttt_shadow_target_jester                    1       // Whether the shadow should be able to target a member of the jester team
 ttt_shadow_target_independent               1       // Whether the shadow should be able to target an independent player
+ttt_shadow_soul_link                        0       // Whether the shadow should die when their target dies and vice-versa
 
 // Arsonist
 ttt_arsonist_douse_time                     8       // The amount of time (in seconds) the arsonist takes to douse someone

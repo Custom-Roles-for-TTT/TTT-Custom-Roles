@@ -17,19 +17,21 @@ local start_timer = CreateConVar("ttt_shadow_start_timer", "30", FCVAR_NONE, "Ho
 local buffer_timer = CreateConVar("ttt_shadow_buffer_timer", "7", FCVAR_NONE, "How much time (in seconds) the shadow can stay of their target's radius", 1, 30)
 local alive_radius = CreateConVar("ttt_shadow_alive_radius", "8", FCVAR_NONE, "The radius (in meters) from the living target that the shadow has to stay within", 1, 15)
 local dead_radius = CreateConVar("ttt_shadow_dead_radius", "3", FCVAR_NONE, "The radius (in meters) from the death target that the shadow has to stay within", 1, 15)
-local target_buff = CreateConVar("ttt_shadow_target_buff", "1", FCVAR_NONE, "The type of buff to shadow's target should get. 0 - None. 1 - Heal over time. 2 - Single respawn. 3 - Damage bonus. 4 - Team join", 0, 4)
+local target_buff = CreateConVar("ttt_shadow_target_buff", "4", FCVAR_NONE, "The type of buff to shadow's target should get. 0 - None. 1 - Heal over time. 2 - Single respawn. 3 - Damage bonus. 4 - Team join", 0, 4)
 local target_buff_notify = CreateConVar("ttt_shadow_target_buff_notify", "1", FCVAR_NONE, "Whether the shadow's target should be notified when they are buffed", 0, 1)
 local target_buff_delay = CreateConVar("ttt_shadow_target_buff_delay", "60", FCVAR_NONE, "How long (in seconds) the shadow needs to be near their target before the buff takes effect", 1, 120)
 local target_buff_heal_amount = CreateConVar("ttt_shadow_target_buff_heal_amount", "5", FCVAR_NONE, "The amount of health the shadow's target should be healed per-interval", 1, 100)
 local target_buff_heal_interval = CreateConVar("ttt_shadow_target_buff_heal_interval", "10", FCVAR_NONE, "How often (in seconds) the shadow's target should be healed", 1, 100)
 local target_buff_respawn_delay = CreateConVar("ttt_shadow_target_buff_respawn_delay", "10", FCVAR_NONE, "How often (in seconds) before the shadow's target should respawn", 1, 120)
 local target_buff_damage_bonus = CreateConVar("ttt_shadow_target_buff_damage_bonus", "0.15", FCVAR_NONE, "Damage bonus the shadow's target should get (e.g. 0.15 = 15% extra damage)", 0.05, 1)
+local target_buff_role_copy = CreateConVar("ttt_shadow_target_buff_role_copy", "0", FCVAR_NONE, "Whether the shadow should instead copy the role of their target if the team join buff is enabled", 0, 1)
 local speed_mult = CreateConVar("ttt_shadow_speed_mult", "1.1", FCVAR_NONE, "The minimum multiplier to use on the shadow's sprint speed when they are outside of their target radius (e.g. 1.1 = 110% normal speed)", 1, 2)
 local speed_mult_max = CreateConVar("ttt_shadow_speed_mult_max", "1.5", FCVAR_NONE, "The maximum multiplier to use on the shadow's sprint speed when they are FAR outside of their target radius (e.g. 1.5 = 150% normal speed)", 1, 2)
 local sprint_recovery = CreateConVar("ttt_shadow_sprint_recovery", "0.1", FCVAR_NONE, "The minimum amount of stamina to recover per tick when the shadow is outside of their target radius", 0, 1)
 local sprint_recovery_max = CreateConVar("ttt_shadow_sprint_recovery_max", "0.5", FCVAR_NONE, "The maximum amount of stamina to recover per tick when the shadow is FAR outside of their target radius", 0, 1)
 local target_jester = CreateConVar("ttt_shadow_target_jester", "1", FCVAR_NONE, "Whether the shadow should be able to target a member of the jester team", 0, 1)
 local target_independent = CreateConVar("ttt_shadow_target_independent", "1", FCVAR_NONE, "Whether the shadow should be able to target an independent player", 0, 1)
+local soul_link = CreateConVar("ttt_shadow_soul_link", "0", FCVAR_NONE, "Whether the shadow should die when their target dies and vice-versa", 0, 1)
 
 hook.Add("TTTSyncGlobals", "Shadow_TTTSyncGlobals", function()
     SetGlobalInt("ttt_shadow_start_timer", start_timer:GetInt())
@@ -42,6 +44,7 @@ hook.Add("TTTSyncGlobals", "Shadow_TTTSyncGlobals", function()
     SetGlobalFloat("ttt_shadow_speed_mult_max", speed_mult_max:GetFloat())
     SetGlobalFloat("ttt_shadow_sprint_recovery", sprint_recovery:GetFloat())
     SetGlobalFloat("ttt_shadow_sprint_recovery_max", sprint_recovery_max:GetFloat())
+    SetGlobalBool("ttt_shadow_soul_link", soul_link:GetBool())
 end)
 
 -----------------------
@@ -90,7 +93,12 @@ local function ClearBuffTimer(shadow, target, sendMessage)
     local timerId = "TTTShadowBuffTimer_" .. shadow:SteamID64() .. "_" .. target:SteamID64()
     if buffTimers[timerId] then
         if sendMessage then
-            local message = "You got too far from your target and stopped buffing them!"
+            local message = "You got too far from your target and "
+            if target_buff:GetInt() == SHADOW_BUFF_TEAM_JOIN then
+                message = message .. "stopped joining their team!"
+            else
+                message = message .. "stopped buffing them!"
+            end
             shadow:PrintMessage(HUD_PRINTCENTER, message)
             shadow:PrintMessage(HUD_PRINTTALK, message)
         end
@@ -117,7 +125,12 @@ local function CreateBuffTimer(shadow, target)
     if buffTimers[timerId] then return end
 
     local buffDelay = target_buff_delay:GetInt()
-    local message = "Stay with your target for " .. buffDelay .. " seconds to give them a buff!"
+    local message = "Stay with your target for " .. buffDelay .. " seconds to "
+    if target_buff:GetInt() == SHADOW_BUFF_TEAM_JOIN then
+        message = message .. "join their team!"
+    else
+        message = message .. "give them a buff!"
+    end
     shadow:PrintMessage(HUD_PRINTCENTER, message)
     shadow:PrintMessage(HUD_PRINTTALK, message)
 
@@ -136,8 +149,9 @@ local function CreateBuffTimer(shadow, target)
         if buff == SHADOW_BUFF_TEAM_JOIN then
             local role = ROLE_INNOCENT
             local role_team = target:GetRoleTeam(true)
-            -- Copy the player's role if they are on a team that is usually one role by itself
-            if role_team == ROLE_TEAM_JESTER or
+            -- Copy the player's role if the copy role convar is enabled, or they are on a team that is usually one role by itself
+            if target_buff_role_copy:GetBool() or
+                    role_team == ROLE_TEAM_JESTER or
                     role_team == ROLE_TEAM_INDEPENDENT or
                     role_team == ROLE_TEAM_MONSTER then
                 role = target:GetRole()
@@ -194,6 +208,36 @@ hook.Add("ScalePlayerDamage", "Shadow_Buff_ScalePlayerDamage", function(ply, hit
     if not att:GetNWBool("ShadowBuffActive", false) then return end
 
     dmginfo:ScaleDamage(1 + target_buff_damage_bonus:GetFloat())
+end)
+
+-- Used for the shadow's soul-link convar
+local function KillSoulLinkedPlayer(ply, msg)
+    if IsPlayer(ply) and ply:Alive() and not ply:IsSpec() then
+        ply:Kill()
+        ply:PrintMessage(HUD_PRINTCENTER, msg)
+        ply:PrintMessage(HUD_PRINTTALK, msg)
+    end
+end
+
+hook.Add("DoPlayerDeath", "Shadow_SoulLink_DoPlayerDeath", function(ply, attacker, dmg)
+    if not soul_link:GetBool() or not IsPlayer(ply) then return end
+    -- Kill the shadow's target as well
+    if ply:IsShadow() then
+        local target = player.GetBySteamID64(ply:GetNWString("ShadowTarget", ""))
+        if IsPlayer(target) and target:Alive() and not target:IsSpec() then
+            KillSoulLinkedPlayer(target, ply:Nick() .. " was your " .. ROLE_STRINGS[ROLE_SHADOW] .. " and died!")
+        end
+    else
+        -- Find the shadows that "belong" to this player, and kill them
+        for _, p in ipairs(GetAllPlayers()) do
+            if p:IsShadow() then
+                local target = player.GetBySteamID64(p:GetNWString("ShadowTarget", ""))
+                if IsPlayer(target) and target == ply and p:Alive() and not p:IsSpec() then
+                    KillSoulLinkedPlayer(p, "Your target died!")
+                end
+            end
+        end
+    end
 end)
 
 hook.Add("PostPlayerDeath", "Shadow_Buff_PostPlayerDeath", function(ply)
