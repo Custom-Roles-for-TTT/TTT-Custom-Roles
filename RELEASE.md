@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.8.11 (Beta)
-**Released:**
+**Released: July 2nd, 2023**
 
 ### Additions
 - Added `ttt_shadow_target_buff_role_copy` convar to control whether the shadow copies the role of the target player if the team join buff is active (disabled by default)
