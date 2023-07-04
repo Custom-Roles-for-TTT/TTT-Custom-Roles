@@ -751,6 +751,9 @@ function HELPSCRN:CreateConfig(dsettings)
     cb = dgui:CheckBox(GetTranslation("set_bypass_culling"), "ttt_bypass_culling")
     cb:SetTooltip(GetTranslation("set_bypass_culling_tip"))
 
+    cb = dgui:CheckBox(GetTranslation("set_popup_hint_sounds"), "ttt_cl_msg_soundcue")
+    cb:SetTooltip(GetTranslation("set_popup_hint_sounds_tip"))
+
     HookCall("TTTSettingsConfigTabFields", nil, "Interface", dgui)
 
     dsettings:AddItem(dgui)

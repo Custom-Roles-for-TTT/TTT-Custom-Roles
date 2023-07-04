@@ -286,6 +286,8 @@ L.set_radio_button = "Radio menu button"
 L.set_radio_button_tip = "What button to press to open/close the radio menu"
 L.set_bypass_culling = "Bypass map culling"
 L.set_bypass_culling_tip = "Whether to bypass vis leafs and culling in maps for player icons and highlighting. Disable for performance if you don't care about icons and highlighting lagging behind players sometimes."
+L.set_popup_hint_sounds = "Play a sound for popup messages"
+L.set_popup_hint_sounds_tip = "Whether to play a sound whenever a popup message appears (Popup messages appear in the top right corner when rounds begin/end and when bodies are found/searched)"
 
 L.set_title_play = "Gameplay settings"
 
