@@ -1,12 +1,25 @@
 # Release Notes
 
+## 1.9.0
+**Released:**\
+Includes beta updates [1.8.3](#183-beta) to [1.8.11](#1811-beta).
+
+### Additions
+- Added `ttt_shadow_target_notify_mode` convar to control whether the shadow's target is told if they have a shadow or not (disabled by default)
+
+### Changes
+- Changed shadow buff delay to 90 seconds by default
+- Changed shadow target buff notifications to be disabled by default
+
+### Developer
+- Removed old, unused code from the paramedic's defib, hypnotist's brainwashing device, and mad scientists zombification device
+
 ## 1.8.11 (Beta)
-**Released:**
+**Released: July 2nd, 2023**
 
 ### Additions
 - Added `ttt_shadow_target_buff_role_copy` convar to control whether the shadow copies the role of the target player if the team join buff is active (disabled by default)
 - Added `ttt_shadow_soul_link` convar to control whether the shadow dies when their target dies and vice-versa (disabled by default)
-- Added description in the F1 help menu for the shadow's soul link, if it's turned on
 
 ### Changes
 - Changed shadow buff to "team join" by default
