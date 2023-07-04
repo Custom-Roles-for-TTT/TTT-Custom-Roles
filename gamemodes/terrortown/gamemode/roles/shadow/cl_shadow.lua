@@ -160,6 +160,8 @@ end)
 AddHook("TTTScoreboardPlayerRole", "Shadow_TTTScoreboardPlayerRole", function(ply, cli, c, roleStr)
     if cli:IsActiveShadow() and ply:SteamID64() == cli:GetNWString("ShadowTarget", "") then
         return c, roleStr, ROLE_SHADOW
+    elseif GetGlobalInt("ttt_shadow_target_notify_mode", 0) == SHADOW_NOTIFY_IDENTIFY and ply:IsShadow() and ply:GetNWString("ShadowTarget", "") == cli:SteamID64() then
+        return ROLE_COLORS_SCOREBOARD[ROLE_SHADOW], ROLE_STRINGS_SHORT[ROLE_SHADOW]
     end
 end)
 
