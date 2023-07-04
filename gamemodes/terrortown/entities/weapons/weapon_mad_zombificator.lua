@@ -59,15 +59,6 @@ SWEP.AllowDrop = false
 -- settings
 local maxdist = 64
 local success = 100
-local mutateok = 0
-local mutatemax = 0
-
-local mutate = {
-    ["models/props_junk/watermelon01.mdl"] = true,
-    ["models/props/cs_italy/orange.mdl"] = true,
-    ["models/props/cs_italy/bananna.mdl"] = true,
-    ["models/props/cs_italy/bananna_bunch.mdl"] = true
-}
 
 local beep = Sound("buttons/button17.wav")
 local hum = Sound("items/nvg_on.wav")
@@ -275,21 +266,15 @@ if SERVER then
         if GetRoundState() ~= ROUND_ACTIVE then return end
 
         local ent = tr.Entity
-        if IsValid(ent) then
-            if ent:GetClass() == "prop_physics" and mutate[ent:GetModel()] and mutateok > 0 then
-                self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-                ent:EmitSound(zap, 75, math.random(98, 102))
-                ent:SetModelScale(math.min(mutatemax, ent:GetModelScale() + 0.25), 1)
-            elseif ent:GetClass() == "prop_ragdoll" and validbody(ent) then
-                self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-                self.Location = FindRespawnLocation(pos) or pos
+        if IsValid(ent) and ent:GetClass() == "prop_ragdoll" and validbody(ent) then
+            self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
+            self.Location = FindRespawnLocation(pos) or pos
 
-                if self.Location then
-                    self:Begin(ent, tr.PhysicsBone)
-                else
-                    self:Error("INSUFFICIENT ROOM")
-                    return
-                end
+            if self.Location then
+                self:Begin(ent, tr.PhysicsBone)
+            else
+                self:Error("INSUFFICIENT ROOM")
+                return
             end
         end
     end
