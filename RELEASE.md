@@ -6,6 +6,8 @@ Includes beta updates [1.8.3](#183-beta) to [1.8.11](#1811-beta).
 
 ### Additions
 - Added `ttt_shadow_target_notify_mode` convar to control whether the shadow's target is told if they have a shadow or not (disabled by default)
+- Added `ttt_lootgoblin_radar_beep_sound` client-side convar to control whether the loot goblin radar should beep whenever the location updates (enabled by default)
+- 
 
 ### Changes
 - Changed shadow buff delay to 90 seconds by default

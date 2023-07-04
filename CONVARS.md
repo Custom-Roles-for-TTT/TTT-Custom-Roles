@@ -917,6 +917,9 @@ ttt_informant_show_scan_radius              0       // Whether to show the ring 
 // JESTER TEAM SETTINGS
 // Beggar
 ttt_beggar_show_scan_radius                 0       // Whether to show the ring that shows the approximate radius of the beggar's traitor scanner (when it's enabled)
+
+// Loot Goblin
+
 ```
 
 ## Role Weapon Shop
