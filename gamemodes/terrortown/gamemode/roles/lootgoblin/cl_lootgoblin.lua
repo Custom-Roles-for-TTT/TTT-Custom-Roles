@@ -38,6 +38,7 @@ local lootgoblin_radar_beep_sound = CreateClientConVar("ttt_lootgoblin_radar_bee
 
 hook.Add("TTTSettingsRolesTabSections", "LootGoblin_TTTSettingsRolesTabSections", function(role, parentForm)
     if role ~= ROLE_LOOTGOBLIN then return end
+    if not GetGlobalBool("ttt_lootgoblin_radar_enabled", false) then return end
 
     parentForm:CheckBox(LANG.GetTranslation("lootgoblin_config_radar_sound"), "ttt_lootgoblin_radar_beep_sound")
     return true

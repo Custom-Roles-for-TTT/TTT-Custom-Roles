@@ -66,6 +66,7 @@ hook.Add("TTTSyncGlobals", "LootGoblin_TTTSyncGlobals", function()
     SetGlobalInt("ttt_lootgoblin_regen_delay", lootgoblin_regen_delay:GetInt())
     SetGlobalInt("ttt_lootgoblin_radar_timer", lootgoblin_radar_timer:GetInt())
     SetGlobalBool("ttt_lootgoblin_active_display", lootgoblin_active_display:GetBool())
+    SetGlobalBool("ttt_lootgoblin_radar_enabled", lootgoblin_radar_enabled:GetBool())
 end)
 
 -----------
