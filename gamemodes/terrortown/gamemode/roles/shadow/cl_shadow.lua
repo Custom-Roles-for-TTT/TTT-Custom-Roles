@@ -12,6 +12,7 @@ local MathCos = math.cos
 local MathPi = math.pi
 local MathRand = math.Rand
 local AddHook = hook.Add
+local StringUpper = string.upper
 
 ------------------
 -- TRANSLATIONS --
