@@ -127,7 +127,7 @@ end)
 ---------------
 
 AddHook("TTTTargetIDPlayerRoleIcon", "Shadow_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
-    if ply:IsActiveShadow() and ply:GetNWString("ShadowTarget", "") == cli:SteamID64() then
+    if GetGlobalInt("ttt_shadow_target_notify_mode", 0) == SHADOW_NOTIFY_IDENTIFY and ply:IsActiveShadow() and ply:GetNWString("ShadowTarget", "") == cli:SteamID64() then
         return ROLE_SHADOW, true
     end
 end)
@@ -135,7 +135,7 @@ end)
 AddHook("TTTTargetIDPlayerRing", "Shadow_TTTTargetIDPlayerRing", function(ent, cli, ringVisible)
     if not IsPlayer(ent) then return end
 
-    if ent:IsActiveShadow() and ent:GetNWString("ShadowTarget", "") == cli:SteamID64() then
+    if GetGlobalInt("ttt_shadow_target_notify_mode", 0) == SHADOW_NOTIFY_IDENTIFY and ent:IsActiveShadow() and ent:GetNWString("ShadowTarget", "") == cli:SteamID64() then
         return true, ROLE_COLORS_RADAR[ROLE_SHADOW]
     end
 end)
@@ -147,7 +147,7 @@ AddHook("TTTTargetIDPlayerText", "Shadow_TTTTargetIDPlayerText", function(ent, c
                 return LANG.GetTranslation("shadow_target"), ROLE_COLORS_RADAR[ROLE_SHADOW]
             end
             return text, clr, LANG.GetTranslation("shadow_target"), ROLE_COLORS_RADAR[ROLE_SHADOW]
-        elseif ent:IsActiveShadow() and ent:GetNWString("ShadowTarget", "") == cli:SteamID64() then
+        elseif GetGlobalInt("ttt_shadow_target_notify_mode", 0) == SHADOW_NOTIFY_IDENTIFY and ent:IsActiveShadow() and ent:GetNWString("ShadowTarget", "") == cli:SteamID64() then
             return StringUpper(ROLE_STRINGS[ROLE_SHADOW]), ROLE_COLORS_RADAR[ROLE_SHADOW]
         end
     end
