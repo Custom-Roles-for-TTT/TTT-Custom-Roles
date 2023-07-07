@@ -172,9 +172,12 @@ net.Receive("TTT_UpdateLootGoblinWins", function()
     end
 end)
 
-hook.Add("TTTPrepareRound", "LootGoblin_WinTracking_TTTPrepareRound", function()
+local function ResetLootGoblinWin()
     lootgoblin_wins = false
-end)
+end
+net.Receive("TTT_ResetLootGoblinWins", ResetLootGoblinWin)
+hook.Add("TTTPrepareRound", "LootGoblin_WinTracking_TTTPrepareRound", ResetLootGoblinWin)
+hook.Add("TTTBeginRound", "LootGoblin_WinTracking_TTTBeginRound", ResetLootGoblinWin)
 
 ----------------
 -- WIN CHECKS --

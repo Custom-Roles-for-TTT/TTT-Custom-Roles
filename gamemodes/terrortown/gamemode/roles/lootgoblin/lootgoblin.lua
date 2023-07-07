@@ -19,6 +19,7 @@ local TableInsert = table.insert
 local TableRemove = table.remove
 
 util.AddNetworkString("TTT_UpdateLootGoblinWins")
+util.AddNetworkString("TTT_ResetLootGoblinWins")
 util.AddNetworkString("TTT_LootGoblinRadar")
 
 resource.AddSingleFile("sound/lootgoblin/cackle1.wav")
@@ -271,6 +272,9 @@ hook.Add("TTTBeginRound", "LootGoblin_TTTBeginRound", function()
     if player.IsRoleLiving(ROLE_LOOTGOBLIN) then
         StartGoblinTimers()
     end
+
+    net.Start("TTT_ResetLootGoblinWins")
+    net.Broadcast()
 end)
 
 ---------------
@@ -393,8 +397,12 @@ hook.Add("TTTPrepareRound", "LootGoblin_PrepareRound", function()
         v:SetNWVector("TTTLootGoblinRadar", Vector(0, 0, 0))
         ResetPlayer(v)
     end
+
     net.Start("TTT_LootGoblinRadar")
     net.WriteBool(false)
+    net.Broadcast()
+
+    net.Start("TTT_ResetLootGoblinWins")
     net.Broadcast()
 end)
 
