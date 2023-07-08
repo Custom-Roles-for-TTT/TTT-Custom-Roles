@@ -41,6 +41,7 @@ Kills the local player by a random non-jester team player. *NOTE*: Cheats must b
 *Added in:* 1.0.0\
 *Parameters:*
 - *remove_body* - Whether to remove the local player's body after killing them (Defaults to `false`)
+- *allow_dead* - Whether to allow the randomly selected player to be dead (Defaults to `false`)
 
 ### ttt_kill_from_player
 Kills the local player by another player with the given name. *NOTE*: Cheats must be enabled to use this command.\
@@ -48,6 +49,7 @@ Kills the local player by another player with the given name. *NOTE*: Cheats mus
 *Parameters:*
 - *killer_name* - The name of the player who will kill the local player
 - *remove_body* - Whether to remove the local player's body after killing them (Defaults to `false`)
+- *allow_dead* - Whether to allow the specified player to be dead (Defaults to `false`)
 
 ### ttt_kill_target_from_random
 Kills the target player by a random non-jester team player. *NOTE*: Cheats must be enabled to use this command.\
@@ -55,6 +57,7 @@ Kills the target player by a random non-jester team player. *NOTE*: Cheats must 
 *Parameters:*
 - *target_name* - The name of the player who will be killed
 - *remove_body* - Whether to remove the target player's body after killing them (Defaults to `false`)
+- *allow_dead* - Whether to allow the randomly selected player to be dead (Defaults to `false`)
 
 ### ttt_kill_target_from_player
 Kills the target player by another player with the given name. *NOTE*: Cheats must be enabled to use this command.\
@@ -63,6 +66,7 @@ Kills the target player by another player with the given name. *NOTE*: Cheats mu
 - *target_name* - The name of the player who will be killed
 - *killer_name* - The name of the player who will kill the target player
 - *remove_body* - Whether to remove the target player's body after killing them (Defaults to `false`)
+- *allow_dead* - Whether to allow the specified player to be dead (Defaults to `false`)
 
 ### ttt_order_for_someone
 Orders a shop item on behalf of a another player with the given name. *NOTE*: Cheats must be enabled to use this command.\
