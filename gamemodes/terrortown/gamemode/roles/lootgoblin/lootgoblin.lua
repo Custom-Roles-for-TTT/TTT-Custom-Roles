@@ -252,7 +252,7 @@ local function HandleLootGoblinWinChecks(win_type)
 
     local hasLootGoblin = false
     for _, v in ipairs(GetAllPlayers()) do
-        if v:IsActiveLootGoblin() and not v:GetNWBool("LootGoblinKilled", false) then
+        if v:IsLootGoblin() and v:Alive() and not v:IsSpec() and not v:GetNWBool("LootGoblinKilled", false) then
             hasLootGoblin = true
         end
     end
