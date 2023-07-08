@@ -13,6 +13,7 @@ Damages the local player by a random non-jester team player. *NOTE*: Cheats must
 *Added in:* 1.3.7\
 *Parameters:*
 - *damage* - How much damage to do to the local player (Defaults to 1)
+- *allow_dead* - Whether to allow the randomly selected player to be dead (Defaults to `false`)
 
 ### ttt_damage_from_player
 Damages the local player by another player with the given name. *NOTE*: Cheats must be enabled to use this command.\
@@ -20,6 +21,7 @@ Damages the local player by another player with the given name. *NOTE*: Cheats m
 *Parameters:*
 - *killer_name* - The name of the player who will kill the local player
 - *damage* - How much damage to do to the local player (Defaults to 1)
+- *allow_dead* - Whether to allow the specified player to be dead (Defaults to `false`)
 
 ### ttt_damage_target_from_random
 Damages the target player by a random non-jester team player. *NOTE*: Cheats must be enabled to use this command.\
@@ -27,6 +29,7 @@ Damages the target player by a random non-jester team player. *NOTE*: Cheats mus
 *Parameters:*
 - *target_name* - The name of the player who will be killed
 - *damage* - How much damage to do to the target (Defaults to 1)
+- *allow_dead* - Whether to allow the randomly selected player to be dead (Defaults to `false`)
 
 ### ttt_damage_target_from_player
 Damages the target player by another player with the given name. *NOTE*: Cheats must be enabled to use this command.\
@@ -35,6 +38,7 @@ Damages the target player by another player with the given name. *NOTE*: Cheats 
 - *target_name* - The name of the player who will be killed
 - *killer_name* - The name of the player who will kill the target player
 - *damage* - How much damage to do to the target (Defaults to 1)
+- *allow_dead* - Whether to allow the specified player to be dead (Defaults to `false`)
 
 ### ttt_kill_from_random
 Kills the local player by a random non-jester team player. *NOTE*: Cheats must be enabled to use this command.\
