@@ -123,7 +123,7 @@ hook.Add("FinishMove", "LootGoblin_FinishMove", function(ply, mv)
     local mode = lootgoblin_regen_mode:GetInt()
     if mode ~= LOOTGOBLIN_REGEN_MODE_STILL then return end
 
-    if ply:IsActiveLootGoblin() and ply:IsRoleActive() then
+    if ply:IsLootGoblin() and ply:Alive() and not ply:IsSpec() and ply:IsRoleActive() then
         local loc = ply:GetPos()
         local sid64 = ply:SteamID64()
         -- Keep track of when a player moves and stop regeneration when they do
@@ -144,7 +144,7 @@ hook.Add("PostEntityTakeDamage", "LootGoblin_PostEntityTakeDamage", function(ent
     local dmg = dmginfo:GetDamage()
     if dmg <= 0 then return end
 
-    if not ent:IsActiveLootGoblin() or not ent:IsRoleActive() then return end
+    if not ent:IsLootGoblin() or not ent:Alive() or ent:IsSpec() or not ent:IsRoleActive() then return end
 
     local mode = lootgoblin_regen_mode:GetInt()
     if mode ~= LOOTGOBLIN_REGEN_MODE_AFTER_DAMAGE then return end
@@ -204,7 +204,7 @@ local function StartGoblinTimers()
     local goblinTime = MathRandom(goblinTimeMin, goblinTimeMax)
     SetGlobalFloat("ttt_lootgoblin_activate", CurTime() + goblinTime)
     for _, v in ipairs(GetAllPlayers()) do
-        if v:IsActiveLootGoblin() then
+        if v:IsLootGoblin() and v:Alive() and not v:IsSpec() then
             v:PrintMessage(HUD_PRINTTALK, "You will transform into a goblin in " .. tostring(goblinTime) .. " seconds!")
         end
     end
@@ -212,7 +212,7 @@ local function StartGoblinTimers()
         lootGoblinActive = true
         local revealMode = lootgoblin_announce:GetInt()
         for _, v in ipairs(GetAllPlayers()) do
-            if v:IsActiveLootGoblin() then
+            if v:IsLootGoblin() and v:Alive() and not v:IsSpec() then
                 ActivateLootGoblin(v)
             elseif revealMode == JESTER_NOTIFY_EVERYONE or
                     (v:IsActiveTraitorTeam() and (revealMode == JESTER_NOTIFY_TRAITOR or JESTER_NOTIFY_DETECTIVE_AND_TRAITOR)) or
@@ -231,7 +231,7 @@ local function StartGoblinTimers()
             end
             timer.Create("LootGoblinCackle", MathRandom(min, max), 0, function()
                 for _, v in ipairs(GetAllPlayers()) do
-                    if v:IsActiveLootGoblin() and not v:GetNWBool("LootGoblinKilled", false) then
+                    if v:IsLootGoblin() and v:Alive() and not v:IsSpec() and not v:GetNWBool("LootGoblinKilled", false) then
                         local idx = MathRandom(1, #cackles)
                         local chosen_sound = cackles[idx]
                         sound.Play(chosen_sound, v:GetPos())
@@ -363,7 +363,7 @@ hook.Add("TTTBeginRound", "LootGoblin_Radar_TTTBeginRound", function()
 
     timer.Create("LootGoblinRadarDelay", 1, 0, function()
         for _, v in ipairs(GetAllPlayers()) do
-            if v:IsActiveLootGoblin() then
+            if v:IsLootGoblin() and v:Alive() and not v:IsSpec() then
                 local locations = goblins[v:SteamID64()]
                 if locations == nil then
                     locations = {}
