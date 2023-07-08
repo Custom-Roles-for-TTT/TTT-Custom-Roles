@@ -8,6 +8,7 @@ local GetAllPlayers = player.GetAll
 local MathMin = math.min
 
 util.AddNetworkString("TTT_UpdateShadowWins")
+util.AddNetworkString("TTT_ResetShadowWins")
 
 -------------
 -- CONVARS --
@@ -348,6 +349,9 @@ hook.Add("TTTBeginRound", "Shadow_TTTBeginRound", function()
             end
         end
     end)
+
+    net.Start("TTT_ResetShadowWins")
+    net.Broadcast()
 end)
 
 hook.Add("PlayerSpawn", "Shadow_PlayerSpawn", function(ply, transition)
@@ -387,7 +391,7 @@ end)
 -- CLEANUP --
 -------------
 
-hook.Add("TTTPrepareRound", "Shadow_PrepareRound", function()
+hook.Add("TTTPrepareRound", "Shadow_TTTPrepareRound", function()
     for _, v in pairs(GetAllPlayers()) do
         ClearShadowState(v)
     end
@@ -397,6 +401,9 @@ hook.Add("TTTPrepareRound", "Shadow_PrepareRound", function()
         timer.Remove(timerId)
     end
     table.Empty(buffTimers)
+
+    net.Start("TTT_ResetShadowWins")
+    net.Broadcast()
 end)
 
 hook.Add("TTTPlayerRoleChanged", "Shadow_TTTPlayerRoleChanged", function(ply, oldRole, newRole)

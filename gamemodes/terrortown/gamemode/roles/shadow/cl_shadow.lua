@@ -61,16 +61,12 @@ local function ClientGetRagdollEntity(sid64)
     return nil
 end
 
-----------------
--- WIN CHECKS --
-----------------
+-------------
+-- SCORING --
+-------------
 
+-- Track when the shadow wins
 local shadow_wins = false
-
-AddHook("TTTPrepareRound", "Shadow_WinTracking_TTTPrepareRound", function()
-    shadow_wins = false
-end)
-
 net.Receive("TTT_UpdateShadowWins", function()
     -- Log the win event with an offset to force it to the end
     if net.ReadBool() then
@@ -81,6 +77,17 @@ net.Receive("TTT_UpdateShadowWins", function()
         }, 1)
     end
 end)
+
+local function ResetShadowWin()
+    shadow_wins = false
+end
+net.Receive("TTT_ResetShadowWins", ResetShadowWin)
+hook.Add("TTTPrepareRound", "Shadow_WinTracking_TTTPrepareRound", ResetShadowWin)
+hook.Add("TTTBeginRound", "Shadow_WinTracking_TTTBeginRound", ResetShadowWin)
+
+----------------
+-- WIN CHECKS --
+----------------
 
 AddHook("TTTScoringSecondaryWins", "Shadow_TTTScoringSecondaryWins", function(wintype, secondary_wins)
     if shadow_wins then
