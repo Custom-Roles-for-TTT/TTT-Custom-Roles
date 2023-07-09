@@ -1,5 +1,184 @@
 # Release Notes
 
+## 1.9.0
+**Released: July 9th, 2023**\
+Includes beta updates [1.8.3](#183-beta) to [1.8.11](#1811-beta).
+
+### Additions
+- Added `ttt_shadow_target_notify_mode` convar to control whether the shadow's target is told if they have a shadow or not (disabled by default)
+- Added `ttt_lootgoblin_radar_beep_sound` client-side convar to control whether the loot goblin radar should beep whenever the location updates (enabled by default)
+- Added a button to the F1 settings menu to disable the sound that is played when a popup message appears
+
+### Changes
+- Changed shadow buff delay to 90 seconds by default
+- Changed shadow target buff notifications to be disabled by default
+- Changed loot goblin win tracking logic to hopefully fix the case where the round summary will show a loot goblin win when that role wasn't in the round
+
+### Fixes
+- Fixed phantoms being stuck possessing a dead player if their attacker died before they did
+
+### Developer
+- Removed old, unused code from the paramedic's defib, hypnotist's brainwashing device, and mad scientists zombification device
+- Updated debug commands for damaging and killing players to take an optional argument allowing dead players to be the source
+
+## 1.8.11 (Beta)
+**Released: July 2nd, 2023**
+
+### Additions
+- Added `ttt_shadow_target_buff_role_copy` convar to control whether the shadow copies the role of the target player if the team join buff is active (disabled by default)
+- Added `ttt_shadow_soul_link` convar to control whether the shadow dies when their target dies and vice-versa (disabled by default)
+
+### Changes
+- Changed shadow buff to "team join" by default
+- Changed messages displayed to the shadow if the join team buff is active to be more accurate
+
+## 1.8.10 (Beta)
+**Released: June 25th, 2023**
+
+### Additions
+- Added new convar (`ttt_lootgoblin_active_display`) to control whether the loot goblin's role is revealed when they are activated (defaults to enabled to keep current behavior)
+- Added sprint speed and stamina recovery bonuses to the shadow when they are outside of their target's radius
+  - Both values are configurable and can be disabled
+  - Both values also scale up to a maximum value (also configurable) the further the shadow is from their target
+- Added the ability to move the parasite onto the monster team (disabled by default)
+- Added the ability to control whether the shadow's target is notified when they are buffed (enabled by default)
+- Added the ability to control whether the shadow can target jesters (enabled by default)
+- Added the ability to control whether the shadow can target independents (enabled by default)
+- Added a new buff option (`ttt_shadow_target_buff 4`) for the shadow: joining their target's team
+  - If this is enabled, the shadow will join the same team as their target after the buff delay has elapsed
+
+### Changes
+- **BREAKING CHANGE** - Renamed `ttt_beggar_traitor_scan*` convars to `ttt_beggar_scan*`
+- Changed `ttt_beggar_scan` to have a second mode (`ttt_beggar_scan 2`) which allows beggars to scan whether a player has a shop
+
+### Fixes
+- Fixed conflict between loot goblin and revenger radar timing convars
+- Fixed loot goblin stamina recovery not being synced across client and server
+- Fixed disabling invisibility setting the glass material which should be clear but isn't for everyone
+- Fixed beggar scanning circle showing even when beggar scanning was disabled
+- Fixed roles promoted by the marshal not having their health adjusted
+- Fixed `ttt_impersonator_detective_chance` not working
+
+## 1.8.9 (Beta)
+**Released: May 28th, 2023**
+
+### Additions
+- Added a buff to the shadow's target after they have been together for enough time
+  - By default the buff is health regeneration, but it can be disabled and or configured as a single respawn or a damage bonus instead
+
+### Changes
+- Changed jester team roles to no longer be immune to map-triggered damage (such as "out of map" kill zones)
+
+### Fixes
+- Fixed beggar client config section showing when traitor scans are not enabled
+- Fixed error in the shadow client code if a non-player ragdoll exists
+
+## 1.8.8 (Beta)
+**Released: May 20th, 2023**
+
+### Additions
+- Added ability to use the DNA scanner on the body parts left behind when a vampire eats a player or corpse
+
+### Changes
+- Overhauled sprinting system to fix prediction issues (Thanks @wgetJane for letting us know and helping to fix parts of it!)
+- Changed Hitmarkers settings menu labels to be translatable
+- Changed Equipment/Shop settings menu labels to be translatable
+- Changed death notification messages to be translatable
+
+### Fixes
+- Fixed "You fell to death!" death notification not working
+- Fixed "You burned to death!" death notification not working for some types of fires
+- Fixed hit sound playing if enable hitmarkers after shooting someone with them disabled
+- Fixed jesters who have been searched showing question mark icons on the scoreboard
+- Ported "TTT: Fix wrong argument in SortByMember" from base TTT
+
+### Developer
+- Changed the DNA Tester to be marked a role weapon for easier interaction with addons that expect that
+- Changed `TTTSprintKey`, `TTTSprintStaminaPost`, and `TTTSprintStaminaRecovery` to also run on the server
+- Added `TTTSprintStateChange` hook which runs when a player starts or stops sprinting
+- Added `plymeta:GetSprinting`, `plymeta:SetSprinting`, `plymeta:GetSprintStamina`, and `plymeta:SetSprintStamina`
+
+## 1.8.7 (Beta)
+**Released: May 6th, 2023**
+
+### Additions
+- Added ability for the beggar to scan players (`ttt_beggar_traitor_scan`) to determine whether they are traitors (disabled by default)
+- Added buyable Death Radar for the mad scientist which will update periodically to mark dead bodies
+- Added ability to warn a player infected by the parasite after a configurable (`ttt_parasite_infection_warning_time`) amount of time (disabled by default)
+
+### Developer
+- Added `table.HasItemWithPropertyValue` static method
+- Added equipment frame as parameter to `TTTEquipmentTabs`
+
+## 1.8.6 (Beta)
+**Released: April 30th, 2023**
+
+### Additions
+- Added convar to control who a bodysnatcher's role change is revealed to when they join the jester team (`ttt_bodysnatcher_reveal_jester`)
+
+### Changes
+- Changed hint text for a player corpse to show "call a Detective" instead of "search" when `ttt_detective_search_only` was set to `1`
+- Changed sponge to show icon and color on the scoreboard for everyone
+- Changed arsonist notification message delay time range to be longer by default
+- Changed arsonist douse max distance to be larger by default
+- Ported "TTT: fix knife effect_fn not being cleared" from base TTT
+
+### Fixes
+- Fixed covert search hint text showing on a player corpse that has already been searched
+- Fixed aura icons showing on the bottom of the screen even when the source player has died
+- Fixed shadow seeing their target highlighted even after they've died
+- Fixed conflict between informant logic and convars that controlled beggar and bodysnatcher role change reveal scope
+- Fixed old man getting stuck with a huge amount of health when they are hit by two damage events simultaneously (e.g. by a Holy Hand Grenade explosion)
+
+### Developer
+- Added `GetRawRoleTeamName` global function to get the untranslated name of a team by `ROLE_TEAM_*` enumeration
+
+## 1.8.5 (Beta)
+**Released: April 22nd, 2023**
+
+### Additions
+- Added new independent role: arsonist
+
+### Changes
+- Ported "TTT: Fix ironsight position when in singleplayer" from base TTT
+
+## 1.8.4 (Beta)
+**Released: April 16th, 2023**
+
+### Additions
+- Added HUD element for tracking player breath when under water
+
+### Fixes
+- Fixed ragdoll spectator flag not being reset immediately when a player un-spectates
+- Fixed glitch bluff role never getting set to a special traitor when `ttt_glitch_mode` was set to `1`
+
+## 1.8.3 (Beta)
+**Released: April 8th, 2023**
+
+### Additions
+- Added new jester role: sponge
+- Added button to body search dialog to take a DNA sample (or open the DNA scanner UI if a sample was already taken) when the player has a DNA Tester
+  - Can be disabled via the new `ttt_dna_scan_on_dialog` convar
+- Added screen effect when a player is inside an aura to make it more clear they are being affected
+
+### Changes
+- Changed "call detective" button on body search dialog to be hidden when the local player is a detective
+- Changed corpse icons on DNA scanner UI to have the player's name in the hover tooltip
+
+### Fixes
+- Fixed covert body search not working properly and text hint missing
+- Fixed body search text hint not using correct key if it was rebound
+- Fixed killer win server log being overridden by jester win server log
+- Fixed minor plurality issue in the server log message when the jester wins
+- Fixed shadow role translations overriding sapper translations
+- Fixed role team name and color being incorrect in the body search dialog
+
+### Developer
+- Added new `CORPSE.CanBeSearched` method to make it easier to check if a corpse can be searched by a player
+- Added new `TTTBodySearchButtons` hook to add buttons to the body search dialog
+- Added `player.GetLivingInRadius` to get all living players within a radius of the given position
+- Added new `CRHUD:PaintStatusEffect` method to slightly tint the screen and add floating particle effects to the bottom of the HUD
+
 ## 1.8.2
 **Released: April 2nd, 2023**
 
@@ -215,7 +394,7 @@ Includes all beta updates from [1.6.14](#1614-beta) to [1.6.19](#1619-beta).
 - Added new special innocent role: the infected
 
 ### Changes
-- Changed sprint speed to be more resistant to client-side speed hacking (Thanks wget for letting us know!)
+- Changed sprint speed to be more resistant to client-side speed hacking (Thanks @wgetJane for letting us know!)
 - Changed the round summary screen to automatically lower the font size of the winning team if it's more than 18 characters, down from 20
 - Changed loot goblin cackle min and max convars to not cause problems when the min is greater than the max
 
@@ -375,7 +554,7 @@ Includes all beta updates from [1.6.1](#161-beta) to [1.6.3](#163-beta).
 **Released: June 26th, 2022**
 
 ### Changes
-- Changed player role icons (over their heads) and highlighting to ignore map optimizations which prevented them from updating regularly (Thanks to wget for the logic help!)
+- Changed player role icons (over their heads) and highlighting to ignore map optimizations which prevented them from updating regularly (Thanks to @wgetJane for the logic help!)
   - This is controlled by a new client-side convar, `ttt_bypass_culling`, which is enabled by default and available in the F1 settings menu
 
 ### Fixes

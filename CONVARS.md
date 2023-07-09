@@ -86,12 +86,14 @@ ttt_beggar_enabled                          0       // Whether or not the beggar
 ttt_bodysnatcher_enabled                    0       // Whether or not the bodysnatcher should spawn
 ttt_lootgoblin_enabled                      0       // Whether or not the loot goblin should spawn
 ttt_cupid_enabled                           0       // Whether or not the cupid should spawn
+ttt_sponge_enabled                          0       // Whether or not the sponge should spawn
 ttt_drunk_enabled                           0       // Whether or not the drunk should spawn
 ttt_oldman_enabled                          0       // Whether or not the old man should spawn
 ttt_killer_enabled                          0       // Whether or not the killer should spawn
 ttt_zombie_enabled                          0       // Whether or not the zombie should spawn
 ttt_madscientist_enabled                    0       // Whether or not the mad scientist should spawn
 ttt_shadow_enabled                          0       // Whether or not the shadow should spawn
+ttt_arsonist_enabled                        0       // Whether or not the arsonist should spawn
 
 // Individual Role Spawn Weights
 ttt_hypnotist_spawn_weight                  1       // The weight assigned to spawning the hypnotist
@@ -124,12 +126,14 @@ ttt_beggar_spawn_weight                     1       // The weight assigned to sp
 ttt_bodysnatcher_spawn_weight               1       // The weight assigned to spawning the bodysnatcher
 ttt_lootgoblin_spawn_weight                 1       // The weight assigned to spawning the loot goblin
 ttt_cupid_spawn_weight                      1       // The weight assigned to spawning the cupid
+ttt_sponge_spawn_weight                     1       // The weight assigned to spawning the sponge
 ttt_drunk_spawn_weight                      1       // The weight assigned to spawning the drunk
 ttt_oldman_spawn_weight                     1       // The weight assigned to spawning the old man
 ttt_killer_spawn_weight                     1       // The weight assigned to spawning the killer
 ttt_zombie_spawn_weight                     1       // The weight assigned to spawning the zombie
 ttt_madscientist_spawn_weight               1       // The weight assigned to spawning the mad scientist
 ttt_shadow_spawn_weight                     1       // The weight assigned to spawning the shadow
+ttt_arsonist_spawn_weight                   1       // The weight assigned to spawning the arsonist
 // (Note: Each role is limited to one player per round.)
 
 // Individual Role Minimum Player Requirements
@@ -163,12 +167,14 @@ ttt_beggar_min_players                      0       // The minimum number of pla
 ttt_bodysnatcher_min_players                0       // The minimum number of players required to spawn the bodysnatcher
 ttt_lootgoblin_min_players                  0       // The minimum number of players required to spawn the loot goblin
 ttt_cupid_min_players                       0       // The minimum number of players required to spawn the cupid
+ttt_sponge_min_players                      0       // The minimum number of players required to spawn the sponge
 ttt_drunk_min_players                       0       // The minimum number of players required to spawn the drunk
 ttt_oldman_min_players                      0       // The minimum number of players required to spawn the old man
 ttt_killer_min_players                      0       // The minimum number of players required to spawn the killer
 ttt_zombie_min_players                      0       // The minimum number of players required to spawn the zombie
 ttt_madscientist_min_players                0       // The minimum number of players required to spawn the mad scientist
 ttt_shadow_min_players                      0       // The minimum number of players required to spawn the shadow
+ttt_arsonist_min_players                    0       // The minimum number of players required to spawn the arsonist
 
 // ----------------------------------------
 
@@ -250,7 +256,9 @@ ttt_single_doctor_quack                     0       // Whether only a single doc
 ttt_single_doctor_quack_chance              0.5     // The chance that a doctor should have an opportunity to spawn instead of a quack (e.g. 0.7 = 70% chance for doctor, 30% chance for quack. Only applies if ttt_single_doctor_quack is enabled)
 
 // Parasite
+ttt_parasite_is_monster                     0       // Whether the parasite should be treated as a member of the monster team (rather than the traitor team)
 ttt_parasite_infection_time                 45      // The time it takes in seconds for the parasite to fully infect someone
+ttt_parasite_infection_warning_time         0       // The time in seconds after infection to warn the victim. Set to 0 to disable.
 ttt_parasite_infection_transfer             0       // Whether the parasite's infection will transfer if the parasite's killer is killed by another player
 ttt_parasite_infection_transfer_reset       1       // Whether the parasite's infection progress will reset if their infection is transferred to another player
 ttt_parasite_infection_suicide_mode         0       // The way to handle when a player infected by the parasite kills themselves. 0 - Do nothing. 1 - Respawn the parasite. 2 - Respawn the parasite ONLY IF the infected player killed themselves with a console command like "kill"
@@ -470,6 +478,11 @@ ttt_beggar_respawn_change_role              0       // Whether to change the rol
 ttt_beggar_notify_mode                      0       // The logic to use when notifying players that a beggar is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
 ttt_beggar_notify_sound                     0       // Whether to play a cheering sound when a beggar is killed
 ttt_beggar_notify_confetti                  0       // Whether to throw confetti when a beggar is a killed
+ttt_beggar_scan                             0       // Whether the beggar can scan players to see if they are traitors. 0 - Disabled. 1 - Can only scan traitors. 2 - Can scan any role that has a shop.
+ttt_beggar_scan_time                        15      // The amount of time (in seconds) the beggar's scanner takes to use
+ttt_beggar_scan_float_time                  1       // The amount of time (in seconds) it takes for the beggar's scanner to lose it's target without line of sight
+ttt_beggar_scan_cooldown                    3       // The amount of time (in seconds) the beggar's tracker goes on cooldown for after losing it's target
+ttt_beggar_scan_distance                    2500    // The maximum distance away the scanner target can be
 
 // Bodysnatcher
 ttt_bodysnatchers_are_independent           0       // Whether bodysnatchers should be treated as members of the independent team (rather than the jester team)
@@ -479,6 +492,7 @@ ttt_bodysnatcher_reveal_traitor             1       // Who the bodysnatcher is r
 ttt_bodysnatcher_reveal_innocent            1       // Who the bodysnatcher is revealed to when they join the innocent team. 0 - No one. 1 - Everyone. 2 - Their new team
 ttt_bodysnatcher_reveal_monster             1       // Who the bodysnatcher is revealed to when they join the monster team. 0 - No one. 1 - Everyone. 2 - Their new team
 ttt_bodysnatcher_reveal_independent         1       // Who the bodysnatcher is revealed to when they join the independent team. 0 - No one. 1 - Everyone. 2 - Their new team
+ttt_bodysnatcher_reveal_jester              1       // Who the bodysnatcher is revealed to when they join the jester team. 0 - No one. 1 - Everyone. 2 - Their new team
 ttt_bodysnatcher_respawn                    0       // Whether the bodysnatcher respawns when they are killed before joining another team
 ttt_bodysnatcher_respawn_delay              3       // The delay to use when respawning the bodysnatcher (if "ttt_bodysnatcher_respawn" is enabled)
 ttt_bodysnatcher_respawn_limit              0       // The maximum number of times the bodysnatcher can respawn (if "ttt_bodysnatcher_respawn" is enabled). Set to 0 to allow infinite respawns
@@ -508,6 +522,7 @@ ttt_lootgoblin_regen_delay                  0       // The length of the delay (
 ttt_lootgoblin_radar_enabled                0       // Whether the radar ping for the loot goblin should be enabled or not
 ttt_lootgoblin_radar_timer                  15      // How often (in seconds) the radar ping for the loot goblin should update
 ttt_lootgoblin_radar_delay                  15      // How delayed (in seconds) the radar ping for the loot goblin should be
+ttt_lootgoblin_active_display               1       // Whether to show the loot goblin's information over their head and on the scoreboard once they are activated
 
 // Cupid
 ttt_cupids_are_independent                  0       // Whether cupids should be treated as members of the independent team (rather than the jester team)
@@ -519,6 +534,12 @@ ttt_cupid_lover_vision_enable               1       // Whether the lovers can se
 ttt_cupid_notify_mode                       0       // The logic to use when notifying players that a cupid is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
 ttt_cupid_notify_sound                      0       // Whether to play a cheering sound when a cupid is killed
 ttt_cupid_notify_confetti                   0       // Whether to throw confetti when a cupid is a killed
+
+// Sponge
+ttt_sponge_aura_radius                      5       // The radius of the sponge's aura in meters
+ttt_sponge_notify_mode                      0       // The logic to use when notifying players that the sponge is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
+ttt_sponge_notify_sound                     0       // Whether to play a cheering sound when a sponge is killed
+ttt_sponge_notify_confetti                  0       // Whether to throw confetti when a sponge is a killed
 
 // ----------------------------------------
 
@@ -566,11 +587,13 @@ ttt_drunk_can_be_beggar                     1       // Whether the drunk can bec
 ttt_drunk_can_be_bodysnatcher               1       // Whether the drunk can become a bodysnatcher
 ttt_drunk_can_be_lootgoblin                 1       // Whether the drunk can become a loot goblin
 ttt_drunk_can_be_cupid                      1       // Whether the drunk can become a cupid
+ttt_drunk_can_be_sponge                     1       // Whether the drunk can become a sponge
 ttt_drunk_can_be_oldman                     1       // Whether the drunk can become an old man
 ttt_drunk_can_be_killer                     1       // Whether the drunk can become a killer
 ttt_drunk_can_be_zombie                     1       // Whether the drunk can become a zombie
 ttt_drunk_can_be_madscientist               1       // Whether the drunk can become a mad scientist
 ttt_drunk_can_be_shadow                     1       // Whether the drunk can become a shadow
+ttt_drunk_can_be_arsonist                   1       // Whether the drunk can become a arsonist
 
 // Old Man
 ttt_oldman_drain_health_to                  0       // The amount of health to drain the old man down to. Set to 0 to disable
@@ -630,6 +653,28 @@ ttt_shadow_start_timer                      30      // How much time (in seconds
 ttt_shadow_buffer_timer                     7       // How much time (in seconds) the shadow can stay of their target's radius without dying
 ttt_shadow_alive_radius                     8       // The radius (in meters) from the living target that the shadow has to stay within
 ttt_shadow_dead_radius                      3       // The radius (in meters) from the death target that the shadow has to stay within
+ttt_shadow_target_buff                      4       // The type of buff to shadow's target should get. 0 - None. 1 - Heal over time. 2 - Single respawn. 3 - Damage bonus. 4 - Team join.
+ttt_shadow_target_buff_notify               0       // Whether the shadow's target should be notified when they are buffed
+ttt_shadow_target_buff_delay                90      // How long (in seconds) the shadow needs to be near their target before the buff takes effect
+ttt_shadow_target_buff_heal_amount          5       // The amount of health the shadow's target should be healed per-interval
+ttt_shadow_target_buff_heal_interval        10      // How often (in seconds) the shadow's target should be healed
+ttt_shadow_target_buff_respawn_delay        10      // How often (in seconds) before the shadow's target should respawn
+ttt_shadow_target_buff_damage_bonus         0.15    // Damage bonus the shadow's target should get (e.g. 0.15 = 15% extra damage)
+ttt_shadow_target_buff_role_copy            0       // Whether the shadow should instead copy the role of their target if the team join buff is enabled
+ttt_shadow_speed_mult                       1.1     // The minimum multiplier to use on the shadow's sprint speed when they are outside of their target radius (e.g. 1.1 = 110% normal speed)
+ttt_shadow_speed_mult_max                   1.5     // The maximum multiplier to use on the shadow's sprint speed when they are FAR outside of their target radius (e.g. 1.5 = 150% normal speed)
+ttt_shadow_sprint_recovery                  0.1     // The minimum amount of stamina to recover per tick when the shadow is outside of their target radius
+ttt_shadow_sprint_recovery_max              0.5     // The maximum amount of stamina to recover per tick when the shadow is FAR outside of their target radius
+ttt_shadow_target_jester                    1       // Whether the shadow should be able to target a member of the jester team
+ttt_shadow_target_independent               1       // Whether the shadow should be able to target an independent player
+ttt_shadow_soul_link                        0       // Whether the shadow should die when their target dies and vice-versa
+ttt_shadow_target_notify_mode               0       // How the shadow's target should be notified they have a shadow. 0 - Don't notify. 1 - Anonymously notify. 2 - Identify the shadow.
+
+// Arsonist
+ttt_arsonist_douse_time                     8       // The amount of time (in seconds) the arsonist takes to douse someone
+ttt_arsonist_douse_distance                 250     // The maximum distance away the dousing target can be
+ttt_arsonist_douse_notify_delay_min         10      // The minimum delay before a player is notified they've been doused
+ttt_arsonist_douse_notify_delay_max         30      // The maximum delay before a player is notified they've been doused
 
 // ----------------------------------------
 
@@ -764,12 +809,14 @@ ttt_beggar_starting_health                  100     // The amount of health the 
 ttt_bodysnatcher_starting_health            100     // The amount of health the bodysnatcher starts with
 ttt_lootgoblin_starting_health              50      // The amount of health the loot goblin starts with
 ttt_cupid_starting_health                   100     // The amount of health the cupid starts with
+ttt_sponge_starting_health                  150     // The amount of health the sponge starts with
 ttt_drunk_starting_health                   100     // The amount of health the drunk starts with
 ttt_oldman_starting_health                  1       // The amount of health the old man starts with
 ttt_killer_starting_health                  150     // The amount of health the killer starts with
 ttt_zombie_starting_health                  100     // The amount of health the zombie starts with
 ttt_madscientist_starting_health            100     // The amount of health the mad scientist starts with
 ttt_shadow_starting_health                  100     // The amount of health the shadow starts with
+ttt_arsonist_starting_health                100     // The amount of health the arsonist starts with
 
 // Individual Role Max Health. Set to 0 or -1 to use the game's default maximum health.
 ttt_traitor_max_health                      100     // The maximum amount of health a traitor can have
@@ -805,12 +852,14 @@ ttt_beggar_max_health                       100     // The maximum amount of hea
 ttt_bodysnatcher_max_health                 100     // The maximum amount of health the bodysnatcher can have
 ttt_lootgoblin_max_health                   50      // The maximum amount of health the loot goblin can have
 ttt_cupid_max_health                        100     // The maximum amount of health the cupid can have
+ttt_sponge_max__health                      150     // The maximum amount of health the sponge can have
 ttt_drunk_max_health                        100     // The maximum amount of health the drunk can have
 ttt_oldman_max_health                       1       // The maximum amount of health the old man can have
 ttt_killer_max_health                       150     // The maximum amount of health the killer can have
 ttt_zombie_max_health                       100     // The maximum amount of health the zombie can have
 ttt_madscientist_max_health                 100     // The maximum amount of health the mad scientist can have
 ttt_shadow_max_health                       100     // The maximum amount of health the shadow can have
+ttt_arsonist_max_health                     100     // The maximum amount of health the arsonist can have
 
 // Round Time
 ttt_roundtime_win_draw                      0       // Whether a round that ends because the round time limit has passed counts as a draw. If it is not a draw, the traitor team loses
@@ -847,6 +896,7 @@ ttt_round_summary_tabs                      summary,hilite,events,scores // The 
 ttt_death_notifier_enable                   1       // Whether the name and role of a player's killer should be shown to the victim
 ttt_smokegrenade_extinguish                 1       // Whether smoke grenades should extinguish fire
 ttt_player_set_color                        1       // Whether player colors are set each time that player spawns
+ttt_dna_scan_on_dialog                      1       // Whether to show a button to open the DNA scanner on the body search dialog
 ```
 
 Thanks to [KarlOfDuty](https://github.com/KarlOfDuty) for his original version of this document, [here](https://github.com/KarlOfDuty/TTT-Custom-Roles/blob/patch-1/README.md).
@@ -863,6 +913,13 @@ The below role settings are for each player to set individually. They are all av
 // TRAITOR TEAM SETTINGS
 // Informant
 ttt_informant_show_scan_radius              0       // Whether to show the ring that shows the approximate radius of the informant's scanner
+
+// JESTER TEAM SETTINGS
+// Beggar
+ttt_beggar_show_scan_radius                 0       // Whether to show the ring that shows the approximate radius of the beggar's traitor scanner (when it's enabled)
+
+// Loot Goblin
+ttt_lootgoblin_radar_beep_sound             1       // Whether to play a sound when the loot goblin radar location updates
 ```
 
 ## Role Weapon Shop

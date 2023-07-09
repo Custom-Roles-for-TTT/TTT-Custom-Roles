@@ -13,6 +13,7 @@ local util = util
 local GetAllPlayers = player.GetAll
 
 util.AddNetworkString("TTT_UpdateOldManWins")
+util.AddNetworkString("TTT_ResetOldManWins")
 
 resource.AddSingleFile("sound/oldmanramble.wav")
 
@@ -96,10 +97,13 @@ hook.Add("EntityTakeDamage", "OldMan_EntityTakeDamage", function(ent, dmginfo)
     -- Only give the Old Man an adrenaline rush once
     if ent:GetNWBool("AdrenalineRushed", false) then return end
 
-    -- Save their real health
-    ent.damageHealth = ent:Health()
-    -- Set their health to a high number so we can detect if they take damage
-    ent:SetHealth(tempHealth)
+    -- If we're not already processing one of these events
+    if not ent.damageHealth then
+        -- Save their real health
+        ent.damageHealth = ent:Health()
+        -- Set their health to a high number so we can detect if they take damage
+        ent:SetHealth(tempHealth)
+    end
 end)
 
 hook.Add("PostEntityTakeDamage", "OldMan_PostEntityTakeDamage", function(ent, dmginfo, took)
@@ -109,29 +113,37 @@ hook.Add("PostEntityTakeDamage", "OldMan_PostEntityTakeDamage", function(ent, dm
 
     if GetRoundState() ~= ROUND_ACTIVE then return end
     if not IsPlayer(ent) or not ent:IsOldMan() then return end
-    if ent:IsRoleActive() then return end
 
-    -- Check if they took damage
-    local damage = tempHealth - ent:Health()
-    -- Reset their health to the real amount
-    ent:SetHealth(ent.damageHealth)
+    -- Retrieve their original health
+    local health = ent.damageHealth
+    ent.damageHealth = nil
+    if not health then return end
+
+    -- And check if they took damage
+    local damage = dmginfo:GetDamage()
 
     -- If they didn't take damage then we don't care
-    if not took then return end
-    if damage <= 0 then return end
+    -- but be sure to set their health back to the original
+    if not took or damage <= 0 then
+        ent:SetHealth(health)
+        return
+    end
 
     -- Only give the Old Man an adrenaline rush once
+    if ent:IsRoleActive() then return end
     if ent:GetNWBool("AdrenalineRushed", false) then return end
-
-    local att = dmginfo:GetAttacker()
-    local health = ent.damageHealth
 
     -- If the damage would have killed them then...
     if damage >= health then
+        local att = dmginfo:GetAttacker()
         -- If they are attacked by a player, enter an adrenaline rush
         if IsPlayer(att) then
-            ent:SetHealth(1)
             ent:SetNWBool("AdrenalineRush", true)
+            -- Delay the health change here slightly so that any other damage events can fully clear first
+            -- Without this delay, double damage events (from, e.g. a Holy Hand Grenade explosion) will cause the player to die
+            timer.Simple(0, function()
+                ent:SetHealth(1)
+            end)
             if oldman_adrenaline_ramble:GetBool() then
                 ent:EmitSound("oldmanramble.wav")
             end
@@ -179,16 +191,25 @@ hook.Add("PostEntityTakeDamage", "OldMan_PostEntityTakeDamage", function(ent, dm
         end
     -- If this wasn't enough to kill the player, reduce their health by the damage amount
     else
-        ent:SetHealth(ent.damageHealth - damage)
+        ent:SetHealth(health - damage)
     end
 end)
 
-hook.Add("TTTPrepareRound", "OldMan_Adrenaline_TTTPrepareRound", function()
+hook.Add("TTTPrepareRound", "OldMan_TTTPrepareRound", function()
     for _, v in pairs(GetAllPlayers()) do
+        v.damageHealth = nil
         v:SetNWBool("AdrenalineRush", false)
         v:SetNWBool("AdrenalineRushed", false)
         timer.Remove(v:Nick() .. "AdrenalineRush")
     end
+
+    net.Start("TTT_ResetOldManWins")
+    net.Broadcast()
+end)
+
+hook.Add("TTTBeginRound", "OldMan_TTTBeginRound", function()
+    net.Start("TTT_ResetOldManWins")
+    net.Broadcast()
 end)
 
 -----------

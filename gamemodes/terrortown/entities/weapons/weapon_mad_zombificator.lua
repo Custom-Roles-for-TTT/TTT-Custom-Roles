@@ -59,15 +59,6 @@ SWEP.AllowDrop = false
 -- settings
 local maxdist = 64
 local success = 100
-local mutateok = 0
-local mutatemax = 0
-
-local mutate = {
-    ["models/props_junk/watermelon01.mdl"] = true,
-    ["models/props/cs_italy/orange.mdl"] = true,
-    ["models/props/cs_italy/bananna.mdl"] = true,
-    ["models/props/cs_italy/bananna_bunch.mdl"] = true
-}
 
 local beep = Sound("buttons/button17.wav")
 local hum = Sound("items/nvg_on.wav")
@@ -123,7 +114,7 @@ if SERVER then
     end
 
     local function bodyply(body)
-        local ply = false
+        local ply
 
         if body.sid64 then
             ply = player.GetBySteamID64(body.sid64)
@@ -275,21 +266,15 @@ if SERVER then
         if GetRoundState() ~= ROUND_ACTIVE then return end
 
         local ent = tr.Entity
-        if IsValid(ent) then
-            if ent:GetClass() == "prop_physics" and mutate[ent:GetModel()] and mutateok > 0 then
-                self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-                ent:EmitSound(zap, 75, math.random(98, 102))
-                ent:SetModelScale(math.min(mutatemax, ent:GetModelScale() + 0.25), 1)
-            elseif ent:GetClass() == "prop_ragdoll" and validbody(ent) then
-                self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-                self.Location = FindRespawnLocation(pos) or pos
+        if IsValid(ent) and ent:GetClass() == "prop_ragdoll" and validbody(ent) then
+            self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
+            self.Location = FindRespawnLocation(pos) or pos
 
-                if self.Location then
-                    self:Begin(ent, tr.PhysicsBone)
-                else
-                    self:Error("INSUFFICIENT ROOM")
-                    return
-                end
+            if self.Location then
+                self:Begin(ent, tr.PhysicsBone)
+            else
+                self:Error("INSUFFICIENT ROOM")
+                return
             end
         end
     end
@@ -343,7 +328,7 @@ if CLIENT then
             local progress = math.min(1, 1 - ((time - CurTime()) / charge))
             CRHUD:PaintProgressBar(x, y, w, Color(0, 255, 0, 155), self:GetMessage(), progress)
         elseif state == DEFIB_ERROR then
-            CRHUD:PaintProgressBar(x, y, w, Color(200 + math.sin(CurTime() * 32) * 50, 0, 0, 155), self:GetMessage(), progress)
+            CRHUD:PaintProgressBar(x, y, w, Color(200 + math.sin(CurTime() * 32) * 50, 0, 0, 155), self:GetMessage(), 1)
         end
     end
 

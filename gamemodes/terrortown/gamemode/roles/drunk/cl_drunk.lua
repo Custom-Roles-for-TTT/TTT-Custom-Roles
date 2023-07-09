@@ -1,4 +1,5 @@
 local hook = hook
+local math = math
 local net = net
 local surface = surface
 local util = util

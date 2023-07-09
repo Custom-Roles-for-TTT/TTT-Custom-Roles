@@ -217,7 +217,7 @@ function RADIO:ShowRadioCommands(state)
             -- This is not how you should do things
             radioframe.ForceResize = function(s)
                 w = 0
-                local label = nil
+                local label
                 for k, v in pairs(s.Items) do
                     label = v:GetChild(0)
                     if label:GetWide() > w then

@@ -26,16 +26,9 @@ function plymeta:ShouldRevealBodysnatcher(tgt)
     if not tgt then tgt = self end
 
     -- Determine whether which setting we should check based on what role they changed to
-    local bodysnatcherMode = nil
-    if tgt:IsTraitorTeam() then
-        bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_traitor", BODYSNATCHER_REVEAL_ALL)
-    elseif tgt:IsInnocentTeam() then
-        bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_innocent", BODYSNATCHER_REVEAL_ALL)
-    elseif tgt:IsMonsterTeam() then
-        bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_monster", BODYSNATCHER_REVEAL_ALL)
-    elseif tgt:IsIndependentTeam() then
-        bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_independent", BODYSNATCHER_REVEAL_ALL)
-    end
+    local roleTeam = player.GetRoleTeam(tgt:GetRole(), true)
+    local convarTeam = GetRawRoleTeamName(roleTeam)
+    local bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_" .. convarTeam, BODYSNATCHER_REVEAL_ALL)
 
     -- Check the setting value and whether the player and the target are the same team
     return bodysnatcherMode == BODYSNATCHER_REVEAL_ALL or (self:IsSameTeam(tgt) and bodysnatcherMode == BODYSNATCHER_REVEAL_TEAM)
@@ -88,6 +81,11 @@ table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
 })
 table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
     cvar = "ttt_bodysnatcher_reveal_independent",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
+    cvar = "ttt_bodysnatcher_reveal_jester",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
 })

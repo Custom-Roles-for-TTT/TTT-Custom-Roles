@@ -3,6 +3,7 @@ local math = math
 
 local MathCos = math.cos
 local MathSin = math.sin
+local GetAllPlayers = player.GetAll
 
 ------------------
 -- TRANSLATIONS --
@@ -27,24 +28,22 @@ hook.Add("TTTPlayerAliveClientThink", "Paladin_RoleFeatures_TTTPlayerAliveClient
         if not ply.AuraNextPart then ply.AuraNextPart = CurTime() end
         if not ply.AuraDir then ply.AuraDir = 0 end
         local pos = ply:GetPos() + Vector(0, 0, 30)
-        if ply.AuraNextPart < CurTime() then
-            if client:GetPos():Distance(pos) <= 3000 then
-                ply.AuraEmitter:SetPos(pos)
-                ply.AuraNextPart = CurTime() + 0.02
-                ply.AuraDir = ply.AuraDir + 0.05
-                local radius = GetGlobalFloat("ttt_paladin_aura_radius", 262.45)
-                local vec = Vector(MathSin(ply.AuraDir) * radius, MathCos(ply.AuraDir) * radius, 10)
-                local particle = ply.AuraEmitter:Add("particle/shield.vmt", ply:GetPos() + vec)
-                particle:SetVelocity(Vector(0, 0, 20))
-                particle:SetDieTime(1)
-                particle:SetStartAlpha(200)
-                particle:SetEndAlpha(0)
-                particle:SetStartSize(3)
-                particle:SetEndSize(2)
-                particle:SetRoll(0)
-                particle:SetRollDelta(0)
-                particle:SetColor(ROLE_COLORS[ROLE_PALADIN].r, ROLE_COLORS[ROLE_PALADIN].g, ROLE_COLORS[ROLE_PALADIN].b)
-            end
+        if ply.AuraNextPart < CurTime() and client:GetPos():Distance(pos) <= 3000 then
+            ply.AuraEmitter:SetPos(pos)
+            ply.AuraNextPart = CurTime() + 0.02
+            ply.AuraDir = ply.AuraDir + 0.05
+            local radius = GetGlobalFloat("ttt_paladin_aura_radius", UNITS_PER_FIVE_METERS)
+            local vec = Vector(MathSin(ply.AuraDir) * radius, MathCos(ply.AuraDir) * radius, 10)
+            local particle = ply.AuraEmitter:Add("particle/shield.vmt", ply:GetPos() + vec)
+            particle:SetVelocity(Vector(0, 0, 20))
+            particle:SetDieTime(1)
+            particle:SetStartAlpha(200)
+            particle:SetEndAlpha(0)
+            particle:SetStartSize(3)
+            particle:SetEndSize(2)
+            particle:SetRoll(0)
+            particle:SetRollDelta(0)
+            particle:SetColor(ROLE_COLORS[ROLE_PALADIN].r, ROLE_COLORS[ROLE_PALADIN].g, ROLE_COLORS[ROLE_PALADIN].b)
         end
     elseif ply.AuraEmitter then
         ply.AuraEmitter:Finish()
@@ -52,6 +51,25 @@ hook.Add("TTTPlayerAliveClientThink", "Paladin_RoleFeatures_TTTPlayerAliveClient
         ply.AuraDir = nil
         ply.AuraNextPart = nil
     end
+end)
+
+local client = nil
+local shield = Material("particle/shield.vmt")
+hook.Add("HUDPaintBackground", "Paladin_HUDPaintBackground", function()
+    if not client then client = LocalPlayer() end
+
+    if not IsPlayer(client) then return end
+    if not client:Alive() then return end
+    if client:IsPaladin() then return end
+
+    local inside = false
+    for _, p in pairs(GetAllPlayers()) do
+        if p:IsActive() and p:Alive() and p:GetDisplayedRole() == ROLE_PALADIN and client:GetPos():Distance(p:GetPos()) <= GetGlobalFloat("ttt_paladin_aura_radius", UNITS_PER_FIVE_METERS) then
+            inside = true
+            break
+        end
+    end
+    CRHUD:PaintStatusEffect(inside, ROLE_COLORS[ROLE_PALADIN], shield, "PaladinAura")
 end)
 
 --------------

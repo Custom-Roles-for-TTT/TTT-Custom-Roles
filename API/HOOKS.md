@@ -7,6 +7,20 @@ For example, if there is a hook that returns three parameters: `first`, `second`
 
 ***NOTE:*** Be careful that you only return from a hook when you absolutely want to change something. Due to the way GMod hooks work, whichever hook instance returns first causes the *remaining hook instances to be completely skipped*. This is useful for certain hooks when you want to stop a behavior from happening, but it can also accidentally cause functionality to break because its code is completely ignored.
 
+### TTTBodySearchButtons(ply, rag, buttons, searchRaw, detectiveSearchOnly)
+Called when a player opens the body search dialog. Used to add new buttons to the dialog.\
+*Realm:* Client\
+*Added in:* 1.8.3\
+*Parameters:*
+- *ply* - The player who is opening the body search dialog
+- *rag* - The `prop_ragdoll` representing a player's body being searched
+- *buttons* - The table of buttons being rendered on the body search dialog. Insert a new descriptive object into this table to add a button to the window. The possible descriptive object properties are:
+  - *text* - The text to show on the button
+  - *onclick* - The function to call when the button is clicked. The only parameter passed to this function is the [DButton](https://wiki.facepunch.com/gmod/DButton) instance.
+  - *disabled* - A boolean or function which returns a boolean used to determine whether this button should be clickable. Defaults to `true` if not provided.
+- *searchRaw* - The raw search data
+- *detectiveSearchOnly* - Whether only detectives should be able to search bodies
+
 ### TTTBlockPlayerFootstepSound(ply)
 Called when a player is making a footstep. Used to determine if the player's footstep sound should be stopped.\
 *Realm:* Client and Server\
@@ -94,12 +108,13 @@ Called before the event icon for the "round finished" event is rendered in the e
 - *winString* - The new winString value to use or the original passed into the hook
 - *roleString* - The new roleString value to use or the original passed into the hook
 
-### TTTEquipmentTabs(dsheet)
+### TTTEquipmentTabs(dsheet, dframe)
 Allows creation of new tabs for the equipment (shop) menu.\
 *Realm:* Client\
 *Added in:* 1.0.0\
 *Parameters:*
 - *dsheet* - The [DPropertySheet](https://wiki.facepunch.com/gmod/DPropertySheet) used by the equipment window
+- *dframe* - The [DFrame](https://wiki.facepunch.com/gmod/DFrame) representing the equipment window *(Added in 1.8.7)*
 
 *Return:* If `true`, the equipment window will show even if the player doesn't have any of the default tabs. *(Added in 1.7.3)*
 
@@ -401,7 +416,6 @@ Called before each round summary screen is shown with the winning team. Used to 
 *Parameters:*
 - *wintype* - The round win type
 - *secondaryWins* - The table of role information for who should have a secondary win on the round summary. Insert any role data you would like to display into this table. Role data can either be the role's identifier (to use the default text and color logic) or, *as of version 1.4.6*, a table of the following data (to use your own text and colors):
-  - rol - The role identifier
   - txt - The text to display
   - col - The background color to use
 
@@ -611,6 +625,7 @@ Called when a player should be shown a role-specific spectator HUD, allowing tha
 
 ### TTTSpeedMultiplier(ply, mults, sprinting)
 Called when determining what speed the player should be moving at.\
+*NOTE:* This hook is [predicted](https://wiki.facepunch.com/gmod/prediction). This means that in singleplayer, it will not be called in the Client realm.\
 *Realm:* Client and Server\
 *Added in:* 1.0.0\
 *Parameters:*
@@ -618,10 +633,21 @@ Called when determining what speed the player should be moving at.\
 - *mults* - The table of speed multipliers that should be applied to this player. Insert any multipliers you would like to apply to the target player into this table
 - *sprinting* - Whether the player is currently sprinting *(Added in 1.7.3)*
 
+### TTTSprintKey(ply)
+Called when determining if a player is sprinting. Allows overriding of which directional key needs to be pressed for sprinting to start.\
+*NOTE:* This hook is [predicted](https://wiki.facepunch.com/gmod/prediction). This means that in singleplayer, it will not be called in the Client realm.\
+*Realm:* Client and Server\
+*Added in:* 1.0.0 on Client and 1.8.8 on Server\
+*Parameters:*
+- *ply* - Player who is being checked for sprinting
+
+*Return:* The [IN_*](https://wiki.facepunch.com/gmod/Enums/IN) enum value representing the key that must be pressed in addition to `IN_SPEED` to start sprinting. If none provided, default of `IN_FORWARD` will be used.
+
 ### TTTSprintStaminaPost(ply, stamina, sprintTimer, consumption)
-Called after a player's sprint stamina is reduced. Return value is the new stamina value for the player.\
-*Realm:* Client\
-*Added in:* 1.0.2\
+Called after a player's sprint stamina is reduced. Used to adjust the player's new stamina amount.\
+*NOTE:* This hook is [predicted](https://wiki.facepunch.com/gmod/prediction). This means that in singleplayer, it will not be called in the Client realm.\
+*Realm:* Client and Server\
+*Added in:* 1.0.2 on Client and 1.8.8 on Server\
 *Parameters:*
 - *ply* - Player whose stamina is being adjusted
 - *stamina* - Player's current stamina
@@ -630,15 +656,27 @@ Called after a player's sprint stamina is reduced. Return value is the new stami
 
 *Return:* The stamina value to assign to the player. If none is provided, the player's stamina will not be changed.
 
-### TTTSprintStaminaRecovery(client, recovery)
+### TTTSprintStaminaRecovery(ply, recovery)
 Called before a player's sprint stamina is recovered. Used to adjust how fast the player's stamina will recover.\
-*Realm:* Client\
-*Added in:* 1.3.6\
+*NOTE:* This hook is [predicted](https://wiki.facepunch.com/gmod/prediction). This means that in singleplayer, it will not be called in the Client realm.\
+*Realm:* Client and Server\
+*Added in:* 1.3.6 on Client and 1.8.8 on Server\
 *Parameters:*
-- *client* - The local player
+- *ply* - Player whose stamina is being adjusted
 - *recovery* - Player's current stamina recovery rate
 
 *Return:* The stamina recovery rate to assign to the player. If none is provided, the player's default stamina recovery rate will be used.
+
+### TTTSprintStateChange(ply, sprinting, wasSprinting)
+Called when a player starts or stops sprinting.\
+*NOTE*: This represents the change in player speed, not the change in the `Sprinting` player variable.\
+*NOTE:* This hook is [predicted](https://wiki.facepunch.com/gmod/prediction). This means that in singleplayer, it will not be called in the Client realm.\
+*Realm:* Client and Server\
+*Added in:* 1.8.8\
+*Parameters:*
+- *ply* - Player whose sprint state changed
+- *sprinting* - Whether the player is now sprinting
+- *wasSprinting* - Whether the player was sprinting
 
 ### TTTShouldPlayerSmoke(ply, client, shouldSmoke, smokeColor, smokeParticle, smokeOffset)
 .\

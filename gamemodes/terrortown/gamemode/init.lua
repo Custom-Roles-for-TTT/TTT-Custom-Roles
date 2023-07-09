@@ -39,6 +39,10 @@ AddCSLuaFile("vgui/sb_main.lua")
 AddCSLuaFile("vgui/sb_row.lua")
 AddCSLuaFile("vgui/sb_team.lua")
 AddCSLuaFile("vgui/sb_info.lua")
+AddCSLuaFile("cl_hitmarkers.lua")
+AddCSLuaFile("cl_deathnotify.lua")
+AddCSLuaFile("cl_sprint.lua")
+AddCSLuaFile("sprint_shd.lua")
 
 include("shared.lua")
 
@@ -57,6 +61,10 @@ include("corpse.lua")
 include("player_ext_shd.lua")
 include("player_ext.lua")
 include("player.lua")
+include("hitmarkers.lua")
+include("deathnotify.lua")
+include("sprint.lua")
+include("sprint_shd.lua")
 
 -- Localise stuff we use often. It's like Lua go-faster stripes.
 local concommand = concommand
@@ -82,8 +90,6 @@ local GetAllPlayers = player.GetAll
 local StringFormat = string.format
 local StringLower = string.lower
 local StringUpper = string.upper
-local StringSub = string.sub
-local StringStartsWith = string.StartsWith
 
 -- Round times
 CreateConVar("ttt_roundtime_minutes", "10", FCVAR_NOTIFY)
@@ -313,20 +319,11 @@ CreateConVar("ttt_namechange_bantime", "10")
 CreateConVar("ttt_disable_headshots", "0")
 CreateConVar("ttt_disable_mapwin", "0")
 
-CreateConVar("ttt_death_notifier_enable", "1")
-
 -- bem server convars
 CreateConVar("ttt_bem_allow_change", 1, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Allow clients to change the look of the shop menu")
 CreateConVar("ttt_bem_sv_cols", 4, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Sets the number of columns in the shop menu's item list (serverside)")
 CreateConVar("ttt_bem_sv_rows", 5, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Sets the number of rows in the shop menu's item list (serverside)")
 CreateConVar("ttt_bem_sv_size", 64, { FCVAR_ARCHIVE, FCVAR_REPLICATED, FCVAR_SERVER_CAN_EXECUTE }, "Sets the item size in the shop menu's item list (serverside)")
-
--- sprint convars
-local sprintEnabled = CreateConVar("ttt_sprint_enabled", "1", FCVAR_SERVER_CAN_EXECUTE, "Whether sprint is enabled")
-local speedMultiplier = CreateConVar("ttt_sprint_bonus_rel", "0.4", FCVAR_SERVER_CAN_EXECUTE, "The relative speed bonus given while sprinting. Def: 0.4")
-local recovery = CreateConVar("ttt_sprint_regenerate_innocent", "0.08", FCVAR_SERVER_CAN_EXECUTE, "Sets stamina regeneration for innocents. Def: 0.08")
-local traitorRecovery = CreateConVar("ttt_sprint_regenerate_traitor", "0.12", FCVAR_SERVER_CAN_EXECUTE, "Sets stamina regeneration speed for traitors. Def: 0.12")
-local consumption = CreateConVar("ttt_sprint_consume", "0.2", FCVAR_SERVER_CAN_EXECUTE, "Sets stamina consumption speed. Def: 0.2")
 
 local ttt_detective = CreateConVar("ttt_sherlock_mode", "1", FCVAR_ARCHIVE + FCVAR_NOTIFY)
 local ttt_minply = CreateConVar("ttt_minimum_players", "2", FCVAR_ARCHIVE + FCVAR_NOTIFY)
@@ -367,19 +364,15 @@ util.AddNetworkString("TTT_ConfirmUseTButton")
 util.AddNetworkString("TTT_C4Config")
 util.AddNetworkString("TTT_C4DisarmResult")
 util.AddNetworkString("TTT_C4Warn")
+util.AddNetworkString("TTT_SendSamples")
 util.AddNetworkString("TTT_ShowPrints")
+util.AddNetworkString("TTT_TakeSample")
 util.AddNetworkString("TTT_ScanResult")
 util.AddNetworkString("TTT_FlareScorch")
 util.AddNetworkString("TTT_Radar")
 util.AddNetworkString("TTT_Spectate")
 util.AddNetworkString("TTT_TeleportMark")
 util.AddNetworkString("TTT_ClearRadarExtras")
-util.AddNetworkString("TTT_DrawHitMarker")
-util.AddNetworkString("TTT_CreateBlood")
-util.AddNetworkString("TTT_OpenMixer")
-util.AddNetworkString("TTT_ClientDeathNotify")
-util.AddNetworkString("TTT_SprintSpeedSet")
-util.AddNetworkString("TTT_SprintGetConVars")
 util.AddNetworkString("TTT_SpawnedPlayers")
 util.AddNetworkString("TTT_Defibrillated")
 util.AddNetworkString("TTT_RoleChanged")
@@ -444,7 +437,7 @@ function GM:Initialize()
     math.randomseed(os.time())
 
     WaitForPlayers()
-    HandleRoleEquipment()
+    WEPS.HandleRoleEquipment()
 
     if cvars.Number("sv_alltalk", 0) > 0 then
         ErrorNoHalt("TTT WARNING: sv_alltalk is enabled. Dead players will be able to talk to living players. TTT will now attempt to set sv_alltalk 0.\n")
@@ -554,8 +547,6 @@ function GM:SyncGlobals()
 
     SetGlobalBool("ttt_scoreboard_deaths", GetConVar("ttt_scoreboard_deaths"):GetBool())
     SetGlobalBool("ttt_scoreboard_score", GetConVar("ttt_scoreboard_score"):GetBool())
-
-    SetGlobalBool("ttt_sprint_enabled", GetConVar("ttt_sprint_enabled"):GetBool())
 
     UpdateRoleState()
 end
@@ -966,7 +957,7 @@ function BeginRound()
 
     if CheckForAbort() then return end
 
-    HandleRoleEquipment()
+    WEPS.HandleRoleEquipment()
     InitRoundEndTime()
 
     if CheckForAbort() then return end
@@ -1499,6 +1490,7 @@ function SelectRoles()
     local monsterRoles = {}
     local detectives = {}
     local traitors = {}
+    local glitch_mode = GetConVar("ttt_glitch_mode"):GetInt()
 
     -- Special rules for role spawning
     -- Role exclusion logic also needs to be copied into the drunk role selection logic in drunk.lua -> plymeta:SoberDrunk
@@ -1507,7 +1499,6 @@ function SelectRoles()
         [ROLE_DEPUTY] = function() return detective_count > 0 or GetConVar("ttt_deputy_without_detective"):GetBool() end,
         [ROLE_REVENGER] = function() return choice_count > 1 end,
         [ROLE_GLITCH] = function()
-            local glitch_mode = GetConVar("ttt_glitch_mode"):GetInt()
             return (glitch_mode == GLITCH_SHOW_AS_TRAITOR and #traitors > 1) or
                     ((glitch_mode == GLITCH_SHOW_AS_SPECIAL_TRAITOR or glitch_mode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES) and traitor_count > 1)
         end,
@@ -1654,12 +1645,12 @@ function SelectRoles()
         end
     end
 
-    local has_impersonator = table.HasValue(specialTraitorRoles, ROLE_IMPERSONATOR)
+    local can_have_impersonator = IsRoleAvailable(ROLE_IMPERSONATOR)
     local impersonator_chance = GetConVar("ttt_impersonator_detective_chance"):GetFloat()
     -- Any of these left are vanilla detectives
     for _, v in pairs(detectives) do
         -- By chance have this detective actually be a promoted impersonator
-        if #traitors > 0 and has_impersonator and math.random() < impersonator_chance then
+        if can_have_impersonator and #traitors > 0 and math.random() < impersonator_chance then
             v:SetRole(ROLE_IMPERSONATOR)
             PrintRole(v, ROLE_IMPERSONATOR)
             v:HandleDetectiveLikePromotion()
@@ -1671,11 +1662,11 @@ function SelectRoles()
             traitors_copy = table.Copy(traitors)
             choices_copy = table.Copy(choices)
 
-            -- Remove the option so we don't have 2 impersonators
-            table.RemoveByValue(specialTraitorRoles, ROLE_IMPERSONATOR)
+            -- Mark this role as taken so we don't have 2 impersonators
+            hasRole[ROLE_IMPERSONATOR] = true
 
             -- Only allow one to be an impersonator
-            has_impersonator = false
+            can_have_impersonator = false
         else
             v:SetRole(ROLE_DETECTIVE)
             PrintRole(v, ROLE_DETECTIVE)
@@ -1935,197 +1926,3 @@ function ShowVersion(ply)
     end
 end
 concommand.Add("ttt_version", ShowVersion)
-
--- Hit Markers
--- Creator: Exho
-
-resource.AddFile("sound/hitmarkers/mlghit.wav")
-hook.Add("EntityTakeDamage", "HitmarkerDetector", function(ent, dmginfo)
-    local att = dmginfo:GetAttacker()
-    local pos = dmginfo:GetDamagePosition()
-
-    if IsPlayer(att) and att ~= ent then
-        if (ent:IsPlayer() or ent:IsNPC()) then -- Only players and NPCs show hitmarkers
-            local drawCrit = ent:GetNWBool("LastHitCrit") and not GetConVar("ttt_disable_headshots"):GetBool()
-
-            net.Start("TTT_DrawHitMarker")
-            net.WriteBool(drawCrit)
-            net.Send(att) -- Send the message to the attacker
-
-            net.Start("TTT_CreateBlood")
-            net.WriteVector(pos)
-            net.Broadcast()
-        end
-    end
-end)
-
-hook.Add("ScalePlayerDamage", "HitmarkerPlayerCritDetector", function(ply, hitgroup, dmginfo)
-    ply:SetNWBool("LastHitCrit", hitgroup == HITGROUP_HEAD)
-end)
-
-hook.Add("ScaleNPCDamage", "HitmarkerPlayerCritDetector", function(npc, hitgroup, dmginfo)
-    npc:SetNWBool("LastHitCrit", hitgroup == HITGROUP_HEAD)
-end)
-
-hook.Add("PlayerSay", "ColorMixerOpen", function(ply, text, team_only)
-    text = StringLower(text)
-    if (StringSub(text, 1, 12) == "!hmcritcolor") then
-        net.Start("TTT_OpenMixer")
-        net.WriteBool(true)
-        net.Send(ply)
-        return false
-    elseif (StringSub(text, 1, 8) == "!hmcolor") then
-        net.Start("TTT_OpenMixer")
-        net.WriteBool(false)
-        net.Send(ply)
-        return false
-    end
-end)
-
--- Death messages
-hook.Add("PlayerDeath", "TTT_ClientDeathNotify", function(victim, inflictor, attacker)
-    if gmod.GetGamemode().Name ~= "Trouble in Terrorist Town" then return end
-    if not GetConVar("ttt_death_notifier_enable"):GetBool() then return end
-
-    local reason = "nil"
-    local killerName = "nil"
-    local role = ROLE_NONE
-
-    if victim.DiedByWater then
-        reason = "water"
-    elseif attacker == victim then
-        reason = "suicide"
-    elseif IsValid(inflictor) then
-        if victim:IsPlayer() and (StringStartsWith(inflictor:GetClass(), "prop_physics") or inflictor:GetClass() == "prop_dynamic") then
-            -- If the killer is also a prop
-            reason = "prop"
-        elseif IsValid(attacker) then
-            if inflictor:GetClass() == "entityflame" and attacker:GetClass() == "entityflame" then
-                reason = "burned"
-            elseif inflictor:GetClass() == "worldspawn" and attacker:GetClass() == "worldspawn" then
-                reason = "fell"
-            elseif attacker:IsPlayer() and victim ~= attacker then
-                reason = "ply"
-                killerName = attacker:Nick()
-                role = attacker:GetRole()
-            end
-        end
-    end
-
-    local new_reason, new_killer, new_role = CallHook("TTTDeathNotifyOverride", nil, victim, inflictor, attacker, reason, killerName, role)
-    if type(new_reason) == "string" then reason = new_reason end
-    if type(new_killer) == "string" then killerName = new_killer end
-    if type(new_role) == "number" and new_role >= ROLE_NONE and new_role <= ROLE_MAX then role = new_role end
-
-    -- Send the buffer message with the death information to the victim
-    net.Start("TTT_ClientDeathNotify")
-    net.WriteString(killerName)
-    net.WriteInt(role, 8)
-    net.WriteString(reason)
-    net.Send(victim)
-end)
-
--- Sprint
-net.Receive("TTT_SprintSpeedSet", function(len, ply)
-    if not sprintEnabled:GetBool() then
-        ply.mult = nil
-        return
-    end
-
-    if net.ReadBool() then
-        ply.mult = 1 + speedMultiplier:GetFloat()
-    else
-        ply.mult = nil
-    end
-end)
-
--- Send ConVars if requested
-net.Receive("TTT_SprintGetConVars", function(len, ply)
-    local convars = {
-        [1] = sprintEnabled:GetBool(),
-        [2] = speedMultiplier:GetFloat(),
-        [3] = recovery:GetFloat(),
-        [4] = traitorRecovery:GetFloat(),
-        [5] = consumption:GetFloat()
-    }
-    net.Start("TTT_SprintGetConVars")
-    net.WriteTable(convars)
-    net.Send(ply)
-end)
-
--- return Speed
-hook.Add("TTTPlayerSpeedModifier", "TTTSprintPlayerSpeed", function(ply, _, _)
-    return GetSprintMultiplier(ply, sprintEnabled:GetBool() and ply.mult ~= nil)
-end)
-
--- If this logic or the list of roles who can buy is changed, it must also be updated in weaponry.lua and cl_equip.lua
--- This also sends a cache reset request to every client so that things like shop randomization happen every round
-function HandleRoleEquipment()
-    local handled = false
-    for id, name in pairs(ROLE_STRINGS_RAW) do
-        WEPS.PrepWeaponsLists(id)
-        local rolefiles, _ = file.Find("roleweapons/" .. name .. "/*.txt", "DATA")
-        local roleexcludes = { }
-        local roleenorandoms = { }
-        local roleweapons = { }
-        for _, v in pairs(rolefiles) do
-            local exclude = false
-            local norandom = false
-            -- Extract the weapon name from the file name
-            local lastdotpos = v:find("%.")
-            local weaponname = StringSub(v, 0, lastdotpos - 1)
-
-            -- Check that there isn't a two-part extension (e.g. "something.exclude.txt")
-            local extension = StringSub(v, lastdotpos + 1, #v)
-            lastdotpos = extension:find("%.")
-
-            -- If there is, check if it equals one of our expected types
-            if lastdotpos ~= nil then
-                extension = StringLower(StringSub(extension, 0, lastdotpos - 1))
-                if extension == "exclude" then
-                    exclude = true
-                elseif extension == "norandom" then
-                    norandom = true
-                end
-            end
-
-            if exclude then
-                table.insert(WEPS.ExcludeWeapons[id], weaponname)
-                table.insert(roleexcludes, weaponname)
-            elseif norandom then
-                table.insert(WEPS.BypassRandomWeapons[id], weaponname)
-                table.insert(roleenorandoms, weaponname)
-            else
-                table.insert(WEPS.BuyableWeapons[id], weaponname)
-                table.insert(roleweapons, weaponname)
-            end
-        end
-
-        if id >= ROLE_EXTERNAL_START and ROLE_SHOP_ITEMS[id] then
-            for _, v in pairs(ROLE_SHOP_ITEMS[id]) do
-                table.insert(WEPS.BuyableWeapons[id], v)
-                table.insert(roleweapons, v)
-            end
-        end
-
-        if #roleweapons > 0 or #roleexcludes > 0 or #roleenorandoms > 0 then
-            net.Start("TTT_BuyableWeapons")
-            net.WriteInt(id, 16)
-            net.WriteTable(roleweapons)
-            net.WriteTable(roleexcludes)
-            net.WriteTable(roleenorandoms)
-            net.Broadcast()
-            handled = true
-        end
-    end
-
-    -- Send this once if the roleweapons feature wasn't used (which resets the cache on its own)
-    if not handled then
-        net.Start("TTT_ResetBuyableWeaponsCache")
-        net.Broadcast()
-    end
-
-    net.Start("TTT_RoleWeaponsLoaded")
-    net.Broadcast()
-    CallHook("TTTRoleWeaponsLoaded")
-end

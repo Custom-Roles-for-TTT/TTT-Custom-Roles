@@ -2,6 +2,20 @@ AddCSLuaFile()
 
 local table = table
 
+-- Initialize role features
+BEGGAR_UNSCANNED = 0
+BEGGAR_SCANNED_HIDDEN = 1
+BEGGAR_SCANNED_TEAM = 2
+
+BEGGAR_SCANNER_IDLE = 0
+BEGGAR_SCANNER_LOCKED = 1
+BEGGAR_SCANNER_SEARCHING = 2
+BEGGAR_SCANNER_LOST = 3
+
+BEGGAR_SCAN_MODE_DISABLED = 0
+BEGGAR_SCAN_MODE_TRAITORS = 1
+BEGGAR_SCAN_MODE_SHOPS = 2
+
 -- Update their team
 hook.Add("TTTUpdateRoleState", "Beggar_TTTUpdateRoleState", function()
     local beggars_are_independent = GetGlobalBool("ttt_beggars_are_independent", false)
@@ -84,4 +98,29 @@ table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
 table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
     cvar = "ttt_beggar_respawn_change_role",
     type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
+    cvar = "ttt_beggar_scan",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
+    cvar = "ttt_beggar_scan_time",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
+    cvar = "ttt_beggar_scan_float_time",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
+    cvar = "ttt_beggar_scan_cooldown",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
+    cvar = "ttt_beggar_scan_distance",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
 })

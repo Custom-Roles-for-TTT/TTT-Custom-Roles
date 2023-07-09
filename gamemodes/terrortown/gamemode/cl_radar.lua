@@ -91,14 +91,14 @@ function RADAR:DrawTarget(tgt, size, offset, no_shrink)
         if tgt.t then
             -- Show time
             text = util.SimpleTime(tgt.t - CurTime(), "%02i:%02i")
-            w, h = surface.GetTextSize(text)
+            w, _ = surface.GetTextSize(text)
 
             surface.SetTextPos(scrpos.x - w / 2, scrpos.y + sz / 2)
             surface.DrawText(text)
         elseif tgt.nick then
             -- Show nickname
             text = tgt.nick
-            w, h = surface.GetTextSize(text)
+            w, _ = surface.GetTextSize(text)
 
             surface.SetTextPos(scrpos.x - w / 2, scrpos.y + sz / 2)
             surface.DrawText(text)
@@ -203,7 +203,7 @@ function RADAR:Draw(client)
 
             role = tgt.role or ROLE_INNOCENT
 
-            local color = nil
+            local color
             if client:IsTraitorTeam() then
                 local hideSpecialTraitors = glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES and GetGlobalBool("ttt_glitch_round", false)
                 local hideBeggar = tgt.was_beggar and (beggarMode == ANNOUNCE_REVEAL_NONE or beggarMode == ANNOUNCE_REVEAL_INNOCENTS)

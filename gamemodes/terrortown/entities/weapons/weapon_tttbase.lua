@@ -175,7 +175,7 @@ if CLIENT then
 
         -- somehow it seems this can be called before my player metatable
         -- additions have loaded
-        local color = nil
+        local color
         if hide_role then
             color = COLOR_WHITE
         elseif client.IsTraitorTeam and client:IsTraitorTeam() then
@@ -511,7 +511,7 @@ function SWEP:Initialize()
 end
 
 function SWEP:CalcViewModel()
-    if (not CLIENT) or (not IsFirstTimePredicted()) then return end
+    if (not CLIENT) or (not IsFirstTimePredicted() and not game.SinglePlayer()) then return end
     self.bIron = self:GetIronsights()
     self.fIronTime = self:GetIronsightsTime()
     self.fCurrentTime = CurTime()

@@ -152,7 +152,7 @@ local function CanTeleportToPos(ply, pos)
     -- first check if we can teleport here at all, because any solid object or
     -- brush will make us stuck and therefore kills/blocks us instead, so the
     -- trace checks for anything solid to players that isn't a player
-    local tr = nil
+    local tr
     local tres = {start=pos, endpos=pos, mask=MASK_PLAYERSOLID, filter=player.GetAll()}
     local collide = false
 
@@ -178,26 +178,20 @@ local function CanTeleportToPos(ply, pos)
     if collide then
         --Telefrag(ply, ply)
         return true, nil
-    else
-
-        -- find all players in the place where we will be and telefrag them
-        local blockers = ents.FindInBox(pos + Vector(-16, -16, 0),
-                                                  pos + Vector(16, 16, 64))
-
-        local blocking_plys = {}
-
-        for _, block in ipairs(blockers) do
-            if IsPlayer(block) and block ~= ply and block:IsTerror() and block:Alive() then
-                table.insert(blocking_plys, block)
-                -- telefrag blocker
-                --Telefrag(block, ply)
-            end
-        end
-
-        return false, blocking_plys
     end
 
-    return false, nil
+    -- find all players in the place where we will be and telefrag them
+    local blockers = ents.FindInBox(pos + Vector(-16, -16, 0),
+                                                pos + Vector(16, 16, 64))
+    local blocking_plys = {}
+
+    for _, block in ipairs(blockers) do
+        if IsPlayer(block) and block ~= ply and block:IsTerror() and block:Alive() then
+            table.insert(blocking_plys, block)
+        end
+    end
+
+    return false, blocking_plys
 end
 
 local function DoTeleport(ply, teleport, weapon)

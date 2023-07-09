@@ -1,4 +1,5 @@
 local file = file
+local hook = hook
 local ipairs = ipairs
 local IsValid = IsValid
 local math = math
@@ -23,9 +24,12 @@ if not string.StartsWith then
     string.StartsWith = string.StartWith
 end
 
+include("player_class/player_ttt.lua")
+
 -- Version string for display and function for version checks
-CR_VERSION = "1.8.2"
+CR_VERSION = "1.9.0"
 CR_BETA = false
+CR_WORKSHOP_ID = CR_BETA and "2404251054" or "2421039084"
 
 function CRVersion(version)
     local installedVersionRaw = StringSplit(CR_VERSION, ".")
@@ -63,6 +67,47 @@ GM.Website = "ttt.badking.net"
 GM.Version = "Custom Roles for TTT v" .. CR_VERSION
 
 GM.Customized = false
+
+local function IsCustomRolesMounted()
+    for _, a in ipairs(engine.GetAddons()) do
+        if tostring(a.wsid) == CR_WORKSHOP_ID and a.mounted then
+            return true
+        end
+    end
+    return false
+end
+
+CRDebug = CRDebug or {
+    -- Only enable this on beta when we're not mounted from the workshop
+    Enabled = CR_BETA and not IsCustomRolesMounted(),
+    -- These keys (in "{EventName}_{Identifier}" format) are known to re-register themselves
+    IgnoredHookDupes = {
+        "InitPostEntity_CreateVoiceVGUI"
+    }
+}
+
+-- Only run this when we're debugging and only do it once
+if CRDebug.Enabled and not CRDebug.HooksChecked then
+    CRDebug.HooksChecked = CRDebug.HooksChecked or {}
+    local oldHookAdd = hook.Add
+    hook.Add = function(eventName, identifier, func)
+        local info = debug.getinfo(2, "S")
+        -- Only run the hook checks for custom roles code
+        if StringFind(info.short_src, "custom-roles", 1, true) or StringFind(info.short_src, "customroles", 1, true) then
+            local key = eventName .. "_" .. tostring(identifier)
+            -- Keep track of which ones we've checked already so we don't spam ourselves on reload
+            -- Also ignore the ones that are known to replace themselves... for whatever reason
+            if not CRDebug.HooksChecked[key] and not table.HasValue(CRDebug.IgnoredHookDupes, key) then
+                local hooks = hook.GetTable()
+                if hooks[eventName] and hooks[eventName][identifier] then
+                    ErrorNoHaltWithStack("Hook for '" .. eventName .. "' with identifier '" .. identifier .. "' already exists!")
+                end
+                CRDebug.HooksChecked[key] = true
+            end
+        end
+        oldHookAdd(eventName, identifier, func)
+    end
+end
 
 -- Round status consts
 ROUND_WAIT = 1
@@ -111,8 +156,10 @@ ROLE_MARSHAL = 35
 ROLE_INFECTED = 36
 ROLE_CUPID = 37
 ROLE_SHADOW = 38
+ROLE_SPONGE = 39
+ROLE_ARSONIST = 40
 
-ROLE_MAX = 38
+ROLE_MAX = 40
 ROLE_EXTERNAL_START = ROLE_MAX + 1
 
 local function AddRoleAssociations(list, roles)
@@ -134,7 +181,7 @@ function GetTeamRoles(list, excludes)
 end
 
 SHOP_ROLES = {}
-AddRoleAssociations(SHOP_ROLES, {ROLE_TRAITOR, ROLE_DETECTIVE, ROLE_HYPNOTIST, ROLE_DEPUTY, ROLE_IMPERSONATOR, ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_MERCENARY, ROLE_ASSASSIN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_VAMPIRE, ROLE_VETERAN, ROLE_DOCTOR, ROLE_QUACK, ROLE_PARASITE, ROLE_PALADIN, ROLE_TRACKER, ROLE_MEDIUM, ROLE_SAPPER, ROLE_INFORMANT, ROLE_MARSHAL})
+AddRoleAssociations(SHOP_ROLES, {ROLE_TRAITOR, ROLE_DETECTIVE, ROLE_HYPNOTIST, ROLE_DEPUTY, ROLE_IMPERSONATOR, ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_MERCENARY, ROLE_ASSASSIN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_VAMPIRE, ROLE_VETERAN, ROLE_DOCTOR, ROLE_QUACK, ROLE_PARASITE, ROLE_PALADIN, ROLE_TRACKER, ROLE_MEDIUM, ROLE_SAPPER, ROLE_INFORMANT, ROLE_MARSHAL, ROLE_MADSCIENTIST})
 
 DELAYED_SHOP_ROLES = {}
 AddRoleAssociations(DELAYED_SHOP_ROLES, {ROLE_CLOWN, ROLE_VETERAN, ROLE_DEPUTY})
@@ -146,10 +193,10 @@ INNOCENT_ROLES = {}
 AddRoleAssociations(INNOCENT_ROLES, {ROLE_INNOCENT, ROLE_DETECTIVE, ROLE_GLITCH, ROLE_PHANTOM, ROLE_REVENGER, ROLE_DEPUTY, ROLE_MERCENARY, ROLE_VETERAN, ROLE_DOCTOR, ROLE_TRICKSTER, ROLE_PARAMEDIC, ROLE_PALADIN, ROLE_TRACKER, ROLE_MEDIUM, ROLE_TURNCOAT, ROLE_SAPPER, ROLE_MARSHAL, ROLE_INFECTED})
 
 JESTER_ROLES = {}
-AddRoleAssociations(JESTER_ROLES, {ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_BEGGAR, ROLE_BODYSNATCHER, ROLE_LOOTGOBLIN, ROLE_CUPID})
+AddRoleAssociations(JESTER_ROLES, {ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_BEGGAR, ROLE_BODYSNATCHER, ROLE_LOOTGOBLIN, ROLE_CUPID, ROLE_SPONGE})
 
 INDEPENDENT_ROLES = {}
-AddRoleAssociations(INDEPENDENT_ROLES, {ROLE_DRUNK, ROLE_OLDMAN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_MADSCIENTIST, ROLE_SHADOW})
+AddRoleAssociations(INDEPENDENT_ROLES, {ROLE_DRUNK, ROLE_OLDMAN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_MADSCIENTIST, ROLE_SHADOW, ROLE_ARSONIST})
 
 MONSTER_ROLES = {}
 AddRoleAssociations(MONSTER_ROLES, {})
@@ -281,7 +328,7 @@ local function FillRoleColors(list, type)
     local mode = modeCVar and modeCVar:GetString() or "default"
 
     for r = ROLE_NONE, ROLE_MAX do
-        local c = nil
+        local c
         if mode == "custom" then
             if r == ROLE_DETECTIVE then c = ColorFromCustomConVars("ttt_custom_det_color") or COLOR_DETECTIVE["default"]
             elseif DETECTIVE_ROLES[r] then c = ColorFromCustomConVars("ttt_custom_spec_det_color") or COLOR_SPECIAL_DETECTIVE["default"]
@@ -318,6 +365,19 @@ local function FillRoleColors(list, type)
     end
 end
 
+function GetRawRoleTeamName(role_team)
+    if role_team == ROLE_TEAM_TRAITOR then
+        return "traitor"
+    elseif role_team == ROLE_TEAM_MONSTER then
+        return "monster"
+    elseif role_team == ROLE_TEAM_JESTER then
+        return "jester"
+    elseif role_team == ROLE_TEAM_INDEPENDENT then
+        return "independent"
+    end
+    return "innocent"
+end
+
 if CLIENT then
     function GetRoleTeamColor(role_team, type)
         local modeCVar = GetConVar("ttt_color_mode")
@@ -345,16 +405,7 @@ if CLIENT then
     end
 
     function GetRoleTeamName(role_team)
-        if role_team == ROLE_TEAM_TRAITOR then
-            return LANG.GetTranslation("traitor")
-        elseif role_team == ROLE_TEAM_MONSTER then
-            return LANG.GetTranslation("monster")
-        elseif role_team == ROLE_TEAM_JESTER then
-            return LANG.GetTranslation("jester")
-        elseif role_team == ROLE_TEAM_INDEPENDENT then
-            return LANG.GetTranslation("independent")
-        end
-        return LANG.GetTranslation("innocent")
+        return LANG.GetTranslation(GetRawRoleTeamName(role_team))
     end
 
     function GetRoleTeamInfo(role_team, simple_color)
@@ -424,18 +475,7 @@ else
         end
     end
 
-    function GetRoleTeamName(role_team)
-        if role_team == ROLE_TEAM_TRAITOR then
-            return "traitor"
-        elseif role_team == ROLE_TEAM_MONSTER then
-            return "monster"
-        elseif role_team == ROLE_TEAM_JESTER then
-            return "jester"
-        elseif role_team == ROLE_TEAM_INDEPENDENT then
-            return "independent"
-        end
-        return "innocent"
-    end
+    GetRoleTeamName = GetRawRoleTeamName
 end
 
 ROLE_COLORS = {}
@@ -512,7 +552,9 @@ ROLE_STRINGS_RAW = {
     [ROLE_MARSHAL] = "marshal",
     [ROLE_INFECTED] = "infected",
     [ROLE_CUPID] = "cupid",
-    [ROLE_SHADOW] = "shadow"
+    [ROLE_SHADOW] = "shadow",
+    [ROLE_SPONGE] = "sponge",
+    [ROLE_ARSONIST] = "arsonist"
 }
 
 ROLE_STRINGS = {
@@ -554,7 +596,9 @@ ROLE_STRINGS = {
     [ROLE_MARSHAL] = "Marshal",
     [ROLE_INFECTED] = "Infected",
     [ROLE_CUPID] = "Cupid",
-    [ROLE_SHADOW] = "Shadow"
+    [ROLE_SHADOW] = "Shadow",
+    [ROLE_SPONGE] = "Sponge",
+    [ROLE_ARSONIST] = "Arsonist"
 }
 
 ROLE_STRINGS_PLURAL = {
@@ -596,7 +640,9 @@ ROLE_STRINGS_PLURAL = {
     [ROLE_MARSHAL] = "Marshals",
     [ROLE_INFECTED] = "Infected",
     [ROLE_CUPID] = "Cupids",
-    [ROLE_SHADOW] = "Shadows"
+    [ROLE_SHADOW] = "Shadows",
+    [ROLE_SPONGE] = "Sponges",
+    [ROLE_ARSONIST] = "Arsonists"
 }
 
 ROLE_STRINGS_EXT = {
@@ -639,7 +685,9 @@ ROLE_STRINGS_EXT = {
     [ROLE_MARSHAL] = "a Marshal",
     [ROLE_INFECTED] = "an Infected",
     [ROLE_CUPID] = "a Cupid",
-    [ROLE_SHADOW] = "a Shadow"
+    [ROLE_SHADOW] = "a Shadow",
+    [ROLE_SPONGE] = "a Sponge",
+    [ROLE_ARSONIST] = "an Arsonist"
 }
 
 ROLE_STRINGS_SHORT = {
@@ -682,7 +730,9 @@ ROLE_STRINGS_SHORT = {
     [ROLE_MARSHAL] = "mhl",
     [ROLE_INFECTED] = "ifd",
     [ROLE_CUPID] = "cup",
-    [ROLE_SHADOW] = "sha"
+    [ROLE_SHADOW] = "sha",
+    [ROLE_SPONGE] = "spn",
+    [ROLE_ARSONIST] = "ars"
 }
 
 function StartsWithVowel(word)
@@ -1078,8 +1128,9 @@ EVENT_TURNCOATCHANGED = 29
 EVENT_DEPUTIZED = 30
 EVENT_INFECTEDSUCCUMBED = 31
 EVENT_CUPIDPAIRED = 32
+EVENT_ARSONISTIGNITED = 33
 
-EVENT_MAX = EVENT_MAX or 32
+EVENT_MAX = EVENT_MAX or 33
 EVENTS_BY_ROLE = EVENTS_BY_ROLE or {}
 
 if SERVER then
@@ -1133,8 +1184,10 @@ WIN_VAMPIRE = 11
 WIN_LOOTGOBLIN = 12
 WIN_CUPID = 13
 WIN_SHADOW = 14
+WIN_SPONGE = 15
+WIN_ARSONIST = 16
 
-WIN_MAX = WIN_MAX or 14
+WIN_MAX = WIN_MAX or 16
 WINS_BY_ROLE = WINS_BY_ROLE or {}
 
 if SERVER then
@@ -1225,6 +1278,10 @@ ANNOUNCE_REVEAL_INNOCENTS = 3
 SPECIAL_DETECTIVE_HIDE_NONE = 0
 SPECIAL_DETECTIVE_HIDE_FOR_ALL = 1
 SPECIAL_DETECTIVE_HIDE_FOR_OTHERS = 2
+
+-- Misc. role constants
+UNITS_PER_METER = 52.49
+UNITS_PER_FIVE_METERS = UNITS_PER_METER * 5
 
 -- Corpse stuff
 CORPSE_ICON_TYPES = {
@@ -1364,33 +1421,6 @@ function GM:Move(ply, mv)
         mv:SetMaxClientSpeed(mv:GetMaxClientSpeed() * mul)
         mv:SetMaxSpeed(mv:GetMaxSpeed() * mul)
     end
-end
-
-function GetSprintMultiplier(ply, sprinting)
-    local mult = 1
-    if IsValid(ply) then
-        local mults = {}
-        CallHook("TTTSpeedMultiplier", nil, ply, mults, sprinting)
-        for _, m in pairs(mults) do
-            mult = mult * m
-        end
-
-        if sprinting and ply.mult then
-            mult = mult * ply.mult
-        end
-
-        local wep = ply:GetActiveWeapon()
-        if IsValid(wep) then
-            local weaponClass = wep:GetClass()
-            if weaponClass == "genji_melee" then
-                return 1.4 * mult
-            elseif weaponClass == "weapon_ttt_homebat" then
-                return 1.25 * mult
-            end
-        end
-    end
-
-    return mult
 end
 
 function UpdateRoleWeaponState()

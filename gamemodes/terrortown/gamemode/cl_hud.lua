@@ -15,6 +15,8 @@ local MathMax = math.max
 local MathClamp = math.Clamp
 local MathRound = math.Round
 local MathCeil = math.ceil
+local MathRand = math.Rand
+local MathAbs = math.abs
 local TableCount = table.Count
 local interp = string.Interp
 local format = string.format
@@ -87,6 +89,12 @@ local sprint_colors = {
     border = COLOR_WHITE,
     background = Color(30, 60, 100, 222),
     fill = Color(75, 150, 255, 255)
+};
+
+local drown_colors = {
+    border = Color(0, 0, 0, 0),
+    background = Color(255, 255, 255, 1),
+    fill = COLOR_WHITE
 };
 
 -- Modified RoundedBox
@@ -204,6 +212,75 @@ function CRHUD:PaintProgressBar(x, y, width, color, heading, progress, segments,
         end
     end
 end
+
+-- Generates a random coordinate on the bottom of the player's screen within one of 5 regions so that the particles can't clump together.
+local function GenerateStatusEffectParticlePos(index)
+    local segmentWidth = (ScrW() - 100) / 5
+    local x = 50 + segmentWidth * (index - 1) + MathRand(0, segmentWidth)
+    local y = MathRand(ScrH() - 150, ScrH() - 50)
+    return x, y
+end
+
+local statusEffects = {}
+function CRHUD:PaintStatusEffect(shouldPaint, color, material, identifier)
+    if not statusEffects[identifier] then
+        statusEffects[identifier] = {alpha=0, particles=nil, color=nil}
+    end
+    if not statusEffects[identifier].particles then
+        statusEffects[identifier].particles = { --We split lifetime evenly and vary the order so they dont spawn in a line.
+            {x=0, y=0, lifetime=0.4},
+            {x=0, y=0, lifetime=1.2},
+            {x=0, y=0, lifetime=1.6},
+            {x=0, y=0, lifetime=0.8},
+            {x=0, y=0, lifetime=2}
+        }
+        for i = 1, #statusEffects[identifier].particles do
+            statusEffects[identifier].particles[i].x, statusEffects[identifier].particles[i].y = GenerateStatusEffectParticlePos(i)
+        end
+    end
+
+    if shouldPaint and statusEffects[identifier].alpha < 1 then -- Slowly increase alpha until it reaches 1 if we should paint
+        statusEffects[identifier].alpha = statusEffects[identifier].alpha + 0.01
+    elseif statusEffects[identifier].alpha > 0 then -- Slowly decrease alpha until it reaches 0 if we shouldn't paint
+        statusEffects[identifier].alpha = statusEffects[identifier].alpha - 0.01
+    end
+    statusEffects[identifier].alpha = MathClamp(statusEffects[identifier].alpha, 0, 1)
+
+    if statusEffects[identifier].alpha > 0 then
+        statusEffects[identifier].color = { -- This table is used to determine the color of the tint applied to the screen. It maxes out at 5% opacity and scales according to the current alpha value so that it fades in and out smoothly.
+            ["$pp_colour_addr"] = color.r/255 * statusEffects[identifier].alpha * 0.05,
+            ["$pp_colour_addg"] = color.g/255 * statusEffects[identifier].alpha * 0.05,
+            ["$pp_colour_addb"] = color.b/255 * statusEffects[identifier].alpha * 0.05,
+            ["$pp_colour_brightness"] = 0,
+            ["$pp_colour_contrast"] = 1,
+            ["$pp_colour_colour"] = 1,
+            ["$pp_colour_mulr"] = 0,
+            ["$pp_colour_mulg"] = 0,
+            ["$pp_colour_mulb"] = 0
+        }
+
+        for i = 1, #statusEffects[identifier].particles do
+            statusEffects[identifier].particles[i].lifetime = statusEffects[identifier].particles[i].lifetime - 0.01
+            if statusEffects[identifier].particles[i].lifetime <= 0 then -- When a particle's lifetime reaches zero we reset it and move it to a new location
+                statusEffects[identifier].particles[i].lifetime = 2
+                statusEffects[identifier].particles[i].x, statusEffects[identifier].particles[i].y = GenerateStatusEffectParticlePos(i)
+            end
+            statusEffects[identifier].particles[i].y = statusEffects[identifier].particles[i].y - 0.25 -- Particles slowly move up over time
+            local alpha = (1 - MathAbs(1 - statusEffects[identifier].particles[i].lifetime)) * statusEffects[identifier].alpha * 255 -- The alpha value of each particle fades in and out depending on remaining lifetime and reaches it's peak when lifetime is equal to 1. This is also scaled by the overall alpha value of the effect.
+            surface.SetDrawColor(color.r, color.g, color.b, alpha)
+            surface.SetMaterial(material)
+            surface.DrawTexturedRect(statusEffects[identifier].particles[i].x, statusEffects[identifier].particles[i].y, 50, 50)
+        end
+    end
+end
+
+hook.Add("RenderScreenspaceEffects", "CRStatusEffects_RenderScreenspaceEffects", function()
+    for _, effect in pairs(statusEffects) do
+        if effect.alpha > 0 then
+            DrawColorModify(effect.color)
+        end
+    end
+end)
 
 local roundstate_string = {
     [ROUND_WAIT] = "round_wait",
@@ -326,6 +403,9 @@ end
 local ttt_health_label = CreateClientConVar("ttt_health_label", "0", true)
 
 local armor_tex = surface.GetTextureID("vgui/ttt/equip/armor")
+local drown_start = nil
+-- Found in the "Drowning Indicator for TTT" addon which in turn found it "in Source™ Code"
+local MAX_AIR_TIME_SECONDS = 8
 local function InfoPaint(client)
     local L = GetLang()
 
@@ -342,6 +422,7 @@ local function InfoPaint(client)
     DrawBg(x, y, width, height, client)
 
     local bar_height = 25
+    local sprint_bar_height = 4
     local bar_width = width - (margin * 2)
 
     -- Draw health
@@ -385,16 +466,29 @@ local function InfoPaint(client)
     -- Sprint stamina
     if GetGlobalBool("ttt_sprint_enabled", true) then
         local sprint_y = health_y + (2 * (bar_height + margin))
-        bar_height = 4
 
-        CRHUD:PaintBar(2, x + margin, sprint_y, bar_width, bar_height, sprint_colors, client:GetNWFloat("sprintMeter", 0) / 100)
+        CRHUD:PaintBar(2, x + margin, sprint_y, bar_width, sprint_bar_height, sprint_colors, client:GetSprintStamina() / 100)
+    end
+
+    if client:WaterLevel() == 3 then
+        if not drown_start then
+            drown_start = CurTime()
+        end
+
+        local time_diff = CurTime() - drown_start
+        local drown_progress = (MAX_AIR_TIME_SECONDS - time_diff) / MAX_AIR_TIME_SECONDS
+        -- Position this bar as if the sprint bar is there even if it isn't so we're consitent
+        local drown_y = health_y + (2 * (bar_height + margin)) + sprint_bar_height + 2
+        CRHUD:PaintBar(4, x + margin, drown_y, bar_width, 6, drown_colors, drown_progress)
+    else
+        drown_start = nil
     end
 
     -- Draw traitor state
     local round_state = GAMEMODE.round_state
 
     local traitor_y = y - 30
-    local text = nil
+    local text
     if round_state == ROUND_ACTIVE then
         if hide_role then
             text = GetTranslation("hidden")

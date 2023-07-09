@@ -52,7 +52,7 @@ function ENT:GetNearbyCorpses()
 
     local near_corpses = {}
 
-    local ent = nil
+    local ent
     for i=1, #near do
         ent = near[i]
         if IsValid(ent) and ent.player_ragdoll and ent.scene then
@@ -176,7 +176,7 @@ function ENT:Explode(tr)
 
         local corpses = self:GetNearbyCorpses()
         if #corpses > self.MaxScenesPerPulse then
-            table.SortByMember(corpses, "dist", function(a, b) return a > b end)
+            table.SortByMember(corpses, "dist", true)
         end
 
         local e = EffectData()

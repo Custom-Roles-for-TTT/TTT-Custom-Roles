@@ -20,6 +20,11 @@ local MathAcos = math.acos
 function plymeta:IsTerror() return self:Team() == TEAM_TERROR end
 function plymeta:IsSpec() return self:Team() == TEAM_SPEC end
 
+function plymeta:SetupDataTables()
+    self:NetworkVar("Bool", 0, "Sprinting")
+    self:NetworkVar("Float", 0, "SprintStamina")
+end
+
 if CLIENT then
     local oldSteamID64 = plymeta.SteamID64
     function plymeta:SteamID64()
@@ -305,9 +310,6 @@ function plymeta:StripRoleWeapons()
             self:StripWeapon(weap_class)
         end
     end
-
-    -- Remove the DNA scanner explcitly since it's a role weapon but not a CR role weapon so it's not tagged with the category
-    self:StripWeapon("weapon_ttt_wtester")
 end
 
 -- Override GetEyeTrace for an optional trace mask param. Technically traces
@@ -639,6 +641,16 @@ function player.GetLivingRole(role)
     return nil
 end
 function player.IsRoleLiving(role) return IsPlayer(player.GetLivingRole(role)) end
+
+function player.GetLivingInRadius(pos, radius)
+    local living_players = {}
+    for _, p in ipairs(GetAllPlayers()) do
+        if not p:Alive() or p:IsSpec() then continue end
+        if p:GetPos():Distance(pos) > radius then continue end
+        table.insert(living_players, p)
+    end
+    return living_players
+end
 
 function player.TeamLivingCount(ignorePassiveWinners)
     local innocent_alive = 0

@@ -91,6 +91,8 @@ function SWEP:OpenEnt(hitEnt)
                 hitEnt:Fire("Unlock", nil, 0)
             end
 
+            -- The 256 bit for door spawn flags is "Use Opens"
+            -- If the use key would open this, hitting it with a crowbar should too
             if unlock or hitEnt:HasSpawnFlags(256) then
                 if openable == OPEN_ROT then
                     hitEnt:Fire("OpenAwayFrom", self:GetOwner(), 0)
@@ -170,8 +172,7 @@ function SWEP:PrimaryAttack()
 
     if SERVER then
         -- Do another trace that sees nodraw stuff like func_button
-        local tr_all = nil
-        tr_all = util.TraceLine({ start = spos, endpos = sdest, filter = owner })
+        local tr_all = util.TraceLine({ start = spos, endpos = sdest, filter = owner })
 
         owner:SetAnimation(PLAYER_ATTACK1)
 

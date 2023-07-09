@@ -93,6 +93,13 @@ Returns a function that filters net messages to players that are on the monster 
 *Parameters:*
 - *aliveOnly* - Whether this filter should only include live players (Defaults to `false`)
 
+### GetRawRoleTeamName(roleTeam)
+Gets the untranslated name belonging to the specified role team (see ROLE_TEAM_* global enumeration).\
+*Realm:* Client and Server\
+*Added in:* 1.8.6\
+*Parameters:*
+- *roleTeam* - Which team role to get the color for (see ROLE_TEAM_* global enumeration)
+
 ### GetRoleTeamColor(roleTeam, type)
 Gets the color belonging to the specified role team (see ROLE_TEAM_* global enumeration).\
 *Realm:* Client\

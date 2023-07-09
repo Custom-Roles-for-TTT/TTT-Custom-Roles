@@ -20,6 +20,8 @@ L.independents = "Independents"
 L.innocent = "Innocent"
 L.innocents = "Innocents"
 
+L.shoprole = "Shop Role"
+
 --- Round status messages
 L.round_minplayers = "Not enough players to start a new round..."
 L.round_voting = "Vote in progress, delaying new round by {num} seconds..."
@@ -174,6 +176,8 @@ L.search_title = "Body Search Results"
 L.search_info = "Information"
 L.search_confirm = "Confirm Death"
 L.search_call = "Call {role}"
+L.search_sample = "Take DNA Sample"
+L.search_scan_open = "Open DNA Scanner"
 
 -- Descriptions of pieces of information found
 L.search_nick = "This is the body of {player}."
@@ -282,6 +286,8 @@ L.set_radio_button = "Radio menu button"
 L.set_radio_button_tip = "What button to press to open/close the radio menu"
 L.set_bypass_culling = "Bypass map culling"
 L.set_bypass_culling_tip = "Whether to bypass vis leafs and culling in maps for player icons and highlighting. Disable for performance if you don't care about icons and highlighting lagging behind players sometimes."
+L.set_popup_hint_sounds = "Play a sound for popup messages"
+L.set_popup_hint_sounds_tip = "Whether to play a sound whenever a popup message appears (Popup messages appear in the top right corner when rounds begin/end and when bodies are found/searched)"
 
 L.set_title_play = "Gameplay settings"
 
@@ -615,7 +621,9 @@ L.karma_min = "Liability"
 
 -- TargetID misc
 L.corpse = "Corpse"
-L.corpse_hint = "Press E to search."
+L.corpse_hint = "Press {usekey} to search."
+L.corpse_hint_covert = "Press {usekey} to search. Press {walkkey}+{usekey} to search covertly."
+L.corpse_hint_call = "Press {usekey} to call {adetective}."
 
 L.target_disg = " (DISGUISED)"
 L.target_unid = "Unidentified body"
@@ -624,6 +632,7 @@ L.target_credits = "Search to receive unspent credits"
 
 L.target_unknown_team = "UNKNOWN {targettype}"
 L.target_unconfirmed_role = "UNCONFIRMED {targettype}"
+L.target_not_role = "NON-{targettype}"
 
 -- Traitor buttons (HUD buttons with hand icons that only traitors can see)
 L.tbut_single = "Single use"

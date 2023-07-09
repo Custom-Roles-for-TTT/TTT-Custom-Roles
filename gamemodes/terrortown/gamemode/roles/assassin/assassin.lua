@@ -102,7 +102,7 @@ local function AssignAssassinTarget(ply, start, delay)
         target = independents[math.random(#independents)]
     end
 
-    local targetMessage = ""
+    local targetMessage
     if target ~= nil then
         ply:SetNWString("AssassinTarget", target)
 

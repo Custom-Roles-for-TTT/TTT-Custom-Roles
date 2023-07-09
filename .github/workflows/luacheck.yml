@@ -1,0 +1,38 @@
+name: Luacheck
+
+on: [ push, pull_request ]
+
+jobs:
+
+  luacheck:
+    strategy:
+      fail-fast: false
+      matrix:
+        luaVersion: ["5.1"] #[ "5.4", "5.3", "5.2", "5.1", "luajit" ] # , "luajit-openresty"
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          repository: 'Malivil/gluacheck'
+          path: 'gluacheck'
+
+      - name: Setup ‘lua’
+        uses: leafo/gh-actions-lua@v9
+        with:
+          luaVersion: ${{ matrix.luaVersion }}
+
+      - name: Setup ‘luarocks’
+        uses: leafo/gh-actions-luarocks@v4
+
+      - name: Setup dependencies
+        run: luarocks install --deps-only gluacheck-dev-1.rockspec
+
+      - name: Build ‘luacheck’ (bootstrap)
+        run: luarocks make gluacheck-dev-1.rockspec
+
+      - name: Run ‘luacheck’ (dogfood)
+        run: lua -e 'package.path="./gluacheck/src/?.lua;./gluacheck/src/?/init.lua;"..package.path' gluacheck/bin/luacheck.lua lua gamemodes
