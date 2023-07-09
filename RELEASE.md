@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.9.0
-**Released:**\
+**Released: July 9th, 2023**\
 Includes beta updates [1.8.3](#183-beta) to [1.8.11](#1811-beta).
 
 ### Additions
