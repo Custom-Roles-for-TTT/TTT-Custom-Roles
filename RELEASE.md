@@ -1,12 +1,32 @@
 # Release Notes
 
+## 1.9.0
+**Released: July 9th, 2023**\
+Includes beta updates [1.8.3](#183-beta) to [1.8.11](#1811-beta).
+
+### Additions
+- Added `ttt_shadow_target_notify_mode` convar to control whether the shadow's target is told if they have a shadow or not (disabled by default)
+- Added `ttt_lootgoblin_radar_beep_sound` client-side convar to control whether the loot goblin radar should beep whenever the location updates (enabled by default)
+- Added a button to the F1 settings menu to disable the sound that is played when a popup message appears
+
+### Changes
+- Changed shadow buff delay to 90 seconds by default
+- Changed shadow target buff notifications to be disabled by default
+- Changed loot goblin win tracking logic to hopefully fix the case where the round summary will show a loot goblin win when that role wasn't in the round
+
+### Fixes
+- Fixed phantoms being stuck possessing a dead player if their attacker died before they did
+
+### Developer
+- Removed old, unused code from the paramedic's defib, hypnotist's brainwashing device, and mad scientists zombification device
+- Updated debug commands for damaging and killing players to take an optional argument allowing dead players to be the source
+
 ## 1.8.11 (Beta)
 **Released: July 2nd, 2023**
 
 ### Additions
 - Added `ttt_shadow_target_buff_role_copy` convar to control whether the shadow copies the role of the target player if the team join buff is active (disabled by default)
 - Added `ttt_shadow_soul_link` convar to control whether the shadow dies when their target dies and vice-versa (disabled by default)
-- Added description in the F1 help menu for the shadow's soul link, if it's turned on
 
 ### Changes
 - Changed shadow buff to "team join" by default

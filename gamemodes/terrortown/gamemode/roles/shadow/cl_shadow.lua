@@ -11,12 +11,14 @@ local MathSin = math.sin
 local MathCos = math.cos
 local MathPi = math.pi
 local MathRand = math.Rand
+local AddHook = hook.Add
+local StringUpper = string.upper
 
 ------------------
 -- TRANSLATIONS --
 ------------------
 
-hook.Add("Initialize", "Shadow_Translations_Initialize", function()
+AddHook("Initialize", "Shadow_Translations_Initialize", function()
     -- Popup
     LANG.AddToLanguage("english", "info_popup_shadow", [[You are {role}! Find your target quickly
 and stay close to them. If you don't you die.
@@ -59,16 +61,12 @@ local function ClientGetRagdollEntity(sid64)
     return nil
 end
 
-----------------
--- WIN CHECKS --
-----------------
+-------------
+-- SCORING --
+-------------
 
+-- Track when the shadow wins
 local shadow_wins = false
-
-hook.Add("TTTPrepareRound", "Shadow_WinTracking_TTTPrepareRound", function()
-    shadow_wins = false
-end)
-
 net.Receive("TTT_UpdateShadowWins", function()
     -- Log the win event with an offset to force it to the end
     if net.ReadBool() then
@@ -80,7 +78,18 @@ net.Receive("TTT_UpdateShadowWins", function()
     end
 end)
 
-hook.Add("TTTScoringSecondaryWins", "Shadow_TTTScoringSecondaryWins", function(wintype, secondary_wins)
+local function ResetShadowWin()
+    shadow_wins = false
+end
+net.Receive("TTT_ResetShadowWins", ResetShadowWin)
+hook.Add("TTTPrepareRound", "Shadow_WinTracking_TTTPrepareRound", ResetShadowWin)
+hook.Add("TTTBeginRound", "Shadow_WinTracking_TTTBeginRound", ResetShadowWin)
+
+----------------
+-- WIN CHECKS --
+----------------
+
+AddHook("TTTScoringSecondaryWins", "Shadow_TTTScoringSecondaryWins", function(wintype, secondary_wins)
     if shadow_wins then
         table.insert(secondary_wins, ROLE_SHADOW)
     end
@@ -90,13 +99,13 @@ end)
 -- EVENTS --
 ------------
 
-hook.Add("TTTEventFinishText", "Shadow_TTTEventFinishText", function(e)
+AddHook("TTTEventFinishText", "Shadow_TTTEventFinishText", function(e)
     if e.win == WIN_SHADOW then
         return LANG.GetParamTranslation("ev_win_shadow", { role = string.lower(ROLE_STRINGS[ROLE_SHADOW]) })
     end
 end)
 
-hook.Add("TTTEventFinishIconText", "Shadow_TTTEventFinishIconText", function(e, win_string, role_string)
+AddHook("TTTEventFinishIconText", "Shadow_TTTEventFinishIconText", function(e, win_string, role_string)
     if e.win == WIN_SHADOW then
         return "ev_win_icon_also", ROLE_STRINGS[ROLE_SHADOW]
     end
@@ -106,7 +115,7 @@ end)
 -- SCORING --
 -------------
 
-hook.Add("TTTScoringSummaryRender", "Shadow_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
+AddHook("TTTScoringSummaryRender", "Shadow_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
     if not IsPlayer(ply) then return end
 
     if ply:IsShadow() then
@@ -124,12 +133,30 @@ end)
 -- TARGET ID --
 ---------------
 
-hook.Add("TTTTargetIDPlayerText", "Shadow_TTTTargetIDPlayerText", function(ent, cli, text, clr, secondaryText)
-    if IsPlayer(ent) and cli:IsActiveShadow() and ent:SteamID64() == cli:GetNWString("ShadowTarget", "") then
-        if text == nil then
-            return LANG.GetTranslation("shadow_target"), ROLE_COLORS_RADAR[ROLE_SHADOW]
+AddHook("TTTTargetIDPlayerRoleIcon", "Shadow_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
+    if GetGlobalInt("ttt_shadow_target_notify_mode", 0) == SHADOW_NOTIFY_IDENTIFY and ply:IsActiveShadow() and ply:GetNWString("ShadowTarget", "") == cli:SteamID64() then
+        return ROLE_SHADOW, true
+    end
+end)
+
+AddHook("TTTTargetIDPlayerRing", "Shadow_TTTTargetIDPlayerRing", function(ent, cli, ringVisible)
+    if not IsPlayer(ent) then return end
+
+    if GetGlobalInt("ttt_shadow_target_notify_mode", 0) == SHADOW_NOTIFY_IDENTIFY and ent:IsActiveShadow() and ent:GetNWString("ShadowTarget", "") == cli:SteamID64() then
+        return true, ROLE_COLORS_RADAR[ROLE_SHADOW]
+    end
+end)
+
+AddHook("TTTTargetIDPlayerText", "Shadow_TTTTargetIDPlayerText", function(ent, cli, text, clr, secondaryText)
+    if IsPlayer(ent) then
+        if cli:IsActiveShadow() and ent:SteamID64() == cli:GetNWString("ShadowTarget", "") then
+            if text == nil then
+                return LANG.GetTranslation("shadow_target"), ROLE_COLORS_RADAR[ROLE_SHADOW]
+            end
+            return text, clr, LANG.GetTranslation("shadow_target"), ROLE_COLORS_RADAR[ROLE_SHADOW]
+        elseif GetGlobalInt("ttt_shadow_target_notify_mode", 0) == SHADOW_NOTIFY_IDENTIFY and ent:IsActiveShadow() and ent:GetNWString("ShadowTarget", "") == cli:SteamID64() then
+            return StringUpper(ROLE_STRINGS[ROLE_SHADOW]), ROLE_COLORS_RADAR[ROLE_SHADOW]
         end
-        return text, clr, LANG.GetTranslation("shadow_target"), ROLE_COLORS_RADAR[ROLE_SHADOW]
     end
 end)
 
@@ -137,13 +164,15 @@ end)
 -- SCOREBOARD --
 ----------------
 
-hook.Add("TTTScoreboardPlayerRole", "Shadow_TTTScoreboardPlayerRole", function(ply, cli, c, roleStr)
+AddHook("TTTScoreboardPlayerRole", "Shadow_TTTScoreboardPlayerRole", function(ply, cli, c, roleStr)
     if cli:IsActiveShadow() and ply:SteamID64() == cli:GetNWString("ShadowTarget", "") then
         return c, roleStr, ROLE_SHADOW
+    elseif GetGlobalInt("ttt_shadow_target_notify_mode", 0) == SHADOW_NOTIFY_IDENTIFY and ply:IsShadow() and ply:GetNWString("ShadowTarget", "") == cli:SteamID64() then
+        return ROLE_COLORS_SCOREBOARD[ROLE_SHADOW], ROLE_STRINGS_SHORT[ROLE_SHADOW]
     end
 end)
 
-hook.Add("TTTScoreboardPlayerName", "Shadow_TTTScoreboardPlayerName", function(ply, cli, text)
+AddHook("TTTScoreboardPlayerName", "Shadow_TTTScoreboardPlayerName", function(ply, cli, text)
     if cli:IsActiveShadow() and ply:SteamID64() == cli:GetNWString("ShadowTarget", "") then
         return ply:Nick() .. " (" .. LANG.GetTranslation("shadow_target") .. ")"
     end
@@ -157,7 +186,7 @@ local vision_enabled = false
 local client = nil
 
 local function EnableShadowTargetHighlights()
-    hook.Add("PreDrawHalos", "Shadow_Highlight_PreDrawHalos", function()
+    AddHook("PreDrawHalos", "Shadow_Highlight_PreDrawHalos", function()
         local sid64 = client:GetNWString("ShadowTarget", "")
         if sid64 == "" then return end
 
@@ -183,7 +212,7 @@ local function EnableShadowTargetHighlights()
     end)
 end
 
-hook.Add("TTTUpdateRoleState", "Shadow_Highlight_TTTUpdateRoleState", function()
+AddHook("TTTUpdateRoleState", "Shadow_Highlight_TTTUpdateRoleState", function()
     client = client or LocalPlayer()
 
     -- Disable highlights on role change
@@ -194,7 +223,7 @@ hook.Add("TTTUpdateRoleState", "Shadow_Highlight_TTTUpdateRoleState", function()
 end)
 
 -- Handle enabling and disabling of highlighting
-hook.Add("Think", "Shadow_Highlight_Think", function()
+AddHook("Think", "Shadow_Highlight_Think", function()
     if not IsPlayer(client) then return end
 
     if client:IsActiveShadow() and client:Alive() then
@@ -310,7 +339,7 @@ local function TargetCleanup()
     targetBody = nil
 end
 
-hook.Add("Think", "Shadow_Think", function()
+AddHook("Think", "Shadow_Think", function()
     if not IsPlayer(client) then
         client = LocalPlayer()
     end
@@ -342,7 +371,7 @@ hook.Add("Think", "Shadow_Think", function()
     end
 end)
 
-hook.Add("TTTEndRound", "Shadow_ClearCache_TTTEndRound", function()
+AddHook("TTTEndRound", "Shadow_ClearCache_TTTEndRound", function()
     TargetCleanup()
 end)
 
@@ -350,7 +379,7 @@ end)
 -- HUD --
 ---------
 
-hook.Add("HUDPaint", "Shadow_HUDPaint", function()
+AddHook("HUDPaint", "Shadow_HUDPaint", function()
     if not IsPlayer(client) then
         client = LocalPlayer()
     end
@@ -386,7 +415,7 @@ hook.Add("HUDPaint", "Shadow_HUDPaint", function()
     end
 end)
 
-hook.Add("TTTHUDInfoPaint", "Shadow_TTTHUDInfoPaint", function(cli, label_left, label_top, active_labels)
+AddHook("TTTHUDInfoPaint", "Shadow_TTTHUDInfoPaint", function(cli, label_left, label_top, active_labels)
     if not cli:IsShadow() then return end
 
     local hide_role = false
@@ -434,7 +463,7 @@ end)
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleText", "Shadow_TTTTutorialRoleText", function(role, titleLabel)
+AddHook("TTTTutorialRoleText", "Shadow_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_SHADOW then
         local roleColor = ROLE_COLORS[ROLE_SHADOW]
         local soul_link = GetGlobalBool("ttt_shadow_soul_link", false)
@@ -454,7 +483,7 @@ hook.Add("TTTTutorialRoleText", "Shadow_TTTTutorialRoleText", function(role, tit
 
         local buff = GetGlobalInt("ttt_shadow_target_buff", SHADOW_BUFF_NONE)
         if buff ~= SHADOW_BUFF_NONE then
-            local buffDelay = GetGlobalInt("ttt_shadow_target_buff_delay", -1)
+            local buffDelay = GetGlobalInt("ttt_shadow_target_buff_delay", 90)
             local buffType = LANG.GetTranslation("shadow_buff_" .. buff)
             html = html .. "<span style='display: block; margin-top: 10px;'>If you stay with your target for " .. buffDelay .. " seconds "
             if buff == SHADOW_BUFF_TEAM_JOIN then

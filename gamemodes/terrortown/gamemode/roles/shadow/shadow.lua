@@ -8,6 +8,7 @@ local GetAllPlayers = player.GetAll
 local MathMin = math.min
 
 util.AddNetworkString("TTT_UpdateShadowWins")
+util.AddNetworkString("TTT_ResetShadowWins")
 
 -------------
 -- CONVARS --
@@ -17,9 +18,9 @@ local start_timer = CreateConVar("ttt_shadow_start_timer", "30", FCVAR_NONE, "Ho
 local buffer_timer = CreateConVar("ttt_shadow_buffer_timer", "7", FCVAR_NONE, "How much time (in seconds) the shadow can stay of their target's radius", 1, 30)
 local alive_radius = CreateConVar("ttt_shadow_alive_radius", "8", FCVAR_NONE, "The radius (in meters) from the living target that the shadow has to stay within", 1, 15)
 local dead_radius = CreateConVar("ttt_shadow_dead_radius", "3", FCVAR_NONE, "The radius (in meters) from the death target that the shadow has to stay within", 1, 15)
-local target_buff = CreateConVar("ttt_shadow_target_buff", "4", FCVAR_NONE, "The type of buff to shadow's target should get. 0 - None. 1 - Heal over time. 2 - Single respawn. 3 - Damage bonus. 4 - Team join", 0, 4)
-local target_buff_notify = CreateConVar("ttt_shadow_target_buff_notify", "1", FCVAR_NONE, "Whether the shadow's target should be notified when they are buffed", 0, 1)
-local target_buff_delay = CreateConVar("ttt_shadow_target_buff_delay", "60", FCVAR_NONE, "How long (in seconds) the shadow needs to be near their target before the buff takes effect", 1, 120)
+local target_buff = CreateConVar("ttt_shadow_target_buff", "4", FCVAR_NONE, "The type of buff to shadow's target should get. 0 - None. 1 - Heal over time. 2 - Single respawn. 3 - Damage bonus. 4 - Team join.", 0, 4)
+local target_buff_notify = CreateConVar("ttt_shadow_target_buff_notify", "0", FCVAR_NONE, "Whether the shadow's target should be notified when they are buffed", 0, 1)
+local target_buff_delay = CreateConVar("ttt_shadow_target_buff_delay", "90", FCVAR_NONE, "How long (in seconds) the shadow needs to be near their target before the buff takes effect", 1, 120)
 local target_buff_heal_amount = CreateConVar("ttt_shadow_target_buff_heal_amount", "5", FCVAR_NONE, "The amount of health the shadow's target should be healed per-interval", 1, 100)
 local target_buff_heal_interval = CreateConVar("ttt_shadow_target_buff_heal_interval", "10", FCVAR_NONE, "How often (in seconds) the shadow's target should be healed", 1, 100)
 local target_buff_respawn_delay = CreateConVar("ttt_shadow_target_buff_respawn_delay", "10", FCVAR_NONE, "How often (in seconds) before the shadow's target should respawn", 1, 120)
@@ -32,6 +33,7 @@ local sprint_recovery_max = CreateConVar("ttt_shadow_sprint_recovery_max", "0.5"
 local target_jester = CreateConVar("ttt_shadow_target_jester", "1", FCVAR_NONE, "Whether the shadow should be able to target a member of the jester team", 0, 1)
 local target_independent = CreateConVar("ttt_shadow_target_independent", "1", FCVAR_NONE, "Whether the shadow should be able to target an independent player", 0, 1)
 local soul_link = CreateConVar("ttt_shadow_soul_link", "0", FCVAR_NONE, "Whether the shadow should die when their target dies and vice-versa", 0, 1)
+local target_notify_mode = CreateConVar("ttt_shadow_target_notify_mode", "0", FCVAR_NONE, "How the shadow's target should be notified they have a shadow. 0 - Don't notify. 1 - Anonymously notify. 2 - Identify the shadow.", 0, 2)
 
 hook.Add("TTTSyncGlobals", "Shadow_TTTSyncGlobals", function()
     SetGlobalInt("ttt_shadow_start_timer", start_timer:GetInt())
@@ -45,6 +47,7 @@ hook.Add("TTTSyncGlobals", "Shadow_TTTSyncGlobals", function()
     SetGlobalFloat("ttt_shadow_sprint_recovery", sprint_recovery:GetFloat())
     SetGlobalFloat("ttt_shadow_sprint_recovery_max", sprint_recovery_max:GetFloat())
     SetGlobalBool("ttt_shadow_soul_link", soul_link:GetBool())
+    SetGlobalInt("ttt_shadow_target_notify_mode", target_notify_mode:GetInt())
 end)
 
 -----------------------
@@ -70,6 +73,14 @@ ROLE_ON_ROLE_ASSIGNED[ROLE_SHADOW] = function(ply)
         ply:PrintMessage(HUD_PRINTTALK, "Your target is " .. closestTarget:Nick() .. ".")
         ply:PrintMessage(HUD_PRINTCENTER, "Your target is " .. closestTarget:Nick() .. ".")
         ply:SetNWFloat("ShadowTimer", CurTime() + GetConVar("ttt_shadow_start_timer"):GetInt())
+        local notifyMode = target_notify_mode:GetInt()
+        if notifyMode == SHADOW_NOTIFY_ANONYMOUS then
+            closestTarget:PrintMessage(HUD_PRINTTALK, "You have a " .. ROLE_STRINGS[ROLE_SHADOW] .. " following you!")
+            closestTarget:PrintMessage(HUD_PRINTCENTER, "You have a " .. ROLE_STRINGS[ROLE_SHADOW] .. " following you!")
+        elseif notifyMode == SHADOW_NOTIFY_IDENTIFY then
+            closestTarget:PrintMessage(HUD_PRINTTALK, ply:Nick() .. " is your " .. ROLE_STRINGS[ROLE_SHADOW] .. "!")
+            closestTarget:PrintMessage(HUD_PRINTCENTER, ply:Nick() .. " is your " .. ROLE_STRINGS[ROLE_SHADOW] .. "!")
+        end
     end
 end
 
@@ -338,6 +349,9 @@ hook.Add("TTTBeginRound", "Shadow_TTTBeginRound", function()
             end
         end
     end)
+
+    net.Start("TTT_ResetShadowWins")
+    net.Broadcast()
 end)
 
 hook.Add("PlayerSpawn", "Shadow_PlayerSpawn", function(ply, transition)
@@ -377,7 +391,7 @@ end)
 -- CLEANUP --
 -------------
 
-hook.Add("TTTPrepareRound", "Shadow_PrepareRound", function()
+hook.Add("TTTPrepareRound", "Shadow_TTTPrepareRound", function()
     for _, v in pairs(GetAllPlayers()) do
         ClearShadowState(v)
     end
@@ -387,6 +401,9 @@ hook.Add("TTTPrepareRound", "Shadow_PrepareRound", function()
         timer.Remove(timerId)
     end
     table.Empty(buffTimers)
+
+    net.Start("TTT_ResetShadowWins")
+    net.Broadcast()
 end)
 
 hook.Add("TTTPlayerRoleChanged", "Shadow_TTTPlayerRoleChanged", function(ply, oldRole, newRole)

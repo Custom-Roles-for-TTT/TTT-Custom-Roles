@@ -36,9 +36,12 @@ net.Receive("TTT_UpdateOldManWins", function()
     end
 end)
 
-hook.Add("TTTPrepareRound", "OldMan_WinTracking_TTTPrepareRound", function()
+local function ResetOldManWin()
     oldman_wins = false
-end)
+end
+net.Receive("TTT_ResetOldManWins", ResetOldManWin)
+hook.Add("TTTPrepareRound", "OldMan_WinTracking_TTTPrepareRound", ResetOldManWin)
+hook.Add("TTTBeginRound", "OldMan_WinTracking_TTTBeginRound", ResetOldManWin)
 
 ----------------
 -- WIN CHECKS --

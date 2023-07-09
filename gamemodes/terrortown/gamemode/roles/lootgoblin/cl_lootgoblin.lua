@@ -21,10 +21,27 @@ hook.Add("Initialize", "LootGoblin_Translations_Initialize", function()
     -- HUD
     LANG.AddToLanguage("english", "lootgoblin_hud", "You will transform in: {time}")
 
+    -- ConVars
+    LANG.AddToLanguage("english", "lootgoblin_config_radar_sound", "Play radar ping sound")
+
     -- Popup
     LANG.AddToLanguage("english", "info_popup_lootgoblin", [[You are {role}! All you want to do is hoard your
 loot! But be careful... Everyone is out to kill
 you and steal it for themselves!]])
+end)
+
+-------------
+-- CONVARS --
+-------------
+
+local lootgoblin_radar_beep_sound = CreateClientConVar("ttt_lootgoblin_radar_beep_sound", "1", true, false, "Whether the loot goblin's radar should play a beep sound whenever the location updates", 0, 1)
+
+hook.Add("TTTSettingsRolesTabSections", "LootGoblin_TTTSettingsRolesTabSections", function(role, parentForm)
+    if role ~= ROLE_LOOTGOBLIN then return end
+    if not GetGlobalBool("ttt_lootgoblin_radar_enabled", false) then return end
+
+    parentForm:CheckBox(LANG.GetTranslation("lootgoblin_config_radar_sound"), "ttt_lootgoblin_radar_beep_sound")
+    return true
 end)
 
 ---------------
@@ -96,7 +113,7 @@ local function SetLootGoblinPosition()
         for k, v in ipairs(GetAllPlayers()) do
             if v:IsActiveLootGoblin() and v:IsRoleActive() then
                 lootgoblins[k] = { pos = v:GetNWVector("TTTLootGoblinRadar", Vector(0, 0, 0)) }
-                if cli:IsActive() then surface.PlaySound(beep_success) end
+                if cli:IsActive() and lootgoblin_radar_beep_sound:GetBool() then surface.PlaySound(beep_success) end
             end
         end
     end
@@ -155,9 +172,12 @@ net.Receive("TTT_UpdateLootGoblinWins", function()
     end
 end)
 
-hook.Add("TTTPrepareRound", "LootGoblin_WinTracking_TTTPrepareRound", function()
+local function ResetLootGoblinWin()
     lootgoblin_wins = false
-end)
+end
+net.Receive("TTT_ResetLootGoblinWins", ResetLootGoblinWin)
+hook.Add("TTTPrepareRound", "LootGoblin_WinTracking_TTTPrepareRound", ResetLootGoblinWin)
+hook.Add("TTTBeginRound", "LootGoblin_WinTracking_TTTBeginRound", ResetLootGoblinWin)
 
 ----------------
 -- WIN CHECKS --
