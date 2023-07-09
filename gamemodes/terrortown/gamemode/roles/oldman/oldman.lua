@@ -13,6 +13,7 @@ local util = util
 local GetAllPlayers = player.GetAll
 
 util.AddNetworkString("TTT_UpdateOldManWins")
+util.AddNetworkString("TTT_ResetOldManWins")
 
 resource.AddSingleFile("sound/oldmanramble.wav")
 
@@ -194,13 +195,21 @@ hook.Add("PostEntityTakeDamage", "OldMan_PostEntityTakeDamage", function(ent, dm
     end
 end)
 
-hook.Add("TTTPrepareRound", "OldMan_Adrenaline_TTTPrepareRound", function()
+hook.Add("TTTPrepareRound", "OldMan_TTTPrepareRound", function()
     for _, v in pairs(GetAllPlayers()) do
         v.damageHealth = nil
         v:SetNWBool("AdrenalineRush", false)
         v:SetNWBool("AdrenalineRushed", false)
         timer.Remove(v:Nick() .. "AdrenalineRush")
     end
+
+    net.Start("TTT_ResetOldManWins")
+    net.Broadcast()
+end)
+
+hook.Add("TTTBeginRound", "OldMan_TTTBeginRound", function()
+    net.Start("TTT_ResetOldManWins")
+    net.Broadcast()
 end)
 
 -----------
