@@ -1,0 +1,45 @@
+html {
+    background-color: #282828;
+    color: white;
+    font-family: "Trebuchet MS", Tahoma, sans-serif;
+}
+
+li > a {
+    font-weight: inherit;
+}
+
+ul > li > a {
+    font-weight: bold;
+}
+
+h1, h2, h3 {
+    padding-bottom: .3em;
+    font-size: 2em;
+    background-color: #7e7e7e;
+    border-radius: 15px 0px 15px 0px;
+    color: white;
+    font-weight: bold;
+    padding: 10px;
+    width: 100%;
+    text-shadow: 2px 2px 0px black;
+}
+
+h2 {
+    font-size: 1.5em;
+}
+
+h3 {
+    font-size: 1em;
+}
+
+h1 > a,
+h2 > a,
+h3 > a {
+    text-decoration: none;
+}
+
+h1 > a:hover,
+h2 > a:hover,
+h3 > a:hover {
+    text-decoration: underline;
+}

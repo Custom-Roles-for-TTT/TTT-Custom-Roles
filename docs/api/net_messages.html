@@ -1,0 +1,57 @@
+<head>
+    <title>Custom Roles for TTT - API - Net Messages</title>
+    <link rel="stylesheet" href="../css/style.css"/>
+    <link rel="stylesheet" href="../css/api.css"/>
+</head>
+
+<h1><a id="net-messages" href="#net-messages">Net Messages</a></h1>
+<p>Messages that the Custom Roles for TTT addon is set up to listen to in the defined realm.</p>
+
+<h3><a id="ttt_resetbuyableweaponscache" href="#ttt_resetbuyableweaponscache">TTT_ResetBuyableWeaponsCache</a></h3>
+<p>
+    Resets the client's buyable weapons cache. This should be called if a weapon's CanBuy list has been updated.<br>
+    <em>Realm:</em> Client<br>
+    <em>Added in:</em> 1.0.0
+</p>
+
+<h3><a id="ttt_playerfootstep" href="#ttt_playerfootstep">TTT_PlayerFootstep</a></h3>
+<p>
+    Adds a footstep to the list's list of footsteps to show.<br>
+    <em>Realm:</em> Client<br>
+    <em>Added in:</em> 1.0.0<br>
+    <em>Parameters:</em>
+</p>
+<ul>
+    <li><em>Entity</em> - The player whose footsteps are being recorded</li>
+    <li><em>Vector</em> - The position to place the footsteps at</li>
+    <li><em>Angle</em> - The angle to place the footsteps with</li>
+    <li><em>Bit</em> - Which foot's step is currently being recorded (0 = Left, 1 = Right)</li>
+    <li><em>Table</em> - The R, G, and B values of the color for the placed footstep</li>
+    <li><em>UInt(8)</em> - The amount of time (in seconds) before the footsteps should fade completely from view</li>
+</ul>
+
+<h3><a id="ttt_clearplayerfootsteps" href="#ttt_clearplayerfootsteps">TTT_ClearPlayerFootsteps</a></h3>
+<p>
+    Resets the client's list of footsteps to show.<br>
+    <em>Realm:</em> Client<br>
+    <em>Added in:</em> 1.0.0
+</p>
+
+<h3><a id="ttt_rolechanged" href="#ttt_rolechanged">TTT_RoleChanged</a></h3>
+<p>
+    Logs that a player's role has changed.<br>
+    <em>Realm:</em> Client<br>
+    <em>Added in:</em> 1.0.0<br>
+    <em>Parameters:</em>
+</p>
+<ul>
+    <li><em>String</em> - The player's SteamID64 value</li>
+    <li><em>UInt (Versions &lt;= 1.1.1), Int (Versions &gt;= 1.1.2)</em> - The player's new role number</li>
+</ul>
+
+<h3><a id="ttt_updaterolenames" href="#ttt_updaterolenames">TTT_UpdateRoleNames</a></h3>
+<p>
+    Causes the client to update their local role name tables based on convar values.<br>
+    <em>Realm:</em> Client<br>
+    <em>Added in:</em> 1.0.7
+</p>

@@ -13,7 +13,7 @@ Damages the local player by a random non-jester team player. *NOTE*: Cheats must
 *Added in:* 1.3.7\
 *Parameters:*
 - *damage* - How much damage to do to the local player (Defaults to 1)
-- *allow_dead* - Whether to allow the randomly selected player to be dead (Defaults to `false`)
+- *allow_dead* - Whether to allow the randomly selected player to be dead (Defaults to `false`) *(Added in 1.9.0)*
 
 ### ttt_damage_from_player
 Damages the local player by another player with the given name. *NOTE*: Cheats must be enabled to use this command.\
@@ -21,7 +21,7 @@ Damages the local player by another player with the given name. *NOTE*: Cheats m
 *Parameters:*
 - *killer_name* - The name of the player who will kill the local player
 - *damage* - How much damage to do to the local player (Defaults to 1)
-- *allow_dead* - Whether to allow the specified player to be dead (Defaults to `false`)
+- *allow_dead* - Whether to allow the specified player to be dead (Defaults to `false`) *(Added in 1.9.0)*
 
 ### ttt_damage_target_from_random
 Damages the target player by a random non-jester team player. *NOTE*: Cheats must be enabled to use this command.\
@@ -29,7 +29,7 @@ Damages the target player by a random non-jester team player. *NOTE*: Cheats mus
 *Parameters:*
 - *target_name* - The name of the player who will be killed
 - *damage* - How much damage to do to the target (Defaults to 1)
-- *allow_dead* - Whether to allow the randomly selected player to be dead (Defaults to `false`)
+- *allow_dead* - Whether to allow the randomly selected player to be dead (Defaults to `false`) *(Added in 1.9.0)*
 
 ### ttt_damage_target_from_player
 Damages the target player by another player with the given name. *NOTE*: Cheats must be enabled to use this command.\
@@ -38,14 +38,14 @@ Damages the target player by another player with the given name. *NOTE*: Cheats 
 - *target_name* - The name of the player who will be killed
 - *killer_name* - The name of the player who will kill the target player
 - *damage* - How much damage to do to the target (Defaults to 1)
-- *allow_dead* - Whether to allow the specified player to be dead (Defaults to `false`)
+- *allow_dead* - Whether to allow the specified player to be dead (Defaults to `false`) *(Added in 1.9.0)*
 
 ### ttt_kill_from_random
 Kills the local player by a random non-jester team player. *NOTE*: Cheats must be enabled to use this command.\
 *Added in:* 1.0.0\
 *Parameters:*
 - *remove_body* - Whether to remove the local player's body after killing them (Defaults to `false`)
-- *allow_dead* - Whether to allow the randomly selected player to be dead (Defaults to `false`)
+- *allow_dead* - Whether to allow the randomly selected player to be dead (Defaults to `false`) *(Added in 1.9.0)*
 
 ### ttt_kill_from_player
 Kills the local player by another player with the given name. *NOTE*: Cheats must be enabled to use this command.\
@@ -53,7 +53,7 @@ Kills the local player by another player with the given name. *NOTE*: Cheats mus
 *Parameters:*
 - *killer_name* - The name of the player who will kill the local player
 - *remove_body* - Whether to remove the local player's body after killing them (Defaults to `false`)
-- *allow_dead* - Whether to allow the specified player to be dead (Defaults to `false`)
+- *allow_dead* - Whether to allow the specified player to be dead (Defaults to `false`) *(Added in 1.9.0)*
 
 ### ttt_kill_target_from_random
 Kills the target player by a random non-jester team player. *NOTE*: Cheats must be enabled to use this command.\
@@ -61,7 +61,7 @@ Kills the target player by a random non-jester team player. *NOTE*: Cheats must 
 *Parameters:*
 - *target_name* - The name of the player who will be killed
 - *remove_body* - Whether to remove the target player's body after killing them (Defaults to `false`)
-- *allow_dead* - Whether to allow the randomly selected player to be dead (Defaults to `false`)
+- *allow_dead* - Whether to allow the randomly selected player to be dead (Defaults to `false`) *(Added in 1.9.0)*
 
 ### ttt_kill_target_from_player
 Kills the target player by another player with the given name. *NOTE*: Cheats must be enabled to use this command.\
@@ -70,7 +70,7 @@ Kills the target player by another player with the given name. *NOTE*: Cheats mu
 - *target_name* - The name of the player who will be killed
 - *killer_name* - The name of the player who will kill the target player
 - *remove_body* - Whether to remove the target player's body after killing them (Defaults to `false`)
-- *allow_dead* - Whether to allow the specified player to be dead (Defaults to `false`)
+- *allow_dead* - Whether to allow the specified player to be dead (Defaults to `false`) *(Added in 1.9.0)*
 
 ### ttt_order_for_someone
 Orders a shop item on behalf of a another player with the given name. *NOTE*: Cheats must be enabled to use this command.\

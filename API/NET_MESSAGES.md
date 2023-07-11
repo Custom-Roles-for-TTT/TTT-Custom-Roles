@@ -26,7 +26,7 @@ Resets the client's list of footsteps to show.\
 ### TTT_RoleChanged
 Logs that a player's role has changed.\
 *Realm:* Client\
-*Added in:* 1.0.0
+*Added in:* 1.0.0\
 *Parameters:*
 - *String* - The player's SteamID64 value
 - *UInt (Versions <= 1.1.1), Int (Versions >= 1.1.2)* - The player's new role number
