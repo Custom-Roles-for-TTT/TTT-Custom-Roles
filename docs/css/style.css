@@ -69,7 +69,6 @@
 .moreless {
     color: grey;
     font-size: 12px;
-    font-family: "Trebuchet MS", Tahoma, sans-serif;
     position: absolute;
     right: 8px;
     bottom: 8px;
@@ -85,4 +84,8 @@
 a {
     color: inherit;
     font-weight: bold;
+}
+
+p {
+    width: fit-content;
 }
