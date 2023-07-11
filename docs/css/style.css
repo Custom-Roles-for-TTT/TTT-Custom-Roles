@@ -1,0 +1,91 @@
+:root {
+    --innocent:#19c819;
+    --special-innocent:#f5c800;
+    --traitor:#c81919;
+    --special-traitor:#f56a00;
+    --detective:#1919c8;
+    --special-detective:#28b4c8;
+    --jester:#b417fd;
+    --independent:#703200;
+    --monster:#456100;
+}
+
+@media screen and (min-width: 832px) {
+    body {
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+.collapsible {
+    background-color: #525252;
+    border-radius: 20px 0px 15px 0px; /* The top left corner radius here is slightly larger so the dark background doesn't bleed through */
+    margin-bottom:10px;
+}
+
+.collapsible:hover {
+    filter: brightness(105%);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-radius: 15px 0px 15px 0px;
+    color: white;
+    font-size: 24px;
+    font-family: "Trebuchet MS", Tahoma, sans-serif;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 10px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    text-shadow: 2px 2px 0px black;
+}
+
+.content {
+    border-radius: 0px 0px 15px 0px;
+    background-color: #525252;
+    color: white;
+    font-size: 16px;
+    font-family: "Trebuchet MS", Tahoma, sans-serif;
+    padding: 0 16px;
+    position: relative;
+}
+
+.expansion {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+}
+
+.expansion > p {
+    margin-top: 0px;
+}
+
+.moreless {
+    color: grey;
+    font-size: 12px;
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    cursor: pointer;
+}
+
+.inline-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+a {
+    color: inherit;
+    font-weight: bold;
+}
+
+p {
+    width: fit-content;
+}
