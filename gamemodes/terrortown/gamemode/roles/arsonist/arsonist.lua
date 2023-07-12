@@ -17,7 +17,7 @@ local arsonist_douse_notify_delay_min = CreateConVar("ttt_arsonist_douse_notify_
 local arsonist_douse_notify_delay_max = CreateConVar("ttt_arsonist_douse_notify_delay_max", "30", FCVAR_NONE, "The delay delay before a player is notified they've been doused", 3, 60)
 local arsonist_damage_penalty = CreateConVar("ttt_arsonist_damage_penalty", "0.2", FCVAR_NONE, "Damage penalty that the arsonist has when attacking before igniting everyone (e.g. 0.2 = 20% less damage)", 0, 1)
 local arsonist_burn_damage = CreateConVar("ttt_arsonist_burn_damage", "2", FCVAR_NONE, "Damage done per fire tick to players ignited by the arsonist", 1, 10)
-local detective_search_only_arsonistdouse = CreateConVar("ttt_detective_search_only_arsonistdouse", 0)
+local detective_search_only_arsonistdouse = CreateConVar("ttt_detective_search_only_arsonistdouse", "0")
 
 hook.Add("TTTSyncGlobals", "Informant_TTTSyncGlobals", function()
     SetGlobalInt("ttt_arsonist_douse_time", arsonist_douse_time:GetInt())
