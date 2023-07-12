@@ -134,6 +134,9 @@ function SWEP:PrimaryAttack()
         local message = "You have been ignited by the " .. ROLE_STRINGS[ROLE_ARSONIST] .. "!"
         p:PrintMessage(HUD_PRINTCENTER, message)
         p:PrintMessage(HUD_PRINTTALK, message)
+
+        -- Remove the notification delay timer since the message above already tells them the same thing
+        timer.Remove("TTTArsonistNotifyDelay_" .. p:SteamID64())
     end
 
     local message = "You have set " .. igniteCount .. " player(s) on fire!"

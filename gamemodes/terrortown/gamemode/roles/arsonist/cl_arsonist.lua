@@ -64,6 +64,7 @@ end)
 -- Show "DOUSED" label on the players who have been doused
 hook.Add("TTTScoreboardPlayerName", "Arsonist_TTTScoreboardPlayerName", function(ply, cli, text)
     if GetRoundState() < ROUND_ACTIVE then return end
+    if not cli:IsArsonist() then return end
 
     local state = ply:GetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED)
     if state ~= ARSONIST_DOUSED then return end

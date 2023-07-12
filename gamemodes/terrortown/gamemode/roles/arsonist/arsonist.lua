@@ -148,6 +148,11 @@ hook.Add("Think", "Arsonist_Douse_Think", function()
     end
 end)
 
+hook.Add("PostPlayerDeath", "Arsonist_PostPlayerDeath", function(ply)
+    -- Remove the notification delay timer since the player is already dead
+    timer.Remove("TTTArsonistNotifyDelay_" .. ply:SteamID64())
+end)
+
 hook.Add("TTTPrepareRound", "Arsonist_TTTPrepareRound", function()
     for _, v in pairs(GetAllPlayers()) do
         v:SetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED)
