@@ -16,6 +16,9 @@ Includes beta updates [1.8.3](#183-beta) to [1.8.11](#1811-beta).
 
 ### Fixes
 - Fixed phantoms being stuck possessing a dead player if their attacker died before they did
+- Fixed everyone being able to see whether someone was doused by the arsonist on the scoreboard
+- Fixed players being notified that they were doused by the arsonist after they were already ignited
+- Fixed players being notified that they were doused by the arsonist even if they were dead
 
 ### Developer
 - Removed old, unused code from the paramedic's defib, hypnotist's brainwashing device, and mad scientists zombification device
