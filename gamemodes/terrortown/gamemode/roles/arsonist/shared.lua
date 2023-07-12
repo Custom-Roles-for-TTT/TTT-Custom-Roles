@@ -44,3 +44,16 @@ table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
 })
+table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
+    cvar = "ttt_arsonist_early_ignite",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
+    cvar = "ttt_detective_search_only_arsonistdouse",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
+    cvar = "ttt_arsonist_corpse_ignite_time",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})

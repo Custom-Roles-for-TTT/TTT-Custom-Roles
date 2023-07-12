@@ -17,11 +17,13 @@ local arsonist_douse_notify_delay_min = CreateConVar("ttt_arsonist_douse_notify_
 local arsonist_douse_notify_delay_max = CreateConVar("ttt_arsonist_douse_notify_delay_max", "30", FCVAR_NONE, "The delay delay before a player is notified they've been doused", 3, 60)
 local arsonist_damage_penalty = CreateConVar("ttt_arsonist_damage_penalty", "0.2", FCVAR_NONE, "Damage penalty that the arsonist has when attacking before igniting everyone (e.g. 0.2 = 20% less damage)", 0, 1)
 local arsonist_burn_damage = CreateConVar("ttt_arsonist_burn_damage", "2", FCVAR_NONE, "Damage done per fire tick to players ignited by the arsonist", 1, 10)
+local detective_search_only_arsonistdouse = CreateConVar("ttt_detective_search_only_arsonistdouse", 0)
 
 hook.Add("TTTSyncGlobals", "Informant_TTTSyncGlobals", function()
     SetGlobalInt("ttt_arsonist_douse_time", arsonist_douse_time:GetInt())
     SetGlobalInt("ttt_arsonist_douse_notify_delay_min", arsonist_douse_notify_delay_min:GetInt())
     SetGlobalInt("ttt_arsonist_douse_notify_delay_max", arsonist_douse_notify_delay_max:GetInt())
+    SetGlobalBool("ttt_detective_search_only_arsonistdouse", detective_search_only_arsonistdouse:GetBool())
 end)
 
 --------------------
@@ -81,7 +83,10 @@ hook.Add("Think", "Arsonist_Douse_Think", function()
             if complete then
                 p:SetNWBool("TTTArsonistDouseComplete", true)
 
-                local message = "You've doused everyone alive in gasoline. Your igniter is now active!"
+                local message = "You've doused everyone alive in gasoline."
+                if not GetGlobalBool("ttt_arsonist_early_ignite", false) then
+                    message = message .. " Your igniter is now active!"
+                end
                 p:PrintMessage(HUD_PRINTCENTER, message)
                 p:PrintMessage(HUD_PRINTTALK, message)
             end
@@ -118,6 +123,7 @@ hook.Add("Think", "Arsonist_Douse_Think", function()
             -- If we're done dousing, mark the target and reset the arsonist state
             if CurTime() - start_time > douse_time then
                 target:SetNWInt("TTTArsonistDouseStage", ARSONIST_DOUSED)
+                target:SetNWInt("TTTArsonistDouseTime", CurTime())
                 p:SetNWFloat("TTTArsonistDouseStartTime", -1)
                 p:SetNWString("TTTArsonistDouseTarget", "")
 
@@ -145,6 +151,7 @@ end)
 hook.Add("TTTPrepareRound", "Arsonist_TTTPrepareRound", function()
     for _, v in pairs(GetAllPlayers()) do
         v:SetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED)
+        v:SetNWInt("TTTArsonistDouseTime", -1)
         v:SetNWString("TTTArsonistDouseTarget", "")
         v:SetNWFloat("TTTArsonistDouseStartTime", -1)
         v:SetNWBool("TTTArsonistDouseComplete", false)
