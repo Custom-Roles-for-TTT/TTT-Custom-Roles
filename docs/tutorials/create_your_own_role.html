@@ -1021,11 +1021,11 @@ end</pre></code></div>
 <h3><a id="uploading" href="#uploading">Uploading</a></h3>
 <p>Now you are ready to upload your addon. In Steam right click on Garry's Mod and click 'Manage' &gt; 'Browse local files'. A folder should open up which contains your GMod files. Open 'bin' and you should see a file called 'gmad.exe'. Drag and drop your addon folder onto 'gmad.exe'. You should see a new file appear next to your addon folder. It should have the same name as your folder but with the file extension '.gma'. In my case we now have a new file called 'SummonerRole.gma'.</p>
 <p>Go back to the same folder where you found 'gmad.exe'. Click on the address bar up the top and type 'cmd'. This should open up the command prompt where you need to type this command to upload your addon.</p>
-<div><pre><code>gmpublish.exe create -addon %PATHTOGMA% -icon %PATHTOJPG%</code></pre></div>
+<div><pre><code class="language-plaintext">gmpublish.exe create -addon %PATHTOGMA% -icon %PATHTOJPG%</code></pre></div>
 
 <p>Replace <code>%PATHTOGMA%</code> and <code>%PATHTOJPG%</code> with the file paths to your .gma addon file and .jpg workshop icon respectively.</p>
 <p>For my Summoner addon it looks like this:</p>
-<div><pre><code>gmpublish.exe create -addon "C:\Development\GMod\SummonerRole.gma" -icon "C:\Development\GMod\SummonerRole.jpg"</code></pre></div>
+<div><pre><code class="language-plaintext">gmpublish.exe create -addon "C:\Development\GMod\SummonerRole.gma" -icon "C:\Development\GMod\SummonerRole.jpg"</code></pre></div>
 
 <p>Hit enter and you should see your addon upload to Steam! Once it is done you can view your addon by opening steam, hovering over your name up the top and clicking 'Content'. Click the 'Workshop Items' tab and your addon should be there! Here you can give your addon a description and then change its visibility to public. <em>(Note: If you ever need to update a pre-existing addon you can read how to do that <a href="https://wiki.facepunch.com/gmod/Workshop_Addon_Updating" target="_blank">here</a>.)</em></p>
 <p>Once you have made your addon public, we would love to hear about it! Jump into <a href="https://discord.gg/BAPZrykC3F" target="_blank">our discord server</a> and show us what you have made!</p>
