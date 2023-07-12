@@ -20,7 +20,6 @@ h1, h2, h3, h4 {
     color: white;
     font-weight: bold;
     padding: 10px;
-    width: 100%;
     text-shadow: 2px 2px 0px black;
 }
 
@@ -48,4 +47,46 @@ h2 > a:hover,
 h3 > a:hover,
 h4 > a:hover {
     text-decoration: underline;
+}
+
+table {
+    display: block;
+    width: max-content;
+    max-width: 100%;
+    overflow: auto;
+    margin-top: 0;
+    margin-bottom: 16px;
+    border-spacing: 0;
+}
+
+table th {
+    font-weight: 600;
+}
+
+table th,
+table td {
+    padding: 6px 13px;
+    border: 1px solid #30363d;
+}
+
+table tr {
+    background-color: #22272e;
+}
+
+table tr:nth-child(2n) {
+    background-color: #292e35;
+}
+
+code {
+    padding: .2em .4em;
+    margin: 0;
+    white-space: break-spaces;
+    font-size: 90%;
+    background-color: rgba(110, 118, 129, 0.4);
+    border-radius: 6px;
+}
+
+.hljs {
+    white-space: inherit !important;
+    font-size: inherit !important;
 }
