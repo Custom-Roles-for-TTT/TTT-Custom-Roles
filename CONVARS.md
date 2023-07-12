@@ -650,7 +650,7 @@ ttt_madscientist_respawn_enable             0       // Whether the mad scientist
 
 // Shadow
 ttt_shadow_start_timer                      30      // How much time (in seconds) the shadow has to find their target at the start of the round
-ttt_shadow_buffer_timer                     7       // How much time (in seconds) the shadow can stay of their target's radius without dying
+ttt_shadow_buffer_timer                     7       // How much time (in seconds) the shadow can stay out of their target's radius without dying
 ttt_shadow_alive_radius                     8       // The radius (in meters) from the living target that the shadow has to stay within
 ttt_shadow_dead_radius                      3       // The radius (in meters) from the death target that the shadow has to stay within
 ttt_shadow_target_buff                      4       // The type of buff to shadow's target should get. 0 - None. 1 - Heal over time. 2 - Single respawn. 3 - Damage bonus. 4 - Team join.
@@ -667,8 +667,10 @@ ttt_shadow_sprint_recovery                  0.1     // The minimum amount of sta
 ttt_shadow_sprint_recovery_max              0.5     // The maximum amount of stamina to recover per tick when the shadow is FAR outside of their target radius
 ttt_shadow_target_jester                    1       // Whether the shadow should be able to target a member of the jester team
 ttt_shadow_target_independent               1       // Whether the shadow should be able to target an independent player
-ttt_shadow_soul_link                        0       // Whether the shadow should die when their target dies and vice-versa
 ttt_shadow_target_notify_mode               0       // How the shadow's target should be notified they have a shadow. 0 - Don't notify. 1 - Anonymously notify. 2 - Identify the shadow.
+ttt_shadow_soul_link                        0       // Whether the shadow should die when their target dies and vice-versa
+ttt_shadow_weaken_health_to                 0       // How low to reduce the shadow's health to when they are outside of the target circle instead of killing them. Set to 0 to disable, meaning the shadow will be killed
+ttt_shadow_weaken_timer                     3       // How often (in seconds) to adjust the shadow's health when they are outside of the target circle
 
 // Arsonist
 ttt_arsonist_douse_time                     8       // The amount of time (in seconds) the arsonist takes to douse someone

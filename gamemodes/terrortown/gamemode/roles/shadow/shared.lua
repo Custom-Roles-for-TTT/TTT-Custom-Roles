@@ -19,6 +19,8 @@ SHADOW_NOTIFY_NONE = 0
 SHADOW_NOTIFY_ANONYMOUS = 1
 SHADOW_NOTIFY_IDENTIFY = 2
 
+SHADOW_FORCED_PROGRESS_BAR = -2
+
 -- Initialize role features
 ROLE_HAS_PASSIVE_WIN[ROLE_SHADOW] = true
 ROLE_IS_ACTIVE[ROLE_SHADOW] = function(ply)
@@ -190,6 +192,16 @@ table.insert(ROLE_CONVARS[ROLE_SHADOW], {
 })
 table.insert(ROLE_CONVARS[ROLE_SHADOW], {
     cvar = "ttt_shadow_target_notify_mode",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_SHADOW], {
+    cvar = "ttt_shadow_weaken_health_to",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_SHADOW], {
+    cvar = "ttt_shadow_weaken_timer",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
 })

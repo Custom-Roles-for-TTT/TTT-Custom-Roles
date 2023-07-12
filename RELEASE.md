@@ -7,6 +7,7 @@
 - Added arsonist dousing information to a corpse's search window
 - Added ability to allow the arsonist to use their igniter at any time instead of waiting for all players to be doused (disabled by default)
 - Added message to tell the arsonist how many players they set on fire after using the igniter
+- Added ability to temporarily reduce the shadow's maximum health over time while they are outside of the target circle instead of killing them (disabled by default)
 
 ### Changes
 - Changed arsonist's igniter to set player corpses on fire as well (disableable via convar)
