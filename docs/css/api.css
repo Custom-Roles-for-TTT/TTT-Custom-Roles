@@ -13,14 +13,12 @@ ul > li > a {
 }
 
 h1, h2, h3, h4 {
-    padding-bottom: .3em;
     font-size: 2em;
-    background-color: #7e7e7e;
-    border-radius: 15px 0px 15px 0px;
-    color: white;
+    background-color: #787878;
+    border-radius: 15px 0 15px 0;
     font-weight: bold;
-    padding: 10px;
-    text-shadow: 2px 2px 0px black;
+    padding: 6px;
+    text-shadow: 2px 2px 0 black;
 }
 
 h2 {
