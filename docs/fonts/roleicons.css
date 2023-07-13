@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'roleicons';
-  src:  url('roleicons.eot?yrhufd');
-  src:  url('roleicons.eot?yrhufd#iefix') format('embedded-opentype'),
-    url('roleicons.ttf?yrhufd') format('truetype'),
-    url('roleicons.woff?yrhufd') format('woff'),
-    url('roleicons.svg?yrhufd#icomoon') format('svg');
+  src:  url('roleicons.eot?5c3tcv');
+  src:  url('roleicons.eot?5c3tcv#iefix') format('embedded-opentype'),
+  url('roleicons.ttf?5c3tcv') format('truetype'),
+  url('roleicons.woff?5c3tcv') format('woff'),
+  url('roleicons.svg?5c3tcv#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -126,6 +126,9 @@
 }
 .icon-swapper:before {
   content: "\e921";
+}
+.icon-team:before {
+  content: "\e92a";
 }
 .icon-tracker:before {
   content: "\e922";
