@@ -42,7 +42,7 @@ body {
     font-family: "Trebuchet MS", Tahoma, sans-serif;
     font-weight: bold;
     cursor: pointer;
-    padding: 6px;
+    padding: 6px 8px;
     width: 100%;
     border: none;
     text-align: left;
