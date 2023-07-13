@@ -151,6 +151,13 @@ end)
 hook.Add("PostPlayerDeath", "Arsonist_PostPlayerDeath", function(ply)
     -- Remove the notification delay timer since the player is already dead
     timer.Remove("TTTArsonistNotifyDelay_" .. ply:SteamID64())
+
+    -- Clear any ignite info the igniter may have left around
+    if not ply.ignite_info then return end
+    if not IsPlayer(ply.ignite_info.att) then return end
+    if not ply.ignite_info.att:IsArsonist() then return end
+
+    ply.ignite_info = nil
 end)
 
 hook.Add("TTTPrepareRound", "Arsonist_TTTPrepareRound", function()
