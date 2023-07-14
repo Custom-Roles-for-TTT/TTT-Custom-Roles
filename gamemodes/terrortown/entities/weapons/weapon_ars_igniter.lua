@@ -81,22 +81,6 @@ function SWEP:Deploy()
     return true
 end
 
-local function RunIgniteTimer(ent, timer_name)
-    if IsValid(ent) and ent:IsOnFire() then
-        if ent:WaterLevel() > 0 then
-            ent:Extinguish()
-        elseif CurTime() > ent.burn_destroy then
-            ent:SetNotSolid(true)
-            ent:Remove()
-        else
-            -- keep on burning
-            return
-        end
-    end
-
-    timer.Remove(timer_name) -- stop running timer
-end
-
 function SWEP:PrimaryAttack()
     if self:GetNextPrimaryFire() > CurTime() then return end
     self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
@@ -133,14 +117,7 @@ function SWEP:PrimaryAttack()
             if corpseIgniteTime > 0 then
                 local rag = p.server_ragdoll or p:GetRagdollEntity()
                 if IsValid(rag) then
-                    rag:Ignite(corpseIgniteTime)
-
-                    -- Adapted logic from flare gun
-                    local tname = Format("ragburn_%d_%d", rag:EntIndex(), math.ceil(CurTime()))
-                    rag.burn_destroy = CurTime() + corpseIgniteTime
-                    timer.Create(tname, 0.1, math.ceil(1 + corpseIgniteTime / 0.1), function()
-                        RunIgniteTimer(rag, tname)
-                    end)
+                    util.BurnRagdoll(rag, corpseIgniteTime)
                 end
             end
             continue

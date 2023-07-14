@@ -12,6 +12,9 @@
 ### Changes
 - Changed arsonist's igniter to set player corpses on fire as well (disableable via convar)
 
+### Developer
+- Added `util.BurnRagdoll` to burn a player's ragdoll, show scorch marks, and automatically destroy it unless it's been extinguished
+
 ## 1.9.0
 **Released: July 9th, 2023**\
 Includes beta updates [1.8.3](#183-beta) to [1.8.11](#1811-beta).

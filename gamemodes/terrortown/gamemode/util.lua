@@ -485,3 +485,92 @@ if SERVER then
         end
     end
 end
+
+----------------------------
+-- ADAPTED FROM FLARE GUN --
+----------------------------
+
+if CLIENT then
+
+    local function ReceiveScorches()
+        local ent = net.ReadEntity()
+        local num = net.ReadUInt(8)
+        -- small scorches under the limbs
+        for i=1, num do
+            util.PaintDown(net.ReadVector(), "FadingScorch", ent)
+        end
+
+        -- big scorch in the center
+        if IsValid(ent) then
+            util.PaintDown(ent:LocalToWorld(ent:OBBCenter()), "Scorch", ent)
+        end
+    end
+    net.Receive("TTT_RagdollScorch", ReceiveScorches)
+
+elseif SERVER then
+
+    util.AddNetworkString("TTT_RagdollScorch")
+
+    local function SendScorches(ent, tbl)
+        net.Start("TTT_RagdollScorch")
+            net.WriteEntity(ent)
+            net.WriteUInt(#tbl, 8)
+            for _, p in ipairs(tbl) do
+                net.WriteVector(p)
+            end
+        net.Broadcast()
+    end
+
+    local function RunIgniteTimer(ent, timer_name)
+        if IsValid(ent) and ent:IsOnFire() then
+            if ent:WaterLevel() > 0 then
+                ent:Extinguish()
+            elseif CurTime() > ent.burn_destroy then
+                ent:SetNotSolid(true)
+                ent:Remove()
+            else
+                -- keep on burning
+                return
+            end
+        end
+
+        timer.Remove(timer_name) -- stop running timer
+    end
+
+    local function ScorchUnderRagdoll(ent)
+        local postbl = {}
+        -- small scorches under limbs
+        for i=0, ent:GetPhysicsObjectCount() - 1 do
+            local subphys = ent:GetPhysicsObjectNum(i)
+            if IsValid(subphys) then
+                table.insert(postbl, subphys:GetPos())
+            end
+        end
+
+        -- send to client manually because server decal painting tends to be unreliable
+        SendScorches(ent, postbl)
+    end
+
+    -- Burns and destroys a ragdoll while also displaying scorches and allowing for extinguishing in water
+    function util.BurnRagdoll(rag, burn_time, scorch)
+        if not IsValid(rag) or rag:GetClass() ~= "prop_ragdoll" then return end
+
+        rag:Ignite(burn_time)
+        rag.burn_destroy = CurTime() + burn_time
+
+        local tname = Format("burnrag_%d_%d", rag:EntIndex(), math.ceil(CurTime()))
+        timer.Create(tname, 0.1, math.ceil(1 + burn_time / 0.1), function()
+            RunIgniteTimer(rag, tname)
+        end)
+
+        -- Default to true
+        if scorch ~= false then
+            ScorchUnderRagdoll(rag)
+        end
+    end
+
+end
+
+------------------------
+-- END FROM FLARE GUN --
+------------------------
