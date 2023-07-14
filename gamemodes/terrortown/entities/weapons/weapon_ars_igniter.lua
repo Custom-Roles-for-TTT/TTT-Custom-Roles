@@ -58,7 +58,7 @@ SWEP.InLoadoutForDefault    = {ROLE_ARSONIST}
 
 if SERVER then
     CreateConVar("ttt_arsonist_early_ignite", "0", FCVAR_NONE, "Whether to allow the arsonist to use their igniter without dousing everyone first", 0, 1)
-    CreateConVar("ttt_arsonist_corpse_ignite_time", "10", FCVAR_NONE, "The amount of time (in seconds) to ignite doused dead player corpses for before destroying them", 0, 30)
+    CreateConVar("ttt_arsonist_corpse_ignite_time", "10", FCVAR_NONE, "The amount of time (in seconds) to ignite doused dead player corpses for before destroying them", 1, 30)
 end
 
 function SWEP:Initialize()
@@ -114,11 +114,9 @@ function SWEP:PrimaryAttack()
 
         -- If the player is dead, try to ignite their ragdoll instead
         if not p:Alive() or p:IsSpec() then
-            if corpseIgniteTime > 0 then
-                local rag = p.server_ragdoll or p:GetRagdollEntity()
-                if IsValid(rag) then
-                    util.BurnRagdoll(rag, corpseIgniteTime)
-                end
+            local rag = p.server_ragdoll or p:GetRagdollEntity()
+            if IsValid(rag) then
+                util.BurnRagdoll(rag, corpseIgniteTime)
             end
             continue
         end

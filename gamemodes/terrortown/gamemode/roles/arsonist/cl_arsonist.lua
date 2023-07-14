@@ -22,7 +22,8 @@ hook.Add("Initialize", "Arsonist_Translations_Initialize", function()
     LANG.AddToLanguage("english", "ev_win_arsonist", "The blazing {role} has won the round!")
 
     -- HUD
-    LANG.AddToLanguage("english", "arsdouse_dousing", "DOUSING")
+    LANG.AddToLanguage("english", "arsdouse_dousing", "DOUSING {target}")
+    LANG.AddToLanguage("english", "arsdouse_dousing_corpse", "DOUSING {target}'s CORPSE")
     LANG.AddToLanguage("english", "arsdouse_doused", "DOUSED")
     LANG.AddToLanguage("english", "arsdouse_failed", "DOUSING FAILED")
     LANG.AddToLanguage("english", "arsonist_hud", "Dousing complete. Igniter active.")
@@ -43,10 +44,15 @@ end)
 hook.Add("TTTTargetIDPlayerText", "Arsonist_TTTTargetIDPlayerText", function(ent, cli, text, col, secondaryText)
     if GetRoundState() < ROUND_ACTIVE then return end
     if not cli:IsArsonist() then return end
-    if not IsPlayer(ent) then return end
 
-    local state = ent:GetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED)
-    if state ~= ARSONIST_DOUSED then return end
+    -- If this is a player, check their doused state
+    if IsPlayer(ent) then
+        local state = ent:GetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED)
+        if state ~= ARSONIST_DOUSED then return end
+    -- Otherise if this is a ragdoll we just need to check the flag on it directly
+    elseif IsRagdoll(ent) and not ent:GetNWBool("TTTArsonistDoused", false) then
+        return
+    end
 
     local T = LANG.GetTranslation
     if text == nil then
@@ -199,6 +205,7 @@ hook.Add("HUDPaint", "Arsonist_HUDPaint", function()
 
     local w = 300
     local T = LANG.GetTranslation
+    local PT = LANG.GetParamTranslation
 
     if state == ARSONIST_DOUSING_LOST then
         local color = Color(200 + math.sin(CurTime() * 32) * 50, 0, 0, 155)
@@ -206,14 +213,18 @@ hook.Add("HUDPaint", "Arsonist_HUDPaint", function()
     elseif state >= ARSONIST_DOUSING then
         if end_time < 0 then return end
 
-        local text = T("arsdouse_dousing")
+        local placeholder = "arsdouse_dousing"
+        if not target:Alive() or target:IsSpec() then
+            placeholder = "arsdouse_dousing_corpse"
+        end
+        local text = PT(placeholder, {target = target:Nick()})
         local color = Color(0, 255, 0, 155)
         if state == ARSONIST_DOUSING_LOSING then
             color = Color(255, 255, 0, 155)
         end
 
         local progress = math.min(1, 1 - ((end_time - CurTime()) / douse_time))
-        CRHUD:PaintProgressBar(x, y, w, color, text .. " " .. target:Nick(), progress)
+        CRHUD:PaintProgressBar(x, y, w, color, text, progress)
     end
 end)
 

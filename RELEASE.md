@@ -10,7 +10,8 @@
 - Added ability to temporarily reduce the shadow's maximum health over time while they are outside of the target circle instead of killing them (disabled by default)
 
 ### Changes
-- Changed arsonist's igniter to set player corpses on fire as well (disableable via convar)
+- Changed arsonist's igniter to a set player's corpse on fire if they were doused before being killed
+- Changed arsonist to try to douse a player's corpse if a living player is not found close enough
 
 ### Developer
 - Added `util.BurnRagdoll` to burn a player's ragdoll, show scorch marks, and automatically destroy it unless it's been extinguished

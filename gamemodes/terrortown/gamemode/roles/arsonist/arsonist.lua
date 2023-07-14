@@ -1,9 +1,12 @@
 AddCSLuaFile()
 
+local ents = ents
 local hook = hook
 local ipairs = ipairs
+local math = math
 local player = player
 
+local FindEntsByClass = ents.FindByClass
 local GetAllPlayers = player.GetAll
 local MathRandom = math.random
 
@@ -53,6 +56,26 @@ local function FindArsonistTarget(arsonist, douse_distance)
         end
     end
 
+    -- If we didn't find a player, find the closest ragdoll belonging to a dead player instead
+    if not IsPlayer(closest_ply) then
+        for _, rag in ipairs(FindEntsByClass("prop_ragdoll")) do
+            if rag:GetNWBool("TTTArsonistDoused", false) then continue end
+
+            local p = CORPSE.GetPlayer(rag)
+            if p == arsonist then continue end
+            if not IsPlayer(p) or p:Alive() or not p:IsSpec() then continue end
+
+            local douse_stage = p:GetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED)
+            if douse_stage ~= ARSONIST_UNDOUSED then continue end
+
+            local distance = rag:GetPos():Distance(arsonist:GetPos())
+            if distance < douse_distance and (closest_ply_dist == -1 or distance < closest_ply_dist) then
+                closest_ply_dist = distance
+                closest_ply = p
+            end
+        end
+    end
+
     if IsPlayer(closest_ply) then
         arsonist:SetNWString("TTTArsonistDouseTarget", closest_ply:SteamID64())
     end
@@ -93,7 +116,18 @@ hook.Add("Think", "Arsonist_Douse_Think", function()
             continue
         end
 
-        local distance = target:GetPos():Distance(p:GetPos())
+        local target_pos = target:GetPos()
+        local target_dead = not target:Alive() or target:IsSpec()
+        local target_rag = nil
+        -- If the target is dead, use their ragdoll instead
+        if target_dead then
+            target_rag = target.server_ragdoll or target:GetRagdollEntity()
+            if not IsValid(target_rag) then continue end
+
+            target_pos = target_rag:GetPos()
+        end
+
+        local distance = target_pos:Distance(p:GetPos())
         local stage = target:GetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED)
         local start_time = p:GetNWFloat("TTTArsonistDouseStartTime", -1)
         if distance > douse_distance then
@@ -124,6 +158,9 @@ hook.Add("Think", "Arsonist_Douse_Think", function()
             if CurTime() - start_time > douse_time then
                 target:SetNWInt("TTTArsonistDouseStage", ARSONIST_DOUSED)
                 target:SetNWInt("TTTArsonistDouseTime", CurTime())
+                if IsValid(target_rag) then
+                    target_rag:SetNWBool("TTTArsonistDoused", true)
+                end
                 p:SetNWFloat("TTTArsonistDouseStartTime", -1)
                 p:SetNWString("TTTArsonistDouseTarget", "")
 
@@ -134,7 +171,13 @@ hook.Add("Think", "Arsonist_Douse_Think", function()
                         if not IsPlayer(target) then return end
                         if not target:Alive() or target:IsSpec() then return end
 
-                        local message = "You have been doused in gasoline by the " .. ROLE_STRINGS[ROLE_ARSONIST] .. "!"
+                        local message = ""
+                        if target_dead then
+                            message = message .. "Your corpse has "
+                        else
+                            message = message .. "You have "
+                        end
+                        message = message .. "been doused in gasoline by the " .. ROLE_STRINGS[ROLE_ARSONIST] .. "!"
                         target:PrintMessage(HUD_PRINTCENTER, message)
                         target:PrintMessage(HUD_PRINTTALK, message)
                     end)
@@ -180,7 +223,7 @@ hook.Add("TTTPlayerSpawnForRound", "Arsonist_TTTPlayerSpawnForRound", function(p
         -- Reset any arsonist who has been flagged as "complete"
         for _, p in ipairs(GetAllPlayers()) do
             if not p:IsArsonist() then continue end
-            -- Don't reset hte flag on a player that already used their igniter
+            -- Don't reset the flag on a player that already used their igniter
             if not p:HasWeapon("weapon_ars_igniter") then continue end
 
             if p:GetNWBool("TTTArsonistDouseComplete", false) then
