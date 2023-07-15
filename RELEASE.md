@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.9.2 (Beta)
+**Released:**
+
+### Additions
+- Added ability to have the shadow be killed when anything kills their target, but not vice versa. Set `ttt_shadow_soul_link 2` to enable this behavior.
+
 ## 1.9.1 (Beta)
 **Released: July 16th, 2023**
 

@@ -19,6 +19,11 @@ SHADOW_NOTIFY_NONE = 0
 SHADOW_NOTIFY_ANONYMOUS = 1
 SHADOW_NOTIFY_IDENTIFY = 2
 
+-- Shadow soul link modes
+SHADOW_SOUL_LINK_NONE = 0
+SHADOW_SOUL_LINK_BOTH = 1
+SHADOW_SOUL_LINK_TARGET = 2
+
 SHADOW_FORCED_PROGRESS_BAR = -2
 
 -- Initialize role features
@@ -187,11 +192,12 @@ table.insert(ROLE_CONVARS[ROLE_SHADOW], {
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_soul_link",
-    type = ROLE_CONVAR_TYPE_BOOL
+    cvar = "ttt_shadow_target_notify_mode",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
 })
 table.insert(ROLE_CONVARS[ROLE_SHADOW], {
-    cvar = "ttt_shadow_target_notify_mode",
+    cvar = "ttt_shadow_soul_link",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
 })

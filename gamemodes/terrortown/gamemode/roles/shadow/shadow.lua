@@ -33,7 +33,7 @@ local sprint_recovery_max = CreateConVar("ttt_shadow_sprint_recovery_max", "0.5"
 local target_jester = CreateConVar("ttt_shadow_target_jester", "1", FCVAR_NONE, "Whether the shadow should be able to target a member of the jester team", 0, 1)
 local target_independent = CreateConVar("ttt_shadow_target_independent", "1", FCVAR_NONE, "Whether the shadow should be able to target an independent player", 0, 1)
 local target_notify_mode = CreateConVar("ttt_shadow_target_notify_mode", "0", FCVAR_NONE, "How the shadow's target should be notified they have a shadow. 0 - Don't notify. 1 - Anonymously notify. 2 - Identify the shadow.", 0, 2)
-local soul_link = CreateConVar("ttt_shadow_soul_link", "0", FCVAR_NONE, "Whether the shadow should die when their target dies and vice-versa", 0, 1)
+local soul_link = CreateConVar("ttt_shadow_soul_link", "0", FCVAR_NONE, "Whether the shadow's soul should be linked to their target. 0 - Disable. 1 - Both shadow and target die if either is killed. 2 - The shadow dies if their target is killed.", 0, 2)
 local weaken_health_to = CreateConVar("ttt_shadow_weaken_health_to", "0", FCVAR_NONE, "How low to reduce the shadow's health to when they are outside of the target circle instead of killing them. Set to 0 to disable, meaning the shadow will be killed", 0, 100)
 local weaken_timer = CreateConVar("ttt_shadow_weaken_timer", "3", FCVAR_NONE, "How often (in seconds) to adjust the shadow's health when they are outside of the target circle", 1, 30)
 
@@ -48,7 +48,7 @@ hook.Add("TTTSyncGlobals", "Shadow_TTTSyncGlobals", function()
     SetGlobalFloat("ttt_shadow_speed_mult_max", speed_mult_max:GetFloat())
     SetGlobalFloat("ttt_shadow_sprint_recovery", sprint_recovery:GetFloat())
     SetGlobalFloat("ttt_shadow_sprint_recovery_max", sprint_recovery_max:GetFloat())
-    SetGlobalBool("ttt_shadow_soul_link", soul_link:GetBool())
+    SetGlobalInt("ttt_shadow_soul_link", soul_link:GetInt())
     SetGlobalInt("ttt_shadow_target_notify_mode", target_notify_mode:GetInt())
     SetGlobalInt("ttt_shadow_weaken_health_to", weaken_health_to:GetInt())
 end)
@@ -228,30 +228,30 @@ hook.Add("ScalePlayerDamage", "Shadow_Buff_ScalePlayerDamage", function(ply, hit
     dmginfo:ScaleDamage(1 + target_buff_damage_bonus:GetFloat())
 end)
 
--- Used for the shadow's soul-link convar
-local function KillSoulLinkedPlayer(ply, msg)
-    if IsPlayer(ply) and ply:Alive() and not ply:IsSpec() then
-        ply:Kill()
-        ply:PrintMessage(HUD_PRINTCENTER, msg)
-        ply:PrintMessage(HUD_PRINTTALK, msg)
-    end
-end
-
 hook.Add("DoPlayerDeath", "Shadow_SoulLink_DoPlayerDeath", function(ply, attacker, dmg)
-    if not soul_link:GetBool() or not IsPlayer(ply) then return end
+    if soul_link:GetInt() == SHADOW_SOUL_LINK_NONE or not IsPlayer(ply) then return end
+
     -- Kill the shadow's target as well
     if ply:IsShadow() then
-        local target = player.GetBySteamID64(ply:GetNWString("ShadowTarget", ""))
-        if IsPlayer(target) and target:Alive() and not target:IsSpec() then
-            KillSoulLinkedPlayer(target, ply:Nick() .. " was your " .. ROLE_STRINGS[ROLE_SHADOW] .. " and died!")
+        -- But only if bi-directional soul link is enabled
+        if soul_link:GetInt() == SHADOW_SOUL_LINK_BOTH then
+            local target = player.GetBySteamID64(ply:GetNWString("ShadowTarget", ""))
+            if IsPlayer(target) and target:Alive() and not target:IsSpec() then
+                target:Kill()
+                local msg = ply:Nick() .. " was your " .. ROLE_STRINGS[ROLE_SHADOW] .. " and died!"
+                target:PrintMessage(HUD_PRINTCENTER, msg)
+                target:PrintMessage(HUD_PRINTTALK, msg)
+            end
         end
     else
         -- Find the shadows that "belong" to this player, and kill them
         for _, p in ipairs(GetAllPlayers()) do
-            if p:IsShadow() then
+            if p:IsShadow() and p:Alive() and not p:IsSpec() then
                 local target = player.GetBySteamID64(p:GetNWString("ShadowTarget", ""))
-                if IsPlayer(target) and target == ply and p:Alive() and not p:IsSpec() then
-                    KillSoulLinkedPlayer(p, "Your target died!")
+                if IsPlayer(target) and target == ply then
+                    p:Kill()
+                    p:PrintMessage(HUD_PRINTCENTER, "Your target died!")
+                    p:PrintMessage(HUD_PRINTTALK, "Your target died!")
                 end
             end
         end
