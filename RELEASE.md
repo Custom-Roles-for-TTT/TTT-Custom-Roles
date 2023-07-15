@@ -6,6 +6,9 @@
 ### Additions
 - Added ability to have the shadow be killed when anything kills their target, but not vice versa. Set `ttt_shadow_soul_link 2` to enable this behavior.
 
+### Fixes
+- Fixed double message when a shadow killed their target and soul link was enabled
+
 ## 1.9.1 (Beta)
 **Released: July 16th, 2023**
 
