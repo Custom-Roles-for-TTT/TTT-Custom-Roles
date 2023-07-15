@@ -34,6 +34,7 @@ Includes beta updates [1.8.3](#183-beta) to [1.8.11](#1811-beta).
 ### Changes
 - Changed shadow buff delay to 90 seconds by default
 - Changed shadow target buff notifications to be disabled by default
+- Changed shadow who killed their target to die immediately upon respawn (by defib, etc.)
 - Changed loot goblin win tracking logic to hopefully fix the case where the round summary will show a loot goblin win when that role wasn't in the round
 
 ### Fixes
