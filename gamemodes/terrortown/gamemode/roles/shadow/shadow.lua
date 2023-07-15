@@ -355,7 +355,13 @@ hook.Add("TTTBeginRound", "Shadow_TTTBeginRound", function()
 end)
 
 hook.Add("PlayerSpawn", "Shadow_PlayerSpawn", function(ply, transition)
+    if GetRoundState() ~= ROUND_ACTIVE then return end
+
     if ply:IsShadow() then
+        -- If you killed your target, you stay dead!
+        if ply:GetNWString("ShadowTarget", "") then
+            ply:Kill()
+        end
         ply:SetNWFloat("ShadowTimer", CurTime() + start_timer:GetInt())
     end
 end)
@@ -363,7 +369,7 @@ end)
 hook.Add("PlayerDeath", "Shadow_KillCheck_PlayerDeath", function(victim, infl, attacker)
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     if not valid_kill then return end
-    if attacker:IsShadow() then return end
+    if not attacker:IsShadow() then return end
 
     if victim:SteamID64() == attacker:GetNWString("ShadowTarget", "") then
         attacker:Kill()
