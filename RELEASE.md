@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.9.1 (Beta)
-**Released:**
+**Released: July 16th, 2023**
 
 ### Additions
 - Added arsonist dousing information to a corpse's search window
