@@ -369,7 +369,7 @@ end)
 hook.Add("PlayerDeath", "Shadow_KillCheck_PlayerDeath", function(victim, infl, attacker)
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     if not valid_kill then return end
-    if attacker:IsShadow() then return end
+    if not attacker:IsShadow() then return end
 
     if victim:SteamID64() == attacker:GetNWString("ShadowTarget", "") then
         attacker:Kill()
