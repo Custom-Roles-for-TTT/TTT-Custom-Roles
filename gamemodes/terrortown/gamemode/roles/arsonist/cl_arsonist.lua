@@ -9,7 +9,10 @@ local client
 hook.Add("Initialize", "Arsonist_Translations_Initialize", function()
     -- Weapons
     LANG.AddToLanguage("english", "arsonistigniter_help_pri", "Press {primaryfire} to ignite doused players.")
-    LANG.AddToLanguage("english", "arsonistigniter_help_sec", "Can only be used when all players are doused")
+    LANG.AddToLanguage("english", "arsonistigniter_help_sec", "Can only be used once")
+
+    -- Body Search
+    LANG.AddToLanguage("english", "arsonist_body_doused", "They were doused {time} ago by {anarsonist}!")
 
     -- Events
     LANG.AddToLanguage("english", "ev_arsonignite", "Everyone was ignited by the {arsonist}")
@@ -19,7 +22,8 @@ hook.Add("Initialize", "Arsonist_Translations_Initialize", function()
     LANG.AddToLanguage("english", "ev_win_arsonist", "The blazing {role} has won the round!")
 
     -- HUD
-    LANG.AddToLanguage("english", "arsdouse_dousing", "DOUSING")
+    LANG.AddToLanguage("english", "arsdouse_dousing", "DOUSING {target}")
+    LANG.AddToLanguage("english", "arsdouse_dousing_corpse", "DOUSING {target}'s CORPSE")
     LANG.AddToLanguage("english", "arsdouse_doused", "DOUSED")
     LANG.AddToLanguage("english", "arsdouse_failed", "DOUSING FAILED")
     LANG.AddToLanguage("english", "arsonist_hud", "Dousing complete. Igniter active.")
@@ -40,10 +44,15 @@ end)
 hook.Add("TTTTargetIDPlayerText", "Arsonist_TTTTargetIDPlayerText", function(ent, cli, text, col, secondaryText)
     if GetRoundState() < ROUND_ACTIVE then return end
     if not cli:IsArsonist() then return end
-    if not IsPlayer(ent) then return end
 
-    local state = ent:GetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED)
-    if state ~= ARSONIST_DOUSED then return end
+    -- If this is a player, check their doused state
+    if IsPlayer(ent) then
+        local state = ent:GetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED)
+        if state ~= ARSONIST_DOUSED then return end
+    -- Otherise if this is a ragdoll we just need to check the flag on it directly
+    elseif IsRagdoll(ent) and not ent:GetNWBool("TTTArsonistDoused", false) then
+        return
+    end
 
     local T = LANG.GetTranslation
     if text == nil then
@@ -80,6 +89,39 @@ ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_ARSONIST] = function(ply, target)
     ------ name, role
     return true, false
 end
+
+--------------------
+-- BODY SEARCHING --
+--------------------
+
+hook.Add("TTTBodySearchPopulate", "Arsonist_TTTBodySearchPopulate", function(search, raw)
+    local rag = Entity(raw.eidx)
+    if not IsValid(rag) then return end
+
+    local ply = CORPSE.GetPlayer(rag)
+    if not IsPlayer(ply) then return end
+
+    local state = ply:GetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED)
+    if state ~= ARSONIST_DOUSED then return end
+
+    local douseTime = ply:GetNWInt("TTTArsonistDouseTime", -1)
+    if douseTime < 0 then return end
+
+    local time = util.SimpleTime(CurTime() - douseTime, "%02i:%02i")
+    local message = LANG.GetParamTranslation("arsonist_body_doused", {time = time, anarsonist = ROLE_STRINGS_EXT[ROLE_ARSONIST]})
+
+    local roleString = ROLE_STRINGS_SHORT[ROLE_ARSONIST]
+    local img = "vgui/ttt/icon_" .. roleString
+    if file.Exists("materials/vgui/ttt/roles/" .. roleString .. "/icon_" .. roleString .. ".vtf", "GAME") then
+        img = "vgui/ttt/roles/" .. roleString .. "/icon_" .. roleString
+    end
+    search["arsonistdouse"] = {
+        text = message,
+        img = img,
+        color = ROLE_COLORS[ROLE_ARSONIST],
+        p = 3
+    }
+end)
 
 -------------
 -- SCORING --
@@ -163,6 +205,7 @@ hook.Add("HUDPaint", "Arsonist_HUDPaint", function()
 
     local w = 300
     local T = LANG.GetTranslation
+    local PT = LANG.GetParamTranslation
 
     if state == ARSONIST_DOUSING_LOST then
         local color = Color(200 + math.sin(CurTime() * 32) * 50, 0, 0, 155)
@@ -170,18 +213,24 @@ hook.Add("HUDPaint", "Arsonist_HUDPaint", function()
     elseif state >= ARSONIST_DOUSING then
         if end_time < 0 then return end
 
-        local text = T("arsdouse_dousing")
+        local placeholder = "arsdouse_dousing"
+        if not target:Alive() or target:IsSpec() then
+            placeholder = "arsdouse_dousing_corpse"
+        end
+        local text = PT(placeholder, {target = target:Nick()})
         local color = Color(0, 255, 0, 155)
         if state == ARSONIST_DOUSING_LOSING then
             color = Color(255, 255, 0, 155)
         end
 
         local progress = math.min(1, 1 - ((end_time - CurTime()) / douse_time))
-        CRHUD:PaintProgressBar(x, y, w, color, text .. " " .. target:Nick(), progress)
+        CRHUD:PaintProgressBar(x, y, w, color, text, progress)
     end
 end)
 
 hook.Add("TTTHUDInfoPaint", "Arsonist_TTTHUDInfoPaint", function(cli, label_left, label_top, active_labels)
+    if GetGlobalBool("ttt_arsonist_early_ignite", false) then return end
+
     local hide_role = false
     if ConVarExists("ttt_hide_role") then
         hide_role = GetConVar("ttt_hide_role"):GetBool()
@@ -220,8 +269,11 @@ hook.Add("TTTTutorialRoleText", "Arsonist_TTTTutorialRoleText", function(role, t
         roleColor = ROLE_COLORS[ROLE_TRAITOR]
 
         html = html .. "<span style='display: block; margin-top: 10px;'>To help accomplish this, they can <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>douse players in gasoline</span> by standing near them.</span>"
-        html = html .. "<span style='display: block; margin-top: 10px;'>Once every player has been doused, they can use their igniter to <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>burn</span> all the doused players.</span>"
-
+        if GetGlobalBool("ttt_arsonist_early_ignite", false) then
+            html = html .. "<span style='display: block; margin-top: 10px;'>They can use their igniter to <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>burn</span> all the doused players at any time. The igniter can only be used once, though, so plan accordinly.</span>"
+        else
+            html = html .. "<span style='display: block; margin-top: 10px;'>Once every player has been doused, they can use their igniter to <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>burn</span> all the doused players.</span>"
+        end
         -- Show a warning about the notification delay if its enabled
         local delay_min = GetGlobalInt("ttt_arsonist_douse_notify_delay_min", 3)
         local delay_max = GetGlobalInt("ttt_arsonist_douse_notify_delay_max", 5)

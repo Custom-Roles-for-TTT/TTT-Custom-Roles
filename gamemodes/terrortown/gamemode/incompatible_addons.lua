@@ -46,6 +46,7 @@ local incompatible = {
     ["254779132"] = { reason = "Overwrites core files required for Custom Roles for TTT.", alt = "810154456" }, -- TTT DeadRinger by Porter
     ["367945571"] = { reason = "Overwrites core files required for Custom Roles for TTT." }, -- TTT: Advanced Body Search
     ["2520210407"] = { reason = "Overwrites core files required for Custom Roles for TTT." }, -- TTT Weapon Balance by Emzatin.
+    ["1848007854"] = { reason = "Overwrites the DNA scanner code which breaks Custom Roles for TTT features."}, -- TTT - DNA Scanner Model Version (BackStabber) by Kobra
 
     -- Damage Logs
     ["663328966"] = { reason = "Damage logs are not compatible with any non-default roles.", alt = "2306802961" }, -- TTT RDM Manager With Damage Logs by Schmatty

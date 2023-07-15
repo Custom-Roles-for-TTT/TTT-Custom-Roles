@@ -746,6 +746,8 @@ function PrepareRound()
         -- Clear out the resurrection checking data so roles don't get their old weapons back next round in specific circumstances
         v.Resurrecting = false
         v.DeathRoleWeapons = nil
+        -- Clear out old ignition info so we don't misattribute stuff in the new round
+        v.ignite_info = nil
     end
 
     -- Check playercount

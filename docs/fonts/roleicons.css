@@ -1,0 +1,153 @@
+@font-face {
+  font-family: 'roleicons';
+  src:  url('roleicons.eot?5c3tcv');
+  src:  url('roleicons.eot?5c3tcv#iefix') format('embedded-opentype'),
+  url('roleicons.ttf?5c3tcv') format('truetype'),
+  url('roleicons.woff?5c3tcv') format('woff'),
+  url('roleicons.svg?5c3tcv#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'roleicons' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-arsonist:before {
+  content: "\e900";
+}
+.icon-assassin:before {
+  content: "\e901";
+}
+.icon-beggar:before {
+  content: "\e902";
+}
+.icon-bodysnatcher:before {
+  content: "\e903";
+}
+.icon-clown:before {
+  content: "\e904";
+}
+.icon-cupid:before {
+  content: "\e905";
+}
+.icon-deputy:before {
+  content: "\e906";
+}
+.icon-detective:before {
+  content: "\e907";
+}
+.icon-doctor:before {
+  content: "\e908";
+}
+.icon-drunk:before {
+  content: "\e909";
+}
+.icon-glitch:before {
+  content: "\e90a";
+}
+.icon-hypnotist:before {
+  content: "\e90b";
+}
+.icon-impersonator:before {
+  content: "\e90c";
+}
+.icon-infected:before {
+  content: "\e90d";
+}
+.icon-informant:before {
+  content: "\e90e";
+}
+.icon-innocent:before {
+  content: "\e90f";
+}
+.icon-jester:before {
+  content: "\e910";
+}
+.icon-killer:before {
+  content: "\e911";
+}
+.icon-loot-goblin:before {
+  content: "\e912";
+}
+.icon-mad-scientist:before {
+  content: "\e913";
+}
+.icon-marshal:before {
+  content: "\e914";
+}
+.icon-medium:before {
+  content: "\e915";
+}
+.icon-mercenary:before {
+  content: "\e916";
+}
+.icon-old-man:before {
+  content: "\e917";
+}
+.icon-paladin:before {
+  content: "\e918";
+}
+.icon-paramedic:before {
+  content: "\e919";
+}
+.icon-parasite:before {
+  content: "\e91a";
+}
+.icon-phantom:before {
+  content: "\e91b";
+}
+.icon-quack:before {
+  content: "\e91c";
+}
+.icon-revenger:before {
+  content: "\e91d";
+}
+.icon-sapper:before {
+  content: "\e91e";
+}
+.icon-shadow:before {
+  content: "\e91f";
+}
+.icon-sponge:before {
+  content: "\e920";
+}
+.icon-swapper:before {
+  content: "\e921";
+}
+.icon-team:before {
+  content: "\e92a";
+}
+.icon-tracker:before {
+  content: "\e922";
+}
+.icon-traitor:before {
+  content: "\e923";
+}
+.icon-trickster:before {
+  content: "\e924";
+}
+.icon-turncoat:before {
+  content: "\e925";
+}
+.icon-vampire:before {
+  content: "\e926";
+}
+.icon-veteran:before {
+  content: "\e927";
+}
+.icon-zombie:before {
+  content: "\e928";
+}

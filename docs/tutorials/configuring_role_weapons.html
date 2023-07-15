@@ -1,0 +1,126 @@
+<head>
+    <title>Custom Roles for TTT - Tutorials - Configuring Role Weapons</title>
+    <link rel="stylesheet" href="../css/style.css"/>
+    <link rel="stylesheet" href="../css/api.css"/>
+</head>
+
+<h1>Role Weapon Shop</h1>
+<p>In TTT some roles have shops where they are allowed to purchase weapons. Given the prevalence of custom weapons from the workshop, the ability to add more weapons to each role's shop has been added.</p>
+
+<h2><a id="table-of-contents" href="#table-of-contents">Table of Contents</a></h2>
+<ol>
+    <li><a href="#configuration-by-ui">Configuration by UI</a>
+        <ol>
+            <li><a href="#explanation">Explanation</a></li>
+            <li><a href="#example">Example</a></li>
+        </ol>
+    </li>
+    <li><a href="#configuration-by-files">Configuration by Files</a>
+        <ol>
+            <li><a href="#weapons">Weapons</a>
+                <ol>
+                    <li><a href="#adding-weapons">Adding Weapons</a></li>
+                    <li><a href="#removing-weapons">Removing Weapons</a></li>
+                    <li><a href="#bypassing-weapon-randomization">Bypassing Weapon Randomization</a></li>
+                    <li><a href="#finding-a-weapons-class">Finding a Weapon's Class</a></li>
+                </ol>
+            </li>
+            <li><a href="#equipment">Equipment</a>
+                <ol>
+                    <li><a href="#adding-equipment">Adding Equipment</a></li>
+                    <li><a href="#removing-equipment">Removing Equipment</a></li>
+                    <li><a href="#bypassing-equipment-randomization">Bypassing Equipment Randomization</a></li>
+                    <li><a href="#finding-an-equipment-items-name">Finding an Equipment Item's Name</a></li>
+                </ol>
+            </li>
+        </ol>
+    </li>
+</ol>
+
+<h2><a id="configuration-by-ui" href="#configuration-by-ui">Configuration by UI</a></h2>
+<p>The easiest way to configure the role shops is via a user interface usable by administrators directly from a running game. To open the interface, run the <code>ttt_roleweapons</code> command from your console. The window that opens should look something like this:</p>
+<p><img src="img/RoleWeapons_Blank.png" alt="Blank Role Weapons Window" style="max-width: 100%;"></p>
+
+<h3><a id="explanation" href="#explanation"><strong>Explanation</strong></a></h3>
+<p>This window was made to closely resemble the role equipment shop so parts of it should be fairly intuitive to use. For example: the search bar, the weapon list, and the weapon info panel are all directly copied from the weapon shop.</p>
+<p>Apart from those familiar pieces, this window also adds a few more controls specifically for configuring the role weapons shops:</p>
+
+<ul>
+    <li><em>Search Role</em> - This dropdown in the top right of the window allows you to choose which role's shop to display and search through</li>
+    <li>The bottom right of the window houses the controls for targeting and saving the configuration changes
+        <ul>
+            <li><em>Save Role</em> - This dropdown allows you to choose which role you would update</li>
+            <li><em>Weapon State Checkboxes</em> - These checkboxes allow you to change how a weapon behaves in the role's shop
+                <ul>
+                    <li><em>None</em> - Use the default buying configuration for the weapon</li>
+                    <li><em>Include</em> - Mark this weapon as explicitly buyable</li>
+                    <li><em>Exclude</em> - Mark this weapon as explicitly NOT buyable</li>
+                </ul>
+            </li>
+            <li><em>No Random</em> - Ensure this weapon stays in the shop, regardless of randomization</li>
+            <li><em>Update</em> - Save the configuration changes</li>
+        </ul>
+    </li>
+    <li><em>Close</em> - This button will close the window, discarding any unsaved changes</li>
+</ul>
+
+<h3><a id="example" href="#example"><strong>Example</strong></a></h3>
+<p>To help understand the functionality of this window it might be easier to walk through an example: we are going to find the Health Station (which we know the Detective can buy) and add it to the Veteran's shop. The Veteran gets a shop when they are activated, but only if weapons are actually available to them. This is where the role weapons system comes into play.</p>
+<p>First things first: we open the window and select "Detective" from the "Search Roles" dropdown. From there we can either scroll through the list of weapons or use the search text box to search for "health". We then choose "Veteran" from the "Save Role" dropdown and click the "Include" checkbox. With all that done the window should look like this:</p>
+<p><img src="img/RoleWeapons_DetVet.png" alt="Role Weapons Window for Detective -> Veteran" style="max-width: 100%;"></p>
+<p>From here, the last step is to click the "Update" button and we're done -- The Veteran now has the ability to buy a Health Station.</p>
+
+<h2><a id="configuration-by-files" href="#configuration-by-files">Configuration by Files</a></h2>
+<p>If you cannot or do not want to use the in-game UI to set up the role shop, it is also doable by manual file manipulation. This may be useful for server operators using Docker who want to have the configurations embedded in their server image.</p>
+<p><em>NOTE</em>: Using the configuration UI still creates and deletes files in the backend. Given that, you can use the UI on your local game and then copy the files to a server or Docker image build as needed.</p>
+
+<h3><a id="weapons" href="#weapons"><strong>Weapons</strong></a></h3>
+
+<h4><a id="adding-weapons" href="#adding-weapons"><em>Adding Weapons</em></a></h4>
+<p>To add weapons to a role (that already has a shop), create an empty .txt file with the weapon class (e.g. weapon_ttt_somethingcool.txt) in the garrysmod/data/roleweapons/{rolename} folder.<br>
+<strong>NOTE</strong>: If the <em>roleweapons</em> folder does not already exist in garrysmod/data, create it.<br>
+<strong>NOTE</strong>: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective/weapon_ttt_somethingcool.txt</p>
+<p>Also note the ttt_shop_* ConVars that are available above which can help control some of the role weapon shop lists.</p>
+
+<h4><a id="removing-weapons" href="#removing-weapons"><em>Removing Weapons</em></a></h4>
+<p>At the same time, there are some workshop weapons that are given to multiple roles that maybe you don't want to be available to certain roles. In order to handle that case, the ability to exclude weapons from a role's weapon shop has been added.</p>
+<p>To remove weapons from a role's shop, create an empty .exclude.txt file with the weapon class (e.g. weapon_ttt_somethingcool.exclude.txt) in the garrysmod/data/roleweapons/{rolename} folder.<br>
+<strong>NOTE</strong>: If the <em>roleweapons</em> folder does not already exist in garrysmod/data, create it.<br>
+<strong>NOTE</strong>: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective/weapon_ttt_somethingcool.exclude.txt</p>
+
+<h4><a id="bypassing-weapon-randomization" href="#bypassing-weapon-randomization"><em>Bypassing Weapon Randomization</em></a></h4>
+<p>With the addition of the Shop Randomization feature (and the ttt_shop_random_* ConVars), weapons may not always appear in the shop (which is the point). If, however, you want certain weapons to <em>always</em> be in the shop while other weapons are randomized, the ability to bypass shop randomization for a weapon in a role's weapon shop has been added.</p>
+<p>To stop a weapon from being removed from a role's shop via randomization, create an empty .norandom.txt file with the weapon class (e.g. weapon_ttt_somethingcool.norandom.txt) in the garrysmod/data/roleweapons/{rolename} folder.<br>
+<strong>NOTE</strong>: If the <em>roleweapons</em> folder does not already exist in garrysmod/data, create it.<br>
+<strong>NOTE</strong>: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective/weapon_ttt_somethingcool.norandom.txt</p>
+
+<h4><a id="finding-a-weapons-class" href="#finding-a-weapons-class"><em>Finding a Weapon's Class</em></a></h4>
+<p>To find the class name of a weapon to use above, follow the steps below</p>
+<ol>
+    <li>Start a local server with TTT as the selected gamemode</li>
+    <li>Spawn 1 bot by using the <em>bot</em> command in console</li>
+    <li>Obtain the weapon whose class you want. If it is already available to buy from a certain role's shop, either force yourself to be that role via the <em>ttt_force_*</em> commands or via a ULX plugin.</li>
+    <li>Run the following command in console to get a list of all of your weapon classes: <code>lua_run PrintTable(player.GetHumans()[1]:GetWeapons())</code></li>
+</ol>
+
+<h3><a id="equipment" href="#equipment"><strong>Equipment</strong></a></h3>
+
+<h4><a id="adding-equipment" href="#adding-equipment"><em>Adding Equipment</em></a></h4>
+<p>Equipment are items that a role can use that do not take up a weapon slot, such as the body armor or radar. To add equipment items to a role (that already has a shop), create an empty .txt file with the equipment item's name (e.g. "bruh bunker.txt") in the garrysmod/data/roleweapons/{rolename} folder.<br>
+<strong>NOTE</strong>: If the <em>roleweapons</em> folder does not already exist in garrysmod/data, create it.<br>
+<strong>NOTE</strong>: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective/bruh bunker.txt</p>
+
+<h4><a id="removing-equipment" href="#removing-equipment"><em>Removing Equipment</em></a></h4>
+<p>Similarly there are some equipment items that you want to prevent a specific role from buying. To handle that case, the addon has the ability to exclude specific equipment items from the shop in a similar way.</p>
+<p>To remove equipment from a role's shop, create an empty .exclude.txt file with the item's name (e.g. "bruh bunker.exclude.txt") in the garrysmod/data/roleweapons/{rolename} folder.<br>
+<strong>NOTE</strong>: If the <em>roleweapons</em> folder does not already exist in garrysmod/data, create it.<br>
+<strong>NOTE</strong>: The name of the role must be all lowercase for cross-operating system compatibility. For example: garrysmod/data/roleweapons/detective/bruh bunker.exclude.txt</p>
+
+<h4><a id="finding-an-equipment-items-name" href="#finding-an-equipment-items-name"><em>Finding an Equipment Item's Name</em></a></h4>
+<p>To find the name of an equipment item to use above, follow the steps below</p>
+<ol>
+    <li>Start a local server with TTT as the selected gamemode</li>
+    <li>Spawn 1 bot by using the <em>bot</em> command in console</li>
+    <li>Obtain the equipment item whose name you want. If it is already available to buy from a certain role's shop, either force yourself to be that role via the <em>ttt_force_*</em> commands or via a ULX plugin.</li>
+    <li>Run the following command in console to get a full list of your equipment item names: <code>lua_run GetEquipmentItemById(EQUIP_RADAR); lua_run for id, e in pairs(EquipmentCache) do if player.GetHumans()[1]:HasEquipmentItem(id) then print(id .. " = " .. e.name) end end</code></li>
+</ol>

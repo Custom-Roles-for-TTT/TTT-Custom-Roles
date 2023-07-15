@@ -1,0 +1,81 @@
+<head>
+    <title>Custom Roles for TTT - API - Table Methods</title>
+    <link rel="stylesheet" href="../css/style.css"/>
+    <link rel="stylesheet" href="../css/api.css"/>
+</head>
+
+<h1>Table Methods</h1>
+<p>Methods created to help with the manipulation of tables</p>
+
+<h3><a id="tableexcludedkeystbl-excludes" href="#tableexcludedkeystbl-excludes">table.ExcludedKeys(tbl, excludes)</a></h3>
+<p>
+    Returns new table that contains the keys not present as values in in the given exclude table.<br>
+    <em>Realm:</em> Client and Server<br>
+    <em>Added in:</em> 1.2.3<br>
+    <em>Parameters:</em>
+</p>
+<ul>
+    <li><em>tbl</em> - The table whose keys are being inspected</li>
+    <li><em>excludes</em> - Table of values to exclude</li>
+</ul>
+
+<h3><a id="tablehasitemwithpropertyvaluetbl-key-val" href="#tablehasitemwithpropertyvaluetbl-key-val">table.HasItemWithPropertyValue(tbl, key, val)</a></h3>
+<p>
+    Returns whether the given table has an item whose property specified by the provided <code>key</code> has a value that makes the given <code>val</code>.<br>
+    <em>Realm:</em> Client and Server<br>
+    <em>Added in:</em> 1.8.7<br>
+    <em>Parameters:</em>
+</p>
+<ul>
+    <li><em>tbl</em> - The table whose values are being inspected</li>
+    <li><em>key</em> - The property name whose value is being compared</li>
+    <li><em>val</em> - The value to find in the given property</li>
+</ul>
+
+<h3><a id="tableintersectedkeysfirst_tbl-second_tbl-excludes" href="#tableintersectedkeysfirst_tbl-second_tbl-excludes">table.IntersectedKeys(first_tbl, second_tbl, excludes)</a></h3>
+<p>
+    Returns new table that contains the keys that are only present in both given tables, excluding those which appear as values in the given exclude table (if it is given).<br>
+    <em>Realm:</em> Client and Server<br>
+    <em>Added in:</em> 1.2.3<br>
+    <em>Parameters:</em>
+</p>
+<ul>
+    <li><em>first_tbl</em> - The first table whose keys are being intersected</li>
+    <li><em>second_tbl</em> - The second table whose keys are being intersected</li>
+    <li><em>excludes</em> - Table of values to exclude from the intersect. (Optional)</li>
+</ul>
+
+<h3><a id="tablelookupkeystbl" href="#tablelookupkeystbl">table.LookupKeys(tbl)</a></h3>
+<p>
+    Returns new table that contains the keys that have a truth-y value in the given table.<br>
+    <em>Realm:</em> Client and Server<br>
+    <em>Added in:</em> 1.2.3<br>
+    <em>Parameters:</em>
+</p>
+<ul>
+    <li><em>tbl</em> - The table whose keys are being inspected</li>
+</ul>
+
+<h3><a id="tabletolookuptbl" href="#tabletolookuptbl">table.ToLookup(tbl)</a></h3>
+<p>
+    Returns a new table whose keys are the values of the given table and whose values are all the literal boolean <code>true</code>. Used for fast lookups by key.<br>
+    <em>Realm:</em> Client and Server<br>
+    <em>Added in:</em> 1.2.3<br>
+    <em>Parameters:</em>
+</p>
+<ul>
+    <li><em>tbl</em> - The table whose keys are being inspected</li>
+</ul>
+
+<h3><a id="tableunionedkeysfirst_tbl-second_tbl-excludes" href="#tableunionedkeysfirst_tbl-second_tbl-excludes">table.UnionedKeys(first_tbl, second_tbl, excludes)</a></h3>
+<p>
+    Returns new table that contains a combination of the keys present in first table and the second table, excluding those which appear as values in the given exclude table (if it is given).<br>
+    <em>Realm:</em> Client and Server<br>
+    <em>Added in:</em> 1.2.3<br>
+    <em>Parameters:</em>
+</p>
+<ul>
+    <li><em>first_tbl</em> - The first table whose keys are being unioned</li>
+    <li><em>second_tbl</em> - The second table whose keys are being unioned</li>
+    <li><em>excludes</em> - Table of values to exclude from the union. (Optional)</li>
+</ul>
