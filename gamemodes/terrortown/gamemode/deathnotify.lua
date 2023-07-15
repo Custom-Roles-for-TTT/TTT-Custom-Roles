@@ -23,7 +23,7 @@ hook.Add("PlayerDeath", "TTT_ClientDeathNotify", function(victim, inflictor, att
         reason = "water"
     elseif attacker == victim then
         reason = "suicide"
-    elseif inflictor then
+    elseif inflictor ~= NULL then
         if IsPlayer(victim) and (StringStartsWith(inflictor:GetClass(), "prop_physics") or inflictor:GetClass() == "prop_dynamic") then
             -- If the killer is also a prop
             reason = "prop"
