@@ -28,8 +28,7 @@ hook.Add("PlayerDeath", "TTT_ClientDeathNotify", function(victim, inflictor, att
             -- If the killer is also a prop
             reason = "prop"
         elseif attacker then
-            if (inflictor:GetClass() == "entityflame" and attacker:GetClass() == "entityflame") or
-                (inflictor:GetClass() == "env_fire" and attacker:GetClass() == "env_fire") then
+            if inflictor:GetClass() == "entityflame" or inflictor:GetClass() == "env_fire" then
                 reason = "burned"
             elseif inflictor:GetClass() == "worldspawn" and attacker:GetClass() == "worldspawn" then
                 reason = "fell"
