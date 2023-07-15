@@ -355,7 +355,13 @@ hook.Add("TTTBeginRound", "Shadow_TTTBeginRound", function()
 end)
 
 hook.Add("PlayerSpawn", "Shadow_PlayerSpawn", function(ply, transition)
+    if GetRoundState() ~= ROUND_ACTIVE then return end
+
     if ply:IsShadow() then
+        -- If you killed your target, you stay dead!
+        if ply:GetNWString("ShadowTarget", "") then
+            ply:Kill()
+        end
         ply:SetNWFloat("ShadowTimer", CurTime() + start_timer:GetInt())
     end
 end)
