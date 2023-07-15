@@ -388,7 +388,7 @@ AddHook("HUDPaint", "Shadow_HUDPaint", function()
 
     local t = client:GetNWFloat("ShadowTimer", -1)
 
-    if client:IsActiveShadow() and t > 0 then
+    if client:IsActiveShadow() and (t > 0 or t == SHADOW_FORCED_PROGRESS_BAR) then
         local remaining = MathMax(0, t - CurTime())
 
         local PT = LANG.GetParamTranslation
@@ -466,9 +466,9 @@ end)
 AddHook("TTTTutorialRoleText", "Shadow_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_SHADOW then
         local roleColor = ROLE_COLORS[ROLE_SHADOW]
-        local soul_link = GetGlobalBool("ttt_shadow_soul_link", false)
         local html = "The " .. ROLE_STRINGS[ROLE_SHADOW] .. " is an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>independent</span> role that wins by staying close to their target without dying. "
-        if soul_link then
+
+        if GetGlobalBool("ttt_shadow_soul_link", false) then
             html = html .. "If the shadow dies, their target dies and vice-versa. "
         else
             html = html .. "If the shadow kills their target, they die instantly. "
@@ -477,7 +477,14 @@ AddHook("TTTTutorialRoleText", "Shadow_TTTTutorialRoleText", function(role, titl
 
         local start_timer = GetGlobalInt("ttt_shadow_start_timer", 30)
         local buffer_timer = GetGlobalInt("ttt_shadow_buffer_timer", 7)
-        html = html .. "<span style='display: block; margin-top: 10px;'>They can see their target through walls and are given <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. start_timer .. " seconds</span> to find them at the start of the round. Once the shadow has found their target, they are given a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. buffer_timer .. " second</span> warning if they start to get too far away. If either of these timers run out before the shadow can find their target, the shadow dies.</span>"
+        html = html .. "<span style='display: block; margin-top: 10px;'>They can see their target through walls and are given <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. start_timer .. " seconds</span> to find them at the start of the round. Once the shadow has found their target, they are given a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. buffer_timer .. " second</span> warning if they start to get too far away. If either of these timers run out before the shadow can find their target, the shadow "
+
+        if GetGlobalInt("ttt_shadow_weaken_health_to", 0) > 0 then
+            html = html .. "has their health temporarily reduced over time. Once they get close to their target again, though, they will start to recover their max health back to normal"
+        else
+            html = html .. "dies"
+        end
+        html = html .. ".</span>"
 
         html = html .. "<span style='display: block; margin-top: 10px;'>If your target dies you still need to stay close to their body. Staying too far away from their body for more than <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. buffer_timer .. " seconds</span> will kill you.</span>"
 

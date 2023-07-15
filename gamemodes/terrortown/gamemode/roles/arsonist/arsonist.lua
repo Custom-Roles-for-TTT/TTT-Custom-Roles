@@ -1,9 +1,12 @@
 AddCSLuaFile()
 
+local ents = ents
 local hook = hook
 local ipairs = ipairs
+local math = math
 local player = player
 
+local FindEntsByClass = ents.FindByClass
 local GetAllPlayers = player.GetAll
 local MathRandom = math.random
 
@@ -17,11 +20,13 @@ local arsonist_douse_notify_delay_min = CreateConVar("ttt_arsonist_douse_notify_
 local arsonist_douse_notify_delay_max = CreateConVar("ttt_arsonist_douse_notify_delay_max", "30", FCVAR_NONE, "The delay delay before a player is notified they've been doused", 3, 60)
 local arsonist_damage_penalty = CreateConVar("ttt_arsonist_damage_penalty", "0.2", FCVAR_NONE, "Damage penalty that the arsonist has when attacking before igniting everyone (e.g. 0.2 = 20% less damage)", 0, 1)
 local arsonist_burn_damage = CreateConVar("ttt_arsonist_burn_damage", "2", FCVAR_NONE, "Damage done per fire tick to players ignited by the arsonist", 1, 10)
+local detective_search_only_arsonistdouse = CreateConVar("ttt_detective_search_only_arsonistdouse", "0")
 
 hook.Add("TTTSyncGlobals", "Informant_TTTSyncGlobals", function()
     SetGlobalInt("ttt_arsonist_douse_time", arsonist_douse_time:GetInt())
     SetGlobalInt("ttt_arsonist_douse_notify_delay_min", arsonist_douse_notify_delay_min:GetInt())
     SetGlobalInt("ttt_arsonist_douse_notify_delay_max", arsonist_douse_notify_delay_max:GetInt())
+    SetGlobalBool("ttt_detective_search_only_arsonistdouse", detective_search_only_arsonistdouse:GetBool())
 end)
 
 --------------------
@@ -48,6 +53,26 @@ local function FindArsonistTarget(arsonist, douse_distance)
         if distance < douse_distance and (closest_ply_dist == -1 or distance < closest_ply_dist) then
             closest_ply_dist = distance
             closest_ply = p
+        end
+    end
+
+    -- If we didn't find a player, find the closest ragdoll belonging to a dead player instead
+    if not IsPlayer(closest_ply) then
+        for _, rag in ipairs(FindEntsByClass("prop_ragdoll")) do
+            if rag:GetNWBool("TTTArsonistDoused", false) then continue end
+
+            local p = CORPSE.GetPlayer(rag)
+            if p == arsonist then continue end
+            if not IsPlayer(p) or p:Alive() or not p:IsSpec() then continue end
+
+            local douse_stage = p:GetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED)
+            if douse_stage ~= ARSONIST_UNDOUSED then continue end
+
+            local distance = rag:GetPos():Distance(arsonist:GetPos())
+            if distance < douse_distance and (closest_ply_dist == -1 or distance < closest_ply_dist) then
+                closest_ply_dist = distance
+                closest_ply = p
+            end
         end
     end
 
@@ -81,14 +106,28 @@ hook.Add("Think", "Arsonist_Douse_Think", function()
             if complete then
                 p:SetNWBool("TTTArsonistDouseComplete", true)
 
-                local message = "You've doused everyone alive in gasoline. Your igniter is now active!"
+                local message = "You've doused everyone alive in gasoline."
+                if not GetGlobalBool("ttt_arsonist_early_ignite", false) then
+                    message = message .. " Your igniter is now active!"
+                end
                 p:PrintMessage(HUD_PRINTCENTER, message)
                 p:PrintMessage(HUD_PRINTTALK, message)
             end
             continue
         end
 
-        local distance = target:GetPos():Distance(p:GetPos())
+        local target_pos = target:GetPos()
+        local target_dead = not target:Alive() or target:IsSpec()
+        local target_rag = nil
+        -- If the target is dead, use their ragdoll instead
+        if target_dead then
+            target_rag = target.server_ragdoll or target:GetRagdollEntity()
+            if not IsValid(target_rag) then continue end
+
+            target_pos = target_rag:GetPos()
+        end
+
+        local distance = target_pos:Distance(p:GetPos())
         local stage = target:GetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED)
         local start_time = p:GetNWFloat("TTTArsonistDouseStartTime", -1)
         if distance > douse_distance then
@@ -118,6 +157,10 @@ hook.Add("Think", "Arsonist_Douse_Think", function()
             -- If we're done dousing, mark the target and reset the arsonist state
             if CurTime() - start_time > douse_time then
                 target:SetNWInt("TTTArsonistDouseStage", ARSONIST_DOUSED)
+                target:SetNWInt("TTTArsonistDouseTime", CurTime())
+                if IsValid(target_rag) then
+                    target_rag:SetNWBool("TTTArsonistDoused", true)
+                end
                 p:SetNWFloat("TTTArsonistDouseStartTime", -1)
                 p:SetNWString("TTTArsonistDouseTarget", "")
 
@@ -128,7 +171,13 @@ hook.Add("Think", "Arsonist_Douse_Think", function()
                         if not IsPlayer(target) then return end
                         if not target:Alive() or target:IsSpec() then return end
 
-                        local message = "You have been doused in gasoline by the " .. ROLE_STRINGS[ROLE_ARSONIST] .. "!"
+                        local message = ""
+                        if target_dead then
+                            message = message .. "Your corpse has "
+                        else
+                            message = message .. "You have "
+                        end
+                        message = message .. "been doused in gasoline by the " .. ROLE_STRINGS[ROLE_ARSONIST] .. "!"
                         target:PrintMessage(HUD_PRINTCENTER, message)
                         target:PrintMessage(HUD_PRINTTALK, message)
                     end)
@@ -145,11 +194,19 @@ end)
 hook.Add("PostPlayerDeath", "Arsonist_PostPlayerDeath", function(ply)
     -- Remove the notification delay timer since the player is already dead
     timer.Remove("TTTArsonistNotifyDelay_" .. ply:SteamID64())
+
+    -- Clear any ignite info the igniter may have left around
+    if not ply.ignite_info then return end
+    if not IsPlayer(ply.ignite_info.att) then return end
+    if not ply.ignite_info.att:IsArsonist() then return end
+
+    ply.ignite_info = nil
 end)
 
 hook.Add("TTTPrepareRound", "Arsonist_TTTPrepareRound", function()
     for _, v in pairs(GetAllPlayers()) do
         v:SetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED)
+        v:SetNWInt("TTTArsonistDouseTime", -1)
         v:SetNWString("TTTArsonistDouseTarget", "")
         v:SetNWFloat("TTTArsonistDouseStartTime", -1)
         v:SetNWBool("TTTArsonistDouseComplete", false)
@@ -166,7 +223,7 @@ hook.Add("TTTPlayerSpawnForRound", "Arsonist_TTTPlayerSpawnForRound", function(p
         -- Reset any arsonist who has been flagged as "complete"
         for _, p in ipairs(GetAllPlayers()) do
             if not p:IsArsonist() then continue end
-            -- Don't reset hte flag on a player that already used their igniter
+            -- Don't reset the flag on a player that already used their igniter
             if not p:HasWeapon("weapon_ars_igniter") then continue end
 
             if p:GetNWBool("TTTArsonistDouseComplete", false) then
