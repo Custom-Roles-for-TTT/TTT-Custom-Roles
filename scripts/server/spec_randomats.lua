@@ -48,17 +48,24 @@ hook.Add("TTTBeginRound", "SpectatorRandomats_TTTBeginRound", function()
     end
 
     if specCount < minSpectators then return end
-    
-    local event = GetRandomWeightedEvent()
-    if not event then return end
 
-    print("[SpectatorRandomats] There are " .. specCount .. " spectators. Starting '" .. event .. "' after " .. startDelay .. " seconds.")
+    print("[SpectatorRandomats] There are " .. specCount .. " spectators. Starting event after " .. startDelay .. " seconds.")
     timer.Create("SpectatorRandomatsDelay", startDelay, 1, function()
         -- If one of these is running already, don't start a new one
         for id, _ in pairs(events) do
-            if Randomat:IsEventActive(id) then return end
+            if Randomat:IsEventActive(id) then
+                print("[SpectatorRandomats] Another spectator-based Randomat is already running, no new event will be started")
+                return
+            end
         end
 
+        local event = GetRandomWeightedEvent()
+        if not event then
+            print("[SpectatorRandomats] No valid event was found to start")
+            return
+        end
+
+        print("[SpectatorRandomats] Starting " .. event)
         Randomat:TriggerEvent(event)
     end)
 end)
