@@ -29,4 +29,15 @@
         </div>
     </div>
 </body>
+<script>
+    // Add the "selected" class to whichever nav element matches the nav hash
+    window.onload = function() {
+        if (!window.location.hash) return;
+
+        var navEl = document.getElementById(window.location.hash.slice(1));
+        if (!navEl) return;
+
+        navEl.classList.add("selected");
+    }
+</script>
 </html>
