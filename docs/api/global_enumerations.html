@@ -1,44 +1,51 @@
+<!doctype html>
+<html>
 <head>
     <title>Custom Roles for TTT - API - Global Enumerations</title>
     <link rel="stylesheet" href="../css/style.css"/>
     <link rel="stylesheet" href="../css/api.css"/>
 </head>
+<body>
+    <embed src="../nav.html#api" width="220" height="278" style="float: left; margin-right: 10px;" />
+    <div>
+        <h1>Global Enumerations</h1>
+        <p>Enumerations available globally (within the defined realm). There are additional enumerations used internally for configuration and event reporting that are not included here. If you need them, for whatever reason, you will need to find them or ask one of the developers in Discord.</p>
 
-<h1>Global Enumerations</h1>
-<p>Enumerations available globally (within the defined realm). There are additional enumerations used internally for configuration and event reporting that are not included here. If you need them, for whatever reason, you will need to find them or ask one of the developers in Discord.</p>
+        <h3><a id="role_rolename" href="#role_rolename">ROLE_{ROLENAME}</a></h3>
+        <p>
+            Every role that is added has its role number available as a global enum value. In addition, <code>ROLE_MAX</code> is defined as the highest role number assigned, <code>ROLE_NONE</code> is the role number a player is given before another role is assigned, and <code>ROLE_EXTERNAL_START</code> is the first role number assigned to roles defined outside of the code Custom Roles for TTT addon.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> Whenever each role is added
+        </p>
 
-<h3><a id="role_rolename" href="#role_rolename">ROLE_{ROLENAME}</a></h3>
-<p>
-    Every role that is added has its role number available as a global enum value. In addition, <code>ROLE_MAX</code> is defined as the highest role number assigned, <code>ROLE_NONE</code> is the role number a player is given before another role is assigned, and <code>ROLE_EXTERNAL_START</code> is the first role number assigned to roles defined outside of the code Custom Roles for TTT addon.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> Whenever each role is added
-</p>
+        <h3><a id="role_convar_type_" href="#role_convar_type_">ROLE_CONVAR_TYPE_</a></h3>
+        <p>
+            What type the convar for an external role is. Used by the ULX plugin to dynamically generate the configuration UI.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.11<br>
+            <em>Values:</em>
+        </p>
+        <ul>
+            <li>ROLE_CONVAR_TYPE_NUM - A number. Will use a slider in the configuration UI.</li>
+            <li>ROLE_CONVAR_TYPE_BOOL - A boolean. Will use a checkbox in the configuration UI.</li>
+            <li>ROLE_CONVAR_TYPE_TEXT - A text value. Will use a text box in the configuration UI.</li>
+        </ul>
 
-<h3><a id="role_convar_type_" href="#role_convar_type_">ROLE_CONVAR_TYPE_</a></h3>
-<p>
-    What type the convar for an external role is. Used by the ULX plugin to dynamically generate the configuration UI.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.11<br>
-    <em>Values:</em>
-</p>
-<ul>
-    <li>ROLE_CONVAR_TYPE_NUM - A number. Will use a slider in the configuration UI.</li>
-    <li>ROLE_CONVAR_TYPE_BOOL - A boolean. Will use a checkbox in the configuration UI.</li>
-    <li>ROLE_CONVAR_TYPE_TEXT - A text value. Will use a text box in the configuration UI.</li>
-</ul>
-
-<h3><a id="role_team_" href="#role_team_">ROLE_TEAM_</a></h3>
-<p>
-    Which role team an external role is registered to. A "role team" is a way of grouping roles by common functionality and mostly maps to the logical team with the exception of the detective role team. The detective role team is part of the innocent logical team.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.9<br>
-    <em>Values:</em>
-</p>
-<ul>
-    <li>ROLE_TEAM_INNOCENT</li>
-    <li>ROLE_TEAM_TRAITOR</li>
-    <li>ROLE_TEAM_JESTER</li>
-    <li>ROLE_TEAM_INDEPENDENT</li>
-    <li>ROLE_TEAM_MONSTER <em>(Added in 1.1.7)</em></li>
-    <li>ROLE_TEAM_DETECTIVE <em>(Added in 1.1.3)</em></li>
-</ul>
+        <h3><a id="role_team_" href="#role_team_">ROLE_TEAM_</a></h3>
+        <p>
+            Which role team an external role is registered to. A "role team" is a way of grouping roles by common functionality and mostly maps to the logical team with the exception of the detective role team. The detective role team is part of the innocent logical team.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.9<br>
+            <em>Values:</em>
+        </p>
+        <ul>
+            <li>ROLE_TEAM_INNOCENT</li>
+            <li>ROLE_TEAM_TRAITOR</li>
+            <li>ROLE_TEAM_JESTER</li>
+            <li>ROLE_TEAM_INDEPENDENT</li>
+            <li>ROLE_TEAM_MONSTER <em>(Added in 1.1.7)</em></li>
+            <li>ROLE_TEAM_DETECTIVE <em>(Added in 1.1.3)</em></li>
+        </ul>
+    </div>
+</body>
+<html>

@@ -1,33 +1,40 @@
+<!doctype html>
+<html>
 <head>
     <title>Custom Roles for TTT - API - Util Methods</title>
     <link rel="stylesheet" href="../css/style.css"/>
     <link rel="stylesheet" href="../css/api.css"/>
 </head>
+<body>
+    <embed src="../nav.html#api" width="220" height="278" style="float: left; margin-right: 10px;" />
+    <div>
+        <h1>Utility Methods</h1>
+        <p>Utility methods created to help with various common scenarios</p>
 
-<h1>Utility Methods</h1>
-<p>Utility methods created to help with various common scenarios</p>
+        <h3><a id="utilburnragdollrag-burn_time_scorch" href="#utilburnragdollrag-burn_time_scorch">util.BurnRagdoll(rag, burn_time, scorch)</a></h3>
+        <p>
+            Burns a player ragdoll, shows scorch marks, and automatically destroys the ragdoll unless it's been extinguished by water.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.9.1<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>rag</em> - The <code>prop_ragdoll</code> to set on fire</li>
+            <li><em>burn_time</em> - How long the ragdoll should burn for before being destroyed</li>
+            <li><em>scorch</em> - Whether scorch marks should be created under the ragdoll (Defaults to <code>true</code>)</li>
+        </ul>
 
-<h3><a id="utilburnragdollrag-burn_time_scorch" href="#utilburnragdollrag-burn_time_scorch">util.BurnRagdoll(rag, burn_time, scorch)</a></h3>
-<p>
-    Burns a player ragdoll, shows scorch marks, and automatically destroys the ragdoll unless it's been extinguished by water.<br>
-    <em>Realm:</em> Server<br>
-    <em>Added in:</em> 1.9.1<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>rag</em> - The <code>prop_ragdoll</code> to set on fire</li>
-    <li><em>burn_time</em> - How long the ragdoll should burn for before being destroyed</li>
-    <li><em>scorch</em> - Whether scorch marks should be created under the ragdoll (Defaults to <code>true</code>)</li>
-</ul>
-
-<h3><a id="utilexecfilefilepath-errorifmissing" href="#utilexecfilefilepath-errorifmissing">util.ExecFile(filePath, errorIfMissing)</a></h3>
-<p>
-    Executes a file at the given path, relative to the root game location.<br>
-    <em>Realm:</em> Server<br>
-    <em>Added in:</em> 1.6.7<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>filePath</em> - The path to the file to be executed, relative to the root game location</li>
-    <li><em>errorIfMissing</em> - Whether to throw an error if the file is missing (Defaults to <code>false</code>)</li></li>
-</ul>
+        <h3><a id="utilexecfilefilepath-errorifmissing" href="#utilexecfilefilepath-errorifmissing">util.ExecFile(filePath, errorIfMissing)</a></h3>
+        <p>
+            Executes a file at the given path, relative to the root game location.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.6.7<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>filePath</em> - The path to the file to be executed, relative to the root game location</li>
+            <li><em>errorIfMissing</em> - Whether to throw an error if the file is missing (Defaults to <code>false</code>)</li></li>
+        </ul>
+    </div>
+</body>
+<html>

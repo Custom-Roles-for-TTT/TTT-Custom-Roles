@@ -1,3 +1,5 @@
+<!doctype html>
+<html>
 <head>
     <title>Custom Roles for TTT - Tutorials - Creating Your Own Custom Role</title>
     <link rel="stylesheet" href="../css/style.css"/>
@@ -7,88 +9,92 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
     <script>hljs.highlightAll();</script>
 </head>
+<body>
+    <embed src="../nav.html#tutorials" width="220" height="278" style="float: left; margin-right: 10px;" />
+    <div>
+        <h1>Creating Your Own Custom Role</h1>
+        <p>This tutorial aims to provide the step-by-step instructions that a developer would need to create their own custom role. It covers creation of the role's basic features, what options are available for preset advanced features to choose from, all the way through creating the role icons and publishing to the workshop.</p>
+        <p>This tutorial assumes you have some programming experience, even if it's not directly in Lua itself. Lua is a pretty straight-forward language, so knowledge of its specifics are not necessary as long as you are good at googling. Of course, if you have any questions about how to do more advanced things, feel free to join our Discord server to ask.</p>
 
-<h1>Creating Your Own Custom Roles for TTT Role</h1>
-
-<h2><a id="table-of-contents" href="#table-of-contents">Table of Contents</a></h2>
-<ol>
-    <li><a href="#before-you-start">Before You Start</a></li>
-    <li><a href="#code">Code</a>
+        <h2><a id="table-of-contents" href="#table-of-contents">Table of Contents</a></h2>
         <ol>
-            <li><a href="#role-table">Role Table</a></li>
-            <li><a href="#role-strings">Role Strings</a></li>
-            <li><a href="#description">Description</a></li>
-            <li><a href="#team">Team</a></li>
-            <li><a href="#shop-and-loadout-items">Shop and Loadout Items</a>
+            <li><a href="#before-you-start">Before You Start</a></li>
+            <li><a href="#code">Code</a>
                 <ol>
-                    <li><a href="#weapon">Weapon</a></li>
-                    <li><a href="#equipment">Equipment</a></li>
+                    <li><a href="#role-table">Role Table</a></li>
+                    <li><a href="#role-strings">Role Strings</a></li>
+                    <li><a href="#description">Description</a></li>
+                    <li><a href="#team">Team</a></li>
+                    <li><a href="#shop-and-loadout-items">Shop and Loadout Items</a>
+                        <ol>
+                            <li><a href="#weapon">Weapon</a></li>
+                            <li><a href="#equipment">Equipment</a></li>
+                        </ol>
+                    </li>
+                    <li><a href="#credits">Credits</a></li>
+                    <li><a href="#health">Health</a></li>
+                    <li><a href="#role-activation">Role Activation</a></li>
+                    <li><a href="#role-selection">Role Selection</a></li>
+                    <li><a href="#acting-like-a-jester">Acting Like a Jester</a></li>
+                    <li><a href="#translations">Translations</a></li>
+                    <li><a href="#custom-spectator-hud">Custom Spectator HUD</a></li>
+                    <li><a href="#optional-rules">Optional Rules</a></li>
+                    <li><a href="#convars">ConVars</a></li>
+                    <li><a href="#custom-win-conditions">Custom Win Conditions</a>
+                        <ol>
+                            <li><a href="#win-identifier">Win Identifier</a></li>
+                            <li><a href="#win-condition">Win Condition</a></li>
+                            <li><a href="#round-summary-title">Round Summary Title</a></li>
+                            <li><a href="#round-summary-events">Round Summary Events</a></li>
+                            <li><a href="#round-result-message">Round Result Message</a></li>
+                            <li><a href="#full-win-condition-example">Full Win Condition Example</a></li>
+                        </ol>
+                    </li>
+                    <li><a href="#tutorial-page">Tutorial Page</a></li>
+                    <li><a href="#role-registration">Role Registration</a></li>
+                    <li><a href="#final-block">Final Block</a></li>
+                    <li><a href="#example-file">Example File</a></li>
+                    <li><a href="#file-separation">File Separation</a></li>
+                    <li><a href="#role-modifications">Role Modifications</a></li>
                 </ol>
             </li>
-            <li><a href="#credits">Credits</a></li>
-            <li><a href="#health">Health</a></li>
-            <li><a href="#role-activation">Role Activation</a></li>
-            <li><a href="#role-selection">Role Selection</a></li>
-            <li><a href="#acting-like-a-jester">Acting Like a Jester</a></li>
-            <li><a href="#translations">Translations</a></li>
-            <li><a href="#custom-spectator-hud">Custom Spectator HUD</a></li>
-            <li><a href="#optional-rules">Optional Rules</a></li>
-            <li><a href="#convars">ConVars</a></li>
-            <li><a href="#custom-win-conditions">Custom Win Conditions</a>
+            <li><a href="#sprites">Sprites</a>
                 <ol>
-                    <li><a href="#win-identifier">Win Identifier</a></li>
-                    <li><a href="#win-condition">Win Condition</a></li>
-                    <li><a href="#round-summary-title">Round Summary Title</a></li>
-                    <li><a href="#round-summary-events">Round Summary Events</a></li>
-                    <li><a href="#round-result-message">Round Result Message</a></li>
-                    <li><a href="#full-win-condition-example">Full Win Condition Example</a></li>
+                    <li><a href="#finding-a-role-icon">Finding a Role Icon</a></li>
+                    <li><a href="#tab-file">Tab File</a></li>
+                    <li><a href="#score-file">Score File</a></li>
+                    <li><a href="#sprite-file">Sprite File</a></li>
+                    <li><a href="#icon-file">Icon File</a></li>
+                    <li><a href="#vmt-files">.vmt Files</a></li>
                 </ol>
             </li>
-            <li><a href="#tutorial-page">Tutorial Page</a></li>
-            <li><a href="#role-registration">Role Registration</a></li>
-            <li><a href="#final-block">Final Block</a></li>
-            <li><a href="#example-file">Example File</a></li>
-            <li><a href="#file-separation">File Separation</a></li>
-            <li><a href="#role-modifications">Role Modifications</a></li>
+            <li><a href="#uploading-your-addon">Uploading Your Addon</a>
+                <ol>
+                    <li><a href="#addonjson">addon.json</a></li>
+                    <li><a href="#workshop-icon">Workshop Icon</a></li>
+                    <li><a href="#folder-name">Folder Name</a></li>
+                    <li><a href="#final-checks">Final Checks</a></li>
+                    <li><a href="#uploading">Uploading</a></li>
+                </ol>
+            </li>
+            <li><a href="#wrapping-up">Wrapping Up</a></li>
         </ol>
-    </li>
-    <li><a href="#sprites">Sprites</a>
-        <ol>
-            <li><a href="#finding-a-role-icon">Finding a Role Icon</a></li>
-            <li><a href="#tab-file">Tab File</a></li>
-            <li><a href="#score-file">Score File</a></li>
-            <li><a href="#sprite-file">Sprite File</a></li>
-            <li><a href="#icon-file">Icon File</a></li>
-            <li><a href="#vmt-files">.vmt Files</a></li>
-        </ol>
-    </li>
-    <li><a href="#uploading-your-addon">Uploading Your Addon</a>
-        <ol>
-            <li><a href="#addonjson">addon.json</a></li>
-            <li><a href="#workshop-icon">Workshop Icon</a></li>
-            <li><a href="#folder-name">Folder Name</a></li>
-            <li><a href="#final-checks">Final Checks</a></li>
-            <li><a href="#uploading">Uploading</a></li>
-        </ol>
-    </li>
-    <li><a href="#wrapping-up">Wrapping Up</a></li>
-</ol>
 
-<h2><a id="before-you-start" href="#before-you-start">Before You Start</a></h2>
-<p>In order to create your own role you will need to make sure you have downloaded tools to edit the following file types:</p>
-<ul>
-    <li><strong>.psd</strong> - For this guide we will be using Photoshop but <a href="https://www.gimp.org/" target="_blank">GIMP</a> is a great free alternative.</li>
-    <li><strong>.lua</strong> - This can be done in Notepad in a pinch but at the very least we would recommend <a href="https://notepad-plus-plus.org/" target="_blank">Notepad++</a>.</li>
-    <li><strong>.vmt and .vtf</strong> - <a href="https://nemstools.github.io/pages/VTFLib-Download.html" target="_blank">VTFEdit</a> is the best way to edit these files but if you know what you are doing there are plugins for other apps.</li>
-</ul>
-<p>In this guide we will be walking through how we made the Summoner role and you can download all the templates we are using <a href="https://github.com/NoxxFlame/TTT-Custom-Roles/blob/release/templates">here</a>.</p>
-<p>Last thing to do before you are ready to get started is to unzip that file which should give you 4 .psd files and a folder like this:</p>
-<p><img src="https://i.imgur.com/UCyxklx.png" style="max-width: 100%;" /></p>
+        <h2><a id="before-you-start" href="#before-you-start">Before You Start</a></h2>
+        <p>In order to create your own role you will need to make sure you have downloaded tools to edit the following file types:</p>
+        <ul>
+            <li><strong>.psd</strong> - For this guide we will be using Photoshop but <a href="https://www.gimp.org/" target="_blank">GIMP</a> is a great free alternative.</li>
+            <li><strong>.lua</strong> - This can be done in Notepad in a pinch but at the very least we would recommend <a href="https://notepad-plus-plus.org/" target="_blank">Notepad++</a>.</li>
+            <li><strong>.vmt and .vtf</strong> - <a href="https://nemstools.github.io/pages/VTFLib-Download.html" target="_blank">VTFEdit</a> is the best way to edit these files but if you know what you are doing there are plugins for other apps.</li>
+        </ul>
+        <p>In this guide we will be walking through how we made the Summoner role and you can download all the templates we are using <a href="https://github.com/NoxxFlame/TTT-Custom-Roles/blob/release/templates">here</a>.</p>
+        <p>Last thing to do before you are ready to get started is to unzip that file which should give you 4 .psd files and a folder like this:</p>
+        <p><img src="https://i.imgur.com/UCyxklx.png" style="max-width: 100%;" /></p>
 
-<h2><a id="code" href="#code">Code</a></h2>
-<p>Open up 'Role Addon Template' &gt; 'lua' &gt; 'customroles' and rename '%NAMERAW%.lua' to whatever you want the name of your role to be. In this case we will rename it to 'summoner.lua'.</p>
-<p>Open up that file and you should see something like this:</p>
-<div><pre><code class="language-lua">local ROLE = {}
+        <h2><a id="code" href="#code">Code</a></h2>
+        <p>Open up 'Role Addon Template' &gt; 'lua' &gt; 'customroles' and rename '%NAMERAW%.lua' to whatever you want the name of your role to be. In this case we will rename it to 'summoner.lua'.</p>
+        <p>Open up that file and you should see something like this:</p>
+        <div><pre><code class="language-lua">local ROLE = {}
 
 ROLE.nameraw = ""
 ROLE.name = ""
@@ -121,274 +127,274 @@ RegisterRole(ROLE)
 if SERVER then  
     AddCSLuaFile()
 end</code></pre>
-</div>
+        </div>
 
-<p>Lets break that down piece by piece.</p>
+        <p>Lets break that down piece by piece.</p>
 
-<h3><a id="role-table" href="#role-table">Role Table</a></h3>
-<p>First we have this line here:</p>
-<div><pre><code class="language-lua">local ROLE = {}</code></pre></div>
-<p>You don't need to touch this line. The ROLE table will store everything CR for TTT needs to understand your role.</p>
+        <h3><a id="role-table" href="#role-table">Role Table</a></h3>
+        <p>First we have this line here:</p>
+        <div><pre><code class="language-lua">local ROLE = {}</code></pre></div>
+        <p>You don't need to touch this line. The ROLE table will store everything CR for TTT needs to understand your role.</p>
 
-<h3><a id="role-strings" href="#role-strings">Role Strings</a></h3>
-<p>The next chunk here is all about the name of your role:</p>
-<div><pre><code class="language-lua">ROLE.nameraw = ""  
+        <h3><a id="role-strings" href="#role-strings">Role Strings</a></h3>
+        <p>The next chunk here is all about the name of your role:</p>
+        <div><pre><code class="language-lua">ROLE.nameraw = ""  
 ROLE.name = ""  
 ROLE.nameplural = ""  
 ROLE.nameext = ""  
 ROLE.nameshort = ""</code></pre></div>
 
-<p><code>nameraw</code> is used to create all the necessary ConVars for your role. It should only contain lowercase characters a-z, without spaces or punctuation.</p>
-<p><code>name</code>, <code>nameplural</code> and <code>nameext</code> are all about how your role is presented to the user. <code>name</code> is the title case name of your role. <code>nameplural</code> is the title case name for the plural of your role. <code>nameext</code> is the title case name for your role with this associated indefinite article. (i.e. a or an)</p>
-<p><code>nameshort</code> is used for sprites and other files relevant to your role. It should be 3 characters long and only contain lowercase characters a-z, without spaces or punctuation. Try to make this unique to your role and not just a generic string of characters to avoid clashes with other roles.</p>
-<p>For the Summoner that block of code will now look like this.</p>
+        <p><code>nameraw</code> is used to create all the necessary ConVars for your role. It should only contain lowercase characters a-z, without spaces or punctuation.</p>
+        <p><code>name</code>, <code>nameplural</code> and <code>nameext</code> are all about how your role is presented to the user. <code>name</code> is the title case name of your role. <code>nameplural</code> is the title case name for the plural of your role. <code>nameext</code> is the title case name for your role with this associated indefinite article. (i.e. a or an)</p>
+        <p><code>nameshort</code> is used for sprites and other files relevant to your role. It should be 3 characters long and only contain lowercase characters a-z, without spaces or punctuation. Try to make this unique to your role and not just a generic string of characters to avoid clashes with other roles.</p>
+        <p>For the Summoner that block of code will now look like this.</p>
 
-<div><pre><code class="language-lua">ROLE.nameraw = "summoner"  
+        <div><pre><code class="language-lua">ROLE.nameraw = "summoner"  
 ROLE.name = "Summoner"  
 ROLE.nameplural = "Summoners"  
 ROLE.nameext = "a Summoner"  
 ROLE.nameshort = "sum"</code></pre></div>
 
-<h3><a id="description" href="#description">Description</a></h3>
-<p>The next line cares about the description of your role that shows up at the start of the round. Lua uses double square brackets for multi-line strings so you don't need quotes or newline characters here, plaintext should do the trick.</p>
-<p>There are a few strings here that can be used within curly brackets which are replaced with role names or other information that isn't constant. Below is a table of replacement strings you might find useful.</p>
-<table>
-    <thead>
-        <tr>
-            <th>Placeholder</th>
-            <th>Description</th>
-            <th>Example</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td><code>{role}</code></td>
-            <td>The name of your role</td>
-            <td>Summoner</td>
-        </tr>
-        <tr>
-            <td><code>{innocent}</code></td>
-            <td>The name of the Innocent role</td>
-            <td>Innocent</td>
-        </tr>
-        <tr>
-            <td><code>{innocents}</code></td>
-            <td>The plural form of the Innocent role</td>
-            <td>Innocents</td>
-        </tr>
-        <tr>
-            <td><code>{aninnocent}</code></td>
-            <td>The name of the Innocent role with an article</td>
-            <td>an Innocent</td>
-        </tr>
-        <tr>
-            <td><code>{traitor}</code></td>
-            <td>The name of the Traitor role</td>
-            <td>Traitor</td>
-        </tr>
-        <tr>
-            <td><code>{traitors}</code></td>
-            <td>The plural form of the Traitor role</td>
-            <td>Traitors</td>
-        </tr>
-        <tr>
-            <td><code>{atraitor}</code></td>
-            <td>The name of the Traitor role with an article</td>
-            <td>a Traitor</td>
-        </tr>
-        <tr>
-            <td><code>{detective}</code></td>
-            <td>The name of the Detective role</td>
-            <td>Detective</td>
-        </tr>
-        <tr>
-            <td><code>{detectives}</code></td>
-            <td>The plural form of the Detective role</td>
-            <td>Detectives</td>
-        </tr>
-        <tr>
-            <td><code>{adetective}</code></td>
-            <td>The name of the Detective role with an article</td>
-            <td>a Detective</td>
-        </tr>
-        <tr>
-            <td><code>{jester}</code></td>
-            <td>The name of the Jester role</td>
-            <td>Jester</td>
-        </tr>
-        <tr>
-            <td><code>{jesters}</code></td>
-            <td>The plural form of the Jester role</td>
-            <td>Jesters</td>
-        </tr>
-        <tr>
-            <td><code>{ajester}</code></td>
-            <td>The name of the Jester role with an article</td>
-            <td>a Jester</td>
-        </tr>
-        <tr>
-            <td><code>{comrades}</code></td>
-            <td>Information about fellow traitors and glitches</td>
-            <td>These are your comrades: (includes a list of traitors)</td>
-        </tr>
-        <tr>
-            <td><code>{menukey}</code></td>
-            <td>The key bound to open the shop</td>
-            <td>C</td>
-        </tr>
-    </tbody>
-</table>
+        <h3><a id="description" href="#description">Description</a></h3>
+        <p>The next line cares about the description of your role that shows up at the start of the round. Lua uses double square brackets for multi-line strings so you don't need quotes or newline characters here, plaintext should do the trick.</p>
+        <p>There are a few strings here that can be used within curly brackets which are replaced with role names or other information that isn't constant. Below is a table of replacement strings you might find useful.</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Placeholder</th>
+                    <th>Description</th>
+                    <th>Example</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>{role}</code></td>
+                    <td>The name of your role</td>
+                    <td>Summoner</td>
+                </tr>
+                <tr>
+                    <td><code>{innocent}</code></td>
+                    <td>The name of the Innocent role</td>
+                    <td>Innocent</td>
+                </tr>
+                <tr>
+                    <td><code>{innocents}</code></td>
+                    <td>The plural form of the Innocent role</td>
+                    <td>Innocents</td>
+                </tr>
+                <tr>
+                    <td><code>{aninnocent}</code></td>
+                    <td>The name of the Innocent role with an article</td>
+                    <td>an Innocent</td>
+                </tr>
+                <tr>
+                    <td><code>{traitor}</code></td>
+                    <td>The name of the Traitor role</td>
+                    <td>Traitor</td>
+                </tr>
+                <tr>
+                    <td><code>{traitors}</code></td>
+                    <td>The plural form of the Traitor role</td>
+                    <td>Traitors</td>
+                </tr>
+                <tr>
+                    <td><code>{atraitor}</code></td>
+                    <td>The name of the Traitor role with an article</td>
+                    <td>a Traitor</td>
+                </tr>
+                <tr>
+                    <td><code>{detective}</code></td>
+                    <td>The name of the Detective role</td>
+                    <td>Detective</td>
+                </tr>
+                <tr>
+                    <td><code>{detectives}</code></td>
+                    <td>The plural form of the Detective role</td>
+                    <td>Detectives</td>
+                </tr>
+                <tr>
+                    <td><code>{adetective}</code></td>
+                    <td>The name of the Detective role with an article</td>
+                    <td>a Detective</td>
+                </tr>
+                <tr>
+                    <td><code>{jester}</code></td>
+                    <td>The name of the Jester role</td>
+                    <td>Jester</td>
+                </tr>
+                <tr>
+                    <td><code>{jesters}</code></td>
+                    <td>The plural form of the Jester role</td>
+                    <td>Jesters</td>
+                </tr>
+                <tr>
+                    <td><code>{ajester}</code></td>
+                    <td>The name of the Jester role with an article</td>
+                    <td>a Jester</td>
+                </tr>
+                <tr>
+                    <td><code>{comrades}</code></td>
+                    <td>Information about fellow traitors and glitches</td>
+                    <td>These are your comrades: (includes a list of traitors)</td>
+                </tr>
+                <tr>
+                    <td><code>{menukey}</code></td>
+                    <td>The key bound to open the shop</td>
+                    <td>C</td>
+                </tr>
+            </tbody>
+        </table>
 
-<p>The description for the Summoner will look like this:</p>
-<div><pre><code class="language-lua">ROLE.desc = [[You are {role}! {comrades}  
-  
+        <p>The description for the Summoner will look like this:</p>
+        <div><pre><code class="language-lua">ROLE.desc = [[You are {role}! {comrades}  
+
 Summon minions to help defeat your enemies.  
-    
+
 Press {menukey} to receive your special equipment!]]</code></pre></div>
 
-<h3><a id="team" href="#team">Team</a></h3>
-<p>Next we have the team. You can set which team your role is a member of by using the the following values</p>
-<table>
-    <thead>
-        <tr>
-            <th>Team</th>
-            <th>Value</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Innocent</td>
-            <td><code>ROLE_TEAM_INNOCENT</code></td>
-        </tr>
-        <tr>
-            <td>Traitor</td>
-            <td><code>ROLE_TEAM_TRAITOR</code></td>
-        </tr>
-        <tr>
-            <td>Detective</td>
-            <td><code>ROLE_TEAM_DETECTIVE</code></td>
-        </tr>
-        <tr>
-            <td>Jester</td>
-            <td><code>ROLE_TEAM_JESTER</code></td>
-        </tr>
-        <tr>
-            <td>Independent</td>
-            <td><code>ROLE_TEAM_INDEPENDENT</code></td>
-        </tr>
-        <tr>
-            <td>Monster</td>
-            <td><code>ROLE_TEAM_MONSTER</code></td>
-        </tr>
-    </tbody>
-</table>
+        <h3><a id="team" href="#team">Team</a></h3>
+        <p>Next we have the team. You can set which team your role is a member of by using the the following values</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Team</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Innocent</td>
+                    <td><code>ROLE_TEAM_INNOCENT</code></td>
+                </tr>
+                <tr>
+                    <td>Traitor</td>
+                    <td><code>ROLE_TEAM_TRAITOR</code></td>
+                </tr>
+                <tr>
+                    <td>Detective</td>
+                    <td><code>ROLE_TEAM_DETECTIVE</code></td>
+                </tr>
+                <tr>
+                    <td>Jester</td>
+                    <td><code>ROLE_TEAM_JESTER</code></td>
+                </tr>
+                <tr>
+                    <td>Independent</td>
+                    <td><code>ROLE_TEAM_INDEPENDENT</code></td>
+                </tr>
+                <tr>
+                    <td>Monster</td>
+                    <td><code>ROLE_TEAM_MONSTER</code></td>
+                </tr>
+            </tbody>
+        </table>
 
-<p>So for the Summoner, which is a traitor we have:</p>
-<div><pre><code class="language-lua">ROLE.team = ROLE_TEAM_TRAITOR</code></pre></div>
+        <p>So for the Summoner, which is a traitor we have:</p>
+        <div><pre><code class="language-lua">ROLE.team = ROLE_TEAM_TRAITOR</code></pre></div>
 
-<h3><a id="shop-and-loadout-items" href="#shop-and-loadout-items">Shop and Loadout Items</a></h3>
-<p>The next two lines are all about shop and loadout items:</p>
-<div><pre><code class="language-lua">ROLE.shop = nil
+        <h3><a id="shop-and-loadout-items" href="#shop-and-loadout-items">Shop and Loadout Items</a></h3>
+        <p>The next two lines are all about shop and loadout items:</p>
+        <div><pre><code class="language-lua">ROLE.shop = nil
 ROLE.loadout = {}</code></pre></div>
 
-<p>If you want your role to have access to a shop or if you want them to spawn with any items, this is where you can add that.</p>
-<p>Traitors automatically have access to body armor, a radar and a disguiser in the shop. Detectives have access to a radar in the shop and spawn with body armor.</p>
-<p>To give your role a shop, first change the shop property to read: <code>ROLE.shop = {}</code>. By default a role will not have a shop. If a role is given a shop, the <code>ttt_%NAMERAW%_shop_random_percent</code>, <code>ttt_%NAMERAW%_shop_random_enabled</code>, and (if applicable) <code>ttt_%NAMERAW%_shop_mode</code> or <code>ttt_%NAMERAW%_shop_sync</code> convars will be created automatically.</p>
-<p>Inside the curly brackets for the shop or loadout add the class names of any other weapons or equipment you want, separated by commas. To find the class name of a weapon or equipment you can do the following:</p>
+        <p>If you want your role to have access to a shop or if you want them to spawn with any items, this is where you can add that.</p>
+        <p>Traitors automatically have access to body armor, a radar and a disguiser in the shop. Detectives have access to a radar in the shop and spawn with body armor.</p>
+        <p>To give your role a shop, first change the shop property to read: <code>ROLE.shop = {}</code>. By default a role will not have a shop. If a role is given a shop, the <code>ttt_%NAMERAW%_shop_random_percent</code>, <code>ttt_%NAMERAW%_shop_random_enabled</code>, and (if applicable) <code>ttt_%NAMERAW%_shop_mode</code> or <code>ttt_%NAMERAW%_shop_sync</code> convars will be created automatically.</p>
+        <p>Inside the curly brackets for the shop or loadout add the class names of any other weapons or equipment you want, separated by commas. To find the class name of a weapon or equipment you can do the following:</p>
 
-<h4><a id="weapon" href="#weapon">Weapon:</a></h4>
-<ol>
-    <li>Start a local server with TTT as the selected gamemode</li>
-    <li>Spawn 1 bot by using the <em>bot</em> command in console</li>
-    <li>Obtain the weapon whose class you want. If it is already available to buy from a certain role's shop, either force yourself to be that role via the <em>ttt_force_*</em> commands or via a ULX plugin.</li>
-    <li>Run the following command in console to get a list of all of your weapon classes: <code>lua_run PrintTable(player.GetHumans()[1]:GetWeapons())</code></li>
-</ol>
+        <h4><a id="weapon" href="#weapon">Weapon:</a></h4>
+        <ol>
+            <li>Start a local server with TTT as the selected gamemode</li>
+            <li>Spawn 1 bot by using the <em>bot</em> command in console</li>
+            <li>Obtain the weapon whose class you want. If it is already available to buy from a certain role's shop, either force yourself to be that role via the <em>ttt_force_*</em> commands or via a ULX plugin.</li>
+            <li>Run the following command in console to get a list of all of your weapon classes: <code>lua_run PrintTable(player.GetHumans()[1]:GetWeapons())</code></li>
+        </ol>
 
-<h4><a id="equipment" href="#equipment">Equipment:</a></h4>
-<ol>
-    <li>Start a local server with TTT as the selected gamemode</li>
-    <li>Spawn 1 bot by using the <em>bot</em> command in console</li>
-    <li>Obtain the equipment item whose name you want. If it is already available to buy from a certain role's shop, either force yourself to be that role via the <em>ttt_force_*</em> commands or via a ULX plugin.</li>
-    <li>Run the following command in console to get a full list of your equipment item names: <code>lua_run GetEquipmentItemById(EQUIP_RADAR); lua_run for id, e in pairs(EquipmentCache) do if player.GetHumans()[1]:HasEquipmentItem(id) then print(id .. " = " .. e.name) end end</code></li>
-</ol>
+        <h4><a id="equipment" href="#equipment">Equipment:</a></h4>
+        <ol>
+            <li>Start a local server with TTT as the selected gamemode</li>
+            <li>Spawn 1 bot by using the <em>bot</em> command in console</li>
+            <li>Obtain the equipment item whose name you want. If it is already available to buy from a certain role's shop, either force yourself to be that role via the <em>ttt_force_*</em> commands or via a ULX plugin.</li>
+            <li>Run the following command in console to get a full list of your equipment item names: <code>lua_run GetEquipmentItemById(EQUIP_RADAR); lua_run for id, e in pairs(EquipmentCache) do if player.GetHumans()[1]:HasEquipmentItem(id) then print(id .. " = " .. e.name) end end</code></li>
+        </ol>
 
-<p><em>(Note: Equipment items can only be added to the loadout table for roles in version 1.2.1 and above!)</em></p>
-<p>For the Summoner, we don't want any loadout items but we do want the shop to have access to a few different items so we can add them like this:</p>
+        <p><em>(Note: Equipment items can only be added to the loadout table for roles in version 1.2.1 and above!)</em></p>
+        <p>For the Summoner, we don't want any loadout items but we do want the shop to have access to a few different items so we can add them like this:</p>
 
-<div><pre><code class="language-lua">ROLE.shop = {"weapon_ttt_beenade", "weapon_ttt_barnacle", "surprisecombine", "weapon_doncombinesummoner"}  
+        <div><pre><code class="language-lua">ROLE.shop = {"weapon_ttt_beenade", "weapon_ttt_barnacle", "surprisecombine", "weapon_doncombinesummoner"}  
 ROLE.loadout = {}</code></pre></div>
 
-<h3><a id="credits" href="#credits">Credits</a></h3>
-<p>Now that you have a shop set up for you role, what about the credits to actually buy things? Well, if your role is <code>ROLE_TEAM_TRAITOR</code> or <code>ROLE_TEAM_DETECTIVE</code> then they will automatically have 1 starting credit. If they belong to another team or you want to change your role to have a different amount of starting credits than the default, you can use the <code>ROLE.startingcredits</code> property:</p>
-<div><pre><code class="language-lua">ROLE.startingcredits = nil</code></pre></div>
+        <h3><a id="credits" href="#credits">Credits</a></h3>
+        <p>Now that you have a shop set up for you role, what about the credits to actually buy things? Well, if your role is <code>ROLE_TEAM_TRAITOR</code> or <code>ROLE_TEAM_DETECTIVE</code> then they will automatically have 1 starting credit. If they belong to another team or you want to change your role to have a different amount of starting credits than the default, you can use the <code>ROLE.startingcredits</code> property:</p>
+        <div><pre><code class="language-lua">ROLE.startingcredits = nil</code></pre></div>
 
-<p>Whatever number you assign to this property will automatically be set as the default for the <code>ttt_%NAMERAW%_credits_starting</code> convar. This convar is automatically created for all roles that have credits. For the Summoner, let's have them start with 2 credits so they can use a couple different shop items in the same round:</p>
-<div><pre><code class="language-lua">ROLE.startingcredits = 2</code></pre></div>
+        <p>Whatever number you assign to this property will automatically be set as the default for the <code>ttt_%NAMERAW%_credits_starting</code> convar. This convar is automatically created for all roles that have credits. For the Summoner, let's have them start with 2 credits so they can use a couple different shop items in the same round:</p>
+        <div><pre><code class="language-lua">ROLE.startingcredits = 2</code></pre></div>
 
-<h3><a id="health" href="#health">Health</a></h3>
-<p>The next couple of properties have to do with the health for your role:</p>
-<div><pre><code class="language-lua">ROLE.startinghealth = nil
+        <h3><a id="health" href="#health">Health</a></h3>
+        <p>The next couple of properties have to do with the health for your role:</p>
+        <div><pre><code class="language-lua">ROLE.startinghealth = nil
 ROLE.maxhealth = nil</code></pre></div>
 
-<p>If these aren't set the role will use <em>100</em> for the starting and maximum health by default. Also, if you only set the <code>ROLE.startinghealth</code> property then the maximum health will match by default as well.</p>
-<p>For the Summoner we want to keep it at the <em>100</em> default health, but for the sake of this example we're going to change the starting and maximum health so they start with <em>125</em> but have a maximum of <em>150</em>, allowing them to heal a little:</p>
-<div><pre><code class="language-lua">ROLE.startinghealth = 125
+        <p>If these aren't set the role will use <em>100</em> for the starting and maximum health by default. Also, if you only set the <code>ROLE.startinghealth</code> property then the maximum health will match by default as well.</p>
+        <p>For the Summoner we want to keep it at the <em>100</em> default health, but for the sake of this example we're going to change the starting and maximum health so they start with <em>125</em> but have a maximum of <em>150</em>, allowing them to heal a little:</p>
+        <div><pre><code class="language-lua">ROLE.startinghealth = 125
 ROLE.maxhealth = 150</code></pre></div>
 
-<h3><a id="role-activation" href="#role-activation">Role Activation</a></h3>
-<p>Some roles may have special logic that changes how they behave after some activation event. For example, the Clown is activated when only one team remains and the effect of their activation is they can now do damage. If you want to be able to do something like that we recommend using the entity networked properties system (such as <a href="https://wiki.facepunch.com/gmod/Entity:SetNWBool" target="_blank">SetNWBool</a>). When the role is activated you could <code>ply:SetNWBool("SummonerActive", true)</code> and then check that they are active in other places to change their behavior using <code>ply:GetNWBool("SummonerActive", false)</code>. To make this slightly nicer, we introduced the <code>ply:IsRoleActive()</code> method in v1.2.2 which is also used in delayed shop activation (see <a href="#optional-rules">Optional Rules</a>).</p>
-<p>The next line in our role definition has to do with tying into the <code>ply:IsRoleActive()</code> method, allowing you to define if your role is "active" on your own terms:</p>
-<div><pre><code class="language-lua">ROLE.isactive = nil</code></pre></div>
+        <h3><a id="role-activation" href="#role-activation">Role Activation</a></h3>
+        <p>Some roles may have special logic that changes how they behave after some activation event. For example, the Clown is activated when only one team remains and the effect of their activation is they can now do damage. If you want to be able to do something like that we recommend using the entity networked properties system (such as <a href="https://wiki.facepunch.com/gmod/Entity:SetNWBool" target="_blank">SetNWBool</a>). When the role is activated you could <code>ply:SetNWBool("SummonerActive", true)</code> and then check that they are active in other places to change their behavior using <code>ply:GetNWBool("SummonerActive", false)</code>. To make this slightly nicer, we introduced the <code>ply:IsRoleActive()</code> method in v1.2.2 which is also used in delayed shop activation (see <a href="#optional-rules">Optional Rules</a>).</p>
+        <p>The next line in our role definition has to do with tying into the <code>ply:IsRoleActive()</code> method, allowing you to define if your role is "active" on your own terms:</p>
+        <div><pre><code class="language-lua">ROLE.isactive = nil</code></pre></div>
 
-<p>This property should be a function with a single parameter that takes a player object and returns a boolean. Continuing our example from the paragraph above, we should define this property like so:</p>
-<div><pre><code class="language-lua">ROLE.isactive = function(ply)
+        <p>This property should be a function with a single parameter that takes a player object and returns a boolean. Continuing our example from the paragraph above, we should define this property like so:</p>
+        <div><pre><code class="language-lua">ROLE.isactive = function(ply)
     return ply:GetNWBool("SummonerActive", false)
 end</code></pre></div>
 
-<p>Once that is defined you can use <code>ply:IsRoleActive()</code> anywhere you need to check your role's activation state.</p>
+        <p>Once that is defined you can use <code>ply:IsRoleActive()</code> anywhere you need to check your role's activation state.</p>
 
-<h3><a id="role-selection" href="#role-selection">Role Selection</a></h3>
-<p>Not all roles that are created should be selectable at all times. A perfect example of this is the Trickster role which is nearly useless on maps that don't have traitor traps and traitor buttons. The next line in our file lets us define a predicate function to decide whether a role should be selectable (both for initial spawn and for a role the Drunk can change into if <code>ttt_drunk_any_role</code> is enabled):</p>
-<div><pre><code class="language-lua">ROLE.selectionpredicate = nil</code></pre></div>
+        <h3><a id="role-selection" href="#role-selection">Role Selection</a></h3>
+        <p>Not all roles that are created should be selectable at all times. A perfect example of this is the Trickster role which is nearly useless on maps that don't have traitor traps and traitor buttons. The next line in our file lets us define a predicate function to decide whether a role should be selectable (both for initial spawn and for a role the Drunk can change into if <code>ttt_drunk_any_role</code> is enabled):</p>
+        <div><pre><code class="language-lua">ROLE.selectionpredicate = nil</code></pre></div>
 
-<p>Our example Summoner doesn't have any selection requirements, but let's say for example's sake that it should behave like the Trickster and only spawn if there are traitor traps and traitor buttons on the map. To do that we define the predicate function which returns <code>true</code> to allow the role to be selected when the traps and buttons exist. It would look something like this:</p>
-<div><pre><code class="language-lua">ROLE.selectionpredicate = function()
-    return #ents.FindByClass("ttt_traitor_button") > 0
-end</code></pre></div>
+        <p>Our example Summoner doesn't have any selection requirements, but let's say for example's sake that it should behave like the Trickster and only spawn if there are traitor traps and traitor buttons on the map. To do that we define the predicate function which returns <code>true</code> to allow the role to be selected when the traps and buttons exist. It would look something like this:</p>
+        <div><pre><code class="language-lua">ROLE.selectionpredicate = function()
+            return #ents.FindByClass("ttt_traitor_button") > 0
+        end</code></pre></div>
 
-<h3><a id="acting-like-a-jester" href="#acting-like-a-jester">Acting Like a Jester</a></h3>
-<p>The next part of the file will help you create a role that sometimes acts like a jester. The perfect example of this functionality is the clown role -- when they first spawn, they:</p>
-<ol>
-    <li>Cannot do damage</li>
-    <li>Don't take various forms of damage (fire, explosion, falling, etc.)</li>
-    <li>Appear as a jester to other roles (on the radar, scoreboard, icon over their head, etc.)</li>
-</ol>
+        <h3><a id="acting-like-a-jester" href="#acting-like-a-jester">Acting Like a Jester</a></h3>
+        <p>The next part of the file will help you create a role that sometimes acts like a jester. The perfect example of this functionality is the clown role -- when they first spawn, they:</p>
+        <ol>
+            <li>Cannot do damage</li>
+            <li>Don't take various forms of damage (fire, explosion, falling, etc.)</li>
+            <li>Appear as a jester to other roles (on the radar, scoreboard, icon over their head, etc.)</li>
+        </ol>
 
-<p>Once the role activates (in the case of the clown, this happens when there is only one team remaining) then they no longer act like a jester, allowing them to do damage and potentially win the round.</p>
-<p>To make your role behave similarly, you need to define the following property:</p>
-<div><pre><code class="language-lua">ROLE.shouldactlikejester = nil</code></pre></div>
+        <p>Once the role activates (in the case of the clown, this happens when there is only one team remaining) then they no longer act like a jester, allowing them to do damage and potentially win the round.</p>
+        <p>To make your role behave similarly, you need to define the following property:</p>
+        <div><pre><code class="language-lua">ROLE.shouldactlikejester = nil</code></pre></div>
 
-<p>This property should be a function with a single parameter that takes a player object and returns a boolean. In the case of our example Summoner, we're going to have them to act like a jester until they are activated. To accomplish that, we define the property like this:</p>
-<div><pre><code class="language-lua">ROLE.shouldactlikejester = function(ply)
+        <p>This property should be a function with a single parameter that takes a player object and returns a boolean. In the case of our example Summoner, we're going to have them to act like a jester until they are activated. To accomplish that, we define the property like this:</p>
+        <div><pre><code class="language-lua">ROLE.shouldactlikejester = function(ply)
     return not ply:IsRoleActive()
 end</code></pre></div>
 
-<p>Once that is defined you can use <code>ply:ShouldActLikeJester()</code> anywhere you need to check whether they should still act like a jester. Custom Roles for TTT will automatically use your defined function when doing damage calculations (damage taken and damage given) as well as role display in thinks like the radar and target ID (icon over the head, name and circle when looking at a player).</p>
+        <p>Once that is defined you can use <code>ply:ShouldActLikeJester()</code> anywhere you need to check whether they should still act like a jester. Custom Roles for TTT will automatically use your defined function when doing damage calculations (damage taken and damage given) as well as role display in thinks like the radar and target ID (icon over the head, name and circle when looking at a player).</p>
 
-<h3><a id="translations" href="#translations">Translations</a></h3>
-<p>Next there is a line that looks like this:</p>
-<div><pre><code class="language-lua">ROLE.translations = {}</code></pre></div>
+        <h3><a id="translations" href="#translations">Translations</a></h3>
+        <p>Next there is a line that looks like this:</p>
+        <div><pre><code class="language-lua">ROLE.translations = {}</code></pre></div>
 
-<p>This line allows you to define custom translations to be used elsewhere in your role. The <code>ROLE.translations</code> variable is a table that maps a language name to a list of key-value pairs where the <code>key</code> is the name of the translation and the <code>value</code> is the translated string in the desired language.</p>
-<p>For example, if we wanted to add a custom translation for the <code>english</code> language, it would look something like this:</p>
-<div><pre><code class="language-lua">ROLE.translations = {
+        <p>This line allows you to define custom translations to be used elsewhere in your role. The <code>ROLE.translations</code> variable is a table that maps a language name to a list of key-value pairs where the <code>key</code> is the name of the translation and the <code>value</code> is the translated string in the desired language.</p>
+        <p>For example, if we wanted to add a custom translation for the <code>english</code> language, it would look something like this:</p>
+        <div><pre><code class="language-lua">ROLE.translations = {
     ["english"] = {
         ["summoner_testtranslation"] = "This is in English"
     }
 }</code></pre></div>
 
-<p>From here you can add additional entries for each language you want to add support for. The list of currently-supported languages is available on the <a href="https://github.com/Facepunch/garrysmod/tree/master/garrysmod/gamemodes/terrortown/gamemode/lang">Facepunch Garry's Mod GitHub</a>. For example, if we wanted to add a Spanish version of our translation then it would look like this:</p>
-<div><pre><code class="language-lua">ROLE.translations = {
+        <p>From here you can add additional entries for each language you want to add support for. The list of currently-supported languages is available on the <a href="https://github.com/Facepunch/garrysmod/tree/master/garrysmod/gamemodes/terrortown/gamemode/lang">Facepunch Garry's Mod GitHub</a>. For example, if we wanted to add a Spanish version of our translation then it would look like this:</p>
+        <div><pre><code class="language-lua">ROLE.translations = {
     ["english"] = {
         ["summoner_testtranslation"] = "This is in English"
     },
@@ -397,16 +403,16 @@ end</code></pre></div>
     }
 }</code></pre></div>
 
-<p><em>(Note: At the very least there should be an english version of every translation you add. The english translation will be used as the default if a translation is not available in the client's chosen language)</em></p>
-<p>Once a translation is defined, it can be used in client-side code via <code>LANG.GetTranslation</code> (or <code>LANG.GetParamTranslation</code> if it requires parameters).</p>
+        <p><em>(Note: At the very least there should be an english version of every translation you add. The english translation will be used as the default if a translation is not available in the client's chosen language)</em></p>
+        <p>Once a translation is defined, it can be used in client-side code via <code>LANG.GetTranslation</code> (or <code>LANG.GetParamTranslation</code> if it requires parameters).</p>
 
-<h3><a id="custom-spectator-hud" href="#custom-spectator-hud">Custom Spectator HUD</a></h3>
-<p>Some roles have features which are activated once the player dies, such as the phantom. In the phantom's case, they build up some amount of power over time and can use that power to use one of four different abilities against the player the killed them. While the power generation logic will be up to you to design and implement (you may want to look at the phantom code for reference), the spectator HUD display and action implementation have been made easier through the use of hooks and shared methods.</p>
-<p>This section of the guide will explain the pieces of the system which should make these kind of spectator HUDs easier and provide a proof-of-concept example with the summoner role.</p>
-<p>To implement a spectator HUD like the phantom has, you will need to create two hooks, one player method, and a series of translations and convars to control which powers are enabled and their costs. The translations should be added using the role translations system that you can read about <a href="#translations">above</a>. The <code>TTTSpectatorShowHUD</code> hook (which is what is used to render the spectator HUD itself) must be defined on the client. The convars and the <code>TTTSpectatorHUDKeyPress</code> hook (which is what is used to handle when a key is pressed by someone who has a spectator HUD shown) must be defined on the server. The <code>ROLE.shouldshowspectatorhud</code> method (which determines whether a player should currently be seeing a spectator HUD) should be defined on both client and server.</p>
-<p>Due to how inter-connected the pieces of this system are, we're not going to break them down into individual blocks in this guide like other sections do. Instead, we'll go over them in concept and then leave the implemented example below for you to peruse.</p>
-<p>For our example's sake we've taken the phantom implementation and removed half the powers to keep the code size relatively small. Going through the implementation, the <code>ROLE.shouldshowspectatorhud</code> function checks that the player (who is guaranteed to be a summoner, in this case) has the property that shows they should be seeing the spectator HUD. On the client side, we first initialize the translations used for the spectator HUD and then define the HUD itself using the <code>TTTSpectatorShowHUD</code> hook. Within that hook we prepare the information required and call the shared <code>CRHUD:PaintPowersHUD</code> method which handles the rendering for us. The server side is similar, first we initialize the convars and sync the values as globals so they are available on the client. Then we use the <code>TTTSpectatorHUDKeyPress</code> hook to intercept key presses and define what action each keypress should result in. The <a href="../api.html" target="_blank">API</a> has more information about the specifics of these hooks and methods if you want to learn more. See below for the fully constructed example:</p>
-<div><pre><code class="language-lua">ROLE.shouldshowspectatorhud = function(ply)
+        <h3><a id="custom-spectator-hud" href="#custom-spectator-hud">Custom Spectator HUD</a></h3>
+        <p>Some roles have features which are activated once the player dies, such as the phantom. In the phantom's case, they build up some amount of power over time and can use that power to use one of four different abilities against the player the killed them. While the power generation logic will be up to you to design and implement (you may want to look at the phantom code for reference), the spectator HUD display and action implementation have been made easier through the use of hooks and shared methods.</p>
+        <p>This section of the guide will explain the pieces of the system which should make these kind of spectator HUDs easier and provide a proof-of-concept example with the summoner role.</p>
+        <p>To implement a spectator HUD like the phantom has, you will need to create two hooks, one player method, and a series of translations and convars to control which powers are enabled and their costs. The translations should be added using the role translations system that you can read about <a href="#translations">above</a>. The <code>TTTSpectatorShowHUD</code> hook (which is what is used to render the spectator HUD itself) must be defined on the client. The convars and the <code>TTTSpectatorHUDKeyPress</code> hook (which is what is used to handle when a key is pressed by someone who has a spectator HUD shown) must be defined on the server. The <code>ROLE.shouldshowspectatorhud</code> method (which determines whether a player should currently be seeing a spectator HUD) should be defined on both client and server.</p>
+        <p>Due to how inter-connected the pieces of this system are, we're not going to break them down into individual blocks in this guide like other sections do. Instead, we'll go over them in concept and then leave the implemented example below for you to peruse.</p>
+        <p>For our example's sake we've taken the phantom implementation and removed half the powers to keep the code size relatively small. Going through the implementation, the <code>ROLE.shouldshowspectatorhud</code> function checks that the player (who is guaranteed to be a summoner, in this case) has the property that shows they should be seeing the spectator HUD. On the client side, we first initialize the translations used for the spectator HUD and then define the HUD itself using the <code>TTTSpectatorShowHUD</code> hook. Within that hook we prepare the information required and call the shared <code>CRHUD:PaintPowersHUD</code> method which handles the rendering for us. The server side is similar, first we initialize the convars and sync the values as globals so they are available on the client. Then we use the <code>TTTSpectatorHUDKeyPress</code> hook to intercept key presses and define what action each keypress should result in. The <a href="../api.html" target="_blank">API</a> has more information about the specifics of these hooks and methods if you want to learn more. See below for the fully constructed example:</p>
+        <div><pre><code class="language-lua">ROLE.shouldshowspectatorhud = function(ply)
     if ply:GetNWBool("Haunting") then
         return true
     end
@@ -472,106 +478,106 @@ if SERVER then
     end)
 end</code></pre></div>
 
-<p><em>(NOTE: If your role is already using the <code>TTTSyncGlobals</code> hook elsewhere then consider merging the hooks together in your role file. If you don't want to do that, just be careful that the hook instance name (the 2nd parameter) is unique for each hook you add)</em></p>
+        <p><em>(NOTE: If your role is already using the <code>TTTSyncGlobals</code> hook elsewhere then consider merging the hooks together in your role file. If you don't want to do that, just be careful that the hook instance name (the 2nd parameter) is unique for each hook you add)</em></p>
 
-<h3><a id="optional-rules" href="#optional-rules">Optional Rules</a></h3>
-<p>There are a few options for roles that aren't covered in the template because they don't apply to every role. Add any of these that you want to apply to your role to the file.</p>
-<table>
-    <thead>
-        <tr>
-            <th>Option</th>
-            <th>Type</th>
-            <th>Description</th>
-            <th>Added in</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td><code>ROLE.canlootcredits</code></td>
-            <td>boolean</td>
-            <td>Whether this role can loot credits from dead bodies. Automatically enabled if the role has a shop, but setting to <code>false</code> can make it so the role has a shop but cannot loot credits. Setting this to <code>true</code> will allow this role to loot credits regardless of whether they have a shop and will automatically create the <code>ttt_%NAMERAW%_credits_starting</code> convar.</td>
-            <td>1.1.8</td>
-        </tr>
-        <tr>
-            <td><code>ROLE.canusetraitorbuttons</code></td>
-            <td>boolean</td>
-            <td>Whether this role can see and use traitor traps. Automatically enabled if the role is part of <code>ROLE_TEAM_TRAITOR</code>, but setting to <code>false</code> can make it so the role is a traitor that cannot use traitor traps. Setting to <code>true</code> will allow this role to use traitor traps regardless of their team association.</td>
-            <td>1.1.8</td>
-        </tr>
-        <tr>
-            <td><code>ROLE.shoulddelayshop</code></td>
-            <td>boolean</td>
-            <td>Whether this role's shop purchases are delayed. Purchases will only be given to the player when <code>plymeta:GiveDelayedShopItems</code> is called by your own role logic. Enabling this feature will automatically create <code>ttt_%NAMERAW%_shop_active_only</code> and <code>ttt_%NAMERAW%_shop_delay</code> convars. Requires that the role has a shop and has role activation defined (see <a href="#role-activation">Role Activation</a>).</td>
-            <td>1.2.2</td>
-        </tr>
-        <tr>
-            <td><code>ROLE.shoulddelayannouncements</code></td>
-            <td>boolean</td>
-            <td>Whether this role should delay announcements when they kill a player that shows a message (like phantom and parasite). Used for things like preventing the assassin's target update message from getting overlapped.</td>
-            <td>1.2.7</td>
-        </tr>
-        <tr>
-            <td><code>ROLE.haspassivewin</code></td>
-            <td>boolean</td>
-            <td>Whether this role should not block another role from winning (like the old man).</td>
-            <td>1.3.1</td>
-        </tr>
-        <tr>
-            <td><code>ROLE.shouldnotdrown</code></td>
-            <td>boolean</td>
-            <td>Whether the player should not show the drown effect or take drowning damage.</td>
-            <td>1.5.7</td>
-        </tr>
-        <tr>
-            <td><code>ROLE.canseec4</code></td>
-            <td>boolean</td>
-            <td>Whether the player should be able to see the C4 icons like traitors can.</td>
-            <td>1.5.14</td>
-        </tr>
-        <tr>
-            <td><code>ROLE.istargetidoverridden</code></td>
-            <td>function(ply, target, showJester)</td>
-            <td>Whether the player's target ID information (role icon, circle, text) are being overridden by a hook. Called by the <code>plymeta:IsTargetIDOverridden</code> function. See <a href="../api/methods_player_object.html" target="_blank">the API</a> for more information on the function.</td>
-            <td>1.5.15</td>
-        </tr>
-        <tr>
-            <td><code>ROLE.isscoreboardinfooverridden</code></td>
-            <td>function(ply, target)</td>
-            <td>Whether the player's scoreboard (player name, role color and icon) are being overridden by a hook. Called by the <code>plymeta:IsScoreboardInfoOverridden</code> function. See <a href="../api/methods_player_object.html" target="_blank">the API</a> for more information on the function.</td>
-            <td>1.5.15</td>
-        </tr>
-        <tr>
-            <td><code>ROLE.istargethighlighted</code></td>
-            <td>function(ply, target)</td>
-            <td>Whether the target is being highlighted per the player's role rules. Called by the <code>plymeta:IsTargetHighlighted</code> function. See <a href="../api/methods_player_object.html" target="_blank">the API</a> for more information on the function.</td>
-            <td>1.5.15</td>
-        </tr>
-    </tbody>
-</table>
+        <h3><a id="optional-rules" href="#optional-rules">Optional Rules</a></h3>
+        <p>There are a few options for roles that aren't covered in the template because they don't apply to every role. Add any of these that you want to apply to your role to the file.</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Option</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Added in</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>ROLE.canlootcredits</code></td>
+                    <td>boolean</td>
+                    <td>Whether this role can loot credits from dead bodies. Automatically enabled if the role has a shop, but setting to <code>false</code> can make it so the role has a shop but cannot loot credits. Setting this to <code>true</code> will allow this role to loot credits regardless of whether they have a shop and will automatically create the <code>ttt_%NAMERAW%_credits_starting</code> convar.</td>
+                    <td>1.1.8</td>
+                </tr>
+                <tr>
+                    <td><code>ROLE.canusetraitorbuttons</code></td>
+                    <td>boolean</td>
+                    <td>Whether this role can see and use traitor traps. Automatically enabled if the role is part of <code>ROLE_TEAM_TRAITOR</code>, but setting to <code>false</code> can make it so the role is a traitor that cannot use traitor traps. Setting to <code>true</code> will allow this role to use traitor traps regardless of their team association.</td>
+                    <td>1.1.8</td>
+                </tr>
+                <tr>
+                    <td><code>ROLE.shoulddelayshop</code></td>
+                    <td>boolean</td>
+                    <td>Whether this role's shop purchases are delayed. Purchases will only be given to the player when <code>plymeta:GiveDelayedShopItems</code> is called by your own role logic. Enabling this feature will automatically create <code>ttt_%NAMERAW%_shop_active_only</code> and <code>ttt_%NAMERAW%_shop_delay</code> convars. Requires that the role has a shop and has role activation defined (see <a href="#role-activation">Role Activation</a>).</td>
+                    <td>1.2.2</td>
+                </tr>
+                <tr>
+                    <td><code>ROLE.shoulddelayannouncements</code></td>
+                    <td>boolean</td>
+                    <td>Whether this role should delay announcements when they kill a player that shows a message (like phantom and parasite). Used for things like preventing the assassin's target update message from getting overlapped.</td>
+                    <td>1.2.7</td>
+                </tr>
+                <tr>
+                    <td><code>ROLE.haspassivewin</code></td>
+                    <td>boolean</td>
+                    <td>Whether this role should not block another role from winning (like the old man).</td>
+                    <td>1.3.1</td>
+                </tr>
+                <tr>
+                    <td><code>ROLE.shouldnotdrown</code></td>
+                    <td>boolean</td>
+                    <td>Whether the player should not show the drown effect or take drowning damage.</td>
+                    <td>1.5.7</td>
+                </tr>
+                <tr>
+                    <td><code>ROLE.canseec4</code></td>
+                    <td>boolean</td>
+                    <td>Whether the player should be able to see the C4 icons like traitors can.</td>
+                    <td>1.5.14</td>
+                </tr>
+                <tr>
+                    <td><code>ROLE.istargetidoverridden</code></td>
+                    <td>function(ply, target, showJester)</td>
+                    <td>Whether the player's target ID information (role icon, circle, text) are being overridden by a hook. Called by the <code>plymeta:IsTargetIDOverridden</code> function. See <a href="../api/methods_player_object.html" target="_blank">the API</a> for more information on the function.</td>
+                    <td>1.5.15</td>
+                </tr>
+                <tr>
+                    <td><code>ROLE.isscoreboardinfooverridden</code></td>
+                    <td>function(ply, target)</td>
+                    <td>Whether the player's scoreboard (player name, role color and icon) are being overridden by a hook. Called by the <code>plymeta:IsScoreboardInfoOverridden</code> function. See <a href="../api/methods_player_object.html" target="_blank">the API</a> for more information on the function.</td>
+                    <td>1.5.15</td>
+                </tr>
+                <tr>
+                    <td><code>ROLE.istargethighlighted</code></td>
+                    <td>function(ply, target)</td>
+                    <td>Whether the target is being highlighted per the player's role rules. Called by the <code>plymeta:IsTargetHighlighted</code> function. See <a href="../api/methods_player_object.html" target="_blank">the API</a> for more information on the function.</td>
+                    <td>1.5.15</td>
+                </tr>
+            </tbody>
+        </table>
 
-<p>The Summoner doesn't need these options to be set because it is <code>ROLE_TEAM_TRAITOR</code> and has a shop, but just for an example, here's what it would look like if we wanted to remove their credit looting and traitor trap abilities and delay their shop item delivery:</p>
-<div><pre><code class="language-lua">ROLE.canlootcredits = false
+        <p>The Summoner doesn't need these options to be set because it is <code>ROLE_TEAM_TRAITOR</code> and has a shop, but just for an example, here's what it would look like if we wanted to remove their credit looting and traitor trap abilities and delay their shop item delivery:</p>
+        <div><pre><code class="language-lua">ROLE.canlootcredits = false
 ROLE.canusetraitorbuttons = false
 ROLE.shoulddelayshop = true</code></pre></div>
 
-<h3><a id="role-change-logic" href="#role-change-logic">Role Change Logic</a></h3>
-<p>Sometimes a role has to handle the specific cases of when a role is initially assigned to a player (e.g. at the start of the round or when the drunk remembers what role they are) or when a role is stolen (e.g. by the bodysnatcher or the swapper). To make those situations handleable there are two different functions that can optionally be added to your role.</p>
-<p>The first function is called when a role is initially assigned to a player and can be used to set up some logic like the assignment of the assassin's first target. The function can be defined like this:</p>
-<div><pre><code class="language-lua">ROLE.onroleassigned = function(ply)
+        <h3><a id="role-change-logic" href="#role-change-logic">Role Change Logic</a></h3>
+        <p>Sometimes a role has to handle the specific cases of when a role is initially assigned to a player (e.g. at the start of the round or when the drunk remembers what role they are) or when a role is stolen (e.g. by the bodysnatcher or the swapper). To make those situations handleable there are two different functions that can optionally be added to your role.</p>
+        <p>The first function is called when a role is initially assigned to a player and can be used to set up some logic like the assignment of the assassin's first target. The function can be defined like this:</p>
+        <div><pre><code class="language-lua">ROLE.onroleassigned = function(ply)
     -- Do something with the 'ply', the player being assigned the role, here
 end</code></pre></div>
 
-<p>The other function that might be useful is called when someone takes the role from someone else. This can be used to transfer some part of the role state (such as an assassin's current target) to the new player. This function looks something like:</p>
-<div><pre><code class="language-lua">ROLE.moverolestate = function(source, target, keepOnSource)
+        <p>The other function that might be useful is called when someone takes the role from someone else. This can be used to transfer some part of the role state (such as an assassin's current target) to the new player. This function looks something like:</p>
+        <div><pre><code class="language-lua">ROLE.moverolestate = function(source, target, keepOnSource)
     -- In this function 'source' is the player whose state is being moved to 'target'
     -- The 'keepOnSource' tells you whether the 'source' player should keep whatever information is being copied to 'target'
     -- If 'keepOnSource' is 'false', that information should be removed from the 'source' player
 end</code></pre></div>
 
-<h3><a id="convars" href="#convars">ConVars</a></h3>
-<p>By default CR for TTT will handle and create some of the ConVars that are required for your role to function.
-These ConVars all use the string you gave for <code>nameraw</code> in their definition. The following ConVars are all created by default:</p>
-<div><pre><code class="language-plaintext">ttt_%NAMERAW%_enabled (Used to enable or disable the role)
+        <h3><a id="convars" href="#convars">ConVars</a></h3>
+        <p>By default CR for TTT will handle and create some of the ConVars that are required for your role to function.
+        These ConVars all use the string you gave for <code>nameraw</code> in their definition. The following ConVars are all created by default:</p>
+        <div><pre><code class="language-plaintext">ttt_%NAMERAW%_enabled (Used to enable or disable the role)
 ttt_%NAMERAW%_spawn_weight (The weight assigned for spawning the role)
 ttt_%NAMERAW%_min_players (The minimum number of player required to spawn the role)
 ttt_%NAMERAW%_starting_health (The amount of health the role starts each round with)
@@ -581,47 +587,47 @@ ttt_%NAMERAW%_name_plural (Used to rename the plural form of the role)
 ttt_%NAMERAW%_name_article (Used to rename the indefinite article of the role)
 </code></pre></div>
 
-<p>These next convars are created only if the role has access to a shop:</p>
-<div><pre><code class="language-plaintext">ttt_%NAMERAW%_credits_starting (The number of credits the role spawns with)
+        <p>These next convars are created only if the role has access to a shop:</p>
+        <div><pre><code class="language-plaintext">ttt_%NAMERAW%_credits_starting (The number of credits the role spawns with)
 ttt_%NAMERAW%_shop_random_enabled (Whether shop randomization is enabled for the role)
 ttt_%NAMERAW%_shop_random_percent (The percent chance that each weapon in the roles shop will not be shown)
 </code></pre></div>
 
-<p>Finally, these convars are only created if the role has access to a shop AND is either a traitor, detective or independent role:</p>
-<div><pre><code class="language-plaintext">ttt_%NAMERAW%_shop_sync (Whether the role should have access to all traitor/detective shop items) [TRAITOR AND DETECTIVE ONLY]
+        <p>Finally, these convars are only created if the role has access to a shop AND is either a traitor, detective or independent role:</p>
+        <div><pre><code class="language-plaintext">ttt_%NAMERAW%_shop_sync (Whether the role should have access to all traitor/detective shop items) [TRAITOR AND DETECTIVE ONLY]
 ttt_%NAMERAW%_shop_mode (Whether the role should have access to traitor and/or detective shop items) [INDEPENDENT ONLY]
 </code></pre></div>
 
-<!--TODO: Replace this link with the HTML version-->
-<p>For more information on the specifics of these ConVars you can read the full list of ConVars <a href="https://github.com/NoxxFlame/TTT-Custom-Roles/blob/master/CONVARS.md#server-configurations">here</a>.</p>
-<p>If you would like to add your own ConVars that aren't automatically created you can do so here. First create the ConVars as you would normally with <code>CreateConVar</code>. <em>(Note: Please try to keep your ConVars as consistently named as possible. The recommended naming scheme for role specific convars is <code>ttt_%NAMERAW%_...</code>.)</em></p>
-<p>Once you have defined your ConVar you can add it to the <code>convars</code> table to get it to show up inside ULX menus. Each entry in the <code>convars</code> table needs two properties. <code>cvar</code> is the name of the ConVar you want to add and <code>type</code> is one of three values depending on if you want your ConVar to show up as a slider, checkbox or textbox.</p>
-<table>
-    <thead>
-        <tr>
-            <th>Type</th>
-            <th>Value</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Slider</td>
-            <td><code>ROLE_CONVAR_TYPE_NUM</code></td>
-        </tr>
-        <tr>
-            <td>Checkbox</td>
-            <td><code>ROLE_CONVAR_TYPE_BOOL</code></td>
-        </tr>
-        <tr>
-            <td>Textbox</td>
-            <td><code>ROLE_CONVAR_TYPE_TEXT</code></td>
-        </tr>
-    </tbody>
-</table>
+        <!--TODO: Replace this link with the HTML version-->
+        <p>For more information on the specifics of these ConVars you can read the full list of ConVars <a href="https://github.com/NoxxFlame/TTT-Custom-Roles/blob/master/CONVARS.md#server-configurations">here</a>.</p>
+        <p>If you would like to add your own ConVars that aren't automatically created you can do so here. First create the ConVars as you would normally with <code>CreateConVar</code>. <em>(Note: Please try to keep your ConVars as consistently named as possible. The recommended naming scheme for role specific convars is <code>ttt_%NAMERAW%_...</code>.)</em></p>
+        <p>Once you have defined your ConVar you can add it to the <code>convars</code> table to get it to show up inside ULX menus. Each entry in the <code>convars</code> table needs two properties. <code>cvar</code> is the name of the ConVar you want to add and <code>type</code> is one of three values depending on if you want your ConVar to show up as a slider, checkbox or textbox.</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Slider</td>
+                    <td><code>ROLE_CONVAR_TYPE_NUM</code></td>
+                </tr>
+                <tr>
+                    <td>Checkbox</td>
+                    <td><code>ROLE_CONVAR_TYPE_BOOL</code></td>
+                </tr>
+                <tr>
+                    <td>Textbox</td>
+                    <td><code>ROLE_CONVAR_TYPE_TEXT</code></td>
+                </tr>
+            </tbody>
+        </table>
 
-<p>If your ConVar is a number using a slider you can optionally add a third property <code>decimal</code> which determines how many decimal places of precision you want to give the user. <em>(Note: Max and min values for sliders are determined by the max and min values you specified when you defined the ConVar)</em></p>
-<p>The Summoner does not have any extra ConVars but for the sake of example we will add three useless ConVars.</p>
-<div><pre><code class="language-lua">if SERVER then
+        <p>If your ConVar is a number using a slider you can optionally add a third property <code>decimal</code> which determines how many decimal places of precision you want to give the user. <em>(Note: Max and min values for sliders are determined by the max and min values you specified when you defined the ConVar)</em></p>
+        <p>The Summoner does not have any extra ConVars but for the sake of example we will add three useless ConVars.</p>
+        <div><pre><code class="language-lua">if SERVER then
     CreateConVar("ttt_summoner_slider", "0", FCVAR_NONE, "This is a useless slider", 0, 10)
     CreateConVar("ttt_summoner_checkbox", "0")
     CreateConVar("ttt_summoner_textbox", "0")
@@ -641,31 +647,31 @@ table.insert(ROLE.convars, {
     type = ROLE_CONVAR_TYPE_TEXT
 })</code></pre></div>
 
-<h3><a id="custom-win-conditions" href="#custom-win-conditions">Custom Win Conditions</a></h3>
-<p>One of the more complicated parts of creating a new role comes with creating a custom win condition. The good news is this is only required if you don't want to use one of the existing "Traitors Win!", "Innocents Win!", etc. messages. A good rule of thumb is if you are creating a role that is <code>ROLE_TEAM_JESTER</code> or <code>ROLE_TEAM_INDEPENDENT</code> then you would probably need to create a custom win condition as well.</p>
-<p>To create a custom win condition, you will need to define a global unique win identifier and use three separate hooks.</p>
+        <h3><a id="custom-win-conditions" href="#custom-win-conditions">Custom Win Conditions</a></h3>
+        <p>One of the more complicated parts of creating a new role comes with creating a custom win condition. The good news is this is only required if you don't want to use one of the existing "Traitors Win!", "Innocents Win!", etc. messages. A good rule of thumb is if you are creating a role that is <code>ROLE_TEAM_JESTER</code> or <code>ROLE_TEAM_INDEPENDENT</code> then you would probably need to create a custom win condition as well.</p>
+        <p>To create a custom win condition, you will need to define a global unique win identifier and use three separate hooks.</p>
 
-<h4><a id="win-identifier" href="#win-identifier">Win Identifier</a></h4>
-<p>The identifier must be unique to make sure you can differentiate between your role's win and any other role's win. The Win ID should be generated on the server and will be automatically synced to the client.</p>
-<p>Be sure to use the role ID for your new role when calling the <code>GenerateNewWinID</code> method. After the <code>GenerateNewWinID</code> method is called, the code below then saves the generated value to the global <code>WIN_SUMMONER</code> value to be used on the server later:</p>
-<div><pre><code class="language-lua">if SERVER then
+        <h4><a id="win-identifier" href="#win-identifier">Win Identifier</a></h4>
+        <p>The identifier must be unique to make sure you can differentiate between your role's win and any other role's win. The Win ID should be generated on the server and will be automatically synced to the client.</p>
+        <p>Be sure to use the role ID for your new role when calling the <code>GenerateNewWinID</code> method. After the <code>GenerateNewWinID</code> method is called, the code below then saves the generated value to the global <code>WIN_SUMMONER</code> value to be used on the server later:</p>
+        <div><pre><code class="language-lua">if SERVER then
     hook.Add("Initialize", "SummonerInitialize", function()
         WIN_SUMMONER = GenerateNewWinID(ROLE_SUMMONER)
     end)
 end</code></pre></div>
 
-<p>In order for your code to use it on the client, however, you will need to use the <code>TTTSyncWinIDs</code> hook to know when you can pull the ID from the <code>WINS_BY_ROLE</code> global table by doing the following:</p>
-<div><pre><code class="language-lua">if CLIENT then
+        <p>In order for your code to use it on the client, however, you will need to use the <code>TTTSyncWinIDs</code> hook to know when you can pull the ID from the <code>WINS_BY_ROLE</code> global table by doing the following:</p>
+        <div><pre><code class="language-lua">if CLIENT then
     hook.Add("TTTSyncWinIDs", "SummonerTTTWinIDsSynced", function()
         WIN_SUMMONER = WINS_BY_ROLE[ROLE_SUMMONER]
     end)
 end</code></pre></div>
 
-<p>Once we have our unique win condition identifier created it's time to write the code that uses it.</p>
+        <p>Once we have our unique win condition identifier created it's time to write the code that uses it.</p>
 
-<h4><a id="win-condition" href="#win-condition">Win Condition</a></h4>
-<p>The first piece of code that will use our new win condition identifier is the code that determines if our role should win the round. To do that we have to hook the <code>TTTCheckForWin</code> method on the server side. For this hook it is important to only return a value if you want to have a specific result. For example, if you want to block the round from ending you return <code>WIN_NONE</code> and if you want your role to win then you return the win condition identifier we made above (in our example case: <code>WIN_SUMMONER</code>). If you return nothing then the default win condition logic will run as normal. See below for a template example of how to set up this hook:</p>
-<div><pre><code class="language-lua">if SERVER then
+        <h4><a id="win-condition" href="#win-condition">Win Condition</a></h4>
+        <p>The first piece of code that will use our new win condition identifier is the code that determines if our role should win the round. To do that we have to hook the <code>TTTCheckForWin</code> method on the server side. For this hook it is important to only return a value if you want to have a specific result. For example, if you want to block the round from ending you return <code>WIN_NONE</code> and if you want your role to win then you return the win condition identifier we made above (in our example case: <code>WIN_SUMMONER</code>). If you return nothing then the default win condition logic will run as normal. See below for a template example of how to set up this hook:</p>
+        <div><pre><code class="language-lua">if SERVER then
     hook.Add("TTTCheckForWin", "SummonerCheckForWin", function()
         local summonerWins = false
         --[[
@@ -678,34 +684,34 @@ end</code></pre></div>
     end)
 end</code></pre></div>
 
-<p>We'll leave the actual logic to determine whether our role wins blank as an exercise for you to fill out on your own. Once our role can actually win we need to define two more hooks to let everyone know when that it happened.</p>
+        <p>We'll leave the actual logic to determine whether our role wins blank as an exercise for you to fill out on your own. Once our role can actually win we need to define two more hooks to let everyone know when that it happened.</p>
 
-<h4><a id="round-summary-title" href="#round-summary-title">Round Summary Title</a></h4>
-<p>The first hook to show that our role won is the one for the big text on the round summary screen. This hook (which runs on the client side) allows you to return an object which describes the text to show when your win condition happens.</p>
-<p>The first property of the object that the hook expects is <code>txt</code> which is the translation string for the text being shown. There are two default translation strings that are available specifically for this purpose. Choose whichever one makes sense for your role:</p>
-<table>
-    <thead>
-        <tr>
-            <th>Translation String</th>
-            <th>Text</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>hilite_win_role_singular</td>
-            <td>THE {role} WINS</td>
-        </tr>
-        <tr>
-            <td>hilite_win_role_plural</td>
-            <td>THE {role} WIN</td>
-        </tr>
-    </tbody>
-</table>
+        <h4><a id="round-summary-title" href="#round-summary-title">Round Summary Title</a></h4>
+        <p>The first hook to show that our role won is the one for the big text on the round summary screen. This hook (which runs on the client side) allows you to return an object which describes the text to show when your win condition happens.</p>
+        <p>The first property of the object that the hook expects is <code>txt</code> which is the translation string for the text being shown. There are two default translation strings that are available specifically for this purpose. Choose whichever one makes sense for your role:</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Translation String</th>
+                    <th>Text</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>hilite_win_role_singular</td>
+                    <td>THE {role} WINS</td>
+                </tr>
+                <tr>
+                    <td>hilite_win_role_plural</td>
+                    <td>THE {role} WIN</td>
+                </tr>
+            </tbody>
+        </table>
 
-<p>The second property is <code>params</code> which is another object with the values to use when replacing placeholders in the translation string. When using the translation strings above, the only placeholder is <code>role</code> so the only property inside the <code>params</code> object should be <code>role</code>. The value for this property should be the role string for your role in the correct singular or plural form depending on which translation string you used above. For example, if you used <code>hilite_win_role_singular</code> then <code>role</code> would be <code>ROLE_STRINGS[ROLE_SUMMONER]</code> but if you used <code>hilite_win_role_plural</code> then <code>role</code> would be <code>ROLE_STRINGS_PLURAL[ROLE_SUMMONER]</code>.</p>
-<p>The final parameter of the returned object is <code>c</code>, representing the color to show in the background behind the winning text. In general you should use the role color for your role. In our case that would look like this: <code>ROLE_COLORS[ROLE_SUMMONER]</code>.</p>
-<p>Putting all the properties together, the hook would look something like the following:</p>
-<div><pre><code class="language-lua">if CLIENT then
+        <p>The second property is <code>params</code> which is another object with the values to use when replacing placeholders in the translation string. When using the translation strings above, the only placeholder is <code>role</code> so the only property inside the <code>params</code> object should be <code>role</code>. The value for this property should be the role string for your role in the correct singular or plural form depending on which translation string you used above. For example, if you used <code>hilite_win_role_singular</code> then <code>role</code> would be <code>ROLE_STRINGS[ROLE_SUMMONER]</code> but if you used <code>hilite_win_role_plural</code> then <code>role</code> would be <code>ROLE_STRINGS_PLURAL[ROLE_SUMMONER]</code>.</p>
+        <p>The final parameter of the returned object is <code>c</code>, representing the color to show in the background behind the winning text. In general you should use the role color for your role. In our case that would look like this: <code>ROLE_COLORS[ROLE_SUMMONER]</code>.</p>
+        <p>Putting all the properties together, the hook would look something like the following:</p>
+        <div><pre><code class="language-lua">if CLIENT then
     hook.Add("TTTScoringWinTitle", "SummonerScoringWinTitle", function(wintype, wintitles, title, secondaryWinRole)
         if wintype == WIN_SUMMONER then
             return { txt = "hilite_win_role_singular", params = { role = string.upper(ROLE_STRINGS[ROLE_SUMMONER]) }, c = ROLE_COLORS[ROLE_SUMMONER] }
@@ -713,9 +719,9 @@ end</code></pre></div>
     end)
 end</code></pre></div>
 
-<h4><a id="round-summary-events" href="#round-summary-events">Round Summary Events</a></h4>
-<p>Another part of the round summary screen that we want to tie into the is Events tab. When the round ends we add a row to the Events tab for the major events that occurred during that round. The part that we care about, specifically, is the text for the "round finished" event which is implemented by the two hooks below:</p>
-<div><pre><code class="language-lua">if CLIENT then
+        <h4><a id="round-summary-events" href="#round-summary-events">Round Summary Events</a></h4>
+        <p>Another part of the round summary screen that we want to tie into the is Events tab. When the round ends we add a row to the Events tab for the major events that occurred during that round. The part that we care about, specifically, is the text for the "round finished" event which is implemented by the two hooks below:</p>
+        <div><pre><code class="language-lua">if CLIENT then
     hook.Add("TTTEventFinishText", "SummonerEventFinishText", function(e)
         if e.win == WIN_SUMMONER then
             return LANG.GetParamTranslation("ev_win_summoner", { role = string.lower(ROLE_STRINGS[ROLE_SUMMONER]) })
@@ -735,13 +741,13 @@ ROLE.translations = {
     }
 }</code></pre></div>
 
-<p>The first hook (<code>TTTEventFinishText</code>) is used to control the text to show in the row on the Events tab itself. We recommend using a translatable string (as we do in the example) but that is not strictly necessary. Don't forget to use the role translations system (<a href="#translations">detailed above</a>) to set up the translation string to use.</p>
-<p>The second hook (<code>TTTEventFinishIconText</code>) is used to control the text that shows when you hover over the icon in the row on the Events tab. The second hook's first return value is the name of a translation string and in most cases doesn't need to be changed at all. In the most common case the only thing you need to do is return the plural string for the winning role (or team) as the second return value.</p>
+        <p>The first hook (<code>TTTEventFinishText</code>) is used to control the text to show in the row on the Events tab itself. We recommend using a translatable string (as we do in the example) but that is not strictly necessary. Don't forget to use the role translations system (<a href="#translations">detailed above</a>) to set up the translation string to use.</p>
+        <p>The second hook (<code>TTTEventFinishIconText</code>) is used to control the text that shows when you hover over the icon in the row on the Events tab. The second hook's first return value is the name of a translation string and in most cases doesn't need to be changed at all. In the most common case the only thing you need to do is return the plural string for the winning role (or team) as the second return value.</p>
 
-<h4><a id="round-result-message" href="#round-result-message">Round Result Message</a></h4>
-<p>The final hook to set up our custom win condition is the one that displays the winning message in the top-right of the screen. It also prints the winning team to the server console, but that's not something the players will see. This hook is on the server side but requires a translation to be set up on the client side (using the role translation system <a href="#translations">detailed above</a>) for the actual message to display.</p>
-<p>The standard name we use for the translation string for this is the same as the win condition identifier global, but in all lowercase. In our example, that would be <code>win_summoner</code>. When we set up the translation we deliberately use a placeholder for the role name so that the role can be renamed dynamically. We then have to pass the role string for our role when we use the translation. The full example of the hook and the translation string setup can be seen below:</p>
-<div><pre><code class="language-lua">if SERVER then
+        <h4><a id="round-result-message" href="#round-result-message">Round Result Message</a></h4>
+        <p>The final hook to set up our custom win condition is the one that displays the winning message in the top-right of the screen. It also prints the winning team to the server console, but that's not something the players will see. This hook is on the server side but requires a translation to be set up on the client side (using the role translation system <a href="#translations">detailed above</a>) for the actual message to display.</p>
+        <p>The standard name we use for the translation string for this is the same as the win condition identifier global, but in all lowercase. In our example, that would be <code>win_summoner</code>. When we set up the translation we deliberately use a placeholder for the role name so that the role can be renamed dynamically. We then have to pass the role string for our role when we use the translation. The full example of the hook and the translation string setup can be seen below:</p>
+        <div><pre><code class="language-lua">if SERVER then
     hook.Add("TTTPrintResultMessage", "SummonerPrintResultMessage", function(type)
         if type == WIN_SUMMONER then
             LANG.Msg("win_summoner", { role = ROLE_STRINGS[ROLE_SUMMONER] })
@@ -757,12 +763,12 @@ ROLE.translations = {
     }
 }</code></pre></div>
 
-<p>The <code>LANG.Msg</code> call is the one that sends the message to each client and tells them to translate it. Below that, the <code>ServerLog</code> call writes a simpler message to the server console, just in case. Finally we <code>return true</code> from the hook to tell Custom Roles for TTT not to run the default logic for printing these messages since we've already handled it.</p>
+        <p>The <code>LANG.Msg</code> call is the one that sends the message to each client and tells them to translate it. Below that, the <code>ServerLog</code> call writes a simpler message to the server console, just in case. Finally we <code>return true</code> from the hook to tell Custom Roles for TTT not to run the default logic for printing these messages since we've already handled it.</p>
 
-<h4><a id="full-win-condition-example" href="#full-win-condition-example">Full Win Condition Example</a></h4>
-<p>As mentioned earlier, a good rule of thumb is if you are creating a role that is <code>ROLE_TEAM_JESTER</code> or <code>ROLE_TEAM_INDEPENDENT</code> then you will probably need a custom win condition. In the case of the Summoner none of this is required as it is <code>ROLE_TEAM_TRAITOR</code> and we want the summoner to win with the traitors, but it is left here as an example.</p>
-<p>If we piece together all the bits of code from the previous sections it would come out looking something like this:</p>
-<div><pre><code class="language-lua">ROLE.translations = {
+        <h4><a id="full-win-condition-example" href="#full-win-condition-example">Full Win Condition Example</a></h4>
+        <p>As mentioned earlier, a good rule of thumb is if you are creating a role that is <code>ROLE_TEAM_JESTER</code> or <code>ROLE_TEAM_INDEPENDENT</code> then you will probably need a custom win condition. In the case of the Summoner none of this is required as it is <code>ROLE_TEAM_TRAITOR</code> and we want the summoner to win with the traitors, but it is left here as an example.</p>
+        <p>If we piece together all the bits of code from the previous sections it would come out looking something like this:</p>
+        <div><pre><code class="language-lua">ROLE.translations = {
     ["english"] = {
         ["ev_win_summoner"] = "The {role}'s army of minions has won them the round!",
         ["win_summoner"] = "The {role}'s minions have overwhelmed their enemies!"
@@ -817,16 +823,16 @@ if CLIENT then
     end)
 end</code></pre></div>
 
-<h3><a id="tutorial-page" href="#tutorial-page">Tutorial Page</a></h3>
-<p>With every new role that is added, the amount of different possible features and abilities becomes even more difficult for the players to remember. To help in that regard we have created a dynamic tutorial system within the in-game F1 Help and Settings menu. The tutorial system only shows pages for the roles that are currently available and enabled on the server and allows role creators to dynamically define their role tutorial page. The intent of the role tutorial page is to provide a description of the functionality of the role and to dynamically update based on the current role configurations. Dynamically updating the role tutorial page allows server operators to configure the roles to their liking while avoiding the confusion of a static tutorial image not matching those configurations (as in past versions of Custom Roles for TTT).</p>
-<p>There are two different client-side hooks that can be used to define the tutorial page for your role:</p>
-<ol>
-    <li><code>TTTTutorialRolePage</code> - Used to render a completely custom page using the extensive panel and UI control system built into GMod.</li>
-    <li><code>TTTTutorialRoleText</code> - Used to provide the text to show for a role. This text can be HTML and will be rendered within a <code>&lt;div&gt;</code>.</li>
-</ol>
+        <h3><a id="tutorial-page" href="#tutorial-page">Tutorial Page</a></h3>
+        <p>With every new role that is added, the amount of different possible features and abilities becomes even more difficult for the players to remember. To help in that regard we have created a dynamic tutorial system within the in-game F1 Help and Settings menu. The tutorial system only shows pages for the roles that are currently available and enabled on the server and allows role creators to dynamically define their role tutorial page. The intent of the role tutorial page is to provide a description of the functionality of the role and to dynamically update based on the current role configurations. Dynamically updating the role tutorial page allows server operators to configure the roles to their liking while avoiding the confusion of a static tutorial image not matching those configurations (as in past versions of Custom Roles for TTT).</p>
+        <p>There are two different client-side hooks that can be used to define the tutorial page for your role:</p>
+        <ol>
+            <li><code>TTTTutorialRolePage</code> - Used to render a completely custom page using the extensive panel and UI control system built into GMod.</li>
+            <li><code>TTTTutorialRoleText</code> - Used to provide the text to show for a role. This text can be HTML and will be rendered within a <code>&lt;div&gt;</code>.</li>
+        </ol>
 
-<p>For our Summoner example, we're going to use the simpler <code>TTTTutorialRoleText</code> hook and return a simple string description of the role.</p>
-<div><pre><code class="language-lua">if CLIENT then
+        <p>For our Summoner example, we're going to use the simpler <code>TTTTutorialRoleText</code> hook and return a simple string description of the role.</p>
+        <div><pre><code class="language-lua">if CLIENT then
     hook.Add("TTTTutorialRoleText", "SummonerTutorialRoleText", function(role, titleLabel, roleIcon)
         if role == ROLE_SUMMONER then
             return "The " .. ROLE_STRINGS[ROLE_SUMMONER] .. " is a member of the traitor team who can only purchase items that summon minions to fight for them."
@@ -834,9 +840,9 @@ end</code></pre></div>
     end)
 end</code></pre></div>
 
-<p><em>(Note: If you would like to make this information translatable, see the <a href="#translations">Translations</a> section of this document. )</em></p>
-<p>For a more complex example, lets take the same string from before but change the phrase "traitor team" to be the color of the traitor team in TTT. To do that, we're going to use some fairly basic HTML instead of just raw text:</p>
-<div><pre><code class="language-lua">if CLIENT then
+        <p><em>(Note: If you would like to make this information translatable, see the <a href="#translations">Translations</a> section of this document. )</em></p>
+        <p>For a more complex example, lets take the same string from before but change the phrase "traitor team" to be the color of the traitor team in TTT. To do that, we're going to use some fairly basic HTML instead of just raw text:</p>
+        <div><pre><code class="language-lua">if CLIENT then
     hook.Add("TTTTutorialRoleText", "SummonerTutorialRoleText", function(role, titleLabel, roleIcon)
         if role == ROLE_SUMMONER then
             local roleColor = ROLE_COLORS[ROLE_TRAITOR]
@@ -845,20 +851,20 @@ end</code></pre></div>
     end)
 end</code></pre></div>
 
-<h3><a id="role-registration" href="#role-registration">Role Registration</a></h3>
-<p>The next line simply tells CR for TTT to register your role and passes through all the relevant information. You do not need to edit this line. CR for TTT automatically defines an enumeration for your role, <code>ROLE_%NAMERAW%</code> as well as helper functions <code>Get%NAMERAW%</code>, <code>Is%NAMERAW%</code> and <code>IsActive%NAMERAW%</code> if you would like to use them to add extra logic for your role.</p>
+        <h3><a id="role-registration" href="#role-registration">Role Registration</a></h3>
+        <p>The next line simply tells CR for TTT to register your role and passes through all the relevant information. You do not need to edit this line. CR for TTT automatically defines an enumeration for your role, <code>ROLE_%NAMERAW%</code> as well as helper functions <code>Get%NAMERAW%</code>, <code>Is%NAMERAW%</code> and <code>IsActive%NAMERAW%</code> if you would like to use them to add extra logic for your role.</p>
 
-<h3><a id="final-block" href="#final-block">Final Block</a></h3>
-<p>Finally we have this block of code:</p>
-<div><pre><code class="language-lua">if SERVER then  
+        <h3><a id="final-block" href="#final-block">Final Block</a></h3>
+        <p>Finally we have this block of code:</p>
+        <div><pre><code class="language-lua">if SERVER then  
     AddCSLuaFile()
 end</code></pre></div>
 
-<p>When this code is run on the server it makes sure the client downloads this file so they know everything you have done up until now. Any logic that should only run on the server-side should be in an <code>if SERVER then</code> block like this.</p>
+        <p>When this code is run on the server it makes sure the client downloads this file so they know everything you have done up until now. Any logic that should only run on the server-side should be in an <code>if SERVER then</code> block like this.</p>
 
-<h3><a id="example-file" href="#example-file">Example File</a></h3>
-<p>Once you have done that you are finished with coding. You can close your file and move on to creating your sprites. One last time before moving on to that, here is the full summoner.lua file for reference, as it appears on the workshop:</p>
-<div><pre><code class="language-lua">local ROLE = {}  
+        <h3><a id="example-file" href="#example-file">Example File</a></h3>
+        <p>Once you have done that you are finished with coding. You can close your file and move on to creating your sprites. One last time before moving on to that, here is the full summoner.lua file for reference, as it appears on the workshop:</p>
+        <div><pre><code class="language-lua">local ROLE = {}  
 
 ROLE.nameraw = "summoner"  
 ROLE.name = "Summoner"  
@@ -892,71 +898,69 @@ if CLIENT then
     end)
 end</pre></code></div>
 
-<h3><a id="file-separation" href="#file-separation">File Separation</a></h3>
-<p>When working with larger roles, having everything in the one file can easily become messy. In this situation you can <em><strong>optionally</strong></em> split your code across client, server, and shared files.</p>
-<p>To do this first create a folder inside of the 'lua/customroles' folder with the name of your role. <em>(e.g. lua/customroles/summoner)</em></p>
-<p>Inside this folder you can create three separate files:</p>
-<ul>
-<li>'<strong>%NAMERAW%.lua</strong>' for any code you want to run server-side only. This should be any code you have inside an <code>if SERVER then</code> or similar block.</li>
-<li>'<strong>cl_%NAMERAW%.lua</strong>' for any code you want to run client-side only. This should be any code you have inside an <code>if CLIENT then</code> or similar block.</li>
-<li>'<strong>shared.lua</strong>' or '<strong>sh_%NAMERAW%.lua</strong>' for any code you want to run both server-side and client-side.</li>
-</ul>
-<p>For example in the case of the summoner, if I wanted to use this method my file structure should look like this:</p>
-<div><pre><code class="language-plaintext">└─ lua
+        <h3><a id="file-separation" href="#file-separation">File Separation</a></h3>
+        <p>When working with larger roles, having everything in the one file can easily become messy. In this situation you can <em><strong>optionally</strong></em> split your code across client, server, and shared files.</p>
+        <p>To do this first create a folder inside of the 'lua/customroles' folder with the name of your role. <em>(e.g. lua/customroles/summoner)</em></p>
+        <p>Inside this folder you can create three separate files:</p>
+        <ul>
+        <li>'<strong>%NAMERAW%.lua</strong>' for any code you want to run server-side only. This should be any code you have inside an <code>if SERVER then</code> or similar block.</li>
+        <li>'<strong>cl_%NAMERAW%.lua</strong>' for any code you want to run client-side only. This should be any code you have inside an <code>if CLIENT then</code> or similar block.</li>
+        <li>'<strong>shared.lua</strong>' or '<strong>sh_%NAMERAW%.lua</strong>' for any code you want to run both server-side and client-side.</li>
+        </ul>
+        <p>For example in the case of the summoner, if I wanted to use this method my file structure should look like this:</p>
+        <div><pre><code class="language-plaintext">└─ lua
    └─ customroles
       └─ summoner
          ├─ cl_summoner.lua
          ├─ shared.lua
          └─ summoner.lua
-</code></pre></div>
+        </code></pre></div>
 
-<h3><a id="role-modifications" href="#role-modifications">Role Modifications</a></h3>
-<p>If instead of creating your own role from scratch you would like to modify a pre-existing role, you can do this by placing your code inside of 'lua/rolemodifications' instead of 'lua/customroles'. You <em>SHOULD NOT</em> create the <code>ROLE</code> table or call <code>RegisterRole(ROLE)</code> when creating a role modification as the role you are modifying already exists.</p>
-<p>You can either place your code inside a single file, or you can split it between three separate client, server, and shared files as is described in the <a href="#file-separation">File Separation</a> section.</p>
-<p>Modifying pre-existing roles can end up being more confusing than creating one from scratch if you don't know what you are doing, and unfortunately as the scope of modifying a role is almost endless an in depth walkthrough would be impossible. It is strongly recommended that you familiarise yourself with Lua, Garry's Mod and Custom Roles for TTT before getting started with a role modification. If you would like to see an example of a role modification you can look at the code behind the enhanced detectives pack <a href="https://github.com/NoxxFlame/TTT-Enhanced-Detectives">here</a>.</p>
+        <h3><a id="role-modifications" href="#role-modifications">Role Modifications</a></h3>
+        <p>If instead of creating your own role from scratch you would like to modify a pre-existing role, you can do this by placing your code inside of 'lua/rolemodifications' instead of 'lua/customroles'. You <em>SHOULD NOT</em> create the <code>ROLE</code> table or call <code>RegisterRole(ROLE)</code> when creating a role modification as the role you are modifying already exists.</p>
+        <p>You can either place your code inside a single file, or you can split it between three separate client, server, and shared files as is described in the <a href="#file-separation">File Separation</a> section.</p>
+        <p>Modifying pre-existing roles can end up being more confusing than creating one from scratch if you don't know what you are doing, and unfortunately as the scope of modifying a role is almost endless an in depth walkthrough would be impossible. It is strongly recommended that you familiarise yourself with Lua, Garry's Mod and Custom Roles for TTT before getting started with a role modification. If you would like to see an example of a role modification you can look at the code behind the enhanced detectives pack <a href="https://github.com/NoxxFlame/TTT-Enhanced-Detectives">here</a>.</p>
 
-<h2><a id="sprites" href="#sprites">Sprites</a></h2>
-<p>There are four different sprites used within CR for TTT and you will need to make a separate image file for each.</p>
+        <h2><a id="sprites" href="#sprites">Sprites</a></h2>
+        <p>There are four different sprites used within CR for TTT and you will need to make a separate image file for each.</p>
 
-<h3><a id="finding-a-role-icon" href="#finding-a-role-icon">Finding a Role Icon</a></h3>
-<p>Before you start messing with each individual sprite you need to find a good role icon. Your role icon should be solid white and you should avoid too much detail. One of the best places we know to find icons like this is <a href="https://game-icons.net/" target="_blank">https://game-icons.net/</a>.</p>
-<p>For the Summoner we are going to use their "minions" icon with some slight changes. Make sure your icon is white with a transparent background. Here is the final version of the icon we are using for the summoner:</p>
-<p><img src="https://i.imgur.com/vbuDVHP.png" style="max-width: 100%;"/></p>
+        <h3><a id="finding-a-role-icon" href="#finding-a-role-icon">Finding a Role Icon</a></h3>
+        <p>Before you start messing with each individual sprite you need to find a good role icon. Your role icon should be solid white and you should avoid too much detail. One of the best places we know to find icons like this is <a href="https://game-icons.net/" target="_blank">https://game-icons.net/</a>.</p>
+        <p>For the Summoner we are going to use their "minions" icon with some slight changes. Make sure your icon is white with a transparent background. Here is the final version of the icon we are using for the summoner:</p>
+        <p><img src="https://i.imgur.com/vbuDVHP.png" style="max-width: 100%;"/></p>
 
-<h3><a id="tab-file" href="#tab-file">Tab File</a></h3>
-<p>The tab file is the simplest icon of the bunch. This icon shows up next to players that you know the role of when you are holding tab. There is no template for the tab icon as all you need to do is resize your icon down to 16x16. This icon should be saved as 'tab_%NAMESHORT%.png' where <code>%NAMESHORT%</code> is replaced with whatever you defined <code>nameshort</code> as earlier. All of the icons in this guide should be saved in 'Role Addon Template' &gt; 'materials' &gt; 'vgui' &gt; 'ttt'.</p>
-<p>Here is what we ended with for 'tab_sum.png':</p>
-<p><img src="https://i.imgur.com/XocV4qu.png" style="max-width: 100%;"/></p>
+        <h3><a id="tab-file" href="#tab-file">Tab File</a></h3>
+        <p>The tab file is the simplest icon of the bunch. This icon shows up next to players that you know the role of when you are holding tab. There is no template for the tab icon as all you need to do is resize your icon down to 16x16. This icon should be saved as 'tab_%NAMESHORT%.png' where <code>%NAMESHORT%</code> is replaced with whatever you defined <code>nameshort</code> as earlier. All of the icons in this guide should be saved in 'Role Addon Template' &gt; 'materials' &gt; 'vgui' &gt; 'ttt'.</p>
+        <p>Here is what we ended with for 'tab_sum.png':</p>
+        <p><img src="https://i.imgur.com/XocV4qu.png" style="max-width: 100%;"/></p>
 
-<h3><a id="score-file" href="#score-file">Score File</a></h3>
-<p>The score file is what shows up in the round summary at the end of each round. Open up 'Score Template.psd' and you should see a white dashed outline. This is the guide for the size of your icon. Click on the 'Icon' layer and paste in your role icon. You should automatically see a shadow appear behind your icon. Resize this icon until the white is all inside the dashed outline. <em>(Note: It doesn't matter if some shadow spills out of the outline as long as all the white is inside the guide.)</em> Once you are happy with the positioning of the icon you can click the eye symbol next to the 'Icon Guide' layer to hide the dashed outline guide. Save this image as 'score_%NAMESHORT%.png' where <code>%NAMESHORT%</code> is replaced as you did before. Once again this should be saved in 'Role Addon Template' &gt; 'materials' &gt; 'vgui' &gt; 'ttt'.</p>
-<p>Here is what we have for 'score_sum.png':</p>
-<p><img src="https://i.imgur.com/zZkU611.png" style="max-width: 100%;"/></p>
+        <h3><a id="score-file" href="#score-file">Score File</a></h3>
+        <p>The score file is what shows up in the round summary at the end of each round. Open up 'Score Template.psd' and you should see a white dashed outline. This is the guide for the size of your icon. Click on the 'Icon' layer and paste in your role icon. You should automatically see a shadow appear behind your icon. Resize this icon until the white is all inside the dashed outline. <em>(Note: It doesn't matter if some shadow spills out of the outline as long as all the white is inside the guide.)</em> Once you are happy with the positioning of the icon you can click the eye symbol next to the 'Icon Guide' layer to hide the dashed outline guide. Save this image as 'score_%NAMESHORT%.png' where <code>%NAMESHORT%</code> is replaced as you did before. Once again this should be saved in 'Role Addon Template' &gt; 'materials' &gt; 'vgui' &gt; 'ttt'.</p>
+        <p>Here is what we have for 'score_sum.png':</p>
+        <p><img src="https://i.imgur.com/zZkU611.png" style="max-width: 100%;"/></p>
 
-<h3><a id="sprite-file" href="#sprite-file">Sprite File</a></h3>
-<p>The sprite file is what shows up above players heads when you know their role. Open up 'Sprite Template.psd' and once again you should see a white dashed outline. Repeat the same process as you did for the score icon. Click on the 'Icon' layer, paste in your role icon, resize to fit the outline and hide the outline guide layer. Save this image as 'sprite_%NAMESHORT%.png'.</p>
-<p>For some icons GMod likes to use a .vtf or Valve Texture Format file. In order to do this we need to first create a .tga or Targa file. Targa files use an alpha layer for transparency so we need to convert our .png into a .tga. While Photoshop and GIMP can do this natively they do not properly create the alpha layer we need. The best method we have found is to use <a href="https://www.aconvert.com/image/png-to-tga/" target="_blank">Aconvert.com</a> so upload your 'sprite_%NAMESHORT%.png' file here and download the converted Targa file.</p>
-<p>Finally we can turn our .tga into the .vtf file we need. Open VTFEdit, click 'File' &gt; 'Import' and select the converted Targa file. You should see your icon inside of VTFEdit except the shadows should have turned solid black and any transparency is now white. While this may look incredibly strange, this is actually exactly what we want! Save this file as 'sprite_%NAMESHORT%.vtf' in 'Role Addon Template' &gt; 'materials' &gt; 'vgui' &gt; 'ttt'.</p>
-<p>Here is the final version of 'sprite_sum.vtf':</p>
-<p><img src="https://i.imgur.com/IhFJfmp.png" style="max-width: 100%;"/></p>
+        <h3><a id="sprite-file" href="#sprite-file">Sprite File</a></h3>
+        <p>The sprite file is what shows up above players heads when you know their role. Open up 'Sprite Template.psd' and once again you should see a white dashed outline. Repeat the same process as you did for the score icon. Click on the 'Icon' layer, paste in your role icon, resize to fit the outline and hide the outline guide layer. Save this image as 'sprite_%NAMESHORT%.png'.</p>
+        <p>For some icons GMod likes to use a .vtf or Valve Texture Format file. In order to do this we need to first create a .tga or Targa file. Targa files use an alpha layer for transparency so we need to convert our .png into a .tga. While Photoshop and GIMP can do this natively they do not properly create the alpha layer we need. The best method we have found is to use <a href="https://www.aconvert.com/image/png-to-tga/" target="_blank">Aconvert.com</a> so upload your 'sprite_%NAMESHORT%.png' file here and download the converted Targa file.</p>
+        <p>Finally we can turn our .tga into the .vtf file we need. Open VTFEdit, click 'File' &gt; 'Import' and select the converted Targa file. You should see your icon inside of VTFEdit except the shadows should have turned solid black and any transparency is now white. While this may look incredibly strange, this is actually exactly what we want! Save this file as 'sprite_%NAMESHORT%.vtf' in 'Role Addon Template' &gt; 'materials' &gt; 'vgui' &gt; 'ttt'.</p>
+        <p>Here is the final version of 'sprite_sum.vtf':</p>
+        <p><img src="https://i.imgur.com/IhFJfmp.png" style="max-width: 100%;"/></p>
 
-<h3><a id="icon-file" href="#icon-file">Icon File</a></h3>
-<p>The icon file is shown when a body is searched to reveal that players role. Open up 'Icon Template.psd' and yet again you should see a guide outline. Repeat the same process you did for both the score and sprite files. The icon file also needs to have a .vtf format so save your file as a .png, upload it to <a href="https://www.aconvert.com/image/png-to-tga/" target="_blank">Aconvert.com</a>, download your .tga file and import it into VTFEdit. Save this file as 'icon_%NAMESHORT%.vtf' in 'Role Addon Template' &gt; 'materials' &gt; 'vgui' &gt; 'ttt'.</p>
-<p>Here is the final version of 'icon_sum.vtf':</p>
-<p><img src="https://i.imgur.com/Jeh8sHo.png" style="max-width: 100%;"/></p>
+        <h3><a id="icon-file" href="#icon-file">Icon File</a></h3>
+        <p>The icon file is shown when a body is searched to reveal that players role. Open up 'Icon Template.psd' and yet again you should see a guide outline. Repeat the same process you did for both the score and sprite files. The icon file also needs to have a .vtf format so save your file as a .png, upload it to <a href="https://www.aconvert.com/image/png-to-tga/" target="_blank">Aconvert.com</a>, download your .tga file and import it into VTFEdit. Save this file as 'icon_%NAMESHORT%.vtf' in 'Role Addon Template' &gt; 'materials' &gt; 'vgui' &gt; 'ttt'.</p>
+        <p>Here is the final version of 'icon_sum.vtf':</p>
+        <p><img src="https://i.imgur.com/Jeh8sHo.png" style="max-width: 100%;"/></p>
 
-<h3><a id="vmt-files" href="#vmt-files">.vmt Files</a></h3>
-<p>The final step you need to take to finish your role sprites is to update the three .vmt files that were already present in 'Role Addon Template' &gt; 'materials' &gt; 'vgui' &gt; 'ttt' when you started. Rename each of the files to replace <code>%NAMESHORT%</code> with what you defined <code>nameshort</code> as in your earlier coding. Open up each file and you should see one line that looks like this:</p>
-<div><pre><code>"$basetexture" "vgui/ttt/sprite_%NAMESHORT%"
-</code></pre></div>
+        <h3><a id="vmt-files" href="#vmt-files">.vmt Files</a></h3>
+        <p>The final step you need to take to finish your role sprites is to update the three .vmt files that were already present in 'Role Addon Template' &gt; 'materials' &gt; 'vgui' &gt; 'ttt' when you started. Rename each of the files to replace <code>%NAMESHORT%</code> with what you defined <code>nameshort</code> as in your earlier coding. Open up each file and you should see one line that looks like this:</p>
+        <div><pre><code>"$basetexture" "vgui/ttt/sprite_%NAMESHORT%"</code></pre></div>
 
-<p>or this:</p>
-<div><pre><code>"$basetexture" "vgui/ttt/icon_%NAMESHORT%"
-</code></pre></div>
+        <p>or this:</p>
+        <div><pre><code>"$basetexture" "vgui/ttt/icon_%NAMESHORT%"</code></pre></div>
 
-<p>Replace <code>%NAMESHORT%</code> with whatever you set <code>nameshort</code> to earlier and save each of those three files.</p>
-<p>For example, here is what 'sprite_sum_noz.vmt' looks like:</p>
-<div><pre><code>"UnlitGeneric"
+        <p>Replace <code>%NAMESHORT%</code> with whatever you set <code>nameshort</code> to earlier and save each of those three files.</p>
+        <p>For example, here is what 'sprite_sum_noz.vmt' looks like:</p>
+        <div><pre><code>"UnlitGeneric"
 {
     "$basetexture" "vgui/ttt/sprite_sum"
     "$nocull" 1
@@ -967,40 +971,40 @@ end</pre></code></div>
     "$vertexalpha" 1
     "$translucent" 1
 }
-</code></pre></div>
+        </code></pre></div>
 
-<h2><a id="uploading-your-addon" href="#uploading-your-addon">Uploading Your Addon</a></h2>
-<p>Your role is almost ready to go! The last thing you need to do is upload your addon to the steam workshop. Before you can do that there are 2 more files you need to make 'addon.json' and your workshop icon.</p>
+        <h2><a id="uploading-your-addon" href="#uploading-your-addon">Uploading Your Addon</a></h2>
+        <p>Your role is almost ready to go! The last thing you need to do is upload your addon to the steam workshop. Before you can do that there are 2 more files you need to make 'addon.json' and your workshop icon.</p>
 
-<h3><a id="addonjson" href="#addonjson">addon.json</a></h3>
-<p>'addon.json' is found inside the 'Role Addon Template' folder. Open it up and set <code>%NAME%</code> to whatever the name of your role is.</p>
-<p>For example 'addon.json' for the Summoner role looks like this:</p>
-<div><pre><code>{
+        <h3><a id="addonjson" href="#addonjson">addon.json</a></h3>
+        <p>'addon.json' is found inside the 'Role Addon Template' folder. Open it up and set <code>%NAME%</code> to whatever the name of your role is.</p>
+        <p>For example 'addon.json' for the Summoner role looks like this:</p>
+        <div><pre><code>{
   "title": "Summoner (CR for TTT)",
   "type": "ServerContent",
   "ignore": []
 }
-</code></pre></div>
+        </code></pre></div>
 
-<h3><a id="workshop-icon" href="#workshop-icon">Workshop Icon</a></h3>
-<p>Now is the time to open the last template. This step is completely optional, you can use whatever workshop icon you want! However, if you want to keep it consistent with other CR for TTT roles open up 'Workshop Icon Template.psd'.</p>
-<p>Right about now you should be getting a feeling of déjà vu because out friend the white dashed outline is back. Copy your role icon onto the 'Icon' layer and this time instead of a shadow you should see a thick coloured outline. Resize your icon so the white all fits within the guide, it doesn't matter if the coloured outline spills outside the guide. Hide the 'Icon Guide' layer and you are almost good to go.</p>
-<p>Each team in CR for TTT has it's own colour it is identified by and this template works best if you switch out the background to match that colour. In the layers window you should see four different background colours. Hide all the ones that don't match your roles team. You should also see four different stroke outline effects on the 'Role Icon' layer. Hide all the ones that don't match the colour of the background.</p>
+        <h3><a id="workshop-icon" href="#workshop-icon">Workshop Icon</a></h3>
+        <p>Now is the time to open the last template. This step is completely optional, you can use whatever workshop icon you want! However, if you want to keep it consistent with other CR for TTT roles open up 'Workshop Icon Template.psd'.</p>
+        <p>Right about now you should be getting a feeling of déjà vu because out friend the white dashed outline is back. Copy your role icon onto the 'Icon' layer and this time instead of a shadow you should see a thick coloured outline. Resize your icon so the white all fits within the guide, it doesn't matter if the coloured outline spills outside the guide. Hide the 'Icon Guide' layer and you are almost good to go.</p>
+        <p>Each team in CR for TTT has it's own colour it is identified by and this template works best if you switch out the background to match that colour. In the layers window you should see four different background colours. Hide all the ones that don't match your roles team. You should also see four different stroke outline effects on the 'Role Icon' layer. Hide all the ones that don't match the colour of the background.</p>
 
-<p>In the case of the Summoner or another traitor role it should look like this:</p>
-<p><img src="https://i.imgur.com/x5sUaXT.png" style="max-width: 100%;"/></p>
-<p>Once you have done that you are ready to hit save. This time you want to put your icon in the same folder as 'Role Addon Template', not inside it! Steam workshop needs the icon file to be a .jpg so make sure you save it as the right format.</p>
+        <p>In the case of the Summoner or another traitor role it should look like this:</p>
+        <p><img src="https://i.imgur.com/x5sUaXT.png" style="max-width: 100%;"/></p>
+        <p>Once you have done that you are ready to hit save. This time you want to put your icon in the same folder as 'Role Addon Template', not inside it! Steam workshop needs the icon file to be a .jpg so make sure you save it as the right format.</p>
 
-<p>Here is my finalised 'SummonerRole.jpg':</p>
-<p><img src="https://i.imgur.com/wTMTtEj.png" style="max-width: 100%;"/></p>
+        <p>Here is my finalised 'SummonerRole.jpg':</p>
+        <p><img src="https://i.imgur.com/wTMTtEj.png" style="max-width: 100%;"/></p>
 
-<h3><a id="folder-name" href="#folder-name">Folder Name</a></h3>
-<p>While we are at it now is a good time to rename 'Role Addon Template' because it's not a template anymore, it's yours! Name it the same thing as whatever you named your workshop icon.</p>
-<p>Before you get to uploading now is a great time to test your addon. In Steam right click on Garry's Mod and click 'Manage' &gt; 'Browse local files'. A folder should open up which contains your GMod files. Open 'garrysmod' &gt; 'addons' and paste the folder you just renamed in here. When you next boot up GMod your addon should load and you can test it out before uploading to the workshop.</p>
+        <h3><a id="folder-name" href="#folder-name">Folder Name</a></h3>
+        <p>While we are at it now is a good time to rename 'Role Addon Template' because it's not a template anymore, it's yours! Name it the same thing as whatever you named your workshop icon.</p>
+        <p>Before you get to uploading now is a great time to test your addon. In Steam right click on Garry's Mod and click 'Manage' &gt; 'Browse local files'. A folder should open up which contains your GMod files. Open 'garrysmod' &gt; 'addons' and paste the folder you just renamed in here. When you next boot up GMod your addon should load and you can test it out before uploading to the workshop.</p>
 
-<h3><a id="final-checks" href="#final-checks">Final Checks</a></h3>
-<p>Before you upload your addon, now is a great time to check that your file structure is all correct! For reference here is the file structure of my completed Summoner addon:</p>
-<div><pre><code class="language-plaintext">├─ SummonerRole.jpg
+        <h3><a id="final-checks" href="#final-checks">Final Checks</a></h3>
+        <p>Before you upload your addon, now is a great time to check that your file structure is all correct! For reference here is the file structure of my completed Summoner addon:</p>
+        <div><pre><code class="language-plaintext">├─ SummonerRole.jpg
 └─ SummonerRole
    ├─ addon.json
    ├─ lua
@@ -1016,19 +1020,19 @@ end</pre></code></div>
             ├─ sprite_sum.vtf
             ├─ sprite_sum.vmt
             └─ sprite_sum_noz.vmt
-</code></pre></div>
+        </code></pre></div>
 
-<h3><a id="uploading" href="#uploading">Uploading</a></h3>
-<p>Now you are ready to upload your addon. In Steam right click on Garry's Mod and click 'Manage' &gt; 'Browse local files'. A folder should open up which contains your GMod files. Open 'bin' and you should see a file called 'gmad.exe'. Drag and drop your addon folder onto 'gmad.exe'. You should see a new file appear next to your addon folder. It should have the same name as your folder but with the file extension '.gma'. In my case we now have a new file called 'SummonerRole.gma'.</p>
-<p>Go back to the same folder where you found 'gmad.exe'. Click on the address bar up the top and type 'cmd'. This should open up the command prompt where you need to type this command to upload your addon.</p>
-<div><pre><code class="language-plaintext">gmpublish.exe create -addon %PATHTOGMA% -icon %PATHTOJPG%</code></pre></div>
+        <h3><a id="uploading" href="#uploading">Uploading</a></h3>
+        <p>Now you are ready to upload your addon. In Steam right click on Garry's Mod and click 'Manage' &gt; 'Browse local files'. A folder should open up which contains your GMod files. Open 'bin' and you should see a file called 'gmad.exe'. Drag and drop your addon folder onto 'gmad.exe'. You should see a new file appear next to your addon folder. It should have the same name as your folder but with the file extension '.gma'. In my case we now have a new file called 'SummonerRole.gma'.</p>
+        <p>Go back to the same folder where you found 'gmad.exe'. Click on the address bar up the top and type 'cmd'. This should open up the command prompt where you need to type this command to upload your addon.</p>
+        <div><pre><code class="language-plaintext">gmpublish.exe create -addon %PATHTOGMA% -icon %PATHTOJPG%</code></pre></div>
 
-<p>Replace <code>%PATHTOGMA%</code> and <code>%PATHTOJPG%</code> with the file paths to your .gma addon file and .jpg workshop icon respectively.</p>
-<p>For my Summoner addon it looks like this:</p>
-<div><pre><code class="language-plaintext">gmpublish.exe create -addon "C:\Development\GMod\SummonerRole.gma" -icon "C:\Development\GMod\SummonerRole.jpg"</code></pre></div>
+        <p>Replace <code>%PATHTOGMA%</code> and <code>%PATHTOJPG%</code> with the file paths to your .gma addon file and .jpg workshop icon respectively.</p>
+        <p>For my Summoner addon it looks like this:</p>
+        <div><pre><code class="language-plaintext">gmpublish.exe create -addon "C:\Development\GMod\SummonerRole.gma" -icon "C:\Development\GMod\SummonerRole.jpg"</code></pre></div>
 
-<p>Hit enter and you should see your addon upload to Steam! Once it is done you can view your addon by opening steam, hovering over your name up the top and clicking 'Content'. Click the 'Workshop Items' tab and your addon should be there! Here you can give your addon a description and then change its visibility to public. <em>(Note: If you ever need to update a pre-existing addon you can read how to do that <a href="https://wiki.facepunch.com/gmod/Workshop_Addon_Updating" target="_blank">here</a>.)</em></p>
-<p>Once you have made your addon public, we would love to hear about it! Jump into <a href="https://discord.gg/BAPZrykC3F" target="_blank">our discord server</a> and show us what you have made!</p>
+        <p>Hit enter and you should see your addon upload to Steam! Once it is done you can view your addon by opening steam, hovering over your name up the top and clicking 'Content'. Click the 'Workshop Items' tab and your addon should be there! Here you can give your addon a description and then change its visibility to public. <em>(Note: If you ever need to update a pre-existing addon you can read how to do that <a href="https://wiki.facepunch.com/gmod/Workshop_Addon_Updating" target="_blank">here</a>.)</em></p>
+        <p>Once you have made your addon public, we would love to hear about it! Jump into <a href="https://discord.gg/BAPZrykC3F" target="_blank">our discord server</a> and show us what you have made!</p>
 
-<h2><a id="wrapping-up" href="#wrapping-up">Wrapping Up</a></h2>
-<p>If you have any problems or questions please jump into the <a href="https://discord.gg/BAPZrykC3F" target="_blank">Custom Roles for TTT Discord Server</a>! We love to see what everyone has making and there are almost always people online willing to help out if you need a hand.</p>
+        <h2><a id="wrapping-up" href="#wrapping-up">Wrapping Up</a></h2>
+        <p>If you have any problems or questions please jump into the <a href="https://discord.gg/BAPZrykC3F" target="_blank">Custom Roles for TTT Discord Server</a>! We love to see what everyone has making and there are almost always people online willing to help out if you need a hand.</p>

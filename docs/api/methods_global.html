@@ -1,351 +1,358 @@
+<!doctype html>
+<html>
 <head>
     <title>Custom Roles for TTT - API - Global Methods</title>
     <link rel="stylesheet" href="../css/style.css"/>
     <link rel="stylesheet" href="../css/api.css"/>
 </head>
+<body>
+    <embed src="../nav.html#api" width="220" height="278" style="float: left; margin-right: 10px;" />
+    <div>
+        <h1>Global Methods</h1>
+        <p>Methods available globally (within the defined realm)</p>
 
-<h1>Global Methods</h1>
-<p>Methods available globally (within the defined realm)</p>
+        <h3><a id="assignassassintargetply-start-delay" href="#assignassassintargetply-start-delay">AssignAssassinTarget(ply, start, delay)</a></h3>
+        <p>
+            Assigns the target player their next assassination target (if they are the assassin role).<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The target player</li>
+            <li><em>start</em> - Whether this is running at the start of the round (Defaults to <code>false</code>)</li>
+            <li><em>delay</em> - Whether the assassin's target assignment is delayed (Defaults to false)</li>
+        </ul>
 
-<h3><a id="assignassassintargetply-start-delay" href="#assignassassintargetply-start-delay">AssignAssassinTarget(ply, start, delay)</a></h3>
-<p>
-    Assigns the target player their next assassination target (if they are the assassin role).<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.0<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>ply</em> - The target player</li>
-    <li><em>start</em> - Whether this is running at the start of the round (Defaults to <code>false</code>)</li>
-    <li><em>delay</em> - Whether the assassin's target assignment is delayed (Defaults to false)</li>
-</ul>
+        <h3><a id="crversionversion" href="#crversionversion">CRVersion(version)</a></h3>
+        <p>
+            Whether the current version is equal to or newer than the version number given.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>version</em> - The version number to compare against the currently installed version. Must be in the "#.#.#" format</li>
+        </ul>
 
-<h3><a id="crversionversion" href="#crversionversion">CRVersion(version)</a></h3>
-<p>
-    Whether the current version is equal to or newer than the version number given.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.0<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>version</em> - The version number to compare against the currently installed version. Must be in the "#.#.#" format</li>
-</ul>
+        <h3><a id="findrespawnlocationpos" href="#findrespawnlocationpos">FindRespawnLocation(pos)</a></h3>
+        <p>
+            Finds a possible respawn position based on accessible areas around the given position.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.0.0<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>pos</em> - The position around which a respawn position will be found</li>
+        </ul>
+        <p><em>Returns</em>: An accessible position around the given position or <code>false</code> if none can be found</p>
 
-<h3><a id="findrespawnlocationpos" href="#findrespawnlocationpos">FindRespawnLocation(pos)</a></h3>
-<p>
-    Finds a possible respawn position based on accessible areas around the given position.<br>
-    <em>Realm:</em> Server<br>
-    <em>Added in:</em> 1.0.0<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>pos</em> - The position around which a respawn position will be found</li>
-</ul>
-<p><em>Returns</em>: An accessible position around the given position or <code>false</code> if none can be found</p>
+        <h3><a id="generateneweventidrole" href="#generateneweventidrole">GenerateNewEventID(role)</a></h3>
+        <p>
+            Generates a new ID to be used for custom scoring events.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.2.5<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>role</em> - The ID of the role that the generated event ID belongs to. Pass <code>ROLE_NONE</code> if this should not be associated with any role <em>(Added in 1.4.2)</em></li>
+        </ul>
+        <p><em>NOTE:</em> To get this value on the client, use the <code>TTTSyncEventIDs</code> hook and pull the value out of the <code>EVENTS_BY_ROLE</code> global table</p>
 
-<h3><a id="generateneweventidrole" href="#generateneweventidrole">GenerateNewEventID(role)</a></h3>
-<p>
-    Generates a new ID to be used for custom scoring events.<br>
-    <em>Realm:</em> Server<br>
-    <em>Added in:</em> 1.2.5<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>role</em> - The ID of the role that the generated event ID belongs to. Pass <code>ROLE_NONE</code> if this should not be associated with any role <em>(Added in 1.4.2)</em></li>
-</ul>
-<p><em>NOTE:</em> To get this value on the client, use the <code>TTTSyncEventIDs</code> hook and pull the value out of the <code>EVENTS_BY_ROLE</code> global table</p>
+        <h3><a id="generatenewwinidrole" href="#generatenewwinidrole">GenerateNewWinID(role)</a></h3>
+        <p>
+            Generates a new ID to be used for custom win conditions.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.2.5<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>role</em> - The ID of the role that the generated win ID belongs to. Pass <code>ROLE_NONE</code> if this should not be associated with any role <em>(Added in 1.4.2)</em></li>
+        </ul>
+        <p><em>NOTE:</em> To get this value on the client, use the <code>TTTSyncWinIDs</code> hook and pull the value out of the <code>WINS_BY_ROLE</code> global table</p>
 
-<h3><a id="generatenewwinidrole" href="#generatenewwinidrole">GenerateNewWinID(role)</a></h3>
-<p>
-    Generates a new ID to be used for custom win conditions.<br>
-    <em>Realm:</em> Server<br>
-    <em>Added in:</em> 1.2.5<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>role</em> - The ID of the role that the generated win ID belongs to. Pass <code>ROLE_NONE</code> if this should not be associated with any role <em>(Added in 1.4.2)</em></li>
-</ul>
-<p><em>NOTE:</em> To get this value on the client, use the <code>TTTSyncWinIDs</code> hook and pull the value out of the <code>WINS_BY_ROLE</code> global table</p>
+        <h3><a id="getequipmentitembyidid" href="#getequipmentitembyidid">GetEquipmentItemById(id)</a></h3>
+        <p>
+            Gets an equipment item's definition by their ID.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>id</em> - The ID of the equipment item being looked up (e.g. EQUIP_RADAR)</li>
+        </ul>
 
-<h3><a id="getequipmentitembyidid" href="#getequipmentitembyidid">GetEquipmentItemById(id)</a></h3>
-<p>
-    Gets an equipment item's definition by their ID.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.0<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>id</em> - The ID of the equipment item being looked up (e.g. EQUIP_RADAR)</li>
-</ul>
+        <h3><a id="getequipmentitembynamename" href="#getequipmentitembynamename">GetEquipmentItemByName(name)</a></h3>
+        <p>
+            Gets an equipment item's definition by their name.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>name</em> - The name of the equipment item being looked up</li>
+        </ul>
 
-<h3><a id="getequipmentitembynamename" href="#getequipmentitembynamename">GetEquipmentItemByName(name)</a></h3>
-<p>
-    Gets an equipment item's definition by their name.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.0<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>name</em> - The name of the equipment item being looked up</li>
-</ul>
+        <h3><a id="getrolenamefilteraliveonly" href="#getrolenamefilteraliveonly">Get{RoleName}Filter(aliveOnly)</a></h3>
+        <p>
+            Dynamically created functions for each role that returns a function that filters net messages to players that are role. For example: <code>GetTraitorFilter()</code> and <code>GetPhantomFilter()</code> return a filter function that can be used to send a message to players who are a traitor or a phantom, respectively.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> Whenever each role is added<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>aliveOnly</em> - Whether this filter should only include live players (Defaults to <code>false</code>)</li>
+        </ul>
 
-<h3><a id="getrolenamefilteraliveonly" href="#getrolenamefilteraliveonly">Get{RoleName}Filter(aliveOnly)</a></h3>
-<p>
-    Dynamically created functions for each role that returns a function that filters net messages to players that are role. For example: <code>GetTraitorFilter()</code> and <code>GetPhantomFilter()</code> return a filter function that can be used to send a message to players who are a traitor or a phantom, respectively.<br>
-    <em>Realm:</em> Server<br>
-    <em>Added in:</em> Whenever each role is added<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>aliveOnly</em> - Whether this filter should only include live players (Defaults to <code>false</code>)</li>
-</ul>
+        <h3><a id="getinnocentteamfilteraliveonly" href="#getinnocentteamfilteraliveonly">GetInnocentTeamFilter(aliveOnly)</a></h3>
+        <p>
+            Returns a function that filters net messages to players that are on the innocent team.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.0.0<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>aliveOnly</em> - Whether this filter should only include live players (Defaults to <code>false</code>)</li>
+        </ul>
 
-<h3><a id="getinnocentteamfilteraliveonly" href="#getinnocentteamfilteraliveonly">GetInnocentTeamFilter(aliveOnly)</a></h3>
-<p>
-    Returns a function that filters net messages to players that are on the innocent team.<br>
-    <em>Realm:</em> Server<br>
-    <em>Added in:</em> 1.0.0<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>aliveOnly</em> - Whether this filter should only include live players (Defaults to <code>false</code>)</li>
-</ul>
+        <h3><a id="getjesterteamfilteraliveonly" href="#getjesterteamfilteraliveonly">GetJesterTeamFilter(aliveOnly)</a></h3>
+        <p>
+            Returns a function that filters net messages to players that are on the jester team.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.0.0<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>aliveOnly</em> - Whether this filter should only include live players (Defaults to <code>false</code>)</li>
+        </ul>
 
-<h3><a id="getjesterteamfilteraliveonly" href="#getjesterteamfilteraliveonly">GetJesterTeamFilter(aliveOnly)</a></h3>
-<p>
-    Returns a function that filters net messages to players that are on the jester team.<br>
-    <em>Realm:</em> Server<br>
-    <em>Added in:</em> 1.0.0<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>aliveOnly</em> - Whether this filter should only include live players (Defaults to <code>false</code>)</li>
-</ul>
+        <h3><a id="getindependentteamfilteraliveonly" href="#getindependentteamfilteraliveonly">GetIndependentTeamFilter(aliveOnly)</a></h3>
+        <p>
+            Returns a function that filters net messages to players that are on the independent team.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.0.0<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>aliveOnly</em> - Whether this filter should only include live players (Defaults to <code>false</code>)</li>
+        </ul>
 
-<h3><a id="getindependentteamfilteraliveonly" href="#getindependentteamfilteraliveonly">GetIndependentTeamFilter(aliveOnly)</a></h3>
-<p>
-    Returns a function that filters net messages to players that are on the independent team.<br>
-    <em>Realm:</em> Server<br>
-    <em>Added in:</em> 1.0.0<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>aliveOnly</em> - Whether this filter should only include live players (Defaults to <code>false</code>)</li>
-</ul>
+        <h3><a id="getmonsterteamfilteraliveonly" href="#getmonsterteamfilteraliveonly">GetMonsterTeamFilter(aliveOnly)</a></h3>
+        <p>
+            Returns a function that filters net messages to players that are on the monster team.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.0.0<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>aliveOnly</em> - Whether this filter should only include live players (Defaults to <code>false</code>)</li>
+        </ul>
 
-<h3><a id="getmonsterteamfilteraliveonly" href="#getmonsterteamfilteraliveonly">GetMonsterTeamFilter(aliveOnly)</a></h3>
-<p>
-    Returns a function that filters net messages to players that are on the monster team.<br>
-    <em>Realm:</em> Server<br>
-    <em>Added in:</em> 1.0.0<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>aliveOnly</em> - Whether this filter should only include live players (Defaults to <code>false</code>)</li>
-</ul>
+        <h3><a id="getrawroleteamnameroleteam" href="#getrawroleteamnameroleteam">GetRawRoleTeamName(roleTeam)</a></h3>
+        <p>
+            Gets the untranslated name belonging to the specified role team (see ROLE_TEAM_* global enumeration).<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.8.6<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>roleTeam</em> - Which team role to get the color for (see ROLE_TEAM_* global enumeration)</li>
+        </ul>
 
-<h3><a id="getrawroleteamnameroleteam" href="#getrawroleteamnameroleteam">GetRawRoleTeamName(roleTeam)</a></h3>
-<p>
-    Gets the untranslated name belonging to the specified role team (see ROLE_TEAM_* global enumeration).<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.8.6<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>roleTeam</em> - Which team role to get the color for (see ROLE_TEAM_* global enumeration)</li>
-</ul>
+        <h3><a id="getroleteamcolorroleteam-type" href="#getroleteamcolorroleteam-type">GetRoleTeamColor(roleTeam, type)</a></h3>
+        <p>
+            Gets the color belonging to the specified role team (see ROLE_TEAM_* global enumeration).<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.1.8<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>roleTeam</em> - Which team role to get the color for (see ROLE_TEAM_* global enumeration)</li>
+            <li><em>type</em> - The color modification type. Options are: "dark", "highlight", "radar", "scoreboard", or "sprite". (Optional)</li>
+        </ul>
 
-<h3><a id="getroleteamcolorroleteam-type" href="#getroleteamcolorroleteam-type">GetRoleTeamColor(roleTeam, type)</a></h3>
-<p>
-    Gets the color belonging to the specified role team (see ROLE_TEAM_* global enumeration).<br>
-    <em>Realm:</em> Client<br>
-    <em>Added in:</em> 1.1.8<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>roleTeam</em> - Which team role to get the color for (see ROLE_TEAM_* global enumeration)</li>
-    <li><em>type</em> - The color modification type. Options are: "dark", "highlight", "radar", "scoreboard", or "sprite". (Optional)</li>
-</ul>
+        <h3><a id="getroleteaminforoleteam-simplecolor" href="#getroleteaminforoleteam-simplecolor">GetRoleTeamInfo(roleTeam, simpleColor)</a></h3>
+        <p>
+            Gets the name and color belonging to the specified role team (see ROLE_TEAM_* global enumeration).<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.2.7<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>roleTeam</em> - Which team role to get the color for (see ROLE_TEAM_* global enumeration)</li>
+            <li><em>simpleColor</em> - Whether to use simple team colors (e.g. all innocents are the same color and all traitors are the same color)</li>
+        </ul>
+        <p><em>Returns:</em></p>
+        <ul>
+            <li><em>roleTeamName</em> - The name of the provided role team</li>
+            <li><em>roleTeamColor</em> - The color of the provided role team</li>
+        </ul>
 
-<h3><a id="getroleteaminforoleteam-simplecolor" href="#getroleteaminforoleteam-simplecolor">GetRoleTeamInfo(roleTeam, simpleColor)</a></h3>
-<p>
-    Gets the name and color belonging to the specified role team (see ROLE_TEAM_* global enumeration).<br>
-    <em>Realm:</em> Client<br>
-    <em>Added in:</em> 1.2.7<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>roleTeam</em> - Which team role to get the color for (see ROLE_TEAM_* global enumeration)</li>
-    <li><em>simpleColor</em> - Whether to use simple team colors (e.g. all innocents are the same color and all traitors are the same color)</li>
-</ul>
-<p><em>Returns:</em></p>
-<ul>
-    <li><em>roleTeamName</em> - The name of the provided role team</li>
-    <li><em>roleTeamColor</em> - The color of the provided role team</li>
-</ul>
+        <h3><a id="getroleteamnameroleteam" href="#getroleteamnameroleteam">GetRoleTeamName(roleTeam)</a></h3>
+        <p>
+            Gets the name belonging to the specified role team (see ROLE_TEAM_* global enumeration).<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.2.7 on Client and 1.8.2 on Server<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>roleTeam</em> - Which team role to get the color for (see ROLE_TEAM_* global enumeration)</li>
+        </ul>
+        <p><em>NOTE:</em> This will not use translated names when called on the server</p>
 
-<h3><a id="getroleteamnameroleteam" href="#getroleteamnameroleteam">GetRoleTeamName(roleTeam)</a></h3>
-<p>
-    Gets the name belonging to the specified role team (see ROLE_TEAM_* global enumeration).<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.2.7 on Client and 1.8.2 on Server<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>roleTeam</em> - Which team role to get the color for (see ROLE_TEAM_* global enumeration)</li>
-</ul>
-<p><em>NOTE:</em> This will not use translated names when called on the server</p>
+        <h3><a id="getsprintmultiplierply-sprinting" href="#getsprintmultiplierply-sprinting">GetSprintMultiplier(ply, sprinting)</a></h3>
+        <p>
+            Gets the given player's current sprint multiplier.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The target player</li>
+            <li><em>sprinting</em> - Whether the player is currently sprinting</li>
+        </ul>
 
-<h3><a id="getsprintmultiplierply-sprinting" href="#getsprintmultiplierply-sprinting">GetSprintMultiplier(ply, sprinting)</a></h3>
-<p>
-    Gets the given player's current sprint multiplier.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.0<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>ply</em> - The target player</li>
-    <li><em>sprinting</em> - Whether the player is currently sprinting</li>
-</ul>
+        <h3><a id="getteamrolesteam_table-exclude" href="#getteamrolesteam_table-exclude">GetTeamRoles(team_table, exclude)</a></h3>
+        <p>
+            Gets a table of role numbers that belong to the team whose lookup table is given.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.2<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>team_table</em> - Team lookup table</li>
+            <li><em>exclude</em> - Lookup table of roles to exclude from the team (Optional)</li>
+        </ul>
 
-<h3><a id="getteamrolesteam_table-exclude" href="#getteamrolesteam_table-exclude">GetTeamRoles(team_table, exclude)</a></h3>
-<p>
-    Gets a table of role numbers that belong to the team whose lookup table is given.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.2<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>team_table</em> - Team lookup table</li>
-    <li><em>exclude</em> - Lookup table of roles to exclude from the team (Optional)</li>
-</ul>
+        <h3><a id="gettraitorteamfilteraliveonly" href="#gettraitorteamfilteraliveonly">GetTraitorTeamFilter(aliveOnly)</a></h3>
+        <p>
+            Returns a function that filters net messages to players that are on the traitor team.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.0.0<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>aliveOnly</em> - Whether this filter should only include live players (Defaults to <code>false</code>)</li>
+        </ul>
 
-<h3><a id="gettraitorteamfilteraliveonly" href="#gettraitorteamfilteraliveonly">GetTraitorTeamFilter(aliveOnly)</a></h3>
-<p>
-    Returns a function that filters net messages to players that are on the traitor team.<br>
-    <em>Realm:</em> Server<br>
-    <em>Added in:</em> 1.0.0<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>aliveOnly</em> - Whether this filter should only include live players (Defaults to <code>false</code>)</li>
-</ul>
+        <h3><a id="jesterteamkillednotificationattacker-victim-getkillstring-shouldshow" href="#jesterteamkillednotificationattacker-victim-getkillstring-shouldshow">JesterTeamKilledNotification(attacker, victim, getKillString, shouldShow)</a></h3>
+        <p>
+            Used to display a message, play a sound, and/or create confetti when a member of the jester team is killed. Automatically checks <code>ttt_%NAMERAW%_notify_mode</code>, <code>ttt_%NAMERAW%_notify_sound</code>, and <code>ttt_%NAMERAW%_notify_confetti</code> convars.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.3.1<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>attacker</em> - The player that killed the victim</li>
+            <li><em>victim</em> - The player that was killed</li>
+            <li><em>getKillString(ply)</em> - A callback function which returns the message that the player given as a parameter should be shown</li>
+            <li><em>shouldShow(ply)</em> - A callback function which returns whether the player given as a parameter should be shown a message (Optional, defaults to <code>true</code>)</li>
+        </ul>
 
-<h3><a id="jesterteamkillednotificationattacker-victim-getkillstring-shouldshow" href="#jesterteamkillednotificationattacker-victim-getkillstring-shouldshow">JesterTeamKilledNotification(attacker, victim, getKillString, shouldShow)</a></h3>
-<p>
-    Used to display a message, play a sound, and/or create confetti when a member of the jester team is killed. Automatically checks <code>ttt_%NAMERAW%_notify_mode</code>, <code>ttt_%NAMERAW%_notify_sound</code>, and <code>ttt_%NAMERAW%_notify_confetti</code> convars.<br>
-    <em>Realm:</em> Server<br>
-    <em>Added in:</em> 1.3.1<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>attacker</em> - The player that killed the victim</li>
-    <li><em>victim</em> - The player that was killed</li>
-    <li><em>getKillString(ply)</em> - A callback function which returns the message that the player given as a parameter should be shown</li>
-    <li><em>shouldShow(ply)</em> - A callback function which returns whether the player given as a parameter should be shown a message (Optional, defaults to <code>true</code>)</li>
-</ul>
+        <h3><a id="onplayerhighlightenabledclient-alliedroles-showjesters-hideenemies-traitorallies-onlyshowenemies" href="#onplayerhighlightenabledclient-alliedroles-showjesters-hideenemies-traitorallies-onlyshowenemies">OnPlayerHighlightEnabled(client, alliedRoles, showJesters, hideEnemies, traitorAllies, onlyShowEnemies)</a></h3>
+        <p>
+            Handles player highlighting (colored glow around players) rules for the local player.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.2.7<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>client</em> - The local player</li>
+            <li><em>alliedRoles</em> - Table of role IDs that should show as allied to the current player</li>
+            <li><em>showJesters</em> - Whether jester roles should be highlighted in the jester color. If <code>false</code>, jesters will appear in the generic enemy color instead</li>
+            <li><em>hideEnemies</em> - Whether enemy roles (e.g. anyone that isn't an ally or a jester if <em>showJesters</em> is enabled) should be highlighted</li>
+            <li><em>traitorAllies</em> - Whether this role's allies are traitors. If <code>true</code>, allied roles will be shown in the traitor color. Otherwise allied roles will be shown in the innocent color</li>
+            <li><em>onlyShowEnemies</em> - Whether to only highlight players whose roles are explicitly enemies of the local player. If this is <code>true</code> then allies will not be highlighted. If both this and <em>showJesters</em> are <code>true</code> then neither allies nor jesters will be highlighted</li>
+        </ul>
 
-<h3><a id="onplayerhighlightenabledclient-alliedroles-showjesters-hideenemies-traitorallies-onlyshowenemies" href="#onplayerhighlightenabledclient-alliedroles-showjesters-hideenemies-traitorallies-onlyshowenemies">OnPlayerHighlightEnabled(client, alliedRoles, showJesters, hideEnemies, traitorAllies, onlyShowEnemies)</a></h3>
-<p>
-    Handles player highlighting (colored glow around players) rules for the local player.<br>
-    <em>Realm:</em> Client<br>
-    <em>Added in:</em> 1.2.7<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>client</em> - The local player</li>
-    <li><em>alliedRoles</em> - Table of role IDs that should show as allied to the current player</li>
-    <li><em>showJesters</em> - Whether jester roles should be highlighted in the jester color. If <code>false</code>, jesters will appear in the generic enemy color instead</li>
-    <li><em>hideEnemies</em> - Whether enemy roles (e.g. anyone that isn't an ally or a jester if <em>showJesters</em> is enabled) should be highlighted</li>
-    <li><em>traitorAllies</em> - Whether this role's allies are traitors. If <code>true</code>, allied roles will be shown in the traitor color. Otherwise allied roles will be shown in the innocent color</li>
-    <li><em>onlyShowEnemies</em> - Whether to only highlight players whose roles are explicitly enemies of the local player. If this is <code>true</code> then allies will not be highlighted. If both this and <em>showJesters</em> are <code>true</code> then neither allies nor jesters will be highlighted</li>
-</ul>
+        <h3><a id="registerroleroletable" href="#registerroleroletable">RegisterRole(roleTable)</a></h3>
+        <p>
+            Registers a role with Custom Roles for TTT. See <a href="/NoxxFlame/TTT-Custom-Roles/blob/release/API/CREATE_YOUR_OWN_ROLE.md">here</a> for instructions on how to create a role and role table structure.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.9
+        </p>
 
-<h3><a id="registerroleroletable" href="#registerroleroletable">RegisterRole(roleTable)</a></h3>
-<p>
-    Registers a role with Custom Roles for TTT. See <a href="/NoxxFlame/TTT-Custom-Roles/blob/release/API/CREATE_YOUR_OWN_ROLE.md">here</a> for instructions on how to create a role and role table structure.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.9
-</p>
+        <h3><a id="setrolehealthply" href="#setrolehealthply">SetRoleHealth(ply)</a></h3>
+        <p>
+            Sets the target player's health and max health based on their role convars.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.3<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The target player</li>
+        </ul>
 
-<h3><a id="setrolehealthply" href="#setrolehealthply">SetRoleHealth(ply)</a></h3>
-<p>
-    Sets the target player's health and max health based on their role convars.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.3<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>ply</em> - The target player</li>
-</ul>
+        <h3><a id="setrolemaxhealthply" href="#setrolemaxhealthply">SetRoleMaxHealth(ply)</a></h3>
+        <p>
+            Sets the target player's max health based on their role convars.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.15<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The target player</li>
+        </ul>
 
-<h3><a id="setrolemaxhealthply" href="#setrolemaxhealthply">SetRoleMaxHealth(ply)</a></h3>
-<p>
-    Sets the target player's max health based on their role convars.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.15<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>ply</em> - The target player</li>
-</ul>
+        <h3><a id="setrolestartinghealthply" href="#setrolestartinghealthply">SetRoleStartingHealth(ply)</a></h3>
+        <p>
+            Sets the target player's health based on their role convars.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.15<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The target player</li>
+        </ul>
 
-<h3><a id="setrolestartinghealthply" href="#setrolestartinghealthply">SetRoleStartingHealth(ply)</a></h3>
-<p>
-    Sets the target player's health based on their role convars.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.15<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>ply</em> - The target player</li>
-</ul>
+        <h3><a id="shouldshowtraitorextrainfo" href="#shouldshowtraitorextrainfo">ShouldShowTraitorExtraInfo()</a></h3>
+        <p>
+            Whether extra information should be shown for the traitor team (e.g. teammate assassin's target and teammate parasite's infection).<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.5.7
+        </p>
 
-<h3><a id="shouldshowtraitorextrainfo" href="#shouldshowtraitorextrainfo">ShouldShowTraitorExtraInfo()</a></h3>
-<p>
-    Whether extra information should be shown for the traitor team (e.g. teammate assassin's target and teammate parasite's infection).<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.5.7
-</p>
+        <h3><a id="shouldpromotedetectivelike" href="#shouldpromotedetectivelike">ShouldPromoteDetectiveLike()</a></h3>
+        <p>
+            Whether an unpromoted detective-like player (deputy/impersonator) should be promoted.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.2.5
+        </p>
 
-<h3><a id="shouldpromotedetectivelike" href="#shouldpromotedetectivelike">ShouldPromoteDetectiveLike()</a></h3>
-<p>
-    Whether an unpromoted detective-like player (deputy/impersonator) should be promoted.<br>
-    <em>Realm:</em> Server<br>
-    <em>Added in:</em> 1.2.5
-</p>
+        <h3><a id="startswithvowelstr" href="#startswithvowelstr">StartsWithVowel(str)</a></h3>
+        <p>
+            Whether the given string starts with a vowel.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.8
+        </p>
 
-<h3><a id="startswithvowelstr" href="#startswithvowelstr">StartsWithVowel(str)</a></h3>
-<p>
-    Whether the given string starts with a vowel.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.8
-</p>
+        <h3><a id="updaterolecoloursupdaterolecolors" href="#updaterolecoloursupdaterolecolors">UpdateRoleColours()/UpdateRoleColors()</a></h3>
+        <p>
+            Updates the role color tables based on the color convars and color type convar.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0
+        </p>
 
-<h3><a id="updaterolecoloursupdaterolecolors" href="#updaterolecoloursupdaterolecolors">UpdateRoleColours()/UpdateRoleColors()</a></h3>
-<p>
-    Updates the role color tables based on the color convars and color type convar.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.0
-</p>
+        <h3><a id="updaterolestrings" href="#updaterolestrings">UpdateRoleStrings()</a></h3>
+        <p>
+            Updates the role string tables based on the role name convars.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.7
+        </p>
 
-<h3><a id="updaterolestrings" href="#updaterolestrings">UpdateRoleStrings()</a></h3>
-<p>
-    Updates the role string tables based on the role name convars.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.7
-</p>
+        <h3><a id="updateroleweaponstate" href="#updateroleweaponstate">UpdateRoleWeaponState()</a></h3>
+        <p>
+            Enables and disables weapons based on which roles are enabled.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.5
+        </p>
 
-<h3><a id="updateroleweaponstate" href="#updateroleweaponstate">UpdateRoleWeaponState()</a></h3>
-<p>
-    Enables and disables weapons based on which roles are enabled.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.5
-</p>
-
-<h3><a id="updaterolestate" href="#updaterolestate">UpdateRoleState()</a></h3>
-<p>
-    Updates the team membership, colors, and weapon state based on which roles are enabled and belong to which teams.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.0
-</p>
+        <h3><a id="updaterolestate" href="#updaterolestate">UpdateRoleState()</a></h3>
+        <p>
+            Updates the team membership, colors, and weapon state based on which roles are enabled and belong to which teams.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0
+        </p>
+    </div>
+</body>
+<html>
