@@ -6,6 +6,9 @@
 ### Additions
 - Added ability to have the shadow be killed when anything kills their target, but not vice versa. Set `ttt_shadow_soul_link 2` to enable this behavior.
 
+### Changes
+- Changed weapons that use the C4 model to use the updated model that supports custom player model hand skins
+
 ### Fixes
 - Fixed double message when a shadow killed their target and soul link was enabled
 
