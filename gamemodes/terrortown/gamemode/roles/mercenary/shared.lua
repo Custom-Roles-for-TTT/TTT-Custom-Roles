@@ -6,25 +6,32 @@ local hook = hook
 ROLE_STARTING_CREDITS[ROLE_MERCENARY] = 1
 local function InitializeEquipment()
     if EquipmentItems then
-        local mat_dir = "vgui/ttt/"
-        EquipmentItems[ROLE_MERCENARY] = {
-            -- body armor
-            { id = EQUIP_ARMOR,
-              loadout = true, -- default equipment for mercenaries
-              type = "item_passive",
-              material = mat_dir .. "icon_armor",
-              name = "item_armor",
-              desc = "item_armor_desc"
-            },
+        if not EquipmentItems[ROLE_MERCENARY] then
+            EquipmentItems[ROLE_MERCENARY] = {}
+        end
 
-            -- radar
-            { id = EQUIP_RADAR,
-              type = "item_active",
-              material = mat_dir .. "icon_radar",
-              name = "item_radar",
-              desc = "item_radar_desc"
-            }
-        }
+        local mat_dir = "vgui/ttt/"
+        -- If we haven't already registered these items, add them to the list
+        if not table.HasItemWithPropertyValue(EquipmentItems[ROLE_MERCENARY], "id", EQUIP_ARMOR) then
+            table.insert(EquipmentItems[ROLE_MERCENARY], {
+                id = EQUIP_ARMOR,
+                loadout = true, -- default equipment for mercenaries
+                type = "item_passive",
+                material = mat_dir .. "icon_armor",
+                name = "item_armor",
+                desc = "item_armor_desc"
+            })
+        end
+
+        if not table.HasItemWithPropertyValue(EquipmentItems[ROLE_MERCENARY], "id", EQUIP_RADAR) then
+            table.insert(EquipmentItems[ROLE_MERCENARY], {
+                id = EQUIP_RADAR,
+                type = "item_active",
+                material = mat_dir .. "icon_radar",
+                name = "item_radar",
+                desc = "item_radar_desc"
+            })
+        end
     end
 
     if DefaultEquipment then

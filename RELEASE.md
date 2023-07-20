@@ -12,6 +12,9 @@
 ### Fixes
 - Fixed double message when a shadow killed their target and soul link was enabled
 
+### Developer
+- Changed how some roles set their default shop equipment (passive) items so they don't overwrite other things also adding to the lists if the timing isn't perfect
+
 ## 1.9.1 (Beta)
 **Released: July 16th, 2023**
 

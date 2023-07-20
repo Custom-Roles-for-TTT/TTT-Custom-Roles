@@ -27,24 +27,31 @@ end
 
 local function InitializeEquipment()
     if EquipmentItems then
-        local mat_dir = "vgui/ttt/"
-        EquipmentItems[ROLE_DEPUTY] = {
-            -- body armor
-            { id = EQUIP_ARMOR,
-              type = "item_passive",
-              material = mat_dir .. "icon_armor",
-              name = "item_armor",
-              desc = "item_armor_desc"
-            },
+        if not EquipmentItems[ROLE_DEPUTY] then
+            EquipmentItems[ROLE_DEPUTY] = {}
+        end
 
-            -- radar
-            { id = EQUIP_RADAR,
-              type = "item_active",
-              material = mat_dir .. "icon_radar",
-              name = "item_radar",
-              desc = "item_radar_desc"
-            }
-        }
+        local mat_dir = "vgui/ttt/"
+        -- If we haven't already registered these items, add them to the list
+        if not table.HasItemWithPropertyValue(EquipmentItems[ROLE_DEPUTY], "id", EQUIP_ARMOR) then
+            table.insert(EquipmentItems[ROLE_DEPUTY], {
+                id = EQUIP_ARMOR,
+                type = "item_passive",
+                material = mat_dir .. "icon_armor",
+                name = "item_armor",
+                desc = "item_armor_desc"
+            })
+        end
+
+        if not table.HasItemWithPropertyValue(EquipmentItems[ROLE_DEPUTY], "id", EQUIP_RADAR) then
+            table.insert(EquipmentItems[ROLE_DEPUTY], {
+                id = EQUIP_RADAR,
+                type = "item_active",
+                material = mat_dir .. "icon_radar",
+                name = "item_radar",
+                desc = "item_radar_desc"
+            })
+        end
     end
 
     if DefaultEquipment then
