@@ -1,124 +1,131 @@
+<!doctype html>
+<html>
 <head>
     <title>Custom Roles for TTT - API - Commands</title>
     <link rel="stylesheet" href="../css/style.css"/>
     <link rel="stylesheet" href="../css/api.css"/>
 </head>
+<body>
+    <embed src="../nav.html#api" width="220" height="278" style="float: left; margin-right: 10px;" />
+    <div>
+        <h1>Commands</h1>
 
-<h1>Commands</h1>
+        <h2><a id="client-commands" href="#client-commands"><em>Client Commands</em></a></h2>
 
-<h2><a id="client-commands" href="#client-commands"><em>Client Commands</em></a></h2>
+        <h3><a id="ttt_reset_weapons_cache" href="#ttt_reset_weapons_cache">ttt_reset_weapons_cache</a></h3>
+        <p>
+            Resets the client's equipment cache used in shop display. Useful when debugging changed shop rules.<br>
+            <em>Added in</em>: 1.0.11
+        </p>
 
-<h3><a id="ttt_reset_weapons_cache" href="#ttt_reset_weapons_cache">ttt_reset_weapons_cache</a></h3>
-<p>
-    Resets the client's equipment cache used in shop display. Useful when debugging changed shop rules.<br>
-    <em>Added in</em>: 1.0.11
-</p>
+        <h2 style="margin-top: 43px;"><a id="server-commands" href="#server-commands"><em>Server Commands</em></a></h2>
 
-<h2><a id="server-commands" href="#server-commands"><em>Server Commands</em></a></h2>
+        <h3><a id="ttt_damage_from_random" href="#ttt_damage_from_random">ttt_damage_from_random</a></h3>
+        <p>
+            Damages the local player by a random non-jester team player. <em>NOTE</em>: Cheats must be enabled to use this command.<br>
+            <em>Added in:</em> 1.3.7<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>damage</em> - How much damage to do to the local player (Defaults to 1)</li>
+            <li><em>allow_dead</em> - Whether to allow the randomly selected player to be dead (Defaults to <code>false</code>) <em>(Added in 1.9.0)</em></li>
+        </ul>
 
-<h3><a id="ttt_damage_from_random" href="#ttt_damage_from_random">ttt_damage_from_random</a></h3>
-<p>
-    Damages the local player by a random non-jester team player. <em>NOTE</em>: Cheats must be enabled to use this command.<br>
-    <em>Added in:</em> 1.3.7<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>damage</em> - How much damage to do to the local player (Defaults to 1)</li>
-    <li><em>allow_dead</em> - Whether to allow the randomly selected player to be dead (Defaults to <code>false</code>) <em>(Added in 1.9.0)</em></li>
-</ul>
+        <h3><a id="ttt_damage_from_player" href="#ttt_damage_from_player">ttt_damage_from_player</a></h3>
+        <p>
+            Damages the local player by another player with the given name. <em>NOTE</em>: Cheats must be enabled to use this command.<br>
+            <em>Added in:</em> 1.3.7<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>killer_name</em> - The name of the player who will kill the local player</li>
+            <li><em>damage</em> - How much damage to do to the local player (Defaults to 1)</li>
+            <li><em>allow_dead</em> - Whether to allow the specified player to be dead (Defaults to <code>false</code>) <em>(Added in 1.9.0)</em></li>
+        </ul>
 
-<h3><a id="ttt_damage_from_player" href="#ttt_damage_from_player">ttt_damage_from_player</a></h3>
-<p>
-    Damages the local player by another player with the given name. <em>NOTE</em>: Cheats must be enabled to use this command.<br>
-    <em>Added in:</em> 1.3.7<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>killer_name</em> - The name of the player who will kill the local player</li>
-    <li><em>damage</em> - How much damage to do to the local player (Defaults to 1)</li>
-    <li><em>allow_dead</em> - Whether to allow the specified player to be dead (Defaults to <code>false</code>) <em>(Added in 1.9.0)</em></li>
-</ul>
+        <h3><a id="ttt_damage_target_from_random" href="#ttt_damage_target_from_random">ttt_damage_target_from_random</a></h3>
+        <p>
+            Damages the target player by a random non-jester team player. <em>NOTE</em>: Cheats must be enabled to use this command.<br>
+        <em>Added in:</em> 1.3.7<br>
+        <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>target_name</em> - The name of the player who will be killed</li>
+            <li><em>damage</em> - How much damage to do to the target (Defaults to 1)</li>
+            <li><em>allow_dead</em> - Whether to allow the randomly selected player to be dead (Defaults to <code>false</code>) <em>(Added in 1.9.0)</em></li>
+        </ul>
 
-<h3><a id="ttt_damage_target_from_random" href="#ttt_damage_target_from_random">ttt_damage_target_from_random</a></h3>
-<p>
-    Damages the target player by a random non-jester team player. <em>NOTE</em>: Cheats must be enabled to use this command.<br>
-<em>Added in:</em> 1.3.7<br>
-<em>Parameters:</em>
-</p>
-<ul>
-    <li><em>target_name</em> - The name of the player who will be killed</li>
-    <li><em>damage</em> - How much damage to do to the target (Defaults to 1)</li>
-    <li><em>allow_dead</em> - Whether to allow the randomly selected player to be dead (Defaults to <code>false</code>) <em>(Added in 1.9.0)</em></li>
-</ul>
+        <h3><a id="ttt_damage_target_from_player" href="#ttt_damage_target_from_player">ttt_damage_target_from_player</a></h3>
+        <p>
+            Damages the target player by another player with the given name. <em>NOTE</em>: Cheats must be enabled to use this command.<br>
+            <em>Added in:</em> 1.3.7<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>target_name</em> - The name of the player who will be killed</li>
+            <li><em>killer_name</em> - The name of the player who will kill the target player</li>
+            <li><em>damage</em> - How much damage to do to the target (Defaults to 1)</li>
+            <li><em>allow_dead</em> - Whether to allow the specified player to be dead (Defaults to <code>false</code>) <em>(Added in 1.9.0)</em></li>
+        </ul>
 
-<h3><a id="ttt_damage_target_from_player" href="#ttt_damage_target_from_player">ttt_damage_target_from_player</a></h3>
-<p>
-    Damages the target player by another player with the given name. <em>NOTE</em>: Cheats must be enabled to use this command.<br>
-    <em>Added in:</em> 1.3.7<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>target_name</em> - The name of the player who will be killed</li>
-    <li><em>killer_name</em> - The name of the player who will kill the target player</li>
-    <li><em>damage</em> - How much damage to do to the target (Defaults to 1)</li>
-    <li><em>allow_dead</em> - Whether to allow the specified player to be dead (Defaults to <code>false</code>) <em>(Added in 1.9.0)</em></li>
-</ul>
+        <h3><a id="ttt_kill_from_random" href="#ttt_kill_from_random">ttt_kill_from_random</a></h3>
+        <p>
+            Kills the local player by a random non-jester team player. <em>NOTE</em>: Cheats must be enabled to use this command.<br>
+            <em>Added in:</em> 1.0.0<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>remove_body</em> - Whether to remove the local player's body after killing them (Defaults to <code>false</code>)</li>
+            <li><em>allow_dead</em> - Whether to allow the randomly selected player to be dead (Defaults to <code>false</code>) <em>(Added in 1.9.0)</em></li>
+        </ul>
 
-<h3><a id="ttt_kill_from_random" href="#ttt_kill_from_random">ttt_kill_from_random</a></h3>
-<p>
-    Kills the local player by a random non-jester team player. <em>NOTE</em>: Cheats must be enabled to use this command.<br>
-    <em>Added in:</em> 1.0.0<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>remove_body</em> - Whether to remove the local player's body after killing them (Defaults to <code>false</code>)</li>
-    <li><em>allow_dead</em> - Whether to allow the randomly selected player to be dead (Defaults to <code>false</code>) <em>(Added in 1.9.0)</em></li>
-</ul>
+        <h3><a id="ttt_kill_from_player" href="#ttt_kill_from_player">ttt_kill_from_player</a></h3>
+        <p>
+            Kills the local player by another player with the given name. <em>NOTE</em>: Cheats must be enabled to use this command.<br>
+            <em>Added in:</em> 1.0.0<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>killer_name</em> - The name of the player who will kill the local player</li>
+            <li><em>remove_body</em> - Whether to remove the local player's body after killing them (Defaults to <code>false</code>)</li>
+            <li><em>allow_dead</em> - Whether to allow the specified player to be dead (Defaults to <code>false</code>) <em>(Added in 1.9.0)</em></li>
+        </ul>
 
-<h3><a id="ttt_kill_from_player" href="#ttt_kill_from_player">ttt_kill_from_player</a></h3>
-<p>
-    Kills the local player by another player with the given name. <em>NOTE</em>: Cheats must be enabled to use this command.<br>
-    <em>Added in:</em> 1.0.0<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>killer_name</em> - The name of the player who will kill the local player</li>
-    <li><em>remove_body</em> - Whether to remove the local player's body after killing them (Defaults to <code>false</code>)</li>
-    <li><em>allow_dead</em> - Whether to allow the specified player to be dead (Defaults to <code>false</code>) <em>(Added in 1.9.0)</em></li>
-</ul>
+        <h3><a id="ttt_kill_target_from_random" href="#ttt_kill_target_from_random">ttt_kill_target_from_random</a></h3>
+        <p>
+            Kills the target player by a random non-jester team player. <em>NOTE</em>: Cheats must be enabled to use this command.<br>
+            <em>Added in:</em> 1.0.0<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>target_name</em> - The name of the player who will be killed</li>
+            <li><em>remove_body</em> - Whether to remove the target player's body after killing them (Defaults to <code>false</code>)</li>
+            <li><em>allow_dead</em> - Whether to allow the randomly selected player to be dead (Defaults to <code>false</code>) <em>(Added in 1.9.0)</em></li>
+        </ul>
 
-<h3><a id="ttt_kill_target_from_random" href="#ttt_kill_target_from_random">ttt_kill_target_from_random</a></h3>
-<p>
-    Kills the target player by a random non-jester team player. <em>NOTE</em>: Cheats must be enabled to use this command.<br>
-    <em>Added in:</em> 1.0.0<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>target_name</em> - The name of the player who will be killed</li>
-    <li><em>remove_body</em> - Whether to remove the target player's body after killing them (Defaults to <code>false</code>)</li>
-    <li><em>allow_dead</em> - Whether to allow the randomly selected player to be dead (Defaults to <code>false</code>) <em>(Added in 1.9.0)</em></li>
-</ul>
+        <h3><a id="ttt_kill_target_from_player" href="#ttt_kill_target_from_player">ttt_kill_target_from_player</a></h3>
+        <p>
+            Kills the target player by another player with the given name. <em>NOTE</em>: Cheats must be enabled to use this command.<br>
+            <em>Added in:</em> 1.0.0<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>target_name</em> - The name of the player who will be killed</li>
+            <li><em>killer_name</em> - The name of the player who will kill the target player</li>
+            <li><em>remove_body</em> - Whether to remove the target player's body after killing them (Defaults to <code>false</code>)</li>
+            <li><em>allow_dead</em> - Whether to allow the specified player to be dead (Defaults to <code>false</code>) <em>(Added in 1.9.0)</em></li>
+        </ul>
 
-<h3><a id="ttt_kill_target_from_player" href="#ttt_kill_target_from_player">ttt_kill_target_from_player</a></h3>
-<p>
-    Kills the target player by another player with the given name. <em>NOTE</em>: Cheats must be enabled to use this command.<br>
-    <em>Added in:</em> 1.0.0<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>target_name</em> - The name of the player who will be killed</li>
-    <li><em>killer_name</em> - The name of the player who will kill the target player</li>
-    <li><em>remove_body</em> - Whether to remove the target player's body after killing them (Defaults to <code>false</code>)</li>
-    <li><em>allow_dead</em> - Whether to allow the specified player to be dead (Defaults to <code>false</code>) <em>(Added in 1.9.0)</em></li>
-</ul>
-
-<h3><a id="ttt_order_for_someone" href="#ttt_order_for_someone">ttt_order_for_someone</a></h3>
-<p>
-    Orders a shop item on behalf of a another player with the given name. <em>NOTE</em>: Cheats must be enabled to use this command.<br>
-    <em>Added in:</em> 1.0.0<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>target_name</em> - The name of the player who will be killed</li>
-    <li><em>order</em> - The weapon class string or equipment ID number to be ordered</li>
-</ul>
+        <h3><a id="ttt_order_for_someone" href="#ttt_order_for_someone">ttt_order_for_someone</a></h3>
+        <p>
+            Orders a shop item on behalf of a another player with the given name. <em>NOTE</em>: Cheats must be enabled to use this command.<br>
+            <em>Added in:</em> 1.0.0<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>target_name</em> - The name of the player who will be killed</li>
+            <li><em>order</em> - The weapon class string or equipment ID number to be ordered</li>
+        </ul>
+    </div>
+</body>
+<html>

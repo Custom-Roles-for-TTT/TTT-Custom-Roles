@@ -1,14 +1,18 @@
+<!doctype html>
+<html>
 <head>
     <title>Custom Roles for TTT - Tutorials - Renaming Roles</title>
     <link rel="stylesheet" href="../css/style.css"/>
     <link rel="stylesheet" href="../css/api.css"/>
 </head>
-
-<h2>Renaming Roles</h2>
-<p>If you would like to rename roles in game you can do so with specific ConVars. This effect works server side ONLY and will automatically network the role names with any clients playing on your server.<br>
-To rename a role set the ConVar <code>ttt_ROLENAME_name</code> to whatever you would like that role to b called. (e.g. <code>ttt_quack_name "Death Doctor"</code> will rename the Quack to the Death Doctor.)</p>
-<p><strong>NOTE</strong>: The game will try its best to automatically generate articles and plurals for any new names but it is not always successful. If this is the case you can use <code>ttt_ROLENAME_name_article</code> and <code>ttt_ROLENAME_name_plural</code> to manually fix this.</p>
-<ul>
-    <li>Setting the Old Man's name to "Old Woman" will show "Old Womans" as the plural form by default. Setting <code>ttt_oldman_name_plural</code> to "Old Women" will fix this.</li>
-    <li>Setting the Innocent's name to "Honest Man" will show "a Honest Man" with "a" as the article by default. Setting <code>ttt_innocent_name_article</code> to "an" will fix this and properly show "an Honest Man".</li>
-</ul>
+<body>
+    <embed src="../nav.html#tutorials" width="220" height="278" style="float: left; margin-right: 10px;" />
+    <div>
+        <h2>Renaming Roles</h2>
+        <p>If you would like to rename roles in game you can do so with specific ConVars. This effect works server side ONLY and will automatically network the role names with any clients playing on your server.<br>
+        To rename a role set the ConVar <code>ttt_ROLENAME_name</code> to whatever you would like that role to b called. (e.g. <code>ttt_quack_name "Death Doctor"</code> will rename the Quack to the Death Doctor.)</p>
+        <p><strong>NOTE</strong>: The game will try its best to automatically generate articles and plurals for any new names but it is not always successful. If this is the case you can use <code>ttt_ROLENAME_name_article</code> and <code>ttt_ROLENAME_name_plural</code> to manually fix this.</p>
+        <ul>
+            <li>Setting the Old Man's name to "Old Woman" will show "Old Womans" as the plural form by default. Setting <code>ttt_oldman_name_plural</code> to "Old Women" will fix this.</li>
+            <li>Setting the Innocent's name to "Honest Man" will show "a Honest Man" with "a" as the article by default. Setting <code>ttt_innocent_name_article</code> to "an" will fix this and properly show "an Honest Man".</li>
+        </ul>
