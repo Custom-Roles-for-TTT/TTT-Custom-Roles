@@ -1,16 +1,23 @@
+<!doctype html>
+<html>
 <head>
     <title>Custom Roles for TTT - API - Map Entities</title>
     <link rel="stylesheet" href="../css/style.css"/>
     <link rel="stylesheet" href="../css/api.css"/>
 </head>
+<body>
+    <embed src="../nav.html#api" width="220" height="278" style="float: left; margin-right: 10px;" />
+    <div>
+        <h1>Map Entities</h1>
+        <p>Entities for maps created or modified in Custom Roles for TTT. A list of default TTT entities is available <a href="https://www.troubleinterroristtown.com/development/mapping/#entities" target="_blank">here</a> but note that they may have been modified (see below).</p>
 
-<h1>Map Entities</h1>
-<p>Entities for maps created or modified in Custom Roles for TTT. A list of default TTT entities is available <a href="https://www.troubleinterroristtown.com/development/mapping/#entities" target="_blank">here</a> but note that they may have been modified (see below).</p>
+        <h3><a id="ttt_logic_role" href="#ttt_logic_role">ttt_logic_role</a></h3>
+        <p>An entity used to test the role of the activator. Modified in Custom Roles for TTT to support new roles by treating <code>ROLE_INNOCENT (0)</code>, <code>ROLE_TRAITOR (1)</code>, and <code>ROLE_DETECTIVE (2)</code> as team checks. Also allows using specific custom role IDs (e.g. <code>ROLE_GLITCH (5)</code>) which can be found in <a href="https://github.com/NoxxFlame/TTT-Custom-Roles/blob/release/gamemodes/terrortown/gamemode/shared.lua" target="_blank">shared.lua</a>.</p>
+        <p><em>WARNING:</em> There is a caveat when trying to do a role-specific check for <code>ROLE_JESTER (3)</code> -- the base TTT <code>ttt_logic_role</code> entity uses a value of <code>ROLE_ANY (3)</code> to allow any role to pass a logic check and this conflicts due to reuse of the same value. In order to keep compatibility with maps made for base TTT, we have kept the value of <code>ROLE_ANY (3)</code>. If you would like to specifically check for <code>ROLE_JESTER</code> you must instead use a value of <code>-3</code>. This will tell Custom Roles for TTT that you mean <code>ROLE_JESTER</code> rather than <code>ROLE_ANY</code> and allows compatibility with base TTT maps.</p>
+        <p><em>WARNING:</em> Is is not recommended to create a logic check for external Custom Roles (e.g. the Summoner) because external role ID numbers are generated when the server starts and will vary between servers based on what external roles they have enabled.</p>
 
-<h3><a id="ttt_logic_role" href="#ttt_logic_role">ttt_logic_role</a></h3>
-<p>An entity used to test the role of the activator. Modified in Custom Roles for TTT to support new roles by treating <code>ROLE_INNOCENT (0)</code>, <code>ROLE_TRAITOR (1)</code>, and <code>ROLE_DETECTIVE (2)</code> as team checks. Also allows using specific custom role IDs (e.g. <code>ROLE_GLITCH (5)</code>) which can be found in <a href="https://github.com/NoxxFlame/TTT-Custom-Roles/blob/release/gamemodes/terrortown/gamemode/shared.lua" target="_blank">shared.lua</a>.</p>
-<p><em>WARNING:</em> There is a caveat when trying to do a role-specific check for <code>ROLE_JESTER (3)</code> -- the base TTT <code>ttt_logic_role</code> entity uses a value of <code>ROLE_ANY (3)</code> to allow any role to pass a logic check and this conflicts due to reuse of the same value. In order to keep compatibility with maps made for base TTT, we have kept the value of <code>ROLE_ANY (3)</code>. If you would like to specifically check for <code>ROLE_JESTER</code> you must instead use a value of <code>-3</code>. This will tell Custom Roles for TTT that you mean <code>ROLE_JESTER</code> rather than <code>ROLE_ANY</code> and allows compatibility with base TTT maps.</p>
-<p><em>WARNING:</em> Is is not recommended to create a logic check for external Custom Roles (e.g. the Summoner) because external role ID numbers are generated when the server starts and will vary between servers based on what external roles they have enabled.</p>
-
-<h3><a id="ttt_game_text" href="#ttt_game_text">ttt_game_text</a></h3>
-<p>An entity to send a message to a configured receiver. Modified in Custom Roles for TTT to support new roles by treating the existing <code>RECEIVE_DETECTIVE (2)</code>, <code>RECEIVE_TRAITOR (3)</code>, and <code>RECEIVE_INNOCENT (4)</code> as team checks. Furthermore, support for the new types of Custom Roles was added via the new <code>RECEIVE_JESTER (5)</code>, <code>RECEIVE_INDEPENDENT (6)</code>, and <code>RECEIVE_MONSTER (7)</code> values.</p>
+        <h3><a id="ttt_game_text" href="#ttt_game_text">ttt_game_text</a></h3>
+        <p>An entity to send a message to a configured receiver. Modified in Custom Roles for TTT to support new roles by treating the existing <code>RECEIVE_DETECTIVE (2)</code>, <code>RECEIVE_TRAITOR (3)</code>, and <code>RECEIVE_INNOCENT (4)</code> as team checks. Furthermore, support for the new types of Custom Roles was added via the new <code>RECEIVE_JESTER (5)</code>, <code>RECEIVE_INDEPENDENT (6)</code>, and <code>RECEIVE_MONSTER (7)</code> values.</p>
+    </div>
+</body>
+<html>

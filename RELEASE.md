@@ -1,5 +1,20 @@
 # Release Notes
 
+## 1.9.2 (Beta)
+**Released: July 22nd, 2023**
+
+### Additions
+- Added ability to have the shadow be killed when anything kills their target, but not vice versa. Set `ttt_shadow_soul_link 2` to enable this behavior.
+
+### Changes
+- Changed weapons that use the C4 model to use the updated model that supports custom player model hand skins
+
+### Fixes
+- Fixed double message when a shadow killed their target and soul link was enabled
+
+### Developer
+- Changed how some roles set their default shop equipment (passive) items so they don't overwrite other things also adding to the lists if the timing isn't perfect
+
 ## 1.9.1 (Beta)
 **Released: July 16th, 2023**
 

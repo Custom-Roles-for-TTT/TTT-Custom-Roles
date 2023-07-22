@@ -468,8 +468,11 @@ AddHook("TTTTutorialRoleText", "Shadow_TTTTutorialRoleText", function(role, titl
         local roleColor = ROLE_COLORS[ROLE_SHADOW]
         local html = "The " .. ROLE_STRINGS[ROLE_SHADOW] .. " is an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>independent</span> role that wins by staying close to their target without dying. "
 
-        if GetGlobalBool("ttt_shadow_soul_link", false) then
+        local soul_link = GetGlobalInt("ttt_shadow_soul_link", SHADOW_SOUL_LINK_NONE)
+        if soul_link == SHADOW_SOUL_LINK_BOTH then
             html = html .. "If the shadow dies, their target dies and vice-versa. "
+        elseif soul_link == SHADOW_SOUL_LINK_TARGET then
+            html = html .. "If the shadow's target dies, the shadow dies instantly. "
         else
             html = html .. "If the shadow kills their target, they die instantly. "
         end

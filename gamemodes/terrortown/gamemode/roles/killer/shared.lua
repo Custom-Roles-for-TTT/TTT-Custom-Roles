@@ -10,32 +10,41 @@ ROLE_STARTING_CREDITS[ROLE_KILLER] = 2
 
 local function InitializeEquipment()
     if EquipmentItems then
+        if not EquipmentItems[ROLE_KILLER] then
+            EquipmentItems[ROLE_KILLER] = {}
+        end
+
         local mat_dir = "vgui/ttt/"
-        EquipmentItems[ROLE_KILLER] = {
-            -- body armor
-            { id = EQUIP_ARMOR,
-              type = "item_passive",
-              material = mat_dir .. "icon_armor",
-              name = "item_armor",
-              desc = "item_armor_desc"
-            },
+        -- If we haven't already registered these items, add them to the list
+        if not table.HasItemWithPropertyValue(EquipmentItems[ROLE_KILLER], "id", EQUIP_ARMOR) then
+            table.insert(EquipmentItems[ROLE_KILLER], {
+                id = EQUIP_ARMOR,
+                type = "item_passive",
+                material = mat_dir .. "icon_armor",
+                name = "item_armor",
+                desc = "item_armor_desc"
+            })
+        end
 
-            -- radar
-            { id = EQUIP_RADAR,
-              type = "item_active",
-              material = mat_dir .. "icon_radar",
-              name = "item_radar",
-              desc = "item_radar_desc"
-            },
+        if not table.HasItemWithPropertyValue(EquipmentItems[ROLE_KILLER], "id", EQUIP_RADAR) then
+            table.insert(EquipmentItems[ROLE_KILLER], {
+                id = EQUIP_RADAR,
+                type = "item_active",
+                material = mat_dir .. "icon_radar",
+                name = "item_radar",
+                desc = "item_radar_desc"
+            })
+        end
 
-            -- disguiser
-            { id = EQUIP_DISGUISE,
-              type = "item_active",
-              material = mat_dir .. "icon_disguise",
-              name = "item_disg",
-              desc = "item_disg_desc"
-            }
-        }
+        if not table.HasItemWithPropertyValue(EquipmentItems[ROLE_KILLER], "id", EQUIP_DISGUISE) then
+            table.insert(EquipmentItems[ROLE_KILLER], {
+                id = EQUIP_DISGUISE,
+                type = "item_active",
+                material = mat_dir .. "icon_disguise",
+                name = "item_disg",
+                desc = "item_disg_desc"
+            })
+        end
     end
 
     if DefaultEquipment then

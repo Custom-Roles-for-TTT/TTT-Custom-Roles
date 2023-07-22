@@ -1,609 +1,616 @@
+<!doctype html>
+<html>
 <head>
     <title>Custom Roles for TTT - API - Player Object Methods</title>
     <link rel="stylesheet" href="../css/style.css"/>
     <link rel="stylesheet" href="../css/api.css"/>
 </head>
-
-<h1>Player Object Methods</h1>
-<p>Methods available when called from a Player object (within the defined realm)</p>
-
-<h3><a id="plymetabeginrolechecks" href="#plymetabeginrolechecks">plymeta:BeginRoleChecks()</a></h3>
-<p>
-    Sets up role logic for the player to handle role-specific events and checks.<br>
-    <em>Realm:</em> Server<br>
-    <em>Added in:</em> 1.1.9
-</p>
-
-<h3><a id="plymetacelebratesnd-showconfetti" href="#plymetacelebratesnd-showconfetti">plymeta:Celebrate(snd, showConfetti)</a></h3>
-<p>
-    Plays a celebration effect (sound and or confetti) at the player's location.<br>
-    <em>Realm:</em> Client<br>
-    <em>Added in:</em> 1.3.1<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>snd</em> - What sound to play (if any) as part of this celebration</li>
-    <li><em>showConfetti</em> - Whether to show confetti as part of this celebration</li>
-</ul>
-
-<h3><a id="plymetacanlootcreditsactiveonly" href="#plymetacanlootcreditsactiveonly">plymeta:CanLootCredits(activeOnly)</a></h3>
-<p>
-    Whether the player can loot credits from a corpse that has them.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.5<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>activeOnly</em> - Whether the player must also be active (Defaults to <code>false</code>)</li>
-</ul>
-
-<h3><a id="plymetacanseec4" href="#plymetacanseec4">plymeta:CanSeeC4()</a></h3>
-<p>
-    Whether the player can see the C4 icons like traitors can.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.5.14
-</p>
-
-<h3><a id="plymetacanuseshop" href="#plymetacanuseshop">plymeta:CanUseShop()</a></h3>
-<p>
-    Whether the player can currently open the shop menu.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.2
-</p>
-
-<h3><a id="plymetacanusetraitorbuttonactiveonly" href="#plymetacanusetraitorbuttonactiveonly">plymeta:CanUseTraitorButton(activeOnly)</a></h3>
-<p>
-    Whether the player can see and use traitor buttons.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.5<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>activeOnly</em> - Whether the player must also be active (Defaults to <code>false</code>)</li>
-</ul>
-
-<h3><a id="plymetadrunkjoinlosingteam" href="#plymetadrunkjoinlosingteam">plymeta:DrunkJoinLosingTeam()</a></h3>
-<p>
-    Attempts to find the losing team and calls <code>self:SoberDrunk(team)</code> using the losing team as the <em>team</em> parameter.<br>
-    <em>Realm:</em> Server<br>
-    <em>Added in:</em> 1.7.2
-</p>
-
-<h3><a id="plymetadrunkrememberrolerole" href="#plymetadrunkrememberrolerole">plymeta:DrunkRememberRole(role)</a></h3>
-<p>
-    Sets the drunk's role and runs required checks for that role.<br>
-    <em>Realm:</em> Server<br>
-    <em>Added in:</em> 1.1.9<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>role</em> - Which role to set the drunk to (see ROLE_* global enumeration)</li>
-</ul>
-
-<h3><a id="plymetagetavoiddetectiveplymetashouldavoiddetective-added-in-162" href="#plymetagetavoiddetectiveplymetashouldavoiddetective-added-in-162">plymeta:GetAvoidDetective()/plymeta:ShouldAvoidDetective() (Added in 1.6.2)</a></h3>
-<p>
-    Whether this player wants to avoid being a detective role.<br>
-    <em>Realm:</em> Server<br>
-    <em>Added in:</em> 1.0.0
-</p>
-
-<h3><a id="plymetagetbypasscullingplymetashouldbypassculling" href="#plymetagetbypasscullingplymetashouldbypassculling">plymeta:GetBypassCulling()/plymeta:ShouldBypassCulling()</a></h3>
-<p>
-    Whether this player wants to bypass map optimizations like vis leafs and culling for things like role head icons and highlighting.<br>
-    <em>Realm:</em> Server<br>
-    <em>Added in:</em> 1.6.2
-</p>
-
-<h3><a id="plymetagetdisplayedrole" href="#plymetagetdisplayedrole">plymeta:GetDisplayedRole()</a></h3>
-<p>
-    Gets the role that should be displayed for the player.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.5.3
-</p>
-<p>
-    <em>Returns:</em>
-</p>
-<ul>
-    <li><em>display_role</em> - The role that should be displayed for the player.</li>
-    <li><em>changed</em> - Whether the return value was changed and should be hidden</li>
-</ul>
-
-<h3><a id="plymetagetheight" href="#plymetagetheight">plymeta:GetHeight()</a></h3>
-<p>
-    Gets the <em>estimated</em> height of the player based on their player model.<br>
-    <em>Realm:</em> Client<br>
-    <em>Added in:</em> 1.0.2
-</p>
-
-<h3><a id="plymetagetroleteamdetectivesareinnocent" href="#plymetagetroleteamdetectivesareinnocent">plymeta:GetRoleTeam(detectivesAreInnocent)</a></h3>
-<p>
-    Gets which "role team" a player belongs to (see ROLE_TEAM_* global enumeration).<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.2.7<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>detectivesAreInnocent</em> - Whether to include members of the detective "role team" in the innocent "role team" to match the logical teams</li>
-</ul>
-
-<h3><a id="plymetagetsprinting" href="#plymetagetsprinting">plymeta:GetSprinting()</a></h3>
-<p>
-    Gets whether the player is currently sprinting.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.8.8
-</p>
-
-<h3><a id="plymetagetsprintstamina" href="#plymetagetsprintstamina">plymeta:GetSprintStamina()</a></h3>
-<p>
-    Gets the player's current sprint stamina.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.8.8
-</p>
-
-<h3><a id="plymetagetvampirepreviousrole" href="#plymetagetvampirepreviousrole">plymeta:GetVampirePreviousRole()</a></h3>
-<p>
-    Gets the player's previous role if they are a Vampire that has been converted or <code>ROLE_NONE</code> otherwise.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.0
-</p>
-
-<h3><a id="plymetagivedelayedshopitems" href="#plymetagivedelayedshopitems">plymeta:GiveDelayedShopItems()</a></h3>
-<p>
-    Give the player their shop items that were being held due to the role having a delayed shop.<br>
-    <em>Realm:</em> Server<br>
-    <em>Added in:</em> 1.2.2
-</p>
-
-<h3><a id="plymetahandledetectivelikepromotion" href="#plymetahandledetectivelikepromotion">plymeta:HandleDetectiveLikePromotion()</a></h3>
-<p>
-    Handles the player's promotion as a detective-like role (deputy/impersonator). Promotes the player and sends necessary net events.<br>
-    <em>Realm:</em> Server<br>
-    <em>Added in:</em> 1.2.5
-</p>
-
-<h3><a id="plymetaisrolenameplymetagetrolename" href="#plymetaisrolenameplymetagetrolename">plymeta:Is{RoleName}()/plymeta:Get{RoleName}()</a></h3>
-<p>
-    Dynamically created functions for each role that returns whether the player is that role. For example: <code>plymeta:IsTraitor()</code> and <code>plymeta:IsPhantom()</code> return whether the player is a traitor or a phantom, respectively.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> Whenever each role is added
-</p>
-
-<h3><a id="plymetaisactiverolename" href="#plymetaisactiverolename">plymeta:IsActive{RoleName}()</a></h3>
-<p>
-    Dynamically created functions for each role that returns whether <code>plymeta:Is{RoleName}</code> returns <code>true</code> and the player is active. For example: <code>plymeta:IsActiveTraitor()</code> and <code>plymeta:IsActivePhantom()</code> return whether the player is active and a traitor or a phantom, respectively.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> Whenever each role is added
-</p>
-
-<h3><a id="plymetaisactivecustom" href="#plymetaisactivecustom">plymeta:IsActiveCustom()</a></h3>
-<p>
-    Whether <code>plymeta:IsCustom</code> returns <code>true</code> and the player is active.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.0
-</p>
-
-<h3><a id="plymetaisactivedetectivelike" href="#plymetaisactivedetectivelike">plymeta:IsActiveDetectiveLike()</a></h3>
-<p>
-    Whether <code>plymeta:IsActiveDetectiveLike</code> returns <code>true</code> and the player is active.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.0
-</p>
-
-<h3><a id="plymetaisactiveindependentteam" href="#plymetaisactiveindependentteam">plymeta:IsActiveIndependentTeam()</a></h3>
-<p>
-    Whether <code>plymeta:IsIndependentTeam</code> returns <code>true</code> and the player is active.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.0
-</p>
-
-<h3><a id="plymetaisactiveinnocentteam" href="#plymetaisactiveinnocentteam">plymeta:IsActiveInnocentTeam()</a></h3>
-<p>
-    Whether <code>plymeta:IsInnocentTeam</code> returns <code>true</code> and the player is active.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.0
-</p>
-
-<h3><a id="plymetaisactivejesterteam" href="#plymetaisactivejesterteam">plymeta:IsActiveJesterTeam()</a></h3>
-<p>
-    Whether <code>plymeta:IsJesterTeam</code> returns <code>true</code> and the player is active.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.0
-</p>
-
-<h3><a id="plymetaisactivemonsterteam" href="#plymetaisactivemonsterteam">plymeta:IsActiveMonsterTeam()</a></h3>
-<p>
-    Whether <code>plymeta:IsMonsterTeam</code> returns <code>true</code> and the player is active.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.0
-</p>
-
-<h3><a id="plymetaisactivetraitorteam" href="#plymetaisactivetraitorteam">plymeta:IsActiveTraitorTeam()</a></h3>
-<p>
-    Whether <code>plymeta:IsTraitorTeam</code> returns <code>true</code> and the player is active.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.0
-</p>
-
-<h3><a id="plymetaisactiveshoprole" href="#plymetaisactiveshoprole">plymeta:IsActiveShopRole()</a></h3>
-<p>
-    Whether <code>plymeta:IsActiveShopRole</code> returns <code>true</code> and the player is active.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.0
-</p>
-
-<h3><a id="plymetaiscustom" href="#plymetaiscustom">plymeta:IsCustom()</a></h3>
-<p>
-    Whether the player's role is not one of the three default TTT roles.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.0
-</p>
-
-<h3><a id="plymetaisdetectivelikeplymetagetdetectivelike" href="#plymetaisdetectivelikeplymetagetdetectivelike">plymeta:IsDetectiveLike()/plymeta:GetDetectiveLike()</a></h3>
-<p>
-    Whether the player's role is like a detective (e.g. detective or promoted deputy/impersonator).<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.0
-</p>
-
-<h3><a id="plymetaisdetectivelikepromotableplymetagetdetectivelikepromotable" href="#plymetaisdetectivelikepromotableplymetagetdetectivelikepromotable">plymeta:IsDetectiveLikePromotable()/plymeta:GetDetectiveLikePromotable()</a></h3>
-<p>
-    Whether the player's role is an unpromoted detective-like role (deputy/impersonator).<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.2.5
-</p>
-
-<h3><a id="plymetaisindependentteam" href="#plymetaisindependentteam">plymeta:IsIndependentTeam()</a></h3>
-<p>
-    Whether the player is on the independent team.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.0
-</p>
-
-<h3><a id="plymetaisinnocentteam" href="#plymetaisinnocentteam">plymeta:IsInnocentTeam()</a></h3>
-<p>
-    Whether the player is on the innocent team.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.0
-</p>
-
-<h3><a id="plymetaisjesterteam" href="#plymetaisjesterteam">plymeta:IsJesterTeam()</a></h3>
-<p>
-    Whether the player is on the jester team.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.0
-</p>
-
-<h3><a id="plymetaismonsterteam" href="#plymetaismonsterteam">plymeta:IsMonsterTeam()</a></h3>
-<p>
-    Whether the player is on the monster team.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.0
-</p>
-
-<h3><a id="plymetaisonscreenent_or_pos-limit" href="#plymetaisonscreenent_or_pos-limit">plymeta:IsOnScreen(ent_or_pos, limit)</a></h3>
-<p>
-    Whether the entity or position given is on screen for the player, within the given value limit.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.6.2<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>ent_or_pos</em> - The entity or position vector that is being checked</li>
-    <li><em>limit</em> - The maximum value limit before a player is determined to be "off screen" (Defaults to 1)</li>
-</ul>
-
-<h3><a id="plymetaisroleactive" href="#plymetaisroleactive">plymeta:IsRoleActive()</a></h3>
-<p>
-    Whether the player's role feature has been activated.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.2.2
-</p>
-
-<h3><a id="plymetaissameteamtarget" href="#plymetaissameteamtarget">plymeta:IsSameTeam(target)</a></h3>
-<p>
-    Whether the player is on the same team as the target.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.0<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>target</em> - The other player whose team is being compared</li>
-</ul>
-
-<h3><a id="plymetaisscoreboardinfooverriddentarget" href="#plymetaisscoreboardinfooverriddentarget">plymeta:IsScoreboardInfoOverridden(target)</a></h3>
-<p>
-    Whether the player is currently overriding a piece of scoreboard information.<br>
-    <em>Realm:</em> Client<br>
-    <em>Added in:</em> 1.5.15<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>target</em> - The player whose scoreboard info is being rendered</li>
-</ul>
-<p>
-    <em>Returns:</em>
-</p>
-<ul>
-    <li><em>isNameOverridden</em> - Whether the player name is currently overridden</li>
-    <li><em>isRoleOverridden</em> - Whether the role color or icon is currently overridden</li>
-</ul>
-
-<h3><a id="plymetaisshoprole" href="#plymetaisshoprole">plymeta:IsShopRole()</a></h3>
-<p>
-    Whether the player has a shop (see <code>plymeta:CanUseShop</code> for determining if it is openable).<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.0
-</p>
-
-<h3><a id="plymetaistargethighlightedtarget" href="#plymetaistargethighlightedtarget">plymeta:IsTargetHighlighted(target)</a></h3>
-<p>
-    Whether the target player is highlighted based the player's role rules.<br>
-    <em>Realm:</em> Client<br>
-    <em>Added in:</em> 1.5.15<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>target</em> - The player whose scoreboard info is being rendered</li>
-</ul>
-
-<h3><a id="plymetaistargetidoverriddentarget-showjester" href="#plymetaistargetidoverriddentarget-showjester">plymeta:IsTargetIDOverridden(target, showJester)</a></h3>
-<p>
-    Whether the player is currently overriding a piece of target ID information.<br>
-    <em>Realm:</em> Client<br>
-    <em>Added in:</em> 1.5.15<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>target</em> - The player whose scoreboard info is being rendered</li>
-    <li><em>showJester</em> - Whether the target is a jester and the local player would normally know that</li>
-</ul>
-<p>
-    <em>Returns:</em>
-</p>
-<ul>
-    <li><em>isIconOverridden</em> - Whether the target ID role icon is currently overridden</li>
-    <li><em>isRingOverridden</em> - Whether the target ID identification ring is currently overridden</li>
-    <li><em>isTextOverridden</em> - Whether the target ID text is currently overridden</li>
-</ul>
-
-<h3><a id="plymetaistraitorteam" href="#plymetaistraitorteam">plymeta:IsTraitorTeam()</a></h3>
-<p>
-    Whether the player is on the traitor team.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.0
-</p>
-
-<h3><a id="plymetaisvampireallyplymetagetvampireally" href="#plymetaisvampireallyplymetagetvampireally">plymeta:IsVampireAlly()/plymeta:GetVampireAlly()</a></h3>
-<p>
-    Whether the player is allied with the vampire role.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.0
-</p>
-
-<h3><a id="plymetaisvampireprimeplymetagetvampireprime" href="#plymetaisvampireprimeplymetagetvampireprime">plymeta:IsVampirePrime()/plymeta:GetVampirePrime()</a></h3>
-<p>
-    Whether the player is the prime (e.g. first-spawned) vampire.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.0
-</p>
-
-<h3><a id="plymetaiszombieallyplymetagetzombieally" href="#plymetaiszombieallyplymetagetzombieally">plymeta:IsZombieAlly()/plymeta:GetZombieAlly()</a></h3>
-<p>
-    Whether the player is allied with the zombie role.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.0
-</p>
-
-<h3><a id="plymetaiszombieprimeplymetagetzombieprime" href="#plymetaiszombieprimeplymetagetzombieprime">plymeta:IsZombiePrime()/plymeta:GetZombiePrime()</a></h3>
-<p>
-    Whether the player is the prime (e.g. first-spawned) zombie.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.0
-</p>
-
-<h3><a id="plymetaiszombifying" href="#plymetaiszombifying">plymeta:IsZombifying()</a></h3>
-<p>
-    Whether the player is in the process of respawning as a zombie.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.5.12
-</p>
-
-<h3><a id="plymetamoverolestatetarget-keeponsource" href="#plymetamoverolestatetarget-keeponsource">plymeta:MoveRoleState(target, keepOnSource)</a></h3>
-<p>
-    Moves role state data (such as promotion and monster prime status) to the target.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.5<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>target</em> - The player to move the role state data to</li>
-    <li><em>keepOnSource</em> - Whether the source player should also keep the role state data (Defaults to <code>false</code>)</li>
-</ul>
-
-<h3><a id="plymetaresetplayerscale" href="#plymetaresetplayerscale">plymeta:ResetPlayerScale()</a></h3>
-<p>
-    Reset's the players size to default by adjusting models, step sizes, hulls and view offsets.<br>
-    <em>Realm:</em> Server<br>
-    <em>Added in:</em> 1.3.1
-</p>
-
-<h3><a id="plymetarespawnaszombieprime" href="#plymetarespawnaszombieprime">plymeta:RespawnAsZombie(prime)</a></h3>
-<p>
-    Respawns the player as a zombie after a 3 second delay.<br>
-    <em>Realm:</em> Server<br>
-    <em>Added in:</em> 1.5.12<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>prime</em> - Whether to mark the respawning player as the prime zombie <em>(Added in 1.6.15)</em></li>
-</ul>
-
-<h3><a id="plymetasetdefaultcreditskeep_existing" href="#plymetasetdefaultcreditskeep_existing">plymeta:SetDefaultCredits(keep_existing)</a></h3>
-<p>
-    Sets the credits on the player based on their role's starting credits convars.<br>
-    <em>Realm:</em> Server<br>
-    <em>Added in:</em> 1.0.0<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>keep_existing</em> - Whether to keep the player's existing credits (Defaults to <code>false</code>) <em>(Added in 1.6.2)</em></li>
-</ul>
-
-<h3><a id="plymetasetroleandbroadcastrole" href="#plymetasetroleandbroadcastrole">plymeta:SetRoleAndBroadcast(role)</a></h3>
-<p>
-    Sets the player's role to the given one and (if called on the server) broadcasts the change to all clients for scoreboard tracking.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.0<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>role</em> - The role number to set this player to</li>
-</ul>
-
-<h3><a id="plymetasetsprintingsprinting" href="#plymetasetsprintingsprinting">plymeta:SetSprinting(sprinting)</a></h3>
-<p>
-    Sets whether the player is currently sprinting.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.8.8
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>sprinting</em> - Whether the player is sprinting</li>
-</ul>
-
-<h3><a id="plymetasetsprintstaminastamina" href="#plymetasetsprintstaminastamina">plymeta:SetSprintStamina(stamina)</a></h3>
-<p>
-    Sets the player's current sprint stamina.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.8.8
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>stamina</em> - The player's new sprint stamina</li>
-</ul>
-
-<h3><a id="plymetasetvampirepreviousrolepreviousrole" href="#plymetasetvampirepreviousrolepreviousrole">plymeta:SetVampirePreviousRole(previousRole)</a></h3>
-<p>
-    Sets the player's previous role for when they are turned into a vampire.<br>
-    <em>Realm:</em> Server<br>
-    <em>Added in:</em> 1.0.0<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>previousRole</em> - The previous role this player had before becoming a vampire</li>
-</ul>
-
-<h3><a id="plymetasetvampireprimeisprime" href="#plymetasetvampireprimeisprime">plymeta:SetVampirePrime(isPrime)</a></h3>
-<p>
-    Sets whether the player is a prime (e.g. first-spawned) vampire.<br>
-    <em>Realm:</em> Server<br>
-    <em>Added in:</em> 1.0.0<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>isPrime</em> - Whether the player is a prime vampire</li>
-</ul>
-
-<h3><a id="plymetasetzombieprimeisprime" href="#plymetasetzombieprimeisprime">plymeta:SetZombiePrime(isPrime)</a></h3>
-<p>
-    Sets whether the player is a prime (e.g. first-spawned) zombie.<br>
-    <em>Realm:</em> Server<br>
-    <em>Added in:</em> 1.0.0<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>isPrime</em> - Whether the player is a prime zombie</li>
-</ul>
-
-<h3><a id="plymetashouldactlikejester" href="#plymetashouldactlikejester">plymeta:ShouldActLikeJester()</a></h3>
-<p>
-    Whether the player should act like a jester (e.g. in what damage they do, what damage they take, how they appear to other players, etc.).<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.2.5
-</p>
-
-<h3><a id="plymetashoulddelayannouncements" href="#plymetashoulddelayannouncements">plymeta:ShouldDelayAnnouncements()</a></h3>
-<p>
-    Whether this role should delay announcements when they kill a player that shows a message (like phantom and parasite). Used for things like preventing the assassin's target update message from getting overlapped.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.2.7
-</p>
-
-<h3><a id="plymetashoulddelayshoppurchase" href="#plymetashoulddelayshoppurchase">plymeta:ShouldDelayShopPurchase()</a></h3>
-<p>
-    Whether the player's shop purchase deliveries should be delayed.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.2.2
-</p>
-
-<h3><a id="plymetashouldhidejesters" href="#plymetashouldhidejesters">plymeta:ShouldHideJesters()</a></h3>
-<p>
-    Whether the player should hide a jester player's role (in radar, on the scoreboard, in target ID, etc.).<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.2.5
-</p>
-
-<h3><a id="plymetashouldnotdrown" href="#plymetashouldnotdrown">plymeta:ShouldNotDrown()</a></h3>
-<p>
-    Whether the player should not show the drown effect or take drowning damage.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.5.7
-</p>
-
-<h3><a id="plymetashouldrevealbeggartgt" href="#plymetashouldrevealbeggartgt">plymeta:ShouldRevealBeggar(tgt)</a></h3>
-<p>
-    Whether the player should reveal the fact that the target player is no longer a beggar (e.g. converted to an innocent or traitor).<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.2.5<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>tgt</em> - The target player beggar. If a value is not provided, the context player will be used instead (e.g. <code>ply:ShouldRevealBeggar()</code> is the same as <code>ply:ShouldRevealBeggar(ply)</code>)</li>
-</ul>
-
-<h3><a id="plymetashouldrevealbodysnatchertgt" href="#plymetashouldrevealbodysnatchertgt">plymeta:ShouldRevealBodysnatcher(tgt)</a></h3>
-<p>
-    Whether the player should reveal the fact that the target player is no longer a bodysnatcher (e.g. has snatched a role from a dead body).<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.2.5<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>tgt</em> - The target player bodysnatcher. If a value is not provided, the context player will be used instead (e.g. <code>ply:ShouldRevealBodysnatcher()</code> is the same as <code>ply:ShouldRevealBodysnatcher(ply)</code>)</li>
-</ul>
-
-<h3><a id="plymetashouldshowspectatorhud" href="#plymetashouldshowspectatorhud">plymeta:ShouldShowSpectatorHUD()</a></h3>
-<p>
-    Whether this player should currently be shown a spectator HUD. Used for things like the Phantom and Parasite spectator HUDs.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.3.1
-</p>
-
-<h3><a id="plymetasoberdrunkteam" href="#plymetasoberdrunkteam">plymeta:SoberDrunk(team)</a></h3>
-<p>
-    Runs the logic for when a drunk sobers up and remembers their role.<br>
-    <em>Realm:</em> Server<br>
-    <em>Added in:</em> 1.1.9<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>team</em> - Which team to choose a role from (see ROLE_TEAM_* global enumeration)</li>
-</ul>
-
-<h3><a id="plymetastriproleweapons" href="#plymetastriproleweapons">plymeta:StripRoleWeapons()</a></h3>
-<p>
-    Strips all weapons from the player whose <code>Category</code> property matches the global <code>WEAPON_CATEGORY_ROLE</code> value.<br>
-    <em>Realm:</em> Client and Server<br>
-    <em>Added in:</em> 1.0.5
-</p>
-
-<h3><a id="plymetasetplayerscalescale" href="#plymetasetplayerscalescale">plymeta:SetPlayerScale(scale)</a></h3>
-<p>
-    Sets the player's size by adjusting models, step sizes, hulls and view offsets.<br>
-    <em>Realm:</em> Server<br>
-    <em>Added in:</em> 1.3.1<br>
-    <em>Parameters:</em>
-</p>
-<ul>
-    <li><em>scale</em> - The value with which to scale the players size, relative to their current size.</li>
-</ul>
+<body>
+    <embed src="../nav.html#api" width="220" height="278" style="float: left; margin-right: 10px;" />
+    <div>
+        <h1>Player Object Methods</h1>
+        <p>Methods available when called from a Player object (within the defined realm)</p>
+
+        <h3><a id="plymetabeginrolechecks" href="#plymetabeginrolechecks">plymeta:BeginRoleChecks()</a></h3>
+        <p>
+            Sets up role logic for the player to handle role-specific events and checks.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.1.9
+        </p>
+
+        <h3 style="margin-top: 30px"><a id="plymetacelebratesnd-showconfetti" href="#plymetacelebratesnd-showconfetti">plymeta:Celebrate(snd, showConfetti)</a></h3>
+        <p>
+            Plays a celebration effect (sound and or confetti) at the player's location.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.3.1<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>snd</em> - What sound to play (if any) as part of this celebration</li>
+            <li><em>showConfetti</em> - Whether to show confetti as part of this celebration</li>
+        </ul>
+
+        <h3><a id="plymetacanlootcreditsactiveonly" href="#plymetacanlootcreditsactiveonly">plymeta:CanLootCredits(activeOnly)</a></h3>
+        <p>
+            Whether the player can loot credits from a corpse that has them.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.5<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>activeOnly</em> - Whether the player must also be active (Defaults to <code>false</code>)</li>
+        </ul>
+
+        <h3><a id="plymetacanseec4" href="#plymetacanseec4">plymeta:CanSeeC4()</a></h3>
+        <p>
+            Whether the player can see the C4 icons like traitors can.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.5.14
+        </p>
+
+        <h3><a id="plymetacanuseshop" href="#plymetacanuseshop">plymeta:CanUseShop()</a></h3>
+        <p>
+            Whether the player can currently open the shop menu.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.2
+        </p>
+
+        <h3><a id="plymetacanusetraitorbuttonactiveonly" href="#plymetacanusetraitorbuttonactiveonly">plymeta:CanUseTraitorButton(activeOnly)</a></h3>
+        <p>
+            Whether the player can see and use traitor buttons.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.5<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>activeOnly</em> - Whether the player must also be active (Defaults to <code>false</code>)</li>
+        </ul>
+
+        <h3><a id="plymetadrunkjoinlosingteam" href="#plymetadrunkjoinlosingteam">plymeta:DrunkJoinLosingTeam()</a></h3>
+        <p>
+            Attempts to find the losing team and calls <code>self:SoberDrunk(team)</code> using the losing team as the <em>team</em> parameter.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.7.2
+        </p>
+
+        <h3><a id="plymetadrunkrememberrolerole" href="#plymetadrunkrememberrolerole">plymeta:DrunkRememberRole(role)</a></h3>
+        <p>
+            Sets the drunk's role and runs required checks for that role.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.1.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>role</em> - Which role to set the drunk to (see ROLE_* global enumeration)</li>
+        </ul>
+
+        <h3><a id="plymetagetavoiddetectiveplymetashouldavoiddetective-added-in-162" href="#plymetagetavoiddetectiveplymetashouldavoiddetective-added-in-162">plymeta:GetAvoidDetective()/plymeta:ShouldAvoidDetective() (Added in 1.6.2)</a></h3>
+        <p>
+            Whether this player wants to avoid being a detective role.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.0.0
+        </p>
+
+        <h3><a id="plymetagetbypasscullingplymetashouldbypassculling" href="#plymetagetbypasscullingplymetashouldbypassculling">plymeta:GetBypassCulling()/plymeta:ShouldBypassCulling()</a></h3>
+        <p>
+            Whether this player wants to bypass map optimizations like vis leafs and culling for things like role head icons and highlighting.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.6.2
+        </p>
+
+        <h3><a id="plymetagetdisplayedrole" href="#plymetagetdisplayedrole">plymeta:GetDisplayedRole()</a></h3>
+        <p>
+            Gets the role that should be displayed for the player.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.5.3
+        </p>
+        <p>
+            <em>Returns:</em>
+        </p>
+        <ul>
+            <li><em>display_role</em> - The role that should be displayed for the player.</li>
+            <li><em>changed</em> - Whether the return value was changed and should be hidden</li>
+        </ul>
+
+        <h3><a id="plymetagetheight" href="#plymetagetheight">plymeta:GetHeight()</a></h3>
+        <p>
+            Gets the <em>estimated</em> height of the player based on their player model.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.0.2
+        </p>
+
+        <h3><a id="plymetagetroleteamdetectivesareinnocent" href="#plymetagetroleteamdetectivesareinnocent">plymeta:GetRoleTeam(detectivesAreInnocent)</a></h3>
+        <p>
+            Gets which "role team" a player belongs to (see ROLE_TEAM_* global enumeration).<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.2.7<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>detectivesAreInnocent</em> - Whether to include members of the detective "role team" in the innocent "role team" to match the logical teams</li>
+        </ul>
+
+        <h3><a id="plymetagetsprinting" href="#plymetagetsprinting">plymeta:GetSprinting()</a></h3>
+        <p>
+            Gets whether the player is currently sprinting.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.8.8
+        </p>
+
+        <h3><a id="plymetagetsprintstamina" href="#plymetagetsprintstamina">plymeta:GetSprintStamina()</a></h3>
+        <p>
+            Gets the player's current sprint stamina.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.8.8
+        </p>
+
+        <h3><a id="plymetagetvampirepreviousrole" href="#plymetagetvampirepreviousrole">plymeta:GetVampirePreviousRole()</a></h3>
+        <p>
+            Gets the player's previous role if they are a Vampire that has been converted or <code>ROLE_NONE</code> otherwise.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0
+        </p>
+
+        <h3><a id="plymetagivedelayedshopitems" href="#plymetagivedelayedshopitems">plymeta:GiveDelayedShopItems()</a></h3>
+        <p>
+            Give the player their shop items that were being held due to the role having a delayed shop.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.2.2
+        </p>
+
+        <h3><a id="plymetahandledetectivelikepromotion" href="#plymetahandledetectivelikepromotion">plymeta:HandleDetectiveLikePromotion()</a></h3>
+        <p>
+            Handles the player's promotion as a detective-like role (deputy/impersonator). Promotes the player and sends necessary net events.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.2.5
+        </p>
+
+        <h3><a id="plymetaisrolenameplymetagetrolename" href="#plymetaisrolenameplymetagetrolename">plymeta:Is{RoleName}()/plymeta:Get{RoleName}()</a></h3>
+        <p>
+            Dynamically created functions for each role that returns whether the player is that role. For example: <code>plymeta:IsTraitor()</code> and <code>plymeta:IsPhantom()</code> return whether the player is a traitor or a phantom, respectively.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> Whenever each role is added
+        </p>
+
+        <h3><a id="plymetaisactiverolename" href="#plymetaisactiverolename">plymeta:IsActive{RoleName}()</a></h3>
+        <p>
+            Dynamically created functions for each role that returns whether <code>plymeta:Is{RoleName}</code> returns <code>true</code> and the player is active. For example: <code>plymeta:IsActiveTraitor()</code> and <code>plymeta:IsActivePhantom()</code> return whether the player is active and a traitor or a phantom, respectively.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> Whenever each role is added
+        </p>
+
+        <h3><a id="plymetaisactivecustom" href="#plymetaisactivecustom">plymeta:IsActiveCustom()</a></h3>
+        <p>
+            Whether <code>plymeta:IsCustom</code> returns <code>true</code> and the player is active.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0
+        </p>
+
+        <h3><a id="plymetaisactivedetectivelike" href="#plymetaisactivedetectivelike">plymeta:IsActiveDetectiveLike()</a></h3>
+        <p>
+            Whether <code>plymeta:IsActiveDetectiveLike</code> returns <code>true</code> and the player is active.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0
+        </p>
+
+        <h3><a id="plymetaisactiveindependentteam" href="#plymetaisactiveindependentteam">plymeta:IsActiveIndependentTeam()</a></h3>
+        <p>
+            Whether <code>plymeta:IsIndependentTeam</code> returns <code>true</code> and the player is active.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0
+        </p>
+
+        <h3><a id="plymetaisactiveinnocentteam" href="#plymetaisactiveinnocentteam">plymeta:IsActiveInnocentTeam()</a></h3>
+        <p>
+            Whether <code>plymeta:IsInnocentTeam</code> returns <code>true</code> and the player is active.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0
+        </p>
+
+        <h3><a id="plymetaisactivejesterteam" href="#plymetaisactivejesterteam">plymeta:IsActiveJesterTeam()</a></h3>
+        <p>
+            Whether <code>plymeta:IsJesterTeam</code> returns <code>true</code> and the player is active.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0
+        </p>
+
+        <h3><a id="plymetaisactivemonsterteam" href="#plymetaisactivemonsterteam">plymeta:IsActiveMonsterTeam()</a></h3>
+        <p>
+            Whether <code>plymeta:IsMonsterTeam</code> returns <code>true</code> and the player is active.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0
+        </p>
+
+        <h3><a id="plymetaisactivetraitorteam" href="#plymetaisactivetraitorteam">plymeta:IsActiveTraitorTeam()</a></h3>
+        <p>
+            Whether <code>plymeta:IsTraitorTeam</code> returns <code>true</code> and the player is active.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0
+        </p>
+
+        <h3><a id="plymetaisactiveshoprole" href="#plymetaisactiveshoprole">plymeta:IsActiveShopRole()</a></h3>
+        <p>
+            Whether <code>plymeta:IsActiveShopRole</code> returns <code>true</code> and the player is active.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0
+        </p>
+
+        <h3><a id="plymetaiscustom" href="#plymetaiscustom">plymeta:IsCustom()</a></h3>
+        <p>
+            Whether the player's role is not one of the three default TTT roles.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0
+        </p>
+
+        <h3><a id="plymetaisdetectivelikeplymetagetdetectivelike" href="#plymetaisdetectivelikeplymetagetdetectivelike">plymeta:IsDetectiveLike()/plymeta:GetDetectiveLike()</a></h3>
+        <p>
+            Whether the player's role is like a detective (e.g. detective or promoted deputy/impersonator).<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0
+        </p>
+
+        <h3><a id="plymetaisdetectivelikepromotableplymetagetdetectivelikepromotable" href="#plymetaisdetectivelikepromotableplymetagetdetectivelikepromotable">plymeta:IsDetectiveLikePromotable()/plymeta:GetDetectiveLikePromotable()</a></h3>
+        <p>
+            Whether the player's role is an unpromoted detective-like role (deputy/impersonator).<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.2.5
+        </p>
+
+        <h3><a id="plymetaisindependentteam" href="#plymetaisindependentteam">plymeta:IsIndependentTeam()</a></h3>
+        <p>
+            Whether the player is on the independent team.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0
+        </p>
+
+        <h3><a id="plymetaisinnocentteam" href="#plymetaisinnocentteam">plymeta:IsInnocentTeam()</a></h3>
+        <p>
+            Whether the player is on the innocent team.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0
+        </p>
+
+        <h3><a id="plymetaisjesterteam" href="#plymetaisjesterteam">plymeta:IsJesterTeam()</a></h3>
+        <p>
+            Whether the player is on the jester team.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0
+        </p>
+
+        <h3><a id="plymetaismonsterteam" href="#plymetaismonsterteam">plymeta:IsMonsterTeam()</a></h3>
+        <p>
+            Whether the player is on the monster team.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0
+        </p>
+
+        <h3><a id="plymetaisonscreenent_or_pos-limit" href="#plymetaisonscreenent_or_pos-limit">plymeta:IsOnScreen(ent_or_pos, limit)</a></h3>
+        <p>
+            Whether the entity or position given is on screen for the player, within the given value limit.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.6.2<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ent_or_pos</em> - The entity or position vector that is being checked</li>
+            <li><em>limit</em> - The maximum value limit before a player is determined to be "off screen" (Defaults to 1)</li>
+        </ul>
+
+        <h3><a id="plymetaisroleactive" href="#plymetaisroleactive">plymeta:IsRoleActive()</a></h3>
+        <p>
+            Whether the player's role feature has been activated.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.2.2
+        </p>
+
+        <h3><a id="plymetaissameteamtarget" href="#plymetaissameteamtarget">plymeta:IsSameTeam(target)</a></h3>
+        <p>
+            Whether the player is on the same team as the target.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>target</em> - The other player whose team is being compared</li>
+        </ul>
+
+        <h3><a id="plymetaisscoreboardinfooverriddentarget" href="#plymetaisscoreboardinfooverriddentarget">plymeta:IsScoreboardInfoOverridden(target)</a></h3>
+        <p>
+            Whether the player is currently overriding a piece of scoreboard information.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.5.15<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>target</em> - The player whose scoreboard info is being rendered</li>
+        </ul>
+        <p>
+            <em>Returns:</em>
+        </p>
+        <ul>
+            <li><em>isNameOverridden</em> - Whether the player name is currently overridden</li>
+            <li><em>isRoleOverridden</em> - Whether the role color or icon is currently overridden</li>
+        </ul>
+
+        <h3><a id="plymetaisshoprole" href="#plymetaisshoprole">plymeta:IsShopRole()</a></h3>
+        <p>
+            Whether the player has a shop (see <code>plymeta:CanUseShop</code> for determining if it is openable).<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0
+        </p>
+
+        <h3><a id="plymetaistargethighlightedtarget" href="#plymetaistargethighlightedtarget">plymeta:IsTargetHighlighted(target)</a></h3>
+        <p>
+            Whether the target player is highlighted based the player's role rules.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.5.15<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>target</em> - The player whose scoreboard info is being rendered</li>
+        </ul>
+
+        <h3><a id="plymetaistargetidoverriddentarget-showjester" href="#plymetaistargetidoverriddentarget-showjester">plymeta:IsTargetIDOverridden(target, showJester)</a></h3>
+        <p>
+            Whether the player is currently overriding a piece of target ID information.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.5.15<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>target</em> - The player whose scoreboard info is being rendered</li>
+            <li><em>showJester</em> - Whether the target is a jester and the local player would normally know that</li>
+        </ul>
+        <p>
+            <em>Returns:</em>
+        </p>
+        <ul>
+            <li><em>isIconOverridden</em> - Whether the target ID role icon is currently overridden</li>
+            <li><em>isRingOverridden</em> - Whether the target ID identification ring is currently overridden</li>
+            <li><em>isTextOverridden</em> - Whether the target ID text is currently overridden</li>
+        </ul>
+
+        <h3><a id="plymetaistraitorteam" href="#plymetaistraitorteam">plymeta:IsTraitorTeam()</a></h3>
+        <p>
+            Whether the player is on the traitor team.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0
+        </p>
+
+        <h3><a id="plymetaisvampireallyplymetagetvampireally" href="#plymetaisvampireallyplymetagetvampireally">plymeta:IsVampireAlly()/plymeta:GetVampireAlly()</a></h3>
+        <p>
+            Whether the player is allied with the vampire role.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0
+        </p>
+
+        <h3><a id="plymetaisvampireprimeplymetagetvampireprime" href="#plymetaisvampireprimeplymetagetvampireprime">plymeta:IsVampirePrime()/plymeta:GetVampirePrime()</a></h3>
+        <p>
+            Whether the player is the prime (e.g. first-spawned) vampire.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0
+        </p>
+
+        <h3><a id="plymetaiszombieallyplymetagetzombieally" href="#plymetaiszombieallyplymetagetzombieally">plymeta:IsZombieAlly()/plymeta:GetZombieAlly()</a></h3>
+        <p>
+            Whether the player is allied with the zombie role.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0
+        </p>
+
+        <h3><a id="plymetaiszombieprimeplymetagetzombieprime" href="#plymetaiszombieprimeplymetagetzombieprime">plymeta:IsZombiePrime()/plymeta:GetZombiePrime()</a></h3>
+        <p>
+            Whether the player is the prime (e.g. first-spawned) zombie.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0
+        </p>
+
+        <h3><a id="plymetaiszombifying" href="#plymetaiszombifying">plymeta:IsZombifying()</a></h3>
+        <p>
+            Whether the player is in the process of respawning as a zombie.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.5.12
+        </p>
+
+        <h3><a id="plymetamoverolestatetarget-keeponsource" href="#plymetamoverolestatetarget-keeponsource">plymeta:MoveRoleState(target, keepOnSource)</a></h3>
+        <p>
+            Moves role state data (such as promotion and monster prime status) to the target.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.5<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>target</em> - The player to move the role state data to</li>
+            <li><em>keepOnSource</em> - Whether the source player should also keep the role state data (Defaults to <code>false</code>)</li>
+        </ul>
+
+        <h3><a id="plymetaresetplayerscale" href="#plymetaresetplayerscale">plymeta:ResetPlayerScale()</a></h3>
+        <p>
+            Reset's the players size to default by adjusting models, step sizes, hulls and view offsets.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.3.1
+        </p>
+
+        <h3><a id="plymetarespawnaszombieprime" href="#plymetarespawnaszombieprime">plymeta:RespawnAsZombie(prime)</a></h3>
+        <p>
+            Respawns the player as a zombie after a 3 second delay.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.5.12<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>prime</em> - Whether to mark the respawning player as the prime zombie <em>(Added in 1.6.15)</em></li>
+        </ul>
+
+        <h3><a id="plymetasetdefaultcreditskeep_existing" href="#plymetasetdefaultcreditskeep_existing">plymeta:SetDefaultCredits(keep_existing)</a></h3>
+        <p>
+            Sets the credits on the player based on their role's starting credits convars.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.0.0<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>keep_existing</em> - Whether to keep the player's existing credits (Defaults to <code>false</code>) <em>(Added in 1.6.2)</em></li>
+        </ul>
+
+        <h3><a id="plymetasetroleandbroadcastrole" href="#plymetasetroleandbroadcastrole">plymeta:SetRoleAndBroadcast(role)</a></h3>
+        <p>
+            Sets the player's role to the given one and (if called on the server) broadcasts the change to all clients for scoreboard tracking.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>role</em> - The role number to set this player to</li>
+        </ul>
+
+        <h3><a id="plymetasetsprintingsprinting" href="#plymetasetsprintingsprinting">plymeta:SetSprinting(sprinting)</a></h3>
+        <p>
+            Sets whether the player is currently sprinting.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.8.8
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>sprinting</em> - Whether the player is sprinting</li>
+        </ul>
+
+        <h3><a id="plymetasetsprintstaminastamina" href="#plymetasetsprintstaminastamina">plymeta:SetSprintStamina(stamina)</a></h3>
+        <p>
+            Sets the player's current sprint stamina.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.8.8
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>stamina</em> - The player's new sprint stamina</li>
+        </ul>
+
+        <h3><a id="plymetasetvampirepreviousrolepreviousrole" href="#plymetasetvampirepreviousrolepreviousrole">plymeta:SetVampirePreviousRole(previousRole)</a></h3>
+        <p>
+            Sets the player's previous role for when they are turned into a vampire.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.0.0<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>previousRole</em> - The previous role this player had before becoming a vampire</li>
+        </ul>
+
+        <h3><a id="plymetasetvampireprimeisprime" href="#plymetasetvampireprimeisprime">plymeta:SetVampirePrime(isPrime)</a></h3>
+        <p>
+            Sets whether the player is a prime (e.g. first-spawned) vampire.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.0.0<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>isPrime</em> - Whether the player is a prime vampire</li>
+        </ul>
+
+        <h3><a id="plymetasetzombieprimeisprime" href="#plymetasetzombieprimeisprime">plymeta:SetZombiePrime(isPrime)</a></h3>
+        <p>
+            Sets whether the player is a prime (e.g. first-spawned) zombie.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.0.0<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>isPrime</em> - Whether the player is a prime zombie</li>
+        </ul>
+
+        <h3><a id="plymetashouldactlikejester" href="#plymetashouldactlikejester">plymeta:ShouldActLikeJester()</a></h3>
+        <p>
+            Whether the player should act like a jester (e.g. in what damage they do, what damage they take, how they appear to other players, etc.).<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.2.5
+        </p>
+
+        <h3><a id="plymetashoulddelayannouncements" href="#plymetashoulddelayannouncements">plymeta:ShouldDelayAnnouncements()</a></h3>
+        <p>
+            Whether this role should delay announcements when they kill a player that shows a message (like phantom and parasite). Used for things like preventing the assassin's target update message from getting overlapped.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.2.7
+        </p>
+
+        <h3><a id="plymetashoulddelayshoppurchase" href="#plymetashoulddelayshoppurchase">plymeta:ShouldDelayShopPurchase()</a></h3>
+        <p>
+            Whether the player's shop purchase deliveries should be delayed.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.2.2
+        </p>
+
+        <h3><a id="plymetashouldhidejesters" href="#plymetashouldhidejesters">plymeta:ShouldHideJesters()</a></h3>
+        <p>
+            Whether the player should hide a jester player's role (in radar, on the scoreboard, in target ID, etc.).<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.2.5
+        </p>
+
+        <h3><a id="plymetashouldnotdrown" href="#plymetashouldnotdrown">plymeta:ShouldNotDrown()</a></h3>
+        <p>
+            Whether the player should not show the drown effect or take drowning damage.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.5.7
+        </p>
+
+        <h3><a id="plymetashouldrevealbeggartgt" href="#plymetashouldrevealbeggartgt">plymeta:ShouldRevealBeggar(tgt)</a></h3>
+        <p>
+            Whether the player should reveal the fact that the target player is no longer a beggar (e.g. converted to an innocent or traitor).<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.2.5<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>tgt</em> - The target player beggar. If a value is not provided, the context player will be used instead (e.g. <code>ply:ShouldRevealBeggar()</code> is the same as <code>ply:ShouldRevealBeggar(ply)</code>)</li>
+        </ul>
+
+        <h3><a id="plymetashouldrevealbodysnatchertgt" href="#plymetashouldrevealbodysnatchertgt">plymeta:ShouldRevealBodysnatcher(tgt)</a></h3>
+        <p>
+            Whether the player should reveal the fact that the target player is no longer a bodysnatcher (e.g. has snatched a role from a dead body).<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.2.5<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>tgt</em> - The target player bodysnatcher. If a value is not provided, the context player will be used instead (e.g. <code>ply:ShouldRevealBodysnatcher()</code> is the same as <code>ply:ShouldRevealBodysnatcher(ply)</code>)</li>
+        </ul>
+
+        <h3><a id="plymetashouldshowspectatorhud" href="#plymetashouldshowspectatorhud">plymeta:ShouldShowSpectatorHUD()</a></h3>
+        <p>
+            Whether this player should currently be shown a spectator HUD. Used for things like the Phantom and Parasite spectator HUDs.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.3.1
+        </p>
+
+        <h3><a id="plymetasoberdrunkteam" href="#plymetasoberdrunkteam">plymeta:SoberDrunk(team)</a></h3>
+        <p>
+            Runs the logic for when a drunk sobers up and remembers their role.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.1.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>team</em> - Which team to choose a role from (see ROLE_TEAM_* global enumeration)</li>
+        </ul>
+
+        <h3><a id="plymetastriproleweapons" href="#plymetastriproleweapons">plymeta:StripRoleWeapons()</a></h3>
+        <p>
+            Strips all weapons from the player whose <code>Category</code> property matches the global <code>WEAPON_CATEGORY_ROLE</code> value.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.5
+        </p>
+
+        <h3><a id="plymetasetplayerscalescale" href="#plymetasetplayerscalescale">plymeta:SetPlayerScale(scale)</a></h3>
+        <p>
+            Sets the player's size by adjusting models, step sizes, hulls and view offsets.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.3.1<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>scale</em> - The value with which to scale the players size, relative to their current size.</li>
+        </ul>
+    </div>
+</body>
+<html>
