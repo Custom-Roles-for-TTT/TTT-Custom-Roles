@@ -1,6 +1,6 @@
 # Release Notes
 
-## 1.9.2 (Beta)
+## 1.9.2
 **Released: July 22nd, 2023**
 
 ### Additions
