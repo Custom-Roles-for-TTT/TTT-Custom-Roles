@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+    <title>Custom Roles for TTT - API - SWEPs</title>
+    <link rel="stylesheet" href="../css/style.css"/>
+    <link rel="stylesheet" href="../css/api.css"/>
+</head>
+<body>
+    <embed src="../nav.html#api" width="220" height="278" style="float: left; margin-right: 10px;" />
+    <div>
+        <h1>SWEPs</h1>
+        <p>Changes made to SWEPs (the data structure used when defining new weapons)</p>
+
+        <h3><a id="user-content-swepblockshoprandomization" href="#user-content-swepblockshoprandomization">SWEP.BlockShopRandomization</a></h3>
+        <p>
+            Whether this weapon should block the shop randomization logic. Setting this to <code>true</code> will ensure this SWEP <em>always</em> shows in the applicable role's shop.<br>
+            <em>Added in:</em> 1.0.7
+        </p>
+
+        <h3><a id="user-content-swepcategory" href="#user-content-swepcategory">SWEP.Category</a></h3>
+        <p>
+            Updated so role weapons added by Custom Roles for TTT have a fixed global value: <code>WEAPON_CATEGORY_ROLE</code>. This is used to easily identify which weapons belong to specific roles.<br>
+            <em>Added in:</em> 1.0.5
+        </p>
+
+        <h3><a id="user-content-swepequipmenudata" href="#user-content-swepequipmenudata">SWEP.EquipMenuData</a></h3>
+        <p>
+            Updated so <code>name</code>, <code>type</code>, and <code>desc</code> properties can be parameterless functions to allow for parameterized translation.<br>
+            <em>Added in:</em> 1.0.8
+        </p>
+
+        <h3><a id="user-content-swepshopname" href="#user-content-swepshopname">SWEP.ShopName</a></h3>
+        <p>
+            The weapon name to use in the shop menu. If not provided, <code>SWEP.PrintName</code> is used instead.<br>
+            <em>Added in:</em> 1.1.9
+        </p>
+    </div>
+</body>
+<html>

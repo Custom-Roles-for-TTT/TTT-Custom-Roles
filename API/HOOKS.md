@@ -603,7 +603,7 @@ Called when a player who is being shown a role-specific spectator HUD presses a 
 *Realm:* Server\
 *Added in:* 1.3.1\
 *Parameters:*
-- *ply* - The spectator player who is attemping to press a key
+- *ply* - The spectator player who is attempting to press a key
 - *tgt* - The target playing being spectated
 - *powers* - The table of key-value pairs of spectator powers where the key is the [IN](https://wiki.facepunch.com/gmod/Enums/IN) enum value of the desired button press and the value is an object with the following properties:
   - *start_command* - The console command to run to start the power effect

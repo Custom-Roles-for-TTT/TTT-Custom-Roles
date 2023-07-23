@@ -1,0 +1,1452 @@
+<!doctype html>
+<html>
+<head>
+    <title>Custom Roles for TTT - API - Hooks</title>
+    <link rel="stylesheet" href="../css/style.css"/>
+    <link rel="stylesheet" href="../css/api.css"/>
+</head>
+<body>
+    <embed src="../nav.html#api" width="220" height="278" style="float: left; margin-right: 10px;" />
+    <div>
+        <h1>Hooks</h1>
+        <p>Custom and modified event hooks available within the defined realm. A list of default TTT hooks is available <a href="https://www.troubleinterroristtown.com/development/hooks/" target="_blank">here</a> but note that they may have been modified (see below).</p>
+        <p><em><strong>NOTE:</strong></em> When using a hook with multiple return values, you <em>must</em> return a non-<code>nil</code> value for all properties up to the one(s) you are modifying or the hook results will be ignored entirely.</p>
+        <p>For example, if there is a hook that returns three parameters: <code>first</code>, <code>second</code>, and <code>third</code> and you want to modify the <code>second</code> parameter you must return the <code>first</code> parameter as non-<code>nil</code> as well, like this: <code>return first, newSecond</code>. Any return parameters after <code>second</code> can be omitted and the default value will be used.</p>
+        <p><em><strong>NOTE:</strong></em> Be careful that you only return from a hook when you absolutely want to change something. Due to the way GMod hooks work, whichever hook instance returns first causes the <em>remaining hook instances to be completely skipped</em>. This is useful for certain hooks when you want to stop a behavior from happening, but it can also accidentally cause functionality to break because its code is completely ignored.</p>
+
+        <h3><a id="tttbodysearchbuttonsply-rag-buttons-searchraw-detectivesearchonly" href="#tttbodysearchbuttonsply-rag-buttons-searchraw-detectivesearchonly">TTTBodySearchButtons(ply, rag, buttons, searchRaw, detectiveSearchOnly)</a></h3>
+        <p>
+            Called when a player opens the body search dialog. Used to add new buttons to the dialog.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.8.3<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player who is opening the body search dialog</li>
+            <li><em>rag</em> - The <code>prop_ragdoll</code> representing a player's body being searched</li>
+            <li><em>buttons</em> - The table of buttons being rendered on the body search dialog. Insert a new descriptive object into this table to add a button to the window. The possible descriptive object properties are:
+        <ul>
+            <li><em>text</em> - The text to show on the button</li>
+            <li><em>onclick</em> - The function to call when the button is clicked. The only parameter passed to this function is the <a href="https://wiki.facepunch.com/gmod/DButton" target="_blank">DButton</a> instance.</li>
+            <li><em>disabled</em> - A boolean or function which returns a boolean used to determine whether this button should be clickable. Defaults to <code>true</code> if not provided.</li>
+        </ul>
+        </li>
+            <li><em>searchRaw</em> - The raw search data</li>
+            <li><em>detectiveSearchOnly</em> - Whether only detectives should be able to search bodies</li>
+        </ul>
+
+        <h3><a id="tttblockplayerfootstepsoundply" href="#tttblockplayerfootstepsoundply">TTTBlockPlayerFootstepSound(ply)</a></h3>
+        <p>
+            Called when a player is making a footstep. Used to determine if the player's footstep sound should be stopped.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.2.7<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player who is making footsteps</li>
+        </ul>
+        <p>
+            <em>Return:</em> Whether or not the given player's footstep sounds should be stopped (Defaults to <code>false</code>).
+        </p>
+
+        <h3><a id="tttc4disarmbomb-result-ply" href="#tttc4disarmbomb-result-ply">TTTC4Disarm(bomb, result, ply)</a></h3>
+        <p>
+            Modified to allow changing the defusal result via the new return value.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.5.14<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>bomb</em> - The bomb entity being defused</li>
+            <li><em>result</em> - Whether the defusal was successful</li>
+            <li><em>ply</em> - The player defusing the bomb</li>
+        </ul>
+        <p>
+            <em>Return:</em>
+        </p>
+        <ul>
+            <li><em>result</em> - The new result value to use or the original passed into the hook</li>
+        </ul>
+
+        <h3><a id="tttcanidentifycorpseply-rag-wastraitor" href="#tttcanidentifycorpseply-rag-wastraitor">TTTCanIdentifyCorpse(ply, rag, wasTraitor)</a></h3>
+        <p>
+            Changed <code>was_traitor</code> parameter to be <code>true</code> for any member of the traitor team, rather than just the traitor role.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.0.5<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player who is attempting to identify a corpse</li>
+            <li><em>rag</em> - The ragdoll being identified</li>
+            <li><em>wasTraitor</em> - Whether the player who the targeted ragdoll represents belonged to the traitor team</li>
+        </ul>
+        <p>
+            <em>Return:</em> Whether or not the given player should be able to identify the given corpse (Defaults to <code>false</code>).
+        </p>
+
+        <h3><a id="tttcupidshouldloversurviveply-lover" href="#tttcupidshouldloversurviveply-lover">TTTCupidShouldLoverSurvive(ply, lover)</a></h3>
+        <p>
+            Called before a player is killed because their lover (as set by Cupid's arrows) has been killed. Allows developers to prevent the player from being killed.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.8.2<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player who may be killed</li>
+            <li><em>lover</em> - The player's lover who is already dead</li>
+        </ul>
+        <p>
+            <em>Return:</em> If <code>ply</code> should not be killed, return <code>true</code>. Otherwise do not return anything.
+        </p>
+
+        <h3><a id="tttdeathnotifyoverridevictim-inflictor-attacker-reason-killername-role" href="#tttdeathnotifyoverridevictim-inflictor-attacker-reason-killername-role">TTTDeathNotifyOverride(victim, inflictor, attacker, reason, killerName, role)</a></h3>
+        <p>
+            Called before the name and role of a player's killer is shown to the victim. Used to change the death message reason, killer name, and/or killer role.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.5.14<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>victim</em> - The player who was killed</li>
+            <li><em>inflictor</em> - The thing that was used to kill them</li>
+            <li><em>attacker</em> - The player that killed the victim</li>
+            <li><em>reason</em> - The kind of death the player experienced (e.g. <code>water</code>, <code>suicide</code>, <code>prop</code>, <code>burned</code>, <code>fell</code>, or <code>ply</code>)</li>
+            <li><em>killerName</em> - The name of the player that killed the victim (used when <code>reason</code> is <code>ply</code>)</li>
+            <li><em>role</em> - The role of the player that killed the victim (used when <code>reason</code> is <code>ply</code>)</li>
+        </ul>
+        <p>
+            <em>Return:</em>
+        </p>
+        <ul>
+            <li><em>reason</em> - The new reason value to use or the original passed into the hook</li>
+            <li><em>killerName</em> - The new killerName value to use or the original passed into the hook</li>
+            <li><em>role</em> - The new role value to use or the original passed into the hook. Use <code>ROLE_NONE</code> to hide the attacker's role from the victim</li>
+        </ul>
+
+        <h3><a id="ttteventfinishtexte" href="#ttteventfinishtexte">TTTEventFinishText(e)</a></h3>
+        <p>
+            Called before the event text for the "round finished" event is rendered in the end-of-round summary's Events tab.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.2.7<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>e</em> - Event parameters. Contains the following properties:
+            <ul>
+                <li><code>id</code> - The event identifier (always <code>EVENT_FINISH</code>)</li>
+                <li><code>t</code> - The time when this event occurred</li>
+                <li><code>win</code> - The win condition identifier</li>
+            </ul>
+        </li>
+        </ul>
+        <p>
+            <em>Return:</em> Text to show in events list at the end of the round
+        </p>
+
+        <h3><a id="ttteventfinishicontexte-winstring-rolestring" href="#ttteventfinishicontexte-winstring-rolestring">TTTEventFinishIconText(e, winString, roleString)</a></h3>
+        <p>
+            Called before the event icon for the "round finished" event is rendered in the end-of-round summary's Events tab. Used to change the mouseover text for the icon.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.2.7<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>e</em> - Event parameters. Contains the following properties:
+            <ul>
+                <li><code>id</code> - The event identifier (always <code>EVENT_FINISH</code>)</li>
+                <li><code>t</code> - The time when this event occurred</li>
+                <li><code>win</code> - The win condition identifier</li>
+            </ul>
+        </li>
+            <li><em>winString</em> - The translation string that will be used to display the icon mouseover text</li>
+            <li><em>roleString</em> - The role string to use in place of the <code>role</code> placeholder in the translation string</li>
+        </ul>
+        <p>
+            <em>Return:</em>
+        </p>
+        <ul>
+            <li><em>winString</em> - The new winString value to use or the original passed into the hook</li>
+            <li><em>roleString</em> - The new roleString value to use or the original passed into the hook</li>
+        </ul>
+
+        <h3><a id="tttequipmenttabsdsheet-dframe" href="#tttequipmenttabsdsheet-dframe">TTTEquipmentTabs(dsheet, dframe)</a></h3>
+        <p>
+            Allows creation of new tabs for the equipment (shop) menu.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.0.0<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>dsheet</em> - The <a href="https://wiki.facepunch.com/gmod/DPropertySheet" target="_blank">DPropertySheet</a> used by the equipment window</li>
+            <li><em>dframe</em> - The <a href="https://wiki.facepunch.com/gmod/DFrame" target="_blank">DFrame</a> representing the equipment window <em>(Added in 1.8.7)</em></li>
+        </ul>
+        <p>
+            <em>Return:</em> If <code>true</code>, the equipment window will show even if the player doesn't have any of the default tabs. <em>(Added in 1.7.3)</em>
+        </p>
+
+        <h3><a id="ttthudinfopaintclient-labelx-labely-activelabels" href="#ttthudinfopaintclient-labelx-labely-activelabels">TTTHUDInfoPaint(client, labelX, labelY, activeLabels)</a></h3>
+        <p>
+            Called after player information such as role, health, and ammo and equipment information such as radar cooldown and disguiser activation are drawn on the screen. Used to write additional persistent text on the screen for player reference.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.3.1<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>client</em> - The local player</li>
+            <li><em>labelX</em> - The X value representing the correct indentation from the left side of the screen to add information</li>
+            <li><em>labelY</em> - The Y value representing the first clear space to add information</li>
+            <li><em>activeLabels</em> - The list of current active additional labels. Used to determine the labelY offset to use via: <code>labelY = labelY + (20 * #activeLabels)</code>. Be sure to insert an entry when you add your own label so other addons can space appropriately. <em>(Added in 1.6.11)</em></li>
+        </ul>
+
+        <h3><a id="tttinformantscanstagechangedply-tgt-stage" href="#tttinformantscanstagechangedply-tgt-stage">TTTInformantScanStageChanged(ply, tgt, stage)</a></h3>
+        <p>
+            Called when an informant has scanned additional information from a target player.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.6.16<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The informant performing the scan</li>
+            <li><em>tgt</em> - The player being scanned</li>
+            <li><em>stage</em> - The new scan stage</li>
+        </ul>
+
+        <h3><a id="tttkarmagiverewardply-reward-victim" href="#tttkarmagiverewardply-reward-victim">TTTKarmaGiveReward(ply, reward, victim)</a></h3>
+        <p>
+            Called before a player is rewarded with karma. Used to block a player's karma reward.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.2.7<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player who will be rewarded karma</li>
+            <li><em>reward</em> - The amount of karma the player will be rewarded with</li>
+            <li><em>victim</em> - The victim of the event that is rewarding the player with karma. If this is not a player, karma is being rewarded as part of the end of the round</li>
+        </ul>
+        <p>
+            <em>Return:</em> Whether or not the given player should be prevented from being rewarded with karma (Defaults to <code>false</code>).
+        </p>
+
+        <h3><a id="tttkarmashouldgivepenaltyattacker-victim" href="#tttkarmashouldgivepenaltyattacker-victim">TTTKarmaShouldGivePenalty(attacker, victim)</a></h3>
+        <p>
+            Called before a player's karma effect is decided. Used to determine if a player should be penalized or rewarded.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.2.7<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>attacker</em> - The player who hurt or killed the victim</li>
+            <li><em>victim</em> - The player who was hurt or killed</li>
+        </ul>
+        <p>
+            <em>Return:</em> <code>true</code> if the attacker should be penalized or <code>false</code> if they should not. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
+        </p>
+
+        <h3><a id="tttmadscientistzombifybeginply-tgt" href="#tttmadscientistzombifybeginply-tgt">TTTMadScientistZombifyBegin(ply, tgt)</a></h3>
+        <p>
+            Called when a mad scientist begins zombifying a target.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.6.16<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The mad scientist doing the zombifying</li>
+            <li><em>tgt</em> - The target being zombified</li>
+        </ul>
+
+        <h3><a id="tttpaladinaurahealedply-tgt-healed" href="#tttpaladinaurahealedply-tgt-healed">TTTPaladinAuraHealed(ply, tgt, healed)</a></h3>
+        <p>
+            Called when a paladin heals a target.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.6.16<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The paladin doing the healing</li>
+            <li><em>tgt</em> - The target being healed</li>
+            <li><em>healed</em> - The amount healed</li>
+        </ul>
+
+        <h3><a id="tttparasiterespawnparasite-attacker" href="#tttparasiterespawnparasite-attacker">TTTParasiteRespawn(parasite, attacker)</a></h3>
+        <p>
+            Called when a parasite respawns.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.8.2<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>parasite</em> - The parasite that is respawning</li>
+            <li><em>attacker</em> - The player that originally killed the parasite (aka the "host")</li>
+        </ul>
+
+        <h3><a id="tttplayeraliveclientthinkclient-ply" href="#tttplayeraliveclientthinkclient-ply">TTTPlayerAliveClientThink(client, ply)</a></h3>
+        <p>
+            Called for each player who is alive during the <code>Think</code> hook.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.3.1<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>client</em> - The local player</li>
+            <li><em>ply</em> - The current alive player target</li>
+        </ul>
+
+        <h3><a id="tttplayeralivethinkply" href="#tttplayeralivethinkply">TTTPlayerAliveThink(ply)</a></h3>
+        <p>
+            Called for each player who is alive during the <code>Tick</code> hook.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.2.7<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The current alive player target</li>
+        </ul>
+
+        <h3><a id="tttplayerrolechangedply-oldrole-newrole" href="#tttplayerrolechangedply-oldrole-newrole">TTTPlayerRoleChanged(ply, oldRole, newRole)</a></h3>
+        <p>
+            Called after a player's role has changed.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.2.7<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player whose role is being changed</li>
+            <li><em>oldRole</em> - The role the player had before this change</li>
+            <li><em>newRole</em> - The role the player is changing to</li>
+        </ul>
+
+        <h3><a id="tttplayerrolechangedbyitemply-tgt-item" href="#tttplayerrolechangedbyitemply-tgt-item">TTTPlayerRoleChangedByItem(ply, tgt, item)</a></h3>
+        <p>
+            Called after a player's role has been changed by a weapon or item.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.6.16<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player using the resurrection device</li>
+            <li><em>tgt</em> - The target player being resurrected</li>
+            <li><em>item</em> - The weapon or item used to change the target's role</li>
+        </ul>
+
+        <h3><a id="tttplayerspawnforroundply-deadonly" href="#tttplayerspawnforroundply-deadonly">TTTPlayerSpawnForRound(ply, deadOnly)</a></h3>
+        <p>
+            Called before a player is spawned for a round. Also used when reviving a player (via a defib, zombie conversion, etc.).<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.2.7<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player who is being spawned or respawned</li>
+            <li><em>deadOnly</em> - Whether this call is specifically targeted at dead players</li>
+        </ul>
+
+        <h3><a id="tttplayerusedhealthstationply-station-healed-should_reduce" href="#tttplayerusedhealthstationply-station-healed-should_reduce">TTTPlayerUsedHealthStation(ply, station, healed, should_reduce)</a></h3>
+        <p>
+            Called after a player uses a health station. Added <code>should_reduce</code> parameter which is not present in vanilla TTT.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.0.0<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player who is using the health station</li>
+            <li><em>station</em> - The health station being used</li>
+            <li><em>healed</em> - The amount the player's health changed</li>
+            <li><em>should_reduce</em> - Whether the player's max health was reduced instead of their health being increased <em>(Added in 1.5.7)</em></li>
+        </ul>
+
+        <h3><a id="tttprintresultmessagetype" href="#tttprintresultmessagetype">TTTPrintResultMessage(type)</a></h3>
+        <p>
+            Called before the round win results message is printed to the top-right corner of the screen. Can be used to print a replacement message for custom win types that this would not normally handle.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.0.14<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>type</em> - The round win type</li>
+        </ul>
+        <p>
+            <em>Return:</em> <code>true</code> if the default print messages should be skipped (Defaults to <code>false</code>).
+        </p>
+
+        <h3><a id="tttradarplayerrenderclient-tgt-color-hidden" href="#tttradarplayerrenderclient-tgt-color-hidden">TTTRadarPlayerRender(client, tgt, color, hidden)</a></h3>
+        <p>
+            Called before a target's radar ping is rendered, allowing the color and whether the ping should be shown to be changed.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.2.3<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>client</em> - The local player</li>
+            <li><em>tgt</em> - The target player's radar data. Can contain the following properties:
+            <ul>
+                <li><code>pos</code> - The target's position</li>
+                <li><code>role</code> - The target's role, if any</li>
+                <li><code>was_beggar</code> - If the target was a beggar but was converted to another role</li>
+                <li><code>was_bodysnatcher</code> - If the target was a bodysnatcher but was converted to another role</li>
+                <li><code>killer_clown_active</code> - whether the target is a Clown that has been activated</li>
+                <li><code>sid64</code> - The <a href="https://wiki.facepunch.com/gmod/Player:SteamID64" target="_blank">SteamID64</a> value of the target</li>
+                <li>The following properties can be added (only one or the other) to <code>tgt</code> to change what is displayed with the radar ping
+                    <ul>
+                        <li><code>nick</code> - A string value that will be shown under the radar ping circle</li>
+                        <li><code>t</code> - A time number value that will be calculated as the difference from "now" and shown in the "##:##" format</li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+            <li><em>color</em> - The color that would normally be used for the radar ping for the target, if any</li>
+            <li><em>hidden</em> - Whether the radar ping for the target would normally be hidden</li>
+        </ul>
+        <p>
+            <em>Return:</em>
+        </p>
+        <ul>
+            <li><em>color</em> - The new color value to use or the original passed into the hook</li>
+            <li><em>hidden</em> - The new hidden value to use or the original passed into the hook</li>
+        </ul>
+
+        <h3><a id="tttradarrenderclient" href="#tttradarrenderclient">TTTRadarRender(client)</a></h3>
+        <p>
+            Called after non-player radar points are rendered and before players are rendered. Used for rendering custom non-player radar points.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.3.1<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>client</em> - The local player</li>
+        </ul>
+
+        <h3><a id="tttrewarddetectivetraitordeathamountvictim-attacker-amount" href="#tttrewarddetectivetraitordeathamountvictim-attacker-amount">TTTRewardDetectiveTraitorDeathAmount(victim, attacker, amount)</a></h3>
+        <p>
+            Called before all detectives are awarded credits for a traitor being killed.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.4.8<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>victim</em> - The player who was killed</li>
+            <li><em>attacker</em> - The player who killed the victim</li>
+            <li><em>amount</em> - The number of credits that all detectives will be awarded</li>
+        </ul>
+        <p>
+            <em>Return:</em>
+        </p>
+        <ul>
+            <li><em>new_amount</em> - The new number of credits that all detectives will be awarded</li>
+        </ul>
+
+        <h3><a id="tttrewarddetectivetraitordeathply-victim-attacker-amount" href="#tttrewarddetectivetraitordeathply-victim-attacker-amount">TTTRewardDetectiveTraitorDeath(ply, victim, attacker, amount)</a></h3>
+        <p>
+            Called before a player awarded credits for a traitor being killed.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.4.8<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player who is being given credits</li>
+            <li><em>victim</em> - The player who was killed</li>
+            <li><em>attacker</em> - The player who killed the victim</li>
+            <li><em>amount</em> - The number of credits being awarded</li>
+        </ul>
+        <p>
+            <em>Return:</em> <code>true</code> to prevent the given player from being awarded credits
+        </p>
+
+        <h3><a id="tttrewardplayerkilledamountvictim-attacker-amount" href="#tttrewardplayerkilledamountvictim-attacker-amount">TTTRewardPlayerKilledAmount(victim, attacker, amount)</a></h3>
+        <p>
+            Called before a player is awarded credits for killing an opponent.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.4.8<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>victim</em> - The player who was killed</li>
+            <li><em>attacker</em> - The player who killed the victim</li>
+            <li><em>amount</em> - The number of credits that the attacker will be awarded</li>
+        </ul>
+        <p>
+            <em>Return:</em>
+        </p>
+        <ul>
+            <li><em>new_amount</em> - The new number of credits that the attacker will be awarded</li>
+        </ul>
+
+        <h3><a id="tttrewardtraitorinnocentdeathamountvictim-attacker-amount" href="#tttrewardtraitorinnocentdeathamountvictim-attacker-amount">TTTRewardTraitorInnocentDeathAmount(victim, attacker, amount)</a></h3>
+        <p>
+            Called before all traitors are awarded credits for a non-traitor being killed.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.4.8<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>victim</em> - The player who was killed</li>
+            <li><em>attacker</em> - The player who killed the victim</li>
+            <li><em>amount</em> - The number of credits that all traitors will be awarded</li>
+        </ul>
+        <p>
+            <em>Return:</em>
+        </p>
+        <ul>
+            <li><em>new_amount</em> - The new number of credits that all traitors will be awarded</li>
+        </ul>
+
+        <h3><a id="tttrewardtraitorinnocentdeathply-victim-attacker-amount" href="#tttrewardtraitorinnocentdeathply-victim-attacker-amount">TTTRewardTraitorInnocentDeath(ply, victim, attacker, amount)</a></h3>
+        <p>
+            Called before a player awarded credits for a non-traitor being killed.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.4.8<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player who is being given credits</li>
+            <li><em>victim</em> - The player who was killed</li>
+            <li><em>attacker</em> - The player who killed the victim</li>
+            <li><em>amount</em> - The number of credits being awarded</li>
+        </ul>
+        <p>
+            <em>Return:</em> <code>true</code> to prevent the given player from being awarded credits
+        </p>
+
+        <h3><a id="tttrolepopupparamsclient" href="#tttrolepopupparamsclient">TTTRolePopupParams(client)</a></h3>
+        <p>
+            Called before a player's role start-of-round popup message is displayed, allowing the parameters to be added to.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.2.7<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>client</em> - The local player</li>
+        </ul>
+        <p>
+            <em>Return:</em>
+        </p>
+        <ul>
+            <li><em>params</em> - Table of name-value parameters to be used in this player's role start-of-round popup message</li>
+        </ul>
+
+        <h3><a id="tttrolepopuprolestringoverrideclient-rolestring" href="#tttrolepopuprolestringoverrideclient-rolestring">TTTRolePopupRoleStringOverride(client, roleString)</a></h3>
+        <p>
+            Called before a player's role start-of-round popup message is displayed, allowing the target translation string to be changed.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.5.11<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>client</em> - The local player</li>
+            <li><em>roleString</em> - The string representing role of the local player. Is normally used to build the role info popup translation</li>
+        </ul>
+        <p>
+            <em>Return:</em>
+        </p>
+        <ul>
+            <li><em>roleString</em> - The new string to use when building the role info popup translation</li>
+        </ul>
+
+        <h3><a id="tttrolesloaded" href="#tttrolesloaded">TTTRolesLoaded()</a></h3>
+        <p>
+            Called after all roles and role modifications have been loaded.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.5.3
+        </p>
+
+        <h3><a id="tttroleregisteredroleid" href="#tttroleregisteredroleid">TTTRoleRegistered(roleID)</a></h3>
+        <p>
+            Called after an external role has been registered.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.5.3<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>roleID</em> - The unique identifier for the registered role</li>
+        </ul>
+
+        <h3><a id="tttroleweaponsloaded" href="#tttroleweaponsloaded">TTTRoleWeaponsLoaded()</a></h3>
+        <p>
+            Called after the role weapons configuration is loaded.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.6.17
+        </p>
+
+        <h3><a id="tttroleweaponupdatedrole-weapon-include-exclude-norandom" href="#tttroleweaponupdatedrole-weapon-include-exclude-norandom">TTTRoleWeaponUpdated(role, weapon, include, exclude, noRandom)</a></h3>
+        <p>
+            Called after a role weapon configuration is changed for a specific role and weapon.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.6.17<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>role</em> - The role being updated</li>
+            <li><em>weapon</em> - The weapon class or equipment name being updated</li>
+            <li><em>include</em> - Whether this weapon is being added to <code>WEPS.BuyableWeapons</code></li>
+            <li><em>exclude</em> - Whether this weapon is being added to <code>WEPS.ExcludeWeapons</code></li>
+            <li><em>noRandom</em> - Whether this weapon is being added to <code>WEPS.BypassRandomWeapons</code></li>
+        </ul>
+
+        <h3><a id="tttscoreboardplayernameply-client-currentname" href="#tttscoreboardplayernameply-client-currentname">TTTScoreboardPlayerName(ply, client, currentName)</a></h3>
+        <p>
+            Called before a player's row in the scoreboard (tab menu) is shown, allowing the name to be changed.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.1.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player being rendered</li>
+            <li><em>client</em> - The local player</li>
+            <li><em>currentName</em> - The current name string (including extra information)</li>
+        </ul>
+        <p>
+            <em>Return:</em>
+        </p>
+        <ul>
+            <li><em>name</em> - The new name value to show on the scoreboard</li>
+        </ul>
+
+        <h3><a id="tttscoreboardplayerroleply-client-color-rolefilename" href="#tttscoreboardplayerroleply-client-color-rolefilename">TTTScoreboardPlayerRole(ply, client, color, roleFileName)</a></h3>
+        <p>
+            Called before a player's row in the scoreboard (tab menu) is shown, allowing the colors and icon to be changed.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.1.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player being rendered</li>
+            <li><em>client</em> - The local player</li>
+            <li><em>color</em> - The background <a href="https://wiki.facepunch.com/gmod/Color" target="_blank">Color</a> to use</li>
+            <li><em>roleFileName</em> - The portion of the scoring icon path that indicates which role it belongs to. Used in one of the following icon path patterns: "vgui/ttt/tab_{roleFileName}.png" (1.1.9+), "vgui/ttt/roles/{roleFileName}/tab_{roleFileName}.png"  (1.3.4+)</li>
+        </ul>
+        <p>
+            <em>Return:</em>
+        </p>
+        <ul>
+            <li><em>color</em> - The new color value to use or the original passed into the hook</li>
+            <li><em>roleFileName</em> - The new roleFileName value to use or the original passed into the hook</li>
+            <li><em>flashRole</em> - If a valid role is provided, this will cause the target player's scoreboard role to have a flashing border in the given role's color (see ROLE_* global enumeration)</li>
+        </ul>
+
+        <h3><a id="tttscoringsecondarywinswintype-secondarywins" href="#tttscoringsecondarywinswintype-secondarywins">TTTScoringSecondaryWins(wintype, secondaryWins)</a></h3>
+        <p>
+            Called before each round summary screen is shown with the winning team. Used to add roles to the secondary win display (e.g. AND THE OLD MAN WINS).<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.4.1<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>wintype</em> - The round win type</li>
+            <li><em>secondaryWins</em> - The table of role information for who should have a secondary win on the round summary. Insert any role data you would like to display into this table. Role data can either be the role's identifier (to use the default text and color logic) or, <em>as of version 1.4.6</em>, a table of the following data (to use your own text and colors):
+                <ul>
+                    <li>txt - The text to display</li>
+                    <li>col - The background color to use</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h3><a id="tttscoringsummaryrenderply-rolefilename-groupingrole-rolecolor-namelabel-startingrole-finalrole" href="#tttscoringsummaryrenderply-rolefilename-groupingrole-rolecolor-namelabel-startingrole-finalrole">TTTScoringSummaryRender(ply, roleFileName, groupingRole, roleColor, nameLabel, startingRole, finalRole)</a></h3>
+        <p>
+            Called before the round summary screen is shown. Used to modify the color, position, and icon for a player.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.1.5<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player being rendered</li>
+            <li><em>roleFileName</em> - The portion of the scoring icon path that indicates which role it belongs to. Used in one of the following icon path patterns: "vgui/ttt/score_{roleFileName}.png" (1.1.5+), "vgui/ttt/roles/{roleFileName}/score_{roleFileName}.png" (1.3.4+)</li>
+            <li><em>groupingRole</em> - The role to use when determining the section to of the summary screen to put this player in</li>
+            <li><em>roleColor</em> - The background <a href="https://wiki.facepunch.com/gmod/Color" target="_blank">Color</a> to use behind the role icon</li>
+            <li><em>nameLabel</em> - The name that is going to be used for this player on the round summary <em>(Added in 1.2.3)</em></li>
+            <li><em>startingRole</em> - The role that this player started the round with <em>(Added in 1.2.7)</em></li>
+            <li><em>finalRole</em> - The role that this player ended the round with <em>(Added in 1.2.7)</em></li>
+        </ul>
+        <p>
+            <em>Return:</em>
+        </p>
+        <ul>
+            <li><em>roleFileName</em> - The new roleFileName value to use or the original passed into the hook</li>
+            <li><em>groupingRole</em> - The new groupingRole value to use or the original passed into the hook</li>
+            <li><em>roleColor</em> - The new roleColor value to use or the original passed into the hook</li>
+            <li><em>newName</em> - The new nameLabel value to use for the original passed into the hook <em>(Added in 1.2.3)</em></li>
+            <li><em>otherName</em> - Another name to pair with the label parameter (below) when rendering this player's information. Parameters will be used like "newName (label otherName)" <em>(Added in 1.6.17)</em></li>
+            <li><em>label</em> - The label to use when pairing the name and otherName together (see above) <em>(Added in 1.6.17)</em></li>
+        </ul>
+
+        <h3><a id="tttscoringwintitlewintype-wintitles-title" href="#tttscoringwintitlewintype-wintitles-title">TTTScoringWinTitle(wintype, wintitles, title)</a></h3>
+        <p>
+            Called multiple times before the round end screen is shown with the winning team. For each tab of the round end screen that shows the winning team, this hook is first called with <code>WIN_INNOCENT</code> to get the default value and then called with the actual winning team. Return a new win title object to override what would normally be shown on the round end screen. This should be used by roles to customize what is shown on the round summary screen.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.0.14<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>wintype</em> - The round win type</li>
+            <li><em>wintitles</em> - Table of default win title parameters</li>
+            <li><em>title</em> - The currently selected win title</li>
+        </ul>
+        <p>
+            <em>Return:</em>
+        </p>
+        <ul>
+            <li><em>newTitle</em>
+                <ul>
+                    <li><em>txt</em> - The translation string to use to get the winning team text</li>
+                    <li><em>c</em> - The background <a href="https://wiki.facepunch.com/gmod/Color" target="_blank">Color</a> to use</li>
+                    <li><em>params</em> - Any parameters to use when translating <code>txt</code></li>
+                </ul>
+            </li>
+        </ul>
+
+        <h3><a id="tttscoringwintitleoverridewintype-wintitles-title" href="#tttscoringwintitleoverridewintype-wintitles-title">TTTScoringWinTitleOverride(wintype, wintitles, title)</a></h3>
+        <p>
+            Called multiple times before the round end screen is shown with the winning team. For each tab of the round end screen that shows the winning team this is called with the winning team. Return a new win title object to override what would normally be shown on the round end screen. This should be used by external addons to change the look of the round summary screen, <em>not</em> by roles to set their custom win titles. For a role's custom win title, use <code>TTTScoringWinTitle</code> instead.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.7.3<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>wintype</em> - The round win type</li>
+            <li><em>wintitles</em> - Table of default win title parameters</li>
+            <li><em>title</em> - The currently selected win title</li>
+        </ul>
+        <p>
+            <em>Return:</em>
+        </p>
+        <ul>
+            <li><em>newTitle</em>
+                <ul>
+                    <li><em>txt</em> - The translation string to use to get the winning team text</li>
+                    <li><em>c</em> - The background <a href="https://wiki.facepunch.com/gmod/Color" target="_blank">Color</a> to use</li>
+                    <li><em>params</em> - Any parameters to use when translating <code>txt</code></li>
+                </ul>
+            </li>
+        </ul>
+
+        <h3><a id="tttselectroleschoices-prevroles" href="#tttselectroleschoices-prevroles">TTTSelectRoles(choices, prevRoles)</a></h3>
+        <p>
+            Called before players are randomly assigned roles. If a player is assigned a role during this hook, they will not be randomly assigned one later.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.0.0<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>choices</em> - The table of players who will be assigned roles</li>
+            <li><em>prevRoles</em> - The table whose keys are role numbers and values are tables of players who had that role last round</li>
+        </ul>
+
+        <h3><a id="tttselectrolesdetectiveoptionsroletable-choices-choicecount-traitors-traitorcount" href="#tttselectrolesdetectiveoptionsroletable-choices-choicecount-traitors-traitorcount">TTTSelectRolesDetectiveOptions(roleTable, choices, choiceCount, traitors, traitorCount)</a></h3>
+        <p>
+            Called before players are assigned a detective role, allowing the available roles and their weights (how many times they appear in the table) to be manipulated.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.2.3<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>roleTable</em> - The table of roles representing the available detective roles and their weight (how many times they appear in the table). This table should be manipulated to effect change</li>
+            <li><em>choices</em> - The table of available player choices that will not be (and have not already been) assigned a traitor or detective role. Manipulating this table will have no effect</li>
+            <li><em>choiceCount</em> - The total number of player choices there are</li>
+            <li><em>traitors</em> - The table of available player choices that will be (or have already been) assigned a traitor role. Manipulating this table will have no effect</li>
+            <li><em>traitorCount</em> - The number of players that will be (or have already been) assigned a traitor role</li>
+            <li><em>detectives</em> - The table of available player choices that will be (or have already been) assigned a detective role. Manipulating this table will have no effect</li>
+            <li><em>detectiveCount</em> - The number of players that will be (or have already been) assigned a detective role</li>
+        </ul>
+
+        <h3><a id="tttselectrolesindependentoptionsroletable-choices-choicecount-traitors-traitorcount" href="#tttselectrolesindependentoptionsroletable-choices-choicecount-traitors-traitorcount">TTTSelectRolesIndependentOptions(roleTable, choices, choiceCount, traitors, traitorCount)</a></h3>
+        <p>
+            Called before players are assigned a independent role, allowing the available roles and their weights (how many times they appear in the table) to be manipulated.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.2.3<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>roleTable</em> - The table of roles representing the available independent roles (and jester roles, if ttt_single_jester_independent or ttt_multiple_jesters_independents is enabled) and their weight (how many times they appear in the table). This table should be manipulated to effect change</li>
+            <li><em>choices</em> - The table of available player choices that will not be (and have not already been) assigned a traitor or detective role. Manipulating this table will have no effect</li>
+            <li><em>choiceCount</em> - The total number of player choices there are</li>
+            <li><em>traitors</em> - The table of available player choices that will be (or have already been) assigned a traitor role. Manipulating this table will have no effect</li>
+            <li><em>traitorCount</em> - The number of players that will be (or have already been) assigned a traitor role</li>
+            <li><em>detectives</em> - The table of available player choices that will be (or have already been) assigned a detective role. Manipulating this table will have no effect</li>
+            <li><em>detectiveCount</em> - The number of players that will be (or have already been) assigned a detective role</li>
+        </ul>
+
+        <h3><a id="tttselectrolesinnocentoptionsroletable-choices-choicecount-traitors-traitorcount" href="#tttselectrolesinnocentoptionsroletable-choices-choicecount-traitors-traitorcount">TTTSelectRolesInnocentOptions(roleTable, choices, choiceCount, traitors, traitorCount)</a></h3>
+        <p>
+            Called before players are assigned an innocent role, allowing the available roles and their weights (how many times they appear in the table) to be manipulated.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.2.3<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>roleTable</em> - The table of roles representing the available innocent roles and their weight (how many times they appear in the table). This table should be manipulated to effect change</li>
+            <li><em>choices</em> - The table of available player choices that will not be (and have not already been) assigned a traitor or detective role. Manipulating this table will have no effect</li>
+            <li><em>choiceCount</em> - The total number of player choices there are</li>
+            <li><em>traitors</em> - The table of available player choices that will be (or have already been) assigned a traitor role. Manipulating this table will have no effect</li>
+            <li><em>traitorCount</em> - The number of players that will be (or have already been) assigned a traitor role</li>
+            <li><em>detectives</em> - The table of available player choices that will be (or have already been) assigned a detective role. Manipulating this table will have no effect</li>
+            <li><em>detectiveCount</em> - The number of players that will be (or have already been) assigned a detective role</li>
+        </ul>
+
+        <h3><a id="tttselectrolesjesteroptionsroletable-choices-choicecount-traitors-traitorcount" href="#tttselectrolesjesteroptionsroletable-choices-choicecount-traitors-traitorcount">TTTSelectRolesJesterOptions(roleTable, choices, choiceCount, traitors, traitorCount)</a></h3>
+        <p>
+            Called before players are assigned a jester role, allowing the available roles and their weights (how many times they appear in the table) to be manipulated.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.2.3<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>roleTable</em> - The table of roles representing the available jester roles (and independent roles, if ttt_single_jester_independent or ttt_multiple_jesters_independents is enabled) and their weight (how many times they appear in the table). This table should be manipulated to effect change</li>
+            <li><em>choices</em> - The table of available player choices that will not be (and have not already been) assigned a traitor or detective role. Manipulating this table will have no effect</li>
+            <li><em>choiceCount</em> - The total number of player choices there are</li>
+            <li><em>traitors</em> - The table of available player choices that will be (or have already been) assigned a traitor role. Manipulating this table will have no effect</li>
+            <li><em>traitorCount</em> - The number of players that will be (or have already been) assigned a traitor role</li>
+            <li><em>detectives</em> - The table of available player choices that will be (or have already been) assigned a detective role. Manipulating this table will have no effect</li>
+            <li><em>detectiveCount</em> - The number of players that will be (or have already been) assigned a detective role</li>
+        </ul>
+
+        <h3><a id="tttselectrolesmonsteroptionsroletable-choices-choicecount-traitors-traitorcount" href="#tttselectrolesmonsteroptionsroletable-choices-choicecount-traitors-traitorcount">TTTSelectRolesMonsterOptions(roleTable, choices, choiceCount, traitors, traitorCount)</a></h3>
+        <p>
+            Called before players are assigned a monster role, allowing the available roles and their weights (how many times they appear in the table) to be manipulated.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.2.3<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>roleTable</em> - The table of roles representing the available monster roles and their weight (how many times they appear in the table). This table should be manipulated to effect change</li>
+            <li><em>choices</em> - The table of available player choices that will not be (and have not already been) assigned a traitor or detective role. Manipulating this table will have no effect</li>
+            <li><em>choiceCount</em> - The total number of player choices there are</li>
+            <li><em>traitors</em> - The table of available player choices that will be (or have already been) assigned a traitor role. Manipulating this table will have no effect</li>
+            <li><em>traitorCount</em> - The number of players that will be (or have already been) assigned a traitor role</li>
+            <li><em>detectives</em> - The table of available player choices that will be (or have already been) assigned a detective role. Manipulating this table will have no effect</li>
+            <li><em>detectiveCount</em> - The number of players that will be (or have already been) assigned a detective role</li>
+        </ul>
+
+        <h3><a id="tttselectrolestraitoroptionsroletable-choices-choicecount-traitors-traitorcount" href="#tttselectrolestraitoroptionsroletable-choices-choicecount-traitors-traitorcount">TTTSelectRolesTraitorOptions(roleTable, choices, choiceCount, traitors, traitorCount)</a></h3>
+        <p>
+            Called before players are assigned a traitor role, allowing the available roles and their weights (how many times they appear in the table) to be manipulated.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.2.3<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>roleTable</em> - The table of roles representing the available traitor roles and their weight (how many times they appear in the table). This table should be manipulated to effect change</li>
+            <li><em>choices</em> - The table of available player choices that will not be (and have not already been) assigned a traitor or detective role. Manipulating this table will have no effect</li>
+            <li><em>choiceCount</em> - The total number of player choices there are</li>
+            <li><em>traitors</em> - The table of available player choices that will be (or have already been) assigned a traitor role. Manipulating this table will have no effect</li>
+            <li><em>traitorCount</em> - The number of players that will be (or have already been) assigned a traitor role</li>
+            <li><em>detectives</em> - The table of available player choices that will be (or have already been) assigned a detective role. Manipulating this table will have no effect</li>
+            <li><em>detectiveCount</em> - The number of players that will be (or have already been) assigned a detective role</li>
+        </ul>
+
+        <h3><a id="tttsettingsconfigtabfieldssectionname-parentform" href="#tttsettingsconfigtabfieldssectionname-parentform">TTTSettingsConfigTabFields(sectionName, parentForm)</a></h3>
+        <p>
+            Called after each section of the help menu's Config tab has been created, allowing developers to add controls to that section.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.7.3<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>sectionName</em> - The name of the section of the help menu's Settings tab that is being created. Expected values: Interface, Gameplay, Color, Language, BEM, Hitmarkers</li>
+            <li><em>parentForm</em> - The parent <a href="https://wiki.facepunch.com/gmod/DForm" target="_blank">DForm</a> for the section being processed</li>
+        </ul>
+
+        <h3><a id="tttsettingsconfigtabsectionsparentpanel" href="#tttsettingsconfigtabsectionsparentpanel">TTTSettingsConfigTabSections(parentPanel)</a></h3>
+        <p>
+            Called after the Config tab of the help menu has been created, allowing developers to add sections to it.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.7.3<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>parentPanel</em> - The parent <a href="https://wiki.facepunch.com/gmod/DScrollPanel" target="_blank">DScrollPanel</a> for the tab</li>
+        </ul>
+
+        <h3><a id="tttsettingsrolestabsectionsrole-parentform" href="#tttsettingsrolestabsectionsrole-parentform">TTTSettingsRolesTabSections(role, parentForm)</a></h3>
+        <p>
+            Called for each role, allowing developers to add a configuration section for it.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.7.3<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>role</em> - The ID of the role whose setting section is being added</li>
+            <li><em>parentForm</em> - The parent <a href="https://wiki.facepunch.com/gmod/DForm" target="_blank">DForm</a> for the role being processed</li>
+        </ul>
+        <p>
+            <em>Return:</em>
+        </p>
+        <ul>
+            <li><em>add_section</em> - Return <code>true</code> to add this role config section to the dialog. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.</li>
+        </ul>
+
+        <h3><a id="tttshoprandomboughtclient-item" href="#tttshoprandomboughtclient-item">TTTShopRandomBought(client, item)</a></h3>
+        <p>
+            Called when a player buys a random item from the shop.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.6.16<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>client</em> - The player who is buying a random item</li>
+            <li><em>item</em> - The random item that was selected</li>
+        </ul>
+
+        <h3><a id="tttsmokegrenadeextinguishent_class-ent_pos" href="#tttsmokegrenadeextinguishent_class-ent_pos">TTTSmokeGrenadeExtinguish(ent_class, ent_pos)</a></h3>
+        <p>
+            Called when a smoke grenade extinguishes a fire entity.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.6.16<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ent_class</em> - The class of fire entity that was extinguished</li>
+            <li><em>ent_pos</em> - The position of the fire entity that was extinguished</li>
+        </ul>
+
+        <h3><a id="tttspectatorhudkeypressply-tgt-powers" href="#tttspectatorhudkeypressply-tgt-powers">TTTSpectatorHUDKeyPress(ply, tgt, powers)</a></h3>
+        <p>
+            Called when a player who is being shown a role-specific spectator HUD presses a button, allowing the hook to intercept that button press and perform specific logic if necessary.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.3.1<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The spectator player who is attempting to press a key</li>
+            <li><em>tgt</em> - The target playing being spectated</li>
+            <li><em>powers</em> - The table of key-value pairs of spectator powers where the key is the <a href="https://wiki.facepunch.com/gmod/Enums/IN" target="_blank">IN</a> enum value of the desired button press and the value is an object with the following properties:
+                <ul>
+                    <li><em>start_command</em> - The console command to run to start the power effect</li>
+                    <li><em>end_command</em> - The console command to run to end the power effect</li>
+                    <li><em>time</em> - The amount of time before the end command should be run</li>
+                    <li><em>cost</em> - The cost of using this power</li>
+                </ul>
+            </li>
+        </ul>
+        <p>
+            <em>Return:</em>
+        </p>
+        <ul>
+            <li><em>skip</em> - Whether the remaining spectator keypress logic should be skipped</li>
+            <li><em>power_property</em> - The NWInt property name to use when getting and updating the current spectator power level</li>
+        </ul>
+
+        <h3><a id="tttspectatorshowhudclient-tgt" href="#tttspectatorshowhudclient-tgt">TTTSpectatorShowHUD(client, tgt)</a></h3>
+        <p>
+            Called when a player should be shown a role-specific spectator HUD, allowing that role's logic to render the HUD as needed.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.3.1<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>client</em> - The local player</li>
+            <li><em>tgt</em> - The target playing being spectated</li>
+        </ul>
+
+        <h3><a id="tttspeedmultiplierply-mults-sprinting" href="#tttspeedmultiplierply-mults-sprinting">TTTSpeedMultiplier(ply, mults, sprinting)</a></h3>
+        <p>
+            Called when determining what speed the player should be moving at.<br>
+            <em>NOTE:</em> This hook is <a href="https://wiki.facepunch.com/gmod/prediction" target="_blank">predicted</a>. This means that in singleplayer, it will not be called in the Client realm.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The target player</li>
+            <li><em>mults</em> - The table of speed multipliers that should be applied to this player. Insert any multipliers you would like to apply to the target player into this table</li>
+            <li><em>sprinting</em> - Whether the player is currently sprinting <em>(Added in 1.7.3)</em></li>
+        </ul>
+
+        <h3><a id="tttsprintkeyply" href="#tttsprintkeyply">TTTSprintKey(ply)</a></h3>
+        <p>
+            Called when determining if a player is sprinting. Allows overriding of which directional key needs to be pressed for sprinting to start.<br>
+            <em>NOTE:</em> This hook is <a href="https://wiki.facepunch.com/gmod/prediction" target="_blank">predicted</a>. This means that in singleplayer, it will not be called in the Client realm.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.0 on Client and 1.8.8 on Server<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - Player who is being checked for sprinting</li>
+        </ul>
+        <p>
+            <em>Return:</em> The <a href="https://wiki.facepunch.com/gmod/Enums/IN" target="_blank">IN_*</a> enum value representing the key that must be pressed in addition to <code>IN_SPEED</code> to start sprinting. If none provided, default of <code>IN_FORWARD</code> will be used.
+        </p>
+
+        <h3><a id="tttsprintstaminapostply-stamina-sprinttimer-consumption" href="#tttsprintstaminapostply-stamina-sprinttimer-consumption">TTTSprintStaminaPost(ply, stamina, sprintTimer, consumption)</a></h3>
+        <p>
+            Called after a player's sprint stamina is reduced. Used to adjust the player's new stamina amount.<br>
+            <em>NOTE:</em> This hook is <a href="https://wiki.facepunch.com/gmod/prediction" target="_blank">predicted</a>. This means that in singleplayer, it will not be called in the Client realm.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.0.2 on Client and 1.8.8 on Server<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - Player whose stamina is being adjusted</li>
+            <li><em>stamina</em> - Player's current stamina</li>
+            <li><em>sprintTimer</em> - Time representing when the player last sprinted</li>
+            <li><em>consumption</em> - The stamina consumption rate</li>
+        </ul>
+        <p>
+            <em>Return:</em> The stamina value to assign to the player. If none is provided, the player's stamina will not be changed.
+        </p>
+
+        <h3><a id="tttsprintstaminarecoveryply-recovery" href="#tttsprintstaminarecoveryply-recovery">TTTSprintStaminaRecovery(ply, recovery)</a></h3>
+        <p>
+            Called before a player's sprint stamina is recovered. Used to adjust how fast the player's stamina will recover.<br>
+            <em>NOTE:</em> This hook is <a href="https://wiki.facepunch.com/gmod/prediction" target="_blank">predicted</a>. This means that in singleplayer, it will not be called in the Client realm.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.3.6 on Client and 1.8.8 on Server<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - Player whose stamina is being adjusted</li>
+            <li><em>recovery</em> - Player's current stamina recovery rate</li>
+        </ul>
+        <p>
+            <em>Return:</em> The stamina recovery rate to assign to the player. If none is provided, the player's default stamina recovery rate will be used.
+        </p>
+
+        <h3><a id="tttsprintstatechangeply-sprinting-wassprinting" href="#tttsprintstatechangeply-sprinting-wassprinting">TTTSprintStateChange(ply, sprinting, wasSprinting)</a></h3>
+        <p>
+            Called when a player starts or stops sprinting.<br>
+            <em>NOTE</em>: This represents the change in player speed, not the change in the <code>Sprinting</code> player variable.<br>
+            <em>NOTE:</em> This hook is <a href="https://wiki.facepunch.com/gmod/prediction" target="_blank">predicted</a>. This means that in singleplayer, it will not be called in the Client realm.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.8.8<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - Player whose sprint state changed</li>
+            <li><em>sprinting</em> - Whether the player is now sprinting</li>
+            <li><em>wasSprinting</em> - Whether the player was sprinting</li>
+        </ul>
+
+        <h3><a id="tttshouldplayersmokeply-client-shouldsmoke-smokecolor-smokeparticle-smokeoffset" href="#tttshouldplayersmokeply-client-shouldsmoke-smokecolor-smokeparticle-smokeoffset">TTTShouldPlayerSmoke(ply, client, shouldSmoke, smokeColor, smokeParticle, smokeOffset)</a></h3>
+        <p>
+            .<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.2.7<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The target player being rendered</li>
+            <li><em>client</em> - The local player</li>
+            <li><em>shouldSmoke</em> - Whether the player would normally emit smoke</li>
+            <li><em>smokeColor</em> - What <a href="https://wiki.facepunch.com/gmod/Color" target="_blank">Color</a> the smoke will be. (Defaults to <code>COLOR_BLACK</code>)</li>
+            <li><em>smokeParticle</em> - What particle the smoke will use. Should be the relative path the the <code>.vmt</code> file for the particle. (Defaults to <code>"particle/snow.vmt"</code>)</li>
+            <li><em>smokeOffset</em> - A <a href="https://wiki.facepunch.com/gmod/Vector" target="_blank">Vector</a> representing the relative offset from the player's feet. (Defaults to <code>Vector(0, 0, 30)</code>)</li>
+        </ul>
+        <p>
+            <em>Return:</em>
+        </p>
+        <ul>
+            <li><em>shouldSmoke</em> - The new shouldSmoke value to use or the original passed into the hook</li>
+            <li><em>smokeColor</em> - The new smokeColor value to use or the original passed into the hook</li>
+            <li><em>smokeParticle</em> - The new smokeParticle value to use or the original passed into the hook</li>
+            <li><em>smokeOffset</em> - The new smokeOffset value to use or the original passed into the hook</li>
+        </ul>
+
+        <h3><a id="tttsynceventids" href="#tttsynceventids">TTTSyncEventIDs()</a></h3>
+        <p>
+            Called when the server is syncing generated event IDs to the client.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.4.6
+        </p>
+
+        <h3><a id="tttsyncglobals" href="#tttsyncglobals">TTTSyncGlobals()</a></h3>
+        <p>
+            Called when the server is syncing convars to global variables for client access.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.2.7
+        </p>
+
+        <h3><a id="tttsyncwinids" href="#tttsyncwinids">TTTSyncWinIDs()</a></h3>
+        <p>
+            Called when the server is syncing generated win IDs to the client.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.4.6
+        </p>
+
+        <h3><a id="ttttargetidplayerblockiconply-client" href="#ttttargetidplayerblockiconply-client">TTTTargetIDPlayerBlockIcon(ply, client)</a></h3>
+        <p>
+            Called before a player's overhead icon is shown, allowing you to block it.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.3.5<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The target player being rendered</li>
+            <li><em>client</em> - The local player</li>
+        </ul>
+        <p>
+            <em>Return:</em> <code>true</code> to stop this information from being rendered
+        </p>
+
+        <h3><a id="ttttargetidplayerblockinfoply-client" href="#ttttargetidplayerblockinfoply-client">TTTTargetIDPlayerBlockInfo(ply, client)</a></h3>
+        <p>
+            Called before a player's target information (name, health, hint text, karma, and ring) are shown, allowing you to block it.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.3.5<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The target player being rendered</li>
+            <li><em>client</em> - The local player</li>
+        </ul>
+        <p>
+            <em>Return:</em> <code>true</code> to stop this information from being rendered
+        </p>
+
+        <h3><a id="ttttargetidplayerhealthply-client-text-clr" href="#ttttargetidplayerhealthply-client-text-clr">TTTTargetIDPlayerHealth(ply, client, text, clr)</a></h3>
+        <p>
+            Called before a player's heath status (shown when you look at a player) is rendered.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.2.5<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The target player being rendered</li>
+            <li><em>client</em> - The local player</li>
+            <li><em>text</em> - The health-related text being shown</li>
+            <li><em>clr</em> - The <a href="https://wiki.facepunch.com/gmod/Color" target="_blank">Color</a> of the text being used</li>
+        </ul>
+        <p>
+            <em>Return:</em>
+        </p>
+        <ul>
+            <li><em>text</em> - The new text value to use or the original passed into the hook. Return <code>false</code> to not show text at all</li>
+            <li><em>clr</em> - The new clr value to use or the original passed into the hook</li>
+        </ul>
+
+        <h3><a id="ttttargetidentityhintlabelent-client-label-clr" href="#ttttargetidentityhintlabelent-client-label-clr">TTTTargetIDEntityHintLabel(ent, client, label, clr)</a></h3>
+        <p>
+            Called before an entity's hint label (shown when you look at an entity) is rendered.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.2.5<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ent</em> - The target entity being rendered. Guaranteed to not be a player.</li>
+            <li><em>client</em> - The local player</li>
+            <li><em>text</em> - The label for the hint-related text being shown</li>
+            <li><em>clr</em> - The <a href="https://wiki.facepunch.com/gmod/Color" target="_blank">Color</a> of the text being used</li>
+        </ul>
+        <p>
+            <em>Return:</em>
+        </p>
+        <ul>
+            <li><em>text</em> - The new text value to use or the original passed into the hook. Return <code>false</code> to not show text at all</li>
+            <li><em>clr</em> - The new clr value to use or the original passed into the hook</li>
+        </ul>
+
+        <h3><a id="ttttargetidplayerhinttextent-client-text-clr" href="#ttttargetidplayerhinttextent-client-text-clr">TTTTargetIDPlayerHintText(ent, client, text, clr)</a></h3>
+        <p>
+            Called before an entity's hint text (shown when you look at an entity) is rendered.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.2.5<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ent</em> - The target entity being rendered. Not necessarily a player so be sure to check <code>ent:IsPlayer()</code> if needed</li>
+            <li><em>client</em> - The local player</li>
+            <li><em>text</em> - The hint-related text being shown</li>
+            <li><em>clr</em> - The <a href="https://wiki.facepunch.com/gmod/Color" target="_blank">Color</a> of the text being used</li>
+        </ul>
+        <p>
+            <em>Return:</em>
+        </p>
+        <ul>
+            <li><em>text</em> - The new text value to use or the original passed into the hook. Return <code>false</code> to not show text at all</li>
+            <li><em>clr</em> - The new clr value to use or the original passed into the hook</li>
+            <li><em>secondary_text</em> - A secondary text value to show under <code>text</code>. Return <code>false</code> or nothing to not show secondary text at all</li>
+            <li><em>secondary_color</em> - The <a href="https://wiki.facepunch.com/gmod/Color" target="_blank">Color</a> to use for <code>secondary_text</code>. If not provided, <code>clr</code> value will be used instead <em>(Added in 1.6.17)</em></li>
+        </ul>
+
+        <h3><a id="ttttargetidplayerkarmaply-client-text-clr" href="#ttttargetidplayerkarmaply-client-text-clr">TTTTargetIDPlayerKarma(ply, client, text, clr)</a></h3>
+        <p>
+            Called before a player's karma status text (shown when you look at a player) is rendered.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.2.5<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The target player being rendered</li>
+            <li><em>client</em> - The local player</li>
+            <li><em>text</em> - The karma-related text being shown</li>
+            <li><em>clr</em> - The <a href="https://wiki.facepunch.com/gmod/Color" target="_blank">Color</a> of the text being used</li>
+        </ul>
+        <p>
+            <em>Return:</em>
+        </p>
+        <ul>
+            <li><em>text</em> - The new text value to use or the original passed into the hook. Return <code>false</code> to not show text at all</li>
+            <li><em>clr</em> - The new clr value to use or the original passed into the hook</li>
+        </ul>
+
+        <h3><a id="ttttargetidplayerkilliconply-client-showkillicon-showjester" href="#ttttargetidplayerkilliconply-client-showkillicon-showjester">TTTTargetIDPlayerKillIcon(ply, client, showKillIcon, showJester)</a></h3>
+        <p>
+            Called before player Target ID icon (over their head) is rendered to determine if the "KILL" icon should be shown.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.1.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The target player being rendered</li>
+            <li><em>client</em> - The local player</li>
+            <li><em>showKillIcon</em> - Whether the kill icon would normally be shown for this player</li>
+            <li><em>showJester</em> - Whether the target is a jester and the local player would normally know that</li>
+        </ul>
+        <p>
+            <em>Return:</em> <code>true</code> if the kill icon should be shown or <code>false</code> if not. Returning nothing or a non-boolean value will default to the given <em>showKillIcon</em> value.
+        </p>
+
+        <h3><a id="ttttargetidplayernameply-client-text-clr" href="#ttttargetidplayernameply-client-text-clr">TTTTargetIDPlayerName(ply, client, text, clr)</a></h3>
+        <p>
+            Called before a player's name (shown when you look at a player) is rendered.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.2.5<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The target player being rendered</li>
+            <li><em>client</em> - The local player</li>
+            <li><em>text</em> - The player's name text being shown</li>
+            <li><em>clr</em> - The <a href="https://wiki.facepunch.com/gmod/Color" target="_blank">Color</a> of the text being used</li>
+        </ul>
+        <p>
+            <em>Return:</em>
+        </p>
+        <ul>
+            <li><em>text</em> - The new text value to use or the original passed into the hook. Return <code>false</code> to not show text at all</li>
+            <li><em>clr</em> - The new clr value to use or the original passed into the hook</li>
+        </ul>
+
+        <h3><a id="ttttargetidplayerringent-client-ringvisible" href="#ttttargetidplayerringent-client-ringvisible">TTTTargetIDPlayerRing(ent, client, ringVisible)</a></h3>
+        <p>
+            Called before an entity's Target ID ring (shown when you look at an entity) is rendered.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.2.3<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ent</em> - The target entity being rendered. Not necessarily a player so be sure to check <code>ent:IsPlayer()</code> if needed</li>
+            <li><em>client</em> - The local player</li>
+            <li><em>ringVisible</em> - Whether the ring would normally be visible for this target</li>
+        </ul>
+        <p>
+            <em>Return:</em>
+        </p>
+        <ul>
+            <li><em>newVisible</em> - The new ringVisible value to use or the original passed into the hook</li>
+            <li><em>colorOverride</em> - The <a href="https://wiki.facepunch.com/gmod/Color" target="_blank">Color</a> to use for the ring. Return <code>false</code> if you don't want to override the color. <em>NOTE:</em> For some reason colors that are near-black do not render so try a lighter color if you are having trouble</li>
+        </ul>
+
+        <h3><a id="ttttargetidplayerroleiconply-client-role-noz-colorrole-hidebeggar-showjester-hidebodysnatcher" href="#ttttargetidplayerroleiconply-client-role-noz-colorrole-hidebeggar-showjester-hidebodysnatcher">TTTTargetIDPlayerRoleIcon(ply, client, role, noZ, colorRole, hideBeggar, showJester, hideBodysnatcher)</a></h3>
+        <p>
+            Called before player Target ID icon (over their head) is rendered allowing changing the icon and color shown.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.1.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The target player being rendered</li>
+            <li><em>client</em> - The local player</li>
+            <li><em>role</em> - What role is currently being shown for the target player</li>
+            <li><em>noZ</em> - Whether the icon is currently visible through walls</li>
+            <li><em>colorRole</em> - What role is being used for the icon background color (Only used when a different color than the one belonging to <em>role</em> is being used)</li>
+            <li><em>hideBeggar</em> - Whether the target was a beggar whose new role should be hidden</li>
+            <li><em>showJester</em> - Whether the target is a jester and the local player would normally know that</li>
+            <li><em>hideBodysnatcher</em> - Whether the target is a bodysnatcher whose new role should be hidden <em>(Added in 1.2.5)</em></li>
+        </ul>
+        <p>
+            <em>Return:</em>
+        </p>
+        <ul>
+            <li><em>role</em> - The new role value to use or the original passed into the hook. Return <code>false</code> to stop the icon from being rendered</li>
+            <li><em>noZ</em> - The new noZ value to use or the original passed into the hook. <em>NOTE:</em> The matching icon .vmt for this flag needs to exist. If <em>noZ</em> is <code>true</code>, a "sprite_{ROLESHORTNAME}_noz.vmt" file must exist and if <em>noZ</em> is <code>false</code>, a "sprite_{ROLESHORTNAME}.vmt" file must exist</li>
+            <li><em>colorRole</em> - The new colorRole value to use or the original passed into the hook</li>
+        </ul>
+
+        <h3><a id="ttttargetidplayertextent-client-text-clr-secondarytext" href="#ttttargetidplayertextent-client-text-clr-secondarytext">TTTTargetIDPlayerText(ent, client, text, clr, secondaryText)</a></h3>
+        <p>
+            Called before player Target ID text (shown when you look at a player) is rendered.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.1.9<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ent</em> - The target entity being rendered. Not necessarily a player so be sure to check <code>ent:IsPlayer()</code> if needed</li>
+            <li><em>client</em> - The local player</li>
+            <li><em>text</em> - The first line of text being shown</li>
+            <li><em>clr</em> - The <a href="https://wiki.facepunch.com/gmod/Color" target="_blank">Color</a> of the text being used</li>
+            <li><em>secondaryText</em> - The second line of text being shown</li>
+        </ul>
+        <p>
+            <em>Return:</em>
+        </p>
+        <ul>
+            <li><em>text</em> - The new text value to use or the original passed into the hook. Return <code>false</code> to not show text at all</li>
+            <li><em>clr</em> - The new clr value to use or the original passed into the hook</li>
+            <li><em>secondaryText</em> - The new secondaryText value to use or the original passed into the hook. Return <code>false</code> to not show text at all</li>
+        </ul>
+
+        <h3><a id="ttttargetidragdollnameent-client-text-clr" href="#ttttargetidragdollnameent-client-text-clr">TTTTargetIDRagdollName(ent, client, text, clr)</a></h3>
+        <p>
+            Called before a ragdoll's name (shown when you look at a ragdoll) is rendered.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.2.5<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ent</em> - The target ragdoll being rendered</li>
+            <li><em>client</em> - The local player</li>
+            <li><em>text</em> - The ragdoll's name text being shown</li>
+            <li><em>clr</em> - The <a href="https://wiki.facepunch.com/gmod/Color" target="_blank">Color</a> of the text being used</li>
+        </ul>
+        <p>
+            <em>Return:</em>
+        </p>
+        <ul>
+            <li><em>text</em> - The new text value to use or the original passed into the hook. Return <code>false</code> to not show text at all</li>
+            <li><em>clr</em> - The new clr value to use or the original passed into the hook</li>
+        </ul>
+
+        <h3><a id="tttturncoatteamchangedply-traitor" href="#tttturncoatteamchangedply-traitor">TTTTurncoatTeamChanged(ply, traitor)</a></h3>
+        <p>
+            Called when a turncoat's team is changed
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.6.16<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player who triggered the turncoat team change (most likely would be the turncoat themselves)</li>
+            <li><em>traitor</em> - Whether the turncoat is changing to the traitor team</li>
+        </ul>
+
+        <h3><a id="ttttutorialroleenabledrole" href="#ttttutorialroleenabledrole">TTTTutorialRoleEnabled(role)</a></h3>
+        <p>
+            Called before a role's tutorial page is rendered. This can be used to allow a page to be shown when it normally would not be because the role is disabled. Useful for situations like showing the Zombie tutorial page when the Mad Scientist is enabled (because the Mad Scientist creates Zombies).<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.2.7<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>role</em> - Which role's tutorial page is being rendered</li>
+        </ul>
+        <p>
+            <em>Return:</em> <code>true</code> to show this page when it normally would not be
+        </p>
+
+        <h3><a id="ttttutorialrolepagerole-parentpanel-titlelabel-roleicon" href="#ttttutorialrolepagerole-parentpanel-titlelabel-roleicon">TTTTutorialRolePage(role, parentPanel, titleLabel, roleIcon)</a></h3>
+        <p>
+            Called before a role's tutorial page is rendered. This can be used to render a completely custom page with information about a role.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.2.7<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>role</em> - Which role's tutorial page is being rendered</li>
+            <li><em>parentPanel</em> - The parent <a href="https://wiki.facepunch.com/gmod/DPanel" target="_blank">DPanel</a> that this tutorial page is being rendered within</li>
+            <li><em>titleLabel</em> - The <a href="https://wiki.facepunch.com/gmod/DLabel" target="_blank">DLabel</a> that is being used as the title of the rendered tutorial page. Has the role's name automatically set as the label text</li>
+            <li><em>roleIcon</em> - The <a href="https://wiki.facepunch.com/gmod/DImage" target="_blank">DImage</a> that is being used to show the role's icon on the rendered tutorial page</li>
+        </ul>
+        <p>
+            <em>Return:</em> <code>true</code> to tell the tutorial page to use the content set in this hook rather than calling the <code>TTTTutorialRoleText</code> hook
+        </p>
+
+        <h3><a id="ttttutorialrolepageextrarole-parentpanel-titlelabel-roleicon" href="#ttttutorialrolepageextrarole-parentpanel-titlelabel-roleicon">TTTTutorialRolePageExtra(role, parentPanel, titleLabel, roleIcon)</a></h3>
+        <p>
+            Called after a role's tutorial page is rendered. This can be used to provide additional data to show for a role.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.5.3<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>role</em> - Which role's tutorial page is being rendered</li>
+            <li><em>parentPanel</em> - The parent <a href="https://wiki.facepunch.com/gmod/DPanel" target="_blank">DPanel</a> that this tutorial page is being rendered within</li>
+            <li><em>titleLabel</em> - The <a href="https://wiki.facepunch.com/gmod/DLabel" target="_blank">DLabel</a> that is being used as the title of the rendered tutorial page. Has the role's name automatically set as the label text</li>
+            <li><em>roleIcon</em> - The <a href="https://wiki.facepunch.com/gmod/DImage" target="_blank">DImage</a> that is being used to show the role's icon on the rendered tutorial page</li>
+        </ul>
+
+        <h3><a id="ttttutorialroletextrole-titlelabel-roleicon" href="#ttttutorialroletextrole-titlelabel-roleicon">TTTTutorialRoleText(role, titleLabel, roleIcon)</a></h3>
+        <p>
+            Called before a role's tutorial page is rendered. This can be used to provide the text to show for a role.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.2.7<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>role</em> - Which role's tutorial page is being rendered</li>
+            <li><em>titleLabel</em> - The <a href="https://wiki.facepunch.com/gmod/DLabel" target="_blank">DLabel</a> that is being used as the title of the rendered tutorial page. Has the role's name automatically set as the label text</li>
+            <li><em>roleIcon</em> - The <a href="https://wiki.facepunch.com/gmod/DImage" target="_blank">DImage</a> that is being used to show the role's icon on the rendered tutorial page</li>
+        </ul>
+        <p>
+            <em>Return:</em> The string value to show on the tutorial page for this role. Can be HTML and will be rendered within a <code>&lt;div&gt;</code>
+        </p>
+
+        <h3><a id="ttttutorialroletextextrarole-titlelabel-roleicon-htmldata" href="#ttttutorialroletextextrarole-titlelabel-roleicon-htmldata">TTTTutorialRoleTextExtra(role, titleLabel, roleIcon, htmlData)</a></h3>
+        <p>
+            Called before a role's tutorial page is rendered but after <code>TTTTutorialRoleText</code> is called. This can be used to provide additional text to show for a role.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.5.3<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>role</em> - Which role's tutorial page is being rendered</li>
+            <li><em>titleLabel</em> - The <a href="https://wiki.facepunch.com/gmod/DLabel" target="_blank">DLabel</a> that is being used as the title of the rendered tutorial page. Has the role's name automatically set as the label text</li>
+            <li><em>roleIcon</em> - The <a href="https://wiki.facepunch.com/gmod/DImage" target="_blank">DImage</a> that is being used to show the role's icon on the rendered tutorial page</li>
+            <li><em>htmlData</em> - The string HTML data that would be shown for the given role. It does not include the closing <code>&lt;/div&gt;</code> tag, meaning additional HTML can be appended to the end without worrying about proper structure.</li>
+        </ul>
+        <p>
+            <em>Return:</em> The full string value to show on the tutorial page for this role. Should not include the closing <code>&lt;/div&gt;</code> tag as this is appended automatically.
+        </p>
+
+        <h3><a id="tttupdaterolestate" href="#tttupdaterolestate">TTTUpdateRoleState()</a></h3>
+        <p>
+            Called after globals are synced but but before role colors and strings are set. Can be used to update role states (team membership) and role weapon (buyable, loadout, etc.) states based on configurations.<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.2.7
+        </p>
+
+        <h3><a id="tttvampirebodyeatenply-ent-living-healed" href="#tttvampirebodyeatenply-ent-living-healed">TTTVampireBodyEaten(ply, ent, living, healed)</a></h3>
+        <p>
+            Called after a vampire eats a body.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.6.16<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The vampire eating the body</li>
+            <li><em>ent</em> - The target entity. Generally either a player or a ragdoll</li>
+            <li><em>living</em> - Whether the target entity was living at the time they were eaten</li>
+            <li><em>healed</em> - The amount of health the player gained from eating the body</li>
+        </ul>
+
+        <h3><a id="tttvampireinvisibilitychangeply-invisible" href="#tttvampireinvisibilitychangeply-invisible">TTTVampireInvisibilityChange(ply, invisible)</a></h3>
+        <p>
+            Called when a vampire starts or ends their invisibility.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.6.16<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The vampire changing invisibility state</li>
+            <li><em>ent</em> - The target entity. Generally either a player or a ragdoll</li>
+        </ul>
+
+        <h3><a id="tttwincheckblockswinblocks" href="#tttwincheckblockswinblocks">TTTWinCheckBlocks(winBlocks)</a></h3>
+        <p>
+            Called after the <code>TTTCheckForWins</code> has already been called, allowing for an addon to block a win. Used for roles like the clown and the drunk to have them activate when the round would normally end the first time.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.3.1<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>winBlocks</em> - The table of callback functions that are given the current win type and return either the same win type they are given or a different win type if it should be changed. The callback function should <strong>always</strong> return a value.</li>
+        </ul>
+
+        <h3><a id="tttwincheckcompletewin" href="#tttwincheckcompletewin">TTTWinCheckComplete(win)</a></h3>
+        <p>
+            Called after a win condition has been set and right before the round eds. Used for roles like the old man that perform some logic before the end of the round without changing the outcome.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.3.1<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>win</em> - The win type that the round is about to end with</li>
+        </ul>
+    </div>
+</body>
+<html>

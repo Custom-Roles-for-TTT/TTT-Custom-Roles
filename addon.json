@@ -15,6 +15,7 @@
     "LICENSE",
     "scripts*",
     "templates*",
-    "images*"
+    "images*",
+    "docs*"
   ]
 }

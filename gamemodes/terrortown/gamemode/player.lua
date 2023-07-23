@@ -836,6 +836,7 @@ function GM:PlayerDeath(victim, infl, attacker)
     victim:Flashlight(false)
 
     victim:Extinguish()
+    victim.ignite_info = nil
 
     net.Start("TTT_PlayerDied")
     net.Send(victim)
@@ -1277,6 +1278,7 @@ function GM:Tick()
             if ply:WaterLevel() == 3 then
                 if ply:IsOnFire() then
                     ply:Extinguish()
+                    ply.ignite_info = nil
                 end
 
                 if ply.drowning then

@@ -16,16 +16,21 @@ VAMPIRE_THRALL_FF_MODE_IMMUNE = 2
 
 local function InitializeEquipment()
     if EquipmentItems then
-        local mat_dir = "vgui/ttt/"
-        EquipmentItems[ROLE_VAMPIRE] = {
-            -- body armor
-            { id = EQUIP_ARMOR,
-              type = "item_passive",
-              material = mat_dir .. "icon_armor",
-              name = "item_armor",
-              desc = "item_armor_desc"
-            }
-        }
+        if not EquipmentItems[ROLE_VAMPIRE] then
+            EquipmentItems[ROLE_VAMPIRE] = {}
+        end
+
+        -- If we haven't already registered this item, add it to the list
+        if not table.HasItemWithPropertyValue(EquipmentItems[ROLE_VAMPIRE], "id", EQUIP_ARMOR) then
+            local mat_dir = "vgui/ttt/"
+            table.insert(EquipmentItems[ROLE_VAMPIRE], {
+                id = EQUIP_ARMOR,
+                type = "item_passive",
+                material = mat_dir .. "icon_armor",
+                name = "item_armor",
+                desc = "item_armor_desc"
+            })
+        end
     end
 
     if DefaultEquipment then

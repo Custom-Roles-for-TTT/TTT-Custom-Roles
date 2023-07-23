@@ -15,7 +15,7 @@ util.AddNetworkString("TTT_ResetShadowWins")
 -------------
 
 local start_timer = CreateConVar("ttt_shadow_start_timer", "30", FCVAR_NONE, "How much time (in seconds) the shadow has to find their target at the start of the round", 1, 90)
-local buffer_timer = CreateConVar("ttt_shadow_buffer_timer", "7", FCVAR_NONE, "How much time (in seconds) the shadow can stay of their target's radius", 1, 30)
+local buffer_timer = CreateConVar("ttt_shadow_buffer_timer", "7", FCVAR_NONE, "How much time (in seconds) the shadow can stay out of their target's radius", 1, 30)
 local alive_radius = CreateConVar("ttt_shadow_alive_radius", "8", FCVAR_NONE, "The radius (in meters) from the living target that the shadow has to stay within", 1, 15)
 local dead_radius = CreateConVar("ttt_shadow_dead_radius", "3", FCVAR_NONE, "The radius (in meters) from the death target that the shadow has to stay within", 1, 15)
 local target_buff = CreateConVar("ttt_shadow_target_buff", "4", FCVAR_NONE, "The type of buff to shadow's target should get. 0 - None. 1 - Heal over time. 2 - Single respawn. 3 - Damage bonus. 4 - Team join.", 0, 4)
@@ -32,8 +32,10 @@ local sprint_recovery = CreateConVar("ttt_shadow_sprint_recovery", "0.1", FCVAR_
 local sprint_recovery_max = CreateConVar("ttt_shadow_sprint_recovery_max", "0.5", FCVAR_NONE, "The maximum amount of stamina to recover per tick when the shadow is FAR outside of their target radius", 0, 1)
 local target_jester = CreateConVar("ttt_shadow_target_jester", "1", FCVAR_NONE, "Whether the shadow should be able to target a member of the jester team", 0, 1)
 local target_independent = CreateConVar("ttt_shadow_target_independent", "1", FCVAR_NONE, "Whether the shadow should be able to target an independent player", 0, 1)
-local soul_link = CreateConVar("ttt_shadow_soul_link", "0", FCVAR_NONE, "Whether the shadow should die when their target dies and vice-versa", 0, 1)
 local target_notify_mode = CreateConVar("ttt_shadow_target_notify_mode", "0", FCVAR_NONE, "How the shadow's target should be notified they have a shadow. 0 - Don't notify. 1 - Anonymously notify. 2 - Identify the shadow.", 0, 2)
+local soul_link = CreateConVar("ttt_shadow_soul_link", "0", FCVAR_NONE, "Whether the shadow's soul should be linked to their target. 0 - Disable. 1 - Both shadow and target die if either is killed. 2 - The shadow dies if their target is killed.", 0, 2)
+local weaken_health_to = CreateConVar("ttt_shadow_weaken_health_to", "0", FCVAR_NONE, "How low to reduce the shadow's health to when they are outside of the target circle instead of killing them. Set to 0 to disable, meaning the shadow will be killed", 0, 100)
+local weaken_timer = CreateConVar("ttt_shadow_weaken_timer", "3", FCVAR_NONE, "How often (in seconds) to adjust the shadow's health when they are outside of the target circle", 1, 30)
 
 hook.Add("TTTSyncGlobals", "Shadow_TTTSyncGlobals", function()
     SetGlobalInt("ttt_shadow_start_timer", start_timer:GetInt())
@@ -46,8 +48,9 @@ hook.Add("TTTSyncGlobals", "Shadow_TTTSyncGlobals", function()
     SetGlobalFloat("ttt_shadow_speed_mult_max", speed_mult_max:GetFloat())
     SetGlobalFloat("ttt_shadow_sprint_recovery", sprint_recovery:GetFloat())
     SetGlobalFloat("ttt_shadow_sprint_recovery_max", sprint_recovery_max:GetFloat())
-    SetGlobalBool("ttt_shadow_soul_link", soul_link:GetBool())
+    SetGlobalInt("ttt_shadow_soul_link", soul_link:GetInt())
     SetGlobalInt("ttt_shadow_target_notify_mode", target_notify_mode:GetInt())
+    SetGlobalInt("ttt_shadow_weaken_health_to", weaken_health_to:GetInt())
 end)
 
 -----------------------
@@ -89,12 +92,16 @@ end
 -------------------
 
 local function ClearShadowState(ply)
+    ply.TTTShadowMaxHealth = nil
+    ply.TTTShadowLastMaxHealth = nil
     ply:SetNWBool("ShadowActive", false)
     ply:SetNWString("ShadowTarget", "")
     ply:SetNWFloat("ShadowTimer", -1)
     ply:SetNWFloat("ShadowBuffTimer", -1)
     ply:SetNWBool("ShadowBuffActive", false)
     ply:SetNWBool("ShadowBuffDepleted", false)
+    timer.Remove("TTTShadowWeakenTimer_" .. ply:SteamID64())
+    timer.Remove("TTTShadowRegenTimer_" .. ply:SteamID64())
 end
 
 local buffTimers = {}
@@ -221,30 +228,30 @@ hook.Add("ScalePlayerDamage", "Shadow_Buff_ScalePlayerDamage", function(ply, hit
     dmginfo:ScaleDamage(1 + target_buff_damage_bonus:GetFloat())
 end)
 
--- Used for the shadow's soul-link convar
-local function KillSoulLinkedPlayer(ply, msg)
-    if IsPlayer(ply) and ply:Alive() and not ply:IsSpec() then
-        ply:Kill()
-        ply:PrintMessage(HUD_PRINTCENTER, msg)
-        ply:PrintMessage(HUD_PRINTTALK, msg)
-    end
-end
-
 hook.Add("DoPlayerDeath", "Shadow_SoulLink_DoPlayerDeath", function(ply, attacker, dmg)
-    if not soul_link:GetBool() or not IsPlayer(ply) then return end
+    if soul_link:GetInt() == SHADOW_SOUL_LINK_NONE or not IsPlayer(ply) then return end
+
     -- Kill the shadow's target as well
     if ply:IsShadow() then
-        local target = player.GetBySteamID64(ply:GetNWString("ShadowTarget", ""))
-        if IsPlayer(target) and target:Alive() and not target:IsSpec() then
-            KillSoulLinkedPlayer(target, ply:Nick() .. " was your " .. ROLE_STRINGS[ROLE_SHADOW] .. " and died!")
+        -- But only if bi-directional soul link is enabled
+        if soul_link:GetInt() == SHADOW_SOUL_LINK_BOTH then
+            local target = player.GetBySteamID64(ply:GetNWString("ShadowTarget", ""))
+            if IsPlayer(target) and target:Alive() and not target:IsSpec() then
+                target:Kill()
+                local msg = ply:Nick() .. " was your " .. ROLE_STRINGS[ROLE_SHADOW] .. " and died!"
+                target:PrintMessage(HUD_PRINTCENTER, msg)
+                target:PrintMessage(HUD_PRINTTALK, msg)
+            end
         end
     else
         -- Find the shadows that "belong" to this player, and kill them
         for _, p in ipairs(GetAllPlayers()) do
-            if p:IsShadow() then
+            if p:IsShadow() and p:Alive() and not p:IsSpec() then
                 local target = player.GetBySteamID64(p:GetNWString("ShadowTarget", ""))
-                if IsPlayer(target) and target == ply and p:Alive() and not p:IsSpec() then
-                    KillSoulLinkedPlayer(p, "Your target died!")
+                if IsPlayer(target) and target == ply then
+                    p:Kill()
+                    p:PrintMessage(HUD_PRINTCENTER, "Your target died!")
+                    p:PrintMessage(HUD_PRINTTALK, "Your target died!")
                 end
             end
         end
@@ -302,21 +309,92 @@ hook.Add("PostPlayerDeath", "Shadow_Buff_PostPlayerDeath", function(ply)
             ClearBuffTimer(p, ply)
         end
     end
+
+    -- Stop weakening or regenerating a dead player
+    timer.Remove("TTTShadowWeakenTimer_" .. ply:SteamID64())
+    timer.Remove("TTTShadowRegenTimer_" .. ply:SteamID64())
 end)
 
+local function CreateWeakenTimer(shadow, weakenTo, weakenTimer)
+    if timer.Exists("TTTShadowWeakenTimer_" .. shadow:SteamID64()) then return end
+
+    shadow.TTTShadowMaxHealth = shadow:GetMaxHealth()
+    shadow.TTTShadowLastMaxHealth = shadow.TTTShadowMaxHealth
+    timer.Create("TTTShadowWeakenTimer_" .. shadow:SteamID64(), weakenTimer, 0, function()
+        if not IsValid(shadow) or not shadow:Alive() or shadow:IsSpec() then return end
+
+        local currentMaxHealth = shadow:GetMaxHealth()
+        -- Something else changed their max health, this is the new maximum
+        if shadow.TTTShadowLastMaxHealth ~= currentMaxHealth then
+            shadow.TTTShadowMaxHealth = currentMaxHealth
+        end
+
+        if currentMaxHealth <= weakenTo then return end
+
+        local hp = shadow:Health()
+        -- Don't kill them
+        if hp > 0 then
+            shadow:SetHealth(hp - 1)
+        end
+
+        shadow.TTTShadowLastMaxHealth = currentMaxHealth - 1
+        shadow:SetMaxHealth(shadow.TTTShadowLastMaxHealth)
+    end)
+end
+
+local function CreateRegenTimer(shadow, weakenTimer)
+    if timer.Exists("TTTShadowRegenTimer_" .. shadow:SteamID64()) then return end
+
+    timer.Remove("TTTShadowWeakenTimer_" .. shadow:SteamID64())
+
+    -- Sanity check, just in case
+    if not shadow.TTTShadowMaxHealth then return end
+
+    shadow.TTTShadowLastMaxHealth = shadow:GetMaxHealth()
+    timer.Create("TTTShadowRegenTimer_" .. shadow:SteamID64(), weakenTimer, 0, function()
+        if not IsValid(shadow) or not shadow:Alive() or shadow:IsSpec() then return end
+
+        local currentMaxHealth = shadow:GetMaxHealth()
+        -- Something else changed their max health, this is the new maximum
+        if shadow.TTTShadowLastMaxHealth ~= currentMaxHealth then
+            shadow.TTTShadowMaxHealth = currentMaxHealth
+        end
+
+        -- If we've finished regenning, stop the timer
+        if currentMaxHealth >= shadow.TTTShadowMaxHealth then
+            timer.Remove("TTTShadowRegenTimer_" .. shadow:SteamID64())
+            return
+        end
+
+        shadow:SetHealth(shadow:Health() + 1)
+
+        shadow.TTTShadowLastMaxHealth = currentMaxHealth + 1
+        shadow:SetMaxHealth(shadow.TTTShadowLastMaxHealth)
+    end)
+end
+
 hook.Add("TTTBeginRound", "Shadow_TTTBeginRound", function()
+    local weakenTo = weaken_health_to:GetInt()
+    local weakenTimer = weaken_timer:GetInt()
     timer.Create("TTTShadowTimer", 0.1, 0, function()
         for _, v in pairs(GetAllPlayers()) do
-            if not v:IsActiveShadow() or v:IsSpec() then continue end
+            if not v:IsShadow() or not v:Alive() or v:IsSpec() then continue end
 
             local target = player.GetBySteamID64(v:GetNWString("ShadowTarget", ""))
             local t = v:GetNWFloat("ShadowTimer", -1)
             if t > 0 and CurTime() > t then
-                v:Kill()
-                v:PrintMessage(HUD_PRINTCENTER, "You didn't stay close to your target!")
-                v:PrintMessage(HUD_PRINTTALK, "You didn't stay close to your target!")
-                v:SetNWBool("ShadowActive", false)
-                v:SetNWFloat("ShadowTimer", -1)
+                local message = "You didn't stay close to your target!"
+                if weakenTo > 0 then
+                    message = message .. " Return to them to slowly regain your lost health!"
+                    CreateWeakenTimer(v, weakenTo, weakenTimer)
+                    v:SetNWFloat("ShadowTimer", SHADOW_FORCED_PROGRESS_BAR)
+                else
+                    v:Kill()
+                    v:SetNWBool("ShadowActive", false)
+                    v:SetNWFloat("ShadowTimer", -1)
+                end
+                v:PrintMessage(HUD_PRINTCENTER, message)
+                v:PrintMessage(HUD_PRINTTALK, message)
                 v:SetNWFloat("ShadowBuffTimer", -1)
                 ClearBuffTimer(v, target)
             else
@@ -340,9 +418,14 @@ hook.Add("TTTBeginRound", "Shadow_TTTBeginRound", function()
                     if targetAlive and target_buff:GetInt() > SHADOW_BUFF_NONE then
                         CreateBuffTimer(v, target)
                     end
+
+                    if weakenTo > 0 then
+                        CreateRegenTimer(v, weakenTimer)
+                    end
                 else
                     ClearBuffTimer(v, target, true)
-                    if v:GetNWFloat("ShadowTimer", -1) < 0 then
+                    -- Reset the shadow timer if we're not actively weakening the player
+                    if not timer.Exists("TTTShadowWeakenTimer_" .. v:SteamID64()) and v:GetNWFloat("ShadowTimer", -1) < 0 then
                         v:SetNWFloat("ShadowTimer", CurTime() + buffer_timer:GetInt())
                     end
                 end
@@ -370,6 +453,7 @@ hook.Add("PlayerDeath", "Shadow_KillCheck_PlayerDeath", function(victim, infl, a
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     if not valid_kill then return end
     if not attacker:IsShadow() then return end
+    if soul_link:GetInt() ~= SHADOW_SOUL_LINK_NONE then return end
 
     if victim:SteamID64() == attacker:GetNWString("ShadowTarget", "") then
         attacker:Kill()

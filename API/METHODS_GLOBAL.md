@@ -153,7 +153,7 @@ Returns a function that filters net messages to players that are on the traitor 
 - *aliveOnly* - Whether this filter should only include live players (Defaults to `false`)
 
 ### JesterTeamKilledNotification(attacker, victim, getKillString, shouldShow)
-Used to disply a message, play a sound, and/or create confetti when a member of the jester team is killed. Automatically checks `ttt_%NAMERAW%_notify_mode`, `ttt_%NAMERAW%_notify_sound`, and `ttt_%NAMERAW%_notify_confetti` convars.\
+Used to display a message, play a sound, and/or create confetti when a member of the jester team is killed. Automatically checks `ttt_%NAMERAW%_notify_mode`, `ttt_%NAMERAW%_notify_sound`, and `ttt_%NAMERAW%_notify_confetti` convars.\
 *Realm:* Server\
 *Added in:* 1.3.1\
 *Parameters:*

@@ -1,5 +1,36 @@
 # Release Notes
 
+## 1.9.2
+**Released: July 22nd, 2023**
+
+### Additions
+- Added ability to have the shadow be killed when anything kills their target, but not vice versa. Set `ttt_shadow_soul_link 2` to enable this behavior.
+
+### Changes
+- Changed weapons that use the C4 model to use the updated model that supports custom player model hand skins
+
+### Fixes
+- Fixed double message when a shadow killed their target and soul link was enabled
+
+### Developer
+- Changed how some roles set their default shop equipment (passive) items so they don't overwrite other things also adding to the lists if the timing isn't perfect
+
+## 1.9.1 (Beta)
+**Released: July 16th, 2023**
+
+### Additions
+- Added arsonist dousing information to a corpse's search window
+- Added ability to allow the arsonist to use their igniter at any time instead of waiting for all players to be doused (disabled by default)
+- Added message to tell the arsonist how many players they set on fire after using the igniter
+- Added ability to temporarily reduce the shadow's maximum health over time while they are outside of the target circle instead of killing them (disabled by default)
+
+### Changes
+- Changed arsonist's igniter to a set player's corpse on fire if they were doused before being killed
+- Changed arsonist to try to douse a player's corpse if a living player is not found close enough
+
+### Developer
+- Added `util.BurnRagdoll` to burn a player's ragdoll, show scorch marks, and automatically destroy it unless it's been extinguished
+
 ## 1.9.0
 **Released: July 9th, 2023**\
 Includes beta updates [1.8.3](#183-beta) to [1.8.11](#1811-beta).
