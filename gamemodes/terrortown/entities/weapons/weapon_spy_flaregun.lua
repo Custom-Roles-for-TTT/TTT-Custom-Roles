@@ -1,7 +1,17 @@
 AddCSLuaFile()
 
 if CLIENT then
+   SWEP.PrintName = "flare_name"
    SWEP.Slot = 8
+   SWEP.ViewModelFOV = 54
+   SWEP.ViewModelFlip = false
+
+   SWEP.EquipMenuData = {
+      type = "item_weapon",
+      desc = "flare_desc"
+   }
+
+   SWEP.Icon = "vgui/ttt/icon_flare"
 end
 
 SWEP.Base = "weapon_ttt_flaregun"
