@@ -1,4 +1,5 @@
 include("shared.lua")
+include("init_shd.lua")
 
 local cam = cam
 local concommand = concommand
@@ -229,8 +230,8 @@ local function ReceiveRole()
     client:SetRole(role)
 
     -- Update the local state
-    traitor_vision = GetGlobalBool("ttt_traitor_vision_enable", false)
-    jesters_visible_to_traitors = GetGlobalBool("ttt_jesters_visible_to_traitors", false)
+    traitor_vision = GetConVar("ttt_traitors_vision_enable"):GetBool()
+    jesters_visible_to_traitors = GetConVar("ttt_jesters_visible_to_traitors"):GetBool()
 
     -- Disable highlights on role change
     if vision_enabled then

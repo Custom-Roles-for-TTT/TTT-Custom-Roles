@@ -33,10 +33,10 @@ function PANEL:Init()
 
     self.cols = {}
     self:AddColumn(GetTranslation("sb_ping"), function(ply) return ply:Ping() end)
-    if GetGlobalBool("ttt_scoreboard_deaths", false) then
+    if GetConVar("ttt_scoreboard_deaths"):GetBool() then
         self:AddColumn(GetTranslation("sb_deaths"), function(ply) return ply:Deaths() end)
     end
-    if GetGlobalBool("ttt_scoreboard_score", false) then
+    if GetConVar("ttt_scoreboard_score"):GetBool() then
         self:AddColumn(GetTranslation("sb_score"), function(ply) return ply:Frags() end)
     end
 

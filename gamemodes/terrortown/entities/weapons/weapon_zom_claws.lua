@@ -59,33 +59,23 @@ SWEP.NextReload = CurTime()
 SWEP.DeploySpeed = 2
 local sound_single = Sound("Weapon_Crowbar.Single")
 
-if SERVER then
-    CreateConVar("ttt_zombie_leap_enable", "1")
-    CreateConVar("ttt_zombie_spit_enable", "1")
+local zombie_leap_enable = CreateConVar("ttt_zombie_leap_enable", "1", FCVAR_REPLICATED)
+local zombie_spit_enable = CreateConVar("ttt_zombie_spit_enable", "1", FCVAR_REPLICATED)
+local zombie_prime_attack_damage = CreateConVar("ttt_zombie_prime_attack_damage", "65", FCVAR_REPLICATED, "The amount of a damage a prime zombie (e.g. player who spawned as a zombie originally) does with their claws. Server or round must be restarted for changes to take effect", 1, 100)
+local zombie_thrall_attack_damage = CreateConVar("ttt_zombie_thrall_attack_damage", "45", FCVAR_REPLICATED, "The amount of a damage a zombie thrall (e.g. non-prime zombie) does with their claws. Server or round must be restarted for changes to take effect", 1, 100)
+local zombie_prime_attack_delay = CreateConVar("ttt_zombie_prime_attack_delay", "0.7", FCVAR_REPLICATED, "The amount of time between claw attacks for a prime zombie (e.g. player who spawned as a zombie originally). Server or round must be restarted for changes to take effect", 0.1, 3)
+local zombie_thrall_attack_delay = CreateConVar("ttt_zombie_thrall_attack_delay", "1.4", FCVAR_REPLICATED, "The amount of time between claw attacks for a zombie thrall (e.g. non-prime zombie). Server or round must be restarted for changes to take effect", 0.1, 3)
 
+if SERVER then
     CreateConVar("ttt_zombie_prime_convert_chance", "1", FCVAR_NONE, "The chance that a prime zombie (e.g. player who spawned as a zombie originally) will convert other players who are killed by their claws to be zombies as well. Set to 0 to disable", 0, 1)
     CreateConVar("ttt_zombie_thrall_convert_chance", "1", FCVAR_NONE, "The chance that a zombie thrall (e.g. non-prime zombie) will convert other players who are killed by their claws to be zombies as well. Set to 0 to disable", 0, 1)
-
-    CreateConVar("ttt_zombie_prime_attack_damage", "65", FCVAR_NONE, "The amount of a damage a prime zombie (e.g. player who spawned as a zombie originally) does with their claws. Server or round must be restarted for changes to take effect", 1, 100)
-    CreateConVar("ttt_zombie_thrall_attack_damage", "45", FCVAR_NONE, "The amount of a damage a zombie thrall (e.g. non-prime zombie) does with their claws. Server or round must be restarted for changes to take effect", 1, 100)
-    CreateConVar("ttt_zombie_prime_attack_delay", "0.7", FCVAR_NONE, "The amount of time between claw attacks for a prime zombie (e.g. player who spawned as a zombie originally). Server or round must be restarted for changes to take effect", 0.1, 3)
-    CreateConVar("ttt_zombie_thrall_attack_delay", "1.4", FCVAR_NONE, "The amount of time between claw attacks for a zombie thrall (e.g. non-prime zombie). Server or round must be restarted for changes to take effect", 0.1, 3)
 end
 
-function SWEP:Initialize()
-    if SERVER then
-        SetGlobalInt("ttt_zombie_prime_attack_damage", GetConVar("ttt_zombie_prime_attack_damage"):GetInt())
-        SetGlobalInt("ttt_zombie_thrall_attack_damage", GetConVar("ttt_zombie_thrall_attack_damage"):GetInt())
-        SetGlobalFloat("ttt_zombie_prime_attack_delay", GetConVar("ttt_zombie_prime_attack_delay"):GetFloat())
-        SetGlobalFloat("ttt_zombie_thrall_attack_delay", GetConVar("ttt_zombie_thrall_attack_delay"):GetFloat())
-        SetGlobalBool("ttt_zombie_leap_enable", GetConVar("ttt_zombie_leap_enable"):GetBool())
-        SetGlobalBool("ttt_zombie_spit_enable", GetConVar("ttt_zombie_spit_enable"):GetBool())
-    end
-
-    if CLIENT then
+if CLIENT then
+    function SWEP:Initialize()
         self:AddHUDHelp("zom_claws_help_pri", "zom_claws_help_sec", true)
+        return self.BaseClass.Initialize(self)
     end
-    return self.BaseClass.Initialize(self)
 end
 
 --[[
@@ -187,7 +177,7 @@ Jump Attack
 
 function SWEP:SecondaryAttack()
     if SERVER then
-        if not GetConVar("ttt_zombie_leap_enable"):GetBool() then return end
+        if not zombie_leap_enable:GetBool() then return end
         local owner = self:GetOwner()
         if (not self:CanSecondaryAttack()) or owner:IsOnGround() == false then return end
 
@@ -205,7 +195,7 @@ Spit Attack
 
 function SWEP:Reload()
     if CLIENT then return end
-    if not GetConVar("ttt_zombie_spit_enable"):GetBool() then return end
+    if not zombie_spit_enable:GetBool() then return end
     if self.NextReload > CurTime() then return end
     self.NextReload = CurTime() + self.Tertiary.Delay
     self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
@@ -251,11 +241,11 @@ end
 
 function SWEP:Deploy()
     if self:GetOwner():IsZombiePrime() then
-        self.Primary.Damage = GetGlobalInt("ttt_zombie_prime_attack_damage", 65)
-        self.Primary.Delay = GetGlobalFloat("ttt_zombie_prime_attack_delay", 0.7)
+        self.Primary.Damage = zombie_prime_attack_damage:GetInt()
+        self.Primary.Delay = zombie_prime_attack_delay:GetFloat()
     else
-        self.Primary.Damage = GetGlobalInt("ttt_zombie_thrall_attack_damage", 45)
-        self.Primary.Delay = GetGlobalFloat("ttt_zombie_thrall_attack_delay", 1.4)
+        self.Primary.Damage = zombie_thrall_attack_damage:GetInt()
+        self.Primary.Delay = zombie_thrall_attack_delay:GetFloat()
     end
 
     local vm = self:GetOwner():GetViewModel()

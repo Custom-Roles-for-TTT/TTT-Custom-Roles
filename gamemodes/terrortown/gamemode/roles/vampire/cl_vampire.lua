@@ -197,9 +197,9 @@ end
 hook.Add("TTTUpdateRoleState", "Vampire_Highlight_TTTUpdateRoleState", function()
     client = LocalPlayer()
     vampire_vision = GetGlobalBool("ttt_vampire_vision_enable", false)
-    jesters_visible_to_traitors = GetGlobalBool("ttt_jesters_visible_to_traitors", false)
-    jesters_visible_to_monsters = GetGlobalBool("ttt_jesters_visible_to_monsters", false)
-    jesters_visible_to_independents = GetGlobalBool("ttt_jesters_visible_to_independents", false)
+    jesters_visible_to_traitors = GetConVar("ttt_jesters_visible_to_traitors"):GetBool()
+    jesters_visible_to_monsters = GetConVar("ttt_jesters_visible_to_monsters"):GetBool()
+    jesters_visible_to_independents = GetConVar("ttt_jesters_visible_to_independents"):GetBool()
 
     -- Disable highlights on role change
     if vision_enabled then
@@ -248,7 +248,7 @@ hook.Add("TTTTutorialRoleText", "Vampire_TTTTutorialRoleText", function(role, ti
 
         -- Draining
         html = html .. "<span style='display: block; margin-top: 10px;'>They can heal themselves by <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>draining blood</span> from "
-        local drainEnabled = GetGlobalBool("ttt_vampire_drain_enable", true)
+        local drainEnabled = GetConVar("ttt_vampire_drain_enable"):GetBool()
         if drainEnabled then
             html = html .. "both living players and "
         end
@@ -258,9 +258,9 @@ hook.Add("TTTTutorialRoleText", "Vampire_TTTTutorialRoleText", function(role, ti
         html = html .. "<span style='display: block; margin-top: 10px;'>By using the secondary attack with their fangs, they can also <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>fade from view</span> and gain a temporary speed bonus. This is useful for either chasing down prey or running away from conflict.</span>"
 
         -- Convert
-        if drainEnabled and GetGlobalBool("ttt_vampire_convert_enable", false) then
+        if drainEnabled and GetConVar("ttt_vampire_convert_enable"):GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>"
-            if GetGlobalBool("ttt_vampire_prime_only_convert", true) then
+            if GetConVar("ttt_vampire_prime_only_convert"):GetBool() then
                 html = html .. "Prime "
             end
             html = html .. ROLE_STRINGS_PLURAL[ROLE_VAMPIRE] .. " can convert living targets to their team by <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>draining their blood</span> the correct amount (Look for the message on the drain progress bar for when to release).</span>"

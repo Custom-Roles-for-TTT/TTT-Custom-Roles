@@ -199,9 +199,9 @@ hook.Add("TTTTutorialRoleText", "Clown_TTTTutorialRoleText", function(role, titl
 
         -- Shop
         html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_CLOWN] .. " has access to a <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>weapon shop</span>"
-        if GetGlobalBool("ttt_clown_shop_active_only", true) then
+        if GetConVar("ttt_clown_shop_active_only"):GetBool() then
             html = html .. ", but only <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>after they activate</span>"
-        elseif GetGlobalBool("ttt_clown_shop_delay", false) then
+        elseif GetConVar("ttt_clown_shop_delay"):GetBool() then
             html = html .. ", but they are only given their purchased weapons <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>after they activate</span>"
         end
         html = html .. ".</span>"

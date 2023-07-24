@@ -50,27 +50,27 @@ local bodyfound = CreateConVar("ttt_announce_body_found", "1")
 
 local function AnnounceBodyName(p)
     -- If only detectives can search, only announce if this player is a detective
-    if GetGlobalBool("ttt_detective_search_only", true) then return p:IsDetectiveLike() end
+    if GetConVar("ttt_detectives_search_only"):GetBool() then return p:IsDetectiveLike() end
     -- If only detectives can see the name, only announce if this player is a detective
-    if GetGlobalBool("ttt_detective_search_only_nick", false) then return p:IsDetectiveLike() end
+    if GetConVar("ttt_detectives_search_only_nick"):GetBool() then return p:IsDetectiveLike() end
     -- Otherwise everyone can see it
     return true
 end
 
 local function AnnounceBodyRole(p)
     -- If only detectives can search, only announce if this player is a detective
-    if GetGlobalBool("ttt_detective_search_only", true) then return p:IsDetectiveLike() end
+    if GetConVar("ttt_detectives_search_only"):GetBool() then return p:IsDetectiveLike() end
     -- If only detectives can see the role, only announce if this player is a detective
-    if GetGlobalBool("ttt_detective_search_only_role", false) then return p:IsDetectiveLike() end
+    if GetConVar("ttt_detectives_search_only_role"):GetBool() then return p:IsDetectiveLike() end
     -- Otherwise everyone can see it
     return true
 end
 
 local function AnnounceBodyTeam(p)
     -- If only detectives can search, only announce if this player is a detective
-    if GetGlobalBool("ttt_detective_search_only", true) then return p:IsDetectiveLike() end
+    if GetConVar("ttt_detectives_search_only"):GetBool() then return p:IsDetectiveLike() end
     -- If only detectives can see the team, only announce if this player is a detective
-    if GetGlobalBool("ttt_detective_search_only_team", false) then return p:IsDetectiveLike() end
+    if GetConVar("ttt_detectives_search_only_team"):GetBool() then return p:IsDetectiveLike() end
     -- Otherwise everyone can see it
     return true
 end

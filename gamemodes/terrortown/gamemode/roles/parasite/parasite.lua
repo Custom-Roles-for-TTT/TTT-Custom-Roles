@@ -31,7 +31,6 @@ local parasite_infection_saves_lover = CreateConVar("ttt_parasite_infection_save
 
 hook.Add("TTTSyncGlobals", "Parasite_TTTSyncGlobals", function()
     SetGlobalInt("ttt_parasite_infection_time", parasite_infection_time:GetInt())
-    SetGlobalBool("ttt_parasite_enabled", GetConVar("ttt_parasite_enabled"):GetBool())
     SetGlobalBool("ttt_parasite_is_monster", parasite_is_monster:GetBool())
 end)
 

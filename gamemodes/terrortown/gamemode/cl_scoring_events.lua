@@ -67,7 +67,7 @@ Event(EVENT_FINISH,
                      end
                      return T("ev_win_monster")
                   elseif e.win == WIN_TIMELIMIT then
-                     if GetGlobalBool("ttt_roundtime_win_draw", false) then
+                     if GetConVar("ttt_roundtime_win_draw"):GetBool() then
                        return T("ev_win_draw")
                      else
                        return PT("ev_win_time", { role = string.lower(ROLE_STRINGS_PLURAL[ROLE_TRAITOR]) })

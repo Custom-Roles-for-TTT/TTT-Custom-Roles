@@ -449,29 +449,8 @@ else
         end
 
         if DELAYED_SHOP_ROLES[role] then
-            CreateConVar("ttt_" .. rolestring .. "_shop_active_only", "1")
-            CreateConVar("ttt_" .. rolestring .. "_shop_delay", "0")
-        end
-    end
-
-    function SyncShopConVars(role)
-        local rolestring = ROLE_STRINGS_RAW[role]
-        SetGlobalInt("ttt_" .. rolestring .. "_shop_random_percent", GetConVar("ttt_" .. rolestring .. "_shop_random_percent"):GetInt())
-        SetGlobalBool("ttt_" .. rolestring .. "_shop_random_enabled", GetConVar("ttt_" .. rolestring .. "_shop_random_enabled"):GetBool())
-
-        local sync_cvar = "ttt_" .. rolestring .. "_shop_sync"
-        if ConVarExists(sync_cvar) then
-            SetGlobalBool(sync_cvar, GetConVar(sync_cvar):GetBool())
-        end
-
-        local mode_cvar = "ttt_" .. rolestring .. "_shop_mode"
-        if ConVarExists(mode_cvar) then
-            SetGlobalInt(mode_cvar, GetConVar(mode_cvar):GetInt())
-        end
-
-        if DELAYED_SHOP_ROLES[role] then
-            SetGlobalBool("ttt_" .. rolestring .. "_shop_active_only", GetConVar("ttt_" .. rolestring .. "_shop_active_only"):GetBool())
-            SetGlobalBool("ttt_" .. rolestring .. "_shop_delay", GetConVar("ttt_" .. rolestring .. "_shop_delay"):GetBool())
+            CreateConVar("ttt_" .. rolestring .. "_shop_active_only", "1", FCVAR_REPLICATED)
+            CreateConVar("ttt_" .. rolestring .. "_shop_delay", "0", FCVAR_REPLICATED)
         end
     end
 
@@ -735,6 +714,18 @@ ROLE_STRINGS_SHORT = {
     [ROLE_ARSONIST] = "ars"
 }
 
+for role = 0, ROLE_MAX do
+    local rolestring = ROLE_STRINGS_RAW[role]
+
+    if not DEFAULT_ROLES[role] then
+        CreateConVar("ttt_" .. rolestring .. "_enabled", "0", FCVAR_REPLICATED)
+    end
+
+    CreateConVar("ttt_" .. rolestring .. "_name", "", FCVAR_REPLICATED)
+    CreateConVar("ttt_" .. rolestring .. "_name_plural", "", FCVAR_REPLICATED)
+    CreateConVar("ttt_" .. rolestring .. "_name_article", "", FCVAR_REPLICATED)
+end
+
 function StartsWithVowel(word)
     local firstletter = StringSub(word, 1, 1)
     return firstletter == "a" or
@@ -746,11 +737,11 @@ end
 
 function UpdateRoleStrings()
     for role = 0, ROLE_MAX do
-        local name = GetGlobalString("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name", "")
+        local name = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name"):GetString()
         if name ~= "" then
             ROLE_STRINGS[role] = name
 
-            local plural = GetGlobalString("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name_plural", "")
+            local plural = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name_plural"):GetString()
             if plural == "" then -- Fallback if no plural is given. Does NOT handle all cases properly
                 local lastChar = StringLower(StringSub(name, #name, #name))
                 if lastChar == "s" then
@@ -764,7 +755,7 @@ function UpdateRoleStrings()
                 ROLE_STRINGS_PLURAL[role] = plural
             end
 
-            local article = GetGlobalString("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name_article", "")
+            local article = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_name_article"):GetString()
             if article == "" then -- Fallback if no article is given. Does NOT handle all cases properly
                 if StartsWithVowel(name) then
                     ROLE_STRINGS_EXT[role] = "an " .. name
@@ -1433,8 +1424,8 @@ function UpdateRoleWeaponState()
 end
 
 function UpdateRoleState()
-    local disable_looting = GetGlobalBool("ttt_detective_disable_looting", false)
-    local special_detectives_armor_loadout = GetGlobalBool("ttt_special_detectives_armor_loadout", true)
+    local disable_looting = GetConVar("ttt_detectives_disable_looting"):GetBool()
+    local special_detectives_armor_loadout = GetConVar("ttt_special_detectives_armor_loadout"):GetBool()
     for r, e in pairs(DETECTIVE_ROLES) do
         if e then
             -- Don't overwrite custom roles that have this specifically disabled

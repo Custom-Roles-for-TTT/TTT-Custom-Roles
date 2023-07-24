@@ -62,8 +62,8 @@ table.insert(ROLE_CONVARS[ROLE_TRAITOR], {
 --------------------
 
 ROLETEAM_IS_TARGET_HIGHLIGHTED[ROLE_TEAM_TRAITOR] = function(ply, tgt)
-    local traitor_vision = GetGlobalBool("ttt_traitor_vision_enable", false)
+    local traitor_vision = GetConVar("ttt_traitors_vision_enable"):GetBool()
     if ply:IsActiveTraitorTeam() and tgt:IsActiveTraitorTeam() then return traitor_vision end
-    if ply:IsActiveTraitorTeam() and tgt:IsActiveJesterTeam() then return traitor_vision and GetGlobalBool("ttt_jesters_visible_to_traitors", false) end
+    if ply:IsActiveTraitorTeam() and tgt:IsActiveJesterTeam() then return traitor_vision and GetConVar("ttt_jesters_visible_to_traitors"):GetBool() end
     return false
 end

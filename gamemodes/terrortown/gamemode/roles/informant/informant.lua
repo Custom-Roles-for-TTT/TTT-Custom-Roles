@@ -71,7 +71,7 @@ local function SetDefaultScanState(ply, oldRole, newRole)
         ply:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_TEAM)
     elseif ply:IsDetectiveTeam() then
         -- If the detective's role is not known, only skip the team scan
-        if GetConVar("ttt_detective_hide_special_mode"):GetInt() >= SPECIAL_DETECTIVE_HIDE_FOR_ALL then
+        if GetConVar("ttt_detectives_hide_special_mode"):GetInt() >= SPECIAL_DETECTIVE_HIDE_FOR_ALL then
             ply:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_TEAM)
         -- Otherwise skip the team and role scan
         else

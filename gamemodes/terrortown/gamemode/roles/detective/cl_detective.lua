@@ -22,12 +22,12 @@ hook.Add("TTTTutorialRoleText", "Detective_TTTTutorialRoleText", function(role, 
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
         local html = "The " .. ROLE_STRINGS[ROLE_DETECTIVE] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> whose job is to find and eliminate their enemies."
 
-        if GetGlobalBool("ttt_detective_search_only", true) then
+        if GetConVar("ttt_detectives_search_only"):GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>" .. ROLE_STRINGS_PLURAL[ROLE_DETECTIVE] .. " are the only roles allowed to <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>search bodies</span> to find information about who they were and how they died."
         end
 
         html = html .. "<span style='display: block; margin-top: 10px;'>Other players will know you are " .. ROLE_STRINGS_EXT[ROLE_DETECTIVE] .. " just by <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>looking at you</span>"
-        local special_detective_mode = GetGlobalInt("ttt_detective_hide_special_mode", SPECIAL_DETECTIVE_HIDE_NONE)
+        local special_detective_mode = GetConVar("ttt_detectives_hide_special_mode"):GetInt()
         if special_detective_mode > SPECIAL_DETECTIVE_HIDE_NONE then
             html = html .. ", but not what specific type of " .. ROLE_STRINGS[ROLE_DETECTIVE]
             if special_detective_mode == SPECIAL_DETECTIVE_HIDE_FOR_ALL then

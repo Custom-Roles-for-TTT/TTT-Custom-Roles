@@ -179,7 +179,7 @@ ttt_arsonist_min_players                    0       // The minimum number of pla
 // ----------------------------------------
 
 // TRAITOR TEAM SETTINGS
-ttt_traitor_vision_enable                   0       // Whether members of the traitor team can see other members of the traitor team (including Glitches) through walls via a highlight effect
+ttt_traitors_vision_enable                   0       // Whether members of the traitor team can see other members of the traitor team (including Glitches) through walls via a highlight effect
 ttt_traitor_credits_timer                   0       // How often in seconds to give members of the traitor team a credit (set to 0 to disable)
 
 // Traitor
@@ -366,22 +366,22 @@ ttt_infected_cough_timer_max                60      // The maximum time between 
 
 // DETECTIVE TEAM SETTINGS
 // All Detective Roles
-ttt_detective_search_only                   1       // Whether only detectives can search bodies or not
-ttt_detective_search_only_c4                0       // Whether only detectives can reveal a body's C4 disarm code. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
-ttt_detective_search_only_dmg               0       // Whether only detectives can reveal the type of damage used to kill a body. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
-ttt_detective_search_only_dtime             0       // Whether only detectives can reveal a body's death time. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
-ttt_detective_search_only_equipment         0       // Whether only detectives can reveal a body's equipment. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
-ttt_detective_search_only_head              0       // Whether only detectives can reveal whether a body was killed by a head shot. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
-ttt_detective_search_only_kills             0       // Whether only detectives can reveal a body's kills. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
-ttt_detective_search_only_lastid            0       // Whether only detectives can reveal the last player a body saw before death. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
-ttt_detective_search_only_nick              0       // Whether only detectives can reveal a body's name. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
-ttt_detective_search_only_role              0       // Whether only detectives can reveal a body's role. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
-ttt_detective_search_only_team              0       // Whether only detectives can reveal a body's tea,. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled or "ttt_detective_search_only_role" is disabled.
-ttt_detective_search_only_stime             0       // Whether only detectives can reveal a body's DNA decay time. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
-ttt_detective_search_only_wep               0       // Whether only detectives can reveal the weapon used to kill a body. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
-ttt_detective_search_only_words             0       // Whether only detectives can reveal a body's last words (if last words is enabled). Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
-ttt_detective_disable_looting               0       // Whether to disable a detective role's ability to loot credits from bodies
-ttt_detective_hide_special_mode             0       // How to handle special detective role information. 0 - Show the special detective's role to everyone. 1 - Hide the special detective's role from everyone (just show detective instead). 2 - Hide the special detective's role for everyone but themselves (only they can see their true role)
+ttt_detectives_search_only                   1       // Whether only detectives can search bodies or not
+ttt_detectives_search_only_c4                0       // Whether only detectives can reveal a body's C4 disarm code. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled.
+ttt_detectives_search_only_dmg               0       // Whether only detectives can reveal the type of damage used to kill a body. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled.
+ttt_detectives_search_only_dtime             0       // Whether only detectives can reveal a body's death time. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled.
+ttt_detectives_search_only_equipment         0       // Whether only detectives can reveal a body's equipment. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled.
+ttt_detectives_search_only_head              0       // Whether only detectives can reveal whether a body was killed by a head shot. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled.
+ttt_detectives_search_only_kills             0       // Whether only detectives can reveal a body's kills. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled.
+ttt_detectives_search_only_lastid            0       // Whether only detectives can reveal the last player a body saw before death. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled.
+ttt_detectives_search_only_nick              0       // Whether only detectives can reveal a body's name. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled.
+ttt_detectives_search_only_role              0       // Whether only detectives can reveal a body's role. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled.
+ttt_detectives_search_only_team              0       // Whether only detectives can reveal a body's tea,. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled or "ttt_detectives_search_only_role" is disabled.
+ttt_detectives_search_only_stime             0       // Whether only detectives can reveal a body's DNA decay time. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled.
+ttt_detectives_search_only_wep               0       // Whether only detectives can reveal the weapon used to kill a body. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled.
+ttt_detectives_search_only_words             0       // Whether only detectives can reveal a body's last words (if last words is enabled). Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled.
+ttt_detectives_disable_looting               0       // Whether to disable a detective role's ability to loot credits from bodies
+ttt_detectives_hide_special_mode             0       // How to handle special detective role information. 0 - Show the special detective's role to everyone. 1 - Hide the special detective's role from everyone (just show detective instead). 2 - Hide the special detective's role for everyone but themselves (only they can see their true role)
 ttt_detective_glow_enable                   0       // Whether members of the detective team (and active detective-like players) can be seen through walls via a highlight effect
 ttt_special_detectives_armor_loadout        1       // Whether special detectives (all detective roles other than the original detective itself) get armor automatically for free
 ttt_all_search_postround                    1       // Whether non-detectives can search bodies post-round or not
@@ -679,7 +679,7 @@ ttt_arsonist_douse_notify_delay_min         10      // The minimum delay before 
 ttt_arsonist_douse_notify_delay_max         30      // The maximum delay before a player is notified they've been doused
 ttt_arsonist_early_ignite                   0       // Whether to allow the arsonist to use their igniter without dousing everyone first
 ttt_arsonist_corpse_ignite_time             10      // The amount of time (in seconds) to ignite doused dead player corpses for before destroying them
-ttt_detective_search_only_arsonistdouse     0       // Whether only detectives can see information about whether a corpse was doused by an arsonist and when. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
+ttt_detective_search_only_arsonistdouse     0       // Whether only detectives can see information about whether a corpse was doused by an arsonist and when. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled.
 
 // ----------------------------------------
 

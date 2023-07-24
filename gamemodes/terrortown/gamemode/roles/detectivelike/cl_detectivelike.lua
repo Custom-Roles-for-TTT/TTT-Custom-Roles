@@ -62,7 +62,7 @@ AddHook("TTTHUDInfoPaint", "DetectiveLike_TTTHUDInfoPaint", function(client, lab
     if hide_role then return end
 
     if client:IsDetectiveTeam() then
-        if GetGlobalInt("ttt_detective_hide_special_mode", SPECIAL_DETECTIVE_HIDE_NONE) == SPECIAL_DETECTIVE_HIDE_FOR_OTHERS then
+        if GetConVar("ttt_detectives_hide_special_mode"):GetInt() == SPECIAL_DETECTIVE_HIDE_FOR_OTHERS then
             surface.SetFont("TabLarge")
             surface.SetTextColor(255, 255, 255, 230)
 

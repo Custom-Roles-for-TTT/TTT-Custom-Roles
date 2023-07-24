@@ -68,11 +68,11 @@ local SAMPLE_ITEM   = 2
 AccessorFuncDT(SWEP, "charge", "Charge")
 AccessorFuncDT(SWEP, "last_scanned", "LastScanned")
 
+local dna_scan_on_dialog = CreateConVar("ttt_dna_scan_on_dialog", "1", FCVAR_REPLICATED, "Whether to show a button to open the DNA scanner on the body search dialog", 0, 1)
+
 if CLIENT then
     CreateClientConVar("ttt_dna_scan_repeat", 1, true, true)
 else
-    CreateConVar("ttt_dna_scan_on_dialog", "1", FCVAR_NONE, "Whether to show a button to open the DNA scanner on the body search dialog", 0, 1)
-
     function SWEP:GetRepeating()
         local ply = self:GetOwner()
         return IsValid(ply) and ply:GetInfoNum("ttt_dna_scan_repeat", 1) == 1
@@ -97,7 +97,7 @@ function SWEP:Initialize()
 
         local T = LANG.GetTranslation
         hook.Add("TTTBodySearchButtons", "TTTBodySearchButtons_" .. self:EntIndex(), function(client, rag, buttons, search_raw, detectiveSearchOnly)
-            if not GetGlobalBool("ttt_dna_scan_on_dialog", true) then return end
+            if not dna_scan_on_dialog:GetBool() then return end
             if not IsValid(self) or not IsPlayer(self:GetOwner()) then return end
             if client ~= self:GetOwner() then return end
 
@@ -145,8 +145,6 @@ function SWEP:Initialize()
 
             table.insert(buttons, button)
         end)
-    else
-        SetGlobalBool("ttt_dna_scan_on_dialog", GetConVar("ttt_dna_scan_on_dialog"):GetBool())
     end
 
     return self.BaseClass.Initialize(self)

@@ -464,7 +464,7 @@ local function InfoPaint(client)
     end
 
     -- Sprint stamina
-    if GetGlobalBool("ttt_sprint_enabled", true) then
+    if GetConVar("ttt_sprint_enabled"):GetBool() then
         local sprint_y = health_y + (2 * (bar_height + margin))
 
         CRHUD:PaintBar(2, x + margin, sprint_y, bar_width, sprint_bar_height, sprint_colors, client:GetSprintStamina() / 100)

@@ -121,7 +121,7 @@ hook.Add("TTTTutorialRoleText", "Medium_TTTTutorialRoleText", function(role, tit
         end
 
         html = html .. "<span style='display: block; margin-top: 10px;'>Other players will know you are " .. ROLE_STRINGS_EXT[ROLE_DETECTIVE] .. " just by <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>looking at you</span>"
-        local special_detective_mode = GetGlobalInt("ttt_detective_hide_special_mode", SPECIAL_DETECTIVE_HIDE_NONE)
+        local special_detective_mode = GetConVar("ttt_detectives_hide_special_mode"):GetInt()
         if special_detective_mode > SPECIAL_DETECTIVE_HIDE_NONE then
             html = html .. ", but not what specific type of " .. ROLE_STRINGS[ROLE_DETECTIVE]
             if special_detective_mode == SPECIAL_DETECTIVE_HIDE_FOR_ALL then

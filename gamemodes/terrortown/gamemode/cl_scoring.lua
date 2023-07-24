@@ -271,7 +271,7 @@ local function GetWinTitle(wintype)
         [WIN_TRAITOR] = { txt = "hilite_win_role_plural", params = { role = StringUpper(ROLE_STRINGS_PLURAL[ROLE_TRAITOR]) }, c = ROLE_COLORS[ROLE_TRAITOR] },
         [WIN_MONSTER] = { txt = "hilite_win_role_plural", params = { role = StringUpper(T("monsters")) }, c = GetRoleTeamColor(ROLE_TEAM_MONSTER) }
     }
-    if GetGlobalBool("ttt_roundtime_win_draw", false) then
+    if GetConVar("ttt_roundtime_win_draw"):GetBool() then
         wintitles[WIN_TIMELIMIT] = { txt = "hilite_win_draw", c = ROLE_COLORS[ROLE_NONE] }
     else
         -- If it's not a draw, the innocents win
@@ -1057,7 +1057,7 @@ function CLSCORE:ShowPanel()
     parentTabs:SetSize(w - margin*2, h - margin*3 - bh)
     local padding = parentTabs:GetPadding()
 
-    local summary_tabs = GetGlobalString("ttt_round_summary_tabs", "summary,hilite,events,scores")
+    local summary_tabs = GetConVar("ttt_round_summary_tabs"):GetString()
     local tab_order = string.Explode(",", summary_tabs, false)
 
     -- If the convar is empty, use the default list
