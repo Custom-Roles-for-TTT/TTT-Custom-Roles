@@ -57,13 +57,13 @@ hook.Add("TTTTutorialRoleText", "Spy_TTTTutorialRoleText", function(role, titleL
         end
 
         html = html .. "<span style='display: block; margin-top: 10px;'>The <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>flare gun</span> is "
-        local inLoadout = GetConVar("ttt_spy_device_loadout"):GetBool()
+        local inLoadout = GetConVar("ttt_spy_flare_gun_loadout"):GetBool()
 
         if inLoadout then
             html = html .. "given to the " .. ROLE_STRINGS[ROLE_SPY] .. " at the start of the round"
         end
 
-        if GetConVar("ttt_spy_device_shop"):GetBool() then
+        if GetConVar("ttt_spy_flare_gun_shop"):GetBool() then
             if inLoadout then
                 html = html .. " and is "
             end
