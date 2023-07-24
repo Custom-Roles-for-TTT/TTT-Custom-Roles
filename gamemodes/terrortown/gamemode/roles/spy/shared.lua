@@ -4,17 +4,25 @@ local table = table
 local weapons = weapons
 
 local function InitializeEquipment()
-    if not DefaultEquipment then
-        DefaultEquipment = {}
+    if DefaultEquipment then
+        DefaultEquipment[ROLE_SPY] = {"weapon_spy_flaregun", "weapon_ttt_sipistol", "weapon_ttt_knife", EQUIP_ARMOR, EQUIP_RADAR, EQUIP_DISGUISE}
     end
-
-    DefaultEquipment[ROLE_SPY] = {"weapon_spy_flaregun", "weapon_ttt_sipistol", "weapon_ttt_knife", EQUIP_ARMOR, EQUIP_RADAR, EQUIP_DISGUISE}
 end
 
 InitializeEquipment()
 
 hook.Add("Initialize", "Spy_Shared_Initialize", function()
     InitializeEquipment()
+
+    -- Modifying the knife and silenced pistol so they also show up in the Spy's shop
+    -- (If the knife or silenced pistol ever get modified in the future, this should be moved to the weapon SWEP file)
+    local roleWeapons = {"weapon_ttt_sipistol", "weapon_ttt_knife"}
+
+    for _, class in ipairs(roleWeapons) do
+        local modifiedInLoadoutFor = weapons.Get(class).InLoadoutFor or {}
+        table.insert(modifiedInLoadoutFor, ROLE_SPY)
+        weapons.GetStored(class).InLoadoutFor = modifiedInLoadoutFor
+    end
 end)
 
 hook.Add("TTTPrepareRound", "Spy_Shared_TTTPrepareRound", function()
