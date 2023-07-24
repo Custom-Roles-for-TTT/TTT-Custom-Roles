@@ -19,9 +19,9 @@ hook.Add("Initialize", "Spy_Shared_Initialize", function()
     local roleWeapons = {"weapon_ttt_sipistol", "weapon_ttt_knife"}
 
     for _, class in ipairs(roleWeapons) do
-        local modifiedInLoadoutFor = weapons.Get(class).InLoadoutFor or {}
-        table.insert(modifiedInLoadoutFor, ROLE_SPY)
-        weapons.GetStored(class).InLoadoutFor = modifiedInLoadoutFor
+        local modifiedCanBuy = weapons.Get(class).CanBuy or {}
+        table.insert(modifiedCanBuy, ROLE_SPY)
+        weapons.GetStored(class).CanBuy = modifiedCanBuy
     end
 end)
 
