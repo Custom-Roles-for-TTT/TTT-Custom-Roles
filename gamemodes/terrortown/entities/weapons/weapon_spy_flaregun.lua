@@ -14,3 +14,4 @@ SWEP.InLoadoutFor = {ROLE_SPY}
 SWEP.InLoadoutForDefault = {ROLE_SPY}
 
 SWEP.AllowDrop = false
+SWEP.LimitedStock = true

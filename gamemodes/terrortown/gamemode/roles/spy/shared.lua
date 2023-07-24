@@ -5,7 +5,7 @@ local weapons = weapons
 
 local function InitializeEquipment()
     if DefaultEquipment then
-        DefaultEquipment[ROLE_SPY] = {"weapon_ttt_sipistol", "weapon_ttt_knife", EQUIP_ARMOR, EQUIP_RADAR, EQUIP_DISGUISE}
+        DefaultEquipment[ROLE_SPY] = {"weapon_spy_flaregun", "weapon_ttt_sipistol", "weapon_ttt_knife", EQUIP_ARMOR, EQUIP_RADAR, EQUIP_DISGUISE}
     end
 end
 
