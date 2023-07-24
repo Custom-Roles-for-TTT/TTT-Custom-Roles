@@ -56,16 +56,13 @@ SWEP.Secondary.Sound        = ""
 SWEP.InLoadoutFor           = {ROLE_ARSONIST}
 SWEP.InLoadoutForDefault    = {ROLE_ARSONIST}
 
+local arsonist_early_ignite = CreateConVar("ttt_arsonist_early_ignite", "0", FCVAR_NONE, "Whether to allow the arsonist to use their igniter without dousing everyone first", 0, 1)
 if SERVER then
-    CreateConVar("ttt_arsonist_early_ignite", "0", FCVAR_NONE, "Whether to allow the arsonist to use their igniter without dousing everyone first", 0, 1)
     CreateConVar("ttt_arsonist_corpse_ignite_time", "10", FCVAR_NONE, "The amount of time (in seconds) to ignite doused dead player corpses for before destroying them", 1, 30)
 end
 
 function SWEP:Initialize()
     self:SendWeaponAnim(ACT_SLAM_DETONATOR_DRAW)
-    if SERVER then
-        SetGlobalBool("ttt_arsonist_early_ignite", GetConVar("ttt_arsonist_early_ignite"):GetBool())
-    end
     if CLIENT then
         self:AddHUDHelp("arsonistigniter_help_pri", "arsonistigniter_help_sec", true)
     end
@@ -91,7 +88,7 @@ function SWEP:PrimaryAttack()
     if not IsPlayer(owner) then return end
 
     -- Don't ignite if all players aren't doused unless early ignition is enabled
-    if not GetGlobalBool("ttt_arsonist_early_ignite", false) and not owner:GetNWBool("TTTArsonistDouseComplete", false) then
+    if not arsonist_early_ignite:GetBool() and not owner:GetNWBool("TTTArsonistDouseComplete", false) then
         if SERVER then
             local message = "Not all players have been doused in gasoline yet"
             owner:PrintMessage(HUD_PRINTCENTER, message)

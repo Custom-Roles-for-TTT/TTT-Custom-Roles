@@ -14,20 +14,9 @@ local MathRandom = math.random
 -- CONVARS --
 -------------
 
-local arsonist_douse_time = CreateConVar("ttt_arsonist_douse_time", "8", FCVAR_NONE, "The amount of time (in seconds) the arsonist takes to douse someone", 0, 60)
 local arsonist_douse_distance = CreateConVar("ttt_arsonist_douse_distance", "250", FCVAR_NONE, "The maximum distance away the dousing target can be", 50, 1000)
-local arsonist_douse_notify_delay_min = CreateConVar("ttt_arsonist_douse_notify_delay_min", "10", FCVAR_NONE, "The minimum delay before a player is notified they've been doused", 0, 30)
-local arsonist_douse_notify_delay_max = CreateConVar("ttt_arsonist_douse_notify_delay_max", "30", FCVAR_NONE, "The delay delay before a player is notified they've been doused", 3, 60)
 local arsonist_damage_penalty = CreateConVar("ttt_arsonist_damage_penalty", "0.2", FCVAR_NONE, "Damage penalty that the arsonist has when attacking before igniting everyone (e.g. 0.2 = 20% less damage)", 0, 1)
 local arsonist_burn_damage = CreateConVar("ttt_arsonist_burn_damage", "2", FCVAR_NONE, "Damage done per fire tick to players ignited by the arsonist", 1, 10)
-local detective_search_only_arsonistdouse = CreateConVar("ttt_detective_search_only_arsonistdouse", "0")
-
-hook.Add("TTTSyncGlobals", "Informant_TTTSyncGlobals", function()
-    SetGlobalInt("ttt_arsonist_douse_time", arsonist_douse_time:GetInt())
-    SetGlobalInt("ttt_arsonist_douse_notify_delay_min", arsonist_douse_notify_delay_min:GetInt())
-    SetGlobalInt("ttt_arsonist_douse_notify_delay_max", arsonist_douse_notify_delay_max:GetInt())
-    SetGlobalBool("ttt_detective_search_only_arsonistdouse", detective_search_only_arsonistdouse:GetBool())
-end)
 
 --------------------
 -- PLAYER DOUSING --
@@ -85,10 +74,10 @@ local function FindArsonistTarget(arsonist, douse_distance)
 end
 
 hook.Add("Think", "Arsonist_Douse_Think", function()
-    local douse_time = arsonist_douse_time:GetInt()
+    local douse_time = GetConVar("ttt_arsonist_douse_time"):GetInt()
     local douse_distance = arsonist_douse_distance:GetFloat()
-    local douse_notify_delay_min = arsonist_douse_notify_delay_min:GetInt()
-    local douse_notify_delay_max = arsonist_douse_notify_delay_max:GetInt()
+    local douse_notify_delay_min = GetConVar("ttt_arsonist_douse_notify_delay_min"):GetInt()
+    local douse_notify_delay_max = GetConVar("ttt_arsonist_douse_notify_delay_max"):GetInt()
     if douse_notify_delay_min > douse_notify_delay_max then
         douse_notify_delay_min = douse_notify_delay_max
     end
@@ -107,7 +96,7 @@ hook.Add("Think", "Arsonist_Douse_Think", function()
                 p:SetNWBool("TTTArsonistDouseComplete", true)
 
                 local message = "You've doused everyone alive in gasoline."
-                if not GetGlobalBool("ttt_arsonist_early_ignite", false) then
+                if not GetConVar("ttt_arsonist_early_ignite"):GetBool() then
                     message = message .. " Your igniter is now active!"
                 end
                 p:PrintMessage(HUD_PRINTCENTER, message)

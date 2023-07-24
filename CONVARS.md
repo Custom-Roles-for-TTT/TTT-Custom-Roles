@@ -679,7 +679,7 @@ ttt_arsonist_douse_notify_delay_min         10      // The minimum delay before 
 ttt_arsonist_douse_notify_delay_max         30      // The maximum delay before a player is notified they've been doused
 ttt_arsonist_early_ignite                   0       // Whether to allow the arsonist to use their igniter without dousing everyone first
 ttt_arsonist_corpse_ignite_time             10      // The amount of time (in seconds) to ignite doused dead player corpses for before destroying them
-ttt_detective_search_only_arsonistdouse     0       // Whether only detectives can see information about whether a corpse was doused by an arsonist and when. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled.
+ttt_detectives_search_only_arsonistdouse    0       // Whether only detectives can see information about whether a corpse was doused by an arsonist and when. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled.
 
 // ----------------------------------------
 
