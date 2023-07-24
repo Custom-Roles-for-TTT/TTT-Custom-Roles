@@ -4,9 +4,11 @@ local table = table
 local weapons = weapons
 
 local function InitializeEquipment()
-    if DefaultEquipment then
-        DefaultEquipment[ROLE_SPY] = {"weapon_spy_flaregun", "weapon_ttt_sipistol", "weapon_ttt_knife", EQUIP_ARMOR, EQUIP_RADAR, EQUIP_DISGUISE}
+    if not DefaultEquipment then
+        DefaultEquipment = {}
     end
+
+    DefaultEquipment[ROLE_SPY] = {"weapon_spy_flaregun", "weapon_ttt_sipistol", "weapon_ttt_knife", EQUIP_ARMOR, EQUIP_RADAR, EQUIP_DISGUISE}
 end
 
 InitializeEquipment()
@@ -39,7 +41,7 @@ local spy_flare_gun_shop_rebuyable = CreateConVar("ttt_spy_flare_gun_shop_rebuya
 -----------------
 -- ROLE WEAPON --
 -----------------
-hook.Add("TTTUpdateRoleState", "Spy_TTTUpdateRoleState", function()
+hook.Add("TTTUpdateRoleState", "Spy_Shared_TTTUpdateRoleState", function()
     local spy_flare_gun = weapons.GetStored("weapon_spy_flaregun")
 
     if spy_flare_gun_loadout:GetBool() then
