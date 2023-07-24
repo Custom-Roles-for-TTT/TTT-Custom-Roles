@@ -37,7 +37,7 @@ hook.Add("TTTTutorialRoleText", "Spy_TTTTutorialRoleText", function(role, titleL
         local name = GetConVar("ttt_spy_steal_name"):GetBool()
 
         if model or hands or name then
-            html = html .. "On killing a player, the " .. ROLE_STRINGS[ROLE_SPY] .. " copies the following the victim: "
+            html = html .. "On killing a player, the " .. ROLE_STRINGS[ROLE_SPY] .. " copies the following from the victim: "
         end
 
         if model then
