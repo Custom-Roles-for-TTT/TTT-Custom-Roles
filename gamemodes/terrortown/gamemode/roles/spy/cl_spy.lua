@@ -31,13 +31,13 @@ end)
 hook.Add("TTTTutorialRoleText", "Spy_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_SPY then
         local roleColor = ROLE_COLORS[ROLE_TRAITOR]
-        local html = "The " .. ROLE_STRINGS[ROLE_SPY] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitor team</span> whose goal is to sew confusion by stealing the identity of other players.</span>"
+        local html = "The " .. ROLE_STRINGS[ROLE_SPY] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitor team</span> whose goal is to sew confusion by stealing the identity of other players. </span>"
         local model = GetConVar("ttt_spy_steal_model"):GetBool()
         local hands = GetConVar("ttt_spy_steal_model_hands"):GetBool()
         local name = GetConVar("ttt_spy_steal_name"):GetBool()
 
         if model or hands or name then
-            html = html .. "On killing a player, the " .. ROLE_STRINGS[ROLE_SPY] .. " changes the following: "
+            html = html .. "On killing a player, the " .. ROLE_STRINGS[ROLE_SPY] .. " copies the following the victim: "
         end
 
         if model then
@@ -53,10 +53,10 @@ hook.Add("TTTTutorialRoleText", "Spy_TTTTutorialRoleText", function(role, titleL
         end
 
         if model or hands or name then
-            html = html .. " and so takes on the identity of the victim.</span>"
+            html = html .. " and so takes on their identity.</span>"
         end
 
-        html = html .. "<span style='display: block; margin-top: 10px;'>The <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>flare gun</span> is "
+        html = html .. "<span style='display: block; margin-top: 10px;'>A <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>flare gun</span> is "
         local inLoadout = GetConVar("ttt_spy_flare_gun_loadout"):GetBool()
 
         if inLoadout then
