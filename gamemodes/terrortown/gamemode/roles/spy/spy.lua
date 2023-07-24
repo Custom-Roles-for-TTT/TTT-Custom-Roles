@@ -70,17 +70,19 @@ end)
 hook.Add("TTTEndRound", "Spy_TTTEndRound", function()
     for _, ply in ipairs(GetAllPlayers()) do
         if ply:IsSpy() then
-            local k = ply:SteamID64()
+            local plyID = ply:SteamID64()
 
-            if playerModels[k] then
-                SetMDL(ply, playerModels[k])
+            if playerModels[plyID] then
+                SetMDL(ply, playerModels[plyID])
             end
+
+            timer.Simple(0.1, function()
+                ply:SetupHands()
+            end)
         end
+
+        ply:SetNWString("TTTSpyDisguiseName", nil)
     end
 
     table.Empty(playerModels)
-
-    for _, ply in ipairs(GetAllPlayers()) do
-        ply:SetNWString("TTTSpyDisguiseName", nil)
-    end
 end)
