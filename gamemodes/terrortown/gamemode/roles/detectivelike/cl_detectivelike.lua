@@ -122,7 +122,7 @@ end
 
 AddHook("TTTUpdateRoleState", "DetectiveLike_Highlight_TTTUpdateRoleState", function()
     client = LocalPlayer()
-    detective_glow = GetGlobalBool("ttt_detective_glow_enable", false)
+    detective_glow = GetGlobalBool("ttt_detectives_glow_enable", false)
 
     -- Disable highlights on role change
     if vision_enabled then

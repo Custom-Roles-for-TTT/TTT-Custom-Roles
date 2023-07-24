@@ -54,6 +54,6 @@ plymeta.IsDetectiveLike = plymeta.GetDetectiveLike
 plymeta.IsDetectiveLikePromotable = plymeta.GetDetectiveLikePromotable
 
 ROLETEAM_IS_TARGET_HIGHLIGHTED[ROLE_TEAM_DETECTIVE] = function(ply, tgt)
-    if tgt:IsActiveDetectiveLike() then return GetGlobalBool("ttt_detective_glow_enable", false) end
+    if tgt:IsActiveDetectiveLike() then return GetGlobalBool("ttt_detectives_glow_enable", false) end
     return false
 end

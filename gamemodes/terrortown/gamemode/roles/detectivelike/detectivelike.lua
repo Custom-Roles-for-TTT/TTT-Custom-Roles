@@ -13,11 +13,11 @@ util.AddNetworkString("TTT_Promotion")
 -- CONVARS --
 -------------
 
-local detective_glow_enable = CreateConVar("ttt_detective_glow_enable", "0")
+local detectives_glow_enable = CreateConVar("ttt_detectives_glow_enable", "0")
 local detective_credits_timer = CreateConVar("ttt_detective_credits_timer", "0")
 
 hook.Add("TTTSyncGlobals", "DetectiveLike_TTTSyncGlobals", function()
-    SetGlobalBool("ttt_detective_glow_enable", detective_glow_enable:GetBool())
+    SetGlobalBool("ttt_detectives_glow_enable", detectives_glow_enable:GetBool())
 end)
 
 -- Server-side functions shared by detective-like roles (Deputy, Impersonator)
