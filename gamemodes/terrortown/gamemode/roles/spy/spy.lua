@@ -26,9 +26,10 @@ hook.Add("PlayerDeath", "Spy_PlayerDeath", function(victim, inflictor, attacker)
     if not IsPlayer(attacker) or attacker == victim or GetRoundState() ~= ROUND_ACTIVE then return end
 
     if attacker:IsSpy() and not victim:GetNWBool("IsZombifying", false) then
-        -- Stealing model
         local stealModel = GetConVar("ttt_spy_steal_model"):GetBool()
+        local stealHands = GetConVar("ttt_spy_steal_model_hands"):GetBool()
 
+        -- Stealing model
         if stealModel then
             local attackerID = attacker:SteamID64()
 
@@ -38,17 +39,15 @@ hook.Add("PlayerDeath", "Spy_PlayerDeath", function(victim, inflictor, attacker)
             end
 
             SetMDL(attacker, victim:GetModel())
-        end
 
-        -- Stealing 1st-person hands
-        local stealHands = GetConVar("ttt_spy_steal_model_hands"):GetBool()
-
-        if stealHands then
-            timer.Simple(0.1, function()
-                if IsValid(attacker) then
-                    attacker:SetupHands()
-                end
-            end)
+            -- Stealing 1st-person hands (There is no point in doing this if stealing model is not enabled)
+            if stealHands then
+                timer.Simple(0.1, function()
+                    if IsValid(attacker) then
+                        attacker:SetupHands()
+                    end
+                end)
+            end
         end
 
         -- Stealing Name
@@ -59,7 +58,7 @@ hook.Add("PlayerDeath", "Spy_PlayerDeath", function(victim, inflictor, attacker)
         end
 
         -- Displaying alert message on who the spy is now disguised as
-        if GetConVar("ttt_spy_steal_model_alert"):GetBool() and (stealModel or stealHands or stealName) then
+        if GetConVar("ttt_spy_steal_model_alert"):GetBool() and (stealModel or stealName) then
             attacker:PrintMessage(HUD_PRINTCENTER, "Disguised as " .. victim:Nick())
             attacker:PrintMessage(HUD_PRINTTALK, "Disguised as " .. victim:Nick())
         end

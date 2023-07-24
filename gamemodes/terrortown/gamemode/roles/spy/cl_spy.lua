@@ -42,17 +42,18 @@ hook.Add("TTTTutorialRoleText", "Spy_TTTTutorialRoleText", function(role, titleL
 
         if model then
             html = html .. "playermodel, "
-        end
 
-        if hands then
-            html = html .. "1st-person hands, "
+            -- No point to stealing hands if the player's model hasn't changed anyway
+            if hands then
+                html = html .. "1st-person hands, "
+            end
         end
 
         if name then
             html = html .. "name, "
         end
 
-        if model or hands or name then
+        if model or name then
             html = html .. " and so takes on their identity.</span>"
         end
 
