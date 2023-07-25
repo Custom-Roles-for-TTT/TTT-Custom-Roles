@@ -6,7 +6,7 @@ local GetConVar = GetConVar
 ------------------
 hook.Add("Initialize", "Spy_Translations_Initialize", function()
     -- Popup
-    LANG.AddToLanguage("english", "info_popup_spy", [[You are {role}! {comrades}  
+    LANG.AddToLanguage("english", "info_popup_spy", [[You are {role}! {comrades}
 
 When you kill a player, you steal their identity.
 
