@@ -14,24 +14,16 @@ local GetAllPlayers = player.GetAll
 -- CONVARS --
 -------------
 
-local killer_knife_enabled = CreateConVar("ttt_killer_knife_enabled", "1")
 local killer_crowbar_enabled = CreateConVar("ttt_killer_crowbar_enabled", "1")
-local killer_smoke_enabled = CreateConVar("ttt_killer_smoke_enabled", "1")
 local killer_smoke_timer = CreateConVar("ttt_killer_smoke_timer", "60", FCVAR_NONE, "Number of seconds before a killer will start to smoke after their last kill", 1, 120)
-local killer_show_target_icon = CreateConVar("ttt_killer_show_target_icon", "1")
 local killer_damage_penalty = CreateConVar("ttt_killer_damage_penalty", "0.25", FCVAR_NONE, "The fraction a killer's damage will be scaled by when they are attacking without using their knife", 0, 1)
 local killer_damage_reduction = CreateConVar("ttt_killer_damage_reduction", "0", FCVAR_NONE, "The fraction an attacker's bullet damage will be reduced by when they are shooting a killer", 0, 1)
 local killer_warn_all = CreateConVar("ttt_killer_warn_all", "0")
-local killer_vision_enable = CreateConVar("ttt_killer_vision_enable", "1")
-local killer_update_scoreboard = CreateConVar("ttt_killer_update_scoreboard", "1")
 
-hook.Add("TTTSyncGlobals", "Killer_TTTSyncGlobals", function()
-    SetGlobalBool("ttt_killer_show_target_icon", killer_show_target_icon:GetBool())
-    SetGlobalBool("ttt_killer_vision_enable", killer_vision_enable:GetBool())
-    SetGlobalBool("ttt_killer_knife_enabled", killer_knife_enabled:GetBool())
-    SetGlobalBool("ttt_killer_smoke_enabled", killer_smoke_enabled:GetBool())
-    SetGlobalBool("ttt_killer_update_scoreboard", killer_update_scoreboard:GetBool())
-end)
+local killer_knife_enabled = GetConVar("ttt_killer_knife_enabled", "1")
+local killer_smoke_enabled = GetConVar("ttt_killer_smoke_enabled", "1")
+local killer_show_target_icon = GetConVar("ttt_killer_show_target_icon", "1")
+local killer_vision_enable = GetConVar("ttt_killer_vision_enable", "1")
 
 -----------
 -- KARMA --

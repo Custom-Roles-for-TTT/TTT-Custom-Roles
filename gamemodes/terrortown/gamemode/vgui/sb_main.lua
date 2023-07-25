@@ -104,7 +104,7 @@ function ScoreGroup(p)
                 if client:IsSpec() or
                         client:IsActiveTraitorTeam() or client:IsActiveMonsterTeam() or
                         (GetConVar("ttt_independents_update_scoreboard"):GetBool() and client:IsActiveIndependentTeam()) or
-                        (GetGlobalBool("ttt_killer_update_scoreboard") and client:IsActiveKiller()) or
+                        (GetConVar("ttt_killer_update_scoreboard"):GetBool() and client:IsActiveKiller()) or
                         ((GAMEMODE.round_state ~= ROUND_ACTIVE) and client:IsTerror()) then
                     return GROUP_NOTFOUND
                 else
