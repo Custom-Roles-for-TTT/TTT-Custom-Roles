@@ -21,21 +21,14 @@ util.AddNetworkString("TTT_InfectedSuccumbed")
 -- CONVARS --
 -------------
 
-local infected_succumb_time = CreateConVar("ttt_infected_succumb_time", "180", FCVAR_NONE, "Time in seconds for the infected to succumb to their disease", 0, 300)
+local infected_cough_enabled = GetConVar("ttt_infected_cough_enabled")
+local infected_respawn_enable = GetConVar("ttt_infected_respawn_enable")
+local infected_succumb_time = GetConVar("ttt_infected_succumb_time")
+
 local infected_full_health = CreateConVar("ttt_infected_full_health", "1", FCVAR_NONE, "Whether the infected's health is refilled when they become a zombie", 0, 1)
 local infected_prime = CreateConVar("ttt_infected_prime", "1", FCVAR_NONE, "Whether the infected will become a prime zombie", 0, 1)
-local infected_respawn_enable = CreateConVar("ttt_infected_respawn_enable", "0", FCVAR_NONE, "Whether the infected will respawn as a zombie when killed", 0, 1)
-local infected_show_icon = CreateConVar("ttt_infected_show_icon", "1", FCVAR_NONE, "Whether to show the infected icon over their head for zombies and zombie allies", 0, 1)
-local infected_cough_enabled = CreateConVar("ttt_infected_cough_enabled", "1", FCVAR_NONE, "Whether the infected coughs periodically", 0, 1)
 local infected_cough_timer_min = CreateConVar("ttt_infected_cough_timer_min", "30", FCVAR_NONE, "The minimum time between infected coughs", 0, 180)
 local infected_cough_timer_max = CreateConVar("ttt_infected_cough_timer_max", "60", FCVAR_NONE, "The maximum time between infected coughs", 0, 300)
-
-hook.Add("TTTSyncGlobals", "Infected_TTTSyncGlobals", function()
-    SetGlobalInt("ttt_infected_succumb_time", infected_succumb_time:GetInt())
-    SetGlobalBool("ttt_infected_respawn_enable", infected_respawn_enable:GetBool())
-    SetGlobalBool("ttt_infected_show_icon", infected_show_icon:GetBool())
-    SetGlobalBool("ttt_infected_cough_enabled", infected_cough_enabled:GetBool())
-end)
 
 -----------
 -- COUGH --
