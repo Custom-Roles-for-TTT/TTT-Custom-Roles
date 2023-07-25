@@ -13,6 +13,12 @@ end
 ROLE_MOVE_ROLE_STATE[ROLE_DEPUTY] = MoveRoleState
 ROLE_MOVE_ROLE_STATE[ROLE_IMPERSONATOR] = MoveRoleState
 
+-------------
+-- CONVARS --
+-------------
+
+CreateConVar("ttt_detectives_glow_enable", "0", FCVAR_REPLICATED)
+
 --------------------
 -- PLAYER METHODS --
 --------------------

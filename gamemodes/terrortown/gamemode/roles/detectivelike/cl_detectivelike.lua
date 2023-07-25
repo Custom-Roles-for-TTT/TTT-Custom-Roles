@@ -11,6 +11,12 @@ local AddHook = hook.Add
 local RemoveHook = hook.Remove
 local TableInsert = table.insert
 
+-------------
+-- CONVARS --
+-------------
+
+local detectives_glow_enable = GetConVar("ttt_detectives_glow_enable")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -122,7 +128,7 @@ end
 
 AddHook("TTTUpdateRoleState", "DetectiveLike_Highlight_TTTUpdateRoleState", function()
     client = LocalPlayer()
-    detective_glow = GetGlobalBool("ttt_detectives_glow_enable", false)
+    detective_glow = detectives_glow_enable:GetBool()
 
     -- Disable highlights on role change
     if vision_enabled then

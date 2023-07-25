@@ -386,7 +386,7 @@ ttt_detectives_glow_enable                  0       // Whether members of the de
 ttt_special_detectives_armor_loadout        1       // Whether special detectives (all detective roles other than the original detective itself) get armor automatically for free
 ttt_all_search_postround                    1       // Whether non-detectives can search bodies post-round or not
 ttt_all_search_binoc                        0       // Whether non-detectives can search bodies if they are using binoculars
-ttt_detective_credits_timer                 0       // How often in seconds to give members of the detective team a credit (set to 0 to disable)
+ttt_detectives_credits_timer                 0       // How often in seconds to give members of the detective team a credit (set to 0 to disable)
 
 // Paladin
 ttt_paladin_aura_radius                     5       // The radius of the paladin's aura in meters
