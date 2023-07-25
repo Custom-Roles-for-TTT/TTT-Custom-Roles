@@ -493,7 +493,7 @@ AddHook("TTTTutorialRoleText", "Shadow_TTTTutorialRoleText", function(role, titl
         html = html .. "If the shadow survives until the end of the round they win."
 
         local start_timer = shadow_start_timer:GetInt()
-        local buffer_timer = shadow_buffer_time:GetInt()
+        local buffer_timer = shadow_buffer_timer:GetInt()
         html = html .. "<span style='display: block; margin-top: 10px;'>They can see their target through walls and are given <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. start_timer .. " seconds</span> to find them at the start of the round. Once the shadow has found their target, they are given a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. buffer_timer .. " second</span> warning if they start to get too far away. If either of these timers run out before the shadow can find their target, the shadow "
 
         if shadow_weaken_health_to:GetInt() > 0 then
