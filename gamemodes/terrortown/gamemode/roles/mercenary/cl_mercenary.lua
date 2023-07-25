@@ -1,5 +1,11 @@
 local hook = hook
 
+-------------
+-- CONVARS --
+-------------
+
+local mercenary_shop_mode = GetConVar("ttt_mercenary_shop_mode")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -24,7 +30,7 @@ hook.Add("TTTTutorialRoleText", "Mercenary_TTTTutorialRoleText", function(role, 
 
         -- Shop Mode
         html = html .. "<span style='display: block; margin-top: 10px;'>There is an <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>equipment shop</span> available to the " .. ROLE_STRINGS[ROLE_MERCENARY] .. " filled with "
-        local shopMode = GetGlobalInt("ttt_mercenary_shop_mode", SHOP_SYNC_MODE_INTERSECT)
+        local shopMode = mercenary_shop_mode:GetInt()
         if shopMode == SHOP_SYNC_MODE_UNION then
             html = html .. "all weapons available to either the <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>" .. ROLE_STRINGS[ROLE_TRAITOR] .. "</span> or the <span style='color: rgb(" .. detectiveColor.r .. ", " .. detectiveColor.g .. ", " .. detectiveColor.b .. ")'>" .. ROLE_STRINGS[ROLE_DETECTIVE] .. "</span>"
         elseif shopMode == SHOP_SYNC_MODE_INTERSECT then
