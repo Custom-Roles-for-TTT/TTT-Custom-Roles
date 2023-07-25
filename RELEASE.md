@@ -3,6 +3,9 @@
 ## 1.9.3 (Beta)
 **Released:**
 
+### Fixes
+- Fixed `ttt_sapper_protect_self` not allowing sapper to be protected from a different sapper if there are somehow multiple
+
 ### Developer
 - Changed role logic to load shared files first
 
