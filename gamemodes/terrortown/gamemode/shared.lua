@@ -1487,7 +1487,7 @@ function ShouldShowTraitorExtraInfo()
     -- Don't display Parasite and Assassin information if there is a glitch that is distorting the role information
     -- If the glitch mode is "Show as Special Traitor" then we don't want to show this because it reveals which of the traitors is real (because this doesn't show for glitches)
     -- If the glitch mode is "Hide Special Traitor Roles" then we don't want to show anything that reveals what role a traitor really is
-    local glitchMode = GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR)
+    local glitchMode = GetConVar("ttt_glitch_mode"):GetInt()
     local hasGlitch = GetGlobalBool("ttt_glitch_round", false)
     return not hasGlitch or glitchMode == GLITCH_SHOW_AS_TRAITOR
 end

@@ -187,7 +187,7 @@ function RADAR:Draw(client)
 
     local mpos = Vector(ScrW() / 2, ScrH() / 2, 0)
 
-    local glitchMode = GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR)
+    local glitchMode = GetConVar("ttt_glitch_mode"):GetInt()
     local beggarMode = GetConVar("ttt_beggar_reveal_traitor"):GetInt()
     local bodysnatcherMode = GetConVar("ttt_bodysnatcher_reveal_traitor"):GetInt()
     local role, alpha, scrpos, md

@@ -46,7 +46,7 @@ end)
 ---------------
 
 local function GetTeamRole(ply, cli)
-    local glitchMode = GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR)
+    local glitchMode = GetConVar("ttt_glitch_mode"):GetInt()
 
     -- Treat hidden beggars and bodysnatchers as if they are still on the jester team
     if (ply:GetNWBool("WasBeggar", false) and not cli:ShouldRevealBeggar(ply)) or
@@ -144,7 +144,7 @@ hook.Add("TTTTargetIDPlayerText", "Informant_TTTTargetIDPlayerText", function(en
             local labelParam
 
             if TRAITOR_ROLES[role] then
-                local glitchMode = GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR)
+                local glitchMode = GetConVar("ttt_glitch_mode"):GetInt()
                 if glitchMode == GLITCH_SHOW_AS_TRAITOR or glitchMode == GLITCH_HIDE_SPECIAL_TRAITOR_ROLES then
                     labelParam = T("traitor")
                 elseif glitchMode == GLITCH_SHOW_AS_SPECIAL_TRAITOR then

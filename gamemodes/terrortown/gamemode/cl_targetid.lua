@@ -127,7 +127,7 @@ function GM:PostDrawTranslucentRenderables()
 
     dir = client:GetForward() * -1
 
-    local glitchMode = GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR)
+    local glitchMode = GetConVar("ttt_glitch_mode"):GetInt()
     local glitchRound = GetGlobalBool("ttt_glitch_round", false)
     local hide_roles = false
     if ConVarExists("ttt_hide_role") then
@@ -356,7 +356,7 @@ function GM:HUDDrawTargetID()
 
     local target_corpse = false
 
-    local glitchMode = GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR)
+    local glitchMode = GetConVar("ttt_glitch_mode"):GetInt()
     local glitchRound = GetGlobalBool("ttt_glitch_round", false)
 
     local text = nil

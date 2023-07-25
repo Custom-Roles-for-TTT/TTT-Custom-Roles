@@ -238,7 +238,7 @@ function PANEL:Paint(width, height)
 
         if client:IsTraitorTeam() then
             if GetGlobalBool("ttt_glitch_round", false) and (ply:IsTraitorTeam() or (ply:IsGlitch() and not GetGlobalBool("ttt_zombie_round", false))) and client ~= ply then
-                local glitch_role, color_role = GetGlitchedRole(ply, GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR))
+                local glitch_role, color_role = GetGlitchedRole(ply, GetConVar("ttt_glitch_mode"):GetInt())
                 role = glitch_role
                 if color_role then
                     color = ROLE_COLORS_SCOREBOARD[color_role]
