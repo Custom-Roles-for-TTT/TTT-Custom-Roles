@@ -6,6 +6,12 @@ local util = util
 
 local MathMax = math.max
 
+-------------
+-- CONVARS --
+-------------
+
+local drunk_become_clown = GetConVar("ttt_drunk_become_clown")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -110,7 +116,7 @@ hook.Add("TTTTutorialRoleText", "Drunk_TTTTutorialRoleText", function(role, titl
 
         -- Sober on Team Death
         html = html .. "<span style='display: block; margin-top: 10px;'>If there is only one team remaining, <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>the " .. ROLE_STRINGS[ROLE_DRUNK] .. "</span> will instantly sober up and remember they are "
-        if GetGlobalBool("ttt_drunk_become_clown", false) then
+        if drunk_become_clown:GetBool() then
             local jesterColor = GetRoleTeamColor(ROLE_TEAM_JESTER)
             html = html .. "<span style='color: rgb(" .. jesterColor.r .. ", " .. jesterColor.g .. ", " .. jesterColor.b .. ")'>" .. ROLE_STRINGS_EXT[ROLE_CLOWN] .. "</span>, ready to go on a rampage"
         else
