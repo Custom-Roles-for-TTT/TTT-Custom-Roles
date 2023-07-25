@@ -386,7 +386,7 @@ ttt_detectives_glow_enable                  0       // Whether members of the de
 ttt_special_detectives_armor_loadout        1       // Whether special detectives (all detective roles other than the original detective itself) get armor automatically for free
 ttt_all_search_postround                    1       // Whether non-detectives can search bodies post-round or not
 ttt_all_search_binoc                        0       // Whether non-detectives can search bodies if they are using binoculars
-ttt_detectives_credits_timer                 0       // How often in seconds to give members of the detective team a credit (set to 0 to disable)
+ttt_detectives_credits_timer                0       // How often in seconds to give members of the detective team a credit (set to 0 to disable)
 
 // Paladin
 ttt_paladin_aura_radius                     5       // The radius of the paladin's aura in meters
@@ -485,7 +485,7 @@ ttt_beggar_scan_cooldown                    3       // The amount of time (in se
 ttt_beggar_scan_distance                    2500    // The maximum distance away the scanner target can be
 
 // Bodysnatcher
-ttt_bodysnatcher_is_independent           0       // Whether bodysnatchers should be treated as members of the independent team (rather than the jester team)
+ttt_bodysnatcher_is_independent             0       // Whether bodysnatchers should be treated as members of the independent team (rather than the jester team)
 ttt_bodysnatcher_destroy_body               0       // Whether the bodysnatching device destroys the body it is used on or not
 ttt_bodysnatcher_show_role                  1       // Whether the bodysnatching device shows the role of the corpse it is used on or not
 ttt_bodysnatcher_reveal_traitor             1       // Who the bodysnatcher is revealed to when they join the traitor team. 0 - No one. 1 - Everyone. 2 - Their new team
@@ -525,7 +525,7 @@ ttt_lootgoblin_radar_delay                  15      // How delayed (in seconds) 
 ttt_lootgoblin_active_display               1       // Whether to show the loot goblin's information over their head and on the scoreboard once they are activated
 
 // Cupid
-ttt_cupid_is_independent                  0       // Whether cupids should be treated as members of the independent team (rather than the jester team)
+ttt_cupid_is_independent                    0       // Whether cupids should be treated as members of the independent team (rather than the jester team)
 ttt_cupid_lovers_notify_mode                1       // Who is notified with cupid makes two players fall in love 0 - No one. 1 - Everyone. 2 - Traitors. 3 - Innocents
 ttt_cupid_can_damage_lovers                 0       // Whether cupid should be able to damage the lovers
 ttt_cupid_lovers_can_damage_lovers          1       // Whether the lovers should be able to damage each other
