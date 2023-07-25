@@ -2,6 +2,14 @@ local hook = hook
 
 local client
 
+-------------
+-- CONVARS --
+-------------
+
+local arsonist_douse_time = GetConVar("ttt_arsonist_douse_time")
+local arsonist_douse_notify_delay_min = GetConVar("ttt_arsonist_douse_notify_delay_min")
+local arsonist_douse_notify_delay_max = GetConVar("ttt_arsonist_douse_notify_delay_max")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -195,7 +203,7 @@ hook.Add("HUDPaint", "Arsonist_HUDPaint", function()
     local state = target:GetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED)
     if state == ARSONIST_UNDOUSED then return end
 
-    local douse_time = GetConVar("ttt_arsonist_douse_time"):GetInt()
+    local douse_time = arsonist_douse_time:GetInt()
     local end_time = client:GetNWFloat("TTTArsonistDouseStartTime", -1) + douse_time
 
     local x = ScrW() / 2.0
@@ -275,8 +283,8 @@ hook.Add("TTTTutorialRoleText", "Arsonist_TTTTutorialRoleText", function(role, t
             html = html .. "<span style='display: block; margin-top: 10px;'>Once every player has been doused, they can use their igniter to <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>burn</span> all the doused players.</span>"
         end
         -- Show a warning about the notification delay if its enabled
-        local delay_min = GetConVar("ttt_arsonist_douse_notify_delay_min"):GetInt()
-        local delay_max = GetConVar("ttt_arsonist_douse_notify_delay_max"):GetInt()
+        local delay_min = arsonist_douse_notify_delay_min:GetInt()
+        local delay_max = arsonist_douse_notify_delay_max:GetInt()
         if delay_min > delay_max then
             delay_min = delay_max
         end

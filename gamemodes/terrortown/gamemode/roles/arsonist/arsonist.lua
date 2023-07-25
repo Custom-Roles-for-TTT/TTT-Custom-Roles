@@ -18,6 +18,10 @@ local arsonist_douse_distance = CreateConVar("ttt_arsonist_douse_distance", "250
 local arsonist_damage_penalty = CreateConVar("ttt_arsonist_damage_penalty", "0.2", FCVAR_NONE, "Damage penalty that the arsonist has when attacking before igniting everyone (e.g. 0.2 = 20% less damage)", 0, 1)
 local arsonist_burn_damage = CreateConVar("ttt_arsonist_burn_damage", "2", FCVAR_NONE, "Damage done per fire tick to players ignited by the arsonist", 1, 10)
 
+local arsonist_douse_time = GetConVar("ttt_arsonist_douse_time")
+local arsonist_douse_notify_delay_min = GetConVar("ttt_arsonist_douse_notify_delay_min")
+local arsonist_douse_notify_delay_max = GetConVar("ttt_arsonist_douse_notify_delay_max")
+
 --------------------
 -- PLAYER DOUSING --
 --------------------
@@ -73,11 +77,17 @@ local function FindArsonistTarget(arsonist, douse_distance)
     return alive_count == doused_count
 end
 
+local arsonist_early_ignite
 hook.Add("Think", "Arsonist_Douse_Think", function()
-    local douse_time = GetConVar("ttt_arsonist_douse_time"):GetInt()
+    -- Make sure we have this cached when it's available
+    if not arsonist_early_ignite then
+        arsonist_early_ignite = GetConVar("ttt_arsonist_early_ignite")
+    end
+    local early_ignite = arsonist_early_ignite and arsonist_early_ignite:GetBool() or false
+    local douse_time = arsonist_douse_time:GetInt()
     local douse_distance = arsonist_douse_distance:GetFloat()
-    local douse_notify_delay_min = GetConVar("ttt_arsonist_douse_notify_delay_min"):GetInt()
-    local douse_notify_delay_max = GetConVar("ttt_arsonist_douse_notify_delay_max"):GetInt()
+    local douse_notify_delay_min = arsonist_douse_notify_delay_min:GetInt()
+    local douse_notify_delay_max = arsonist_douse_notify_delay_max:GetInt()
     if douse_notify_delay_min > douse_notify_delay_max then
         douse_notify_delay_min = douse_notify_delay_max
     end
@@ -96,7 +106,7 @@ hook.Add("Think", "Arsonist_Douse_Think", function()
                 p:SetNWBool("TTTArsonistDouseComplete", true)
 
                 local message = "You've doused everyone alive in gasoline."
-                if not GetConVar("ttt_arsonist_early_ignite"):GetBool() then
+                if not early_ignite then
                     message = message .. " Your igniter is now active!"
                 end
                 p:PrintMessage(HUD_PRINTCENTER, message)
