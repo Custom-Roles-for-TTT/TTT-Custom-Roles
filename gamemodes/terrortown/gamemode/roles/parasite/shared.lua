@@ -14,37 +14,6 @@ PARASITE_SUICIDE_NONE = 0
 PARASITE_SUICIDE_RESPAWN_ALL = 1
 PARASITE_SUICIDE_RESPAWN_CONSOLE = 2
 
--- Initialize role features
-local function InitializeEquipment()
-    if DefaultEquipment then
-        DefaultEquipment[ROLE_PARASITE] = {
-            EQUIP_ARMOR,
-            EQUIP_RADAR,
-            EQUIP_DISGUISE
-        }
-    end
-end
-InitializeEquipment()
-
-hook.Add("Initialize", "Parasite_Shared_Initialize", function()
-    InitializeEquipment()
-end)
-hook.Add("TTTPrepareRound", "Parasite_Shared_TTTPrepareRound", function()
-    InitializeEquipment()
-end)
-
-ROLE_SHOULD_SHOW_SPECTATOR_HUD[ROLE_PARASITE] = function(ply)
-    if ply:GetNWBool("ParasiteInfecting") then
-        return true
-    end
-end
-
-hook.Add("TTTUpdateRoleState", "Parasite_Team_TTTUpdateRoleState", function()
-    local parasite_is_monster = GetGlobalBool("ttt_parasite_is_monster", false)
-    MONSTER_ROLES[ROLE_PARASITE] = parasite_is_monster
-    TRAITOR_ROLES[ROLE_PARASITE] = not parasite_is_monster
-end)
-
 ------------------
 -- ROLE WEAPONS --
 ------------------
@@ -64,6 +33,9 @@ end)
 ------------------
 -- ROLE CONVARS --
 ------------------
+
+local parasite_is_monster = CreateConVar("ttt_parasite_is_monster", "0", FCVAR_REPLICATED, "Whether the parasite should be treated as a member of the monster team (rather than the traitor team)", 0, 1)
+CreateConVar("ttt_parasite_infection_time", 45, FCVAR_REPLICATED, "The time it takes in seconds for the parasite to fully infect someone", 0, 300)
 
 ROLE_CONVARS[ROLE_PARASITE] = {}
 table.insert(ROLE_CONVARS[ROLE_PARASITE], {
@@ -121,3 +93,36 @@ table.insert(ROLE_CONVARS[ROLE_PARASITE], {
     cvar = "ttt_parasite_is_monster",
     type = ROLE_CONVAR_TYPE_BOOL
 })
+
+-------------------
+-- ROLE FEATURES --
+-------------------
+
+local function InitializeEquipment()
+    if DefaultEquipment then
+        DefaultEquipment[ROLE_PARASITE] = {
+            EQUIP_ARMOR,
+            EQUIP_RADAR,
+            EQUIP_DISGUISE
+        }
+    end
+end
+InitializeEquipment()
+
+hook.Add("Initialize", "Parasite_Shared_Initialize", function()
+    InitializeEquipment()
+end)
+hook.Add("TTTPrepareRound", "Parasite_Shared_TTTPrepareRound", function()
+    InitializeEquipment()
+end)
+
+ROLE_SHOULD_SHOW_SPECTATOR_HUD[ROLE_PARASITE] = function(ply)
+    if ply:GetNWBool("ParasiteInfecting") then
+        return true
+    end
+end
+
+hook.Add("TTTUpdateRoleState", "Parasite_Team_TTTUpdateRoleState", function()
+    MONSTER_ROLES[ROLE_PARASITE] = parasite_is_monster:GetBool()
+    TRAITOR_ROLES[ROLE_PARASITE] = not parasite_is_monster:GetBool()
+end)
