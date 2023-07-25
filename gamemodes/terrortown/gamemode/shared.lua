@@ -92,12 +92,14 @@ if CRDebug.Enabled and not CRDebug.HooksChecked then
             local key = eventName .. "_" .. tostring(identifier)
             -- Keep track of which ones we've checked already so we don't spam ourselves on reload
             -- Also ignore the ones that are known to replace themselves... for whatever reason
-            if not CRDebug.HooksChecked[key] and not table.HasValue(CRDebug.IgnoredHookDupes, key) then
-                local hooks = hook.GetTable()
-                if hooks[eventName] and hooks[eventName][identifier] then
+            if not table.HasValue(CRDebug.IgnoredHookDupes, key) then
+                local locationKey = info.short_src .. "_" .. info.linedefined
+                -- If we have a location key saved but it's different this time then it's a duplicate
+                if CRDebug.HooksChecked[key] and CRDebug.HooksChecked[key] ~= locationKey then
                     ErrorNoHaltWithStack("Hook for '" .. eventName .. "' with identifier '" .. identifier .. "' already exists!")
+                else
+                    CRDebug.HooksChecked[key] = locationKey
                 end
-                CRDebug.HooksChecked[key] = true
             end
         end
         oldHookAdd(eventName, identifier, func)
