@@ -91,7 +91,7 @@ local propspec_outline = Material("models/props_combine/portalball001_sheet")
 
 local function GetDetectiveIconRole(is_traitor)
     if is_traitor then
-        if GetGlobalBool("ttt_impersonator_use_detective_icon", true) then
+        if GetConVar("ttt_impersonator_use_detective_icon"):GetBool() then
             return ROLE_DETECTIVE
         end
         return ROLE_IMPERSONATOR

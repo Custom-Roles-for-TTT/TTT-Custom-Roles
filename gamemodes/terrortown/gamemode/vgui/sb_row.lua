@@ -246,7 +246,7 @@ function PANEL:Paint(width, height)
                     color = ROLE_COLORS_SCOREBOARD[role]
                 end
             elseif ply:IsImpersonator() then
-                if ply:IsRoleActive() and GetGlobalBool("ttt_impersonator_use_detective_icon", true) then
+                if ply:IsRoleActive() and GetConVar("ttt_impersonator_use_detective_icon"):GetBool() then
                     role = ROLE_DETECTIVE
                 end
                 color = ROLE_COLORS_SCOREBOARD[ROLE_IMPERSONATOR]
