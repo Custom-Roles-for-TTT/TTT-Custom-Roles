@@ -7,6 +7,14 @@ local string = string
 local RemoveHook = hook.Remove
 local GetAllPlayers = player.GetAll
 
+-------------
+-- CONVARS --
+-------------
+
+local assassin_show_target_icon = GetConVar("ttt_assassin_show_target_icon")
+local assassin_target_vision_enable = GetConVar("ttt_assassin_target_vision_enable")
+local assassin_next_target_delay = GetConVar("ttt_assassin_next_target_delay")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -37,7 +45,7 @@ end)
 
 -- Show "KILL" icon over the target's head
 hook.Add("TTTTargetIDPlayerKillIcon", "Assassin_TTTTargetIDPlayerKillIcon", function(ply, cli, showKillIcon, showJester)
-    if cli:IsAssassin() and GetGlobalBool("ttt_assassin_show_target_icon", false) and cli:GetNWString("AssassinTarget") == ply:SteamID64() and not showJester then
+    if cli:IsAssassin() and assassin_show_target_icon:GetBool() and cli:GetNWString("AssassinTarget") == ply:SteamID64() and not showJester then
         return true
     end
 end)
@@ -58,7 +66,7 @@ ROLE_IS_TARGETID_OVERRIDDEN[ROLE_ASSASSIN] = function(ply, target, showJester)
     -- Shared logic
     local show = (target:SteamID64() == ply:GetNWString("AssassinTarget", "")) and not showJester
 
-    local icon = show and GetGlobalBool("ttt_assassin_show_target_icon", false)
+    local icon = show and assassin_show_target_icon:GetBool()
     ------ icon,  ring, text
     return icon, false, show
 end
@@ -127,7 +135,7 @@ end
 
 hook.Add("TTTUpdateRoleState", "Assassin_Highlight_TTTUpdateRoleState", function()
     client = LocalPlayer()
-    assassin_target_vision = GetGlobalBool("ttt_assassin_target_vision_enable", false)
+    assassin_target_vision = assassin_target_vision_enable:GetBool()
 
     -- Disable highlights on role change
     if vision_enabled then
@@ -189,19 +197,19 @@ hook.Add("TTTTutorialRoleText", "Assassin_TTTTutorialRoleText", function(role, t
         local roleColor = ROLE_COLORS[ROLE_TRAITOR]
         local html = "The " .. ROLE_STRINGS[ROLE_ASSASSIN] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitor team</span> whose goal is to eliminate their enemies, one target at a time."
 
-        local delay = GetGlobalInt("ttt_assassin_next_target_delay", 0)
+        local delay = assassin_next_target_delay:GetInt()
         html = html .. "<span style='display: block; margin-top: 10px;'>They are assigned an initial target at the start of the round. A new target is assigned "
         if delay > 0 then
             html = html .. delay .. " seconds "
         end
         html = html .. "after their current target is <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>killed</span>.</span>"
 
-        local hasVision = GetGlobalBool("ttt_assassin_target_vision_enable", false)
+        local hasVision = assassin_target_vision_enable:GetBool()
         if hasVision then
             html = html .. "<span style='display: block; margin-top: 10px;'>Their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>target intel</span> helps them see their target through walls by highlighting them.</span>"
         end
 
-        if GetGlobalBool("ttt_assassin_show_target_icon", false) then
+        if assassin_show_target_icon:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>Their current target can"
             if hasVision then
                 html = html .. " also"

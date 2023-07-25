@@ -103,7 +103,7 @@ local RoleModes = { }
 local function GetRoleMode(role)
     -- Cache these the first time
     if not RoleModes[role] then
-        RoleModes[role] = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_mode"):GetInt()
+        RoleModes[role] = cvars.Number("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_mode", SHOP_SYNC_MODE_NONE)
     end
     return RoleModes[role]
 end
@@ -255,7 +255,7 @@ function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor
             elseif CLIENT and not wep.BlockShopRandomization then
                 local norandomtable = WEPS.BypassRandomWeapons[role]
                 if not block_randomization and (not norandomtable or not table.HasValue(norandomtable, id)) then
-                    local random_cvar_enabled = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_random_enabled"):GetBool()
+                    local random_cvar_enabled = cvars.Bool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_random_enabled", false)
                     if random_cvar_enabled then
                         local random_cvar_percent_global = GetConVar("ttt_shop_random_percent"):GetInt()
                         local random_cvar_percent = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_random_percent"):GetInt()

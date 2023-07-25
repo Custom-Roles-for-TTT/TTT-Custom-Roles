@@ -1038,7 +1038,6 @@ globals = {
     "ShouldPromoteDetectiveLike",
     "ShouldShowTraitorExtraInfo",
     "StartsWithVowel",
-    "SyncShopConVars",
     "UpdateRoleColors",
     "UpdateRoleColours",
     "UpdateRoleState",

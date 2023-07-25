@@ -116,8 +116,8 @@ function plymeta:IsShopRole()
         -- Only allow roles with a delayed shop to use it if they have weapons or will be having weapons synced and are active or "active_only" is disabled
         if DELAYED_SHOP_ROLES[role] then
             local rolestring = ROLE_STRINGS_RAW[role]
-            hasWeapon = (hasWeapon or GetConVar("ttt_" .. rolestring .. "_shop_mode"):GetInt() > SHOP_SYNC_MODE_NONE) and
-                (not GetConVar("ttt_" .. rolestring .. "_shop_active_only"):GetBool() or self:IsRoleActive())
+            hasWeapon = (hasWeapon or cvars.Number("ttt_" .. rolestring .. "_shop_mode", SHOP_SYNC_MODE_NONE) > SHOP_SYNC_MODE_NONE) and
+                (not cvars.Bool("ttt_" .. rolestring .. "_shop_active_only", false) or self:IsRoleActive())
         end
         return hasWeapon
     end
@@ -129,7 +129,7 @@ end
 function plymeta:ShouldDelayShopPurchase()
     local role = self:GetRole()
     if DELAYED_SHOP_ROLES[role] then
-        return GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_delay"):GetBool() and not self:IsRoleActive()
+        return cvars.Bool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_delay", false) and not self:IsRoleActive()
     end
     return false
 end

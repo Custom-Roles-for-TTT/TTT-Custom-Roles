@@ -435,12 +435,12 @@ local function OrderEquipment(ply, cmd, args)
 
     local role = ply:GetRole()
 
-    local rolemode = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_mode"):GetInt()
-    local traitorsync = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_sync"):GetBool() and TRAITOR_ROLES[role]
+    local rolemode = cvars.Number("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_mode", SHOP_SYNC_MODE_NONE)
+    local traitorsync = cvars.Bool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_sync", false) and TRAITOR_ROLES[role]
     local sync_traitor_weapons = traitorsync or (rolemode > SHOP_SYNC_MODE_NONE)
 
     local promoted = ply:IsDetectiveLike() and not DETECTIVE_ROLES[role]
-    local detectivesync = GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_sync"):GetBool() and DETECTIVE_ROLES[role]
+    local detectivesync = cvars.Bool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_sync", false) and DETECTIVE_ROLES[role]
     local sync_detective_weapons = detectivesync or promoted or (rolemode > SHOP_SYNC_MODE_NONE)
 
     -- If this role has a table of additional weapons and that table includes this weapon
