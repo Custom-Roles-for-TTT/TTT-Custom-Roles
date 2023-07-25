@@ -1026,19 +1026,45 @@ end
 local function AddRoleFiles(root)
     local rootfiles, dirs = file.Find(root .. "*", "LUA")
     for _, dir in ipairs(dirs) do
+        local clientFiles = {}
+        local sharedFiles = {}
+        local serverFiles = {}
+        -- Partition the files by location so we can load shared first
         local files, _ = file.Find(root .. dir .. "/*.lua", "LUA")
         for _, fil in ipairs(files) do
-            local isClientFile = StringFind(fil, "cl_")
-            local isSharedFile = fil == "shared.lua" or StringFind(fil, "sh_")
-
-            if SERVER then
-                -- Send client and shared files to clients
-                if isClientFile or isSharedFile then AddCSLuaFile(root .. dir .. "/" .. fil) end
-                -- Include non-client files
-                if not isClientFile then include(root .. dir .. "/" .. fil) end
+            if StringFind(fil, "cl_") then
+                table.insert(clientFiles, fil)
+            elseif fil == "shared.lua" or StringFind(fil, "sh_") then
+                table.insert(sharedFiles, fil)
+            else
+                table.insert(serverFiles, fil)
             end
-            -- Include client and shared files
-            if CLIENT and (isClientFile or isSharedFile) then include(root .. dir .. "/" .. fil) end
+        end
+
+        -- Process all the shared files first
+        for _, fil in ipairs(sharedFiles) do
+            -- Send shared files to clients
+            if SERVER then
+                AddCSLuaFile(root .. dir .. "/" .. fil)
+            end
+            -- Include all shared files
+            include(root .. dir .. "/" .. fil)
+        end
+
+        if SERVER then
+            -- Send client files to clients
+            for _, fil in ipairs(clientFiles) do
+                AddCSLuaFile(root .. dir .. "/" .. fil)
+            end
+            -- Include server files
+            for _, fil in ipairs(serverFiles) do
+                include(root .. dir .. "/" .. fil)
+            end
+        elseif CLIENT then
+            -- Include client files
+            for _, fil in ipairs(clientFiles) do
+                include(root .. dir .. "/" .. fil)
+            end
         end
     end
 

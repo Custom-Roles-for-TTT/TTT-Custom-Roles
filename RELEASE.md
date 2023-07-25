@@ -5,6 +5,7 @@
 
 ### Developer
 - Added `util.GetConVarAsBool`, `util.GetConVarAsFloat`, `util.GetConVarAsInt`, and `util.GetConVarAsString` to act as wrappers that allow retrieving default values if the target convar does not exist
+- Changed role logic to load shared files first
 
 ## 1.9.2
 **Released: July 22nd, 2023**
