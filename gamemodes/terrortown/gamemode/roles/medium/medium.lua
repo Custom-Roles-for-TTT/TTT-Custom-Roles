@@ -15,14 +15,8 @@ resource.AddFile("materials/particle/wisp.vmt")
 -- CONVARS --
 -------------
 
-local medium_spirit_color = CreateConVar("ttt_medium_spirit_color", "1")
-local medium_spirit_vision = CreateConVar("ttt_medium_spirit_vision", "1")
-local medium_dead_notify = CreateConVar("ttt_medium_dead_notify", "1")
-
-hook.Add("TTTSyncGlobals", "Medium_TTTSyncGlobals", function()
-    SetGlobalBool("ttt_medium_spirit_color", medium_spirit_color:GetBool())
-    SetGlobalBool("ttt_medium_spirit_vision", medium_spirit_vision:GetBool())
-end)
+local medium_spirit_color = GetConVar("ttt_medium_spirit_color")
+local medium_dead_notify = GetConVar("ttt_medium_dead_notify")
 
 -------------------
 -- ROLE FEATURES --

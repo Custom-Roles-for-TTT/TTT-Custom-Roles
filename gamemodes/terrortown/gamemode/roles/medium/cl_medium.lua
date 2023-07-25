@@ -7,6 +7,13 @@ local GetAllEnts = ents.GetAll
 local MathRand = math.Rand
 local MathRandom = math.random
 
+-------------
+-- CONVARS --
+-------------
+
+local medium_spirit_color = GetConVar("ttt_medium_spirit_color")
+local medium_spirit_vision = GetConVar("ttt_medium_spirit_vision")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -24,9 +31,9 @@ end)
 -- ROLE FEATURE --
 ------------------
 
-local medium_spirit_vision = true
+local spirit_vision = true
 hook.Add("TTTUpdateRoleState", "Medium_RoleFeature_TTTUpdateRoleState", function()
-    medium_spirit_vision = GetGlobalBool("ttt_medium_spirit_vision", true)
+    spirit_vision = medium_spirit_vision:GetBool()
 end)
 
 local cacheTime = CurTime()
@@ -36,7 +43,7 @@ local function ShouldSeeSpirits(ply)
     -- Mediums can always see spirits
     if ply:IsActiveMedium() then return true end
     -- If spirit vision is disabled, non-Mediums can never see spirits
-    if not medium_spirit_vision then return false end
+    if not spirit_vision then return false end
     -- If the player is alive, they can never see spirits
     if ply:Alive() or not ply:IsSpec() then return false end
 
@@ -78,23 +85,21 @@ hook.Add("Think", "Medium_RoleFeature_Think", function()
             if not ent.WispEmitter then ent.WispEmitter = ParticleEmitter(ent:GetPos()) end
             if not ent.WispNextPart then ent.WispNextPart = CurTime() end
             local pos = ent:GetPos() + Vector(0, 0, 64)
-            if ent.WispNextPart < CurTime() then
-                if client:GetPos():Distance(pos) <= 3000 then
-                    ent.WispEmitter:SetPos(pos)
-                    ent.WispNextPart = CurTime() + MathRand(0.003, 0.01)
-                    local particle = ent.WispEmitter:Add("particle/wisp.vmt", pos)
-                    particle:SetVelocity(Vector(0, 0, 30))
-                    particle:SetDieTime(1)
-                    particle:SetStartAlpha(MathRandom(150, 220))
-                    particle:SetEndAlpha(0)
-                    local size = MathRandom(4, 7)
-                    particle:SetStartSize(size)
-                    particle:SetEndSize(1)
-                    particle:SetRoll(MathRand(0, math.pi))
-                    particle:SetRollDelta(0)
-                    local col = ent:GetNWVector("SpiritColor", Vector(1, 1, 1))
-                    particle:SetColor(col.x * 255, col.y * 255, col.z * 255)
-                end
+            if ent.WispNextPart < CurTime() and client:GetPos():Distance(pos) <= 3000 then
+                ent.WispEmitter:SetPos(pos)
+                ent.WispNextPart = CurTime() + MathRand(0.003, 0.01)
+                local particle = ent.WispEmitter:Add("particle/wisp.vmt", pos)
+                particle:SetVelocity(Vector(0, 0, 30))
+                particle:SetDieTime(1)
+                particle:SetStartAlpha(MathRandom(150, 220))
+                particle:SetEndAlpha(0)
+                local size = MathRandom(4, 7)
+                particle:SetStartSize(size)
+                particle:SetEndSize(1)
+                particle:SetRoll(MathRand(0, math.pi))
+                particle:SetRollDelta(0)
+                local col = ent:GetNWVector("SpiritColor", Vector(1, 1, 1))
+                particle:SetColor(col.x * 255, col.y * 255, col.z * 255)
             end
         elseif ent.WispEmitter then
             ent.WispEmitter:Finish()
@@ -116,7 +121,7 @@ hook.Add("TTTTutorialRoleText", "Medium_TTTTutorialRoleText", function(role, tit
         html = html .. "<span style='display: block; margin-top: 10px;'>Instead of getting a DNA Scanner like a vanilla <span style='color: rgb(" .. detectiveColor.r .. ", " .. detectiveColor.g .. ", " .. detectiveColor.b .. ")'>" .. ROLE_STRINGS[ROLE_DETECTIVE] .. "</span>, they have the ability to see the spirits of the dead as they move around the afterlife.</span>"
 
         -- Spirits
-        if GetGlobalBool("ttt_medium_spirit_color", true) then
+        if medium_spirit_color:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>Each player will have a randomly assigned <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>spirit color</span> allowing the " .. ROLE_STRINGS[ROLE_MEDIUM] .. " to keep track of track specific spirits.</span>"
         end
 
