@@ -11,6 +11,7 @@
 
 ### Fixes
 - Fixed double message when a shadow killed their target and soul link was enabled
+- Fixed conflict between beggar and informant causing error when `ttt_beggar_respawn` was enabled
 
 ### Developer
 - Changed how some roles set their default shop equipment (passive) items so they don't overwrite other things also adding to the lists if the timing isn't perfect
