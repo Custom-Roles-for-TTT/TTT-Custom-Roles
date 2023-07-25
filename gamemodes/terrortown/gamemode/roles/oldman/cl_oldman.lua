@@ -5,6 +5,15 @@ local table = table
 
 local StringUpper = string.upper
 
+-------------
+-- CONVARS --
+-------------
+
+local oldman_drain_health_to = GetConVar("ttt_oldman_drain_health_to")
+local oldman_adrenaline_rush = GetConVar("ttt_oldman_adrenaline_rush")
+local oldman_adrenaline_shotgun = GetConVar("ttt_oldman_adrenaline_shotgun")
+local oldman_hide_when_active = GetConVar("ttt_oldman_hide_when_active")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -74,7 +83,7 @@ end)
 ---------------
 
 local function IsOldManVisible(ply)
-    return IsPlayer(ply) and ply:IsOldMan() and ply:IsRoleActive() and not GetGlobalBool("ttt_oldman_hide_when_active", false)
+    return IsPlayer(ply) and ply:IsOldMan() and ply:IsRoleActive() and not oldman_hide_when_active:GetBool()
 end
 
 -- Show the old man icon if the player is an activated old man
@@ -138,16 +147,16 @@ hook.Add("TTTTutorialRoleText", "OldMan_TTTTutorialRoleText", function(role, tit
         local traitorColor = ROLE_COLORS[ROLE_TRAITOR]
 
         -- Adrenaline Rush
-        local rushTime = GetGlobalInt("ttt_oldman_adrenaline_rush", 5)
+        local rushTime = oldman_adrenaline_rush:GetInt()
         if rushTime > 0 then
             html = html .. "<span style='display: block; margin-top: 10px;'>If the " .. ROLE_STRINGS[ROLE_OLDMAN] .. " is hit by enough damage that would kill them, they experience <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>an adrenaline rush</span> and fight off death for " .. rushTime .. " seconds. After their adrenaline runs out, <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>they die</span>. This gives them just long enough for the " .. ROLE_STRINGS[ROLE_OLDMAN] .. " to exact revenge against their killer.</span>"
-            if GetGlobalBool("ttt_oldman_adrenaline_shotgun", true) then
+            if oldman_adrenaline_shotgun:GetBool() then
                 html = html .. "<span style='display: block; margin-top: 10px;'>During the adrenaline rush, the " .. ROLE_STRINGS[ROLE_OLDMAN] .. " is given a <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>double-barrel shotgun</span> with two shots so they cannot be caught unarmed.</span>"
             end
         end
 
         -- Health Drain
-        local drainTo = GetGlobalInt("ttt_oldman_drain_health_to", 0)
+        local drainTo = oldman_drain_health_to:GetInt()
         if drainTo > 0 then
             html = html .. "<span style='display: block; margin-top: 10px;'>To give the " .. ROLE_STRINGS[ROLE_OLDMAN] .. " a sense of urgency, their <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>health will slowly drain down to " .. drainTo .. "</span>, over time.</span>"
         end

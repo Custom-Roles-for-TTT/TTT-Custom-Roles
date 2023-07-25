@@ -13,6 +13,12 @@ end
 -- ROLE CONVARS --
 ------------------
 
+CreateConVar("ttt_oldman_drain_health_to", "0", FCVAR_REPLICATED, "The amount of health to drain the old man down to. Set to 0 to disable", 0, 200)
+CreateConVar("ttt_oldman_adrenaline_rush", "5", FCVAR_REPLICATED, "The time in seconds the old mans adrenaline rush lasts for. Set to 0 to disable", 0, 30)
+CreateConVar("ttt_oldman_adrenaline_shotgun", "1", FCVAR_REPLICATED)
+CreateConVar("ttt_oldman_adrenaline_ramble", "1", FCVAR_REPLICATED)
+CreateConVar("ttt_oldman_hide_when_active", "0", FCVAR_REPLICATED)
+
 ROLE_CONVARS[ROLE_OLDMAN] = {}
 table.insert(ROLE_CONVARS[ROLE_OLDMAN], {
     cvar = "ttt_oldman_drain_health_to",
