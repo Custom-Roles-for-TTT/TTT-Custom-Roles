@@ -19,6 +19,12 @@ local function GetLoverKiller(cli)
     return player.GetBySteamID64(sid)
 end
 
+-------------
+-- CONVARS --
+-------------
+
+local revenger_radar_timer = GetConVar("ttt_revenger_radar_timer")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -112,7 +118,7 @@ local function UpdateRevengerLoverKiller()
     local active = net.ReadBool()
     if active then
         SetRevengerLoverKillerPosition()
-        timer.Create("updaterevengerloverkiller", GetGlobalInt("ttt_revenger_radar_timer", 15), 0, SetRevengerLoverKillerPosition)
+        timer.Create("updaterevengerloverkiller", revenger_radar_timer:GetInt(), 0, SetRevengerLoverKillerPosition)
     else
         revenger_lover_killers = {}
     end
@@ -161,7 +167,7 @@ hook.Add("TTTTutorialRoleText", "Revenger_TTTTutorialRoleText", function(role, t
         html = html .. "<span style='display: block; margin-top: 10px;'>If their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>soulmate is killed</span>, the " .. ROLE_STRINGS[ROLE_REVENGER] .. "'s goal becomes tracking down and <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>exacting revenge</span> against their soulmate's killer.</span>"
 
         -- Radar
-        html = html .. "<span style='display: block; margin-top: 10px;'>To accomplish this, the " .. ROLE_STRINGS[ROLE_REVENGER] .. " is shown <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>the location of their soulmate's killer</span> via radar-like pings, every " .. GetGlobalInt("ttt_revenger_radar_timer", 15) .. " seconds.</span>"
+        html = html .. "<span style='display: block; margin-top: 10px;'>To accomplish this, the " .. ROLE_STRINGS[ROLE_REVENGER] .. " is shown <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>the location of their soulmate's killer</span> via radar-like pings, every " .. revenger_radar_timer:GetInt() .. " seconds.</span>"
 
         return html
     end
