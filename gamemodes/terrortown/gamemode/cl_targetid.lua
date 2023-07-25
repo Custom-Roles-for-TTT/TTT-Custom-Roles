@@ -95,7 +95,7 @@ local function GetDetectiveIconRole(is_traitor)
             return ROLE_DETECTIVE
         end
         return ROLE_IMPERSONATOR
-    elseif GetGlobalBool("ttt_deputy_use_detective_icon", true) then
+    elseif GetConVar("ttt_deputy_use_detective_icon"):GetBool() then
         return ROLE_DETECTIVE
     end
     return ROLE_DEPUTY

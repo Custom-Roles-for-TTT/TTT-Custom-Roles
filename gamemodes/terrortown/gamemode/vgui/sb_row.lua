@@ -265,7 +265,7 @@ function PANEL:Paint(width, height)
                 else
                     role = disp_role
                 end
-            elseif GetGlobalBool("ttt_deputy_use_detective_icon", true) then
+            elseif GetConVar("ttt_deputy_use_detective_icon"):GetBool() then
                 role = ROLE_DETECTIVE
             else
                 role = ROLE_DEPUTY

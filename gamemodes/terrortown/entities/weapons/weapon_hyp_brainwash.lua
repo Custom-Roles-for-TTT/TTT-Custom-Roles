@@ -164,7 +164,7 @@ if SERVER then
             return true
         end
         if ply:IsDeputy() then
-            return GetGlobalBool("ttt_deputy_use_detective_icon", true)
+            return GetConVar("ttt_deputy_use_detective_icon"):GetBool()
         end
         return false
     end

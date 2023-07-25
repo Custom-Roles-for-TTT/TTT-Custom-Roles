@@ -28,7 +28,7 @@ hook.Add("TTTTutorialRoleText", "Impersonator_TTTTutorialRoleText", function(rol
         html = html .. "<span style='display: block; margin-top: 10px;'>They have <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>all the powers of " .. ROLE_STRINGS_EXT[ROLE_DETECTIVE] .. "</span> including " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "-only weapons and the ability to search bodies.</span>"
 
         local impersonator_use_detective_icon = GetGlobalBool("ttt_impersonator_use_detective_icon", true)
-        local deputy_use_detective_icon = GetGlobalBool("ttt_deputy_use_detective_icon", true)
+        local deputy_use_detective_icon = GetConVar("ttt_deputy_use_detective_icon"):GetBool()
 
         -- Detective Icon for Everyone
         if impersonator_use_detective_icon and  deputy_use_detective_icon then
