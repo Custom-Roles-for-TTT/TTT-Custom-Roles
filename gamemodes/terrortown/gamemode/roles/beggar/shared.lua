@@ -18,9 +18,9 @@ BEGGAR_SCAN_MODE_SHOPS = 2
 
 -- Update their team
 hook.Add("TTTUpdateRoleState", "Beggar_TTTUpdateRoleState", function()
-    local beggars_are_independent = GetGlobalBool("ttt_beggars_are_independent", false)
-    INDEPENDENT_ROLES[ROLE_BEGGAR] = beggars_are_independent
-    JESTER_ROLES[ROLE_BEGGAR] = not beggars_are_independent
+    local beggar_is_independent = GetConVar("ttt_beggar_is_independent"):GetBool()
+    INDEPENDENT_ROLES[ROLE_BEGGAR] = beggar_is_independent
+    JESTER_ROLES[ROLE_BEGGAR] = not beggar_is_independent
 end)
 
 --------------------
@@ -36,9 +36,9 @@ function plymeta:ShouldRevealBeggar(tgt)
     -- Use what role they changed to to determine which setting to use
     local beggarMode = nil
     if tgt:IsTraitor() then
-        beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", ANNOUNCE_REVEAL_ALL)
+        beggarMode = GetConVar("ttt_beggar_reveal_traitor"):GetInt()
     elseif tgt:IsInnocent() then
-        beggarMode = GetGlobalInt("ttt_beggar_reveal_innocent", ANNOUNCE_REVEAL_TRAITORS)
+        beggarMode = GetConVar("ttt_beggar_reveal_innocent"):GetInt()
     end
 
     -- Then determine whether this player should show for the client's team
@@ -52,6 +52,16 @@ end
 ------------------
 -- ROLE CONVARS --
 ------------------
+
+CreateConVar("ttt_beggar_is_independent", "0", FCVAR_REPLICATED, "Whether beggars should be treated as members of the independent team", 0, 1)
+CreateConVar("ttt_beggar_respawn", "0", FCVAR_REPLICATED, "Whether the beggar respawns when they are killed before joining another team", 0, 1)
+CreateConVar("ttt_beggar_respawn_limit", "0", FCVAR_REPLICATED, "The maximum number of times the beggar can respawn (if \"ttt_beggar_respawn\" is enabled). Set to 0 to allow infinite", 0, 30)
+CreateConVar("ttt_beggar_respawn_delay", "3", FCVAR_REPLICATED, "The delay to use when respawning the beggar (if \"ttt_beggar_respawn\" is enabled)", 0, 60)
+CreateConVar("ttt_beggar_respawn_change_role", "0", FCVAR_REPLICATED, "Whether to change the role of the respawning the beggar (if \"ttt_beggar_respawn\" is enabled)", 0, 1)
+CreateConVar("ttt_beggar_reveal_traitor", "1", FCVAR_REPLICATED, "Who the beggar is revealed to when they join the traitor team", 0, 3)
+CreateConVar("ttt_beggar_reveal_innocent", "2", FCVAR_REPLICATED, "Who the beggar is revealed to when they join the innocent team", 0, 3)
+CreateConVar("ttt_beggar_scan", "0", FCVAR_REPLICATED, "Whether the beggar can scan players to see if they are traitors. 0 - Disabled. 1 - Can only scan traitors. 2 - Can scan any role that has a shop.", 0, 2)
+CreateConVar("ttt_beggar_scan_time", "15", FCVAR_REPLICATED, "The amount of time (in seconds) the beggar's scanner takes to use", 0, 60)
 
 ROLE_CONVARS[ROLE_BEGGAR] = {}
 table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
@@ -68,7 +78,7 @@ table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
-    cvar = "ttt_beggars_are_independent",
+    cvar = "ttt_beggar_is_independent",
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_BEGGAR], {

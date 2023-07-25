@@ -468,7 +468,7 @@ ttt_single_drunk_clown                      0       // Whether only a single dru
 ttt_single_drunk_clown_chance               0.5     // The chance that a drunk should have an opportunity to spawn instead of a clown (e.g. 0.7 = 70% chance for drunk, 30% chance for clown. Only applies if ttt_single_drunk_clown is enabled)
 
 // Beggar
-ttt_beggars_are_independent                 0       // Whether beggars should be treated as members of the independent team (rather than the jester team)
+ttt_beggar_is_independent                   0       // Whether beggars should be treated as members of the independent team (rather than the jester team)
 ttt_beggar_reveal_traitor                   1       // Who the beggar is revealed to when they join the traitor team. 0 - No one. 1 - Everyone. 2 - Traitors. 3 - Innocents
 ttt_beggar_reveal_innocent                  2       // Who the beggar is revealed to when they join the innocent team. 0 - No one. 1 - Everyone. 2 - Traitors. 3 - Innocents
 ttt_beggar_respawn                          0       // Whether the beggar respawns when they are killed before joining another team
