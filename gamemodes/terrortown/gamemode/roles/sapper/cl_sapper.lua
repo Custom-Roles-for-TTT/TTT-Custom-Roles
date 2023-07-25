@@ -12,6 +12,7 @@ local GetAllPlayers = player.GetAll
 local sapper_aura_radius = GetConVar("ttt_sapper_aura_radius")
 local sapper_protect_self = GetConVar("ttt_sapper_protect_self")
 local sapper_fire_immune = GetConVar("ttt_sapper_fire_immune")
+local sapper_can_see_c4 = GetConVar("ttt_sapper_can_see_c4")
 local sapper_c4_guaranteed_defuse = GetConVar("ttt_sapper_c4_guaranteed_defuse")
 
 ------------------
