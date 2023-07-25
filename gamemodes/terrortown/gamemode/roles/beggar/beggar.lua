@@ -210,7 +210,7 @@ end)
 -- ROLE CHANGES --
 ------------------
 
-hook.Add("TTTPlayerRoleChanged", "Beggar_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+hook.Add("TTTPlayerRoleChanged", "Beggar_Informant_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if beggar_scan:GetInt() <= BEGGAR_SCAN_MODE_DISABLED then return end
     if oldRole == newRole then return end
     if GetRoundState() ~= ROUND_ACTIVE then return end
