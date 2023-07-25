@@ -16,14 +16,7 @@ util.AddNetworkString("TTT_BodysnatcherKilled")
 -------------
 
 local bodysnatcher_respawn = GetConVar("ttt_bodysnatcher_respawn")
-local bodysnatcher_respawn_delay = GetConVar("ttt_bodysnatcher_respawn_delay")
 local bodysnatcher_respawn_limit = GetConVar("ttt_bodysnatcher_respawn_limit")
-local bodysnatcher_reveal_innocent = GetConVar("ttt_bodysnatcher_reveal_innocent")
-local bodysnatcher_reveal_traitor = GetConVar("ttt_bodysnatcher_reveal_traitor")
-local bodysnatcher_reveal_jester = GetConVar("ttt_bodysnatcher_reveal_jester")
-local bodysnatcher_reveal_independent = GetConVar("ttt_bodysnatcher_reveal_independent")
-local bodysnatcher_reveal_monster = GetConVar("ttt_bodysnatcher_reveal_monster")
-local bodysnatcher_is_independent = GetConVar("ttt_bodysnatcher_is_independent")
 
 CreateConVar("ttt_bodysnatcher_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the bodysnatcher is killed", 0, 4)
 CreateConVar("ttt_bodysnatcher_notify_sound", "0", FCVAR_NONE, "Whether to play a cheering sound when a bodysnatcher is killed", 0, 1)

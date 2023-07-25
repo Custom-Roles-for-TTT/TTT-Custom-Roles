@@ -231,7 +231,7 @@ function RADAR:Draw(client)
             end
 
             -- If the target is an active clown but they should be hidden, hide them from the radar
-            local hidden = tgt.killer_clown_active and GetGlobalBool("ttt_clown_hide_when_active", false)
+            local hidden = tgt.killer_clown_active and GetConVar("ttt_clown_hide_when_active"):GetBool()
 
             local newColor, newHidden = CallHook("TTTRadarPlayerRender", nil, client, tgt, color, hidden)
             if newColor then color = newColor end
