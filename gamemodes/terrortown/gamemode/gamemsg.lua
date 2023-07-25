@@ -55,7 +55,7 @@ local function ShouldHideTraitorBeggar()
 end
 
 local function ShouldHideTraitorBodysnatcher()
-    local bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_traitor", BODYSNATCHER_REVEAL_ALL)
+    local bodysnatcherMode = GetConVar("ttt_bodysnatcher_reveal_traitor"):GetInt()
     return bodysnatcherMode == BODYSNATCHER_REVEAL_NONE
 end
 

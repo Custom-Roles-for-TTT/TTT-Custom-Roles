@@ -189,7 +189,7 @@ function RADAR:Draw(client)
 
     local glitchMode = GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR)
     local beggarMode = GetConVar("ttt_beggar_reveal_traitor"):GetInt()
-    local bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_traitor", BODYSNATCHER_REVEAL_ALL)
+    local bodysnatcherMode = GetConVar("ttt_bodysnatcher_reveal_traitor"):GetInt()
     local role, alpha, scrpos, md
     for _, tgt in pairs(RADAR.targets) do
         alpha = alpha_base

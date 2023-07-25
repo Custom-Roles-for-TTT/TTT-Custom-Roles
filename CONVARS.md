@@ -485,7 +485,7 @@ ttt_beggar_scan_cooldown                    3       // The amount of time (in se
 ttt_beggar_scan_distance                    2500    // The maximum distance away the scanner target can be
 
 // Bodysnatcher
-ttt_bodysnatchers_are_independent           0       // Whether bodysnatchers should be treated as members of the independent team (rather than the jester team)
+ttt_bodysnatcher_is_independent           0       // Whether bodysnatchers should be treated as members of the independent team (rather than the jester team)
 ttt_bodysnatcher_destroy_body               0       // Whether the bodysnatching device destroys the body it is used on or not
 ttt_bodysnatcher_show_role                  1       // Whether the bodysnatching device shows the role of the corpse it is used on or not
 ttt_bodysnatcher_reveal_traitor             1       // Who the bodysnatcher is revealed to when they join the traitor team. 0 - No one. 1 - Everyone. 2 - Their new team
