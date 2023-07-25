@@ -18,16 +18,9 @@ CreateConVar("ttt_cupid_notify_mode", "0", FCVAR_NONE, "The logic to use when no
 CreateConVar("ttt_cupid_notify_sound", "0", FCVAR_NONE, "Whether to play a cheering sound when a cupid is killed", 0, 1)
 CreateConVar("ttt_cupid_notify_confetti", "0", FCVAR_NONE, "Whether to throw confetti when a cupid is a killed", 0, 1)
 CreateConVar("ttt_cupid_lovers_notify_mode", "1", FCVAR_NONE, "Who is notified with cupid makes two players fall in love", 0, 3)
-local cupids_are_independent = CreateConVar("ttt_cupids_are_independent", "0", FCVAR_NONE, "Whether cupids should be treated as members of the independent team", 0, 1)
 local cupid_can_damage_lovers = CreateConVar("ttt_cupid_can_damage_lovers", "0", FCVAR_NONE, "Whether cupid should be able to damage the lovers", 0, 1)
 local cupid_lovers_can_damage_lovers = CreateConVar("ttt_cupid_lovers_can_damage_lovers", "1", FCVAR_NONE, "Whether the lovers should be able to damage each other", 0, 1)
 local cupid_lovers_can_damage_cupid = CreateConVar("ttt_cupid_lovers_can_damage_cupid", "0", FCVAR_NONE, "Whether the lovers should be able to damage cupid", 0, 1)
-local cupid_lover_vision_enable = CreateConVar("ttt_cupid_lover_vision_enable", "1", FCVAR_NONE, "Whether the lovers can see outlines of each other through walls", 0, 1)
-
-hook.Add("TTTSyncGlobals", "Cupid_TTTSyncGlobals", function()
-    SetGlobalBool("ttt_cupids_are_independent", cupids_are_independent:GetBool())
-    SetGlobalBool("ttt_cupid_lover_vision_enable", cupid_lover_vision_enable:GetBool())
-end)
 
 ----------------
 -- DEATH LINK --

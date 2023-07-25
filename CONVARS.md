@@ -525,7 +525,7 @@ ttt_lootgoblin_radar_delay                  15      // How delayed (in seconds) 
 ttt_lootgoblin_active_display               1       // Whether to show the loot goblin's information over their head and on the scoreboard once they are activated
 
 // Cupid
-ttt_cupids_are_independent                  0       // Whether cupids should be treated as members of the independent team (rather than the jester team)
+ttt_cupid_is_independent                  0       // Whether cupids should be treated as members of the independent team (rather than the jester team)
 ttt_cupid_lovers_notify_mode                1       // Who is notified with cupid makes two players fall in love 0 - No one. 1 - Everyone. 2 - Traitors. 3 - Innocents
 ttt_cupid_can_damage_lovers                 0       // Whether cupid should be able to damage the lovers
 ttt_cupid_lovers_can_damage_lovers          1       // Whether the lovers should be able to damage each other
