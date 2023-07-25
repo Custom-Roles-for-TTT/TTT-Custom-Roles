@@ -486,6 +486,38 @@ if SERVER then
     end
 end
 
+function util.GetConVarAsInt(convar_name, default)
+    local convar = GetConVar(convar_name)
+    if convar then
+        return convar:GetInt()
+    end
+    return default
+end
+
+function util.GetConVarAsFloat(convar_name, default)
+    local convar = GetConVar(convar_name)
+    if convar then
+        return convar:GetFloat()
+    end
+    return default
+end
+
+function util.GetConVarAsBool(convar_name, default)
+    local convar = GetConVar(convar_name)
+    if convar then
+        return convar:GetBool()
+    end
+    return default
+end
+
+function util.GetConVarAsString(convar_name, default)
+    local convar = GetConVar(convar_name)
+    if convar then
+        return convar:GetString()
+    end
+    return default
+end
+
 ----------------------------
 -- ADAPTED FROM FLARE GUN --
 ----------------------------

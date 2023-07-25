@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.9.3 (Beta)
+**Released:**
+
+### Developer
+- Added `util.GetConVarAsBool`, `util.GetConVarAsFloat`, `util.GetConVarAsInt`, and `util.GetConVarAsString` to act as wrappers that allow retrieving default values if the target convar does not exist
+
 ## 1.9.2
 **Released: July 22nd, 2023**
 

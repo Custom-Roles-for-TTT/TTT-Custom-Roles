@@ -33,7 +33,7 @@ function plymeta:HandleDetectiveLikePromotion()
     end
 
     -- Give the player their shop items if purchase was delayed
-    if DELAYED_SHOP_ROLES[role] and self.bought and GetConVar("ttt_" .. rolestring .. "_shop_delay"):GetBool() then
+    if DELAYED_SHOP_ROLES[role] and self.bought and util.GetConVarAsBool("ttt_" .. rolestring .. "_shop_delay", false) then
         self:GiveDelayedShopItems()
     end
 
