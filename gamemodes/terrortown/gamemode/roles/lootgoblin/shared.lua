@@ -19,25 +19,17 @@ ROLE_IS_ACTIVE[ROLE_LOOTGOBLIN] = function(ply)
     return ply:GetNWBool("LootGoblinActive", false)
 end
 
--------------------
--- ROLE FEATURES --
--------------------
-
-hook.Add("TTTSprintStaminaRecovery", "LootGoblin_TTTSprintStaminaRecovery", function(ply, recovery)
-    if IsPlayer(ply) and ply:IsActiveLootGoblin() and ply:IsRoleActive() then
-        return GetGlobalFloat("ttt_lootgoblin_sprint_recovery", 0.12)
-    end
-end)
-
-hook.Add("TTTSpeedMultiplier", "LootGoblin_TTTSpeedMultiplier", function(ply, mults)
-    if IsPlayer(ply) and ply:IsActiveLootGoblin() and ply:IsRoleActive() then
-        TableInsert(mults, GetGlobalFloat("ttt_lootgoblin_speed_mult", 1.2))
-    end
-end)
-
 ------------------
 -- ROLE CONVARS --
 ------------------
+
+local lootgoblin_speed_mult = CreateConVar("ttt_lootgoblin_speed_mult", "1.2", FCVAR_REPLICATED, "The multiplier to use on the loot goblin's movement speed when they are activated (e.g. 1.2 = 120% normal speed)", 1, 2)
+local lootgoblin_sprint_recovery = CreateConVar("ttt_lootgoblin_sprint_recovery", "0.12", FCVAR_REPLICATED, "The amount of stamina to recover per tick when the loot goblin is activated", 0, 1)
+CreateConVar("ttt_lootgoblin_regen_mode", "2", FCVAR_REPLICATED, "Whether the loot goblin should regenerate health and using what logic. 0 - No regeneration. 1 - Constant regen while active. 2 - Regen while standing still. 3 - Regen after taking damage", 0, 3)
+CreateConVar("ttt_lootgoblin_regen_delay", "0", FCVAR_REPLICATED, "The length of the delay (in seconds) before the loot goblin's health will start to regenerate", 0, 60)
+CreateConVar("ttt_lootgoblin_radar_timer", "15", FCVAR_REPLICATED, "How often (in seconds) the radar ping for the loot goblin should update", 1, 60)
+CreateConVar("ttt_lootgoblin_active_display", "1", FCVAR_REPLICATED, "Whether to show the loot goblin's information over their head and on the scoreboard once they are activated", 0, 1)
+CreateConVar("ttt_lootgoblin_radar_enabled", "0", FCVAR_REPLICATED, "Whether the radar ping for the loot goblin should be enabled or not", 0, 1)
 
 ROLE_CONVARS[ROLE_LOOTGOBLIN] = {}
 table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
@@ -139,3 +131,19 @@ table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
     cvar = "ttt_lootgoblin_active_display",
     type = ROLE_CONVAR_TYPE_BOOL,
 })
+
+-------------------
+-- ROLE FEATURES --
+-------------------
+
+hook.Add("TTTSprintStaminaRecovery", "LootGoblin_TTTSprintStaminaRecovery", function(ply, recovery)
+    if IsPlayer(ply) and ply:IsActiveLootGoblin() and ply:IsRoleActive() then
+        return lootgoblin_sprint_recovery:GetFloat()
+    end
+end)
+
+hook.Add("TTTSpeedMultiplier", "LootGoblin_TTTSpeedMultiplier", function(ply, mults)
+    if IsPlayer(ply) and ply:IsActiveLootGoblin() and ply:IsRoleActive() then
+        TableInsert(mults, lootgoblin_speed_mult:GetFloat())
+    end
+end)
