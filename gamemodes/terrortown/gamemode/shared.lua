@@ -711,18 +711,6 @@ ROLE_STRINGS_SHORT = {
     [ROLE_ARSONIST] = "ars"
 }
 
-for role = 0, ROLE_MAX do
-    local rolestring = ROLE_STRINGS_RAW[role]
-
-    if not DEFAULT_ROLES[role] then
-        CreateConVar("ttt_" .. rolestring .. "_enabled", "0", FCVAR_REPLICATED)
-    end
-
-    CreateConVar("ttt_" .. rolestring .. "_name", "", FCVAR_REPLICATED)
-    CreateConVar("ttt_" .. rolestring .. "_name_plural", "", FCVAR_REPLICATED)
-    CreateConVar("ttt_" .. rolestring .. "_name_article", "", FCVAR_REPLICATED)
-end
-
 function StartsWithVowel(word)
     local firstletter = StringSub(word, 1, 1)
     return firstletter == "a" or
