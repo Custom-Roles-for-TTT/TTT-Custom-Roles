@@ -33,3 +33,7 @@ function SWEP:PrimaryAttack()
         self:Remove()
     end
 end
+
+function SWEP:OnDrop()
+    self:Remove()
+end
