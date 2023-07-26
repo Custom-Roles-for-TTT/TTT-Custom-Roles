@@ -26,14 +26,16 @@ SWEP.InLoadoutForDefault = {ROLE_SPY}
 SWEP.AllowDrop = false
 SWEP.LimitedStock = true
 
-function SWEP:PrimaryAttack()
-    self.BaseClass.PrimaryAttack(self)
+if SERVER then
+    function SWEP:PrimaryAttack()
+        self.BaseClass.PrimaryAttack(self)
 
-    if SERVER and self:Clip1() <= 0 then
+        if self:Clip1() <= 0 then
+            self:Remove()
+        end
+    end
+
+    function SWEP:OnDrop()
         self:Remove()
     end
-end
-
-function SWEP:OnDrop()
-    self:Remove()
 end
