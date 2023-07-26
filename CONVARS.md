@@ -222,8 +222,8 @@ ttt_assassin_allow_zombie_kill              1       // Whether the assassin can 
 ttt_assassin_allow_vampire_kill             1       // Whether the assassin can kill a vampire without penalty, even if it is not their target
 
 // Vampire
-ttt_vampires_are_monsters                   0       // Whether vampires should be treated as members of the monster team (rather than the traitor team)
-ttt_vampires_are_independent                0       // Whether vampires should be treated as members of the independent team (rather than the traitor team)
+ttt_vampire_is_monster                      0       // Whether vampires should be treated as members of the monster team (rather than the traitor team)
+ttt_vampire_is_independent                  0       // Whether vampires should be treated as members of the independent team (rather than the traitor team)
 ttt_vampire_vision_enable                   0       // Whether vampires have their special vision highlights enabled
 ttt_vampire_drain_enable                    1       // Whether vampires have the ability to drain a living target's blood using their fangs
 ttt_vampire_drain_first                     0       // Whether vampires should drain a living target's blood first rather than converting first
