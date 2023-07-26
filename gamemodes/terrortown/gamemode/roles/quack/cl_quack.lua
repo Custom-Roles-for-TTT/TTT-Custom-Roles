@@ -1,6 +1,13 @@
 local hook = hook
 local string = string
 
+-------------
+-- CONVARS --
+-------------
+
+local quack_phantom_cure = GetConVar("ttt_quack_phantom_cure")
+local quack_station_bomb = GetConVar("ttt_quack_station_bomb")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -45,11 +52,11 @@ hook.Add("TTTTutorialRoleText", "Quack_TTTTutorialRoleText", function(role, titl
 
         html = html .. "<span style='display: block; margin-top: 10px;'>Use the equipment shop to buy <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>a bomb station</span> or <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>fake " .. string.lower(ROLE_STRINGS[ROLE_PARASITE]) .. " cure</span> to help administer \"treatments\".</span>"
 
-        if GetGlobalBool("ttt_quack_phantom_cure", false) then
+        if quack_phantom_cure:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_QUACK] .. " can also <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>buy an Exorcism Device</span> which can be used to remove a haunting " .. ROLE_STRINGS[ROLE_PHANTOM] .. ".</span>"
         end
 
-        if GetGlobalBool("ttt_quack_station_bomb", false) then
+        if quack_station_bomb:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>There is also a buyable <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>Station Bomb</span> which can be used to convert someone's Health Station into a Bomb Station.</span>"
         end
 

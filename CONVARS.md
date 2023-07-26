@@ -222,8 +222,8 @@ ttt_assassin_allow_zombie_kill              1       // Whether the assassin can 
 ttt_assassin_allow_vampire_kill             1       // Whether the assassin can kill a vampire without penalty, even if it is not their target
 
 // Vampire
-ttt_vampires_are_monsters                   0       // Whether vampires should be treated as members of the monster team (rather than the traitor team)
-ttt_vampires_are_independent                0       // Whether vampires should be treated as members of the independent team (rather than the traitor team)
+ttt_vampire_is_monster                      0       // Whether vampires should be treated as members of the monster team (rather than the traitor team)
+ttt_vampire_is_independent                  0       // Whether vampires should be treated as members of the independent team (rather than the traitor team)
 ttt_vampire_vision_enable                   0       // Whether vampires have their special vision highlights enabled
 ttt_vampire_drain_enable                    1       // Whether vampires have the ability to drain a living target's blood using their fangs
 ttt_vampire_drain_first                     0       // Whether vampires should drain a living target's blood first rather than converting first
@@ -386,7 +386,7 @@ ttt_detectives_glow_enable                  0       // Whether members of the de
 ttt_special_detectives_armor_loadout        1       // Whether special detectives (all detective roles other than the original detective itself) get armor automatically for free
 ttt_all_search_postround                    1       // Whether non-detectives can search bodies post-round or not
 ttt_all_search_binoc                        0       // Whether non-detectives can search bodies if they are using binoculars
-ttt_detectives_credits_timer                 0       // How often in seconds to give members of the detective team a credit (set to 0 to disable)
+ttt_detectives_credits_timer                0       // How often in seconds to give members of the detective team a credit (set to 0 to disable)
 
 // Paladin
 ttt_paladin_aura_radius                     5       // The radius of the paladin's aura in meters
@@ -485,7 +485,7 @@ ttt_beggar_scan_cooldown                    3       // The amount of time (in se
 ttt_beggar_scan_distance                    2500    // The maximum distance away the scanner target can be
 
 // Bodysnatcher
-ttt_bodysnatcher_is_independent           0       // Whether bodysnatchers should be treated as members of the independent team (rather than the jester team)
+ttt_bodysnatcher_is_independent             0       // Whether bodysnatchers should be treated as members of the independent team (rather than the jester team)
 ttt_bodysnatcher_destroy_body               0       // Whether the bodysnatching device destroys the body it is used on or not
 ttt_bodysnatcher_show_role                  1       // Whether the bodysnatching device shows the role of the corpse it is used on or not
 ttt_bodysnatcher_reveal_traitor             1       // Who the bodysnatcher is revealed to when they join the traitor team. 0 - No one. 1 - Everyone. 2 - Their new team
@@ -525,7 +525,7 @@ ttt_lootgoblin_radar_delay                  15      // How delayed (in seconds) 
 ttt_lootgoblin_active_display               1       // Whether to show the loot goblin's information over their head and on the scoreboard once they are activated
 
 // Cupid
-ttt_cupid_is_independent                  0       // Whether cupids should be treated as members of the independent team (rather than the jester team)
+ttt_cupid_is_independent                    0       // Whether cupids should be treated as members of the independent team (rather than the jester team)
 ttt_cupid_lovers_notify_mode                1       // Who is notified with cupid makes two players fall in love 0 - No one. 1 - Everyone. 2 - Traitors. 3 - Innocents
 ttt_cupid_can_damage_lovers                 0       // Whether cupid should be able to damage the lovers
 ttt_cupid_lovers_can_damage_lovers          1       // Whether the lovers should be able to damage each other
@@ -621,9 +621,9 @@ ttt_killer_credits_starting                 2       // The number of credits a k
 ttt_killer_update_scoreboard                1       // Whether killers show dead players as missing in action (Is ignored if ttt_independents_update_scoreboard is set to 1)
 
 // Zombie
-ttt_zombies_are_monsters                    0       // Whether zombies should be treated as members of the monster team (rather than the independent team)
-ttt_zombies_are_traitors                    0       // Whether zombies should be treated as members of the traitors team (rather than the independent team)
-ttt_zombie_round_chance                     0.1     // The chance that a "zombie round" will occur where all players who would have been traitors are made zombies instead. Only usable when "ttt_zombies_are_traitors" is set to "1"
+ttt_zombie_is_monster                       0       // Whether zombies should be treated as members of the monster team (rather than the independent team)
+ttt_zombie_is_traitor                       0       // Whether zombies should be treated as members of the traitors team (rather than the independent team)
+ttt_zombie_round_chance                     0.1     // The chance that a "zombie round" will occur where all players who would have been traitors are made zombies instead. Only usable when "ttt_zombie_is_traitor" is set to "1"
 ttt_zombie_vision_enable                    0       // Whether zombies have their special vision highlights enabled
 ttt_zombie_spit_enable                      1       // Whether zombies have their spit attack enabled
 ttt_zombie_leap_enable                      1       // Whether zombies have their leap attack enabled

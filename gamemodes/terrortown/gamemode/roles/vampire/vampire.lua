@@ -26,24 +26,13 @@ resource.AddSingleFile("sound/weapons/ttt/vampireeat.wav")
 -- CONVARS --
 -------------
 
-local vampires_are_monsters = CreateConVar("ttt_vampires_are_monsters", "0")
-local vampires_are_independent = CreateConVar("ttt_vampires_are_independent", "0")
-local vampire_show_target_icon = CreateConVar("ttt_vampire_show_target_icon", "0")
 local vampire_damage_reduction = CreateConVar("ttt_vampire_damage_reduction", "0", FCVAR_NONE, "The fraction an attacker's bullet damage will be reduced by when they are shooting a vampire", 0, 1)
-local vampire_prime_death_mode = CreateConVar("ttt_vampire_prime_death_mode", "0", FCVAR_NONE, "What to do when the prime vampire(s) (e.g. players who spawn as vampires originally) are killed. 0 - Do nothing. 1 - Kill all vampire thralls (non-prime vampires). 2 - Revert all vampire thralls (non-prime vampires) to their original role", 0, 2)
-local vampire_vision_enable = CreateConVar("ttt_vampire_vision_enable", "0")
 local vampire_kill_credits = CreateConVar("ttt_vampire_kill_credits", "1")
-local vampire_loot_credits = CreateConVar("ttt_vampire_loot_credits", "1")
 local vampire_prime_friendly_fire = CreateConVar("ttt_vampire_prime_friendly_fire", "0", FCVAR_NONE, "How to handle friendly fire damage to the prime vampire(s) from their thralls. 0 - Do nothing. 1 - Reflect damage back to the attacker (non-prime vampire). 2 - Negate damage to the prime vampire.", 0, 2)
 
-hook.Add("TTTSyncGlobals", "Vampire_TTTSyncGlobals", function()
-    SetGlobalBool("ttt_vampires_are_monsters", vampires_are_monsters:GetBool())
-    SetGlobalBool("ttt_vampires_are_independent", vampires_are_independent:GetBool())
-    SetGlobalBool("ttt_vampire_show_target_icon", vampire_show_target_icon:GetBool())
-    SetGlobalBool("ttt_vampire_vision_enable", vampire_vision_enable:GetBool())
-    SetGlobalBool("ttt_vampire_loot_credits", vampire_loot_credits:GetBool())
-    SetGlobalInt("ttt_vampire_prime_death_mode", vampire_prime_death_mode:GetInt())
-end)
+local vampire_show_target_icon = GetConVar("ttt_vampire_show_target_icon")
+local vampire_vision_enable = GetConVar("ttt_vampire_vision_enable")
+local vampire_prime_death_mode = GetConVar("ttt_vampire_prime_death_mode")
 
 -------------
 -- CREDITS --

@@ -16,13 +16,6 @@ BEGGAR_SCAN_MODE_DISABLED = 0
 BEGGAR_SCAN_MODE_TRAITORS = 1
 BEGGAR_SCAN_MODE_SHOPS = 2
 
--- Update their team
-hook.Add("TTTUpdateRoleState", "Beggar_TTTUpdateRoleState", function()
-    local beggar_is_independent = GetConVar("ttt_beggar_is_independent"):GetBool()
-    INDEPENDENT_ROLES[ROLE_BEGGAR] = beggar_is_independent
-    JESTER_ROLES[ROLE_BEGGAR] = not beggar_is_independent
-end)
-
 --------------------
 -- PLAYER METHODS --
 --------------------
@@ -53,7 +46,7 @@ end
 -- ROLE CONVARS --
 ------------------
 
-CreateConVar("ttt_beggar_is_independent", "0", FCVAR_REPLICATED, "Whether beggars should be treated as members of the independent team", 0, 1)
+local beggar_is_independent = CreateConVar("ttt_beggar_is_independent", "0", FCVAR_REPLICATED, "Whether beggars should be treated as members of the independent team", 0, 1)
 CreateConVar("ttt_beggar_respawn", "0", FCVAR_REPLICATED, "Whether the beggar respawns when they are killed before joining another team", 0, 1)
 CreateConVar("ttt_beggar_respawn_limit", "0", FCVAR_REPLICATED, "The maximum number of times the beggar can respawn (if \"ttt_beggar_respawn\" is enabled). Set to 0 to allow infinite", 0, 30)
 CreateConVar("ttt_beggar_respawn_delay", "3", FCVAR_REPLICATED, "The delay to use when respawning the beggar (if \"ttt_beggar_respawn\" is enabled)", 0, 60)
@@ -134,3 +127,13 @@ table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
 })
+
+-------------------
+-- ROLE FEATURES --
+-------------------
+
+hook.Add("TTTUpdateRoleState", "Beggar_TTTUpdateRoleState", function()
+    local is_independent = beggar_is_independent:GetBool()
+    INDEPENDENT_ROLES[ROLE_BEGGAR] = is_independent
+    JESTER_ROLES[ROLE_BEGGAR] = not is_independent
+end)

@@ -12,13 +12,8 @@ local GetAllPlayers = player.GetAll
 -- CONVARS --
 -------------
 
-local tracker_footstep_time = CreateConVar("ttt_tracker_footstep_time", "15", FCVAR_NONE, "The amount of time players' footsteps should show to the tracker before fading. Set to 0 to disable", 0, 60)
-local tracker_footstep_color = CreateConVar("ttt_tracker_footstep_color", "1")
-
-hook.Add("TTTSyncGlobals", "Tracker_TTTSyncGlobals", function()
-    SetGlobalInt("ttt_tracker_footstep_time", tracker_footstep_time:GetInt())
-    SetGlobalBool("ttt_tracker_footstep_color", tracker_footstep_color:GetBool())
-end)
+local tracker_footstep_time = GetConVar("ttt_tracker_footstep_time")
+local tracker_footstep_color = GetConVar("ttt_tracker_footstep_color")
 
 -------------------
 -- ROLE FEATURES --

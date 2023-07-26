@@ -960,13 +960,13 @@ function BeginRound()
     GAMEMODE.DamageLog = {}
     GAMEMODE.RoundStartTime = CurTime()
 
-    local zombies_are_traitors = TRAITOR_ROLES[ROLE_ZOMBIE]
-    local vampires_are_traitors = TRAITOR_ROLES[ROLE_VAMPIRE]
-    LoadMonsterEquipment(zombies_are_traitors, vampires_are_traitors)
+    local zombie_is_traitor = TRAITOR_ROLES[ROLE_ZOMBIE]
+    local vampire_is_traitor = TRAITOR_ROLES[ROLE_VAMPIRE]
+    LoadMonsterEquipment(zombie_is_traitor, vampire_is_traitor)
     -- Send the status to the client because at this point the globals haven't synced
     net.Start("TTT_LoadMonsterEquipment")
-    net.WriteBool(zombies_are_traitors)
-    net.WriteBool(vampires_are_traitors)
+    net.WriteBool(zombie_is_traitor)
+    net.WriteBool(vampire_is_traitor)
     net.Broadcast()
 
     -- Sound start alarm

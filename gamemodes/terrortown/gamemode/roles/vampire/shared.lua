@@ -14,55 +14,6 @@ VAMPIRE_THRALL_FF_MODE_NONE = 0
 VAMPIRE_THRALL_FF_MODE_REFLECT = 1
 VAMPIRE_THRALL_FF_MODE_IMMUNE = 2
 
-local function InitializeEquipment()
-    if EquipmentItems then
-        if not EquipmentItems[ROLE_VAMPIRE] then
-            EquipmentItems[ROLE_VAMPIRE] = {}
-        end
-
-        -- If we haven't already registered this item, add it to the list
-        if not table.HasItemWithPropertyValue(EquipmentItems[ROLE_VAMPIRE], "id", EQUIP_ARMOR) then
-            local mat_dir = "vgui/ttt/"
-            table.insert(EquipmentItems[ROLE_VAMPIRE], {
-                id = EQUIP_ARMOR,
-                type = "item_passive",
-                material = mat_dir .. "icon_armor",
-                name = "item_armor",
-                desc = "item_armor_desc"
-            })
-        end
-    end
-
-    if DefaultEquipment then
-        DefaultEquipment[ROLE_VAMPIRE] = {
-            EQUIP_ARMOR,
-            EQUIP_RADAR,
-            EQUIP_DISGUISE
-        }
-    end
-end
-InitializeEquipment()
-
--- Initialize role features
-hook.Add("Initialize", "Vampire_Shared_Initialize", function()
-    InitializeEquipment()
-end)
-hook.Add("TTTPrepareRound", "Vampire_Shared_TTTPrepareRound", function()
-    InitializeEquipment()
-end)
-
-hook.Add("TTTUpdateRoleState", "Vampire_TTTUpdateRoleState", function()
-    local vampires_are_monsters = GetGlobalBool("ttt_vampires_are_monsters", false)
-    -- Vampires cannot be both Monsters and Independents so don't make them Independents if they are already Monsters
-    local vampires_are_independent = not vampires_are_monsters and GetGlobalBool("ttt_vampires_are_independent", false)
-    MONSTER_ROLES[ROLE_VAMPIRE] = vampires_are_monsters
-    TRAITOR_ROLES[ROLE_VAMPIRE] = not vampires_are_monsters and not vampires_are_independent
-    INDEPENDENT_ROLES[ROLE_VAMPIRE] = vampires_are_independent
-
-    -- Override whether the Vampire can loot credits
-    CAN_LOOT_CREDITS_ROLES[ROLE_VAMPIRE] = GetGlobalBool("ttt_vampire_loot_credits", true)
-end)
-
 --------------------
 -- PLAYER METHODS --
 --------------------
@@ -100,13 +51,20 @@ end)
 -- ROLE CONVARS --
 ------------------
 
+local vampire_is_monster = CreateConVar("ttt_vampire_is_monster", "0", FCVAR_REPLICATED)
+local vampire_is_independent = CreateConVar("ttt_vampire_is_independent", "0", FCVAR_REPLICATED)
+local vampire_loot_credits = CreateConVar("ttt_vampire_loot_credits", "1", FCVAR_REPLICATED)
+CreateConVar("ttt_vampire_show_target_icon", "0", FCVAR_REPLICATED)
+CreateConVar("ttt_vampire_vision_enable", "0", FCVAR_REPLICATED)
+CreateConVar("ttt_vampire_prime_death_mode", "0", FCVAR_REPLICATED, "What to do when the prime vampire(s) (e.g. players who spawn as vampires originally) are killed. 0 - Do nothing. 1 - Kill all vampire thralls (non-prime vampires). 2 - Revert all vampire thralls (non-prime vampires) to their original role", 0, 2)
+
 ROLE_CONVARS[ROLE_VAMPIRE] = {}
 table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
-    cvar = "ttt_vampires_are_monsters",
+    cvar = "ttt_vampire_is_monster",
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
-    cvar = "ttt_vampires_are_independent",
+    cvar = "ttt_vampire_is_independent",
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
@@ -195,3 +153,56 @@ table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
     cvar = "ttt_vampire_vision_enable",
     type = ROLE_CONVAR_TYPE_BOOL
 })
+
+-------------------
+-- ROLE FEATURES --
+-------------------
+
+local function InitializeEquipment()
+    if EquipmentItems then
+        if not EquipmentItems[ROLE_VAMPIRE] then
+            EquipmentItems[ROLE_VAMPIRE] = {}
+        end
+
+        -- If we haven't already registered this item, add it to the list
+        if not table.HasItemWithPropertyValue(EquipmentItems[ROLE_VAMPIRE], "id", EQUIP_ARMOR) then
+            local mat_dir = "vgui/ttt/"
+            table.insert(EquipmentItems[ROLE_VAMPIRE], {
+                id = EQUIP_ARMOR,
+                type = "item_passive",
+                material = mat_dir .. "icon_armor",
+                name = "item_armor",
+                desc = "item_armor_desc"
+            })
+        end
+    end
+
+    if DefaultEquipment then
+        DefaultEquipment[ROLE_VAMPIRE] = {
+            EQUIP_ARMOR,
+            EQUIP_RADAR,
+            EQUIP_DISGUISE
+        }
+    end
+end
+InitializeEquipment()
+
+-- Initialize role features
+hook.Add("Initialize", "Vampire_Shared_Initialize", function()
+    InitializeEquipment()
+end)
+hook.Add("TTTPrepareRound", "Vampire_Shared_TTTPrepareRound", function()
+    InitializeEquipment()
+end)
+
+hook.Add("TTTUpdateRoleState", "Vampire_TTTUpdateRoleState", function()
+    local is_monster = vampire_is_monster:GetBool()
+    -- Vampires cannot be both Monsters and Independents so don't make them Independents if they are already Monsters
+    local is_independent = not is_monster and vampire_is_independent:GetBool()
+    MONSTER_ROLES[ROLE_VAMPIRE] = is_monster
+    TRAITOR_ROLES[ROLE_VAMPIRE] = not is_monster and not is_independent
+    INDEPENDENT_ROLES[ROLE_VAMPIRE] = is_independent
+
+    -- Override whether the Vampire can loot credits
+    CAN_LOOT_CREDITS_ROLES[ROLE_VAMPIRE] = vampire_loot_credits:GetBool()
+end)

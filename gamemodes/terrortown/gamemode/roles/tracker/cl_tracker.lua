@@ -1,5 +1,12 @@
 local hook = hook
 
+-------------
+-- CONVARS --
+-------------
+
+local tracker_footstep_time = GetConVar("ttt_tracker_footstep_time")
+local tracker_footstep_color = GetConVar("ttt_tracker_footstep_color")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -24,11 +31,11 @@ hook.Add("TTTTutorialRoleText", "Tracker_TTTTutorialRoleText", function(role, ti
         local html = "The " .. ROLE_STRINGS[ROLE_TRACKER] .. " is a " .. ROLE_STRINGS[ROLE_DETECTIVE] .. " and a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> whose job is to find and eliminate their enemies."
 
         -- Footsteps
-        local footstepTime = GetGlobalInt("ttt_tracker_footstep_time", 15)
+        local footstepTime = tracker_footstep_time:GetInt()
         if footstepTime > 0 then
             html = html .. "<span style='display: block; margin-top: 10px;'>Instead of getting a DNA Scanner like a vanilla <span style='color: rgb(" .. detectiveColor.r .. ", " .. detectiveColor.g .. ", " .. detectiveColor.b .. ")'>" .. ROLE_STRINGS[ROLE_DETECTIVE] .. "</span>, they have the ability to see player footsteps from the last " .. footstepTime .. " seconds on the ground.</span>"
 
-            if GetGlobalBool("ttt_tracker_footstep_color", true) then
+            if tracker_footstep_color:GetBool() then
                 html = html .. "<span style='display: block; margin-top: 10px;'>Each player will have a randomly assigned <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>footstep color</span> allowing the " .. ROLE_STRINGS[ROLE_TRACKER] .. " to follow specific players.</span>"
             end
         end

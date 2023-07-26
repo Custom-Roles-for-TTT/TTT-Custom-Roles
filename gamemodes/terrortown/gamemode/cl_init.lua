@@ -600,9 +600,9 @@ end
 -- Monster-as-traitors equipment
 
 net.Receive("TTT_LoadMonsterEquipment", function()
-    local zombies_are_traitors = net.ReadBool()
-    local vampires_are_traitors = net.ReadBool()
-    LoadMonsterEquipment(zombies_are_traitors, vampires_are_traitors)
+    local zombie_is_traitor = net.ReadBool()
+    local vampire_is_traitor = net.ReadBool()
+    LoadMonsterEquipment(zombie_is_traitor, vampire_is_traitor)
 end)
 
 -- Footsteps

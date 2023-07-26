@@ -1,5 +1,13 @@
 local hook = hook
 
+-------------
+-- CONVARS --
+-------------
+
+local paramedic_defib_as_innocent = GetConVar("ttt_paramedic_defib_as_innocent")
+local paramedic_device_loadout = GetConVar("ttt_paramedic_device_loadout")
+local paramedic_device_shop = GetConVar("ttt_paramedic_device_shop")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -25,13 +33,13 @@ hook.Add("TTTTutorialRoleText", "Paramedic_TTTTutorialRoleText", function(role, 
         local html = "The " .. ROLE_STRINGS[ROLE_PARAMEDIC] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> whose goal is to resurrect dead players."
 
         -- Loadout Defib
-        local inLoadout = GetGlobalBool("ttt_paramedic_device_loadout", true)
+        local inLoadout = paramedic_device_loadout:GetBool()
         if inLoadout then
             html = html .. "<span style='display: block; margin-top: 10px;'>A <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>defibrillator is given</span> to the " .. ROLE_STRINGS[ROLE_PARAMEDIC] .. " at the start of the round.</span>"
         end
 
         -- Shop Defib
-        if GetGlobalBool("ttt_paramedic_device_shop", false) then
+        if paramedic_device_shop:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>They <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>can "
             if inLoadout then
                 html = html .. "also "
@@ -40,7 +48,7 @@ hook.Add("TTTTutorialRoleText", "Paramedic_TTTTutorialRoleText", function(role, 
         end
 
         -- Respawn as Innocent
-        if GetGlobalBool("ttt_paramedic_defib_as_innocent", false) then
+        if paramedic_defib_as_innocent:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>Any player <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>resurrected by the defibrillator</span> is converted to " .. ROLE_STRINGS_EXT[ROLE_INNOCENT] .. ".</span>"
         end
 

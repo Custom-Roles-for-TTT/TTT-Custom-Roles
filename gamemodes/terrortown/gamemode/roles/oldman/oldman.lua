@@ -21,18 +21,10 @@ resource.AddSingleFile("sound/oldmanramble.wav")
 -- CONVARS --
 -------------
 
-local oldman_drain_health_to = CreateConVar("ttt_oldman_drain_health_to", "0", FCVAR_NONE, "The amount of health to drain the old man down to. Set to 0 to disable", 0, 200)
-local oldman_adrenaline_rush = CreateConVar("ttt_oldman_adrenaline_rush", "5", FCVAR_NONE, "The time in seconds the old mans adrenaline rush lasts for. Set to 0 to disable", 0, 30)
-local oldman_adrenaline_shotgun = CreateConVar("ttt_oldman_adrenaline_shotgun", "1")
-local oldman_adrenaline_ramble = CreateConVar("ttt_oldman_adrenaline_ramble", "1")
-local oldman_hide_when_active = CreateConVar("ttt_oldman_hide_when_active", "0")
-
-hook.Add("TTTSyncGlobals", "OldMan_TTTSyncGlobals", function()
-    SetGlobalInt("ttt_oldman_drain_health_to", oldman_drain_health_to:GetInt())
-    SetGlobalInt("ttt_oldman_adrenaline_rush", oldman_adrenaline_rush:GetInt())
-    SetGlobalBool("ttt_oldman_adrenaline_shotgun", oldman_adrenaline_shotgun:GetBool())
-    SetGlobalBool("ttt_oldman_hide_when_active", oldman_hide_when_active:GetBool())
-end)
+local oldman_drain_health_to = GetConVar("ttt_oldman_drain_health_to")
+local oldman_adrenaline_rush = GetConVar("ttt_oldman_adrenaline_rush")
+local oldman_adrenaline_shotgun = GetConVar("ttt_oldman_adrenaline_shotgun")
+local oldman_adrenaline_ramble = GetConVar("ttt_oldman_adrenaline_ramble")
 
 ----------------
 -- WIN CHECKS --

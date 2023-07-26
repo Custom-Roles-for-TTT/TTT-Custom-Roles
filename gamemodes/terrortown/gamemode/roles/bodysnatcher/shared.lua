@@ -8,13 +8,6 @@ BODYSNATCHER_REVEAL_NONE = 0
 BODYSNATCHER_REVEAL_ALL = 1
 BODYSNATCHER_REVEAL_TEAM = 2
 
--- Update their team
-hook.Add("TTTUpdateRoleState", "Bodysnatcher_TTTUpdateRoleState", function()
-    local bodysnatcher_is_independent = GetConVar("ttt_bodysnatcher_is_independent"):GetBool()
-    INDEPENDENT_ROLES[ROLE_BODYSNATCHER] = bodysnatcher_is_independent
-    JESTER_ROLES[ROLE_BODYSNATCHER] = not bodysnatcher_is_independent
-end)
-
 --------------------
 -- PLAYER METHODS --
 --------------------
@@ -46,7 +39,7 @@ CreateConVar("ttt_bodysnatcher_reveal_traitor", "1", FCVAR_REPLICATED, "Who the 
 CreateConVar("ttt_bodysnatcher_reveal_jester", "1", FCVAR_REPLICATED, "Who the bodysnatcher is revealed to when they join the jester team", 0, 2)
 CreateConVar("ttt_bodysnatcher_reveal_independent", "1", FCVAR_REPLICATED, "Who the bodysnatcher is revealed to when they join the independent team", 0, 2)
 CreateConVar("ttt_bodysnatcher_reveal_monster", "1", FCVAR_REPLICATED, "Who the bodysnatcher is revealed to when they join the monster team", 0, 2)
-CreateConVar("ttt_bodysnatcher_is_independent", "0", FCVAR_REPLICATED, "Whether bodysnatchers should be treated as members of the independent team", 0, 1)
+local bodysnatcher_is_independent = CreateConVar("ttt_bodysnatcher_is_independent", "0", FCVAR_REPLICATED, "Whether bodysnatchers should be treated as members of the independent team", 0, 1)
 
 ROLE_CONVARS[ROLE_BODYSNATCHER] = {}
 table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
@@ -118,3 +111,13 @@ table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
 })
+
+-------------------
+-- ROLE FEATURES --
+-------------------
+
+hook.Add("TTTUpdateRoleState", "Bodysnatcher_Team_TTTUpdateRoleState", function()
+    local is_independent = bodysnatcher_is_independent:GetBool()
+    INDEPENDENT_ROLES[ROLE_BODYSNATCHER] = is_independent
+    JESTER_ROLES[ROLE_BODYSNATCHER] = not is_independent
+end)
