@@ -5,6 +5,8 @@
 
 ### Fixes
 - Fixed `ttt_sapper_protect_self` not allowing sapper to be protected from a different sapper if there are somehow multiple
+- Fixed sprinting, then changing your crosshair size, then sprinting again causing your crosshair to revert to the original unchanged size
+- Fixed sprinting causing crosshair size to be rounded to the nearest whole number
 
 ### Developer
 - Changed role logic to load shared files first

@@ -8,9 +8,7 @@ AddHook("TTTSprintStateChange", "Sprinting_Crosshair_TTTSprintStateChange", func
     if ply ~= LocalPlayer() then return end
 
     if sprinting then
-        if not crosshairSize then
-            crosshairSize = GetConVar("ttt_crosshair_size"):GetInt()
-        end
+        crosshairSize = GetConVar("ttt_crosshair_size"):GetFloat()
         RunConsoleCommand("ttt_crosshair_size", crosshairSize + 1)
     elseif crosshairSize then
         RunConsoleCommand("ttt_crosshair_size", crosshairSize)
