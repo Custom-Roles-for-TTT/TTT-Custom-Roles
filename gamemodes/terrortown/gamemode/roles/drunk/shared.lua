@@ -7,6 +7,8 @@ local table = table
 -- ROLE CONVARS --
 ------------------
 
+CreateConVar("ttt_drunk_become_clown", "0", FCVAR_REPLICATED)
+
 ROLE_CONVARS[ROLE_DRUNK] = {}
 table.insert(ROLE_CONVARS[ROLE_DRUNK], {
     cvar = "ttt_drunk_sober_time",

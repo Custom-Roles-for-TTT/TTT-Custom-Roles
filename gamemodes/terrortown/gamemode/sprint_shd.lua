@@ -15,6 +15,12 @@ local defaultRecovery = 0.08
 local traitorRecovery = 0.12
 local consumption = 0.2
 
+CreateConVar("ttt_sprint_enabled", "1", { FCVAR_SERVER_CAN_EXECUTE, FCVAR_REPLICATED }, "Whether sprint is enabled")
+CreateConVar("ttt_sprint_bonus_rel", "0.4", { FCVAR_SERVER_CAN_EXECUTE, FCVAR_REPLICATED }, "The relative speed bonus given while sprinting. Def: 0.4")
+CreateConVar("ttt_sprint_regenerate_innocent", "0.08", { FCVAR_SERVER_CAN_EXECUTE, FCVAR_REPLICATED }, "Sets stamina regeneration for innocents. Def: 0.08")
+CreateConVar("ttt_sprint_regenerate_traitor", "0.12", { FCVAR_SERVER_CAN_EXECUTE, FCVAR_REPLICATED }, "Sets stamina regeneration speed for traitors. Def: 0.12")
+CreateConVar("ttt_sprint_consume", "0.2", { FCVAR_SERVER_CAN_EXECUTE, FCVAR_REPLICATED }, "Sets stamina consumption speed. Def: 0.2")
+
 function GetSprintMultiplier(ply, sprinting)
     local mult = 1
     if IsValid(ply) then
@@ -78,11 +84,11 @@ local function HandleSprintStaminaRecovery(ply)
 end
 
 AddHook("TTTPrepareRound", "TTTSprintPrepareRound", function()
-    sprintEnabled = GetGlobalBool("ttt_sprint_enabled", true)
-    speedMultiplier = GetGlobalFloat("ttt_sprint_bonus_rel", "0.4")
-    defaultRecovery = GetGlobalFloat("ttt_sprint_regenerate_innocent", "0.08")
-    traitorRecovery = GetGlobalFloat("ttt_sprint_regenerate_traitor", "0.12")
-    consumption = GetGlobalFloat("ttt_sprint_consume", "0.2")
+    sprintEnabled = GetConVar("ttt_sprint_enabled"):GetBool()
+    speedMultiplier = GetConVar("ttt_sprint_bonus_rel"):GetFloat()
+    defaultRecovery = GetConVar("ttt_sprint_regenerate_innocent"):GetFloat()
+    traitorRecovery = GetConVar("ttt_sprint_regenerate_traitor"):GetFloat()
+    consumption = GetConVar("ttt_sprint_consume"):GetFloat()
 
     if SERVER then
         for _, p in ipairs(GetAllPlayers()) do

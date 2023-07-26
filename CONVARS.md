@@ -179,7 +179,7 @@ ttt_arsonist_min_players                    0       // The minimum number of pla
 // ----------------------------------------
 
 // TRAITOR TEAM SETTINGS
-ttt_traitor_vision_enable                   0       // Whether members of the traitor team can see other members of the traitor team (including Glitches) through walls via a highlight effect
+ttt_traitors_vision_enable                  0       // Whether members of the traitor team can see other members of the traitor team (including Glitches) through walls via a highlight effect
 ttt_traitor_credits_timer                   0       // How often in seconds to give members of the traitor team a credit (set to 0 to disable)
 
 // Traitor
@@ -222,8 +222,8 @@ ttt_assassin_allow_zombie_kill              1       // Whether the assassin can 
 ttt_assassin_allow_vampire_kill             1       // Whether the assassin can kill a vampire without penalty, even if it is not their target
 
 // Vampire
-ttt_vampires_are_monsters                   0       // Whether vampires should be treated as members of the monster team (rather than the traitor team)
-ttt_vampires_are_independent                0       // Whether vampires should be treated as members of the independent team (rather than the traitor team)
+ttt_vampire_is_monster                      0       // Whether vampires should be treated as members of the monster team (rather than the traitor team)
+ttt_vampire_is_independent                  0       // Whether vampires should be treated as members of the independent team (rather than the traitor team)
 ttt_vampire_vision_enable                   0       // Whether vampires have their special vision highlights enabled
 ttt_vampire_drain_enable                    1       // Whether vampires have the ability to drain a living target's blood using their fangs
 ttt_vampire_drain_first                     0       // Whether vampires should drain a living target's blood first rather than converting first
@@ -375,27 +375,27 @@ ttt_infected_cough_timer_max                60      // The maximum time between 
 
 // DETECTIVE TEAM SETTINGS
 // All Detective Roles
-ttt_detective_search_only                   1       // Whether only detectives can search bodies or not
-ttt_detective_search_only_c4                0       // Whether only detectives can reveal a body's C4 disarm code. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
-ttt_detective_search_only_dmg               0       // Whether only detectives can reveal the type of damage used to kill a body. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
-ttt_detective_search_only_dtime             0       // Whether only detectives can reveal a body's death time. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
-ttt_detective_search_only_equipment         0       // Whether only detectives can reveal a body's equipment. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
-ttt_detective_search_only_head              0       // Whether only detectives can reveal whether a body was killed by a head shot. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
-ttt_detective_search_only_kills             0       // Whether only detectives can reveal a body's kills. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
-ttt_detective_search_only_lastid            0       // Whether only detectives can reveal the last player a body saw before death. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
-ttt_detective_search_only_nick              0       // Whether only detectives can reveal a body's name. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
-ttt_detective_search_only_role              0       // Whether only detectives can reveal a body's role. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
-ttt_detective_search_only_team              0       // Whether only detectives can reveal a body's tea,. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled or "ttt_detective_search_only_role" is disabled.
-ttt_detective_search_only_stime             0       // Whether only detectives can reveal a body's DNA decay time. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
-ttt_detective_search_only_wep               0       // Whether only detectives can reveal the weapon used to kill a body. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
-ttt_detective_search_only_words             0       // Whether only detectives can reveal a body's last words (if last words is enabled). Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
-ttt_detective_disable_looting               0       // Whether to disable a detective role's ability to loot credits from bodies
-ttt_detective_hide_special_mode             0       // How to handle special detective role information. 0 - Show the special detective's role to everyone. 1 - Hide the special detective's role from everyone (just show detective instead). 2 - Hide the special detective's role for everyone but themselves (only they can see their true role)
-ttt_detective_glow_enable                   0       // Whether members of the detective team (and active detective-like players) can be seen through walls via a highlight effect
+ttt_detectives_search_only                  1       // Whether only detectives can search bodies or not
+ttt_detectives_search_only_c4               0       // Whether only detectives can reveal a body's C4 disarm code. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled.
+ttt_detectives_search_only_dmg              0       // Whether only detectives can reveal the type of damage used to kill a body. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled.
+ttt_detectives_search_only_dtime            0       // Whether only detectives can reveal a body's death time. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled.
+ttt_detectives_search_only_equipment        0       // Whether only detectives can reveal a body's equipment. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled.
+ttt_detectives_search_only_head             0       // Whether only detectives can reveal whether a body was killed by a head shot. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled.
+ttt_detectives_search_only_kills            0       // Whether only detectives can reveal a body's kills. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled.
+ttt_detectives_search_only_lastid           0       // Whether only detectives can reveal the last player a body saw before death. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled.
+ttt_detectives_search_only_nick             0       // Whether only detectives can reveal a body's name. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled.
+ttt_detectives_search_only_role             0       // Whether only detectives can reveal a body's role. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled.
+ttt_detectives_search_only_team             0       // Whether only detectives can reveal a body's tea,. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled or "ttt_detectives_search_only_role" is disabled.
+ttt_detectives_search_only_stime            0       // Whether only detectives can reveal a body's DNA decay time. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled.
+ttt_detectives_search_only_wep              0       // Whether only detectives can reveal the weapon used to kill a body. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled.
+ttt_detectives_search_only_words            0       // Whether only detectives can reveal a body's last words (if last words is enabled). Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled.
+ttt_detectives_disable_looting              0       // Whether to disable a detective role's ability to loot credits from bodies
+ttt_detectives_hide_special_mode            0       // How to handle special detective role information. 0 - Show the special detective's role to everyone. 1 - Hide the special detective's role from everyone (just show detective instead). 2 - Hide the special detective's role for everyone but themselves (only they can see their true role)
+ttt_detectives_glow_enable                  0       // Whether members of the detective team (and active detective-like players) can be seen through walls via a highlight effect
 ttt_special_detectives_armor_loadout        1       // Whether special detectives (all detective roles other than the original detective itself) get armor automatically for free
 ttt_all_search_postround                    1       // Whether non-detectives can search bodies post-round or not
 ttt_all_search_binoc                        0       // Whether non-detectives can search bodies if they are using binoculars
-ttt_detective_credits_timer                 0       // How often in seconds to give members of the detective team a credit (set to 0 to disable)
+ttt_detectives_credits_timer                0       // How often in seconds to give members of the detective team a credit (set to 0 to disable)
 
 // Paladin
 ttt_paladin_aura_radius                     5       // The radius of the paladin's aura in meters
@@ -477,7 +477,7 @@ ttt_single_drunk_clown                      0       // Whether only a single dru
 ttt_single_drunk_clown_chance               0.5     // The chance that a drunk should have an opportunity to spawn instead of a clown (e.g. 0.7 = 70% chance for drunk, 30% chance for clown. Only applies if ttt_single_drunk_clown is enabled)
 
 // Beggar
-ttt_beggars_are_independent                 0       // Whether beggars should be treated as members of the independent team (rather than the jester team)
+ttt_beggar_is_independent                   0       // Whether beggars should be treated as members of the independent team (rather than the jester team)
 ttt_beggar_reveal_traitor                   1       // Who the beggar is revealed to when they join the traitor team. 0 - No one. 1 - Everyone. 2 - Traitors. 3 - Innocents
 ttt_beggar_reveal_innocent                  2       // Who the beggar is revealed to when they join the innocent team. 0 - No one. 1 - Everyone. 2 - Traitors. 3 - Innocents
 ttt_beggar_respawn                          0       // Whether the beggar respawns when they are killed before joining another team
@@ -494,7 +494,7 @@ ttt_beggar_scan_cooldown                    3       // The amount of time (in se
 ttt_beggar_scan_distance                    2500    // The maximum distance away the scanner target can be
 
 // Bodysnatcher
-ttt_bodysnatchers_are_independent           0       // Whether bodysnatchers should be treated as members of the independent team (rather than the jester team)
+ttt_bodysnatcher_is_independent             0       // Whether bodysnatchers should be treated as members of the independent team (rather than the jester team)
 ttt_bodysnatcher_destroy_body               0       // Whether the bodysnatching device destroys the body it is used on or not
 ttt_bodysnatcher_show_role                  1       // Whether the bodysnatching device shows the role of the corpse it is used on or not
 ttt_bodysnatcher_reveal_traitor             1       // Who the bodysnatcher is revealed to when they join the traitor team. 0 - No one. 1 - Everyone. 2 - Their new team
@@ -534,7 +534,7 @@ ttt_lootgoblin_radar_delay                  15      // How delayed (in seconds) 
 ttt_lootgoblin_active_display               1       // Whether to show the loot goblin's information over their head and on the scoreboard once they are activated
 
 // Cupid
-ttt_cupids_are_independent                  0       // Whether cupids should be treated as members of the independent team (rather than the jester team)
+ttt_cupid_is_independent                    0       // Whether cupids should be treated as members of the independent team (rather than the jester team)
 ttt_cupid_lovers_notify_mode                1       // Who is notified with cupid makes two players fall in love 0 - No one. 1 - Everyone. 2 - Traitors. 3 - Innocents
 ttt_cupid_can_damage_lovers                 0       // Whether cupid should be able to damage the lovers
 ttt_cupid_lovers_can_damage_lovers          1       // Whether the lovers should be able to damage each other
@@ -630,9 +630,9 @@ ttt_killer_credits_starting                 2       // The number of credits a k
 ttt_killer_update_scoreboard                1       // Whether killers show dead players as missing in action (Is ignored if ttt_independents_update_scoreboard is set to 1)
 
 // Zombie
-ttt_zombies_are_monsters                    0       // Whether zombies should be treated as members of the monster team (rather than the independent team)
-ttt_zombies_are_traitors                    0       // Whether zombies should be treated as members of the traitors team (rather than the independent team)
-ttt_zombie_round_chance                     0.1     // The chance that a "zombie round" will occur where all players who would have been traitors are made zombies instead. Only usable when "ttt_zombies_are_traitors" is set to "1"
+ttt_zombie_is_monster                       0       // Whether zombies should be treated as members of the monster team (rather than the independent team)
+ttt_zombie_is_traitor                       0       // Whether zombies should be treated as members of the traitors team (rather than the independent team)
+ttt_zombie_round_chance                     0.1     // The chance that a "zombie round" will occur where all players who would have been traitors are made zombies instead. Only usable when "ttt_zombie_is_traitor" is set to "1"
 ttt_zombie_vision_enable                    0       // Whether zombies have their special vision highlights enabled
 ttt_zombie_spit_enable                      1       // Whether zombies have their spit attack enabled
 ttt_zombie_leap_enable                      1       // Whether zombies have their leap attack enabled
@@ -688,7 +688,7 @@ ttt_arsonist_douse_notify_delay_min         10      // The minimum delay before 
 ttt_arsonist_douse_notify_delay_max         30      // The maximum delay before a player is notified they've been doused
 ttt_arsonist_early_ignite                   0       // Whether to allow the arsonist to use their igniter without dousing everyone first
 ttt_arsonist_corpse_ignite_time             10      // The amount of time (in seconds) to ignite doused dead player corpses for before destroying them
-ttt_detective_search_only_arsonistdouse     0       // Whether only detectives can see information about whether a corpse was doused by an arsonist and when. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detective_search_only" is enabled.
+ttt_detectives_search_only_arsonistdouse    0       // Whether only detectives can see information about whether a corpse was doused by an arsonist and when. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled.
 
 // ----------------------------------------
 

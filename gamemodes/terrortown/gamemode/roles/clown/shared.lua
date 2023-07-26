@@ -14,6 +14,10 @@ end
 -- ROLE CONVARS --
 ------------------
 
+CreateConVar("ttt_clown_hide_when_active", "0", FCVAR_REPLICATED)
+CreateConVar("ttt_clown_use_traps_when_active", "0", FCVAR_REPLICATED)
+CreateConVar("ttt_clown_show_target_icon", "0", FCVAR_REPLICATED)
+
 ROLE_CONVARS[ROLE_CLOWN] = {}
 table.insert(ROLE_CONVARS[ROLE_CLOWN], {
     cvar = "ttt_clown_damage_bonus",

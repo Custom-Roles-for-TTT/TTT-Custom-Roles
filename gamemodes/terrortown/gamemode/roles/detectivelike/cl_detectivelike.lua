@@ -11,6 +11,12 @@ local AddHook = hook.Add
 local RemoveHook = hook.Remove
 local TableInsert = table.insert
 
+-------------
+-- CONVARS --
+-------------
+
+local detectives_glow_enable = GetConVar("ttt_detectives_glow_enable")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -62,7 +68,7 @@ AddHook("TTTHUDInfoPaint", "DetectiveLike_TTTHUDInfoPaint", function(client, lab
     if hide_role then return end
 
     if client:IsDetectiveTeam() then
-        if GetGlobalInt("ttt_detective_hide_special_mode", SPECIAL_DETECTIVE_HIDE_NONE) == SPECIAL_DETECTIVE_HIDE_FOR_OTHERS then
+        if GetConVar("ttt_detectives_hide_special_mode"):GetInt() == SPECIAL_DETECTIVE_HIDE_FOR_OTHERS then
             surface.SetFont("TabLarge")
             surface.SetTextColor(255, 255, 255, 230)
 
@@ -122,7 +128,7 @@ end
 
 AddHook("TTTUpdateRoleState", "DetectiveLike_Highlight_TTTUpdateRoleState", function()
     client = LocalPlayer()
-    detective_glow = GetGlobalBool("ttt_detective_glow_enable", false)
+    detective_glow = detectives_glow_enable:GetBool()
 
     -- Disable highlights on role change
     if vision_enabled then

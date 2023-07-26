@@ -187,9 +187,9 @@ function RADAR:Draw(client)
 
     local mpos = Vector(ScrW() / 2, ScrH() / 2, 0)
 
-    local glitchMode = GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR)
-    local beggarMode = GetGlobalInt("ttt_beggar_reveal_traitor", ANNOUNCE_REVEAL_ALL)
-    local bodysnatcherMode = GetGlobalInt("ttt_bodysnatcher_reveal_traitor", BODYSNATCHER_REVEAL_ALL)
+    local glitchMode = GetConVar("ttt_glitch_mode"):GetInt()
+    local beggarMode = GetConVar("ttt_beggar_reveal_traitor"):GetInt()
+    local bodysnatcherMode = GetConVar("ttt_bodysnatcher_reveal_traitor"):GetInt()
     local role, alpha, scrpos, md
     for _, tgt in pairs(RADAR.targets) do
         alpha = alpha_base
@@ -231,7 +231,7 @@ function RADAR:Draw(client)
             end
 
             -- If the target is an active clown but they should be hidden, hide them from the radar
-            local hidden = tgt.killer_clown_active and GetGlobalBool("ttt_clown_hide_when_active", false)
+            local hidden = tgt.killer_clown_active and GetConVar("ttt_clown_hide_when_active"):GetBool()
 
             local newColor, newHidden = CallHook("TTTRadarPlayerRender", nil, client, tgt, color, hidden)
             if newColor then color = newColor end

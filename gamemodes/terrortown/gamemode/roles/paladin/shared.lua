@@ -24,6 +24,10 @@ end)
 -- ROLE CONVARS --
 ------------------
 
+CreateConVar("ttt_paladin_aura_radius", "5", FCVAR_REPLICATED, "The radius of the paladin's aura in meters", 1, 30)
+CreateConVar("ttt_paladin_protect_self", "0", FCVAR_REPLICATED)
+CreateConVar("ttt_paladin_heal_self", "1", FCVAR_REPLICATED)
+
 ROLE_CONVARS[ROLE_PALADIN] = {}
 table.insert(ROLE_CONVARS[ROLE_PALADIN], {
     cvar = "ttt_paladin_aura_radius",

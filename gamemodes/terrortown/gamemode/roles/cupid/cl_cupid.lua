@@ -10,6 +10,13 @@ local RemoveHook = hook.Remove
 local TableInsert = table.insert
 local StringUpper = string.upper
 
+-------------
+-- CONVARS --
+-------------
+
+local cupid_lover_vision_enable = GetConVar("ttt_cupid_lover_vision_enable")
+local cupid_is_independent = GetConVar("ttt_cupid_is_independent")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -43,7 +50,7 @@ end)
 AddHook("TTTRolePopupRoleStringOverride", "Cupid_TTTRolePopupRoleStringOverride", function(cli, roleString)
     if not IsPlayer(cli) or not cli:IsCupid() then return end
 
-    if GetGlobalBool("ttt_cupids_are_independent", false) then
+    if cupid_is_independent:GetBool() then
         return roleString .. "_indep"
     end
     return roleString .. "_jester"
@@ -277,7 +284,7 @@ end
 
 AddHook("TTTUpdateRoleState", "Cupid_Highlight_TTTUpdateRoleState", function()
     client = LocalPlayer()
-    lover_vision = GetGlobalBool("ttt_cupid_lover_vision_enable", false)
+    lover_vision = cupid_lover_vision_enable:GetBool()
 end)
 
 AddHook("Think", "Cupid_Highlight_Think", function()

@@ -1,5 +1,11 @@
 local hook = hook
 
+-------------
+-- CONVARS --
+-------------
+
+local deputy_use_detective_icon = GetConVar("ttt_deputy_use_detective_icon")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -25,7 +31,7 @@ hook.Add("TTTTutorialRoleText", "Deputy_TTTTutorialRoleText", function(role, tit
 
         -- Icon
         html = html .. "<span style='display: block; margin-top: 10px;'>Once promoted, <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>all players</span> will see the "
-        if GetGlobalBool("ttt_deputy_use_detective_icon", true) then
+        if deputy_use_detective_icon:GetBool() then
             html = html .. ROLE_STRINGS[ROLE_DETECTIVE]
         else
             html = html .. ROLE_STRINGS[ROLE_DEPUTY]

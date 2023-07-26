@@ -34,11 +34,16 @@ end)
 -- CONVARS --
 -------------
 
+local lootgoblin_regen_mode = GetConVar("ttt_lootgoblin_regen_mode")
+local lootgoblin_radar_timer = GetConVar("ttt_lootgoblin_radar_timer")
+local lootgoblin_active_display = GetConVar("ttt_lootgoblin_active_display")
+local lootgoblin_radar_enabled = GetConVar("ttt_lootgoblin_radar_enabled")
+
 local lootgoblin_radar_beep_sound = CreateClientConVar("ttt_lootgoblin_radar_beep_sound", "1", true, false, "Whether the loot goblin's radar should play a beep sound whenever the location updates", 0, 1)
 
 hook.Add("TTTSettingsRolesTabSections", "LootGoblin_TTTSettingsRolesTabSections", function(role, parentForm)
     if role ~= ROLE_LOOTGOBLIN then return end
-    if not GetGlobalBool("ttt_lootgoblin_radar_enabled", false) then return end
+    if not lootgoblin_radar_enabled:GetBool() then return end
 
     parentForm:CheckBox(LANG.GetTranslation("lootgoblin_config_radar_sound"), "ttt_lootgoblin_radar_beep_sound")
     return true
@@ -50,19 +55,19 @@ end)
 
 -- Reveal the loot goblin to all players once activated
 hook.Add("TTTTargetIDPlayerRoleIcon", "LootGoblin_TTTTargetIDPlayerRoleIcon", function(ply, client, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
-    if ply:IsActiveLootGoblin() and ply:IsRoleActive() and GetGlobalBool("ttt_lootgoblin_active_display", true) then
+    if ply:IsActiveLootGoblin() and ply:IsRoleActive() and lootgoblin_active_display:GetBool() then
         return ROLE_LOOTGOBLIN, false
     end
 end)
 
 hook.Add("TTTTargetIDPlayerRing", "LootGoblin_TTTTargetIDPlayerRing", function(ent, client, ringVisible)
-    if IsPlayer(ent) and ent:IsActiveLootGoblin() and ent:IsRoleActive() and GetGlobalBool("ttt_lootgoblin_active_display", true) then
+    if IsPlayer(ent) and ent:IsActiveLootGoblin() and ent:IsRoleActive() and lootgoblin_active_display:GetBool() then
         return true, ROLE_COLORS_RADAR[ROLE_LOOTGOBLIN]
     end
 end)
 
 hook.Add("TTTTargetIDPlayerText", "LootGoblin_TTTTargetIDPlayerText", function(ent, client, text, clr, secondaryText)
-    if IsPlayer(ent) and ent:IsActiveLootGoblin() and ent:IsRoleActive() and GetGlobalBool("ttt_lootgoblin_active_display", true) then
+    if IsPlayer(ent) and ent:IsActiveLootGoblin() and ent:IsRoleActive() and lootgoblin_active_display:GetBool() then
         return StringUpper(ROLE_STRINGS[ROLE_LOOTGOBLIN]), ROLE_COLORS_RADAR[ROLE_LOOTGOBLIN]
     end
 end)
@@ -71,7 +76,7 @@ ROLE_IS_TARGETID_OVERRIDDEN[ROLE_LOOTGOBLIN] = function(ply, target)
     if not IsPlayer(target) then return end
     if not target:IsActiveLootGoblin() then return end
     if not target:IsRoleActive() then return end
-    if not GetGlobalBool("ttt_lootgoblin_active_display", true) then return end
+    if not lootgoblin_active_display:GetBool() then return end
 
     ------ icon, ring, text
     return true, true, true
@@ -124,7 +129,7 @@ local function UpdateLootGoblin()
     local active = net.ReadBool()
     if active then
         SetLootGoblinPosition()
-        timer.Create("updatelootgoblin", GetGlobalInt("ttt_lootgoblin_radar_timer", 15), 0, SetLootGoblinPosition)
+        timer.Create("updatelootgoblin", lootgoblin_radar_timer:GetInt(), 0, SetLootGoblinPosition)
     else
         lootgoblins = {}
     end
@@ -140,7 +145,7 @@ end)
 ----------------
 
 hook.Add("TTTScoreboardPlayerRole", "LootGoblin_TTTScoreboardPlayerRole", function(ply, client, color, roleFileName)
-    if ply:IsActiveLootGoblin() and ply:IsRoleActive() and GetGlobalBool("ttt_lootgoblin_active_display", true) then
+    if ply:IsActiveLootGoblin() and ply:IsRoleActive() and lootgoblin_active_display:GetBool() then
         return ROLE_COLORS_SCOREBOARD[ROLE_LOOTGOBLIN], ROLE_STRINGS_SHORT[ROLE_LOOTGOBLIN]
     end
 end)
@@ -149,7 +154,7 @@ ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_LOOTGOBLIN] = function(ply, target)
     if not IsPlayer(target) then return end
     if not target:IsActiveLootGoblin() then return end
     if not target:IsRoleActive() then return end
-    if not GetGlobalBool("ttt_lootgoblin_active_display", true) then return end
+    if not lootgoblin_active_display:GetBool() then return end
 
     ------ name,  role
     return false, true
@@ -255,7 +260,7 @@ hook.Add("TTTTutorialRoleText", "LootGoblin_TTTTutorialRoleText", function(role,
         html = html .. "<span style='display: block; margin-top: 10px;'>If <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>the " .. ROLE_STRINGS[ROLE_LOOTGOBLIN] .. "</span> survives until another team wins the round, they will share the win with that team.</span>"
 
         -- Regeneration
-        local regenMode = GetGlobalInt("ttt_lootgoblin_regen_mode", LOOTGOBLIN_REGEN_MODE_STILL)
+        local regenMode = lootgoblin_regen_mode:GetInt()
         if regenMode > LOOTGOBLIN_REGEN_MODE_NONE then
             html = html .. "<span style='display: block; margin-top: 10px;'>While activated, <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>the " .. ROLE_STRINGS[ROLE_LOOTGOBLIN] .. "</span> will regenerate health "
 

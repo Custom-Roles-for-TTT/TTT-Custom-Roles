@@ -2,16 +2,12 @@ AddCSLuaFile()
 
 local table = table
 
--- Update their team
-hook.Add("TTTUpdateRoleState", "Cupid_TTTUpdateRoleState", function()
-    local cupids_are_independent = GetGlobalBool("ttt_cupids_are_independent", false)
-    INDEPENDENT_ROLES[ROLE_CUPID] = cupids_are_independent
-    JESTER_ROLES[ROLE_CUPID] = not cupids_are_independent
-end)
-
 ------------------
 -- ROLE CONVARS --
 ------------------
+
+CreateConVar("ttt_cupid_lover_vision_enable", "1", FCVAR_REPLICATED, "Whether the lovers can see outlines of each other through walls", 0, 1)
+local cupid_is_independent = CreateConVar("ttt_cupid_is_independent", "0", FCVAR_REPLICATED, "Whether cupids should be treated as members of the independent team", 0, 1)
 
 ROLE_CONVARS[ROLE_CUPID] = {}
 table.insert(ROLE_CONVARS[ROLE_CUPID], {
@@ -33,7 +29,7 @@ table.insert(ROLE_CONVARS[ROLE_CUPID], {
     decimal = 0
 })
 table.insert(ROLE_CONVARS[ROLE_CUPID], {
-    cvar = "ttt_cupids_are_independent",
+    cvar = "ttt_cupid_is_independent",
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_CUPID], {
@@ -52,3 +48,13 @@ table.insert(ROLE_CONVARS[ROLE_CUPID], {
     cvar = "ttt_cupid_lover_vision_enable",
     type = ROLE_CONVAR_TYPE_BOOL
 })
+
+-------------------
+-- ROLE FEATURES --
+-------------------
+
+hook.Add("TTTUpdateRoleState", "Cupid_TTTUpdateRoleState", function()
+    local is_independent = cupid_is_independent:GetBool()
+    INDEPENDENT_ROLES[ROLE_CUPID] = is_independent
+    JESTER_ROLES[ROLE_CUPID] = not is_independent
+end)

@@ -23,6 +23,9 @@ end)
 -- ROLE CONVARS --
 ------------------
 
+CreateConVar("ttt_tracker_footstep_time", "15", FCVAR_REPLICATED, "The amount of time players' footsteps should show to the tracker before fading. Set to 0 to disable", 0, 60)
+CreateConVar("ttt_tracker_footstep_color", "1", FCVAR_REPLICATED)
+
 ROLE_CONVARS[ROLE_TRACKER] = {}
 table.insert(ROLE_CONVARS[ROLE_TRACKER], {
     cvar = "ttt_tracker_footstep_time",

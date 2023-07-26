@@ -8,10 +8,11 @@ resource.AddFile("materials/particle/sponge.vmt")
 -- CONVARS --
 -------------
 
-local sponge_aura_radius = CreateConVar("ttt_sponge_aura_radius", "5", FCVAR_NONE, "The radius of the sponge's aura in meters", 1, 30)
 CreateConVar("ttt_sponge_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the sponge is killed", 0, 4)
 CreateConVar("ttt_sponge_notify_sound", "0", FCVAR_NONE, "Whether to play a cheering sound when a sponge is killed", 0, 1)
 CreateConVar("ttt_sponge_notify_confetti", "0", FCVAR_NONE, "Whether to throw confetti when a sponge is a killed", 0, 1)
+
+local sponge_aura_radius = GetConVar("ttt_sponge_aura_radius")
 
 hook.Add("TTTSyncGlobals", "Sponge_TTTSyncGlobals", function()
     SetGlobalFloat("ttt_sponge_aura_radius", sponge_aura_radius:GetInt() * UNITS_PER_METER)

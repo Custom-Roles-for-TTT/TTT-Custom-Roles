@@ -1,6 +1,13 @@
 local hook = hook
 local net = net
 
+-------------
+-- CONVARS --
+-------------
+
+local hypnotist_device_loadout = GetConVar("ttt_hypnotist_device_loadout")
+local hypnotist_device_shop = GetConVar("ttt_hypnotist_device_shop")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -70,12 +77,12 @@ hook.Add("TTTTutorialRoleText", "Hypnotist_TTTTutorialRoleText", function(role, 
 
         html = html .. "<span style='display: block; margin-top: 10px;'>The <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>brainwashing device</span> is "
 
-        local inLoadout = GetGlobalBool("ttt_hypnotist_device_loadout", true)
+        local inLoadout = hypnotist_device_loadout:GetBool()
         if inLoadout then
             html = html .. "given to the player at the start of the round"
         end
 
-        if GetGlobalBool("ttt_hypnotist_device_shop", false) then
+        if hypnotist_device_shop:GetBool() then
             if inLoadout then
                 html = html .. " and is "
             end
@@ -83,7 +90,7 @@ hook.Add("TTTTutorialRoleText", "Hypnotist_TTTTutorialRoleText", function(role, 
         end
         html = html .. ".</span>"
 
-        if GetGlobalBool("ttt_traitor_vision_enable", false) then
+        if GetConVar("ttt_traitors_vision_enable"):GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'><span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>Constant communication</span> with their allies allows them to quickly identify friends by highlighting them in their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>team color</span>.</span>"
         end
 

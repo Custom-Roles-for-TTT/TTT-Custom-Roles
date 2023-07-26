@@ -83,6 +83,12 @@ end)
 -- ROLE CONVARS --
 ------------------
 
+CreateConVar("ttt_killer_knife_enabled", "1", FCVAR_REPLICATED)
+CreateConVar("ttt_killer_smoke_enabled", "1", FCVAR_REPLICATED)
+CreateConVar("ttt_killer_show_target_icon", "1", FCVAR_REPLICATED)
+CreateConVar("ttt_killer_vision_enable", "1", FCVAR_REPLICATED)
+CreateConVar("ttt_killer_update_scoreboard", "1", FCVAR_REPLICATED)
+
 ROLE_CONVARS[ROLE_KILLER] = {}
 table.insert(ROLE_CONVARS[ROLE_KILLER], {
     cvar = "ttt_killer_knife_enabled",

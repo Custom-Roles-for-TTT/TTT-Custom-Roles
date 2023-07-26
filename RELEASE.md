@@ -6,6 +6,9 @@
 ### Additions
 - Added a new traitor role: The Spy
 
+### Fixes
+- Fixed `ttt_sapper_protect_self` not allowing sapper to be protected from a different sapper if there are somehow multiple
+
 ### Developer
 - Changed role logic to load shared files first
 
@@ -20,6 +23,9 @@
 
 ### Fixes
 - Fixed double message when a shadow killed their target and soul link was enabled
+- Fixed conflict between beggar and informant causing error when `ttt_beggar_respawn` was enabled
+- Fixed conflict between arsonist and informant causing some convars to not correctly sync with the client
+- Fixed the death radar not initializing on the client before the round starts
 
 ### Developer
 - Changed how some roles set their default shop equipment (passive) items so they don't overwrite other things also adding to the lists if the timing isn't perfect

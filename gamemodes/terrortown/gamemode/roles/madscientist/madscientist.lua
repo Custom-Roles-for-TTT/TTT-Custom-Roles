@@ -6,13 +6,7 @@ local hook = hook
 -- CONVARS --
 -------------
 
-local madscientist_respawn_enable = CreateConVar("ttt_madscientist_respawn_enable", "0")
-local madscientist_is_monster = CreateConVar("ttt_madscientist_is_monster", "0")
-
-hook.Add("TTTSyncGlobals", "MadScientist_TTTSyncGlobals", function()
-    SetGlobalBool("ttt_madscientist_respawn_enable", madscientist_respawn_enable:GetBool())
-    SetGlobalBool("ttt_madscientist_is_monster", madscientist_is_monster:GetBool())
-end)
+local madscientist_respawn_enable = GetConVar("ttt_madscientist_respawn_enable")
 
 -------------------
 -- ROLE FEATURES --

@@ -3,6 +3,15 @@ local string = string
 
 local RemoveHook = hook.Remove
 
+-------------
+-- CONVARS --
+-------------
+
+local killer_knife_enabled = GetConVar("ttt_killer_knife_enabled", "1")
+local killer_smoke_enabled = GetConVar("ttt_killer_smoke_enabled", "1")
+local killer_show_target_icon = GetConVar("ttt_killer_show_target_icon", "1")
+local killer_vision_enable = GetConVar("ttt_killer_vision_enable", "1")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -39,7 +48,7 @@ end)
 
 -- Show "KILL" icon over all non-jester team heads
 hook.Add("TTTTargetIDPlayerKillIcon", "Killer_TTTTargetIDPlayerKillIcon", function(ply, cli, showKillIcon, showJester)
-    if cli:IsKiller() and GetGlobalBool("ttt_killer_show_target_icon", false) and not showJester then
+    if cli:IsKiller() and killer_show_target_icon:GetBool() and not showJester then
         return true
     end
 end)
@@ -55,7 +64,7 @@ ROLE_IS_TARGETID_OVERRIDDEN[ROLE_KILLER] = function(ply, target, showJester)
     if not ply:IsKiller() then return end
     if not IsPlayer(target) then return end
 
-    local show_kill = GetGlobalBool("ttt_killer_show_target_icon", false) and not showJester
+    local show_kill = killer_show_target_icon:GetBool() and not showJester
     local show_role = showJester
 
     ------ icon,                   ring,  text
@@ -78,7 +87,7 @@ end
 
 hook.Add("TTTUpdateRoleState", "Killer_Highlight_TTTUpdateRoleState", function()
     client = LocalPlayer()
-    killer_vision = GetGlobalBool("ttt_killer_vision_enable", false)
+    killer_vision = killer_vision_enable:GetBool()
 
     -- Disable highlights on role change
     if vision_enabled then
@@ -159,23 +168,23 @@ hook.Add("TTTTutorialRoleText", "Killer_TTTTutorialRoleText", function(role, tit
         roleColor = ROLE_COLORS[ROLE_TRAITOR]
 
         -- Knife
-        if GetGlobalBool("ttt_killer_knife_enabled", true) then
+        if killer_knife_enabled:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>They are given a knife that does high damage to aid in their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>slaughter.</span></span>"
         end
 
         -- Smoke
-        if GetGlobalBool("ttt_killer_smoke_enabled", true) then
+        if killer_smoke_enabled:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>If they don't <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>kill</span> often enough they will begin to smoke, alerting the other players.</span>"
         end
 
         -- Vision
-        local hasVision = GetGlobalBool("ttt_killer_vision_enable", true)
+        local hasVision = killer_vision_enable:GetBool()
         if hasVision then
             html = html .. "<span style='display: block; margin-top: 10px;'>Their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>blood lust</span> helps them see their targets through walls by highlighting their enemies.</span>"
         end
 
         -- Target ID
-        if GetGlobalBool("ttt_killer_show_target_icon", true) then
+        if killer_show_target_icon:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>Their targets can"
             if hasVision then
                 html = html .. " also"

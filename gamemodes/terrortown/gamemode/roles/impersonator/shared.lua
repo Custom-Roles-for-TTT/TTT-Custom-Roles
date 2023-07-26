@@ -47,6 +47,8 @@ end)
 -- ROLE CONVARS --
 ------------------
 
+CreateConVar("ttt_impersonator_use_detective_icon", "1", FCVAR_REPLICATED)
+
 ROLE_CONVARS[ROLE_IMPERSONATOR] = {}
 table.insert(ROLE_CONVARS[ROLE_IMPERSONATOR], {
     cvar = "ttt_impersonator_damage_penalty",

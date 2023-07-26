@@ -64,10 +64,12 @@ local STATE_KILL = 4
 
 local beep = Sound("npc/fast_zombie/fz_alert_close1.wav")
 
+local vampire_convert_enable = CreateConVar("ttt_vampire_convert_enable", "0", FCVAR_REPLICATED, "Whether vampires have the ability to convert living targets to a vampire thrall using their fangs", 0, 1)
+local vampire_drain_enable = CreateConVar("ttt_vampire_drain_enable", "1", FCVAR_REPLICATED, "Whether vampires have the ability to drain a living target's blood using their fangs", 0, 1)
+local vampire_drain_first = CreateConVar("ttt_vampire_drain_first", "0", FCVAR_REPLICATED, "Whether vampires should drain a living target's blood first rather than converting first", 0, 1)
+local vampire_prime_only_convert = CreateConVar("ttt_vampire_prime_only_convert", "1", FCVAR_REPLICATED, "Whether only prime vampires (e.g. players who spawn as vampire originally) are allowed to convert other players", 0, 1)
+
 if SERVER then
-    CreateConVar("ttt_vampire_convert_enable", "0", FCVAR_NONE, "Whether vampires have the ability to convert living targets to a vampire thrall using their fangs", 0, 1)
-    CreateConVar("ttt_vampire_drain_enable", "1", FCVAR_NONE, "Whether vampires have the ability to drain a living target's blood using their fangs", 0, 1)
-    CreateConVar("ttt_vampire_drain_first", "0", FCVAR_NONE, "Whether vampires should drain a living target's blood first rather than converting first", 0, 1)
     CreateConVar("ttt_vampire_drain_credits", "0", FCVAR_NONE, "How many credits a vampire should get for draining a living target", 0, 10)
     CreateConVar("ttt_vampire_drain_mute_target", "0", FCVAR_NONE, "Whether players being drained by a vampire should be muted", 0, 1)
     CreateConVar("ttt_vampire_fang_dead_timer", "0", FCVAR_NONE, "The amount of time fangs must be used to fully drain a dead target's blood. Set to 0 to use the same time as \"ttt_vampire_fang_timer\"", 0, 30)
@@ -76,7 +78,6 @@ if SERVER then
     CreateConVar("ttt_vampire_fang_overheal", "25", FCVAR_NONE, "The amount over the vampire's normal maximum health (e.g. 100 + this ConVar) that the vampire can heal to by drinking blood.", 0, 100)
     CreateConVar("ttt_vampire_fang_overheal_living", "-1", FCVAR_NONE, "The amount of overheal (see \"ttt_vampire_fang_overheal\") to give if the vampire's target is living. Set to -1 to use the same amount as \"ttt_vampire_fang_overheal\" instead", -1, 100)
     CreateConVar("ttt_vampire_fang_unfreeze_delay", "2", FCVAR_NONE, "The number of seconds before players who were frozen in place by the fangs should be released if the vampire stops using the fangs on them", 0, 15)
-    CreateConVar("ttt_vampire_prime_only_convert", "1", FCVAR_NONE, "Whether only prime vampires (e.g. players who spawn as vampire originally) are allowed to convert other players", 0, 1)
 end
 
 function SWEP:SetupDataTables()
@@ -102,11 +103,6 @@ function SWEP:Initialize()
     end
 
     if SERVER then
-        SetGlobalBool("ttt_vampire_convert_enable", GetConVar("ttt_vampire_convert_enable"):GetBool())
-        SetGlobalBool("ttt_vampire_drain_enable", GetConVar("ttt_vampire_drain_enable"):GetBool())
-        SetGlobalBool("ttt_vampire_drain_first", GetConVar("ttt_vampire_drain_first"):GetBool())
-        SetGlobalBool("ttt_vampire_prime_only_convert", GetConVar("ttt_vampire_prime_only_convert"):GetBool())
-
         if GetConVar("ttt_vampire_drain_mute_target"):GetBool() then
             hook.Add("PlayerCanSeePlayersChat", "Vampire_PlayerCanSeePlayersChat_" .. self:EntIndex(), function(text, team_only, listener, speaker)
                 if not IsPlayer(listener) or not IsPlayer(speaker) then return end
@@ -159,7 +155,7 @@ function SWEP:OnRemove()
 end
 
 function SWEP:CanConvert()
-    return GetGlobalBool("ttt_vampire_convert_enable", false) and (not GetGlobalBool("ttt_vampire_prime_only_convert", true) or self:GetOwner():IsVampirePrime())
+    return vampire_convert_enable:GetBool() and (not vampire_prime_only_convert:GetBool() or self:GetOwner():IsVampirePrime())
 end
 
 local function GetPlayerFromBody(body)
@@ -193,7 +189,7 @@ function SWEP:PrimaryAttack()
             end
 
             self:Eat(tr.Entity)
-        elseif ent:IsPlayer() and GetConVar("ttt_vampire_drain_enable"):GetBool() then
+        elseif ent:IsPlayer() and vampire_drain_enable:GetBool() then
             self:SetTargetIsBody(false)
             if ent:ShouldActLikeJester() then
                 self:Error("TARGET IS A JESTER")
@@ -500,7 +496,7 @@ function SWEP:Think()
         else
             if CurTime() >= self:GetStartTime() + (self:GetFangDuration() / 2) then
                 local verb = "CONVERT"
-                if GetConVar("ttt_vampire_drain_first"):GetBool() then
+                if vampire_drain_first:GetBool() then
                     self:SetState(STATE_KILL)
                     verb = "KILL"
                 else
@@ -522,7 +518,7 @@ if CLIENT then
 
         local firstVerb
         local secondVerb
-        if GetGlobalBool("ttt_vampire_drain_first", false) then
+        if vampire_drain_first:GetBool() then
             firstVerb = "vam_fangs_kill"
             secondVerb = "vam_fangs_convert"
         else

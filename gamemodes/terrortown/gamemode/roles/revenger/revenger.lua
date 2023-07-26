@@ -18,14 +18,9 @@ util.AddNetworkString("TTT_RevengerLoverKillerRadar")
 -- CONVARS --
 -------------
 
-local revenger_radar_timer = CreateConVar("ttt_revenger_radar_timer", "15", FCVAR_NONE, "How often (in seconds) the radar ping for the lover's killer should update", 1, 60)
 local revenger_damage_bonus = CreateConVar("ttt_revenger_damage_bonus", "0", FCVAR_NONE, "Extra damage that the revenger deals to their lover's killer (e.g. 0.5 = 50% extra damage)", 0, 1)
 local revenger_drain_health_to = CreateConVar("ttt_revenger_drain_health_to", "-1", FCVAR_NONE, "The amount of health to drain the revenger down to after their lover has died. Setting to 0 will kill them. Set to -1 to disable", -1, 200)
 local revenger_drain_health_rate = CreateConVar("ttt_revenger_drain_health_rate", "3", FCVAR_NONE, "How often, in seconds, health will be drained from a revenger whose lover has died", 1, 60)
-
-hook.Add("TTTSyncGlobals", "Revenger_TTTSyncGlobals", function()
-    SetGlobalInt("ttt_revenger_radar_timer", revenger_radar_timer:GetInt())
-end)
 
 -----------
 -- KARMA --
