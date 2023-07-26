@@ -33,12 +33,24 @@ hook.Add("TTTPrepareRound", "Traitor_Shared_TTTPrepareRound", function()
 end)
 
 ------------------
+-- ROLE CONVARS --
+------------------
+
+local traitor_phantom_cure = CreateConVar("ttt_traitor_phantom_cure", "0", FCVAR_REPLICATED)
+
+ROLE_CONVARS[ROLE_TRAITOR] = {}
+table.insert(ROLE_CONVARS[ROLE_TRAITOR], {
+    cvar = "ttt_traitor_phantom_cure",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+
+------------------
 -- ROLE WEAPONS --
 ------------------
 
 hook.Add("TTTUpdateRoleState", "Traitor_TTTUpdateRoleState", function()
     local phantom_device = weapons.GetStored("weapon_pha_exorcism")
-    if GetGlobalBool("ttt_traitor_phantom_cure", false) then
+    if traitor_phantom_cure:GetBool() then
         if not table.HasValue(phantom_device.CanBuy, ROLE_TRAITOR) then
             table.insert(phantom_device.CanBuy, ROLE_TRAITOR)
         end
@@ -46,16 +58,6 @@ hook.Add("TTTUpdateRoleState", "Traitor_TTTUpdateRoleState", function()
         table.RemoveByValue(phantom_device.CanBuy, ROLE_TRAITOR)
     end
 end)
-
-------------------
--- ROLE CONVARS --
-------------------
-
-ROLE_CONVARS[ROLE_TRAITOR] = {}
-table.insert(ROLE_CONVARS[ROLE_TRAITOR], {
-    cvar = "ttt_traitor_phantom_cure",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
 
 --------------------
 -- PLAYER METHODS --

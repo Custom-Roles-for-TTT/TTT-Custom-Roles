@@ -8,12 +8,7 @@ local GetAllPlayers = player.GetAll
 -- CONVARS --
 -------------
 
-local traitor_phantom_cure = CreateConVar("ttt_traitor_phantom_cure", "0")
 local traitor_credits_timer = CreateConVar("ttt_traitor_credits_timer", "0")
-
-hook.Add("TTTSyncGlobals", "Traitor_TTTSyncGlobals", function()
-    SetGlobalBool("ttt_traitor_phantom_cure", traitor_phantom_cure:GetBool())
-end)
 
 -----------------------
 -- PLAYER VISIBILITY --
