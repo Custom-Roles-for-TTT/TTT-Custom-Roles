@@ -31,6 +31,12 @@ if SERVER then
         self.BaseClass.PrimaryAttack(self)
 
         if self:Clip1() <= 0 then
+            local owner = self:GetOwner()
+
+            if IsPlayer(owner) then
+                owner:ConCommand("lastinv")
+            end
+
             self:Remove()
         end
     end
