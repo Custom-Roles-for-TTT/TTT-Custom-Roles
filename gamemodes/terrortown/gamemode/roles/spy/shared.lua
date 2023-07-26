@@ -64,13 +64,9 @@ hook.Add("TTTUpdateRoleState", "Spy_Shared_TTTUpdateRoleState", function()
         spy_flare_gun.CanBuy = {ROLE_SPY}
 
         spy_flare_gun.LimitedStock = not spy_flare_gun_shop_rebuyable:GetBool()
-        -- Allow the flare gun to be dropped when it is a shop item, so the rebuyable convar can have an effect
-        -- (By default, the flare gun is not removed from the player on being used up, so even if it is set to be rebuyable, it cannot be bought again otherwise)
-        spy_flare_gun.AllowDrop = true
     else
         spy_flare_gun.CanBuy = nil
         spy_flare_gun.LimitedStock = true
-        spy_flare_gun.AllowDrop = false
     end
 end)
 
