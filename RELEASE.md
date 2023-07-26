@@ -6,6 +6,9 @@
 ### Additions
 - Added a new traitor role: The Spy
 
+### Developer
+- Changed role logic to load shared files first
+
 ## 1.9.2
 **Released: July 22nd, 2023**
 
