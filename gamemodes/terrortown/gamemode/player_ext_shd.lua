@@ -106,7 +106,7 @@ function plymeta:IsShopRole()
     local role = self:GetRole()
     local hasShop = SHOP_ROLES[role] or false
     -- Don't perform the additional checks if "shop for all" is enabled
-    if GetGlobalBool("ttt_shop_for_all", false) then
+    if GetConVar("ttt_shop_for_all"):GetBool() then
         return hasShop
     end
 

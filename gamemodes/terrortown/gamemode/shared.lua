@@ -418,40 +418,40 @@ if CLIENT then
         return teamName, teamColor
     end
 else
-    function CreateCreditConVar(role)
-        -- Add explicit ROLE_INNOCENT exclusion here in case shop-for-all is enabled
-        if not DEFAULT_ROLES[role] or role == ROLE_INNOCENT then
-            local rolestring = ROLE_STRINGS_RAW[role]
-            local credits = "0"
-            if ROLE_STARTING_CREDITS[role] then credits = ROLE_STARTING_CREDITS[role]
-            elseif TRAITOR_ROLES[role] then credits = "1"
-            elseif DETECTIVE_ROLES[role] then credits = "1" end
-            CreateConVar("ttt_" .. rolestring .. "_credits_starting", credits, FCVAR_REPLICATED)
-        end
-    end
-
-    function CreateShopConVars(role)
-        local rolestring = ROLE_STRINGS_RAW[role]
-        CreateCreditConVar(role)
-
-        CreateConVar("ttt_" .. rolestring .. "_shop_random_percent", "0", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown for the " .. rolestring, 0, 100)
-        CreateConVar("ttt_" .. rolestring .. "_shop_random_enabled", "0", FCVAR_REPLICATED, "Whether shop randomization should run for the " .. rolestring)
-
-        if (TRAITOR_ROLES[role] and role ~= ROLE_TRAITOR) or (DETECTIVE_ROLES[role] and role ~= ROLE_DETECTIVE) or role == ROLE_ZOMBIE then -- This all happens before we run UpdateRoleState so we need to manually add zombies
-            CreateConVar("ttt_" .. rolestring .. "_shop_sync", "0", FCVAR_REPLICATED)
-        end
-
-        if (INDEPENDENT_ROLES[role] and role ~= ROLE_ZOMBIE) or DELAYED_SHOP_ROLES[role] then
-            CreateConVar("ttt_" .. rolestring .. "_shop_mode", "0", FCVAR_REPLICATED)
-        end
-
-        if DELAYED_SHOP_ROLES[role] then
-            CreateConVar("ttt_" .. rolestring .. "_shop_active_only", "1", FCVAR_REPLICATED)
-            CreateConVar("ttt_" .. rolestring .. "_shop_delay", "0", FCVAR_REPLICATED)
-        end
-    end
-
     GetRoleTeamName = GetRawRoleTeamName
+end
+
+function CreateCreditConVar(role)
+    -- Add explicit ROLE_INNOCENT exclusion here in case shop-for-all is enabled
+    if not DEFAULT_ROLES[role] or role == ROLE_INNOCENT then
+        local rolestring = ROLE_STRINGS_RAW[role]
+        local credits = "0"
+        if ROLE_STARTING_CREDITS[role] then credits = ROLE_STARTING_CREDITS[role]
+        elseif TRAITOR_ROLES[role] then credits = "1"
+        elseif DETECTIVE_ROLES[role] then credits = "1" end
+        CreateConVar("ttt_" .. rolestring .. "_credits_starting", credits, FCVAR_REPLICATED)
+    end
+end
+
+function CreateShopConVars(role)
+    local rolestring = ROLE_STRINGS_RAW[role]
+    CreateCreditConVar(role)
+
+    CreateConVar("ttt_" .. rolestring .. "_shop_random_percent", "0", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown for the " .. rolestring, 0, 100)
+    CreateConVar("ttt_" .. rolestring .. "_shop_random_enabled", "0", FCVAR_REPLICATED, "Whether shop randomization should run for the " .. rolestring)
+
+    if (TRAITOR_ROLES[role] and role ~= ROLE_TRAITOR) or (DETECTIVE_ROLES[role] and role ~= ROLE_DETECTIVE) or role == ROLE_ZOMBIE then -- This all happens before we run UpdateRoleState so we need to manually add zombies
+        CreateConVar("ttt_" .. rolestring .. "_shop_sync", "0", FCVAR_REPLICATED)
+    end
+
+    if (INDEPENDENT_ROLES[role] and role ~= ROLE_ZOMBIE) or DELAYED_SHOP_ROLES[role] then
+        CreateConVar("ttt_" .. rolestring .. "_shop_mode", "0", FCVAR_REPLICATED)
+    end
+
+    if DELAYED_SHOP_ROLES[role] then
+        CreateConVar("ttt_" .. rolestring .. "_shop_active_only", "1", FCVAR_REPLICATED)
+        CreateConVar("ttt_" .. rolestring .. "_shop_delay", "0", FCVAR_REPLICATED)
+    end
 end
 
 ROLE_COLORS = {}
@@ -1463,7 +1463,7 @@ function UpdateRoleState()
     UpdateRoleColours()
 
     -- Enable the shop for all roles if configured to do so
-    if GetGlobalBool("ttt_shop_for_all", false) then
+    if GetConVar("ttt_shop_for_all"):GetBool() then
         for role = 0, ROLE_MAX do
             if not SHOP_ROLES[role] then
                 SHOP_ROLES[role] = true

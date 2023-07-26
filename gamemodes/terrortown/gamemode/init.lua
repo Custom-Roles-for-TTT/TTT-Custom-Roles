@@ -235,34 +235,6 @@ CreateConVar("ttt_det_credits_starting", "1")
 CreateConVar("ttt_det_credits_traitorkill", "0")
 CreateConVar("ttt_det_credits_traitordead", "1")
 
--- Shop parameters
-CreateConVar("ttt_shop_for_all", 0, FCVAR_REPLICATED)
--- Add any convars that are missing once shop-for-all is enabled
-cvars.AddChangeCallback("ttt_shop_for_all", function(convar, oldValue, newValue)
-    local enabled = tobool(newValue)
-    if enabled then
-        for role = 0, ROLE_MAX do
-            if not SHOP_ROLES[role] then
-                CreateShopConVars(role)
-                SHOP_ROLES[role] = true
-            end
-        end
-    end
-
-    SetGlobalBool("ttt_shop_for_all", enabled)
-end)
-
-local shop_roles = GetTeamRoles(SHOP_ROLES)
-for _, role in ipairs(shop_roles) do
-    CreateShopConVars(role)
-end
-
--- Create the starting credit convar for all roles that have credits but don't have a shop
-local shopless_credit_roles = table.UnionedKeys(CAN_LOOT_CREDITS_ROLES, ROLE_STARTING_CREDITS, shop_roles)
-for _, role in ipairs(shopless_credit_roles) do
-    CreateCreditConVar(role)
-end
-
 -- Other
 CreateConVar("ttt_use_weapon_spawn_scripts", "1")
 CreateConVar("ttt_weapon_spawn_count", "0")
