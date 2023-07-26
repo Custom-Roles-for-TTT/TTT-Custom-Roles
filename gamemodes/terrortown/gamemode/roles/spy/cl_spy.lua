@@ -74,7 +74,7 @@ hook.Add("TTTTutorialRoleText", "Spy_TTTTutorialRoleText", function(role, titleL
             html = html .. ".</span>"
         end
 
-        if GetGlobalBool("ttt_traitor_vision_enable", false) then
+        if GetConVar("ttt_traitor_vision_enable"):GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'><span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>Constant communication</span> with their allies allows them to quickly identify friends by highlighting them in their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>team color</span>.</span>"
         end
 
