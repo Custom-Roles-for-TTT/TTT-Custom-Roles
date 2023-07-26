@@ -1,5 +1,12 @@
 local hook = hook
 
+-------------
+-- CONVARS --
+-------------
+
+local turncoat_change_health = GetConVar("ttt_turncoat_change_health")
+local turncoat_change_innocent_kill = GetConVar("ttt_turncoat_change_innocent_kill")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -54,11 +61,11 @@ hook.Add("TTTTutorialRoleText", "Turncoat_TTTTutorialRoleText", function(role, t
         local traitorColor = ROLE_COLORS[ROLE_TRAITOR]
         html = html .. "<span style='display: block; margin-top: 10px;'>They are given a one-time-use Team Changer device which moves them to the <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>traitor team</span> and <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>announces their role to everyone</span>.</span>"
 
-        if GetGlobalBool("ttt_turncoat_change_innocent_kill", false) then
+        if turncoat_change_innocent_kill:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>If they kill a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> then they will change teams automatically.</span>"
         end
 
-        local health = GetGlobalInt("ttt_turncoat_change_health", 10)
+        local health = turncoat_change_health:GetInt()
         return html .. "<span style='display: block; margin-top: 10px;'>At the same time, their <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>health is changed to</span> " .. health .. ".</span>"
     end
 end)
