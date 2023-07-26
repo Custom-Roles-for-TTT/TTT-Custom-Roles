@@ -7,6 +7,13 @@ local string = string
 local RemoveHook = hook.Remove
 local StringUpper = string.upper
 
+-------------
+-- CONVARS --
+-------------
+
+local zombie_show_target_icon = GetConVar("ttt_zombie_show_target_icon")
+local zombie_vision_enable = GetConVar("ttt_zombie_vision_enable")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -45,7 +52,7 @@ end)
 
 -- Show "KILL" icon over all non-jester team heads when the zombie is using their claws
 hook.Add("TTTTargetIDPlayerKillIcon", "Zombie_TTTTargetIDPlayerKillIcon", function(ply, cli, showKillIcon, showJester)
-    if cli:IsZombie() and GetGlobalBool("ttt_zombie_show_target_icon", false) and cli.GetActiveWeapon and IsValid(cli:GetActiveWeapon()) and cli:GetActiveWeapon():GetClass() == "weapon_zom_claws" and not showJester then
+    if cli:IsZombie() and zombie_show_target_icon:GetBool() and cli.GetActiveWeapon and IsValid(cli:GetActiveWeapon()) and cli:GetActiveWeapon():GetClass() == "weapon_zom_claws" and not showJester then
         return true
     end
 end)
@@ -96,7 +103,7 @@ ROLE_IS_TARGETID_OVERRIDDEN[ROLE_ZOMBIE] = function(ply, target, showJester)
     if not IsPlayer(target) then return end
 
     -- Overriding the icon to show "KILL"
-    if ply:IsZombie() and GetGlobalBool("ttt_zombie_show_target_icon", false) and ply.GetActiveWeapon and IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() == "weapon_zom_claws" and not showJester then
+    if ply:IsZombie() and zombie_show_target_icon:GetBool() and ply.GetActiveWeapon and IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() == "weapon_zom_claws" and not showJester then
         ------ icon, ring,  text
         return true, false, false
     end
@@ -245,7 +252,7 @@ end
 
 hook.Add("TTTUpdateRoleState", "Zombie_Highlight_TTTUpdateRoleState", function()
     client = LocalPlayer()
-    zombie_vision = GetGlobalBool("ttt_zombie_vision_enable", false)
+    zombie_vision = zombie_vision_enable:GetBool()
     jesters_visible_to_traitors = GetConVar("ttt_jesters_visible_to_traitors"):GetBool()
     jesters_visible_to_monsters = GetConVar("ttt_jesters_visible_to_monsters"):GetBool()
     jesters_visible_to_independents = GetConVar("ttt_jesters_visible_to_independents"):GetBool()
@@ -320,13 +327,13 @@ hook.Add("TTTTutorialRoleText", "Zombie_TTTTutorialRoleText", function(role, tit
         end
 
         -- Vision
-        local hasVision = GetGlobalBool("ttt_zombie_vision_enable", false)
+        local hasVision = zombie_vision_enable:GetBool()
         if hasVision then
             html = html .. "<span style='display: block; margin-top: 10px;'>Their <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>hunger for brains</span> helps them see their targets through walls by highlighting their enemies.</span>"
         end
 
         -- Target ID
-        if GetGlobalBool("ttt_zombie_show_target_icon", false) then
+        if zombie_show_target_icon:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>Their targets can"
             if hasVision then
                 html = html .. " also"

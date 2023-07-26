@@ -621,9 +621,9 @@ ttt_killer_credits_starting                 2       // The number of credits a k
 ttt_killer_update_scoreboard                1       // Whether killers show dead players as missing in action (Is ignored if ttt_independents_update_scoreboard is set to 1)
 
 // Zombie
-ttt_zombies_are_monsters                    0       // Whether zombies should be treated as members of the monster team (rather than the independent team)
-ttt_zombies_are_traitors                    0       // Whether zombies should be treated as members of the traitors team (rather than the independent team)
-ttt_zombie_round_chance                     0.1     // The chance that a "zombie round" will occur where all players who would have been traitors are made zombies instead. Only usable when "ttt_zombies_are_traitors" is set to "1"
+ttt_zombie_is_monster                       0       // Whether zombies should be treated as members of the monster team (rather than the independent team)
+ttt_zombie_is_traitor                       0       // Whether zombies should be treated as members of the traitors team (rather than the independent team)
+ttt_zombie_round_chance                     0.1     // The chance that a "zombie round" will occur where all players who would have been traitors are made zombies instead. Only usable when "ttt_zombie_is_traitor" is set to "1"
 ttt_zombie_vision_enable                    0       // Whether zombies have their special vision highlights enabled
 ttt_zombie_spit_enable                      1       // Whether zombies have their spit attack enabled
 ttt_zombie_leap_enable                      1       // Whether zombies have their leap attack enabled

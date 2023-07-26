@@ -184,17 +184,17 @@ local function RemoveMonsterRoleEquipment(role)
     end
 end
 
-function LoadMonsterEquipment(zombies_are_traitors, vampires_are_traitors)
+function LoadMonsterEquipment(zombie_is_traitor, vampire_is_traitor)
     local radar = GetEquipmentItem(ROLE_TRAITOR, EQUIP_RADAR)
 
     -- Allow Monsters to buy Radar if they are members of the Traitor team
-    if zombies_are_traitors then
+    if zombie_is_traitor then
         LoadMonsterRoleEquipment(ROLE_ZOMBIE, radar)
     else
         RemoveMonsterRoleEquipment(ROLE_ZOMBIE)
     end
 
-    if vampires_are_traitors then
+    if vampire_is_traitor then
         LoadMonsterRoleEquipment(ROLE_VAMPIRE, radar)
     else
         RemoveMonsterRoleEquipment(ROLE_VAMPIRE)
