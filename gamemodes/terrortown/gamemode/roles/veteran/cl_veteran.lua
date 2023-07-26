@@ -1,5 +1,11 @@
 local hook = hook
 
+-------------
+-- CONVARS --
+-------------
+
+local veteran_full_heal = GetConVar("ttt_veteran_full_heal")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -24,7 +30,7 @@ hook.Add("TTTTutorialRoleText", "Veteran_TTTTutorialRoleText", function(role, ti
         html = html .. "<span style='display: block; margin-top: 10px;'>When the " .. ROLE_STRINGS[ROLE_VETERAN] .. " is the <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>last remaining member</span> of the innocent team, they are warned via an on-screen message and they <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>become \"active\"</span>.</span>"
 
         -- Full Heal
-        if GetGlobalBool("ttt_veteran_full_heal", true) then
+        if veteran_full_heal:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>An active " .. ROLE_STRINGS[ROLE_VETERAN] .. " has their <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>health fully restored</span>, allowing them a fighting chance against their remaining enemies.</span>"
         end
 
