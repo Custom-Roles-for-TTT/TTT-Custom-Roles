@@ -33,46 +33,46 @@ hook.Add("TTTTutorialRoleText", "Spy_TTTTutorialRoleText", function(role, titleL
         local roleColor = ROLE_COLORS[ROLE_TRAITOR]
         local html = "The " .. ROLE_STRINGS[ROLE_SPY] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitor team</span> whose goal is to sow confusion by stealing the identity of other players. </span>"
         local model = GetConVar("ttt_spy_steal_model"):GetBool()
-        local hands = GetConVar("ttt_spy_steal_model_hands"):GetBool()
         local name = GetConVar("ttt_spy_steal_name"):GetBool()
 
-        if model or hands or name then
-            html = html .. "On killing a player, the " .. ROLE_STRINGS[ROLE_SPY] .. " copies the following from the victim: "
-        end
-
-        if model then
-            html = html .. "playermodel, "
-
-            -- No point to stealing hands if the player's model hasn't changed anyway
-            if hands then
-                html = html .. "1st-person hands, "
-            end
-        end
-
-        if name then
-            html = html .. "name, "
-        end
-
         if model or name then
-            html = html .. " and so takes on their identity.</span>"
-        end
+            html = html .. "On killing a player, the " .. ROLE_STRINGS[ROLE_SPY] .. " copies their "
 
-        html = html .. "<span style='display: block; margin-top: 10px;'>A <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>flare gun</span> is "
-        local inLoadout = GetConVar("ttt_spy_flare_gun_loadout"):GetBool()
+            if model then
+                html = html .. "playermodel"
 
-        if inLoadout then
-            html = html .. "given to the " .. ROLE_STRINGS[ROLE_SPY] .. " at the start of the round"
-        end
-
-        if GetConVar("ttt_spy_flare_gun_shop"):GetBool() then
-            if inLoadout then
-                html = html .. " and is "
+                if name then
+                    html = html .. " and "
+                end
             end
 
-            html = html .. "purchasable in the equipment shop"
+            if name then
+                html = html .. "name"
+            end
+
+            html = html .. ", and always takes on the identity of the last player they killed.</span>"
         end
 
-        html = html .. ".</span>"
+        local inLoadout = GetConVar("ttt_spy_flare_gun_loadout"):GetBool()
+        local inShop = GetConVar("ttt_spy_flare_gun_shop"):GetBool()
+
+        if inLoadout or inShop then
+            html = html .. "<span style='display: block; margin-top: 10px;'>A <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>flare gun</span> is "
+
+            if inLoadout then
+                html = html .. "given to the " .. ROLE_STRINGS[ROLE_SPY] .. " at the start of the round"
+            end
+
+            if inShop then
+                if inLoadout then
+                    html = html .. " and is "
+                end
+
+                html = html .. "purchasable in the equipment shop"
+            end
+
+            html = html .. ".</span>"
+        end
 
         if GetGlobalBool("ttt_traitor_vision_enable", false) then
             html = html .. "<span style='display: block; margin-top: 10px;'><span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>Constant communication</span> with their allies allows them to quickly identify friends by highlighting them in their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>team color</span>.</span>"
