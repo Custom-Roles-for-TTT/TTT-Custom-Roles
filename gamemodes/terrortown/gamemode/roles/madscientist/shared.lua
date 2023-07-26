@@ -35,6 +35,7 @@ ROLE_SELECTION_PREDICATE[ROLE_MADSCIENTIST] = function()
 end
 
 hook.Add("TTTUpdateRoleState", "MadScientist_Team_TTTUpdateRoleState", function()
-    MONSTER_ROLES[ROLE_MADSCIENTIST] = madscientist_is_monster:GetBool()
-    INDEPENDENT_ROLES[ROLE_MADSCIENTIST] = not madscientist_is_monster:GetBool()
+    local is_monster = madscientist_is_monster:GetBool()
+    MONSTER_ROLES[ROLE_MADSCIENTIST] = is_monster
+    INDEPENDENT_ROLES[ROLE_MADSCIENTIST] = not is_monster
 end)

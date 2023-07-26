@@ -54,6 +54,7 @@ table.insert(ROLE_CONVARS[ROLE_CUPID], {
 -------------------
 
 hook.Add("TTTUpdateRoleState", "Cupid_TTTUpdateRoleState", function()
-    INDEPENDENT_ROLES[ROLE_CUPID] = cupid_is_independent:GetBool()
-    JESTER_ROLES[ROLE_CUPID] = not cupid_is_independent:GetBool()
+    local is_independent = cupid_is_independent:GetBool()
+    INDEPENDENT_ROLES[ROLE_CUPID] = is_independent
+    JESTER_ROLES[ROLE_CUPID] = not is_independent
 end)

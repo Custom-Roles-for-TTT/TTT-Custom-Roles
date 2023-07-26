@@ -133,6 +133,7 @@ table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
 -------------------
 
 hook.Add("TTTUpdateRoleState", "Beggar_TTTUpdateRoleState", function()
-    INDEPENDENT_ROLES[ROLE_BEGGAR] = beggar_is_independent:GetBool()
-    JESTER_ROLES[ROLE_BEGGAR] = not beggar_is_independent:GetBool()
+    local is_independent = beggar_is_independent:GetBool()
+    INDEPENDENT_ROLES[ROLE_BEGGAR] = is_independent
+    JESTER_ROLES[ROLE_BEGGAR] = not is_independent
 end)

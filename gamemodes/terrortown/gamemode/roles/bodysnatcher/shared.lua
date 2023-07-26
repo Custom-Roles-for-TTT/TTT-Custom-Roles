@@ -117,6 +117,7 @@ table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
 -------------------
 
 hook.Add("TTTUpdateRoleState", "Bodysnatcher_Team_TTTUpdateRoleState", function()
-    INDEPENDENT_ROLES[ROLE_BODYSNATCHER] = bodysnatcher_is_independent:GetBool()
-    JESTER_ROLES[ROLE_BODYSNATCHER] = not bodysnatcher_is_independent:GetBool()
+    local is_independent = bodysnatcher_is_independent:GetBool()
+    INDEPENDENT_ROLES[ROLE_BODYSNATCHER] = is_independent
+    JESTER_ROLES[ROLE_BODYSNATCHER] = not is_independent
 end)
