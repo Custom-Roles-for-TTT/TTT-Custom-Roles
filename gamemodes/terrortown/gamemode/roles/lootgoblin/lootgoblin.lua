@@ -256,10 +256,6 @@ hook.Add("TTTWinCheckComplete", "LootGoblin_TTTWinCheckComplete", HandleLootGobl
 ------------
 
 hook.Add("TTTBeginRound", "LootGoblin_TTTBeginRound", function()
-    if player.IsRoleLiving(ROLE_LOOTGOBLIN) then
-        StartGoblinTimers()
-    end
-
     net.Start("TTT_ResetLootGoblinWins")
     net.Broadcast()
 end)

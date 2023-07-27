@@ -42,3 +42,29 @@ CreateConVar("ttt_scoreboard_score", "0", FCVAR_REPLICATED)
 
 CreateConVar("ttt_shop_random_percent", "50", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown by default", 0, 100)
 CreateConVar("ttt_shop_random_position", "0", FCVAR_REPLICATED, "Whether to randomize the position of the items in the shop")
+
+-- Shop parameters
+CreateConVar("ttt_shop_for_all", 0, FCVAR_REPLICATED)
+-- Add any convars that are missing once shop-for-all is enabled
+cvars.AddChangeCallback("ttt_shop_for_all", function(convar, oldValue, newValue)
+    local enabled = tobool(newValue)
+    if enabled then
+        for role = 0, ROLE_MAX do
+            if not SHOP_ROLES[role] then
+                CreateShopConVars(role)
+                SHOP_ROLES[role] = true
+            end
+        end
+    end
+end)
+
+local shop_roles = GetTeamRoles(SHOP_ROLES)
+for _, role in ipairs(shop_roles) do
+    CreateShopConVars(role)
+end
+
+-- Create the starting credit convar for all roles that have credits but don't have a shop
+local shopless_credit_roles = table.UnionedKeys(CAN_LOOT_CREDITS_ROLES, ROLE_STARTING_CREDITS, shop_roles)
+for _, role in ipairs(shopless_credit_roles) do
+    CreateCreditConVar(role)
+end
