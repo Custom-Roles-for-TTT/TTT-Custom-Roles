@@ -9,6 +9,7 @@
 - Fixed sprinting causing crosshair size to be rounded to the nearest whole number
 - Fixed loot goblin transform message being shown multiple times
 - Fixed `ttt_bodysnatcher_respawn_delay` not working
+- Fixed deputy, impersonator and zombie tutorial screens so they show if the marshal or madscientist could spawn them while the role isn't enabled
 
 ### Developer
 - Changed role logic to load shared files first

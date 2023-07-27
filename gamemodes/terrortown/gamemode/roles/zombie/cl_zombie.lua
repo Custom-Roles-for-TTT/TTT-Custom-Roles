@@ -296,7 +296,9 @@ end
 hook.Add("TTTTutorialRoleEnabled", "Zombie_TTTTutorialRoleEnabled", function(role)
     if role == ROLE_ZOMBIE then
         -- Show the zombie screen if the Mad Scientist could spawn them
-        return INDEPENDENT_ROLES[ROLE_ZOMBIE] and GetConVar("ttt_madscientist_enabled"):GetBool()
+        return GetConVar("ttt_madscientist_enabled"):GetBool() and (
+                (INDEPENDENT_ROLES[ROLE_ZOMBIE] and INDEPENDENT_ROLES[ROLE_MADSCIENTIST]) or
+                (MONSTER_ROLES[ROLE_ZOMBIE] and MONSTER_ROLES[ROLE_MADSCIENTIST]))
     end
 end)
 
