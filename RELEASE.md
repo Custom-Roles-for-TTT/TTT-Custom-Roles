@@ -8,6 +8,7 @@
 - Fixed sprinting, then changing your crosshair size, then sprinting again causing your crosshair to revert to the original unchanged size
 - Fixed sprinting causing crosshair size to be rounded to the nearest whole number
 - Fixed loot goblin transform message being shown multiple times
+- Fixed `ttt_bodysnatcher_respawn_delay` not working
 
 ### Developer
 - Changed role logic to load shared files first

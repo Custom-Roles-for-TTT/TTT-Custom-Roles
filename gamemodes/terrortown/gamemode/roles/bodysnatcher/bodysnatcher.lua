@@ -16,6 +16,7 @@ util.AddNetworkString("TTT_BodysnatcherKilled")
 -------------
 
 local bodysnatcher_respawn = GetConVar("ttt_bodysnatcher_respawn")
+local bodysnatcher_respawn_delay = GetConVar("ttt_bodysnatcher_respawn_delay")
 local bodysnatcher_respawn_limit = GetConVar("ttt_bodysnatcher_respawn_limit")
 
 CreateConVar("ttt_bodysnatcher_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the bodysnatcher is killed", 0, 4)
@@ -84,7 +85,7 @@ hook.Add("PlayerDeath", "Bodysnatcher_KillCheck_PlayerDeath", function(victim, i
     local respawnLimit = bodysnatcher_respawn_limit:GetInt()
     if bodysnatcher_respawn:GetBool() and (respawnLimit == 0 or victim.BodysnatcherRespawn < respawnLimit) then
         victim.BodysnatcherRespawn = victim.BodysnatcherRespawn + 1
-        local delay = bodysnatcher_respawn_limit:GetInt()
+        local delay = bodysnatcher_respawn_delay:GetInt()
         if delay > 0 then
             victim:PrintMessage(HUD_PRINTCENTER, "You were killed but will respawn in " .. delay .. " seconds.")
         else
