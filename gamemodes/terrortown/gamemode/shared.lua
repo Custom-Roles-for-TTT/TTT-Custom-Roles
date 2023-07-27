@@ -1635,7 +1635,7 @@ CreateConVar("ttt_detective_search_only_arsonistdouse", "0", FCVAR_REPLICATED)
 OldCVarWarning("ttt_detective_search_only_arsonistdouse", "ttt_detectives_search_only_arsonistdouse")
 
 -- Beggar
-CreateConVar("ttt_beggar_is_independent", "0", FCVAR_REPLICATED, "Whether beggars should be treated as members of the independent team", 0, 1)
+CreateConVar("ttt_beggars_are_independent", "0", FCVAR_REPLICATED, "Whether beggars should be treated as members of the independent team", 0, 1)
 OldCVarWarning("ttt_beggars_are_independent", "ttt_beggar_is_independent")
 
 -- Bodysnatcher
