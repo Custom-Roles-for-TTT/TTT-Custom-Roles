@@ -1603,3 +1603,68 @@ DefaultEquipment = {
         "weapon_ttt_glock"
     }
 };
+
+-----------------
+-- Old ConVars --
+-----------------
+
+local function OldCVarWarning(oldName, newName)
+    cvars.AddChangeCallback(oldName, function(convar, oldValue, newValue)
+        RunConsoleCommand(newName, newValue)
+        ErrorNoHalt("WARNING: ConVar \'" .. oldName .. "\' deprecated. Use \'" .. newName .. "\' instead!\n")
+    end)
+end
+
+-- init_shd
+CreateConVar("ttt_detective_disable_looting", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_detective_disable_looting", "ttt_detectives_disable_looting")
+
+CreateConVar("ttt_detective_hide_special_mode", SPECIAL_DETECTIVE_HIDE_NONE, FCVAR_REPLICATED, "How to handle special detective role information. 0 - Show the special detective's role to everyone. 1 - Hide the special detective's role from everyone (just show detective instead). 2 - Hide the special detective's role for everyone but themselves (only they can see their true role)", SPECIAL_DETECTIVE_HIDE_NONE, SPECIAL_DETECTIVE_HIDE_FOR_OTHERS)
+OldCVarWarning("ttt_detective_hide_special_mode", "ttt_detectives_hide_special_mode")
+
+CreateConVar("ttt_detective_search_only", "1", FCVAR_REPLICATED)
+OldCVarWarning("ttt_detective_search_only", "ttt_detectives_search_only")
+
+for _, dataType in ipairs(CORPSE_ICON_TYPES) do
+    CreateConVar("ttt_detective_search_only_" .. dataType, "0", FCVAR_REPLICATED)
+    OldCVarWarning("ttt_detective_search_only_" .. dataType, "ttt_detectives_search_only_" .. dataType)
+end
+
+-- Arsonist
+CreateConVar("ttt_detective_search_only_arsonistdouse", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_detective_search_only_arsonistdouse", "ttt_detectives_search_only_arsonistdouse")
+
+-- Beggar
+CreateConVar("ttt_beggars_are_independent", "0", FCVAR_REPLICATED, "Whether beggars should be treated as members of the independent team", 0, 1)
+OldCVarWarning("ttt_beggars_are_independent", "ttt_beggar_is_independent")
+
+-- Bodysnatcher
+CreateConVar("ttt_bodysnatchers_are_independent", "0", FCVAR_REPLICATED, "Whether bodysnatchers should be treated as members of the independent team", 0, 1)
+OldCVarWarning("ttt_bodysnatchers_are_independent", "ttt_bodysnatcher_is_independent")
+
+-- Cupid
+CreateConVar("ttt_cupids_are_independent", "0", FCVAR_REPLICATED, "Whether cupids should be treated as members of the independent team", 0, 1)
+OldCVarWarning("ttt_cupids_are_independent", "ttt_cupid_is_independent")
+
+-- Detective-Like
+CreateConVar("ttt_detective_glow_enable", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_detective_glow_enable", "ttt_detectives_glow_enable")
+
+if SERVER then
+    CreateConVar("ttt_detective_credits_timer", "0")
+    OldCVarWarning("ttt_detective_credits_timer", "ttt_detectives_credits_timer")
+end
+
+-- Vampire
+CreateConVar("ttt_vampires_are_monsters", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_vampires_are_monsters", "ttt_vampire_is_monster")
+
+CreateConVar("ttt_vampires_are_independent", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_vampires_are_independent", "ttt_vampire_is_independent")
+
+-- Zombie
+CreateConVar("ttt_zombies_are_monsters", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_zombies_are_monsters", "ttt_zombie_is_monster")
+
+CreateConVar("ttt_zombies_are_traitors", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_zombies_are_traitors", "ttt_zombie_is_traitor")
