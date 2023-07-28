@@ -120,7 +120,7 @@ local function ShowSearchInfo(dataType, detectiveSearchOnly, owner)
         client = LocalPlayer()
     end
     if client:IsDetectiveLike() then return true end
-    return not GetConVar("ttt_detectives_search_only_" .. dataType):GetBool()
+    return not cvars.Bool("ttt_detectives_search_only_" .. dataType, false)
 end
 
 function PreprocSearch(raw)
