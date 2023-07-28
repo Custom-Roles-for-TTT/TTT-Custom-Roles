@@ -733,6 +733,9 @@ function HELPSCRN:CreateConfig(dsettings)
 
     dgui:CheckBox(GetTranslation("set_cues"), "ttt_cl_soundcues")
 
+    cb = dgui:CheckBox(GetTranslation("set_msg_cue"), "ttt_cl_msg_soundcue")
+    cb:SetTooltip(GetTranslation("set_msg_cue_tip"))
+
     cb = dgui:CheckBox(GetTranslation("set_raw_karma"), "ttt_show_raw_karma_value")
     cb:SetTooltip(GetTranslation("set_raw_karma_tip"))
 
@@ -750,10 +753,6 @@ function HELPSCRN:CreateConfig(dsettings)
 
     cb = dgui:CheckBox(GetTranslation("set_bypass_culling"), "ttt_bypass_culling")
     cb:SetTooltip(GetTranslation("set_bypass_culling_tip"))
-
-    cb = dgui:CheckBox(GetTranslation("set_popup_hint_sounds"), "ttt_cl_msg_soundcue")
-    cb:SetTooltip(GetTranslation("set_popup_hint_sounds_tip"))
-
     HookCall("TTTSettingsConfigTabFields", nil, "Interface", dgui)
 
     dsettings:AddItem(dgui)
