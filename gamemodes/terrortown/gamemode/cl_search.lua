@@ -120,11 +120,11 @@ local function ShowSearchInfo(dataType, detectiveSearchOnly, owner)
         client = LocalPlayer()
     end
     if client:IsDetectiveLike() then return true end
-    return not GetGlobalBool("ttt_detective_search_only_" .. dataType, false)
+    return not cvars.Bool("ttt_detectives_search_only_" .. dataType, false)
 end
 
 function PreprocSearch(raw)
-    local detectiveSearchOnly = GetGlobalBool("ttt_detective_search_only", true) and not (GetGlobalBool("ttt_all_search_postround", true) and GetRoundState() ~= ROUND_ACTIVE)
+    local detectiveSearchOnly = GetConVar("ttt_detectives_search_only"):GetBool() and not (GetConVar("ttt_all_search_postround"):GetBool() and GetRoundState() ~= ROUND_ACTIVE)
     local hasRole = false
     local search = {}
     for t, d in pairs(raw) do
@@ -393,7 +393,7 @@ local function ShowSearchScreen(search_raw)
 
     local rag = Entity(search_raw.eidx)
     local buttons = {}
-    local detectiveSearchOnly = GetGlobalBool("ttt_detective_search_only", true) and not (GetGlobalBool("ttt_all_search_postround", true) and GetRoundState() ~= ROUND_ACTIVE)
+    local detectiveSearchOnly = GetConVar("ttt_detectives_search_only"):GetBool() and not (GetConVar("ttt_all_search_postround"):GetBool() and GetRoundState() ~= ROUND_ACTIVE)
     if not detectiveSearchOnly then
         table.insert(buttons, {
             text = T("search_confirm"),

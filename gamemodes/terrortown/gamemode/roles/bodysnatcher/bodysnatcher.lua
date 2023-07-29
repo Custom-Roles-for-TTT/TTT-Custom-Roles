@@ -15,32 +15,15 @@ util.AddNetworkString("TTT_BodysnatcherKilled")
 -- CONVARS --
 -------------
 
+local bodysnatcher_respawn = GetConVar("ttt_bodysnatcher_respawn")
+local bodysnatcher_respawn_delay = GetConVar("ttt_bodysnatcher_respawn_delay")
+local bodysnatcher_respawn_limit = GetConVar("ttt_bodysnatcher_respawn_limit")
+
 CreateConVar("ttt_bodysnatcher_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the bodysnatcher is killed", 0, 4)
 CreateConVar("ttt_bodysnatcher_notify_sound", "0", FCVAR_NONE, "Whether to play a cheering sound when a bodysnatcher is killed", 0, 1)
 CreateConVar("ttt_bodysnatcher_notify_confetti", "0", FCVAR_NONE, "Whether to throw confetti when a bodysnatcher is a killed", 0, 1)
 CreateConVar("ttt_bodysnatcher_destroy_body", "0", FCVAR_NONE, "Whether the bodysnatching device destroys the body it is used on or not", 0, 1)
 CreateConVar("ttt_bodysnatcher_show_role", "1", FCVAR_NONE, "Whether the bodysnatching device shows the role of the corpse it is used on or not", 0, 1)
-local bodysnatchers_are_independent = CreateConVar("ttt_bodysnatchers_are_independent", "0", FCVAR_NONE, "Whether bodysnatchers should be treated as members of the independent team", 0, 1)
-local bodysnatcher_reveal_traitor = CreateConVar("ttt_bodysnatcher_reveal_traitor", "1", FCVAR_NONE, "Who the bodysnatcher is revealed to when they join the traitor team", 0, 2)
-local bodysnatcher_reveal_innocent = CreateConVar("ttt_bodysnatcher_reveal_innocent", "1", FCVAR_NONE, "Who the bodysnatcher is revealed to when they join the innocent team", 0, 2)
-local bodysnatcher_reveal_monster = CreateConVar("ttt_bodysnatcher_reveal_monster", "1", FCVAR_NONE, "Who the bodysnatcher is revealed to when they join the monster team", 0, 2)
-local bodysnatcher_reveal_independent = CreateConVar("ttt_bodysnatcher_reveal_independent", "1", FCVAR_NONE, "Who the bodysnatcher is revealed to when they join the independent team", 0, 2)
-local bodysnatcher_reveal_jester = CreateConVar("ttt_bodysnatcher_reveal_jester", "1", FCVAR_NONE, "Who the bodysnatcher is revealed to when they join the jester team", 0, 2)
-local bodysnatcher_respawn = CreateConVar("ttt_bodysnatcher_respawn", "0", FCVAR_NONE, "Whether the bodysnatcher respawns when they are killed before joining another team", 0, 1)
-local bodysnatcher_respawn_limit = CreateConVar("ttt_bodysnatcher_respawn_limit", "0", FCVAR_NONE, "The maximum number of times the bodysnatcher can respawn (if \"ttt_bodysnatcher_respawn\" is enabled). Set to 0 to allow infinite respawns", 0, 30)
-local bodysnatcher_respawn_delay = CreateConVar("ttt_bodysnatcher_respawn_delay", "3", FCVAR_NONE, "The delay to use when respawning the bodysnatcher (if \"ttt_bodysnatcher_respawn\" is enabled)", 0, 60)
-
-hook.Add("TTTSyncGlobals", "Bodysnatcher_TTTSyncGlobals", function()
-    SetGlobalBool("ttt_bodysnatchers_are_independent", bodysnatchers_are_independent:GetBool())
-    SetGlobalInt("ttt_bodysnatcher_reveal_traitor", bodysnatcher_reveal_traitor:GetInt())
-    SetGlobalInt("ttt_bodysnatcher_reveal_innocent", bodysnatcher_reveal_innocent:GetInt())
-    SetGlobalInt("ttt_bodysnatcher_reveal_monster", bodysnatcher_reveal_monster:GetInt())
-    SetGlobalInt("ttt_bodysnatcher_reveal_independent", bodysnatcher_reveal_independent:GetInt())
-    SetGlobalInt("ttt_bodysnatcher_reveal_jester", bodysnatcher_reveal_jester:GetInt())
-    SetGlobalBool("ttt_bodysnatcher_respawn", bodysnatcher_respawn:GetBool())
-    SetGlobalInt("ttt_bodysnatcher_respawn_limit", bodysnatcher_respawn_limit:GetInt())
-    SetGlobalInt("ttt_bodysnatcher_respawn_delay", bodysnatcher_respawn_delay:GetInt())
-end)
 
 ----------------
 -- ROLE STATE --
@@ -102,7 +85,7 @@ hook.Add("PlayerDeath", "Bodysnatcher_KillCheck_PlayerDeath", function(victim, i
     local respawnLimit = bodysnatcher_respawn_limit:GetInt()
     if bodysnatcher_respawn:GetBool() and (respawnLimit == 0 or victim.BodysnatcherRespawn < respawnLimit) then
         victim.BodysnatcherRespawn = victim.BodysnatcherRespawn + 1
-        local delay = bodysnatcher_respawn_limit:GetInt()
+        local delay = bodysnatcher_respawn_delay:GetInt()
         if delay > 0 then
             victim:PrintMessage(HUD_PRINTCENTER, "You were killed but will respawn in " .. delay .. " seconds.")
         else

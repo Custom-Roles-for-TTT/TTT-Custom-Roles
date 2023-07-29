@@ -62,3 +62,10 @@ end)
 hook.Add("TTTPrepareRound", "Mercenary_Shared_TTTPrepareRound", function()
     InitializeEquipment()
 end)
+
+-------------
+-- CONVARS --
+-------------
+
+-- Create this here since it wouldn't normally get created and has a different default value anyway
+CreateConVar("ttt_mercenary_shop_mode", "2", FCVAR_REPLICATED)

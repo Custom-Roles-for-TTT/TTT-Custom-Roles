@@ -4,6 +4,14 @@ local string = string
 
 local StringUpper = string.upper
 
+-------------
+-- CONVARS --
+-------------
+
+local clown_hide_when_active = GetConVar("ttt_clown_hide_when_active")
+local clown_use_traps_when_active = GetConVar("ttt_clown_use_traps_when_active")
+local clown_show_target_icon = GetConVar("ttt_clown_show_target_icon")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -29,7 +37,7 @@ end)
 
 -- Show "KILL" icon over the target's head
 hook.Add("TTTTargetIDPlayerKillIcon", "Clown_TTTTargetIDPlayerKillIcon", function(ply, cli, showKillIcon, showJester)
-    if cli:IsClown() and cli:IsRoleActive() and GetGlobalBool("ttt_clown_show_target_icon", false) and not showJester then
+    if cli:IsClown() and cli:IsRoleActive() and clown_show_target_icon:GetBool() and not showJester then
         return true
     end
 end)
@@ -39,7 +47,7 @@ local function IsClownActive(ply)
 end
 
 local function IsClownVisible(ply)
-    return IsClownActive(ply) and not GetGlobalBool("ttt_clown_hide_when_active", false)
+    return IsClownActive(ply) and not clown_hide_when_active:GetBool()
 end
 
 hook.Add("TTTTargetIDPlayerRoleIcon", "Clown_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, color_role, hideBeggar, showJester, hideBodysnatcher)
@@ -111,7 +119,7 @@ net.Receive("TTT_ClownActivate", function()
     if not IsPlayer(ent) then return end
 
     -- Set the traitor button availability state to match the setting
-    TRAITOR_BUTTON_ROLES[ROLE_CLOWN] = GetGlobalBool("ttt_clown_use_traps_when_active", false)
+    TRAITOR_BUTTON_ROLES[ROLE_CLOWN] = clown_use_traps_when_active:GetBool()
 
     ent:Celebrate("clown.wav", true)
 
@@ -188,26 +196,26 @@ hook.Add("TTTTutorialRoleText", "Clown_TTTTutorialRoleText", function(role, titl
         html = html .. "<span style='display: block; margin-top: 10px;'>When a team would normally win, the " .. ROLE_STRINGS[ROLE_CLOWN] .. " <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>activates</span> which allows them to <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>go on a rampage</span> and win by surprise.</span>"
 
         -- Target ID
-        if GetGlobalBool("ttt_clown_show_target_icon", false) then
+        if clown_show_target_icon:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>Their targets can be identified by the <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>KILL</span> icon floating over their heads.</span>"
         end
 
         -- Hide When Active
-        if GetGlobalBool("ttt_clown_hide_when_active", false) then
+        if clown_hide_when_active:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>When activated they are also <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>hidden</span> from players who could normally <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>see them through walls</span>.</span>"
         end
 
         -- Shop
         html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_CLOWN] .. " has access to a <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>weapon shop</span>"
-        if GetGlobalBool("ttt_clown_shop_active_only", true) then
+        if GetConVar("ttt_clown_shop_active_only"):GetBool() then
             html = html .. ", but only <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>after they activate</span>"
-        elseif GetGlobalBool("ttt_clown_shop_delay", false) then
+        elseif GetConVar("ttt_clown_shop_delay"):GetBool() then
             html = html .. ", but they are only given their purchased weapons <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>after they activate</span>"
         end
         html = html .. ".</span>"
 
         -- Traitor Traps
-        if GetGlobalBool("ttt_clown_use_traps_when_active", false) then
+        if clown_use_traps_when_active:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'><span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>Traitor traps</span> also become available when <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>the " .. ROLE_STRINGS[ROLE_CLOWN] .." is activated</span>.</span>"
         end
 

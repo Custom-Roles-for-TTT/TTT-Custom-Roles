@@ -106,7 +106,7 @@ function plymeta:IsShopRole()
     local role = self:GetRole()
     local hasShop = SHOP_ROLES[role] or false
     -- Don't perform the additional checks if "shop for all" is enabled
-    if GetGlobalBool("ttt_shop_for_all", false) then
+    if GetConVar("ttt_shop_for_all"):GetBool() then
         return hasShop
     end
 
@@ -116,8 +116,8 @@ function plymeta:IsShopRole()
         -- Only allow roles with a delayed shop to use it if they have weapons or will be having weapons synced and are active or "active_only" is disabled
         if DELAYED_SHOP_ROLES[role] then
             local rolestring = ROLE_STRINGS_RAW[role]
-            hasWeapon = (hasWeapon or GetGlobalInt("ttt_" .. rolestring .. "_shop_mode", SHOP_SYNC_MODE_NONE) > SHOP_SYNC_MODE_NONE) and
-                (not GetGlobalBool("ttt_" .. rolestring .. "_shop_active_only", false) or self:IsRoleActive())
+            hasWeapon = (hasWeapon or cvars.Number("ttt_" .. rolestring .. "_shop_mode", SHOP_SYNC_MODE_NONE) > SHOP_SYNC_MODE_NONE) and
+                (not cvars.Bool("ttt_" .. rolestring .. "_shop_active_only", false) or self:IsRoleActive())
         end
         return hasWeapon
     end
@@ -129,7 +129,7 @@ end
 function plymeta:ShouldDelayShopPurchase()
     local role = self:GetRole()
     if DELAYED_SHOP_ROLES[role] then
-        return GetGlobalBool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_delay", false) and not self:IsRoleActive()
+        return cvars.Bool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_delay", false) and not self:IsRoleActive()
     end
     return false
 end
@@ -165,11 +165,11 @@ function plymeta:ShouldActLikeJester()
 end
 function plymeta:ShouldHideJesters()
     if self:IsTraitorTeam() then
-        return not GetGlobalBool("ttt_jesters_visible_to_traitors", false)
+        return not GetConVar("ttt_jesters_visible_to_traitors"):GetBool()
     elseif self:IsMonsterTeam() then
-        return not GetGlobalBool("ttt_jesters_visible_to_monsters", false)
+        return not GetConVar("ttt_jesters_visible_to_monsters"):GetBool()
     elseif self:IsIndependentTeam() then
-        return not GetGlobalBool("ttt_jesters_visible_to_independents", false)
+        return not GetConVar("ttt_jesters_visible_to_independents"):GetBool()
     end
     return true
 end
@@ -216,7 +216,7 @@ end
 
 function plymeta:GetDisplayedRole()
     if self:IsDetectiveTeam() and not self:IsDetective() then
-        local special_detective_mode = GetGlobalInt("ttt_detective_hide_special_mode", SPECIAL_DETECTIVE_HIDE_NONE)
+        local special_detective_mode = GetConVar("ttt_detectives_hide_special_mode"):GetInt()
         -- By default, show detective unless this is disabled
         local show_detective = special_detective_mode ~= SPECIAL_DETECTIVE_HIDE_NONE
 

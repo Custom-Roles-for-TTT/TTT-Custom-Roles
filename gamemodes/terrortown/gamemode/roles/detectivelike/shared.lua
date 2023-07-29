@@ -13,6 +13,12 @@ end
 ROLE_MOVE_ROLE_STATE[ROLE_DEPUTY] = MoveRoleState
 ROLE_MOVE_ROLE_STATE[ROLE_IMPERSONATOR] = MoveRoleState
 
+-------------
+-- CONVARS --
+-------------
+
+local detectives_glow_enable = CreateConVar("ttt_detectives_glow_enable", "0", FCVAR_REPLICATED)
+
 --------------------
 -- PLAYER METHODS --
 --------------------
@@ -33,7 +39,7 @@ function plymeta:HandleDetectiveLikePromotion()
     end
 
     -- Give the player their shop items if purchase was delayed
-    if DELAYED_SHOP_ROLES[role] and self.bought and GetConVar("ttt_" .. rolestring .. "_shop_delay"):GetBool() then
+    if DELAYED_SHOP_ROLES[role] and self.bought and cvars.Bool("ttt_" .. rolestring .. "_shop_delay", false) then
         self:GiveDelayedShopItems()
     end
 
@@ -54,6 +60,6 @@ plymeta.IsDetectiveLike = plymeta.GetDetectiveLike
 plymeta.IsDetectiveLikePromotable = plymeta.GetDetectiveLikePromotable
 
 ROLETEAM_IS_TARGET_HIGHLIGHTED[ROLE_TEAM_DETECTIVE] = function(ply, tgt)
-    if tgt:IsActiveDetectiveLike() then return GetGlobalBool("ttt_detective_glow_enable", false) end
+    if tgt:IsActiveDetectiveLike() then return detectives_glow_enable:GetBool() end
     return false
 end

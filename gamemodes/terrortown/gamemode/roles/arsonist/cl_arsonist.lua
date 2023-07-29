@@ -2,6 +2,14 @@ local hook = hook
 
 local client
 
+-------------
+-- CONVARS --
+-------------
+
+local arsonist_douse_time = GetConVar("ttt_arsonist_douse_time")
+local arsonist_douse_notify_delay_min = GetConVar("ttt_arsonist_douse_notify_delay_min")
+local arsonist_douse_notify_delay_max = GetConVar("ttt_arsonist_douse_notify_delay_max")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -195,7 +203,7 @@ hook.Add("HUDPaint", "Arsonist_HUDPaint", function()
     local state = target:GetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED)
     if state == ARSONIST_UNDOUSED then return end
 
-    local douse_time = GetGlobalInt("ttt_arsonist_douse_time", 8)
+    local douse_time = arsonist_douse_time:GetInt()
     local end_time = client:GetNWFloat("TTTArsonistDouseStartTime", -1) + douse_time
 
     local x = ScrW() / 2.0
@@ -229,7 +237,7 @@ hook.Add("HUDPaint", "Arsonist_HUDPaint", function()
 end)
 
 hook.Add("TTTHUDInfoPaint", "Arsonist_TTTHUDInfoPaint", function(cli, label_left, label_top, active_labels)
-    if GetGlobalBool("ttt_arsonist_early_ignite", false) then return end
+    if GetConVar("ttt_arsonist_early_ignite"):GetBool() then return end
 
     local hide_role = false
     if ConVarExists("ttt_hide_role") then
@@ -269,14 +277,14 @@ hook.Add("TTTTutorialRoleText", "Arsonist_TTTTutorialRoleText", function(role, t
         roleColor = ROLE_COLORS[ROLE_TRAITOR]
 
         html = html .. "<span style='display: block; margin-top: 10px;'>To help accomplish this, they can <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>douse players in gasoline</span> by standing near them.</span>"
-        if GetGlobalBool("ttt_arsonist_early_ignite", false) then
+        if GetConVar("ttt_arsonist_early_ignite"):GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>They can use their igniter to <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>burn</span> all the doused players at any time. The igniter can only be used once, though, so plan accordinly.</span>"
         else
             html = html .. "<span style='display: block; margin-top: 10px;'>Once every player has been doused, they can use their igniter to <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>burn</span> all the doused players.</span>"
         end
         -- Show a warning about the notification delay if its enabled
-        local delay_min = GetGlobalInt("ttt_arsonist_douse_notify_delay_min", 3)
-        local delay_max = GetGlobalInt("ttt_arsonist_douse_notify_delay_max", 5)
+        local delay_min = arsonist_douse_notify_delay_min:GetInt()
+        local delay_max = arsonist_douse_notify_delay_max:GetInt()
         if delay_min > delay_max then
             delay_min = delay_max
         end

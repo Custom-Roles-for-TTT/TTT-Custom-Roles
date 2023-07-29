@@ -33,10 +33,10 @@ function PANEL:Init()
 
     self.cols = {}
     self:AddColumn(GetTranslation("sb_ping"), function(ply) return ply:Ping() end)
-    if GetGlobalBool("ttt_scoreboard_deaths", false) then
+    if GetConVar("ttt_scoreboard_deaths"):GetBool() then
         self:AddColumn(GetTranslation("sb_deaths"), function(ply) return ply:Deaths() end)
     end
-    if GetGlobalBool("ttt_scoreboard_score", false) then
+    if GetConVar("ttt_scoreboard_score"):GetBool() then
         self:AddColumn(GetTranslation("sb_score"), function(ply) return ply:Frags() end)
     end
 
@@ -238,7 +238,7 @@ function PANEL:Paint(width, height)
 
         if client:IsTraitorTeam() then
             if GetGlobalBool("ttt_glitch_round", false) and (ply:IsTraitorTeam() or (ply:IsGlitch() and not GetGlobalBool("ttt_zombie_round", false))) and client ~= ply then
-                local glitch_role, color_role = GetGlitchedRole(ply, GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR))
+                local glitch_role, color_role = GetGlitchedRole(ply, GetConVar("ttt_glitch_mode"):GetInt())
                 role = glitch_role
                 if color_role then
                     color = ROLE_COLORS_SCOREBOARD[color_role]
@@ -246,7 +246,7 @@ function PANEL:Paint(width, height)
                     color = ROLE_COLORS_SCOREBOARD[role]
                 end
             elseif ply:IsImpersonator() then
-                if ply:IsRoleActive() and GetGlobalBool("ttt_impersonator_use_detective_icon", true) then
+                if ply:IsRoleActive() and GetConVar("ttt_impersonator_use_detective_icon"):GetBool() then
                     role = ROLE_DETECTIVE
                 end
                 color = ROLE_COLORS_SCOREBOARD[ROLE_IMPERSONATOR]
@@ -265,7 +265,7 @@ function PANEL:Paint(width, height)
                 else
                     role = disp_role
                 end
-            elseif GetGlobalBool("ttt_deputy_use_detective_icon", true) then
+            elseif GetConVar("ttt_deputy_use_detective_icon"):GetBool() then
                 role = ROLE_DETECTIVE
             else
                 role = ROLE_DEPUTY

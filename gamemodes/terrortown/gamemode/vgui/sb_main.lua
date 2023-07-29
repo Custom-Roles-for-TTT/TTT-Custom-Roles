@@ -103,8 +103,8 @@ function ScoreGroup(p)
                 -- To terrorists, missing players show as alive
                 if client:IsSpec() or
                         client:IsActiveTraitorTeam() or client:IsActiveMonsterTeam() or
-                        (GetGlobalBool("ttt_independents_update_scoreboard") and client:IsActiveIndependentTeam()) or
-                        (GetGlobalBool("ttt_killer_update_scoreboard") and client:IsActiveKiller()) or
+                        (GetConVar("ttt_independents_update_scoreboard"):GetBool() and client:IsActiveIndependentTeam()) or
+                        (GetConVar("ttt_killer_update_scoreboard"):GetBool() and client:IsActiveKiller()) or
                         ((GAMEMODE.round_state ~= ROUND_ACTIVE) and client:IsTerror()) then
                     return GROUP_NOTFOUND
                 else
@@ -193,10 +193,10 @@ function PANEL:Init()
     -- the various score column headers
     self.cols = {}
     self:AddColumn(GetTranslation("sb_ping"), nil, nil, "ping")
-    if GetGlobalBool("ttt_scoreboard_deaths", false) then
+    if GetConVar("ttt_scoreboard_deaths"):GetBool() then
         self:AddColumn(GetTranslation("sb_deaths"), nil, nil, "deaths")
     end
-    if GetGlobalBool("ttt_scoreboard_score", false) then
+    if GetConVar("ttt_scoreboard_score"):GetBool() then
         self:AddColumn(GetTranslation("sb_score"), nil, nil, "score")
     end
 

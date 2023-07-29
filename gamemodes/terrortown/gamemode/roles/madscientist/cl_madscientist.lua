@@ -1,5 +1,11 @@
 local hook = hook
 
+-------------
+-- CONVARS --
+-------------
+
+local madscientist_respawn_enable = GetConVar("ttt_madscientist_respawn_enable")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -28,7 +34,7 @@ hook.Add("TTTTutorialRoleText", "MadScientist_TTTTutorialRoleText", function(rol
         local html = "The " .. ROLE_STRINGS[ROLE_MADSCIENTIST] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. string.lower(roleTeamString) .. " team</span> whose goal is to resurrect dead bodies as their <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>" .. ROLE_STRINGS[ROLE_ZOMBIE] .. " minions</span>."
 
         -- Respawn
-        if GetGlobalBool("ttt_madscientist_respawn_enable", false) then
+        if madscientist_respawn_enable:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>If the " .. ROLE_STRINGS[ROLE_MADSCIENTIST] .. " is killed they will <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>respawn as " .. ROLE_STRINGS_EXT[ROLE_ZOMBIE] .. " thrall</spawn>.</span>"
         end
 

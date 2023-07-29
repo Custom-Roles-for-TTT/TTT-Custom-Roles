@@ -29,14 +29,14 @@ end)
 
 hook.Add("TTTUpdateRoleState", "Hypnotist_TTTUpdateRoleState", function()
     local hypnotist_defib = weapons.GetStored("weapon_hyp_brainwash")
-    if GetGlobalBool("ttt_hypnotist_device_loadout", false) then
+    if GetConVar("ttt_hypnotist_device_loadout"):GetBool() then
         hypnotist_defib.InLoadoutFor = table.Copy(hypnotist_defib.InLoadoutForDefault)
     else
         table.Empty(hypnotist_defib.InLoadoutFor)
     end
-    if GetGlobalBool("ttt_hypnotist_device_shop", false) then
+    if GetConVar("ttt_hypnotist_device_shop"):GetBool() then
         hypnotist_defib.CanBuy = {ROLE_HYPNOTIST}
-        hypnotist_defib.LimitedStock = not GetGlobalBool("ttt_hypnotist_device_shop_rebuyable", false)
+        hypnotist_defib.LimitedStock = not GetConVar("ttt_hypnotist_device_shop_rebuyable"):GetBool()
     else
         hypnotist_defib.CanBuy = nil
         hypnotist_defib.LimitedStock = true
@@ -46,6 +46,10 @@ end)
 ------------------
 -- ROLE CONVARS --
 ------------------
+
+CreateConVar("ttt_hypnotist_device_loadout", "1", FCVAR_REPLICATED)
+CreateConVar("ttt_hypnotist_device_shop", "0", FCVAR_REPLICATED)
+CreateConVar("ttt_hypnotist_device_shop_rebuyable", "0", FCVAR_REPLICATED)
 
 ROLE_CONVARS[ROLE_HYPNOTIST] = {}
 table.insert(ROLE_CONVARS[ROLE_HYPNOTIST], {

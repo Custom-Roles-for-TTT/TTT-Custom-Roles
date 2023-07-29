@@ -91,11 +91,11 @@ local propspec_outline = Material("models/props_combine/portalball001_sheet")
 
 local function GetDetectiveIconRole(is_traitor)
     if is_traitor then
-        if GetGlobalBool("ttt_impersonator_use_detective_icon", true) then
+        if GetConVar("ttt_impersonator_use_detective_icon"):GetBool() then
             return ROLE_DETECTIVE
         end
         return ROLE_IMPERSONATOR
-    elseif GetGlobalBool("ttt_deputy_use_detective_icon", true) then
+    elseif GetConVar("ttt_deputy_use_detective_icon"):GetBool() then
         return ROLE_DETECTIVE
     end
     return ROLE_DEPUTY
@@ -127,7 +127,7 @@ function GM:PostDrawTranslucentRenderables()
 
     dir = client:GetForward() * -1
 
-    local glitchMode = GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR)
+    local glitchMode = GetConVar("ttt_glitch_mode"):GetInt()
     local glitchRound = GetGlobalBool("ttt_glitch_round", false)
     local hide_roles = false
     if ConVarExists("ttt_hide_role") then
@@ -356,7 +356,7 @@ function GM:HUDDrawTargetID()
 
     local target_corpse = false
 
-    local glitchMode = GetGlobalInt("ttt_glitch_mode", GLITCH_SHOW_AS_TRAITOR)
+    local glitchMode = GetConVar("ttt_glitch_mode"):GetInt()
     local glitchRound = GetGlobalBool("ttt_glitch_round", false)
 
     local text = nil

@@ -1,5 +1,11 @@
 local hook = hook
 
+-------------
+-- CONVARS --
+-------------
+
+local deputy_use_detective_icon = GetConVar("ttt_deputy_use_detective_icon")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -14,6 +20,13 @@ end)
 -- TUTORIAL --
 --------------
 
+hook.Add("TTTTutorialRoleEnabled", "Deputy_TTTTutorialRoleEnabled", function(role)
+    if role == ROLE_DEPUTY then
+        -- Show the deputy screen if the marshal could spawn them
+        return GetConVar("ttt_marshal_enabled"):GetBool()
+    end
+end)
+
 hook.Add("TTTTutorialRoleText", "Deputy_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_DEPUTY then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
@@ -25,7 +38,7 @@ hook.Add("TTTTutorialRoleText", "Deputy_TTTTutorialRoleText", function(role, tit
 
         -- Icon
         html = html .. "<span style='display: block; margin-top: 10px;'>Once promoted, <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>all players</span> will see the "
-        if GetGlobalBool("ttt_deputy_use_detective_icon", true) then
+        if deputy_use_detective_icon:GetBool() then
             html = html .. ROLE_STRINGS[ROLE_DETECTIVE]
         else
             html = html .. ROLE_STRINGS[ROLE_DEPUTY]

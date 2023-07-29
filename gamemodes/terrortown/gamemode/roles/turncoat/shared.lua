@@ -46,6 +46,9 @@ end
 -- ROLE CONVARS --
 ------------------
 
+CreateConVar("ttt_turncoat_change_health", "10", FCVAR_REPLICATED, "The amount of health to set the turncoat to when they change teams", 1, 200)
+CreateConVar("ttt_turncoat_change_innocent_kill", "0", FCVAR_REPLICATED, "Whether to change the turncoat's team when they kill a member of the innocent team", 0, 1)
+
 ROLE_CONVARS[ROLE_TURNCOAT] = {}
 table.insert(ROLE_CONVARS[ROLE_TURNCOAT], {
     cvar = "ttt_turncoat_change_max_health",

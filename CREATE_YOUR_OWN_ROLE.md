@@ -372,7 +372,7 @@ To implement a spectator HUD like the phantom has, you will need to create two h
 
 Due to how inter-connected the pieces of this system are, we're not going to break them down into individual blocks in this guide like other sections do. Instead, we'll go over them in concept and then leave the implemented example below for you to peruse.
 
-For our example's sake we've taken the phantom implementation and removed half the powers to keep the code size relatively small. Going through the implementation, the `ROLE.shouldshowspectatorhud` function checks that the player (who is guaranteed to be a summoner, in this case) has the property that shows they should be seeing the spectator HUD. On the client side, we first initialize the translations used for the spectator HUD and then define the HUD itself using the `TTTSpectatorShowHUD` hook. Within that hook we prepare the information required and call the shared `CRHUD:PaintPowersHUD` method which handles the rendering for us. The server side is similar, first we initialize the convars and sync the values as globals so they are available on the client. Then we use the `TTTSpectatorHUDKeyPress` hook to intercept key presses and define what action each keypress should result in. The [API](API.md) has more information about the specifics of these hooks and methods if you want to learn more. See below for the fully constructed example:
+For our example's sake we've taken the phantom implementation and removed half the powers to keep the code size relatively small. Going through the implementation, the `ROLE.shouldshowspectatorhud` function checks that the player (who is guaranteed to be a summoner, in this case) has the property that shows they should be seeing the spectator HUD. On the client side, we first initialize the translations used for the spectator HUD and then define the HUD itself using the `TTTSpectatorShowHUD` hook. Within that hook we prepare the information required and call the shared `CRHUD:PaintPowersHUD` method which handles the rendering for us. The server side is similar, we use the `TTTSpectatorHUDKeyPress` hook to intercept key presses and define what action each keypress should result in. The [API](API.md) has more information about the specifics of these hooks and methods if you want to learn more. See below for the fully constructed example:
 
 ```lua
 ROLE.shouldshowspectatorhud = function(ply)
@@ -389,6 +389,10 @@ ROLE.translations = {
     }
 }
 
+local summoner_killer_haunt_power_max = CreateConVar("ttt_summoner_killer_haunt_power_max", "100", FCVAR_REPLICATED)
+local summoner_killer_haunt_jump_cost = CreateConVar("ttt_summoner_killer_haunt_jump_cost", "50", FCVAR_REPLICATED)
+local summoner_killer_haunt_drop_cost = CreateConVar("ttt_summoner_killer_haunt_drop_cost", "75", FCVAR_REPLICATED)
+
 if CLIENT then
     hook.Add("TTTSpectatorShowHUD", "Summoner_TTTSpectatorShowHUD", function(cli, tgt)
         if not cli:IsSummoner() then return end
@@ -400,10 +404,10 @@ if CLIENT then
             fill = Color(82, 226, 255, 255)
         }
         local powers = {
-            [L.summoner_haunt_jump] = GetGlobalInt("ttt_summoner_killer_haunt_jump_cost", 50),
-            [L.summoner_haunt_drop] = GetGlobalInt("ttt_summoner_killer_haunt_drop_cost", 75)
+            [L.summoner_haunt_jump] = summoner_killer_haunt_jump_cost:GetInt(),
+            [L.summoner_haunt_drop] = summoner_killer_haunt_drop_cost:GetInt()
         }
-        local max_power = GetGlobalInt("ttt_summoner_killer_haunt_power_max", 100)
+        local max_power = summoner_killer_haunt_power_max:GetInt()
         local current_power = cli:GetNWInt("PhantomPossessingPower", 0)
 
         CRHUD:PaintPowersHUD(powers, max_power, current_power, willpower_colors, L.summoner_haunt_title)
@@ -411,16 +415,6 @@ if CLIENT then
 end
 
 if SERVER then
-    local summoner_killer_haunt_power_max = CreateConVar("ttt_summoner_killer_haunt_power_max", "100")
-    local summoner_killer_haunt_jump_cost = CreateConVar("ttt_summoner_killer_haunt_jump_cost", "50")
-    local summoner_killer_haunt_drop_cost = CreateConVar("ttt_summoner_killer_haunt_drop_cost", "75")
-
-    hook.Add("TTTSyncGlobals", "Summoner_TTTSyncGlobals", function()
-        SetGlobalInt("ttt_summoner_killer_haunt_power_max", summoner_killer_haunt_power_max:GetInt())
-        SetGlobalInt("ttt_summoner_killer_haunt_jump_cost", summoner_killer_haunt_jump_cost:GetInt())
-        SetGlobalInt("ttt_summoner_killer_haunt_drop_cost", summoner_killer_haunt_drop_cost:GetInt())
-    end)
-
     hook.Add("TTTSpectatorHUDKeyPress", "Summoner_TTTSpectatorHUDKeyPress", function(ply, tgt, powers)
         if ply:GetNWBool("PhantomHaunting", false) and IsValid(tgt) and tgt:Alive() and not tgt:IsSpec() then
             powers[IN_ATTACK2] = {
@@ -441,8 +435,6 @@ if SERVER then
     end)
 end
 ```
-
-*(NOTE: If your role is already using the `TTTSyncGlobals` hook elsewhere then consider merging the hooks together in your role file. If you don't want to do that, just be careful that the hook instance name (the 2nd parameter) is unique for each hook you add)*
 
 ### Optional Rules
 

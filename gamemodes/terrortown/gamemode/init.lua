@@ -2,6 +2,7 @@
 
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
+AddCSLuaFile("init_shd.lua")
 AddCSLuaFile("cl_hud.lua")
 AddCSLuaFile("cl_msgstack.lua")
 AddCSLuaFile("cl_hudpickup.lua")
@@ -45,6 +46,7 @@ AddCSLuaFile("cl_sprint.lua")
 AddCSLuaFile("sprint_shd.lua")
 
 include("shared.lua")
+include("init_shd.lua")
 
 include("incompatible_addons.lua")
 include("karma.lua")
@@ -63,7 +65,6 @@ include("player_ext.lua")
 include("player.lua")
 include("hitmarkers.lua")
 include("deathnotify.lua")
-include("sprint.lua")
 include("sprint_shd.lua")
 
 -- Localise stuff we use often. It's like Lua go-faster stripes.
@@ -93,7 +94,6 @@ local StringUpper = string.upper
 
 -- Round times
 CreateConVar("ttt_roundtime_minutes", "10", FCVAR_NOTIFY)
-CreateConVar("ttt_roundtime_win_draw", "0")
 CreateConVar("ttt_preptime_seconds", "30", FCVAR_NOTIFY)
 CreateConVar("ttt_posttime_seconds", "30", FCVAR_NOTIFY)
 CreateConVar("ttt_firstpreptime", "60")
@@ -128,20 +128,12 @@ CreateConVar("ttt_monster_max", "1")
 CreateConVar("ttt_monster_pct", 0.33)
 CreateConVar("ttt_monster_chance", 0.5)
 
--- Scoreboard
-CreateConVar("ttt_scoreboard_deaths", "0")
-CreateConVar("ttt_scoreboard_score", "0")
-
--- Round Summary
-CreateConVar("ttt_round_summary_tabs", "summary,hilite,events,scores")
-
 for role = 0, ROLE_MAX do
     local rolestring = ROLE_STRINGS_RAW[role]
     local shortstring = ROLE_STRINGS_SHORT[role]
     if not DEFAULT_ROLES[role] then
-        CreateConVar("ttt_" .. rolestring .. "_enabled", "0", FCVAR_REPLICATED)
-        CreateConVar("ttt_" .. rolestring .. "_spawn_weight", "1", FCVAR_REPLICATED)
-        CreateConVar("ttt_" .. rolestring .. "_min_players", "0", FCVAR_REPLICATED)
+        CreateConVar("ttt_" .. rolestring .. "_spawn_weight", "1")
+        CreateConVar("ttt_" .. rolestring .. "_min_players", "0")
     end
 
     local starting_health = "100"
@@ -150,11 +142,8 @@ for role = 0, ROLE_MAX do
     local max_health = nil
     if ROLE_MAX_HEALTH[role] then max_health = ROLE_MAX_HEALTH[role] end
 
-    CreateConVar("ttt_" .. rolestring .. "_starting_health", starting_health, FCVAR_REPLICATED)
-    CreateConVar("ttt_" .. rolestring .. "_max_health", max_health or starting_health, FCVAR_REPLICATED)
-    CreateConVar("ttt_" .. rolestring .. "_name", "", FCVAR_REPLICATED)
-    CreateConVar("ttt_" .. rolestring .. "_name_plural", "", FCVAR_REPLICATED)
-    CreateConVar("ttt_" .. rolestring .. "_name_article", "", FCVAR_REPLICATED)
+    CreateConVar("ttt_" .. rolestring .. "_starting_health", starting_health)
+    CreateConVar("ttt_" .. rolestring .. "_max_health", max_health or starting_health)
 
     -- Body icon
     if file.Exists("materials/vgui/ttt/roles/" .. shortstring .. "/icon_" .. shortstring .. ".vmt", "GAME") then
@@ -195,30 +184,11 @@ for role = 0, ROLE_MAX do
     end
 end
 
--- Traitor role properties
-CreateConVar("ttt_traitor_vision_enable", "0")
-
--- Detective role properties
-CreateConVar("ttt_detective_search_only", "1")
-for _, dataType in ipairs(CORPSE_ICON_TYPES) do
-    CreateConVar("ttt_detective_search_only_" .. dataType, "0")
-end
-CreateConVar("ttt_detective_disable_looting", "0")
-CreateConVar("ttt_detective_hide_special_mode", SPECIAL_DETECTIVE_HIDE_NONE, FCVAR_NONE, "How to handle special detective role information. 0 - Show the special detective's role to everyone. 1 - Hide the special detective's role from everyone (just show detective instead). 2 - Hide the special detective's role for everyone but themselves (only they can see their true role)", SPECIAL_DETECTIVE_HIDE_NONE, SPECIAL_DETECTIVE_HIDE_FOR_OTHERS)
-CreateConVar("ttt_all_search_postround", "1")
-CreateConVar("ttt_all_search_binoc", "0")
-
-CreateConVar("ttt_special_detectives_armor_loadout", "1")
-
 -- Jester role properties
 CreateConVar("ttt_jesters_trigger_traitor_testers", "1")
-CreateConVar("ttt_jesters_visible_to_traitors", "1")
-CreateConVar("ttt_jesters_visible_to_monsters", "1")
-CreateConVar("ttt_jesters_visible_to_independents", "1")
 
 -- Independent role properties
 CreateConVar("ttt_independents_trigger_traitor_testers", "0")
-CreateConVar("ttt_independents_update_scoreboard", "0")
 
 -- Do this here so the convars are created early enough to be used by ULX
 for role = 0, ROLE_MAX do
@@ -264,40 +234,6 @@ CreateConVar("ttt_credits_alonebonus", "1")
 CreateConVar("ttt_det_credits_starting", "1")
 CreateConVar("ttt_det_credits_traitorkill", "0")
 CreateConVar("ttt_det_credits_traitordead", "1")
-
--- Shop parameters
-CreateConVar("ttt_shop_for_all", 0, FCVAR_REPLICATED)
--- Add any convars that are missing once shop-for-all is enabled
-cvars.AddChangeCallback("ttt_shop_for_all", function(convar, oldValue, newValue)
-    local enabled = tobool(newValue)
-    if enabled then
-        for role = 0, ROLE_MAX do
-            if not SHOP_ROLES[role] then
-                CreateShopConVars(role)
-                SHOP_ROLES[role] = true
-                timer.Simple(0.25, function()
-                    SyncShopConVars(role)
-                end)
-            end
-        end
-    end
-
-    SetGlobalBool("ttt_shop_for_all", enabled)
-end)
-
-local shop_roles = GetTeamRoles(SHOP_ROLES)
-for _, role in ipairs(shop_roles) do
-    CreateShopConVars(role)
-end
-
-CreateConVar("ttt_shop_random_percent", "50", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown by default", 0, 100)
-CreateConVar("ttt_shop_random_position", "0", FCVAR_REPLICATED, "Whether to randomize the position of the items in the shop")
-
--- Create the starting credit convar for all roles that have credits but don't have a shop
-local shopless_credit_roles = table.UnionedKeys(CAN_LOOT_CREDITS_ROLES, ROLE_STARTING_CREDITS, shop_roles)
-for _, role in ipairs(shopless_credit_roles) do
-    CreateCreditConVar(role)
-end
 
 -- Other
 CreateConVar("ttt_use_weapon_spawn_scripts", "1")
@@ -499,54 +435,12 @@ function GM:SyncGlobals()
     SetGlobalFloat("ttt_karma_strict", GetConVar("ttt_karma_strict"):GetBool())
     SetGlobalFloat("ttt_karma_lenient", GetConVar("ttt_karma_lenient"):GetBool())
 
-    SetGlobalBool("ttt_detective_search_only", GetConVar("ttt_detective_search_only"):GetBool())
-    for _, dataType in ipairs(CORPSE_ICON_TYPES) do
-        SetGlobalBool("ttt_detective_search_only_" .. dataType, GetConVar("ttt_detective_search_only_" .. dataType):GetBool())
-    end
-    SetGlobalInt("ttt_detective_hide_special_mode", GetConVar("ttt_detective_hide_special_mode"):GetInt())
-    SetGlobalBool("ttt_all_search_postround", GetConVar("ttt_all_search_postround"):GetBool())
-    SetGlobalBool("ttt_all_search_binoc", GetConVar("ttt_all_search_binoc"):GetBool())
-
-    SetGlobalInt("ttt_shop_random_percent", GetConVar("ttt_shop_random_percent"):GetInt())
-    SetGlobalBool("ttt_shop_random_position", GetConVar("ttt_shop_random_position"):GetBool())
-
-    for role = 0, ROLE_MAX do
-        local rolestring = ROLE_STRINGS_RAW[role]
-        SetGlobalString("ttt_" .. rolestring .. "_name", GetConVar("ttt_" .. rolestring .. "_name"):GetString())
-        SetGlobalString("ttt_" .. rolestring .. "_name_plural", GetConVar("ttt_" .. rolestring .. "_name_plural"):GetString())
-        SetGlobalString("ttt_" .. rolestring .. "_name_article", GetConVar("ttt_" .. rolestring .. "_name_article"):GetString())
-        if SHOP_ROLES[role] then
-            SyncShopConVars(role)
-        end
-
-        -- "Replicate" the enabled convar so we can use it for informative messages on the client (e.g. tutorials)
-        if not DEFAULT_ROLES[role] then
-            SetGlobalBool("ttt_" .. rolestring .. "_enabled", GetConVar("ttt_" .. rolestring .. "_enabled"):GetBool())
-        end
-    end
-
-    SetGlobalBool("ttt_special_detectives_armor_loadout", GetConVar("ttt_special_detectives_armor_loadout"):GetBool())
-
-    SetGlobalBool("ttt_traitor_vision_enable", GetConVar("ttt_traitor_vision_enable"):GetBool())
-
-    SetGlobalBool("ttt_jesters_visible_to_traitors", GetConVar("ttt_jesters_visible_to_traitors"):GetBool())
-    SetGlobalBool("ttt_jesters_visible_to_monsters", GetConVar("ttt_jesters_visible_to_monsters"):GetBool())
-    SetGlobalBool("ttt_jesters_visible_to_independents", GetConVar("ttt_jesters_visible_to_independents"):GetBool())
-
-    SetGlobalBool("ttt_independents_update_scoreboard", GetConVar("ttt_independents_update_scoreboard"):GetBool())
-
     SetGlobalBool("ttt_bem_allow_change", GetConVar("ttt_bem_allow_change"):GetBool())
     SetGlobalInt("ttt_bem_sv_cols", GetConVar("ttt_bem_sv_cols"):GetInt())
     SetGlobalInt("ttt_bem_sv_rows", GetConVar("ttt_bem_sv_rows"):GetInt())
     SetGlobalInt("ttt_bem_sv_size", GetConVar("ttt_bem_sv_size"):GetInt())
 
     SetGlobalBool("sv_voiceenable", GetConVar("sv_voiceenable"):GetBool())
-
-    SetGlobalString("ttt_round_summary_tabs", GetConVar("ttt_round_summary_tabs"):GetString())
-    SetGlobalBool("ttt_roundtime_win_draw", GetConVar("ttt_roundtime_win_draw"):GetBool())
-
-    SetGlobalBool("ttt_scoreboard_deaths", GetConVar("ttt_scoreboard_deaths"):GetBool())
-    SetGlobalBool("ttt_scoreboard_score", GetConVar("ttt_scoreboard_score"):GetBool())
 
     UpdateRoleState()
 end
@@ -1038,13 +932,13 @@ function BeginRound()
     GAMEMODE.DamageLog = {}
     GAMEMODE.RoundStartTime = CurTime()
 
-    local zombies_are_traitors = TRAITOR_ROLES[ROLE_ZOMBIE]
-    local vampires_are_traitors = TRAITOR_ROLES[ROLE_VAMPIRE]
-    LoadMonsterEquipment(zombies_are_traitors, vampires_are_traitors)
+    local zombie_is_traitor = TRAITOR_ROLES[ROLE_ZOMBIE]
+    local vampire_is_traitor = TRAITOR_ROLES[ROLE_VAMPIRE]
+    LoadMonsterEquipment(zombie_is_traitor, vampire_is_traitor)
     -- Send the status to the client because at this point the globals haven't synced
     net.Start("TTT_LoadMonsterEquipment")
-    net.WriteBool(zombies_are_traitors)
-    net.WriteBool(vampires_are_traitors)
+    net.WriteBool(zombie_is_traitor)
+    net.WriteBool(vampire_is_traitor)
     net.Broadcast()
 
     -- Sound start alarm
@@ -1066,7 +960,7 @@ function PrintResultMessage(type)
     if overriden then return end
 
     if type == WIN_TIMELIMIT then
-        if GetGlobalBool("ttt_roundtime_win_draw", false) then
+        if GetConVar("ttt_roundtime_win_draw"):GetBool() then
             LANG.Msg("win_draw")
             ServerLog("Result: timelimit reached, draw.\n")
         else

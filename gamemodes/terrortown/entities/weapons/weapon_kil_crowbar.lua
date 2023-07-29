@@ -55,18 +55,14 @@ SWEP.AllowDrop = true
 
 local sound_single = Sound("Weapon_Crowbar.Single")
 
+local killer_crowbar_damage = CreateConVar("ttt_killer_crowbar_damage", "20", FCVAR_REPLICATED, "How much damage the crowbar should do when the killer bashes another player with it. Server or round must be restarted for changes to take effect", 1, 100)
 if SERVER then
-    CreateConVar("ttt_killer_crowbar_damage", "20", FCVAR_NONE, "How much damage the crowbar should do when the killer bashes another player with it. Server or round must be restarted for changes to take effect", 1, 100)
     CreateConVar("ttt_killer_crowbar_thrown_damage", "50", FCVAR_NONE, "How much damage the crowbar should do when the killer throws it at another player. Server or round must be restarted for changes to take effect", 1, 100)
 end
 
 function SWEP:Initialize()
     self.CanFire = true
     self.was_thrown = false
-
-    if SERVER then
-        SetGlobalInt("ttt_killer_crowbar_damage", GetConVar("ttt_killer_crowbar_damage"):GetInt())
-    end
 
     if CLIENT then
         self.ModelEntity = ClientsideModel(self.WorldModel)
@@ -76,7 +72,7 @@ function SWEP:Initialize()
 end
 
 function SWEP:Deploy()
-    self.Primary.Damage = GetGlobalInt("ttt_killer_crowbar_damage", 20)
+    self.Primary.Damage = killer_crowbar_damage:GetInt()
 end
 
 function SWEP:PrimaryAttack()

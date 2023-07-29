@@ -1,5 +1,37 @@
 # Release Notes
 
+## 1.9.3 (Beta)
+**Released: July 29th, 2023**
+
+### Changes
+- Changed settings menu entry for notification sound cue to match base TTT
+- **BREAKING CHANGE** - Renamed some convars so similar convars now have consistent plurality. Added a warning message when the old convars are being used so server admins can find and rename these convars before the old one are removed in the major release after this change goes into effect. The list of convars changed is:
+  - ttt_detective_hide_special_mode -> ttt_detectives_hide_special_mode
+  - ttt_detective_search_only -> ttt_detectives_search_only
+  - ttt_detective_search_only_* -> ttt_detectives_search_only_*
+  - ttt_detective_disable_looting -> ttt_detectives_disable_looting
+  - ttt_traitor_vision_enable -> ttt_traitors_vision_enable
+  - ttt_beggars_are_independent -> ttt_beggar_is_independent
+  - ttt_bodysnatchers_are_independent -> ttt_bodysnatcher_is_independent
+  - ttt_cupids_are_independent -> ttt_cupid_is_independent
+  - ttt_detective_glow_enable -> ttt_detectives_glow_enable
+  - ttt_detective_credits_timer -> ttt_detectives_credits_timer
+  - ttt_vampires_are_monsters -> ttt_vampire_is_monster
+  - ttt_vampires_are_independent -> ttt_vampire_is_independent
+  - ttt_zombies_are_monsters -> ttt_zombie_is_monster
+  - ttt_zombies_are_traitors -> ttt_zombie_is_traitor
+
+### Fixes
+- Fixed `ttt_sapper_protect_self` not allowing sapper to be protected from a different sapper if there are somehow multiple
+- Fixed sprinting, then changing your crosshair size, then sprinting again causing your crosshair to revert to the original unchanged size
+- Fixed sprinting causing crosshair size to be rounded to the nearest whole number
+- Fixed loot goblin transform message being shown multiple times
+- Fixed `ttt_bodysnatcher_respawn_delay` not working
+- Fixed deputy, impersonator and zombie tutorial screens so they show if the marshal or madscientist could spawn them while the role isn't enabled
+
+### Developer
+- Changed role logic to load shared files first
+
 ## 1.9.2
 **Released: July 22nd, 2023**
 

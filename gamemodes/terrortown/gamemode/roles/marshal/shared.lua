@@ -38,6 +38,11 @@ end)
 -- ROLE CONVARS --
 ------------------
 
+CreateConVar("ttt_marshal_monster_deputy_chance", "0.5", FCVAR_REPLICATED, "The chance that a monster will become a deputy. -1 to disable", -1, 1)
+CreateConVar("ttt_marshal_jester_deputy_chance", "0.5", FCVAR_REPLICATED, "The chance that a jester will become a deputy. -1 to disable", -1, 1)
+CreateConVar("ttt_marshal_independent_deputy_chance", "0.5", FCVAR_REPLICATED, "The chance that an independent will become a deputy. -1 to disable", -1, 1)
+CreateConVar("ttt_marshal_announce_deputy", "1", FCVAR_REPLICATED)
+
 ROLE_CONVARS[ROLE_MARSHAL] = {}
 table.insert(ROLE_CONVARS[ROLE_MARSHAL], {
     cvar = "ttt_marshal_monster_deputy_chance",

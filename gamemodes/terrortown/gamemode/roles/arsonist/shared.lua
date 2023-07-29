@@ -13,6 +13,11 @@ ARSONIST_DOUSED = 4
 -- ROLE CONVARS --
 ------------------
 
+CreateConVar("ttt_arsonist_douse_time", "8", FCVAR_REPLICATED, "The amount of time (in seconds) the arsonist takes to douse someone", 0, 60)
+CreateConVar("ttt_arsonist_douse_notify_delay_min", "10", FCVAR_REPLICATED, "The minimum delay before a player is notified they've been doused", 0, 30)
+CreateConVar("ttt_arsonist_douse_notify_delay_max", "30", FCVAR_REPLICATED, "The delay delay before a player is notified they've been doused", 3, 60)
+CreateConVar("ttt_detectives_search_only_arsonistdouse", "0", FCVAR_REPLICATED)
+
 ROLE_CONVARS[ROLE_ARSONIST] = {}
 table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
     cvar = "ttt_arsonist_douse_time",
@@ -49,7 +54,7 @@ table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
-    cvar = "ttt_detective_search_only_arsonistdouse",
+    cvar = "ttt_detectives_search_only_arsonistdouse",
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_ARSONIST], {

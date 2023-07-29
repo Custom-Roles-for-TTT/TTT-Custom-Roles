@@ -6,6 +6,14 @@ local string = string
 
 local RemoveHook = hook.Remove
 
+-------------
+-- CONVARS --
+-------------
+
+local vampire_show_target_icon = GetConVar("ttt_vampire_show_target_icon")
+local vampire_vision_enable = GetConVar("ttt_vampire_vision_enable")
+local vampire_prime_death_mode = GetConVar("ttt_vampire_prime_death_mode")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -49,7 +57,7 @@ end)
 
 -- Show "KILL" icon over all non-jester team heads
 hook.Add("TTTTargetIDPlayerKillIcon", "Vampire_TTTTargetIDPlayerKillIcon", function(ply, cli, showKillIcon, showJester)
-    if cli:IsVampire() and GetGlobalBool("ttt_vampire_show_target_icon", false) and not showJester then
+    if cli:IsVampire() and vampire_show_target_icon:GetBool() and not showJester then
         return true
     end
 end)
@@ -58,7 +66,7 @@ ROLE_IS_TARGETID_OVERRIDDEN[ROLE_VAMPIRE] = function(ply, target, showJester)
     if not ply:IsVampire() then return end
     if not IsPlayer(target) then return end
 
-    local show = GetGlobalBool("ttt_vampire_show_target_icon", false) and not showJester
+    local show = vampire_show_target_icon:GetBool() and not showJester
 
     ------ icon, ring,  text
     return show, false, false
@@ -196,10 +204,10 @@ end
 
 hook.Add("TTTUpdateRoleState", "Vampire_Highlight_TTTUpdateRoleState", function()
     client = LocalPlayer()
-    vampire_vision = GetGlobalBool("ttt_vampire_vision_enable", false)
-    jesters_visible_to_traitors = GetGlobalBool("ttt_jesters_visible_to_traitors", false)
-    jesters_visible_to_monsters = GetGlobalBool("ttt_jesters_visible_to_monsters", false)
-    jesters_visible_to_independents = GetGlobalBool("ttt_jesters_visible_to_independents", false)
+    vampire_vision = vampire_vision_enable:GetBool()
+    jesters_visible_to_traitors = GetConVar("ttt_jesters_visible_to_traitors"):GetBool()
+    jesters_visible_to_monsters = GetConVar("ttt_jesters_visible_to_monsters"):GetBool()
+    jesters_visible_to_independents = GetConVar("ttt_jesters_visible_to_independents"):GetBool()
 
     -- Disable highlights on role change
     if vision_enabled then
@@ -248,7 +256,7 @@ hook.Add("TTTTutorialRoleText", "Vampire_TTTTutorialRoleText", function(role, ti
 
         -- Draining
         html = html .. "<span style='display: block; margin-top: 10px;'>They can heal themselves by <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>draining blood</span> from "
-        local drainEnabled = GetGlobalBool("ttt_vampire_drain_enable", true)
+        local drainEnabled = GetConVar("ttt_vampire_drain_enable"):GetBool()
         if drainEnabled then
             html = html .. "both living players and "
         end
@@ -258,15 +266,15 @@ hook.Add("TTTTutorialRoleText", "Vampire_TTTTutorialRoleText", function(role, ti
         html = html .. "<span style='display: block; margin-top: 10px;'>By using the secondary attack with their fangs, they can also <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>fade from view</span> and gain a temporary speed bonus. This is useful for either chasing down prey or running away from conflict.</span>"
 
         -- Convert
-        if drainEnabled and GetGlobalBool("ttt_vampire_convert_enable", false) then
+        if drainEnabled and GetConVar("ttt_vampire_convert_enable"):GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>"
-            if GetGlobalBool("ttt_vampire_prime_only_convert", true) then
+            if GetConVar("ttt_vampire_prime_only_convert"):GetBool() then
                 html = html .. "Prime "
             end
             html = html .. ROLE_STRINGS_PLURAL[ROLE_VAMPIRE] .. " can convert living targets to their team by <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>draining their blood</span> the correct amount (Look for the message on the drain progress bar for when to release).</span>"
 
             -- Prime Death Mode
-            local primeMode = GetGlobalInt("ttt_vampire_prime_death_mode", VAMPIRE_DEATH_NONE)
+            local primeMode = vampire_prime_death_mode:GetInt()
             if primeMode > VAMPIRE_DEATH_NONE then
                 html = html .. "<span style='display: block; margin-top: 10px;'>If the Prime " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " is killed, all of the " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " spawn they made will be "
 
@@ -281,13 +289,13 @@ hook.Add("TTTTutorialRoleText", "Vampire_TTTTutorialRoleText", function(role, ti
         end
 
         -- Vision
-        local hasVision = GetGlobalBool("ttt_vampire_vision_enable", false)
+        local hasVision = vampire_vision_enable:GetBool()
         if hasVision then
             html = html .. "<span style='display: block; margin-top: 10px;'>Their <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>hunger for blood</span> helps them see their targets through walls by highlighting their enemies.</span>"
         end
 
         -- Target ID
-        if GetGlobalBool("ttt_vampire_show_target_icon", false) then
+        if vampire_show_target_icon:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>Their targets can"
             if hasVision then
                 html = html .. " also"

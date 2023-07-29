@@ -40,7 +40,7 @@ end
 
 local function IsAllDetectiveOnly()
     for _, dataType in ipairs(CORPSE_ICON_TYPES) do
-        if not GetGlobalBool("ttt_detective_search_only_" .. dataType, false) then
+        if not GetConVar("ttt_detectives_search_only_" .. dataType):GetBool() then
             return false
         end
     end
@@ -51,8 +51,8 @@ function CORPSE.CanBeSearched(ply, rag)
     if not IsPlayer(ply) then return false end
 
     local ownerEnt = CORPSE.GetPlayer(rag)
-    local detectiveSearchOnly = (GetGlobalBool("ttt_detective_search_only", true) or IsAllDetectiveOnly()) and
-                            not (GetGlobalBool("ttt_all_search_postround", true) and GetRoundState() ~= ROUND_ACTIVE) and
-                            not (GetGlobalBool("ttt_all_search_binoc", false) and ply:GetActiveWeapon() and WEPS.GetClass(ply:GetActiveWeapon()) == "weapon_ttt_binoculars")
+    local detectiveSearchOnly = (GetConVar("ttt_detectives_search_only"):GetBool() or IsAllDetectiveOnly()) and
+                            not (GetConVar("ttt_all_search_postround"):GetBool() and GetRoundState() ~= ROUND_ACTIVE) and
+                            not (GetConVar("ttt_all_search_binoc"):GetBool() and ply:GetActiveWeapon() and WEPS.GetClass(ply:GetActiveWeapon()) == "weapon_ttt_binoculars")
     return ply:IsDetectiveLike() or not detectiveSearchOnly or (IsValid(ownerEnt) and ownerEnt:GetNWBool("body_searched", false))
 end

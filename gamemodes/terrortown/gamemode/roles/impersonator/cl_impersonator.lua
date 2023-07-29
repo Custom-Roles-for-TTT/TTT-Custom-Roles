@@ -18,6 +18,13 @@ end)
 -- TUTORIAL --
 --------------
 
+hook.Add("TTTTutorialRoleEnabled", "Impersonator_TTTTutorialRoleEnabled", function(role)
+    if role == ROLE_IMPERSONATOR then
+        -- Show the impersonator screen if the marshal could spawn them
+        return GetConVar("ttt_marshal_enabled"):GetBool()
+    end
+end)
+
 hook.Add("TTTTutorialRoleText", "Impersonator_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_IMPERSONATOR then
         local roleColor = ROLE_COLORS[ROLE_TRAITOR]
@@ -27,8 +34,8 @@ hook.Add("TTTTutorialRoleText", "Impersonator_TTTTutorialRoleText", function(rol
         html = html .. "<span style='display: block; margin-top: 10px;'>After the " .. ROLE_STRINGS[ROLE_DETECTIVE] .. " is killed, <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>the " .. ROLE_STRINGS[ROLE_IMPERSONATOR] .. " is \"promoted\"</span> and then must pretend to be the new " .. ROLE_STRINGS[ROLE_DETECTIVE] .. ".</span>"
         html = html .. "<span style='display: block; margin-top: 10px;'>They have <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>all the powers of " .. ROLE_STRINGS_EXT[ROLE_DETECTIVE] .. "</span> including " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "-only weapons and the ability to search bodies.</span>"
 
-        local impersonator_use_detective_icon = GetGlobalBool("ttt_impersonator_use_detective_icon", true)
-        local deputy_use_detective_icon = GetGlobalBool("ttt_deputy_use_detective_icon", true)
+        local impersonator_use_detective_icon = GetConVar("ttt_impersonator_use_detective_icon"):GetBool()
+        local deputy_use_detective_icon = GetConVar("ttt_deputy_use_detective_icon"):GetBool()
 
         -- Detective Icon for Everyone
         if impersonator_use_detective_icon and  deputy_use_detective_icon then
