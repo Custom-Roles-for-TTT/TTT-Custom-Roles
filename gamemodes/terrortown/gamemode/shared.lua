@@ -1630,6 +1630,9 @@ for _, dataType in ipairs(CORPSE_ICON_TYPES) do
     OldCVarWarning("ttt_detective_search_only_" .. dataType, "ttt_detectives_search_only_" .. dataType)
 end
 
+CreateConVar("ttt_traitor_vision_enable", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_traitor_vision_enable", "ttt_traitors_vision_enable")
+
 -- Arsonist
 CreateConVar("ttt_detective_search_only_arsonistdouse", "0", FCVAR_REPLICATED)
 OldCVarWarning("ttt_detective_search_only_arsonistdouse", "ttt_detectives_search_only_arsonistdouse")

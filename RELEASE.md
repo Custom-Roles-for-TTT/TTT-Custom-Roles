@@ -9,6 +9,7 @@
   - ttt_detective_search_only -> ttt_detectives_search_only
   - ttt_detective_search_only_* -> ttt_detectives_search_only_*
   - ttt_detective_disable_looting -> ttt_detectives_disable_looting
+  - ttt_traitor_vision_enable -> ttt_traitors_vision_enable
   - ttt_beggars_are_independent -> ttt_beggar_is_independent
   - ttt_bodysnatchers_are_independent -> ttt_bodysnatcher_is_independent
   - ttt_cupids_are_independent -> ttt_cupid_is_independent
