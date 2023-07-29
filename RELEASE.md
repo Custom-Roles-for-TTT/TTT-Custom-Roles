@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.9.3 (Beta)
-**Released:**
+**Released: July 29th, 2023**
 
 ### Changes
 - Changed settings menu entry for notification sound cue to match base TTT
