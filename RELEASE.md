@@ -4,6 +4,7 @@
 **Released:**
 
 ### Changes
+- Changed settings menu entry for notification sound cue to match base TTT
 - **BREAKING CHANGE** - Renamed some convars so similar convars now have consistent plurality. Added a warning message when the old convars are being used so server admins can find and rename these convars before the old one are removed in the major release after this change goes into effect. The list of convars changed is:
   - ttt_detective_hide_special_mode -> ttt_detectives_hide_special_mode
   - ttt_detective_search_only -> ttt_detectives_search_only
