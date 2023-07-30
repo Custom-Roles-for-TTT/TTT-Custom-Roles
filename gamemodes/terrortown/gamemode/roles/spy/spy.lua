@@ -39,7 +39,7 @@ local playerModels = {}
 hook.Add("PlayerDeath", "Spy_PlayerDeath", function(victim, inflictor, attacker)
     if not IsPlayer(attacker) or attacker == victim or GetRoundState() ~= ROUND_ACTIVE then return end
 
-    if attacker:IsSpy() and not victim:GetNWBool("IsZombifying", false) then
+    if attacker:IsSpy() and not victim:IsZombifying() then
         local stealModel = spy_steal_model:GetBool()
         local stealHands = spy_steal_model_hands:GetBool()
 
