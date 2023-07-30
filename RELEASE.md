@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.9.4 (Beta)
+**Released:**
+
+### Developer
+- Added `weapon_cr_defibbase` and updated all defib-like weapons to use it
+
 ## 1.9.3 (Beta)
 **Released: July 29th, 2023**
 

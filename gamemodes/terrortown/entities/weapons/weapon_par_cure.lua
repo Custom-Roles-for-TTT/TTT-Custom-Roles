@@ -1,12 +1,13 @@
 AddCSLuaFile()
 
 local IsValid = IsValid
-local math = math
 local pairs = pairs
 local player = player
 local string = string
 local timer = timer
 local util = util
+
+SWEP.HoldType               = "slam"
 
 if CLIENT then
     local GetPTranslation = LANG.GetParamTranslation
@@ -28,25 +29,13 @@ if CLIENT then
     SWEP.Icon = "vgui/ttt/icon_cure"
 end
 
-SWEP.Base = "weapon_tttbase"
+SWEP.ViewModel              = "models/weapons/c_medkit.mdl"
+SWEP.WorldModel             = "models/weapons/w_medkit.mdl"
 
-SWEP.ViewModel = "models/weapons/c_medkit.mdl"
-SWEP.WorldModel = "models/weapons/w_medkit.mdl"
-
-SWEP.Primary.ClipSize        = -1
-SWEP.Primary.DefaultClip     = -1
-SWEP.Primary.Automatic       = true
-SWEP.Primary.Delay           = 1
-SWEP.Primary.Ammo            = "none"
-
-SWEP.Secondary.ClipSize       = -1
-SWEP.Secondary.DefaultClip    = -1
-SWEP.Secondary.Automatic      = true
-SWEP.Secondary.Ammo           = "none"
-SWEP.Secondary.Delay          = 2
-
-SWEP.Kind = WEAPON_EQUIP
-SWEP.CanBuy = { ROLE_DOCTOR, ROLE_QUACK }
+SWEP.Base                   = "weapon_cr_defibbase"
+SWEP.Category               = WEAPON_CATEGORY_ROLE
+SWEP.Kind                   = WEAPON_EQUIP
+SWEP.CanBuy                 = { ROLE_DOCTOR, ROLE_QUACK }
 for role = 0, ROLE_MAX do
     if DETECTIVE_ROLES[role] then
         table.insert(SWEP.CanBuy, role)
@@ -58,28 +47,22 @@ for role = 0, ROLE_MAX do
         end
     end
 end
-SWEP.CanBuyDefault = table.Copy(SWEP.CanBuy)
-SWEP.NoSights = true
-SWEP.HoldType = "slam"
+SWEP.CanBuyDefault          = table.Copy(SWEP.CanBuy)
+SWEP.AllowDrop              = true
 
-SWEP.UseHands = true
-SWEP.ViewModelFlip = false
 SWEP.BlockShopRandomization = true
+
+SWEP.DeadTarget             = false
+SWEP.HasSecondary           = true
 
 PARASITE_CURE_KILL_NONE = 0
 PARASITE_CURE_KILL_OWNER = 1
 PARASITE_CURE_KILL_TARGET = 2
 
-local DEFIB_IDLE = 0
-local DEFIB_BUSY = 1
-local DEFIB_ERROR = 2
-
-local beep = Sound("buttons/button17.wav")
-local hum = Sound("items/nvg_on.wav")
 local cured = Sound("items/smallmedkit1.wav")
 
 if SERVER then
-    CreateConVar("ttt_parasite_cure_time", "3", FCVAR_NONE, "The amount of time (in seconds) the parasite cure takes to use", 0, 30)
+    SWEP.DeviceTimeConVar = CreateConVar("ttt_parasite_cure_time", "3", FCVAR_NONE, "The amount of time (in seconds) the parasite cure takes to use", 0, 30)
 end
 
 if CLIENT then
@@ -89,146 +72,74 @@ if CLIENT then
     end
 end
 
-function SWEP:SetupDataTables()
-    self:NetworkVar("Int", 0, "State")
-    self:NetworkVar("Int", 1, "ChargeTime")
-    self:NetworkVar("Float", 0, "Begin")
-    self:NetworkVar("String", 0, "Message")
-
-    if SERVER then
-        self:SetChargeTime(GetConVar("ttt_parasite_cure_time"):GetInt())
-    end
-end
-
 if SERVER then
-    local CureMode = CreateConVar("ttt_parasite_cure_mode", "2", FCVAR_NONE, "How to handle using a parasite cure on someone who is not infected. 0 - Kill nobody (But use up the cure), 1 - Kill the person who uses the cure, 2 - Kill the person the cure is used on", 0, 2)
+    local parasite_cure_mode = CreateConVar("ttt_parasite_cure_mode", "2", FCVAR_NONE, "How to handle using a parasite cure on someone who is not infected. 0 - Kill nobody (But use up the cure), 1 - Kill the person who uses the cure, 2 - Kill the person the cure is used on", 0, 2)
 
-    function SWEP:Reset()
-        self:SetState(DEFIB_IDLE)
-        self:SetBegin(-1)
-        self:SetMessage('')
-        self.Target = nil
-    end
+    function SWEP:OnSuccess(ply, body)
+        ply:EmitSound(cured)
 
-    function SWEP:Error(msg)
-        self:SetState(DEFIB_ERROR)
-        self:SetBegin(CurTime())
-        self:SetMessage(msg)
+        if ply:GetNWBool("ParasiteInfected", false) then
+            for _, v in pairs(player.GetAll()) do
+                if v:GetNWString("ParasiteInfectingTarget", "") == ply:SteamID64() then
+                    ply:SetNWBool("ParasiteInfected", false)
+                    v:SetNWBool("ParasiteInfecting", false)
+                    v:SetNWString("ParasiteInfectingTarget", nil)
+                    v:SetNWInt("ParasiteInfectionProgress", 0)
+                    timer.Remove(v:Nick() .. "ParasiteInfectionProgress")
+                    timer.Remove(v:Nick() .. "ParasiteInfectingSpectate")
+                    v:PrintMessage(HUD_PRINTCENTER, "Your host has been cured.")
 
-        self:GetOwner():EmitSound(beep, 60, 50, 1)
-        self.Target = nil
-
-        timer.Simple(3 * 0.75, function()
-            if IsValid(self) then self:Reset() end
-        end)
-    end
-
-    function SWEP:DoCure(ply)
-        local owner = self:GetOwner()
-        if IsPlayer(ply) then
-            ply:EmitSound(cured)
-
-            if ply:GetNWBool("ParasiteInfected", false) then
-                for _, v in pairs(player.GetAll()) do
-                    if v:GetNWString("ParasiteInfectingTarget", "") == ply:SteamID64() then
-                        ply:SetNWBool("ParasiteInfected", false)
-                        v:SetNWBool("ParasiteInfecting", false)
-                        v:SetNWString("ParasiteInfectingTarget", nil)
-                        v:SetNWInt("ParasiteInfectionProgress", 0)
-                        timer.Remove(v:Nick() .. "ParasiteInfectionProgress")
-                        timer.Remove(v:Nick() .. "ParasiteInfectingSpectate")
-                        v:PrintMessage(HUD_PRINTCENTER, "Your host has been cured.")
-
-                        if GetConVar("ttt_parasite_infection_saves_lover"):GetBool() then
-                            local loverSID = v:GetNWString("TTTCupidLover", "")
-                            if loverSID ~= "" then
-                                local lover = player.GetBySteamID64(loverSID)
-                                lover:PrintMessage(HUD_PRINTTALK, "Your lover's host was cured!")
-                            end
+                    if GetConVar("ttt_parasite_infection_saves_lover"):GetBool() then
+                        local loverSID = v:GetNWString("TTTCupidLover", "")
+                        if loverSID ~= "" then
+                            local lover = player.GetBySteamID64(loverSID)
+                            lover:PrintMessage(HUD_PRINTTALK, "Your lover's host was cured!")
                         end
                     end
                 end
-            else
-                local cureMode = CureMode:GetInt()
-                if cureMode == PARASITE_CURE_KILL_OWNER and IsValid(owner) then
-                    owner:Kill()
-                elseif cureMode == PARASITE_CURE_KILL_TARGET then
-                    ply:Kill()
-                end
             end
-
-            self:Remove()
         else
-            if ply == owner then
-                self:SetNextSecondaryFire(CurTime() + 1)
-            else
-                self:SetNextPrimaryFire(CurTime() + 1)
-            end
-        end
-    end
-
-    function SWEP:Begin(ply)
-        if not IsPlayer(ply) then
-            self:Error("INVALID TARGET")
-            return
-        end
-
-        self:SetState(DEFIB_BUSY)
-        self:SetBegin(CurTime())
-        if ply == self:GetOwner() then
-            self:SetMessage("CURING YOURSELF")
-        else
-            self:SetMessage("CURING " .. string.upper(ply:Nick()))
-        end
-
-        self:GetOwner():EmitSound(hum, 75, math.random(98, 102), 1)
-
-        self.Target = ply
-    end
-
-    function SWEP:Think()
-        if self:GetState() == DEFIB_BUSY then
             local owner = self:GetOwner()
-            if self:GetBegin() + self:GetChargeTime() <= CurTime() then
-                self:DoCure(self.Target)
-                self:Reset()
-            elseif owner == self.Target then
-                if not owner:KeyDown(IN_ATTACK2) then
-                    self:Error("CURE ABORTED")
-                end
-            elseif not owner:KeyDown(IN_ATTACK) or owner:GetEyeTrace(MASK_SHOT_HULL).Entity ~= self.Target then
-                self:Error("CURE ABORTED")
+            local cure_mode = parasite_cure_mode:GetInt()
+            if cure_mode == PARASITE_CURE_KILL_OWNER and IsValid(owner) then
+                owner:Kill()
+            elseif cure_mode == PARASITE_CURE_KILL_TARGET then
+                ply:Kill()
             end
         end
     end
 
-    function SWEP:PrimaryAttack()
-        if self:GetState() ~= DEFIB_IDLE then return end
-        if GetRoundState() ~= ROUND_ACTIVE then return end
-
-        local owner = self:GetOwner()
-        local tr = util.TraceLine({
-            start = owner:GetShootPos(),
-            endpos = owner:GetShootPos() + owner:GetAimVector() * 64,
-            filter = owner
-        })
-
-        local ent = tr.Entity
-        if IsPlayer(ent) then
-            self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
-            self:Begin(ent)
+    function SWEP:GetProgressMessage(ply, body, bone)
+        if ply == self:GetOwner() then
+            return "CURING YOURSELF"
         end
+        return "CURING " .. string.upper(ply:Nick())
     end
 
-    function SWEP:SecondaryAttack()
-        if self:GetState() ~= DEFIB_IDLE then return end
-        if GetRoundState() ~= ROUND_ACTIVE then return end
+    function SWEP:GetAbortMessage()
+        return "CURE ABORTED"
+    end
 
+    function SWEP:IsCurrentTargetValid()
         local owner = self:GetOwner()
-        if IsPlayer(owner) then
-            self:SetNextSecondaryFire(CurTime() + self.Primary.Delay)
-            self:Begin(owner)
+        if owner == self.Target then
+            return owner:KeyDown(IN_ATTACK2)
         end
+        return owner:KeyDown(IN_ATTACK) and owner:GetEyeTrace(MASK_SHOT_HULL).Entity == self.Target
+    end
+
+    function SWEP:GetTarget(primary)
+        local owner = self:GetOwner()
+        if primary then
+            local tr = util.TraceLine({
+                start = owner:GetShootPos(),
+                endpos = owner:GetShootPos() + owner:GetAimVector() * 64,
+                filter = owner
+            })
+
+            return tr.Entity, tr.PhysicsBone
+        end
+        return owner, nil
     end
 
     function SWEP:Equip(newowner)
@@ -236,40 +147,4 @@ if SERVER then
             newowner:PrintMessage(HUD_PRINTTALK, ROLE_STRINGS[ROLE_TRAITOR] .. ", the parasite cure you are holding is real.")
         end
     end
-
-    function SWEP:Holster()
-        self:Reset()
-        return true
-    end
 end
-
-if CLIENT then
-    function SWEP:DrawHUD()
-        local state = self:GetState()
-        self.BaseClass.DrawHUD(self)
-
-        if state == DEFIB_IDLE then return end
-
-        local charge = self:GetChargeTime()
-        local time = self:GetBegin() + charge
-
-        local x = ScrW() / 2.0
-        local y = ScrH() / 2.0
-
-        y = y + (y / 3)
-
-        local w = 255
-
-        if state == DEFIB_BUSY then
-            if time < 0 then return end
-            local progress = math.min(1, 1 - ((time - CurTime()) / charge))
-            CRHUD:PaintProgressBar(x, y, w, Color(0, 255, 0, 155), self:GetMessage(), progress)
-        elseif state == DEFIB_ERROR then
-            CRHUD:PaintProgressBar(x, y, w, Color(200 + math.sin(CurTime() * 32) * 50, 0, 0, 155), self:GetMessage(), 1)
-        end
-    end
-
-    function SWEP:PrimaryAttack() return false end
-end
-
-function SWEP:DryFire() return false end
