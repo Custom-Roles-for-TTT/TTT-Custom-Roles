@@ -1,292 +1,300 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html>
 <head>
-    <title>CR4TTT Deprecated Globals</title>
-    <style>
-        td {
-            border: 1px solid black;
-            padding: 2px 4px;
-        }
-    </style>
+    <title>Custom Roles for TTT - Deprecated Globals Checker</title>
+    <link rel="stylesheet" href="css/style.css"/>
+    <link rel="stylesheet" href="css/api.css"/>
 </head>
 <body onload="pageLoaded()">
-    <button id="open">Open Folder</button>
-    <span id="state"></span>
-    <table id="missingConvars" style="margin-top:6px;border-spacing:0;border: 1px solid black;">
-        <tr>
-            <td><b>File</b></td>
-            <td><b>Line</b></td>
-            <td><b>ConVar</b></td>
-            <td><b>New ConVar</b></td>
-        </tr>
-    </table>
-    <script>
-        const convars = [
-            "ttt_killer_crowbar_damage",
-            "ttt_killer_knife_damage",
-            "ttt_killer_knife_delay",
-            "ttt_oldman_adrenaline_shotgun_damage",
-            "ttt_dna_scan_on_dialog",
-            "ttt_vampire_convert_enable",
-            "ttt_vampire_drain_enable",
-            "ttt_vampire_drain_first",
-            "ttt_vampire_prime_only_convert",
-            "ttt_zombie_leap_enable",
-            "ttt_zombie_prime_attack_damage",
-            "ttt_zombie_prime_attack_delay",
-            "ttt_zombie_spit_enable",
-            "ttt_zombie_thrall_attack_damage",
-            "ttt_zombie_thrall_attack_delay",
-            "ttt_arsonist_early_ignite",
-            "ttt_all_search_binoc",
-            "ttt_all_search_postround",
-            "ttt_independents_update_scoreboard",
-            "ttt_jesters_visible_to_independents",
-            "ttt_jesters_visible_to_monsters",
-            "ttt_jesters_visible_to_traitors",
-            "ttt_round_summary_tabs",
-            "ttt_roundtime_win_draw",
-            "ttt_scoreboard_deaths",
-            "ttt_scoreboard_score",
-            "ttt_shop_random_percent",
-            "ttt_shop_random_position",
-            "ttt_special_detectives_armor_loadout",
-            "ttt_sprint_bonus_rel",
-            "ttt_sprint_consume",
-            "ttt_sprint_regenerate_innocent",
-            "ttt_sprint_regenerate_traitor",
-            "ttt_detective_search_only_arsonistdouse",
-            "ttt_arsonist_douse_notify_delay_max",
-            "ttt_arsonist_douse_notify_delay_min",
-            "ttt_arsonist_douse_time",
-            "ttt_assassin_next_target_delay",
-            "ttt_assassin_show_target_icon",
-            "ttt_assassin_target_vision_enable",
-            "ttt_beggar_respawn",
-            "ttt_beggar_respawn_change_role",
-            "ttt_beggar_respawn_delay",
-            "ttt_beggar_respawn_limit",
-            "ttt_beggar_reveal_innocent",
-            "ttt_beggar_reveal_traitor",
-            "ttt_beggar_scan",
-            "ttt_beggar_scan_time",
-            "ttt_bodysnatcher_respawn",
-            "ttt_bodysnatcher_respawn_delay",
-            "ttt_bodysnatcher_respawn_limit",
-            "ttt_bodysnatcher_reveal_independent",
-            "ttt_bodysnatcher_reveal_innocent",
-            "ttt_bodysnatcher_reveal_jester",
-            "ttt_bodysnatcher_reveal_monster",
-            "ttt_bodysnatcher_reveal_traitor",
-            "ttt_clown_hide_when_active",
-            "ttt_clown_show_target_icon",
-            "ttt_clown_use_traps_when_active",
-            "ttt_cupid_lover_vision_enable",
-            "ttt_deputy_use_detective_icon",
-            "ttt_drunk_become_clown",
-            "ttt_glitch_mode",
-            "ttt_glitch_use_traps",
-            "ttt_hypnotist_device_loadout",
-            "ttt_hypnotist_device_shop",
-            "ttt_hypnotist_device_shop_rebuyable",
-            "ttt_impersonator_use_detective_icon",
-            "ttt_infected_cough_enabled",
-            "ttt_infected_respawn_enable",
-            "ttt_infected_show_icon",
-            "ttt_infected_succumb_time",
-            "ttt_informant_can_scan_glitches",
-            "ttt_informant_can_scan_jesters",
-            "ttt_informant_requires_scanner",
-            "ttt_informant_scanner_time",
-            "ttt_informant_share_scans",
-            "ttt_jester_healthstation_reduce_max",
-            "ttt_jester_win_by_traitors",
-            "ttt_killer_knife_enabled",
-            "ttt_killer_show_target_icon",
-            "ttt_killer_smoke_enabled",
-            "ttt_killer_update_scoreboard",
-            "ttt_killer_vision_enable",
-            "ttt_lootgoblin_active_display",
-            "ttt_lootgoblin_radar_enabled",
-            "ttt_lootgoblin_radar_timer",
-            "ttt_lootgoblin_regen_delay",
-            "ttt_lootgoblin_regen_mode",
-            "ttt_lootgoblin_speed_mult",
-            "ttt_lootgoblin_sprint_recovery",
-            "ttt_madscientist_is_monster",
-            "ttt_madscientist_respawn_enable",
-            "ttt_marshal_announce_deputy",
-            "ttt_marshal_independent_deputy_chance",
-            "ttt_marshal_jester_deputy_chance",
-            "ttt_marshal_monster_deputy_chance",
-            "ttt_medium_spirit_color",
-            "ttt_medium_spirit_vision",
-            "ttt_mercenary_shop_mode",
-            "ttt_oldman_adrenaline_rush",
-            "ttt_oldman_adrenaline_shotgun",
-            "ttt_oldman_drain_health_to",
-            "ttt_oldman_hide_when_active",
-            "ttt_paladin_aura_radius",
-            "ttt_paladin_heal_self",
-            "ttt_paladin_protect_self",
-            "ttt_paramedic_defib_as_innocent",
-            "ttt_paramedic_device_loadout",
-            "ttt_paramedic_device_shop",
-            "ttt_paramedic_device_shop_rebuyable",
-            "ttt_parasite_enabled",
-            "ttt_parasite_infection_time",
-            "ttt_parasite_is_monster",
-            "ttt_phantom_killer_haunt",
-            "ttt_phantom_killer_haunt_attack_cost",
-            "ttt_phantom_killer_haunt_drop_cost",
-            "ttt_phantom_killer_haunt_jump_cost",
-            "ttt_phantom_killer_haunt_move_cost",
-            "ttt_phantom_killer_haunt_power_max",
-            "ttt_phantom_killer_smoke",
-            "ttt_quack_phantom_cure",
-            "ttt_quack_station_bomb",
-            "ttt_revenger_radar_timer",
-            "ttt_sapper_aura_radius",
-            "ttt_sapper_c4_guaranteed_defuse",
-            "ttt_sapper_can_see_c4",
-            "ttt_sapper_fire_immune",
-            "ttt_sapper_protect_self",
-            "ttt_shadow_alive_radius",
-            "ttt_shadow_buffer_timer",
-            "ttt_shadow_dead_radius",
-            "ttt_shadow_soul_link",
-            "ttt_shadow_speed_mult",
-            "ttt_shadow_speed_mult_max",
-            "ttt_shadow_sprint_recovery",
-            "ttt_shadow_sprint_recovery_max",
-            "ttt_shadow_start_timer",
-            "ttt_shadow_target_buff",
-            "ttt_shadow_target_buff_delay",
-            "ttt_shadow_target_notify_mode",
-            "ttt_shadow_weaken_health_to",
-            "ttt_swapper_healthstation_reduce_max",
-            "ttt_swapper_killer_health",
-            "ttt_tracker_footstep_color",
-            "ttt_tracker_footstep_time",
-            "ttt_traitor_phantom_cure",
-            "ttt_turncoat_change_health",
-            "ttt_turncoat_change_innocent_kill",
-            "ttt_vampire_loot_credits",
-            "ttt_vampire_prime_death_mode",
-            "ttt_vampire_show_target_icon",
-            "ttt_vampire_vision_enable",
-            "ttt_veteran_full_heal",
-            "ttt_zombie_prime_speed_bonus",
-            "ttt_zombie_show_target_icon",
-            "ttt_zombie_thrall_speed_bonus",
-            "ttt_zombie_vision_enable"
-        ]
-        const wildcardConvars = [
-            "_enabled",
-            "_name",
-            "_name_article",
-            "_name_plural",
-            "_shop_active_only",
-            "_shop_delay",
-            "_shop_mode",
-            "_shop_random_enabled",
-            "_shop_random_percent",
-            "_shop_sync"
-        ]
-        const renamedConvars = [
-            ["ttt_detective_disable_looting", "ttt_detectives_disable_looting"],
-            ["ttt_detective_hide_special_mode", "ttt_detectives_hide_special_mode"],
-            ["ttt_detective_search_only", "ttt_detectives_search_only"],
-            ["ttt_traitor_vision_enable", "ttt_traitors_vision_enable"],
-            ["ttt_beggars_are_independent", "ttt_beggar_is_independent"],
-            ["ttt_bodysnatchers_are_independent", "ttt_bodysnatcher_is_independent"] ,
-            ["ttt_cupids_are_independent", "ttt_cupid_is_independent"],
-            ["ttt_detective_glow_enable", "ttt_detectives_glow_enable"],
-            ["ttt_detective_credits_timer", "ttt_detectives_credits_timer"],
-            ["ttt_vampires_are_monsters", "ttt_vampire_is_monster"],
-            ["ttt_vampires_are_independent", "ttt_vampire_is_independent"],
-            ["ttt_zombies_are_monsters", "ttt_zombie_is_monster"],
-            ["ttt_zombies_are_traitors", "ttt_zombie_is_traitor"]
-        ]
+    <embed src="nav.html#deprecatedglobals" width="220" height="298" style="float: left; margin-right: 10px;" />
+    <div>
+        <h1>Deprecated Globals Checker</h1>
 
-        const button = document.getElementById('open');
-        const table = document.getElementById("missingConvars");
-        const state = document.getElementById("state");
+        <h2>Overview</h2>
+        
+        <p>The Deprecated Globals Checker is a tool that helps developers to find the global variables and renamed ConVars that were used in older versions of Custom Roles for TTT.</p>
+        <p>The tool uses an experimental browser feature which is only available on certain browsers (Chrome, Edge, Opera).</p>
 
-        function pageLoaded() {
-            let userAgent = navigator.userAgent;
-            if (!userAgent.match(/chrome|chromium|crios|edg|opr\//i)) {
-                state.innerHTML = "<b>Please use a supported browser (Chrome, Edge, Opera)</b>"
-                state.style.color = "red"
+        <h2 style="margin-top: 56px;">Tool</h2>
+
+        <button id="open">Open Folder</button>
+        <span id="state"></span>
+        <table id="missingConvars" style="margin-top:6px;border-spacing:0;border: 1px solid black;">
+            <tr>
+                <td><b>File</b></td>
+                <td><b>Line</b></td>
+                <td><b>ConVar</b></td>
+                <td><b>New ConVar</b></td>
+            </tr>
+        </table>
+        <script>
+            const convars = [
+                "ttt_killer_crowbar_damage",
+                "ttt_killer_knife_damage",
+                "ttt_killer_knife_delay",
+                "ttt_oldman_adrenaline_shotgun_damage",
+                "ttt_dna_scan_on_dialog",
+                "ttt_vampire_convert_enable",
+                "ttt_vampire_drain_enable",
+                "ttt_vampire_drain_first",
+                "ttt_vampire_prime_only_convert",
+                "ttt_zombie_leap_enable",
+                "ttt_zombie_prime_attack_damage",
+                "ttt_zombie_prime_attack_delay",
+                "ttt_zombie_spit_enable",
+                "ttt_zombie_thrall_attack_damage",
+                "ttt_zombie_thrall_attack_delay",
+                "ttt_arsonist_early_ignite",
+                "ttt_all_search_binoc",
+                "ttt_all_search_postround",
+                "ttt_independents_update_scoreboard",
+                "ttt_jesters_visible_to_independents",
+                "ttt_jesters_visible_to_monsters",
+                "ttt_jesters_visible_to_traitors",
+                "ttt_round_summary_tabs",
+                "ttt_roundtime_win_draw",
+                "ttt_scoreboard_deaths",
+                "ttt_scoreboard_score",
+                "ttt_shop_random_percent",
+                "ttt_shop_random_position",
+                "ttt_special_detectives_armor_loadout",
+                "ttt_sprint_bonus_rel",
+                "ttt_sprint_consume",
+                "ttt_sprint_regenerate_innocent",
+                "ttt_sprint_regenerate_traitor",
+                "ttt_detective_search_only_arsonistdouse",
+                "ttt_arsonist_douse_notify_delay_max",
+                "ttt_arsonist_douse_notify_delay_min",
+                "ttt_arsonist_douse_time",
+                "ttt_assassin_next_target_delay",
+                "ttt_assassin_show_target_icon",
+                "ttt_assassin_target_vision_enable",
+                "ttt_beggar_respawn",
+                "ttt_beggar_respawn_change_role",
+                "ttt_beggar_respawn_delay",
+                "ttt_beggar_respawn_limit",
+                "ttt_beggar_reveal_innocent",
+                "ttt_beggar_reveal_traitor",
+                "ttt_beggar_scan",
+                "ttt_beggar_scan_time",
+                "ttt_bodysnatcher_respawn",
+                "ttt_bodysnatcher_respawn_delay",
+                "ttt_bodysnatcher_respawn_limit",
+                "ttt_bodysnatcher_reveal_independent",
+                "ttt_bodysnatcher_reveal_innocent",
+                "ttt_bodysnatcher_reveal_jester",
+                "ttt_bodysnatcher_reveal_monster",
+                "ttt_bodysnatcher_reveal_traitor",
+                "ttt_clown_hide_when_active",
+                "ttt_clown_show_target_icon",
+                "ttt_clown_use_traps_when_active",
+                "ttt_cupid_lover_vision_enable",
+                "ttt_deputy_use_detective_icon",
+                "ttt_drunk_become_clown",
+                "ttt_glitch_mode",
+                "ttt_glitch_use_traps",
+                "ttt_hypnotist_device_loadout",
+                "ttt_hypnotist_device_shop",
+                "ttt_hypnotist_device_shop_rebuyable",
+                "ttt_impersonator_use_detective_icon",
+                "ttt_infected_cough_enabled",
+                "ttt_infected_respawn_enable",
+                "ttt_infected_show_icon",
+                "ttt_infected_succumb_time",
+                "ttt_informant_can_scan_glitches",
+                "ttt_informant_can_scan_jesters",
+                "ttt_informant_requires_scanner",
+                "ttt_informant_scanner_time",
+                "ttt_informant_share_scans",
+                "ttt_jester_healthstation_reduce_max",
+                "ttt_jester_win_by_traitors",
+                "ttt_killer_knife_enabled",
+                "ttt_killer_show_target_icon",
+                "ttt_killer_smoke_enabled",
+                "ttt_killer_update_scoreboard",
+                "ttt_killer_vision_enable",
+                "ttt_lootgoblin_active_display",
+                "ttt_lootgoblin_radar_enabled",
+                "ttt_lootgoblin_radar_timer",
+                "ttt_lootgoblin_regen_delay",
+                "ttt_lootgoblin_regen_mode",
+                "ttt_lootgoblin_speed_mult",
+                "ttt_lootgoblin_sprint_recovery",
+                "ttt_madscientist_is_monster",
+                "ttt_madscientist_respawn_enable",
+                "ttt_marshal_announce_deputy",
+                "ttt_marshal_independent_deputy_chance",
+                "ttt_marshal_jester_deputy_chance",
+                "ttt_marshal_monster_deputy_chance",
+                "ttt_medium_spirit_color",
+                "ttt_medium_spirit_vision",
+                "ttt_mercenary_shop_mode",
+                "ttt_oldman_adrenaline_rush",
+                "ttt_oldman_adrenaline_shotgun",
+                "ttt_oldman_drain_health_to",
+                "ttt_oldman_hide_when_active",
+                "ttt_paladin_aura_radius",
+                "ttt_paladin_heal_self",
+                "ttt_paladin_protect_self",
+                "ttt_paramedic_defib_as_innocent",
+                "ttt_paramedic_device_loadout",
+                "ttt_paramedic_device_shop",
+                "ttt_paramedic_device_shop_rebuyable",
+                "ttt_parasite_enabled",
+                "ttt_parasite_infection_time",
+                "ttt_parasite_is_monster",
+                "ttt_phantom_killer_haunt",
+                "ttt_phantom_killer_haunt_attack_cost",
+                "ttt_phantom_killer_haunt_drop_cost",
+                "ttt_phantom_killer_haunt_jump_cost",
+                "ttt_phantom_killer_haunt_move_cost",
+                "ttt_phantom_killer_haunt_power_max",
+                "ttt_phantom_killer_smoke",
+                "ttt_quack_phantom_cure",
+                "ttt_quack_station_bomb",
+                "ttt_revenger_radar_timer",
+                "ttt_sapper_aura_radius",
+                "ttt_sapper_c4_guaranteed_defuse",
+                "ttt_sapper_can_see_c4",
+                "ttt_sapper_fire_immune",
+                "ttt_sapper_protect_self",
+                "ttt_shadow_alive_radius",
+                "ttt_shadow_buffer_timer",
+                "ttt_shadow_dead_radius",
+                "ttt_shadow_soul_link",
+                "ttt_shadow_speed_mult",
+                "ttt_shadow_speed_mult_max",
+                "ttt_shadow_sprint_recovery",
+                "ttt_shadow_sprint_recovery_max",
+                "ttt_shadow_start_timer",
+                "ttt_shadow_target_buff",
+                "ttt_shadow_target_buff_delay",
+                "ttt_shadow_target_notify_mode",
+                "ttt_shadow_weaken_health_to",
+                "ttt_swapper_healthstation_reduce_max",
+                "ttt_swapper_killer_health",
+                "ttt_tracker_footstep_color",
+                "ttt_tracker_footstep_time",
+                "ttt_traitor_phantom_cure",
+                "ttt_turncoat_change_health",
+                "ttt_turncoat_change_innocent_kill",
+                "ttt_vampire_loot_credits",
+                "ttt_vampire_prime_death_mode",
+                "ttt_vampire_show_target_icon",
+                "ttt_vampire_vision_enable",
+                "ttt_veteran_full_heal",
+                "ttt_zombie_prime_speed_bonus",
+                "ttt_zombie_show_target_icon",
+                "ttt_zombie_thrall_speed_bonus",
+                "ttt_zombie_vision_enable"
+            ]
+            const wildcardConvars = [
+                "_enabled",
+                "_name",
+                "_name_article",
+                "_name_plural",
+                "_shop_active_only",
+                "_shop_delay",
+                "_shop_mode",
+                "_shop_random_enabled",
+                "_shop_random_percent",
+                "_shop_sync"
+            ]
+            const renamedConvars = [
+                ["ttt_detective_disable_looting", "ttt_detectives_disable_looting"],
+                ["ttt_detective_hide_special_mode", "ttt_detectives_hide_special_mode"],
+                ["ttt_detective_search_only", "ttt_detectives_search_only"],
+                ["ttt_traitor_vision_enable", "ttt_traitors_vision_enable"],
+                ["ttt_beggars_are_independent", "ttt_beggar_is_independent"],
+                ["ttt_bodysnatchers_are_independent", "ttt_bodysnatcher_is_independent"] ,
+                ["ttt_cupids_are_independent", "ttt_cupid_is_independent"],
+                ["ttt_detective_glow_enable", "ttt_detectives_glow_enable"],
+                ["ttt_detective_credits_timer", "ttt_detectives_credits_timer"],
+                ["ttt_vampires_are_monsters", "ttt_vampire_is_monster"],
+                ["ttt_vampires_are_independent", "ttt_vampire_is_independent"],
+                ["ttt_zombies_are_monsters", "ttt_zombie_is_monster"],
+                ["ttt_zombies_are_traitors", "ttt_zombie_is_traitor"]
+            ]
+
+            const button = document.getElementById('open');
+            const table = document.getElementById("missingConvars");
+            const state = document.getElementById("state");
+
+            function pageLoaded() {
+                let userAgent = navigator.userAgent;
+                if (!userAgent.match(/chrome|chromium|crios|edg|opr\//i)) {
+                    state.innerHTML = "<b>Please use a supported browser (Chrome, Edge, Opera)</b>"
+                    state.style.color = "red"
+                    button.disabled = true
+                }
+            }
+
+            button.addEventListener('click', async () => {
+                const dirHandle = await window.showDirectoryPicker();
+                const files = await getAllLuaFiles(dirHandle, "");
                 button.disabled = true
-            }
-        }
-
-        button.addEventListener('click', async () => {
-            const dirHandle = await window.showDirectoryPicker();
-            const files = await getAllLuaFiles(dirHandle, "");
-            button.disabled = true
-            state.innerHTML = "Searching..."
-            state.style.color = "black"
-            for await (const file of files) {
-                const fileData = await file.handle.getFile()
-                const fileText = await fileData.text()
-                const lines = fileText.split(/\r?\n|\r|\n/g);
-                for (let line = 1; line <= lines.length; line++) {
-                    for (const convar of convars) {
-                        let regex = "[GS]etGlobal(Bool|Int|String|Float)\\(['\"](" + convar + ")"
-                        let matches = lines[line - 1].matchAll(new RegExp(regex, "g"))
-                        for (const match of matches) {
-                            addTableRow(file.filePath, line, match[2])
+                state.innerHTML = "Searching..."
+                state.style.color = "black"
+                for await (const file of files) {
+                    const fileData = await file.handle.getFile()
+                    const fileText = await fileData.text()
+                    const lines = fileText.split(/\r?\n|\r|\n/g);
+                    for (let line = 1; line <= lines.length; line++) {
+                        for (const convar of convars) {
+                            let regex = "[GS]etGlobal(Bool|Int|String|Float)\\(['\"](" + convar + ")"
+                            let matches = lines[line - 1].matchAll(new RegExp(regex, "g"))
+                            for (const match of matches) {
+                                addTableRow(file.filePath, line, match[2])
+                            }
                         }
-                    }
 
-                    for (const wildcardConvar of wildcardConvars) {
-                        let regex = "[GS]etGlobal(Bool|Int|String|Float)\\(['\"](ttt_.+?" + wildcardConvar + ")"
-                        let matches = lines[line - 1].matchAll(new RegExp(regex, "g"))
-                        for (const match of matches) {
-                            addTableRow(file.filePath, line, match[2])
+                        for (const wildcardConvar of wildcardConvars) {
+                            let regex = "[GS]etGlobal(Bool|Int|String|Float)\\(['\"](ttt_.+?" + wildcardConvar + ")"
+                            let matches = lines[line - 1].matchAll(new RegExp(regex, "g"))
+                            for (const match of matches) {
+                                addTableRow(file.filePath, line, match[2])
+                            }
                         }
-                    }
 
-                    for (const renamedConvar of renamedConvars) {
-                        let regex = "([GS]etGlobal(Bool|Int|String|Float)|GetConVar)\\(['\"](" + renamedConvar[0] + ")"
-                        let matches = lines[line - 1].matchAll(new RegExp(regex, "g"))
-                        for (const match of matches) {
-                            addTableRow(file.filePath, line, match[3], renamedConvar[1])
+                        for (const renamedConvar of renamedConvars) {
+                            let regex = "([GS]etGlobal(Bool|Int|String|Float)|GetConVar)\\(['\"](" + renamedConvar[0] + ")"
+                            let matches = lines[line - 1].matchAll(new RegExp(regex, "g"))
+                            for (const match of matches) {
+                                addTableRow(file.filePath, line, match[3], renamedConvar[1])
+                            }
                         }
                     }
                 }
-            }
-            button.disabled = false
-            state.innerHTML = "<b>Done!</b>"
-            state.style.color = "green"
-        });
+                button.disabled = false
+                state.innerHTML = "<b>Done!</b>"
+                state.style.color = "green"
+            });
 
-        async function getAllLuaFiles(dirHandle, path) {
-            const files = [];
-            for await (let [name, handle] of dirHandle) {
-                if (handle.kind === 'directory') {
-                    files.push(...await getAllLuaFiles(handle, path + "/" + name));
-                } else if (handle.kind === 'file' && name.slice(-4) == ".lua") {
-                    const filePath = path + "/" + name
-                    files.push({filePath, handle});
+            async function getAllLuaFiles(dirHandle, path) {
+                const files = [];
+                for await (let [name, handle] of dirHandle) {
+                    if (handle.kind === 'directory') {
+                        files.push(...await getAllLuaFiles(handle, path + "/" + name));
+                    } else if (handle.kind === 'file' && name.slice(-4) == ".lua") {
+                        const filePath = path + "/" + name
+                        files.push({filePath, handle});
+                    }
                 }
+                return files;
             }
-            return files;
-        }
 
-        function addTableRow(path, line, convar, newconvar = "") {
-            let row = table.insertRow(1);
-            let cell1 = row.insertCell(0);
-            let cell2 = row.insertCell(1);
-            let cell3 = row.insertCell(2);
-            let cell4 = row.insertCell(3);
-            cell1.innerHTML = path;
-            cell2.innerHTML = line;
-            cell3.innerHTML = convar;
-            cell4.innerHTML = newconvar;
-        }
-    </script>
+            function addTableRow(path, line, convar, newconvar = "") {
+                let row = table.insertRow(1);
+                let cell1 = row.insertCell(0);
+                let cell2 = row.insertCell(1);
+                let cell3 = row.insertCell(2);
+                let cell4 = row.insertCell(3);
+                cell1.innerHTML = path;
+                cell2.innerHTML = line;
+                cell3.innerHTML = convar;
+                cell4.innerHTML = newconvar;
+            }
+        </script>
+    </div>
 </body>
 </html>
