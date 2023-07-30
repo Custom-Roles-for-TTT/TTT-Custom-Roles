@@ -147,7 +147,7 @@ if CLIENT then
         for _, v in pairs(player.GetAll()) do v.HypnotisedHide = nil end
     end)
 
-    local oldScoreGroup = oldScoreGroup or ScoreGroup
+    local oldScoreGroup = ScoreGroup
     function ScoreGroup(ply)
         if ply.HypnotisedHide then return GROUP_FOUND end
         return oldScoreGroup(ply)

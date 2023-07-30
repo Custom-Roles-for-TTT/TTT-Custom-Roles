@@ -117,7 +117,7 @@ if CLIENT then
         for _, v in pairs(player.GetAll()) do v.MadZomHide = nil end
     end)
 
-    local oldScoreGroup = oldScoreGroup or ScoreGroup
+    local oldScoreGroup = ScoreGroup
     function ScoreGroup(ply)
         if ply.MadZomHide then return GROUP_FOUND end
         return oldScoreGroup(ply)
