@@ -48,6 +48,8 @@ end)
 -- TARGET ID --
 ---------------
 
+--TODO: Add TTTTargetIDPlayerTargetIcon hook for players to douse
+
 -- Show "DOUSED" label on players who have been doused
 hook.Add("TTTTargetIDPlayerText", "Arsonist_TTTTargetIDPlayerText", function(ent, cli, text, col, secondaryText)
     if GetRoundState() < ROUND_ACTIVE then return end

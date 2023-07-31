@@ -44,11 +44,13 @@ end)
 ---------------
 
 -- Show "KILL" icon over the target's head
-hook.Add("TTTTargetIDPlayerKillIcon", "Assassin_TTTTargetIDPlayerKillIcon", function(ply, cli, showKillIcon, showJester)
+hook.Add("TTTTargetIDPlayerKillIcon", "Assassin_TTTTargetIDPlayerKillIcon", function(ply, cli, showKillIcon, showJester) --TODO: Remove this
     if cli:IsAssassin() and assassin_show_target_icon:GetBool() and cli:GetNWString("AssassinTarget") == ply:SteamID64() and not showJester then
         return true
     end
 end)
+
+--TODO: Add TTTTargetIDPlayerTargetIcon hook for target to kill if ttt_assassin_show_target_icon is enabled
 
 hook.Add("TTTTargetIDPlayerText", "Assassin_TTTTargetIDPlayerText", function(ent, cli, text, col, secondary_text)
     if cli:IsAssassin() and IsPlayer(ent) and ent:SteamID64() == cli:GetNWString("AssassinTarget", "") then

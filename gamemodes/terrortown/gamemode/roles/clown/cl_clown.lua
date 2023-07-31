@@ -36,11 +36,13 @@ end)
 ---------------
 
 -- Show "KILL" icon over the target's head
-hook.Add("TTTTargetIDPlayerKillIcon", "Clown_TTTTargetIDPlayerKillIcon", function(ply, cli, showKillIcon, showJester)
+hook.Add("TTTTargetIDPlayerKillIcon", "Clown_TTTTargetIDPlayerKillIcon", function(ply, cli, showKillIcon, showJester) --TODO: Remove this
     if cli:IsClown() and cli:IsRoleActive() and clown_show_target_icon:GetBool() and not showJester then
         return true
     end
 end)
+
+--TODO: Add TTTTargetIDPlayerTargetIcon hook for players to kill if ttt_clown_show_target_icon is enabled
 
 local function IsClownActive(ply)
     return IsPlayer(ply) and ply:IsClown() and ply:IsRoleActive()

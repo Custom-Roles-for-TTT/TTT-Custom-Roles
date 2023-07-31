@@ -63,15 +63,25 @@ local indicator_mat_roleback_noz = Material("vgui/ttt/sprite_roleback_noz")
 local indicator_mat_rolefront = Material("vgui/ttt/sprite_rolefront")
 local indicator_mat_rolefront_noz = Material("vgui/ttt/sprite_rolefront_noz")
 
-local indicator_mat_target_noz = Material("vgui/ttt/sprite_target_noz")
+local indicator_mat_iconback = {down=Material("vgui/ttt/sprite_icondownback"), up=Material("vgui/ttt/sprite_iconupback")} --TODO: Actually add these sprites
+local indicator_mat_iconback_noz = {down=Material("vgui/ttt/sprite_icondownback_noz"), up=Material("vgui/ttt/sprite_iconupback")}
+local indicator_mat_iconfront = {down=Material("vgui/ttt/sprite_icondownfront"), up=Material("vgui/ttt/sprite_iconupback")}
+local indicator_mat_iconfront_noz = {down=Material("vgui/ttt/sprite_icondownfront_noz"), up=Material("vgui/ttt/sprite_iconupback")}
 
-local function DrawRoleIcon(role, noz, pos, dir, color_role)
+local indicator_mat_target_noz = Material("vgui/ttt/sprite_target_noz")
+local client
+
+local function DrawRoleIcon(role, noz, pos, dir, color_role, offset)
     local role_file_name = ROLE_STRINGS_SHORT[role]
     local cache_key = role_file_name
     if noz then
         cache_key = StringFormat("%s_noz", cache_key)
     end
     local indicator_mat = ROLE_SPRITE_ICON_MATERIALS[cache_key]
+
+    if offset then
+        pos = pos + (client:GetRight() * -5)
+    end
 
     if noz then render.SetMaterial(indicator_mat_roleback_noz)
     else render.SetMaterial(indicator_mat_roleback) end
@@ -85,7 +95,35 @@ local function DrawRoleIcon(role, noz, pos, dir, color_role)
     render.DrawQuadEasy(pos, dir, 8, 8, COLOR_WHITE, 180)
 end
 
-local client, plys, ply, pos, dir, tgt
+local targetIcons = {}
+
+local function DrawTargetIcon(icon, noz, pos, dir, iconColor, iconType, offset)
+    local cache_key = icon
+    if noz then
+        cache_key = StringFormat("%s_noz", cache_key)
+    end
+    if not targetIcons[cache_key] then
+        targetIcons[cache_key] = Material(StringFormat("vgui/ttt/sprite_%s.vmt", cache_key))
+    end
+    local indicator_mat = targetIcons[cache_key]
+
+    if offset then
+        pos = pos + (client:GetRight() * 5)
+    end
+
+    if noz then render.SetMaterial(indicator_mat_iconback_noz[iconType])
+    else render.SetMaterial(indicator_mat_iconback[iconType]) end
+    render.DrawQuadEasy(pos, dir, 8, 8, iconColor, 180)
+
+    render.SetMaterial(indicator_mat)
+    render.DrawQuadEasy(pos, dir, 8, 8, COLOR_WHITE, 180)
+
+    if noz then render.SetMaterial(indicator_mat_iconfront_noz[iconType])
+    else render.SetMaterial(indicator_mat_iconfront[iconType]) end
+    render.DrawQuadEasy(pos, dir, 8, 8, COLOR_WHITE, 180)
+end
+
+local plys, ply, pos, dir, tgt
 
 local propspec_outline = Material("models/props_combine/portalball001_sheet")
 
@@ -147,7 +185,7 @@ function GM:PostDrawTranslucentRenderables()
 
             -- Allow other addons (and external roles) to determine if the "KILL" icon should show
             -- NOTE: Leave the permanent 'false' parameter to make sure we don't break external hook usage
-            local showKillIcon = CallHook("TTTTargetIDPlayerKillIcon", nil, v, client, false, showJester)
+            local showKillIcon = CallHook("TTTTargetIDPlayerKillIcon", nil, v, client, false, showJester) --TODO: Remove this
             if showKillIcon and not client:IsSameTeam(v) then -- If we are showing the "KILL" icon this should take priority over role icons
                 render.SetMaterial(indicator_mat_roleback_noz)
                 render.DrawQuadEasy(pos, dir, 8, 8, ROLE_COLORS_SPRITE[client:GetRole()], 180) -- Use the colour of whatever role the player currently is for the "KILL" icon
@@ -221,8 +259,14 @@ function GM:PostDrawTranslucentRenderables()
                 if type(newNoZ) == "boolean" then noz = newNoZ end
                 if newColorRole then color_role = newColorRole end
 
+                local icon, iconNoZ, iconColor, iconType = CallHook("TTTTargetIDPlayerTargetIcon", nil, v, client)
+                local offset = role and icon
+
                 if role then
-                    DrawRoleIcon(role, noz, pos, dir, color_role)
+                    DrawRoleIcon(role, noz, pos, dir, color_role, offset)
+                end
+                if icon then
+                    DrawTargetIcon(icon, iconNoZ, pos, dir, iconColor, iconType, offset)
                 end
             end
         end

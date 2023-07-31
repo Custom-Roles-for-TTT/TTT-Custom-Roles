@@ -51,11 +51,13 @@ end)
 ---------------
 
 -- Show "KILL" icon over all non-jester team heads when the zombie is using their claws
-hook.Add("TTTTargetIDPlayerKillIcon", "Zombie_TTTTargetIDPlayerKillIcon", function(ply, cli, showKillIcon, showJester)
+hook.Add("TTTTargetIDPlayerKillIcon", "Zombie_TTTTargetIDPlayerKillIcon", function(ply, cli, showKillIcon, showJester) --TODO: Remove this
     if cli:IsZombie() and zombie_show_target_icon:GetBool() and cli.GetActiveWeapon and IsValid(cli:GetActiveWeapon()) and cli:GetActiveWeapon():GetClass() == "weapon_zom_claws" and not showJester then
         return true
     end
 end)
+
+--TODO: Add TTTTargetIDPlayerTargetIcon hook for players to kill if ttt_zombie_show_target_icon is enabled
 
 -- Show the correct role icon for zombies and their allies
 hook.Add("TTTTargetIDPlayerRoleIcon", "Zombie_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)

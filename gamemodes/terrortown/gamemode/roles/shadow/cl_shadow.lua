@@ -147,6 +147,8 @@ end)
 -- TARGET ID --
 ---------------
 
+--TODO: Add TTTTargetIDPlayerTargetIcon hook for target to follow
+
 AddHook("TTTTargetIDPlayerRoleIcon", "Shadow_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
     if shadow_target_notify_mode:GetInt() == SHADOW_NOTIFY_IDENTIFY and ply:IsActiveShadow() and ply:GetNWString("ShadowTarget", "") == cli:SteamID64() then
         return ROLE_SHADOW, true

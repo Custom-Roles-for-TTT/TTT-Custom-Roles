@@ -47,11 +47,13 @@ end)
 ---------------
 
 -- Show "KILL" icon over all non-jester team heads
-hook.Add("TTTTargetIDPlayerKillIcon", "Killer_TTTTargetIDPlayerKillIcon", function(ply, cli, showKillIcon, showJester)
+hook.Add("TTTTargetIDPlayerKillIcon", "Killer_TTTTargetIDPlayerKillIcon", function(ply, cli, showKillIcon, showJester) --TODO: Remove this
     if cli:IsKiller() and killer_show_target_icon:GetBool() and not showJester then
         return true
     end
 end)
+
+--TODO: Add TTTTargetIDPlayerTargetIcon hook for players to kill if ttt_killer_show_target_icon is enabled
 
 -- Show the jester role icon for any jester team player
 hook.Add("TTTTargetIDPlayerRoleIcon", "Killer_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
