@@ -50,14 +50,12 @@ end)
 -- TARGET ID --
 ---------------
 
--- Show "KILL" icon over all non-jester team heads when the zombie is using their claws
-hook.Add("TTTTargetIDPlayerKillIcon", "Zombie_TTTTargetIDPlayerKillIcon", function(ply, cli, showKillIcon, showJester) --TODO: Remove this
+-- Show skull icon over all non-jester team heads when the zombie is using their claws
+hook.Add("TTTTargetIDPlayerTargetIcon", "Zombie_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
     if cli:IsZombie() and zombie_show_target_icon:GetBool() and cli.GetActiveWeapon and IsValid(cli:GetActiveWeapon()) and cli:GetActiveWeapon():GetClass() == "weapon_zom_claws" and not showJester then
-        return true
+        return "kill", true, ROLE_COLORS_SPRITE[ROLE_ZOMBIE], "down"
     end
 end)
-
---TODO: Add TTTTargetIDPlayerTargetIcon hook for players to kill if ttt_zombie_show_target_icon is enabled
 
 -- Show the correct role icon for zombies and their allies
 hook.Add("TTTTargetIDPlayerRoleIcon", "Zombie_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
@@ -103,12 +101,6 @@ end)
 
 ROLE_IS_TARGETID_OVERRIDDEN[ROLE_ZOMBIE] = function(ply, target, showJester)
     if not IsPlayer(target) then return end
-
-    -- Overriding the icon to show "KILL"
-    if ply:IsZombie() and zombie_show_target_icon:GetBool() and ply.GetActiveWeapon and IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() == "weapon_zom_claws" and not showJester then
-        ------ icon, ring,  text
-        return true, false, false
-    end
 
     -- The rest of this logic is not needed if zombies are traitors
     -- Traitor logic is already handled elsewhere

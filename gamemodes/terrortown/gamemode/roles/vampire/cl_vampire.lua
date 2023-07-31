@@ -55,24 +55,12 @@ end)
 -- TARGET ID --
 ---------------
 
--- Show "KILL" icon over all non-jester team heads
-hook.Add("TTTTargetIDPlayerKillIcon", "Vampire_TTTTargetIDPlayerKillIcon", function(ply, cli, showKillIcon, showJester) --TODO: Remove this
+-- Show skull icon over all non-jester team heads
+hook.Add("TTTTargetIDPlayerTargetIcon", "Vampire_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
     if cli:IsVampire() and vampire_show_target_icon:GetBool() and not showJester then
-        return true
+        return "kill", true, ROLE_COLORS_SPRITE[ROLE_VAMPIRE], "down"
     end
 end)
-
---TODO: Add TTTTargetIDPlayerTargetIcon hook for players to kill if ttt_vampire_show_target_icon is enabled
-
-ROLE_IS_TARGETID_OVERRIDDEN[ROLE_VAMPIRE] = function(ply, target, showJester)
-    if not ply:IsVampire() then return end
-    if not IsPlayer(target) then return end
-
-    local show = vampire_show_target_icon:GetBool() and not showJester
-
-    ------ icon, ring,  text
-    return show, false, false
-end
 
 -------------
 -- SCORING --

@@ -63,10 +63,10 @@ local indicator_mat_roleback_noz = Material("vgui/ttt/sprite_roleback_noz")
 local indicator_mat_rolefront = Material("vgui/ttt/sprite_rolefront")
 local indicator_mat_rolefront_noz = Material("vgui/ttt/sprite_rolefront_noz")
 
-local indicator_mat_iconback = {down=Material("vgui/ttt/sprite_icondownback"), up=Material("vgui/ttt/sprite_iconupback")} --TODO: Actually add these sprites
-local indicator_mat_iconback_noz = {down=Material("vgui/ttt/sprite_icondownback_noz"), up=Material("vgui/ttt/sprite_iconupback")}
-local indicator_mat_iconfront = {down=Material("vgui/ttt/sprite_icondownfront"), up=Material("vgui/ttt/sprite_iconupback")}
-local indicator_mat_iconfront_noz = {down=Material("vgui/ttt/sprite_icondownfront_noz"), up=Material("vgui/ttt/sprite_iconupback")}
+local indicator_mat_targetback = {down=Material("vgui/ttt/sprite_targetdownback"), up=Material("vgui/ttt/sprite_targetupback")}
+local indicator_mat_targetback_noz = {down=Material("vgui/ttt/sprite_targetdownback_noz"), up=Material("vgui/ttt/sprite_targetupback")}
+local indicator_mat_targetfront = {down=Material("vgui/ttt/sprite_targetdownfront"), up=Material("vgui/ttt/sprite_targetupback")}
+local indicator_mat_targetfront_noz = {down=Material("vgui/ttt/sprite_targetdownfront_noz"), up=Material("vgui/ttt/sprite_targetupback")}
 
 local indicator_mat_target_noz = Material("vgui/ttt/sprite_target_noz")
 local client
@@ -103,7 +103,7 @@ local function DrawTargetIcon(icon, noz, pos, dir, iconColor, iconType, offset)
         cache_key = StringFormat("%s_noz", cache_key)
     end
     if not targetIcons[cache_key] then
-        targetIcons[cache_key] = Material(StringFormat("vgui/ttt/sprite_%s.vmt", cache_key))
+        targetIcons[cache_key] = Material(StringFormat("vgui/ttt/sprite_target%s_%s.vmt", iconType, cache_key))
     end
     local indicator_mat = targetIcons[cache_key]
 
@@ -111,15 +111,15 @@ local function DrawTargetIcon(icon, noz, pos, dir, iconColor, iconType, offset)
         pos = pos + (client:GetRight() * 5)
     end
 
-    if noz then render.SetMaterial(indicator_mat_iconback_noz[iconType])
-    else render.SetMaterial(indicator_mat_iconback[iconType]) end
+    if noz then render.SetMaterial(indicator_mat_targetback_noz[iconType])
+    else render.SetMaterial(indicator_mat_targetback[iconType]) end
     render.DrawQuadEasy(pos, dir, 8, 8, iconColor, 180)
 
     render.SetMaterial(indicator_mat)
     render.DrawQuadEasy(pos, dir, 8, 8, COLOR_WHITE, 180)
 
-    if noz then render.SetMaterial(indicator_mat_iconfront_noz[iconType])
-    else render.SetMaterial(indicator_mat_iconfront[iconType]) end
+    if noz then render.SetMaterial(indicator_mat_targetfront_noz[iconType])
+    else render.SetMaterial(indicator_mat_targetfront[iconType]) end
     render.DrawQuadEasy(pos, dir, 8, 8, COLOR_WHITE, 180)
 end
 
@@ -259,7 +259,7 @@ function GM:PostDrawTranslucentRenderables()
                 if type(newNoZ) == "boolean" then noz = newNoZ end
                 if newColorRole then color_role = newColorRole end
 
-                local icon, iconNoZ, iconColor, iconType = CallHook("TTTTargetIDPlayerTargetIcon", nil, v, client)
+                local icon, iconNoZ, iconColor, iconType = CallHook("TTTTargetIDPlayerTargetIcon", nil, v, client, showJester)
                 local offset = role and icon
 
                 if role then
