@@ -13,6 +13,8 @@
 ### Developer
 - Added `weapon_cr_defibbase` and updated all defib-like weapons to use it
 - Added `TTTTargetIDPlayerTargetIcon` hook to control what target icon and background color should be shown over the target's head
+- **BREAKING CHANGE** - Deprecated `TTTTargetIDPlayerKillIcon`
+  - Use the `TTTTargetIDPlayerTargetIcon` hook instead and return `"kill", true, ROLE_COLORS_SPRITE[ply:GetRole()], "down"`
 
 ## 1.9.3 (Beta)
 **Released: July 29th, 2023**
