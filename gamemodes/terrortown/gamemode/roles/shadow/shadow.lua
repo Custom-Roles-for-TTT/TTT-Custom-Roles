@@ -42,7 +42,7 @@ ROLE_ON_ROLE_ASSIGNED[ROLE_SHADOW] = function(ply)
     local closestTarget = nil
     local closestDistance = -1
     for _, p in pairs(GetAllPlayers()) do
-        if p:Alive() and not p:IsSpec() and p ~= ply and
+        if p:IsActive() and p ~= ply and
             (shadow_target_jester:GetBool() or not p:IsJesterTeam()) and
             (shadow_target_independent:GetBool() or not p:IsIndependentTeam()) then
             local distance = ply:GetPos():Distance(p:GetPos())
@@ -217,7 +217,7 @@ hook.Add("DoPlayerDeath", "Shadow_SoulLink_DoPlayerDeath", function(ply, attacke
         -- But only if bi-directional soul link is enabled
         if shadow_soul_link:GetInt() == SHADOW_SOUL_LINK_BOTH then
             local target = player.GetBySteamID64(ply:GetNWString("ShadowTarget", ""))
-            if IsPlayer(target) and target:Alive() and not target:IsSpec() then
+            if IsPlayer(target) and target:IsActive() then
                 target:Kill()
                 local msg = ply:Nick() .. " was your " .. ROLE_STRINGS[ROLE_SHADOW] .. " and died!"
                 target:PrintMessage(HUD_PRINTCENTER, msg)
@@ -227,7 +227,7 @@ hook.Add("DoPlayerDeath", "Shadow_SoulLink_DoPlayerDeath", function(ply, attacke
     else
         -- Find the shadows that "belong" to this player, and kill them
         for _, p in ipairs(GetAllPlayers()) do
-            if p:IsShadow() and p:Alive() and not p:IsSpec() then
+            if p:IsShadow() and p:IsActive() then
                 local target = player.GetBySteamID64(p:GetNWString("ShadowTarget", ""))
                 if IsPlayer(target) and target == ply then
                     p:Kill()
@@ -381,7 +381,7 @@ hook.Add("TTTBeginRound", "Shadow_TTTBeginRound", function()
             else
                 local ent = target
                 local radius = shadow_alive_radius:GetFloat() * UNITS_PER_METER
-                local targetAlive = target:Alive() and not target:IsSpec()
+                local targetAlive = target:IsActive()
                 if not targetAlive then
                     ent = target.server_ragdoll or target:GetRagdollEntity()
                     radius = shadow_dead_radius:GetFloat() * UNITS_PER_METER
