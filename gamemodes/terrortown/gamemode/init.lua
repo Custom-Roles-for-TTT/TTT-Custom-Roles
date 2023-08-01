@@ -644,6 +644,8 @@ function PrepareRound()
         v.DeathRoleWeapons = nil
         -- Clear out old ignition info so we don't misattribute stuff in the new round
         v.ignite_info = nil
+        -- Clear the message queue so any messages from the previous round don't show update
+        v:ResetMessageQueue()
     end
 
     -- Check playercount

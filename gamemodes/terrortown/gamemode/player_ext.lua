@@ -554,6 +554,46 @@ function plymeta:ResetPlayerScale()
     self:SetStepSize(18)
 end
 
+local messageQueue = {}
+
+MSG_PRINTBOTH = 1
+MSG_PRINTTALK = 3 -- Keep this the same value as HUD_PRINTTALK just in case
+MSG_PRINTCENTER = 4 -- Keep this the same value as HUD_PRINTCENTER just in case
+
+function plymeta:PrintMessageQueue()
+    local sid = self:SteamID64()
+    self:PrintMessage(HUD_PRINTCENTER, messageQueue[sid][1])
+
+    timer.Create("MessageQueue" .. sid, 5, 0, function()
+        table.remove(messageQueue[sid], 1)
+        if #messageQueue[sid] >= 1 then
+            self:PrintMessageQueue()
+        end
+    end)
+end
+
+function plymeta:QueueMessage(type, message)
+    local sid = self:SteamID64()
+    if not messageQueue[sid] then
+        messageQueue[sid] = {}
+    end
+    if type == 1 or type == 3 then
+        self:PrintMessage(HUD_PRINTTALK, message)
+    end
+    if type == 1 or type == 4 then
+        table.insert(messageQueue[sid], message)
+        if #messageQueue[sid] == 1 then
+            self:PrintMessageQueue()
+        end
+    end
+end
+
+function plymeta:ResetMessageQueue()
+    local sid = self:SteamID64()
+    messageQueue[sid] = {}
+    timer.Remove("MessageQueue" .. sid)
+end
+
 -- Run these overrides when the round is preparing the first time to ensure their addons have been loaded
 hook.Add("TTTPrepareRound", "PostLoadOverride", function()
     -- Compatibility with Dead Ringer (810154456)
