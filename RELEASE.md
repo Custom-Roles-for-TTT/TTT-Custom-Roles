@@ -13,7 +13,6 @@
 ### Developer
 - Added `weapon_cr_defibbase` and updated all defib-like weapons to use it
 - Added `TTTTargetIDPlayerTargetIcon` hook to control what target icon and background color should be shown over the target's head
-- Added `plymeta:QueueMessage` method to queue messages to be printed to chat and the center of the screen one at a time
 
 ## 1.9.3 (Beta)
 **Released: July 29th, 2023**

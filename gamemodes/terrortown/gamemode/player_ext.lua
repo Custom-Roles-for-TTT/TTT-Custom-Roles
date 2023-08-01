@@ -575,8 +575,6 @@ function plymeta:PrintMessageQueue()
             self:PrintMessageQueue()
         end)
     end
-
-
 end
 
 function plymeta:ResetMessageQueue()
