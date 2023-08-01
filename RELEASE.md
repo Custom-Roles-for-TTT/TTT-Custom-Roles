@@ -3,6 +3,9 @@
 ## 1.9.4 (Beta)
 **Released:**
 
+### Changes
+- Expanded the `ttt_roleweapons` command to have additional modes such as list, clean, and reload. See the command documentation for more information.
+
 ### Developer
 - Added `weapon_cr_defibbase` and updated all defib-like weapons to use it
 
