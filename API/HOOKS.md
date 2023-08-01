@@ -859,7 +859,7 @@ Called before player Target ID icon (over their head) is rendered allowing addin
 
 *Return:*
 - *icon* - The icon name used in the filename of the icon
-- *iconNoZ* - Whether the icon should be visible through walls. *NOTE:* A .vmt file for the icon must exist in "vgui/ttt". If *iconNoZ* is `true`, a "sprite_target{ICONTYPE}_{ICONNAME}_noz.vmt" file must exist and if *iconNoZ* is `false`, a "sprite_target{ICONTYPE}_{ICONNAME}.vmt" file must exist
+- *iconNoZ* - Whether the icon should be visible through walls. *NOTE:* A .vmt file for the icon must exist in "vgui/ttt/targeticons/{ICONTYPE}". If *iconNoZ* is `true`, a "sprite_target_{ICONNAME}_noz.vmt" file must exist and if *iconNoZ* is `false`, a "sprite_target_{ICONNAME}.vmt" file must exist
 - *iconColor* - The [Color](https://wiki.facepunch.com/gmod/Color) to use for the icon
 - *iconType* - The icon type used in the filename of the icon. `"down"` if you want the icon background to be a downwards pointing triangle, or `"up"` for an upwards pointing triangle
 

@@ -102,7 +102,7 @@ local function DrawTargetIcon(icon, noz, pos, dir, iconColor, iconType, offset)
         cache_key = StringFormat("%s_noz", cache_key)
     end
     if not targetIcons[cache_key] then
-        targetIcons[cache_key] = Material(StringFormat("vgui/ttt/sprite_target%s_%s.vmt", iconType, cache_key))
+        targetIcons[cache_key] = Material(StringFormat("vgui/ttt/targeticons/%s/sprite_target_%s.vmt", iconType, cache_key))
     end
     local indicator_mat = targetIcons[cache_key]
 
