@@ -406,7 +406,7 @@ globals = {
     "MOVETYPE_WALK",
     "MSG_PRINTBOTH",
     "MSG_PRINTCENTER",
-    "MSG_PRINTTALK"
+    "MSG_PRINTTALK",
     "MUTE_ALL",
     "MUTE_NONE",
     "MUTE_SPEC",
