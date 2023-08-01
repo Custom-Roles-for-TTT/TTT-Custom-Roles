@@ -563,6 +563,16 @@ if CLIENT then
         end
         emitter:Finish()
     end
+
+    function plymeta:QueueMessage(type, message, time)
+        time = time or 5
+        net.Start("TTT_QueueMessage")
+        net.WriteEntity(self)
+        net.WriteUInt(type, 3)
+        net.WriteString(message)
+        net.WriteFloat(time)
+        net.SendToServer()
+    end
 else
     -- SERVER
 

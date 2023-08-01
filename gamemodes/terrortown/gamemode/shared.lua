@@ -1285,6 +1285,11 @@ SPECIAL_DETECTIVE_HIDE_FOR_OTHERS = 2
 UNITS_PER_METER = 52.49
 UNITS_PER_FIVE_METERS = UNITS_PER_METER * 5
 
+-- Message queue modes
+MSG_PRINTBOTH = 1
+MSG_PRINTTALK = 3 -- Keep this the same value as HUD_PRINTTALK just in case
+MSG_PRINTCENTER = 4 -- Keep this the same value as HUD_PRINTCENTER just in case
+
 -- Corpse stuff
 CORPSE_ICON_TYPES = {
     "c4",
