@@ -68,7 +68,7 @@ local function FindAndPromoteDetectiveLike()
             -- If the player is an Impersonator, tell all their team members when they get promoted
             if ply:IsImpersonator() then
                 for _, v in pairs(GetAllPlayers()) do
-                    if v ~= ply and v:IsTraitorTeam() and v:Alive() and not v:IsSpec() then
+                    if v ~= ply and v:IsActiveTraitorTeam() then
                         local message = "The " .. ROLE_STRINGS[ROLE_IMPERSONATOR] .. " has been promoted to " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "!"
                         if not alive then
                             message = message .. " Too bad they're dead..."
@@ -115,7 +115,7 @@ hook.Add("TTTBeginRound", "DetectiveLike_TTTBeginRound", function()
 
     timer.Create("DetectiveCreditTimer", credit_timer, 0, function()
         for _, v in pairs(GetAllPlayers()) do
-            if v:Alive() and not v:IsSpec() and v:IsDetectiveLike() then
+            if v:IsActive() and v:IsDetectiveLike() then
                 v:AddCredits(1)
                 LANG.Msg(v, "credit_all", { role = ROLE_STRINGS[v:GetRole()], num = 1 })
             end

@@ -57,7 +57,7 @@ function plymeta:SetRole(role)
 end
 
 -- Player is alive and in an active round
-function plymeta:IsActive() return self:IsTerror() and GetRoundState() == ROUND_ACTIVE end
+function plymeta:IsActive() return self:Alive() and self:IsTerror() and GetRoundState() == ROUND_ACTIVE end
 
 -- convenience functions for common patterns
 function plymeta:IsRole(role) return self:GetRole() == role end
@@ -634,7 +634,7 @@ end
 
 function player.GetLivingRole(role)
     for _, v in ipairs(GetAllPlayers()) do
-        if v:Alive() and v:IsTerror() and v:IsRole(role) then
+        if v:IsActiveRole(role) then
             return v
         end
     end
@@ -660,7 +660,7 @@ function player.TeamLivingCount(ignorePassiveWinners)
     local jester_alive = 0
     for _, v in ipairs(GetAllPlayers()) do
         -- If the player is alive
-        if v:Alive() and v:IsTerror() then
+        if v:IsActive() then
             -- If we're either not ignoring passive winners or this isn't a passive winning role
             if not ignorePassiveWinners or not ROLE_HAS_PASSIVE_WIN[v:GetRole()] then
                 if v:IsInnocentTeam() then
@@ -695,7 +695,7 @@ end
 
 function player.ExecuteAgainstTeamPlayers(roleTeam, detectivesAreInnocent, aliveOnly, callback)
     for _, v in ipairs(GetAllPlayers()) do
-        if not aliveOnly or (v:Alive() and v:IsTerror()) then
+        if not aliveOnly or v:IsActive() then
             local playerTeam = player.GetRoleTeam(v:GetRole(), detectivesAreInnocent)
             if playerTeam == roleTeam then
                 callback(v)
@@ -716,7 +716,7 @@ function player.LivingCount(ignorePassiveWinners)
     local players_alive = 0
     for _, v in ipairs(GetAllPlayers()) do
         -- If the player is alive and we're either not ignoring passive winners or this isn't a passive winning role
-        if (v:Alive() and v:IsTerror() and (not ignorePassiveWinners or not ROLE_HAS_PASSIVE_WIN[v:GetRole()])) or
+        if (v:IsActive() and (not ignorePassiveWinners or not ROLE_HAS_PASSIVE_WIN[v:GetRole()])) or
             -- Handle zombification differently because the player's original role should have no impact on this
             v:IsZombifying() then
             players_alive = players_alive + 1

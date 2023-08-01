@@ -43,7 +43,7 @@ hook.Add("PlayerDisconnected", "Zombie_Prime_PlayerDisconnected", function(ply)
 
     local zombies = {}
     for _, v in pairs(GetAllPlayers()) do
-        if v:Alive() and v:IsTerror() and v:IsZombie() and v ~= ply then
+        if v:IsActiveZombie() and v ~= ply then
             -- If we already have another prime, we're all set
             if v:IsZombiePrime() then
                 return
@@ -117,7 +117,7 @@ hook.Add("TTTCheckForWin", "Zombie_TTTCheckForWin", function()
     local zombie_alive = false
     local other_alive = false
     for _, v in ipairs(GetAllPlayers()) do
-        if v:Alive() and v:IsTerror() then
+        if v:IsActive() then
             if v:IsZombie() or v:IsMadScientist() then
                 zombie_alive = true
             elseif not v:ShouldActLikeJester() then

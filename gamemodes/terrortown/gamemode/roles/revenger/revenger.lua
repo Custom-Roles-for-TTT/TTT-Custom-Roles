@@ -133,7 +133,7 @@ end
 ROLE_ON_ROLE_ASSIGNED[ROLE_REVENGER] = function(ply)
     local potentialSoulmates = {}
     for _, p in pairs(GetAllPlayers()) do
-        if p:Alive() and not p:IsSpec() and p ~= ply then
+        if p:IsActive() and p ~= ply then
             table.insert(potentialSoulmates, p)
         end
     end
@@ -181,7 +181,7 @@ hook.Add("PlayerDisconnected", "Revenger_Lover_PlayerDisconnected", function(ply
             if p:GetNWString("RevengerLover", "") == sid64 then
                 revenger = p
             end
-        elseif p:Alive() and not p:IsSpec() and p ~= ply then
+        elseif p:IsActive() and p ~= ply then
             table.insert(potentialSoulmates, p)
         end
     end

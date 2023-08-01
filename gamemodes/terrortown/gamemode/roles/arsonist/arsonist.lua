@@ -214,7 +214,7 @@ hook.Add("TTTPrepareRound", "Arsonist_TTTPrepareRound", function()
 end)
 
 hook.Add("TTTPlayerSpawnForRound", "Arsonist_TTTPlayerSpawnForRound", function(ply, dead_only)
-    if dead_only and ply:Alive() and not ply:IsSpec() then return end
+    if dead_only and ply:IsActive() then return end
 
     -- Player is respawning that has not been doused
     if ply:GetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED) == ARSONIST_UNDOUSED then
@@ -229,7 +229,7 @@ hook.Add("TTTPlayerSpawnForRound", "Arsonist_TTTPlayerSpawnForRound", function(p
                 p:SetNWBool("TTTArsonistDouseComplete", false)
 
                 -- Let the arsonist know they have more work to do
-                if p:Alive() and not p:IsSpec() then
+                if p:IsActive() then
                     p:PrintMessage(HUD_PRINTCENTER, message)
                     p:PrintMessage(HUD_PRINTTALK, message)
                 end
@@ -282,7 +282,7 @@ hook.Add("TTTCheckForWin", "Arsonist_TTTCheckForWin", function()
     local arsonist_alive = false
     local other_alive = false
     for _, v in ipairs(GetAllPlayers()) do
-        if v:Alive() and v:IsTerror() then
+        if v:IsActive() then
             if v:IsArsonist() then
                 arsonist_alive = true
             elseif not v:ShouldActLikeJester() then

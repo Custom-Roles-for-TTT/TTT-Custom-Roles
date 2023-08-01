@@ -65,7 +65,7 @@ end
 
 function ENT:UseOverride(activator)
     local owner = self:GetOwner()
-    if IsPlayer(activator) and IsPlayer(owner) and activator:Alive() and not activator:IsSpec() and activator:IsSameTeam(owner) then
+    if IsPlayer(activator) and IsPlayer(owner) and activator:IsActive() and activator:IsSameTeam(owner) then
         local prints = self.fingerprints or {}
         self:Remove()
 

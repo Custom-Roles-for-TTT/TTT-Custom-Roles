@@ -103,7 +103,7 @@ end)
 hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     if valid_kill and victim:IsPhantom() then
-        local attacker_alive = attacker:Alive() and not attacker:IsSpec()
+        local attacker_alive = attacker:IsActive()
         local will_posses = phantom_killer_haunt:GetBool() and not victim:IsZombifying() and attacker_alive
 
         -- Only bother looking this up if we're going to use it
@@ -114,7 +114,7 @@ hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
 
         if phantom_announce_death:GetBool() then
             for _, v in pairs(GetAllPlayers()) do
-                if v ~= attacker and v:IsDetectiveLike() and v:Alive() and not v:IsSpec() and v:SteamID64() ~= loverSID then
+                if v ~= attacker and v:IsDetectiveLike() and v:IsActive() and v:SteamID64() ~= loverSID then
                     v:PrintMessage(HUD_PRINTCENTER, "The " .. ROLE_STRINGS[ROLE_PHANTOM] .. " has been killed.")
                 end
             end
@@ -210,7 +210,7 @@ hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
 end)
 
 hook.Add("TTTSpectatorHUDKeyPress", "Phantom_TTTSpectatorHUDKeyPress", function(ply, tgt, powers)
-    if ply:GetNWBool("PhantomPossessing", false) and IsValid(tgt) and tgt:Alive() and not tgt:IsSpec() then
+    if ply:GetNWBool("PhantomPossessing", false) and IsValid(tgt) and tgt:IsActive() then
         powers[IN_ATTACK] = {
             start_command = "+attack",
             end_command = "-attack",
@@ -309,7 +309,7 @@ hook.Add("DoPlayerDeath", "Phantom_DoPlayerDeath", function(ply, attacker, dmgin
 
         if respawn and phantom_announce_death:GetBool() then
             for _, v in pairs(GetAllPlayers()) do
-                if v:IsDetectiveLike() and v:Alive() and not v:IsSpec() then
+                if v:IsDetectiveLike() and v:IsActive() then
                     v:PrintMessage(HUD_PRINTCENTER, "The " .. ROLE_STRINGS[ROLE_PHANTOM] .. " has been respawned.")
                 end
             end

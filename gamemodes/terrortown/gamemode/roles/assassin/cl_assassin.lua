@@ -119,7 +119,7 @@ local function EnableAssassinTargetHighlights()
 
         local target = nil
         for _, v in pairs(GetAllPlayers()) do
-            if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= client and v:SteamID64() == target_sid64 then
+            if IsValid(v) and v:IsActive() and v ~= client and v:SteamID64() == target_sid64 then
                 target = v
                 break
             end
