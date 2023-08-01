@@ -592,10 +592,10 @@ function plymeta:QueueMessage(type, message, time)
     if not messageQueue[sid] then
         messageQueue[sid] = {}
     end
-    if type == 1 or type == 3 then
+    if type == MSG_PRINTBOTH or type == MSG_PRINTTALK then
         self:PrintMessage(HUD_PRINTTALK, message)
     end
-    if type == 1 or type == 4 then
+    if type == MSG_PRINTBOTH or type == MSG_PRINTCENTER then
         table.insert(messageQueue[sid], {message=message, time=time})
         if #messageQueue[sid] == 1 then
             self:PrintMessageQueue()
@@ -603,8 +603,7 @@ function plymeta:QueueMessage(type, message, time)
     end
 end
 
-net.Receive("TTT_QueueMessage", function()
-    local ply = net.ReadEntity()
+net.Receive("TTT_QueueMessage", function(len, ply)
     local type = net.ReadUInt(3)
     local message = net.ReadString()
     local time = net.ReadFloat()

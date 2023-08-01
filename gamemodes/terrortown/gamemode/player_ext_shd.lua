@@ -565,9 +565,12 @@ if CLIENT then
     end
 
     function plymeta:QueueMessage(type, message, time)
+        if LocalPlayer() ~= self then
+            ErrorNoHalt("`plymeta:QueueMessage` cannot be used to send messages to other players when called clientside.")
+            return
+        end
         time = time or 5
         net.Start("TTT_QueueMessage")
-        net.WriteEntity(self)
         net.WriteUInt(type, 3)
         net.WriteString(message)
         net.WriteFloat(time)
