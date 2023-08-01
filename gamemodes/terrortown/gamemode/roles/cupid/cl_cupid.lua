@@ -190,7 +190,15 @@ end)
 -- TARGET ID --
 ---------------
 
---TODO: Add TTTTargetIDPlayerTargetIcon hook for lovers
+-- Show lover icon over all lover players
+hook.Add("TTTTargetIDPlayerTargetIcon", "Cupid_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
+    local target = ply:SteamID64()
+    if cli:IsCupid() and (target == cli:GetNWString("TTTCupidTarget1", "") or target == cli:GetNWString("TTTCupidTarget2", "")) then
+        return "lover", false, Color(230, 90, 200, 255), "up"
+    elseif target == cli:GetNWString("TTTCupidLover", "") then
+        return "lover", true, Color(230, 90, 200, 255), "up"
+    end
+end)
 
 AddHook("TTTTargetIDPlayerRoleIcon", "Cupid_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
     if ply:IsActiveCupid() and ply:SteamID64() == cli:GetNWString("TTTCupidShooter", "") then

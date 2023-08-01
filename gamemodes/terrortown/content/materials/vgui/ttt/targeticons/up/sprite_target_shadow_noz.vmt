@@ -1,6 +1,6 @@
 "UnlitGeneric"
 {
-	"$basetexture" "vgui/ttt/sprite_target"
+	"$basetexture" "vgui/ttt/targeticons/up/sprite_target_shadow"
 	"$nocull" 1
 	"$ignorez" 1
 	"$nodecal" 1

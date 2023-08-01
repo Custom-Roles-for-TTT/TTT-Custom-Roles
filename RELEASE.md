@@ -3,11 +3,16 @@
 ## 1.9.4 (Beta)
 **Released:**
 
+### Additions
+- Added target icon above undoused player's heads for the arsonist, lover's heads for cupid and the lovers, and the shadow's target's head for the shadow
+
 ### Changes
+- Changed appearance of 'KILL' icon used by multiple roles
 - Expanded the `ttt_roleweapons` command to have additional modes such as list, clean, and reload. See the command documentation for more information.
 
 ### Developer
 - Added `weapon_cr_defibbase` and updated all defib-like weapons to use it
+- Added `TTTTargetIDPlayerTargetIcon` hook to control what target icon and background color should be shown over the target's head
 
 ## 1.9.3 (Beta)
 **Released: July 29th, 2023**
