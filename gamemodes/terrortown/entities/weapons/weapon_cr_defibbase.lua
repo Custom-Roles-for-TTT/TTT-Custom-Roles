@@ -161,7 +161,7 @@ if SERVER then
 
     function SWEP:DoSuccess(target)
         local ply, body = self:GetPlayerAndBodyFromTarget(target)
-        if not IsPlayer(ply) or (self.DeadTarget and ply:Alive() and not ply:IsSpec()) then
+        if not IsPlayer(ply) or (self.DeadTarget and ply:IsActive()) then
             self:DoFailure()
             return
         end

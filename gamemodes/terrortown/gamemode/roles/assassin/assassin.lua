@@ -67,7 +67,7 @@ local function AssignAssassinTarget(ply, start, delay)
     end
 
     for _, p in pairs(GetAllPlayers()) do
-        if p:Alive() and not p:IsSpec() then
+        if p:IsActive() then
             -- Include all non-traitor detective-like players
             if p:IsDetectiveLike() and not p:IsTraitorTeam() then
                 table.insert(detectives, p:SteamID64())
@@ -114,7 +114,7 @@ local function AssignAssassinTarget(ply, start, delay)
         targetMessage = "No further targets available."
     end
 
-    if ply:Alive() and not ply:IsSpec() then
+    if ply:IsActive() then
         if not delay and not start then targetMessage = "Target eliminated. " .. targetMessage end
         ply:PrintMessage(HUD_PRINTCENTER, targetMessage)
         ply:PrintMessage(HUD_PRINTTALK, targetMessage)
@@ -133,7 +133,7 @@ local function UpdateAssassinTargets(ply)
                 local delay = assassin_next_target_delay:GetFloat()
                 -- Delay giving the next target if we're configured to do so
                 if delay > 0 then
-                    if v:Alive() and not v:IsSpec() then
+                    if v:IsActive() then
                         v:PrintMessage(HUD_PRINTCENTER, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
                         v:PrintMessage(HUD_PRINTTALK, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
                     end

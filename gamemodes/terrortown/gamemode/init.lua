@@ -902,7 +902,7 @@ function BeginRound()
     net.Broadcast()
 
     for _, v in pairs(GetAllPlayers()) do
-        if v:Alive() and v:IsTerror() then
+        if v:IsActive() then
             net.Start("TTT_SpawnedPlayers")
             net.WriteString(v:Nick())
             net.WriteInt(v:GetRole(), 8)
@@ -917,7 +917,7 @@ function BeginRound()
     -- EQUIP_REGEN health regeneration tick
     timer.Create("RegenEquipmentTick", 0.66, 0, function()
         for _, v in pairs(GetAllPlayers()) do
-            if v:Alive() and not v:IsSpec() and v:HasEquipmentItem(EQUIP_REGEN) then
+            if v:IsActive() and v:HasEquipmentItem(EQUIP_REGEN) then
                 local hp = v:Health()
                 if hp < v:GetMaxHealth() then
                     v:SetHealth(hp + 1)
@@ -1157,7 +1157,7 @@ function GM:TTTCheckForWin()
     local monster_alive = false
 
     for _, v in ipairs(GetAllPlayers()) do
-        if v:Alive() and v:IsTerror() then
+        if v:IsActive() then
             if v:IsTraitorTeam() then
                 traitor_alive = true
             elseif v:IsMonsterTeam() then

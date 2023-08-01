@@ -123,7 +123,7 @@ hook.Add("TTTPrepareRound", "Killer_Smoke_PrepareRound", function()
 end)
 
 hook.Add("TTTPlayerSpawnForRound", "Killer_Smoke_TTTPlayerSpawnForRound", function(ply, dead_only)
-    if dead_only and ply:Alive() and not ply:IsSpec() then return end
+    if dead_only and ply:IsActive() then return end
 
     ply:SetNWBool("KillerSmoke", false)
 end)
@@ -322,7 +322,7 @@ hook.Add("TTTCheckForWin", "Killer_TTTCheckForWin", function()
     local killer_alive = false
     local other_alive = false
     for _, v in ipairs(GetAllPlayers()) do
-        if v:Alive() and v:IsTerror() then
+        if v:IsActive() then
             if v:IsKiller() then
                 killer_alive = true
             elseif not v:ShouldActLikeJester() then

@@ -115,7 +115,7 @@ hook.Add("PlayerDeath", "Vampire_PrimeDeath_PlayerDeath", function(victim, infl,
         local vampires = {}
         -- Find all the living vampires anmd count the primes
         for _, v in pairs(GetAllPlayers()) do
-            if v:Alive() and v:IsTerror() and v:IsVampire() then
+            if v:IsActiveVampire() then
                 if v:IsVampirePrime() then
                     living_vampire_primes = living_vampire_primes + 1
                 end
@@ -168,7 +168,7 @@ hook.Add("PlayerDisconnected", "Vampire_Prime_PlayerDisconnected", function(ply)
 
     local vampires = {}
     for _, v in pairs(GetAllPlayers()) do
-        if v:Alive() and v:IsTerror() and v:IsVampire() and v ~= ply then
+        if v:IsActiveVampire() and v ~= ply then
             -- If we already have another prime, we're all set
             if v:IsVampirePrime() then
                 return
@@ -231,7 +231,7 @@ hook.Add("TTTCheckForWin", "Vampire_TTTCheckForWin", function()
     local vampire_alive = false
     local other_alive = false
     for _, v in ipairs(GetAllPlayers()) do
-        if v:Alive() and v:IsTerror() then
+        if v:IsActive() then
             if v:IsVampire() then
                 vampire_alive = true
             elseif not v:ShouldActLikeJester() then

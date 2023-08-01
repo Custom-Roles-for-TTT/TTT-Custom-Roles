@@ -11,6 +11,7 @@
 - Expanded the `ttt_roleweapons` command to have additional modes such as list, clean, and reload. See the command documentation for more information.
 
 ### Developer
+- Changed `plymeta:IsActive` to ensure the player is alive like it was always supposed to
 - Added `weapon_cr_defibbase` and updated all defib-like weapons to use it
 - Added `TTTTargetIDPlayerTargetIcon` hook to control what target icon and background color should be shown over the target's head
 - **BREAKING CHANGE** - Deprecated `TTTTargetIDPlayerKillIcon`

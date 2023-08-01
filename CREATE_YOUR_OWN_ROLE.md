@@ -416,7 +416,7 @@ end
 
 if SERVER then
     hook.Add("TTTSpectatorHUDKeyPress", "Summoner_TTTSpectatorHUDKeyPress", function(ply, tgt, powers)
-        if ply:GetNWBool("PhantomHaunting", false) and IsValid(tgt) and tgt:Alive() and not tgt:IsSpec() then
+        if ply:GetNWBool("PhantomHaunting", false) and IsValid(tgt) and tgt:IsActive() then
             powers[IN_ATTACK2] = {
                 start_command = "+menu",
                 end_command = "-menu",

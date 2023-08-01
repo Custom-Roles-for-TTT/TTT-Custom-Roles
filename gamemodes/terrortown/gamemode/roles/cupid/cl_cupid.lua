@@ -71,10 +71,10 @@ AddHook("TTTScoringSecondaryWins", "Cupid_TTTScoringSecondaryWins", function(win
 
     for _, p in ipairs(GetAllPlayers()) do
         local lover = p:GetNWString("TTTCupidLover", "")
-        if p:Alive() and p:IsTerror() and lover ~= "" then
+        if p:IsActive() and lover ~= "" then
             local loverPly = player.GetBySteamID64(lover)
             -- This shouldn't be necessary because if one lover dies the other should too but we check just in case
-            if IsPlayer(loverPly) and loverPly:Alive() and loverPly:IsTerror() then
+            if IsPlayer(loverPly) and loverPly:IsActive() then
                 TableInsert(secondary_wins, {
                     rol = ROLE_CUPID,
                     txt = LANG.GetTranslation("hilite_lovers_secondary"),
@@ -105,10 +105,10 @@ end)
 AddHook("TTTEndRound", "Cupid_SecondaryWinEvent_TTTEndRound", function()
     for _, p in ipairs(GetAllPlayers()) do
         local lover = p:GetNWString("TTTCupidLover", "")
-        if p:Alive() and p:IsTerror() and lover ~= "" then
+        if p:IsActive() and lover ~= "" then
             local loverPly = player.GetBySteamID64(lover)
             -- This shouldn't be necessary because if one lover dies the other should too but we check just in case
-            if IsPlayer(loverPly) and loverPly:Alive() and loverPly:IsTerror() then
+            if IsPlayer(loverPly) and loverPly:IsActive() then
                 CLSCORE:AddEvent({ -- Log the win event with an offset to force it to the end
                     id = EVENT_FINISH,
                     win = WIN_CUPID

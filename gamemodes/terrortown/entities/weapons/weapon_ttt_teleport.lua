@@ -186,7 +186,7 @@ local function CanTeleportToPos(ply, pos)
     local blocking_plys = {}
 
     for _, block in ipairs(blockers) do
-        if IsPlayer(block) and block ~= ply and block:IsTerror() and block:Alive() then
+        if IsPlayer(block) and block ~= ply and block:IsActive() then
             table.insert(blocking_plys, block)
         end
     end
