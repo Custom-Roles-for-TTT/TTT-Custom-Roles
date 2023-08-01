@@ -68,7 +68,6 @@ local indicator_mat_targetback_noz = {down=Material("vgui/ttt/sprite_targetdownb
 local indicator_mat_targetfront = {down=Material("vgui/ttt/sprite_targetdownfront"), up=Material("vgui/ttt/sprite_targetupback")}
 local indicator_mat_targetfront_noz = {down=Material("vgui/ttt/sprite_targetdownfront_noz"), up=Material("vgui/ttt/sprite_targetupback")}
 
-local indicator_mat_target_noz = Material("vgui/ttt/sprite_target_noz")
 local client
 
 local function DrawRoleIcon(role, noz, pos, dir, color_role, offset)

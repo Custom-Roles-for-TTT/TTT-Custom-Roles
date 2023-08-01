@@ -4,9 +4,10 @@
 **Released:**
 
 ### Additions
-- Added target icon above undoused player's heads for the arsonist, lover's heads for cupid and the lovers
+- Added target icon above undoused player's heads for the arsonist, lover's heads for cupid and the lovers, and the shadow's target's head for the shadow
 
 ### Changes
+- Changed appearance of 'KILL' icon used by multiple roles
 
 ### Developer
 - Added `weapon_cr_defibbase` and updated all defib-like weapons to use it
