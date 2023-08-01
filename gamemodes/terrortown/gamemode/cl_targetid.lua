@@ -64,9 +64,9 @@ local indicator_mat_rolefront = Material("vgui/ttt/sprite_rolefront")
 local indicator_mat_rolefront_noz = Material("vgui/ttt/sprite_rolefront_noz")
 
 local indicator_mat_targetback = {down=Material("vgui/ttt/sprite_targetdownback"), up=Material("vgui/ttt/sprite_targetupback")}
-local indicator_mat_targetback_noz = {down=Material("vgui/ttt/sprite_targetdownback_noz"), up=Material("vgui/ttt/sprite_targetupback")}
-local indicator_mat_targetfront = {down=Material("vgui/ttt/sprite_targetdownfront"), up=Material("vgui/ttt/sprite_targetupback")}
-local indicator_mat_targetfront_noz = {down=Material("vgui/ttt/sprite_targetdownfront_noz"), up=Material("vgui/ttt/sprite_targetupback")}
+local indicator_mat_targetback_noz = {down=Material("vgui/ttt/sprite_targetdownback_noz"), up=Material("vgui/ttt/sprite_targetupback_noz")}
+local indicator_mat_targetfront = {down=Material("vgui/ttt/sprite_targetdownfront"), up=Material("vgui/ttt/sprite_targetupfront")}
+local indicator_mat_targetfront_noz = {down=Material("vgui/ttt/sprite_targetdownfront_noz"), up=Material("vgui/ttt/sprite_targetupfront_noz")}
 
 local client
 
@@ -97,12 +97,13 @@ end
 local targetIcons = {}
 
 local function DrawTargetIcon(icon, noz, pos, dir, iconColor, iconType, offset)
-    local cache_key = icon
+    local iconFile = icon
     if noz then
-        cache_key = StringFormat("%s_noz", cache_key)
+        iconFile = StringFormat("%s_noz", iconFile)
     end
+    local cache_key = StringFormat("%s_%s", iconType, iconFile)
     if not targetIcons[cache_key] then
-        targetIcons[cache_key] = Material(StringFormat("vgui/ttt/targeticons/%s/sprite_target_%s.vmt", iconType, cache_key))
+        targetIcons[cache_key] = Material(StringFormat("vgui/ttt/targeticons/%s/sprite_target_%s.vmt", iconType, iconFile))
     end
     local indicator_mat = targetIcons[cache_key]
 

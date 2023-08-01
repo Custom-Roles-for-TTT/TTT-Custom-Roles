@@ -49,14 +49,15 @@ if SERVER then
     resource.AddFile("materials/vgui/ttt/sprite_targetupfront.vmt")
     resource.AddSingleFile("materials/vgui/ttt/sprite_targetupfront_noz.vmt")
 
-    resource.AddFile("materials/vgui/ttt/sprite_targetdown_douse.vmt")
-    resource.AddSingleFile("materials/vgui/ttt/sprite_targetdown_douse_noz.vmt")
-    resource.AddFile("materials/vgui/ttt/sprite_targetdown_kill.vmt")
-    resource.AddSingleFile("materials/vgui/ttt/sprite_targetdown_kill_noz.vmt")
-    resource.AddFile("materials/vgui/ttt/sprite_targetup_lover.vmt")
-    resource.AddSingleFile("materials/vgui/ttt/sprite_targetup_lover_noz.vmt")
-    resource.AddFile("materials/vgui/ttt/sprite_targetup_shadow.vmt")
-    resource.AddSingleFile("materials/vgui/ttt/sprite_targetup_shadow_noz.vmt")
+    -- Target Icons
+    resource.AddFile("materials/vgui/ttt/targeticons/down/sprite_target_douse.vmt")
+    resource.AddSingleFile("materials/vgui/ttt/targeticons/down/sprite_target_douse_noz.vmt")
+    resource.AddFile("materials/vgui/ttt/targeticons/down/sprite_target_kill.vmt")
+    resource.AddSingleFile("materials/vgui/ttt/targeticons/down/sprite_target_kill_noz.vmt")
+    resource.AddFile("materials/vgui/ttt/targeticons/up/sprite_target_lover.vmt")
+    resource.AddSingleFile("materials/vgui/ttt/targeticons/up/sprite_target_lover_noz.vmt")
+    resource.AddFile("materials/vgui/ttt/targeticons/up/sprite_target_shadow.vmt")
+    resource.AddSingleFile("materials/vgui/ttt/targeticons/up/sprite_target_shadow_noz.vmt")
 
     -- "Nil" role
     resource.AddFile("materials/vgui/ttt/roles/nil/icon_nil.vmt")
