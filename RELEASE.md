@@ -14,6 +14,7 @@
 - Changed `plymeta:IsActive` to ensure the player is alive like it was always supposed to
 - Added `weapon_cr_defibbase` and updated all defib-like weapons to use it
 - Added `TTTTargetIDPlayerTargetIcon` hook to control what target icon and background color should be shown over the target's head
+- Added `plymeta:QueueMessage` method to queue messages to be printed to chat and the center of the screen one at a time
 - **BREAKING CHANGE** - Deprecated `TTTTargetIDPlayerKillIcon`
   - Use the `TTTTargetIDPlayerTargetIcon` hook instead and return `"kill", true, ROLE_COLORS_SPRITE[ply:GetRole()], "down"`
 
