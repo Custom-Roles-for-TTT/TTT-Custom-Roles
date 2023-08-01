@@ -151,7 +151,7 @@ end)
 hook.Add("TTTTargetIDPlayerTargetIcon", "Shadow_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
     if cli:IsShadow() and ply:SteamID64() == cli:GetNWString("ShadowTarget", "") then
         local iconColor = ROLE_COLORS_SPRITE[ROLE_TRAITOR]
-        if client:GetPos():Distance(ent:GetPos()) <= shadow_alive_radius:GetFloat() * UNITS_PER_METER then
+        if cli:GetPos():Distance(ply:GetPos()) <= shadow_alive_radius:GetFloat() * UNITS_PER_METER then
             iconColor = ROLE_COLORS_SPRITE[ROLE_INNOCENT]
         end
         return "shadow", true, iconColor, "up"

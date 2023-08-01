@@ -50,7 +50,7 @@ end)
 
 -- Show douse icon over all undoused players
 hook.Add("TTTTargetIDPlayerTargetIcon", "Arsonist_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
-    if cli:IsArsonist() and ply:GetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED) < ARSONIST_DOUSED then
+    if cli:IsArsonist() and not cli:GetNWBool("TTTArsonistDouseComplete", false) and ply:GetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED) < ARSONIST_DOUSED then
         return "douse", false, ROLE_COLORS_SPRITE[ROLE_ARSONIST], "down"
     end
 end)
