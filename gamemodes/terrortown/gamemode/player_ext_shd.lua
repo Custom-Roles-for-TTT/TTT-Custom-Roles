@@ -174,7 +174,7 @@ function plymeta:ShouldHideJesters()
     return true
 end
 
-function plymeta:ShouldDelayAnnouncements() return ROLE_SHOULD_DELAY_ANNOUNCEMENTS[self:GetRole()] or false end
+function plymeta:ShouldDelayAnnouncements() return ROLE_SHOULD_DELAY_ANNOUNCEMENTS[self:GetRole()] or false end -- TODO: Remove after 2.0.0
 function plymeta:ShouldNotDrown() return ROLE_SHOULD_NOT_DROWN[self:GetRole()] or false end
 function plymeta:CanSeeC4()
     if self:IsActiveTraitorTeam() then

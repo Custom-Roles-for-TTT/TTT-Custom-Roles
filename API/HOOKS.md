@@ -789,8 +789,8 @@ Called before a player's karma status text (shown when you look at a player) is 
 - *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
 - *clr* - The new clr value to use or the original passed into the hook
 
-### TTTTargetIDPlayerKillIcon(ply, client, showKillIcon, showJester)
-**THIS HOOK IS DEPRECATED AS OF 1.9.4! USE** <u>TTTTargetIDPlayerTargetIcon</u> **INSTEAD**\
+### TTTTargetIDPlayerKillIcon(ply, client, showKillIcon, showJester)  <!-- TODO: Remove after 2.0.0 -->
+**DEPRECATED IN 1.9.4**\
 Called before player Target ID icon (over their head) is rendered to determine if the "KILL" icon should be shown.\
 *Realm:* Client\
 *Added in:* 1.1.9\

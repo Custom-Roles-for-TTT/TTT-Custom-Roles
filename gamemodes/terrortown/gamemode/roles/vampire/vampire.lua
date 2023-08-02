@@ -133,8 +133,7 @@ hook.Add("PlayerDeath", "Vampire_PrimeDeath_PlayerDeath", function(victim, infl,
             -- Kill them
             if prime_death_mode == VAMPIRE_DEATH_KILL_CONVERTED then
                 for _, vnp in pairs(vampires) do
-                    vnp:PrintMessage(HUD_PRINTTALK, "Your " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " overlord has been slain and you die with them")
-                    vnp:PrintMessage(HUD_PRINTCENTER, "Your " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " overlord has been slain and you die with them")
+                    vnp:QueueMessage(MSG_PRINTBOTH, "Your " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " overlord has been slain and you die with them")
                     vnp:Kill()
                 end
             -- Change them back to their previous roles
@@ -143,8 +142,7 @@ hook.Add("PlayerDeath", "Vampire_PrimeDeath_PlayerDeath", function(victim, infl,
                 for _, vnp in pairs(vampires) do
                     local prev_role = vnp:GetVampirePreviousRole()
                     if prev_role ~= ROLE_NONE then
-                        vnp:PrintMessage(HUD_PRINTTALK, "Your " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " overlord has been slain and you feel their grip over you subside")
-                        vnp:PrintMessage(HUD_PRINTCENTER, "Your " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " overlord has been slain and you feel their grip over you subside")
+                        vnp:QueueMessage(MSG_PRINTBOTH, "Your " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " overlord has been slain and you feel their grip over you subside")
                         vnp:SetRoleAndBroadcast(prev_role)
                         vnp:StripWeapon("weapon_vam_fangs")
                         vnp:SelectWeapon("weapon_zm_improvised")
@@ -184,9 +182,7 @@ hook.Add("PlayerDisconnected", "Vampire_Prime_PlayerDisconnected", function(ply)
     local new_prime = vampires[idx]
     new_prime:SetVampirePrime(true)
 
-    local message = "The prime " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " has faded away and you've seized power in their absence!"
-    new_prime:PrintMessage(HUD_PRINTCENTER, message)
-    new_prime:PrintMessage(HUD_PRINTTALK, message)
+    new_prime:QueueMessage(MSG_PRINTBOTH, "The prime " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " has faded away and you've seized power in their absence!")
 end)
 
 function plymeta:SetVampirePrime(p) self:SetNWBool("vampire_prime", p) end

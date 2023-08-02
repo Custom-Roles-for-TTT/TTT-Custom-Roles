@@ -17,6 +17,8 @@
 - Added `plymeta:QueueMessage` method to queue messages to be printed to chat and the center of the screen one at a time
 - **BREAKING CHANGE** - Deprecated `TTTTargetIDPlayerKillIcon`
   - Use the `TTTTargetIDPlayerTargetIcon` hook instead and return `"kill", true, ROLE_COLORS_SPRITE[ply:GetRole()], "down"`
+- **BREAKING CHANGE** - Deprecated `plymeta:ShouldDelayAnnouncements`
+  - Use `plymeta:QueueMessage` to automatically queue announcements instead
 
 ## 1.9.3 (Beta)
 **Released: July 29th, 2023**

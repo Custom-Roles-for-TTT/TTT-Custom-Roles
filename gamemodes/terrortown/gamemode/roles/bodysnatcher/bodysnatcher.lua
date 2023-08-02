@@ -87,9 +87,9 @@ hook.Add("PlayerDeath", "Bodysnatcher_KillCheck_PlayerDeath", function(victim, i
         victim.BodysnatcherRespawn = victim.BodysnatcherRespawn + 1
         local delay = bodysnatcher_respawn_delay:GetInt()
         if delay > 0 then
-            victim:PrintMessage(HUD_PRINTCENTER, "You were killed but will respawn in " .. delay .. " seconds.")
+            victim:QueueMessage(MSG_PRINTCENTER, "You were killed but will respawn in " .. delay .. " seconds.")
         else
-            victim:PrintMessage(HUD_PRINTCENTER, "You were killed but are about to respawn.")
+            victim:QueueMessage(MSG_PRINTCENTER, "You were killed but are about to respawn.")
             -- Introduce a slight delay to prevent player getting stuck as a spectator
             delay = 0.1
         end

@@ -37,8 +37,7 @@ function plymeta:ChangeTurncoatTeam(extra)
     end
     message = message .. "!"
     for _, ply in ipairs(GetAllPlayers()) do
-        ply:PrintMessage(HUD_PRINTTALK, message)
-        ply:PrintMessage(HUD_PRINTCENTER, message)
+        ply:QueueMessage(MSG_PRINTBOTH, message)
     end
 
     -- Change health

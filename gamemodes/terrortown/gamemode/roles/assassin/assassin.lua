@@ -116,8 +116,7 @@ local function AssignAssassinTarget(ply, start, delay)
 
     if ply:IsActive() then
         if not delay and not start then targetMessage = "Target eliminated. " .. targetMessage end
-        ply:PrintMessage(HUD_PRINTCENTER, targetMessage)
-        ply:PrintMessage(HUD_PRINTTALK, targetMessage)
+        ply:QueueMessage(MSG_PRINTBOTH, targetMessage)
     end
 end
 
@@ -134,8 +133,7 @@ local function UpdateAssassinTargets(ply)
                 -- Delay giving the next target if we're configured to do so
                 if delay > 0 then
                     if v:IsActive() then
-                        v:PrintMessage(HUD_PRINTCENTER, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
-                        v:PrintMessage(HUD_PRINTTALK, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
+                        v:QueueMessage(MSG_PRINTBOTH, "Target eliminated. You will receive your next assignment in " .. tostring(delay) .. " seconds.")
                     end
                     timer.Create(v:Nick() .. "AssassinTarget", delay, 1, function()
                         AssignAssassinTarget(v, false, true)
@@ -144,8 +142,7 @@ local function UpdateAssassinTargets(ply)
                     AssignAssassinTarget(v, false, false)
                 end
             else
-                v:PrintMessage(HUD_PRINTCENTER, "Final target eliminated.")
-                v:PrintMessage(HUD_PRINTTALK, "Final target eliminated.")
+                v:QueueMessage(MSG_PRINTBOTH, "Final target eliminated.")
             end
         end
     end
@@ -163,8 +160,7 @@ ROLE_MOVE_ROLE_STATE[ROLE_ASSASSIN] = function(ply, target, keep_on_source)
         if not keep_on_source then ply:SetNWString("AssassinTarget", "") end
         target:SetNWString("AssassinTarget", assassinTarget)
         local target_nick = player.GetBySteamID64(assassinTarget):Nick()
-        target:PrintMessage(HUD_PRINTCENTER, "You have learned that your predecessor's target was " .. target_nick)
-        target:PrintMessage(HUD_PRINTTALK, "You have learned that your predecessor's target was " .. target_nick)
+        target:QueueMessage(MSG_PRINTBOTH, "You have learned that your predecessor's target was " .. target_nick)
     elseif ply:IsAssassin() then
         -- If the player we're taking the role state from was an assassin but they didn't have a target, try to assign a target to this player
         -- Use a slight delay to let the role change go through first just in case
@@ -219,8 +215,7 @@ hook.Add("DoPlayerDeath", "Assassin_DoPlayerDeath", function(ply, attacker, dmgi
         local skipPenalty = ConVarExists(convar) and GetConVar(convar):GetBool() and ply:IsRoleActive()
         if wasNotTarget and not skipPenalty then
             timer.Remove(attacker:Nick() .. "AssassinTarget")
-            attacker:PrintMessage(HUD_PRINTCENTER, "Contract failed. You killed the wrong player.")
-            attacker:PrintMessage(HUD_PRINTTALK, "Contract failed. You killed the wrong player.")
+            attacker:QueueMessage(MSG_PRINTBOTH, "Contract failed. You killed the wrong player.")
             attacker:SetNWBool("AssassinFailed", true)
             attacker:SetNWString("AssassinTarget", "")
         end

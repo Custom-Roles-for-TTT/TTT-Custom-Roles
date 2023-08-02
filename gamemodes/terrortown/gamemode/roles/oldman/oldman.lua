@@ -139,9 +139,7 @@ hook.Add("PostEntityTakeDamage", "OldMan_PostEntityTakeDamage", function(ent, dm
             if oldman_adrenaline_ramble:GetBool() then
                 ent:EmitSound("oldmanramble.wav")
             end
-            local message = "You are having an adrenaline rush! You will die in " .. tostring(adrenalineTime) .. " seconds."
-            ent:PrintMessage(HUD_PRINTTALK, message)
-            ent:PrintMessage(HUD_PRINTCENTER, message)
+            ent:QueueMessage(MSG_PRINTBOTH, "You are having an adrenaline rush! You will die in " .. tostring(adrenalineTime) .. " seconds.")
 
             if oldman_adrenaline_shotgun:GetBool() then
                 for _, wep in ipairs(ent:GetWeapons()) do

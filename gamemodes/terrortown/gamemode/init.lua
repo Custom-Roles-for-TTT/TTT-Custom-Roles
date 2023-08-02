@@ -753,8 +753,7 @@ function TellTraitorsAboutTraitors()
     for _, v in ipairs(plys) do
         if v:IsTraitorTeam() then
             if hasGlitch then
-                v:PrintMessage(HUD_PRINTTALK, "There is " .. ROLE_STRINGS_EXT[ROLE_GLITCH] .. ".")
-                v:PrintMessage(HUD_PRINTCENTER, "There is " .. ROLE_STRINGS_EXT[ROLE_GLITCH] .. ".")
+                v:QueueMessage(MSG_PRINTBOTH, "There is " .. ROLE_STRINGS_EXT[ROLE_GLITCH] .. ".")
             end
 
             if #traitornicks < 2 then

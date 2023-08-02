@@ -75,8 +75,7 @@ net.Receive("TTT_Deputized", function(len)
             amarshal = string.Capitalize(ROLE_STRINGS_EXT[ROLE_MARSHAL]),
             adeputy = ROLE_STRINGS_EXT[ROLE_DEPUTY]
         })
-        client:PrintMessage(HUD_PRINTTALK, message)
-        client:PrintMessage(HUD_PRINTCENTER, message)
+        client:QueueMessage(MSG_PRINTBOTH, message)
     end
 end)
 

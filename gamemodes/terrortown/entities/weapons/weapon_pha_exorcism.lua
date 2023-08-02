@@ -69,7 +69,7 @@ if SERVER then
                     v:SetNWInt("PhantomPossessingPower", 0)
                     timer.Remove(v:Nick() .. "PhantomPossessingPower")
                     timer.Remove(v:Nick() .. "PhantomPossessingSpectate")
-                    v:PrintMessage(HUD_PRINTCENTER, "Your spirit has been cleansed from your target.")
+                    v:QueueMessage(MSG_PRINTCENTER, "Your spirit has been cleansed from your target.")
 
                     if GetConVar("ttt_phantom_haunt_saves_lover"):GetBool() then
                         local loverSID = v:GetNWString("TTTCupidLover", "")

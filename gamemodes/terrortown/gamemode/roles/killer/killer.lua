@@ -66,8 +66,7 @@ local function HandleKillerSmokeTick()
                     if not IsValid(v) then return end
                     if v:IsKiller() and v:Alive() and not v:GetNWBool("KillerSmoke", false) then
                         v:SetNWBool("KillerSmoke", true)
-                        v:PrintMessage(HUD_PRINTCENTER, "Your evil is showing")
-                        v:PrintMessage(HUD_PRINTTALK, "Your evil is showing")
+                        v:QueueMessage(MSG_PRINTBOTH, "Your evil is showing")
                     elseif (v:IsKiller() and not v:Alive()) or not player.IsRoleLiving(ROLE_KILLER) then
                         timer.Remove("KillerKillCheckTimer")
                     end
@@ -298,16 +297,7 @@ hook.Add("TTTBeginRound", "Killer_Announce_TTTBeginRound", function()
                 local isTraitor = v:IsTraitorTeam()
                 -- Warn this player about the Killer if they are a traitor or we are configured to warn everyone
                 if not v:IsKiller() and (isTraitor or killer_warn_all:GetBool()) then
-                    v:PrintMessage(HUD_PRINTTALK, "There is " .. ROLE_STRINGS_EXT[ROLE_KILLER] .. ".")
-                    -- Only delay this if the player is a traitor and there is a glitch
-                    -- This gives time for the glitch warning to go away
-                    if isTraitor and hasGlitch then
-                        timer.Simple(3, function()
-                            v:PrintMessage(HUD_PRINTCENTER, "There is " .. ROLE_STRINGS_EXT[ROLE_KILLER] .. ".")
-                        end)
-                    else
-                        v:PrintMessage(HUD_PRINTCENTER, "There is " .. ROLE_STRINGS_EXT[ROLE_KILLER] .. ".")
-                    end
+                    v:QueueMessage(MSG_PRINTBOTH, "There is " .. ROLE_STRINGS_EXT[ROLE_KILLER] .. ".")
                 end
             end
         end

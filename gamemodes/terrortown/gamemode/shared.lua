@@ -814,7 +814,7 @@ ROLE_SELECTION_PREDICATE = {}
 ROLE_CONVARS = {}
 
 -- Optional features
-ROLE_SHOULD_DELAY_ANNOUNCEMENTS = {}
+ROLE_SHOULD_DELAY_ANNOUNCEMENTS = {} -- TODO: Remove after 2.0.0
 ROLE_HAS_PASSIVE_WIN = {}
 ROLE_SHOULD_NOT_DROWN = {}
 ROLE_CAN_SEE_C4 = {}
@@ -926,7 +926,7 @@ function RegisterRole(tbl)
         DELAYED_SHOP_ROLES[roleID] = tbl.shoulddelayshop
     end
 
-    if type(tbl.shoulddelayannouncements) == "boolean" then
+    if type(tbl.shoulddelayannouncements) == "boolean" then -- TODO: Remove after 2.0.0
         ROLE_SHOULD_DELAY_ANNOUNCEMENTS[roleID] = tbl.shoulddelayannouncements
     end
 
@@ -1550,9 +1550,9 @@ if SERVER then
         for _, ply in pairs(GetAllPlayers()) do
             if ply == attacker then
                 local role_string = ROLE_STRINGS[role]
-                ply:PrintMessage(HUD_PRINTCENTER, "You killed the " .. role_string .. "!")
+                ply:QueueMessage(MSG_PRINTCENTER, "You killed the " .. role_string .. "!")
             elseif (shouldshow == nil or shouldshow(ply)) and ShouldShowJesterNotification(ply, mode) then
-                ply:PrintMessage(HUD_PRINTCENTER, getkillstring(ply))
+                ply:QueueMessage(MSG_PRINTCENTER, getkillstring(ply))
             end
 
             if play_sound or show_confetti then

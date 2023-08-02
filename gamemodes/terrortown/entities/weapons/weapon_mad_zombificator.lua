@@ -74,7 +74,7 @@ if SERVER then
         ply:SetEyeAngles(Angle(0, body:GetAngles().y, 0))
         ply:SetRole(ROLE_ZOMBIE)
         ply:StripRoleWeapons()
-        ply:PrintMessage(HUD_PRINTCENTER, "You have been turned into a zombie.")
+        ply:QueueMessage(MSG_PRINTCENTER, "You have been turned into a zombie.")
         SetRoleHealth(ply)
 
         SafeRemoveEntity(body)

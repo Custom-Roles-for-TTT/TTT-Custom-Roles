@@ -87,7 +87,7 @@ if SERVER then
                     v:SetNWInt("ParasiteInfectionProgress", 0)
                     timer.Remove(v:Nick() .. "ParasiteInfectionProgress")
                     timer.Remove(v:Nick() .. "ParasiteInfectingSpectate")
-                    v:PrintMessage(HUD_PRINTCENTER, "Your host has been cured.")
+                    v:QueueMessage(MSG_PRINTCENTER, "Your host has been cured.")
 
                     if GetConVar("ttt_parasite_infection_saves_lover"):GetBool() then
                         local loverSID = v:GetNWString("TTTCupidLover", "")

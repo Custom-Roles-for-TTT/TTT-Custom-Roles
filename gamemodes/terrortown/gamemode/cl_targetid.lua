@@ -248,7 +248,7 @@ function GM:PostDrawTranslucentRenderables()
 
             local icon, iconNoZ, iconColor, iconType = CallHook("TTTTargetIDPlayerTargetIcon", nil, v, client, showJester)
 
-            if not icon then
+            if not icon then  -- TODO: Remove after 2.0.0
                 local showKillIcon = CallHook("TTTTargetIDPlayerKillIcon", nil, v, client, false, showJester)
                 if showKillIcon then
                     icon = "kill"

@@ -61,8 +61,7 @@ local function FindAndPromoteDetectiveLike()
         if ply:IsDetectiveLikePromotable() then
             local alive = ply:Alive()
             if alive then
-                ply:PrintMessage(HUD_PRINTTALK, "You have been promoted to " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "!")
-                ply:PrintMessage(HUD_PRINTCENTER, "You have been promoted to " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "!")
+                ply:QueueMessage(MSG_PRINTBOTH, "You have been promoted to " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "!")
             end
 
             -- If the player is an Impersonator, tell all their team members when they get promoted
@@ -73,8 +72,7 @@ local function FindAndPromoteDetectiveLike()
                         if not alive then
                             message = message .. " Too bad they're dead..."
                         end
-                        v:PrintMessage(HUD_PRINTTALK, message)
-                        v:PrintMessage(HUD_PRINTCENTER, message)
+                        v:QueueMessage(MSG_PRINTBOTH, message)
                     end
                 end
             end

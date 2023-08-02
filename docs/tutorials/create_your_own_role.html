@@ -502,7 +502,7 @@ end</code></pre></div>
                     <td>Whether this role's shop purchases are delayed. Purchases will only be given to the player when <code>plymeta:GiveDelayedShopItems</code> is called by your own role logic. Enabling this feature will automatically create <code>ttt_%NAMERAW%_shop_active_only</code> and <code>ttt_%NAMERAW%_shop_delay</code> convars. Requires that the role has a shop and has role activation defined (see <a href="#role-activation">Role Activation</a>).</td>
                     <td>1.2.2</td>
                 </tr>
-                <tr>
+                <tr>  <!-- TODO: Remove after 2.0.0 -->
                     <td><code>ROLE.shoulddelayannouncements</code></td>
                     <td>boolean</td>
                     <td>Whether this role should delay announcements when they kill a player that shows a message (like phantom and parasite). Used for things like preventing the assassin's target update message from getting overlapped.</td>
