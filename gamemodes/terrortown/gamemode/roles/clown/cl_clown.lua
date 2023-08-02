@@ -155,17 +155,32 @@ end)
 -- SCOREBOARD --
 ----------------
 
-hook.Add("TTTScoreboardPlayerRole", "Clown_TTTScoreboardPlayerRole", function(ply, client, color, roleFileName)
+hook.Add("TTTScoreboardPlayerRole", "Clown_TTTScoreboardPlayerRole", function(ply, cli, color, roleFileName)
+    -- If the local client is an activated clown and the target is a jester, show the jester icon
+    if IsClownActive(cli) and ply:ShouldActLikeJester() then
+        local _, role_overridden = ply:IsScoreboardInfoOverridden(cli)
+        if role_overridden then return end
+
+        return ROLE_COLORS_SCOREBOARD[ROLE_JESTER], ROLE_STRINGS_SHORT[ROLE_NONE]
+    end
     if IsClownVisible(ply) then
         return ROLE_COLORS_SCOREBOARD[ROLE_CLOWN], ROLE_STRINGS_SHORT[ROLE_CLOWN]
     end
 end)
 
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_CLOWN] = function(ply, target)
-    if not IsClownVisible(target) then return end
+    if not IsPlayer(target) then return end
+
+    local role_overridden = false
+    local target_jester = IsClownActive(ply) and target:ShouldActLikeJester()
+    -- We only care about whether these are overridden if the target is a tester
+    if target_jester then
+        _, role_overridden = target:IsScoreboardInfoOverridden(ply)
+    end
+    local visible = IsClownVisible(target)
 
     ------ name,  role
-    return false, true
+    return false, (target_jester and not role_overridden) or visible
 end
 
 -------------------
