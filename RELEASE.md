@@ -5,10 +5,15 @@
 
 ### Additions
 - Added target icon above undoused player's heads for the arsonist, lover's heads for cupid and the lovers, and the shadow's target's head for the shadow
+- Added jester player information to the clown's scoreboard when they are active, matching their target ID (icon, ring, text) visibility
 
 ### Changes
 - Changed appearance of 'KILL' icon used by multiple roles
 - Expanded the `ttt_roleweapons` command to have additional modes such as list, clean, and reload. See the command documentation for more information.
+
+### Fixes
+- Fixed clown seeing jester icons (instead of question mark icons) over all jester team members' heads when they are activated
+- Fixed clown seeing jester icon over the activated loot goblin's head (instead of the loot goblin icon)
 
 ### Developer
 - Changed `plymeta:IsActive` to ensure the player is alive like it was always supposed to
@@ -16,6 +21,7 @@
 - Added `TTTTargetIDPlayerTargetIcon` hook to control what target icon and background color should be shown over the target's head
 - **BREAKING CHANGE** - Deprecated `TTTTargetIDPlayerKillIcon`
   - Use the `TTTTargetIDPlayerTargetIcon` hook instead and return `"kill", true, ROLE_COLORS_SPRITE[ply:GetRole()], "down"`
+- Fixed loot goblin's definition of `ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN` and `ROLE_IS_TARGETID_OVERRIDDEN` using the parameters backwards
 
 ## 1.9.3 (Beta)
 **Released: July 29th, 2023**
