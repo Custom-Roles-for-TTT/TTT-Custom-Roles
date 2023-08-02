@@ -177,14 +177,7 @@ hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
             end)
         end
 
-        -- Delay this message so the player can see whatever other message is being shown on death
-        if attacker:ShouldDelayAnnouncements() then -- TODO: Remove after 2.0.0
-            timer.Simple(3, function()
-                attacker:QueueMessage(MSG_PRINTCENTER, "You have been haunted.")
-            end)
-        else
-            attacker:QueueMessage(MSG_PRINTCENTER, "You have been haunted.")
-        end
+        attacker:QueueMessage(MSG_PRINTCENTER, "You have been haunted.")
         victim:QueueMessage(MSG_PRINTCENTER, "Your attacker has been haunted.")
 
         if loverSID ~= "" then

@@ -293,7 +293,7 @@ function SWEP:DoConvert()
     ply:SetVampirePreviousRole(ply:GetRole())
     ply:SetRole(ROLE_VAMPIRE)
     ply:SetVampirePrime(false)
-    ply:QueueMessage(MSG_PRINTCENTER, "You have become a Vampire! Use your fangs to suck blood or fade from view")
+    ply:QueueMessage(MSG_PRINTCENTER, "You have become " .. ROLE_STRINGS_EXT[ROLE_VAMPIRE] .. "! Use your fangs to suck blood or fade from view")
 
     local owner = self:GetOwner()
     hook.Call("TTTPlayerRoleChangedByItem", nil, owner, ply, self)

@@ -26,7 +26,6 @@
 - **BREAKING CHANGE** - Deprecated `plymeta:ShouldDelayAnnouncements`
   - Use `plymeta:QueueMessage` to automatically queue announcements instead
 
-
 ## 1.9.3 (Beta)
 **Released: July 29th, 2023**
 

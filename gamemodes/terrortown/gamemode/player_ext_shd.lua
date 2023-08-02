@@ -566,7 +566,7 @@ if CLIENT then
 
     function plymeta:QueueMessage(type, message, time)
         if LocalPlayer() ~= self then
-            ErrorNoHalt("`plymeta:QueueMessage` cannot be used to send messages to other players when called clientside.")
+            ErrorNoHalt("`plymeta:QueueMessage` cannot be used to send messages to other players when called clientside.\n")
             return
         end
         time = time or 5

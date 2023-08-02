@@ -217,13 +217,7 @@ hook.Add("PlayerDeath", "Parasite_PlayerDeath", function(victim, infl, attacker)
         HandleParasiteInfection(attacker, victim)
 
         if parasite_announce_infection:GetBool() then
-            if attacker:ShouldDelayAnnouncements() then -- TODO: Remove after 2.0.0
-                timer.Simple(3, function()
-                    attacker:QueueMessage(MSG_PRINTCENTER, "You have been infected with a parasite.")
-                end)
-            else
-                attacker:QueueMessage(MSG_PRINTCENTER, "You have been infected with a parasite.")
-            end
+            attacker:QueueMessage(MSG_PRINTCENTER, "You have been infected with a parasite.")
         end
         victim:QueueMessage(MSG_PRINTCENTER, "Your attacker has been infected.")
 
