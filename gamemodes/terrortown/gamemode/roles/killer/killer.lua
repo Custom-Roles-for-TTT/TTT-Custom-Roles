@@ -282,12 +282,9 @@ hook.Add("TTTBeginRound", "Killer_Announce_TTTBeginRound", function()
     timer.Simple(1.5, function()
         local plys = GetAllPlayers()
 
-        local hasGlitch = false
         local hasKiller = false
         for _, v in ipairs(plys) do
-            if v:IsGlitch() then
-                hasGlitch = true
-            elseif v:IsKiller() then
+            if v:IsKiller() then
                 hasKiller = true
             end
         end
