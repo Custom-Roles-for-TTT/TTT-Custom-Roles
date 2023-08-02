@@ -53,6 +53,9 @@ end
 hook.Add("TTTTargetIDPlayerRoleIcon", "Clown_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, color_role, hideBeggar, showJester, hideBodysnatcher)
     -- If the local client is an activated clown and the target is a jester, show the jester icon
     if IsClownActive(cli) and ply:ShouldActLikeJester() then
+        local icon_overridden, _, _ = ply:IsTargetIDOverridden(cli)
+        if icon_overridden then return end
+
         return ROLE_NONE, false, ROLE_JESTER
     end
     -- Show the clown icon if the target is an activated clown
@@ -66,6 +69,9 @@ hook.Add("TTTTargetIDPlayerRing", "Clown_TTTTargetIDPlayerRing", function(ent, c
 
     -- If the local client is an activated clown and the target is a jester, show the jester information
     if IsPlayer(ent) and IsClownActive(cli) and ent:ShouldActLikeJester() then
+        local _, ring_overridden, _ = ent:IsTargetIDOverridden(cli)
+        if ring_overridden then return end
+
         return true, ROLE_COLORS_RADAR[ROLE_JESTER]
     end
     -- Show the clown information and color when you look at the target
@@ -79,6 +85,9 @@ hook.Add("TTTTargetIDPlayerText", "Clown_TTTTargetIDPlayerText", function(ent, c
 
     -- If the local client is an activated clown and the target is a jester, show the jester information
     if IsPlayer(ent) and IsClownActive(cli) and ent:ShouldActLikeJester() then
+        local _, _, text_overridden = ent:IsTargetIDOverridden(cli)
+        if text_overridden then return end
+
         local role_string = LANG.GetParamTranslation("target_unknown_team", { targettype = LANG.GetTranslation("jester")})
         return StringUpper(role_string), ROLE_COLORS_RADAR[ROLE_JESTER]
     end
@@ -90,11 +99,22 @@ end)
 ROLE_IS_TARGETID_OVERRIDDEN[ROLE_CLOWN] = function(ply, target)
     if not IsPlayer(target) then return end
 
+    local icon_overridden = false
+    local ring_overridden = false
+    local text_overridden = false
     local target_jester = IsClownActive(ply) and target:ShouldActLikeJester()
-    local visible = target_jester or IsClownVisible(target)
+    -- We only care about whether these are overridden if the target is a tester
+    if target_jester then
+        icon_overridden, ring_overridden, text_overridden = target:IsTargetIDOverridden(ply)
+    end
+    local visible = IsClownVisible(target)
 
-    ------ icon,    ring,    text
-    return visible, visible, visible
+    ------ icon
+    return (target_jester and not icon_overridden) or visible,
+    ------- ring
+            (target_jester and not ring_overridden) or visible,
+    ------- text
+            (target_jester and not text_overridden) or visible
 end
 
 -------------

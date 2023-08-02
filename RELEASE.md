@@ -12,6 +12,7 @@
 
 ### Fixes
 - Fixed clown seeing jester icons (instead of question mark icons) over all jester team members' heads when they are activated
+- Fixed clown seeing jester icon over the activated loot goblin's head (instead of the loot goblin icon)
 
 ### Developer
 - Changed `plymeta:IsActive` to ensure the player is alive like it was always supposed to
