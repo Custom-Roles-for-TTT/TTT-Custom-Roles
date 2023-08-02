@@ -16,7 +16,7 @@ DEATHRADAR.duration = 30
 DEATHRADAR.endtime = 0
 DEATHRADAR.repeating = true
 
-hook.Add("Initialize", "MadScientist_DeathRadar_Initialize", function()
+hook.Add("Initialize", "MadScientist_DeathRadar_Initialize_Lang", function()
     LANG.AddToLanguage("english", "item_death_radar", "Death Radar")
     LANG.AddToLanguage("english", "item_death_radar_desc", [[Allows you to scan for dead bodies.
 

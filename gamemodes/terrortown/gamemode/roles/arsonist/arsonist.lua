@@ -22,7 +22,7 @@ local arsonist_damage_penalty = CreateConVar("ttt_arsonist_damage_penalty", "0.2
 local arsonist_burn_damage = CreateConVar("ttt_arsonist_burn_damage", "2", FCVAR_NONE, "Damage done per fire tick to players ignited by the arsonist", 1, 10)
 local detective_search_only_arsonistdouse = CreateConVar("ttt_detective_search_only_arsonistdouse", "0")
 
-hook.Add("TTTSyncGlobals", "Informant_TTTSyncGlobals", function()
+hook.Add("TTTSyncGlobals", "Arsonist_TTTSyncGlobals", function()
     SetGlobalInt("ttt_arsonist_douse_time", arsonist_douse_time:GetInt())
     SetGlobalInt("ttt_arsonist_douse_notify_delay_min", arsonist_douse_notify_delay_min:GetInt())
     SetGlobalInt("ttt_arsonist_douse_notify_delay_max", arsonist_douse_notify_delay_max:GetInt())
