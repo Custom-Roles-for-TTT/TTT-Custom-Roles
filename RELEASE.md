@@ -4,6 +4,7 @@
 **Released:**
 
 ### Additions
+- Added a new traitor role: spy
 - Added target icon above undoused player's heads for the arsonist, lover's heads for cupid and the lovers, and the shadow's target's head for the shadow
 - Added jester player information to the clown's scoreboard when they are active, matching their target ID (icon, ring, text) visibility
 

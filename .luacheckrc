@@ -990,6 +990,7 @@ globals = {
     "ROLE_SAPPER",
     "ROLE_SHADOW",
     "ROLE_SPONGE",
+    "ROLE_SPY",
     "ROLE_SWAPPER",
     "ROLE_TRACKER",
     "ROLE_TRICKSTER",
