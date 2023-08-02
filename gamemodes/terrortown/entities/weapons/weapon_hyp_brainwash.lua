@@ -108,7 +108,7 @@ if SERVER then
             ply:SetRole(ROLE_TRAITOR)
         end
         ply:StripRoleWeapons()
-        ply:PrintMessage(HUD_PRINTCENTER, "You have been brainwashed and are now a traitor.")
+        ply:QueueMessage(MSG_PRINTCENTER, "You have been brainwashed and are now a traitor.")
         SetRoleHealth(ply)
 
         SafeRemoveEntity(body)

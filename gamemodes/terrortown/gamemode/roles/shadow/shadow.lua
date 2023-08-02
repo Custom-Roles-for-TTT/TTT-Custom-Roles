@@ -54,16 +54,13 @@ ROLE_ON_ROLE_ASSIGNED[ROLE_SHADOW] = function(ply)
     end
     if closestTarget ~= nil then
         ply:SetNWString("ShadowTarget", closestTarget:SteamID64() or "")
-        ply:PrintMessage(HUD_PRINTTALK, "Your target is " .. closestTarget:Nick() .. ".")
-        ply:PrintMessage(HUD_PRINTCENTER, "Your target is " .. closestTarget:Nick() .. ".")
+        ply:QueueMessage(MSG_PRINTBOTH, "Your target is " .. closestTarget:Nick() .. ".")
         ply:SetNWFloat("ShadowTimer", CurTime() + shadow_start_timer:GetInt())
         local notifyMode = shadow_target_notify_mode:GetInt()
         if notifyMode == SHADOW_NOTIFY_ANONYMOUS then
-            closestTarget:PrintMessage(HUD_PRINTTALK, "You have a " .. ROLE_STRINGS[ROLE_SHADOW] .. " following you!")
-            closestTarget:PrintMessage(HUD_PRINTCENTER, "You have a " .. ROLE_STRINGS[ROLE_SHADOW] .. " following you!")
+            closestTarget:QueueMessage(MSG_PRINTBOTH, "You have a " .. ROLE_STRINGS[ROLE_SHADOW] .. " following you!")
         elseif notifyMode == SHADOW_NOTIFY_IDENTIFY then
-            closestTarget:PrintMessage(HUD_PRINTTALK, ply:Nick() .. " is your " .. ROLE_STRINGS[ROLE_SHADOW] .. "!")
-            closestTarget:PrintMessage(HUD_PRINTCENTER, ply:Nick() .. " is your " .. ROLE_STRINGS[ROLE_SHADOW] .. "!")
+            closestTarget:QueueMessage(MSG_PRINTBOTH, ply:Nick() .. " is your " .. ROLE_STRINGS[ROLE_SHADOW] .. "!")
         end
     end
 end
@@ -98,8 +95,7 @@ local function ClearBuffTimer(shadow, target, sendMessage)
             else
                 message = message .. "stopped buffing them!"
             end
-            shadow:PrintMessage(HUD_PRINTCENTER, message)
-            shadow:PrintMessage(HUD_PRINTTALK, message)
+            shadow:QueueMessage(MSG_PRINTBOTH, message)
         end
 
         shadow:SetNWFloat("ShadowBuffTimer", -1)
@@ -130,8 +126,7 @@ local function CreateBuffTimer(shadow, target)
     else
         message = message .. "give them a buff!"
     end
-    shadow:PrintMessage(HUD_PRINTCENTER, message)
-    shadow:PrintMessage(HUD_PRINTTALK, message)
+    shadow:QueueMessage(MSG_PRINTBOTH, message)
 
     buffTimers[timerId] = true
     shadow:SetNWFloat("ShadowBuffTimer", CurTime() + buffDelay)
@@ -159,14 +154,10 @@ local function CreateBuffTimer(shadow, target)
                 role = ROLE_TRAITOR
             end
 
-            message = "You've stayed with your target long enough to join their team! You are now " .. ROLE_STRINGS_EXT[role]
-            shadow:PrintMessage(HUD_PRINTCENTER, message)
-            shadow:PrintMessage(HUD_PRINTTALK, message)
+            shadow:QueueMessage(MSG_PRINTBOTH, "You've stayed with your target long enough to join their team! You are now " .. ROLE_STRINGS_EXT[role])
 
             if shadow_target_buff_notify:GetBool() then
-                message = "Your " .. ROLE_STRINGS[ROLE_SHADOW] .. " has stayed with you long enough to join your team!"
-                target:PrintMessage(HUD_PRINTCENTER, message)
-                target:PrintMessage(HUD_PRINTTALK, message)
+                target:QueueMessage(MSG_PRINTBOTH, "Your " .. ROLE_STRINGS[ROLE_SHADOW] .. " has stayed with you long enough to join your team!")
             end
 
             shadow:SetRole(role)
@@ -181,14 +172,10 @@ local function CreateBuffTimer(shadow, target)
             return
         end
 
-        message = "A buff is now active on your target. Stay with them to keep it up!"
-        shadow:PrintMessage(HUD_PRINTCENTER, message)
-        shadow:PrintMessage(HUD_PRINTTALK, message)
+        shadow:QueueMessage(MSG_PRINTBOTH, "A buff is now active on your target. Stay with them to keep it up!")
 
         if shadow_target_buff_notify:GetBool() then
-            message = "Your " .. ROLE_STRINGS[ROLE_SHADOW] .. " is buffing you. Stay with them to keep it up!"
-            target:PrintMessage(HUD_PRINTCENTER, message)
-            target:PrintMessage(HUD_PRINTTALK, message)
+            target:QueueMessage(MSG_PRINTBOTH, "Your " .. ROLE_STRINGS[ROLE_SHADOW] .. " is buffing you. Stay with them to keep it up!")
         end
 
         if buff == SHADOW_BUFF_HEAL then
@@ -219,9 +206,7 @@ hook.Add("DoPlayerDeath", "Shadow_SoulLink_DoPlayerDeath", function(ply, attacke
             local target = player.GetBySteamID64(ply:GetNWString("ShadowTarget", ""))
             if IsPlayer(target) and target:IsActive() then
                 target:Kill()
-                local msg = ply:Nick() .. " was your " .. ROLE_STRINGS[ROLE_SHADOW] .. " and died!"
-                target:PrintMessage(HUD_PRINTCENTER, msg)
-                target:PrintMessage(HUD_PRINTTALK, msg)
+                target:QueueMessage(MSG_PRINTBOTH, ply:Nick() .. " was your " .. ROLE_STRINGS[ROLE_SHADOW] .. " and died!")
             end
         end
     else
@@ -231,8 +216,7 @@ hook.Add("DoPlayerDeath", "Shadow_SoulLink_DoPlayerDeath", function(ply, attacke
                 local target = player.GetBySteamID64(p:GetNWString("ShadowTarget", ""))
                 if IsPlayer(target) and target == ply then
                     p:Kill()
-                    p:PrintMessage(HUD_PRINTCENTER, "Your target died!")
-                    p:PrintMessage(HUD_PRINTTALK, "Your target died!")
+                    p:QueueMessage(MSG_PRINTBOTH, "Your target died!")
                 end
             end
         end
@@ -260,9 +244,7 @@ hook.Add("PostPlayerDeath", "Shadow_Buff_PostPlayerDeath", function(ply)
 
         -- Let the player know they are going to respawn
         if shadow_target_buff_notify:GetBool() then
-            local message = "Your " .. ROLE_STRINGS[ROLE_SHADOW] .. " will respawn you in " .. respawnDelay .. " seconds"
-            ply:PrintMessage(HUD_PRINTCENTER, message)
-            ply:PrintMessage(HUD_PRINTTALK, message)
+            ply:QueueMessage(MSG_PRINTBOTH, "Your " .. ROLE_STRINGS[ROLE_SHADOW] .. " will respawn you in " .. respawnDelay .. " seconds")
         end
 
         local timerId = "TTTShadowBuffTimer_" .. shadow:SteamID64() .. "_" .. ply:SteamID64()
@@ -278,9 +260,7 @@ hook.Add("PostPlayerDeath", "Shadow_Buff_PostPlayerDeath", function(ply)
             SafeRemoveEntity(corpse)
 
             if IsValid(shadow) then
-                local message = "Your target has respawned!"
-                shadow:PrintMessage(HUD_PRINTCENTER, message)
-                shadow:PrintMessage(HUD_PRINTTALK, message)
+                shadow:QueueMessage(MSG_PRINTBOTH, "Your target has respawned!")
             end
         end)
     else
@@ -374,8 +354,7 @@ hook.Add("TTTBeginRound", "Shadow_TTTBeginRound", function()
                     v:SetNWBool("ShadowActive", false)
                     v:SetNWFloat("ShadowTimer", -1)
                 end
-                v:PrintMessage(HUD_PRINTCENTER, message)
-                v:PrintMessage(HUD_PRINTTALK, message)
+                v:QueueMessage(MSG_PRINTBOTH, message)
                 v:SetNWFloat("ShadowBuffTimer", -1)
                 ClearBuffTimer(v, target)
             else
@@ -438,8 +417,7 @@ hook.Add("PlayerDeath", "Shadow_KillCheck_PlayerDeath", function(victim, infl, a
 
     if victim:SteamID64() == attacker:GetNWString("ShadowTarget", "") then
         attacker:Kill()
-        attacker:PrintMessage(HUD_PRINTCENTER, "You killed your target!")
-        attacker:PrintMessage(HUD_PRINTTALK, "You killed your target!")
+        attacker:QueueMessage(MSG_PRINTBOTH, "You killed your target!")
         ClearBuffTimer(attacker, victim)
         ClearShadowState(attacker)
     end

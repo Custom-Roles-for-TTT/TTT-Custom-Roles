@@ -174,7 +174,7 @@ function plymeta:ShouldHideJesters()
     return true
 end
 
-function plymeta:ShouldDelayAnnouncements() return ROLE_SHOULD_DELAY_ANNOUNCEMENTS[self:GetRole()] or false end
+function plymeta:ShouldDelayAnnouncements() return ROLE_SHOULD_DELAY_ANNOUNCEMENTS[self:GetRole()] or false end -- TODO: Remove after 2.0.0
 function plymeta:ShouldNotDrown() return ROLE_SHOULD_NOT_DROWN[self:GetRole()] or false end
 function plymeta:CanSeeC4()
     if self:IsActiveTraitorTeam() then
@@ -562,6 +562,19 @@ if CLIENT then
             p:SetAirResistance(125)
         end
         emitter:Finish()
+    end
+
+    function plymeta:QueueMessage(type, message, time)
+        if LocalPlayer() ~= self then
+            ErrorNoHalt("`plymeta:QueueMessage` cannot be used to send messages to other players when called clientside.\n")
+            return
+        end
+        time = time or 5
+        net.Start("TTT_QueueMessage")
+        net.WriteUInt(type, 3)
+        net.WriteString(message)
+        net.WriteFloat(time)
+        net.SendToServer()
     end
 else
     -- SERVER

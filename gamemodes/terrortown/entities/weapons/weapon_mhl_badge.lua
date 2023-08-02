@@ -122,7 +122,7 @@ if SERVER then
     end
 
     function SWEP:GetProgressMessage(ply, body, bone)
-        ply:PrintMessage(HUD_PRINTCENTER, "The " .. ROLE_STRINGS[ROLE_MARSHAL] .. " is promoting you.")
+        ply:QueueMessage(MSG_PRINTCENTER, "The " .. ROLE_STRINGS[ROLE_MARSHAL] .. " is promoting you.")
         return "DEPUTIZING " .. string.upper(ply:Nick())
     end
 

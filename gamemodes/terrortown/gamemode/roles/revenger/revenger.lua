@@ -82,8 +82,7 @@ hook.Add("PlayerDeath", "Revenger_PlayerDeath", function(victim, infl, attacker)
                 end
             end
 
-            v:PrintMessage(HUD_PRINTTALK, message)
-            v:PrintMessage(HUD_PRINTCENTER, message)
+            v:QueueMessage(MSG_PRINTBOTH, message)
         end
     end
 end)
@@ -102,8 +101,7 @@ ROLE_MOVE_ROLE_STATE[ROLE_REVENGER] = function(ply, target, keep_on_source)
 
         local revenger_lover = player.GetBySteamID64(lover)
         if IsValid(revenger_lover) then
-            target:PrintMessage(HUD_PRINTTALK, "You are now in love with " .. revenger_lover:Nick() .. ".")
-            target:PrintMessage(HUD_PRINTCENTER, "You are now in love with " .. revenger_lover:Nick() .. ".")
+            target:QueueMessage(MSG_PRINTBOTH, "You are now in love with " .. revenger_lover:Nick() .. ".")
 
             if not revenger_lover:Alive() or revenger_lover:IsSpec() then
                 local message
@@ -121,10 +119,7 @@ ROLE_MOVE_ROLE_STATE[ROLE_REVENGER] = function(ply, target, keep_on_source)
                     message = "Your love has died, but you cannot determine the cause."
                 end
 
-                timer.Simple(1, function()
-                    target:PrintMessage(HUD_PRINTTALK, message)
-                    target:PrintMessage(HUD_PRINTCENTER, message)
-                end)
+                target:QueueMessage(MSG_PRINTBOTH, message)
             end
         end
     end
@@ -140,8 +135,7 @@ ROLE_ON_ROLE_ASSIGNED[ROLE_REVENGER] = function(ply)
     if #potentialSoulmates > 0 then
         local revenger_lover = potentialSoulmates[math.random(#potentialSoulmates)]
         ply:SetNWString("RevengerLover", revenger_lover:SteamID64() or "")
-        ply:PrintMessage(HUD_PRINTTALK, "You are in love with " .. revenger_lover:Nick() .. ".")
-        ply:PrintMessage(HUD_PRINTCENTER, "You are in love with " .. revenger_lover:Nick() .. ".")
+        ply:QueueMessage(MSG_PRINTBOTH, "You are in love with " .. revenger_lover:Nick() .. ".")
     end
 
     local drain_health = revenger_drain_health_to:GetInt()
@@ -157,8 +151,7 @@ ROLE_ON_ROLE_ASSIGNED[ROLE_REVENGER] = function(ply)
                         if hp > drain_health then
                             -- We were going to set them to 0, so just kill them instead
                             if hp == 1 then
-                                p:PrintMessage(HUD_PRINTTALK, "You have succumbed to the heartache of losing your lover.")
-                                p:PrintMessage(HUD_PRINTCENTER, "You have succumbed to the heartache of losing your lover.")
+                                p:QueueMessage(MSG_PRINTBOTH, "You have succumbed to the heartache of losing your lover.")
                                 p:Kill()
                             else
                                 p:SetHealth(hp - 1)
@@ -197,8 +190,7 @@ hook.Add("PlayerDisconnected", "Revenger_Lover_PlayerDisconnected", function(ply
         revenger:SetNWString("RevengerLover", "")
     end
 
-    revenger:PrintMessage(HUD_PRINTTALK, message)
-    revenger:PrintMessage(HUD_PRINTCENTER, message)
+    revenger:QueueMessage(MSG_PRINTBOTH, message)
 end)
 
 ------------------

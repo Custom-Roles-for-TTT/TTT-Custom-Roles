@@ -38,8 +38,7 @@ local function HandleClownWinBlock(win_type)
     local killer_clown_active = clown:IsRoleActive()
     if not killer_clown_active then
         clown:SetNWBool("KillerClownActive", true)
-        clown:PrintMessage(HUD_PRINTTALK, "KILL THEM ALL!")
-        clown:PrintMessage(HUD_PRINTCENTER, "KILL THEM ALL!")
+        clown:QueueMessage(MSG_PRINTBOTH, "KILL THEM ALL!")
         clown:AddCredits(clown_activation_credits:GetInt())
         if clown_heal_on_activate:GetBool() then
             local heal_bonus = clown_heal_bonus:GetInt()

@@ -814,7 +814,7 @@ ROLE_SELECTION_PREDICATE = {}
 ROLE_CONVARS = {}
 
 -- Optional features
-ROLE_SHOULD_DELAY_ANNOUNCEMENTS = {}
+ROLE_SHOULD_DELAY_ANNOUNCEMENTS = {} -- TODO: Remove after 2.0.0
 ROLE_HAS_PASSIVE_WIN = {}
 ROLE_SHOULD_NOT_DROWN = {}
 ROLE_CAN_SEE_C4 = {}
@@ -926,7 +926,7 @@ function RegisterRole(tbl)
         DELAYED_SHOP_ROLES[roleID] = tbl.shoulddelayshop
     end
 
-    if type(tbl.shoulddelayannouncements) == "boolean" then
+    if type(tbl.shoulddelayannouncements) == "boolean" then -- TODO: Remove after 2.0.0
         ROLE_SHOULD_DELAY_ANNOUNCEMENTS[roleID] = tbl.shoulddelayannouncements
     end
 
@@ -1285,6 +1285,11 @@ SPECIAL_DETECTIVE_HIDE_FOR_OTHERS = 2
 UNITS_PER_METER = 52.49
 UNITS_PER_FIVE_METERS = UNITS_PER_METER * 5
 
+-- Message queue modes
+MSG_PRINTBOTH = 1
+MSG_PRINTTALK = 3 -- Keep this the same value as HUD_PRINTTALK just in case
+MSG_PRINTCENTER = 4 -- Keep this the same value as HUD_PRINTCENTER just in case
+
 -- Corpse stuff
 CORPSE_ICON_TYPES = {
     "c4",
@@ -1545,9 +1550,9 @@ if SERVER then
         for _, ply in pairs(GetAllPlayers()) do
             if ply == attacker then
                 local role_string = ROLE_STRINGS[role]
-                ply:PrintMessage(HUD_PRINTCENTER, "You killed the " .. role_string .. "!")
+                ply:QueueMessage(MSG_PRINTCENTER, "You killed the " .. role_string .. "!")
             elseif (shouldshow == nil or shouldshow(ply)) and ShouldShowJesterNotification(ply, mode) then
-                ply:PrintMessage(HUD_PRINTCENTER, getkillstring(ply))
+                ply:QueueMessage(MSG_PRINTCENTER, getkillstring(ply))
             end
 
             if play_sound or show_confetti then

@@ -84,7 +84,7 @@ end)
 
 local function DoParasiteRespawnWithoutBody(parasite, hide_messages)
     if not hide_messages then
-        parasite:PrintMessage(HUD_PRINTCENTER, "You have drained your host of energy and created a new body.")
+        parasite:QueueMessage(MSG_PRINTCENTER, "You have drained your host of energy and created a new body.")
     end
     -- Introduce a slight delay to prevent player getting stuck as a spectator
     timer.Create(parasite:Nick() .. "ParasiteRespawn", 0.1, 1, function()
@@ -107,7 +107,7 @@ local function DoParasiteRespawn(parasite, attacker, hide_messages)
         local respawnMode = parasite_respawn_mode:GetInt()
         if respawnMode == PARASITE_RESPAWN_HOST then
             if not hide_messages then
-                parasite:PrintMessage(HUD_PRINTCENTER, "You have taken control of your host.")
+                parasite:QueueMessage(MSG_PRINTCENTER, "You have taken control of your host.")
             end
 
             parasite:SpawnForRound(true)
@@ -131,7 +131,7 @@ local function DoParasiteRespawn(parasite, attacker, hide_messages)
         elseif respawnMode == PARASITE_RESPAWN_BODY then
             if IsValid(parasiteBody) then
                 if not hide_messages then
-                    parasite:PrintMessage(HUD_PRINTCENTER, "You have drained your host of energy and regenerated your old body.")
+                    parasite:QueueMessage(MSG_PRINTCENTER, "You have drained your host of energy and regenerated your old body.")
                 end
                 parasite:SpawnForRound(true)
                 parasite:SetPos(FindRespawnLocation(parasiteBody:GetPos()) or parasiteBody:GetPos())
@@ -150,8 +150,7 @@ local function DoParasiteRespawn(parasite, attacker, hide_messages)
             attacker:Kill()
         end
         if not hide_messages then
-            attacker:PrintMessage(HUD_PRINTCENTER, "Your parasite has drained you of your energy.")
-            attacker:PrintMessage(HUD_PRINTTALK, "Your parasite has drained you of your energy.")
+            attacker:QueueMessage(MSG_PRINTBOTH, "Your parasite has drained you of your energy.")
         end
 
         hook.Call("TTTParasiteRespawn", nil, parasite, attacker)
@@ -207,8 +206,7 @@ local function HandleParasiteInfection(attacker, victim, keep_progress)
         timer.Create(victim:Nick() .. "ParasiteInfectingWarning", warning_time, 1, function()
             if not IsPlayer(attacker) or not attacker:Alive() or attacker:IsSpec() then return end
 
-            attacker:PrintMessage(HUD_PRINTTALK, "You feel a strange wriggling under your skin.")
-            attacker:PrintMessage(HUD_PRINTCENTER, "You feel a strange wriggling under your skin.")
+            attacker:QueueMessage(MSG_PRINTBOTH, "You feel a strange wriggling under your skin.")
         end)
     end
 end
@@ -218,23 +216,16 @@ hook.Add("PlayerDeath", "Parasite_PlayerDeath", function(victim, infl, attacker)
     if valid_kill and victim:IsParasite() and not victim:IsZombifying() then
         HandleParasiteInfection(attacker, victim)
 
-        -- Delay this message so the player can see the target update message
         if parasite_announce_infection:GetBool() then
-            if attacker:ShouldDelayAnnouncements() then
-                timer.Simple(3, function()
-                    attacker:PrintMessage(HUD_PRINTCENTER, "You have been infected with a parasite.")
-                end)
-            else
-                attacker:PrintMessage(HUD_PRINTCENTER, "You have been infected with a parasite.")
-            end
+            attacker:QueueMessage(MSG_PRINTCENTER, "You have been infected with a parasite.")
         end
-        victim:PrintMessage(HUD_PRINTCENTER, "Your attacker has been infected.")
+        victim:QueueMessage(MSG_PRINTCENTER, "Your attacker has been infected.")
 
         if parasite_infection_saves_lover:GetBool() then
             local loverSID = victim:GetNWString("TTTCupidLover", "")
             if loverSID ~= "" then
                 local lover = player.GetBySteamID64(loverSID)
-                lover:PrintMessage(HUD_PRINTCENTER, "Your lover has died... but they are infecting someone!")
+                lover:QueueMessage(MSG_PRINTCENTER, "Your lover has died... but they are infecting someone!")
             end
         end
 
@@ -275,18 +266,18 @@ hook.Add("DoPlayerDeath", "Parasite_DoPlayerDeath", function(ply, attacker, dmgi
                 if IsPlayer(attacker) and attacker:IsActive() and parasiteDead and transfer then
                     deadParasites[key].attacker = attacker:SteamID64()
                     HandleParasiteInfection(attacker, deadParasite, not parasite_infection_transfer_reset:GetBool())
-                    deadParasite:PrintMessage(HUD_PRINTCENTER, "Your host has been killed and your infection has spread to their killer.")
+                    deadParasite:QueueMessage(MSG_PRINTCENTER, "Your host has been killed and your infection has spread to their killer.")
                     net.Start("TTT_ParasiteInfect")
                     net.WriteString(deadParasite:Nick())
                     net.WriteString(attacker:Nick())
                     net.Broadcast()
                 elseif suicideMode > PARASITE_SUICIDE_NONE and ShouldParasiteRespawnBySuicide(suicideMode, ply, attacker, dmginfo) then
-                    deadParasite:PrintMessage(HUD_PRINTCENTER, "Your host has killed themselves, allowing your infection to take over.")
+                    deadParasite:QueueMessage(MSG_PRINTCENTER, "Your host has killed themselves, allowing your infection to take over.")
                     DoParasiteRespawn(deadParasite, attacker, true)
                 else
                     ClearParasiteState(deadParasite)
                     if parasiteDead then
-                        deadParasite:PrintMessage(HUD_PRINTCENTER, "Your host has died.")
+                        deadParasite:QueueMessage(MSG_PRINTCENTER, "Your host has died.")
 
                         if parasite_infection_saves_lover:GetBool() then
                             local loverSID = deadParasite:GetNWString("TTTCupidLover", "")
@@ -326,7 +317,6 @@ hook.Add("PostPlayerDeath", "Parasite_Lovers_PostPlayerDeath", function(ply)
     if not IsPlayer(lover) then return end
 
     if IsParasiteInfecting(lover) then
-        lover:PrintMessage(HUD_PRINTTALK, "Your lover has died and so you will not survive if you respawn!")
-        lover:PrintMessage(HUD_PRINTCENTER, "Your lover has died and so you will not survive if you respawn!")
+        lover:QueueMessage(MSG_PRINTBOTH, "Your lover has died and so you will not survive if you respawn!")
     end
 end)

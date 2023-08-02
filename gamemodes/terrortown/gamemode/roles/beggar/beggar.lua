@@ -57,14 +57,12 @@ hook.Add("WeaponEquip", "Beggar_WeaponEquip", function(wep, ply)
 
         ply:SetRole(role)
         ply:SetNWBool("WasBeggar", true)
-        ply:PrintMessage(HUD_PRINTTALK, "You have joined the " .. ROLE_STRINGS[role] .. " team")
-        ply:PrintMessage(HUD_PRINTCENTER, "You have joined the " .. ROLE_STRINGS[role] .. " team")
+        ply:QueueMessage(MSG_PRINTBOTH, "You have joined the " .. ROLE_STRINGS[role] .. " team")
         timer.Simple(0.5, function() SendFullStateUpdate() end) -- Slight delay to avoid flickering from beggar to the new role and back to beggar
 
         for _, v in ipairs(GetAllPlayers()) do
             if v ~= ply and (beggarMode == ANNOUNCE_REVEAL_ALL or (v:IsActiveTraitorTeam() and beggarMode == ANNOUNCE_REVEAL_TRAITORS) or (not v:IsActiveTraitorTeam() and beggarMode == ANNOUNCE_REVEAL_INNOCENTS)) then
-                v:PrintMessage(HUD_PRINTTALK, "The beggar has joined the " .. ROLE_STRINGS[role] .. " team")
-                v:PrintMessage(HUD_PRINTCENTER, "The beggar has joined the " .. ROLE_STRINGS[role] .. " team")
+                v:QueueMessage(MSG_PRINTBOTH, "The beggar has joined the " .. ROLE_STRINGS[role] .. " team")
             end
         end
 
@@ -128,11 +126,9 @@ hook.Add("PlayerDeath", "Beggar_KillCheck_PlayerDeath", function(victim, infl, a
 
         local delay = beggar_respawn_delay:GetInt()
         if delay > 0 then
-            victim:PrintMessage(HUD_PRINTTALK, "You were killed but will respawn" .. message_extra .. " in " .. delay .. " seconds.")
-            victim:PrintMessage(HUD_PRINTCENTER, "You were killed but will respawn" .. message_extra .. " in " .. delay .. " seconds.")
+            victim:QueueMessage(MSG_PRINTBOTH, "You were killed but will respawn" .. message_extra .. " in " .. delay .. " seconds.")
         else
-            victim:PrintMessage(HUD_PRINTTALK, "You were killed but are about to respawn" .. message_extra .. ".")
-            victim:PrintMessage(HUD_PRINTCENTER, "You were killed but are about to respawn" .. message_extra .. ".")
+            victim:QueueMessage(MSG_PRINTBOTH, "You were killed but are about to respawn" .. message_extra .. ".")
             -- Introduce a slight delay to prevent player getting stuck as a spectator
             delay = 0.1
         end

@@ -327,6 +327,7 @@ util.AddNetworkString("TTT_JesterDeathCelebration")
 util.AddNetworkString("TTT_LoadMonsterEquipment")
 util.AddNetworkString("TTT_UpdateRoleNames")
 util.AddNetworkString("TTT_ScoreboardUpdate")
+util.AddNetworkString("TTT_QueueMessage")
 
 local function ClearAllFootsteps()
     net.Start("TTT_ClearPlayerFootsteps")
@@ -644,6 +645,8 @@ function PrepareRound()
         v.DeathRoleWeapons = nil
         -- Clear out old ignition info so we don't misattribute stuff in the new round
         v.ignite_info = nil
+        -- Clear the message queue so any messages from the previous round don't show update
+        v:ResetMessageQueue()
     end
 
     -- Check playercount
@@ -750,8 +753,7 @@ function TellTraitorsAboutTraitors()
     for _, v in ipairs(plys) do
         if v:IsTraitorTeam() then
             if hasGlitch then
-                v:PrintMessage(HUD_PRINTTALK, "There is " .. ROLE_STRINGS_EXT[ROLE_GLITCH] .. ".")
-                v:PrintMessage(HUD_PRINTCENTER, "There is " .. ROLE_STRINGS_EXT[ROLE_GLITCH] .. ".")
+                v:QueueMessage(MSG_PRINTBOTH, "There is " .. ROLE_STRINGS_EXT[ROLE_GLITCH] .. ".")
             end
 
             if #traitornicks < 2 then

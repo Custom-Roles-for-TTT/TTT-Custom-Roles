@@ -78,7 +78,7 @@ local function InfectedSuccumb(ply, respawn)
     else
         message = message .. " become "
     end
-    ply:PrintMessage(HUD_PRINTCENTER, message .. ROLE_STRINGS_EXT[ROLE_ZOMBIE])
+    ply:QueueMessage(MSG_PRINTCENTER, message .. ROLE_STRINGS_EXT[ROLE_ZOMBIE])
 
     net.Start("TTT_InfectedSuccumbed")
     net.WriteString(ply:Nick())

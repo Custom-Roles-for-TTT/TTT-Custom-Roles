@@ -115,7 +115,7 @@ hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
         if phantom_announce_death:GetBool() then
             for _, v in pairs(GetAllPlayers()) do
                 if v ~= attacker and v:IsActiveDetectiveLike() and v:SteamID64() ~= loverSID then
-                    v:PrintMessage(HUD_PRINTCENTER, "The " .. ROLE_STRINGS[ROLE_PHANTOM] .. " has been killed.")
+                    v:QueueMessage(MSG_PRINTCENTER, "The " .. ROLE_STRINGS[ROLE_PHANTOM] .. " has been killed.")
                 end
             end
         end
@@ -123,8 +123,7 @@ hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
         if victim:IsZombifying() then return end
 
         if not attacker_alive then
-            victim:PrintMessage(HUD_PRINTCENTER, "Your attacker is already dead so you have nobody to haunt.")
-            victim:PrintMessage(HUD_PRINTTALK, "Your attacker is already dead so you have nobody to haunt.")
+            victim:QueueMessage(MSG_PRINTBOTH, "Your attacker is already dead so you have nobody to haunt.")
             return
         end
 
@@ -148,8 +147,7 @@ hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
                         victim:SetNWBool("PhantomPossessing", false)
                         victim:SetNWInt("PhantomPossessingPower", 0)
 
-                        victim:PrintMessage(HUD_PRINTCENTER, "Your body has been destroyed, removing your tether to the world.")
-                        victim:PrintMessage(HUD_PRINTTALK, "Your body has been destroyed, removing your tether to the world.")
+                        victim:QueueMessage(MSG_PRINTBOTH, "Your body has been destroyed, removing your tether to the world.")
 
                         if phantom_haunt_saves_lover:GetBool() and loverSID ~= "" then
                             local lover = player.GetBySteamID64(loverSID)
@@ -179,19 +177,12 @@ hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
             end)
         end
 
-        -- Delay this message so the player can see whatever other message is being shown on death
-        if attacker:ShouldDelayAnnouncements() then
-            timer.Simple(3, function()
-                attacker:PrintMessage(HUD_PRINTCENTER, "You have been haunted.")
-            end)
-        else
-            attacker:PrintMessage(HUD_PRINTCENTER, "You have been haunted.")
-        end
-        victim:PrintMessage(HUD_PRINTCENTER, "Your attacker has been haunted.")
+        attacker:QueueMessage(MSG_PRINTCENTER, "You have been haunted.")
+        victim:QueueMessage(MSG_PRINTCENTER, "Your attacker has been haunted.")
 
         if loverSID ~= "" then
             local lover = player.GetBySteamID64(loverSID)
-            lover:PrintMessage(HUD_PRINTCENTER, "Your lover has died... but they are haunting someone!")
+            lover:QueueMessage(MSG_PRINTCENTER, "Your lover has died... but they are haunting someone!")
         end
 
         local sid = victim:SteamID64()
@@ -296,12 +287,10 @@ hook.Add("DoPlayerDeath", "Phantom_DoPlayerDeath", function(ply, attacker, dmgin
                         end
                         deadPhantom:SetHealth(health)
                         phantomBody:Remove()
-                        deadPhantom:PrintMessage(HUD_PRINTCENTER, "Your attacker died and you have been respawned.")
-                        deadPhantom:PrintMessage(HUD_PRINTTALK, "Your attacker died and you have been respawned.")
+                        deadPhantom:QueueMessage(MSG_PRINTBOTH, "Your attacker died and you have been respawned.")
                         respawn = true
                     else
-                        deadPhantom:PrintMessage(HUD_PRINTCENTER, "Your attacker died but your body has been destroyed.")
-                        deadPhantom:PrintMessage(HUD_PRINTTALK, "Your attacker died but your body has been destroyed.")
+                        deadPhantom:QueueMessage(MSG_PRINTBOTH, "Your attacker died but your body has been destroyed.")
                     end
                 end
             end
@@ -310,7 +299,7 @@ hook.Add("DoPlayerDeath", "Phantom_DoPlayerDeath", function(ply, attacker, dmgin
         if respawn and phantom_announce_death:GetBool() then
             for _, v in pairs(GetAllPlayers()) do
                 if v:IsActiveDetectiveLike() then
-                    v:PrintMessage(HUD_PRINTCENTER, "The " .. ROLE_STRINGS[ROLE_PHANTOM] .. " has been respawned.")
+                    v:QueueMessage(MSG_PRINTCENTER, "The " .. ROLE_STRINGS[ROLE_PHANTOM] .. " has been respawned.")
                 end
             end
         end
@@ -365,7 +354,6 @@ hook.Add("PostPlayerDeath", "Phantom_Lovers_PostPlayerDeath", function(ply)
     if not IsPlayer(lover) then return end
 
     if IsPhantomHaunting(lover) then
-        lover:PrintMessage(HUD_PRINTTALK, "Your lover has died and so you will not survive if you respawn!")
-        lover:PrintMessage(HUD_PRINTCENTER, "Your lover has died and so you will not survive if you respawn!")
+        lover:QueueMessage(MSG_PRINTBOTH, "Your lover has died and so you will not survive if you respawn!")
     end
 end)
