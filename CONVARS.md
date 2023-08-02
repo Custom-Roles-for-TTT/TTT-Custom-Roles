@@ -711,6 +711,7 @@ ttt_vampire_shop_random_percent             0       // The percent chance that a
 ttt_quack_shop_random_percent               0       // The percent chance that a weapon in the shop will be not be shown for quacks
 ttt_parasite_shop_random_percent            0       // The percent chance that a weapon in the shop will be not be shown for parasites
 ttt_informant_shop_random_percent           0       // The percent chance that a weapon in the shop will be not be shown for informants
+ttt_spy_shop_random_percent                 0       // The percent chance that a weapon in the shop will be not be shown for spies
 ttt_deputy_shop_random_percent              0       // The percent chance that a weapon in the shop will be not be shown for deputies
 ttt_mercenary_shop_random_percent           0       // The percent chance that a weapon in the shop will be not be shown for mercenaries
 ttt_veteran_shop_random_percent             0       // The percent chance that a weapon in the shop will be not be shown for veterans
@@ -736,6 +737,7 @@ ttt_vampire_shop_random_enabled             0       // Whether role shop randomi
 ttt_quack_shop_random_enabled               0       // Whether role shop randomization is enabled for quacks
 ttt_parasite_shop_random_enabled            0       // Whether role shop randomization is enabled for parasites
 ttt_informant_shop_random_enabled           0       // Whether role shop randomization is enabled for informants
+ttt_spy_shop_random_enabled                 0       // Whether role shop randomization is enabled for spies
 ttt_deputy_shop_random_enabled              0       // Whether role shop randomization is enabled for deputies
 ttt_mercenary_shop_random_enabled           0       // Whether role shop randomization is enabled for mercenaries
 ttt_veteran_shop_random_enabled             0       // Whether role shop randomization is enabled for veterans
@@ -781,6 +783,7 @@ ttt_zombie_shop_sync                        0       // Whether zombies should ha
 ttt_quack_shop_sync                         0       // Whether quacks should have all weapons that vanilla traitors have in their weapon shop
 ttt_parasite_shop_sync                      0       // Whether parasites should have all weapons that vanilla traitors have in their weapon shop
 ttt_informant_shop_sync                     0       // Whether informants should have all weapons that vanilla traitors have in their weapon shop
+ttt_spy_shop_sync                           0       // Whether spies should have all weapons that vanilla traitors have in their weapon shop
 
 // Detective Role Shop Sync (Server or round must be restarted for changes to take effect)
 ttt_paladin_shop_sync                       0       // Whether paladins should have all weapons that vanilla detectives have in their weapon shop
