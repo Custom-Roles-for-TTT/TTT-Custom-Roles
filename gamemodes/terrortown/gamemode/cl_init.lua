@@ -431,7 +431,7 @@ end
 function GM:Tick()
     local client = LocalPlayer()
     if IsValid(client) then
-        if client:IsActive() then
+        if client:Alive() and client:Team() ~= TEAM_SPEC then
             WSWITCH:Think()
             RADIO:StoreTarget()
             if traitor_vision then
