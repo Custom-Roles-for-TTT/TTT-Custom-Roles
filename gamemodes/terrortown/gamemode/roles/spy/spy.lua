@@ -73,8 +73,7 @@ hook.Add("PlayerDeath", "Spy_PlayerDeath", function(victim, inflictor, attacker)
 
         -- Displaying alert message on who the spy is now disguised as
         if spy_steal_model_alert:GetBool() and (stealModel or stealName) then
-            attacker:PrintMessage(HUD_PRINTCENTER, "Disguised as " .. victim:Nick())
-            attacker:PrintMessage(HUD_PRINTTALK, "Disguised as " .. victim:Nick())
+            attacker:QueueMessage(MSG_PRINTBOTH, "Disguised as " .. victim:Nick())
         end
     end
 end)

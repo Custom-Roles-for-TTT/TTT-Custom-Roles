@@ -94,6 +94,7 @@ ttt_zombie_enabled                          0       // Whether or not the zombie
 ttt_madscientist_enabled                    0       // Whether or not the mad scientist should spawn
 ttt_shadow_enabled                          0       // Whether or not the shadow should spawn
 ttt_arsonist_enabled                        0       // Whether or not the arsonist should spawn
+ttt_spy_enabled                             0       // Whether or not the spy should spawn
 
 // Individual Role Spawn Weights
 ttt_hypnotist_spawn_weight                  1       // The weight assigned to spawning the hypnotist
@@ -134,6 +135,7 @@ ttt_zombie_spawn_weight                     1       // The weight assigned to sp
 ttt_madscientist_spawn_weight               1       // The weight assigned to spawning the mad scientist
 ttt_shadow_spawn_weight                     1       // The weight assigned to spawning the shadow
 ttt_arsonist_spawn_weight                   1       // The weight assigned to spawning the arsonist
+ttt_spy_spawn_weight                        1       // The weight assigned to spawning the spy
 // (Note: Each role is limited to one player per round.)
 
 // Individual Role Minimum Player Requirements
@@ -175,6 +177,7 @@ ttt_zombie_min_players                      0       // The minimum number of pla
 ttt_madscientist_min_players                0       // The minimum number of players required to spawn the mad scientist
 ttt_shadow_min_players                      0       // The minimum number of players required to spawn the shadow
 ttt_arsonist_min_players                    0       // The minimum number of players required to spawn the arsonist
+ttt_spy_min_players                         0       // The minimum number of players required to spawn the spy
 
 // ----------------------------------------
 
@@ -708,6 +711,7 @@ ttt_vampire_shop_random_percent             0       // The percent chance that a
 ttt_quack_shop_random_percent               0       // The percent chance that a weapon in the shop will be not be shown for quacks
 ttt_parasite_shop_random_percent            0       // The percent chance that a weapon in the shop will be not be shown for parasites
 ttt_informant_shop_random_percent           0       // The percent chance that a weapon in the shop will be not be shown for informants
+ttt_spy_shop_random_percent                 0       // The percent chance that a weapon in the shop will be not be shown for spies
 ttt_deputy_shop_random_percent              0       // The percent chance that a weapon in the shop will be not be shown for deputies
 ttt_mercenary_shop_random_percent           0       // The percent chance that a weapon in the shop will be not be shown for mercenaries
 ttt_veteran_shop_random_percent             0       // The percent chance that a weapon in the shop will be not be shown for veterans
@@ -733,6 +737,7 @@ ttt_vampire_shop_random_enabled             0       // Whether role shop randomi
 ttt_quack_shop_random_enabled               0       // Whether role shop randomization is enabled for quacks
 ttt_parasite_shop_random_enabled            0       // Whether role shop randomization is enabled for parasites
 ttt_informant_shop_random_enabled           0       // Whether role shop randomization is enabled for informants
+ttt_spy_shop_random_enabled                 0       // Whether role shop randomization is enabled for spies
 ttt_deputy_shop_random_enabled              0       // Whether role shop randomization is enabled for deputies
 ttt_mercenary_shop_random_enabled           0       // Whether role shop randomization is enabled for mercenaries
 ttt_veteran_shop_random_enabled             0       // Whether role shop randomization is enabled for veterans
@@ -778,6 +783,7 @@ ttt_zombie_shop_sync                        0       // Whether zombies should ha
 ttt_quack_shop_sync                         0       // Whether quacks should have all weapons that vanilla traitors have in their weapon shop
 ttt_parasite_shop_sync                      0       // Whether parasites should have all weapons that vanilla traitors have in their weapon shop
 ttt_informant_shop_sync                     0       // Whether informants should have all weapons that vanilla traitors have in their weapon shop
+ttt_spy_shop_sync                           0       // Whether spies should have all weapons that vanilla traitors have in their weapon shop
 
 // Detective Role Shop Sync (Server or round must be restarted for changes to take effect)
 ttt_paladin_shop_sync                       0       // Whether paladins should have all weapons that vanilla detectives have in their weapon shop
@@ -831,6 +837,7 @@ ttt_zombie_starting_health                  100     // The amount of health the 
 ttt_madscientist_starting_health            100     // The amount of health the mad scientist starts with
 ttt_shadow_starting_health                  100     // The amount of health the shadow starts with
 ttt_arsonist_starting_health                100     // The amount of health the arsonist starts with
+ttt_spy_starting_health                     100     // The amount of health the spy starts with
 
 // Individual Role Max Health. Set to 0 or -1 to use the game's default maximum health.
 ttt_traitor_max_health                      100     // The maximum amount of health a traitor can have
@@ -874,6 +881,7 @@ ttt_zombie_max_health                       100     // The maximum amount of hea
 ttt_madscientist_max_health                 100     // The maximum amount of health the mad scientist can have
 ttt_shadow_max_health                       100     // The maximum amount of health the shadow can have
 ttt_arsonist_max_health                     100     // The maximum amount of health the arsonist can have
+ttt_spy_max_health                          100     // The maximum amount of health the spy can have
 
 // Round Time
 ttt_roundtime_win_draw                      0       // Whether a round that ends because the round time limit has passed counts as a draw. If it is not a draw, the traitor team loses
