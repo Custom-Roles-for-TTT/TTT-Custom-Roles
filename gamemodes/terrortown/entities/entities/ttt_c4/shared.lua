@@ -106,7 +106,7 @@ function ENT:UseOverride(activator)
     if IsPlayer(activator) then
         -- Traitors not allowed to disarm other traitor's C4 until he is dead
         local owner = self:GetOwner()
-        if self:GetArmed() and owner ~= activator and activator:IsTraitorTeam() and (IsValid(owner) and owner:Alive() and owner:IsTraitorTeam()) then
+        if self:GetArmed() and owner ~= activator and activator:IsTraitorTeam() and (IsValid(owner) and owner:IsActiveTraitorTeam()) then
             LANG.Msg(activator, "c4_no_disarm", { traitor = ROLE_STRINGS[ROLE_TRAITOR] })
             return
         end

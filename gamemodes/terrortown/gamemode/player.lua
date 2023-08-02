@@ -154,7 +154,7 @@ function GM:IsSpawnpointSuitable(ply, spwn, force, rigged)
     local blocking = FindEntsInBox(pos + Vector(-16, -16, 0), pos + Vector(16, 16, 64))
 
     for _, p in ipairs(blocking) do
-        if IsPlayer(p) and p:IsActive() then
+        if IsPlayer(p) and p:IsTerror() and p:Alive() then
             if force then
                 p:Kill()
             else

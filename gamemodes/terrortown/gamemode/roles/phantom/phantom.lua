@@ -114,7 +114,7 @@ hook.Add("PlayerDeath", "Phantom_PlayerDeath", function(victim, infl, attacker)
 
         if phantom_announce_death:GetBool() then
             for _, v in pairs(GetAllPlayers()) do
-                if v ~= attacker and v:IsDetectiveLike() and v:IsActive() and v:SteamID64() ~= loverSID then
+                if v ~= attacker and v:IsActiveDetectiveLike() and v:SteamID64() ~= loverSID then
                     v:QueueMessage(MSG_PRINTCENTER, "The " .. ROLE_STRINGS[ROLE_PHANTOM] .. " has been killed.")
                 end
             end
@@ -305,7 +305,7 @@ hook.Add("DoPlayerDeath", "Phantom_DoPlayerDeath", function(ply, attacker, dmgin
 
         if respawn and phantom_announce_death:GetBool() then
             for _, v in pairs(GetAllPlayers()) do
-                if v:IsDetectiveLike() and v:IsActive() then
+                if v:IsActiveDetectiveLike() then
                     v:QueueMessage(MSG_PRINTCENTER, "The " .. ROLE_STRINGS[ROLE_PHANTOM] .. " has been respawned.")
                 end
             end

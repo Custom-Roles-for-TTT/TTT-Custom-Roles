@@ -212,7 +212,7 @@ hook.Add("TTTPrepareRound", "Arsonist_TTTPrepareRound", function()
 end)
 
 hook.Add("TTTPlayerSpawnForRound", "Arsonist_TTTPlayerSpawnForRound", function(ply, dead_only)
-    if dead_only and ply:IsActive() then return end
+    if dead_only and ply:Alive() and not ply:IsSpec() then return end
 
     -- Player is respawning that has not been doused
     if ply:GetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED) == ARSONIST_UNDOUSED then

@@ -904,7 +904,7 @@ function BeginRound()
     net.Broadcast()
 
     for _, v in pairs(GetAllPlayers()) do
-        if v:IsActive() then
+        if v:Alive() and v:IsTerror() then
             net.Start("TTT_SpawnedPlayers")
             net.WriteString(v:Nick())
             net.WriteInt(v:GetRole(), 8)

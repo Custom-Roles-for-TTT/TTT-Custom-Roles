@@ -122,7 +122,7 @@ hook.Add("TTTPrepareRound", "Killer_Smoke_PrepareRound", function()
 end)
 
 hook.Add("TTTPlayerSpawnForRound", "Killer_Smoke_TTTPlayerSpawnForRound", function(ply, dead_only)
-    if dead_only and ply:IsActive() then return end
+    if dead_only and ply:Alive() and not ply:IsSpec() then return end
 
     ply:SetNWBool("KillerSmoke", false)
 end)

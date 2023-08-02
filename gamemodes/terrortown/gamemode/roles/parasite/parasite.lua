@@ -269,7 +269,7 @@ hook.Add("DoPlayerDeath", "Parasite_DoPlayerDeath", function(ply, attacker, dmgi
                 local transfer = parasite_infection_transfer:GetBool()
                 local suicideMode = parasite_infection_suicide_mode:GetInt()
                 -- Transfer the infection to the new attacker if there is one, they are alive, the parasite is still alive, and the transfer feature is enabled
-                if IsPlayer(attacker) and attacker:Alive() and parasiteDead and transfer then
+                if IsPlayer(attacker) and attacker:IsActive() and parasiteDead and transfer then
                     deadParasites[key].attacker = attacker:SteamID64()
                     HandleParasiteInfection(attacker, deadParasite, not parasite_infection_transfer_reset:GetBool())
                     deadParasite:QueueMessage(MSG_PRINTCENTER, "Your host has been killed and your infection has spread to their killer.")
