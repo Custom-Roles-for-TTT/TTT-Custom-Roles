@@ -17,6 +17,7 @@
 
 ### Developer
 - Changed how some roles set their default shop equipment (passive) items so they don't overwrite other things also adding to the lists if the timing isn't perfect
+- Changed role logic to load shared files first
 
 ## 1.9.1 (Beta)
 **Released: July 16th, 2023**
