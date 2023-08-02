@@ -53,7 +53,7 @@ end
 hook.Add("TTTTargetIDPlayerRoleIcon", "Clown_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, color_role, hideBeggar, showJester, hideBodysnatcher)
     -- If the local client is an activated clown and the target is a jester, show the jester icon
     if IsClownActive(cli) and ply:ShouldActLikeJester() then
-        return ROLE_JESTER, false, ROLE_JESTER
+        return ROLE_NONE, false, ROLE_JESTER
     end
     -- Show the clown icon if the target is an activated clown
     if IsClownVisible(ply) then
@@ -79,7 +79,8 @@ hook.Add("TTTTargetIDPlayerText", "Clown_TTTTargetIDPlayerText", function(ent, c
 
     -- If the local client is an activated clown and the target is a jester, show the jester information
     if IsPlayer(ent) and IsClownActive(cli) and ent:ShouldActLikeJester() then
-        return StringUpper(ROLE_STRINGS[ROLE_JESTER]), ROLE_COLORS_RADAR[ROLE_JESTER]
+        local role_string = LANG.GetParamTranslation("target_unknown_team", { targettype = LANG.GetTranslation("jester")})
+        return StringUpper(role_string), ROLE_COLORS_RADAR[ROLE_JESTER]
     end
     if IsClownVisible(ent) then
         return StringUpper(ROLE_STRINGS[ROLE_CLOWN]), ROLE_COLORS_RADAR[ROLE_CLOWN]
