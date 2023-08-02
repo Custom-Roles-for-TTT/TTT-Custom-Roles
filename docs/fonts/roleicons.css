@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'roleicons';
-  src:  url('roleicons.eot?5c3tcv');
-  src:  url('roleicons.eot?5c3tcv#iefix') format('embedded-opentype'),
-  url('roleicons.ttf?5c3tcv') format('truetype'),
-  url('roleicons.woff?5c3tcv') format('woff'),
-  url('roleicons.svg?5c3tcv#icomoon') format('svg');
+  src:  url('fonts/roleicons.eot?ydaly2');
+  src:  url('fonts/roleicons.eot?ydaly2#iefix') format('embedded-opentype'),
+    url('fonts/roleicons.ttf?ydaly2') format('truetype'),
+    url('fonts/roleicons.woff?ydaly2') format('woff'),
+    url('fonts/roleicons.svg?ydaly2#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -57,6 +57,12 @@
 }
 .icon-glitch:before {
   content: "\e90a";
+}
+.icon-guesser:before {
+  content: "\e929";
+}
+.icon-hive-mind:before {
+  content: "\e92b";
 }
 .icon-hypnotist:before {
   content: "\e90b";
@@ -112,6 +118,9 @@
 .icon-quack:before {
   content: "\e91c";
 }
+.icon-quartermaster:before {
+  content: "\e92c";
+}
 .icon-revenger:before {
   content: "\e91d";
 }
@@ -123,6 +132,9 @@
 }
 .icon-sponge:before {
   content: "\e920";
+}
+.icon-spy:before {
+  content: "\e92d";
 }
 .icon-swapper:before {
   content: "\e921";
@@ -147,6 +159,9 @@
 }
 .icon-veteran:before {
   content: "\e927";
+}
+.icon-vindicator:before {
+  content: "\e92e";
 }
 .icon-zombie:before {
   content: "\e928";
