@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'roleicons';
-  src:  url('fonts/roleicons.eot?ydaly2');
-  src:  url('fonts/roleicons.eot?ydaly2#iefix') format('embedded-opentype'),
-    url('fonts/roleicons.ttf?ydaly2') format('truetype'),
-    url('fonts/roleicons.woff?ydaly2') format('woff'),
-    url('fonts/roleicons.svg?ydaly2#icomoon') format('svg');
+  src:  url('roleicons.eot?ydaly2');
+  src:  url('roleicons.eot?ydaly2#iefix') format('embedded-opentype'),
+    url('roleicons.ttf?ydaly2') format('truetype'),
+    url('roleicons.woff?ydaly2') format('woff'),
+    url('roleicons.svg?ydaly2#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
