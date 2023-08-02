@@ -43,10 +43,10 @@ end)
 -- TARGET ID --
 ---------------
 
--- Show "KILL" icon over the target's head
-hook.Add("TTTTargetIDPlayerKillIcon", "Assassin_TTTTargetIDPlayerKillIcon", function(ply, cli, showKillIcon, showJester)
+-- Show skull icon over the target's head
+hook.Add("TTTTargetIDPlayerTargetIcon", "Assassin_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
     if cli:IsAssassin() and assassin_show_target_icon:GetBool() and cli:GetNWString("AssassinTarget") == ply:SteamID64() and not showJester then
-        return true
+        return "kill", true, ROLE_COLORS_SPRITE[ROLE_ASSASSIN], "down"
     end
 end)
 
@@ -66,9 +66,8 @@ ROLE_IS_TARGETID_OVERRIDDEN[ROLE_ASSASSIN] = function(ply, target, showJester)
     -- Shared logic
     local show = (target:SteamID64() == ply:GetNWString("AssassinTarget", "")) and not showJester
 
-    local icon = show and assassin_show_target_icon:GetBool()
     ------ icon,  ring, text
-    return icon, false, show
+    return false, false, show
 end
 
 ----------------
@@ -120,7 +119,7 @@ local function EnableAssassinTargetHighlights()
 
         local target = nil
         for _, v in pairs(GetAllPlayers()) do
-            if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= client and v:SteamID64() == target_sid64 then
+            if IsValid(v) and v:IsActive() and v ~= client and v:SteamID64() == target_sid64 then
                 target = v
                 break
             end

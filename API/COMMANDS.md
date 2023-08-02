@@ -6,7 +6,26 @@
 Resets the client's equipment cache used in shop display. Useful when debugging changed shop rules.\
 *Added in*: 1.0.11
 
+### ttt_roleweapons
+Allows for viewing and editing which weapons are available in each role's shop.\
+*Added in*: 1.2.7\
+*Parameters:*
+- *command* - Which command should be run *(Added in 1.9.4)*
+  - *open (aka show)* - Opens the configuration UI. See [this tutorial](../CONVARS.md#Configuration-by-UI) for how to use the UI. (This command is the default if no parameter is provided)
+  - *list (aka print)* - Prints the current configuration in the server console, highlighting anything invalid
+  - *clean* - Removes any invalid configurations. WARNING: This CANNOT be undone!
+  - *reload* - Reloads the configurations from the server's filesystem
+
 ## *Server Commands*
+
+### sv_ttt_roleweapons
+Allows for viewing and editing which weapons are available in each role's shop. Server-side version of [ttt_roleweapons](COMMANDS.md#ttt_roleweapons).\
+*Added in*: 1.9.4\
+*Parameters:*
+- *command* - Which command should be run
+  - *list (aka print)* - Prints the current configuration in the console, highlighting anything invalid
+  - *clean* - Removes any invalid configurations. WARNING: This CANNOT be undone!
+  - *reload* - Reloads the configurations from the filesystem
 
 ### ttt_damage_from_random
 Damages the local player by a random non-jester team player. *NOTE*: Cheats must be enabled to use this command.\

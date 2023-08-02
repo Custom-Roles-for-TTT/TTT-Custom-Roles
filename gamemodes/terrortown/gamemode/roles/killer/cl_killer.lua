@@ -46,10 +46,10 @@ end)
 -- TARGET ID --
 ---------------
 
--- Show "KILL" icon over all non-jester team heads
-hook.Add("TTTTargetIDPlayerKillIcon", "Killer_TTTTargetIDPlayerKillIcon", function(ply, cli, showKillIcon, showJester)
+-- Show skull icon over all non-jester team heads
+hook.Add("TTTTargetIDPlayerTargetIcon", "Killer_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
     if cli:IsKiller() and killer_show_target_icon:GetBool() and not showJester then
-        return true
+        return "kill", true, ROLE_COLORS_SPRITE[ROLE_KILLER], "down"
     end
 end)
 
@@ -64,11 +64,8 @@ ROLE_IS_TARGETID_OVERRIDDEN[ROLE_KILLER] = function(ply, target, showJester)
     if not ply:IsKiller() then return end
     if not IsPlayer(target) then return end
 
-    local show_kill = killer_show_target_icon:GetBool() and not showJester
-    local show_role = showJester
-
-    ------ icon,                   ring,  text
-    return show_kill or show_role, false, false
+    ------ icon,       ring,  text
+    return showJester, false, false
 end
 
 ------------------

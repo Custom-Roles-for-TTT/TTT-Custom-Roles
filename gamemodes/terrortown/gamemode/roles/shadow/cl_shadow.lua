@@ -147,6 +147,17 @@ end)
 -- TARGET ID --
 ---------------
 
+-- Show shadow target icon over the shadow's target
+hook.Add("TTTTargetIDPlayerTargetIcon", "Shadow_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
+    if cli:IsShadow() and ply:SteamID64() == cli:GetNWString("ShadowTarget", "") then
+        local iconColor = ROLE_COLORS_SPRITE[ROLE_TRAITOR]
+        if cli:GetPos():Distance(ply:GetPos()) <= shadow_alive_radius:GetFloat() * UNITS_PER_METER then
+            iconColor = ROLE_COLORS_SPRITE[ROLE_INNOCENT]
+        end
+        return "shadow", true, iconColor, "up"
+    end
+end)
+
 AddHook("TTTTargetIDPlayerRoleIcon", "Shadow_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
     if shadow_target_notify_mode:GetInt() == SHADOW_NOTIFY_IDENTIFY and ply:IsActiveShadow() and ply:GetNWString("ShadowTarget", "") == cli:SteamID64() then
         return ROLE_SHADOW, true

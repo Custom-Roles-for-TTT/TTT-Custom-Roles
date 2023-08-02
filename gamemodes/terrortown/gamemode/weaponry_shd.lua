@@ -44,6 +44,13 @@ WEPS.BuyableWeapons = { }
 WEPS.ExcludeWeapons = { }
 WEPS.BypassRandomWeapons = { }
 
+function WEPS.ClearWeaponsLists()
+    table.Empty(WEPS.BuyableWeapons)
+    table.Empty(WEPS.ExcludeWeapons)
+    table.Empty(WEPS.BypassRandomWeapons)
+end
+if CLIENT then net.Receive("TTT_ClearRoleWeapons", WEPS.ClearWeaponsLists) end
+
 function WEPS.PrepWeaponsLists(role)
     -- Initialize the lists for this role
     if not WEPS.BuyableWeapons[role] then

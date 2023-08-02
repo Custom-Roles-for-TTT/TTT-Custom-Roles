@@ -101,9 +101,7 @@ local function CopyLoverNWVars(copyTo, copyFrom, cupidSID, loverSID)
     copyTo:SetNWString("TTTCupidLover", loverSID)
     if lover and IsPlayer(lover) then
         lover:SetNWString("TTTCupidLover", copyTo:SteamID64())
-        local message = copyTo:Nick() .. " has swapped with " .. copyFrom:Nick() .. " and is now your lover."
-        lover:PrintMessage(HUD_PRINTCENTER, message)
-        lover:PrintMessage(HUD_PRINTTALK, message)
+        lover:QueueMessage(MSG_PRINTBOTH, copyTo:Nick() .. " has swapped with " .. copyFrom:Nick() .. " and is now your lover.")
     end
 
     if cupid then
@@ -118,16 +116,14 @@ local function CopyLoverNWVars(copyTo, copyFrom, cupidSID, loverSID)
         else
             message = message .. "in love with " .. lover:Nick() .. "."
         end
-        cupid:PrintMessage(HUD_PRINTCENTER, message)
-        cupid:PrintMessage(HUD_PRINTTALK, message)
+        cupid:QueueMessage(MSG_PRINTBOTH, message)
 
         if loverSID == "" then
             message = copyFrom:Nick() .. " had been hit by cupid's arrow so you are now waiting to be paired with a lover."
         else
             message = copyFrom:Nick() .. " was in love so you are now in love with " .. lover:Nick() .. "."
         end
-        copyTo:PrintMessage(HUD_PRINTCENTER, message)
-        copyTo:PrintMessage(HUD_PRINTTALK, message)
+        copyTo:QueueMessage(MSG_PRINTBOTH, message)
     end
 end
 

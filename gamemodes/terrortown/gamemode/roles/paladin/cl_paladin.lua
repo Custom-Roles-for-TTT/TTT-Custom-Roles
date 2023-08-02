@@ -72,7 +72,7 @@ hook.Add("HUDPaintBackground", "Paladin_HUDPaintBackground", function()
 
     local inside = false
     for _, p in pairs(GetAllPlayers()) do
-        if p:IsActive() and p:Alive() and p:GetDisplayedRole() == ROLE_PALADIN and client:GetPos():Distance(p:GetPos()) <= (paladin_aura_radius:GetFloat() * UNITS_PER_METER) then
+        if p:IsActive() and p:GetDisplayedRole() == ROLE_PALADIN and client:GetPos():Distance(p:GetPos()) <= (paladin_aura_radius:GetFloat() * UNITS_PER_METER) then
             inside = true
             break
         end

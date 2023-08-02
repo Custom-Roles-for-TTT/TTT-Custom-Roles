@@ -65,6 +65,7 @@ include("player_ext.lua")
 include("player.lua")
 include("hitmarkers.lua")
 include("deathnotify.lua")
+include("roleweapons.lua")
 include("sprint_shd.lua")
 
 -- Localise stuff we use often. It's like Lua go-faster stripes.
@@ -235,34 +236,6 @@ CreateConVar("ttt_det_credits_starting", "1")
 CreateConVar("ttt_det_credits_traitorkill", "0")
 CreateConVar("ttt_det_credits_traitordead", "1")
 
--- Shop parameters
-CreateConVar("ttt_shop_for_all", 0, FCVAR_REPLICATED)
--- Add any convars that are missing once shop-for-all is enabled
-cvars.AddChangeCallback("ttt_shop_for_all", function(convar, oldValue, newValue)
-    local enabled = tobool(newValue)
-    if enabled then
-        for role = 0, ROLE_MAX do
-            if not SHOP_ROLES[role] then
-                CreateShopConVars(role)
-                SHOP_ROLES[role] = true
-            end
-        end
-    end
-
-    SetGlobalBool("ttt_shop_for_all", enabled)
-end)
-
-local shop_roles = GetTeamRoles(SHOP_ROLES)
-for _, role in ipairs(shop_roles) do
-    CreateShopConVars(role)
-end
-
--- Create the starting credit convar for all roles that have credits but don't have a shop
-local shopless_credit_roles = table.UnionedKeys(CAN_LOOT_CREDITS_ROLES, ROLE_STARTING_CREDITS, shop_roles)
-for _, role in ipairs(shopless_credit_roles) do
-    CreateCreditConVar(role)
-end
-
 -- Other
 CreateConVar("ttt_use_weapon_spawn_scripts", "1")
 CreateConVar("ttt_weapon_spawn_count", "0")
@@ -347,12 +320,14 @@ util.AddNetworkString("TTT_UpdateBuyableWeapons")
 util.AddNetworkString("TTT_ResetBuyableWeaponsCache")
 util.AddNetworkString("TTT_ConfigureRoleWeapons")
 util.AddNetworkString("TTT_RoleWeaponsLoaded")
+util.AddNetworkString("TTT_ClearRoleWeapons")
 util.AddNetworkString("TTT_PlayerFootstep")
 util.AddNetworkString("TTT_ClearPlayerFootsteps")
 util.AddNetworkString("TTT_JesterDeathCelebration")
 util.AddNetworkString("TTT_LoadMonsterEquipment")
 util.AddNetworkString("TTT_UpdateRoleNames")
 util.AddNetworkString("TTT_ScoreboardUpdate")
+util.AddNetworkString("TTT_QueueMessage")
 
 local function ClearAllFootsteps()
     net.Start("TTT_ClearPlayerFootsteps")
@@ -670,6 +645,8 @@ function PrepareRound()
         v.DeathRoleWeapons = nil
         -- Clear out old ignition info so we don't misattribute stuff in the new round
         v.ignite_info = nil
+        -- Clear the message queue so any messages from the previous round don't show update
+        v:ResetMessageQueue()
     end
 
     -- Check playercount
@@ -776,8 +753,7 @@ function TellTraitorsAboutTraitors()
     for _, v in ipairs(plys) do
         if v:IsTraitorTeam() then
             if hasGlitch then
-                v:PrintMessage(HUD_PRINTTALK, "There is " .. ROLE_STRINGS_EXT[ROLE_GLITCH] .. ".")
-                v:PrintMessage(HUD_PRINTCENTER, "There is " .. ROLE_STRINGS_EXT[ROLE_GLITCH] .. ".")
+                v:QueueMessage(MSG_PRINTBOTH, "There is " .. ROLE_STRINGS_EXT[ROLE_GLITCH] .. ".")
             end
 
             if #traitornicks < 2 then
@@ -943,7 +919,7 @@ function BeginRound()
     -- EQUIP_REGEN health regeneration tick
     timer.Create("RegenEquipmentTick", 0.66, 0, function()
         for _, v in pairs(GetAllPlayers()) do
-            if v:Alive() and not v:IsSpec() and v:HasEquipmentItem(EQUIP_REGEN) then
+            if v:IsActive() and v:HasEquipmentItem(EQUIP_REGEN) then
                 local hp = v:Health()
                 if hp < v:GetMaxHealth() then
                     v:SetHealth(hp + 1)
@@ -1183,7 +1159,7 @@ function GM:TTTCheckForWin()
     local monster_alive = false
 
     for _, v in ipairs(GetAllPlayers()) do
-        if v:Alive() and v:IsTerror() then
+        if v:IsActive() then
             if v:IsTraitorTeam() then
                 traitor_alive = true
             elseif v:IsMonsterTeam() then

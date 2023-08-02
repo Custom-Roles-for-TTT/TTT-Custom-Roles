@@ -71,10 +71,10 @@ AddHook("TTTScoringSecondaryWins", "Cupid_TTTScoringSecondaryWins", function(win
 
     for _, p in ipairs(GetAllPlayers()) do
         local lover = p:GetNWString("TTTCupidLover", "")
-        if p:Alive() and p:IsTerror() and lover ~= "" then
+        if p:IsActive() and lover ~= "" then
             local loverPly = player.GetBySteamID64(lover)
             -- This shouldn't be necessary because if one lover dies the other should too but we check just in case
-            if IsPlayer(loverPly) and loverPly:Alive() and loverPly:IsTerror() then
+            if IsPlayer(loverPly) and loverPly:IsActive() then
                 TableInsert(secondary_wins, {
                     rol = ROLE_CUPID,
                     txt = LANG.GetTranslation("hilite_lovers_secondary"),
@@ -105,10 +105,10 @@ end)
 AddHook("TTTEndRound", "Cupid_SecondaryWinEvent_TTTEndRound", function()
     for _, p in ipairs(GetAllPlayers()) do
         local lover = p:GetNWString("TTTCupidLover", "")
-        if p:Alive() and p:IsTerror() and lover ~= "" then
+        if p:IsActive() and lover ~= "" then
             local loverPly = player.GetBySteamID64(lover)
             -- This shouldn't be necessary because if one lover dies the other should too but we check just in case
-            if IsPlayer(loverPly) and loverPly:Alive() and loverPly:IsTerror() then
+            if IsPlayer(loverPly) and loverPly:IsActive() then
                 CLSCORE:AddEvent({ -- Log the win event with an offset to force it to the end
                     id = EVENT_FINISH,
                     win = WIN_CUPID
@@ -189,6 +189,16 @@ end)
 ---------------
 -- TARGET ID --
 ---------------
+
+-- Show lover icon over all lover players
+hook.Add("TTTTargetIDPlayerTargetIcon", "Cupid_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
+    local target = ply:SteamID64()
+    if cli:IsCupid() and (target == cli:GetNWString("TTTCupidTarget1", "") or target == cli:GetNWString("TTTCupidTarget2", "")) then
+        return "lover", false, Color(230, 90, 200, 255), "up"
+    elseif target == cli:GetNWString("TTTCupidLover", "") then
+        return "lover", true, Color(230, 90, 200, 255), "up"
+    end
+end)
 
 AddHook("TTTTargetIDPlayerRoleIcon", "Cupid_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
     if ply:IsActiveCupid() and ply:SteamID64() == cli:GetNWString("TTTCupidShooter", "") then
@@ -276,7 +286,7 @@ local function EnableLoverHighlights()
     AddHook("PreDrawHalos", "Cupid_Highlight_PreDrawHalos", function()
         local lover = client:GetNWString("TTTCupidLover", "")
         local loverPly = player.GetBySteamID64(lover)
-        if not IsPlayer(loverPly) or not loverPly:Alive() or not loverPly:IsTerror() then return end
+        if not IsPlayer(loverPly) or not loverPly:IsActive() then return end
 
         HaloAdd({ loverPly }, Color(230, 90, 200, 255), 1, 1, 1, true, true)
     end)

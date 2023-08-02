@@ -43,7 +43,7 @@ hook.Add("PlayerDisconnected", "Zombie_Prime_PlayerDisconnected", function(ply)
 
     local zombies = {}
     for _, v in pairs(GetAllPlayers()) do
-        if v:Alive() and v:IsTerror() and v:IsZombie() and v ~= ply then
+        if v:IsActiveZombie() and v ~= ply then
             -- If we already have another prime, we're all set
             if v:IsZombiePrime() then
                 return
@@ -59,9 +59,7 @@ hook.Add("PlayerDisconnected", "Zombie_Prime_PlayerDisconnected", function(ply)
     local new_prime = zombies[idx]
     new_prime:SetZombiePrime(true)
 
-    local message = "The prime " .. ROLE_STRINGS[ROLE_ZOMBIE] .. " has been lost and you've seized power in their absence!"
-    new_prime:PrintMessage(HUD_PRINTCENTER, message)
-    new_prime:PrintMessage(HUD_PRINTTALK, message)
+    new_prime:QueueMessage(MSG_PRINTBOTH, "The prime " .. ROLE_STRINGS[ROLE_ZOMBIE] .. " has been lost and you've seized power in their absence!")
 end)
 
 function plymeta:SetZombiePrime(p) self:SetNWBool("zombie_prime", p) end
@@ -117,7 +115,7 @@ hook.Add("TTTCheckForWin", "Zombie_TTTCheckForWin", function()
     local zombie_alive = false
     local other_alive = false
     for _, v in ipairs(GetAllPlayers()) do
-        if v:Alive() and v:IsTerror() then
+        if v:IsActive() then
             if v:IsZombie() or v:IsMadScientist() then
                 zombie_alive = true
             elseif not v:ShouldActLikeJester() then
@@ -292,7 +290,7 @@ end)
 ----------------
 
 function plymeta:RespawnAsZombie(prime)
-    self:PrintMessage(HUD_PRINTCENTER, "You will respawn as " .. ROLE_STRINGS_EXT[ROLE_ZOMBIE] .. " in 3 seconds.")
+    self:QueueMessage(MSG_PRINTCENTER, "You will respawn as " .. ROLE_STRINGS_EXT[ROLE_ZOMBIE] .. " in 3 seconds.")
     self:SetNWBool("IsZombifying", true)
 
     net.Start("TTT_Zombified")

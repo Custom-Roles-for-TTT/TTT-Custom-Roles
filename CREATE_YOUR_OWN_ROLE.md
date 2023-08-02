@@ -416,7 +416,7 @@ end
 
 if SERVER then
     hook.Add("TTTSpectatorHUDKeyPress", "Summoner_TTTSpectatorHUDKeyPress", function(ply, tgt, powers)
-        if ply:GetNWBool("PhantomHaunting", false) and IsValid(tgt) and tgt:Alive() and not tgt:IsSpec() then
+        if ply:GetNWBool("PhantomHaunting", false) and IsValid(tgt) and tgt:IsActive() then
             powers[IN_ATTACK2] = {
                 start_command = "+menu",
                 end_command = "-menu",
@@ -440,18 +440,18 @@ end
 
 There are a few options for roles that aren't covered in the template because they don't apply to every role. Add any of these that you want to apply to your role to the file.
 
-| Option | Type | Description | Added in |
-| --- | --- | --- | --- |
-| `ROLE.canlootcredits` | boolean | Whether this role can loot credits from dead bodies. Automatically enabled if the role has a shop, but setting to `false` can make it so the role has a shop but cannot loot credits. Setting this to `true` will allow this role to loot credits regardless of whether they have a shop and will automatically create the `ttt_%NAMERAW%_credits_starting` convar. | 1.1.8 |
-| `ROLE.canusetraitorbuttons` | boolean |  Whether this role can see and use traitor traps. Automatically enabled if the role is part of `ROLE_TEAM_TRAITOR`, but setting to `false` can make it so the role is a traitor that cannot use traitor traps. Setting to `true` will allow this role to use traitor traps regardless of their team association. | 1.1.8 |
-| `ROLE.shoulddelayshop` | boolean |  Whether this role's shop purchases are delayed. Purchases will only be given to the player when `plymeta:GiveDelayedShopItems` is called by your own role logic. Enabling this feature will automatically create `ttt_%NAMERAW%_shop_active_only` and `ttt_%NAMERAW%_shop_delay` convars. Requires that the role has a shop and has role activation defined (see [Role Activation](#Role-Activation)). | 1.2.2 |
-| `ROLE.shoulddelayannouncements` | boolean |  Whether this role should delay announcements when they kill a player that shows a message (like phantom and parasite). Used for things like preventing the assassin's target update message from getting overlapped. | 1.2.7 |
-| `ROLE.haspassivewin` | boolean |  Whether this role should not block another role from winning (like the old man). | 1.3.1 |
-| `ROLE.shouldnotdrown` | boolean |  Whether the player should not show the drown effect or take drowning damage. | 1.5.7 |
-| `ROLE.canseec4` | boolean | Whether the player should be able to see the C4 icons like traitors can. | 1.5.14 |
-| `ROLE.istargetidoverridden` | function(ply, target, showJester) | Whether the player's target ID information (role icon, circle, text) are being overridden by a hook. Called by the `plymeta:IsTargetIDOverridden` function. See [the API](API/METHODS_PLAYER_OBJECT.md) for more information on the function. | 1.5.15 |
-| `ROLE.isscoreboardinfooverridden` | function(ply, target) | Whether the player's scoreboard (player name, role color and icon) are being overridden by a hook. Called by the `plymeta:IsScoreboardInfoOverridden` function. See [the API](API/METHODS_PLAYER_OBJECT.md) for more information on the function. | 1.5.15 |
-| `ROLE.istargethighlighted` | function(ply, target) | Whether the target is being highlighted per the player's role rules. Called by the `plymeta:IsTargetHighlighted` function. See [the API](API/METHODS_PLAYER_OBJECT.md) for more information on the function. | 1.5.15 |
+| Option                                                  | Type | Description | Added in |
+|---------------------------------------------------------| --- | --- | --- |
+| `ROLE.canlootcredits`                                   | boolean | Whether this role can loot credits from dead bodies. Automatically enabled if the role has a shop, but setting to `false` can make it so the role has a shop but cannot loot credits. Setting this to `true` will allow this role to loot credits regardless of whether they have a shop and will automatically create the `ttt_%NAMERAW%_credits_starting` convar. | 1.1.8 |
+| `ROLE.canusetraitorbuttons`                             | boolean |  Whether this role can see and use traitor traps. Automatically enabled if the role is part of `ROLE_TEAM_TRAITOR`, but setting to `false` can make it so the role is a traitor that cannot use traitor traps. Setting to `true` will allow this role to use traitor traps regardless of their team association. | 1.1.8 |
+| `ROLE.shoulddelayshop`                                  | boolean |  Whether this role's shop purchases are delayed. Purchases will only be given to the player when `plymeta:GiveDelayedShopItems` is called by your own role logic. Enabling this feature will automatically create `ttt_%NAMERAW%_shop_active_only` and `ttt_%NAMERAW%_shop_delay` convars. Requires that the role has a shop and has role activation defined (see [Role Activation](#Role-Activation)). | 1.2.2 |
+| `ROLE.shoulddelayannouncements` **DEPRECATED IN 1.9.4** | boolean |  Whether this role should delay announcements when they kill a player that shows a message (like phantom and parasite). Used for things like preventing the assassin's target update message from getting overlapped. | 1.2.7 | <!-- TODO: Remove after 2.0.0 -->
+| `ROLE.haspassivewin`                                    | boolean |  Whether this role should not block another role from winning (like the old man). | 1.3.1 |
+| `ROLE.shouldnotdrown`                                   | boolean |  Whether the player should not show the drown effect or take drowning damage. | 1.5.7 |
+| `ROLE.canseec4`                                         | boolean | Whether the player should be able to see the C4 icons like traitors can. | 1.5.14 |
+| `ROLE.istargetidoverridden`                             | function(ply, target, showJester) | Whether the player's target ID information (role icon, circle, text) are being overridden by a hook. Called by the `plymeta:IsTargetIDOverridden` function. See [the API](API/METHODS_PLAYER_OBJECT.md) for more information on the function. | 1.5.15 |
+| `ROLE.isscoreboardinfooverridden`                       | function(ply, target) | Whether the player's scoreboard (player name, role color and icon) are being overridden by a hook. Called by the `plymeta:IsScoreboardInfoOverridden` function. See [the API](API/METHODS_PLAYER_OBJECT.md) for more information on the function. | 1.5.15 |
+| `ROLE.istargethighlighted`                              | function(ply, target) | Whether the target is being highlighted per the player's role rules. Called by the `plymeta:IsTargetHighlighted` function. See [the API](API/METHODS_PLAYER_OBJECT.md) for more information on the function. | 1.5.15 |
 
 The Summoner doesn't need these options to be set because it is `ROLE_TEAM_TRAITOR` and has a shop, but just for an example, here's what it would look like if we wanted to remove their credit looting and traitor trap abilities and delay their shop item delivery:
 
@@ -514,7 +514,7 @@ ttt_%NAMERAW%_shop_sync (Whether the role should have access to all traitor/dete
 ttt_%NAMERAW%_shop_mode (Whether the role should have access to traitor and/or detective shop items) [INDEPENDENT ONLY]
 ```
 
-For more information on the specifics of these ConVars you can read the full list of ConVars [here](https://github.com/NoxxFlame/TTT-Custom-Roles/blob/master/CONVARS.md#server-configurations).
+For more information on the specifics of these ConVars you can read the full list of ConVars [here](https://github.com/Custom-Roles-for-TTT/TTT-Custom-Roles/blob/master/CONVARS.md#server-configurations).
 
 If you would like to add your own ConVars that aren't automatically created you can do so here. First create the ConVars as you would normally with `CreateConVar`. *(Note: Please try to keep your ConVars as consistently named as possible. The recommended naming scheme for role specific convars is `ttt_%NAMERAW%_...`.)*
 

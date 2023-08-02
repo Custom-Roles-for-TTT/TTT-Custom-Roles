@@ -1,13 +1,60 @@
 # Release Notes
 
-## 1.9.3 (Beta)
+## 1.9.4 (Beta)
 **Released:**
 
 ### Additions
-- Added a new traitor role: The Spy
+- Added a new traitor role: spy
+- Added target icon above undoused player's heads for the arsonist, lover's heads for cupid and the lovers, and the shadow's target's head for the shadow
+- Added jester player information to the clown's scoreboard when they are active, matching their target ID (icon, ring, text) visibility
+
+### Changes
+- Changed appearance of 'KILL' icon used by multiple roles
+- Expanded the `ttt_roleweapons` command to have additional modes such as list, clean, and reload. See the command documentation for more information.
+
+### Fixes
+- Fixed clown seeing jester icons (instead of question mark icons) over all jester team members' heads when they are activated
+- Fixed clown seeing jester icon over the activated loot goblin's head (instead of the loot goblin icon)
+
+### Developer
+- Changed `plymeta:IsActive` to ensure the player is alive like it was always supposed to
+- Added `weapon_cr_defibbase` and updated all defib-like weapons to use it
+- Added `TTTTargetIDPlayerTargetIcon` hook to control what target icon and background color should be shown over the target's head
+- Added `plymeta:QueueMessage` method to queue messages to be printed to chat and the center of the screen one at a time
+- Fixed loot goblin's definition of `ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN` and `ROLE_IS_TARGETID_OVERRIDDEN` using the parameters backwards
+- **BREAKING CHANGE** - Deprecated `TTTTargetIDPlayerKillIcon`
+  - Use the `TTTTargetIDPlayerTargetIcon` hook instead and return `"kill", true, ROLE_COLORS_SPRITE[ply:GetRole()], "down"`
+- **BREAKING CHANGE** - Deprecated `plymeta:ShouldDelayAnnouncements`
+  - Use `plymeta:QueueMessage` to automatically queue announcements instead
+
+## 1.9.3 (Beta)
+**Released: July 29th, 2023**
+
+### Changes
+- Changed settings menu entry for notification sound cue to match base TTT
+- **BREAKING CHANGE** - Renamed some convars so similar convars now have consistent plurality. Added a warning message when the old convars are being used so server admins can find and rename these convars before the old one are removed in the major release after this change goes into effect. The list of convars changed is:
+  - ttt_detective_hide_special_mode -> ttt_detectives_hide_special_mode
+  - ttt_detective_search_only -> ttt_detectives_search_only
+  - ttt_detective_search_only_* -> ttt_detectives_search_only_*
+  - ttt_detective_disable_looting -> ttt_detectives_disable_looting
+  - ttt_traitor_vision_enable -> ttt_traitors_vision_enable
+  - ttt_beggars_are_independent -> ttt_beggar_is_independent
+  - ttt_bodysnatchers_are_independent -> ttt_bodysnatcher_is_independent
+  - ttt_cupids_are_independent -> ttt_cupid_is_independent
+  - ttt_detective_glow_enable -> ttt_detectives_glow_enable
+  - ttt_detective_credits_timer -> ttt_detectives_credits_timer
+  - ttt_vampires_are_monsters -> ttt_vampire_is_monster
+  - ttt_vampires_are_independent -> ttt_vampire_is_independent
+  - ttt_zombies_are_monsters -> ttt_zombie_is_monster
+  - ttt_zombies_are_traitors -> ttt_zombie_is_traitor
 
 ### Fixes
 - Fixed `ttt_sapper_protect_self` not allowing sapper to be protected from a different sapper if there are somehow multiple
+- Fixed sprinting, then changing your crosshair size, then sprinting again causing your crosshair to revert to the original unchanged size
+- Fixed sprinting causing crosshair size to be rounded to the nearest whole number
+- Fixed loot goblin transform message being shown multiple times
+- Fixed `ttt_bodysnatcher_respawn_delay` not working
+- Fixed deputy, impersonator and zombie tutorial screens so they show if the marshal or madscientist could spawn them while the role isn't enabled
 
 ### Developer
 - Changed role logic to load shared files first

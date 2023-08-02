@@ -22,7 +22,7 @@ local StringSub = string.sub
 include("player_class/player_ttt.lua")
 
 -- Version string for display and function for version checks
-CR_VERSION = "1.9.3"
+CR_VERSION = "1.9.4"
 CR_BETA = true
 CR_WORKSHOP_ID = CR_BETA and "2404251054" or "2421039084"
 
@@ -419,40 +419,40 @@ if CLIENT then
         return teamName, teamColor
     end
 else
-    function CreateCreditConVar(role)
-        -- Add explicit ROLE_INNOCENT exclusion here in case shop-for-all is enabled
-        if not DEFAULT_ROLES[role] or role == ROLE_INNOCENT then
-            local rolestring = ROLE_STRINGS_RAW[role]
-            local credits = "0"
-            if ROLE_STARTING_CREDITS[role] then credits = ROLE_STARTING_CREDITS[role]
-            elseif TRAITOR_ROLES[role] then credits = "1"
-            elseif DETECTIVE_ROLES[role] then credits = "1" end
-            CreateConVar("ttt_" .. rolestring .. "_credits_starting", credits, FCVAR_REPLICATED)
-        end
-    end
-
-    function CreateShopConVars(role)
-        local rolestring = ROLE_STRINGS_RAW[role]
-        CreateCreditConVar(role)
-
-        CreateConVar("ttt_" .. rolestring .. "_shop_random_percent", "0", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown for the " .. rolestring, 0, 100)
-        CreateConVar("ttt_" .. rolestring .. "_shop_random_enabled", "0", FCVAR_REPLICATED, "Whether shop randomization should run for the " .. rolestring)
-
-        if (TRAITOR_ROLES[role] and role ~= ROLE_TRAITOR) or (DETECTIVE_ROLES[role] and role ~= ROLE_DETECTIVE) or role == ROLE_ZOMBIE then -- This all happens before we run UpdateRoleState so we need to manually add zombies
-            CreateConVar("ttt_" .. rolestring .. "_shop_sync", "0", FCVAR_REPLICATED)
-        end
-
-        if (INDEPENDENT_ROLES[role] and role ~= ROLE_ZOMBIE) or DELAYED_SHOP_ROLES[role] then
-            CreateConVar("ttt_" .. rolestring .. "_shop_mode", "0", FCVAR_REPLICATED)
-        end
-
-        if DELAYED_SHOP_ROLES[role] then
-            CreateConVar("ttt_" .. rolestring .. "_shop_active_only", "1", FCVAR_REPLICATED)
-            CreateConVar("ttt_" .. rolestring .. "_shop_delay", "0", FCVAR_REPLICATED)
-        end
-    end
-
     GetRoleTeamName = GetRawRoleTeamName
+end
+
+function CreateCreditConVar(role)
+    -- Add explicit ROLE_INNOCENT exclusion here in case shop-for-all is enabled
+    if not DEFAULT_ROLES[role] or role == ROLE_INNOCENT then
+        local rolestring = ROLE_STRINGS_RAW[role]
+        local credits = "0"
+        if ROLE_STARTING_CREDITS[role] then credits = ROLE_STARTING_CREDITS[role]
+        elseif TRAITOR_ROLES[role] then credits = "1"
+        elseif DETECTIVE_ROLES[role] then credits = "1" end
+        CreateConVar("ttt_" .. rolestring .. "_credits_starting", credits, FCVAR_REPLICATED)
+    end
+end
+
+function CreateShopConVars(role)
+    local rolestring = ROLE_STRINGS_RAW[role]
+    CreateCreditConVar(role)
+
+    CreateConVar("ttt_" .. rolestring .. "_shop_random_percent", "0", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown for the " .. rolestring, 0, 100)
+    CreateConVar("ttt_" .. rolestring .. "_shop_random_enabled", "0", FCVAR_REPLICATED, "Whether shop randomization should run for the " .. rolestring)
+
+    if (TRAITOR_ROLES[role] and role ~= ROLE_TRAITOR) or (DETECTIVE_ROLES[role] and role ~= ROLE_DETECTIVE) or role == ROLE_ZOMBIE then -- This all happens before we run UpdateRoleState so we need to manually add zombies
+        CreateConVar("ttt_" .. rolestring .. "_shop_sync", "0", FCVAR_REPLICATED)
+    end
+
+    if (INDEPENDENT_ROLES[role] and role ~= ROLE_ZOMBIE) or DELAYED_SHOP_ROLES[role] then
+        CreateConVar("ttt_" .. rolestring .. "_shop_mode", "0", FCVAR_REPLICATED)
+    end
+
+    if DELAYED_SHOP_ROLES[role] then
+        CreateConVar("ttt_" .. rolestring .. "_shop_active_only", "1", FCVAR_REPLICATED)
+        CreateConVar("ttt_" .. rolestring .. "_shop_delay", "0", FCVAR_REPLICATED)
+    end
 end
 
 ROLE_COLORS = {}
@@ -820,7 +820,7 @@ ROLE_SELECTION_PREDICATE = {}
 ROLE_CONVARS = {}
 
 -- Optional features
-ROLE_SHOULD_DELAY_ANNOUNCEMENTS = {}
+ROLE_SHOULD_DELAY_ANNOUNCEMENTS = {} -- TODO: Remove after 2.0.0
 ROLE_HAS_PASSIVE_WIN = {}
 ROLE_SHOULD_NOT_DROWN = {}
 ROLE_CAN_SEE_C4 = {}
@@ -932,7 +932,7 @@ function RegisterRole(tbl)
         DELAYED_SHOP_ROLES[roleID] = tbl.shoulddelayshop
     end
 
-    if type(tbl.shoulddelayannouncements) == "boolean" then
+    if type(tbl.shoulddelayannouncements) == "boolean" then -- TODO: Remove after 2.0.0
         ROLE_SHOULD_DELAY_ANNOUNCEMENTS[roleID] = tbl.shoulddelayannouncements
     end
 
@@ -1291,6 +1291,11 @@ SPECIAL_DETECTIVE_HIDE_FOR_OTHERS = 2
 UNITS_PER_METER = 52.49
 UNITS_PER_FIVE_METERS = UNITS_PER_METER * 5
 
+-- Message queue modes
+MSG_PRINTBOTH = 1
+MSG_PRINTTALK = 3 -- Keep this the same value as HUD_PRINTTALK just in case
+MSG_PRINTCENTER = 4 -- Keep this the same value as HUD_PRINTCENTER just in case
+
 -- Corpse stuff
 CORPSE_ICON_TYPES = {
     "c4",
@@ -1469,7 +1474,7 @@ function UpdateRoleState()
     UpdateRoleColours()
 
     -- Enable the shop for all roles if configured to do so
-    if GetGlobalBool("ttt_shop_for_all", false) then
+    if GetConVar("ttt_shop_for_all"):GetBool() then
         for role = 0, ROLE_MAX do
             if not SHOP_ROLES[role] then
                 SHOP_ROLES[role] = true
@@ -1551,9 +1556,9 @@ if SERVER then
         for _, ply in pairs(GetAllPlayers()) do
             if ply == attacker then
                 local role_string = ROLE_STRINGS[role]
-                ply:PrintMessage(HUD_PRINTCENTER, "You killed the " .. role_string .. "!")
+                ply:QueueMessage(MSG_PRINTCENTER, "You killed the " .. role_string .. "!")
             elseif (shouldshow == nil or shouldshow(ply)) and ShouldShowJesterNotification(ply, mode) then
-                ply:PrintMessage(HUD_PRINTCENTER, getkillstring(ply))
+                ply:QueueMessage(MSG_PRINTCENTER, getkillstring(ply))
             end
 
             if play_sound or show_confetti then
@@ -1609,3 +1614,71 @@ DefaultEquipment = {
         "weapon_ttt_glock"
     }
 };
+
+-----------------
+-- Old ConVars --
+-----------------
+
+local function OldCVarWarning(oldName, newName)
+    cvars.AddChangeCallback(oldName, function(convar, oldValue, newValue)
+        RunConsoleCommand(newName, newValue)
+        ErrorNoHalt("WARNING: ConVar \'" .. oldName .. "\' deprecated. Use \'" .. newName .. "\' instead!\n")
+    end)
+end
+
+-- init_shd
+CreateConVar("ttt_detective_disable_looting", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_detective_disable_looting", "ttt_detectives_disable_looting")
+
+CreateConVar("ttt_detective_hide_special_mode", SPECIAL_DETECTIVE_HIDE_NONE, FCVAR_REPLICATED, "How to handle special detective role information. 0 - Show the special detective's role to everyone. 1 - Hide the special detective's role from everyone (just show detective instead). 2 - Hide the special detective's role for everyone but themselves (only they can see their true role)", SPECIAL_DETECTIVE_HIDE_NONE, SPECIAL_DETECTIVE_HIDE_FOR_OTHERS)
+OldCVarWarning("ttt_detective_hide_special_mode", "ttt_detectives_hide_special_mode")
+
+CreateConVar("ttt_detective_search_only", "1", FCVAR_REPLICATED)
+OldCVarWarning("ttt_detective_search_only", "ttt_detectives_search_only")
+
+for _, dataType in ipairs(CORPSE_ICON_TYPES) do
+    CreateConVar("ttt_detective_search_only_" .. dataType, "0", FCVAR_REPLICATED)
+    OldCVarWarning("ttt_detective_search_only_" .. dataType, "ttt_detectives_search_only_" .. dataType)
+end
+
+CreateConVar("ttt_traitor_vision_enable", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_traitor_vision_enable", "ttt_traitors_vision_enable")
+
+-- Arsonist
+CreateConVar("ttt_detective_search_only_arsonistdouse", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_detective_search_only_arsonistdouse", "ttt_detectives_search_only_arsonistdouse")
+
+-- Beggar
+CreateConVar("ttt_beggars_are_independent", "0", FCVAR_REPLICATED, "Whether beggars should be treated as members of the independent team", 0, 1)
+OldCVarWarning("ttt_beggars_are_independent", "ttt_beggar_is_independent")
+
+-- Bodysnatcher
+CreateConVar("ttt_bodysnatchers_are_independent", "0", FCVAR_REPLICATED, "Whether bodysnatchers should be treated as members of the independent team", 0, 1)
+OldCVarWarning("ttt_bodysnatchers_are_independent", "ttt_bodysnatcher_is_independent")
+
+-- Cupid
+CreateConVar("ttt_cupids_are_independent", "0", FCVAR_REPLICATED, "Whether cupids should be treated as members of the independent team", 0, 1)
+OldCVarWarning("ttt_cupids_are_independent", "ttt_cupid_is_independent")
+
+-- Detective-Like
+CreateConVar("ttt_detective_glow_enable", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_detective_glow_enable", "ttt_detectives_glow_enable")
+
+if SERVER then
+    CreateConVar("ttt_detective_credits_timer", "0")
+    OldCVarWarning("ttt_detective_credits_timer", "ttt_detectives_credits_timer")
+end
+
+-- Vampire
+CreateConVar("ttt_vampires_are_monsters", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_vampires_are_monsters", "ttt_vampire_is_monster")
+
+CreateConVar("ttt_vampires_are_independent", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_vampires_are_independent", "ttt_vampire_is_independent")
+
+-- Zombie
+CreateConVar("ttt_zombies_are_monsters", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_zombies_are_monsters", "ttt_zombie_is_monster")
+
+CreateConVar("ttt_zombies_are_traitors", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_zombies_are_traitors", "ttt_zombie_is_traitor")

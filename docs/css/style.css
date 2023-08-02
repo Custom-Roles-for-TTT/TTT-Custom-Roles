@@ -98,3 +98,10 @@ a {
 p {
     width: fit-content;
 }
+
+.force-break {
+    display: inline-block;
+    margin-top: 0;
+    margin-bottom: 0;
+    min-width: calc(100% - 10px);
+}
