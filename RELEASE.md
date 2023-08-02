@@ -29,9 +29,6 @@
 - Fixed `ttt_bodysnatcher_respawn_delay` not working
 - Fixed deputy, impersonator and zombie tutorial screens so they show if the marshal or madscientist could spawn them while the role isn't enabled
 
-### Developer
-- Changed role logic to load shared files first
-
 ## 1.9.2
 **Released: July 22nd, 2023**
 
