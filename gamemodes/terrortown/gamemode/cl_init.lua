@@ -404,23 +404,21 @@ function GM:Think()
                 if not v.SmokeEmitter then v.SmokeEmitter = ParticleEmitter(v:GetPos()) end
                 if not v.SmokeNextPart then v.SmokeNextPart = CurTime() end
                 local pos = v:GetPos() + smokeOffset
-                if v.SmokeNextPart < CurTime() then
-                    if client:GetPos():Distance(pos) <= 3000 then
-                        v.SmokeEmitter:SetPos(pos)
-                        v.SmokeNextPart = CurTime() + MathRand(0.003, 0.01)
-                        local vec = Vector(MathRand(-8, 8), MathRand(-8, 8), MathRand(10, 55))
-                        local particle = v.SmokeEmitter:Add(smokeParticle, v:LocalToWorld(vec))
-                        particle:SetVelocity(Vector(0, 0, 4) + VectorRand() * 3)
-                        particle:SetDieTime(MathRand(0.5, 2))
-                        particle:SetStartAlpha(MathRandom(150, 220))
-                        particle:SetEndAlpha(0)
-                        local size = MathRandom(4, 7)
-                        particle:SetStartSize(size)
-                        particle:SetEndSize(size + 1)
-                        particle:SetRoll(0)
-                        particle:SetRollDelta(0)
-                        particle:SetColor(smokeColor.r, smokeColor.g, smokeColor.b)
-                    end
+                if v.SmokeNextPart < CurTime() and client:GetPos():Distance(pos) <= 3000 then
+                    v.SmokeEmitter:SetPos(pos)
+                    v.SmokeNextPart = CurTime() + MathRand(0.003, 0.01)
+                    local vec = Vector(MathRand(-8, 8), MathRand(-8, 8), MathRand(10, 55))
+                    local particle = v.SmokeEmitter:Add(smokeParticle, v:LocalToWorld(vec))
+                    particle:SetVelocity(Vector(0, 0, 4) + VectorRand() * 3)
+                    particle:SetDieTime(MathRand(0.5, 2))
+                    particle:SetStartAlpha(MathRandom(150, 220))
+                    particle:SetEndAlpha(0)
+                    local size = MathRandom(4, 7)
+                    particle:SetStartSize(size)
+                    particle:SetEndSize(size + 1)
+                    particle:SetRoll(0)
+                    particle:SetRollDelta(0)
+                    particle:SetColor(smokeColor.r, smokeColor.g, smokeColor.b)
                 end
             elseif v.SmokeEmitter then
                 v.SmokeEmitter:Finish()

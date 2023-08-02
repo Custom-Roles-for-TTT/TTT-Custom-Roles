@@ -286,7 +286,7 @@ local function EnableLoverHighlights()
     AddHook("PreDrawHalos", "Cupid_Highlight_PreDrawHalos", function()
         local lover = client:GetNWString("TTTCupidLover", "")
         local loverPly = player.GetBySteamID64(lover)
-        if not IsPlayer(loverPly) or not loverPly:Alive() or not loverPly:IsTerror() then return end
+        if not IsPlayer(loverPly) or not loverPly:IsActive() then return end
 
         HaloAdd({ loverPly }, Color(230, 90, 200, 255), 1, 1, 1, true, true)
     end)

@@ -19,7 +19,7 @@ local function ShootBullet(weap, dmg, onPlayerShot)
     bullet.Force  = 0
     bullet.Damage = dmg
     if SERVER then
-        bullet.Callback = function(atk, tr, dmg)
+        bullet.Callback = function(atk, tr, d)
             local ent = tr.Entity
             if ent:IsPlayer() and ent:IsTerror() then
                 onPlayerShot(ent, atk)
