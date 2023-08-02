@@ -16,6 +16,7 @@
 - Added `TTTTargetIDPlayerTargetIcon` hook to control what target icon and background color should be shown over the target's head
 - **BREAKING CHANGE** - Deprecated `TTTTargetIDPlayerKillIcon`
   - Use the `TTTTargetIDPlayerTargetIcon` hook instead and return `"kill", true, ROLE_COLORS_SPRITE[ply:GetRole()], "down"`
+- Fixed loot goblin's definition of `ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN` and `ROLE_IS_TARGETID_OVERRIDDEN` using the parameters backwards
 
 ## 1.9.3 (Beta)
 **Released: July 29th, 2023**
