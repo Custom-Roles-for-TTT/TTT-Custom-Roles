@@ -45,6 +45,15 @@ hook.Add("TTTTutorialRoleText", "Deputy_TTTTutorialRoleText", function(role, tit
         end
         html = html .. " icon over the " .. ROLE_STRINGS[ROLE_DEPUTY] .. "'s head.</span>"
 
+        -- Shop
+        html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_DEPUTY] .. " has access to a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>weapon shop</span>"
+        if GetConVar("ttt_deputy_shop_active_only"):GetBool() then
+            html = html .. ", but only <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>after they are promoted</span>"
+        elseif GetConVar("ttt_deputy_shop_delay"):GetBool() then
+            html = html .. ", but they are only given their purchased weapons <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>after they are promoted</span>"
+        end
+        html = html .. ".</span>"
+
         return html
     end
 end)
