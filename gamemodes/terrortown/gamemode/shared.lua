@@ -950,6 +950,14 @@ function RegisterRole(tbl)
         ROLE_CAN_SEE_C4[roleID] = tbl.canseec4
     end
 
+    if type(tbl.canseejesters) == "boolean" then
+        ROLE_CAN_SEE_JESTERS[roleID] = tbl.canseejesters
+    end
+
+    if type(tbl.canseemia) == "boolean" then
+        ROLE_CAN_SEE_MIA[roleID] = tbl.canseemia
+    end
+
     -- Equipment
     -- Make sure teams that normally have shops are added to the shop list, even if they don't have things in their shop by default
     -- This allows the "sync" and "mode" convars to be created
