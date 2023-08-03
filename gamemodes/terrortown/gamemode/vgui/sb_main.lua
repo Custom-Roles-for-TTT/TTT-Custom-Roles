@@ -103,8 +103,7 @@ function ScoreGroup(p)
                 -- To terrorists, missing players show as alive
                 if client:IsSpec() or
                         client:IsActiveTraitorTeam() or client:IsActiveMonsterTeam() or
-                        (GetConVar("ttt_independents_update_scoreboard"):GetBool() and client:IsActiveIndependentTeam()) or
-                        (GetConVar("ttt_killer_update_scoreboard"):GetBool() and client:IsActiveKiller()) or
+                        (client:IsActiveIndependentTeam() and GetConVar("ttt_" .. ROLE_STRINGS_RAW[client:GetRole()] .. "_update_scoreboard"):GetBool()) or
                         ((GAMEMODE.round_state ~= ROUND_ACTIVE) and client:IsTerror()) then
                     return GROUP_NOTFOUND
                 else
