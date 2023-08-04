@@ -12,6 +12,9 @@ local phantom_killer_haunt_move_cost = GetConVar("ttt_phantom_killer_haunt_move_
 local phantom_killer_haunt_attack_cost = GetConVar("ttt_phantom_killer_haunt_attack_cost")
 local phantom_killer_haunt_jump_cost = GetConVar("ttt_phantom_killer_haunt_jump_cost")
 local phantom_killer_haunt_drop_cost = GetConVar("ttt_phantom_killer_haunt_drop_cost")
+local phantom_weaker_each_respawn = GetConVar("ttt_phantom_weaker_each_respawn")
+local phantom_announce_death = GetConVar("ttt_phantom_announce_death")
+local phantom_killer_footstep_time = GetConVar("ttt_phantom_killer_footstep_time")
 
 ------------------
 -- TRANSLATIONS --
@@ -165,9 +168,34 @@ hook.Add("TTTTutorialRoleText", "Phantom_TTTTutorialRoleText", function(role, ti
         -- Respawn
         html = html .. "<span style='display: block; margin-top: 10px;'>If the " .. ROLE_STRINGS[ROLE_PHANTOM] .. " is killed, they will <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>be resurrected</span> if the person that killed them then dies.</span>"
 
-        -- Smoke
-        if phantom_killer_smoke:GetBool() then
-            html = html .. "<span style='display: block; margin-top: 10px;'>Before the " .. ROLE_STRINGS[ROLE_PHANTOM] .. " is respawned, their killer is enveloped in a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>shroud of smoke</span>, revealing themselves as the " .. ROLE_STRINGS[ROLE_PHANTOM] .. "'s killer to other players.</span>"
+        -- Weaker each respawn
+        if phantom_weaker_each_respawn:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>Each time the " .. ROLE_STRINGS[ROLE_PHANTOM] .. " is killed, they will respawn with <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>half as much health</span>, down to a minimum of 1hp.</span>"
+        end
+
+        -- Announce death
+        if phantom_announce_death:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>When the " .. ROLE_STRINGS[ROLE_PHANTOM] .. " is killed, all " .. LANG.GetTranslation("detectives") .. " (and promoted " .. LANG.GetTranslation("detective") .. "-like roles) <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>are notified</span>.<span>"
+        end
+
+        local has_smoke = phantom_killer_smoke:GetBool()
+        local has_footsteps = phantom_killer_footstep_time:GetInt() > 0
+        -- Smoke and Killer footsteps
+        if has_smoke or has_footsteps then
+            html = html .. "<span style='display: block; margin-top: 10px;'>Before the " .. ROLE_STRINGS[ROLE_PHANTOM] .. " is respawned, their killer "
+            if has_smoke then
+                html = html .. "is enveloped in a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>shroud of smoke</span>"
+            end
+
+            if has_smoke and has_footsteps then
+                html = html .. " and "
+            end
+
+            if has_footsteps then
+                html = html .. "leaves behind <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>bloody footprints</span>"
+            end
+
+            html = html .. ", revealing themselves as the " .. ROLE_STRINGS[ROLE_PHANTOM] .. "'s killer to other players.</span>"
         end
 
         -- Possessing
