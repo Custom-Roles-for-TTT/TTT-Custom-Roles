@@ -10,7 +10,8 @@
 
 ### Changes
 - Changed appearance of 'KILL' icon used by multiple roles
-- Expanded the `ttt_roleweapons` command to have additional modes such as list, clean, and reload. See the command documentation for more information.
+- Expanded the `ttt_roleweapons` admin command to have additional modes such as list, clean, and reload. See the command documentation for more information.
+- Changed many role tutorials to include additional information for new and changed features
 
 ### Fixes
 - Fixed clown seeing jester icons (instead of question mark icons) over all jester team members' heads when they are activated
@@ -24,7 +25,7 @@
 - Fixed loot goblin's definition of `ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN` and `ROLE_IS_TARGETID_OVERRIDDEN` using the parameters backwards
 - **BREAKING CHANGE** - Deprecated `TTTTargetIDPlayerKillIcon`
   - Use the `TTTTargetIDPlayerTargetIcon` hook instead and return `"kill", true, ROLE_COLORS_SPRITE[ply:GetRole()], "down"`
-- **BREAKING CHANGE** - Deprecated `plymeta:ShouldDelayAnnouncements`
+- **BREAKING CHANGE** - Deprecated `plymeta:ShouldDelayAnnouncements` and the corresponding `ROLE_SHOULD_DELAY_ANNOUNCEMENTS` table and `ROLE.shoulddelayannouncements` external role feature
   - Use `plymeta:QueueMessage` to automatically queue announcements instead
 
 ## 1.9.3 (Beta)
