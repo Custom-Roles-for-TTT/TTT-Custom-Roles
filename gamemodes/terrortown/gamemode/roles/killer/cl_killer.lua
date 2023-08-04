@@ -7,10 +7,12 @@ local RemoveHook = hook.Remove
 -- CONVARS --
 -------------
 
-local killer_knife_enabled = GetConVar("ttt_killer_knife_enabled", "1")
-local killer_smoke_enabled = GetConVar("ttt_killer_smoke_enabled", "1")
-local killer_show_target_icon = GetConVar("ttt_killer_show_target_icon", "1")
-local killer_vision_enable = GetConVar("ttt_killer_vision_enable", "1")
+local killer_knife_enabled = GetConVar("ttt_killer_knife_enabled")
+local killer_crowbar_enabled = GetConVar("ttt_killer_crowbar_enabled")
+local killer_smoke_enabled = GetConVar("ttt_killer_smoke_enabled")
+local killer_show_target_icon = GetConVar("ttt_killer_show_target_icon")
+local killer_vision_enable = GetConVar("ttt_killer_vision_enable")
+local killer_warn_all = GetConVar("ttt_killer_warn_all")
 
 ------------------
 -- TRANSLATIONS --
@@ -164,9 +166,19 @@ hook.Add("TTTTutorialRoleText", "Killer_TTTTutorialRoleText", function(role, tit
         -- Use this for highlighting things like "kill"
         roleColor = ROLE_COLORS[ROLE_TRAITOR]
 
+        -- Warning
+        if killer_warn_all:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>All players are <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>warned</span> when there is "  .. ROLE_STRINGS_EXT[ROLE_KILLER] .. " in the game.</span>"
+        end
+
         -- Knife
         if killer_knife_enabled:GetBool() then
-            html = html .. "<span style='display: block; margin-top: 10px;'>They are given a knife that does high damage to aid in their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>slaughter.</span></span>"
+            html = html .. "<span style='display: block; margin-top: 10px;'>They are given a knife that does high damage to aid in their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>slaughter</span>.</span>"
+        end
+
+        -- Crowbar
+        if killer_crowbar_enabled:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>They have a special crowbar <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>can be thrown</span>.</span>"
         end
 
         -- Smoke
