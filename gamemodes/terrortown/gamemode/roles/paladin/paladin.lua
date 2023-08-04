@@ -14,12 +14,12 @@ resource.AddFile("materials/particle/shield.vmt")
 -- CONVARS --
 -------------
 
+local paladin_heal_rate = CreateConVar("ttt_paladin_heal_rate", "1", FCVAR_NONE, "The amount of heal a player inside the paladin's aura will heal each second", 0, 10)
+
 local paladin_aura_radius = GetConVar("ttt_paladin_aura_radius")
 local paladin_protect_self = GetConVar("ttt_paladin_protect_self")
 local paladin_heal_self = GetConVar("ttt_paladin_heal_self")
 local paladin_damage_reduction = GetConVar("ttt_paladin_damage_reduction")
-
-local paladin_heal_rate = CreateConVar("ttt_paladin_heal_rate", "1", FCVAR_NONE, "The amount of heal a player inside the paladin's aura will heal each second", 0, 10)
 
 -------------------
 -- ROLE FEATURES --

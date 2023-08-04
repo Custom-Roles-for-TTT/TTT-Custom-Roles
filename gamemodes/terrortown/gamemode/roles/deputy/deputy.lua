@@ -6,10 +6,10 @@ local hook = hook
 -- CONVARS --
 -------------
 
-local deputy_damage_penalty = GetConVar("ttt_deputy_damage_penalty")
-
 CreateConVar("ttt_deputy_without_detective", "0")
 CreateConVar("ttt_deputy_activation_credits", "0", FCVAR_NONE, "The number of credits to give the deputy when they are activated", 0, 10)
+
+local deputy_damage_penalty = GetConVar("ttt_deputy_damage_penalty")
 
 ------------
 -- DAMAGE --

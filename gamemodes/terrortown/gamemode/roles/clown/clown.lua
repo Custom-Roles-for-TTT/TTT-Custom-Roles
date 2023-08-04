@@ -18,12 +18,12 @@ resource.AddSingleFile("sound/clown.wav")
 -- CONVARS --
 -------------
 
+local clown_activation_credits = CreateConVar("ttt_clown_activation_credits", "0", FCVAR_NONE, "The number of credits to give the clown when they are activated", 0, 10)
+
 local clown_use_traps_when_active = GetConVar("ttt_clown_use_traps_when_active")
 local clown_heal_on_activate = GetConVar("ttt_clown_heal_on_activate")
 local clown_heal_bonus = GetConVar("ttt_clown_heal_bonus")
 local clown_damage_bonus = GetConVar("ttt_clown_damage_bonus")
-
-local clown_activation_credits = CreateConVar("ttt_clown_activation_credits", "0", FCVAR_NONE, "The number of credits to give the clown when they are activated", 0, 10)
 
 ----------------
 -- WIN CHECKS --

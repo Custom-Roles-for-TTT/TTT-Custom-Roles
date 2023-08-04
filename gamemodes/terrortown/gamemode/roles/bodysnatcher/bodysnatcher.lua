@@ -15,13 +15,13 @@ util.AddNetworkString("TTT_BodysnatcherKilled")
 -- CONVARS --
 -------------
 
-local bodysnatcher_respawn = GetConVar("ttt_bodysnatcher_respawn")
-local bodysnatcher_respawn_delay = GetConVar("ttt_bodysnatcher_respawn_delay")
-local bodysnatcher_respawn_limit = GetConVar("ttt_bodysnatcher_respawn_limit")
-
 CreateConVar("ttt_bodysnatcher_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the bodysnatcher is killed", 0, 4)
 CreateConVar("ttt_bodysnatcher_notify_sound", "0", FCVAR_NONE, "Whether to play a cheering sound when a bodysnatcher is killed", 0, 1)
 CreateConVar("ttt_bodysnatcher_notify_confetti", "0", FCVAR_NONE, "Whether to throw confetti when a bodysnatcher is a killed", 0, 1)
+
+local bodysnatcher_respawn = GetConVar("ttt_bodysnatcher_respawn")
+local bodysnatcher_respawn_delay = GetConVar("ttt_bodysnatcher_respawn_delay")
+local bodysnatcher_respawn_limit = GetConVar("ttt_bodysnatcher_respawn_limit")
 
 ----------------
 -- ROLE STATE --
