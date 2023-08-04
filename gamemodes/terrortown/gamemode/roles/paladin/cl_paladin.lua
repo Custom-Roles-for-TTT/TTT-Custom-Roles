@@ -91,6 +91,7 @@ hook.Add("TTTTutorialRoleText", "Paladin_TTTTutorialRoleText", function(role, ti
         local detectiveColor = GetRoleTeamColor(ROLE_TEAM_DETECTIVE)
         local html = "The " .. ROLE_STRINGS[ROLE_PALADIN] .. " is a " .. ROLE_STRINGS[ROLE_DETECTIVE] .. " and a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> whose job is to find and eliminate their enemies."
 
+        -- Aura
         local has_damage_reduction = paladin_damage_reduction:GetFloat() > 0
         html = html .. "<span style='display: block; margin-top: 10px;'>Instead of getting a DNA Scanner like a vanilla <span style='color: rgb(" .. detectiveColor.r .. ", " .. detectiveColor.g .. ", " .. detectiveColor.b .. ")'>" .. ROLE_STRINGS[ROLE_DETECTIVE] .. "</span>, they have a healing"
         if has_damage_reduction then
@@ -98,7 +99,7 @@ hook.Add("TTTTutorialRoleText", "Paladin_TTTTutorialRoleText", function(role, ti
         end
         html = html .. " aura.</span>"
 
-        -- Damage Reduction
+        -- Damage reduction
         if has_damage_reduction then
             html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_PALADIN] .. "'s <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>damage reduction</span> "
             if paladin_protect_self:GetBool() then
@@ -118,6 +119,7 @@ hook.Add("TTTTutorialRoleText", "Paladin_TTTTutorialRoleText", function(role, ti
         end
         html = html .. ".</span>"
 
+        -- Hide special detectives mode
         html = html .. "<span style='display: block; margin-top: 10px;'>Other players will know you are " .. ROLE_STRINGS_EXT[ROLE_DETECTIVE] .. " just by <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>looking at you</span>"
         local special_detective_mode = GetConVar("ttt_detectives_hide_special_mode"):GetInt()
         if special_detective_mode > SPECIAL_DETECTIVE_HIDE_NONE then

@@ -37,6 +37,7 @@ hook.Add("TTTTutorialRoleText", "Deputy_TTTTutorialRoleText", function(role, tit
         html = html .. "<span style='display: block; margin-top: 10px;'>After the " .. ROLE_STRINGS[ROLE_DETECTIVE] .. " is killed, <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>the " .. ROLE_STRINGS[ROLE_DEPUTY] .. " is \"promoted\"</span> and then must assume their role as the new " .. ROLE_STRINGS[ROLE_DETECTIVE] .. ".</span>"
         html = html .. "<span style='display: block; margin-top: 10px;'>They have <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>all the powers of " .. ROLE_STRINGS_EXT[ROLE_DETECTIVE] .. "</span> including " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "-only weapons and the ability to search bodies.</span>"
 
+        -- Damage penalty
         if deputy_damage_penalty:GetFloat() > 0 then
             html = html .. "<span style='display: block; margin-top: 10px;'>Be careful though! Before the " .. ROLE_STRINGS[ROLE_DEPUTY] .. " has been promoted, they <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>do less damage</span>.</span>"
         end

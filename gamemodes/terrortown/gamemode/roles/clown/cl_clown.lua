@@ -234,6 +234,7 @@ hook.Add("TTTTutorialRoleText", "Clown_TTTTutorialRoleText", function(role, titl
 
         html = html .. "<span style='display: block; margin-top: 10px;'>When a team would normally win, the " .. ROLE_STRINGS[ROLE_CLOWN] .. " <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>activates</span> which allows them to <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>go on a rampage</span> and win by surprise.</span>"
 
+        -- Damage bonus
         if clown_damage_bonus:GetFloat() > 0 then
             html = html .. "<span style='display: block; margin-top: 10px;'>Once the " .. ROLE_STRINGS[ROLE_CLOWN] .. " has activated, they <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>do more damage</span>.</span>"
         end
@@ -262,6 +263,7 @@ hook.Add("TTTTutorialRoleText", "Clown_TTTTutorialRoleText", function(role, titl
             html = html .. "<span style='display: block; margin-top: 10px;'><span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>Traitor traps</span> also become available when <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>the " .. ROLE_STRINGS[ROLE_CLOWN] .." is activated</span>.</span>"
         end
 
+        -- Heal on activate
         if clown_heal_on_activate:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>When the " .. ROLE_STRINGS[ROLE_CLOWN] .." is activated, they will also be <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>healed to maximum health</span>"
             if clown_heal_bonus:GetInt() > 0 then
