@@ -16,6 +16,7 @@ local infected_cough_enabled = GetConVar("ttt_infected_cough_enabled")
 local infected_respawn_enable = GetConVar("ttt_infected_respawn_enable")
 local infected_show_icon = GetConVar("ttt_infected_show_icon")
 local infected_succumb_time = GetConVar("ttt_infected_succumb_time")
+local infected_full_health = GetConVar("ttt_infected_full_health")
 
 ------------------
 -- TRANSLATIONS --
@@ -173,6 +174,14 @@ hook.Add("TTTTutorialRoleText", "Infected_TTTTutorialRoleText", function(role, t
 
         local succumbTime = infected_succumb_time:GetInt()
         html = html .. "<span style='display: block; margin-top: 10px;'>After " .. succumbTime .. " seconds, the " .. ROLE_STRINGS[ROLE_INFECTED] .. " will <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>succumb to their disease</span> and change into <span style='color: rgb(" .. zombieColor.r .. ", " .. zombieColor.g .. ", " .. zombieColor.b .. ")'>" .. ROLE_STRINGS_EXT[ROLE_ZOMBIE] .. "</span>.</span>"
+
+        if infected_show_icon:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>Before the " .. ROLE_STRINGS[ROLE_INFECTED] .. "'s infection has taken hold, they are <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>identifiable</span> to their future <span style='color: rgb(" .. zombieColor.r .. ", " .. zombieColor.g .. ", " .. zombieColor.b .. ")'>" .. ROLE_STRINGS[ROLE_ZOMBIE] .. " comrades</span> via role icons and displayed colors.</span>"
+        end
+
+        if infected_full_health:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>Once the " .. ROLE_STRINGS[ROLE_INFECTED] .. " has succumbed to their infection, they are <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>healed back to full health</span>.</span>"
+        end
 
         if infected_respawn_enable:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_INFECTED] .. " will also turn into " .. ROLE_STRINGS_EXT[ROLE_ZOMBIE] .. " if <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>they are killed</span>.</span>"
