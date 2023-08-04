@@ -41,6 +41,8 @@ local zombie_is_monster = CreateConVar("ttt_zombie_is_monster", "0", FCVAR_REPLI
 local zombie_is_traitor = CreateConVar("ttt_zombie_is_traitor", "0", FCVAR_REPLICATED)
 local zombie_prime_speed_bonus = CreateConVar("ttt_zombie_prime_speed_bonus", "0.35", FCVAR_REPLICATED, "The amount of bonus speed a prime zombie (e.g. player who spawned as a zombie originally) should get when using their claws. Server or round must be restarted for changes to take effect", 0, 1)
 local zombie_thrall_speed_bonus = CreateConVar("ttt_zombie_thrall_speed_bonus", "0.15", FCVAR_REPLICATED, "The amount of bonus speed a zombie thrall (e.g. non-prime zombie) should get when using their claws. Server or round must be restarted for changes to take effect", 0, 1)
+CreateConVar("ttt_zombie_damage_penalty", "0.5", FCVAR_REPLICATED, "The fraction a zombie's damage will be scaled by when they are attacking without using their claws. For example, setting this to 0.25 will let the zombie deal 75% of normal gun damage, and 0.66 will let the zombie deal 33% of normal damage", 0, 1)
+CreateConVar("ttt_zombie_damage_reduction", "0", FCVAR_REPLICATED, "The fraction an attacker's bullet damage will be reduced by when they are shooting a zombie", 0, 1)
 
 ROLE_CONVARS[ROLE_ZOMBIE] = {}
 table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
