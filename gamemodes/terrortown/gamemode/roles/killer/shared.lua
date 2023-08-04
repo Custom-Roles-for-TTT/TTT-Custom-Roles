@@ -7,6 +7,8 @@ local table = table
 ROLE_STARTING_HEALTH[ROLE_KILLER] = 150
 ROLE_MAX_HEALTH[ROLE_KILLER] = 150
 ROLE_STARTING_CREDITS[ROLE_KILLER] = 2
+ROLE_CAN_SEE_JESTERS[ROLE_KILLER] = true
+ROLE_CAN_SEE_MIA[ROLE_KILLER] = true
 
 local function InitializeEquipment()
     if EquipmentItems then
@@ -87,7 +89,6 @@ CreateConVar("ttt_killer_knife_enabled", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_killer_smoke_enabled", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_killer_show_target_icon", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_killer_vision_enable", "1", FCVAR_REPLICATED)
-CreateConVar("ttt_killer_update_scoreboard", "1", FCVAR_REPLICATED)
 
 ROLE_CONVARS[ROLE_KILLER] = {}
 table.insert(ROLE_CONVARS[ROLE_KILLER], {
@@ -130,10 +131,6 @@ table.insert(ROLE_CONVARS[ROLE_KILLER], {
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_KILLER], {
-    cvar = "ttt_killer_update_scoreboard",
-    type = ROLE_CONVAR_TYPE_BOOL
-})
-table.insert(ROLE_CONVARS[ROLE_KILLER], {
     cvar = "ttt_killer_knife_damage",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
@@ -152,4 +149,12 @@ table.insert(ROLE_CONVARS[ROLE_KILLER], {
     cvar = "ttt_killer_crowbar_thrown_damage",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_KILLER], {
+    cvar = "ttt_killer_can_see_jesters",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_KILLER], {
+    cvar = "ttt_killer_update_scoreboard",
+    type = ROLE_CONVAR_TYPE_BOOL
 })

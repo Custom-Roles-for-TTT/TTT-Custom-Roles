@@ -9,6 +9,9 @@ ARSONIST_DOUSING_LOSING = 2
 ARSONIST_DOUSING_LOST = 3
 ARSONIST_DOUSED = 4
 
+ROLE_CAN_SEE_JESTERS[ROLE_ARSONIST] = true
+ROLE_CAN_SEE_MIA[ROLE_ARSONIST] = true
+
 ------------------
 -- ROLE CONVARS --
 ------------------
@@ -61,4 +64,12 @@ table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
     cvar = "ttt_arsonist_corpse_ignite_time",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
+    cvar = "ttt_arsonist_can_see_jesters",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_ARSONIST], {
+    cvar = "ttt_arsonist_update_scoreboard",
+    type = ROLE_CONVAR_TYPE_BOOL
 })

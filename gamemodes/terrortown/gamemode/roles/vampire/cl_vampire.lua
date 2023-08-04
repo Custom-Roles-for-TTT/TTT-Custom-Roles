@@ -197,7 +197,7 @@ hook.Add("TTTUpdateRoleState", "Vampire_Highlight_TTTUpdateRoleState", function(
     vampire_vision = vampire_vision_enable:GetBool()
     jesters_visible_to_traitors = GetConVar("ttt_jesters_visible_to_traitors"):GetBool()
     jesters_visible_to_monsters = GetConVar("ttt_jesters_visible_to_monsters"):GetBool()
-    jesters_visible_to_independents = GetConVar("ttt_jesters_visible_to_independents"):GetBool()
+    jesters_visible_to_independents = INDEPENDENT_ROLES[ROLE_VAMPIRE] and GetConVar("ttt_vampire_can_see_jesters"):GetBool()
 
     -- Disable highlights on role change
     if vision_enabled then

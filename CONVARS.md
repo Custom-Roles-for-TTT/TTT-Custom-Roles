@@ -247,6 +247,8 @@ ttt_vampire_kill_credits                    1       // Whether the vampire recei
 ttt_vampire_loot_credits                    1       // Whether the vampire can loot credits from a dead player
 ttt_vampire_prime_friendly_fire             0       // How to handle friendly fire damage to the prime vampire(s) from their thralls. 0 - Do nothing. 1 - Reflect damage back to the attacker (non-prime vampire). 2 - Negate damage to the prime vampire.
 ttt_vampire_credits_starting                1       // The number of credits a vampire should start with
+ttt_vampire_can_see_jesters                 1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to vampires (Only applies if ttt_vampire_is_independent is enabled)
+ttt_vampire_update_scoreboard               1       // Whether vampires show dead players as missing in action (Only applies if ttt_vampire_is_independent is enabled)
 
 // Quack
 ttt_quack_credits_starting                  1       // The number of credits a quack should start with
@@ -441,7 +443,6 @@ ttt_single_jester_independent_max_players   0       // The maximum players to ha
 ttt_jesters_trigger_traitor_testers         1       // Whether jesters trigger traitor testers as if they were traitors
 ttt_jesters_visible_to_traitors             1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to members of the traitor team
 ttt_jesters_visible_to_monsters             1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to members of the monster team
-ttt_jesters_visible_to_independents         1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to independent players
 
 // Jester
 ttt_jester_win_by_traitors                  1       // Whether the jester will win the round if they are killed by a traitor
@@ -495,6 +496,8 @@ ttt_beggar_scan_time                        15      // The amount of time (in se
 ttt_beggar_scan_float_time                  1       // The amount of time (in seconds) it takes for the beggar's scanner to lose it's target without line of sight
 ttt_beggar_scan_cooldown                    3       // The amount of time (in seconds) the beggar's tracker goes on cooldown for after losing it's target
 ttt_beggar_scan_distance                    2500    // The maximum distance away the scanner target can be
+ttt_beggar_can_see_jesters                  0       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the beggar (Only applies if ttt_beggar_is_independent is enabled)
+ttt_beggar_update_scoreboard                0       // Whether the beggar shows dead players as missing in action (Only applies if ttt_beggar_is_independent is enabled)
 
 // Bodysnatcher
 ttt_bodysnatcher_is_independent             0       // Whether bodysnatchers should be treated as members of the independent team (rather than the jester team)
@@ -512,6 +515,8 @@ ttt_bodysnatcher_notify_mode                0       // The logic to use when not
 ttt_bodysnatcher_notify_sound               0       // Whether to play a cheering sound when a bodysnatcher is killed
 ttt_bodysnatcher_notify_confetti            0       // Whether to throw confetti when a bodysnatcher is a killed
 ttt_bodysnatcher_device_time                5       // The amount of time (in seconds) the bodysnatcher's device takes to use
+ttt_bodysnatcher_can_see_jesters            0       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the bodysnatcher (Only applies if ttt_bodysnatcher_is_independent is enabled)
+ttt_bodysnatcher_update_scoreboard          0       // Whether the bodysnatcher shows dead players as missing in action (Only applies if ttt_bodysnatcher_is_independent is enabled)
 
 // Loot Goblin
 ttt_lootgoblin_activation_timer             30      // Minimum time in seconds before the loot goblin is revealed
@@ -546,6 +551,8 @@ ttt_cupid_lover_vision_enable               1       // Whether the lovers can se
 ttt_cupid_notify_mode                       0       // The logic to use when notifying players that a cupid is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
 ttt_cupid_notify_sound                      0       // Whether to play a cheering sound when a cupid is killed
 ttt_cupid_notify_confetti                   0       // Whether to throw confetti when a cupid is a killed
+ttt_cupid_can_see_jesters                   0       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to cupid (Only applies if ttt_cupid_is_independent is enabled)
+ttt_cupid_update_scoreboard                 0       // Whether cupid shows dead players as missing in action (Only applies if ttt_cupid_is_independent is enabled)
 
 // Sponge
 ttt_sponge_aura_radius                      5       // The radius of the sponge's aura in meters
@@ -557,7 +564,6 @@ ttt_sponge_notify_confetti                  0       // Whether to throw confetti
 
 // INDEPENDENT TEAM SETTINGS
 ttt_independents_trigger_traitor_testers    0       // Whether independents trigger traitor testers as if they were traitors
-ttt_independents_update_scoreboard          0       // Whether all independent roles show dead players as missing in action
 
 // Drunk
 ttt_drunk_sober_time                        180     // Time in seconds for the drunk to remember their role
@@ -567,6 +573,8 @@ ttt_drunk_become_clown                      0       // Whether the drunk should 
 ttt_drunk_notify_mode                       0       // The logic to use when notifying players that a drunk has sobered up. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
 ttt_drunk_any_role                          0       // Whether the drunk can become any enabled role (other than the drunk, the glitch, or roles that were already used this round). The ttt_drunk_can_be_* convars below can be used to prevent the drunk from becoming specific roles
 ttt_drunk_join_losing_team                  0       // Whether the drunk should join the losing team when their sober timer runs out. Please note this isn't 100% accurate as we can't know for sure which team is losing but we can try based on the available information
+ttt_drunk_can_see_jesters                   0       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the drunk
+ttt_drunk_update_scoreboard                 0       // Whether the drunk shows dead players as missing in action
 ttt_drunk_can_be_traitor                    1       // Whether the drunk can become a traitor
 ttt_drunk_can_be_hypnotist                  1       // Whether the drunk can become a hypnotist
 ttt_drunk_can_be_impersonator               1       // Whether the drunk can become an impersonator
@@ -614,6 +622,8 @@ ttt_oldman_adrenaline_shotgun               1       // Whether the old man is gi
 ttt_oldman_adrenaline_shotgun_damage        10      // How much damage the double barrel shotgun should do
 ttt_oldman_adrenaline_ramble                1       // Whether the rambling speech sound plays when the old man is having their adrenaline rush
 ttt_oldman_hide_when_active                 0       // Whether the old man should be hidden from other players' Target ID (overhead icons) when their adrenaline rush is triggered. Server or round must be restarted for changes to take effect
+ttt_oldman_can_see_jesters                  0       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the old man
+ttt_oldman_update_scoreboard                0       // Whether the old man shows dead players as missing in action
 
 // Killer
 ttt_killer_knife_enabled                    1       // Whether the killer knife is enabled
@@ -630,7 +640,8 @@ ttt_killer_damage_reduction                 0       // The fraction an attacker'
 ttt_killer_warn_all                         0       // Whether to warn all players if there is a killer. If 0, only traitors will be warned
 ttt_killer_vision_enable                    1       // Whether killers have their special vision highlights enabled
 ttt_killer_credits_starting                 2       // The number of credits a killer should start with
-ttt_killer_update_scoreboard                1       // Whether killers show dead players as missing in action (Is ignored if ttt_independents_update_scoreboard is set to 1)
+ttt_killer_can_see_jesters                  1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the killer
+ttt_killer_update_scoreboard                1       // Whether the killer shows dead players as missing in action
 
 // Zombie
 ttt_zombie_is_monster                       0       // Whether zombies should be treated as members of the monster team (rather than the independent team)
@@ -654,11 +665,15 @@ ttt_zombie_prime_convert_chance             1.0     // The chance that a prime z
 ttt_zombie_thrall_convert_chance            1.0     // The chance that a zombie thrall (e.g. non-prime zombie) will convert other players who are killed by their claws to be zombies as well. Set to 0 to disable
 ttt_zombie_friendly_fire                    2       // How to handle friendly fire damage between zombies. 0 - Do nothing. 1 - Reflect the damage back to the attacker. 2 - Negate the damage.
 ttt_zombie_respawn_block_win                0       // Whether a player respawning as a zombie blocks the round from ending, allowing them to join the winning team
+ttt_zombie_can_see_jesters                  1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to zombies (Only applies if ttt_zombie_is_monster and ttt_zombie_is_traitor are not enabled)
+ttt_zombie_update_scoreboard                1       // Whether the zombies show dead players as missing in action (Only applies if ttt_zombie_is_monster and ttt_zombie_is_traitor are not enabled)
 
 // Mad Scientist
 ttt_madscientist_is_monster                 0       // Whether the mad scientist should be treated as a member of the monster team (rather than the independent team)
 ttt_madscientist_device_time                4       // The amount of time (in seconds) the mad scientist's device takes to use
 ttt_madscientist_respawn_enable             0       // Whether the mad scientist should respawn as a zombie when they are killed
+ttt_madscientist_can_see_jesters            1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the mad scientist (Only applies if ttt_madscientist_is_monster is not enabled)
+ttt_madscientist_update_scoreboard          1       // Whether the mad scientist shows dead players as missing in action (Only applies if ttt_madscientist_is_monster is not enabled)
 
 // Shadow
 ttt_shadow_start_timer                      30      // How much time (in seconds) the shadow has to find their target at the start of the round
@@ -683,6 +698,8 @@ ttt_shadow_target_notify_mode               0       // How the shadow's target s
 ttt_shadow_soul_link                        0       // Whether the shadow should die when their target dies and vice-versa
 ttt_shadow_weaken_health_to                 0       // How low to reduce the shadow's health to when they are outside of the target circle instead of killing them. Set to 0 to disable, meaning the shadow will be killed
 ttt_shadow_weaken_timer                     3       // How often (in seconds) to adjust the shadow's health when they are outside of the target circle
+ttt_shadow_can_see_jesters                  0       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the shadow
+ttt_shadow_update_scoreboard                0       // Whether the shadow shows dead players as missing in action
 
 // Arsonist
 ttt_arsonist_douse_time                     8       // The amount of time (in seconds) the arsonist takes to douse someone
@@ -691,6 +708,8 @@ ttt_arsonist_douse_notify_delay_min         10      // The minimum delay before 
 ttt_arsonist_douse_notify_delay_max         30      // The maximum delay before a player is notified they've been doused
 ttt_arsonist_early_ignite                   0       // Whether to allow the arsonist to use their igniter without dousing everyone first
 ttt_arsonist_corpse_ignite_time             10      // The amount of time (in seconds) to ignite doused dead player corpses for before destroying them
+ttt_arsonist_can_see_jesters                1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the arsonist
+ttt_arsonist_update_scoreboard              1       // Whether the arsonist shows dead players as missing in action
 ttt_detectives_search_only_arsonistdouse    0       // Whether only detectives can see information about whether a corpse was doused by an arsonist and when. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled.
 
 // ----------------------------------------

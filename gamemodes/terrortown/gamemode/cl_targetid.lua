@@ -234,7 +234,7 @@ function GM:PostDrawTranslucentRenderables()
                         noz = true
                     end
                 elseif client:IsIndependentTeam() then
-                    if showJester then
+                    if showJester and GetConVar("ttt_" .. ROLE_STRINGS_RAW[client:GetRole()] .. "_can_see_jesters"):GetBool() then
                         role = ROLE_NONE
                         color_role = ROLE_JESTER
                     end
@@ -474,7 +474,7 @@ function GM:HUDDrawTargetID()
                     target_monster = ent:GetRole()
                 end
             elseif client:IsIndependentTeam() then
-                if showJester then
+                if showJester and GetConVar("ttt_" .. ROLE_STRINGS_RAW[client:GetRole()] .. "_can_see_jesters"):GetBool() then
                     target_jester = showJester
                 end
             end
