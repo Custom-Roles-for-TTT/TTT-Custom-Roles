@@ -12,6 +12,7 @@ local GetAllPlayers = player.GetAll
 local paladin_aura_radius = GetConVar("ttt_paladin_aura_radius")
 local paladin_protect_self = GetConVar("ttt_paladin_protect_self")
 local paladin_heal_self = GetConVar("ttt_paladin_heal_self")
+local paladin_damage_reduction = GetConVar("ttt_paladin_damage_reduction")
 
 ------------------
 -- TRANSLATIONS --
@@ -90,16 +91,23 @@ hook.Add("TTTTutorialRoleText", "Paladin_TTTTutorialRoleText", function(role, ti
         local detectiveColor = GetRoleTeamColor(ROLE_TEAM_DETECTIVE)
         local html = "The " .. ROLE_STRINGS[ROLE_PALADIN] .. " is a " .. ROLE_STRINGS[ROLE_DETECTIVE] .. " and a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> whose job is to find and eliminate their enemies."
 
-        html = html .. "<span style='display: block; margin-top: 10px;'>Instead of getting a DNA Scanner like a vanilla <span style='color: rgb(" .. detectiveColor.r .. ", " .. detectiveColor.g .. ", " .. detectiveColor.b .. ")'>" .. ROLE_STRINGS[ROLE_DETECTIVE] .. "</span>, they have a healing and damage reduction aura.</span>"
+        local has_damage_reduction = paladin_damage_reduction:GetFloat() > 0
+        html = html .. "<span style='display: block; margin-top: 10px;'>Instead of getting a DNA Scanner like a vanilla <span style='color: rgb(" .. detectiveColor.r .. ", " .. detectiveColor.g .. ", " .. detectiveColor.b .. ")'>" .. ROLE_STRINGS[ROLE_DETECTIVE] .. "</span>, they have a healing"
+        if has_damage_reduction then
+            html = html .. " and damage reduction"
+        end
+        html = html .. " aura.</span>"
 
         -- Damage Reduction
-        html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_PALADIN] .. "'s <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>damage reduction</span> "
-        if paladin_protect_self:GetBool() then
-            html = html .. "applies to them as well"
-        else
-            html = html .. "does NOT apply to them, however"
+        if has_damage_reduction then
+            html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_PALADIN] .. "'s <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>damage reduction</span> "
+            if paladin_protect_self:GetBool() then
+                html = html .. "applies to them as well"
+            else
+                html = html .. "does NOT apply to them, however"
+            end
+            html = html .. ".</span>"
         end
-        html = html .. ".</span>"
 
         -- Healing
         html = html .. "<span style='display: block; margin-top: 10px;'>Their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>healing</span> "
