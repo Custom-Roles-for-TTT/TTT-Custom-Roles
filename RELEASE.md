@@ -11,8 +11,8 @@
 ### Changes
 - Changed appearance of 'KILL' icon used by multiple roles
 - Expanded the `ttt_roleweapons` command to have additional modes such as list, clean, and reload. See the command documentation for more information.
-- Changed jester and MIA visibility for independent roles to be configurable on a per role bases (Arsonist, killer, mad scientist and zombie enabled by default. Drunk, old man and shadow disabled by default)
-
+- Changed jester and missing in action (MIA) visibility for independent roles to be configurable on a per role basis (Arsonist, killer, mad scientist and zombie enabled by default. Drunk, old man and shadow disabled by default)
+- 
 ### Fixes
 - Fixed clown seeing jester icons (instead of question mark icons) over all jester team members' heads when they are activated
 - Fixed clown seeing jester icon over the activated loot goblin's head (instead of the loot goblin icon)
