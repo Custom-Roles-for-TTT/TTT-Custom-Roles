@@ -26,10 +26,10 @@ resource.AddSingleFile("sound/weapons/ttt/vampireeat.wav")
 -- CONVARS --
 -------------
 
-local vampire_damage_reduction = CreateConVar("ttt_vampire_damage_reduction", "0", FCVAR_NONE, "The fraction an attacker's bullet damage will be reduced by when they are shooting a vampire", 0, 1)
 local vampire_kill_credits = CreateConVar("ttt_vampire_kill_credits", "1")
 local vampire_prime_friendly_fire = CreateConVar("ttt_vampire_prime_friendly_fire", "0", FCVAR_NONE, "How to handle friendly fire damage to the prime vampire(s) from their thralls. 0 - Do nothing. 1 - Reflect damage back to the attacker (non-prime vampire). 2 - Negate damage to the prime vampire.", 0, 2)
 
+local vampire_damage_reduction = GetConVar("ttt_vampire_damage_reduction")
 local vampire_show_target_icon = GetConVar("ttt_vampire_show_target_icon")
 local vampire_vision_enable = GetConVar("ttt_vampire_vision_enable")
 local vampire_prime_death_mode = GetConVar("ttt_vampire_prime_death_mode")
