@@ -9,6 +9,10 @@ ZOMBIE_FF_MODE_NONE = 0
 ZOMBIE_FF_MODE_REFLECT = 1
 ZOMBIE_FF_MODE_IMMUNE = 2
 
+-- Initialize role features
+ROLE_CAN_SEE_JESTERS[ROLE_ZOMBIE] = true
+ROLE_CAN_SEE_MIA[ROLE_ZOMBIE] = true
+
 --------------------
 -- PLAYER METHODS --
 --------------------
@@ -140,6 +144,14 @@ table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
 })
 table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
     cvar = "ttt_zombie_respawn_block_win",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
+    cvar = "ttt_zombie_can_see_jesters",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
+    cvar = "ttt_zombie_update_scoreboard",
     type = ROLE_CONVAR_TYPE_BOOL
 })
 

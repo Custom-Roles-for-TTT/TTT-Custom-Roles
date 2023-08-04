@@ -179,7 +179,7 @@ function GM:TTTScoreboardRowColorForPlayer(ply)
             end
         end
     elseif client:IsIndependentTeam() then
-        if showJester then
+        if showJester and GetConVar("ttt_" .. ROLE_STRINGS_RAW[client:GetRole()] .. "_can_see_jesters"):GetBool() then
             return ROLE_JESTER
         end
     elseif client:IsMonsterTeam() then

@@ -14,6 +14,10 @@ VAMPIRE_THRALL_FF_MODE_NONE = 0
 VAMPIRE_THRALL_FF_MODE_REFLECT = 1
 VAMPIRE_THRALL_FF_MODE_IMMUNE = 2
 
+-- Initialize role features
+ROLE_CAN_SEE_JESTERS[ROLE_VAMPIRE] = true
+ROLE_CAN_SEE_MIA[ROLE_VAMPIRE] = true
+
 --------------------
 -- PLAYER METHODS --
 --------------------
@@ -58,6 +62,8 @@ CreateConVar("ttt_vampire_show_target_icon", "0", FCVAR_REPLICATED)
 CreateConVar("ttt_vampire_vision_enable", "0", FCVAR_REPLICATED)
 CreateConVar("ttt_vampire_prime_death_mode", "0", FCVAR_REPLICATED, "What to do when the prime vampire(s) (e.g. players who spawn as vampires originally) are killed. 0 - Do nothing. 1 - Kill all vampire thralls (non-prime vampires). 2 - Revert all vampire thralls (non-prime vampires) to their original role", 0, 2)
 CreateConVar("ttt_vampire_damage_reduction", "0", FCVAR_REPLICATED, "The fraction an attacker's bullet damage will be reduced by when they are shooting a vampire", 0, 1)
+CreateConVar("ttt_vampire_can_see_jesters", "1", FCVAR_REPLICATED)
+CreateConVar("ttt_vampire_update_scoreboard", "1", FCVAR_REPLICATED)
 
 ROLE_CONVARS[ROLE_VAMPIRE] = {}
 table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
@@ -152,6 +158,14 @@ table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
 })
 table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
     cvar = "ttt_vampire_vision_enable",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
+    cvar = "ttt_vampire_can_see_jesters",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
+    cvar = "ttt_vampire_update_scoreboard",
     type = ROLE_CONVAR_TYPE_BOOL
 })
 

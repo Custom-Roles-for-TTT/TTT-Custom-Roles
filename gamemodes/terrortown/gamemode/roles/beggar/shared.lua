@@ -55,6 +55,8 @@ CreateConVar("ttt_beggar_reveal_traitor", "1", FCVAR_REPLICATED, "Who the beggar
 CreateConVar("ttt_beggar_reveal_innocent", "2", FCVAR_REPLICATED, "Who the beggar is revealed to when they join the innocent team", 0, 3)
 CreateConVar("ttt_beggar_scan", "0", FCVAR_REPLICATED, "Whether the beggar can scan players to see if they are traitors. 0 - Disabled. 1 - Can only scan traitors. 2 - Can scan any role that has a shop.", 0, 2)
 CreateConVar("ttt_beggar_scan_time", "15", FCVAR_REPLICATED, "The amount of time (in seconds) the beggar's scanner takes to use", 0, 60)
+CreateConVar("ttt_beggar_can_see_jesters", "0", FCVAR_REPLICATED)
+CreateConVar("ttt_beggar_update_scoreboard", "0", FCVAR_REPLICATED)
 
 ROLE_CONVARS[ROLE_BEGGAR] = {}
 table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
@@ -126,6 +128,14 @@ table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
     cvar = "ttt_beggar_scan_distance",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
+    cvar = "ttt_beggar_can_see_jesters",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_BEGGAR], {
+    cvar = "ttt_beggar_update_scoreboard",
+    type = ROLE_CONVAR_TYPE_BOOL
 })
 
 -------------------

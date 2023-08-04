@@ -824,6 +824,8 @@ ROLE_SHOULD_DELAY_ANNOUNCEMENTS = {} -- TODO: Remove after 2.0.0
 ROLE_HAS_PASSIVE_WIN = {}
 ROLE_SHOULD_NOT_DROWN = {}
 ROLE_CAN_SEE_C4 = {}
+ROLE_CAN_SEE_JESTERS = {}
+ROLE_CAN_SEE_MIA = {}
 
 -- Player functions
 ROLE_IS_ACTIVE = {}
@@ -946,6 +948,14 @@ function RegisterRole(tbl)
 
     if type(tbl.canseec4) == "boolean" then
         ROLE_CAN_SEE_C4[roleID] = tbl.canseec4
+    end
+
+    if type(tbl.canseejesters) == "boolean" then
+        ROLE_CAN_SEE_JESTERS[roleID] = tbl.canseejesters
+    end
+
+    if type(tbl.canseemia) == "boolean" then
+        ROLE_CAN_SEE_MIA[roleID] = tbl.canseemia
     end
 
     -- Equipment
