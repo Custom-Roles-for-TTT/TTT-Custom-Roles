@@ -16,6 +16,10 @@ local StringUpper = string.upper
 
 local cupid_lover_vision_enable = GetConVar("ttt_cupid_lover_vision_enable")
 local cupid_is_independent = GetConVar("ttt_cupid_is_independent")
+local cupid_lovers_notify_mode = GetConVar("ttt_cupid_lovers_notify_mode")
+local cupid_can_damage_lovers = GetConVar("ttt_cupid_can_damage_lovers")
+local cupid_lovers_can_damage_lovers = GetConVar("ttt_cupid_lovers_can_damage_lovers")
+local cupid_lovers_can_damage_cupid = GetConVar("ttt_cupid_lovers_can_damage_cupid")
 
 ------------------
 -- TRANSLATIONS --
@@ -323,8 +327,43 @@ AddHook("TTTTutorialRoleText", "Cupid_TTTTutorialRoleText", function(role, title
         local roleTeam = player.GetRoleTeam(ROLE_CUPID, true)
         local roleTeamName, roleColor = GetRoleTeamInfo(roleTeam)
         local html = "The " .. ROLE_STRINGS[ROLE_CUPID] .. " is a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. roleTeamName .. "</span> role that wins by making two players fall in love and helping them win together. However, players that fall in love die together and cannot survive while the other is dead."
+
+        -- Bow weapon
         html = html .. "<span style='display: block; margin-top: 10px;'>They are given a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>bow</span> that will cause a player to fall in love when they are shot. Once two players have fallen in love they win the round by surviving until the end of the round or being the last players left standing.</span>"
+
+        -- Lovers created notifications
+        local lovers_notify_mode = cupid_lovers_notify_mode:GetInt()
+        html = html .. "<span style='display: block; margin-top: 10px;'>When the " .. ROLE_STRINGS[ROLE_CUPID] .. " makes two players fall in love, an announcement is shown <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>"
+        if lovers_notify_mode == ANNOUNCE_REVEAL_NONE then
+            html = html .. "only to them"
+        elseif lovers_notify_mode == ANNOUNCE_REVEAL_INNOCENTS then
+            html = html .. "to all " .. LANG.GetTranslation("innocents")
+        elseif lovers_notify_mode == ANNOUNCE_REVEAL_TRAITORS then
+            html = html .. "to all " .. LANG.GetTranslation("traitors")
+        else
+            html = html .. "to everyone"
+        end
+        html = html .. "</span>.</span>"
+
+        -- Win condition
         html = html .. "<span style='display: block; margin-top: 10px;'>As <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. ROLE_STRINGS_EXT[ROLE_CUPID] .. "</span> you do not need to survive until the end of the round to win. As long as the lovers survive you still win.</span>"
+
+        -- Friendly fire
+        -- Cupid -> Lovers
+        if roleTeam ~= ROLE_TEAM_JESTER and not cupid_can_damage_lovers:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_CUPID] .. " can fight alongside the lovers without worrying, as they <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>cannot damage</span> the players they made fall in love.</span>"
+        end
+
+        -- Lover -> Lover
+        if not cupid_lovers_can_damage_lovers:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>To help the lovers stay alive, they <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>cannot damage</span> eachother.</span>"
+        end
+
+        -- Lovers -> Cupid
+        if not cupid_lovers_can_damage_cupid:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>To help prevent friendly fire, the lovers <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>cannot damage</span> " .. ROLE_STRINGS[ROLE_CUPID] .. ".</span>"
+        end
+
         return html
     end
 end)
