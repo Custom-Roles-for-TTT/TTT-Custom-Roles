@@ -120,31 +120,26 @@ function ENT:Touch(ent)
         if tr2.Entity == ent then sound.Play(table.Random(FleshSound), tr.HitPos) end
         if ent:IsPlayer() and ent:IsActive() then
             if ent == owner then
-                owner:PrintMessage(HUD_PRINTCENTER, "You cannot make yourself fall in love with someone.")
+                owner:QueueMessage(MSG_PRINTCENTER, "You cannot make yourself fall in love with someone.")
             else
                 local target1 = owner:GetNWString("TTTCupidTarget1", "")
                 if target1 == "" then
                     ent:SetNWString("TTTCupidShooter", owner:SteamID64())
                     owner:SetNWString("TTTCupidTarget1", ent:SteamID64())
-                    owner:PrintMessage(HUD_PRINTCENTER, ent:Nick() .. " has been hit with your first arrow.")
-                    owner:PrintMessage(HUD_PRINTTALK, ent:Nick() .. " has been hit with your first arrow.")
-                    ent:PrintMessage(HUD_PRINTCENTER, "You have been hit by cupid's arrow!")
-                    ent:PrintMessage(HUD_PRINTTALK, "You have been hit by cupid's arrow!")
+                    owner:QueueMessage(MSG_PRINTBOTH, ent:Nick() .. " has been hit with your first arrow.")
+                    ent:QueueMessage(MSG_PRINTBOTH, "You have been hit by cupid's arrow!")
                 elseif owner:GetNWString("TTTCupidTarget2", "") == "" then
                     if ent:SteamID64() == target1 then
-                        owner:PrintMessage(HUD_PRINTCENTER, "You cannot make someone fall in love with themselves.")
+                        owner:QueueMessage(MSG_PRINTCENTER, "You cannot make someone fall in love with themselves.")
                     else
                         local ent2 = player.GetBySteamID64(target1)
                         ent:SetNWString("TTTCupidShooter", owner:SteamID64())
                         ent:SetNWString("TTTCupidLover", target1)
                         ent2:SetNWString("TTTCupidLover", ent:SteamID64())
                         owner:SetNWString("TTTCupidTarget2", ent:SteamID64())
-                        owner:PrintMessage(HUD_PRINTCENTER, ent:Nick() .. " has fallen in love with " .. ent2:Nick() .. ".")
-                        owner:PrintMessage(HUD_PRINTTALK, ent:Nick() .. " has fallen in love with " .. ent2:Nick() .. ".")
-                        ent2:PrintMessage(HUD_PRINTCENTER, "You have fallen in love with " .. ent:Nick() .. "!")
-                        ent2:PrintMessage(HUD_PRINTTALK, "You have fallen in love with " .. ent:Nick() .. "!")
-                        ent:PrintMessage(HUD_PRINTCENTER, "You have fallen in love with " .. ent2:Nick() .. "!")
-                        ent:PrintMessage(HUD_PRINTTALK, "You have fallen in love with " .. ent2:Nick() .. "!")
+                        owner:QueueMessage(MSG_PRINTBOTH, ent:Nick() .. " has fallen in love with " .. ent2:Nick() .. ".")
+                        ent2:QueueMessage(MSG_PRINTBOTH, "You have fallen in love with " .. ent:Nick() .. "!")
+                        ent:QueueMessage(MSG_PRINTBOTH, "You have fallen in love with " .. ent2:Nick() .. "!")
                         owner:StripWeapon("weapon_cup_bow")
 
                         net.Start("TTT_CupidPaired")
@@ -154,7 +149,7 @@ function ENT:Touch(ent)
                         net.WriteString(owner:SteamID64())
                         net.Broadcast()
 
-                        local mode = GetConVar("ttt_cupid_notify_mode"):GetInt()
+                        local mode = GetConVar("ttt_cupid_lovers_notify_mode"):GetInt()
                         if mode ~= ANNOUNCE_REVEAL_NONE then
                             for _, v in pairs(player.GetAll()) do
                                 if v == ent or v == ent2 or v == owner then
@@ -162,8 +157,7 @@ function ENT:Touch(ent)
                                 end
 
                                 if mode == ANNOUNCE_REVEAL_ALL or (v:IsTraitorTeam() and mode == ANNOUNCE_REVEAL_TRAITORS) or (v:IsInnocentTeam() and mode == ANNOUNCE_REVEAL_INNOCENTS) then
-                                    v:PrintMessage(HUD_PRINTCENTER, ROLE_STRINGS_EXT[ROLE_CUPID] .. " has made two players fall in love!")
-                                    v:PrintMessage(HUD_PRINTTALK, ROLE_STRINGS_EXT[ROLE_CUPID] .. " has made two players fall in love!")
+                                    v:QueueMessage(MSG_PRINTBOTH, ROLE_STRINGS_EXT[ROLE_CUPID] .. " has made two players fall in love!")
                                 end
                             end
                         end

@@ -14,16 +14,16 @@ local GetAllPlayers = player.GetAll
 -- CONVARS --
 -------------
 
-local killer_crowbar_enabled = CreateConVar("ttt_killer_crowbar_enabled", "1")
 local killer_smoke_timer = CreateConVar("ttt_killer_smoke_timer", "60", FCVAR_NONE, "Number of seconds before a killer will start to smoke after their last kill", 1, 120)
 local killer_damage_penalty = CreateConVar("ttt_killer_damage_penalty", "0.25", FCVAR_NONE, "The fraction a killer's damage will be scaled by when they are attacking without using their knife", 0, 1)
 local killer_damage_reduction = CreateConVar("ttt_killer_damage_reduction", "0", FCVAR_NONE, "The fraction an attacker's bullet damage will be reduced by when they are shooting a killer", 0, 1)
-local killer_warn_all = CreateConVar("ttt_killer_warn_all", "0")
 
-local killer_knife_enabled = GetConVar("ttt_killer_knife_enabled", "1")
-local killer_smoke_enabled = GetConVar("ttt_killer_smoke_enabled", "1")
-local killer_show_target_icon = GetConVar("ttt_killer_show_target_icon", "1")
-local killer_vision_enable = GetConVar("ttt_killer_vision_enable", "1")
+local killer_knife_enabled = GetConVar("ttt_killer_knife_enabled")
+local killer_crowbar_enabled = GetConVar("ttt_killer_crowbar_enabled")
+local killer_smoke_enabled = GetConVar("ttt_killer_smoke_enabled")
+local killer_show_target_icon = GetConVar("ttt_killer_show_target_icon")
+local killer_vision_enable = GetConVar("ttt_killer_vision_enable")
+local killer_warn_all = GetConVar("ttt_killer_warn_all")
 
 -----------
 -- KARMA --
@@ -66,8 +66,7 @@ local function HandleKillerSmokeTick()
                     if not IsValid(v) then return end
                     if v:IsKiller() and v:Alive() and not v:GetNWBool("KillerSmoke", false) then
                         v:SetNWBool("KillerSmoke", true)
-                        v:PrintMessage(HUD_PRINTCENTER, "Your evil is showing")
-                        v:PrintMessage(HUD_PRINTTALK, "Your evil is showing")
+                        v:QueueMessage(MSG_PRINTBOTH, "Your evil is showing")
                     elseif (v:IsKiller() and not v:Alive()) or not player.IsRoleLiving(ROLE_KILLER) then
                         timer.Remove("KillerKillCheckTimer")
                     end
@@ -283,12 +282,9 @@ hook.Add("TTTBeginRound", "Killer_Announce_TTTBeginRound", function()
     timer.Simple(1.5, function()
         local plys = GetAllPlayers()
 
-        local hasGlitch = false
         local hasKiller = false
         for _, v in ipairs(plys) do
-            if v:IsGlitch() then
-                hasGlitch = true
-            elseif v:IsKiller() then
+            if v:IsKiller() then
                 hasKiller = true
             end
         end
@@ -298,16 +294,7 @@ hook.Add("TTTBeginRound", "Killer_Announce_TTTBeginRound", function()
                 local isTraitor = v:IsTraitorTeam()
                 -- Warn this player about the Killer if they are a traitor or we are configured to warn everyone
                 if not v:IsKiller() and (isTraitor or killer_warn_all:GetBool()) then
-                    v:PrintMessage(HUD_PRINTTALK, "There is " .. ROLE_STRINGS_EXT[ROLE_KILLER] .. ".")
-                    -- Only delay this if the player is a traitor and there is a glitch
-                    -- This gives time for the glitch warning to go away
-                    if isTraitor and hasGlitch then
-                        timer.Simple(3, function()
-                            v:PrintMessage(HUD_PRINTCENTER, "There is " .. ROLE_STRINGS_EXT[ROLE_KILLER] .. ".")
-                        end)
-                    else
-                        v:PrintMessage(HUD_PRINTCENTER, "There is " .. ROLE_STRINGS_EXT[ROLE_KILLER] .. ".")
-                    end
+                    v:QueueMessage(MSG_PRINTBOTH, "There is " .. ROLE_STRINGS_EXT[ROLE_KILLER] .. ".")
                 end
             end
         end
@@ -322,7 +309,7 @@ hook.Add("TTTCheckForWin", "Killer_TTTCheckForWin", function()
     local killer_alive = false
     local other_alive = false
     for _, v in ipairs(GetAllPlayers()) do
-        if v:Alive() and v:IsTerror() then
+        if v:IsActive() then
             if v:IsKiller() then
                 killer_alive = true
             elseif not v:ShouldActLikeJester() then

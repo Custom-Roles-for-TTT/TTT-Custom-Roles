@@ -47,3 +47,11 @@ table.insert(ROLE_CONVARS[ROLE_OLDMAN], {
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
 })
+table.insert(ROLE_CONVARS[ROLE_OLDMAN], {
+    cvar = "ttt_oldman_can_see_jesters",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_OLDMAN], {
+    cvar = "ttt_oldman_update_scoreboard",
+    type = ROLE_CONVAR_TYPE_BOOL
+})

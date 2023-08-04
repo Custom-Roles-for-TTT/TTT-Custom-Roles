@@ -48,6 +48,7 @@ end)
 ------------------
 
 CreateConVar("ttt_impersonator_use_detective_icon", "1", FCVAR_REPLICATED)
+CreateConVar("ttt_impersonator_damage_penalty", "0", FCVAR_REPLICATED, "Damage penalty that the impersonator has before being promoted (e.g. 0.5 = 50% less damage)", 0, 1)
 
 ROLE_CONVARS[ROLE_IMPERSONATOR] = {}
 table.insert(ROLE_CONVARS[ROLE_IMPERSONATOR], {

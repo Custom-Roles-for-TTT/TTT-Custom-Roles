@@ -4,6 +4,7 @@ local concommand = concommand
 local math = math
 local net = net
 local pairs = pairs
+local string = string
 local table = table
 local timer = timer
 local vgui = vgui
@@ -14,6 +15,27 @@ local StringFind = string.find
 local StringLower = string.lower
 local TableInsert = table.insert
 local TableSort = table.sort
+
+local function ShowList()
+    print("[ROLEWEAPONS] Sending configuration list command... Please check server console for results")
+
+    net.Start("TTT_RoleWeaponsList")
+    net.SendToServer()
+end
+
+local function Clean()
+    print("[ROLEWEAPONS] Sending invalid configuration clean command... Please check server console for results")
+
+    net.Start("TTT_RoleWeaponsClean")
+    net.SendToServer()
+end
+
+local function Reload()
+    print("[ROLEWEAPONS] Sending configuration reload command... Please check server console for results")
+
+    net.Start("TTT_RoleWeaponsReload")
+    net.SendToServer()
+end
 
 local function ItemIsWeapon(item) return not tonumber(item.id) end
 
@@ -27,60 +49,18 @@ local function DoesValueMatch(item, data, value)
     return itemdata and StringFind(StringLower(SafeTranslate(itemdata)), StringLower(value), 1, true)
 end
 
-local function OpenDialog(client)
-    if not client:IsAdmin() and not client:IsSuperAdmin() then
-        ErrorNoHalt("ERROR: You must be an administrator to open the Role Weapons Configuration dialog\n")
-        return
-    end
-
-    local numCols = 4
-    local numRows = 5
-    local itemSize = 64
-    -- margin
-    local m = 5
-    -- item list width
-    local dlistw = ((itemSize + 2) * numCols) - 2 + 15
-    local dlisth = ((itemSize + 2) * numRows) - 2 + 15
-    -- right column width
-    local diw = 270
-    -- frame size
-    local w = dlistw + diw + (m * 4)
-    local h = dlisth + 75
-
-    local dframe = vgui.Create("DFrame")
-    dframe:SetSize(w, h)
-    dframe:Center()
-    dframe:SetTitle(GetTranslation("roleweapons_title"))
-    dframe:SetVisible(true)
-    dframe:ShowCloseButton(true)
-    dframe:SetMouseInputEnabled(true)
-    dframe:SetDeleteOnClose(true)
-
-    local dsheet = vgui.Create("DPropertySheet", dframe)
-
-    -- Add a callback when switching tabs
-    local oldfunc = dsheet.SetActiveTab
-    dsheet.SetActiveTab = function(self, new)
-        if self.m_pActiveTab ~= new and self.OnTabChanged then
-            self:OnTabChanged(self.m_pActiveTab, new)
-        end
-        oldfunc(self, new)
-    end
-
-    dsheet:SetPos(0, 0)
-    dsheet:StretchToParent(m, m + 25, m, m)
-
+local function BuildRoleWeapons(dsheet, dframe, itemSize, m, dlistw, dlisth, diw, w, h)
     local role = ROLE_NONE
     local save_role = ROLE_NONE
     local padding = dsheet:GetPadding()
 
-    local dequip = vgui.Create("DPanel", dsheet)
-    dequip:SetPaintBackground(false)
-    dequip:StretchToParent(padding, padding, padding, padding)
+    local droleweapons = vgui.Create("DPanel", dsheet)
+    droleweapons:SetPaintBackground(false)
+    droleweapons:StretchToParent(padding, padding, padding, padding)
 
     local dsearchheight = 25
     local dsearchpadding = 5
-    local dsearch = vgui.Create("DTextEntry", dequip)
+    local dsearch = vgui.Create("DTextEntry", droleweapons)
     dsearch:SetPos(0, 0)
     dsearch:SetSize(dlistw, dsearchheight)
     dsearch:SetPlaceholderText("Search...")
@@ -89,7 +69,7 @@ local function OpenDialog(client)
     dsearch.OnLoseFocus = function() dframe:SetKeyboardInputEnabled(false) end
 
     local dinfow = diw - m
-    local dsearchrole = vgui.Create("DComboBox", dequip)
+    local dsearchrole = vgui.Create("DComboBox", droleweapons)
     dsearchrole:CopyPos(dsearch)
     dsearchrole:MoveRightOf(dsearch)
     local dsrw, dsrh = dsearchrole:GetPos()
@@ -103,7 +83,7 @@ local function OpenDialog(client)
 
     --- Construct icon listing
     --- icon size = 64 x 64
-    local dlist = vgui.Create("EquipSelect", dequip)
+    local dlist = vgui.Create("EquipSelect", droleweapons)
     dlist:SetPos(0, dsearchheight + dsearchpadding)
     dlist:SetSize(dlistw, dlisth - dsearchheight - dsearchpadding)
     dlist:EnableVerticalScrollbar(true)
@@ -113,7 +93,7 @@ local function OpenDialog(client)
 
     -- Whole right column
     local dih = h - bh - m * 20 - 30
-    local dinfobg = vgui.Create("DPanel", dequip)
+    local dinfobg = vgui.Create("DPanel", droleweapons)
     dinfobg:SetPaintBackground(false)
     dinfobg:SetSize(dinfow, dih)
     dinfobg:SetPos(dlistw + m, dsearchheight + dsearchpadding)
@@ -266,7 +246,7 @@ local function OpenDialog(client)
         FillEquipmentList(filtered)
     end
 
-    local dsaverole = vgui.Create("DComboBox", dequip)
+    local dsaverole = vgui.Create("DComboBox", droleweapons)
     dsaverole:SetPos(dlistw + m, dih)
     dsaverole:SetSize(bw, dsearchheight)
     dsaverole:AddChoice(GetTranslation("roleweapons_select_saverole"), ROLE_NONE, true)
@@ -275,13 +255,13 @@ local function OpenDialog(client)
         dsaverole:AddChoice(ROLE_STRINGS[r], r)
     end
 
-    local dconfirm = vgui.Create("DButton", dequip)
+    local dconfirm = vgui.Create("DButton", droleweapons)
     dconfirm:SetPos(w - 30 - bw, dih + dsearchheight + 3)
     dconfirm:SetSize(bw, bh)
     dconfirm:SetDisabled(true)
     dconfirm:SetText(GetTranslation("roleweapons_confirm"))
 
-    local dcancel = vgui.Create("DButton", dequip)
+    local dcancel = vgui.Create("DButton", droleweapons)
     dcancel:SetPos(w - 30 - bw, dih + dsearchheight + bh + 6)
     dcancel:SetSize(bw, bh)
     dcancel:SetDisabled(false)
@@ -290,7 +270,7 @@ local function OpenDialog(client)
 
     local dradiopadding = 3
 
-    local dradionone = vgui.Create("DCheckBoxLabel", dequip)
+    local dradionone = vgui.Create("DCheckBoxLabel", droleweapons)
     dradionone:SetPos(dlistw + m, dih + dsearchheight + dradiopadding)
     dradionone:SetText(GetTranslation("roleweapons_option_none"))
     dradionone:SetTooltip(GetTranslation("roleweapons_option_none_tooltip"))
@@ -302,7 +282,7 @@ local function OpenDialog(client)
     local dradiol, dradiot = dradionone:GetPos()
     local _, dradioh = dradionone:GetSize()
 
-    local dradioinclude = vgui.Create("DCheckBoxLabel", dequip)
+    local dradioinclude = vgui.Create("DCheckBoxLabel", droleweapons)
     dradioinclude:SetPos(dradiol, dradiot + dradioh + dradiopadding)
     dradioinclude:SetText(GetTranslation("roleweapons_option_include"))
     dradioinclude:SetTooltip(GetTranslation("roleweapons_option_include_tooltip"))
@@ -310,7 +290,7 @@ local function OpenDialog(client)
     dradioinclude:SetTextColor(COLOR_WHITE)
     dradioinclude:SetDisabled(true)
 
-    local dradioexclude = vgui.Create("DCheckBoxLabel", dequip)
+    local dradioexclude = vgui.Create("DCheckBoxLabel", droleweapons)
     dradioexclude:SetPos(dradiol, dradiot + (dradioh * 2) + (dradiopadding * 2))
     dradioexclude:SetText(GetTranslation("roleweapons_option_exclude"))
     dradioexclude:SetTooltip(GetTranslation("roleweapons_option_exclude_tooltip"))
@@ -318,7 +298,7 @@ local function OpenDialog(client)
     dradioexclude:SetTextColor(COLOR_WHITE)
     dradioexclude:SetDisabled(true)
 
-    local dradionorandom = vgui.Create("DCheckBoxLabel", dequip)
+    local dradionorandom = vgui.Create("DCheckBoxLabel", droleweapons)
     dradionorandom:SetPos(w - 30 - bw, dih + (dradiopadding * 2))
     dradionorandom:SetText(GetTranslation("roleweapons_option_norandom"))
     dradionorandom:SetTooltip(GetTranslation("roleweapons_option_norandom_tooltip"))
@@ -497,10 +477,161 @@ local function OpenDialog(client)
     if role > ROLE_NONE then
         FillEquipmentList(GetEquipmentForRole(role, false, true, true, true))
     end
+    return droleweapons
+end
 
-    dsheet:AddSheet(GetTranslation("roleweapons_tabtitle"), dequip, "icon16/bomb.png", false, false, GetTranslation("roleweapons_tabtitle_tooltip"))
+local function BuildCommands(dsheet, dframe, m, w, h)
+    local padding = dsheet:GetPadding()
+    local gap = 20
+    local bw, bh = 126, 25
+
+    local dcommands = vgui.Create("DPanel", dsheet)
+    dcommands:SetPaintBackground(false)
+    dcommands:StretchToParent(padding, padding, padding, padding)
+
+    local currenth = m
+    local dlistlabel = vgui.Create("DLabel", dcommands)
+    dlistlabel:SetPos(0, currenth)
+    dlistlabel:SetText(GetTranslation("roleweapons_command_print_desc"))
+    dlistlabel:SetTextColor(COLOR_DGREY)
+    dlistlabel:SizeToContents()
+
+    local _, parth = dlistlabel:GetSize()
+    currenth = currenth + parth + m
+
+    local dlist = vgui.Create("DButton", dcommands)
+    dlist:SetPos(0, currenth)
+    dlist:SetSize(w - m * 2, bh)
+    dlist:SetDisabled(false)
+    dlist:SetText(GetTranslation("roleweapons_command_print"))
+    dlist.DoClick = function() ShowList() end
+
+    _, parth = dlist:GetSize()
+    currenth = currenth + parth + m + gap
+
+    local dcleanlabel = vgui.Create("DLabel", dcommands)
+    dcleanlabel:SetPos(0, currenth)
+    dcleanlabel:SetText(GetTranslation("roleweapons_command_clean_desc"))
+    dcleanlabel:SetTextColor(COLOR_DGREY)
+    dcleanlabel:SizeToContents()
+
+    _, parth = dcleanlabel:GetSize()
+    currenth = currenth + parth + m
+
+    local dclean = vgui.Create("DButton", dcommands)
+    dclean:SetPos(0, currenth)
+    dclean:SetSize(w - m * 2, bh)
+    dclean:SetDisabled(false)
+    dclean:SetText(GetTranslation("roleweapons_command_clean"))
+    dclean.DoClick = function() Clean() end
+
+    _, parth = dclean:GetSize()
+    currenth = currenth + parth + m + gap
+
+    local dreloadlabel = vgui.Create("DLabel", dcommands)
+    dreloadlabel:SetPos(0, currenth)
+    dreloadlabel:SetText(GetTranslation("roleweapons_command_reload_desc"))
+    dreloadlabel:SetTextColor(COLOR_DGREY)
+    dreloadlabel:SizeToContents()
+
+    _, parth = dreloadlabel:GetSize()
+    currenth = currenth + parth + m
+
+    local dreload = vgui.Create("DButton", dcommands)
+    dreload:SetPos(0, currenth)
+    dreload:SetSize(w - m * 2, bh)
+    dreload:SetDisabled(false)
+    dreload:SetText(GetTranslation("roleweapons_command_reload"))
+    dreload.DoClick = function() Reload() end
+
+    local dcancel = vgui.Create("DButton", dcommands)
+    dcancel:SetPos(w - bw - 30, h - bh - 74)
+    dcancel:SetSize(bw, bh)
+    dcancel:SetDisabled(false)
+    dcancel:SetText(GetTranslation("close"))
+    dcancel.DoClick = function() dframe:Close() end
+
+    return dcommands
+end
+
+local function OpenDialog()
+    local numCols = 4
+    local numRows = 5
+    local itemSize = 64
+    -- margin
+    local m = 5
+    -- item list width
+    local dlistw = ((itemSize + 2) * numCols) - 2 + 15
+    local dlisth = ((itemSize + 2) * numRows) - 2 + 15
+    -- right column width
+    local diw = 270
+    -- frame size
+    local w = dlistw + diw + (m * 4)
+    local h = dlisth + 75
+
+    local dframe = vgui.Create("DFrame")
+    dframe:SetSize(w, h)
+    dframe:Center()
+    dframe:SetTitle(GetTranslation("roleweapons_title"))
+    dframe:SetVisible(true)
+    dframe:ShowCloseButton(true)
+    dframe:SetMouseInputEnabled(true)
+    dframe:SetDeleteOnClose(true)
+
+    local dsheet = vgui.Create("DPropertySheet", dframe)
+
+    -- Add a callback when switching tabs
+    local oldfunc = dsheet.SetActiveTab
+    dsheet.SetActiveTab = function(self, new)
+        if self.m_pActiveTab ~= new and self.OnTabChanged then
+            self:OnTabChanged(self.m_pActiveTab, new)
+        end
+        oldfunc(self, new)
+    end
+
+    dsheet:SetPos(0, 0)
+    dsheet:StretchToParent(m, m + 25, m, m)
+
+    local droleweapons = BuildRoleWeapons(dsheet, dframe, itemSize, m, dlistw, dlisth, diw, w, h)
+    dsheet:AddSheet(GetTranslation("roleweapons_tabtitle"), droleweapons, "icon16/bomb.png", false, false, GetTranslation("roleweapons_tabtitle_tooltip"))
+
+    local dcommands = BuildCommands(dsheet, dframe, m, w, h)
+    dsheet:AddSheet(GetTranslation("roleweapons_commandtitle"), dcommands, "icon16/application_xp_terminal.png", false, false, GetTranslation("roleweapons_commandtitle_tooltip"))
 
     dframe:MakePopup()
     dframe:SetKeyboardInputEnabled(false)
 end
-concommand.Add("ttt_roleweapons", OpenDialog)
+
+local function PrintHelp()
+    print("ttt_roleweapons [OPTION]")
+    print("If no options provided, default of 'open' will be used")
+    print("\tclean\t-\tRemoves any invalid configurations. WARNING: This CANNOT be undone!")
+    print("\thelp\t-\tPrints this message")
+    print("\topen\t-\tOpen the configuration dialog [CLIENT ONLY]")
+    print("\tshow\t")
+    print("\tlist\t-\tPrints the current configuration in the server console, highlighting anything invalid")
+    print("\tprint\t")
+    print("\treload\t-\tReloads the configurations from the server's filesystem")
+end
+
+concommand.Add("ttt_roleweapons", function(ply, cmd, args)
+    if not ply:IsAdmin() and not ply:IsSuperAdmin() then
+        ErrorNoHalt("ERROR: You must be an administrator to open the Role Weapons Configuration dialog\n")
+        return
+    end
+
+    local method = #args > 0 and args[1] or "open"
+    if method == "open" or method == "show" then
+        OpenDialog()
+    elseif method == "print" or method == "list" then
+        ShowList()
+    elseif method == "clean" then
+        Clean()
+    elseif method == "reload" then
+        Reload()
+    elseif method == "help" then
+        PrintHelp()
+    else
+        ErrorNoHalt("ERROR: Unknown command '" .. method .. "'\n")
+    end
+end)

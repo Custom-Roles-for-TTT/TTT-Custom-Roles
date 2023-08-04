@@ -2,6 +2,10 @@ AddCSLuaFile()
 
 local table = table
 
+-- Initialize role features
+ROLE_CAN_SEE_JESTERS[ROLE_MADSCIENTIST] = true
+ROLE_CAN_SEE_MIA[ROLE_MADSCIENTIST] = true
+
 ------------------
 -- ROLE CONVARS --
 ------------------
@@ -21,6 +25,14 @@ table.insert(ROLE_CONVARS[ROLE_MADSCIENTIST], {
 })
 table.insert(ROLE_CONVARS[ROLE_MADSCIENTIST], {
     cvar = "ttt_madscientist_is_monster",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_MADSCIENTIST], {
+    cvar = "ttt_madscientist_can_see_jesters",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_MADSCIENTIST], {
+    cvar = "ttt_madscientist_update_scoreboard",
     type = ROLE_CONVAR_TYPE_BOOL
 })
 

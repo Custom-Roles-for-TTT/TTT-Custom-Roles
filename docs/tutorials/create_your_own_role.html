@@ -10,13 +10,13 @@
     <script>hljs.highlightAll();</script>
 </head>
 <body>
-    <embed src="../nav.html#tutorials" width="220" height="278" style="float: left; margin-right: 10px;" />
+    <embed src="../nav.html#tutorials" width="220" height="298" style="float: left; margin-right: 10px;" />
     <div>
         <h1>Creating Your Own Custom Role</h1>
         <p>This tutorial aims to provide the step-by-step instructions that a developer would need to create their own custom role. It covers creation of the role's basic features, what options are available for preset advanced features to choose from, all the way through creating the role icons and publishing to the workshop.</p>
         <p>This tutorial assumes you have some programming experience, even if it's not directly in Lua itself. Lua is a pretty straight-forward language, so knowledge of its specifics are not necessary as long as you are good at googling. Of course, if you have any questions about how to do more advanced things, feel free to join our Discord server to ask.</p>
 
-        <h2><a id="table-of-contents" href="#table-of-contents">Table of Contents</a></h2>
+        <h2 class="force-break"><a id="table-of-contents" href="#table-of-contents">Table of Contents</a></h2>
         <ol>
             <li><a href="#before-you-start">Before You Start</a></li>
             <li><a href="#code">Code</a>
@@ -87,7 +87,7 @@
             <li><strong>.lua</strong> - This can be done in Notepad in a pinch but at the very least we would recommend <a href="https://notepad-plus-plus.org/" target="_blank">Notepad++</a>.</li>
             <li><strong>.vmt and .vtf</strong> - <a href="https://nemstools.github.io/pages/VTFLib-Download.html" target="_blank">VTFEdit</a> is the best way to edit these files but if you know what you are doing there are plugins for other apps.</li>
         </ul>
-        <p>In this guide we will be walking through how we made the Summoner role and you can download all the templates we are using <a href="https://github.com/NoxxFlame/TTT-Custom-Roles/blob/release/templates">here</a>.</p>
+        <p>In this guide we will be walking through how we made the Summoner role and you can download all the templates we are using <a href="https://github.com/Custom-Roles-for-TTT/TTT-Custom-Roles/blob/release/templates">here</a>.</p>
         <p>Last thing to do before you are ready to get started is to unzip that file which should give you 4 .psd files and a folder like this:</p>
         <p><img src="https://i.imgur.com/UCyxklx.png" style="max-width: 100%;" /></p>
 
@@ -453,7 +453,7 @@ end
 
 if SERVER then
     hook.Add("TTTSpectatorHUDKeyPress", "Summoner_TTTSpectatorHUDKeyPress", function(ply, tgt, powers)
-        if ply:GetNWBool("PhantomHaunting", false) and IsValid(tgt) and tgt:Alive() and not tgt:IsSpec() then
+        if ply:GetNWBool("PhantomHaunting", false) and IsValid(tgt) and tgt:IsActive() then
             powers[IN_ATTACK2] = {
                 start_command = "+menu",
                 end_command = "-menu",
@@ -502,8 +502,8 @@ end</code></pre></div>
                     <td>Whether this role's shop purchases are delayed. Purchases will only be given to the player when <code>plymeta:GiveDelayedShopItems</code> is called by your own role logic. Enabling this feature will automatically create <code>ttt_%NAMERAW%_shop_active_only</code> and <code>ttt_%NAMERAW%_shop_delay</code> convars. Requires that the role has a shop and has role activation defined (see <a href="#role-activation">Role Activation</a>).</td>
                     <td>1.2.2</td>
                 </tr>
-                <tr>
-                    <td><code>ROLE.shoulddelayannouncements</code></td>
+                <tr>  <!-- TODO: Remove after 2.0.0 -->
+                    <td><code>ROLE.shoulddelayannouncements</code> <b>DEPRECATED IN 1.9.4</b></td>
                     <td>boolean</td>
                     <td>Whether this role should delay announcements when they kill a player that shows a message (like phantom and parasite). Used for things like preventing the assassin's target update message from getting overlapped.</td>
                     <td>1.2.7</td>
@@ -543,6 +543,18 @@ end</code></pre></div>
                     <td>function(ply, target)</td>
                     <td>Whether the target is being highlighted per the player's role rules. Called by the <code>plymeta:IsTargetHighlighted</code> function. See <a href="../api/methods_player_object.html" target="_blank">the API</a> for more information on the function.</td>
                     <td>1.5.15</td>
+                </tr>
+                <tr>
+                    <td><code>ROLE.canseejesters</code></td>
+                    <td>boolean</td>
+                    <td>Whether the player should be able to see jesters like traitors can. (Only applies if <code>ROLE.team = ROLE_TEAM_INDEPENDENT</code>)</td>
+                    <td>1.9.4</td>
+                </tr>
+                <tr>
+                    <td><code>ROLE.canseemia</code></td>
+                    <td>boolean</td>
+                    <td>Whether the player should be able to see missing in action players on the scoreboard like traitors can. (Only applies if <code>ROLE.team = ROLE_TEAM_INDEPENDENT</code>)</td>
+                    <td>1.9.4</td>
                 </tr>
             </tbody>
         </table>
@@ -591,7 +603,7 @@ ttt_%NAMERAW%_shop_mode (Whether the role should have access to traitor and/or d
 </code></pre></div>
 
         <!--TODO: Replace this link with the HTML version-->
-        <p>For more information on the specifics of these ConVars you can read the full list of ConVars <a href="https://github.com/NoxxFlame/TTT-Custom-Roles/blob/master/CONVARS.md#server-configurations">here</a>.</p>
+        <p>For more information on the specifics of these ConVars you can read the full list of ConVars <a href="https://github.com/Custom-Roles-for-TTT/TTT-Custom-Roles/blob/master/CONVARS.md#server-configurations">here</a>.</p>
         <p>If you would like to add your own ConVars that aren't automatically created you can do so here. First create the ConVars as you would normally with <code>CreateConVar</code>. <em>(Note: Please try to keep your ConVars as consistently named as possible. The recommended naming scheme for role specific convars is <code>ttt_%NAMERAW%_...</code>.)</em></p>
         <p>Once you have defined your ConVar you can add it to the <code>convars</code> table to get it to show up inside ULX menus. Each entry in the <code>convars</code> table needs two properties. <code>cvar</code> is the name of the ConVar you want to add and <code>type</code> is one of three values depending on if you want your ConVar to show up as a slider, checkbox or textbox.</p>
         <table>
@@ -1028,3 +1040,7 @@ end</pre></code></div>
 
         <h2><a id="wrapping-up" href="#wrapping-up">Wrapping Up</a></h2>
         <p>If you have any problems or questions please jump into the <a href="https://discord.gg/BAPZrykC3F" target="_blank">Custom Roles for TTT Discord Server</a>! We love to see what everyone has making and there are almost always people online willing to help out if you need a hand.</p>
+
+    </div>
+</body>
+<html>

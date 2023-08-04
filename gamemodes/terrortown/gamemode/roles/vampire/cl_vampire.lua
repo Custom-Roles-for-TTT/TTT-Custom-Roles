@@ -13,6 +13,7 @@ local RemoveHook = hook.Remove
 local vampire_show_target_icon = GetConVar("ttt_vampire_show_target_icon")
 local vampire_vision_enable = GetConVar("ttt_vampire_vision_enable")
 local vampire_prime_death_mode = GetConVar("ttt_vampire_prime_death_mode")
+local vampire_damage_reduction = GetConVar("ttt_vampire_damage_reduction")
 
 ------------------
 -- TRANSLATIONS --
@@ -55,22 +56,12 @@ end)
 -- TARGET ID --
 ---------------
 
--- Show "KILL" icon over all non-jester team heads
-hook.Add("TTTTargetIDPlayerKillIcon", "Vampire_TTTTargetIDPlayerKillIcon", function(ply, cli, showKillIcon, showJester)
+-- Show skull icon over all non-jester team heads
+hook.Add("TTTTargetIDPlayerTargetIcon", "Vampire_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
     if cli:IsVampire() and vampire_show_target_icon:GetBool() and not showJester then
-        return true
+        return "kill", true, ROLE_COLORS_SPRITE[ROLE_VAMPIRE], "down"
     end
 end)
-
-ROLE_IS_TARGETID_OVERRIDDEN[ROLE_VAMPIRE] = function(ply, target, showJester)
-    if not ply:IsVampire() then return end
-    if not IsPlayer(target) then return end
-
-    local show = vampire_show_target_icon:GetBool() and not showJester
-
-    ------ icon, ring,  text
-    return show, false, false
-end
 
 -------------
 -- SCORING --
@@ -207,7 +198,7 @@ hook.Add("TTTUpdateRoleState", "Vampire_Highlight_TTTUpdateRoleState", function(
     vampire_vision = vampire_vision_enable:GetBool()
     jesters_visible_to_traitors = GetConVar("ttt_jesters_visible_to_traitors"):GetBool()
     jesters_visible_to_monsters = GetConVar("ttt_jesters_visible_to_monsters"):GetBool()
-    jesters_visible_to_independents = GetConVar("ttt_jesters_visible_to_independents"):GetBool()
+    jesters_visible_to_independents = INDEPENDENT_ROLES[ROLE_VAMPIRE] and GetConVar("ttt_vampire_can_see_jesters"):GetBool()
 
     -- Disable highlights on role change
     if vision_enabled then
@@ -301,6 +292,11 @@ hook.Add("TTTTutorialRoleText", "Vampire_TTTTutorialRoleText", function(role, ti
                 html = html .. " also"
             end
             html = html .. " be identified by the <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>KILL</span> icon floating over their heads.</span>"
+        end
+
+        -- Damage reduction
+        if vampire_damage_reduction:GetFloat() > 0 then
+            html = html .. "<span style='display: block; margin-top: 10px;'>To help keep them alive, the " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " takes <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>less damage from bullets</span>.</span>"
         end
 
         return html

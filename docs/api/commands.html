@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="../css/api.css"/>
 </head>
 <body>
-    <embed src="../nav.html#api" width="220" height="278" style="float: left; margin-right: 10px;" />
+    <embed src="../nav.html#api" width="220" height="298" style="float: left; margin-right: 10px;" />
     <div>
         <h1>Commands</h1>
 
@@ -18,7 +18,40 @@
             <em>Added in</em>: 1.0.11
         </p>
 
-        <h2 style="margin-top: 43px;"><a id="server-commands" href="#server-commands"><em>Server Commands</em></a></h2>
+        <h3 class="force-break"><a id="ttt_roleweapons" href="#ttt_roleweapons">ttt_roleweapons</a></h3>
+        <p>Allows for viewing and editing which weapons are available in each role's shop.<br>
+            <em>Added in:</em> 1.2.7<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li>
+                <em>command</em> - Which command should be run <em>(Added in 1.9.4)</em>
+                <ul>
+                    <li><em>open (aka show)</em> - Opens the configuration UI. See <a href="../tutorials/configuring_role_weapons.html#configuration-by-ui" target="_blank">this tutorial</a> for how to use the UI. (This command is the default if no parameter is provided)</li>
+                    <li><em>list (aka print)</em> - Prints the current configuration in the server console, highlighting anything invalid</li>
+                    <li><em>clean</em> - Removes any invalid configurations. WARNING: This CANNOT be undone!</li>
+                    <li><em>reload</em> - Reloads the configurations from the server's filesystem</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h2><a id="server-commands" href="#server-commands"><em>Server Commands</em></a></h2>
+
+        <h3><a id="sv_ttt_roleweapons" href="#sv_ttt_roleweapons">sv_ttt_roleweapons</a></h3>
+        <p>Allows for viewing and editing which weapons are available in each role's shop. Server-side version of <a href="#ttt_roleweapons">ttt_roleweapons</a>.<br>
+            <em>Added in:</em> 1.9.4<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li>
+                <em>command</em> - Which command should be run
+                <ul>
+                    <li><em>list (aka print)</em> - Prints the current configuration in the console, highlighting anything invalid</li>
+                    <li><em>clean</em> - Removes any invalid configurations. WARNING: This CANNOT be undone!</li>
+                    <li><em>reload</em> - Reloads the configurations from the filesystem</li>
+                </ul>
+            </li>
+        </ul>
 
         <h3><a id="ttt_damage_from_random" href="#ttt_damage_from_random">ttt_damage_from_random</a></h3>
         <p>

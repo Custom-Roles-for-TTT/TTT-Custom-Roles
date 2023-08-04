@@ -40,7 +40,7 @@ hook.Add("TTTBeginRound", "Traitors_TTTBeginRound", function()
 
     timer.Create("TraitorCreditTimer", credit_timer, 0, function()
         for _, v in pairs(GetAllPlayers()) do
-            if v:Alive() and not v:IsSpec() and v:IsTraitorTeam() then
+            if v:IsActiveTraitorTeam() then
                 v:AddCredits(1)
                 LANG.Msg(v, "credit_all", { role = ROLE_STRINGS[v:GetRole()], num = 1 })
             end

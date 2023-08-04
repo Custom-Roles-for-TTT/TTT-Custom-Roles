@@ -21,14 +21,14 @@ util.AddNetworkString("TTT_InfectedSuccumbed")
 -- CONVARS --
 -------------
 
-local infected_cough_enabled = GetConVar("ttt_infected_cough_enabled")
-local infected_respawn_enable = GetConVar("ttt_infected_respawn_enable")
-local infected_succumb_time = GetConVar("ttt_infected_succumb_time")
-
-local infected_full_health = CreateConVar("ttt_infected_full_health", "1", FCVAR_NONE, "Whether the infected's health is refilled when they become a zombie", 0, 1)
 local infected_prime = CreateConVar("ttt_infected_prime", "1", FCVAR_NONE, "Whether the infected will become a prime zombie", 0, 1)
 local infected_cough_timer_min = CreateConVar("ttt_infected_cough_timer_min", "30", FCVAR_NONE, "The minimum time between infected coughs", 0, 180)
 local infected_cough_timer_max = CreateConVar("ttt_infected_cough_timer_max", "60", FCVAR_NONE, "The maximum time between infected coughs", 0, 300)
+
+local infected_cough_enabled = GetConVar("ttt_infected_cough_enabled")
+local infected_respawn_enable = GetConVar("ttt_infected_respawn_enable")
+local infected_succumb_time = GetConVar("ttt_infected_succumb_time")
+local infected_full_health = GetConVar("ttt_infected_full_health")
 
 -----------
 -- COUGH --
@@ -78,7 +78,7 @@ local function InfectedSuccumb(ply, respawn)
     else
         message = message .. " become "
     end
-    ply:PrintMessage(HUD_PRINTCENTER, message .. ROLE_STRINGS_EXT[ROLE_ZOMBIE])
+    ply:QueueMessage(MSG_PRINTCENTER, message .. ROLE_STRINGS_EXT[ROLE_ZOMBIE])
 
     net.Start("TTT_InfectedSuccumbed")
     net.WriteString(ply:Nick())

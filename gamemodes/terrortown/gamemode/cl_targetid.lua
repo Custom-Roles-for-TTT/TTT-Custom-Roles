@@ -63,15 +63,24 @@ local indicator_mat_roleback_noz = Material("vgui/ttt/sprite_roleback_noz")
 local indicator_mat_rolefront = Material("vgui/ttt/sprite_rolefront")
 local indicator_mat_rolefront_noz = Material("vgui/ttt/sprite_rolefront_noz")
 
-local indicator_mat_target_noz = Material("vgui/ttt/sprite_target_noz")
+local indicator_mat_targetback = {down=Material("vgui/ttt/sprite_targetdownback"), up=Material("vgui/ttt/sprite_targetupback")}
+local indicator_mat_targetback_noz = {down=Material("vgui/ttt/sprite_targetdownback_noz"), up=Material("vgui/ttt/sprite_targetupback_noz")}
+local indicator_mat_targetfront = {down=Material("vgui/ttt/sprite_targetdownfront"), up=Material("vgui/ttt/sprite_targetupfront")}
+local indicator_mat_targetfront_noz = {down=Material("vgui/ttt/sprite_targetdownfront_noz"), up=Material("vgui/ttt/sprite_targetupfront_noz")}
 
-local function DrawRoleIcon(role, noz, pos, dir, color_role)
+local client
+
+local function DrawRoleIcon(role, noz, pos, dir, color_role, offset)
     local role_file_name = ROLE_STRINGS_SHORT[role]
     local cache_key = role_file_name
     if noz then
         cache_key = StringFormat("%s_noz", cache_key)
     end
     local indicator_mat = ROLE_SPRITE_ICON_MATERIALS[cache_key]
+
+    if offset then
+        pos = pos + (client:GetRight() * -5)
+    end
 
     if noz then render.SetMaterial(indicator_mat_roleback_noz)
     else render.SetMaterial(indicator_mat_roleback) end
@@ -85,7 +94,36 @@ local function DrawRoleIcon(role, noz, pos, dir, color_role)
     render.DrawQuadEasy(pos, dir, 8, 8, COLOR_WHITE, 180)
 end
 
-local client, plys, ply, pos, dir, tgt
+local targetIcons = {}
+
+local function DrawTargetIcon(icon, noz, pos, dir, iconColor, iconType, offset)
+    local iconFile = icon
+    if noz then
+        iconFile = StringFormat("%s_noz", iconFile)
+    end
+    local cache_key = StringFormat("%s_%s", iconType, iconFile)
+    if not targetIcons[cache_key] then
+        targetIcons[cache_key] = Material(StringFormat("vgui/ttt/targeticons/%s/sprite_target_%s.vmt", iconType, iconFile))
+    end
+    local indicator_mat = targetIcons[cache_key]
+
+    if offset then
+        pos = pos + (client:GetRight() * 5)
+    end
+
+    if noz then render.SetMaterial(indicator_mat_targetback_noz[iconType])
+    else render.SetMaterial(indicator_mat_targetback[iconType]) end
+    render.DrawQuadEasy(pos, dir, 8, 8, iconColor, 180)
+
+    render.SetMaterial(indicator_mat)
+    render.DrawQuadEasy(pos, dir, 8, 8, COLOR_WHITE, 180)
+
+    if noz then render.SetMaterial(indicator_mat_targetfront_noz[iconType])
+    else render.SetMaterial(indicator_mat_targetfront[iconType]) end
+    render.DrawQuadEasy(pos, dir, 8, 8, COLOR_WHITE, 180)
+end
+
+local plys, ply, pos, dir, tgt
 
 local propspec_outline = Material("models/props_combine/portalball001_sheet")
 
@@ -145,85 +183,88 @@ function GM:PostDrawTranslucentRenderables()
             local hideBodysnatcher = v:GetNWBool("WasBodysnatcher", false) and not client:ShouldRevealBodysnatcher(v)
             local showJester = (v:ShouldActLikeJester() or ((v:GetTraitor() or v:GetInnocent()) and hideBeggar) or hideBodysnatcher) and not client:ShouldHideJesters()
 
-            -- Allow other addons (and external roles) to determine if the "KILL" icon should show
-            -- NOTE: Leave the permanent 'false' parameter to make sure we don't break external hook usage
-            local showKillIcon = CallHook("TTTTargetIDPlayerKillIcon", nil, v, client, false, showJester)
-            if showKillIcon and not client:IsSameTeam(v) then -- If we are showing the "KILL" icon this should take priority over role icons
-                render.SetMaterial(indicator_mat_roleback_noz)
-                render.DrawQuadEasy(pos, dir, 8, 8, ROLE_COLORS_SPRITE[client:GetRole()], 180) -- Use the colour of whatever role the player currently is for the "KILL" icon
-
-                render.SetMaterial(indicator_mat_target_noz)
-                render.DrawQuadEasy(pos, dir, 8, 8, COLOR_WHITE, 180)
-
-                render.SetMaterial(indicator_mat_rolefront_noz)
-                render.DrawQuadEasy(pos, dir, 8, 8, COLOR_WHITE, 180)
-            else
-                local role = nil
-                local color_role = nil
-                local noz = false
-                if v:IsDetectiveTeam() then
-                    local disp_role, changed = v:GetDisplayedRole()
-                    -- If the displayed role was changed, use it for the color but use the question mark for the icon
-                    if changed then
-                        color_role = disp_role
+            local role = nil
+            local color_role = nil
+            local noz = false
+            if v:IsDetectiveTeam() then
+                local disp_role, changed = v:GetDisplayedRole()
+                -- If the displayed role was changed, use it for the color but use the question mark for the icon
+                if changed then
+                    color_role = disp_role
+                    role = ROLE_NONE
+                else
+                    role = disp_role
+                end
+            elseif v:IsDetectiveLike() and not (v:IsImpersonator() and client:IsTraitorTeam()) then
+                role = GetDetectiveIconRole(false)
+            end
+            if not hide_roles then
+                if client:IsTraitorTeam() then
+                    noz = true
+                    if showJester then
                         role = ROLE_NONE
-                    else
-                        role = disp_role
-                    end
-                elseif v:IsDetectiveLike() and not (v:IsImpersonator() and client:IsTraitorTeam()) then
-                    role = GetDetectiveIconRole(false)
-                end
-                if not hide_roles then
-                    if client:IsTraitorTeam() then
-                        noz = true
-                        if showJester then
-                            role = ROLE_NONE
-                            color_role = ROLE_JESTER
-                            noz = false
-                        elseif v:IsTraitorTeam() then
-                            if glitchRound then
-                                role, color_role = GetGlitchedRole(v, glitchMode)
-                            -- If the impersonator is promoted, use the Detective's icon with the Impersonator's color
-                            elseif v:IsImpersonator() and v:IsRoleActive() then
-                                role = GetDetectiveIconRole(true)
-                                color_role = ROLE_IMPERSONATOR
-                            else
-                                role = v:GetRole()
-                            end
-                        elseif v:IsGlitch() then
-                            if client:IsZombie() then
-                                role = ROLE_ZOMBIE
-                            else
-                                role, color_role = GetGlitchedRole(v, glitchMode)
-                            end
-                        -- Disable "No Z" for other icons like the Detective-like roles
+                        color_role = ROLE_JESTER
+                        noz = false
+                    elseif v:IsTraitorTeam() then
+                        if glitchRound then
+                            role, color_role = GetGlitchedRole(v, glitchMode)
+                        -- If the impersonator is promoted, use the Detective's icon with the Impersonator's color
+                        elseif v:IsImpersonator() and v:IsRoleActive() then
+                            role = GetDetectiveIconRole(true)
+                            color_role = ROLE_IMPERSONATOR
                         else
-                            noz = false
-                        end
-                    elseif client:IsMonsterTeam() then
-                        if showJester then
-                            role = ROLE_NONE
-                            color_role = ROLE_JESTER
-                        elseif v:IsMonsterTeam() then
                             role = v:GetRole()
-                            noz = true
                         end
-                    elseif client:IsIndependentTeam() then
-                        if showJester then
-                            role = ROLE_NONE
-                            color_role = ROLE_JESTER
+                    elseif v:IsGlitch() then
+                        if client:IsZombie() then
+                            role = ROLE_ZOMBIE
+                        else
+                            role, color_role = GetGlitchedRole(v, glitchMode)
                         end
+                    -- Disable "No Z" for other icons like the Detective-like roles
+                    else
+                        noz = false
+                    end
+                elseif client:IsMonsterTeam() then
+                    if showJester then
+                        role = ROLE_NONE
+                        color_role = ROLE_JESTER
+                    elseif v:IsMonsterTeam() then
+                        role = v:GetRole()
+                        noz = true
+                    end
+                elseif client:IsIndependentTeam() then
+                    if showJester and GetConVar("ttt_" .. ROLE_STRINGS_RAW[client:GetRole()] .. "_can_see_jesters"):GetBool() then
+                        role = ROLE_NONE
+                        color_role = ROLE_JESTER
                     end
                 end
+            end
 
-                local newRole, newNoZ, newColorRole = CallHook("TTTTargetIDPlayerRoleIcon", nil, v, client, role, noz, color_role, hideBeggar, showJester, hideBodysnatcher)
-                if newRole or (type(newRole) == "boolean" and not newRole) then role = newRole end
-                if type(newNoZ) == "boolean" then noz = newNoZ end
-                if newColorRole then color_role = newColorRole end
+            local newRole, newNoZ, newColorRole = CallHook("TTTTargetIDPlayerRoleIcon", nil, v, client, role, noz, color_role, hideBeggar, showJester, hideBodysnatcher)
+            if newRole or (type(newRole) == "boolean" and not newRole) then role = newRole end
+            if type(newNoZ) == "boolean" then noz = newNoZ end
+            if newColorRole then color_role = newColorRole end
 
-                if role then
-                    DrawRoleIcon(role, noz, pos, dir, color_role)
+            local icon, iconNoZ, iconColor, iconType = CallHook("TTTTargetIDPlayerTargetIcon", nil, v, client, showJester)
+
+            if not icon then  -- TODO: Remove after 2.0.0
+                local showKillIcon = CallHook("TTTTargetIDPlayerKillIcon", nil, v, client, false, showJester)
+                if showKillIcon then
+                    icon = "kill"
+                    iconNoZ = true
+                    iconColor = ROLE_COLORS_SPRITE[client:GetRole()]
+                    iconType = "down"
                 end
+            end
+
+            local offset = role and icon
+
+            if role then
+                DrawRoleIcon(role, noz, pos, dir, color_role, offset)
+            end
+            if icon then
+                DrawTargetIcon(icon, iconNoZ, pos, dir, iconColor, iconType, offset)
             end
         end
     end
@@ -433,7 +474,7 @@ function GM:HUDDrawTargetID()
                     target_monster = ent:GetRole()
                 end
             elseif client:IsIndependentTeam() then
-                if showJester then
+                if showJester and GetConVar("ttt_" .. ROLE_STRINGS_RAW[client:GetRole()] .. "_can_see_jesters"):GetBool() then
                     target_jester = showJester
                 end
             end

@@ -39,6 +39,10 @@ CreateConVar("ttt_bodysnatcher_reveal_traitor", "1", FCVAR_REPLICATED, "Who the 
 CreateConVar("ttt_bodysnatcher_reveal_jester", "1", FCVAR_REPLICATED, "Who the bodysnatcher is revealed to when they join the jester team", 0, 2)
 CreateConVar("ttt_bodysnatcher_reveal_independent", "1", FCVAR_REPLICATED, "Who the bodysnatcher is revealed to when they join the independent team", 0, 2)
 CreateConVar("ttt_bodysnatcher_reveal_monster", "1", FCVAR_REPLICATED, "Who the bodysnatcher is revealed to when they join the monster team", 0, 2)
+CreateConVar("ttt_bodysnatcher_destroy_body", "0", FCVAR_REPLICATED, "Whether the bodysnatching device destroys the body it is used on or not", 0, 1)
+CreateConVar("ttt_bodysnatcher_show_role", "1", FCVAR_REPLICATED, "Whether the bodysnatching device shows the role of the corpse it is used on or not", 0, 1)
+CreateConVar("ttt_bodysnatcher_can_see_jesters", "0", FCVAR_REPLICATED)
+CreateConVar("ttt_bodysnatcher_update_scoreboard", "0", FCVAR_REPLICATED)
 local bodysnatcher_is_independent = CreateConVar("ttt_bodysnatcher_is_independent", "0", FCVAR_REPLICATED, "Whether bodysnatchers should be treated as members of the independent team", 0, 1)
 
 ROLE_CONVARS[ROLE_BODYSNATCHER] = {}
@@ -110,6 +114,14 @@ table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
     cvar = "ttt_bodysnatcher_device_time",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
+    cvar = "ttt_bodysnatcher_can_see_jesters",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_BODYSNATCHER], {
+    cvar = "ttt_bodysnatcher_update_scoreboard",
+    type = ROLE_CONVAR_TYPE_BOOL
 })
 
 -------------------

@@ -78,8 +78,7 @@ hook.Add("PlayerDeath", "Medium_Spirits_PlayerDeath", function(victim, infl, att
 
         -- Let the player who died know there is a medium as long as this player isn't the only medium and they are not turning into a zombie
         if medium_dead_notify:GetBool() and (#mediums > 1 or not victim:IsMedium()) and not victim:IsZombifying() then
-            victim:PrintMessage(HUD_PRINTTALK, "The " .. ROLE_STRINGS[ROLE_MEDIUM] .. " senses your spirit.")
-            victim:PrintMessage(HUD_PRINTCENTER, "The " .. ROLE_STRINGS[ROLE_MEDIUM] .. " senses your spirit.")
+            victim:QueueMessage(MSG_PRINTBOTH, "The " .. ROLE_STRINGS[ROLE_MEDIUM] .. " senses your spirit.")
         end
     end
 end)

@@ -35,9 +35,14 @@ end)
 -------------
 
 local lootgoblin_regen_mode = GetConVar("ttt_lootgoblin_regen_mode")
+local lootgoblin_radar_enabled = GetConVar("ttt_lootgoblin_radar_enabled")
 local lootgoblin_radar_timer = GetConVar("ttt_lootgoblin_radar_timer")
 local lootgoblin_active_display = GetConVar("ttt_lootgoblin_active_display")
-local lootgoblin_radar_enabled = GetConVar("ttt_lootgoblin_radar_enabled")
+local lootgoblin_announce = GetConVar("ttt_lootgoblin_announce")
+local lootgoblin_cackle_enabled = GetConVar("ttt_lootgoblin_cackle_enabled")
+local lootgoblin_jingle_enabled = GetConVar("ttt_lootgoblin_jingle_enabled")
+local lootgoblin_speed_mult = GetConVar("ttt_lootgoblin_speed_mult")
+local lootgoblin_sprint_recovery = GetConVar("ttt_lootgoblin_sprint_recovery")
 
 local lootgoblin_radar_beep_sound = CreateClientConVar("ttt_lootgoblin_radar_beep_sound", "1", true, false, "Whether the loot goblin's radar should play a beep sound whenever the location updates", 0, 1)
 
@@ -73,9 +78,9 @@ hook.Add("TTTTargetIDPlayerText", "LootGoblin_TTTTargetIDPlayerText", function(e
 end)
 
 ROLE_IS_TARGETID_OVERRIDDEN[ROLE_LOOTGOBLIN] = function(ply, target)
-    if not IsPlayer(target) then return end
-    if not target:IsActiveLootGoblin() then return end
-    if not target:IsRoleActive() then return end
+    if not IsPlayer(ply) then return end
+    if not ply:IsActiveLootGoblin() then return end
+    if not ply:IsRoleActive() then return end
     if not lootgoblin_active_display:GetBool() then return end
 
     ------ icon, ring, text
@@ -151,9 +156,9 @@ hook.Add("TTTScoreboardPlayerRole", "LootGoblin_TTTScoreboardPlayerRole", functi
 end)
 
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_LOOTGOBLIN] = function(ply, target)
-    if not IsPlayer(target) then return end
-    if not target:IsActiveLootGoblin() then return end
-    if not target:IsRoleActive() then return end
+    if not IsPlayer(ply) then return end
+    if not ply:IsActiveLootGoblin() then return end
+    if not ply:IsRoleActive() then return end
     if not lootgoblin_active_display:GetBool() then return end
 
     ------ name,  role
@@ -251,7 +256,27 @@ hook.Add("TTTTutorialRoleText", "LootGoblin_TTTTutorialRoleText", function(role,
         local html = "The " .. ROLE_STRINGS[ROLE_LOOTGOBLIN] .. " is an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>jester</span> role who likes to hoard loot."
 
         -- Activation Timer
-        html = html .. "<span style='display: block; margin-top: 10px;'>After some time has passed, <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>the " .. ROLE_STRINGS[ROLE_LOOTGOBLIN] .. "</span> will transform and be revealed to players.</span>"
+        html = html .. "<span style='display: block; margin-top: 10px;'>After some time has passed, <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>the " .. ROLE_STRINGS[ROLE_LOOTGOBLIN] .. "</span> will transform"
+        if lootgoblin_active_display:GetBool() then
+            html = html .. "and be revealed to players."
+        end
+        html = html .. "</span>"
+
+        -- Transformation announcement
+        local announce = lootgoblin_announce:GetInt()
+        if announce > JESTER_NOTIFY_NONE then
+            html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_LOOTGOBLIN] .. "'s transformation will be <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>announced to "
+            if announce == JESTER_NOTIFY_DETECTIVE then
+                html = html .. "all " .. LANG.GetTranslation("detectives")
+            elseif announce == JESTER_NOTIFY_TRAITOR then
+                html = html .. "all " .. LANG.GetTranslation("traitors")
+            elseif announce == JESTER_NOTIFY_DETECTIVE_AND_TRAITOR then
+                html = html .. "all " .. LANG.GetTranslation("detectives") .. " and " .. LANG.GetTranslation("traitors")
+            else
+                html = html .. "everyone"
+            end
+            html = html .. "</span>.</span>"
+        end
 
         -- Drop loot on death
         html = html .. "<span style='display: block; margin-top: 10px;'>Once they have activated, <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>the " .. ROLE_STRINGS[ROLE_LOOTGOBLIN] .. "</span> will drop a large number of items and credits when killed.</span>"
@@ -273,6 +298,31 @@ hook.Add("TTTTutorialRoleText", "LootGoblin_TTTTutorialRoleText", function(role,
             end
 
             html = html .. ".</span>"
+        end
+
+        -- Radar
+        if lootgoblin_radar_enabled:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>Once activated, the " .. ROLE_STRINGS[ROLE_LOOTGOBLIN] .. "'s <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>location will be periodically shown</span> to other players. The location is delayed to allow the " .. ROLE_STRINGS[ROLE_LOOTGOBLIN] .. " the chance to run away.</span>"
+        end
+
+        -- Cackle
+        if lootgoblin_cackle_enabled:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>After activation, the " .. ROLE_STRINGS[ROLE_LOOTGOBLIN] .. " will occasionally <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>cackle deviously</span> to taunt their pursuers.</span>"
+        end
+
+        -- Jingle
+        if lootgoblin_jingle_enabled:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>When active, the " .. ROLE_STRINGS[ROLE_LOOTGOBLIN] .. " will <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>make jingling sounds</span> when they move, making them easier to track.</span>"
+        end
+
+        -- Speed boost
+        if lootgoblin_speed_mult:GetFloat() > 1 then
+            html = html .. "<span style='display: block; margin-top: 10px;'>To help the " .. ROLE_STRINGS[ROLE_LOOTGOBLIN] .. " avoid capture, they gain a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>speed boost</span> while active.</span>"
+        end
+
+        -- Sprint stamina recovery boost
+        if lootgoblin_sprint_recovery:GetFloat() > 0 then
+            html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_LOOTGOBLIN] .. " gets a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>boost to their sprint stamina recovery</span> to aid in running away from damage.</span>"
         end
 
         return html

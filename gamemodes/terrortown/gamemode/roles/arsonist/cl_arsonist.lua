@@ -48,6 +48,13 @@ end)
 -- TARGET ID --
 ---------------
 
+-- Show douse icon over all undoused players
+hook.Add("TTTTargetIDPlayerTargetIcon", "Arsonist_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
+    if cli:IsArsonist() and not cli:GetNWBool("TTTArsonistDouseComplete", false) and ply:GetNWInt("TTTArsonistDouseStage", ARSONIST_UNDOUSED) < ARSONIST_DOUSED then
+        return "douse", false, ROLE_COLORS_SPRITE[ROLE_ARSONIST], "down"
+    end
+end)
+
 -- Show "DOUSED" label on players who have been doused
 hook.Add("TTTTargetIDPlayerText", "Arsonist_TTTTargetIDPlayerText", function(ent, cli, text, col, secondaryText)
     if GetRoundState() < ROUND_ACTIVE then return end
@@ -277,7 +284,9 @@ hook.Add("TTTTutorialRoleText", "Arsonist_TTTTutorialRoleText", function(role, t
         roleColor = ROLE_COLORS[ROLE_TRAITOR]
 
         html = html .. "<span style='display: block; margin-top: 10px;'>To help accomplish this, they can <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>douse players in gasoline</span> by standing near them.</span>"
-        if GetConVar("ttt_arsonist_early_ignite"):GetBool() then
+
+        local early_ignite = GetConVar("ttt_arsonist_early_ignite"):GetBool()
+        if early_ignite then
             html = html .. "<span style='display: block; margin-top: 10px;'>They can use their igniter to <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>burn</span> all the doused players at any time. The igniter can only be used once, though, so plan accordinly.</span>"
         else
             html = html .. "<span style='display: block; margin-top: 10px;'>Once every player has been doused, they can use their igniter to <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>burn</span> all the doused players.</span>"
@@ -292,6 +301,12 @@ hook.Add("TTTTutorialRoleText", "Arsonist_TTTTutorialRoleText", function(role, t
         if delay_min > 0 then
             html = html .. "<span style='display: block; margin-top: 10px;'>Be careful though! Players <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>are notified when they are doused</span> after a short delay. Be sure to be sneaky or blend in with other players to disguise that you are the " .. ROLE_STRINGS[ROLE_ARSONIST] .. ".</span>"
         end
+
+        html = html .. "<span style='display: block; margin-top: 10px;'>You can also <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>douse player corpses</span>"
+        if not early_ignite then
+            html = html .. ", but they are not required to activate your igniter"
+        end
+        html = html .. ".</span>"
 
         return html
     end

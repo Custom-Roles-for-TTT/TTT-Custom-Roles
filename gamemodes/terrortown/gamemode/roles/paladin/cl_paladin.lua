@@ -12,6 +12,7 @@ local GetAllPlayers = player.GetAll
 local paladin_aura_radius = GetConVar("ttt_paladin_aura_radius")
 local paladin_protect_self = GetConVar("ttt_paladin_protect_self")
 local paladin_heal_self = GetConVar("ttt_paladin_heal_self")
+local paladin_damage_reduction = GetConVar("ttt_paladin_damage_reduction")
 
 ------------------
 -- TRANSLATIONS --
@@ -72,7 +73,7 @@ hook.Add("HUDPaintBackground", "Paladin_HUDPaintBackground", function()
 
     local inside = false
     for _, p in pairs(GetAllPlayers()) do
-        if p:IsActive() and p:Alive() and p:GetDisplayedRole() == ROLE_PALADIN and client:GetPos():Distance(p:GetPos()) <= (paladin_aura_radius:GetFloat() * UNITS_PER_METER) then
+        if p:IsActive() and p:GetDisplayedRole() == ROLE_PALADIN and client:GetPos():Distance(p:GetPos()) <= (paladin_aura_radius:GetFloat() * UNITS_PER_METER) then
             inside = true
             break
         end
@@ -90,16 +91,24 @@ hook.Add("TTTTutorialRoleText", "Paladin_TTTTutorialRoleText", function(role, ti
         local detectiveColor = GetRoleTeamColor(ROLE_TEAM_DETECTIVE)
         local html = "The " .. ROLE_STRINGS[ROLE_PALADIN] .. " is a " .. ROLE_STRINGS[ROLE_DETECTIVE] .. " and a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> whose job is to find and eliminate their enemies."
 
-        html = html .. "<span style='display: block; margin-top: 10px;'>Instead of getting a DNA Scanner like a vanilla <span style='color: rgb(" .. detectiveColor.r .. ", " .. detectiveColor.g .. ", " .. detectiveColor.b .. ")'>" .. ROLE_STRINGS[ROLE_DETECTIVE] .. "</span>, they have a healing and damage reduction aura.</span>"
-
-        -- Damage Reduction
-        html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_PALADIN] .. "'s <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>damage reduction</span> "
-        if paladin_protect_self:GetBool() then
-            html = html .. "applies to them as well"
-        else
-            html = html .. "does NOT apply to them, however"
+        -- Aura
+        local has_damage_reduction = paladin_damage_reduction:GetFloat() > 0
+        html = html .. "<span style='display: block; margin-top: 10px;'>Instead of getting a DNA Scanner like a vanilla <span style='color: rgb(" .. detectiveColor.r .. ", " .. detectiveColor.g .. ", " .. detectiveColor.b .. ")'>" .. ROLE_STRINGS[ROLE_DETECTIVE] .. "</span>, they have a healing"
+        if has_damage_reduction then
+            html = html .. " and damage reduction"
         end
-        html = html .. ".</span>"
+        html = html .. " aura.</span>"
+
+        -- Damage reduction
+        if has_damage_reduction then
+            html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_PALADIN] .. "'s <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>damage reduction</span> "
+            if paladin_protect_self:GetBool() then
+                html = html .. "applies to them as well"
+            else
+                html = html .. "does NOT apply to them, however"
+            end
+            html = html .. ".</span>"
+        end
 
         -- Healing
         html = html .. "<span style='display: block; margin-top: 10px;'>Their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>healing</span> "
@@ -110,6 +119,7 @@ hook.Add("TTTTutorialRoleText", "Paladin_TTTTutorialRoleText", function(role, ti
         end
         html = html .. ".</span>"
 
+        -- Hide special detectives mode
         html = html .. "<span style='display: block; margin-top: 10px;'>Other players will know you are " .. ROLE_STRINGS_EXT[ROLE_DETECTIVE] .. " just by <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>looking at you</span>"
         local special_detective_mode = GetConVar("ttt_detectives_hide_special_mode"):GetInt()
         if special_detective_mode > SPECIAL_DETECTIVE_HIDE_NONE then

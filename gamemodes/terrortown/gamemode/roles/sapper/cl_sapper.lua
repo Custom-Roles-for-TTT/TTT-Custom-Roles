@@ -96,7 +96,7 @@ hook.Add("HUDPaintBackground", "Sapper_HUDPaintBackground", function()
 
     local inside = false
     for _, p in pairs(GetAllPlayers()) do
-        if p:IsActive() and p:Alive() and p:GetDisplayedRole() == ROLE_SAPPER and client:GetPos():Distance(p:GetPos()) <= (sapper_aura_radius:GetInt() * UNITS_PER_METER) then
+        if p:IsActive() and p:GetDisplayedRole() == ROLE_SAPPER and client:GetPos():Distance(p:GetPos()) <= (sapper_aura_radius:GetInt() * UNITS_PER_METER) then
             inside = true
             break
         end
@@ -114,6 +114,7 @@ hook.Add("TTTTutorialRoleText", "Sapper_TTTTutorialRoleText", function(role, tit
         local detectiveColor = GetRoleTeamColor(ROLE_TEAM_DETECTIVE)
         local html = "The " .. ROLE_STRINGS[ROLE_SAPPER] .. " is a " .. ROLE_STRINGS[ROLE_DETECTIVE] .. " and a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> whose job is to find and eliminate their enemies."
 
+        -- Fire immunity
         local fire_immune = sapper_fire_immune:GetBool()
         local andfire = ""
         if fire_immune then
@@ -130,14 +131,17 @@ hook.Add("TTTTutorialRoleText", "Sapper_TTTTutorialRoleText", function(role, tit
         end
         html = html .. ".</span>"
 
+        -- Can see C4
         if sapper_can_see_c4:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_SAPPER] .. " can also <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>see the location of planted C4</span>.</span>"
         end
 
+        -- C4 defusal
         if sapper_c4_guaranteed_defuse:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>When defusing C4, the " .. ROLE_STRINGS[ROLE_SAPPER] .. " <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>will always succeeed</span>.</span>"
         end
 
+        -- Hide special detectives mode
         html = html .. "<span style='display: block; margin-top: 10px;'>Other players will know you are " .. ROLE_STRINGS_EXT[ROLE_DETECTIVE] .. " just by <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>looking at you</span>"
         local special_detective_mode = GetConVar("ttt_detectives_hide_special_mode"):GetInt()
         if special_detective_mode > SPECIAL_DETECTIVE_HIDE_NONE then

@@ -646,7 +646,7 @@ local function CheckCreditAward(victim, attacker)
                     if CallHook("TTTRewardTraitorInnocentDeath", nil, p, victim, attacker, amt) then
                         return false
                     end
-                    if p:Alive() and not p:IsSpec() and p:IsTraitorTeam() and p:IsShopRole() then
+                    if p:IsActiveTraitorTeam() and p:IsShopRole() then
                         return not p:IsVampire() or vampire_kill_credits
                     end
                     return false
@@ -1364,7 +1364,7 @@ end
 local function GetTargetPlayerByName(name, allow_dead)
     name = string.lower(name)
     for _, v in RandomPairs(GetAllPlayers()) do
-        if IsValid(v) and (allow_dead or (v:Alive() and not v:IsSpec())) and string.lower(v:Nick()) == name then
+        if IsValid(v) and (allow_dead or v:IsActive()) and string.lower(v:Nick()) == name then
             return v
         end
     end
@@ -1372,7 +1372,7 @@ end
 
 local function GetRandomTargetPlayer(ply, allow_dead)
     for _, v in RandomPairs(GetAllPlayers()) do
-        if IsValid(v) and (allow_dead or (v:Alive() and not v:IsSpec())) and v ~= ply and not v:ShouldActLikeJester() then
+        if IsValid(v) and (allow_dead or v:IsActive()) and v ~= ply and not v:ShouldActLikeJester() then
             return v
         end
     end

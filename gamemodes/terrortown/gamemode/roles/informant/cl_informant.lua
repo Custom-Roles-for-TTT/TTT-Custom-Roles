@@ -294,7 +294,27 @@ hook.Add("TTTTutorialRoleText", "Informant_TTTTutorialRoleText", function(role, 
         local roleColor = ROLE_COLORS[ROLE_TRAITOR]
         local jesterColor = ROLE_COLORS[ROLE_JESTER]
         local glitchColor = ROLE_COLORS[ROLE_GLITCH]
-        local html = "The " .. ROLE_STRINGS[ROLE_INFORMANT] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitor team</span> whose goal is to learn more about their enemies using their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>scanner</span>."
+        local html = "The " .. ROLE_STRINGS[ROLE_INFORMANT] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitor team</span> whose goal is to learn more about their enemies using their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>"
+        if informant_requires_scanner:GetBool() then
+            html = html .. "scanner"
+        else
+            html = html .. "scanning ability"
+        end
+        html = html .. "</span>."
+
+        local scanner_circle_state
+        local scanner_circle_state_opposite
+        local scannerColor
+        if informant_show_scan_radius:GetBool() then
+            scanner_circle_state = "enabled"
+            scanner_circle_state_opposite = "disabled"
+            scannerColor = ROLE_COLORS[ROLE_INNOCENT]
+        else
+            scanner_circle_state = "disabled"
+            scanner_circle_state_opposite = "enabled"
+            scannerColor = ROLE_COLORS[ROLE_TRAITOR]
+        end
+        html = html .. "<span style='display: block; margin-top: 10px;'>The scan area circle is currently <span style='color: rgb(" .. scannerColor.r .. ", " .. scannerColor.g .. ", " .. scannerColor.b .. ")'>" .. scanner_circle_state .. "</span> but can be " .. scanner_circle_state_opposite .. " on the role settings tab of this window.</span>"
 
         local scanJesters = informant_can_scan_jesters:GetBool()
         local scanGlitches = informant_can_scan_glitches:GetBool()

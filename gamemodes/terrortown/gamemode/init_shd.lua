@@ -8,6 +8,13 @@ for role = 0, ROLE_MAX do
     CreateConVar("ttt_" .. rolestring .. "_name", "", FCVAR_REPLICATED)
     CreateConVar("ttt_" .. rolestring .. "_name_plural", "", FCVAR_REPLICATED)
     CreateConVar("ttt_" .. rolestring .. "_name_article", "", FCVAR_REPLICATED)
+
+    if INDEPENDENT_ROLES[role] then
+        local jesterVisible = ROLE_CAN_SEE_JESTERS[role] and "1" or "0"
+        CreateConVar("ttt_" .. rolestring .. "_can_see_jesters", jesterVisible, FCVAR_REPLICATED)
+        local miaVisible = ROLE_CAN_SEE_MIA[role] and "1" or "0"
+        CreateConVar("ttt_" .. rolestring .. "_update_scoreboard", miaVisible, FCVAR_REPLICATED)
+    end
 end
 
 CreateConVar("ttt_all_search_binoc", "0", FCVAR_REPLICATED)
@@ -28,10 +35,6 @@ CreateConVar("ttt_traitors_vision_enable", "0", FCVAR_REPLICATED)
 -- Jester role properties
 CreateConVar("ttt_jesters_visible_to_traitors", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_jesters_visible_to_monsters", "1", FCVAR_REPLICATED)
-CreateConVar("ttt_jesters_visible_to_independents", "1", FCVAR_REPLICATED)
-
--- Independent role properties
-CreateConVar("ttt_independents_update_scoreboard", "0", FCVAR_REPLICATED)
 
 CreateConVar("ttt_round_summary_tabs", "summary,hilite,events,scores", FCVAR_REPLICATED)
 

@@ -79,7 +79,7 @@ hook.Add("HUDPaintBackground", "Sponge_HUDPaintBackground", function()
     local inside = false
     local allInside = false
     for _, p in pairs(GetAllPlayers()) do
-        if p:IsActiveSponge() and p:Alive() and client:GetPos():Distance(p:GetPos()) <= GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_FIVE_METERS) then
+        if p:IsActiveSponge() and client:GetPos():Distance(p:GetPos()) <= GetGlobalFloat("ttt_sponge_aura_radius", UNITS_PER_FIVE_METERS) then
             inside = true
             if p:GetNWBool("SpongeAllInRadius", false) then
                 allInside = true

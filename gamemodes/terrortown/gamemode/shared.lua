@@ -22,7 +22,7 @@ local StringSub = string.sub
 include("player_class/player_ttt.lua")
 
 -- Version string for display and function for version checks
-CR_VERSION = "1.9.3"
+CR_VERSION = "1.9.4"
 CR_BETA = true
 CR_WORKSHOP_ID = CR_BETA and "2404251054" or "2421039084"
 
@@ -155,8 +155,9 @@ ROLE_CUPID = 37
 ROLE_SHADOW = 38
 ROLE_SPONGE = 39
 ROLE_ARSONIST = 40
+ROLE_SPY = 41
 
-ROLE_MAX = 40
+ROLE_MAX = 41
 ROLE_EXTERNAL_START = ROLE_MAX + 1
 
 local function AddRoleAssociations(list, roles)
@@ -178,13 +179,13 @@ function GetTeamRoles(list, excludes)
 end
 
 SHOP_ROLES = {}
-AddRoleAssociations(SHOP_ROLES, {ROLE_TRAITOR, ROLE_DETECTIVE, ROLE_HYPNOTIST, ROLE_DEPUTY, ROLE_IMPERSONATOR, ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_MERCENARY, ROLE_ASSASSIN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_VAMPIRE, ROLE_VETERAN, ROLE_DOCTOR, ROLE_QUACK, ROLE_PARASITE, ROLE_PALADIN, ROLE_TRACKER, ROLE_MEDIUM, ROLE_SAPPER, ROLE_INFORMANT, ROLE_MARSHAL, ROLE_MADSCIENTIST})
+AddRoleAssociations(SHOP_ROLES, {ROLE_TRAITOR, ROLE_DETECTIVE, ROLE_HYPNOTIST, ROLE_DEPUTY, ROLE_IMPERSONATOR, ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_MERCENARY, ROLE_ASSASSIN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_VAMPIRE, ROLE_VETERAN, ROLE_DOCTOR, ROLE_QUACK, ROLE_PARASITE, ROLE_PALADIN, ROLE_TRACKER, ROLE_MEDIUM, ROLE_SAPPER, ROLE_INFORMANT, ROLE_MARSHAL, ROLE_MADSCIENTIST, ROLE_SPY})
 
 DELAYED_SHOP_ROLES = {}
 AddRoleAssociations(DELAYED_SHOP_ROLES, {ROLE_CLOWN, ROLE_VETERAN, ROLE_DEPUTY})
 
 TRAITOR_ROLES = {}
-AddRoleAssociations(TRAITOR_ROLES, {ROLE_TRAITOR, ROLE_HYPNOTIST, ROLE_IMPERSONATOR, ROLE_ASSASSIN, ROLE_VAMPIRE, ROLE_QUACK, ROLE_PARASITE, ROLE_INFORMANT})
+AddRoleAssociations(TRAITOR_ROLES, {ROLE_TRAITOR, ROLE_HYPNOTIST, ROLE_IMPERSONATOR, ROLE_ASSASSIN, ROLE_VAMPIRE, ROLE_QUACK, ROLE_PARASITE, ROLE_INFORMANT, ROLE_SPY})
 
 INNOCENT_ROLES = {}
 AddRoleAssociations(INNOCENT_ROLES, {ROLE_INNOCENT, ROLE_DETECTIVE, ROLE_GLITCH, ROLE_PHANTOM, ROLE_REVENGER, ROLE_DEPUTY, ROLE_MERCENARY, ROLE_VETERAN, ROLE_DOCTOR, ROLE_TRICKSTER, ROLE_PARAMEDIC, ROLE_PALADIN, ROLE_TRACKER, ROLE_MEDIUM, ROLE_TURNCOAT, ROLE_SAPPER, ROLE_MARSHAL, ROLE_INFECTED})
@@ -530,7 +531,8 @@ ROLE_STRINGS_RAW = {
     [ROLE_CUPID] = "cupid",
     [ROLE_SHADOW] = "shadow",
     [ROLE_SPONGE] = "sponge",
-    [ROLE_ARSONIST] = "arsonist"
+    [ROLE_ARSONIST] = "arsonist",
+    [ROLE_SPY] = "spy"
 }
 
 ROLE_STRINGS = {
@@ -574,7 +576,8 @@ ROLE_STRINGS = {
     [ROLE_CUPID] = "Cupid",
     [ROLE_SHADOW] = "Shadow",
     [ROLE_SPONGE] = "Sponge",
-    [ROLE_ARSONIST] = "Arsonist"
+    [ROLE_ARSONIST] = "Arsonist",
+    [ROLE_SPY] = "Spy"
 }
 
 ROLE_STRINGS_PLURAL = {
@@ -618,7 +621,8 @@ ROLE_STRINGS_PLURAL = {
     [ROLE_CUPID] = "Cupids",
     [ROLE_SHADOW] = "Shadows",
     [ROLE_SPONGE] = "Sponges",
-    [ROLE_ARSONIST] = "Arsonists"
+    [ROLE_ARSONIST] = "Arsonists",
+    [ROLE_SPY] = "Spies"
 }
 
 ROLE_STRINGS_EXT = {
@@ -663,7 +667,8 @@ ROLE_STRINGS_EXT = {
     [ROLE_CUPID] = "a Cupid",
     [ROLE_SHADOW] = "a Shadow",
     [ROLE_SPONGE] = "a Sponge",
-    [ROLE_ARSONIST] = "an Arsonist"
+    [ROLE_ARSONIST] = "an Arsonist",
+    [ROLE_SPY] = "a Spy"
 }
 
 ROLE_STRINGS_SHORT = {
@@ -708,7 +713,8 @@ ROLE_STRINGS_SHORT = {
     [ROLE_CUPID] = "cup",
     [ROLE_SHADOW] = "sha",
     [ROLE_SPONGE] = "spn",
-    [ROLE_ARSONIST] = "ars"
+    [ROLE_ARSONIST] = "ars",
+    [ROLE_SPY] = "spy"
 }
 
 function StartsWithVowel(word)
@@ -814,10 +820,12 @@ ROLE_SELECTION_PREDICATE = {}
 ROLE_CONVARS = {}
 
 -- Optional features
-ROLE_SHOULD_DELAY_ANNOUNCEMENTS = {}
+ROLE_SHOULD_DELAY_ANNOUNCEMENTS = {} -- TODO: Remove after 2.0.0
 ROLE_HAS_PASSIVE_WIN = {}
 ROLE_SHOULD_NOT_DROWN = {}
 ROLE_CAN_SEE_C4 = {}
+ROLE_CAN_SEE_JESTERS = {}
+ROLE_CAN_SEE_MIA = {}
 
 -- Player functions
 ROLE_IS_ACTIVE = {}
@@ -926,7 +934,7 @@ function RegisterRole(tbl)
         DELAYED_SHOP_ROLES[roleID] = tbl.shoulddelayshop
     end
 
-    if type(tbl.shoulddelayannouncements) == "boolean" then
+    if type(tbl.shoulddelayannouncements) == "boolean" then -- TODO: Remove after 2.0.0
         ROLE_SHOULD_DELAY_ANNOUNCEMENTS[roleID] = tbl.shoulddelayannouncements
     end
 
@@ -940,6 +948,14 @@ function RegisterRole(tbl)
 
     if type(tbl.canseec4) == "boolean" then
         ROLE_CAN_SEE_C4[roleID] = tbl.canseec4
+    end
+
+    if type(tbl.canseejesters) == "boolean" then
+        ROLE_CAN_SEE_JESTERS[roleID] = tbl.canseejesters
+    end
+
+    if type(tbl.canseemia) == "boolean" then
+        ROLE_CAN_SEE_MIA[roleID] = tbl.canseemia
     end
 
     -- Equipment
@@ -1265,6 +1281,7 @@ MUTE_ALL = 2
 MUTE_SPEC = 1002
 
 -- Jester notify modes
+JESTER_NOTIFY_NONE = 0
 JESTER_NOTIFY_DETECTIVE_AND_TRAITOR = 1
 JESTER_NOTIFY_TRAITOR = 2
 JESTER_NOTIFY_DETECTIVE = 3
@@ -1284,6 +1301,11 @@ SPECIAL_DETECTIVE_HIDE_FOR_OTHERS = 2
 -- Misc. role constants
 UNITS_PER_METER = 52.49
 UNITS_PER_FIVE_METERS = UNITS_PER_METER * 5
+
+-- Message queue modes
+MSG_PRINTBOTH = 1
+MSG_PRINTTALK = 3 -- Keep this the same value as HUD_PRINTTALK just in case
+MSG_PRINTCENTER = 4 -- Keep this the same value as HUD_PRINTCENTER just in case
 
 -- Corpse stuff
 CORPSE_ICON_TYPES = {
@@ -1545,9 +1567,9 @@ if SERVER then
         for _, ply in pairs(GetAllPlayers()) do
             if ply == attacker then
                 local role_string = ROLE_STRINGS[role]
-                ply:PrintMessage(HUD_PRINTCENTER, "You killed the " .. role_string .. "!")
+                ply:QueueMessage(MSG_PRINTCENTER, "You killed the " .. role_string .. "!")
             elseif (shouldshow == nil or shouldshow(ply)) and ShouldShowJesterNotification(ply, mode) then
-                ply:PrintMessage(HUD_PRINTCENTER, getkillstring(ply))
+                ply:QueueMessage(MSG_PRINTCENTER, getkillstring(ply))
             end
 
             if play_sound or show_confetti then

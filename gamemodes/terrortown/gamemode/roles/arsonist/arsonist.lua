@@ -109,8 +109,7 @@ hook.Add("Think", "Arsonist_Douse_Think", function()
                 if not early_ignite then
                     message = message .. " Your igniter is now active!"
                 end
-                p:PrintMessage(HUD_PRINTCENTER, message)
-                p:PrintMessage(HUD_PRINTTALK, message)
+                p:QueueMessage(MSG_PRINTBOTH, message)
             end
             continue
         end
@@ -177,8 +176,7 @@ hook.Add("Think", "Arsonist_Douse_Think", function()
                             message = message .. "You have "
                         end
                         message = message .. "been doused in gasoline by the " .. ROLE_STRINGS[ROLE_ARSONIST] .. "!"
-                        target:PrintMessage(HUD_PRINTCENTER, message)
-                        target:PrintMessage(HUD_PRINTTALK, message)
+                        target:QueueMessage(MSG_PRINTBOTH, message)
                     end)
                 end
             end
@@ -229,9 +227,8 @@ hook.Add("TTTPlayerSpawnForRound", "Arsonist_TTTPlayerSpawnForRound", function(p
                 p:SetNWBool("TTTArsonistDouseComplete", false)
 
                 -- Let the arsonist know they have more work to do
-                if p:Alive() and not p:IsSpec() then
-                    p:PrintMessage(HUD_PRINTCENTER, message)
-                    p:PrintMessage(HUD_PRINTTALK, message)
+                if p:IsActive() then
+                    p:QueueMessage(MSG_PRINTBOTH, message)
                 end
             end
         end
@@ -282,7 +279,7 @@ hook.Add("TTTCheckForWin", "Arsonist_TTTCheckForWin", function()
     local arsonist_alive = false
     local other_alive = false
     for _, v in ipairs(GetAllPlayers()) do
-        if v:Alive() and v:IsTerror() then
+        if v:IsActive() then
             if v:IsArsonist() then
                 arsonist_alive = true
             elseif not v:ShouldActLikeJester() then

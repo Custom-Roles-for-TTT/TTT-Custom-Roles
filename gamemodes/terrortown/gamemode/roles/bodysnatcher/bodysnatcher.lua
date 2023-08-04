@@ -15,15 +15,13 @@ util.AddNetworkString("TTT_BodysnatcherKilled")
 -- CONVARS --
 -------------
 
-local bodysnatcher_respawn = GetConVar("ttt_bodysnatcher_respawn")
-local bodysnatcher_respawn_delay = GetConVar("ttt_bodysnatcher_respawn_delay")
-local bodysnatcher_respawn_limit = GetConVar("ttt_bodysnatcher_respawn_limit")
-
 CreateConVar("ttt_bodysnatcher_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that the bodysnatcher is killed", 0, 4)
 CreateConVar("ttt_bodysnatcher_notify_sound", "0", FCVAR_NONE, "Whether to play a cheering sound when a bodysnatcher is killed", 0, 1)
 CreateConVar("ttt_bodysnatcher_notify_confetti", "0", FCVAR_NONE, "Whether to throw confetti when a bodysnatcher is a killed", 0, 1)
-CreateConVar("ttt_bodysnatcher_destroy_body", "0", FCVAR_NONE, "Whether the bodysnatching device destroys the body it is used on or not", 0, 1)
-CreateConVar("ttt_bodysnatcher_show_role", "1", FCVAR_NONE, "Whether the bodysnatching device shows the role of the corpse it is used on or not", 0, 1)
+
+local bodysnatcher_respawn = GetConVar("ttt_bodysnatcher_respawn")
+local bodysnatcher_respawn_delay = GetConVar("ttt_bodysnatcher_respawn_delay")
+local bodysnatcher_respawn_limit = GetConVar("ttt_bodysnatcher_respawn_limit")
 
 ----------------
 -- ROLE STATE --
@@ -87,9 +85,9 @@ hook.Add("PlayerDeath", "Bodysnatcher_KillCheck_PlayerDeath", function(victim, i
         victim.BodysnatcherRespawn = victim.BodysnatcherRespawn + 1
         local delay = bodysnatcher_respawn_delay:GetInt()
         if delay > 0 then
-            victim:PrintMessage(HUD_PRINTCENTER, "You were killed but will respawn in " .. delay .. " seconds.")
+            victim:QueueMessage(MSG_PRINTCENTER, "You were killed but will respawn in " .. delay .. " seconds.")
         else
-            victim:PrintMessage(HUD_PRINTCENTER, "You were killed but are about to respawn.")
+            victim:QueueMessage(MSG_PRINTCENTER, "You were killed but are about to respawn.")
             -- Introduce a slight delay to prevent player getting stuck as a spectator
             delay = 0.1
         end

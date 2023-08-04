@@ -14,10 +14,10 @@ local GetAllPlayers = player.GetAll
 
 local veteran_damage_bonus = CreateConVar("ttt_veteran_damage_bonus", "0.5", FCVAR_NONE, "Damage bonus that the veteran has when they are the last innocent alive (e.g. 0.5 = 50% more damage)", 0, 1)
 local veteran_heal_bonus = CreateConVar("ttt_veteran_heal_bonus", "0", FCVAR_NONE, "The amount of bonus health to give the veteran when they are healed as the last remaining innocent", 0, 100)
-local veteran_announce = CreateConVar("ttt_veteran_announce", "0")
 local veteran_activation_credits = CreateConVar("ttt_veteran_activation_credits", "0", FCVAR_NONE, "The number of credits to give the veteran when they are activated", 0, 10)
 
 local veteran_full_heal = GetConVar("ttt_veteran_full_heal")
+local veteran_announce = GetConVar("ttt_veteran_announce")
 
 -----------------
 -- ROLE STATUS --
@@ -36,13 +36,11 @@ hook.Add("PlayerDeath", "Veteran_RoleFeatures_PlayerDeath", function(victim, inf
                 v:SetNWBool("VeteranActive", true)
                 v:AddCredits(veteran_activation_credits:GetInt())
 
-                v:PrintMessage(HUD_PRINTTALK, "You are the last " .. ROLE_STRINGS[ROLE_INNOCENT] .. " alive!")
-                v:PrintMessage(HUD_PRINTCENTER, "You are the last " .. ROLE_STRINGS[ROLE_INNOCENT] .. " alive!")
+                v:QueueMessage(MSG_PRINTBOTH, "You are the last " .. ROLE_STRINGS[ROLE_INNOCENT] .. " alive!")
                 if veteran_announce:GetBool() then
                     for _, p in ipairs(GetAllPlayers()) do
-                        if p ~= v and p:Alive() and not p:IsSpec() then
-                            p:PrintMessage(HUD_PRINTTALK, "The last " .. ROLE_STRINGS[ROLE_INNOCENT] .. " alive is " .. ROLE_STRINGS_EXT[ROLE_VETERAN] .. "!")
-                            p:PrintMessage(HUD_PRINTCENTER, "The last " .. ROLE_STRINGS[ROLE_INNOCENT] .. " alive is " .. ROLE_STRINGS_EXT[ROLE_VETERAN] .. "!")
+                        if p ~= v and p:IsActive() then
+                            p:QueueMessage(MSG_PRINTBOTH, "The last " .. ROLE_STRINGS[ROLE_INNOCENT] .. " alive is " .. ROLE_STRINGS_EXT[ROLE_VETERAN] .. "!")
                         end
                     end
                 end

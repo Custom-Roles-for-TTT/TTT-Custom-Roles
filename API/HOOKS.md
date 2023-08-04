@@ -789,7 +789,8 @@ Called before a player's karma status text (shown when you look at a player) is 
 - *text* - The new text value to use or the original passed into the hook. Return `false` to not show text at all
 - *clr* - The new clr value to use or the original passed into the hook
 
-### TTTTargetIDPlayerKillIcon(ply, client, showKillIcon, showJester)
+### TTTTargetIDPlayerKillIcon(ply, client, showKillIcon, showJester)  <!-- TODO: Remove after 2.0.0 -->
+**DEPRECATED IN 1.9.4**\
 Called before player Target ID icon (over their head) is rendered to determine if the "KILL" icon should be shown.\
 *Realm:* Client\
 *Added in:* 1.1.9\
@@ -846,6 +847,21 @@ Called before player Target ID icon (over their head) is rendered allowing chang
 - *role* - The new role value to use or the original passed into the hook. Return `false` to stop the icon from being rendered
 - *noZ* - The new noZ value to use or the original passed into the hook. *NOTE:* The matching icon .vmt for this flag needs to exist. If *noZ* is `true`, a "sprite\_{ROLESHORTNAME}\_noz.vmt" file must exist and if *noZ* is `false`, a "sprite_{ROLESHORTNAME}.vmt" file must exist
 - *colorRole* - The new colorRole value to use or the original passed into the hook
+
+### TTTTargetIDPlayerTargetIcon(ply, client, showJester)
+Called before player Target ID icon (over their head) is rendered allowing adding a secondary icon.\
+*Realm:* Client\
+*Added in:* 1.9.4\
+*Parameters:*
+- *ply* - The target player being rendered
+- *client* - The local player
+- *showJester* - Whether the target is a jester and the local player would normally know that
+
+*Return:*
+- *icon* - The icon name used in the filename of the icon
+- *iconNoZ* - Whether the icon should be visible through walls. *NOTE:* A .vmt file for the icon must exist in "vgui/ttt/targeticons/{ICONTYPE}". If *iconNoZ* is `true`, a "sprite_target_{ICONNAME}_noz.vmt" file must exist and if *iconNoZ* is `false`, a "sprite_target_{ICONNAME}.vmt" file must exist
+- *iconColor* - The [Color](https://wiki.facepunch.com/gmod/Color) to use for the icon
+- *iconType* - The icon type used in the filename of the icon. `"down"` if you want the icon background to be a downwards pointing triangle, or `"up"` for an upwards pointing triangle
 
 ### TTTTargetIDPlayerText(ent, client, text, clr, secondaryText)
 Called before player Target ID text (shown when you look at a player) is rendered.\

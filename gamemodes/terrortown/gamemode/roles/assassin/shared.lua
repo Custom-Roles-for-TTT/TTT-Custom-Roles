@@ -4,7 +4,7 @@ local hook = hook
 local table = table
 
 -- Initialize role features
-ROLE_SHOULD_DELAY_ANNOUNCEMENTS[ROLE_ASSASSIN] = true
+ROLE_SHOULD_DELAY_ANNOUNCEMENTS[ROLE_ASSASSIN] = true -- TODO: Remove after 2.0.0
 
 local function InitializeEquipment()
     if DefaultEquipment then
@@ -31,6 +31,13 @@ end)
 CreateConVar("ttt_assassin_show_target_icon", "0", FCVAR_REPLICATED)
 CreateConVar("ttt_assassin_target_vision_enable", "0", FCVAR_REPLICATED)
 CreateConVar("ttt_assassin_next_target_delay", "5", FCVAR_REPLICATED, "The delay (in seconds) before an assassin is assigned their next target", 0, 30)
+CreateConVar("ttt_assassin_allow_lootgoblin_kill", "1", FCVAR_REPLICATED)
+CreateConVar("ttt_assassin_allow_zombie_kill", "1", FCVAR_REPLICATED)
+CreateConVar("ttt_assassin_allow_vampire_kill", "1", FCVAR_REPLICATED)
+CreateConVar("ttt_assassin_target_damage_bonus", "1", FCVAR_REPLICATED, "Damage bonus that the assassin has against their target (e.g. 0.5 = 50% extra damage)", 0, 1)
+CreateConVar("ttt_assassin_target_bonus_bought", "1", FCVAR_REPLICATED)
+CreateConVar("ttt_assassin_wrong_damage_penalty", "0.5", FCVAR_REPLICATED, "Damage penalty that the assassin has when attacking someone who is not their target (e.g. 0.5 = 50% less damage)", 0, 1)
+CreateConVar("ttt_assassin_failed_damage_penalty", "0.5", FCVAR_REPLICATED, "Damage penalty that the assassin has after they have failed their contract by killing the wrong person (e.g. 0.5 = 50% less damage)", 0, 1)
 
 ROLE_CONVARS[ROLE_ASSASSIN] = {}
 table.insert(ROLE_CONVARS[ROLE_ASSASSIN], {

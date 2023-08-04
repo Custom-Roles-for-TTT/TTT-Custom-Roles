@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="../css/api.css"/>
 </head>
 <body>
-    <embed src="../nav.html#api" width="220" height="278" style="float: left; margin-right: 10px;" />
+    <embed src="../nav.html#api" width="220" height="298" style="float: left; margin-right: 10px;" />
     <div>
         <h1>Hooks</h1>
         <p>Custom and modified event hooks available within the defined realm. A list of default TTT hooks is available <a href="https://www.troubleinterroristtown.com/development/hooks/" target="_blank">here</a> but note that they may have been modified (see below).</p>
@@ -1175,8 +1175,9 @@
             <li><em>clr</em> - The new clr value to use or the original passed into the hook</li>
         </ul>
 
-        <h3><a id="ttttargetidplayerkilliconply-client-showkillicon-showjester" href="#ttttargetidplayerkilliconply-client-showkillicon-showjester">TTTTargetIDPlayerKillIcon(ply, client, showKillIcon, showJester)</a></h3>
+        <h3><a id="ttttargetidplayerkilliconply-client-showkillicon-showjester" href="#ttttargetidplayerkilliconply-client-showkillicon-showjester">TTTTargetIDPlayerKillIcon(ply, client, showKillIcon, showJester)</a></h3>  <!-- TODO: Remove after 2.0.0 -->
         <p>
+            <b>DEPRECATED IN 1.9.4</b><br>
             Called before player Target ID icon (over their head) is rendered to determine if the "KILL" icon should be shown.<br>
             <em>Realm:</em> Client<br>
             <em>Added in:</em> 1.1.9<br>
@@ -1257,6 +1258,28 @@
             <li><em>role</em> - The new role value to use or the original passed into the hook. Return <code>false</code> to stop the icon from being rendered</li>
             <li><em>noZ</em> - The new noZ value to use or the original passed into the hook. <em>NOTE:</em> The matching icon .vmt for this flag needs to exist. If <em>noZ</em> is <code>true</code>, a "sprite_{ROLESHORTNAME}_noz.vmt" file must exist and if <em>noZ</em> is <code>false</code>, a "sprite_{ROLESHORTNAME}.vmt" file must exist</li>
             <li><em>colorRole</em> - The new colorRole value to use or the original passed into the hook</li>
+        </ul>
+
+        <h3><a id="tttargetidplayertargeticonply-client-showjester" href="#tttargetidplayertargeticonply-client-showjester">TTTTargetIDPlayerTargetIcon(ply, client, showJester)</a></h3>
+        <p>
+            Called before player Target ID icon (over their head) is rendered allowing adding a secondary icon.<br>
+            <em>Realm:</em> Client<br>
+            <em>Added in:</em> 1.9.4<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The target player being rendered</li>
+            <li><em>client</em> - The local player</li>
+            <li><em>showJester</em> - Whether the target is a jester and the local player would normally know that</li>
+        </ul>
+        <p>
+            <em>Return:</em>
+        </p>
+        <ul>
+            <li><em>icon</em> - The icon name used in the filename of the icon</li>
+            <li><em>iconNoZ</em> - Whether the icon should be visible through walls. <em>NOTE:</em> A .vmt file for the icon must exist in "vgui/ttt/targeticons/{ICONTYPE}". If <em>iconNoZ</em> is <code>true</code>, a "sprite_target_{ICONNAME}_noz.vmt" file must exist and if <em>iconNoZ</em> is <code>false</code>, a "sprite_target_{ICONNAME}.vmt" file must exist</li>
+            <li><em>iconColor</em> - The <a href="https://wiki.facepunch.com/gmod/Color" target="_blank">Color</a> to use for the icon</li></li>
+            <li><em>iconType</em> - The icon type used in the filename of the icon. <code>"down"</code> if you want the icon background to be a downwards pointing triangle, or <code>"up"</code> for an upwards pointing triangle</li>
         </ul>
 
         <h3><a id="ttttargetidplayertextent-client-text-clr-secondarytext" href="#ttttargetidplayertextent-client-text-clr-secondarytext">TTTTargetIDPlayerText(ent, client, text, clr, secondaryText)</a></h3>

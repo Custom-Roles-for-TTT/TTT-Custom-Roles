@@ -22,8 +22,6 @@ util.AddNetworkString("TTT_Zombified")
 -------------
 
 CreateConVar("ttt_zombie_round_chance", 0.1, FCVAR_NONE, "The chance that a \"zombie round\" will occur where all players who would have been traitors are made zombies instead. Only usable when \"ttt_zombie_is_traitor\" is set to \"1\"", 0, 1)
-local zombie_damage_penalty = CreateConVar("ttt_zombie_damage_penalty", "0.5", FCVAR_NONE, "The fraction a zombie's damage will be scaled by when they are attacking without using their claws. For example, setting this to 0.25 will let the zombie deal 75% of normal gun damage, and 0.66 will let the zombie deal 33% of normal damage", 0, 1)
-local zombie_damage_reduction = CreateConVar("ttt_zombie_damage_reduction", "0", FCVAR_NONE, "The fraction an attacker's bullet damage will be reduced by when they are shooting a zombie", 0, 1)
 local zombie_prime_only_weapons = CreateConVar("ttt_zombie_prime_only_weapons", "1")
 local zombie_respawn_health = CreateConVar("ttt_zombie_respawn_health", "100", FCVAR_NONE, "The amount of health a player should respawn with when they are converted to a zombie thrall", 1, 200)
 local zombie_friendly_fire = CreateConVar("ttt_zombie_friendly_fire", "2", FCVAR_NONE, "How to handle friendly fire damage between zombies. 0 - Do nothing. 1 - Reflect the damage back to the attacker. 2 - Negate the damage.", 0, 2)
@@ -31,6 +29,8 @@ local zombie_respawn_block_win = CreateConVar("ttt_zombie_respawn_block_win", "0
 
 local zombie_show_target_icon = GetConVar("ttt_zombie_show_target_icon")
 local zombie_vision_enable = GetConVar("ttt_zombie_vision_enable")
+local zombie_damage_penalty = GetConVar("ttt_zombie_damage_penalty")
+local zombie_damage_reduction = GetConVar("ttt_zombie_damage_reduction")
 
 -----------
 -- PRIME --
@@ -43,7 +43,7 @@ hook.Add("PlayerDisconnected", "Zombie_Prime_PlayerDisconnected", function(ply)
 
     local zombies = {}
     for _, v in pairs(GetAllPlayers()) do
-        if v:Alive() and v:IsTerror() and v:IsZombie() and v ~= ply then
+        if v:IsActiveZombie() and v ~= ply then
             -- If we already have another prime, we're all set
             if v:IsZombiePrime() then
                 return
@@ -59,9 +59,7 @@ hook.Add("PlayerDisconnected", "Zombie_Prime_PlayerDisconnected", function(ply)
     local new_prime = zombies[idx]
     new_prime:SetZombiePrime(true)
 
-    local message = "The prime " .. ROLE_STRINGS[ROLE_ZOMBIE] .. " has been lost and you've seized power in their absence!"
-    new_prime:PrintMessage(HUD_PRINTCENTER, message)
-    new_prime:PrintMessage(HUD_PRINTTALK, message)
+    new_prime:QueueMessage(MSG_PRINTBOTH, "The prime " .. ROLE_STRINGS[ROLE_ZOMBIE] .. " has been lost and you've seized power in their absence!")
 end)
 
 function plymeta:SetZombiePrime(p) self:SetNWBool("zombie_prime", p) end
@@ -117,7 +115,7 @@ hook.Add("TTTCheckForWin", "Zombie_TTTCheckForWin", function()
     local zombie_alive = false
     local other_alive = false
     for _, v in ipairs(GetAllPlayers()) do
-        if v:Alive() and v:IsTerror() then
+        if v:IsActive() then
             if v:IsZombie() or v:IsMadScientist() then
                 zombie_alive = true
             elseif not v:ShouldActLikeJester() then
@@ -292,7 +290,7 @@ end)
 ----------------
 
 function plymeta:RespawnAsZombie(prime)
-    self:PrintMessage(HUD_PRINTCENTER, "You will respawn as " .. ROLE_STRINGS_EXT[ROLE_ZOMBIE] .. " in 3 seconds.")
+    self:QueueMessage(MSG_PRINTCENTER, "You will respawn as " .. ROLE_STRINGS_EXT[ROLE_ZOMBIE] .. " in 3 seconds.")
     self:SetNWBool("IsZombifying", true)
 
     net.Start("TTT_Zombified")

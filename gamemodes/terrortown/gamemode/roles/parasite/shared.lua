@@ -36,6 +36,10 @@ end)
 
 local parasite_is_monster = CreateConVar("ttt_parasite_is_monster", "0", FCVAR_REPLICATED, "Whether the parasite should be treated as a member of the monster team (rather than the traitor team)", 0, 1)
 CreateConVar("ttt_parasite_infection_time", 45, FCVAR_REPLICATED, "The time it takes in seconds for the parasite to fully infect someone", 0, 300)
+CreateConVar("ttt_parasite_infection_transfer", 0, FCVAR_REPLICATED)
+CreateConVar("ttt_parasite_respawn_mode", 0, FCVAR_REPLICATED, "The way in which the parasite respawns. 0 - Take over host. 1 - Respawn at the parasite's body. 2 - Respawn at a random location.", 0, 2)
+CreateConVar("ttt_parasite_announce_infection", 0, FCVAR_REPLICATED)
+CreateConVar("ttt_parasite_infection_suicide_mode", 0, FCVAR_REPLICATED, "The way to handle when a player infected by the parasite kills themselves. 0 - Do nothing. 1 - Respawn the parasite. 2 - Respawn the parasite ONLY IF the infected player killed themselves with a console command like \"kill\"", 0, 2)
 
 ROLE_CONVARS[ROLE_PARASITE] = {}
 table.insert(ROLE_CONVARS[ROLE_PARASITE], {
