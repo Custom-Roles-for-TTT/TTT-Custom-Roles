@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.9.4 (Beta)
-**Released:**
+**Released: August 5th, 2023**
 
 ### Additions
 - Added new traitor role: spy
