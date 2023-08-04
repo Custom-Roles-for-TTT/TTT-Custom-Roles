@@ -22,8 +22,6 @@ util.AddNetworkString("TTT_Zombified")
 -------------
 
 CreateConVar("ttt_zombie_round_chance", 0.1, FCVAR_NONE, "The chance that a \"zombie round\" will occur where all players who would have been traitors are made zombies instead. Only usable when \"ttt_zombie_is_traitor\" is set to \"1\"", 0, 1)
-local zombie_damage_penalty = CreateConVar("ttt_zombie_damage_penalty", "0.5", FCVAR_NONE, "The fraction a zombie's damage will be scaled by when they are attacking without using their claws. For example, setting this to 0.25 will let the zombie deal 75% of normal gun damage, and 0.66 will let the zombie deal 33% of normal damage", 0, 1)
-local zombie_damage_reduction = CreateConVar("ttt_zombie_damage_reduction", "0", FCVAR_NONE, "The fraction an attacker's bullet damage will be reduced by when they are shooting a zombie", 0, 1)
 local zombie_prime_only_weapons = CreateConVar("ttt_zombie_prime_only_weapons", "1")
 local zombie_respawn_health = CreateConVar("ttt_zombie_respawn_health", "100", FCVAR_NONE, "The amount of health a player should respawn with when they are converted to a zombie thrall", 1, 200)
 local zombie_friendly_fire = CreateConVar("ttt_zombie_friendly_fire", "2", FCVAR_NONE, "How to handle friendly fire damage between zombies. 0 - Do nothing. 1 - Reflect the damage back to the attacker. 2 - Negate the damage.", 0, 2)
@@ -31,6 +29,8 @@ local zombie_respawn_block_win = CreateConVar("ttt_zombie_respawn_block_win", "0
 
 local zombie_show_target_icon = GetConVar("ttt_zombie_show_target_icon")
 local zombie_vision_enable = GetConVar("ttt_zombie_vision_enable")
+local zombie_damage_penalty = GetConVar("ttt_zombie_damage_penalty")
+local zombie_damage_reduction = GetConVar("ttt_zombie_damage_reduction")
 
 -----------
 -- PRIME --

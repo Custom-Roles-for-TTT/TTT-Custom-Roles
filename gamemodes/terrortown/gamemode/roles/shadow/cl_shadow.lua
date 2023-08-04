@@ -27,6 +27,8 @@ local shadow_target_buff_delay = GetConVar("ttt_shadow_target_buff_delay")
 local shadow_soul_link = GetConVar("ttt_shadow_soul_link")
 local shadow_weaken_health_to = GetConVar("ttt_shadow_weaken_health_to")
 local shadow_target_notify_mode = GetConVar("ttt_shadow_target_notify_mode")
+local shadow_speed_mult = GetConVar("ttt_shadow_speed_mult")
+local shadow_sprint_recovery = GetConVar("ttt_shadow_sprint_recovery")
 
 ------------------
 -- TRANSLATIONS --
@@ -531,6 +533,24 @@ AddHook("TTTTutorialRoleText", "Shadow_TTTTutorialRoleText", function(role, titl
             if buff == SHADOW_BUFF_RESPAWN then
                 html = html .. "<span style='display: block; margin-top: 10px;'>The first time your target dies while the buff is active, they will <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>respawn</span> after a short delay.</span>"
             end
+        end
+
+        local has_speed_mult = shadow_speed_mult:GetFloat() > 1
+        local has_sprint_recovery = shadow_sprint_recovery:GetFloat() > 0
+        if has_speed_mult or has_sprint_recovery then
+            html = html .. "<span style='display: block; margin-top: 10px;'>When the " .. ROLE_STRINGS[ROLE_SHADOW] .. " is outside of their target's radius, they "
+            if has_speed_mult then
+                html = html .. "get a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>speed bonus</span>"
+            end
+
+            if has_speed_mult and has_sprint_recovery then
+                html = html .. " and "
+            end
+
+            if has_sprint_recovery then
+                html = html .. "<span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>recover sprint stamina faster</span>"
+            end
+            html = html .. ".</span>"
         end
 
         return html

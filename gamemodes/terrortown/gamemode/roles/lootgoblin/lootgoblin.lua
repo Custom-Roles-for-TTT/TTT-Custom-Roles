@@ -43,19 +43,19 @@ CreateConVar("ttt_lootgoblin_notify_sound", "1")
 CreateConVar("ttt_lootgoblin_notify_confetti", "1")
 local lootgoblin_activation_timer = CreateConVar("ttt_lootgoblin_activation_timer", "30", FCVAR_NONE, "Minimum time in seconds before the loot goblin is revealed", 0, 120)
 local lootgoblin_activation_timer_max = CreateConVar("ttt_lootgoblin_activation_timer_max", "60", FCVAR_NONE, "Maximum time in seconds before the loot goblin is revealed", 0, 120)
-local lootgoblin_announce = CreateConVar("ttt_lootgoblin_announce", "4", FCVAR_NONE, "The logic to use when notifying players that a loot goblin has been revealed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone", 0, 4)
 local lootgoblin_size = CreateConVar("ttt_lootgoblin_size", "0.5", FCVAR_NONE, "The size multiplier for the loot goblin to use when they are revealed (e.g. 0.5 = 50% size)", 0, 1)
 local lootgoblin_cackle_timer_min = CreateConVar("ttt_lootgoblin_cackle_timer_min", "4", FCVAR_NONE, "The minimum time between loot goblin cackles", 0, 30)
 local lootgoblin_cackle_timer_max = CreateConVar("ttt_lootgoblin_cackle_timer_max", "12", FCVAR_NONE, "The maximum time between loot goblin cackles", 0, 30)
-local lootgoblin_cackle_enabled = CreateConVar("ttt_lootgoblin_cackle_enabled", "1")
 local lootgoblin_weapons_dropped = CreateConVar("ttt_lootgoblin_weapons_dropped", "8", FCVAR_NONE, "How many weapons the loot goblin drops when they are killed", 0, 10)
-local lootgoblin_jingle_enabled = CreateConVar("ttt_lootgoblin_jingle_enabled", "1")
 local lootgoblin_regen_rate = CreateConVar("ttt_lootgoblin_regen_rate", "3", FCVAR_NONE, "How often (in seconds) a loot goblin should regain health while regenerating", 1, 60)
 local lootgoblin_radar_delay = CreateConVar("ttt_lootgoblin_radar_delay", "15", FCVAR_NONE, "How delayed (in seconds) the radar ping for the loot goblin should be", 1, 60)
 
 local lootgoblin_regen_mode = GetConVar("ttt_lootgoblin_regen_mode")
 local lootgoblin_regen_delay = GetConVar("ttt_lootgoblin_regen_delay")
 local lootgoblin_radar_enabled = GetConVar("ttt_lootgoblin_radar_enabled")
+local lootgoblin_announce = GetConVar("ttt_lootgoblin_announce")
+local lootgoblin_cackle_enabled = GetConVar("ttt_lootgoblin_cackle_enabled")
+local lootgoblin_jingle_enabled = GetConVar("ttt_lootgoblin_jingle_enabled")
 
 -----------
 -- KARMA --
@@ -385,6 +385,8 @@ hook.Add("TTTPrepareRound", "LootGoblin_PrepareRound", function()
 
     net.Start("TTT_ResetLootGoblinWins")
     net.Broadcast()
+
+    table.Empty(goblins)
 end)
 
 hook.Add("TTTPlayerSpawnForRound", "LootGoblin_TTTPlayerSpawnForRound", function(ply, deadOnly)

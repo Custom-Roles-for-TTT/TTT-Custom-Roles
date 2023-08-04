@@ -405,7 +405,7 @@ ttt_detectives_credits_timer                0       // How often in seconds to g
 // Paladin
 ttt_paladin_aura_radius                     5       // The radius of the paladin's aura in meters
 ttt_paladin_damage_reduction                0.3     // The fraction an attacker's damage will be reduced by when they are shooting a player inside the paladin's aura
-ttt_paladin_heal_rate                       1       // The amount of heal a player inside the paladin's aura will heal each second
+ttt_paladin_heal_rate                       1       // The amount of health a player inside the paladin's aura will heal each second
 ttt_paladin_protect_self                    0       // Whether the paladin's damage reduction aura will protect themselves or not
 ttt_paladin_heal_self                       1       // Whether the paladin's healing aura will heal themselves or not
 ttt_paladin_credits_starting                1       // The number of credits a paladin should start with

@@ -75,6 +75,7 @@ end)
 ------------------
 
 CreateConVar("ttt_deputy_use_detective_icon", "1", FCVAR_REPLICATED)
+CreateConVar("ttt_deputy_damage_penalty", "0", FCVAR_REPLICATED, "Damage penalty that the deputy has before being promoted (e.g. 0.5 = 50% less damage)", 0, 1)
 
 ROLE_CONVARS[ROLE_DEPUTY] = {}
 table.insert(ROLE_CONVARS[ROLE_DEPUTY], {
