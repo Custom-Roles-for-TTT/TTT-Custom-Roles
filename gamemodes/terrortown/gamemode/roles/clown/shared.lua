@@ -17,6 +17,8 @@ end
 CreateConVar("ttt_clown_hide_when_active", "0", FCVAR_REPLICATED)
 CreateConVar("ttt_clown_use_traps_when_active", "0", FCVAR_REPLICATED)
 CreateConVar("ttt_clown_show_target_icon", "0", FCVAR_REPLICATED)
+CreateConVar("ttt_clown_heal_on_activate", "0", FCVAR_REPLICATED)
+CreateConVar("ttt_clown_heal_bonus", "0", FCVAR_REPLICATED, "The amount of bonus health to give the clown if they are healed when they are activated", 0, 100)
 
 ROLE_CONVARS[ROLE_CLOWN] = {}
 table.insert(ROLE_CONVARS[ROLE_CLOWN], {

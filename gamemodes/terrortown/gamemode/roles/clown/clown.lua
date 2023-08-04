@@ -19,11 +19,11 @@ resource.AddSingleFile("sound/clown.wav")
 -------------
 
 local clown_use_traps_when_active = GetConVar("ttt_clown_use_traps_when_active")
+local clown_heal_on_activate = GetConVar("ttt_clown_heal_on_activate")
+local clown_heal_bonus = GetConVar("ttt_clown_heal_bonus")
 
 local clown_damage_bonus = CreateConVar("ttt_clown_damage_bonus", "0", FCVAR_NONE, "Damage bonus that the clown has after being activated (e.g. 0.5 = 50% more damage)", 0, 1)
 local clown_activation_credits = CreateConVar("ttt_clown_activation_credits", "0", FCVAR_NONE, "The number of credits to give the clown when they are activated", 0, 10)
-local clown_heal_on_activate = CreateConVar("ttt_clown_heal_on_activate", "0")
-local clown_heal_bonus = CreateConVar("ttt_clown_heal_bonus", "0", FCVAR_NONE, "The amount of bonus health to give the clown if they are healed when they are activated", 0, 100)
 
 ----------------
 -- WIN CHECKS --
@@ -119,13 +119,13 @@ end)
 
 -- Scale a clown's damage
 hook.Add("ScalePlayerDamage", "Clown_ScalePlayerDamage", function(ply, hitgroup, dmginfo)
-    local att = dmginfo:GetAttacker()
     -- Only apply damage scaling after the round starts
-    if IsPlayer(att) and GetRoundState() >= ROUND_ACTIVE then
-        -- Clowns deal extra damage when they are active
-        if att:IsClown() and att:IsRoleActive() then
-            local bonus = clown_damage_bonus:GetFloat()
-            dmginfo:ScaleDamage(1 + bonus)
-        end
-    end
+    if GetRoundState() < ROUND_ACTIVE then return end
+
+    local att = dmginfo:GetAttacker()
+    -- Clowns deal extra damage when they are active
+    if not IsPlayer(att) or not att:IsClown() or not att:IsRoleActive() then return end
+
+    local bonus = clown_damage_bonus:GetFloat()
+    dmginfo:ScaleDamage(1 + bonus)
 end)
