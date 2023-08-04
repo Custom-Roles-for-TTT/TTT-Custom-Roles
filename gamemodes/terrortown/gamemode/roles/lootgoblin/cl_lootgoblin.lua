@@ -251,6 +251,7 @@ hook.Add("TTTTutorialRoleText", "LootGoblin_TTTTutorialRoleText", function(role,
         local html = "The " .. ROLE_STRINGS[ROLE_LOOTGOBLIN] .. " is an <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>jester</span> role who likes to hoard loot."
 
         -- Activation Timer
+        -- TODO: Update to use announce and "active_display" convars
         html = html .. "<span style='display: block; margin-top: 10px;'>After some time has passed, <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>the " .. ROLE_STRINGS[ROLE_LOOTGOBLIN] .. "</span> will transform and be revealed to players.</span>"
 
         -- Drop loot on death
@@ -274,6 +275,12 @@ hook.Add("TTTTutorialRoleText", "LootGoblin_TTTTutorialRoleText", function(role,
 
             html = html .. ".</span>"
         end
+
+         -- TODO: Radar
+         -- TODO: Cackle
+         -- TODO: Jingle
+         -- TODO: Speed
+         -- TODO: Sprint
 
         return html
     end
