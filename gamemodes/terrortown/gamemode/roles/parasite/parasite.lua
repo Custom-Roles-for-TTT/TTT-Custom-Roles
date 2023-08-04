@@ -18,16 +18,16 @@ util.AddNetworkString("TTT_ParasiteInfect")
 -- CONVARS --
 -------------
 
-local parasite_infection_warning_time = CreateConVar("ttt_parasite_infection_warning_time", 0, FCVAR_NONE, "The time in seconds after infection to warn the victim", 0, 300)
-local parasite_infection_transfer = CreateConVar("ttt_parasite_infection_transfer", 0)
-local parasite_infection_transfer_reset = CreateConVar("ttt_parasite_infection_transfer_reset", 1)
-local parasite_infection_suicide_mode = CreateConVar("ttt_parasite_infection_suicide_mode", 0, FCVAR_NONE, "The way to handle when a player infected by the parasite kills themselves. 0 - Do nothing. 1 - Respawn the parasite. 2 - Respawn the parasite ONLY IF the infected player killed themselves with a console command like \"kill\"", 0, 2)
-local parasite_respawn_mode = CreateConVar("ttt_parasite_respawn_mode", 0, FCVAR_NONE, "The way in which the parasite respawns. 0 - Take over host. 1 - Respawn at the parasite's body. 2 - Respawn at a random location.", 0, 2)
-local parasite_respawn_health = CreateConVar("ttt_parasite_respawn_health", 100, FCVAR_NONE, "The health on which the parasite respawns", 1, 100)
-local parasite_announce_infection = CreateConVar("ttt_parasite_announce_infection", 0)
-local parasite_infection_saves_lover = CreateConVar("ttt_parasite_infection_saves_lover", "1", FCVAR_NONE, "Whether the parasite's lover should survive if the parasite is infecting a player", 0, 1)
-
 local parasite_infection_time = GetConVar("ttt_parasite_infection_time")
+local parasite_infection_transfer = GetConVar("ttt_parasite_infection_transfer")
+local parasite_respawn_mode = GetConVar("ttt_parasite_respawn_mode")
+local parasite_announce_infection = GetConVar("ttt_parasite_announce_infection")
+local parasite_infection_suicide_mode = GetConVar("ttt_parasite_infection_suicide_mode")
+
+local parasite_infection_warning_time = CreateConVar("ttt_parasite_infection_warning_time", 0, FCVAR_NONE, "The time in seconds after infection to warn the victim", 0, 300)
+local parasite_infection_transfer_reset = CreateConVar("ttt_parasite_infection_transfer_reset", 1)
+local parasite_respawn_health = CreateConVar("ttt_parasite_respawn_health", 100, FCVAR_NONE, "The health on which the parasite respawns", 1, 100)
+local parasite_infection_saves_lover = CreateConVar("ttt_parasite_infection_saves_lover", "1", FCVAR_NONE, "Whether the parasite's lover should survive if the parasite is infecting a player", 0, 1)
 
 --------------
 -- HAUNTING --
