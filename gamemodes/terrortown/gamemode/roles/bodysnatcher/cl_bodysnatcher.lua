@@ -16,6 +16,8 @@ local bodysnatcher_reveal_jester = GetConVar("ttt_bodysnatcher_reveal_jester")
 local bodysnatcher_reveal_independent = GetConVar("ttt_bodysnatcher_reveal_independent")
 local bodysnatcher_reveal_monster = GetConVar("ttt_bodysnatcher_reveal_monster")
 local bodysnatcher_is_independent = GetConVar("ttt_bodysnatcher_is_independent")
+local bodysnatcher_destroy_body = GetConVar("ttt_bodysnatcher_destroy_body")
+local bodysnatcher_show_role = GetConVar("ttt_bodysnatcher_show_role")
 
 ------------------
 -- TRANSLATIONS --
@@ -183,6 +185,16 @@ hook.Add("TTTTutorialRoleText", "Bodysnatcher_TTTTutorialRoleText", function(rol
         local html = "The " .. ROLE_STRINGS[ROLE_BODYSNATCHER] .. " is a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. roleTeamName .. "</span> role whose goal is to steal the role of a dead player using their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>bodysnatching device</span>."
 
         html = html .. "<span style='display: block; margin-top: 10px;'>After <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>stealing a corpse's role</span>, they take over the goal of their new role.</span>"
+
+        html = html .. "<span style='display: block; margin-top: 10px;'>The corpse's role <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>will "
+        if not bodysnatcher_show_role:GetBool() then
+            html = html .. "not "
+        end
+        html = html .. "be shown</span> while using the bodysnatching device.</span>"
+
+        if bodysnatcher_destroy_body:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>Once the corpse's role has been snatched, the corpse <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>will be destroyed</span>.</span>"
+        end
 
         -- Respawn
         if bodysnatcher_respawn:GetBool() then
