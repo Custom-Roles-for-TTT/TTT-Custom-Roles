@@ -72,9 +72,9 @@ function SWEP:SetupDataTables()
     end
 end
 
-if SERVER then
-    local quack_fake_cure_mode = CreateConVar("ttt_quack_fake_cure_mode", "0", FCVAR_NONE, "How to handle using a fake parasite cure on someone who is not infected. 0 - Kill nobody (But use up the cure), 1 - Kill the person who uses the cure, 2 - Kill the person the cure is used on", 0, 2)
+local quack_fake_cure_mode = CreateConVar("ttt_quack_fake_cure_mode", "0", FCVAR_REPLICATED, "How to handle using a fake parasite cure on someone who is not infected. 0 - Kill nobody (But use up the cure), 1 - Kill the person who uses the cure, 2 - Kill the person the cure is used on", 0, 2)
 
+if SERVER then
     function SWEP:OnSuccess(ply, body)
         ply:EmitSound(cured)
 
