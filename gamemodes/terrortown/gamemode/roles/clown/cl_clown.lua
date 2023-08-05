@@ -40,7 +40,7 @@ end)
 
 -- Show skull icon over the target's head
 hook.Add("TTTTargetIDPlayerTargetIcon", "Clown_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
-    if cli:IsClown() and cli:IsRoleActive() and clown_show_target_icon:GetBool() and not showJester then
+    if cli:IsClown() and cli:IsRoleActive() and clown_show_target_icon:GetBool() and not showJester and not cli:IsSameTeam(ply) then
         return "kill", true, ROLE_COLORS_SPRITE[ROLE_CLOWN], "down"
     end
 end)

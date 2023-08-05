@@ -250,7 +250,7 @@ function GM:PostDrawTranslucentRenderables()
 
             if not icon then  -- TODO: Remove after 2.0.0
                 local showKillIcon = CallHook("TTTTargetIDPlayerKillIcon", nil, v, client, false, showJester)
-                if showKillIcon then
+                if showKillIcon and not client:IsSameTeam(v) then
                     icon = "kill"
                     iconNoZ = true
                     iconColor = ROLE_COLORS_SPRITE[client:GetRole()]
