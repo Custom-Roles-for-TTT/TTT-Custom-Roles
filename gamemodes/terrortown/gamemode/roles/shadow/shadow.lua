@@ -42,7 +42,7 @@ ROLE_ON_ROLE_ASSIGNED[ROLE_SHADOW] = function(ply)
     local closestTarget = nil
     local closestDistance = -1
     for _, p in pairs(GetAllPlayers()) do
-        if p:IsActive() and p ~= ply and
+        if p:Alive() and not p:IsSpec() and p ~= ply and
             (shadow_target_jester:GetBool() or not p:IsJesterTeam()) and
             (shadow_target_independent:GetBool() or not p:IsIndependentTeam()) then
             local distance = ply:GetPos():Distance(p:GetPos())
