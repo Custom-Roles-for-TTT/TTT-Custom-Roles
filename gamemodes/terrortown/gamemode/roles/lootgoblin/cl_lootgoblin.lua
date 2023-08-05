@@ -149,7 +149,7 @@ end)
 -- SCOREBOARD --
 ----------------
 
-hook.Add("TTTScoreboardPlayerRole", "LootGoblin_TTTScoreboardPlayerRole", function(ply, client, color, roleFileName)
+hook.Add("TTTScoreboardPlayerRole", "LootGoblin_TTTScoreboardPlayerRole", function(ply, cli, color, roleFileName)
     if ply:IsActiveLootGoblin() and ply:IsRoleActive() and lootgoblin_active_display:GetBool() then
         return ROLE_COLORS_SCOREBOARD[ROLE_LOOTGOBLIN], ROLE_STRINGS_SHORT[ROLE_LOOTGOBLIN]
     end

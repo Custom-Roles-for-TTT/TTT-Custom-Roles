@@ -59,7 +59,7 @@ end
 local function FindAndPromoteDetectiveLike()
     for _, ply in pairs(GetAllPlayers()) do
         if ply:IsDetectiveLikePromotable() then
-            local alive = ply:Alive()
+            local alive = ply:Alive() and not ply:IsSpec()
             if alive then
                 ply:QueueMessage(MSG_PRINTBOTH, "You have been promoted to " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "!")
             end

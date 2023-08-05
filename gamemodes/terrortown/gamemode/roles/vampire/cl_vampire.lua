@@ -58,7 +58,7 @@ end)
 
 -- Show skull icon over all non-jester team heads
 hook.Add("TTTTargetIDPlayerTargetIcon", "Vampire_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
-    if cli:IsVampire() and vampire_show_target_icon:GetBool() and not showJester then
+    if cli:IsVampire() and vampire_show_target_icon:GetBool() and not showJester and not cli:IsSameTeam(ply) then
         return "kill", true, ROLE_COLORS_SPRITE[ROLE_VAMPIRE], "down"
     end
 end)

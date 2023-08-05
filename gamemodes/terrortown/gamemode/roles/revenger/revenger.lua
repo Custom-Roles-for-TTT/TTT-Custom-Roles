@@ -129,7 +129,7 @@ end
 ROLE_ON_ROLE_ASSIGNED[ROLE_REVENGER] = function(ply)
     local potentialSoulmates = {}
     for _, p in pairs(GetAllPlayers()) do
-        if p:IsActive() and p ~= ply then
+        if p:Alive() and not p:IsSpec() and p ~= ply then
             table.insert(potentialSoulmates, p)
         end
     end

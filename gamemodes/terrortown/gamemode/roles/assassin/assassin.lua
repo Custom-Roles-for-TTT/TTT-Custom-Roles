@@ -64,7 +64,7 @@ local function AssignAssassinTarget(ply, start, delay)
     end
 
     for _, p in pairs(GetAllPlayers()) do
-        if p:IsActive() then
+        if p:Alive() and not p:IsSpec() then
             -- Include all non-traitor detective-like players
             if p:IsDetectiveLike() and not p:IsTraitorTeam() then
                 table.insert(detectives, p:SteamID64())
@@ -111,7 +111,7 @@ local function AssignAssassinTarget(ply, start, delay)
         targetMessage = "No further targets available."
     end
 
-    if ply:IsActive() then
+    if ply:Alive() and not ply:IsSpec() then
         if not delay and not start then targetMessage = "Target eliminated. " .. targetMessage end
         ply:QueueMessage(MSG_PRINTBOTH, targetMessage)
     end
