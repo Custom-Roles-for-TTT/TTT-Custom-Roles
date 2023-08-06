@@ -416,7 +416,7 @@ if SERVER then
                 self.NextCharge = CurTime() + CHARGE_DELAY
             end
         elseif self.NowRepeating and IsValid(self:GetOwner()) then
-            -- owner changed his mind since running last scan?
+            -- owner changed their mind since running last scan?
             if self:GetRepeating() then
                 self:PerformScan(self:GetLastScanned(), true)
             else

@@ -1068,7 +1068,7 @@ local function ReceiveBought()
 end
 net.Receive("TTT_Bought", ReceiveBought)
 
--- Player received the item he has just bought, so run clientside init
+-- Player received the item they have just bought, so run clientside init
 local function ReceiveBoughtItem()
     local is_item = net.ReadBit() == 1
     local id

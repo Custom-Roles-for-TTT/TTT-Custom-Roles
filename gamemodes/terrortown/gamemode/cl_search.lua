@@ -20,7 +20,7 @@ local dtt = { search_dmg_crush = DMG_CRUSH, search_dmg_bullet = DMG_BULLET, sear
 
 local client
 
--- "From his body you can tell XXX"
+-- "From their body you can tell XXX"
 local function DmgToText(d)
     for k, v in pairs(dtt) do
         if is_dmg(d, v) then

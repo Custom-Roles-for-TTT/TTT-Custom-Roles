@@ -500,7 +500,7 @@ function WaitForPlayers()
 end
 
 -- When a player initially spawns after mapload, everything is a bit strange;
--- just making him spectator for some reason does not work right. Therefore,
+-- just making them spectator for some reason does not work right. Therefore,
 -- we regularly check for these broken spectators while we wait for players
 -- and immediately fix them.
 function FixSpectators()
