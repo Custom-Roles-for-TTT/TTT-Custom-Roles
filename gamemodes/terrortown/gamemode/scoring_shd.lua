@@ -34,7 +34,7 @@ function ScoreEvent(e, scores)
         local vid = e.vic.sid64
 
         -- make sure a score table exists for this person
-        -- he might have disconnected by now
+        -- they might have disconnected by now
         if scores[vid] == nil then
             scores[vid] = ScoreInit()
 

@@ -543,7 +543,7 @@ function SWEP:DyingShot()
             eyeang.yaw = eyeang.yaw - math.Rand(-punch, punch)
             self:GetOwner():SetEyeAngles(eyeang)
 
-            MsgN(self:GetOwner():Nick() .. " fired his DYING SHOT")
+            MsgN(self:GetOwner():Nick() .. " fired their DYING SHOT")
 
             self:GetOwner().dying_wep = self
 
