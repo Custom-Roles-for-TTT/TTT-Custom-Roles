@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.9.5 (Beta)
+**Released:**
+
+### Additions
+- Added heart icon over the head of the revenger's soulmate
+
 ## 1.9.4 (Beta)
 **Released: August 5th, 2023**
 

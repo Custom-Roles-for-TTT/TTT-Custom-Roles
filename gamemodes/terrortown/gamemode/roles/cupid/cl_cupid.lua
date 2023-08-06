@@ -182,11 +182,13 @@ end)
 -- HEARTS --
 ------------
 
+local heart_color = Color(230, 90, 200, 255)
+
 AddHook("TTTShouldPlayerSmoke", "Cupid_TTTShouldPlayerSmoke", function(ply, cli, shouldSmoke, smokeColor, smokeParticle, smokeOffset)
     local target = ply:SteamID64()
     if (cli:IsCupid() and (target == cli:GetNWString("TTTCupidTarget1", "") or target == cli:GetNWString("TTTCupidTarget2", "")))
         or (target == cli:GetNWString("TTTCupidLover", "")) then
-        return true, Color(230, 90, 200, 255), "particle/heart.vmt"
+        return true, heart_color, "particle/heart.vmt"
     end
 end)
 
@@ -198,9 +200,9 @@ end)
 hook.Add("TTTTargetIDPlayerTargetIcon", "Cupid_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
     local target = ply:SteamID64()
     if cli:IsCupid() and (target == cli:GetNWString("TTTCupidTarget1", "") or target == cli:GetNWString("TTTCupidTarget2", "")) then
-        return "lover", false, Color(230, 90, 200, 255), "up"
+        return "lover", false, heart_color, "up"
     elseif target == cli:GetNWString("TTTCupidLover", "") then
-        return "lover", true, Color(230, 90, 200, 255), "up"
+        return "lover", true, heart_color, "up"
     end
 end)
 
@@ -228,7 +230,7 @@ AddHook("TTTTargetIDPlayerText", "Cupid_TTTTargetIDPlayerText", function(ent, cl
     if ent:IsActiveCupid() and ent:SteamID64() == cli:GetNWString("TTTCupidShooter", "") then
         return StringUpper(ROLE_STRINGS[ROLE_CUPID]), ROLE_COLORS_RADAR[ROLE_CUPID]
     elseif ent:SteamID64() == cli:GetNWString("TTTCupidLover", "") then
-        return StringUpper(ROLE_STRINGS[ent:GetRole()]), ROLE_COLORS_RADAR[ent:GetRole()], LANG.GetTranslation("scoreboard_cupid_lover"), Color(230, 90, 200, 255)
+        return StringUpper(ROLE_STRINGS[ent:GetRole()]), ROLE_COLORS_RADAR[ent:GetRole()], LANG.GetTranslation("scoreboard_cupid_lover"), heart_color
     end
 end)
 
@@ -292,7 +294,7 @@ local function EnableLoverHighlights()
         local loverPly = player.GetBySteamID64(lover)
         if not IsPlayer(loverPly) or not loverPly:IsActive() then return end
 
-        HaloAdd({ loverPly }, Color(230, 90, 200, 255), 1, 1, 1, true, true)
+        HaloAdd({ loverPly }, heart_color, 1, 1, 1, true, true)
     end)
 end
 

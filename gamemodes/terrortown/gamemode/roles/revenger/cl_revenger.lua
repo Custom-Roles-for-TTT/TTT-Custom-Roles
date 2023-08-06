@@ -57,6 +57,12 @@ end)
 -- TARGET ID --
 ---------------
 
+hook.Add("TTTTargetIDPlayerTargetIcon", "Revenger_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
+    if cli:IsRevenger() and IsLover(cli, ply) then
+        return "lover", false, ROLE_COLORS_RADAR[ROLE_REVENGER], "up"
+    end
+end)
+
 hook.Add("TTTTargetIDPlayerText", "Revenger_TTTTargetIDPlayerText", function(ent, cli, text, col, secondary_text)
     if not IsPlayer(ent) then return end
     if cli:IsRevenger() and IsLover(cli, ent) then
