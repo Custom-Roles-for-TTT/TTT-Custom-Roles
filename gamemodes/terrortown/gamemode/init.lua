@@ -919,7 +919,7 @@ function BeginRound()
     -- EQUIP_REGEN health regeneration tick
     timer.Create("RegenEquipmentTick", 0.66, 0, function()
         for _, v in pairs(GetAllPlayers()) do
-            if v:IsActive() and v:HasEquipmentItem(EQUIP_REGEN) then
+            if v:Alive() and not v:IsSpec() and v:HasEquipmentItem(EQUIP_REGEN) then
                 local hp = v:Health()
                 if hp < v:GetMaxHealth() then
                     v:SetHealth(hp + 1)

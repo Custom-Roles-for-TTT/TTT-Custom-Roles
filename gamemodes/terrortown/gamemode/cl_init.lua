@@ -387,7 +387,7 @@ function GM:DrawDeathNotice() end
 function GM:Think()
     local client = LocalPlayer()
     for _, v in pairs(GetAllPlayers()) do
-        if v:IsActive() then
+        if v:Alive() and not v:IsSpec() then
             CallHook("TTTPlayerAliveClientThink", nil, client, v)
 
             local smokeColor = COLOR_BLACK
@@ -460,7 +460,8 @@ function CheckIdle()
         return
     end
 
-    if GetRoundState() == ROUND_ACTIVE and client:IsActive() then
+    -- Player is alive, not a spectator, and round is active
+    if client:IsActive() then
         local idle_limit = GetGlobalInt("ttt_idle_limit", 300) or 300
         if idle_limit <= 0 then idle_limit = 300 end -- networking sucks sometimes
 
@@ -529,7 +530,7 @@ function OnPlayerHighlightEnabled(client, alliedRoles, showJesters, hideEnemies,
     local friends = {}
     local jesters = {}
     for _, v in pairs(GetAllPlayers()) do
-        if IsValid(v) and v:IsActive() and v ~= client and not ShouldHideFromHighlight(v, client) then
+        if IsValid(v) and v:Alive() and not v:IsSpec() and v ~= client and not ShouldHideFromHighlight(v, client) then
             local hideBeggar = v:GetNWBool("WasBeggar", false) and not client:ShouldRevealBeggar(v)
             local hideBodysnatcher = v:GetNWBool("WasBodysnatcher", false) and not client:ShouldRevealBodysnatcher(v)
             if showJesters and (v:ShouldActLikeJester() or hideBeggar or hideBodysnatcher) then

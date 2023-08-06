@@ -135,7 +135,7 @@ hook.Add("TTTCheckForWin", "Cupid_TTTCheckForWin", function()
         local lover = v:GetNWString("TTTCupidLover", "")
         if lover ~= "" then
             local loverPly = player.GetBySteamID64(lover)
-            if not IsPlayer(loverPly) or not loverPly:Alive() or loverPly:IsSpec() then
+            if not IsPlayer(loverPly) or not loverPly:IsActive() then
                 cupidWin = false
                 break
             end
