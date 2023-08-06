@@ -20,6 +20,7 @@
 - Fixed clown seeing jester icon over the activated loot goblin's head (instead of the loot goblin icon)
 - Fixed `ttt_cupid_lovers_notify_mode` not working
 - Fixed loot goblin not being revealed to traitor team members if they had an informant on their team
+- Fixed cupid's bow having two crosshairs
 
 ### Developer
 - Changed `plymeta:IsActive` to ensure the player is alive like it was always supposed to
