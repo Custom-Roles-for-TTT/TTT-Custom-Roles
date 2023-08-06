@@ -75,10 +75,10 @@ AddHook("TTTScoringSecondaryWins", "Cupid_TTTScoringSecondaryWins", function(win
 
     for _, p in ipairs(GetAllPlayers()) do
         local lover = p:GetNWString("TTTCupidLover", "")
-        if p:IsActive() and lover ~= "" then
+        if p:Alive() and not p:IsSpec() and lover ~= "" then
             local loverPly = player.GetBySteamID64(lover)
             -- This shouldn't be necessary because if one lover dies the other should too but we check just in case
-            if IsPlayer(loverPly) and loverPly:IsActive() then
+            if IsPlayer(loverPly) and loverPly:Alive() and not loverPly:IsSpec() then
                 TableInsert(secondary_wins, {
                     rol = ROLE_CUPID,
                     txt = LANG.GetTranslation("hilite_lovers_secondary"),

@@ -564,14 +564,14 @@ if CLIENT then
         emitter:Finish()
     end
 
-    function plymeta:QueueMessage(type, message, time)
+    function plymeta:QueueMessage(message_type, message, time)
         if LocalPlayer() ~= self then
             ErrorNoHalt("`plymeta:QueueMessage` cannot be used to send messages to other players when called clientside.\n")
             return
         end
         time = time or 5
         net.Start("TTT_QueueMessage")
-        net.WriteUInt(type, 3)
+        net.WriteUInt(message_type, 3)
         net.WriteString(message)
         net.WriteFloat(time)
         net.SendToServer()
@@ -647,7 +647,7 @@ end
 
 function player.GetLivingRole(role)
     for _, v in ipairs(GetAllPlayers()) do
-        if v:IsActiveRole(role) then
+        if v:Alive() and v:IsTerror() and v:IsRole(role) then
             return v
         end
     end
@@ -673,7 +673,7 @@ function player.TeamLivingCount(ignorePassiveWinners)
     local jester_alive = 0
     for _, v in ipairs(GetAllPlayers()) do
         -- If the player is alive
-        if v:IsActive() then
+        if v:Alive() and v:IsTerror() then
             -- If we're either not ignoring passive winners or this isn't a passive winning role
             if not ignorePassiveWinners or not ROLE_HAS_PASSIVE_WIN[v:GetRole()] then
                 if v:IsInnocentTeam() then
@@ -708,7 +708,7 @@ end
 
 function player.ExecuteAgainstTeamPlayers(roleTeam, detectivesAreInnocent, aliveOnly, callback)
     for _, v in ipairs(GetAllPlayers()) do
-        if not aliveOnly or v:IsActive() then
+        if not aliveOnly or (v:Alive() and v:IsTerror()) then
             local playerTeam = player.GetRoleTeam(v:GetRole(), detectivesAreInnocent)
             if playerTeam == roleTeam then
                 callback(v)
@@ -729,7 +729,7 @@ function player.LivingCount(ignorePassiveWinners)
     local players_alive = 0
     for _, v in ipairs(GetAllPlayers()) do
         -- If the player is alive and we're either not ignoring passive winners or this isn't a passive winning role
-        if (v:IsActive() and (not ignorePassiveWinners or not ROLE_HAS_PASSIVE_WIN[v:GetRole()])) or
+        if (v:Alive() and v:IsTerror() and (not ignorePassiveWinners or not ROLE_HAS_PASSIVE_WIN[v:GetRole()])) or
             -- Handle zombification differently because the player's original role should have no impact on this
             v:IsZombifying() then
             players_alive = players_alive + 1

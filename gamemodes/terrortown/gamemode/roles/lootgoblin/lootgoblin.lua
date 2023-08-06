@@ -111,7 +111,7 @@ hook.Add("FinishMove", "LootGoblin_FinishMove", function(ply, mv)
     local mode = lootgoblin_regen_mode:GetInt()
     if mode ~= LOOTGOBLIN_REGEN_MODE_STILL then return end
 
-    if ply:IsActiveLootGoblin() and ply:IsRoleActive() then
+    if ply:IsLootGoblin() and ply:Alive() and not ply:IsSpec() and ply:IsRoleActive() then
         local loc = ply:GetPos()
         local sid64 = ply:SteamID64()
         -- Keep track of when a player moves and stop regeneration when they do
@@ -200,7 +200,7 @@ local function StartGoblinTimers()
     local goblinTime = MathRandom(goblinTimeMin, goblinTimeMax)
     SetGlobalFloat("ttt_lootgoblin_activate", CurTime() + goblinTime)
     for _, v in ipairs(GetAllPlayers()) do
-        if v:IsActiveLootGoblin() then
+        if v:IsLootGoblin() and v:Alive() and not v:IsSpec() then
             v:PrintMessage(HUD_PRINTTALK, "You will transform into a goblin in " .. tostring(goblinTime) .. " seconds!")
         end
     end
