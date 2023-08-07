@@ -301,6 +301,12 @@ end
 AddHook("TTTUpdateRoleState", "Cupid_Highlight_TTTUpdateRoleState", function()
     client = LocalPlayer()
     lover_vision = cupid_lover_vision_enable:GetBool()
+
+    -- Disable highlights on role change
+    if vision_enabled then
+        RemoveHook("PreDrawHalos", "Cupid_Highlight_PreDrawHalos")
+        vision_enabled = false
+    end
 end)
 
 AddHook("Think", "Cupid_Highlight_Think", function()

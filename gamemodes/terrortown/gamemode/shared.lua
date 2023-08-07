@@ -104,6 +104,17 @@ if CRDebug.Enabled and not CRDebug.HooksChecked then
         end
         oldHookAdd(eventName, identifier, func)
     end
+
+    local oldHookRemove = hook.Remove
+    hook.Remove = function(eventName, identifier)
+        local info = debug.getinfo(2, "S")
+        -- Only run the hook checks for custom roles code
+        if StringFind(info.short_src, "custom-roles", 1, true) or StringFind(info.short_src, "customroles", 1, true) then
+            local key = eventName .. "_" .. tostring(identifier)
+            CRDebug.HooksChecked[key] = false
+        end
+        oldHookRemove(eventName, identifier)
+    end
 end
 
 -- Round status consts
