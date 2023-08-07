@@ -191,7 +191,7 @@ function GetTeamRoles(list, excludes)
 end
 
 SHOP_ROLES = {}
-AddRoleAssociations(SHOP_ROLES, {ROLE_TRAITOR, ROLE_DETECTIVE, ROLE_HYPNOTIST, ROLE_DEPUTY, ROLE_IMPERSONATOR, ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_MERCENARY, ROLE_ASSASSIN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_VAMPIRE, ROLE_VETERAN, ROLE_DOCTOR, ROLE_QUACK, ROLE_PARASITE, ROLE_PALADIN, ROLE_TRACKER, ROLE_MEDIUM, ROLE_SAPPER, ROLE_INFORMANT, ROLE_MARSHAL, ROLE_MADSCIENTIST, ROLE_SPY})
+AddRoleAssociations(SHOP_ROLES, {ROLE_TRAITOR, ROLE_DETECTIVE, ROLE_HYPNOTIST, ROLE_DEPUTY, ROLE_IMPERSONATOR, ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_MERCENARY, ROLE_ASSASSIN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_VAMPIRE, ROLE_VETERAN, ROLE_DOCTOR, ROLE_QUACK, ROLE_PARASITE, ROLE_PALADIN, ROLE_TRACKER, ROLE_MEDIUM, ROLE_SAPPER, ROLE_INFORMANT, ROLE_MARSHAL, ROLE_MADSCIENTIST, ROLE_SPY, ROLE_HIVEMIND})
 
 DELAYED_SHOP_ROLES = {}
 AddRoleAssociations(DELAYED_SHOP_ROLES, {ROLE_CLOWN, ROLE_VETERAN, ROLE_DEPUTY})
@@ -453,11 +453,13 @@ function CreateShopConVars(role)
     CreateConVar("ttt_" .. rolestring .. "_shop_random_percent", "0", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown for the " .. rolestring, 0, 100)
     CreateConVar("ttt_" .. rolestring .. "_shop_random_enabled", "0", FCVAR_REPLICATED, "Whether shop randomization should run for the " .. rolestring)
 
-    if (TRAITOR_ROLES[role] and role ~= ROLE_TRAITOR) or (DETECTIVE_ROLES[role] and role ~= ROLE_DETECTIVE) or role == ROLE_ZOMBIE then -- This all happens before we run UpdateRoleState so we need to manually add zombies
+    local hassync = (TRAITOR_ROLES[role] and role ~= ROLE_TRAITOR) or (DETECTIVE_ROLES[role] and role ~= ROLE_DETECTIVE) or ROLE_HAS_SHOP_SYNC[role]
+    if hassync then
         CreateConVar("ttt_" .. rolestring .. "_shop_sync", "0", FCVAR_REPLICATED)
     end
 
-    if (INDEPENDENT_ROLES[role] and role ~= ROLE_ZOMBIE) or DELAYED_SHOP_ROLES[role] then
+    -- Roles don't get both shop sync and shop mode
+    if (INDEPENDENT_ROLES[role] or DELAYED_SHOP_ROLES[role] or ROLE_HAS_SHOP_MODE[role]) and not hassync then
         CreateConVar("ttt_" .. rolestring .. "_shop_mode", "0", FCVAR_REPLICATED)
     end
 
@@ -843,6 +845,8 @@ ROLE_SHOULD_NOT_DROWN = {}
 ROLE_CAN_SEE_C4 = {}
 ROLE_CAN_SEE_JESTERS = {}
 ROLE_CAN_SEE_MIA = {}
+ROLE_HAS_SHOP_MODE = {}
+ROLE_HAS_SHOP_SYNC = {}
 
 -- Player functions
 ROLE_IS_ACTIVE = {}
@@ -973,6 +977,14 @@ function RegisterRole(tbl)
 
     if type(tbl.canseemia) == "boolean" then
         ROLE_CAN_SEE_MIA[roleID] = tbl.canseemia
+    end
+
+    if type(tbl.hasshopmode) == "boolean" then
+        ROLE_HAS_SHOP_MODE[roleID] = tbl.hasshopmode
+    end
+
+    if type(tbl.hasshopsync) == "boolean" then
+        ROLE_HAS_SHOP_SYNC[roleID] = tbl.hasshopsync
     end
 
     -- Equipment

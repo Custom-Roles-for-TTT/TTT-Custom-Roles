@@ -6,6 +6,9 @@
 ### Additions
 - Added heart icon over the head of the revenger's soulmate
 
+### Developer
+- Added `ROLE.hasshopmode` and `ROLE.hasshopsync` optional role features to control creation of `ttt_*_shop_mode` and `ttt_*_shop_sync` convars
+
 ## 1.9.4 (Beta)
 **Released: August 5th, 2023**
 
