@@ -14,6 +14,7 @@ util.AddNetworkString("TTT_HiveMindChatDupe")
 -------------
 
 local hivemind_vision_enable = GetConVar("ttt_hivemind_vision_enable")
+local hivemind_friendly_fire = GetConVar("ttt_hivemind_friendly_fire")
 
 ----------------------
 -- CHAT DUPLICATION --
@@ -59,14 +60,20 @@ AddHook("PlayerDeath", "HiveMind_PlayerDeath", function(victim, infl, attacker)
     end)
 end)
 
--------------
--- CLEANUP --
--------------
+------------
+-- DAMAGE --
+------------
 
-AddHook("TTTPrepareRound", "HiveMind_repareRound", function()
-    for _, v in pairs(GetAllPlayers()) do
-        timer.Remove("HiveMindRespawn_" .. v:SteamID64())
-    end
+-- If friendly fire is not enabled, prevent damage between hive minds
+AddHook("ScalePlayerDamage", "HiveMind_ScalePlayerDamage", function(ply, hitgroup, dmginfo)
+    if GetRoundState() < ROUND_ACTIVE then return end
+    if not ply:IsActiveHiveMind() then return end
+    if hivemind_friendly_fire:GetBool() then return end
+
+    local att = dmginfo:GetAttacker()
+    if not IsPlayer(att) or not att:IsActiveHiveMind() then return end
+
+    dmginfo:ScaleDamage(0)
 end)
 
 -----------
@@ -85,6 +92,9 @@ end)
 ----------------
 
 AddHook("TTTCheckForWin", "HiveMind_TTTCheckForWin", function()
+    -- Only independent hive minds can win on their own
+    if not INDEPENDENT_ROLES[ROLE_HIVEMIND] then return end
+
     local hivemind_alive = false
     local other_alive = false
     for _, v in ipairs(GetAllPlayers()) do
@@ -130,5 +140,15 @@ AddHook("SetupPlayerVisibility", "HiveMind_SetupPlayerVisibility", function(ply)
         if ply:IsOnScreen(pos) then
             AddOriginToPVS(pos)
         end
+    end
+end)
+
+-------------
+-- CLEANUP --
+-------------
+
+AddHook("TTTPrepareRound", "HiveMind_repareRound", function()
+    for _, v in pairs(GetAllPlayers()) do
+        timer.Remove("HiveMindRespawn_" .. v:SteamID64())
     end
 end)

@@ -13,6 +13,7 @@ local StringUpper = string.upper
 -------------
 
 local hivemind_vision_enable = GetConVar("ttt_hivemind_vision_enable")
+local hivemind_friendly_fire = GetConVar("ttt_hivemind_friendly_fire")
 
 ------------------
 -- TRANSLATIONS --
@@ -24,7 +25,11 @@ AddHook("Initialize", "HiveMind_Translations_Initialize", function()
     LANG.AddToLanguage("english", "ev_win_hivemind", "The {role} has assimilated everyone!")
 
     -- Popup
-    LANG.AddToLanguage("english", "info_popup_hivemind", [[You are {role}!]])
+    LANG.AddToLanguage("english", "info_popup_hivemind", [[You are the {role}! Killing other
+players will have them join you, merging their health
+pool and available shop weapons.
+
+Press {menukey} to receive your special equipment!]])
 end)
 
 ----------------------
@@ -186,6 +191,10 @@ end)
 
 AddHook("TTTTutorialRoleText", "HiveMind_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_HIVEMIND then
-        -- TODO
+        local html = "TODO"
+        if hivemind_friendly_fire:GetBool() then
+            html = html .. "TODO"
+        end
+        return html
     end
 end)
