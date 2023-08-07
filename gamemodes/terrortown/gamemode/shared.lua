@@ -167,8 +167,9 @@ ROLE_SHADOW = 38
 ROLE_SPONGE = 39
 ROLE_ARSONIST = 40
 ROLE_SPY = 41
+ROLE_HIVEMIND = 42
 
-ROLE_MAX = 41
+ROLE_MAX = 42
 ROLE_EXTERNAL_START = ROLE_MAX + 1
 
 local function AddRoleAssociations(list, roles)
@@ -205,7 +206,7 @@ JESTER_ROLES = {}
 AddRoleAssociations(JESTER_ROLES, {ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_BEGGAR, ROLE_BODYSNATCHER, ROLE_LOOTGOBLIN, ROLE_CUPID, ROLE_SPONGE})
 
 INDEPENDENT_ROLES = {}
-AddRoleAssociations(INDEPENDENT_ROLES, {ROLE_DRUNK, ROLE_OLDMAN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_MADSCIENTIST, ROLE_SHADOW, ROLE_ARSONIST})
+AddRoleAssociations(INDEPENDENT_ROLES, {ROLE_DRUNK, ROLE_OLDMAN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_MADSCIENTIST, ROLE_SHADOW, ROLE_ARSONIST, ROLE_HIVEMIND})
 
 MONSTER_ROLES = {}
 AddRoleAssociations(MONSTER_ROLES, {})
@@ -222,7 +223,7 @@ AddRoleAssociations(TRAITOR_BUTTON_ROLES, {ROLE_TRICKSTER})
 
 -- Shop roles get this ability by default
 CAN_LOOT_CREDITS_ROLES = {}
-AddRoleAssociations(CAN_LOOT_CREDITS_ROLES, {ROLE_TRICKSTER, ROLE_LOOTGOBLIN})
+AddRoleAssociations(CAN_LOOT_CREDITS_ROLES, {ROLE_TRICKSTER, ROLE_LOOTGOBLIN, ROLE_HIVEMIND})
 
 -- Role colours
 COLOR_INNOCENT = {
@@ -543,7 +544,8 @@ ROLE_STRINGS_RAW = {
     [ROLE_SHADOW] = "shadow",
     [ROLE_SPONGE] = "sponge",
     [ROLE_ARSONIST] = "arsonist",
-    [ROLE_SPY] = "spy"
+    [ROLE_SPY] = "spy",
+    [ROLE_HIVEMIND] = "hivemind"
 }
 
 ROLE_STRINGS = {
@@ -588,7 +590,8 @@ ROLE_STRINGS = {
     [ROLE_SHADOW] = "Shadow",
     [ROLE_SPONGE] = "Sponge",
     [ROLE_ARSONIST] = "Arsonist",
-    [ROLE_SPY] = "Spy"
+    [ROLE_SPY] = "Spy",
+    [ROLE_HIVEMIND] = "Hive Mind"
 }
 
 ROLE_STRINGS_PLURAL = {
@@ -633,7 +636,8 @@ ROLE_STRINGS_PLURAL = {
     [ROLE_SHADOW] = "Shadows",
     [ROLE_SPONGE] = "Sponges",
     [ROLE_ARSONIST] = "Arsonists",
-    [ROLE_SPY] = "Spies"
+    [ROLE_SPY] = "Spies",
+    [ROLE_HIVEMIND] = "Hive Mind"
 }
 
 ROLE_STRINGS_EXT = {
@@ -679,7 +683,8 @@ ROLE_STRINGS_EXT = {
     [ROLE_SHADOW] = "a Shadow",
     [ROLE_SPONGE] = "a Sponge",
     [ROLE_ARSONIST] = "an Arsonist",
-    [ROLE_SPY] = "a Spy"
+    [ROLE_SPY] = "a Spy",
+    [ROLE_HIVEMIND] = "the Hive Mind"
 }
 
 ROLE_STRINGS_SHORT = {
@@ -725,7 +730,8 @@ ROLE_STRINGS_SHORT = {
     [ROLE_SHADOW] = "sha",
     [ROLE_SPONGE] = "spn",
     [ROLE_ARSONIST] = "ars",
-    [ROLE_SPY] = "spy"
+    [ROLE_SPY] = "spy",
+    [ROLE_HIVEMIND] = "hmd"
 }
 
 function StartsWithVowel(word)
@@ -1215,8 +1221,9 @@ WIN_CUPID = 13
 WIN_SHADOW = 14
 WIN_SPONGE = 15
 WIN_ARSONIST = 16
+WIN_HIVEMIND = 17
 
-WIN_MAX = WIN_MAX or 16
+WIN_MAX = WIN_MAX or 17
 WINS_BY_ROLE = WINS_BY_ROLE or {}
 
 if SERVER then
