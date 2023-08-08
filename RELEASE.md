@@ -4,10 +4,12 @@
 **Released:**
 
 ### Additions
+- Added new independent role: hive mind
 - Added heart icon over the head of the revenger's soulmate
 
 ### Developer
 - Added `ROLE.hasshopmode` and `ROLE.hasshopsync` optional role features to control creation of `ttt_*_shop_mode` and `ttt_*_shop_sync` convars
+- Added `TTTPlayerHealthChanged` hook for detecting when a player's health changed using `entmeta:SetHealth`
 
 ## 1.9.4 (Beta)
 **Released: August 5th, 2023**

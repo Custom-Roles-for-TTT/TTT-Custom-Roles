@@ -3,6 +3,9 @@
 local plymeta = FindMetaTable("Player")
 if not plymeta then return end
 
+local entmeta = FindMetaTable("Entity")
+if not entmeta then return end
+
 local ipairs = ipairs
 local IsValid = IsValid
 local math = math
@@ -54,6 +57,16 @@ function plymeta:SetRole(role)
     if oldRole == role then return end
 
     self:BeginRoleChecks()
+end
+
+local oldSetHealth = entmeta.SetHealth
+function entmeta:SetHealth(health)
+    local oldHealth = self:Health()
+    oldSetHealth(self, health)
+
+    if IsPlayer(self) then
+        CallHook("TTTPlayerHealthChanged", nil, self, oldHealth, health)
+    end
 end
 
 -- Player is alive and in an active round
