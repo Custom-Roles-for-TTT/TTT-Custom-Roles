@@ -1,8 +1,5 @@
 AddCSLuaFile()
 
--- Initialize role features
-ROLE_HAS_SHOP_MODE[ROLE_HIVEMIND] = true
-
 ------------------
 -- ROLE CONVARS --
 ------------------
