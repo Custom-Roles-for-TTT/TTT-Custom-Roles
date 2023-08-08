@@ -123,7 +123,6 @@ local function EnableHiveMindHighlights()
 end
 
 AddHook("TTTUpdateRoleState", "HiveMind_Highlight_TTTUpdateRoleState", function()
-    print("TTTUpdateRoleState", vision_enabled)
     client = LocalPlayer()
     hivemind_vision = hivemind_vision_enable:GetBool()
 
