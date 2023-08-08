@@ -972,6 +972,7 @@ globals = {
     "ROLE_DOCTOR",
     "ROLE_DRUNK",
     "ROLE_GLITCH",
+    "ROLE_GUESSER",
     "ROLE_HYPNOTIST",
     "ROLE_IMPERSONATOR",
     "ROLE_INFECTED",

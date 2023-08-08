@@ -6,7 +6,6 @@ local vgui = vgui
 local GetTranslation = LANG.GetTranslation
 local StringLower = string.lower
 local TableInsert = table.insert
-local TableHasValue = table.HasValue
 local TableSort = table.sort
 
 if CLIENT then
@@ -195,7 +194,7 @@ function SWEP:SecondaryAttack()
         drolelabel:SetText(ROLE_STRINGS[selection.role])
         drolelabel:SetTextColor(ROLE_COLORS[selection.role])
 
-        dlist.OnActivePanelChanged = function(self, _, new)
+        dlist.OnActivePanelChanged = function(_, _, new)
             -- TODO: Add network message to sync selected role to NWInt TTTGuesserSelection
             drolelabel:SetText(ROLE_STRINGS[new.role])
             drolelabel:SetTextColor(ROLE_COLORS[new.role])
