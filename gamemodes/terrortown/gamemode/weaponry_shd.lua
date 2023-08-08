@@ -170,6 +170,17 @@ function WEPS.DoesRoleHaveWeapon(role, promoted)
         return true
     end
 
+    -- If this role doesn't have its own weapons, check if any of the roles it syncs with do
+    local syncroles = ROLE_SHOP_SYNC_ROLES[role]
+    if syncroles and table.Count(syncroles) > 0 then
+        for _, r in pairs(syncroles) do
+            if WEPS.DoesRoleHaveWeapon(r, false) then
+                DoesRoleHaveWeaponCache[role] = true
+                return true
+            end
+        end
+    end
+
     DoesRoleHaveWeaponCache[role] = false
     return false
 end
@@ -180,7 +191,7 @@ SHOP_SYNC_MODE_INTERSECT = 2
 SHOP_SYNC_MODE_DETECTIVE = 3
 SHOP_SYNC_MODE_TRAITOR = 4
 
-function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor_weapons, sync_detective_weapons, block_exclusion)
+function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor_weapons, sync_detective_weapons, block_exclusion, sync_roles)
     if wep == nil then return end
     if not wep.CanBuy then return end
 
@@ -248,6 +259,19 @@ function WEPS.HandleCanBuyOverrides(wep, role, block_randomization, sync_traitor
                 -- and vanilla detectives CAN buy this weapon, let this player buy it too
                 table.HasValue(wep.CanBuy, ROLE_DETECTIVE) then
             table.insert(wep.CanBuy, role)
+        end
+
+        -- If this player's role has a list of other roles they should sync from
+        if sync_roles and #sync_roles > 0 and
+                -- and they can't already buy this weapon
+                not table.HasValue(wep.CanBuy, role) then
+            -- Check whether any of the sync roles can can it
+            for _, r in pairs(sync_roles) do
+                if table.HasValue(wep.CanBuy, r) then
+                    table.insert(wep.CanBuy, role)
+                    break
+                end
+            end
         end
     end
 

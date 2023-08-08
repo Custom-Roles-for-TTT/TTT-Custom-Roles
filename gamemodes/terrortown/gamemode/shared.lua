@@ -847,6 +847,7 @@ ROLE_CAN_SEE_JESTERS = {}
 ROLE_CAN_SEE_MIA = {}
 ROLE_HAS_SHOP_MODE = {}
 ROLE_HAS_SHOP_SYNC = {}
+ROLE_SHOP_SYNC_ROLES = {}
 
 -- Player functions
 ROLE_IS_ACTIVE = {}
@@ -985,6 +986,10 @@ function RegisterRole(tbl)
 
     if type(tbl.hasshopsync) == "boolean" then
         ROLE_HAS_SHOP_SYNC[roleID] = tbl.hasshopsync
+    end
+
+    if type(tbl.shopsyncroles) == "table" then
+        ROLE_SHOP_SYNC_ROLES[roleID] = tbl.shopsyncroles
     end
 
     -- Equipment

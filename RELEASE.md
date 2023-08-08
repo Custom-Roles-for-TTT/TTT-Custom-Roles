@@ -9,6 +9,7 @@
 
 ### Developer
 - Added `ROLE.hasshopmode` and `ROLE.hasshopsync` optional role features to control creation of `ttt_*_shop_mode` and `ttt_*_shop_sync` convars
+- Added `ROLE.shopsyncroles` optional role feature to allow a role to automatically inherit the shop items from a list of other roles
 - Added `TTTPlayerHealthChanged` hook for detecting when a player's health changed using `entmeta:SetHealth`
 
 ## 1.9.4 (Beta)
