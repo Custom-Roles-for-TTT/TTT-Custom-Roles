@@ -1,6 +1,6 @@
 "UnlitGeneric"
 {
- "$basetexture" "vgui/ttt/roles/gob/icon_hmd"
+ "$basetexture" "vgui/ttt/roles/hmd/icon_hmd"
  "$vertexcolor" 1
  "$vertexalpha" 1
  "$translucent" 1
