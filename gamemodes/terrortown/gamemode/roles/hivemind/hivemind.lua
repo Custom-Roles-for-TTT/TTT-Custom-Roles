@@ -64,7 +64,7 @@ end)
 local currentHealth = nil
 local maxHealth = nil
 
-AddHook("TTTPlayerRoleChanged", "HiveMind_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+AddHook("TTTPlayerRoleChanged", "HiveMind_HealthSync_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
     if not ply:Alive() or ply:IsSpec() then return end
     if oldRole == ROLE_HIVEMIND or newRole ~= ROLE_HIVEMIND then return end
 
@@ -86,7 +86,7 @@ AddHook("TTTPlayerRoleChanged", "HiveMind_TTTPlayerRoleChanged", function(ply, o
             p:SetMaxHealth(maxHealth)
 
             if p ~= ply then
-                p:QueueMessage(MSG_PRINTCENTER, ply:Nick() .. " has joined the " .. ROLE_STRINGS[ROLE_HIVEMIND] .. ".")
+                p:QueueMessage(MSG_PRINTCENTER, ply:Nick() .. " (" .. ROLE_STRINGS_EXT[oldRole] .. ") has joined the " .. ROLE_STRINGS[ROLE_HIVEMIND] .. ".")
             end
         end
     end
