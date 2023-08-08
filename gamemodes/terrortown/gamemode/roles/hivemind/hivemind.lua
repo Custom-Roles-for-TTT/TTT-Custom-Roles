@@ -92,16 +92,7 @@ AddHook("TTTPlayerRoleChanged", "HiveMind_TTTPlayerRoleChanged", function(ply, o
     end
 end)
 
-AddHook("PostEntityTakeDamage", "HiveMind_PostEntityTakeDamage", function(ent, dmginfo, taken)
-    if not taken then return end
-    if not IsPlayer(ent) or not ent:IsActiveHiveMind() then return end
-
-    -- Set the player's health again to trigger the health changed hook
-    ent:SetHealth(ent:Health())
-end)
-
-AddHook("TTTPlayerHealthChanged", "HiveMind_TTTPlayerHealthChanged", function(ply, oldHealth, newHealth)
-    if not IsPlayer(ply) or not ply:IsActiveHiveMind() then return end
+local function HandleHealthSync(ply, newHealth)
     -- Don't bother running this if the health hasn't changed
     if newHealth == currentHealth then return end
 
@@ -115,10 +106,21 @@ AddHook("TTTPlayerHealthChanged", "HiveMind_TTTPlayerHealthChanged", function(pl
 
         p:SetHealth(currentHealth)
     end
+end
+
+AddHook("PostEntityTakeDamage", "HiveMind_PostEntityTakeDamage", function(ent, dmginfo, taken)
+    if not taken then return end
+    if not IsPlayer(ent) or not ent:IsActiveHiveMind() then return end
+    HandleHealthSync(ent, ent:Health())
+end)
+
+AddHook("TTTPlayerHealthChanged", "HiveMind_TTTPlayerHealthChanged", function(ply, oldHealth, newHealth)
+    if not IsPlayer(ply) or not ply:IsActiveHiveMind() then return end
+    HandleHealthSync(ply, newHealth)
 end)
 
 AddHook("PostPlayerDeath", "HiveMind_PostPlayerDeath", function(ply)
-    if not IsPlayer(ply) or not ply:IsActiveHiveMind() then return end
+    if not IsPlayer(ply) or not ply:IsHiveMind() then return end
 
     for _, p in ipairs(GetAllPlayers()) do
         if p == ply then continue end

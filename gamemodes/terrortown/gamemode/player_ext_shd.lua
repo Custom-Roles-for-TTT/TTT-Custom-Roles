@@ -64,7 +64,8 @@ function entmeta:SetHealth(health)
     local oldHealth = self:Health()
     oldSetHealth(self, health)
 
-    if IsPlayer(self) then
+    -- Only call this if the health changed and the entity is a player
+    if health ~= oldHealth and IsPlayer(self) then
         CallHook("TTTPlayerHealthChanged", nil, self, oldHealth, health)
     end
 end
