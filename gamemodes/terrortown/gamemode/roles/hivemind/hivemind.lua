@@ -51,18 +51,87 @@ AddHook("PlayerDeath", "HiveMind_PlayerDeath", function(victim, infl, attacker)
             victim:SetEyeAngles(Angle(0, body:GetAngles().y, 0))
             body:Remove()
         end
-        -- TODO: Health
-        -- TODO: Max health
-
-        victim:QueueMessage(MSG_PRINTCENTER, "You have become part of " .. ROLE_STRINGS_EXT[ROLE_HIVEMIND] .. ".")
+        victim:QueueMessage(MSG_PRINTCENTER, "You have become part of the " .. ROLE_STRINGS[ROLE_HIVEMIND] .. ".")
 
         SendFullStateUpdate()
     end)
 end)
 
-------------
--- DAMAGE --
-------------
+-------------------
+-- SHARED HEALTH --
+-------------------
+
+local currentHealth = nil
+local maxHealth = nil
+
+AddHook("TTTPlayerRoleChanged", "HiveMind_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+    if not ply:Alive() or ply:IsSpec() then return end
+    if oldRole == ROLE_HIVEMIND or newRole ~= ROLE_HIVEMIND then return end
+
+    -- Everyone except the first member of the hive mind is assigned the existing health pool
+    if currentHealth == nil then
+        currentHealth = ply:Health()
+    else
+        ply:SetHealth(currentHealth)
+    end
+
+    -- Each additional member of the hive mind adds their max health to the pool
+    if maxHealth == nil then
+        maxHealth = ply:GetMaxHealth()
+    else
+        maxHealth = maxHealth + ply:GetMaxHealth()
+
+        for _, p in ipairs(GetAllPlayers()) do
+            if not p:IsHiveMind() then continue end
+            p:SetMaxHealth(maxHealth)
+
+            if p ~= ply then
+                p:QueueMessage(MSG_PRINTCENTER, ply:Nick() .. " has joined the " .. ROLE_STRINGS[ROLE_HIVEMIND] .. ".")
+            end
+        end
+    end
+end)
+
+AddHook("PostEntityTakeDamage", "HiveMind_PostEntityTakeDamage", function(ent, dmginfo, taken)
+    if not taken then return end
+    if not IsPlayer(ent) or not ent:IsActiveHiveMind() then return end
+
+    -- Set the player's health again to trigger the health changed hook
+    ent:SetHealth(ent:Health())
+end)
+
+AddHook("TTTPlayerHealthChanged", "HiveMind_TTTPlayerHealthChanged", function(ply, oldHealth, newHealth)
+    if not IsPlayer(ply) or not ply:IsActiveHiveMind() then return end
+    -- Don't bother running this if the health hasn't changed
+    if newHealth == currentHealth then return end
+
+    -- This amount is, by definition, the latest health value for the whole hive mind
+    currentHealth = newHealth
+
+    -- Sync it to every other member
+    for _, p in ipairs(GetAllPlayers()) do
+        if p == ply then continue end
+        if not p:IsActiveHiveMind() then continue end
+
+        p:SetHealth(currentHealth)
+    end
+end)
+
+AddHook("PostPlayerDeath", "HiveMind_PostPlayerDeath", function(ply)
+    if not IsPlayer(ply) or not ply:IsActiveHiveMind() then return end
+
+    for _, p in ipairs(GetAllPlayers()) do
+        if p == ply then continue end
+        if not p:IsActiveHiveMind() then continue end
+
+        p:QueueMessage(MSG_PRINTCENTER, "A member of the " .. ROLE_STRINGS[ROLE_HIVEMIND] .. " has been killed.")
+        p:Kill()
+    end
+end)
+
+-------------------
+-- FRIENDLY FIRE --
+-------------------
 
 -- If friendly fire is not enabled, prevent damage between hive minds
 AddHook("ScalePlayerDamage", "HiveMind_ScalePlayerDamage", function(ply, hitgroup, dmginfo)
@@ -149,6 +218,7 @@ end)
 
 AddHook("TTTPrepareRound", "HiveMind_repareRound", function()
     for _, v in pairs(GetAllPlayers()) do
+        v.HiveMindHealthSync = nil
         timer.Remove("HiveMindRespawn_" .. v:SteamID64())
     end
 end)
