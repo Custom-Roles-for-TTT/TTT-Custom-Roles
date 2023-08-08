@@ -22,7 +22,7 @@ local StringSub = string.sub
 include("player_class/player_ttt.lua")
 
 -- Version string for display and function for version checks
-CR_VERSION = "1.9.4"
+CR_VERSION = "1.9.5"
 CR_BETA = true
 CR_WORKSHOP_ID = CR_BETA and "2404251054" or "2421039084"
 
@@ -103,6 +103,17 @@ if CRDebug.Enabled and not CRDebug.HooksChecked then
             end
         end
         oldHookAdd(eventName, identifier, func)
+    end
+
+    local oldHookRemove = hook.Remove
+    hook.Remove = function(eventName, identifier)
+        local info = debug.getinfo(2, "S")
+        -- Only run the hook checks for custom roles code
+        if StringFind(info.short_src, "custom-roles", 1, true) or StringFind(info.short_src, "customroles", 1, true) then
+            local key = eventName .. "_" .. tostring(identifier)
+            CRDebug.HooksChecked[key] = false
+        end
+        oldHookRemove(eventName, identifier)
     end
 end
 
@@ -1287,6 +1298,7 @@ MUTE_ALL = 2
 MUTE_SPEC = 1002
 
 -- Jester notify modes
+JESTER_NOTIFY_NONE = 0
 JESTER_NOTIFY_DETECTIVE_AND_TRAITOR = 1
 JESTER_NOTIFY_TRAITOR = 2
 JESTER_NOTIFY_DETECTIVE = 3

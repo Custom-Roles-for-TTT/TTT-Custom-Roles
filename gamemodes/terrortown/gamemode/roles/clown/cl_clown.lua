@@ -11,6 +11,9 @@ local StringUpper = string.upper
 local clown_hide_when_active = GetConVar("ttt_clown_hide_when_active")
 local clown_use_traps_when_active = GetConVar("ttt_clown_use_traps_when_active")
 local clown_show_target_icon = GetConVar("ttt_clown_show_target_icon")
+local clown_heal_on_activate = GetConVar("ttt_clown_heal_on_activate")
+local clown_heal_bonus = GetConVar("ttt_clown_heal_bonus")
+local clown_damage_bonus = GetConVar("ttt_clown_damage_bonus")
 
 ------------------
 -- TRANSLATIONS --
@@ -37,7 +40,7 @@ end)
 
 -- Show skull icon over the target's head
 hook.Add("TTTTargetIDPlayerTargetIcon", "Clown_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
-    if cli:IsClown() and cli:IsRoleActive() and clown_show_target_icon:GetBool() and not showJester then
+    if cli:IsClown() and cli:IsRoleActive() and clown_show_target_icon:GetBool() and not showJester and not cli:IsSameTeam(ply) then
         return "kill", true, ROLE_COLORS_SPRITE[ROLE_CLOWN], "down"
     end
 end)
@@ -231,6 +234,11 @@ hook.Add("TTTTutorialRoleText", "Clown_TTTTutorialRoleText", function(role, titl
 
         html = html .. "<span style='display: block; margin-top: 10px;'>When a team would normally win, the " .. ROLE_STRINGS[ROLE_CLOWN] .. " <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>activates</span> which allows them to <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>go on a rampage</span> and win by surprise.</span>"
 
+        -- Damage bonus
+        if clown_damage_bonus:GetFloat() > 0 then
+            html = html .. "<span style='display: block; margin-top: 10px;'>Once the " .. ROLE_STRINGS[ROLE_CLOWN] .. " has activated, they <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>do more damage</span>.</span>"
+        end
+
         -- Target ID
         if clown_show_target_icon:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>Their targets can be identified by the <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>KILL</span> icon floating over their heads.</span>"
@@ -253,6 +261,15 @@ hook.Add("TTTTutorialRoleText", "Clown_TTTTutorialRoleText", function(role, titl
         -- Traitor Traps
         if clown_use_traps_when_active:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'><span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>Traitor traps</span> also become available when <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>the " .. ROLE_STRINGS[ROLE_CLOWN] .." is activated</span>.</span>"
+        end
+
+        -- Heal on activate
+        if clown_heal_on_activate:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>When the " .. ROLE_STRINGS[ROLE_CLOWN] .." is activated, they will also be <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>healed to maximum health</span>"
+            if clown_heal_bonus:GetInt() > 0 then
+                html = html .. " and even <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>given a little extra</span>"
+            end
+            html = html .. ".</span>"
         end
 
         return html

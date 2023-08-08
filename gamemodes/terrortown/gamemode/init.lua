@@ -500,7 +500,7 @@ function WaitForPlayers()
 end
 
 -- When a player initially spawns after mapload, everything is a bit strange;
--- just making him spectator for some reason does not work right. Therefore,
+-- just making them spectator for some reason does not work right. Therefore,
 -- we regularly check for these broken spectators while we wait for players
 -- and immediately fix them.
 function FixSpectators()
@@ -919,7 +919,7 @@ function BeginRound()
     -- EQUIP_REGEN health regeneration tick
     timer.Create("RegenEquipmentTick", 0.66, 0, function()
         for _, v in pairs(GetAllPlayers()) do
-            if v:IsActive() and v:HasEquipmentItem(EQUIP_REGEN) then
+            if v:Alive() and not v:IsSpec() and v:HasEquipmentItem(EQUIP_REGEN) then
                 local hp = v:Health()
                 if hp < v:GetMaxHealth() then
                     v:SetHealth(hp + 1)

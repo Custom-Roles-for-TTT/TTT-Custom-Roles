@@ -13,6 +13,8 @@ local StringUpper = string.upper
 
 local zombie_show_target_icon = GetConVar("ttt_zombie_show_target_icon")
 local zombie_vision_enable = GetConVar("ttt_zombie_vision_enable")
+local zombie_damage_penalty = GetConVar("ttt_zombie_damage_penalty")
+local zombie_damage_reduction = GetConVar("ttt_zombie_damage_reduction")
 
 ------------------
 -- TRANSLATIONS --
@@ -52,7 +54,7 @@ end)
 
 -- Show skull icon over all non-jester team heads when the zombie is using their claws
 hook.Add("TTTTargetIDPlayerTargetIcon", "Zombie_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
-    if cli:IsZombie() and zombie_show_target_icon:GetBool() and cli.GetActiveWeapon and IsValid(cli:GetActiveWeapon()) and cli:GetActiveWeapon():GetClass() == "weapon_zom_claws" and not showJester then
+    if cli:IsZombie() and zombie_show_target_icon:GetBool() and cli.GetActiveWeapon and IsValid(cli:GetActiveWeapon()) and cli:GetActiveWeapon():GetClass() == "weapon_zom_claws" and not showJester and not cli:IsSameTeam(ply) then
         return "kill", true, ROLE_COLORS_SPRITE[ROLE_ZOMBIE], "down"
     end
 end)
@@ -335,6 +337,16 @@ hook.Add("TTTTutorialRoleText", "Zombie_TTTTutorialRoleText", function(role, tit
                 html = html .. " also"
             end
             html = html .. " be identified by the <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>KILL</span> icon floating over their heads.</span>"
+        end
+
+        -- Damage penalty
+        if zombie_damage_penalty:GetFloat() > 0 then
+            html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_ZOMBIE] .. " should use their claws as much as possible and so they do <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>less damage with other weapons</span>.</span>"
+        end
+
+        -- Damage reduction
+        if zombie_damage_reduction:GetFloat() > 0 then
+            html = html .. "<span style='display: block; margin-top: 10px;'>To help keep them alive, the " .. ROLE_STRINGS[ROLE_ZOMBIE] .. " takes <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>less damage from bullets</span>.</span>"
         end
 
         return html

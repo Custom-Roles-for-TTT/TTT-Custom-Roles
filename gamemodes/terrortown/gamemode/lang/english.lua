@@ -19,6 +19,8 @@ L.independent = "Independent"
 L.independents = "Independents"
 L.innocent = "Innocent"
 L.innocents = "Innocents"
+L.detective = "Detective"
+L.detectives = "Detectives"
 
 L.shoprole = "Shop Role"
 

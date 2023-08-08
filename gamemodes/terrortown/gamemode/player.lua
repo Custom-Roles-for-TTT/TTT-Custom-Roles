@@ -80,7 +80,7 @@ function GM:PlayerSpawn(ply)
     -- Clear out stuff like whether we ordered guns or what bomb code we used
     ply:ResetRoundFlags()
 
-    -- latejoiner, send him some info
+    -- latejoiner, send them some info
     if GetRoundState() == ROUND_ACTIVE then
         SendRoundState(GetRoundState(), ply)
     end
@@ -858,8 +858,8 @@ function GM:SpectatorThink(ply)
 
         -- After first click, go into chase cam, then after another click, to into
         -- roam. If no clicks made, go into chase after X secs, and roam after Y.
-        -- Don't switch for a second in case the player was shooting when he died,
-        -- this would make him accidentally switch out of ragdoll cam.
+        -- Don't switch for a second in case the player was shooting when they died,
+        -- this would make them accidentally switch out of ragdoll cam.
 
         local m = ply:GetObserverMode()
         if (m == OBS_MODE_CHASE and clicked) or elapsed > to_roam then
@@ -1078,7 +1078,7 @@ function GM:EntityTakeDamage(ent, dmginfo)
     elseif ent:IsExplosive() then
         -- When a barrel hits a player, that player damages the barrel because
         -- Source physics. This gives stupid results like a player who gets hit
-        -- with a barrel being blamed for killing himself or even his attacker.
+        -- with a barrel being blamed for killing himself or even their attacker.
         if IsPlayer(att) and
                 dmginfo:IsDamageType(DMG_CRUSH) and
                 IsValid(ent:GetPhysicsAttacker()) then

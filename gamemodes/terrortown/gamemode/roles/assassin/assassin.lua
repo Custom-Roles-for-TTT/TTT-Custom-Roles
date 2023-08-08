@@ -13,18 +13,15 @@ local GetAllPlayers = player.GetAll
 -- CONVARS --
 -------------
 
-local assassin_target_damage_bonus = CreateConVar("ttt_assassin_target_damage_bonus", "1", FCVAR_NONE, "Damage bonus that the assassin has against their target (e.g. 0.5 = 50% extra damage)", 0, 1)
-local assassin_target_bonus_bought = CreateConVar("ttt_assassin_target_bonus_bought", "1")
-local assassin_wrong_damage_penalty = CreateConVar("ttt_assassin_wrong_damage_penalty", "0.5", FCVAR_NONE, "Damage penalty that the assassin has when attacking someone who is not their target (e.g. 0.5 = 50% less damage)", 0, 1)
-local assassin_failed_damage_penalty = CreateConVar("ttt_assassin_failed_damage_penalty", "0.5", FCVAR_NONE, "Damage penalty that the assassin has after they have failed their contract by killing the wrong person (e.g. 0.5 = 50% less damage)", 0, 1)
 local assassin_shop_roles_last = CreateConVar("ttt_assassin_shop_roles_last", "0")
-CreateConVar("ttt_assassin_allow_lootgoblin_kill", "1")
-CreateConVar("ttt_assassin_allow_zombie_kill", "1")
-CreateConVar("ttt_assassin_allow_vampire_kill", "1")
 
 local assassin_show_target_icon = GetConVar("ttt_assassin_show_target_icon")
 local assassin_target_vision_enable = GetConVar("ttt_assassin_target_vision_enable")
 local assassin_next_target_delay = GetConVar("ttt_assassin_next_target_delay")
+local assassin_target_damage_bonus = GetConVar("ttt_assassin_target_damage_bonus")
+local assassin_target_bonus_bought = GetConVar("ttt_assassin_target_bonus_bought")
+local assassin_wrong_damage_penalty = GetConVar("ttt_assassin_wrong_damage_penalty")
+local assassin_failed_damage_penalty = GetConVar("ttt_assassin_failed_damage_penalty")
 
 -----------------------
 -- TARGET ASSIGNMENT --
@@ -67,7 +64,7 @@ local function AssignAssassinTarget(ply, start, delay)
     end
 
     for _, p in pairs(GetAllPlayers()) do
-        if p:IsActive() then
+        if p:Alive() and not p:IsSpec() then
             -- Include all non-traitor detective-like players
             if p:IsDetectiveLike() and not p:IsTraitorTeam() then
                 table.insert(detectives, p:SteamID64())
@@ -114,7 +111,7 @@ local function AssignAssassinTarget(ply, start, delay)
         targetMessage = "No further targets available."
     end
 
-    if ply:IsActive() then
+    if ply:Alive() and not ply:IsSpec() then
         if not delay and not start then targetMessage = "Target eliminated. " .. targetMessage end
         ply:QueueMessage(MSG_PRINTBOTH, targetMessage)
     end

@@ -13,6 +13,7 @@ local RemoveHook = hook.Remove
 local vampire_show_target_icon = GetConVar("ttt_vampire_show_target_icon")
 local vampire_vision_enable = GetConVar("ttt_vampire_vision_enable")
 local vampire_prime_death_mode = GetConVar("ttt_vampire_prime_death_mode")
+local vampire_damage_reduction = GetConVar("ttt_vampire_damage_reduction")
 
 ------------------
 -- TRANSLATIONS --
@@ -57,7 +58,7 @@ end)
 
 -- Show skull icon over all non-jester team heads
 hook.Add("TTTTargetIDPlayerTargetIcon", "Vampire_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
-    if cli:IsVampire() and vampire_show_target_icon:GetBool() and not showJester then
+    if cli:IsVampire() and vampire_show_target_icon:GetBool() and not showJester and not cli:IsSameTeam(ply) then
         return "kill", true, ROLE_COLORS_SPRITE[ROLE_VAMPIRE], "down"
     end
 end)
@@ -291,6 +292,11 @@ hook.Add("TTTTutorialRoleText", "Vampire_TTTTutorialRoleText", function(role, ti
                 html = html .. " also"
             end
             html = html .. " be identified by the <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>KILL</span> icon floating over their heads.</span>"
+        end
+
+        -- Damage reduction
+        if vampire_damage_reduction:GetFloat() > 0 then
+            html = html .. "<span style='display: block; margin-top: 10px;'>To help keep them alive, the " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " takes <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>less damage from bullets</span>.</span>"
         end
 
         return html

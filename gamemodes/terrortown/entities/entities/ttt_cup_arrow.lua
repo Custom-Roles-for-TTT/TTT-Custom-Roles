@@ -149,7 +149,7 @@ function ENT:Touch(ent)
                         net.WriteString(owner:SteamID64())
                         net.Broadcast()
 
-                        local mode = GetConVar("ttt_cupid_notify_mode"):GetInt()
+                        local mode = GetConVar("ttt_cupid_lovers_notify_mode"):GetInt()
                         if mode ~= ANNOUNCE_REVEAL_NONE then
                             for _, v in pairs(player.GetAll()) do
                                 if v == ent or v == ent2 or v == owner then

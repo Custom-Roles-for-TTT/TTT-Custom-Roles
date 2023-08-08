@@ -14,12 +14,12 @@ resource.AddFile("materials/particle/shield.vmt")
 -- CONVARS --
 -------------
 
-local paladin_damage_reduction = CreateConVar("ttt_paladin_damage_reduction", "0.3", FCVAR_NONE, "The fraction an attacker's damage will be reduced by when they are shooting a player inside the paladin's aura", 0, 1)
 local paladin_heal_rate = CreateConVar("ttt_paladin_heal_rate", "1", FCVAR_NONE, "The amount of heal a player inside the paladin's aura will heal each second", 0, 10)
 
 local paladin_aura_radius = GetConVar("ttt_paladin_aura_radius")
 local paladin_protect_self = GetConVar("ttt_paladin_protect_self")
 local paladin_heal_self = GetConVar("ttt_paladin_heal_self")
+local paladin_damage_reduction = GetConVar("ttt_paladin_damage_reduction")
 
 -------------------
 -- ROLE FEATURES --
@@ -53,21 +53,21 @@ end)
 ------------------
 
 hook.Add("ScalePlayerDamage", "Paladin_ScalePlayerDamage", function(ply, hitgroup, dmginfo)
+    if GetRoundState() < ROUND_ACTIVE then return end
+
     local att = dmginfo:GetAttacker()
-    if IsPlayer(att) and GetRoundState() >= ROUND_ACTIVE then
-        if not ply:IsPaladin() or paladin_protect_self:GetBool() then
-            local withPaladin = false
-            local radius = paladin_aura_radius:GetFloat() * UNITS_PER_METER
-            for _, v in pairs(GetAllPlayers()) do
-                if v:IsActivePaladin() and v:GetPos():Distance(ply:GetPos()) <= radius then
-                    withPaladin = true
-                    break
-                end
-            end
-            if withPaladin and not att:IsPaladin() then
-                local reduction = paladin_damage_reduction:GetFloat()
-                dmginfo:ScaleDamage(1 - reduction)
-            end
+    if not IsPlayer(att) or att:IsPaladin() or (ply:IsPaladin() and not paladin_protect_self:GetBool()) then return end
+
+    local withPaladin = false
+    local radius = paladin_aura_radius:GetFloat() * UNITS_PER_METER
+    for _, v in pairs(GetAllPlayers()) do
+        if v:IsActivePaladin() and v:GetPos():Distance(ply:GetPos()) <= radius then
+            withPaladin = true
+            break
         end
+    end
+    if withPaladin then
+        local reduction = paladin_damage_reduction:GetFloat()
+        dmginfo:ScaleDamage(1 - reduction)
     end
 end)

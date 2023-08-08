@@ -30,6 +30,9 @@ CreateConVar("ttt_lootgoblin_regen_delay", "0", FCVAR_REPLICATED, "The length of
 CreateConVar("ttt_lootgoblin_radar_timer", "15", FCVAR_REPLICATED, "How often (in seconds) the radar ping for the loot goblin should update", 1, 60)
 CreateConVar("ttt_lootgoblin_active_display", "1", FCVAR_REPLICATED, "Whether to show the loot goblin's information over their head and on the scoreboard once they are activated", 0, 1)
 CreateConVar("ttt_lootgoblin_radar_enabled", "0", FCVAR_REPLICATED, "Whether the radar ping for the loot goblin should be enabled or not", 0, 1)
+CreateConVar("ttt_lootgoblin_announce", "4", FCVAR_REPLICATED, "The logic to use when notifying players that a loot goblin has been revealed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone", 0, 4)
+CreateConVar("ttt_lootgoblin_cackle_enabled", "1", FCVAR_REPLICATED)
+CreateConVar("ttt_lootgoblin_jingle_enabled", "1", FCVAR_REPLICATED)
 
 ROLE_CONVARS[ROLE_LOOTGOBLIN] = {}
 table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {

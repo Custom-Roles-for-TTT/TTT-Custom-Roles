@@ -18,9 +18,10 @@ util.AddNetworkString("TTT_RevengerLoverKillerRadar")
 -- CONVARS --
 -------------
 
-local revenger_damage_bonus = CreateConVar("ttt_revenger_damage_bonus", "0", FCVAR_NONE, "Extra damage that the revenger deals to their lover's killer (e.g. 0.5 = 50% extra damage)", 0, 1)
 local revenger_drain_health_to = CreateConVar("ttt_revenger_drain_health_to", "-1", FCVAR_NONE, "The amount of health to drain the revenger down to after their lover has died. Setting to 0 will kill them. Set to -1 to disable", -1, 200)
 local revenger_drain_health_rate = CreateConVar("ttt_revenger_drain_health_rate", "3", FCVAR_NONE, "How often, in seconds, health will be drained from a revenger whose lover has died", 1, 60)
+
+local revenger_damage_bonus = GetConVar("ttt_revenger_damage_bonus")
 
 -----------
 -- KARMA --
@@ -128,7 +129,7 @@ end
 ROLE_ON_ROLE_ASSIGNED[ROLE_REVENGER] = function(ply)
     local potentialSoulmates = {}
     for _, p in pairs(GetAllPlayers()) do
-        if p:IsActive() and p ~= ply then
+        if p:Alive() and not p:IsSpec() and p ~= ply then
             table.insert(potentialSoulmates, p)
         end
     end
@@ -198,12 +199,13 @@ end)
 ------------------
 
 hook.Add("ScalePlayerDamage", "Revenger_ScalePlayerDamage", function(ply, hitgroup, dmginfo)
+    -- Only apply damage scaling after the round starts
+    if GetRoundState() < ROUND_ACTIVE then return end
+
     local att = dmginfo:GetAttacker()
-    if IsPlayer(att) and GetRoundState() >= ROUND_ACTIVE then
-        -- Revengers deal extra damage to their lovers killer
-        if att:IsRevenger() and ply:SteamID64() == att:GetNWString("RevengerKiller", "") then
-            local bonus = revenger_damage_bonus:GetFloat()
-            dmginfo:ScaleDamage(1 + bonus)
-        end
-    end
+    -- Revengers deal extra damage to their lover's killer
+    if not IsPlayer(att) or not att:IsRevenger() or ply:SteamID64() ~= att:GetNWString("RevengerKiller", "") then return end
+
+    local bonus = revenger_damage_bonus:GetFloat()
+    dmginfo:ScaleDamage(1 + bonus)
 end)

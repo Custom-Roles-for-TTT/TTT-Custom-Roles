@@ -11,8 +11,6 @@ ROLE_CAN_SEE_MIA[ROLE_MADSCIENTIST] = true
 ------------------
 
 CreateConVar("ttt_madscientist_respawn_enable", "0", FCVAR_REPLICATED)
-CreateConVar("ttt_madscientist_can_see_jesters", "1", FCVAR_REPLICATED)
-CreateConVar("ttt_madscientist_update_scoreboard", "1", FCVAR_REPLICATED)
 local madscientist_is_monster = CreateConVar("ttt_madscientist_is_monster", "0", FCVAR_REPLICATED)
 
 ROLE_CONVARS[ROLE_MADSCIENTIST] = {}

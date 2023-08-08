@@ -17,10 +17,10 @@ resource.AddFile("materials/particle/heart.vmt")
 CreateConVar("ttt_cupid_notify_mode", "0", FCVAR_NONE, "The logic to use when notifying players that a cupid was killed", 0, 4)
 CreateConVar("ttt_cupid_notify_sound", "0", FCVAR_NONE, "Whether to play a cheering sound when a cupid is killed", 0, 1)
 CreateConVar("ttt_cupid_notify_confetti", "0", FCVAR_NONE, "Whether to throw confetti when a cupid is a killed", 0, 1)
-CreateConVar("ttt_cupid_lovers_notify_mode", "1", FCVAR_NONE, "Who is notified with cupid makes two players fall in love", 0, 3)
-local cupid_can_damage_lovers = CreateConVar("ttt_cupid_can_damage_lovers", "0", FCVAR_NONE, "Whether cupid should be able to damage the lovers", 0, 1)
-local cupid_lovers_can_damage_lovers = CreateConVar("ttt_cupid_lovers_can_damage_lovers", "1", FCVAR_NONE, "Whether the lovers should be able to damage each other", 0, 1)
-local cupid_lovers_can_damage_cupid = CreateConVar("ttt_cupid_lovers_can_damage_cupid", "0", FCVAR_NONE, "Whether the lovers should be able to damage cupid", 0, 1)
+
+local cupid_can_damage_lovers = GetConVar("ttt_cupid_can_damage_lovers")
+local cupid_lovers_can_damage_lovers = GetConVar("ttt_cupid_lovers_can_damage_lovers")
+local cupid_lovers_can_damage_cupid = GetConVar("ttt_cupid_lovers_can_damage_cupid")
 
 ----------------
 -- DEATH LINK --
@@ -135,7 +135,7 @@ hook.Add("TTTCheckForWin", "Cupid_TTTCheckForWin", function()
         local lover = v:GetNWString("TTTCupidLover", "")
         if lover ~= "" then
             local loverPly = player.GetBySteamID64(lover)
-            if not IsPlayer(loverPly) or not loverPly:Alive() or loverPly:IsSpec() then
+            if not IsPlayer(loverPly) or not loverPly:IsActive() then
                 cupidWin = false
                 break
             end

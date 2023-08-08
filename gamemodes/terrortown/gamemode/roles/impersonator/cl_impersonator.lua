@@ -1,5 +1,11 @@
 local hook = hook
 
+-------------
+-- CONVARS --
+-------------
+
+local impersonator_damage_penalty = GetConVar("ttt_impersonator_damage_penalty")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -34,12 +40,17 @@ hook.Add("TTTTutorialRoleText", "Impersonator_TTTTutorialRoleText", function(rol
         html = html .. "<span style='display: block; margin-top: 10px;'>After the " .. ROLE_STRINGS[ROLE_DETECTIVE] .. " is killed, <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>the " .. ROLE_STRINGS[ROLE_IMPERSONATOR] .. " is \"promoted\"</span> and then must pretend to be the new " .. ROLE_STRINGS[ROLE_DETECTIVE] .. ".</span>"
         html = html .. "<span style='display: block; margin-top: 10px;'>They have <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>all the powers of " .. ROLE_STRINGS_EXT[ROLE_DETECTIVE] .. "</span> including " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "-only weapons and the ability to search bodies.</span>"
 
+        -- Damage penalty
+        if impersonator_damage_penalty:GetFloat() > 0 then
+            html = html .. "<span style='display: block; margin-top: 10px;'>Be careful though! Before the " .. ROLE_STRINGS[ROLE_IMPERSONATOR] .. " has been promoted, they <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>do less damage</span>.</span>"
+        end
+
         local impersonator_use_detective_icon = GetConVar("ttt_impersonator_use_detective_icon"):GetBool()
         local deputy_use_detective_icon = GetConVar("ttt_deputy_use_detective_icon"):GetBool()
 
         -- Detective Icon for Everyone
         if impersonator_use_detective_icon and  deputy_use_detective_icon then
-            html = html .. "<span style='display: block; margin-top: 10px;'>Once promoted, <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>all players</span> will see the " .. ROLE_STRINGS[ROLE_DETECTIVE].. " icon over the " .. ROLE_STRINGS[ROLE_IMPERSONATOR] .. "'s head.</span>"
+            html = html .. "<span style='display: block; margin-top: 10px;'>Once promoted, <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>all players</span> will see the " .. ROLE_STRINGS[ROLE_DETECTIVE] .. " icon over the " .. ROLE_STRINGS[ROLE_IMPERSONATOR] .. "'s head.</span>"
         else
             -- Icon for Traitors
             html = html .. "<span style='display: block; margin-top: 10px;'>Once promoted, <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>traitor team members</span> will see the "

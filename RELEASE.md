@@ -1,7 +1,13 @@
 # Release Notes
 
-## 1.9.4 (Beta)
+## 1.9.5 (Beta)
 **Released:**
+
+### Additions
+- Added heart icon over the head of the revenger's soulmate
+
+## 1.9.4 (Beta)
+**Released: August 5th, 2023**
 
 ### Additions
 - Added new traitor role: spy
@@ -10,12 +16,17 @@
 
 ### Changes
 - Changed appearance of 'KILL' icon used by multiple roles
-- Expanded the `ttt_roleweapons` command to have additional modes such as list, clean, and reload. See the command documentation for more information.
-- Changed jester and MIA visibility for independent roles to be configurable on a per role bases (Arsonist, killer, mad scientist and zombie enabled by default. Drunk, old man and shadow disabled by default)
+- Expanded the `ttt_roleweapons` admin command to have additional modes such as list, clean, and reload. See the command documentation for more information.
+- Changed jester and missing in action (MIA) visibility for independent roles to be configurable on a per role basis (Arsonist, killer, mad scientist, and zombie enabled by default. Drunk, old man, and shadow disabled by default)
+  - **BREAKING CHANGE** - The previous convars that governed these features for the independent team (`ttt_jesters_visible_to_independents` and `ttt_independents_update_scoreboard`) have been removed
+- Changed many role tutorials to include additional information for new and changed features
 
 ### Fixes
 - Fixed clown seeing jester icons (instead of question mark icons) over all jester team members' heads when they are activated
 - Fixed clown seeing jester icon over the activated loot goblin's head (instead of the loot goblin icon)
+- Fixed `ttt_cupid_lovers_notify_mode` not working
+- Fixed loot goblin not being revealed to traitor team members if they had an informant on their team
+- Fixed cupid's bow having two crosshairs
 
 ### Developer
 - Changed `plymeta:IsActive` to ensure the player is alive like it was always supposed to
@@ -25,7 +36,7 @@
 - Fixed loot goblin's definition of `ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN` and `ROLE_IS_TARGETID_OVERRIDDEN` using the parameters backwards
 - **BREAKING CHANGE** - Deprecated `TTTTargetIDPlayerKillIcon`
   - Use the `TTTTargetIDPlayerTargetIcon` hook instead and return `"kill", true, ROLE_COLORS_SPRITE[ply:GetRole()], "down"`
-- **BREAKING CHANGE** - Deprecated `plymeta:ShouldDelayAnnouncements`
+- **BREAKING CHANGE** - Deprecated `plymeta:ShouldDelayAnnouncements` and the corresponding `ROLE_SHOULD_DELAY_ANNOUNCEMENTS` table and `ROLE.shoulddelayannouncements` external role feature
   - Use `plymeta:QueueMessage` to automatically queue announcements instead
 
 ## 1.9.3 (Beta)

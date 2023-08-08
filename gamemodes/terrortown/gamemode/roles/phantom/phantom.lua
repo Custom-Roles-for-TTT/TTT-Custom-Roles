@@ -18,21 +18,21 @@ util.AddNetworkString("TTT_PhantomHaunt")
 -- CONVARS --
 -------------
 
-local phantom_respawn_health = CreateConVar("ttt_phantom_respawn_health", "50", FCVAR_NONE, "The amount of health a phantom will respawn with", 1, 100)
-local phantom_weaker_each_respawn = CreateConVar("ttt_phantom_weaker_each_respawn", "0")
-local phantom_announce_death = CreateConVar("ttt_phantom_announce_death", "0")
-local phantom_killer_footstep_time = CreateConVar("ttt_phantom_killer_footstep_time", "0", FCVAR_NONE, "The amount of time a phantom's killer's footsteps should show before fading. Set to 0 to disable", 1, 60)
-local phantom_killer_haunt_power_rate = CreateConVar("ttt_phantom_killer_haunt_power_rate", "10", FCVAR_NONE, "The amount of power to regain per second when a phantom is haunting their killer", 1, 25)
-local phantom_killer_haunt_power_starting = CreateConVar("ttt_phantom_killer_haunt_power_starting", "0", FCVAR_NONE, "The amount of power to the phantom starts with", 0, 200)
-local phantom_killer_haunt_without_body = CreateConVar("ttt_phantom_killer_haunt_without_body", "1")
-local phantom_haunt_saves_lover = CreateConVar("ttt_phantom_haunt_saves_lover", "1", FCVAR_NONE, "Whether the phantom's lover should survive if the phantom is haunting a player", 0, 1)
-
 local phantom_killer_haunt = GetConVar("ttt_phantom_killer_haunt")
 local phantom_killer_haunt_power_max = GetConVar("ttt_phantom_killer_haunt_power_max")
 local phantom_killer_haunt_move_cost = GetConVar("ttt_phantom_killer_haunt_move_cost")
 local phantom_killer_haunt_attack_cost = GetConVar("ttt_phantom_killer_haunt_attack_cost")
 local phantom_killer_haunt_jump_cost = GetConVar("ttt_phantom_killer_haunt_jump_cost")
 local phantom_killer_haunt_drop_cost = GetConVar("ttt_phantom_killer_haunt_drop_cost")
+local phantom_weaker_each_respawn = GetConVar("ttt_phantom_weaker_each_respawn")
+local phantom_announce_death = GetConVar("ttt_phantom_announce_death")
+local phantom_killer_footstep_time = GetConVar("ttt_phantom_killer_footstep_time")
+
+local phantom_respawn_health = CreateConVar("ttt_phantom_respawn_health", "50", FCVAR_NONE, "The amount of health a phantom will respawn with", 1, 100)
+local phantom_killer_haunt_power_rate = CreateConVar("ttt_phantom_killer_haunt_power_rate", "10", FCVAR_NONE, "The amount of power to regain per second when a phantom is haunting their killer", 1, 25)
+local phantom_killer_haunt_power_starting = CreateConVar("ttt_phantom_killer_haunt_power_starting", "0", FCVAR_NONE, "The amount of power to the phantom starts with", 0, 200)
+local phantom_killer_haunt_without_body = CreateConVar("ttt_phantom_killer_haunt_without_body", "1")
+local phantom_haunt_saves_lover = CreateConVar("ttt_phantom_haunt_saves_lover", "1", FCVAR_NONE, "Whether the phantom's lover should survive if the phantom is haunting a player", 0, 1)
 
 --------------
 -- HAUNTING --

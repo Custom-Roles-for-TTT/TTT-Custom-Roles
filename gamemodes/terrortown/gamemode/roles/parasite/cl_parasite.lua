@@ -9,6 +9,10 @@ local GetAllPlayers = player.GetAll
 ------------------
 
 local parasite_infection_time = GetConVar("ttt_parasite_infection_time")
+local parasite_infection_transfer = GetConVar("ttt_parasite_infection_transfer")
+local parasite_respawn_mode = GetConVar("ttt_parasite_respawn_mode")
+local parasite_announce_infection = GetConVar("ttt_parasite_announce_infection")
+local parasite_infection_suicide_mode = GetConVar("ttt_parasite_infection_suicide_mode")
 
 ------------------
 -- TRANSLATIONS --
@@ -180,6 +184,47 @@ hook.Add("TTTTutorialRoleText", "Parasite_TTTTutorialRoleText", function(role, t
         html = html .. "<span style='display: block; margin-top: 10px;'>After " .. infection_time .. " seconds, the <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>infection becomes terminal</span>, respawning the " .. ROLE_STRINGS[ROLE_PARASITE] .. " and killing their killer.</span>"
 
         html = html .. "<span style='display: block; margin-top: 10px;'>Members of the <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>traitor team</span> will know who is infected via text when they look at the player or the scoreboard. This helps to let them know <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>not to kill that person</span> which would prevent the " .. ROLE_STRINGS[ROLE_PARASITE] .. " from respawning.</span>"
+
+        local respawn_mode = parasite_respawn_mode:GetInt()
+        html = html .. "<span style='display: block; margin-top: 10px;'>When the infected player succumbs to their infection, the " .. ROLE_STRINGS[ROLE_PARASITE] .. " will respawn <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>"
+        if respawn_mode == PARASITE_RESPAWN_HOST then
+            html = html .. "out of their host's body</span>"
+        elseif respawn_mode == PARASITE_RESPAWN_BODY then
+            html = html .. "out of their own body</span> (if it still exists). If it doesn't, they will instead respawn at a random location on the map"
+        elseif respawn_mode == PARASITE_RESPAWN_RANDOM then
+            html = html .. "at a random location</span> on the map"
+        end
+        html = html .. ".</span>"
+
+        if parasite_announce_infection:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>Be careful! Infected players <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>are notified</span> when they are infected.</span>"
+        end
+
+        local cure_mode = GetConVar("ttt_parasite_cure_mode"):GetInt()
+        html = html .. "<span style='display: block; margin-top: 10px;'>Some roles can buy " .. ROLE_STRINGS_EXT[ROLE_PARASITE] .. " Cure that can remove the infection from a player. If it is used on a player that isn't infected then <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>"
+        if cure_mode == PARASITE_CURE_KILL_NONE then
+            html = html .. "nothing bad will happen</span>, but "
+        elseif cure_mode == PARASITE_CURE_KILL_OWNER then
+            html = html .. "the player using it will be killed</span> and "
+        elseif cure_mode == PARASITE_CURE_KILL_TARGET then
+            html = html .. "the target player will be killed</span> and "
+        end
+        html = html .. "it will get used up.</span>"
+
+        if parasite_infection_transfer:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>If an infected player is killed, their infection <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>is transferred</span> to their killer.</span>"
+        end
+
+        local suicide_mode = parasite_infection_suicide_mode:GetInt()
+        if suicide_mode > PARASITE_SUICIDE_NONE then
+            html = html .. "<span style='display: block; margin-top: 10px;'>If the infected player kills themselves "
+            if suicide_mode == PARASITE_SUICIDE_RESPAWN_ALL then
+                html = html .. "using any method "
+            elseif suicide_mode == PARASITE_SUICIDE_RESPAWN_CONSOLE then
+                html = html .. "using the 'kill' console command "
+            end
+            html = html .. "then the " .. ROLE_STRINGS[ROLE_PARASITE] .. " <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>will respawn immediately</span>.</span>"
+        end
 
         return html
     end

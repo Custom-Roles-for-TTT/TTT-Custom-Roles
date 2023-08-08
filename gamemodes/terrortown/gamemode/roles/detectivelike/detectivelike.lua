@@ -59,7 +59,7 @@ end
 local function FindAndPromoteDetectiveLike()
     for _, ply in pairs(GetAllPlayers()) do
         if ply:IsDetectiveLikePromotable() then
-            local alive = ply:Alive()
+            local alive = ply:IsActive()
             if alive then
                 ply:QueueMessage(MSG_PRINTBOTH, "You have been promoted to " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "!")
             end
@@ -113,7 +113,7 @@ hook.Add("TTTBeginRound", "DetectiveLike_TTTBeginRound", function()
 
     timer.Create("DetectiveCreditTimer", credit_timer, 0, function()
         for _, v in pairs(GetAllPlayers()) do
-            if v:IsActive() and v:IsDetectiveLike() then
+            if v:IsActiveDetectiveLike() then
                 v:AddCredits(1)
                 LANG.Msg(v, "credit_all", { role = ROLE_STRINGS[v:GetRole()], num = 1 })
             end

@@ -89,7 +89,7 @@ local function GetLoadoutWeapons(r)
     return loadout_weapons[r]
 end
 
--- Give player loadout weapons he should have for his role that he does not have
+-- Give player loadout weapons they should have for their role that they do not have
 -- yet
 local function GiveLoadoutWeapons(ply)
     local r = GetRoundState() == ROUND_PREP and ROLE_INNOCENT or ply:GetRole()
@@ -373,7 +373,7 @@ concommand.Add("ttt_dropammo", DropActiveAmmo)
 local function GiveEquipmentWeapon(sid, cls)
     -- Referring to players by SteamID because a player may disconnect while his
     -- unique timer still runs, in which case we want to be able to stop it. For
-    -- that we need its name, and hence his SteamID.
+    -- that we need its name, and hence their SteamID.
     local ply = player.GetBySteamID64(sid)
     local tmr = "give_equipment" .. sid
 
@@ -533,7 +533,7 @@ local function OrderEquipment(ply, cmd, args)
         end
 
         if not allowed then
-            print(ply, "tried to buy item not buyable for his class:", id)
+            print(ply, "tried to buy item not buyable for their role:", id)
             return
         end
 
@@ -550,7 +550,7 @@ local function OrderEquipment(ply, cmd, args)
     elseif swep_table then
         -- weapon whitelist check
         if not table.HasValue(swep_table.CanBuy, role) then
-            print(ply, "tried to buy weapon his role is not permitted to buy")
+            print(ply, "tried to buy weapon their role is not permitted to buy")
             return
         end
 

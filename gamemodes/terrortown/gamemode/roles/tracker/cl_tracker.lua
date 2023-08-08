@@ -40,6 +40,7 @@ hook.Add("TTTTutorialRoleText", "Tracker_TTTTutorialRoleText", function(role, ti
             end
         end
 
+        -- Hide special detectives mode
         html = html .. "<span style='display: block; margin-top: 10px;'>Other players will know you are " .. ROLE_STRINGS_EXT[ROLE_DETECTIVE] .. " just by <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>looking at you</span>"
         local special_detective_mode = GetConVar("ttt_detectives_hide_special_mode"):GetInt()
         if special_detective_mode > SPECIAL_DETECTIVE_HIDE_NONE then
