@@ -218,9 +218,8 @@ end)
 -- CLEANUP --
 -------------
 
-AddHook("TTTPrepareRound", "HiveMind_repareRound", function()
+AddHook("TTTPrepareRound", "HiveMind_PrepareRound", function()
     for _, v in pairs(GetAllPlayers()) do
-        v.HiveMindHealthSync = nil
         timer.Remove("HiveMindRespawn_" .. v:SteamID64())
     end
 end)
