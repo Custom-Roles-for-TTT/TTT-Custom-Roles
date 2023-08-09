@@ -149,10 +149,13 @@ function SWEP:SecondaryAttack()
         local independentsHeight    = MathMax(((itemSize + 2) * independentRows + 2), 0)
         local monstersHeight        = MathMax(((itemSize + 2) * monsterRows + 2), 0)
 
+        -- I worked this out from looking at screenshots and measuring how the bottom margin changes based on the number of labels. I don't know why this is needed or where these numbers come from!
+        local bottomMarginOffset = (2 * labels) - 7
+
         -- frame size
         local w = listWidth + (m * 2) + 2 -- For some reason the icons aren't centred horizontally so add 2px
         local h = detectivesHeight + innocentsHeight + traitorsHeight + jestersHeight + independentsHeight + monstersHeight
-                + (labelHeight * labels) + (m * 2) + headingHeight + searchHeight
+                + (labelHeight * labels) + (m * 2) + headingHeight + searchHeight + bottomMarginOffset
 
         local dframe = vgui.Create("DFrame")
         dframe:SetSize(w, h)
@@ -179,7 +182,7 @@ function SWEP:SecondaryAttack()
             dlabel:SetText(label)
             dlabel:SetContentAlignment(7)
             dlabel:SetWidth(listWidth)
-            dlabel:SetPos(m + 2, yOffset) -- For some reason the text isn't inline with the icons so we shift it 2px to the right
+            dlabel:SetPos(m + 3, yOffset) -- For some reason the text isn't inline with the icons so we shift it 3px to the right
 
             local dlist = vgui.Create("EquipSelect", dframe)
             dlist:SetPos(m, yOffset + labelHeight)
