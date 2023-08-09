@@ -6,6 +6,9 @@
 ### Additions
 - Added heart icon over the head of the revenger's soulmate
 
+### Fixes
+- Fixed parasite infecting a dead host if they died at the exact same time as their attacker
+
 ## 1.9.4 (Beta)
 **Released: August 5th, 2023**
 
