@@ -2,11 +2,16 @@ AddCSLuaFile()
 
 local file = file
 local vgui = vgui
+local net = net
 
 local GetTranslation = LANG.GetTranslation
 local StringLower = string.lower
+local StringFind = string.find
 local TableInsert = table.insert
 local TableSort = table.sort
+local MathMax = math.max
+local MathClamp = math.Clamp
+local MathCeil = math.ceil
 
 if CLIENT then
     SWEP.PrintName          = "Role Guesser"
@@ -57,6 +62,8 @@ SWEP.Secondary.Sound        = ""
 SWEP.InLoadoutFor           = {ROLE_GUESSER}
 SWEP.InLoadoutForDefault    = {ROLE_GUESSER}
 
+local guesser_can_guess_detectives = CreateConVar("ttt_guesser_can_guess_detectives", "0", FCVAR_REPLICATED, "Whether the guesser is allowed to guess detectives", 0, 1)
+
 function SWEP:Initialize()
     self:SendWeaponAnim(ACT_SLAM_DETONATOR_DRAW)
     if CLIENT then
@@ -79,18 +86,73 @@ end
 
 function SWEP:SecondaryAttack()
     if CLIENT then
-        local numCols = 6
-        local numRows = 5
-        local itemSize = 64
-        -- margin
-        local m = 5
-        -- item list width
-        local dlistw = ((itemSize + 2) * numCols) - 2 + 15
-        local dlisth = ((itemSize + 2) * numRows) - 2 + 15
+        local function AddRolesFromTeam(table, team, exclude)
+            local roles = {}
+            for role, v in pairs(team) do
+                if not v or role == ROLE_GUESSER or DEFAULT_ROLES[role] or (exclude and exclude[role]) then continue end
+                if GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_enabled"):GetBool() then -- TODO: Add hook/table to show roles that can be spawned by another role
+                    TableInsert(roles, role)
+                end
+            end
+            TableSort(roles, function(a, b) return StringLower(ROLE_STRINGS[a]) < StringLower(ROLE_STRINGS[b]) end)
+            for _, role in pairs(roles) do
+                TableInsert(table, role)
+            end
+        end
+
+        local detectives = {}
+        if guesser_can_guess_detectives:GetBool() then
+            TableInsert(detectives, ROLE_DETECTIVE)
+            AddRolesFromTeam(detectives, DETECTIVE_ROLES)
+        end
+        local innocents = {}
+        TableInsert(innocents, ROLE_INNOCENT)
+        AddRolesFromTeam(innocents, INNOCENT_ROLES, DETECTIVE_ROLES)
+        local traitors = {}
+        TableInsert(traitors, ROLE_TRAITOR)
+        AddRolesFromTeam(traitors, TRAITOR_ROLES)
+        local jesters = {}
+        AddRolesFromTeam(jesters, JESTER_ROLES)
+        local independents = {}
+        AddRolesFromTeam(independents, INDEPENDENT_ROLES)
+        local monsters = {}
+        AddRolesFromTeam(monsters, MONSTER_ROLES)
+
+        local largestTeam       = MathMax(#detectives, #innocents, #traitors, #jesters, #independents, #monsters)
+        local columns           = MathClamp(largestTeam, 4, 8)
+        local detectiveRows     = MathCeil(#detectives / columns)
+        local innocentRows      = MathCeil(#innocents / columns)
+        local traitorRows       = MathCeil(#traitors / columns)
+        local jesterRows        = MathCeil(#jesters / columns)
+        local independentRows   = MathCeil(#independents / columns)
+        local monsterRows       = MathCeil(#monsters / columns)
+
+        local function isHeadingNeeded(table)
+            return #table == 0 and 0 or 1
+        end
+
+        local labels = isHeadingNeeded(detectives) + isHeadingNeeded(innocents) + isHeadingNeeded(traitors)
+                        + isHeadingNeeded(jesters) + isHeadingNeeded(independents) + isHeadingNeeded(monsters)
+
+        local itemSize      = 64
+        local headingHeight = 22
+        local searchHeight  = 25
+        local labelHeight   = 16
+        local m             = 5
+
+        -- list sizes
+        local listWidth             = (itemSize + 2) * columns
+        local detectivesHeight      = MathMax(((itemSize + 2) * detectiveRows + 2), 0)
+        local innocentsHeight       = MathMax(((itemSize + 2) * innocentRows + 2), 0)
+        local traitorsHeight        = MathMax(((itemSize + 2) * traitorRows + 2), 0)
+        local jestersHeight         = MathMax(((itemSize + 2) * jesterRows + 2), 0)
+        local independentsHeight    = MathMax(((itemSize + 2) * independentRows + 2), 0)
+        local monstersHeight        = MathMax(((itemSize + 2) * monsterRows + 2), 0)
 
         -- frame size
-        local w = dlistw + (m * 2)
-        local h = dlisth + (m * 2) + 52
+        local w = listWidth + (m * 2) + 2 -- For some reason the icons aren't centred horizontally so add 2px
+        local h = detectivesHeight + innocentsHeight + traitorsHeight + jestersHeight + independentsHeight + monstersHeight
+                + (labelHeight * labels) + (m * 2) + headingHeight + searchHeight
 
         local dframe = vgui.Create("DFrame")
         dframe:SetSize(w, h)
@@ -101,115 +163,101 @@ function SWEP:SecondaryAttack()
         dframe:SetMouseInputEnabled(true)
         dframe:SetDeleteOnClose(true)
 
-        local dpanel = vgui.Create("DPanel", dframe)
-        dpanel:SetPaintBackground(false)
-        dpanel:StretchToParent(m, m + 22, m, m + 30)
+        local dsearch = vgui.Create("DTextEntry", dframe)
+        dsearch:SetPos(m + 2, m + headingHeight + 2) -- For some reason this is 2px higher than it should be so shift it down, also undo the extra width added above
+        dsearch:SetSize(listWidth - 2, searchHeight)
+        dsearch:SetPlaceholderText("Search...")
+        dsearch:SetUpdateOnType(true)
+        dsearch.OnGetFocus = function() dframe:SetKeyboardInputEnabled(true) end
+        dsearch.OnLoseFocus = function() dframe:SetKeyboardInputEnabled(false) end
 
-        local dcancel = vgui.Create("DButton", dframe)
-        dcancel:SetPos(w - 102 - m, h - 27 - m)
-        dcancel:SetSize(100, 25)
-        dcancel:SetText(GetTranslation("close"))
-        dcancel.DoClick = function() dframe:Close() end
+        local panelList = {}
 
-        local dlabel = vgui.Create("DLabel", dframe)
-        dlabel:SetFont("GuesserSelection")
-        dlabel:SetText("Currently selected: ")
-        dlabel:SetWidth(w - 100 - (2 * m))
-        dlabel:SetTextColor(Color(255, 255, 255, 255))
-        dlabel:SetPos(m + 1, h - 25 - m)
+        local function createTeamList(label, roleTable, height, yOffset)
+            local dlabel = vgui.Create("DLabel", dframe)
+            dlabel:SetFont("TabLarge")
+            dlabel:SetText(label)
+            dlabel:SetContentAlignment(7)
+            dlabel:SetWidth(listWidth)
+            dlabel:SetPos(m + 2, yOffset) -- For some reason the text isn't inline with the icons so we shift it 2px to the right
 
-        surface.SetFont("GuesserSelection")
-        local labelWidth = surface.GetTextSize("Currently selected: ")
+            local dlist = vgui.Create("EquipSelect", dframe)
+            dlist:SetPos(m, yOffset + labelHeight)
+            dlist:SetSize(listWidth, height)
+            dlist:EnableHorizontal(true)
 
-        local drolelabel = vgui.Create("DLabel", dframe)
-        drolelabel:SetFont("GuesserSelection")
-        drolelabel:SetText(ROLE_STRINGS[ROLE_INNOCENT])
-        drolelabel:SetWidth(w - 100 - (2 * m) - labelWidth)
-        drolelabel:SetTextColor(ROLE_COLORS[ROLE_INNOCENT])
-        drolelabel:SetPos(m + 1 + labelWidth, h - 25 - m)
+            for _, role in pairs(roleTable) do
+                local ic = vgui.Create("SimpleIcon", dlist)
 
-        local dlistbg = vgui.Create("DPanel", dframe)
-        dlistbg:SetBackgroundColor(Color(156, 159, 163))
-        dlistbg:SetPos(2, 24)
-        dlistbg:SetSize(dlistw + 6, dlisth)
+                local roleStringShord = ROLE_STRINGS_SHORT[role]
+                local material = "vgui/ttt/icon_" .. roleStringShord
+                if file.Exists("materials/vgui/ttt/roles/" .. roleStringShord .. "/icon_" .. roleStringShord .. ".vtf", "GAME") then
+                    material = "vgui/ttt/roles/" .. roleStringShord .. "/icon_" .. roleStringShord
+                end
 
-        local dlist = vgui.Create("EquipSelect", dlistbg)
-        dlist:SetPos(0, 0)
-        dlist:SetSize(dlistw, dlisth)
-        dlist:EnableVerticalScrollbar(true)
-        dlist:EnableHorizontal(true)
+                ic:SetIconSize(itemSize)
+                ic:SetIcon(material)
+                ic:SetBackgroundColor(ROLE_COLORS[role] or Color(0, 0, 0, 0))
+                ic:SetTooltip(ROLE_STRINGS[role])
+                ic.role = role
+                ic.enabled = true
 
-        -- sort roles
-        local roletable = {}
+                TableInsert(panelList, ic)
 
-        local function AddRolesFromTeam(team, exclude)
-            local roles = {}
-            for role, v in pairs(team) do
-                if not v or role == ROLE_GUESSER or DEFAULT_ROLES[role] or (exclude and exclude[role]) then continue end
-                if GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_enabled"):GetBool() then -- TODO: Add hook/table to show roles that can be spawned by another role
-                    TableInsert(roles, role)
+                dlist:AddPanel(ic)
+            end
+
+            dlist.OnActivePanelChanged = function(_, _, new)
+                if new.enabled then
+                    net.Start("TTT_Guesser_Select_Role")
+                    net.WriteInt(new.role, 8)
+                    net.SendToServer()
+                    dframe:Close()
                 end
             end
-            TableSort(roles, function(a, b) return StringLower(ROLE_STRINGS[a]) < StringLower(ROLE_STRINGS[b]) end)
-            for _, role in pairs(roles) do
-                TableInsert(roletable, role)
-            end
         end
 
-        TableInsert(roletable, ROLE_DETECTIVE) -- TODO: Add convar to disable guessing of detectives (or maybe just tie to ttt_detectives_hide_special_mode?)
-        AddRolesFromTeam(DETECTIVE_ROLES)
-        TableInsert(roletable, ROLE_INNOCENT)
-        AddRolesFromTeam(INNOCENT_ROLES, DETECTIVE_ROLES)
-        TableInsert(roletable, ROLE_TRAITOR)
-        AddRolesFromTeam(TRAITOR_ROLES)
-        AddRolesFromTeam(JESTER_ROLES)
-        AddRolesFromTeam(INDEPENDENT_ROLES)
-        AddRolesFromTeam(MONSTER_ROLES)
-
-        local selection = nil
-
-        for _, role in pairs(roletable) do
-            local ic = vgui.Create("SimpleIcon", dlist)
-
-            local roleStringShord = ROLE_STRINGS_SHORT[role]
-            local material = "vgui/ttt/icon_" .. roleStringShord
-            if file.Exists("materials/vgui/ttt/roles/" .. roleStringShord .. "/icon_" .. roleStringShord .. ".vtf", "GAME") then
-                material = "vgui/ttt/roles/" .. roleStringShord .. "/icon_" .. roleStringShord
-            end
-
-            ic:SetIconSize(itemSize)
-            ic:SetIcon(material)
-            ic:SetBackgroundColor(ROLE_COLORS[role] or Color(0, 0, 0, 0))
-            ic:SetTooltip(ROLE_STRINGS[role])
-            ic.role = role
-
-            if role == LocalPlayer():GetNWInt("TTTGuesserSelection", ROLE_INNOCENT) then
-                selection = ic
-            end
-
-            dlist:AddPanel(ic)
+        local yOffset = m * 2 + headingHeight + searchHeight
+        if #detectives > 0 then
+            createTeamList("Detective Roles", detectives, detectivesHeight, yOffset)
+            yOffset = yOffset + detectivesHeight + labelHeight
+        end
+        if #innocents > 0 then
+            createTeamList("Innocent Roles", innocents, innocentsHeight, yOffset)
+            yOffset = yOffset + innocentsHeight + labelHeight
+        end
+        if #traitors > 0 then
+            createTeamList("Traitor Roles", traitors, traitorsHeight, yOffset)
+            yOffset = yOffset + traitorsHeight + labelHeight
+        end
+        if #jesters > 0 then
+            createTeamList("Jester Roles", jesters, jestersHeight, yOffset)
+            yOffset = yOffset + jestersHeight + labelHeight
+        end
+        if #independents > 0 then
+            createTeamList("Independent Roles", independents, independentsHeight, yOffset)
+            yOffset = yOffset + independentsHeight + labelHeight
+        end
+        if #monsters > 0 then
+            createTeamList("Monster Roles", monsters, monstersHeight, yOffset)
         end
 
-        dlist:SelectPanel(selection)
-        drolelabel:SetText(ROLE_STRINGS[selection.role])
-        drolelabel:SetTextColor(ROLE_COLORS[selection.role])
-
-        dlist.OnActivePanelChanged = function(_, _, new)
-            -- TODO: Add network message to sync selected role to NWInt TTTGuesserSelection
-            drolelabel:SetText(ROLE_STRINGS[new.role])
-            drolelabel:SetTextColor(ROLE_COLORS[new.role])
+        dsearch.OnValueChange = function(_, value)
+            local query = StringLower(value:gsub("[%p%c%s]", ""))
+            for _, panel in pairs(panelList) do
+                if StringFind(ROLE_STRINGS_RAW[panel.role], query, 1, true) or value == "" then
+                    panel:SetIconColor(COLOR_WHITE)
+                    panel:SetBackgroundColor(ROLE_COLORS[panel.role])
+                    panel.enabled = true
+                else
+                    panel:SetIconColor(COLOR_LGRAY)
+                    panel:SetBackgroundColor(ROLE_COLORS_DARK[panel.role])
+                    panel.enabled = false
+                end
+            end
         end
 
         dframe:MakePopup()
         dframe:SetKeyboardInputEnabled(false)
     end
-end
-
-if CLIENT then
-    surface.CreateFont( "GuesserSelection", {
-        font		= "Roboto",
-        size		= 24,
-        weight		= 500,
-        extended	= true
-    })
 end
