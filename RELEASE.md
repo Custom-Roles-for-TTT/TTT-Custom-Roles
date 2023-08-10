@@ -4,6 +4,7 @@
 **Released:**
 
 ### Additions
+- Added new jester role: guesser
 - Added heart icon over the head of the revenger's soulmate
 
 ### Developer

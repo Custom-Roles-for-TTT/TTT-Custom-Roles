@@ -10,6 +10,7 @@ local StringLower = string.lower
 local StringFind = string.find
 local TableInsert = table.insert
 local TableSort = table.sort
+local TableHasValue = table.HasValue
 local MathMax = math.max
 local MathClamp = math.Clamp
 local MathCeil = math.ceil
@@ -64,6 +65,8 @@ SWEP.InLoadoutFor           = {ROLE_GUESSER}
 SWEP.InLoadoutForDefault    = {ROLE_GUESSER}
 
 local guesser_can_guess_detectives = CreateConVar("ttt_guesser_can_guess_detectives", "0", FCVAR_REPLICATED, "Whether the guesser is allowed to guess detectives", 0, 1)
+local guesser_unguessable_roles = CreateConVar("ttt_guesser_unguessable_roles", "lootgoblin,zombie", FCVAR_NONE, "Names of roles that cannot be guessed by the guesser, separated with commas. Do not include spaces or capital letters.")
+
 
 function SWEP:Initialize()
     self:SendWeaponAnim(ACT_SLAM_DETONATOR_DRAW)
@@ -88,9 +91,15 @@ end
 function SWEP:SecondaryAttack()
     if CLIENT then
         local function AddRolesFromTeam(table, team, exclude)
+            local bannedRoles = {}
+            local bannedRolesString = guesser_unguessable_roles:GetString()
+            if #bannedRolesString > 0 then
+                bannedRoles = string.Explode(",", bannedRolesString)
+            end
             local roles = {}
             for role, v in pairs(team) do
-                if not v or role == ROLE_GUESSER or DEFAULT_ROLES[role] or (exclude and exclude[role]) then continue end
+                if not v or role == ROLE_GUESSER or DEFAULT_ROLES[role] or (exclude and exclude[role])
+                    or TableHasValue(bannedRoles, ROLE_STRINGS_RAW[role]) then continue end
                 if util.CanRoleSpawn(role) then
                     TableInsert(roles, role)
                 end
