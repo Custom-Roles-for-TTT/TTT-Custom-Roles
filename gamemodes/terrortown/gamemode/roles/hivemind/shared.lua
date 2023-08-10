@@ -52,11 +52,22 @@ AddHook("TTTPlayerRoleChanged", "HiveMind_ShopSync_TTTPlayerRoleChanged", functi
     if oldRole ~= ROLE_NONE and not table.HasValue(ROLE_SHOP_SYNC_ROLES[ROLE_HIVEMIND], oldRole) then
         TableInsert(ROLE_SHOP_SYNC_ROLES[ROLE_HIVEMIND], oldRole)
 
-        -- Bust the weapons cache for all players so the weapons show in the shop and they can buy them
-        for _, p in ipairs(GetAllPlayers()) do
-            if not p:IsHiveMind() then continue end
-            -- Bust the shop cache
-            p:ConCommand("ttt_reset_weapons_cache")
+        if SERVER and WEPS.DoesRoleHaveWeapon(oldRole) then
+            -- Bust the weapons cache for all players so the weapons show in the shop and they can buy them
+            for _, p in ipairs(GetAllPlayers()) do
+                if not p:IsHiveMind() then continue end
+                -- Bust the shop cache
+                p:ConCommand("ttt_reset_weapons_cache")
+
+                -- Let the existing players know there might be new weapons
+                if ply ~= p then
+                    timer.Simple(0.25, function()
+                        -- Sanity check
+                        if not IsPlayer(p) or not p:IsActiveHiveMind() then return end
+                        p:QueueMessage(MSG_PRINTCENTER, "New weapons from the assimilated player are now available in your shop")
+                    end)
+                end
+            end
         end
     end
 end)
