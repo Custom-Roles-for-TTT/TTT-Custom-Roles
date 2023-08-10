@@ -328,7 +328,7 @@ end)
 hook.Add("TTTTutorialRoleText", "Guesser_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_GUESSER then
         local roleColor = GetRoleTeamColor(ROLE_TEAM_JESTER)
-        local detectiveColor = GetRoleTeamColor(ROLE_TEAM_DETECTIVE)
+        local detectiveColor = ROLE_COLORS[ROLE_DETECTIVE]
         local html = "The " .. ROLE_STRINGS[ROLE_GUESSER] .. " is a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>jester</span> role whose goal is to figure out and steal the roles of other players."
 
         html = html .. "<span style='display: block; margin-top: 10px;'>If the guesser <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>correctly guesses</span> the role of another player, the guesser swaps roles with the player they guessed and takes over the goal of their new role. However if they <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>incorrectly guess</span> another player's role the guesser dies instead.</span>"
