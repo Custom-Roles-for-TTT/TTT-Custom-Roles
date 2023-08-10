@@ -343,10 +343,10 @@ hook.Add("TTTTutorialRoleText", "Guesser_TTTTutorialRoleText", function(role, ti
         local bannedRoles = ""
         local addComma = false
         for k, v in pairs(unguessableRoles) do
-            local role = table.KeyFromValue(ROLE_STRINGS_RAW, v)
-            if role then
+            local bannedRole = table.KeyFromValue(ROLE_STRINGS_RAW, v)
+            if bannedRole then
                 if addComma then bannedRoles = bannedRoles .. "," end
-                bannedRoles = bannedRoles .. " " .. ROLE_STRINGS[role]
+                bannedRoles = bannedRoles .. " " .. ROLE_STRINGS[bannedRole]
                 addComma = true
             end
         end

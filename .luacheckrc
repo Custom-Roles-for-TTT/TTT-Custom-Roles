@@ -1087,6 +1087,7 @@ std = {
                 HasValue = {},
                 IntersectedKeys  = {},
                 IsEmpty = {},
+                KeyFromValue = {},
                 KeysFromValue = {},
                 LookupKeys = {},
                 Merge = {},
