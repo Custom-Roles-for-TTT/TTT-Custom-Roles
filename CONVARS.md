@@ -566,6 +566,11 @@ ttt_sponge_notify_confetti                  0       // Whether to throw confetti
 // Guesser
 ttt_guesser_can_guess_detectives            0       // Whether the guesser is allowed to guess detectives
 ttt_guesser_minimum_radius                  5       // The minimum radius of the guesser's device in meters. Set to 0 to disable
+ttt_guesser_show_team_threshold             50      // The amount of damage that needs to be dealt to a guesser before they learn the attacker's team
+ttt_guesser_show_role_threshold             100     // The amount of damage that needs to be dealt to a guesser before they learn the attacker's role
+ttt_guesser_notify_mode                     0       // The logic to use when notifying players that a guesser is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
+ttt_guesser_notify_sound                    0       // Whether to play a cheering sound when a guesser is killed
+ttt_guesser_notify_confetti                 0       // Whether to throw confetti when a guesser is a killed
 ttt_guesser_unguessable_roles               "lootgoblin,zombie" // Names of roles that cannot be guessed by the guesser, separated with commas. Do not include spaces or capital letters.
 
 // ----------------------------------------

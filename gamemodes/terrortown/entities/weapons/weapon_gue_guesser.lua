@@ -5,6 +5,7 @@ local vgui = vgui
 local net = net
 local util = util
 
+local GetAllPlayers = player.GetAll
 local GetTranslation = LANG.GetTranslation
 local StringLower = string.lower
 local StringFind = string.find
@@ -64,9 +65,12 @@ SWEP.Secondary.Sound        = ""
 SWEP.InLoadoutFor           = {ROLE_GUESSER}
 SWEP.InLoadoutForDefault    = {ROLE_GUESSER}
 
-local guesser_can_guess_detectives = CreateConVar("ttt_guesser_can_guess_detectives", "0", FCVAR_REPLICATED, "Whether the guesser is allowed to guess detectives", 0, 1)
+if SERVER then
+    CreateConVar("ttt_guesser_minimum_radius", "5", FCVAR_NONE, "The minimum radius of the guesser's device in meters. Set to 0 to disable", 1, 30)
+end
 local guesser_unguessable_roles = CreateConVar("ttt_guesser_unguessable_roles", "lootgoblin,zombie", FCVAR_REPLICATED, "Names of roles that cannot be guessed by the guesser, separated with commas. Do not include spaces or capital letters.")
-local guesser_minimum_radius = CreateConVar("ttt_guesser_minimum_radius", "5", FCVAR_REPLICATED, "The minimum radius of the guesser's device in meters. Set to 0 to disable", 1, 30)
+
+local guesser_can_guess_detectives = GetConVar("ttt_guesser_can_guess_detectives")
 
 function SWEP:Initialize()
     self:SendWeaponAnim(ACT_SLAM_DETONATOR_DRAW)
@@ -104,12 +108,17 @@ function SWEP:PrimaryAttack()
         local tr = util.TraceLine(trace)
         if tr.Entity.IsPlayer() then
             local ply = tr.Entity
-            local radius = guesser_minimum_radius:GetFloat() * UNITS_PER_METER
+            local radius = GetConVar("ttt_guesser_minimum_radius"):GetFloat() * UNITS_PER_METER
             if ply:GetPos():Distance(owner:GetPos()) <= radius or radius == 0 then
                 if ply:GetNWBool("TTTGuesserWasGuesser", false) then
                     owner:QueueMessage(MSG_PRINTCENTER, "That player was previously ".. ROLE_STRINGS_EXT[ROLE_GUESSER] .. " and so cannot be guessed!")
                     return
                 end
+
+                for _, v in pairs(GetAllPlayers()) do
+                    v:SetNWFloat("TTTGuesserDamageDealt", 0)
+                end
+
                 if ply:IsRole(role) then
                     owner:QueueMessage(MSG_PRINTBOTH, "You guessed correctly and have become " .. ROLE_STRINGS_EXT[role] .. "!")
                     owner:SetNWBool("TTTGuesserWasGuesser", true)
@@ -127,7 +136,6 @@ function SWEP:PrimaryAttack()
                     net.WriteString(owner:Nick())
                     net.Broadcast()
                     self:Remove()
-
                 else
                     owner:QueueMessage(MSG_PRINTBOTH, "You guessed incorrectly and have died!")
                     net.Start("TTT_GuesserGuessed")
