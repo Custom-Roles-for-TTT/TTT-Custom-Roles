@@ -18,8 +18,13 @@ AddHook("Initialize", "Guesser_Translations_Initialize", function()
     -- Target ID
     LANG.AddToLanguage("english", "guesser_unguessable", "UNGUESSABLE")
 
-    -- SCORING
+    -- Scoring
     LANG.AddToLanguage("english", "score_guesser_guessed_by", "Guessed by")
+
+    -- Popup
+    LANG.AddToLanguage("english", "info_popup_guesser", [[You are {role}! {traitors} think you are {ajester} and you deal no
+    damage. However, you can use your role guesser to try and guess a player's
+    role. Guess correctly to steal their role. Guess incorrectly and you die.]])
 end)
 
 -------------

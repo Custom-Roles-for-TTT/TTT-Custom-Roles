@@ -565,7 +565,7 @@ ttt_sponge_notify_confetti                  0       // Whether to throw confetti
 
 // Guesser
 ttt_guesser_can_guess_detectives            0       // Whether the guesser is allowed to guess detectives
-ttt_guesser_minimum_radius                  5       // The minimum radius of the guesser's device in meters
+ttt_guesser_minimum_radius                  5       // The minimum radius of the guesser's device in meters. Set to 0 to disable
 ttt_guesser_unguessable_roles               "lootgoblin,zombie" // Names of roles that cannot be guessed by the guesser, separated with commas. Do not include spaces or capital letters.
 
 // ----------------------------------------
