@@ -617,6 +617,7 @@ ttt_drunk_can_be_zombie                     1       // Whether the drunk can bec
 ttt_drunk_can_be_madscientist               1       // Whether the drunk can become a mad scientist
 ttt_drunk_can_be_shadow                     1       // Whether the drunk can become a shadow
 ttt_drunk_can_be_arsonist                   1       // Whether the drunk can become a arsonist
+ttt_drunk_can_be_hivemind                   1       // Whether the drunk can become the hive mind
 
 // Old Man
 ttt_oldman_drain_health_to                  0       // The amount of health to drain the old man down to. Set to 0 to disable
