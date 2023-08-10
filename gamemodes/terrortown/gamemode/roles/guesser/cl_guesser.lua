@@ -21,6 +21,12 @@ AddHook("Initialize", "Guesser_Translations_Initialize", function()
     -- Scoring
     LANG.AddToLanguage("english", "score_guesser_guessed_by", "Guessed by")
 
+    -- Events
+    LANG.AddToLanguage("english", "ev_guesser_correct", "{guesser} correctly guessed {victim}'s role")
+
+    -- Events
+    LANG.AddToLanguage("english", "ev_guesser_incorrect", "{guesser} incorrectly guessed {victim}'s role")
+
     -- Popup
     LANG.AddToLanguage("english", "info_popup_guesser", [[You are {role}! {traitors} think you are {ajester} and you deal no
     damage. However, you can use your role guesser to try and guess a player's
@@ -30,6 +36,39 @@ end)
 -------------
 -- SCORING --
 -------------
+
+-- Register the scoring events for the swapper
+hook.Add("Initialize", "Guesser_Scoring_Initialize", function()
+    local swap_icon = Material("icon16/arrow_refresh_small.png")
+    local fail_icon = Material("icon16/cancel.png")
+    local Event = CLSCORE.DeclareEventDisplay
+    local PT = LANG.GetParamTranslation
+    Event(EVENT_GUESSERCORRECT, {
+        text = function(e)
+            return PT("ev_guesser_correct", {victim = e.victim, guesser = e.guesser})
+        end,
+        icon = function(e)
+            return swap_icon, "Guessed Correctly"
+        end})
+    Event(EVENT_GUESSERINCORRECT, {
+        text = function(e)
+            return PT("ev_guesser_incorrect", {victim = e.victim, guesser = e.guesser})
+        end,
+        icon = function(e)
+            return fail_icon, "Guessed Incorrectly"
+        end})
+end)
+
+net.Receive("TTT_GuesserGuessed", function(_)
+    local correct = net.ReadBool()
+    local victim = net.ReadString()
+    local guesser = net.ReadString()
+    CLSCORE:AddEvent({
+        id = correct and EVENT_GUESSERCORRECT or EVENT_GUESSERINCORRECT,
+        victim = victim,
+        guesser = guesser
+    })
+end)
 
 hook.Add("TTTScoringSummaryRender", "Guesser_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
     if not IsPlayer(ply) then return end

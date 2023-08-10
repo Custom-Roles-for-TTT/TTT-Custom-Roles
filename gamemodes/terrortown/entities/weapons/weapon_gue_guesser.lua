@@ -121,9 +121,20 @@ function SWEP:PrimaryAttack()
                     owner:SetRole(role)
                     ply:SetRole(ROLE_GUESSER)
                     SendFullStateUpdate()
+                    net.Start("TTT_GuesserGuessed")
+                    net.WriteBool(true)
+                    net.WriteString(ply:Nick())
+                    net.WriteString(owner:Nick())
+                    net.Broadcast()
                     self:Remove()
+
                 else
                     owner:QueueMessage(MSG_PRINTBOTH, "You guessed incorrectly and have died!")
+                    net.Start("TTT_GuesserGuessed")
+                    net.WriteBool(false)
+                    net.WriteString(ply:Nick())
+                    net.WriteString(owner:Nick())
+                    net.Broadcast()
                     owner:Kill()
                 end
             end
@@ -267,7 +278,7 @@ function SWEP:SecondaryAttack()
 
             dlist.OnActivePanelChanged = function(_, _, new)
                 if new.enabled then
-                    net.Start("TTT_Guesser_Select_Role")
+                    net.Start("TTT_GuesserSelectRole")
                     net.WriteInt(new.role, 8)
                     net.SendToServer()
                     dframe:Close()

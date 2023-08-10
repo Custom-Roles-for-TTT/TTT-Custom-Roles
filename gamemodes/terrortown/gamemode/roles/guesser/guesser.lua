@@ -6,13 +6,14 @@ local player = player
 
 local GetAllPlayers = player.GetAll
 
-util.AddNetworkString("TTT_Guesser_Select_Role")
+util.AddNetworkString("TTT_GuesserSelectRole")
+util.AddNetworkString("TTT_GuesserGuessed")
 
 -------------------
 -- ROLE FEATURES --
 -------------------
 
-net.Receive("TTT_Guesser_Select_Role", function(_, ply)
+net.Receive("TTT_GuesserSelectRole", function(_, ply)
     if ply:IsActiveGuesser() then
         local role = net.ReadInt(8)
         ply:SetNWInt("TTTGuesserSelection", role)
