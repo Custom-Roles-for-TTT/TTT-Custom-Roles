@@ -190,10 +190,21 @@ end)
 
 AddHook("TTTTutorialRoleText", "HiveMind_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_HIVEMIND then
-        local html = "TODO"
-        if hivemind_friendly_fire:GetBool() then
-            html = html .. "TODO"
+        local roleTeam = player.GetRoleTeam(ROLE_HIVEMIND, true)
+        local roleTeamName, roleColor = GetRoleTeamInfo(roleTeam)
+        local html = "The " .. ROLE_STRINGS[ROLE_HIVEMIND] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. roleTeamName .. "</span> team that wins by being the only role left alive. To accomplish this, the " .. ROLE_STRINGS[ROLE_HIVEMIND] .. " assimilates any player they kill."
+
+        html = html .. "<span style='display: block; margin-top: 10px;'>Assimilated players will <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>respawn as part of the " .. ROLE_STRINGS[ROLE_HIVEMIND] .. "</span>.</span>"
+        html = html .. "<span style='display: block; margin-top: 10px;'>When a player with a shop is assimilated, their available shop items are <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>added to the " .. ROLE_STRINGS[ROLE_HIVEMIND] .. "'s shop</span>.</span>"
+
+        if hivemind_vision_enable:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>To help identify other members of the " .. ROLE_STRINGS[ROLE_HIVEMIND] .. ", they are <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>highlighted with a visible glow</span>.</span>"
         end
+
+        if hivemind_friendly_fire:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>Be careful thought! Members of the " .. ROLE_STRINGS[ROLE_HIVEMIND] .. " <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>CAN damage eachother</span> so watch where you're shooting.</span>"
+        end
+
         return html
     end
 end)
