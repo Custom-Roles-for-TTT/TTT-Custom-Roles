@@ -241,9 +241,9 @@ hook.Add("TTTTutorialRoleText", "Vampire_TTTTutorialRoleText", function(role, ti
         -- Use this for highlighting things like "blood"
         local traitorColor = ROLE_COLORS[ROLE_TRAITOR]
         local roleTeam = player.GetRoleTeam(ROLE_VAMPIRE, true)
-        local roleTeamString, roleTeamColor = GetRoleTeamInfo(roleTeam, true)
+        local roleTeamName, roleColor = GetRoleTeamInfo(roleTeam, true)
 
-        local html = "The " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " is a member of the <span style='color: rgb(" .. roleTeamColor.r .. ", " .. roleTeamColor.g .. ", " .. roleTeamColor.b .. ")'>" .. string.lower(roleTeamString) .. " team</span>."
+        local html = "The " .. ROLE_STRINGS[ROLE_VAMPIRE] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. roleTeamName .. " team</span>."
 
         -- Draining
         html = html .. "<span style='display: block; margin-top: 10px;'>They can heal themselves by <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>draining blood</span> from "
