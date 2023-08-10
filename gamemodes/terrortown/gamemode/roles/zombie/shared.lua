@@ -13,6 +13,17 @@ ZOMBIE_FF_MODE_IMMUNE = 2
 ROLE_CAN_SEE_JESTERS[ROLE_ZOMBIE] = true
 ROLE_CAN_SEE_MIA[ROLE_ZOMBIE] = true
 
+hook.Add("TTTRoleSpawnsArtificially", "Zombie_TTTRoleSpawnsArtificially", function(role)
+    if role == ROLE_ZOMBIE then
+        local madScientistEnabled = GetConVar("ttt_madscientist_enabled"):GetBool() and
+            ((INDEPENDENT_ROLES[ROLE_ZOMBIE] and INDEPENDENT_ROLES[ROLE_MADSCIENTIST])
+            or (MONSTER_ROLES[ROLE_ZOMBIE] and MONSTER_ROLES[ROLE_MADSCIENTIST]))
+        if GetConVar("ttt_infected_enabled"):GetBool() or madScientistEnabled then
+            return true
+        end
+    end
+end)
+
 --------------------
 -- PLAYER METHODS --
 --------------------

@@ -6,6 +6,10 @@
 ### Additions
 - Added heart icon over the head of the revenger's soulmate
 
+### Developer
+- Added `TTTRoleSpawnsArtificially` hook to determine if a role could be spawned artificially. (i.e. Spawned in a way other than naturally spawning when the role is enabled)
+- Added `util.CanRoleSpawnArtificially` and `util.CanRoleSpawn` methods to check if roles could be spawned into a round
+
 ## 1.9.4 (Beta)
 **Released: August 5th, 2023**
 

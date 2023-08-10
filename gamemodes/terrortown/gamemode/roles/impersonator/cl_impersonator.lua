@@ -24,13 +24,6 @@ end)
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleEnabled", "Impersonator_TTTTutorialRoleEnabled", function(role)
-    if role == ROLE_IMPERSONATOR then
-        -- Show the impersonator screen if the marshal could spawn them
-        return GetConVar("ttt_marshal_enabled"):GetBool()
-    end
-end)
-
 hook.Add("TTTTutorialRoleText", "Impersonator_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_IMPERSONATOR then
         local roleColor = ROLE_COLORS[ROLE_TRAITOR]

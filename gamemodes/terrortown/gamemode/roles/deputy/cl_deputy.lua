@@ -21,13 +21,6 @@ end)
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleEnabled", "Deputy_TTTTutorialRoleEnabled", function(role)
-    if role == ROLE_DEPUTY then
-        -- Show the deputy screen if the marshal could spawn them
-        return GetConVar("ttt_marshal_enabled"):GetBool()
-    end
-end)
-
 hook.Add("TTTTutorialRoleText", "Deputy_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_DEPUTY then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]

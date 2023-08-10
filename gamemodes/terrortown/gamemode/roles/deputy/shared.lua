@@ -70,6 +70,12 @@ hook.Add("TTTPrepareRound", "Deputy_Shared_TTTPrepareRound", function()
     InitializeEquipment()
 end)
 
+hook.Add("TTTRoleSpawnsArtificially", "Deputy_TTTRoleSpawnsArtificially", function(role)
+    if role == ROLE_DEPUTY and GetConVar("ttt_marshal_enabled"):GetBool() then
+        return true
+    end
+end)
+
 ------------------
 -- ROLE CONVARS --
 ------------------

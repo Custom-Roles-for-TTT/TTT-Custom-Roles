@@ -13,6 +13,7 @@ local string = string
 local table = table
 local timer = timer
 local weapons = weapons
+local hook = hook
 
 local GetAllPlayers = player.GetAll
 local StringUpper = string.upper
@@ -21,6 +22,7 @@ local StringSub = string.sub
 local StringStartsWith = string.StartsWith
 local StringTrim = string.Trim
 local StringTrimLeft = string.TrimLeft
+local HookCall = hook.Call
 
 -- attempts to get the weapon used from a DamageInfo instance needed because the
 -- GetAmmoType value is useless and inflictor isn't properly set (yet)
@@ -484,6 +486,21 @@ if SERVER then
             game.ConsoleCommand(StringFormat("%s\n", line))
         end
     end
+end
+
+function util.CanRoleSpawnArtificially(role)
+    if HookCall("TTTRoleSpawnsArtificially", nil, role) then
+        return true
+    end
+    return false
+end
+
+function util.CanRoleSpawn(role)
+    if DEFAULT_ROLES[role] then return true end
+    if GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_enabled"):GetBool() then
+        return true
+    end
+    return util.CanRoleSpawnArtificially(role)
 end
 
 ----------------------------

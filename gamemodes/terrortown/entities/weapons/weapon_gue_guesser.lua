@@ -3,6 +3,7 @@ AddCSLuaFile()
 local file = file
 local vgui = vgui
 local net = net
+local util = util
 
 local GetTranslation = LANG.GetTranslation
 local StringLower = string.lower
@@ -90,7 +91,7 @@ function SWEP:SecondaryAttack()
             local roles = {}
             for role, v in pairs(team) do
                 if not v or role == ROLE_GUESSER or DEFAULT_ROLES[role] or (exclude and exclude[role]) then continue end
-                if GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_enabled"):GetBool() then -- TODO: Add hook/table to show roles that can be spawned by another role
+                if util.CanRoleSpawn(role) then
                     TableInsert(roles, role)
                 end
             end
