@@ -4,6 +4,15 @@ local string = string
 local AddHook = hook.Add
 local StringUpper = string.upper
 
+-------------
+-- CONVARS --
+-------------
+
+local guesser_show_team_threshold = GetConVar("ttt_guesser_show_team_threshold")
+local guesser_show_role_threshold = GetConVar("ttt_guesser_show_role_threshold")
+local guesser_can_guess_detectives = GetConVar("ttt_guesser_can_guess_detectives")
+local guesser_unguessable_roles = GetConVar("ttt_guesser_unguessable_roles")
+
 ------------------
 -- TRANSLATIONS --
 ------------------
@@ -31,8 +40,9 @@ AddHook("Initialize", "Guesser_Translations_Initialize", function()
 
     -- Popup
     LANG.AddToLanguage("english", "info_popup_guesser", [[You are {role}! {traitors} think you are {ajester} and you deal no
-    damage. However, you can use your role guesser to try and guess a player's
-    role. Guess correctly to steal their role. Guess incorrectly and you die.]])
+    damage. However, you can use your role guesser to try and guess a player's role. Guess
+    correctly to steal their role. Guess incorrectly and you die. You are immortal and if
+    players try to damage you, you will slowly learn information about their role.]])
 end)
 
 -------------
@@ -112,9 +122,6 @@ local function GetTeamRole(ply, cli)
     elseif ply:IsJesterTeam() then return ROLE_JESTER
     elseif ply:IsMonsterTeam() then return ply:GetRole() end
 end
-
-local guesser_show_team_threshold = GetConVar("ttt_guesser_show_team_threshold")
-local guesser_show_role_threshold = GetConVar("ttt_guesser_show_role_threshold")
 
 local function GetScanState(ply)
     local damage = ply:GetNWFloat("TTTGuesserDamageDealt", 0)
@@ -311,5 +318,48 @@ AddHook("TTTHUDInfoPaint", "Guesser_TTTHUDInfoPaint", function(client, label_lef
 
         -- Track that the label was added so others can position accurately
         table.insert(active_labels, "guesser")
+    end
+end)
+
+--------------
+-- TUTORIAL --
+--------------
+
+hook.Add("TTTTutorialRoleText", "Guesser_TTTTutorialRoleText", function(role, titleLabel)
+    if role == ROLE_GUESSER then
+        local roleColor = GetRoleTeamColor(ROLE_TEAM_JESTER)
+        local detectiveColor = GetRoleTeamColor(ROLE_TEAM_DETECTIVE)
+        local html = "The " .. ROLE_STRINGS[ROLE_GUESSER] .. " is a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>jester</span> role whose goal is to figure out and steal the roles of other players."
+
+        html = html .. "<span style='display: block; margin-top: 10px;'>If the guesser <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>correctly guesses</span> the role of another player, the guesser swaps roles with the player they guessed and takes over the goal of their new role. However if they <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>incorrectly guess</span> another player's role the guesser dies instead.</span>"
+
+        html = html .. "<span style='display: block; margin-top: 10px;'>After swapping roles, the new guesser <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>cannot guess</span> the roles of any players that were previously a guesser and must guess someone else's role instead.</span>"
+
+        local unguessableRoles = {}
+        local unguessableRolesString = guesser_unguessable_roles:GetString()
+        if #unguessableRolesString > 0 then
+            unguessableRoles = string.Explode(",", unguessableRolesString)
+        end
+        local bannedRoles = ""
+        local addComma = false
+        for k, v in pairs(unguessableRoles) do
+            local role = table.KeyFromValue(ROLE_STRINGS_RAW, v)
+            if role then
+                if addComma then bannedRoles = bannedRoles .. "," end
+                bannedRoles = bannedRoles .. " " .. ROLE_STRINGS[role]
+                addComma = true
+            end
+        end
+        if not guesser_can_guess_detectives:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>The guesser <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>cannot</span> guess the roles of <span style='color: rgb(" .. detectiveColor.r .. ", " .. detectiveColor.g .. ", " .. detectiveColor.b .. ")'>detectives</span>"
+            if #bannedRoles > 0 then
+                html = html .. " or any of the following roles:" .. bannedRoles
+            end
+            html = html .. ".</span>"
+        elseif #bannedRoles > 0 then
+            html = html .. "<span style='display: block; margin-top: 10px;'>The guesser <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>cannot</span> guess any of the following roles:" .. bannedRoles .. ".</span>"
+        end
+
+        return html
     end
 end)
