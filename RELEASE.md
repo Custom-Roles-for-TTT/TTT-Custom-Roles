@@ -7,6 +7,9 @@
 - Added new independent role: hive mind
 - Added heart icon over the head of the revenger's soulmate
 
+### Fixes
+- Fixed parasite infecting a dead host if they died at the exact same time as their attacker
+
 ### Developer
 - Added `ROLE.hasshopmode` and `ROLE.hasshopsync` optional role features to control creation of `ttt_*_shop_mode` and `ttt_*_shop_sync` convars
 - Added `ROLE.shopsyncroles` optional role feature to allow a role to automatically inherit the shop items from a list of other roles
