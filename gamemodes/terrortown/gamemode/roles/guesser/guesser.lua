@@ -72,7 +72,7 @@ AddHook("EntityTakeDamage", "Guesser_EntityTakeDamage", function(ent, dmginfo)
         ent:QueueMessage(MSG_PRINTBOTH, message)
     end
     if oldDamage < role_threshold and newDamage >= role_threshold then
-        if not DETECTIVE_ROLES[role] or GetConVar("ttt_detectives_hide_special_mode"):GetInt() >= SPECIAL_DETECTIVE_HIDE_FOR_AL then
+        if not DETECTIVE_ROLES[role] or GetConVar("ttt_detectives_hide_special_mode"):GetInt() >= SPECIAL_DETECTIVE_HIDE_FOR_ALL then
             ent:QueueMessage(MSG_PRINTBOTH, att:Nick() .. " has damaged you enough for you to learn that they are " .. ROLE_STRINGS_EXT[role])
         end
     end
