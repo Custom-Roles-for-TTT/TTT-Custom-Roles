@@ -584,16 +584,16 @@ function plymeta:ResetMessageQueue()
     self:PrintMessage(HUD_PRINTCENTER, "")
 end
 
-function plymeta:QueueMessage(type, message, time)
+function plymeta:QueueMessage(message_type, message, time)
     time = time or 5
     local sid = self:SteamID64()
     if not messageQueue[sid] then
         messageQueue[sid] = {}
     end
-    if type == MSG_PRINTBOTH or type == MSG_PRINTTALK then
+    if message_type == MSG_PRINTBOTH or message_type == MSG_PRINTTALK then
         self:PrintMessage(HUD_PRINTTALK, message)
     end
-    if type == MSG_PRINTBOTH or type == MSG_PRINTCENTER then
+    if message_type == MSG_PRINTBOTH or message_type == MSG_PRINTCENTER then
         table.insert(messageQueue[sid], {message=message, time=time})
         if #messageQueue[sid] == 1 then
             self:PrintMessageQueue()
@@ -602,10 +602,10 @@ function plymeta:QueueMessage(type, message, time)
 end
 
 net.Receive("TTT_QueueMessage", function(len, ply)
-    local type = net.ReadUInt(3)
+    local message_type = net.ReadUInt(3)
     local message = net.ReadString()
     local time = net.ReadFloat()
-    ply:QueueMessage(type, message, time)
+    ply:QueueMessage(message_type, message, time)
 end)
 
 -- Run these overrides when the round is preparing the first time to ensure their addons have been loaded
