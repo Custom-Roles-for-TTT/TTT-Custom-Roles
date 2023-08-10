@@ -26,5 +26,7 @@ end)
 hook.Add("TTTPrepareRound", "Cupid_TTTPrepareRound", function()
     for _, v in pairs(GetAllPlayers()) do
         v:SetNWInt("TTTGuesserSelection", ROLE_NONE)
+        v:SetNWBool("TTTGuesserWasGuesser", false)
+        v:SetNWString("TTTGuesserGuessedBy", "")
     end
 end)

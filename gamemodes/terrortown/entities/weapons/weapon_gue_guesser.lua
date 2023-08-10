@@ -43,7 +43,7 @@ SWEP.UseHands               = true
 SWEP.LimitedStock           = true
 SWEP.AmmoEnt                = nil
 
-SWEP.Primary.Delay          = 1
+SWEP.Primary.Delay          = 0.2
 SWEP.Primary.Automatic      = false
 SWEP.Primary.Cone           = 0
 SWEP.Primary.Ammo           = nil
@@ -52,7 +52,7 @@ SWEP.Primary.ClipMax        = -1
 SWEP.Primary.DefaultClip    = -1
 SWEP.Primary.Sound          = ""
 
-SWEP.Secondary.Delay        = 1.25
+SWEP.Secondary.Delay        = 0.2
 SWEP.Secondary.Automatic    = false
 SWEP.Secondary.Cone         = 0
 SWEP.Secondary.Ammo         = nil
@@ -65,8 +65,8 @@ SWEP.InLoadoutFor           = {ROLE_GUESSER}
 SWEP.InLoadoutForDefault    = {ROLE_GUESSER}
 
 local guesser_can_guess_detectives = CreateConVar("ttt_guesser_can_guess_detectives", "0", FCVAR_REPLICATED, "Whether the guesser is allowed to guess detectives", 0, 1)
-local guesser_unguessable_roles = CreateConVar("ttt_guesser_unguessable_roles", "lootgoblin,zombie", FCVAR_NONE, "Names of roles that cannot be guessed by the guesser, separated with commas. Do not include spaces or capital letters.")
-
+local guesser_unguessable_roles = CreateConVar("ttt_guesser_unguessable_roles", "lootgoblin,zombie", FCVAR_REPLICATED, "Names of roles that cannot be guessed by the guesser, separated with commas. Do not include spaces or capital letters.")
+local guesser_minimum_radius = CreateConVar("ttt_guesser_minimum_radius", "5", FCVAR_REPLICATED, "The minimum radius of the guesser's device in meters", 1, 30)
 
 function SWEP:Initialize()
     self:SendWeaponAnim(ACT_SLAM_DETONATOR_DRAW)
@@ -81,14 +81,59 @@ function SWEP:OnDrop()
 end
 
 function SWEP:Deploy()
+    if SERVER and IsValid(self:GetOwner()) then
+        self:GetOwner():DrawViewModel(false)
+    end
+
+    self:DrawShadow(false)
     self:SendWeaponAnim(ACT_SLAM_DETONATOR_DRAW)
     return true
 end
 
 function SWEP:PrimaryAttack()
+    self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
+    if SERVER then
+        local owner = self:GetOwner()
+        local role = owner:GetNWInt("TTTGuesserSelection", ROLE_NONE)
+        if role == ROLE_NONE then
+            owner:QueueMessage(MSG_PRINTCENTER, "Select a role first!", 1)
+            return
+        end
+
+        local trace = util.GetPlayerTrace(self.Owner)
+        local tr = util.TraceLine(trace)
+        if tr.Entity.IsPlayer() then
+            local ply = tr.Entity
+            local radius = guesser_minimum_radius:GetFloat() * UNITS_PER_METER
+            if ply:GetPos():Distance(owner:GetPos()) <= radius then
+                if ply:GetNWBool("TTTGuesserWasGuesser", false) then
+                    owner:QueueMessage(MSG_PRINTCENTER, "That player was previously ".. ROLE_STRINGS_EXT[ROLE_GUESSER] .. " and so cannot be guessed!")
+                    return
+                end
+                if ply:IsRole(role) then
+                    owner:QueueMessage(MSG_PRINTBOTH, "You guessed correctly and have become " .. ROLE_STRINGS_EXT[role] .. "!")
+                    owner:SetNWBool("TTTGuesserWasGuesser", true)
+                    hook.Call("TTTPlayerRoleChangedByItem", nil, owner, owner, self)
+                    ply:Give("weapon_gue_guesser")
+                    ply:SetNWString("TTTGuesserGuessedBy", owner:Nick())
+                    ply:QueueMessage(MSG_PRINTBOTH, "Your role was guessed by " .. ROLE_STRINGS_EXT[ROLE_GUESSER] .. " and you have taken their place!")
+                    hook.Call("TTTPlayerRoleChangedByItem", nil, owner, ply, self)
+                    owner:SetRole(role)
+                    ply:SetRole(ROLE_GUESSER)
+                    SendFullStateUpdate()
+                    self:Remove()
+                else
+                    owner:QueueMessage(MSG_PRINTBOTH, "You guessed incorrectly and have died!")
+                    owner:Kill()
+                end
+            end
+        end
+    end
 end
 
 function SWEP:SecondaryAttack()
+    if not IsFirstTimePredicted() then return end
+    self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
     if CLIENT then
         local function AddRolesFromTeam(table, team, exclude)
             local bannedRoles = {}
