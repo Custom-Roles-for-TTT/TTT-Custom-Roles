@@ -19,7 +19,7 @@ local guesser_unguessable_roles = GetConVar("ttt_guesser_unguessable_roles")
 
 AddHook("Initialize", "Guesser_Translations_Initialize", function()
     -- Weapons
-    LANG.AddToLanguage("english", "guessingdevice_help_pri", "Press {primaryfire} to guess a player.")
+    LANG.AddToLanguage("english", "guessingdevice_help_pri", "Press {primaryfire} to guess a player's role.")
     LANG.AddToLanguage("english", "guessingdevice_help_sec", "Press {secondaryfire} to select a role.")
     LANG.AddToLanguage("english", "guessingdevice_title", "Role Guesser Selection")
 
@@ -35,21 +35,20 @@ AddHook("Initialize", "Guesser_Translations_Initialize", function()
     -- Events
     LANG.AddToLanguage("english", "ev_guesser_correct", "{guesser} correctly guessed {victim}'s role")
 
-    -- Events
     LANG.AddToLanguage("english", "ev_guesser_incorrect", "{guesser} incorrectly guessed {victim}'s role")
 
     -- Popup
     LANG.AddToLanguage("english", "info_popup_guesser", [[You are {role}! {traitors} think you are {ajester} and you deal no
-    damage. However, you can use your role guesser to try and guess a player's role. Guess
-    correctly to steal their role. Guess incorrectly and you die. You are immortal and if
-    players try to damage you, you will slowly learn information about their role.]])
+damage. However, you can use your role guesser to try and guess a player's role. Guess
+correctly to steal their role. Guess incorrectly and you die. You are immortal and if
+players try to damage you, you will slowly learn information about their role.]])
 end)
 
 -------------
 -- SCORING --
 -------------
 
--- Register the scoring events for the swapper
+-- Register the scoring events for the guesser
 hook.Add("Initialize", "Guesser_Scoring_Initialize", function()
     local swap_icon = Material("icon16/arrow_refresh_small.png")
     local fail_icon = Material("icon16/cancel.png")
@@ -71,7 +70,7 @@ hook.Add("Initialize", "Guesser_Scoring_Initialize", function()
         end})
 end)
 
-net.Receive("TTT_GuesserGuessed", function(_)
+net.Receive("TTT_GuesserGuessed", function()
     local correct = net.ReadBool()
     local victim = net.ReadString()
     local guesser = net.ReadString()
@@ -331,9 +330,9 @@ hook.Add("TTTTutorialRoleText", "Guesser_TTTTutorialRoleText", function(role, ti
         local detectiveColor = ROLE_COLORS[ROLE_DETECTIVE]
         local html = "The " .. ROLE_STRINGS[ROLE_GUESSER] .. " is a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>jester</span> role whose goal is to figure out and steal the roles of other players."
 
-        html = html .. "<span style='display: block; margin-top: 10px;'>If the guesser <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>correctly guesses</span> the role of another player, the guesser swaps roles with the player they guessed and takes over the goal of their new role. However if they <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>incorrectly guess</span> another player's role the guesser dies instead.</span>"
+        html = html .. "<span style='display: block; margin-top: 10px;'>If the " .. ROLE_STRINGS[ROLE_GUESSER] .. " <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>correctly guesses</span> the role of another player, the " .. ROLE_STRINGS[ROLE_GUESSER] .. " swaps roles with the player they guessed and takes over the goal of their new role. However if they <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>incorrectly guess</span> another player's role the " .. ROLE_STRINGS[ROLE_GUESSER] .. " dies instead.</span>"
 
-        html = html .. "<span style='display: block; margin-top: 10px;'>After swapping roles, the new guesser <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>cannot guess</span> the roles of any players that were previously a guesser and must guess someone else's role instead.</span>"
+        html = html .. "<span style='display: block; margin-top: 10px;'>After swapping roles, the new " .. ROLE_STRINGS[ROLE_GUESSER] .. " <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>cannot guess</span> the roles of any players that were previously " .. ROLE_STRINGS_EXT[ROLE_GUESSER] .. " and must guess someone else's role instead.</span>"
 
         local unguessableRoles = {}
         local unguessableRolesString = guesser_unguessable_roles:GetString()
@@ -351,13 +350,13 @@ hook.Add("TTTTutorialRoleText", "Guesser_TTTTutorialRoleText", function(role, ti
             end
         end
         if not guesser_can_guess_detectives:GetBool() then
-            html = html .. "<span style='display: block; margin-top: 10px;'>The guesser <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>cannot</span> guess the roles of <span style='color: rgb(" .. detectiveColor.r .. ", " .. detectiveColor.g .. ", " .. detectiveColor.b .. ")'>detectives</span>"
+            html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_GUESSER] .. " <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>cannot</span> guess the roles of <span style='color: rgb(" .. detectiveColor.r .. ", " .. detectiveColor.g .. ", " .. detectiveColor.b .. ")'>detectives</span>"
             if #bannedRoles > 0 then
                 html = html .. " or any of the following roles:" .. bannedRoles
             end
             html = html .. ".</span>"
         elseif #bannedRoles > 0 then
-            html = html .. "<span style='display: block; margin-top: 10px;'>The guesser <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>cannot</span> guess any of the following roles:" .. bannedRoles .. ".</span>"
+            html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_GUESSER] .. " <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>cannot</span> guess any of the following roles:" .. bannedRoles .. ".</span>"
         end
 
         return html

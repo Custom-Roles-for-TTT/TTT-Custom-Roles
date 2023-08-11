@@ -84,7 +84,7 @@ end)
 -- CLEANUP --
 -------------
 
-AddHook("TTTPrepareRound", "Cupid_TTTPrepareRound", function()
+AddHook("TTTPrepareRound", "Guesser_TTTPrepareRound", function()
     for _, v in pairs(GetAllPlayers()) do
         v:SetNWInt("TTTGuesserSelection", ROLE_NONE)
         v:SetNWBool("TTTGuesserWasGuesser", false)

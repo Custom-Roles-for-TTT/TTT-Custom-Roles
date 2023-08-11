@@ -106,10 +106,10 @@ function SWEP:PrimaryAttack()
 
         local trace = util.GetPlayerTrace(self.Owner)
         local tr = util.TraceLine(trace)
-        if tr.Entity.IsPlayer() then
+        if IsPlayer(tr.Entity) then
             local ply = tr.Entity
             local radius = GetConVar("ttt_guesser_minimum_radius"):GetFloat() * UNITS_PER_METER
-            if ply:GetPos():Distance(owner:GetPos()) <= radius or radius == 0 then
+            if radius == 0 or ply:GetPos():Distance(owner:GetPos()) <= radius then
                 if ply:GetNWBool("TTTGuesserWasGuesser", false) then
                     owner:QueueMessage(MSG_PRINTCENTER, "That player was previously ".. ROLE_STRINGS_EXT[ROLE_GUESSER] .. " and so cannot be guessed!")
                     return
