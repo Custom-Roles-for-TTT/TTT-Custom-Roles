@@ -86,14 +86,14 @@ if CRDebug.Enabled and not CRDebug.HooksChecked then
     CRDebug.HooksChecked = CRDebug.HooksChecked or {}
     local oldHookAdd = hook.Add
     hook.Add = function(eventName, identifier, func)
-        local info = debug.getinfo(2, "S")
+        local info = debug.getinfo(2, "Sl")
         -- Only run the hook checks for custom roles code
         if StringFind(info.short_src, "custom-roles", 1, true) or StringFind(info.short_src, "customroles", 1, true) then
             local key = eventName .. "_" .. tostring(identifier)
             -- Keep track of which ones we've checked already so we don't spam ourselves on reload
             -- Also ignore the ones that are known to replace themselves... for whatever reason
             if not table.HasValue(CRDebug.IgnoredHookDupes, key) then
-                local locationKey = info.short_src .. "_" .. info.linedefined
+                local locationKey = info.short_src .. "_" .. info.currentline
                 -- If we have a location key saved but it's different this time then it's a duplicate
                 if CRDebug.HooksChecked[key] and CRDebug.HooksChecked[key] ~= locationKey then
                     ErrorNoHaltWithStack("Hook for '" .. eventName .. "' with identifier '" .. identifier .. "' already exists!")
