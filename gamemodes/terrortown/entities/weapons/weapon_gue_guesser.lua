@@ -201,12 +201,12 @@ function SWEP:SecondaryAttack()
         local independentRows   = MathCeil(#independents / columns)
         local monsterRows       = MathCeil(#monsters / columns)
 
-        local function isHeadingNeeded(table)
+        local function IsLabelNeeded(table)
             return #table == 0 and 0 or 1
         end
 
-        local labels = isHeadingNeeded(detectives) + isHeadingNeeded(innocents) + isHeadingNeeded(traitors)
-                        + isHeadingNeeded(jesters) + isHeadingNeeded(independents) + isHeadingNeeded(monsters)
+        local labels = IsLabelNeeded(detectives) + IsLabelNeeded(innocents) + IsLabelNeeded(traitors)
+                        + IsLabelNeeded(jesters) + IsLabelNeeded(independents) + IsLabelNeeded(monsters)
 
         local itemSize      = 64
         local headingHeight = 22
@@ -250,7 +250,7 @@ function SWEP:SecondaryAttack()
 
         local panelList = {}
 
-        local function createTeamList(label, roleTable, height, yOffset)
+        local function CreateTeamList(label, roleTable, height, yOffset)
             local dlabel = vgui.Create("DLabel", dframe)
             dlabel:SetFont("TabLarge")
             dlabel:SetText(label)
@@ -296,27 +296,27 @@ function SWEP:SecondaryAttack()
 
         local yOffset = m * 2 + headingHeight + searchHeight
         if #detectives > 0 then
-            createTeamList("Detective Roles", detectives, detectivesHeight, yOffset)
+            CreateTeamList("Detective Roles", detectives, detectivesHeight, yOffset)
             yOffset = yOffset + detectivesHeight + labelHeight
         end
         if #innocents > 0 then
-            createTeamList("Innocent Roles", innocents, innocentsHeight, yOffset)
+            CreateTeamList("Innocent Roles", innocents, innocentsHeight, yOffset)
             yOffset = yOffset + innocentsHeight + labelHeight
         end
         if #traitors > 0 then
-            createTeamList("Traitor Roles", traitors, traitorsHeight, yOffset)
+            CreateTeamList("Traitor Roles", traitors, traitorsHeight, yOffset)
             yOffset = yOffset + traitorsHeight + labelHeight
         end
         if #jesters > 0 then
-            createTeamList("Jester Roles", jesters, jestersHeight, yOffset)
+            CreateTeamList("Jester Roles", jesters, jestersHeight, yOffset)
             yOffset = yOffset + jestersHeight + labelHeight
         end
         if #independents > 0 then
-            createTeamList("Independent Roles", independents, independentsHeight, yOffset)
+            CreateTeamList("Independent Roles", independents, independentsHeight, yOffset)
             yOffset = yOffset + independentsHeight + labelHeight
         end
         if #monsters > 0 then
-            createTeamList("Monster Roles", monsters, monstersHeight, yOffset)
+            CreateTeamList("Monster Roles", monsters, monstersHeight, yOffset)
         end
 
         dsearch.OnValueChange = function(_, value)
