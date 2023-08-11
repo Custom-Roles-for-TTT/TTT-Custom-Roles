@@ -207,7 +207,7 @@ hook.Add("TTTTargetIDPlayerText", "Guesser_TTTTargetIDPlayerText", function(ent,
                 labelName = "target_unconfirmed_role"
                 labelParam = ROLE_STRINGS[role]
             end
-        elseif DETECTIVE_ROLES[role] then labelParam = ROLE_STRINGS[ROLE_DETECTIVE]
+        elseif DETECTIVE_ROLES[role] then labelParam = T("detective")
         elseif INNOCENT_ROLES[role] then labelParam = T("innocent")
         elseif INDEPENDENT_ROLES[role] then labelParam = T("independent")
         elseif JESTER_ROLES[role] then labelParam = T("jester")
