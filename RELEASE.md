@@ -8,6 +8,9 @@
 - Added new jester role: guesser
 - Added heart icon over the head of the revenger's soulmate
 
+### Changes
+- Changed infected icon so that it is unique and not shared with zombies
+
 ### Fixes
 - Fixed parasite infecting a dead host if they died at the exact same time as their attacker
 
