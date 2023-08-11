@@ -214,6 +214,11 @@ end
 hook.Add("PlayerDeath", "Parasite_PlayerDeath", function(victim, infl, attacker)
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     if valid_kill and victim:IsParasite() and not victim:IsZombifying() then
+        if not attacker:IsActive() then
+            victim:QueueMessage(MSG_PRINTBOTH, "Your attacker is already dead, your infection failed to take hold.")
+            return
+        end
+
         HandleParasiteInfection(attacker, victim)
 
         if parasite_announce_infection:GetBool() then

@@ -7,6 +7,9 @@
 - Added new jester role: guesser
 - Added heart icon over the head of the revenger's soulmate
 
+### Fixes
+- Fixed parasite infecting a dead host if they died at the exact same time as their attacker
+
 ### Developer
 - Added `TTTRoleSpawnsArtificially` hook to determine if a role could be spawned artificially. (i.e. Spawned in a way other than naturally spawning when the role is enabled)
 - Added `util.CanRoleSpawnArtificially` and `util.CanRoleSpawn` methods to check if roles could be spawned into a round
