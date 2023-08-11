@@ -289,15 +289,6 @@ end
 -- TUTORIAL --
 --------------
 
-hook.Add("TTTTutorialRoleEnabled", "Zombie_TTTTutorialRoleEnabled", function(role)
-    if role == ROLE_ZOMBIE then
-        -- Show the zombie screen if the Mad Scientist could spawn them
-        return GetConVar("ttt_madscientist_enabled"):GetBool() and (
-                (INDEPENDENT_ROLES[ROLE_ZOMBIE] and INDEPENDENT_ROLES[ROLE_MADSCIENTIST]) or
-                (MONSTER_ROLES[ROLE_ZOMBIE] and MONSTER_ROLES[ROLE_MADSCIENTIST]))
-    end
-end)
-
 hook.Add("TTTTutorialRoleText", "Zombie_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_ZOMBIE then
         -- Use this for highlighting things like "brains"

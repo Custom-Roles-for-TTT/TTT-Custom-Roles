@@ -27,7 +27,7 @@ end)
 hook.Add("TTTTutorialRoleText", "Tracker_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_TRACKER then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
-        local detectiveColor = GetRoleTeamColor(ROLE_TEAM_DETECTIVE)
+        local detectiveColor = ROLE_COLORS[ROLE_DETECTIVE]
         local html = "The " .. ROLE_STRINGS[ROLE_TRACKER] .. " is a " .. ROLE_STRINGS[ROLE_DETECTIVE] .. " and a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> whose job is to find and eliminate their enemies."
 
         -- Footsteps

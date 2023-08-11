@@ -561,6 +561,20 @@
             <em>Added in:</em> 1.5.3
         </p>
 
+        <h3><a id="ttrolespawnsartificiallyrole" href="#ttrolespawnsartificiallyrole">TTTRoleSpawnsArtificially(role)</a></h3>
+        <p>
+            Called when checking if a role can be spawned artificially. (i.e. Spawned in a way other than naturally spawning when the role is enabled.)<br>
+            <em>Realm:</em> Client and Server<br>
+            <em>Added in:</em> 1.9.5<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>role</em> - The ID of the role being checked</li>
+        </ul>
+        <p>
+            <em>Return:</em> <code>true</code> when the role could be spawned artificially. Don't return anything otherwise
+        </p>
+
         <h3><a id="tttroleregisteredroleid" href="#tttroleregisteredroleid">TTTRoleRegistered(roleID)</a></h3>
         <p>
             Called after an external role has been registered.<br>

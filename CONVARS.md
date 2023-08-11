@@ -96,6 +96,7 @@ ttt_shadow_enabled                          0       // Whether or not the shadow
 ttt_arsonist_enabled                        0       // Whether or not the arsonist should spawn
 ttt_spy_enabled                             0       // Whether or not the spy should spawn
 ttt_hivemind_enabled                        0       // Whether or not the hive mind should spawn
+ttt_guesser_enabled                         0       // Whether or not the guesser should spawn
 
 // Individual Role Spawn Weights
 ttt_hypnotist_spawn_weight                  1       // The weight assigned to spawning the hypnotist
@@ -138,6 +139,8 @@ ttt_shadow_spawn_weight                     1       // The weight assigned to sp
 ttt_arsonist_spawn_weight                   1       // The weight assigned to spawning the arsonist
 ttt_spy_spawn_weight                        1       // The weight assigned to spawning the spy
 ttt_hivemind_spawn_weight                   1       // The weight assigned to spawning the hive mind
+ttt_guesser_spawn_weight                    1       // The weight assigned to spawning the guesser
+
 // (Note: Each role is limited to one player per round.)
 
 // Individual Role Minimum Player Requirements
@@ -181,6 +184,7 @@ ttt_shadow_min_players                      0       // The minimum number of pla
 ttt_arsonist_min_players                    0       // The minimum number of players required to spawn the arsonist
 ttt_spy_min_players                         0       // The minimum number of players required to spawn the spy
 ttt_hivemind_min_players                    0       // The minimum number of players required to spawn the hive mind
+ttt_guesser_min_players                     0       // The minimum number of players required to spawn the guesser
 
 // ----------------------------------------
 
@@ -563,6 +567,16 @@ ttt_sponge_notify_mode                      0       // The logic to use when not
 ttt_sponge_notify_sound                     0       // Whether to play a cheering sound when a sponge is killed
 ttt_sponge_notify_confetti                  0       // Whether to throw confetti when a sponge is a killed
 
+// Guesser
+ttt_guesser_can_guess_detectives            0       // Whether the guesser is allowed to guess detectives
+ttt_guesser_minimum_radius                  5       // The minimum radius of the guesser's device in meters. Set to 0 to disable
+ttt_guesser_show_team_threshold             50      // The amount of damage that needs to be dealt to a guesser before they learn the attacker's team
+ttt_guesser_show_role_threshold             100     // The amount of damage that needs to be dealt to a guesser before they learn the attacker's role
+ttt_guesser_notify_mode                     0       // The logic to use when notifying players that a guesser is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
+ttt_guesser_notify_sound                    0       // Whether to play a cheering sound when a guesser is killed
+ttt_guesser_notify_confetti                 0       // Whether to throw confetti when a guesser is a killed
+ttt_guesser_unguessable_roles               "lootgoblin,zombie" // Names of roles that cannot be guessed by the guesser, separated with commas. Do not include spaces or capital letters.
+
 // ----------------------------------------
 
 // INDEPENDENT TEAM SETTINGS
@@ -617,7 +631,9 @@ ttt_drunk_can_be_zombie                     1       // Whether the drunk can bec
 ttt_drunk_can_be_madscientist               1       // Whether the drunk can become a mad scientist
 ttt_drunk_can_be_shadow                     1       // Whether the drunk can become a shadow
 ttt_drunk_can_be_arsonist                   1       // Whether the drunk can become a arsonist
+ttt_drunk_can_be_spy                        1       // Whether the drunk can become a spy
 ttt_drunk_can_be_hivemind                   1       // Whether the drunk can become the hive mind
+ttt_drunk_can_be_guesser                    1       // Whether the drunk can become a guesser
 
 // Old Man
 ttt_oldman_drain_health_to                  0       // The amount of health to drain the old man down to. Set to 0 to disable
@@ -871,6 +887,7 @@ ttt_shadow_starting_health                  100     // The amount of health the 
 ttt_arsonist_starting_health                100     // The amount of health the arsonist starts with
 ttt_spy_starting_health                     100     // The amount of health the spy starts with
 ttt_hivemind_starting_health                100     // The amount of health the hive mind starts with
+ttt_guesser_starting_health                 100     // The amount of health the guesser starts with
 
 // Individual Role Max Health. Set to 0 or -1 to use the game's default maximum health.
 ttt_traitor_max_health                      100     // The maximum amount of health a traitor can have
@@ -916,6 +933,7 @@ ttt_shadow_max_health                       100     // The maximum amount of hea
 ttt_arsonist_max_health                     100     // The maximum amount of health the arsonist can have
 ttt_spy_max_health                          100     // The maximum amount of health the spy can have
 ttt_hivemind_max_health                     100     // The maximum amount of health the hive can have
+ttt_guesser_max_health                      100     // The maximum amount of health the guesser can have
 
 // Round Time
 ttt_roundtime_win_draw                      0       // Whether a round that ends because the round time limit has passed counts as a draw. If it is not a draw, the traitor team loses
