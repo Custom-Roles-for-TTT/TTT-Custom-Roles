@@ -70,8 +70,6 @@ if SERVER then
 end
 local guesser_unguessable_roles = CreateConVar("ttt_guesser_unguessable_roles", "lootgoblin,zombie", FCVAR_REPLICATED, "Names of roles that cannot be guessed by the guesser, separated with commas. Do not include spaces or capital letters.")
 
-local guesser_can_guess_detectives = GetConVar("ttt_guesser_can_guess_detectives")
-
 function SWEP:Initialize()
     self:SendWeaponAnim(ACT_SLAM_DETONATOR_DRAW)
     if CLIENT then
@@ -175,7 +173,7 @@ function SWEP:SecondaryAttack()
         end
 
         local detectives = {}
-        if guesser_can_guess_detectives:GetBool() then
+        if GetConVar("ttt_guesser_can_guess_detectives"):GetBool() then
             TableInsert(detectives, ROLE_DETECTIVE)
             AddRolesFromTeam(detectives, DETECTIVE_ROLES)
         end
