@@ -4,6 +4,7 @@
 **Released:**
 
 ### Additions
+- Added new independent role: hive mind
 - Added new jester role: guesser
 - Added heart icon over the head of the revenger's soulmate
 
@@ -11,6 +12,9 @@
 - Fixed parasite infecting a dead host if they died at the exact same time as their attacker
 
 ### Developer
+- Added `ROLE.hasshopmode` and `ROLE.hasshopsync` optional role features to control creation of `ttt_*_shop_mode` and `ttt_*_shop_sync` convars
+- Added `ROLE.shopsyncroles` optional role feature to allow a role to automatically inherit the shop items from a list of other roles
+- Added `TTTPlayerHealthChanged` hook for detecting when a player's health changed using `entmeta:SetHealth`
 - Added `TTTRoleSpawnsArtificially` hook to determine if a role could be spawned artificially. (i.e. Spawned in a way other than naturally spawning when the role is enabled)
 - Added `util.CanRoleSpawnArtificially` and `util.CanRoleSpawn` methods to check if roles could be spawned into a round
 

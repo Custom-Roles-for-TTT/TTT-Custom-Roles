@@ -12,6 +12,7 @@ ZOMBIE_FF_MODE_IMMUNE = 2
 -- Initialize role features
 ROLE_CAN_SEE_JESTERS[ROLE_ZOMBIE] = true
 ROLE_CAN_SEE_MIA[ROLE_ZOMBIE] = true
+ROLE_HAS_SHOP_SYNC[ROLE_ZOMBIE] = true
 
 hook.Add("TTTRoleSpawnsArtificially", "Zombie_TTTRoleSpawnsArtificially", function(role)
     if role == ROLE_ZOMBIE then
