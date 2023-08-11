@@ -95,6 +95,7 @@ ttt_madscientist_enabled                    0       // Whether or not the mad sc
 ttt_shadow_enabled                          0       // Whether or not the shadow should spawn
 ttt_arsonist_enabled                        0       // Whether or not the arsonist should spawn
 ttt_spy_enabled                             0       // Whether or not the spy should spawn
+ttt_hivemind_enabled                        0       // Whether or not the hive mind should spawn
 
 // Individual Role Spawn Weights
 ttt_hypnotist_spawn_weight                  1       // The weight assigned to spawning the hypnotist
@@ -136,6 +137,7 @@ ttt_madscientist_spawn_weight               1       // The weight assigned to sp
 ttt_shadow_spawn_weight                     1       // The weight assigned to spawning the shadow
 ttt_arsonist_spawn_weight                   1       // The weight assigned to spawning the arsonist
 ttt_spy_spawn_weight                        1       // The weight assigned to spawning the spy
+ttt_hivemind_spawn_weight                   1       // The weight assigned to spawning the hive mind
 // (Note: Each role is limited to one player per round.)
 
 // Individual Role Minimum Player Requirements
@@ -178,6 +180,7 @@ ttt_madscientist_min_players                0       // The minimum number of pla
 ttt_shadow_min_players                      0       // The minimum number of players required to spawn the shadow
 ttt_arsonist_min_players                    0       // The minimum number of players required to spawn the arsonist
 ttt_spy_min_players                         0       // The minimum number of players required to spawn the spy
+ttt_hivemind_min_players                    0       // The minimum number of players required to spawn the hive mind
 
 // ----------------------------------------
 
@@ -614,6 +617,7 @@ ttt_drunk_can_be_zombie                     1       // Whether the drunk can bec
 ttt_drunk_can_be_madscientist               1       // Whether the drunk can become a mad scientist
 ttt_drunk_can_be_shadow                     1       // Whether the drunk can become a shadow
 ttt_drunk_can_be_arsonist                   1       // Whether the drunk can become a arsonist
+ttt_drunk_can_be_hivemind                   1       // Whether the drunk can become the hive mind
 
 // Old Man
 ttt_oldman_drain_health_to                  0       // The amount of health to drain the old man down to. Set to 0 to disable
@@ -712,6 +716,11 @@ ttt_arsonist_can_see_jesters                1       // Whether jesters are revea
 ttt_arsonist_update_scoreboard              1       // Whether the arsonist shows dead players as missing in action
 ttt_detectives_search_only_arsonistdouse    0       // Whether only detectives can see information about whether a corpse was doused by an arsonist and when. Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled.
 
+// Hive Mind
+ttt_hivemind_is_monster                     0       // Whether the hive mind should be treated as a member of the monster team (rather than the independent team)
+ttt_hivemind_vision_enable                  1       // Whether the hive mind's member highlighting is enabled
+ttt_hivemind_friendly_fire                  0       // Whether a member of the hive mind can damage other members of the hive mind
+
 // ----------------------------------------
 
 // WEAPON SHOP SETTINGS
@@ -745,6 +754,7 @@ ttt_swapper_shop_random_percent             0       // The percent chance that a
 ttt_clown_shop_random_percent               0       // The percent chance that a weapon in the shop will be not be shown for clowns
 ttt_killer_shop_random_percent              0       // The percent chance that a weapon in the shop will be not be shown for killers
 ttt_zombie_shop_random_percent              0       // The percent chance that a weapon in the shop will be not be shown for zombies
+ttt_hivemind_shop_random_percent            0       // The percent chance that a weapon in the shop will be not be shown for the hive mind
 
 // Enable/Disable Individual Role Random Shop Restrictions
 ttt_traitor_shop_random_enabled             0       // Whether role shop randomization is enabled for traitors
@@ -771,6 +781,7 @@ ttt_swapper_shop_random_enabled             0       // Whether role shop randomi
 ttt_clown_shop_random_enabled               0       // Whether role shop randomization is enabled for clowns
 ttt_killer_shop_random_enabled              0       // Whether role shop randomization is enabled for killers
 ttt_zombie_shop_random_enabled              0       // Whether role shop randomization is enabled for zombies
+ttt_hivemind_shop_random_enabled            0       // Whether role shop randomization is enabled for the hive mind
 
 // Role Shop Mode (Server or round must be restarted for changes to take effect)
 // Mode explanation:
@@ -792,6 +803,8 @@ ttt_zombie_shop_random_enabled              0       // Whether role shop randomi
 ttt_mercenary_shop_mode                     2       // What additional items are available to the mercenary in the shop (See above for possible values)
 ttt_clown_shop_mode                         0       // What additional items are available to the clown in the shop (See above for possible values)
 ttt_veteran_shop_mode                       0       // What additional items are available to the veteran in the shop (See above for possible values)
+ttt_killer_shop_mode                        0       // What additional items are available to the killer in the shop (See above for possible values)
+ttt_hivemind_shop_mode                      0       // What additional items are available to the hive mind in the shop (See above for possible values)
 
 // Traitor Role Shop Sync (Server or round must be restarted for changes to take effect)
 ttt_hypnotist_shop_sync                     0       // Whether hypnotists should have all weapons that vanilla traitors have in their weapon shop
@@ -857,6 +870,7 @@ ttt_madscientist_starting_health            100     // The amount of health the 
 ttt_shadow_starting_health                  100     // The amount of health the shadow starts with
 ttt_arsonist_starting_health                100     // The amount of health the arsonist starts with
 ttt_spy_starting_health                     100     // The amount of health the spy starts with
+ttt_hivemind_starting_health                100     // The amount of health the hive mind starts with
 
 // Individual Role Max Health. Set to 0 or -1 to use the game's default maximum health.
 ttt_traitor_max_health                      100     // The maximum amount of health a traitor can have
@@ -901,6 +915,7 @@ ttt_madscientist_max_health                 100     // The maximum amount of hea
 ttt_shadow_max_health                       100     // The maximum amount of health the shadow can have
 ttt_arsonist_max_health                     100     // The maximum amount of health the arsonist can have
 ttt_spy_max_health                          100     // The maximum amount of health the spy can have
+ttt_hivemind_max_health                     100     // The maximum amount of health the hive can have
 
 // Round Time
 ttt_roundtime_win_draw                      0       // Whether a round that ends because the round time limit has passed counts as a draw. If it is not a draw, the traitor team loses
