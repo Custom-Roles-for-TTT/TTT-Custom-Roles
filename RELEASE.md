@@ -13,6 +13,7 @@
 
 ### Fixes
 - Fixed parasite infecting a dead host if they died at the exact same time as their attacker
+- Fixed error when a queued message tries to send to a player who has disconnected
 
 ### Developer
 - Added `ROLE.hasshopmode` and `ROLE.hasshopsync` optional role features to control creation of `ttt_*_shop_mode` and `ttt_*_shop_sync` convars
