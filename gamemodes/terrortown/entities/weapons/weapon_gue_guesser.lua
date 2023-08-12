@@ -102,7 +102,7 @@ function SWEP:PrimaryAttack()
             return
         end
 
-        local trace = util.GetPlayerTrace(self.Owner)
+        local trace = util.GetPlayerTrace(owner)
         local tr = util.TraceLine(trace)
         if IsPlayer(tr.Entity) then
             local ply = tr.Entity
@@ -152,7 +152,7 @@ function SWEP:SecondaryAttack()
     if not IsFirstTimePredicted() then return end
     self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
     if CLIENT then
-        local function AddRolesFromTeam(table, team, exclude)
+        local function AddRolesFromTeam(tbl, team, exclude)
             local bannedRoles = {}
             local bannedRolesString = guesser_unguessable_roles:GetString()
             if #bannedRolesString > 0 then
@@ -168,7 +168,7 @@ function SWEP:SecondaryAttack()
             end
             TableSort(roles, function(a, b) return StringLower(ROLE_STRINGS[a]) < StringLower(ROLE_STRINGS[b]) end)
             for _, role in pairs(roles) do
-                TableInsert(table, role)
+                TableInsert(tbl, role)
             end
         end
 
@@ -199,8 +199,8 @@ function SWEP:SecondaryAttack()
         local independentRows   = MathCeil(#independents / columns)
         local monsterRows       = MathCeil(#monsters / columns)
 
-        local function IsLabelNeeded(table)
-            return #table == 0 and 0 or 1
+        local function IsLabelNeeded(tbl)
+            return #tbl == 0 and 0 or 1
         end
 
         local labels = IsLabelNeeded(detectives) + IsLabelNeeded(innocents) + IsLabelNeeded(traitors)
@@ -214,12 +214,12 @@ function SWEP:SecondaryAttack()
 
         -- list sizes
         local listWidth             = (itemSize + 2) * columns
-        local detectivesHeight      = MathMax(((itemSize + 2) * detectiveRows + 2), 0)
-        local innocentsHeight       = MathMax(((itemSize + 2) * innocentRows + 2), 0)
-        local traitorsHeight        = MathMax(((itemSize + 2) * traitorRows + 2), 0)
-        local jestersHeight         = MathMax(((itemSize + 2) * jesterRows + 2), 0)
-        local independentsHeight    = MathMax(((itemSize + 2) * independentRows + 2), 0)
-        local monstersHeight        = MathMax(((itemSize + 2) * monsterRows + 2), 0)
+        local detectivesHeight      = MathMax((itemSize + 2) * detectiveRows + 2, 0)
+        local innocentsHeight       = MathMax((itemSize + 2) * innocentRows + 2, 0)
+        local traitorsHeight        = MathMax((itemSize + 2) * traitorRows + 2, 0)
+        local jestersHeight         = MathMax((itemSize + 2) * jesterRows + 2, 0)
+        local independentsHeight    = MathMax((itemSize + 2) * independentRows + 2, 0)
+        local monstersHeight        = MathMax((itemSize + 2) * monsterRows + 2, 0)
 
         -- I worked this out from looking at screenshots and measuring how the bottom margin changes based on the number of labels. I don't know why this is needed or where these numbers come from!
         local bottomMarginOffset = (2 * labels) - 7
