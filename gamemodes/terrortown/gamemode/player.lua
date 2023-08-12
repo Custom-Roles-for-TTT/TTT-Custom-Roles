@@ -508,9 +508,11 @@ end
 concommand.Add("ttt_spec_use", SpecUseKey)
 
 function GM:PlayerDisconnected(ply)
-    -- Prevent the disconnecter from being in the resends
     if IsValid(ply) then
+        -- Prevent the disconnecter from being in the resends
         ply:SetRole(ROLE_NONE)
+        -- And clear their message queue
+        ply:ResetMessageQueue()
     end
 
     if GetRoundState() ~= ROUND_PREP then
