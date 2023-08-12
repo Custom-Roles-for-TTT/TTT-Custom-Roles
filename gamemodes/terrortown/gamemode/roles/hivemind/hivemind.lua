@@ -35,13 +35,13 @@ end)
 
 -- Players killed by the hive mind join the hive mind
 AddHook("PlayerDeath", "HiveMind_PlayerDeath", function(victim, infl, attacker)
-    if not IsValid(victim) or victim:IsHiveMind() then return end
-    if not IsValid(attacker) or not attacker:IsHiveMind() then return end
+    if not IsPlayer(victim) or victim:IsHiveMind() then return end
+    if not IsPlayer(attacker) or not attacker:IsHiveMind() then return end
 
     timer.Create("HiveMindRespawn_" .. victim:SteamID64(), 0.25, 1, function()
         -- Double-check
-        if not IsValid(victim) or victim:IsHiveMind() then return end
-        if not IsValid(attacker) or not attacker:IsHiveMind() then return end
+        if not IsPlayer(victim) or victim:IsHiveMind() then return end
+        if not IsPlayer(attacker) or not attacker:IsHiveMind() then return end
 
         local body = victim.server_ragdoll or victim:GetRagdollEntity()
         victim:SpawnForRound(true)
