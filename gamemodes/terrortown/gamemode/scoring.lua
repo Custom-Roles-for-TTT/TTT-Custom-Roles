@@ -87,7 +87,7 @@ function SCORE:HandleKill(victim, attacker, dmginfo)
         e.att.mon = attacker:IsMonsterTeam()
         e.tk = (e.att.tr and e.vic.tr) or (e.att.inno and e.vic.inno) or (e.att.mon and e.vic.mon)
 
-        -- If a traitor gets himself killed by another traitor's C4, it's his own
+        -- If a traitor gets himself killed by another traitor's C4, it's their own
         -- damn fault for ignoring the indicator.
         if dmginfo:IsExplosionDamage() and e.att.tr and e.vic.tr then
             local infl = dmginfo:GetInflictor()

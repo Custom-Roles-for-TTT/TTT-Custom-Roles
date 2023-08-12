@@ -24,7 +24,7 @@ end)
 hook.Add("TTTTutorialRoleText", "Mercenary_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_MERCENARY then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
-        local detectiveColor = GetRoleTeamColor(ROLE_TEAM_DETECTIVE)
+        local detectiveColor = ROLE_COLORS[ROLE_DETECTIVE]
         local traitorColor = ROLE_COLORS[ROLE_TRAITOR]
         local html = "The " .. ROLE_STRINGS[ROLE_MERCENARY] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> whose goal is to use their shop to help the player with a <span style='color: rgb(" .. detectiveColor.r .. ", " .. detectiveColor.g .. ", " .. detectiveColor.b .. ")'>" .. ROLE_STRINGS[ROLE_DETECTIVE] .. " role</span> defeat their enemies."
 

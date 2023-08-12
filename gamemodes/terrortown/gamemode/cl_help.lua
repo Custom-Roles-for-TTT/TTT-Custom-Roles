@@ -10,6 +10,7 @@ local string = string
 local table = table
 local timer = timer
 local vgui = vgui
+local util = util
 
 local GetTranslation = LANG.GetTranslation
 local GetPTranslation = LANG.GetParamTranslation
@@ -535,11 +536,8 @@ local function ShowTutorialPage(pnl, page)
 end
 
 local function ShowRoleTutorial(role)
-    -- If the role is enabled, show the page
-    if DEFAULT_ROLES[role] then return true end
-    if GetConVar("ttt_" .. ROLE_STRINGS_RAW[role] .. "_enabled"):GetBool() then
-        return true
-    end
+    -- If the role can spawn, show the page
+    if util.CanRoleSpawn(role) then return true end
 
     -- Otherwise check if there are special rules for this role
     if HookCall("TTTTutorialRoleEnabled", nil, role) then

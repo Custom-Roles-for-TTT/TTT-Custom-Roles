@@ -182,11 +182,13 @@ end)
 -- HEARTS --
 ------------
 
+local heart_color = Color(230, 90, 200, 255)
+
 AddHook("TTTShouldPlayerSmoke", "Cupid_TTTShouldPlayerSmoke", function(ply, cli, shouldSmoke, smokeColor, smokeParticle, smokeOffset)
     local target = ply:SteamID64()
     if (cli:IsCupid() and (target == cli:GetNWString("TTTCupidTarget1", "") or target == cli:GetNWString("TTTCupidTarget2", "")))
         or (target == cli:GetNWString("TTTCupidLover", "")) then
-        return true, Color(230, 90, 200, 255), "particle/heart.vmt"
+        return true, heart_color, "particle/heart.vmt"
     end
 end)
 
@@ -198,9 +200,9 @@ end)
 hook.Add("TTTTargetIDPlayerTargetIcon", "Cupid_TTTTargetIDPlayerTargetIcon", function(ply, cli, showJester)
     local target = ply:SteamID64()
     if cli:IsCupid() and (target == cli:GetNWString("TTTCupidTarget1", "") or target == cli:GetNWString("TTTCupidTarget2", "")) then
-        return "lover", false, Color(230, 90, 200, 255), "up"
+        return "lover", false, heart_color, "up"
     elseif target == cli:GetNWString("TTTCupidLover", "") then
-        return "lover", true, Color(230, 90, 200, 255), "up"
+        return "lover", true, heart_color, "up"
     end
 end)
 
@@ -228,7 +230,7 @@ AddHook("TTTTargetIDPlayerText", "Cupid_TTTTargetIDPlayerText", function(ent, cl
     if ent:IsActiveCupid() and ent:SteamID64() == cli:GetNWString("TTTCupidShooter", "") then
         return StringUpper(ROLE_STRINGS[ROLE_CUPID]), ROLE_COLORS_RADAR[ROLE_CUPID]
     elseif ent:SteamID64() == cli:GetNWString("TTTCupidLover", "") then
-        return StringUpper(ROLE_STRINGS[ent:GetRole()]), ROLE_COLORS_RADAR[ent:GetRole()], LANG.GetTranslation("scoreboard_cupid_lover"), Color(230, 90, 200, 255)
+        return StringUpper(ROLE_STRINGS[ent:GetRole()]), ROLE_COLORS_RADAR[ent:GetRole()], LANG.GetTranslation("scoreboard_cupid_lover"), heart_color
     end
 end)
 
@@ -292,13 +294,19 @@ local function EnableLoverHighlights()
         local loverPly = player.GetBySteamID64(lover)
         if not IsPlayer(loverPly) or not loverPly:IsActive() then return end
 
-        HaloAdd({ loverPly }, Color(230, 90, 200, 255), 1, 1, 1, true, true)
+        HaloAdd({ loverPly }, heart_color, 1, 1, 1, true, true)
     end)
 end
 
 AddHook("TTTUpdateRoleState", "Cupid_Highlight_TTTUpdateRoleState", function()
     client = LocalPlayer()
     lover_vision = cupid_lover_vision_enable:GetBool()
+
+    -- Disable highlights on role change
+    if vision_enabled then
+        RemoveHook("PreDrawHalos", "Cupid_Highlight_PreDrawHalos")
+        vision_enabled = false
+    end
 end)
 
 AddHook("Think", "Cupid_Highlight_Think", function()
@@ -326,7 +334,7 @@ AddHook("TTTTutorialRoleText", "Cupid_TTTTutorialRoleText", function(role, title
     if role == ROLE_CUPID then
         local roleTeam = player.GetRoleTeam(ROLE_CUPID, true)
         local roleTeamName, roleColor = GetRoleTeamInfo(roleTeam)
-        local html = "The " .. ROLE_STRINGS[ROLE_CUPID] .. " is a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. roleTeamName .. "</span> role that wins by making two players fall in love and helping them win together. However, players that fall in love die together and cannot survive while the other is dead."
+        local html = "The " .. ROLE_STRINGS[ROLE_CUPID] .. " is a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. roleTeamName .. "</span> team that wins by making two players fall in love and helping them win together. However, players that fall in love die together and cannot survive while the other is dead."
 
         -- Bow weapon
         html = html .. "<span style='display: block; margin-top: 10px;'>They are given a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>bow</span> that will cause a player to fall in love when they are shot. Once two players have fallen in love they win the round by surviving until the end of the round or being the last players left standing.</span>"

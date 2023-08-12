@@ -89,7 +89,7 @@ local function GetLoadoutWeapons(r)
     return loadout_weapons[r]
 end
 
--- Give player loadout weapons he should have for his role that he does not have
+-- Give player loadout weapons they should have for their role that they do not have
 -- yet
 local function GiveLoadoutWeapons(ply)
     local r = GetRoundState() == ROUND_PREP and ROLE_INNOCENT or ply:GetRole()
@@ -373,7 +373,7 @@ concommand.Add("ttt_dropammo", DropActiveAmmo)
 local function GiveEquipmentWeapon(sid, cls)
     -- Referring to players by SteamID because a player may disconnect while his
     -- unique timer still runs, in which case we want to be able to stop it. For
-    -- that we need its name, and hence his SteamID.
+    -- that we need its name, and hence their SteamID.
     local ply = player.GetBySteamID64(sid)
     local tmr = "give_equipment" .. sid
 
@@ -443,6 +443,20 @@ local function OrderEquipment(ply, cmd, args)
     local detectivesync = cvars.Bool("ttt_" .. ROLE_STRINGS_RAW[role] .. "_shop_sync", false) and DETECTIVE_ROLES[role]
     local sync_detective_weapons = detectivesync or promoted or (rolemode > SHOP_SYNC_MODE_NONE)
 
+    local sync_roles = ROLE_SHOP_SYNC_ROLES[role]
+    if type(sync_roles) ~= "table" then
+        sync_roles = {}
+    end
+
+    -- If traitor weapons are to be synced, add them to the list
+    if sync_traitor_weapons and not table.HasValue(sync_roles, ROLE_TRAITOR) then
+        table.insert(sync_roles, ROLE_TRAITOR)
+    end
+    -- If detective weapons are to be synced, add them to the list
+    if sync_detective_weapons and not table.HasValue(sync_roles, ROLE_DETECTIVE) then
+        table.insert(sync_roles, ROLE_DETECTIVE)
+    end
+
     -- If this role has a table of additional weapons and that table includes this weapon
     -- and this weapon is not currently buyable by the role then mark this weapon as buyable
     if swep_table then
@@ -453,18 +467,15 @@ local function OrderEquipment(ply, cmd, args)
             return
         end
 
-        -- Pre-load the Traitor weapons so that any that have their CanBuy modified will also apply to the enabled allied role(s)
-        if sync_traitor_weapons then
-            WEPS.HandleCanBuyOverrides(swep_table, ROLE_TRAITOR, true, sync_traitor_weapons, sync_detective_weapons)
-        end
-
-        -- Pre-load the Detective weapons so that any that have their CanBuy modified will also apply to the enabled allied role(s)
-        if sync_detective_weapons then
-            WEPS.HandleCanBuyOverrides(swep_table, ROLE_DETECTIVE, true, sync_traitor_weapons, sync_detective_weapons)
+        -- Pre-load the weapons for each synced role so that any that have their CanBuy modified will also apply to the enabled allied role(s)
+        if #sync_roles > 0 then
+            for _, r in pairs(sync_roles) do
+                WEPS.HandleCanBuyOverrides(swep_table, r, true, sync_traitor_weapons, sync_detective_weapons)
+            end
         end
 
         -- Add the loaded weapons for this role
-        WEPS.HandleCanBuyOverrides(swep_table, role, false, sync_traitor_weapons, sync_detective_weapons)
+        WEPS.HandleCanBuyOverrides(swep_table, role, false, sync_traitor_weapons, sync_detective_weapons, false, sync_roles)
     end
 
     -- Don't give roles their items if delayed shop is enabled
@@ -494,14 +505,14 @@ local function OrderEquipment(ply, cmd, args)
             end
         end
 
-        -- Traitor -> Special Traitor
-        if not allowed and sync_traitor_weapons then
-            allowed = GetEquipmentItem(ROLE_TRAITOR, id)
-        end
-
-        -- Detective -> Detective-like, Detective -> Special Detective
-        if not allowed and (promoted or sync_detective_weapons) then
-            allowed = GetEquipmentItem(ROLE_DETECTIVE, id)
+        -- Check each sync role for their equipment as well
+        if not allowed and #sync_roles > 0 then
+            for _, r in pairs(sync_roles) do
+                allowed = GetEquipmentItem(r, id)
+                if allowed then
+                    break
+                end
+            end
         end
 
         -- If it's not allowed, check the extra buyable equipment
@@ -533,7 +544,7 @@ local function OrderEquipment(ply, cmd, args)
         end
 
         if not allowed then
-            print(ply, "tried to buy item not buyable for his class:", id)
+            print(ply, "tried to buy item not buyable for their role:", id)
             return
         end
 
@@ -550,7 +561,7 @@ local function OrderEquipment(ply, cmd, args)
     elseif swep_table then
         -- weapon whitelist check
         if not table.HasValue(swep_table.CanBuy, role) then
-            print(ply, "tried to buy weapon his role is not permitted to buy")
+            print(ply, "tried to buy weapon their role is not permitted to buy")
             return
         end
 

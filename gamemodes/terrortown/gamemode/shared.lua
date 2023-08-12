@@ -22,7 +22,7 @@ local StringSub = string.sub
 include("player_class/player_ttt.lua")
 
 -- Version string for display and function for version checks
-CR_VERSION = "1.9.4"
+CR_VERSION = "1.9.5"
 CR_BETA = true
 CR_WORKSHOP_ID = CR_BETA and "2404251054" or "2421039084"
 
@@ -86,14 +86,14 @@ if CRDebug.Enabled and not CRDebug.HooksChecked then
     CRDebug.HooksChecked = CRDebug.HooksChecked or {}
     local oldHookAdd = hook.Add
     hook.Add = function(eventName, identifier, func)
-        local info = debug.getinfo(2, "S")
+        local info = debug.getinfo(2, "Sl")
         -- Only run the hook checks for custom roles code
         if StringFind(info.short_src, "custom-roles", 1, true) or StringFind(info.short_src, "customroles", 1, true) then
             local key = eventName .. "_" .. tostring(identifier)
             -- Keep track of which ones we've checked already so we don't spam ourselves on reload
             -- Also ignore the ones that are known to replace themselves... for whatever reason
             if not table.HasValue(CRDebug.IgnoredHookDupes, key) then
-                local locationKey = info.short_src .. "_" .. info.linedefined
+                local locationKey = info.short_src .. "_" .. info.currentline
                 -- If we have a location key saved but it's different this time then it's a duplicate
                 if CRDebug.HooksChecked[key] and CRDebug.HooksChecked[key] ~= locationKey then
                     ErrorNoHaltWithStack("Hook for '" .. eventName .. "' with identifier '" .. identifier .. "' already exists!")
@@ -103,6 +103,17 @@ if CRDebug.Enabled and not CRDebug.HooksChecked then
             end
         end
         oldHookAdd(eventName, identifier, func)
+    end
+
+    local oldHookRemove = hook.Remove
+    hook.Remove = function(eventName, identifier)
+        local info = debug.getinfo(2, "S")
+        -- Only run the hook checks for custom roles code
+        if StringFind(info.short_src, "custom-roles", 1, true) or StringFind(info.short_src, "customroles", 1, true) then
+            local key = eventName .. "_" .. tostring(identifier)
+            CRDebug.HooksChecked[key] = false
+        end
+        oldHookRemove(eventName, identifier)
     end
 end
 
@@ -156,8 +167,10 @@ ROLE_SHADOW = 38
 ROLE_SPONGE = 39
 ROLE_ARSONIST = 40
 ROLE_SPY = 41
+ROLE_HIVEMIND = 42
+ROLE_GUESSER = 43
 
-ROLE_MAX = 41
+ROLE_MAX = 43
 ROLE_EXTERNAL_START = ROLE_MAX + 1
 
 local function AddRoleAssociations(list, roles)
@@ -179,7 +192,7 @@ function GetTeamRoles(list, excludes)
 end
 
 SHOP_ROLES = {}
-AddRoleAssociations(SHOP_ROLES, {ROLE_TRAITOR, ROLE_DETECTIVE, ROLE_HYPNOTIST, ROLE_DEPUTY, ROLE_IMPERSONATOR, ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_MERCENARY, ROLE_ASSASSIN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_VAMPIRE, ROLE_VETERAN, ROLE_DOCTOR, ROLE_QUACK, ROLE_PARASITE, ROLE_PALADIN, ROLE_TRACKER, ROLE_MEDIUM, ROLE_SAPPER, ROLE_INFORMANT, ROLE_MARSHAL, ROLE_MADSCIENTIST, ROLE_SPY})
+AddRoleAssociations(SHOP_ROLES, {ROLE_TRAITOR, ROLE_DETECTIVE, ROLE_HYPNOTIST, ROLE_DEPUTY, ROLE_IMPERSONATOR, ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_MERCENARY, ROLE_ASSASSIN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_VAMPIRE, ROLE_VETERAN, ROLE_DOCTOR, ROLE_QUACK, ROLE_PARASITE, ROLE_PALADIN, ROLE_TRACKER, ROLE_MEDIUM, ROLE_SAPPER, ROLE_INFORMANT, ROLE_MARSHAL, ROLE_MADSCIENTIST, ROLE_SPY, ROLE_HIVEMIND})
 
 DELAYED_SHOP_ROLES = {}
 AddRoleAssociations(DELAYED_SHOP_ROLES, {ROLE_CLOWN, ROLE_VETERAN, ROLE_DEPUTY})
@@ -191,10 +204,10 @@ INNOCENT_ROLES = {}
 AddRoleAssociations(INNOCENT_ROLES, {ROLE_INNOCENT, ROLE_DETECTIVE, ROLE_GLITCH, ROLE_PHANTOM, ROLE_REVENGER, ROLE_DEPUTY, ROLE_MERCENARY, ROLE_VETERAN, ROLE_DOCTOR, ROLE_TRICKSTER, ROLE_PARAMEDIC, ROLE_PALADIN, ROLE_TRACKER, ROLE_MEDIUM, ROLE_TURNCOAT, ROLE_SAPPER, ROLE_MARSHAL, ROLE_INFECTED})
 
 JESTER_ROLES = {}
-AddRoleAssociations(JESTER_ROLES, {ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_BEGGAR, ROLE_BODYSNATCHER, ROLE_LOOTGOBLIN, ROLE_CUPID, ROLE_SPONGE})
+AddRoleAssociations(JESTER_ROLES, {ROLE_JESTER, ROLE_SWAPPER, ROLE_CLOWN, ROLE_BEGGAR, ROLE_BODYSNATCHER, ROLE_LOOTGOBLIN, ROLE_CUPID, ROLE_SPONGE, ROLE_GUESSER})
 
 INDEPENDENT_ROLES = {}
-AddRoleAssociations(INDEPENDENT_ROLES, {ROLE_DRUNK, ROLE_OLDMAN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_MADSCIENTIST, ROLE_SHADOW, ROLE_ARSONIST})
+AddRoleAssociations(INDEPENDENT_ROLES, {ROLE_DRUNK, ROLE_OLDMAN, ROLE_KILLER, ROLE_ZOMBIE, ROLE_MADSCIENTIST, ROLE_SHADOW, ROLE_ARSONIST, ROLE_HIVEMIND})
 
 MONSTER_ROLES = {}
 AddRoleAssociations(MONSTER_ROLES, {})
@@ -211,7 +224,7 @@ AddRoleAssociations(TRAITOR_BUTTON_ROLES, {ROLE_TRICKSTER})
 
 -- Shop roles get this ability by default
 CAN_LOOT_CREDITS_ROLES = {}
-AddRoleAssociations(CAN_LOOT_CREDITS_ROLES, {ROLE_TRICKSTER, ROLE_LOOTGOBLIN})
+AddRoleAssociations(CAN_LOOT_CREDITS_ROLES, {ROLE_TRICKSTER, ROLE_LOOTGOBLIN, ROLE_HIVEMIND})
 
 -- Role colours
 COLOR_INNOCENT = {
@@ -441,11 +454,13 @@ function CreateShopConVars(role)
     CreateConVar("ttt_" .. rolestring .. "_shop_random_percent", "0", FCVAR_REPLICATED, "The percent chance that a weapon in the shop will not be shown for the " .. rolestring, 0, 100)
     CreateConVar("ttt_" .. rolestring .. "_shop_random_enabled", "0", FCVAR_REPLICATED, "Whether shop randomization should run for the " .. rolestring)
 
-    if (TRAITOR_ROLES[role] and role ~= ROLE_TRAITOR) or (DETECTIVE_ROLES[role] and role ~= ROLE_DETECTIVE) or role == ROLE_ZOMBIE then -- This all happens before we run UpdateRoleState so we need to manually add zombies
+    local hassync = (TRAITOR_ROLES[role] and role ~= ROLE_TRAITOR) or (DETECTIVE_ROLES[role] and role ~= ROLE_DETECTIVE) or ROLE_HAS_SHOP_SYNC[role]
+    if hassync then
         CreateConVar("ttt_" .. rolestring .. "_shop_sync", "0", FCVAR_REPLICATED)
     end
 
-    if (INDEPENDENT_ROLES[role] and role ~= ROLE_ZOMBIE) or DELAYED_SHOP_ROLES[role] then
+    -- Roles don't get both shop sync and shop mode
+    if (INDEPENDENT_ROLES[role] or DELAYED_SHOP_ROLES[role] or ROLE_HAS_SHOP_MODE[role]) and not hassync then
         CreateConVar("ttt_" .. rolestring .. "_shop_mode", "0", FCVAR_REPLICATED)
     end
 
@@ -532,7 +547,9 @@ ROLE_STRINGS_RAW = {
     [ROLE_SHADOW] = "shadow",
     [ROLE_SPONGE] = "sponge",
     [ROLE_ARSONIST] = "arsonist",
-    [ROLE_SPY] = "spy"
+    [ROLE_SPY] = "spy",
+    [ROLE_HIVEMIND] = "hivemind",
+    [ROLE_GUESSER] = "guesser"
 }
 
 ROLE_STRINGS = {
@@ -577,7 +594,9 @@ ROLE_STRINGS = {
     [ROLE_SHADOW] = "Shadow",
     [ROLE_SPONGE] = "Sponge",
     [ROLE_ARSONIST] = "Arsonist",
-    [ROLE_SPY] = "Spy"
+    [ROLE_SPY] = "Spy",
+    [ROLE_HIVEMIND] = "Hive Mind",
+    [ROLE_GUESSER] = "Guesser"
 }
 
 ROLE_STRINGS_PLURAL = {
@@ -622,7 +641,9 @@ ROLE_STRINGS_PLURAL = {
     [ROLE_SHADOW] = "Shadows",
     [ROLE_SPONGE] = "Sponges",
     [ROLE_ARSONIST] = "Arsonists",
-    [ROLE_SPY] = "Spies"
+    [ROLE_SPY] = "Spies",
+    [ROLE_HIVEMIND] = "Hive Mind",
+    [ROLE_GUESSER] = "Guessers"
 }
 
 ROLE_STRINGS_EXT = {
@@ -668,7 +689,9 @@ ROLE_STRINGS_EXT = {
     [ROLE_SHADOW] = "a Shadow",
     [ROLE_SPONGE] = "a Sponge",
     [ROLE_ARSONIST] = "an Arsonist",
-    [ROLE_SPY] = "a Spy"
+    [ROLE_SPY] = "a Spy",
+    [ROLE_HIVEMIND] = "the Hive Mind",
+    [ROLE_GUESSER] = "a Guesser"
 }
 
 ROLE_STRINGS_SHORT = {
@@ -714,7 +737,9 @@ ROLE_STRINGS_SHORT = {
     [ROLE_SHADOW] = "sha",
     [ROLE_SPONGE] = "spn",
     [ROLE_ARSONIST] = "ars",
-    [ROLE_SPY] = "spy"
+    [ROLE_SPY] = "spy",
+    [ROLE_HIVEMIND] = "hmd",
+    [ROLE_GUESSER] = "gue"
 }
 
 function StartsWithVowel(word)
@@ -826,6 +851,9 @@ ROLE_SHOULD_NOT_DROWN = {}
 ROLE_CAN_SEE_C4 = {}
 ROLE_CAN_SEE_JESTERS = {}
 ROLE_CAN_SEE_MIA = {}
+ROLE_HAS_SHOP_MODE = {}
+ROLE_HAS_SHOP_SYNC = {}
+ROLE_SHOP_SYNC_ROLES = {}
 
 -- Player functions
 ROLE_IS_ACTIVE = {}
@@ -956,6 +984,18 @@ function RegisterRole(tbl)
 
     if type(tbl.canseemia) == "boolean" then
         ROLE_CAN_SEE_MIA[roleID] = tbl.canseemia
+    end
+
+    if type(tbl.hasshopmode) == "boolean" then
+        ROLE_HAS_SHOP_MODE[roleID] = tbl.hasshopmode
+    end
+
+    if type(tbl.hasshopsync) == "boolean" then
+        ROLE_HAS_SHOP_SYNC[roleID] = tbl.hasshopsync
+    end
+
+    if type(tbl.shopsyncroles) == "table" then
+        ROLE_SHOP_SYNC_ROLES[roleID] = tbl.shopsyncroles
     end
 
     -- Equipment
@@ -1147,8 +1187,10 @@ EVENT_DEPUTIZED = 30
 EVENT_INFECTEDSUCCUMBED = 31
 EVENT_CUPIDPAIRED = 32
 EVENT_ARSONISTIGNITED = 33
+EVENT_GUESSERCORRECT = 34
+EVENT_GUESSERINCORRECT = 35
 
-EVENT_MAX = EVENT_MAX or 33
+EVENT_MAX = EVENT_MAX or 35
 EVENTS_BY_ROLE = EVENTS_BY_ROLE or {}
 
 if SERVER then
@@ -1204,8 +1246,9 @@ WIN_CUPID = 13
 WIN_SHADOW = 14
 WIN_SPONGE = 15
 WIN_ARSONIST = 16
+WIN_HIVEMIND = 17
 
-WIN_MAX = WIN_MAX or 16
+WIN_MAX = WIN_MAX or 17
 WINS_BY_ROLE = WINS_BY_ROLE or {}
 
 if SERVER then

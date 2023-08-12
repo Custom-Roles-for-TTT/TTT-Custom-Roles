@@ -198,6 +198,15 @@ Called for each player who is alive during the `Tick` hook.\
 *Parameters:*
 - *ply* - The current alive player target
 
+### TTTPlayerHealthChanged(ply, oldHealth, newHealth)
+Called when a player's health changes.\
+*Realm:* Client and Server\
+*Added in:* 1.9.5\
+*Parameters:*
+- *ply* - The player whose health changed
+- *oldHealth* - The player's old health
+- *newHealth* - The player's new health
+
 ### TTTPlayerRoleChanged(ply, oldRole, newRole)
 Called after a player's role has changed.\
 *Realm:* Client and Server\
@@ -358,6 +367,15 @@ Called before a player's role start-of-round popup message is displayed, allowin
 Called after all roles and role modifications have been loaded.\
 *Realm:* Client\
 *Added in:* 1.5.3
+
+### TTTRoleSpawnsArtificially(role)
+Called when checking if a role can be spawned artificially. (i.e. Spawned in a way other than naturally spawning when the role is enabled.)\
+*Realm:* Client and Server\
+*Added in:* 1.9.5\
+*Parameters:*
+- *roleID* - The ID of the role being checked
+
+*Return:* `true` when the role could be spawned artificially. Don't return anything otherwise
 
 ### TTTRoleRegistered(roleID)
 Called after an external role has been registered.\

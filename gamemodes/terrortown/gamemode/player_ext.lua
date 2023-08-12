@@ -43,14 +43,14 @@ end
 
 -- The live karma starts equal to the base karma, but is updated "live" as the
 -- player damages/kills others. When another player damages/kills this one, the
--- live karma is used to determine his karma penalty.
+-- live karma is used to determine their karma penalty.
 AccessorFunc(plymeta, "live_karma", "LiveKarma", FORCE_NUMBER)
 
 -- The damage factor scales how much damage the player deals, so if it is .9
--- then the player only deals 90% of his original damage.
+-- then the player only deals 90% of their original damage.
 AccessorFunc(plymeta, "dmg_factor", "DamageFactor", FORCE_NUMBER)
 
--- If a player does not damage team members in a round, he has a "clean" round
+-- If a player does not damage team members in a round, they have a "clean" round
 -- and gets a bonus for it.
 AccessorFunc(plymeta, "clean_round", "CleanRound", FORCE_BOOL)
 
@@ -317,7 +317,7 @@ function plymeta:ShouldSpawn()
 end
 
 -- Preps a player for a new round, spawning them if they should. If dead_only is
--- true, only spawns if player is dead, else just makes sure he is healed.
+-- true, only spawns if player is dead, else just makes sure they are healed.
 function plymeta:SpawnForRound(dead_only)
     hook.Call("PlayerSetModel", GAMEMODE, self)
     hook.Call("TTTPlayerSetColor", GAMEMODE, self)
@@ -329,7 +329,7 @@ function plymeta:SpawnForRound(dead_only)
     -- wrong alive status and not a willing spec who unforced after prep started
     -- (and will therefore be "alive")
     if dead_only and self:Alive() and (not self:IsSpec()) then
-        -- if the player does not need respawn, make sure he has full health
+        -- if the player does not need respawn, make sure they have full health
         self:SetHealth(self:GetMaxHealth())
         return false
     end
@@ -584,16 +584,16 @@ function plymeta:ResetMessageQueue()
     self:PrintMessage(HUD_PRINTCENTER, "")
 end
 
-function plymeta:QueueMessage(type, message, time)
+function plymeta:QueueMessage(message_type, message, time)
     time = time or 5
     local sid = self:SteamID64()
     if not messageQueue[sid] then
         messageQueue[sid] = {}
     end
-    if type == MSG_PRINTBOTH or type == MSG_PRINTTALK then
+    if message_type == MSG_PRINTBOTH or message_type == MSG_PRINTTALK then
         self:PrintMessage(HUD_PRINTTALK, message)
     end
-    if type == MSG_PRINTBOTH or type == MSG_PRINTCENTER then
+    if message_type == MSG_PRINTBOTH or message_type == MSG_PRINTCENTER then
         table.insert(messageQueue[sid], {message=message, time=time})
         if #messageQueue[sid] == 1 then
             self:PrintMessageQueue()
@@ -602,10 +602,10 @@ function plymeta:QueueMessage(type, message, time)
 end
 
 net.Receive("TTT_QueueMessage", function(len, ply)
-    local type = net.ReadUInt(3)
+    local message_type = net.ReadUInt(3)
     local message = net.ReadString()
     local time = net.ReadFloat()
-    ply:QueueMessage(type, message, time)
+    ply:QueueMessage(message_type, message, time)
 end)
 
 -- Run these overrides when the round is preparing the first time to ensure their addons have been loaded

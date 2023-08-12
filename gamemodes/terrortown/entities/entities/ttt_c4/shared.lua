@@ -104,7 +104,7 @@ end
 
 function ENT:UseOverride(activator)
     if IsPlayer(activator) then
-        -- Traitors not allowed to disarm other traitor's C4 until he is dead
+        -- Traitors not allowed to disarm other traitor's C4 until they are dead
         local owner = self:GetOwner()
         if self:GetArmed() and owner ~= activator and activator:IsTraitorTeam() and (IsValid(owner) and owner:IsActiveTraitorTeam()) then
             LANG.Msg(activator, "c4_no_disarm", { traitor = ROLE_STRINGS[ROLE_TRAITOR] })
@@ -430,7 +430,7 @@ if SERVER then
         self:WeldToGround(true)
         self.DisarmCausedExplosion = false
 
-        -- ply may be a different player than he who dropped us.
+        -- ply may be a different player than they who dropped us.
         -- Arming player should be the damage owner = "thrower"
         self:SetThrower(ply)
         -- Owner determines who gets messages and can quick-disarm if traitor,
@@ -459,7 +459,7 @@ if SERVER then
                 self.SafeWires[w] = true
                 table.remove(choices, pick)
 
-                -- owner will end up having the last safe wire on his corpse
+                -- owner will end up having the last safe wire on their corpse
                 ply.bomb_wire = w
 
                 picked = picked + 1

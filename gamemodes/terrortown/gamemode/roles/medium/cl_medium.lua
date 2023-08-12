@@ -115,7 +115,7 @@ end)
 hook.Add("TTTTutorialRoleText", "Medium_TTTTutorialRoleText", function(role, titleLabel)
     if role == ROLE_MEDIUM then
         local roleColor = ROLE_COLORS[ROLE_INNOCENT]
-        local detectiveColor = GetRoleTeamColor(ROLE_TEAM_DETECTIVE)
+        local detectiveColor = ROLE_COLORS[ROLE_DETECTIVE]
         local html = "The " .. ROLE_STRINGS[ROLE_MEDIUM] .. " is a " .. ROLE_STRINGS[ROLE_DETECTIVE] .. " and a member of the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>innocent team</span> whose job is to find and eliminate their enemies."
 
         html = html .. "<span style='display: block; margin-top: 10px;'>Instead of getting a DNA Scanner like a vanilla <span style='color: rgb(" .. detectiveColor.r .. ", " .. detectiveColor.g .. ", " .. detectiveColor.b .. ")'>" .. ROLE_STRINGS[ROLE_DETECTIVE] .. "</span>, they have the ability to see the spirits of the dead as they move around the afterlife.</span>"
