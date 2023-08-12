@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.9.5 (Beta)
-**Released:**
+**Released: August 13th, 2023**
 
 ### Additions
 - Added new independent role: hive mind
