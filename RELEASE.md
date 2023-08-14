@@ -3,6 +3,9 @@
 ## 1.9.6 (Beta)
 **Released:**
 
+### Additions
+- Added new special detective role: quartermaster
+
 ### Fixes
 - Fixed typo in the hive mind's tutorial
 

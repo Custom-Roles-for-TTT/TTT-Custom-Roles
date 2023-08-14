@@ -97,6 +97,7 @@ ttt_arsonist_enabled                        0       // Whether or not the arsoni
 ttt_spy_enabled                             0       // Whether or not the spy should spawn
 ttt_hivemind_enabled                        0       // Whether or not the hive mind should spawn
 ttt_guesser_enabled                         0       // Whether or not the guesser should spawn
+ttt_quartermaster_enabled                   0       // Whether or not the quartermaster should spawn
 
 // Individual Role Spawn Weights
 ttt_hypnotist_spawn_weight                  1       // The weight assigned to spawning the hypnotist
@@ -140,6 +141,7 @@ ttt_arsonist_spawn_weight                   1       // The weight assigned to sp
 ttt_spy_spawn_weight                        1       // The weight assigned to spawning the spy
 ttt_hivemind_spawn_weight                   1       // The weight assigned to spawning the hive mind
 ttt_guesser_spawn_weight                    1       // The weight assigned to spawning the guesser
+ttt_quartermaster_spawn_weight              1       // The weight assigned to spawning the quartermaster
 
 // (Note: Each role is limited to one player per round.)
 
@@ -185,6 +187,7 @@ ttt_arsonist_min_players                    0       // The minimum number of pla
 ttt_spy_min_players                         0       // The minimum number of players required to spawn the spy
 ttt_hivemind_min_players                    0       // The minimum number of players required to spawn the hive mind
 ttt_guesser_min_players                     0       // The minimum number of players required to spawn the guesser
+ttt_quartermaster_min_players               0       // The minimum number of players required to spawn the quartermaster
 
 // ----------------------------------------
 
@@ -434,6 +437,7 @@ ttt_sapper_protect_self                     1       // Whether the sapper's prot
 ttt_sapper_fire_immune                      0       // Whether sapper's protection aura also grands fire immunity
 ttt_sapper_can_see_c4                       0       // Whether the sapper can see C4 pings on their radar like traitors
 ttt_sapper_c4_guaranteed_defuse             0       // Whether the sapper is guaranteed to always successfully defuse C4
+ttt_sapper_credits_starting                 1       // The number of credits a sapper should start with
 
 // Marshal
 ttt_marshal_independent_deputy_chance       0.5     // The chance that a independent will become a deputy. -1 to disable
@@ -441,6 +445,11 @@ ttt_marshal_jester_deputy_chance            0.5     // The chance that a jester 
 ttt_marshal_monster_deputy_chance           0.5     // The chance that a monster will become a deputy. -1 to disable
 ttt_marshal_announce_deputy                 1       // Whether a player being deputized will be announced to everyone
 ttt_marshal_badge_time                      8       // The amount of time (in seconds) the marshal's badge takes to use
+ttt_marshal_credits_starting                1       // The number of credits a marshal should start with
+
+// Quartermaster
+ttt_quartermaster_limited_loot              0       // Whether players should be limited to looting a single quartermaster crate per round
+ttt_quartermaster_credits_starting          3       // The number of credits a quartermaster should start with
 
 // ----------------------------------------
 
@@ -634,6 +643,7 @@ ttt_drunk_can_be_arsonist                   1       // Whether the drunk can bec
 ttt_drunk_can_be_spy                        1       // Whether the drunk can become a spy
 ttt_drunk_can_be_hivemind                   1       // Whether the drunk can become the hive mind
 ttt_drunk_can_be_guesser                    1       // Whether the drunk can become a guesser
+ttt_drunk_can_be_quartermaster              1       // Whether the drunk can become a quartermaster
 
 // Old Man
 ttt_oldman_drain_health_to                  0       // The amount of health to drain the old man down to. Set to 0 to disable
@@ -771,6 +781,7 @@ ttt_clown_shop_random_percent               0       // The percent chance that a
 ttt_killer_shop_random_percent              0       // The percent chance that a weapon in the shop will be not be shown for killers
 ttt_zombie_shop_random_percent              0       // The percent chance that a weapon in the shop will be not be shown for zombies
 ttt_hivemind_shop_random_percent            0       // The percent chance that a weapon in the shop will be not be shown for the hive mind
+ttt_quartermaster_shop_random_percent       0       // The percent chance that a weapon in the shop will be not be shown for the quartermaster
 
 // Enable/Disable Individual Role Random Shop Restrictions
 ttt_traitor_shop_random_enabled             0       // Whether role shop randomization is enabled for traitors
@@ -798,6 +809,7 @@ ttt_clown_shop_random_enabled               0       // Whether role shop randomi
 ttt_killer_shop_random_enabled              0       // Whether role shop randomization is enabled for killers
 ttt_zombie_shop_random_enabled              0       // Whether role shop randomization is enabled for zombies
 ttt_hivemind_shop_random_enabled            0       // Whether role shop randomization is enabled for the hive mind
+ttt_quartermaster_shop_random_enabled       0       // Whether role shop randomization is enabled for the quartermaster
 
 // Role Shop Mode (Server or round must be restarted for changes to take effect)
 // Mode explanation:
@@ -839,6 +851,7 @@ ttt_tracker_shop_sync                       0       // Whether trackers should h
 ttt_medium_shop_sync                        0       // Whether mediums should have all weapons that vanilla detectives have in their weapon shop
 ttt_sapper_shop_sync                        0       // Whether sappers should have all weapons that vanilla detectives have in their weapon shop
 ttt_marshal_shop_sync                       0       // Whether marshals should have all weapons that vanilla detectives have in their weapon shop
+ttt_quartermaster_shop_sync                 0       // Whether quartermasters should have all weapons that vanilla detectives have in their weapon shop
 
 // ----------------------------------------
 
@@ -888,6 +901,7 @@ ttt_arsonist_starting_health                100     // The amount of health the 
 ttt_spy_starting_health                     100     // The amount of health the spy starts with
 ttt_hivemind_starting_health                100     // The amount of health the hive mind starts with
 ttt_guesser_starting_health                 100     // The amount of health the guesser starts with
+ttt_quartermaster_starting_health           100     // The amount of health the quartermaster starts with
 
 // Individual Role Max Health. Set to 0 or -1 to use the game's default maximum health.
 ttt_traitor_max_health                      100     // The maximum amount of health a traitor can have
@@ -934,6 +948,7 @@ ttt_arsonist_max_health                     100     // The maximum amount of hea
 ttt_spy_max_health                          100     // The maximum amount of health the spy can have
 ttt_hivemind_max_health                     100     // The maximum amount of health the hive can have
 ttt_guesser_max_health                      100     // The maximum amount of health the guesser can have
+ttt_quartermaster_max_health                100     // The maximum amount of health the quartermaster can have
 
 // Round Time
 ttt_roundtime_win_draw                      0       // Whether a round that ends because the round time limit has passed counts as a draw. If it is not a draw, the traitor team loses
