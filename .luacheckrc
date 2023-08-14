@@ -1000,6 +1000,7 @@ globals = {
     "ROLE_PARASITE",
     "ROLE_PHANTOM",
     "ROLE_QUACK",
+    "ROLE_QUARTERMASTER",
     "ROLE_REVENGER",
     "ROLE_SAPPER",
     "ROLE_SHADOW",
