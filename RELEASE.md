@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.9.6 (Beta)
+**Released:**
+
+### Fixes
+- Fixed typo in the hive mind's tutorial
+
 ## 1.9.5 (Beta)
 **Released: August 13th, 2023**
 
