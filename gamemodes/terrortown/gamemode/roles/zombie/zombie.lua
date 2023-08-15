@@ -68,7 +68,7 @@ function plymeta:SetZombiePrime(p) self:SetNWBool("zombie_prime", p) end
 -- ROLE STATUS --
 -----------------
 
-hook.Add("TTTBeginRound", "Zombie_RoleFeatures_PrepareRound", function()
+hook.Add("TTTBeginRound", "Zombie_RoleFeatures_BeginRound", function()
     for _, v in pairs(GetAllPlayers()) do
         if v:IsZombie() then
             v:SetZombiePrime(true)
@@ -82,6 +82,7 @@ hook.Add("TTTPrepareRound", "Zombie_RoleFeatures_PrepareRound", function()
         v:SetNWBool("IsZombifying", false)
         -- Keep previous naming scheme for backwards compatibility
         v:SetNWBool("zombie_prime", false)
+        timer.Remove("Zombify_" .. v:SteamID64())
     end
 end)
 
@@ -297,7 +298,10 @@ function plymeta:RespawnAsZombie(prime)
     net.WriteString(self:Nick())
     net.Broadcast()
 
-    timer.Simple(3, function()
+    timer.Create("Zombify_" .. self:SteamID64(), 3, 1, function()
+        -- Sanity check
+        if not IsPlayer(self) then return end
+
         -- Don't respawn the player if they were already zombified by something else
         if not self:IsZombie() then
             local body = self.server_ragdoll or self:GetRagdollEntity()
