@@ -202,13 +202,28 @@ Spit Attack
 ]]
 
 function SWEP:Reload()
-    if CLIENT then return end
     if not zombie_spit_enable:GetBool() then return end
     if self.NextReload > CurTime() then return end
     self.NextReload = CurTime() + self.Tertiary.Delay
     self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 
-    self:CSShootBullet(self.Tertiary.Damage, self.Tertiary.Recoil, self.Tertiary.NumShots, self.Tertiary.Cone)
+    if SERVER then
+        self:CSShootBullet(self.Tertiary.Damage, self.Tertiary.Recoil, self.Tertiary.NumShots, self.Tertiary.Cone)
+    end
+    self:SendWeaponAnim(ACT_VM_MISSCENTER)
+
+    -- If you play a fake sequence the fists hide in a quicker and cleaner way than when using "fists_holster"
+    self:PlayAnimation(PLAYER_ATTACK1, "ThisIsAFakeSequence")
+    -- After a short delay, bring the fists back out
+    timer.Simple(0.25, function()
+        if not IsValid(self) then return end
+
+        local owner = self:GetOwner()
+        if not IsValid(owner) then return end
+
+        local vm = owner:GetViewModel()
+        vm:SendViewModelMatchingSequence(vm:LookupSequence("fists_draw"))
+    end)
 end
 
 function SWEP:CSShootBullet(dmg, recoil, numbul, cone)
@@ -228,8 +243,6 @@ function SWEP:CSShootBullet(dmg, recoil, numbul, cone)
     bullet.Damage        = dmg
 
     owner:FireBullets(bullet)
-    self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)     -- View model animation
-    owner:SetAnimation(PLAYER_ATTACK1)            -- 3rd Person Animation
 
     if owner:IsNPC() then return end
 

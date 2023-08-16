@@ -9,6 +9,7 @@
 ### Changes
 - Changed zombie claws to randomly alternate between attacking with left and right claws
 - Changed zombies to use more appropriate thirdperson animations while using the claws
+- Changed zombie spit to have an animation
 
 ### Fixes
 - Fixed typo in the hive mind's tutorial
