@@ -88,17 +88,16 @@ function SWEP:Initialize()
     return self.BaseClass.Initialize(self)
 end
 
+function SWEP:PlayAnimation(sequence, anim)
+    local owner = self:GetOwner()
+    local vm = owner:GetViewModel()
+    vm:SendViewModelMatchingSequence(vm:LookupSequence(anim))
+    owner:SetAnimation(sequence)
+end
+
 --[[
 Claw Attack
 ]]
-
-function SWEP:PlayPunchAnimation()
-    local anim = math.random() < 0.5 and "fists_right" or "fists_left"
-    local vm = self:GetOwner():GetViewModel()
-    vm:SendViewModelMatchingSequence(vm:LookupSequence(anim))
-    self:GetOwner():ViewPunch(Angle( 4, 4, 0 ))
-    self:GetOwner():SetAnimation(PLAYER_ATTACK1)
-end
 
 function SWEP:ShouldConvert()
     local chance = self:GetOwner():IsZombiePrime() and GetConVar("ttt_zombie_prime_convert_chance"):GetFloat() or GetConVar("ttt_zombie_thrall_convert_chance"):GetFloat()
@@ -112,11 +111,13 @@ function SWEP:PrimaryAttack()
     local owner = self:GetOwner()
     if not IsValid(owner) then return end
 
-    self:PlayPunchAnimation()
-
     if owner.LagCompensation then -- for some reason not always true
         owner:LagCompensation(true)
     end
+
+    local anim = math.random() < 0.5 and "fists_right" or "fists_left"
+    self:PlayAnimation(PLAYER_ATTACK1, anim)
+    owner:ViewPunch(Angle( 4, 4, 0 ))
 
     local spos = owner:GetShootPos()
     local sdest = spos + (owner:GetAimVector() * 70)
@@ -129,7 +130,6 @@ function SWEP:PrimaryAttack()
     self:EmitSound(sound_single)
 
     if IsValid(hitEnt) or tr_main.HitWorld then
-        self:PlayPunchAnimation()
         self:SendWeaponAnim(ACT_VM_HITCENTER)
 
         if not (CLIENT and (not IsFirstTimePredicted())) then
@@ -154,8 +154,6 @@ function SWEP:PrimaryAttack()
     end
 
     if not CLIENT then
-        owner:SetAnimation(PLAYER_ATTACK1)
-
         if IsPlayer(hitEnt) and not hitEnt:IsZombieAlly() and not hitEnt:ShouldActLikeJester() then
             if hitEnt:Health() <= self.Primary.Damage and self:ShouldConvert() then
                 owner:AddCredits(1)
