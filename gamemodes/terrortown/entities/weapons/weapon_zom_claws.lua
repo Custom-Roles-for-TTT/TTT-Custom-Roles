@@ -83,7 +83,7 @@ Claw Attack
 ]]
 
 function SWEP:PlayPunchAnimation()
-    local anim = "fists_right"
+    local anim = math.random() < 0.5 and "fists_right" or "fists_left"
     local vm = self:GetOwner():GetViewModel()
     vm:SendViewModelMatchingSequence(vm:LookupSequence(anim))
     self:GetOwner():ViewPunch(Angle( 4, 4, 0 ))

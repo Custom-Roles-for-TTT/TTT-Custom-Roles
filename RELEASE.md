@@ -6,6 +6,9 @@
 ### Additions
 - Added new special detective role: quartermaster
 
+### Changes
+- Updated zombie claws to randomly alternate between attacking with left and right claws
+
 ### Fixes
 - Fixed typo in the hive mind's tutorial
 - Fixed players getting zombie claws as non-zombies if they were turned right before a round restarted
