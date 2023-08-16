@@ -252,6 +252,15 @@ Called before the round win results message is printed to the top-right corner o
 
 *Return:* `true` if the default print messages should be skipped (Defaults to `false`).
 
+#### TTTQuartermasterCrateOpened(ply, tgt, item_id)
+Called when a player opens a crate from a quartermaster.\
+*Realm:* Server\
+*Added in:* 1.9.6\
+*Parameters:*
+- *ply* - The quartermaster who provided the crate
+- *tgt* - The player who opened the crate
+- *item_id* - The ID of the item/equipment in the crate
+
 ### TTTRadarPlayerRender(client, tgt, color, hidden)
 Called before a target's radar ping is rendered, allowing the color and whether the ping should be shown to be changed.\
 *Realm:* Client\

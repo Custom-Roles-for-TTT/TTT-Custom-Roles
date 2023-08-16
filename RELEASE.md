@@ -1,5 +1,15 @@
 # Release Notes
 
+## 1.9.6 (Beta)
+**Released:**
+
+### Additions
+- Added new special detective role: quartermaster
+
+### Fixes
+- Fixed typo in the hive mind's tutorial
+- Fixed players getting zombie claws as non-zombies if they were turned right before a round restarted
+
 ## 1.9.5 (Beta)
 **Released: August 13th, 2023**
 
