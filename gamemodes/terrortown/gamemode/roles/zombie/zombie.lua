@@ -26,11 +26,14 @@ local zombie_prime_only_weapons = CreateConVar("ttt_zombie_prime_only_weapons", 
 local zombie_respawn_health = CreateConVar("ttt_zombie_respawn_health", "100", FCVAR_NONE, "The amount of health a player should respawn with when they are converted to a zombie thrall", 1, 200)
 local zombie_friendly_fire = CreateConVar("ttt_zombie_friendly_fire", "2", FCVAR_NONE, "How to handle friendly fire damage between zombies. 0 - Do nothing. 1 - Reflect the damage back to the attacker. 2 - Negate the damage.", 0, 2)
 local zombie_respawn_block_win = CreateConVar("ttt_zombie_respawn_block_win", "0")
+local zombie_prime_convert_chance = CreateConVar("ttt_zombie_prime_convert_chance", "1", FCVAR_NONE, "The chance that a prime zombie (e.g. player who spawned as a zombie originally) will convert other players who are killed by their claws to be zombies as well. Set to 0 to disable", 0, 1)
+local zombie_thrall_convert_chance = CreateConVar("ttt_zombie_thrall_convert_chance", "1", FCVAR_NONE, "The chance that a zombie thrall (e.g. non-prime zombie) will convert other players who are killed by their claws to be zombies as well. Set to 0 to disable", 0, 1)
 
 local zombie_show_target_icon = GetConVar("ttt_zombie_show_target_icon")
 local zombie_vision_enable = GetConVar("ttt_zombie_vision_enable")
 local zombie_damage_penalty = GetConVar("ttt_zombie_damage_penalty")
 local zombie_damage_reduction = GetConVar("ttt_zombie_damage_reduction")
+local zombie_spit_convert = GetConVar("ttt_zombie_spit_convert")
 
 -----------
 -- PRIME --
@@ -335,6 +338,28 @@ end
 hook.Add("TTTCupidShouldLoverSurvive", "Zombie_TTTCupidShouldLoverSurvive", function(ply, lover)
     if ply:IsZombifying() or lover:IsZombifying() then
         return true
+    end
+end)
+
+local function ShouldConvert(ply)
+    local chance = ply:IsZombiePrime() and zombie_prime_convert_chance:GetFloat() or zombie_thrall_convert_chance:GetFloat()
+    -- Use "less-than" so a chance of 0 really means never
+    return math.random() < chance
+end
+
+hook.Add("DoPlayerDeath", "Zombie_DoPlayerDeath", function(victim, attacker, dmginfo)
+    if not IsPlayer(attacker) or not attacker:IsZombie() then return end
+    if not ShouldConvert(attacker) then return end
+
+    local inflictor = dmginfo:GetInflictor()
+    if not IsValid(inflictor) or WEPS.GetClass(inflictor) ~= "weapon_zom_claws" then return end
+
+    -- If they were killed by a normal slash attack or spit conversion is enabled and they were killed by spitting, convert them
+    if dmginfo:IsDamageType(DMG_SLASH) or (zombie_spit_convert:GetBool() and dmginfo:IsDamageType(DMG_BULLET)) then
+        attacker:AddCredits(1)
+        LANG.Msg(owner, "credit_all", { role = ROLE_STRINGS[ROLE_ZOMBIE], num = 1 })
+        hook.Call("TTTPlayerRoleChangedByItem", nil, attacker, victim, inflictor)
+        victim:RespawnAsZombie()
     end
 end)
 

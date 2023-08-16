@@ -66,11 +66,6 @@ local zombie_thrall_attack_damage = CreateConVar("ttt_zombie_thrall_attack_damag
 local zombie_prime_attack_delay = CreateConVar("ttt_zombie_prime_attack_delay", "0.7", FCVAR_REPLICATED, "The amount of time between claw attacks for a prime zombie (e.g. player who spawned as a zombie originally). Server or round must be restarted for changes to take effect", 0.1, 3)
 local zombie_thrall_attack_delay = CreateConVar("ttt_zombie_thrall_attack_delay", "1.4", FCVAR_REPLICATED, "The amount of time between claw attacks for a zombie thrall (e.g. non-prime zombie). Server or round must be restarted for changes to take effect", 0.1, 3)
 
-if SERVER then
-    CreateConVar("ttt_zombie_prime_convert_chance", "1", FCVAR_NONE, "The chance that a prime zombie (e.g. player who spawned as a zombie originally) will convert other players who are killed by their claws to be zombies as well. Set to 0 to disable", 0, 1)
-    CreateConVar("ttt_zombie_thrall_convert_chance", "1", FCVAR_NONE, "The chance that a zombie thrall (e.g. non-prime zombie) will convert other players who are killed by their claws to be zombies as well. Set to 0 to disable", 0, 1)
-end
-
 function SWEP:Initialize()
     self.ActivityTranslate[ ACT_MP_STAND_IDLE ]					= ACT_HL2MP_IDLE_ZOMBIE
     self.ActivityTranslate[ ACT_MP_WALK ]						= ACT_HL2MP_WALK_ZOMBIE_01
@@ -98,12 +93,6 @@ end
 --[[
 Claw Attack
 ]]
-
-function SWEP:ShouldConvert()
-    local chance = self:GetOwner():IsZombiePrime() and GetConVar("ttt_zombie_prime_convert_chance"):GetFloat() or GetConVar("ttt_zombie_thrall_convert_chance"):GetFloat()
-    -- Use "less-than" so a chance of 0 really means never
-    return math.random() < chance
-end
 
 function SWEP:PrimaryAttack()
     self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
@@ -153,25 +142,16 @@ function SWEP:PrimaryAttack()
         self:SendWeaponAnim(ACT_VM_MISSCENTER)
     end
 
-    if not CLIENT then
-        if IsPlayer(hitEnt) and not hitEnt:IsZombieAlly() and not hitEnt:ShouldActLikeJester() then
-            if hitEnt:Health() <= self.Primary.Damage and self:ShouldConvert() then
-                owner:AddCredits(1)
-                LANG.Msg(owner, "credit_all", { role = ROLE_STRINGS[ROLE_ZOMBIE], num = 1 })
-                hook.Call("TTTPlayerRoleChangedByItem", nil, owner, hitEnt, self)
-                hitEnt:RespawnAsZombie()
-            end
+    if not CLIENT and IsPlayer(hitEnt) and not hitEnt:IsZombieAlly() and not hitEnt:ShouldActLikeJester() then
+        local dmg = DamageInfo()
+        dmg:SetDamage(self.Primary.Damage)
+        dmg:SetAttacker(owner)
+        dmg:SetInflictor(self)
+        dmg:SetDamageForce(owner:GetAimVector() * 5)
+        dmg:SetDamagePosition(owner:GetPos())
+        dmg:SetDamageType(DMG_SLASH)
 
-            local dmg = DamageInfo()
-            dmg:SetDamage(self.Primary.Damage)
-            dmg:SetAttacker(owner)
-            dmg:SetInflictor(self)
-            dmg:SetDamageForce(owner:GetAimVector() * 5)
-            dmg:SetDamagePosition(owner:GetPos())
-            dmg:SetDamageType(DMG_SLASH)
-
-            hitEnt:DispatchTraceAttack(dmg, spos + (owner:GetAimVector() * 3), sdest)
-        end
+        hitEnt:DispatchTraceAttack(dmg, spos + (owner:GetAimVector() * 3), sdest)
     end
 
     if owner.LagCompensation then
@@ -241,6 +221,9 @@ function SWEP:CSShootBullet(dmg, recoil, numbul, cone)
     bullet.TracerName    = "acidtracer"
     bullet.Force         = 55
     bullet.Damage        = dmg
+    bullet.Callback      = function(attacker, tr, dmginfo)
+        dmginfo:SetInflictor(self)
+    end
 
     owner:FireBullets(bullet)
 

@@ -5,6 +5,7 @@
 
 ### Additions
 - Added new special detective role: quartermaster
+- Added convar to control whether a zombie killing a player with spit converts that player to be a zombie as well (defaults to disabled)
 
 ### Changes
 - Changed zombie claws to randomly alternate between attacking with left and right claws

@@ -15,6 +15,7 @@ local zombie_show_target_icon = GetConVar("ttt_zombie_show_target_icon")
 local zombie_vision_enable = GetConVar("ttt_zombie_vision_enable")
 local zombie_damage_penalty = GetConVar("ttt_zombie_damage_penalty")
 local zombie_damage_reduction = GetConVar("ttt_zombie_damage_reduction")
+local zombie_spit_convert = GetConVar("ttt_zombie_spit_convert")
 
 ------------------
 -- TRANSLATIONS --
@@ -313,6 +314,12 @@ hook.Add("TTTTutorialRoleText", "Zombie_TTTTutorialRoleText", function(role, tit
 
             local key = Key("+reload", "R")
             html = html .. "<span style='" .. keyMappingStyles .. "'>" .. key .. "</span> key.</span>"
+
+            html = html .. "<span style='display: block; margin-top: 10px;'>Killing a player with acid spit <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>will "
+            if not zombie_spit_convert:GetBool() then
+                html = html .. "not "
+            end
+            html = html .. "convert them</span>.</span>"
         end
 
         -- Vision
