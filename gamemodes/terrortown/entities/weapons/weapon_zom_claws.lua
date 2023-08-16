@@ -184,11 +184,16 @@ Spit Attack
 function SWEP:Reload()
     if not zombie_spit_enable:GetBool() then return end
     if self.NextReload > CurTime() then return end
+
+    local owner = self:GetOwner()
+    if not IsValid(owner) then return end
+
     self.NextReload = CurTime() + self.Tertiary.Delay
     self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 
     if SERVER then
         self:CSShootBullet(self.Tertiary.Damage, self.Tertiary.Recoil, self.Tertiary.NumShots, self.Tertiary.Cone)
+        owner:EmitSound("npc/fast_zombie/wake1.wav", 100, 100)
     end
     self:SendWeaponAnim(ACT_VM_MISSCENTER)
 
@@ -197,8 +202,6 @@ function SWEP:Reload()
     -- After a short delay, bring the fists back out
     timer.Simple(0.25, function()
         if not IsValid(self) then return end
-
-        local owner = self:GetOwner()
         if not IsValid(owner) then return end
 
         local vm = owner:GetViewModel()
