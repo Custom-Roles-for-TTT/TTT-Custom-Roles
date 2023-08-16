@@ -71,11 +71,21 @@ if SERVER then
     CreateConVar("ttt_zombie_thrall_convert_chance", "1", FCVAR_NONE, "The chance that a zombie thrall (e.g. non-prime zombie) will convert other players who are killed by their claws to be zombies as well. Set to 0 to disable", 0, 1)
 end
 
-if CLIENT then
-    function SWEP:Initialize()
+function SWEP:Initialize()
+    self.ActivityTranslate[ ACT_MP_STAND_IDLE ]					= ACT_HL2MP_IDLE_ZOMBIE
+    self.ActivityTranslate[ ACT_MP_WALK ]						= ACT_HL2MP_WALK_ZOMBIE_01
+    self.ActivityTranslate[ ACT_MP_RUN ]						= ACT_HL2MP_RUN_ZOMBIE
+    self.ActivityTranslate[ ACT_MP_CROUCH_IDLE ]				= ACT_HL2MP_IDLE_CROUCH_ZOMBIE
+    self.ActivityTranslate[ ACT_MP_CROUCHWALK ]					= ACT_HL2MP_WALK_CROUCH_ZOMBIE_01
+    self.ActivityTranslate[ ACT_MP_ATTACK_STAND_PRIMARYFIRE ]	= ACT_GMOD_GESTURE_RANGE_ZOMBIE
+    self.ActivityTranslate[ ACT_MP_ATTACK_CROUCH_PRIMARYFIRE ]	= ACT_GMOD_GESTURE_RANGE_ZOMBIE
+    --self.ActivityTranslate[ ACT_MP_JUMP ]						= ACT_ZOMBIE_LEAPING
+    self.ActivityTranslate[ ACT_RANGE_ATTACK1 ]					= ACT_GMOD_GESTURE_RANGE_ZOMBIE
+
+    if CLIENT then
         self:AddHUDHelp("zom_claws_help_pri", "zom_claws_help_sec", true)
-        return self.BaseClass.Initialize(self)
     end
+    return self.BaseClass.Initialize(self)
 end
 
 --[[
@@ -221,7 +231,6 @@ function SWEP:CSShootBullet(dmg, recoil, numbul, cone)
 
     owner:FireBullets(bullet)
     self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)     -- View model animation
-    owner:MuzzleFlash()                           -- Crappy muzzle light
     owner:SetAnimation(PLAYER_ATTACK1)            -- 3rd Person Animation
 
     if owner:IsNPC() then return end
