@@ -74,7 +74,6 @@ function SWEP:Initialize()
     self.ActivityTranslate[ ACT_MP_CROUCHWALK ]					= ACT_HL2MP_WALK_CROUCH_ZOMBIE_01
     self.ActivityTranslate[ ACT_MP_ATTACK_STAND_PRIMARYFIRE ]	= ACT_GMOD_GESTURE_RANGE_ZOMBIE
     self.ActivityTranslate[ ACT_MP_ATTACK_CROUCH_PRIMARYFIRE ]	= ACT_GMOD_GESTURE_RANGE_ZOMBIE
-    --self.ActivityTranslate[ ACT_MP_JUMP ]						= ACT_ZOMBIE_LEAPING
     self.ActivityTranslate[ ACT_RANGE_ATTACK1 ]					= ACT_GMOD_GESTURE_RANGE_ZOMBIE
 
     if CLIENT then
@@ -164,16 +163,40 @@ Jump Attack
 ]]
 
 function SWEP:SecondaryAttack()
-    if SERVER then
-        if not zombie_leap_enable:GetBool() then return end
-        local owner = self:GetOwner()
-        if (not self:CanSecondaryAttack()) or owner:IsOnGround() == false then return end
+    if not zombie_leap_enable:GetBool() then return end
 
+    local owner = self:GetOwner()
+    if not IsValid(owner) then return end
+
+    if not self:CanSecondaryAttack() or not owner:IsOnGround() then return end
+
+    self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
+
+    if SERVER then
         local jumpsounds = { "npc/fast_zombie/leap1.wav", "npc/zombie/zo_attack2.wav", "npc/fast_zombie/fz_alert_close1.wav", "npc/zombie/zombie_alert1.wav" }
-        self.SecondaryDelay = CurTime()+10
         owner:SetVelocity(owner:GetForward() * 200 + Vector(0,0,400))
         owner:EmitSound(jumpsounds[math.random(#jumpsounds)], 100, 100)
-        self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
+    end
+
+    -- Make this use the leap animation
+    self.ActivityTranslate[ACT_MP_JUMP] = ACT_ZOMBIE_LEAPING
+
+    -- Make it look like the player is jumping
+    owner.m_bJumping = true
+    owner.m_bFirstJumpFrame = false
+    owner.m_flJumpStartTime = CurTime()
+    owner.CalcIdeal = ACT_MP_JUMP
+end
+
+function SWEP:Think()
+    if self.ActivityTranslate[ACT_MP_JUMP] == nil then return end
+
+    local owner = self:GetOwner()
+    if not IsValid(owner) or owner.m_bJumping then return end
+
+    -- When the player hits the ground or lands in water, reset the animation back to normal
+    if owner:IsOnGround() or owner:WaterLevel() > 0 then
+        self.ActivityTranslate[ACT_MP_JUMP] = nil
     end
 end
 
