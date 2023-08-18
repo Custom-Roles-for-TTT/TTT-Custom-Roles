@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.9.6 (Beta)
-**Released:**
+**Released: August 19th, 2023**
 
 ### Additions
 - Added new special detective role: quartermaster
