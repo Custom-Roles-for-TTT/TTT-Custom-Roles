@@ -5,6 +5,12 @@
 
 ### Additions
 - Added new special detective role: quartermaster
+- Added convar to control whether a zombie killing a player with spit converts that player to be a zombie as well (defaults to disabled)
+- Added sound and animation when a zombie uses their spit weapon
+
+### Changes
+- Changed zombie claws to randomly alternate between attacking with left and right claws
+- Changed zombies to use more appropriate thirdperson animations while using the claws
 
 ### Fixes
 - Fixed typo in the hive mind's tutorial
