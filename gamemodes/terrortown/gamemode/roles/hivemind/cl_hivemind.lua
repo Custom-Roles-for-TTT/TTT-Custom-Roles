@@ -25,7 +25,7 @@ AddHook("Initialize", "HiveMind_Translations_Initialize", function()
     LANG.AddToLanguage("english", "ev_win_hivemind", "The {role} has assimilated everyone!")
 
     -- Popup
-    LANG.AddToLanguage("english", "info_popup_hivemind", [[You are the {role}! Killing other
+    LANG.AddToLanguage("english", "info_popup_hivemind", [[You are {role}! Killing other
 players will have them join you, merging their health
 pool and available shop weapons.
 

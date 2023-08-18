@@ -66,35 +66,32 @@ local zombie_thrall_attack_damage = CreateConVar("ttt_zombie_thrall_attack_damag
 local zombie_prime_attack_delay = CreateConVar("ttt_zombie_prime_attack_delay", "0.7", FCVAR_REPLICATED, "The amount of time between claw attacks for a prime zombie (e.g. player who spawned as a zombie originally). Server or round must be restarted for changes to take effect", 0.1, 3)
 local zombie_thrall_attack_delay = CreateConVar("ttt_zombie_thrall_attack_delay", "1.4", FCVAR_REPLICATED, "The amount of time between claw attacks for a zombie thrall (e.g. non-prime zombie). Server or round must be restarted for changes to take effect", 0.1, 3)
 
-if SERVER then
-    CreateConVar("ttt_zombie_prime_convert_chance", "1", FCVAR_NONE, "The chance that a prime zombie (e.g. player who spawned as a zombie originally) will convert other players who are killed by their claws to be zombies as well. Set to 0 to disable", 0, 1)
-    CreateConVar("ttt_zombie_thrall_convert_chance", "1", FCVAR_NONE, "The chance that a zombie thrall (e.g. non-prime zombie) will convert other players who are killed by their claws to be zombies as well. Set to 0 to disable", 0, 1)
+function SWEP:Initialize()
+    self.ActivityTranslate[ACT_MP_STAND_IDLE]                  = ACT_HL2MP_IDLE_ZOMBIE
+    self.ActivityTranslate[ACT_MP_WALK]                        = ACT_HL2MP_WALK_ZOMBIE_01
+    self.ActivityTranslate[ACT_MP_RUN]                         = ACT_HL2MP_RUN_ZOMBIE
+    self.ActivityTranslate[ACT_MP_CROUCH_IDLE]                 = ACT_HL2MP_IDLE_CROUCH_ZOMBIE
+    self.ActivityTranslate[ACT_MP_CROUCHWALK]                  = ACT_HL2MP_WALK_CROUCH_ZOMBIE_01
+    self.ActivityTranslate[ACT_MP_ATTACK_STAND_PRIMARYFIRE]    = ACT_GMOD_GESTURE_RANGE_ZOMBIE
+    self.ActivityTranslate[ACT_MP_ATTACK_CROUCH_PRIMARYFIRE]   = ACT_GMOD_GESTURE_RANGE_ZOMBIE
+    self.ActivityTranslate[ACT_RANGE_ATTACK1]                  = ACT_GMOD_GESTURE_RANGE_ZOMBIE
+
+    if CLIENT then
+        self:AddHUDHelp("zom_claws_help_pri", "zom_claws_help_sec", true)
+    end
+    return self.BaseClass.Initialize(self)
 end
 
-if CLIENT then
-    function SWEP:Initialize()
-        self:AddHUDHelp("zom_claws_help_pri", "zom_claws_help_sec", true)
-        return self.BaseClass.Initialize(self)
-    end
+function SWEP:PlayAnimation(sequence, anim)
+    local owner = self:GetOwner()
+    local vm = owner:GetViewModel()
+    vm:SendViewModelMatchingSequence(vm:LookupSequence(anim))
+    owner:SetAnimation(sequence)
 end
 
 --[[
 Claw Attack
 ]]
-
-function SWEP:PlayPunchAnimation()
-    local anim = "fists_right"
-    local vm = self:GetOwner():GetViewModel()
-    vm:SendViewModelMatchingSequence(vm:LookupSequence(anim))
-    self:GetOwner():ViewPunch(Angle( 4, 4, 0 ))
-    self:GetOwner():SetAnimation(PLAYER_ATTACK1)
-end
-
-function SWEP:ShouldConvert()
-    local chance = self:GetOwner():IsZombiePrime() and GetConVar("ttt_zombie_prime_convert_chance"):GetFloat() or GetConVar("ttt_zombie_thrall_convert_chance"):GetFloat()
-    -- Use "less-than" so a chance of 0 really means never
-    return math.random() < chance
-end
 
 function SWEP:PrimaryAttack()
     self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
@@ -102,11 +99,13 @@ function SWEP:PrimaryAttack()
     local owner = self:GetOwner()
     if not IsValid(owner) then return end
 
-    self:PlayPunchAnimation()
-
     if owner.LagCompensation then -- for some reason not always true
         owner:LagCompensation(true)
     end
+
+    local anim = math.random() < 0.5 and "fists_right" or "fists_left"
+    self:PlayAnimation(PLAYER_ATTACK1, anim)
+    owner:ViewPunch(Angle( 4, 4, 0 ))
 
     local spos = owner:GetShootPos()
     local sdest = spos + (owner:GetAimVector() * 70)
@@ -119,7 +118,6 @@ function SWEP:PrimaryAttack()
     self:EmitSound(sound_single)
 
     if IsValid(hitEnt) or tr_main.HitWorld then
-        self:PlayPunchAnimation()
         self:SendWeaponAnim(ACT_VM_HITCENTER)
 
         if not (CLIENT and (not IsFirstTimePredicted())) then
@@ -143,27 +141,16 @@ function SWEP:PrimaryAttack()
         self:SendWeaponAnim(ACT_VM_MISSCENTER)
     end
 
-    if not CLIENT then
-        owner:SetAnimation(PLAYER_ATTACK1)
+    if not CLIENT and IsPlayer(hitEnt) and not hitEnt:IsZombieAlly() and not hitEnt:ShouldActLikeJester() then
+        local dmg = DamageInfo()
+        dmg:SetDamage(self.Primary.Damage)
+        dmg:SetAttacker(owner)
+        dmg:SetInflictor(self)
+        dmg:SetDamageForce(owner:GetAimVector() * 5)
+        dmg:SetDamagePosition(owner:GetPos())
+        dmg:SetDamageType(DMG_SLASH)
 
-        if IsPlayer(hitEnt) and not hitEnt:IsZombieAlly() and not hitEnt:ShouldActLikeJester() then
-            if hitEnt:Health() <= self.Primary.Damage and self:ShouldConvert() then
-                owner:AddCredits(1)
-                LANG.Msg(owner, "credit_all", { role = ROLE_STRINGS[ROLE_ZOMBIE], num = 1 })
-                hook.Call("TTTPlayerRoleChangedByItem", nil, owner, hitEnt, self)
-                hitEnt:RespawnAsZombie()
-            end
-
-            local dmg = DamageInfo()
-            dmg:SetDamage(self.Primary.Damage)
-            dmg:SetAttacker(owner)
-            dmg:SetInflictor(self)
-            dmg:SetDamageForce(owner:GetAimVector() * 5)
-            dmg:SetDamagePosition(owner:GetPos())
-            dmg:SetDamageType(DMG_SLASH)
-
-            hitEnt:DispatchTraceAttack(dmg, spos + (owner:GetAimVector() * 3), sdest)
-        end
+        hitEnt:DispatchTraceAttack(dmg, spos + (owner:GetAimVector() * 3), sdest)
     end
 
     if owner.LagCompensation then
@@ -176,16 +163,40 @@ Jump Attack
 ]]
 
 function SWEP:SecondaryAttack()
-    if SERVER then
-        if not zombie_leap_enable:GetBool() then return end
-        local owner = self:GetOwner()
-        if (not self:CanSecondaryAttack()) or owner:IsOnGround() == false then return end
+    if not zombie_leap_enable:GetBool() then return end
 
+    local owner = self:GetOwner()
+    if not IsValid(owner) then return end
+
+    if not self:CanSecondaryAttack() or not owner:IsOnGround() then return end
+
+    self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
+
+    if SERVER then
         local jumpsounds = { "npc/fast_zombie/leap1.wav", "npc/zombie/zo_attack2.wav", "npc/fast_zombie/fz_alert_close1.wav", "npc/zombie/zombie_alert1.wav" }
-        self.SecondaryDelay = CurTime()+10
         owner:SetVelocity(owner:GetForward() * 200 + Vector(0,0,400))
         owner:EmitSound(jumpsounds[math.random(#jumpsounds)], 100, 100)
-        self:SetNextSecondaryFire(CurTime() + self.Secondary.Delay)
+    end
+
+    -- Make this use the leap animation
+    self.ActivityTranslate[ACT_MP_JUMP] = ACT_ZOMBIE_LEAPING
+
+    -- Make it look like the player is jumping
+    owner.m_bJumping = true
+    owner.m_bFirstJumpFrame = false
+    owner.m_flJumpStartTime = CurTime()
+    owner.CalcIdeal = ACT_MP_JUMP
+end
+
+function SWEP:Think()
+    if self.ActivityTranslate[ACT_MP_JUMP] == nil then return end
+
+    local owner = self:GetOwner()
+    if not IsValid(owner) or owner.m_bJumping then return end
+
+    -- When the player hits the ground or lands in water, reset the animation back to normal
+    if owner:IsOnGround() or owner:WaterLevel() > 0 then
+        self.ActivityTranslate[ACT_MP_JUMP] = nil
     end
 end
 
@@ -194,13 +205,31 @@ Spit Attack
 ]]
 
 function SWEP:Reload()
-    if CLIENT then return end
     if not zombie_spit_enable:GetBool() then return end
     if self.NextReload > CurTime() then return end
+
+    local owner = self:GetOwner()
+    if not IsValid(owner) then return end
+
     self.NextReload = CurTime() + self.Tertiary.Delay
     self:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
 
-    self:CSShootBullet(self.Tertiary.Damage, self.Tertiary.Recoil, self.Tertiary.NumShots, self.Tertiary.Cone)
+    if SERVER then
+        self:CSShootBullet(self.Tertiary.Damage, self.Tertiary.Recoil, self.Tertiary.NumShots, self.Tertiary.Cone)
+        owner:EmitSound("npc/fast_zombie/wake1.wav", 100, 100)
+    end
+    self:SendWeaponAnim(ACT_VM_MISSCENTER)
+
+    -- If you play a fake sequence the fists hide in a quicker and cleaner way than when using "fists_holster"
+    self:PlayAnimation(PLAYER_ATTACK1, "ThisIsAFakeSequence")
+    -- After a short delay, bring the fists back out
+    timer.Simple(0.25, function()
+        if not IsValid(self) then return end
+        if not IsValid(owner) then return end
+
+        local vm = owner:GetViewModel()
+        vm:SendViewModelMatchingSequence(vm:LookupSequence("fists_draw"))
+    end)
 end
 
 function SWEP:CSShootBullet(dmg, recoil, numbul, cone)
@@ -218,11 +247,11 @@ function SWEP:CSShootBullet(dmg, recoil, numbul, cone)
     bullet.TracerName    = "acidtracer"
     bullet.Force         = 55
     bullet.Damage        = dmg
+    bullet.Callback      = function(attacker, tr, dmginfo)
+        dmginfo:SetInflictor(self)
+    end
 
     owner:FireBullets(bullet)
-    self:SendWeaponAnim(ACT_VM_PRIMARYATTACK)     -- View model animation
-    owner:MuzzleFlash()                           -- Crappy muzzle light
-    owner:SetAnimation(PLAYER_ATTACK1)            -- 3rd Person Animation
 
     if owner:IsNPC() then return end
 
