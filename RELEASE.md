@@ -18,7 +18,7 @@
 - Fixed sponge role being hidden to traitors when there was an informant in the round
 
 ### Developer
-- Added `TTTInformantDefaultScanStage` to help roles override their default informant scan stage
+- Added `TTTInformantDefaultScanStage` hook to help roles override their default informant scan stage
 
 ## 1.9.5 (Beta)
 **Released: August 13th, 2023**
