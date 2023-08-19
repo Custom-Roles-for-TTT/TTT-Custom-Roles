@@ -128,6 +128,17 @@ Called after player information such as role, health, and ammo and equipment inf
 - *labelY* - The Y value representing the first clear space to add information
 - *activeLabels* - The list of current active additional labels. Used to determine the labelY offset to use via: `labelY = labelY + (20 * #activeLabels)`. Be sure to insert an entry when you add your own label so other addons can space appropriately. *(Added in 1.6.11)*
 
+### TTTInformantDefaultScanStage(ply, oldRole, newRole)
+Called when an informant is trying to determine the default scan stage of a plyer. Used to override that value.\
+*Realm:* Server\
+*Added in:* 1.9.6\
+*Parameters:*
+- *ply* - The player whose default stage stage is being determined
+- *oldRole* - The target player's old role. Only used when this hook is called due to a player's role changing
+- *newRole* - The target player's new role. Only used when this hook is called due to a player's role changing
+
+*Return:* The default scan stage to use for this player. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
+
 ### TTTInformantScanStageChanged(ply, tgt, stage)
 Called when an informant has scanned additional information from a target player.\
 *Realm:* Server\
