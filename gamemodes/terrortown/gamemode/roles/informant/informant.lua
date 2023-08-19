@@ -5,6 +5,7 @@ local IsValid = IsValid
 local pairs = pairs
 
 local GetAllPlayers = player.GetAll
+local CallHook = hook.Call
 
 -------------
 -- CONVARS --
@@ -83,6 +84,12 @@ local function SetDefaultScanState(ply, oldRole, newRole)
         ply:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_TEAM)
     else
         ply:SetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
+    end
+
+    -- Allow roles to overwrite their default scan stages if there's some reason why they should be known or hidden
+    local scan_stage = CallHook("TTTInformantDefaultScanStage", nil, ply, oldRole, newRole)
+    if type(scan_stage) == "number" and scan_stage >= INFORMANT_UNSCANNED and scan_stage <= INFORMANT_SCANNED_TRACKED then
+        ply:SetNWInt("TTTInformantScanStage", scan_stage)
     end
 end
 

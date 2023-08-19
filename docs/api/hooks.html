@@ -198,6 +198,22 @@
             <li><em>activeLabels</em> - The list of current active additional labels. Used to determine the labelY offset to use via: <code>labelY = labelY + (20 * #activeLabels)</code>. Be sure to insert an entry when you add your own label so other addons can space appropriately. <em>(Added in 1.6.11)</em></li>
         </ul>
 
+        <h3><a id="tttinformantdefaultscanstageply-oldrole-newrole" href="#tttinformantdefaultscanstageply-oldrole-newrole">TTTInformantDefaultScanStage(ply, oldRole, newRole)</a></h3>
+        <p>
+            Called when an informant has scanned additional information from a target player.<br>
+            <em>Realm:</em> Server<br>
+            <em>Added in:</em> 1.9.6<br>
+            <em>Parameters:</em>
+        </p>
+        <ul>
+            <li><em>ply</em> - The player whose default stage stage is being determined</li>
+            <li><em>oldRole</em> - The target player's old role. Only used when this hook is called due to a player's role changing</li>
+            <li><em>newRole</em> - The target player's new role. Only used when this hook is called due to a player's role changing</li>
+        </ul>
+        <p>
+            <em>Return:</em> The default scan stage to use for this player. If you have no opinion (e.g. let other logic determine this) then don't return anything at all.
+        </p>
+
         <h3><a id="tttinformantscanstagechangedply-tgt-stage" href="#tttinformantscanstagechangedply-tgt-stage">TTTInformantScanStageChanged(ply, tgt, stage)</a></h3>
         <p>
             Called when an informant has scanned additional information from a target player.<br>

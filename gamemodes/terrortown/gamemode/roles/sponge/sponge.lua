@@ -103,6 +103,17 @@ hook.Add("Think", "Sponge_Aura_Think", function()
     end
 end)
 
+-----------------------
+-- ROLE INTERACTIONS --
+-----------------------
+
+-- The sponge is viewable to everyone so the informant's default scan stage should be "ROLE" since their role is already known
+hook.Add("TTTInformantDefaultScanStage", "Sponge_TTTInformantDefaultScanStage", function(ply, oldRole, newRole)
+    if ply:IsSponge() then
+        return INFORMANT_SCANNED_ROLE
+    end
+end)
+
 ----------------
 -- WIN CHECKS --
 ----------------
