@@ -16,6 +16,9 @@ util.AddNetworkString("TTT_HiveMindChatDupe")
 local hivemind_vision_enable = GetConVar("ttt_hivemind_vision_enable")
 local hivemind_friendly_fire = GetConVar("ttt_hivemind_friendly_fire")
 local hivemind_join_heal_pct = GetConVar("ttt_hivemind_join_heal_pct")
+local hivemind_regen_timer = GetConVar("ttt_hivemind_regen_timer")
+local hivemind_regen_per_member_amt = GetConVar("ttt_hivemind_regen_per_member_amt")
+local hivemind_regen_max_pct = GetConVar("ttt_hivemind_regen_max_pct")
 
 ----------------------
 -- CHAT DUPLICATION --
@@ -181,6 +184,43 @@ AddHook("PostPlayerDeath", "HiveMind_PostPlayerDeath", function(ply)
     end
 end)
 
+------------------
+-- HEALTH REGEN --
+------------------
+
+ROLE_ON_ROLE_ASSIGNED[ROLE_HIVEMIND] = function(ply)
+    if timer.Exists("HiveMindHealthRegen") then return end
+
+    local regen_timer = hivemind_regen_timer:GetInt()
+    if regen_timer <= 0 then return end
+
+    local per_member_amt = hivemind_regen_per_member_amt:GetInt()
+    local regen_max = hivemind_regen_max_pct:GetFloat()
+
+    timer.Create("HiveMindHealthRegen", regen_timer, 0, function()
+        local hivemind_count = 0
+        for _, p in ipairs(GetAllPlayers()) do
+            if p:IsHiveMind() then
+                hivemind_count = hivemind_count + 1
+            end
+        end
+
+        -- Only heal for each additional member
+        if hivemind_count <= 1 then return end
+
+        -- If we're healing past their max regen, scale the amount down to match instead
+        local heal_amount = per_member_amt * (hivemind_count - 1)
+        if (currentHealth + heal_amount) / maxHealth > regen_max then
+            heal_amount = math.floor(regen_max * maxHealth) - currentHealth
+        end
+
+        -- Don't bother syncing if we're not healing anything
+        if heal_amount <= 0 then return end
+
+        HandleHealthSync(nil, currentHealth + heal_amount)
+    end)
+end
+
 -------------------
 -- FRIENDLY FIRE --
 -------------------
@@ -273,4 +313,5 @@ AddHook("TTTPrepareRound", "HiveMind_PrepareRound", function()
         timer.Remove("HiveMindRespawn_" .. v:SteamID64())
         v.PreviousMaxHealth = nil
     end
+    timer.Remove("HiveMindHealthRegen")
 end)

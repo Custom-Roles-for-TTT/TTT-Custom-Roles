@@ -16,6 +16,9 @@ CreateConVar("ttt_hivemind_vision_enable", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_hivemind_friendly_fire", "0", FCVAR_REPLICATED)
 local hivemind_is_monster = CreateConVar("ttt_hivemind_is_monster", "0", FCVAR_REPLICATED)
 CreateConVar("ttt_hivemind_join_heal_pct", 0.25, FCVAR_REPLICATED, "The percentage a new member's maximum health that the hive mind should be healed (e.g. 0.25 = 25% of their health healed)", 0, 1)
+CreateConVar("ttt_hivemind_regen_timer", 0, FCVAR_REPLICATED, "The amount of time (in seconds) between each health regeneration", 0, 180)
+CreateConVar("ttt_hivemind_regen_per_member_amt", 1, FCVAR_REPLICATED, "The amount of health per-member of the hive mind that they should regenerate over time", 1, 20)
+CreateConVar("ttt_hivemind_regen_max_pct", 0.5, FCVAR_REPLICATED, "The percentage of the hive mind's maximum health to heal them up to (e.g. 0.5 = 50% of their max health)", 0.1, 1)
 
 ROLE_CONVARS[ROLE_HIVEMIND] = {}
 TableInsert(ROLE_CONVARS[ROLE_HIVEMIND], {
@@ -32,6 +35,21 @@ TableInsert(ROLE_CONVARS[ROLE_HIVEMIND], {
 })
 table.insert(ROLE_CONVARS[ROLE_HIVEMIND], {
     cvar = "ttt_hivemind_join_heal_pct",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 2
+})
+table.insert(ROLE_CONVARS[ROLE_HIVEMIND], {
+    cvar = "ttt_hivemind_regen_per_member_amt",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_HIVEMIND], {
+    cvar = "ttt_hivemind_regen_timer",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_HIVEMIND], {
+    cvar = "ttt_hivemind_regen_max_pct",
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 2
 })

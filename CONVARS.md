@@ -750,7 +750,9 @@ ttt_hivemind_is_monster                     0       // Whether the hive mind sho
 ttt_hivemind_vision_enable                  1       // Whether the hive mind's member highlighting is enabled
 ttt_hivemind_friendly_fire                  0       // Whether a member of the hive mind can damage other members of the hive mind
 ttt_hivemind_join_heal_pct                  0.25    // The percentage a new member's maximum health that the hive mind should be healed (e.g. 0.25 = 25% of their health healed)
-
+ttt_hivemind_regen_timer                    0       // The amount of time (in seconds) between each health regeneration
+ttt_hivemind_regen_per_member_amt           1       // The amount of health per-member of the hive mind that they should regenerate over time
+ttt_hivemind_regen_max_pct                  0.5     // The percentage of the hive mind's maximum health to heal them up to (e.g. 0.5 = 50% of their max health)
 // ----------------------------------------
 
 // WEAPON SHOP SETTINGS

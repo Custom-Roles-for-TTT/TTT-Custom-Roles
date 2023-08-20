@@ -15,6 +15,9 @@ local StringUpper = string.upper
 local hivemind_vision_enable = GetConVar("ttt_hivemind_vision_enable")
 local hivemind_friendly_fire = GetConVar("ttt_hivemind_friendly_fire")
 local hivemind_join_heal_pct = GetConVar("ttt_hivemind_join_heal_pct")
+local hivemind_regen_timer = GetConVar("ttt_hivemind_regen_timer")
+local hivemind_regen_per_member_amt = GetConVar("ttt_hivemind_regen_per_member_amt")
+local hivemind_regen_max_pct = GetConVar("ttt_hivemind_regen_max_pct")
 
 ------------------
 -- TRANSLATIONS --
@@ -203,6 +206,12 @@ AddHook("TTTTutorialRoleText", "HiveMind_TTTTutorialRoleText", function(role, ti
         local join_heal_pct = hivemind_join_heal_pct:GetFloat()
         if join_heal_pct > 0 then
             html = html .. "<span style='display: block; margin-top: 10px;'>When a new member joins the " .. ROLE_STRINGS[ROLE_HIVEMIND] .. ", the collective <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>is healed by " .. (join_heal_pct * 100) .. "% of their former maximum health</span>.</span>"
+        end
+
+        local regen_timer = hivemind_regen_timer:GetInt()
+        if regen_timer > 0 then
+            local max_pct = (hivemind_regen_max_pct:GetFloat() * 100) .. "%"
+            html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_HIVEMIND] .. " will also <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>regenerate " .. hivemind_regen_per_member_amt:GetInt() .. " health per additional member every " .. regen_timer .. " second(s)</span>, up to " .. max_pct .. " of their maximum health.</span>"
         end
 
         html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_HIVEMIND] .. " also has a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>shared pool of credits</span> -- gaining or spending credits affects the collective.</span>"
