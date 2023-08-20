@@ -57,6 +57,7 @@ local lootgoblin_announce = GetConVar("ttt_lootgoblin_announce")
 local lootgoblin_cackle_enabled = GetConVar("ttt_lootgoblin_cackle_enabled")
 local lootgoblin_jingle_enabled = GetConVar("ttt_lootgoblin_jingle_enabled")
 local lootgoblin_active_display = GetConVar("ttt_lootgoblin_active_display")
+local lootgoblin_drop_timer = GetConVar("ttt_lootgoblin_drop_timer")
 
 -----------
 -- KARMA --
@@ -191,6 +192,16 @@ local function ActivateLootGoblin(ply)
     end
 end
 
+local function DropWeapon(wep, source_pos)
+    local pos = source_pos + Vector(0, 0, 25)
+    local ent = CreateEntity(wep)
+    ent:SetPos(pos)
+    ent:Spawn()
+
+    local phys = ent:GetPhysicsObject()
+    if phys:IsValid() then phys:ApplyForceCenter(Vector(math.Rand(-100, 100), math.Rand(-100, 100), 300) * phys:GetMass()) end
+end
+
 local function StartGoblinTimers()
     local goblinTimeMin = lootgoblin_activation_timer:GetInt()
     local goblinTimeMax = lootgoblin_activation_timer_max:GetInt()
@@ -234,7 +245,52 @@ local function StartGoblinTimers()
                 timer.Adjust("LootGoblinCackle", MathRandom(min, max), 0, nil)
             end)
         end
+
+        local dropTimer = lootgoblin_drop_timer:GetInt()
+        if dropTimer > 0 then
+            timer.Create("LootGoblinDrop", dropTimer, 0, function()
+                local weps = weapons.GetList()
+                for _, ply in ipairs(GetAllPlayers()) do
+                    if ply:IsActiveLootGoblin() then
+                        local wep = nil
+                        -- Loop in here so we get a different weapon for each loot goblin (if there are multiple)
+                        for _, v in RandomPairs(weps) do
+                            if v and not v.AutoSpawnable and v.CanBuy and v.AllowDrop then
+                                wep = WEPS.GetClass(v)
+                                break
+                            end
+                        end
+
+                        -- Sanity check
+                        if not wep then break end
+
+                        local pos = ply:GetPos()
+                        local ang = ply:GetAngles()
+                        -- Drop behind the player
+                        local new_pos = pos - (ang:Forward() * 40)
+                        DropWeapon(wep, new_pos)
+                    end
+                end
+            end)
+        end
     end)
+end
+
+local function PauseTimers()
+    timer.Pause("LootGoblinActivate")
+    timer.Pause("LootGoblinDrop")
+    timer.Pause("LootGoblinCackle")
+    timer.Pause("LootGoblinRadarDelay")
+end
+
+local function UnPauseTimers()
+    timer.UnPause("LootGoblinActivate")
+    timer.UnPause("LootGoblinDrop")
+    timer.UnPause("LootGoblinCackle")
+    timer.UnPause("LootGoblinRadarDelay")
+
+    local remaining = timer.TimeLeft("LootGoblinActivate")
+    SetGlobalFloat("ttt_lootgoblin_activate", CurTime() + remaining)
 end
 
 ----------------
@@ -257,10 +313,6 @@ local function HandleLootGoblinWinChecks(win_type)
     net.Broadcast()
 end
 hook.Add("TTTWinCheckComplete", "LootGoblin_TTTWinCheckComplete", HandleLootGoblinWinChecks)
-
-------------
--- TIMERS --
-------------
 
 hook.Add("TTTBeginRound", "LootGoblin_TTTBeginRound", function()
     net.Start("TTT_ResetLootGoblinWins")
@@ -299,7 +351,7 @@ local function PauseIfSingleGoblin()
     if GetRoundState() ~= ROUND_ACTIVE then return end
 
     if not player.IsRoleLiving(ROLE_LOOTGOBLIN) then
-        timer.Pause("LootGoblinActivate")
+        PauseTimers()
     end
 end
 
@@ -322,17 +374,11 @@ hook.Add("PlayerDeath", "LootGoblin_PlayerDeath", function(victim, infl, attacke
                 end
 
                 local ragdoll = victim.server_ragdoll or victim:GetRagdollEntity()
-                local pos = ragdoll:GetPos() + Vector(0, 0, 25)
-
                 local idx = MathRandom(1, #lootTable)
                 local wep = lootTable[idx]
                 table.remove(lootTable, idx)
-                local ent = CreateEntity(wep)
-                ent:SetPos(pos)
-                ent:Spawn()
 
-                local phys = ent:GetPhysicsObject()
-                if phys:IsValid() then phys:ApplyForceCenter(Vector(math.Rand(-100, 100), math.Rand(-100, 100), 300) * phys:GetMass()) end
+                DropWeapon(wep, ragdoll:GetPos())
             end)
         end
 
@@ -407,9 +453,7 @@ hook.Add("TTTPlayerSpawnForRound", "LootGoblin_TTTPlayerSpawnForRound", function
                 ActivateLootGoblin(ply)
             end
         elseif timer.Exists("LootGoblinActivate") then
-            timer.UnPause("LootGoblinActivate")
-            local remaining = timer.TimeLeft("LootGoblinActivate")
-            SetGlobalFloat("ttt_lootgoblin_activate", CurTime() + remaining)
+            UnPauseTimers()
         end
     end
 end)
@@ -423,15 +467,14 @@ hook.Add("TTTPlayerRoleChanged", "LootGoblin_TTTPlayerRoleChanged", function(ply
         elseif not timer.Exists("LootGoblinActivate") then
             StartGoblinTimers()
         else
-            timer.UnPause("LootGoblinActivate")
-            local remaining = timer.TimeLeft("LootGoblinActivate")
-            SetGlobalFloat("ttt_lootgoblin_activate", CurTime() + remaining)
+            UnPauseTimers()
         end
     end
 end)
 
 hook.Add("TTTEndRound", "LootGoblin_TTTEndRound", function()
     timer.Remove("LootGoblinActivate")
+    timer.Remove("LootGoblinDrop")
     timer.Remove("LootGoblinCackle")
     timer.Remove("LootGoblinRadarDelay")
     lootGoblinActive = false
