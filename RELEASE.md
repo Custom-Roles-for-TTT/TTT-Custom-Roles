@@ -8,6 +8,9 @@
 - Added ability for an activated loot goblin to periodically drop weapons behind them while they are alive (disabled by default)
 - Added ability to show a warning message to all players when there is a guesser in a round (disabled by default)
 
+### Developer
+- Added `TTTPlayerCreditsChanged` hook to detect when a player's credits were added to or subtracted from
+
 ## 1.9.6 (Beta)
 **Released: August 19th, 2023**
 

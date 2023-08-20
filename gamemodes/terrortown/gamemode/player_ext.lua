@@ -23,6 +23,8 @@ local table = table
 local timer = timer
 local weapons = weapons
 
+local CallHook = hook.Call
+
 function plymeta:SetRagdollSpec(s)
     if s then
         self.spec_ragdoll_start = CurTime()
@@ -69,6 +71,7 @@ end
 
 function plymeta:AddCredits(amt)
     self:SetCredits(self:GetCredits() + amt)
+    CallHook("TTTPlayerCreditsChanged", nil, self, amt)
 end
 function plymeta:SubtractCredits(amt) self:AddCredits(-amt) end
 
@@ -319,9 +322,9 @@ end
 -- Preps a player for a new round, spawning them if they should. If dead_only is
 -- true, only spawns if player is dead, else just makes sure they are healed.
 function plymeta:SpawnForRound(dead_only)
-    hook.Call("PlayerSetModel", GAMEMODE, self)
-    hook.Call("TTTPlayerSetColor", GAMEMODE, self)
-    hook.Call("TTTPlayerSpawnForRound", GAMEMODE, self, dead_only)
+    CallHook("PlayerSetModel", GAMEMODE, self)
+    CallHook("TTTPlayerSetColor", GAMEMODE, self)
+    CallHook("TTTPlayerSpawnForRound", GAMEMODE, self, dead_only)
 
     -- Workaround to prevent GMod sprint from working
     self:SetRunSpeed(self:GetWalkSpeed())
