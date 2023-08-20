@@ -556,6 +556,7 @@ ttt_lootgoblin_radar_enabled                0       // Whether the radar ping fo
 ttt_lootgoblin_radar_timer                  15      // How often (in seconds) the radar ping for the loot goblin should update
 ttt_lootgoblin_radar_delay                  15      // How delayed (in seconds) the radar ping for the loot goblin should be
 ttt_lootgoblin_active_display               1       // Whether to show the loot goblin's information over their head and on the scoreboard once they are activated
+ttt_lootgoblin_drop_timer                   0       // How often (in seconds) the loot goblin should drop a piece of loot behind them
 
 // Cupid
 ttt_cupid_is_independent                    0       // Whether cupids should be treated as members of the independent team (rather than the jester team)
