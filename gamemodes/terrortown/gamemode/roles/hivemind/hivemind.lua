@@ -15,6 +15,7 @@ util.AddNetworkString("TTT_HiveMindChatDupe")
 
 local hivemind_vision_enable = GetConVar("ttt_hivemind_vision_enable")
 local hivemind_friendly_fire = GetConVar("ttt_hivemind_friendly_fire")
+local hivemind_join_heal_pct = GetConVar("ttt_hivemind_join_heal_pct")
 
 ----------------------
 -- CHAT DUPLICATION --
@@ -44,6 +45,7 @@ AddHook("PlayerDeath", "HiveMind_PlayerDeath", function(victim, infl, attacker)
         if not IsPlayer(attacker) or not attacker:IsHiveMind() then return end
 
         local body = victim.server_ragdoll or victim:GetRagdollEntity()
+        victim.PreviousMaxHealth = victim:GetMaxHealth()
         victim:SpawnForRound(true)
         victim:SetRole(ROLE_HIVEMIND)
         if IsValid(body) then
@@ -108,11 +110,30 @@ AddHook("TTTPlayerRoleChanged", "HiveMind_HealthSync_TTTPlayerRoleChanged", func
     if maxHealth == nil then
         maxHealth = ply:GetMaxHealth()
     else
-        maxHealth = maxHealth + ply:GetMaxHealth()
+        local roleMaxHealth = nil
+        -- This player should have their previous max health saved in the death hook above, but just make sure
+        if ply.PreviousMaxHealth then
+            roleMaxHealth = ply.PreviousMaxHealth
+            ply.PreviousMaxHealth = nil
+        -- If it's not there, for whatever reason, use the old role's configured max health instead
+        else
+            roleMaxHealth = GetConVar("ttt_" .. ROLE_STRINGS_RAW[oldRole] .. "_max_health"):GetInt()
+        end
+        maxHealth = maxHealth + roleMaxHealth
+
+        local heal_pct = hivemind_join_heal_pct:GetFloat()
+        if heal_pct > 0 then
+            local healAmt = math.ceil(roleMaxHealth * heal_pct)
+            currentHealth = currentHealth + healAmt
+        end
 
         for _, p in ipairs(GetAllPlayers()) do
             if not p:IsHiveMind() then continue end
             p:SetMaxHealth(maxHealth)
+            -- If we're being healed, update everyone's health too
+            if heal_pct > 0 then
+                p:SetHealth(currentHealth)
+            end
 
             if p ~= ply then
                 p:QueueMessage(MSG_PRINTCENTER, ply:Nick() .. " (" .. ROLE_STRINGS_EXT[oldRole] .. ") has joined the " .. ROLE_STRINGS[ROLE_HIVEMIND] .. ".")
@@ -250,5 +271,6 @@ end)
 AddHook("TTTPrepareRound", "HiveMind_PrepareRound", function()
     for _, v in pairs(GetAllPlayers()) do
         timer.Remove("HiveMindRespawn_" .. v:SteamID64())
+        v.PreviousMaxHealth = nil
     end
 end)

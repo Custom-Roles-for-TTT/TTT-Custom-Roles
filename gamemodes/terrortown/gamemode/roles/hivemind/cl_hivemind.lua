@@ -14,6 +14,7 @@ local StringUpper = string.upper
 
 local hivemind_vision_enable = GetConVar("ttt_hivemind_vision_enable")
 local hivemind_friendly_fire = GetConVar("ttt_hivemind_friendly_fire")
+local hivemind_join_heal_pct = GetConVar("ttt_hivemind_join_heal_pct")
 
 ------------------
 -- TRANSLATIONS --
@@ -198,6 +199,12 @@ AddHook("TTTTutorialRoleText", "HiveMind_TTTTutorialRoleText", function(role, ti
         html = html .. "<span style='display: block; margin-top: 10px;'>When a player with a shop is assimilated, their available shop items are <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>added to the " .. ROLE_STRINGS[ROLE_HIVEMIND] .. "'s shop</span>.</span>"
 
         html = html .. "<span style='display: block; margin-top: 10px;'>All members of the " .. ROLE_STRINGS[ROLE_HIVEMIND] .. " have a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>shared pool of health</span> -- gaining members increases the collective's maximum health and any healing or damage done to one member affects them all.</span>"
+
+        local join_heal_pct = hivemind_join_heal_pct:GetFloat()
+        if join_heal_pct > 0 then
+            html = html .. "<span style='display: block; margin-top: 10px;'>When a new member joins the " .. ROLE_STRINGS[ROLE_HIVEMIND] .. ", the collective <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>is healed by " .. (join_heal_pct * 100) .. "% of their former maximum health</span>.</span>"
+        end
+
         html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_HIVEMIND] .. " also has a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>shared pool of credits</span> -- gaining or spending credits affects the collective.</span>"
 
         if hivemind_vision_enable:GetBool() then

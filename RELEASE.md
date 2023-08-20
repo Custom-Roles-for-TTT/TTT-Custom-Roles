@@ -7,6 +7,7 @@
 - Added convar (`ttt_drunk_any_role_include_disabled`) to control whether disabled roles are included in the list of possible drunk roles when `ttt_drunk_any_role` is enabled (disabled by default)
 - Added ability for an activated loot goblin to periodically drop weapons behind them while they are alive (disabled by default)
 - Added ability to show a warning message to all players when there is a guesser in a round (disabled by default)
+- Added ability to have the hive mind be healed by a percentage of a new member's former max health (defaults to 0.25, or 25%)
 
 ### Changes
 - Changed players who join the hive mind to keep the credits they had before death

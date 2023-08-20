@@ -749,6 +749,7 @@ ttt_detectives_search_only_arsonistdouse    0       // Whether only detectives c
 ttt_hivemind_is_monster                     0       // Whether the hive mind should be treated as a member of the monster team (rather than the independent team)
 ttt_hivemind_vision_enable                  1       // Whether the hive mind's member highlighting is enabled
 ttt_hivemind_friendly_fire                  0       // Whether a member of the hive mind can damage other members of the hive mind
+ttt_hivemind_join_heal_pct                  0.25    // The percentage a new member's maximum health that the hive mind should be healed (e.g. 0.25 = 25% of their health healed)
 
 // ----------------------------------------
 
