@@ -9,6 +9,8 @@
 - Added ability to show a warning message to all players when there is a guesser in a round (disabled by default)
 
 ### Changes
+- Changed players who join the hive mind to keep the credits they had before death
+- Changed hive mind to sync available credits between members
 - Changed hive mind tutorial to mention the shared health pool feature
 
 ### Developer

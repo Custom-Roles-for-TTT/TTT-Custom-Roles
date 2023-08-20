@@ -47,6 +47,8 @@ AddHook("PlayerDeath", "HiveMind_PlayerDeath", function(victim, infl, attacker)
         victim:SpawnForRound(true)
         victim:SetRole(ROLE_HIVEMIND)
         if IsValid(body) then
+            local credits = CORPSE.GetCredits(body, 0)
+            victim:AddCredits(credits)
             victim:SetPos(FindRespawnLocation(body:GetPos()) or body:GetPos())
             victim:SetEyeAngles(Angle(0, body:GetAngles().y, 0))
             body:Remove()
@@ -55,6 +57,33 @@ AddHook("PlayerDeath", "HiveMind_PlayerDeath", function(victim, infl, attacker)
 
         SendFullStateUpdate()
     end)
+end)
+
+--------------------
+-- SHARED CREDITS --
+--------------------
+
+local currentCredits = 0
+
+local function HandleCreditsSync(amt)
+    currentCredits = currentCredits + amt
+    for _, p in ipairs(GetAllPlayers()) do
+        if not p:IsHiveMind() then continue end
+        if p:GetCredits() ~= currentCredits then
+            p:SetCredits(currentCredits)
+        end
+    end
+end
+
+AddHook("TTTPlayerCreditsChanged", "HiveMind_CreditsSync_TTTPlayerCreditsChanged", function(ply, amt)
+    if not IsPlayer(ply) or not ply:IsActiveHiveMind() then return end
+    HandleCreditsSync(amt)
+end)
+
+AddHook("TTTPlayerRoleChanged", "HiveMind_CreditsSync_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+    if not ply:Alive() or ply:IsSpec() then return end
+    if oldRole == ROLE_HIVEMIND or newRole ~= ROLE_HIVEMIND then return end
+    HandleCreditsSync(ply:GetCredits())
 end)
 
 -------------------
