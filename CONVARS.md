@@ -586,6 +586,7 @@ ttt_guesser_notify_mode                     0       // The logic to use when not
 ttt_guesser_notify_sound                    0       // Whether to play a cheering sound when a guesser is killed
 ttt_guesser_notify_confetti                 0       // Whether to throw confetti when a guesser is a killed
 ttt_guesser_unguessable_roles               "lootgoblin,zombie" // Names of roles that cannot be guessed by the guesser, separated with commas. Do not include spaces or capital letters.
+ttt_guesser_warn_all                        0       // Whether all players are warned when there's a guesser in a round
 
 // ----------------------------------------
 

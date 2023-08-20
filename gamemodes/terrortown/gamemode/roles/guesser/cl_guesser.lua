@@ -11,6 +11,7 @@ local StringUpper = string.upper
 local guesser_show_team_threshold = GetConVar("ttt_guesser_show_team_threshold")
 local guesser_show_role_threshold = GetConVar("ttt_guesser_show_role_threshold")
 local guesser_can_guess_detectives = GetConVar("ttt_guesser_can_guess_detectives")
+local guesser_warn_all = GetConVar("ttt_guesser_warn_all")
 
 ------------------
 -- TRANSLATIONS --
@@ -356,6 +357,10 @@ hook.Add("TTTTutorialRoleText", "Guesser_TTTTutorialRoleText", function(role, ti
             html = html .. ".</span>"
         elseif #bannedRoles > 0 then
             html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_GUESSER] .. " <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>cannot</span> guess any of the following roles:" .. bannedRoles .. ".</span>"
+        end
+
+        if guesser_warn_all:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>All players are <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>warned</span> when there is "  .. ROLE_STRINGS_EXT[ROLE_GUESSER] .. " in the game.</span>"
         end
 
         return html
