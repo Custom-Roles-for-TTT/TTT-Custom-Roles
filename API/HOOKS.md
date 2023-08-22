@@ -209,6 +209,14 @@ Called for each player who is alive during the `Tick` hook.\
 *Parameters:*
 - *ply* - The current alive player target
 
+### TTTPlayerCreditsChanged(ply, amount)
+Called whenever a player's credits are added to or subtracted from.\
+*Realm:* Server\
+*Added in:* 1.9.7\
+*Parameters:*
+- *ply* - The player whose credits changed
+- *amount* - The amount the player's credits changed by
+
 ### TTTPlayerHealthChanged(ply, oldHealth, newHealth)
 Called when a player's health changes.\
 *Realm:* Client and Server\

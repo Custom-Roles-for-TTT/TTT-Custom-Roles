@@ -33,6 +33,7 @@ CreateConVar("ttt_lootgoblin_radar_enabled", "0", FCVAR_REPLICATED, "Whether the
 CreateConVar("ttt_lootgoblin_announce", "4", FCVAR_REPLICATED, "The logic to use when notifying players that a loot goblin has been revealed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone", 0, 4)
 CreateConVar("ttt_lootgoblin_cackle_enabled", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_lootgoblin_jingle_enabled", "1", FCVAR_REPLICATED)
+CreateConVar("ttt_lootgoblin_drop_timer", 0, FCVAR_REPLICATED, "How often (in seconds) the loot goblin should drop a piece of loot behind them",  0, 300)
 
 ROLE_CONVARS[ROLE_LOOTGOBLIN] = {}
 table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
@@ -133,6 +134,11 @@ table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
 table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
     cvar = "ttt_lootgoblin_active_display",
     type = ROLE_CONVAR_TYPE_BOOL,
+})
+table.insert(ROLE_CONVARS[ROLE_LOOTGOBLIN], {
+    cvar = "ttt_lootgoblin_drop_timer",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
 })
 
 -------------------

@@ -22,6 +22,7 @@ CreateConVar("ttt_guesser_notify_confetti", "0", FCVAR_NONE, "Whether to throw c
 local guesser_show_team_threshold = GetConVar("ttt_guesser_show_team_threshold")
 local guesser_show_role_threshold = GetConVar("ttt_guesser_show_role_threshold")
 local guesser_can_guess_detectives = GetConVar("ttt_guesser_can_guess_detectives")
+local guesser_warn_all = GetConVar("ttt_guesser_warn_all")
 
 -------------------
 -- ROLE FEATURES --
@@ -78,6 +79,34 @@ AddHook("EntityTakeDamage", "Guesser_EntityTakeDamage", function(ent, dmginfo)
     end
 
     dmginfo:SetDamage(0)
+end)
+
+------------------
+-- ANNOUNCEMENT --
+------------------
+
+-- Warn other players that there is a guesser
+hook.Add("TTTBeginRound", "Guesser_Announce_TTTBeginRound", function()
+    if not guesser_warn_all:GetBool() then return end
+
+    timer.Simple(1.5, function()
+        local plys = GetAllPlayers()
+
+        local hasGuesser = false
+        for _, v in ipairs(plys) do
+            if v:IsGuesser() then
+                hasGuesser = true
+            end
+        end
+
+        if not hasGuesser then return end
+
+        for _, v in ipairs(plys) do
+            if not v:IsGuesser() then
+                v:QueueMessage(MSG_PRINTBOTH, "There is " .. ROLE_STRINGS_EXT[ROLE_GUESSER] .. ".")
+            end
+        end
+    end)
 end)
 
 -------------

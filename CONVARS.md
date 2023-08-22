@@ -556,6 +556,7 @@ ttt_lootgoblin_radar_enabled                0       // Whether the radar ping fo
 ttt_lootgoblin_radar_timer                  15      // How often (in seconds) the radar ping for the loot goblin should update
 ttt_lootgoblin_radar_delay                  15      // How delayed (in seconds) the radar ping for the loot goblin should be
 ttt_lootgoblin_active_display               1       // Whether to show the loot goblin's information over their head and on the scoreboard once they are activated
+ttt_lootgoblin_drop_timer                   0       // How often (in seconds) the loot goblin should drop a piece of loot behind them
 
 // Cupid
 ttt_cupid_is_independent                    0       // Whether cupids should be treated as members of the independent team (rather than the jester team)
@@ -585,6 +586,7 @@ ttt_guesser_notify_mode                     0       // The logic to use when not
 ttt_guesser_notify_sound                    0       // Whether to play a cheering sound when a guesser is killed
 ttt_guesser_notify_confetti                 0       // Whether to throw confetti when a guesser is a killed
 ttt_guesser_unguessable_roles               "lootgoblin,zombie" // Names of roles that cannot be guessed by the guesser, separated with commas. Do not include spaces or capital letters.
+ttt_guesser_warn_all                        0       // Whether all players are warned when there's a guesser in a round
 
 // ----------------------------------------
 
@@ -598,6 +600,7 @@ ttt_drunk_traitor_chance                    0       // Chance that the drunk wil
 ttt_drunk_become_clown                      0       // Whether the drunk should become a clown (instead of joining the losing team) if the round would end before they sober up
 ttt_drunk_notify_mode                       0       // The logic to use when notifying players that a drunk has sobered up. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
 ttt_drunk_any_role                          0       // Whether the drunk can become any enabled role (other than the drunk, the glitch, or roles that were already used this round). The ttt_drunk_can_be_* convars below can be used to prevent the drunk from becoming specific roles
+ttt_drunk_any_role_include_disabled         0       // Whether disabled roles (e.g., roles with their ttt_*_enabled convar set to 0) should be included in the list of possible roles for the drunk to sober up to. Only used when ttt_drunk_any_role is enabled. Does not ignore ttt_drunk_can_be_* convars
 ttt_drunk_join_losing_team                  0       // Whether the drunk should join the losing team when their sober timer runs out. Please note this isn't 100% accurate as we can't know for sure which team is losing but we can try based on the available information
 ttt_drunk_can_see_jesters                   0       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the drunk
 ttt_drunk_update_scoreboard                 0       // Whether the drunk shows dead players as missing in action
@@ -746,7 +749,10 @@ ttt_detectives_search_only_arsonistdouse    0       // Whether only detectives c
 ttt_hivemind_is_monster                     0       // Whether the hive mind should be treated as a member of the monster team (rather than the independent team)
 ttt_hivemind_vision_enable                  1       // Whether the hive mind's member highlighting is enabled
 ttt_hivemind_friendly_fire                  0       // Whether a member of the hive mind can damage other members of the hive mind
-
+ttt_hivemind_join_heal_pct                  0.25    // The percentage a new member's maximum health that the hive mind should be healed (e.g. 0.25 = 25% of their health healed)
+ttt_hivemind_regen_timer                    0       // The amount of time (in seconds) between each health regeneration
+ttt_hivemind_regen_per_member_amt           1       // The amount of health per-member of the hive mind that they should regenerate over time
+ttt_hivemind_regen_max_pct                  0.5     // The percentage of the hive mind's maximum health to heal them up to (e.g. 0.5 = 50% of their max health)
 // ----------------------------------------
 
 // WEAPON SHOP SETTINGS

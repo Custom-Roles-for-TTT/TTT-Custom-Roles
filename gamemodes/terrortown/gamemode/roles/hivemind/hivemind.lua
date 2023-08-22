@@ -15,6 +15,10 @@ util.AddNetworkString("TTT_HiveMindChatDupe")
 
 local hivemind_vision_enable = GetConVar("ttt_hivemind_vision_enable")
 local hivemind_friendly_fire = GetConVar("ttt_hivemind_friendly_fire")
+local hivemind_join_heal_pct = GetConVar("ttt_hivemind_join_heal_pct")
+local hivemind_regen_timer = GetConVar("ttt_hivemind_regen_timer")
+local hivemind_regen_per_member_amt = GetConVar("ttt_hivemind_regen_per_member_amt")
+local hivemind_regen_max_pct = GetConVar("ttt_hivemind_regen_max_pct")
 
 ----------------------
 -- CHAT DUPLICATION --
@@ -44,9 +48,12 @@ AddHook("PlayerDeath", "HiveMind_PlayerDeath", function(victim, infl, attacker)
         if not IsPlayer(attacker) or not attacker:IsHiveMind() then return end
 
         local body = victim.server_ragdoll or victim:GetRagdollEntity()
+        victim.PreviousMaxHealth = victim:GetMaxHealth()
         victim:SpawnForRound(true)
         victim:SetRole(ROLE_HIVEMIND)
         if IsValid(body) then
+            local credits = CORPSE.GetCredits(body, 0)
+            victim:AddCredits(credits)
             victim:SetPos(FindRespawnLocation(body:GetPos()) or body:GetPos())
             victim:SetEyeAngles(Angle(0, body:GetAngles().y, 0))
             body:Remove()
@@ -55,6 +62,33 @@ AddHook("PlayerDeath", "HiveMind_PlayerDeath", function(victim, infl, attacker)
 
         SendFullStateUpdate()
     end)
+end)
+
+--------------------
+-- SHARED CREDITS --
+--------------------
+
+local currentCredits = 0
+
+local function HandleCreditsSync(amt)
+    currentCredits = currentCredits + amt
+    for _, p in ipairs(GetAllPlayers()) do
+        if not p:IsHiveMind() then continue end
+        if p:GetCredits() ~= currentCredits then
+            p:SetCredits(currentCredits)
+        end
+    end
+end
+
+AddHook("TTTPlayerCreditsChanged", "HiveMind_CreditsSync_TTTPlayerCreditsChanged", function(ply, amt)
+    if not IsPlayer(ply) or not ply:IsActiveHiveMind() then return end
+    HandleCreditsSync(amt)
+end)
+
+AddHook("TTTPlayerRoleChanged", "HiveMind_CreditsSync_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
+    if not ply:Alive() or ply:IsSpec() then return end
+    if oldRole == ROLE_HIVEMIND or newRole ~= ROLE_HIVEMIND then return end
+    HandleCreditsSync(ply:GetCredits())
 end)
 
 -------------------
@@ -79,11 +113,30 @@ AddHook("TTTPlayerRoleChanged", "HiveMind_HealthSync_TTTPlayerRoleChanged", func
     if maxHealth == nil then
         maxHealth = ply:GetMaxHealth()
     else
-        maxHealth = maxHealth + ply:GetMaxHealth()
+        local roleMaxHealth
+        -- This player should have their previous max health saved in the death hook above, but just make sure
+        if ply.PreviousMaxHealth then
+            roleMaxHealth = ply.PreviousMaxHealth
+            ply.PreviousMaxHealth = nil
+        -- If it's not there, for whatever reason, use the old role's configured max health instead
+        else
+            roleMaxHealth = GetConVar("ttt_" .. ROLE_STRINGS_RAW[oldRole] .. "_max_health"):GetInt()
+        end
+        maxHealth = maxHealth + roleMaxHealth
+
+        local heal_pct = hivemind_join_heal_pct:GetFloat()
+        if heal_pct > 0 then
+            local healAmt = math.ceil(roleMaxHealth * heal_pct)
+            currentHealth = currentHealth + healAmt
+        end
 
         for _, p in ipairs(GetAllPlayers()) do
             if not p:IsHiveMind() then continue end
             p:SetMaxHealth(maxHealth)
+            -- If we're being healed, update everyone's health too
+            if heal_pct > 0 then
+                p:SetHealth(currentHealth)
+            end
 
             if p ~= ply then
                 p:QueueMessage(MSG_PRINTCENTER, ply:Nick() .. " (" .. ROLE_STRINGS_EXT[oldRole] .. ") has joined the " .. ROLE_STRINGS[ROLE_HIVEMIND] .. ".")
@@ -130,6 +183,43 @@ AddHook("PostPlayerDeath", "HiveMind_PostPlayerDeath", function(ply)
         p:Kill()
     end
 end)
+
+------------------
+-- HEALTH REGEN --
+------------------
+
+ROLE_ON_ROLE_ASSIGNED[ROLE_HIVEMIND] = function(ply)
+    if timer.Exists("HiveMindHealthRegen") then return end
+
+    local regen_timer = hivemind_regen_timer:GetInt()
+    if regen_timer <= 0 then return end
+
+    local per_member_amt = hivemind_regen_per_member_amt:GetInt()
+    local regen_max = hivemind_regen_max_pct:GetFloat()
+
+    timer.Create("HiveMindHealthRegen", regen_timer, 0, function()
+        local hivemind_count = 0
+        for _, p in ipairs(GetAllPlayers()) do
+            if p:IsHiveMind() then
+                hivemind_count = hivemind_count + 1
+            end
+        end
+
+        -- Only heal for each additional member
+        if hivemind_count <= 1 then return end
+
+        -- If we're healing past their max regen, scale the amount down to match instead
+        local heal_amount = per_member_amt * (hivemind_count - 1)
+        if (currentHealth + heal_amount) / maxHealth > regen_max then
+            heal_amount = math.floor(regen_max * maxHealth) - currentHealth
+        end
+
+        -- Don't bother syncing if we're not healing anything
+        if heal_amount <= 0 then return end
+
+        HandleHealthSync(nil, currentHealth + heal_amount)
+    end)
+end
 
 -------------------
 -- FRIENDLY FIRE --
@@ -221,5 +311,7 @@ end)
 AddHook("TTTPrepareRound", "HiveMind_PrepareRound", function()
     for _, v in pairs(GetAllPlayers()) do
         timer.Remove("HiveMindRespawn_" .. v:SteamID64())
+        v.PreviousMaxHealth = nil
     end
+    timer.Remove("HiveMindHealthRegen")
 end)
