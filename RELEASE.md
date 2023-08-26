@@ -1,5 +1,23 @@
 # Release Notes
 
+## 1.9.7 (Beta)
+**Released: August 27th, 2023**
+
+### Additions
+- Added convar (`ttt_drunk_any_role_include_disabled`) to control whether disabled roles are included in the list of possible drunk roles when `ttt_drunk_any_role` is enabled (disabled by default)
+- Added ability for an activated loot goblin to periodically drop weapons behind them while they are alive (disabled by default)
+- Added ability to show a warning message to all players when there is a guesser in a round (disabled by default)
+- Added ability to have the hive mind be healed by a percentage of a new member's former max health (defaults to 0.25, or 25%)
+- Added ability for the hive mind to have a health regeneration over time that scales up as more players are assimilated (disabled by default)
+
+### Changes
+- Changed players who join the hive mind to keep the credits they had before death
+- Changed hive mind to sync available credits between members
+- Changed hive mind tutorial to mention the shared health pool feature
+
+### Developer
+- Added `TTTPlayerCreditsChanged` hook to detect when a player's credits were added to or subtracted from
+
 ## 1.9.6 (Beta)
 **Released: August 19th, 2023**
 

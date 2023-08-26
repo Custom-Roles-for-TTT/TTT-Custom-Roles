@@ -43,6 +43,7 @@ local lootgoblin_cackle_enabled = GetConVar("ttt_lootgoblin_cackle_enabled")
 local lootgoblin_jingle_enabled = GetConVar("ttt_lootgoblin_jingle_enabled")
 local lootgoblin_speed_mult = GetConVar("ttt_lootgoblin_speed_mult")
 local lootgoblin_sprint_recovery = GetConVar("ttt_lootgoblin_sprint_recovery")
+local lootgoblin_drop_timer = GetConVar("ttt_lootgoblin_drop_timer")
 
 local lootgoblin_radar_beep_sound = CreateClientConVar("ttt_lootgoblin_radar_beep_sound", "1", true, false, "Whether the loot goblin's radar should play a beep sound whenever the location updates", 0, 1)
 
@@ -280,6 +281,11 @@ hook.Add("TTTTutorialRoleText", "LootGoblin_TTTTutorialRoleText", function(role,
 
         -- Drop loot on death
         html = html .. "<span style='display: block; margin-top: 10px;'>Once they have activated, <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>the " .. ROLE_STRINGS[ROLE_LOOTGOBLIN] .. "</span> will drop a large number of items and credits when killed.</span>"
+
+        local drop_timer = lootgoblin_drop_timer:GetInt()
+        if drop_timer > 0 then
+            html = html .. "<span style='display: block; margin-top: 10px;'>While alive and activated, <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>the " .. ROLE_STRINGS[ROLE_LOOTGOBLIN] .. "</span> will periodically drop items on the ground behind them.</span>"
+        end
 
         -- Win condition
         html = html .. "<span style='display: block; margin-top: 10px;'>If <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>the " .. ROLE_STRINGS[ROLE_LOOTGOBLIN] .. "</span> survives until another team wins the round, they will share the win with that team.</span>"
