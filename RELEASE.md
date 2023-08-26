@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.9.7 (Beta)
-**Released:**
+**Released: August 27th, 2023**
 
 ### Additions
 - Added convar (`ttt_drunk_any_role_include_disabled`) to control whether disabled roles are included in the list of possible drunk roles when `ttt_drunk_any_role` is enabled (disabled by default)
