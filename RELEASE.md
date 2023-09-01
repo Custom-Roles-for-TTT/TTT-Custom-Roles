@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.9.8 (Beta)
+**Released:**
+
+### Fixes
+- Fixed clown not being revealed when they activate when there's an informant in the round
+
 ## 1.9.7 (Beta)
 **Released: August 27th, 2023**
 
