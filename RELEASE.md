@@ -15,6 +15,9 @@
 - Changed hive mind to sync available credits between members
 - Changed hive mind tutorial to mention the shared health pool feature
 
+### Fixes
+- Fixed clown not being revealed when they activate when there's an informant in the round
+
 ### Developer
 - Added `TTTPlayerCreditsChanged` hook to detect when a player's credits were added to or subtracted from
 
