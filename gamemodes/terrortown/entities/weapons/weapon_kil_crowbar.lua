@@ -115,7 +115,7 @@ function SWEP:PrimaryAttack()
                 -- do a bullet just to make blood decals work sanely
                 -- need to disable lagcomp because firebullets does its own
                 owner:LagCompensation(false)
-                owner:FireBullets({Num=1, Src=spos, Dir=owner:GetAimVector(), Spread=Vector(0,0,0), Tracer=0, Force=1, Damage=0})
+                owner:FireBullets({Num=1, Src=spos, Dir=owner:GetAimVector(), Spread=vector_origin, Tracer=0, Force=1, Damage=0})
             else
                 util.Effect("Impact", edata)
             end

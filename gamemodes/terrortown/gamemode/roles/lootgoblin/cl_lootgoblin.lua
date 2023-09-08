@@ -123,7 +123,7 @@ local function SetLootGoblinPosition()
         lootgoblins = {}
         for k, v in ipairs(GetAllPlayers()) do
             if v:IsActiveLootGoblin() and v:IsRoleActive() then
-                lootgoblins[k] = { pos = v:GetNWVector("TTTLootGoblinRadar", Vector(0, 0, 0)) }
+                lootgoblins[k] = { pos = v:GetNWVector("TTTLootGoblinRadar", vector_origin) }
                 if cli:IsActive() and lootgoblin_radar_beep_sound:GetBool() then surface.PlaySound(beep_success) end
             end
         end

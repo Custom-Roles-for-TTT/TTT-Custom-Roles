@@ -322,7 +322,7 @@ local function DrawLink(ply, ent)
             ent.LinkEmitter:SetPos(pos)
             ent.LinkNextPart = CurTime() + 0.02
             local particle = ent.LinkEmitter:Add("particle/wisp.vmt", pos)
-            particle:SetVelocity(Vector(0, 0, 0))
+            particle:SetVelocity(vector_origin)
             particle:SetDieTime(0.25)
             particle:SetStartAlpha(200)
             particle:SetEndAlpha(0)
