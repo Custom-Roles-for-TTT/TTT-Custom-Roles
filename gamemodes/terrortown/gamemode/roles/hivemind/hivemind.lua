@@ -119,7 +119,7 @@ AddHook("TTTPlayerRoleChanged", "HiveMind_HealthSync_TTTPlayerRoleChanged", func
             roleMaxHealth = ply.PreviousMaxHealth
             ply.PreviousMaxHealth = nil
         -- If it's not there, for whatever reason, use the old role's configured max health instead
-        else
+        elseif oldRole > ROLE_NONE and oldRole <= ROLE_MAX then
             roleMaxHealth = cvars.Number("ttt_" .. ROLE_STRINGS_RAW[oldRole] .. "_max_health", 100)
         end
         maxHealth = maxHealth + roleMaxHealth
