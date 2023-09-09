@@ -1,5 +1,13 @@
 # Release Notes
 
+## 1.9.8 (Beta)
+**Released:**
+
+### Fixes
+- Fixed quartermaster not always counting as an innocent (for example, on the round summary screen)
+- Fixed error on round start sometimes when there was a hive mind in the round
+- Fixed parasite cures to attribute target kills to the owner so jester wins are properly triggered
+
 ## 1.9.7 (Beta)
 **Released: August 27th, 2023**
 

@@ -279,6 +279,7 @@ function SWEP:DoUnfreeze()
     if freeze_count == 0 then
         self.TargetEntity:Freeze(false)
     end
+    self.TargetEntity:RemoveEFlags(EFL_NO_DAMAGE_FORCES)
     self.TargetEntity = nil
     self.TargetEntityChatWarned = false
     self.TargetEntityVoiceWarned = false
@@ -313,14 +314,25 @@ end
 
 function SWEP:DoKill()
     local attacker = self:GetOwner()
+
+    -- Negate the knockback from using a huge damage value
+    self.TargetEntity:AddEFlags(EFL_NO_DAMAGE_FORCES)
+
     local dmginfo = DamageInfo()
     dmginfo:SetDamage(10000)
     dmginfo:SetAttacker(attacker)
     dmginfo:SetInflictor(game.GetWorld())
     dmginfo:SetDamageType(DMG_SLASH)
-    dmginfo:SetDamageForce(Vector(0, 0, 0))
+    dmginfo:SetDamageForce(vector_origin)
     dmginfo:SetDamagePosition(attacker:GetPos())
     self.TargetEntity:TakeDamageInfo(dmginfo)
+
+    -- Cleanup
+    timer.Simple(0.25, function()
+        if not IsValid(self) then return end
+        if not IsPlayer(self.TargetEntity) then return end
+        self.TargetEntity:RemoveEFlags(EFL_NO_DAMAGE_FORCES)
+    end)
 
     self:DoHeal(true)
     self:DropBones()
