@@ -46,8 +46,8 @@ SWEP.ViewModelFOV = 70
 SWEP.ViewModel = "models/weapons/v_doublebarrl.mdl"
 SWEP.WorldModel = "models/weapons/w_double_barrel_shotgun.mdl"
 
-SWEP.IronSightsPos = Vector(0, 0, 0)
-SWEP.IronSightsAng = Vector(0, 0, 0)
+SWEP.IronSightsPos = vector_origin
+SWEP.IronSightsAng = vector_origin
 
 local oldman_adrenaline_shotgun_damage = CreateConVar("ttt_oldman_adrenaline_shotgun_damage", "10", FCVAR_REPLICATED, "How much damage the double barrel shotgun should do", 0, 100)
 

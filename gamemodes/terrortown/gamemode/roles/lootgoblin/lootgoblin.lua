@@ -430,7 +430,7 @@ end
 hook.Add("TTTPrepareRound", "LootGoblin_PrepareRound", function()
     for _, v in pairs(GetAllPlayers()) do
         v:SetNWBool("LootGoblinKilled", false)
-        v:SetNWVector("TTTLootGoblinRadar", Vector(0, 0, 0))
+        v:SetNWVector("TTTLootGoblinRadar", vector_origin)
         ResetPlayer(v)
     end
 

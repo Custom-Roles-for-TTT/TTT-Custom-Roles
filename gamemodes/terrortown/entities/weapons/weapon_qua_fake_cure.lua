@@ -90,7 +90,23 @@ if SERVER then
             if cure_mode == QUACK_FAKE_CURE_KILL_OWNER and IsValid(owner) then
                 owner:Kill()
             elseif cure_mode == QUACK_FAKE_CURE_KILL_TARGET then
-                ply:Kill()
+                -- Negate the knockback from using a huge damage value
+                ply:AddEFlags(EFL_NO_DAMAGE_FORCES)
+
+                local dmginfo = DamageInfo()
+                dmginfo:SetDamage(10000)
+                dmginfo:SetAttacker(owner)
+                dmginfo:SetInflictor(game.GetWorld())
+                dmginfo:SetDamageType(DMG_SHOCK)
+                dmginfo:SetDamageForce(vector_origin)
+                dmginfo:SetDamagePosition(owner:GetPos())
+                ply:TakeDamageInfo(dmginfo)
+
+                -- Cleanup
+                timer.Simple(0.25, function()
+                    if not IsPlayer(ply) then return end
+                    ply:RemoveEFlags(EFL_NO_DAMAGE_FORCES)
+                end)
             end
         end
     end
