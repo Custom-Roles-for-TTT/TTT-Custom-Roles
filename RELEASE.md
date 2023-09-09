@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.9.8 (Beta)
-**Released:**
+**Released: September 9th, 2023**
 
 ### Fixes
 - Fixed quartermaster not always counting as an innocent (for example, on the round summary screen)
