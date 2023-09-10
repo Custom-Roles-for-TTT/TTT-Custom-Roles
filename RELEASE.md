@@ -3,6 +3,9 @@
 ## 1.9.9 (Beta)
 **Released:**
 
+### Fixes
+- Fixed marshal badge use distance being shorter than intended
+
 ### Developer
 - Added `ROLE.isdetectivelike` optional feature to make it easier for custom roles to be treated like deputy and impersonator
 
