@@ -873,6 +873,7 @@ ROLE_SHOULD_SHOW_SPECTATOR_HUD = {}
 ROLE_IS_TARGETID_OVERRIDDEN = {}
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN = {}
 ROLE_IS_TARGET_HIGHLIGHTED = {}
+ROLE_SHOULD_REVEAL_ROLE_WHEN_ACTIVE = {}
 ROLETEAM_IS_TARGET_HIGHLIGHTED = {}
 
 ROLE_CONVAR_TYPE_NUM = 0
@@ -1009,6 +1010,10 @@ function RegisterRole(tbl)
 
     if type(tbl.isdetectivelike) == "boolean" then
         DETECTIVE_LIKE_ROLES[roleID] = tbl.isdetectivelike
+    end
+
+    if type(tbl.shouldrevealrolewhenactive) == "function" then
+        ROLE_SHOULD_REVEAL_ROLE_WHEN_ACTIVE[roleID] = tbl.shouldrevealrolewhenactive
     end
 
     -- Equipment

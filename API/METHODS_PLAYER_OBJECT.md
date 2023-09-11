@@ -386,6 +386,11 @@ Whether the player should reveal the fact that the target player is no longer a 
 *Parameters:*
 - *tgt* - The target player bodysnatcher. If a value is not provided, the context player will be used instead (e.g. `ply:ShouldRevealBodysnatcher()` is the same as `ply:ShouldRevealBodysnatcher(ply)`)
 
+### plymeta:ShouldRevealRoleWhenActive()
+Whether this player should have their role revealed (over their head, on the scoreboard, etc.) when their role is active.\
+*Realm:* Client and Server\
+*Added in:* 1.9.9
+
 ### plymeta:ShouldShowSpectatorHUD()
 Whether this player should currently be shown a spectator HUD. Used for things like the Phantom and Parasite spectator HUDs.\
 *Realm:* Client and Server\

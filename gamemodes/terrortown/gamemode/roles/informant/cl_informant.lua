@@ -80,6 +80,8 @@ end
 hook.Add("TTTTargetIDPlayerRoleIcon", "Informant_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
     if GetRoundState() < ROUND_ACTIVE then return end
 
+    if ply:ShouldRevealRoleWhenActive() and ply:IsRoleActive() then return end
+
     local state = ply:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
     if state <= INFORMANT_UNSCANNED then return end
 
@@ -110,6 +112,8 @@ hook.Add("TTTTargetIDPlayerRing", "Informant_TTTTargetIDPlayerRing", function(en
     if GetRoundState() < ROUND_ACTIVE then return end
     if not IsPlayer(ent) then return end
 
+    if ent:ShouldRevealRoleWhenActive() and ent:IsRoleActive() then return end
+
     local state = ent:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
     if state <= INFORMANT_UNSCANNED then return end
 
@@ -132,6 +136,8 @@ end)
 hook.Add("TTTTargetIDPlayerText", "Informant_TTTTargetIDPlayerText", function(ent, cli, text, col, secondaryText)
     if GetRoundState() < ROUND_ACTIVE then return end
     if not IsPlayer(ent) then return end
+
+    if ent:ShouldRevealRoleWhenActive() and ent:IsRoleActive() then return end
 
     local state = ent:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
     if state <= INFORMANT_UNSCANNED then return end
@@ -178,6 +184,8 @@ end)
 ROLE_IS_TARGETID_OVERRIDDEN[ROLE_INFORMANT] = function(ply, target, showJester)
     if not IsPlayer(target) then return end
 
+    if target:ShouldRevealRoleWhenActive() and target:IsRoleActive() then return end
+
     local state = target:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
     if state <= INFORMANT_UNSCANNED then return end
 
@@ -194,6 +202,8 @@ end
 
 hook.Add("TTTScoreboardPlayerRole", "Informant_TTTScoreboardPlayerRole", function(ply, cli, c, roleStr)
     if GetRoundState() < ROUND_ACTIVE then return end
+
+    if ply:ShouldRevealRoleWhenActive() and ply:IsRoleActive() then return end
 
     local state = ply:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
     if state <= INFORMANT_UNSCANNED then return end
@@ -216,6 +226,8 @@ end)
 
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_INFORMANT] = function(ply, target)
     if not IsPlayer(target) then return end
+
+    if target:ShouldRevealRoleWhenActive() and target:IsRoleActive() then return end
 
     local state = target:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
     if state <= INFORMANT_UNSCANNED then return end

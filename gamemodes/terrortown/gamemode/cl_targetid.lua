@@ -199,7 +199,9 @@ function GM:PostDrawTranslucentRenderables()
                 role = GetDetectiveIconRole(false)
             end
             if not hide_roles then
-                if client:IsTraitorTeam() then
+                if v:ShouldRevealRoleWhenActive() and v:IsRoleActive() then
+                    role = v:GetRole()
+                elseif client:IsTraitorTeam() then
                     noz = true
                     if showJester then
                         role = ROLE_NONE
@@ -392,8 +394,9 @@ function GM:HUDDrawTargetID()
     local target_glitch = false
 
     local target_jester = false
-
     local target_monster = false
+
+    local target_role = false
 
     local target_corpse = false
 
@@ -451,7 +454,9 @@ function GM:HUDDrawTargetID()
             local hideBeggar = ent:GetNWBool("WasBeggar", false) and not client:ShouldRevealBeggar(ent)
             local hideBodysnatcher = ent:GetNWBool("WasBodysnatcher", false) and not client:ShouldRevealBodysnatcher(ent)
             local showJester = (ent:ShouldActLikeJester() or ((ent:GetTraitor() or ent:GetInnocent()) and hideBeggar) or hideBodysnatcher) and not client:ShouldHideJesters()
-            if client:IsTraitorTeam() then
+            if ent:ShouldRevealRoleWhenActive() and ent:IsRoleActive() then
+                target_role = true
+            elseif client:IsTraitorTeam() then
                 if showJester then
                     target_jester = showJester
                 else
@@ -525,7 +530,7 @@ function GM:HUDDrawTargetID()
 
     local w, h -- text width/height, reused several times
 
-    local ring_visible = target_traitor or target_unknown_traitor or target_special_traitor or target_unknown_special_traitor or target_detective or target_unknown_detective or target_special_detective or target_glitch or target_jester or target_monster
+    local ring_visible = target_role or target_traitor or target_unknown_traitor or target_special_traitor or target_unknown_special_traitor or target_detective or target_unknown_detective or target_special_detective or target_glitch or target_jester or target_monster
 
     local new_visible, color_override = CallHook("TTTTargetIDPlayerRing", nil, ent, client, ring_visible)
     if type(new_visible) == "boolean" then ring_visible = new_visible end
@@ -535,6 +540,8 @@ function GM:HUDDrawTargetID()
 
         if color_override then
             surface.SetDrawColor(color_override)
+        elseif target_role then
+            surface.SetDrawColor(ROLE_COLORS_RADAR[ent:GetRole()])
         elseif target_traitor or target_unknown_traitor then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_TRAITOR])
         elseif target_special_traitor or target_unknown_special_traitor then
@@ -679,7 +686,10 @@ function GM:HUDDrawTargetID()
     end
 
     text = nil
-    if target_traitor then
+    if target_role then
+        text = StringUpper(ROLE_STRINGS[ent:GetRole()])
+        col = ROLE_COLORS_RADAR[ent:GetRole()]
+    elseif target_traitor then
         text = StringUpper(ROLE_STRINGS[ROLE_TRAITOR])
         col = ROLE_COLORS_RADAR[ROLE_TRAITOR]
     elseif target_unknown_traitor then
