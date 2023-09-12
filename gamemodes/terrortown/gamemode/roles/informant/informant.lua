@@ -274,7 +274,14 @@ hook.Add("TTTPlayerAliveThink", "Informant_TTTPlayerAliveThink", function(ply)
         if state == INFORMANT_SCANNER_IDLE then
             local target = IsTargetingPlayer(ply)
             if target and (not informant_requires_scanner:GetBool() or (ply.GetActiveWeapon and IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() == "weapon_inf_scanner")) then
-                if target:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED) < INFORMANT_SCANNED_TRACKED and ScanAllowed(ply, target) then
+                local stage = target:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
+                -- If their role is already revealed by feature then their scan stage should be at least that
+                if stage < INFORMANT_SCANNED_ROLE and target:ShouldRevealRoleWhenActive() and target:IsRoleActive() then
+                    stage = INFORMANT_SCANNED_ROLE
+                    target:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_ROLE)
+                end
+
+                if stage < INFORMANT_SCANNED_TRACKED and ScanAllowed(ply, target) then
                     ply:SetNWInt("TTTInformantScannerState", INFORMANT_SCANNER_LOCKED)
                     ply:SetNWString("TTTInformantScannerTarget", target:SteamID64())
                     ply:SetNWString("TTTInformantScannerMessage", "SCANNING " .. string.upper(target:Nick()))

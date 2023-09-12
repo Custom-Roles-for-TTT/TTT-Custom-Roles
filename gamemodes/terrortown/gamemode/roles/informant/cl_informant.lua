@@ -80,10 +80,11 @@ end
 hook.Add("TTTTargetIDPlayerRoleIcon", "Informant_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
     if GetRoundState() < ROUND_ACTIVE then return end
 
-    if ply:ShouldRevealRoleWhenActive() and ply:IsRoleActive() then return end
-
     local state = ply:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
     if state <= INFORMANT_UNSCANNED then return end
+
+    -- If this player's scan stage would show less than their role features just let that handle it
+    if state <= INFORMANT_SCANNED_ROLE and ply:ShouldRevealRoleWhenActive() and ply:IsRoleActive() then return end
 
     if cli:IsInformant() or (cli:IsTraitorTeam() and informant_share_scans:GetBool()) then
         local newRole = role
@@ -112,10 +113,11 @@ hook.Add("TTTTargetIDPlayerRing", "Informant_TTTTargetIDPlayerRing", function(en
     if GetRoundState() < ROUND_ACTIVE then return end
     if not IsPlayer(ent) then return end
 
-    if ent:ShouldRevealRoleWhenActive() and ent:IsRoleActive() then return end
-
     local state = ent:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
     if state <= INFORMANT_UNSCANNED then return end
+
+    -- If this player's scan stage would show less than their role features just let that handle it
+    if state <= INFORMANT_SCANNED_ROLE and ent:ShouldRevealRoleWhenActive() and ent:IsRoleActive() then return end
 
     if cli:IsInformant() or (cli:IsTraitorTeam() and informant_share_scans:GetBool()) then
         local newRingVisible = ringVisible
@@ -137,10 +139,11 @@ hook.Add("TTTTargetIDPlayerText", "Informant_TTTTargetIDPlayerText", function(en
     if GetRoundState() < ROUND_ACTIVE then return end
     if not IsPlayer(ent) then return end
 
-    if ent:ShouldRevealRoleWhenActive() and ent:IsRoleActive() then return end
-
     local state = ent:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
     if state <= INFORMANT_UNSCANNED then return end
+
+    -- If this player's scan stage would show less than their role features just let that handle it
+    if state <= INFORMANT_SCANNED_ROLE and ent:ShouldRevealRoleWhenActive() and ent:IsRoleActive() then return end
 
     if cli:IsInformant() or (cli:IsTraitorTeam() and informant_share_scans:GetBool()) then
         local newText = text
@@ -184,10 +187,11 @@ end)
 ROLE_IS_TARGETID_OVERRIDDEN[ROLE_INFORMANT] = function(ply, target, showJester)
     if not IsPlayer(target) then return end
 
-    if target:ShouldRevealRoleWhenActive() and target:IsRoleActive() then return end
-
     local state = target:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
     if state <= INFORMANT_UNSCANNED then return end
+
+    -- If this player's scan stage would show less than their role features just let that handle it
+    if state <= INFORMANT_SCANNED_ROLE and target:ShouldRevealRoleWhenActive() and target:IsRoleActive() then return end
 
     -- Info is only overridden for the informant or members of their team when enabled
     if not ply:IsInformant() and (not ply:IsTraitorTeam() or not informant_share_scans:GetBool()) then return end
@@ -203,10 +207,11 @@ end
 hook.Add("TTTScoreboardPlayerRole", "Informant_TTTScoreboardPlayerRole", function(ply, cli, c, roleStr)
     if GetRoundState() < ROUND_ACTIVE then return end
 
-    if ply:ShouldRevealRoleWhenActive() and ply:IsRoleActive() then return end
-
     local state = ply:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
     if state <= INFORMANT_UNSCANNED then return end
+
+    -- If this player's scan stage would show less than their role features just let that handle it
+    if state <= INFORMANT_SCANNED_ROLE and ply:ShouldRevealRoleWhenActive() and ply:IsRoleActive() then return end
 
     if IsPlayer(ply) and cli:IsInformant() or (cli:IsTraitorTeam() and informant_share_scans:GetBool()) then
         local newColor = c
@@ -227,10 +232,11 @@ end)
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_INFORMANT] = function(ply, target)
     if not IsPlayer(target) then return end
 
-    if target:ShouldRevealRoleWhenActive() and target:IsRoleActive() then return end
-
     local state = target:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
     if state <= INFORMANT_UNSCANNED then return end
+
+    -- If this player's scan stage would show less than their role features just let that handle it
+    if state <= INFORMANT_SCANNED_ROLE and target:ShouldRevealRoleWhenActive() and target:IsRoleActive() then return end
 
     -- Info is only overridden for the informant or members of their team when enabled
     if not ply:IsInformant() and (not ply:IsTraitorTeam() or not informant_share_scans:GetBool()) then return end
