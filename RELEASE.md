@@ -3,6 +3,9 @@
 ## 1.9.9 (Beta)
 **Released:**
 
+### Changes
+- Changed informant and beggar scan logic to work better with roles that are revealed when they activate
+
 ### Fixes
 - Fixed marshal badge use distance being shorter than intended
 
