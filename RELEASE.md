@@ -8,6 +8,7 @@
 
 ### Fixes
 - Fixed marshal badge use distance being shorter than intended
+- Fixed error on round start when a hive mind was being spawned
 
 ### Developer
 - Added `ROLE.isdetectivelike` optional feature to make it easier for custom roles to be treated like deputy and impersonator
