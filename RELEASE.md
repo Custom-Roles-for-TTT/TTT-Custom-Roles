@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.9.9 (Beta)
-**Released:**
+**Released: September 27th, 2023**
 
 ### Changes
 - Changed informant and beggar scan logic to work better with roles that are revealed when they activate
