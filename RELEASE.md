@@ -1,5 +1,18 @@
 # Release Notes
 
+## 1.9.9 (Beta)
+**Released:**
+
+### Changes
+- Changed informant and beggar scan logic to work better with roles that are revealed when they activate
+
+### Fixes
+- Fixed marshal badge use distance being shorter than intended
+
+### Developer
+- Added `ROLE.isdetectivelike` optional feature to make it easier for custom roles to be treated like deputy and impersonator
+- Added `ROLE.shouldrevealrolewhenactive` optional feature to control whether a role's information should be revealed (over their head, on the scoreboard, etc.) when they are active
+
 ## 1.9.8 (Beta)
 **Released: September 9th, 2023**
 

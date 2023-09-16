@@ -64,11 +64,11 @@ local function FindAndPromoteDetectiveLike()
                 ply:QueueMessage(MSG_PRINTBOTH, "You have been promoted to " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "!")
             end
 
-            -- If the player is an Impersonator, tell all their team members when they get promoted
-            if ply:IsImpersonator() then
+            -- If the player is a member of the traitor team, tell all their team members when they get promoted
+            if ply:IsTraitorTeam() then
                 for _, v in pairs(GetAllPlayers()) do
                     if v ~= ply and v:IsActiveTraitorTeam() then
-                        local message = "The " .. ROLE_STRINGS[ROLE_IMPERSONATOR] .. " has been promoted to " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "!"
+                        local message = "The " .. ROLE_STRINGS[ply:GetRole()] .. " has been promoted to " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "!"
                         if not alive then
                             message = message .. " Too bad they're dead..."
                         end

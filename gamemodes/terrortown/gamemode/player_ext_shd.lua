@@ -206,6 +206,15 @@ function plymeta:ShouldShowSpectatorHUD()
     return false
 end
 
+function plymeta:ShouldRevealRoleWhenActive()
+    -- Check if this role has an external definition for whether to show reveal their role when they are active
+    local role = self:GetRole()
+    if ROLE_SHOULD_REVEAL_ROLE_WHEN_ACTIVE[role] then
+        return ROLE_SHOULD_REVEAL_ROLE_WHEN_ACTIVE[role](self)
+    end
+    return false
+end
+
 function plymeta:SetRoleAndBroadcast(role)
     self:SetRole(role)
 
@@ -427,8 +436,9 @@ if CLIENT then
         local role = self:GetRole()
         if ROLE_IS_TARGETID_OVERRIDDEN[role] then return ROLE_IS_TARGETID_OVERRIDDEN[role](self, target, showJester) end
 
-        ------ icon,  ring,  text
-        return false, false, false
+        local revealed = self:ShouldRevealRoleWhenActive() and self:IsRoleActive()
+        ------ icon,     ring,     text
+        return revealed, revealed, revealed
     end
 
     function plymeta:IsScoreboardInfoOverridden(target)
@@ -437,7 +447,7 @@ if CLIENT then
         if ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[role] then return ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[role](self, target) end
 
         ------ name,  role
-        return false, false
+        return false, self:ShouldRevealRoleWhenActive() and self:IsRoleActive()
     end
 
     function plymeta:IsTargetHighlighted(target)

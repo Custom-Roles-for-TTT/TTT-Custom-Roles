@@ -158,8 +158,8 @@ function GM:TTTScoreboardRowColorForPlayer(ply)
 
     if ply:GetDetectiveLike() then
         return ply:GetDisplayedRole()
-    elseif ply:IsClown() and ply:IsRoleActive() then
-        return ROLE_CLOWN
+    elseif ply:ShouldRevealRoleWhenActive() and ply:IsRoleActive() then
+        return ply:GetRole()
     end
 
     local hideBeggar = ply:GetNWBool("WasBeggar", false) and not client:ShouldRevealBeggar(ply)
@@ -277,6 +277,11 @@ function PANEL:Paint(width, height)
         if role == ROLE_JESTER and not ply:GetNWBool("body_searched", false) then
             roleStr = ROLE_STRINGS_SHORT[ROLE_NONE]
         else
+            roleStr = ROLE_STRINGS_SHORT[role]
+        end
+
+        if ply:ShouldRevealRoleWhenActive() and ply:IsRoleActive() then
+            c = ROLE_COLORS_SCOREBOARD[role]
             roleStr = ROLE_STRINGS_SHORT[role]
         end
     end

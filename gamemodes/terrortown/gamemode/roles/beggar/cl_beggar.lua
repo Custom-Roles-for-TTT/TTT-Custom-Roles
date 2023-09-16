@@ -154,6 +154,8 @@ hook.Add("TTTTargetIDPlayerRoleIcon", "Beggar_TTTTargetIDPlayerRoleIcon", functi
     if GetRoundState() < ROUND_ACTIVE then return end
     if not cli:IsBeggar() then return end
 
+    if ply:ShouldRevealRoleWhenActive() and ply:IsRoleActive() then return end
+
     local state = ply:GetNWInt("TTTBeggarScanStage", BEGGAR_UNSCANNED)
     if state ~= BEGGAR_SCANNED_TEAM then return end
 
@@ -175,6 +177,8 @@ hook.Add("TTTTargetIDPlayerRing", "Beggar_TTTTargetIDPlayerRing", function(ent, 
     if not cli:IsBeggar() then return end
     if not IsPlayer(ent) then return end
 
+    if ent:ShouldRevealRoleWhenActive() and ent:IsRoleActive() then return end
+
     local state = ent:GetNWInt("TTTBeggarScanStage", BEGGAR_UNSCANNED)
     if state ~= BEGGAR_SCANNED_TEAM then return end
 
@@ -195,6 +199,8 @@ hook.Add("TTTTargetIDPlayerText", "Beggar_TTTTargetIDPlayerText", function(ent, 
     if GetRoundState() < ROUND_ACTIVE then return end
     if not cli:IsBeggar() then return end
     if not IsPlayer(ent) then return end
+
+    if ent:ShouldRevealRoleWhenActive() and ent:IsRoleActive() then return end
 
     local state = ent:GetNWInt("TTTBeggarScanStage", BEGGAR_UNSCANNED)
     if state <= BEGGAR_UNSCANNED then return end
@@ -225,6 +231,8 @@ end)
 
 ROLE_IS_TARGETID_OVERRIDDEN[ROLE_BEGGAR] = function(ply, target, showJester)
     if not IsPlayer(target) then return end
+
+    if target:ShouldRevealRoleWhenActive() and target:IsRoleActive() then return end
 
     local state = target:GetNWInt("TTTBeggarScanStage", BEGGAR_UNSCANNED)
     if state <= BEGGAR_UNSCANNED then return end
@@ -259,6 +267,8 @@ hook.Add("TTTScoreboardPlayerRole", "Beggar_TTTScoreboardPlayerRole", function(p
     if not cli:IsBeggar() then return end
     if not IsPlayer(ply) then return end
 
+    if ply:ShouldRevealRoleWhenActive() and ply:IsRoleActive() then return end
+
     local state = ply:GetNWInt("TTTBeggarScanStage", BEGGAR_UNSCANNED)
     if state ~= BEGGAR_SCANNED_TEAM then return end
 
@@ -278,6 +288,8 @@ end)
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_BEGGAR] = function(ply, target)
     if not ply:IsBeggar() then return end
     if not IsPlayer(target) then return end
+
+    if target:ShouldRevealRoleWhenActive() and target:IsRoleActive() then return end
 
     local state = target:GetNWInt("TTTBeggarScanStage", BEGGAR_UNSCANNED)
     if state ~= BEGGAR_SCANNED_TEAM then return end
