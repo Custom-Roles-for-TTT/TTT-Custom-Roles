@@ -113,7 +113,7 @@ AddHook("TTTPlayerRoleChanged", "HiveMind_HealthSync_TTTPlayerRoleChanged", func
     if maxHealth == nil then
         maxHealth = ply:GetMaxHealth()
     else
-        local roleMaxHealth
+        local roleMaxHealth = 100
         -- This player should have their previous max health saved in the death hook above, but just make sure
         if ply.PreviousMaxHealth then
             roleMaxHealth = ply.PreviousMaxHealth
