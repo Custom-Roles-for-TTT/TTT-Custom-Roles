@@ -2,19 +2,11 @@ AddCSLuaFile()
 
 local table = table
 
--- Initialize role features
-ROLE_SHOULD_ACT_LIKE_JESTER[ROLE_CLOWN] = function(ply)
-    return not ply:IsRoleActive()
-end
-ROLE_IS_ACTIVE[ROLE_CLOWN] = function(ply)
-    return ply:GetNWBool("KillerClownActive", false)
-end
-
 ------------------
 -- ROLE CONVARS --
 ------------------
 
-CreateConVar("ttt_clown_hide_when_active", "0", FCVAR_REPLICATED)
+local clown_hide_when_active = CreateConVar("ttt_clown_hide_when_active", "0", FCVAR_REPLICATED)
 CreateConVar("ttt_clown_use_traps_when_active", "0", FCVAR_REPLICATED)
 CreateConVar("ttt_clown_show_target_icon", "0", FCVAR_REPLICATED)
 CreateConVar("ttt_clown_heal_on_activate", "0", FCVAR_REPLICATED)
@@ -53,3 +45,14 @@ table.insert(ROLE_CONVARS[ROLE_CLOWN], {
     type = ROLE_CONVAR_TYPE_NUM,
     decimal = 0
 })
+
+-- Initialize role features
+ROLE_SHOULD_ACT_LIKE_JESTER[ROLE_CLOWN] = function(ply)
+    return not ply:IsRoleActive()
+end
+ROLE_IS_ACTIVE[ROLE_CLOWN] = function(ply)
+    return ply:GetNWBool("KillerClownActive", false)
+end
+ROLE_SHOULD_REVEAL_ROLE_WHEN_ACTIVE[ROLE_CLOWN] = function()
+    return not clown_hide_when_active:GetBool()
+end

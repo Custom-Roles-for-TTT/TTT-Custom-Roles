@@ -281,19 +281,30 @@ local function ScanAllowed(ply, target)
     return InRange(ply, target)
 end
 
+local function GetFinalScanStage(target)
+    local scan_mode = beggar_scan:GetInt()
+    if scan_mode == BEGGAR_SCAN_MODE_TRAITORS then
+        if not target:IsTraitorTeam() then
+            return BEGGAR_SCANNED_HIDDEN
+        end
+    elseif not target:IsShopRole() then
+        return BEGGAR_SCANNED_HIDDEN
+    end
+    return BEGGAR_SCANNED_TEAM
+end
+
 local function Scan(ply, target)
     if not IsValid(ply) or not IsValid(target) then return end
 
     if target:IsActive() then
         if CurTime() - ply:GetNWFloat("TTTBeggarScannerStartTime", -1) >= beggar_scan_time:GetInt() then
-            local stage = BEGGAR_SCANNED_TEAM
+            local stage = GetFinalScanStage(target)
             local message = "You have discovered that " .. target:Nick()
             local scan_mode = beggar_scan:GetInt()
             if scan_mode == BEGGAR_SCAN_MODE_TRAITORS then
                 message = message .. " is "
                 if not target:IsTraitorTeam() then
                     message = message .. "not "
-                    stage = BEGGAR_SCANNED_HIDDEN
                 end
                 message = message .. "a traitor role."
             else
@@ -301,7 +312,6 @@ local function Scan(ply, target)
                     message = message .. " has "
                 else
                     message = message .. " does not have "
-                    stage = BEGGAR_SCANNED_HIDDEN
                 end
                 message = message .. "a shop."
             end
@@ -326,11 +336,20 @@ hook.Add("TTTPlayerAliveThink", "Beggar_TTTPlayerAliveThink", function(ply)
         local state = ply:GetNWInt("TTTBeggarScannerState", BEGGAR_SCANNER_IDLE)
         if state == BEGGAR_SCANNER_IDLE then
             local target = IsTargetingPlayer(ply)
-            if target and target:GetNWInt("TTTBeggarScanStage", BEGGAR_UNSCANNED) < BEGGAR_SCANNED_HIDDEN and ScanAllowed(ply, target) then
-                ply:SetNWInt("TTTBeggarScannerState", BEGGAR_SCANNER_LOCKED)
-                ply:SetNWString("TTTBeggarScannerTarget", target:SteamID64())
-                ply:SetNWString("TTTBeggarScannerMessage", "SCANNING " .. string.upper(target:Nick()))
-                ply:SetNWFloat("TTTBeggarScannerStartTime", CurTime())
+            if target then
+                local stage = target:GetNWInt("TTTBeggarScanStage", BEGGAR_UNSCANNED)
+                -- If their role is already revealed by feature then their scan stage should be at least that
+                if stage < BEGGAR_SCANNED_HIDDEN and target:ShouldRevealRoleWhenActive() and target:IsRoleActive() then
+                    stage = GetFinalScanStage(target)
+                    target:SetNWInt("TTTBeggarScanStage", stage)
+                end
+
+                if stage < BEGGAR_SCANNED_HIDDEN and ScanAllowed(ply, target) then
+                    ply:SetNWInt("TTTBeggarScannerState", BEGGAR_SCANNER_LOCKED)
+                    ply:SetNWString("TTTBeggarScannerTarget", target:SteamID64())
+                    ply:SetNWString("TTTBeggarScannerMessage", "SCANNING " .. string.upper(target:Nick()))
+                    ply:SetNWFloat("TTTBeggarScannerStartTime", CurTime())
+                end
             end
         elseif state == BEGGAR_SCANNER_LOCKED then
             local target = player.GetBySteamID64(ply:GetNWString("TTTBeggarScannerTarget", ""))

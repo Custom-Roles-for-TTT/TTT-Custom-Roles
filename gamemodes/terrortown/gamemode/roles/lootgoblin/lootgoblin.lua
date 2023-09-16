@@ -56,7 +56,6 @@ local lootgoblin_radar_enabled = GetConVar("ttt_lootgoblin_radar_enabled")
 local lootgoblin_announce = GetConVar("ttt_lootgoblin_announce")
 local lootgoblin_cackle_enabled = GetConVar("ttt_lootgoblin_cackle_enabled")
 local lootgoblin_jingle_enabled = GetConVar("ttt_lootgoblin_jingle_enabled")
-local lootgoblin_active_display = GetConVar("ttt_lootgoblin_active_display")
 local lootgoblin_drop_timer = GetConVar("ttt_lootgoblin_drop_timer")
 
 -----------
@@ -157,14 +156,6 @@ local lootGoblinActive = false
 local function ActivateLootGoblin(ply)
     ply:SetNWBool("LootGoblinActive", true)
     ply:PrintMessage(HUD_PRINTTALK, "You have transformed into a goblin!")
-
-    -- Update the scan state if there is an informant, the goblin should be revealed, and they haven't already been scanned
-    if lootgoblin_active_display:GetBool() then
-        local state = ply:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
-        if state ~= INFORMANT_UNSCANNED and state < INFORMANT_SCANNED_ROLE then
-            ply:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_ROLE)
-        end
-    end
 
     local mode = lootgoblin_regen_mode:GetInt()
     if mode == LOOTGOBLIN_REGEN_MODE_ALWAYS then

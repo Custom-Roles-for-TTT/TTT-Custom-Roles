@@ -22,7 +22,7 @@ local StringSub = string.sub
 include("player_class/player_ttt.lua")
 
 -- Version string for display and function for version checks
-CR_VERSION = "1.9.8"
+CR_VERSION = "1.9.9"
 CR_BETA = true
 CR_WORKSHOP_ID = CR_BETA and "2404251054" or "2421039084"
 
@@ -215,6 +215,9 @@ AddRoleAssociations(MONSTER_ROLES, {})
 
 DETECTIVE_ROLES = {}
 AddRoleAssociations(DETECTIVE_ROLES, {ROLE_DETECTIVE, ROLE_PALADIN, ROLE_TRACKER, ROLE_MEDIUM, ROLE_SAPPER, ROLE_MARSHAL, ROLE_QUARTERMASTER})
+
+DETECTIVE_LIKE_ROLES = {}
+AddRoleAssociations(DETECTIVE_LIKE_ROLES, {ROLE_DEPUTY, ROLE_IMPERSONATOR})
 
 DEFAULT_ROLES = {}
 AddRoleAssociations(DEFAULT_ROLES, {ROLE_INNOCENT, ROLE_TRAITOR, ROLE_DETECTIVE})
@@ -870,6 +873,7 @@ ROLE_SHOULD_SHOW_SPECTATOR_HUD = {}
 ROLE_IS_TARGETID_OVERRIDDEN = {}
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN = {}
 ROLE_IS_TARGET_HIGHLIGHTED = {}
+ROLE_SHOULD_REVEAL_ROLE_WHEN_ACTIVE = {}
 ROLETEAM_IS_TARGET_HIGHLIGHTED = {}
 
 ROLE_CONVAR_TYPE_NUM = 0
@@ -1002,6 +1006,14 @@ function RegisterRole(tbl)
 
     if type(tbl.shopsyncroles) == "table" then
         ROLE_SHOP_SYNC_ROLES[roleID] = tbl.shopsyncroles
+    end
+
+    if type(tbl.isdetectivelike) == "boolean" then
+        DETECTIVE_LIKE_ROLES[roleID] = tbl.isdetectivelike
+    end
+
+    if type(tbl.shouldrevealrolewhenactive) == "function" then
+        ROLE_SHOULD_REVEAL_ROLE_WHEN_ACTIVE[roleID] = tbl.shouldrevealrolewhenactive
     end
 
     -- Equipment

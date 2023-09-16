@@ -40,10 +40,6 @@ local function HandleClownWinBlock(win_type)
         clown:SetNWBool("KillerClownActive", true)
         clown:QueueMessage(MSG_PRINTBOTH, "KILL THEM ALL!")
         clown:AddCredits(clown_activation_credits:GetInt())
-        local state = clown:GetNWInt("TTTInformantScanStage", INFORMANT_UNSCANNED)
-        if state ~= INFORMANT_UNSCANNED and state < INFORMANT_SCANNED_ROLE then
-            clown:SetNWInt("TTTInformantScanStage", INFORMANT_SCANNED_ROLE)
-        end
         if clown_heal_on_activate:GetBool() then
             local heal_bonus = clown_heal_bonus:GetInt()
             local health = clown:GetMaxHealth() + heal_bonus

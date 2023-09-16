@@ -3,8 +3,6 @@ local net = net
 local string = string
 local table = table
 
-local StringUpper = string.upper
-
 -------------
 -- CONVARS --
 -------------
@@ -12,7 +10,6 @@ local StringUpper = string.upper
 local oldman_drain_health_to = GetConVar("ttt_oldman_drain_health_to")
 local oldman_adrenaline_rush = GetConVar("ttt_oldman_adrenaline_rush")
 local oldman_adrenaline_shotgun = GetConVar("ttt_oldman_adrenaline_shotgun")
-local oldman_hide_when_active = GetConVar("ttt_oldman_hide_when_active")
 
 ------------------
 -- TRANSLATIONS --
@@ -77,62 +74,6 @@ hook.Add("TTTEventFinishIconText", "OldMan_TTTEventFinishIconText", function(e, 
         return "ev_win_icon_also", ROLE_STRINGS[ROLE_OLDMAN]
     end
 end)
-
----------------
--- TARGET ID --
----------------
-
-local function IsOldManVisible(ply)
-    return IsPlayer(ply) and ply:IsOldMan() and ply:IsRoleActive() and not oldman_hide_when_active:GetBool()
-end
-
--- Show the old man icon if the player is an activated old man
-hook.Add("TTTTargetIDPlayerRoleIcon", "OldMan_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, color_role, hideBeggar, showJester, hideBodysnatcher)
-    if IsOldManVisible(ply) then
-        return ROLE_OLDMAN, false, ROLE_OLDMAN
-    end
-end)
-
--- Show the old man information and color when you look at the player
-hook.Add("TTTTargetIDPlayerRing", "OldMan_TTTTargetIDPlayerRing", function(ent, client, ring_visible)
-    if GetRoundState() < ROUND_ACTIVE then return end
-
-    if IsOldManVisible(ent) then
-        return true, ROLE_COLORS_RADAR[ROLE_OLDMAN]
-    end
-end)
-
-hook.Add("TTTTargetIDPlayerText", "OldMan_TTTTargetIDPlayerText", function(ent, client, text, col, secondary_text)
-    if GetRoundState() < ROUND_ACTIVE then return end
-
-    if IsOldManVisible(ent) then
-        return StringUpper(ROLE_STRINGS[ROLE_OLDMAN]), ROLE_COLORS_RADAR[ROLE_OLDMAN]
-    end
-end)
-
-ROLE_IS_TARGETID_OVERRIDDEN[ROLE_OLDMAN] = function(ply, target)
-    if not IsOldManVisible(target) then return end
-
-    ------ icon, ring, text
-    return true, true, true
-end
-
-----------------
--- SCOREBOARD --
-----------------
-
-hook.Add("TTTScoreboardPlayerRole", "OldMan_TTTScoreboardPlayerRole", function(ply, client, color, roleFileName)
-    if IsOldManVisible(ply) then
-        return ROLE_COLORS_SCOREBOARD[ROLE_OLDMAN], ROLE_STRINGS_SHORT[ROLE_OLDMAN]
-    end
-end)
-
-ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN[ROLE_OLDMAN] = function(ply, target)
-    if not IsOldManVisible(target) then return end
-
-    ------ name,  role
-    return false, true
-end
 
 --------------
 -- TUTORIAL --

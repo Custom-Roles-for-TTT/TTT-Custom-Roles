@@ -30,6 +30,9 @@ SWEP.DeploySpeed            = 4
 
 SWEP.DeadTarget             = false
 
+-- Settings
+SWEP.MaxDistance            = 96
+
 if SERVER then
     SWEP.DeviceTimeConVar = CreateConVar("ttt_marshal_badge_time", "8", FCVAR_NONE, "The amount of time (in seconds) the marshal's badge takes to use", 0, 60)
 end
