@@ -4,6 +4,11 @@ local IsValid = IsValid
 local math = math
 local util = util
 
+if SERVER then
+    util.AddNetworkString("TTT_ZombieLeapStart")
+    util.AddNetworkString("TTT_ZombieLeapEnd")
+end
+
 if CLIENT then
     SWEP.PrintName = "Claws"
     SWEP.EquipMenuData = {
@@ -186,10 +191,14 @@ function SWEP:SecondaryAttack()
     self.ActivityTranslate[ACT_MP_JUMP] = ACT_ZOMBIE_LEAPING
 
     -- Make it look like the player is jumping
-    owner.m_bJumping = true
-    owner.m_bFirstJumpFrame = false
-    owner.m_flJumpStartTime = CurTime()
-    owner.CalcIdeal = ACT_MP_JUMP
+    hook.Run("DoAnimationEvent", owner, PLAYERANIMEVENT_JUMP)
+
+    -- Sync this jump override to the other players so they can see it too
+    if SERVER then
+        net.Start("TTT_ZombieLeapStart")
+        net.WriteEntity(owner)
+        net.Broadcast()
+    end
 end
 
 function SWEP:Think()
@@ -201,6 +210,13 @@ function SWEP:Think()
     -- When the player hits the ground or lands in water, reset the animation back to normal
     if owner:IsOnGround() or owner:WaterLevel() > 0 then
         self.ActivityTranslate[ACT_MP_JUMP] = nil
+
+        -- Sync clearing the override to the other players as well
+        if SERVER then
+            net.Start("TTT_ZombieLeapEnd")
+            net.WriteEntity(owner)
+            net.Broadcast()
+        end
     end
 end
 
@@ -287,4 +303,29 @@ end
 
 function SWEP:Holster(weapon)
     return true
+end
+
+
+if CLIENT then
+    net.Receive("TTT_ZombieLeapStart", function()
+        local ply = net.ReadEntity()
+        if not IsPlayer(ply) then return end
+
+        hook.Run("DoAnimationEvent", ply, PLAYERANIMEVENT_JUMP)
+
+        local wep = ply:GetActiveWeapon()
+        if IsValid(wep) and WEPS.GetClass(wep) == "weapon_zom_claws" then
+            wep.ActivityTranslate[ACT_MP_JUMP] = ACT_ZOMBIE_LEAPING
+        end
+    end)
+
+    net.Receive("TTT_ZombieLeapEnd", function()
+        local ply = net.ReadEntity()
+        if not IsPlayer(ply) then return end
+
+        local wep = ply:GetActiveWeapon()
+        if IsValid(wep) and WEPS.GetClass(wep) == "weapon_zom_claws" then
+            wep.ActivityTranslate[ACT_MP_JUMP] = nil
+        end
+    end)
 end
