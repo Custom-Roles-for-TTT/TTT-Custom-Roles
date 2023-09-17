@@ -30,10 +30,8 @@ end)
 hook.Add("TTTTargetIDPlayerName", "Spy_TTTTargetIDPlayerName", function(ply, client, text, clr)
     -- If enabled, the Spy's disguise changes their name to the player they last killed
     if ply:IsSpy() and ply:GetNWString("TTTSpyDisguiseName", false) and not client:IsTraitorTeam() and spy_steal_name:GetBool() then
-        text = ply:GetNWString("TTTSpyDisguiseName")
+        return ply:GetNWString("TTTSpyDisguiseName"), clr
     end
-
-    return text, clr
 end)
 
 --------------
