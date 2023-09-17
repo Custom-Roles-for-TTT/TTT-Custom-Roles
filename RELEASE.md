@@ -10,6 +10,7 @@
 - Fixed marshal badge use distance being shorter than intended
 - Fixed error on round start when a hive mind was being spawned
 - Fixed new zombie leap animation not working on dedicated servers
+- Fixed spy breaking other addons trying to manipulate or hide player names when mousing over players
 
 ### Developer
 - Added `ROLE.isdetectivelike` optional feature to make it easier for custom roles to be treated like deputy and impersonator
