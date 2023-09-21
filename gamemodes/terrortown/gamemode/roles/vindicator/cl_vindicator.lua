@@ -13,6 +13,7 @@ local GetAllPlayers = player.GetAll
 hook.Add("Initialize", "Vindicator_Translations_Initialize", function()
     -- Win conditions
     LANG.AddToLanguage("english", "win_vindicator", "The {role} got their revenge!")
+    LANG.AddToLanguage("english", "ev_win_vindicator", "The {role} has won the round!")
 end)
 
 ---------------
@@ -139,5 +140,41 @@ end
 hook.Add("TTTScoringWinTitle", "Vindicator_TTTScoringWinTitle", function(wintype, wintitles, title, secondary_win_role)
     if wintype == WIN_VINDICATOR then
         return { txt = "hilite_win_role_singular", params = { role = string.upper(ROLE_STRINGS[ROLE_VINDICATOR]) }, c = ROLE_COLORS[ROLE_VINDICATOR] }
+    end
+end)
+
+hook.Add("TTTScoringSecondaryWins", "Vindicator_TTTScoringSecondaryWins", function(wintype, secondary_wins)
+    for _, ply in pairs(GetAllPlayers()) do
+        if ply:IsVindicator() and ply:GetNWBool("VindicatorSuccess", false) then
+            TableInsert(secondary_wins, ROLE_VINDICATOR)
+        end
+    end
+end)
+
+------------
+-- EVENTS --
+------------
+
+AddHook("TTTEventFinishText", "Vindicator_TTTEventFinishText", function(e)
+    if e.win == WIN_VINDICATOR then
+        return LANG.GetTranslation("ev_win_vindicator")
+    end
+end)
+
+AddHook("TTTEventFinishIconText", "Vindicator_TTTEventFinishIconText", function(e, win_string, role_string)
+    if e.win == WIN_VINDICATOR then
+        return win_string, ROLE_STRINGS[ROLE_VINDICATOR]
+    end
+end)
+
+AddHook("TTTEndRound", "Vindicator_SecondaryWinEvent_TTTEndRound", function()
+    for _, ply in pairs(GetAllPlayers()) do
+        if ply:IsVindicator() and ply:GetNWBool("VindicatorSuccess", false) then
+            CLSCORE:AddEvent({ -- Log the win event with an offset to force it to the end
+                id = EVENT_FINISH,
+                win = WIN_VINDICATOR
+            }, 1)
+            return
+        end
     end
 end)

@@ -82,7 +82,7 @@ hook.Add("PlayerDeath", "Vindicator_PlayerDeath", function(victim, infl, attacke
             end
         elseif attacker:IsVindicator() and victim:SteamID64() == attacker:GetNWString("VindicatorTarget", "") then
             attacker:GetNWBool("VindicatorSuccess", true)
-        elseif attacker == victim then
+        elseif attacker == victim and vindicator_target_suicide_success:GetBool() then
             for _, ply in pairs(GetAllPlayers()) do
                 if ply:IsActiveVindicator() and victim:SteamID64() == ply:GetNWString("VindicatorTarget", "") then
                     attacker:GetNWBool("VindicatorSuccess", true)
@@ -149,6 +149,6 @@ hook.Add("TTTPrepareRound", "Vindicator_PrepareRound", function()
     SetVindicatorTeam(false)
     for _, ply in pairs(GetAllPlayers()) do
         ply:SetNWString("VindicatorTarget", "")
-        ply:GetNWBool("VindicatorSuccess", false)
+        ply:SetNWBool("VindicatorSuccess", false)
     end
 end)
