@@ -180,11 +180,11 @@ end)
 hook.Add("PlayerDisconnected", "Vindicator_PlayerDisconnected", function(ply)
     local sid64 = ply:SteamID64()
 
-    for _, ply in pairs(GetAllPlayers()) do
-        if ply:GetNWString("VindicatorTarget", "") == sid64 and not ply:GetNWBool("VindicatorSuccess", false) then
-            ply:QueueMessage(MSG_PRINTBOTH, "Your target has disconnected so you have rejoined the innocent team!")
+    for _, v in pairs(GetAllPlayers()) do
+        if v:GetNWString("VindicatorTarget", "") == sid64 and not v:GetNWBool("VindicatorSuccess", false) then
+            v:QueueMessage(MSG_PRINTBOTH, "Your target has disconnected so you have rejoined the innocent team!")
             SetVindicatorTeam(false)
-            ply:SetNWString("VindicatorTarget", "")
+            v:SetNWString("VindicatorTarget", "")
         end
     end
 end)
