@@ -3,11 +3,15 @@ AddCSLuaFile()
 local hook = hook
 local timer = timer
 local player = player
+local net = net
 local math = math
 
 local GetAllPlayers = player.GetAll
 
 util.AddNetworkString("TTT_VindicatorTeamChange")
+util.AddNetworkString("TTT_VindicatorActive")
+util.AddNetworkString("TTT_VindicatorSuccess")
+util.AddNetworkString("TTT_VindicatorFail")
 
 -------------
 -- CONVARS --
@@ -70,6 +74,11 @@ local function ActivateVindicator(vindicator, target)
             end
         end
     end
+
+    net.Start("TTT_VindicatorActive")
+    net.WriteString(vindicator:Nick())
+    net.WriteString(target:Nick())
+    net.Broadcast()
 end
 
 hook.Add("PlayerDeath", "Vindicator_PlayerDeath", function(victim, infl, attacker)
@@ -90,14 +99,26 @@ hook.Add("PlayerDeath", "Vindicator_PlayerDeath", function(victim, infl, attacke
         elseif attacker:IsVindicator() and victim:SteamID64() == attacker:GetNWString("VindicatorTarget", "") then
             attacker:GetNWBool("VindicatorSuccess", true)
             attacker:QueueMessage(MSG_PRINTBOTH, "You have successfully killed your target.")
+            net.Start("TTT_VindicatorSuccess")
+            net.WriteString(attacker:Nick())
+            net.WriteString(victim:Nick())
+            net.Broadcast()
         else
             for _, ply in pairs(GetAllPlayers()) do
                 if ply:IsActiveVindicator() and victim:SteamID64() == ply:GetNWString("VindicatorTarget", "") then
                     if attacker == victim and vindicator_target_suicide_success:GetBool() then
                         attacker:GetNWBool("VindicatorSuccess", true)
                         attacker:QueueMessage(MSG_PRINTBOTH, "Your target finished the job for you and has killed themselves.")
+                        net.Start("TTT_VindicatorSuccess")
+                        net.WriteString(ply:Nick())
+                        net.WriteString(victim:Nick())
+                        net.Broadcast()
                     else
                         attacker:QueueMessage(MSG_PRINTBOTH, "Your target was killed by someone else and you have failed.")
+                        net.Start("TTT_VindicatorFail")
+                        net.WriteString(ply:Nick())
+                        net.WriteString(victim:Nick())
+                        net.Broadcast()
                     end
                 end
             end

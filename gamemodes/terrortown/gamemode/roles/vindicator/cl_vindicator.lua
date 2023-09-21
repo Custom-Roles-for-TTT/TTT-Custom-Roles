@@ -14,6 +14,11 @@ hook.Add("Initialize", "Vindicator_Translations_Initialize", function()
     -- Win conditions
     LANG.AddToLanguage("english", "win_vindicator", "The {role} got their revenge!")
     LANG.AddToLanguage("english", "ev_win_vindicator", "The {role} has won the round!")
+
+    -- EVENTS
+    LANG.AddToLanguage("english", "ev_vindicator_active", "{vindicator} is tracking down their killer, {target}")
+    LANG.AddToLanguage("english", "ev_vindicator_success", "{vindicator} got their revenge on {target}")
+    LANG.AddToLanguage("english", "ev_vindicator_fail", "{vindicator} didn't get revenge on {target}")
 end)
 
 ---------------
@@ -155,19 +160,19 @@ end)
 -- EVENTS --
 ------------
 
-AddHook("TTTEventFinishText", "Vindicator_TTTEventFinishText", function(e)
+hook.Add("TTTEventFinishText", "Vindicator_TTTEventFinishText", function(e)
     if e.win == WIN_VINDICATOR then
         return LANG.GetTranslation("ev_win_vindicator")
     end
 end)
 
-AddHook("TTTEventFinishIconText", "Vindicator_TTTEventFinishIconText", function(e, win_string, role_string)
+hook.Add("TTTEventFinishIconText", "Vindicator_TTTEventFinishIconText", function(e, win_string, role_string)
     if e.win == WIN_VINDICATOR then
         return win_string, ROLE_STRINGS[ROLE_VINDICATOR]
     end
 end)
 
-AddHook("TTTEndRound", "Vindicator_SecondaryWinEvent_TTTEndRound", function()
+hook.Add("TTTEndRound", "Vindicator_SecondaryWinEvent_TTTEndRound", function()
     for _, ply in pairs(GetAllPlayers()) do
         if ply:IsVindicator() and ply:GetNWBool("VindicatorSuccess", false) then
             CLSCORE:AddEvent({ -- Log the win event with an offset to force it to the end
@@ -177,4 +182,64 @@ AddHook("TTTEndRound", "Vindicator_SecondaryWinEvent_TTTEndRound", function()
             return
         end
     end
+end)
+
+-- Register the scoring events for the vindicator
+hook.Add("Initialize", "Vindicator_Scoring_Initialize", function()
+    local user_delete_icon = Material("icon16/user_delete.png")
+    local star_icon = Material("icon16/star.png")
+    local stop_icon = Material("icon16/stop.png")
+    local Event = CLSCORE.DeclareEventDisplay
+    local PT = LANG.GetParamTranslation
+    Event(EVENT_VINDICATORACTIVE, {
+        text = function(e)
+            return PT("ev_vindicator_active", {vindicator = e.vindicator, target = e.target})
+        end,
+        icon = function(e)
+            return user_delete_icon, "Vindicator Active"
+        end})
+    Event(EVENT_VINDICATORSUCCESS, {
+        text = function(e)
+            return PT("ev_vindicator_success", {vindicator = e.vindicator, target = e.target})
+        end,
+        icon = function(e)
+            return star_icon, "Vindicator Success"
+        end})
+    Event(EVENT_VINDICATORFAIL, {
+        text = function(e)
+            return PT("ev_vindicator_fail", {vindicator = e.vindicator, target = e.target})
+        end,
+        icon = function(e)
+            return stop_icon, "Vindicator Fail"
+        end})
+end)
+
+net.Receive("TTT_VindicatorActive", function(len)
+    local vindicator = net.ReadString()
+    local target = net.ReadString()
+    CLSCORE:AddEvent({
+        id = EVENT_VINDICATORACTIVE,
+        vindicator = vindicator,
+        target = target
+    })
+end)
+
+net.Receive("TTT_VindicatorSuccess", function(len)
+    local vindicator = net.ReadString()
+    local target = net.ReadString()
+    CLSCORE:AddEvent({
+        id = EVENT_VINDICATORSUCCESS,
+        vindicator = vindicator,
+        target = target
+    })
+end)
+
+net.Receive("TTT_VindicatorFail", function(len)
+    local vindicator = net.ReadString()
+    local target = net.ReadString()
+    CLSCORE:AddEvent({
+        id = EVENT_VINDICATORFAIL,
+        vindicator = vindicator,
+        target = target
+    })
 end)
