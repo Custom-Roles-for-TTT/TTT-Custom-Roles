@@ -6,6 +6,15 @@ local pairs = pairs
 local RemoveHook = hook.Remove
 local GetAllPlayers = player.GetAll
 
+------------------
+-- TRANSLATIONS --
+------------------
+
+hook.Add("Initialize", "Vindicator_Translations_Initialize", function()
+    -- Win conditions
+    LANG.AddToLanguage("english", "win_vindicator", "The {role} got their revenge!")
+end)
+
 ---------------
 -- TARGET ID --
 ---------------
@@ -122,3 +131,13 @@ ROLE_IS_TARGET_HIGHLIGHTED[ROLE_VINDICATOR] = function(ply, target)
     local isTarget = target_sid64 == target:SteamID64()
     return isTarget
 end
+
+----------------
+-- WIN CHECKS --
+----------------
+
+hook.Add("TTTScoringWinTitle", "Vindicator_TTTScoringWinTitle", function(wintype, wintitles, title, secondary_win_role)
+    if wintype == WIN_VINDICATOR then
+        return { txt = "hilite_win_role_singular", params = { role = string.upper(ROLE_STRINGS[ROLE_VINDICATOR]) }, c = ROLE_COLORS[ROLE_VINDICATOR] }
+    end
+end)
