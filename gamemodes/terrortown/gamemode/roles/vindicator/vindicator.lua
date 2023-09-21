@@ -20,6 +20,7 @@ util.AddNetworkString("TTT_VindicatorFail")
 local vindicator_respawn_delay = CreateConVar("ttt_vindicator_respawn_delay", "5", FCVAR_NONE, "Delay between the vindicator dying and respawning in seconds", 0, 30)
 local vindicator_respawn_health = CreateConVar("ttt_vindicator_respawn_health", "100", FCVAR_NONE, "The amount of health a vindicator will respawn with", 1, 200)
 local vindicator_announcement_mode = CreateConVar("ttt_vindicator_announcement_mode", "1", FCVAR_NONE, "Who is notified when the vindicator respawns", 0, 2)
+local vindicator_prevent_revival = CreateConVar("ttt_vindicator_prevent_revival", "0", FCVAR_NONE)
 
 local vindicator_target_suicide_success = GetConVar("ttt_vindicator_target_suicide_success")
 local vindicator_kill_on_fail = GetConVar("ttt_vindicator_kill_on_fail")
@@ -107,6 +108,10 @@ hook.Add("PlayerDeath", "Vindicator_PlayerDeath", function(victim, infl, attacke
             net.WriteString(attacker:Nick())
             net.WriteString(victim:Nick())
             net.Broadcast()
+            if not vindicator_prevent_revival:GetBool() and vindicator_kill_on_success:GetBool() then
+                attacker:Kill()
+                attacker:QueueMessage(MSG_PRINTBOTH, "You can now rest in peace having achieved your goal.")
+            end
         else
             for _, ply in pairs(GetAllPlayers()) do
                 if ply:IsActiveVindicator() and victim:SteamID64() == ply:GetNWString("VindicatorTarget", "") then
@@ -117,12 +122,20 @@ hook.Add("PlayerDeath", "Vindicator_PlayerDeath", function(victim, infl, attacke
                         net.WriteString(ply:Nick())
                         net.WriteString(victim:Nick())
                         net.Broadcast()
+                        if not vindicator_prevent_revival:GetBool() and vindicator_kill_on_success:GetBool() then
+                            ply:Kill()
+                            ply:QueueMessage(MSG_PRINTBOTH, "You can now rest in peace having achieved your goal.")
+                        end
                     else
                         ply:QueueMessage(MSG_PRINTBOTH, "Your target was killed by someone else and you have failed.")
                         net.Start("TTT_VindicatorFail")
                         net.WriteString(ply:Nick())
                         net.WriteString(victim:Nick())
                         net.Broadcast()
+                        if not vindicator_prevent_revival:GetBool() and vindicator_kill_on_fail:GetBool() then
+                            ply:Kill()
+                            ply:QueueMessage(MSG_PRINTBOTH, "Having failed to take revenge, you must return to death.")
+                        end
                     end
                 end
             end
@@ -136,26 +149,44 @@ end)
 
 hook.Add("TTTBeginRound", "Vindicator_TTTBeginRound", function()
     timer.Create("TTTVindicatorTimer", 0.1, 0, function()
-        for _, v in pairs(GetAllPlayers()) do
-            if not v:IsActiveVindicator() then continue end
+        if vindicator_prevent_revival:GetBool() then
+            for _, v in pairs(GetAllPlayers()) do
+                if not v:IsActiveVindicator() then continue end
 
-            local target_sid64 = v:GetNWString("VindicatorTarget", "")
-            if target_sid64 == "" then continue end
+                local target_sid64 = v:GetNWString("VindicatorTarget", "")
+                if target_sid64 == "" then continue end
 
-            local target = player.GetBySteamID64(target_sid64)
-            if not IsPlayer(target) or target:IsActive() then continue end
+                local target = player.GetBySteamID64(target_sid64)
+                if not IsPlayer(target) or target:IsActive() then continue end
 
-            local success = v:GetNWBool("VindicatorSuccess", false)
-            if (success and not vindicator_kill_on_success:GetBool()) or (not success and not vindicator_kill_on_fail:GetBool()) then continue end
+                local success = v:GetNWBool("VindicatorSuccess", false)
+                if (success and not vindicator_kill_on_success:GetBool()) or (not success and not vindicator_kill_on_fail:GetBool()) then continue end
 
-            v:Kill()
-            if success then
-                v:QueueMessage(MSG_PRINTBOTH, "You can now rest in peace having achieved your goal.")
-            else
-                v:QueueMessage(MSG_PRINTBOTH, "Having failed to take revenge, you must return to death.")
+                v:Kill()
+                if success then
+                    v:QueueMessage(MSG_PRINTBOTH, "You can now rest in peace having achieved your goal.")
+                else
+                    v:QueueMessage(MSG_PRINTBOTH, "Having failed to take revenge, you must return to death.")
+                end
             end
         end
     end)
+end)
+
+--------------------------
+-- DISCONNECTION CHECKS --
+--------------------------
+
+hook.Add("PlayerDisconnected", "Vindicator_PlayerDisconnected", function(ply)
+    local sid64 = ply:SteamID64()
+
+    for _, ply in pairs(GetAllPlayers()) do
+        if ply:GetNWString("VindicatorTarget", "") == sid64 and not ply:GetNWBool("VindicatorSuccess", false) then
+            ply:QueueMessage(MSG_PRINTBOTH, "Your target has disconnected so you have rejoined the innocent team!")
+            SetVindicatorTeam(false)
+            ply:SetNWString("VindicatorTarget", "")
+        end
+    end
 end)
 
 ----------------
@@ -189,7 +220,7 @@ hook.Add("TTTCheckForWin", "Vindicator_TTTCheckForWin", function()
             if ply:GetNWBool("VindicatorSuccess", false) then
                 vindicator_win = true
             end
-        elseif ply:IsActive() then
+        elseif ply:IsActive() and not ply:ShouldActLikeJester()  then
             other_alive = true
         end
     end

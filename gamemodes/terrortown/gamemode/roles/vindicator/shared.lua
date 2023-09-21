@@ -57,6 +57,10 @@ table.insert(ROLE_CONVARS[ROLE_VINDICATOR], {
     decimal = 0
 })
 table.insert(ROLE_CONVARS[ROLE_VINDICATOR], {
+    cvar = "ttt_vindicator_prevent_revival",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_VINDICATOR], {
     cvar = "ttt_vindicator_target_suicide_success",
     type = ROLE_CONVAR_TYPE_BOOL
 })

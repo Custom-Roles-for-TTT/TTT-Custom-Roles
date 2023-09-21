@@ -393,6 +393,7 @@ ttt_infected_cough_timer_max                60      // The maximum time between 
 ttt_vindicator_respawn_delay                5       // Delay between the vindicator dying and respawning in seconds
 ttt_vindicator_respawn_health               100     // The amount of health a vindicator will respawn with
 ttt_vindicator_announcement_mode            1       // Who is notified when the vindicator respawns (0: No one, 1: The vindicator's killer, 2: Everyone)
+ttt_vindicator_prevent_revival              0       // Whether the vindicator should be killed if they are revived after having died due to failing or succeeding in killing their target
 ttt_vindicator_target_suicide_success       1       // Whether the vindicator's killer killing themselves should count as a win for the vindicator
 ttt_vindicator_kill_on_fail                 1       // Whether the vindicator should be killed if they fail to kill their target
 ttt_vindicator_kill_on_success              0       // Whether the vindicator should be killed after they kill their target
