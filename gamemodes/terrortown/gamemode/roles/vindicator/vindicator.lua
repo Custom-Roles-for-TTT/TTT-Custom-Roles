@@ -81,6 +81,29 @@ hook.Add("PlayerDeath", "Vindicator_PlayerDeath", function(victim, infl, attacke
     end
 end)
 
+----------------
+-- WIN CHECKS --
+----------------
+
+local function HandleVindicatorWinBlock(win_type)
+    if win_type == WIN_NONE then return win_type end
+
+    if not INDEPENDENT_ROLES[ROLE_VINDICATOR] then return win_type end
+
+    local vindicator = player.GetLivingRole(ROLE_VINDICATOR)
+    if not IsPlayer(vindicator) then return win_type end
+
+    local sid64 = vindicator:GetNWString("VindicatorTarget", "")
+    local target = player.GetBySteamID64(sid64)
+    if not IsPlayer(target) or not target:Alive() then return win_type end
+
+    return WIN_NONE
+end
+
+hook.Add("TTTWinCheckBlocks", "Vindicator_TTTWinCheckBlocks", function(win_blocks)
+    table.insert(win_blocks, HandleVindicatorWinBlock)
+end)
+
 -------------
 -- CLEANUP --
 -------------
