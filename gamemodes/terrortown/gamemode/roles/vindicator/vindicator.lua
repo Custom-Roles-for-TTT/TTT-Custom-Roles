@@ -63,6 +63,10 @@ local function ActivateVindicator(vindicator, target)
         end
     end
 
+    local vect = target:GetPos() - vindicator:GetPos()
+    vindicator:SetEyeAngles(vect:Angle())
+
+    vindicator:QueueMessage(MSG_PRINTBOTH, "Hunt down your killer and get your revenge!")
     local mode = vindicator_announcement_mode:GetInt()
     if mode >= VINDICATOR_ANNOUNCE_TARGET then
         target:QueueMessage(MSG_PRINTBOTH, ROLE_STRINGS_EXT[ROLE_VINDICATOR] .. " (" .. vindicator:Nick() .. ") has respawned and is hunting you down!")
@@ -97,7 +101,7 @@ hook.Add("PlayerDeath", "Vindicator_PlayerDeath", function(victim, infl, attacke
                 end)
             end
         elseif attacker:IsVindicator() and victim:SteamID64() == attacker:GetNWString("VindicatorTarget", "") then
-            attacker:GetNWBool("VindicatorSuccess", true)
+            attacker:SetNWBool("VindicatorSuccess", true)
             attacker:QueueMessage(MSG_PRINTBOTH, "You have successfully killed your target.")
             net.Start("TTT_VindicatorSuccess")
             net.WriteString(attacker:Nick())
@@ -107,14 +111,14 @@ hook.Add("PlayerDeath", "Vindicator_PlayerDeath", function(victim, infl, attacke
             for _, ply in pairs(GetAllPlayers()) do
                 if ply:IsActiveVindicator() and victim:SteamID64() == ply:GetNWString("VindicatorTarget", "") then
                     if attacker == victim and vindicator_target_suicide_success:GetBool() then
-                        attacker:GetNWBool("VindicatorSuccess", true)
-                        attacker:QueueMessage(MSG_PRINTBOTH, "Your target finished the job for you and has killed themselves.")
+                        ply:SetNWBool("VindicatorSuccess", true)
+                        ply:QueueMessage(MSG_PRINTBOTH, "Your target finished the job for you and has killed themselves.")
                         net.Start("TTT_VindicatorSuccess")
                         net.WriteString(ply:Nick())
                         net.WriteString(victim:Nick())
                         net.Broadcast()
                     else
-                        attacker:QueueMessage(MSG_PRINTBOTH, "Your target was killed by someone else and you have failed.")
+                        ply:QueueMessage(MSG_PRINTBOTH, "Your target was killed by someone else and you have failed.")
                         net.Start("TTT_VindicatorFail")
                         net.WriteString(ply:Nick())
                         net.WriteString(victim:Nick())

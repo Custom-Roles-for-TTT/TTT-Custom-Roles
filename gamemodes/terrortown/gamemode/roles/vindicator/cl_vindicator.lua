@@ -1,8 +1,10 @@
 local halo = halo
 local hook = hook
+local table = table
 local IsValid = IsValid
 local pairs = pairs
 
+local TableInsert = table.insert
 local RemoveHook = hook.Remove
 local GetAllPlayers = player.GetAll
 
@@ -20,8 +22,11 @@ hook.Add("Initialize", "Vindicator_Translations_Initialize", function()
     LANG.AddToLanguage("english", "ev_vindicator_success", "{vindicator} got their revenge on {target}")
     LANG.AddToLanguage("english", "ev_vindicator_fail", "{vindicator} didn't get revenge on {target}")
 
+    -- Scoring
+    LANG.AddToLanguage("english", "score_vindicator_killedby", "Killed by")
+
     -- Popup
-    LANG.AddToLanguage("english", "info_popup_infected", [[You are {role}! Work with the {innocents}
+    LANG.AddToLanguage("english", "info_popup_vindicator", [[You are {role}! Work with the {innocents}
 to try to track down the {traitors}! If someone
 kills you, you will come back from the dead
 to get revenge on your killer.]])
@@ -155,9 +160,28 @@ hook.Add("TTTScoringWinTitle", "Vindicator_TTTScoringWinTitle", function(wintype
 end)
 
 hook.Add("TTTScoringSecondaryWins", "Vindicator_TTTScoringSecondaryWins", function(wintype, secondary_wins)
-    for _, ply in pairs(GetAllPlayers()) do
-        if ply:IsVindicator() and ply:GetNWBool("VindicatorSuccess", false) then
-            TableInsert(secondary_wins, ROLE_VINDICATOR)
+    if wintype ~= WIN_VINDICATOR then
+        for _, ply in pairs(GetAllPlayers()) do
+            if ply:IsVindicator() and ply:GetNWBool("VindicatorSuccess", false) then
+                TableInsert(secondary_wins, ROLE_VINDICATOR)
+            end
+        end
+    end
+end)
+
+-------------
+-- SCORING --
+-------------
+
+-- Show who killed the vindicator
+hook.Add("TTTScoringSummaryRender", "Vindicator_TTTScoringSummaryRender", function(ply, roleFileName, groupingRole, roleColor, name, startingRole, finalRole)
+    if not IsPlayer(ply) then return end
+
+    if ply:IsVindicator() and ply:IsRoleActive() then
+        local sid64 = ply:GetNWString("VindicatorTarget", "")
+        local target = player.GetBySteamID64(sid64)
+        if IsPlayer(target) then
+            return roleFileName, groupingRole, roleColor, name, target:Nick(), LANG.GetTranslation("score_vindicator_killedby")
         end
     end
 end)
