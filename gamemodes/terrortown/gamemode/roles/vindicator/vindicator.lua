@@ -67,7 +67,7 @@ end
 hook.Add("PlayerDeath", "Vindicator_PlayerDeath", function(victim, infl, attacker)
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     if valid_kill and victim:IsVindicator() and not victim:IsRoleActive() then
-        if victim:GetNWBool("IsZombifying", false) then return end
+        if victim:IsZombifying() or attacker:IsHiveMind() then return end
 
         local delay = vindicator_respawn_delay:GetInt()
         if delay == 0 then
