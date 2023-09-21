@@ -15,10 +15,16 @@ hook.Add("Initialize", "Vindicator_Translations_Initialize", function()
     LANG.AddToLanguage("english", "win_vindicator", "The {role} got their revenge!")
     LANG.AddToLanguage("english", "ev_win_vindicator", "The {role} has won the round!")
 
-    -- EVENTS
+    -- Events
     LANG.AddToLanguage("english", "ev_vindicator_active", "{vindicator} is tracking down their killer, {target}")
     LANG.AddToLanguage("english", "ev_vindicator_success", "{vindicator} got their revenge on {target}")
     LANG.AddToLanguage("english", "ev_vindicator_fail", "{vindicator} didn't get revenge on {target}")
+
+    -- Popup
+    LANG.AddToLanguage("english", "info_popup_infected", [[You are {role}! Work with the {innocents}
+to try to track down the {traitors}! If someone
+kills you, you will come back from the dead
+to get revenge on your killer.]])
 end)
 
 ---------------
