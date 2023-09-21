@@ -39,3 +39,32 @@ end
 CreateConVar("ttt_vindicator_target_suicide_success", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_vindicator_kill_on_fail", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_vindicator_kill_on_success", "0", FCVAR_REPLICATED)
+
+ROLE_CONVARS[ROLE_VINDICATOR] = {}
+table.insert(ROLE_CONVARS[ROLE_VINDICATOR], {
+    cvar = "ttt_vindicator_respawn_delay",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_VINDICATOR], {
+    cvar = "ttt_vindicator_respawn_health",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_VINDICATOR], {
+    cvar = "ttt_vindicator_announcement_mode",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_VINDICATOR], {
+    cvar = "ttt_vindicator_target_suicide_success",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_VINDICATOR], {
+    cvar = "ttt_vindicator_kill_on_fail",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_VINDICATOR], {
+    cvar = "ttt_vindicator_kill_on_success",
+    type = ROLE_CONVAR_TYPE_BOOL
+})

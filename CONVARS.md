@@ -63,6 +63,7 @@ ttt_vampire_enabled                         0       // Whether or not the vampir
 ttt_quack_enabled                           0       // Whether or not the quack should spawn
 ttt_parasite_enabled                        0       // Whether or not the parasite should spawn
 ttt_informant_enabled                       0       // Whether or not the informant should spawn
+ttt_spy_enabled                             0       // Whether or not the spy should spawn
 ttt_glitch_enabled                          0       // Whether or not the glitch should spawn
 ttt_phantom_enabled                         0       // Whether or not the phantom should spawn
 ttt_revenger_enabled                        0       // Whether or not the revenger should spawn
@@ -74,11 +75,13 @@ ttt_trickster_enabled                       0       // Whether or not the tricks
 ttt_paramedic_enabled                       0       // Whether or not the paramedic should spawn
 ttt_turncoat_enabled                        0       // Whether or not the turncoat should spawn
 ttt_infected_enabled                        0       // Whether or not the infected should spawn
+ttt_vindicator_enabled                      0       // Whether or not the vindicator should spawn
 ttt_paladin_enabled                         0       // Whether or not the paladin should spawn
 ttt_tracker_enabled                         0       // Whether or not the tracker should spawn
 ttt_medium_enabled                          0       // Whether or not the medium should spawn
 ttt_sapper_enabled                          0       // Whether or not the sapper should spawn
 ttt_marshal_enabled                         0       // Whether or not the marshal should spawn
+ttt_quartermaster_enabled                   0       // Whether or not the quartermaster should spawn
 ttt_jester_enabled                          0       // Whether or not the jester should spawn
 ttt_swapper_enabled                         0       // Whether or not the swapper should spawn
 ttt_clown_enabled                           0       // Whether or not the clown should spawn
@@ -87,6 +90,7 @@ ttt_bodysnatcher_enabled                    0       // Whether or not the bodysn
 ttt_lootgoblin_enabled                      0       // Whether or not the loot goblin should spawn
 ttt_cupid_enabled                           0       // Whether or not the cupid should spawn
 ttt_sponge_enabled                          0       // Whether or not the sponge should spawn
+ttt_guesser_enabled                         0       // Whether or not the guesser should spawn
 ttt_drunk_enabled                           0       // Whether or not the drunk should spawn
 ttt_oldman_enabled                          0       // Whether or not the old man should spawn
 ttt_killer_enabled                          0       // Whether or not the killer should spawn
@@ -94,10 +98,7 @@ ttt_zombie_enabled                          0       // Whether or not the zombie
 ttt_madscientist_enabled                    0       // Whether or not the mad scientist should spawn
 ttt_shadow_enabled                          0       // Whether or not the shadow should spawn
 ttt_arsonist_enabled                        0       // Whether or not the arsonist should spawn
-ttt_spy_enabled                             0       // Whether or not the spy should spawn
 ttt_hivemind_enabled                        0       // Whether or not the hive mind should spawn
-ttt_guesser_enabled                         0       // Whether or not the guesser should spawn
-ttt_quartermaster_enabled                   0       // Whether or not the quartermaster should spawn
 
 // Individual Role Spawn Weights
 ttt_hypnotist_spawn_weight                  1       // The weight assigned to spawning the hypnotist
@@ -107,6 +108,7 @@ ttt_vampire_spawn_weight                    1       // The weight assigned to sp
 ttt_quack_spawn_weight                      1       // The weight assigned to spawning the quack
 ttt_parasite_spawn_weight                   1       // The weight assigned to spawning the parasite
 ttt_informant_spawn_weight                  1       // The weight assigned to spawning the informant
+ttt_spy_spawn_weight                        1       // The weight assigned to spawning the spy
 ttt_glitch_spawn_weight                     1       // The weight assigned to spawning the glitch
 ttt_phantom_spawn_weight                    1       // The weight assigned to spawning the phantom
 ttt_revenger_spawn_weight                   1       // The weight assigned to spawning the revenger
@@ -118,11 +120,13 @@ ttt_trickster_spawn_weight                  1       // The weight assigned to sp
 ttt_paramedic_spawn_weight                  1       // The weight assigned to spawning the paramedic
 ttt_turncoat_spawn_weight                   1       // The weight assigned to spawning the turncoat
 ttt_infected_spawn_weight                   1       // The weight assigned to spawning the infected
+ttt_vindicator_spawn_weight                 1       // The weight assigned to spawning the vindicator
 ttt_paladin_spawn_weight                    1       // The weight assigned to spawning the paladin
 ttt_tracker_spawn_weight                    1       // The weight assigned to spawning the tracker
 ttt_medium_spawn_weight                     1       // The weight assigned to spawning the medium
 ttt_sapper_spawn_weight                     1       // The weight assigned to spawning the sapper
 ttt_marshal_spawn_weight                    1       // The weight assigned to spawning the marshal
+ttt_quartermaster_spawn_weight              1       // The weight assigned to spawning the quartermaster
 ttt_jester_spawn_weight                     1       // The weight assigned to spawning the jester
 ttt_swapper_spawn_weight                    1       // The weight assigned to spawning the swapper
 ttt_clown_spawn_weight                      1       // The weight assigned to spawning the clown
@@ -131,6 +135,7 @@ ttt_bodysnatcher_spawn_weight               1       // The weight assigned to sp
 ttt_lootgoblin_spawn_weight                 1       // The weight assigned to spawning the loot goblin
 ttt_cupid_spawn_weight                      1       // The weight assigned to spawning the cupid
 ttt_sponge_spawn_weight                     1       // The weight assigned to spawning the sponge
+ttt_guesser_spawn_weight                    1       // The weight assigned to spawning the guesser
 ttt_drunk_spawn_weight                      1       // The weight assigned to spawning the drunk
 ttt_oldman_spawn_weight                     1       // The weight assigned to spawning the old man
 ttt_killer_spawn_weight                     1       // The weight assigned to spawning the killer
@@ -138,10 +143,7 @@ ttt_zombie_spawn_weight                     1       // The weight assigned to sp
 ttt_madscientist_spawn_weight               1       // The weight assigned to spawning the mad scientist
 ttt_shadow_spawn_weight                     1       // The weight assigned to spawning the shadow
 ttt_arsonist_spawn_weight                   1       // The weight assigned to spawning the arsonist
-ttt_spy_spawn_weight                        1       // The weight assigned to spawning the spy
 ttt_hivemind_spawn_weight                   1       // The weight assigned to spawning the hive mind
-ttt_guesser_spawn_weight                    1       // The weight assigned to spawning the guesser
-ttt_quartermaster_spawn_weight              1       // The weight assigned to spawning the quartermaster
 
 // (Note: Each role is limited to one player per round.)
 
@@ -153,6 +155,7 @@ ttt_vampire_min_players                     0       // The minimum number of pla
 ttt_quack_min_players                       0       // The minimum number of players required to spawn the quack
 ttt_parasite_min_players                    0       // The minimum number of players required to spawn the parasite
 ttt_informant_min_players                   0       // The minimum number of players required to spawn the informant
+ttt_spy_min_players                         0       // The minimum number of players required to spawn the spy
 ttt_glitch_min_players                      0       // The minimum number of players required to spawn the glitch
 ttt_phantom_min_players                     0       // The minimum number of players required to spawn the phantom
 ttt_revenger_min_players                    0       // The minimum number of players required to spawn the revenger
@@ -164,11 +167,13 @@ ttt_trickster_min_players                   0       // The minimum number of pla
 ttt_paramedic_min_players                   0       // The minimum number of players required to spawn the paramedic
 ttt_turncoat_min_players                    0       // The minimum number of players required to spawn the turncoat
 ttt_infected_min_players                    0       // The minimum number of players required to spawn the infected
+ttt_vindicator_min_players                  0       // The minimum number of players required to spawn the vindicator
 ttt_paladin_min_players                     0       // The minimum number of players required to spawn the paladin
 ttt_tracker_min_players                     0       // The minimum number of players required to spawn the tracker
 ttt_medium_min_players                      0       // The minimum number of players required to spawn the medium
 ttt_sapper_min_players                      0       // The minimum number of players required to spawn the sapper
 ttt_marshal_min_players                     0       // The minimum number of players required to spawn the marshal
+ttt_quartermaster_min_players               0       // The minimum number of players required to spawn the quartermaster
 ttt_jester_min_players                      0       // The minimum number of players required to spawn the jester
 ttt_swapper_min_players                     0       // The minimum number of players required to spawn the swapper
 ttt_clown_min_players                       0       // The minimum number of players required to spawn the clown
@@ -177,6 +182,7 @@ ttt_bodysnatcher_min_players                0       // The minimum number of pla
 ttt_lootgoblin_min_players                  0       // The minimum number of players required to spawn the loot goblin
 ttt_cupid_min_players                       0       // The minimum number of players required to spawn the cupid
 ttt_sponge_min_players                      0       // The minimum number of players required to spawn the sponge
+ttt_guesser_min_players                     0       // The minimum number of players required to spawn the guesser
 ttt_drunk_min_players                       0       // The minimum number of players required to spawn the drunk
 ttt_oldman_min_players                      0       // The minimum number of players required to spawn the old man
 ttt_killer_min_players                      0       // The minimum number of players required to spawn the killer
@@ -184,10 +190,7 @@ ttt_zombie_min_players                      0       // The minimum number of pla
 ttt_madscientist_min_players                0       // The minimum number of players required to spawn the mad scientist
 ttt_shadow_min_players                      0       // The minimum number of players required to spawn the shadow
 ttt_arsonist_min_players                    0       // The minimum number of players required to spawn the arsonist
-ttt_spy_min_players                         0       // The minimum number of players required to spawn the spy
 ttt_hivemind_min_players                    0       // The minimum number of players required to spawn the hive mind
-ttt_guesser_min_players                     0       // The minimum number of players required to spawn the guesser
-ttt_quartermaster_min_players               0       // The minimum number of players required to spawn the quartermaster
 
 // ----------------------------------------
 
@@ -385,6 +388,14 @@ ttt_infected_show_icon                      1       // Whether to show the infec
 ttt_infected_cough_enabled                  1       // Whether the infected coughs periodically
 ttt_infected_cough_timer_min                30      // The minimum time between infected coughs
 ttt_infected_cough_timer_max                60      // The maximum time between infected coughs
+
+// Vindicator
+ttt_vindicator_respawn_delay                5       // Delay between the vindicator dying and respawning in seconds
+ttt_vindicator_respawn_health               100     // The amount of health a vindicator will respawn with
+ttt_vindicator_announcement_mode            1       // Who is notified when the vindicator respawns (0: No one, 1: The vindicator's killer, 2: Everyone)
+ttt_vindicator_target_suicide_success       1       // Whether the vindicator's killer killing themselves should count as a win for the vindicator
+ttt_vindicator_kill_on_fail                 1       // Whether the vindicator should be killed if they fail to kill their target
+ttt_vindicator_kill_on_success              0       // Whether the vindicator should be killed after they kill their target
 
 // ----------------------------------------
 
