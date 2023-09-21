@@ -249,3 +249,40 @@ net.Receive("TTT_VindicatorFail", function(len)
         target = target
     })
 end)
+
+--------------
+-- TUTORIAL --
+--------------
+
+local vindicator_target_suicide_success = GetConVar("ttt_vindicator_target_suicide_success")
+local vindicator_kill_on_fail = GetConVar("ttt_vindicator_kill_on_fail")
+local vindicator_kill_on_success = GetConVar("ttt_vindicator_kill_on_success")
+
+hook.Add("TTTTutorialRoleText", "Vindicator_TTTTutorialRoleText", function(role, titleLabel)
+    if role == ROLE_VINDICATOR then
+        local innocentColor = ROLE_COLORS[ROLE_INNOCENT]
+        local independentColor = ROLE_COLORS[ROLE_DRUNK]
+        local html = "The " .. ROLE_STRINGS[ROLE_VINDICATOR] .. " is a member of the <span style='color: rgb(" .. innocentColor.r .. ", " .. innocentColor.g .. ", " .. innocentColor.b .. ")'>innocent team</span> who has a second chance to win if they are killed."
+
+        html = html .. "<span style='display: block; margin-top: 10px;'>If they are killed, the " .. ROLE_STRINGS[ROLE_VINDICATOR] .. " will respawn as <span style='color: rgb(" .. independentColor.r .. ", " .. independentColor.g .. ", " .. independentColor.b .. ")'>an independent</span> who need to track down their killer and get revenge. As they are no longer part of the <span style='color: rgb(" .. innocentColor.r .. ", " .. innocentColor.g .. ", " .. innocentColor.b .. ")'>innocent team</span> they do not win with their old team and must kill their killer to win the round.</span>"
+
+        html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_VINDICATOR] .. " must be the one to get the killing blow on their killer. If someone else gets the kill, the " .. ROLE_STRINGS[ROLE_VINDICATOR] .. " will not win."
+        if vindicator_target_suicide_success:GetBool() then
+            html = html .. " However, if the " .. ROLE_STRINGS[ROLE_VINDICATOR] .. "'s killer kills themselves that counts as a win for the " .. ROLE_STRINGS[ROLE_VINDICATOR] .. "."
+        end
+        html = html .. "</span>"
+
+        html = html .. "<span style='display: block; margin-top: 10px;'>Once the " .. ROLE_STRINGS[ROLE_VINDICATOR] .. "'s target has died, "
+        if vindicator_kill_on_fail:GetBool() and vindicator_kill_on_success:GetBool() then
+            html = html .. "the " .. ROLE_STRINGS[ROLE_VINDICATOR] .. " is killed also. However they can still win, even if dead.</span>"
+        elseif vindicator_kill_on_fail:GetBool() then
+            html = html .. "if the " .. ROLE_STRINGS[ROLE_VINDICATOR] .. " was the one to kill them then they are free to live out the rest of the round. They will win even if they die before the round ends. However if the " .. ROLE_STRINGS[ROLE_VINDICATOR] .. " failed to kill their target then they are killed also.</span>"
+        elseif vindicator_kill_on_success:GetBool() then
+            html = html .. "if the " .. ROLE_STRINGS[ROLE_VINDICATOR] .. " was the one to kill them then they die as well. They will win even though they are dead. However if the " .. ROLE_STRINGS[ROLE_VINDICATOR] .. " failed to kill their target then they are forced to remain and wander aimlessly without a goal or purpose.</span>"
+        else
+            html = html .. "the " .. ROLE_STRINGS[ROLE_VINDICATOR] .. " is free to live out the rest of the round. If they die before the round ends, they can still win as long as they killed their target.</span>"
+        end
+
+        return html
+    end
+end)

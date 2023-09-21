@@ -19,8 +19,8 @@ util.AddNetworkString("TTT_VindicatorFail")
 
 local vindicator_respawn_delay = CreateConVar("ttt_vindicator_respawn_delay", "5", FCVAR_NONE, "Delay between the vindicator dying and respawning in seconds", 0, 30)
 local vindicator_respawn_health = CreateConVar("ttt_vindicator_respawn_health", "100", FCVAR_NONE, "The amount of health a vindicator will respawn with", 1, 200)
+local vindicator_announcement_mode = CreateConVar("ttt_vindicator_announcement_mode", "1", FCVAR_NONE, "Who is notified when the vindicator respawns", 0, 2)
 
-local vindicator_announcement_mode = GetConVar("ttt_vindicator_announcement_mode")
 local vindicator_target_suicide_success = GetConVar("ttt_vindicator_target_suicide_success")
 local vindicator_kill_on_fail = GetConVar("ttt_vindicator_kill_on_fail")
 local vindicator_kill_on_success = GetConVar("ttt_vindicator_kill_on_success")
