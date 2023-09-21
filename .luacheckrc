@@ -831,6 +831,9 @@ globals = {
     "EVENT_TURNCOATCHANGED",
     "EVENT_VAMPIFIED",
     "EVENT_VAMPPRIME_DEATH",
+    "EVENT_VINDICATORACTIVE",
+    "EVENT_VINDICATORFAIL",
+    "EVENT_VINDICATORSUCCESS",
     "EVENT_ZOMBIFIED",
     "GLITCH_HIDE_SPECIAL_TRAITOR_ROLES",
     "GLITCH_SHOW_AS_SPECIAL_TRAITOR",
@@ -975,6 +978,7 @@ globals = {
     "WIN_TIMELIMIT",
     "WIN_TRAITOR",
     "WIN_VAMPIRE",
+    "WIN_VINDICATOR",
     "WIN_ZOMBIE",
     "ZOMBIE_FF_MODE_IMMUNE",
     "ZOMBIE_FF_MODE_NONE",
@@ -988,6 +992,9 @@ globals = {
     "SWAPPER_WEAPON_NONE",
     "SWAPPER_WEAPON_ALL",
     "SWAPPER_WEAPON_ROLE",
+    "VINDICATOR_ANNOUNCE_NONE",
+    "VINDICATOR_ANNOUNCE_TARGET",
+    "VINDICATOR_ANNOUNCE_ALL",
 
     -- CR Roles
     "ROLE_ARSONIST",
@@ -1031,6 +1038,7 @@ globals = {
     "ROLE_TURNCOAT",
     "ROLE_VAMPIRE",
     "ROLE_VETERAN",
+    "ROLE_VINDICATOR",
     "ROLE_ZOMBIE",
 
     -- CR Globals
@@ -1073,6 +1081,7 @@ globals = {
     "SetRoleMaxHealth",
     "SetRoleStartingHealth",
     "SetTurncoatTeam",
+    "SetVindicatorTeam",
     "ShouldPromoteDetectiveLike",
     "ShouldShowTraitorExtraInfo",
     "StartsWithVowel",
