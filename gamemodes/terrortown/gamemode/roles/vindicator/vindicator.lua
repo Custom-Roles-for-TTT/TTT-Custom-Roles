@@ -18,6 +18,8 @@ local vindicator_respawn_health = CreateConVar("ttt_vindicator_respawn_health", 
 
 local vindicator_announcement_mode = GetConVar("ttt_vindicator_announcement_mode")
 local vindicator_target_suicide_success = GetConVar("ttt_vindicator_target_suicide_success")
+local vindicator_kill_on_fail = GetConVar("ttt_vindicator_kill_on_fail")
+local vindicator_kill_on_success = GetConVar("ttt_vindicator_kill_on_success")
 
 -------------------
 -- ROLE FEATURES --
@@ -25,6 +27,11 @@ local vindicator_target_suicide_success = GetConVar("ttt_vindicator_target_suici
 
 local function ActivateVindicator(vindicator, target)
     if not vindicator:IsVindicator() then return end
+
+    if not target:Alive() then
+        vindicator:QueueMessage(MSG_PRINTBOTH, "Your target has already died so you will not be respawned.")
+        return
+    end
 
     local body = vindicator.server_ragdoll or vindicator:GetRagdollEntity()
     if IsValid(body) then
@@ -76,20 +83,54 @@ hook.Add("PlayerDeath", "Vindicator_PlayerDeath", function(victim, infl, attacke
                 ActivateVindicator(victim, attacker)
             else
                 victim:QueueMessage(MSG_PRINTBOTH, "You will be respawned in " .. delay .. " second(s)", math.min(delay, 5))
-                timer.Create("VindicatorRespawn", delay, 1, function()
+                timer.Create("VindicatorRespawn" .. victim:SteamID64(), delay, 1, function()
                     ActivateVindicator(victim, attacker)
                 end)
             end
         elseif attacker:IsVindicator() and victim:SteamID64() == attacker:GetNWString("VindicatorTarget", "") then
             attacker:GetNWBool("VindicatorSuccess", true)
-        elseif attacker == victim and vindicator_target_suicide_success:GetBool() then
+            attacker:QueueMessage(MSG_PRINTBOTH, "You have successfully killed your target.")
+        else
             for _, ply in pairs(GetAllPlayers()) do
                 if ply:IsActiveVindicator() and victim:SteamID64() == ply:GetNWString("VindicatorTarget", "") then
-                    attacker:GetNWBool("VindicatorSuccess", true)
+                    if attacker == victim and vindicator_target_suicide_success:GetBool() then
+                        attacker:GetNWBool("VindicatorSuccess", true)
+                        attacker:QueueMessage(MSG_PRINTBOTH, "Your target finished the job for you and has killed themselves.")
+                    else
+                        attacker:QueueMessage(MSG_PRINTBOTH, "Your target was killed by someone else and you have failed.")
+                    end
                 end
             end
         end
     end
+end)
+
+----------------
+-- DEATH LINK --
+----------------
+
+hook.Add("TTTBeginRound", "Vindicator_TTTBeginRound", function()
+    timer.Create("TTTVindicatorTimer", 0.1, 0, function()
+        for _, v in pairs(GetAllPlayers()) do
+            if not v:IsActiveVindicator() then continue end
+
+            local target_sid64 = v:GetNWString("VindicatorTarget", "")
+            if target_sid64 == "" then continue end
+
+            local target = player.GetBySteamID64(target_sid64)
+            if not IsPlayer(target) or target:IsActive() then continue end
+
+            local success = v:GetNWBool("VindicatorSuccess", false)
+            if (success and not vindicator_kill_on_success:GetBool()) or (not success and not vindicator_kill_on_fail:GetBool()) then continue end
+
+            v:Kill()
+            if success then
+                v:QueueMessage(MSG_PRINTBOTH, "You can now rest in peace having achieved your goal.")
+            else
+                v:QueueMessage(MSG_PRINTBOTH, "Having failed to take revenge, you must return to death.")
+            end
+        end
+    end)
 end)
 
 ----------------
@@ -150,5 +191,7 @@ hook.Add("TTTPrepareRound", "Vindicator_PrepareRound", function()
     for _, ply in pairs(GetAllPlayers()) do
         ply:SetNWString("VindicatorTarget", "")
         ply:SetNWBool("VindicatorSuccess", false)
+        timer.Remove("VindicatorRespawn" .. ply:SteamID64())
     end
+    timer.Remove("TTTVindicatorTimer")
 end)

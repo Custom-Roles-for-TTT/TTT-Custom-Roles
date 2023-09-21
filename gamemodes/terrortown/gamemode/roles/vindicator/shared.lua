@@ -38,3 +38,5 @@ end
 
 CreateConVar("ttt_vindicator_announcement_mode", "1", FCVAR_REPLICATED, "Who is notified when the vindicator respawns", 0, 2)
 CreateConVar("ttt_vindicator_target_suicide_success", "1", FCVAR_REPLICATED)
+CreateConVar("ttt_vindicator_kill_on_fail", "1", FCVAR_REPLICATED)
+CreateConVar("ttt_vindicator_kill_on_success", "0", FCVAR_REPLICATED)
