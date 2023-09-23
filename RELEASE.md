@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.9.10 (Beta)
+**Released: September 23rd, 2023**
+
+### Additions
+- Added new innocent role: vindicator
+
 ## 1.9.9 (Beta)
 **Released: September 17th, 2023**
 

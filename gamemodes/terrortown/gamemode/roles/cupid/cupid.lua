@@ -57,6 +57,7 @@ hook.Add("TTTPrepareRound", "Cupid_TTTPrepareRound", function()
         v:SetNWString("TTTCupidTarget1", "")
         v:SetNWString("TTTCupidTarget2", "")
     end
+    timer.Remove("TTTCupidTimer")
 end)
 
 ------------
