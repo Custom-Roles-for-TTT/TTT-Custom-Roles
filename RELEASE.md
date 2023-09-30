@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.9.11 (Beta)
+**Released: **
+
+### Changes
+- Changed the vindicator so they don't see the role of their killer in the death message
+
 ## 1.9.10 (Beta)
 **Released: September 23rd, 2023**
 
