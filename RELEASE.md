@@ -5,6 +5,7 @@
 
 ### Changes
 - Changed zombie claws weapon to use a player's custom model if they have one and it's compatible
+  - They also change to the zombie color to make it match how other players see them
 
 ### Fixes
 - Fixed vindicator win result message conflicting with killer
