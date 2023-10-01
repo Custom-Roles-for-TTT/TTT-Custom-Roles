@@ -340,6 +340,12 @@ local function PlayerSpawn()
     else
         TIPS.Hide()
     end
+
+    -- Reset the player's viewmodel color
+    local vm = LocalPlayer():GetViewModel()
+    if IsValid(vm) then
+        vm:SetColor(COLOR_WHITE)
+    end
 end
 net.Receive("TTT_PlayerSpawned", PlayerSpawn)
 

@@ -3,6 +3,9 @@
 ## 1.9.12 (Beta)
 **Released:**
 
+### Changes
+- Changed zombie claws weapon to use a player's custom model if they have one and it's compatible
+
 ### Fixes
 - Fixed vindicator win result message conflicting with killer
 
