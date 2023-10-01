@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.9.12 (Beta)
+**Released:**
+
+### Fixes
+- Fixed vindicator win result message conflicting with killer
+
 ## 1.9.11 (Beta)
 **Released: October 1st, 2023**
 

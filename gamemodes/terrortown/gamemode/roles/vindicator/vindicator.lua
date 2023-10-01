@@ -241,7 +241,7 @@ hook.Add("TTTCheckForWin", "Vindicator_TTTCheckForWin", function()
     end
 end)
 
-hook.Add("TTTPrintResultMessage", "Killer_TTTPrintResultMessage", function(type)
+hook.Add("TTTPrintResultMessage", "Vindicator_TTTPrintResultMessage", function(type)
     if type == WIN_VINDICATOR then
         LANG.Msg("win_vindicator", { role = ROLE_STRINGS[ROLE_VINDICATOR] })
         ServerLog("Result: " .. ROLE_STRINGS[ROLE_VINDICATOR] .. " wins.\n")
