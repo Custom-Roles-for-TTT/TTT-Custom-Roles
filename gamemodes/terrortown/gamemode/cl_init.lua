@@ -294,6 +294,12 @@ function GM:ClearClientState()
     client.radio = nil
     client.called_corpses = {}
 
+    -- Reset the player's viewmodel color
+    local vm = client:GetViewModel()
+    if IsValid(vm) then
+        vm:SetColor(COLOR_WHITE)
+    end
+
     VOICE.InitBattery()
 
     for _, p in ipairs(GetAllPlayers()) do
@@ -339,12 +345,6 @@ local function PlayerSpawn()
         TIPS.Show()
     else
         TIPS.Hide()
-    end
-
-    -- Reset the player's viewmodel color
-    local vm = LocalPlayer():GetViewModel()
-    if IsValid(vm) then
-        vm:SetColor(COLOR_WHITE)
     end
 end
 net.Receive("TTT_PlayerSpawned", PlayerSpawn)
