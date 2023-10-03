@@ -3,14 +3,16 @@
 <head>
     <title>Custom Roles for TTT - API - Util Methods</title>
     <link rel="stylesheet" href="../css/style.css"/>
-    <link rel="stylesheet" href="../css/api.css"/>
 </head>
 <body>
-    <embed src="../nav.html#api" width="220" height="298" style="float: left; margin-right: 10px;" />
-    <div>
+    <div class="navigation panel">
+        <iframe src="../nav.html#api" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left; margin-right: 10px;"></iframe>
+    </div>
+    <div class="contentheader panel">
         <h1>Utility Methods</h1>
         <p>Utility methods created to help with various common scenarios</p>
-
+    </div>
+    <div class="contentbody panel">
         <h3><a id="utilburnragdollrag-burn_time_scorch" href="#utilburnragdollrag-burn_time_scorch">util.BurnRagdoll(rag, burn_time, scorch)</a></h3>
         <p>
             Burns a player ragdoll, shows scorch marks, and automatically destroys the ragdoll unless it's been extinguished by water.<br>
@@ -59,4 +61,9 @@
         </ul>
     </div>
 </body>
+<script>
+    function resizeIframe(obj) {
+        obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
+    }
+</script>
 <html>

@@ -3,14 +3,16 @@
 <head>
     <title>Custom Roles for TTT - API - Commands</title>
     <link rel="stylesheet" href="../css/style.css"/>
-    <link rel="stylesheet" href="../css/api.css"/>
 </head>
 <body>
-    <embed src="../nav.html#api" width="220" height="298" style="float: left; margin-right: 10px;" />
-    <div>
+    <div class="navigation panel">
+        <iframe src="../nav.html#api" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left; margin-right: 10px;"></iframe>
+    </div>
+    <div class="contentheader panel">
         <h1>Commands</h1>
-
-        <h2><a id="client-commands" href="#client-commands"><em>Client Commands</em></a></h2>
+    </div>
+    <div class="contentbody panel">
+        <h2><a id="client-commands" href="#client-commands">Client Commands</a></h2>
 
         <h3><a id="ttt_reset_weapons_cache" href="#ttt_reset_weapons_cache">ttt_reset_weapons_cache</a></h3>
         <p>
@@ -18,7 +20,7 @@
             <em>Added in</em>: 1.0.11
         </p>
 
-        <h3 class="force-break"><a id="ttt_roleweapons" href="#ttt_roleweapons">ttt_roleweapons</a></h3>
+        <h3><a id="ttt_roleweapons" href="#ttt_roleweapons">ttt_roleweapons</a></h3>
         <p>Allows for viewing and editing which weapons are available in each role's shop.<br>
             <em>Added in:</em> 1.2.7<br>
             <em>Parameters:</em>
@@ -35,7 +37,7 @@
             </li>
         </ul>
 
-        <h2><a id="server-commands" href="#server-commands"><em>Server Commands</em></a></h2>
+        <h2><a id="server-commands" href="#server-commands">Server Commands</a></h2>
 
         <h3><a id="sv_ttt_roleweapons" href="#sv_ttt_roleweapons">sv_ttt_roleweapons</a></h3>
         <p>Allows for viewing and editing which weapons are available in each role's shop. Server-side version of <a href="#ttt_roleweapons">ttt_roleweapons</a>.<br>
@@ -161,4 +163,9 @@
         </ul>
     </div>
 </body>
+<script>
+    function resizeIframe(obj) {
+        obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
+    }
+</script>
 <html>

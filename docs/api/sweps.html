@@ -3,14 +3,16 @@
 <head>
     <title>Custom Roles for TTT - API - SWEPs</title>
     <link rel="stylesheet" href="../css/style.css"/>
-    <link rel="stylesheet" href="../css/api.css"/>
 </head>
 <body>
-    <embed src="../nav.html#api" width="220" height="298" style="float: left; margin-right: 10px;" />
-    <div>
+    <div class="navigation panel">
+        <iframe src="../nav.html#api" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left; margin-right: 10px;"></iframe>
+    </div>
+    <div class="contentheader panel">
         <h1>SWEPs</h1>
         <p>Changes made to SWEPs (the data structure used when defining new weapons)</p>
-
+    </div>
+    <div class="contentbody panel">
         <h3><a id="user-content-swepblockshoprandomization" href="#user-content-swepblockshoprandomization">SWEP.BlockShopRandomization</a></h3>
         <p>
             Whether this weapon should block the shop randomization logic. Setting this to <code>true</code> will ensure this SWEP <em>always</em> shows in the applicable role's shop.<br>
@@ -36,4 +38,9 @@
         </p>
     </div>
 </body>
+<script>
+    function resizeIframe(obj) {
+        obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
+    }
+</script>
 <html>

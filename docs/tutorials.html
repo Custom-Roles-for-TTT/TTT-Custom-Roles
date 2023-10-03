@@ -3,18 +3,18 @@
 <head>
     <title>Custom Roles for TTT - Tutorials</title>
     <link rel="stylesheet" href="css/style.css"/>
-    <link rel="stylesheet" href="css/api.css"/>
 </head>
 <body>
-    <embed src="nav.html#tutorials" width="220" height="298" style="float: left; margin-right: 10px;" />
-    <div>
+    <div class="navigation panel">
+        <iframe src="nav.html#tutorials" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left; margin-right: 10px;"></iframe>
+    </div>
+    <div class="contentheader panel">
         <h1>Tutorials</h1>
 
-        <h2>Overview</h2>
-
         <p>These articles are aimed to help server operators as well as developers. The configuration tutorials are meant for server operators who want to do more advanced configurations, whereas the development tutorials are for programmers who want to perform common coding tasks related to Custom Roles for TTT.</p>
-
-        <h2 class="force-break">Table of Contents</h2>
+    </div>
+    <div class="contentbody panel">
+        <h2>Table of Contents</h2>
 
         <ol>
             <li>Configuration
@@ -36,4 +36,9 @@
         </ol>
     </div>
 </body>
+<script>
+    function resizeIframe(obj) {
+        obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
+    }
+</script>
 <html>

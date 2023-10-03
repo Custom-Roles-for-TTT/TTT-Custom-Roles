@@ -7,8 +7,18 @@
     <script type="text/javascript" src="js/expandable.js" defer></script>
 </head>
 <body>
-    <embed src="nav.html#home" width="220" height="298" style="float: left; margin-right: 10px;" />
-    <div>
+    <div class="navigation panel">
+        <iframe src="nav.html#api" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left; margin-right: 10px;"></iframe>
+    </div>
+    <div class="contentheader panel">
+        <h1>Custom Roles for TTT Wiki</h1>
+    </div>
+    <div class="contentbody panel">
     </div>
 </body>
+<script>
+    function resizeIframe(obj) {
+        obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
+    }
+</script>
 </html>

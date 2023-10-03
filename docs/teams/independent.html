@@ -7,8 +7,13 @@
     <script type="text/javascript" src="../js/expandable.js" defer></script>
 </head>
 <body>
-    <embed src="../nav.html#independent" width="220" height="298" style="float: left; margin-right: 10px;" />
-    <div>
+    <div class="navigation panel">
+        <iframe src="../nav.html#independent" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left; margin-right: 10px;"></iframe>
+    </div>
+    <div class="contentheader panel">
+        <h1>Independent Roles</h1>
+    </div>
+    <div class="contentbody panel" style="margin-top: 10px;">
         <div id="arsonist" class="collapsible">
             <button class="header" style="background-color:var(--independent);"><i class="icon-arsonist"></i>Arsonist</button>
             <div class="content">
@@ -101,4 +106,9 @@
         </div>
     </div>
 </body>
+<script>
+    function resizeIframe(obj) {
+        obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
+    }
+</script>
 </html>

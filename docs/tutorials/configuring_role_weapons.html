@@ -3,16 +3,18 @@
 <head>
     <title>Custom Roles for TTT - Tutorials - Configuring Role Weapons</title>
     <link rel="stylesheet" href="../css/style.css"/>
-    <link rel="stylesheet" href="../css/api.css"/>
 </head>
 <body>
-    <embed src="../nav.html#tutorials" width="220" height="298" style="float: left; margin-right: 10px;" />
-    <div>
+    <div class="navigation panel">
+        <iframe src="../nav.html#tutorials" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left; margin-right: 10px;"></iframe>
+    </div>
+    <div class="contentheader panel">
         <h1>Role Weapon Shop</h1>
         <p>In TTT some roles have shops where they are allowed to purchase weapons. Given the prevalence of custom weapons from the workshop, the ability to add more weapons to each role's shop has been added.</p>
         <p>Follow the sections below to add any shop weapon to any role's shop, via step-by-steps instructions using our in-game UI or by manipulating files on your host server.</p>
-
-        <h2 class="force-break"><a id="table-of-contents" href="#table-of-contents">Table of Contents</a></h2>
+    </div>
+    <div class="contentbody panel">
+        <h2><a id="table-of-contents" href="#table-of-contents">Table of Contents</a></h2>
         <ol>
             <li><a href="#configuration-by-ui">Configuration by UI</a>
                 <ol>
@@ -131,4 +133,9 @@
         </ol>
     </div>
 </body>
+<script>
+    function resizeIframe(obj) {
+        obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
+    }
+</script>
 </html>

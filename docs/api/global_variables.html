@@ -3,14 +3,16 @@
 <head>
     <title>Custom Roles for TTT - API - Global Variables</title>
     <link rel="stylesheet" href="../css/style.css"/>
-    <link rel="stylesheet" href="../css/api.css"/>
 </head>
 <body>
-    <embed src="../nav.html#api" width="220" height="298" style="float: left; margin-right: 10px;" />
-    <div>
+    <div class="navigation panel">
+        <iframe src="../nav.html#api" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left; margin-right: 10px;"></iframe>
+    </div>
+    <div class="contentheader panel">
         <h1>Global Variables</h1>
         <p>Variables available globally (within the defined realm)</p>
-
+    </div>
+    <div class="contentbody panel">
         <h3><a id="can_loot_credits_roles" href="#can_loot_credits_roles">CAN_LOOT_CREDITS_ROLES</a></h3>
         <p>
             Lookup table for whether a role can loot credits off of a corpse.<br>
@@ -18,7 +20,7 @@
             <em>Added in:</em> 1.0.5
         </p>
 
-        <h3 class="force-break"><a id="color_innocent" href="#color_innocent">COLOR_INNOCENT</a></h3>
+        <h3><a id="color_innocent" href="#color_innocent">COLOR_INNOCENT</a></h3>
         <p>
             Table of the default colors to use for the innocent role for each color type.<br>
             <em>Realm:</em> Client and Server<br>
@@ -264,4 +266,9 @@
         </p>
     </div>
 </body>
+<script>
+    function resizeIframe(obj) {
+        obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
+    }
+</script>
 <html>

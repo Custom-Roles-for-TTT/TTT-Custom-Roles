@@ -7,8 +7,13 @@
     <script type="text/javascript" src="../js/expandable.js" defer></script>
 </head>
 <body>
-    <embed src="../nav.html#jester" width="220" height="298" style="float: left; margin-right: 10px;" />
-    <div>
+    <div class="navigation panel">
+        <iframe src="../nav.html#jester" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left; margin-right: 10px;"></iframe>
+    </div>
+    <div class="contentheader panel">
+        <h1>Jester Roles</h1>
+    </div>
+    <div class="contentbody panel" style="margin-top: 10px;">
         <div id="beggar" class="collapsible">
             <button class="header" style="background-image:linear-gradient(110deg, var(--jester) 0%, var(--jester) 70%, var(--independent) 70%, var(--independent) 100%);"><i class="icon-beggar"></i>Beggar</button>
             <div class="content">
@@ -101,4 +106,9 @@
         </div>
     </div>
 </body>
+<script>
+    function resizeIframe(obj) {
+        obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
+    }
+</script>
 </html>

@@ -3,20 +3,21 @@
 <head>
     <title>Custom Roles for TTT - Tutorials - Creating Your Own Custom Role</title>
     <link rel="stylesheet" href="../css/style.css"/>
-    <link rel="stylesheet" href="../css/api.css"/>
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github-dark-dimmed.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
     <script>hljs.highlightAll();</script>
 </head>
 <body>
-    <embed src="../nav.html#tutorials" width="220" height="298" style="float: left; margin-right: 10px;" />
-    <div>
+    <div class="navigation panel">
+        <iframe src="../nav.html#tutorials" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left; margin-right: 10px;"></iframe>
+    </div>
+    <div class="contentheader panel">
         <h1>Creating Your Own Custom Role</h1>
         <p>This tutorial aims to provide the step-by-step instructions that a developer would need to create their own custom role. It covers creation of the role's basic features, what options are available for preset advanced features to choose from, all the way through creating the role icons and publishing to the workshop.</p>
         <p>This tutorial assumes you have some programming experience, even if it's not directly in Lua itself. Lua is a pretty straight-forward language, so knowledge of its specifics are not necessary as long as you are good at googling. Of course, if you have any questions about how to do more advanced things, feel free to join our Discord server to ask.</p>
-
-        <h2 class="force-break"><a id="table-of-contents" href="#table-of-contents">Table of Contents</a></h2>
+    </div>
+    <div class="contentbody panel">
+        <h2><a id="table-of-contents" href="#table-of-contents">Table of Contents</a></h2>
         <ol>
             <li><a href="#before-you-start">Before You Start</a></li>
             <li><a href="#code">Code</a>
@@ -1073,4 +1074,9 @@ end</pre></code></div>
 
     </div>
 </body>
+<script>
+    function resizeIframe(obj) {
+        obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
+    }
+</script>
 <html>
