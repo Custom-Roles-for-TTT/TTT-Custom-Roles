@@ -582,9 +582,15 @@ end</code></pre></div>
                 </tr>
                 <tr>
                     <td><code>ROLE.shouldrevealrolewhenactive</code></td>
-                    <td>boolean</td>
+                    <td>function(ply)</td>
                     <td>Whether this role should have their role revealed (over their head, on the scoreboard, etc.) when their role is active.</td>
                     <td>1.9.9</td>
+                </tr>
+                <tr>
+                    <td><code>ROLE.victimchangingrole</code></td>
+                    <td>function(ply, victim)</td>
+                    <td>Whether this role's victims are having their role changed.</td>
+                    <td>1.9.12</td>
                 </tr>
             </tbody>
         </table>

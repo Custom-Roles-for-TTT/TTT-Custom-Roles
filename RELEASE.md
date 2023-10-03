@@ -9,6 +9,10 @@
 
 ### Fixes
 - Fixed vindicator win result message conflicting with killer
+- Fixed minor capitalization typo in the vindicator announcement message
+
+### Developer
+- Added `plymeta:IsVictimChangingRole` and corresponding role feature to help determine whether a player killed by another player will be changing their role (e.g. zombie, hive mind)
 
 ## 1.9.11 (Beta)
 **Released: October 1st, 2023**

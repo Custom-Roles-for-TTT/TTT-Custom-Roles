@@ -215,6 +215,15 @@ function plymeta:ShouldRevealRoleWhenActive()
     return false
 end
 
+function plymeta:IsVictimChangingRole(victim)
+    -- Check if this role has an external definition for whether players killed by them are changing their role
+    local role = self:GetRole()
+    if ROLE_VICTIM_CHANGING_ROLE[role] then
+        return ROLE_VICTIM_CHANGING_ROLE[role](self, victim)
+    end
+    return false
+end
+
 function plymeta:SetRoleAndBroadcast(role)
     self:SetRole(role)
 
