@@ -3,10 +3,12 @@
 <head>
     <title>Custom Roles for TTT - API - Hooks</title>
     <link rel="stylesheet" href="../css/style.css"/>
+    <script type="text/javascript" src="../js/shared.js" defer></script>
 </head>
 <body>
+    <button onclick="backToTop()" id="totop">Back to Top</button>
     <div class="navigation panel">
-        <iframe src="../nav.html#api" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left; margin-right: 10px;"></iframe>
+        <iframe id="nav" src="../nav.html#api" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left; margin-right: 10px;"></iframe>
     </div>
     <div class="contentheader panel">
         <h1>Hooks</h1>
@@ -1543,9 +1545,4 @@
         </ul>
     </div>
 </body>
-<script>
-    function resizeIframe(obj) {
-        obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
-    }
-</script>
 <html>

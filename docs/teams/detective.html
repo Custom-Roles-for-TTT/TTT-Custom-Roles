@@ -4,11 +4,12 @@
     <title>Detectives - Custom Roles for TTT Wiki</title>
     <link type="text/css" rel="stylesheet" href="../fonts/roleicons.css">
     <link type="text/css" rel="stylesheet" href="../css/style.css"></head>
-    <script type="text/javascript" src="../js/expandable.js" defer></script>
+    <script type="text/javascript" src="../js/shared.js" defer></script>
 </head>
 <body>
+    <button onclick="backToTop()" id="totop">Back to Top</button>
     <div class="navigation panel">
-        <iframe src="../nav.html#detective" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left; margin-right: 10px;"></iframe>
+        <iframe id="nav" src="../nav.html#detective" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left; margin-right: 10px;"></iframe>
     </div>
     <div class="contentheader panel">
         <h1>Detective Roles</h1>
@@ -86,9 +87,4 @@
         </div>
     </div>
 </body>
-<script>
-    function resizeIframe(obj) {
-        obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
-    }
-</script>
 </html>

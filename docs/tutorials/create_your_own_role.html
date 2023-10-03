@@ -8,8 +8,9 @@
     <script>hljs.highlightAll();</script>
 </head>
 <body>
+    <button onclick="backToTop()" id="totop">Back to Top</button>
     <div class="navigation panel">
-        <iframe src="../nav.html#tutorials" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left; margin-right: 10px;"></iframe>
+        <iframe id="nav" src="../nav.html#tutorials" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left; margin-right: 10px;"></iframe>
     </div>
     <div class="contentheader panel">
         <h1>Creating Your Own Custom Role</h1>
@@ -1074,9 +1075,4 @@ end</pre></code></div>
 
     </div>
 </body>
-<script>
-    function resizeIframe(obj) {
-        obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
-    }
-</script>
 <html>

@@ -109,32 +109,6 @@ p {
     width: 100%;
 }
 
-@media screen and (max-width: 1000px) {
-    .panel {
-        width: 100%;
-    }
-}
-
-@media screen and (min-width: 1001px) {
-    body {
-        max-width: 1000px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    .contentheader {
-        padding-left: 15px;
-        :first-child {
-            margin-top: 0;
-            margin-bottom: 0;
-        }
-
-        :last-child {
-            margin-bottom: 0;
-        }
-    }
-}
-
 html {
     background-color: #282828;
     color: white;
@@ -225,4 +199,64 @@ code {
 .hljs {
     white-space: inherit !important;
     font-size: inherit !important;
+}
+
+#totop {
+    opacity: 50%;
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 99;
+    border: none;
+    outline: none;
+    background-color: #555555;
+    color: white;
+    cursor: pointer;
+    align-items: center;
+    gap: 6px;
+    border-radius: 15px 0 15px 0;
+    font-size: 20px;
+    font-family: "Trebuchet MS", Tahoma, sans-serif;
+    font-weight: bold;
+    padding: 10px 12px;
+    text-align: left;
+    text-shadow: 2px 2px 0 black;
+}
+
+#totop:hover {
+    opacity: 100%;
+}
+
+@media screen and (max-width: 1000px) {
+    .panel {
+        width: 100%;
+    }
+}
+
+@media screen and (min-width: 1001px) {
+    body {
+        max-width: 1000px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .contentheader {
+        padding-left: 15px;
+        :first-child {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        :last-child {
+            margin-bottom: 0;
+        }
+    }
+}
+
+@media screen and (min-width: 221px) {
+    .navli {
+        float: left;
+        padding-right: 24px;
+    }
 }

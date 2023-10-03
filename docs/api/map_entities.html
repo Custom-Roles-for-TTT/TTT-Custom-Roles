@@ -3,10 +3,12 @@
 <head>
     <title>Custom Roles for TTT - API - Map Entities</title>
     <link rel="stylesheet" href="../css/style.css"/>
+    <script type="text/javascript" src="../js/shared.js" defer></script>
 </head>
 <body>
+    <button onclick="backToTop()" id="totop">Back to Top</button>
     <div class="navigation panel">
-        <iframe src="../nav.html#api" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left; margin-right: 10px;"></iframe>
+        <iframe id="nav" src="../nav.html#api" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left; margin-right: 10px;"></iframe>
     </div>
     <div class="contentheader panel">
         <h1>Map Entities</h1>
@@ -22,9 +24,4 @@
         <p>An entity to send a message to a configured receiver. Modified in Custom Roles for TTT to support new roles by treating the existing <code>RECEIVE_DETECTIVE (2)</code>, <code>RECEIVE_TRAITOR (3)</code>, and <code>RECEIVE_INNOCENT (4)</code> as team checks. Furthermore, support for the new types of Custom Roles was added via the new <code>RECEIVE_JESTER (5)</code>, <code>RECEIVE_INDEPENDENT (6)</code>, and <code>RECEIVE_MONSTER (7)</code> values.</p>
     </div>
 </body>
-<script>
-    function resizeIframe(obj) {
-        obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
-    }
-</script>
 <html>

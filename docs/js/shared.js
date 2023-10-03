@@ -1,3 +1,4 @@
+// COLLAPSABLE SECTIONS
 function expandContent(content, forceExpand = false) {
     var expansion = content.querySelector(".expansion");
     var moreless = content.querySelector(".moreless");
@@ -31,4 +32,32 @@ for (var i = 0; i < coll.length; i++) {
             expandContent(this);
         }
     });
+}
+
+// NAVIGATION PANEL
+function resizeIframe(obj) {
+    obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
+}
+
+var naviframe = document.getElementById("nav");
+window.onresize = function() {
+    var innerdoc = naviframe.contentDocument || naviframe.contentWindow.document;
+    var navdiv = innerdoc.getElementById("navwrapper");
+    naviframe.style.height = navdiv.clientHeight + 'px';
+}
+
+// TO TOP BUTTON
+var topbutton = document.getElementById("totop");
+
+window.onscroll = function() {
+    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        topbutton.style.display = "block";
+    } else {
+        topbutton.style.display = "none";
+    }
+};
+
+function backToTop() {
+    document.body.scrollTop = 0; // For Safari
+    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
 }
