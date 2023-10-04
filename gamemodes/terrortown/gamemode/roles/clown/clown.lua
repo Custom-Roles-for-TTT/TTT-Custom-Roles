@@ -76,7 +76,7 @@ local function HandleClownWinBlock(win_type)
     end
 
     -- Clown wins if they are the only role left
-    if not traitor_alive and not innocent_alive and not monster_alive then
+    if not traitor_alive and not innocent_alive and not monster_alive and not indep_alive then
         return WIN_CLOWN
     end
 
