@@ -92,9 +92,7 @@ hook.Add("PlayerDeath", "Vindicator_PlayerDeath", function(victim, infl, attacke
     local valid_kill = IsPlayer(attacker) and GetRoundState() == ROUND_ACTIVE
     if valid_kill then
         if victim:IsVindicator() and not victim:IsRoleActive() and attacker ~= victim then
-            print("Vindicator was killed!")
             if attacker:IsVictimChangingRole(victim) then return end
-            print("They weren't changing role!")
 
             local delay = vindicator_respawn_delay:GetInt()
             if delay == 0 then
