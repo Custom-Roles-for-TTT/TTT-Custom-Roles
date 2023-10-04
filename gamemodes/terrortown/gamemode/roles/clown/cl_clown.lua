@@ -205,7 +205,7 @@ hook.Add("TTTTutorialRoleText", "Clown_TTTTutorialRoleText", function(role, titl
         local indepColor = GetRoleTeamColor(ROLE_TEAM_INDEPENDENT)
         local html = "The " .. ROLE_STRINGS[ROLE_CLOWN] .. " is a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>jester</span> role whose goal is to survive long enough that only them and one team remains."
 
-        html = html .. "<span style='display: block; margin-top: 10px;'>When a team would normally win, the " .. ROLE_STRINGS[ROLE_CLOWN] .. " <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>activates</span> which converting them to be <span style='color: rgb(" .. indepColor.r .. ", " .. indepColor.g .. ", " .. indepColor.b .. ")'>independent</span> and allowing them to <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>go on a rampage</span> and win by surprise.</span>"
+        html = html .. "<span style='display: block; margin-top: 10px;'>When a team would normally win, the " .. ROLE_STRINGS[ROLE_CLOWN] .. " <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>activates</span> which converts them to an <span style='color: rgb(" .. indepColor.r .. ", " .. indepColor.g .. ", " .. indepColor.b .. ")'>independent</span> and allows them to <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>go on a rampage</span> and win by surprise.</span>"
 
         -- Damage bonus
         if clown_damage_bonus:GetFloat() > 0 then
