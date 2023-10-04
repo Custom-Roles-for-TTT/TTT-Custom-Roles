@@ -1081,6 +1081,7 @@ globals = {
     "SelectRoles",
     "SetRoleMaxHealth",
     "SetRoleStartingHealth",
+    "SetClownTeam",
     "SetTurncoatTeam",
     "SetVindicatorTeam",
     "ShouldPromoteDetectiveLike",
