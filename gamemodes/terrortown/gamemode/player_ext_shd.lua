@@ -743,8 +743,8 @@ function player.ExecuteAgainstTeamPlayers(roleTeam, detectivesAreInnocent, alive
     for _, v in ipairs(GetAllPlayers()) do
         if not aliveOnly or (v:Alive() and v:IsTerror()) then
             local playerTeam = player.GetRoleTeam(v:GetRole(), detectivesAreInnocent)
-            if playerTeam == roleTeam then
-                callback(v)
+            if playerTeam == roleTeam and callback(v) then
+                return
             end
         end
     end

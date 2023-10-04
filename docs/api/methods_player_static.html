@@ -43,7 +43,7 @@
             <li><em>roleTeam</em> - The "role team" whose members to execute the callback against (see ROLE_TEAM_* global enumeration)</li>
             <li><em>detectivesAreInnocent</em> - Whether to include members of the detective "role team" in the innocent "role team" to match the logical teams</li>
             <li><em>aliveOnly</em> - Whether to only include alive players</li>
-            <li><em>callback</em> - The function to execute against each "role team" player. Takes a player as the single argument</li>
+            <li><em>callback</em> - The function to execute against each "role team" player. Takes a player as the single argument. If <code>true</code> is returned, the rest of the execution is skipped.</li>
         </ul>
 
         <h3><a id="playergetlivinginradiuspos-radius" href="#playergetlivinginradiuspos-radius">player.GetLivingInRadius(pos, radius)</a></h3>
