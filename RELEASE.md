@@ -6,7 +6,7 @@
 ### Changes
 - Changed zombie claws weapon to use a player's custom model if they have one and it's compatible
   - They also change to the zombie color to make it match how other players see them
-- The clown now becomes an independent when activated to make their ability to do damage make more sense
+- Changed the clown to become an independent when activated to make their ability to do damage make more sense
 
 ### Fixes
 - Fixed vindicator win result message conflicting with killer

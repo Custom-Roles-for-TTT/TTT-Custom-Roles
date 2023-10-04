@@ -2,14 +2,12 @@ AddCSLuaFile()
 
 local hook = hook
 local net = net
-local pairs = pairs
 local player = player
 local resource = resource
 local table = table
 local util = util
 
-local GetAllPlayers = player.GetAll
-
+util.AddNetworkString("TTT_ClownTeamChange")
 util.AddNetworkString("TTT_ClownActivate")
 
 resource.AddSingleFile("sound/clown.wav")
@@ -37,7 +35,7 @@ local function HandleClownWinBlock(win_type)
 
     local killer_clown_active = clown:IsRoleActive()
     if not killer_clown_active then
-        clown:SetNWBool("KillerClownActive", true)
+        SetClownTeam(true)
         clown:QueueMessage(MSG_PRINTBOTH, "KILL THEM ALL!")
         clown:AddCredits(clown_activation_credits:GetInt())
         if clown_heal_on_activate:GetBool() then
@@ -66,9 +64,19 @@ local function HandleClownWinBlock(win_type)
         return WIN_NONE
     end
 
-    -- Clown wins if they are the only one left
     local traitor_alive, innocent_alive, indep_alive, monster_alive, _ = player.AreTeamsLiving(true)
-    if not traitor_alive and not innocent_alive and not monster_alive and not indep_alive then
+    -- If there are independents alive, check if any of them are non-clowns
+    if indep_alive then
+        player.ExecuteAgainstTeamPlayers(ROLE_TEAM_INDEPENDENT, true, true, function(ply)
+            if not ply:IsClown() then
+                indep_alive = false
+                return true
+            end
+        end)
+    end
+
+    -- Clown wins if they are the only role left
+    if not traitor_alive and not innocent_alive and not monster_alive then
         return WIN_CLOWN
     end
 
@@ -100,17 +108,9 @@ end)
 -- ROLE TRACKING --
 -------------------
 
--- Disable tracking that this player was is the active clown at the start of a new round or if their role changes
+-- Disable tracking that clown was active at the start of a new round
 hook.Add("TTTPrepareRound", "Clown_PrepareRound", function()
-    for _, v in pairs(GetAllPlayers()) do
-        v:SetNWBool("KillerClownActive", false)
-    end
-end)
-
-hook.Add("TTTPlayerRoleChanged", "Clown_TTTPlayerRoleChanged", function(ply, oldRole, newRole)
-    if oldRole == ROLE_CLOWN then
-        ply:SetNWBool("KillerClownActive", false)
-    end
+    SetClownTeam(false)
 end)
 
 ------------
