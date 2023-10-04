@@ -58,6 +58,10 @@ table.insert(ROLE_CONVARS[ROLE_HIVEMIND], {
 -- ROLE FEATURES --
 -------------------
 
+ROLE_VICTIM_CHANGING_ROLE[ROLE_HIVEMIND] = function(ply, victim)
+    return not victim:IsHiveMind()
+end
+
 AddHook("TTTUpdateRoleState", "HiveMind_Team_TTTUpdateRoleState", function()
     local is_monster = hivemind_is_monster:GetBool()
     MONSTER_ROLES[ROLE_HIVEMIND] = is_monster

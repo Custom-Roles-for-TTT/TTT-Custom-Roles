@@ -69,13 +69,15 @@ local function ActivateVindicator(vindicator, target)
 
     vindicator:QueueMessage(MSG_PRINTBOTH, "Hunt down your killer and get your revenge!")
     local mode = vindicator_announcement_mode:GetInt()
-    if mode >= VINDICATOR_ANNOUNCE_TARGET then
-        target:QueueMessage(MSG_PRINTBOTH, ROLE_STRINGS_EXT[ROLE_VINDICATOR] .. " (" .. vindicator:Nick() .. ") has respawned and is hunting you down!")
-    end
-    if mode == VINDICATOR_ANNOUNCE_ALL then
-        for _, ply in pairs(GetAllPlayers()) do
-            if ply ~= vindicator and ply ~= target then
-                ply:PrintMessage(HUD_PRINTTALK, ROLE_STRINGS_EXT[ROLE_VINDICATOR] .. " (" .. vindicator:Nick() .. ") has respawned and is hunting down " .. target:Nick() .. "!")
+    if mode > VINDICATOR_ANNOUNCE_NONE then
+        local roleStr = string.Capitalize(ROLE_STRINGS_EXT[ROLE_VINDICATOR])
+        target:QueueMessage(MSG_PRINTBOTH, roleStr .. " (" .. vindicator:Nick() .. ") has respawned and is hunting you down!")
+
+        if mode == VINDICATOR_ANNOUNCE_ALL then
+            for _, ply in pairs(GetAllPlayers()) do
+                if ply ~= vindicator and ply ~= target then
+                    ply:PrintMessage(HUD_PRINTTALK, roleStr .. " (" .. vindicator:Nick() .. ") has respawned and is hunting down " .. target:Nick() .. "!")
+                end
             end
         end
     end
@@ -90,7 +92,7 @@ hook.Add("PlayerDeath", "Vindicator_PlayerDeath", function(victim, infl, attacke
     local valid_kill = IsPlayer(attacker) and GetRoundState() == ROUND_ACTIVE
     if valid_kill then
         if victim:IsVindicator() and not victim:IsRoleActive() and attacker ~= victim then
-            if victim:IsZombifying() or attacker:IsHiveMind() then return end
+            if attacker:IsVictimChangingRole(victim) then return end
 
             local delay = vindicator_respawn_delay:GetInt()
             if delay == 0 then
@@ -241,7 +243,7 @@ hook.Add("TTTCheckForWin", "Vindicator_TTTCheckForWin", function()
     end
 end)
 
-hook.Add("TTTPrintResultMessage", "Killer_TTTPrintResultMessage", function(type)
+hook.Add("TTTPrintResultMessage", "Vindicator_TTTPrintResultMessage", function(type)
     if type == WIN_VINDICATOR then
         LANG.Msg("win_vindicator", { role = ROLE_STRINGS[ROLE_VINDICATOR] })
         ServerLog("Result: " .. ROLE_STRINGS[ROLE_VINDICATOR] .. " wins.\n")

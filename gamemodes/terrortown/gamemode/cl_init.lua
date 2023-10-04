@@ -294,6 +294,12 @@ function GM:ClearClientState()
     client.radio = nil
     client.called_corpses = {}
 
+    -- Reset the player's viewmodel color
+    local vm = client:GetViewModel()
+    if IsValid(vm) then
+        vm:SetColor(COLOR_WHITE)
+    end
+
     VOICE.InitBattery()
 
     for _, p in ipairs(GetAllPlayers()) do

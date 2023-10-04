@@ -1,5 +1,21 @@
 # Release Notes
 
+## 1.9.12 (Beta)
+**Released:**
+
+### Changes
+- Changed zombie claws weapon to use a player's custom model if they have one and it's compatible
+  - They also change to the zombie color to make it match how other players see them
+- Changed the clown to become an independent when activated to make their ability to do damage make more sense
+
+### Fixes
+- Fixed vindicator win result message conflicting with killer
+- Fixed minor capitalization typo in the vindicator announcement message
+
+### Developer
+- Added `plymeta:IsVictimChangingRole` and corresponding role feature to help determine whether a player killed by another player will be changing their role (e.g. zombie, hive mind)
+- Changed `player.ExecuteAgainstTeamPlayers` to skip the rest of the execution when `callback` returns `true`
+
 ## 1.9.11 (Beta)
 **Released: October 1st, 2023**
 
