@@ -262,6 +262,13 @@ Whether the player is the prime (e.g. first-spawned) vampire.\
 *Realm:* Client and Server\
 *Added in:* 1.0.0
 
+### plymeta:IsVictimChangingRole(victim)
+Whether victims killed by this player are changing their role.\
+*Realm:* Client and Server\
+*Added in:* 1.9.12\
+*Parameters:*
+- *victim* - The player who was killed by this player
+
 ### plymeta:IsZombieAlly()/plymeta:GetZombieAlly()
 Whether the player is allied with the zombie role.\
 *Realm:* Client and Server\

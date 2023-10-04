@@ -173,7 +173,7 @@ end)
 
 hook.Add("TTTScoringWinTitle", "Clown_TTTScoringWinTitle", function(wintype, wintitles, title, secondary_win_role)
     if wintype == WIN_CLOWN then
-        return { txt = "hilite_win_role_singular", params = { role = StringUpper(ROLE_STRINGS[ROLE_CLOWN]) }, c = ROLE_COLORS[ROLE_JESTER] }
+        return { txt = "hilite_win_role_singular", params = { role = StringUpper(ROLE_STRINGS[ROLE_CLOWN]) }, c = ROLE_COLORS[ROLE_CLOWN] }
     end
 end)
 
@@ -202,9 +202,10 @@ hook.Add("TTTTutorialRoleText", "Clown_TTTTutorialRoleText", function(role, titl
         -- Use this for highlighting things like "kill"
         local traitorColor = ROLE_COLORS[ROLE_TRAITOR]
         local roleColor = GetRoleTeamColor(ROLE_TEAM_JESTER)
+        local indepColor = GetRoleTeamColor(ROLE_TEAM_INDEPENDENT)
         local html = "The " .. ROLE_STRINGS[ROLE_CLOWN] .. " is a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>jester</span> role whose goal is to survive long enough that only them and one team remains."
 
-        html = html .. "<span style='display: block; margin-top: 10px;'>When a team would normally win, the " .. ROLE_STRINGS[ROLE_CLOWN] .. " <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>activates</span> which allows them to <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>go on a rampage</span> and win by surprise.</span>"
+        html = html .. "<span style='display: block; margin-top: 10px;'>When a team would normally win, the " .. ROLE_STRINGS[ROLE_CLOWN] .. " <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>activates</span> which converts them to an <span style='color: rgb(" .. indepColor.r .. ", " .. indepColor.g .. ", " .. indepColor.b .. ")'>independent</span> and allows them to <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>go on a rampage</span> and win by surprise.</span>"
 
         -- Damage bonus
         if clown_damage_bonus:GetFloat() > 0 then
@@ -232,7 +233,7 @@ hook.Add("TTTTutorialRoleText", "Clown_TTTTutorialRoleText", function(role, titl
 
         -- Traitor Traps
         if clown_use_traps_when_active:GetBool() then
-            html = html .. "<span style='display: block; margin-top: 10px;'><span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>Traitor traps</span> also become available when <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>the " .. ROLE_STRINGS[ROLE_CLOWN] .." is activated</span>.</span>"
+            html = html .. "<span style='display: block; margin-top: 10px;'><span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>Traitor traps</span> also become available when <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>the " .. ROLE_STRINGS[ROLE_CLOWN] .. " is activated</span>.</span>"
         end
 
         -- Heal on activate

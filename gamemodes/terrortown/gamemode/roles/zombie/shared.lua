@@ -14,6 +14,10 @@ ROLE_CAN_SEE_JESTERS[ROLE_ZOMBIE] = true
 ROLE_CAN_SEE_MIA[ROLE_ZOMBIE] = true
 ROLE_HAS_SHOP_SYNC[ROLE_ZOMBIE] = true
 
+ROLE_VICTIM_CHANGING_ROLE[ROLE_ZOMBIE] = function(ply, victim)
+    return victim:IsZombifying()
+end
+
 hook.Add("TTTRoleSpawnsArtificially", "Zombie_TTTRoleSpawnsArtificially", function(role)
     if role == ROLE_ZOMBIE then
         local madScientistEnabled = GetConVar("ttt_madscientist_enabled"):GetBool() and
