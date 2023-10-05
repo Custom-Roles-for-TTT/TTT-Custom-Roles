@@ -8,13 +8,21 @@
 </head>
 <body>
     <button onclick="backToTop()" id="totop">Back to Top</button>
-    <div class="navigation panel">
+    <div class="navigation panel" style="margin-bottom: 15px;">
         <iframe id="nav" src="../nav.html#jester" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left; margin-right: 10px;"></iframe>
     </div>
-    <div class="contentheader panel">
-        <h1>Jester Roles</h1>
+    <div class="contentheader panel" style="margin-bottom: 15px;">
+        <div style="background-color: #787878; border-radius: 20px 0 15px 0; margin-top: 0; display: inline-block;">
+            <h1 style="background-color:var(--jester); margin-top: 0;">Jester Roles</h1>
+            <div style="margin: 10px;">
+                <p><span style="color:var(--jester);"><a href="../teams/jester.html">Jesters</a></span> have unique win conditions for each role, often focused on causing chaos and confusion. Typically, there are very few <span style="color:var(--jester);"><a href="../teams/jester.html">jesters</a></span> in each round.</p>
+                <p><span style="color:var(--jester);"><a href="../teams/jester.html">Jesters</a></span> are not part of a team. Even if there are multiple different <span style="color:var(--jester);"><a href="../teams/jester.html">jesters</a></span> in the same round, they will often be competing against each other either directly or indirectly.</p>
+                <p>Members of the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span>, <span style="color:var(--monster);"><a href="../teams/monster.html">monster team</a></span>, and some <span style="color:var(--independent);"><a href="../teams/independent.html">independents</a></span> are made aware of which players are <span style="color:var(--jester);"><a href="../teams/jester.html">jesters</a></span>, but not told which specific role they are.</p>
+                <p>Under normal circumstances <span style="color:var(--jester);"><a href="../teams/jester.html">jesters</a></span> cannot deal damage to players and are also immune to most forms of environmental damage, e.g. falling, drowning, fire, etc.</p>
+            </div>
+        </div>
     </div>
-    <div class="contentbody panel" style="margin-top: 10px;">
+    <div class="contentbody panel">
         <div id="beggar" class="collapsible">
             <button class="header" style="background-image:linear-gradient(110deg, var(--jester) 0%, var(--jester) 70%, var(--independent) 70%, var(--independent) 100%);"><i class="icon-beggar"></i>Beggar</button>
             <div class="content">

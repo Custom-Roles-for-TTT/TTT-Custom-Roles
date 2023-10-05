@@ -8,13 +8,20 @@
 </head>
 <body>
     <button onclick="backToTop()" id="totop">Back to Top</button>
-    <div class="navigation panel">
+    <div class="navigation panel" style="margin-bottom: 15px;">
         <iframe id="nav" src="../nav.html#independent" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left; margin-right: 10px;"></iframe>
     </div>
-    <div class="contentheader panel">
-        <h1>Independent Roles</h1>
+    <div class="contentheader panel" style="margin-bottom: 15px;">
+        <div style="background-color: #787878; border-radius: 20px 0 15px 0; margin-top: 0; display: inline-block;">
+            <h1 style="background-color:var(--independent); margin-top: 0;">Independent Roles</h1>
+            <div style="margin: 10px;">
+                <p><span style="color:var(--independent);"><a href="../teams/independent.html">Independents</a></span> have unique win conditions for each role. There is very little in common between different <span style="color:var(--independent);"><a href="../teams/independent.html">independents</a></span>, and they can play completely different to each other. Typically, there are very few <span style="color:var(--independent);"><a href="../teams/independent.html">independents</a></span> in each round.</p>
+                <p>Most <span style="color:var(--independent);"><a href="../teams/independent.html">independents</a></span> do not have their role known to any other players, and are not part of a team. Even if there are multiple different <span style="color:var(--independent);"><a href="../teams/independent.html">independents</a></span> in the same round, they will often be competing against each other either directly or indirectly. However, there are exceptions to this as some <span style="color:var(--independent);"><a href="../teams/independent.html">independents</a></span> have a goal of converting other players to their team. In these cases those players will be aware of each other's roles and can win together.</p>
+                <p>Some <span style="color:var(--independent);"><a href="../teams/independent.html">independents</a></span> are made aware of <span style="color:var(--jester);"><a href="../teams/jester.html">jesters</a></span>, and have the ability to see players who are dead but have not had their bodies found as "missing in action" on the scoreboard. These abilities are usually reserved for <span style="color:var(--independent);"><a href="../teams/independent.html">independents</a></span> whose goal requires killing other players. <span style="color:var(--independent);"><a href="../teams/independent.html">Independents</a></span> with a more passive goal will tend not to have these abilities.</p>
+            </div>
+        </div>
     </div>
-    <div class="contentbody panel" style="margin-top: 10px;">
+    <div class="contentbody panel">
         <div id="arsonist" class="collapsible">
             <button class="header" style="background-color:var(--independent);"><i class="icon-arsonist"></i>Arsonist</button>
             <div class="content">

@@ -8,13 +8,20 @@
 </head>
 <body>
     <button onclick="backToTop()" id="totop">Back to Top</button>
-    <div class="navigation panel">
+    <div class="navigation panel" style="margin-bottom: 15px;">
         <iframe id="nav" src="../nav.html#detective" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left; margin-right: 10px;"></iframe>
     </div>
-    <div class="contentheader panel">
-        <h1>Detective Roles</h1>
+    <div class="contentheader panel" style="margin-bottom: 15px;">
+        <div style="background-color: #787878; border-radius: 20px 0 15px 0; margin-top: 0; display: inline-block;">
+            <h1 style="background-color:var(--detective); margin-top: 0;">Detective Roles</h1>
+            <div style="margin: 10px;">
+                <p><span style="color:var(--detective);"><a href="../teams/detective.html">Detectives</a></span> are part of the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span>, however they have unique advantages and disadvantages compared to other <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocents</a></span>.</p>
+                <p>The main goal of <span style="color:var(--detective);"><a href="../teams/detective.html">detectives</a></span>, and by extension the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span>, is to identify and eliminate all members of the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span>. In some cases, they also need to take out <span style="color:var(--monster);"><a href="../teams/monster.html">monsters</a></span>, <span style="color:var(--jester);"><a href="../teams/jester.html">jesters</a></span>, or <span style="color:var(--independent);"><a href="../teams/independent.html">independents</a></span> that could prevent their victory.</p>
+                <p><span style="color:var(--detective);"><a href="../teams/detective.html">Detectives</a></span> have their role known to all players, as such they usually act as the de facto leader of the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span>. They also have the ability to search dead bodies of players and uncover their role and information about their death. This information is often vital to the success of the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span> and can make <span style="color:var(--detective);"><a href="../teams/detective.html">detectives</a></span> high priority targets for the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitors</a></span>.</p>
+            </div>
+        </div>
     </div>
-    <div class="contentbody panel" style="margin-top: 10px;">
+    <div class="contentbody panel">
         <div id="detective" class="collapsible">
             <button class="header" style="background-color:var(--detective);"><i class="icon-detective"></i>Detective</button>
             <div class="content">

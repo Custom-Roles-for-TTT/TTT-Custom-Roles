@@ -8,13 +8,21 @@
 </head>
 <body>
     <button onclick="backToTop()" id="totop">Back to Top</button>
-    <div class="navigation panel">
+    <div class="navigation panel" style="margin-bottom: 15px;">
         <iframe id="nav" src="../nav.html#innocent" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left; margin-right: 10px;"></iframe>
     </div>
-    <div class="contentheader panel">
-        <h1>Innocent Roles</h1>
+    <div class="contentheader panel" style="margin-bottom: 15px;">
+        <div style="background-color: #787878; border-radius: 20px 0 15px 0; margin-top: 0; display: inline-block;">
+            <h1 style="background-color:var(--innocent); margin-top: 0;">Innocent Roles</h1>
+            <div style="margin: 10px;">
+                <p>The <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span> is one of the two primary teams in play in a game of <b>Trouble in Terrorist Town</b>.</p>
+                <p>The main goal of the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span> is to identify and eliminate all members of the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span>. In some cases, they also need to take out <span style="color:var(--monster);"><a href="../teams/monster.html">monsters</a></span>, <span style="color:var(--jester);"><a href="../teams/jester.html">jesters</a></span>, or <span style="color:var(--independent);"><a href="../teams/independent.html">independents</a></span> that could prevent their victory.</p>
+                <p>Members of the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span> do not have their roles known to any other players, and they usually lack a definitive method to prove their innocence. This puts the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span> at a significant disadvantage compared to the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span>, whose roles are known to each other. To address this, most games have a higher number of <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent</a></span> players than <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitors</a></span>.</p>
+                <p><span style="color:var(--detective);"><a href="../teams/detective.html">Detectives</a></span> are also part of the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span>, sharing the same objective, but their allegiance is known to all players.</p>
+            </div>
+        </div>
     </div>
-    <div class="contentbody panel" style="margin-top: 10px;">
+    <div class="contentbody panel">
         <div id="innocent" class="collapsible">
             <button class="header" style="background-color:var(--innocent);"><i class="icon-innocent"></i>Innocent</button>
             <div class="content">

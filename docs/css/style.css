@@ -129,7 +129,7 @@ h1, h2, h3, h4 {
     background-color: #787878;
     border-radius: 15px 0 15px 0;
     font-weight: bold;
-    padding: 6px;
+    padding: 6px 8px;
     text-shadow: 2px 2px 0 black;
 }
 

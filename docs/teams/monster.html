@@ -8,13 +8,21 @@
 </head>
 <body>
     <button onclick="backToTop()" id="totop">Back to Top</button>
-    <div class="navigation panel">
+    <div class="navigation panel" style="margin-bottom: 15px;">
         <iframe id="nav" src="../nav.html#monster" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left; margin-right: 10px;"></iframe>
     </div>
-    <div class="contentheader panel">
-        <h1>Monster Roles</h1>
+    <div class="contentheader panel" style="margin-bottom: 15px;">
+        <div style="background-color: #787878; border-radius: 20px 0 15px 0; margin-top: 0; display: inline-block;">
+            <h1 style="background-color:var(--monster); margin-top: 0;">Monster Roles</h1>
+            <div style="margin: 10px;">
+                <p>The <span style="color:var(--monster);"><a href="../teams/monster.html">monster team</a></span> has no members by default, but it can be configured to act as a third team fighting against both the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span> and the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span>.</p>
+                <p>The main goal of the <span style="color:var(--monster);"><a href="../teams/monster.html">monster team</a></span> is to eliminate all members of the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span> and the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span>. In some cases, they also need to take out <span style="color:var(--jester);"><a href="../teams/jester.html">jesters</a></span> or <span style="color:var(--independent);"><a href="../teams/independent.html">independents</a></span> that could prevent their victory.</p>
+                <p>Members of the <span style="color:var(--monster);"><a href="../teams/monster.html">monster team</a></span> have their roles known to each other, and <span style="color:var(--jester);"><a href="../teams/jester.html">jesters</a></span> are also known to <span style="color:var(--monster);"><a href="../teams/monster.html">monsters</a></span>. Additionally, <span style="color:var(--monster);"><a href="../teams/monster.html">monsters</a></span> have the ability to see players who are dead but have not had their bodies found as "missing in action" on the scoreboard. This makes the <span style="color:var(--monster);"><a href="../teams/monster.html">monster team</a></span> very similar to the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span> and gives them a significant advantage over the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span>, whose roles are not known to each other, and who cannot see MIA players on the scoreboard. To address this, most games have a higher number of <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent</a></span> players than <span style="color:var(--monster);"><a href="../teams/monster.html">monsters</a></span> and <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitors</a></span>.</p>
+                <p><span style="color:var(--monster);"><a href="../teams/monster.html">Monsters</a></span> often have access to weapons or abilities that give them additional advantages against the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span> and the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span>, but can give away their allegiance if not used in secret.</p>
+            </div>
+        </div>
     </div>
-    <div class="contentbody panel" style="margin-top: 10px;">
+    <div class="contentbody panel">
         <div class="collapsible">
             <button class="header" style="background-color:var(--monster);"><i class="icon-team"></i>Configurable Monsters</button>
             <div class="content">
