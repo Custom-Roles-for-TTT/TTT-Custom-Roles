@@ -89,6 +89,7 @@ local util = util
 local CallHook = hook.Call
 local RunHook = hook.Run
 local GetAllPlayers = player.GetAll
+local MathRand = math.Rand
 local StringFormat = string.format
 local StringLower = string.lower
 local StringUpper = string.upper
@@ -889,10 +890,9 @@ function BeginRound()
 
     for _, v in pairs(GetAllPlayers()) do
         -- Player color
-        local vec = Vector(1, 1, 1)
-        vec.x = math.Rand(0, 1)
-        vec.y = math.Rand(0, 1)
-        vec.z = math.Rand(0, 1)
+        -- Generate a random color, but make sure it's not too bright or too dark
+        local col = HSLToColor(MathRand(0, 360), MathRand(0.5, 1), MathRand(0.25, 0.75))
+        local vec = Vector(col.r / 255, col.g / 255, col.b / 255)
         v:SetNWVector("PlayerColor", vec)
 
         v:BeginRoleChecks()
