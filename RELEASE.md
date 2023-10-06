@@ -3,6 +3,10 @@
 ## 1.9.12 (Beta)
 **Released:**
 
+### Additions
+- Added new tracking radar to the tracker's shop, allow them to track living players and player corpses
+  - The tracking radar icons use the same color as the tracker footprints
+
 ### Changes
 - Changed zombie claws weapon to use a player's custom model if they have one and it's compatible
   - They also change to the zombie color to make it match how other players see them
