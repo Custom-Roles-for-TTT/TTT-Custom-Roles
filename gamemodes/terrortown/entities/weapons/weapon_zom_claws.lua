@@ -28,7 +28,7 @@ SWEP.Category = WEAPON_CATEGORY_ROLE
 
 SWEP.HoldType = "fist"
 
-SWEP.ViewModel = Model("models/weapons/c_arms_cstrike.mdl")
+SWEP.ViewModel = Model("models/weapons/c_arms.mdl")
 SWEP.WorldModel = ""
 
 SWEP.HitDistance = 250
@@ -55,6 +55,7 @@ SWEP.Tertiary.Delay = 3
 
 SWEP.Kind = WEAPON_ROLE
 
+SWEP.UseHands = true
 SWEP.AllowDrop = false
 SWEP.IsSilent = false
 
@@ -301,10 +302,18 @@ function SWEP:Deploy()
     vm:SendViewModelMatchingSequence(vm:LookupSequence("fists_draw"))
 end
 
-function SWEP:Holster(weapon)
+function SWEP:Holster(weap)
+    if CLIENT then
+        local owner = weap:GetOwner()
+        if not IsPlayer(owner) then return end
+
+        local vm = owner:GetViewModel()
+        if not IsValid(vm) or vm:GetColor() == COLOR_WHITE then return end
+
+        vm:SetColor(COLOR_WHITE)
+    end
     return true
 end
-
 
 if CLIENT then
     net.Receive("TTT_ZombieLeapStart", function()
@@ -328,4 +337,13 @@ if CLIENT then
             wep.ActivityTranslate[ACT_MP_JUMP] = nil
         end
     end)
+
+    local zombie_color = Color(70, 100, 25, 255)
+
+    -- Set the viewmodel color to the zombie color so it matches what other players see
+    function SWEP:PreDrawViewModel(vm, wep, ply)
+        if vm:GetColor() ~= zombie_color then
+            vm:SetColor(zombie_color)
+        end
+    end
 end

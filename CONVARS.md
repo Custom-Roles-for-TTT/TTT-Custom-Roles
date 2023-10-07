@@ -508,6 +508,8 @@ ttt_clown_heal_bonus                        0       // The amount of bonus healt
 ttt_clown_shop_active_only                  1       // Whether the clown's shop should be available only after they activate
 ttt_clown_shop_delay                        0       // Whether the clown's purchased shop items should be held until they activate
 ttt_clown_credits_starting                  0       // The number of credits a clown should start with
+ttt_clown_can_see_jesters                   1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the clown after they activate
+ttt_clown_update_scoreboard                 1       // Whether the clown shows dead players as missing in action after they activate
 ttt_single_drunk_clown                      0       // Whether only a single drunk or clown should spawn in a round (Only applies if ttt_single_jester_independent is disabled)
 ttt_single_drunk_clown_chance               0.5     // The chance that a drunk should have an opportunity to spawn instead of a clown (e.g. 0.7 = 70% chance for drunk, 30% chance for clown. Only applies if ttt_single_drunk_clown is enabled)
 

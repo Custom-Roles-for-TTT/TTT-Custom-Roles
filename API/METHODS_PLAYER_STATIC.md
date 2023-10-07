@@ -23,7 +23,7 @@ Executes a callback function against the players that are members of the specifi
 - *roleTeam* - The "role team" whose members to execute the callback against (see ROLE_TEAM_* global enumeration)
 - *detectivesAreInnocent* - Whether to include members of the detective "role team" in the innocent "role team" to match the logical teams
 - *aliveOnly* - Whether to only include alive players
-- *callback* - The function to execute against each "role team" player. Takes a player as the single argument
+- *callback* - The function to execute against each "role team" player. Takes a player as the single argument. If `true` is returned, the rest of the execution is skipped.
 
 ### player.GetLivingInRadius(pos, radius)
 Returns a table of all players who are alive and within `radius` units of `pos`.\

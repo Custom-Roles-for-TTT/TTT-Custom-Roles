@@ -23,6 +23,8 @@ if SERVER then
     resource.AddFile("materials/vgui/ttt/beacon_back.vmt")
     resource.AddFile("materials/vgui/ttt/beacon_det.vmt")
     resource.AddFile("materials/vgui/ttt/beacon_rev.vmt")
+    resource.AddFile("materials/vgui/ttt/beacon_skull.vmt")
+    resource.AddFile("materials/vgui/ttt/beacon_trk.vmt")
 
     -- Round Summary
     resource.AddSingleFile("materials/vgui/ttt/score_disconicon.png")

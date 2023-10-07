@@ -22,7 +22,7 @@ local StringSub = string.sub
 include("player_class/player_ttt.lua")
 
 -- Version string for display and function for version checks
-CR_VERSION = "1.9.11"
+CR_VERSION = "1.9.12"
 CR_BETA = true
 CR_WORKSHOP_ID = CR_BETA and "2404251054" or "2421039084"
 
@@ -880,6 +880,7 @@ ROLE_IS_TARGETID_OVERRIDDEN = {}
 ROLE_IS_SCOREBOARD_INFO_OVERRIDDEN = {}
 ROLE_IS_TARGET_HIGHLIGHTED = {}
 ROLE_SHOULD_REVEAL_ROLE_WHEN_ACTIVE = {}
+ROLE_VICTIM_CHANGING_ROLE = {}
 ROLETEAM_IS_TARGET_HIGHLIGHTED = {}
 
 ROLE_CONVAR_TYPE_NUM = 0
@@ -1020,6 +1021,10 @@ function RegisterRole(tbl)
 
     if type(tbl.shouldrevealrolewhenactive) == "function" then
         ROLE_SHOULD_REVEAL_ROLE_WHEN_ACTIVE[roleID] = tbl.shouldrevealrolewhenactive
+    end
+
+    if type(tbl.victimchangingrole) == "function" then
+        ROLE_VICTIM_CHANGING_ROLE[roleID] = tbl.victimchangingrole
     end
 
     -- Equipment
