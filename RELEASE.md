@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.9.12 (Beta)
-**Released:**
+**Released: October 7th, 2023**
 
 ### Additions
 - Added new tracking radar to the tracker's shop, allow them to track living players and player corpses
@@ -25,7 +25,7 @@
 **Released: October 1st, 2023**
 
 ### Changes
-- Changed the vindicator so they don't see the role of their killer in the death message
+- Changed the vindicator so they don't see the role of their killer in their death message
 
 ## 1.9.10 (Beta)
 **Released: September 23rd, 2023**
