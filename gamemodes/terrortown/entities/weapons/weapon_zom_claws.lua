@@ -303,7 +303,7 @@ function SWEP:Deploy()
 end
 
 function SWEP:Holster(weap)
-    if CLIENT then
+    if CLIENT and IsValid(weap) then
         local owner = weap:GetOwner()
         if not IsPlayer(owner) then return end
 
