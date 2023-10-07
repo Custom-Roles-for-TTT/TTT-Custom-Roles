@@ -3,10 +3,15 @@
 ## 1.9.12 (Beta)
 **Released:**
 
+### Additions
+- Added new tracking radar to the tracker's shop, allow them to track living players and player corpses
+  - The tracking radar icons use the same color as the tracker footprints
+
 ### Changes
 - Changed zombie claws weapon to use a player's custom model if they have one and it's compatible
   - They also change to the zombie color to make it match how other players see them
 - Changed the clown to become an independent when activated to make their ability to do damage make more sense
+- Changed player colors used by tracker and medium to avoid brightnesses and saturations that can be hard to see
 
 ### Fixes
 - Fixed vindicator win result message conflicting with killer
