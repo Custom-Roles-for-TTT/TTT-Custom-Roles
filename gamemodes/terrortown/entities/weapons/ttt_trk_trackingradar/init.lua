@@ -12,6 +12,7 @@ local table = table
 local FindEntsByClass = ents.FindByClass
 local GetAllPlayers = player.GetAll
 local MathRound = math.Round
+local MathRand = math.Rand
 
 -- should mirror client
 local chargetime = 30
@@ -35,13 +36,21 @@ local function TrackRadarScan(ply, cmd, args)
             if ply == p or not IsValid(p) then continue end
 
             local pos = p:LocalToWorld(p:OBBCenter())
-            if not p:Alive() or p:IsSpec() then
-                local rag = p.server_ragdoll or p:GetRagdollEntity()
-                if IsValid(rag) then
-                    pos = rag:GetPos()
-                else
-                    continue
+            local col
+            if IsPlayer(p) then
+                col = p:GetNWVector("PlayerColor", Vector(1, 1, 1))
+                if not p:Alive() or p:IsSpec() then
+                    local rag = p.server_ragdoll or p:GetRagdollEntity()
+                    if IsValid(rag) then
+                        pos = rag:GetPos()
+                    else
+                        continue
+                    end
                 end
+            -- Generate a random color for decoys
+            else
+                local color = HSLToColor(MathRand(0, 360), MathRand(0.5, 1), MathRand(0.25, 0.75))
+                col = Vector(color.r / 255, color.g / 255, color.b / 255)
             end
 
             -- Round off, easier to send and inaccuracy does not matter
@@ -49,7 +58,7 @@ local function TrackRadarScan(ply, cmd, args)
             pos.y = MathRound(pos.y)
             pos.z = MathRound(pos.z)
 
-            table.insert(targets, { pos = pos, col = p:GetNWVector("PlayerColor", Vector(1, 1, 1)) })
+            table.insert(targets, { pos = pos, col = col })
         end
 
         net.Start("TTT_TrackRadar")
