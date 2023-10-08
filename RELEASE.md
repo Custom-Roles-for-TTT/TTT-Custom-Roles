@@ -16,6 +16,7 @@
 ### Fixes
 - Fixed vindicator win result message conflicting with killer
 - Fixed minor capitalization typo in the vindicator announcement message
+- Fixed vindicator not having their team changed and their target shown on the round summary if their target died before they respawned
 
 ### Developer
 - Added `plymeta:IsVictimChangingRole` and corresponding role feature to help determine whether a player killed by another player will be changing their role (e.g. zombie, hive mind)
