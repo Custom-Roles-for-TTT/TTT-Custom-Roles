@@ -33,6 +33,15 @@ local vindicator_kill_on_success = GetConVar("ttt_vindicator_kill_on_success")
 local function ActivateVindicator(vindicator, target)
     if not vindicator:IsVindicator() then return end
 
+    -- Change their team and set their target even if the target is already dead
+    SetVindicatorTeam(true)
+    vindicator:SetNWString("VindicatorTarget", target:SteamID64())
+
+    net.Start("TTT_VindicatorActive")
+    net.WriteString(vindicator:Nick())
+    net.WriteString(target:Nick())
+    net.Broadcast()
+
     if not target:Alive() then
         vindicator:QueueMessage(MSG_PRINTBOTH, "Your target has already died so you will not be respawned.")
         return
@@ -44,8 +53,6 @@ local function ActivateVindicator(vindicator, target)
     end
     vindicator:SpawnForRound(true)
     vindicator:SetHealth(vindicator_respawn_health:GetInt())
-    SetVindicatorTeam(true)
-    vindicator:SetNWString("VindicatorTarget", target:SteamID64())
 
     local spawns = GetSpawnEnts(true, false)
     local furthestSpawn = nil
@@ -81,11 +88,6 @@ local function ActivateVindicator(vindicator, target)
             end
         end
     end
-
-    net.Start("TTT_VindicatorActive")
-    net.WriteString(vindicator:Nick())
-    net.WriteString(target:Nick())
-    net.Broadcast()
 end
 
 hook.Add("PlayerDeath", "Vindicator_PlayerDeath", function(victim, infl, attacker)
