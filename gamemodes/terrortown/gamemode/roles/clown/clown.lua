@@ -64,19 +64,18 @@ local function HandleClownWinBlock(win_type)
         return WIN_NONE
     end
 
-    local traitor_alive, innocent_alive, indep_alive, monster_alive, _ = player.AreTeamsLiving(true)
+    local traitor_alive, innocent_alive, indep_alive, monster_alive, _ = player.TeamLivingCount(true)
     -- If there are independents alive, check if any of them are non-clowns
-    if indep_alive then
+    if indep_alive > 0 then
         player.ExecuteAgainstTeamPlayers(ROLE_TEAM_INDEPENDENT, true, true, function(ply)
-            if not ply:IsClown() then
-                indep_alive = false
-                return true
+            if ply:IsClown() then
+                indep_alive = indep_alive - 1
             end
         end)
     end
 
     -- Clown wins if they are the only role left
-    if not traitor_alive and not innocent_alive and not monster_alive and not indep_alive then
+    if traitor_alive <= 0 and innocent_alive <= 0 and monster_alive <= 0 and indep_alive <= 0 then
         return WIN_CLOWN
     end
 
