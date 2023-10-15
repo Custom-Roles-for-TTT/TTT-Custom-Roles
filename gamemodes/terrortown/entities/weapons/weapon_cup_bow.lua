@@ -224,20 +224,20 @@ function SWEP:Deploy()
 end
 
 if CLIENT then
-    local ang = angle_zero
+    local ang = Angle(0, 0, 0)
 
-    local vm_origin = vector_origin
-    local vm_angles = angle_zero
+    local vm_origin = Vector(0, 0, 0)
+    local vm_angles = Angle(0, 0, 0)
 
     SWEP.SwayScale = 0
     SWEP.BobScale = 0
 
-    SWEP.VMOrigin = vector_origin
+    SWEP.VMOrigin = Vector(0, 0, 0)
 
     SWEP.BobCycle = 0
 
-    SWEP.BobPos  = vector_origin
-    SWEP.BobPos2 = vector_origin
+    SWEP.BobPos  = Vector(0, 0, 0)
+    SWEP.BobPos2 = Vector(0, 0, 0)
 
     SWEP.AimOrigin = Vector(-6, -3, 1)
     SWEP.AimAngles = Angle(1, 0, -45)
@@ -250,7 +250,7 @@ if CLIENT then
     SWEP.SpeedMult = 0
     SWEP.SideSpeed = 0
 
-    SWEP.LastAngles = angle_zero
+    SWEP.LastAngles = Angle(0, 0, 0)
     SWEP.AimFOV = 25
 
     function SWEP:PreDrawViewModel(vm, wep, ply)
