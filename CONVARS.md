@@ -16,7 +16,6 @@
        1. [Equipment](#Equipment)
           1. [Adding Equipment](#Adding-Equipment)
           1. [Removing Equipment](#Removing-Equipment)
-          1. [Bypassing Equipment Randomization](#Bypassing-Equipment-Randomization)
           1. [Finding an Equipment Item's Name](#Finding-an-Equipment-Items-Name)
 1. [Renaming Roles](#Renaming-Roles)
 
