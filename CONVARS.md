@@ -276,13 +276,13 @@ ttt_single_doctor_quack_chance              0.5     // The chance that a doctor 
 // Parasite
 ttt_parasite_is_monster                     0       // Whether the parasite should be treated as a member of the monster team (rather than the traitor team)
 ttt_parasite_infection_time                 45      // The time it takes in seconds for the parasite to fully infect someone
-ttt_parasite_infection_warning_time         0       // The time in seconds after infection to warn the victim. Set to 0 to disable.
+ttt_parasite_infection_warning_time         0       // The time in seconds after infection to warn the victim with an ambiguous message. Set to 0 to disable.
 ttt_parasite_infection_transfer             0       // Whether the parasite's infection will transfer if the parasite's killer is killed by another player
 ttt_parasite_infection_transfer_reset       1       // Whether the parasite's infection progress will reset if their infection is transferred to another player
 ttt_parasite_infection_suicide_mode         0       // The way to handle when a player infected by the parasite kills themselves. 0 - Do nothing. 1 - Respawn the parasite. 2 - Respawn the parasite ONLY IF the infected player killed themselves with a console command like "kill"
 ttt_parasite_respawn_mode                   0       // The way in which the parasite respawns. 0 - Take over host. 1 - Respawn at the parasite's body. 2 - Respawn at a random location.
 ttt_parasite_respawn_health                 100     // The health on which the parasite respawns
-ttt_parasite_announce_infection             0       // Whether players are notified when they are infected with the parasite
+ttt_parasite_announce_infection             0       // Whether players are notified immediately when they are infected with the parasite
 ttt_parasite_cure_mode                      2       // How to handle using a parasite cure on someone who is not infected. 0 - Kill nobody (But use up the cure), 1 - Kill the person who uses the cure, 2 - Kill the person the cure is used on
 ttt_parasite_cure_time                      3       // The amount of time (in seconds) the parasite cure takes to use
 ttt_parasite_infection_saves_lover          1       // Whether the parasite's lover should survive if the parasite is infecting a player
