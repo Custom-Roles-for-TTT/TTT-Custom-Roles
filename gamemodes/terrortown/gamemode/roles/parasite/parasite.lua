@@ -18,7 +18,7 @@ util.AddNetworkString("TTT_ParasiteInfect")
 -- CONVARS --
 -------------
 
-local parasite_infection_warning_time = CreateConVar("ttt_parasite_infection_warning_time", 0, FCVAR_NONE, "The time in seconds after infection to warn the victim", 0, 300)
+local parasite_infection_warning_time = CreateConVar("ttt_parasite_infection_warning_time", 0, FCVAR_NONE, "The time in seconds after infection to warn the victim with an ambiguous message", 0, 300)
 local parasite_infection_transfer_reset = CreateConVar("ttt_parasite_infection_transfer_reset", 1)
 local parasite_respawn_health = CreateConVar("ttt_parasite_respawn_health", 100, FCVAR_NONE, "The health on which the parasite respawns", 1, 100)
 local parasite_infection_saves_lover = CreateConVar("ttt_parasite_infection_saves_lover", "1", FCVAR_NONE, "Whether the parasite's lover should survive if the parasite is infecting a player", 0, 1)
