@@ -70,7 +70,7 @@ local incompatible = {
     ["305575144"] = { reason = "Death messages are included in Custom Roles for TTT." }, -- TTT Kill reveal / Kill notifier with colors by Thomads
 
     -- Miscellaneous
-    ["1721137539"] = { reason = "Breaks the tracker's footsteps by always returning a value to PlayerFootstep hook." }, -- Avengers RandoMat Event by Jenssons
+    ["1721137539"] = { reason = "Breaks the tracker's footsteps by always returning a value to PlayerFootstep hook.", alt = "3052896263" }, -- Avengers RandoMat Event by Jenssons
     ["2209392671"] = { reason = "Breaks the weapon switch HUD (and possibly others)."} -- TTT SimpleHUD by Suphax
 }
 
