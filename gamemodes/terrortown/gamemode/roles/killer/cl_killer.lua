@@ -80,7 +80,7 @@ local client = nil
 
 local function EnableKillerHighlights()
     hook.Add("PreDrawHalos", "Killer_Highlight_PreDrawHalos", function()
-        OnPlayerHighlightEnabled(client, {ROLE_KILLER}, true, false, false)
+        OnPlayerHighlightEnabled(client, {ROLE_KILLER}, GetConVar("ttt_killer_can_see_jesters"):GetBool(), false, false)
     end)
 end
 

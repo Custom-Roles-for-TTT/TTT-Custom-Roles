@@ -1,5 +1,11 @@
 # Release Notes
 
+## 1.9.13 (Beta)
+**Released:**
+
+### Fixes
+- Fixed killer highlighting of jesters not obeying `ttt_killer_can_see_jesters`
+
 ## 1.9.12 (Beta)
 **Released: October 7th, 2023**
 
