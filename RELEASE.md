@@ -11,6 +11,7 @@
 - Fixed killer seeing generic jester role icon instead of question mark
 - Fixed minor capitalization typo in the cupid pairing message
 - Fixed view angle corruption when using the cupid's bow
+- Fixed bodysnatchers that joined the traitor team receiving traitor team text chat even if `ttt_bodysnatcher_reveal_traitor` is set to `0` (none)
 
 ## 1.9.12 (Beta)
 **Released: October 7th, 2023**
