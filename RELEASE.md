@@ -5,6 +5,7 @@
 
 ### Additions
 - Added new mode for the `ttt_beggar_reveal_*` convars, allowing the beggar's team change to be announced and shown to any role that can see jesters (e.g. traitors, monsters, and independents with that feature enabled)
+- Added new mode for the `ttt_bodysnatcher_reveal_*` convars, allowing the beggar's team change to be announced and shown to any role that can see jesters (e.g. traitors, monsters, and independents with that feature enabled)
 
 ### Fixes
 - Fixed killer highlighting of jesters not obeying `ttt_killer_can_see_jesters`
