@@ -3,6 +3,9 @@
 ## 1.9.13 (Beta)
 **Released:**
 
+### Additions
+- Added new mode for the `ttt_beggar_reveal_*` convars, allowing the beggar's team change to be announced and shown to any role that can see jesters (e.g. traitors, monsters, and independents with that feature enabled)
+
 ### Fixes
 - Fixed killer highlighting of jesters not obeying `ttt_killer_can_see_jesters`
 - Fixed killer seeing generic jester role icon instead of question mark

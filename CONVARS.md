@@ -514,8 +514,8 @@ ttt_single_drunk_clown_chance               0.5     // The chance that a drunk s
 
 // Beggar
 ttt_beggar_is_independent                   0       // Whether beggars should be treated as members of the independent team (rather than the jester team)
-ttt_beggar_reveal_traitor                   1       // Who the beggar is revealed to when they join the traitor team. 0 - No one. 1 - Everyone. 2 - Traitors. 3 - Innocents
-ttt_beggar_reveal_innocent                  2       // Who the beggar is revealed to when they join the innocent team. 0 - No one. 1 - Everyone. 2 - Traitors. 3 - Innocents
+ttt_beggar_reveal_traitor                   1       // Who the beggar is revealed to when they join the traitor team. 0 - No one. 1 - Everyone. 2 - Traitors. 3 - Innocents. 4 - Roles that can see jesters
+ttt_beggar_reveal_innocent                  2       // Who the beggar is revealed to when they join the innocent team. 0 - No one. 1 - Everyone. 2 - Traitors. 3 - Innocents. 4 - Roles that can see jesters
 ttt_beggar_respawn                          0       // Whether the beggar respawns when they are killed before joining another team
 ttt_beggar_respawn_delay                    3       // The delay to use when respawning the beggar (if "ttt_beggar_respawn" is enabled)
 ttt_beggar_respawn_limit                    0       // The maximum number of times the beggar can respawn (if "ttt_beggar_respawn" is enabled). Set to 0 to allow infinite respawns

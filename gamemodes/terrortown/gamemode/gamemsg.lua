@@ -51,7 +51,7 @@ end
 
 local function ShouldHideTraitorBeggar()
     local beggarMode = GetConVar("ttt_beggar_reveal_traitor"):GetInt()
-    return beggarMode == ANNOUNCE_REVEAL_NONE or beggarMode == ANNOUNCE_REVEAL_INNOCENTS
+    return beggarMode == BEGGAR_REVEAL_NONE or beggarMode == BEGGAR_REVEAL_INNOCENTS
 end
 
 local function ShouldHideTraitorBodysnatcher()
