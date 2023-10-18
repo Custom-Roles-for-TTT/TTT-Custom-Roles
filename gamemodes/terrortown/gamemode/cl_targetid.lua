@@ -542,6 +542,8 @@ function GM:HUDDrawTargetID()
             surface.SetDrawColor(color_override)
         elseif target_role then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ent:GetRole()])
+        elseif target_jester then
+            surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_JESTER])
         elseif target_traitor or target_unknown_traitor then
             surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_TRAITOR])
         elseif target_special_traitor or target_unknown_special_traitor then
@@ -566,8 +568,6 @@ function GM:HUDDrawTargetID()
             end
         elseif target_monster then
             surface.SetDrawColor(GetRoleTeamColor(ROLE_TEAM_MONSTER, "radar"))
-        elseif target_jester then
-            surface.SetDrawColor(ROLE_COLORS_RADAR[ROLE_JESTER])
         end
         surface.DrawTexturedRect(x - 32, y - 32, 64, 64)
     end
@@ -689,6 +689,9 @@ function GM:HUDDrawTargetID()
     if target_role then
         text = StringUpper(ROLE_STRINGS[ent:GetRole()])
         col = ROLE_COLORS_RADAR[ent:GetRole()]
+    elseif target_jester then
+        text = GetPTranslation("target_unknown_team", { targettype = StringUpper(GetTranslation("jester")) })
+        col = ROLE_COLORS_RADAR[ROLE_JESTER]
     elseif target_traitor then
         text = StringUpper(ROLE_STRINGS[ROLE_TRAITOR])
         col = ROLE_COLORS_RADAR[ROLE_TRAITOR]
@@ -724,9 +727,6 @@ function GM:HUDDrawTargetID()
     elseif target_unknown_detective then
         text = GetPTranslation("target_unknown_team", { targettype = StringUpper(ROLE_STRINGS[ROLE_DETECTIVE]) })
         col = ROLE_COLORS_RADAR[ROLE_DETECTIVE]
-    elseif target_jester then
-        text = GetPTranslation("target_unknown_team", { targettype = StringUpper(GetTranslation("jester")) })
-        col = ROLE_COLORS_RADAR[ROLE_JESTER]
     elseif target_monster then
         text = StringUpper(ROLE_STRINGS[target_monster])
         col = GetRoleTeamColor(ROLE_TEAM_MONSTER, "radar")

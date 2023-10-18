@@ -12,6 +12,7 @@
 - Fixed minor capitalization typo in the cupid pairing message
 - Fixed view angle corruption when using the cupid's bow
 - Fixed bodysnatchers that joined the traitor team receiving traitor team text chat even if `ttt_bodysnatcher_reveal_traitor` is set to `0` (none)
+- Fixed some role information not being properly hidden when a role (like the beggar or bodysnatcher) changes to another role but that change is not revealed
 
 ## 1.9.12 (Beta)
 **Released: October 7th, 2023**
