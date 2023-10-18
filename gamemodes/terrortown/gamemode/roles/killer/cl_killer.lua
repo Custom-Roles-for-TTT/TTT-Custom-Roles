@@ -55,21 +55,6 @@ hook.Add("TTTTargetIDPlayerTargetIcon", "Killer_TTTTargetIDPlayerTargetIcon", fu
     end
 end)
 
--- Show the jester role icon for any jester team player
-hook.Add("TTTTargetIDPlayerRoleIcon", "Killer_TTTTargetIDPlayerRoleIcon", function(ply, cli, role, noz, colorRole, hideBeggar, showJester, hideBodysnatcher)
-    if cli:IsKiller() and showJester then
-        return ROLE_JESTER
-    end
-end)
-
-ROLE_IS_TARGETID_OVERRIDDEN[ROLE_KILLER] = function(ply, target, showJester)
-    if not ply:IsKiller() then return end
-    if not IsPlayer(target) then return end
-
-    ------ icon,       ring,  text
-    return showJester, false, false
-end
-
 ------------------
 -- HIGHLIGHTING --
 ------------------
