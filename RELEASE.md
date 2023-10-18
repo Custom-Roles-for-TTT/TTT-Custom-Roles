@@ -9,6 +9,8 @@
 ### Fixes
 - Fixed killer highlighting of jesters not obeying `ttt_killer_can_see_jesters`
 - Fixed killer seeing generic jester role icon instead of question mark
+- Fixed minor capitalization typo in the cupid pairing message
+- Fixed view angle corruption when using the cupid's bow
 
 ## 1.9.12 (Beta)
 **Released: October 7th, 2023**
