@@ -51,7 +51,7 @@ end
 
 local function ShouldHideTraitorBeggar()
     local beggarMode = GetConVar("ttt_beggar_reveal_traitor"):GetInt()
-    return beggarMode == ANNOUNCE_REVEAL_NONE or beggarMode == ANNOUNCE_REVEAL_INNOCENTS
+    return beggarMode == BEGGAR_REVEAL_NONE or beggarMode == BEGGAR_REVEAL_INNOCENTS
 end
 
 local function ShouldHideTraitorBodysnatcher()
@@ -116,7 +116,7 @@ function GetTraitorTeamFilterWithExcludes(alive_only)
         if alive_only and (not p:Alive() or p:IsSpec()) then return false end
 
         if hideBeggar and p:IsTraitor() and p:GetNWBool("WasBeggar", false) then return false end
-        if hideBodysnatcher and p:GetNWBool("WasBodysnatcher", false) then return false end
+        if hideBodysnatcher and p:IsTraitor() and p:GetNWBool("WasBodysnatcher", false) then return false end
 
         return true
     end)

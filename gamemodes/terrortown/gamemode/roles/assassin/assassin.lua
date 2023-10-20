@@ -44,16 +44,12 @@ local function AssignAssassinTarget(ply, start, delay)
     local shops = {}
     local detectives = {}
     local independents = {}
-    local beggarMode = GetConVar("ttt_beggar_reveal_innocent"):GetInt()
     local shopRolesLast = assassin_shop_roles_last:GetBool()
-    local bodysnatcherModeInno = GetConVar("ttt_bodysnatcher_reveal_innocent"):GetInt()
-    local bodysnatcherModeMon = GetConVar("ttt_bodysnatcher_reveal_monster"):GetInt()
-    local bodysnatcherModeIndep = GetConVar("ttt_bodysnatcher_reveal_independent"):GetInt()
 
-    local function AddEnemy(p, bodysnatcherMode)
-        -- Don't add the former beggar to the list of enemies unless the "reveal" setting is enabled
-        if p:IsInnocent() and p:GetNWBool("WasBeggar", false) and beggarMode ~= ANNOUNCE_REVEAL_ALL and beggarMode ~= ANNOUNCE_REVEAL_TRAITORS then return end
-        if p:GetNWBool("WasBodysnatcher", false) and bodysnatcherMode ~= BODYSNATCHER_REVEAL_ALL then return end
+    local function AddEnemy(p)
+        -- Don't add the former beggar or bodysnatcher to the list of enemies unless the "reveal" setting is enabled
+        if p:IsInnocent() and p:GetNWBool("WasBeggar", false) and ply:ShouldRevealBeggar(p) then return end
+        if p:GetNWBool("WasBodysnatcher", false) and ply:ShouldRevealBodysnatcher(p) then return end
 
         -- Put shop roles into a list if they should be targeted last
         if shopRolesLast and p:IsShopRole() then
@@ -70,15 +66,12 @@ local function AssignAssassinTarget(ply, start, delay)
                 table.insert(detectives, p:SteamID64())
             -- Exclude Glitch from this list so they don't get discovered immediately
             elseif p:IsInnocentTeam() and not p:IsGlitch() then
-                AddEnemy(p, bodysnatcherModeInno)
+                AddEnemy(p)
             elseif p:IsMonsterTeam() then
-                AddEnemy(p, bodysnatcherModeMon)
+                AddEnemy(p)
             -- Exclude roles that have a passive win because they just want to survive
             elseif p:IsIndependentTeam() and not ROLE_HAS_PASSIVE_WIN[p:GetRole()] then
-                -- Also exclude bodysnatchers turned into an independent if their role hasn't been revealed
-                if not p:GetNWBool("WasBodysnatcher", false) or bodysnatcherModeIndep == BODYSNATCHER_REVEAL_ALL then
-                    table.insert(independents, p:SteamID64())
-                end
+                AddEnemy(p)
             end
         end
     end
