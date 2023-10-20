@@ -325,19 +325,19 @@ hook.Add("TTTHUDInfoPaint", "Beggar_TTTHUDInfoPaint", function(cli, label_left, 
     if hide_role then return end
 
     if (cli:IsInnocent() or cli:IsTraitor()) and cli:GetNWBool("WasBeggar", false) then
-        local beggarMode = ANNOUNCE_REVEAL_ALL
+        local beggarMode = BEGGAR_REVEAL_ALL
         if cli:IsInnocent() then beggarMode = beggar_reveal_innocent:GetInt()
         elseif cli:IsTraitor() then beggarMode = beggar_reveal_traitor:GetInt() end
-        if beggarMode ~= ANNOUNCE_REVEAL_ALL then
+        if beggarMode ~= BEGGAR_REVEAL_ALL and beggarMode ~= BEGGAR_REVEAL_ROLES_THAT_CAN_SEE_JESTER then
             surface.SetFont("TabLarge")
             surface.SetTextColor(255, 255, 255, 230)
 
             local text
-            if beggarMode == ANNOUNCE_REVEAL_NONE then
+            if beggarMode == BEGGAR_REVEAL_NONE then
                 text = LANG.GetParamTranslation("beggar_hidden_all_hud", { beggar = ROLE_STRINGS_EXT[ROLE_BEGGAR] })
-            elseif beggarMode == ANNOUNCE_REVEAL_TRAITORS then
+            elseif beggarMode == BEGGAR_REVEAL_TRAITORS then
                 text = LANG.GetParamTranslation("beggar_hidden_innocent_hud", { beggar = ROLE_STRINGS_EXT[ROLE_BEGGAR], innocents = ROLE_STRINGS_PLURAL[ROLE_INNOCENT] })
-            elseif beggarMode == ANNOUNCE_REVEAL_INNOCENTS then
+            elseif beggarMode == BEGGAR_REVEAL_INNOCENTS then
                 text = LANG.GetParamTranslation("beggar_hidden_traitor_hud", { beggar = ROLE_STRINGS_EXT[ROLE_BEGGAR], traitors = ROLE_STRINGS_PLURAL[ROLE_TRAITOR] })
             end
             local _, h = surface.GetTextSize(text)
@@ -411,14 +411,16 @@ end)
 
 local function GetRevealModeString(roleColor, revealMode, teamName, teamColor)
     local modeString = "When joining the <span style='color: rgb(" .. teamColor.r .. ", " .. teamColor.g .. ", " .. teamColor.b .. ")'>" .. string.lower(teamName) .. "</span> team, the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. ROLE_STRINGS[ROLE_BEGGAR] .. "</span>'s new role will be revealed to "
-    if revealMode == ANNOUNCE_REVEAL_ALL then
+    if revealMode == BEGGAR_REVEAL_ALL then
         modeString = modeString .. "everyone"
-    elseif revealMode == ANNOUNCE_REVEAL_TRAITORS then
+    elseif revealMode == BEGGAR_REVEAL_TRAITORS then
         local revealColor = ROLE_COLORS[ROLE_TRAITOR]
         modeString = modeString .. "only <span style='color: rgb(" .. revealColor.r .. ", " .. revealColor.g .. ", " .. revealColor.b .. ")'>" .. string.lower(LANG.GetTranslation("traitors")) .. "</span>"
-    elseif revealMode == ANNOUNCE_REVEAL_INNOCENTS then
+    elseif revealMode == BEGGAR_REVEAL_INNOCENTS then
         local revealColor = ROLE_COLORS[ROLE_TRAITOR]
         modeString = modeString .. "only <span style='color: rgb(" .. revealColor.r .. ", " .. revealColor.g .. ", " .. revealColor.b .. ")'>" .. string.lower(LANG.GetTranslation("innocents")) .. "</span>"
+    elseif revealMode == BEGGAR_REVEAL_ROLES_THAT_CAN_SEE_JESTER then
+       modeString = modeString .. "any role that can see <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. string.lower(LANG.GetTranslation("jesters")) .. "</span>"
     else
         modeString = modeString .. "nobody"
     end

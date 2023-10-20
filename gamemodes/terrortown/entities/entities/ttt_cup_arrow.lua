@@ -157,7 +157,7 @@ function ENT:Touch(ent)
                                 end
 
                                 if mode == ANNOUNCE_REVEAL_ALL or (v:IsTraitorTeam() and mode == ANNOUNCE_REVEAL_TRAITORS) or (v:IsInnocentTeam() and mode == ANNOUNCE_REVEAL_INNOCENTS) then
-                                    v:QueueMessage(MSG_PRINTBOTH, ROLE_STRINGS_EXT[ROLE_CUPID] .. " has made two players fall in love!")
+                                    v:QueueMessage(MSG_PRINTBOTH, string.Capitalize(ROLE_STRINGS_EXT[ROLE_CUPID]) .. " has made two players fall in love!")
                                 end
                             end
                         end

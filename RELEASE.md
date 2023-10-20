@@ -1,5 +1,20 @@
 # Release Notes
 
+## 1.9.13 (Beta)
+**Released: October 21st, 2023**
+
+### Additions
+- Added new mode for the `ttt_beggar_reveal_*` convars, allowing the beggar's team change to be announced and shown to any role that can see jesters (e.g. traitors, monsters, and independents with that feature enabled)
+- Added new mode for the `ttt_bodysnatcher_reveal_*` convars, allowing the beggar's team change to be announced and shown to any role that can see jesters (e.g. traitors, monsters, and independents with that feature enabled)
+
+### Fixes
+- Fixed killer highlighting of jesters not obeying `ttt_killer_can_see_jesters`
+- Fixed killer seeing generic jester role icon instead of question mark
+- Fixed minor capitalization typo in the cupid pairing message
+- Fixed view angle corruption when using the cupid's bow
+- Fixed bodysnatchers that joined the traitor team receiving traitor team text chat even if `ttt_bodysnatcher_reveal_traitor` is set to `0` (none)
+- Fixed some role information not being properly hidden when a role (like the beggar or bodysnatcher) changes to another role but that change is not revealed
+
 ## 1.9.12 (Beta)
 **Released: October 7th, 2023**
 

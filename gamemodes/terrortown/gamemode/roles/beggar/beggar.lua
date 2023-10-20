@@ -29,8 +29,6 @@ local beggar_respawn = GetConVar("ttt_beggar_respawn")
 local beggar_respawn_limit = GetConVar("ttt_beggar_respawn_limit")
 local beggar_respawn_delay = GetConVar("ttt_beggar_respawn_delay")
 local beggar_respawn_change_role = GetConVar("ttt_beggar_respawn_change_role")
-local beggar_reveal_traitor = GetConVar("ttt_beggar_reveal_traitor")
-local beggar_reveal_innocent = GetConVar("ttt_beggar_reveal_innocent")
 local beggar_scan = GetConVar("ttt_beggar_scan")
 local beggar_scan_time = GetConVar("ttt_beggar_scan_time")
 
@@ -46,13 +44,10 @@ hook.Add("WeaponEquip", "Beggar_WeaponEquip", function(wep, ply)
         wep.BoughtBy = ply
     elseif ply:IsBeggar() and (wep.BoughtBy:IsTraitorTeam() or wep.BoughtBy:IsInnocentTeam()) then
         local role
-        local beggarMode
         if wep.BoughtBy:IsTraitorTeam() then
             role = ROLE_TRAITOR
-            beggarMode = beggar_reveal_traitor:GetInt()
         else
             role = ROLE_INNOCENT
-            beggarMode = beggar_reveal_innocent:GetInt()
         end
 
         ply:SetRole(role)
@@ -61,7 +56,7 @@ hook.Add("WeaponEquip", "Beggar_WeaponEquip", function(wep, ply)
         timer.Simple(0.5, function() SendFullStateUpdate() end) -- Slight delay to avoid flickering from beggar to the new role and back to beggar
 
         for _, v in ipairs(GetAllPlayers()) do
-            if v ~= ply and (beggarMode == ANNOUNCE_REVEAL_ALL or (v:IsActiveTraitorTeam() and beggarMode == ANNOUNCE_REVEAL_TRAITORS) or (not v:IsActiveTraitorTeam() and beggarMode == ANNOUNCE_REVEAL_INNOCENTS)) then
+            if v ~= ply and v:ShouldRevealBeggar(ply) then
                 v:QueueMessage(MSG_PRINTBOTH, "The beggar has joined the " .. ROLE_STRINGS[role] .. " team")
             end
         end
