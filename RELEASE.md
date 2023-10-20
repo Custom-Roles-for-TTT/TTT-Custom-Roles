@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.9.13 (Beta)
-**Released:**
+**Released: October 21st, 2023**
 
 ### Additions
 - Added new mode for the `ttt_beggar_reveal_*` convars, allowing the beggar's team change to be announced and shown to any role that can see jesters (e.g. traitors, monsters, and independents with that feature enabled)
