@@ -13,6 +13,7 @@ local killer_smoke_enabled = GetConVar("ttt_killer_smoke_enabled")
 local killer_show_target_icon = GetConVar("ttt_killer_show_target_icon")
 local killer_vision_enable = GetConVar("ttt_killer_vision_enable")
 local killer_warn_all = GetConVar("ttt_killer_warn_all")
+local killer_can_see_jesters = GetConVar("ttt_killer_can_see_jesters")
 
 ------------------
 -- TRANSLATIONS --
@@ -61,17 +62,19 @@ end)
 
 local killer_vision = false
 local vision_enabled = false
+local can_see_jesters = false
 local client = nil
 
 local function EnableKillerHighlights()
     hook.Add("PreDrawHalos", "Killer_Highlight_PreDrawHalos", function()
-        OnPlayerHighlightEnabled(client, {ROLE_KILLER}, GetConVar("ttt_killer_can_see_jesters"):GetBool(), false, false)
+        OnPlayerHighlightEnabled(client, {ROLE_KILLER}, can_see_jesters, false, false)
     end)
 end
 
 hook.Add("TTTUpdateRoleState", "Killer_Highlight_TTTUpdateRoleState", function()
     client = LocalPlayer()
     killer_vision = killer_vision_enable:GetBool()
+    can_see_jesters = killer_can_see_jesters:GetBool()
 
     -- Disable highlights on role change
     if vision_enabled then
