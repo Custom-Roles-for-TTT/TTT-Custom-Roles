@@ -1,5 +1,12 @@
 # Release Notes
 
+## 2.0.0
+**Released:**\
+Includes beta updates [1.9.3](#193-beta) to [1.9.13](#1913-beta).
+
+### Fixes
+- Ported "TTT: Prevent error when NPC fires SWEP derived from weapon_tttbase" from base TTT
+
 ## 1.9.13 (Beta)
 **Released: October 21st, 2023**
 
