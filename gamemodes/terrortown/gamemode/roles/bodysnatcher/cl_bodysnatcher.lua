@@ -138,7 +138,7 @@ hook.Add("TTTHUDInfoPaint", "Bodysnatcher_TTTHUDInfoPaint", function(client, lab
         elseif client:IsMonsterTeam() then bodysnatcherMode = bodysnatcher_reveal_monster:GetInt()
         elseif client:IsIndependentTeam() then bodysnatcherMode = bodysnatcher_reveal_independent:GetInt()
         elseif client:IsJesterTeam() then bodysnatcherMode = bodysnatcher_reveal_jester:GetInt() end
-        if bodysnatcherMode ~= BODYSNATCHER_REVEAL_ALL then
+        if bodysnatcherMode ~= BODYSNATCHER_REVEAL_ALL and bodysnatcherMode ~= BODYSNATCHER_REVEAL_ROLES_THAT_CAN_SEE_JESTER then
             surface.SetFont("TabLarge")
             surface.SetTextColor(255, 255, 255, 230)
 
@@ -172,6 +172,8 @@ local function GetRevealModeString(roleColor, revealMode, teamName, teamColor)
         modeString = modeString .. "everyone"
     elseif revealMode == BODYSNATCHER_REVEAL_TEAM then
         modeString = modeString .. "only <span style='color: rgb(" .. teamColor.r .. ", " .. teamColor.g .. ", " .. teamColor.b .. ")'>their new team</span>"
+    elseif revealMode == BODYSNATCHER_REVEAL_ROLES_THAT_CAN_SEE_JESTER then
+        modeString = modeString .. "any role that can see <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. string.lower(LANG.GetTranslation("jesters")) .. "</span>"
     else
         modeString = modeString .. "nobody"
     end
