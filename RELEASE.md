@@ -4,6 +4,9 @@
 **Released:**\
 Includes beta updates [1.9.3](#193-beta) to [1.9.13](#1913-beta).
 
+### Additions
+- Added `ttt_beggar_announce_delay` (disabled by default) to allow delaying the announcement of the beggar's role change
+
 ### Fixes
 - Ported "TTT: Prevent error when NPC fires SWEP derived from weapon_tttbase" from base TTT
 

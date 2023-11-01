@@ -530,6 +530,7 @@ ttt_beggar_scan_cooldown                    3       // The amount of time (in se
 ttt_beggar_scan_distance                    2500    // The maximum distance away the scanner target can be
 ttt_beggar_can_see_jesters                  0       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the beggar (Only applies if ttt_beggar_is_independent is enabled)
 ttt_beggar_update_scoreboard                0       // Whether the beggar shows dead players as missing in action (Only applies if ttt_beggar_is_independent is enabled)
+ttt_beggar_announce_delay                   0       // How long the delay between role change and announcement should be
 
 // Bodysnatcher
 ttt_bodysnatcher_is_independent             0       // Whether bodysnatchers should be treated as members of the independent team (rather than the jester team)

@@ -20,6 +20,7 @@ local beggar_reveal_traitor = GetConVar("ttt_beggar_reveal_traitor")
 local beggar_reveal_innocent = GetConVar("ttt_beggar_reveal_innocent")
 local beggar_scan = GetConVar("ttt_beggar_scan")
 local beggar_scan_time = GetConVar("ttt_beggar_scan_time")
+local beggar_announce_delay = GetConVar("ttt_beggar_announce_delay")
 
 ------------------
 -- TRANSLATIONS --
@@ -409,8 +410,9 @@ end)
 -- TUTORIAL --
 --------------
 
-local function GetRevealModeString(roleColor, revealMode, teamName, teamColor)
+local function GetRevealModeInfo(roleColor, revealMode, teamName, teamColor)
     local modeString = "When joining the <span style='color: rgb(" .. teamColor.r .. ", " .. teamColor.g .. ", " .. teamColor.b .. ")'>" .. string.lower(teamName) .. "</span> team, the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. ROLE_STRINGS[ROLE_BEGGAR] .. "</span>'s new role will be revealed to "
+    local revealed = true
     if revealMode == BEGGAR_REVEAL_ALL then
         modeString = modeString .. "everyone"
     elseif revealMode == BEGGAR_REVEAL_TRAITORS then
@@ -420,11 +422,12 @@ local function GetRevealModeString(roleColor, revealMode, teamName, teamColor)
         local revealColor = ROLE_COLORS[ROLE_TRAITOR]
         modeString = modeString .. "only <span style='color: rgb(" .. revealColor.r .. ", " .. revealColor.g .. ", " .. revealColor.b .. ")'>" .. string.lower(LANG.GetTranslation("innocents")) .. "</span>"
     elseif revealMode == BEGGAR_REVEAL_ROLES_THAT_CAN_SEE_JESTER then
-       modeString = modeString .. "any role that can see <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. string.lower(LANG.GetTranslation("jesters")) .. "</span>"
+        modeString = modeString .. "any role that can see <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>" .. string.lower(LANG.GetTranslation("jesters")) .. "</span>"
     else
         modeString = modeString .. "nobody"
+        revealed = false
     end
-    return modeString .. "."
+    return modeString .. ".", revealed
 end
 
 hook.Add("TTTTutorialRoleText", "Beggar_TTTTutorialRoleText", function(role, titleLabel)
@@ -459,12 +462,19 @@ hook.Add("TTTTutorialRoleText", "Beggar_TTTTutorialRoleText", function(role, tit
         -- Innocent Reveal
         local revealMode = beggar_reveal_innocent:GetInt()
         local teamName, teamColor = GetRoleTeamInfo(ROLE_TEAM_INNOCENT, true)
-        html = html .. "<span style='display: block; margin-top: 10px;'>" .. GetRevealModeString(roleColor, revealMode, teamName, teamColor) .. "</span>"
+        local innoRevealString, innoRevealed = GetRevealModeInfo(roleColor, revealMode, teamName, teamColor)
+        html = html .. "<span style='display: block; margin-top: 10px;'>" .. innoRevealString .. "</span>"
 
         -- Traitor Reveal
         revealMode = beggar_reveal_traitor:GetInt()
         teamName, teamColor = GetRoleTeamInfo(ROLE_TEAM_TRAITOR, true)
-        html = html .. "<span style='display: block; margin-top: 10px;'>" .. GetRevealModeString(roleColor, revealMode, teamName, teamColor) .. "</span>"
+        local traRevealString, traRevealed = GetRevealModeInfo(roleColor, revealMode, teamName, teamColor)
+        html = html .. "<span style='display: block; margin-top: 10px;'>" .. traRevealString .. "</span>"
+
+        local announceDelay = beggar_announce_delay:GetInt()
+        if (innoRevealed or traRevealed) and announceDelay > 0 then
+            html = html .. "<span style='display: block; margin-top: 10px;'>There is a <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>delay of " .. announceDelay .. " seconds</span> between when the " .. ROLE_STRINGS[ROLE_BEGGAR] .. " changes teams and when the announcement happens.</span>"
+        end
 
         -- Traitor scanning
         local scanMode = beggar_scan:GetInt()
