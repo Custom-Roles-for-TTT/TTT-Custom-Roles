@@ -191,9 +191,10 @@ table i {
     color: #AAAAAA;
 }
 
-table code {
+table i code {
     padding: .1em .2em;
     font-style: normal;
+    background-color: rgba(110, 118, 129, 0.2);
 }
 
 table ol {
@@ -205,7 +206,7 @@ code {
     margin: 0;
     white-space: break-spaces;
     font-size: 90%;
-    background-color: rgba(110, 118, 129, 0.2);
+    background-color: rgba(110, 118, 129, 0.4);
     border-radius: 6px;
 }
 
