@@ -15,6 +15,7 @@ body {
 }
 
 .collapsible {
+    width: 100%;
     background-color: #787878;
     border-radius: 20px 0 15px 0; /* The top left corner radius here is slightly larger so the dark background doesn't bleed through */
     margin-bottom: 10px;
@@ -186,13 +187,25 @@ table tr {
 table tr:nth-child(2n) {
     background-color: #292e35;
 }
+table i {
+    color: #AAAAAA;
+}
+
+table code {
+    padding: .1em .2em;
+    font-style: normal;
+}
+
+table ol {
+    margin: 8px 0;
+}
 
 code {
     padding: .2em .4em;
     margin: 0;
     white-space: break-spaces;
     font-size: 90%;
-    background-color: rgba(110, 118, 129, 0.4);
+    background-color: rgba(110, 118, 129, 0.2);
     border-radius: 6px;
 }
 

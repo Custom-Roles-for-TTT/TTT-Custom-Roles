@@ -3,157 +3,911 @@
 <head>
     <title>Innocents - Custom Roles for TTT Wiki</title>
     <link type="text/css" rel="stylesheet" href="../fonts/roleicons.css">
-    <link type="text/css" rel="stylesheet" href="../css/style.css"></head>
-    <script type="text/javascript" src="../js/shared.js" defer></script>
+    <link type="text/css" rel="stylesheet" href="../css/style.css">
+</head>
+<script type="text/javascript" src="../js/shared.js" defer></script>
 </head>
 <body>
-    <button onclick="backToTop()" id="totop">Back to Top</button>
-    <div class="navigation panel" style="margin-bottom: 15px;">
-        <iframe id="nav" src="../nav.html#innocent" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left; margin-right: 10px;"></iframe>
-    </div>
-    <div class="contentheader panel" style="margin-bottom: 15px;">
-        <div style="background-color: #787878; border-radius: 20px 0 15px 0; margin-top: 0; display: inline-block;">
-            <h1 style="background-color:var(--innocent); margin-top: 0;">Innocent Roles</h1>
-            <div style="margin: 10px;">
-                <p>The <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span> is one of the two primary teams in play in a game of <b>Trouble in Terrorist Town</b>.</p>
-                <p>The main goal of the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span> is to identify and eliminate all members of the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span>. In some cases, they also need to take out <span style="color:var(--monster);"><a href="../teams/monster.html">monsters</a></span>, <span style="color:var(--jester);"><a href="../teams/jester.html">jesters</a></span>, or <span style="color:var(--independent);"><a href="../teams/independent.html">independents</a></span> that could prevent their victory.</p>
-                <p>Members of the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span> do not have their roles known to any other players, and they usually lack a definitive method to prove their innocence. This puts the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span> at a significant disadvantage compared to the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span>, whose roles are known to each other. To address this, most games have a higher number of <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent</a></span> players than <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitors</a></span>.</p>
-                <p><span style="color:var(--detective);"><a href="../teams/detective.html">Detectives</a></span> are also part of the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span>, sharing the same objective, but their allegiance is known to all players.</p>
-            </div>
+<button onclick="backToTop()" id="totop">Back to Top</button>
+<div class="navigation panel" style="margin-bottom: 15px;">
+    <iframe id="nav" src="../nav.html#innocent" scrolling="no" onload="resizeIframe(this)" width="100%"
+            style="overflow:hidden; border-style: none; float: left; margin-right: 10px;"></iframe>
+</div>
+<div class="contentheader panel" style="margin-bottom: 15px;">
+    <div style="background-color: #787878; border-radius: 20px 0 15px 0; margin-top: 0; display: inline-block;">
+        <h1 style="background-color:var(--innocent); margin-top: 0;">Innocent Roles</h1>
+        <div style="margin: 10px;">
+            <p>The <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span> is one
+                of the two primary teams in play in a game of <b>Trouble in Terrorist Town</b>.</p>
+            <p>The main goal of the <span style="color:var(--innocent);"><a
+                    href="../teams/innocent.html">innocent team</a></span> is to identify and eliminate all members of
+                the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span>. In some
+                cases, they also need to take out <span style="color:var(--monster);"><a href="../teams/monster.html">monsters</a></span>,
+                <span style="color:var(--jester);"><a href="../teams/jester.html">jesters</a></span>, or <span
+                        style="color:var(--independent);"><a href="../teams/independent.html">independents</a></span>
+                that could prevent their victory.</p>
+            <p>Members of the <span style="color:var(--innocent);"><a
+                    href="../teams/innocent.html">innocent team</a></span> do not have their roles known to any other
+                players, and they usually lack a definitive method to prove their innocence. This puts the <span
+                        style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span> at a
+                significant disadvantage compared to the <span style="color:var(--traitor);"><a
+                        href="../teams/traitor.html">traitor team</a></span>, whose roles are known to each other. To
+                address this, most games have a higher number of <span style="color:var(--innocent);"><a
+                        href="../teams/innocent.html">innocent</a></span> players than <span
+                        style="color:var(--traitor);"><a href="../teams/traitor.html">traitors</a></span>.</p>
+            <p><span style="color:var(--detective);"><a href="../teams/detective.html">Detectives</a></span> are also
+                part of the <span style="color:var(--innocent);"><a
+                        href="../teams/innocent.html">innocent team</a></span>, sharing the same objective, but their
+                allegiance is known to all players.</p>
         </div>
     </div>
-    <div class="contentbody panel">
-        <div id="innocent" class="collapsible">
-            <button class="header" style="background-color:var(--innocent);"><i class="icon-innocent"></i>Innocent</button>
-            <div class="content">
-                <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--innocent);"><i class="icon-innocent"></i><a href="#innocent">Innocent</a></span> is the base member of the <span style="color:var(--innocent);">innocent team</span> and has no special abilities.</p>
-                <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
-            </div>
+</div>
+<div class="contentbody panel">
+    <div id="innocent"
+         style="background-color: #787878; width: 100%; border-radius: 20px 0 15px 0; margin-bottom: 10px; display: inline-block;">
+        <button class="header" style="cursor: default; background-color:var(--innocent);"><i class="icon-innocent"></i>Innocent
+        </button>
+        <div class="content">
+            <p>The <span class="inline-icon" style="color:var(--innocent);"><i class="icon-innocent"></i><a
+                    href="#innocent">Innocent</a></span> is the base member of the <span style="color:var(--innocent);">innocent team</span>
+                and has no special abilities.</p>
+        </div>
 
-        </div>
-        <div id="deputy" class="collapsible">
-            <button class="header" style="background-color:var(--special-innocent);"><i class="icon-deputy"></i>Deputy</button>
-            <div class="content">
-                <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-deputy"></i><a href="#deputy">Deputy</a></span> is promoted to replace the <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="../teams/detective.html#detective">Detective</a></span> in the event of their death.</p>
-                <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
-            </div>
-        </div>
-        <div id="doctor" class="collapsible">
-            <button class="header" style="background-color:var(--special-innocent);"><i class="icon-doctor"></i>Doctor</button>
-            <div class="content">
-                <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-doctor"></i><a href="#doctor">Doctor</a></span> can buy items to heal themselves and others.</p>
-                <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
-            </div>
-        </div>
-        <div id="glitch" class="collapsible">
-            <button class="header" style="background-color:var(--special-innocent);"><i class="icon-glitch"></i>Glitch</button>
-            <div class="content">
-                <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-glitch"></i><a href="#glitch">Glitch</a></span> appears as a <span class="inline-icon" style="color:var(--traitor);"><i class="icon-traitor"></i><a href="../teams/traitor.html#traitor">Traitor</a></span> to members of the <span style="color:var(--traitor);">traitor team</span> but they are actually a member of the <span style="color:var(--innocent);">innocent team</span>.</p>
-                <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
-            </div>
-        </div>
-        <div id="infected" class="collapsible">
-            <button class="header" style="background-color:var(--special-innocent);"><i class="icon-infected"></i>Infected</button>
-            <div class="content">
-                <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-infected"></i><a href="#infected">Infected</a></span> turns into a <span class="inline-icon" style="color:var(--independent);"><i class="icon-zombie"></i><a href="../teams/independent.html#zombie">Zombie</a></span> if the round goes on for too long.</p>
-                <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
-            </div>
-        </div>
-        <div id="mercenary" class="collapsible">
-            <button class="header" style="background-color:var(--special-innocent);"><i class="icon-mercenary"></i>Mercenary</button>
-            <div class="content">
-                <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-mercenary"></i><a href="#mercenary">Mercenary</a></span> can buy items to help defeat their enemies.</p>
-                <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
-            </div>
-        </div>
-        <div id="paramedic" class="collapsible">
-            <button class="header" style="background-color:var(--special-innocent);"><i class="icon-paramedic"></i>Paramedic</button>
-            <div class="content">
-                <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-paramedic"></i><a href="#paramedic">Paramedic</a></span> can use their defibrillator to revive another player.</p>
-                <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
-            </div>
-        </div>
-        <div id="phantom" class="collapsible">
-            <button class="header" style="background-color:var(--special-innocent);"><i class="icon-phantom"></i>Phantom</button>
-            <div class="content">
-                <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-phantom"></i><a href="#phantom">Phantom</a></span> can haunt their killer for a chance to respawn.</p>
-                <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
-            </div>
-        </div>
-        <div id="revenger" class="collapsible">
-            <button class="header" style="background-color:var(--special-innocent);"><i class="icon-revenger"></i>Revenger</button>
-            <div class="content">
-                <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-revenger"></i><a href="#revenger">Revenger</a></span> can track down their soulmate's killer for revenge.</p>
-                <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
-            </div>
-        </div>
-        <div id="trickster" class="collapsible">
-            <button class="header" style="background-color:var(--special-innocent);"><i class="icon-trickster"></i>Trickster</button>
-            <div class="content">
-                <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-trickster"></i><a href="#trickster">Trickster</a></span> can activate traps like memebers of the <span style="color:var(--traitor);">traitor team</span>.</p>
-                <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
-            </div>
-        </div>
-        <div id="turncoat" class="collapsible">
-            <button class="header" style="background-color:var(--special-innocent);"><i class="icon-turncoat"></i>Turncoat</button>
-            <div class="content">
-                <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-turncoat"></i><a href="#turncoat">Turncoat</a></span> can switch sides and join the <span style="color:var(--traitor);">traitor team</span>.</p>
-                <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
-            </div>
-        </div>
-        <div id="veteran" class="collapsible">
-            <button class="header" style="background-color:var(--special-innocent);"><i class="icon-veteran"></i>Veteran</button>
-            <div class="content">
-                <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-veteran"></i><a href="#veteran">Veteran</a></span> gets a buff if they are the last memeber of the <span style="color:var(--innocent);">innocent team</span> left alive.</p>
-                <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
-            </div>
-        </div>
-        <div id="vindicator" class="collapsible">
-            <button class="header" style="background-color:var(--special-innocent);"><i class="icon-vindicator"></i>Vindicator</button>
-            <div class="content">
-                <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-vindicator"></i><a href="#vindicator">Vindicator</a></span> respawns as an <span style="color:var(--independent);">independent</span> if they are killed to take their revenge.</p>
-                <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
+    </div>
+    <div id="deputy" class="collapsible">
+        <button class="header" style="background-color:var(--special-innocent);"><i class="icon-deputy"></i>Deputy
+        </button>
+        <div class="content">
+            <div class="moreless">[more]</div>
+            <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-deputy"></i><a
+                    href="#deputy">Deputy</a></span> is promoted to replace the <span class="inline-icon"
+                                                                                      style="color:var(--detective);"><i
+                    class="icon-detective"></i><a href="../teams/detective.html#detective">Detective</a></span> in the
+                event of their death.</p>
+            <div class="expansion">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                    aliquip ex ea commodo consequat.</p>
+                <table style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ttt_deputy_activation_credits</td>
+                        <td>0</td>
+                        <td>Integer</td>
+                        <td>The number of credits to give the deputy when they are activated.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_deputy_credits_starting</td>
+                        <td>0</td>
+                        <td>Integer</td>
+                        <td>The number of credits a deputy should start with.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_deputy_damage_penalty</td>
+                        <td>0</td>
+                        <td>Float (0-1)</td>
+                        <td>Damage penalty that the deputy has before being promoted. <i>(e.g. 0.5 = 50% less
+                            damage.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_deputy_shop_active_only</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether the deputy's shop should be available only after they activate.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_deputy_shop_delay</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether the deputy's purchased shop items should be held until they activate.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_deputy_use_detective_icon</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether a promoted deputy should show the detective icon over their head instead of the
+                            deputy icon.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_deputy_without_detective</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether a deputy can spawn without a detective in the round. <i>(This will automatically
+                            promote the deputy when they spawn.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_deputy_impersonator_promote_any_death</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether deputy/impersonator should be promoted when any detective dies rather than only
+                            after all detectives have died.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_deputy_impersonator_start_promoted</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether deputy/impersonator should start the round promoted.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_single_deputy_impersonator</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether only a single deputy or impersonator should spawn in a round.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_single_deputy_impersonator_chance</td>
+                        <td>0.5</td>
+                        <td>Float (0-1)</td>
+                        <td>The chance that a deputy should have an opportunity to spawn instead of an impersonator. <i>(e.g.
+                            0.7 = 70% chance for deputy, 30% chance for impersonator. Requires <code>ttt_single_deputy_impersonator</code>
+                            to be enabled.)</i></td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
+    <div id="doctor" class="collapsible">
+        <button class="header" style="background-color:var(--special-innocent);"><i class="icon-doctor"></i>Doctor
+        </button>
+        <div class="content">
+            <div class="moreless">[more]</div>
+            <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-doctor"></i><a
+                    href="#doctor">Doctor</a></span> can buy items to heal themselves and others.</p>
+            <div class="expansion">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                    aliquip ex ea commodo consequat.</p>
+                <table style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ttt_doctor_credits_starting</td>
+                        <td>1</td>
+                        <td>Integer</td>
+                        <td>The number of credits a doctor should start with.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_single_doctor_quack</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether only a single doctor or quack should spawn in a round.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_single_doctor_quack_chance</td>
+                        <td>0.5</td>
+                        <td>Float (0-1)</td>
+                        <td>The chance that a doctor should have an opportunity to spawn instead of an quack. <i>(e.g.
+                            0.7 = 70% chance for doctor, 30% chance for quack. Requires
+                            <code>ttt_single_doctor_quack</code> to be enabled.)</i></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="glitch" class="collapsible">
+        <button class="header" style="background-color:var(--special-innocent);"><i class="icon-glitch"></i>Glitch
+        </button>
+        <div class="content">
+            <div class="moreless">[more]</div>
+            <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-glitch"></i><a
+                    href="#glitch">Glitch</a></span> appears as a <span class="inline-icon"
+                                                                        style="color:var(--traitor);"><i
+                    class="icon-traitor"></i><a href="../teams/traitor.html#traitor">Traitor</a></span> to members of
+                the <span style="color:var(--traitor);">traitor team</span> but they are actually a member of the <span
+                        style="color:var(--innocent);">innocent team</span>.</p>
+            <div class="expansion">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                    aliquip ex ea commodo consequat.</p>
+                <table style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ttt_glitch_mode</td>
+                        <td>0</td>
+                        <td>Integer (0-2)</td>
+                        <td>The way in which the glitch appears to traitors:
+                            <ol start="0">
+                                <li>Appears as a regular traitor.</li>
+                                <li>Can appear as a special traitor.</li>
+                                <li>Causes all traitors, regular or special, to appear as regular traitors and appears
+                                    as a regular traitor themselves.
+                                </li>
+                            </ol>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_glitch_use_traps</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether glitches can see and use traitor traps. This also allows them to loot credits for
+                            traps that require them.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="infected" class="collapsible">
+        <button class="header" style="background-color:var(--special-innocent);"><i class="icon-infected"></i>Infected
+        </button>
+        <div class="content">
+            <div class="moreless">[more]</div>
+            <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-infected"></i><a
+                    href="#infected">Infected</a></span> turns into a <span class="inline-icon"
+                                                                            style="color:var(--independent);"><i
+                    class="icon-zombie"></i><a href="../teams/independent.html#zombie">Zombie</a></span> if the round
+                goes on for too long.</p>
+            <div class="expansion">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                    aliquip ex ea commodo consequat.</p>
+                <table style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ttt_infected_cough_enabled</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether the infected coughs periodically.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_infected_cough_timer_max</td>
+                        <td>60</td>
+                        <td>Integer</td>
+                        <td>The maximum time between infected coughs.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_infected_cough_timer_min</td>
+                        <td>30</td>
+                        <td>Integer</td>
+                        <td>The minimum time between infected coughs.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_infected_full_health</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether the infected's health is refilled when they become a zombie.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_infected_prime</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether the infected will become a prime zombie.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_infected_respawn_enable</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether the infected will respawn as a zombie when killed.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_infected_show_icon</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether to show the infected icon over their head for zombies and zombie allies.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_infected_succumb_time</td>
+                        <td>180</td>
+                        <td>Integer</td>
+                        <td>Time in seconds for the infected to succumb to their disease.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="mercenary" class="collapsible">
+        <button class="header" style="background-color:var(--special-innocent);"><i class="icon-mercenary"></i>Mercenary
+        </button>
+        <div class="content">
+            <div class="moreless">[more]</div>
+            <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-mercenary"></i><a
+                    href="#mercenary">Mercenary</a></span> can buy items to help defeat their enemies.</p>
+            <div class="expansion">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                    aliquip ex ea commodo consequat.</p>
+                <table style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ttt_mercenary_credits_starting</td>
+                        <td>1</td>
+                        <td>Integer</td>
+                        <td>The number of credits a mercenary should start with.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_mercenary_shop_mode</td>
+                        <td>2</td>
+                        <td>Integer (0-4)</td>
+                        <td>What additional items are available to the mercenary in the shop:
+                            <ol start="0">
+                                <li>Nothing.</li>
+                                <li>Weapons available to either the traitor or the detective.</li>
+                                <li>Only weapons available to both the traitor and the detective.</li>
+                                <li>Detective weapons.</li>
+                                <li>Traitor weapons.</li>
+                            </ol>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="paramedic" class="collapsible">
+        <button class="header" style="background-color:var(--special-innocent);"><i class="icon-paramedic"></i>Paramedic
+        </button>
+        <div class="content">
+            <div class="moreless">[more]</div>
+            <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-paramedic"></i><a
+                    href="#paramedic">Paramedic</a></span> can use their defibrillator to revive another player.</p>
+            <div class="expansion">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                    aliquip ex ea commodo consequat.</p>
+                <table style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ttt_paramedic_defib_as_innocent</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether the paramedic's defib brings back everyone as a vanilla innocent role.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_paramedic_defib_time</td>
+                        <td>8</td>
+                        <td>Integer</td>
+                        <td>The amount of time in seconds the paramedic's defib takes to use.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_paramedic_device_loadout</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether the paramedic's defib should be given to them when they spawn. <i>(Server must be
+                            restarted for changes to take effect.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_paramedic_device_shop</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether the paramedic's defib should be purchasable in the shop. <i>(Requires <code>ttt_shop_for_all</code>
+                            to be enabled. Server must be restarted for changes to take effect.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_paramedic_device_shop_rebuyable</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether the paramedic's defib should be purchaseable multiple times. <i>(requires <code>ttt_paramedic_device_shop</code>
+                            to be enabled. Server must be restarted for changes to take effect.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_single_paramedic_hypnotist</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether only a single paramedic or hypnotist should spawn in a round.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_single_paramedic_hypnotist_chance</td>
+                        <td>0.5</td>
+                        <td>Float (0-1)</td>
+                        <td>The chance that a paramedic should have an opportunity to spawn instead of an hypnotist. <i>(e.g.
+                            0.7 = 70% chance for paramedic, 30% chance for hypnotist. Requires <code>ttt_single_paramedic_hypnotist</code>
+                            to be enabled.)</i></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="phantom" class="collapsible">
+        <button class="header" style="background-color:var(--special-innocent);"><i class="icon-phantom"></i>Phantom
+        </button>
+        <div class="content">
+            <div class="moreless">[more]</div>
+            <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-phantom"></i><a
+                    href="#phantom">Phantom</a></span> can haunt their killer for a chance to respawn.</p>
+            <div class="expansion">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                    aliquip ex ea commodo consequat.</p>
+                <table style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ttt_phantom_announce_death</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether to announce to detective likes that a phantom has been killed or respawned.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_phantom_cure_time</td>
+                        <td>3</td>
+                        <td>Integer</td>
+                        <td>The amount of time in seconds the phantom exorcism device takes to use. <i>(Requires <code>ttt_traitor_phantom_cure</code>
+                            or <code>ttt_quack_phantom_cure</code> to be enabled.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_phantom_haunt_saves_lover</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether the phantom's lover should survive if the phantom is haunting a player.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_phantom_killer_footstep_time</td>
+                        <td>0</td>
+                        <td>Integer</td>
+                        <td>The time in seconds a phantom's killer's footsteps should show before fading. <i>(Set to 0
+                            to disable.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_phantom_killer_haunt</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether to have the phantom haunt their killer.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_phantom_killer_haunt_attack_cost</td>
+                        <td>100</td>
+                        <td>Integer</td>
+                        <td>The amount of power to spend when a phantom is making their killer attack via a haunting.
+                            <i>(Set to 0 to disable.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_phantom_killer_haunt_drop_cost</td>
+                        <td>75</td>
+                        <td>Integer</td>
+                        <td>The amount of power to spend when a phantom is making their killer drop their weapon via a
+                            haunting. <i>(Set to 0 to disable.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_phantom_killer_haunt_jump_cost</td>
+                        <td>50</td>
+                        <td>Integer</td>
+                        <td>The amount of power to spend when a phantom is making their killer jump via a haunting. <i>(Set
+                            to 0 to disable.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_phantom_killer_haunt_move_cost</td>
+                        <td>25</td>
+                        <td>Integer</td>
+                        <td>The amount of power to spend when a phantom is moving their killer via a haunting. <i>(Set
+                            to 0 to disable.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_phantom_killer_haunt_power_max</td>
+                        <td>100</td>
+                        <td>Integer</td>
+                        <td>The maximum amount of power a phantom can have when haunting their killer.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_phantom_killer_haunt_power_rate</td>
+                        <td>10</td>
+                        <td>Integer</td>
+                        <td>The amount of power to regain per second when a phantom is haunting their killer.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_phantom_killer_haunt_power_starting</td>
+                        <td>0</td>
+                        <td>Integer</td>
+                        <td>The amount of power to the phantom starts with.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_phantom_killer_haunt_without_body</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether the phantom can use their powers after their body is destroyed.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_phantom_killer_smoke</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether to show smoke on the player who killed the phantom.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_phantom_respawn_health</td>
+                        <td>50</td>
+                        <td>Integer</td>
+                        <td>The amount of health a phantom will respawn with.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_phantom_weaker_each_respawn</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether a phantom respawns with half as much HP each time they respawn, down to a minimum of
+                            1 HP.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_single_phantom_parasite</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether only a single phantom or parasite should spawn in a round.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_single_phantom_parasite_chance</td>
+                        <td>0.5</td>
+                        <td>Float (0-1)</td>
+                        <td>The chance that a phantom should have an opportunity to spawn instead of an parasite. <i>(e.g.
+                            0.7 = 70% chance for phantom, 30% chance for parasite. Requires <code>ttt_single_phantom_parasite</code>
+                            to be enabled.)</i></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="revenger" class="collapsible">
+        <button class="header" style="background-color:var(--special-innocent);"><i class="icon-revenger"></i>Revenger
+        </button>
+        <div class="content">
+            <div class="moreless">[more]</div>
+            <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-revenger"></i><a
+                    href="#revenger">Revenger</a></span> can track down their soulmate's killer for revenge.</p>
+            <div class="expansion">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                    aliquip ex ea commodo consequat.</p>
+                <table style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ttt_revenger_damage_bonus</td>
+                        <td>0</td>
+                        <td>Float</td>
+                        <td>Extra damage that the revenger deals to their lover's killer. <i>(e.g. 0.5 = 50% extra
+                            damage.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_revenger_drain_health_rate</td>
+                        <td>3</td>
+                        <td>Integer</td>
+                        <td>How often, in seconds, health will be drained from a revenger whose lover has died.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_revenger_drain_health_to</td>
+                        <td>-1</td>
+                        <td>Integer</td>
+                        <td>The amount of health to drain the revenger down to after their lover has died. <i>(Setting
+                            to 0 will kill them. Set to -1 to disable.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_revenger_radar_timer</td>
+                        <td>15</td>
+                        <td>Integer</td>
+                        <td>The amount of time in seconds between radar pings for the revenger's lover's killer.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="trickster" class="collapsible">
+        <button class="header" style="background-color:var(--special-innocent);"><i class="icon-trickster"></i>Trickster
+        </button>
+        <div class="content">
+            <div class="moreless">[more]</div>
+            <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-trickster"></i><a
+                    href="#trickster">Trickster</a></span> can activate traps like memebers of the <span
+                    style="color:var(--traitor);">traitor team</span>.</p>
+            <div class="expansion">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                    aliquip ex ea commodo consequat.</p>
+                <table style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ttt_trickster_credits_starting</td>
+                        <td>0</td>
+                        <td>Integer</td>
+                        <td>The number of credits a trickster should start with.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="turncoat" class="collapsible">
+        <button class="header" style="background-color:var(--special-innocent);"><i class="icon-turncoat"></i>Turncoat
+        </button>
+        <div class="content">
+            <div class="moreless">[more]</div>
+            <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-turncoat"></i><a
+                    href="#turncoat">Turncoat</a></span> can switch sides and join the <span
+                    style="color:var(--traitor);">traitor team</span>.</p>
+            <div class="expansion">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                    aliquip ex ea commodo consequat.</p>
+                <table style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ttt_turncoat_change_health</td>
+                        <td>10</td>
+                        <td>Integer</td>
+                        <td>The amount of health to set the turncoat to when they change teams.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_turncoat_change_innocent_kill</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether to change the turncoat's team when they kill a member of the innocent team.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_turncoat_change_max_health</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether to change the turncoat's max health when they change teams.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="veteran" class="collapsible">
+        <button class="header" style="background-color:var(--special-innocent);"><i class="icon-veteran"></i>Veteran
+        </button>
+        <div class="content">
+            <div class="moreless">[more]</div>
+            <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-veteran"></i><a
+                    href="#veteran">Veteran</a></span> gets a buff if they are the last memeber of the <span
+                    style="color:var(--innocent);">innocent team</span> left alive.</p>
+            <div class="expansion">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                    aliquip ex ea commodo consequat.</p>
+                <table style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ttt_veteran_activation_credits</td>
+                        <td>0</td>
+                        <td>Integer</td>
+                        <td>The number of credits to give the veteran when they are activated.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_veteran_announce</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether to announce to all other living players when the veteran is the last remaining
+                            innocent.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_veteran_damage_bonus</td>
+                        <td>0.5</td>
+                        <td>Float</td>
+                        <td>Damage bonus that the veteran has when they are the last innocent alive. <i>(e.g. 0.5 = 50%
+                            more damage.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_veteran_full_heal</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether the veteran gets a full heal upon becoming the last remaining innocent or not.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_veteran_heal_bonus</td>
+                        <td>0</td>
+                        <td>Integer</td>
+                        <td>The amount of bonus health to give the veteran when they are healed as the last remaining
+                            innocent.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_veteran_shop_active_only</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether the veteran's shop should be available only after they activate.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_veteran_shop_delay</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether the veteran's purchased shop items should be held until they activate.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_veteran_shop_mode</td>
+                        <td>0</td>
+                        <td>Integer (0-4)</td>
+                        <td>What additional items are available to the veteran in the shop:
+                            <ol start="0">
+                                <li>Nothing.</li>
+                                <li>Weapons available to either the traitor or the detective.</li>
+                                <li>Only weapons available to both the traitor and the detective.</li>
+                                <li>Detective weapons.</li>
+                                <li>Traitor weapons.</li>
+                            </ol>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="vindicator" class="collapsible">
+        <button class="header" style="background-color:var(--special-innocent);"><i class="icon-vindicator"></i>Vindicator
+        </button>
+        <div class="content">
+            <div class="moreless">[more]</div>
+            <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-vindicator"></i><a
+                    href="#vindicator">Vindicator</a></span> respawns as an <span style="color:var(--independent);">independent</span>
+                if they are killed to take their revenge.</p>
+            <div class="expansion">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                    aliquip ex ea commodo consequat.</p>
+                <table style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ttt_vindicator_announcement_mode</td>
+                        <td>1</td>
+                        <td>Integer (0-2)</td>
+                        <td>Who is notified when the vindicator respawns:
+                            <ol start="0">
+                                <li>No one.</li>
+                                <li>The vindicator's killer.</li>
+                                <li>Everyone.</li>
+                            </ol>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_vindicator_can_see_jesters</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to
+                            vindicators when they are on the independent team.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_vindicator_kill_on_fail</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether the vindicator should be killed if they fail to kill their target.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_vindicator_kill_on_success</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether the vindicator should be killed after they kill their target.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_vindicator_prevent_revival</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether the vindicator should be killed if they are revived after having died due to failing
+                            or succeeding in killing their target.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_vindicator_respawn_delay</td>
+                        <td>5</td>
+                        <td>Integer</td>
+                        <td>Delay between the vindicator dying and respawning in seconds.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_vindicator_respawn_health</td>
+                        <td>100</td>
+                        <td>Integer</td>
+                        <td>The amount of health a vindicator will respawn with.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_vindicator_target_suicide_success</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether the vindicator's killer killing themselves should count as a win for the
+                            vindicator.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_vindicator_update_scoreboard</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether vindicators show dead players as missing in action when they are on the independent
+                            team.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

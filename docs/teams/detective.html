@@ -3,95 +3,403 @@
 <head>
     <title>Detectives - Custom Roles for TTT Wiki</title>
     <link type="text/css" rel="stylesheet" href="../fonts/roleicons.css">
-    <link type="text/css" rel="stylesheet" href="../css/style.css"></head>
-    <script type="text/javascript" src="../js/shared.js" defer></script>
+    <link type="text/css" rel="stylesheet" href="../css/style.css">
+</head>
+<script type="text/javascript" src="../js/shared.js" defer></script>
 </head>
 <body>
-    <button onclick="backToTop()" id="totop">Back to Top</button>
-    <div class="navigation panel" style="margin-bottom: 15px;">
-        <iframe id="nav" src="../nav.html#detective" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left; margin-right: 10px;"></iframe>
-    </div>
-    <div class="contentheader panel" style="margin-bottom: 15px;">
-        <div style="background-color: #787878; border-radius: 20px 0 15px 0; margin-top: 0; display: inline-block;">
-            <h1 style="background-color:var(--detective); margin-top: 0;">Detective Roles</h1>
-            <div style="margin: 10px;">
-                <p><span style="color:var(--detective);"><a href="../teams/detective.html">Detectives</a></span> are part of the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span>, however they have unique advantages and disadvantages compared to other <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocents</a></span>.</p>
-                <p>The main goal of <span style="color:var(--detective);"><a href="../teams/detective.html">detectives</a></span>, and by extension the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span>, is to identify and eliminate all members of the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span>. In some cases, they also need to take out <span style="color:var(--monster);"><a href="../teams/monster.html">monsters</a></span>, <span style="color:var(--jester);"><a href="../teams/jester.html">jesters</a></span>, or <span style="color:var(--independent);"><a href="../teams/independent.html">independents</a></span> that could prevent their victory.</p>
-                <p><span style="color:var(--detective);"><a href="../teams/detective.html">Detectives</a></span> have their role known to all players, as such they usually act as the de facto leader of the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span>. They also have the ability to search dead bodies of players and uncover their role and information about their death. This information is often vital to the success of the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span> and can make <span style="color:var(--detective);"><a href="../teams/detective.html">detectives</a></span> high priority targets for the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitors</a></span>.</p>
-            </div>
+<button onclick="backToTop()" id="totop">Back to Top</button>
+<div class="navigation panel" style="margin-bottom: 15px;">
+    <iframe id="nav" src="../nav.html#detective" scrolling="no" onload="resizeIframe(this)" width="100%"
+            style="overflow:hidden; border-style: none; float: left; margin-right: 10px;"></iframe>
+</div>
+<div class="contentheader panel" style="margin-bottom: 15px;">
+    <div style="background-color: #787878; border-radius: 20px 0 15px 0; margin-top: 0; display: inline-block;">
+        <h1 style="background-color:var(--detective); margin-top: 0;">Detective Roles</h1>
+        <div style="margin: 10px;">
+            <p><span style="color:var(--detective);"><a href="../teams/detective.html">Detectives</a></span> are part of
+                the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span>,
+                however they have unique advantages and disadvantages compared to other <span
+                        style="color:var(--innocent);"><a href="../teams/innocent.html">innocents</a></span>.</p>
+            <p>The main goal of <span style="color:var(--detective);"><a
+                    href="../teams/detective.html">detectives</a></span>, and by extension the <span
+                    style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span>, is to
+                identify and eliminate all members of the <span style="color:var(--traitor);"><a
+                        href="../teams/traitor.html">traitor team</a></span>. In some cases, they also need to take out
+                <span style="color:var(--monster);"><a href="../teams/monster.html">monsters</a></span>, <span
+                        style="color:var(--jester);"><a href="../teams/jester.html">jesters</a></span>, or <span
+                        style="color:var(--independent);"><a href="../teams/independent.html">independents</a></span>
+                that could prevent their victory.</p>
+            <p><span style="color:var(--detective);"><a href="../teams/detective.html">Detectives</a></span> have their
+                role known to all players, as such they usually act as the de facto leader of the <span
+                        style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span>. They
+                also have the ability to search dead bodies of players and uncover their role and information about
+                their death. This information is often vital to the success of the <span style="color:var(--innocent);"><a
+                        href="../teams/innocent.html">innocent team</a></span> and can make <span
+                        style="color:var(--detective);"><a href="../teams/detective.html">detectives</a></span> high
+                priority targets for the <span style="color:var(--traitor);"><a
+                        href="../teams/traitor.html">traitors</a></span>.</p>
         </div>
     </div>
-    <div class="contentbody panel">
-        <div id="detective" class="collapsible">
-            <button class="header" style="background-color:var(--detective);"><i class="icon-detective"></i>Detective</button>
-            <div class="content">
-                <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="#detective">Detective</a></span> is the base member of the <span style="color:var(--detective);">detective team</span> who can use their DNA scanner to track down killers.</p>
-                <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
-            </div>
-        </div>
-        <div id="marshal" class="collapsible">
-            <button class="header" style="background-color:var(--special-detective);"><i class="icon-marshal"></i>Marshal</button>
-            <div class="content">
-                <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--special-detective);"><i class="icon-marshal"></i><a href="#marshal">Marshal</a></span> can use their badge to turn a player into a <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-deputy"></i><a href="../teams/innocent.html#deputy">Deputy</a></span> or an <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-impersonator"></i><a href="../teams/traitor.html#impersonator">Impersonator</a></span>.</p>
-                <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
-            </div>
-        </div>
-        <div id="medium" class="collapsible">
-            <button class="header" style="background-color:var(--special-detective);"><i class="icon-medium"></i>Medium</button>
-            <div class="content">
-                <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--special-detective);"><i class="icon-medium"></i><a href="#medium">Medium</a></span> can communicate the souls of dead players.</p>
-                <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
-            </div>
-        </div>
-        <div id="paladin" class="collapsible">
-            <button class="header" style="background-color:var(--special-detective);"><i class="icon-paladin"></i>Paladin</button>
-            <div class="content">
-                <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--special-detective);"><i class="icon-paladin"></i><a href="#paladin">Paladin</a></span> has an aura that can heal players.</p>
-                <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
-            </div>
-        </div>
-        <div id="sapper" class="collapsible">
-            <button class="header" style="background-color:var(--special-detective);"><i class="icon-sapper"></i>Sapper</button>
-            <div class="content">
-                <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--special-detective);"><i class="icon-sapper"></i><a href="#sapper">Sapper</a></span> has an aura that makes players immune to explosions.</p>
-                <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
-            </div>
-        </div>
-        <div id="tracker" class="collapsible">
-            <button class="header" style="background-color:var(--special-detective);"><i class="icon-tracker"></i>Tracker</button>
-            <div class="content">
-                <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--special-detective);"><i class="icon-tracker"></i><a href="#tracker">Tracker</a></span> can see a trail of footsteps left by other players.</p>
-                <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
-            </div>
-        </div>
-        <div id="quartermaster" class="collapsible">
-            <button class="header" style="background-color:var(--special-detective);"><i class="icon-quartermaster"></i>Quartermaster</button>
-            <div class="content">
-                <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--special-detective);"><i class="icon-quartermaster"></i><a href="#quartermaster">Quartermaster</a></span> can buy items from a <span style="color:var(--traitor);">traitor shop</span> as weapon crates for other players.</p>
-                <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
+</div>
+<div class="contentbody panel">
+    <div id="detective" class="collapsible">
+        <button class="header" style="background-color:var(--detective);"><i class="icon-detective"></i>Detective
+        </button>
+        <div class="content">
+            <div class="moreless">[more]</div>
+            <p>The <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a
+                    href="#detective">Detective</a></span> is the base member of the <span
+                    style="color:var(--detective);">detective team</span> who can use their DNA scanner to track down
+                killers.</p>
+            <div class="expansion">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                    aliquip ex ea commodo consequat.</p>
+                <table style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
+    <div id="marshal" class="collapsible">
+        <button class="header" style="background-color:var(--special-detective);"><i class="icon-marshal"></i>Marshal
+        </button>
+        <div class="content">
+            <div class="moreless">[more]</div>
+            <p>The <span class="inline-icon" style="color:var(--special-detective);"><i class="icon-marshal"></i><a
+                    href="#marshal">Marshal</a></span> can use their badge to turn a player into a <span
+                    class="inline-icon" style="color:var(--special-innocent);"><i class="icon-deputy"></i><a
+                    href="../teams/innocent.html#deputy">Deputy</a></span> or an <span class="inline-icon"
+                                                                                       style="color:var(--special-traitor);"><i
+                    class="icon-impersonator"></i><a href="../teams/traitor.html#impersonator">Impersonator</a></span>.
+            </p>
+            <div class="expansion">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                    aliquip ex ea commodo consequat.</p>
+                <table style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ttt_marshal_announce_deputy</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether a player being deputized will be announced to everyone.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_marshal_badge_time</td>
+                        <td>8</td>
+                        <td>Integer</td>
+                        <td>The amount of time in seconds the marshal's badge takes to use.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_marshal_credits_starting</td>
+                        <td>1</td>
+                        <td>Integer</td>
+                        <td>The number of credits a marshal should start with.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_marshal_independent_deputy_chance</td>
+                        <td>0.5</td>
+                        <td>Float (0-1)</td>
+                        <td>The chance that a independent will become a deputy when the marshal's badge is used on them.
+                            <i>(Set to -1 to disable.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_marshal_jester_deputy_chance</td>
+                        <td>0.5</td>
+                        <td>Float (0-1)</td>
+                        <td>The chance that a jester will become a deputy when the marshal's badge is used on them. <i>(Set
+                            to -1 to disable.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_marshal_monster_deputy_chance</td>
+                        <td>0.5</td>
+                        <td>Float (0-1)</td>
+                        <td>The chance that a monster will become a deputy when the marshal's badge is used on them. <i>(Set
+                            to -1 to disable.)</i></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="medium" class="collapsible">
+        <button class="header" style="background-color:var(--special-detective);"><i class="icon-medium"></i>Medium
+        </button>
+        <div class="content">
+            <div class="moreless">[more]</div>
+            <p>The <span class="inline-icon" style="color:var(--special-detective);"><i class="icon-medium"></i><a
+                    href="#medium">Medium</a></span> can communicate the souls of dead players.</p>
+            <div class="expansion">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                    aliquip ex ea commodo consequat.</p>
+                <table style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ttt_medium_credits_starting</td>
+                        <td>1</td>
+                        <td>Integer</td>
+                        <td>The number of credits a medium should start with.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_medium_dead_notify</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether player should be notified that there is a medium when they die.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_medium_spirit_color</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether players' spirits should have different colors.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_medium_spirit_vision</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether players' spirits should be able to see each other.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="paladin" class="collapsible">
+        <button class="header" style="background-color:var(--special-detective);"><i class="icon-paladin"></i>Paladin
+        </button>
+        <div class="content">
+            <div class="moreless">[more]</div>
+            <p>The <span class="inline-icon" style="color:var(--special-detective);"><i class="icon-paladin"></i><a
+                    href="#paladin">Paladin</a></span> has an aura that can heal players.</p>
+            <div class="expansion">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                    aliquip ex ea commodo consequat.</p>
+                <table style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ttt_paladin_aura_radius</td>
+                        <td>5</td>
+                        <td>Float</td>
+                        <td>The radius of the paladin's aura in meters.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_paladin_credits_starting</td>
+                        <td>1</td>
+                        <td>Integer</td>
+                        <td>The number of credits a paladin should start with.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_paladin_damage_reduction</td>
+                        <td>0.3</td>
+                        <td>Float (0-1)</td>
+                        <td>The fraction an attacker's damage will be reduced by when they are shooting a player inside
+                            the paladin's aura. <i>(e.g. 0.5 = 50% less damage.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_paladin_heal_rate</td>
+                        <td>1</td>
+                        <td>Integer</td>
+                        <td>The amount of health a player inside the paladin's aura will heal each second.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_paladin_heal_self</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether the paladin's healing aura will heal themselves or not.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_paladin_protect_self</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether the paladin's damage reduction aura will protect themselves or not.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="quartermaster" class="collapsible">
+        <button class="header" style="background-color:var(--special-detective);"><i class="icon-quartermaster"></i>Quartermaster
+        </button>
+        <div class="content">
+            <div class="moreless">[more]</div>
+            <p>The <span class="inline-icon" style="color:var(--special-detective);"><i
+                    class="icon-quartermaster"></i><a href="#quartermaster">Quartermaster</a></span> can buy items from
+                a <span style="color:var(--traitor);">traitor shop</span> as weapon crates for other players.</p>
+            <div class="expansion">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                    aliquip ex ea commodo consequat.</p>
+                <table style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ttt_quartermaster_credits_starting</td>
+                        <td>3</td>
+                        <td>Integer</td>
+                        <td>The number of credits a quartermaster should start with.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_quartermaster_limited_loot</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether players should be limited to looting a single quartermaster crate per round.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="sapper" class="collapsible">
+        <button class="header" style="background-color:var(--special-detective);"><i class="icon-sapper"></i>Sapper
+        </button>
+        <div class="content">
+            <div class="moreless">[more]</div>
+            <p>The <span class="inline-icon" style="color:var(--special-detective);"><i class="icon-sapper"></i><a
+                    href="#sapper">Sapper</a></span> has an aura that makes players immune to explosions.</p>
+            <div class="expansion">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                    aliquip ex ea commodo consequat.</p>
+                <table style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ttt_sapper_aura_radius</td>
+                        <td>5</td>
+                        <td>Float</td>
+                        <td>The radius of the sapper's aura in meters.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_sapper_c4_guaranteed_defuse</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether the sapper is guaranteed to always successfully defuse C4.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_sapper_can_see_c4</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether the sapper can see C4 pings on their radar like traitors.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_sapper_credits_starting</td>
+                        <td>1</td>
+                        <td>Integer</td>
+                        <td>The number of credits a sapper should start with.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_sapper_fire_immune</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether sapper's protection aura also grands fire immunity.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_sapper_protect_self</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether the sapper's protection aura will protect themselves or not.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="tracker" class="collapsible">
+        <button class="header" style="background-color:var(--special-detective);"><i class="icon-tracker"></i>Tracker
+        </button>
+        <div class="content">
+            <div class="moreless">[more]</div>
+            <p>The <span class="inline-icon" style="color:var(--special-detective);"><i class="icon-tracker"></i><a
+                    href="#tracker">Tracker</a></span> can see a trail of footsteps left by other players.</p>
+            <div class="expansion">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                    aliquip ex ea commodo consequat.</p>
+                <table style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ttt_tracker_credits_starting</td>
+                        <td>1</td>
+                        <td>Integer</td>
+                        <td>The number of credits a tracker should start with.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_tracker_footstep_color</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether players' footsteps should have different colors.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_tracker_footstep_time</td>
+                        <td>15</td>
+                        <td>Integer</td>
+                        <td>The time in seconds a player's footsteps should show to the tracker before fading. <i>(Set
+                            to 0 to disable.)</i></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

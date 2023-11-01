@@ -3,116 +3,1162 @@
 <head>
     <title>Jesters - Custom Roles for TTT Wiki</title>
     <link type="text/css" rel="stylesheet" href="../fonts/roleicons.css">
-    <link type="text/css" rel="stylesheet" href="../css/style.css"></head>
-    <script type="text/javascript" src="../js/shared.js" defer></script>
+    <link type="text/css" rel="stylesheet" href="../css/style.css">
+</head>
+<script type="text/javascript" src="../js/shared.js" defer></script>
 </head>
 <body>
-    <button onclick="backToTop()" id="totop">Back to Top</button>
-    <div class="navigation panel" style="margin-bottom: 15px;">
-        <iframe id="nav" src="../nav.html#jester" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left; margin-right: 10px;"></iframe>
-    </div>
-    <div class="contentheader panel" style="margin-bottom: 15px;">
-        <div style="background-color: #787878; border-radius: 20px 0 15px 0; margin-top: 0; display: inline-block;">
-            <h1 style="background-color:var(--jester); margin-top: 0;">Jester Roles</h1>
-            <div style="margin: 10px;">
-                <p><span style="color:var(--jester);"><a href="../teams/jester.html">Jesters</a></span> have unique win conditions for each role, often focused on causing chaos and confusion. Typically, there are very few <span style="color:var(--jester);"><a href="../teams/jester.html">jesters</a></span> in each round.</p>
-                <p><span style="color:var(--jester);"><a href="../teams/jester.html">Jesters</a></span> are not part of a team. Even if there are multiple different <span style="color:var(--jester);"><a href="../teams/jester.html">jesters</a></span> in the same round, they will often be competing against each other either directly or indirectly.</p>
-                <p>Members of the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span>, <span style="color:var(--monster);"><a href="../teams/monster.html">monster team</a></span>, and some <span style="color:var(--independent);"><a href="../teams/independent.html">independents</a></span> are made aware of which players are <span style="color:var(--jester);"><a href="../teams/jester.html">jesters</a></span>, but not told which specific role they are.</p>
-                <p>Under normal circumstances <span style="color:var(--jester);"><a href="../teams/jester.html">jesters</a></span> cannot deal damage to players and are also immune to most forms of environmental damage, e.g. falling, drowning, fire, etc.</p>
-            </div>
+<button onclick="backToTop()" id="totop">Back to Top</button>
+<div class="navigation panel" style="margin-bottom: 15px;">
+    <iframe id="nav" src="../nav.html#jester" scrolling="no" onload="resizeIframe(this)" width="100%"
+            style="overflow:hidden; border-style: none; float: left; margin-right: 10px;"></iframe>
+</div>
+<div class="contentheader panel" style="margin-bottom: 15px;">
+    <div style="background-color: #787878; border-radius: 20px 0 15px 0; margin-top: 0; display: inline-block;">
+        <h1 style="background-color:var(--jester); margin-top: 0;">Jester Roles</h1>
+        <div style="margin: 10px;">
+            <p><span style="color:var(--jester);"><a href="../teams/jester.html">Jesters</a></span> have unique win
+                conditions for each role, often focused on causing chaos and confusion. Typically, there are very few
+                <span style="color:var(--jester);"><a href="../teams/jester.html">jesters</a></span> in each round.</p>
+            <p><span style="color:var(--jester);"><a href="../teams/jester.html">Jesters</a></span> are not part of a
+                team. Even if there are multiple different <span style="color:var(--jester);"><a
+                        href="../teams/jester.html">jesters</a></span> in the same round, they will often be competing
+                against each other either directly or indirectly.</p>
+            <p>Members of the <span style="color:var(--traitor);"><a
+                    href="../teams/traitor.html">traitor team</a></span>, <span style="color:var(--monster);"><a
+                    href="../teams/monster.html">monster team</a></span>, and some <span
+                    style="color:var(--independent);"><a href="../teams/independent.html">independents</a></span> are
+                made aware of which players are <span style="color:var(--jester);"><a href="../teams/jester.html">jesters</a></span>,
+                but not told which specific role they are.</p>
+            <p>Under normal circumstances <span style="color:var(--jester);"><a href="../teams/jester.html">jesters</a></span>
+                cannot deal damage to players and are also immune to most forms of environmental damage, e.g. falling,
+                drowning, fire, etc.</p>
         </div>
     </div>
-    <div class="contentbody panel">
-        <div id="beggar" class="collapsible">
-            <button class="header" style="background-image:linear-gradient(110deg, var(--jester) 0%, var(--jester) 70%, var(--independent) 70%, var(--independent) 100%);"><i class="icon-beggar"></i>Beggar</button>
-            <div class="content">
-                <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-beggar"></i><a href="#beggar">Beggar</a></span> joins someone's team and becomes an <span class="inline-icon" style="color:var(--innocent);"><i class="icon-innocent"></i><a href="../teams/innocent.html#innocent">Innocent</a></span> or a <span class="inline-icon" style="color:var(--traitor);"><i class="icon-traitor"></i><a href="../teams/traitor.html#traitor">Traitor</a></span> when they are given a shop item by another player.</p>
-                <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
-            </div>
-        </div>
-        <div id="bodysnatcher" class="collapsible">
-            <button class="header" style="background-image:linear-gradient(110deg, var(--jester) 0%, var(--jester) 70%, var(--independent) 70%, var(--independent) 100%);"><i class="icon-bodysnatcher"></i>Bodysnatcher</button>
-            <div class="content">
-                <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-bodysnatcher"></i><a href="#bodysnatcher">Bodysnatcher</a></span> can use their bodysnatching device on a body to steal their role.</p>
-                <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
-            </div>
-        </div>
-        <div id="clown" class="collapsible">
-            <button class="header" style="background-color:var(--jester);"><i class="icon-clown"></i>Clown</button>
-            <div class="content">
-                <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-clown"></i><a href="#clown">Clown</a></span> pretends to be a <span class="inline-icon" style="color:var(--jester);"><i class="icon-jester"></i><a href="#jester">Jester</a></span> until someone is about to win, then they can deal damage and must kill everyone else to win.</p>
-                <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
-            </div>
-        </div>
-        <div id="cupid" class="collapsible">
-            <button class="header" style="background-image:linear-gradient(110deg, var(--jester) 0%, var(--jester) 70%, var(--independent) 70%, var(--independent) 100%);"><i class="icon-cupid"></i>Cupid</button>
-            <div class="content">
-                <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-cupid"></i><a href="#cupid">Cupid</a></span> can use their bow to make two players fall in love. Those players then win and die together.</p>
-                <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
-            </div>
-        </div>
-        <div id="guesser" class="collapsible">
-            <button class="header" style="background-color:var(--jester);"><i class="icon-guesser"></i>Guesser</button>
-            <div class="content">
-                <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-guesser"></i><a href="#guesser">Guesser</a></span> must guess another player's role to swap roles with them. If they guess wrong, they die.</p>
-                <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
-            </div>
-        </div>
-        <div id="jester" class="collapsible">
-            <button class="header" style="background-color:var(--jester);"><i class="icon-jester"></i>Jester</button>
-            <div class="content">
-                <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-jester"></i><a href="#jester">Jester</a></span> wins the round if they can get another player to kill them.</p>
-                <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
-            </div>
-        </div>
-        <div id="loot-goblin" class="collapsible">
-            <button class="header" style="background-color:var(--jester);"><i class="icon-loot-goblin"></i>Loot Goblin</button>
-            <div class="content">
-                <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-loot-goblin"></i><a href="#loot-goblin">Loot Goblin</a></span> is revealed to all players and drops random shop items when they die. They win if they can survive until the end of the round.</p>
-                <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
-            </div>
-        </div>
-        <div id="sponge" class="collapsible">
-            <button class="header" style="background-color:var(--jester);"><i class="icon-sponge"></i>Sponge</button>
-            <div class="content">
-                <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-sponge"></i><a href="#sponge">Sponge</a></span> has an aura that absorbs damage that would be dealt to nearby players and wins the round if they die.</p>
-                <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
-            </div>
-        </div>
-        <div id="swapper" class="collapsible">
-            <button class="header" style="background-color:var(--jester);"><i class="icon-swapper"></i>Swapper</button>
-            <div class="content">
-                <div class="moreless">[more]</div>
-                <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-swapper"></i><a href="#swapper">Swapper</a></span> swaps roles with their killer instead of dying.</p>
-                <div class="expansion">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
+</div>
+<div class="contentbody panel">
+    <div id="beggar" class="collapsible">
+        <button class="header"
+                style="background-image:linear-gradient(110deg, var(--jester) 0%, var(--jester) 70%, var(--independent) 70%, var(--independent) 100%);">
+            <i class="icon-beggar"></i>Beggar
+        </button>
+        <div class="content">
+            <div class="moreless">[more]</div>
+            <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-beggar"></i><a href="#beggar">Beggar</a></span>
+                joins someone's team and becomes an <span class="inline-icon" style="color:var(--innocent);"><i
+                        class="icon-innocent"></i><a href="../teams/innocent.html#innocent">Innocent</a></span> or a
+                <span class="inline-icon" style="color:var(--traitor);"><i class="icon-traitor"></i><a
+                        href="../teams/traitor.html#traitor">Traitor</a></span> when they are given a shop item by
+                another player.</p>
+            <div class="expansion">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                    aliquip ex ea commodo consequat.</p>
+                <table style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ttt_beggar_can_see_jesters</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to the
+                            beggar <i>(Requires <code>ttt_beggar_is_independent</code> to be enabled.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_beggar_is_independent</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether beggars should be treated as members of the independent team.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_beggar_notify_confetti</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether to throw confetti when a beggar is a killed.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_beggar_notify_mode</td>
+                        <td>0</td>
+                        <td>Integer (0-4)</td>
+                        <td>The logic to use when notifying players that a beggar is killed:
+                            <ol start="0">
+                                <li>Don't notify anyone.</li>
+                                <li>Only notify traitors and detective.</li>
+                                <li>Only notify traitors.</li>
+                                <li>Only notify detective.</li>
+                                <li>Notify everyone.</li>
+                            </ol>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_beggar_notify_sound</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether to play a cheering sound when a beggar is killed.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_beggar_respawn</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether the beggar respawns when they are killed before joining another team.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_beggar_respawn_change_role</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether to change the role of the respawning the beggar. Their role will be Traitor if
+                            killed by an innocent player and Innocent otherwise. <i>(Requires
+                                <code>ttt_beggar_respawn</code> to be enabled.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_beggar_respawn_delay</td>
+                        <td>3</td>
+                        <td>Integer</td>
+                        <td>The delay in seconds to use when respawning the beggar. <i>(Requires <code>ttt_beggar_respawn</code>
+                            to be enabled.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_beggar_respawn_limit</td>
+                        <td>0</td>
+                        <td>Integer</td>
+                        <td>The maximum number of times the beggar can respawn. Set to 0 to allow infinite respawns. <i>(Requires
+                            <code>ttt_beggar_respawn</code> to be enabled.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_beggar_reveal_innocent</td>
+                        <td>2</td>
+                        <td>Integer (0-3)</td>
+                        <td>Who the beggar is revealed to when they join the innocent team:
+                            <ol start="0">
+                                <li>No one.</li>
+                                <li>Everyone.</li>
+                                <li>Traitors.</li>
+                                <li>Innocents.</li>
+                            </ol>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_beggar_reveal_traitor</td>
+                        <td>1</td>
+                        <td>Integer (0-3)</td>
+                        <td>Who the beggar is revealed to when they join the traitor team:
+                            <ol start="0">
+                                <li>No one.</li>
+                                <li>Everyone.</li>
+                                <li>Traitors.</li>
+                                <li>Innocents.</li>
+                            </ol>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_beggar_scan</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether the beggar can scan players to see if they are traitors. 0 - Disabled. 1 - Can only
+                            scan traitors. 2 - Can scan any role that has a shop.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_beggar_scan_cooldown</td>
+                        <td>3</td>
+                        <td>Integer</td>
+                        <td>The amount of time in seconds the beggar's tracker goes on cooldown for after losing it's
+                            target.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_beggar_scan_distance</td>
+                        <td>2500</td>
+                        <td>Integer</td>
+                        <td>The maximum distance away the scanner target can be.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_beggar_scan_float_time</td>
+                        <td>1</td>
+                        <td>Integer</td>
+                        <td>The amount of time in seconds it takes for the beggar's scanner to lose it's target without
+                            line of sight.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_beggar_scan_time</td>
+                        <td>15</td>
+                        <td>Integer</td>
+                        <td>The amount of time in seconds the beggar's scanner takes to use.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_beggar_update_scoreboard</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether the beggar shows dead players as missing in action. <i>(Requires <code>ttt_beggar_is_independent</code>
+                            to be enabled.)</i></td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
+    <div id="bodysnatcher" class="collapsible">
+        <button class="header"
+                style="background-image:linear-gradient(110deg, var(--jester) 0%, var(--jester) 70%, var(--independent) 70%, var(--independent) 100%);">
+            <i class="icon-bodysnatcher"></i>Bodysnatcher
+        </button>
+        <div class="content">
+            <div class="moreless">[more]</div>
+            <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-bodysnatcher"></i><a
+                    href="#bodysnatcher">Bodysnatcher</a></span> can use their bodysnatching device on a body to steal
+                their role.</p>
+            <div class="expansion">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                    aliquip ex ea commodo consequat.</p>
+                <table style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ttt_bodysnatcher_can_see_jesters</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to the
+                            bodysnatcher. <i>(Requires <code>ttt_bodysnatcher_is_independent</code> to be enabled.)</i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_bodysnatcher_destroy_body</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether the bodysnatching device destroys the body it is used on or not.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_bodysnatcher_device_time</td>
+                        <td>5</td>
+                        <td>Integer</td>
+                        <td>The amount of time in seconds the bodysnatcher's device takes to use.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_bodysnatcher_is_independent</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether bodysnatchers should be treated as members of the independent team.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_bodysnatcher_notify_confetti</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether to throw confetti when a bodysnatcher is a killed.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_bodysnatcher_notify_mode</td>
+                        <td>0</td>
+                        <td>Integer (0-4)</td>
+                        <td>The logic to use when notifying players that a bodysnatcher is killed:
+                            <ol start="0">
+                                <li>Don't notify anyone.</li>
+                                <li>Only notify traitors and detective.</li>
+                                <li>Only notify traitors.</li>
+                                <li>Only notify detective.</li>
+                                <li>Notify everyone.</li>
+                            </ol>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_bodysnatcher_notify_sound</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether to play a cheering sound when a bodysnatcher is killed.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_bodysnatcher_respawn</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether the bodysnatcher respawns when they are killed before joining another team.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_bodysnatcher_respawn_delay</td>
+                        <td>3</td>
+                        <td>Integer</td>
+                        <td>The delay in seconds to use when respawning the bodysnatcher. <i>(Requires <code>ttt_bodysnatcher_respawn</code>
+                            to be enabled.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_bodysnatcher_respawn_limit</td>
+                        <td>0</td>
+                        <td>Integer</td>
+                        <td>The maximum number of times the bodysnatcher can respawn. Set to 0 to allow infinite
+                            respawns. <i>(Requires <code>ttt_bodysnatcher_respawn</code> to be enabled.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_bodysnatcher_reveal_independent</td>
+                        <td>1</td>
+                        <td>Integer (0-2)</td>
+                        <td>Who the bodysnatcher is revealed to when they join the independent team:
+                            <ol start="0">
+                                <li>No one.</li>
+                                <li>Everyone.</li>
+                                <li>Their new team.</li>
+                            </ol>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_bodysnatcher_reveal_innocent</td>
+                        <td>1</td>
+                        <td>Integer (0-2)</td>
+                        <td>Who the bodysnatcher is revealed to when they join the innocent team:
+                            <ol start="0">
+                                <li>No one.</li>
+                                <li>Everyone.</li>
+                                <li>Their new team.</li>
+                            </ol>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_bodysnatcher_reveal_jester</td>
+                        <td>1</td>
+                        <td>Integer (0-2)</td>
+                        <td>Who the bodysnatcher is revealed to when they join the jester team:
+                            <ol start="0">
+                                <li>No one.</li>
+                                <li>Everyone.</li>
+                                <li>Their new team.</li>
+                            </ol>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_bodysnatcher_reveal_monster</td>
+                        <td>1</td>
+                        <td>Integer (0-2)</td>
+                        <td>Who the bodysnatcher is revealed to when they join the monster team:
+                            <ol start="0">
+                                <li>No one.</li>
+                                <li>Everyone.</li>
+                                <li>Their new team.</li>
+                            </ol>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_bodysnatcher_reveal_traitor</td>
+                        <td>1</td>
+                        <td>Integer (0-2)</td>
+                        <td>Who the bodysnatcher is revealed to when they join the traitor team:
+                            <ol start="0">
+                                <li>No one.</li>
+                                <li>Everyone.</li>
+                                <li>Their new team.</li>
+                            </ol>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_bodysnatcher_show_role</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether the bodysnatching device shows the role of the corpse it is used on or not.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_bodysnatcher_update_scoreboard</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether the bodysnatcher shows dead players as missing in action. <i>(Requires <code>ttt_bodysnatcher_is_independent</code>
+                            to be enabled.)</i></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="clown" class="collapsible">
+        <button class="header" style="background-color:var(--jester);"><i class="icon-clown"></i>Clown</button>
+        <div class="content">
+            <div class="moreless">[more]</div>
+            <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-clown"></i><a href="#clown">Clown</a></span>
+                pretends to be a <span class="inline-icon" style="color:var(--jester);"><i class="icon-jester"></i><a
+                        href="#jester">Jester</a></span> until someone is about to win, then they can deal damage and
+                must kill everyone else to win.</p>
+            <div class="expansion">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                    aliquip ex ea commodo consequat.</p>
+                <table style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ttt_clown_activation_credits</td>
+                        <td>0</td>
+                        <td>Integer</td>
+                        <td>The number of credits to give the clown when they are activated.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_clown_can_see_jesters</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to the
+                            clown after they activate.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_clown_credits_starting</td>
+                        <td>0</td>
+                        <td>Integer</td>
+                        <td>The number of credits a clown should start with.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_clown_damage_bonus</td>
+                        <td>0</td>
+                        <td>Float</td>
+                        <td>Damage bonus that the clown has after being activated. <i>(e.g. 0.5 = 50% more damage.)</i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_clown_heal_bonus</td>
+                        <td>0</td>
+                        <td>Integer</td>
+                        <td>The amount of bonus health to give the clown if they are healed when they are activated.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_clown_heal_on_activate</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether the clown should fully heal when they activate or not.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_clown_hide_when_active</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether the clown should be hidden from other players' overhead icons when they are
+                            activated. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_clown_shop_active_only</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether the clown's shop should be available only after they activate.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_clown_shop_delay</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether the clown's purchased shop items should be held until they activate.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_clown_shop_mode</td>
+                        <td>0</td>
+                        <td>Integer (0-4)</td>
+                        <td>What additional items are available to the clown in the shop:
+                            <ol start="0">
+                                <li>Nothing.</li>
+                                <li>Weapons available to either the traitor or the detective.</li>
+                                <li>Only weapons available to both the traitor and the detective.</li>
+                                <li>Detective weapons.</li>
+                                <li>Traitor weapons.</li>
+                            </ol>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_clown_show_target_icon</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether the clown has an icon over other players' heads showing who to kill. <i>(Server or
+                            round must be restarted for changes to take effect.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_clown_update_scoreboard</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether the clown shows dead players as missing in action after they activate.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_clown_use_traps_when_active</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether the clown can see and use traitor traps when they are activated.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_single_drunk_clown</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether only a single drunk or clown should spawn in a round.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_single_drunk_clown_chance</td>
+                        <td>0.5</td>
+                        <td>Float (0-1)</td>
+                        <td>The chance that a drunk should have an opportunity to spawn instead of an clown. <i>(e.g.
+                            0.7 = 70% chance for drunk, 30% chance for clown. Requires
+                            <code>ttt_single_drunk_clown</code> to be enabled.)</i></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="cupid" class="collapsible">
+        <button class="header"
+                style="background-image:linear-gradient(110deg, var(--jester) 0%, var(--jester) 70%, var(--independent) 70%, var(--independent) 100%);">
+            <i class="icon-cupid"></i>Cupid
+        </button>
+        <div class="content">
+            <div class="moreless">[more]</div>
+            <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-cupid"></i><a href="#cupid">Cupid</a></span>
+                can use their bow to make two players fall in love. Those players then win and die together.</p>
+            <div class="expansion">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                    aliquip ex ea commodo consequat.</p>
+                <table style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ttt_cupid_can_damage_lovers</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether cupid should be able to damage the lovers.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_cupid_can_see_jesters</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to
+                            cupid. <i>(Requires <code>ttt_cupid_is_independent</code> to be enabled.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_cupid_is_independent</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether cupids should be treated as members of the independent team.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_cupid_lover_vision_enable</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether the lovers can see outlines of each other through walls.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_cupid_lovers_can_damage_cupid</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether the lovers should be able to damage cupid.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_cupid_lovers_can_damage_lovers</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether the lovers should be able to damage each other.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_cupid_lovers_notify_mode</td>
+                        <td>1</td>
+                        <td>Integer (0-3)</td>
+                        <td>Who is notified with cupid makes two players fall in love:
+                            <ol start="0">
+                                <li>No one.</li>
+                                <li>Everyone.</li>
+                                <li>Traitors.</li>
+                                <li>Innocents.</li>
+                            </ol>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_cupid_notify_confetti</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether to throw confetti when a cupid is a killed.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_cupid_notify_mode</td>
+                        <td>0</td>
+                        <td>Integer (0-4)</td>
+                        <td>The logic to use when notifying players that a cupid is killed:
+                            <ol start="0">
+                                <li>Don't notify anyone.</li>
+                                <li>Only notify traitors and detective.</li>
+                                <li>Only notify traitors.</li>
+                                <li>Only notify detective.</li>
+                                <li>Notify everyone.</li>
+                            </ol>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_cupid_notify_sound</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether to play a cheering sound when a cupid is killed.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_cupid_update_scoreboard</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether cupid shows dead players as missing in action. <i>(Requires <code>ttt_cupid_is_independent</code>
+                            to be enabled.)</i></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="guesser" class="collapsible">
+        <button class="header" style="background-color:var(--jester);"><i class="icon-guesser"></i>Guesser</button>
+        <div class="content">
+            <div class="moreless">[more]</div>
+            <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-guesser"></i><a
+                    href="#guesser">Guesser</a></span> must guess another player's role to swap roles with them. If they
+                guess wrong, they die.</p>
+            <div class="expansion">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                    aliquip ex ea commodo consequat.</p>
+                <table style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ttt_guesser_can_guess_detectives</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether the guesser is allowed to guess detectives.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_guesser_minimum_radius</td>
+                        <td>5</td>
+                        <td>Float</td>
+                        <td>The minimum radius of the guesser's device in meters. <i>(Set to 0 to disable.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_guesser_notify_confetti</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether to throw confetti when a guesser is a killed.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_guesser_notify_mode</td>
+                        <td>0</td>
+                        <td>Integer (0-4)</td>
+                        <td>The logic to use when notifying players that a guesser is killed:
+                            <ol start="0">
+                                <li>Don't notify anyone.</li>
+                                <li>Only notify traitors and detective.</li>
+                                <li>Only notify traitors.</li>
+                                <li>Only notify detective.</li>
+                                <li>Notify everyone.</li>
+                            </ol>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_guesser_notify_sound</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether to play a cheering sound when a guesser is killed.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_guesser_show_role_threshold</td>
+                        <td>100</td>
+                        <td>Integer</td>
+                        <td>The amount of damage that needs to be dealt to a guesser before they learn the attacker's
+                            role.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_guesser_show_team_threshold</td>
+                        <td>50</td>
+                        <td>Integer</td>
+                        <td>The amount of damage that needs to be dealt to a guesser before they learn the attacker's
+                            team.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_guesser_unguessable_roles</td>
+                        <td>"lootgoblin,zombie"</td>
+                        <td>String</td>
+                        <td>Names of roles that cannot be guessed by the guesser, separated with commas. <i>(Do not
+                            include spaces or capital letters.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_guesser_warn_all</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether all players are warned when there's a guesser in a round.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="jester" class="collapsible">
+        <button class="header" style="background-color:var(--jester);"><i class="icon-jester"></i>Jester</button>
+        <div class="content">
+            <div class="moreless">[more]</div>
+            <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-jester"></i><a href="#jester">Jester</a></span>
+                wins the round if they can get another player to kill them.</p>
+            <div class="expansion">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                    aliquip ex ea commodo consequat.</p>
+                <table style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ttt_jester_credits_starting</td>
+                        <td>0</td>
+                        <td>Integer</td>
+                        <td>The number of credits a jester should start with.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_jester_healthstation_reduce_max</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether the jester's max health should be reduced to match their current health when using a
+                            health station, instead of being healed.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_jester_notify_confetti</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether to throw confetti when a jester is a killed.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_jester_notify_mode</td>
+                        <td>0</td>
+                        <td>Integer (0-4)</td>
+                        <td>The logic to use when notifying players that a jester is killed:
+                            <ol start="0">
+                                <li>Don't notify anyone.</li>
+                                <li>Only notify traitors and detective.</li>
+                                <li>Only notify traitors.</li>
+                                <li>Only notify detective.</li>
+                                <li>Notify everyone.</li>
+                            </ol>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_jester_notify_sound</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether to play a cheering sound when a jester is killed.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_jester_win_by_traitors</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether the jester will win the round if they are killed by a traitor.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_single_jester_swapper</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether only a single jester or swapper should spawn in a round.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_single_jester_swapper_chance</td>
+                        <td>0.5</td>
+                        <td>Float (0-1)</td>
+                        <td>The chance that a jester should have an opportunity to spawn instead of an swapper. <i>(e.g.
+                            0.7 = 70% chance for jester, 30% chance for swapper. Requires <code>ttt_single_jester_swapper</code>
+                            to be enabled.)</i></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="loot-goblin" class="collapsible">
+        <button class="header" style="background-color:var(--jester);"><i class="icon-loot-goblin"></i>Loot Goblin
+        </button>
+        <div class="content">
+            <div class="moreless">[more]</div>
+            <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-loot-goblin"></i><a
+                    href="#loot-goblin">Loot Goblin</a></span> is revealed to all players and drops random shop items
+                when they die. They win if they can survive until the end of the round.</p>
+            <div class="expansion">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                    aliquip ex ea commodo consequat.</p>
+                <table style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ttt_lootgoblin_activation_timer</td>
+                        <td>30</td>
+                        <td>Integer</td>
+                        <td>Minimum time in seconds before the loot goblin is revealed.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_lootgoblin_activation_timer_max</td>
+                        <td>60</td>
+                        <td>Integer</td>
+                        <td>Maximum time in seconds before the loot goblin is revealed.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_lootgoblin_active_display</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether to show the loot goblin's information over their head and on the scoreboard once
+                            they are activated.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_lootgoblin_announce</td>
+                        <td>4</td>
+                        <td>Integer (0-4)</td>
+                        <td>The logic to use when notifying players that a loot goblin has been revealed:
+                            <ol start="0">
+                                <li>Don't notify anyone.</li>
+                                <li>Only notify traitors and detective.</li>
+                                <li>Only notify traitors.</li>
+                                <li>Only notify detective.</li>
+                                <li>Notify everyone.</li>
+                            </ol>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_lootgoblin_cackle_enabled</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether to play a cackle sound periodically when a loot goblin is activated.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_lootgoblin_cackle_timer_max</td>
+                        <td>12</td>
+                        <td>Integer</td>
+                        <td>The maximum time between loot goblin cackles.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_lootgoblin_cackle_timer_min</td>
+                        <td>4</td>
+                        <td>Integer</td>
+                        <td>The minimum time between loot goblin cackles.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_lootgoblin_drop_timer</td>
+                        <td>0</td>
+                        <td>Integer</td>
+                        <td>How often in seconds the loot goblin should drop a piece of loot behind them.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_lootgoblin_jingle_enabled</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether to play a jingle sound when an activated loot goblin is moving.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_lootgoblin_notify_confetti</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether to throw confetti when a loot goblin is a killed.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_lootgoblin_notify_mode</td>
+                        <td>4</td>
+                        <td>Integer (0-4)</td>
+                        <td>The logic to use when notifying players that a loot goblin is killed:
+                            <ol start="0">
+                                <li>Don't notify anyone.</li>
+                                <li>Only notify traitors and detective.</li>
+                                <li>Only notify traitors.</li>
+                                <li>Only notify detective.</li>
+                                <li>Notify everyone.</li>
+                            </ol>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_lootgoblin_notify_sound</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether to play a cheering sound when a loot goblin is killed.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_lootgoblin_radar_delay</td>
+                        <td>15</td>
+                        <td>Integer</td>
+                        <td>How delayed in seconds the radar ping for the loot goblin should be.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_lootgoblin_radar_enabled</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether the radar ping for the loot goblin should be enabled or not.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_lootgoblin_radar_timer</td>
+                        <td>15</td>
+                        <td>Integer</td>
+                        <td>How often in seconds the radar ping for the loot goblin should update.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_lootgoblin_regen_delay</td>
+                        <td>0</td>
+                        <td>Integer</td>
+                        <td>The length of the delay in seconds before the loot goblin's health will start to
+                            regenerate.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_lootgoblin_regen_mode</td>
+                        <td>2</td>
+                        <td>Boolean</td>
+                        <td>Whether the loot goblin should regenerate health and using what logic. 0 - No regeneration.
+                            1 - Constant regen while active. 2 - Regen while standing still. 3 - Regen after taking
+                            damage.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_lootgoblin_regen_rate</td>
+                        <td>3</td>
+                        <td>Integer</td>
+                        <td>How often in seconds a loot goblin should regain health while regenerating.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_lootgoblin_size</td>
+                        <td>0.5</td>
+                        <td>Float</td>
+                        <td>The size multiplier for the loot goblin to use when they are revealed. <i>(e.g. 0.5 = 50%
+                            size.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_lootgoblin_speed_mult</td>
+                        <td>1.2</td>
+                        <td>Float</td>
+                        <td>The multiplier to use on the loot goblin's movement speed when they are activated. <i>(e.g.
+                            1.2 = 120% normal speed.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_lootgoblin_sprint_recovery</td>
+                        <td>0.12</td>
+                        <td>Float</td>
+                        <td>The amount of stamina to recover per tick when the loot goblin is activated.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_lootgoblin_weapons_dropped</td>
+                        <td>8</td>
+                        <td>Integer</td>
+                        <td>How many weapons the loot goblin drops when they are killed.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="sponge" class="collapsible">
+        <button class="header" style="background-color:var(--jester);"><i class="icon-sponge"></i>Sponge</button>
+        <div class="content">
+            <div class="moreless">[more]</div>
+            <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-sponge"></i><a href="#sponge">Sponge</a></span>
+                has an aura that absorbs damage that would be dealt to nearby players and wins the round if they die.
+            </p>
+            <div class="expansion">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                    aliquip ex ea commodo consequat.</p>
+                <table style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ttt_sponge_aura_radius</td>
+                        <td>5</td>
+                        <td>Float</td>
+                        <td>The radius of the sponge's aura in meters.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_sponge_notify_confetti</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether to throw confetti when a sponge is a killed.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_sponge_notify_mode</td>
+                        <td>0</td>
+                        <td>Integer (0-4)</td>
+                        <td>The logic to use when notifying players that the sponge is killed:
+                            <ol start="0">
+                                <li>Don't notify anyone.</li>
+                                <li>Only notify traitors and detective.</li>
+                                <li>Only notify traitors.</li>
+                                <li>Only notify detective.</li>
+                                <li>Notify everyone.</li>
+                            </ol>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_sponge_notify_sound</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether to play a cheering sound when a sponge is killed.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="swapper" class="collapsible">
+        <button class="header" style="background-color:var(--jester);"><i class="icon-swapper"></i>Swapper</button>
+        <div class="content">
+            <div class="moreless">[more]</div>
+            <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-swapper"></i><a
+                    href="#swapper">Swapper</a></span> swaps roles with their killer instead of dying.</p>
+            <div class="expansion">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                    aliquip ex ea commodo consequat.</p>
+                <table style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>ConVar</th>
+                        <th>Default</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>ttt_swapper_credits_starting</td>
+                        <td>0</td>
+                        <td>Integer</td>
+                        <td>The number of credits a swapper should start with.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_swapper_healthstation_reduce_max</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether the swapper's max health should be reduced to match their current health when using
+                            a health station, instead of being healed.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_swapper_killer_health</td>
+                        <td>100</td>
+                        <td>Integer</td>
+                        <td>The amount of health the swapper's killer should set to. Set to "0" to kill them.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_swapper_killer_max_health</td>
+                        <td>0</td>
+                        <td>Integer</td>
+                        <td>The maximum health value to set on the swapper's killer. Set to "0" to use the swapper's
+                            default.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_swapper_notify_confetti</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether to throw confetti when a swapper is a killed.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_swapper_notify_mode</td>
+                        <td>0</td>
+                        <td>Integer (0-4)</td>
+                        <td>The logic to use when notifying players that a swapper is killed:
+                            <ol start="0">
+                                <li>Don't notify anyone.</li>
+                                <li>Only notify traitors and detective.</li>
+                                <li>Only notify traitors.</li>
+                                <li>Only notify detective.</li>
+                                <li>Notify everyone.</li>
+                            </ol>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_swapper_notify_sound</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether to play a cheering sound when a swapper is killed.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_swapper_respawn_health</td>
+                        <td>100</td>
+                        <td>Integer</td>
+                        <td>What amount of health to give the swapper when they are killed and respawned.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_swapper_swap_lovers</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether the swapper should swap lovers with their attacker or not.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_swapper_weapon_mode</td>
+                        <td>1</td>
+                        <td>Integer (0-2)</td>
+                        <td>How to handle weapons when the Swapper is killed:
+                            <ol start="0">
+                                <li>Don't swap anything.</li>
+                                <li>Swap role weapons if there are any 2 - Swap all weapons.</li>
+                            </ol>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_single_jester_swapper</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether only a single jester or swapper should spawn in a round.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_single_jester_swapper_chance</td>
+                        <td>0.5</td>
+                        <td>Float (0-1)</td>
+                        <td>The chance that a jester should have an opportunity to spawn instead of an swapper. <i>(e.g.
+                            0.7 = 70% chance for jester, 30% chance for swapper. Requires <code>ttt_single_jester_swapper</code>
+                            to be enabled.)</i></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
