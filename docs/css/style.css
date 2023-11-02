@@ -32,7 +32,7 @@ body {
     gap: 6px;
     border-radius: 15px 0 15px 0;
     color: white;
-    font-size: 20px;
+    font-size: 1.3em;
     font-family: "Trebuchet MS", Tahoma, sans-serif;
     font-weight: bold;
     cursor: pointer;
@@ -48,7 +48,6 @@ body {
     border-radius: 0 0 15px 0;
     background-color: #787878;
     color: white;
-    font-size: 16px;
     font-family: "Trebuchet MS", Tahoma, sans-serif;
     padding: 0 10px;
     position: relative;
@@ -139,7 +138,7 @@ h2 {
 }
 
 h3 {
-    font-size: 1em;
+    font-size: 1.2em;
 }
 
 h4 {
@@ -230,7 +229,7 @@ code {
     align-items: center;
     gap: 6px;
     border-radius: 15px 0 15px 0;
-    font-size: 20px;
+    font-size: 1.3em;
     font-family: "Trebuchet MS", Tahoma, sans-serif;
     font-weight: bold;
     padding: 10px 12px;
