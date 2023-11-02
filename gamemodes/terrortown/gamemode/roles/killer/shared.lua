@@ -161,3 +161,17 @@ table.insert(ROLE_CONVARS[ROLE_KILLER], {
     cvar = "ttt_killer_update_scoreboard",
     type = ROLE_CONVAR_TYPE_BOOL
 })
+table.insert(ROLE_CONVARS[ROLE_KILLER], {
+    cvar = "ttt_killer_credits_award_pct",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 2
+})
+table.insert(ROLE_CONVARS[ROLE_KILLER], {
+    cvar = "ttt_killer_credits_award_size",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_KILLER], {
+    cvar = "ttt_killer_credits_award_repeat",
+    type = ROLE_CONVAR_TYPE_BOOL
+})

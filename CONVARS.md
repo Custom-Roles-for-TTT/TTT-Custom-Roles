@@ -255,7 +255,10 @@ ttt_vampire_fang_overheal_living            -1      // The amount of overheal (s
 ttt_vampire_fang_unfreeze_delay             2       // The number of seconds before players who were frozen in place by the fangs should be released if the vampire stops using the fangs on them
 ttt_vampire_prime_death_mode                0       // What to do when the prime vampire(s) (e.g. players who spawn as vampires originally) are killed. 0 - Do nothing. 1 - Kill all vampire thralls (non-prime vampires). 2 - Revert all vampire thralls (non-prime vampires) to their original role
 ttt_vampire_prime_only_convert              1       // Whether only prime vampires (e.g. players who spawn as vampire originally) are allowed to convert other players
-ttt_vampire_kill_credits                    1       // Whether the vampire receives credits when they kill another player
+ttt_vampire_kill_credits                    1       // Whether the vampire receives credits when they kill another player. (Only applies when ttt_vampire_is_independent and ttt_vampire_is_monster are both disabled)
+ttt_vampire_credits_award_pct               0.35    // When this percentage of the innocent players are dead, vampires are awarded more credits. (Only applies when ttt_vampire_is_monster or ttt_vampire_is_independent is enabled)
+ttt_vampire_credits_award_size              1       // The number of credits awarded. (Only applies when ttt_vampire_is_monster or ttt_vampire_is_independent is enabled)
+ttt_vampire_credits_award_repeat            1       // Whether the credit award is handed out multiple times. if for example you set the percentage to 0.25, and enable this, vampires will be awarded credits at 25% killed, 50% killed, and 75% killed. (Only applies when ttt_vampire_is_monster or ttt_vampire_is_independent is enabled)
 ttt_vampire_loot_credits                    1       // Whether the vampire can loot credits from a dead player
 ttt_vampire_prime_friendly_fire             0       // How to handle friendly fire damage to the prime vampire(s) from their thralls. 0 - Do nothing. 1 - Reflect damage back to the attacker (non-prime vampire). 2 - Negate damage to the prime vampire.
 ttt_vampire_credits_starting                1       // The number of credits a vampire should start with
@@ -692,6 +695,9 @@ ttt_killer_vision_enable                    1       // Whether killers have thei
 ttt_killer_credits_starting                 2       // The number of credits a killer should start with
 ttt_killer_can_see_jesters                  1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the killer
 ttt_killer_update_scoreboard                1       // Whether the killer shows dead players as missing in action
+ttt_killer_credits_award_pct                0.35    // When this percentage of the innocent players are dead, the killer is awarded more credits.
+ttt_killer_credits_award_size               1       // The number of credits awarded.
+ttt_killer_credits_award_repeat             1       // Whether the credit award is handed out multiple times. if for example you set the percentage to 0.25, and enable this, the killer will be awarded credits at 25% killed, 50% killed, and 75% killed.
 
 // Zombie
 ttt_zombie_is_monster                       0       // Whether zombies should be treated as members of the monster team (rather than the independent team)

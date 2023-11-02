@@ -9,6 +9,8 @@ Includes beta updates [1.9.3](#193-beta) to [1.9.13](#1913-beta).
 
 ### Changes
 - **BREAKING CHANGE** - Renamed `ttt_traitor_credits_timer` to `ttt_traitors_credits_timer`
+- **BREAKING CHANGE** - Changed vampire to use the new `ttt_vampire_credits_award_pct`, `ttt_vampire_credits_award_size`, and `ttt_vampire_credits_award_repeat` convars instead of the traitor ones when the vampire is not a traitor
+- **BREAKING CHANGE** - Changed killer to use the new `ttt_killer_credits_award_pct`, `ttt_killer_credits_award_size`, and `ttt_killer_credits_award_repeat` convars instead of the traitor ones
 
 ### Fixes
 - Ported "TTT: Prevent error when NPC fires SWEP derived from weapon_tttbase" from base TTT

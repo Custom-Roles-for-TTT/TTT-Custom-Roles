@@ -17,6 +17,9 @@ local GetAllPlayers = player.GetAll
 local killer_smoke_timer = CreateConVar("ttt_killer_smoke_timer", "60", FCVAR_NONE, "Number of seconds before a killer will start to smoke after their last kill", 1, 120)
 local killer_damage_penalty = CreateConVar("ttt_killer_damage_penalty", "0.25", FCVAR_NONE, "The fraction a killer's damage will be scaled by when they are attacking without using their knife", 0, 1)
 local killer_damage_reduction = CreateConVar("ttt_killer_damage_reduction", "0", FCVAR_NONE, "The fraction an attacker's bullet damage will be reduced by when they are shooting a killer", 0, 1)
+local killer_credits_award_pct = CreateConVar("ttt_killer_credits_award_pct", "0.35")
+local killer_credits_award_size = CreateConVar("ttt_killer_credits_award_size", "1")
+local killer_credits_award_repeat = CreateConVar("ttt_killer_credits_award_repeat", "1")
 
 local killer_knife_enabled = GetConVar("ttt_killer_knife_enabled")
 local killer_crowbar_enabled = GetConVar("ttt_killer_crowbar_enabled")
@@ -154,7 +157,7 @@ hook.Add("DoPlayerDeath", "Killer_Credits_DoPlayerDeath", function(victim, attac
 
     local valid_attacker = IsPlayer(attacker)
 
-    if valid_attacker and attacker:IsActiveKiller() and (not (victim:IsKiller() or victim:IsJesterTeam())) and (not GAMEMODE.AwardedKillerCredits or GetConVar("ttt_credits_award_repeat"):GetBool()) then
+    if valid_attacker and attacker:IsActiveKiller() and (not (victim:IsKiller() or victim:IsJesterTeam())) and (not GAMEMODE.AwardedKillerCredits or killer_credits_award_repeat:GetBool()) then
         local ply_alive = 0
         local ply_dead = 0
 
@@ -180,9 +183,9 @@ hook.Add("DoPlayerDeath", "Killer_Credits_DoPlayerDeath", function(victim, attac
         end
 
         local pct = ply_dead / ply_total
-        if pct >= GetConVar("ttt_credits_award_pct"):GetFloat() then
+        if pct >= killer_credits_award_pct:GetFloat() then
             -- Traitors have killed sufficient people to get an award
-            local amt = GetConVar("ttt_credits_award_size"):GetInt()
+            local amt = killer_credits_award_size:GetInt()
 
             -- If size is 0, awards are off
             if amt > 0 then

@@ -28,6 +28,9 @@ resource.AddSingleFile("sound/weapons/ttt/vampireeat.wav")
 
 local vampire_kill_credits = CreateConVar("ttt_vampire_kill_credits", "1")
 local vampire_prime_friendly_fire = CreateConVar("ttt_vampire_prime_friendly_fire", "0", FCVAR_NONE, "How to handle friendly fire damage to the prime vampire(s) from their thralls. 0 - Do nothing. 1 - Reflect damage back to the attacker (non-prime vampire). 2 - Negate damage to the prime vampire.", 0, 2)
+local vampire_credits_award_pct = CreateConVar("ttt_vampire_credits_award_pct", "0.35")
+local vampire_credits_award_size = CreateConVar("ttt_vampire_credits_award_size", "1")
+local vampire_credits_award_repeat = CreateConVar("ttt_vampire_credits_award_repeat", "1")
 
 local vampire_damage_reduction = GetConVar("ttt_vampire_damage_reduction")
 local vampire_show_target_icon = GetConVar("ttt_vampire_show_target_icon")
@@ -55,7 +58,7 @@ hook.Add("DoPlayerDeath", "Vampire_Credits_DoPlayerDeath", function(victim, atta
 
     local valid_attacker = IsPlayer(attacker)
     local kill_credits = vampire_kill_credits:GetBool()
-    if kill_credits and valid_attacker and not TRAITOR_ROLES[ROLE_VAMPIRE] and attacker:IsActiveVampire() and (not (victim:IsMonsterTeam() or victim:IsJesterTeam())) and (not GAMEMODE.AwardedVampireCredits or GetConVar("ttt_credits_award_repeat"):GetBool()) then
+    if kill_credits and valid_attacker and not TRAITOR_ROLES[ROLE_VAMPIRE] and attacker:IsActiveVampire() and (not (victim:IsMonsterTeam() or victim:IsJesterTeam())) and (not GAMEMODE.AwardedVampireCredits or vampire_credits_award_repeat:GetBool()) then
         local ply_alive = 0
         local ply_dead = 0
 
@@ -81,9 +84,9 @@ hook.Add("DoPlayerDeath", "Vampire_Credits_DoPlayerDeath", function(victim, atta
         end
 
         local pct = ply_dead / ply_total
-        if pct >= GetConVar("ttt_credits_award_pct"):GetFloat() then
+        if pct >= vampire_credits_award_pct:GetFloat() then
             -- Traitors have killed sufficient people to get an award
-            local amt = GetConVar("ttt_credits_award_size"):GetInt()
+            local amt = vampire_credits_award_size:GetInt()
 
             -- If size is 0, awards are off
             if amt > 0 then
