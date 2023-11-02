@@ -24,6 +24,95 @@
     </div>
 </div>
 <div class="contentbody panel">
+    <div class="noncollapsible">
+        <button class="header" style="cursor: default; background-color:#555555">Team Configuration</button>
+        <div class="content">
+            <p>Each round after <span style="color:var(--detective);"><a href="../teams/detective.html">detectives</a></span> are chosen, a percentage of the remaining players will be part of the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span>. A fraction of those players have a chance to be a <span style="color:var(--special-traitor);">special traitor</span>, and the others will each be a <span class="inline-icon" style="color:var(--traitor);"><i class="icon-traitor"></i><a href="#traitor">Traitor</a></span>.</p>
+            <p>The percentage of players that will be on the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span>, the maximum number of players on the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span>, the percentage of players on the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span> who have the chance to become a <span style="color:var(--special-traitor);">special traitor</span>, and the chance that any one of them will be chosen as a <span style="color:var(--special-traitor);">special traitor</span> are determined by the ConVars in the table below.</p>
+            <table style="width:100%; margin-bottom: 10px;">
+                <thead>
+                <tr>
+                    <th>ConVar</th>
+                    <th>Default</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>ttt_traitor_pct</td>
+                    <td>0.25</td>
+                    <td>Float (0-1)</td>
+                    <td><b>Vanilla TTT ConVar</b> - Percentage of players, rounded up, that will spawn as a member of the traitor team.</td>
+                </tr>
+                <tr>
+                    <td>ttt_traitor_max</td>
+                    <td>32</td>
+                    <td>Integer</td>
+                    <td><b>Vanilla TTT ConVar</b> - The maximum number of players that can spawn as a member of the traitor team.</td>
+                </tr>
+                <tr>
+                    <td>ttt_special_traitor_pct</td>
+                    <td>0.33</td>
+                    <td>Float (0-1)</td>
+                    <td>Percentage of traitors, rounded up, that have the chance to spawn as a special traitor.</td>
+                </tr>
+                <tr>
+                    <td>ttt_special_traitor_chance</td>
+                    <td>0.5</td>
+                    <td>Float (0-1)</td>
+                    <td>The chance that a special traitor will spawn in each individual slot made by <code>ttt_special_traitor_pct</code>.</td>
+                </tr>
+                </tbody>
+            </table>
+            <p>Example: There are eight players in the game. <code>ttt_traitor_pct</code> is 0.25, <code>ttt_special_traitor_pct</code> is 0.33, and <code>ttt_special_traitor_chance</code> is 0.5 as per the default values above. 25% of the players in the game (rounded up) will spawn as members of the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span> as <code>ttt_traitor_pct</code> is set to 0.25. This means there will be two players that are members of the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span>. At most 33% of the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span> (rounded up) can be <span style="color:var(--special-traitor);">special traitors</span> as <code>ttt_special_traitor_pct</code> is set to 0.33. This means that there will be at most one <span style="color:var(--special-traitor);">special traitor</span>. However, that player only has a 50% chance to be a <span style="color:var(--special-traitor);">special traitor</span> as <code>ttt_special_traitor_chance</code> is set to 0.5. This means it is possible for the round to have zero or one <span style="color:var(--special-traitor);">special traitor</span>. All remaining members of the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span> will each be a <span class="inline-icon" style="color:var(--traitor);"><i class="icon-traitor"></i><a href="#traitor">Traitor</a></span>.</p>
+            <p>If you wanted it to be possible for all members of the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span> to be <span style="color:var(--special-traitor);">special traitors</span> at once, set <code>ttt_special_traitor_pct</code> to 1. Alternately, if you always wanted the same number of <span style="color:var(--special-traitor);">special traitors</span> in each round with no variation, set <code>ttt_special_traitor_chance</code> to 1. Setting either <code>ttt_special_traitor_pct</code> or <code>ttt_special_traitor_chance</code> to 0 will make it impossible for <span style="color:var(--special-traitor);">special traitors</span> to spawn.</p>
+            <p>Additionally, members of the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span> are able to earn credits to spend in the shop. The following ConVars can be used to configure how credits are earned.</p>
+            <table style="width:100%; margin-bottom: 10px;">
+                <thead>
+                <tr>
+                    <th>ConVar</th>
+                    <th>Default</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>ttt_credits_award_pct</td>
+                    <td>0.35</td>
+                    <td>Float (0-1)</td>
+                    <td><b>Vanilla TTT ConVar</b> - When this percentage of non-traitor, non-jester players are dead, members of the traitor team are awarded a number of credits equal to <code>ttt_credits_award_size</code>.</td>
+                </tr>
+                <tr>
+                    <td>ttt_credits_award_size</td>
+                    <td>1</td>
+                    <td>Integer</td>
+                    <td><b>Vanilla TTT ConVar</b> - The number of credits awarded to members of the traitor team when the percentage determined by <code>ttt_credits_award_pct</code> of non-traitor, non-jester players are dead.</td>
+                </tr>
+                <tr>
+                    <td>ttt_credits_award_repeat</td>
+                    <td>1</td>
+                    <td>Boolean</td>
+                    <td><b>Vanilla TTT ConVar</b> - Whether the credit award determined by <code>ttt_credits_award_pct</code> and <code>ttt_credits_award_size</code> is handed out multiple times. <i>(e.g. If <code>ttt_credits_award_pct</code> is 0.25, member of the traitor team will be awarded credits at 25% killed, 50% killed, and 75% killed.)</i></td>
+                </tr>
+                <tr>
+                    <td>ttt_credits_detectivekill</td>
+                    <td>1</td>
+                    <td>Integer</td>
+                    <td><b>Vanilla TTT ConVar</b> - The number of credits a member of the traitor team will receive if they kill a detective.</td>
+                </tr>
+                <tr>
+                    <td>ttt_traitor_credits_timer</td>
+                    <td>0</td>
+                    <td>Integer</td>
+                    <td>How often in seconds to give members of the traitor team a credit. <i>(Set to 0 to disable.)</i></td>
+                </tr>
+                </tbody>
+            </table>
+            <p>Instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page, and ConVars specific to configuring each role can be found below.</p>
+        </div>
+    </div>
     <div id="traitor" class="collapsible">
         <button class="header" style="background-color:var(--traitor);"><i class="icon-traitor"></i>Traitor</button>
         <div class="content">
@@ -42,6 +131,12 @@
                     </tr>
                     </thead>
                     <tbody>
+                    <tr>
+                        <td>ttt_credits_starting</td>
+                        <td>2</td>
+                        <td>Integer</td>
+                        <td><b>Vanilla TTT ConVar</b> - The number of credits a traitor should start with.</i></td>
+                    </tr>
                     <tr>
                         <td>ttt_traitor_phantom_cure</td>
                         <td>0</td>
@@ -835,7 +930,7 @@
             </div>
         </div>
     </div>
-    <div style="background-color: #787878; width: 100%; border-radius: 20px 0 15px 0; margin-bottom: 10px; display: inline-block;">
+    <div class="noncollapsible">
         <button class="header" style="cursor: default; background-color:var(--special-traitor);"><i class="icon-team"></i>Configurable Traitors</button>
         <div class="content">
             <p>The following roles can be configured to be part of the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span> instead of their default team: <span class="inline-icon" style="color:var(--independent);"><i class="icon-zombie"></i><a href="../teams/independent.html#zombie">Zombie</a></span>.</p>

@@ -24,7 +24,41 @@
     </div>
 </div>
 <div class="contentbody panel">
-    <div id="innocent" style="background-color: #787878; width: 100%; border-radius: 20px 0 15px 0; margin-bottom: 10px; display: inline-block;">
+    <div class="noncollapsible">
+        <button class="header" style="cursor: default; background-color:#555555">Team Configuration</button>
+        <div class="content">
+            <p>Each round after <span style="color:var(--detective);"><a href="../teams/detective.html">detectives</a></span>, <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitors</a></span>, <span style="color:var(--jester);"><a href="../teams/jester.html">jesters</a></span>, and <span style="color:var(--independent);"><a href="../teams/independent.html">independents</a></span> are chosen, any remaining players will be part of the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span>. A fraction of those players have a chance to be a <span style="color:var(--special-innocent);">special innocent</span>, and the others will each be an <span class="inline-icon" style="color:var(--innocent);"><i class="icon-innocent"></i><a href="#innocent">Innocent</a></span>.</p>
+            <p>The percentage of players on the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span> who have the chance to become a <span style="color:var(--special-innocent);">special innocent</span>, and the chance that any one of them will be chosen as a <span style="color:var(--special-innocent);">special innocent</span> are determined by the ConVars in the table below.</p>
+            <table style="width:100%; margin-bottom: 10px;">
+                <thead>
+                <tr>
+                    <th>ConVar</th>
+                    <th>Default</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>ttt_special_innocent_pct</td>
+                    <td>0.33</td>
+                    <td>Float (0-1)</td>
+                    <td>Percentage of innocents, rounded up, that have the chance to spawn as a special innocent.</td>
+                </tr>
+                <tr>
+                    <td>ttt_special_innocent_chance</td>
+                    <td>0.5</td>
+                    <td>Float (0-1)</td>
+                    <td>The chance that a special innocent will spawn in each individual slot made by <code>ttt_special_innocent_pct</code>.</td>
+                </tr>
+                </tbody>
+            </table>
+            <p>Example: There are four members of the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span>. <code>ttt_special_innocent_pct</code> is 0.33, and <code>ttt_special_innocent_chance</code> is 0.5 as per the default values above. At most 33% of the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span> (rounded up) can be <span style="color:var(--special-innocent);">special innocents</span> as <code>ttt_special_innocent_pct</code> is set to 0.33. This means that there will be at most two <span style="color:var(--special-innocent);">special innocents</span>. However, each of those two players only has a 50% chance to be a <span style="color:var(--special-innocent);">special innocent</span> as <code>ttt_special_innocent_chance</code> is set to 0.5. This means it is possible for the round to have zero, one, or two <span style="color:var(--special-innocent);">special innocents</span>. All remaining members of the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span> will each be an <span class="inline-icon" style="color:var(--innocent);"><i class="icon-innocent"></i><a href="#innocent">Innocent</a></span>.</p>
+            <p>If you wanted it to be possible for all members of the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span> to be <span style="color:var(--special-innocent);">special innocents</span> at once, set <code>ttt_special_innocent_pct</code> to 1. Alternately, if you always wanted the same number of <span style="color:var(--special-innocent);">special innocents</span> in each round with no variation, set <code>ttt_special_innocent_chance</code> to 1. Setting either <code>ttt_special_innocent_pct</code> or <code>ttt_special_innocent_chance</code> to 0 will make it impossible for <span style="color:var(--special-innocent);">special innocents</span> to spawn.</p>
+            <p>Instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page, and ConVars specific to configuring each role can be found below.</p>
+        </div>
+    </div>
+    <div id="innocent" class="noncollapsible">
         <button class="header" style="cursor: default; background-color:var(--innocent);"><i class="icon-innocent"></i>Innocent</button>
         <div class="content">
             <p>The <span class="inline-icon" style="color:var(--innocent);"><i class="icon-innocent"></i><a href="#innocent">Innocent</a></span> is the base member of the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span> and has no special abilities.</p>
