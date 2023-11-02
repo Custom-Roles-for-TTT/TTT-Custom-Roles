@@ -1731,6 +1731,9 @@ end
 CreateConVar("ttt_traitor_vision_enable", "0", FCVAR_REPLICATED)
 OldCVarWarning("ttt_traitor_vision_enable", "ttt_traitors_vision_enable")
 
+CreateConVar("ttt_traitor_credits_timer", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_traitor_credits_timer", "ttt_traitors_credits_timer")
+
 -- Arsonist
 CreateConVar("ttt_detective_search_only_arsonistdouse", "0", FCVAR_REPLICATED)
 OldCVarWarning("ttt_detective_search_only_arsonistdouse", "ttt_detectives_search_only_arsonistdouse")

@@ -195,7 +195,7 @@ ttt_hivemind_min_players                    0       // The minimum number of pla
 
 // TRAITOR TEAM SETTINGS
 ttt_traitors_vision_enable                  0       // Whether members of the traitor team can see other members of the traitor team (including Glitches) through walls via a highlight effect
-ttt_traitor_credits_timer                   0       // How often in seconds to give members of the traitor team a credit (set to 0 to disable)
+ttt_traitors_credits_timer                  0       // How often in seconds to give members of the traitor team a credit (set to 0 to disable)
 
 // Traitor
 ttt_traitor_phantom_cure                    0       // Whether to allow the traitor to buy the phantom exorcism device which can remove a haunting phantom. Server must be restarted for changes to take effect
