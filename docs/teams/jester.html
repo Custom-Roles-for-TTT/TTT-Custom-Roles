@@ -125,6 +125,28 @@
             <p>Instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page, and ConVars specific to configuring each role can be found below.</p>
         </div>
     </div>
+    <div class="noncollapsible">
+        <button class="header" style="cursor: default; background-color:#555555">Role Guidelines</button>
+        <div class="content">
+            <p>When designing roles it is important to make sure your role is part of the correct team. Each team has a unique identity along with strengths and weaknesses that play better with some roles than others. If you are designing a jester role, keep the following in mind:</p>
+            <b>Jesters should:</b>
+            <ul style="margin: 10px 0;">
+                <li>Have a config option to be a part of the independent team instead if the role could also work as one that does damage but has no team.</li>
+                <li>Have unique win conditions, secondary win conditions, or some way of changing into a role that has a win condition.</li>
+                <li>Have some interesting mechanic or ability to help them toward their win condition or help with changing into a role that has a win condition.</li>
+            </ul>
+            <b>Jesters should <u>NOT</u>:</b>
+            <ul style="margin: 10px 0;">
+                <li>Be able to damage other players. If you role relies on being able to damage other players at all times, consider the following:</li>
+                <ul>
+                    <li>Your role might be a better fit as an independent. In most cases independents are roles that are not on the team of any other roles that can freely do damage to other players.</li>
+                    <li>If your role only needs to deal damage after certain criteria have been met, consider changing your role's team from jester to independent mid round like with the <span class="inline-icon" style="color:var(--jester);"><i class="icon-clown"></i><a href="#clown">Clown</a></span>.</li>
+                </ul>
+            </ul>
+            <p>These are just guidelines and in some special circumstances a role might be best fit as a jester even if it doesn't align with the above suggestions. However, in general following these suggestions will ensure that your role works well within the framework that Custom Roles for TTT provides.</p>
+            <p>A walkthrough for creating your own role can be found on the <a href="../tutorials/create_your_own_role.html">Create Your Own Role</a> tutorial page.</p>
+        </div>
+    </div>
     <div id="beggar" class="collapsible">
         <button class="header" style="background-image:linear-gradient(110deg, var(--jester) 0%, var(--jester) 70%, var(--independent) 70%, var(--independent) 100%);"><i class="icon-beggar"></i>Beggar</button>
         <div class="content">
@@ -454,7 +476,7 @@
         <button class="header" style="background-color:var(--jester);"><i class="icon-clown"></i>Clown</button>
         <div class="content">
             <div class="moreless">[more]</div>
-            <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-clown"></i><a href="#clown">Clown</a></span> pretends to be a <span class="inline-icon" style="color:var(--jester);"><i class="icon-jester"></i><a href="#jester">Jester</a></span> until someone is about to win, then they can deal damage and must kill everyone else to win.</p>
+            <p>The <span class="inline-icon" style="color:var(--jester);"><i class="icon-clown"></i><a href="#clown">Clown</a></span> pretends to be a <span class="inline-icon" style="color:var(--jester);"><i class="icon-jester"></i><a href="#jester">Jester</a></span> until someone is about to win, then they become an <span style="color:var(--independent)">independent</span> and can deal damage and must kill everyone else to win.</p>
             <div class="expansion">
                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
                 <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
