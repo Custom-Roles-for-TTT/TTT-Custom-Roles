@@ -103,7 +103,7 @@
                     <td><b>Vanilla TTT ConVar</b> - The number of credits a member of the traitor team will receive if they kill a detective.</td>
                 </tr>
                 <tr>
-                    <td>ttt_traitor_credits_timer</td>
+                    <td>ttt_traitors_credits_timer</td>
                     <td>0</td>
                     <td>Integer</td>
                     <td>How often in seconds to give members of the traitor team a credit. <i>(Set to 0 to disable.)</i></td>
@@ -781,6 +781,24 @@
                         <td>Whether vampires have the ability to convert living targets to a vampire thrall using their fangs.</td>
                     </tr>
                     <tr>
+                        <td>ttt_vampire_credits_award_pct</td>
+                        <td>0.35</td>
+                        <td>Float (0-1)</td>
+                        <td>When this percentage of non-vampire ally, non-jester players are dead, vampires are awarded a number of credits equal to <code>ttt_vampire_credits_award_size</code>. <i>(Requires <code>ttt_vampire_is_independent</code> or <code>ttt_vampire_is_monster</code> to be enabled.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_vampire_credits_award_repeat</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether the credit award determined by <code>ttt_vampire_credits_award_pct</code> and <code>ttt_vampire_credits_award_size</code> is handed out multiple times. <i>(e.g. If <code>ttt_vampire_credits_award_pct</code> is 0.25, vampires will be awarded credits at 25% killed, 50% killed, and 75% killed. Requires <code>ttt_vampire_is_independent</code> or <code>ttt_vampire_is_monster</code> to be enabled.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_vampire_credits_award_size</td>
+                        <td>1</td>
+                        <td>Integer</td>
+                        <td>The number of credits awarded to vampires when the percentage determined by <code>ttt_vampire_credits_award_pct</code> of non-vampire ally, non-jester players are dead. <i>(Requires <code>ttt_vampire_is_independent</code> or <code>ttt_vampire_is_monster</code> to be enabled.)</i></td>
+                    </tr>
+                    <tr>
                         <td>ttt_vampire_credits_starting</td>
                         <td>1</td>
                         <td>Integer</td>
@@ -868,7 +886,7 @@
                         <td>ttt_vampire_kill_credits</td>
                         <td>1</td>
                         <td>Boolean</td>
-                        <td>Whether the vampire receives credits when they kill another player.</td>
+                        <td>Whether vampires receive credits when they kill other players. <i>(Requires <code>ttt_vampire_is_independent</code> or <code>ttt_vampire_is_monster</code> to be enabled.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_vampire_loot_credits</td>

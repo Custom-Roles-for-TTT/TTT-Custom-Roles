@@ -316,6 +316,24 @@
                         <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to the killer.</td>
                     </tr>
                     <tr>
+                        <td>ttt_killer_credits_award_pct</td>
+                        <td>0.35</td>
+                        <td>Float (0-1)</td>
+                        <td>When this percentage of non-jester players are dead, killers are awarded a number of credits equal to <code>ttt_killer_credits_award_size</code>.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_killer_credits_award_repeat</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether the credit award determined by <code>ttt_killer_credits_award_pct</code> and <code>ttt_killer_credits_award_size</code> is handed out multiple times. <i>(e.g. If <code>ttt_killer_credits_award_pct</code> is 0.25, killers will be awarded credits at 25% killed, 50% killed, and 75% killed.)</i></td>
+                    </tr>
+                    <tr>
+                        <td>ttt_killer_credits_award_size</td>
+                        <td>1</td>
+                        <td>Integer</td>
+                        <td>The number of credits awarded to killers when the percentage determined by <code>ttt_killer_credits_award_pct</code> of non-jester players are dead.</td>
+                    </tr>
+                    <tr>
                         <td>ttt_killer_credits_starting</td>
                         <td>2</td>
                         <td>Integer</td>
