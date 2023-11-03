@@ -25,24 +25,6 @@
 </div>
 <div class="contentbody panel">
     <div class="noncollapsible">
-        <button class="header" style="cursor: default; background-color:#555555">Role Guidelines</button>
-        <div class="content">
-            <p>When designing roles it is important to make sure your role is part of the correct team. Each team has a unique identity along with strengths and weaknesses that play better with some roles than others. If you are designing a monster role, keep the following in mind:</p>
-            <b>Monsters should:</b>
-            <ul style="margin: 10px 0;">
-                <li>Be either a traitor or an independent by default with a config option to change them into a monster. The monster team is completely disabled by default and any role that works on the monster team should also work as either a traitor or an independent as well.</li>
-                <li>Win by working with other monsters to kill the innocents and traitors.</li>
-            </ul>
-            <b>Monsters should <u>NOT</u>:</b>
-            <ul style="margin: 10px 0;">
-                <li>Have unique win conditions. If your role requires a unique win condition consider making them a jester or independent.</li>
-                <li>Have any reason to kill/damage/annoy other monsters. If your role wants to interfere with the monsters' goals consider making them an innocent, traitor, detective, jester or independent.</li>
-            </ul>
-            <p>These are just guidelines and in some special circumstances a role might be best fit as an independent even if it doesn't align with the above suggestions. However, in general following these suggestions will ensure that your role works well within the framework that Custom Roles for TTT provides.</p>
-            <p>A walkthrough for creating your own role can be found on the <a href="../tutorials/create_your_own_role.html">Create Your Own Role</a> tutorial page.</p>
-        </div>
-    </div>
-    <div class="noncollapsible">
         <button class="header" style="cursor: default; background-color:#555555">Team Configuration</button>
         <div class="content">
             <p>Each round after detectives, traitors, jesters, and independents are chosen, a percentage of the remaining players will be part of the monster team. The following ConVars can be used to configure the requirements and restrictions on how monsters spawn.</p>
@@ -79,6 +61,24 @@
             <p><b>Example:</b> There are eight players in the game. <code>ttt_monster_pct</code> is 0.33, and <code>ttt_monster_chance</code> is 0.5 as per the default values above. Four players have already been picked as traitors, detectives, jesters and independents. At most 33% of the remaining players (rounded up) can be monsters as <code>ttt_monster_pct</code> is set to 0.33. This means that there will be at most two monsters. However, each of those players only has a 50% chance to be a monster as <code>ttt_monster_chance</code> is set to 0.5. This means it is possible for the round to have zero, one, or two monsters. All remaining players who have not had a role assigned will be part of the innocent team.</p>
             <p>If you wanted it to be possible for all non-traitor, non-detective, non-jester, non-independent players to be monsters at once, set <code>ttt_monster_pct</code> to 1. Alternately, if you always wanted the same number of monsters in each round with no variation, set <code>ttt_monster_chance</code> to 1. Setting either <code>ttt_monster_pct</code> or <code>ttt_monster_chance</code> to 0 will make it impossible for monsters to spawn.</p>
             <p>Instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page, and ConVars specific to configuring each role can be found below.</p>
+        </div>
+    </div>
+    <div class="noncollapsible">
+        <button class="header" style="cursor: default; background-color:#555555">Role Guidelines</button>
+        <div class="content">
+            <p>When designing roles it is important to make sure your role is part of the correct team. Each team has a unique identity along with strengths and weaknesses that play better with some roles than others. If you are designing a monster role, keep the following in mind:</p>
+            <b>Monsters should:</b>
+            <ul style="margin: 10px 0;">
+                <li>Be either a traitor or an independent by default with a config option to change them into a monster. The monster team is completely disabled by default and any role that works on the monster team should also work as either a traitor or an independent as well.</li>
+                <li>Win by working with other monsters to kill the innocents and traitors.</li>
+            </ul>
+            <b>Monsters should <u>NOT</u>:</b>
+            <ul style="margin: 10px 0;">
+                <li>Have unique win conditions. If your role requires a unique win condition consider making them a jester or independent.</li>
+                <li>Have any reason to kill/damage/annoy other monsters. If your role wants to interfere with the monsters' goals consider making them an innocent, traitor, detective, jester or independent.</li>
+            </ul>
+            <p>These are just guidelines and in some special circumstances a role might be best fit as an independent even if it doesn't align with the above suggestions. However, in general following these suggestions will ensure that your role works well within the framework that Custom Roles for TTT provides.</p>
+            <p>A walkthrough for creating your own role can be found on the <a href="../tutorials/create_your_own_role.html">Create Your Own Role</a> tutorial page.</p>
         </div>
     </div>
     <div class="noncollapsible">
