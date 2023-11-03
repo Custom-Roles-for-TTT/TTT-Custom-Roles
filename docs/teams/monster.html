@@ -25,6 +25,45 @@
 </div>
 <div class="contentbody panel">
     <div class="noncollapsible">
+        <button class="header" style="cursor: default; background-color:#555555">Team Configuration</button>
+        <div class="content">
+            <p>Each round after detectives, traitors, jesters, and independents are chosen, a percentage of the remaining players will be part of the monster team. The following ConVars can be used to configure the requirements and restrictions on how monsters spawn.</p>
+            <table style="width:100%; margin-bottom: 10px;">
+                <thead>
+                <tr>
+                    <th>ConVar</th>
+                    <th>Default</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>ttt_monster_max</td>
+                    <td>1</td>
+                    <td>Integer</td>
+                    <td>The maximum number of players that can spawn as a member of the monster team.</td>
+                </tr>
+                <tr>
+                    <td>ttt_monster_pct</td>
+                    <td>0.33</td>
+                    <td>Float (0-1)</td>
+                    <td>Percentage of innocents, rounded up, that have the chance to spawn as a monster.</td>
+                </tr>
+                <tr>
+                    <td>ttt_monster_chance</td>
+                    <td>0.5</td>
+                    <td>Float (0-1)</td>
+                    <td>The chance that a monster will spawn in each individual slot made by <code>ttt_monster_pct</code>.</td>
+                </tr>
+                </tbody>
+            </table>
+            <p><b>Example:</b> There are eight players in the game. <code>ttt_monster_pct</code> is 0.33, and <code>ttt_monster_chance</code> is 0.5 as per the default values above. Four players have already been picked as traitors, detectives, jesters and independents. At most 33% of the remaining players (rounded up) can be monsters as <code>ttt_monster_pct</code> is set to 0.33. This means that there will be at most two monsters. However, each of those players only has a 50% chance to be a monster as <code>ttt_monster_chance</code> is set to 0.5. This means it is possible for the round to have zero, one, or two monsters. All remaining players who have not had a role assigned will be part of the innocent team.</p>
+            <p>If you wanted it to be possible for all non-traitor, non-detective, non-jester, non-independent players to be monsters at once, set <code>ttt_monster_pct</code> to 1. Alternately, if you always wanted the same number of monsters in each round with no variation, set <code>ttt_monster_chance</code> to 1. Setting either <code>ttt_monster_pct</code> or <code>ttt_monster_chance</code> to 0 will make it impossible for monsters to spawn.</p>
+            <p>Instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page, and ConVars specific to configuring each role can be found below.</p>
+        </div>
+    </div>
+    <div class="noncollapsible">
         <button class="header" style="cursor: default; background-color:var(--monster);"><i class="icon-team"></i>Configurable Monsters</button>
         <div class="content">
             <p>The following roles can be configured to be part of the <span style="color:var(--monster);">monster team</span> instead of their default team: <span class="inline-icon" style="color:var(--independent);"><i class="icon-hive-mind"></i><a href="../teams/independent.html#hive-mind">Hive Mind</a></span>, <span class="inline-icon" style="color:var(--independent);"><i class="icon-mad-scientist"></i><a href="../teams/independent.html#mad-scientist">Mad Scientist</a></span>, <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-parasite"></i><a href="../teams/traitor.html#parasite">Parasite</a></span>, <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-vampire"></i><a href="../teams/traitor.html#vampire">Vampire</a></span>, and <span class="inline-icon" style="color:var(--independent);"><i class="icon-zombie"></i><a href="../teams/independent.html#zombie">Zombie</a></span>.</p>

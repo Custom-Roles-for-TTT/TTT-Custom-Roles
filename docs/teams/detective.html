@@ -23,11 +23,198 @@
     </div>
 </div>
 <div class="contentbody panel">
+    <div class="noncollapsible">
+        <button class="header" style="cursor: default; background-color:#555555">Team Configuration</button>
+        <div class="content">
+            <p>Each round a percentage of players will be chosen as detectives. A fraction of those players have a chance to be a <span style="color:var(--special-detective)">special detective</span>, and the others will each be a <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="#detective">Detective</a></span>.</p>
+            <p>The following ConVars can be used to configure the requirements and restrictions on how detectives spawn.</p>
+            <table style="width:100%; margin-bottom: 10px;">
+                <thead>
+                <tr>
+                    <th>ConVar</th>
+                    <th>Default</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>ttt_detective_pct</td>
+                    <td>0.13</td>
+                    <td>Float (0-1)</td>
+                    <td><b>Vanilla TTT ConVar</b> - Percentage of players, rounded up, that will spawn as a detective.</td>
+                </tr>
+                <tr>
+                    <td>ttt_detective_max</td>
+                    <td>32</td>
+                    <td>Integer</td>
+                    <td><b>Vanilla TTT ConVar</b> - The maximum number of players that can spawn as a detective.</td>
+                </tr>
+                <tr>
+                    <td>ttt_detective_min_players</td>
+                    <td>8</td>
+                    <td>Integer</td>
+                    <td><b>Vanilla TTT ConVar</b> - The minimum number of players required to spawn detectives.</td>
+                </tr>
+                <tr>
+                    <td>ttt_detective_karma_min</td>
+                    <td>600</td>
+                    <td>Integer</td>
+                    <td><b>Vanilla TTT ConVar</b> - The minimum amount of karma required for a player to be selected to spawn as a detective.</td>
+                </tr>
+                <tr>
+                    <td>ttt_special_detective_pct</td>
+                    <td>0.33</td>
+                    <td>Float (0-1)</td>
+                    <td>Percentage of detectives, rounded up, that have the chance to spawn as a special detective.</td>
+                </tr>
+                <tr>
+                    <td>ttt_special_detective_chance</td>
+                    <td>0.5</td>
+                    <td>Float (0-1)</td>
+                    <td>The chance that a special detective will spawn in each individual slot made by <code>ttt_special_detective_pct</code>.</td>
+                </tr>
+                </tbody>
+            </table>
+            <p><b>Example:</b> There are eight players in the game. <code>ttt_detective_pct</code> is 0.13, <code>ttt_special_detective_pct</code> is 0.33, and <code>ttt_special_detective_chance</code> is 0.5 as per the default values above. 13% of the players in the game (rounded up) will spawn as detectives as <code>ttt_detective_pct</code> is set to 0.13. This means there will be two players that are detectives. At most 33% of those detectives (rounded up) can be special detectives as <code>ttt_special_detective_pct</code> is set to 0.33. This means that there will be at most one special detective. However, that player only has a 50% chance to be a special detective as <code>ttt_special_detective_chance</code> is set to 0.5. This means it is possible for the round to have zero or one special detective. All remaining detectives will each be a <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="#detective">Detective</a></span>.</p>
+            <p>If you wanted it to be possible for all detectives to be special detectives at once, set <code>ttt_special_detective_pct</code> to 1. Alternately, if you always wanted the same number of special detectives in each round with no variation, set <code>ttt_special_detective_chance</code> to 1. Setting either <code>ttt_special_detective_pct</code> or <code>ttt_special_detective_chance</code> to 0 will make it impossible for special detectives to spawn.</p>
+            <p>Additionally, detectives are able to earn credits to spend in the shop. The following ConVars can be used to configure how credits are earned.</p>
+            <table style="width:100%; margin-bottom: 10px;">
+                <thead>
+                <tr>
+                    <th>ConVar</th>
+                    <th>Default</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>ttt_det_credits_traitorkill</td>
+                    <td>0</td>
+                    <td>Integer</td>
+                    <td><b>Vanilla TTT ConVar</b> - The number of credits detectives receive when they kill a traitor.</td>
+                </tr>
+                <tr>
+                    <td>ttt_det_credits_traitordead</td>
+                    <td>1</td>
+                    <td>Integer</td>
+                    <td><b>Vanilla TTT ConVar</b> - The number of credits detectives receive when a traitor dies.</td>
+                </tr>
+                <tr>
+                    <td>ttt_detectives_credits_timer</td>
+                    <td>0</td>
+                    <td>Integer</td>
+                    <td>How often in seconds to give detectives a credit. <i>(Set to 0 to disable.)</i></td>
+                </tr>
+                </tbody>
+            </table>
+            <p>Detectives also have the ability to search bodies and uncover information about dead players and how they died. The following ConVars can used to configure what information is available to which players.</p>
+            <table style="width:100%; margin-bottom: 10px;">
+                <thead>
+                <tr>
+                    <th>ConVar</th>
+                    <th>Default</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>ttt_all_search_postround</td>
+                    <td>1</td>
+                    <td>Boolean</td>
+                    <td>Whether non-detectives can search bodies post-round.</td>
+                </tr>
+                <tr>
+                    <td>ttt_all_search_binoc</td>
+                    <td>0</td>
+                    <td>Boolean</td>
+                    <td>Whether non-detectives can search bodies if they are using binoculars.</td>
+                </tr>
+                <tr>
+                    <td>ttt_detectives_disable_looting</td>
+                    <td>0</td>
+                    <td>Boolean</td>
+                    <td>Whether to disable a detective role's ability to loot credits from bodies.</td>
+                </tr>
+                <tr>
+                    <td>ttt_detectives_search_only</td>
+                    <td>1</td>
+                    <td>Boolean</td>
+                    <td>Whether only detectives can search bodies.</td>
+                </tr>
+                <tr>
+                    <td>ttt_detectives_search_only_*</td>
+                    <td>0</td>
+                    <td>Boolean</td>
+                    <td>Whether only detectives can reveal specific information from a body. Once a detective searches a body, this information will be available to all players. Replace * with any of the following:
+                        <ul>
+                            <li><code>arsonistdouse</code> - If the dead player was doused by an arsonist and when.</li>
+                            <li><code>c4</code> - The dead player's C4 disarm code.</li>
+                            <li><code>dmg</code> - The type of damage used to kill the dead player.</li>
+                            <li><code>dtime</code> - The dead player's time of death.</li>
+                            <li><code>equipment</code> - Any equipment the dead player had on them.</li>
+                            <li><code>head</code> - If the dead player was killed by a headshot.</li>
+                            <li><code>kills</code> - A list of players that the dead player killed.</li>
+                            <li><code>lastid</code> - The last player the dead player saw before they died.</li>
+                            <li><code>nick</code> - The dead player's name.</li>
+                            <li><code>role</code> - The dead player's role.</li>
+                            <li><code>stime</code> - The dead player's DNA sample decay time.</li>
+                            <li><code>team</code> - The dead player's team. <i>(Requires <code>ttt_detectives_search_only_role</code> to be disabled.)</i></li>
+                            <li><code>wep</code> - The weapon used to kill the dead player.</li>
+                            <li><code>words</code> - The dead player's last words. </li>
+                        </ul>
+                        <i>(Requires <code>ttt_detectives_search_only</code> to be disabled.)</i>.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <p>Finally the following miscellaneous ConVars can be used to configure options that apply to all detectives.</p>
+            <table style="width:100%; margin-bottom: 10px;">
+                <thead>
+                <tr>
+                    <th>ConVar</th>
+                    <th>Default</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>ttt_detectives_glow_enable</td>
+                    <td>0</td>
+                    <td>Boolean</td>
+                    <td>Whether detectives and detective-likes can see other detectives and detective-likes through walls via a highlight effect.</td>
+                </tr>
+                <tr>
+                    <td>ttt_detectives_hide_special_mode</td>
+                    <td>0</td>
+                    <td>Integer (0-2)</td>
+                    <td>How to handle special detective role information:
+                        <ol start="0">
+                            <li>Show the special detective's role to everyone.</li>
+                            <li>Hide the special detective's role from everyone and just show as a regular detective instead.</li>
+                            <li>Hide the special detective's role from everyone but themselves.</li>
+                        </ol>
+                    </td>
+                </tr>
+                <tr>
+                    <td>ttt_special_detectives_armor_loadout</td>
+                    <td>1</td>
+                    <td>Boolean</td>
+                    <td>Whether special detectives get armor automatically for free. <i>(Regular detectives always get body armor for free.)</i></td>
+                </tr>
+                </tbody>
+            </table>
+            <p>Instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page, and ConVars specific to configuring each role can be found below.</p>
+        </div>
+    </div>
     <div id="detective" class="collapsible">
         <button class="header" style="background-color:var(--detective);"><i class="icon-detective"></i>Detective</button>
         <div class="content">
             <div class="moreless">[more]</div>
-            <p>The <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="#detective">Detective</a></span> is the base member of the <span style="color:var(--detective);">detective team</span> who can use their DNA scanner to track down killers.</p>
+            <p>The <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="#detective">Detective</a></span> is the base version of the <span style="color:var(--detective);">detectives</span> who can use their DNA scanner to track down killers.</p>
             <div class="expansion">
                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
                 <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
@@ -42,7 +229,7 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <td>ttt_det_credits_starting </td>
+                        <td>ttt_det_credits_starting</td>
                         <td>1</td>
                         <td>Integer</td>
                         <td><b>Vanilla TTT ConVar</b> - The number of credits a detective should start with.</td>

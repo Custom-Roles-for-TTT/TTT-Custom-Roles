@@ -24,6 +24,107 @@
     </div>
 </div>
 <div class="contentbody panel">
+    <div class="noncollapsible">
+        <button class="header" style="cursor: default; background-color:#555555">Team Configuration</button>
+        <div class="content">
+            <p>Each round after detectives and traitors are chosen, some of the remaining players may be chosen as jesters. The following ConVars can be used to configure the requirements and restrictions on how jesters spawn.</p>
+            <table style="width:100%; margin-bottom: 10px;">
+                <thead>
+                <tr>
+                    <th>ConVar</th>
+                    <th>Default</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>ttt_independent_chance</td>
+                    <td>0.5</td>
+                    <td>Float (0-1)</td>
+                    <td>The chance that a single independent <i>(or jester if <code>ttt_single_jester_independent</code> is enabled)</i> will spawn in a round. <i>(Requires <code>ttt_multiple_jesters_independents</code> to be disabled.)</i></td>
+                </tr>
+                <tr>
+                    <td>ttt_jester_chance</td>
+                    <td>0.5</td>
+                    <td>Float (0-1)</td>
+                    <td>The chance that a single jester will spawn in a round. <i>(Requires <code>ttt_single_jester_independent</code> and <code>ttt_multiple_jesters_independents</code> to be disabled.)</i></td>
+                </tr>
+                <tr>
+                    <td>ttt_single_jester_independent</td>
+                    <td>1</td>
+                    <td>Boolean</td>
+                    <td>Whether only a single jester or independent should spawn in a round.</td>
+                </tr>
+                <tr>
+                    <td>ttt_single_jester_independent_max_players</td>
+                    <td>0</td>
+                    <td>Integer</td>
+                    <td>The maximum players to have only a single jester or independent spawn in a row. If there are more players than this both a jester and an independent can spawn in the same round. <i>(Set to 0 to disable. Requires <code>ttt_single_jester_independent</code> to be enabled.)</i></td>
+                </tr>
+                <tr>
+                    <td>ttt_multiple_jesters_independents</td>
+                    <td>0</td>
+                    <td>Boolean</td>
+                    <td>Whether more than one jester/independent should be allowed to spawn in each round. <i>(Enabling this will ignore <code>ttt_independent_chance</code>, <code>ttt_jester_chance</code>, <code>ttt_single_jester_independent</code>, and <code>ttt_single_jester_independent_max_players</code>.)</i></td>
+                </tr>
+                <tr>
+                    <td>ttt_jester_independent_max</td>
+                    <td>2</td>
+                    <td>Integer</td>
+                    <td>The maximum number of players that can spawn as a jester or independent. <i>(Requires <code>ttt_multiple_jesters_independents</code> to be enabled.)</i></td>
+                </tr>
+                <tr>
+                    <td>ttt_jester_independent_pct</td>
+                    <td>0.13</td>
+                    <td>Float (0-1)</td>
+                    <td>Percentage of players, rounded up, that have the chance to spawn as a jester or independent. <i>(Requires <code>ttt_multiple_jesters_independents</code> to be enabled.)</i></td>
+                </tr>
+                <tr>
+                    <td>ttt_jester_independent_chance</td>
+                    <td>0.5</td>
+                    <td>Float (0-1)</td>
+                    <td>The chance that a jester or independent will spawn in each individual slot made by <code>ttt_jester_independent_pct</code>. <i>(Requires <code>ttt_multiple_jesters_independents</code> to be enabled.)</i></td>
+                </tr>
+                </tbody>
+            </table>
+            <p><b>Example:</b> <code>ttt_independent_chance</code> is 0.5, <code>ttt_jester_chance</code> is 0.5, <code>ttt_single_jester_independent</code> is 1, and <code>ttt_single_jester_independent_max_players</code> is 0 as per the default values above. As <code>ttt_single_jester_independent</code> is set to 1 there can only be a single jester or independent in each round and <code>ttt_jester_chance</code> will be ignored. This means there is a 50% chance that a jester or independent will spawn in the round as <code>ttt_independent_chance</code> is set to 0.5. If <code>ttt_single_jester_independent</code> were instead set to 0, there is a 50% chance that a jester will spawn in the round as <code>ttt_jester_chance</code> is set to 0.5. This jester could spawn in addition to an independent, but there will only ever be one of each. If <code>ttt_single_jester_independent_max_players</code> were now set to 8, this would mean that in games with 8 or less players only a single jester or independent could spawn, but in games with 9 or more players there is a chance for both a jester and an independent to spawn.</p>
+            <p>If <code>ttt_multiple_jesters_independents</code> was set to 1, <code>ttt_independent_chance</code>, <code>ttt_jester_chance</code>, <code>ttt_single_jester_independent</code>, and <code>ttt_single_jester_independent_max_players</code> would all be ignored and the jesters and independent roles are combined into one group. In this example there are eight players in the game, <code>ttt_jester_independent_pct</code> is 0.13, and <code>ttt_jester_independent_chance</code> is 0.5 as per the default values above. At most 13% of players (rounded up) can be jesters or independents as <code>ttt_jester_independent_pct</code> is set to 0.13. This means that there will be at most two jesters or independents. However, each of those players only has a 50% chance to be a jester or independent as <code>ttt_jester_independent_chance</code> is set to 0.5. This means it is possible for the round to have zero, one, or two jesters and independents. All remaining players who have not had a role assigned will be part of the innocent or monster teams.</p>
+            <p>If you always wanted the same number of jesters and independents in each round with no variation, set <code>ttt_jester_independent_chance</code> to 1. Setting either <code>ttt_jester_independent_pct</code> or <code>ttt_jester_independent_chance</code> to 0 will make it impossible for jesters and independents to spawn while <code>ttt_multiple_jesters_independents</code> is enabled.</p>
+            <p>Additionally, the following miscellaneous ConVars can be used to configure options that apply to all jesters.</p>
+            <table style="width:100%; margin-bottom: 10px;">
+                <thead>
+                <tr>
+                    <th>ConVar</th>
+                    <th>Default</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>ttt_jesters_trigger_traitor_testers</td>
+                    <td>1</td>
+                    <td>Boolean</td>
+                    <td>Whether jesters trigger traitor testers as if they were traitors.</td>
+                </tr>
+                <tr>
+                    <td>ttt_jesters_visible_to_traitors</td>
+                    <td>1</td>
+                    <td>Boolean</td>
+                    <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to members of the traitor team.</td>
+                </tr>
+                <tr>
+                    <td>ttt_jesters_visible_to_monsters</td>
+                    <td>1</td>
+                    <td>Boolean</td>
+                    <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to members of the monster team.</td>
+                </tr>
+                </tbody>
+            </table>
+            <p>Instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page, and ConVars specific to configuring each role can be found below.</p>
+        </div>
+    </div>
     <div id="beggar" class="collapsible">
         <button class="header" style="background-image:linear-gradient(110deg, var(--jester) 0%, var(--jester) 70%, var(--independent) 70%, var(--independent) 100%);"><i class="icon-beggar"></i>Beggar</button>
         <div class="content">

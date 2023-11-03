@@ -28,7 +28,7 @@
         <button class="header" style="cursor: default; background-color:#555555">Team Configuration</button>
         <div class="content">
             <p>Each round after detectives are chosen, a percentage of the remaining players will be part of the traitor team. A fraction of those players have a chance to be a <span style="color:var(--special-traitor)">special traitor</span>, and the others will each be a <span class="inline-icon" style="color:var(--traitor);"><i class="icon-traitor"></i><a href="#traitor">Traitor</a></span>.</p>
-            <p>The percentage of players that will be on the traitor team, the maximum number of players on the traitor team, the percentage of players on the traitor team who have the chance to become a special traitor, and the chance that any one of them will be chosen as a special traitor are determined by the ConVars in the table below.</p>
+            <p>The following ConVars can be used to configure the requirements and restrictions on how traitors spawn.</p>
             <table style="width:100%; margin-bottom: 10px;">
                 <thead>
                 <tr>
@@ -107,6 +107,25 @@
                     <td>0</td>
                     <td>Integer</td>
                     <td>How often in seconds to give members of the traitor team a credit. <i>(Set to 0 to disable.)</i></td>
+                </tr>
+                </tbody>
+            </table>
+            <p>Finally the following miscellaneous ConVars can be used to configure options that apply to all members of the traitor team.</p>
+            <table style="width:100%; margin-bottom: 10px;">
+                <thead>
+                <tr>
+                    <th>ConVar</th>
+                    <th>Default</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>ttt_traitors_vision_enable</td>
+                    <td>0</td>
+                    <td>Boolean</td>
+                    <td>Whether members of the traitor team can see other members of the traitor team through walls via a highlight effect.</td>
                 </tr>
                 </tbody>
             </table>
