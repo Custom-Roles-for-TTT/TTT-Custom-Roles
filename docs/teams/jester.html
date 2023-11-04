@@ -120,6 +120,18 @@
                     <td>Boolean</td>
                     <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to members of the monster team.</td>
                 </tr>
+                <tr>
+                    <td>ttt_karma_jesterkill_penalty</td>
+                    <td>50</td>
+                    <td>Integer</td>
+                    <td>The karma penalty for killing the jester.</td>
+                </tr>
+                <tr>
+                    <td>ttt_karma_jesterdmg_ratio</td>
+                    <td>0.5</td>
+                    <td>Float</td>
+                    <td>The fraction of damage dealt to jesters, that should be taken from the attacker's karma. <i>(e.g. If a player dealt 40 damage to a jester and <code>ttt_karma_jesterdmg_ratio</code> is 0.5, the attacker would lose 20 karma as 40x0.5=20.)</i></td>
+                </tr>
                 </tbody>
             </table>
             <p>Instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page, and ConVars specific to configuring each role can be found below.</p>
