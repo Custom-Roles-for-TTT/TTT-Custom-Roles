@@ -247,6 +247,31 @@ code {
     opacity: 100%;
 }
 
+.large-icon {
+    display: inline-block;
+    font-size: 50px;
+    text-align: center;
+    width: 120px;
+    text-shadow: 1px 1px 0 black;
+}
+
+.large-icon:hover {
+    filter: brightness(90%);
+}
+
+.large-icon-label {
+    margin: 0;
+    font-size: 15px;
+    width: 100%;
+    text-decoration: underline;
+}
+
+@media screen and (max-width: 530px) {
+    .panel {
+        width: 100%;
+    }
+}
+
 @media screen and (max-width: 1000px) {
     .panel {
         width: 100%;
