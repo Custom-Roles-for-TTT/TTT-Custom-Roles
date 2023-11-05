@@ -13,7 +13,7 @@ local StringUpper = string.upper
 -------------
 
 local infected_cough_enabled = GetConVar("ttt_infected_cough_enabled")
-local infected_respawn_enable = GetConVar("ttt_infected_respawn_enable")
+local infected_respawn_enabled = GetConVar("ttt_infected_respawn_enabled")
 local infected_show_icon = GetConVar("ttt_infected_show_icon")
 local infected_succumb_time = GetConVar("ttt_infected_succumb_time")
 local infected_full_health = GetConVar("ttt_infected_full_health")
@@ -183,7 +183,7 @@ hook.Add("TTTTutorialRoleText", "Infected_TTTTutorialRoleText", function(role, t
             html = html .. "<span style='display: block; margin-top: 10px;'>Once the " .. ROLE_STRINGS[ROLE_INFECTED] .. " has succumbed to their infection, they are <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>healed back to full health</span>.</span>"
         end
 
-        if infected_respawn_enable:GetBool() then
+        if infected_respawn_enabled:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_INFECTED] .. " will also turn into " .. ROLE_STRINGS_EXT[ROLE_ZOMBIE] .. " if <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>they are killed</span>.</span>"
         end
 

@@ -1731,9 +1731,6 @@ end
 CreateConVar("ttt_traitor_vision_enable", "0", FCVAR_REPLICATED)
 OldCVarWarning("ttt_traitor_vision_enable", "ttt_traitors_vision_enable")
 
-CreateConVar("ttt_traitor_credits_timer", "0", FCVAR_REPLICATED)
-OldCVarWarning("ttt_traitor_credits_timer", "ttt_traitors_credits_timer")
-
 -- Arsonist
 CreateConVar("ttt_detective_search_only_arsonistdouse", "0", FCVAR_REPLICATED)
 OldCVarWarning("ttt_detective_search_only_arsonistdouse", "ttt_detectives_search_only_arsonistdouse")
@@ -1757,6 +1754,16 @@ OldCVarWarning("ttt_detective_glow_enable", "ttt_detectives_glow_enable")
 if SERVER then
     CreateConVar("ttt_detective_credits_timer", "0")
     OldCVarWarning("ttt_detective_credits_timer", "ttt_detectives_credits_timer")
+end
+
+-- Infected
+CreateConVar("ttt_infected_respawn_enable", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_infected_respawn_enable", "ttt_infected_respawn_enabled")
+
+-- Traitor
+if SERVER then
+    CreateConVar("ttt_traitor_credits_timer", "0")
+    OldCVarWarning("ttt_traitor_credits_timer", "ttt_traitors_credits_timer")
 end
 
 -- Vampire

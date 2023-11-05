@@ -385,7 +385,7 @@ ttt_turncoat_change_innocent_kill           0       // Whether to change the tur
 ttt_infected_succumb_time                   180     // Time in seconds for the infected to succumb to their disease
 ttt_infected_full_health                    1       // Whether the infected's health is refilled when they become a zombie
 ttt_infected_prime                          1       // Whether the infected will become a prime zombie
-ttt_infected_respawn_enable                 0       // Whether the infected will respawn as a zombie when killed
+ttt_infected_respawn_enabled                0       // Whether the infected will respawn as a zombie when killed
 ttt_infected_show_icon                      1       // Whether to show the infected icon over their head for zombies and zombie allies
 ttt_infected_cough_enabled                  1       // Whether the infected coughs periodically
 ttt_infected_cough_timer_min                30      // The minimum time between infected coughs

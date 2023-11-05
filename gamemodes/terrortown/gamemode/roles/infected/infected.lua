@@ -26,7 +26,7 @@ local infected_cough_timer_min = CreateConVar("ttt_infected_cough_timer_min", "3
 local infected_cough_timer_max = CreateConVar("ttt_infected_cough_timer_max", "60", FCVAR_NONE, "The maximum time between infected coughs", 0, 300)
 
 local infected_cough_enabled = GetConVar("ttt_infected_cough_enabled")
-local infected_respawn_enable = GetConVar("ttt_infected_respawn_enable")
+local infected_respawn_enabled = GetConVar("ttt_infected_respawn_enabled")
 local infected_succumb_time = GetConVar("ttt_infected_succumb_time")
 local infected_full_health = GetConVar("ttt_infected_full_health")
 
@@ -137,7 +137,7 @@ local function StartSuccumbTimer()
 end
 
 hook.Add("PlayerDeath", "Infected_KillCheck_PlayerDeath", function(victim, infl, attacker)
-    if not infected_respawn_enable:GetBool() then return end
+    if not infected_respawn_enabled:GetBool() then return end
     local valid_kill = IsPlayer(attacker) and attacker ~= victim and GetRoundState() == ROUND_ACTIVE
     if not valid_kill then return end
     if not victim:IsInfected() then return end
