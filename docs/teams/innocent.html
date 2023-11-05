@@ -396,7 +396,9 @@
             <div class="moreless">[more]</div>
             <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-paramedic"></i><a href="#paramedic">Paramedic</a></span> can use their defibrillator to revive another player.</p>
             <div class="expansion">
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                <p>By default, the <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-paramedic"></i><a href="#paramedic">Paramedic</a></span> is given a defibrillator as part of their loadout but this can be disabled via the <code>ttt_paramedic_device_loadout</code> ConVar.</p>
+                <p>When <code>ttt_paramedic_device_shop</code> (and <code>ttt_shop_for_all</code>, see below) are enabled, the <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-paramedic"></i><a href="#paramedic">Paramedic</a></span> can buy a defibrillator from their shop.</p>
+                <p>Any player resurrected by the <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-paramedic"></i><a href="#paramedic">Paramedic</a></span>'s defibrillator  retains their previous role, with the exception of <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="../teams/detective.html#detective">Detective</a></span>-like roles (e.g. <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="../teams/detective.html#detective">Detective</a></span>, <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-deputy"></i><a href="#deputy">Deputy</a></span>, <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-impersonator"></i><a href="../teams/traitor.html#impersonator">Impersonator</a></span>, etc.) which are converted to the vanilla role for their team (<span class="inline-icon" style="color:var(--innocent);"><i class="icon-innocent"></i><a href="#innocent">Innocent</a></span>, <span class="inline-icon" style="color:var(--traitor);"><i class="icon-traitor"></i><a href="../teams/traitor.html#traitor">Traitor</a></span>, etc.). This behavior can be changed by enabling <code>ttt_paramedic_defib_as_innocent</code>, causing all players to come back as <span class="inline-icon" style="color:var(--innocent);"><i class="icon-innocent"></i><a href="#innocent">Innocents</a></span>.</p>
                 <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
                 <table style="width:100%; margin-bottom: 10px;">
                     <thead>
@@ -462,7 +464,21 @@
             <div class="moreless">[more]</div>
             <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-phantom"></i><a href="#phantom">Phantom</a></span> can haunt their killer for a chance to respawn.</p>
             <div class="expansion">
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                <p>If the <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-phantom"></i><a href="#phantom">Phantom</a></span> is killed, they will be resurrected if the person that killed them then dies.</p>
+                <p>Each time the <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-phantom"></i><a href="#phantom">Phantom</a></span> is killed with <code>ttt_phantom_weaker_each_respawn</code> enabled, they will respawn with half as much health (down to a minimum of 1).</p>
+                <p>When the <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-phantom"></i><a href="#phantom">Phantom</a></span> is killed and <code>ttt_phantom_announce_death</code> is enabled, all <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="../teams/detective.html#detective">Detectives</a></span> (and promoted <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="../teams/detective.html#detective">Detective</a></span>-like roles) are notified</span>.</p>
+                <p>To help the <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-phantom"></i><a href="#phantom">Phantom</a></span>'s killer be identified, <code>ttt_phantom_killer_smoke</code> and/or <code>ttt_phantom_killer_footstep_time</code> can be set to envelope the <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-phantom"></i><a href="#phantom">Phantom</a></span>'s killer in a shroud of smoke or have them leave behind bloody footprints, respectively.</p>
+                <p>By default, when the <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-phantom"></i><a href="#phantom">Phantom</a></span> is killed they haunt their killer. While haunting a player, the <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-phantom"></i><a href="#phantom">Phantom</a></span> can use one of their haunting abilities to try and get their killer killed, causing them to respawn. This behavior can be disabled by setting <code>ttt_phantom_killer_haunt</code> to <code>0</code>.</p>
+                <p>
+                    The haunting abilities that the <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-phantom"></i><a href="#phantom">Phantom</a></span> has are:
+                    <ul>
+                        <li>Attack - Make the haunted player use their current weapon for a short time</li>
+                        <li>Drop Weapon - Make the haunted player drop their current weapon</li>
+                        <li>Jump - Make the haunted player jump</li>
+                        <li>Move - Make the haunted player move in the specified direction for a short time</li>
+                    </ul>
+                    Each of these abilities can be adjusted or disabled via the ConVars listed below.
+                </p>
                 <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
                 <table style="width:100%; margin-bottom: 10px;">
                     <thead>
@@ -604,9 +620,11 @@
         <button class="header" style="background-color:var(--special-innocent);"><i class="icon-revenger"></i>Revenger</button>
         <div class="content">
             <div class="moreless">[more]</div>
-            <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-revenger"></i><a href="#revenger">Revenger</a></span> can track down their soulmate's killer for revenge.</p>
+            <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-revenger"></i><a href="#revenger">Revenger</a></span> is assigned a random player as soulmate to protect.</p>
             <div class="expansion">
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                <p>If their soulmate is killed, the <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-revenger"></i><a href="#revenger">Revenger</a></span>'s goal becomes tracking down and exacting revenge against their soulmate's killer.</p>
+                <p>To accomplish this, the <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-revenger"></i><a href="#revenger">Revenger</a></span> is shown the location of their soulmate's killer via radar-like pings that update on a configurable interval (see <code>ttt_revenger_radar_timer</code> below).</p>
+                <p>Furthermore, if <code>ttt_revenger_damage_bonus</code> is configured, the <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-revenger"></i><a href="#revenger">Revenger</a></span> will gain a damage bonus against their soulmate's killer.</p>
                 <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
                 <table style="width:100%; margin-bottom: 10px;">
                     <thead>
@@ -652,9 +670,9 @@
         <button class="header" style="background-color:var(--special-innocent);"><i class="icon-trickster"></i>Trickster</button>
         <div class="content">
             <div class="moreless">[more]</div>
-            <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-trickster"></i><a href="#trickster">Trickster</a></span> can activate traps like memebers of the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span>.</p>
+            <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-trickster"></i><a href="#trickster">Trickster</a></span> can activate traps like members of the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span>.</p>
             <div class="expansion">
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-trickster"></i><a href="#trickster">Trickster</a></span> can also loot credits from corpses, in case a traitor trap or traitor button requires payment.</p>
                 <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
                 <table style="width:100%; margin-bottom: 10px;">
                     <thead>
@@ -684,7 +702,8 @@
             <div class="moreless">[more]</div>
             <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-turncoat"></i><a href="#turncoat">Turncoat</a></span> can switch sides and join the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span>.</p>
             <div class="expansion">
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-turncoat"></i><a href="#turncoat">Turncoat</a></span> is given a one-time-use Team Changer device which moves them to the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span>, changes their health to the amount set by the <code>ttt_turncoat_change_health</code> ConVar, and announces their role to everyone.</p>
+                <p>If <code>ttt_turncoat_change_innocent_kill</code> is enabled, the <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-turncoat"></i><a href="#turncoat">Turncoat</a></span> will automatically change teams if they kill a member of the <span style="color:var(--innocent);">innocent team</span>.</p>
                 <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
                 <table style="width:100%; margin-bottom: 10px;">
                     <thead>
@@ -724,9 +743,11 @@
         <button class="header" style="background-color:var(--special-innocent);"><i class="icon-veteran"></i>Veteran</button>
         <div class="content">
             <div class="moreless">[more]</div>
-            <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-veteran"></i><a href="#veteran">Veteran</a></span> gets a buff if they are the last memeber of the <span style="color:var(--innocent);">innocent team</span> left alive.</p>
+            <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-veteran"></i><a href="#veteran">Veteran</a></span> gets a buff if they are the last member of the <span style="color:var(--innocent);">innocent team</span> left alive.</p>
             <div class="expansion">
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                <p>When the <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-veteran"></i><a href="#veteran">Veteran</a></span> is the last remaining member of the <span style="color:var(--innocent);">innocent team</span>, they are warned via an on-screen message and they become "active". Enabling <code>ttt_veteran_announce</code> makes the announcement global so all players can see it.</p>
+                <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-veteran"></i><a href="#veteran">Veteran</a></span> has access to a shop, but by default it is only available when they are active. The <code>ttt_veteran_shop_active_only</code> and <code>ttt_veteran_shop_delay</code> ConVars can change the behavior of when the shop is available and what happens when it's used.</p>
+                <p>By default, the <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-veteran"></i><a href="#veteran">Veteran</a></span> is also healed to full health when they become active. This can be disabled by changing the <code>ttt_veteran_full_heal</code> ConVar.</p>
                 <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
                 <table style="width:100%; margin-bottom: 10px;">
                     <thead>
@@ -806,7 +827,9 @@
             <div class="moreless">[more]</div>
             <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-vindicator"></i><a href="#vindicator">Vindicator</a></span> respawns as an <span style="color:var(--independent);"><a href="../teams/independent.html">independent</a></span> if they are killed to take their revenge.</p>
             <div class="expansion">
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                <p>If they are killed, the <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-vindicator"></i><a href="#vindicator">Vindicator</a></span> will respawn as an <span style="color:var(--independent);"><a href="../teams/independent.html">independent</a></span> who need to track down their killer and get revenge. As they are no longer part of the <span style="color:var(--innocent);">innocent team</span> they do not win with their old team and must kill their killer to win the round.</p>
+                <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-vindicator"></i><a href="#vindicator">Vindicator</a></span> must be the one to get the killing blow on their killer. If someone else gets the kill, the <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-vindicator"></i><a href="#vindicator">Vindicator</a></span> will not win. By default, if the <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-vindicator"></i><a href="#vindicator">Vindicator</a></span>'s killer kills themselves, it counts as a win for the <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-vindicator"></i><a href="#vindicator">Vindicator</a></span> as well. This can be disabled by changing the <code>ttt_vindicator_target_suicide_success</code> ConVar.</p>
+                <p>What happens to the <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-vindicator"></i><a href="#vindicator">Vindicator</a></span> when their target is killed depends on the values of <code>ttt_vindicator_kill_on_success</code> and <code>ttt_vindicator_kill_on_fail</code>. By default, the <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-vindicator"></i><a href="#vindicator">Vindicator</a></span> is killed if they fail to kill their killer but will live for the remainder of the round if they are successful.</p>
                 <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
                 <table style="width:100%; margin-bottom: 10px;">
                     <thead>
