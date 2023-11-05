@@ -352,7 +352,7 @@
             <div class="moreless">[more]</div>
             <p>The <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-mercenary"></i><a href="#mercenary">Mercenary</a></span> can buy items to help defeat their enemies.</p>
             <div class="expansion">
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                <p>The weapons that the <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-mercenary"></i><a href="#mercenary">Mercenary</a></span> has available in their shop is subject to the <code>ttt_mercenary_shop_mode</code> ConVar. Be default, they will have all weapons that can be bought by both <span class="inline-icon" style="color:var(--traitor);"><i class="icon-traitor"></i><a href="../teams/traitor.html#traitor">Traitors</a></span> and <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="../teams/detective.html#detective">Detectives</a></span>. For example, assuming <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="../teams/detective.html#detective">Detectives</a></span> can buy "radar" and the "juggernaut suit" and the <span class="inline-icon" style="color:var(--traitor);"><i class="icon-traitor"></i><a href="../teams/traitor.html#traitor">Traitors</a></span> can buy "radar" and the "banana bomb" then the <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-mercenary"></i><a href="#mercenary">Mercenary</a></span> will have the "radar" added to their shop since it is available in both.</p>
                 <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
                 <table style="width:100%; margin-bottom: 10px;">
                     <thead>
@@ -376,11 +376,11 @@
                         <td>Integer (0-4)</td>
                         <td>What additional items are available to the mercenary in the shop:
                             <ol start="0">
-                                <li>Nothing.</li>
-                                <li>Weapons available to either the traitor or the detective.</li>
-                                <li>Only weapons available to both the traitor and the detective.</li>
-                                <li>Detective weapons.</li>
-                                <li>Traitor weapons.</li>
+                                <li>(Disabled) Nothing.</li>
+                                <li>(Union) Weapons available to either the traitor or the detective.</li>
+                                <li>(Intersect) Only weapons available to both the traitor and the detective.</li>
+                                <li>(Detective) All weapons available to the detective.</li>
+                                <li>(Traitor) All weapons available to the traitor.</li>
                             </ol>
                         </td>
                     </tr>
@@ -786,11 +786,11 @@
                         <td>Integer (0-4)</td>
                         <td>What additional items are available to the veteran in the shop:
                             <ol start="0">
-                                <li>Nothing.</li>
-                                <li>Weapons available to either the traitor or the detective.</li>
-                                <li>Only weapons available to both the traitor and the detective.</li>
-                                <li>Detective weapons.</li>
-                                <li>Traitor weapons.</li>
+                                <li>(Disabled) Nothing.</li>
+                                <li>(Union) Weapons available to either the traitor or the detective.</li>
+                                <li>(Intersect) Only weapons available to both the traitor and the detective.</li>
+                                <li>(Detective) All weapons available to the detective.</li>
+                                <li>(Traitor) All weapons available to the traitor.</li>
                             </ol>
                         </td>
                     </tr>
