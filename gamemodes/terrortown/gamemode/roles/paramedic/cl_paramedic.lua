@@ -48,9 +48,13 @@ hook.Add("TTTTutorialRoleText", "Paramedic_TTTTutorialRoleText", function(role, 
         end
 
         -- Respawn as Innocent
+        html = html .. "<span style='display: block; margin-top: 10px;'>Any player <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>resurrected by the defibrillator</span>"
         if paramedic_defib_as_innocent:GetBool() then
-            html = html .. "<span style='display: block; margin-top: 10px;'>Any player <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>resurrected by the defibrillator</span> is converted to " .. ROLE_STRINGS_EXT[ROLE_INNOCENT] .. ".</span>"
+            html = html .. " is converted to " .. ROLE_STRINGS_EXT[ROLE_INNOCENT]
+        else
+            html = html .. " retains their previous role, with the exception of " .. ROLE_STRINGS[ROLE_DETECTIVE] .. "-like roles (e.g. " .. ROLE_STRINGS[ROLE_DETECTIVE] .. ", " .. ROLE_STRINGS[ROLE_DEPUTY] .. ", " .. ROLE_STRINGS[ROLE_IMPERSONATOR] .. ", etc.) which are converted to the vanilla role for their team (" .. ROLE_STRINGS[ROLE_INNOCENT] .. ", " .. ROLE_STRINGS[ROLE_TRAITOR] .. ", etc.)"
         end
+        html = html .. ".</span>"
 
         return html
     end
