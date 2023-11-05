@@ -12,6 +12,7 @@ local StringUpper = string.upper
 -- CONVARS --
 -------------
 
+local infected_prime = GetConVar("ttt_infected_prime")
 local infected_cough_enabled = GetConVar("ttt_infected_cough_enabled")
 local infected_respawn_enabled = GetConVar("ttt_infected_respawn_enabled")
 local infected_show_icon = GetConVar("ttt_infected_show_icon")
@@ -185,6 +186,10 @@ hook.Add("TTTTutorialRoleText", "Infected_TTTTutorialRoleText", function(role, t
 
         if infected_respawn_enabled:GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_INFECTED] .. " will also turn into " .. ROLE_STRINGS_EXT[ROLE_ZOMBIE] .. " if <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>they are killed</span>.</span>"
+        end
+
+        if infected_prime:GetBool() then
+            html = html .. "<span style='display: block; margin-top: 10px;'>The " .. ROLE_STRINGS[ROLE_INFECTED] .. " will come back back as a <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>prime " .. ROLE_STRINGS[ROLE_ZOMBIE] .. "</span>, meaning they have all the abilities and stat bonuses that " .. ROLE_STRINGS_EXT[ROLE_ZOMBIE] .. " spawning into the round normally would have.</span>"
         end
 
         if infected_cough_enabled:GetBool() then

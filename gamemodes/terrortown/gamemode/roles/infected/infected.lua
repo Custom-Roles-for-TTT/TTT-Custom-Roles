@@ -21,10 +21,10 @@ util.AddNetworkString("TTT_InfectedSuccumbed")
 -- CONVARS --
 -------------
 
-local infected_prime = CreateConVar("ttt_infected_prime", "1", FCVAR_NONE, "Whether the infected will become a prime zombie", 0, 1)
 local infected_cough_timer_min = CreateConVar("ttt_infected_cough_timer_min", "30", FCVAR_NONE, "The minimum time between infected coughs", 0, 180)
 local infected_cough_timer_max = CreateConVar("ttt_infected_cough_timer_max", "60", FCVAR_NONE, "The maximum time between infected coughs", 0, 300)
 
+local infected_prime = GetConVar("ttt_infected_prime")
 local infected_cough_enabled = GetConVar("ttt_infected_cough_enabled")
 local infected_respawn_enabled = GetConVar("ttt_infected_respawn_enabled")
 local infected_succumb_time = GetConVar("ttt_infected_succumb_time")
