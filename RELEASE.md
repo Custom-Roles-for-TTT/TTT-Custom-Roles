@@ -16,6 +16,7 @@ Includes beta updates [1.9.3](#193-beta) to [1.9.13](#1913-beta).
 ### Fixes
 - Ported "TTT: Prevent error when NPC fires SWEP derived from weapon_tttbase" from base TTT
 - Fixed `ttt_monster_max` greater than 1 not working
+- Fixed infected player that is in the progress of respawning due dying while `ttt_infected_respawn_enabled` is enabled not counting as zombifying for the purposes of delaying the round end
 
 ## 1.9.13 (Beta)
 **Released: October 21st, 2023**

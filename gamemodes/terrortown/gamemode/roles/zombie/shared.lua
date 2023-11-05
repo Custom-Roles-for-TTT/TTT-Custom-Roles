@@ -49,7 +49,7 @@ end
 plymeta.IsZombiePrime = plymeta.GetZombiePrime
 plymeta.IsZombieAlly = plymeta.GetZombieAlly
 
-function plymeta:IsZombifying() return self:GetNWBool("IsZombifying", false) end
+function plymeta:IsZombifying() return self:GetNWBool("IsZombifying", false) or self:GetNWBool("InfectedIsZombifying", false) end
 
 ------------------
 -- ROLE CONVARS --

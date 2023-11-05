@@ -157,16 +157,6 @@ ROLE_ON_ROLE_ASSIGNED[ROLE_INFECTED] = function()
     StartCoughTimer()
 end
 
-------------------
--- CUPID LOVERS --
-------------------
-
-hook.Add("TTTCupidShouldLoverSurvive", "Infected_TTTCupidShouldLoverSurvive", function(ply, lover)
-    if ply:GetNWBool("InfectedIsZombifying", false) or lover:GetNWBool("InfectedIsZombifying", false) then
-        return true
-    end
-end)
-
 -------------
 -- CLEANUP --
 -------------
