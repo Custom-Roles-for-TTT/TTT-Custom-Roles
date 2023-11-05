@@ -266,14 +266,13 @@ code {
     text-decoration: underline;
 }
 
-@media screen and (max-width: 530px) {
+@media screen and (max-width: 1000px) {
     .panel {
         width: 100%;
     }
-}
 
-@media screen and (max-width: 1000px) {
-    .panel {
+    .footerpadding {
+        height: 4em;
         width: 100%;
     }
 }
