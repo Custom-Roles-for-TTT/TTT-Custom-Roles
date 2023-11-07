@@ -237,7 +237,9 @@
             <div class="moreless">[more]</div>
             <p>The <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="#detective">Detective</a></span> is the base version of the <span style="color:var(--detective);">detectives</span> who can use their DNA scanner to track down killers.</p>
             <div class="expansion">
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                <p>The Detective has access to a shop containing powerful items that can be used to help the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span> win against the traitors.</p>
+                <p>The Detective also spawns with a DNA scanner that can be used to track down players using DNA samples left on dead bodies, weapons, or other items. Samples do not last forever and will decay if they are not collected quickly. Once a sample has been collected the DNA scanner will provide frequent updates that point towards the player that the sample belongs to.</p>
+                <p>Unlike most unique role items, the DNA scanner can be dropped and used by other players of any role.</p>
                 <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
                 <table style="width:100%; margin-bottom: 10px;">
                     <thead>
@@ -267,7 +269,9 @@
             <div class="moreless">[more]</div>
             <p>The <span class="inline-icon" style="color:var(--special-detective);"><i class="icon-marshal"></i><a href="#marshal">Marshal</a></span> can use their badge to turn a player into a <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-deputy"></i><a href="../teams/innocent.html#deputy">Deputy</a></span> or an <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-impersonator"></i><a href="../teams/traitor.html#impersonator">Impersonator</a></span>.</p>
             <div class="expansion">
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                <p>The Marshal is given a deputy badge as part of their loadout which can be used to convert players into either a Deputy or an Impersonator. If the badge is used on a member of the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span> that player will become a Deputy, and if it is used on a member of the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span> that player will become an Impersonator.</p>
+                <p>If the badge is used on any other player, there is a chance for that player to become either a Deputy or an Independent. This chance can be configured independently for each team with the ConVars below.</p>
+                <p>The Marshal has access to a shop containing a small handful of useful items. However, if the <code>ttt_marshal_shop_sync</code> ConVar is enabled the Marshal will have access to all items available to the <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="#detective">Detective</a></span>.</p>
                 <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
                 <table style="width:100%; margin-bottom: 10px;">
                     <thead>
@@ -301,7 +305,7 @@
                         <td>ttt_marshal_independent_deputy_chance</td>
                         <td>0.5</td>
                         <td>Float (0-1)</td>
-                        <td>The chance that a independent will become a Deputy when the Marshal's badge is used on them. <i>(Set to -1 to disable.)</i></td>
+                        <td>The chance that an independent will become a Deputy when the Marshal's badge is used on them. <i>(Set to -1 to disable.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_marshal_jester_deputy_chance</td>
@@ -327,7 +331,9 @@
             <div class="moreless">[more]</div>
             <p>The <span class="inline-icon" style="color:var(--special-detective);"><i class="icon-medium"></i><a href="#medium">Medium</a></span> can communicate the souls of dead players.</p>
             <div class="expansion">
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                <p>The positions of dead players' spectator cameras appear to the Medium as colourful floating orbs. While dead players cannot communicate directly with living players, they are able to use their position to try to give the Medium hints.</p>
+                <p>If <code>medium_spirit_color</code> is enabled each player's spirit will be given a unique color, otherwise each spirit will be white.</p>
+                <p>The Medium has access to a shop containing a small handful of useful items. However, if the <code>ttt_medium_shop_sync</code> ConVar is enabled the Medium will have access to all items available to the <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="#detective">Detective</a></span>.</p>
                 <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
                 <table style="width:100%; margin-bottom: 10px;">
                     <thead>
@@ -373,9 +379,12 @@
         <button class="header" style="background-color:var(--special-detective);"><i class="icon-paladin"></i>Paladin</button>
         <div class="content">
             <div class="moreless">[more]</div>
-            <p>The <span class="inline-icon" style="color:var(--special-detective);"><i class="icon-paladin"></i><a href="#paladin">Paladin</a></span> has an aura that can heal players.</p>
+            <p>The <span class="inline-icon" style="color:var(--special-detective);"><i class="icon-paladin"></i><a href="#paladin">Paladin</a></span> has an aura that can heal players and reduce incoming damage.</p>
             <div class="expansion">
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                <p>Players inside the Paladin's aura will slowly heal over time at a rate determined by <code>ttt_paladin_heal_rate</code>. The Paladin themselves will also slowly heal if <code>ttt_paladin_heal_self</code> is enabled.</p>
+                <p>The Paladin's can also reduce incoming damage for players inside their aura by a factor determined by <code>ttt_paladin_damage_reduction</code>. By default the Paladin will not receive this incoming damage reduction themselves, but this can be enabled with <code>ttt_paladin_protect_self</code>.</p>
+                <p>If <code>ttt_detectives_hide_special_mode</code> is changed from its default such that the Paladin's role is hidden from other players, the Paladin's aura will also be made invisible to other players, however it's effects will still apply.</p>
+                <p>The Paladin has access to a shop containing a small handful of useful items. However, if the <code>ttt_paladin_shop_sync</code> ConVar is enabled the Paladin will have access to all items available to the <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="#detective">Detective</a></span>.</p>
                 <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
                 <table style="width:100%; margin-bottom: 10px;">
                     <thead>
@@ -435,7 +444,8 @@
             <div class="moreless">[more]</div>
             <p>The <span class="inline-icon" style="color:var(--special-detective);"><i class="icon-quartermaster"></i><a href="#quartermaster">Quartermaster</a></span> can buy items available to <span class="inline-icon" style="color:var(--traitor);"><i class="icon-traitor"></i><a href="#traitor">Traitors</a></span> as weapon crates for other players.</p>
             <div class="expansion">
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                <p>The Quartermaster cannot buy items for themselves, instead all items bought by the Quartermaster will be dropped on the ground in crates that can be opened by other players. The Quartermaster cannot open their own crates and so must instead supply items to other players.</p>
+                <p>If <code>ttt_quartermaster_limited_loot</code> is enabled, each player will only be able to open one weapon crate per round, otherwise each player is free to open as many crates as they would like.</p>
                 <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
                 <table style="width:100%; margin-bottom: 10px;">
                     <thead>
@@ -471,7 +481,11 @@
             <div class="moreless">[more]</div>
             <p>The <span class="inline-icon" style="color:var(--special-detective);"><i class="icon-sapper"></i><a href="#sapper">Sapper</a></span> has an aura that makes players immune to explosions.</p>
             <div class="expansion">
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                <p>Players inside the Sapper's aura will be immune to explosion damage. The Sapper themselves will also be immune if <code>ttt_sapper_protect_self</code> is enabled.</p>
+                <p>Players inside the Sapper's aura will also be immune to fire damage if <code>ttt_sapper_fire_immune</code> is enabled.</p>
+                <p>The Sapper can be configured to also be more effected against C4. Enabling <code>ttt_sapper_can_see_c4</code> will allow Sapper's to see the location of armed C4 through walls, and enabling <code>ttt_sapper_c4_guaranteed_defuse</code> will make it impossible for the Sapper to detonate C4 while defusing.</p>
+                <p>If <code>ttt_detectives_hide_special_mode</code> is changed from its default such that the Sapper's role is hidden from other players, the Sapper's aura will also be made invisible to other players, however it's effects will still apply.</p>
+                <p>The Sapper has access to a shop containing a small handful of useful items. However, if the <code>ttt_sapper_shop_sync</code> ConVar is enabled the Sapper will have access to all items available to the <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="#detective">Detective</a></span>.</p>
                 <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
                 <table style="width:100%; margin-bottom: 10px;">
                     <thead>
@@ -531,7 +545,10 @@
             <div class="moreless">[more]</div>
             <p>The <span class="inline-icon" style="color:var(--special-detective);"><i class="icon-tracker"></i><a href="#tracker">Tracker</a></span> can see a trail of footsteps left by other players.</p>
             <div class="expansion">
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                <p>If <code>ttt_tracker_footstep_color</code> is enabled each player's footsteps will be given a unique color, otherwise all footsteps will be white.</p>
+                <p>Footsteps will disappear over time, fully disappearing after the length of time determined by <code>ttt_tracker_footstep_time</code> has passed.</p>
+                <p>The Tracker can buy the tracking radar which will periodically show the locations of all living players and any dead bodies. The colors used by the tracking radar match the colors of each player's footsteps.</p>
+                <p>The Tracker has access to a shop containing a small handful of useful items including the tracking radar. However, if the <code>ttt_tracker_shop_sync</code> ConVar is enabled the Tracker will also have access to all items available to the <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="#detective">Detective</a></span>.</p>
                 <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
                 <table style="width:100%; margin-bottom: 10px;">
                     <thead>
