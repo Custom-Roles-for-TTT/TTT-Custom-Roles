@@ -1,13 +1,15 @@
 // COLLAPSABLE SECTIONS
 function expandContent(content, forceExpand = false) {
     var expansion = content.querySelector(".expansion");
-    var moreless = content.querySelector(".moreless");
-    if (expansion.style.maxHeight && !forceExpand){
-        expansion.style.maxHeight = null;
-        moreless.innerHTML = "[more]";
-    } else {
-        expansion.style.maxHeight = expansion.scrollHeight + "px";
-        moreless.innerHTML = "[less]";
+    if (expansion) {
+        var moreless = content.querySelector(".moreless");
+        if (expansion.style.maxHeight && !forceExpand) {
+            expansion.style.maxHeight = null;
+            moreless.innerHTML = "[more]";
+        } else {
+            expansion.style.maxHeight = expansion.scrollHeight + "px";
+            moreless.innerHTML = "[less]";
+        }
     }
 }
 
