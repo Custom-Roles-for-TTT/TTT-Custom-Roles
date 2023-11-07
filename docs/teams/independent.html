@@ -148,7 +148,7 @@
                         <td>ttt_arsonist_can_see_jesters</td>
                         <td>1</td>
                         <td>Boolean</td>
-                        <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to the arsonist.</td>
+                        <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to the Arsonist.</td>
                     </tr>
                     <tr>
                         <td>ttt_arsonist_corpse_ignite_time</td>
@@ -178,25 +178,25 @@
                         <td>ttt_arsonist_douse_time</td>
                         <td>8</td>
                         <td>Integer</td>
-                        <td>The amount of time in seconds the arsonist takes to douse someone.</td>
+                        <td>The amount of time in seconds the Arsonist takes to douse someone.</td>
                     </tr>
                     <tr>
                         <td>ttt_arsonist_early_ignite</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether to allow the arsonist to use their igniter without dousing everyone first.</td>
+                        <td>Whether to allow the Arsonist to use their igniter without dousing everyone first.</td>
                     </tr>
                     <tr>
                         <td>ttt_arsonist_update_scoreboard</td>
                         <td>1</td>
                         <td>Boolean</td>
-                        <td>Whether the arsonist shows dead players as missing in action.</td>
+                        <td>Whether the Arsonist shows dead players as missing in action.</td>
                     </tr>
                     <tr>
                         <td>ttt_detectives_search_only_arsonistdouse</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether only detectives can see information about whether a corpse was doused by an arsonist and when. Once a detective searches a body, this information will be available to all players. <i>(Requires <code>ttt_detectives_search_only</code> to be disabled.)</i></td>
+                        <td>Whether only detectives can see information about whether a corpse was doused by an Arsonist and when. Once a detective searches a body, this information will be available to all players. <i>(Requires <code>ttt_detectives_search_only</code> to be disabled.)</i></td>
                     </tr>
                     </tbody>
                 </table>
@@ -226,49 +226,49 @@
                         <td>ttt_drunk_any_role</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether the drunk can become any enabled role other than the drunk, the glitch, or roles that were already used this round. <i>(The <code>ttt_drunk_can_be_*</code> ConVars can be used to prevent the drunk from becoming specific roles.)</i></td>
+                        <td>Whether the Drunk can become any enabled role other than theDrunk, the Glitch, or roles that were already used this round. <i>(The <code>ttt_drunk_can_be_*</code> ConVars can be used to prevent theDrunk from becoming specific roles.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_drunk_can_be_*</td>
                         <td>1</td>
                         <td>Boolean</td>
-                        <td>Whether the drunk can become a specific role when they sober up. Replace * with the name of the role you want to configure without spaces or capital letters. <i>(Requires <code>ttt_drunk_any_role</code> to be enabled. The glitch and drunk cannot be configured in this way.)</i></td>
+                        <td>Whether the Drunk can become a specific role when they sober up. Replace * with the name of the role you want to configure without spaces or capital letters. <i>(Requires <code>ttt_drunk_any_role</code> to be enabled. The Glitch and Drunk cannot be configured in this way.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_drunk_any_role_include_disabled</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether disabled roles should be included in the list of possible roles for the drunk to sober up to. <i>(Requires <code>ttt_drunk_any_role</code> to be enabled.)</i></td>
+                        <td>Whether disabled roles should be included in the list of possible roles for the Drunk to sober up to. <i>(Requires <code>ttt_drunk_any_role</code> to be enabled.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_drunk_become_clown</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether the drunk should become a clown instead of joining the losing team if the round would end before they sober up.</td>
+                        <td>Whether the Drunk should become a Clown instead of joining the losing team if the round would end before they sober up.</td>
                     </tr>
                     <tr>
                         <td>ttt_drunk_can_see_jesters</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to the drunk.</td>
+                        <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to the Drunk.</td>
                     </tr>
                     <tr>
                         <td>ttt_drunk_innocent_chance</td>
                         <td>0.7</td>
                         <td>Float (0-1)</td>
-                        <td>Chance that the drunk will become an innocent role when remembering their role.</td>
+                        <td>Chance that the Drunk will become an innocent role when remembering their role.</td>
                     </tr>
                     <tr>
                         <td>ttt_drunk_join_losing_team</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether the drunk should join the losing team when their sober timer runs out. <i>(This isn't 100% accurate as we can't know for sure which team is losing but we can try based on the available information.)</i></td>
+                        <td>Whether the Drunk should join the losing team when their sober timer runs out. <i>(This isn't 100% accurate as we can't know for sure which team is losing but we can try based on the available information.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_drunk_notify_mode</td>
                         <td>0</td>
                         <td>Integer (0-4)</td>
-                        <td>The logic to use when notifying players that a drunk has sobered up:
+                        <td>The logic to use when notifying players that a Drunk has sobered up:
                             <ol start="0">
                                 <li>Don't notify anyone.</li>
                                 <li>Only notify traitors and detective.</li>
@@ -282,31 +282,31 @@
                         <td>ttt_drunk_sober_time</td>
                         <td>180</td>
                         <td>Integer</td>
-                        <td>Time in seconds for the drunk to remember their role.</td>
+                        <td>Time in seconds for the Drunk to remember their role.</td>
                     </tr>
                     <tr>
                         <td>ttt_drunk_traitor_chance</td>
                         <td>0</td>
                         <td>Float (0-1)</td>
-                        <td>Chance that the drunk will become a traitor role when remembering their role. If disabled, player chance of becoming a traitor is equal to every other non-innocent role. <i>(Requires <code>ttt_drunk_any_role</code> to be disabled.)</i></td>
+                        <td>Chance that the Drunk will become a traitor role when remembering their role. If disabled, player chance of becoming a traitor is equal to every other non-innocent role. <i>(Requires <code>ttt_drunk_any_role</code> to be disabled.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_drunk_update_scoreboard</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether the drunk shows dead players as missing in action.</td>
+                        <td>Whether the Drunk shows dead players as missing in action.</td>
                     </tr>
                     <tr>
                         <td>ttt_single_drunk_clown</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether only a single drunk or clown should spawn in a round.</td>
+                        <td>Whether only a single Drunk or Clown should spawn in a round.</td>
                     </tr>
                     <tr>
                         <td>ttt_single_drunk_clown_chance</td>
                         <td>0.5</td>
                         <td>Float (0-1)</td>
-                        <td>The chance that a drunk should have an opportunity to spawn instead of a clown. <i>(e.g. 0.7 = 70% chance for drunk, 30% chance for clown. Requires <code>ttt_single_drunk_clown</code> to be enabled.)</i></td>
+                        <td>The chance that a Drunk should have an opportunity to spawn instead of a Clown. <i>(e.g. 0.7 = 70% chance forDrunk, 30% chance for Clown. Requires <code>ttt_single_drunk_clown</code> to be enabled.)</i></td>
                     </tr>
                     </tbody>
                 </table>
@@ -336,31 +336,31 @@
                         <td>ttt_hivemind_friendly_fire</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether a member of the hive mind can damage other members of the hive mind.</td>
+                        <td>Whether a member of the Hive Mind can damage other members of the Hive Mind.</td>
                     </tr>
                     <tr>
                         <td>ttt_hivemind_is_monster</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether the hive mind should be treated as a member of the monster team.</td>
+                        <td>Whether the Hive Mind should be treated as a member of the monster team.</td>
                     </tr>
                     <tr>
                         <td>ttt_hivemind_join_heal_pct</td>
                         <td>0.25</td>
                         <td>Float</td>
-                        <td>The percentage a new member's maximum health that the hive mind should be healed. <i>(e.g. 0.25 = 25% of their health healed.)</i></td>
+                        <td>The percentage a new member's maximum health that the Hive Mind should be healed. <i>(e.g. 0.25 = 25% of their health healed.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_hivemind_regen_max_pct</td>
                         <td>0.5</td>
                         <td>Float (0-1)</td>
-                        <td>The percentage of the hive mind's maximum health to heal them up to. <i>(e.g. 0.5 = 50% of their max health.)</i></td>
+                        <td>The percentage of the Hive Mind's maximum health to heal them up to. <i>(e.g. 0.5 = 50% of their max health.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_hivemind_regen_per_member_amt</td>
                         <td>1</td>
                         <td>Integer</td>
-                        <td>The amount of health per-member of the hive mind that they should regenerate over time.</td>
+                        <td>The amount of health per-member of the Hive Mind that they should regenerate over time.</td>
                     </tr>
                     <tr>
                         <td>ttt_hivemind_regen_timer</td>
@@ -372,13 +372,13 @@
                         <td>ttt_hivemind_shop_mode</td>
                         <td>0</td>
                         <td>Integer (0-4)</td>
-                        <td>What additional items are available to the hive mind in the shop:
+                        <td>What additional items are available to the Hive Mind in the shop:
                             <ol start="0">
                                 <li>(Disabled) Nothing.</li>
-                                <li>(Union) Weapons available to either the traitor or the detective.</li>
-                                <li>(Intersect) Only weapons available to both the traitor and the detective.</li>
-                                <li>(Detective) All weapons available to the detective.</li>
-                                <li>(Traitor) All weapons available to the traitor.</li>
+                                <li>(Union) Weapons available to either the Traitor or the Detective.</li>
+                                <li>(Intersect) Only weapons available to both the Traitor and the Detective.</li>
+                                <li>(Detective) All weapons available to the Detective.</li>
+                                <li>(Traitor) All weapons available to the Traitor.</li>
                             </ol>
                         </td>
                     </tr>
@@ -386,7 +386,7 @@
                         <td>ttt_hivemind_vision_enable</td>
                         <td>1</td>
                         <td>Boolean</td>
-                        <td>Whether the hive mind's member highlighting is enabled.</td>
+                        <td>Whether the Hive Mind's member highlighting is enabled.</td>
                     </tr>
                     </tbody>
                 </table>
@@ -416,91 +416,91 @@
                         <td>ttt_killer_can_see_jesters</td>
                         <td>1</td>
                         <td>Boolean</td>
-                        <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to the killer.</td>
+                        <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to the Killer.</td>
                     </tr>
                     <tr>
                         <td>ttt_killer_credits_award_pct</td>
                         <td>0.35</td>
                         <td>Float (0-1)</td>
-                        <td>When this percentage of non-jester players are dead, killers are awarded a number of credits equal to <code>ttt_killer_credits_award_size</code>.</td>
+                        <td>When this percentage of non-jester players are dead, Killers are awarded a number of credits equal to <code>ttt_killer_credits_award_size</code>.</td>
                     </tr>
                     <tr>
                         <td>ttt_killer_credits_award_repeat</td>
                         <td>1</td>
                         <td>Boolean</td>
-                        <td>Whether the credit award determined by <code>ttt_killer_credits_award_pct</code> and <code>ttt_killer_credits_award_size</code> is handed out multiple times. <i>(e.g. If <code>ttt_killer_credits_award_pct</code> is 0.25, killers will be awarded credits at 25% killed, 50% killed, and 75% killed.)</i></td>
+                        <td>Whether the credit award determined by <code>ttt_killer_credits_award_pct</code> and <code>ttt_killer_credits_award_size</code> is handed out multiple times. <i>(e.g. If <code>ttt_killer_credits_award_pct</code> is 0.25, Killers will be awarded credits at 25% killed, 50% killed, and 75% killed.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_killer_credits_award_size</td>
                         <td>1</td>
                         <td>Integer</td>
-                        <td>The number of credits awarded to killers when the percentage determined by <code>ttt_killer_credits_award_pct</code> of non-jester players are dead.</td>
+                        <td>The number of credits awarded to Killers when the percentage determined by <code>ttt_killer_credits_award_pct</code> of non-jester players are dead.</td>
                     </tr>
                     <tr>
                         <td>ttt_killer_credits_starting</td>
                         <td>2</td>
                         <td>Integer</td>
-                        <td>The number of credits a killer should start with.</td>
+                        <td>The number of credits a Killer should start with.</td>
                     </tr>
                     <tr>
                         <td>ttt_killer_crowbar_damage</td>
                         <td>20</td>
                         <td>Integer</td>
-                        <td>How much damage the crowbar should do when the killer bashes another player with it. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                        <td>How much damage the crowbar should do when the Killer bashes another player with it. <i>(Server or round must be restarted for changes to take effect.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_killer_crowbar_enabled</td>
                         <td>1</td>
                         <td>Boolean</td>
-                        <td>Whether the killer throwable crowbar is enabled.</td>
+                        <td>Whether the Killer throwable crowbar is enabled.</td>
                     </tr>
                     <tr>
                         <td>ttt_killer_crowbar_thrown_damage</td>
                         <td>50</td>
                         <td>Integer</td>
-                        <td>How much damage the crowbar should do when the killer throws it at another player. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                        <td>How much damage the crowbar should do when the Killer throws it at another player. <i>(Server or round must be restarted for changes to take effect.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_killer_damage_penalty</td>
                         <td>0.25</td>
                         <td>Float (0-1)</td>
-                        <td>The fraction a killer's damage will be scaled by when they are attacking without using their knife. <i>(e.g. 0.5 = 50% less damage.)</i></td>
+                        <td>The fraction a Killer's damage will be scaled by when they are attacking without using their knife. <i>(e.g. 0.5 = 50% less damage.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_killer_damage_reduction</td>
                         <td>0</td>
                         <td>Float (0-1)</td>
-                        <td>The fraction an attacker's bullet damage will be reduced by when they are shooting a killer. <i>(e.g. 0.5 = 50% less damage.)</i></td>
+                        <td>The fraction an attacker's bullet damage will be reduced by when they are shooting a Killer. <i>(e.g. 0.5 = 50% less damage.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_killer_knife_damage</td>
                         <td>65</td>
                         <td>Integer</td>
-                        <td>How much damage the killer knife does. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                        <td>How much damage the Killer's knife does. <i>(Server or round must be restarted for changes to take effect.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_killer_knife_delay</td>
                         <td>0.8</td>
                         <td>Float</td>
-                        <td>The amount of time between knife attacks for a killer. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                        <td>The amount of time between knife attacks for a Killer. <i>(Server or round must be restarted for changes to take effect.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_killer_knife_enabled</td>
                         <td>1</td>
                         <td>Boolean</td>
-                        <td>Whether the killer knife is enabled.</td>
+                        <td>Whether the Killer's knife is enabled.</td>
                     </tr>
                     <tr>
                         <td>ttt_killer_shop_mode</td>
                         <td>0</td>
                         <td>Integer (0-4)</td>
-                        <td>What additional items are available to the killer in the shop:
+                        <td>What additional items are available to the Killer in the shop:
                             <ol start="0">
                                 <li>(Disabled) Nothing.</li>
-                                <li>(Union) Weapons available to either the traitor or the detective.</li>
-                                <li>(Intersect) Only weapons available to both the traitor and the detective.</li>
-                                <li>(Detective) All weapons available to the detective.</li>
-                                <li>(Traitor) All weapons available to the traitor.</li>
+                                <li>(Union) Weapons available to either the Traitor or the Detective.</li>
+                                <li>(Intersect) Only weapons available to both the Traitor and the Detective.</li>
+                                <li>(Detective) All weapons available to the Detective.</li>
+                                <li>(Traitor) All weapons available to the Traitor.</li>
                             </ol>
                         </td>
                     </tr>
@@ -508,37 +508,37 @@
                         <td>ttt_killer_show_target_icon</td>
                         <td>1</td>
                         <td>Boolean</td>
-                        <td>Whether killers have an icon over other players' heads showing who to kill. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                        <td>Whether Killers have an icon over other players' heads showing who to kill. <i>(Server or round must be restarted for changes to take effect.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_killer_smoke_enabled</td>
                         <td>1</td>
                         <td>Boolean</td>
-                        <td>Whether the killer smoke is enabled.</td>
+                        <td>Whether the Killer smoke is enabled.</td>
                     </tr>
                     <tr>
                         <td>ttt_killer_smoke_timer</td>
                         <td>60</td>
                         <td>Integer</td>
-                        <td>Number of seconds before a killer will start to smoke after their last kill.</td>
+                        <td>Number of seconds before a Killer will start to smoke after their last kill.</td>
                     </tr>
                     <tr>
                         <td>ttt_killer_update_scoreboard</td>
                         <td>1</td>
                         <td>Boolean</td>
-                        <td>Whether the killer shows dead players as missing in action.</td>
+                        <td>Whether the Killer shows dead players as missing in action.</td>
                     </tr>
                     <tr>
                         <td>ttt_killer_vision_enable</td>
                         <td>1</td>
                         <td>Boolean</td>
-                        <td>Whether killers have their special vision highlights enabled.</td>
+                        <td>Whether Killers have their special vision highlights enabled.</td>
                     </tr>
                     <tr>
                         <td>ttt_killer_warn_all</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether to warn all players if there is a killer. If 0, only traitors will be warned.</td>
+                        <td>Whether to warn all players if there is a Killer. If 0, only traitors will be warned.</td>
                     </tr>
                     </tbody>
                 </table>
@@ -568,31 +568,31 @@
                         <td>ttt_madscientist_can_see_jesters</td>
                         <td>1</td>
                         <td>Boolean</td>
-                        <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to the mad scientist. <i>(Requires <code>ttt_madscientist_is_monster</code> to be disabled.)</i></td>
+                        <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to the Mad Scientist. <i>(Requires <code>ttt_madscientist_is_monster</code> to be disabled.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_madscientist_device_time</td>
                         <td>4</td>
                         <td>Integer</td>
-                        <td>The amount of time in seconds the mad scientist's device takes to use.</td>
+                        <td>The amount of time in seconds the Mad Scientist's device takes to use.</td>
                     </tr>
                     <tr>
                         <td>ttt_madscientist_is_monster</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether the mad scientist should be treated as a member of the monster team.</td>
+                        <td>Whether the Mad Scientist should be treated as a member of the monster team.</td>
                     </tr>
                     <tr>
                         <td>ttt_madscientist_respawn_enable</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether the mad scientist should respawn as a zombie when they are killed.</td>
+                        <td>Whether the Mad Scientist should respawn as a Zombie when they are killed.</td>
                     </tr>
                     <tr>
                         <td>ttt_madscientist_update_scoreboard</td>
                         <td>1</td>
                         <td>Boolean</td>
-                        <td>Whether the mad scientist shows dead players as missing in action. <i>(Requires <code>ttt_madscientist_is_monster</code> to be disabled.)</i></td>
+                        <td>Whether the Mad Scientist shows dead players as missing in action. <i>(Requires <code>ttt_madscientist_is_monster</code> to be disabled.)</i></td>
                     </tr>
                     </tbody>
                 </table>
@@ -622,19 +622,19 @@
                         <td>ttt_oldman_adrenaline_ramble</td>
                         <td>1</td>
                         <td>Boolean</td>
-                        <td>Whether the rambling speech sound plays when the old man is having their adrenaline rush.</td>
+                        <td>Whether the rambling speech sound plays when the Old Man is having their adrenaline rush.</td>
                     </tr>
                     <tr>
                         <td>ttt_oldman_adrenaline_rush</td>
                         <td>5</td>
                         <td>Integer</td>
-                        <td>The time in seconds the old man's adrenaline rush lasts for. <i>(Set to 0 to disable.)</i></td>
+                        <td>The time in seconds the Old Man's adrenaline rush lasts for. <i>(Set to 0 to disable.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_oldman_adrenaline_shotgun</td>
                         <td>1</td>
                         <td>Boolean</td>
-                        <td>Whether the old man is given a double barrel shotgun when their adrenaline rush is triggered.</td>
+                        <td>Whether the Old Man is given a double barrel shotgun when their adrenaline rush is triggered.</td>
                     </tr>
                     <tr>
                         <td>ttt_oldman_adrenaline_shotgun_damage</td>
@@ -646,25 +646,25 @@
                         <td>ttt_oldman_can_see_jesters</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to the old man.</td>
+                        <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to the Old Man.</td>
                     </tr>
                     <tr>
                         <td>ttt_oldman_drain_health_to</td>
                         <td>0</td>
                         <td>Integer</td>
-                        <td>The amount of health to drain the old man down to. <i>(Set to 0 to disable.)</i></td>
+                        <td>The amount of health to drain the Old Man down to. <i>(Set to 0 to disable.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_oldman_hide_when_active</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether the old man should be hidden from other players' overhead icons when their adrenaline rush is triggered. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                        <td>Whether the Old Man should be hidden from other players' overhead icons when their adrenaline rush is triggered. <i>(Server or round must be restarted for changes to take effect.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_oldman_update_scoreboard</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether the old man shows dead players as missing in action.</td>
+                        <td>Whether the Old Man shows dead players as missing in action.</td>
                     </tr>
                     </tbody>
                 </table>
@@ -694,67 +694,67 @@
                         <td>ttt_shadow_alive_radius</td>
                         <td>8</td>
                         <td>Float</td>
-                        <td>The radius in meters from the living target that the shadow has to stay within.</td>
+                        <td>The radius in meters from the living target that the Shadow has to stay within.</td>
                     </tr>
                     <tr>
                         <td>ttt_shadow_buffer_timer</td>
                         <td>7</td>
                         <td>Integer</td>
-                        <td>How much time in seconds the shadow can stay out of their target's radius without dying.</td>
+                        <td>How much time in seconds the Shadow can stay out of their target's radius without dying.</td>
                     </tr>
                     <tr>
                         <td>ttt_shadow_can_see_jesters</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to the shadow.</td>
+                        <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to the Shadow.</td>
                     </tr>
                     <tr>
                         <td>ttt_shadow_dead_radius</td>
                         <td>3</td>
                         <td>Float</td>
-                        <td>The radius in meters from the death target that the shadow has to stay within.</td>
+                        <td>The radius in meters from the death target that the Shadow has to stay within.</td>
                     </tr>
                     <tr>
                         <td>ttt_shadow_soul_link</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether the shadow should die when their target dies and vice-versa.</td>
+                        <td>Whether the Shadow should die when their target dies and vice-versa.</td>
                     </tr>
                     <tr>
                         <td>ttt_shadow_speed_mult</td>
                         <td>1.1</td>
                         <td>Float</td>
-                        <td>The minimum multiplier to use on the shadow's sprint speed when they are outside of their target radius. <i>(e.g. 1.1 = 110% normal speed.)</i></td>
+                        <td>The minimum multiplier to use on the Shadow's sprint speed when they are outside of their target radius. <i>(e.g. 1.1 = 110% normal speed.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_shadow_speed_mult_max</td>
                         <td>1.5</td>
                         <td>Float</td>
-                        <td>The maximum multiplier to use on the shadow's sprint speed when they are FAR outside of their target radius. <i>(e.g. 1.5 = 150% normal speed.)</i></td>
+                        <td>The maximum multiplier to use on the Shadow's sprint speed when they are FAR outside of their target radius. <i>(e.g. 1.5 = 150% normal speed.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_shadow_sprint_recovery</td>
                         <td>0.1</td>
                         <td>Float</td>
-                        <td>The minimum amount of stamina to recover per tick when the shadow is outside of their target radius.</td>
+                        <td>The minimum amount of stamina to recover per tick when the Shadow is outside of their target radius.</td>
                     </tr>
                     <tr>
                         <td>ttt_shadow_sprint_recovery_max</td>
                         <td>0.5</td>
                         <td>Float</td>
-                        <td>The maximum amount of stamina to recover per tick when the shadow is FAR outside of their target radius.</td>
+                        <td>The maximum amount of stamina to recover per tick when the Shadow is FAR outside of their target radius.</td>
                     </tr>
                     <tr>
                         <td>ttt_shadow_start_timer</td>
                         <td>30</td>
                         <td>Integer</td>
-                        <td>How much time in seconds the shadow has to find their target at the start of the round.</td>
+                        <td>How much time in seconds the Shadow has to find their target at the start of the round.</td>
                     </tr>
                     <tr>
                         <td>ttt_shadow_target_buff</td>
                         <td>4</td>
                         <td>Integer (0-4)</td>
-                        <td>The type of buff to shadow's target should get:
+                        <td>The type of buff to Shadow's target should get:
                             <ol start="0">
                                 <li>None.</li>
                                 <li>Heal over time.</li>
@@ -768,65 +768,65 @@
                         <td>ttt_shadow_target_buff_damage_bonus</td>
                         <td>0.15</td>
                         <td>Float</td>
-                        <td>Damage bonus the shadow's target should get. <i>(e.g. 0.15 = 15% extra damage.)</i></td>
+                        <td>Damage bonus the Shadow's target should get. <i>(e.g. 0.15 = 15% extra damage.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_shadow_target_buff_delay</td>
                         <td>90</td>
                         <td>Integer</td>
-                        <td>How long in seconds the shadow needs to be near their target before the buff takes effect.</td>
+                        <td>How long in seconds the Shadow needs to be near their target before the buff takes effect.</td>
                     </tr>
                     <tr>
                         <td>ttt_shadow_target_buff_heal_amount</td>
                         <td>5</td>
                         <td>Integer</td>
-                        <td>The amount of health the shadow's target should be healed per-interval.</td>
+                        <td>The amount of health the Shadow's target should be healed per-interval.</td>
                     </tr>
                     <tr>
                         <td>ttt_shadow_target_buff_heal_interval</td>
                         <td>10</td>
                         <td>Integer</td>
-                        <td>How often in seconds the shadow's target should be healed.</td>
+                        <td>How often in seconds the Shadow's target should be healed.</td>
                     </tr>
                     <tr>
                         <td>ttt_shadow_target_buff_notify</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether the shadow's target should be notified when they are buffed.</td>
+                        <td>Whether the Shadow's target should be notified when they are buffed.</td>
                     </tr>
                     <tr>
                         <td>ttt_shadow_target_buff_respawn_delay</td>
                         <td>10</td>
                         <td>Integer</td>
-                        <td>How often in seconds before the shadow's target should respawn.</td>
+                        <td>How often in seconds before the Shadow's target should respawn.</td>
                     </tr>
                     <tr>
                         <td>ttt_shadow_target_buff_role_copy</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether the shadow should instead copy the role of their target if the team join buff is enabled.</td>
+                        <td>Whether the Shadow should instead copy the role of their target if the team join buff is enabled.</td>
                     </tr>
                     <tr>
                         <td>ttt_shadow_target_independent</td>
                         <td>1</td>
                         <td>Boolean</td>
-                        <td>Whether the shadow should be able to target an independent player.</td>
+                        <td>Whether the Shadow should be able to target an independent player.</td>
                     </tr>
                     <tr>
                         <td>ttt_shadow_target_jester</td>
                         <td>1</td>
                         <td>Boolean</td>
-                        <td>Whether the shadow should be able to target a member of the jester team.</td>
+                        <td>Whether the Shadow should be able to target a member of the jester team.</td>
                     </tr>
                     <tr>
                         <td>ttt_shadow_target_notify_mode</td>
                         <td>0</td>
                         <td>Integer (0-2)</td>
-                        <td>How the shadow's target should be notified they have a shadow:
+                        <td>How the Shadow's target should be notified they have a Shadow:
                             <ol start="0">
                                 <li>Don't notify.</li>
                                 <li>Anonymously notify.</li>
-                                <li>Identify the shadow.</li>
+                                <li>Identify the Shadow.</li>
                             </ol>
                         </td>
                     </tr>
@@ -834,19 +834,19 @@
                         <td>ttt_shadow_update_scoreboard</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether the shadow shows dead players as missing in action.</td>
+                        <td>Whether the Shadow shows dead players as missing in action.</td>
                     </tr>
                     <tr>
                         <td>ttt_shadow_weaken_health_to</td>
                         <td>0</td>
                         <td>Integer</td>
-                        <td>How low to reduce the shadow's health to when they are outside of the target circle instead of killing them. <i>(Setting to 0 will kill them.)</i></td>
+                        <td>How low to reduce the Shadow's health to when they are outside of the target circle instead of killing them. <i>(Setting to 0 will kill them.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_shadow_weaken_timer</td>
                         <td>3</td>
                         <td>Integer</td>
-                        <td>How often in seconds to adjust the shadow's health when they are outside of the target circle.</td>
+                        <td>How often in seconds to adjust the Shadow's health when they are outside of the target circle.</td>
                     </tr>
                     </tbody>
                 </table>
@@ -876,25 +876,25 @@
                         <td>ttt_zombie_can_see_jesters</td>
                         <td>1</td>
                         <td>Boolean</td>
-                        <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to zombies. <i>(Requires <code>ttt_zombie_is_monster</code> and <code>ttt_zombie_is_traitor</code> to be disabled.)</i></td>
+                        <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to Zombies. <i>(Requires <code>ttt_zombie_is_monster</code> and <code>ttt_zombie_is_traitor</code> to be disabled.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_zombie_damage_penalty</td>
                         <td>0.5</td>
                         <td>Float (0-1)</td>
-                        <td>The fraction a zombie's damage will be scaled by when they are attacking without using their claws. <i>(e.g. 0.5 = 50% less damage.)</i></td>
+                        <td>The fraction a Zombie's damage will be scaled by when they are attacking without using their claws. <i>(e.g. 0.5 = 50% less damage.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_zombie_damage_reduction</td>
                         <td>0</td>
                         <td>Float (0-1)</td>
-                        <td>The fraction an attacker's bullet damage will be reduced by when they are shooting a zombie. <i>(e.g. 0.5 = 50% less damage.)</i></td>
+                        <td>The fraction an attacker's bullet damage will be reduced by when they are shooting a Zombie. <i>(e.g. 0.5 = 50% less damage.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_zombie_friendly_fire</td>
                         <td>2</td>
                         <td>Integer (0-2)</td>
-                        <td>How to handle friendly fire damage between zombies:
+                        <td>How to handle friendly fire damage between Zombies:
                             <ol start="0">
                                 <li>Do nothing.</li>
                                 <li>Reflect the damage back to the attacker.</li>
@@ -906,115 +906,115 @@
                         <td>ttt_zombie_is_monster</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether zombies should be treated as members of the monster team.</td>
+                        <td>Whether Zombies should be treated as members of the monster team.</td>
                     </tr>
                     <tr>
                         <td>ttt_zombie_is_traitor</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether zombies should be treated as members of the traitors team.</td>
+                        <td>Whether Zombies should be treated as members of the traitors team.</td>
                     </tr>
                     <tr>
                         <td>ttt_zombie_leap_enable</td>
                         <td>1</td>
                         <td>Boolean</td>
-                        <td>Whether zombies have their leap attack enabled.</td>
+                        <td>Whether Zombies have their leap attack enabled.</td>
                     </tr>
                     <tr>
                         <td>ttt_zombie_prime_attack_damage</td>
                         <td>65</td>
                         <td>Integer</td>
-                        <td>The amount of a damage a prime zombie does with their claws. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                        <td>The amount of a damage a prime Zombie does with their claws. <i>(Server or round must be restarted for changes to take effect.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_zombie_prime_attack_delay</td>
                         <td>0.7</td>
                         <td>Float</td>
-                        <td>The amount of time between claw attacks for a prime zombie. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                        <td>The amount of time between claw attacks for a prime Zombie. <i>(Server or round must be restarted for changes to take effect.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_zombie_prime_convert_chance</td>
                         <td>1</td>
                         <td>Float (0-1)</td>
-                        <td>The chance that a prime zombie will convert other players who are killed by their claws to be zombies as well. <i>(Set to 0 to disable.)</i></td>
+                        <td>The chance that a prime Zombie will convert other players who are killed by their claws to be Zombies as well. <i>(Set to 0 to disable.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_zombie_prime_only_weapons</td>
                         <td>1</td>
                         <td>Boolean</td>
-                        <td>Whether only prime zombies are allowed to pick up weapons.</td>
+                        <td>Whether only prime Zombies are allowed to pick up weapons.</td>
                     </tr>
                     <tr>
                         <td>ttt_zombie_prime_speed_bonus</td>
                         <td>0.35</td>
                         <td>Float</td>
-                        <td>The amount of bonus speed a prime zombie should get when using their claws. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                        <td>The amount of bonus speed a prime Zombie should get when using their claws. <i>(Server or round must be restarted for changes to take effect.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_zombie_respawn_block_win</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether a player respawning as a zombie blocks the round from ending, allowing them to join the winning team.</td>
+                        <td>Whether a player respawning as a Zombie blocks the round from ending, allowing them to join the winning team.</td>
                     </tr>
                     <tr>
                         <td>ttt_zombie_respawn_health</td>
                         <td>100</td>
                         <td>Integer</td>
-                        <td>The amount of health a player should respawn with when they are converted to a zombie thrall.</td>
+                        <td>The amount of health a player should respawn with when they are converted to a Zombie thrall.</td>
                     </tr>
                     <tr>
                         <td>ttt_zombie_round_chance</td>
                         <td>0.1</td>
                         <td>Float (0-1)</td>
-                        <td>The chance that a "zombie round" will occur where all players who would have been traitors are made zombies instead. <i>(Requires <code>ttt_zombie_is_traitor</code> to be enabled.)</i></td>
+                        <td>The chance that a "zombie round" will occur where all players who would have been traitors are made Zombies instead. <i>(Requires <code>ttt_zombie_is_traitor</code> to be enabled.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_zombie_show_target_icon</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether zombies have an icon over other players' heads showing who to kill. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                        <td>Whether Zombies have an icon over other players' heads showing who to kill. <i>(Server or round must be restarted for changes to take effect.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_zombie_spit_enable</td>
                         <td>1</td>
                         <td>Boolean</td>
-                        <td>Whether zombies have their spit attack enabled.</td>
+                        <td>Whether Zombies have their spit attack enabled.</td>
                     </tr>
                     <tr>
                         <td>ttt_zombie_thrall_attack_damage</td>
                         <td>45</td>
                         <td>Integer</td>
-                        <td>The amount of a damage a zombie thrall does with their claws. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                        <td>The amount of a damage a Zombie thrall does with their claws. <i>(Server or round must be restarted for changes to take effect.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_zombie_thrall_attack_delay</td>
                         <td>1.4</td>
                         <td>Float</td>
-                        <td>The amount of time between claw attacks for a zombie thrall. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                        <td>The amount of time between claw attacks for a Zombie thrall. <i>(Server or round must be restarted for changes to take effect.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_zombie_thrall_convert_chance</td>
                         <td>1</td>
                         <td>Float (0-1)</td>
-                        <td>The chance that a zombie thrall will convert other players who are killed by their claws to be zombies as well. <i>(Set to 0 to disable.)</i></td>
+                        <td>The chance that a Zombie thrall will convert other players who are killed by their claws to be Zombies as well. <i>(Set to 0 to disable.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_zombie_thrall_speed_bonus</td>
                         <td>0.15</td>
                         <td>Float</td>
-                        <td>The amount of bonus speed a zombie thrall should get when using their claws. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                        <td>The amount of bonus speed a Zombie thrall should get when using their claws. <i>(Server or round must be restarted for changes to take effect.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_zombie_update_scoreboard</td>
                         <td>1</td>
                         <td>Boolean</td>
-                        <td>Whether the zombies show dead players as missing in action. <i>(Requires <code>ttt_zombie_is_monster</code> and <code>ttt_zombie_is_traitor</code> to be disabled.)</i></td>
+                        <td>Whether the Zombies show dead players as missing in action. <i>(Requires <code>ttt_zombie_is_monster</code> and <code>ttt_zombie_is_traitor</code> to be disabled.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_zombie_vision_enable</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether zombies have their special vision highlights enabled.</td>
+                        <td>Whether Zombies have their special vision highlights enabled.</td>
                     </tr>
                     </tbody>
                 </table>

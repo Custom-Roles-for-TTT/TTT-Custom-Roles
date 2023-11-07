@@ -183,36 +183,36 @@
                         <td>ttt_beggar_announce_delay</td>
                         <td>0</td>
                         <td>Integer</td>
-                        <td>How long in seconds the delay between the beggar changing role and other players receiving an announcement should be.</i></td>
+                        <td>How long in seconds the delay between the Beggar changing role and other players receiving an announcement should be.</i></td>
                     </tr>
                     <tr>
                         <td>ttt_beggar_can_see_jesters</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to the beggar <i>(Requires <code>ttt_beggar_is_independent</code> to be enabled.)</i></td>
+                        <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to the Beggar <i>(Requires <code>ttt_beggar_is_independent</code> to be enabled.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_beggar_is_independent</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether beggars should be treated as members of the independent team.</td>
+                        <td>Whether Beggars should be treated as members of the independent team.</td>
                     </tr>
                     <tr>
                         <td>ttt_beggar_notify_confetti</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether to throw confetti when a beggar is a killed.</td>
+                        <td>Whether to throw confetti when a Beggar is a killed.</td>
                     </tr>
                     <tr>
                         <td>ttt_beggar_notify_mode</td>
                         <td>0</td>
                         <td>Integer (0-4)</td>
-                        <td>The logic to use when notifying players that a beggar is killed:
+                        <td>The logic to use when notifying players that a Beggar is killed:
                             <ol start="0">
                                 <li>Don't notify anyone.</li>
-                                <li>Only notify traitors and detective.</li>
+                                <li>Only notify traitors and detectives.</li>
                                 <li>Only notify traitors.</li>
-                                <li>Only notify detective.</li>
+                                <li>Only notify detectives.</li>
                                 <li>Notify everyone.</li>
                             </ol>
                         </td>
@@ -221,37 +221,37 @@
                         <td>ttt_beggar_notify_sound</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether to play a cheering sound when a beggar is killed.</td>
+                        <td>Whether to play a cheering sound when a Beggar is killed.</td>
                     </tr>
                     <tr>
                         <td>ttt_beggar_respawn</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether the beggar respawns when they are killed before joining another team.</td>
+                        <td>Whether the Beggar respawns when they are killed before joining another team.</td>
                     </tr>
                     <tr>
                         <td>ttt_beggar_respawn_change_role</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether to change the role of the respawning the beggar. Their role will be Traitor if killed by an innocent player and Innocent otherwise. <i>(Requires <code>ttt_beggar_respawn</code> to be enabled.)</i></td>
+                        <td>Whether to change the role of the respawning the Beggar. Their role will be Traitor if killed by an innocent player and Innocent otherwise. <i>(Requires <code>ttt_beggar_respawn</code> to be enabled.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_beggar_respawn_delay</td>
                         <td>3</td>
                         <td>Integer</td>
-                        <td>The delay in seconds to use when respawning the beggar. <i>(Requires <code>ttt_beggar_respawn</code> to be enabled.)</i></td>
+                        <td>The delay in seconds to use when respawning the Beggar. <i>(Requires <code>ttt_beggar_respawn</code> to be enabled.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_beggar_respawn_limit</td>
                         <td>0</td>
                         <td>Integer</td>
-                        <td>The maximum number of times the beggar can respawn. Set to 0 to allow infinite respawns. <i>(Requires <code>ttt_beggar_respawn</code> to be enabled.)</i></td>
+                        <td>The maximum number of times the Beggar can respawn. Set to 0 to allow infinite respawns. <i>(Requires <code>ttt_beggar_respawn</code> to be enabled.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_beggar_reveal_innocent</td>
                         <td>2</td>
                         <td>Integer (0-4)</td>
-                        <td>Who the beggar is revealed to when they join the innocent team:
+                        <td>Who the Beggar is revealed to when they join the innocent team:
                             <ol start="0">
                                 <li>No one.</li>
                                 <li>Everyone.</li>
@@ -265,7 +265,7 @@
                         <td>ttt_beggar_reveal_traitor</td>
                         <td>1</td>
                         <td>Integer (0-4)</td>
-                        <td>Who the beggar is revealed to when they join the traitor team:
+                        <td>Who the Beggar is revealed to when they join the traitor team:
                             <ol start="0">
                                 <li>No one.</li>
                                 <li>Everyone.</li>
@@ -278,14 +278,20 @@
                     <tr>
                         <td>ttt_beggar_scan</td>
                         <td>0</td>
-                        <td>Boolean</td>
-                        <td>Whether the beggar can scan players to see if they are traitors. 0 - Disabled. 1 - Can only scan traitors. 2 - Can scan any role that has a shop.</td>
+                        <td>Integer (0-2)</td>
+                        <td>Whether the Beggar can scan players to see if they are traitors
+                            <ol start="0">
+                                <li>Disabled.</li>
+                                <li>Can only scan traitors.</li>
+                                <li>Can scan any role that has a shop.</li>
+                            </ol>
+                        </td>
                     </tr>
                     <tr>
                         <td>ttt_beggar_scan_cooldown</td>
                         <td>3</td>
                         <td>Integer</td>
-                        <td>The amount of time in seconds the beggar's tracker goes on cooldown for after losing it's target.</td>
+                        <td>The amount of time in seconds the Beggar's tracker goes on cooldown for after losing it's target.</td>
                     </tr>
                     <tr>
                         <td>ttt_beggar_scan_distance</td>
@@ -297,19 +303,19 @@
                         <td>ttt_beggar_scan_float_time</td>
                         <td>1</td>
                         <td>Integer</td>
-                        <td>The amount of time in seconds it takes for the beggar's scanner to lose it's target without line of sight.</td>
+                        <td>The amount of time in seconds it takes for the Beggar's scanner to lose it's target without line of sight.</td>
                     </tr>
                     <tr>
                         <td>ttt_beggar_scan_time</td>
                         <td>15</td>
                         <td>Integer</td>
-                        <td>The amount of time in seconds the beggar's scanner takes to use.</td>
+                        <td>The amount of time in seconds the Beggar's scanner takes to use.</td>
                     </tr>
                     <tr>
                         <td>ttt_beggar_update_scoreboard</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether the beggar shows dead players as missing in action. <i>(Requires <code>ttt_beggar_is_independent</code> to be enabled.)</i></td>
+                        <td>Whether the Beggar shows dead players as missing in action. <i>(Requires <code>ttt_beggar_is_independent</code> to be enabled.)</i></td>
                     </tr>
                     </tbody>
                 </table>
@@ -339,7 +345,7 @@
                         <td>ttt_bodysnatcher_can_see_jesters</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to the bodysnatcher. <i>(Requires <code>ttt_bodysnatcher_is_independent</code> to be enabled.)</i></td>
+                        <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to the Bodysnatcher. <i>(Requires <code>ttt_bodysnatcher_is_independent</code> to be enabled.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_bodysnatcher_destroy_body</td>
@@ -351,30 +357,30 @@
                         <td>ttt_bodysnatcher_device_time</td>
                         <td>5</td>
                         <td>Integer</td>
-                        <td>The amount of time in seconds the bodysnatcher's device takes to use.</td>
+                        <td>The amount of time in seconds the Bodysnatcher's device takes to use.</td>
                     </tr>
                     <tr>
                         <td>ttt_bodysnatcher_is_independent</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether bodysnatchers should be treated as members of the independent team.</td>
+                        <td>Whether Bodysnatchers should be treated as members of the independent team.</td>
                     </tr>
                     <tr>
                         <td>ttt_bodysnatcher_notify_confetti</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether to throw confetti when a bodysnatcher is a killed.</td>
+                        <td>Whether to throw confetti when a Bodysnatcher is a killed.</td>
                     </tr>
                     <tr>
                         <td>ttt_bodysnatcher_notify_mode</td>
                         <td>0</td>
                         <td>Integer (0-4)</td>
-                        <td>The logic to use when notifying players that a bodysnatcher is killed:
+                        <td>The logic to use when notifying players that a Bodysnatcher is killed:
                             <ol start="0">
                                 <li>Don't notify anyone.</li>
-                                <li>Only notify traitors and detective.</li>
+                                <li>Only notify traitors and detectives.</li>
                                 <li>Only notify traitors.</li>
-                                <li>Only notify detective.</li>
+                                <li>Only notify detectives.</li>
                                 <li>Notify everyone.</li>
                             </ol>
                         </td>
@@ -383,31 +389,31 @@
                         <td>ttt_bodysnatcher_notify_sound</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether to play a cheering sound when a bodysnatcher is killed.</td>
+                        <td>Whether to play a cheering sound when a Bodysnatcher is killed.</td>
                     </tr>
                     <tr>
                         <td>ttt_bodysnatcher_respawn</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether the bodysnatcher respawns when they are killed before joining another team.</td>
+                        <td>Whether the Bodysnatcher respawns when they are killed before joining another team.</td>
                     </tr>
                     <tr>
                         <td>ttt_bodysnatcher_respawn_delay</td>
                         <td>3</td>
                         <td>Integer</td>
-                        <td>The delay in seconds to use when respawning the bodysnatcher. <i>(Requires <code>ttt_bodysnatcher_respawn</code> to be enabled.)</i></td>
+                        <td>The delay in seconds to use when respawning the Bodysnatcher. <i>(Requires <code>ttt_bodysnatcher_respawn</code> to be enabled.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_bodysnatcher_respawn_limit</td>
                         <td>0</td>
                         <td>Integer</td>
-                        <td>The maximum number of times the bodysnatcher can respawn. Set to 0 to allow infinite respawns. <i>(Requires <code>ttt_bodysnatcher_respawn</code> to be enabled.)</i></td>
+                        <td>The maximum number of times the Bodysnatcher can respawn. Set to 0 to allow infinite respawns. <i>(Requires <code>ttt_bodysnatcher_respawn</code> to be enabled.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_bodysnatcher_reveal_independent</td>
                         <td>1</td>
                         <td>Integer (0-3)</td>
-                        <td>Who the bodysnatcher is revealed to when they join the independent team:
+                        <td>Who the Bodysnatcher is revealed to when they join the independent team:
                             <ol start="0">
                                 <li>No one.</li>
                                 <li>Everyone.</li>
@@ -420,7 +426,7 @@
                         <td>ttt_bodysnatcher_reveal_innocent</td>
                         <td>1</td>
                         <td>Integer (0-3)</td>
-                        <td>Who the bodysnatcher is revealed to when they join the innocent team:
+                        <td>Who the Bodysnatcher is revealed to when they join the innocent team:
                             <ol start="0">
                                 <li>No one.</li>
                                 <li>Everyone.</li>
@@ -433,7 +439,7 @@
                         <td>ttt_bodysnatcher_reveal_jester</td>
                         <td>1</td>
                         <td>Integer (0-3)</td>
-                        <td>Who the bodysnatcher is revealed to when they join the jester team:
+                        <td>Who the Bodysnatcher is revealed to when they join the jester team:
                             <ol start="0">
                                 <li>No one.</li>
                                 <li>Everyone.</li>
@@ -446,7 +452,7 @@
                         <td>ttt_bodysnatcher_reveal_monster</td>
                         <td>1</td>
                         <td>Integer (0-3)</td>
-                        <td>Who the bodysnatcher is revealed to when they join the monster team:
+                        <td>Who the Bodysnatcher is revealed to when they join the monster team:
                             <ol start="0">
                                 <li>No one.</li>
                                 <li>Everyone.</li>
@@ -459,7 +465,7 @@
                         <td>ttt_bodysnatcher_reveal_traitor</td>
                         <td>1</td>
                         <td>Integer (0-3)</td>
-                        <td>Who the bodysnatcher is revealed to when they join the traitor team:
+                        <td>Who the Bodysnatcher is revealed to when they join the traitor team:
                             <ol start="0">
                                 <li>No one.</li>
                                 <li>Everyone.</li>
@@ -478,7 +484,7 @@
                         <td>ttt_bodysnatcher_update_scoreboard</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether the bodysnatcher shows dead players as missing in action. <i>(Requires <code>ttt_bodysnatcher_is_independent</code> to be enabled.)</i></td>
+                        <td>Whether the Bodysnatcher shows dead players as missing in action. <i>(Requires <code>ttt_bodysnatcher_is_independent</code> to be enabled.)</i></td>
                     </tr>
                     </tbody>
                 </table>
@@ -508,67 +514,67 @@
                         <td>ttt_clown_activation_credits</td>
                         <td>0</td>
                         <td>Integer</td>
-                        <td>The number of credits to give the clown when they are activated.</td>
+                        <td>The number of credits to give the Clown when they are activated.</td>
                     </tr>
                     <tr>
                         <td>ttt_clown_can_see_jesters</td>
                         <td>1</td>
                         <td>Boolean</td>
-                        <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to the clown after they activate.</td>
+                        <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to the Clown after they activate.</td>
                     </tr>
                     <tr>
                         <td>ttt_clown_credits_starting</td>
                         <td>0</td>
                         <td>Integer</td>
-                        <td>The number of credits a clown should start with.</td>
+                        <td>The number of credits a Clown should start with.</td>
                     </tr>
                     <tr>
                         <td>ttt_clown_damage_bonus</td>
                         <td>0</td>
                         <td>Float</td>
-                        <td>Damage bonus that the clown has after being activated. <i>(e.g. 0.5 = 50% more damage.)</i></td>
+                        <td>Damage bonus that the Clown has after being activated. <i>(e.g. 0.5 = 50% more damage.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_clown_heal_bonus</td>
                         <td>0</td>
                         <td>Integer</td>
-                        <td>The amount of bonus health to give the clown if they are healed when they are activated.</td>
+                        <td>The amount of bonus health to give the Clown if they are healed when they are activated.</td>
                     </tr>
                     <tr>
                         <td>ttt_clown_heal_on_activate</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether the clown should fully heal when they activate or not.</td>
+                        <td>Whether the Clown should fully heal when they activate or not.</td>
                     </tr>
                     <tr>
                         <td>ttt_clown_hide_when_active</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether the clown should be hidden from other players' overhead icons when they are activated. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                        <td>Whether the Clown should be hidden from other players' overhead icons when they are activated. <i>(Server or round must be restarted for changes to take effect.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_clown_shop_active_only</td>
                         <td>1</td>
                         <td>Boolean</td>
-                        <td>Whether the clown's shop should be available only after they activate.</td>
+                        <td>Whether the Clown's shop should be available only after they activate.</td>
                     </tr>
                     <tr>
                         <td>ttt_clown_shop_delay</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether the clown's purchased shop items should be held until they activate.</td>
+                        <td>Whether the Clown's purchased shop items should be held until they activate.</td>
                     </tr>
                     <tr>
                         <td>ttt_clown_shop_mode</td>
                         <td>0</td>
                         <td>Integer (0-4)</td>
-                        <td>What additional items are available to the clown in the shop:
+                        <td>What additional items are available to the Clown in the shop:
                             <ol start="0">
                                 <li>(Disabled) Nothing.</li>
-                                <li>(Union) Weapons available to either the traitor or the detective.</li>
-                                <li>(Intersect) Only weapons available to both the traitor and the detective.</li>
-                                <li>(Detective) All weapons available to the detective.</li>
-                                <li>(Traitor) All weapons available to the traitor.</li>
+                                <li>(Union) Weapons available to either the Traitor or the Detective.</li>
+                                <li>(Intersect) Only weapons available to both the Traitor and the Detective.</li>
+                                <li>(Detective) All weapons available to the Detective.</li>
+                                <li>(Traitor) All weapons available to the Traitor.</li>
                             </ol>
                         </td>
                     </tr>
@@ -576,31 +582,31 @@
                         <td>ttt_clown_show_target_icon</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether the clown has an icon over other players' heads showing who to kill. <i>(Server or round must be restarted for changes to take effect.)</i></td>
+                        <td>Whether the Clown has an icon over other players' heads showing who to kill. <i>(Server or round must be restarted for changes to take effect.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_clown_update_scoreboard</td>
                         <td>1</td>
                         <td>Boolean</td>
-                        <td>Whether the clown shows dead players as missing in action after they activate.</td>
+                        <td>Whether the Clown shows dead players as missing in action after they activate.</td>
                     </tr>
                     <tr>
                         <td>ttt_clown_use_traps_when_active</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether the clown can see and use traitor traps when they are activated.</td>
+                        <td>Whether the Clown can see and use traitor traps when they are activated.</td>
                     </tr>
                     <tr>
                         <td>ttt_single_drunk_clown</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether only a single drunk or clown should spawn in a round.</td>
+                        <td>Whether only a single Drunk or Clown should spawn in a round.</td>
                     </tr>
                     <tr>
                         <td>ttt_single_drunk_clown_chance</td>
                         <td>0.5</td>
                         <td>Float (0-1)</td>
-                        <td>The chance that a drunk should have an opportunity to spawn instead of a clown. <i>(e.g. 0.7 = 70% chance for drunk, 30% chance for clown. Requires <code>ttt_single_drunk_clown</code> to be enabled.)</i></td>
+                        <td>The chance that a Drunk should have an opportunity to spawn instead of a Clown. <i>(e.g. 0.7 = 70% chance forDrunk, 30% chance for Clown. Requires <code>ttt_single_drunk_clown</code> to be enabled.)</i></td>
                     </tr>
                     </tbody>
                 </table>
@@ -630,19 +636,19 @@
                         <td>ttt_cupid_can_damage_lovers</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether cupid should be able to damage the lovers.</td>
+                        <td>Whether Cupid should be able to damage the lovers.</td>
                     </tr>
                     <tr>
                         <td>ttt_cupid_can_see_jesters</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to cupid. <i>(Requires <code>ttt_cupid_is_independent</code> to be enabled.)</i></td>
+                        <td>Whether jesters are revealed (via overhead icons, color/icon on the scoreboard, etc.) to Cupid. <i>(Requires <code>ttt_cupid_is_independent</code> to be enabled.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_cupid_is_independent</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether cupids should be treated as members of the independent team.</td>
+                        <td>Whether Cupids should be treated as members of the independent team.</td>
                     </tr>
                     <tr>
                         <td>ttt_cupid_lover_vision_enable</td>
@@ -654,7 +660,7 @@
                         <td>ttt_cupid_lovers_can_damage_cupid</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether the lovers should be able to damage cupid.</td>
+                        <td>Whether the lovers should be able to damage Cupid.</td>
                     </tr>
                     <tr>
                         <td>ttt_cupid_lovers_can_damage_lovers</td>
@@ -666,7 +672,7 @@
                         <td>ttt_cupid_lovers_notify_mode</td>
                         <td>1</td>
                         <td>Integer (0-3)</td>
-                        <td>Who is notified with cupid makes two players fall in love:
+                        <td>Who is notified with Cupid makes two players fall in love:
                             <ol start="0">
                                 <li>No one.</li>
                                 <li>Everyone.</li>
@@ -679,13 +685,13 @@
                         <td>ttt_cupid_notify_confetti</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether to throw confetti when a cupid is a killed.</td>
+                        <td>Whether to throw confetti when a Cupid is a killed.</td>
                     </tr>
                     <tr>
                         <td>ttt_cupid_notify_mode</td>
                         <td>0</td>
                         <td>Integer (0-4)</td>
-                        <td>The logic to use when notifying players that a cupid is killed:
+                        <td>The logic to use when notifying players that a Cupid is killed:
                             <ol start="0">
                                 <li>Don't notify anyone.</li>
                                 <li>Only notify traitors and detective.</li>
@@ -699,13 +705,13 @@
                         <td>ttt_cupid_notify_sound</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether to play a cheering sound when a cupid is killed.</td>
+                        <td>Whether to play a cheering sound when a Cupid is killed.</td>
                     </tr>
                     <tr>
                         <td>ttt_cupid_update_scoreboard</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether cupid shows dead players as missing in action. <i>(Requires <code>ttt_cupid_is_independent</code> to be enabled.)</i></td>
+                        <td>Whether Cupid shows dead players as missing in action. <i>(Requires <code>ttt_cupid_is_independent</code> to be enabled.)</i></td>
                     </tr>
                     </tbody>
                 </table>
@@ -735,25 +741,25 @@
                         <td>ttt_guesser_can_guess_detectives</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether the guesser is allowed to guess detectives.</td>
+                        <td>Whether the Guesser is allowed to guess detectives.</td>
                     </tr>
                     <tr>
                         <td>ttt_guesser_minimum_radius</td>
                         <td>5</td>
                         <td>Float</td>
-                        <td>The minimum radius of the guesser's device in meters. <i>(Set to 0 to disable.)</i></td>
+                        <td>The minimum radius of the Guesser's device in meters. <i>(Set to 0 to disable.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_guesser_notify_confetti</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether to throw confetti when a guesser is a killed.</td>
+                        <td>Whether to throw confetti when a Guesser is a killed.</td>
                     </tr>
                     <tr>
                         <td>ttt_guesser_notify_mode</td>
                         <td>0</td>
                         <td>Integer (0-4)</td>
-                        <td>The logic to use when notifying players that a guesser is killed:
+                        <td>The logic to use when notifying players that a Guesser is killed:
                             <ol start="0">
                                 <li>Don't notify anyone.</li>
                                 <li>Only notify traitors and detective.</li>
@@ -767,31 +773,31 @@
                         <td>ttt_guesser_notify_sound</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether to play a cheering sound when a guesser is killed.</td>
+                        <td>Whether to play a cheering sound when a Guesser is killed.</td>
                     </tr>
                     <tr>
                         <td>ttt_guesser_show_role_threshold</td>
                         <td>100</td>
                         <td>Integer</td>
-                        <td>The amount of damage that needs to be dealt to a guesser before they learn the attacker's role.</td>
+                        <td>The amount of damage that needs to be dealt to a Guesser before they learn the attacker's role.</td>
                     </tr>
                     <tr>
                         <td>ttt_guesser_show_team_threshold</td>
                         <td>50</td>
                         <td>Integer</td>
-                        <td>The amount of damage that needs to be dealt to a guesser before they learn the attacker's team.</td>
+                        <td>The amount of damage that needs to be dealt to a Guesser before they learn the attacker's team.</td>
                     </tr>
                     <tr>
                         <td>ttt_guesser_unguessable_roles</td>
                         <td>"lootgoblin,zombie"</td>
                         <td>String</td>
-                        <td>Names of roles that cannot be guessed by the guesser, separated with commas. <i>(Do not include spaces or capital letters.)</i></td>
+                        <td>Names of roles that cannot be guessed by the Guesser, separated with commas. <i>(Do not include spaces or capital letters.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_guesser_warn_all</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether all players are warned when there's a guesser in a round.</td>
+                        <td>Whether all players are warned when there's a Guesser in a round.</td>
                     </tr>
                     </tbody>
                 </table>
@@ -865,13 +871,13 @@
                         <td>ttt_single_jester_swapper</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether only a single jester or swapper should spawn in a round.</td>
+                        <td>Whether only a single jester or Swapper should spawn in a round.</td>
                     </tr>
                     <tr>
                         <td>ttt_single_jester_swapper_chance</td>
                         <td>0.5</td>
                         <td>Float (0-1)</td>
-                        <td>The chance that a jester should have an opportunity to spawn instead of a swapper. <i>(e.g. 0.7 = 70% chance for jester, 30% chance for swapper. Requires <code>ttt_single_jester_swapper</code> to be enabled.)</i></td>
+                        <td>The chance that a jester should have an opportunity to spawn instead of a Swapper. <i>(e.g. 0.7 = 70% chance for jester, 30% chance for Swapper. Requires <code>ttt_single_jester_swapper</code> to be enabled.)</i></td>
                     </tr>
                     </tbody>
                 </table>
@@ -901,25 +907,25 @@
                         <td>ttt_lootgoblin_activation_timer</td>
                         <td>30</td>
                         <td>Integer</td>
-                        <td>Minimum time in seconds before the loot goblin is revealed.</td>
+                        <td>Minimum time in seconds before the Loot Goblin is revealed.</td>
                     </tr>
                     <tr>
                         <td>ttt_lootgoblin_activation_timer_max</td>
                         <td>60</td>
                         <td>Integer</td>
-                        <td>Maximum time in seconds before the loot goblin is revealed.</td>
+                        <td>Maximum time in seconds before the Loot Goblin is revealed.</td>
                     </tr>
                     <tr>
                         <td>ttt_lootgoblin_active_display</td>
                         <td>1</td>
                         <td>Boolean</td>
-                        <td>Whether to show the loot goblin's information over their head and on the scoreboard once they are activated.</td>
+                        <td>Whether to show the Loot Goblin's information over their head and on the scoreboard once they are activated.</td>
                     </tr>
                     <tr>
                         <td>ttt_lootgoblin_announce</td>
                         <td>4</td>
                         <td>Integer (0-4)</td>
-                        <td>The logic to use when notifying players that a loot goblin has been revealed:
+                        <td>The logic to use when notifying players that a Loot Goblin has been revealed:
                             <ol start="0">
                                 <li>Don't notify anyone.</li>
                                 <li>Only notify traitors and detective.</li>
@@ -933,43 +939,43 @@
                         <td>ttt_lootgoblin_cackle_enabled</td>
                         <td>1</td>
                         <td>Boolean</td>
-                        <td>Whether to play a cackle sound periodically when a loot goblin is activated.</td>
+                        <td>Whether to play a cackle sound periodically when a Loot Goblin is activated.</td>
                     </tr>
                     <tr>
                         <td>ttt_lootgoblin_cackle_timer_max</td>
                         <td>12</td>
                         <td>Integer</td>
-                        <td>The maximum time between loot goblin cackles.</td>
+                        <td>The maximum time between Loot Goblin cackles.</td>
                     </tr>
                     <tr>
                         <td>ttt_lootgoblin_cackle_timer_min</td>
                         <td>4</td>
                         <td>Integer</td>
-                        <td>The minimum time between loot goblin cackles.</td>
+                        <td>The minimum time between Loot Goblin cackles.</td>
                     </tr>
                     <tr>
                         <td>ttt_lootgoblin_drop_timer</td>
                         <td>0</td>
                         <td>Integer</td>
-                        <td>How often in seconds the loot goblin should drop a piece of loot behind them.</td>
+                        <td>How often in seconds the Loot Goblin should drop a piece of loot behind them.</td>
                     </tr>
                     <tr>
                         <td>ttt_lootgoblin_jingle_enabled</td>
                         <td>1</td>
                         <td>Boolean</td>
-                        <td>Whether to play a jingle sound when an activated loot goblin is moving.</td>
+                        <td>Whether to play a jingle sound when an activated Loot Goblin is moving.</td>
                     </tr>
                     <tr>
                         <td>ttt_lootgoblin_notify_confetti</td>
                         <td>1</td>
                         <td>Boolean</td>
-                        <td>Whether to throw confetti when a loot goblin is a killed.</td>
+                        <td>Whether to throw confetti when a Loot Goblin is a killed.</td>
                     </tr>
                     <tr>
                         <td>ttt_lootgoblin_notify_mode</td>
                         <td>4</td>
                         <td>Integer (0-4)</td>
-                        <td>The logic to use when notifying players that a loot goblin is killed:
+                        <td>The logic to use when notifying players that a Loot Goblin is killed:
                             <ol start="0">
                                 <li>Don't notify anyone.</li>
                                 <li>Only notify traitors and detective.</li>
@@ -983,67 +989,67 @@
                         <td>ttt_lootgoblin_notify_sound</td>
                         <td>1</td>
                         <td>Boolean</td>
-                        <td>Whether to play a cheering sound when a loot goblin is killed.</td>
+                        <td>Whether to play a cheering sound when a Loot Goblin is killed.</td>
                     </tr>
                     <tr>
                         <td>ttt_lootgoblin_radar_delay</td>
                         <td>15</td>
                         <td>Integer</td>
-                        <td>How delayed in seconds the radar ping for the loot goblin should be.</td>
+                        <td>How delayed in seconds the radar ping for the Loot Goblin should be.</td>
                     </tr>
                     <tr>
                         <td>ttt_lootgoblin_radar_enabled</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether the radar ping for the loot goblin should be enabled or not.</td>
+                        <td>Whether the radar ping for the Loot Goblin should be enabled or not.</td>
                     </tr>
                     <tr>
                         <td>ttt_lootgoblin_radar_timer</td>
                         <td>15</td>
                         <td>Integer</td>
-                        <td>How often in seconds the radar ping for the loot goblin should update.</td>
+                        <td>How often in seconds the radar ping for the Loot Goblin should update.</td>
                     </tr>
                     <tr>
                         <td>ttt_lootgoblin_regen_delay</td>
                         <td>0</td>
                         <td>Integer</td>
-                        <td>The length of the delay in seconds before the loot goblin's health will start to regenerate.</td>
+                        <td>The length of the delay in seconds before the Loot Goblin's health will start to regenerate.</td>
                     </tr>
                     <tr>
                         <td>ttt_lootgoblin_regen_mode</td>
                         <td>2</td>
                         <td>Boolean</td>
-                        <td>Whether the loot goblin should regenerate health and using what logic. 0 - No regeneration. 1 - Constant regen while active. 2 - Regen while standing still. 3 - Regen after taking damage.</td>
+                        <td>Whether the Loot Goblin should regenerate health and using what logic. 0 - No regeneration. 1 - Constant regen while active. 2 - Regen while standing still. 3 - Regen after taking damage.</td>
                     </tr>
                     <tr>
                         <td>ttt_lootgoblin_regen_rate</td>
                         <td>3</td>
                         <td>Integer</td>
-                        <td>How often in seconds a loot goblin should regain health while regenerating.</td>
+                        <td>How often in seconds a Loot Goblin should regain health while regenerating.</td>
                     </tr>
                     <tr>
                         <td>ttt_lootgoblin_size</td>
                         <td>0.5</td>
                         <td>Float</td>
-                        <td>The size multiplier for the loot goblin to use when they are revealed. <i>(e.g. 0.5 = 50% size.)</i></td>
+                        <td>The size multiplier for the Loot Goblin to use when they are revealed. <i>(e.g. 0.5 = 50% size.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_lootgoblin_speed_mult</td>
                         <td>1.2</td>
                         <td>Float</td>
-                        <td>The multiplier to use on the loot goblin's movement speed when they are activated. <i>(e.g. 1.2 = 120% normal speed.)</i></td>
+                        <td>The multiplier to use on the Loot Goblin's movement speed when they are activated. <i>(e.g. 1.2 = 120% normal speed.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_lootgoblin_sprint_recovery</td>
                         <td>0.12</td>
                         <td>Float</td>
-                        <td>The amount of stamina to recover per tick when the loot goblin is activated.</td>
+                        <td>The amount of stamina to recover per tick when the Loot Goblin is activated.</td>
                     </tr>
                     <tr>
                         <td>ttt_lootgoblin_weapons_dropped</td>
                         <td>8</td>
                         <td>Integer</td>
-                        <td>How many weapons the loot goblin drops when they are killed.</td>
+                        <td>How many weapons the Loot Goblin drops when they are killed.</td>
                     </tr>
                     </tbody>
                 </table>
@@ -1073,19 +1079,19 @@
                         <td>ttt_sponge_aura_radius</td>
                         <td>5</td>
                         <td>Float</td>
-                        <td>The radius of the sponge's aura in meters.</td>
+                        <td>The radius of the Sponge's aura in meters.</td>
                     </tr>
                     <tr>
                         <td>ttt_sponge_notify_confetti</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether to throw confetti when a sponge is a killed.</td>
+                        <td>Whether to throw confetti when a Sponge is a killed.</td>
                     </tr>
                     <tr>
                         <td>ttt_sponge_notify_mode</td>
                         <td>0</td>
                         <td>Integer (0-4)</td>
-                        <td>The logic to use when notifying players that the sponge is killed:
+                        <td>The logic to use when notifying players that the Sponge is killed:
                             <ol start="0">
                                 <li>Don't notify anyone.</li>
                                 <li>Only notify traitors and detective.</li>
@@ -1099,7 +1105,7 @@
                         <td>ttt_sponge_notify_sound</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether to play a cheering sound when a sponge is killed.</td>
+                        <td>Whether to play a cheering sound when a Sponge is killed.</td>
                     </tr>
                     </tbody>
                 </table>
@@ -1129,37 +1135,37 @@
                         <td>ttt_swapper_credits_starting</td>
                         <td>0</td>
                         <td>Integer</td>
-                        <td>The number of credits a swapper should start with.</td>
+                        <td>The number of credits a Swapper should start with.</td>
                     </tr>
                     <tr>
                         <td>ttt_swapper_healthstation_reduce_max</td>
                         <td>1</td>
                         <td>Boolean</td>
-                        <td>Whether the swapper's max health should be reduced to match their current health when using a health station, instead of being healed.</td>
+                        <td>Whether the Swapper's max health should be reduced to match their current health when using a health station, instead of being healed.</td>
                     </tr>
                     <tr>
                         <td>ttt_swapper_killer_health</td>
                         <td>100</td>
                         <td>Integer</td>
-                        <td>The amount of health the swapper's killer should set to. Set to "0" to kill them.</td>
+                        <td>The amount of health the Swapper's killer should set to. Set to "0" to kill them.</td>
                     </tr>
                     <tr>
                         <td>ttt_swapper_killer_max_health</td>
                         <td>0</td>
                         <td>Integer</td>
-                        <td>The maximum health value to set on the swapper's killer. Set to "0" to use the swapper's default.</td>
+                        <td>The maximum health value to set on the Swapper's killer. Set to "0" to use the Swapper's default.</td>
                     </tr>
                     <tr>
                         <td>ttt_swapper_notify_confetti</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether to throw confetti when a swapper is a killed.</td>
+                        <td>Whether to throw confetti when a Swapper is a killed.</td>
                     </tr>
                     <tr>
                         <td>ttt_swapper_notify_mode</td>
                         <td>0</td>
                         <td>Integer (0-4)</td>
-                        <td>The logic to use when notifying players that a swapper is killed:
+                        <td>The logic to use when notifying players that a Swapper is killed:
                             <ol start="0">
                                 <li>Don't notify anyone.</li>
                                 <li>Only notify traitors and detective.</li>
@@ -1173,19 +1179,19 @@
                         <td>ttt_swapper_notify_sound</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether to play a cheering sound when a swapper is killed.</td>
+                        <td>Whether to play a cheering sound when a Swapper is killed.</td>
                     </tr>
                     <tr>
                         <td>ttt_swapper_respawn_health</td>
                         <td>100</td>
                         <td>Integer</td>
-                        <td>What amount of health to give the swapper when they are killed and respawned.</td>
+                        <td>What amount of health to give the Swapper when they are killed and respawned.</td>
                     </tr>
                     <tr>
                         <td>ttt_swapper_swap_lovers</td>
                         <td>1</td>
                         <td>Boolean</td>
-                        <td>Whether the swapper should swap lovers with their attacker or not.</td>
+                        <td>Whether the Swapper should swap lovers with their attacker or not.</td>
                     </tr>
                     <tr>
                         <td>ttt_swapper_weapon_mode</td>
@@ -1202,13 +1208,13 @@
                         <td>ttt_single_jester_swapper</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether only a single jester or swapper should spawn in a round.</td>
+                        <td>Whether only a single jester or Swapper should spawn in a round.</td>
                     </tr>
                     <tr>
                         <td>ttt_single_jester_swapper_chance</td>
                         <td>0.5</td>
                         <td>Float (0-1)</td>
-                        <td>The chance that a jester should have an opportunity to spawn instead of a swapper. <i>(e.g. 0.7 = 70% chance for jester, 30% chance for swapper. Requires <code>ttt_single_jester_swapper</code> to be enabled.)</i></td>
+                        <td>The chance that a jester should have an opportunity to spawn instead of a Swapper. <i>(e.g. 0.7 = 70% chance for jester, 30% chance for Swapper. Requires <code>ttt_single_jester_swapper</code> to be enabled.)</i></td>
                     </tr>
                     </tbody>
                 </table>
