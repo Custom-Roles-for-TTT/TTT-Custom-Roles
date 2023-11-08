@@ -132,7 +132,9 @@
             <div class="moreless">[more]</div>
             <p>The <span class="inline-icon" style="color:var(--independent);"><i class="icon-arsonist"></i><a href="#arsonist">Arsonist</a></span> can douse players and set them on fire. They win if they are the last player alive.</p>
             <div class="expansion">
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                <p>They can douse players in gasoline by standing near them and then set them on fire using their igniter weapon once all other players have all been doused. If <code>ttt_arsonist_early_ignite</code> is enabled, the igniter weapon can be used at any time, but keep in mind it can only be used once.</p>
+                <p>Players are notified when they are doused after a configurable delay (see <code>ttt_arsonist_douse_notify_delay_min</code> and <code>ttt_arsonist_douse_notify_delay_max</code> below). This is to encourage Arsonists to be sneaky or blend in with other players to disguise themselves.</p>
+                <p>Dead players' corpses can also be doused and will be ignited with living doused players. Dousing all corpses is not required to activate the igniter when <code>ttt_arsonist_early_ignite</code> is disabled.</p>
                 <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
                 <table style="width:100%; margin-bottom: 10px;">
                     <thead>
