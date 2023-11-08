@@ -212,7 +212,9 @@
             <div class="moreless">[more]</div>
             <p>The <span class="inline-icon" style="color:var(--independent);"><i class="icon-drunk"></i><a href="#drunk">Drunk</a></span> has forgotten their role and remembers after enough time passes or when there are no members of the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span> or <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span> left alive.</p>
             <div class="expansion">
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                <p>If there is only one team remaining, the Drunk will instantly sober up and remember they are.</p>
+                <p>After some time has passed (configurable by the <code>ttt_drunk_sober_time</code> ConVar) and the round has not ended, the Drunk will sober up and remember what role they are.</p>
+                <p>Which role the Drunk becomes depends on the situation and various ConVars (For example, <code>ttt_drunk_any_role</code>, <code>ttt_drunk_can_be_*</code>, <code>ttt_drunk_become_clown</code>, <code>ttt_drunk_innocent_chance</code>, and <code>ttt_drunk_join_losing_team</code>). By default, the Drunk will join the losing team and become their most basic role (e.g. the <span class="inline-icon" style="color:var(--innocent);"><i class="icon-innocent"></i><a href="../teams/innocent.html#innocent">Innocent</a></span> for the innocent team and the <span class="inline-icon" style="color:var(--traitor);"><i class="icon-traitor"></i><a href="../teams/traitor.html#traitor">Traitor</a></span> for the traitor team) in the case of the round ending. If the Drunk is remembering their role due to the sober timer running out, they have a 70% chance of becoming an Innocent and, therefore, a 30% chance of becoming a Traitor.</p>
                 <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
                 <table style="width:100%; margin-bottom: 10px;">
                     <thead>
@@ -228,7 +230,7 @@
                         <td>ttt_drunk_any_role</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether the Drunk can become any enabled role other than theDrunk, the Glitch, or roles that were already used this round. <i>(The <code>ttt_drunk_can_be_*</code> ConVars can be used to prevent theDrunk from becoming specific roles.)</i></td>
+                        <td>Whether the Drunk can become any enabled role other than theDrunk, the Glitch, or roles that were already used this round. <i>(The <code>ttt_drunk_can_be_*</code> ConVars can be used to prevent the Drunk from becoming specific roles.)</i></td>
                     </tr>
                     <tr>
                         <td>ttt_drunk_can_be_*</td>
@@ -322,7 +324,14 @@
             <div class="moreless">[more]</div>
             <p>The <span class="inline-icon" style="color:var(--independent);"><i class="icon-hive-mind"></i><a href="#hive-mind">Hive Mind</a></span> can assimilate other players into the <span class="inline-icon" style="color:var(--independent);"><i class="icon-hive-mind"></i><a href="#hive-mind">Hive Mind</a></span>, gaining access to their shop items and sharing a health pool as they do. They win by assimilating all living players.</p>
             <div class="expansion">
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                <p>Players killed by the Hive Mind will be assimilated and will respawn as part of the Hive Mind.</p>
+                <p>When a player with a shop is assimilated, their available shop items are added to the Hive Mind's shop.</p>
+                <p>All members of the Hive Mind have a shared pool of health -- gaining members increases the collective's maximum health and any healing or damage done to one member affects them all.</p>
+                <p>The Hive Mind also has a shared pool of credits -- gaining or spending credits affects the collective.</p>
+                <p>When each new member joins the Hive Mind, the collective is healed by a percentage of the new member's former maximum health. By default it is 25%, but that value is configurable via the <code>ttt_hivemind_join_heal_pct</code> ConVar.</p>
+                <p>Members of the Hive Mind can identify each other through walls by a highlight, but that can be removed by disabling the <code>ttt_hivemind_vision_enable</code> ConVar.</p>
+                <p>By default, members of the Hive Mind cannot damage each other but this behavior can be changed via the <code>ttt_hivemind_friendly_fire</code> ConVar.</p>
+                <p>Health regeneration can be enabled for the Hive Mind and adjusted via the <code>ttt_hivemind_regen_timer</code>, <code>ttt_hivemind_regen_per_member_amt</code>, and <code>ttt_hivemind_regen_max_pct</code> ConVars.</p>
                 <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
                 <table style="width:100%; margin-bottom: 10px;">
                     <thead>

@@ -221,7 +221,7 @@ AddHook("TTTTutorialRoleText", "HiveMind_TTTTutorialRoleText", function(role, ti
         end
 
         if hivemind_friendly_fire:GetBool() then
-            html = html .. "<span style='display: block; margin-top: 10px;'>Be careful thought! Members of the " .. ROLE_STRINGS[ROLE_HIVEMIND] .. " <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>CAN damage eachother</span> so watch where you're shooting.</span>"
+            html = html .. "<span style='display: block; margin-top: 10px;'>Be careful though! Members of the " .. ROLE_STRINGS[ROLE_HIVEMIND] .. " <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>CAN damage eachother</span> so watch where you're shooting.</span>"
         end
 
         return html
