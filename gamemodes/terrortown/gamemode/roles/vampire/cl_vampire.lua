@@ -280,7 +280,7 @@ hook.Add("TTTTutorialRoleText", "Vampire_TTTTutorialRoleText", function(role, ti
         end
 
         -- Vision
-        local hasVision = vampire_vision_enable:GetBool()
+        local hasVision = vampire_vision_enabled:GetBool()
         if hasVision then
             html = html .. "<span style='display: block; margin-top: 10px;'>Their <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>hunger for blood</span> helps them see their targets through walls by highlighting their enemies.</span>"
         end
