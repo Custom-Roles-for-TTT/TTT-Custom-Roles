@@ -194,7 +194,7 @@ ttt_hivemind_min_players                    0       // The minimum number of pla
 // ----------------------------------------
 
 // TRAITOR TEAM SETTINGS
-ttt_traitors_vision_enable                  0       // Whether members of the traitor team can see other members of the traitor team (including Glitches) through walls via a highlight effect
+ttt_traitors_vision_enabled                 0       // Whether members of the traitor team can see other members of the traitor team (including Glitches) through walls via a highlight effect
 ttt_traitors_credits_timer                  0       // How often in seconds to give members of the traitor team a credit (set to 0 to disable)
 
 // Traitor
@@ -224,7 +224,7 @@ ttt_single_paramedic_hypnotist_chance       0.5     // The chance that a paramed
 
 // Assassin
 ttt_assassin_show_target_icon               0       // Whether assassins have an icon over their target's heads showing who to kill. Server or round must be restarted for changes to take effect
-ttt_assassin_target_vision_enable           0       // Whether assassins have a visible aura around their target, visible through walls
+ttt_assassin_target_vision_enabled          0       // Whether assassins have a visible aura around their target, visible through walls
 ttt_assassin_next_target_delay              5       // The delay (in seconds) before an assassin is assigned their next target
 ttt_assassin_target_damage_bonus            1       // Damage bonus that the assassin has against their target (e.g. 0.5 = 50% extra damage)
 ttt_assassin_target_bonus_bought            1       // Whether the damage bonus that the assassin has against their target should apply on weapons bought from the shop
@@ -239,12 +239,12 @@ ttt_assassin_allow_vampire_kill             1       // Whether the assassin can 
 // Vampire
 ttt_vampire_is_monster                      0       // Whether vampires should be treated as members of the monster team (rather than the traitor team)
 ttt_vampire_is_independent                  0       // Whether vampires should be treated as members of the independent team (rather than the traitor team)
-ttt_vampire_vision_enable                   0       // Whether vampires have their special vision highlights enabled
-ttt_vampire_drain_enable                    1       // Whether vampires have the ability to drain a living target's blood using their fangs
+ttt_vampire_vision_enabled                  0       // Whether vampires have their special vision highlights enabled
+ttt_vampire_drain_enabled                   1       // Whether vampires have the ability to drain a living target's blood using their fangs
 ttt_vampire_drain_first                     0       // Whether vampires should drain a living target's blood first rather than converting first
 ttt_vampire_drain_credits                   0       // How many credits a vampire should get for draining a living target
 ttt_vampire_drain_mute_target               0       // Whether players being drained by a vampire should be muted
-ttt_vampire_convert_enable                  0       // Whether vampires have the ability to convert living targets to a vampire thrall using their fangs
+ttt_vampire_convert_enabled                 0       // Whether vampires have the ability to convert living targets to a vampire thrall using their fangs
 ttt_vampire_show_target_icon                0       // Whether vampires have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect.
 ttt_vampire_damage_reduction                0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a vampire
 ttt_vampire_fang_timer                      5       // The amount of time fangs must be used to fully drain a target's blood
@@ -423,7 +423,7 @@ ttt_detectives_search_only_wep              0       // Whether only detectives c
 ttt_detectives_search_only_words            0       // Whether only detectives can reveal a body's last words (if last words is enabled). Once a detective searches a body, this information will be available to all players. Ignored when "ttt_detectives_search_only" is enabled.
 ttt_detectives_disable_looting              0       // Whether to disable a detective role's ability to loot credits from bodies
 ttt_detectives_hide_special_mode            0       // How to handle special detective role information. 0 - Show the special detective's role to everyone. 1 - Hide the special detective's role from everyone (just show detective instead). 2 - Hide the special detective's role for everyone but themselves (only they can see their true role)
-ttt_detectives_glow_enable                  0       // Whether members of the detective team (and active detective-like players) can be seen through walls via a highlight effect
+ttt_detectives_glow_enabled                 0       // Whether members of the detective team (and active detective-like players) can be seen through walls via a highlight effect
 ttt_special_detectives_armor_loadout        1       // Whether special detectives (all detective roles other than the original detective itself) get armor automatically for free
 ttt_all_search_postround                    1       // Whether non-detectives can search bodies post-round or not
 ttt_all_search_binoc                        0       // Whether non-detectives can search bodies if they are using binoculars
@@ -584,7 +584,7 @@ ttt_cupid_lovers_notify_mode                1       // Who is notified with cupi
 ttt_cupid_can_damage_lovers                 0       // Whether cupid should be able to damage the lovers
 ttt_cupid_lovers_can_damage_lovers          1       // Whether the lovers should be able to damage each other
 ttt_cupid_lovers_can_damage_cupid           0       // Whether the lovers should be able to damage cupid
-ttt_cupid_lover_vision_enable               1       // Whether the lovers can see outlines of each other through walls
+ttt_cupid_lover_vision_enabled              1       // Whether the lovers can see outlines of each other through walls
 ttt_cupid_notify_mode                       0       // The logic to use when notifying players that a cupid is killed. 0 - Don't notify anyone. 1 - Only notify traitors and detective. 2 - Only notify traitors. 3 - Only notify detective. 4 - Notify everyone
 ttt_cupid_notify_sound                      0       // Whether to play a cheering sound when a cupid is killed
 ttt_cupid_notify_confetti                   0       // Whether to throw confetti when a cupid is a killed
@@ -691,7 +691,7 @@ ttt_killer_show_target_icon                 1       // Whether killers have an i
 ttt_killer_damage_penalty                   0.25    // The fraction a killer's damage will be scaled by when they are attacking without using their knife
 ttt_killer_damage_reduction                 0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a killer
 ttt_killer_warn_all                         0       // Whether to warn all players if there is a killer. If 0, only traitors will be warned
-ttt_killer_vision_enable                    1       // Whether killers have their special vision highlights enabled
+ttt_killer_vision_enabled                   1       // Whether killers have their special vision highlights enabled
 ttt_killer_credits_starting                 2       // The number of credits a killer should start with
 ttt_killer_can_see_jesters                  1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the killer
 ttt_killer_update_scoreboard                1       // Whether the killer shows dead players as missing in action
@@ -703,9 +703,9 @@ ttt_killer_credits_award_repeat             1       // Whether the credit award 
 ttt_zombie_is_monster                       0       // Whether zombies should be treated as members of the monster team (rather than the independent team)
 ttt_zombie_is_traitor                       0       // Whether zombies should be treated as members of the traitors team (rather than the independent team)
 ttt_zombie_round_chance                     0.1     // The chance that a "zombie round" will occur where all players who would have been traitors are made zombies instead. Only usable when "ttt_zombie_is_traitor" is set to "1"
-ttt_zombie_vision_enable                    0       // Whether zombies have their special vision highlights enabled
-ttt_zombie_spit_enable                      1       // Whether zombies have their spit attack enabled
-ttt_zombie_leap_enable                      1       // Whether zombies have their leap attack enabled
+ttt_zombie_vision_enabled                   0       // Whether zombies have their special vision highlights enabled
+ttt_zombie_spit_enabled                     1       // Whether zombies have their spit attack enabled
+ttt_zombie_leap_enabled                     1       // Whether zombies have their leap attack enabled
 ttt_zombie_show_target_icon                 0       // Whether zombies have an icon over other players' heads showing who to kill. Server or round must be restarted for changes to take effect
 ttt_zombie_damage_penalty                   0.5     // The fraction a zombie's damage will be scaled by when they are attacking without using their claws. For example, setting this to 0.25 will let the zombie deal 75% of normal gun damage, and 0.66 will let the zombie deal 33% of normal damage
 ttt_zombie_damage_reduction                 0       // The fraction an attacker's bullet damage will be reduced by when they are shooting a zombie
@@ -727,7 +727,7 @@ ttt_zombie_update_scoreboard                1       // Whether the zombies show 
 // Mad Scientist
 ttt_madscientist_is_monster                 0       // Whether the mad scientist should be treated as a member of the monster team (rather than the independent team)
 ttt_madscientist_device_time                4       // The amount of time (in seconds) the mad scientist's device takes to use
-ttt_madscientist_respawn_enable             0       // Whether the mad scientist should respawn as a zombie when they are killed
+ttt_madscientist_respawn_enabled            0       // Whether the mad scientist should respawn as a zombie when they are killed
 ttt_madscientist_can_see_jesters            1       // Whether jesters are revealed (via head icons, color/icon on the scoreboard, etc.) to the mad scientist (Only applies if ttt_madscientist_is_monster is not enabled)
 ttt_madscientist_update_scoreboard          1       // Whether the mad scientist shows dead players as missing in action (Only applies if ttt_madscientist_is_monster is not enabled)
 
@@ -770,7 +770,7 @@ ttt_detectives_search_only_arsonistdouse    0       // Whether only detectives c
 
 // Hive Mind
 ttt_hivemind_is_monster                     0       // Whether the hive mind should be treated as a member of the monster team (rather than the independent team)
-ttt_hivemind_vision_enable                  1       // Whether the hive mind's member highlighting is enabled
+ttt_hivemind_vision_enabled                 1       // Whether the hive mind's member highlighting is enabled
 ttt_hivemind_friendly_fire                  0       // Whether a member of the hive mind can damage other members of the hive mind
 ttt_hivemind_join_heal_pct                  0.25    // The percentage a new member's maximum health that the hive mind should be healed (e.g. 0.25 = 25% of their health healed)
 ttt_hivemind_regen_timer                    0       // The amount of time (in seconds) between each health regeneration
@@ -1011,7 +1011,7 @@ ttt_scoreboard_score                        0       // Whether to show the score
 ttt_round_summary_tabs                      summary,hilite,events,scores // The tabs to show in the round summary screen. Changing the order of the values will change the order of the tabs. Excluding a value from the comma-delimited list will prevent that tab from showing. Invalid values will be ignored. Round must be restarted for changes to take effect
 
 // Misc.
-ttt_death_notifier_enable                   1       // Whether the name and role of a player's killer should be shown to the victim
+ttt_death_notifier_enabled                  1       // Whether the name and role of a player's killer should be shown to the victim
 ttt_smokegrenade_extinguish                 1       // Whether smoke grenades should extinguish fire
 ttt_player_set_color                        1       // Whether player colors are set each time that player spawns
 ttt_dna_scan_on_dialog                      1       // Whether to show a button to open the DNA scanner on the body search dialog

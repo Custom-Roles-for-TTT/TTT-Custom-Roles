@@ -11,7 +11,7 @@ local RemoveHook = hook.Remove
 -------------
 
 local vampire_show_target_icon = GetConVar("ttt_vampire_show_target_icon")
-local vampire_vision_enable = GetConVar("ttt_vampire_vision_enable")
+local vampire_vision_enabled = GetConVar("ttt_vampire_vision_enabled")
 local vampire_prime_death_mode = GetConVar("ttt_vampire_prime_death_mode")
 local vampire_damage_reduction = GetConVar("ttt_vampire_damage_reduction")
 
@@ -195,7 +195,7 @@ end
 
 hook.Add("TTTUpdateRoleState", "Vampire_Highlight_TTTUpdateRoleState", function()
     client = LocalPlayer()
-    vampire_vision = vampire_vision_enable:GetBool()
+    vampire_vision = vampire_vision_enabled:GetBool()
     jesters_visible_to_traitors = GetConVar("ttt_jesters_visible_to_traitors"):GetBool()
     jesters_visible_to_monsters = GetConVar("ttt_jesters_visible_to_monsters"):GetBool()
     jesters_visible_to_independents = INDEPENDENT_ROLES[ROLE_VAMPIRE] and GetConVar("ttt_vampire_can_see_jesters"):GetBool()
@@ -247,7 +247,7 @@ hook.Add("TTTTutorialRoleText", "Vampire_TTTTutorialRoleText", function(role, ti
 
         -- Draining
         html = html .. "<span style='display: block; margin-top: 10px;'>They can heal themselves by <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>draining blood</span> from "
-        local drainEnabled = GetConVar("ttt_vampire_drain_enable"):GetBool()
+        local drainEnabled = GetConVar("ttt_vampire_drain_enabled"):GetBool()
         if drainEnabled then
             html = html .. "both living players and "
         end
@@ -257,7 +257,7 @@ hook.Add("TTTTutorialRoleText", "Vampire_TTTTutorialRoleText", function(role, ti
         html = html .. "<span style='display: block; margin-top: 10px;'>By using the secondary attack with their fangs, they can also <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>fade from view</span> and gain a temporary speed bonus. This is useful for either chasing down prey or running away from conflict.</span>"
 
         -- Convert
-        if drainEnabled and GetConVar("ttt_vampire_convert_enable"):GetBool() then
+        if drainEnabled and GetConVar("ttt_vampire_convert_enabled"):GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'>"
             if GetConVar("ttt_vampire_prime_only_convert"):GetBool() then
                 html = html .. "Prime "

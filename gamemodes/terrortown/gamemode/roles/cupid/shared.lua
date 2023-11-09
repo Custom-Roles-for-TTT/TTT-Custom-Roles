@@ -6,7 +6,7 @@ local table = table
 -- ROLE CONVARS --
 ------------------
 
-CreateConVar("ttt_cupid_lover_vision_enable", "1", FCVAR_REPLICATED, "Whether the lovers can see outlines of each other through walls", 0, 1)
+CreateConVar("ttt_cupid_lover_vision_enabled", "1", FCVAR_REPLICATED, "Whether the lovers can see outlines of each other through walls", 0, 1)
 CreateConVar("ttt_cupid_can_see_jesters", "0", FCVAR_REPLICATED)
 CreateConVar("ttt_cupid_update_scoreboard", "0", FCVAR_REPLICATED)
 local cupid_is_independent = CreateConVar("ttt_cupid_is_independent", "0", FCVAR_REPLICATED, "Whether cupids should be treated as members of the independent team", 0, 1)
@@ -51,7 +51,7 @@ table.insert(ROLE_CONVARS[ROLE_CUPID], {
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_CUPID], {
-    cvar = "ttt_cupid_lover_vision_enable",
+    cvar = "ttt_cupid_lover_vision_enabled",
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_CUPID], {

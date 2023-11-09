@@ -59,7 +59,7 @@ local vampire_is_monster = CreateConVar("ttt_vampire_is_monster", "0", FCVAR_REP
 local vampire_is_independent = CreateConVar("ttt_vampire_is_independent", "0", FCVAR_REPLICATED)
 local vampire_loot_credits = CreateConVar("ttt_vampire_loot_credits", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_vampire_show_target_icon", "0", FCVAR_REPLICATED)
-CreateConVar("ttt_vampire_vision_enable", "0", FCVAR_REPLICATED)
+CreateConVar("ttt_vampire_vision_enabled", "0", FCVAR_REPLICATED)
 CreateConVar("ttt_vampire_prime_death_mode", "0", FCVAR_REPLICATED, "What to do when the prime vampire(s) (e.g. players who spawn as vampires originally) are killed. 0 - Do nothing. 1 - Kill all vampire thralls (non-prime vampires). 2 - Revert all vampire thralls (non-prime vampires) to their original role", 0, 2)
 CreateConVar("ttt_vampire_damage_reduction", "0", FCVAR_REPLICATED, "The fraction an attacker's bullet damage will be reduced by when they are shooting a vampire", 0, 1)
 CreateConVar("ttt_vampire_can_see_jesters", "1", FCVAR_REPLICATED)
@@ -75,11 +75,11 @@ table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
-    cvar = "ttt_vampire_convert_enable",
+    cvar = "ttt_vampire_convert_enabled",
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
-    cvar = "ttt_vampire_drain_enable",
+    cvar = "ttt_vampire_drain_enabled",
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
@@ -157,7 +157,7 @@ table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {
-    cvar = "ttt_vampire_vision_enable",
+    cvar = "ttt_vampire_vision_enabled",
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_VAMPIRE], {

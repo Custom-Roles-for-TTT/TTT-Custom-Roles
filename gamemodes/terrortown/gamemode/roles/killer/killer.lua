@@ -25,7 +25,7 @@ local killer_knife_enabled = GetConVar("ttt_killer_knife_enabled")
 local killer_crowbar_enabled = GetConVar("ttt_killer_crowbar_enabled")
 local killer_smoke_enabled = GetConVar("ttt_killer_smoke_enabled")
 local killer_show_target_icon = GetConVar("ttt_killer_show_target_icon")
-local killer_vision_enable = GetConVar("ttt_killer_vision_enable")
+local killer_vision_enabled = GetConVar("ttt_killer_vision_enabled")
 local killer_warn_all = GetConVar("ttt_killer_warn_all")
 
 -----------
@@ -344,7 +344,7 @@ end)
 hook.Add("SetupPlayerVisibility", "Killer_SetupPlayerVisibility", function(ply)
     if not ply:ShouldBypassCulling() then return end
     if not ply:IsActiveKiller() then return end
-    if not killer_vision_enable:GetBool() and not killer_show_target_icon:GetBool() then return end
+    if not killer_vision_enabled:GetBool() and not killer_show_target_icon:GetBool() then return end
 
     for _, v in ipairs(GetAllPlayers()) do
         if ply:TestPVS(v) then continue end

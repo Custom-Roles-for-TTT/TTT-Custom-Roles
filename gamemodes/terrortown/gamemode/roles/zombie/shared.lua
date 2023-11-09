@@ -56,7 +56,7 @@ function plymeta:IsZombifying() return self:GetNWBool("IsZombifying", false) or 
 ------------------
 
 CreateConVar("ttt_zombie_show_target_icon", "0", FCVAR_REPLICATED)
-CreateConVar("ttt_zombie_vision_enable", "0", FCVAR_REPLICATED)
+CreateConVar("ttt_zombie_vision_enabled", "0", FCVAR_REPLICATED)
 local zombie_is_monster = CreateConVar("ttt_zombie_is_monster", "0", FCVAR_REPLICATED)
 local zombie_is_traitor = CreateConVar("ttt_zombie_is_traitor", "0", FCVAR_REPLICATED)
 local zombie_prime_speed_bonus = CreateConVar("ttt_zombie_prime_speed_bonus", "0.35", FCVAR_REPLICATED, "The amount of bonus speed a prime zombie (e.g. player who spawned as a zombie originally) should get when using their claws. Server or round must be restarted for changes to take effect", 0, 1)
@@ -108,15 +108,15 @@ table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
     decimal = 2
 })
 table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
-    cvar = "ttt_zombie_vision_enable",
+    cvar = "ttt_zombie_vision_enabled",
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
-    cvar = "ttt_zombie_leap_enable",
+    cvar = "ttt_zombie_leap_enabled",
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {
-    cvar = "ttt_zombie_spit_enable",
+    cvar = "ttt_zombie_spit_enabled",
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_ZOMBIE], {

@@ -230,7 +230,7 @@ local function ReceiveRole()
     client:SetRole(role)
 
     -- Update the local state
-    traitor_vision = GetConVar("ttt_traitors_vision_enable"):GetBool()
+    traitor_vision = GetConVar("ttt_traitors_vision_enabled"):GetBool()
     jesters_visible_to_traitors = GetConVar("ttt_jesters_visible_to_traitors"):GetBool()
 
     -- Disable highlights on role change

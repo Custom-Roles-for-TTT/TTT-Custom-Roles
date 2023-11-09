@@ -65,8 +65,8 @@ SWEP.NextReload = CurTime()
 SWEP.DeploySpeed = 2
 local sound_single = Sound("Weapon_Crowbar.Single")
 
-local zombie_leap_enable = CreateConVar("ttt_zombie_leap_enable", "1", FCVAR_REPLICATED)
-local zombie_spit_enable = CreateConVar("ttt_zombie_spit_enable", "1", FCVAR_REPLICATED)
+local zombie_leap_enabled = CreateConVar("ttt_zombie_leap_enabled", "1", FCVAR_REPLICATED)
+local zombie_spit_enabled = CreateConVar("ttt_zombie_spit_enabled", "1", FCVAR_REPLICATED)
 local zombie_prime_attack_damage = CreateConVar("ttt_zombie_prime_attack_damage", "65", FCVAR_REPLICATED, "The amount of a damage a prime zombie (e.g. player who spawned as a zombie originally) does with their claws. Server or round must be restarted for changes to take effect", 1, 100)
 local zombie_thrall_attack_damage = CreateConVar("ttt_zombie_thrall_attack_damage", "45", FCVAR_REPLICATED, "The amount of a damage a zombie thrall (e.g. non-prime zombie) does with their claws. Server or round must be restarted for changes to take effect", 1, 100)
 local zombie_prime_attack_delay = CreateConVar("ttt_zombie_prime_attack_delay", "0.7", FCVAR_REPLICATED, "The amount of time between claw attacks for a prime zombie (e.g. player who spawned as a zombie originally). Server or round must be restarted for changes to take effect", 0.1, 3)
@@ -173,7 +173,7 @@ Jump Attack
 ]]
 
 function SWEP:SecondaryAttack()
-    if not zombie_leap_enable:GetBool() then return end
+    if not zombie_leap_enabled:GetBool() then return end
 
     local owner = self:GetOwner()
     if not IsValid(owner) then return end
@@ -226,7 +226,7 @@ Spit Attack
 ]]
 
 function SWEP:Reload()
-    if not zombie_spit_enable:GetBool() then return end
+    if not zombie_spit_enabled:GetBool() then return end
     if self.NextReload > CurTime() then return end
 
     local owner = self:GetOwner()

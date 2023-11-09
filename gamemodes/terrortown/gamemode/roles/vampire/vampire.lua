@@ -34,7 +34,7 @@ local vampire_credits_award_repeat = CreateConVar("ttt_vampire_credits_award_rep
 
 local vampire_damage_reduction = GetConVar("ttt_vampire_damage_reduction")
 local vampire_show_target_icon = GetConVar("ttt_vampire_show_target_icon")
-local vampire_vision_enable = GetConVar("ttt_vampire_vision_enable")
+local vampire_vision_enabled = GetConVar("ttt_vampire_vision_enabled")
 local vampire_prime_death_mode = GetConVar("ttt_vampire_prime_death_mode")
 
 -------------
@@ -362,7 +362,7 @@ end)
 hook.Add("SetupPlayerVisibility", "Vampire_SetupPlayerVisibility", function(ply)
     if not ply:ShouldBypassCulling() then return end
     if not ply:IsActiveVampire() then return end
-    if not vampire_vision_enable:GetBool() and not vampire_show_target_icon:GetBool() then return end
+    if not vampire_vision_enabled:GetBool() and not vampire_show_target_icon:GetBool() then return end
 
     -- Only use this when the vampire would see the highlighting and icons (when they have their fangs out)
     local hasFangs = ply.GetActiveWeapon and IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() == "weapon_vam_fangs"

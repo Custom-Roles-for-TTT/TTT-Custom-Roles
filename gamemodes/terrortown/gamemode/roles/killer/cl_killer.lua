@@ -11,7 +11,7 @@ local killer_knife_enabled = GetConVar("ttt_killer_knife_enabled")
 local killer_crowbar_enabled = GetConVar("ttt_killer_crowbar_enabled")
 local killer_smoke_enabled = GetConVar("ttt_killer_smoke_enabled")
 local killer_show_target_icon = GetConVar("ttt_killer_show_target_icon")
-local killer_vision_enable = GetConVar("ttt_killer_vision_enable")
+local killer_vision_enabled = GetConVar("ttt_killer_vision_enabled")
 local killer_warn_all = GetConVar("ttt_killer_warn_all")
 local killer_can_see_jesters = GetConVar("ttt_killer_can_see_jesters")
 
@@ -73,7 +73,7 @@ end
 
 hook.Add("TTTUpdateRoleState", "Killer_Highlight_TTTUpdateRoleState", function()
     client = LocalPlayer()
-    killer_vision = killer_vision_enable:GetBool()
+    killer_vision = killer_vision_enabled:GetBool()
     can_see_jesters = killer_can_see_jesters:GetBool()
 
     -- Disable highlights on role change
@@ -175,7 +175,7 @@ hook.Add("TTTTutorialRoleText", "Killer_TTTTutorialRoleText", function(role, tit
         end
 
         -- Vision
-        local hasVision = killer_vision_enable:GetBool()
+        local hasVision = killer_vision_enabled:GetBool()
         if hasVision then
             html = html .. "<span style='display: block; margin-top: 10px;'>Their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>blood lust</span> helps them see their targets through walls by highlighting their enemies.</span>"
         end

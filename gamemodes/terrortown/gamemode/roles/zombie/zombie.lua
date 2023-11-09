@@ -30,7 +30,7 @@ local zombie_prime_convert_chance = CreateConVar("ttt_zombie_prime_convert_chanc
 local zombie_thrall_convert_chance = CreateConVar("ttt_zombie_thrall_convert_chance", "1", FCVAR_NONE, "The chance that a zombie thrall (e.g. non-prime zombie) will convert other players who are killed by their claws to be zombies as well. Set to 0 to disable", 0, 1)
 
 local zombie_show_target_icon = GetConVar("ttt_zombie_show_target_icon")
-local zombie_vision_enable = GetConVar("ttt_zombie_vision_enable")
+local zombie_vision_enabled = GetConVar("ttt_zombie_vision_enabled")
 local zombie_damage_penalty = GetConVar("ttt_zombie_damage_penalty")
 local zombie_damage_reduction = GetConVar("ttt_zombie_damage_reduction")
 local zombie_spit_convert = GetConVar("ttt_zombie_spit_convert")
@@ -371,7 +371,7 @@ end)
 hook.Add("SetupPlayerVisibility", "Zombie_SetupPlayerVisibility", function(ply)
     if not ply:ShouldBypassCulling() then return end
     if not ply:IsActiveZombie() then return end
-    if not zombie_vision_enable:GetBool() and not zombie_show_target_icon:GetBool() then return end
+    if not zombie_vision_enabled:GetBool() and not zombie_show_target_icon:GetBool() then return end
 
     -- Only use this when the zombie would see the highlighting and icons (when they have their claws out)
     local hasFangs = ply.GetActiveWeapon and IsValid(ply:GetActiveWeapon()) and ply:GetActiveWeapon():GetClass() == "weapon_zom_claws"

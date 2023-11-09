@@ -90,7 +90,7 @@ hook.Add("TTTTutorialRoleText", "Hypnotist_TTTTutorialRoleText", function(role, 
         end
         html = html .. ".</span>"
 
-        if GetConVar("ttt_traitors_vision_enable"):GetBool() then
+        if GetConVar("ttt_traitors_vision_enabled"):GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'><span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>Constant communication</span> with their allies allows them to quickly identify friends by highlighting them in their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>team color</span>.</span>"
         end
 

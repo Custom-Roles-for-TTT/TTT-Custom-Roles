@@ -16,7 +16,7 @@ local GetAllPlayers = player.GetAll
 local assassin_shop_roles_last = CreateConVar("ttt_assassin_shop_roles_last", "0")
 
 local assassin_show_target_icon = GetConVar("ttt_assassin_show_target_icon")
-local assassin_target_vision_enable = GetConVar("ttt_assassin_target_vision_enable")
+local assassin_target_vision_enabled = GetConVar("ttt_assassin_target_vision_enabled")
 local assassin_next_target_delay = GetConVar("ttt_assassin_next_target_delay")
 local assassin_target_damage_bonus = GetConVar("ttt_assassin_target_damage_bonus")
 local assassin_target_bonus_bought = GetConVar("ttt_assassin_target_bonus_bought")
@@ -270,7 +270,7 @@ end)
 hook.Add("SetupPlayerVisibility", "Assassin_SetupPlayerVisibility", function(ply)
     if not ply:ShouldBypassCulling() then return end
     if not ply:IsActiveAssassin() then return end
-    if not assassin_target_vision_enable:GetBool() and not assassin_show_target_icon:GetBool() then return end
+    if not assassin_target_vision_enabled:GetBool() and not assassin_show_target_icon:GetBool() then return end
 
     local target_sid64 = ply:GetNWString("AssassinTarget", "")
     for _, v in ipairs(GetAllPlayers()) do
