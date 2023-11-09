@@ -329,7 +329,7 @@
                 <p>All members of the Hive Mind have a shared pool of health -- gaining members increases the collective's maximum health and any healing or damage done to one member affects them all.</p>
                 <p>The Hive Mind also has a shared pool of credits -- gaining or spending credits affects the collective.</p>
                 <p>When each new member joins the Hive Mind, the collective is healed by a percentage of the new member's former maximum health. By default it is 25%, but that value is configurable via the <code>ttt_hivemind_join_heal_pct</code> ConVar.</p>
-                <p>Members of the Hive Mind can identify each other through walls by a highlight, but that can be removed by disabling the <code>ttt_hivemind_vision_enable</code> ConVar.</p>
+                <p>Members of the Hive Mind can identify each other through walls by a highlight, but that can be removed by disabling the <code>ttt_hivemind_vision_enabled/code> ConVar.</p>
                 <p>By default, members of the Hive Mind cannot damage each other but this behavior can be changed via the <code>ttt_hivemind_friendly_fire</code> ConVar.</p>
                 <p>Health regeneration can be enabled for the Hive Mind and adjusted via the <code>ttt_hivemind_regen_timer</code>, <code>ttt_hivemind_regen_per_member_amt</code>, and <code>ttt_hivemind_regen_max_pct</code> ConVars.</p>
                 <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
@@ -394,7 +394,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>ttt_hivemind_vision_enable</td>
+                        <td>ttt_hivemind_vision_enabled/td>
                         <td>1</td>
                         <td>Boolean</td>
                         <td>Whether the Hive Mind's member highlighting is enabled.</td>
@@ -415,7 +415,7 @@
                 <p>They are given a knife that does high damage to aid in their slaughter. This knife can be disabled by changing <code>ttt_killer_knife_enabled</code> and adjusted by <code>ttt_killer_knife_damage</code> and <code>ttt_killer_knife_delay</code>.</p>
                 <p>They have a special crowbar that can be thrown. It can be disabled by changing <code>ttt_killer_crowbar_enabled</code> and adjusted by <code>ttt_killer_crowbar_damage</code> and <code>ttt_killer_crowbar_thrown_damage</code>.</p>
                 <p>If they don't kill often enough they will begin to smoke, alerting the other players. The Killer will be warned in chat in advance of the smoke starting, and the smoke can be disabled by changing <code>ttt_killer_smoke_enabled</code>.</p>
-                <p>The Killer's blood lust helps them see their targets through walls by highlighting their enemies unless <code>ttt_killer_vision_enable</code> is disabled.</p>
+                <p>The Killer's blood lust helps them see their targets through walls by highlighting their enemies unless <code>ttt_killer_vision_enabled/code> is disabled.</p>
                 <p>Their targets can also be identified by the skull icon floating over their heads, which can be disabled by changing <code>ttt_killer_show_target_icon</code>.</p>
                 <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
                 <table style="width:100%; margin-bottom: 10px;">
@@ -545,7 +545,7 @@
                         <td>Whether the Killer shows dead players as missing in action.</td>
                     </tr>
                     <tr>
-                        <td>ttt_killer_vision_enable</td>
+                        <td>ttt_killer_vision_enabled/td>
                         <td>1</td>
                         <td>Boolean</td>
                         <td>Whether Killers have their special vision highlights enabled.</td>
@@ -568,7 +568,7 @@
             <div class="moreless">[more]</div>
             <p>The <span class="inline-icon" style="color:var(--independent);"><i class="icon-mad-scientist"></i><a href="#mad-scientist">Mad Scientist</a></span> can use their zombification device to revive players as <span class="inline-icon" style="color:var(--independent);"><i class="icon-zombie"></i><a href="#zombie">Zombies</a></span>. They win when everyone is either dead, a <span class="inline-icon" style="color:var(--independent);"><i class="icon-mad-scientist"></i><a href="#mad-scientist">Mad Scientist</a></span> or a <span class="inline-icon" style="color:var(--independent);"><i class="icon-zombie"></i><a href="#zombie">Zombie</a></span>.</p>
             <div class="expansion">
-                <p>When <code>ttt_madscientist_respawn_enable</code> is enabled, the Mad Scientist will respawn as a Zombie thrall when killed.</p>
+                <p>When <code>ttt_madscientist_respawn_enabled/code> is enabled, the Mad Scientist will respawn as a Zombie thrall when killed.</p>
                 <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
                 <table style="width:100%; margin-bottom: 10px;">
                     <thead>
@@ -599,7 +599,7 @@
                         <td>Whether the Mad Scientist should be treated as a member of the monster team.</td>
                     </tr>
                     <tr>
-                        <td>ttt_madscientist_respawn_enable</td>
+                        <td>ttt_madscientist_respawn_enabled/td>
                         <td>0</td>
                         <td>Boolean</td>
                         <td>Whether the Mad Scientist should respawn as a Zombie when they are killed.</td>
@@ -883,9 +883,9 @@
             <p>The <span class="inline-icon" style="color:var(--independent);"><i class="icon-zombie"></i><a href="#zombie">Zombie</a></span> can turn other players into <span class="inline-icon" style="color:var(--independent);"><i class="icon-zombie"></i><a href="#zombie">Zombies</a></span> with their claws. They win when everyone is either dead, a <span class="inline-icon" style="color:var(--independent);"><i class="icon-mad-scientist"></i><a href="#mad-scientist">Mad Scientist</a></span> or a <span class="inline-icon" style="color:var(--independent);"><i class="icon-zombie"></i><a href="#zombie">Zombie</a></span>.</p>
             <div class="expansion">
                 <p>Killing a player with their claws will turn the target into a Zombie thrall.</p>
-                <p>By using the secondary attack with the claws, Zombies can leap in the air to surprise their potential targets. This can be disabled by changing <code>ttt_zombie_leap_enable</code>.</p>
-                <p>If the target is out of range of the claws, the Zombie can spit acid at them by pressing the reload button. This can be disabled by changing <code>ttt_zombie_spit_enable</code>. Killing a player with acid spit will not convert them unless <code>ttt_zombie_spit_convert</code> is enabled.</p>
-                <p>When <code>ttt_zombie_vision_enable</code> is enabled, their hunger for brains helps them see their targets through walls by highlighting their enemies.</p>
+                <p>By using the secondary attack with the claws, Zombies can leap in the air to surprise their potential targets. This can be disabled by changing <code>ttt_zombie_leap_enabled/code>.</p>
+                <p>If the target is out of range of the claws, the Zombie can spit acid at them by pressing the reload button. This can be disabled by changing <code>ttt_zombie_spit_enabled/code>. Killing a player with acid spit will not convert them unless <code>ttt_zombie_spit_convert</code> is enabled.</p>
+                <p>When <code>ttt_zombie_vision_enabled/code> is enabled, their hunger for brains helps them see their targets through walls by highlighting their enemies.</p>
                 <p>If <code>ttt_zombie_show_target_icon</code> is enabled, their targets can also be identified by the skull icon floating over their heads.</p>
                 <p>To encourage the use of their claws, Zombies do less damage with other weapons. This can be adjusted or disabled via the <code>ttt_zombie_damage_penalty</code> ConVar. <code>ttt_zombie_damage_reduction</code> can be set to cause the Zombies to take less bullet damage from other players, allowing them to survive more easily when attacking.</p>
                 <p>Any Zombie that spawns into a round at the beginning is known as a prime Zombie. Prime Zombies are special compared to Zombie thralls (the Zombies created by the prime), in that by default only the prime Zombie can use weapons other than their claws. This behavior can be disabled via the <code>ttt_zombie_prime_only_weapons</code> ConVar. Furthermore, the prime Zombie does more damage and can attack faster compared to the thralls, but all of that can be adjusted by the <code>ttt_zombie_prime_*</code> and <code>ttt_zombie_thrall_*</code> ConVars (see more information below).</p>
@@ -943,7 +943,7 @@
                         <td>Whether Zombies should be treated as members of the traitors team.</td>
                     </tr>
                     <tr>
-                        <td>ttt_zombie_leap_enable</td>
+                        <td>ttt_zombie_leap_enabled/td>
                         <td>1</td>
                         <td>Boolean</td>
                         <td>Whether Zombies have their leap attack enabled.</td>
@@ -1003,7 +1003,7 @@
                         <td>Whether Zombies have an icon over other players' heads showing who to kill. <i>(Server or round must be restarted for changes to take effect.)</i></td>
                     </tr>
                     <tr>
-                        <td>ttt_zombie_spit_enable</td>
+                        <td>ttt_zombie_spit_enabled/td>
                         <td>1</td>
                         <td>Boolean</td>
                         <td>Whether Zombies have their spit attack enabled.</td>
@@ -1039,7 +1039,7 @@
                         <td>Whether the Zombies show dead players as missing in action. <i>(Requires <code>ttt_zombie_is_monster</code> and <code>ttt_zombie_is_traitor</code> to be disabled.)</i></td>
                     </tr>
                     <tr>
-                        <td>ttt_zombie_vision_enable</td>
+                        <td>ttt_zombie_vision_enabled/td>
                         <td>0</td>
                         <td>Boolean</td>
                         <td>Whether Zombies have their special vision highlights enabled.</td>
