@@ -22,7 +22,7 @@ local StringSub = string.sub
 include("player_class/player_ttt.lua")
 
 -- Version string for display and function for version checks
-CR_VERSION = "1.9.13"
+CR_VERSION = "1.9.14"
 CR_BETA = true
 CR_WORKSHOP_ID = CR_BETA and "2404251054" or "2421039084"
 
@@ -1729,7 +1729,11 @@ for _, dataType in ipairs(CORPSE_ICON_TYPES) do
 end
 
 CreateConVar("ttt_traitor_vision_enable", "0", FCVAR_REPLICATED)
-OldCVarWarning("ttt_traitor_vision_enable", "ttt_traitors_vision_enable")
+OldCVarWarning("ttt_traitor_vision_enable", "ttt_traitors_vision_enabled")
+
+-- Assassin
+CreateConVar("ttt_assassin_target_vision_enable", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_assassin_target_vision_enable", "ttt_assassin_target_vision_enabled")
 
 -- Arsonist
 CreateConVar("ttt_detective_search_only_arsonistdouse", "0", FCVAR_REPLICATED)
@@ -1747,13 +1751,38 @@ OldCVarWarning("ttt_bodysnatchers_are_independent", "ttt_bodysnatcher_is_indepen
 CreateConVar("ttt_cupids_are_independent", "0", FCVAR_REPLICATED, "Whether cupids should be treated as members of the independent team", 0, 1)
 OldCVarWarning("ttt_cupids_are_independent", "ttt_cupid_is_independent")
 
+CreateConVar("ttt_cupid_lover_vision_enable", "1", FCVAR_REPLICATED, "Whether the lovers can see outlines of each other through walls", 0, 1)
+OldCVarWarning("ttt_cupid_lover_vision_enable", "ttt_cupid_lover_vision_enabled")
+
 -- Detective-Like
 CreateConVar("ttt_detective_glow_enable", "0", FCVAR_REPLICATED)
-OldCVarWarning("ttt_detective_glow_enable", "ttt_detectives_glow_enable")
+OldCVarWarning("ttt_detective_glow_enable", "ttt_detectives_glow_enabled")
 
 if SERVER then
     CreateConVar("ttt_detective_credits_timer", "0")
     OldCVarWarning("ttt_detective_credits_timer", "ttt_detectives_credits_timer")
+end
+
+-- Hive Mind
+CreateConVar("ttt_hivemind_vision_enable", "1", FCVAR_REPLICATED)
+OldCVarWarning("ttt_hivemind_vision_enable", "ttt_hivemind_vision_enabled")
+
+-- Infected
+CreateConVar("ttt_infected_respawn_enable", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_infected_respawn_enable", "ttt_infected_respawn_enabled")
+
+-- Killer
+CreateConVar("ttt_killer_vision_enable", "1", FCVAR_REPLICATED)
+OldCVarWarning("ttt_killer_vision_enable", "ttt_killer_vision_enabled")
+
+-- Mad Scientist
+CreateConVar("ttt_madscientist_respawn_enable", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_madscientist_respawn_enable", "ttt_madscientist_respawn_enabled")
+
+-- Traitor
+if SERVER then
+    CreateConVar("ttt_traitor_credits_timer", "0")
+    OldCVarWarning("ttt_traitor_credits_timer", "ttt_traitors_credits_timer")
 end
 
 -- Vampire
@@ -1763,9 +1792,33 @@ OldCVarWarning("ttt_vampires_are_monsters", "ttt_vampire_is_monster")
 CreateConVar("ttt_vampires_are_independent", "0", FCVAR_REPLICATED)
 OldCVarWarning("ttt_vampires_are_independent", "ttt_vampire_is_independent")
 
+CreateConVar("ttt_vampire_convert_enable", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_vampire_convert_enable", "ttt_vampire_convert_enabled")
+
+CreateConVar("ttt_vampire_drain_enable", "1", FCVAR_REPLICATED)
+OldCVarWarning("ttt_vampire_drain_enable", "ttt_vampire_drain_enabled")
+
+CreateConVar("ttt_vampire_vision_enable", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_vampire_vision_enable", "ttt_vampire_vision_enabled")
+
 -- Zombie
 CreateConVar("ttt_zombies_are_monsters", "0", FCVAR_REPLICATED)
 OldCVarWarning("ttt_zombies_are_monsters", "ttt_zombie_is_monster")
 
 CreateConVar("ttt_zombies_are_traitors", "0", FCVAR_REPLICATED)
 OldCVarWarning("ttt_zombies_are_traitors", "ttt_zombie_is_traitor")
+
+CreateConVar("ttt_zombie_leap_enable", "1", FCVAR_REPLICATED)
+OldCVarWarning("ttt_zombie_leap_enable", "ttt_zombie_leap_enabled")
+
+CreateConVar("ttt_zombie_spit_enable", "1", FCVAR_REPLICATED)
+OldCVarWarning("ttt_zombie_spit_enable", "ttt_zombie_spit_enabled")
+
+CreateConVar("ttt_zombie_vision_enable", "0", FCVAR_REPLICATED)
+OldCVarWarning("ttt_zombie_vision_enable", "ttt_zombie_vision_enabled")
+
+-- Death Notifier
+if SERVER then
+    CreateConVar("ttt_death_notifier_enable", "1")
+    OldCVarWarning("ttt_death_notifier_enable", "ttt_death_notifier_enabled")
+end

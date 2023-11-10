@@ -9,11 +9,11 @@ local StringStartsWith = string.StartsWith
 
 util.AddNetworkString("TTT_ClientDeathNotify")
 
-local death_notifier_enable = CreateConVar("ttt_death_notifier_enable", "1")
+local death_notifier_enabled = CreateConVar("ttt_death_notifier_enabled", "1")
 
 hook.Add("PlayerDeath", "TTT_ClientDeathNotify", function(victim, inflictor, attacker)
     if gmod.GetGamemode().Name ~= "Trouble in Terrorist Town" then return end
-    if not death_notifier_enable:GetBool() then return end
+    if not death_notifier_enabled:GetBool() then return end
 
     local reason = "nil"
     local killerName = "nil"

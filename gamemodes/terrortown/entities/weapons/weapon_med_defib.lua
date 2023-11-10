@@ -58,10 +58,12 @@ if SERVER then
             ply:SetRole(ROLE_INNOCENT)
             ply:StripRoleWeapons()
         elseif ply:GetDetectiveLike() then
-            if ply:IsInnocentTeam() then
-                ply:SetRole(ROLE_INNOCENT)
+            if ply:IsJesterTeam() then
+                ply:SetRole(ROLE_JESTER)
             elseif ply:IsTraitorTeam() then
                 ply:SetRole(ROLE_TRAITOR)
+            else
+                ply:SetRole(ROLE_INNOCENT)
             end
             ply:StripRoleWeapons()
         end

@@ -13,7 +13,7 @@ util.AddNetworkString("TTT_HiveMindChatDupe")
 -- CONVARS --
 -------------
 
-local hivemind_vision_enable = GetConVar("ttt_hivemind_vision_enable")
+local hivemind_vision_enabled = GetConVar("ttt_hivemind_vision_enabled")
 local hivemind_friendly_fire = GetConVar("ttt_hivemind_friendly_fire")
 local hivemind_join_heal_pct = GetConVar("ttt_hivemind_join_heal_pct")
 local hivemind_regen_timer = GetConVar("ttt_hivemind_regen_timer")
@@ -291,7 +291,7 @@ end)
 AddHook("SetupPlayerVisibility", "HiveMind_SetupPlayerVisibility", function(ply)
     if not ply:ShouldBypassCulling() then return end
     if not ply:IsActiveHiveMind() then return end
-    if not hivemind_vision_enable:GetBool() then return end
+    if not hivemind_vision_enabled:GetBool() then return end
 
     for _, v in ipairs(GetAllPlayers()) do
         if ply:TestPVS(v) then continue end

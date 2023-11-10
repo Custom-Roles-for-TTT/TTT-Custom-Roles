@@ -30,7 +30,7 @@ for _, dataType in ipairs(CORPSE_ICON_TYPES) do
 end
 
 -- Traitor role properties
-CreateConVar("ttt_traitors_vision_enable", "0", FCVAR_REPLICATED)
+CreateConVar("ttt_traitors_vision_enabled", "0", FCVAR_REPLICATED)
 
 -- Jester role properties
 CreateConVar("ttt_jesters_visible_to_traitors", "1", FCVAR_REPLICATED)

@@ -8,7 +8,7 @@ local GetAllPlayers = player.GetAll
 -- CONVARS --
 -------------
 
-local traitor_credits_timer = CreateConVar("ttt_traitor_credits_timer", "0")
+local traitor_credits_timer = CreateConVar("ttt_traitors_credits_timer", "0")
 
 -----------------------
 -- PLAYER VISIBILITY --
