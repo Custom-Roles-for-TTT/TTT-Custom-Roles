@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
-<body>
+<body onload="pageLoaded()">
     <button onclick="backToTop()" id="totop">Back to Top</button>
     <div class="navigation panel">
         <iframe id="nav" src="nav.html#deprecatedglobals" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left;"></iframe>
@@ -238,7 +238,7 @@
             const table = document.getElementById("missingConvars");
             const state = document.getElementById("state");
 
-            window.onload = function() {
+            function pageLoaded() {
                 let userAgent = navigator.userAgent;
                 if (!userAgent.match(/chrome|chromium|crios|edg|opr\//i)) {
                     state.innerHTML = "<b>Please use a supported browser (Chrome, Edge, Opera)</b>"
