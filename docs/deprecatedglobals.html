@@ -5,9 +5,9 @@
     <link rel="stylesheet" href="css/style.css"/>
     <script type="text/javascript" src="js/shared.js" defer></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
-<body onload="pageLoaded()">
+<body>
     <button onclick="backToTop()" id="totop">Back to Top</button>
     <div class="navigation panel">
         <iframe id="nav" src="nav.html#deprecatedglobals" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left;"></iframe>
@@ -29,7 +29,7 @@
                 <td><b>New ConVar</b></td>
             </tr>
         </table>
-        <script>
+        <script type="text/javascript">
             const convars = [
                 "ttt_killer_crowbar_damage",
                 "ttt_killer_knife_damage",
@@ -238,7 +238,7 @@
             const table = document.getElementById("missingConvars");
             const state = document.getElementById("state");
 
-            function pageLoaded() {
+            window.onload = function() {
                 let userAgent = navigator.userAgent;
                 if (!userAgent.match(/chrome|chromium|crios|edg|opr\//i)) {
                     state.innerHTML = "<b>Please use a supported browser (Chrome, Edge, Opera)</b>"
