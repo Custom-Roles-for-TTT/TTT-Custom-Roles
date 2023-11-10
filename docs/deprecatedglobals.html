@@ -3,21 +3,23 @@
 <head>
     <title>Custom Roles for TTT - Deprecated Globals Checker</title>
     <link rel="stylesheet" href="css/style.css"/>
-    <link rel="stylesheet" href="css/api.css"/>
+    <script type="text/javascript" src="js/shared.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
 </head>
 <body onload="pageLoaded()">
-    <embed src="nav.html#deprecatedglobals" width="220" height="298" style="float: left; margin-right: 10px;" />
-    <div>
+    <button onclick="backToTop()" id="totop">Back to Top</button>
+    <div class="navigation panel">
+        <iframe id="nav" src="nav.html#deprecatedglobals" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left;"></iframe>
+    </div>
+    <div class="contentheader panel">
         <h1>Deprecated Globals Checker</h1>
-
-        <h2>Overview</h2>
         
         <p>The Deprecated Globals Checker is a tool that helps developers to find the global variables and renamed ConVars that were used in older versions of Custom Roles for TTT.</p>
         <p>The tool uses an experimental browser feature which is only available on certain browsers (Chrome, Edge, Opera).</p>
-
-        <h2 style="margin-top: 56px;">Tool</h2>
-
-        <button id="open">Open Folder</button>
+    </div>
+    <div class="contentbody panel">
+        <button id="open" style="margin-top: 15px;">Open Folder</button>
         <span id="state"></span>
         <table id="missingConvars" style="margin-top:6px;border-spacing:0;border: 1px solid black;">
             <tr>
@@ -312,5 +314,6 @@
             }
         </script>
     </div>
+    <div class="footerpadding panel"></div>
 </body>
 </html>
