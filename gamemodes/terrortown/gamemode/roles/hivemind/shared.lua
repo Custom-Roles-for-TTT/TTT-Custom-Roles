@@ -12,7 +12,7 @@ local TableInsert = table.insert
 -- ROLE CONVARS --
 ------------------
 
-CreateConVar("ttt_hivemind_vision_enable", "1", FCVAR_REPLICATED)
+CreateConVar("ttt_hivemind_vision_enabled", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_hivemind_friendly_fire", "0", FCVAR_REPLICATED)
 local hivemind_is_monster = CreateConVar("ttt_hivemind_is_monster", "0", FCVAR_REPLICATED)
 CreateConVar("ttt_hivemind_join_heal_pct", 0.25, FCVAR_REPLICATED, "The percentage a new member's maximum health that the hive mind should be healed (e.g. 0.25 = 25% of their health healed)", 0, 1)
@@ -22,7 +22,7 @@ CreateConVar("ttt_hivemind_regen_max_pct", 0.5, FCVAR_REPLICATED, "The percentag
 
 ROLE_CONVARS[ROLE_HIVEMIND] = {}
 TableInsert(ROLE_CONVARS[ROLE_HIVEMIND], {
-    cvar = "ttt_hivemind_vision_enable",
+    cvar = "ttt_hivemind_vision_enabled",
     type = ROLE_CONVAR_TYPE_BOOL
 })
 TableInsert(ROLE_CONVARS[ROLE_HIVEMIND], {

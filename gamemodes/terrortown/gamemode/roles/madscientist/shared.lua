@@ -10,7 +10,7 @@ ROLE_CAN_SEE_MIA[ROLE_MADSCIENTIST] = true
 -- ROLE CONVARS --
 ------------------
 
-CreateConVar("ttt_madscientist_respawn_enable", "0", FCVAR_REPLICATED)
+CreateConVar("ttt_madscientist_respawn_enabled", "0", FCVAR_REPLICATED)
 local madscientist_is_monster = CreateConVar("ttt_madscientist_is_monster", "0", FCVAR_REPLICATED)
 
 ROLE_CONVARS[ROLE_MADSCIENTIST] = {}
@@ -20,7 +20,7 @@ table.insert(ROLE_CONVARS[ROLE_MADSCIENTIST], {
     decimal = 0
 })
 table.insert(ROLE_CONVARS[ROLE_MADSCIENTIST], {
-    cvar = "ttt_madscientist_respawn_enable",
+    cvar = "ttt_madscientist_respawn_enabled",
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_MADSCIENTIST], {

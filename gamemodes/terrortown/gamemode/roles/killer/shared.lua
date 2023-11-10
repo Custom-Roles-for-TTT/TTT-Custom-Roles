@@ -89,7 +89,7 @@ CreateConVar("ttt_killer_knife_enabled", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_killer_crowbar_enabled", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_killer_smoke_enabled", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_killer_show_target_icon", "1", FCVAR_REPLICATED)
-CreateConVar("ttt_killer_vision_enable", "1", FCVAR_REPLICATED)
+CreateConVar("ttt_killer_vision_enabled", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_killer_update_scoreboard", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_killer_warn_all", "0", FCVAR_REPLICATED)
 
@@ -130,7 +130,7 @@ table.insert(ROLE_CONVARS[ROLE_KILLER], {
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_KILLER], {
-    cvar = "ttt_killer_vision_enable",
+    cvar = "ttt_killer_vision_enabled",
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_KILLER], {
@@ -159,5 +159,19 @@ table.insert(ROLE_CONVARS[ROLE_KILLER], {
 })
 table.insert(ROLE_CONVARS[ROLE_KILLER], {
     cvar = "ttt_killer_update_scoreboard",
+    type = ROLE_CONVAR_TYPE_BOOL
+})
+table.insert(ROLE_CONVARS[ROLE_KILLER], {
+    cvar = "ttt_killer_credits_award_pct",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 2
+})
+table.insert(ROLE_CONVARS[ROLE_KILLER], {
+    cvar = "ttt_killer_credits_award_size",
+    type = ROLE_CONVAR_TYPE_NUM,
+    decimal = 0
+})
+table.insert(ROLE_CONVARS[ROLE_KILLER], {
+    cvar = "ttt_killer_credits_award_repeat",
     type = ROLE_CONVAR_TYPE_BOOL
 })

@@ -64,8 +64,8 @@ local STATE_KILL = 4
 
 local beep = Sound("npc/fast_zombie/fz_alert_close1.wav")
 
-local vampire_convert_enable = CreateConVar("ttt_vampire_convert_enable", "0", FCVAR_REPLICATED, "Whether vampires have the ability to convert living targets to a vampire thrall using their fangs", 0, 1)
-local vampire_drain_enable = CreateConVar("ttt_vampire_drain_enable", "1", FCVAR_REPLICATED, "Whether vampires have the ability to drain a living target's blood using their fangs", 0, 1)
+local vampire_convert_enabled = CreateConVar("ttt_vampire_convert_enabled", "0", FCVAR_REPLICATED, "Whether vampires have the ability to convert living targets to a vampire thrall using their fangs", 0, 1)
+local vampire_drain_enabled = CreateConVar("ttt_vampire_drain_enabled", "1", FCVAR_REPLICATED, "Whether vampires have the ability to drain a living target's blood using their fangs", 0, 1)
 local vampire_drain_first = CreateConVar("ttt_vampire_drain_first", "0", FCVAR_REPLICATED, "Whether vampires should drain a living target's blood first rather than converting first", 0, 1)
 local vampire_prime_only_convert = CreateConVar("ttt_vampire_prime_only_convert", "1", FCVAR_REPLICATED, "Whether only prime vampires (e.g. players who spawn as vampire originally) are allowed to convert other players", 0, 1)
 
@@ -155,7 +155,7 @@ function SWEP:OnRemove()
 end
 
 function SWEP:CanConvert()
-    return vampire_convert_enable:GetBool() and (not vampire_prime_only_convert:GetBool() or self:GetOwner():IsVampirePrime())
+    return vampire_convert_enabled:GetBool() and (not vampire_prime_only_convert:GetBool() or self:GetOwner():IsVampirePrime())
 end
 
 local function GetPlayerFromBody(body)
@@ -189,7 +189,7 @@ function SWEP:PrimaryAttack()
             end
 
             self:Eat(tr.Entity)
-        elseif ent:IsPlayer() and vampire_drain_enable:GetBool() then
+        elseif ent:IsPlayer() and vampire_drain_enabled:GetBool() then
             self:SetTargetIsBody(false)
             if ent:ShouldActLikeJester() then
                 self:Error("TARGET IS A JESTER")

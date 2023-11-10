@@ -17,7 +17,7 @@ ROLE_MOVE_ROLE_STATE[ROLE_IMPERSONATOR] = MoveRoleState
 -- CONVARS --
 -------------
 
-local detectives_glow_enable = CreateConVar("ttt_detectives_glow_enable", "0", FCVAR_REPLICATED)
+local detectives_glow_enabled = CreateConVar("ttt_detectives_glow_enabled", "0", FCVAR_REPLICATED)
 
 --------------------
 -- PLAYER METHODS --
@@ -60,6 +60,6 @@ plymeta.IsDetectiveLike = plymeta.GetDetectiveLike
 plymeta.IsDetectiveLikePromotable = plymeta.GetDetectiveLikePromotable
 
 ROLETEAM_IS_TARGET_HIGHLIGHTED[ROLE_TEAM_DETECTIVE] = function(ply, tgt)
-    if tgt:IsActiveDetectiveLike() then return detectives_glow_enable:GetBool() end
+    if tgt:IsActiveDetectiveLike() then return detectives_glow_enabled:GetBool() end
     return false
 end

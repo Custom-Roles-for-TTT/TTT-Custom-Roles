@@ -1,5 +1,37 @@
 # Release Notes
 
+## 1.9.14 (Beta)
+**Released:**
+
+### Additions
+- Added `ttt_beggar_announce_delay` (disabled by default) to allow delaying the announcement of the beggar's role change
+
+### Changes
+- **BREAKING CHANGE** - Renamed `ttt_traitor_credits_timer` to `ttt_traitors_credits_timer`
+- **BREAKING CHANGE** - Renamed the following ConVars to change the `_enable` ending to `_enabled` for consistency:
+  - ttt_assassin_target_vision_enable -> ttt_assassin_target_vision_enabled
+  - ttt_cupid_lover_vision_enable -> ttt_cupid_lover_vision_enabled
+  - ttt_death_notifier_enable -> ttt_death_notifier_enabled
+  - ttt_detective_glow_enable -> ttt_detective_glow_enabled
+  - ttt_hivemind_vision_enable -> ttt_hivemind_vision_enabled
+  - ttt_infected_respawn_enable -> ttt_infected_respawn_enabled
+  - ttt_killer_vision_enable -> ttt_killer_vision_enabled
+  - ttt_madscientist_respawn_enable -> ttt_madscientist_respawn_enabled
+  - ttt_vampire_convert_enable -> ttt_vampire_convert_enabled
+  - ttt_vampire_drain_enable -> ttt_vampire_drain_enabled
+  - ttt_vampire_vision_enable -> ttt_vampire_vision_enabled
+  - ttt_zombie_leap_enable -> ttt_zombie_leap_enabled
+  - ttt_zombie_spit_enable -> ttt_zombie_spit_enabled
+  - ttt_zombie_vision_enable -> ttt_zombie_vision_enabled
+- **BREAKING CHANGE** - Changed vampire to use the new `ttt_vampire_credits_award_pct`, `ttt_vampire_credits_award_size`, and `ttt_vampire_credits_award_repeat` convars instead of the traitor ones when the vampire is not a traitor
+- **BREAKING CHANGE** - Changed killer to use the new `ttt_killer_credits_award_pct`, `ttt_killer_credits_award_size`, and `ttt_killer_credits_award_repeat` convars instead of the traitor ones
+
+### Fixes
+- Ported "TTT: Prevent error when NPC fires SWEP derived from weapon_tttbase" from base TTT
+- Fixed `ttt_monster_max` greater than 1 not working
+- Fixed infected player that is in the progress of respawning due dying while `ttt_infected_respawn_enabled` is enabled not counting as zombifying for the purposes of delaying the round end
+- Fixed paramedic's defibrillator not changing detective-like roles not on the innocent or traitor teams to be their base role when resurrected
+
 ## 1.9.13 (Beta)
 **Released: October 21st, 2023**
 

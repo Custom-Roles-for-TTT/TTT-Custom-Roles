@@ -12,7 +12,7 @@ local GetAllPlayers = player.GetAll
 -------------
 
 local assassin_show_target_icon = GetConVar("ttt_assassin_show_target_icon")
-local assassin_target_vision_enable = GetConVar("ttt_assassin_target_vision_enable")
+local assassin_target_vision_enabled = GetConVar("ttt_assassin_target_vision_enabled")
 local assassin_next_target_delay = GetConVar("ttt_assassin_next_target_delay")
 local assassin_allow_lootgoblin_kill = GetConVar("ttt_assassin_allow_lootgoblin_kill")
 local assassin_allow_zombie_kill = GetConVar("ttt_assassin_allow_zombie_kill")
@@ -141,7 +141,7 @@ end
 
 hook.Add("TTTUpdateRoleState", "Assassin_Highlight_TTTUpdateRoleState", function()
     client = LocalPlayer()
-    assassin_target_vision = assassin_target_vision_enable:GetBool()
+    assassin_target_vision = assassin_target_vision_enabled:GetBool()
 
     -- Disable highlights on role change
     if vision_enabled then
@@ -210,7 +210,7 @@ hook.Add("TTTTutorialRoleText", "Assassin_TTTTutorialRoleText", function(role, t
         end
         html = html .. "after their current target is <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>killed</span>.</span>"
 
-        local hasVision = assassin_target_vision_enable:GetBool()
+        local hasVision = assassin_target_vision_enabled:GetBool()
         if hasVision then
             html = html .. "<span style='display: block; margin-top: 10px;'>Their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>target intel</span> helps them see their target through walls by highlighting them.</span>"
         end
@@ -223,7 +223,7 @@ hook.Add("TTTTutorialRoleText", "Assassin_TTTTutorialRoleText", function(role, t
             html = html .. " be identified by the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>KILL</span> icon floating over their head.</span>"
         end
 
-        if GetConVar("ttt_traitors_vision_enable"):GetBool() then
+        if GetConVar("ttt_traitors_vision_enabled"):GetBool() then
             html = html .. "<span style='display: block; margin-top: 10px;'><span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>Constant communication</span> with their allies allows them to quickly identify friends by highlighting them in their <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>team color</span>.</span>"
         end
 

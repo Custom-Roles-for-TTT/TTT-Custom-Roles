@@ -29,7 +29,7 @@ end)
 ------------------
 
 CreateConVar("ttt_assassin_show_target_icon", "0", FCVAR_REPLICATED)
-CreateConVar("ttt_assassin_target_vision_enable", "0", FCVAR_REPLICATED)
+CreateConVar("ttt_assassin_target_vision_enabled", "0", FCVAR_REPLICATED)
 CreateConVar("ttt_assassin_next_target_delay", "5", FCVAR_REPLICATED, "The delay (in seconds) before an assassin is assigned their next target", 0, 30)
 CreateConVar("ttt_assassin_allow_lootgoblin_kill", "1", FCVAR_REPLICATED)
 CreateConVar("ttt_assassin_allow_zombie_kill", "1", FCVAR_REPLICATED)
@@ -45,7 +45,7 @@ table.insert(ROLE_CONVARS[ROLE_ASSASSIN], {
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_ASSASSIN], {
-    cvar = "ttt_assassin_target_vision_enable",
+    cvar = "ttt_assassin_target_vision_enabled",
     type = ROLE_CONVAR_TYPE_BOOL
 })
 table.insert(ROLE_CONVARS[ROLE_ASSASSIN], {
