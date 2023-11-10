@@ -4,275 +4,31 @@
     <title>Custom Roles for TTT - Detectives</title>
     <link type="text/css" rel="stylesheet" href="../fonts/roleicons.css">
     <link type="text/css" rel="stylesheet" href="../css/style.css">
+    <script type="text/javascript" src="../js/shared.js" defer></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<script type="text/javascript" src="../js/shared.js" defer></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
 </head>
 <body>
-<button onclick="backToTop()" id="totop">Back to Top</button>
-<div class="navigation panel" style="margin-bottom: 15px;">
-    <iframe id="nav" src="../nav.html#detective" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left;"></iframe>
-</div>
-<div class="contentheader panel" style="margin-bottom: 15px;">
-    <div style="background-color: #787878; border-radius: 20px 0 15px 0; margin-top: 0; display: inline-block;">
-        <h1 style="background-color:var(--detective); margin-top: 0;">Detective Roles</h1>
-        <div style="margin: 10px;">
-            <p><span style="color:var(--detective);">Detectives</span> are part of the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span>, however they have unique advantages and disadvantages compared to other innocents.</p>
-            <p>The main goal of detectives, and by extension the innocent team, is to identify and eliminate all members of the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span>. In some cases, they also need to take out <span style="color:var(--monster);"><a href="../teams/monster.html">monsters</a></span>, <span style="color:var(--jester);"><a href="../teams/jester.html">jesters</a></span>, or <span style="color:var(--independent);"><a href="../teams/independent.html">independents</a></span> that could prevent their victory.</p>
-            <p>Detectives have their role known to all players, as such they usually act as the de facto leader of the innocent team. They also have the ability to search dead bodies of players and uncover their role and information about their death. This information is often vital to the success of the innocent team and can make detectives high priority targets for the traitors.</p>
-        </div>
+    <button onclick="backToTop()" id="totop">Back to Top</button>
+    <div class="navigation panel" style="margin-bottom: 15px;">
+        <iframe id="nav" src="../nav.html#detective" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left;"></iframe>
     </div>
-</div>
-<div class="contentbody panel">
-    <div class="noncollapsible">
-        <button class="header" style="cursor: default; background-color:#555555">Team Configuration</button>
-        <div class="content">
-            <p>Each round a percentage of players will be chosen as detectives. A fraction of those players have a chance to be a <span style="color:var(--special-detective)">special detective</span>, and the others will each be a <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="#detective">Detective</a></span>.</p>
-            <p>The following ConVars can be used to configure the requirements and restrictions on how detectives spawn.</p>
-            <table style="width:100%; margin-bottom: 10px;">
-                <thead>
-                <tr>
-                    <th>ConVar</th>
-                    <th>Default</th>
-                    <th>Type</th>
-                    <th>Description</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>ttt_detective_pct</td>
-                    <td>0.13</td>
-                    <td>Float (0-1)</td>
-                    <td><b>Vanilla TTT ConVar</b> - Percentage of players, rounded up, that will spawn as a detective.</td>
-                </tr>
-                <tr>
-                    <td>ttt_detective_max</td>
-                    <td>32</td>
-                    <td>Integer</td>
-                    <td><b>Vanilla TTT ConVar</b> - The maximum number of players that can spawn as a detective.</td>
-                </tr>
-                <tr>
-                    <td>ttt_detective_min_players</td>
-                    <td>8</td>
-                    <td>Integer</td>
-                    <td><b>Vanilla TTT ConVar</b> - The minimum number of players required to spawn detectives.</td>
-                </tr>
-                <tr>
-                    <td>ttt_detective_karma_min</td>
-                    <td>600</td>
-                    <td>Integer</td>
-                    <td><b>Vanilla TTT ConVar</b> - The minimum amount of karma required for a player to be selected to spawn as a detective.</td>
-                </tr>
-                <tr>
-                    <td>ttt_special_detective_pct</td>
-                    <td>0.33</td>
-                    <td>Float (0-1)</td>
-                    <td>Percentage of detectives, rounded up, that have the chance to spawn as a special detective.</td>
-                </tr>
-                <tr>
-                    <td>ttt_special_detective_chance</td>
-                    <td>0.5</td>
-                    <td>Float (0-1)</td>
-                    <td>The chance that a special detective will spawn in each individual slot made by <code>ttt_special_detective_pct</code>.</td>
-                </tr>
-                </tbody>
-            </table>
-            <p><b>Example:</b> There are eight players in the game. <code>ttt_detective_pct</code> is 0.13, <code>ttt_special_detective_pct</code> is 0.33, and <code>ttt_special_detective_chance</code> is 0.5 as per the default values above. 13% of the players in the game (rounded up) will spawn as detectives as <code>ttt_detective_pct</code> is set to 0.13. This means there will be two players that are detectives. At most 33% of those detectives (rounded up) can be special detectives as <code>ttt_special_detective_pct</code> is set to 0.33. This means that there will be at most one special detective. However, that player only has a 50% chance to be a special detective as <code>ttt_special_detective_chance</code> is set to 0.5. This means it is possible for the round to have zero or one special detective. All remaining detectives will each be a <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="#detective">Detective</a></span>.</p>
-            <p>If you wanted it to be possible for all detectives to be special detectives at once, set <code>ttt_special_detective_pct</code> to 1. Alternately, if you always wanted the same number of special detectives in each round with no variation, set <code>ttt_special_detective_chance</code> to 1. Setting either <code>ttt_special_detective_pct</code> or <code>ttt_special_detective_chance</code> to 0 will make it impossible for special detectives to spawn.</p>
-            <p>Additionally, detectives are able to earn credits to spend in the shop. The following ConVars can be used to configure how credits are earned.</p>
-            <table style="width:100%; margin-bottom: 10px;">
-                <thead>
-                <tr>
-                    <th>ConVar</th>
-                    <th>Default</th>
-                    <th>Type</th>
-                    <th>Description</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>ttt_det_credits_traitorkill</td>
-                    <td>0</td>
-                    <td>Integer</td>
-                    <td><b>Vanilla TTT ConVar</b> - The number of credits detectives receive when they kill a traitor.</td>
-                </tr>
-                <tr>
-                    <td>ttt_det_credits_traitordead</td>
-                    <td>1</td>
-                    <td>Integer</td>
-                    <td><b>Vanilla TTT ConVar</b> - The number of credits detectives receive when a traitor dies.</td>
-                </tr>
-                <tr>
-                    <td>ttt_detectives_credits_timer</td>
-                    <td>0</td>
-                    <td>Integer</td>
-                    <td>How often in seconds to give detectives a credit. <i>(Set to 0 to disable.)</i></td>
-                </tr>
-                </tbody>
-            </table>
-            <p>Detectives also have the ability to search bodies and uncover information about dead players and how they died. The following ConVars can used to configure what information is available to which players.</p>
-            <table style="width:100%; margin-bottom: 10px;">
-                <thead>
-                <tr>
-                    <th>ConVar</th>
-                    <th>Default</th>
-                    <th>Type</th>
-                    <th>Description</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>ttt_all_search_postround</td>
-                    <td>1</td>
-                    <td>Boolean</td>
-                    <td>Whether non-detectives can search bodies post-round.</td>
-                </tr>
-                <tr>
-                    <td>ttt_all_search_binoc</td>
-                    <td>0</td>
-                    <td>Boolean</td>
-                    <td>Whether non-detectives can search bodies if they are using binoculars.</td>
-                </tr>
-                <tr>
-                    <td>ttt_detectives_disable_looting</td>
-                    <td>0</td>
-                    <td>Boolean</td>
-                    <td>Whether to disable a detective role's ability to loot credits from bodies.</td>
-                </tr>
-                <tr>
-                    <td>ttt_detectives_search_only</td>
-                    <td>1</td>
-                    <td>Boolean</td>
-                    <td>Whether only detectives can search bodies.</td>
-                </tr>
-                <tr>
-                    <td>ttt_detectives_search_only_*</td>
-                    <td>0</td>
-                    <td>Boolean</td>
-                    <td>Whether only detectives can reveal specific information from a body. Once a detective searches a body, this information will be available to all players. Replace * with any of the following:
-                        <ul>
-                            <li><code>arsonistdouse</code> - If the dead player was doused by an Arsonist and when.</li>
-                            <li><code>c4</code> - The dead player's C4 disarm code.</li>
-                            <li><code>dmg</code> - The type of damage used to kill the dead player.</li>
-                            <li><code>dtime</code> - The dead player's time of death.</li>
-                            <li><code>equipment</code> - Any equipment the dead player had on them.</li>
-                            <li><code>head</code> - If the dead player was killed by a headshot.</li>
-                            <li><code>kills</code> - A list of players that the dead player killed.</li>
-                            <li><code>lastid</code> - The last player the dead player saw before they died.</li>
-                            <li><code>nick</code> - The dead player's name.</li>
-                            <li><code>role</code> - The dead player's role.</li>
-                            <li><code>stime</code> - The dead player's DNA sample decay time.</li>
-                            <li><code>team</code> - The dead player's team. <i>(Requires <code>ttt_detectives_search_only_role</code> to be disabled.)</i></li>
-                            <li><code>wep</code> - The weapon used to kill the dead player.</li>
-                            <li><code>words</code> - The dead player's last words. </li>
-                        </ul>
-                        <i>(Requires <code>ttt_detectives_search_only</code> to be disabled.)</i>.
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-            <p>Finally the following miscellaneous ConVars can be used to configure options that apply to all detectives.</p>
-            <table style="width:100%; margin-bottom: 10px;">
-                <thead>
-                <tr>
-                    <th>ConVar</th>
-                    <th>Default</th>
-                    <th>Type</th>
-                    <th>Description</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>ttt_detectives_glow_enabled</td>
-                    <td>0</td>
-                    <td>Boolean</td>
-                    <td>Whether detectives and detective-likes can see other detectives and detective-likes through walls via a highlight effect.</td>
-                </tr>
-                <tr>
-                    <td>ttt_detectives_hide_special_mode</td>
-                    <td>0</td>
-                    <td>Integer (0-2)</td>
-                    <td>How to handle special detective role information:
-                        <ol start="0">
-                            <li>Show the special detective's role to everyone.</li>
-                            <li>Hide the special detective's role from everyone and just show as a regular detective instead.</li>
-                            <li>Hide the special detective's role from everyone but themselves.</li>
-                        </ol>
-                    </td>
-                </tr>
-                <tr>
-                    <td>ttt_special_detectives_armor_loadout</td>
-                    <td>1</td>
-                    <td>Boolean</td>
-                    <td>Whether special detectives get armor automatically for free. <i>(Regular detectives always get body armor for free.)</i></td>
-                </tr>
-                </tbody>
-            </table>
-            <p>Instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page, and ConVars specific to configuring each role can be found below.</p>
-        </div>
-    </div>
-    <div class="noncollapsible">
-        <button class="header" style="cursor: default; background-color:#555555">Role Guidelines</button>
-        <div class="content">
-            <p>When designing roles it is important to make sure your role is part of the correct team. Each team has a unique identity along with strengths and weaknesses that play better with some roles than others. If you are designing a detective role, keep the following in mind:</p>
-            <b>Detectives should:</b>
-            <ul style="margin: 10px 0;">
-                <li>Win by working with innocents and other detectives to identify and kill the traitors.</li>
-                <li>Be able to search and identify bodies.</li>
-            </ul>
-            <b>Detectives should <u>NOT</u>:</b>
-            <ul style="margin: 10px 0;">
-                <li>Have unique win conditions. If your role requires a unique win condition consider making them a jester or independent.</li>
-                <li>Have any reason to kill/damage/annoy innocents and other detectives. If your role wants to cause chaos and confusion consider making them a traitor, jester or independent.</li>
-                <li>Have any reason to stay hidden from players. Detectives are meant to be a public team leader for the innocents.</li>
-            </ul>
-            <p>These are just guidelines and in some special circumstances a role might be best fit as a detective even if it doesn't align with the above suggestions. However, in general following these suggestions will ensure that your role works well within the framework that Custom Roles for TTT provides.</p>
-            <p>A walkthrough for creating your own role can be found on the <a href="../tutorials/create_your_own_role.html">Create Your Own Role</a> tutorial page.</p>
-        </div>
-    </div>
-    <div id="detective" class="collapsible">
-        <button class="header" style="background-color:var(--detective);"><i class="icon-detective"></i>Detective</button>
-        <div class="content">
-            <div class="moreless">[more]</div>
-            <p>The <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="#detective">Detective</a></span> is the base version of the <span style="color:var(--detective);">detectives</span> who can use their DNA scanner to track down killers.</p>
-            <div class="expansion">
-                <p>The Detective has access to a shop containing powerful items that can be used to help the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span> win against the traitors.</p>
-                <p>The Detective also spawns with a DNA scanner that can be used to track down players using DNA samples left on dead bodies, weapons, or other items. Samples do not last forever and will decay if they are not collected quickly. Once a sample has been collected the DNA scanner will provide frequent updates that point towards the player that the sample belongs to.</p>
-                <p>Unlike most unique role items, the DNA scanner can be dropped and used by other players of any role.</p>
-                <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
-                <table style="width:100%; margin-bottom: 10px;">
-                    <thead>
-                    <tr>
-                        <th>ConVar</th>
-                        <th>Default</th>
-                        <th>Type</th>
-                        <th>Description</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>ttt_det_credits_starting</td>
-                        <td>1</td>
-                        <td>Integer</td>
-                        <td><b>Vanilla TTT ConVar</b> - The number of credits a detective should start with.</td>
-                    </tr>
-                    </tbody>
-                </table>
-                <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
+    <div class="contentheader panel" style="margin-bottom: 15px;">
+        <div style="background-color: #787878; border-radius: 20px 0 15px 0; margin-top: 0; display: inline-block;">
+            <h1 style="background-color:var(--detective); margin-top: 0;">Detective Roles</h1>
+            <div style="margin: 10px;">
+                <p><span style="color:var(--detective);">Detectives</span> are part of the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span>, however they have unique advantages and disadvantages compared to other innocents.</p>
+                <p>The main goal of detectives, and by extension the innocent team, is to identify and eliminate all members of the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span>. In some cases, they also need to take out <span style="color:var(--monster);"><a href="../teams/monster.html">monsters</a></span>, <span style="color:var(--jester);"><a href="../teams/jester.html">jesters</a></span>, or <span style="color:var(--independent);"><a href="../teams/independent.html">independents</a></span> that could prevent their victory.</p>
+                <p>Detectives have their role known to all players, as such they usually act as the de facto leader of the innocent team. They also have the ability to search dead bodies of players and uncover their role and information about their death. This information is often vital to the success of the innocent team and can make detectives high priority targets for the traitors.</p>
             </div>
         </div>
     </div>
-    <div id="marshal" class="collapsible">
-        <button class="header" style="background-color:var(--special-detective);"><i class="icon-marshal"></i>Marshal</button>
-        <div class="content">
-            <div class="moreless">[more]</div>
-            <p>The <span class="inline-icon" style="color:var(--special-detective);"><i class="icon-marshal"></i><a href="#marshal">Marshal</a></span> can use their badge to turn a player into a <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-deputy"></i><a href="../teams/innocent.html#deputy">Deputy</a></span> or an <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-impersonator"></i><a href="../teams/traitor.html#impersonator">Impersonator</a></span>.</p>
-            <div class="expansion">
-                <p>The Marshal is given a deputy badge as part of their loadout which can be used to convert players into either a Deputy or an Impersonator. If the badge is used on a member of the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span> that player will become a Deputy, and if it is used on a member of the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span> that player will become an Impersonator.</p>
-                <p>If the badge is used on any other player, there is a chance for that player to become either a Deputy or an Impersonator. This chance can be configured independently for each team with the ConVars below.</p>
-                <p>The Marshal has access to a shop containing a small handful of useful items. However, if the <code>ttt_marshal_shop_sync</code> ConVar is enabled the Marshal will have access to all items available to the <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="#detective">Detective</a></span>.</p>
-                <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+    <div class="contentbody panel">
+        <div class="noncollapsible">
+            <button class="header" style="cursor: default; background-color:#555555">Team Configuration</button>
+            <div class="content">
+                <p>Each round a percentage of players will be chosen as detectives. A fraction of those players have a chance to be a <span style="color:var(--special-detective)">special detective</span>, and the others will each be a <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="#detective">Detective</a></span>.</p>
+                <p>The following ConVars can be used to configure the requirements and restrictions on how detectives spawn.</p>
                 <table style="width:100%; margin-bottom: 10px;">
                     <thead>
                     <tr>
@@ -284,57 +40,46 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <td>ttt_marshal_announce_deputy</td>
-                        <td>1</td>
-                        <td>Boolean</td>
-                        <td>Whether a player being deputized will be announced to everyone.</td>
+                        <td>ttt_detective_pct</td>
+                        <td>0.13</td>
+                        <td>Float (0-1)</td>
+                        <td><b>Vanilla TTT ConVar</b> - Percentage of players, rounded up, that will spawn as a detective.</td>
                     </tr>
                     <tr>
-                        <td>ttt_marshal_badge_time</td>
+                        <td>ttt_detective_max</td>
+                        <td>32</td>
+                        <td>Integer</td>
+                        <td><b>Vanilla TTT ConVar</b> - The maximum number of players that can spawn as a detective.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_detective_min_players</td>
                         <td>8</td>
                         <td>Integer</td>
-                        <td>The amount of time in seconds the Marshal's badge takes to use.</td>
+                        <td><b>Vanilla TTT ConVar</b> - The minimum number of players required to spawn detectives.</td>
                     </tr>
                     <tr>
-                        <td>ttt_marshal_credits_starting</td>
-                        <td>1</td>
+                        <td>ttt_detective_karma_min</td>
+                        <td>600</td>
                         <td>Integer</td>
-                        <td>The number of credits a Marshal should start with.</td>
+                        <td><b>Vanilla TTT ConVar</b> - The minimum amount of karma required for a player to be selected to spawn as a detective.</td>
                     </tr>
                     <tr>
-                        <td>ttt_marshal_independent_deputy_chance</td>
+                        <td>ttt_special_detective_pct</td>
+                        <td>0.33</td>
+                        <td>Float (0-1)</td>
+                        <td>Percentage of detectives, rounded up, that have the chance to spawn as a special detective.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_special_detective_chance</td>
                         <td>0.5</td>
                         <td>Float (0-1)</td>
-                        <td>The chance that an independent will become a Deputy when the Marshal's badge is used on them. <i>(Set to -1 to disable.)</i></td>
-                    </tr>
-                    <tr>
-                        <td>ttt_marshal_jester_deputy_chance</td>
-                        <td>0.5</td>
-                        <td>Float (0-1)</td>
-                        <td>The chance that a jester will become a Deputy when the Marshal's badge is used on them. <i>(Set to -1 to disable.)</i></td>
-                    </tr>
-                    <tr>
-                        <td>ttt_marshal_monster_deputy_chance</td>
-                        <td>0.5</td>
-                        <td>Float (0-1)</td>
-                        <td>The chance that a monster will become a Deputy when the Marshal's badge is used on them. <i>(Set to -1 to disable.)</i></td>
+                        <td>The chance that a special detective will spawn in each individual slot made by <code>ttt_special_detective_pct</code>.</td>
                     </tr>
                     </tbody>
                 </table>
-                <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
-            </div>
-        </div>
-    </div>
-    <div id="medium" class="collapsible">
-        <button class="header" style="background-color:var(--special-detective);"><i class="icon-medium"></i>Medium</button>
-        <div class="content">
-            <div class="moreless">[more]</div>
-            <p>The <span class="inline-icon" style="color:var(--special-detective);"><i class="icon-medium"></i><a href="#medium">Medium</a></span> can communicate the souls of dead players.</p>
-            <div class="expansion">
-                <p>The positions of dead players' spectator cameras appear to the Medium as colourful floating orbs. While dead players cannot communicate directly with living players, they are able to use their position to try to give the Medium hints.</p>
-                <p>If <code>ttt_medium_spirit_color</code> is enabled each player's spirit will be given a unique color, otherwise each spirit will be white.</p>
-                <p>The Medium has access to a shop containing a small handful of useful items. However, if the <code>ttt_medium_shop_sync</code> ConVar is enabled the Medium will have access to all items available to the <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="#detective">Detective</a></span>.</p>
-                <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                <p><b>Example:</b> There are eight players in the game. <code>ttt_detective_pct</code> is 0.13, <code>ttt_special_detective_pct</code> is 0.33, and <code>ttt_special_detective_chance</code> is 0.5 as per the default values above. 13% of the players in the game (rounded up) will spawn as detectives as <code>ttt_detective_pct</code> is set to 0.13. This means there will be two players that are detectives. At most 33% of those detectives (rounded up) can be special detectives as <code>ttt_special_detective_pct</code> is set to 0.33. This means that there will be at most one special detective. However, that player only has a 50% chance to be a special detective as <code>ttt_special_detective_chance</code> is set to 0.5. This means it is possible for the round to have zero or one special detective. All remaining detectives will each be a <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="#detective">Detective</a></span>.</p>
+                <p>If you wanted it to be possible for all detectives to be special detectives at once, set <code>ttt_special_detective_pct</code> to 1. Alternately, if you always wanted the same number of special detectives in each round with no variation, set <code>ttt_special_detective_chance</code> to 1. Setting either <code>ttt_special_detective_pct</code> or <code>ttt_special_detective_chance</code> to 0 will make it impossible for special detectives to spawn.</p>
+                <p>Additionally, detectives are able to earn credits to spend in the shop. The following ConVars can be used to configure how credits are earned.</p>
                 <table style="width:100%; margin-bottom: 10px;">
                     <thead>
                     <tr>
@@ -346,46 +91,26 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <td>ttt_medium_credits_starting</td>
+                        <td>ttt_det_credits_traitorkill</td>
+                        <td>0</td>
+                        <td>Integer</td>
+                        <td><b>Vanilla TTT ConVar</b> - The number of credits detectives receive when they kill a traitor.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_det_credits_traitordead</td>
                         <td>1</td>
                         <td>Integer</td>
-                        <td>The number of credits a Medium should start with.</td>
+                        <td><b>Vanilla TTT ConVar</b> - The number of credits detectives receive when a traitor dies.</td>
                     </tr>
                     <tr>
-                        <td>ttt_medium_dead_notify</td>
-                        <td>1</td>
-                        <td>Boolean</td>
-                        <td>Whether player should be notified that there is a Medium when they die.</td>
-                    </tr>
-                    <tr>
-                        <td>ttt_medium_spirit_color</td>
-                        <td>1</td>
-                        <td>Boolean</td>
-                        <td>Whether players' spirits should have different colors.</td>
-                    </tr>
-                    <tr>
-                        <td>ttt_medium_spirit_vision</td>
-                        <td>1</td>
-                        <td>Boolean</td>
-                        <td>Whether players' spirits should be able to see each other.</td>
+                        <td>ttt_detectives_credits_timer</td>
+                        <td>0</td>
+                        <td>Integer</td>
+                        <td>How often in seconds to give detectives a credit. <i>(Set to 0 to disable.)</i></td>
                     </tr>
                     </tbody>
                 </table>
-                <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
-            </div>
-        </div>
-    </div>
-    <div id="paladin" class="collapsible">
-        <button class="header" style="background-color:var(--special-detective);"><i class="icon-paladin"></i>Paladin</button>
-        <div class="content">
-            <div class="moreless">[more]</div>
-            <p>The <span class="inline-icon" style="color:var(--special-detective);"><i class="icon-paladin"></i><a href="#paladin">Paladin</a></span> has an aura that can heal players and reduce incoming damage.</p>
-            <div class="expansion">
-                <p>Players inside the Paladin's aura will slowly heal over time at a rate determined by <code>ttt_paladin_heal_rate</code>. The Paladin themselves will also slowly heal if <code>ttt_paladin_heal_self</code> is enabled.</p>
-                <p>The Paladin's can also reduce incoming damage for players inside their aura by a factor determined by <code>ttt_paladin_damage_reduction</code>. By default the Paladin will not receive this incoming damage reduction themselves, but this can be enabled with <code>ttt_paladin_protect_self</code>.</p>
-                <p>If <code>ttt_detectives_hide_special_mode</code> is changed from its default such that the Paladin's role is hidden from other players, the Paladin's aura will also be made invisible to other players, however it's effects will still apply.</p>
-                <p>The Paladin has access to a shop containing a small handful of useful items. However, if the <code>ttt_paladin_shop_sync</code> ConVar is enabled the Paladin will have access to all items available to the <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="#detective">Detective</a></span>.</p>
-                <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                <p>Detectives also have the ability to search bodies and uncover information about dead players and how they died. The following ConVars can used to configure what information is available to which players.</p>
                 <table style="width:100%; margin-bottom: 10px;">
                     <thead>
                     <tr>
@@ -397,56 +122,56 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <td>ttt_paladin_aura_radius</td>
-                        <td>5</td>
-                        <td>Float</td>
-                        <td>The radius of the Paladin's aura in meters.</td>
-                    </tr>
-                    <tr>
-                        <td>ttt_paladin_credits_starting</td>
-                        <td>1</td>
-                        <td>Integer</td>
-                        <td>The number of credits a Paladin should start with.</td>
-                    </tr>
-                    <tr>
-                        <td>ttt_paladin_damage_reduction</td>
-                        <td>0.3</td>
-                        <td>Float (0-1)</td>
-                        <td>The fraction an attacker's damage will be reduced by when they are shooting a player inside the Paladin's aura. <i>(e.g. 0.5 = 50% less damage.)</i></td>
-                    </tr>
-                    <tr>
-                        <td>ttt_paladin_heal_rate</td>
-                        <td>1</td>
-                        <td>Integer</td>
-                        <td>The amount of health a player inside the Paladin's aura will heal each second.</td>
-                    </tr>
-                    <tr>
-                        <td>ttt_paladin_heal_self</td>
+                        <td>ttt_all_search_postround</td>
                         <td>1</td>
                         <td>Boolean</td>
-                        <td>Whether the Paladin's healing aura will heal themselves or not.</td>
+                        <td>Whether non-detectives can search bodies post-round.</td>
                     </tr>
                     <tr>
-                        <td>ttt_paladin_protect_self</td>
+                        <td>ttt_all_search_binoc</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether the Paladin's damage reduction aura will protect themselves or not.</td>
+                        <td>Whether non-detectives can search bodies if they are using binoculars.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_detectives_disable_looting</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether to disable a detective role's ability to loot credits from bodies.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_detectives_search_only</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether only detectives can search bodies.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_detectives_search_only_*</td>
+                        <td>0</td>
+                        <td>Boolean</td>
+                        <td>Whether only detectives can reveal specific information from a body. Once a detective searches a body, this information will be available to all players. Replace * with any of the following:
+                            <ul>
+                                <li><code>arsonistdouse</code> - If the dead player was doused by an Arsonist and when.</li>
+                                <li><code>c4</code> - The dead player's C4 disarm code.</li>
+                                <li><code>dmg</code> - The type of damage used to kill the dead player.</li>
+                                <li><code>dtime</code> - The dead player's time of death.</li>
+                                <li><code>equipment</code> - Any equipment the dead player had on them.</li>
+                                <li><code>head</code> - If the dead player was killed by a headshot.</li>
+                                <li><code>kills</code> - A list of players that the dead player killed.</li>
+                                <li><code>lastid</code> - The last player the dead player saw before they died.</li>
+                                <li><code>nick</code> - The dead player's name.</li>
+                                <li><code>role</code> - The dead player's role.</li>
+                                <li><code>stime</code> - The dead player's DNA sample decay time.</li>
+                                <li><code>team</code> - The dead player's team. <i>(Requires <code>ttt_detectives_search_only_role</code> to be disabled.)</i></li>
+                                <li><code>wep</code> - The weapon used to kill the dead player.</li>
+                                <li><code>words</code> - The dead player's last words. </li>
+                            </ul>
+                            <i>(Requires <code>ttt_detectives_search_only</code> to be disabled.)</i>.
+                        </td>
                     </tr>
                     </tbody>
                 </table>
-                <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
-            </div>
-        </div>
-    </div>
-    <div id="quartermaster" class="collapsible">
-        <button class="header" style="background-color:var(--special-detective);"><i class="icon-quartermaster"></i>Quartermaster</button>
-        <div class="content">
-            <div class="moreless">[more]</div>
-            <p>The <span class="inline-icon" style="color:var(--special-detective);"><i class="icon-quartermaster"></i><a href="#quartermaster">Quartermaster</a></span> can buy items available to <span class="inline-icon" style="color:var(--traitor);"><i class="icon-traitor"></i><a href="#traitor">Traitors</a></span> as weapon crates for other players.</p>
-            <div class="expansion">
-                <p>The Quartermaster cannot buy items for themselves, and instead all items bought by the Quartermaster will be dropped on the ground in crates that can be opened by other players. The Quartermaster cannot open their own crates and so must instead supply items to other players.</p>
-                <p>If <code>ttt_quartermaster_limited_loot</code> is enabled, each player will only be able to open one weapon crate per round, otherwise each player is free to open as many crates as they would like.</p>
-                <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                <p>Finally the following miscellaneous ConVars can be used to configure options that apply to all detectives.</p>
                 <table style="width:100%; margin-bottom: 10px;">
                     <thead>
                     <tr>
@@ -458,133 +183,407 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <td>ttt_quartermaster_credits_starting</td>
-                        <td>3</td>
-                        <td>Integer</td>
-                        <td>The number of credits a Quartermaster should start with.</td>
-                    </tr>
-                    <tr>
-                        <td>ttt_quartermaster_limited_loot</td>
+                        <td>ttt_detectives_glow_enabled</td>
                         <td>0</td>
                         <td>Boolean</td>
-                        <td>Whether players should be limited to looting a single Quartermaster crate per round.</td>
+                        <td>Whether detectives and detective-likes can see other detectives and detective-likes through walls via a highlight effect.</td>
+                    </tr>
+                    <tr>
+                        <td>ttt_detectives_hide_special_mode</td>
+                        <td>0</td>
+                        <td>Integer (0-2)</td>
+                        <td>How to handle special detective role information:
+                            <ol start="0">
+                                <li>Show the special detective's role to everyone.</li>
+                                <li>Hide the special detective's role from everyone and just show as a regular detective instead.</li>
+                                <li>Hide the special detective's role from everyone but themselves.</li>
+                            </ol>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ttt_special_detectives_armor_loadout</td>
+                        <td>1</td>
+                        <td>Boolean</td>
+                        <td>Whether special detectives get armor automatically for free. <i>(Regular detectives always get body armor for free.)</i></td>
                     </tr>
                     </tbody>
                 </table>
-                <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
+                <p>Instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page, and ConVars specific to configuring each role can be found below.</p>
+            </div>
+        </div>
+        <div class="noncollapsible">
+            <button class="header" style="cursor: default; background-color:#555555">Role Guidelines</button>
+            <div class="content">
+                <p>When designing roles it is important to make sure your role is part of the correct team. Each team has a unique identity along with strengths and weaknesses that play better with some roles than others. If you are designing a detective role, keep the following in mind:</p>
+                <b>Detectives should:</b>
+                <ul style="margin: 10px 0;">
+                    <li>Win by working with innocents and other detectives to identify and kill the traitors.</li>
+                    <li>Be able to search and identify bodies.</li>
+                </ul>
+                <b>Detectives should <u>NOT</u>:</b>
+                <ul style="margin: 10px 0;">
+                    <li>Have unique win conditions. If your role requires a unique win condition consider making them a jester or independent.</li>
+                    <li>Have any reason to kill/damage/annoy innocents and other detectives. If your role wants to cause chaos and confusion consider making them a traitor, jester or independent.</li>
+                    <li>Have any reason to stay hidden from players. Detectives are meant to be a public team leader for the innocents.</li>
+                </ul>
+                <p>These are just guidelines and in some special circumstances a role might be best fit as a detective even if it doesn't align with the above suggestions. However, in general following these suggestions will ensure that your role works well within the framework that Custom Roles for TTT provides.</p>
+                <p>A walkthrough for creating your own role can be found on the <a href="../tutorials/create_your_own_role.html">Create Your Own Role</a> tutorial page.</p>
+            </div>
+        </div>
+        <div id="detective" class="collapsible">
+            <button class="header" style="background-color:var(--detective);"><i class="icon-detective"></i>Detective</button>
+            <div class="content">
+                <div class="moreless">[more]</div>
+                <p>The <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="#detective">Detective</a></span> is the base version of the <span style="color:var(--detective);">detectives</span> who can use their DNA scanner to track down killers.</p>
+                <div class="expansion">
+                    <p>The Detective has access to a shop containing powerful items that can be used to help the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span> win against the traitors.</p>
+                    <p>The Detective also spawns with a DNA scanner that can be used to track down players using DNA samples left on dead bodies, weapons, or other items. Samples do not last forever and will decay if they are not collected quickly. Once a sample has been collected the DNA scanner will provide frequent updates that point towards the player that the sample belongs to.</p>
+                    <p>Unlike most unique role items, the DNA scanner can be dropped and used by other players of any role.</p>
+                    <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                    <table style="width:100%; margin-bottom: 10px;">
+                        <thead>
+                        <tr>
+                            <th>ConVar</th>
+                            <th>Default</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ttt_det_credits_starting</td>
+                            <td>1</td>
+                            <td>Integer</td>
+                            <td><b>Vanilla TTT ConVar</b> - The number of credits a detective should start with.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
+                </div>
+            </div>
+        </div>
+        <div id="marshal" class="collapsible">
+            <button class="header" style="background-color:var(--special-detective);"><i class="icon-marshal"></i>Marshal</button>
+            <div class="content">
+                <div class="moreless">[more]</div>
+                <p>The <span class="inline-icon" style="color:var(--special-detective);"><i class="icon-marshal"></i><a href="#marshal">Marshal</a></span> can use their badge to turn a player into a <span class="inline-icon" style="color:var(--special-innocent);"><i class="icon-deputy"></i><a href="../teams/innocent.html#deputy">Deputy</a></span> or an <span class="inline-icon" style="color:var(--special-traitor);"><i class="icon-impersonator"></i><a href="../teams/traitor.html#impersonator">Impersonator</a></span>.</p>
+                <div class="expansion">
+                    <p>The Marshal is given a deputy badge as part of their loadout which can be used to convert players into either a Deputy or an Impersonator. If the badge is used on a member of the <span style="color:var(--innocent);"><a href="../teams/innocent.html">innocent team</a></span> that player will become a Deputy, and if it is used on a member of the <span style="color:var(--traitor);"><a href="../teams/traitor.html">traitor team</a></span> that player will become an Impersonator.</p>
+                    <p>If the badge is used on any other player, there is a chance for that player to become either a Deputy or an Impersonator. This chance can be configured independently for each team with the ConVars below.</p>
+                    <p>The Marshal has access to a shop containing a small handful of useful items. However, if the <code>ttt_marshal_shop_sync</code> ConVar is enabled the Marshal will have access to all items available to the <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="#detective">Detective</a></span>.</p>
+                    <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                    <table style="width:100%; margin-bottom: 10px;">
+                        <thead>
+                        <tr>
+                            <th>ConVar</th>
+                            <th>Default</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ttt_marshal_announce_deputy</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether a player being deputized will be announced to everyone.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_marshal_badge_time</td>
+                            <td>8</td>
+                            <td>Integer</td>
+                            <td>The amount of time in seconds the Marshal's badge takes to use.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_marshal_credits_starting</td>
+                            <td>1</td>
+                            <td>Integer</td>
+                            <td>The number of credits a Marshal should start with.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_marshal_independent_deputy_chance</td>
+                            <td>0.5</td>
+                            <td>Float (0-1)</td>
+                            <td>The chance that an independent will become a Deputy when the Marshal's badge is used on them. <i>(Set to -1 to disable.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_marshal_jester_deputy_chance</td>
+                            <td>0.5</td>
+                            <td>Float (0-1)</td>
+                            <td>The chance that a jester will become a Deputy when the Marshal's badge is used on them. <i>(Set to -1 to disable.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_marshal_monster_deputy_chance</td>
+                            <td>0.5</td>
+                            <td>Float (0-1)</td>
+                            <td>The chance that a monster will become a Deputy when the Marshal's badge is used on them. <i>(Set to -1 to disable.)</i></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
+                </div>
+            </div>
+        </div>
+        <div id="medium" class="collapsible">
+            <button class="header" style="background-color:var(--special-detective);"><i class="icon-medium"></i>Medium</button>
+            <div class="content">
+                <div class="moreless">[more]</div>
+                <p>The <span class="inline-icon" style="color:var(--special-detective);"><i class="icon-medium"></i><a href="#medium">Medium</a></span> can communicate the souls of dead players.</p>
+                <div class="expansion">
+                    <p>The positions of dead players' spectator cameras appear to the Medium as colourful floating orbs. While dead players cannot communicate directly with living players, they are able to use their position to try to give the Medium hints.</p>
+                    <p>If <code>ttt_medium_spirit_color</code> is enabled each player's spirit will be given a unique color, otherwise each spirit will be white.</p>
+                    <p>The Medium has access to a shop containing a small handful of useful items. However, if the <code>ttt_medium_shop_sync</code> ConVar is enabled the Medium will have access to all items available to the <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="#detective">Detective</a></span>.</p>
+                    <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                    <table style="width:100%; margin-bottom: 10px;">
+                        <thead>
+                        <tr>
+                            <th>ConVar</th>
+                            <th>Default</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ttt_medium_credits_starting</td>
+                            <td>1</td>
+                            <td>Integer</td>
+                            <td>The number of credits a Medium should start with.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_medium_dead_notify</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether player should be notified that there is a Medium when they die.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_medium_spirit_color</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether players' spirits should have different colors.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_medium_spirit_vision</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether players' spirits should be able to see each other.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
+                </div>
+            </div>
+        </div>
+        <div id="paladin" class="collapsible">
+            <button class="header" style="background-color:var(--special-detective);"><i class="icon-paladin"></i>Paladin</button>
+            <div class="content">
+                <div class="moreless">[more]</div>
+                <p>The <span class="inline-icon" style="color:var(--special-detective);"><i class="icon-paladin"></i><a href="#paladin">Paladin</a></span> has an aura that can heal players and reduce incoming damage.</p>
+                <div class="expansion">
+                    <p>Players inside the Paladin's aura will slowly heal over time at a rate determined by <code>ttt_paladin_heal_rate</code>. The Paladin themselves will also slowly heal if <code>ttt_paladin_heal_self</code> is enabled.</p>
+                    <p>The Paladin's can also reduce incoming damage for players inside their aura by a factor determined by <code>ttt_paladin_damage_reduction</code>. By default the Paladin will not receive this incoming damage reduction themselves, but this can be enabled with <code>ttt_paladin_protect_self</code>.</p>
+                    <p>If <code>ttt_detectives_hide_special_mode</code> is changed from its default such that the Paladin's role is hidden from other players, the Paladin's aura will also be made invisible to other players, however it's effects will still apply.</p>
+                    <p>The Paladin has access to a shop containing a small handful of useful items. However, if the <code>ttt_paladin_shop_sync</code> ConVar is enabled the Paladin will have access to all items available to the <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="#detective">Detective</a></span>.</p>
+                    <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                    <table style="width:100%; margin-bottom: 10px;">
+                        <thead>
+                        <tr>
+                            <th>ConVar</th>
+                            <th>Default</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ttt_paladin_aura_radius</td>
+                            <td>5</td>
+                            <td>Float</td>
+                            <td>The radius of the Paladin's aura in meters.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_paladin_credits_starting</td>
+                            <td>1</td>
+                            <td>Integer</td>
+                            <td>The number of credits a Paladin should start with.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_paladin_damage_reduction</td>
+                            <td>0.3</td>
+                            <td>Float (0-1)</td>
+                            <td>The fraction an attacker's damage will be reduced by when they are shooting a player inside the Paladin's aura. <i>(e.g. 0.5 = 50% less damage.)</i></td>
+                        </tr>
+                        <tr>
+                            <td>ttt_paladin_heal_rate</td>
+                            <td>1</td>
+                            <td>Integer</td>
+                            <td>The amount of health a player inside the Paladin's aura will heal each second.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_paladin_heal_self</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Paladin's healing aura will heal themselves or not.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_paladin_protect_self</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Paladin's damage reduction aura will protect themselves or not.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
+                </div>
+            </div>
+        </div>
+        <div id="quartermaster" class="collapsible">
+            <button class="header" style="background-color:var(--special-detective);"><i class="icon-quartermaster"></i>Quartermaster</button>
+            <div class="content">
+                <div class="moreless">[more]</div>
+                <p>The <span class="inline-icon" style="color:var(--special-detective);"><i class="icon-quartermaster"></i><a href="#quartermaster">Quartermaster</a></span> can buy items available to <span class="inline-icon" style="color:var(--traitor);"><i class="icon-traitor"></i><a href="#traitor">Traitors</a></span> as weapon crates for other players.</p>
+                <div class="expansion">
+                    <p>The Quartermaster cannot buy items for themselves, and instead all items bought by the Quartermaster will be dropped on the ground in crates that can be opened by other players. The Quartermaster cannot open their own crates and so must instead supply items to other players.</p>
+                    <p>If <code>ttt_quartermaster_limited_loot</code> is enabled, each player will only be able to open one weapon crate per round, otherwise each player is free to open as many crates as they would like.</p>
+                    <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                    <table style="width:100%; margin-bottom: 10px;">
+                        <thead>
+                        <tr>
+                            <th>ConVar</th>
+                            <th>Default</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ttt_quartermaster_credits_starting</td>
+                            <td>3</td>
+                            <td>Integer</td>
+                            <td>The number of credits a Quartermaster should start with.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_quartermaster_limited_loot</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether players should be limited to looting a single Quartermaster crate per round.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
+                </div>
+            </div>
+        </div>
+        <div id="sapper" class="collapsible">
+            <button class="header" style="background-color:var(--special-detective);"><i class="icon-sapper"></i>Sapper</button>
+            <div class="content">
+                <div class="moreless">[more]</div>
+                <p>The <span class="inline-icon" style="color:var(--special-detective);"><i class="icon-sapper"></i><a href="#sapper">Sapper</a></span> has an aura that makes players immune to explosions.</p>
+                <div class="expansion">
+                    <p>Players inside the Sapper's aura will be immune to explosion damage. The Sapper themselves will also be immune if <code>ttt_sapper_protect_self</code> is enabled.</p>
+                    <p>Players inside the Sapper's aura will also be immune to fire damage if <code>ttt_sapper_fire_immune</code> is enabled.</p>
+                    <p>The Sapper can be configured to also be more effected against C4. Enabling <code>ttt_sapper_can_see_c4</code> will allow Sapper's to see the location of armed C4 through walls, and enabling <code>ttt_sapper_c4_guaranteed_defuse</code> will make it impossible for the Sapper to detonate C4 while defusing.</p>
+                    <p>If <code>ttt_detectives_hide_special_mode</code> is changed from its default such that the Sapper's role is hidden from other players, the Sapper's aura will also be made invisible to other players, however it's effects will still apply.</p>
+                    <p>The Sapper has access to a shop containing a small handful of useful items. However, if the <code>ttt_sapper_shop_sync</code> ConVar is enabled the Sapper will have access to all items available to the <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="#detective">Detective</a></span>.</p>
+                    <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                    <table style="width:100%; margin-bottom: 10px;">
+                        <thead>
+                        <tr>
+                            <th>ConVar</th>
+                            <th>Default</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ttt_sapper_aura_radius</td>
+                            <td>5</td>
+                            <td>Float</td>
+                            <td>The radius of the Sapper's aura in meters.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_sapper_c4_guaranteed_defuse</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Sapper is guaranteed to always successfully defuse C4.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_sapper_can_see_c4</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether the Sapper can see C4 pings on their radar like traitors.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_sapper_credits_starting</td>
+                            <td>1</td>
+                            <td>Integer</td>
+                            <td>The number of credits a Sapper should start with.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_sapper_fire_immune</td>
+                            <td>0</td>
+                            <td>Boolean</td>
+                            <td>Whether Sapper's protection aura also grands fire immunity.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_sapper_protect_self</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether the Sapper's protection aura will protect themselves or not.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
+                </div>
+            </div>
+        </div>
+        <div id="tracker" class="collapsible">
+            <button class="header" style="background-color:var(--special-detective);"><i class="icon-tracker"></i>Tracker</button>
+            <div class="content">
+                <div class="moreless">[more]</div>
+                <p>The <span class="inline-icon" style="color:var(--special-detective);"><i class="icon-tracker"></i><a href="#tracker">Tracker</a></span> can see a trail of footsteps left by other players.</p>
+                <div class="expansion">
+                    <p>If <code>ttt_tracker_footstep_color</code> is enabled each player's footsteps will be given a unique color, otherwise all footsteps will be white.</p>
+                    <p>Footsteps will disappear over time, fully disappearing after the length of time determined by <code>ttt_tracker_footstep_time</code> has passed.</p>
+                    <p>The Tracker can buy the tracking radar which will periodically show the locations of all living players and any dead bodies. The colors used by the tracking radar match the colors of each player's footsteps.</p>
+                    <p>The Tracker has access to a shop containing a small handful of useful items including the tracking radar. However, if the <code>ttt_tracker_shop_sync</code> ConVar is enabled the Tracker will also have access to all items available to the <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="#detective">Detective</a></span>.</p>
+                    <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
+                    <table style="width:100%; margin-bottom: 10px;">
+                        <thead>
+                        <tr>
+                            <th>ConVar</th>
+                            <th>Default</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>ttt_tracker_credits_starting</td>
+                            <td>1</td>
+                            <td>Integer</td>
+                            <td>The number of credits a Tracker should start with.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_tracker_footstep_color</td>
+                            <td>1</td>
+                            <td>Boolean</td>
+                            <td>Whether players' footsteps should have different colors.</td>
+                        </tr>
+                        <tr>
+                            <td>ttt_tracker_footstep_time</td>
+                            <td>15</td>
+                            <td>Integer</td>
+                            <td>The time in seconds a player's footsteps should show to the Tracker before fading. <i>(Set to 0 to disable.)</i></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
+                </div>
             </div>
         </div>
     </div>
-    <div id="sapper" class="collapsible">
-        <button class="header" style="background-color:var(--special-detective);"><i class="icon-sapper"></i>Sapper</button>
-        <div class="content">
-            <div class="moreless">[more]</div>
-            <p>The <span class="inline-icon" style="color:var(--special-detective);"><i class="icon-sapper"></i><a href="#sapper">Sapper</a></span> has an aura that makes players immune to explosions.</p>
-            <div class="expansion">
-                <p>Players inside the Sapper's aura will be immune to explosion damage. The Sapper themselves will also be immune if <code>ttt_sapper_protect_self</code> is enabled.</p>
-                <p>Players inside the Sapper's aura will also be immune to fire damage if <code>ttt_sapper_fire_immune</code> is enabled.</p>
-                <p>The Sapper can be configured to also be more effected against C4. Enabling <code>ttt_sapper_can_see_c4</code> will allow Sapper's to see the location of armed C4 through walls, and enabling <code>ttt_sapper_c4_guaranteed_defuse</code> will make it impossible for the Sapper to detonate C4 while defusing.</p>
-                <p>If <code>ttt_detectives_hide_special_mode</code> is changed from its default such that the Sapper's role is hidden from other players, the Sapper's aura will also be made invisible to other players, however it's effects will still apply.</p>
-                <p>The Sapper has access to a shop containing a small handful of useful items. However, if the <code>ttt_sapper_shop_sync</code> ConVar is enabled the Sapper will have access to all items available to the <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="#detective">Detective</a></span>.</p>
-                <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
-                <table style="width:100%; margin-bottom: 10px;">
-                    <thead>
-                    <tr>
-                        <th>ConVar</th>
-                        <th>Default</th>
-                        <th>Type</th>
-                        <th>Description</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>ttt_sapper_aura_radius</td>
-                        <td>5</td>
-                        <td>Float</td>
-                        <td>The radius of the Sapper's aura in meters.</td>
-                    </tr>
-                    <tr>
-                        <td>ttt_sapper_c4_guaranteed_defuse</td>
-                        <td>0</td>
-                        <td>Boolean</td>
-                        <td>Whether the Sapper is guaranteed to always successfully defuse C4.</td>
-                    </tr>
-                    <tr>
-                        <td>ttt_sapper_can_see_c4</td>
-                        <td>0</td>
-                        <td>Boolean</td>
-                        <td>Whether the Sapper can see C4 pings on their radar like traitors.</td>
-                    </tr>
-                    <tr>
-                        <td>ttt_sapper_credits_starting</td>
-                        <td>1</td>
-                        <td>Integer</td>
-                        <td>The number of credits a Sapper should start with.</td>
-                    </tr>
-                    <tr>
-                        <td>ttt_sapper_fire_immune</td>
-                        <td>0</td>
-                        <td>Boolean</td>
-                        <td>Whether Sapper's protection aura also grands fire immunity.</td>
-                    </tr>
-                    <tr>
-                        <td>ttt_sapper_protect_self</td>
-                        <td>1</td>
-                        <td>Boolean</td>
-                        <td>Whether the Sapper's protection aura will protect themselves or not.</td>
-                    </tr>
-                    </tbody>
-                </table>
-                <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
-            </div>
-        </div>
-    </div>
-    <div id="tracker" class="collapsible">
-        <button class="header" style="background-color:var(--special-detective);"><i class="icon-tracker"></i>Tracker</button>
-        <div class="content">
-            <div class="moreless">[more]</div>
-            <p>The <span class="inline-icon" style="color:var(--special-detective);"><i class="icon-tracker"></i><a href="#tracker">Tracker</a></span> can see a trail of footsteps left by other players.</p>
-            <div class="expansion">
-                <p>If <code>ttt_tracker_footstep_color</code> is enabled each player's footsteps will be given a unique color, otherwise all footsteps will be white.</p>
-                <p>Footsteps will disappear over time, fully disappearing after the length of time determined by <code>ttt_tracker_footstep_time</code> has passed.</p>
-                <p>The Tracker can buy the tracking radar which will periodically show the locations of all living players and any dead bodies. The colors used by the tracking radar match the colors of each player's footsteps.</p>
-                <p>The Tracker has access to a shop containing a small handful of useful items including the tracking radar. However, if the <code>ttt_tracker_shop_sync</code> ConVar is enabled the Tracker will also have access to all items available to the <span class="inline-icon" style="color:var(--detective);"><i class="icon-detective"></i><a href="#detective">Detective</a></span>.</p>
-                <h3 style="margin: 10px 0; padding: 0;">Role Configuration:</h3>
-                <table style="width:100%; margin-bottom: 10px;">
-                    <thead>
-                    <tr>
-                        <th>ConVar</th>
-                        <th>Default</th>
-                        <th>Type</th>
-                        <th>Description</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>ttt_tracker_credits_starting</td>
-                        <td>1</td>
-                        <td>Integer</td>
-                        <td>The number of credits a Tracker should start with.</td>
-                    </tr>
-                    <tr>
-                        <td>ttt_tracker_footstep_color</td>
-                        <td>1</td>
-                        <td>Boolean</td>
-                        <td>Whether players' footsteps should have different colors.</td>
-                    </tr>
-                    <tr>
-                        <td>ttt_tracker_footstep_time</td>
-                        <td>15</td>
-                        <td>Integer</td>
-                        <td>The time in seconds a player's footsteps should show to the Tracker before fading. <i>(Set to 0 to disable.)</i></td>
-                    </tr>
-                    </tbody>
-                </table>
-                <p>A list of ConVars shared by every role and instructions for using ConVars can be found on the <a href="../tutorials/configuring_convars.html">Configuring ConVars</a> tutorial page.</p>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="footerpadding panel"></div>
+    <div class="footerpadding panel"></div>
 </body>
 </html>
