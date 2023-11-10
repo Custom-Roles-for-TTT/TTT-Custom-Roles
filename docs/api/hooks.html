@@ -3,17 +3,23 @@
 <head>
     <title>Custom Roles for TTT - API - Hooks</title>
     <link rel="stylesheet" href="../css/style.css"/>
-    <link rel="stylesheet" href="../css/api.css"/>
+    <script type="text/javascript" src="../js/shared.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
 </head>
 <body>
-    <embed src="../nav.html#api" width="220" height="298" style="float: left; margin-right: 10px;" />
-    <div>
+    <button onclick="backToTop()" id="totop">Back to Top</button>
+    <div class="navigation panel">
+        <iframe id="nav" src="../nav.html#api" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left;"></iframe>
+    </div>
+    <div class="contentheader panel">
         <h1>Hooks</h1>
         <p>Custom and modified event hooks available within the defined realm. A list of default TTT hooks is available <a href="https://www.troubleinterroristtown.com/development/hooks/" target="_blank">here</a> but note that they may have been modified (see below).</p>
         <p><em><strong>NOTE:</strong></em> When using a hook with multiple return values, you <em>must</em> return a non-<code>nil</code> value for all properties up to the one(s) you are modifying or the hook results will be ignored entirely.</p>
         <p>For example, if there is a hook that returns three parameters: <code>first</code>, <code>second</code>, and <code>third</code> and you want to modify the <code>second</code> parameter you must return the <code>first</code> parameter as non-<code>nil</code> as well, like this: <code>return first, newSecond</code>. Any return parameters after <code>second</code> can be omitted and the default value will be used.</p>
         <p><em><strong>NOTE:</strong></em> Be careful that you only return from a hook when you absolutely want to change something. Due to the way GMod hooks work, whichever hook instance returns first causes the <em>remaining hook instances to be completely skipped</em>. This is useful for certain hooks when you want to stop a behavior from happening, but it can also accidentally cause functionality to break because its code is completely ignored.</p>
-
+    </div>
+    <div class="contentbody panel">
         <h3><a id="tttbodysearchbuttonsply-rag-buttons-searchraw-detectivesearchonly" href="#tttbodysearchbuttonsply-rag-buttons-searchraw-detectivesearchonly">TTTBodySearchButtons(ply, rag, buttons, searchRaw, detectiveSearchOnly)</a></h3>
         <p>
             Called when a player opens the body search dialog. Used to add new buttons to the dialog.<br>
@@ -70,7 +76,7 @@
 
         <h3><a id="tttcanidentifycorpseply-rag-wastraitor" href="#tttcanidentifycorpseply-rag-wastraitor">TTTCanIdentifyCorpse(ply, rag, wasTraitor)</a></h3>
         <p>
-            Changed <code>was_traitor</code> parameter to be <code>true</code> for any member of the traitor team, rather than just the traitor role.<br>
+            Changed <code>was_traitor</code> parameter to be <code>true</code> for any member of the traitor team, rather than just the regular Traitor role.<br>
             <em>Realm:</em> Server<br>
             <em>Added in:</em> 1.0.5<br>
             <em>Parameters:</em>
@@ -200,7 +206,7 @@
 
         <h3><a id="tttinformantdefaultscanstageply-oldrole-newrole" href="#tttinformantdefaultscanstageply-oldrole-newrole">TTTInformantDefaultScanStage(ply, oldRole, newRole)</a></h3>
         <p>
-            Called when an informant has scanned additional information from a target player.<br>
+            Called when an Informant has scanned additional information from a target player.<br>
             <em>Realm:</em> Server<br>
             <em>Added in:</em> 1.9.6<br>
             <em>Parameters:</em>
@@ -216,13 +222,13 @@
 
         <h3><a id="tttinformantscanstagechangedply-tgt-stage" href="#tttinformantscanstagechangedply-tgt-stage">TTTInformantScanStageChanged(ply, tgt, stage)</a></h3>
         <p>
-            Called when an informant has scanned additional information from a target player.<br>
+            Called when an Informant has scanned additional information from a target player.<br>
             <em>Realm:</em> Server<br>
             <em>Added in:</em> 1.6.16<br>
             <em>Parameters:</em>
         </p>
         <ul>
-            <li><em>ply</em> - The informant performing the scan</li>
+            <li><em>ply</em> - The Informant performing the scan</li>
             <li><em>tgt</em> - The player being scanned</li>
             <li><em>stage</em> - The new scan stage</li>
         </ul>
@@ -260,39 +266,39 @@
 
         <h3><a id="tttmadscientistzombifybeginply-tgt" href="#tttmadscientistzombifybeginply-tgt">TTTMadScientistZombifyBegin(ply, tgt)</a></h3>
         <p>
-            Called when a mad scientist begins zombifying a target.<br>
+            Called when a Mad Scientist begins zombifying a target.<br>
             <em>Realm:</em> Server<br>
             <em>Added in:</em> 1.6.16<br>
             <em>Parameters:</em>
         </p>
         <ul>
-            <li><em>ply</em> - The mad scientist doing the zombifying</li>
+            <li><em>ply</em> - The Mad Scientist doing the zombifying</li>
             <li><em>tgt</em> - The target being zombified</li>
         </ul>
 
         <h3><a id="tttpaladinaurahealedply-tgt-healed" href="#tttpaladinaurahealedply-tgt-healed">TTTPaladinAuraHealed(ply, tgt, healed)</a></h3>
         <p>
-            Called when a paladin heals a target.<br>
+            Called when a Paladin heals a target.<br>
             <em>Realm:</em> Server<br>
             <em>Added in:</em> 1.6.16<br>
             <em>Parameters:</em>
         </p>
         <ul>
-            <li><em>ply</em> - The paladin doing the healing</li>
+            <li><em>ply</em> - The Paladin doing the healing</li>
             <li><em>tgt</em> - The target being healed</li>
             <li><em>healed</em> - The amount healed</li>
         </ul>
 
         <h3><a id="tttparasiterespawnparasite-attacker" href="#tttparasiterespawnparasite-attacker">TTTParasiteRespawn(parasite, attacker)</a></h3>
         <p>
-            Called when a parasite respawns.<br>
+            Called when a Parasite respawns.<br>
             <em>Realm:</em> Server<br>
             <em>Added in:</em> 1.8.2<br>
             <em>Parameters:</em>
         </p>
         <ul>
-            <li><em>parasite</em> - The parasite that is respawning</li>
-            <li><em>attacker</em> - The player that originally killed the parasite (aka the "host")</li>
+            <li><em>parasite</em> - The Parasite that is respawning</li>
+            <li><em>attacker</em> - The player that originally killed the Parasite (aka the "host")</li>
         </ul>
 
         <h3><a id="tttplayeraliveclientthinkclient-ply" href="#tttplayeraliveclientthinkclient-ply">TTTPlayerAliveClientThink(client, ply)</a></h3>
@@ -371,7 +377,7 @@
 
         <h3><a id="tttplayerspawnforroundply-deadonly" href="#tttplayerspawnforroundply-deadonly">TTTPlayerSpawnForRound(ply, deadOnly)</a></h3>
         <p>
-            Called before a player is spawned for a round. Also used when reviving a player (via a defib, zombie conversion, etc.).<br>
+            Called before a player is spawned for a round. Also used when reviving a player (via a defib, Zombie conversion, etc.).<br>
             <em>Realm:</em> Server<br>
             <em>Added in:</em> 1.2.7<br>
             <em>Parameters:</em>
@@ -411,14 +417,14 @@
 
         <h3><a id="tttquartermastercrateopenedply-tgt-item_id" href="#tttquartermastercrateopenedply-tgt-item_id"></a>TTTQuartermasterCrateOpened(ply, tgt, item_id)</a></h3>
         <p>
-            Called when a player opens a crate from a quartermaster.<br>
+            Called when a player opens a crate from a Quartermaster.<br>
             <em>Realm:</em> Server<br>
             <em>Added in:</em> 1.9.6<br>
             <em>Parameters:</em>
         </p>
         <ul>
             <li><em>type</em> - The round win type</li>
-            <li><em>ply</em> - The quartermaster who provided the crate</li>
+            <li><em>ply</em> - The Quartermaster who provided the crate</li>
             <li><em>tgt</em> - The player who opened the crate</li>
             <li><em>item_id</em> - The ID of the item/equipment in the crate</li>
         </ul>
@@ -436,8 +442,8 @@
             <ul>
                 <li><code>pos</code> - The target's position</li>
                 <li><code>role</code> - The target's role, if any</li>
-                <li><code>was_beggar</code> - If the target was a beggar but was converted to another role</li>
-                <li><code>was_bodysnatcher</code> - If the target was a bodysnatcher but was converted to another role</li>
+                <li><code>was_beggar</code> - If the target was a Beggar but was converted to another role</li>
+                <li><code>was_bodysnatcher</code> - If the target was a Bodysnatcher but was converted to another role</li>
                 <li><code>killer_clown_active</code> - whether the target is a Clown that has been activated</li>
                 <li><code>sid64</code> - The <a href="https://wiki.facepunch.com/gmod/Player:SteamID64" target="_blank">SteamID64</a> value of the target</li>
                 <li>The following properties can be added (only one or the other) to <code>tgt</code> to change what is displayed with the radar ping
@@ -1316,9 +1322,9 @@
             <li><em>role</em> - What role is currently being shown for the target player</li>
             <li><em>noZ</em> - Whether the icon is currently visible through walls</li>
             <li><em>colorRole</em> - What role is being used for the icon background color (Only used when a different color than the one belonging to <em>role</em> is being used)</li>
-            <li><em>hideBeggar</em> - Whether the target was a beggar whose new role should be hidden</li>
+            <li><em>hideBeggar</em> - Whether the target was a Beggar whose new role should be hidden</li>
             <li><em>showJester</em> - Whether the target is a jester and the local player would normally know that</li>
-            <li><em>hideBodysnatcher</em> - Whether the target is a bodysnatcher whose new role should be hidden <em>(Added in 1.2.5)</em></li>
+            <li><em>hideBodysnatcher</em> - Whether the target is a Bodysnatcher whose new role should be hidden <em>(Added in 1.2.5)</em></li>
         </ul>
         <p>
             <em>Return:</em>
@@ -1397,14 +1403,14 @@
 
         <h3><a id="tttturncoatteamchangedply-traitor" href="#tttturncoatteamchangedply-traitor">TTTTurncoatTeamChanged(ply, traitor)</a></h3>
         <p>
-            Called when a turncoat's team is changed
+            Called when a Turncoat's team is changed
             <em>Realm:</em> Server<br>
             <em>Added in:</em> 1.6.16<br>
             <em>Parameters:</em>
         </p>
         <ul>
-            <li><em>ply</em> - The player who triggered the turncoat team change (most likely would be the turncoat themselves)</li>
-            <li><em>traitor</em> - Whether the turncoat is changing to the traitor team</li>
+            <li><em>ply</em> - The player who triggered the Turncoat team change (most likely would be the Turncoat themselves)</li>
+            <li><em>traitor</em> - Whether the Turncoat is changing to the traitor team</li>
         </ul>
 
         <h3><a id="ttttutorialroleenabledrole" href="#ttttutorialroleenabledrole">TTTTutorialRoleEnabled(role)</a></h3>
@@ -1494,13 +1500,13 @@
 
         <h3><a id="tttvampirebodyeatenply-ent-living-healed" href="#tttvampirebodyeatenply-ent-living-healed">TTTVampireBodyEaten(ply, ent, living, healed)</a></h3>
         <p>
-            Called after a vampire eats a body.<br>
+            Called after a Vampire eats a body.<br>
             <em>Realm:</em> Server<br>
             <em>Added in:</em> 1.6.16<br>
             <em>Parameters:</em>
         </p>
         <ul>
-            <li><em>ply</em> - The vampire eating the body</li>
+            <li><em>ply</em> - The Vampire eating the body</li>
             <li><em>ent</em> - The target entity. Generally either a player or a ragdoll</li>
             <li><em>living</em> - Whether the target entity was living at the time they were eaten</li>
             <li><em>healed</em> - The amount of health the player gained from eating the body</li>
@@ -1508,19 +1514,19 @@
 
         <h3><a id="tttvampireinvisibilitychangeply-invisible" href="#tttvampireinvisibilitychangeply-invisible">TTTVampireInvisibilityChange(ply, invisible)</a></h3>
         <p>
-            Called when a vampire starts or ends their invisibility.<br>
+            Called when a Vampire starts or ends their invisibility.<br>
             <em>Realm:</em> Server<br>
             <em>Added in:</em> 1.6.16<br>
             <em>Parameters:</em>
         </p>
         <ul>
-            <li><em>ply</em> - The vampire changing invisibility state</li>
+            <li><em>ply</em> - The Vampire changing invisibility state</li>
             <li><em>ent</em> - The target entity. Generally either a player or a ragdoll</li>
         </ul>
 
         <h3><a id="tttwincheckblockswinblocks" href="#tttwincheckblockswinblocks">TTTWinCheckBlocks(winBlocks)</a></h3>
         <p>
-            Called after the <code>TTTCheckForWins</code> has already been called, allowing for an addon to block a win. Used for roles like the clown and the drunk to have them activate when the round would normally end the first time.<br>
+            Called after the <code>TTTCheckForWins</code> has already been called, allowing for an addon to block a win. Used for roles like the Clown and the Drunk to have them activate when the round would normally end the first time.<br>
             <em>Realm:</em> Server<br>
             <em>Added in:</em> 1.3.1<br>
             <em>Parameters:</em>
@@ -1531,7 +1537,7 @@
 
         <h3><a id="tttwincheckcompletewin" href="#tttwincheckcompletewin">TTTWinCheckComplete(win)</a></h3>
         <p>
-            Called after a win condition has been set and right before the round eds. Used for roles like the old man that perform some logic before the end of the round without changing the outcome.<br>
+            Called after a win condition has been set and right before the round eds. Used for roles like the Old Man that perform some logic before the end of the round without changing the outcome.<br>
             <em>Realm:</em> Server<br>
             <em>Added in:</em> 1.3.1<br>
             <em>Parameters:</em>
@@ -1540,5 +1546,6 @@
             <li><em>win</em> - The win type that the round is about to end with</li>
         </ul>
     </div>
+    <div class="footerpadding panel"></div>
 </body>
 <html>

@@ -3,14 +3,20 @@
 <head>
     <title>Custom Roles for TTT - API - Global Variables</title>
     <link rel="stylesheet" href="../css/style.css"/>
-    <link rel="stylesheet" href="../css/api.css"/>
+    <script type="text/javascript" src="../js/shared.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
 </head>
 <body>
-    <embed src="../nav.html#api" width="220" height="298" style="float: left; margin-right: 10px;" />
-    <div>
+    <button onclick="backToTop()" id="totop">Back to Top</button>
+    <div class="navigation panel">
+        <iframe id="nav" src="../nav.html#api" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left;"></iframe>
+    </div>
+    <div class="contentheader panel">
         <h1>Global Variables</h1>
         <p>Variables available globally (within the defined realm)</p>
-
+    </div>
+    <div class="contentbody panel">
         <h3><a id="can_loot_credits_roles" href="#can_loot_credits_roles">CAN_LOOT_CREDITS_ROLES</a></h3>
         <p>
             Lookup table for whether a role can loot credits off of a corpse.<br>
@@ -18,9 +24,9 @@
             <em>Added in:</em> 1.0.5
         </p>
 
-        <h3 class="force-break"><a id="color_innocent" href="#color_innocent">COLOR_INNOCENT</a></h3>
+        <h3><a id="color_innocent" href="#color_innocent">COLOR_INNOCENT</a></h3>
         <p>
-            Table of the default colors to use for the innocent role for each color type.<br>
+            Table of the default colors to use for the Innocent role for each color type.<br>
             <em>Realm:</em> Client and Server<br>
             <em>Added in:</em> 1.0.0
         </p>
@@ -34,7 +40,7 @@
 
         <h3><a id="color_traitor" href="#color_traitor">COLOR_TRAITOR</a></h3>
         <p>
-            Table of the default colors to use for the traitor role for each color type.<br>
+            Table of the default colors to use for the Traitor role for each color type.<br>
             <em>Realm:</em> Client and Server<br>
             <em>Added in:</em> 1.0.0
         </p>
@@ -48,7 +54,7 @@
 
         <h3><a id="color_detective" href="#color_detective">COLOR_DETECTIVE</a></h3>
         <p>
-            Table of the default colors to use for the detective role for each color type.<br>
+            Table of the default colors to use for the Detective role for each color type.<br>
             <em>Realm:</em> Client and Server<br>
             <em>Added in:</em> 1.0.0
         </p>
@@ -263,5 +269,6 @@
             <em>Added in:</em> 1.4.2
         </p>
     </div>
+    <div class="footerpadding panel"></div>
 </body>
 <html>

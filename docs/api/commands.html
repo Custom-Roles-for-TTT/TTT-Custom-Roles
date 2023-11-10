@@ -3,14 +3,20 @@
 <head>
     <title>Custom Roles for TTT - API - Commands</title>
     <link rel="stylesheet" href="../css/style.css"/>
-    <link rel="stylesheet" href="../css/api.css"/>
+    <script type="text/javascript" src="../js/shared.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
 </head>
 <body>
-    <embed src="../nav.html#api" width="220" height="298" style="float: left; margin-right: 10px;" />
-    <div>
+    <button onclick="backToTop()" id="totop">Back to Top</button>
+    <div class="navigation panel">
+        <iframe id="nav" src="../nav.html#api" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left;"></iframe>
+    </div>
+    <div class="contentheader panel">
         <h1>Commands</h1>
-
-        <h2><a id="client-commands" href="#client-commands"><em>Client Commands</em></a></h2>
+    </div>
+    <div class="contentbody panel">
+        <h2><a id="client-commands" href="#client-commands">Client Commands</a></h2>
 
         <h3><a id="ttt_reset_weapons_cache" href="#ttt_reset_weapons_cache">ttt_reset_weapons_cache</a></h3>
         <p>
@@ -18,7 +24,7 @@
             <em>Added in</em>: 1.0.11
         </p>
 
-        <h3 class="force-break"><a id="ttt_roleweapons" href="#ttt_roleweapons">ttt_roleweapons</a></h3>
+        <h3><a id="ttt_roleweapons" href="#ttt_roleweapons">ttt_roleweapons</a></h3>
         <p>Allows for viewing and editing which weapons are available in each role's shop.<br>
             <em>Added in:</em> 1.2.7<br>
             <em>Parameters:</em>
@@ -35,7 +41,7 @@
             </li>
         </ul>
 
-        <h2><a id="server-commands" href="#server-commands"><em>Server Commands</em></a></h2>
+        <h2><a id="server-commands" href="#server-commands">Server Commands</a></h2>
 
         <h3><a id="sv_ttt_roleweapons" href="#sv_ttt_roleweapons">sv_ttt_roleweapons</a></h3>
         <p>Allows for viewing and editing which weapons are available in each role's shop. Server-side version of <a href="#ttt_roleweapons">ttt_roleweapons</a>.<br>
@@ -160,5 +166,6 @@
             <li><em>order</em> - The weapon class string or equipment ID number to be ordered</li>
         </ul>
     </div>
+    <div class="footerpadding panel"></div>
 </body>
 <html>

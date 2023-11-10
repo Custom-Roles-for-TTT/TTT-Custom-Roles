@@ -291,7 +291,7 @@ hook.Add("TTTTutorialRoleText", "Vampire_TTTTutorialRoleText", function(role, ti
             if hasVision then
                 html = html .. " also"
             end
-            html = html .. " be identified by the <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>KILL</span> icon floating over their heads.</span>"
+            html = html .. " be identified by the <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>skull</span> icon floating over their heads.</span>"
         end
 
         -- Damage reduction

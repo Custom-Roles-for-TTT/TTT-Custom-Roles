@@ -3,14 +3,20 @@
 <head>
     <title>Custom Roles for TTT - API - Player Object Methods</title>
     <link rel="stylesheet" href="../css/style.css"/>
-    <link rel="stylesheet" href="../css/api.css"/>
+    <script type="text/javascript" src="../js/shared.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
 </head>
 <body>
-    <embed src="../nav.html#api" width="220" height="298" style="float: left; margin-right: 10px;" />
-    <div>
+    <button onclick="backToTop()" id="totop">Back to Top</button>
+    <div class="navigation panel">
+        <iframe id="nav" src="../nav.html#api" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left;"></iframe>
+    </div>
+    <div class="contentheader panel">
         <h1>Player Object Methods</h1>
         <p>Methods available when called from a Player object (within the defined realm)</p>
-
+    </div>
+    <div class="contentbody panel">
         <h3><a id="plymetabeginrolechecks" href="#plymetabeginrolechecks">plymeta:BeginRoleChecks()</a></h3>
         <p>
             Sets up role logic for the player to handle role-specific events and checks.<br>
@@ -18,7 +24,7 @@
             <em>Added in:</em> 1.1.9
         </p>
 
-        <h3 class="force-break"><a id="plymetacelebratesnd-showconfetti" href="#plymetacelebratesnd-showconfetti">plymeta:Celebrate(snd, showConfetti)</a></h3>
+        <h3><a id="plymetacelebratesnd-showconfetti" href="#plymetacelebratesnd-showconfetti">plymeta:Celebrate(snd, showConfetti)</a></h3>
         <p>
             Plays a celebration effect (sound and or confetti) at the player's location.<br>
             <em>Realm:</em> Client<br>
@@ -75,13 +81,13 @@
 
         <h3><a id="plymetadrunkrememberrolerole" href="#plymetadrunkrememberrolerole">plymeta:DrunkRememberRole(role)</a></h3>
         <p>
-            Sets the drunk's role and runs required checks for that role.<br>
+            Sets the Drunk's role and runs required checks for that role.<br>
             <em>Realm:</em> Server<br>
             <em>Added in:</em> 1.1.9<br>
             <em>Parameters:</em>
         </p>
         <ul>
-            <li><em>role</em> - Which role to set the drunk to (see ROLE_* global enumeration)</li>
+            <li><em>role</em> - Which role to set the Drunk to (see ROLE_* global enumeration)</li>
         </ul>
 
         <h3><a id="plymetagetavoiddetectiveplymetashouldavoiddetective-added-in-162" href="#plymetagetavoiddetectiveplymetashouldavoiddetective-added-in-162">plymeta:GetAvoidDetective()/plymeta:ShouldAvoidDetective() (Added in 1.6.2)</a></h3>
@@ -160,21 +166,21 @@
 
         <h3><a id="plymetahandledetectivelikepromotion" href="#plymetahandledetectivelikepromotion">plymeta:HandleDetectiveLikePromotion()</a></h3>
         <p>
-            Handles the player's promotion as a detective-like role (deputy/impersonator). Promotes the player and sends necessary net events.<br>
+            Handles the player's promotion as a detective-like role (deputy/Impersonator). Promotes the player and sends necessary net events.<br>
             <em>Realm:</em> Server<br>
             <em>Added in:</em> 1.2.5
         </p>
 
         <h3><a id="plymetaisrolenameplymetagetrolename" href="#plymetaisrolenameplymetagetrolename">plymeta:Is{RoleName}()/plymeta:Get{RoleName}()</a></h3>
         <p>
-            Dynamically created functions for each role that returns whether the player is that role. For example: <code>plymeta:IsTraitor()</code> and <code>plymeta:IsPhantom()</code> return whether the player is a traitor or a phantom, respectively.<br>
+            Dynamically created functions for each role that returns whether the player is that role. For example: <code>plymeta:IsTraitor()</code> and <code>plymeta:IsPhantom()</code> return whether the player is a Traitor or a Phantom, respectively.<br>
             <em>Realm:</em> Client and Server<br>
             <em>Added in:</em> Whenever each role is added
         </p>
 
         <h3><a id="plymetaisactiverolename" href="#plymetaisactiverolename">plymeta:IsActive{RoleName}()</a></h3>
         <p>
-            Dynamically created functions for each role that returns whether <code>plymeta:Is{RoleName}</code> returns <code>true</code> and the player is active. For example: <code>plymeta:IsActiveTraitor()</code> and <code>plymeta:IsActivePhantom()</code> return whether the player is active and a traitor or a phantom, respectively.<br>
+            Dynamically created functions for each role that returns whether <code>plymeta:Is{RoleName}</code> returns <code>true</code> and the player is active. For example: <code>plymeta:IsActiveTraitor()</code> and <code>plymeta:IsActivePhantom()</code> return whether the player is active and a Traitor or a Phantom, respectively.<br>
             <em>Realm:</em> Client and Server<br>
             <em>Added in:</em> Whenever each role is added
         </p>
@@ -237,21 +243,21 @@
 
         <h3><a id="plymetaiscustom" href="#plymetaiscustom">plymeta:IsCustom()</a></h3>
         <p>
-            Whether the player's role is not one of the three default TTT roles.<br>
+            Whether the player's role is not one of the three regular TTT roles.<br>
             <em>Realm:</em> Client and Server<br>
             <em>Added in:</em> 1.0.0
         </p>
 
         <h3><a id="plymetaisdetectivelikeplymetagetdetectivelike" href="#plymetaisdetectivelikeplymetagetdetectivelike">plymeta:IsDetectiveLike()/plymeta:GetDetectiveLike()</a></h3>
         <p>
-            Whether the player's role is like a detective (e.g. detective or promoted deputy/impersonator).<br>
+            Whether the player's role is like a detective (e.g. detective or promoted Deputy/Impersonator).<br>
             <em>Realm:</em> Client and Server<br>
             <em>Added in:</em> 1.0.0
         </p>
 
         <h3><a id="plymetaisdetectivelikepromotableplymetagetdetectivelikepromotable" href="#plymetaisdetectivelikepromotableplymetagetdetectivelikepromotable">plymeta:IsDetectiveLikePromotable()/plymeta:GetDetectiveLikePromotable()</a></h3>
         <p>
-            Whether the player's role is an unpromoted detective-like role (deputy/impersonator).<br>
+            Whether the player's role is an unpromoted detective-like role (deputy/Impersonator).<br>
             <em>Realm:</em> Client and Server<br>
             <em>Added in:</em> 1.2.5
         </p>
@@ -379,14 +385,14 @@
 
         <h3><a id="plymetaisvampireallyplymetagetvampireally" href="#plymetaisvampireallyplymetagetvampireally">plymeta:IsVampireAlly()/plymeta:GetVampireAlly()</a></h3>
         <p>
-            Whether the player is allied with the vampire role.<br>
+            Whether the player is allied with the Vampire role.<br>
             <em>Realm:</em> Client and Server<br>
             <em>Added in:</em> 1.0.0
         </p>
 
         <h3><a id="plymetaisvampireprimeplymetagetvampireprime" href="#plymetaisvampireprimeplymetagetvampireprime">plymeta:IsVampirePrime()/plymeta:GetVampirePrime()</a></h3>
         <p>
-            Whether the player is the prime (e.g. first-spawned) vampire.<br>
+            Whether the player is the prime (e.g. first-spawned) Vampire.<br>
             <em>Realm:</em> Client and Server<br>
             <em>Added in:</em> 1.0.0
         </p>
@@ -404,21 +410,21 @@
 
         <h3><a id="plymetaiszombieallyplymetagetzombieally" href="#plymetaiszombieallyplymetagetzombieally">plymeta:IsZombieAlly()/plymeta:GetZombieAlly()</a></h3>
         <p>
-            Whether the player is allied with the zombie role.<br>
+            Whether the player is allied with the Zombie role.<br>
             <em>Realm:</em> Client and Server<br>
             <em>Added in:</em> 1.0.0
         </p>
 
         <h3><a id="plymetaiszombieprimeplymetagetzombieprime" href="#plymetaiszombieprimeplymetagetzombieprime">plymeta:IsZombiePrime()/plymeta:GetZombiePrime()</a></h3>
         <p>
-            Whether the player is the prime (e.g. first-spawned) zombie.<br>
+            Whether the player is the prime (e.g. first-spawned) Zombie.<br>
             <em>Realm:</em> Client and Server<br>
             <em>Added in:</em> 1.0.0
         </p>
 
         <h3><a id="plymetaiszombifying" href="#plymetaiszombifying">plymeta:IsZombifying()</a></h3>
         <p>
-            Whether the player is in the process of respawning as a zombie.<br>
+            Whether the player is in the process of respawning as a Zombie.<br>
             <em>Realm:</em> Client and Server<br>
             <em>Added in:</em> 1.5.12
         </p>
@@ -444,13 +450,13 @@
 
         <h3><a id="plymetarespawnaszombieprime" href="#plymetarespawnaszombieprime">plymeta:RespawnAsZombie(prime)</a></h3>
         <p>
-            Respawns the player as a zombie after a 3 second delay.<br>
+            Respawns the player as a Zombie after a 3 second delay.<br>
             <em>Realm:</em> Server<br>
             <em>Added in:</em> 1.5.12<br>
             <em>Parameters:</em>
         </p>
         <ul>
-            <li><em>prime</em> - Whether to mark the respawning player as the prime zombie <em>(Added in 1.6.15)</em></li>
+            <li><em>prime</em> - Whether to mark the respawning player as the prime Zombie <em>(Added in 1.6.15)</em></li>
         </ul>
 
         <h3><a id="plymetasetdefaultcreditskeep_existing" href="#plymetasetdefaultcreditskeep_existing">plymeta:SetDefaultCredits(keep_existing)</a></h3>
@@ -499,35 +505,35 @@
 
         <h3><a id="plymetasetvampirepreviousrolepreviousrole" href="#plymetasetvampirepreviousrolepreviousrole">plymeta:SetVampirePreviousRole(previousRole)</a></h3>
         <p>
-            Sets the player's previous role for when they are turned into a vampire.<br>
+            Sets the player's previous role for when they are turned into a Vampire.<br>
             <em>Realm:</em> Server<br>
             <em>Added in:</em> 1.0.0<br>
             <em>Parameters:</em>
         </p>
         <ul>
-            <li><em>previousRole</em> - The previous role this player had before becoming a vampire</li>
+            <li><em>previousRole</em> - The previous role this player had before becoming a Vampire</li>
         </ul>
 
         <h3><a id="plymetasetvampireprimeisprime" href="#plymetasetvampireprimeisprime">plymeta:SetVampirePrime(isPrime)</a></h3>
         <p>
-            Sets whether the player is a prime (e.g. first-spawned) vampire.<br>
+            Sets whether the player is a prime (e.g. first-spawned) Vampire.<br>
             <em>Realm:</em> Server<br>
             <em>Added in:</em> 1.0.0<br>
             <em>Parameters:</em>
         </p>
         <ul>
-            <li><em>isPrime</em> - Whether the player is a prime vampire</li>
+            <li><em>isPrime</em> - Whether the player is a prime Vampire</li>
         </ul>
 
         <h3><a id="plymetasetzombieprimeisprime" href="#plymetasetzombieprimeisprime">plymeta:SetZombiePrime(isPrime)</a></h3>
         <p>
-            Sets whether the player is a prime (e.g. first-spawned) zombie.<br>
+            Sets whether the player is a prime (e.g. first-spawned) Zombie.<br>
             <em>Realm:</em> Server<br>
             <em>Added in:</em> 1.0.0<br>
             <em>Parameters:</em>
         </p>
         <ul>
-            <li><em>isPrime</em> - Whether the player is a prime zombie</li>
+            <li><em>isPrime</em> - Whether the player is a prime Zombie</li>
         </ul>
 
         <h3><a id="plymetashouldactlikejester" href="#plymetashouldactlikejester">plymeta:ShouldActLikeJester()</a></h3>
@@ -540,7 +546,7 @@
         <h3><a id="plymetashoulddelayannouncements" href="#plymetashoulddelayannouncements">plymeta:ShouldDelayAnnouncements()</a></h3>  <!-- TODO: Remove after 2.0.0 -->
         <p>
             <b>DEPRECATED IN 1.9.4</b><br>
-            Whether this role should delay announcements when they kill a player that shows a message (like phantom and parasite). Used for things like preventing the assassin's target update message from getting overlapped.<br>
+            Whether this role should delay announcements when they kill a player that shows a message (like Phantom and Parasite). Used for things like preventing the Assassin's target update message from getting overlapped.<br>
             <em>Realm:</em> Client and Server<br>
             <em>Added in:</em> 1.2.7
         </p>
@@ -568,24 +574,24 @@
 
         <h3><a id="plymetashouldrevealbeggartgt" href="#plymetashouldrevealbeggartgt">plymeta:ShouldRevealBeggar(tgt)</a></h3>
         <p>
-            Whether the player should reveal the fact that the target player is no longer a beggar (e.g. converted to an innocent or traitor).<br>
+            Whether the player should reveal the fact that the target player is no longer a Beggar (e.g. converted to an Innocent or Traitor).<br>
             <em>Realm:</em> Client and Server<br>
             <em>Added in:</em> 1.2.5<br>
             <em>Parameters:</em>
         </p>
         <ul>
-            <li><em>tgt</em> - The target player beggar. If a value is not provided, the context player will be used instead (e.g. <code>ply:ShouldRevealBeggar()</code> is the same as <code>ply:ShouldRevealBeggar(ply)</code>)</li>
+            <li><em>tgt</em> - The target player Beggar. If a value is not provided, the context player will be used instead (e.g. <code>ply:ShouldRevealBeggar()</code> is the same as <code>ply:ShouldRevealBeggar(ply)</code>)</li>
         </ul>
 
         <h3><a id="plymetashouldrevealbodysnatchertgt" href="#plymetashouldrevealbodysnatchertgt">plymeta:ShouldRevealBodysnatcher(tgt)</a></h3>
         <p>
-            Whether the player should reveal the fact that the target player is no longer a bodysnatcher (e.g. has snatched a role from a dead body).<br>
+            Whether the player should reveal the fact that the target player is no longer a Bodysnatcher (e.g. has snatched a role from a dead body).<br>
             <em>Realm:</em> Client and Server<br>
             <em>Added in:</em> 1.2.5<br>
             <em>Parameters:</em>
         </p>
         <ul>
-            <li><em>tgt</em> - The target player bodysnatcher. If a value is not provided, the context player will be used instead (e.g. <code>ply:ShouldRevealBodysnatcher()</code> is the same as <code>ply:ShouldRevealBodysnatcher(ply)</code>)</li>
+            <li><em>tgt</em> - The target player Bodysnatcher. If a value is not provided, the context player will be used instead (e.g. <code>ply:ShouldRevealBodysnatcher()</code> is the same as <code>ply:ShouldRevealBodysnatcher(ply)</code>)</li>
         </ul>
 
         <h3><a id="plymetashouldrevealrolewhenactive" href="#plymetashouldrevealrolewhenactive">plymeta:ShouldRevealRoleWhenActive()</a></h3>
@@ -604,7 +610,7 @@
 
         <h3><a id="plymetasoberdrunkteam" href="#plymetasoberdrunkteam">plymeta:SoberDrunk(team)</a></h3>
         <p>
-            Runs the logic for when a drunk sobers up and remembers their role.<br>
+            Runs the logic for when a Drunk sobers up and remembers their role.<br>
             <em>Realm:</em> Server<br>
             <em>Added in:</em> 1.1.9<br>
             <em>Parameters:</em>
@@ -631,5 +637,6 @@
             <li><em>scale</em> - The value with which to scale the players size, relative to their current size.</li>
         </ul>
     </div>
+    <div class="footerpadding panel"></div>
 </body>
 <html>

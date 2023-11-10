@@ -45,7 +45,7 @@ hook.Add("TTTTutorialRoleText", "Glitch_TTTTutorialRoleText", function(role, tit
         end
 
         -- Communications block
-        html = html .. "<span style='display: block; margin-top: 10px;'>When there is " .. ROLE_STRINGS_EXT[ROLE_GLITCH] .. " in the round, team text and voice chat <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>are blocked</span> to make it difficult to communicate and identify the " .. ROLE_STRINGS[ROLE_GLITCH] .. ".</span>"
+        html = html .. "<span style='display: block; margin-top: 10px;'>When there is " .. ROLE_STRINGS_EXT[ROLE_GLITCH] .. " in the round, traitor team text and voice chat <span style='color: rgb(" .. traitorColor.r .. ", " .. traitorColor.g .. ", " .. traitorColor.b .. ")'>are blocked</span> to make it difficult to communicate and identify the " .. ROLE_STRINGS[ROLE_GLITCH] .. ".</span>"
 
         -- Traitor traps
         if glitch_use_traps:GetBool() then

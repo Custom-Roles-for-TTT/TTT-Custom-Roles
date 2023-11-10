@@ -3,14 +3,20 @@
 <head>
     <title>Custom Roles for TTT - API - Util Methods</title>
     <link rel="stylesheet" href="../css/style.css"/>
-    <link rel="stylesheet" href="../css/api.css"/>
+    <script type="text/javascript" src="../js/shared.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
 </head>
 <body>
-    <embed src="../nav.html#api" width="220" height="298" style="float: left; margin-right: 10px;" />
-    <div>
+    <button onclick="backToTop()" id="totop">Back to Top</button>
+    <div class="navigation panel">
+        <iframe id="nav" src="../nav.html#api" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left;"></iframe>
+    </div>
+    <div class="contentheader panel">
         <h1>Utility Methods</h1>
         <p>Utility methods created to help with various common scenarios</p>
-
+    </div>
+    <div class="contentbody panel">
         <h3><a id="utilburnragdollrag-burn_time_scorch" href="#utilburnragdollrag-burn_time_scorch">util.BurnRagdoll(rag, burn_time, scorch)</a></h3>
         <p>
             Burns a player ragdoll, shows scorch marks, and automatically destroys the ragdoll unless it's been extinguished by water.<br>
@@ -58,5 +64,6 @@
             <li><em>errorIfMissing</em> - Whether to throw an error if the file is missing (Defaults to <code>false</code>)</li>
         </ul>
     </div>
+    <div class="footerpadding panel"></div>
 </body>
 <html>

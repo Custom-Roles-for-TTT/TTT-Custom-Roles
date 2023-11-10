@@ -166,7 +166,7 @@ hook.Add("TTTTutorialRoleText", "Killer_TTTTutorialRoleText", function(role, tit
 
         -- Crowbar
         if killer_crowbar_enabled:GetBool() then
-            html = html .. "<span style='display: block; margin-top: 10px;'>They have a special crowbar <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>can be thrown</span>.</span>"
+            html = html .. "<span style='display: block; margin-top: 10px;'>They have a special crowbar that <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>can be thrown</span>.</span>"
         end
 
         -- Smoke
@@ -186,7 +186,7 @@ hook.Add("TTTTutorialRoleText", "Killer_TTTTutorialRoleText", function(role, tit
             if hasVision then
                 html = html .. " also"
             end
-            html = html .. " be identified by the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>KILL</span> icon floating over their heads.</span>"
+            html = html .. " be identified by the <span style='color: rgb(" .. roleColor.r .. ", " .. roleColor.g .. ", " .. roleColor.b .. ")'>skull</span> icon floating over their heads.</span>"
         end
 
         return html

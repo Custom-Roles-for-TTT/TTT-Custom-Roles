@@ -3,14 +3,20 @@
 <head>
     <title>Custom Roles for TTT - API - SWEPs</title>
     <link rel="stylesheet" href="../css/style.css"/>
-    <link rel="stylesheet" href="../css/api.css"/>
+    <script type="text/javascript" src="../js/shared.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
 </head>
 <body>
-    <embed src="../nav.html#api" width="220" height="298" style="float: left; margin-right: 10px;" />
-    <div>
+    <button onclick="backToTop()" id="totop">Back to Top</button>
+    <div class="navigation panel">
+        <iframe id="nav" src="../nav.html#api" scrolling="no" onload="resizeIframe(this)" width="100%" style="overflow:hidden; border-style: none; float: left;"></iframe>
+    </div>
+    <div class="contentheader panel">
         <h1>SWEPs</h1>
         <p>Changes made to SWEPs (the data structure used when defining new weapons)</p>
-
+    </div>
+    <div class="contentbody panel">
         <h3><a id="user-content-swepblockshoprandomization" href="#user-content-swepblockshoprandomization">SWEP.BlockShopRandomization</a></h3>
         <p>
             Whether this weapon should block the shop randomization logic. Setting this to <code>true</code> will ensure this SWEP <em>always</em> shows in the applicable role's shop.<br>
@@ -35,5 +41,6 @@
             <em>Added in:</em> 1.1.9
         </p>
     </div>
+    <div class="footerpadding panel"></div>
 </body>
 <html>
