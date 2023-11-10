@@ -15,6 +15,8 @@ function expandContent(content, forceExpand = false) {
 
 function openAnchor() {
     var hash = window.location.hash.substring(1);
+    if (!hash) return;
+
     var anchor = document.getElementById(hash);
     if (anchor) {
         var content = anchor.getElementsByTagName('div')[0];
