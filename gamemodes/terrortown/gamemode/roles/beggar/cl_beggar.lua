@@ -481,7 +481,7 @@ hook.Add("TTTTutorialRoleText", "Beggar_TTTTutorialRoleText", function(role, tit
         if scanMode > BEGGAR_SCAN_MODE_DISABLED then
             local mode_string
             if scanMode == BEGGAR_SCAN_MODE_TRAITORS then
-                mode_string = "members of the " .. LANG.GetTranslation("traitor") ..  " team"
+                mode_string = "members of the " .. LANG.GetTranslation("traitor") .. " team"
             else
                 mode_string = "out if they have a shop"
             end
