@@ -1,7 +1,7 @@
 # Release Notes
 
 ## 1.9.14 (Beta)
-**Released:**
+**Released: November 11th, 2023**
 
 ### Additions
 - Added `ttt_beggar_announce_delay` (disabled by default) to allow delaying the announcement of the beggar's role change
